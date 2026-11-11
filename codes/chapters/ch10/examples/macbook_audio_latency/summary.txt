@@ -1,0 +1,17 @@
+null flags {'0': 1988} same index host median 13.583333231508732
+  absolute_first_correlation {'count': 8, 'median': 0.039077731906372246, 'min': 0.016168907698958443, 'max': 0.10870887725628374}
+base128 flags {'0': 4688} same index host median 13.583333231508732
+  absolute_first_correlation {'count': 20, 'median': 0.6800907178688667, 'min': 0.6709565713780786, 'max': 0.6888928019502011}
+  first_offset_ms {'count': 20, 'median': 106.3125, 'min': 106.3125, 'max': 106.3125}
+paired flags {'0': 7388} same index host median 13.583333231508732
+  absolute_first_correlation {'count': 32, 'median': 0.6726930322796483, 'min': 0.6589827348671288, 'max': 0.6902319277311363}
+  first_offset_ms {'count': 32, 'median': 105.60416666666667, 'min': 105.60416666666667, 'max': 105.60416666666667}
+  echo_correlation {'count': 32, 'median': 0.805825447873118, 'min': 0.7722318399021268, 'max': 0.817540029015443}
+  echo_return_offset_ms {'count': 32, 'median': 105.60416666666667, 'min': 105.58333333333333, 'max': 105.60416666666667}
+  first_to_forwarded_echo_ms {'count': 32, 'median': 185.60416666666666, 'min': 165.58333333333334, 'max': 205.60416666666666}
+  host_tagged_adc_to_dac_ms {'count': 32, 'median': 93.58302084729075, 'min': 73.58295796439052, 'max': 113.58308279886842}
+  paired summary {'60': {'first_offset_ms': {'count': 16, 'median': 105.60416666666667, 'min': 105.60416666666667, 'max': 105.60416666666667}, 'echo_correlation': {'count': 16, 'median': 0.803280146834513, 'min': 0.7800815407107844, 'max': 0.817540029015443}, 'echo_return_offset_ms': {'count': 16, 'median': 105.60416666666667, 'min': 105.58333333333333, 'max': 105.60416666666667}, 'first_to_forwarded_echo_ms': {'count': 16, 'median': 165.60416666666666, 'min': 165.58333333333334, 'max': 165.60416666666666}, 'host_tagged_adc_to_dac_ms': {'count': 16, 'median': 73.58308369293809, 'min': 73.58295796439052, 'max': 73.5835419036448}}, '100': {'first_offset_ms': {'count': 16, 'median': 105.60416666666667, 'min': 105.60416666666667, 'max': 105.60416666666667}, 'echo_correlation': {'count': 16, 'median': 0.8083002805852708, 'min': 0.7722318399021268, 'max': 0.8139716745100245}, 'echo_return_offset_ms': {'count': 16, 'median': 105.60416666666667, 'min': 105.60416666666667, 'max': 105.60416666666667}, 'first_to_forwarded_echo_ms': {'count': 16, 'median': 205.60416666666666, 'min': 205.60416666666666, 'max': 205.60416666666666}, 'host_tagged_adc_to_dac_ms': {'count': 16, 'median': 113.58295800164342, 'min': 113.58249979093671, 'max': 113.58308279886842}}, '100_minus_60': {'first_offset_ms': {'count': 16, 'median': 0.0, 'min': 0.0, 'max': 0.0}, 'echo_correlation': {'count': 16, 'median': 0.001004975890948001, 'min': -0.008751433964874544, 'max': 0.02758569155057411}, 'echo_return_offset_ms': {'count': 16, 'median': 0.0, 'min': 0.0, 'max': 0.020833333333342807}, 'first_to_forwarded_echo_ms': {'count': 16, 'median': 40.0, 'min': 40.0, 'max': 40.020833333333314}, 'host_tagged_adc_to_dac_ms': {'count': 16, 'median': 39.99987419229001, 'min': 39.99937488697469, 'max': 40.0001248344779}}}
+  whole-probe gates 32 clipped samples 0
+base480 flags {'0': 1250} same index host median 35.583333345130086
+  absolute_first_correlation {'count': 20, 'median': 0.6784466810653009, 'min': 0.6680549109205202, 'max': 0.6882217458545279}
+  first_offset_ms {'count': 20, 'median': 115.72916666666667, 'min': 115.72916666666667, 'max': 115.72916666666667}

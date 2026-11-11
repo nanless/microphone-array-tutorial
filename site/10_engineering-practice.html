@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 10 章 · 工程实现、评测与产业实践 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="3b9f0c885a50"><style>
+<meta name="source-digest" content="5064f54696c6"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -1793,6 +1793,62 @@ $$</p>
 <p>标签 B 对应输入索引 200，在回调 1 的偏移 40 处采到，即 $110+40/16=112.5$ ms。结果在 133 ms 发布，已错过 132 ms 开始的回调 2。已记录的输出标签落在回调 3 的首点，即索引 400，DAC 时刻为 155 ms，因此延迟为 <strong>42.5 ms</strong>。能赶上哪个回调只限定结果可以在哪时被读取，具体输出位置还须由实际标签确认。</p>
 <p>第三个输入标签 C 在回调 3 的索引 480 处采到，采样时刻为 $125+80/16=130$ ms，结果于 150 ms 发布。回调 4 报告 <code>paInputOverflow</code>。在不指定固定块长的模式中，这个标志说明本次输入首样本前有采集数据被丢弃，接口没有给出丢弃数量。本例的恢复策略丢弃旧待发标签并提交无标签填充，因此 C 没有对应输出。报告保留计划 3 个、配对成功 2 个和丢样量未知，C 不参加延迟统计。建立新的连续记录后，再用新标签测量。<a href="https://github.com/PortAudio/portaudio/blob/3f7bee79a65327d2e0965e8a74299723ed6f072d/include/portaudio.h#L723-L730" title="citation">PortAudio 19.7.0 固定头文件的输入上溢定义</a></p>
 <p>原练习入口的 <code>variable_callback_replay</code> 输出这五行和三个标签的纳秒读数。它处理的是固定合成事件。做实测时，可用同一台双通道记录仪记录送入设备的探测信号和设备输出，按固定窗口定位同一标记，再比较报告时间戳与外部记录。若信号经过扬声器和麦克风，结果还包含声学路径，需保留测点、距离、采样率和失败数。Android 官方环回用已知探测音和归一化相关测输出到回采的总偏移，本文的 ADC 到 DAC 数值须从实际正向处理路径取得。<a href="https://source.android.com/docs/core/audio/latency/measure#technique" title="citation">Android 官方环回延迟测量方法</a></p>
+<p><strong>MacBook Air 单麦实测。</strong> 2026-11-12，在 MacBook Air（Mac17,3）上，经 Core Audio 和 PortAudio 打开 48 kHz 双工流。程序从内置麦克风端点读取一路音频，并将同一个探测音送到内置扬声器端点的两路输出。这里的通道数指应用收到和提交的信号。测试没有接入阵列，也没有运行定位或波束形成。测量前后的系统播放音量读数分别为 26% 和 64%，没有逐次音量记录或声压标定。</p>
+<p><strong>声学往返怎么测。</strong> 在播放缓冲的样本索引 $n_{\mathrm{out}}$ 插入一段 20 ms、900–4500 Hz 的扫频脉冲。麦克风同时录音。将探测波形与候选录音片段分别减均值，再做归一化互相关，取搜索窗内绝对相关最大的匹配索引 $n_{\mathrm{in}}$。两索引之差除以名义采样率，得到本次流的声学往返偏移。测量方向是<strong>提交播放→扬声器→空气→麦克风→读到录音</strong>，包含播放和采集的缓冲。</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
+<thead>
+<tr>
+<th scope="col" style="text-align: right;">回调块长</th>
+<th scope="col" style="text-align: right;">有声试次</th>
+<th scope="col" style="text-align: right;">匹配偏移</th>
+<th scope="col" style="text-align: right;">声学往返偏移中位数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">128 点</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">5103 点</td>
+<td style="text-align: right;">106.31 ms</td>
+</tr>
+<tr>
+<td style="text-align: right;">480 点</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">5555 点</td>
+<td style="text-align: right;">115.73 ms</td>
+</tr>
+</tbody>
+</table></div>
+<p>例如 128 点组的结果为 $5103/48000\times1000=106.3125$ ms。各组内的 20 个匹配索引一致。另一次打开 128 点流得到 105.60 ms，因此不能把两组中位数之差全部归因于块长。无输出对照的 8 个搜索窗中，最大绝对相关为 0.109。有声组中，首个探测音的最低绝对相关为 0.659。</p>
+<p><strong>ADC 到 DAC 的时间戳怎么配。</strong> 在同一条 128 点双工流内，程序每次只转发一次采集到的探测片段，并交替加入 60 ms 和 100 ms 缓冲。对同一个标签，找到原输入样本所在的回调和它被转发到的输出回调。以输入块首样本的 ADC 时间戳加输入块内偏移，得到采样时刻估计。再以输出块首样本的 DAC 时间戳加输出块内偏移，得到播放时刻估计。两个偏移都要先除以采样率，最后用播放时刻减去采样时刻。</p>
+<p>以 60 ms 档的第一试次为例，输入标签位于索引 28100，对应采集块起点 28032、块内偏移 68 点。转发索引为 $28100+2880=30980$，对应播放块起点 30976、块内偏移 4 点。两块首样本的时间戳相差约 74.9166 ms，加上 $(4-68)/48000$ s 后得到约 <strong>73.583 ms</strong>。这一步既没有把回调起点当成采样时刻，也没有在时间戳差上再加一次 60 ms。</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
+<thead>
+<tr>
+<th scope="col" style="text-align: right;">插入缓冲</th>
+<th scope="col" style="text-align: right;">试次</th>
+<th scope="col" style="text-align: right;">两次回采中对应片段的间隔，中位数</th>
+<th scope="col" style="text-align: right;">ADC→DAC 时间戳估计，中位数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">60 ms</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">165.60 ms</td>
+<td style="text-align: right;">73.58 ms</td>
+</tr>
+<tr>
+<td style="text-align: right;">100 ms</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">205.60 ms</td>
+<td style="text-align: right;">113.58 ms</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>两个绝对值为什么不能直接比较。</strong> 时间戳估计沿<strong>采集→程序转发→播放</strong>计时，并依赖后端给出的端点时刻。声学往返沿<strong>播放→再次采集</strong>测偏移。要找到第二次回采，程序把实际送出的转发片段当作模板，在麦克风录音中再做一次相关。把这次匹配偏移加到程序插入的缓冲，就得到表中两次回采的对应片段之间的间隔。它包括转发后的一程扬声器到麦克风路径，所用标记是片段的相关匹配位置。</p>
+<p>这里可比较的是同一条流中<strong>增加缓冲前后的变化量</strong>。16 对试次的回采间隔差为 40.00–40.02 ms，配对时间戳差约为 40.00 ms。这个对照验证了 40 ms 缓冲确实进入了实际播放链路，绝对单向延迟仍需独立双通道记录仪校准。四个正式流共记录 15314 次回调，均未收到 PortAudio 状态标志。短时结果没有覆盖产品的高负载验收。</p>
+<p><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch10/examples/macbook_audio_latency/README.md">复跑说明</a>提供原生采集与转发代码、相关计算、四次录制的回调日志和逐次结果。可先用已保存的日志复算上面的时间戳。要重新找声学相关峰，则需重新播放并录音。原始麦克风波形未随报告保存。</p>
 <h3 id="sec-u-fe48419bc0">E10-18：重叠窗与不等长任务怎样计算 RTF</h3>
 <p>输入为 16 kHz 连续音频，分析窗 512 点，帧移 128 点，每次调用服务耗时 4 ms。只计算稳定运行的服务负载，暂不计启动填窗和末尾排空。求正确的 RTF，并解释用窗长作分母会怎样。</p>
 <p>每次调用只新推进 $128/16000=8$ ms 音频，故按式(10-12)得到 $4/8=0.5$。512 点窗长虽然是 $32\ \mathrm{ms}$，其中大部分样本与上次重叠；若用 $4/32=0.125$，就把同一源时间重复计入分母。四通道并行采集也不会把这次推进量变成 32 ms。</p>

@@ -1,0 +1,8 @@
+input=MacBook Air麦克风
+output=MacBook Air扬声器
+host=Core Audio
+PortAudio=PortAudio V19.7.0-devel, revision 147dd722548358763a8b649b3e4b41dfffbcfbb6
+rate=48000
+input_latency_s=0.214854167
+output_latency_s=0.019166667
+callbacks=1988

@@ -1,0 +1,993 @@
+{
+  "null": {
+    "alternating_delay_ms": {},
+    "device": {
+      "input": "MacBook Air麦克风",
+      "output": "MacBook Air扬声器",
+      "host": "Core Audio",
+      "PortAudio": "PortAudio V19.7.0-devel, revision 147dd722548358763a8b649b3e4b41dfffbcfbb6",
+      "rate": "48000",
+      "input_latency_s": "0.214854167",
+      "output_latency_s": "0.019166667",
+      "callbacks": "1988"
+    },
+    "requested_callback_frames": 128,
+    "observed_callback_frames": [
+      128
+    ],
+    "callback_flags_histogram": {
+      "0": 1988
+    },
+    "same_index_host_adc_to_dac_ms": {
+      "count": 1988,
+      "median": 13.583333231508732,
+      "min": 13.583333231508732,
+      "max": 13.583333231508732
+    },
+    "programmed_delay_ms": 0.0,
+    "summary": {
+      "absolute_first_correlation": {
+        "count": 8,
+        "median": 0.039077731906372246,
+        "min": 0.016168907698958443,
+        "max": 0.10870887725628374
+      }
+    },
+    "trials": [
+      {
+        "trial": 1,
+        "first_correlation": -0.04682810708310883,
+        "first_offset_samples": 7225,
+        "first_offset_ms": 150.52083333333334
+      },
+      {
+        "trial": 2,
+        "first_correlation": -0.03664139111488805,
+        "first_offset_samples": 9398,
+        "first_offset_ms": 195.79166666666666
+      },
+      {
+        "trial": 3,
+        "first_correlation": -0.04151407269785643,
+        "first_offset_samples": 4054,
+        "first_offset_ms": 84.45833333333333
+      },
+      {
+        "trial": 4,
+        "first_correlation": -0.07153063935944293,
+        "first_offset_samples": 5528,
+        "first_offset_ms": 115.16666666666667
+      },
+      {
+        "trial": 5,
+        "first_correlation": 0.03300469457343262,
+        "first_offset_samples": 243,
+        "first_offset_ms": 5.0625
+      },
+      {
+        "trial": 6,
+        "first_correlation": 0.016168907698958443,
+        "first_offset_samples": 6491,
+        "first_offset_ms": 135.22916666666666
+      },
+      {
+        "trial": 7,
+        "first_correlation": 0.10870887725628374,
+        "first_offset_samples": 1219,
+        "first_offset_ms": 25.395833333333332
+      },
+      {
+        "trial": 8,
+        "first_correlation": 0.023178218328882023,
+        "first_offset_samples": 6185,
+        "first_offset_ms": 128.85416666666666
+      }
+    ]
+  },
+  "base128": {
+    "alternating_delay_ms": {},
+    "device": {
+      "input": "MacBook Air麦克风",
+      "output": "MacBook Air扬声器",
+      "host": "Core Audio",
+      "PortAudio": "PortAudio V19.7.0-devel, revision 147dd722548358763a8b649b3e4b41dfffbcfbb6",
+      "rate": "48000",
+      "input_latency_s": "0.214854167",
+      "output_latency_s": "0.019166667",
+      "callbacks": "4688"
+    },
+    "requested_callback_frames": 128,
+    "observed_callback_frames": [
+      128
+    ],
+    "callback_flags_histogram": {
+      "0": 4688
+    },
+    "same_index_host_adc_to_dac_ms": {
+      "count": 4688,
+      "median": 13.583333231508732,
+      "min": 13.583333231508732,
+      "max": 13.583333231508732
+    },
+    "programmed_delay_ms": 0.0,
+    "summary": {
+      "absolute_first_correlation": {
+        "count": 20,
+        "median": 0.6800907178688667,
+        "min": 0.6709565713780786,
+        "max": 0.6888928019502011
+      },
+      "first_offset_ms": {
+        "count": 20,
+        "median": 106.3125,
+        "min": 106.3125,
+        "max": 106.3125
+      }
+    },
+    "trials": [
+      {
+        "trial": 1,
+        "first_correlation": 0.6888928019502011,
+        "first_offset_samples": 5103,
+        "first_offset_ms": 106.3125
+      },
+      {
+        "trial": 2,
+        "first_correlation": 0.6869592417759777,
+        "first_offset_samples": 5103,
+        "first_offset_ms": 106.3125
+      },
+      {
+        "trial": 3,
+        "first_correlation": 0.6830018563535685,
+        "first_offset_samples": 5103,
+        "first_offset_ms": 106.3125
+      },
+      {
+        "trial": 4,
+        "first_correlation": 0.6849197738293541,
+        "first_offset_samples": 5103,
+        "first_offset_ms": 106.3125
+      },
+      {
+        "trial": 5,
+        "first_correlation": 0.6858095373331881,
+        "first_offset_samples": 5103,
+        "first_offset_ms": 106.3125
+      },
+      {
+        "trial": 6,
+        "first_correlation": 0.6802106845423714,
+        "first_offset_samples": 5103,
+        "first_offset_ms": 106.3125
+      },
+      {
+        "trial": 7,
+        "first_correlation": 0.6795302574997694,
+        "first_offset_samples": 5103,
+        "first_offset_ms": 106.3125
+      },
+      {
+        "trial": 8,
+        "first_correlation": 0.681874464185536,
+        "first_offset_samples": 5103,
+        "first_offset_ms": 106.3125
+      },
+      {
+        "trial": 9,
+        "first_correlation": 0.6861432380796106,
+        "first_offset_samples": 5103,
+        "first_offset_ms": 106.3125
+      },
+      {
+        "trial": 10,
+        "first_correlation": 0.6799707511953618,
+        "first_offset_samples": 5103,
+        "first_offset_ms": 106.3125
+      },
+      {
+        "trial": 11,
+        "first_correlation": 0.6792919282109086,
+        "first_offset_samples": 5103,
+        "first_offset_ms": 106.3125
+      },
+      {
+        "trial": 12,
+        "first_correlation": 0.6865594596327785,
+        "first_offset_samples": 5103,
+        "first_offset_ms": 106.3125
+      },
+      {
+        "trial": 13,
+        "first_correlation": 0.6796732764591056,
+        "first_offset_samples": 5103,
+        "first_offset_ms": 106.3125
+      },
+      {
+        "trial": 14,
+        "first_correlation": 0.6857154918371049,
+        "first_offset_samples": 5103,
+        "first_offset_ms": 106.3125
+      },
+      {
+        "trial": 15,
+        "first_correlation": 0.6780820366004606,
+        "first_offset_samples": 5103,
+        "first_offset_ms": 106.3125
+      },
+      {
+        "trial": 16,
+        "first_correlation": 0.6762988402216776,
+        "first_offset_samples": 5103,
+        "first_offset_ms": 106.3125
+      },
+      {
+        "trial": 17,
+        "first_correlation": 0.6709565713780786,
+        "first_offset_samples": 5103,
+        "first_offset_ms": 106.3125
+      },
+      {
+        "trial": 18,
+        "first_correlation": 0.6756775334461129,
+        "first_offset_samples": 5103,
+        "first_offset_ms": 106.3125
+      },
+      {
+        "trial": 19,
+        "first_correlation": 0.6745123217915255,
+        "first_offset_samples": 5103,
+        "first_offset_ms": 106.3125
+      },
+      {
+        "trial": 20,
+        "first_correlation": 0.6739640140749081,
+        "first_offset_samples": 5103,
+        "first_offset_ms": 106.3125
+      }
+    ]
+  },
+  "paired": {
+    "alternating_delay_ms": {
+      "60": {
+        "first_offset_ms": {
+          "count": 16,
+          "median": 105.60416666666667,
+          "min": 105.60416666666667,
+          "max": 105.60416666666667
+        },
+        "echo_correlation": {
+          "count": 16,
+          "median": 0.803280146834513,
+          "min": 0.7800815407107844,
+          "max": 0.817540029015443
+        },
+        "echo_return_offset_ms": {
+          "count": 16,
+          "median": 105.60416666666667,
+          "min": 105.58333333333333,
+          "max": 105.60416666666667
+        },
+        "first_to_forwarded_echo_ms": {
+          "count": 16,
+          "median": 165.60416666666666,
+          "min": 165.58333333333334,
+          "max": 165.60416666666666
+        },
+        "host_tagged_adc_to_dac_ms": {
+          "count": 16,
+          "median": 73.58308369293809,
+          "min": 73.58295796439052,
+          "max": 73.5835419036448
+        }
+      },
+      "100": {
+        "first_offset_ms": {
+          "count": 16,
+          "median": 105.60416666666667,
+          "min": 105.60416666666667,
+          "max": 105.60416666666667
+        },
+        "echo_correlation": {
+          "count": 16,
+          "median": 0.8083002805852708,
+          "min": 0.7722318399021268,
+          "max": 0.8139716745100245
+        },
+        "echo_return_offset_ms": {
+          "count": 16,
+          "median": 105.60416666666667,
+          "min": 105.60416666666667,
+          "max": 105.60416666666667
+        },
+        "first_to_forwarded_echo_ms": {
+          "count": 16,
+          "median": 205.60416666666666,
+          "min": 205.60416666666666,
+          "max": 205.60416666666666
+        },
+        "host_tagged_adc_to_dac_ms": {
+          "count": 16,
+          "median": 113.58295800164342,
+          "min": 113.58249979093671,
+          "max": 113.58308279886842
+        }
+      },
+      "100_minus_60": {
+        "first_offset_ms": {
+          "count": 16,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "echo_correlation": {
+          "count": 16,
+          "median": 0.001004975890948001,
+          "min": -0.008751433964874544,
+          "max": 0.02758569155057411
+        },
+        "echo_return_offset_ms": {
+          "count": 16,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.020833333333342807
+        },
+        "first_to_forwarded_echo_ms": {
+          "count": 16,
+          "median": 40.0,
+          "min": 40.0,
+          "max": 40.020833333333314
+        },
+        "host_tagged_adc_to_dac_ms": {
+          "count": 16,
+          "median": 39.99987419229001,
+          "min": 39.99937488697469,
+          "max": 40.0001248344779
+        }
+      }
+    },
+    "device": {
+      "input": "MacBook Air麦克风",
+      "output": "MacBook Air扬声器",
+      "host": "Core Audio",
+      "PortAudio": "PortAudio V19.7.0-devel, revision 147dd722548358763a8b649b3e4b41dfffbcfbb6",
+      "rate": "48000",
+      "input_latency_s": "0.214854167",
+      "output_latency_s": "0.019166667",
+      "callbacks": "7388"
+    },
+    "requested_callback_frames": 128,
+    "observed_callback_frames": [
+      128
+    ],
+    "callback_flags_histogram": {
+      "0": 7388
+    },
+    "same_index_host_adc_to_dac_ms": {
+      "count": 7388,
+      "median": 13.583333231508732,
+      "min": 13.583333231508732,
+      "max": 13.583333231508732
+    },
+    "programmed_delay_ms": 60.0,
+    "summary": {
+      "absolute_first_correlation": {
+        "count": 32,
+        "median": 0.6726930322796483,
+        "min": 0.6589827348671288,
+        "max": 0.6902319277311363
+      },
+      "first_offset_ms": {
+        "count": 32,
+        "median": 105.60416666666667,
+        "min": 105.60416666666667,
+        "max": 105.60416666666667
+      },
+      "echo_correlation": {
+        "count": 32,
+        "median": 0.805825447873118,
+        "min": 0.7722318399021268,
+        "max": 0.817540029015443
+      },
+      "echo_return_offset_ms": {
+        "count": 32,
+        "median": 105.60416666666667,
+        "min": 105.58333333333333,
+        "max": 105.60416666666667
+      },
+      "first_to_forwarded_echo_ms": {
+        "count": 32,
+        "median": 185.60416666666666,
+        "min": 165.58333333333334,
+        "max": 205.60416666666666
+      },
+      "host_tagged_adc_to_dac_ms": {
+        "count": 32,
+        "median": 93.58302084729075,
+        "min": 73.58295796439052,
+        "max": 113.58308279886842
+      }
+    },
+    "trials": [
+      {
+        "trial": 1,
+        "first_correlation": 0.680507331822165,
+        "first_offset_samples": 5069,
+        "first_offset_ms": 105.60416666666667,
+        "whole_first_probe_within_gate": true,
+        "echo_correlation": 0.7800815407107844,
+        "echo_return_offset_ms": 105.60416666666667,
+        "first_to_forwarded_echo_ms": 165.60416666666666,
+        "programmed_delay_ms": 60.0,
+        "host_tagged_adc_to_dac_ms": 73.58324993401766,
+        "forwarding_clip_count": 0
+      },
+      {
+        "trial": 2,
+        "first_correlation": 0.6788810582030224,
+        "first_offset_samples": 5069,
+        "first_offset_ms": 105.60416666666667,
+        "whole_first_probe_within_gate": true,
+        "echo_correlation": 0.7722318399021268,
+        "echo_return_offset_ms": 105.60416666666667,
+        "first_to_forwarded_echo_ms": 205.60416666666666,
+        "programmed_delay_ms": 100.0,
+        "host_tagged_adc_to_dac_ms": 113.58295776881278,
+        "forwarding_clip_count": 0
+      },
+      {
+        "trial": 3,
+        "first_correlation": 0.6740526204646886,
+        "first_offset_samples": 5069,
+        "first_offset_ms": 105.60416666666667,
+        "whole_first_probe_within_gate": true,
+        "echo_correlation": 0.7852526407552479,
+        "echo_return_offset_ms": 105.60416666666667,
+        "first_to_forwarded_echo_ms": 165.60416666666666,
+        "programmed_delay_ms": 60.0,
+        "host_tagged_adc_to_dac_ms": 73.58295796439052,
+        "forwarding_clip_count": 0
+      },
+      {
+        "trial": 4,
+        "first_correlation": 0.6838611166294458,
+        "first_offset_samples": 5069,
+        "first_offset_ms": 105.60416666666667,
+        "whole_first_probe_within_gate": true,
+        "echo_correlation": 0.812838332305822,
+        "echo_return_offset_ms": 105.60416666666667,
+        "first_to_forwarded_echo_ms": 205.60416666666666,
+        "programmed_delay_ms": 100.0,
+        "host_tagged_adc_to_dac_ms": 113.58308279886842,
+        "forwarding_clip_count": 0
+      },
+      {
+        "trial": 5,
+        "first_correlation": 0.6902319277311363,
+        "first_offset_samples": 5069,
+        "first_offset_ms": 105.60416666666667,
+        "whole_first_probe_within_gate": true,
+        "echo_correlation": 0.80175313859333,
+        "echo_return_offset_ms": 105.60416666666667,
+        "first_to_forwarded_echo_ms": 165.60416666666666,
+        "programmed_delay_ms": 60.0,
+        "host_tagged_adc_to_dac_ms": 73.58312490396202,
+        "forwarding_clip_count": 0
+      },
+      {
+        "trial": 6,
+        "first_correlation": 0.6715875834232617,
+        "first_offset_samples": 5069,
+        "first_offset_ms": 105.60416666666667,
+        "whole_first_probe_within_gate": true,
+        "echo_correlation": 0.8058272402137328,
+        "echo_return_offset_ms": 105.60416666666667,
+        "first_to_forwarded_echo_ms": 205.60416666666666,
+        "programmed_delay_ms": 100.0,
+        "host_tagged_adc_to_dac_ms": 113.58291679061949,
+        "forwarding_clip_count": 0
+      },
+      {
+        "trial": 7,
+        "first_correlation": 0.673656766501313,
+        "first_offset_samples": 5069,
+        "first_offset_ms": 105.60416666666667,
+        "whole_first_probe_within_gate": true,
+        "echo_correlation": 0.8126417579514672,
+        "echo_return_offset_ms": 105.60416666666667,
+        "first_to_forwarded_echo_ms": 165.60416666666666,
+        "programmed_delay_ms": 60.0,
+        "host_tagged_adc_to_dac_ms": 73.58308299444616,
+        "forwarding_clip_count": 0
+      },
+      {
+        "trial": 8,
+        "first_correlation": 0.6832410520118666,
+        "first_offset_samples": 5069,
+        "first_offset_ms": 105.60416666666667,
+        "whole_first_probe_within_gate": true,
+        "echo_correlation": 0.8083449704640547,
+        "echo_return_offset_ms": 105.60416666666667,
+        "first_to_forwarded_echo_ms": 205.60416666666666,
+        "programmed_delay_ms": 100.0,
+        "host_tagged_adc_to_dac_ms": 113.58295800164342,
+        "forwarding_clip_count": 0
+      },
+      {
+        "trial": 9,
+        "first_correlation": 0.6732678896621682,
+        "first_offset_samples": 5069,
+        "first_offset_ms": 105.60416666666667,
+        "whole_first_probe_within_gate": true,
+        "echo_correlation": 0.801151121462623,
+        "echo_return_offset_ms": 105.60416666666667,
+        "first_to_forwarded_echo_ms": 165.60416666666666,
+        "programmed_delay_ms": 60.0,
+        "host_tagged_adc_to_dac_ms": 73.58304201625288,
+        "forwarding_clip_count": 0
+      },
+      {
+        "trial": 10,
+        "first_correlation": 0.6731212810909968,
+        "first_offset_samples": 5069,
+        "first_offset_ms": 105.60416666666667,
+        "whole_first_probe_within_gate": true,
+        "echo_correlation": 0.8108346957675934,
+        "echo_return_offset_ms": 105.60416666666667,
+        "first_to_forwarded_echo_ms": 205.60416666666666,
+        "programmed_delay_ms": 100.0,
+        "host_tagged_adc_to_dac_ms": 113.58295800164342,
+        "forwarding_clip_count": 0
+      },
+      {
+        "trial": 11,
+        "first_correlation": 0.6749106485854998,
+        "first_offset_samples": 5069,
+        "first_offset_ms": 105.60416666666667,
+        "whole_first_probe_within_gate": true,
+        "echo_correlation": 0.8110415908442754,
+        "echo_return_offset_ms": 105.60416666666667,
+        "first_to_forwarded_echo_ms": 165.60416666666666,
+        "programmed_delay_ms": 60.0,
+        "host_tagged_adc_to_dac_ms": 73.58308276161551,
+        "forwarding_clip_count": 0
+      },
+      {
+        "trial": 12,
+        "first_correlation": 0.6746387887106974,
+        "first_offset_samples": 5069,
+        "first_offset_ms": 105.60416666666667,
+        "whole_first_probe_within_gate": true,
+        "echo_correlation": 0.8103750082972493,
+        "echo_return_offset_ms": 105.60416666666667,
+        "first_to_forwarded_echo_ms": 205.60416666666666,
+        "programmed_delay_ms": 100.0,
+        "host_tagged_adc_to_dac_ms": 113.58295800164342,
+        "forwarding_clip_count": 0
+      },
+      {
+        "trial": 13,
+        "first_correlation": 0.6648526863111657,
+        "first_offset_samples": 5069,
+        "first_offset_ms": 105.60416666666667,
+        "whole_first_probe_within_gate": true,
+        "echo_correlation": 0.8048056215400573,
+        "echo_return_offset_ms": 105.60416666666667,
+        "first_to_forwarded_echo_ms": 165.60416666666666,
+        "programmed_delay_ms": 60.0,
+        "host_tagged_adc_to_dac_ms": 73.58308276161551,
+        "forwarding_clip_count": 0
+      },
+      {
+        "trial": 14,
+        "first_correlation": 0.6734840464092594,
+        "first_offset_samples": 5069,
+        "first_offset_ms": 105.60416666666667,
+        "whole_first_probe_within_gate": true,
+        "echo_correlation": 0.8058236555325033,
+        "echo_return_offset_ms": 105.60416666666667,
+        "first_to_forwarded_echo_ms": 205.60416666666666,
+        "programmed_delay_ms": 100.0,
+        "host_tagged_adc_to_dac_ms": 113.58291679061949,
+        "forwarding_clip_count": 0
+      },
+      {
+        "trial": 15,
+        "first_correlation": 0.6722647834682999,
+        "first_offset_samples": 5069,
+        "first_offset_ms": 105.60416666666667,
+        "whole_first_probe_within_gate": true,
+        "echo_correlation": 0.8067892353243978,
+        "echo_return_offset_ms": 105.60416666666667,
+        "first_to_forwarded_echo_ms": 165.60416666666666,
+        "programmed_delay_ms": 60.0,
+        "host_tagged_adc_to_dac_ms": 73.58308392576873,
+        "forwarding_clip_count": 0
+      },
+      {
+        "trial": 16,
+        "first_correlation": 0.6734500530768098,
+        "first_offset_samples": 5069,
+        "first_offset_ms": 105.60416666666667,
+        "whole_first_probe_within_gate": true,
+        "echo_correlation": 0.8101867060809985,
+        "echo_return_offset_ms": 105.60416666666667,
+        "first_to_forwarded_echo_ms": 205.60416666666666,
+        "programmed_delay_ms": 100.0,
+        "host_tagged_adc_to_dac_ms": 113.58295800164342,
+        "forwarding_clip_count": 0
+      },
+      {
+        "trial": 17,
+        "first_correlation": 0.6664072998687307,
+        "first_offset_samples": 5069,
+        "first_offset_ms": 105.60416666666667,
+        "whole_first_probe_within_gate": true,
+        "echo_correlation": 0.8032882709031701,
+        "echo_return_offset_ms": 105.60416666666667,
+        "first_to_forwarded_echo_ms": 165.60416666666666,
+        "programmed_delay_ms": 60.0,
+        "host_tagged_adc_to_dac_ms": 73.58308392576873,
+        "forwarding_clip_count": 0
+      },
+      {
+        "trial": 18,
+        "first_correlation": 0.6690039872790855,
+        "first_offset_samples": 5069,
+        "first_offset_ms": 105.60416666666667,
+        "whole_first_probe_within_gate": true,
+        "echo_correlation": 0.806204930039735,
+        "echo_return_offset_ms": 105.60416666666667,
+        "first_to_forwarded_echo_ms": 205.60416666666666,
+        "programmed_delay_ms": 100.0,
+        "host_tagged_adc_to_dac_ms": 113.58291702345014,
+        "forwarding_clip_count": 0
+      },
+      {
+        "trial": 19,
+        "first_correlation": 0.6750929294401075,
+        "first_offset_samples": 5069,
+        "first_offset_ms": 105.60416666666667,
+        "whole_first_probe_within_gate": true,
+        "echo_correlation": 0.8101820508508029,
+        "echo_return_offset_ms": 105.60416666666667,
+        "first_to_forwarded_echo_ms": 165.60416666666666,
+        "programmed_delay_ms": 60.0,
+        "host_tagged_adc_to_dac_ms": 73.58312490396202,
+        "forwarding_clip_count": 0
+      },
+      {
+        "trial": 20,
+        "first_correlation": 0.6589827348671288,
+        "first_offset_samples": 5069,
+        "first_offset_ms": 105.60416666666667,
+        "whole_first_probe_within_gate": true,
+        "echo_correlation": 0.8096014087637684,
+        "echo_return_offset_ms": 105.60416666666667,
+        "first_to_forwarded_echo_ms": 205.60416666666666,
+        "programmed_delay_ms": 100.0,
+        "host_tagged_adc_to_dac_ms": 113.58249979093671,
+        "forwarding_clip_count": 0
+      },
+      {
+        "trial": 21,
+        "first_correlation": 0.6706000291268831,
+        "first_offset_samples": 5069,
+        "first_offset_ms": 105.60416666666667,
+        "whole_first_probe_within_gate": true,
+        "echo_correlation": 0.817540029015443,
+        "echo_return_offset_ms": 105.60416666666667,
+        "first_to_forwarded_echo_ms": 165.60416666666666,
+        "programmed_delay_ms": 60.0,
+        "host_tagged_adc_to_dac_ms": 73.58312490396202,
+        "forwarding_clip_count": 0
+      },
+      {
+        "trial": 22,
+        "first_correlation": 0.6663648577220466,
+        "first_offset_samples": 5069,
+        "first_offset_ms": 105.60416666666667,
+        "whole_first_probe_within_gate": true,
+        "echo_correlation": 0.8139716745100245,
+        "echo_return_offset_ms": 105.60416666666667,
+        "first_to_forwarded_echo_ms": 205.60416666666666,
+        "programmed_delay_ms": 100.0,
+        "host_tagged_adc_to_dac_ms": 113.58295800164342,
+        "forwarding_clip_count": 0
+      },
+      {
+        "trial": 23,
+        "first_correlation": 0.67528907300822,
+        "first_offset_samples": 5069,
+        "first_offset_ms": 105.60416666666667,
+        "whole_first_probe_within_gate": true,
+        "echo_correlation": 0.8003614202845148,
+        "echo_return_offset_ms": 105.60416666666667,
+        "first_to_forwarded_echo_ms": 165.60416666666666,
+        "programmed_delay_ms": 60.0,
+        "host_tagged_adc_to_dac_ms": 73.58308299444616,
+        "forwarding_clip_count": 0
+      },
+      {
+        "trial": 24,
+        "first_correlation": 0.6716621922853167,
+        "first_offset_samples": 5069,
+        "first_offset_ms": 105.60416666666667,
+        "whole_first_probe_within_gate": true,
+        "echo_correlation": 0.7987863653152526,
+        "echo_return_offset_ms": 105.60416666666667,
+        "first_to_forwarded_echo_ms": 205.60416666666666,
+        "programmed_delay_ms": 100.0,
+        "host_tagged_adc_to_dac_ms": 113.58295800164342,
+        "forwarding_clip_count": 0
+      },
+      {
+        "trial": 25,
+        "first_correlation": 0.6649542248259215,
+        "first_offset_samples": 5069,
+        "first_offset_ms": 105.60416666666667,
+        "whole_first_probe_within_gate": true,
+        "echo_correlation": 0.7973983115216751,
+        "echo_return_offset_ms": 105.60416666666667,
+        "first_to_forwarded_echo_ms": 165.60416666666666,
+        "programmed_delay_ms": 60.0,
+        "host_tagged_adc_to_dac_ms": 73.5835419036448,
+        "forwarding_clip_count": 0
+      },
+      {
+        "trial": 26,
+        "first_correlation": 0.6709517833592057,
+        "first_offset_samples": 5069,
+        "first_offset_ms": 105.60416666666667,
+        "whole_first_probe_within_gate": true,
+        "echo_correlation": 0.798390229311125,
+        "echo_return_offset_ms": 105.60416666666667,
+        "first_to_forwarded_echo_ms": 205.60416666666666,
+        "programmed_delay_ms": 100.0,
+        "host_tagged_adc_to_dac_ms": 113.58291702345014,
+        "forwarding_clip_count": 0
+      },
+      {
+        "trial": 27,
+        "first_correlation": 0.6670427244309035,
+        "first_offset_samples": 5069,
+        "first_offset_ms": 105.60416666666667,
+        "whole_first_probe_within_gate": true,
+        "echo_correlation": 0.8023262509103644,
+        "echo_return_offset_ms": 105.60416666666667,
+        "first_to_forwarded_echo_ms": 165.60416666666666,
+        "programmed_delay_ms": 60.0,
+        "host_tagged_adc_to_dac_ms": 73.58308369293809,
+        "forwarding_clip_count": 0
+      },
+      {
+        "trial": 28,
+        "first_correlation": 0.665758173592604,
+        "first_offset_samples": 5069,
+        "first_offset_ms": 105.60416666666667,
+        "whole_first_probe_within_gate": true,
+        "echo_correlation": 0.8082555907064869,
+        "echo_return_offset_ms": 105.60416666666667,
+        "first_to_forwarded_echo_ms": 205.60416666666666,
+        "programmed_delay_ms": 100.0,
+        "host_tagged_adc_to_dac_ms": 113.58295800164342,
+        "forwarding_clip_count": 0
+      },
+      {
+        "trial": 29,
+        "first_correlation": 0.665602947696655,
+        "first_offset_samples": 5069,
+        "first_offset_ms": 105.60416666666667,
+        "whole_first_probe_within_gate": true,
+        "echo_correlation": 0.8044159383643575,
+        "echo_return_offset_ms": 105.60416666666667,
+        "first_to_forwarded_echo_ms": 165.60416666666666,
+        "programmed_delay_ms": 60.0,
+        "host_tagged_adc_to_dac_ms": 73.58308369293809,
+        "forwarding_clip_count": 0
+      },
+      {
+        "trial": 30,
+        "first_correlation": 0.6668574105097271,
+        "first_offset_samples": 5069,
+        "first_offset_ms": 105.60416666666667,
+        "whole_first_probe_within_gate": true,
+        "echo_correlation": 0.8132744395576273,
+        "echo_return_offset_ms": 105.60416666666667,
+        "first_to_forwarded_echo_ms": 205.60416666666666,
+        "programmed_delay_ms": 100.0,
+        "host_tagged_adc_to_dac_ms": 113.58295870013535,
+        "forwarding_clip_count": 0
+      },
+      {
+        "trial": 31,
+        "first_correlation": 0.6670410117803716,
+        "first_offset_samples": 5069,
+        "first_offset_ms": 105.60416666666667,
+        "whole_first_probe_within_gate": true,
+        "echo_correlation": 0.8032720227658557,
+        "echo_return_offset_ms": 105.58333333333333,
+        "first_to_forwarded_echo_ms": 165.58333333333334,
+        "programmed_delay_ms": 60.0,
+        "host_tagged_adc_to_dac_ms": 73.5830410849303,
+        "forwarding_clip_count": 0
+      },
+      {
+        "trial": 32,
+        "first_correlation": 0.682438067100782,
+        "first_offset_samples": 5069,
+        "first_offset_ms": 105.60416666666667,
+        "whole_first_probe_within_gate": true,
+        "echo_correlation": 0.7945205888009812,
+        "echo_return_offset_ms": 105.60416666666667,
+        "first_to_forwarded_echo_ms": 205.60416666666666,
+        "programmed_delay_ms": 100.0,
+        "host_tagged_adc_to_dac_ms": 113.58291702345014,
+        "forwarding_clip_count": 0
+      }
+    ]
+  },
+  "base480": {
+    "alternating_delay_ms": {},
+    "device": {
+      "input": "MacBook Air麦克风",
+      "output": "MacBook Air扬声器",
+      "host": "Core Audio",
+      "PortAudio": "PortAudio V19.7.0-devel, revision 147dd722548358763a8b649b3e4b41dfffbcfbb6",
+      "rate": "48000",
+      "input_latency_s": "0.222187500",
+      "output_latency_s": "0.033833333",
+      "callbacks": "1250"
+    },
+    "requested_callback_frames": 480,
+    "observed_callback_frames": [
+      480
+    ],
+    "callback_flags_histogram": {
+      "0": 1250
+    },
+    "same_index_host_adc_to_dac_ms": {
+      "count": 1250,
+      "median": 35.583333345130086,
+      "min": 35.583333345130086,
+      "max": 35.583333345130086
+    },
+    "programmed_delay_ms": 0.0,
+    "summary": {
+      "absolute_first_correlation": {
+        "count": 20,
+        "median": 0.6784466810653009,
+        "min": 0.6680549109205202,
+        "max": 0.6882217458545279
+      },
+      "first_offset_ms": {
+        "count": 20,
+        "median": 115.72916666666667,
+        "min": 115.72916666666667,
+        "max": 115.72916666666667
+      }
+    },
+    "trials": [
+      {
+        "trial": 1,
+        "first_correlation": 0.6793742892688777,
+        "first_offset_samples": 5555,
+        "first_offset_ms": 115.72916666666667
+      },
+      {
+        "trial": 2,
+        "first_correlation": 0.6745866944221088,
+        "first_offset_samples": 5555,
+        "first_offset_ms": 115.72916666666667
+      },
+      {
+        "trial": 3,
+        "first_correlation": 0.6739925499424873,
+        "first_offset_samples": 5555,
+        "first_offset_ms": 115.72916666666667
+      },
+      {
+        "trial": 4,
+        "first_correlation": 0.6745868878576051,
+        "first_offset_samples": 5555,
+        "first_offset_ms": 115.72916666666667
+      },
+      {
+        "trial": 5,
+        "first_correlation": 0.67554627898121,
+        "first_offset_samples": 5555,
+        "first_offset_ms": 115.72916666666667
+      },
+      {
+        "trial": 6,
+        "first_correlation": 0.6790585302939159,
+        "first_offset_samples": 5555,
+        "first_offset_ms": 115.72916666666667
+      },
+      {
+        "trial": 7,
+        "first_correlation": 0.6747979620372055,
+        "first_offset_samples": 5555,
+        "first_offset_ms": 115.72916666666667
+      },
+      {
+        "trial": 8,
+        "first_correlation": 0.6755481686112051,
+        "first_offset_samples": 5555,
+        "first_offset_ms": 115.72916666666667
+      },
+      {
+        "trial": 9,
+        "first_correlation": 0.6763939732877123,
+        "first_offset_samples": 5555,
+        "first_offset_ms": 115.72916666666667
+      },
+      {
+        "trial": 10,
+        "first_correlation": 0.6715133776669585,
+        "first_offset_samples": 5555,
+        "first_offset_ms": 115.72916666666667
+      },
+      {
+        "trial": 11,
+        "first_correlation": 0.6680549109205202,
+        "first_offset_samples": 5555,
+        "first_offset_ms": 115.72916666666667
+      },
+      {
+        "trial": 12,
+        "first_correlation": 0.6846511132880992,
+        "first_offset_samples": 5555,
+        "first_offset_ms": 115.72916666666667
+      },
+      {
+        "trial": 13,
+        "first_correlation": 0.6778348318366859,
+        "first_offset_samples": 5555,
+        "first_offset_ms": 115.72916666666667
+      },
+      {
+        "trial": 14,
+        "first_correlation": 0.6814185767534128,
+        "first_offset_samples": 5555,
+        "first_offset_ms": 115.72916666666667
+      },
+      {
+        "trial": 15,
+        "first_correlation": 0.6831995077884832,
+        "first_offset_samples": 5555,
+        "first_offset_ms": 115.72916666666667
+      },
+      {
+        "trial": 16,
+        "first_correlation": 0.6882217458545279,
+        "first_offset_samples": 5555,
+        "first_offset_ms": 115.72916666666667
+      },
+      {
+        "trial": 17,
+        "first_correlation": 0.6846644406907306,
+        "first_offset_samples": 5555,
+        "first_offset_ms": 115.72916666666667
+      },
+      {
+        "trial": 18,
+        "first_correlation": 0.6838262979604683,
+        "first_offset_samples": 5555,
+        "first_offset_ms": 115.72916666666667
+      },
+      {
+        "trial": 19,
+        "first_correlation": 0.681506390869952,
+        "first_offset_samples": 5555,
+        "first_offset_ms": 115.72916666666667
+      },
+      {
+        "trial": 20,
+        "first_correlation": 0.6821482904406624,
+        "first_offset_samples": 5555,
+        "first_offset_ms": 115.72916666666667
+      }
+    ]
+  }
+}

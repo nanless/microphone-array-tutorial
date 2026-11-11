@@ -4,17 +4,18 @@
 
 [Hear the four mics in action](#listen-same-scene-two-directions) · [Beginner course route](#follow-the-course) · [Book PDF](dist/microphone-array-tutorial.pdf) · [简体中文](README.md)
 
-![Source A on the left reaches M1 first. Source B on the right reaches M4 first. The animation slows down the two arrival sequences.](assets/readme/listening-room.svg)
+<picture>
+  <source media="(prefers-reduced-motion: reduce)" srcset="assets/readme/listening-room-still.svg">
+  <img alt="Source A on the left reaches M1 first. Source B on the right reaches M4 first. The animation slows down the two arrival sequences." src="assets/readme/listening-room.svg">
+</picture>
 
 ## Listen: same scene, two directions
 
 Picture a table. Source A on the left makes a series of long tones. Source B on the right makes pairs of short tones. **Make a prediction: can you bring each side forward in turn without moving the microphones?**
 
-| Play the same three-second scene | What to listen for |
-| --- | --- |
-| [▶ Single mic M1](assets/readme/lab/single.wav?raw=true) | Both the long tones and the pairs of short tones. |
-| [▶ Four mics, steered left to A](assets/readme/lab/left.wav?raw=true) | The long tones stay; the pairs get quieter. |
-| [▶ Four mics, steered right to B](assets/readme/lab/right.wav?raw=true) | This time the pairs come through. |
+1. **[▶ Single mic M1](assets/readme/lab/single.wav?raw=true)**: both the long tones and the pairs of short tones.
+2. **[▶ Steer left to A](assets/readme/lab/left.wav?raw=true)**: the long tones stay; the pairs get quieter.
+3. **[▶ Steer right to B](assets/readme/lab/right.wav?raw=true)**: this time the pairs come through.
 
 Turn your device volume down first. The clips are mono, so a phone speaker works. If your browser downloads the WAV, open it in a player.
 

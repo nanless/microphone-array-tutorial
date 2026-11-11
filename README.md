@@ -4,17 +4,18 @@
 
 [先听四支麦的效果](#先听同一段声音选两种方向) · [新手课程路线](#按这条路线学) · [全书 PDF](dist/microphone-array-tutorial.pdf) · [English](README_EN.md)
 
-![左边的声源 A 先到 M1，右边的声源 B 先到 M4。动图放慢展示各自到达四支麦克风的顺序。](assets/readme/listening-room.svg)
+<picture>
+  <source media="(prefers-reduced-motion: reduce)" srcset="assets/readme/listening-room-still.svg">
+  <img alt="左边的声源 A 先到 M1，右边的声源 B 先到 M4。动图放慢展示各自到达四支麦克风的顺序。" src="assets/readme/listening-room.svg">
+</picture>
 
 ## 先听：同一段声音，选两种方向
 
 把上图想成一张桌子。左边 A 发出一串较长的音，右边 B 发出成对的短音。**先猜：如果只改处理方式，能不能让左边和右边轮流占上风？**
 
-| 播放同一段 3 秒声音 | 留意什么 |
-| --- | --- |
-| [▶ 单支麦 M1](assets/readme/lab/single.wav?raw=true) | 长音和两下短音都在。 |
-| [▶ 四支麦对准左边 A](assets/readme/lab/left.wav?raw=true) | 长音留下，两下短音变轻。 |
-| [▶ 四支麦对准右边 B](assets/readme/lab/right.wav?raw=true) | 这次主要听见两下短音。 |
+1. **[▶ 单支麦 M1](assets/readme/lab/single.wav?raw=true)**：长音和两下短音都在。
+2. **[▶ 对准左边 A](assets/readme/lab/left.wav?raw=true)**：长音留下，两下短音变轻。
+3. **[▶ 对准右边 B](assets/readme/lab/right.wav?raw=true)**：这次主要听见两下短音。
 
 先把设备音量调低。三段都是单声道，可以直接用手机扬声器；如果浏览器下载了 WAV，用播放器打开即可。效果来自对四路信号做不同的时间补偿，音频没有逐段调音量。这是**有意选用容易对比的合成音**，实录不会这么干净。
 

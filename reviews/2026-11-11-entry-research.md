@@ -13,7 +13,7 @@
 | [fast.ai《Practical Deep Learning for Coders》](https://course.fast.ai/) | 第一屏给出适用读者、用途和课程承诺；安装、案例和课程索引有各自位置。 | 首屏只放主题、能做什么、三个去处。依赖和复算放实验折叠区，不挡住直接试听。 |
 | [Chi 与 Wylie，ICAP 原论文](https://doi.org/10.1080/00461520.2014.965823) | 区分被动观看、操作和生成解释；点了按钮并不自动等于能解释现象。 | 先猜哪种节奏会变弱，再听。最后保持方向不变、换一个低音，迫使读者用周期和相对时差解释结果。此处没有测量教学效果。 |
 | [MathWorks 官方声学波束形成例](https://www.mathworks.com/help/audio/ug/acoustic-beamforming-using-a-microphone-array.html) | 先比较某一单路，再补入射方向的时差并相干平均；示例也明确保留了方向平均压不下的干扰。 | 分清“知道往哪边”与“算法找方向”。首页只实现已知方向的最小数学控制，保留 250 Hz 反例，不借用其语音素材或性能数字。 |
-| [GitHub 写作与格式说明](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax) | 仓库内资源使用相对链接。README 的资源预览与执行本地网页是两件事。 | 直接显示 SVG，音频用版本化 WAV；互动页只需一个 HTML 文件，明确从文件页下载，不依赖外部网站。 |
+| [GitHub 写作与格式说明](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax) | 仓库内资源使用相对链接。README 的资源预览与执行本地网页是两件事。 | 直接显示 SVG，并通过 picture 提供减少动态效果的静态版本；音频用版本化 WAV；互动页只需一个 HTML 文件，明确从文件页下载，不依赖外部网站。 |
 
 ## 实验设计和证据边界
 

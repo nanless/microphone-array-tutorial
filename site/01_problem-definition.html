@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 1 章 · 问题定义与双耳启示 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="1a85da73ba06"><style>
+<meta name="source-digest" content="0fc6040b7677"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -602,7 +602,7 @@ $$</p>
 <p>硬件形状决定能观测到哪些差异，算法决定怎样利用这些差异。增加麦克风数量、改变外壳或采用学习方法，都需要检查输入信息、模型假设与失效情况，不能只凭方法名称推断效果。第 2 章将从传播时延出发，把这些差异写成完整阵列信号模型。</p>
 <p>还要先决定输出给谁用。语音识别前端常把多只麦克风合成一条增强音轨；听者用耳机判断声源方位时，左右两路及其相互关系本身也是要交付的信息。若把同一条增强音轨原样送入两耳，非零频点的右左复比一律为 1，原来的耳间声级差和相位差都不会留在这对输出里。第 5 章先解释怎样构造一条输出，再讨论怎样检查它对目标和干扰的响应。</p>
 <span id="sec-3" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-f7a201edb9">本章练习</h2>
-<p>E01-01～E01-03 使用 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch00/cross_chapter/exercises_spatial.py"><code>exercises_spatial.py</code></a>；E01-04～E01-10 使用 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch01/chapter01_experiments.py"><code>chapter01_experiments.py</code></a>。均不需下载数据；在仓库根目录运行：</p>
+<p>E01-01～E01-03 使用 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/exercises_spatial.py"><code>exercises_spatial.py</code></a>；E01-04～E01-10 使用 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch01/chapter01_experiments.py"><code>chapter01_experiments.py</code></a>。均不需下载数据；在仓库根目录运行：</p>
 <pre><code class="language-bash">.venv/bin/python -m codes.chapters.ch00.cross_chapter.exercises_spatial
 .venv/bin/python -m codes.chapters.ch01.chapter01_experiments
 </code></pre>
@@ -754,7 +754,7 @@ $$</p>
 <li>补偿后平均：<a href="audio/alignment_aligned.wav"><code>alignment_aligned.wav</code></a><audio class="audio-sample" controls preload="none" aria-label="alignment_aligned.wav" src="audio/alignment_aligned.wav">请使用上方 WAV 链接下载。</audio></li>
 <li>同样共同延迟的参考：<a href="audio/alignment_reference.wav"><code>alignment_reference.wav</code></a><audio class="audio-sample" controls preload="none" aria-label="alignment_reference.wav" src="audio/alignment_reference.wav">请使用上方 WAV 链接下载。</audio></li>
 </ul>
-<p>这组跨章音频按固定组映射归入第 2 章的 <code>audio/</code>，参数和逐文件摘要见<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch00/audio/MANIFEST.json">主音频清单</a>，生成源见 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch00/core/audio_samples.py"><code>alignment_error_case()</code></a>。补偿后文件与参考相同，是这一确定性对齐实验的预期结果。</p>
+<p>这组跨章音频按固定组映射归入第 2 章的 <code>audio/</code>，参数和逐文件摘要见<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/audio/MANIFEST.json">主音频清单</a>，生成源见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/core/audio_samples.py"><code>alignment_error_case()</code></a>。补偿后文件与参考相同，是这一确定性对齐实验的预期结果。</p>
 <p>章节入口的 E01-05 同时报告浮点计算和随仓 WAV 的实际 PCM 读回结果。读回前核对主清单、生成源摘要、文件摘要与 PCM 格式，再在样本半开区间 $[1600,30400)$，即 0.1～1.9 秒，用各频率的正弦、余弦基函数做最小二乘并合成幅度。该区间避开淡入淡出且包含整数周期，避免把起止边缘、共同延迟和幅度衰减混为同一种误差。</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
 <thead>
@@ -990,7 +990,7 @@ $$</p>
 </tbody>
 </table></div>
 <p>时差测量只搜索 −16～+16 的整数采样点：固定右通道接收窗口，对每个候选延迟取对应左通道的 28800 个样本，先把逐点乘积求和，再除以两段能量乘积的平方根，选归一化线性相关最大的候选。正延迟表示左通道较晚到达。这个相关分数不是方向概率，限定范围内恢复本例的时差也不证明全范围或任意声音都能唯一定位。</p>
-<p>这一组音频及其<a href="binaural_audio/MANIFEST.json">独立清单</a>由<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch01/examples/generate_binaural_cues.py">双耳线索生成与检查入口</a>生成，源模型见<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch01/core/binaural_cues.py">双耳线索实现</a>。它们不计入主清单的 109 个 WAV。清单分别保留解析输入参数、浮点测量、PCM 测量和生成源及 WAV 摘要；检查模式只读，不修改样本。</p>
+<p>这一组音频及其<a href="binaural_audio/MANIFEST.json">独立清单</a>由<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch01/examples/generate_binaural_cues.py">双耳线索生成与检查入口</a>生成，源模型见<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch01/core/binaural_cues.py">双耳线索实现</a>。它们不计入主清单的 109 个 WAV。清单分别保留解析输入参数、浮点测量、PCM 测量和生成源及 WAV 摘要；检查模式只读，不修改样本。</p>
 <p>试听时使用能保持左右通道的耳机，并先从低音量开始。合并单声道会改变这些线索。可以描述自己听到的偏向，但不能凭个人听感声称测出了 ITD 阈值、定位准确率或某个固定角度。</p>
 <h3 id="sec-u-5a8c86a7c7">E01-09：保持目标不变，为什么自噪声还会被放大</h3>
 <p>两路输入均为 $x_1=s+v_1$、$x_2=s+v_2$，目标已经等幅对齐。两路噪声零均值、空间不相关、单位功率；目标功率为正。分别使用实权重 $(w_1,w_2)=(0.5,0.5)$ 与 $(2,-1)$，计算目标响应、输出噪声功率、线性 WNG 和 dB WNG。负权重是否会带来“负噪声功率”？</p>
@@ -1169,7 +1169,7 @@ P_R=0.0072(0.3261205)\\
 </tr>
 </tbody>
 </table></div>
-<p>实际 PCM 不应被写成逐频比值精确不变。输出均方包含全部量化后样本，逐频投影只测两个指定频率；它不是盲估计或完整 HRTF 测量。模型与当前源、文件摘要见<a href="spectral_audio/MANIFEST.json">独立清单</a>，唯一实现见 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch01/core/spectral_cues.py"><code>spectral_cues.py</code></a>，只读核验入口为：</p>
+<p>实际 PCM 不应被写成逐频比值精确不变。输出均方包含全部量化后样本，逐频投影只测两个指定频率；它不是盲估计或完整 HRTF 测量。模型与当前源、文件摘要见<a href="spectral_audio/MANIFEST.json">独立清单</a>，唯一实现见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch01/core/spectral_cues.py"><code>spectral_cues.py</code></a>，只读核验入口为：</p>
 <pre><code class="language-bash">.venv/bin/python -m codes.chapters.ch01.examples.generate_spectral_cues --check
 </code></pre>
 <p><strong>失效与反例。</strong> 若某频率的 $S=0$，两耳谱都为零，即使滤波响应非零，观测复比与 ILD 都成为 $0/0$，IPD 也无定义。本题两个人工响应没有零点；为了单独检查滤波零点，另取 $h_L=[1,1]$、$h_R=[1,-1]$：在 $\omega=\pi$ 且 $S\ne0$ 时，左响应为零、右响应为 2，右除左无定义，ILD 按极限为 $+\infty$；在 $\omega=0$ 时则右响应为零，ILD 为 $-\infty$。这两种情形都没有可比较的双耳相位。DC／Nyquist 只用于解析边界检查，不作为上述试听刺激。</p>

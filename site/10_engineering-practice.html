@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 10 章 · 工程实现、评测与产业实践 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="1a85da73ba06"><style>
+<meta name="source-digest" content="0fc6040b7677"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -578,8 +578,8 @@ $$</p>
 <li>监控线程汇总期限违约、丢样和高水位，不让日志写入阻塞回调。</li>
 </ul>
 <p>回调与工作线程的时钟、缓冲单位和丢帧策略必须写清。这是一种参考结构，不表示所有实时 DSP 都只能在回调外执行；有界、预分配且能满足期限的小型处理也可以在回调中完成。</p>
-<p>环形缓冲已满时，系统需要事先选择“丢最旧块”“丢新块”或“降级处理”。任何一种策略都会改变输出：丢块破坏连续状态，等待会阻塞采集，积压则增大延迟。本书的 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch10/core/engineering.py"><code>RingBuffer</code></a> 采用“丢最旧样本”的可见基线，并累计 <code>dropped</code>；它用来说明容量和溢出语义，不是无锁实时队列。</p>
-<p><a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch10/core/engineering.py"><code>simulate_deadline_queue</code></a> 用一条串行工作队列区分三件事：处理完成晚于本帧期限、队列达到高水位、容量已满而丢帧。平均 RTF 小于 1 仍可能出现其中任何一种。正式设备还要记录<strong>播放下溢</strong>（下一块音频未及时送到设备，underrun）和<strong>采集上溢</strong>（采集数据未及时取走，overrun）；驱动常把两者合称 <code>xrun</code>。线程优先级、CPU 频率策略和并发负载也应一同记录。</p>
+<p>环形缓冲已满时，系统需要事先选择“丢最旧块”“丢新块”或“降级处理”。任何一种策略都会改变输出：丢块破坏连续状态，等待会阻塞采集，积压则增大延迟。本书的 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch10/core/engineering.py"><code>RingBuffer</code></a> 采用“丢最旧样本”的可见基线，并累计 <code>dropped</code>；它用来说明容量和溢出语义，不是无锁实时队列。</p>
+<p><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch10/core/engineering.py"><code>simulate_deadline_queue</code></a> 用一条串行工作队列区分三件事：处理完成晚于本帧期限、队列达到高水位、容量已满而丢帧。平均 RTF 小于 1 仍可能出现其中任何一种。正式设备还要记录<strong>播放下溢</strong>（下一块音频未及时送到设备，underrun）和<strong>采集上溢</strong>（采集数据未及时取走，overrun）；驱动常把两者合称 <code>xrun</code>。线程优先级、CPU 频率策略和并发负载也应一同记录。</p>
 <p>同一时刻的事件需要明确先后：本书模型先释放已经完成的帧，再接收这一时刻到来的新帧；恰在期限完成算准时。</p>
 <p>若到达时刻用乘法、完成时刻用浮点累加，舍入差可能把同一边界误判为队列仍满。教学模拟内部因此用输入浮点数对应的精确有理数比较事件，不加人为宽限；E10-16 用整数时钟刻度独立复核。这种离线记账方式不用于实时音频回调。</p>
 <p>Linux 的 ALSA（Advanced Linux Sound Architecture，先进 Linux 声音架构）还区分具体恢复原因：<code>-EPIPE</code> 表示上溢或下溢，<code>-ESTRPIPE</code> 与挂起有关，<code>-ENODEV</code> 可表示设备移除；某些回声参考设备在关联播放未启动时会返回 <code>-ENODATA</code>。这些状态不能统一解释为“再读一次”。挂起时可尝试 <code>snd_pcm_resume</code>；不支持或恢复失败时可能需要 <code>snd_pcm_prepare</code>，而 <code>-ENODATA</code> 不在 <code>snd_pcm_recover</code> 的恢复范围内。<a href="https://www.alsa-project.org/alsa-doc/alsa-lib/pcm.html" title="citation">ALSA PCM 官方接口说明，Error codes</a></p>
@@ -697,10 +697,10 @@ $$</p>
 <h3 id="sec-u-7f2acead54">时钟漂移的波形与时间轴</h3>
 <p>图 40 和主音频清单的 <code>clock_drift</code> 组使用标称 16 kHz、设备快 100 ppm、8 s 的确定性合成信号。两设备在各自的精确采样时刻对同一个连续信号求值，没有用左右声道电平差替代采样时刻差。以参考索引对应的 8 s 作换算，另一设备同索引时刻为 $8/(1+100\times10^{-6})$ s，差约 $0.79992\ \mathrm{ms}$，约为 12.799 个参考采样；实际文件末样本早于 8 s，逐样本真值以清单为准。</p>
 <p><img alt="图40：采样率偏移的时间漂移与未同步求平均" src="../figures/fig40_clock_drift.png" onerror="this.alt+='（图缺失）'" /></p>
-<p>图 40：16 kHz、100 ppm、8 s 数学合成例子；各文件采用同一导出增益。参考信号、双设备采样、未对齐均值与理想同步均值用于区分时钟误差和空间噪声。请结合<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch00/audio/MANIFEST.json">音频清单</a>读取参数。</p>
+<p>图 40：16 kHz、100 ppm、8 s 数学合成例子；各文件采用同一导出增益。参考信号、双设备采样、未对齐均值与理想同步均值用于区分时钟误差和空间噪声。请结合<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/audio/MANIFEST.json">音频清单</a>读取参数。</p>
 <p>同索引直接求平均时，时差随时间增加，频率越高，同一时差对应的相位差越大；局部相消不能解释成已经消除了环境噪声。理想同步均值使用已知连续信号与时钟真值，表示准确重采样所要达到的目标，<strong>并非已经实现的盲 SRO 估计器或补偿器输出</strong>。因此试听比较只能说明失同步的后果，不能据此报告某补偿算法的性能；下文另有实际估计与插值的闭环例子。</p>
 <p>初始时差表现为整条“延迟—时间”曲线的截距，稳定 SRO 表现为斜率，偶发丢样则表现为阶跃。三者不能只靠首尾两个点可靠区分。工程上可分块估计互相关峰，先检查峰值置信度，再对可信的“时间—相对延迟”点做直线拟合；残差中若出现近似一个或多个采样间隔的突跳，应先查丢样和时间戳，而不是把所有变化都拟合成 ppm。</p>
-<p><a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch10/core/engineering.py"><code>estimate_sro_ppm</code></a> 把相对延迟定义为“参考时间减设备时间”，再拟合截距和斜率；正斜率表示设备采样率较高，与 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch10/core/engineering.py"><code>resample_sro_to_reference</code></a> 的符号一致。</p>
+<p><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch10/core/engineering.py"><code>estimate_sro_ppm</code></a> 把相对延迟定义为“参考时间减设备时间”，再拟合截距和斜率；正斜率表示设备采样率较高，与 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch10/core/engineering.py"><code>resample_sro_to_reference</code></a> 的符号一致。</p>
 <p>以参考时间为横轴，将观测延迟拟合为 $\widehat d(T)=b+\widehat sT$。这里 $b$ 的单位是秒，$\widehat s$ 是秒/秒；仅在恒定速率模型成立且 $\widehat s\lt 1$ 时，才有以下换算：</p>
 <p>$$
 \begin{aligned}
@@ -729,7 +729,7 @@ $$</p>
 <p>本书有状态线性接口将参考和设备索引限制在 $2^{53}$ 以内，避免整数转为 float64 后失去逐点位置。它还拒绝被检测到的非零时钟位置下溢与无法表示的非零插值输出；失败的 <code>push</code> 不提交输出相位或上一输入样本状态。该支持范围不是无限精度时钟模型，异常也不表示输入真的为零或缺样；合法的已知缺口仍以 <code>None</code> 表示。</p>
 <p>连续流可对照 libsamplerate 的 <code>src_process</code> 或 SpeexDSP 的重采样接口。以 libsamplerate 为例，比例定义为“输出速率/输入速率”；设备快 100 ppm 时，转到参考时钟的比例约为 $1/1.0001=0.99990001$。每次调用还会返回实际消耗的输入帧数和生成的输出帧数，调用方必须保留未消耗输入，不能假设一进一出或每块重新创建转换器。<a href="https://libsndfile.github.io/libsamplerate/api_full.html" title="citation">libsamplerate Full API</a></p>
 <p>本书的<a href="research/03_industrial_deployment.html#i04libsamplerate-的有状态重采样">libsamplerate 两段已知时钟实验</a>实际调用锁定的 C 接口：前 5 s 为 +100 ppm，后 5 s 为 +150 ppm。未校正组在 1～9 s 的标记偏移增加 16 帧，按真值更新比例后该段残余增加 0 帧；每次输入消费量及结束排空也逐调用核对。这里的时钟速率是预先给定的，不能把结果写成“已自动估计漂移”，也没有测抗混叠或真实设备。</p>
-<p>为把“估计—补偿—残余核查”连起来，本书另有<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch10/sro_closed_loop_demo.py">固定真值的合成时间戳实验</a>。参考时钟为 2 000 Hz，设备时钟快 150 ppm，首样本晚到 2 ms，并故意删去设备索引 12 000 的一个样本。前 2 s 的 9 个时间戳锚点满足 $t_n=0.002+n/2000.3$ s；相对延迟 $n/2000-t_n$ 的截距是 $-2$ ms，斜率应为 $150\times10^{-6}/(1+150\times10^{-6})$，即一阶报告 149.9775 ppm，反解得到 150 ppm。时间戳间隔还单独识别出一个缺样，不能把这个阶跃并入斜率。</p>
+<p>为把“估计—补偿—残余核查”连起来，本书另有<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch10/sro_closed_loop_demo.py">固定真值的合成时间戳实验</a>。参考时钟为 2 000 Hz，设备时钟快 150 ppm，首样本晚到 2 ms，并故意删去设备索引 12 000 的一个样本。前 2 s 的 9 个时间戳锚点满足 $t_n=0.002+n/2000.3$ s；相对延迟 $n/2000-t_n$ 的截距是 $-2$ ms，斜率应为 $150\times10^{-6}/(1+150\times10^{-6})$，即一阶报告 149.9775 ppm，反解得到 150 ppm。时间戳间隔还单独识别出一个缺样，不能把这个阶跃并入斜率。</p>
 <p>校准结束后，示例从参考索引 4 500 开始，以 257 样本块保持插值相位。缺样附近的参考索引 12 002、12 003 被标为无效，而不是跨缺口插值。</p>
 <p>按解析生成的参考波形逐段比较，缺样前的 6 000 个有效样本均方误差从未校正的 0.02869 降到 0.000002773；缺样后的 9 000 个有效样本从 0.02131 降到 0.000002477。这些是本书合成数据的无量纲幅值平方误差，未校正组按相同序号直接比较，包含起始错位、长期速率偏差和缺样造成的错位；已校正组只统计有效输出。</p>
 <p>结果说明在<strong>精确时间戳、恒定时钟和已知缺口</strong>下，估计值能驱动跨块补偿，且可分别检查缺口两侧。线性插值没有充分抗混叠能力，本例也没有测设备时间戳噪声、音频盲估计、时钟温漂或在线比例更新；这些仍须在目标设备验证。<a href="research/03_industrial_deployment.html#i04libsamplerate-的有状态重采样">实验口径与运行方法</a></p>
@@ -836,7 +836,7 @@ $$</p>
 <p><strong>锚点手算。</strong> 某频点的已知噪声帧系数为 $2$，故 $D=|2|^2=4$。另两帧的带噪系数为 $3$ 和 $1$，取 $\alpha=1$、$\beta=0.04$。</p>
 <p>前一帧功率是 $9$，相减得 $9-4=5$，地板为 $0.04\times9=0.36$，故输出功率 $5$、幅度 $\sqrt5\approx2.2361$；后一帧功率是 $1$，相减得 $-3$，地板为 $0.04$，故输出功率 $0.04$、幅度 $0.2$。</p>
 <p>两帧原相位均为零；若原系数改成 $3\mathrm j$ 和 $1\mathrm j$，输出相应为 $\sqrt5\mathrm j$ 和 $0.2\mathrm j$。不能把功率相减误写成幅度 $3-2=1$。这个手算只证明式(10-8)的数值约定；若噪声统计随时间改变或噪声段混入目标，$D$ 就会失配。</p>
-<p>运行<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch10/spectral_subtraction_demo.py">谱减练习代码</a>可复算同一频点的两个带噪帧；另运行<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch00/examples/generate_audio_samples.py">统一音频生成器</a>可重建<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch00/audio/MANIFEST.json">五个试听文件及参数清单</a>：合成谐波目标、独立高斯噪声、带噪输入、$\beta=0.04$ 输出和 $\beta=0$ 输出。16 kHz、2 s 输入的前 0.4 s 仅有噪声，47 个完整落在该段的 STFT 帧估计 $D_f$；两种处理使用同一输入、同一固定噪声估计和同组共同导出增益。</p>
+<p>运行<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch10/spectral_subtraction_demo.py">谱减练习代码</a>可复算同一频点的两个带噪帧；另运行<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/examples/generate_audio_samples.py">统一音频生成器</a>可重建<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/audio/MANIFEST.json">五个试听文件及参数清单</a>：合成谐波目标、独立高斯噪声、带噪输入、$\beta=0.04$ 输出和 $\beta=0$ 输出。16 kHz、2 s 输入的前 0.4 s 仅有噪声，47 个完整落在该段的 STFT 帧估计 $D_f$；两种处理使用同一输入、同一固定噪声估计和同组共同导出增益。</p>
 <p>先降低播放音量，再在相同设备音量下比较三个版本：</p>
 <ul>
 <li><a href="audio/spectral_noisy.wav">带噪输入</a><audio class="audio-sample" controls preload="none" aria-label="带噪输入" src="audio/spectral_noisy.wav">请使用上方 WAV 链接下载。</audio></li>
@@ -938,11 +938,11 @@ E_k&=\frac1B\sum_{n=0}^{B-1}x_k[n]^2,\\
 \end{aligned}
 \tag{10-9}
 $$</p>
-<p>样本以数字满幅为 1 时，$E_k$ 是该幅度单位的平方，RMS 与样本同单位。<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch10/core/engineering.py"><code>HysteresisVAD</code></a> 的 <code>update(frame)</code> 输入是波形样本，内部计算 RMS 后与门限平方根比较；构造参数 <code>on_threshold</code>、<code>off_threshold</code> 则是线性均方能量，不接受 dB 阈值；把 dBFS 门限传给它会造成口径错误。</p>
+<p>样本以数字满幅为 1 时，$E_k$ 是该幅度单位的平方，RMS 与样本同单位。<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch10/core/engineering.py"><code>HysteresisVAD</code></a> 的 <code>update(frame)</code> 输入是波形样本，内部计算 RMS 后与门限平方根比较；构造参数 <code>on_threshold</code>、<code>off_threshold</code> 则是线性均方能量，不接受 dB 阈值；把 dBFS 门限传给它会造成口径错误。</p>
 <p><code>hangover_frames=2</code> 表示首次跌破继续阈值的两帧仍保持活动，第三帧才关闭。例如恒定幅度 0.3 的一帧，均方能量为 $0.3^2=0.09$，可跨过 0.08 的启动阈值；直接把标量 0.09 当作波形输入只得到 $0.09^2=0.0081$，不会启动。</p>
-<p>该基线没有噪声自适应、频带特征和神经网络，也不自行保存预卷；预卷可用 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch10/core/engineering.py"><code>RingBuffer</code></a> 保留触发前的固定帧数，并在 VAD 由假变真时先取出缓存。</p>
+<p>该基线没有噪声自适应、频带特征和神经网络，也不自行保存预卷；预卷可用 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch10/core/engineering.py"><code>RingBuffer</code></a> 保留触发前的固定帧数，并在 VAD 由假变真时先取出缓存。</p>
 <h3 id="sec-u-240a0e3321">整块 AGC：控制量何时可用</h3>
-<p>AGC 要区分“把正常语音逐渐推向目标电平”和“避免数字输出样本超出满幅”。<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch10/core/engineering.py"><code>PeakProtectAGC</code></a> 先取得当前整块的峰值，再给这一块乘同一增益；它必须等当前块收齐，不能被描述为零等待的逐样本控制。</p>
+<p>AGC 要区分“把正常语音逐渐推向目标电平”和“避免数字输出样本超出满幅”。<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch10/core/engineering.py"><code>PeakProtectAGC</code></a> 先取得当前整块的峰值，再给这一块乘同一增益；它必须等当前块收齐，不能被描述为零等待的逐样本控制。</p>
 <p>设当前块峰值为 $p_k=\max_n|x_k[n]|$，目标峰值为 $p_\star\in(0,1]$，最大增益为 $g_{\max}>0$，上一块实际增益为 $g_{k-1}$。对 $p_k>0$，该基线按以下步骤计算：</p>
 <p>$$
 \begin{aligned}
@@ -980,8 +980,8 @@ $$</p>
 <p>训练后量化（Post-Training Quantization，PTQ）不一定需要同一种校准流程。以 ONNX Runtime 的激活量化为例，静态量化用代表性校准输入预先确定尺度与零点；动态量化在推理时根据当前激活计算这些参数，因此增加了运行时工作。量化感知训练（Quantization-Aware Training，QAT）则在训练阶段模拟量化误差。<a href="https://onnxruntime.ai/docs/performance/model-optimizations/quantization.html" title="citation">官方量化文档的 Dynamic/Static Quantization 与 Method selection 小节</a>，核实于 2026-09-22。</p>
 <p>选择哪一种方法，应依据目标芯片支持的算子、代表性数据上的任务指标和最不利输入测试。权重与激活是否同时量化、逐张量还是逐通道定标也要写清，不能仅用“int8”推断统一的校准方法、精度下降量或加速倍数。</p>
 <h3 id="sec-u-71daf71541">Q1.15 的乘积、累加与输出取整</h3>
-<p>定点格式还要明确舍入和饱和规则。本书的 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch10/core/engineering.py"><code>q15_quantize</code></a> 把 $[-1,1)$ 映射到有符号 Q1.15：乘 $32768$、按最近偶数舍入，再饱和到 $[-32768,32767]$。因此 $-1$ 可以精确表示，$+1$ 只能饱和为 $32767/32768$。</p>
-<p><a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch10/core/engineering.py"><code>q15_dot</code></a> 用 64 位整数累加乘积，只在输出时除以 $2^{15}$、按最近偶数舍入并饱和；目标 DSP 若使用不同累加位宽或逐乘积舍入，就不应期待 bit-exact 相同。测试既要覆盖正常小数，也要覆盖 $\pm1\text{、}$超范围输入和累加器极值；不能只比较平均误差。</p>
+<p>定点格式还要明确舍入和饱和规则。本书的 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch10/core/engineering.py"><code>q15_quantize</code></a> 把 $[-1,1)$ 映射到有符号 Q1.15：乘 $32768$、按最近偶数舍入，再饱和到 $[-32768,32767]$。因此 $-1$ 可以精确表示，$+1$ 只能饱和为 $32767/32768$。</p>
+<p><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch10/core/engineering.py"><code>q15_dot</code></a> 用 64 位整数累加乘积，只在输出时除以 $2^{15}$、按最近偶数舍入并饱和；目标 DSP 若使用不同累加位宽或逐乘积舍入，就不应期待 bit-exact 相同。测试既要覆盖正常小数，也要覆盖 $\pm1\text{、}$超范围输入和累加器极值；不能只比较平均误差。</p>
 <p>实数 PCM 接口还应在类型转换前拒绝意外的复数输入，不能把丢弃虚部后的数组当作原始信号。</p>
 <p>若整数码字为 $X_i,H_i$，对应实数为 $X_i/2^{15}$、$H_i/2^{15}$，则乘积有 30 个小数位。记 $\operatorname{rne}$ 为最近偶数舍入，$\operatorname{sat}_{16}$ 为限制到有符号 16 位范围，得到</p>
 <p>$$
@@ -1137,7 +1137,7 @@ M_{\mathrm{peak}}&=M_0+\max_t m(t).
 \tag{10-15}
 $$</p>
 <p>同一物理内存只计一次。串行阶段的临时工作区若可复用，不应直接把两个峰值相加；阶段并发时又不能只取较大者。E10-23 用同一组大小比较这两种生命周期。</p>
-<p>只有<strong>假设这六帧模式长期重复</strong>且线程服务时间等于高功耗时间，才可用 $45/60=75\%$ 作功率占空比。若负载端活动/空闲功率为 1.2/0.2 W，则平均为 $1.2\times0.75+0.2\times0.25=0.95$ W；3.7 V、$2\ \mathrm{Ah}$、可交付比例 0.8 给出 $5.92/0.95\approx6.23$ h。功率假设与帧截止期假设彼此独立，续航估算合格也不能抵消三次逾期。完整输入和逐帧结果见 E10-14，复算入口为 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch00/cross_chapter/exercises_engineering.py"><code>exercises_engineering.py</code></a>。</p>
+<p>只有<strong>假设这六帧模式长期重复</strong>且线程服务时间等于高功耗时间，才可用 $45/60=75\%$ 作功率占空比。若负载端活动/空闲功率为 1.2/0.2 W，则平均为 $1.2\times0.75+0.2\times0.25=0.95$ W；3.7 V、$2\ \mathrm{Ah}$、可交付比例 0.8 给出 $5.92/0.95\approx6.23$ h。功率假设与帧截止期假设彼此独立，续航估算合格也不能抵消三次逾期。完整输入和逐帧结果见 E10-14，复算入口为 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/exercises_engineering.py"><code>exercises_engineering.py</code></a>。</p>
 <span id="sec-16" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-10-5">10.5 评测体系</h2>
 <p>每项指标只能回答一部分问题。面向完整系统的评测通常还需覆盖任务效果、语音质量、稳定性、资源占用和长时间运行。</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
@@ -1321,7 +1321,7 @@ $$</p>
 <p>低功耗常驻任务和高算力按需任务可以分开：例如 KWS 在低功耗处理器上运行，唤醒后再启动 ASR 或分离网络。但 AEC、波束、WPE 是否常驻取决于是否需要持续边播边听、录音或通话，不应把“唤醒前关闭完整前端”写成固定方案。</p>
 <p>端侧、云侧或混合部署要比较隐私、断网可用性、网络尾延迟、更新能力和能耗。对品牌产品的实现方式没有公开证据时，只能写成候选架构，不能当作产品事实。</p>
 <span id="sec-21" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-10-9-1">10.9.1 开源实现怎样用作工程对照</h3>
-<p>开源项目解决的是链路中的不同部分，不能因为都能处理音频就横向替换。下面只列本书正文能够说明用途和边界的项目；固定来源、提交、许可证和核实日期统一记录在 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch00/SOURCES.lock.json"><code>codes/chapters/ch00/SOURCES.lock.json</code></a>，代码、模型权重和数据集许可证分别检查。</p>
+<p>开源项目解决的是链路中的不同部分，不能因为都能处理音频就横向替换。下面只列本书正文能够说明用途和边界的项目；固定来源、提交、许可证和核实日期统一记录在 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/SOURCES.lock.json"><code>codes/chapters/ch00/SOURCES.lock.json</code></a>，代码、模型权重和数据集许可证分别检查。</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
 <thead>
 <tr>
@@ -1474,7 +1474,7 @@ $$</p>
 </tbody>
 </table></div>
 <p>每个验收阈值都应包含测量条件、统计量和样本量。例如“角误差小于 5°”还要说明声源角度分布、距离、房间、信噪比，以及该数值是均值还是某个分位数。教程中的算例只能用于验证计算，不能直接作为产品验收阈值。</p>
-<p>在线监控应记录足以定位故障的最少字段，默认不保存原始语音。本书给出的 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch10/engineering/telemetry_schema.json"><code>telemetry_schema.json</code></a> 声明的示例字段见下表，其中没有用户身份、转写文本或原始音频。这个示例允许额外字段，通过校验并不证明记录里没有敏感内容；实际系统应在日志生成端只从获准字段中取值，再按 §10.6 约束访问和保留。</p>
+<p>在线监控应记录足以定位故障的最少字段，默认不保存原始语音。本书给出的 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch10/engineering/telemetry_schema.json"><code>telemetry_schema.json</code></a> 声明的示例字段见下表，其中没有用户身份、转写文本或原始音频。这个示例允许额外字段，通过校验并不证明记录里没有敏感内容；实际系统应在日志生成端只从获准字段中取值，再按 §10.6 约束访问和保留。</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
 <thead>
 <tr>
@@ -1583,11 +1583,11 @@ $$</p>
 <p>选择集合、权重和处理状态应作为一次有版本的配置更新。控制线程可以验证新模型并计算权重，工作线程在声明的块边界切换，避免一半数据使用旧通道顺序、另一半权重使用新顺序。AEC 路径、WPE 缓存、掩码通道、几何、标定和参考通道也要按各自依赖重新检查；这套教学适配器不实现原子切换、故障检测或实时线程协议。</p>
 <p>若不可用的是原相对传递函数的参考通道，还须明确新的参考及所保护的输出。选出剩余响应并保持原目标幅度定义，与把响应重新除以某个健康通道，是两个不同操作；后一操作会改变输出尺度。本例给定 $\vec d$ 并保持原目标参考，不自动重新归一化。若一个通道也不剩，或者给定模型不合法，应拒绝本次数值求解，再由系统执行事先规定的停流或旁路策略。</p>
 <span id="sec-23" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-10-11">10.11 本章练习</h2>
-<p>以下三十四题的输入均为本书构造的教学数据。先手算，再运行 E10-01～12 与 E10-14 的 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch00/cross_chapter/exercises_engineering.py"><code>exercises_engineering.py</code></a>：</p>
+<p>以下三十四题的输入均为本书构造的教学数据。先手算，再运行 E10-01～12 与 E10-14 的 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/exercises_engineering.py"><code>exercises_engineering.py</code></a>：</p>
 <pre><code class="language-bash">.venv/bin/python -m codes.chapters.ch00.cross_chapter.exercises_engineering
 </code></pre>
-<p>E10-13 运行独立的 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch10/spectral_subtraction_demo.py"><code>spectral_subtraction_demo.py</code></a>；E10-15 使用 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch00/cross_chapter/tracking_time_exercises.py"><code>tracking_time_exercises.py</code></a>，E10-16～17 使用 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch00/cross_chapter/engineering_boundary_exercises.py"><code>engineering_boundary_exercises.py</code></a>。各程序按稳定编号输出中间量和结果；它们不访问声卡，也不代表硬件性能测量。</p>
-<p>E10-18～34 使用 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch10/chapter10_experiments.py"><code>chapter10_experiments.py</code></a>，运行方式如下：</p>
+<p>E10-13 运行独立的 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch10/spectral_subtraction_demo.py"><code>spectral_subtraction_demo.py</code></a>；E10-15 使用 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/tracking_time_exercises.py"><code>tracking_time_exercises.py</code></a>，E10-16～17 使用 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/engineering_boundary_exercises.py"><code>engineering_boundary_exercises.py</code></a>。各程序按稳定编号输出中间量和结果；它们不访问声卡，也不代表硬件性能测量。</p>
+<p>E10-18～34 使用 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch10/chapter10_experiments.py"><code>chapter10_experiments.py</code></a>，运行方式如下：</p>
 <pre><code class="language-bash">.venv/bin/python -m codes.chapters.ch10.chapter10_experiments
 </code></pre>
 <p>E10-34 包含已知坏麦的短手算和同模型的实际PCM控制。</p>
@@ -1711,7 +1711,7 @@ $$</p>
 <p><strong>参考答案</strong>：帧 2 的 0.04 只能达到继续阈值，不能启动。帧 3 的 0.09 启动，帧 4 保持活动；帧 5、6 消耗两次结束保持，帧 7 才关闭。活动标记为 <code>[假,假,假,真,真,真,真,假,假,假]</code>。</p>
 <p>触发时先取出缓存中的帧 1、2，再追加触发帧 3 一次，之后保留帧 4、5、6。输出帧号为 <code>[1,2,3,4,5,6]</code>，对应半开采样区间 $[160,1120)$，长度 $1120-160=960$ 点，即 60 ms。若先把帧 3 入缓存又单独追加，会重复触发帧；若拿关闭的帧 7 作片段末帧，则额外保留了一帧。</p>
 <p>帧 3 完整到达时是 40 ms，启动事件此时可用；帧 7 完整到达时是 80 ms，结束事件此时可用。被保留音频的结束边界却是 70 ms。预卷保存的是此前已采集的声音，事件可用时刻与片段时轴不同，不能把两帧预卷自动当作每个连续音频块又增加 20 ms 延迟。</p>
-<p>运行 <code>.venv/bin/python -m codes.chapters.ch00.cross_chapter.tracking_time_exercises</code> 可检查上述逐帧结果，见<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch00/cross_chapter/tracking_time_exercises.py">代码</a>和<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/tests/test_codes_time_state_exercises.py">边界测试</a>。流开始后立刻触发时，只能使用实际存在的历史；输入终止时仍活动的片段标成“尚未观察到结束事件”，不伪造 VAD 关闭。本题验证缓冲和事件语义，常数波形不用于评价真实语音检出率。</p>
+<p>运行 <code>.venv/bin/python -m codes.chapters.ch00.cross_chapter.tracking_time_exercises</code> 可检查上述逐帧结果，见<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/tracking_time_exercises.py">代码</a>和<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/tests/test_codes_time_state_exercises.py">边界测试</a>。流开始后立刻触发时，只能使用实际存在的历史；输入终止时仍活动的片段标成“尚未观察到结束事件”，不伪造 VAD 关闭。本题验证缓冲和事件语义，常数波形不用于评价真实语音检出率。</p>
 <h3 id="sec-u-7774115f61">E10-16：恰好在下一帧到达时完成，算不算丢帧？</h3>
 <p>一条串行线程每 0.1 ms 收到一帧，共 30 帧；容量只有 1 帧，包含正在处理者，满时丢新帧。第一帧在 0 到达，每帧期限为到达后 0.1 ms。比较服务时长恒为 0.1 ms 和恒为 0.11 ms 两种情形，计算接收数、丢帧数和期限违约数。</p>
 <p><strong>参考答案</strong>：取 0.01 ms 为一个整数刻度。第一种情形每 10 刻度到一帧，每帧也用 10 刻度处理；第 $i$ 帧在 $10i$ 开始，在 $10(i+1)$ 完成，恰好是下一帧到达和本帧期限。先完成再接收，30 帧全部准时，丢帧和违约均为零。</p>
@@ -1929,7 +1929,7 @@ $$</p>
 <p>三个窗口对应半开索引 <code>[8000,8320)</code>、<code>[9600,11200)</code>、<code>[16000,17600)</code>。导出前浮点波形在第一个窗口的比例依次为 7.466769、0.932932、1.111111；PCM 的差别来自量化，不能用浮点结果冒充文件读回值。RMS 比仅描述电平变化，不是 SNR、语音可懂度或主观质量。</p>
 <p>对窗口的输入整数样本 $u_n$、输出整数样本 $v_n$，RMS 比直接由 $\sqrt{\sum v_n^2/\sum u_n^2}$ 计算；相同样本数与解码因子 $1/32768$ 在比值中相消。入口另保留两个整数平方和与窗口样本数。清单、源或文件不一致时检查失败，须由生成入口显式重生后再核验，章节入口不会修写资产来掩盖失败。</p>
 <p><img alt="图45 整块峰值 AGC 的分块、增益与输出对照" src="../figures/fig45_agc_blocks.png" onerror="this.alt+='（图缺失）'" /></p>
-<p>图 45(a) 以四个正式 WAV 的 PCM 读回值计算整段 2 s 音频的 10 ms RMS 曲线，各值置于该测量窗中心，显示输入与三条实际运行支路的电平变化；(b) 把增益阶梯放在各块结束、控制量可用的时刻。上图的样本时间与下图的可用时间含义不同，不能把离线画回原样本时轴的结果称作零等待；图中也没有通过时间平移模拟实际播放。完整逐块状态和浮点/PCM 分窗结果见<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch00/audio/MANIFEST.json">音频参数清单</a>与<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch10/chapter10_experiments.py">练习入口</a>。</p>
+<p>图 45(a) 以四个正式 WAV 的 PCM 读回值计算整段 2 s 音频的 10 ms RMS 曲线，各值置于该测量窗中心，显示输入与三条实际运行支路的电平变化；(b) 把增益阶梯放在各块结束、控制量可用的时刻。上图的样本时间与下图的可用时间含义不同，不能把离线画回原样本时轴的结果称作零等待；图中也没有通过时间平移模拟实际播放。完整逐块状态和浮点/PCM 分窗结果见<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/audio/MANIFEST.json">音频参数清单</a>与<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch10/chapter10_experiments.py">练习入口</a>。</p>
 <p>先调低播放音量，再比较以下文件：</p>
 <p><a href="audio/agc_blocks_input.wav">合成输入</a><audio class="audio-sample" controls preload="none" aria-label="合成输入" src="audio/agc_blocks_input.wav">请使用上方 WAV 链接下载。</audio></p>
 <p><a href="audio/agc_blocks_10ms.wav">10 ms 块、按时间常数换算系数</a><audio class="audio-sample" controls preload="none" aria-label="10 ms 块、按时间常数换算系数" src="audio/agc_blocks_10ms.wav">请使用上方 WAV 链接下载。</audio></p>
@@ -1995,7 +1995,7 @@ $$</p>
 </tbody>
 </table></div>
 <p>软控制减慢了这三次观测功率进入噪声统计的速度，却没有完全冻结。如果改用 $I_t=1$ 时硬保持、否则按 $4/5$ 更新，结果反而是 $[1,1,2.6]$；这是另一条规则。若高功率来自噪声突然上升，更新慢也会延长噪声失配，因此“更低的估计”不自动更正确。</p>
-<p>本题没有实现完整 MCRA 或 IMCRA，也不计算 OM-LSA 的条件增益；后者的先验、后验与对数增益组合见<a href="05_beamforming.html#e05-21">第5章 E05-21</a>。<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch10/chapter10_experiments.py">章节入口</a>用有理数计算本题递推，输出每步分数和十进制值。</p>
+<p>本题没有实现完整 MCRA 或 IMCRA，也不计算 OM-LSA 的条件增益；后者的先验、后验与对数增益组合见<a href="05_beamforming.html#e05-21">第5章 E05-21</a>。<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch10/chapter10_experiments.py">章节入口</a>用有理数计算本题递推，输出每步分数和十进制值。</p>
 <p><a id="e10-29"></a></p>
 <h3 id="sec-u-33844d3d55">E10-29：有限 RIR 尾部怎样改变衰减外推</h3>
 <p>本书给定数学冲激响应 $h[n]=2^{-n/2}$、$n\ge0$，采样率 10 Hz；不含测量噪声。先计算完整无限尾部的式(10-16)，再只保留前四点，以 0 和 0.3 s 两端点的斜率外推 $T_{60}$。这个低采样率例子用于手算，不是可用于房间测量的语音频带 RIR。</p>
@@ -2200,7 +2200,7 @@ $$</p>
 <li><a href="noise_audio/noise_known_variance.wav">已知方差输出</a><audio class="audio-sample" controls preload="none" aria-label="已知方差输出" src="noise_audio/noise_known_variance.wav">请使用上方 WAV 链接下载。</audio></li>
 </ul>
 <p>这些文件用于对应数值变化，没有正式听测或语音可懂度评测。</p>
-<p>复现入口为 <code>python -m codes.chapters.ch10.examples.generate_noise_mismatch</code>，已有资产用同命令加 <code>--check</code> 严格只读核验。<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch10/chapter10_experiments.py">章节题入口</a>先核验六文件、清单、生成源和完整模型回放，再实际读取WAV字节重新评分，另列浮点分解；清单或资产过期时失败，不自动重生。</p>
+<p>复现入口为 <code>python -m codes.chapters.ch10.examples.generate_noise_mismatch</code>，已有资产用同命令加 <code>--check</code> 严格只读核验。<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch10/chapter10_experiments.py">章节题入口</a>先核验六文件、清单、生成源和完整模型回放，再实际读取WAV字节重新评分，另列浮点分解；清单或资产过期时失败，不自动重生。</p>
 <p><a id="e10-34"></a></p>
 <h3 id="sec-u-fbd4df22d3">E10-34：坏麦置零之后，为什么必须重算波束</h3>
 <p><strong>题设与目标。</strong> 三通道的已知目标响应为 $\vec d=[1,1,1]^T$。给定噪声协方差 $\mathbf R=\mathbf B\mathbf B^T$，其中</p>
@@ -2372,7 +2372,7 @@ $$</p>
 <p><img alt="图78 已知通道0失效后的有效权重、同窗PCM波形、目标投影与总误差" src="../figures/fig78_channel_failure.png" onerror="this.alt+='（图缺失）'" /></p>
 <p><strong>图78</strong>的(a)列出已知时间噪声协方差 $0.005\mathbf B\mathbf B^T$ 下的有效权重、解析目标响应和噪声均方；(b)使用实际PCM同一128点片段 <code>[2400,2528)</code> 比较目标参考与三条输出，时间轴从150 ms起，没有增益或时移匹配；(c)把实际PCM对参考的投影诊断和总NMSE分别画出，并用横线、菱形另标解析响应与解析NMSE。</p>
 <p>旧权重的解析目标响应为0，但PCM投影诊断约为0.000105；量化后的微小投影不能改称精确无目标，也不能据此认为单位响应已经恢复。本图的协方差控制与原始权重来自已知模型，投影只用于解释实际输出，不参与求解。</p>
-<p>本题的短数值入口复用 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch10/core/channel_selection.py"><code>channel_selection.py</code></a> 的通道适配和第5章唯一MVDR实现。完整阵列、一个通道、通道换序、复数频域模型以及协方差整体缩放均有独立测试；非法或重复索引、无剩余通道、不合法统计、不可正定求解和非有限输入会拒绝求解。正标量缩放只用于避免求解时的极端功率尺度，返回的选后协方差仍保留输入单位，没有改变相对加载或单位响应目标。</p>
+<p>本题的短数值入口复用 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch10/core/channel_selection.py"><code>channel_selection.py</code></a> 的通道适配和第5章唯一MVDR实现。完整阵列、一个通道、通道换序、复数频域模型以及协方差整体缩放均有独立测试；非法或重复索引、无剩余通道、不合法统计、不可正定求解和非有限输入会拒绝求解。正标量缩放只用于避免求解时的极端功率尺度，返回的选后协方差仍保留输入单位，没有改变相对加载或单位响应目标。</p>
 <p>六个数学合成文件均为16 kHz、32000点；两条阵列输入为三声道，其余为单声道。先调低音量，再用以下文件对应观察目标保留与噪声变化：</p>
 <ul>
 <li><a href="channel_audio/channel_reference.wav">共同目标参考</a><audio class="audio-sample" controls preload="none" aria-label="共同目标参考" src="channel_audio/channel_reference.wav">请使用上方 WAV 链接下载。</audio></li>

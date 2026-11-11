@@ -211,7 +211,7 @@ RESEARCH = [
     ("04_source_reproduction.md", "源码获取与独立复现记录"),
     ("05_exercises_and_audio.md", "章节代码练习与音频实验"),
 ]
-REPOSITORY_BLOB_BASE = "https://github.com/nanless/microphone-array-signal-processing/blob/main/"
+REPOSITORY_BLOB_BASE = "https://github.com/nanless/microphone-array-tutorial/blob/main/"
 LABEL_BY_FNAME = {f: l for f, l in CHAPTERS}
 LABEL_BY_FNAME[HOME_FNAME] = "🏠 导读与导航（首页）"
 
@@ -1275,8 +1275,8 @@ def local_link_target(href, source_path):
 
 def repository_url(parsed, target):
     path = quote(target.relative_to(ROOT.resolve()).as_posix(), safe="/")
-    return urlunsplit(("https", "github.com",
-                      "/nanless/microphone-array-signal-processing/blob/main/" + path,
+    base = urlsplit(REPOSITORY_BLOB_BASE)
+    return urlunsplit((base.scheme, base.netloc, base.path + path,
                       parsed.query, parsed.fragment))
 
 

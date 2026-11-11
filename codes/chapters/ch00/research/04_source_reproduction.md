@@ -179,7 +179,7 @@ WPE 首先验证延迟回归向量、复共轭和加权正规方程。离线与�
 PCM16 的七帧双通道读回得到帧数 3/3/1/0、标量项数 6/6/2/0，归一化误差为 0。
 完整条件和原始数值见[工业报告](../../ch10/reports/industrial_interfaces.json)及[工业研究](03_industrial_deployment.md)。
 
-第10章2026-10-01的[独立历史报告](../../ch10/reports/industrial_contracts.json)由[bde483保存的原合同脚本](https://github.com/nanless/microphone-array-signal-processing/blob/bde483bcc429a553aeaf8830ca3687ab46831db0/codes/chapters/ch10/examples/audit_industrial_contracts.py)生成，不改上述历史三库报告或2026-09-28的STOI/DeepFilterNet报告。2026-10-05的当前复验见[工业研究§9](03_industrial_deployment.md#industrial-current-interface-contracts)，改后工具只显式写新的当前报告。各报告分别绑定运行时的原文件、许可证、HEAD和工具/锁表摘要，保存每项代替边界与运行前后清洁状态；CMSIS的期望来自整数卷积、Speex来自手写递推，VAD及demo来自合法帧与样本计数。
+第10章2026-10-01的[独立历史报告](../../ch10/reports/industrial_contracts.json)由[bde483保存的原合同脚本](https://github.com/nanless/microphone-array-tutorial/blob/bde483bcc429a553aeaf8830ca3687ab46831db0/codes/chapters/ch10/examples/audit_industrial_contracts.py)生成，不改上述历史三库报告或2026-09-28的STOI/DeepFilterNet报告。2026-10-05的当前复验见[工业研究§9](03_industrial_deployment.md#industrial-current-interface-contracts)，改后工具只显式写新的当前报告。各报告分别绑定运行时的原文件、许可证、HEAD和工具/锁表摘要，保存每项代替边界与运行前后清洁状态；CMSIS的期望来自整数卷积、Speex来自手写递推，VAD及demo来自合法帧与样本计数。
 
 FastEnhancer例使用受控假计时：1000点输入、512点窗、256点帧移、10 ms假耗时，原打印0.125而新增源时长分母为0.16；[E10-32](../../../../chapters/10_engineering-practice.md#e10-32)解释两者。原main的保存分支也在内存接收器上核对裁256点后取原长度，没有写模型输出文件。MCRA受控软更新的[E10-28](../../../../chapters/10_engineering-practice.md#e10-28)是本书给定局部统计的递推子链；Speex原助手的硬标记不能充当该原算法复现。
 
@@ -247,7 +247,7 @@ SMP-PHAT 的原版复现发现了失败：在本机 Apple clang/arm64 上，固�
 
 矩阵求解成功后还要问两个问题：结果是否满足所需的优化目标，数组类型是否保存了求解器返回的数值。[附录 A 的 E14-03](../../../../chapters/14_appendix-symbols-math.md#sec-u-3899a8c1b7)说明零残差不保证参数唯一；[E14-05](../../../../chapters/14_appendix-symbols-math.md#sec-u-935c1036ea)说明奇异协方差中的最小范数线性方程解，不自动成为约束噪声最小化的解。这两个判断分别涉及代数目标和物理目标，不能用“输出有限”替代。
 
-[旧历史报告](../../appendix_a/reports/upstream_solver_contracts.json)记录本书于2026-10-02在Python 3.13.12、NumPy 2.5.3环境中运行[当时版本的限定工具](https://github.com/nanless/microphone-array-signal-processing/blob/241513c8f35d952747f16ccbb40cf85a5363b5ae/codes/chapters/appendix_a/examples/audit_upstream_solver_contracts.py)。旧报告登记完整加载固定 `pb_bss` 提交 `10acc347fc9ea21e3d312806a0bd751d0d0af183` 的[原 `pb_bss/math/solve.py`](https://github.com/fgnt/pb_bss/blob/10acc347fc9ea21e3d312806a0bd751d0d0af183/pb_bss/math/solve.py "citation")，仅调用 `stable_solve`；不做AST提取、源码补丁或算法替身，也不导入完整 `pb_bss` 包。该模块是维护者提供的通用求解助手，按原[MIT许可证](https://github.com/fgnt/pb_bss/blob/10acc347fc9ea21e3d312806a0bd751d0d0af183/LICENSE "citation")使用，不是本书自行实现的求解器。
+[旧历史报告](../../appendix_a/reports/upstream_solver_contracts.json)记录本书于2026-10-02在Python 3.13.12、NumPy 2.5.3环境中运行[当时版本的限定工具](https://github.com/nanless/microphone-array-tutorial/blob/241513c8f35d952747f16ccbb40cf85a5363b5ae/codes/chapters/appendix_a/examples/audit_upstream_solver_contracts.py)。旧报告登记完整加载固定 `pb_bss` 提交 `10acc347fc9ea21e3d312806a0bd751d0d0af183` 的[原 `pb_bss/math/solve.py`](https://github.com/fgnt/pb_bss/blob/10acc347fc9ea21e3d312806a0bd751d0d0af183/pb_bss/math/solve.py "citation")，仅调用 `stable_solve`；不做AST提取、源码补丁或算法替身，也不导入完整 `pb_bss` 包。该模块是维护者提供的通用求解助手，按原[MIT许可证](https://github.com/fgnt/pb_bss/blob/10acc347fc9ea21e3d312806a0bd751d0d0af183/LICENSE "citation")使用，不是本书自行实现的求解器。
 
 原函数先尝试 `numpy.linalg.solve`；矩阵奇异时，逐矩阵回退到 `numpy.linalg.lstsq`。对
 $\mathbf A=\left[\begin{smallmatrix}1&1\\2&2\end{smallmatrix}\right]$、$\mathbf B=\mathbf I_2$，令两行参数之和为 $s$，第一列残差最小化为 $(s-1)^2+(2s)^2$，驻点 $s=1/5$；第二列则为 $s^2+(2s-1)^2$，驻点 $s=2/5$。在每列固定和的解中，两个分量取相等值使范数最小，因此独立期望为

@@ -317,7 +317,7 @@ def source_digest():
 
 HTML_TO_CH = {fname.replace(".md", ".html"): chapter_number(fname) for fname, _ in CHAPTERS}
 HTML_TO_CH.update({old: HTML_TO_CH[current] for old, current in LEGACY_HTML_ROUTES.items()})
-REPOSITORY_BLOB_BASE = "https://github.com/nanless/microphone-array-signal-processing/blob/main/"
+REPOSITORY_BLOB_BASE = "https://github.com/nanless/microphone-array-tutorial/blob/main/"
 
 
 def heading_anchor(text, fallback_index):

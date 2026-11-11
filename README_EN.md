@@ -1,6 +1,6 @@
 # Microphone Arrays for Beginners
 
-[中文首页](README.md) · [First lesson: two microphones](chapters/01_problem-definition.md) · [Book guide](chapters/00_overview.md) · [Download the PDF](dist/microphone-array-tutorial.pdf)
+[中文首页](README.md) · [First lesson](chapters/01_problem-definition.md) · [Book guide](chapters/00_overview.md) · [PDF](dist/microphone-array-tutorial.pdf)
 
 **Both microphones pick up your voice. Why can mixing them make part of it disappear?** If you speak at one end of a conference table, the nearer microphone hears you first. That delay helps us work out where you are, and it matters when we mix the recordings.
 
@@ -10,7 +10,7 @@
 
 Mix a low tone and a high one, then let M2 record the result one sample behind M1. A digital recording stores one number at each regular time step; that's a **sample**. The clips below mix the same synthetic input, with no added noise and no separate gain adjustments. Start at low volume and listen to A, then B. Each lasts two seconds.
 
-**[▶ A · Average the recordings directly](codes/chapters/ch02/audio/alignment_unaligned.wav?raw=true)**　　**[▶ B · Align the recordings, then average](codes/chapters/ch02/audio/alignment_aligned.wav?raw=true)**
+**[▶ A · Direct mix](codes/chapters/ch02/audio/alignment_unaligned.wav?raw=true)**　　**[▶ B · Align then mix](codes/chapters/ch02/audio/alignment_aligned.wav?raw=true)**
 
 If your browser downloads the WAV, open it in your audio player. In B, listen for the higher tone. The lower tone changes much less. The next figure shows where that difference comes from.
 

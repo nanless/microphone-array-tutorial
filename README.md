@@ -1,6 +1,6 @@
 # 麦克风阵列入门
 
-[English guide](README_EN.md) · [第一课：两支麦克风](chapters/01_problem-definition.md) · [全书导读](chapters/00_overview.md) · [下载 PDF](dist/microphone-array-tutorial.pdf)
+[English](README_EN.md) · [第一课](chapters/01_problem-definition.md) · [全书目录](chapters/00_overview.md) · [下载 PDF](dist/microphone-array-tutorial.pdf)
 
 **同一句话，两支麦克风都录到了，为什么一混合反而少了一部分声音？** 你在会议桌一端说话，近处的麦克风先收到，远处的晚一点。声源定位利用的正是这点先后，混合之前也得先想办法对齐它们。
 
@@ -10,7 +10,7 @@
 
 把一个低音和一个高音叠起来，让 M2 比 M1 晚记下一格。数字录音每隔固定时间记一个数，这一格就是一个**采样点**。下面是同一段合成声音的两种混合结果，没有加噪声，也没有分别调音量。先调低音量，按 A、B 各听一次，每段 2 秒。
 
-**[▶ A · 直接把两路平均](codes/chapters/ch02/audio/alignment_unaligned.wav?raw=true)**　　**[▶ B · 先对齐，再平均](codes/chapters/ch02/audio/alignment_aligned.wav?raw=true)**
+**[▶ A · 直接平均](codes/chapters/ch02/audio/alignment_unaligned.wav?raw=true)**　　**[▶ B · 对齐再平均](codes/chapters/ch02/audio/alignment_aligned.wav?raw=true)**
 
 如果浏览器下载了 WAV，用本地播放器打开即可。比较时，留意 B 中较尖的那层音，低一点的音变化小得多。听不出也没关系：下一张图能告诉你变化来自哪里。
 

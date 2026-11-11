@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 7 章 · 去混响（WPE） · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="1a85da73ba06"><style>
+<meta name="source-digest" content="0fc6040b7677"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -820,7 +820,7 @@ L_{\mathrm{NMSE}}&=10\log_{10}\mathrm{NMSE}.
 <p>指标的零能量边界应单独处理：$T(Y)=0$ 时静音能量占比没有定义；$T(Y)>0$、$Q(Y)=0$ 时其对数值为 $-\infty$。</p>
 <p>参考 $s$ 为零时NMSE没有定义；输出 $y=0$ 而参考能量为正时，不拟合增益直接得到NMSE为1。完全拟合时NMSE为0，对数同样为 $-\infty$。图上若为显示设置有限下限，那只是显示规则，不能把它记成真实误差，也不能用带单位的绝对小常数破坏整体缩放等变性。</p>
 <p>混响与输出的指标分别为−8.67、−7.70 dB，输出反而变差约0.97 dB。因此本例同时显示拖尾能量减少与活动段参考误差增加，不能把拖尾减少直接写成语音保真改善。</p>
-<p>图中使用居中5帧均值估计功率，包含两帧未来信息；功率下限为每频原观测最大功率的 $10^{-5}$，相对对角加载为 $10^{-6}$。全段求系数本身也依赖未来。卷积结果截取1.4 s，未显示之后的完整物理尾声，因此图中指标不用于估计真实 $T_{60}$。生成参数、选帧和数字见<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch07/reports/figure21_wpe.json">图21统计记录</a>。</p>
+<p>图中使用居中5帧均值估计功率，包含两帧未来信息；功率下限为每频原观测最大功率的 $10^{-5}$，相对对角加载为 $10^{-6}$。全段求系数本身也依赖未来。卷积结果截取1.4 s，未显示之后的完整物理尾声，因此图中指标不用于估计真实 $T_{60}$。生成参数、选帧和数字见<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch07/reports/figure21_wpe.json">图21统计记录</a>。</p>
 <h3 id="sec-u-3e2046c71e">与空间处理组成系统</h3>
 <p><strong>与其他模块的组合</strong>：WPE 可先减弱晚期混响，掩码 MVDR 再抑制噪声与定向干扰。Drude et al.（Interspeech 2018）在其测试条件下报告了联合系统相对单模块的改善。<a href="https://www.isca-archive.org/interspeech_2018/drude18_interspeech.html" title="citation">Interspeech 2018 论文</a></p>
 <p>WPE → GSS → MVDR/GEV 也可不使用神经分离网络，见第 8 章。Raj et al.（Interspeech 2023）展示了 GSS 的 GPU 并行实现；速度比较只能按其论文的硬件、数据、代码版本和计时范围解读，不将加速倍数外推到其他实现。</p>
@@ -901,7 +901,7 @@ Z = wpe(Y, taps=10, delay=3,   # taps=K（预测阶数），delay=Δ（保护延
 </table></div>
 <p>无状态接口传入以当前帧结尾的缓冲；有状态接口在写入当前值 40 <strong>之前</strong>先从自己的旧缓冲取历史。图24和本章公式对应表中第一行的离线索引，不能把逐帧接口的 <code>delay=1</code> 直接改写成书中的 $\Delta=1$。移植参数时，应先用这种带时间标签的小输入核对实际帧号。</p>
 <p>历史展开排列是另一项独立检查。固定两通道六帧为 $[10,20,30,40,50,60]$ 与 $[100,200,300,400,500,600]$，当前 $t=5$，$K=2$、<code>delay=1</code>。离线历史为 $[50,500,40,400]$，先滞后、后通道；无状态接口从含当前帧的缓冲取到 $[40,30,400,300]$，先通道、后由新到旧；有状态接口从尚未写入当前帧的旧缓冲取到 $[20,30,200,300]$，先通道、后由旧到新。这里同时存在帧号与排列差异。</p>
-<p>即便修正了实际滞后，也必须同步置换系数和统计矩阵，不能原样搬用滤波器。固定版本的真实调用与整数标签检查见<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch07/reports/upstream_wpe_contracts.json">接口布局审计</a>。</p>
+<p>即便修正了实际滞后，也必须同步置换系数和统计矩阵，不能原样搬用滤波器。固定版本的真实调用与整数标签检查见<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch07/reports/upstream_wpe_contracts.json">接口布局审计</a>。</p>
 <p>同一文件的 <code>OnlineWPE.step_block()</code>要求包含指定历史长度的缓冲形状；锁定版本 <code>_get_prediction()</code>还注明只支持 <code>block_shift=1</code>。它不能被当作任意帧移的块处理器。TensorFlow 路线在 <code>tf_wpe.py</code> 中另有 <code>block_wpe_step()</code> 和 <code>recursive_wpe()</code>，依赖、状态和接口也不同。<a href="https://github.com/fgnt/nara_wpe/blob/a166779cca2088817e330481bd20af1a2c598555/nara_wpe/wpe.py"><code>nara_wpe</code> NumPy 源码</a>、<a href="https://github.com/fgnt/nara_wpe/blob/a166779cca2088817e330481bd20af1a2c598555/nara_wpe/tf_wpe.py">TensorFlow 源码</a></p>
 <h2 id="sec-7-6">7.6 与其他模块组合及失效边界</h2>
 <h3 id="sec-u-c406205243">网络输出决定模块位置</h3>
@@ -1013,19 +1013,19 @@ T_v&=\max(0,T-t_{\min}).
 <p>这里的“联合”并不排斥分步计算。在同一组正权重、同一有效帧和同一导向约束下，可以先解多通道 WPE，再对其残差解<strong>加权 MPDR</strong>，得到与整块 WPD 相同的输出。关键是两步共同对应原目标，而非任意选两个模块串联。<a href="#e07-07">E07-07</a>通过完整平方和一个四维例子说明这种等价，以及不同加载为什么会破坏直接比较。</p>
 <h2 id="sec-7-7">7.7 可执行教学基线与复现实验</h2>
 <h3 id="sec-u-e6c77eb174">教学实现与诊断取点</h3>
-<p><a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch07/core/dereverberation.py"><code>codes/chapters/ch07/core/dereverberation.py</code></a> 提供只依赖 NumPy 的最小离线 WPE。<code>offline_wpe()</code> 接收复数 STFT，单通道轴序为 <code>(频点, 帧)</code>，多通道轴序为 <code>(频点, 通道, 帧)</code>，输出保持相同形状；它实现保护延迟、按滞后堆叠多通道历史、共享功率权重、相对对角加载和复共轭预测。计算前逐频点以共同幅度归一化各通道和各帧，输出再恢复原幅度。这能处理许多共同缩放输入，但有限输入并不保证所有混合尺度的中间乘积都能用float64表示。</p>
+<p><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch07/core/dereverberation.py"><code>codes/chapters/ch07/core/dereverberation.py</code></a> 提供只依赖 NumPy 的最小离线 WPE。<code>offline_wpe()</code> 接收复数 STFT，单通道轴序为 <code>(频点, 帧)</code>，多通道轴序为 <code>(频点, 通道, 帧)</code>，输出保持相同形状；它实现保护延迟、按滞后堆叠多通道历史、共享功率权重、相对对角加载和复共轭预测。计算前逐频点以共同幅度归一化各通道和各帧，输出再恢复原幅度。这能处理许多共同缩放输入，但有限输入并不保证所有混合尺度的中间乘积都能用float64表示。</p>
 <p><code>taps=0</code>、迭代次数为零、记录短于首个有效回归帧或整个频点为零时直接旁路。输入各维不能为空、数值必须有限；阶数、延迟和迭代次数必须为整数，功率下限必须是有限正数。输入必须是复谱，不能把幅度谱传入后再补相位。</p>
 <p>默认 <code>power_context=0</code> 不平滑。取2时，对每帧功率作居中5帧均值；边缘仅按实际存在的帧数除，不把缺失帧作为零加入平均。这个选项在内部帧使用两帧未来信息，图21采用它；即使设为0，整段估计系数仍然是离线计算。</p>
 <p>默认调用仍只返回谱数组。设 <code>return_diagnostics=True</code> 时另返回逐频点诊断：<code>solver</code> 与 <code>matrix_kind</code> 指明实际求解路径；<code>min_rank</code>、<code>max_condition_number</code> 给出该路径实际矩阵在各轮中的最小数值秩和最大条件数，另有正规方程最小二乘回退次数及旁路原因。默认模式诊断加载后正规矩阵，<code>design_lstsq</code> 模式诊断增广设计矩阵。数值秩依赖浮点精度和矩阵尺度，不是语音质量或混响强度评分。</p>
 <p>默认正规方程路径在 <code>np.linalg.solve</code> 抛出奇异矩阵错误后用 <code>np.linalg.lstsq</code> 求最小范数解；它不会自行增加加载、减小 $K$ 或根据音质旁路。调用方应检查诊断和参考信号，在需要时调整加载、阶数或旁路策略；求得有限残差不等于保住了直达声。</p>
 <p>实现对归一化丢失非零分量、正权重变零及超出支持范围的功率、统计或预测分量乘积明确报 <code>ValueError</code>，恢复输出时也检查非零量是否变零。乘积检查采用保守的非零分量幅度下界；不相遇或最终抵消的极端项也可能被拒绝。它界定的是这一个教学求解器的支持范围，不是数学结果的可表示性。</p>
 <p>例如输入 $[10^{308},10^{108},0]$ 在一次单抽头预测中可能先产生约 $10^{-400}$ 的归一化预测，再恢复为约 $10^{-92}$ 的原尺度项；直接把中间项当零会教错输出。当前实现选择明确拒绝这一范围，保留输入而不返回伪零结果。</p>
-<p>合法零输入及可表示的小系数仍有独立测试，见<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/tests/test_codes_wpe_numerics.py">数值与设计矩阵回归</a>。</p>
-<p>可试听一组独立的 2.25 s、16 kHz 单通道数学合成夹具：<a href="audio/wpe_dry.wav">无回声参考</a><audio class="audio-sample" controls preload="none" aria-label="无回声参考" src="audio/wpe_dry.wav">请使用上方 WAV 链接下载。</audio>、<a href="audio/wpe_reverberant.wav">稀疏回声观测</a><audio class="audio-sample" controls preload="none" aria-label="稀疏回声观测" src="audio/wpe_reverberant.wav">请使用上方 WAV 链接下载。</audio>、<a href="audio/wpe_output.wav">离线 WPE 输出</a><audio class="audio-sample" controls preload="none" aria-label="离线 WPE 输出" src="audio/wpe_output.wav">请使用上方 WAV 链接下载。</audio>。三条 WAV 使用共同导出增益 1，可比较停音后拖尾及有声段谐波的变化；它们不同于图21的 1.4 s 随机衰减 RIR 仿真，只供现象试听，不能充当真实房间或语音质量测试。<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch00/audio/MANIFEST.json">主音频清单</a>和<a href="research/05_exercises_and_audio.html#5-wpe-的预测与目标损伤">练习与音频手册</a>给出生成条件与边界。</p>
+<p>合法零输入及可表示的小系数仍有独立测试，见<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/tests/test_codes_wpe_numerics.py">数值与设计矩阵回归</a>。</p>
+<p>可试听一组独立的 2.25 s、16 kHz 单通道数学合成夹具：<a href="audio/wpe_dry.wav">无回声参考</a><audio class="audio-sample" controls preload="none" aria-label="无回声参考" src="audio/wpe_dry.wav">请使用上方 WAV 链接下载。</audio>、<a href="audio/wpe_reverberant.wav">稀疏回声观测</a><audio class="audio-sample" controls preload="none" aria-label="稀疏回声观测" src="audio/wpe_reverberant.wav">请使用上方 WAV 链接下载。</audio>、<a href="audio/wpe_output.wav">离线 WPE 输出</a><audio class="audio-sample" controls preload="none" aria-label="离线 WPE 输出" src="audio/wpe_output.wav">请使用上方 WAV 链接下载。</audio>。三条 WAV 使用共同导出增益 1，可比较停音后拖尾及有声段谐波的变化；它们不同于图21的 1.4 s 随机衰减 RIR 仿真，只供现象试听，不能充当真实房间或语音质量测试。<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/audio/MANIFEST.json">主音频清单</a>和<a href="research/05_exercises_and_audio.html#5-wpe-的预测与目标损伤">练习与音频手册</a>给出生成条件与边界。</p>
 <h3 id="sec-u-24aba87cac">低残差不等于保住了目标</h3>
 <p>取一个频点、单通道六帧全为 $1+0j$，设 $K=2$、$\Delta=1$、迭代一次、对角加载为零。有效帧 $n=2,3,4,5$ 的历史向量全为 $[1,1]^\top$，所以 $\mathbf R=4\begin{bmatrix}1&1\\1&1\end{bmatrix}$、$\vec r=[4,4]^\top$；$\mathbf R$ 的秩为 1。最小范数解 $\vec g=[1/2,1/2]^\top$ 把这些帧预测为 1，残差为零（双精度实现中约在 $10^{-16}$ 量级）。前两帧因缺少完整历史而原样保留。</p>
 <p>该输入没有给出晚期混响真值，却会使可预测的目标分量几乎消失，故不能把残差小解读为去混响成功。若为改善数值条件而加对角加载，也仍须检查目标失真；正则化不能单独证明模型的声学假设成立。</p>
-<p>联合示例用 <code>.venv/bin/python -m codes.chapters.ch00.cross_chapter.ch06_09_baselines</code> 运行，边界测试见 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/tests/test_codes_aec_wpe_sep_track.py"><code>tests/test_codes_aec_wpe_sep_track.py</code></a>和<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/tests/test_codes_wpe_mask_diagnostics.py"><code>tests/test_codes_wpe_mask_diagnostics.py</code></a>。测试固定检查 $K=0$、短输入、全零频点、单抽头复共轭方向、多通道形状、整体幅度缩放等变性、秩亏诊断与非零微小掩码。实际音频管线还要自行固定 STFT 的窗、帧移、<code>center</code>/补零约定与 ISTFT 长度，并测试短语音、静音权重、病态矩阵、通道交换及块边界。</p>
+<p>联合示例用 <code>.venv/bin/python -m codes.chapters.ch00.cross_chapter.ch06_09_baselines</code> 运行，边界测试见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/tests/test_codes_aec_wpe_sep_track.py"><code>tests/test_codes_aec_wpe_sep_track.py</code></a>和<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/tests/test_codes_wpe_mask_diagnostics.py"><code>tests/test_codes_wpe_mask_diagnostics.py</code></a>。测试固定检查 $K=0$、短输入、全零频点、单抽头复共轭方向、多通道形状、整体幅度缩放等变性、秩亏诊断与非零微小掩码。实际音频管线还要自行固定 STFT 的窗、帧移、<code>center</code>/补零约定与 ISTFT 长度，并测试短语音、静音权重、病态矩阵、通道交换及块边界。</p>
 <p>该基线是整段离线估计，不宣称因果或实时。离线、在线、学习功率与联合滤波的源代码入口分别如下，完整读码顺序和失效实验见 <a href="research/02_aec_wpe_separation.html#wpe">WPE 源码研究</a>。</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table class="wpe-readable-table">
 <thead>
@@ -1079,13 +1079,13 @@ T_v&=\max(0,T-t_{\min}).
 <p>静态核对锁定ESPnet代码还发现，构造器中的 <code>diagonal_loading</code>、<code>diag_eps</code>、<code>use_torch_solver</code> 没有被该版本 <code>DNN_WPE.forward()</code> 消费；对应底层路径仍使用固定 $10^{-10}$ 的绝对加载及求逆。这是特定版本的源码行为，不是已运行训练权重的结果。移植参数时需追踪实际被调用的路径，不能只看构造器名称。<a href="research/02_aec_wpe_separation.html#wpe">研究手册W04</a>保留调用关系和验证范围。</p>
 <p>工程比较应固定通道数、上下文长度、硬件、计时范围和实际因果条件。训练权重、语料和 CUDA 环境是独立前提；取得源代码并不表示训练或设备实时性已经验证。</p>
 <h3 id="sec-u-8af9560f97">离线、在线与未来扰动的实跑对照</h3>
-<p>本书另提供<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch07/examples/compare_wpe_reference.py">独立实现数值对照</a>：把教学版 <code>offline_wpe()</code> 与未经修改的 <code>nara-wpe 0.0.11</code> 的 <code>wpe_v6()</code> 比较。固定复数随机输入、预测阶数 2、保护延迟 3，检查单通道、双通道、通道置换和整体缩放，每种分别迭代 1 次和 3 次。两种实现对启动帧的处理不同，因此只比较零起始索引 $t=4$ 起的有效预测区间；8组检查的最大绝对误差约为 $3.2\times10^{-15}$。</p>
+<p>本书另提供<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch07/examples/compare_wpe_reference.py">独立实现数值对照</a>：把教学版 <code>offline_wpe()</code> 与未经修改的 <code>nara-wpe 0.0.11</code> 的 <code>wpe_v6()</code> 比较。固定复数随机输入、预测阶数 2、保护延迟 3，检查单通道、双通道、通道置换和整体缩放，每种分别迭代 1 次和 3 次。两种实现对启动帧的处理不同，因此只比较零起始索引 $t=4$ 起的有效预测区间；8组检查的最大绝对误差约为 $3.2\times10^{-15}$。</p>
 <p><a href="research/02_aec_wpe_separation.html#wpe">完整参数与误差口径</a>说明为何要对齐统计区间和功率下限。</p>
 <p>锁定包的默认别名 <code>wpe</code> 指向 <code>wpe_v7</code>；上述对照明确选择的是 <code>wpe_v6</code>。v6/v7的全频相对功率地板与v8的逐频地板，在高动态范围输入上不等价；固定输入下误差接近零不能证明所有入口都等价，源码和反例见同一研究手册。</p>
 <p>该检查验证复数代数、维度和迭代口径，不是语音质量、流式延迟或论文全量实验的复现。</p>
-<p><a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch07/examples/compare_online_wpe_reference.py">在线接口与状态对照</a>先手算上述三个固定索引，再以保留上游缓冲顺序的精简 NumPy 适配参考逐帧对照锁定源码。适配部分随附原始版权与 MIT 声明；独立期望另由实数、复数启动例的分数手算给出，不用两个相关实现彼此一致代替独立验证。</p>
+<p><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch07/examples/compare_online_wpe_reference.py">在线接口与状态对照</a>先手算上述三个固定索引，再以保留上游缓冲顺序的精简 NumPy 适配参考逐帧对照锁定源码。适配部分随附原始版权与 MIT 声明；独立期望另由实数、复数启动例的分数手算给出，不用两个相关实现彼此一致代替独立验证。</p>
 <p>固定种子、48 帧、2 个频点、1 个通道、2 抽头、<code>delay=2</code>、遗忘因子 0.95 时，NumPy 与上游连续输出的最大绝对误差为 $2.4\times10^{-15}$。同一对象在第 24 帧外层分块不改变输出；若第 24 帧重建对象，差异从该帧开始，最大绝对差约为 2.56。后一个数值只说明状态丢失会改变这组合成复谱，不表示 2.56 是任何语音指标。</p>
-<p><a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch07/wpe_temporal_contract.py">未来帧与多种外层分块实验</a>进一步固定种子 20260924，构造 48 帧、2 频点、1 通道的合成复谱；只在零起始第 30 帧的两个频点各加 $5+2\mathrm j$。锁定的 <code>nara-wpe 0.0.11</code> 逐帧接口保持同一个状态对象，使用 2 抽头、<code>delay=2</code>、遗忘因子 0.95。</p>
+<p><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch07/wpe_temporal_contract.py">未来帧与多种外层分块实验</a>进一步固定种子 20260924，构造 48 帧、2 频点、1 通道的合成复谱；只在零起始第 30 帧的两个频点各加 $5+2\mathrm j$。锁定的 <code>nara-wpe 0.0.11</code> 逐帧接口保持同一个状态对象，使用 2 抽头、<code>delay=2</code>、遗忘因子 0.95。</p>
 <p>两组输出在第 30 帧之前逐样本相同；第 30 帧的最大差为 $|5+2\mathrm j|=\sqrt{29}\approx5.385$，之后的最大差约为 1.261。当前帧计算时两次运行的旧状态和历史回归量相同，所以当帧输出差由输入改变量直接给出；后续差异还包含状态更新的影响。</p>
 <p>将原始 48 帧分成 48 个单帧块、<code>7+13+5+23</code> 帧四块或 <code>30+18</code> 帧两块，调用同一对象的 <code>step_frame()</code>，与整段逐帧调用逐样本完全相同。这些“块”只是外层调用分组，<strong>不是</strong> <code>OnlineWPE.step_block()</code> 所要求的历史窗口。</p>
 <p>作为相反对照，锁定版离线 <code>wpe_v6()</code> 用全段统计、一次迭代处理同一对输入时，第 30 帧以前的输出最大差约为 0.210。实验只验证固定复谱和固定实现的时间依赖；它没有 STFT 波形分帧、端到端延迟或去混响音质数据。<a href="https://github.com/fgnt/nara_wpe/blob/a166779cca2088817e330481bd20af1a2c598555/nara_wpe/wpe.py">逐帧接口源码</a>与<a href="https://www.isca-archive.org/interspeech_2017/kinoshita17_interspeech.pdf" title="citation">Kinoshita 等 2017 年论文 §3</a>分别给出此版本接口和在线短数据统计问题。</p>
@@ -1147,7 +1147,7 @@ T_v&=\max(0,T-t_{\min}).
 </li>
 </ol>
 <p><strong>可运行练习 E07-01～E07-05</strong></p>
-<p>运行 <code>.venv/bin/python -m codes.chapters.ch00.cross_chapter.exercises_enhancement</code>，源码见 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch00/cross_chapter/exercises_enhancement.py"><code>exercises_enhancement.py</code></a>。可听的混响前后样本及其固定处理参数见<a href="research/05_exercises_and_audio.html">练习及音频手册</a>；下面的复数序列只用于数学核对。</p>
+<p>运行 <code>.venv/bin/python -m codes.chapters.ch00.cross_chapter.exercises_enhancement</code>，源码见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/exercises_enhancement.py"><code>exercises_enhancement.py</code></a>。可听的混响前后样本及其固定处理参数见<a href="research/05_exercises_and_audio.html">练习及音频手册</a>；下面的复数序列只用于数学核对。</p>
 <h3 id="sec-u-8d4954f97d">E07-01：有效帧与矩阵尺寸</h3>
 <p>2 通道、12 帧、$\Delta=3$、$K=2$、帧移 8 ms，采用零起始帧号。首个有效帧、有效帧数、回归向量维数分别是多少？</p>
 <p><strong>解答</strong>：首帧为 $3+2-1=4$，使用历史帧 1、0，每个历史帧含两通道。共有 $12-4=8$ 个有效帧，向量有 $MK=4$ 项，正规矩阵为 $4\times4$。最近/最远历史分别延迟 24/32 ms。8 个样本多于 4 个参数不保证独立或良态。</p>
@@ -1174,7 +1174,7 @@ T_v&=\max(0,T-t_{\min}).
 <p><strong>第 1 步：把通道数写入似然。</strong> 对 $M$ 维 proper 复高斯向量，协方差行列式是 $\lambda^M$，指数中的二次型是 $\sum_m|E_m|^2/\lambda$。忽略与 $\lambda$ 无关的常数后，负对数似然与式(7-13)相同。令导数为零，相当于 $M\lambda=\sum_m|E_m|^2$，所以正的共享方差等于各通道残差功率的平均。</p>
 <p><strong>第 2 步：代入本题。</strong> $|1+\mathrm j|^2=2$，$|2|^2=4$，故 $\hat\lambda=(2+4)/2=3$。若逐通道单独估计，得到的是 2 和 4；共享模型通过同一个参数约束两通道，不能把这三个数混用。</p>
 <p><strong>第 3 步：改变通道增益。</strong> 第二路乘以 2 后，残差为 $[1+\mathrm j,4]$，其功率变为 16，共享估计为 $(2+16)/2=9$；把所有通道都乘以 2 则得到 $4\times3=12$。单通道增益变化和全阵列共同缩放并不等价。若共同乘以非零常数 $c$，同时令 $\lambda$ 乘以 $|c|^2$，正规方程中分子与分母抵消，$\mathbf R$ 和 $\mathbf P$ 保持不变。另一种操作是只把全部逆功率权重乘同一正常数，此时两边才共同缩放。逐通道增益不均匀通常还会改变各帧相对权重，不满足上述共同缩放关系。</p>
-<p>全零残差时，无约束似然把最优值推向 $\lambda\downarrow0$，没有正的内部极小值，也不能对零功率取倒数。实际 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch07/core/dereverberation.py"><code>offline_wpe()</code></a>另设相对功率地板，并对完全静音频点旁路，因此实现不是无约束的逐帧极大似然。代码与独立检查见 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch00/cross_chapter/enhancement_step_exercises.py">enhancement_step_exercises.py</a> 的 <code>E07-06</code>。本题只核对功率更新，不证明球形模型符合真实房间。</p>
+<p>全零残差时，无约束似然把最优值推向 $\lambda\downarrow0$，没有正的内部极小值，也不能对零功率取倒数。实际 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch07/core/dereverberation.py"><code>offline_wpe()</code></a>另设相对功率地板，并对完全静音频点旁路，因此实现不是无约束的逐帧极大似然。代码与独立检查见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/enhancement_step_exercises.py">enhancement_step_exercises.py</a> 的 <code>E07-06</code>。本题只核对功率更新，不证明球形模型符合真实房间。</p>
 <p><a id="e07-07"></a></p>
 <h3 id="sec-u-e977ef7d36">E07-07：把 WPD 拆成 WPE 与加权 MPDR，为什么还会得到同一个答案？</h3>
 <p>沿用 E07-05 的四维协方差，按“当前两麦、一个延迟历史块”排列。固定所有 $\lambda_t>0$，不更新功率、不加正则化。先证明分解，再独立复算系数和一帧输出。</p>
@@ -1239,9 +1239,9 @@ y_t&=\vec w_\star^H(\vec x_t-\mathbf G^H\vec q_t).
 <p>对一组额外指定的快照 $\vec x=[2,1]^\top,\vec q=[2,3]^\top$，WPE 残差为 $\vec z=[1,1]^\top$，后级输出为 $2/5+3/5=1$。直接四维滤波也得到 $(2/5)2+(3/5)1-(1/5)2=1$。这个快照只检查两种表示的输出等式，不声称它单独生成了给定协方差。目标值仍为 $\vec w^T\mathbf S\vec w=3/5$，与 E07-05 独立四维求解一致。</p>
 <p><strong>适用边界。</strong> 若 $\mathbf B=0$，则 $\mathbf G=0$，历史不参与滤波；若 $\mathbf C$ 奇异，上述求逆证明不能直接使用。本式针对固定功率的一次求解；两条迭代流水线还须使用相同的功率更新、初始化和停止条件，才可以继续比较。</p>
 <p>给整块 $\bar{\mathbf R}$ 加 $\delta \mathbf I$ 后，代数分解依然成立，但得到的是 $\mathbf G_\delta=(\mathbf C+\delta \mathbf I)^{-1}\mathbf B^H$ 和 $\mathbf S_\delta=\mathbf A+\delta \mathbf I-\mathbf B\mathbf G_\delta$。只对 WPE 历史块加载，再直接用其残差的经验协方差做后级，通常不是同一个 $\mathbf S_\delta$；两模块各自的相对加载也不能自动视为同一个正则化问题。因此“串联即可等价”必须连同权重、统计帧和正则化一起核对。</p>
-<p>分解依据见 <a href="https://arxiv.org/pdf/1910.13707">Boeddeker 等，ICASSP 2020，§4 和附录</a>；本题的完整平方、数字和快照为本书复算。运行 <code>.venv/bin/python -m codes.chapters.ch00.cross_chapter.enhancement_structure_exercises</code>；<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch00/cross_chapter/enhancement_structure_exercises.py">代码</a>和<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/tests/test_codes_enhancement_structure.py">独立测试</a>另检查复数互相关、共同缩放、零互相关与奇异矩阵。这里没有运行真实音频，也不从目标值较小推断语音质量必然更好。</p>
+<p>分解依据见 <a href="https://arxiv.org/pdf/1910.13707">Boeddeker 等，ICASSP 2020，§4 和附录</a>；本题的完整平方、数字和快照为本书复算。运行 <code>.venv/bin/python -m codes.chapters.ch00.cross_chapter.enhancement_structure_exercises</code>；<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/enhancement_structure_exercises.py">代码</a>和<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/tests/test_codes_enhancement_structure.py">独立测试</a>另检查复数互相关、共同缩放、零互相关与奇异矩阵。这里没有运行真实音频，也不从目标值较小推断语音质量必然更好。</p>
 <h3 id="sec-u-9134240666">E07-08：复数加权求解与加载后的正交性</h3>
-<p>本题及E07-09～21统一运行 <code>.venv/bin/python -m codes.chapters.ch07.chapter07_experiments</code>，入口见<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch07/chapter07_experiments.py">chapter07_experiments.py</a>。数值题检查代数和边界；E07-17和E07-21包含可听波形，不将其他题的复谱当真实录音。</p>
+<p>本题及E07-09～21统一运行 <code>.venv/bin/python -m codes.chapters.ch07.chapter07_experiments</code>，入口见<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch07/chapter07_experiments.py">chapter07_experiments.py</a>。数值题检查代数和边界；E07-17和E07-21包含可听波形，不将其他题的复谱当真实录音。</p>
 <p><strong>题设。</strong> 两麦、单抽头、$\Delta=3$，共有六帧。前3帧的通道列向量依次为 $(1,0)^T,(0,1)^T,(1,\mathrm j)^T$；后3帧第一路为 $0,-\mathrm j/2,3$，第二路全为0。只求第一输出的预测器，指定有效帧的逆功率权重为 $1,2,1$。这些是给定共享功率的一次求解，不在题内交替更新功率。</p>
 <p><strong>第1步：构造实际历史。</strong> 有效帧是3、4、5，它们读取第0、1、2帧，所以历史恰好是上述三个二维向量。由式(7-7)，三项外积及互相关累加得到</p>
 <p>$$\mathbf R=\begin{bmatrix}2&-\mathrm j\\\mathrm j&3\end{bmatrix},\qquad
@@ -1291,7 +1291,7 @@ r_3&=\alpha^3r_0+\sum_{i=1}^3\alpha^{3-i}q_iX_i.
 <p>权重是 $[1/4,1/2,1]$。代入得 $R_3=1/4+1/4+2+1=7/2$，$r_3=1/8+1/5+8/5+1=117/40$，因此 $g_3=117/140\approx0.835714$。丢掉先验项就会算成另一个批量问题。</p>
 <p><strong>第2步：检查输出时点。</strong> 三次更新后的系数依次为0.65、0.77、0.835714；而先验输出依次用0.5、0.65、0.77，因此输出是0.3、0.3、0.23。最后一个输出不是用最终系数评分的结果。</p>
 <p><strong>第3步：零历史期间保留什么？</strong> 若接着两帧的回归量均为零，继续遗忘得到 $R=7/8,r=117/160$；若冻结统计，两者保持 $7/2,117/40$。这两种情况下系数比值暂时相同，但之后遇到非零输入时权重不同。无论选择哪种统计策略，实际时间和历史缓冲仍须推进，不能反复把同一个旧帧当作新历史。</p>
-<p><strong>数值边界另查。</strong> 逆矩阵递推在零回归量下可能执行 $\mathbf P\leftarrow\mathbf P/\alpha$，其增长与上述直接 $R$ 衰减是同一问题的两面。锁定nara实现从单位逆矩阵启动、连续零帧时，$\alpha=0.95$在第13838个调用首次出现非有限状态；$\alpha=0.5$在第1024个调用出现。之后切回非零输入也可能传播非有限输出。参数、调用计数和环境见<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch07/reports/chapter07_online_wpe_silence.json">静音边界实跑报告</a>及<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch07/examples/wpe_silence_boundary.py">复现入口</a>。这些是固定双精度实现的边界，不是所有在线WPE的通用寿命；本题直接累计R的教学递推也不是该上游逆更新接口。</p>
+<p><strong>数值边界另查。</strong> 逆矩阵递推在零回归量下可能执行 $\mathbf P\leftarrow\mathbf P/\alpha$，其增长与上述直接 $R$ 衰减是同一问题的两面。锁定nara实现从单位逆矩阵启动、连续零帧时，$\alpha=0.95$在第13838个调用首次出现非有限状态；$\alpha=0.5$在第1024个调用出现。之后切回非零输入也可能传播非有限输出。参数、调用计数和环境见<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch07/reports/chapter07_online_wpe_silence.json">静音边界实跑报告</a>及<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch07/examples/wpe_silence_boundary.py">复现入口</a>。这些是固定双精度实现的边界，不是所有在线WPE的通用寿命；本题直接累计R的教学递推也不是该上游逆更新接口。</p>
 <h3 id="sec-u-bc67e982af">E07-14：MINT可逆为什么仍会放大噪声？</h3>
 <p><strong>题设。</strong> 单声源经两条已知FIR路径 $h_1=[1,a]$、$h_2=[1,b]$ 到达麦克风，各路再叠加相互独立、方差均为 $\sigma^2$ 的噪声。只求常数逆权重 $u_1,u_2$，使加权后的总路径成为 $[1,0]$。</p>
 <p><strong>解两个约束。</strong> 直达系数给出 $u_1+u_2=1$，第二个抽头给出 $au_1+bu_2=0$。当 $a\ne b$，解为</p>
@@ -1446,7 +1446,7 @@ L_k\,e^{\mathrm j\pi kq/4}.
 </tr>
 </tbody>
 </table></div>
-<p><strong>加载与支持边界。</strong> 如需同一个固定 $\delta>0$ 的正则目标，直接路径按式(7-9)增广 $\sqrt\delta \mathbf I$，正规路径加 $\delta \mathbf I$；不能只给其中一条加载后声称算法更准确。加载会抑制本题的弱差方向，也会改变答案。直接设计求解解决的是避免预先平方条件数这一项困难；极端尺度、原始病态、有限样本与模型错误仍须独立检查。本题的唯一求解核与诊断在<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch07/core/dereverberation.py">WPE数值核</a>，独立两行代数及复数加载测试在<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/tests/test_codes_wpe_numerics.py">数值回归</a>。</p>
+<p><strong>加载与支持边界。</strong> 如需同一个固定 $\delta>0$ 的正则目标，直接路径按式(7-9)增广 $\sqrt\delta \mathbf I$，正规路径加 $\delta \mathbf I$；不能只给其中一条加载后声称算法更准确。加载会抑制本题的弱差方向，也会改变答案。直接设计求解解决的是避免预先平方条件数这一项困难；极端尺度、原始病态、有限样本与模型错误仍须独立检查。本题的唯一求解核与诊断在<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch07/core/dereverberation.py">WPE数值核</a>，独立两行代数及复数加载测试在<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/tests/test_codes_wpe_numerics.py">数值回归</a>。</p>
 <p><a id="e07-20"></a></p>
 <h3 id="sec-u-478a0f00c4">E07-20：保留直达系数时，怎样在残余反射与噪声之间取舍？</h3>
 <p><strong>题设。</strong> 沿用E07-14两条已知路径，第二个抽头可以在同一个任意正延迟 $L$：$h_1=\delta[n]+a\delta[n-L]$、$h_2=\delta[n]+b\delta[n-L]$。只允许两个实常数权重，并保留直达系数 $u_1+u_2=1$。取 $a=0.5,b=0.49$，比较精确逆与带权重惩罚的受限设计；这不是任意长FIR的通用MINT最优解。</p>
@@ -1556,7 +1556,7 @@ u_1+u_2&=1.
 </table></div>
 <p>三行实际PCM相对平方误差分别约为0.00004947、0.49308050、0.16398603。精确逆对干净路径的反射抵消关系仍成立，但差为0.01的权重将后路径噪声明显放大。受限正则输出主动保留反射，所以总误差减小并不意味着每个干净源频率都无失真。</p>
 <p><strong>为什么实际值不等于理论值？</strong> 有限记录的噪声互乘均值为约 $-3.0147\times10^{-9}$，没有恰好为零。正则输出的有限浮点误差可分为干净误差0.0005445000、输出噪声0.0002741400、两倍交叉项0.0000012535；三者相加约0.0008198935。将总体期望的交叉项零直接代替这个固定种子的实际项，会得到另一个数字。PCM再包含独立量化差异，不能把误差全部解释成噪声方差变化。</p>
-<p><strong>复现与限制。</strong> 运行 <code>.venv/bin/python -m codes.chapters.ch07.examples.mint_teaching_demo</code> 生成，追加 <code>--check</code> 仅只读检查；唯一模型在<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch07/core/mint_teaching.py">mint_teaching.py</a>，实际文件、取点、源摘要及浮点/PCM结果在<a href="mint_audio/MANIFEST.json">独立清单</a>。这是一个固定源、固定种子的已知路径比较，未做人声、听感或真实房间验证；它不能给出盲WPE、一般MINT或其他噪声条件的统一排名。</p>
+<p><strong>复现与限制。</strong> 运行 <code>.venv/bin/python -m codes.chapters.ch07.examples.mint_teaching_demo</code> 生成，追加 <code>--check</code> 仅只读检查；唯一模型在<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch07/core/mint_teaching.py">mint_teaching.py</a>，实际文件、取点、源摘要及浮点/PCM结果在<a href="mint_audio/MANIFEST.json">独立清单</a>。这是一个固定源、固定种子的已知路径比较，未做人声、听感或真实房间验证；它不能给出盲WPE、一般MINT或其他噪声条件的统一排名。</p>
 <p><a id="e07-22"></a></p>
 <h3 id="sec-u-4a8a10bd2d">E07-22：接收时钟同步，历史里为什么还有当前目标？</h3>
 <p><strong>输入与要检查的问题。</strong> 沿用式(7-29)的整数帧模型，源只有 $s[0]=s[4]=1$，其他帧为0；观察接收帧 $t=0,\ldots,9$。参考通道到达延迟为3帧，辅助通道为0帧。已知保护源间隔 $\Delta_0=3$，只用辅助通道的一个实数抽头拟合参考当前值，没有混响、噪声或未知延迟估计。</p>
@@ -1613,7 +1613,7 @@ e_t&=y_t-gq_t.
 <p>统一延迟的 $q=[0,1,0,0]^\top$ 与 $y$ 完全相同，故 $R=1,r=1,g=1$，残差四帧全为0。低残差来自消去目标，不能解释成去混响成功。</p>
 <p>修正后的 $q=[1,0,0,0]^\top$，故 $R=1,r=0,g=0$，残差为 $[0,1,0,0]^\top$，保留了本例目标。两种单列设计的秩均为1，条件数均为1；结论不是来自给病态矩阵加载。</p>
 <p><strong>第三步：列出边界。</strong> 此处只选一个辅助抽头，避免再加入与其完全相同的参考历史列；如果把两列都放进修正后的设计，会得到重复列和秩亏。换成持续常数或周期性源，即使源间隔修正正确，过去源仍可能预测当前源，目标仍可被消去；<a href="#sec-u-cfc202bb16">E07-17</a>已经给出实际纯音例。</p>
-<p>题设不含反射，全部拟合帧也同时用于展示结果，没有留出性能声明。运行<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch07/chapter07_experiments.py">本章入口</a>的E07-22，可核对两个回归向量、R、r、g和残差；唯一源时刻模型在<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch07/core/prediction_delays.py">prediction_delays.py</a>。</p>
+<p>题设不含反射，全部拟合帧也同时用于展示结果，没有留出性能声明。运行<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch07/chapter07_experiments.py">本章入口</a>的E07-22，可核对两个回归向量、R、r、g和残差；唯一源时刻模型在<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch07/core/prediction_delays.py">prediction_delays.py</a>。</p>
 <p><a id="e07-23"></a></p>
 <h3 id="sec-u-3085f44c5d">E07-23：0.6 s的T60如何换成8 ms的功率衰减？</h3>
 <p><strong>给定模型。</strong> 固定一个满足晚期统计近似的频带，源不再注入新能量；给定 $T_{60}=0.6$ s、$f_s=16000$ Hz、帧移128点。初始晚期谱方差取1，只计算归一化自由衰减，不从录音估计T60，也不运行谱增益器或WPE。</p>
@@ -1657,7 +1657,7 @@ e_t&=y_t-gq_t.
 </table></div>
 <p>75帧正好经过0.6 s，功率变成百万分之一，幅度变成千分之一。若误把幅度因子当作功率因子，75帧后的“功率”会变成 $10^{-3}$，用 $10\log_{10}$ 只下降30 dB，差一倍衰减斜率。</p>
 <p><strong>第四步：检查没有被模型提供的信息。</strong> 这些比值不提供初始真实谱方差、直混比、混合时间或源持续发声时的驱动项。它们也不是WPE早期方差 $\lambda$ 的更新规则；式(7-10)的残差功率更新仍须从其自己的模型计算。</p>
-<p>运行<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch07/chapter07_experiments.py">本章入口</a>的E07-23，可核对功率、幅度、级别三种表示。把帧移改为4 ms，再算150帧，应得到同样的0.6 s终点；只改帧数而不改时间换算会得到不同衰减时长。</p>
+<p>运行<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch07/chapter07_experiments.py">本章入口</a>的E07-23，可核对功率、幅度、级别三种表示。把帧移改为4 ms，再算150帧，应得到同样的0.6 s终点；只改帧数而不改时间换算会得到不同衰减时长。</p>
 <p><a id="e07-24"></a></p>
 <h3 id="sec-u-3c305245d9">E07-24：从六个PCM文件核对传播时刻与目标泄漏</h3>
 <p><strong>源和路径先全部公开。</strong> 本题把E07-22的源时刻问题换成可播放的确定性波形，仍没有房间反射、噪声、STFT或盲到达时延估计。采样率16 kHz，单位从帧换成波形采样点；取帧移128点只用于换算。</p>
@@ -1712,7 +1712,7 @@ e[j]&=\sin^2(\pi j/127).
 <p>除以D得到输出均方与误差均方；共同参考均方约为 $3.100439\times10^{-4}$。统一延迟输出安静，目标误差却等于整个参考；修正后输出保留本例目标。不要把输出功率0叫做目标恢复，也不要把这个没有反射的控制称为WPE的混响消除成绩。</p>
 <p><img alt="图75 已知传播差下的源时刻、辅助历史与目标残差" src="../figures/fig75_prediction_delays.png" onerror="this.alt+='（图缺失）'" /></p>
 <p>图75(a)展示E07-22的四帧源时刻控制；(b)在同一接收时轴上画一个96 ms周期的实际参考与两种辅助历史；(c)比较同窗实际PCM目标误差；(d)另画E07-23的正确功率衰减与误用幅度因子的曲线。最后一面板是独立的统计自由衰减模型，不是从本题音频测得的混响。图中没有房间混响、盲TDOA、STFT跨带补偿或工业性能。</p>
-<p><strong>复现和边界。</strong> 运行 <code>.venv/bin/python -m codes.chapters.ch07.examples.generate_delay_audio</code> 生成，追加 <code>--check</code> 只读完整回放；<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch07/chapter07_experiments.py">本章入口</a>的E07-24读取正式资产。源波形与支持安排在<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch07/core/delay_audio.py">delay_audio.py</a>，共享源时刻和实数拟合核在<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch07/core/prediction_delays.py">prediction_delays.py</a>，真实WAV摘要、源摘要、浮点和PCM评分在<a href="delay_audio/MANIFEST.json">独立清单</a>。</p>
+<p><strong>复现和边界。</strong> 运行 <code>.venv/bin/python -m codes.chapters.ch07.examples.generate_delay_audio</code> 生成，追加 <code>--check</code> 只读完整回放；<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch07/chapter07_experiments.py">本章入口</a>的E07-24读取正式资产。源波形与支持安排在<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch07/core/delay_audio.py">delay_audio.py</a>，共享源时刻和实数拟合核在<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch07/core/prediction_delays.py">prediction_delays.py</a>，真实WAV摘要、源摘要、浮点和PCM评分在<a href="delay_audio/MANIFEST.json">独立清单</a>。</p>
 <p>若目标持续发声、重复间隔与保护间隔重合，正确时刻的历史仍可预测目标；本题的零互乘结论不能照搬。该检查也没有估计未知传播差或比较真实语音听感；它用于理解为什么必须先声明接收时间、源时间和回归输入，再解释低残差。</p>
 <span id="sec-7-1-3" class="anchor-alias" aria-hidden="true"></span><span id="sec-5" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-7-10">7.10 研究方向</h2>
 <p>WPE 的改进主要围绕四个限制展开：</p>

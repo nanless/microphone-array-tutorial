@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 8 章 · 语音分离 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="1a85da73ba06"><style>
+<meta name="source-digest" content="0fc6040b7677"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -803,7 +803,7 @@ q_t^{(r)}&={\vec z}_t^H({\mathbf B}^{(r)})^{-1}{\vec z}_t,\\
 <p>这些密度是题目给定的相对数值，只检验 E 步归一化；它们不是从录音拟合出的 cACG 密度，也不构成分离性能实验。完整手算及代码见练习 E08-07。</p>
 <p><strong>活动错误的三帧反例</strong>。再固定 $\pi=[0.4,0.4,0.2]$，顺序仍为“说话人 1、说话人 2、背景噪声”。三帧的相对空间密度依次是 $[8,1,1]$、$[1,8,1]$、$[1,1,1]$；真实说话人活动依次是“仅说话人 1、仅说话人 2、两人都静音”。正确标注下，首帧说话人 1 的分数为 $0.4\times8=3.2$，背景分数为 $0.2$，故其后验为 $3.2/(3.2+0.2)=16/17\approx0.9412$。</p>
 <p>若漏标首帧的说话人 1，门控会把其后验强制置零，无论该分量的固定空间密度多高。若把第三帧的说话人 1 错标为活动，其后验会从 0 变成 $0.4/(0.4+0.2)=2/3$，本应占 1 的背景后验变为 $1/3$。</p>
-<p>这组数字由<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch08/gss_activity_error_demo.py"><code>gss_activity_error_demo.py</code></a>和独立分数测试复算，只描述<strong>固定密度、固定权重时的 E 步</strong>。完整 GSS 还会让错误活动参与参数更新，并经 SCM、波束形成影响音频；上述后验变化不能直接换算成 SI-SDR 或 WER 的变化。原论文的活动门控见<a href="https://www.isca-archive.org/chime_2018/boeddecker18_chime.pdf" title="citation">Boeddeker 等 §3.2、式(5)～(8)</a>。</p>
+<p>这组数字由<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch08/gss_activity_error_demo.py"><code>gss_activity_error_demo.py</code></a>和独立分数测试复算，只描述<strong>固定密度、固定权重时的 E 步</strong>。完整 GSS 还会让错误活动参与参数更新，并经 SCM、波束形成影响音频；上述后验变化不能直接换算成 SI-SDR 或 WER 的变化。原论文的活动门控见<a href="https://www.isca-archive.org/chime_2018/boeddecker18_chime.pdf" title="citation">Boeddeker 等 §3.2、式(5)～(8)</a>。</p>
 <p>活动标注只限制允许的簇，不会自动修复错误分割。如果目标说话人在所选片段内始终活动，目标与恒活动噪声类仍可能交换标签；原论文通过扩展目标片段前后的上下文，让目标类出现静音帧来降低这种置换风险，不能保证完全消除。短活动段、空分量或近奇异形状矩阵还需要正则化和失败检测。<a href="https://www.isca-archive.org/chime_2018/boeddecker18_chime.pdf" title="citation">原始论文 §3.2、图 3、式(5)～(8)</a></p>
 <h3 id="sec-8-4-4">8.4.4 协方差、波束权重与适用边界</h3>
 <p><strong>GSS 的源数与计算规模</strong>：输入通常是一段包含重叠语音的会议录音。cACGMM 的分量数通常由日志或系统配置预先给定；它不会仅凭式(8-17)可靠推断未知说话人数。</p>
@@ -840,11 +840,11 @@ $$</p>
 <p>真实的“目标 + 多个说话人 + 环境噪声”并非二分类，$1-\gamma$ 会把所有非目标成分合在一起，不能解释成纯噪声掩码。实际实现还要检查有效样本数、条件数和对角加载。<a href="https://doi.org/10.1109/ICASSP.2016.7471664" title="citation">掩码波束形成实例</a>。</p>
 <p>定位结果可以给分离提供方向先验；分离网络输出的掩码又能用于估计 MVDR 的目标与干扰协方差。</p>
 <h3 id="sec-8-4-5">8.4.5 可运行的 cACGMM—SCM—MVDR 受控链</h3>
-<p><a href="#sec-8-4-3">§8.4.3</a>的两帧活动门控小例只计算固定密度的 E 步归一化。本书另提供原创 NumPy <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch08/core/gss_teaching.py">教学整链</a>：逐频点把两麦复谱严格归一化为单位向量，使用说话人活动和恒活动背景类对复角中心高斯混合模型（cACGMM）进行 8 轮活动导引与形状迭代；各类形状矩阵采用迹归一化与正定加载，空类显式重置。然后用未做方向归一化的原始复谱和后验掩码计算目标/非目标 SCM，最终使用两麦 MVDR 输出目标复谱。</p>
+<p><a href="#sec-8-4-3">§8.4.3</a>的两帧活动门控小例只计算固定密度的 E 步归一化。本书另提供原创 NumPy <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch08/core/gss_teaching.py">教学整链</a>：逐频点把两麦复谱严格归一化为单位向量，使用说话人活动和恒活动背景类对复角中心高斯混合模型（cACGMM）进行 8 轮活动导引与形状迭代；各类形状矩阵采用迹归一化与正定加载，空类显式重置。然后用未做方向归一化的原始复谱和后验掩码计算目标/非目标 SCM，最终使用两麦 MVDR 输出目标复谱。</p>
 <p>低能量点不参与方向模型拟合，后验设为背景 1；若原观测非零，它的外积仍会计入非目标 SCM。以两麦的一帧为例，若低能量观测为 $[0,1/4]^\top$，它对非目标加权外积和的贡献是 $\operatorname{diag}(0,1/16)$，同时还在掩码质量里贡献 1。不能因它被排除出 cACG 形状更新，就把原始复谱也设为零。</p>
 <p>活动输入数组是（帧，说话人），后验输出数组是（频点，分量，帧）。推导把背景写为分量 $j=0$，数组则把背景放在分量轴最后一项。返回的 SCM 是从原尺度观测和原掩码计算的统计；两麦求权接口另按 §8.7 的办法缩放并重新估计用于求解的矩阵。代码同时返回掩码、SCM、权重、低能量点数、重置次数以及波束求解诊断，便于核查每一步。</p>
 <p>教学实现用向量范数判断有效点，不用范数平方。每个频点先取所有帧的最大范数，门限为该峰值的 $10^{-7}$ 与绝对下限 $10^{-12}$ 中较大者；范数严格大于门限才参与更新，相等也归背景。绝对项与 STFT 幅度同单位，相对系数无量纲，两者均为公开参数。绝对项主导时，整体缩小输入可能改变门控。</p>
-<p><a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch08/examples/gss_teaching_demo.py">固定脚本</a>用种子 20260924 合成 16 kHz、2 s 的<strong>两条独立高斯测试波形</strong>，并给它们设置已知活动区间。第一路在麦 0 直接到达、麦 1 晚 2 个采样；第二路相反，另加每麦独立均方根约 0.003 的高斯噪声。STFT 窗长 256 点、帧移 128 点，活动按帧中心给出。</p>
+<p><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch08/examples/gss_teaching_demo.py">固定脚本</a>用种子 20260924 合成 16 kHz、2 s 的<strong>两条独立高斯测试波形</strong>，并给它们设置已知活动区间。第一路在麦 0 直接到达、麦 1 晚 2 个采样；第二路相反，另加每麦独立均方根约 0.003 的高斯噪声。STFT 窗长 256 点、帧移 128 点，活动按帧中心给出。</p>
 <p>这个合成阵列没有房间混响，因此演示时旁路 WPE；代码可显式调用本书的离线 WPE 实现，但<strong>本实验没有据此验证 WPE</strong>。说话人活动作为外部输入提供，不是从混合录音自动识别。</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
 <thead>
@@ -873,7 +873,7 @@ $$</p>
 </tbody>
 </table></div>
 <p>这一组数字只说明在给定模型、固定输入和已知活动下，整条教学链能产生可复核音频；不能推断在其他说话人、房间或活动标注上必有 12.48 dB 的改善。</p>
-<p>所有说话人静音的帧上，背景后验为 1；错误标注条件下目标后验为 0。正确条件下本次形状矩阵重置次数为 0，后验每点求和与 1 的最大差约为 $2.22\times10^{-16}$。这些数值可由<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/tests/test_codes_gss_teaching.py">独立测试</a>和<a href="gss_audio/STATE.npz">完整状态文件</a>复算。</p>
+<p>所有说话人静音的帧上，背景后验为 1；错误标注条件下目标后验为 0。正确条件下本次形状矩阵重置次数为 0，后验每点求和与 1 的最大差约为 $2.22\times10^{-16}$。这些数值可由<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/tests/test_codes_gss_teaching.py">独立测试</a>和<a href="gss_audio/STATE.npz">完整状态文件</a>复算。</p>
 <p>状态文件分别保存更新前后两套参数：<code>posterior</code> 来自末次 E 步使用的 <code>e_step_shapes</code>、<code>e_step_priors</code>；<code>shape_matrices</code>、<code>post_update_priors</code> 是随后形状与先验更新的结果，没有再用它们执行一次 E 步。重算后验须选前一套，并读取 <code>valid_points</code> 区分强制背景点。全为低能量的频点执行零轮，其余固定执行八轮；实际轮数另存，固定八轮不等于已经收敛。</p>
 <p>先调低播放音量。各文件采用同一导出增益；文件摘要和参数见<a href="gss_audio/MANIFEST.json">独立清单</a>。</p>
 <p><a href="gss_audio/source_1.wav">第一路源</a><audio class="audio-sample" controls preload="none" aria-label="第一路源" src="gss_audio/source_1.wav">请使用上方 WAV 链接下载。</audio></p>
@@ -1102,7 +1102,7 @@ Y&=P_{\mathcal S}(Y).
 <p>TSE 的身份泄漏、注册信道和声纹保护测试，不能由文本查询分离的类别级结果替代。</p>
 <span id="sec-8-1-5" class="anchor-alias" aria-hidden="true"></span><span id="sec-7" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-8-7">8.7 教学代码与源码复现</h2>
 <h3 id="sec-u-856e6b31e6">本地可运行模块与回退</h3>
-<p><a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch08/core/separation.py"><code>codes/chapters/ch08/core/separation.py</code></a> 提供五个只依赖 NumPy 的小模块：</p>
+<p><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch08/core/separation.py"><code>codes/chapters/ch08/core/separation.py</code></a> 提供五个只依赖 NumPy 的小模块：</p>
 <ul>
 <li><code>si_sdr()</code> 接收等长一维估计与参考。先各自按峰值缩放再去均值，避免绝对幅度引起溢出；能量下限是估计能量乘 <code>epsilon</code>，而不是固定绝对能量。默认 <code>epsilon=1e-12</code> 时，完美和正交样本分别返回约 +120/−120 dB 的有限边界值；这些上限不是测量精度。零信号及去均值后为零的信号明确报错。</li>
 <li><code>pit_permutation()</code> 接收形状相同的（源，样本）数组并枚举排列，返回“第几个输出对应第几个参考”的元组和平均 SI-SDR。任一行去均值后为零时，整条样例无法用这个接口打分；同分时返回枚举中最先达到最高分的排列。它是已知参考下的评价，返回排列不能证明匹配唯一，更不能恢复在线说话人身份。</li>
@@ -1116,7 +1116,7 @@ Y&=P_{\mathcal S}(Y).
 <p><strong>数值支持与模型中的零要分开。</strong> 这些float64教学接口会拒绝检测到的非零归一化分量、正统计量、活动后验或超出支持范围的MVDR输出丢失；这属于当前求解器的支持边界，不证明物理信号静音，也不证明某类已被活动规则禁用。真正的零掩码、真零统计与活动禁用仍可合法出现。</p>
 <p>活动后验在对数域组合先验与密度，但若严格正结果不能表示为非零浮点数，就明确报错，不把它写成数学概率0。SCM的特殊指数累计路线也不等于任意有限输入都保证可求解。</p>
 <p>MVDR另允许一种明确标记的舍入相消：恢复前的分量残差不超过各项绝对值和的8倍机器精度、恢复后却变为0时，用 <code>rounding_underflow_components</code> 和 <code>rounding_underflow_positions</code> 记录数量及位置。这个状态无法区分严格数学零与舍入量级的真实非零，不能把输出0称为目标或干扰被精确消除。</p>
-<p>联合示例用 <code>.venv/bin/python -m codes.chapters.ch00.cross_chapter.ch06_09_baselines</code> 运行，测试见 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/tests/test_codes_aec_wpe_sep_track.py"><code>tests/test_codes_aec_wpe_sep_track.py</code></a>。测试覆盖输出交换、静音参考和静音估计拒绝、SCM 厄米性、MVDR 无失真约束，以及目标或干扰掩码为空时回退参考麦。实际评测还必须固定去均值、时延/增益对齐、静音段、截断长度和输入基线；秩亏 SCM、单通道输入、$N>M$、跨块换人及 STFT 重构均需单独测试。教学版 MVDR 在目标或干扰统计不可用时退回参考麦克风，不应把这一回退的输出解释成成功分离。</p>
+<p>联合示例用 <code>.venv/bin/python -m codes.chapters.ch00.cross_chapter.ch06_09_baselines</code> 运行，测试见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/tests/test_codes_aec_wpe_sep_track.py"><code>tests/test_codes_aec_wpe_sep_track.py</code></a>。测试覆盖输出交换、静音参考和静音估计拒绝、SCM 厄米性、MVDR 无失真约束，以及目标或干扰掩码为空时回退参考麦。实际评测还必须固定去均值、时延/增益对齐、静音段、截断长度和输入基线；秩亏 SCM、单通道输入、$N>M$、跨块换人及 STFT 重构均需单独测试。教学版 MVDR 在目标或干扰统计不可用时退回参考麦克风，不应把这一回退的输出解释成成功分离。</p>
 <h3 id="sec-u-6ec62bae1e">外部源码及运行边界</h3>
 <p>本章的外部实现已经按具体算法定位，不能把“正文尚未实现”写成“没有可用源码”。<a href="research/02_aec_wpe_separation.html#bss">盲分离与 GSS 研究</a>和<a href="research/02_aec_wpe_separation.html#neural">神经分离研究</a>进一步列出读码顺序、状态、最小实验与失败条件。</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
@@ -1194,8 +1194,8 @@ Y&=P_{\mathcal S}(Y).
 <p>网络归一化则需要区分静态读码与实际推理：Conv-TasNet 原论文的 cLN 表示累计归一化，而 Asteroid 的同名别名表示逐帧通道归一化，<code>cgLN</code> 才对应累计统计。固定 ESPnet TF-GridNet 在输入标准差归一化处未设零方差下限，全零或常量输入因此存在非有限风险。本书仅完成这些路径的源码核对，未运行对应神经网络；具体定位见<a href="research/02_aec_wpe_separation.html#neural">神经分离研究</a>。</p>
 <p>FastMNMF 的可用实现还体现了许可需要逐来源检查：作者 <code>SoundSourceSeparation</code> 整库限定学术研究，而 pyroomacoustics 的 <code>fastmnmf.py</code> 文件有独立 MIT 许可。SpeakerBeam 作者仓库采用内部评估协议，限制修改与再分发，不能把它与 MIT/Apache-2.0 项目统一称为可自由纳入产品的开源代码。<a href="https://github.com/LCAV/pyroomacoustics/blob/v0.10.0/pyroomacoustics/bss/fastmnmf.py">FastMNMF 文件许可</a>、<a href="https://github.com/sekiguchi92/SoundSourceSeparation/blob/897fe87fea3d85a243d8a3fd36c2232bb0548ad3/LICENSE">作者仓库许可</a>、<a href="https://github.com/BUTSpeechFIT/speakerbeam/blob/91af02cc617afa35fedfbdbf32533012cd0a8672/LICENSE.txt">SpeakerBeam 评估协议</a></p>
 <h3 id="sec-u-483828373d">AuxIVA 的盲估计实验</h3>
-<p><strong>已运行的 AuxIVA 盲估计最小实验</strong>。本书的<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch08/examples/reproduce_auxiva_reference.py"><code>reproduce_auxiva_reference.py</code></a>直接从锁定的 <a href="https://github.com/tky823/ssspy/blob/38b9389e8b1914422561f1936d9b28d042d62d2c/ssspy/bss/iva.py" title="citation">ssspy <code>bss/iva.py</code></a> 调用 <code>AuxLaplaceIVA</code> 的 IP 更新。混合矩阵只用于合成两麦观测和制作参考，未传给估计器；它接收的只有混合 STFT，自己估计逐频解混矩阵。输出经参考麦 0 回投影和 iSTFT 后才评分。</p>
-<p>测试运行命令为 <code>.venv/bin/python -m codes.chapters.ch08.examples.reproduce_auxiva_reference</code>；源码必须先按<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch00/SOURCES.lock.json">锁表</a>取得到隔离目录。</p>
+<p><strong>已运行的 AuxIVA 盲估计最小实验</strong>。本书的<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch08/examples/reproduce_auxiva_reference.py"><code>reproduce_auxiva_reference.py</code></a>直接从锁定的 <a href="https://github.com/tky823/ssspy/blob/38b9389e8b1914422561f1936d9b28d042d62d2c/ssspy/bss/iva.py" title="citation">ssspy <code>bss/iva.py</code></a> 调用 <code>AuxLaplaceIVA</code> 的 IP 更新。混合矩阵只用于合成两麦观测和制作参考，未传给估计器；它接收的只有混合 STFT，自己估计逐频解混矩阵。输出经参考麦 0 回投影和 iSTFT 后才评分。</p>
+<p>测试运行命令为 <code>.venv/bin/python -m codes.chapters.ch08.examples.reproduce_auxiva_reference</code>；源码必须先按<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/SOURCES.lock.json">锁表</a>取得到隔离目录。</p>
 <p>本书仿真采用两路独立高斯随机载波乘不同的八段固定包络，各路按自身标准差归一；随机种子 2468、采样率 8 kHz、每路 32000 点，观测为 $\left[\begin{smallmatrix}1&0.9\\0.8&1\end{smallmatrix}\right]\mathbf s$，矩阵条件数约 12.24。无噪声、无混响。周期 Hann 窗长 256 点、帧移 64 点、中心补零，整段运行 30 次 IP 迭代。</p>
 <p>评分参考是两路在<strong>麦克风 0 上的源图像</strong> $s_1$ 与 $0.9s_2$，并非统一干声；使用整段去均值、无时延对齐的 SI-SDR。输入基线为同一麦克风 0 混合波形分别对两个源图像评分，输出用真实参考只做离线 PIT 评分。</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
@@ -1251,7 +1251,7 @@ Y&=P_{\mathcal S}(Y).
 </ol>
 </blockquote>
 <p><strong>可运行练习 E08-01～E08-07</strong></p>
-<p>运行 <code>.venv/bin/python -m codes.chapters.ch00.cross_chapter.exercises_enhancement</code> 复算以下七题。逐题结果和代码见 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch00/cross_chapter/exercises_enhancement.py"><code>exercises_enhancement.py</code></a>，GSS 活动门控函数见 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch08/core/separation.py"><code>guided_activity_posterior()</code></a>，合成混合与已知矩阵解混音频见<a href="research/05_exercises_and_audio.html">练习及音频手册</a>。</p>
+<p>运行 <code>.venv/bin/python -m codes.chapters.ch00.cross_chapter.exercises_enhancement</code> 复算以下七题。逐题结果和代码见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/exercises_enhancement.py"><code>exercises_enhancement.py</code></a>，GSS 活动门控函数见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch08/core/separation.py"><code>guided_activity_posterior()</code></a>，合成混合与已知矩阵解混音频见<a href="research/05_exercises_and_audio.html">练习及音频手册</a>。</p>
 <h3 id="sec-u-9de4e54866">E08-01：尺度不变是否意味着时移不变？</h3>
 <p>取零均值 $s=[1,0,-1,0]$、$u=[0,1,0,-1]$，$\hat s=s+0.1u$。分别计算原幅度、两信号同乘 $10^{-5}$、固定 $s$ 为参考、将估计改成循环右移一采样的 $s$ 时的 SI-SDR。</p>
 <p><strong>解答</strong>：$\langle s,u\rangle=0$、两者能量均为 2，故 $\alpha=1$，能量比 $2/(0.01\times2)=100$，原幅度与低幅度都为 20 dB。循环右移一采样恰好得到 $u$，与 $s$ 正交，数学分数为负无穷，教学实现报 −120 dB 边界。</p>
@@ -1283,14 +1283,14 @@ Y&=P_{\mathcal S}(Y).
 <p><strong>解答第 1 步：补背景活动。</strong> 函数把两帧的说话人活动补上恒为 1 的背景活动，得到 $[1,0,1]$ 和 $[0,0,1]$。</p>
 <p><strong>第 2 步：逐项相乘并归一化。</strong> 第一帧的未归一化分数为 $[1\times0.5\times2,\;0\times0.3\times1,\;1\times0.2\times1]=[1,0,0.2]$。分母是 $1.2$，故后验为 $[5/6,0,1/6]$。第二帧的分数为 $[0,0,0.2]$，分母是 $0.2$，后验为 $[0,0,1]$。</p>
 <p><strong>第 3 步：检查失效边界。</strong> 若删去背景类，第二帧的两个分数和为零，后验无定义。该结果说明背景类在全体说话人静音时提供了可归一化的候选；它不表示这一帧已被正确分离。</p>
-<p>本题给的是固定相对密度，只检验式(8-17)之后的活动门控与 E 步归一化。它没有估计 cACG 形状矩阵、执行 M 步或输出分离音频；后验属于背景类也不证明目标语音已被正确分离。代码中 <code>speaker_activity</code> 只输入两位说话人的标记，背景活动由函数自动补上。见 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch00/cross_chapter/exercises_enhancement.py"><code>exercises_enhancement.py</code></a> 中的 <code>E08-07</code>。</p>
+<p>本题给的是固定相对密度，只检验式(8-17)之后的活动门控与 E 步归一化。它没有估计 cACG 形状矩阵、执行 M 步或输出分离音频；后验属于背景类也不证明目标语音已被正确分离。代码中 <code>speaker_activity</code> 只输入两位说话人的标记，背景活动由函数自动补上。见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/exercises_enhancement.py"><code>exercises_enhancement.py</code></a> 中的 <code>E08-07</code>。</p>
 <p><a id="e08-08"></a></p>
 <h3 id="sec-u-e5512fea03">E08-08：AuxIVA 怎样更新一个解混行？</h3>
 <p>使用 §8.3 的式(8-8)，固定本轮加权矩阵，复算一个 IP 子步骤。</p>
 <p><strong>题目与手算。</strong> 只复算 IP 子步骤，给定 ${\mathbf W}={\mathbf I}_2$、${\mathbf V}=\left[\begin{smallmatrix}2&1\\1&2\end{smallmatrix}\right]$，更新第一行。消元求 $2u_1+u_2=1$、$u_1+2u_2=0$，得 ${\vec u}=[2/3,-1/3]^\top$。因为 ${\mathbf V}{\vec u}={\vec e}_1$，二次型 ${\vec u}^\top {\mathbf V}{\vec u}=u_1=2/3$，故</p>
 <p>$$\vec w=[\sqrt{2/3},-1/\sqrt6]^\top\approx[0.81650,-0.40825]^\top.$$</p>
 <p>直接代回有 $\vec w^\top {\mathbf V}\vec w=1$；${\mathbf V}$ 的特征值为 1、3，满足正定条件。它不是欧氏长度归一，$\vec w^\top\vec w=5/6$。复数情形存入矩阵行时必须共轭，不能把列 $\vec w$ 原样当行。</p>
-<p>本题的 ${\mathbf V}$ 是已给定的正定输入，未从语音运行范数估计、所有行更新或回投影，因此只验证 IP 子步骤；源码和独立复数检查见 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch00/cross_chapter/enhancement_step_exercises.py">enhancement_step_exercises.py</a> 的 <code>E08-08</code>。秩亏、零范数和源数大于麦数不满足本题前提，不能原样求解。</p>
+<p>本题的 ${\mathbf V}$ 是已给定的正定输入，未从语音运行范数估计、所有行更新或回投影，因此只验证 IP 子步骤；源码和独立复数检查见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/enhancement_step_exercises.py">enhancement_step_exercises.py</a> 的 <code>E08-08</code>。秩亏、零范数和源数大于麦数不满足本题前提，不能原样求解。</p>
 <p><a id="e08-09"></a></p>
 <h3 id="sec-u-d49c5dcc3e">E08-09：ILRMA 的谱基与激活具体相乘得到什么？</h3>
 <p>对某一个源，以频点为行、时间为列，设非负谱基 ${\mathbf B}$ 和激活 ${\mathbf H}$ 为</p>
@@ -1306,7 +1306,7 @@ Y&=P_{\mathcal S}(Y).
 <p><strong>先找空间方向。</strong> 对 ${\vec v}_+=[1,1]^\top$，目标/干扰的特征值分别为 1.8、0.2；对 ${\vec v}_-=[1,-1]^\top$，则为 0.2、1.8。两矩阵都正定，且条件数均为 $1.8/0.2=9$。</p>
 <p><strong>再施加目标约束。</strong> 选 ${\vec v}={\vec v}_+$ 表示以第一麦为参考的目标相对传递函数。由 $\mathbf R_{\mathrm{int}}{\vec u}={\vec v}$ 得 ${\vec u}=5{\vec v}$，分母 ${\vec v}^H{\vec u}=10$，所以 ${\vec w}={\vec u}/10=[0.5,0.5]^\top$。检验 ${\vec w}^H{\vec v}=1$；对快照 $[1,1]^\top$ 输出 1，对 $[1,-1]^\top$ 输出 0。按给定 SCM，目标输出功率 ${\vec w}^H\mathbf R_{\mathrm{tar}}{\vec w}=0.9$，干扰输出功率 ${\vec w}^H\mathbf R_{\mathrm{int}}{\vec w}=0.1$。</p>
 <p><strong>最后核对 GEV。</strong> 两个方向的广义特征值分别为 $1.8/0.2=9$、$0.2/1.8=1/9$，故主方向也是 ${\vec v}_+$。GEV 本身只决定方向，直接用 ${\vec v}_+$ 会把目标输出变成 2；另施加 ${\vec w}^H{\vec v}=1$ 后才与本例 MVDR 的尺度一致。比值 9 不表示已经测到真实录音改善 9 倍；这里只有两个给定快照、软掩码和已选目标方向。一般 SCM 未必共享特征向量，不能外推为 GEV 与 MVDR 总相同。代码对应 <code>E08-10</code>。</p>
-<p>上述三题与 E06-21、E07-06 共同运行：<code>.venv/bin/python -m codes.chapters.ch00.cross_chapter.enhancement_step_exercises</code>。检验见 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/tests/test_codes_enhancement_steps.py">test_codes_enhancement_steps.py</a>。</p>
+<p>上述三题与 E06-21、E07-06 共同运行：<code>.venv/bin/python -m codes.chapters.ch00.cross_chapter.enhancement_step_exercises</code>。检验见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/tests/test_codes_enhancement_steps.py">test_codes_enhancement_steps.py</a>。</p>
 <p><a id="e08-11"></a></p>
 <h3 id="sec-u-cd2ae7a0bb">E08-11：cACG 的形状更新为什么要除以二次型，又为什么没有声功率尺度？</h3>
 <p>固定一个频点和一个混合分量，保留两帧单位方向 ${\vec z}_1=[1,0]^\top,{\vec z}_2=[0,1]^\top$，该分量在两帧的责任权重为 $\gamma_1=3/4,\gamma_2=1/4$，旧形状矩阵 ${\mathbf B}^{(0)}={\mathbf I}_2$。其他分量的参数固定且不参与本题。求一次形状固定点更新，再计算两个方向的相对密度。</p>
@@ -1342,8 +1342,8 @@ Y&=P_{\mathcal S}(Y).
 <p>对任意 $c>0$，$\det(c{\mathbf B})=c^M\det {\mathbf B}$，而 ${\vec z}^H(c{\mathbf B})^{-1}{\vec z}=q/c$。密度中出现的 $c^{-M}$ 与 $(1/c)^{-M}$ 恰好抵消，所以 ${\mathbf B}$ 与 $2{\mathbf B}$ 给相同密度。固定迹只是从这些等价矩阵里选一个代表。相反，后级原始复谱 SCM 乘以 2 会改变功率，不能把这两种尺度混为一谈。</p>
 <p><strong>第 4 步：不要把一步迭代误认成稳定估计。</strong> 若继续固定本题的责任权重，下一轮二次型为 $2/3,2$，未归一矩阵为 $\operatorname{diag}(9/4,1/4)$，迹归一后为 $\operatorname{diag}(1.8,0.2)$。这组只有两个正交方向且权重不均衡的数据会把形状推向边界；它不是证明已收敛的训练集。若两帧都改成 $[1,0]^\top$，第一步就得到 $\operatorname{diag}(2,0)$，虽然迹为 2，矩阵却奇异，下一轮密度没有合法逆矩阵。</p>
 <p>教学整链在归一化后使用向单位阵收缩等显式正则化，并在质量不足时重置分量；例如将奇异矩阵收缩为 $(1-0.02){\mathbf B}+0.02{\mathbf I}$，其特征值为 $1.98,0.02$。这样改变了无正则化迭代，必须保留参数，不能把“迹已经归一化”当成正定保证。</p>
-<p>运行 <code>.venv/bin/python -m codes.chapters.ch00.cross_chapter.enhancement_structure_exercises</code>；<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch00/cross_chapter/enhancement_structure_exercises.py">原创代码</a>和<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/tests/test_codes_enhancement_structure.py">独立测试</a>检查分数结果、正比例尺度不变、复数外积的共轭以及秩亏拒绝。这里只执行形状子步骤，没有重新运行官方 GSS、生成该题音频或测量分离质量。</p>
-<p>以下E08-12～32的确定性输入与步骤由本书推导；运行 <code>.venv/bin/python -m codes.chapters.ch08.chapter08_experiments</code>，入口为<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch08/chapter08_experiments.py">chapter08_experiments.py</a>的 <code>run_experiments()</code>。其中矩阵题只验证指定数学步骤，E08-23使用人为给定的输出槽位检验连续拼接，E08-28使用真值构造掩码能力对照，均不冒充新训练的分离网络。音频检查读取已经发布的文件，失败时明确报错，不通过重生覆盖坏资产。</p>
+<p>运行 <code>.venv/bin/python -m codes.chapters.ch00.cross_chapter.enhancement_structure_exercises</code>；<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/enhancement_structure_exercises.py">原创代码</a>和<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/tests/test_codes_enhancement_structure.py">独立测试</a>检查分数结果、正比例尺度不变、复数外积的共轭以及秩亏拒绝。这里只执行形状子步骤，没有重新运行官方 GSS、生成该题音频或测量分离质量。</p>
+<p>以下E08-12～32的确定性输入与步骤由本书推导；运行 <code>.venv/bin/python -m codes.chapters.ch08.chapter08_experiments</code>，入口为<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch08/chapter08_experiments.py">chapter08_experiments.py</a>的 <code>run_experiments()</code>。其中矩阵题只验证指定数学步骤，E08-23使用人为给定的输出槽位检验连续拼接，E08-28使用真值构造掩码能力对照，均不冒充新训练的分离网络。音频检查读取已经发布的文件，失败时明确报错，不通过重生覆盖坏资产。</p>
 <p><a id="e08-12"></a></p>
 <h3 id="sec-u-b8a7fee7f2">E08-12：复数 IP 为什么要共轭写回并逐行更新？</h3>
 <p><strong>题设。</strong> 取 ${\mathbf W}_0={\mathbf I}_2$，两行暂用同一个加权矩阵</p>
@@ -1486,7 +1486,7 @@ J_2&=4\sqrt2+2\log2+2\log3\\
 <p><strong>第二步：重排与加权。</strong> 在重叠 6400 点上，令第二块权重从 0 线性增加到 1，第一块取其补数；两端点都包含在权重数组中。权重之和恒为 1，非重叠区只保留对应块。正确关联后，两块同槽位的样本相同，所以加权拼接精确恢复 $[v_1,v_2]$。若不关联，重叠区会逐渐换人，重叠区后继续保持错误槽位。</p>
 <p><strong>评分与试听。</strong> 全段统一去均值、不做时移或增益对齐，分别对固定身份的 $s_1,s_2$ 评分。浮点参考下，未关联两路约为 −3.3407 dB，正确关联两路约为 20.0000 dB；输入单通道混合分别对两源的分数约为 0 dB。这里改善的是已给定槽位的连续对应，没有降低模拟槽位中原有的 0.1 倍串音。</p>
 <p>实际导出 PCM 后，以 PCM 参考同口径评分：未关联两路为 −3.3408、−3.3405 dB，已关联为 19.9989、19.9997 dB，混合基线约为 0 dB。量化使这些值略有变化，不能把浮点解析值当作 PCM 实测值。精确参数见<a href="research/05_exercises_and_audio.html">练习及音频手册</a>。</p>
-<p>本题入口分别保留未量化模型的排列和分数，以及 <code>published_audio.actual_pcm_measurements</code>。后者检查<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch00/audio/MANIFEST.json">主清单</a>的生成源摘要、四个WAV摘要、共同增益与PCM16格式，再实际读取文件，以每通道32000点的整数二阶量独立重算分数；没有重新量化内存模型来冒充文件读回。去均值的能量和内积先用整数分子计算，评分采用固定源身份，不重新PIT、不拟合传播时移。</p>
+<p>本题入口分别保留未量化模型的排列和分数，以及 <code>published_audio.actual_pcm_measurements</code>。后者检查<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/audio/MANIFEST.json">主清单</a>的生成源摘要、四个WAV摘要、共同增益与PCM16格式，再实际读取文件，以每通道32000点的整数二阶量独立重算分数；没有重新量化内存模型来冒充文件读回。去均值的能量和内积先用整数分子计算，评分采用固定源身份，不重新PIT、不拟合传播时移。</p>
 <p>所有文件用共同增益 1 导出。先调低播放音量；参考文件与两个输出文件的左右声道表示源身份槽位，不是物理左右麦克风。</p>
 <p><a href="audio/css_overlap_reference.wav">双声道源参考，仅用于评分</a><audio class="audio-sample" controls preload="none" aria-label="双声道源参考，仅用于评分" src="audio/css_overlap_reference.wav">请使用上方 WAV 链接下载。</audio></p>
 <p><a href="audio/css_overlap_mixture.wav">单通道混合</a><audio class="audio-sample" controls preload="none" aria-label="单通道混合" src="audio/css_overlap_mixture.wav">请使用上方 WAV 链接下载。</audio></p>
@@ -1681,7 +1681,7 @@ J_2&=4\sqrt2+2\log2+2\log3\\
 <li><a href="mask_audio/mask_unbounded_real.wav">无上界实掩码</a><audio class="audio-sample" controls preload="none" aria-label="无上界实掩码" src="mask_audio/mask_unbounded_real.wav">请使用上方 WAV 链接下载。</audio></li>
 <li><a href="mask_audio/mask_complex_oracle.wav">复数对照</a><audio class="audio-sample" controls preload="none" aria-label="复数对照" src="mask_audio/mask_complex_oracle.wav">请使用上方 WAV 链接下载。</audio></li>
 </ul>
-<p>纯计算见 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch08/core/mask_representation.py">mask_representation.py</a>；入口 <code>.venv/bin/python -m codes.chapters.ch08.examples.mask_representation_demo --check</code> 只读核验，失败不会重生修补。章入口E08-28同时保存未量化模型与已发布资产的实际评分。</p>
+<p>纯计算见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch08/core/mask_representation.py">mask_representation.py</a>；入口 <code>.venv/bin/python -m codes.chapters.ch08.examples.mask_representation_demo --check</code> 只读核验，失败不会重生修补。章入口E08-28同时保存未量化模型与已发布资产的实际评分。</p>
 <p><strong>边界。</strong> 这里使用全记录FFT和已知目标，非因果，也没有训练或运行盲分离器。它只比较三种表示集合，不能声称复掩码网络一定优于实掩码网络。源在同一点完全抵消、混合复值为0而目标非零时，有限乘法掩码也无解；相位、尺度、独立性及连续身份仍需各自验证。</p>
 <p><a id="e08-29"></a></p>
 <h3 id="sec-u-0fefa579be">E08-29：排列已经匹配，为什么拼接仍会相消？</h3>
@@ -1701,7 +1701,7 @@ g_i&=\frac{{\vec c}_i^\top {\vec p}_i}{{\vec c}_i^\top {\vec c}_i},\\
 <p>这个子例不把增益回归加入匹配器本身；排列、极性及增益是三个独立检查。低能量或被串音污染的重叠应拒绝或回退，系数限幅与跨块延续还需另定策略。若两块存在时延、频率相关滤波或非线性失真，一个实数乘数不能普遍修复。绝对相关和回归系数都不证明永久说话人身份。</p>
 <p><a id="e08-30"></a></p>
 <h3 id="sec-u-a59766d3b1">E08-30：两个一致性操作的次序，怎样改变重叠样本？</h3>
-<p><strong>题设。</strong> 使用第2章唯一<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch02/core/spectral.py">STFT实现</a>：矩形窗长4、帧移2、不居中、不补前端，六点混合波形 $x=[1,1,1,1,1,1]$ 恰有两帧。各帧采用未归一化DFT和带 $1/4$ 的逆DFT，单边谱含DC、一个内部频点及Nyquist。这里的帧是样本索引计算，不指定物理频率，也没有合成或分离语音。</p>
+<p><strong>题设。</strong> 使用第2章唯一<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch02/core/spectral.py">STFT实现</a>：矩形窗长4、帧移2、不居中、不补前端，六点混合波形 $x=[1,1,1,1,1,1]$ 恰有两帧。各帧采用未归一化DFT和带 $1/4$ 的逆DFT，单边谱含DC、一个内部频点及Nyquist。这里的帧是样本索引计算，不指定物理频率，也没有合成或分离语音。</p>
 <p>给定两路初始谱，其帧内逆变换为：第一路第一帧 $[0,0,0,0]$、第二帧 $[1,1,1,1]$；第二路两帧都为零。第一路两帧的DC谱因此为0和4，其余频点为零。单帧实端点合法，但共享采样位置各被第一路描述成0和1，原谱不一致。</p>
 <p>两路严格正权按帧给定：第一帧 $v_1=3,v_2=1$；第二帧 $v_1=1,v_2=3$，同一帧内各频点相同。记混合修正为 $Q$，STFT合成再分析为 $P$。第一路得到修正的比例为</p>
 <p>$$\begin{aligned}
@@ -1785,7 +1785,7 @@ g_i&=\frac{{\vec c}_i^\top {\vec p}_i}{{\vec c}_i^\top {\vec c}_i},\\
 <p>未归一化DFT的谱误差不等于波形样本误差，不能把 $1/4$ 写成“波形差了25%”。代码保存完整谱、两帧逆变换和六点波形，允许读者逐项复算。</p>
 <p><strong>两个约束为什么在第一种次序同时成立？</strong> 对本题一致的混合谱 $X$，混合修正后输出总和为 $X$。同一线性 $P$ 逐路作用，得到 $\sum_nP(Q(Y)_n)=P(X)=X$；每路又处在 $P$ 的一致谱集合中。这一结论依赖混合本身一致、各路共用同一分析合成约定，以及 $P$ 线性幂等；它不证明这种组合还是到两个约束交集的加权最近投影。</p>
 <p><strong>控制与边界。</strong> 两路改成等权时，两次序的谱完全相同，因为常数修正比例可穿过同一线性 $P$；每路修正比例跨时频固定的非等权情形也有这个性质。初始输出若全零，本题这组帧权重虽仍可造成谱不同，两个次序的合成波形反而相同；所以不能只用全零初值声称已经演示了声音差异。</p>
-<p>本题是一组给定输出的有限约束检查，不证明哪条波形更接近真实源，也没有实现训练网络或一般的多次交替优化。改变窗、端点、频内权重或合成定义，应重新计算。纯计算见<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch08/core/consistency_teaching.py">一致性教学核</a>和<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/tests/test_codes_ch08_constraint_teaching.py">独立共享样本测试</a>；约束来源见<a href="https://arxiv.org/pdf/1811.08521" title="citation">Wisdom等，2019，§3.1～3.3</a>。</p>
+<p>本题是一组给定输出的有限约束检查，不证明哪条波形更接近真实源，也没有实现训练网络或一般的多次交替优化。改变窗、端点、频内权重或合成定义，应重新计算。纯计算见<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch08/core/consistency_teaching.py">一致性教学核</a>和<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/tests/test_codes_ch08_constraint_teaching.py">独立共享样本测试</a>；约束来源见<a href="https://arxiv.org/pdf/1811.08521" title="citation">Wisdom等，2019，§3.1～3.3</a>。</p>
 <p><a id="e08-31"></a></p>
 <h3 id="sec-u-b79b8e4cf9">E08-31：强背景会怎样影响PCA，背景行又怎样构造？</h3>
 <p><strong>题设分成两个控制。</strong> 第一部分用三个麦克风说明按功率降维可能丢目标；第二部分用两个麦克风、一条给定目标行说明OverIVA背景约束。两个矩阵属于不同模型，第二部分不是从第一部分盲估的结果。</p>
@@ -1818,7 +1818,7 @@ g_i&=\frac{{\vec c}_i^\top {\vec p}_i}{{\vec c}_i^\top {\vec c}_i},\\
 <p>此处 ${\mathbf C}_1$ 为 $N_{\mathrm{tar}}\times N_{\mathrm{tar}}$，${\mathbf C}_2$ 与 ${\mathbf J}$ 为 $(M-N_{\mathrm{tar}})\times N_{\mathrm{tar}}$。由约束取共轭转置，有 ${\mathbf U}{\mathbf C}{\mathbf W}_{\mathrm{tar}}^H={\mathbf J}{\mathbf C}_1-{\mathbf C}_2=0$，因此可解右侧线性系统。${\mathbf C}_1$ 可逆时 ${\mathbf J}={\mathbf C}_2{\mathbf C}_1^{-1}$；实际代码用线性求解，不显式求逆。<a href="https://arxiv.org/html/1905.07880v2" title="citation">原论文§3、式(9)、(14)</a>。</p>
 <p>本题选取矩阵 ${\mathbf E}_1=[1,0]$、${\mathbf E}_2=[0,1]$，于是 ${\mathbf C}_1=[5/2]$、${\mathbf C}_2=[2]$；矩阵求解恰好退回 $(5/2)J=2$。一般复数情形仍需 ${\mathbf W}_{\mathrm{tar}}^H$ 和 ${\mathbf U}^H$，不能因为这个实数例子中转置与共轭转置相同，就在程序里省掉共轭。</p>
 <p><strong>边界。</strong> 正定 ${\mathbf C}$ 不保证这个坐标块 ${\mathbf C}_1$ 可逆。例如 ${\mathbf C}={\mathbf I}_2$、${\mathbf W}_{\mathrm{tar}}=[0,1]$，则 ${\mathbf C}_1=0$，不能按当前 ${\mathbf U}=[J,-1]$ 的形式求解；应另选可用的坐标参数化，不能拿伪逆结果冒充原式成立。</p>
-<p>二阶交叉量为零不等于统计独立，见E08-24；给定行的约束成立也不等于目标身份正确。完整OverIVA还需源模型与迭代更新，本题没有运行它，也没有从真实房间估计源数或背景。纯计算见<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch08/core/overiva_teaching.py">背景约束教学核</a>，复数测试另外用非实交叉量检查 $H$ 与普通转置的区别。</p>
+<p>二阶交叉量为零不等于统计独立，见E08-24；给定行的约束成立也不等于目标身份正确。完整OverIVA还需源模型与迭代更新，本题没有运行它，也没有从真实房间估计源数或背景。纯计算见<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch08/core/overiva_teaching.py">背景约束教学核</a>，复数测试另外用非实交叉量检查 $H$ 与普通转置的区别。</p>
 <p><a id="e08-32"></a></p>
 <h3 id="sec-u-6695554cf2">E08-32：把极性与增益问题变成连续的两块音频</h3>
 <p><strong>题设与共同取点。</strong> E08-29只有四个重叠样本。本题把同一标量关系放进2秒数学合成音频，以16 kHz生成32000点，两声道分别固定为槽位1的 $0.1\sin(2\pi500t)$、槽位2的 $0.1\sin(2\pi1500t)$。两路使用同一绝对采样时轴，各端乘320点平方正弦包络，端点均为零；共同导出增益1，没有传播时延、噪声、混响或槽位交换。</p>
@@ -1944,7 +1944,7 @@ g_i&=\frac{{\vec c}_i^\top {\vec p}_i}{{\vec c}_i^\top {\vec c}_i},\\
 <li><a href="css_audio/css_polarity.wav">只校正极性</a><audio class="audio-sample" controls preload="none" aria-label="只校正极性" src="css_audio/css_polarity.wav">请使用上方 WAV 链接下载。</audio></li>
 <li><a href="css_audio/css_corrected.wav">直接标量校正</a><audio class="audio-sample" controls preload="none" aria-label="直接标量校正" src="css_audio/css_corrected.wav">请使用上方 WAV 链接下载。</audio></li>
 </ul>
-<p>重叠回归复用<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch08/core/css.py">唯一CSS标量核</a>，长模型见<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch08/core/css_audio.py">音频计算源</a>。<code>.venv/bin/python -m codes.chapters.ch08.examples.generate_css_audio --check</code> 只读重放与核对，失败不会自动修补资产；章入口E08-32分别返回模型、两个窗口的评分和已发布文件核验。</p>
+<p>重叠回归复用<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch08/core/css.py">唯一CSS标量核</a>，长模型见<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch08/core/css_audio.py">音频计算源</a>。<code>.venv/bin/python -m codes.chapters.ch08.examples.generate_css_audio --check</code> 只读重放与核对，失败不会自动修补资产；章入口E08-32分别返回模型、两个窗口的评分和已发布文件核验。</p>
 <hr />
 <blockquote>
 <p>📄 本篇信息：配图 4 张 ｜ <a href="index.html">回首页</a></p>

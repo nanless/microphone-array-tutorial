@@ -541,7 +541,7 @@ class BuildHelpersTest(unittest.TestCase):
         rewritten = build_pdf.rewrite_repository_links(html)
         self.assertEqual(
             rewritten,
-            '<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch06/core/aec.py">AEC code</a>',
+            '<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/core/aec.py">AEC code</a>',
         )
         self.assertEqual(
             build_pdf.rewrite_repository_links('<a href="https://example.com/a">a</a>'),

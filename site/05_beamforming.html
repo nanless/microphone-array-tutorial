@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 5 章 · 波束形成 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="1a85da73ba06"><style>
+<meta name="source-digest" content="0fc6040b7677"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -1304,13 +1304,13 @@ b_n=4\pi\mathrm j^n j_n(\kappa r)。
 <p>正实数的功率归一化不会消除任意复相位。逐频幅度保持、逐频 SNR 保持与保留参考波形是不同要求；跨帧权重还要检查相位连续性。关于窄带 SNR 准则与宽带目标失真的区别，可读 <a href="https://www.iwaenc.org/proceedings/2006/pdf/A17.pdf" title="citation">Warsitz 与 Haeb-Umbach 2006，§2～3、式(6)～(11)</a>。此处引用其准则比较；其会议版归一化公式不能直接替换本章所引2007年期刊版的定义。</p>
 <p>另一个容易混淆的变化发生在外积之前：式(5-21)让所有通道共享一个标量统计权重；若每个通道先乘不同的掩码平方根，观测向量本身已改变。即使所得矩阵仍半正定，其通道幅度关系和秩也可能变化，不能只把它解释为更可靠的样本平均。<a href="#e05-24">E05-24</a>将这个变化与分母归一化分别算出。</p>
 <span id="sec-16" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-5-9-1">5.9.1 可执行基线与上线检查</h3>
-<p><a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch05/core/beamforming.py"><code>beamforming.py</code></a> 提供 DSB、弥散场相干矩阵、加载超指向/MVDR、LCMV、GSC 阻塞矩阵和 Wiener 增益的原创 NumPy 基线。权重约定为输出 $Y=\vec w^H\vec x$；该波束基线的 <code>apply_beamformer()</code> 接收 <code>通道 × 频点 × 帧</code>（CFT）谱，逐频点权重为 <code>频点 × 通道</code>（FM），输出为 <code>频点 × 帧</code>（FT）。</p>
+<p><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch05/core/beamforming.py"><code>beamforming.py</code></a> 提供 DSB、弥散场相干矩阵、加载超指向/MVDR、LCMV、GSC 阻塞矩阵和 Wiener 增益的原创 NumPy 基线。权重约定为输出 $Y=\vec w^H\vec x$；该波束基线的 <code>apply_beamformer()</code> 接收 <code>通道 × 频点 × 帧</code>（CFT）谱，逐频点权重为 <code>频点 × 通道</code>（FM），输出为 <code>频点 × 帧</code>（FT）。</p>
 <p>第8章的掩码接口采用另一种明确轴序：<code>masked_spatial_covariance()</code> 和 <code>mask_mvdr_2x2()</code> 接收 <code>频点 × 通道 × 帧</code>（FMT）复谱与FT掩码。从上述CFT谱接入时，先用 <code>spectra_cft.swapaxes(0, 1)</code> 转成FMT；不能只改形状注释。<code>mask_mvdr_2x2()</code> 返回FT输出和FM权重，后者可按同一 $\vec w^H\vec x$ 约定用于波束基线。接口及旁路诊断见<a href="08_speech-separation.html#sec-8-7">第8章教学实现</a>。</p>
-<p>函数用线性方程求解代替显式求逆；未加载协方差病态、LCMV 约束不独立或空统计量都会报错。正文算例的 DSB 单位响应、Capon 数值、MVDR 权重、LCMV 双约束、GSC 阻塞和 Wiener 增益由 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/tests/test_codes_doa_beam.py"><code>test_codes_doa_beam.py</code></a> 独立回归，串联示例见 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch00/cross_chapter/ch02_05_baselines.py"><code>ch02_05_baselines.py</code></a>。</p>
-<p>DSB 对非零导向矢量计算 $\vec a/(\vec a^H\vec a)$；实现先按最大分量缩放，再归一化，以免极大或极小的有限输入在平方时溢出或下溢。若结果本身超出浮点范围则报错，而不是返回貌似有效的零权重。Wiener 增益中的功率必须为有限非负实数，不能把复数功率的虚部丢掉后继续运行；相关边界回归见 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/tests/test_codes_spatial_round3.py"><code>test_codes_spatial_round3.py</code></a>。</p>
+<p>函数用线性方程求解代替显式求逆；未加载协方差病态、LCMV 约束不独立或空统计量都会报错。正文算例的 DSB 单位响应、Capon 数值、MVDR 权重、LCMV 双约束、GSC 阻塞和 Wiener 增益由 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/tests/test_codes_doa_beam.py"><code>test_codes_doa_beam.py</code></a> 独立回归，串联示例见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/ch02_05_baselines.py"><code>ch02_05_baselines.py</code></a>。</p>
+<p>DSB 对非零导向矢量计算 $\vec a/(\vec a^H\vec a)$；实现先按最大分量缩放，再归一化，以免极大或极小的有限输入在平方时溢出或下溢。若结果本身超出浮点范围则报错，而不是返回貌似有效的零权重。Wiener 增益中的功率必须为有限非负实数，不能把复数功率的虚部丢掉后继续运行；相关边界回归见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/tests/test_codes_spatial_round3.py"><code>test_codes_spatial_round3.py</code></a>。</p>
 <p>这些函数是公式基线，不是完整设备状态机。实时实现还要记录 STFT 窗长和帧移、分数延时滤波器、固定传播补偿、参考通道、SCM 遗忘因子、VAD/SPP 门控、权值更新周期和输出限幅。</p>
 <p>每次更新后检查条件数、$|\vec w^H\vec a-1|$、WNG 和输出峰值；空掩码或病态矩阵出现时，应在“保持上一组已验证权值、增加已标明口径的加载、退回 DSB”之间预先规定顺序。目标泄漏时应冻结噪声 SCM 或 GSC 自适应支路，并记录触发原因，不能只在输出失真后重新初始化。</p>
-<p>外部波束实现按完整提交号保存在 <code>codes/chapters/ch00/upstream/_downloads/</code>，取得源码后的构建、数值回归和设备测试分别记录。版本与许可见 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch00/SOURCES.lock.json"><code>SOURCES.lock.json</code></a>，扩展实验和源码阅读顺序见<a href="research/01_spatial_and_tracking.html">空间处理与追踪研究</a>。TorchAudio 的 <code>examples/tutorials/mvdr_tutorial.py</code>、ESPnet 的 <code>espnet2/enh/layers/beamformer.py</code> 分别连接掩码、协方差、参考通道与输出波形；复现应使用锁定源码及相容依赖，不能把浮动 nightly 文档当作稳定发行版契约。</p>
+<p>外部波束实现按完整提交号保存在 <code>codes/chapters/ch00/upstream/_downloads/</code>，取得源码后的构建、数值回归和设备测试分别记录。版本与许可见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/SOURCES.lock.json"><code>SOURCES.lock.json</code></a>，扩展实验和源码阅读顺序见<a href="research/01_spatial_and_tracking.html">空间处理与追踪研究</a>。TorchAudio 的 <code>examples/tutorials/mvdr_tutorial.py</code>、ESPnet 的 <code>espnet2/enh/layers/beamformer.py</code> 分别连接掩码、协方差、参考通道与输出波形；复现应使用锁定源码及相容依赖，不能把浮动 nightly 文档当作稳定发行版契约。</p>
 <p>持续自适应 GSC 可读 BTK2.0 的 <code>btk20_src/lib/pybeamformer.py::SubbandGSCLMSBeamformer</code> 和 <code>SubbandGSCRLSBeamformer</code>，由 <code>unit_test/test_online_beamforming.py</code> 连接逐通道音频、滤波器组、方向控制和输出。这些类保留跨帧更新状态，提供了比本书 E05-16 单抽头教学链更完整的子带处理结构；其子带实现不能直接当作 §5.5 的时域 Frost。<a href="https://github.com/kkumatani/distant_speech_recognition/blob/feff19ec8bcb770f6530fe280dc3ccafc2f5984a/btk20_src/lib/pybeamformer.py" title="citation">固定 BTK 作者源码</a>。</p>
 <p>BTK 示例声速取 <code>343740.0</code>，与毫米坐标配套；本书米制阵列不能直接代入。构建默认 Python 2.7，并要求 SWIG、GSL、NumPy 和 libsndfile，不能仅凭根目录 MIT 许可或示例存在便认为可在现代环境直接运行。研究文档分别列出构建前提和目标偏移、更新冻结的最小实验；这些上游数值实验尚未执行。</p>
 <p>球阵还多了一层编码误差。<code>sound_field_analysis/process.py::spatFT</code> 计算球谐系数，<code>gen.py::radial_filter</code> 控制径向补偿；Politis 的 <code>arraySHTfiltersMeas_regLS.m</code> 用实测响应设计编码滤波器，<code>sphMVDR.m</code>、<code>sphLCMV.m</code> 在球谐域求权重。<a href="https://appliedacousticschalmers.github.io/sound_field_analysis-py/reference.html" title="citation">sfa 官方接口</a>；<a href="https://github.com/polarch/Spherical-Array-Processing" title="citation">Politis 作者实现</a>。</p>
@@ -1479,7 +1479,7 @@ P_{in}=P_i+P_n,\\
 </table></div>
 <p>可先独立核对 DSB 行：正横设计使四个权重均为 $1/4$；干扰方向相邻麦的相位步进为 $\psi=2\pi(2000)(0.04)\sin40°/343$，所以干扰幅度响应为 $|\sum_{m=0}^{3}e^{\mathrm jm\psi}/4|\approx0.5241$。输出干扰加噪声功率为 $10(0.5241)^2+1/4\approx2.9973$，再代入式(5-24)得到表中 SINR。</p>
 <p>在这一组<strong>精确协方差、单频、固定几何</strong>条件下，LCMV 的干扰响应被硬约束为零，但输出 SINR 略低于 MVDR；加载使 WNG 和真实目标幅度增益回升，同时放松了干扰抑制。目标方向变化后，四种方法对设计方向的响应仍为 1，却不保证对真实方向无失真。</p>
-<p>表中数字不代表语音可懂度、统计平均或实机性能，也不能推广为固定排名。完整参数、未舍入结果和可运行计算见<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch05/beamformer_common_input_demo.py">同输入波束对照</a>。</p>
+<p>表中数字不代表语音可懂度、统计平均或实机性能，也不能推广为固定排名。完整参数、未舍入结果和可运行计算见<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch05/beamformer_common_input_demo.py">同输入波束对照</a>。</p>
 <span id="sec-18" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-5-10-1">5.10.1 延伸阅读：Kumatani 等的远场语音阵列处理综述</h3>
 <p>本章引用的是 Kumatani、McDonough 与 Raj 的正式综述 <em>Microphone Array Processing for Distant Speech Recognition: From Close-Talking Microphones to Far-Field Sensors</em>，发表于 <em>IEEE Signal Processing Magazine</em> 29(6):127–140，2012 年11月。CMU 课程网站托管了这篇期刊综述的 PDF。<a href="https://doi.org/10.1109/MSP.2012.2205285" title="citation">正式 DOI</a>；<a href="https://course.ece.cmu.edu/~ece792/handouts/KumataniEtAl12.pdf" title="citation">作者 PDF</a>。</p>
 <p><strong>先核对实验对象。</strong> 印刷页137～139的球阵实验比较32麦、半径4.2 cm的 Eigenmike 刚性球与64麦、长1.26 m的线阵。数据是 TIMIT 预录语音通过扬声器在真实房间重放，每个位置37名说话人、3241词，采样率44.1 kHz，房间混响时间约525 ms。这是重放录音实验，既不是本书数学合成音频，也不是自然会议录音。表4与表5分别对应28°和68°位置。</p>
@@ -1507,7 +1507,7 @@ P_{in}=P_i+P_n,\\
 <p>泄漏目标与固定支路输出相关，自适应对消器可能将这部分目标一并消除，造成目标衰减；实际程度还取决于自适应滤波器和更新门控。保护措施见 §5.6 末。</p>
 </li>
 </ol>
-<p>下面五题由 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch00/cross_chapter/exercises_spatial.py"><code>exercises_spatial.py</code></a> 输出权重、响应或功率，用来检查实现所需的模型条件。</p>
+<p>下面五题由 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/exercises_spatial.py"><code>exercises_spatial.py</code></a> 输出权重、响应或功率，用来检查实现所需的模型条件。</p>
 <h3 id="sec-u-b4a56bdc07">E05-01：一般 MWF 为什么不能总用秩一公式？</h3>
 <p>噪声协方差为 $\mathbf I$，参考麦选择向量为 $[1,0]^\top$，噪声权重为 1。分别取目标协方差 $\operatorname{diag}(2,1)$ 和 $\operatorname{diag}(2,0)$，比较一般 MWF 线性方程与目标秩一时的迹化简。</p>
 <p><strong>参考答案</strong>：一般解为 $(\mathbf R_{ss}+\mathbf I)^{-1}\mathbf R_{ss}\vec e_1$。两种目标协方差都得到 $[2/3,0]^\top$，因为参考通道对应的对角项是 $2/(2+1)$。</p>
@@ -1596,9 +1596,9 @@ B(30^\circ)&=\frac{1+j}{2(\beta+1)}。
 <p>最后一列使用反三角不等式 $|1+\vec w^H\vec e|\ge\max(0,1-\epsilon\|\vec w\|_2)$。这是幅度保证，不能直接当成功率百分比；若需要功率下界，应再平方。</p>
 <p><strong>第三步：构造最坏方向。</strong> 取 $\vec e=-\epsilon\vec w/\|\vec w\|_2$，其范数正好为 $\epsilon$，且 $\vec w^H\vec e=-\epsilon\|\vec w\|_2$，所以表中两个界都能达到。A 对应 $\vec e\approx[-0.014142,-0.014142]^\top$，B 对应 $[-0.017889,0.008944]^\top$。同样大小的向量误差，在差分权重下造成更大的目标响应变化。</p>
 <p><strong>边界。</strong> 这里允许任意复数范数球内的误差；真实的角度偏差、共同增益漂移或设备标定残差可能只占其中很小的结构化子集。因此这个界可以保守，不能把 $\epsilon=0.02$ 直接解释成“每只麦误差 2%”或“方向误差 0.02 rad”。B 是隔离范数效应的代数例子，不是声称某种阵列的最优超指向解。</p>
-<p>这条推导把 §5.2 的 WNG 与 §5.4.1 的球形不确定集联系起来；<a href="https://users.aalto.fi/~vorobys1/RobBeamformer.pdf" title="citation">Vorobyov、Gershman 与 Luo 2003，§III-A、式(18)–(25)</a>讨论用此类集合构造最坏情况约束。该论文的鲁棒优化还需联合选择权重，不能把本题对既定权重的误差界当成完整求解器。数值由 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch00/cross_chapter/spatial_precision_exercises.py"><code>spatial_precision_exercises.py</code></a> 的 <code>E05-06</code> 输出，测试直接验证构造误差达到手算界。</p>
+<p>这条推导把 §5.2 的 WNG 与 §5.4.1 的球形不确定集联系起来；<a href="https://users.aalto.fi/~vorobys1/RobBeamformer.pdf" title="citation">Vorobyov、Gershman 与 Luo 2003，§III-A、式(18)–(25)</a>讨论用此类集合构造最坏情况约束。该论文的鲁棒优化还需联合选择权重，不能把本题对既定权重的误差界当成完整求解器。数值由 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/spatial_precision_exercises.py"><code>spatial_precision_exercises.py</code></a> 的 <code>E05-06</code> 输出，测试直接验证构造误差达到手算界。</p>
 <p><strong>实现边界检查。</strong> 数学式成立不意味着任意有限浮点输入都能直接计算。<code>mvdr_weights</code> 和 <code>capon_spectrum</code> 在求解、二次型归一化或最终结果超出浮点范围时明确报错；<code>apply_beamformer</code> 也拒绝非有限输出。</p>
-<p>例如 $\mathbf R=\mathbf I_2$、$\vec a=[10^{200},10^{200}]^\top$ 的数学 MVDR 权重是 $[5\times10^{-201},5\times10^{-201}]^\top$，但未缩放的二次型会溢出。本书接口拒绝这一输入，避免用无穷大作分母后静默返回零权重；它没有承诺支持全部可表示的极端尺度。回归见 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/tests/test_codes_spatial_precision.py"><code>test_codes_spatial_precision.py</code></a>，也保留较大但可正常计算的尺度检查。</p>
+<p>例如 $\mathbf R=\mathbf I_2$、$\vec a=[10^{200},10^{200}]^\top$ 的数学 MVDR 权重是 $[5\times10^{-201},5\times10^{-201}]^\top$，但未缩放的二次型会溢出。本书接口拒绝这一输入，避免用无穷大作分母后静默返回零权重；它没有承诺支持全部可表示的极端尺度。回归见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/tests/test_codes_spatial_precision.py"><code>test_codes_spatial_precision.py</code></a>，也保留较大但可正常计算的尺度检查。</p>
 <h3 id="sec-u-b6252197d9">E05-07：给定白噪声增益要求，加载量至少应取多少？</h3>
 <p>E05-02 比较预先指定的加载量，E05-06 说明 WNG 与导向误差的关系。现在反过来设计：两麦名义目标导向为 $\vec a=[1,1]^\top$，干扰导向为 $\vec b=[1,j]^\top$，干扰功率为 10，独立白噪声每通道功率为 1。取</p>
 <p>$$\begin{aligned}
@@ -1665,8 +1665,8 @@ G_{\mathrm{WNG}}(\varepsilon)&=\frac1{1/2+50/h^2}。
 </table></div>
 <p>评分使用<strong>原始</strong> $\mathbf R$，不把 $\vec w^H\mathbf R_\varepsilon\vec w$ 误称为物理噪声功率。后者多出 $\varepsilon\|\vec w\|^2$，是设计惩罚项。表中更大的 WNG 伴随更弱的干扰抑制；仅凭 WNG 增大不能说整体增强效果变好。</p>
 <p><strong>边界检查。</strong> 当 $\varepsilon\to\infty$，权重趋向 $[0.5,0.5]^\top$，WNG 趋向 2。对于本题的名义导向，无失真约束与 Cauchy–Schwarz 不等式给出 $1=|\vec w^H\vec a|^2\le2\|\vec w\|^2$，因此 WNG 不可能大于 2。本题的有限加载始终留有非零虚部，所以恰好达到 2 只能取极限；要求 2.1 则没有解。一般阵列应根据实际协方差重新求解，不能沿用本题的数字 9。</p>
-<p>本题为式(5-9)与 WNG 定义的本书代数推导，复算见<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch00/cross_chapter/spatial_model_exercises.py"><code>spatial_model_exercises.py</code></a>的 <code>E05-07</code>。代码实际调用 <code>mvdr_weights</code>，测试用式(5-25)及干扰响应独立核对，并包含刚低于要求的 $\varepsilon=8$ 作为反例。</p>
-<p>下面 E05-08～17 由 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch05/chapter05_experiments.py"><code>chapter05_experiments.py</code></a> 输出同一组输入和未舍入结果。它们是本书确定性小模型；除 E05-16 的逐样本处理外，不模拟语音录音、随机快拍或设备运行时间。</p>
+<p>本题为式(5-9)与 WNG 定义的本书代数推导，复算见<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/spatial_model_exercises.py"><code>spatial_model_exercises.py</code></a>的 <code>E05-07</code>。代码实际调用 <code>mvdr_weights</code>，测试用式(5-25)及干扰响应独立核对，并包含刚低于要求的 $\varepsilon=8$ 作为反例。</p>
+<p>下面 E05-08～17 由 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch05/chapter05_experiments.py"><code>chapter05_experiments.py</code></a> 输出同一组输入和未舍入结果。它们是本书确定性小模型；除 E05-16 的逐样本处理外，不模拟语音录音、随机快拍或设备运行时间。</p>
 <h3 id="sec-u-531bc348b1">E05-08：GSC 的零空间解怎样等于 LCMV？</h3>
 <p><strong>题设。</strong> 三麦目标导向为 $\vec a=\vec1$，噪声协方差为 $\mathbf R=\operatorname{diag}(1,2,4)$。固定权重 $\vec w_q=\vec1/3$，阻塞矩阵取</p>
 <p>$$\mathbf B=\begin{bmatrix}1&1\\-1&0\\0&-1\end{bmatrix}。$$</p>
@@ -2033,7 +2033,7 @@ B_{DSB}(\phi)&=(1+2\cos\phi)/3。
 <p>所以 $B'_V(0)=-3\mathrm j/7$，另外两者的导数为零。取 $\phi=0.2$，有 $B_V\approx0.985762-0.085144\mathrm j$、$B_D\approx0.987733$。导数约束消除了本例复响应误差的一阶项；单约束 MVDR 的一阶项为纯虚数，其<strong>幅度</strong>误差仍从二阶开始，不能把复误差和幅度误差混为一谈。</p>
 <p><img alt="图55：导数约束的局部复响应与噪声代价" src="../figures/fig55_derivative_constraints.png" onerror="this.alt+='（图缺失）'" /></p>
 <p><strong>图55</strong>使用本题解析模型展示局部响应和同一噪声协方差下的代价，不是 PCM 音频评分。改变相位参考后，导向矢量会乘一个随方向变化的共同相位，必须重新推导复导数约束。二阶项、较大偏差和真实模型误差也不由一个一阶约束保证；本题不是方向误差分布或统计置信区间。</p>
-<p>本书推导的数值入口为 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch05/chapter05_experiments.py"><code>chapter05_experiments.py</code></a>；声音与总误差的对照见 <a href="#e05-22">E05-22</a>。</p>
+<p>本书推导的数值入口为 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch05/chapter05_experiments.py"><code>chapter05_experiments.py</code></a>；声音与总误差的对照见 <a href="#e05-22">E05-22</a>。</p>
 <p><a id="e05-19"></a></p>
 <h3 id="sec-u-0a1ab334a4">E05-19：最坏范数球约束为什么不保持名义单位响应？</h3>
 <p><strong>题设。</strong> 两麦名义导向向量为 $\vec a_0=[1,1]^\top$，噪声协方差为 $\mathbf I$，真实向量为 $\vec a_0+\vec e$。允许任意复误差 $\|\vec e\|_2\le\epsilon$，取 $\epsilon=0.2$；向量和半径沿用此处的单位幅度归一化。要求误差球内的最低幅度响应不小于1，求最小噪声权重。</p>
@@ -2053,7 +2053,7 @@ b_{\min}&=\max\{0,b-r\},\\
 <p>$$G_{\mathrm{WNG}}=\frac{(2t)^2}{2t^2}=2。$$</p>
 <p>若错误地使用 $1/\|\vec w\|^2$，会得到约1.474315，那只是此处输出噪声功率的倒数。本例相对于 $\epsilon=0$ 的 DSB 只是把两个权重共同放大；方向图形状和 WNG 不变，绝对输出噪声功率却增加。因此“扩大误差半径必然降低 DI 或 WNG”不成立；其他协方差和流形下仍需另算。</p>
 <p><strong>边界。</strong> 若同时要求名义响应恰好为1和最坏幅度至少为1，在 $\epsilon>0$ 时两者不可兼得。若 $\epsilon\ge\sqrt2$，误差球包含零向量，任何权重对该向量的响应都为零，问题不可行。</p>
-<p>球内还允许改变实际目标相位的复误差。幅度下限不能保证实际输出等于某个固定复参考；原论文印刷页316脚注5特别指出相位限制。这一白噪声闭式例由本书推导，可在 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch05/chapter05_experiments.py"><code>chapter05_experiments.py</code></a>复算，不代替任意不确定集的通用求解器。</p>
+<p>球内还允许改变实际目标相位的复误差。幅度下限不能保证实际输出等于某个固定复参考；原论文印刷页316脚注5特别指出相位限制。这一白噪声闭式例由本书推导，可在 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch05/chapter05_experiments.py"><code>chapter05_experiments.py</code></a>复算，不代替任意不确定集的通用求解器。</p>
 <p><a id="e05-20"></a></p>
 <h3 id="sec-u-ab39e3c2bb">E05-20：Souden 权重怎样保留参考麦的复数声像？</h3>
 <p><strong>题设。</strong> 固定频点，观测 $\vec x=\vec b S+\vec n$，源 $S$ 与噪声不相关，$E|S|^2=\phi_s=3$。未经参考归一化的传递向量为 $\vec b=[2,1+\mathrm j]^\top$，噪声协方差为 $\mathbf R_n=\operatorname{diag}(2,1)$。第 $r$ 个参考麦的目标声像为 $b_r S$，不是统一取 $S$。</p>
@@ -2105,7 +2105,7 @@ b_{\min}&=\max\{0,b-r\},\\
 <p>噪声功率为 $(12/13)^2(1/2)=72/169$。目标失真以参考声像 $(1+\mathrm j)S$ 为基准，因此功率为 $3|1+\mathrm j|^2|12/13-1|^2=6/169$。源噪声不相关时，总均方误差为两项之和 $78/169=6/13$。这是 MWF 对噪声与失真的权衡，不是严格无失真。</p>
 <p><strong>第四步：用全秩目标检查边界。</strong> 改取 $\mathbf R_s=\operatorname{diag}(2,1)$、$\mathbf R_n=\mathbf I$、第1麦参考。式(5-29)给出 $\vec w=[2/3,0]^\top$，没有对所有目标声像分量施加参考保持约束；相对第1麦目标的失真功率为 $2|2/3-1|^2=2/9$。</p>
 <p>这个输入的普通 MWF 恰也得到 $[2/3,0]^\top$，但两种准则并不一般等价。§5.9.1 中 <code>get_wmwf_vector</code> 的秩一迹化简在同一全秩输入得到 $[1/2,0]^\top$，是另一条包含噪声权重的公式，不能与本题 Souden 归一化混用。全秩 SCM 本身合法，却失去了上述单一传递向量 $\vec b$ 的推导前提。</p>
-<p>本题入口为 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch05/chapter05_experiments.py"><code>chapter05_experiments.py</code></a>，用于检验参考、共轭和取点，不是不同软件增强效果的排名。固定上游方法的实际调用及异常边界见<a href="research/01_spatial_and_tracking.html#beamformer-upstream-audit">原方法审计</a>；这些受控输入结果不等于整包或音频链运行成功。</p>
+<p>本题入口为 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch05/chapter05_experiments.py"><code>chapter05_experiments.py</code></a>，用于检验参考、共轭和取点，不是不同软件增强效果的排名。固定上游方法的实际调用及异常边界见<a href="research/01_spatial_and_tracking.html#beamformer-upstream-audit">原方法审计</a>；这些受控输入结果不等于整包或音频链运行成功。</p>
 <p><a id="e05-21"></a></p>
 <h3 id="sec-u-f3d0e40267">E05-21：同一谱能量为何会得到不同的语音存在概率？</h3>
 <p><strong>题设。</strong> 单个复数谱值为 $Y$。语音缺席假设 $H_0$ 下，$Y\sim\mathcal{CN}(0,\phi_n)$；语音存在假设 $H_1$ 下，$Y\sim\mathcal{CN}(0,\phi_n+\phi_s)$。这里 $\mathcal{CN}$ 为零均值圆对称复高斯分布，功率参数 $\phi_n>0$、$\phi_s\ge0$；$H_1$ 下另假定目标与噪声独立。定义先验缺席概率 $q_0=P(H_0)$、先验信噪比 $\xi=\phi_s/\phi_n$、观测能量比 $\gamma=|Y|^2/\phi_n$。</p>
@@ -2153,7 +2153,7 @@ G&=\exp(u+v)。
 <p><img alt="图56：先验、语音存在后验与给定条件增益的组合" src="../figures/fig56_omlsa_probability.png" onerror="this.alt+='（图缺失）'" /></p>
 <p><strong>图56</strong>显示指定概率模型与给定增益下的解析结果，不是完整 OM-LSA/IMCRA 的增强效果。语音估计所用的 $p_s$ 与噪声递归控制所用的 $p_n$ 作用不同，不能未经定义就认为二者相等。</p>
 <p><strong>边界。</strong> 当 $\xi=0$ 时两个观测模型相同，观测不能改变先验，故 $p_s=1-q_0$。先验为0时后验为1；先验为1时后验为0，应按原 Bayes 公式或极限处理，不能在式(5-31)中除以 $1-q_0=0$。$G_{min}=0$ 不能直接进入此处对数计算；算法若允许零增益，需明确其极限或保护规则。实际完整 LSA 还要计算 $G_{H_1}$，噪声跟踪还需时间状态，这两项均未由本题完成。</p>
-<p>本书数值入口为 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch05/chapter05_experiments.py"><code>chapter05_experiments.py</code></a>。</p>
+<p>本书数值入口为 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch05/chapter05_experiments.py"><code>chapter05_experiments.py</code></a>。</p>
 <p><a id="e05-22"></a></p>
 <h3 id="sec-u-bca30faf33">E05-22：局部目标响应改善能保证波形总误差更小吗？</h3>
 <p><strong>题设。</strong> 把 E05-18 的两组固定权重用于三麦自由场数学合成声音。阵元为 $[-0.04,0,0.04]$ m，声速343 m/s，采样率16 kHz。源在 $7.8439416794°$，由1 kHz与3 kHz两个余弦分量组成，每项幅度0.08；活动段设置20 ms淡入淡出。噪声在时间和通道间独立，均值为零，期望协方差为 $0.02^2\operatorname{diag}(1,2,4)$。生成器使用零均值高斯噪声，随机种子为20260522，随机数发生器为 PCG64。</p>
@@ -2279,11 +2279,11 @@ G&=\exp(u+v)。
 </table></div>
 <p>例如第一行由 $8342042475/(27200\times32768^2)$ 得到；另一行使用同一个样本分母和解码尺度。浮点分量评分、总体期望与 PCM 总误差有不同的取点，不能互相替代。本次实际 PCM 总 MSE 也是单约束输出较低，不代表其他偏角或噪声强度下排名不变。</p>
 <p>清单还用1 kHz/3 kHz的余弦、正弦四列最小二乘设计估计输出／参考复相量比。这些比值包含本次观测噪声和量化误差；导数输出估计出现小虚部并不证明解析导数约束失效。相量拟合也没有用于修正上述波形评分。</p>
-<p>参数、随机种子、浮点与 PCM 分开评分、生成源及文件 SHA 由独立 <a href="derivative_audio/MANIFEST.json">MANIFEST.json</a>记录。生成源为 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch05/core/derivative_audio.py"><code>derivative_audio.py</code></a>，发布入口为 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch05/examples/generate_derivative_audio.py"><code>generate_derivative_audio.py</code></a>：</p>
+<p>参数、随机种子、浮点与 PCM 分开评分、生成源及文件 SHA 由独立 <a href="derivative_audio/MANIFEST.json">MANIFEST.json</a>记录。生成源为 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch05/core/derivative_audio.py"><code>derivative_audio.py</code></a>，发布入口为 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch05/examples/generate_derivative_audio.py"><code>generate_derivative_audio.py</code></a>：</p>
 <pre><code class="language-bash">python -m codes.chapters.ch05.examples.generate_derivative_audio
 python -m codes.chapters.ch05.examples.generate_derivative_audio --check
 </code></pre>
-<p>生成会发布四个样本；<code>--check</code> 只读核对已有资产。理论算例亦可通过 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch05/chapter05_experiments.py"><code>chapter05_experiments.py</code></a>复算。</p>
+<p>生成会发布四个样本；<code>--check</code> 只读核对已有资产。理论算例亦可通过 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch05/chapter05_experiments.py"><code>chapter05_experiments.py</code></a>复算。</p>
 <p><strong>边界。</strong> 本题只在已知几何、固定偏角和指定噪声模型下比较两个权重，不是未知 DOA 估计、真实语音听评或工业实时测试。试听可以比较实际输出，但不能代替目标分量评分，更不能凭声音较轻就推断目标保真更好。</p>
 <p><a id="e05-23"></a></p>
 <h3 id="sec-u-e8fcec5128">E05-23：每个频点的信噪比相同，为什么波形仍会改变？</h3>
@@ -2407,7 +2407,7 @@ P_{e,Q}&=0.1^2(1/2+1/2)\\
 <p>相量拟合只用于诊断各频率的实际复相位，没有用来补偿评分。例如高频输出／参考复比，翻号文件约为 $-1.0000658234$，正交相位文件约为 $-0.0000183123-1.0000681577\mathrm j$，其量化偏差也须保留。参数、文件SHA、解析／浮点／PCM分栏及完整复比见独立<a href="phase_audio/MANIFEST.json">清单</a>，不能用前表解析值替代读回结果。</p>
 <p><img alt="图73：同功率的两频分量与参考波形" src="../figures/fig73_phase_reference.png" onerror="this.alt+='（图缺失）'" /></p>
 <p><strong>图73</strong>比较已知分量重合成的波形与误差，并使用相同参考和稳态窗。它说明相同逐频功率没有选定唯一参考波形；图中的声音没有盲估计、GEV、STFT或BAN处理，也没有语音质量排名。</p>
-<p>生成源为<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch05/core/phase_audio.py">phase_audio.py</a>，入口为<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch05/examples/generate_phase_audio.py">generate_phase_audio.py</a>。<code>--check</code>只读重放并核对已发布PCM；本题解析输出与实际清单的入口为<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch05/chapter05_experiments.py">chapter05_experiments.py</a>：</p>
+<p>生成源为<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch05/core/phase_audio.py">phase_audio.py</a>，入口为<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch05/examples/generate_phase_audio.py">generate_phase_audio.py</a>。<code>--check</code>只读重放并核对已发布PCM；本题解析输出与实际清单的入口为<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch05/chapter05_experiments.py">chapter05_experiments.py</a>：</p>
 <pre><code class="language-bash">python -m codes.chapters.ch05.examples.generate_phase_audio --check
 python -m codes.chapters.ch05.chapter05_experiments
 </code></pre>
@@ -2451,7 +2451,7 @@ python -m codes.chapters.ch05.chapter05_experiments
 $$</p>
 <p>这里的权重和高于保护阈值。两个标量估计矩阵只差整体尺度，秩都为1；它们又都不同于交替逐通道预滤所得的秩2矩阵。分母口径与通道预滤是两项独立变化，不能用“用了掩码”将其合并。</p>
 <p><strong>边界与复算。</strong> 非负逐通道预滤后的外积平均仍半正定，但合法矩阵不自动具有正确的目标／噪声语义。本题没有证明哪种掩码策略在语音数据中更好，也没有测在线跟踪速度。实际方法应检查预滤如何改变跨通道幅相、目标矩阵的秩、参考声像、噪声统计与输出取点，再讨论性能。</p>
-<p>本题代码为<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch05/chapter05_experiments.py">chapter05_experiments.py</a>的 <code>channel_mask_prefilter_model()</code>；输出同时保留原矩阵、两种逐通道预滤矩阵、按帧数和按质量归一的标量矩阵，以及两种目标上的响应。独立测试直接核对有理数矩阵与 $6/5$、1两个响应，不把函数自己的输出用作唯一预期。</p>
+<p>本题代码为<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch05/chapter05_experiments.py">chapter05_experiments.py</a>的 <code>channel_mask_prefilter_model()</code>；输出同时保留原矩阵、两种逐通道预滤矩阵、按帧数和按质量归一的标量矩阵，以及两种目标上的响应。独立测试直接核对有理数矩阵与 $6/5$、1两个响应，不把函数自己的输出用作唯一预期。</p>
 <p><a id="e05-25"></a></p>
 <h3 id="sec-u-8687ade082">E05-25：两耳都保留了目标，干扰的位置线索还在吗？</h3>
 <p>三个麦的目标导向为 $\vec a=[1,1,1]^\top$，已知干扰导向为 $\vec b=[1,-1,1]^\top$，左右参考取第 1、2 麦。固定设计矩阵 $\mathbf R=\mathbf I_3$，只代表单位功率的空间白背景，不把已知方向干扰的外积并入这个矩阵。比较只有目标约束和另加 $\eta=1/3$ 干扰约束的解。</p>

@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 9 章 · 声源追踪 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="1a85da73ba06"><style>
+<meta name="source-digest" content="0fc6040b7677"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -980,7 +980,7 @@ S&=\sum_iw_i\sin\phi_i,\\
 <li><strong>滤波器</strong>：使用 200 个粒子和“高斯目标 + 均匀杂波”混合似然，均匀杂波权重为 0.1，角度过程扰动标准差为每步 $1^\circ$，角速度过程扰动标准差为每步 $0.25^\circ/\mathrm{frame}$；</li>
 <li><strong>初始化与边界</strong>：初始角度粒子在允许扇区内均匀采样，不读取未来第一个有效观测。状态只允许落在 $[0^\circ,120^\circ]$ 有限扇区，越界粒子按扇区端点作镜面反射。</li>
 </ul>
-<p>镜面反射是便于展示的玩具边界，不是圆周角的 $360^\circ$ 环绕，也不代表真实墙面反射。随机种子为22001，同一随机数生成器依次生成观测与粒子过程；0.2替换概率实际抽中25帧，其中3帧又被置为缺测，留下110个有效观测中的22个杂波。完整逐帧轨迹、ESS、掩码和分母见<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch09/reports/figure22_tracking.json">图22报告</a>。</p>
+<p>镜面反射是便于展示的玩具边界，不是圆周角的 $360^\circ$ 环绕，也不代表真实墙面反射。随机种子为22001，同一随机数生成器依次生成观测与粒子过程；0.2替换概率实际抽中25帧，其中3帧又被置为缺测，留下110个有效观测中的22个杂波。完整逐帧轨迹、ESS、掩码和分母见<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch09/reports/figure22_tracking.json">图22报告</a>。</p>
 <p><img alt="图22 声源追踪示意" src="../figures/fig22_tracking.png" onerror="this.alt+='（图缺失）'" /></p>
 <p>图22（a）中，灰点为逐帧 DOA 观测，黑线为正弦真值轨迹，红线为粒子滤波估计，紫色阴影标出连续 10 帧缺测，橙色竖线表示有效粒子数低于 $N/2$ 后执行了系统重采样。紫色叉号只标出该帧预测后至少 5% 粒子越界并被镜面反射的时刻，避免用“任一粒子越界”放大单个尾部样本。</p>
 <p>缺测段没有似然更新，轨迹只由匀速状态模型与过程噪声外推；$0^\circ$ 与 $120^\circ$ 是采用反射规则的有限扇区边界。</p>
@@ -1095,22 +1095,22 @@ D_t(x)=[1-p_D(x)]D_t^-(x)\\
 <h3 id="sec-9-3-3">9.3.3 可执行基线与双目标交叉实验</h3>
 <p>本小节先核对教学接口，再用确定性角度序列区分位置误差与身份错配。</p>
 <h3 id="sec-u-fc4ad81613">可执行单目标接口与边界</h3>
-<p><a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch09/core/tracking.py"><code>codes/chapters/ch09/core/tracking.py</code></a> 提供常速度角度 Kalman 滤波器、$[-180^\circ,180^\circ)$ 环绕、系统重采样和圆周角 SIR 粒子滤波器。</p>
+<p><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch09/core/tracking.py"><code>codes/chapters/ch09/core/tracking.py</code></a> 提供常速度角度 Kalman 滤波器、$[-180^\circ,180^\circ)$ 环绕、系统重采样和圆周角 SIR 粒子滤波器。</p>
 <p><code>ConstantVelocityKalman</code> 的状态单位是 <code>[度, 度/秒]</code>；每帧先用实际秒数 <code>dt</code> 调用 <code>predict()</code>，有观测时再以角度方差调用 <code>update()</code>，缺测时不调用更新。协方差使用 Joseph 形式。它与算例9-1的“度/帧”不同，比较前应转换状态、转移矩阵及过程噪声单位。</p>
 <p><code>CircularParticleFilter</code> 用最短圆周角差的高斯目标项与均匀杂波项混合更新权重，按有效粒子数决定是否系统重采样；它只估计单个圆周角，不包含速度粒子、有限扇区反射或轨迹身份。</p>
 <p>该项把最短角差代入普通高斯密度，再与每度 $1/360$ 的均匀项混合。当标准差远小于180°时，高斯落在最短角区间外的质量很小；对任意大的标准差，它在该区间的积分小于1，混合系数不能再直接解释为严格圆周生成模型的杂波概率。因此它是窄角误差的教学近似，不是通用的归一圆周高斯模型。严格宽分布模型须另选环绕正态、归一截断密度或其他圆分布，连同参数含义一起验证。</p>
-<p>联合示例用 <code>.venv/bin/python -m codes.chapters.ch00.cross_chapter.ch06_09_baselines</code> 运行，测试见 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/tests/test_codes_aec_wpe_sep_track.py"><code>tests/test_codes_aec_wpe_sep_track.py</code></a>。测试覆盖 $179^\circ$ 与 $-179^\circ$ 的最短新息、缺测时角度方差增长、Joseph 更新后的对称半正定性、远距离高置信观测的对数权重、退化权重的系统重采样，以及对称后验下未定义的圆周均值。</p>
+<p>联合示例用 <code>.venv/bin/python -m codes.chapters.ch00.cross_chapter.ch06_09_baselines</code> 运行，测试见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/tests/test_codes_aec_wpe_sep_track.py"><code>tests/test_codes_aec_wpe_sep_track.py</code></a>。测试覆盖 $179^\circ$ 与 $-179^\circ$ 的最短新息、缺测时角度方差增长、Joseph 更新后的对称半正定性、远距离高置信观测的对数权重、退化权重的系统重采样，以及对称后验下未定义的圆周均值。</p>
 <p>教学 Kalman 类的过程噪声矩阵 $\mathbf Q$ 已按一次预测间隔离散化；若 <code>dt</code> 改变，不能继续照搬同一个 $\mathbf Q$。粒子后验的圆周合向量接近零时，代码会明确报错，而不是返回由浮点残差决定的任意角度。</p>
 <p>这些教学接口采用float64，有限输入不保证所有中间运算都受支持。对已检测到的正方差或概率支持丢失，要安全计算、保留对数状态或明确报错，不能把数值下溢解释为确定状态或零概率；合法的零过程噪声与半正定协方差仍应接受。</p>
 <p>如何重算 $\mathbf Q$ 取决于过程噪声模型，练习 E09-04 比较两种不同定义。粒子重采样阈值则按有效粒子数的同一尺度指定：<code>resample_if_needed()</code> 接受 $[0,N]$ 内有限实数，0 表示关闭，默认是 $N/2$；布尔值、数组、负数、超过粒子数或非有限值均报错，且不改变粒子和随机数状态。</p>
 <p>设备只搜索有限扇区时不能把两个扇区端点自动接成相邻方向；还需测试迟到/乱序观测、长缺测、错误时间戳、野点门控、目标交叉、轨迹出生/确认/删除、ID 重用和消息超时。<a href="#e09-23">E09-23</a>用同一随机游走比较按原时刻回放、丢弃迟到观测与错误的当前时刻更新。无有效观测时只预测并传播协方差，超过有效期后回到搜索模式，不能把外推方向当作新观测。</p>
 <h3 id="sec-u-b70bbe3259">两目标交叉、短暂缺测与控制限速</h3>
-<p><a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch09/tracking_crossing_dropout_demo.py"><code>tracking_crossing_dropout_demo.py</code></a> 使用确定的角度观测，不生成语音或设备录音。为便于手算，每步间隔刻意取 1 s；两条轨迹初态分别为 $[20^\circ,+10^\circ/\mathrm s]$、$[60^\circ,-10^\circ/\mathrm s]$，初始协方差都是 $\mathbf I$，每步过程噪声 $\mathbf Q=\operatorname{diag}(0.1,0.01)$，角度观测方差为 $1\ \mathrm{deg}^2$。这些是实验指定的滤波参数，并非从真实定位器标定得到。</p>
+<p><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch09/tracking_crossing_dropout_demo.py"><code>tracking_crossing_dropout_demo.py</code></a> 使用确定的角度观测，不生成语音或设备录音。为便于手算，每步间隔刻意取 1 s；两条轨迹初态分别为 $[20^\circ,+10^\circ/\mathrm s]$、$[60^\circ,-10^\circ/\mathrm s]$，初始协方差都是 $\mathbf I$，每步过程噪声 $\mathbf Q=\operatorname{diag}(0.1,0.01)$，角度观测方差为 $1\ \mathrm{deg}^2$。这些是实验指定的滤波参数，并非从真实定位器标定得到。</p>
 <p>示例在 15° 门内穷举两轨与最多两条观测的一对一配对，优先关联最多的门内观测，再选择圆周角残差平方和最小者；若代价完全相等，按轨迹和观测输入顺序决定。</p>
 <p>这个两轨最小代价关联是全局最近邻（Global Nearest Neighbour，GNN）分配的教学缩例，不实现 JPDA、MHT、轨迹出生或删除。Stone Soup 固定版本的 <code>neighbour.py</code> 区分逐次贪心的 <code>NearestNeighbour</code> 与联合分配的 <code>GlobalNearestNeighbour</code>；本例只复算后一类的两轨分配思想，没有调用该框架的假设器和轨迹管理。<a href="https://github.com/dstl/Stone-Soup/blob/8d1edeb07ef8505ed065cbef435cfb5e517d9bdc/stonesoup/dataassociator/neighbour.py" title="citation">Stone Soup 固定源码</a>。</p>
 <p>第 2 s，两轨按匀速模型都预测到 $40^\circ$，输入顺序是 B 的 $39^\circ$、A 的 $41^\circ$。两种一对一配对的残差平方和同为 $1^2+1^2=2\ \mathrm{deg}^2$。示例的并列代价规则于是把 B 的观测给轨迹 A，把 A 的观测给轨迹 B；这一帧有两次标签错配。</p>
 <p>去掉标签后，观测位置集合与真值集合都是 $\{39^\circ,41^\circ\}$，按后文式(9-25)取 $p\ge1,c>0$，该集合的 OSPA 仍为 0。这里算的是<strong>未滤波的观测集合</strong>；滤波后的两条角度还有非零位置误差，不能把两者混称为零误差。</p>
-<p>下表逐帧比较最小代价关联结果与“用真值标签做关联”的诊断对照。真值标签只用于评价和对照更新，不进入最小代价关联的代价。角度误差是滤波后轨迹 A、B 各自相对其真值的最短圆周角绝对误差；方差是最小代价关联轨迹 A 的角度方差，数值保留两位小数。运行命令为 <code>.venv/bin/python -m codes.chapters.ch09.tracking_crossing_dropout_demo</code>，独立手算检验见 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/tests/test_codes_tracking_crossing_dropout.py"><code>test_codes_tracking_crossing_dropout.py</code></a>。</p>
+<p>下表逐帧比较最小代价关联结果与“用真值标签做关联”的诊断对照。真值标签只用于评价和对照更新，不进入最小代价关联的代价。角度误差是滤波后轨迹 A、B 各自相对其真值的最短圆周角绝对误差；方差是最小代价关联轨迹 A 的角度方差，数值保留两位小数。运行命令为 <code>.venv/bin/python -m codes.chapters.ch09.tracking_crossing_dropout_demo</code>，独立手算检验见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/tests/test_codes_tracking_crossing_dropout.py"><code>test_codes_tracking_crossing_dropout.py</code></a>。</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table class="tutorial-budget-table" style="--tutorial-table-width:63em">
 <thead>
 <tr>
@@ -1167,7 +1167,7 @@ D_t(x)=[1-p_D(x)]D_t^-(x)\\
 <p>若波束方向从 $20^\circ$ 起，每秒最多转 $5^\circ$，两次只能走到 $25^\circ,30^\circ$，相对预测方向分别滞后 $5^\circ,10^\circ$。这个数例量化了限速代价，不包含定位计算、消息传输或实际波束权重切换的延迟；设备应按真实帧间隔、目标运动与可接受滞后重新选限速值。</p>
 <h3 id="sec-u-82a35b6f54">上游实现与适用范围</h3>
 <p>固定版本函数名不等于完整算法契约。FilterPy 的组合 <code>predict_update()</code> 与分开调用的 EKF 路径在雅可比求值时刻上有差异；IMM 也需核对无观测时是否按新模式先验融合。正文推导固定求值时刻，原函数受控输入及差异见<a href="research/01_spatial_and_tracking.html#tracking-upstream-audit">追踪实现核查</a>，不要把调用成功当作数学条件已满足。</p>
-<p>进一步的实现可按 FilterPy 和 Stone Soup 的固定版本阅读，源码工作目录、许可和入口由 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch00/SOURCES.lock.json"><code>SOURCES.lock.json</code></a> 管理。FilterPy 的 <code>kalman/EKF.py</code>、<code>UKF.py</code>、<code>IMM.py</code> 分别定位非线性更新和运动模型切换；Stone Soup 的 <code>dataassociator/probability.py::JPDA</code> 处理联合关联，<code>updater/pointprocess.py::PHDUpdater</code> 配合 <code>mixturereducer/gaussianmixture.py::GaussianMixtureReducer</code> 完成 GM-PHD 更新与分量合并、剪枝。具体阅读顺序、实验输入和失败情况见<a href="research/01_spatial_and_tracking.html">空间处理与追踪研究</a>。</p>
+<p>进一步的实现可按 FilterPy 和 Stone Soup 的固定版本阅读，源码工作目录、许可和入口由 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/SOURCES.lock.json"><code>SOURCES.lock.json</code></a> 管理。FilterPy 的 <code>kalman/EKF.py</code>、<code>UKF.py</code>、<code>IMM.py</code> 分别定位非线性更新和运动模型切换；Stone Soup 的 <code>dataassociator/probability.py::JPDA</code> 处理联合关联，<code>updater/pointprocess.py::PHDUpdater</code> 配合 <code>mixturereducer/gaussianmixture.py::GaussianMixtureReducer</code> 完成 GM-PHD 更新与分量合并、剪枝。具体阅读顺序、实验输入和失败情况见<a href="research/01_spatial_and_tracking.html">空间处理与追踪研究</a>。</p>
 <p>把位置追踪例子改成麦克风方向追踪时，至少要重写三处。观测模型应输出方位角或方向单位向量，不能继续使用二维位置残差；门控距离要使用相应协方差与角度环绕；杂波强度必须与观测空间的测度一致，例如每弧度的预期假峰数。检测概率还要反映说话人静默和定位器漏检，不能直接照搬雷达示例。</p>
 <p>GM-PHD 的高斯权重和表示期望目标数，不要求归一到 1。出生分布没有覆盖某个方向时，新目标可能一直不能形成足够强的分量；剪枝阈值过高则会删掉弱源，因此应记录每帧删去的总强度质量。</p>
 <p>JPDA 也需要明确漏检事件和一对一约束；在两人交叉时，软关联可能混合轨迹，并不自动保持说话人身份。<a href="https://github.com/dstl/Stone-Soup/blob/8d1edeb07ef8505ed065cbef435cfb5e517d9bdc/docs/tutorials/08_JPDATutorial.py" title="citation">Stone Soup JPDA 教程源码</a>；<a href="https://stonesoup.readthedocs.io/en/v1.9.1/auto_tutorials/filters/GMPHDTutorial.html" title="citation">GM-PHD 官方教程</a>，核实于 2026-09-22。</p>
@@ -1321,13 +1321,13 @@ r'_m(u)&=\vec n_m(u)^\top\vec v,\\
 <p>每 160 点保存一次轨迹真值。方位角从 $+y$ 轴向 $+x$ 轴为正。起点横坐标为 $-0.8$ m，故 $\theta_0=\arctan(-0.8/1.5)\approx-28.07^\circ$。</p>
 <p>在 $u=0.99$ s，横坐标 $-0.8+0.8\times0.99=-0.008$ m，方位角约 $-0.31^\circ$；末段 $u=1.99$ s 的横坐标是 $0.792$ m，方位角约 $+27.83^\circ$。这些时刻属于保存的轨迹格点；声音到达麦克风的接收时刻还要加传播时延。</p>
 <p>把同一发射时刻到麦 1、麦 0 的传播时间之差定义为有符号 TDOA：$\tau_{1-0}(u)=[r_1(u)-r_0(u)]/343$，其中 $r_m$ 是声源到麦 $m$ 的距离。起点声源在左侧，更靠近麦 0，所以 $r_1-r_0>0$，麦 1 的到达更晚。按上述坐标代入距离公式，起点约为 $+0.0001372$ s，乘以 16000 后是 $+2.19$ 采样；末段声源已在右侧，约为 $-0.0001361$ s，即 $-2.18$ 采样。两侧符号相反，不能只报 TDOA 的绝对值。</p>
-<p>清单中的时间格点按声源轨迹的全局时钟取样；同一行 TDOA 比较的是该时刻发出的波到两麦的传播时间，并非两麦在同一采样索引处的波形峰差。逐帧值、坐标、统一增益及各文件摘要保存在清单中。<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/tests/test_codes_moving_source.py">静止解析极限和符号测试</a>独立核对<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch09/examples/moving_source_audio.py">生成器</a>。</p>
+<p>清单中的时间格点按声源轨迹的全局时钟取样；同一行 TDOA 比较的是该时刻发出的波到两麦的传播时间，并非两麦在同一采样索引处的波形峰差。逐帧值、坐标、统一增益及各文件摘要保存在清单中。<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/tests/test_codes_moving_source.py">静止解析极限和符号测试</a>独立核对<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch09/examples/moving_source_audio.py">生成器</a>。</p>
 <p>这里没有墙面反射、空气吸收、声源和麦克风指向性，也没有多人交叉或活动缺测。听到的音高、声像和电平变化不能直接当作某个 DOA 追踪器的准确率；若要评价追踪，还需对输出运行固定定位器，按相同时间戳比较逐帧误差和漏检，并另报波束控制滞后。真实移动录音可另按 <a href="https://www.locata.lms.tf.fau.de/tasks/" title="citation">LOCATA 官方任务说明</a>选择任务 3（静止阵列、单移动说话人）；自行逐帧评分应选择带声源位置真值的开发集，并明确录音和真值版本。</p>
 <h3 id="sec-u-666f355e22">从带噪双麦波形到定位与追踪</h3>
 <p>前一组两音调样本用于核对传播模型；下面的独立实验对波形运行定位器，再把有效观测交给 KF。两组样本不能混用评分。先调低播放音量：</p>
 <p><a href="tracking_audio/source.wav">源参考：32音调与一次静默</a><audio class="audio-sample" controls preload="none" aria-label="源参考：32音调与一次静默" src="tracking_audio/source.wav">请使用上方 WAV 链接下载。</audio></p>
 <p><a href="tracking_audio/array_noisy.wav">运动传播后的带噪双麦信号</a><audio class="audio-sample" controls preload="none" aria-label="运动传播后的带噪双麦信号" src="tracking_audio/array_noisy.wav">请使用上方 WAV 链接下载。</audio></p>
-<p>这两份都是本书数学合成 WAV，独立保存在 <code>codes/chapters/ch09/tracking_audio/</code>，不计入主清单的 109 个样本或前述移动源 3 个文件。生成、量化、参数及逐帧结果见<a href="tracking_audio/MANIFEST.json">独立清单</a>；实现见 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch09/core/tracking_audio.py"><code>tracking_audio.py</code></a>。</p>
+<p>这两份都是本书数学合成 WAV，独立保存在 <code>codes/chapters/ch09/tracking_audio/</code>，不计入主清单的 109 个样本或前述移动源 3 个文件。生成、量化、参数及逐帧结果见<a href="tracking_audio/MANIFEST.json">独立清单</a>；实现见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch09/core/tracking_audio.py"><code>tracking_audio.py</code></a>。</p>
 <p>几何、速度、声速与前述传播模型相同。采样率16 kHz、时长2 s；源由300～3400 Hz、间隔100 Hz的32条正弦等幅相加，每条幅度为 $1/\sqrt{32}$。随机生成器为PCG64、种子9001，先生成32个独立均匀相位，再按通道次序生成两路独立高斯传感器噪声，导出前标准差.01。</p>
 <p>源首尾采用20 ms线性淡入淡出；在发射时轴.8～.82 s淡出、.82～1.08 s为零、1.08～1.10 s淡入。它是带包络的多音调，不是真实语音或白噪声。</p>
 <p>两文件使用同一导出增益约0.4023136344，把共同最大峰值缩至.7，再量化为16位PCM。分析从实际PCM解码，已知共同增益只用于恢复固定RMS门限的尺度；不逐帧归一化，也不借干净参考判断活动。</p>
@@ -1412,9 +1412,9 @@ t_{\rm available}&=\frac{n_0+512}{16000},\\
 <h3 id="sec-u-9d29271e5a">可运行练习的入口与约定</h3>
 <p>本章26题从时间单位、滤波与粒子权重走到多目标关联和评分。E09-20～E09-23进一步检查相关观测、距离尺度、空观测存在概率与迟到观测。</p>
 <p>E09-24～E09-26分别展开完整模式密度与连续缺测、实际 PCM 的候选确认与退役、三维姿态及静态球面条件化。三题各自说明输入、时间与坐标约定，不把这些教学环节当作完整工业追踪器。</p>
-<p>E09-01～E09-05 运行 <code>.venv/bin/python -m codes.chapters.ch00.cross_chapter.exercises_enhancement</code>，源码见 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch00/cross_chapter/exercises_enhancement.py"><code>exercises_enhancement.py</code></a>；E09-06 使用本节的交叉实验脚本。这些练习使用方向数值，不通过左右声道音量模拟阵列定位；后者的声像不能代替麦克风传播时延模型。</p>
+<p>E09-01～E09-05 运行 <code>.venv/bin/python -m codes.chapters.ch00.cross_chapter.exercises_enhancement</code>，源码见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/exercises_enhancement.py"><code>exercises_enhancement.py</code></a>；E09-06 使用本节的交叉实验脚本。这些练习使用方向数值，不通过左右声道音量模拟阵列定位；后者的声像不能代替麦克风传播时延模型。</p>
 <h3 id="sec-u-b51bd23596">新练习的实现边界</h3>
-<p>E09-10～E09-26 的统一入口为 <code>.venv/bin/python -m codes.chapters.ch09.chapter09_experiments</code>，见<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch09/chapter09_experiments.py">原创复算代码</a>。E09-19与E09-25读取指定实际波形，其余题是小规模代数、概率、时刻或数值边界检查。集合距离的实现先按截断尺度计算，避免很小的正距离因平方而归零；辅助代价幂超出float64表示范围时返回明确状态，不把它报告成精确0。它们不构成完整通用 EKF、UKF、JPDA、PHD 或多目标身份管理系统。</p>
+<p>E09-10～E09-26 的统一入口为 <code>.venv/bin/python -m codes.chapters.ch09.chapter09_experiments</code>，见<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch09/chapter09_experiments.py">原创复算代码</a>。E09-19与E09-25读取指定实际波形，其余题是小规模代数、概率、时刻或数值边界检查。集合距离的实现先按截断尺度计算，避免很小的正距离因平方而归零；辅助代价幂超出float64表示范围时返回明确状态，不把它报告成精确0。它们不构成完整通用 EKF、UKF、JPDA、PHD 或多目标身份管理系统。</p>
 <h3 id="sec-u-87e2fb92df">E09-01：把“每帧”改为“每秒”</h3>
 <p>初态 $[30^\circ,5^\circ/\mathrm s]$，$\mathbf P=\operatorname{diag}(4,1)$；每 0.1 s 预测一次，采用已为此间隔离散化的 $\mathbf Q=\operatorname{diag}(0.1,0.01)$。连续两次缺测，求状态和协方差。</p>
 <p><strong>解答</strong>：每步角度增加 $5\times0.1=0.5^\circ$，两步状态依次是 $[30.5,5]^\top$、$[31,5]^\top$。按式(9-3)得到</p>
@@ -1460,7 +1460,7 @@ t_{\rm available}&=\frac{n_0+512}{16000},\\
 <p>$$\mathbf P_{1.08}\approx\begin{bmatrix}4.217941&1.7264\\1.7264&9.16\end{bmatrix}.$$</p>
 <p>若上游已经把状态预测至1.08 s，发布的 <code>state_time</code> 也必须改成1.08 s；消费方此时不再外推。仍从1.00 s算起会错误地再加2.4°。</p>
 <p>1.08 s 尚未超过有效期；若 1.20 s 才消费，示例拒绝这个状态并要求重新搜索或采用另行定义的降级策略。本题只把<strong>已在测量时刻形成的状态</strong>向前预测，未实现把迟到原始观测融合进已经更新过的当前滤波器。后一问题需要保存历史状态、重排重放或专用乱序观测方法；直接在当前时刻调用一次普通更新会混淆时间。<a href="https://stonesoup.readthedocs.io/en/v1.9.1/auto_examples/oosm/KalmanFilterOOSMExample.html">Stone Soup 固定延迟乱序观测示例</a>可用于比较到达顺序、等待重排与丢弃策略。</p>
-<p>E09-07、E09-08 的复算入口为 <code>.venv/bin/python -m codes.chapters.ch00.cross_chapter.tracking_time_exercises</code>，见<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch00/cross_chapter/tracking_time_exercises.py">源码</a>和<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/tests/test_codes_time_state_exercises.py">独立期望值测试</a>。前者检查证据递推，后者检查时间和不确定度；都不是实际声学定位精度测试。</p>
+<p>E09-07、E09-08 的复算入口为 <code>.venv/bin/python -m codes.chapters.ch00.cross_chapter.tracking_time_exercises</code>，见<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/tracking_time_exercises.py">源码</a>和<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/tests/test_codes_time_state_exercises.py">独立期望值测试</a>。前者检查证据递推，后者检查时间和不确定度；都不是实际声学定位精度测试。</p>
 <p><a id="e09-09"></a></p>
 <h3 id="sec-u-e45700d293">E09-09：IMM 为什么不能只平均两个模型的方差？</h3>
 <p>为隔离交互步骤，两模型都用同一局部展开角度作为标量状态，旧概率为 $\vec\mu=[3/4,1/4]$，均值为 $x_1=0^\circ,x_2=10^\circ$，方差为 $P_1=1\ \mathrm{deg}^2,P_2=4\ \mathrm{deg}^2$。转移矩阵取 $\mathbf T=\left[\begin{smallmatrix}0.9&0.1\\0.2&0.8\end{smallmatrix}\right]$，明确约定 $T_{ij}=\Pr(\text{新模式}=j\mid\text{旧模式}=i)$，所以<strong>每行</strong>和为 1。这里不是对真实停走过程的标定结果。</p>
@@ -1508,7 +1508,7 @@ t_{\rm available}&=\frac{n_0+512}{16000},\\
 <p><strong>边界与实现检查。</strong> 若 $\mathbf T=\mathbf I$，每个模型只接收自己的旧状态，交互退化为不混合；若某个 $c_j=0\text{，}$这个目的模式不可达，条件概率无定义，需禁用或按另行声明的初始化策略处理。不同状态维度的静止、匀速和加速模型不能直接平均，须先定义状态映射与被补维度的不确定度。接近 $-180^\circ/180^\circ$ 时，也不能把两个原始角度直接算术平均；需在一致局部角度图中展开，或采用适当的圆统计混合。</p>
 <p>固定 <a href="https://github.com/rlabbe/filterpy/blob/3b51149ebcff0401ff1e10bf08ffca7b6bbc4a33/filterpy/kalman/IMM.py">FilterPy <code>IMM.py</code></a> 的 <code>predict()</code> 在传播前计算混合初值，<code>_compute_mixing_probabilities()</code> 实际执行 <code>mu @ M</code>；其类参数说明中的转移方向文字与这条赋值不一致。接入时应以明确约定和非对称矩阵小例核验，不可仅依据参数说明再转置矩阵。本书例题采用上述行转移约定。</p>
 <p>固定版本的实际调用还存在无观测 <code>predict()</code> 总体混合权重与新模式先验不一致的边界；研究记录将上游原行为与独立目标计算分开，不修改上游源码，见<a href="research/01_spatial_and_tracking.html#tracking-upstream-audit">追踪实现核查</a>。</p>
-<p>本题运行入口为 <code>.venv/bin/python -m codes.chapters.ch00.cross_chapter.enhancement_structure_exercises</code>，见<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch00/cross_chapter/enhancement_structure_exercises.py">原创复算代码</a>和<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/tests/test_codes_enhancement_structure.py">独立测试</a>。测试用有理数二阶矩核对方差，另检查全概率下的总体均值/协方差不变、恒等转移和不可达模式。它验证交互算术，不验证真实 DOA 精度或机动识别率。</p>
+<p>本题运行入口为 <code>.venv/bin/python -m codes.chapters.ch00.cross_chapter.enhancement_structure_exercises</code>，见<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/enhancement_structure_exercises.py">原创复算代码</a>和<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/tests/test_codes_enhancement_structure.py">独立测试</a>。测试用有理数二阶矩核对方差，另检查全概率下的总体均值/协方差不变、恒等转移和不可达模式。它验证交互算术，不验证真实 DOA 精度或机动识别率。</p>
 <p><a id="e09-10"></a></p>
 <h3 id="sec-u-d81726d5ac">E09-10：方位观测的 EKF 一步更新</h3>
 <p><strong>题设。</strong> 只取二维位置子状态，预测位置为 $\vec m^-=[1,2]^\top$ m，$\mathbf P^-=\mathbf I/4$ m²，阵列中心在原点。观测使用本书的 $h(x,y)=\operatorname{atan2}(x,y)$，方差 $R=.01$ rad²；本次观测为 $z=h(\vec m^-)+.1$ rad。求雅可比、增益与后验，并说明为什么它没有完整确定距离。</p>
@@ -1861,7 +1861,7 @@ b&=\log\sum_k a_k,\\
 </tbody>
 </table></div>
 <p>$F=1$ 且无观测，交互本身保持总体均值和二阶矩，只有过程噪声增加方差。时刻2的方差可独立算成 $0.897358874054+4\times0.414772198396$，时刻3再加 $4\times0.390340538877$。模式概率变化来自转移，不是缺测提供了新的方位证据。</p>
-<p><a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch09/core/imm_teaching.py">原创标量核</a>保留持续对数模式概率，区分线性显示下溢与真实零先验；不可达目的模式、无效方差及超出浮点支持的计算明确失败。它不包含角度环绕、未知偏置、出生/删除或音频定位。模式集合和转移矩阵都是指定值，不能把本例称为机动检测成绩。</p>
+<p><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch09/core/imm_teaching.py">原创标量核</a>保留持续对数模式概率，区分线性显示下溢与真实零先验；不可达目的模式、无效方差及超出浮点支持的计算明确失败。它不包含角度环绕、未知偏置、出生/删除或音频定位。模式集合和转移矩阵都是指定值，不能把本例称为机动检测成绩。</p>
 <p><a id="e09-25"></a></p>
 <h3 id="sec-u-64e83d15d8">E09-25：实际 PCM 检测怎样触发候选、确认与退役</h3>
 <p><strong>题设。</strong> 读取 E09-19 的实际双麦 PCM，沿用197个512点窗、160点步长、RMS门与 GCC-PHAT。只维护一个教学轨迹槽，局部 ID 单调分配；候选连续3个有效帧才确认。候选遇无效帧即取消，再次出现时分配新 ID。确认后缺测可保持发布，龄期严格超过0.20 s才退役，等于门限保留。不重新生成波形，不用源静音真值代替检测。</p>
@@ -1931,7 +1931,7 @@ a_{\max}&=0.20(2f_s)=6400.
 <p>默认协议对197帧分配2个 ID、产生1次退役、在确认状态发布187帧；状态龄期对照发布189帧。这些是声明规则下的计数，不是准确率。原连续 KF 作为独立诊断，并不由管理器重置；即使退役后仍有诊断外推角，也不代表仍有已确认轨迹。</p>
 <p><img alt="图77：实际双麦PCM检测及两个时钟下的单槽候选、确认与退役" src="../figures/fig77_tracking_lifecycle.png" onerror="this.alt+='（图缺失）'" /></p>
 <p><em>图77使用实际 PCM 的有效标记，区分窗中心、整窗可用时刻与最近测量。事件由声明的连续计数和龄期规则产生；局部 ID1、ID2 不表示识别出两个人。没有输出增强音频，不是运行 ODAS、Bernoulli 或 LMB 整链。</em></p>
-<p><a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch09/examples/tracking_lifecycle_demo.py">只读入口</a>先核独立清单，再读取实际 PCM 计算检测与事件。这个单槽规则不处理多人关联、跨轨合并或永久身份。当前核拒绝重复或乱序的帧起点，连续命中按<strong>相邻提交行</strong>计数。本实验以固定 160 点帧移提交全部 197 行，所以相邻提交行就是相邻采集帧。若只提交起点为 $0,160,1600$ 的三条有效行，当前核仍会在第三行确认，尽管中间漏交了八行。需要固定采集节奏的系统应补交缺帧标记，或按帧序号间隙重置连续命中计数。迟到观测的重排、去重、容量与 ID 持久化也要由外层定义。它与 E09-06 的预置双轨交叉、E09-22 的概率存在更新各有不同目标。</p>
+<p><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch09/examples/tracking_lifecycle_demo.py">只读入口</a>先核独立清单，再读取实际 PCM 计算检测与事件。这个单槽规则不处理多人关联、跨轨合并或永久身份。当前核拒绝重复或乱序的帧起点，连续命中按<strong>相邻提交行</strong>计数。本实验以固定 160 点帧移提交全部 197 行，所以相邻提交行就是相邻采集帧。若只提交起点为 $0,160,1600$ 的三条有效行，当前核仍会在第三行确认，尽管中间漏交了八行。需要固定采集节奏的系统应补交缺帧标记，或按帧序号间隙重置连续命中计数。迟到观测的重排、去重、容量与 ID 持久化也要由外层定义。它与 E09-06 的预置双轨交叉、E09-22 的概率存在更新各有不同目标。</p>
 <p><a id="e09-26"></a></p>
 <h3 id="sec-u-ec8ab3e22d">E09-26：三维姿态转换、极点与一次 vMF 更新</h3>
 <p><strong>题设。</strong> 沿用本书 $+y$ 零点、朝 $+x$ 为正的方位 $\theta$，以及水平面朝 $+z$ 的俯仰 $\phi_{\mathrm{el}}$。已知阵列到世界的姿态是绕世界 $+z$ 的右手正90°旋转。转换阵列观测 $(30°,0°)$，再检查归一化和球面概率。公式三角函数代入弧度，题面用度显示。</p>
@@ -1975,7 +1975,7 @@ k_+&=\|\vec\eta^+\|,\\
 \end{aligned}\tag{9-42}$$</p>
 <p>$\vec\eta^+=(4,3,0)^\top$，因此集中度5、集中方向 $(.8,.6,0)^\top$，方位53.130102354156°。它不是将0°和90°按 $3:4$ 作普通角度平均。等集中度的先验与观测正好反向时，自然向量抵消、后验均匀，集中方向应未定义而不是除以0。</p>
 <p>集中方向也不等于期望向量。$k>0$ 时，期望长度 $A(k)=\coth k-1/k$；本例 $A(5)=0.800090803982$，所以 $E[\vec u]=A(5)\vec m_+$ 的范数小于1。高集中度可以近似局部角误差，但不能把 $k$ 无条件当成精确角方差倒数。</p>
-<p><a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch09/core/spherical_tracking.py">原创球面核</a>检验旋转正交、行列式正1、单位向量、极点与抵消。用稳定对数密度避免巨大 $\sinh k$，均匀情况单独处理；它不实现动态球面滤波、多人关联、未知姿态或麦克风定位。</p>
+<p><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch09/core/spherical_tracking.py">原创球面核</a>检验旋转正交、行列式正1、单位向量、极点与抵消。用稳定对数密度避免巨大 $\sinh k$，均匀情况单独处理；它不实现动态球面滤波、多人关联、未知姿态或麦克风定位。</p>
 <hr />
 <blockquote>
 <p>📄 本篇信息：配图 5 张 ｜ <a href="index.html">回首页</a></p>

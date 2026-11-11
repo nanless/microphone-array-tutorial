@@ -701,7 +701,7 @@ CMake要求3.20和C11，库链接平台数学库；MSVC路径明确拒绝，目�
 
 ### I32：固定工业接口诊断的执行范围
 
-[诊断脚本](../../ch10/examples/audit_industrial_upstream_interfaces.py)的旧[JSON报告](../../ch10/reports/industrial_upstream_interfaces.json)对应本章来源审查 SRC10-01～03；它绑定的是[bde483历史工具字节](https://github.com/nanless/microphone-array-signal-processing/blob/bde483bcc429a553aeaf8830ca3687ab46831db0/codes/chapters/ch10/examples/audit_industrial_upstream_interfaces.py)，不是改后工具的产物。当前工具的实际复验与新报告见[§9](#industrial-current-interface-contracts)。脚本先验证独立上游工作树的完整提交、干净状态、被用源码与许可摘要，再执行；结束再次检查，禁止自动获取依赖和改写上游。报告还绑定脚本摘要及输入配置摘要，JSON不写入非标准 NaN 或 Infinity。
+[诊断脚本](../../ch10/examples/audit_industrial_upstream_interfaces.py)的旧[JSON报告](../../ch10/reports/industrial_upstream_interfaces.json)对应本章来源审查 SRC10-01～03；它绑定的是[bde483历史工具字节](https://github.com/nanless/microphone-array-tutorial/blob/bde483bcc429a553aeaf8830ca3687ab46831db0/codes/chapters/ch10/examples/audit_industrial_upstream_interfaces.py)，不是改后工具的产物。当前工具的实际复验与新报告见[§9](#industrial-current-interface-contracts)。脚本先验证独立上游工作树的完整提交、干净状态、被用源码与许可摘要，再执行；结束再次检查，禁止自动获取依赖和改写上游。报告还绑定脚本摘要及输入配置摘要，JSON不写入非标准 NaN 或 Infinity。
 
 | 对象 | 本轮实际动作 | 未执行 |
 |---|---|---|
@@ -725,7 +725,7 @@ PYTHONDONTWRITEBYTECODE=1 /private/tmp/masp-appb-pra-venv/bin/python \
 
 #### 2026-10-01：五项固定源码合同的受限执行
 
-2026-10-01的[历史合同报告](../../ch10/reports/industrial_contracts.json)绑定[bde483保存的原工具字节](https://github.com/nanless/microphone-array-signal-processing/blob/bde483bcc429a553aeaf8830ca3687ab46831db0/codes/chapters/ch10/examples/audit_industrial_contracts.py)，不是改后工具的产物；2026-10-05的当前工具与实际复验见[§9](#industrial-current-interface-contracts)。历史运行不修改上述2026-09-28报告，先核官方地址、完整HEAD、工作树清洁状态、各源码与许可证的SHA及Git blob，再在临时目录编译或提取原函数，结束重复核对。报告绑定当时工具和完整锁表摘要，严格JSON不写NaN/Infinity。获取工具的 `not_run` 仍表示获取过程没有执行上游，不改成整包运行成功。
+2026-10-01的[历史合同报告](../../ch10/reports/industrial_contracts.json)绑定[bde483保存的原工具字节](https://github.com/nanless/microphone-array-tutorial/blob/bde483bcc429a553aeaf8830ca3687ab46831db0/codes/chapters/ch10/examples/audit_industrial_contracts.py)，不是改后工具的产物；2026-10-05的当前工具与实际复验见[§9](#industrial-current-interface-contracts)。历史运行不修改上述2026-09-28报告，先核官方地址、完整HEAD、工作树清洁状态、各源码与许可证的SHA及Git blob，再在临时目录编译或提取原函数，结束重复核对。报告绑定当时工具和完整锁表摘要，严格JSON不写NaN/Infinity。获取工具的 `not_run` 仍表示获取过程没有执行上游，不改成整包运行成功。
 
 | 固定对象 | 实际执行与输入 | 独立核对结果 | 代替项和未执行范围 |
 |---|---|---|---|

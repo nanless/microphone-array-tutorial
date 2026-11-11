@@ -2,7 +2,7 @@
 <link rel="canonical" href="13_distributed-enhancement.html"><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 13 章 · 分布式麦克风协同增强 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="1a85da73ba06"><style>
+<meta name="source-digest" content="0fc6040b7677"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -852,7 +852,7 @@ z_u&=\vec f_u^H\vec x_u,\\
 <p>该源分析与合成各乘一次对称 Hann 窗的平方根，没有再除以重叠处的窗乘积和。以同样的窗和半窗跳长取 8 点为例，窗定义为 $h[n]=(1-\cos(2\pi n/7))/2$。内部重叠区依次加出 $h[0]+h[4]\approx0.950484$、$h[1]+h[5]\approx0.799516$、$h[2]+h[6]\approx0.799516$、$h[3]+h[7]\approx0.950484$，因此即使频域不处理，窗乘积和也不是恒定的 1。尾部还要单独核对：24 点输入、8 点窗、4 点跳长时，按该源码的循环边界，只处理从 0、4、8、12 开始的四帧，漏掉本来完整的第 16 点起始帧，末 4 点未被处理。</p>
 <p>该源没有对角加载；即使噪声段包含很多帧，若两路观测总是相同，噪声矩阵仍然秩亏。上述是对具体窗、循环和统计的独立控制；<a href="https://homes.esat.kuleuven.be/~abertran/reports/IWAENC10.pdf" title="citation">IWAENC 2010 §II-C、§III</a>中的算法框图不能代替检查这一固定实现。</p>
 <p>这次对作者MATLAB文件完成的是固定身份的静态审查，未运行MATLAB/Octave，也未接入真实无线网络。源码可见、某方法被提取核对、完整流式整链实测，是三个不同状态；后续实验必须继续保留这个区别。</p>
-<p><a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch13/reports/upstream_distributed_contracts_current.json">当前原接口报告</a>还记录了 paderwasn 的三个固定原助手，共 16 次限定调用：13 次吻合独立对照，1 次短输入行为有差异，2 次返回数值却没有可观测峰。报告另静态比较了 DWACD 的信号与活动切片：固定例中信号的延迟段是 8192 点，活动判断却取 16384 点，把下一段的活动也算进去。独立门控对照用先 8192 个零、再 8192 个一的活动向量，原切片的延迟活动计数为 8192，能通过严格大于 6144 的门槛；与信号同范围的切片计数为零，不能通过。这个结果说明要核对统计支持和观测标记；没有执行原 DWACD，也没有测出 SRO。</p>
+<p><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch13/reports/upstream_distributed_contracts_current.json">当前原接口报告</a>还记录了 paderwasn 的三个固定原助手，共 16 次限定调用：13 次吻合独立对照，1 次短输入行为有差异，2 次返回数值却没有可观测峰。报告另静态比较了 DWACD 的信号与活动切片：固定例中信号的延迟段是 8192 点，活动判断却取 16384 点，把下一段的活动也算进去。独立门控对照用先 8192 个零、再 8192 个一的活动向量，原切片的延迟活动计数为 8192，能通过严格大于 6144 的门槛；与信号同范围的切片计数为零，不能通过。这个结果说明要核对统计支持和观测标记；没有执行原 DWACD，也没有测出 SRO。</p>
 <span id="sec-47" class="anchor-alias" aria-hidden="true"></span><span id="sec-15-14" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-13-14">13.14 通信、矩阵存储与更新预算怎样算</h2>
 <span id="sec-48" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-3888e3de9b">先声明计数的信号表示</h3>
 <p>原始PCM16单声道、采样率16kHz的有效载荷是$16000\times16=256000$ bit/s，即32 kB/s。32位浮点时域流是64 kB/s。两秒记录对应64000与128000字节，均未计文件头、包头、校验、加密、重传和纠错。</p>
@@ -914,7 +914,7 @@ P_{\mathrm{ref}}&=\sum_{n\in\mathcal I}D[n]^2,\\
 <p>对白噪声集中权重的远端部分$[4,-1]^\top/13$，振幅界为$5\Delta/26$。该界是远端输入量化导致的浮点输出增量；最终输出再次量化时另有一次舍入误差。若实际传输的是先合成后量化的广播$z$，界应使用接收系数乘该广播的量化步长，不能机械复用逐麦传输界。削波、丢包与速率漂移也不在这一舍入界内。</p>
 <p>本次实际传输控制量化的是$z_2=2x_3-x_4/2$，接收系数为$2/13$。因此对应振幅界是$\Delta/13\approx2.347506\times10^{-6}$，实际浮点输出相对未量化控制的最大增量约$2.347005\times10^{-6}$，处于独立舍入界内。这是对真正编码、重读后的远端广播计算的结果。</p>
 <span id="sec-56" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-da5ae5d202">可以复算的入口与音频组</h3>
-<p>数值核见<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch13/core/distributed.py">distributed.py</a>，音频模型见<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch13/core/distributed_audio.py">distributed_audio.py</a>。数学正文使用列压缩矩阵$\mathbf T$、$\tilde{\vec x}=\mathbf T^H\vec x$；代码参数<code>projection</code>使用观测行，即$\mathbf B=\mathbf T^H$，并在内部归一化非零行。局部权重数值会随坐标尺度变化，代码输出的有效全局权重、协方差模型和MSE才是与正文手算的共同核对对象。复数广播滤波$\vec f^H\vec x$对应代码中的共轭行，不能直接将$\vec f^\top$填入。</p>
+<p>数值核见<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch13/core/distributed.py">distributed.py</a>，音频模型见<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch13/core/distributed_audio.py">distributed_audio.py</a>。数学正文使用列压缩矩阵$\mathbf T$、$\tilde{\vec x}=\mathbf T^H\vec x$；代码参数<code>projection</code>使用观测行，即$\mathbf B=\mathbf T^H$，并在内部归一化非零行。局部权重数值会随坐标尺度变化，代码输出的有效全局权重、协方差模型和MSE才是与正文手算的共同核对对象。复数广播滤波$\vec f^H\vec x$对应代码中的共轭行，不能直接将$\vec f^\top$填入。</p>
 <p>代码的<code>compressed_weights</code>对应内部归一化观测坐标，<code>raw_compressed_weights</code>对应传入的原始广播坐标；缓存接收系数与重组当前输出使用后一组。<code>outputs_at_last_solve</code>仅保存上次求解时的全局提案，<code>cached_outputs</code>才是用当前广播重组后的实际权重。两者可在广播变化后不同，E13-09/10要求分别评分。</p>
 <p>从仓库根目录运行以下入口。生成命令写17个WAV及独立清单；<code>--check</code>只读核对18个普通成员、当前真实源摘要、参数与完整字节重放，不重新获取上游实现。</p>
 <pre><code class="language-bash">.venv/bin/python -m codes.chapters.ch13.examples.generate_distributed_audio

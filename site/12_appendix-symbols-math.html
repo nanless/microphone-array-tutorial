@@ -2,7 +2,7 @@
 <link rel="canonical" href="14_appendix-symbols-math.html"><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 14 章 · 附录 A：符号术语数学 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="1a85da73ba06"><style>
+<meta name="source-digest" content="0fc6040b7677"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -1233,7 +1233,7 @@ $$</p>
 $$</p>
 <p>这里两个特征值由 $4,1$ 变为 $1,1$，但目标导向矢量也改变了。若用白化后的数据与原导向矢量 $[1,1]^\top$ 匹配，空间模型就不一致。这个矩阵例子由本书构造，并非实测噪声。</p>
 <p>PHAT 的运算对象却是<strong>一个频点的一对通道的互功率谱</strong>：当 $G_{12}(f)\ne0$ 时，$G_{12}(f)/|G_{12}(f)|$ 是一个模为 1 的复数，不会把两路快拍分别乘上 $1/2$ 和 $1$。例如两路确定的复频谱值为 $X_1=2$、$X_2=1$ 时，互谱为 2，PHAT 后为 1，但这不是把噪声协方差变成单位阵。</p>
-<p>本题两路噪声互不相关，理论噪声互功率谱为 0；此时 PHAT 还须跳过或保护分母，更不能从零互谱推得 $\mathbf W$。这反驳了“PHAT 等于空间白化”的说法，但不否定 PHAT 在时延估计中抑制源谱幅度影响的用途。复算入口为 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch00/cross_chapter/exercises_engineering.py"><code>exercises_engineering.py</code></a> 的 <code>E14-04</code>。</p>
+<p>本题两路噪声互不相关，理论噪声互功率谱为 0；此时 PHAT 还须跳过或保护分母，更不能从零互谱推得 $\mathbf W$。这反驳了“PHAT 等于空间白化”的说法，但不否定 PHAT 在时延估计中抑制源谱幅度影响的用途。复算入口为 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/exercises_engineering.py"><code>exercises_engineering.py</code></a> 的 <code>E14-04</code>。</p>
 <p>第 4 章 E04-11 进一步给出非对角噪声协方差与完整方向搜索：只白化协方差会得到 −4.8°，同步变换导向才得到给定的 0° 真值。那是已知噪声模型下的确定性例子，不是一般噪声中的定位精度保证。</p>
 <span id="sec-u-935c1036ea" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-84ef8c9584">E14-05：奇异协方差中，把逆换成伪逆是否总能得到 MVDR？</h3>
 <p>考虑明确的一组输入：</p>
@@ -1299,14 +1299,14 @@ $$</p>
 <p><strong>同一矩阵换一个导向，再看何时伪逆可用。</strong> 若把目标改成 $\vec a=[0,1]^\top$，约束固定 $w_2=1$；无论 $w_1$ 取什么值，噪声功率都为 1。此时归一化伪逆解 $[0,1]^\top$ 是最优解之一，零空间内的任意加量都不改变结果。</p>
 <p>一般地，若目标在零空间中的正交投影为非零 $\vec a_0$，取 $\vec a_0/\|\vec a_0\|_2^2$ 就能满足约束且功率为零。若投影为零，目标全在 $\mathbf R$ 的值域；在该值域中 $\mathbf R$ 正定，可按 §14.3.6 求解，结果正是归一化伪逆解。再加任意零空间权重，约束和最小功率都不变。</p>
 <p><strong>工程解释。</strong> 真实麦克风一般不会拥有完全零噪声通道；这个精确半正定模型用于揭示优化前提，不能据此推荐把实际加载降到零。有限快拍、通道重复或秩约束模型都可能产生奇异样本协方差。此时应先判断目标是否含零空间分量，再选加载、明确的子空间约束或其他相应求解方法。E14-03 中伪逆给出最小范数最小二乘解的结论仍然成立，那是另一个目标函数与约束问题。</p>
-<p>本题是本书自行构造的代数反例，运行 <code>.venv/bin/python -m codes.chapters.ch00.cross_chapter.spatial_model_exercises</code> 的 <code>E14-05</code> 可核对可行性、两种输出功率与加载极限；<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch00/cross_chapter/spatial_model_exercises.py">源码</a>使用给定矩阵，不把反例扩写成通用奇异 MVDR 求解器。</p>
+<p>本题是本书自行构造的代数反例，运行 <code>.venv/bin/python -m codes.chapters.ch00.cross_chapter.spatial_model_exercises</code> 的 <code>E14-05</code> 可核对可行性、两种输出功率与加载极限；<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/spatial_model_exercises.py">源码</a>使用给定矩阵，不把反例扩写成通用奇异 MVDR 求解器。</p>
 <span id="sec-u-99706c9759" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-53cdc056b8">E14-06：完整 FFT 的末格是接近采样率的正频率吗？</h3>
 <p>给定 $N=8$、$f_s=8$ kHz，列出完整 DFT 从 $k=0$ 到 $7$ 的有符号代表频率，以及实信号单边 FFT 保留的频率。再分别考虑 $x[n]=\cos(2\pi n/8)$ 与 $z[n]=(-1)^n$（$n=0,\ldots,7$）：两者的非零频点在哪里？本题使用前向 DFT 无 $1/N$、逆变换带 $1/N$ 的约定。</p>
 <p><strong>频率格。</strong> 格点间隔是 $f_s/N=1$ kHz。由式(14-1)，完整频率依次是 $[0,1,2,3,-4,-3,-2,-1]$ kHz；实输入单边谱是 $[0,1,2,3,4]$ kHz。故 $k=7$ 的有符号代表是 $-1$ kHz。把它写作 $+7$ kHz 时，整数采样点上的复指数完全相同，二者相差一个采样率，不是两个独立格点。$k=4$ 在完整 fftfreq 口径记作 $-4$ kHz，在单边 rfftfreq 口径记作 $+4$ kHz。</p>
 <p><strong>复谱核对。</strong> $\cos(2\pi n/8)=\tfrac12e^{\mathrm j2\pi n/8}+\tfrac12e^{-\mathrm j2\pi n/8}$，所以无归一化完整 DFT 只有 $X[1]=X[7]=8/2=4$ 非零。$(-1)^n=e^{\mathrm j\pi n}=e^{-\mathrm j\pi n}$ 对整数 $n$ 完全相同，因此它只有 $Z[4]=8$ 一个 Nyquist 格点；不能把 $+4$ 与 $-4$ kHz 各计成一份独立能量。正负频率分量对实余弦互为共轭，但填入阵列导向相位时须用与所取谱格一致的有符号频率。</p>
 <p>用 Parseval 等式核对样本平方和：余弦的两个共轭格各贡献 $4^2/8$，合计 4；交替序列的 Nyquist 格只贡献一次 $8^2/8=8$。因此用单边谱算能量时，内部频点要补上没有存储的共轭项，DC 和 Nyquist 则只计一次。若谱处理后仍要逆变换为实信号，这两个自共轭端点的值也必须为实数。</p>
 <p><img alt="图48 完整八点 DFT 的有符号频率与实谱单边频率" src="../figures/fig48_fft_frequencies.png" onerror="this.alt+='（图缺失）'" /></p>
-<p>图 48（a）按 fftfreq 约定画出 $N=8$、$f_s=8$ kHz 的全部格点，$k=4$ 记为 $-4$ kHz；（b）只保存实信号的非负格点，$k=4$ 记为 $+4$ kHz。两幅图中的 Nyquist 标注是<strong>同一个离散格点</strong>，不是两次观测。图示给的是频率坐标约定，不表示补零增加了频率分辨能力。<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/appendix_a/appendix_a_experiments.py">代码复算</a>还列出余弦的两个非零格点。</p>
+<p>图 48（a）按 fftfreq 约定画出 $N=8$、$f_s=8$ kHz 的全部格点，$k=4$ 记为 $-4$ kHz；（b）只保存实信号的非负格点，$k=4$ 记为 $+4$ kHz。两幅图中的 Nyquist 标注是<strong>同一个离散格点</strong>，不是两次观测。图示给的是频率坐标约定，不表示补零增加了频率分辨能力。<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/appendix_a/appendix_a_experiments.py">代码复算</a>还列出余弦的两个非零格点。</p>
 <span id="sec-u-601bb171ef" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-26323254d5">E14-07：复向量为什么不能用普通转置计算能量？</h3>
 <p>取 $\vec x=[1,\mathrm j]^\top$。分别计算 $\vec x^H\vec x$ 和 $\vec x^\top\vec x$，并说明哪个可作为模平方之和。</p>
 <p>共轭转置后，$\vec x^H=[1,-\mathrm j]$，所以 $\vec x^H\vec x=1+(-\mathrm j)\mathrm j=2$。普通转置却给 $\vec x^\top\vec x=1+\mathrm j^2=0$；它发生相消，不能表示这路非零向量的能量。与 E14-02 一样，外积 $\vec x\vec x^H=\left[\begin{smallmatrix}1&-\mathrm j\\\mathrm j&1\end{smallmatrix}\right]$ 是厄米半正定的，但单个外积的秩仅为 1。这个确定性复向量只说明复共轭的必要性；要称为统计功率，仍须定义平均区间或概率模型。</p>
@@ -1368,7 +1368,7 @@ $$</p>
 <span id="sec-u-f2a35d6e39" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-2a6196d983">E14-12：SDW-MWF 的噪声权重趋大时一定归零吗？</h3>
 <p>取目标协方差 $\mathbf R_{ss}=\operatorname{diag}(1,0)$，参考选择向量 $\vec e_r=[1,0]^\top$。先令噪声协方差为 $\mathbf R_{nn}=\operatorname{diag}(0,1)$，再改为 $\mathbf I$；两种情况下都用 $\vec w_\mu=(\mathbf R_{ss}+\mu\mathbf R_{nn})^{-1}\mathbf R_{ss}\vec e_r$，逐一计算 $\mu=1,10,10^6$ 的权重及 $\mu\to\infty$ 的极限。</p>
 <p><strong>噪声有零空间。</strong> 第一种矩阵的和为 $\operatorname{diag}(1,\mu)$，对每个 $\mu>0$ 都可逆。右边为 $[1,0]^\top$，所以三个权重均为 $[1,0]^\top$，极限也不为零。第一通道恰在噪声零空间中，增大它的噪声惩罚不会改变该通道的输出；这不表示真实麦克风有完全无噪声通道。</p>
-<p><strong>噪声正定。</strong> 将噪声矩阵改为 $\mathbf I$，则 $\vec w_\mu=[1/(1+\mu),0]^\top$。$\mu=1,10,10^6$ 时第一权重分别为 $0.5$、约 $0.090909$、约 $9.99999\times10^{-7}$，极限为零。两组的目标与参考完全相同，改变的只有噪声矩阵是否正定。因此“$\mu$ 趋大则零输出”必须写出充分条件；“总矩阵每次可逆”本身不足以推出极限。<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/appendix_a/appendix_a_experiments.py">代码复算</a>返回两组权重，结果属于本书代数反例，不是实际语音质量比较。</p>
+<p><strong>噪声正定。</strong> 将噪声矩阵改为 $\mathbf I$，则 $\vec w_\mu=[1/(1+\mu),0]^\top$。$\mu=1,10,10^6$ 时第一权重分别为 $0.5$、约 $0.090909$、约 $9.99999\times10^{-7}$，极限为零。两组的目标与参考完全相同，改变的只有噪声矩阵是否正定。因此“$\mu$ 趋大则零输出”必须写出充分条件；“总矩阵每次可逆”本身不足以推出极限。<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/appendix_a/appendix_a_experiments.py">代码复算</a>返回两组权重，结果属于本书代数反例，不是实际语音质量比较。</p>
 <span id="sec-u-9ad8275b24" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-3335e1dd38">E14-13：绝对与相对对角加载在整体缩放后有何不同？</h3>
 <p>本书手算：取两麦同一频点的协方差 $\mathbf R=\operatorname{diag}(4,1)$、$M=2$、非零目标导向矢量 $\vec a=[1,1]^\top$。分别以绝对参数 $\delta=1$ 和相对参数 $\eta=0.4$ 加载，按第 5 章式(5-9)求 MVDR 权重及加载矩阵的二范数条件数。然后仅将 $\mathbf R$ 乘以 10，保持 $\delta$、$\eta$ 的数值不变，重新计算。这里的数是确定性代数输入，不是估计协方差或硬件实测值。</p>
 <p><strong>先算加载量。</strong> 原矩阵的平均对角元素为 $\operatorname{tr}(\mathbf R)/M=(4+1)/2=2.5$，所以相对加载增加 $\eta\operatorname{tr}(\mathbf R)/M=0.4\times2.5=1$，恰与绝对加载 $\delta=1$ 相同，两者都得到 $\operatorname{diag}(5,2)$。$\delta$ 和协方差元素同量纲；$\eta$ 无量纲，乘上平均对角元素后的加性项才具有协方差量纲。</p>
@@ -1416,7 +1416,7 @@ $$</p>
 \qquad
 \|\vec r\|_2^2=\frac12+\frac12=1\text{。}$$</p>
 <p>逐项检查正交条件：$\mathbf A^H\vec r=(-1-\mathrm j)/2+(-\mathrm j)(-1+\mathrm j)/2=0$。观测无法完全落在 $\mathbf A$ 的一维复列空间内，最优残差仍非零，但沿该设计列再改参数已经不能减小它。</p>
-<p>若改用普通转置，则 $\mathbf A^\top\mathbf A=1+\mathrm j^2=0$，尽管设计列非零而且满列秩。这个“零分母”由错误内积造成，不是原问题不可辨识。E14-07 说明共轭模平方定义能量，本题进一步说明它如何进入参数拟合。复算入口为 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/appendix_a/appendix_a_experiments.py"><code>appendix_a_experiments.py</code></a> 的 <code>E14-14</code>。</p>
+<p>若改用普通转置，则 $\mathbf A^\top\mathbf A=1+\mathrm j^2=0$，尽管设计列非零而且满列秩。这个“零分母”由错误内积造成，不是原问题不可辨识。E14-07 说明共轭模平方定义能量，本题进一步说明它如何进入参数拟合。复算入口为 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/appendix_a/appendix_a_experiments.py"><code>appendix_a_experiments.py</code></a> 的 <code>E14-14</code>。</p>
 <p><span id="e12-15" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e14-15"></a></p>
 <span id="sec-u-b4090abdbf" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-a9e3cd8d47">E14-15：已知噪声协方差怎样改变最小二乘答案？</h3>
 <p>观测模型 $\vec b=\mathbf A x_*+\vec n$ 中，$\mathbf A=[1,1]^\top$，$E\vec n=0$，已知 $\mathbf C=E[\vec n\vec n^H]=\operatorname{diag}(1,4)$。本次观测为 $\vec b=[0,2]^\top$。分别求 OLS 和式(14-5)的 WLS，检查残差正交条件，并比较两种线性估计在这个统计模型中的方差。</p>
@@ -1537,7 +1537,7 @@ n_2[n]&=0.06e[n]\cos(2\pi4000n/16000)\text{。}
 </tbody>
 </table></div>
 <p>浮点目标均方约为 $0.020000000000000004$，三个浮点 NMSE 在舍入精度内分别为 $0.028125$、$0.018000$、$0.058500$；PCM 表采用实际量化参考的 $D_I$，不把解析 $0.02$ 当作其精确分母。两种结果的微小差别来自量化和浮点舍入，不改变本例权重的排序。这些数值是固定模型、固定窗口的客观读回，不是多次随机实验或听测统计。</p>
-<p>复算命令为 <code>.venv/bin/python -m codes.chapters.appendix_a.appendix_a_experiments</code>，资产严格只读核验为 <code>.venv/bin/python -m codes.chapters.appendix_a.examples.generate_weighted_audio --check</code>；生成模型位于 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/appendix_a/core/weighted_audio.py"><code>weighted_audio.py</code></a>。入口检查正式文件，不自动重生缺失或过期资产。本例频率、噪声比例与稳定窗口均已知；有限包络边缘不纳入此解析评分，也没有执行人工听测。真实噪声相关、协方差未知、时变或目标两路响应不同的情况，应重新建模而不能照搬这组权重。</p>
+<p>复算命令为 <code>.venv/bin/python -m codes.chapters.appendix_a.appendix_a_experiments</code>，资产严格只读核验为 <code>.venv/bin/python -m codes.chapters.appendix_a.examples.generate_weighted_audio --check</code>；生成模型位于 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/appendix_a/core/weighted_audio.py"><code>weighted_audio.py</code></a>。入口检查正式文件，不自动重生缺失或过期资产。本例频率、噪声比例与稳定窗口均已知；有限包络边缘不纳入此解析评分，也没有执行人工听测。真实噪声相关、协方差未知、时变或目标两路响应不同的情况，应重新建模而不能照搬这组权重。</p>
 <p><span id="e12-20" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e14-20"></a></p>
 <span id="sec-u-97f33585ea" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-28d6db2836">E14-20：相关噪声为什么会产生负权重，白化后还须改变什么？</h3>
 <p><strong>题目与输入。</strong> 两次观测包含同一个未知标量 $x_*$，模型为 $\vec b=\vec a x_*+\vec n$，其中 $\vec a=[1,1]^\top$。设计矩阵是这一列 $\mathbf A=\vec a$，不是待估的阵列导向。噪声均值为零，给定真实协方差</p>
@@ -1602,7 +1602,7 @@ H_{\mathrm{wrong}}&=\vec h_{\mathrm{wrong}}^H\vec a,\\
 \end{aligned}\tag{14-11}$$</p>
 <p>这条处理链仍返回有限估计，噪声也确实被白化；但真实目标被缩放了。它没有保持本题的无偏约束，不能与前表三种单位响应方案混为一谈。这与 E14-04 及第4章的同步变换规则相通：坐标改变后，模型也要跟着改变。</p>
 <p><strong>一次观测与总体结论分开。</strong> 若恰给 $\vec b=[0,2]^\top$，OLS、仅对角加权和完整 GLS 分别得到 $1$、$2/5$ 与 $-1/2$。白化后的观测为 $[0,4/\sqrt7]^\top$；同步变换的最小二乘估计仍为 $-1/2$，错误处理链却得到 $2/\sqrt7$。负的估计值是参数值，不是负方差。未知 $x_*$ 时，仅凭这些数不能排列这一次观测的真实误差；$7/8$ 与 $32/25$ 等数字比较的是给定零均值噪声模型下的总体方差。</p>
-<p><strong>可运行代码与边界。</strong> <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/appendix_a/appendix_a_experiments.py">附录 A 入口</a>中的 <code>correlated_gls_demo()</code> 返回 <code>E14-20</code> 的输入矩阵、Cholesky 因子、白化矩阵、三组原有效权重、真实方差、给定观测的估计以及错误处理链的响应。程序用 NumPy 的 <code>lstsq</code> 解白化问题，不另写通用 GLS 求解器；手算则采用二阶伴随矩阵和完成平方，两种路线独立核对。运行完整入口的命令见本节开头。</p>
+<p><strong>可运行代码与边界。</strong> <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/appendix_a/appendix_a_experiments.py">附录 A 入口</a>中的 <code>correlated_gls_demo()</code> 返回 <code>E14-20</code> 的输入矩阵、Cholesky 因子、白化矩阵、三组原有效权重、真实方差、给定观测的估计以及错误处理链的响应。程序用 NumPy 的 <code>lstsq</code> 解白化问题，不另写通用 GLS 求解器；手算则采用二阶伴随矩阵和完成平方，两种路线独立核对。运行完整入口的命令见本节开头。</p>
 <p>本题没有估计协方差、生成新音频或验证未知时变噪声。$\mathbf C$ 不正定时，本题的可逆白化步骤不成立；估错相关项或目标两路增益时，负权重也可能放大误差。实际系统应验证协方差、目标模型和数值条件，不能只凭“用了负权重”判断方法更好。</p>
 <hr />
 <blockquote>

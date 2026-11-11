@@ -1800,8 +1800,8 @@ EXPECTED_REAL_AUDIO_FILES = set(EXPECTED_REAL_AUDIO_CHANNELS) | {
     "MANIFEST.json", "ATTRIBUTION.txt", "LICENSE.txt", "README.md",
 }
 EXPECTED_REAL_AUDIO_SOURCE_LINKS = {
-    "../core/real_recordings.py": "https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch02/core/real_recordings.py",
-    "../examples/prepare_real_recordings.py": "https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch02/examples/prepare_real_recordings.py",
+    "../core/real_recordings.py": "https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch02/core/real_recordings.py",
+    "../examples/prepare_real_recordings.py": "https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch02/examples/prepare_real_recordings.py",
 }
 
 

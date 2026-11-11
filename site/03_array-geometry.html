@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 3 章 · 阵列几何形态 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="1a85da73ba06"><style>
+<meta name="source-digest" content="0fc6040b7677"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -694,7 +694,7 @@ B(f,\theta;\theta_0)&=\frac1M\sum_{m=0}^{M-1}e^{\mathrm j\psi_m}.
 </tr>
 </tbody>
 </table></div>
-<p>两行的常规主瓣宽度在本条件下很接近；白噪声增益相同，是因为目标响应为 1、权重平方和同为 $6(1/6)^2=1/6$。连续滞后结构不同，并不必然使等权 DSB 的主瓣大幅改变。这里没有比较旁瓣、混叠角域、有限样本协同阵估计或房间定位误差，不能由这个表推出两种阵列所有任务性能相同。<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch03/chapter03_experiments.py">第 3 章补充实验</a>提供这组固定条件复算。</p>
+<p>两行的常规主瓣宽度在本条件下很接近；白噪声增益相同，是因为目标响应为 1、权重平方和同为 $6(1/6)^2=1/6$。连续滞后结构不同，并不必然使等权 DSB 的主瓣大幅改变。这里没有比较旁瓣、混叠角域、有限样本协同阵估计或房间定位误差，不能由这个表推出两种阵列所有任务性能相同。<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch03/chapter03_experiments.py">第 3 章补充实验</a>提供这组固定条件复算。</p>
 <p>差分集合只给出虚拟位置的候选索引。要把这些位置用于子空间估计，还需要从协方差中构造相应的二阶统计量。</p>
 <span id="sec-u-20a0d88f74" class="anchor-alias" aria-hidden="true"></span><span id="sec-8" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-3-3-2">3.3.2 物理协方差怎样给出虚拟滞后</h3>
 <p>考虑一个固定频点：远场源两两不相关、均值为零；所有通道使用相同理想响应；传感器噪声与源不相关，跨通道独立且方差同为 $\sigma_n^2$。令 $P_k$ 是第 $k$ 个源在参考麦的功率，$\vec b_{ij}=\vec r_i-\vec r_j$ 是基线，$\kappa_f=2\pi f/c$ 是波数、单位 rad/m，则</p>
@@ -765,7 +765,7 @@ g'_ma_m(\theta'_q)
 <p><strong>原始噪声与拟合残差需要分开。</strong> 模型中的 $\vec n=\vec y-g\vec z$ 使用真实增益；拟合残差 $\vec r=\vec y-\hat g\vec z$ 使用估计增益。式(3-12)使 $\vec z^H\vec r=0$，因为最小点已把输入方向上的可拟合部分吸收到系数中；它并不要求有限记录恰好满足 $\vec z^H\vec n=0$。E03-12 显示原始噪声的内积为 −0.3，而拟合残差的内积为零。</p>
 <p>这个公式假设 $z_i$ 可视为已知输入。若参考麦本身含显著噪声，直接用带噪 $X_m/X_0$ 或把 $X_0$ 当精确输入会引入误差变量问题，尤其在参考能量很小时容易不稳定。E03-15 用四个等权观测展示：真实增益为 2，带噪输入的最小二乘系数却为 1.6，并且训练残差比代入真增益时更小。重复同一组记录不会改变这个系数。实测需要足够激励、参考噪声模型、多帧统计和独立复测；这些条件不能省略为“数据够多就无偏”。</p>
 <p><strong>未知方向不等于完全无锚。</strong> <a href="https://www.microsoft.com/en-us/research/wp-content/uploads/2004/06/2004-ivantash-icme.pdf">Tashev《Gain Self-Calibration Procedure for Microphone Arrays》ICME 论文，2004，§2–3</a>先估方向，再利用该方向与各路接收能量更新<strong>增益</strong>；其简化模型把位置视为足够准确，并把通道响应修正简化为增益修正。<a href="https://doi.org/10.1007/BF01201215">Weiss 与 Friedlander《Eigenstructure Methods for Direction Finding with Sensor Gain and Phase Uncertainties》，1990，摘要</a>讨论方向与各传感器增益、相位的联合估计。方法名称或论文摘要都不能使上面这个任意复增益 ULA 反例自动消失；必须核对各自的模型和额外约束。</p>
-<p><strong>本书的受锚约束教学演示</strong>给出一条可运行的最小路径，而非复现上述论文算法。<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch03/examples/self_calibration_demo.py">演示入口</a>生成四麦、三个依次录制的单源场景，每场景 48 帧单频复谱；<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch03/core/calibration.py">估计实现</a>固定 $g_0=1$，还要求从观测之外独立测得相邻第 1 路相对第 0 路的相位，增益幅度仍由数据估计。角度限制在 $[-60°,60°]$，相邻麦在该角域内不得相位折叠。这个外部相位锚约束住上面的共同相位斜率；如果锚本身错了，数据残差并不能替它纠错。</p>
+<p><strong>本书的受锚约束教学演示</strong>给出一条可运行的最小路径，而非复现上述论文算法。<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch03/examples/self_calibration_demo.py">演示入口</a>生成四麦、三个依次录制的单源场景，每场景 48 帧单频复谱；<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch03/core/calibration.py">估计实现</a>固定 $g_0=1$，还要求从观测之外独立测得相邻第 1 路相对第 0 路的相位，增益幅度仍由数据估计。角度限制在 $[-60°,60°]$，相邻麦在该角域内不得相位折叠。这个外部相位锚约束住上面的共同相位斜率；如果锚本身错了，数据残差并不能替它纠错。</p>
 <p>实现最小化式(3-11)的 $J$：固定增益时先对每帧未知源复谱做最小二乘消元，在角域内用网格和局部搜索更新每个场景的方向；固定方向和源复谱时，再用复数最小二乘更新通道增益，并将第 1 路相位约束在外部测量值上。它记录初始与每轮目标值、轮数和停止状态；目标值停止下降或达到迭代上限，不等于找到全局最优。</p>
 <p>运行仓库根目录下的 <code>PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -B -m codes.chapters.ch03.examples.self_calibration_demo</code> 可得到 JSON 数值。本书单次合成以随机种子 307 生成源复谱和复高斯噪声，噪声复数均方根为 $0.005$；外部相位锚取正确的 $0°$ 时，算法在 21 轮后报告收敛，三个真方向 $[-40°,0°,35°]$ 对应的估计约为 $[-39.994°,-0.012°,34.997°]$，未归一化目标值由约 $0.011823$ 降至 $0.011719$。真值只用于事后评分，不作为拟合输入。</p>
 <p>反过来，对<strong>无噪声</strong>的同一信号误设外部相位锚为 $+5°$，算法也报告收敛，估计方向约为 $[-49.631°,-6.840°,27.031°]$，目标值约 $1.1\times10^{-28}$。可见极小残差只能说明模型对数据拟合得好，不能证明相位锚正确或方向无偏。本例没有混响、同时多源、频率相关误差或时钟偏差，也没有设备实测与全局最优保证。</p>
@@ -880,10 +880,10 @@ J(\vec v)=\|\mathbf C\vec v-\vec x\|_2^2
 <p>标定结果不能只保存一组没有上下文的复数。最小标定记录应包括设备或阵列序列号、麦克风通道顺序、坐标系与长度单位、参考麦克风、采样率、频率网格、复增益或实测流形、测量温湿度、测量日期、算法版本和原始记录校验值。</p>
 <p>加载时先核对通道数、设备身份、坐标维度和频率网格；任一项不匹配时应拒绝套用，而不是截断或重排数组。</p>
 <p>产线验收还要用未参与拟合的方向复测目标响应、旁瓣或零陷，并把允许误差写成设备规格，而不是沿用某个教学算例的门限。</p>
-<p><a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch03/core/geometry.py"><code>geometry.py</code></a> 提供统一的平面波和球面波导向矢量，正角、参考麦克风和声速约定与 §2.1 一致。它是校准前后的共同计算基线，不包含针对某种硬件的自动校准器。对应测试会检查正角时 $\tau_{21}\lt 0$、导向相位为正，以及近场幅度和传播距离；这样可在替换实测流形前先排除坐标轴、通道顺序和傅里叶符号错误。</p>
+<p><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch03/core/geometry.py"><code>geometry.py</code></a> 提供统一的平面波和球面波导向矢量，正角、参考麦克风和声速约定与 §2.1 一致。它是校准前后的共同计算基线，不包含针对某种硬件的自动校准器。对应测试会检查正角时 $\tau_{21}\lt 0$、导向相位为正，以及近场幅度和传播距离；这样可在替换实测流形前先排除坐标轴、通道顺序和傅里叶符号错误。</p>
 <p>几何决定可观测的空间信息，标定决定理论模型能否用于实测数据。第 4 章将从 GCC-PHAT 开始介绍声源定位算法。</p>
 <span id="sec-15" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-f7a201edb9">本章练习</h2>
-<p>下面六题使用 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch00/cross_chapter/exercises_spatial.py"><code>exercises_spatial.py</code></a> 复算，检查差分位置、反三角函数边界、角度约定、远场近似误差、双麦相减响应和通道复增益标定。第七题用独立的协同阵脚本，避免把“差集长度”误当作有效虚拟协方差。</p>
+<p>下面六题使用 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/exercises_spatial.py"><code>exercises_spatial.py</code></a> 复算，检查差分位置、反三角函数边界、角度约定、远场近似误差、双麦相减响应和通道复增益标定。第七题用独立的协同阵脚本，避免把“差集长度”误当作有效虚拟协方差。</p>
 <h3 id="sec-u-4cd4d600f1">E03-01：差分位置相同，观测次数也相同吗？</h3>
 <p>对位置 $\{0,1,2,3,4,5\}$ 和 $\{0,1,2,3,7,11\}$，枚举全部有序麦对，包括同一麦与自身配对。计算每个差分滞后的重数，并检查重数之和。位置单位为半波长。</p>
 <p><strong>参考答案</strong>：两种布局都有 $6\times6=36$ 个有序麦对，零滞后的重数均为 6。均匀阵的滞后从 −5 到 5，重数依次为 $1,2,3,4,5,6,5,4,3,2,1$，共 11 个不同位置。</p>
@@ -998,7 +998,7 @@ J(\vec v)=\|\mathbf C\vec v-\vec x\|_2^2
 <p>它等价于对按 −3～3 排列的连续滞后向量取四个长度为 4 的重叠片段，再求外积均值。片段内部保持原顺序；四个片段恰好对应 $\mathbf T$ 从最后一列到第一列，改变求和项的次序不改变外积之和。任意向量 $\vec v$ 都有 $\vec v^H\mathbf R_{\rm ss}\vec v=\|\mathbf T^H\vec v\|^2/4\ge0$，所以该构造半正定。此例 $\mathbf T$ 为厄米矩阵，特征向量保持不变、特征值变为原值平方后除以 4，得到 $25/36,1/9,1/9,1/36$。</p>
 <p>这不证明有限样本误差已经消失，也不是恢复了原始麦信号。若 $X$ 用 V 表示，直接滞后矩阵 $\mathbf T$ 的单位为 V²，$\mathbf R_{\rm ss}$ 的单位则为 V⁴；两者不能直接把特征值当作同一种声功率来比较。<a href="https://github.com/morriswmz/doatools.py/blob/9469db201e0418aef6b97583ef54b6fec2769502/doatools/estimation/coarray.py" title="citation">固定版 doatools 的 <code>CoarrayACMBuilder1D</code></a>分别提供直接重排与空间平滑模式，调用时应明确模式；原始方法和构造条件见 <a href="https://doi.org/10.1109/TSP.2010.2049264" title="citation">Pal 与 Vaidyanathan 2010 第 IV 节</a>。</p>
 <p><strong>相干源为什么不能按同一滞后直接解释？</strong> 另取物理 ULA 位置 $p=\{0,1,2\}$、两个方向仍为 $0°$ 与 $30°$，但两源现在播放同一个单位功率复波形，且没有噪声。两个导向向量相加得到 $\vec v=[2,1+\mathrm j,0]^\top$，所以 $\mathbf R=\vec v\vec v^H$。同为滞后 1 的两个元素变成 $R_{10}=2+2\mathrm j$、$R_{21}=0$，已经不是同一个总体值。把它们平均不能恢复“两个互不相关源各有单位功率”的模型。</p>
-<p>先手算这些外积与滞后，再运行 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch03/coarray_covariance_exercise.py">E03-07 原例</a>与<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch03/chapter03_experiments.py">第 3 章补充实验</a>核对原例、平滑对照和相干反例。这些都是窄带统计计算，没有生成四通道声音，也没有证明三只麦在任意 SNR 或快拍数下都能分辨四个声源。</p>
+<p>先手算这些外积与滞后，再运行 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch03/coarray_covariance_exercise.py">E03-07 原例</a>与<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch03/chapter03_experiments.py">第 3 章补充实验</a>核对原例、平滑对照和相干反例。这些都是窄带统计计算，没有生成四通道声音，也没有证明三只麦在任意 SNR 或快拍数下都能分辨四个声源。</p>
 <p>下面 E03-08～18 使用同一个补充实验入口：</p>
 <pre><code class="language-bash">.venv/bin/python -m codes.chapters.ch03.chapter03_experiments
 </code></pre>
@@ -1425,7 +1425,7 @@ g_{\rm ratio}
 <p>4 kHz 提供了 8 kHz 缺失的相对空间信息。若两频观测能量不同，汇总残差还需要说明能量或权重分母；不能将表中两个比例随意称为整体 SNR 或定位成功率。</p>
 <p><img alt="图52 六麦圆环两方向的多频相对流形比较" src="../figures/fig52_hexagon_multifrequency.png" onerror="this.alt+='（图缺失）'" /></p>
 <p>图 52（a）画本题六个坐标及两个水平方向，方位零点为 $+y$；（b）在 $0°$～$180°$ 内扫描候选方向，以真方向 $\vec u$ 为参考，画式(3-19)的相干功率 $\rho_f^2$。错误方向 $\vec v$ 在 8 kHz 仍为 1，在 4 kHz 为 $1/9$；对应残差分别为 0 和 $8/9$。图是已知理想流形的解析计算，PCM 音频的频点估计误差另行测量，两者不能混称。</p>
-<p><strong>音频复算：分开有限包络与稳定相位。</strong> <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch03/examples/generate_geometry_audio.py">生成入口</a>与<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch03/core/geometry_audio.py">连续源及测量实现</a>使用同一个双音源，每个正弦的幅度为 0.08，频率为 4 kHz、8 kHz。源活动区间为 $[0.1,1.9)$ s，两端各有 20 ms 线性淡入淡出；共同基准传播延迟 $b_0=2$ ms。这里 $b_0$ 是时间，不能与前面方向分量 $b$ 混用。</p>
+<p><strong>音频复算：分开有限包络与稳定相位。</strong> <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch03/examples/generate_geometry_audio.py">生成入口</a>与<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch03/core/geometry_audio.py">连续源及测量实现</a>使用同一个双音源，每个正弦的幅度为 0.08，频率为 4 kHz、8 kHz。源活动区间为 $[0.1,1.9)$ s，两端各有 20 ms 线性淡入淡出；共同基准传播延迟 $b_0=2$ ms。这里 $b_0$ 是时间，不能与前面方向分量 $b$ 混用。</p>
 <p>令带包络的双音源为 $F(t)$，保存圆心时轴参考 $F(t-b_0)$，以及两个方向各自的六路观测 $x_m(t)=F(t-b_0+\vec r_m^\top\vec u/c)$ 或 $F(t-b_0+\vec r_m^\top\vec v/c)$。每个文件均为 32 kHz、2 s、每通道 64000 点、共同导出增益 1。通道顺序与圆环的 $m=0,\ldots,5$ 一致。传播时差通过连续源函数在对应时刻求值，没有运行采样后分数时延插值或时差估计器。</p>
 <ul>
 <li><a href="geometry_audio/geometry_reference.wav">圆心源参考：单声道</a><audio class="audio-sample" controls preload="none" aria-label="圆心源参考：单声道" src="geometry_audio/geometry_reference.wav">请使用上方 WAV 链接下载。</audio></li>
@@ -1542,9 +1542,9 @@ b_z&=c(\delta_t-\tau_{+z})=0.02\ \mathrm m.
 \hat{\vec\tau}&=\mathbf D\hat{\vec x}/c,\\
 \vec r_\tau&=\vec\tau-\hat{\vec\tau}.
 \end{aligned}\tag{3-21}$$</p>
-<p>这里 $\hat{\vec x}_{1:3}$ 表示前三个分量；$\vec r_\tau$ 是秒单位的拟合残差。<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch03/core/baseline_calibration.py">唯一反求核</a>先核对实数有限输入、单位方向、正声速、长度与增广秩，再调用 <code>lstsq</code>；它不先形成 $\mathbf D^\top\mathbf D$，也不对秩不足输入悄悄返回一个伪逆代表解。返回值保留基线、固定时延、秩、条件数、预测时延和观测减预测的残差。<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/tests/test_codes_ch03_baseline_calibration.py">独立数学测试</a>另以四条标量方程、同俯仰零空间和五观测的精确残差检验。</p>
+<p>这里 $\hat{\vec x}_{1:3}$ 表示前三个分量；$\vec r_\tau$ 是秒单位的拟合残差。<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch03/core/baseline_calibration.py">唯一反求核</a>先核对实数有限输入、单位方向、正声速、长度与增广秩，再调用 <code>lstsq</code>；它不先形成 $\mathbf D^\top\mathbf D$，也不对秩不足输入悄悄返回一个伪逆代表解。返回值保留基线、固定时延、秩、条件数、预测时延和观测减预测的残差。<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/tests/test_codes_ch03_baseline_calibration.py">独立数学测试</a>另以四条标量方程、同俯仰零空间和五观测的精确残差检验。</p>
 <p>恰好四个独立观测可以插值得到零训练残差，故零残差本身不是精度证据；应使用额外方向复测，必要时按已知的时延误差协方差加权。这个核采用等权拟合，没有估计误差协方差或定位准确率。如果声速也未知，把基线与声速同时乘以同一个正数不会改变 $\vec b/c$，时延不能单独确定米制尺度。错误方向、反射、方向相关相位误差、固定时延变化或时钟漂移，也不由满秩检查自动修复。</p>
-<p><strong>音频复算：先测固定频点相位，再求基线。</strong> <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch03/examples/generate_baseline_audio.py">独立生成入口</a>生成六份数学合成音频，16 kHz、32000点、共同导出增益1。同一连续源 $F(t)$ 是幅度0.2的500 Hz正弦，活动区间 $[0.1,1.9)$ s，两端各有20 ms线性淡入淡出；共同传播基准为 $b_0=2$ ms。五个双通道场景均为 $x_0(t)=F(t-b_0)$、$x_1(t)=F(t-b_0-\tau_q)$，源参考另存为单声道。四训练方向后使用 $(0.6,0.8,0)$ 留出方向，声源、几何与时延模型相同。</p>
+<p><strong>音频复算：先测固定频点相位，再求基线。</strong> <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch03/examples/generate_baseline_audio.py">独立生成入口</a>生成六份数学合成音频，16 kHz、32000点、共同导出增益1。同一连续源 $F(t)$ 是幅度0.2的500 Hz正弦，活动区间 $[0.1,1.9)$ s，两端各有20 ms线性淡入淡出；共同传播基准为 $b_0=2$ ms。五个双通道场景均为 $x_0(t)=F(t-b_0)$、$x_1(t)=F(t-b_0-\tau_q)$，源参考另存为单声道。四训练方向后使用 $(0.6,0.8,0)$ 留出方向，声源、几何与时延模型相同。</p>
 <ul>
 <li><a href="baseline_audio/baseline_source.wav">源参考：单声道</a><audio class="audio-sample" controls preload="none" aria-label="源参考：单声道" src="baseline_audio/baseline_source.wav">请使用上方 WAV 链接下载。</audio></li>
 <li><a href="baseline_audio/baseline_train_px.wav">$+x$训练：双声道</a><audio class="audio-sample" controls preload="none" aria-label="$+x$训练：双声道" src="baseline_audio/baseline_train_px.wav">请使用上方 WAV 链接下载。</audio></li>
@@ -1553,7 +1553,7 @@ b_z&=c(\delta_t-\tau_{+z})=0.02\ \mathrm m.
 <li><a href="baseline_audio/baseline_train_pz.wav">$+z$训练：双声道</a><audio class="audio-sample" controls preload="none" aria-label="$+z$训练：双声道" src="baseline_audio/baseline_train_pz.wav">请使用上方 WAV 链接下载。</audio></li>
 <li><a href="baseline_audio/baseline_heldout.wav">留出方向：双声道</a><audio class="audio-sample" controls preload="none" aria-label="留出方向：双声道" src="baseline_audio/baseline_heldout.wav">请使用上方 WAV 链接下载。</audio></li>
 </ul>
-<p>每份记录统一取 $[2400,29600)$ 点，即 $[0.15,1.85)$ s，共27200点、850个500 Hz周期，避开所有传播和淡变边界。<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch03/core/baseline_audio.py">连续源及测量核</a>先拟合余弦、正弦两列，写复相量 $z_m=C_m-\mathrm jD_m$，再求 $\tau=-\operatorname{Arg}(z_1z_0^*)/(2\pi\times500)$。这一步<strong>依赖先验 $|\tau|\lt 1$ ms</strong>，500 Hz主值相位只选取这一周期内的时延；它不是宽带 GCC、相位解缠或盲同步器。源参考不参加时延拟合，两个通道各自的相量提供相对相位。</p>
+<p>每份记录统一取 $[2400,29600)$ 点，即 $[0.15,1.85)$ s，共27200点、850个500 Hz周期，避开所有传播和淡变边界。<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch03/core/baseline_audio.py">连续源及测量核</a>先拟合余弦、正弦两列，写复相量 $z_m=C_m-\mathrm jD_m$，再求 $\tau=-\operatorname{Arg}(z_1z_0^*)/(2\pi\times500)$。这一步<strong>依赖先验 $|\tau|\lt 1$ ms</strong>，500 Hz主值相位只选取这一周期内的时延；它不是宽带 GCC、相位解缠或盲同步器。源参考不参加时延拟合，两个通道各自的相量提供相对相位。</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
 <thead>
 <tr>

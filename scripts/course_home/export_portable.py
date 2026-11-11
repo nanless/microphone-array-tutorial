@@ -8,7 +8,8 @@ import re
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = Path(__file__).resolve().parent
 DEST = ROOT / "assets/readme"
-BLOB = "https://github.com/nanless/microphone-array-tutorial/blob/main/"
+REPOSITORY = "https://github.com/nanless/microphone-array-tutorial"
+BLOB = REPOSITORY + "/blob/main/"
 AUDIO = ("single.wav", "left.wav", "right.wav")
 
 
@@ -25,7 +26,7 @@ def portable(template, css, script):
             path = BLOB + "codes/chapters/ch02/real_audio/README.md"
         elif re.fullmatch(r"\d{2}_[a-z-]+\.html", path):
             path = BLOB + "chapters/" + path.removesuffix(".html") + ".md"
-        elif not path.startswith("#"):
+        elif path != REPOSITORY and not path.startswith("#"):
             raise ValueError(f"Unmapped portable link: {path}")
         return f'href="{escape(path, quote=True)}"'
 

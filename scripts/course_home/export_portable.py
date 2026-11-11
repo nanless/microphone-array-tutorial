@@ -28,6 +28,10 @@ def portable(template, css, script):
             path = BLOB + "codes/chapters/ch00/research/README.md"
         elif path == "real_audio/README.md":
             path = BLOB + "codes/chapters/ch02/real_audio/README.md"
+        elif path == "research/03_industrial_deployment.html" or re.fullmatch(
+            r"\d{2}_[a-z-]+\.html#sec-\d+-\d+", path
+        ):
+            path = PAGES + "site/" + path
         elif re.fullmatch(r"\d{2}_[a-z-]+\.html", path):
             path = BLOB + "chapters/" + path.removesuffix(".html") + ".md"
         elif path != REPOSITORY and path not in CASE_SOURCES and not path.startswith("#"):
@@ -44,7 +48,7 @@ def portable(template, css, script):
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>把声音听出方向 · 麦克风阵列入门</title>
+<title>麦克风阵列信号处理 · 从入门到工业实践</title>
 <style>*{{box-sizing:border-box}}body{{margin:0;font-family:system-ui,sans-serif}}{css}</style>
 </head>
 <body>{template}

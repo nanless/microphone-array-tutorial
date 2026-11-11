@@ -810,7 +810,7 @@ def build_html(build_date=None):
     toc.append("</ul></section>")
     date_s = resolve_build_date(build_date)
     cover = (f'<div class="cover"><h1>麦克风阵列信号处理教程</h1>'
-             f'<div class="sub">深入浅出 · 从阵列摆位到工程选型（合订本）</div>'
+             f'<div class="sub">从入门到工业实践（合订本）</div>'
              f'<div class="meta">构建日期 {date_s} · 源文件 sha256 {source_digest()}<br>'
              f'共 {len(CHAPTERS)} 篇：导读、13 章正文（含两篇扩展专题）、2 篇附录</div></div>')
     # Chrome emits named destinations for referenced anchors. A transparent,
@@ -1113,7 +1113,7 @@ def add_bookmarks(pdf_path, outline, aliases=None):
     writer = PdfWriter(clone_from=reader)
     writer.add_metadata({
         "/Title": "麦克风阵列信号处理教程",
-        "/Subject": "从阵列摆位到工程选型",
+        "/Subject": "从入门到工业实践",
         "/Creator": "scripts/build_pdf.py",
         "/SourceDigest": source_digest(),
     })

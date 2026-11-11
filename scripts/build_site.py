@@ -1839,7 +1839,7 @@ def main():
         toc, _ = sub_list("index.html", home_heads)
         home_html = re.sub(r"<h1(\b[^>]*>.*?)</h1>", r"<h2\1</h2>", home_html, count=1, flags=re.S)
         home_page = PAGE.format(
-            title="从零开始", css=CSS, crumb="导读与导航",
+            title="从入门到工业实践", css=CSS, crumb="导读与导航",
             home_href="index.html",
             source_digest=build_digest,
             inline_layout_script=inline_layout_script,

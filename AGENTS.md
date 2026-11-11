@@ -7,9 +7,9 @@
 
 ### 1.1 教程面向谁
 
-本项目是一套面向初学者和入门研究生的麦克风阵列信号处理中文教程。内容从阵列为何有效讲起，
-逐步进入声源定位（DOA）、波束形成、声学回声消除（AEC）、去混响（WPE）、语音分离、
-声源追踪、工程实现与选型。
+本项目是一套从入门到工业实践的麦克风阵列信号处理中文教程，服务于初学者、研究读者和工程人员。
+内容从阵列为何有效讲起，逐步进入声源定位（DOA）、波束形成、声学回声消除（AEC）、
+去混响（WPE）、语音分离和追踪，再讨论设备实现、评测、选型与验收，并扩展到声学成像和分布式阵列。
 
 正文应让读者同时得到四样东西：
 
@@ -81,7 +81,7 @@
 | 图13统计生成物 | `scripts/make_figures.py` → `codes/chapters/ch04/reports/figure13_gcc_reverb.json` | 9 条件各 150 次的逐次事件、峰对比度和计数 | 与图片同次计算生成；保留共享随机性、失败和区间口径，不手改结果 |
 | 源码研究文档 | `codes/chapters/ch00/research/*.md` | 逐算法源码入口、实现差异、工业配置与复现实验 | 与正文和覆盖表互链；区分建议实验和已执行结果 |
 | 项目说明源文件 | `README.md`、`README_EN.md`、`scripts/README.md`、`codes/chapters/README.md`、`codes/chapters/ch00/{research,upstream}/README.md`、`codes/chapters/ch02/real_audio/README.md`、`scripts/vendor/mathjax-3.2.2/README.md` | 八份本书维护的源README：入口、英文、构建、代码、研究、获取、数据与公式资源 | 按真实内容修改；中英文共有信息同步，派生站点README由构建更新，上游忽略缓存原README保留身份 |
-| 课程首页与 GitHub 入口 | `scripts/course_home/{index.html,home.css,home.js,export_portable.py}` → `site/index.html` 的课程部分及 `assets/readme/course-{intro.html,cover.svg,cover-still.svg}` | 同源的课程页、断网单文件版和 GitHub 动图；原导读及所有锚点仍在 `site/index.html` | 模板、样式、交互和三段试听 WAV 计入站点源摘要；单文件与两张封面图由导出器生成，`--check` 只读校验。旧图保留路径；不计入 80 张教材编号图 |
+| 课程首页与 GitHub 入口 | `scripts/course_home/{index.html,home.css,home.js,export_portable.py}` → `site/index.html` 的课程部分及 `assets/readme/course-{intro.html,cover.svg,cover-still.svg}` | 同源的课程页、单文件导出版和 GitHub 动图；原导读及所有锚点仍在 `site/index.html` | 模板、样式和交互计入站点源摘要。单文件与两张封面图由导出器生成，`--check` 只读校验；单文件内的动图可离线查看，实录试听和章节链接需联网。首页动图不计入 80 张教材编号图 |
 | 首页 LOCATA 实录 | `scripts/course_home/prepare_locata.py` → `assets/readme/cases/locata/{before.wav,after.wav,MANIFEST.json}`；另有 `NOTICE.txt` | 固定开发集任务 2 第 1 次 DICIT 录音的方向扫描与 15 路对齐平均 | 六个上游成员绑定 SHA；原始第 7 路和处理结果共同导出增益；两处数值使用各自单独出声窗的实际 PCM。引用实测几何和署名许可，`--check` 只读复算 |
 | GitHub 首页互动实验 | `assets/readme/lab/{README.md,README_EN.md,array-lab.html,export-lab.mjs}` → 同目录三个 WAV 和首页静态替代图 | 双语、离线、不需麦克风权限的四路合成试听，区分单麦和两种补时差方式 | HTML 内只有一份合成与数值核；改源后用导出脚本重生，`--check` 逐字节只读重放；全段浮点分量功率与混合 PCM 分开，不计入教材音频目录和出版物 |
 | 图 21 数值报告 | `scripts/make_figures.py::fig_wpe` → `codes/chapters/ch07/reports/figure21_wpe.json` | 同一信号的参数、帧选择、能量分母与谱域误差 | 随图重生；不将谱图显示频带当成指标统计频带 |

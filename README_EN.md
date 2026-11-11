@@ -1,15 +1,15 @@
-# An Introduction to Microphone Arrays
+# Microphone Array Signal Processing · From Fundamentals to Industrial Practice
 
-**Hear where sound comes from.** Start with a recording and learn how a conference device finds a speaker, listens toward them, and handles echo.
+Start with multichannel recordings and array geometry. Work through localization, beamforming, echo cancellation, dereverberation, separation, and tracking, then apply them to device implementation, evaluation, and system selection. Two advanced chapters cover acoustic imaging and distributed arrays.
 
-**[Open the online course →](https://nanless.github.io/microphone-array-tutorial/)** · [Chapter 1](chapters/01_problem-definition.md) · [Full contents](chapters/00_overview.md) · [PDF](dist/microphone-array-tutorial.pdf) · [简体中文](README.md)
+**[Open the online course →](https://nanless.github.io/microphone-array-tutorial/)** · [Start at Chapter 1](chapters/01_problem-definition.md) · [Industrial practice](https://nanless.github.io/microphone-array-tutorial/site/#course-engineering) · [Full contents](chapters/00_overview.md) · [PDF](dist/microphone-array-tutorial.pdf) · [简体中文](README.md)
 
 <picture>
   <source media="(prefers-reduced-motion: reduce)" srcset="assets/readme/course-cover-still.svg">
   <img alt="Source A on the left makes a sound. The four microphones receive it in order from left to right. In the course introduction, move the source to the right to see the order reverse." src="assets/readme/course-cover.svg">
 </picture>
 
-## Start here
+## Online case studies
 
 [Open the Chinese course](https://nanless.github.io/microphone-array-tutorial/) in your browser. Switch between the two sound sources in the animation, see how the array finds and focuses on a source in a real room recording, and pick a chapter from the learning route. [Jump to the case studies →](https://nanless.github.io/microphone-array-tutorial/site/#course-cases)
 
@@ -21,16 +21,16 @@ Separate the four raw recordings. The voice reaches the nearest microphone first
 
 This book starts with what you can hear. At each step, ask what signals you have, what they can tell you, and when they might lead you astray.
 
-## Where to read next
+## Learning paths
 
-| What you want to do | Where to start |
-| --- | --- |
-| Work out where a sound came from | [Ch. 1–4: The task, signals, geometry, and direction](chapters/01_problem-definition.md) |
-| Listen toward someone or track them as they move | [Ch. 5: Beamforming](chapters/05_beamforming.md) · [Ch. 9: Tracking](chapters/09_source-tracking.md) |
-| Handle an echo, a ringing room, or overlapping voices | [Ch. 6: Echo cancellation](chapters/06_aec.md) · [Ch. 7: Dereverberation](chapters/07_wpe-dereverberation.md) · [Ch. 8: Speech separation](chapters/08_speech-separation.md) |
-| Put the methods on a device and test the results | [Ch. 10: Sync, calibration, and latency](chapters/10_engineering-practice.md) · [Ch. 11: Selection and validation](chapters/11_selection-guide.md) |
+| Chapters | What you can do | Where to start |
+| --- | --- | --- |
+| 1–3 · Fundamentals and geometry | Model the signals using arrival times, phase, and microphone positions | [Chapter 1](chapters/01_problem-definition.md) |
+| 4–9 · Algorithm design and validation | Choose algorithms for localization, beamforming, echo cancellation, dereverberation, separation, and tracking, then check them with code and worked examples | [Localization](chapters/04_doa-estimation.md) · [Beamforming](chapters/05_beamforming.md) · [Chapter guide](chapters/00_overview.md) |
+| 10–11 · Industrial practice | Plan synchronization and calibration, measure end-to-end latency, budget compute and power, and define acceptance criteria | [Engineering](chapters/10_engineering-practice.md) · [Selection and validation](chapters/11_selection-guide.md) |
+| 12–13 · Advanced topics | Locate machine noise and account for clock drift, bandwidth, and packet loss across devices | [Acoustic imaging](chapters/12_acoustic-imaging.md) · [Distributed arrays](chapters/13_distributed-enhancement.md) |
 
-Start with Chapter 1 and consult the [math and notation appendix](chapters/14_appendix-symbols-math.md) when you need complex numbers or matrices. The [full contents](chapters/00_overview.md) also covers acoustic imaging, distributed arrays, and room simulation. The book is in Chinese.
+If you are new to the subject, begin with Chapter 1 and consult the math appendix as needed. For device work, go straight to the engineering tasks and the implementation guide. The main text is in Chinese. [Math and notation](chapters/14_appendix-symbols-math.md) · [Engineering tasks](https://nanless.github.io/microphone-array-tutorial/site/#course-engineering) · [Industrial implementation notes](codes/chapters/ch00/research/03_industrial_deployment.md)
 
 **13 chapters · 2 appendices · 363 runnable exercises · 80 numbered figures**
 

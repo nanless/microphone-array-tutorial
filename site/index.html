@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>从零开始 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="7f97433700a5"><style>
+<title>从入门到工业实践 · 麦克风阵列信号处理教程</title>
+<meta name="source-digest" content="076fed964b7a"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -260,7 +260,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 .course-mark { display:grid; place-items:center; width:30px; height:30px; border-radius:50%; background:var(--ink); color:#fff; font-size:24px; line-height:1; }
 .course-hero { display:grid; grid-template-columns:minmax(0,.84fr) minmax(0,1fr); align-items:center; gap:clamp(30px,6vw,90px); padding-block:clamp(48px,8vw,112px) clamp(48px,7vw,94px); }
 .course .course-kicker { margin:0 0 12px; font-size:.83rem; letter-spacing:.13em; font-weight:750; color:var(--red); }
-.course h1 { font-size:clamp(3.35rem,7.8vw,6.5rem); letter-spacing:-.065em; line-height:1.03; margin:0; border:0; padding:0; }
+.course h1 { font-size:clamp(2.85rem,6.35vw,5.15rem); letter-spacing:-.065em; line-height:1.03; margin:0; border:0; padding:0; }
 .course h1 span { color:var(--blue); }
 .course-deck { margin:22px 0; max-width:30rem; font-size:clamp(1.06rem,2vw,1.32rem); }
 .course-actions { display:flex; flex-wrap:wrap; align-items:center; gap:9px 19px; }
@@ -346,6 +346,14 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 .course-stops div,.course-extra { display:flex; flex-wrap:wrap; gap:8px 17px; }
 .course-stops a,.course-extra a { font-size:.92rem; }
 .course-extra { margin:23px 0 0; }
+.course-engineering { background:#1d304b; color:#fff8ea; padding-block:clamp(37px,6vw,70px); }
+.course-engineering a { color:#e3ecfb; }
+.course-engineering a:focus-visible { outline-color:#f6b27a; }
+.course-engineering-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+.course-engineering-grid article { padding:16px; border:1px solid #7186a0; border-radius:8px; background:#263d5d; }
+.course-engineering-grid h3 { margin-top:0; }
+.course-engineering-grid p { margin:7px 0 11px; }
+.course-engineering-grid article div { display:flex; flex-wrap:wrap; gap:5px 14px; }
 @media (min-width:791px) {
   .course-case { display:grid; grid-row:span 6; grid-template-rows:subgrid; }
 }
@@ -353,8 +361,8 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
   .course-width { width:calc(100% - 36px); }
   .course-hero,.course-preface { grid-template-columns:1fr; }
   .course-hero { padding-block:36px 40px; gap:24px; }
-  .course h1 { font-size:clamp(3rem,11vw,5.3rem); }
-  .course-case-grid,.course-audio-grid { grid-template-columns:1fr; }
+  .course h1 { font-size:clamp(2.8rem,9.5vw,4.8rem); }
+  .course-case-grid,.course-audio-grid,.course-engineering-grid { grid-template-columns:1fr; }
 }
 @media (max-width:500px) {
   .course-header { flex-wrap:wrap; padding-block:12px; }
@@ -367,10 +375,10 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <header class="topbar"><a href="index.html">🏠 首页</a> &nbsp;/&nbsp; 导读与导航</header>
 <div class="course" id="course-home" tabindex="-1">
   <header class="course-header course-width">
-    <a class="course-brand" href="#course-home"><span class="course-mark" aria-hidden="true">∿</span> 麦克风阵列入门</a>
+    <a class="course-brand" href="#course-home"><span class="course-mark" aria-hidden="true">∿</span> 麦克风阵列教程</a>
     <nav aria-label="课程入口">
       <a href="#course-cases">案例</a>
-      <a href="#course-path">课程</a>
+      <a href="#course-path">学习路线</a>
       <a href="#main-content">全书导读</a>
       <a href="../dist/microphone-array-tutorial.pdf">PDF</a>
       <a href="https://github.com/nanless/microphone-array-tutorial">GitHub 仓库</a>
@@ -379,14 +387,14 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 
   <section class="course-hero course-width" aria-labelledby="course-title">
     <div class="course-intro">
-      <p class="course-kicker">用耳朵开始的中文技术课</p>
-      <h1 id="course-title">把声音<br>听出<span>方向。</span></h1>
-      <p class="course-deck">同一句话，四支麦克风收到的时间不一样。这点先后，能用来找人，也能让设备朝那个人拾音。</p>
+      <p class="course-kicker">从入门到工业实践</p>
+      <h1 id="course-title">麦克风阵列<br><span>信号处理</span></h1>
+      <p class="course-deck">从麦克风摆位和多路录音讲起，推导定位、波束形成和回声消除，再把算法接进设备，解决同步、延迟、选型和验收。</p>
       <div class="course-actions">
         <a class="course-cta" href="01_problem-definition.html">读第一章 <span aria-hidden="true">→</span></a>
-        <a class="course-quiet" href="#course-cases">看真实案例 <span aria-hidden="true">↓</span></a>
+        <a class="course-quiet" href="#course-engineering">工程实践 <span aria-hidden="true">↓</span></a>
       </div>
-      <p class="course-note">先读图和案例。需要复算时，再查代码和数学附录。</p>
+      <p class="course-note">13 章正文、2 篇附录、363 道可运行练习。</p>
     </div>
 
     <figure class="course-demo" data-source="left">
@@ -544,16 +552,40 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
   </section>
 
   <section class="course-width course-path" id="course-path" aria-labelledby="course-path-title">
-    <p class="course-kicker">课程地图</p>
-    <h2 id="course-path-title">从一段录音，到一台设备。</h2>
-    <p class="course-section-intro">初学按顺序读第 1～5 章，先把声音到达、定位和拾音连起来。已有项目可以按下面的任务跳读。</p>
+    <h2 id="course-path-title">学习路线</h2>
+    <p class="course-section-intro">第一次学，从第 1 章建立模型。已有信号处理基础，可以按任务读算法。正在做设备，可以直接进工程实践。</p>
     <ol class="course-stops">
-      <li><span>01</span><h3>从录音找方向</h3><p>两路波形前后滑一滑，找到最吻合的位置。这个时差能排除哪些方向？</p><div><a href="01_problem-definition.html">问题定义</a><a href="02_basics-signal-model.html">信号模型</a><a href="03_array-geometry.html">阵列几何</a><a href="04_doa-estimation.html">定位</a></div></li>
-      <li><span>02</span><h3>让设备朝人拾音</h3><p>对齐再平均；故意转错方向，看看目标损失多少。说话人走动时，再用多帧观测跟上他。</p><div><a href="05_beamforming.html">波束形成</a><a href="09_source-tracking.html">声源追踪</a></div></li>
-      <li><span>03</span><h3>分辨房间里的麻烦</h3><p>自己说过的话传回来、一声响拖了尾、两个人同时开口，各自能利用什么线索？</p><div><a href="06_aec.html">回声消除</a><a href="07_wpe-dereverberation.html">去混响</a><a href="08_speech-separation.html">语音分离</a></div></li>
-      <li><span>04</span><h3>接上设备并验收</h3><p>量工作距离、延迟和场景变化时的效果。先排查通道同步与标定，再比较算法。</p><div><a href="10_engineering-practice.html">工程实践</a><a href="11_selection-guide.html">选型验收</a><a href="real_audio/README.md">真实录音</a></div></li>
+      <li><span>第 1～3 章</span><h3>基础与阵列几何</h3><p>从多路录音的到达时差出发，建立传播模型，理解阵列摆法怎样影响分辨率。</p><div><a href="01_problem-definition.html">问题定义</a><a href="02_basics-signal-model.html">信号模型</a><a href="03_array-geometry.html">阵列几何</a></div></li>
+      <li><span>第 4～9 章</span><h3>算法设计与验证</h3><p>按观测条件选算法，复算关键步骤，用代码和音频检查目标损伤与失效条件。</p><div><a href="04_doa-estimation.html">定位</a><a href="05_beamforming.html">波束形成</a><a href="06_aec.html">回声消除</a><a href="07_wpe-dereverberation.html">去混响</a><a href="08_speech-separation.html">语音分离</a><a href="09_source-tracking.html">追踪</a></div></li>
+      <li><span>第 10～11 章</span><h3>系统实现与选型验收</h3><p>处理同步、标定和播放参考，测端到端延迟，估算算力与功耗，写出可验收的规格。</p><div><a href="#course-engineering">按工程任务跳读</a><a href="10_engineering-practice.html">工程实现</a><a href="11_selection-guide.html">选型与验收</a></div></li>
+      <li><span>第 12～13 章</span><h3>声学成像与分布式阵列</h3><p>用声学成像找设备的噪声源。多设备协同时，分析时钟偏差、通信预算和丢包对增强的影响。</p><div><a href="12_acoustic-imaging.html">声学成像</a><a href="13_distributed-enhancement.html">分布式协同</a></div></li>
     </ol>
-    <p class="course-extra"><a href="12_acoustic-imaging.html">声学成像</a><a href="13_distributed-enhancement.html">分布式阵列</a><a href="14_appendix-symbols-math.html">数学与符号</a><a href="15_appendix-guide.html">房间仿真</a><a href="research/index.html">代码与复现</a><a href="#main-content">继续读完整导读 ↓</a></p>
+    <p class="course-extra"><a href="14_appendix-symbols-math.html">数学与符号</a><a href="15_appendix-guide.html">综合练习与排错</a><a href="research/index.html">源码与复现</a><a href="#main-content">全书导读 ↓</a></p>
+  </section>
+
+  <section class="course-engineering" id="course-engineering" aria-labelledby="course-engineering-title">
+    <div class="course-width">
+      <h2 id="course-engineering-title">工业实践</h2>
+      <p class="course-section-intro">把算法接进设备时，先确定每一路信号从哪来、在哪个时刻可用，再决定怎样测效果。</p>
+      <div class="course-engineering-grid">
+        <article>
+          <h3>搭链路</h3>
+          <p>画出采集、处理和播放路径，标明时钟、缓冲以及回声参考从哪里取。</p>
+          <a href="10_engineering-practice.html#sec-10-1">参考链路与端到端延迟 →</a>
+        </article>
+        <article>
+          <h3>算预算</h3>
+          <p>估算最坏帧耗时、内存和功耗。用定点化前后的结果检查量化会损伤哪些指标。</p>
+          <a href="10_engineering-practice.html#sec-10-4">定点化、算力与功耗 →</a>
+        </article>
+        <article>
+          <h3>做验收</h3>
+          <p>把拾音距离、延迟和效果写成可测规格。用掉帧、参考中断和通道异常检查恢复行为。</p>
+          <div><a href="10_engineering-practice.html#sec-10-10">联调与验收</a><a href="11_selection-guide.html#sec-11-5">可验证规格</a></div>
+        </article>
+      </div>
+      <p class="course-extra"><a href="research/03_industrial_deployment.html">工业源码手册 · PortAudio、PipeWire、WebRTC 等实现 →</a></p>
+    </div>
   </section>
 </div>
 
@@ -641,6 +673,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <p>全套教程配了 80 张编号图，另有 1 张附录 B 房间题补充图，图 18～20、图 26～32、图 36～39 以及图57～58、图74在第 6 章。插图分为几何示意、指定条件下的仿真和系统框图，阅读时要同时核对图注中的参数。</p>
 <hr />
 <span id="sec-2" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-9d988aa5ab">1. 这是一份什么样的教程</h2>
+<p>这是一套从入门到工业实践的麦克风阵列信号处理教程。第 1～3 章建立信号模型和阵列几何，第 4～9 章推导和比较处理算法。第 10～11 章把算法放回设备的实时链路，讨论同步、标定、延迟、算力、功耗和验收条件。第 12～13 章扩展到声学成像与分布式阵列。</p>
 <p>这份教程不要求预先学过麦克风阵列。推导会用到单位换算、三角函数、复数和矩阵；不熟悉这些工具时，可按需查<a href="14_appendix-symbols-math.html#sec-14-3">附录 A §14.3</a>，再回到当前算例。读完后，各章的公式、边界和排错内容也可作为手册查阅。</p>
 <p>第一次读，可以先到<a href="#sec-u-6d43c0086f">第 8 节</a>的图 34，听「对齐与平均」对照，再回到这里。记住两个问题：同一个声音早到了多久？把它对齐以后，哪些成分叠得更整齐？全书有 80 张编号图和 1 张房间题补充图，可以按同样的方法先读图和算例，再核对公式的条件。</p>
 <p>教程从一个具体问题讲起：你站在 3 米外跟音箱说话，它怎样从噪声、混响和自身播放声中提取你的语音。如果另一个人同时讲话，或者你边说边走，系统还会遇到分离和追踪问题。这些任务需要的输入、输出和评价方式不同：</p>

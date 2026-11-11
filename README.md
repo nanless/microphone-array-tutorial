@@ -1,17 +1,17 @@
-# 麦克风阵列入门
+# 麦克风阵列信号处理 · 从入门到工业实践
 
-**把声音听出方向。** 从一段录音学起，理解会议机怎样找人、朝人拾音，以及为什么有些回声得另想办法。
+从多路录音和阵列几何学起，推导声源定位、波束形成、回声消除、去混响、分离和追踪，再做设备实现、评测、选型与验收。书中另有声学成像和分布式阵列专题。
 
-**[在线进入课程 →](https://nanless.github.io/microphone-array-tutorial/)** · [直接读第一章](chapters/01_problem-definition.md) · [全书目录](chapters/00_overview.md) · [PDF](dist/microphone-array-tutorial.pdf) · [English](README_EN.md)
+**[在线进入课程 →](https://nanless.github.io/microphone-array-tutorial/)** · [从第一章开始](chapters/01_problem-definition.md) · [工业实践](https://nanless.github.io/microphone-array-tutorial/site/#course-engineering) · [全书目录](chapters/00_overview.md) · [PDF](dist/microphone-array-tutorial.pdf) · [English](README_EN.md)
 
 <picture>
   <source media="(prefers-reduced-motion: reduce)" srcset="assets/readme/course-cover-still.svg">
   <img alt="左边 A 发声，四支麦克风由左到右依次收到声音。课程页可以把发声位置换到右边，观察次序如何反转。" src="assets/readme/course-cover.svg">
 </picture>
 
-## 第一次来，从这里开始
+## 在线案例
 
-[打开在线课程](https://nanless.github.io/microphone-array-tutorial/)。点选左右声源看动图，用一段房间实录看定位、听波束形成前后，再按学习路线选章节。手机和电脑都能直接打开。 [直接看定位与波束形成案例 →](https://nanless.github.io/microphone-array-tutorial/site/#course-cases)
+[打开在线课程](https://nanless.github.io/microphone-array-tutorial/)。可用动图看声音到达的先后，再用同一段房间实录看定位、听波束形成前后的差别。 [直接看定位与波束形成案例 →](https://nanless.github.io/microphone-array-tutorial/site/#course-cases)
 
 ## 序言 · 同一句话，为什么录了四份？
 
@@ -21,16 +21,16 @@
 
 这本书从这些听得见的现象出发。每一步都问：手上有什么信号，能靠它知道什么，什么时候会猜错？
 
-## 这本书怎么读
+## 学习路线
 
-| 手头的问题 | 从这里进去 |
-| --- | --- |
-| 第一次学，想从两路录音看出方向 | [1–4 章：任务、信号、几何、定位](chapters/01_problem-definition.md) |
-| 找到人了，想让设备朝他拾音 | [第 5 章：波束形成](chapters/05_beamforming.md) · [第 9 章：跟踪移动声源](chapters/09_source-tracking.md) |
-| 听见回声、房间拖尾，或两个人同时说话 | [第 6 章：消回声](chapters/06_aec.md) · [第 7 章：去混响](chapters/07_wpe-dereverberation.md) · [第 8 章：语音分离](chapters/08_speech-separation.md) |
-| 装到设备上，想知道怎么测才算有效 | [第 10 章：同步、标定和延迟](chapters/10_engineering-practice.md) · [第 11 章：选型与验收](chapters/11_selection-guide.md) |
+| 阶段 | 可以做什么 | 从哪读起 |
+| --- | --- | --- |
+| 第 1～3 章 · 基础与阵列几何 | 用时差、相位和阵列摆位建立信号模型 | [第 1 章](chapters/01_problem-definition.md) |
+| 第 4～9 章 · 算法设计与验证 | 按任务选择定位、波束形成、消回声、去混响、分离或追踪，复算并运行例子 | [声源定位](chapters/04_doa-estimation.md) · [波束形成](chapters/05_beamforming.md) · [算法目录](chapters/00_overview.md) |
+| 第 10～11 章 · 工业实践 | 做同步和标定，测端到端延迟，核算算力与功耗，制定选型和验收指标 | [工程实现](chapters/10_engineering-practice.md) · [选型与验收](chapters/11_selection-guide.md) |
+| 第 12～13 章 · 专题 | 找出设备的噪声源，或者处理跨设备的时钟偏差、带宽和丢包 | [声学成像](chapters/12_acoustic-imaging.md) · [分布式阵列](chapters/13_distributed-enhancement.md) |
 
-从第一章开始读，不用先学完复数和矩阵；遇到时再翻[数学与符号附录](chapters/14_appendix-symbols-math.md)。[全书目录](chapters/00_overview.md)另有声学成像、分布式阵列和房间仿真路线。
+第一次学可以从第 1 章读起，遇到复数、矩阵和符号再查附录。正在做设备，可以直接进入工程任务和工业源码手册。 [数学与符号](chapters/14_appendix-symbols-math.md) · [工程任务入口](https://nanless.github.io/microphone-array-tutorial/site/#course-engineering) · [工业源码手册](codes/chapters/ch00/research/03_industrial_deployment.md)
 
 **13 章正文 · 2 篇附录 · 363 道可运行练习 · 80 张编号图**
 

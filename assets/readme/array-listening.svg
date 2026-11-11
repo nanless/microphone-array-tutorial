@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="340" viewBox="0 0 880 340" role="img" aria-labelledby="title desc">
+  <title id="title">One source, two microphones</title>
+  <desc id="desc">Sound paths of different lengths reach two microphones. The onset marker in microphone 2's record is farther along the time axis.</desc>
+  <defs>
+    <linearGradient id="bg" x2="1" y2="1" gradientUnits="objectBoundingBox">
+      <stop stop-color="#102f3c"/><stop offset="1" stop-color="#121e37"/>
+    </linearGradient>
+    <radialGradient id="light"><stop stop-color="#176e6d" stop-opacity=".70"/><stop offset="1" stop-color="#176e6d" stop-opacity="0"/></radialGradient>
+    <pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M24 0H0V24" fill="none" stroke="#a3cdd0" stroke-opacity=".12"/></pattern>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5 0 10Z" fill="#a2b6cb"/></marker>
+  </defs>
+  <rect x="1" y="1" width="878" height="338" rx="26" fill="url(#bg)" stroke="#325369"/>
+  <ellipse cx="145" cy="116" rx="198" ry="110" fill="url(#light)"/>
+  <rect x="43" y="37" width="794" height="260" rx="18" fill="url(#grid)" stroke="#6c8da1" stroke-opacity=".3"/>
+  <g fill="none" stroke="#71c4ba" stroke-width="2" opacity=".33">
+    <path d="M177 102a63 63 0 0 1-8 89"/><path d="M200 83a93 93 0 0 1-12 131"/><path d="M223 65a123 123 0 0 1-15 171"/>
+  </g>
+  <circle cx="130" cy="143" r="35" fill="#163d4c" stroke="#73e4ce" stroke-width="2"/>
+  <path d="M112 138h9l13-11v32l-13-11h-9zm29-1q8 6 0 12" fill="none" stroke="#a2f3de" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <g stroke-width="2.4" stroke-dasharray="5 7" fill="none"><path d="M161 128L323 91" stroke="#76e4d4"/><path d="M157 163L324 233" stroke="#ffcb87"/></g>
+  <g fill="#132b43" stroke-width="2"><circle cx="351" cy="87" r="24" stroke="#76e4d4"/><circle cx="351" cy="239" r="24" stroke="#ffcb87"/></g>
+  <g fill="none" stroke-width="2" stroke-linecap="round">
+    <path d="M347 81v7a4 4 0 0 0 8 0v-7a4 4 0 0 0-8 0zm-4 5v3a8 8 0 0 0 16 0v-3m-8 11v4m-4 0h8" stroke="#76e4d4"/>
+    <path d="M347 233v7a4 4 0 0 0 8 0v-7a4 4 0 0 0-8 0zm-4 5v3a8 8 0 0 0 16 0v-3m-8 11v4m-4 0h8" stroke="#ffcb87"/>
+  </g>
+  <g fill="#e9f5f9" font-family="Arial,sans-serif" font-size="26" font-weight="700" text-anchor="middle"><text x="351" y="139">M1</text><text x="351" y="288">M2</text></g>
+  <path d="M407 62v211" stroke="#65859a" stroke-opacity=".5"/>
+  <g stroke="#7e97ae" stroke-width="1.5" fill="none"><path d="M435 87H803"/><path d="M435 239H803"/><path d="M447 166H793" marker-end="url(#arrow)"/></g>
+  <g fill="none" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M436 87H507q9 0 16-17t16 15t16 24t16-37t16 12t16 23t16-33t16 12t16 17t16-28t16 10t16 13t16-19t16 6t16 10t16-10t16 2h18" stroke="#76e4d4"/>
+    <path d="M436 239H537q9 0 16-17t16 15t16 24t16-37t16 12t16 23t16-33t16 12t16 17t16-28t16 10t16 13t16-19t16 6t16 10t16-10t16 2h18" stroke="#ffcb87"/>
+  </g>
+  <g stroke-width="2" stroke-dasharray="4 5"><path d="M507 99v54" stroke="#76e4d4"/><path d="M537 179v48" stroke="#ffcb87"/></g>
+  <circle cx="507" cy="166" r="5" fill="#76e4d4"/><circle cx="537" cy="166" r="5" fill="#ffcb87"/>
+  <text x="809" y="173" fill="#d3e4ed" font-family="Arial,sans-serif" font-style="italic" font-size="25">t</text>
+</svg>

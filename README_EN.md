@@ -1,147 +1,81 @@
-# An Accessible Guide to Microphone Array Signal Processing
+# Microphone Arrays for Beginners
 
-**Two microphones record the same voice. Why not simply add their recordings?** The sound reaches them at different times. The time difference helps estimate where it came from. Align the two copies of the voice before averaging, and they add more consistently. These are the starting ideas for **direction finding** and **beamforming**.
+[中文首页](README.md) · [First lesson: two microphones](chapters/01_problem-definition.md) · [Book guide](chapters/00_overview.md) · [Download the PDF](dist/microphone-array-tutorial.pdf)
 
-![Two microphones and the difference in sound travel paths](figures/fig02_dsin_geometry.png)
+**Both microphones pick up your voice. Why can mixing them make part of it disappear?** If you speak at one end of a conference table, the nearer microphone hears you first. That delay helps us work out where you are, and it matters when we mix the recordings.
 
-The drawing uses a 4 cm pair to explain the geometry. The listening exercise uses a separate mathematical example: at 16 kHz, the target reaches microphone 2 three samples, or 187.5 microseconds, before microphone 1.
+![Different travel paths from one sound source to two microphones, with the second waveform starting later.](assets/readme/array-listening.svg)
 
-Start at a low playback volume.
+## Listen first: where did the high tone go?
 
-1. [Listen to a single microphone](codes/chapters/ch01/audio/spatial_mic1.wav) as a reference.
-2. [Listen to a direct average](codes/chapters/ch01/audio/spatial_unaligned.wav), combining samples with the same index.
-3. [Listen to an aligned average](codes/chapters/ch01/audio/spatial_aligned.wav), delaying microphone 2 by three samples before averaging.
+Mix a low tone and a high one, then let M2 record the result one sample behind M1. A digital recording stores one number at each regular time step; that's a **sample**. The clips below mix the same synthetic input, with no added noise and no separate gain adjustments. Start at low volume and listen to A, then B. Each lasts two seconds.
 
-All three files use the same export gain. Start with [Chapter 1](chapters/01_problem-definition.md) to see when averaging helps and [Chapter 2](chapters/02_basics-signal-model.md) to calculate a delay from geometry. [Chapter 5 has four more examples](chapters/05_beamforming.md#e05-27) for comparing what each ear receives.
+**[▶ A · Average the recordings directly](codes/chapters/ch02/audio/alignment_unaligned.wav?raw=true)**　　**[▶ B · Align the recordings, then average](codes/chapters/ch02/audio/alignment_aligned.wav?raw=true)**
 
-| What you want to do | Where to start |
-|---|---|
-| Learn arrays for the first time | [Guide](chapters/00_overview.md) → [Chapter 1](chapters/01_problem-definition.md) → [Chapter 2](chapters/02_basics-signal-model.md) |
-| Find a source and focus on it | [Chapter 4: Direction finding](chapters/04_doa-estimation.md) → [Chapter 5: Beamforming](chapters/05_beamforming.md) |
-| Build an audio front end | [Chapter 10: Engineering](chapters/10_engineering-practice.md) → [Chapter 11: Selection](chapters/11_selection-guide.md) |
-| Read offline or run the examples | [Combined PDF](dist/microphone-array-tutorial.pdf) · [Chapter code](codes/chapters/README.md) · [Exercise and audio handbook](codes/chapters/ch00/research/05_exercises_and_audio.md) |
+If your browser downloads the WAV, open it in your audio player. In B, listen for the higher tone. The lower tone changes much less. The next figure shows where that difference comes from.
 
-The tutorial and research chapters are in Chinese. They include **363 executable exercises, 80 numbered figures, and one supplementary room exercise figure**. The [audio inventory](codes/chapters/README.md#audio-inventory) lists 109 main synthetic WAVs, 158 synthetic WAVs in 28 independent sets, and four [DEMAND excerpts and derived WAVs](codes/chapters/ch02/real_audio/README.md). The [source research handbook](codes/chapters/ch00/research/README.md) separates source acquisition, static inspection, limited method execution, and system validation.
+## Look at what the average does
 
-中文版：[README.md](README.md)
+Use a short pulse in place of the whole sound. The horizontal axis is the sample number. The height of a stem is the amplitude at that sample. `½ Σ` means add the two values and divide by two.
 
-The same way of comparing signals also helps with echo and reverberation: check both what remains and what happens to the target. The [guide](chapters/00_overview.md) pairs these plots with the matching WAVs.
+![Pulse alignment. A: the peaks at samples 2 and 3 give two half-height output peaks. B: delay M1 by one sample and both pulses give one full-height peak at sample 3.](assets/readme/one-sample-shift.svg)
 
-![Waveform and segment energy comparisons for alignment, echo cancellation, and dereverberation](figures/fig34_audio_examples.png)
+- **A, average directly.** At sample 2, `(1 + 0) ÷ 2 = 0.5`. At sample 3, `(0 + 1) ÷ 2 = 0.5`. The original peak gets spread across two samples.
+- **B, align and average.** Let the earlier M1 wait a sample. Both peaks now fall on sample 3, giving `(1 + 1) ÷ 2 = 1`. Delaying the earlier recording only requires past samples.
 
-## Layout
+The pulse shows **how to align** the signals. The clips contain continuous tones, each with a positive and negative half of its cycle. When the recordings are out of step, a positive value in one can meet a negative value in the other. Their average can have a smaller amplitude.
 
-| Path | Description |
-|---|---|
-| `chapters/` | 16 tutorial documents in Markdown (`00_overview.md` is the homepage; `01`–`13` are chapters (Chapters 12/13 are Extensions I/II); `14`/`15` are Appendices A/B; navigation defines reading order) |
-| `figures/` | 80 numbered figures (`fig01`–`fig80_*.png`) with the room-exercise supplementary figure stored separately at `codes/chapters/appendix_b/room_audio/ROOM_RESULTS.png`; all generated by scripts and reproducible |
-| `codes/chapters/` | Chapter-owned source, experiments, reports and assets for the guide, Chapters 1–11, Extensions I/II and Appendices A/B; see the [code map](codes/chapters/README.md) |
-| `codes/chapters/ch10/channel_audio/` | Six mathematical known-channel-failure WAVs, eight generating sources and gain 1; separate analytic, float and 27,200-sample actual PCM integer scores |
-| `codes/chapters/ch00/audio/MANIFEST.json` and chapter `audio/` folders | One manifest covers 109 book-synthesized WAVs in 27 groups, stored by chapter with parameters and hashes; generated by script |
-| `codes/chapters/ch01/spectral_audio/` | Two mono mathematical sources and two stereo complete-tail FIR outputs; separate analytic, floating-point and PCM scores, without measured HRTFs or direction truth |
-| `codes/chapters/ch02/sweep_audio/` | Four digital sweep/complete/noisy/cut-response WAVs; full estimated IR, oracle support and outside-support scores for float and actual decoded PCM, without room measurements |
-| `codes/chapters/ch03/baseline_audio/` | Six known-direction source/training/held-out WAVs; augmented-rank checks and separate float/actual PCM baseline and fixed channel-delay estimates |
-| `codes/chapters/ch04/reflection_audio/` | Four same-source reference/direct/reflection/mixed WAVs; rank-one coherent fields can have a finite false MUSIC peak; analytic, float and actual PCM results stay separate |
-| `codes/chapters/ch01/binaural_audio/`, `codes/chapters/ch08/gss_audio/`, `codes/chapters/ch09/moving_audio/`, `codes/chapters/ch09/tracking_audio/`, `codes/chapters/appendix_b/room_audio/` | Five independent synthetic sets containing 5, 5, 3, 2, and 18 WAVs respectively, with their own state, truth, observations or room-result report and manifests |
-| `codes/chapters/ch02/stft_audio/`, `codes/chapters/ch03/geometry_audio/` | Two further independent synthetic sets, three WAVs each; complete convolution and steady-window multifrequency phase have separate scores, source hashes and PCM manifests |
-| `codes/chapters/ch04/focus_audio/` | Four independent known-unitary focusing WAVs: two mono sources and two four-channel observations, with steady-window multifrequency rank scores |
-| `codes/chapters/ch05/derivative_audio/` | Four independent derivative-constraint WAVs: one mono reference, a three-channel array and two outputs, with eight source hashes and actual PCM reference errors |
-| `codes/chapters/ch05/binaural_beamforming_audio/` | Four stereo synthetic beamforming WAVs separating target, interferer, and background controls |
-| `codes/chapters/ch05/phase_audio/` | Three known per-frequency phase controls with separate phase, power and integer PCM errors |
-| `codes/chapters/ch06/apa_audio/` | Six colored-reference APA WAVs: training and frozen holdout, a complete 13-sample tail and separate float/PCM scores |
-| `codes/chapters/ch06/reference_audio/` | Six known playback-gain/tail WAVs: frozen path, complete 1600-sample tail and windowed integer scores |
-| `codes/chapters/ch07/delay_audio/` | Six known arrival/history WAVs, one real regressor, common receiver clock and actual integer scores |
-| `codes/chapters/ch07/mint_audio/` | Six known sparse-path inverse WAVs: complete 512-sample tails, common gain and an independent parameter/score manifest |
-| `codes/chapters/appendix_b/response_audio/` | Five known short-FIR equal-DRR contrasts, with four source hashes, full tails, common gain and actual integer PCM scores |
-| `codes/chapters/ch08/css_audio/` | Four fixed-slot polarity/gain controls; overlap fitting and two scoring windows, without blind CSS |
-| `codes/chapters/ch08/mask_audio/`, `codes/chapters/ch10/noise_audio/` | Two independent mathematical synthetic sets with six WAVs each; known-mask representations and fixed noise-estimate mismatch retain separate analytic, floating and actual PCM scores |
-| `codes/chapters/ch11/scenario_audio/`, `codes/chapters/appendix_a/weighted_audio/` | Eight selection-scenario WAVs and five known-noise weighting WAVs, each with its own manifest, common gain, scoring window and integer denominators |
-| `codes/chapters/ch13/distributed_audio/` | 17 independent 16 kHz mathematical WAVs; common gain 1, 28800-sample steady and 800-sample packet scores with frozen source hashes |
-| `codes/chapters/ch12/imaging_audio/` | Five independent 24 kHz snapshot WAVs, 48004-sample complete records and a 38160-sample scoring set, with current source and PCM hashes |
-| `codes/chapters/ch00/io_contracts.py` | Shared file-path, ordinary-member, strict JSON and report-write checks for generators and source acquisition tools; numerical models and asset manifests remain chapter-owned |
-| `codes/chapters/ch02/real_audio/` | Real synchronized DEMAND excerpt, derived averages, separate manifest and data license |
-| `codes/chapters/ch00/research/` | Detailed source research: algorithm steps, state and configuration, source entrypoints, failure experiments and industrial reproduction |
-| `codes/chapters/ch00/upstream/_downloads/` | Git-ignored local cache of separately acquired upstream source; it may contain local changes and is not part of the published tutorial or tracked documentation. See the [acquisition guide](codes/chapters/ch00/upstream/README.md) |
-| `codes/chapters/*/reports/` | Small-scale run reports beside their algorithm chapters, separate from source acquisition and full paper benchmarks |
-| `scripts/` | Plotting and build scripts (`make_figures.py`, `make_aec_figures.py`, `make_beamforming_figures.py`, `make_reference_figures.py`, `make_delay_figures.py`, `make_css_figures.py`, `make_tracking_figures.py`, `make_channel_figures.py`, `make_selection_figures.py`, `build_site.py`, `build_pdf.py`; see `scripts/README.md`) |
-| `site/` | 26 pages: 16 current tutorial pages (including the homepage), 4 legacy-route compatibility pages and 6 handbook pages under `research/`; reproducible build output |
-| `dist/` | [Current combined PDF](dist/microphone-array-tutorial.pdf) and rebuildable HTML; the PDF has 910 bookmarks: 16 top-level, 151 second-level and 743 third-level |
+## Count the samples: why is the high tone affected more?
 
-## Chapters
+The clips are sampled 16,000 times per second. A sample is **62.5 microseconds**. A 1 kHz cycle lasts 16 samples; a 4 kHz cycle lasts only four. The same delay shifts one tone by **1/16 of its cycle**, and the other by **1/4**.
 
-| # | File | Topics | Level |
-|---|---|---|---|
-| Guide | `chapters/00_overview.md` | Navigation, three learning paths, figure map | Beginner |
-| Ch 1 | `chapters/01_problem-definition.md` | Noise, reverberation, interference, self-noise, array gain, binaural cues | Beginner |
-| Ch 2 | `chapters/02_basics-signal-model.md` | Delay, near/far field, signal model, reverberation, STFT/covariance, beampattern metrics | Intermediate |
-| Ch 3 | `chapters/03_array-geometry.md` | Linear/circular/spherical/sparse arrays, endfire sensitivity, calibration | Intermediate |
-| Ch 4 | `chapters/04_doa-estimation.md` | GCC-PHAT, SRP, TDOA geometry, Bartlett/Capon, MUSIC/ESPRIT, broadband focusing, DNN localization, CRLB | Advanced |
-| Ch 5 | `chapters/05_beamforming.md` | DSB, superdirective, MVDR, LCMV, GSC, SPP, postfilters, spherical harmonics, DNN beamforming | Advanced |
-| Ch 6 | `chapters/06_aec.md` | NLMS, PBFDAF, subband AEC, IPNLMS, RLS, Kalman/FDKF, double-talk, nonlinear echo, hybrid neural AEC, AEC3 | Advanced |
-| Ch 7 | `chapters/07_wpe-dereverberation.md` | WPE derivation, Δ/K selection, online WPE, worked examples | Intermediate |
-| Ch 8 | `chapters/08_speech-separation.md` | Mixing model, BSS, GSS, deep separation, TSE, continuous meeting separation, datasets | Intermediate |
-| Ch 9 | `chapters/09_source-tracking.md` | Kalman worked example, particle filtering, PHD tracking, localization–tracking–beamforming interface | Intermediate |
-| Ch 10 | `chapters/10_engineering-practice.md` | Reference pipeline, critical-path latency, SRO/calibration, resource budgets, evaluation | Intermediate |
-| Ch 11 | `chapters/11_selection-guide.md` | Conditional selection, scenario constraints, verifiable specifications, exercises | Beginner |
-| Ch 12 (Extension I) | `chapters/12_acoustic-imaging.md` | CSM, spherical scan, PSF, DAMAS/CLEAN-SC/simplified CSM fitting, calibration and region quantities; 18 step-by-step exercises | Advanced |
-| Ch 13 (Extension II) | `chapters/13_distributed-enhancement.md` | Node-specific MWF, task-related compression, DANSE conditions, tree topology, GEVD, clock and packet controls; 25 exercises and 17 independent WAVs | Advanced |
-| Ch 14 (Appendix A) | `chapters/14_appendix-symbols-math.md` | Symbols, terminology, math refresher | Reference |
-| Ch 15 (Appendix B) | `chapters/15_appendix-guide.md` | Learning paths, field map, research frontier, debugging, the 17 comprehensive written exercises and E15-01–15 code exercises, reproduction guide | Reference |
+![Amplitudes measured from the WAVs. A retains 98.1% at 1 kHz and 70.7% at 4 kHz; B retains 100% at both frequencies.](assets/readme/two-tone-result.svg)
 
-## Quick start
+Here, 100% is the amplitude of the [clean reference](codes/chapters/ch02/audio/alignment_reference.wav?raw=true) at that frequency. Without alignment, the 4 kHz tone retains about seven tenths of its amplitude, while 1 kHz stays close to the original. This is an **amplitude** comparison in a noise-free example; it does not measure speech intelligibility.
 
-Run from the repository root. Python 3.13 is the recorded validation environment; the exact main dependencies are pinned in [requirements.txt](requirements.txt). Windows uses `.venv\Scripts\python.exe` in place of `.venv/bin/python`.
+<details>
+<summary>Work out the 70.7% from four samples</summary>
+
+At 16 kHz, a 4 kHz cycle has four samples. If the original sine has amplitude 1, one channel is `0, 1, 0, −1`. The channel delayed by one sample is `−1, 0, 1, 0` over the same steady-state cycle.
+
+Their average is `−0.5, 0.5, 0.5, −0.5`. None of those samples happens to land on the peak of the resulting sine. Write the average as `0.5 × sin(θ) − 0.5 × cos(θ)`: the two components are a quarter cycle apart, so the amplitude is `√(0.5² + 0.5²) = 1/√2 ≈ 0.707`. See [E01-05](chapters/01_problem-definition.md#e01-05差一个采样点为什么高频损失更大) for the worked answer and WAV measurements.
+
+</details>
+
+## Pick your next lesson
+
+| What would you like to understand? | Start here |
+| --- | --- |
+| **Why use two microphones?** | [Chapter 1: What to keep and what to remove](chapters/01_problem-definition.md) → [Chapter 2: Turning arrival times into a model](chapters/02_basics-signal-model.md) |
+| **Where is the speaker, and how do I listen in that direction?** | [Chapter 4: Find the shift that best matches two recordings](chapters/04_doa-estimation.md) → [Chapter 5: Align and combine sound from the target direction](chapters/05_beamforming.md) |
+| **Why do I hear myself in a call, and why does an empty room ring?** | [Chapter 6: Cancel echo using the known playback signal](chapters/06_aec.md) · [Chapter 7: Reduce the tail from room reflections](chapters/07_wpe-dereverberation.md) |
+| **What should I measure on my device?** | [Chapter 10: Latency, synchronization, and calibration](chapters/10_engineering-practice.md) · [Chapter 11: Choose from the use case and acceptance criteria](chapters/11_selection-guide.md) |
+
+Using the arrival order to infer direction is the starting point for **source localization**. Compensating for the delay from a chosen direction and combining the signals is the simplest **beamforming** method. We supplied the correct delay here. The later chapters explain how to estimate it and when the estimate can go wrong.
+
+<details>
+<summary>Reproduce the WAV measurements on your computer</summary>
+
+You need Git and Python. The tutorial was verified with Python 3.13; [requirements.txt](requirements.txt) pins the dependencies.
 
 ```bash
+git clone https://github.com/nanless/microphone-array-tutorial.git
+cd microphone-array-tutorial
 python3 -m venv .venv
 .venv/bin/python -m pip install -r requirements.txt
-.venv/bin/python -m codes.chapters.ch00.cross_chapter.ch02_05_baselines
-.venv/bin/python -m codes.chapters.ch00.cross_chapter.ch06_09_baselines
-.venv/bin/python -m codes.chapters.ch10.examples.ch10_engineering_baselines
-.venv/bin/python -m codes.chapters.ch04.chapter04_experiments
-.venv/bin/python -m codes.chapters.ch12.chapter12_exercises
-.venv/bin/python -m codes.chapters.ch13.chapter13_exercises
+.venv/bin/python -c 'import json; from codes.chapters.ch01.chapter01_experiments import published_alignment_measurements as measure; print(json.dumps(measure()["pcm_measurements"], indent=2))'
 ```
 
-These examples print their results. The chapter map and exercise handbook list the other chapter and cross-chapter runners; one runner does not execute all 363 exercises. Some exercises read the committed PCM assets and fail if their source or manifest is stale.
+On Windows, use `.venv\Scripts\python.exe` in place of `.venv/bin/python`. The result lists amplitudes and ratios for 1 kHz and 4 kHz. The measurement checks the committed WAV formats and digests and leaves the audio files untouched.
 
-The repository includes the published audio and figures. To rebuild the website and PDF from these assets:
+</details>
 
-```bash
-.venv/bin/python scripts/build_site.py
-.venv/bin/python scripts/build_pdf.py --build-date 2026-11-11
-.venv/bin/python -m unittest discover -s tests -v
-.venv/bin/python scripts/quality_check.py
-```
+## Book and reference material
 
-Open `site/index.html` for the tutorial or `site/research/index.html` for the handbook. Website formulas load MathJax over the network. The PDF uses bundled MathJax 3.2.2 offline and requires Google Chrome; set `CHROME_BIN` to the Chrome executable when it is not at the default macOS path. Choose the intended cover date, or use `SOURCE_DATE_EPOCH`; this fixes the cover date, not every binary output byte.
+[Chapter guide](chapters/00_overview.md) · [Offline PDF](dist/microphone-array-tutorial.pdf) · [Code and audio by chapter](codes/chapters/README.md) · [Exercise and audio handbook](codes/chapters/ch00/research/05_exercises_and_audio.md)
 
-For complete regeneration, follow the [ordered audio and figure commands](scripts/README.md#audio-regeneration). Generate the main set and all 27 independent NumPy-based sets before the nine plotting entry points. The remaining independent room set requires isolated `pyroomacoustics==0.10.0`; DEMAND is prepared separately from its fixed archive. Do not overwrite an individual WAV or modify a generated manifest to bypass verification. Every ordinary generator supports read-only `--check`; room verification uses `check_room_assets`, while actual room simulation has a separate `--run` path.
+The Chinese tutorial has **13 chapters, two appendices, 363 runnable exercises, and 80 numbered figures**, plus a supplementary room exercise figure. Use the [book guide](chapters/00_overview.md) for array geometry, speech separation, tracking, acoustic imaging, and distributed arrays. The [audio inventory](codes/chapters/README.md#audio-inventory) lists synthetic examples separately from the real DEMAND recordings.
 
-Optional tests may skip when SciPy, fixed upstream caches, a compiler or FFTW is absent. A successful test command can therefore contain skipped checks. Read the reported reasons and the [optional verification instructions](scripts/README.md#optional-verification); installing main dependencies does not install every upstream system.
+[Source research handbook](codes/chapters/ch00/research/README.md) · [Third-party sources and licenses](codes/chapters/ch00/THIRD_PARTY.md) · [Build the site, PDF, and experiments](scripts/README.md)
 
-## Reference sources and evidence
-
-```bash
-.venv/bin/python codes/chapters/ch00/upstream/fetch_upstreams.py --list
-.venv/bin/python codes/chapters/ch00/upstream/fetch_upstreams.py --all --report tmp/source-acquisition.json
-.venv/bin/python codes/chapters/ch00/upstream/fetch_upstreams.py --verify --report tmp/source-verification.json
-```
-
-Acquisition needs network access and Git. Offline verification preserves mismatched or locally modified caches and reports failures; it does not repair them or execute algorithms. Official non-Git archives use a separate lock and tool. See the [acquisition guide](codes/chapters/ch00/upstream/README.md), [coverage table](codes/chapters/ch00/COVERAGE.md) and [third-party licenses](codes/chapters/ch00/THIRD_PARTY.md).
-
-The repository has no root `LICENSE` or `COPYING`; public access does not establish permission to redistribute the book or its teaching code. Upstream code, model weights and datasets have independent terms. DEMAND derivatives retain their documented CC BY-SA 3.0 license.
-
-## Learning paths
-
-- **Foundations**: guide → Chapter 1 → Sections 11.1–11.3 → Chapters 2/3 → GCC/SRP in Chapter 4 → DSB/MVDR in Chapter 5 → Chapters 6–9. Reproduce the relevant examples and explain their assumptions.
-- **Engineering**: define task and acceptance criteria in Chapter 11 → choose modules from Chapters 5–8 → read Chapter 10 → produce latency, synchronization and calibration budgets. Hardware timing and acoustic quality require measurements on the target system.
-- **Research**: information bounds in Chapter 2 → geometry in Chapter 3 → the relevant Chapters 4–9 → [Section 15.3](chapters/15_appendix-guide.md#153-研究前沿速览2024) and [Section 15.6](chapters/15_appendix-guide.md#156-思考与练习). Use Chapter 12 for source-map inversion and Chapter 13 for distributed waveform enhancement; fix dataset, version and scoring protocol before comparing results.
-
-## Conventions and validation limits
-
-Core referenced equations use `\tag{chapter-index}` and citations such as Eq. (5-1). Define dimensions, units, conjugation, coordinate axes and delay signs before calculation. Power ratios use 10 log10; amplitude ratios use 20 log10 when the corresponding power is proportional to squared amplitude. Each numerical claim retains its input, reference, alignment, scoring region and source.
-
-The combined PDF uses offline SVG mathematics with fixed English structural descriptions, checking every source identity against its actual MCID. Mathematical meaning and assistive-technology reading order still require human verification. The October 5, 2026 technical audit covers the 267 sources then published. Four newer stereo WAVs are verified against their own manifest. The human listening register remains unexecuted. See the [audio acceptance materials](codes/chapters/README.md#音频技术检查与真人听辨记录).
-
-The publication check validates structure, links, source digests and PDF destinations. It does not establish subjective audio quality, correct assistive-technology reading order or full PDF/UA conformance. The [build guide](scripts/README.md) documents the current checks and limitations.
+There is no general license at the repository root. Public access does not grant redistribution rights. Third-party code and data have their own terms.

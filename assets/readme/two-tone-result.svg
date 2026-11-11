@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="244" viewBox="0 0 720 244" role="img" aria-labelledby="title desc">
+  <title id="title">Tone amplitude retained in the published audio</title>
+  <desc id="desc">Direct averaging retains 98.1 percent at 1 kHz and 70.7 percent at 4 kHz. Aligned averaging retains 100 percent at both frequencies.</desc>
+  <rect x="1" y="1" width="718" height="242" rx="22" fill="#f3f7fa" stroke="#d8e3ec"/>
+  <g stroke="#d7e1e9" stroke-width="1"><path d="M192 31v157m100-157v157m100-157v157m100-157v157m100-157v157"/></g>
+  <g fill="#264154" font-family="Arial,sans-serif" font-size="23" font-weight="700">
+    <text x="27" y="73">1 kHz</text><text x="27" y="151">4 kHz</text>
+    <text x="140" y="57" fill="#4a5794">A</text><text x="140" y="90" fill="#08685e">B</text>
+    <text x="140" y="135" fill="#4a5794">A</text><text x="140" y="168" fill="#08685e">B</text>
+  </g>
+  <g fill="#6777b5"><rect x="192" y="39" width="392.4" height="21" rx="4"/><rect x="192" y="117" width="282.8" height="21" rx="4"/></g>
+  <g fill="#087b6e"><rect x="192" y="72" width="400" height="21" rx="4"/><rect x="192" y="150" width="400" height="21" rx="4"/></g>
+  <g fill="#264154" font-family="Arial,sans-serif" font-size="21" font-weight="700"><text x="601" y="57">98.1%</text><text x="601" y="90">100%</text><text x="485" y="135">70.7%</text><text x="601" y="168">100%</text></g>
+  <g fill="#4d6374" font-family="Arial,sans-serif" font-size="18" text-anchor="middle"><text x="192" y="215">0%</text><text x="292" y="215">25%</text><text x="392" y="215">50%</text><text x="492" y="215">75%</text><text x="592" y="215">100%</text></g>
+</svg>

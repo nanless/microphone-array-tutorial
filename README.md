@@ -1,147 +1,81 @@
-# 深入浅出麦克风阵列信号处理
+# 麦克风阵列入门
 
-**两支麦克风录下同一句话，为什么不能直接把它们相加？** 声音到达两支麦克风有先有后。用这个时间差，可以推测声音来自哪里；把两路的目标声对齐再平均，则能让它们更一致地叠加。这两个操作分别引出**声源定位**和**波束形成**。
+[English guide](README_EN.md) · [第一课：两支麦克风](chapters/01_problem-definition.md) · [全书导读](chapters/00_overview.md) · [下载 PDF](dist/microphone-array-tutorial.pdf)
 
-![两支麦克风与传播路程差的几何示意](figures/fig02_dsin_geometry.png)
+**同一句话，两支麦克风都录到了，为什么一混合反而少了一部分声音？** 你在会议桌一端说话，近处的麦克风先收到，远处的晚一点。声源定位利用的正是这点先后，混合之前也得先想办法对齐它们。
 
-图中的 4 cm 双麦用来解释几何关系。下面的试听采用另一组简单的数学合成输入：16 kHz 采样时，目标到麦 2 比到麦 1 早 3 个采样点，也就是 187.5 微秒。
+![同一个声音沿不同长短的路径到达两支麦克风，右边的两条波形先后起振。](assets/readme/array-listening.svg)
 
-试听前先调低音量。
+## 先听：只差一个采样点，高音去哪儿了？
 
-1. [先听单只麦克风](codes/chapters/ch01/audio/spatial_mic1.wav)，给自己一个参照。
-2. [再听直接平均](codes/chapters/ch01/audio/spatial_unaligned.wav)，两路按相同的采样编号相加除以二。
-3. [最后听对齐后平均](codes/chapters/ch01/audio/spatial_aligned.wav)，先把较早的麦 2 延迟 3 点，再做同样的平均。
+把一个低音和一个高音叠起来，让 M2 比 M1 晚记下一格。数字录音每隔固定时间记一个数，这一格就是一个**采样点**。下面是同一段合成声音的两种混合结果，没有加噪声，也没有分别调音量。先调低音量，按 A、B 各听一次，每段 2 秒。
 
-三个文件用同一增益导出。想知道什么时候对齐才有收益，可以先做[第 1 章](chapters/01_problem-definition.md)的单麦和多麦噪声对照，再用[第 2 章](chapters/02_basics-signal-model.md)从图上复算时差。想听左右耳会留下哪些线索，可以直接听[第 5 章的四段双耳对照](chapters/05_beamforming.md#e05-27)。
+**[▶ A · 直接把两路平均](codes/chapters/ch02/audio/alignment_unaligned.wav?raw=true)**　　**[▶ B · 先对齐，再平均](codes/chapters/ch02/audio/alignment_aligned.wav?raw=true)**
 
-| 你想做什么 | 从哪里开始 |
-|---|---|
-| 第一次接触阵列 | [导读](chapters/00_overview.md) → [第 1 章](chapters/01_problem-definition.md) → [第 2 章](chapters/02_basics-signal-model.md) |
-| 找到声音并朝它拾音 | [第 4 章：定位](chapters/04_doa-estimation.md) → [第 5 章：波束形成](chapters/05_beamforming.md) |
-| 把处理接进设备 | [第 10 章：工程实现](chapters/10_engineering-practice.md) → [第 11 章：选型](chapters/11_selection-guide.md) |
-| 离线精读或动手复算 | [合订 PDF](dist/microphone-array-tutorial.pdf) · [按章代码](codes/chapters/README.md) · [练习与音频手册](codes/chapters/ch00/research/05_exercises_and_audio.md) |
+如果浏览器下载了 WAV，用本地播放器打开即可。比较时，留意 B 中较尖的那层音，低一点的音变化小得多。听不出也没关系：下一张图能告诉你变化来自哪里。
 
-本书面向初学者和入门研究生，包含 **363 道可运行代码练习、80 张编号图和 1 张房间题补充图**。[完整音频目录](codes/chapters/README.md#audio-inventory)包括主清单 109 个合成 WAV、28 套独立实验的 158 个合成 WAV，以及 4 个 [DEMAND 真实录音摘录及派生 WAV](codes/chapters/ch02/real_audio/README.md)。[源码研究手册](codes/chapters/ch00/research/README.md)区分已取得源码、静态核验、限定方法运行与完整系统验收。
+## 再看：同一次到达，为什么变成了两个小峰？
 
-English project guide: [README_EN.md](README_EN.md)
+用一个短脉冲代替整段声音。图里的横轴是采样编号，每根竖线的高度就是这一点的振幅；`½ Σ` 表示把两路相加再除以二。
 
-同一种对照方法也能检查回声和拖尾：把输出与同钟参照放在一起，分别看残余和目标有没有受损。下图的三组实验及音频可在[导读末尾](chapters/00_overview.md)一起查看。
+![脉冲对齐示意。A：两路分别在第 2、3 点出现峰值，直接平均留下两个半高峰。B：让先到的 M1 晚一格，两路在第 3 点叠出一个全高峰。](assets/readme/one-sample-shift.svg)
 
-![三组波形与分段能量：对齐、回声消除、去混响](figures/fig34_audio_examples.png)
+- **A，直接平均。** 第 2 点是 `(1 + 0) ÷ 2 = 0.5`，第 3 点是 `(0 + 1) ÷ 2 = 0.5`。原来的尖峰被分到了两格。
+- **B，对齐再平均。** 让先到的 M1 等一格。两路的峰都落到第 3 点，得到 `(1 + 1) ÷ 2 = 1`。等的是先到那路，所以不需要预知下一点。
 
-## 目录结构
+脉冲图解释了**怎么对齐**。刚才听的是连续的音，每一周期还有正、负两半。两路一旦错开，一个音的正值就可能碰上另一路的负值；平均后的振幅会变小。
 
-| 目录/文件 | 说明 |
-|---|---|
-| `chapters/` | 教程正文 16 篇 Markdown（`00_overview.md` 是入口，`01`～`13` 是 13 章正文（第12、13章为扩展专题Ⅰ/Ⅱ），`14`/`15` 是附录 A/B；阅读顺序以导航为准） |
-| `figures/` | 80 张编号图（`fig01`～`fig80_*.png`），房间题补充图另存于 `codes/chapters/appendix_b/room_audio/ROOM_RESULTS.png`；全部由脚本生成、可复现 |
-| `codes/chapters/` | 导读、第 1～11 章、扩展专题Ⅰ/Ⅱ及附录 A/B 的源码、实验、报告和资产；逐章目录与命令见[代码地图](codes/chapters/README.md) |
-| `codes/chapters/ch10/channel_audio/` | 六个已知坏麦数学合成WAV，8真实源、共同增益1；分开解析、浮点与27200点实际PCM整数评分 |
-| `codes/chapters/ch00/audio/MANIFEST.json`、各章 `audio/` | 主清单统一管理 27 组、109 个按章节存放的本书合成 WAV；由脚本生成，不直接编辑 |
-| `codes/chapters/ch01/spectral_audio/` | 两种数学源谱及已知两抽头响应，2 个单声源与2个双声完整尾输出；独立清单与解析/浮点/PCM评分 |
-| `codes/chapters/ch02/sweep_audio/` | 已知数字扫频、完整/加噪/截尾三响应共4WAV；实际PCM与浮点的完整IR、真值支持及支持外能量分别评分，不是房间测量 |
-| `codes/chapters/ch03/baseline_audio/` | 已知方向求三维基线及固定通道时延的6WAV；增广秩、真实PCM相量与未参与拟合方向分开核验 |
-| `codes/chapters/ch04/reflection_audio/` | 同源参考/直达/反射/总观测四WAV；高相干与秩一的有限假峰，解析/浮点/实际PCM分开 |
-| `codes/chapters/ch01/binaural_audio/`、`codes/chapters/ch08/gss_audio/`、`codes/chapters/ch09/moving_audio/`、`codes/chapters/ch09/tracking_audio/`、`codes/chapters/appendix_b/room_audio/` | 五套独立合成实验资产，分别为 5、5、3、2、18 个 WAV；中间状态、轨迹/逐帧观测或房间数值报告随各自清单保存 |
-| `codes/chapters/ch02/stft_audio/`、`codes/chapters/ch03/geometry_audio/` | 另外两套独立合成实验，各3个WAV；完整卷积与稳定窗多频相位分别评分，生成源和PCM摘要随各自清单保存 |
-| `codes/chapters/ch04/focus_audio/` | 另外四份独立已知酉聚焦合成WAV；两份单声道源、两份四声道观测，固定稳定窗检查双频池化秩 |
-| `codes/chapters/ch05/derivative_audio/` | 四份独立三麦导数约束WAV；八个真实生成源，固定参考的实际PCM误差 |
-| `codes/chapters/ch05/binaural_beamforming_audio/` | 四份双耳波束合成 WAV，分开检查目标、干扰和背景 |
-| `codes/chapters/ch05/phase_audio/` | 三个已知逐频相位控制，分开相位、功率和实际 PCM 整数误差 |
-| `codes/chapters/ch06/apa_audio/` | 六份有色参考APA合成WAV；训练/冻结留出、完整13点尾及浮点/PCM评分 |
-| `codes/chapters/ch06/reference_audio/` | 六份已知播放增益/尾声WAV；同钟冻结路径、完整1600点尾及分窗整数评分 |
-| `codes/chapters/ch07/delay_audio/` | 六份已知到达与历史WAV；同一接收时轴、单实回归、完整表示尾及整数评分 |
-| `codes/chapters/ch07/mint_audio/` | 六份已知稀疏路径逆合成WAV；完整512点尾、共同增益及独立参数/评分清单 |
-| `codes/chapters/appendix_b/response_audio/` | 五份同DRR已知短FIR频响对照WAV；四真实生成源、完整尾部、共同增益与实际PCM整数评分 |
-| `codes/chapters/ch08/css_audio/` | 四个既定槽位极性与增益控制；重叠拟合与两个评分窗分开，不是盲 CSS |
-| `codes/chapters/ch08/mask_audio/`、`codes/chapters/ch10/noise_audio/` | 两套独立数学合成实验，各6个WAV；已知掩码表示与固定噪声估计失配分别记录解析、浮点和实际PCM评分 |
-| `codes/chapters/ch11/scenario_audio/`、`codes/chapters/appendix_a/weighted_audio/` | 选型场景8个WAV与已知噪声加权5个WAV；各有独立清单、共同增益、评分窗和整数分母 |
-| `codes/chapters/ch13/distributed_audio/` | 17份独立16kHz数学WAV，共同增益1；28800点稳窗与800点缺口窗分别评分，绑定九个真实源 |
-| `codes/chapters/ch12/imaging_audio/` | 五份独立24kHz成像快拍WAV，真实源摘要、48004点完整记录及38160点评分快拍集随清单保存 |
-| `codes/chapters/ch00/io_contracts.py` | 生成器和源码获取工具共用的文件路径、普通成员、严格JSON及报告写入检查；数值模型和各资产清单仍由所属章维护 |
-| `codes/chapters/ch02/real_audio/` | DEMAND 真实同步录音摘录、派生均值、独立清单与数据许可；不是合成数据 |
-| `codes/chapters/ch00/research/` | 详细源码研究手册：算法步骤、状态与配置、代码入口、失败实验和工业复现 |
-| `codes/chapters/ch00/upstream/_downloads/` | 本机按需取得的第三方源码缓存，已被 Git 忽略；可能含本地修改，不属于本书提交的文档或教学代码，取得与核验方法见[源码获取说明](codes/chapters/ch00/upstream/README.md) |
-| `codes/chapters/*/reports/` | 随算法所属章保存的小规模运行报告；与源码获取状态、论文全量评测分开 |
-| `scripts/` | 绘图与构建脚本（`make_figures.py`、`make_aec_figures.py`、`make_beamforming_figures.py`、`make_reference_figures.py`、`make_delay_figures.py`、`make_css_figures.py`、`make_tracking_figures.py`、`make_channel_figures.py`、`make_selection_figures.py`、`build_site.py`、`build_pdf.py`，说明见 `scripts/README.md`） |
-| `site/` | 26 个网页：16 个当前教程页（含首页）、4 个旧路径兼容页面及 `research/` 下 6 个研究手册页；构建产物，可再生 |
-| `dist/` | [当前合订 PDF](dist/microphone-array-tutorial.pdf) 与可再生的合订 HTML；PDF 含 16 个顶级、151 个二级、743 个三级书签，共 910 个 |
+## 算一步：同样晚一格，为什么高音损失更多？
 
-## 章节导览
+这组音频每秒记录 16,000 点，一格是 **62.5 微秒**。1 kHz 的音每周期有 16 点，4 kHz 的音每周期只有 4 点。同样错开一格，前者只错开周期的 **1/16**，后者却错开了 **1/4**。
 
-| 篇 | 文件 | 内容 | 难度 |
-|---|---|---|---|
-| 导读 | `chapters/00_overview.md` | 全套导航、三条学习路径、插图地图 | 入门 |
-| 第 1 章 | `chapters/01_problem-definition.md` | 噪声、混响、干扰、自噪声，阵列增益与双耳线索 | 入门 |
-| 第 2 章 | `chapters/02_basics-signal-model.md` | 时延、远近场、信号模型、房间混响、STFT/协方差、波束图度量 | 进阶 |
-| 第 3 章 | `chapters/03_array-geometry.md` | 线阵、圆阵、球阵、稀疏阵，端射灵敏度与阵列校准 | 进阶 |
-| 第 4 章 | `chapters/04_doa-estimation.md` | GCC-PHAT、SRP、几何解算、Bartlett/Capon、MUSIC/ESPRIT、宽带聚焦、DNN 定位、CRLB | 较难 |
-| 第 5 章 | `chapters/05_beamforming.md` | DSB、超指向、MVDR、LCMV、GSC、SPP、后置滤波、球谐、DNN 波束 | 较难 |
-| 第 6 章 | `chapters/06_aec.md` | NLMS、PBFDAF、子带 AEC、IPNLMS、RLS、Kalman/FDKF、双讲检测、非线性、混合神经 AEC、AEC3 | 较难 |
-| 第 7 章 | `chapters/07_wpe-dereverberation.md` | WPE 原理与推导、Δ/K 选择、在线 WPE、手算例 | 进阶 |
-| 第 8 章 | `chapters/08_speech-separation.md` | 混合模型、BSS、GSS、深度分离、TSE、连续会议分离与数据集 | 进阶 |
-| 第 9 章 | `chapters/09_source-tracking.md` | KF 手算、粒子滤波、PHD 多目标、定位—追踪—波束接口 | 进阶 |
-| 第 10 章 | `chapters/10_engineering-practice.md` | 参考链路、关键路径延迟、SRO/标定、资源预算与评测 | 进阶 |
-| 第 11 章 | `chapters/11_selection-guide.md` | 条件化选型、场景约束、可验证规格与练习 | 入门 |
-| 第 12 章（专题Ⅰ） | `chapters/12_acoustic-imaging.md` | CSM、球面扫描、PSF、DAMAS/CLEAN-SC/简化CMF、校准与区域量；18道逐步代码题 | 较难 |
-| 第 13 章（专题Ⅱ） | `chapters/13_distributed-enhancement.md` | 节点特定MWF、任务相关压缩、DANSE条件、树拓扑、GEVD、时钟与缺口；25题与17个独立音频 | 较难 |
-| 第 14 章（附录 A） | `chapters/14_appendix-symbols-math.md` | 符号表、术语定义、预备数学速览 | 查阅 |
-| 第 15 章（附录 B） | `chapters/15_appendix-guide.md` | 学习路径、领域地图、研究前沿、排错、17 道综合书面题与 E15-01～15 代码题、复现说明 | 查阅 |
+![从两段 WAV 读回的振幅。A 在 1 kHz 保留 98.1%，在 4 kHz 保留 70.7%；B 两个频率均保留 100%。](assets/readme/two-tone-result.svg)
 
-## 快速开始
+图中的 100% 指[干净参照](codes/chapters/ch02/audio/alignment_reference.wav?raw=true)在相同频率上的振幅。4 kHz 直接平均后只剩约七成，1 kHz 则仍接近原值。这是**振幅**的比例；实验没有噪声，也没有测真人语音的清晰度。
 
-以下命令从仓库根目录运行。本机验证环境为 Python 3.13；主依赖的精确版本见 [requirements.txt](requirements.txt)。Windows 将 `.venv/bin/python` 换成 `.venv\Scripts\python.exe`。
+<details>
+<summary>想手算 70.7%？只用四个点</summary>
+
+4 kHz 在 16 kHz 采样率下每周期正好四点。把原始正弦的振幅看作 1，一路依次是 `0, 1, 0, −1`；晚一格的那路是 `−1, 0, 1, 0`（取稳态的一周期）。
+
+两路平均得到 `−0.5, 0.5, 0.5, −0.5`。这四个点碰巧都没踩在新正弦的峰上。要算峰值，可把平均写成 `0.5 × sin(θ) − 0.5 × cos(θ)`；这两个相差四分之一周期的分量合起来，振幅是 `√(0.5² + 0.5²) = 1/√2 ≈ 0.707`。完整解答和音频测量见 [E01-05](chapters/01_problem-definition.md#e01-05差一个采样点为什么高频损失更大)。
+
+</details>
+
+## 下一课，按你想解决的问题选
+
+| 你想弄懂什么 | 从这里读 |
+| --- | --- |
+| **两支麦为什么有用？** | [第 1 章：哪些声音想保留，哪些想去掉](chapters/01_problem-definition.md) → [第 2 章：把到达先后写成模型](chapters/02_basics-signal-model.md) |
+| **怎么知道声音从哪边来，又怎样朝那边拾音？** | [第 4 章：先找两路最吻合的错位](chapters/04_doa-estimation.md) → [第 5 章：让目标方向的声音对齐再合成](chapters/05_beamforming.md) |
+| **为什么通话会听见自己的回声，空房间里又会拖尾？** | [第 6 章：借助设备知道的播放信号消回声](chapters/06_aec.md) · [第 7 章：处理房间反射造成的混响](chapters/07_wpe-dereverberation.md) |
+| **要把算法装进设备，该测什么？** | [第 10 章：延迟、同步与标定](chapters/10_engineering-practice.md) · [第 11 章：从场景和验收条件反推选型](chapters/11_selection-guide.md) |
+
+用到达先后推断方向，是**声源定位**的起点；按目标方向补时差、再合成，是最简单的**波束形成**。这里直接给了正确时差。真实录音里，如何找到它、什么时候会找错，正是后续课程要解决的问题。
+
+<details>
+<summary>在自己电脑上复算这段音频</summary>
+
+需要 Git 和 Python。本书用 Python 3.13 验证；依赖版本见 [requirements.txt](requirements.txt)。
 
 ```bash
+git clone https://github.com/nanless/microphone-array-tutorial.git
+cd microphone-array-tutorial
 python3 -m venv .venv
 .venv/bin/python -m pip install -r requirements.txt
-.venv/bin/python -m codes.chapters.ch00.cross_chapter.ch02_05_baselines
-.venv/bin/python -m codes.chapters.ch00.cross_chapter.ch06_09_baselines
-.venv/bin/python -m codes.chapters.ch10.examples.ch10_engineering_baselines
-.venv/bin/python -m codes.chapters.ch04.chapter04_experiments
-.venv/bin/python -m codes.chapters.ch12.chapter12_exercises
-.venv/bin/python -m codes.chapters.ch13.chapter13_exercises
+.venv/bin/python -c 'import json; from codes.chapters.ch01.chapter01_experiments import published_alignment_measurements as measure; print(json.dumps(measure()["pcm_measurements"], indent=2))'
 ```
 
-这些入口打印各自结果。其余单章和跨章入口见代码地图与练习手册，一个入口不会执行全部 363 题。部分题目读取随仓 PCM；源码、清单或音频过期时会失败。
+Windows 将 `.venv/bin/python` 换成 `.venv\Scripts\python.exe`。结果分别列出 1 kHz 和 4 kHz 的振幅及比值。函数直接读取随仓库提供的 WAV，核对格式和摘要后再测量，不改写音频。
 
-仓库已包含发布音频与图片。使用这些资产重建网站和 PDF：
+</details>
 
-```bash
-.venv/bin/python scripts/build_site.py
-.venv/bin/python scripts/build_pdf.py --build-date 2026-11-11
-.venv/bin/python -m unittest discover -s tests -v
-.venv/bin/python scripts/quality_check.py
-```
+## 全书与资料
 
-教程入口为 `site/index.html`，研究手册入口为 `site/research/index.html`。网站公式需要联网加载 MathJax；PDF 使用本地固定 MathJax 3.2.2，仍需 Google Chrome。非默认 macOS 安装位置用 `CHROME_BIN` 指向 Chrome 可执行文件。封面日期按实际出版日期设置，也可用 `SOURCE_DATE_EPOCH`；固定日期不等于 PDF 每个二进制字节都能跨环境重现。
+[章节导览](chapters/00_overview.md) · [离线合订 PDF](dist/microphone-array-tutorial.pdf) · [按章查代码与音频](codes/chapters/README.md) · [练习与音频手册](codes/chapters/ch00/research/05_exercises_and_audio.md)
 
-完整重生成按[音频与绘图的执行顺序](scripts/README.md#audio-regeneration)进行：先生成主清单和 27 套 NumPy 独立实验，再运行九个绘图入口；另 1 套房间实验使用隔离的 `pyroomacoustics==0.10.0`，DEMAND 则从固定归档单独准备。不要手改单个 WAV 或清单来绕过核验。普通生成器的 `--check` 只读；房间资产检查用 `check_room_assets`，真正仿真另用 `--run`。
+全书含 **13 章正文、2 篇附录、363 道可运行练习和 80 张编号图**，另有一张房间题补图。可按问题跳读；几何、语音分离、追踪、声学成像和分布式阵列都在[全书导读](chapters/00_overview.md)中有各自入口。[音频目录](codes/chapters/README.md#audio-inventory)把合成实验与 DEMAND 真实录音分开列出。
 
-缺少 SciPy、固定上游缓存、编译器或 FFTW 时，可选测试会跳过。测试命令退出成功仍可能含未执行项，应查看具体原因并按[可选核验说明](scripts/README.md#optional-verification)补齐；安装主依赖不会自动安装全部上游系统。
+[源码研究手册](codes/chapters/ch00/research/README.md) · [第三方来源与许可](codes/chapters/ch00/THIRD_PARTY.md) · [网站、PDF 和实验的构建说明](scripts/README.md)
 
-## 原始实现与证据
-
-```bash
-.venv/bin/python codes/chapters/ch00/upstream/fetch_upstreams.py --list
-.venv/bin/python codes/chapters/ch00/upstream/fetch_upstreams.py --all --report tmp/source-acquisition.json
-.venv/bin/python codes/chapters/ch00/upstream/fetch_upstreams.py --verify --report tmp/source-verification.json
-```
-
-获取需要 Git 和网络。离线核验保留选集不匹配或有本地修改的缓存并报告失败，不自动修复，也不执行算法。官方非 Git 归档采用独立锁表与工具。具体命令、来源与许可见[获取说明](codes/chapters/ch00/upstream/README.md)、[算法覆盖表](codes/chapters/ch00/COVERAGE.md)和[第三方记录](codes/chapters/ch00/THIRD_PARTY.md)。
-
-根目录没有 `LICENSE` 或 `COPYING`；公开可见不自动授予本书或教学代码的再分发许可。上游代码、模型权重与数据各有独立条款，DEMAND 派生物沿用其文档中的 CC BY-SA 3.0。
-
-## 学习路径
-
-- **基础**：导读 → 第 1 章 → §11.1～§11.3 → 第 2、3 章 → 第 4 章 GCC/SRP → 第 5 章 DSB/MVDR → 第 6～9 章。完成相应例子，并能解释成立条件。
-- **工程**：第 11 章写任务和验收条件 → 第 5～8 章选模块 → 第 10 章核工程接口 → 输出延迟、同步、标定预算。硬件时序和声学质量仍在目标系统测量。
-- **研究**：第 2 章信息界 → 第 3 章几何 → 第 4～9 章相关方法 → [§15.3](chapters/15_appendix-guide.md#153-研究前沿速览2024) 与 [§15.6](chapters/15_appendix-guide.md#156-思考与练习)。源量成像读第 12 章，分布式波形增强读第 13 章；比较结果前固定数据、版本与评分协议。
-
-## 约定与验收边界
-
-核心引用公式使用 `\tag{章-序}`，正文写“见式(5-1)”。计算前说明维度、单位、共轭、坐标和时差正号。功率比用 10 log10；功率与幅度平方成正比时，幅度比用 20 log10。每项数字保留输入、参考、对齐、评分区域与来源。
-
-合订PDF使用离线SVG公式与固定英文结构说明，逐式核源身份和真实MCID；公式含义与辅助技术阅读顺序仍需人工核验。2026-10-05 的技术检查覆盖当时的 267 份发布源；新增 4 份双耳 WAV 随清单单独核验。真人听辨登记尚未执行；材料见[音频验收说明](codes/chapters/README.md#音频技术检查与真人听辨记录)。
-
-发布门禁检查结构、链接、源摘要与 PDF 目标，不据此声明主观音质、辅助技术阅读顺序或完整 PDF/UA 已通过。具体检查和限制见[构建说明](scripts/README.md)。
+仓库根目录没有通用许可证；公开可见不等于获准再分发。第三方代码和数据按各自条款使用。

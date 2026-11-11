@@ -81,6 +81,7 @@
 | 图13统计生成物 | `scripts/make_figures.py` → `codes/chapters/ch04/reports/figure13_gcc_reverb.json` | 9 条件各 150 次的逐次事件、峰对比度和计数 | 与图片同次计算生成；保留共享随机性、失败和区间口径，不手改结果 |
 | 源码研究文档 | `codes/chapters/ch00/research/*.md` | 逐算法源码入口、实现差异、工业配置与复现实验 | 与正文和覆盖表互链；区分建议实验和已执行结果 |
 | 项目说明源文件 | `README.md`、`README_EN.md`、`scripts/README.md`、`codes/chapters/README.md`、`codes/chapters/ch00/{research,upstream}/README.md`、`codes/chapters/ch02/real_audio/README.md`、`scripts/vendor/mathjax-3.2.2/README.md` | 八份本书维护的源README：入口、英文、构建、代码、研究、获取、数据与公式资源 | 按真实内容修改；中英文共有信息同步，派生站点README由构建更新，上游忽略缓存原README保留身份 |
+| GitHub 首页配图 | `assets/readme/*.svg` | 双语首页共用的声音传播示意、单采样脉冲示意和双音振幅对照 | SVG 是可编辑源，不计入 80 张教材编号图；振幅图以 E01-05 的实际 PCM 测量为准，改后检查两种语言及移动端显示 |
 | 图 21 数值报告 | `scripts/make_figures.py::fig_wpe` → `codes/chapters/ch07/reports/figure21_wpe.json` | 同一信号的参数、帧选择、能量分母与谱域误差 | 随图重生；不将谱图显示频带当成指标统计频带 |
 | 图64选型报告与图 | `scripts/make_figures.py::fig_selection_scenarios` → `codes/chapters/ch11/reports/figure64_selection_scenarios.json` | 两场景实际PCM误差与解析控制、共同权重及最坏值 | 随独立音频清单真实生成；保留整数NMSE分母，不平均dB替代线性误差；不是设备排名 |
 | 第11章原评分与时间核合同 | `codes/chapters/ch11/examples/audit_meeting_scoring_interfaces.py`、`audit_meeting_kernel_contracts.py` → `reports/meeting_scoring_interfaces_current.json`、`meeting_kernel_contracts_current.json` | 固定原接口限定调用、两个原C++核13例（旧9例与4点时间控制分栏） | 核官方origin、固定blob、全部实际源码/许可与真实编译依赖闭包；32导入原模块与50预查原文件分开，完整选集不匹配及缺扩展保留。历史两报告字节不改；默认只读stdout，显式输出仅仓内指定current或仓外普通路径；不称完整评分器或ASR |

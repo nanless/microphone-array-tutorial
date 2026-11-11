@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 9 章 · 声源追踪 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="759b4238ac3b"><style>
+<meta name="source-digest" content="1a85da73ba06"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -520,6 +520,7 @@ r&=b\bmod360^\circ,\\
 <p>式(9-7)定义精确的模运算。浮点实现先把输入角度映射到规范区间，再作差并环绕；已在区间内的小角度应保持原值，不能因先加180°而被舍入成零。大角度的输入本身若已丢失精细角差，环绕也不能恢复它。</p>
 <p>这个操作没有把局部高斯模型变成任意圆周分布模型：后验跨越多个方向或接近对跖歧义时，应保留多峰或圆统计表示。</p>
 <p>例如预测为 $+179^\circ$、观测为 $-179^\circ$，直接相减得到 $-358^\circ$，最短圆周角差却是 $+2^\circ$。不做环绕会让滤波器沿错误方向大幅更新，门控也可能把正确观测判成野点。</p>
+<p>若两方向恰好相差 $180^\circ$，顺、逆两边的最短路径同长；式(9-7)按半开区间约定返回 $-180^\circ$。这个符号只用于确定表示，不能从中判断声源实际沿哪一侧运动。</p>
 <p>若设备只搜索一个不跨边界的有限扇区，则应使用该扇区的边界模型，不能把 $-180^\circ$ 与 $+180^\circ$ 自动视为相邻。</p>
 <p>式(9-6)便于手算；浮点实现可使用数值上更稳健的 Joseph 形式</p>
 <p>$$\begin{aligned}
@@ -543,7 +544,7 @@ k_*&=\frac{P^-}{P^-+R}.
 \epsilon_\nu&=\vec\nu^\top\mathbf S^{-1}\vec\nu,\\
  p=1:\quad\epsilon_\nu&=\nu^2/S.
 \end{aligned}\tag{9-10}$$</p>
-<p>线性高斯模型、正确关联且协方差匹配时，NIS 服从自由度为 $p$ 的卡方分布。可按允许的拒真概率选门限；单个观测落在门内不等于“该观测正确的概率”。混响假峰、多峰定位和错关联会破坏前提，仍要用相符数据标定。E09-05 检查角度环绕，E09-17 检查单位变化后 NIS 不变。</p>
+<p>在线性高斯模型中，若关联正确、新息零均值且协方差 $\mathbf S$ 非奇异并与实际误差匹配，门控<strong>之前</strong>的 NIS 服从自由度为 $p$ 的卡方分布。可按允许的拒真概率选门限；单个观测落在门内不等于“该观测正确的概率”。若只保留通过门控的新息，其样本已经按门限截断，不能再拿这批样本检验未截断的卡方分布。对圆周角，这一模型通常只是误差集中于一个局部角区时的近似；混响假峰、多峰定位和错关联会进一步破坏前提。E09-05 检查角度环绕，E09-17 检查单位变化后 NIS 不变。</p>
 <p>合法协方差必须对称半正定。Joseph 形式减少舍入问题，但不能修复错误的负方差输入。实现应先拒绝非法对角方差；若只恢复舍入量级的不对称或微小负特征值，要明确容差和恢复操作，不能接受后原样当作物理协方差传播。</p>
 <h3 id="sec-9-2-2">9.2.2 算例 9-1：卡尔曼滤波单步复算</h3>
 <p>以下本书手算描述相对阵列方位缓慢变化的移动声源。说话人只转动头部而位置不变，不自动产生这里的 DOA 轨迹。</p>
@@ -1225,6 +1226,11 @@ D_t(x)=[1-p_D(x)]D_t^-(x)\\
 <td class="tutorial-short-column" style="--tutorial-column-width:20em">用于测量计算与调度延迟</td>
 </tr>
 <tr>
+<td class="tutorial-short-column" style="--tutorial-column-width:14em"><code>apply_time</code></td>
+<td class="tutorial-short-column" style="--tutorial-column-width:18em">新波束权重首次用于输出的音频块时刻</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:20em">与 <code>state_time</code> 换到同一时钟；设备转动时还要使用对应时刻的姿态</td>
+</tr>
+<tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:14em">状态与协方差</td>
 <td class="tutorial-short-column" style="--tutorial-column-width:18em">角度/角速度或位置/速度，以及同维协方差</td>
 <td class="tutorial-short-column" style="--tutorial-column-width:20em">单位、维度、圆周角新息与置信区间</td>
@@ -1252,9 +1258,15 @@ D_t(x)=[1-p_D(x)]D_t^-(x)\\
 </tbody>
 </table></div>
 <p>例如目标角速度为 $30^\circ/\mathrm s$，波束形成器收到的状态比采样时间晚 80 ms；若直接使用旧角度，确定性外推误差可达 $30\times0.080=2.4^\circ$。若状态仍属于那个采样时刻，消费方应从 <code>state_time</code> 外推到实际生效时刻，并按 $\mathbf F\mathbf P\mathbf F^\top+\mathbf Q$ 传播协方差。若发布方已经预测到生效时刻，不能再从 <code>measurement_time</code> 重复外推；超过接口约定的有效期就不能继续把旧方向当作高置信观测。</p>
+<p><strong>同一个状态，时间起点差 40 ms 会怎样？</strong> 取八麦均匀线阵，在 3 kHz 的工作频点上麦距为半波长。已知状态时刻的方向为 $30^\circ$、角速度为 $250^\circ/\mathrm s$，40 ms 后发布，80 ms 后新波束才实际作用于音频。按此匀速假设，正确的生效方向为 $50^\circ$；误把发布时刻当作状态时刻，外推 40 ms 只得到 $40^\circ$。按第 5 章等权延迟求和，真实方向 $\theta$ 与转向 $\theta_b$ 的归一幅度为</p>
+<p>$$
+\left|\frac18\sum_{m=0}^{7}e^{j\pi m(\sin\theta-\sin\theta_b)}\right| .
+$$</p>
+<p>取 $\theta=50^\circ$，直接沿用 $30^\circ$、从错误时刻外推到 $40^\circ$、正确转向 $50^\circ$，用 $20\log_{10}$ 换算的目标响应分别约为 $-24.20$、$-3.75$ 和 $0$ dB。数字只适用于这组几何、频率和角速度；它说明为何实际生效时刻要独立记录，不代表一般语音的衰减。</p>
 <h3 id="sec-u-7498cbdd42">从活动观测到轨迹出生、确认与删除</h3>
 <p>一个有效定位峰只是一条观测。工程接口可以先为未关联峰建立<strong>候选轨迹</strong>，积累规定数量的有效观测后才确认；已确认轨迹短时缺测时可外推，长期缺测后应退役。重新出现的峰可以建立新轨迹，但只凭方位和活动不能证明它仍是先前那个人。</p>
 <p>这里有三个不同的时钟：观测窗中心决定观测所属时刻；完整窗口收齐后，检测事件才可供管理器使用；最近有效观测的时刻决定预测依据有多旧。把超时写成“20帧”，还需要指定每帧步长；写成秒并核对具体时钟，才能比较不同帧率和延迟。</p>
+<p>还要区分三种输入：音频帧根本未收到、收到并处理后没有检测结果、检测到候选但关联门拒绝。没有收到帧时不产生新的测量似然；有检测机会却未检测时，才可用已定义的漏检概率更新；门控拒绝则是选择结果，要结合门内概率和关联模型解释。例如两个模式的先验各为 0.5，检测概率分别为 0.9 和 0.1。处理了一帧并确认无检测时，两个未归一化权重为 $0.5(1-0.9)=0.05$、$0.5(1-0.1)=0.45$，归一化得 0.1、0.9。若该帧未收到、此步又不发生模式转移，则仍为 0.5、0.5。E09-22 展开漏检证据，E09-24 展开未观测时的模式预测。</p>
 <p><a href="#e09-25">E09-25</a>读取现有双麦 PCM，使用检测器实际给出的有效标记，再按一个明确的单轨迹管理规则生成候选、确认与退役事件。它不输出“追踪后语音”，也不使用源静音真值替代检测器。此规则是可检查的工程状态机，不是 E09-22 的 Bernoulli 存在概率更新；确认或删除门限也不是统计置信度。</p>
 <h3 id="sec-u-11f08ac058">OSPA：集合位置与人数的归一化误差</h3>
 <p>多目标结果可用最优子模式分配距离（Optimal Subpattern Assignment，OSPA）评价。设底层 $d$ 是状态空间的度量，截断距离 $c>0$ 与 $d$ 同单位，阶数 $1\le p\lt \infty$。真值集 $X$ 有 $m$ 个目标，估计集 $Y$ 有 $n\ge m$ 个目标；$\pi$ 遍历 $n$ 个估计点的排列，前 $m$ 个用于一对一匹配，则</p>
@@ -1278,8 +1290,9 @@ J_{\rm card}&=\frac{c^p}{2}(m+n-2|\gamma|),\\
 J&=J_{\rm loc}+J_{\rm card},\\
 D_{\rm G}^p&=\min_\gamma J.
 \end{aligned}\tag{9-26}$$</p>
-<p>最优解无须保留距离超过 $c$ 的配对：把该对拆成一个漏检和一个虚警，总代价为 $c^p$，更小或相等。最后取 $D_{\rm G}=(D_{\rm G}^p)^{1/p}$；$p>1$ 时可加的是距离的 $p$ 次方分量，不能把各开根结果直接相加。<a href="https://arxiv.org/abs/1601.05585" title="citation">Rahmathullah、García-Fernández 与 Svensson 的原文 Definition 1 与 Proposition 1</a>给出 GOSPA 及 $\alpha=2$ 的分解。E09-15 沿用本章30°、70°、32°例子算出差别。</p>
+<p>最优解无须保留距离超过 $c$ 的配对：把该对拆成一个漏检和一个虚警，总代价为 $c^p$，严格更小。距离恰等于 $c$ 时，两种处理的总代价相同；若需分列定位、漏检和虚警，按原文附录的规则只允许 $d\lt c$ 的配对。例如 $p=1,c=10^\circ$，真值为 $0^\circ$、估计为 $10^\circ$，总代价是 $10^\circ$，可按该规则分成 $5^\circ$ 漏检、$5^\circ$ 虚警，而不是记作定位误差。最后取 $D_{\rm G}=(D_{\rm G}^p)^{1/p}$；$p>1$ 时可加的是距离的 $p$ 次方分量，不能把各开根结果直接相加。<a href="https://arxiv.org/abs/1601.05585" title="citation">Rahmathullah、García-Fernández 与 Svensson 的原文 Definition 1、Proposition 1 和附录</a>给出这一分解。E09-15 的教学代码主要复核总分与截断匹配、人数差，不能把返回的两项直接命名为严格分解的定位、漏检和虚警三项。</p>
 <p>OSPA 与 GOSPA 都在同一帧无标签集合上计算，都不能证明轨迹身份连续。身份切换还要固定跨帧真值匹配协议、漏检后的ID保持和重用规则；本章交叉实验的“错配数”仅指当帧分配到错误真标签的次数，不能直接当成通用基准的 ID-switch 统计。</p>
+<p>例如两个连续帧的真方向都为 $0^\circ$ 和 $30^\circ$，两帧都估计准确，但第二帧把两个输出 ID 对调：逐帧集合距离仍都为零，而按位置固定配对后，两名真值目标的关联 ID 都变了。若两名说话人恰在同一方向，标量角度集合还会合并相同元素；需另选能保留多个目标的状态表示和评分协议，不能靠该集合指标恢复人数。带时间关联的距离可参考 <a href="https://arxiv.org/abs/1605.01177" title="citation">García-Fernández 等的轨迹集度量</a>。</p>
 <h2 id="sec-9-5">9.5 自由场移动声源的双麦音频与传播真值</h2>
 <h3 id="sec-u-76dfa623a9">发射时刻与接收时刻</h3>
 <p>先调低播放音量。前文的声像移动样本只改变左右声道增益，不包含阵列传播时差：</p>
@@ -1320,6 +1333,7 @@ r'_m(u)&=\vec n_m(u)^\top\vec v,\\
 <p>两文件使用同一导出增益约0.4023136344，把共同最大峰值缩至.7，再量化为16位PCM。分析从实际PCM解码，已知共同增益只用于恢复固定RMS门限的尺度；不逐帧归一化，也不借干净参考判断活动。</p>
 <p><strong>定位与门控。</strong> 每帧512点、帧移160点，完整帧数为 $\lfloor(32000-512)/160\rfloor+1=197$。先用未加窗双通道块的所有样本计算均方根（Root Mean Square，RMS）；恢复导出前尺度后，仅RMS严格大于.04才定位。对称 Hann 窗使用 <code>numpy.hanning(512)</code>；调用 <code>gcc_phat(ch1,ch0)</code>，搜索时差限制为 $.1/343$ s，采用抛物线峰值插值。GCC-PHAT沿用第4章广义互相关相位变换的定义。</p>
 <p>按 $\tau_{1-0}=t_1-t_0$，当前几何的远场转换为 $\theta=\arcsin(-343\tau_{1-0}/.1)$。反正弦自变量超出 $[-1,1]$ 时记缺测，不强制裁成±90°。定位和RMS门控都不读取真值；有限距离与窗内运动意味着单一时差、远场角转换存在近似误差。</p>
+<p>反正弦只返回 $[-90^\circ,90^\circ]$ 主值，本实验的真值也在以 $+y$ 为中心的前半平面。两麦沿 $x$ 轴布置时，平面上的 $(1,2)$ 与 $(1,-2)$ 到两麦的距离逐一相同，时差相同，无法据此区分前后。主值只是选定搜索区域，没有为双麦增加新观测。</p>
 <p><strong>滤波取点。</strong> 首个有效方向初始化状态 $[z,0]^\top$，$\mathbf P=\operatorname{diag}(4,400)$；之后每10 ms先预测，有观测才更新。角度测量方差为4度²，连续白角加速度强度为100度²/秒³，按实际.01 s重新构造 $\mathbf Q$。</p>
 <p>这组 $R,\mathbf Q$ 是教学指定值；重叠帧观测相关，不能把输出协方差直接解释为实测置信区间覆盖率。<a href="#e09-20">E09-20</a>手算把相关证据误当独立证据时的方差变化。</p>
 <p><strong>状态与可用时刻。</strong> 帧起点为零起始样本 $n_0$ 时，状态对应接收窗中心；最早可用时刻采用半开区间块已采齐的边界：</p>
@@ -1330,8 +1344,8 @@ t_{\rm available}&=\frac{n_0+512}{16000},\\
 &=16.03125\ \mathrm{ms}.
 \end{aligned}\tag{9-29}$$</p>
 <p>这里尚未加入定位运算、调度和播放缓冲延迟。输出是窗中心状态，不能称为采样完成时刻的零延迟方向。真值也按接收窗中心解到阵列中心的迟滞发射时刻，再计算该发射位置的方位；不能拿同数值发射时间的位置直接评分。</p>
-<p>逐帧清单另以 <code>measurement_time_s</code> 记录<strong>本帧有效观测</strong>所属的接收窗中心；有效时它等于 <code>state_time_s</code>，缺测时为 <code>null</code>。<code>last_valid_measurement_time_s</code> 保存最近一次有效观测的中心时刻，尚无有效观测时为 <code>null</code>。<code>state_time_s</code> 始终是本帧滤波或预测状态所属时刻，<code>available_time_s</code> 是整窗采齐的最早时刻。</p>
-<p>缺测后若需计算观测龄期，应从当前 <code>state_time_s</code> 减去最近有效观测时刻，不能把状态已预测到当前时刻误当作刚收到新观测。图 44 的横轴仍采用 <code>state_time_s</code>；这些字段用于核对观测龄期，不参与图中的原有评分。</p>
+<p>逐帧清单另以 <code>measurement_time_s</code> 记录<strong>本帧有效观测</strong>所属的接收窗中心；有效时它等于 <code>state_time_s</code>，缺测时为 <code>null</code>。<code>last_valid_measurement_time_s</code> 保存最近一次有效观测的中心时刻，尚无有效观测时为 <code>null</code>。<code>state_time_s</code> 标记这一帧所对应的状态时刻；首个有效观测之前也有帧时间戳，但尚无实际滤波状态。<code>available_time_s</code> 是整窗采齐的最早时刻。</p>
+<p>图 44 的横轴是 <code>state_time_s</code>；在这条历元轴上，观测龄期为状态时刻减去最近有效观测时刻。若要检查实际实时期限，则用输出可用时刻或新权重真正生效的时刻减去同一个观测时刻。状态已预测到当前历元，并不表示刚收到新观测。这些字段不参与图中的原有评分。</p>
 <p><img alt="图44 带噪移动源的波形定位与追踪" src="../figures/fig44_tracking_audio.png" onerror="this.alt+='（图缺失）'" /></p>
 <p>图44使用上述同一组实际PCM波形处理结果：（a）比较传播真值、有效GCC方向和滤波输出；（b）显示状态时刻的角方差，缺测时只传播预测；（c）比较同一发射事件的真值时差与GCC亚采样峰，单位为采样点，左侧声源的通道1−通道0时差为正。三图横轴都是接收窗中心 <code>state_time</code>，灰区标记本次RMS门产生的缺测。</p>
 <p>图中的真值用于评分与显示，不参与定位、RMS门或KF更新。“滤波输出”含初始化帧、有效观测更新后的状态，以及缺测时的预测状态，清单逐帧保存取点类型。图中方差没有进行覆盖率校准，不能直接当作实测置信带。</p>
@@ -1917,7 +1931,7 @@ a_{\max}&=0.20(2f_s)=6400.
 <p>默认协议对197帧分配2个 ID、产生1次退役、在确认状态发布187帧；状态龄期对照发布189帧。这些是声明规则下的计数，不是准确率。原连续 KF 作为独立诊断，并不由管理器重置；即使退役后仍有诊断外推角，也不代表仍有已确认轨迹。</p>
 <p><img alt="图77：实际双麦PCM检测及两个时钟下的单槽候选、确认与退役" src="../figures/fig77_tracking_lifecycle.png" onerror="this.alt+='（图缺失）'" /></p>
 <p><em>图77使用实际 PCM 的有效标记，区分窗中心、整窗可用时刻与最近测量。事件由声明的连续计数和龄期规则产生；局部 ID1、ID2 不表示识别出两个人。没有输出增强音频，不是运行 ODAS、Bernoulli 或 LMB 整链。</em></p>
-<p><a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch09/examples/tracking_lifecycle_demo.py">只读入口</a>先核独立清单，再读取实际 PCM 计算检测与事件。这个单槽规则不处理多人关联、跨轨合并或永久身份。当前核拒绝重复或乱序的帧起点；通用系统还需另定义迟到观测的重排、去重、容量与 ID 持久化。它与 E09-06 的预置双轨交叉、E09-22 的概率存在更新各有不同目标。</p>
+<p><a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch09/examples/tracking_lifecycle_demo.py">只读入口</a>先核独立清单，再读取实际 PCM 计算检测与事件。这个单槽规则不处理多人关联、跨轨合并或永久身份。当前核拒绝重复或乱序的帧起点，连续命中按<strong>相邻提交行</strong>计数。本实验以固定 160 点帧移提交全部 197 行，所以相邻提交行就是相邻采集帧。若只提交起点为 $0,160,1600$ 的三条有效行，当前核仍会在第三行确认，尽管中间漏交了八行。需要固定采集节奏的系统应补交缺帧标记，或按帧序号间隙重置连续命中计数。迟到观测的重排、去重、容量与 ID 持久化也要由外层定义。它与 E09-06 的预置双轨交叉、E09-22 的概率存在更新各有不同目标。</p>
 <p><a id="e09-26"></a></p>
 <h3 id="sec-u-ec8ab3e22d">E09-26：三维姿态转换、极点与一次 vMF 更新</h3>
 <p><strong>题设。</strong> 沿用本书 $+y$ 零点、朝 $+x$ 为正的方位 $\theta$，以及水平面朝 $+z$ 的俯仰 $\phi_{\mathrm{el}}$。已知阵列到世界的姿态是绕世界 $+z$ 的右手正90°旋转。转换阵列观测 $(30°,0°)$，再检查归一化和球面概率。公式三角函数代入弧度，题面用度显示。</p>

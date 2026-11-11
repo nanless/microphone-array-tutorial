@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 12 章 · 声学成像与噪声源诊断 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="759b4238ac3b"><style>
+<meta name="source-digest" content="1a85da73ba06"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -520,7 +520,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <span id="sec-8" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-7d5cea56a9">同一频点的多源观测</h3>
 <p>固定频点 $f_k$，把第 $\ell$ 个快拍的通道复数系数排成 $\vec x_\ell\in\mathbb C^{M\times1}$。第 $j$ 个候选源的系数是标量 $s_{j,\ell}$，传播向量是 $\vec a_j\in\mathbb C^{M\times1}$：</p>
 <p>$$\begin{aligned}
-\vec x_\ell&=\sum_{j=1}^{J}\vec a_j s_{j,\ell}+\vec n_\ell,\\
+\vec x_\ell&=\sum_{j=1}^{J}\vec a_j s_{j,\ell}+\vec n_\ell\\
 &=\mathbf A\vec s_\ell+\vec n_\ell,\\
 \mathbf A&=[\vec a_1,\ldots,\vec a_J].
 \end{aligned}\tag{12-1}$$</p>
@@ -578,6 +578,12 @@ x_{2,\ell}x_{1,\ell}^*&|x_{2,\ell}|^2
 \end{aligned}\tag{12-5}$$</p>
 <p>内部正频点 $\epsilon_k=2$；DC点与偶数 $N$ 的Nyquist点 $\epsilon_k=1$。$\mathbf S$的单位为Pa²/Hz，$\mathbf R_{\rm bin}$的单位为Pa²，前提是输入声压已经校准到Pa。数字音频则使用相应的数字幅度平方单位。</p>
 <p>不能用 $\sum v[n]$代替 $U$做同一种统计归一化。前者与正弦幅度校正有关，后者用于上述谱平方量。窗会把一条谱线分配到相邻频格，所以某一格的值变化不等于总平方量变化。E12-13用24点矩形窗和周期Hann窗完整复算。</p>
+<p>对第 $m$ 个通道，把所有单边频格的量相加，由 Parseval 等式得到</p>
+<p>$$
+\sum_{k=0}^{\lfloor N/2\rfloor} [\mathbf R_{\rm bin}[k]]_{mm}
+=\frac{1}{LU}\sum_{\ell=1}^{L}\sum_{n=0}^{N-1}v[n]^2|x_{m,\ell}[n]|^2 .
+$$</p>
+<p>右侧是窗平方加权均方。矩形窗下它等于普通帧均方；非平稳信号换用其他窗时，两者可以不同。取四点周期 Hann 窗 $[0,1/2,1,1/2]$，$U=3/2$。单位冲激落在第 0 点或第 2 点时，普通均方都为 $1/4$，积分谱却分别为 0 和 $2/3$。前者是冲激被窗遮掉，不是 FFT 丢了功率。对不同通道，实信号单边互谱的虚部仍保留频点相位；若要从谱求实信号的零时延互相关，应取积分的实部，因为负频率的虚部会与正频率抵消。</p>
 <span id="sec-15" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-02bbce1c66">非相干源假设发生在哪一步</h3>
 <p>把式(12-1)代入总体二阶矩。若源与噪声满足 $\mathbb E[\vec s\vec n^H]=\mathbf0$，交叉项消失，先得到 $\mathbf R=\mathbf A\mathbf R_s\mathbf A^H+\mathbf R_n$。零均值时，源与噪声不相关可以保证这一条件；非零均值时，仅中心化后不相关还不够。其中 $\mathbf R_s=\mathbb E[\vec s\vec s^H]$是源二阶矩，零均值时也是源协方差。只有当不同源的互谱为零，它才是对角阵：</p>
 <p>$$\begin{aligned}
@@ -766,8 +772,8 @@ B&=\vec w_p^H\mathbf D\vec w_p,\\
 <p>若求解器只接受实数，目标 $\vec q$仍然是实数非负源量；不能通过丢弃字典虚部来让输入变实。虚部保存了传播相位的重要信息。</p>
 <span id="sec-34" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-d5da82a8c1">DAMAS固定点何时对应完整CSM拟合</h3>
 <p>§12.5的截断GS与扫描域NNLS目标不同，但在完整CSM与匹配权重的条件下，GS可以对应另一个明确目标：非负的完整CSM Frobenius拟合。用秩一模板的Gram矩阵展开目标，再按一个坐标最小化，便得到同一未松弛GS更新。<a href="https://gilleschardon.fr/papers/damascmf.pdf" title="citation">Chardon等，§3.1～3.3，定理1～3与式(15)～(18)</a></p>
-<p>这个联系要求观测和模板保持相同处理，不删对角、不裁剪扫描值，也不添加噪声列、预算或截距。各传播列不必有相同范数，但需用正的行尺度将PSF转换为对称Gram矩阵。它不把任意有限轮GS输出直接宣称为最优或唯一。</p>
-<p><a href="#e12-17">E12-17</a>先逐项推导式(12-29)～(12-31)，再用同一有效CSM计算两种目标的不同最小点。删对角或改变约束时，应重新推导模板、目标和更新，不能只沿用算法名称。</p>
+<p>下文直接推导的是完整 CSM：观测和模板不删对角、不裁剪扫描值，也不添加噪声列、预算或截距。各传播列不必有相同范数，但需用正的行尺度将 PSF 转换为对称 Gram 矩阵。它不把任意有限轮 GS 输出直接宣称为最优或唯一。</p>
+<p><a href="#e12-17">E12-17</a>先逐项推导式(12-29)～(12-31)，再用同一有效 CSM 计算两种目标的不同最小点，并以一致去对角作对照。去对角后模板内积可以为负，但模板的 Gram 矩阵仍半正定：其二次型是模板线性组合的模平方和。与完整情形一样，扫描残差的平方和仍是另一个目标。<a href="https://gilleschardon.fr/papers/damascmf.pdf" title="citation">Chardon 等，§3.5</a>推导了去对角情形。</p>
 <span id="sec-35" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-c93fb52739" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-8378eb57b1">噪声与源量预算怎样改变拟合目标</h3>
 <p>Yardibi等研究稀疏约束的反卷积与协方差拟合。为说明噪声项、列归一化和源量预算如何改变目标，本书给定下面的联合模型；不将这个控制称为已复现完整原CMF。单位范数传播列记作 $\tilde{\mathbf A}$，源系数记作 $\vec d$，以区别本篇参考位置的 $\vec q$：</p>
 <p>$$\begin{aligned}
@@ -825,9 +831,11 @@ B&=\vec w_p^H\mathbf D\vec w_p,\\
 <p>检查两列是否相同还不够。源量作用在CSM模板 $\vec a_j\vec a_j^H$上；即使每个模板都不同，多个模板仍可能整体线性相关。E12-18给出双麦四个不同相位列，两种非负源分布都生成 $2\mathbf I$，连完整CSM也不能区分。</p>
 <p>本书先假定传感器噪声已知为零，再展示这个源字典自身的歧义。若另把未知白噪声加入模型，$2\mathbf I$还能完全解释为空间白噪声；这是扩大模型后的另一种歧义，不能倒过来声称该控制的真实噪声为2。</p>
 <p>未知格数不超过 $M^2$只是维度上可能充分，不保证字典满列秩，更不保证某个非负观测的唯一分解。秩亏表示存在不可见的变化方向，但该方向是否能在某个给定解附近保持非负，还要实际检查；不能笼统推断每个非负观测都具有多解。</p>
+<p><strong>等幅远场均匀线阵的上限更低。</strong> 同一频点上，令 $\psi_j$ 为第 $j$ 个方向的相邻阵元相位差。以首麦为参考，模板第 $m,n$ 项是 $e^{j(m-n)\psi_j}$，只依赖麦对间隔 $m-n$。所有对角项共享一个实数，正间隔只有 $M-1$ 种，每种最多提供一个实部和一个虚部；负间隔由共轭给出。因此模板的实线性空间维数最多为 $1+2(M-1)=2M-1$，去对角后最多为 $2M-2$。八麦例分别为 15 和 14，不是 $8^2=64$。这是秩上限，不能写成可稳定分辨的源数；近场传播和不规则布阵也不一定服从这个重复间隔模型。差分共阵的解释可回查<a href="03_array-geometry.html">第 3 章</a>。</p>
 <span id="sec-45" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-a1335b6ca7">离网格、源区外与深度错误</h3>
 <p>实际源在两个格点之间时，反演可能把它分配给相邻几个点；候选源区没有覆盖实际源时，模型可能沿边界放置能解释泄漏的源量。原DAMAS论文第10～13页讨论了离网格及扫描边界控制，相关建议取决于其阵列和频率，不应当作全部工业场景的固定网格规范。<a href="https://ntrs.nasa.gov/api/citations/20080015889/downloads/20080015889.pdf" title="citation">原论文</a></p>
 <p>二维网格把所有源放在同一个平面，适合已知源面控制。实际源不在此平面时，距离、幅度和相位都失配，地图可能偏移。改成三维网格增加了搜索范围，也增加了未知量；单侧平面阵的深度分辨能力仍可能很弱。</p>
+<p><strong>环形阵的轴向反例。</strong> 沿用 E12-06 半径 0.2 m 的八麦圆环，但现在只比较轴上两个深度 $z=0.6$ 和 $0.2$ m，并以圆心作公共参考。任一深度的源到所有环麦都等距，式(12-2)给出各通道相同的复数响应，模平方为 $z^2/(z^2+0.2^2)$；两个候选分别为 0.9 和 0.5。完整 CSM 都是全一矩阵乘一个系数：若深处源量为 $q$，浅处用 $1.8q$ 就能产生完全相同的 CSM。未知源量时，增加同一圆周上的麦数不会消除这项歧义。增加一个圆心麦后，该通道参考响应恒为 1，而环麦响应随深度变化；这两个候选模板不再成比例。此例只说明两格能被区分，不能推广成单环加中心能解析任意三维源场。</p>
 <span id="sec-46" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-2f6d8bd41b">有限快拍、坏道和过度解释</h3>
 <p>增加快拍数可以降低某些统计波动，但源的移动和运行状态变化会让长时间平均混合不同传播或功率状态。只固定一组CSM再改变软件中的“快拍数”参数，不是重新采集独立统计实验。</p>
 <p>通道增益、相位和位置误差会改变模型PSF。若某路失效，应按实际参与通道重新建立字典、权重和统计矩阵；不能仅把失败数据置零却仍使用原阵列全部通道的归一化。</p>
@@ -841,6 +849,7 @@ B&=\vec w_p^H\mathbf D\vec w_p,\\
 <p>单位与 $q_j$相同，通常为参考声压Pa²或数字幅度²。不要额外乘格面积；否则同一个离散源会随网格尺寸变化而改变总量。</p>
 <p>若另行定义连续源密度 $\rho_q(\vec p)$，单位为Pa²/m²，离散近似才是 $Q_{\mathcal G}\approx\sum_j\rho_{q,j}\Delta A_j$。密度与每格量之间的转换应在网格细化时同步进行，E12-15比较两个定义。</p>
 <p>区域求和还依赖非相干源模型和共同参考尺度。相干源的边际功率相加不包含交叉项；以不同参考位置定义的量也不能未经转换直接相加。</p>
+<p><strong>共同物理点和共同参考距离。</strong> 假设两个非相干全向点源到同一个物理点的距离分别为 1 m 和 2 m，各在该点贡献 $0.25\,\mathrm{Pa}^2$；这个点的总均方声压是 $0.50\,\mathrm{Pa}^2$。如果改成逐源报告“离该源 1 m 处”的均方声压，按自由场距离平方反比，第一源仍是 $0.25$，第二源换算为 $0.25\times(2/1)^2=1.00\,\mathrm{Pa}^2$。后者合计 $1.25\,\mathrm{Pa}^2$，用于比较指定距离的源量，不是某个共同物理点的声压，也没有变成单位为 W 的辐射声功率。</p>
 <span id="sec-49" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-4af52fd793">线性总量转成声压级</h3>
 <p>校准到Pa、且给定频带的均方量为 $Q>0$时，声压级（Sound Pressure Level，SPL）为</p>
 <p>$$\begin{aligned}
@@ -934,7 +943,7 @@ Q_{\mathcal G,\mathcal B}
 <p>原论文公式、本书教学核、固定上游原调用和隔离修正调用分别记录。源码取得不等于方法已运行，限定函数调用也不等于风洞完整整链运行。第三方数据、音频与代码的许可分别检查，复现命令只使用明确的本地来源。</p>
 <p>本书<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch12/reports/upstream_imaging_contracts.json">历史上游成像接口报告</a>固定Acoular 26.08、提交 <code>13d3d7df74ac1a8135c7ec71da098cbbc03d8652</code>，记录原调用前后的源码身份与洁净状态。单源 $q=2$、循环增益0.6、20轮控制中，固定原实现的完整CSM支路返回约4.812502861；作者式(12-15)与本书独立核返回约1.999999978。这个差异只对应报告中的原支路和参数，不能把原输出写成作者公式的验证。</p>
 <p>报告还区分不加权半三角与完整Frobenius目标，以及默认截距的独立代数控制。原scikit-learn估计器未运行，不能把 E12-12的截距算例称为其运行结果。历史报告的完整稀疏选集记录 <code>source_selection_mismatch</code>；所用原文件已核身份不等于当时完整选集核对通过。新的限定运行另见<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch12/reports/upstream_imaging_contracts_current.json">当前上游成像接口报告</a>，不能给历史报告换摘要或将原失败改成成功。</p>
-<p>作者的<a href="https://github.com/gilleschardon/DAMAS/blob/61987952e2237e6b088a169ee891dd96576f2565/damas.py" title="citation">固定DAMAS / CMF源码</a>另有<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch12/reports/damas_author_contracts_current.json">当前原模块合同报告</a>。本书取得21个选定源码与许可文本，保留GPL-3.0许可；实际导入完整原 <code>damas.py</code>，限定9个控制中8个数值与独立期望匹配，零CSM控制保留原异常路径的 <code>NameError</code>，未修改上游来消除失败。</p>
+<p>作者的<a href="https://github.com/gilleschardon/DAMAS/blob/61987952e2237e6b088a169ee891dd96576f2565/damas.py" title="citation">固定 DAMAS / CMF 源码</a>另有<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch12/reports/damas_author_contracts_current.json">当前原模块合同报告</a>。本书取得 21 个选定源码与许可文本，保留 GPL-3.0 许可。默认解释器因缺 SciPy 未完成原调用；随后用独立环境（NumPy 2.5.3、SciPy 1.18.1、Matplotlib 3.11.2）执行完整原 <code>damas.py</code>。9 个限定控制中 8 个数值与独立期望匹配，零 CSM 控制保留原异常路径的 <code>NameError</code>；完整选集的获取状态与这一个模块的实际运行分别记录。</p>
 <p>原模块在重复列控制中返回的 <code>unique=True</code>不能证明全字典的非负解唯一。某次活动列子集的Gram可正定，却仍存在其他支撑上的同观测解，E12-18给出这种整体歧义。源码README另指向后继项目acosolo，只作为维护者入口；本书没有运行其整链，也没有执行原MATLAB、MEX或论文大规模基准。</p>
 <span id="sec-57" class="anchor-alias" aria-hidden="true"></span><span id="sec-14-12" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-12-12">12.12 本书代码与音频怎样使用</h2>
 <span id="sec-58" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-f6ba2c18b2">先运行不写文件的练习</h3>
@@ -1123,7 +1132,7 @@ x_v[n]&=0.1\cos(2\pi\,2n/24)\\
 \end{aligned}$$</p>
 <p>正频格1、2、3的FFT幅值分别0.6、1.2、0.6。</p>
 <p>bin均方量分别为 $1/300$、$1/75$、$1/300$，相加0.02。单格值与矩形窗不同，总量在本题条件下相同。仅取中心格会漏掉窗引起的谱分配。</p>
-<p>DC与Nyquist的FFT端点幅值都是4.8，$\epsilon=1$，bin量为 $4.8^2/(24\times24)=0.04$。它们在单边谱中没有另一个独立共轭格，不可翻倍；也不能套用正弦均方除2规则。</p>
+<p><strong>回到矩形窗检查端点。</strong> DC 与 Nyquist 的 FFT 端点幅值都是 4.8，$\epsilon=1$，bin 量为 $4.8^2/(24\times24)=0.04$。它们在单边谱中没有另一个独立共轭格，不可翻倍；也不能套用非端点正弦均方除 2 的规则。</p>
 <p><span id="e14-14" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e12-14"></a></p>
 <span id="sec-75" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-abb9f41705" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-c010f17b9c">E12-14：参考点变化后，CSM为什么不变</h3>
 <p><strong>题干。</strong> 使用 E12-06的两个源，参考位置由原点变为 $(0,0,0.2)$ m。计算每个源新的参考均方量，并证明实际传感器CSM不变。</p>
@@ -1165,7 +1174,7 @@ D_{ii}&=(\vec a_i^H\vec a_i)^2>0,\\
 <p>将式(12-18)的完整CSM平方目标记为 $F$，逐项展开得到</p>
 <p>$$\begin{aligned}
 F(\vec q)&=\left\|\sum_jq_j\mathbf T_j
--\hat{\mathbf R}\right\|_F^2,\\
+-\hat{\mathbf R}\right\|_F^2\\
 &=\vec q^\top\mathbf G\vec q
 -2\vec h^\top\vec q\\
 &\quad+\|\hat{\mathbf R}\|_F^2.
@@ -1178,7 +1187,7 @@ r_i^P&=b_i-\sum_{j\ne i}P_{ij}q_j.
 \end{aligned}$$</p>
 <p>非负坐标最小值为</p>
 <p>$$\begin{aligned}
-q_i&\leftarrow\max(0,r_i^G/G_{ii}),\\
+q_i&\leftarrow\max(0,r_i^G/G_{ii})\\
 &=\max(0,r_i^P/P_{ii}).
 \end{aligned}\tag{12-31}$$</p>
 <p>第二行由同一行的正尺度 $D_{ii}$约去得到。这正是未加松弛时的非负坐标GS更新。固定点满足 $\vec q\ge0$、$\mathbf G\vec q-\vec h\ge0$以及逐项互补条件；因为 $\mathbf G$是模板Gram矩阵，$F$为凸二次目标，这些条件刻画其最优解。<a href="https://gilleschardon.fr/papers/damascmf.pdf" title="citation">Chardon等，§3.1～3.3，定理1～3与式(15)～(18)</a></p>
@@ -1227,6 +1236,39 @@ S(u,v)&=(u+v/4-1)^2\\
 </tbody>
 </table></div>
 <p>最后一格可不重新展开整个矩阵：在 $v=0$时，$F(u,0)=4(u-1)^2+28/9$，代入 $u=16/17$便得 $28/9+4/289=8128/2601$。两方案各自在自己的目标上更小；不能跨列比较数值来宣布某算法更准确。</p>
+<p><strong>用同一输入再做去对角对照。</strong> 令 $\mathcal O$ 把矩阵的对角置零，记 $\mathbf T'_i=\mathcal O(\mathbf T_i)$、$\mathbf R'=\mathcal O(\hat{\mathbf R})$。先删对角再做内积，得到</p>
+<p>$$\begin{aligned}
+G'_{ij}&=\langle\mathbf T'_i,\mathbf T'_j\rangle_F,\qquad
+h'_i=\langle\mathbf T'_i,\mathbf R'\rangle_F,\\
+\mathbf G'&=\begin{pmatrix}2&-1\\-1&2\end{pmatrix},\qquad
+\vec h'=\begin{pmatrix}4/3\\-8/3\end{pmatrix}.
+\end{aligned}$$</p>
+<p>两麦都是单位幅度，若按 §12.8 的两麦补偿让自响应为 1，去对角扫描矩阵与观测分别是 $\mathbf G'/2$ 和 $\vec h'/2$。给两者同时乘同一正常数只会缩放扫描平方目标，不改变最小点。此时 $q_2=0$ 时，CSM 拟合的第一项半梯度为 $2q_1-4/3$；令它为零得 $q_1=2/3$。第二项半梯度为 $-q_1+8/3=2>0$，所以第二坐标保持零。对扫描平方目标，在 $q_2=0$ 上，残差是 $[q_1-2/3,-q_1/2+4/3]^\top$；令其平方和关于 $q_1$ 的导数为零得 $q_1=16/15$，第二项半梯度为 $3/5>0$。</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
+<thead>
+<tr>
+<th scope="col">去对角目标的解</th>
+<th scope="col">$\vec q$</th>
+<th scope="col" style="text-align: right;">补偿后扫描平方</th>
+<th scope="col" style="text-align: right;">去对角 CSM 平方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CSM 非负拟合</td>
+<td>$[2/3,0]^\top$</td>
+<td style="text-align: right;">$1$</td>
+<td style="text-align: right;">$8/3$</td>
+</tr>
+<tr>
+<td>扫描域 NNLS</td>
+<td>$[16/15,0]^\top$</td>
+<td style="text-align: right;">$4/5$</td>
+<td style="text-align: right;">$224/75$</td>
+</tr>
+</tbody>
+</table></div>
+<p>负扫描值 $-4/3$ 在这个例子里直接参与求解，不能先裁零。两个最小点与作者原模块的去对角限定调用一致；表中扫描误差采用上述行尺度，不与原函数内部的未归一扫描误差混用。本书的非负 PSF 教学 GS 未运行这一有符号控制。</p>
 <p>若把字典第二列扩大2倍，其能量变为8，$\mathbf D=\operatorname{diag}(4,64)$。此时 $\mathbf P$的两非对角元为1与 $1/16$，不再对称；$\mathbf G$的两非对角元仍同为4。代码同时核 $\mathbf G=\mathbf D\mathbf P$与 $\vec h=\mathbf D\vec b$，说明等价联系并不要求相同列范数。</p>
 <p><img alt="图80 两种成像目标的非负等值线与不同最小点" src="../figures/fig80_imaging_objectives.png" onerror="this.alt+='（图缺失）'" /></p>
 <p>图80分别画扫描域平方目标和完整CSM平方目标，并放大两个相近最小点附近的非负区域。每个面板使用自己的等值线与最小值，二者不是同一误差刻度。观测向量不等于字典任一列，最小CSM残差仍大于零；图中最小点是所选模型的拟合结果，没有证明真实源位、独立源功率或工业定位性能。程序复用本章唯一GS、有限NNLS和完整Frobenius实字典，不调用Acoular求解器。</p>

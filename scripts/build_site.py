@@ -5,7 +5,7 @@
     .venv/bin/python scripts/build_site.py
 
 产物：site/index.html（首页）+ site/01..15_*.html（15 篇正文/专题/附录），
-另有 site/research/index.html 和 5 篇独立研究页、主清单 109 个与独立实验 154 个合成 WAV，
+另有 site/research/index.html 和 5 篇独立研究页、主清单 109 个与独立实验 158 个合成 WAV，
 以及 4 个真实录音/派生 WAV；源码按章保存，发布 URL 保持原样。
 左侧边栏 = 首页 + 15 篇 + 每篇的二级及以下小节锚点，顶部面包屑，
 文末上一篇/下一篇（首页不输出该盒）。图片直接引用 ../figures/（不复制）。
@@ -65,6 +65,8 @@ BASELINE_AUDIO_WAVS = {'baseline_source.wav', 'baseline_train_px.wav', 'baseline
 SWEEP_AUDIO_ROOT = CODE_CHAPTERS / 'ch02' / 'sweep_audio'
 SWEEP_AUDIO_WAVS = {'sweep_source.wav', 'sweep_complete.wav', 'sweep_noisy.wav', 'sweep_cut.wav'}
 PHASE_AUDIO_ROOT = CODE_CHAPTERS / "ch05" / "phase_audio"
+BINAURAL_BEAMFORMING_ROOT = CODE_CHAPTERS / "ch05" / "binaural_beamforming_audio"
+BINAURAL_BEAMFORMING_WAVS = {f"binaural_{r}.wav" for r in ("input", "bmvdr", "blcmv", "null")}
 PHASE_AUDIO_WAVS = {"phase_reference.wav", "phase_flip.wav", "phase_quadrature.wav"}
 DERIVATIVE_AUDIO_ROOT = CODE_CHAPTERS / "ch05" / "derivative_audio"
 APA_AUDIO_ROOT = CODE_CHAPTERS / "ch06" / "apa_audio"
@@ -680,6 +682,19 @@ def stage_reflection_audio(source, destination):
     return expected
 
 
+def stage_binaural_beamforming_audio(source, destination):
+    """Copy only verified, deterministically replayable stereo controls."""
+    from codes.chapters.ch05.examples.binaural_beamforming_demo import check_assets
+    expected = BINAURAL_BEAMFORMING_WAVS | {"MANIFEST.json"}
+    _preflight_asset_stage(source, destination, expected)
+    check_assets(source)
+    destination.mkdir()
+    for name in sorted(expected):
+        shutil.copy2(source / name, destination / name)
+    check_assets(destination)
+    return expected
+
+
 def stage_phase_audio(source, destination):
     """Publish the exact known-component phase controls after read-only replay."""
     _preflight_asset_stage(source, destination, PHASE_AUDIO_WAVS | {'MANIFEST.json'})
@@ -1175,7 +1190,7 @@ def source_digest():
     paths += [main_audio_manifest_path(CODE_CHAPTERS)]
     paths += sorted(main_audio_sources())
     for asset_root in (REAL_AUDIO_ROOT, ROOM_AUDIO_ROOT, MOVING_AUDIO_ROOT,
-                       TRACKING_AUDIO_ROOT, GSS_AUDIO_ROOT, BINAURAL_AUDIO_ROOT, SPECTRAL_AUDIO_ROOT, STFT_AUDIO_ROOT, SWEEP_AUDIO_ROOT, BASELINE_AUDIO_ROOT, REFLECTION_AUDIO_ROOT, PHASE_AUDIO_ROOT, GEOMETRY_AUDIO_ROOT, FOCUS_AUDIO_ROOT, DERIVATIVE_AUDIO_ROOT, APA_AUDIO_ROOT, REFERENCE_AUDIO_ROOT, DELAY_AUDIO_ROOT, CSS_AUDIO_ROOT, MINT_AUDIO_ROOT, MASK_AUDIO_ROOT, NOISE_AUDIO_ROOT, CHANNEL_AUDIO_ROOT, SCENARIO_AUDIO_ROOT, WEIGHTED_AUDIO_ROOT, RESPONSE_AUDIO_ROOT, IMAGING_AUDIO_ROOT, DISTRIBUTED_AUDIO_ROOT):
+                       TRACKING_AUDIO_ROOT, GSS_AUDIO_ROOT, BINAURAL_AUDIO_ROOT, SPECTRAL_AUDIO_ROOT, STFT_AUDIO_ROOT, SWEEP_AUDIO_ROOT, BASELINE_AUDIO_ROOT, REFLECTION_AUDIO_ROOT, PHASE_AUDIO_ROOT, BINAURAL_BEAMFORMING_ROOT, GEOMETRY_AUDIO_ROOT, FOCUS_AUDIO_ROOT, DERIVATIVE_AUDIO_ROOT, APA_AUDIO_ROOT, REFERENCE_AUDIO_ROOT, DELAY_AUDIO_ROOT, CSS_AUDIO_ROOT, MINT_AUDIO_ROOT, MASK_AUDIO_ROOT, NOISE_AUDIO_ROOT, CHANNEL_AUDIO_ROOT, SCENARIO_AUDIO_ROOT, WEIGHTED_AUDIO_ROOT, RESPONSE_AUDIO_ROOT, IMAGING_AUDIO_ROOT, DISTRIBUTED_AUDIO_ROOT):
         paths += sorted(asset_root.glob("*"))
     paths += sorted((ROOT / "figures").glob("fig*.png"))
     paths += [Path(__file__), ROOT / "scripts" / "build_markdown_helpers.py",
@@ -1341,6 +1356,9 @@ def rewrite_site_links(html, source_path):
         if target.parent == REFLECTION_AUDIO_ROOT.resolve() and target.name in (REFLECTION_AUDIO_WAVS | {'MANIFEST.json'}):
             relative = os.path.relpath('reflection_audio/' + target.name, Path(current).parent).replace(os.sep, '/')
             return urlunsplit(('', '', relative, parsed.query, parsed.fragment))
+        if target.parent == BINAURAL_BEAMFORMING_ROOT.resolve() and target.name in (BINAURAL_BEAMFORMING_WAVS | {"MANIFEST.json"}):
+            relative = os.path.relpath("binaural_beamforming_audio/" + target.name, Path(current).parent).replace(os.sep, "/")
+            return urlunsplit(("", "", relative, parsed.query, parsed.fragment))
         if target.parent == PHASE_AUDIO_ROOT.resolve() and target.name in (PHASE_AUDIO_WAVS | {'MANIFEST.json'}):
             relative = os.path.relpath('phase_audio/' + target.name, Path(current).parent).replace(os.sep, '/')
             return urlunsplit(('', '', relative, parsed.query, parsed.fragment))
@@ -1404,7 +1422,7 @@ def rewrite_site_links(html, source_path):
         # input as a download link; only the explicit mono derivatives play.
         if parsed.path.endswith("real_audio/demand_nriver_16ch_10s.wav"):
             return match.group(0)
-        if parsed.scheme or parsed.query or parsed.fragment or not re.fullmatch(r"(?:\.\./)?(?:audio|real_audio|moving_audio|tracking_audio|gss_audio|binaural_audio|spectral_audio|stft_audio|sweep_audio|baseline_audio|reflection_audio|phase_audio|geometry_audio|focus_audio|derivative_audio|apa_audio|reference_audio|delay_audio|css_audio|mint_audio|mask_audio|noise_audio|channel_audio|scenario_audio|weighted_audio|response_audio|imaging_audio|distributed_audio)/[a-z0-9_]+\.wav", parsed.path):
+        if parsed.scheme or parsed.query or parsed.fragment or not re.fullmatch(r"(?:\.\./)?(?:audio|real_audio|moving_audio|tracking_audio|gss_audio|binaural_audio|spectral_audio|stft_audio|sweep_audio|baseline_audio|reflection_audio|phase_audio|binaural_beamforming_audio|geometry_audio|focus_audio|derivative_audio|apa_audio|reference_audio|delay_audio|css_audio|mint_audio|mask_audio|noise_audio|channel_audio|scenario_audio|weighted_audio|response_audio|imaging_audio|distributed_audio)/[a-z0-9_]+\.wav", parsed.path):
             return match.group(0)
         safe_href = escape(href, quote=True)
         safe_label = escape(re.sub(r'<[^>]+>', '', unescape(label)), quote=True)
@@ -1732,12 +1750,13 @@ def _validate_site_output(directory):
     validate_imaging(directory / 'sweep_audio', SWEEP_AUDIO_WAVS | {'MANIFEST.json'}, check=False)
     validate_imaging(directory / 'baseline_audio', BASELINE_AUDIO_WAVS | {'MANIFEST.json'}, check=False)
     validate_imaging(directory / 'reflection_audio', REFLECTION_AUDIO_WAVS | {'MANIFEST.json'}, check=False)
+    validate_imaging(directory / 'binaural_beamforming_audio', BINAURAL_BEAMFORMING_WAVS | {'MANIFEST.json'}, check=False)
     validate_imaging(directory / 'phase_audio', PHASE_AUDIO_WAVS | {'MANIFEST.json'}, check=False)
     validate_imaging(directory / 'reference_audio', REFERENCE_AUDIO_WAVS | {'MANIFEST.json'}, check=False)
     validate_imaging(directory / 'delay_audio', DELAY_AUDIO_WAVS | {'MANIFEST.json'}, check=False)
     validate_imaging(directory / 'css_audio', CSS_AUDIO_WAVS | {'MANIFEST.json'}, check=False)
     subdirectories = ('research', 'audio', 'real_audio', 'room_audio', 'moving_audio',
-                      'tracking_audio', 'gss_audio', 'binaural_audio', 'spectral_audio', 'stft_audio', 'sweep_audio', 'baseline_audio', 'reflection_audio', 'phase_audio',
+                      'tracking_audio', 'gss_audio', 'binaural_audio', 'spectral_audio', 'stft_audio', 'sweep_audio', 'baseline_audio', 'reflection_audio', 'phase_audio', 'binaural_beamforming_audio',
                       'geometry_audio', 'focus_audio', 'derivative_audio', 'apa_audio', 'reference_audio', 'delay_audio', 'css_audio',
                       'mint_audio', 'mask_audio', 'noise_audio', 'channel_audio', 'scenario_audio', 'weighted_audio', 'response_audio', 'imaging_audio', 'distributed_audio')
     for folder in (directory, *(directory/name for name in subdirectories)):
@@ -1952,6 +1971,9 @@ def main():
         (OUT / 'baseline_audio').mkdir(exist_ok=True)
         reflection_names = stage_reflection_audio(REFLECTION_AUDIO_ROOT, temp_out / 'reflection_audio')
         (OUT / 'reflection_audio').mkdir(exist_ok=True)
+        binaural_beamforming_names = stage_binaural_beamforming_audio(
+            BINAURAL_BEAMFORMING_ROOT, temp_out / "binaural_beamforming_audio")
+        (OUT / "binaural_beamforming_audio").mkdir(exist_ok=True)
         phase_names = stage_phase_audio(PHASE_AUDIO_ROOT, temp_out / 'phase_audio')
         (OUT / 'phase_audio').mkdir(exist_ok=True)
         publish_files([(temp_out / name, OUT / name) for name in sorted(expected)] +
@@ -2011,7 +2033,9 @@ def main():
                       [(temp_out / 'reflection_audio' / name, OUT / 'reflection_audio' / name)
                        for name in sorted(reflection_names)] +
                       [(temp_out / 'phase_audio' / name, OUT / 'phase_audio' / name)
-                       for name in sorted(phase_names)], stale, boundary=OUT)
+                       for name in sorted(phase_names)] +
+                      [(temp_out / "binaural_beamforming_audio" / name, OUT / "binaural_beamforming_audio" / name)
+                       for name in sorted(binaural_beamforming_names)], stale, boundary=OUT)
     print("DONE", len(expected), "pages")
 
 

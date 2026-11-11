@@ -49,6 +49,7 @@ SPECTRAL_AUDIO_ROOT = CODE_CHAPTERS / "ch01" / "spectral_audio"
 SPECTRAL_AUDIO_CHANNELS = {'flat_source.wav': 1, 'flat_stereo.wav': 2,
                            'tilted_source.wav': 1, 'tilted_stereo.wav': 2}
 PHASE_AUDIO_ROOT = CODE_CHAPTERS / "ch05" / "phase_audio"
+BINAURAL_BEAMFORMING_ROOT = CODE_CHAPTERS / "ch05" / "binaural_beamforming_audio"
 PHASE_AUDIO_WAVS = {"phase_reference.wav", "phase_flip.wav", "phase_quadrature.wav"}
 DERIVATIVE_AUDIO_ROOT = ROOT / "codes/chapters/ch05/derivative_audio"
 APA_AUDIO_ROOT = ROOT / "codes/chapters/ch06/apa_audio"
@@ -140,7 +141,7 @@ EXPECTED_SUBSECTION_COUNTS = {
     "02_basics-signal-model.md": 49,  # 新增E19、独立数字扫频主题与E20
     "03_array-geometry.md": 32,
     "04_doa-estimation.md": 48,
-    "05_beamforming.md": 44,
+    "05_beamforming.md": 47,
     "06_aec.md": 71,  # reference-gain topic and E40/E41/E42 are four independent h4 topics
     "07_wpe-dereverberation.md": 58,
     "08_speech-separation.md": 63,  # OverIVA topic and three separately navigable exercises
@@ -185,14 +186,14 @@ EXPECTED_LEGACY_ROUTES = {
     "13_appendix-guide.html": "15_appendix-guide.html",
 }
 EXPECTED_SECTION_COUNT = 151
-EXPECTED_SUBSECTION_COUNT = 740
-EXPECTED_OUTLINE_ITEM_COUNT = 907
+EXPECTED_SUBSECTION_COUNT = 743
+EXPECTED_OUTLINE_ITEM_COUNT = 910
 EXPECTED_FIGURE_NUMBERS = set(range(1, 81))
-EXPECTED_EXERCISE_COUNT = 360
+EXPECTED_EXERCISE_COUNT = 363
 EXPECTED_EXERCISE_COUNTS = {
     '01_problem-definition.md': 10, '02_basics-signal-model.md': 20,
     '03_array-geometry.md': 18, '04_doa-estimation.md': 25,
-    '05_beamforming.md': 24, '06_aec.md': 42, '07_wpe-dereverberation.md': 24,
+    '05_beamforming.md': 27, '06_aec.md': 42, '07_wpe-dereverberation.md': 24,
     '08_speech-separation.md': 32, '09_source-tracking.md': 26,
     '10_engineering-practice.md': 34, '11_selection-guide.md': 27,
     '14_appendix-symbols-math.md': 20, '15_appendix-guide.md': 15,
@@ -1509,7 +1510,7 @@ def site_source_digest():
     paths += sorted(main_audio_path(CODE_CHAPTERS, record["group"], record["file"])
                     for record in manifest["files"])
     for asset_root in (REAL_AUDIO_ROOT, ROOM_AUDIO_ROOT, MOVING_AUDIO_ROOT,
-                       TRACKING_AUDIO_ROOT, GSS_AUDIO_ROOT, BINAURAL_AUDIO_ROOT, SPECTRAL_AUDIO_ROOT, STFT_AUDIO_ROOT, SWEEP_AUDIO_ROOT, BASELINE_AUDIO_ROOT, REFLECTION_AUDIO_ROOT, PHASE_AUDIO_ROOT, GEOMETRY_AUDIO_ROOT, FOCUS_AUDIO_ROOT, DERIVATIVE_AUDIO_ROOT, APA_AUDIO_ROOT, REFERENCE_AUDIO_ROOT, DELAY_AUDIO_ROOT, CSS_AUDIO_ROOT, MINT_AUDIO_ROOT, MASK_AUDIO_ROOT, NOISE_AUDIO_ROOT, CHANNEL_AUDIO_ROOT, SCENARIO_AUDIO_ROOT, WEIGHTED_AUDIO_ROOT, RESPONSE_AUDIO_ROOT, IMAGING_AUDIO_ROOT, DISTRIBUTED_AUDIO_ROOT):
+                       TRACKING_AUDIO_ROOT, GSS_AUDIO_ROOT, BINAURAL_AUDIO_ROOT, SPECTRAL_AUDIO_ROOT, STFT_AUDIO_ROOT, SWEEP_AUDIO_ROOT, BASELINE_AUDIO_ROOT, REFLECTION_AUDIO_ROOT, PHASE_AUDIO_ROOT, BINAURAL_BEAMFORMING_ROOT, GEOMETRY_AUDIO_ROOT, FOCUS_AUDIO_ROOT, DERIVATIVE_AUDIO_ROOT, APA_AUDIO_ROOT, REFERENCE_AUDIO_ROOT, DELAY_AUDIO_ROOT, CSS_AUDIO_ROOT, MINT_AUDIO_ROOT, MASK_AUDIO_ROOT, NOISE_AUDIO_ROOT, CHANNEL_AUDIO_ROOT, SCENARIO_AUDIO_ROOT, WEIGHTED_AUDIO_ROOT, RESPONSE_AUDIO_ROOT, IMAGING_AUDIO_ROOT, DISTRIBUTED_AUDIO_ROOT):
         paths += sorted(asset_root.glob("*"))
     paths += sorted((ROOT / "figures").glob("fig*.png"))
     paths += [ROOT / "scripts" / name for name in
@@ -3348,6 +3349,23 @@ def check_reflection_audio(errors):
         fail(errors, '独立相干反射音频：' + str(error))
 
 
+def check_binaural_beamforming_audio(errors):
+    from codes.chapters.ch05.examples.binaural_beamforming_demo import check_assets
+    directory = "binaural_beamforming_audio"
+    names = {f"binaural_{role}.wav" for role in ("input", "bmvdr", "blcmv", "null")}
+    source = CODE_CHAPTERS / "ch05" / directory
+    published = SITE / directory
+    try:
+        check_assets(source)
+        validate_asset_directory(published, names | {"MANIFEST.json"}, check=True)
+        for name in names | {"MANIFEST.json"}:
+            if (published / name).read_bytes() != (source / name).read_bytes():
+                raise ValueError(f"站点副本与原音频不同：{name}")
+        _check_visible_audio(SITE / "05_beamforming.html", "", directory, names, {"MANIFEST.json"})
+    except (OSError, ValueError) as exc:
+        fail(errors, f"双耳波束实验：{exc}")
+
+
 def check_phase_audio(errors):
     """Replay true sources, then independently score actual signed PCM integers."""
     try:
@@ -4711,6 +4729,7 @@ def main():
     check_baseline_audio(errors)
     check_reflection_audio(errors)
     check_phase_audio(errors)
+    check_binaural_beamforming_audio(errors)
     check_phase_figure(errors)
     check_reference_audio(errors)
     check_delay_audio(errors)

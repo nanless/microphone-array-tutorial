@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>空间处理与追踪源码研究 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="759b4238ac3b"><style>
+<meta name="source-digest" content="1a85da73ba06"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -2321,6 +2321,10 @@ C_{\rm PAN}&=\frac{\vec w^H\mathbf R_n\vec a}{\vec w^H\mathbf R_n\vec w},\\
 </tbody>
 </table></div>
 <p>VAP起始代码检查0→1转换，初始已经活动的区间还须独立核边界。论文§VI.B.4的指标定义与这份固定程序的行为应分别记录；不能从论文定义推断代码已经正确执行，也不能由这些静态疑点声称论文结果错误。</p>
+<p><strong>双耳输出：论文目标与工程配置。</strong> <a href="../05_beamforming.html#e05-25">第 5 章 E05-25～27</a>复用本书的 MVDR/LCMV 数值核，分别检查两耳目标声像、一个方向干扰的复比，以及残余背景的相干性。<a href="https://sharongannot.group/wp-content/uploads/2021/04/2016030110.pdf" title="citation">Hadad 等的 BLCMV 论文</a>给出双约束及噪声权衡；<a href="https://sharongannot.group/binaural-lcmv/" title="citation">论文作者的试听页</a>提供示范音频，本轮未核实作者求解器的可获取源码与许可。<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC7225838/" title="citation">Gößling 等的双耳感知实验</a>单独验证空间感知取舍；本书的合成分量实验没有复刻真人测试。</p>
+<p>工程对照是 <a href="https://github.com/HoerTech-gGmbH/openMHA/blob/0b9f087e514f9cc0a901fcde9db17de35f9ec438/examples/06-binaural-beamformer/beamformer.cfg" title="citation">openMHA v4.18.1 固定配置</a>。它接受 <code>[front-left, front-right, rear-left, rear-right]</code> 四路，采样率 16 kHz、每块 160 点、分析窗 320 点、FFT 512 点。按该配置的 −180° 到 +180°、5° 步进，零起点下标 40 对应其 +20°，角度正向仍以原配置为准。</p>
+<p><a href="https://github.com/HoerTech-gGmbH/openMHA/blob/0b9f087e514f9cc0a901fcde9db17de35f9ec438/mha/plugins/acSteer/acSteer.cpp" title="citation">acSteer</a>从固定权重表分发左右两组。每个频点有 584 个复系数，即 2 个参考耳乘 73 个角度再乘 4 个输入；257 个单边频点合计 150088 个复系数。原表每组另有一行空白，共 150672 行。<a href="https://github.com/HoerTech-gGmbH/openMHA/blob/0b9f087e514f9cc0a901fcde9db17de35f9ec438/mha/plugins/steerbf/steerbf.cpp" title="citation">steerbf</a>按角度选权重，对四路执行权重共轭乘输入再累加。配置分别输出左右两路，既不在这条执行路径实时求逆，也不等于论文的双约束训练或估计。</p>
+<p><a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch00/SOURCES.lock.json">获取清单</a>锁定 10 个许可文本和权重文件，存于忽略的本地缓存；保留 AGPL-3.0 原条款。实际核对固定提交、工作树和选集；未取示例录音、未编译或运行插件。设备验证还需要校准方向及参考麦、确认左右时钟和播放路径，再分别量化残留干扰、目标响应与空间线索。CHiME-9 的 <a href="https://www.chimechallenge.org/challenges/chime9/task2/index" title="citation">ECHI 听障语音增强任务</a>可作为独立数据与评测入口；其中结果不由这套合成音频或 openMHA 静态核对推出。</p>
 <footer class="foot">麦克风阵列信号处理教程 · 静态站由 scripts/build_site.py 生成</footer>
 </main></div><a class="topbtn" href="#top" title="回顶部" aria-label="回到页面顶部">↑</a>
 <script>if(!navigator.onLine)document.getElementById('offnote').style.display='block';</script>

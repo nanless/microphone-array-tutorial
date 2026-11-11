@@ -1666,3 +1666,11 @@ E09-24 的共同初值均值0、方差1，过程方差分别0、4，测量方差
 | [measures.m 284～307行](https://github.com/cevers/sap_locata_eval/blob/2787cdabf21bc96453c0d4f3c66db9c9c9f40434/functions/measures.m#L284-L307) | `find(this_miss,first)`取首个非零缺测项，再使用全局真值时间索引。对`[1,1,0]`，独立语句追踪会给起始缺测数0而不是2；这只是静态反例，未运行MATLAB及时性评分 |
 
 VAP起始代码检查0→1转换，初始已经活动的区间还须独立核边界。论文§VI.B.4的指标定义与这份固定程序的行为应分别记录；不能从论文定义推断代码已经正确执行，也不能由这些静态疑点声称论文结果错误。
+
+**双耳输出：论文目标与工程配置。** [第 5 章 E05-25～27](../../../../chapters/05_beamforming.md#e05-25)复用本书的 MVDR/LCMV 数值核，分别检查两耳目标声像、一个方向干扰的复比，以及残余背景的相干性。[Hadad 等的 BLCMV 论文](https://sharongannot.group/wp-content/uploads/2021/04/2016030110.pdf "citation")给出双约束及噪声权衡；[论文作者的试听页](https://sharongannot.group/binaural-lcmv/ "citation")提供示范音频，本轮未核实作者求解器的可获取源码与许可。[Gößling 等的双耳感知实验](https://pmc.ncbi.nlm.nih.gov/articles/PMC7225838/ "citation")单独验证空间感知取舍；本书的合成分量实验没有复刻真人测试。
+
+工程对照是 [openMHA v4.18.1 固定配置](https://github.com/HoerTech-gGmbH/openMHA/blob/0b9f087e514f9cc0a901fcde9db17de35f9ec438/examples/06-binaural-beamformer/beamformer.cfg "citation")。它接受 `[front-left, front-right, rear-left, rear-right]` 四路，采样率 16 kHz、每块 160 点、分析窗 320 点、FFT 512 点。按该配置的 −180° 到 +180°、5° 步进，零起点下标 40 对应其 +20°，角度正向仍以原配置为准。
+
+[acSteer](https://github.com/HoerTech-gGmbH/openMHA/blob/0b9f087e514f9cc0a901fcde9db17de35f9ec438/mha/plugins/acSteer/acSteer.cpp "citation")从固定权重表分发左右两组。每个频点有 584 个复系数，即 2 个参考耳乘 73 个角度再乘 4 个输入；257 个单边频点合计 150088 个复系数。原表每组另有一行空白，共 150672 行。[steerbf](https://github.com/HoerTech-gGmbH/openMHA/blob/0b9f087e514f9cc0a901fcde9db17de35f9ec438/mha/plugins/steerbf/steerbf.cpp "citation")按角度选权重，对四路执行权重共轭乘输入再累加。配置分别输出左右两路，既不在这条执行路径实时求逆，也不等于论文的双约束训练或估计。
+
+[获取清单](../SOURCES.lock.json)锁定 10 个许可文本和权重文件，存于忽略的本地缓存；保留 AGPL-3.0 原条款。实际核对固定提交、工作树和选集；未取示例录音、未编译或运行插件。设备验证还需要校准方向及参考麦、确认左右时钟和播放路径，再分别量化残留干扰、目标响应与空间线索。CHiME-9 的 [ECHI 听障语音增强任务](https://www.chimechallenge.org/challenges/chime9/task2/index "citation")可作为独立数据与评测入口；其中结果不由这套合成音频或 openMHA 静态核对推出。

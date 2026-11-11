@@ -116,10 +116,21 @@ Vo RFS 追踪源码归档单独取得和核验：
 
 固定作者提交`61987952e2237e6b088a169ee891dd96576f2565`的21个GPLv3文本已取得，共74510字节。完整许可和源通知保留在独立忽略工作树；三份MAT数据、预编译MEX不在选集。已登记的限定实验未运行MATLAB/MEX或作者论文大实验。原矩阵产品、CSM与扫描NNLS目标以及Python原边界见[源码复现研究§13](../research/04_source_reproduction.md#imaging-author-source)。
 
+## 第5章 openMHA 双耳固定波束选集
+
+```bash
+.venv/bin/python -B codes/chapters/ch00/upstream/fetch_upstreams.py --project openmha
+```
+
+官方标签 `v4.18.1` 指向 `0b9f087e514f9cc0a901fcde9db17de35f9ec438`。本地工作树取得 10 个固定文本，共 5,904,110 字节：根目录 `COPYING`、`README.md`，四麦双耳示例配置及其随附滤波系数表，以及 `acSteer` 和 `steerbf` 的源码、头文件和构建入口。完整 AGPLv3 文本和源码声明保留在独立工作区。系数表属于该配置的预计算输入；工作树未取得示例 WAV、原始 HRIR 数据或运行时，不构成可执行的 openMHA 环境。
+
+此次获取核对了固定提交、工作区状态、完整选集和 10 个文件的原始字节；没有构建或执行插件，也没有进行真人听测。文件留在 Git 忽略的工作区。读取该示例时，先查看 `beamformer.cfg` 的通道路由，再分别在 `acSteer` 和 `steerbf` 中核对滤波系数的装载顺序与输出共轭。
+
+追加该项目后首次全表核验有两项失败。SOF 工作区的唯一变化是未跟踪的 Finder `.DS_Store`；将其原样移至仓库外保留，未修改跟踪文件或源码选集。再次核验为 76 项通过、22 项旧选集不匹配、17 项仅索引、1 项原 AEC Challenge 本地修改失败，仍返回退出码 1。原有 115 条锁表记录和状态记录逐条与历史快照一致。
 
 ## 当前入口与结果怎样对应
 
-主锁表登记115个Git项目，归档来源单独管理；当前完整选集政策为32条排除规则。项目计数、已取得工作区、选集核验通过数和已运行方法数分别读取锁表、状态报告及所属章方法报告，不以下载数量替代算法覆盖。
+主锁表登记116个Git项目，归档来源单独管理；当前完整选集政策为32条排除规则。项目计数、已取得工作区、选集核验通过数和已运行方法数分别读取锁表、状态报告及所属章方法报告，不以下载数量替代算法覆盖。
 
 ```bash
 .venv/bin/python codes/chapters/ch00/upstream/fetch_archives.py --verify --report tmp/archive-verification.json

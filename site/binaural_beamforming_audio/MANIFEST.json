@@ -1,0 +1,411 @@
+{
+  "schema_version": 1,
+  "exercises": [
+    "E05-25",
+    "E05-26",
+    "E05-27"
+  ],
+  "origin": "deterministic five-tone component control, not measured acoustics",
+  "sample_rate_hz": 16000,
+  "samples_per_channel": 32000,
+  "channel_order": [
+    "left",
+    "right"
+  ],
+  "common_export_gain": 1.0,
+  "target_transfer": [
+    1.0,
+    1.0,
+    1.0
+  ],
+  "interferer_transfer": [
+    1.0,
+    -1.0,
+    1.0
+  ],
+  "frequencies_hz": [
+    500,
+    1500,
+    750,
+    1000,
+    1250
+  ],
+  "amplitudes": [
+    0.12,
+    0.12,
+    0.08,
+    0.08,
+    0.08
+  ],
+  "tone_order": [
+    "target",
+    "interferer",
+    "background_mic1",
+    "background_mic2",
+    "background_mic3"
+  ],
+  "window_samples": [
+    2400,
+    29600
+  ],
+  "fade_samples_each_end": 320,
+  "sample_format": "signed little endian PCM16, ties to even, decode scale 32768",
+  "source_sha256": {
+    "codes/chapters/ch05/examples/binaural_beamforming_demo.py": "e384f898438f4b410928ad096db7bce76a5947624ae5d856ca125368e0281545",
+    "codes/chapters/ch05/core/beamforming.py": "481f79a66fcc4c1f232704ee3a516b596d28ebc89d9045c494b71f6206b77216",
+    "codes/chapters/ch04/core/covariance.py": "d704be037100ee53caf6e2130fbabbe14ce6eeff9e3d11dde389fd368d271249",
+    "codes/chapters/ch02/core/conventions.py": "4e80a27490f05ddd5f4826361420c0c8d0b331464d1e5629c5def492da47b1d7",
+    "codes/chapters/ch00/core/audio_samples.py": "8fb4e9e822129d0019ef047299effd53b4f02f90ff68b5198016d04ddad31cf8",
+    "codes/chapters/ch00/io_contracts.py": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974"
+  },
+  "measurements": {
+    "input": {
+      "weights": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "target_response": [
+        1.0,
+        1.0
+      ],
+      "interferer_response": [
+        1.0,
+        -1.0
+      ],
+      "unit_background_output_covariance": [
+        [
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0
+        ]
+      ],
+      "file": "binaural_input.wav",
+      "sha256": "7f4bb7b7187aafa8bcf260156f1551e49c68812d541702d2bcf494a2b4acad51",
+      "peak_quantization_error": 1.5241033649138203e-05,
+      "float_signed_cosine_amplitude_by_tone": [
+        [
+          0.11999999999999121,
+          0.11999999999999465
+        ],
+        [
+          0.12000000000000287,
+          -0.11999999999999686
+        ],
+        [
+          0.07999999999999957,
+          1.2899565009017448e-17
+        ],
+        [
+          1.4964294025632617e-16,
+          0.08000000000000011
+        ],
+        [
+          5.570252936968322e-17,
+          -1.9728201222383955e-16
+        ]
+      ],
+      "pcm_signed_cosine_amplitude_by_tone": [
+        [
+          0.1199998301314965,
+          0.11999761235852117
+        ],
+        [
+          0.12000019942860116,
+          -0.12000029139380435
+        ],
+        [
+          0.07999935940673376,
+          3.746299919891019e-18
+        ],
+        [
+          1.9859239581490213e-06,
+          0.0799997341444019
+        ],
+        [
+          -3.7519955473047738e-06,
+          -9.603054375841176e-17
+        ]
+      ],
+      "actual_pcm_total": {
+        "integer_energy_each_ear": [
+          514020294725,
+          514013720400
+        ],
+        "integer_cross_sum": -3022175,
+        "integer_mean_square_denominator_per_ear": 29205777612800
+      }
+    },
+    "bmvdr": {
+      "weights": [
+        [
+          0.3333333333333333,
+          0.3333333333333333,
+          0.3333333333333333
+        ],
+        [
+          0.3333333333333333,
+          0.3333333333333333,
+          0.3333333333333333
+        ]
+      ],
+      "target_response": [
+        1.0,
+        1.0
+      ],
+      "interferer_response": [
+        0.3333333333333333,
+        0.3333333333333333
+      ],
+      "unit_background_output_covariance": [
+        [
+          0.3333333333333333,
+          0.3333333333333333
+        ],
+        [
+          0.3333333333333333,
+          0.3333333333333333
+        ]
+      ],
+      "file": "binaural_bmvdr.wav",
+      "sha256": "2283f1a6fefc2a9a4f07be80d894b7967627b1d8285cba0a368131bc7735b91d",
+      "peak_quantization_error": 1.5246605691382475e-05,
+      "float_signed_cosine_amplitude_by_tone": [
+        [
+          0.11999999999999322,
+          0.11999999999999322
+        ],
+        [
+          0.039999999999999744,
+          0.039999999999999744
+        ],
+        [
+          0.02666666666666658,
+          0.02666666666666658
+        ],
+        [
+          0.026666666666666974,
+          0.026666666666666974
+        ],
+        [
+          0.026666666666667015,
+          0.026666666666667015
+        ]
+      ],
+      "pcm_signed_cosine_amplitude_by_tone": [
+        [
+          0.11999991138625116,
+          0.11999991138625116
+        ],
+        [
+          0.03999884220652224,
+          0.03999884220652224
+        ],
+        [
+          0.026667403375157474,
+          0.026667403375157474
+        ],
+        [
+          0.026668062022156616,
+          0.026668062022156616
+        ],
+        [
+          0.026668288086728192,
+          0.026668288086728192
+        ]
+      ],
+      "actual_pcm_total": {
+        "integer_energy_each_ear": [
+          264800313425,
+          264800313425
+        ],
+        "integer_cross_sum": 264800313425,
+        "integer_mean_square_denominator_per_ear": 29205777612800
+      }
+    },
+    "blcmv": {
+      "weights": [
+        [
+          0.3333333333333333,
+          0.3333333333333333,
+          0.3333333333333333
+        ],
+        [
+          0.16666666666666663,
+          0.6666666666666666,
+          0.16666666666666663
+        ]
+      ],
+      "target_response": [
+        1.0,
+        0.9999999999999999
+      ],
+      "interferer_response": [
+        0.3333333333333333,
+        -0.33333333333333337
+      ],
+      "unit_background_output_covariance": [
+        [
+          0.3333333333333333,
+          0.33333333333333326
+        ],
+        [
+          0.33333333333333326,
+          0.49999999999999994
+        ]
+      ],
+      "file": "binaural_blcmv.wav",
+      "sha256": "1869f1ed4ba00607643d5a9c0af57e77d0f5fe0a066154ed90844bc770fb5410",
+      "peak_quantization_error": 1.5253345373819616e-05,
+      "float_signed_cosine_amplitude_by_tone": [
+        [
+          0.11999999999999322,
+          0.11999999999998885
+        ],
+        [
+          0.039999999999999744,
+          -0.03999999999999934
+        ],
+        [
+          0.02666666666666658,
+          0.013333333333333306
+        ],
+        [
+          0.026666666666666974,
+          0.05333333333333435
+        ],
+        [
+          0.026666666666667015,
+          0.013333333333333246
+        ]
+      ],
+      "pcm_signed_cosine_amplitude_by_tone": [
+        [
+          0.11999991138625116,
+          0.11999717329830377
+        ],
+        [
+          0.03999884220652224,
+          -0.0399982316774889
+        ],
+        [
+          0.026667403375157474,
+          0.013336581500401418
+        ],
+        [
+          0.026668062022156616,
+          0.05333582170539359
+        ],
+        [
+          0.026668288086728192,
+          0.013333483502889496
+        ]
+      ],
+      "actual_pcm_total": {
+        "integer_energy_each_ear": [
+          264800313425,
+          280368693700
+        ],
+        "integer_cross_sum": 218070245075,
+        "integer_mean_square_denominator_per_ear": 29205777612800
+      }
+    },
+    "null": {
+      "weights": [
+        [
+          0.25,
+          0.5,
+          0.25
+        ],
+        [
+          0.25,
+          0.5,
+          0.25
+        ]
+      ],
+      "target_response": [
+        1.0,
+        1.0
+      ],
+      "interferer_response": [
+        0.0,
+        0.0
+      ],
+      "unit_background_output_covariance": [
+        [
+          0.375,
+          0.375
+        ],
+        [
+          0.375,
+          0.375
+        ]
+      ],
+      "file": "binaural_null.wav",
+      "sha256": "b165b35cd7c1e78bb0bb271fc1bdfff6d4ab4813da284491859793cde9fcd817",
+      "peak_quantization_error": 1.5252082800312934e-05,
+      "float_signed_cosine_amplitude_by_tone": [
+        [
+          0.11999999999999456,
+          0.11999999999999456
+        ],
+        [
+          6.623259429613557e-17,
+          6.623259429613557e-17
+        ],
+        [
+          0.01999999999999976,
+          0.01999999999999976
+        ],
+        [
+          0.040000000000000556,
+          0.040000000000000556
+        ],
+        [
+          0.019999999999999723,
+          0.019999999999999723
+        ]
+      ],
+      "pcm_signed_cosine_amplitude_by_tone": [
+        [
+          0.1199969983405548,
+          0.1199969983405548
+        ],
+        [
+          -2.7560302097275943e-07,
+          -2.7560302097275943e-07
+        ],
+        [
+          0.020002608465859308,
+          0.020002608465859308
+        ],
+        [
+          0.04000576037933813,
+          0.04000576037933813
+        ],
+        [
+          0.020001780932569217,
+          0.020001780932569217
+        ]
+      ],
+      "actual_pcm_total": {
+        "integer_energy_each_ear": [
+          245327308550,
+          245327308550
+        ],
+        "integer_cross_sum": 245327308550,
+        "integer_mean_square_denominator_per_ear": 29205777612800
+      }
+    }
+  }
+}

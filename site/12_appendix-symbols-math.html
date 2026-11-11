@@ -2,7 +2,7 @@
 <link rel="canonical" href="14_appendix-symbols-math.html"><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 14 章 · 附录 A：符号术语数学 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="759b4238ac3b"><style>
+<meta name="source-digest" content="1a85da73ba06"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -362,7 +362,8 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <p>阵列坐标约定为：麦 1 位于 $x=0$，麦 2 位于 $+x$；正横为 0°，正角朝麦 2；$\vec u$ 从阵列指向声源，传播方向为 $-\vec u$。</p>
 <p>球谐公式常改用从 $+x$ 轴起算的方位角 $\alpha$ 和从 $+z$ 轴起算的极角 $\vartheta$。与本书从 $+y$ 朝 $+x$ 起算的声源方位角 $\theta$、从水平面起算的俯仰角 $\phi_{\mathrm{el}}$ 对接时，应先换算 $\alpha=\pi/2-\theta$（按 $2\pi$ 周期取值）、$\vartheta=\pi/2-\phi_{\mathrm{el}}$，再调用相应公式或接口，见<a href="05_beamforming.html#sec-5-8">§5.8</a>。</p>
 <p><strong>字母复用</strong>（与 §2.3 一致）：本符号表把波数记为 $\kappa=2\pi f/c$，与 STFT 频点索引 $k$ 区分；其他章节的局部推导或文献仍可能用 $k$ 表示波数，第7章局部也用 $k$ 表示 WPE 的滞后帧号。$D$ 可表示阵列孔径或 PHD 强度函数；$\lambda$ 可表示波长、WPE 功率谱或矩阵特征值；$K$ 可表示声源数或 WPE 预测阶数；$s$ 可表示源信号或追踪状态。具体含义以所在公式的定义为准。</p>
-<p>需要区分 STFT 网格时，本书用 $k$ 表示频点索引、$\ell$ 表示帧索引；连续时间仍用 $t$，离散采样索引用 $n$。实信号的<strong>单边谱</strong>取 $0\leq k\leq\lfloor N/2\rfloor$，对应非负频率 $f_k=kf_s/N$（Hz）。若存储完整 $N$ 点 DFT，后半段索引表示负频率：偶数 $N$ 的 $k>N/2$ 或奇数 $N$ 的 $k>(N-1)/2$ 应解释为 $(k-N)f_s/N$。偶数 $N$ 的 Nyquist 格点 $k=N/2$ 对实信号自共轭，可按单边谱约定记作 $+f_s/2$；不能把完整 DFT 的末格直接解释成接近 $+f_s$ 的新物理频率。E14-06 给出八点算例。</p>
+<p>本表区分 STFT 网格时，默认 $k$ 是频点索引、$\ell$ 是帧索引，$n$ 是离散采样索引，$t$ 是连续时间。各章沿用不同公式时会另定义下标：第 5 章的 $\vec x(k,n)$ 按（频点，帧）排列；第 8 章的 $X_m(f,k)$ 也按（频点，帧）排列，活动推导还用 $t$ 表示离散帧。跨章比较先按物理含义对齐，不能仅凭同一个字母判断是哪条轴。</p>
+<p>实信号的<strong>单边谱</strong>取 $0\leq k\leq\lfloor N/2\rfloor$，对应非负频率 $f_k=kf_s/N$（Hz）。若存储完整 $N$ 点 DFT，后半段索引表示负频率：偶数 $N$ 的 $k>N/2$ 或奇数 $N$ 的 $k>(N-1)/2$ 应解释为 $(k-N)f_s/N$。偶数 $N$ 的 Nyquist 格点 $k=N/2$ 对实信号自共轭，可按单边谱约定记作 $+f_s/2$；不能把完整 DFT 的末格直接解释成接近 $+f_s$ 的新物理频率。E14-06 给出八点算例。</p>
 <p>若必须给<strong>完整双边频谱</strong>的每个格点指定有符号代表频率，本书采用与 NumPy 的 fftfreq 接口一致的排列：</p>
 <p>$$f_k^{\mathrm{full}}=
 \begin{cases}
@@ -577,7 +578,7 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">超定方程组</td>
-<td>方程比未知数多，通常无精确解、只可求最小二乘解——TDOA 定位的麦对多于未知数时就是这样（见§4.4）</td>
+<td>方程比未知数多。右端落在系数矩阵的列空间中时有精确解；不相容时可求最小二乘近似。TDOA 定位中，多个麦对的时差还可能共享到达时刻，方程多不等于独立信息多（§4.4）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">双曲线定位</td>
@@ -778,7 +779,7 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">半功率波束宽度（Half-Power Beamwidth，HPBW）/旁瓣电平（Side-Lobe Level，SLL）</td>
-<td>HPBW 是主瓣两个 −3 dB 点间的角宽；SLL 是最高旁瓣相对主瓣的电平（§2.6、§5.2）</td>
+<td>HPBW 是主瓣两侧 −3 dB 交点间的角宽；SLL 是最高旁瓣相对主瓣的电平。所报扫描域缺少一侧交点或没有可识别的旁瓣时，应分别注明该量未定义或不可测（§2.6、§5.2）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">CRLB / CRB（克拉美－罗下界，Cramér–Rao Lower Bound）</td>
@@ -818,7 +819,7 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">GSS（导引源分离）</td>
-<td>利用方向或说话人活动信息引导空间聚类与波束形成的分离方法；常用 cACGMM 估计时频掩码，并用活动标注约束输出排列（§8.4）</td>
+<td>§8.4 讲解的原方案用说话人活动时间约束 cACGMM 的分量标签，再由掩码估计空间统计并作波束形成；方向先验可另作约束，不能替代该原方案的活动标注</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">WDO（W-不重叠正交性，W-disjoint orthogonality）</td>
@@ -881,7 +882,7 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">时频掩码（Time-Frequency Mask，TF-mask）</td>
-<td>定义在时频网格上的权重或选择函数，用于加权目标、干扰或噪声统计量。二值掩码和理想比值掩码常限制在 $[0,1]$，但复值掩码、幅度比掩码及某些网络输出可以超出该区间；使用时必须写明类型、取值域和作用对象（§5.4、§5.9）</td>
+<td>定义在时频网格上的权重或选择函数。可用非负实权重给多通道外积赋权，也可逐点乘输入谱或波束输出谱；后者的掩码若取复数就能改变相位。使用时写明取值域和作用对象（§5.9、§8.1、§8.4）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">新息（innovation）</td>
@@ -1088,11 +1089,11 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 </table></div>
 <p>对数把连乘转为相加，便于表示跨越多个数量级的增益、信噪比和衰减。</p>
 <p>dB 练习：① 功率先乘 4 再乘 2，总增益是多少 dB？② 电压增益为 −6 dB 时，幅度比约为多少？</p>
-<p>答案：① $10\log_{10}(4\times2)\approx9$ dB；② 幅度约减半，功率约为原来的四分之一。</p>
+<p>答案：① $10\log_{10}(4\times2)\approx9$ dB；② 电压幅度比为 $10^{-6/20}\approx0.501$。若前后测量的是同一阻值上的电压，平均功率与均方电压成正比，功率约为原来的四分之一；负载改变时，还需要阻值才能换算。</p>
 <p><strong>SNR 换算例。</strong> 目标功率为 3、噪声功率为 1 时，线性 SNR 为 3，对应 $10\log_{10}3\approx4.8$ dB。若处理后输出 SNR 为 12 dB，则 SNR 增益约为 $12-4.8=7.2$ dB。输入 SNR、输出 SNR 和 SNR 增益是三个不同的量（§5.1）。</p>
 <span id="sec-12-3-3" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-14-3-3">14.3.3 卷积与相关</h3>
 <p>卷积 $y=x*h$ 表示信号 $x$ 经过线性时不变系统 $h$ 后的输出；在固定声源和接收位置的近似下，$h$ 可以取房间脉冲响应（§2.4）。</p>
-<p>对离散时间序列，$y[n]=\sum_k h[k]x[n-k]$。先选定输出时刻 $n$，再把各个过去输入 $x[n-k]$ 乘上对应路径系数 $h[k]$ 并相加；附录练习 E14-01 用两个抽头逐项计算。</p>
+<p>对离散时间序列，$y[n]=\sum_k h[k]x[n-k]$。先选定输出时刻 $n$，再把各个偏移处的输入 $x[n-k]$ 乘上对应系数 $h[k]$ 并相加。若系统因果，$k\lt 0$ 的抽头全为零，故只需当前及过去的输入；若离线使用含负下标的滤波器，则可能还需要未来输入。附录练习 E14-01 用两个因果抽头逐项计算。</p>
 <p>相关 $R(\tau)$ 衡量两段信号在相对位移 $\tau$ 下的相似度；峰值位置可作为时延候选（§4.2）。</p>
 <p>先约定有限序列在给定范围以外取零。对复数序列，本书的相关与时延次序为</p>
 <p>$$R_{12}[q]=\sum_{n\in\mathbb Z}x_1[n]x_2^*[n-q]\text{。}\tag{14-2}$$</p>
@@ -1112,7 +1113,7 @@ $\vec v^H\hat{\mathbf R}\vec v=L^{-1}\sum_\ell|\vec v^H\vec x_\ell|^2\geq0$；�
 <p>如果在同一批快拍上先计算样本均值 $\bar{\vec x}$，再用相同分母 $L$ 计算中心化矩阵 $\hat{\mathbf C}_L$，逐项展开得到 $\hat{\mathbf R}=\hat{\mathbf C}_L+\bar{\vec x}\bar{\vec x}^H$（第 2 章式(2-7)）。因此两者逐批相等的条件是<strong>本批</strong> $\bar{\vec x}=0$。即使产生这些快拍的随机过程总体均值为零，有限一批数据的样本均值也可能不为零；E14-02 用复快拍直接算出差别，E14-10 再检查中心化如何影响秩。</p>
 <p>厄米半正定只验证了二阶矩的合法形状，不自动给出 proper 复高斯概率模型。实信号的 DC 与偶数长度 Nyquist 格点是实量，不能直接套用内点的非退化 proper 复高斯密度；端点建模与适用范围见<a href="07_wpe-dereverberation.html#sec-7-1">第 7 章 §7.1</a>。</p>
 <span id="sec-12-3-5" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-14-3-5">14.3.5 最小二乘</h3>
-<p>方程比未知数多时通常没有精确解。最小二乘求使总残差平方最小的 $\hat{\vec{x}}$：</p>
+<p>方程多于未知数时，要看各条方程是否相容。例如 $x=3$、$2x=6$ 有同一个精确解；若把第二条改成 $2x=7$，就没有一个 $x$ 能同时满足两条约束。最小二乘在两种情况下都可用，求使总残差平方最小的 $\hat{\vec{x}}$：</p>
 <p>$$\min_{\vec{x}}\|\mathbf{A}\vec{x}-\vec{b}\|^2\text{。}$$</p>
 <p>设 $\mathbf A\in\mathbb C^{m\times p}$、$\vec x\in\mathbb C^p$、$\vec b\in\mathbb C^m$。残差 $\vec r=\mathbf A\vec x-\vec b$ 是 $m$ 维，平方范数 $\|\vec r\|_2^2=\vec r^H\vec r$ 是非负实数。展开为 $\vec x^H\mathbf A^H\mathbf A\vec x-\vec x^H\mathbf A^H\vec b-\vec b^H\mathbf A\vec x+\vec b^H\vec b$；对 $\vec x^*$ 求驻点，得到正规方程</p>
 <p>$$\mathbf A^H\mathbf A\hat{\vec x}=\mathbf A^H\vec b\text{。}\tag{14-4}$$</p>
@@ -1129,6 +1130,7 @@ $\vec v^H\hat{\mathbf R}\vec v=L^{-1}\sum_\ell|\vec v^H\vec x_\ell|^2\geq0$；�
 <p><strong>第 2 步：求驻点。</strong> 对 $\vec w^*$ 做 Wirtinger 求导并令零，得到 $\mathbf R\vec w+\lambda^*\vec a=0$。</p>
 <p><strong>第 3 步：写出比例关系。</strong> 乘子的命名可吸收共轭与负号，因此得到 $\vec w\propto\mathbf R^{-1}\vec a$。</p>
 <p><strong>第 4 步：代回约束。</strong> 写 $\vec w=\gamma\mathbf R^{-1}\vec a$，则 $\vec w^H\vec a=\gamma^*\vec a^H\mathbf R^{-1}\vec a=1$。若 $\mathbf R$ 厄米正定，分母 $q=\vec a^H\mathbf R^{-1}\vec a$ 是正实数，所以 $\gamma=1/q$，得到 $\vec w=\mathbf R^{-1}\vec a/(\vec a^H\mathbf R^{-1}\vec a)$，即 §5.4 式(5-9)。</p>
+<p><strong>再检查它是唯一最小值。</strong> 记刚得到的权重为 $\vec w_*$。任意其他可行权重可写为 $\vec w_*+\vec d$，并满足 $\vec d^H\vec a=0$。因为 $\mathbf R\vec w_*=\vec a/q$，展开功率时交叉项 $2\operatorname{Re}(\vec d^H\mathbf R\vec w_*)$ 为零，增加的功率只剩 $\vec d^H\mathbf R\vec d$。正定矩阵使它在 $\vec d\ne0$ 时严格大于零，因此没有第二个可行权重能取得同样的最小功率。</p>
 <p>若协方差奇异，不能直接使用这一逆矩阵形式；需另行处理秩或加载。LCMV 把标量约束和乘子换成向量形式（§5.5）。</p>
 <p><strong>Wirtinger 求导。</strong> 对实值目标函数，可在 Wirtinger 微积分中把 $\vec{w}$ 和 $\vec{w}^*$ 视为形式上独立的变量，对 $\vec{w}^*$ 求偏导并令其为零。§5.4 给出了与实部、虚部分别求导等价的完整推导。</p>
 <span id="sec-12-3-7" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-14-3-7">14.3.7 特征值分解</h3>
@@ -1294,12 +1296,15 @@ $$</p>
 </tbody>
 </table></div>
 <p>当 $\delta\to0^+$，加载解趋向 $[1,0]^\top$，并不趋向机械替换的 $[0,1]^\top$。数值截断、伪逆与加载极限是不同操作，不能仅因都涉及“小特征值”就互换。</p>
+<p><strong>同一矩阵换一个导向，再看何时伪逆可用。</strong> 若把目标改成 $\vec a=[0,1]^\top$，约束固定 $w_2=1$；无论 $w_1$ 取什么值，噪声功率都为 1。此时归一化伪逆解 $[0,1]^\top$ 是最优解之一，零空间内的任意加量都不改变结果。</p>
+<p>一般地，若目标在零空间中的正交投影为非零 $\vec a_0$，取 $\vec a_0/\|\vec a_0\|_2^2$ 就能满足约束且功率为零。若投影为零，目标全在 $\mathbf R$ 的值域；在该值域中 $\mathbf R$ 正定，可按 §14.3.6 求解，结果正是归一化伪逆解。再加任意零空间权重，约束和最小功率都不变。</p>
 <p><strong>工程解释。</strong> 真实麦克风一般不会拥有完全零噪声通道；这个精确半正定模型用于揭示优化前提，不能据此推荐把实际加载降到零。有限快拍、通道重复或秩约束模型都可能产生奇异样本协方差。此时应先判断目标是否含零空间分量，再选加载、明确的子空间约束或其他相应求解方法。E14-03 中伪逆给出最小范数最小二乘解的结论仍然成立，那是另一个目标函数与约束问题。</p>
 <p>本题是本书自行构造的代数反例，运行 <code>.venv/bin/python -m codes.chapters.ch00.cross_chapter.spatial_model_exercises</code> 的 <code>E14-05</code> 可核对可行性、两种输出功率与加载极限；<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch00/cross_chapter/spatial_model_exercises.py">源码</a>使用给定矩阵，不把反例扩写成通用奇异 MVDR 求解器。</p>
 <span id="sec-u-99706c9759" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-53cdc056b8">E14-06：完整 FFT 的末格是接近采样率的正频率吗？</h3>
 <p>给定 $N=8$、$f_s=8$ kHz，列出完整 DFT 从 $k=0$ 到 $7$ 的有符号代表频率，以及实信号单边 FFT 保留的频率。再分别考虑 $x[n]=\cos(2\pi n/8)$ 与 $z[n]=(-1)^n$（$n=0,\ldots,7$）：两者的非零频点在哪里？本题使用前向 DFT 无 $1/N$、逆变换带 $1/N$ 的约定。</p>
-<p><strong>频率格。</strong> 格点间隔是 $f_s/N=1$ kHz。由式(14-1)，完整频率依次是 $[0,1,2,3,-4,-3,-2,-1]$ kHz；实输入单边谱是 $[0,1,2,3,4]$ kHz。故 $k=7$ 代表 $-1$ kHz，不是 $+7$ kHz。$k=4$ 在完整 fftfreq 口径记作 $-4$ kHz，在单边 rfftfreq 口径记作 $+4$ kHz。</p>
+<p><strong>频率格。</strong> 格点间隔是 $f_s/N=1$ kHz。由式(14-1)，完整频率依次是 $[0,1,2,3,-4,-3,-2,-1]$ kHz；实输入单边谱是 $[0,1,2,3,4]$ kHz。故 $k=7$ 的有符号代表是 $-1$ kHz。把它写作 $+7$ kHz 时，整数采样点上的复指数完全相同，二者相差一个采样率，不是两个独立格点。$k=4$ 在完整 fftfreq 口径记作 $-4$ kHz，在单边 rfftfreq 口径记作 $+4$ kHz。</p>
 <p><strong>复谱核对。</strong> $\cos(2\pi n/8)=\tfrac12e^{\mathrm j2\pi n/8}+\tfrac12e^{-\mathrm j2\pi n/8}$，所以无归一化完整 DFT 只有 $X[1]=X[7]=8/2=4$ 非零。$(-1)^n=e^{\mathrm j\pi n}=e^{-\mathrm j\pi n}$ 对整数 $n$ 完全相同，因此它只有 $Z[4]=8$ 一个 Nyquist 格点；不能把 $+4$ 与 $-4$ kHz 各计成一份独立能量。正负频率分量对实余弦互为共轭，但填入阵列导向相位时须用与所取谱格一致的有符号频率。</p>
+<p>用 Parseval 等式核对样本平方和：余弦的两个共轭格各贡献 $4^2/8$，合计 4；交替序列的 Nyquist 格只贡献一次 $8^2/8=8$。因此用单边谱算能量时，内部频点要补上没有存储的共轭项，DC 和 Nyquist 则只计一次。若谱处理后仍要逆变换为实信号，这两个自共轭端点的值也必须为实数。</p>
 <p><img alt="图48 完整八点 DFT 的有符号频率与实谱单边频率" src="../figures/fig48_fft_frequencies.png" onerror="this.alt+='（图缺失）'" /></p>
 <p>图 48（a）按 fftfreq 约定画出 $N=8$、$f_s=8$ kHz 的全部格点，$k=4$ 记为 $-4$ kHz；（b）只保存实信号的非负格点，$k=4$ 记为 $+4$ kHz。两幅图中的 Nyquist 标注是<strong>同一个离散格点</strong>，不是两次观测。图示给的是频率坐标约定，不表示补零增加了频率分辨能力。<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/appendix_a/appendix_a_experiments.py">代码复算</a>还列出余弦的两个非零格点。</p>
 <span id="sec-u-601bb171ef" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-26323254d5">E14-07：复向量为什么不能用普通转置计算能量？</h3>
@@ -1330,6 +1335,7 @@ $$</p>
 </tbody>
 </table></div>
 <p>两块在 $n=2$ 重叠，故该点为 $1+3=4$，其余点照原位置保留。错误的两点循环卷积则分别为 $[2,2.5]$、$[5,5.5]$，拼接成 $[2,2.5,5,5.5]$：第一块尾项 1 绕回到 $n=0$，第二块尾项 2 绕回到 $n=2$，末尾 $n=4$ 也丢失。E14-01 只检查一次短卷积；本题说明连续分块时还必须保留并相加跨块尾部。对于长度 $B$ 的新输入和 $L_h$ 抽头 FIR，每块的线性结果长 $B+L_h-1$，FFT 长度至少达到这个长度才可避免本块循环别名。</p>
+<p>补零与保留尾部可分开检查：若每块都正确补到 3 点，但仍丢弃每块第三点，拼接得到 $[1,2.5,3,5.5]$。这时没有绕回；问题是 $n=2$ 少了上一块的 1，且 $n=4$ 没有输出。只改 FFT 长度不能修好跨块相加。</p>
 <p><img alt="图49 分块线性卷积的重叠尾部与错误循环绕回" src="../figures/fig49_fft_block_boundary.png" onerror="this.alt+='（图缺失）'" /></p>
 <p>图 49 把上述两点手算扩展到下文的 16 kHz PCM 脉冲音频，而不是直接画小序列 $x=[1,2,3,4]$。（a）为正确线性卷积，（b）为刻意构造的错误逐块循环卷积；两图使用相同的 $B=512$、$h[0]=1$、$h[120]=0.6$、输入脉冲与共同导出增益 1。首脉冲在 $n=500$（$31.25\,\mathrm{ms}$），竖虚线标出 $n=512$（$32\,\mathrm{ms}$）块边界。正确尾部在 $n=620$（$38.75\,\mathrm{ms}$），错误实现却将尾部绕回到 $n=108$（$6.75\,\mathrm{ms}$）。左、右两图的纵轴都是最终 PCM 读回幅度；图中的提前脉冲不是物理声学预回声。</p>
 <p>下面三个<a href="research/05_exercises_and_audio.html">数学合成音频</a>把同一问题换成可听的块边界。先降低音量，再分别播放。</p>
@@ -1542,7 +1548,7 @@ n_2[n]&=0.06e[n]\cos(2\pi4000n/16000)\text{。}
 <p>$$\mathbf C^{-1}=\frac47
 \begin{bmatrix}4&-3/2\\-3/2&1\end{bmatrix}。\tag{14-8}$$</p>
 <p>因此 $\mathbf C^{-1}\vec a=[10/7,-2/7]^\top$，归一化分母为 $\vec a^H\mathbf C^{-1}\vec a=8/7$，得到 $\vec h=[5/4,-1/4]^\top$。第二个权重为负，两个权重之和仍为 1；输出中的目标项恰为 $x_*$，没有通过衰减目标来降低噪声。</p>
-<p>噪声输出为 $(5/4)n_1-(1/4)n_2$。其中 $n_2$ 与 $n_1$ 的相关部分被相减抵消，但剩余噪声仍有正方差。权重是线性组合系数，不能当成取值限制在 $[0,1]$ 的活动掩码或概率。</p>
+<p>噪声输出为 $(5/4)n_1-(1/4)n_2$。为看清消掉多少，写 $n_2=(3/2)n_1+\xi$。由协方差可得 $E[n_1\xi^*]=0$、$E[|\xi|^2]=7/4$。代回得到 $(7/8)n_1-\xi/4$；共同分量只被部分抵消，剩余两项的总功率是 $49/64+7/64=7/8$。这一步只需零互协方差，不要求两项独立。权重是线性组合系数，不能当成取值限制在 $[0,1]$ 的活动掩码或概率。</p>
 <p><strong>第二步：在同一个真实协方差下比较。</strong> 对给定权重，参数误差为 $\hat x-x_*=\vec h^H\vec n$，总体误差方差为 $\vec h^H\mathbf C\vec h$。这里的协方差不随所选方法更换。只按方差倒数归一化会得到 $[4/5,1/5]^\top$；它对应忽略相关项的模型，评分时仍必须使用完整的 $\mathbf C$。</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
 <thead>

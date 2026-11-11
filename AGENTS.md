@@ -50,6 +50,7 @@
 | 成像图与原源合同 | `scripts/make_figures.py::fig_imaging_*` → `ch12/reports/figure67～69*.json`、`figure80_imaging_objectives.json`；`ch12/examples/audit_upstream_imaging_contracts.py` → `upstream_imaging_contracts_current.json` | 两格、球面441格、目标与校准控制及固定Acoular原方法 | 图绑定真实数值核，不反演441未知源或称功率图为增强波形；原full CLEAN-SC差异、CMF目标和谱端点真实保留；完整选集状态与所用源码身份分栏，不修改上游或历史 |
 | 作者DAMAS原模块合同 | `ch12/examples/audit_damas_author_contracts.py` → 显式 `damas_author_contracts_current.json` | 固定作者GPL完整Python模块九限定控制；8数值吻合、1原NameError | 默认只读stdout；完整模块原imports执行，前后核原文件及三个直接库入口，不称传递闭包、MATLAB/MEX或论文大实验；不覆盖历史报告 |
 | 导数约束源与生成物 | `codes/chapters/ch05/core/derivative_audio.py`、`codes/chapters/ch05/examples/generate_derivative_audio.py` → `codes/chapters/ch05/derivative_audio/` | 4个16kHz、32002采样单/三声道数学合成WAV，独立清单 | 共同因果参考1点、八真实源、固定seed/共同增益1；2400:29600窗分开解析期望、浮点分解与实际PCM总误差；不把后验LS复响应拟合当增益补偿，不称语音/实录或工业成绩；`--check`严格只读 |
+| 双耳波束源与生成物 | `codes/chapters/ch05/examples/binaural_beamforming_demo.py` → `codes/chapters/ch05/binaural_beamforming_audio/` | 四个16 kHz、32000点／耳数学合成PCM16、独立清单 | 共同增益1；左／右声道，27200点稳定窗；六真实源与五普通成员，分开解析背景、浮点／实际PCM投影和实际整数和；`--check`只读；没有宽带STFT、实测HRTF或真人评测 |
 | 已知逐频相位源与生成物 | `codes/chapters/ch05/core/phase_audio.py`、`examples/generate_phase_audio.py` → `ch05/phase_audio/`；`scripts/make_beamforming_figures.py` → 图73及数值报告 | 三个16kHz、32000点单声道双音数学控制与独立清单 | 共同增益1，2400:29600窗共27200点；五真实源，严格四普通成员；解析/浮点/PCM整数E/D与相位分开，量化后功率不宣称精确相等；无噪声/GEV/STFT/BAN整链或正式听测，`--check`只读 |
 | 仿射投影源与生成物 | `codes/chapters/ch06/core/apa_audio.py`、`codes/chapters/ch06/examples/generate_apa_audio.py` → `codes/chapters/ch06/apa_audio/` | 6个16kHz、32013点单声道数学合成WAV，独立清单 | 同一有色参考/16抽头路径，训练0:24000后冻结；8000点留出分开浮点分量与实际PCM总功率，保留13点尾但不计分；八真实源/共同增益1、单seed；不称真实语音、clean ERLE或工业成绩，`--check`严格只读 |
 | 已知播放增益与尾声源/生成物 | `ch06/core/reference_audio.py`、`examples/generate_reference_audio.py` → `ch06/reference_audio/`；`scripts/make_reference_figures.py` → 图74及报告 | 六个16kHz、33600点单声道数学合成WAV与独立清单 | 已知两抽头路径全冻结，g从1变2且尾部延续2；保留1600完整尾，step1600/stable9600/tail1600点解析、浮点与实际PCM整数E/D分开；八真实源、严格七普通成员/参数类型，实际PCM NCC的near_only不当近端真值，`--check`完整只读回放 |
@@ -93,7 +94,7 @@
 | 构建源文件 | `scripts/build_site.py`、`scripts/build_pdf.py`、`scripts/build_markdown_helpers.py`、`scripts/inline_layout.js`、`scripts/pdf_math.js`、`scripts/heading_aliases.py`、`scripts/legacy_sequential_anchors.json`、`scripts/chapter_identity.py`、`scripts/chapter_numbering.json` | 生成站点、合订 HTML 和 PDF，共用Markdown数学/代码边界处理及有限行内排版保护，并保护已发布深链的原语义 | 页面结构或渲染有问题时修改这里；标题改号后逐项校验历史语义锚；共享脚本变化须进入两种产物的源摘要 |
 | PDF 公式第三方资源 | `scripts/vendor/mathjax-3.2.2/` | 固定MathJax3.2.2 SVG、SRE4.0.6英文规则与许可；保留历史CHTML字体 | 保留上游许可及来源摘要；更新版本时同步更新构建核验与渲染抽查，不手改压缩脚本或字体 |
 | 插图生成物 | `figures/fig*.png` | 正文插图 | 由绘图脚本生成，不直接编辑 |
-| 站点生成物 | `site/*.html`、`site/research/*.html`、`site/real_audio/`、`site/room_audio/`、`site/gss_audio/`、`site/moving_audio/`、`site/tracking_audio/`、`site/noise_audio/`、`site/channel_audio/`、`site/scenario_audio/`、`site/weighted_audio/`、`site/response_audio/`、`site/binaural_audio/`、`site/spectral_audio/`、`site/stft_audio/`、`site/sweep_audio/`、`site/geometry_audio/`、`site/baseline_audio/`、`site/focus_audio/`、`site/reflection_audio/`、`site/derivative_audio/`、`site/phase_audio/`、`site/apa_audio/`、`site/reference_audio/`、`site/delay_audio/`、`site/css_audio/`、`site/mint_audio/`、`site/mask_audio/`、`site/imaging_audio/`、`site/distributed_audio/` | 16 篇当前教程、4 个旧路径兼容页面、6 篇研究手册页面与真实录音、独立合成实验的媒体副本 | 由 `build_site.py` 生成，不直接编辑 |
+| 站点生成物 | `site/*.html`、`site/research/*.html`、`site/real_audio/`、`site/room_audio/`、`site/gss_audio/`、`site/moving_audio/`、`site/tracking_audio/`、`site/noise_audio/`、`site/channel_audio/`、`site/scenario_audio/`、`site/weighted_audio/`、`site/response_audio/`、`site/binaural_audio/`、`site/spectral_audio/`、`site/stft_audio/`、`site/sweep_audio/`、`site/geometry_audio/`、`site/baseline_audio/`、`site/focus_audio/`、`site/reflection_audio/`、`site/derivative_audio/`、`site/phase_audio/`、`site/binaural_beamforming_audio/`、`site/apa_audio/`、`site/reference_audio/`、`site/delay_audio/`、`site/css_audio/`、`site/mint_audio/`、`site/mask_audio/`、`site/imaging_audio/`、`site/distributed_audio/` | 16 篇当前教程、4 个旧路径兼容页面、6 篇研究手册页面与真实录音、独立合成实验的媒体副本 | 由 `build_site.py` 生成，不直接编辑 |
 | 本次验收证据 | `reviews/2026-10-05-*.json`、`reviews/2026-10-05-human-listening-register.csv` | 发布音频技术检查、未执行真人计划/登记、可选测试与公式/浏览器验收的日期快照 | 实际结果与未执行条件分开；这些是注明日期的证据，不自动宣称未来修改后的资产已验收 |
 | 合订生成物 | `dist/combined.html`、`dist/microphone-array-tutorial.pdf` | 合订 HTML 和 PDF | 由 `build_pdf.py` 生成，不直接编辑 |
 
@@ -120,6 +121,7 @@
 .venv/bin/python -m codes.chapters.ch04.examples.generate_focus_audio  # 独立已知酉聚焦音频
 .venv/bin/python -m codes.chapters.ch05.examples.generate_derivative_audio  # 独立三麦导数约束音频
 .venv/bin/python -m codes.chapters.ch05.examples.generate_phase_audio  # 三份已知相位PCM；--check只读
+.venv/bin/python -m codes.chapters.ch05.examples.binaural_beamforming_demo --write  # 四份双声道PCM；--check只读
 .venv/bin/python -m codes.chapters.ch06.examples.generate_apa_audio  # 独立有色参考APA训练/留出音频
 .venv/bin/python -m codes.chapters.ch06.examples.generate_reference_audio  # 六份已知播放增益/尾声WAV；--check严格只读
 .venv/bin/python -m codes.chapters.ch07.examples.mint_teaching_demo  # 独立已知路径逆与正则权衡六WAV
@@ -707,7 +709,7 @@ MathJax 公式统一缩到明显小于相邻正文；优先拆行、使用 `alig
 | 构建脚本或依赖 | 运行受影响命令及最小回归；检查退出状态和输出文件 | 命令正常结束；输出完整；未引入无关依赖或文件变化 |
 
 当前完整构建的基线是 80 张编号 PNG 和 1 张房间补图、16 个当前教程页面（首页加15篇）、4 个旧路径兼容页面与 6 个研究手册页面（共26页），以及 PDF 的 16 个章级、151 个节级、
-740 个子节级书签，共 907 个大纲项。子节级书签来自第 1～11 章、扩展专题Ⅰ/Ⅱ与附录 A/B；各篇独立数量见 `scripts/quality_check.py` 的显式清单。
+743 个子节级书签，共 910 个大纲项。子节级书签来自第 1～11 章、扩展专题Ⅰ/Ⅱ与附录 A/B；各篇独立数量见 `scripts/quality_check.py` 的显式清单。
 质量门禁应从独立的发布清单或显式常量读取这些基线，不能只从待检 Markdown 动态生成“期望值”
 再自我比较。构建后应核对数量和名称。若本次任务改变章节或图表结构，先更新发布清单、README 和本节，
 再按新值验收，不能为了通过检查保留过期数字。

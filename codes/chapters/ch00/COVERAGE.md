@@ -69,7 +69,7 @@
 | §4.2 | GCC-PHAT 与物理 lag 裁剪 | 本仓库可运行基线 | `codes/chapters/ch04/core/doa.py::gcc_phat` | 静音、麦序、带宽与多峰；互谱阈值相对本麦对峰值 |
 | §4.2 | GCC 峰三点亚采样插值 | 本仓库可运行基线 | `codes/chapters/ch04/core/doa.py::gcc_phat` 插值选项 | 不能创造窄带缺少的信息 |
 | §4.3；附录 B 第 16 题 | 远场 SRP-PHAT | 本仓库可运行基线 | `codes/chapters/ch04/core/doa.py::srp_phat`；`codes/chapters/appendix_b/examples/room_srp_exercise.py` 在六个固定房间输入上执行 | 逐帧PHAT后平均、等权正频点直接相位求和，非完整irfft查表；全零或仅直流输入拒绝给出方向；六点结果不代表跨房间失效率 |
-| §4.7.1；研究扩展：空间 §8 | 近场三维 SRP | 原理索引 | 正文球面传播与角度—距离网格；空间研究 §8 的版本边界 | 锁定 pyroomacoustics 0.10.0 未将 `mode/r` 接入有效导向和距离网格，不能作为该变体实现 |
+| §4.7「近场模型失配」；研究扩展：空间 §8 | 近场三维 SRP | 原理索引 | 正文球面传播与角度—距离网格；空间研究 §8 的版本边界 | 锁定 pyroomacoustics 0.10.0 未将 `mode/r` 接入有效导向和距离网格，不能作为该变体实现 |
 | §4.3；研究扩展：空间 §9 | 分层 SRP 搜索 | 外部参考实现 | `odas`：`src/module/mod_ssl.c`、`src/signal/scan.c` | 粗层丢峰不能由细层恢复 |
 | 研究扩展：空间 §9 | 方向性麦对筛选 | 外部参考实现 | `odas`：`src/signal/spatialindex.c` 与配置 | 设备指向性及有效麦对 |
 | 研究扩展：空间 §10 | SVD-PHAT | 原理索引 | 原论文与低秩实验设计 | 未确认唯一且许可明确的作者实现 |
@@ -133,6 +133,8 @@
 | §5.4.1 | 特征空间波束 | 原理索引 | Chang–Yeh 1992；空间研究 §22 | 子空间维数/高SNR/导向投影；未取得作者完整实现 |
 | §5.4.1 | 干扰加噪声协方差重构 | 原理索引 | Gu–Leshem 2012；空间研究 §22 | 排除目标角域与流形假设；Capon函数不是完整重构算法 |
 | §5.5 | LCMV 闭式权重 | 本仓库可运行基线 | `codes/chapters/ch05/core/beamforming.py::lcmv_weights`；`codes/chapters/ch05/beamformer_common_input_demo.py` | 约束独立性、残差 |
+| §5.5、E05-25～27 | 双耳 MVDR／双耳 LCMV | 本仓库可运行基线 | `ch05/examples/binaural_beamforming_demo.py`、四份同增益双声道 PCM16 | 已知三麦分量；定向复比、背景相干与残余功率分开；非盲估计、宽带系统或真人听测 |
+| §5.5、空间研究的双耳输出 | openMHA 左右预计算滤波 | 外部参考实现 | `openmha` 的固定示例配置、`acSteer` 与 `steerbf` | AGPL-3.0 选集取得及静态核验；未运行插件，不声称实时 BLCMV 求解 |
 | §5.5 后的 Frost 专题 | Frost 投影自适应 | 原理索引 | 正文时域投影更新；E05-10实际计算一步 | 由 LCMV 约束出发；一步约束核对不是完整在线Frost实现 |
 | §5.6 | GSC 阻塞矩阵 | 本仓库可运行基线 | `codes/chapters/ch05/core/beamforming.py::blocking_matrix` | 不含持续自适应抵消支路 |
 | §5.6；E05-16 | 单参考复数 GSC NLMS 状态更新 | 本仓库可运行基线 | `codes/chapters/ch05/core/gsc.py::ScalarGSCNLMS`；`codes/chapters/ch05/chapter05_experiments.py` | 给定固定/阻塞输出，跨块、冻结和复位；不含方向估计、自动SPP或多抽头滤波器组 |
@@ -238,7 +240,7 @@
 | 增强研究两阶段去混响 | 输出端PSD训练WPE与单通道维纳后滤 | 原理索引 | 2sderev作者2023论文及官方补充；研究 `#two-stage-dereverb` | 有限滤长残余；HA前40ms/CI16ms目标不同，训练代码未公开、源码许可未核，不取得代码/模型 |
 | §7.10；增强研究 W09 | MetaAF 学习 WPE 滤波器更新 | 外部参考实现 | `metaaf`：`zoo/wpe/wpe.py`、`zoo/wpe/wpe_eval.py`；核心优化器在 `metaaf/` | 固定源码选集已取得，zoo 采用独立非商业许可；未训练、未载入模型、未复现质量指标 |
 | §7.10；增强研究 W09 | VACE-WPE 虚拟通道估计与任务特定前端 | 外部参考实现 | `tso_vace_wpe`：`vace_wpe.py`、`torch_custom/wpe_th_utils.py`、`torch_custom/neural_wpe.py` | MIT 固定源码与直接依赖选集；未取模型和语料，未训练/推理或核验 ASV 性能 |
-| §7.8；E07-22～24 | 已知到达下的源时刻与单历史回归控制 | 本仓库可运行基线 | `codes/chapters/ch07/core/prediction_delays.py`、`core/delay_audio.py`及六PCM生成/核验；图75 | 已知整数到达、一个实数回归、共同接收时轴；不估计时差，不是完整STFT/跨频WPE；T60题仅自由功率衰减换算 |
+| §7.6；E07-22～24 | 已知到达下的源时刻与单历史回归控制 | 本仓库可运行基线 | `codes/chapters/ch07/core/prediction_delays.py`、`core/delay_audio.py`及六PCM生成/核验；图75 | 已知整数到达、一个实数回归、共同接收时轴；不估计时差，不是完整STFT/跨频WPE；T60题仅自由功率衰减换算 |
 | 增强研究W10；`#rir-encoder-candidate` | RIR对比嵌入辅助编码器 | 外部参考实现 | `rir-encoder`：`network.py`、`data_module.py`、`loss_fn.py`、`train.py`、`embedding_extraction.py` | 作者MIT固定八文本已取得，顶层训练有写入；未装依赖/取权重/运行，非论文完整FiLM-SGMSE恢复管线 |
 | 增强研究W10；`#usdnet-plus-candidate` | USDnet++混合与SPD重构弱监督 | 原理索引 | Pang等Interspeech2026，DOI10.21437/Interspeech.2026-2044，原§3～4式3～15 | WPE/WPD结果仍非干净真值；FCP可含未来与全句求解，二模型另计；未核可许可作者整链实现/权重/运行 |
 | §7.2 | 离线单/多通道 WPE | 本仓库可运行基线 | `codes/chapters/ch07/core/dereverberation.py::offline_wpe`；外部对照 `nara_wpe`；`btk20`：`btk20_src/dereverberation/dereverberation.cc`、`.h` | 保护延迟、有效历史、相对加载；BTK20 的通道功率与加载不同，见研究 W08；数值对照见 W01/W11；BTK20 仅静态核对，未构建整链 |
@@ -246,7 +248,7 @@
 | §7.4；研究扩展：增强 W03 | 块在线/递推 WPE | 外部参考实现 | `nara_wpe`：`nara_wpe/tf_wpe.py` | TF 固定版权重 .7 乘当前块；块内估计后处理本块，非逐帧因果；静态核对见 W03 |
 | §7.10；增强研究NeMo接口 | NeMo幅度掩码多轮WPE | 外部参考实现 | `nemo_wpe`：`masking.py::MaskBasedDereverbWPE`、`multichannel.py::WPEFilter`（精确路径见锁表） | 固定v2.4.0仅AST静态核验；迭代输入、长度屏蔽与trace加载不同，未执行Torch |
 | §7.10 | DNN-WPE | 外部参考实现 | `espnet`：`espnet2/enh/layers/dnn_wpe.py`、`wpe.py`、`mask_estimator.py` | 配置值须追到实际求解器；固定版部分成员未传入，填充帧统计亦需核对；静态结果见 W04/W11 |
-| §7.10 | WPD | 外部参考实现 | `espnet`：`espnet2/enh/layers/beamformer.py` WPD 分支及同目录的 `beamformer_th.py`、`dnn_beamformer.py` | 当前约束、延迟历史与功率；源码入口核对不代表整链运行 |
+| §7.6 | WPD | 外部参考实现 | `espnet`：`espnet2/enh/layers/beamformer.py` WPD 分支及同目录的 `beamformer_th.py`、`dnn_beamformer.py` | 当前约束、延迟历史与功率；源码入口核对不代表整链运行 |
 | 研究扩展：增强 W06 | AR-FastMNMF | 原理索引 | `fastmnmf_author`：`src/` 受限来源索引 | 学术研究限制，未纳入通用源码集合 |
 | §8.5 | SI-SDR | 本仓库可运行基线 | `codes/chapters/ch08/core/separation.py::si_sdr` | 零均值、零能量、参考目标 |
 | §8.5 | 小源数 PIT 排列枚举 | 本仓库可运行基线 | `codes/chapters/ch08/core/separation.py::pit_permutation` | 阶乘成本，不是长期身份关联 |

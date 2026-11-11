@@ -10,7 +10,7 @@
 
 ## 完整重生成顺序
 
-已有发布资产可直接核验和构建。需要从生成源重建时，先运行主清单与以下26套独立数学合成生成器，再绘图。第27套房间仿真及DEMAND真实数据按后文独立流程处理，不能用普通生成命令覆盖旧房间或取得未固定录音。
+已有发布资产可直接核验和构建。需要从生成源重建时，先运行主清单与以下27套独立数学合成生成器，再绘图。第28套房间仿真及DEMAND真实数据按后文独立流程处理，不能用普通生成命令覆盖旧房间或取得未固定录音。
 
 ```bash
 .venv/bin/python -m codes.chapters.ch00.examples.generate_audio_samples  # 主27组109WAV
@@ -24,6 +24,7 @@
 .venv/bin/python -m codes.chapters.ch04.examples.generate_focus_audio  # 4 WAV：focus_audio
 .venv/bin/python -m codes.chapters.ch05.examples.generate_derivative_audio  # 4 WAV：derivative_audio
 .venv/bin/python -m codes.chapters.ch05.examples.generate_phase_audio  # 3 WAV：phase_audio
+.venv/bin/python -m codes.chapters.ch05.examples.binaural_beamforming_demo --write  # 4 WAV：binaural_beamforming_audio
 .venv/bin/python -m codes.chapters.ch06.examples.generate_apa_audio  # 6 WAV：apa_audio
 .venv/bin/python -m codes.chapters.ch06.examples.generate_reference_audio  # 6 WAV：reference_audio
 .venv/bin/python -m codes.chapters.ch07.examples.generate_delay_audio  # 6 WAV：delay_audio
@@ -57,7 +58,7 @@
 
 上面的日期为明确的封面日期示例，正式构建按出版日期设置或使用 `SOURCE_DATE_EPOCH`。这些参数不保证字体、Chrome或PDF时间元数据跨环境逐字节相同。Windows将 `.venv/bin/python` 换成 `.venv\Scripts\python.exe`。
 
-全部27套清单、样本数和模型边界见[代码音频目录](../codes/chapters/README.md#audio-inventory)。普通生成器均支持只读 `--check`；房间与真实数据检查另用：
+全部28套清单、样本数和模型边界见[代码音频目录](../codes/chapters/README.md#audio-inventory)。普通生成器均支持只读 `--check`；房间与真实数据检查另用：
 
 ```bash
 .venv/bin/python -m codes.chapters.appendix_b.examples.check_room_assets
@@ -88,9 +89,9 @@
 | `make_tracking_figures.py` | 图77：先严格只读核实际PCM，计算单槽生命周期及可用/状态龄期；12真实源与3输入摘要、全部197行/5事件独立验收 | `figures/fig77_tracking_lifecycle.png`及第9章数值报告 |
 | `make_channel_figures.py` | 图78：先只读核六已知坏麦PCM与清单，分开目标响应、总NMSE与128点波形；9真实源及7输入摘要 | `figures/fig78_channel_failure.png`和第10章数值报告 |
 | `make_selection_figures.py` | 图79：同一已知三麦模型的DS/三加载MVDR，实际噪声与另模型DI分开，声学两硬条件及设备证据三态；8真实源 | `figures/fig79_selection_evidence.png`和`ch11/reports/figure79_selection_evidence.json`；无新音频 |
-| `quality_check.py` | 发布门禁。用独立基线检查 16 篇/151 节/740 个指定子节/80 图，核对图号、alt、公式编号与引用、小节语义链接、PNG 绘图脚本摘要、网页导航和 PDF 三级书签。确定性问题阻断发布，高风险口语只提醒人工复核 | 通过、失败清单，以及不阻断发布的人工复核与可访问性提示 |
+| `quality_check.py` | 发布门禁。用独立基线检查 16 篇/151 节/743 个指定子节/80 图，核对图号、alt、公式编号与引用、小节语义链接、PNG 绘图脚本摘要、网页导航和 PDF 三级书签。确定性问题阻断发布，高风险口语只提醒人工复核 | 通过、失败清单，以及不阻断发布的人工复核与可访问性提示 |
 
-360 道稳定编号的代码题可从各章入口复算，例如：
+363 道稳定编号的代码题可从各章入口复算，例如：
 
 ```bash
 .venv/bin/python -m codes.chapters.ch04.chapter04_experiments
@@ -139,7 +140,7 @@
 
 **发布与验收说明**
 
-**书签与人工抽查**：合订本 PDF 顶层是导读、13 章正文（含两篇扩展专题）和 2 篇附录，第二层来自各篇实际小节；第 1～11 章、两篇扩展专题与附录共有 740 个源 h4 作为第三级书签，并保持在各自父节之下。
+**书签与人工抽查**：合订本 PDF 顶层是导读、13 章正文（含两篇扩展专题）和 2 篇附录，第二层来自各篇实际小节；第 1～11 章、两篇扩展专题与附录共有 743 个源 h4 作为第三级书签，并保持在各自父节之下。
 
 书签使用 HTML 标题 id 对应的 PDF 命名目标，保留页内定位。命名目标缺失、越界或同名却指向不同位置时构建失败；发布门禁独立比较每项书签与正文目标的页码及视图参数。目录和正文可能出现同名标题，仅检查落页文字不能识别误跳到目录的问题。
 
@@ -167,7 +168,7 @@ Chrome遗留的排版空格只在严格证明后加Layout标记：未处于现�
 
 纯SVG公式不一定进入普通文字提取结果。空页/少字页检查仅在真实Formula父树、唯一MCID、同一ActualText和实际绘制均吻合时补入公式结构说明；120字符启发阈值保持。这是正文存在性检查，不测纸面占用面积。标题须整块排版，成像两格手算的输入、计算与结论保持同页；实际长标题拆页和大图造成的留白仍须按成品目视判断，不能靠补充语义文本放行。
 
-**独立结构基线**：发布门禁的独立结构基线为 16 个顶级书签、151 个二级书签、740 个三级书签，共 907 个大纲项，以及图 1～80。它还检查图号与 alt、公式编号与引用、小节语义链接、每个源 h2/h3/h4 标题是否真的出现在当前页导航中（源 h1 可排除），以及 PNG 中的 `SourceScript` 和完整 `SourceScriptDigest`。
+**独立结构基线**：发布门禁的独立结构基线为 16 个顶级书签、151 个二级书签、743 个三级书签，共 910 个大纲项，以及图 1～80。它还检查图号与 alt、公式编号与引用、小节语义链接、每个源 h2/h3/h4 标题是否真的出现在当前页导航中（源 h1 可排除），以及 PNG 中的 `SourceScript` 和完整 `SourceScriptDigest`。
 
 修改绘图脚本后未重画的 PNG 会使门禁失败；高风险口语命中只输出人工复核提示。
 

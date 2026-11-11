@@ -2537,6 +2537,38 @@
       ],
       "verified_at": "2026-10-05",
       "note": "Chardon, Picheral and Ollivier author reference linked by DOI 10.5281/zenodo.4609267. Twenty-one GPLv3 text files (74510 bytes at the fixed commit); retain the complete root LICENSE and source notices. No three MAT datasets or precompiled MEX binaries selected, no MATLAB/MEX execution, no author benchmark or Acoular package run. Original Python solver limitations are preserved and discussed separately; acquired source does not prove runtime correctness or permit relicensing."
+    },
+    {
+      "id": "openmha",
+      "url": "https://github.com/HoerTech-gGmbH/openMHA.git",
+      "revision": "0b9f087e514f9cc0a901fcde9db17de35f9ec438",
+      "release": "v4.18.1",
+      "license": "AGPL-3.0",
+      "fetch_enabled": true,
+      "scope": "Fixed four-input, two-output hearing-aid beamformer configuration, bundled numeric filter table, acSteer and steerbf source",
+      "acquisition": "independent_source_checkout",
+      "source_paths": [
+        "COPYING",
+        "README.md",
+        "examples/06-binaural-beamformer/beamformer.cfg",
+        "examples/06-binaural-beamformer/MVDR_iso_norm_bte_16KHz_4ch_lr_FFT512_-180-5-180.txt",
+        "mha/plugins/acSteer/Makefile",
+        "mha/plugins/acSteer/acSteer.cpp",
+        "mha/plugins/acSteer/acSteer.h",
+        "mha/plugins/steerbf/Makefile",
+        "mha/plugins/steerbf/steerbf.cpp",
+        "mha/plugins/steerbf/steerbf.h"
+      ],
+      "entrypoints": [
+        "COPYING",
+        "README.md",
+        "examples/06-binaural-beamformer/beamformer.cfg",
+        "examples/06-binaural-beamformer/MVDR_iso_norm_bte_16KHz_4ch_lr_FFT512_-180-5-180.txt",
+        "mha/plugins/acSteer/acSteer.cpp",
+        "mha/plugins/steerbf/steerbf.cpp"
+      ],
+      "verified_at": "2026-11-11",
+      "note": "Official annotated tag v4.18.1 resolves to the pinned commit. Retain the root AGPLv3 text and the original file notices. The selected numeric table is the filter data shipped with this example, not the underlying HRIR corpus. Do not copy the example WAV, HRIR database, runtime binaries, or other assets into the selected checkout or the tutorial Git history. No build, plugin execution, recorded-data test or embedded-device validation."
     }
   ]
 }

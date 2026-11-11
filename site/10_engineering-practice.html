@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 10 章 · 工程实现、评测与产业实践 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="759b4238ac3b"><style>
+<meta name="source-digest" content="1a85da73ba06"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -539,7 +539,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 </tr>
 </tbody>
 </table></div>
-<p>同一帧内有多个模块串行执行时，它们的计算时间要相加；并行分支取耗时最长的关键分支；流水重叠的等待只沿关键路径计一次。在线 WPE 只使用历史帧时，本身不需要未来帧，但其分帧、平滑和实现缓冲仍可能产生延迟。</p>
+<p>同一帧内有多个模块串行执行时，它们的计算时间要相加；并行分支取耗时最长的关键分支；流水重叠的等待只沿关键路径计一次。先预测后更新的在线 WPE 用历史帧预测，再用当前观测减去预测；这一步不要求未来帧。分帧、功率平滑和实现缓冲仍可能产生延迟。</p>
 <p>先从数据依赖求完成时刻。设模块 $v$ 的输入全部就绪时刻为 $r_v$、完成时刻为 $c_v$、服务耗时为 $s_v$，均以秒计；$\mathcal P(v)$ 是直接前驱集合。在没有资源竞争、无需额外等待的理想调度中，</p>
 <p>$$
 \begin{aligned}
@@ -621,7 +621,7 @@ $$</p>
 <td class="tutorial-short-column" style="--tutorial-column-width:10em">定位/追踪</td>
 <td class="tutorial-short-column" style="--tutorial-column-width:12em">波束或应用需要方向/轨迹</td>
 <td class="tutorial-short-column" style="--tutorial-column-width:14em">多通道特征、活动状态、测量时间</td>
-<td class="tutorial-short-column" style="--tutorial-column-width:14em">坐标系、测量/发布时间、状态与协方差、活动/存在概率、轨迹 ID 与有效期</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:14em">坐标系、测量/状态所属/发布时间、状态与协方差、活动/存在概率、轨迹 ID 与有效期</td>
 <td class="tutorial-short-column" style="--tutorial-column-width:14em">坐标变换、过期外推、漏检/虚警、ID 生命周期；接口细节见 §9.4</td>
 </tr>
 <tr>
@@ -642,7 +642,7 @@ $$</p>
 <td class="tutorial-short-column" style="--tutorial-column-width:10em">解析波束形成</td>
 <td class="tutorial-short-column" style="--tutorial-column-width:12em">需要将空间统计转换为目标音轨</td>
 <td class="tutorial-short-column" style="--tutorial-column-width:14em">同一阶段的多通道 STFT；目标/干扰 SCM 或导向矢量</td>
-<td class="tutorial-short-column" style="--tutorial-column-width:14em">每目标的增强信号及波束权重</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:14em">每目标的增强信号、波束权重及其实际生效时刻</td>
 <td class="tutorial-short-column" style="--tutorial-column-width:14em">导向失配、协方差病态和目标泄漏；方向状态只控制需要方向的波束</td>
 </tr>
 <tr>
@@ -1189,7 +1189,7 @@ $$</p>
 <p>词错误率（Word Error Rate，WER）的多输出变体各有约定：拼接最小排列词错误率（Concatenated minimum-Permutation Word Error Rate，cpWER）、最优参考组合词错误率（Optimal Reference Combination Word Error Rate，ORC-WER）和说话人归属词错误率（Speaker-Attributed Word Error Rate，sa-WER）不能只凭“多路转写”互换，选型时应核对排列和身份评分规则。</p>
 <p>OSPA 把定位误差与目标数量错误合成一个集合距离；经典 OSPA 本身不保留身份标签，因此不能用它代替轨迹身份切换指标。报告还应给出轨迹中断/碎片数、ID 切换和关联规则，而不是用一个集合距离覆盖全部时序失败。</p>
 <p>ITU-T 已于 2024 年 1 月 5 日撤销 <a href="https://www.itu.int/rec/T-REC-P.862/en" title="citation">P.862（PESQ）</a>，并在官方页面指向 <span style="white-space: nowrap"><a href="https://www.itu.int/rec/T-REC-P.863/en" title="citation">P.863（POLQA）</a>。</span>因此，PESQ 适合在必须对照旧论文时按原条件复现；新的标准合规性表述不应把 P.862 写成现行建议书。P.863 是现行的客观语音质量建议书，但其适用范围和版本仍需随正式报告记录。</p>
-<p><a href="https://www.itu.int/rec/T-REC-P.835/en" title="citation">ITU-T P.835（07/2026）</a>用于对含噪语音处理系统做主观听测，分别评价语音信号（Signal，SIG）、背景噪声（Background，BAK）和总体效果（Overall，OVRL）。截至 2026-09-22，官方条目状态为“生效，预发布”（in force, prepublished）；三维评分的用途可见<a href="https://www.itu.int/itu-t/workprog/wp_item.aspx?isn=20844" title="citation">官方工作项目说明</a>。</p>
+<p><a href="https://www.itu.int/rec/T-REC-P.835-202607-I/en" title="citation">ITU-T P.835（07/2026）</a>用于对含噪语音处理系统做主观听测，分别评价语音信号（Signal，SIG）、背景噪声（Background，BAK）和总体效果（Overall，OVRL），见<a href="https://www.itu.int/dms_pubrec/itu-t/rec/p/T-REC-P.835-202607-I!!SUM-HTM-E.htm" title="citation">该版官方摘要</a>。官方条目列出 2026-10-29 发布的正式文本下载项（需要 TIES 访问权限），并另列可免费获取的软件。</p>
 <p>它适合区分“噪声是否减弱”和“语音是否受损”，但不能直接评价 DOA、轨迹身份或空间位置。正式报告应写明标准版本、听测材料、听众筛选、播放设备和统计区间。</p>
 <p><a href="https://www.itu.int/rec/T-REC-P.566/en" title="citation">ITU-T P.566（07/2026）</a>的官方条目将其列为“已生效，待发布”（in force / to be published）的单端机器学习多维语音质量模型。在正式文本发布前，本书不从二手资料扩写输出维度或评分细则。P.566 的单端客观预测不能代替 P.835 主观听测，也不评价 DOA、轨迹或空间位置。</p>
 <p>公开评分代码可帮助固定执行口径。DNS Challenge 的 <code>DNSMOS/dnsmos_local.py</code> 提供本地质量预测，AEC Challenge 的 <code>AECMOS/AECMOS_local/</code> 提供回声相关评分；前者还区分普通和个性化模式。需要同时锁定模型摘要、采样率、裁段、短文件处理与聚合方式。模型预测分不是实际听众 MOS，也不能代替任务识别指标。<a href="https://github.com/microsoft/DNS-Challenge/tree/591184a9fcb2cbdec02520fed81a32bbbf9d73ff/DNSMOS" title="citation">DNSMOS 本地说明</a>、<a href="https://github.com/microsoft/AEC-Challenge/tree/6c633d0a9d2a143a0e364899b91b06f127315b18/AECMOS" title="citation">AECMOS 本地说明</a></p>
@@ -1314,7 +1314,8 @@ $$</p>
 <p>球阵的可用球谐阶数同时受空间采样、阵列半径、频率和模态噪声放大限制。这里 $\kappa=2\pi f/c$ 是波数，$r$ 是球阵半径，$\kappa r$ 是无量纲频率。</p>
 <p>表示到 $N$ 阶的完整球谐系数共有 $(N+1)^2$ 个，因此离散阵元数至少要能支撑相应的空间采样；实际还要留出几何和数值稳定性余量。</p>
 <p>可用阶数在高频受阵元空间混叠限制，在低频又受 $\kappa r$ 较小和径向滤波噪声放大限制。不能用 $N=\lceil\kappa r\rceil+1$ 一条式子替代完整设计，也不能把“某阶需要多少系数”直接等同于任意摆放的同数麦克风一定可用。</p>
-<p>三个非共点麦克风已经构成阵列。若几何非共线，它们能提供二维空间信息；若接近共线，则某些方向存在镜像或条件数问题。手机的主要限制通常是孔径小、结构遮挡和工作模式变化，而不是“三麦构不成阵列”。</p>
+<p>三支不共线的麦克风提供两条独立基线，可以从远场时差恢复入射方向在阵列平面内的两个分量。在完整三维空间中，阵列平面两侧互为镜像的方向却有相同的平面投影。即使两条基线正交，三支理想全向麦的时差也不能判定声源在哪一侧；已知声源位于同一侧，或增加一支不在该平面内的麦克风，可以消除这里的镜像歧义。</p>
+<p>例如以米为单位，麦克风位置为 $(0,0,0)$、$(0.04,0,0)$、$(0,0.04,0)$。方向 $(0.3,0.4,\pm\sqrt{0.75})$ 都是单位向量，与两条基线的内积都是 0.012 m、0.016 m。换算成相对时延时，无论采用哪一种一致的到达符号，两个方向得到的时延对都相同。接近共线是另一个问题：两条基线近乎平行，从有误差的时差反推平面分量会更不稳定。手机还常受到孔径小、结构遮挡和工作模式变化的限制。</p>
 <span id="sec-20" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-10-9">10.9 从模型到设备</h2>
 <p>部署前先固定输入尺寸、算子版本、量化方式和线程配置，再测算力与内存。模型参数从 32 位浮点量化到 8 位整数时，参数存储在理想情况下约缩小四倍；端到端速度取决于硬件是否有相应整数内核、访存和算子融合，不能据此承诺“快四倍”。</p>
 <p>低功耗常驻任务和高算力按需任务可以分开：例如 KWS 在低功耗处理器上运行，唤醒后再启动 ASR 或分离网络。但 AEC、波束、WPE 是否常驻取决于是否需要持续边播边听、录音或通话，不应把“唤醒前关闭完整前端”写成固定方案。</p>
@@ -1473,7 +1474,7 @@ $$</p>
 </tbody>
 </table></div>
 <p>每个验收阈值都应包含测量条件、统计量和样本量。例如“角误差小于 5°”还要说明声源角度分布、距离、房间、信噪比，以及该数值是均值还是某个分位数。教程中的算例只能用于验证计算，不能直接作为产品验收阈值。</p>
-<p>在线监控应记录足以定位故障、但不默认保存原始语音的字段。本书给出的 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch10/engineering/telemetry_schema.json"><code>telemetry_schema.json</code></a> 采用以下口径；它是最小示例，不含用户身份、转写文本或原始音频。</p>
+<p>在线监控应记录足以定位故障的最少字段，默认不保存原始语音。本书给出的 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch10/engineering/telemetry_schema.json"><code>telemetry_schema.json</code></a> 声明的示例字段见下表，其中没有用户身份、转写文本或原始音频。这个示例允许额外字段，通过校验并不证明记录里没有敏感内容；实际系统应在日志生成端只从获准字段中取值，再按 §10.6 约束访问和保留。</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
 <thead>
 <tr>
@@ -1535,6 +1536,9 @@ $$</p>
 <li>截断或 NaN 模型输出用于检查旁路和重置。</li>
 </ul>
 <p>每次试验都要记录注入位置、持续时间、期望状态转换和恢复时间，不能只确认进程没有崩溃。教学接口会拒绝非有限阈值、非整数容量和非有限输入，不将这些输入静默转成有效音频；设备上的旁路或停流策略则要由系统接口另行定义。</p>
+<p><strong>把回声、方向和输出放到同一条时间轴上。</strong> 可先离线准备一段共用 16 kHz 时钟的三麦控制记录。保存各麦的干净近端分量、播放参考及其卷积产生的回声，再相加得到混合输入。安排只播放、只说话及同时发生的区间；在同时发生的区间只改一次播放增益，保持近端方向和回声路径不变。先按 <a href="06_aec.html#e06-40">E06-40</a> 核对卷积前后的增益取点，再按同一采样区间比较 AEC 残差与干净近端参考。</p>
+<p>然后让定位接收 AEC 残差，把方向估计交给追踪和波束形成。保存方向所属的采集样本和该结果实际可用的样本。以 16 kHz 为例，状态对应样本 3200、到样本 3840 才发布，相差 $(3840-3200)/16000=40$ ms；若在样本 4000 使用它，状态已经有 50 ms 历史，虽然发布仅过去 10 ms。假设接口规定状态最多可用 45 ms，样本 4000 应触发预先选好的回退策略；这个阈值只用于检查逻辑，真实设备应按允许的转向误差设定。参见 <a href="09_source-tracking.html#sec-u-a202b27fd4">E09-08</a> 的时钟对照。</p>
+<p>用同一混合输入分别检查三个条件：使用真值方向、使用当时确实可用的方向、使用超过有效期的方向。先读 AEC 残差，再读定位偏差、方向过期事件和波束输出相对干净参考的误差；这样才能判断是参考取点错了、方向被回声带偏，还是接口沿用了旧结果。这个离线联调方案可复用前几章的单模块练习；声卡缓冲、真实回声路径、拾音位置和用户听感仍需在目标设备上分别测量。</p>
 <p>常见故障可按依赖关系缩小范围：</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
 <thead>

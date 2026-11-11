@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 1 章 · 问题定义与双耳启示 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="759b4238ac3b"><style>
+<meta name="source-digest" content="1a85da73ba06"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -550,6 +550,7 @@ $$</p>
 <p>机器阵列不能照搬人的这条纯音实验界限。以 2 kHz 纯音为例，一个周期是 $1/2000=0.0005$ 秒，即 $500\ \mu\mathrm{s}$。延迟 $100\ \mu\mathrm{s}$ 与延迟 $600\ \mu\mathrm{s}$ 相差一个完整周期，对无限持续的这个纯音产生相同的相位；只有在几何允许两种时延时，二者才同时构成候选。由相位绕圈产生的数学歧义，与听觉神经对快速细结构的锁相能力下降，是两件不同的事。</p>
 <p><strong>双耳相位差（Interaural Phase Difference，IPD）</strong>比较同一频率的左右相位，本章同样采用右减左。对两耳谱值都非零的纯延迟模型，右减左相位为 $2\pi f\tau$，只在相差整数个 $2\pi$ 时视为同一相位，且 $\tau=t_L-t_R$。</p>
 <p>于是 2 kHz 下，$360^\circ\times2000\times0.0001=72^\circ$，而 $360^\circ\times2000\times0.0006=432^\circ$；减去一整圈 $360^\circ$ 后仍是 $72^\circ$。这项相位计算没有为两个时差增添新的区分信息。17.5 cm 的无遮挡双点最大时差只有约 510 μs，因此 600 μs 不属于该特定几何的候选。</p>
+<p>再看一对没有被几何上限排除的候选：在同一无遮挡双点模型中，$+450\,\mu\mathrm{s}$ 和 $-50\,\mu\mathrm{s}$ 都合法，相差也恰好是 2 kHz 的一个周期。它们的右减左相位分别为 $324^\circ$ 和 $-36^\circ$，主值相同，但时差符号相反。若同一传播时差也作用于有足够能量的 1 kHz 分量，两者的相位分别变为 $162^\circ$ 和 $-18^\circ$，这一频点就能区分它们。判断时要同时检查：相位是否相同、候选时差是否落在几何允许范围内，以及其他频点是否提供了独立约束。</p>
 <p>一般滤波响应还会改变相位，不能直接把任意 IPD 除以 $2\pi f$ 当作传播 ITD；正式复比定义及失效例见本章 E01-10，傅里叶时移正号见<a href="02_basics-signal-model.html#sec-2-3">§2.3</a>。</p>
 <p>对机器而言，相位歧义还取决于麦间距和几何。宽带信息、非均匀阵列或实测阵列响应可以提供额外约束，但不是自动消除歧义的保证（§2.6、§3.2）。准备好时，可继续复算<a href="04_doa-estimation.html#sec-u-56493f2d40">第 4 章 E04-18 的纯音与多频对照</a>，参数及试听见<a href="research/05_exercises_and_audio.html#26-纯音的时差歧义与宽频相位约束">音频实验总览第 26 节</a>。</p>
 <h3 id="sec-u-dff9e8c5a2">方向相关频谱与头相关传递函数</h3>
@@ -599,6 +600,7 @@ $$</p>
 </tbody>
 </table></div>
 <p>硬件形状决定能观测到哪些差异，算法决定怎样利用这些差异。增加麦克风数量、改变外壳或采用学习方法，都需要检查输入信息、模型假设与失效情况，不能只凭方法名称推断效果。第 2 章将从传播时延出发，把这些差异写成完整阵列信号模型。</p>
+<p>还要先决定输出给谁用。语音识别前端常把多只麦克风合成一条增强音轨；听者用耳机判断声源方位时，左右两路及其相互关系本身也是要交付的信息。若把同一条增强音轨原样送入两耳，非零频点的右左复比一律为 1，原来的耳间声级差和相位差都不会留在这对输出里。第 5 章先解释怎样构造一条输出，再讨论怎样检查它对目标和干扰的响应。</p>
 <span id="sec-3" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-f7a201edb9">本章练习</h2>
 <p>E01-01～E01-03 使用 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch00/cross_chapter/exercises_spatial.py"><code>exercises_spatial.py</code></a>；E01-04～E01-10 使用 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch01/chapter01_experiments.py"><code>chapter01_experiments.py</code></a>。均不需下载数据；在仓库根目录运行：</p>
 <pre><code class="language-bash">.venv/bin/python -m codes.chapters.ch00.cross_chapter.exercises_spatial

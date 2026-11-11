@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 5 章 · 波束形成 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="759b4238ac3b"><style>
+<meta name="source-digest" content="1a85da73ba06"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -307,6 +307,9 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="05_beamforming.html#sec-u-bca30faf33">E05-22：局部目标响应改善能保证波形总误差更小吗？</a></li>
 <li>&nbsp;&nbsp;<a href="05_beamforming.html#sec-u-e8fcec5128">E05-23：每个频点的信噪比相同，为什么波形仍会改变？</a></li>
 <li>&nbsp;&nbsp;<a href="05_beamforming.html#sec-u-9dcb5dc891">E05-24：逐通道掩码为什么可能改变协方差的秩？</a></li>
+<li>&nbsp;&nbsp;<a href="05_beamforming.html#sec-u-8687ade082">E05-25：两耳都保留了目标，干扰的位置线索还在吗？</a></li>
+<li>&nbsp;&nbsp;<a href="05_beamforming.html#sec-u-bb0ee14475">E05-26：一个方向的复比保住了，背景也保住了吗？</a></li>
+<li>&nbsp;&nbsp;<a href="05_beamforming.html#sec-u-8c09186fb3">E05-27：把干扰完全消掉，还能评估干扰相位吗？</a></li>
 </ul>
 <div class="chap"><a href="06_aec.html">第 6 章 · 声学回声消除（AEC）</a></div>
 <div class="chap"><a href="07_wpe-dereverberation.html">第 7 章 · 去混响（WPE）</a></div>
@@ -379,6 +382,9 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="05_beamforming.html#sec-u-bca30faf33">E05-22：局部目标响应改善能保证波形总误差更小吗？</a></li>
 <li>&nbsp;&nbsp;<a href="05_beamforming.html#sec-u-e8fcec5128">E05-23：每个频点的信噪比相同，为什么波形仍会改变？</a></li>
 <li>&nbsp;&nbsp;<a href="05_beamforming.html#sec-u-9dcb5dc891">E05-24：逐通道掩码为什么可能改变协方差的秩？</a></li>
+<li>&nbsp;&nbsp;<a href="05_beamforming.html#sec-u-8687ade082">E05-25：两耳都保留了目标，干扰的位置线索还在吗？</a></li>
+<li>&nbsp;&nbsp;<a href="05_beamforming.html#sec-u-bb0ee14475">E05-26：一个方向的复比保住了，背景也保住了吗？</a></li>
+<li>&nbsp;&nbsp;<a href="05_beamforming.html#sec-u-8c09186fb3">E05-27：把干扰完全消掉，还能评估干扰相位吗？</a></li>
 </ul></nav></details>
 <blockquote>
 <p>⚠️ 本篇是教程正文第 5 章（正文共 13 章（其中第 12、13 章为扩展专题），另有附录 A/B），可独立阅读，前后篇见下方导航。</p>
@@ -498,9 +504,9 @@ Q&=\frac{|\vec{w}^H\vec{a}|^2}{\vec{w}^H\mathbf{\Gamma}\vec{w}},\\
 <p>例如两麦对准目标时，未归一化求和得到 2，等权平均得到 1。离开目标方向后，$|B_{\rm DSB}|=\left|\sin(M\psi/2)/(M\sin(\psi/2))\right|$ 随 $\psi$ 变化，形成主瓣、零点和旁瓣。</p>
 </li>
 <li>
-<p>主瓣边缘：第一个零点在 $M\psi/2 = \pi$，即 $\psi = 2\pi/M$。</p>
+<p>阵因子的第一个正零点在 $\psi = 2\pi/M$（$M\ge2$）；只有该相位差对应可见角度时，才能在实测角域找到这个主瓣边缘。$\psi=2\pi n$ 则是所有阵元再次同相，归一化幅度为 1；分式在这里取极限，不能把分子为零当成零陷。</p>
 <p>正横附近用 $\sin\theta\approx\theta$，并把主瓣内离散阵因子近似为连续孔径时，“零点到零点”宽度约为 $2\lambda/(Md)$，半功率宽度约为 $0.886\lambda/(Md)$；斜指向时还要按 §2.6 除以 $\cos\theta_0$。后一个系数是充分大 $M$、正横小角度下的近似值，小阵列应直接从上式数值求半功率点。</p>
-<p>这里的 $Md$ 来自 $M$ 项离散阵因子，不等于阵列首尾的物理跨度 $D=(M-1)d$。用 $\lambda/D$ 表示的是孔径尺度估计；两者只在 $M$ 较大时接近，小阵列中必须说明采用哪一种口径。两种写法都表达同一趋势：阵元数或间距增大、波长减小时，主瓣变窄。</p>
+<p>这里的 $Md$ 来自 $M$ 项离散阵因子；物理跨度为 $D=(M-1)d$。只有 $M$ 较大时，两个尺度才接近。靠近端射，或计算出的零点超出可见角域时，应直接用阵因子检查。例如正横双麦的 $d=\lambda/8$，可见方向内 $|\psi|\le\pi/4$，最小归一化功率为 $\cos^2(\pi/8)\approx0.854$，整个角域内连半功率点都没有。</p>
 </li>
 </ol>
 <p>均匀加权等价于空间域的矩形窗。其第一旁瓣随 $M$ 增大才趋近相对主瓣约 −13.26 dB；例如按上面的离散阵因子复算，$M=3,4,8,16$ 时约为 −9.54、−11.30、−12.80、−13.15 dB，$M=2$ 则没有常规意义下的旁瓣。因此小阵列不能直接套用“−13 dB”。</p>
@@ -633,9 +639,10 @@ w_2^*a_2&\approx0.5000-2.3559j,\\
 <p><strong>一阶差分原理</strong>：两个相距很近的麦克风接收同一远场声波时存在小的传播时延差。对其中一路施加内部延迟和增益后相减，可使某些方向相消、另一些方向保留。输出写成 $y(t)=x_1(t)-g\,x_2(t-\tau)$：实数系数 $g$ 的绝对值控制幅度，负号会额外翻转相位；$\tau$ 控制随频率变化的延迟相位；改变 $(g,\tau)$ 就会改变零点位置和指向图形状。</p>
 <p><strong>后向零点怎样变成近似心形</strong>：设端射双麦间距为 $d$。为固定麦序与正负号，本节取麦 1 在 $x=0$ 的前端、麦 2 在 $x=d$ 的后端；前方是 $-x$（$\theta=-90^\circ$），后方是 $+x$（$\theta=+90^\circ$）。定义传播时延差 $\tau_p(\theta)=\tau_{21}=t_2-t_1$，即麦 2 相对麦 1 的到达时刻差。该方向的频率响应可写成</p>
 <p>$$H(\omega,\theta)=1-g\,e^{-\mathrm j\omega[\tau+\tau_p(\theta)]}。\tag{5-7}$$</p>
+<p>这里的 $\omega=2\pi f$ 以 rad/s 计，两个时延以秒计；§5.1 的数字频率以 rad/sample 计，要配合样本编号使用。</p>
 <p>选择 $g$ 和内部延迟 $\tau$ 可以令后向响应在设计频率或低频近似下为零。仅有这个零点还不能证明整个宽带方向图是心形。</p>
 <p>当 $\kappa d=2\pi fd/c\ll1$，把指数项作一阶展开，并用均衡器补偿差分器随频率上升的幅度后，归一化方向图才可在一段频带内近似“全向项加偶极项”；取相应系数时得到心形、超心形或 8 字形。</p>
-<p>频率升高、间距不再远小于波长、延迟量化或通道失配都会使形状偏离该近似。$\tau=0$ 且 $g=1$ 的纯相减只产生前后对称的偶极响应。<a href="https://doi.org/10.1109/ICASSP.1997.599609" title="citation">Elko &amp; Pong, ICASSP 1997</a></p>
+<p>频率升高、间距不再远小于波长、延迟量化或通道失配都会使形状偏离该近似。$\tau=0$ 且 $g=1$ 的纯相减前后等幅；只有在 $\kappa d\ll1$ 时，才近似为偶极方向图。<a href="https://doi.org/10.1109/ICASSP.1997.599609" title="citation">Elko &amp; Pong, ICASSP 1997</a></p>
 <p><strong>一阶 DMA 手算。</strong> 取端射双麦 $d=2$ cm、$c=343$ m/s，则 $T=d/c=58.31\ \mu$s。按上面的麦序与坐标约定，前向 $\tau_p=+T$、后向 $\tau_p=-T$；取 $g=1,\tau=T$。后向响应为 $H_b=1-e^0=0$。在 $f=500$ Hz，前向响应</p>
 <p>$$\begin{aligned}
 H_f&=1-e^{-\mathrm j2\omega T},\\
@@ -945,7 +952,7 @@ L&=\vec w^H\mathbf R\vec w\\
 <p>$$\vec\lambda=(\mathbf C^H\mathbf R^{-1}\mathbf C)^{-1}\vec f。$$</p>
 <p>再代回就得到式(5-11)。拉格朗日函数必须保留成对的共轭约束项，才能保持为实数，并在对 $\vec w^*$ 求导时得到正确的约束贡献。除 $M\times M$ 的 $\mathbf R$ 外，还要对 $K_c\times K_c$ 的约束矩阵求逆。</p>
 <blockquote>
-<p><strong>维度核对</strong>：约束有 $K_c$ 条，$\vec f$ 和 $\vec\lambda$ 都是 $K_c\times1$ 向量；$\mathbf C$ 是 $M\times K_c$，所以 $\mathbf C^H\vec w$ 与 $\vec f$ 维度一致。矩阵 $\mathbf C^H\mathbf R^{-1}\mathbf C$ 为 $K_c\times K_c$。若 $\mathbf C$ 满列秩，$K_c$ 条独立复线性约束把可调子空间的复维数从 $M$ 降为 $M-K_c$；$K_c=M$ 时，权重通常由约束唯一确定。</p>
+<p><strong>维度核对</strong>：约束有 $K_c$ 条，$\vec f$ 和 $\vec\lambda$ 都是 $K_c\times1$ 向量；$\mathbf C$ 是 $M\times K_c$，所以 $\mathbf C^H\vec w$ 与 $\vec f$ 维度一致。矩阵 $\mathbf C^H\mathbf R^{-1}\mathbf C$ 为 $K_c\times K_c$。若 $\mathbf C$ 满列秩，$K_c$ 条独立复线性约束把可调子空间的复维数从 $M$ 降为 $M-K_c$；$K_c=M$ 时，权重由约束唯一确定。</p>
 </blockquote>
 <p><strong>解的结构</strong>由两部分组成：$\mathbf{R}^{-1}$ 按噪声与干扰的空间相关结构加权，后半部分把结果投影并归一化到满足全部约束的可行集合。常用约束包括：</p>
 <ol>
@@ -955,7 +962,7 @@ L&=\vec w^H\mathbf R\vec w\\
 </ol>
 <p>导数约束针对指定参考点下的<strong>复响应</strong>，而不仅是响应幅度。角度求导通常以弧度为单位；若先改用相位差变量，须用链式法则说明两种导数的关系。改变参考麦会引入随方向变化的共同相位，相同的“复导数为零”不能原封不动沿用。</p>
 <p>在名义方向附近，一阶复导数为零可以降低局部复响应误差，但会占用自由度。噪声代价和 WNG 的变化取决于噪声模型，不是固定损失。<a href="#e05-18">E05-18</a>从三个权重手算约束与代价，<a href="#e05-22">E05-22</a>进一步比较波形目标误差和总误差。</p>
-<p><strong>约束不是免费的</strong>：若 $\mathbf C$ 满列秩，数学上可有 $K_c\le M$ 条独立约束。$K_c=M$ 时权重通常被约束唯一确定，没有剩余自由度用于根据 $\mathbf R$ 压噪；若希望保留至少一个自适应自由度，则需 $K_c\lt M$。约束增多不必然使 WNG 单调恶化，但会缩小可行集合，必须逐频点检查 WNG 与目标响应。</p>
+<p><strong>约束不是免费的</strong>：若 $\mathbf C$ 满列秩，数学上可有 $K_c\le M$ 条独立约束。$K_c=M$ 时权重由约束唯一确定，没有剩余自由度用于根据 $\mathbf R$ 压噪；若希望保留至少一个自适应自由度，则需 $K_c\lt M$。约束增多不必然使 WNG 单调恶化，但会缩小可行集合，必须逐频点检查 WNG 与目标响应。</p>
 <h3 id="sec-u-7a5487ebd1">算例 5-2 补充：LCMV 双约束</h3>
 <p><strong>题设</strong>：沿用算例 5-2 的 2 麦阵（$d=\lambda/2$，目标 0°，干扰 30°），但这次干扰方向已知，要求同时满足两条约束：目标方向增益为 1、干扰方向增益为 0。约束矩阵 $\mathbf{C}=[\vec{a}_0,\ \vec{a}_i]$（$2\times2$），约束值 $\vec{f}=[1,\ 0]^\top$，噪声取白噪 $\mathbf{R}=\mathbf{I}$（先看约束本身的效果，不掺自适应）。</p>
 <p><strong>求解</strong>：$\mathbf{R}=\mathbf{I}$ 时 $\mathbf{C}^H\mathbf{R}^{-1}\mathbf{C}=\mathbf{C}^H\mathbf{C}$。$\vec{a}_0=[1,1]^\top$，$\vec{a}_i=[1,+\mathrm{j}]^\top$，所以</p>
@@ -965,6 +972,12 @@ L&=\vec w^H\mathbf R\vec w\\
 <p><strong>验证约束</strong>：$\vec{w}^H\vec{a}_0=(0.5-0.5\mathrm{j})+(0.5+0.5\mathrm{j})=1$ ✓；$\vec{w}^H\vec{a}_i=(0.5-0.5\mathrm{j})+(0.5+0.5\mathrm{j})(+\mathrm{j})=0$ ✓。干扰方向满足精确零响应约束。</p>
 <p>此时 $\|\vec{w}\|^2=1$，$\mathrm{WNG}_{\mathrm{dB}}=0$ dB，比 DSB 的 +3 dB 低 3 dB。2 个麦和 2 条独立约束使权重由约束唯一确定，没有剩余自由度再根据 $\mathbf R$ 调整白噪声输出。</p>
 <p>相比之下，算例 5-2 的 MVDR 只约束目标，得到 $\mathrm{WNG}_{\mathrm{dB}}=+0.39$ dB 和干扰方向 −23.8 dB。LCMV 适合方向先验可靠且需要硬约束的情形；MVDR 根据估计协方差自适应抑制干扰。两者的选择还取决于方向误差和协方差估计质量。</p>
+<p><strong>如果输出给左右耳，就要分别约束两个响应。</strong> 第 1 章用两路信号解释双耳相位差和声级差。做通话单声道拾音时，只需交付一路目标；做双耳助听或可穿戴拾音时，要决定左右耳分别收到什么。把同一路增强信号复制两份，会使仍可听见的成分在两路里同幅、同相。两路分别做无失真约束可保留目标的左右参考声像，但目标约束不会自动保护背景的空间线索。</p>
+<p>固定一个频点。用共同的源参考定义目标导向 $\vec a$ 和已知方向干扰导向 $\vec b$；下标 $\mathrm L,\mathrm R$ 取两个向量在左右参考麦上的元素。每个输出仍用 $Y_e=\vec w_e^H\vec x$，其中 $e=\mathrm L,\mathrm R$。<strong>双耳 MVDR（BMVDR）</strong>分别最小化左右输出的噪声功率，只约束目标响应为 $a_e$。<strong>双耳 LCMV（BLCMV）</strong>可再给定干扰的共同缩放 $\eta$，每耳增加一个约束：</p>
+<p>$$\vec w_e^H\vec a=a_e,\qquad \vec w_e^H\vec b=\eta b_e\text{。}\tag{5-39}$$</p>
+<p>若 $\eta\ne0$，且两耳干扰参考都非零，干扰输出的右／左复比是 $(\eta b_\mathrm R)/(\eta b_\mathrm L)=b_\mathrm R/b_\mathrm L$，保留这一个干扰的双耳相位差和声级差。$\eta=0$ 则是消除该方向，干扰没有可定义的输出复比。实现时，传给 LCMV 接口的响应列应取共轭，因为接口约束的是 $\mathbf C^H\vec w$。</p>
+<p>从单约束解还可看出 BMVDR 的限制：以 $\vec w_0^H\vec a=1$ 的解为基础，在两耳使用同一噪声矩阵时，有 $\vec w_e=a_e^*\vec w_0$，因此 $Y_e=a_e(\vec w_0^H\vec x)$。只要两耳目标响应非零，在该频点有非零输出的残余成分就会继承目标的右／左复比。<a href="https://sharongannot.group/wp-content/uploads/2021/04/2016030110.pdf" title="citation">Hadad、Doclo 和 Gannot 的 BLCMV 论文</a>分析了干扰缩放与残余噪声的关系；<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC7225838/" title="citation">Gößling 等人的双耳听辨实验</a>则另行比较空间感知与语音增强。不能只用一耳的 SNR 判断双耳结果。</p>
+<p>下面的 E05-25～27 先用三个通道手算，再用同一组分量试听。工程上还需核对左右采样与播放时钟、参考麦位置、两耳独立增益是否改变复比，以及残余背景的归一化互谱。<a href="research/01_spatial_and_tracking.html">空间处理研究手册</a>另对照了 openMHA 的固定双耳滤波配置。</p>
 <h2 id="sec-u-fb93744989">多通道维纳滤波与秩一目标模型</h2>
 <p>多通道维纳滤波（Multichannel Wiener Filter，简称 MWF）最小化指定参考目标与输出之间的均方误差，允许目标失真与残余噪声共同进入代价。MVDR 则施加硬的无失真约束，两者不能一般性地视为同一个解。语音失真加权多通道维纳滤波（Speech Distortion Weighted MWF，简称 SDW-MWF）进一步改变这两项的相对权重。</p>
 <p>固定一个频点，设 $\vec x=\vec s+\vec n$。定义 $s_{out}=\vec w^H\vec s$、$n_{out}=\vec w^H\vec n$、$s_{ref}=\vec e_r^H\vec s$；$\vec e_r$ 是第 $r$ 位为1的参考麦选择列向量。记噪声输出功率 $J_n=E|n_{out}|^2$、目标失真功率 $J_s=E|s_{out}-s_{ref}|^2$，取 $\mu>0$。本节使用未中心化二阶矩 $\mathbf R_{ss}=E[\vec s\vec s^H]$、$\mathbf R_{nn}=E[\vec n\vec n^H]$；总体均值为零时，它们才同时等于总体协方差。</p>
@@ -2439,6 +2452,70 @@ $$</p>
 <p>这里的权重和高于保护阈值。两个标量估计矩阵只差整体尺度，秩都为1；它们又都不同于交替逐通道预滤所得的秩2矩阵。分母口径与通道预滤是两项独立变化，不能用“用了掩码”将其合并。</p>
 <p><strong>边界与复算。</strong> 非负逐通道预滤后的外积平均仍半正定，但合法矩阵不自动具有正确的目标／噪声语义。本题没有证明哪种掩码策略在语音数据中更好，也没有测在线跟踪速度。实际方法应检查预滤如何改变跨通道幅相、目标矩阵的秩、参考声像、噪声统计与输出取点，再讨论性能。</p>
 <p>本题代码为<a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch05/chapter05_experiments.py">chapter05_experiments.py</a>的 <code>channel_mask_prefilter_model()</code>；输出同时保留原矩阵、两种逐通道预滤矩阵、按帧数和按质量归一的标量矩阵，以及两种目标上的响应。独立测试直接核对有理数矩阵与 $6/5$、1两个响应，不把函数自己的输出用作唯一预期。</p>
+<p><a id="e05-25"></a></p>
+<h3 id="sec-u-8687ade082">E05-25：两耳都保留了目标，干扰的位置线索还在吗？</h3>
+<p>三个麦的目标导向为 $\vec a=[1,1,1]^\top$，已知干扰导向为 $\vec b=[1,-1,1]^\top$，左右参考取第 1、2 麦。固定设计矩阵 $\mathbf R=\mathbf I_3$，只代表单位功率的空间白背景，不把已知方向干扰的外积并入这个矩阵。比较只有目标约束和另加 $\eta=1/3$ 干扰约束的解。</p>
+<p><strong>第一步：只保护目标。</strong> 单位矩阵下，目标方向的无失真解是 $\vec a/(\vec a^H\vec a)=[1,1,1]^\top/3$。两个参考上的目标响应都为 1，所以两耳权重相同。输出干扰在每耳的响应为 $(1-1+1)/3=1/3$，原来的右／左复比为 $-1$，现在变成 $+1$。两者的声级差都为 0 dB，双耳相位差却由半个周期变成 0。</p>
+<p><strong>第二步：再限制干扰。</strong> 设实权重的首尾之和为 $p=w_1+w_3$，中间为 $q=w_2$。目标约束是 $p+q=1$，干扰约束是 $p-q=\pm1/3$，左用正号，右用负号。联立得到左耳 $(p,q)=(2/3,1/3)$，右耳 $(p,q)=(1/3,2/3)$。固定 $p$ 时，$w_1^2+w_3^2$ 在 $w_1=w_3=p/2$ 处最小。原问题的矩阵和约束都为实数；虚部只能增加平方代价，故这个实解也是复问题的唯一最小解。</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
+<thead>
+<tr>
+<th scope="col">方案</th>
+<th scope="col">左耳权重</th>
+<th scope="col">右耳权重</th>
+<th scope="col">干扰响应（左、右）</th>
+<th scope="col">干扰右／左复比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>输入参考</td>
+<td>$[1,0,0]^\top$</td>
+<td>$[0,1,0]^\top$</td>
+<td>$(1,-1)$</td>
+<td>$-1$</td>
+</tr>
+<tr>
+<td>BMVDR</td>
+<td>$[1,1,1]^\top/3$</td>
+<td>$[1,1,1]^\top/3$</td>
+<td>$(1/3,1/3)$</td>
+<td>$+1$</td>
+</tr>
+<tr>
+<td>BLCMV，$\eta=1/3$</td>
+<td>$[1,1,1]^\top/3$</td>
+<td>$[1,4,1]^\top/6$</td>
+<td>$(1/3,-1/3)$</td>
+<td>$-1$</td>
+</tr>
+</tbody>
+</table></div>
+<p>后两行的干扰残余功率都为各耳输入干扰功率的 $1/9$。仅看干扰功率，分不出两者对双耳线索的处理。</p>
+<p><a id="e05-26"></a></p>
+<h3 id="sec-u-bb0ee14475">E05-26：一个方向的复比保住了，背景也保住了吗？</h3>
+<p>沿用上题权重。对于单位协方差的背景，计算两输出的归一化互谱。采用 $C_{\mathrm{LR}}=\mathbb E[Y_\mathrm L Y_\mathrm R^*]$ 的次序，设 $P_e=\mathbb E|Y_e|^2$。这里比较相干系数的模 $|C_{\mathrm{LR}}|/\sqrt{P_\mathrm L P_\mathrm R}$；有些接口报告的是这个量的平方。当任一耳背景功率为零，这个系数无定义；按这里的互谱次序，其相角是左减右，与第 1 章的右减左 IPD 约定相反。</p>
+<p><strong>参考答案。</strong> 输入参考选择不同通道，所以 $C_{\mathrm{LR}}=0$，两耳功率各为 1。BMVDR 的两个权重相同，因此 $P_\mathrm L=P_\mathrm R=C_{\mathrm{LR}}=1/3$，相干系数的模为 1。</p>
+<p>BLCMV 的左耳仍是 $1/3$；右耳功率为 $(1^2+4^2+1^2)/36=1/2$。互谱是左、右权重的内积 $(1+4+1)/18=1/3$。相干系数的模因此为 $(1/3)/\sqrt{(1/3)(1/2)}=\sqrt{2/3}$。干扰的右／左复比已恢复，白背景的归一化互谱仍与原来的 0 不同；右耳也承担了更高的背景输出功率。</p>
+<p><a id="e05-27"></a></p>
+<h3 id="sec-u-8c09186fb3">E05-27：把干扰完全消掉，还能评估干扰相位吗？</h3>
+<p>把共同残留系数改成 $\eta=0$，先解两个权重，再改用 $\vec b=[1,\mathrm j,1]^\top$，$\eta=1/3$，检查右耳实际复响应。</p>
+<p><strong>参考答案。</strong> 第一种情形仍有 $p+q=1$，第二个方程变为 $p-q=0$。所以两耳权重都为 $[1/4,1/2,1/4]^\top$，干扰输出皆为零。此时右／左复比是 $0/0$，应该记作无定义。实际测量也应先设残余能量门限，不能把近乎静音的相位误差当成可靠观测。</p>
+<p>第二种情形的右参考干扰为 $\mathrm j$，应得到 $Y_\mathrm R/B=\mathrm j/3$（$B$ 为非零干扰源谱）。若误把 $\mathrm j/3$ 直接作为 $\mathbf C^H\vec w_\mathrm R$ 中的约束，实际输出会变成 $-\mathrm j/3$。两者的幅度相同，单验功率仍发现不了这个错误。</p>
+<p><strong>用同一增益听四个输出。</strong> 以下是数学合成的双声道 WAV。用耳机并从低音量开始；双声道顺序固定为左、右。按序对照 1500 Hz 分量在两耳同相、反相和消失时的变化：</p>
+<ul>
+<li><a href="binaural_beamforming_audio/binaural_input.wav">原始左右参考麦</a><audio class="audio-sample" controls preload="none" aria-label="原始左右参考麦" src="binaural_beamforming_audio/binaural_input.wav">请使用上方 WAV 链接下载。</audio></li>
+<li><a href="binaural_beamforming_audio/binaural_bmvdr.wav">只约束目标：BMVDR</a><audio class="audio-sample" controls preload="none" aria-label="只约束目标：BMVDR" src="binaural_beamforming_audio/binaural_bmvdr.wav">请使用上方 WAV 链接下载。</audio></li>
+<li><a href="binaural_beamforming_audio/binaural_blcmv.wav">保留干扰复比：BLCMV</a><audio class="audio-sample" controls preload="none" aria-label="保留干扰复比：BLCMV" src="binaural_beamforming_audio/binaural_blcmv.wav">请使用上方 WAV 链接下载。</audio></li>
+<li><a href="binaural_beamforming_audio/binaural_null.wav">两个输出都对干扰置零</a><audio class="audio-sample" controls preload="none" aria-label="两个输出都对干扰置零" src="binaural_beamforming_audio/binaural_null.wav">请使用上方 WAV 链接下载。</audio></li>
+</ul>
+<p>每段 16 kHz、32000 点／耳，500 Hz 代表目标，1500 Hz 代表干扰，750、1000、1250 Hz 分别代表三路背景。后一组三音在所声明的整数周期窗口内正交；它们不是随机独立、逐频空间白的环境录音。实验用已知分量合成波形，不估计导向、不运行宽带 STFT，也不把反相音解释成真实听觉方向。</p>
+<p><a href="binaural_beamforming_audio/MANIFEST.json">实际 PCM 清单</a>分列浮点与读回后的有符号余弦幅度，以及窗口 $[2400,29600)$ 中的左右总能量和交叉项整数和。该混合波形的总互谱不能代替上题单独背景的统计。</p>
+<p>实际 PCM 的 1500 Hz 有符号幅度，BMVDR 左、右均约为 $+0.04000$，BLCMV 约为 $+0.04000$ 和 $-0.04000$。零陷样本两耳投影的绝对值约为 $2.8\times10^{-7}$，是混合波形量化后的微小泄漏，不能为已消除的模型分量指定相位。</p>
+<p>复算与只读检查：</p>
+<pre><code class="language-bash">python -m codes.chapters.ch05.examples.binaural_beamforming_demo
+python -m codes.chapters.ch05.examples.binaural_beamforming_demo --check
+</code></pre>
 <hr />
 <blockquote>
 <p>📄 本篇信息：配图 6 张 ｜ <a href="index.html">回首页</a></p>

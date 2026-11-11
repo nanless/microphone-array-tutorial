@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 3 章 · 阵列几何形态 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="759b4238ac3b"><style>
+<meta name="source-digest" content="1a85da73ba06"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -836,7 +836,7 @@ J(\vec v)=\|\mathbf C\vec v-\vec x\|_2^2
 <td class="tutorial-short-column" style="--tutorial-column-width:7em">相位失配</td>
 <td class="tutorial-short-column" style="--tutorial-column-width:9em">2°（高频段）</td>
 <td class="tutorial-short-column" style="--tutorial-column-width:9em">高频指向精度</td>
-<td class="tutorial-short-column" style="--tutorial-column-width:18em">2° 相位误差在 8 kHz 约等于 0.24 mm 等效位置误差，MUSIC 峰可能偏移、旁瓣可能抬高</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:18em">在 8 kHz、$c=343$ m/s 时，2° 相位误差等效于沿该入射方向约 0.24 mm 的传播路径差；MUSIC 峰可能偏移、旁瓣可能抬高</td>
 <td class="tutorial-short-column" style="--tutorial-column-width:16em">在受控条件下，按频率测量并补偿相对复响应；已知方向与可靠参考的例子见 §3.4.1</td>
 </tr>
 <tr>
@@ -1532,6 +1532,7 @@ b_z&=c(\delta_t-\tau_{+z})=0.02\ \mathrm m.
 \end{bmatrix}.$$</p>
 <p>$\mathbf U$ 本身秩为3，但 $\mathbf D$ 的法向列恒为 $-1/2$，与常量列成比例，所以增广秩只有3。增加 $b_z$ 10 mm，同时增加 $\ell_t$ 5 mm，全部行的变化均为 $-(1/2)\times10+5=0$ mm。因此另一组基线 $(0.04,0.03,0.03)$ m与固定时延 $20+5000/343\approx34.5772595\ \mu s$ 产生完全相同的时延。</p>
 <p>已知方向多、方向矩阵满秩，都不能替代增广秩检查。同一俯仰再增加更多方位仍保留这项自由度；增加不同俯仰后也要重新检查整个增广矩阵，不能只数场景数量。</p>
+<p><strong>留出检验也需要独立时间基准。</strong> 如果标定用的四个方向和留出的第五个方向都被加上同一个 $20\,\mu\mathrm{s}$ 的通道时差偏置，模型会把它完整吸收到固定相对时延一项，基线不变，五次残差也不变。此时留出检验仍可查方向模型，却发现不了大家共用的计时偏置。要把采集偏置与校准参考偏置分开，需要独立的时间测量，例如<a href="10_engineering-practice.html#sec-10-2">第 10 章</a>的同步与偏移检查。</p>
 <p><strong>数值求解与边界。</strong> 有更多独立方向或测量误差时，用等权最小二乘：</p>
 <p>$$\begin{aligned}
 \hat{\vec x}&=\underset{\vec v\in\mathbb R^4}{\arg\min}

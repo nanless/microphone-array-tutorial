@@ -47,9 +47,11 @@
 
 **挑战赛**用于了解公开任务和评测口径。
 
-CHiME 覆盖远场、多说话人和多通道语音处理；CHiME-9 设置 MCoRec 多会话鸡尾酒会转写与会话聚类、ECHI 低延迟助听对话增强。[CHiME-10 官方任务页](https://www.chimechallenge.org/challenges/chime10/index "citation")列出 ECHI-2、URGENT、SG-TSE 三项任务；[官方日程页](https://www.chimechallenge.org/challenges/chime10/dates "citation")列出计划于 2027 年 2 月 4 日开放、提交期暂定为 2027 年 8～9 月。上述日程核实于 2026 年 10 月 5 日，参赛时应重新核对官方日期。
+CHiME 覆盖远场、多说话人和多通道语音处理；[CHiME-9](https://www.chimechallenge.org/challenges/chime9/ "citation")设置 MCoRec 多会话转写与会话聚类、ECHI 低延迟助听对话增强。[CHiME-10 官方任务页](https://www.chimechallenge.org/challenges/chime10/index "citation")列出 ECHI-2、URGENT、SG-TSE 三项任务；[官方日程页](https://www.chimechallenge.org/challenges/chime10/dates "citation")列出计划于 2027 年 2 月 4 日开放、提交期暂定为 2027 年 8～9 月。上述日程核实于 2026 年 11 月 11 日，参赛时应重新核对官方日期。
 
 DCASE 2026 的挑战期及系统提交于 2026 年 6 月 15 日截止，并在 7 月 1 日公布结果；Task 3 是 Semantic Acoustic Imaging SELD，与 DCASE 2024 Task 3 的距离估计设置不同。以上状态核实于 2026 年 10 月 5 日，任务定义、[提交日期](https://dcase.community/challenge2026/submission "citation")与结果见 [DCASE 2026 官方页面](https://dcase.community/challenge2026/ "citation")和[结果公告](https://dcase.community/articles/dcase2026-challenge-results-published "citation")。
+
+[DCASE 2026 Task 3](https://dcase.community/challenge2026/task-semantic-acoustic-imaging-for-sound-event-localization-and-detection-from-spatial-audio-and-audiovisual-scenes "citation")的输出还包含事件类别与空间能量分布，按官方的图像匹配与相关性指标评分。专题Ⅰ的 DAS、DAMAS 或 CMF 能生成给定传播模型下的空间图，但本身不提供事件类别或任务提交格式。若用它们作为前端对照，要分别报告成像误差与语义任务评分，不能以图像颜色或第 12 章的数值量代替挑战分数。
 
 其他公开评测包括 REVERB 去混响评测、ICASSP DNS/AEC Challenge，以及已结束的 [SPEAR Challenge 2023](https://signalprocessingsociety.org/publications-resources/data-challenges/speech-enhancement-augmented-reality-spear-challenge-2023 "citation")。SPEAR 使用头戴式 6 通道设备研究 AR 语音增强；它的年份、阵列和任务条件不应外推为当前持续榜单。
 
@@ -224,7 +226,7 @@ VarArray 把 TAC、Conformer 分离和通道间相位差特征用于几何无关
 | $d < \lambda/2$ | ULA 在整个闭可视角域内避免端点歧义的充分条件；$d=\lambda/2$ 时两个端火方向 $-90^\circ$ 与 $+90^\circ$ 可产生相同阵元采样，限定转向范围时可另行分析 | §2.6 |
 | HPBW、DI、WNG | 分别按主瓣两个半功率点、全空间功率响应平均、不相关等功率通道噪声定义；见式(2-11)～式(2-13) | §2.6 |
 | CRB 公式 | 给定统计模型与正则条件下，无偏 DOA 估计方差的下界；见式(2-14) | §2.6 |
-| $\hat\theta = \arcsin(c\hat\tau_{12}/d)$ | 双麦时延差 → 角度；本书定义 $\tau_{12}=t_1-t_2$，并以 $X_1X_2^*$ 的 GCC 峰估计它 | §2.1、§4.2 |
+| $\hat\theta = \arcsin(c\hat\tau_{12}/d)$ | 双麦远场时延差 → 前半平面主值；本书定义 $\tau_{12}=t_1-t_2$，并以 $X_1X_2^*$ 的 GCC 峰估计它；镜像方向需另有观测 | §2.1、§4.2 |
 | $R(\tau)=\int \Phi X_1X_2^* e^{j2\pi f\tau}df$ | GCC 加权互相关 | §4.2 |
 | $\hat{\vec{p}} = \arg\max_{\vec{r}} \sum R^{PHAT}$ | SRP-PHAT 全阵列投票 | §4.3 |
 | $P_C = 1/(\vec{a}^H\hat{\mathbf{R}}^{-1}\vec{a})$ | Capon 谱 | §4.5 |
@@ -345,7 +347,7 @@ D_t(x)&=[1-p_D(x)]D^-(x)\\
 
 6. 在个人副本的 `fig_doa_spectrum()` 中把两源间隔从 50° 缩到 15°、8°，观察 Bartlett、Capon、MUSIC 的谱峰；先写明两源各自角度及中心方向。原图标题固定写着 $(-20°,30°)$，改 `srcs` 后还须改标题、真值标记、图注与输出文件名，并记录 20 dB 每阵元总输入 SNR、400 快拍、源数 2 和峰值判据。
 
-    **比较基准**：8 元半波 ULA 的离散阵因子 HPBW 近似为 $0.886\lambda/(Md)\approx12.7°$；用物理跨度 $D=(M-1)d=3.5\lambda$ 得到的 $\lambda/D\approx16.4°$ 只是孔径尺度。
+    **比较基准**：8 元半波 ULA 正横转向时，主瓣半功率全宽（HPBW）近似为 $0.886\lambda/(Md)$ 弧度，换成角度约为 $12.7^\circ$。物理跨度 $D=(M-1)d=3.5\lambda$ 给出的 $\lambda/D$ 弧度（约 $16.4^\circ$）是另一种孔径尺度。离开正横时，在 $u=\sin\theta$ 上近似等宽的主瓣会拉宽为更大的角度宽度；不要把正横近似当成所有转向的固定角分辨率。
 
     不要预先规定谁在某个角度必然失败。实际结果取决于 SNR、快拍数、源相关性、加载和峰值判据。MUSIC 在理想独立源条件下可能分辨小于常规主瓣宽度的两源，但不保证在失配或相干源下保持这一能力。
 
@@ -467,7 +469,7 @@ $$
 
 只用零阶镜像生成较短的 RIR 再补零，会使两条 RIR 在不同长度下分别经历零相位滤波，差中可能混入滤波边界效应；处理位置与默认参数见[固定版 `room.py` 的 RIR 构建代码](https://github.com/LCAV/pyroomacoustics/blob/0dd39f2614b7fc44b2cc63dbe7d60f4641068890/pyroomacoustics/room.py#L2348-L2432)及[默认参数](https://github.com/LCAV/pyroomacoustics/blob/0dd39f2614b7fc44b2cc63dbe7d60f4641068890/pyroomacoustics/parameters.py#L185-L195)。四麦 DRR 先各自计算，再取中位数；中位数并非把四麦能量先合并后计算的 DRR。
 
-**混响时间怎样算。** 从完整 RIR 的 Schroeder 倒向能量积分曲线，在 $-5$ 到 $-25$ dB 区间拟合 dB 对时间的直线，按斜率外推至 $-60$ dB；本题将它称为“$T_{20}$ 外推的 $T_{60}$”，不是实测房间混响时间。逐麦值与中位数都保留，区间不够时脚本报错。
+**混响时间怎样算。** 从完整 RIR 的 Schroeder 倒向能量积分曲线，在 $-5$ 到 $-25$ dB 区间拟合 dB 对时间的直线，再求按该斜率下降 60 dB 所需的时长。若斜率为 $\beta<0$，时长为 $-60/\beta$。本题称它为“$T_{20}$ 外推的 $T_{60}$”，不是实测房间混响时间。逐麦值与中位数都保留，区间不够时脚本报错；真实记录中即使跨过两个阈值，也须检查拟合段是否混入噪声底，见 E15-15。
 
 以 1 m、$-30°$ 条件的第 1 只麦为例，本书仿真的直达 RIR 能量约为 0.96774，反射 RIR 能量约为 0.24448，因而该麦 DRR 为 $10\log_{10}(0.96774/0.24448)\approx5.975$ dB；四麦 DRR 的中位数为 $5.755\,\mathrm{dB}$。同一只麦的 $-5$～$-25$ dB 拟合斜率约为 $-109.682$ dB/s，故外推 $T_{60}=-60/(-109.682)\approx0.547$ s。计算先用未舍入值，下面仅展示约数。
 
@@ -567,6 +569,8 @@ $$
 $$
 
 当 $\alpha=0$ 或1时，没有插值误差；在直流 $\omega=0$ 处也没有幅度损失。一般频率下，式(15-4)小于1，说明它包含低通作用。这里比较的是离散时间固定延迟滤波器，不能把连续插值核的频响直接当成此二抽头滤波器的响应。
+
+**一般分数延迟也会有相位误差。** 取 $\alpha=1/4$、$f=f_s/4$，即 $\omega=\pi/2$。式(15-3)给 $H=(3-j)/4$，幅度为 $\sqrt{10}/4\approx0.7906$；相位为 $-\arctan(1/3)\approx-0.3218$ rad。理想四分之一采样延迟的相位应为 $-\omega/4=-\pi/8\approx-0.3927$ rad。下面半采样的准确相位来自两抽头恰好相等，不宜推广到其他延迟比例。
 
 **半采样是容易算清的一种情况。** 提取公共相位后，两个相量关于该相位对称：
 
@@ -733,6 +737,10 @@ $$
 
 这些性质依赖共享映射、正确的通道平均和逐通道残差；插入固定通道编号、将通道展平成固定长向量，或给不同通道不同参数，都需重新证明。该夹具说明结构性质，不能证明新增麦克风必然提高分离质量，也不表示已执行原作者的训练模型。原始结构见[TAC §2.1，式(1)～式(4)](https://arxiv.org/html/1910.14104v3 "citation")；[逐步实验](../codes/chapters/appendix_b/appendix_b_experiments.py)返回四组中间量。
 
+**补零不是增加一条有效通道。** 若把原输入补成 $[1,3,0]$，有效通道只有前两条，平均仍为 $4$；错把补零通道算进去会得到 $8/3$。再把补零通道换到开头，得到 $[0,3,1]$：沿用“前两条有效”会得到 $3$；有效标记随通道一起置换后，才仍是 $4$。真实网络的变换也可能有偏置，补零输入未必仍映成零。
+
+[作者原源码静态合同](../codes/chapters/appendix_b/reports/tac_contracts_current.json)记录了固定 FaSNet 实现的两种分支：`num_mic.max() == 0` 时用全部通道；另一分支逐样本按有效通道数取通道前缀，不能把任意位置的补零当作受支持的掩码。此外，FaSNet 外层有取第 0 路作参考的步骤，单个 TAC 子块的置换等变性不能直接推广到整个增强系统。这个报告核对了原源码的结构，没有运行网络、权重或语音分离。
+
 #### E15-12：共同缩放不会改变 DRR，为什么直接平方会算错？
 
 <a id="e15-12"></a>
@@ -757,6 +765,8 @@ $$
 再固定 $h[n]=\exp(-3\ln(10)n/(0.6f_s))$、$f_s=16000\ \mathrm{Hz}$、$n=0,\ldots,31999$。其幅度平方每0.6 s下降60 dB，理想无限尾倒向能量也按同一斜率衰减；保存2 s尾部后，在规定区间拟合应得接近0.6 s的外推值。分别将整条 RIR 乘1、$10^{-200}$ 与 $10^{200}$，曲线与拟合结果应在数值精度内相同。这是有限指数夹具的缩放控制，不是三次房间测量。
 
 本书的[房间指标核](../codes/chapters/appendix_b/core/room_metrics.py)保留普通路径，对检测到的差分溢出、归一化非零分量或功率支持丢失明确拒绝。它是有限 float64 支持的教学实现，式(15-7)不保证任意极端动态范围都能计算。
+
+还要区分“分量已在输入里丢失”和“平方算不下去”。若同一个采样点的直达幅度为 1，反射幅度为 $10^{-20}$，先以 float64 相加得到的完整幅度会舍入为 1；再减直达幅度只能得到零。即使后面用对数安全累加，也无法恢复那一反射。合成实验若掌握两个分量，可以保留独立分量用于数值审计；只收到总录音时不能假定已有这样的分解。
 
 #### E15-13：时间原点和时间单位为何不应改变 T20 外推？
 
@@ -915,6 +925,15 @@ $$
 
 **适用边界。** 此题证明给定无噪声指数尾的有限保存会改变倒向能量与外推值，没有执行噪声底修正、ISO测量流程或自动截断校正。真实房间的多段衰减、频带、测量噪声和尾长要分别核验；第16题约0.546 s的PRA房间结果也不能凭这个不同模型的算例归因于有限尾。拟合区间缺失时，现有指标核明确拒绝，不凭名义0.6 s强行补出结果。
 
+**有噪声时，跨过两个阈值也不保证拟合有效。** 把固定 RIR 加上各点零均值、方差为 $\sigma^2$ 的噪声。对固定信号，逐点平方的交叉项期望为零，因此倒向能量的期望会额外包含 $(N-n)\sigma^2$。以 32000 点记录为例，若全记录噪声期望能量等于信号能量的 1%，用“期望能量的比值”在 $n=4000$ 处计算，会从无噪声的约 $-25$ dB 变为
+
+$$
+10\log_{10}\frac{10^{-2.5}+0.01(1-4000/32000)}{1+0.01}
+\approx -19.28\ \mathrm{dB}.
+$$
+
+这里忽略了在本例可忽略的 $10^{-20}$ 有限尾项；所得数值是对期望能量比取对数，不是某条噪声录音的结果，也不是 dB 值的期望。靠近文件末端时，积分中的剩余噪声样本也减少，曲线仍可能最终越过 $-25$ dB，越过位置却主要由记录长度和噪声决定。记录真实衰减时，应核对噪声底与拟合区间的相对位置；[带噪 RIR 估计研究中的表 II](https://doi.org/10.1121/1.4943547 "citation")给出一种需独立验证的噪声补偿做法，本书指标核不执行它。
+
 ### 15.7 复现说明
 
 先运行代码基线的单元测试和第 10 章示例，核对确定性输出：
@@ -1002,7 +1021,7 @@ $$
 .venv/bin/python -m codes.chapters.appendix_b.examples.generate_response_audio
 .venv/bin/python -m codes.chapters.ch12.examples.generate_imaging_audio  # 配套成像音频；图67～69由解析控制生成
 .venv/bin/python -m codes.chapters.ch13.examples.generate_distributed_audio
-.venv/bin/python scripts/make_figures.py      # 图 1～25、图 33～36、40～72
+.venv/bin/python scripts/make_figures.py      # 图 1～25、图 33～36、40～72、80
 .venv/bin/python scripts/make_aec_figures.py  # 图 26～32、37～39（回声消除专题）
 .venv/bin/python scripts/make_beamforming_figures.py  # 图73：已知双音的实际PCM与解析相位
 .venv/bin/python scripts/make_reference_figures.py  # 图74：实际PCM播放增益与尾声控制

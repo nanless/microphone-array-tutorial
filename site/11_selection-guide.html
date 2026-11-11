@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 11 章 · 总结与选型指南 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="759b4238ac3b"><style>
+<meta name="source-digest" content="1a85da73ba06"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -396,7 +396,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 </tr>
 <tr>
 <td>RTF</td>
-<td>实时因子（Real-Time Factor）</td>
+<td>本章的实时因子（Real-Time Factor），即处理耗时与音频时长之比。前面波束章节的 RTF 指相对传递函数</td>
 </tr>
 <tr>
 <td>SRO</td>
@@ -518,7 +518,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <h3 id="sec-u-d96611f1d8">多人内容与身份的评分口径</h3>
 <p>多人重叠场景先区分三种识别口径：</p>
 <ul>
-<li>拼接最小排列词错误率（Concatenated minimum-Permutation Word Error Rate，cpWER）先按说话人拼接参考与假设，再寻找一个全局最优的说话人排列；</li>
+<li>拼接最小排列词错误率（Concatenated minimum-Permutation Word Error Rate，cpWER）在每个会话内分别按参考说话人和假设流拼接，再为整个会话选择一个最优排列。不会逐句重新选排列，也不核验匿名流标签是否是实名；</li>
 <li>最优参考组合词错误率（Optimal Reference Combination Word Error Rate，ORC-WER）允许参考语句在输出流之间做最优组合，不要求一条输出流全程对应同一个人；</li>
 <li>说话人归属词错误率（Speaker-Attributed Word Error Rate，sa-WER）把词转写与说话人标签一起评价，归属错误会影响结果。</li>
 </ul>
@@ -564,6 +564,8 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <p>词元相同，并不保证评分问题相同。ORC-WER 把一条完整参考话段分配给一条输出流；若把同一句拆成多个话段，就增加了可选分配。应根据预定标注规则固定参考边界，不能根据某个系统的输出重新切分。<a href="#e11-23">E11-23</a>用同样的两个词计算切分前后的差异。</p>
 <p>普通编辑距离还会允许很早的参考词与很晚的同词假设匹配。在长会议中，同一个常用词会反复出现；这样的匹配可能掩盖时间错误。时间约束评分还需给出词时间区间、容差、时间戳来自真实标注还是近似，以及边界接触时是否允许匹配。<a href="https://www.isca-archive.org/chime_2023/neumann23_chime.pdf" title="citation">MeetEval 2023 原论文 §4，印刷第29～30页</a>说明时间约束及词级时间近似的作用。</p>
 <p><a href="#e11-24">E11-24</a>只展开单词序列的时间约束编辑距离，不把这个小核当成完整的时间约束最小排列词错误率（Time-Constrained minimum-Permutation Word Error Rate，tcpWER）工具。真实多人评分还要处理全局流分配、文本规范化、话段排序和时间容差。固定原实现的端点约定与论文定义须分别核对，不能仅凭同名接口认定一致。</p>
+<p><strong>从比赛协议读出能比较什么。</strong> 同一届比赛也可能采用不同的汇总口径。CHiME-8 <a href="https://www.chimechallenge.org/challenges/chime8/task1/submission">Task 1（DASR）的提交说明</a>规定使用 5 秒容差的 tcpWER；固定版 <a href="https://github.com/chimechallenge/chime-utils/blob/152882404f572d40769ef02bf91c5a9a9cfc9c78/chime_utils/scoring/meeteval.py#L174-L217">DASR 评分代码</a>传入指定评分区间，在每个场景内合并词计数，再等权平均四个场景的分数。</p>
+<p><a href="https://www.chimechallenge.org/challenges/chime8/task2/rules">Task 2（NOTSOFAR）的规则</a>同样采用 5 秒容差和指定文本规范化，但<a href="https://www.chimechallenge.org/challenges/chime8/task2/results">官方排名</a>先逐会话计算 tcpWER，再等权平均会话分数；另报告不要求固定说话人归属的 tcORC-WER，用于补充分析。比较结果时要核对汇总单位、评分区间和文本规范化。换届后还要重新核对任务；例如 <a href="https://www.chimechallenge.org/challenges/chime9/">CHiME-9</a>公布的是 MCoRec 与 ECHI，不能把它们的成绩直接接到 CHiME-8 Task 2 排名上。</p>
 <h3 id="sec-u-1ad6ffa9bb">输出槽位与目标条件</h3>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table class="selection-readable-table">
 <thead>
@@ -776,6 +778,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <p>若需求改成“始终只听主持人，且主持人可注册”，硬约束会改变，TSE 才重新成为候选。</p>
 <h3 id="sec-u-01def5a266">硬约束要区分通过、失败与证据不足</h3>
 <p>先明确每条阈值约束的是确定预算、测量值还是概率。例如“任何输出不得超过 150 ms”和“该负载下延迟的 p99 不超过 150 ms”是不同要求。有限样本最大值并不自动等于系统的最坏情况保证；平均 RTF 合格也不能替代逐次截止期检查。</p>
+<p>按总体分布的逆累计概率定义，p99 不超过 150 ms 等价于超出 150 ms 的概率至多 1%。若 20 次相互独立、同分布的试验都未超限，按 E11-08 的单侧 95% 上界计算，超限概率仍可高达约 13.91%；在相同假设和零超限下，至少要 299 次才支持 1% 的门槛。连续相邻帧可能共用负载状态，不能简单地按独立试验计数。E11-04 的样本分位数是另一项描述，不能替代这条证据。</p>
 <p>若已有可信的指标范围，可比较整个范围与上界：范围全部合格才通过，范围全部超限则失败，跨越阈值或缺少必要指标时记为证据不足。范围是确定误差界、统计置信区间还是观测的最小至最大值，也要分别写明；后两者不能无条件当作确定界。E11-14 用两个指标演示三态判断。</p>
 <p>比较两个候选也应保留这些区间。若一个候选的最差端点仍好于另一个的最好端点，可以作出确定支配判断；区间交叠时，中点上的排序不能证明真实排序。<a href="#e11-21">E11-21</a>把候选间支配与相对硬阈值的判断分开计算。</p>
 <h3 id="sec-u-2b5c122169">合格候选之间仍可能没有唯一最好方案</h3>
@@ -794,6 +797,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <h3 id="sec-u-626859aee2">评分事件与评分数值应分别保存</h3>
 <p>一次会话没有识别出任何词，和这次会话根本没有交付输出文件，是两种事件。前者在预定评分协议下可以是合法空假设：参考中的词全部被删除，错误数仍有定义。后者需要按事先约定的缺文件策略处理；不能仅因两者都“没有词”就自动采用相同分数。</p>
 <p>输出格式损坏、参考不可读、评分程序异常也要分别记录。错误数未产生时，它是未评分事件，不能填写零错误。若只汇总成功会话，分子和参考词数分母都来自该子集，并同时报告它占计划会话和参考词的比例。成功文件比例与成功参考词比例通常不同。</p>
+<p>E11-26 的包装器先校验计划本身：会话 ID 重复或参考词列表无效时，整次调用报错，并不返回逐会话分数。计划有效后，缺假设、坏假设和评分器异常才作为逐会话事件保存。</p>
 <p>有界量表可以像E11-12那样计算缺失均值的可能范围。WER含插入，能够超过100%，一般没有可以直接套用的固定上界；不能借用1～5分量表的缺失界来证明完整WER排序。完整排名资格应与分数分开保存：若协议要求全部计划会话可评分，缺一项就仍不具备该资格。<a href="#e11-26">E11-26</a>将逐事件复算这条链，不运行识别模型。</p>
 <h3 id="sec-u-eca0a8698a">同一物理候选的噪声收益与硬约束</h3>
 <p>比较波束时，先固定实际噪声协方差、目标参考与允许的失配，再分别检查输出噪声、目标响应和传感器自噪声放大。未加载MVDR可能最能压制给定方向的干扰，却因大权重范数或目标失配而不满足硬条件。目标响应也不能只检查设计方向；应检查规格中声明的实际方向或扰动范围。</p>
@@ -804,6 +808,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <span id="sec-8" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-b322947d6d">题 1：带播放的周向语音终端（E11-05）</h3>
 <p>需求是水平面周向覆盖，设备会播放音乐，主要任务是唤醒和单人指令。两种示意圆阵半径都为 4 cm，分别放 4 麦和 6 麦；声速取 343 m/s，需求频率上限 4 kHz。先以相邻麦弦长 $2r\sin(\pi/M)$ 与 $c/(2d_{\rm adjacent})$ 作<strong>单对筛查</strong>，再写出必要模块和两个关键对照实验。这个筛查不保证整个圆阵流形没有其他歧义。</p>
 <p><strong>答案要点</strong>：四麦相邻弦长为 $0.08\sin45°\approx0.05657$ m，对应筛查界约 3032 Hz，低于 4 kHz；六麦相邻弦长为 $0.08\sin30°=0.04$ m，对应 4287.5 Hz，高于 4 kHz。按本题相邻单对条件，只保留六麦候选继续研究，仍需用完整阵列几何和工作频带核对歧义与波束质量。</p>
+<p><strong>用整阵复核四麦的一对歧义。</strong> 将四只麦放在水平面的 $(\pm r,0)$、$(0,\pm r)$，令方向单位向量 $\vec u_\pm=(v\pm h/2,-v\pm h/2)^\top$，其中 $h=c/(2fr)=1.071875$，$v=\sqrt{(1-h^2/2)/2}$。两向量长度均为 1，且差为 $(h,h)^\top$。把差向量投影到任意麦坐标，得到 $\pm rh$；乘相位系数 $2\pi f/c$ 就得到 $\pm\pi$。所以这两个方向在每只麦上的相对复比都为 $-1$，以同一只参考麦归一化后，整组导向矢量相同。这个反例针对 4 kHz 理想水平远场模型；六麦通过相邻弦长筛查，也不能据此判断三维镜像或设备失配。</p>
 <p>播放时仍需拾音，因此两方案都要评估 AEC，并确保参考覆盖播放处理。定位或多方向固定波束可用于周向选择；WPE 和分离不是默认必选。</p>
 <p>关键对照至少包括“静音播放与音乐播放下的唤醒曲线”和“AEC 开关下的近端语音损伤及残余回声”。本题的几何数字是本书构造的筛查输入，不是任何产品的性能。运行 <a href="https://github.com/nanless/microphone-array-signal-processing/blob/main/codes/chapters/ch00/cross_chapter/exercises_engineering.py"><code>exercises_engineering.py</code></a> 的 <code>E11-05</code> 可复算两行候选。</p>
 <span id="sec-9" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-7b9a84ce60">题 2：多人会议（E11-06）</h3>
@@ -1373,6 +1378,7 @@ S_L&=\max\{\mathcal E_{L,S},\\
 </tbody>
 </table></div>
 <p>实际PCM结果代入式(11-19)，q为0.25时总分约0.1415130419、0.2366884696，仍选3抽头；q为0.75时约0.1940588947、0.0791530025，仍选9抽头。组成区间最坏值分别约0.1940588947、0.2366884696；逐场景最大值分别约0.2203318211、0.3154562032。两种最坏任务仍都选3抽头，数值与解析计算分别保留。</p>
+<p><strong>先合并误差能量也会改变排序。</strong> 仍用上表实际 PCM 整数，取相同组成 $q=0.55$。按式(11-19)先求各场景 NMSE 再平均，3/9 抽头约为 0.173041、0.142167，选 9 抽头。若任务改为按组成汇总误差和参考能量，再用 $(qE_{L,S}+(1-q)E_{L,D})/(qD_S+(1-q)D_D)$ 打分，结果约为 0.155103、0.195944，选 3 抽头。原因是双音参考能量接近单音的两倍，合并能量会让双音场景在总比值中占更大权重。两种口径都能定义，但应先定口径再看排名。</p>
 <p><strong>先取分贝会改变什么？</strong> 以实际PCM结果和共同组成 $q=0.25$ 为例，按式(11-19)先在线性域平均、再取 $10\log_{10}J_L$，3/9抽头分别约为−8.4920、−6.2582 dB，仍选3抽头。若把两个场景各自的NMSE先取分贝，再按同一q平均，则分别约为−8.6803、−12.2935 dB，反而选9抽头。</p>
 <p>后者等价于对线性误差取加权几何平均，衡量的是另一个目标；它不能代替本题已定义的加权算术平均。这个反例使用上表真实整数E/D，不用解析近似替换PCM评分。</p>
 <p><strong>试听与复现。</strong> 先调低音量。每个场景按目标、混合、3抽头、9抽头的顺序比较；两场景的目标不同，不能单凭听起来更安静给总体评分。</p>
@@ -1486,7 +1492,7 @@ C_w&=W_s/W_p,\\
 \end{aligned}\tag{11-21}$$</p>
 <p>这里 $N$ 是会话数、$W$ 是参考词数、$E$ 是错误总数；下标p表示计划集合，s表示成功评分子集，$C_s$与$C_w$分别为会话与参考词覆盖率，均为本题局部记号。子集没有成功参考词时，连子集WER也不能计算。</p>
 <p><strong>完整排名资格。</strong> 若预定协议要求五次会话全部可评分，这次结果不具备完整排名资格。不能把3个已知错误除以全部10词，得到30%并当作完整WER；这相当于暗中把未评分的6个参考词当成零错误。也不能将75%填到全部会话上，它只描述成功子集。</p>
-<p>若协议事先明确“缺失假设按空输出评分”，s2才可贡献3次删除；这会改变评分规则与有效分母，且缺失事件仍应保留。该规则不会自动修复s3的格式错误或s4的程序异常。本题采用严格保留未评分事件的规则，没有事后补空假设。</p>
+<p>若协议事先明确“缺失假设按空输出评分”，s2 才可贡献 3 次删除；缺失事件仍应保留。届时可评分会话为 3/5、参考词为 7/10，子集 WER 变为 $6/7$。s3 和 s4 仍未评分，因此完整测试集 WER 仍未定义。本题采用严格保留未评分事件的规则，没有事后补空假设。</p>
 <p>运行E11-26可读取上述五个事件。s3由真实列表验证产生格式异常，s4由教学回调实际抛出 <code>RuntimeError</code>；它们不是实际ASR软件的故障记录。包装器只收到错误总数，不从总数倒推插入、删除、替换或伪造编辑路径。这里s0的一次替换、s1的两次删除来自读者逐词手算。更多有关会话匹配与固定原实现的执行边界见<a href="research/03_industrial_deployment.html#meeting-kernel-contracts">原评分接口研究</a>。</p>
 <p><a id="e11-27"></a></p>
 <h3 id="sec-u-da90b31f09">题 27：最低噪声的波束为何不能直接通过选型（E11-27）</h3>
@@ -1563,7 +1569,7 @@ P_{n,\rm out}&=\vec w^H\mathbf R_n\vec w.
 P_{\rm target\ error}&=\varepsilon_H^2,\\
 \mathrm{NMSE}_{\rm actual}&=\varepsilon_H^2+P_{n,\rm out}.
 \end{aligned}\tag{11-25}$$</p>
-<p>$\varepsilon_H$ 是复响应相对1的幅差，不是误差平方，也不是 $||H|-1|$。本例对称条件使H近似为实数，不能据此省略一般复响应的相位误差。</p>
+<p>$\varepsilon_H$ 是复响应误差 $H-1$ 的模。本例的对称条件使 $H$ 近似为实数。一般情况下，即使幅度恰好为 1，相位仍会带来误差；例如 $H=\mathrm j$ 时，$|H|=1$，但 $|H-1|=\sqrt2$。</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table class="tutorial-budget-table" style="--tutorial-table-width:50em">
 <thead>
 <tr>

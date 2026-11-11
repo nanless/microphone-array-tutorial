@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 4 章 · 声源定位（DOA 估计） · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="759b4238ac3b"><style>
+<meta name="source-digest" content="1a85da73ba06"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -490,7 +490,8 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 R[l]&=\sum_n x_1[n]x_2[n-l],\\
 \hat\tau_{12}&=\frac{\arg\max_l R[l]}{f_s}\text{。}
 \end{aligned}\tag{4-1}$$</p>
-<p>把 $x_2$ 往右挪 $l$ 格，和 $x_1$ 上下对齐，逐点相乘再求和。加总越大，这个错位下两路越像。$\arg\max$ 返回峰的位置，不是峰高。若输入为复数，应把第二项改为 $x_2^*[n-l]$。长度同为 $N$、遍历全部滞后的直接计算需要 $O(N^2)$ 次乘加；频域实现可把复杂度降到 $O(N\log N)$。</p>
+<p>把 $x_2$ 往右挪 $l$ 格，和 $x_1$ 上下对齐，逐点相乘再求和。这里比较的是实值、有符号的相关值；$\arg\max$ 返回峰的位置。长度同为 $N$、遍历全部滞后的直接计算需要 $O(N^2)$ 次乘加；频域实现可把复杂度降到 $O(N\log N)$。</p>
+<p>复数输入的相关定义把第二项改为 $x_2^*[n-l]$，但这只定义了相关函数，还没定义选峰规则。比如 $x_1=[0,\mathrm j]$、$x_2=[1,0]$，两路有限支持，滞后 $+1$ 的相关是 $\mathrm j$，取实部会把这个峰变成 0。若模型允许两路相差未知的公共复增益，可以比较 $|R[l]|$；若约定了信号极性和相位，则应按该模型指定实值评分。本章实音频算例仍按式(4-1)取有符号峰。</p>
 <blockquote>
 <p><strong>频域等价式（相关定理）</strong>：时域逐点算出的整条 $R(\tau)$，等于频域共轭相乘后再作逆变换——</p>
 <p>$$R[l] = \mathrm{IFFT}\{X_1[k]X_2^*[k]\}[l]$$</p>
@@ -630,7 +631,7 @@ G[k]&=X_1X_2^*\\
 <p><img alt="图12 GCC-PHAT 原理" src="../figures/fig12_gcc_phat.png" onerror="this.alt+='（图缺失）'" /></p>
 <p>图 12 的声源由4096点周期模型产生，频带为300～6000 Hz；用频域相位实现分数采样时延后，每路加标准差0.05的独立噪声。相关计算的FFT长度为8192，时延网格插值16倍。它是周期带限随机信号的数学示例，截取两路波形不会把它变成真实录音或因果有限长传播实验。</p>
 <p><strong>图示说明</strong>：图 12（a）的两路波形设定为 $d=4$ cm、$\theta=30°$，对应 $\tau_0\approx58.3\,\mu\mathrm{s}$，即 16 kHz 下约 0.933 个采样点。</p>
-<p>图 12（b）将两路固定噪声样例做 16 倍时延网格插值后计算 GCC-PHAT，峰值落在 $58.59375\,\mu\mathrm{s}$，即 0.9375 个原始采样点；虚线标出 $58.3\,\mu\mathrm{s}$ 真值。图 12（c）把时差乘声速得到路程差，再除以间距得到角度正弦，$\theta$ 从正横起算，与 §2.1 约定一致。</p>
+<p>图 12（b）对两路固定噪声样例先做 PHAT 互谱归一化，再在细化 16 倍的时延网格上计算逆变换。峰值落在 $58.59375\,\mu\mathrm{s}$，即 0.9375 个原始采样点；虚线标出 $58.3\,\mu\mathrm{s}$ 真值。图 12（c）把时差乘声速得到路程差，再除以间距得到角度正弦，$\theta$ 从正横起算，与 §2.1 约定一致。</p>
 <p>这个固定样例的估计接近真值，但单个样例不能代表误差分布。</p>
 <p><strong>算例：GCC-PHAT 完整数字链（$d=4$ cm、$\theta=30°$）</strong>：按 §2.1 几何关系，真值时延 $\tau_0=d\sin\theta/c=0.04\times0.5/343\approx58.3\,\mu\mathrm{s}$；16 kHz 下 1 个采样点 $=62.5\,\mu\mathrm{s}$，故真值在 $58.3/62.5\approx0.933$ 格。直接取整读峰只能得到 1 格，对应 $\arcsin(343\times62.5\,\mu\mathrm{s}/0.04)\approx32.4°$。</p>
 <p>图 12 的脚本对互谱补零，把旧偶数奈奎斯特频点拆到正负频率，并补偿逆变换的长度尺度；E04-12说明为什么两步都需要。这里使用周期三角插值，不是三点抛物线拟合。它把 GCC-PHAT 的时延网格细化到 $62.5/16\approx3.91\,\mu\mathrm{s}$，再在相关序列上取最大值。固定随机种子的噪声样例得到 $58.59375\,\mu\mathrm{s}$，即 $0.9375$ 格；换算角度为</p>
@@ -825,7 +826,7 @@ i&=2,\ldots,M\text{。}
 <ul>
 <li>$\vec{p}$：待求声源位置，远场只需方向；</li>
 <li>$\vec{r}_i$：第 $i$ 个麦的坐标，已知且依赖标定；</li>
-<li>方程共 $M-1$ 个。对一般近场非线性方程，二维至少需要 3 只不共线麦、三维至少需要 4 只不共面麦，且某些几何仍可能有多个候选解。方程数超过位置维数后可用最小二乘吸收测量误差；</li>
+<li>方程共 $M-1$ 个。对一般近场非线性方程，二维通常至少要 3 只麦，三维至少要 4 只麦。若没有已知半平面或半空间等先验，还需分别排除共线或共面阵列的镜像；四只共面麦在已知半空间内仍可能局部辨识近场位置。不共面也不自动保证全局唯一。方程数超过位置维数后可用最小二乘吸收测量误差；</li>
 <li>下面的 Chan 线性化还引入参考距离这一附加未知量，因此其第一阶段无正则最小二乘在二维至少需要 4 只麦、三维至少需要 5 只麦，并要求线性方程组满列秩。</li>
 </ul>
 <h3 id="sec-u-a5bc9197a2">算例 4-2：TDOA 几何解算数值例——两个时延怎么变成一个方向</h3>
@@ -1322,7 +1323,7 @@ u_y&=-\frac{0.0282975}{0.04}=-0.7074375\text{。}
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">找多个峰时需峰选择规则</td>
 <td class="tutorial-short-column" style="--tutorial-column-width:12em">几何与声速已知；搜索区覆盖真值</td>
 <td class="tutorial-short-column" style="--tutorial-column-width:12em">网格误差、宽峰、多径假峰</td>
-<td class="tutorial-short-column" style="--tutorial-column-width:14em">约 $O(N_{\rm grid}M^2)$，另有 GCC</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:14em">GCC 查表扫描约 $O(N_{\rm grid}M^2)$，另算 GCC；逐频直接求和还要计入频点数</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:9em">Bartlett</td>
@@ -1384,11 +1385,11 @@ u_y&=-\frac{0.0282975}{0.04}=-0.7074375\text{。}
 <p><strong>选择依据</strong>：先检查几何与采样率带来的可观测性，包括孔径、GDOP、空间混叠和亚采样时延能力。算法可在明确模型或先验下改善统计效率，但不能恢复几何中不存在的信息。资源受限且不使用训练数据时，可把 SRP-PHAT 作为基线并验证粗到细搜索；满足源数、秩和标定条件时，可评估 MUSIC/root-MUSIC；学习型方法只有在训练数据覆盖目标阵列、房间、噪声与源数，并在同条件验证集上优于解析基线时，才有采用依据。</p>
 <p><strong>定位置信度与丢轨判据</strong>：单帧给一个方向是不够的，在线系统还要回答“这个方向值不值得信、目标跟丢了没有”。三个常用健康度量如下：</p>
 <ol>
-<li><strong>峰值显著度</strong>：先规定主峰邻域以外哪些点构成背景，再比较主峰与该背景。GCC或SRP-PHAT可含负得分，不能直接当成非负功率比；例如图13使用 $\max g/\operatorname{median}|g|$，背景分母为零时应标成指标无效，另查峰形。高比值仍可能来自反射假峰，不能证明方向正确；</li>
+<li><strong>峰值显著度</strong>：先规定参与分母的网格点，再比较主峰与背景尺度。GCC 或 SRP-PHAT 可含负得分。图 13 在整个实验搜索网格（含主峰）取 $|g|$ 的中位数，并加 $10^{-12}$，再以最大有符号得分除以这个分母。若另做排除主峰邻域的统计，应单独命名；分母接近零时先检查信号活动与峰形。高比值也可能来自反射假峰；</li>
 <li><strong>帧间一致性</strong>：连续多帧 DOA 的角度离散程度或中值偏移。跨越 $\pm180°$ 时应先按圆周角差计算，不能把179°与−179°当成相差358°。静止源的异常跳动与运动源的正常变化须分开，不能仅凭方差大便丢弃移动目标；</li>
 <li><strong>信号存在性</strong>：该方向波束输出的SNR，或经验证集校准的语音存在概率；静音段的方向估计直接弃用。</li>
 </ol>
-<p>这些量是诊断特征，不自动成为正确方向的概率。平坦响应、空间混叠或镜像歧义须另行判断，不能用高峰背比消除。丢轨阈值必须用本系统验证集标定。满足丢轨条件后，追踪器应转入重捕获状态，而不是继续输出抖动角度。这三类量是第 9 章追踪状态机的输入。</p>
+<p>这些量是诊断特征，不自动成为正确方向的概率。平坦响应、空间混叠或镜像歧义须另行判断。丢轨阈值要在本系统上验证；满足条件后，追踪器可以转入重捕获。第 9 章的图 44 只演示按均方根能量和物理时差范围筛选观测；图 77 用筛选结果管理轨迹状态，没有实现这里列出的全部诊断。</p>
 <h3 id="sec-4-8-1">4.8.1 双源分辨率：先规定成功，再重复抽样</h3>
 <p>图 11 的一次谱形不能给出“能分开多近的两个声源”的成功概率。这里把 §15.6.2 第 6 题变成 E04-08 的重复试验：固定算法、阵列和选峰规则，只改变两源间隔，逐次记录两个方向是否都被正确找到。MUSIC 的信号与噪声子空间定义见 <a href="https://doi.org/10.1109/TAP.1986.1143830" title="citation">Schmidt 1986 原论文</a>；下面的计数和区间是本书仿真，不是该论文的性能数字。</p>
 <p><strong>输入与比较口径。</strong> 8 元半波长均匀线阵，单个窄带频点，正横为 $0°$。两个互不相关的圆对称复高斯源各有单位功率，角度关于 $0°$ 对称，间隔分别为 $50°$、$15°$ 和 $8°$。</p>

@@ -89,6 +89,29 @@ class EngineeringBoundaryTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             callback_timing_ns(0, 10**400, 10**401)
 
+    def test_variable_callback_replay_follows_tags_and_excludes_unknown_gap(self):
+        replay = run_exercises()["E10-17"]["variable_callback_replay"]
+        self.assertEqual([row["frame_count"] for row in replay["trace"]], [160, 80, 160, 160, 80])
+        a, b, c = replay["markers"]
+        self.assertEqual((a["capture_callback"], a["first_callback_at_or_after_ready"],
+                          a["output_callback"], a["output_index"]), (0, 1, 1, 180))
+        self.assertEqual((b["capture_callback"], b["first_callback_at_or_after_ready"],
+                          b["output_callback"], b["output_index"]), (1, 3, 3, 400))
+        # Hand-derived endpoints: each sample spans 1/16 ms. A uses
+        # 100 + 120/16 -> 140 + 20/16 and B uses 110 + 40/16 -> 155.
+        self.assertEqual((a["adc_sample_ns"], a["dac_sample_ns"], a["latency_ns"]),
+                         (107_500_000, 141_250_000, 33_750_000))
+        self.assertEqual((b["adc_sample_ns"], b["dac_sample_ns"], b["latency_ns"]),
+                         (112_500_000, 155_000_000, 42_500_000))
+        self.assertEqual((c["status"], c["adc_sample_ns"], c["first_callback_at_or_after_ready"]),
+                         ("unmatched_after_gap", 130_000_000, 4))
+        self.assertIsNone(c["output_index"])
+        self.assertIsNone(c["dac_sample_ns"])
+        self.assertIsNone(c["latency_ns"])
+        self.assertIsNone(replay["trace"][4]["input_start"])
+        self.assertIsNone(replay["known_gap_sample_count"])
+        self.assertEqual((replay["matched_markers"], replay["planned_markers"]), (2, 3))
+
     def test_sign_test_tail_by_independent_enumeration(self):
         result = paired_sign_test_lower_is_better([12, 8, 20, 5, 15, 10],
                                                   [10, 9, 14, 5, 12, 9])

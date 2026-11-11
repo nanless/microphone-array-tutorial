@@ -11,7 +11,7 @@ Start with multichannel recordings and array geometry. Work through localization
 
 ## Online case studies
 
-[Open the Chinese course](https://nanless.github.io/microphone-array-tutorial/) in your browser. Switch between the two sound sources in the animation, see how the array finds and focuses on a source in a real room recording, and pick a chapter from the learning route. [Jump to the case studies →](https://nanless.github.io/microphone-array-tutorial/site/#course-cases)
+[Open the Chinese course](https://nanless.github.io/microphone-array-tutorial/) in your browser. Switch between the two sound sources in the animation, see how the array finds a source in a real room recording, compare the raw channel with delay-and-sum and MVDR with postfiltering, and pick a chapter from the learning route. [Jump to the case studies →](https://nanless.github.io/microphone-array-tutorial/site/#course-cases)
 
 ## Preface · Why record the same words four times?
 

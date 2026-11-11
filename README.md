@@ -11,7 +11,7 @@
 
 ## 在线案例
 
-[打开在线课程](https://nanless.github.io/microphone-array-tutorial/)。可用动图看声音到达的先后，再用同一段房间实录看定位、听波束形成前后的差别。 [直接看定位与波束形成案例 →](https://nanless.github.io/microphone-array-tutorial/site/#course-cases)
+[打开在线课程](https://nanless.github.io/microphone-array-tutorial/)。可用动图看声音到达的先后，再用同一段房间实录看定位、听原始录音、对齐相加和 MVDR 加后滤波三种输出。 [直接看定位与波束形成案例 →](https://nanless.github.io/microphone-array-tutorial/site/#course-cases)
 
 ## 序言 · 同一句话，为什么录了四份？
 

@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 9 章 · 声源追踪 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="076fed964b7a"><style>
+<meta name="source-digest" content="3b9f0c885a50"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -1265,7 +1265,8 @@ $$</p>
 <p>取 $\theta=50^\circ$，直接沿用 $30^\circ$、从错误时刻外推到 $40^\circ$、正确转向 $50^\circ$，用 $20\log_{10}$ 换算的目标响应分别约为 $-24.20$、$-3.75$ 和 $0$ dB。数字只适用于这组几何、频率和角速度；它说明为何实际生效时刻要独立记录，不代表一般语音的衰减。</p>
 <h3 id="sec-u-7498cbdd42">从活动观测到轨迹出生、确认与删除</h3>
 <p>一个有效定位峰只是一条观测。工程接口可以先为未关联峰建立<strong>候选轨迹</strong>，积累规定数量的有效观测后才确认；已确认轨迹短时缺测时可外推，长期缺测后应退役。重新出现的峰可以建立新轨迹，但只凭方位和活动不能证明它仍是先前那个人。</p>
-<p>这里有三个不同的时钟：观测窗中心决定观测所属时刻；完整窗口收齐后，检测事件才可供管理器使用；最近有效观测的时刻决定预测依据有多旧。把超时写成“20帧”，还需要指定每帧步长；写成秒并核对具体时钟，才能比较不同帧率和延迟。</p>
+<p>在同一时间基准下分别记下三个时间点。窗中心标记观测所属时刻，窗口收齐时刻给出检测最早可能可用的时间，最近一次有效观测时刻则用于计算证据龄期。若把超时写成“20 帧”，还需注明每帧步长。消息和采集各用一个时钟时，要先换到同一时间基准再相减。</p>
+<p>例如最近一次真实观测在 1.000 s，此后没有新观测。追踪器将状态预测到 1.100 s，于 1.105 s 发布，波束在 1.115 s 生效。从已发布状态继续外推只需 15 ms，此时观测证据却已过去 115 ms。若设备规定最近真实观测最多可用 100 ms，应在这次应用时执行约定的回退。反复发布预测不会刷新最近有效观测的时刻。实际输出如何与采集对上见<a href="10_engineering-practice.html#sec-u-864ef35c3f">第 10 章 E10-17</a>。</p>
 <p>还要区分三种输入：音频帧根本未收到、收到并处理后没有检测结果、检测到候选但关联门拒绝。没有收到帧时不产生新的测量似然；有检测机会却未检测时，才可用已定义的漏检概率更新；门控拒绝则是选择结果，要结合门内概率和关联模型解释。例如两个模式的先验各为 0.5，检测概率分别为 0.9 和 0.1。处理了一帧并确认无检测时，两个未归一化权重为 $0.5(1-0.9)=0.05$、$0.5(1-0.1)=0.45$，归一化得 0.1、0.9。若该帧未收到、此步又不发生模式转移，则仍为 0.5、0.5。E09-22 展开漏检证据，E09-24 展开未观测时的模式预测。</p>
 <p><a href="#e09-25">E09-25</a>读取现有双麦 PCM，使用检测器实际给出的有效标记，再按一个明确的单轨迹管理规则生成候选、确认与退役事件。它不输出“追踪后语音”，也不使用源静音真值替代检测器。此规则是可检查的工程状态机，不是 E09-22 的 Bernoulli 存在概率更新；确认或删除门限也不是统计置信度。</p>
 <h3 id="sec-u-11f08ac058">OSPA：集合位置与人数的归一化误差</h3>
@@ -1322,7 +1323,8 @@ r'_m(u)&=\vec n_m(u)^\top\vec v,\\
 <p>在 $u=0.99$ s，横坐标 $-0.8+0.8\times0.99=-0.008$ m，方位角约 $-0.31^\circ$；末段 $u=1.99$ s 的横坐标是 $0.792$ m，方位角约 $+27.83^\circ$。这些时刻属于保存的轨迹格点；声音到达麦克风的接收时刻还要加传播时延。</p>
 <p>把同一发射时刻到麦 1、麦 0 的传播时间之差定义为有符号 TDOA：$\tau_{1-0}(u)=[r_1(u)-r_0(u)]/343$，其中 $r_m$ 是声源到麦 $m$ 的距离。起点声源在左侧，更靠近麦 0，所以 $r_1-r_0>0$，麦 1 的到达更晚。按上述坐标代入距离公式，起点约为 $+0.0001372$ s，乘以 16000 后是 $+2.19$ 采样；末段声源已在右侧，约为 $-0.0001361$ s，即 $-2.18$ 采样。两侧符号相反，不能只报 TDOA 的绝对值。</p>
 <p>清单中的时间格点按声源轨迹的全局时钟取样；同一行 TDOA 比较的是该时刻发出的波到两麦的传播时间，并非两麦在同一采样索引处的波形峰差。逐帧值、坐标、统一增益及各文件摘要保存在清单中。<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/tests/test_codes_moving_source.py">静止解析极限和符号测试</a>独立核对<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch09/examples/moving_source_audio.py">生成器</a>。</p>
-<p>这里没有墙面反射、空气吸收、声源和麦克风指向性，也没有多人交叉或活动缺测。听到的音高、声像和电平变化不能直接当作某个 DOA 追踪器的准确率；若要评价追踪，还需对输出运行固定定位器，按相同时间戳比较逐帧误差和漏检，并另报波束控制滞后。真实移动录音可另按 <a href="https://www.locata.lms.tf.fau.de/tasks/" title="citation">LOCATA 官方任务说明</a>选择任务 3（静止阵列、单移动说话人）；自行逐帧评分应选择带声源位置真值的开发集，并明确录音和真值版本。</p>
+<p>这里没有墙面反射、空气吸收、声源和麦克风指向性，也没有多人交叉或活动缺测。听到的音高、声像和电平变化不能直接当作某个 DOA 追踪器的准确率。评价追踪时，先对输出运行固定定位器，再按相同时间戳比较逐帧误差和漏检，并另报波束控制滞后。</p>
+<p>真实移动录音可选择 LOCATA 任务 3，即静止阵列观测单个移动说话人。自行逐帧评分时可选带声源位置真值的开发集，并明确录音和真值版本。<a href="https://arxiv.org/pdf/1909.01008" title="citation">LOCATA 作者论文，§III 表 I、§IV.C</a></p>
 <h3 id="sec-u-666f355e22">从带噪双麦波形到定位与追踪</h3>
 <p>前一组两音调样本用于核对传播模型；下面的独立实验对波形运行定位器，再把有效观测交给 KF。两组样本不能混用评分。先调低播放音量：</p>
 <p><a href="tracking_audio/source.wav">源参考：32音调与一次静默</a><audio class="audio-sample" controls preload="none" aria-label="源参考：32音调与一次静默" src="tracking_audio/source.wav">请使用上方 WAV 链接下载。</audio></p>

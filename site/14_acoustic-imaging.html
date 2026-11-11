@@ -2,7 +2,7 @@
 <link rel="canonical" href="12_acoustic-imaging.html"><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 12 章 · 声学成像与噪声源诊断 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="076fed964b7a"><style>
+<meta name="source-digest" content="3b9f0c885a50"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -883,6 +883,8 @@ Q_{\mathcal G,\mathcal B}
 \end{aligned}\tag{12-28}$$</p>
 <p>若全部通道幅度多乘2，所有平方量多乘4，相对变化约6.0206dB；峰位置可能不变，但绝对量错误。若一条通道额外旋转180°，原本同相的双麦平均可能成为相消，不能通过共同声级校正修复。</p>
 <p>增益相位、坐标、时钟与传感器健康是不同检查。第3章已经讲解校准与参考误差，本节只把它们接入成像统计链。校正后还应保留原观测、系数、单位和来源，以便区分传感器异常与软件处理。</p>
+<p>式(12-28)可以在平均后一次应用，前提是同一个校正矩阵适用于参与平均的所有快拍。若窗口内换了校准或通道配置，应保留各快拍的版本，按各自的系数校正后再累积，或者从切换点分开统计。</p>
+<p>取两个两麦快拍，使用 §12.3 的均方复系数。它们分别为 $[1,1]^\top$ 和 $[1,-1]^\top$，第二个快拍的右麦有已知极性翻转。直接平均外积时，两个非对角项一正一负，得到单位矩阵。平均后再对某一路乘固定相位，两个零互谱仍是零。若先把第二个快拍的右麦乘 $-1$，再平均，所得矩阵四项都是 1。用等权同相波束 $[1/2,1/2]^\top$ 计算，直接平均得到扫描量 $1/2$，逐快拍校正后得到 1。这个控制使用已知切换记录；设备应保留原始快拍或按版本累积，以便发现并复核这类相消。</p>
 <p><img alt="图69 声学成像的通道增益、对角补偿、CSM目标与区域汇总口径" src="../figures/fig69_imaging_calibration.png" onerror="this.alt+='（图缺失）'" /></p>
 <p>图69的四个面板依次控制第二通道幅度增益、不等幅单源的DR补偿、不同CSM拟合目标，以及区域求和与dB。第一面板用已知逆增益恢复单位扫描响应；其余面板对应 E12-07、E12-12、E12-10。图中截距解是独立数学控制，没有运行原scikit-learn估计器。这些固定解析控制不是自动阵列标定、现场测量或某设备精度指标。</p>
 <span id="sec-54" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-bb9b605b0d">现场校准与运行记录</h3>

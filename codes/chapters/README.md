@@ -38,6 +38,8 @@
 
 旧的 `codes.examples.*` 和 `codes.array_tutorial.*` 导入路径已经退出仓内接口。运行时使用上表中的章节模块；修改题目时改唯一真实源文件，再核对全书 363 个稳定练习 ID、对应章节和覆盖表。
 
+E10-17 的变长回调时序在 [跨章工程边界入口](ch00/cross_chapter/engineering_boundary_exercises.py) 内复算。第 11 章统一入口的 E11-13 同时报迟到、未交付、分场景分母和合并结果；[R01 实录](ch02/real_audio/README.md)另用于检查整段和最差窗口的区别。
+
 第4章E04-24用同源直达与反射说明高相干和秩一不足以确认直达方向；E04-25逐行解人工Q2帧CTF首比，区分整路径比与真实STFT近似。四份[独立PCM控制](ch04/reflection_audio/MANIFEST.json)由`codes.chapters.ch04.examples.generate_reflection_audio`生成，附加`--check`严格只读重放；原源当前报告与历史报告分开保存，详见[研究58/59](ch00/research/01_spatial_and_tracking.md#58-直达路径证据dpd筛选与dp-rtf不是同一计算)。
 
 第3章E03-18从四已知方向反求三维基线及固定相对通道时延；同俯仰反例检查的是增广矩阵秩。先运行`.venv/bin/python -m codes.chapters.ch03.examples.generate_baseline_audio --check`只读核对六份[独立音频](ch03/baseline_audio/MANIFEST.json)，首次生成去掉`--check`。500Hz单音、2400:29600稳定窗和已知总时差小于1ms是相位反推前提；实际PCM训练拟合与第五方向的留出预测分别记录。原协同阵工具默认stdout，新[当前合同报告](ch03/reports/upstream_coarray_contracts.json)保留完整选集不匹配及限定原方法成功两个状态，不能覆盖旧历史报告。
@@ -56,7 +58,7 @@
 
 ## 完整音频目录与运行方式
 
-发布源共271个WAV：主清单109个、以下28套独立合成158个、DEMAND真实摘录及派生4个。网站另有271份同内容副本；忽略的上游缓存中音频不计入发布资产。文件数不是独立实验次数，也不是算法数。
+教材音频发布源共271个WAV：主清单109个、以下28套独立合成158个、DEMAND真实摘录及派生4个。网站另有271份同内容副本。[课程首页 LOCATA 对照](../../assets/readme/cases/locata/NOTICE.txt)的三段首页试听及第 5 章 MVDR 基线共四段 WAV，单列，可用第 5 章的数值核和首页生成脚本复算。忽略的上游缓存中音频不计入发布资产。文件数不是独立实验次数，也不是算法数。
 
 主清单由 `codes.chapters.ch00.examples.generate_audio_samples` 生成，27组分章存放；其唯一定义见 [MANIFEST.json](ch00/audio/MANIFEST.json) 和 [`code_layout.py`](../../scripts/code_layout.py)。以下模块统一加前缀 `codes.chapters.`，从仓库根目录运行。
 

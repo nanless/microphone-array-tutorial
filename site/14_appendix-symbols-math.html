@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 14 章 · 附录 A：符号术语数学 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="076fed964b7a"><style>
+<meta name="source-digest" content="3b9f0c885a50"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -1111,6 +1111,7 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 $\vec v^H\hat{\mathbf R}\vec v=L^{-1}\sum_\ell|\vec v^H\vec x_\ell|^2\geq0$；这说明式(14-3)是厄米、半正定矩阵，但不保证正定或可逆。例如只有一张两麦快拍 $\vec x=[1,\mathrm j]^\top$ 时，外积为 $\left[\begin{smallmatrix}1&-\mathrm j\\ \mathrm j&1\end{smallmatrix}\right]$，特征值为 $2$ 和 $0$，秩只有 $1$。</p>
 <p>如果在同一批快拍上先计算样本均值 $\bar{\vec x}$，再用相同分母 $L$ 计算中心化矩阵 $\hat{\mathbf C}_L$，逐项展开得到 $\hat{\mathbf R}=\hat{\mathbf C}_L+\bar{\vec x}\bar{\vec x}^H$（第 2 章式(2-7)）。因此两者逐批相等的条件是<strong>本批</strong> $\bar{\vec x}=0$。即使产生这些快拍的随机过程总体均值为零，有限一批数据的样本均值也可能不为零；E14-02 用复快拍直接算出差别，E14-10 再检查中心化如何影响秩。</p>
 <p>厄米半正定只验证了二阶矩的合法形状，不自动给出 proper 复高斯概率模型。实信号的 DC 与偶数长度 Nyquist 格点是实量，不能直接套用内点的非退化 proper 复高斯密度；端点建模与适用范围见<a href="07_wpe-dereverberation.html#sec-7-1">第 7 章 §7.1</a>。</p>
+<p>取独立、零均值、方差为 1 的实高斯变量 $X,Y$。复变量 $Z_1=X$ 与 $Z_2=(X+\mathrm jY)/\sqrt2$ 的 $E|Z|^2$ 都是 1，但 $E[Z_1^2]=1$，而 $E[Z_2^2]=(E[X^2]-E[Y^2]+2\mathrm jE[XY])/2=0$。对零均值复向量，后一类不取共轭的二阶矩写成 $E[\vec z\vec z^\top]$，称为伪协方差。它为零时称该复向量为 proper。功率相等时，两种分布仍可具有不同的实、虚部结构。这也解释了实值频谱端点为何需要单独建模。 <a href="https://doi.org/10.1109/78.539051" title="citation">Picinbono 的复向量二阶统计论文</a></p>
 <span id="sec-12-3-5" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-14-3-5">14.3.5 最小二乘</h3>
 <p>方程多于未知数时，要看各条方程是否相容。例如 $x=3$、$2x=6$ 有同一个精确解；若把第二条改成 $2x=7$，就没有一个 $x$ 能同时满足两条约束。最小二乘在两种情况下都可用，求使总残差平方最小的 $\hat{\vec{x}}$：</p>
 <p>$$\min_{\vec{x}}\|\mathbf{A}\vec{x}-\vec{b}\|^2\text{。}$$</p>
@@ -1145,6 +1146,7 @@ $\vec v^H\hat{\mathbf R}\vec v=L^{-1}\sum_\ell|\vec v^H\vec x_\ell|^2\geq0$；�
 <li>相对加载写作 $\mathbf R+\eta\operatorname{tr}(\mathbf R)\mathbf I/M$，$\eta$ 无量纲，整体缩放 $\mathbf R$ 时加载也同比缩放。</li>
 </ul>
 <p>对厄米半正定矩阵，正加载可抬高小特征值，并可能改变最优权重和指向性。变化不是必然：若 $\mathbf R=\operatorname{diag}(4,1)$、$\vec a=[1,0]^\top$，任意正加载下的归一化 MVDR 都是 $[1,0]^\top$。报告参数时必须说明采用哪一种口径，不能只写一个无单位的“$\varepsilon$”。</p>
+<p>若输入恰为零矩阵，则迹为零，纯相对加载仍给零矩阵。实现若允许这一输入，须明确如何处理，例如暂停自适应，或采用有单位的正地板并记录求解目标的改变。</p>
 <p><a href="15_appendix-guide.html#sec-15-6-2">附录 B §15.6.2 的第 5 章题 8：改变六麦圆阵半径并比较 WNG、DI 与条件数</a>提供相应练习；它不是综合编号 E15-08。数值由脚本参数决定，不预设固定区间。</p>
 <span id="sec-12-3-9" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-14-3-9">14.3.9 已知噪声加权：在哪个度量下投影？</h3>
 <p>设观测模型为 $\vec b=\mathbf A\vec x_*+\vec n$，其中 $\mathbf A\in\mathbb C^{m\times p}$ 是设计矩阵，$\vec x_*\in\mathbb C^p$ 是真实参数，$\vec b,\vec n\in\mathbb C^m$ 分别是观测和噪声。$\vec n$ 均值为零，已知协方差 $\mathbf C=E[\vec n\vec n^H]$ 厄米正定。本节的 $\mathbf C$ 是 $m\times m$ 噪声协方差，不是符号表中的 LCMV 约束矩阵。普通最小二乘（Ordinary Least Squares，OLS）把每个观测残差等权计入；加权最小二乘（Weighted Least Squares，WLS）用 $\mathbf C^{-1}$ 计入观测可信度。相关噪声需要矩阵权重，不能只按对角元素分别相除。</p>
@@ -1164,7 +1166,7 @@ $\vec v^H\hat{\mathbf R}\vec v=L^{-1}\sum_\ell|\vec v^H\vec x_\ell|^2\geq0$；�
 <p>两路噪声相关时，非对角元素会改变最优组合。权重不一定落在 0 与 1 之间；负权重可以抵消相关噪声，而权重和仍保持目标响应。<a href="#e14-20">E14-20</a>用完整二阶矩、方差完成平方和显式 Cholesky 白化逐步核对这一点。</p>
 <span id="sec-12-3-10" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-14-3-10">14.3.10 数值截断与正则：删去还是收缩弱方向？</h3>
 <p>奇异值分解把设计矩阵写成 $\mathbf A=\mathbf U\boldsymbol\Sigma\mathbf V^H$，其中非负奇异值 $\sigma_i$ 表示对应方向的观测强度。没有截断时，一个非零奇异方向的逆因子是 $1/\sigma_i$，小奇异值会放大该方向上的观测误差。截断奇异值分解（Truncated Singular Value Decomposition，TSVD）选择一个阈值，直接不估计低于保留标准的方向；它改变了有效估计空间。</p>
-<p>二次正则又称 ridge 或 Tikhonov 正则，在残差外惩罚参数范数。令 $\delta>0$，两种解在奇异坐标下为</p>
+<p>这里用 $\delta\|\vec x\|_2^2$ 惩罚参数范数，即岭正则（ridge），也是一般 Tikhonov 正则中惩罚矩阵取单位阵的特例。若改用 $\|\mathbf L\vec x\|_2^2$ 来惩罚差分等结构，原设计矩阵的奇异向量未必还能把问题逐方向拆开。令 $\delta>0$，截断和岭正则的解在奇异坐标下为</p>
 <p>$$\begin{aligned}
 \hat{\vec x}_{\mathrm{TSVD}}
 &=\sum_{\sigma_i>\rho\sigma_{\max}}

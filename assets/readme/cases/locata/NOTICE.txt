@@ -1,4 +1,4 @@
-LOCATA 实录试听对照 / LOCATA recording, before and after
+LOCATA 实录试听对照 / LOCATA recording comparison
 
 Dataset: Christine Evers, Heinrich W. Löllmann, Heinrich Mellmann, Alexander Schmidt,
 Hendrik Barfuss, Patrick A. Naylor, and Walter Kellermann. Data Corpus for the
@@ -12,23 +12,53 @@ https://www.locata.lms.tf.fau.de/files/2020/01/Documentation_LOCATA_final_releas
 Challenge paper: https://doi.org/10.1109/TASLP.2020.2990485
 
 Source take: dev.zip, dev/task2/recording1/dicit/audio_array_dicit.wav.
-A denotes loudspeaker 3; B denotes loudspeaker 4. Both clips cover the entire
-6.302667-second take at 48 kHz. Before is channel 7. After is offline delay and
-sum over all 15 channels, steered with the optical position of A and measured
-microphone positions. Both clips receive the same fixed gain of four and are
-converted to mono PCM16 without separate peak normalization. The displayed
-power changes use the release's A-only and B-only activity labels, including
-room reverberation and background. These numbers do not quantify source power
-during overlapping speech.
+A denotes loudspeaker 3; B denotes loudspeaker 4. All four clips cover the
+same 302528 samples at 48 kHz. before.wav is the raw channel 7 reference;
+after.wav is offline delay and sum; mvdr.wav is the Chapter 5 comparison with loaded MVDR weights and frequency tapers.
+The homepage enhancement, focus.wav, uses full-band loaded MVDR followed by a
+B monitor. The beams use measured microphone and source coordinates. A shared gain of four precedes PCM16
+conversion. Separate peak normalization is disabled for this comparison.
 
-Localization selects frames whose centers have an A-only activity label, uses
-375–3000 Hz, and calls the repository
-SRP-PHAT implementation. Scan angles are relative to global positive y, with
-positive x to the right. The optical measurement supplies the position markers
-and the comparison direction. The scan estimates a bearing, not a range.
+MVDR uses the full Hann STFT windows inside the B-only 3.48–3.94 s interval
+(41 frames, 1024 samples per frame, hop 512). We estimate an uncentered
+interference-plus-background covariance per frequency and add 0.1 times its
+mean diagonal to the diagonal. The MVDR weight is used at full strength from
+250 to 6000 Hz. Raised-cosine tapers blend to delay and sum over 125–250 and
+6000–8000 Hz. The offline weights are fixed when filtering the full take.
+Window positions and settings were chosen during development on this take.
 
-MANIFEST.json records the upstream members and checksums, configuration,
-angle scan, source geometry and integer PCM energies. With the named members
-extracted into PATH/dev and FFmpeg on PATH, run from the repository root:
+The homepage enhancement forms a delay-and-sum monitor aimed at B, then
+projects its weight off the A steering vector. It rejects the modelled A
+response before estimating power. Both the full-band A beam and the B
+monitor use three-frame power smoothing with weights [0.25, 0.5, 0.25]
+and zero padding. The A beam is multiplied by
+max(0.25, P_A / max(P_A + 0.5 P_B, 1e-40)).
+The monitor, the fitted covariance, and the look-ahead make this an
+offline, geometry-assisted example. Room reflections can leak A into
+the monitor and the postfilter can attenuate target speech.
+
+Report windows have no overlap with calibration: A-only 2.65–3.10 s, B-only
+4.08–4.68 s, both active 4.90–5.70 s. Band figures use a symmetric Hann window
+over each interval and integrate interior DFT bins from 300 through 3400 Hz,
+relative to the same window of the raw PCM. The level plot uses the same
+frequency band with 50 ms windows and 20 ms hops. It clips levels below −60
+dBFS for display. Full-band integer PCM sums are recorded separately. Single-
+source windows still include room reverberation and background. The overlap
+window measures combined output; it does not measure either source in
+isolation or provide a clean-reference speech quality score.
+
+For the interactive localization case, each complete STFT frame lies in
+the selected A-only or B-only report window (40 or 54 frames). Each scan
+uses 375–3000 Hz and the repository SRP-PHAT implementation. Angles are
+relative to global positive y, with positive x to the right. Each displayed
+curve is scaled independently to show its peak. The manifest also preserves
+the older A scan selected by frame center. The optical positions supply
+comparison bearings and the plotted markers; they are not inputs to the scan.
+They are inputs to the beamformer and monitor. The scan estimates bearing.
+
+MANIFEST.json records the six upstream members, source and output checksums,
+window and beam settings, angle scan, geometry, and actual PCM measurements.
+With those members extracted into PATH/dev and FFmpeg on PATH, run from the
+repository root:
   .venv/bin/python -m scripts.course_home.prepare_locata PATH --check
-Omit --check only when intentionally regenerating the pair and its manifest.
+Omit --check when intentionally regenerating the clips, plot and manifest.

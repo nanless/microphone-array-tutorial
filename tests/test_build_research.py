@@ -3,6 +3,7 @@ import contextlib
 import io
 import json
 import re
+import shutil
 import tempfile
 import unittest
 from html.parser import HTMLParser
@@ -23,6 +24,7 @@ class Links(HTMLParser):
         self.hrefs = []
         self.ids = set()
         self.images = []
+        self.audio = []
 
     def handle_starttag(self, tag, attrs):
         attrs = dict(attrs)
@@ -32,6 +34,8 @@ class Links(HTMLParser):
             self.hrefs.append(attrs["href"])
         if tag == "img" and "src" in attrs:
             self.images.append((attrs["src"], attrs.get("alt")))
+        if tag == "audio" and "src" in attrs:
+            self.audio.append(attrs["src"])
 
 
 class ResearchBuildTest(unittest.TestCase):
@@ -365,6 +369,13 @@ class ResearchBuildTest(unittest.TestCase):
             figure_root.mkdir()
             for figure in (ROOT / "figures").glob("*.png"):
                 (figure_root / figure.name).write_bytes(figure.read_bytes())
+            case_source = ROOT / "assets/readme/cases/locata"
+            case_root = Path(temporary) / "assets/readme/cases/locata"
+            shutil.copytree(case_source, case_root)
+            pdf_source = ROOT / "dist/microphone-array-tutorial.pdf"
+            pdf = Path(temporary) / "dist" / pdf_source.name
+            pdf.parent.mkdir()
+            shutil.copyfile(pdf_source, pdf)
             with mock.patch.object(build_site, "OUT", output), contextlib.redirect_stdout(io.StringIO()):
                 build_site.main()
             room_source = ROOT / "codes" / "chapters" / "appendix_b" / "room_audio"
@@ -458,6 +469,13 @@ class ResearchBuildTest(unittest.TestCase):
                 parser.feed(path.read_text(encoding="utf-8"))
                 pages[path.resolve()] = parser
             self.assertEqual(len(pages), 26)
+            home = pages[(output / "index.html").resolve()]
+            case_audio = {src for src in home.audio if src.startswith("../assets/readme/cases/locata/")}
+            self.assertEqual(case_audio, {f"../assets/readme/cases/locata/{name}" for name in
+                                         ("before.wav", "after.wav", "focus.wav")})
+            for src in case_audio:
+                target = (output / src).resolve()
+                self.assertEqual(target.read_bytes(), (case_source / target.name).read_bytes())
             room_links = set()
             room_images = set()
             apa_links = set()
@@ -518,6 +536,7 @@ class ResearchBuildTest(unittest.TestCase):
                                              (output / "focus_audio").resolve(),
                                              (output / "derivative_audio").resolve(),
                                              (output / "phase_audio").resolve(),
+                                             (output / "binaural_beamforming_audio").resolve(),
                                              (output / "apa_audio").resolve(),
                                              (output / "reference_audio").resolve(),
                                              (output / "delay_audio").resolve(),
@@ -533,6 +552,7 @@ class ResearchBuildTest(unittest.TestCase):
                             owner = {"gss_audio": "ch08", "moving_audio": "ch09",
                                      "tracking_audio": "ch09", "binaural_audio": "ch01", "spectral_audio": "ch01", "stft_audio": "ch02", "sweep_audio": "ch02",
                                      "geometry_audio": "ch03", "baseline_audio": "ch03", "reflection_audio": "ch04", "focus_audio": "ch04", "derivative_audio": "ch05", "phase_audio": "ch05",
+                                     "binaural_beamforming_audio": "ch05",
                                      "apa_audio": "ch06", "reference_audio": "ch06", "delay_audio": "ch07", "css_audio": "ch08", "mint_audio": "ch07", "mask_audio": "ch08",
                                      "noise_audio": "ch10", "channel_audio": "ch10", "scenario_audio": "ch11",
                                      "weighted_audio": "appendix_a", "response_audio": "appendix_b",
@@ -548,6 +568,11 @@ class ResearchBuildTest(unittest.TestCase):
                             self.assertEqual(target.read_bytes(), source.read_bytes())
                             self.assertFalse(uri.fragment)
                             continue
+                        if target.parent == case_root.resolve():
+                            self.assertTrue(target.is_file())
+                            self.assertEqual(target.read_bytes(), (case_source / target.name).read_bytes())
+                            self.assertFalse(uri.fragment)
+                            continue
                         if target.suffix == ".wav":
                             self.assertEqual(target.parent, (output / "audio").resolve())
                             self.assertTrue(target.is_file())
@@ -557,6 +582,10 @@ class ResearchBuildTest(unittest.TestCase):
                             self.assertTrue(target.is_file())
                             self.assertEqual(target.read_bytes(), (ROOT / "figures" / target.name).read_bytes())
                             continue
+                        if target == pdf.resolve():
+                            self.assertTrue(target.is_file())
+                            self.assertFalse(uri.fragment)
+                            continue
                         self.assertIn(target, pages)
                         if uri.fragment:
                             self.assertIn(unquote(uri.fragment), pages[target].ids)
@@ -565,6 +594,10 @@ class ResearchBuildTest(unittest.TestCase):
                     if uri.scheme or uri.netloc:
                         continue
                     target = (path.parent / unquote(uri.path)).resolve()
+                    if target.parent == case_root.resolve():
+                        self.assertEqual(target.name, "levels.svg")
+                        self.assertTrue(alt and alt.strip())
+                        self.assertEqual(target.read_bytes(), (case_source / target.name).read_bytes())
                     if target.parent == (output / "room_audio").resolve():
                         with self.subTest(page=path.name, image=src):
                             self.assertEqual(target.name, "ROOM_RESULTS.png")

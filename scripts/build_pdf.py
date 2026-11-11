@@ -238,11 +238,12 @@ h1,h2,h3,h4{break-after:avoid;break-inside:avoid;page-break-inside:avoid}
 #ch-10-sec-10-12+ol{break-inside:avoid;page-break-inside:avoid}
 /* 第11章的四条试听链接在纸版紧凑逐行排列，保留链接并避免章末短节孤页。 */
 #ch-11 p:has(>a[href$=".wav"]:only-child){margin-bottom:0}
-/* 附录A末题的计算、表和解释在 A4 上保持可读并尽量同页。 */
-#ch-12 h3#ch-12-sec-u-9ad8275b24{margin-bottom:8px}
-#ch-12 h3#ch-12-sec-u-9ad8275b24~p{margin-bottom:.3em;line-height:1.5}
-#ch-12 h3#ch-12-sec-u-9ad8275b24~table{margin:6px 0;break-inside:avoid;page-break-inside:avoid}
-#ch-12 h3#ch-12-sec-u-9ad8275b24~table th,#ch-12 h3#ch-12-sec-u-9ad8275b24~table td{padding:3px 7px}
+/* 附录 A 末题保留字号，收紧公式外间距，避免边界说明独占一页。 */
+#ch-12 p:has(>a#ch-12-e14-20)~h3{margin-bottom:8px}
+#ch-12 p:has(>a#ch-12-e14-20)~p{margin-bottom:.3em;line-height:1.55}
+#ch-12 p:has(>a#ch-12-e14-20)~p>mjx-container[display="true"]{margin:.5em 0}
+#ch-12 p:has(>a#ch-12-e14-20)~table{margin:6px 0;break-inside:avoid;page-break-inside:avoid}
+#ch-12 p:has(>a#ch-12-e14-20)~table :is(th,td){padding:3px 7px}
 /* 章末独立练习与研究小节从完整页开始，避免最后几行独占一页。 */
 p:has(>a#ch-8-e08-11){break-before:page;page-break-before:always}
 #ch-0-sec-u-cc2724a31a+ul{break-inside:avoid;page-break-inside:avoid}

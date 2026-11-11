@@ -191,15 +191,18 @@ class TACGuardTests(unittest.TestCase):
                     self.assertRaisesRegex(ValueError, 'Ignored source membership'):
                 audit.run_audit(helper.cache)
 
-    def test_actual_four_direct_sources_and_current_115_status(self):
+    def test_actual_four_direct_sources_and_live_lock_status(self):
         report = audit.run_audit()
         self.assertEqual(report['direct_sources_before'], report['direct_sources_after'])
         self.assertEqual(len(report['direct_sources_before']), 4)
         self.assertNotIn('codes/chapters/ch00/core/source_history.py', report['direct_sources_before'])
         for relative, digest in report['direct_sources_before'].items():
             self.assertEqual(hashlib.sha256((audit.ROOT / relative).read_bytes()).hexdigest(), digest)
-        self.assertEqual(report['source_lock_project_count'], 115)
-        self.assertEqual(report['source_status_sha256'], audit.digest(audit.STATUS.read_bytes()))
+        lock_bytes = audit.LOCK.read_bytes()
+        self.assertEqual(report['source_lock_sha256'], hashlib.sha256(lock_bytes).hexdigest())
+        lock = audit.strict_loads(lock_bytes)
+        self.assertEqual(report['source_lock_project_count'], len(lock['projects']))
+        self.assertEqual(report['source_status_sha256'], hashlib.sha256(audit.STATUS.read_bytes()).hexdigest())
         self.assertFalse(report['source_identity_before']['clean_after'])
         self.assertTrue(report['source_identity_after']['clean_after'])
         self.assertEqual(report['counts'], {'static_contracts': 10, 'original_runtime_calls': 0})

@@ -57,6 +57,58 @@ def missing_score_anchor():
             'is_confidence_interval': False}
 
 
+def deadline_acceptance_anchor():
+    """One planned response per simulated session, including absent output."""
+    deadline_ms = 150
+    target_rate = Fraction(1, 100)
+    tail_alpha = Fraction(1, 160)  # Two candidates, two scenarios, two tails.
+    candidate_responses = {
+        'A': {'normal': [100] * 600, 'stress': [100] * 17 + [180, None, None]},
+        'B': {'normal': [125] * 600, 'stress': [125] * 19 + [150]},
+    }
+    candidates = {}
+    for candidate, scenarios in candidate_responses.items():
+        rows = {}
+        delivered = []
+        for scenario, responses in scenarios.items():
+            observed = [value for value in responses if value is not None]
+            delivered.extend(observed)
+            n = len(responses)
+            late = sum(value > deadline_ms for value in observed)
+            absent = n - len(observed)
+            violations = late + absent
+            # At the required probability, large violation counts reject an
+            # acceptable risk. Zero counts use the existing exact upper limit.
+            upper = tail = None
+            if violations == 0:
+                upper = zero_failure_upper_bound(n, 1 - float(tail_alpha))
+                verdict = 'pass' if upper <= target_rate else 'undetermined'
+            else:
+                tail = sum(math.comb(n, k) * target_rate**k * (1 - target_rate)**(n - k)
+                           for k in range(violations, n + 1))
+                verdict = 'fail' if tail < tail_alpha else 'undetermined'
+            rows[scenario] = {'planned': n, 'on_time': n - violations,
+                              'late': late, 'absent': absent, 'violations': violations,
+                              'zero_count_upper': upper,
+                              'upper_tail_at_limit': float(tail) if tail is not None else None,
+                              'verdict': verdict}
+        planned = sum(row['planned'] for row in rows.values())
+        violations = sum(row['violations'] for row in rows.values())
+        verdicts = {row['verdict'] for row in rows.values()}
+        candidates[candidate] = {
+            'scenarios': rows,
+            'pooled_violations': violations,
+            'pooled_planned': planned,
+            'pooled_observed_rate': violations / planned,
+            'delivered_only_p99_ms': sorted(delivered)[(99 * len(delivered) + 99) // 100 - 1],
+            'verdict': 'fail' if 'fail' in verdicts else
+            'undetermined' if 'undetermined' in verdicts else 'pass',
+        }
+    return {'constructed_data': True, 'deadline_ms': deadline_ms,
+            'target_violation_probability': float(target_rate),
+            'per_bound_alpha': float(tail_alpha), 'candidates': candidates}
+
+
 def simultaneous_risk_anchor():
     scenarios, trials, alpha, target = 3, 100, .05, .01
     per_alpha = alpha / scenarios
@@ -67,7 +119,8 @@ def simultaneous_risk_anchor():
             'simultaneous_upper_each': zero_failure_upper_bound(trials, 1-per_alpha),
             'target_upper': target, 'minimum_zero_failure_trials_each': minimum,
             'previous_n_upper': zero_failure_upper_bound(minimum-1, 1-per_alpha),
-            'minimum_n_upper': zero_failure_upper_bound(minimum, 1-per_alpha)}
+            'minimum_n_upper': zero_failure_upper_bound(minimum, 1-per_alpha),
+            'deadline_acceptance': deadline_acceptance_anchor()}
 
 
 def interval_anchor():

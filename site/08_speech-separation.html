@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 8 章 · 语音分离 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="076fed964b7a"><style>
+<meta name="source-digest" content="3b9f0c885a50"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -985,7 +985,9 @@ C_{ij}&=\frac{|u_i^\top v_j|}{\|u_i\|\|v_j\|},\\
 \sum_b w_b[t]&>0.
 \end{aligned}\tag{8-26}$$</p>
 <p>窗之和为 1 时可以省略分母，但不能默认任意窗口、块移都满足。边界只含一块时也须保持非零支持。E08-23 只从实际重叠区判断两个模拟输出槽位的对应，随后按互补线性窗拼接；干净参考仅留给评分。</p>
-<p>连续识别的指标也要写清分配规则。连接最小排列词错误率（Concatenated Minimum-Permutation WER，cpWER）、最优参考组合词错误率（Optimal Reference Combination WER，ORC-WER）和说话人归属词错误率（Speaker-Attributed WER，sa-WER）处理说话人对应的方式不同，不能只写“WER”。</p>
+<p>流式实现还要约定哪些样本已经可以交付。沿用 E08-23 的两块 $[0,1.2)$ s 和 $[0.8,2.0)$ s，假设整块收齐才能生成槽位，且两块均无额外右侧上下文。只依赖第一块的 $[0,0.8)$ s 区间最早在 1.2 s 可交付。共同区间 $[0.8,1.2)$ s 用于估计排列，也要等待第二块；在 2.0 s 才取得拼接所需的全部输入。因此该区间各样本的输入等待约为 0.8～1.2 s，尽管两块只重叠 0.4 s。</p>
+<p>以上时刻只由输入依赖决定。若第二块还需后续样本，须等待到实际右边界，录音结束时则按明确的排空或填充规则处理。再另记推理、排队和写出时间，才能判断输出什么时候到达下游。若匹配器报告未确定，应保存该段槽位状态和回退结果，不能让缺失的匹配事件消失在平均延迟里。样本所属时刻与实际交付的配对见<a href="10_engineering-practice.html#sec-u-864ef35c3f">第 10 章 E10-17</a>。</p>
+<p>连续识别的指标也要写清分配规则。拼接最小排列词错误率（Concatenated Minimum-Permutation WER，cpWER）、最优参考组合词错误率（Optimal Reference Combination WER，ORC-WER）和说话人归属词错误率（Speaker-Attributed WER，sa-WER）处理说话人对应的方式不同，不能只写“WER”。</p>
 <p>cpWER先将同一参考说话人的话语按开始时间拼接，再为整段输出流选择一套全局排列；它不能在说话人每次开口时重新交换输出槽位。ORC-WER则按时间顺序将参考话语分配给输出流，同一句话只归一条流，允许不沿用参考说话人标签。因此，ORC-WER更适合评价可复用的CSS输出流，但其低分不能证明流具有永久身份。<a href="https://www.isca-archive.org/chime_2023/neumann23_chime.pdf">MeetEval原论文，§3.2式(3)、§3.4式(5)，印刷页28～29</a>。</p>
 <p>本书的四词例按时间给出参考 $A:a,\ B:c,\ A:b,\ B:d$；两条输出流为“a d”和“c b”。逐话语分配可把四词全部放到正确流，ORC-WER为0/4；cpWER的参考连接文本是“A:a b”“B:c d”，固定一套整段排列后至少错两词，最佳值为2/4。这个例子只枚举指定文字的编辑距离，没有运行识别器或MeetEval软件，也不涉及断句、分词或重叠时间误差。</p>
 <p>CSS 解决长录音的分块与输出一致性，不保证身份永久不交换；需要稳定身份时还要结合分割或说话人跟踪。</p>

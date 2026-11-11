@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 3 章 · 阵列几何形态 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="076fed964b7a"><style>
+<meta name="source-digest" content="3b9f0c885a50"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -864,7 +864,7 @@ J(\vec v)=\|\mathbf C\vec v-\vec x\|_2^2
 </table></div>
 <p>50 ppm 一行指两节点之间的相对误差。同一物理时刻的累计采样数差除以标称采样率，得到 $50\times10^{-6}\times3600=0.18$ s；在 16 kHz、1 小时下相应的累计差为 2880 个采样点。</p>
 <p>若两个独立晶振各容许 ±50 ppm，一快一慢时相对误差可接近 100 ppm，不能仍按 50 ppm 计算。</p>
-<p>若按同一采样索引比较两节点的物理采样时间，50 ppm、标称 1 小时对应的时间差大小为 $0.18/1.00005\approx0.179991$ s；这与累计采样数差的换算口径不同。该表只作数量级分析，不替代设备时钟的温漂与统计测量。</p>
+<p>若两节点同时开始采样，实际采样率分别为 $f_1$ 和 $f_2$，则同一采样索引 $n$ 对应的物理时间差大小为 $n|1/f_1-1/f_2|$。例如一端恰为标称 16 kHz，另一端快 50 ppm，在标称 1 小时对应的索引处，时间差为 $0.18/1.00005\approx0.179991$ s。这个量比较相同索引的物理时刻，上文的 2880 点比较相同物理时刻的累计采样数。</p>
 <p>增益失配一行的两个 dB 数有不同分母。−40 dB 是后方残差相对一只麦克风输入幅度的电平；−31 dB 先把前方响应归一到 0 dB，再读后方零陷的相对电平。读波束图时应使用后一个口径，不能把两数当成同一零陷深度。</p>
 <p>位置误差造成的相位偏差随频率增大；增益漂移、耦合和噪声则未必遵循同一单调关系。依赖精确相消的零陷和超指向设计通常最敏感。</p>
 <p>固定一体式阵列可在受控条件下标定相对通道响应；是否出厂写入补偿系数，取决于具体设备和流程。例如，<a href="https://wiki.analog.com/resources/tools-software/sigmastudio/toolbox/adialgorithms/offlinemicrophonematch">ADI 的 SigmaStudio 离线麦克风匹配说明</a>只涉及两路输入的电平匹配。</p>

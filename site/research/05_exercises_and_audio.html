@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>章节代码练习与音频实验 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="076fed964b7a"><style>
+<meta name="source-digest" content="3b9f0c885a50"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -877,6 +877,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <p>E14-04 在<a href="../14_appendix-symbols-math.html#sec-14-4">附录 A</a>比较空间矩阵白化和 GCC-PHAT 的频谱相位加权：$R_{nn}=\operatorname{diag}(4,1)$ 时可取 $W=\operatorname{diag}(0.5,1)$，得到 $WR_{nn}W^H=I$，而导向矢量 $[1,1]^\top$ 要同步变为 $[0.5,1]^\top$。对一个复数互谱除以其模只得到标量相位，不能完成这项跨通道协方差变换。运行<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/exercises_engineering.py">工程练习</a>查看矩阵乘法输出。</p>
 <p>E09-06 使用确定性角度观测：交叉帧两轨均预测 $40^\circ$，B 的 $39^\circ$ 先于 A 的 $41^\circ$ 输入。两种一对一配对的平方残差和均为 $2\ \mathrm{deg}^2$；指定并列规则产生两次身份错配，但未滤波观测集合的 OSPA 为 0。另从 $P_0=I$、$Q=\operatorname{diag}(0.1,0.01)$ 出发连续预测两次，角度方差为 $2.10$、$5.21\ \mathrm{deg}^2$；每秒最多转 $5^\circ$ 的控制角为 $25^\circ$、$30^\circ$。这些答案可由<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/tests/test_codes_tracking_crossing_dropout.py">独立测试</a>逐项复核，适用边界见<a href="../09_source-tracking.html#sec-9-6">第 9 章练习</a>；它没有语音或设备 WAV，不应借用追踪试听样本作身份真值。</p>
 <p>E10-14 把六帧的服务时间、队列容量、内存与示意电池功耗放在同一预算中。平均 RTF 为 0.75，但六帧有三次超过 10 ms 期限；峰值 667.5 KiB、示意平均功耗 0.95 W，不能用平均吞吐合格推出尾延迟合格。E11-05～07 分别用圆阵间距、会议单路延迟和车载时钟偏移做“先硬约束后软指标”的具名候选筛选。输入与完整答案见<a href="../10_engineering-practice.html#sec-10-4-3">第 10 章</a>、<a href="../11_selection-guide.html#sec-11-6">第 11 章</a>及<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/exercises_engineering.py">工程练习代码</a>。这些数值是教学条件，不是设备验收。</p>
+<p><a href="../10_engineering-practice.html#sec-u-864ef35c3f">E10-17</a>的 <code>variable_callback_replay</code> 另核变长回调中的输入标签、实际出样槽和未知缺口。对齐后的两次延迟为 33.75 ms、42.5 ms，第三次无法配对。第 11 章 E11-13 的 <code>deadline_acceptance</code> 用同样的分母原则做选型：设备未交付的已计划应答进入违约计数，测试日志未知另记，常态和压力场景各自判定。 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/engineering_boundary_exercises.py">E10-17 代码</a> · <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch11/chapter11_experiments.py">第 11 章统一入口</a></p>
 <span id="sec-3" class="anchor-alias" aria-hidden="true"></span><span id="2-合成音频试听前的约定" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-2769596ee0">2. 合成音频试听前的约定</h2>
 <p>第 3～11、13～16、18、21～30、32～34 节的 109 个样本均为本书数学合成，不是真人语音或实测房间。听到的谐波音、噪声和声像变化用于分辨计算操作，不能据此评价可懂度、语音自然度、识别准确率或真实设备性能。没有执行正式听音实验或给出 MOS。</p>
 <p>每组文件共用一个增益，导出峰值不超过约 0.8；设备播放音量不由文件保证。请从低音量开始，不要为了听残差而立即把音量调高。播放器不自动播放，不做单个文件的响度匹配。</p>

@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 15 章 · 附录 B：路径地图与练习 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="076fed964b7a"><style>
+<meta name="source-digest" content="3b9f0c885a50"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -817,7 +817,7 @@ D_t(x)&=[1-p_D(x)]D^-(x)\\
 <ol start="4">
 <li>
 <p>在个人实验副本中查看 <code>fig_geometries</code> 生成的图 8(e)：原图是环上 6 麦加中心 1 麦，共 7 麦。保持中心麦和圆环半径不变，把环上改为 7 麦，使总数为 8 麦；坐标、标题和图注须同时改为“7+1”。思考：中心麦能提供什么新信息？</p>
-<p><strong>提示</strong>：它可作为参考通道，并新增从中心到各环麦的基线；“到各环麦距离相等”描述的是几何布局，不表示任意入射方向下都与环麦等相位。固定半径时增加环上麦数会缩短相邻间距，但不会增加最大孔径。</p>
+<p><strong>提示</strong>：它可作为参考通道，并新增从中心到各环麦的基线。“到各环麦距离相等”描述的是几何布局，不表示任意入射方向下都与环麦等相位。固定半径 $r$ 时，六麦圆环有直径对，最大麦距为 $2r$。七麦圆环最远两麦相隔三格，最大麦距是 $2r\sin(3\pi/7)\approx1.950r$，略小于原来的 $2r$。中心到环上的距离为 $r$，不会改变这两个最大值。见<a href="03_array-geometry.html#sec-3-1">第 3 章阵列几何</a>。</p>
 </li>
 </ol>
 <span id="sec-13-6-2" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-15-6-2">15.6.2 定位与波束：第 4、5 章的题 5～8</h3>
@@ -1620,6 +1620,7 @@ $$</p>
 <p>图67～69由声学成像专题的解析控制生成，分别检查PSF、相干失配、完整CSM剥离、校准与区域量。其18道练习和五份独立音频见<a href="12_acoustic-imaging.html">扩展专题Ⅰ</a>。</p>
 <p>图70～72与25道E13题见<a href="13_distributed-enhancement.html">分布式协同增强专题</a>。17份独立WAV使用即时已知协方差混合；时钟、量化和缺包有不同误差来源，不能把它们并入主109样本或称为真实无线录音。</p>
 <p>图73读取第5章三份已知双音PCM。相位反号和正交变化保持解析稳态功率，却增加同钟参考误差；量化后三份功率分别保存，不假定完全相等。它由独立绘图脚本生成，不重写其他图的源摘要。</p>
+<p>第 5 章 E05-27 的四份双耳波束试听可用 <code>.venv/bin/python -m codes.chapters.ch05.examples.binaural_beamforming_demo --check</code> 只读回放检查。它们是给定方向、已知目标和背景下的数学合成样本，左、右耳的复响应与噪声条件都由实验指定。 <a href="05_beamforming.html#e05-27">双耳波束练习</a></p>
 <p>图74读取第6章六份已知播放增益与尾声PCM。先核验完整资产，再分别绘制给定增益、切换后实际残差、分窗整数功率及播放停止后的帧去均值RMS。已知路径从开始冻结，不做训练或增益拟合；完整1600点尾中当前参考全零，但历史回声非零，十个<code>near_only</code>标签只说明活动规则的边界。</p>
 <p>图75读取第7章六份已知到达与历史PCM，分别呈现源时刻手算、同一接收时轴的波形、实际整数目标误差，以及独立的晚期功率自由衰减。保护间隔的单实回归不是完整STFT-WPE，统计功率曲线也不是从这六份音频估计的房间衰减。</p>
 <p>图76读取第8章四份同槽同钟PCM，区分解析拼接倍率与实际波形，并分别核主/后评分窗的合并整数误差。正确排列不保证极性或增益正确；本控制没有运行盲CSS或身份识别。</p>

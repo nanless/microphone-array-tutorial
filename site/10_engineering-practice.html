@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 10 章 · 工程实现、评测与产业实践 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="076fed964b7a"><style>
+<meta name="source-digest" content="3b9f0c885a50"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -578,6 +578,7 @@ $$</p>
 <li>监控线程汇总期限违约、丢样和高水位，不让日志写入阻塞回调。</li>
 </ul>
 <p>回调与工作线程的时钟、缓冲单位和丢帧策略必须写清。这是一种参考结构，不表示所有实时 DSP 都只能在回调外执行；有界、预分配且能满足期限的小型处理也可以在回调中完成。</p>
+<p>回调若由后端决定实际块长，应用应按本次收到的 <code>frameCount</code> 推进缓冲，并分别保存输入范围与提交的输出范围。工作线程跨回调交付时，还要记录输出实际承接了哪个输入标签。<a href="#sec-u-864ef35c3f">E10-17</a>用变长回调演示配对和缺口恢复。<a href="https://github.com/PortAudio/portaudio/blob/3f7bee79a65327d2e0965e8a74299723ed6f072d/include/portaudio.h#L690-L864" title="citation">PortAudio 19.7.0 固定头文件的时间戳、状态位和块长说明</a></p>
 <p>环形缓冲已满时，系统需要事先选择“丢最旧块”“丢新块”或“降级处理”。任何一种策略都会改变输出：丢块破坏连续状态，等待会阻塞采集，积压则增大延迟。本书的 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch10/core/engineering.py"><code>RingBuffer</code></a> 采用“丢最旧样本”的可见基线，并累计 <code>dropped</code>；它用来说明容量和溢出语义，不是无锁实时队列。</p>
 <p><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch10/core/engineering.py"><code>simulate_deadline_queue</code></a> 用一条串行工作队列区分三件事：处理完成晚于本帧期限、队列达到高水位、容量已满而丢帧。平均 RTF 小于 1 仍可能出现其中任何一种。正式设备还要记录<strong>播放下溢</strong>（下一块音频未及时送到设备，underrun）和<strong>采集上溢</strong>（采集数据未及时取走，overrun）；驱动常把两者合称 <code>xrun</code>。线程优先级、CPU 频率策略和并发负载也应一同记录。</p>
 <p>同一时刻的事件需要明确先后：本书模型先释放已经完成的帧，再接收这一时刻到来的新帧；恰在期限完成算准时。</p>
@@ -699,7 +700,8 @@ $$</p>
 <p><img alt="图40：采样率偏移的时间漂移与未同步求平均" src="../figures/fig40_clock_drift.png" onerror="this.alt+='（图缺失）'" /></p>
 <p>图 40：16 kHz、100 ppm、8 s 数学合成例子；各文件采用同一导出增益。参考信号、双设备采样、未对齐均值与理想同步均值用于区分时钟误差和空间噪声。请结合<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/audio/MANIFEST.json">音频清单</a>读取参数。</p>
 <p>同索引直接求平均时，时差随时间增加，频率越高，同一时差对应的相位差越大；局部相消不能解释成已经消除了环境噪声。理想同步均值使用已知连续信号与时钟真值，表示准确重采样所要达到的目标，<strong>并非已经实现的盲 SRO 估计器或补偿器输出</strong>。因此试听比较只能说明失同步的后果，不能据此报告某补偿算法的性能；下文另有实际估计与插值的闭环例子。</p>
-<p>初始时差表现为整条“延迟—时间”曲线的截距，稳定 SRO 表现为斜率，偶发丢样则表现为阶跃。三者不能只靠首尾两个点可靠区分。工程上可分块估计互相关峰，先检查峰值置信度，再对可信的“时间—相对延迟”点做直线拟合；残差中若出现近似一个或多个采样间隔的突跳，应先查丢样和时间戳，而不是把所有变化都拟合成 ppm。</p>
+<p>初始时差表现为整条“延迟—时间”曲线的截距，稳定 SRO 表现为斜率。如果软件把缺样后的数据按接收顺序重新紧排，后续对应索引会改变，延迟曲线就可能出现阶跃。若仍保留可靠的原始索引，应先把该区间记作缺口；缺样本身不说明设备时钟速率改变。</p>
+<p>只靠首尾两个点很难区分这些原因。分块估计互相关峰时，先检查峰值是否可信，再对无缺口区间的“时间—相对延迟”点作直线拟合。残差出现近似一个或多个采样间隔的突跳时，先核对采样计数、丢弃记录和时间戳。</p>
 <p><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch10/core/engineering.py"><code>estimate_sro_ppm</code></a> 把相对延迟定义为“参考时间减设备时间”，再拟合截距和斜率；正斜率表示设备采样率较高，与 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch10/core/engineering.py"><code>resample_sro_to_reference</code></a> 的符号一致。</p>
 <p>以参考时间为横轴，将观测延迟拟合为 $\widehat d(T)=b+\widehat sT$。这里 $b$ 的单位是秒，$\widehat s$ 是秒/秒；仅在恒定速率模型成立且 $\widehat s\lt 1$ 时，才有以下换算：</p>
 <p>$$
@@ -1488,6 +1490,10 @@ $$</p>
 <td>单调采集时钟域；时间戳指本帧首样本，不是墙上时间</td>
 </tr>
 <tr>
+<td><code>sample_rate_hz</code>、<code>vad_active</code></td>
+<td>名义采样率（Hz）与该帧经迟滞和结束保持后的语音活动状态；实测速率和实际判决可用时刻需另记</td>
+</tr>
+<tr>
 <td><code>queue_depth</code></td>
 <td>发布该条记录时仍在等待的帧数，不含正在执行的帧</td>
 </tr>
@@ -1721,7 +1727,72 @@ $$</p>
 <p>假设同一个双工流的时间戳可信、采集与播放均为 16 kHz。一次回调收到 160 个输入样本，并将它们按相同索引复制到本次的 160 点输出缓冲，没有额外算法延迟。已知首个输入样本的模数转换器（Analog-to-Digital Converter，ADC）采样时刻为 5.000 s，回调调用时刻为 5.015 s，首个输出样本的 DAC 时刻为 5.045 s。回调处理用时 3 ms 且按期返回。求输入在回调开始时的年龄、输出首样本还需等待的时间，以及该输入样本到对应输出样本的延迟。</p>
 <p><strong>参考答案</strong>：输入年龄为 $(5.015-5.000)\times1000=15$ ms；输出提前安排量为 $(5.045-5.015)\times1000=30$ ms。由于明确了输入、输出的样本对应关系，该样本的 ADC 到 DAC 延迟为 $(5.045-5.000)\times1000=45$ ms。3 ms 计算已经发生在已给出的两个端点之间，不能再加成 48 ms；如果无法按期交付缓冲，给定的正常播放对应关系也就不能继续沿用。</p>
 <p>每块音频覆盖 $160/16000=10$ ms。若输出改为晚一块才发送，原输入样本对应下一块输出首点的 5.055 s，此时延迟为 55 ms。直接相减“当前回调的两个首样本时间戳”仍只有 45 ms，却已比较了错误的一对样本。首样本时间、块时长、计算用时和数据经过几块缓冲必须分别记录。</p>
-<p>这三个字段对应 PortAudio 的 <code>inputBufferAdcTime</code>、<code>currentTime</code>、<code>outputBufferDacTime</code>；<a href="https://files.portaudio.com/docs/v19-doxydocs/structPaStreamCallbackTimeInfo.html" title="citation">官方结构体说明</a>规定它们以秒计并使用所属流的时间基准（核实：2026-09-26）。跨流、跨设备的时间不能未经校准直接相减；实际后端未报告的硬件延迟还需环回测量。示例 <code>E10-17</code> 将题设时刻记为整数纳秒以精确相减，这只是记录单位，不是宣称设备有纳秒精度，也不是实际调用 PortAudio 的测量结果。</p>
+<p>这三个字段对应 PortAudio 的 <code>inputBufferAdcTime</code>、<code>currentTime</code>、<code>outputBufferDacTime</code>，以秒计并使用所属流的时间基准。示例将题设时刻记为整数纳秒以精确相减。设备的时间戳精度应另行验证，跨流、跨设备时须先校准到共同时间基准。<a href="https://files.portaudio.com/docs/v19-doxydocs/structPaStreamCallbackTimeInfo.html" title="citation">PortAudio 官方结构体说明</a></p>
+<p><strong>变长回调中的样本配对。</strong> 下面是同一双工流的离线回放。采集和播放都按 16 kHz 的精确网格建模，每个时间样本占 0.0625 ms。回调读取在其起点前已经发布的结果；同一时刻发生发布和读取时，本例约定先发布。表中输入与输出范围均为左闭右开，输出索引从应用开始提交缓冲时累计，包含用于填充的输出槽。</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
+<thead>
+<tr>
+<th scope="col" style="text-align: right;">回调</th>
+<th scope="col" style="text-align: right;">点数</th>
+<th scope="col">输入范围</th>
+<th scope="col">输出范围</th>
+<th scope="col" style="text-align: right;">ADC 首点（ms）</th>
+<th scope="col" style="text-align: right;">回调起点（ms）</th>
+<th scope="col" style="text-align: right;">DAC 首点（ms）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">160</td>
+<td><code>[0,160)</code></td>
+<td><code>[0,160)</code></td>
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">116</td>
+<td style="text-align: right;">130</td>
+</tr>
+<tr>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">80</td>
+<td><code>[160,240)</code></td>
+<td><code>[160,240)</code></td>
+<td style="text-align: right;">110</td>
+<td style="text-align: right;">124</td>
+<td style="text-align: right;">140</td>
+</tr>
+<tr>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">160</td>
+<td><code>[240,400)</code></td>
+<td><code>[240,400)</code></td>
+<td style="text-align: right;">115</td>
+<td style="text-align: right;">132</td>
+<td style="text-align: right;">145</td>
+</tr>
+<tr>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">160</td>
+<td><code>[400,560)</code></td>
+<td><code>[400,560)</code></td>
+<td style="text-align: right;">125</td>
+<td style="text-align: right;">144</td>
+<td style="text-align: right;">155</td>
+</tr>
+<tr>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">80</td>
+<td>连续索引未知</td>
+<td><code>[560,640)</code></td>
+<td style="text-align: right;">137</td>
+<td style="text-align: right;">154</td>
+<td style="text-align: right;">165</td>
+</tr>
+</tbody>
+</table></div>
+<p>输入标签 A 对应索引 120，在回调 0 的块内偏移 120，实际采样时刻为 $100+120/16=107.5$ ms。工作线程在 122 ms 发布结果，赶上 124 ms 开始的回调 1。已记录的输出标签在该回调偏移 20 处，即输出索引 180，DAC 时刻为 $140+20/16=141.25$ ms。两端相减得到 <strong>33.75 ms</strong>。</p>
+<p>标签 B 对应输入索引 200，在回调 1 的偏移 40 处采到，即 $110+40/16=112.5$ ms。结果在 133 ms 发布，已错过 132 ms 开始的回调 2。已记录的输出标签落在回调 3 的首点，即索引 400，DAC 时刻为 155 ms，因此延迟为 <strong>42.5 ms</strong>。能赶上哪个回调只限定结果可以在哪时被读取，具体输出位置还须由实际标签确认。</p>
+<p>第三个输入标签 C 在回调 3 的索引 480 处采到，采样时刻为 $125+80/16=130$ ms，结果于 150 ms 发布。回调 4 报告 <code>paInputOverflow</code>。在不指定固定块长的模式中，这个标志说明本次输入首样本前有采集数据被丢弃，接口没有给出丢弃数量。本例的恢复策略丢弃旧待发标签并提交无标签填充，因此 C 没有对应输出。报告保留计划 3 个、配对成功 2 个和丢样量未知，C 不参加延迟统计。建立新的连续记录后，再用新标签测量。<a href="https://github.com/PortAudio/portaudio/blob/3f7bee79a65327d2e0965e8a74299723ed6f072d/include/portaudio.h#L723-L730" title="citation">PortAudio 19.7.0 固定头文件的输入上溢定义</a></p>
+<p>原练习入口的 <code>variable_callback_replay</code> 输出这五行和三个标签的纳秒读数。它处理的是固定合成事件。做实测时，可用同一台双通道记录仪记录送入设备的探测信号和设备输出，按固定窗口定位同一标记，再比较报告时间戳与外部记录。若信号经过扬声器和麦克风，结果还包含声学路径，需保留测点、距离、采样率和失败数。Android 官方环回用已知探测音和归一化相关测输出到回采的总偏移，本文的 ADC 到 DAC 数值须从实际正向处理路径取得。<a href="https://source.android.com/docs/core/audio/latency/measure#technique" title="citation">Android 官方环回延迟测量方法</a></p>
 <h3 id="sec-u-fe48419bc0">E10-18：重叠窗与不等长任务怎样计算 RTF</h3>
 <p>输入为 16 kHz 连续音频，分析窗 512 点，帧移 128 点，每次调用服务耗时 4 ms。只计算稳定运行的服务负载，暂不计启动填窗和末尾排空。求正确的 RTF，并解释用窗长作分母会怎样。</p>
 <p>每次调用只新推进 $128/16000=8$ ms 音频，故按式(10-12)得到 $4/8=0.5$。512 点窗长虽然是 $32\ \mathrm{ms}$，其中大部分样本与上次重叠；若用 $4/32=0.125$，就把同一源时间重复计入分母。四通道并行采集也不会把这次推进量变成 32 ms。</p>

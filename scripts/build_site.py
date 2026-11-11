@@ -1197,6 +1197,8 @@ def source_digest():
     paths += sorted((ROOT / "figures").glob("fig*.png"))
     paths += [COURSE_HOME_ROOT / name for name in COURSE_HOME_FILES]
     paths += [ROOT / "assets/readme/lab" / name for name in ("single.wav", "left.wav", "right.wav")]
+    paths += [ROOT / "assets/readme/cases/locata" / name for name in
+              ("MANIFEST.json", "NOTICE.txt", "before.wav", "after.wav", "mvdr.wav", "levels.svg")]
     paths += [Path(__file__), ROOT / "scripts" / "build_markdown_helpers.py",
               INLINE_LAYOUT_PATH,
               ROOT / "scripts" / "heading_aliases.py",

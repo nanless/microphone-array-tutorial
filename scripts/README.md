@@ -10,7 +10,7 @@
 
 ## 课程入口
 
-从 [GitHub Pages 课程首页](https://nanless.github.io/microphone-array-tutorial/) 可以看互动示意、听 LOCATA 房间实录的处理前后对照，再按基础、算法、工业实践和专题选课。[工业实践入口](https://nanless.github.io/microphone-array-tutorial/site/#course-engineering)按搭链路、算预算和做验收链接到正文及源码手册。
+从 [GitHub Pages 课程首页](https://nanless.github.io/microphone-array-tutorial/) 可以看互动示意、听 LOCATA 房间实录的原始、对齐相加与 MVDR 加后滤波对照，再按基础、算法、工业实践和专题选课。[工业实践入口](https://nanless.github.io/microphone-array-tutorial/site/#course-engineering)按搭链路、算预算和做验收链接到正文及源码手册。
 
 推送站点或配套媒体到 `main` 后，[发布工作流](../.github/workflows/pages.yml)会发布生成好的 `site/`、插图、试听文件和 PDF。本地开发可直接在浏览器中打开 [`site/index.html`](../site/index.html)。
 
@@ -21,6 +21,8 @@
 .venv/bin/python scripts/course_home/export_portable.py --check
 .venv/bin/python scripts/build_site.py
 ```
+
+[LOCATA 试听与电平图](../assets/readme/cases/locata/NOTICE.txt)由 `scripts.course_home.prepare_locata` 生成。准备标明摘要的六个原始成员和 FFmpeg 后，用 `.venv/bin/python -m scripts.course_home.prepare_locata /path/to/extracted --check` 只读重放。要重生素材时先省略 `--check`，再运行只读核验和站点构建。
 
 只改课程模板、样式或交互时，站点源摘要改变，合订本内容不受影响。若同时改了共享的 `build_site.py`，按下方顺序重新构建 PDF。
 

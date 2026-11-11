@@ -616,6 +616,8 @@ def expected_site_content(name: str, source: str):
     ids = {primary for _level, _title, primary in semantic_heading_ids(source)}
     images = Counter(f"../figures/{figure_name}"
                      for _alt, figure_name, _number in extract_figure_references(source))
+    if name == "00_overview.md":
+        images["../assets/readme/cases/locata/levels.svg"] += 1
     if name == "15_appendix-guide.md":
         if not re.search(r"!\[[^\]]+\]\(\.\./codes/chapters/appendix_b/room_audio/ROOM_RESULTS\.png\)", source):
             raise ValueError("附录 B 缺少房间仿真补充图源引用")
@@ -1515,6 +1517,8 @@ def site_source_digest():
     paths += sorted((ROOT / "figures").glob("fig*.png"))
     paths += [ROOT / "scripts/course_home" / name for name in ("index.html", "home.css", "home.js")]
     paths += [ROOT / "assets/readme/lab" / name for name in ("single.wav", "left.wav", "right.wav")]
+    paths += [ROOT / "assets/readme/cases/locata" / name for name in
+              ("MANIFEST.json", "NOTICE.txt", "before.wav", "after.wav", "mvdr.wav", "levels.svg")]
     paths += [ROOT / "scripts" / name for name in
               ("build_site.py", "build_markdown_helpers.py", "inline_layout.js", "heading_aliases.py",
                "chapter_identity.py", "chapter_numbering.json", "legacy_sequential_anchors.json", "code_layout.py", "make_figures.py",

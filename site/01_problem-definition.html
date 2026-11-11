@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 1 章 · 问题定义与双耳启示 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="076fed964b7a"><style>
+<meta name="source-digest" content="3b9f0c885a50"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -551,7 +551,7 @@ $$</p>
 <p><strong>双耳相位差（Interaural Phase Difference，IPD）</strong>比较同一频率的左右相位，本章同样采用右减左。对两耳谱值都非零的纯延迟模型，右减左相位为 $2\pi f\tau$，只在相差整数个 $2\pi$ 时视为同一相位，且 $\tau=t_L-t_R$。</p>
 <p>于是 2 kHz 下，$360^\circ\times2000\times0.0001=72^\circ$，而 $360^\circ\times2000\times0.0006=432^\circ$；减去一整圈 $360^\circ$ 后仍是 $72^\circ$。这项相位计算没有为两个时差增添新的区分信息。17.5 cm 的无遮挡双点最大时差只有约 510 μs，因此 600 μs 不属于该特定几何的候选。</p>
 <p>再看一对没有被几何上限排除的候选：在同一无遮挡双点模型中，$+450\,\mu\mathrm{s}$ 和 $-50\,\mu\mathrm{s}$ 都合法，相差也恰好是 2 kHz 的一个周期。它们的右减左相位分别为 $324^\circ$ 和 $-36^\circ$，主值相同，但时差符号相反。若同一传播时差也作用于有足够能量的 1 kHz 分量，两者的相位分别变为 $162^\circ$ 和 $-18^\circ$，这一频点就能区分它们。判断时要同时检查：相位是否相同、候选时差是否落在几何允许范围内，以及其他频点是否提供了独立约束。</p>
-<p>一般滤波响应还会改变相位，不能直接把任意 IPD 除以 $2\pi f$ 当作传播 ITD；正式复比定义及失效例见本章 E01-10，傅里叶时移正号见<a href="02_basics-signal-model.html#sec-2-3">§2.3</a>。</p>
+<p>一般滤波响应还会改变相位，不能直接把任意 IPD 除以 $2\pi f$ 当作传播 ITD。复比定义及失效例见本章 E01-10，时延与相位的符号见<a href="02_basics-signal-model.html#sec-2-3">§2.3</a>。</p>
 <p>对机器而言，相位歧义还取决于麦间距和几何。宽带信息、非均匀阵列或实测阵列响应可以提供额外约束，但不是自动消除歧义的保证（§2.6、§3.2）。准备好时，可继续复算<a href="04_doa-estimation.html#sec-u-56493f2d40">第 4 章 E04-18 的纯音与多频对照</a>，参数及试听见<a href="research/05_exercises_and_audio.html#26-纯音的时差歧义与宽频相位约束">音频实验总览第 26 节</a>。</p>
 <h3 id="sec-u-dff9e8c5a2">方向相关频谱与头相关传递函数</h3>
 <p>耳廓的褶皱，以及头、肩膀的散射，会改变不同方向声音到耳朵时的频谱。某些频率加强形成谱峰，某些频率减弱形成谱谷；这些位置随方向变化，可以提供俯仰和前后方向的线索。</p>

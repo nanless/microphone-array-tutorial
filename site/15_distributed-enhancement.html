@@ -2,7 +2,7 @@
 <link rel="canonical" href="13_distributed-enhancement.html"><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 13 章 · 分布式麦克风协同增强 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="076fed964b7a"><style>
+<meta name="source-digest" content="3b9f0c885a50"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -845,6 +845,7 @@ z_u&=\vec f_u^H\vec x_u,\\
 <p>即使物理声音和目标都没变，把一路广播放大两倍也会改变它的方差及它与本地观测的互谱。旧版与新版的协方差各自合法，并不表示把两者直接平均后，就得到了当前输入的协方差。求解器可能顺利给出一个权重，但这个权重针对的是混合坐标下的另一组统计。</p>
 <p>对于已知、可逆的观测坐标变换，可以先把旧协方差和交叉向量转换到当前坐标，再与新统计平均。<a href="#e13-25">E13-25</a>把这件事拆成一个两麦手算：旧、新、错误混合以及正确转换后的矩阵分别列出，最后全部在同一个物理目标上评分。</p>
 <p>这种转换不等于恢复任何被压缩丢失的信号。若新广播改用了旧广播完全没有保留的方向，旧压缩数据未必能换成新压缩数据；此时需要当前版本的新观测、仍保存的原始数据，或明确给定的全局统计。具体实现还要确保一个统计批次有足够的目标活动与非活动帧。作者扩展论文把跨迭代统计不一致及重启统计后的VAD支持问题分别讨论，<a href="https://arxiv.org/html/2506.02797v2#S3.SS7.SSS1" title="citation">TI-DANSE⁺ §III-G1</a>；本题只核对给定二阶矩的坐标变换，不运行该在线估计链。</p>
+<p><strong>每个麦对都有统计，拼起来未必是协方差。</strong> 假设缺包使三组麦对分别从不同的可用窗口得到相关系数 $r_{12}=0.9$、$r_{13}=0.9$、$r_{23}=-0.9$。每个两路相关矩阵的特征值都是 $0.1$ 和 $1.9$。把三项拼成对角为 1 的同一个矩阵 $\mathbf R$，取 $\vec v=[-1,1,1]^\top$，直接相乘得 $\mathbf R\vec v=-0.8\vec v$。这相当于沿该方向算出了负功率，不能交给要求半正定的波束或 MWF 求解器。可从同一批各路均有效、广播版本一致的快拍累加外积，或采用显式的缺测模型。丢弃不完整快拍会减少统计支持，缺失与语音活动相关时还可能改变所估计的总体，因此也应保留有效快拍数与回退状态。<a href="https://stat.ethz.ch/R-manual/R-devel/library/stats/html/cor.html" title="citation">R 官方相关矩阵文档的逐对缺失说明</a></p>
 <span id="sec-46" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-d261d70382">固定作者MATLAB源的静态合同</h3>
 <p>本仓库核对了固定作者源码的更新顺序，区分向外广播滤波$\mathbf W_{\mathrm{ext}}$与本节点内部输出滤波$\mathbf W_{\mathrm{int}}$。顺序令牌限制外部目标<code>Wext_target</code>的事件更新；实际<code>Wext</code>仍逐帧朝旧目标平滑，内部滤波也继续更新，所以“本次不是该节点的令牌”并不表示该节点所有状态冻结。</p>
 <p>这一固定文件使用普通特征值分解，先从<code>real(D)</code>对角中选最大值，再对选中的值取绝对值；它没有按绝对值大小重新排序，也不是§13.12的GEVD白化方法。比如特征值为−4和−1时，该顺序先选−1、取绝对值得1，不能说选中了绝对值最大的4。此例检查原控制流，不将带负特征值的矩阵当作合法目标协方差。</p>
@@ -901,6 +902,7 @@ P_{\mathrm{ref}}&=\sum_{n\in\mathcal I}D[n]^2,\\
 <p>缺口也必须规定策略。补零使远端数据在缺口内消失；沿用上一包会引入陈旧内容；回退本地滤波会改变该段的有效全局权重。三种策略须使用相同缺口位置、同一评分窗，并明确计入缺口段还是只计有效样本。没有一种策略可仅凭平均误差较小就宣称对任意网络丢包鲁棒。</p>
 <p>本次实际音频比较补零和本地回退两种策略，缺口为$16000:16800$的800点，即5个160点包。全稳窗浮点NMSE分别约0.168516、0.161918；缺口内补零的解析值为$461/676$，回退为$4/9$。重读PCM的缺口NMSE分别约0.681955、0.444451。全窗与缺口窗结果分别解释“整段平均影响”和“缺口期间的输出”，不能互相替代。</p>
 <p><strong>迟到不等于从未收到，但都可能让实时输出缺少输入。</strong> 在统一时钟的例子中，16 kHz 的 160 点包覆盖 10 ms。假定含首样本 16000 的包到 1020 ms 才到，而第一个输出样本已在 1018 ms 按包为单位判定回退，则不能用迟到包悄悄重写已提交的结果。可记录包到达时刻、每包截止时刻、迟到/未到状态和实际回退区间；离线追补另计。无论补零或回退，评分仍使用原来的样本区间。这里是独立的期限手算，已导出的缺口音频只模拟已知连续缺口，没有网络到达过程。</p>
+<p>现场记录可把发送方采样标记、包序号、接收时刻和融合截止时刻分开。以 RTP 为例，序号可用于识别丢失与重排，时间戳对应媒体的采样时刻。RTCP 发送方报告给出媒体时钟与参考时钟的对应点。融合仍须核对不同节点的参考时钟是否可比、相对采样率是否已校正，以及观测是否在所需时刻可用。 <a href="https://www.rfc-editor.org/rfc/rfc3550" title="citation">RFC 3550 §5.1、§6.4.1</a></p>
 <p><img alt="图72：时钟校正与缺口策略的有限记录控制" src="../figures/fig72_distributed_transport.png" onerror="this.alt+='（图缺失）'" /></p>
 <p>图72　时钟控制区分目标失真、噪声与实际PCM总误差；缺口控制保留全稳窗及缺口窗两个分母。插值改变噪声模型，已知缺口触发回退；两者都不是未知SRO或任意丢包的鲁棒性验证。</p>
 <span id="sec-55" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-f78297cb89">PCM16远端传输的误差界</h3>

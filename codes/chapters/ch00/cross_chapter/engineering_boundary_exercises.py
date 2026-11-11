@@ -48,6 +48,71 @@ def callback_timing_ns(input_adc_ns, callback_ns, output_dac_ns):
     return result
 
 
+def variable_callback_timing_demo():
+    """Replay three planned markers on a fixed, synthetic 16 kHz duplex trace."""
+    sample_rate_hz = 16_000
+    sample_period_ns = 62_500
+    ns_per_ms = 1_000_000
+    # After the overrun, the continuous input index is unknown. Output indices
+    # count the application's submitted slots, including untagged filler.
+    callbacks = [
+        (0, 0, 160, 100, 116, 130, False),
+        (160, 160, 80, 110, 124, 140, False),
+        (240, 240, 160, 115, 132, 145, False),
+        (400, 400, 160, 125, 144, 155, False),
+        (None, 560, 80, 137, 154, 165, True),
+    ]
+    trace = [
+        dict(callback_id=callback_id, input_start=input_start, output_start=output_start,
+             frame_count=frames, input_adc_ns=adc*ns_per_ms, callback_ns=begin*ns_per_ms,
+             output_dac_ns=dac*ns_per_ms, input_overflow=overflow)
+        for callback_id, (input_start, output_start, frames, adc, begin, dac, overflow)
+        in enumerate(callbacks)
+    ]
+    # Actual output tags are given by the trace, not inferred from timing.
+    delivered = {"A": (1, 20), "B": (3, 0)}
+    markers = []
+    for label, input_index, ready_ms in (("A", 120, 122), ("B", 200, 133), ("C", 480, 150)):
+        capture = next(row for row in trace if row["input_start"] is not None
+                       and row["input_start"] <= input_index < row["input_start"] + row["frame_count"])
+        input_offset = input_index - capture["input_start"]
+        input_time = capture["input_adc_ns"] + input_offset*sample_period_ns
+        ready_ns = ready_ms*ns_per_ms
+        first_candidate = next(row for row in trace if row["callback_ns"] >= ready_ns)
+        marker = dict(label=label, input_index=input_index, input_offset=input_offset,
+                      capture_callback=capture["callback_id"], adc_sample_ns=input_time,
+                      ready_ns=ready_ns, first_callback_at_or_after_ready=first_candidate["callback_id"],
+                      output_callback=None, output_offset=None, output_index=None, dac_sample_ns=None,
+                      latency_ns=None)
+        output_slot = delivered.get(label)
+        if output_slot is None:
+            if not first_candidate["input_overflow"]:
+                raise AssertionError("this fixture expects to discard the pending marker at an input gap")
+            marker["status"] = "unmatched_after_gap"
+        else:
+            output_callback, offset = output_slot
+            playback = trace[output_callback]
+            if (playback["callback_ns"] < ready_ns or not 0 <= offset < playback["frame_count"]
+                    or any(row["input_overflow"]
+                           for row in trace[capture["callback_id"] + 1:output_callback + 1])):
+                raise AssertionError("the tagged fixture output must be ready and within a continuous epoch")
+            output_time = playback["output_dac_ns"] + offset*sample_period_ns
+            marker.update(status="matched", output_callback=output_callback, output_offset=offset,
+                          output_index=playback["output_start"] + offset, dac_sample_ns=output_time,
+                          latency_ns=output_time - input_time)
+        markers.append(marker)
+
+    return {
+        "scope": "synthetic callback replay; no audio API or hardware execution",
+        "sample_rate_hz": sample_rate_hz,
+        "trace": trace,
+        "markers": markers,
+        "known_gap_sample_count": None,
+        "planned_markers": len(markers),
+        "matched_markers": sum(marker["status"] == "matched" for marker in markers),
+    }
+
+
 def paired_sign_test_lower_is_better(baseline, candidate):
     """One-sided exact sign test conditional on non-ties, H0: P(win)=1/2.
 
@@ -123,6 +188,7 @@ def run_exercises():
             "compute_ms": 3.0,
             "added_output_block_ms": 10.0,
             "latency_after_one_extra_output_block_ms": 55.0,
+            "variable_callback_replay": variable_callback_timing_demo(),
         },
         "E11-09": {
             "reference_words_per_session": [100] * 6,

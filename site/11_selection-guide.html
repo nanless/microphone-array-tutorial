@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 11 章 · 总结与选型指南 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="076fed964b7a"><style>
+<meta name="source-digest" content="3b9f0c885a50"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -484,8 +484,8 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 </tr>
 <tr>
 <td>晚期混响</td>
-<td>先用关闭 WPE 的基线</td>
-<td>晚期混响确实限制词错误率（Word Error Rate，WER）、可懂度或听感时启用 WPE</td>
+<td>保留关闭 WPE 的基线</td>
+<td>若晚期混响可能影响任务，增加启用 WPE 的同输入对照。转写任务检查词错误率（Word Error Rate，WER），监听任务检查可懂度、听感与处理延迟</td>
 <td>预测延迟、阶数、直达声损伤</td>
 </tr>
 <tr>
@@ -723,6 +723,12 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <p>每条候选都应补一项故障试验，例如拔插后恢复、参考切换、跨块状态清零、缓冲不足或线程过载，具体入口见<a href="research/03_industrial_deployment.html">工业部署研究</a>。</p>
 <p>候选的输入输出与评分工具同样需要筛选。libsoxr、libsamplerate 的比例协议不能照搬；libsndfile 的时间帧数不能当成通道标量数；libebur128 的响度与真峰值也不是语音质量分。</p>
 <p>有干净参考时才可按相应条件使用 STOI/ESTOI 或 ViSQOL，静音过多、有效帧不足、参考错配及模型缺失必须进入失败记录。评分输入与失效边界见<a href="10_engineering-practice.html#sec-10-5">第 10 章评测体系</a>，固定源码入口另见<a href="research/03_industrial_deployment.html">工业部署研究</a>。</p>
+<p><strong>用真实噪声复核整段和最差窗口。</strong> 假设选型时要验证一个简化预测：忽略通道间的交叉项后，算出的零时延等权平均功率与实际导出功率应相差不超过 6 dB。这里的 6 dB 是演示判据。采用 R01 中同一段 16 kHz、十秒、十六麦同步溪流录音。它已有十六路原 PCM 和十六路零时延平均 PCM 两个文件。读回两者，用同一时间窗评分。第 5 章的实录波束比较则使用同一条录音内互不重叠的校准和评分时段。 <a href="https://zenodo.org/records/1227121" title="citation">DEMAND 原始数据说明</a> · <a href="real_audio/README.md">R01 采集、许可和复算入口</a></p>
+<p>令 $x_{m,n}$ 为原 PCM 整数，$y_n$ 为十六路平均并按最近偶数舍入后的发布整数。对同一个半开窗 $\mathcal I$，先求 $E_y=\sum_{n\in\mathcal I}y_n^2$ 和 $E_x=\sum_{m=1}^{16}\sum_{n\in\mathcal I}x_{m,n}^2$。实际平均功率与对角预测的比值为 $16^2 E_y/E_x$，公共的样本数和解码尺度约去。整段的整数和分别为 $310934193$ 和 $30159510188$，故偏差为 $10\log_{10}(16^2 E_y/E_x)\approx4.2148$ dB，满足整段判据。</p>
+<p>若需求改为每个预先固定的 1 s 窗口都满足同一判据，就按每窗独立分母算偏差。最差的第一个窗口 $[0,16000)$ 中，两项整数和分别为 $21252668$ 和 $624667934$，偏差为 $9.4000$ dB。第二、第三窗为 $8.9257$、$8.8156$ dB，其余七窗均低于 6 dB。整段与逐窗给出不同验收结果。这十个相邻窗口描述同一段实录的时间变化，不能为未知场景提供十次独立试验的置信界。参考是数字噪声功率预测，本实验没有干净目标声来评分语音增强。</p>
+<p>从仓库根目录运行以下命令可核对四个发布文件与逐窗结果。整数公式直接使用读回的原 PCM 和发布均值，完整记录的结果也可通过按窗分别累加 $E_x$、$E_y$ 后再求比复算。</p>
+<pre><code class="language-bash">.venv/bin/python -m codes.chapters.ch02.examples.prepare_real_recordings --check
+</code></pre>
 <h3 id="sec-11-5-2">11.5.2 完整决策例：未知参会者的连续转写</h3>
 <p>假设会议中共有 2～6 名未注册说话人，人数随时间变化，但任一时刻最多两人同时说话。系统要连续输出全部内容给 ASR，并要求端到端延迟可测但尚未给定阈值。先用硬约束筛选，再进入实测：</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table class="selection-readable-table">
@@ -778,7 +784,8 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <p>若需求改成“始终只听主持人，且主持人可注册”，硬约束会改变，TSE 才重新成为候选。</p>
 <h3 id="sec-u-01def5a266">硬约束要区分通过、失败与证据不足</h3>
 <p>先明确每条阈值约束的是确定预算、测量值还是概率。例如“任何输出不得超过 150 ms”和“该负载下延迟的 p99 不超过 150 ms”是不同要求。有限样本最大值并不自动等于系统的最坏情况保证；平均 RTF 合格也不能替代逐次截止期检查。</p>
-<p>按总体分布的逆累计概率定义，p99 不超过 150 ms 等价于超出 150 ms 的概率至多 1%。若 20 次相互独立、同分布的试验都未超限，按 E11-08 的单侧 95% 上界计算，超限概率仍可高达约 13.91%；在相同假设和零超限下，至少要 299 次才支持 1% 的门槛。连续相邻帧可能共用负载状态，不能简单地按独立试验计数。E11-04 的样本分位数是另一项描述，不能替代这条证据。</p>
+<p>先规定延迟从哪个事件计时、测到哪个输出，以及哪些请求进入分母。以每次已启动的应答请求为单位，若协议将截止时没有有效输出的请求也算违约，可以把其等待时间记为 $+\infty$。对这个包含全部计划请求的总体，按逆累积分布定义，p99 不超过 150 ms 等价于超过 150 ms 的概率至多 1%。日志本身缺失时，先标为测量未知，再按预定策略判断这次测试能否出结论。不能把没有观测的日志直接当成设备没有交付。</p>
+<p>同一场景中，若 20 次相互独立、同分布的试验都未超限，按 E11-08 的单侧 95% 上界计算，超限概率仍可高达约 13.91%。在相同假设和零超限下，至少要 299 次才支持 1% 的门槛。相邻帧常共享负载状态，不能逐帧套用这个独立试验模型。若试验按整次会话判断“发生至少一次违约”，估计的是会话失败概率。报告成功件的样本 p99 时也应另列其分母，见 E11-04。</p>
 <p>若已有可信的指标范围，可比较整个范围与上界：范围全部合格才通过，范围全部超限则失败，跨越阈值或缺少必要指标时记为证据不足。范围是确定误差界、统计置信区间还是观测的最小至最大值，也要分别写明；后两者不能无条件当作确定界。E11-14 用两个指标演示三态判断。</p>
 <p>比较两个候选也应保留这些区间。若一个候选的最差端点仍好于另一个的最好端点，可以作出确定支配判断；区间交叠时，中点上的排序不能证明真实排序。<a href="#e11-21">E11-21</a>把候选间支配与相对硬阈值的判断分开计算。</p>
 <h3 id="sec-u-2b5c122169">合格候选之间仍可能没有唯一最好方案</h3>
@@ -1008,6 +1015,56 @@ p_{\mathrm U,j}&=1-(\alpha/J)^{1/n_j}.
 $$</p>
 <p>代入 $J=3$、$n_j=100$，得到每个上界约 4.0117%。联合要求更强，所以单项界变宽。</p>
 <p>若希望三个上界都不超过 1%，各场景预定次数须满足 $n_j\ge\ln(0.05/3)/\ln(0.99)$，向上取整为 408。407 次零失败时上界约 1.00094%，408 次约 0.99850%。这是一种保守且透明的分配方法，不宣称样本数在所有联合方法中最小。运行 <code>E11-13</code> 可检查 407/408 边界；不能事后挑选零失败场景才作联合声明。</p>
+<p><strong>整链复算：把未交付的应答放回分母。</strong> 预先定义每次会话只有一个计划应答。计时从采齐有效输入的最后一个样本开始，到第一个有效应答的播放样本。超过 150 ms 交付、或在规定的观测期限内始终没有有效输出，都算违约。恰好 150 ms 算按时。要求常态和“本机播放并处于高负载”两个场景的违约概率各不超过 1%。假定各候选在各场景内的会话可视为固定次数、独立同分布试验。以下为构造数据。</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
+<thead>
+<tr>
+<th scope="col">候选与场景</th>
+<th scope="col" style="text-align: right;">计划应答</th>
+<th scope="col" style="text-align: right;">按时</th>
+<th scope="col" style="text-align: right;">迟到</th>
+<th scope="col" style="text-align: right;">未交付</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A，常态</td>
+<td style="text-align: right;">600</td>
+<td style="text-align: right;">600（100 ms）</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>A，压力</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">17（100 ms）</td>
+<td style="text-align: right;">1（180 ms）</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr>
+<td>B，常态</td>
+<td style="text-align: right;">600</td>
+<td style="text-align: right;">600（125 ms）</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>B，压力</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">20（含一个 150 ms）</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table></div>
+<p>若只用已交付样本，按 E11-04 的最近秩计算全池 p99，A 为 100 ms，B 为 125 ms。即使把未交付放回分母，A 的全池观察违约率 $3/620\approx0.484\%$ 仍低于 1%，但压力场景的观察率为 $3/20=15\%$。两个聚合结果都没有回答每个场景是否合格。</p>
+<p>要同时核对两候选、两场景的上下两个方向，预先给八个单侧界各分配 $\alpha_b=0.05/8=0.00625$。由式(11-7)，同时覆盖至少为 95%，允许同一会话上两个候选的结果相关。常态各 600 次零违约，用式(11-1) 得上界 $1-\alpha_b^{1/600}\approx0.8423\%$，两者常态都通过。B 在压力场景 20 次零违约，上界约 $22.4121\%$，证据仍不足。A 的压力场景有三次违约，在门槛 $p=0.01$ 处，出现至少三次的概率为</p>
+<p>$$
+1-0.99^{20}-20(0.01)0.99^{19}-190(0.01)^2 0.99^{18}
+\approx0.001004\lt \alpha_b.
+$$</p>
+<p>这三项分别减掉恰好零、一次和两次的概率。对更低的真实违约概率，这个上尾还会更小，因此 A 的压力场景可判失败。B 需要更多压力场景的会话才能判定。本例用精确二项尾概率反解单侧界，单侧尾概率按本题分配。<a href="https://www.itl.nist.gov/div898/software/dataplot/refman2/auxillar/exacbici.htm" title="citation">NIST 精确二项置信限</a></p>
+<p>运行本章统一入口，在 <code>E11-13</code> 的 <code>deadline_acceptance</code> 中查看迟到、未交付和计划数。实测时还应记录每次请求的开始时刻、实际首次播放时刻、未交付原因和测量日志状态。失败率估计按预先定义的会话单元，不按录音帧数扩充分母。</p>
 <h3 id="sec-u-da9377b819">题 14：阈值附近应保留第三种状态（E11-14）</h3>
 <p>要求延迟不超过 150 ms、功率不超过 1 W。下表暂将区间视为确定的误差范围，而非有限样本的极值或置信区间。判断每个候选是通过、失败还是证据不足。</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
@@ -1570,49 +1627,49 @@ P_{\rm target\ error}&=\varepsilon_H^2,\\
 \mathrm{NMSE}_{\rm actual}&=\varepsilon_H^2+P_{n,\rm out}.
 \end{aligned}\tag{11-25}$$</p>
 <p>$\varepsilon_H$ 是复响应误差 $H-1$ 的模。本例的对称条件使 $H$ 近似为实数。一般情况下，即使幅度恰好为 1，相位仍会带来误差；例如 $H=\mathrm j$ 时，$|H|=1$，但 $|H-1|=\sqrt2$。</p>
-<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table class="tutorial-budget-table" style="--tutorial-table-width:50em">
+<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
 <thead>
 <tr>
-<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:11em">候选</th>
-<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:9em">实际H</th>
-<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:9em">幅差 ε_H</th>
-<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:11em">目标误差功率</th>
-<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:10em">实际总NMSE</th>
+<th scope="col">候选</th>
+<th scope="col">实际H</th>
+<th scope="col">复响应误差 $\varepsilon_H$</th>
+<th scope="col">目标误差功率</th>
+<th scope="col">实际总NMSE</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:11em">DS</td>
-<td class="tutorial-short-column" style="--tutorial-column-width:9em">0.998641</td>
-<td class="tutorial-short-column" style="--tutorial-column-width:9em">0.001359</td>
-<td class="tutorial-short-column" style="--tutorial-column-width:11em">0.000001847</td>
-<td class="tutorial-short-column" style="--tutorial-column-width:10em">0.962118</td>
+<td>DS</td>
+<td>0.998641</td>
+<td>0.001359</td>
+<td>0.000001847</td>
+<td>0.962118</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:11em">MVDR，α=0</td>
-<td class="tutorial-short-column" style="--tutorial-column-width:9em">0.766431</td>
-<td class="tutorial-short-column" style="--tutorial-column-width:9em">0.233569</td>
-<td class="tutorial-short-column" style="--tutorial-column-width:11em">0.054555</td>
-<td class="tutorial-short-column" style="--tutorial-column-width:10em">0.129625</td>
+<td>MVDR，α=0</td>
+<td>0.766431</td>
+<td>0.233569</td>
+<td>0.054555</td>
+<td>0.129625</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:11em">MVDR，α=0.1</td>
-<td class="tutorial-short-column" style="--tutorial-column-width:9em">0.866379</td>
-<td class="tutorial-short-column" style="--tutorial-column-width:9em">0.133621</td>
-<td class="tutorial-short-column" style="--tutorial-column-width:11em">0.017854</td>
-<td class="tutorial-short-column" style="--tutorial-column-width:10em">0.257262</td>
+<td>MVDR，α=0.1</td>
+<td>0.866379</td>
+<td>0.133621</td>
+<td>0.017854</td>
+<td>0.257262</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:11em">MVDR，α=1</td>
-<td class="tutorial-short-column" style="--tutorial-column-width:9em">0.971504</td>
-<td class="tutorial-short-column" style="--tutorial-column-width:9em">0.028496</td>
-<td class="tutorial-short-column" style="--tutorial-column-width:11em">0.000812</td>
-<td class="tutorial-short-column" style="--tutorial-column-width:10em">0.767713</td>
+<td>MVDR，α=1</td>
+<td>0.971504</td>
+<td>0.028496</td>
+<td>0.000812</td>
+<td>0.767713</td>
 </tr>
 </tbody>
 </table></div>
-<p>未加载MVDR的总NMSE最低，但它的目标幅差约23.36%，且WNG为负。若只按总误差排序，可能选中一个不满足目标保持与自噪声放大要求的候选。</p>
-<p><strong>最后按规格筛选。</strong> 题设声学硬条件为WNG不低于0 dB、复响应幅差不超过0.03；设备硬条件另要求端到端延迟不超过150 ms，但四个候选都没有该设备上的延迟证据。</p>
+<p>未加载MVDR的总NMSE最低，但它的目标复响应误差约0.2336，且WNG为负。若只按总误差排序，可能选中一个不满足目标保持与自噪声放大要求的候选。</p>
+<p><strong>最后按规格筛选。</strong> 题设声学硬条件为 WNG 不低于 0 dB、复响应误差不超过 0.03。设备硬条件另要求端到端延迟不超过 150 ms，四个候选都没有该设备上的延迟证据。</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table class="tutorial-budget-table" style="--tutorial-table-width:42em">
 <thead>
 <tr>
@@ -1649,9 +1706,9 @@ P_{\rm target\ error}&=\varepsilon_H^2,\\
 </tr>
 </tbody>
 </table></div>
-<p>声学合格集合为DS与α=1。在这个有限集合和给定噪声/实际方向下，α=1的总NMSE较小，可优先作为设备测试候选；完整设备选型仍未确定。若幅差门限改成0.01，α=1约0.028496的误差也会失败，此时只有DS满足声学条件。门限必须来自预定规格，不能为保留某候选事后修改。</p>
+<p>声学合格集合为 DS 与 α=1。在这个有限集合和给定噪声及实际方向下，α=1 的总 NMSE 较小，可优先作为设备测试候选。完整设备选型仍未确定。若复响应误差门限改成 0.01，α=1 约 0.028496 的误差也会失败，此时只有 DS 满足声学条件。门限必须来自预定规格，不能为保留某候选事后修改。</p>
 <p><img alt="图79：物理收益、声学硬条件与设备证据分开判断" src="../figures/fig79_selection_evidence.png" onerror="this.alt+='（图缺失）'" /></p>
-<p><em>图79：E11-27的四个已知单频候选使用相同实际噪声协方差，加载只用于设计。WNG与复响应幅差决定声学合格集合，总NMSE只在相同目标与噪声条件下比较；DI来自另一个三维弥散模型。设备延迟全部未测，因此图中的声学通过不等于设备通过。没有运行宽带音频、识别模型或设备测试。</em></p>
+<p><em>图79：E11-27 的四个已知单频候选使用相同实际噪声协方差，加载只用于设计。WNG 和复响应误差决定声学合格集合，总 NMSE 在相同目标与噪声条件下比较。DI 来自另一个三维弥散模型。设备延迟全部未测，完整设备规格仍缺证据。</em></p>
 <p>运行E11-27可核对导向矢量、两种统计矩阵、权重、名义/实际响应与三态结果。解析手算用于独立核查；程序调用<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch05/core/beamforming.py">第5章唯一波束核</a>，不复制求解器。第5章的加载与失配练习、第10章E10-34的<a href="10_engineering-practice.html#e10-34">已知坏麦PCM</a>可用于理解相应边界，但它们不是本题这组R与方向的音频实测。</p>
 <p>本题只检查一个给定5°偏差，不保证整个扰动区间鲁棒；也没有求解最坏情况WNG约束优化。单频复权重还不能直接当成因果宽带滤波器，实际设备需规定频带、共轭对称、实现延迟及切换状态，再测资源与有效场景。</p>
 <span id="sec-15" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-11-7">11.7 后续阅读</h2>

@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 7 章 · 去混响（WPE） · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="076fed964b7a"><style>
+<meta name="source-digest" content="3b9f0c885a50"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -831,6 +831,8 @@ L_{\mathrm{NMSE}}&=10\log_{10}\mathrm{NMSE}.
 <p><a href="https://www.isca-archive.org/interspeech_2017/kinoshita17_interspeech.pdf">Kinoshita等（2017）§5.1.2</a>的“online”实验使用2 s不重叠块和0.7的统计遗忘；该文网络虽采用单向LSTM，输入仍含左右各5帧，在8 ms帧移下有40 ms未来上下文。因此该论文的在线配置不能直接作为零前视逐帧实现。</p>
 <p>短块提供的有效样本较少，$\lambda$ 和相关矩阵的方差更大；块过长又会增加等待时间，并使旧房间统计占比过高。</p>
 <p>在线实现还要处理初始化、矩阵正则化、静音冻结和路径突变，不能只把批处理迭代次数改成 1。DNN-WPE 可以用网络估计 $\lambda$，但是否优于传统估计取决于训练数据与测试房间是否匹配。</p>
+<p>如果采集丢了一帧，保留原帧号并标记缺口。以 $\Delta=3$、$K=2$ 为例，预测第 $t$ 帧需要 $t-3$、$t-4$ 两帧。若第 $j$ 帧缺失，第 $j+3$ 帧和第 $j+4$ 帧都会引用它；在没有其他缺帧的条件下，第 $j+5$ 帧起再次具备完整历史。把后续帧压紧编号会改变回归量对应的物理时刻。</p>
+<p>一种可检查的恢复策略是在历史不完整时保留已有权重和统计量，对仍收到的当前帧暂时旁路，同时让历史缓冲沿原帧号推进。第 $j$ 帧本身没有观测，需要把缺口通知下游。若重连后帧号或通道定义已经改变，则重新建立历史，按启动条件恢复预测。已有连续复谱实验没有执行这些设备恢复动作。采集缺口与回调状态的记录见<a href="10_engineering-practice.html#sec-10-1-2">第 10 章 §10.1.2</a>。</p>
 <h3 id="sec-u-b312a6e275">递推统计与先验输出</h3>
 <p>下面是本书直接累计正规矩阵的教学递推。固定频点，以 $\vec q_t$ 表示历史列向量，当前标量观测为 $X_t$，功率 $\lambda_t>0$ 只能从当前及已到达数据取得：</p>
 <p>$$\begin{aligned}

@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 5 章 · 波束形成 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="076fed964b7a"><style>
+<meta name="source-digest" content="3b9f0c885a50"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -476,7 +476,7 @@ Q&=\frac{|\vec{w}^H\vec{a}|^2}{\vec{w}^H\mathbf{\Gamma}\vec{w}},\\
 <span id="sec-3" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-5-2">5.2 延迟求和波束形成器（Delay-and-Sum Beamformer，简称 DSB）：“合唱前先把大家对齐”</h2>
 <p>按导向矢量把各通道时延补偿后等权相加：</p>
 <p>$$\vec{w}_{DSB} = \frac{1}{M}\vec{a}(\theta_0)。\tag{5-4}$$</p>
-<p>若不除以 $M$，对齐后的目标幅度是单通道的 $M$ 倍；本章采用的 $1/M$ 归一化使目标响应为 1。这两种写法的输出 SNR 相同，但绝对幅度增益不同。</p>
+<p>若不除以 $M$，对齐后的目标幅度是单通道的 $M$ 倍；本章采用的 $1/M$ 归一化使目标响应为 1。这两种写法的输出 SNR 相同，但绝对幅度增益不同。式(5-4)假定各导向分量的模均为 1。若模型还含通道幅度，单位响应归一化应除以 $\vec a^H\vec a$。例如 $\vec a=[1,2]^\top$ 时，$\vec a/2$ 的目标响应为 $5/2$，改用 $\vec a/5$ 才得到单位响应。</p>
 <h3 id="sec-u-acd3ed3bbb">双麦延迟求和手算</h3>
 <p>2 麦相距 $d=4$ cm，声源与阵列正横方向夹角 $30°$（从正横量角，§2.1 约定，本章统一用此约定），频率 $f=1$ kHz。</p>
 <ol>
@@ -860,6 +860,43 @@ L(\vec w,\lambda)&=\vec w^H\mathbf R_{nn}\vec w\\
 </tbody>
 </table></div>
 <p>读法：$\alpha$ 增大时，条件数通常改善、权重范数减小，零陷和指向性也可能减弱。变化多少由协方差特征值、导向矢量与加载归一化口径共同决定，不能预先保证若干 dB。应画出 WNG、目标失真和噪声输出随归一化加载量的曲线，再按系统预算选点。</p>
+<p><strong>实录对照：目标导向相同，干扰统计从哪里来</strong></p>
+<p><a href="https://nanless.github.io/microphone-array-tutorial/site/#course-cases">在线案例</a>用 LOCATA 开发集任务 2 的第 1 次 DICIT 录音。房间里的 A、B 是两个播放语音的扬声器。输入是同步的 15 路、48 kHz 录音。原始第 7 路、对齐相加和带对角加载的 MVDR 使用同一时间轴和同一导出增益。<a href="https://zenodo.org/records/3630471">LOCATA 数据与许可</a></p>
+<ol>
+<li><strong>固定目标。</strong> 用光学测得的 A 和各麦克风三维位置计算传播距离。以第 7 路为参考，用距离差除以 343 m/s 得到相对时延，再按 §2.3 写成单位模导向矢量。两种波束使用同一矢量。页面的定位扫描只估计方位，波束的输入另外使用实测位置。</li>
+<li><strong>估计干扰。</strong> 用 3.48–3.94 s 内完整落入 B 单独出声区间的 41 帧。Hann 窗长 1024 点、帧移 512 点。对每个频点，将各帧的 15 路复向量做外积，再除以 41。矩阵也含房间背景和残留混响。沿对角线加上本频点平均对角值的 0.1 倍，再用式(5-9)求解。</li>
+<li><strong>固定权重并试听。</strong> 250–6000 Hz 使用全部 MVDR 权重。125–250 Hz 与 6000–8000 Hz 按升余弦在两组权重间平滑过渡，频带外使用对齐相加。两组权重对同一设计矢量的响应均为 1，线性混合仍保留该响应。重建使用实数逆变换和重叠相加，直流与奈奎斯特频点按 §2.5 的实谱约束处理。</li>
+<li><strong>分别核对目标与干扰。</strong> 对不同于校准窗的两个单讲窗，从实际试听 PCM 取相同时间段，乘对称 Hann 窗，积分 300–3400 Hz 的谱功率。每格用同一窗的原始第 7 路作分母。读表时先看 B 降了多少，再看 A 是否也变轻。</li>
+</ol>
+<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
+<thead>
+<tr>
+<th scope="col">单讲评分窗</th>
+<th scope="col" style="text-align: right;">对齐相加相对第 7 路</th>
+<th scope="col" style="text-align: right;">MVDR 相对第 7 路</th>
+<th scope="col" style="text-align: right;">MVDR 相对对齐相加</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A，2.65–3.10 s</td>
+<td style="text-align: right;">−2.42 dB</td>
+<td style="text-align: right;">−3.28 dB</td>
+<td style="text-align: right;">−0.86 dB</td>
+</tr>
+<tr>
+<td>B，4.08–4.68 s</td>
+<td style="text-align: right;">−8.96 dB</td>
+<td style="text-align: right;">−16.38 dB</td>
+<td style="text-align: right;">−7.42 dB</td>
+</tr>
+</tbody>
+</table></div>
+<p>单位响应约束只针对设计矢量。实录中的 A 还有反射，实测单讲窗也包含底噪，所以表中的 A 仍会下降。4.90–5.70 s 的双讲可试听两种方法的差别。双讲只有混合输出，不能用总功率反推每个扬声器的抑制量。校准和评分样本互不重叠，配置在同一条开发录音上选定。设备上若无法取得 B 单讲标签和目标位置，需要另验证目标跟踪、统计更新、污染检测和失效回退。实时延迟还需按 §10.1 实测。</p>
+<p><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/scripts/course_home/prepare_locata.py">复算脚本</a>调用本章的 <code>mvdr_weights</code> 和 <code>dsb_weights</code>。用 FFmpeg 解码，按<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/assets/readme/cases/locata/NOTICE.txt">数据成员清单</a>准备目录后，从仓库根目录运行：</p>
+<pre><code class="language-bash">.venv/bin/python -m scripts.course_home.prepare_locata /path/to/extracted --check
+</code></pre>
+<p><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/assets/readme/cases/locata/MANIFEST.json">测量记录</a>保留训练帧数、实际 PCM 整数能量、频带积分及文件摘要。可先复算 $-16.38-(-8.96)=-7.42$ dB，再切换试听核对主观效果。设计模型的最小白噪声增益约 4.14 dB，可与 15 路等权的约 11.76 dB 比较。更强的定向干扰抑制需要更谨慎地对待传感器噪声和失配。</p>
 <span id="sec-7" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-5-4-1">5.4.1 稳健波束形成方法</h3>
 <p>对角加载主要限制协方差求逆的敏感度和权重范数，不能覆盖所有失配来源。下面按四类误差分别说明可选方法、假设和代价：</p>
 <ul>

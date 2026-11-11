@@ -86,6 +86,23 @@ class Chapter11ExperimentsTests(unittest.TestCase):
         self.assertGreater(.99**407, 1/60)
         self.assertLessEqual(.99**408, 1/60)
 
+    def test_deadline_counts_missing_and_late_responses_in_pressure_scenario(self):
+        result = self.results['E11-13']['deadline_acceptance']
+        a, b = (result['candidates'][candidate] for candidate in ('A', 'B'))
+        a_stress, b_stress = a['scenarios']['stress'], b['scenarios']['stress']
+        self.assertEqual((a_stress['on_time'], a_stress['late'], a_stress['absent']), (17, 1, 2))
+        self.assertEqual(b_stress['on_time'], 20)  # A delivery at 150 ms is on time.
+        self.assertEqual((a['pooled_violations'], a['pooled_planned']), (3, 620))
+        self.assertEqual((a['delivered_only_p99_ms'], b['delivered_only_p99_ms']), (100, 125))
+        self.assertEqual((a['verdict'], b['verdict']), ('fail', 'undetermined'))
+        self.assertAlmostEqual((1 - a['scenarios']['normal']['zero_count_upper']) ** 600, 1/160)
+        self.assertAlmostEqual((1 - b_stress['zero_count_upper']) ** 20, 1/160)
+        # Independent lower-tail complement at the specification limit p=1%.
+        p, q = Fraction(1, 100), Fraction(99, 100)
+        complement = 1 - q**20 - 20*p*q**19 - 190*p*p*q**18
+        self.assertAlmostEqual(a_stress['upper_tail_at_limit'], float(complement))
+        self.assertLess(complement, Fraction(1, 160))
+
     def test_interval_verdict_boundaries_and_missingness(self):
         self.assertEqual(self.results['E11-14']['verdicts'],
                          {'A': 'pass', 'B': 'undetermined', 'C': 'fail', 'D': 'undetermined'})

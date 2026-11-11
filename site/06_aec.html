@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 6 章 · 声学回声消除（AEC） · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="076fed964b7a"><style>
+<meta name="source-digest" content="3b9f0c885a50"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -2291,7 +2291,8 @@ e_\mathrm a[n]=\sum_{\ell=0}^{L-1}h[\ell]\Delta g_{n,\ell}\,x[n-\ell],\\
 <pre><code class="language-bash">.venv/bin/python -m codes.chapters.ch06.aec_kalman_scalar_demo
 </code></pre>
 <p>它固定已知状态和噪声方差，展示实数、复数与较大观测方差三种代入；不包含完整频域滤波器的分区状态、方差估计或双讲判决。<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/tests/test_codes_aec_kalman_scalar_demo.py">独立测试</a>核对分数结果，不把这一个标量更新列为已复现的 FDKF 工业算法。</p>
-<p><code>erle_db()</code> 用 <code>double_talk_mask</code> 明确排除双讲样本；调用者还需用 <code>valid_mask</code> 排除初始收敛段、近端单讲和静音段。函数在输入、输出平均功率上都加上正的 <code>epsilon</code> 地板，因此完美抵消也会报告有限的、随地板而变的 dB 数值，不能把这个上限解释成设备噪声底。该实现用于核对式(6-3)的抽头顺序、冻结语义和指标窗口，不包含延迟搜索、非线性处理、舒适噪声或实时音频接口。</p>
+<p><code>erle_db()</code> 用 <code>double_talk_mask</code> 排除双讲样本。调用者还需用 <code>valid_mask</code> 排除初始收敛段、近端单讲和静音段。函数要求有效窗的输入均方严格大于 <code>epsilon</code>，否则拒绝评分，即使均方为正。例如使用默认地板 $10^{-15}$ 时，输入只有一个幅度为 $10^{-8}$ 的样本，其均方 $10^{-16}$ 低于这项门槛。</p>
+<p>通过门槛后，函数在输入和输出均方上各加 <code>epsilon</code> 再求比值。完美抵消也会给出有限的、随地板变化的 dB 数值，不能把这个上限解释成设备噪声底。该实现用于核对式(6-3)的抽头顺序、冻结语义和指标窗口，不包含延迟搜索、非线性处理、舒适噪声或实时音频接口。</p>
 <p>自动测试见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/tests/test_codes_aec_wpe_sep_track.py"><code>tests/test_codes_aec_wpe_sep_track.py</code></a>和<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/tests/test_codes_aec_streaming.py">流式边界测试</a>，覆盖零能量参考、已知路径、路径突变、冻结更新、跨块一致性、空块与复位以及双讲样本不进入 ERLE。接入设备时还必须增加参考断流、纯延迟超过滤波器覆盖范围、削波、多参考高度相关和长时路径漂移测试；异常时的安全回退是冻结自适应更新或旁路线性抵消，而不是继续用不可信残差更新。</p>
 <p>外部源码按完整提交保存在 <code>codes/chapters/ch00/upstream/_downloads/</code> 的相应项目目录中，具体获取状态见<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/upstream/README.md">代码获取说明</a>。该目录是按需取得的参考源码，教学算法与第三方代码各自保留来源和许可。研究细节见 <a href="research/02_aec_wpe_separation.html#aec">AEC 源码研究</a>，其中逐项列出信号接口、读码顺序、状态参数、最小实验与失效实验。</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table class="aec-readable-table">
@@ -2385,7 +2386,7 @@ e_\mathrm a[n]=\sum_{\ell=0}^{L-1}h[\ell]\Delta g_{n,\ell}\,x[n-\ell],\\
 <p>原文件摘要、满幅样本检查、计算口径和<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/aec_doubletalk_experiment.py">可运行脚本</a>见<a href="research/02_aec_wpe_separation.html#aec">研究记录</a>。录音只放在 Git 忽略缓存，不随教程分发。</p>
 <p><strong>同一真实配对输入上的教学 PBFDAF。</strong> 为检查式(6-5)的实现离开合成输入后会怎样，本书将上述远端单讲和真实双讲的 <code>lpb</code>/<code>mic</code> 原样交给<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/examples/aec_pbfdaf_real_pair_compare.py">离线脚本</a>。16 kHz PCM16 除以 32768 后以 float64 处理；块长 160 点、26 个分区（覆盖 4160 点）、步长 0.3、归一化地板 0.05，每块投影合法梯度。参数沿用先前合成教学例，<strong>没有针对这两段实录调参</strong>。</p>
 <p>正确、全零、晚 1 s 三种参考各从零状态运行；没有延迟搜索、双讲冻结或残余后滤。Speex 的 4096 点请求在固定版内部上取整到 26 个 160 点分区；相同的抽头容量并不意味着相同的更新和输出链。</p>
-<p>在相同的远端单讲 <code>[3,11.77)</code> s 评分区，正确参考、全零参考、晚 1 s 参考的麦克风输入/教学残差<strong>总数字功率变化</strong>分别为 −6.700、0、−18.017 dB；在真实双讲 <code>[3,8)</code> s 分别为 −6.363、0、−1.665 dB。负号表示输出总功率反而更大，不应删除不利结果或把零参考的 0 dB 当作算法有效的证据。晚参考条件的部分 float64 样本还超出了 PCM16 可表示幅度，因此脚本不剪裁、不保存这些输出为音频。</p>
+<p>总数字功率下降量按 $10\log_{10}(P_{\mathrm{in}}/P_{\mathrm{res}})$ 计算，$P_{\mathrm{in}}$ 和 $P_{\mathrm{res}}$ 分别是同一评分区间的输入与残差波形均方。正确参考、全零参考和晚 1 s 参考，在远端单讲 <code>[3,11.77)</code> s 分别得到 −6.700、0、−18.017 dB，在真实双讲 <code>[3,8)</code> s 分别得到 −6.363、0、−1.665 dB。负值表示残差总功率高于输入，0 dB 表示总功率相等。晚参考条件的部分 float64 样本还超出了 PCM16 可表示幅度，因此脚本不剪裁、不保存这些输出为音频。</p>
 <p>这次对照说明当前无延迟补偿、瞬时功率归一化的<strong>教学配置</strong>对这两条录音不稳健；它不证明 PBFDAF 这一类方法不适用。输入没有分离的干净回声或近端真值，三个 dB 数字不是 ERLE，也不是近端保留率。Speex 核心输出经过其他处理且量化成 PCM16，不能把它与这里的 float64 线性残差按大小排产品名次。原文件 SHA-256、每个 1 s 区间结果和运行命令见<a href="research/02_aec_wpe_separation.html#aec">研究记录</a>。</p>
 <h3 id="sec-6-15-4">6.15.4 已知近端注入的受控检查</h3>
 <p>为了把“输出变小”和“近端信号通过处理器”分开，本书对同一播放参考 $x$、基线麦克风 $d_0$，分别从新状态运行处理器 $A$：一次输入 $d_0$，一次输入 $d_0+s$。这里 $s$ 是逐样本已知的外加近端波形，$W$ 是预先固定的注入区间。记两次输出为 $y_0=A(x,d_0)$ 与 $y_1=A(x,d_0+s)$。定义输出增量、原样投影增益和不拟合时延或增益的相对平方误差为</p>

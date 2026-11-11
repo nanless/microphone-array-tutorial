@@ -1,0 +1,60 @@
+name: Publish course to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/pages.yml'
+      - 'site/**'
+      - 'figures/**'
+      - 'dist/microphone-array-tutorial.pdf'
+      - 'assets/readme/lab/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: read
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/configure-pages@v6
+      - name: Stage the course and its media
+        shell: bash
+        run: |
+          mkdir -p _pages/assets/readme/lab _pages/dist
+          cp -R site figures _pages/
+          cp assets/readme/lab/{array-lab.html,single.wav,left.wav,right.wav} _pages/assets/readme/lab/
+          cp dist/microphone-array-tutorial.pdf _pages/dist/
+          cat > _pages/index.html <<'HTML'
+          <!doctype html>
+          <html lang="zh-CN">
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width,initial-scale=1">
+          <meta http-equiv="refresh" content="0; url=./site/">
+          <title>麦克风阵列入门</title>
+          <a href="./site/">进入课程</a>
+          </html>
+          HTML
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: _pages
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/deploy-pages@v4
+        id: deployment

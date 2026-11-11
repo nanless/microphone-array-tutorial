@@ -2,7 +2,7 @@
 
 **把声音听出方向。** 从一段录音学起，理解会议机怎样找人、朝人拾音，以及为什么有些回声得另想办法。
 
-**[下载课程页 →](assets/readme/course-intro.html)** · [直接读第一章](chapters/01_problem-definition.md) · [全书目录](chapters/00_overview.md) · [PDF](dist/microphone-array-tutorial.pdf) · [English](README_EN.md)
+**[在线进入课程 →](https://nanless.github.io/microphone-array-tutorial/)** · [直接读第一章](chapters/01_problem-definition.md) · [全书目录](chapters/00_overview.md) · [PDF](dist/microphone-array-tutorial.pdf) · [English](README_EN.md)
 
 <picture>
   <source media="(prefers-reduced-motion: reduce)" srcset="assets/readme/course-cover-still.svg">
@@ -11,7 +11,7 @@
 
 ## 第一次来，从这里开始
 
-到[课程文件页](assets/readme/course-intro.html)点 **Download raw file**，然后用浏览器打开下载的文件。动图、三个播放器和学习路线都在这一页，断网也能演示和试听。不用装 Python，不用接麦克风。
+[打开在线课程](https://nanless.github.io/microphone-array-tutorial/)。点选左右声源看动图，用页面上的三个播放器听差别，再按学习路线选章节。手机和电脑都能直接打开。
 
 也可以就在 GitHub 上先听：**[单支麦](assets/readme/lab/single.wav?raw=true) → [对准左边](assets/readme/lab/left.wav?raw=true) → [对准右边](assets/readme/lab/right.wav?raw=true)**。先调低音量。每段约三秒，左边是一串长音，右边是成对短音，三段用的是同一组模拟录音。
 

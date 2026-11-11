@@ -2,7 +2,7 @@
 
 **Hear where sound comes from.** Start with a recording and learn how a conference device finds a speaker, listens toward them, and handles echo.
 
-**[Download the course introduction →](assets/readme/course-intro.html)** · [Chapter 1](chapters/01_problem-definition.md) · [Full contents](chapters/00_overview.md) · [PDF](dist/microphone-array-tutorial.pdf) · [简体中文](README.md)
+**[Open the online course →](https://nanless.github.io/microphone-array-tutorial/)** · [Chapter 1](chapters/01_problem-definition.md) · [Full contents](chapters/00_overview.md) · [PDF](dist/microphone-array-tutorial.pdf) · [简体中文](README.md)
 
 <picture>
   <source media="(prefers-reduced-motion: reduce)" srcset="assets/readme/course-cover-still.svg">
@@ -11,7 +11,7 @@
 
 ## Start here
 
-On the [course file page](assets/readme/course-intro.html), choose **Download raw file** and open the saved HTML in your browser. The Chinese course introduction includes the animation, three audio players, and the learning route. The demo and audio work offline without Python or a microphone.
+[Open the Chinese course](https://nanless.github.io/microphone-array-tutorial/) in your browser. Switch between the two sound sources in the animation, compare the three audio clips, and pick a chapter from the learning route.
 
 Or listen here: **[One mic](assets/readme/lab/single.wav?raw=true) → [steered left](assets/readme/lab/left.wav?raw=true) → [steered right](assets/readme/lab/right.wav?raw=true)**. Turn down the volume first. Each clip is about three seconds. Long tones are on the left, pairs of short tones on the right, and all three clips use the same simulated recordings.
 

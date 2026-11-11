@@ -10,7 +10,7 @@
 
 ## 课程入口
 
-打开 [`site/index.html`](../site/index.html) 可进入课程页；在本地直接用浏览器打开即可。互动示意和试听不需要网络；往下仍是原来的全书导读。GitHub 使用同源的[单文件课程页](../assets/readme/course-intro.html)，把三个试听 WAV 内嵌进文件，下载后可断网播放，进入 GitHub 章节时再联网。
+从 [GitHub Pages 课程首页](https://nanless.github.io/microphone-array-tutorial/) 可以直接看互动示意、试听和选课。推送站点或配套媒体到 `main` 后，[发布工作流](../.github/workflows/pages.yml)会发布生成好的 `site/`、插图、试听文件和 PDF。本地开发可直接在浏览器中打开 [`site/index.html`](../site/index.html)。
 
 课程页面、样式和交互的源文件在 [`course_home/`](course_home/)。改动后从仓库根目录运行：
 

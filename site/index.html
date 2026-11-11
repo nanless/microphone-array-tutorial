@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>导读与导航 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="0fc6040b7677"><style>
+<title>从零开始 · 麦克风阵列信号处理教程</title>
+<meta name="source-digest" content="4fc4c303fd60"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -240,8 +240,228 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 </script>
 <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"
  onerror="document.getElementById('offnote').style.display='block';document.getElementById('offnote').textContent='公式渲染脚本加载失败：当前显示的是公式源码。';"></script>
-</head><body id="top"><a class="skip-link" href="#main-content">跳到正文</a>
+<style>.course-page { --course-paper:#f6f3eb; }
+.course-page .topbar { display:none; }
+.course-page .side { top:0; height:100vh; }
+.course-page .wrap { scroll-margin-top:18px; border-top:1px solid #d5dbe2; }
+.course {
+  --ink:#17273d; --quiet:#4b5e76; --line:#c8d0da; --paper:#f6f3eb;
+  --blue:#204c98; --red:#ae3827;
+  background:var(--paper); color:var(--ink); font-size:17px; line-height:1.65;
+}
+.course-width { width:min(100% - 72px, 1160px); margin-inline:auto; }
+.course a { color:var(--blue); text-underline-offset:.2em; }
+.course :is(a,button):focus-visible { outline:3px solid #914216; outline-offset:4px; }
+.course-header { display:flex; align-items:center; justify-content:space-between; gap:12px 20px; padding-block:20px; border-bottom:1px solid var(--line); }
+.course-header nav { display:flex; gap:6px 20px; flex-wrap:wrap; }
+.course-header a { text-decoration:none; color:var(--ink); font-size:15px; }
+.course-header a:hover { text-decoration:underline; }
+.course-header .course-brand { display:inline-flex; align-items:center; gap:9px; font-size:17px; font-weight:760; }
+.course-mark { display:grid; place-items:center; width:30px; height:30px; border-radius:50%; background:var(--ink); color:#fff; font-size:24px; line-height:1; }
+.course-hero { display:grid; grid-template-columns:minmax(0,.84fr) minmax(0,1fr); align-items:center; gap:clamp(30px,6vw,90px); padding-block:clamp(48px,8vw,112px) clamp(48px,7vw,94px); }
+.course .course-kicker { margin:0 0 12px; font-size:.83rem; letter-spacing:.13em; font-weight:750; color:var(--red); }
+.course h1 { font-size:clamp(3.35rem,7.8vw,6.5rem); letter-spacing:-.065em; line-height:1.03; margin:0; border:0; padding:0; }
+.course h1 span { color:var(--blue); }
+.course-deck { margin:22px 0; max-width:30rem; font-size:clamp(1.06rem,2vw,1.32rem); }
+.course-actions { display:flex; flex-wrap:wrap; align-items:center; gap:9px 19px; }
+.course .course-cta { display:inline-flex; align-items:center; gap:17px; min-height:45px; padding:9px 16px; background:var(--blue); color:#fff; text-decoration:none; border-radius:5px; font-weight:700; }
+.course .course-cta:hover { background:#153669; }
+.course-quiet { min-height:45px; display:inline-flex; align-items:center; gap:5px; }
+.course .course-note { color:var(--quiet); font-size:.89rem; margin:13px 0 0; }
+.course-demo { margin:0; background:#fff; border:1px solid #b8c5d5; border-radius:18px; padding:14px; box-shadow:0 12px 45px #21324b12; }
+.course-demo-heading { display:flex; justify-content:space-between; padding:0 4px 10px; gap:8px; font-size:.83rem; font-weight:700; color:#405976; }
+.course-plot { display:block; width:100%; height:auto; }
+.course-demo figcaption { padding:10px 2px 0; }
+.course-switch:not([hidden]) { display:flex; flex-wrap:wrap; gap:7px; }
+.course-switch button { min-height:43px; padding:5px 11px; border-radius:6px; border:1px solid #a5b4c9; font:inherit; font-size:.9rem; color:var(--ink); background:#fff; cursor:pointer; }
+.course-switch button[aria-pressed=true] { color:#fff; background:var(--blue); border-color:var(--blue); }
+.course-arrival { font-size:.87rem; margin:9px 1px 0; color:var(--quiet); }
+.course-demo[data-source=left] .course-from-right,.course-demo[data-source=right] .course-from-left { display:none; }
+.course-emitters circle { fill:#cbd7e7; }
+.course-emitters text { fill:var(--ink); }
+.course-demo[data-source=left] .course-emitters circle:first-child,.course-demo[data-source=right] .course-emitters circle:nth-child(2) { fill:#ad402c; }
+.course-demo[data-source=left] .course-emitters text:nth-child(3),.course-demo[data-source=right] .course-emitters text:nth-child(4) { fill:#fff; }
+.course-wave,.course-hits circle { opacity:0; }
+@media (prefers-reduced-motion:no-preference) {
+  .course-demo.course-playing .course-wave { animation:course-wave 1.95s linear; transform-origin:72px 144px; }
+  .course-demo.course-playing .course-hits circle { animation:course-hit .46s ease-out both; }
+  .course-demo[data-source=left] .course-hits circle:nth-child(1),.course-demo[data-source=right] .course-hits circle:nth-child(4) { animation-delay:.43s; }
+  .course-demo[data-source=left] .course-hits circle:nth-child(2),.course-demo[data-source=right] .course-hits circle:nth-child(3) { animation-delay:.79s; }
+  .course-demo[data-source=left] .course-hits circle:nth-child(3),.course-demo[data-source=right] .course-hits circle:nth-child(2) { animation-delay:1.15s; }
+  .course-demo[data-source=left] .course-hits circle:nth-child(4),.course-demo[data-source=right] .course-hits circle:nth-child(1) { animation-delay:1.51s; }
+  @keyframes course-wave { from {opacity:0; transform:scale(.22)} 13% {opacity:.9} 72% {opacity:.6} to {opacity:0; transform:scale(2.35)} }
+  @keyframes course-hit { 0%,100% {opacity:0} 25% {opacity:1} }
+}
+.course h2 { font-size:clamp(1.8rem,4vw,3rem); line-height:1.2; letter-spacing:-.035em; border:0; margin:0 0 17px; padding:0; }
+.course h3 { font-size:1.15rem; line-height:1.35; margin:7px 0; }
+.course-preface { display:grid; grid-template-columns:minmax(0,.72fr) minmax(0,1fr); gap:0 50px; border-top:1px solid var(--line); padding-block:34px 45px; }
+.course-preface .course-kicker { grid-column:1 / -1; }
+.course-preface p { margin:0 0 12px; }
+.course-questions { margin:15px 0 0; }
+.course-questions div { display:grid; grid-template-columns:8.5rem 1fr; gap:5px 12px; padding:10px 0; border-top:1px solid var(--line); }
+.course-questions dt { font-weight:750; }
+.course-questions dd { margin:0; }
+.course-listen { background:#1d304b; color:#fff8ea; padding-block:clamp(36px,6vw,72px); }
+.course-listen .course-kicker { color:#ffbb9a; }
+.course-listen a,.course-listen .course-note { color:#e3ecfb; }
+.course-listen :is(a,button):focus-visible { outline-color:#f6b27a; }
+.course-section-intro { max-width:47rem; margin:0 0 22px; }
+.course-clips { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+.course-clips > div { padding:16px; border:1px solid #7186a0; background:#263d5d; border-radius:9px; }
+.course-clips p { font-size:.92rem; margin:6px 0 10px; }
+.course-clip-number { font-size:.83rem; font-weight:700; color:#ffca9c; }
+.course-clips audio { width:100%; height:44px; display:block; margin-bottom:4px; }
+.course-clips a { font-size:.8rem; }
+.course-path { padding-block:clamp(43px,7vw,84px); }
+.course-stops { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; list-style:none; margin:0; padding:0; }
+.course-stops li { border-top:3px solid var(--blue); background:#fff; padding:16px; }
+.course-stops li > span { color:var(--red); font:700 1rem system-ui,sans-serif; }
+.course-stops p { margin:6px 0 9px; }
+.course-stops div,.course-extra { display:flex; flex-wrap:wrap; gap:8px 17px; }
+.course-stops a,.course-extra a { font-size:.92rem; }
+.course-extra { margin:23px 0 0; }
+@media (max-width:790px) {
+  .course-width { width:calc(100% - 36px); }
+  .course-hero,.course-preface { grid-template-columns:1fr; }
+  .course-hero { padding-block:36px 40px; gap:24px; }
+  .course h1 { font-size:clamp(3rem,11vw,5.3rem); }
+  .course-clips { grid-template-columns:1fr; }
+}
+@media (max-width:500px) {
+  .course-header { flex-wrap:wrap; padding-block:12px; }
+  .course-header nav { gap:0 17px; }
+  .course-header nav a { padding-block:4px; }
+  .course-questions div,.course-stops { grid-template-columns:1fr; }
+  .course-demo { padding:11px; }
+}
+</style></head><body id="top" class="course-page"><a class="skip-link" href="#course-home">跳到课程入口</a>
 <header class="topbar"><a href="index.html">🏠 首页</a> &nbsp;/&nbsp; 导读与导航</header>
+<div class="course" id="course-home" tabindex="-1">
+  <header class="course-header course-width">
+    <a class="course-brand" href="#course-home"><span class="course-mark" aria-hidden="true">∿</span> 麦克风阵列入门</a>
+    <nav aria-label="课程入口">
+      <a href="#course-listen">试听</a>
+      <a href="#course-path">课程</a>
+      <a href="#main-content">全书导读</a>
+      <a href="../dist/microphone-array-tutorial.pdf">PDF</a>
+    </nav>
+  </header>
+
+  <section class="course-hero course-width" aria-labelledby="course-title">
+    <div class="course-intro">
+      <p class="course-kicker">用耳朵开始的中文技术课</p>
+      <h1 id="course-title">把声音<br>听出<span>方向。</span></h1>
+      <p class="course-deck">同一句话，四支麦克风收到的时间不一样。这点先后，能用来找人，也能让设备朝那个人拾音。</p>
+      <div class="course-actions">
+        <a class="course-cta" href="01_problem-definition.html">读第一章 <span aria-hidden="true">→</span></a>
+        <a class="course-quiet" href="#course-listen">先听一遍 <span aria-hidden="true">↓</span></a>
+      </div>
+      <p class="course-note">试听不用设备或编程基础。要复算时，再打开代码和数学附录。</p>
+    </div>
+
+    <figure class="course-demo" data-source="left">
+      <div class="course-demo-heading"><span>01 / 到达先后</span><span>传播示意</span></div>
+      <svg class="course-plot" viewBox="0 0 500 272" role="img" aria-labelledby="course-plot-title course-plot-desc">
+        <title id="course-plot-title">声音怎样依次抵达四支麦克风</title>
+        <desc id="course-plot-desc">左边发声时从 1 号到 4 号依次收到，右边发声时顺序相反。下方文字给出当前顺序。</desc>
+        <defs>
+          <pattern id="course-dots" width="17" height="17" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="#a7b3c7" opacity=".38"/></pattern>
+        </defs>
+        <rect width="500" height="272" rx="12" fill="#eaf0f7"/>
+        <rect width="500" height="272" rx="12" fill="url(#course-dots)"/>
+        <path d="M55 144H445" stroke="#8497b3" stroke-width="2" stroke-dasharray="4 6"/>
+        <g class="course-from-left" fill="none" stroke="#b74731" stroke-width="3" stroke-linecap="round">
+          <path d="M104 129a25 25 0 0 1 0 30M120 114a47 47 0 0 1 0 60M137 98a70 70 0 0 1 0 92" opacity=".72"/>
+          <path class="course-wave" d="M170 67a119 119 0 0 1 0 154"/>
+        </g>
+        <g class="course-from-right" fill="none" stroke="#b74731" stroke-width="3" stroke-linecap="round" transform="translate(500 0) scale(-1 1)">
+          <path d="M104 129a25 25 0 0 1 0 30M120 114a47 47 0 0 1 0 60M137 98a70 70 0 0 1 0 92" opacity=".72"/>
+          <path class="course-wave" d="M170 67a119 119 0 0 1 0 154"/>
+        </g>
+        <rect x="148" y="119" width="204" height="50" rx="17" fill="#192940"/>
+        <g fill="#1b304c" stroke="#99b6f1" stroke-width="2">
+          <circle cx="175" cy="144" r="10"/><circle cx="225" cy="144" r="10"/>
+          <circle cx="275" cy="144" r="10"/><circle cx="325" cy="144" r="10"/>
+        </g>
+        <g class="course-hits" fill="#ffe095">
+          <circle cx="175" cy="144" r="8"/><circle cx="225" cy="144" r="8"/>
+          <circle cx="275" cy="144" r="8"/><circle cx="325" cy="144" r="8"/>
+        </g>
+        <g font-family="system-ui,sans-serif" font-weight="700" font-size="18" text-anchor="middle" fill="#2a4263">
+          <text x="175" y="200">1</text><text x="225" y="200">2</text><text x="275" y="200">3</text><text x="325" y="200">4</text>
+        </g>
+        <g class="course-emitters" font-family="system-ui,sans-serif" font-size="22" font-weight="750" text-anchor="middle">
+          <circle cx="72" cy="144" r="24"/><circle cx="428" cy="144" r="24"/>
+          <text x="72" y="152">A</text><text x="428" y="152">B</text>
+        </g>
+      </svg>
+      <figcaption>
+        <div class="course-switch" role="group" aria-label="选一个发声位置" hidden>
+          <button type="button" data-course-source="left" aria-pressed="true">左边 A</button>
+          <button type="button" data-course-source="right" aria-pressed="false">右边 B</button>
+          <button type="button" data-course-replay aria-label="重播传播动画">重播</button>
+        </div>
+        <p class="course-arrival" aria-live="polite">左边 A 发声：1 → 2 → 3 → 4</p>
+      </figcaption>
+    </figure>
+  </section>
+
+  <section class="course-preface course-width" aria-labelledby="course-preface-title">
+    <p class="course-kicker">序言</p>
+    <h2 id="course-preface-title">一次通话，三个问题</h2>
+    <div>
+      <p>视频会议里，对方没听清坐在桌子另一端的人，倒听见了敲键盘。更奇怪的是，他还能听到自己刚说过的话。看起来都是「声音太杂」，排查时却得问三个不同的问题。</p>
+      <dl class="course-questions">
+        <div><dt>人在哪边？</dt><dd>量同一句话在不同录音里错开了多少，用时差推方向。</dd></div>
+        <div><dt>怎样朝他拾音？</dt><dd>按这个方向的时差把他的声音对齐再平均。别的方向通常对不齐，削弱多少要看频率和房间。</dd></div>
+        <div><dt>为什么听见自己？</dt><dd>对方的设备可以拿已知的播放信号来估计回到麦克风的回声。这个线索和时差不同。</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="course-listen" id="course-listen" aria-labelledby="course-listen-title">
+    <div class="course-width">
+      <p class="course-kicker">第一个实验</p>
+      <h2 id="course-listen-title">同一组录音，挑一边听。</h2>
+      <p class="course-section-intro">左边是长音，右边是成对的短音。先调低音量，猜一猜切换方向后哪种节奏会变轻。每段约三秒，三段没有分别调音量。</p>
+      <div class="course-clips">
+        <div>
+          <span class="course-clip-number" aria-hidden="true">01</span><h3 id="course-single-label">单支麦克风</h3>
+          <p>留意两种节奏重叠的地方。</p>
+          <audio controls preload="none" aria-labelledby="course-single-label" src="../assets/readme/lab/single.wav"></audio>
+          <a href="../assets/readme/lab/single.wav">打开 WAV</a>
+        </div>
+        <div>
+          <span class="course-clip-number" aria-hidden="true">02</span><h3 id="course-left-label">四支麦，对准左边</h3>
+          <p>长音还在，短音弱了多少？</p>
+          <audio controls preload="none" aria-labelledby="course-left-label" src="../assets/readme/lab/left.wav"></audio>
+          <a href="../assets/readme/lab/left.wav">打开 WAV</a>
+        </div>
+        <div>
+          <span class="course-clip-number" aria-hidden="true">03</span><h3 id="course-right-label">四支麦，对准右边</h3>
+          <p>这次注意成对的短音。</p>
+          <audio controls preload="none" aria-labelledby="course-right-label" src="../assets/readme/lab/right.wav"></audio>
+          <a href="../assets/readme/lab/right.wav">打开 WAV</a>
+        </div>
+      </div>
+      <p class="course-note">这是为了看清因果而设计的合成实验。把右边换成低音，效果会怎样？<a href="../assets/readme/lab/array-lab.html">打开交互实验 →</a></p>
+    </div>
+  </section>
+
+  <section class="course-width course-path" id="course-path" aria-labelledby="course-path-title">
+    <p class="course-kicker">课程地图</p>
+    <h2 id="course-path-title">从一段录音，到一台设备。</h2>
+    <p class="course-section-intro">初学按顺序读第 1～5 章，先把声音到达、定位和拾音连起来。已有项目可以按下面的任务跳读。</p>
+    <ol class="course-stops">
+      <li><span>01</span><h3>从录音找方向</h3><p>两路波形前后滑一滑，找到最吻合的位置。这个时差能排除哪些方向？</p><div><a href="01_problem-definition.html">问题定义</a><a href="02_basics-signal-model.html">信号模型</a><a href="03_array-geometry.html">阵列几何</a><a href="04_doa-estimation.html">定位</a></div></li>
+      <li><span>02</span><h3>让设备朝人拾音</h3><p>对齐再平均；故意转错方向，看看目标损失多少。说话人走动时，再用多帧观测跟上他。</p><div><a href="05_beamforming.html">波束形成</a><a href="09_source-tracking.html">声源追踪</a></div></li>
+      <li><span>03</span><h3>分辨房间里的麻烦</h3><p>自己说过的话传回来、一声响拖了尾、两个人同时开口，各自能利用什么线索？</p><div><a href="06_aec.html">回声消除</a><a href="07_wpe-dereverberation.html">去混响</a><a href="08_speech-separation.html">语音分离</a></div></li>
+      <li><span>04</span><h3>接上设备并验收</h3><p>量工作距离、延迟和场景变化时的效果。先排查通道同步与标定，再比较算法。</p><div><a href="10_engineering-practice.html">工程实践</a><a href="11_selection-guide.html">选型验收</a><a href="real_audio/README.md">真实录音</a></div></li>
+    </ol>
+    <p class="course-extra"><a href="12_acoustic-imaging.html">声学成像</a><a href="13_distributed-enhancement.html">分布式阵列</a><a href="14_appendix-symbols-math.html">数学与符号</a><a href="15_appendix-guide.html">房间仿真</a><a href="research/index.html">代码与复现</a><a href="#main-content">继续读完整导读 ↓</a></p>
+  </section>
+</div>
+
 <div class="wrap"><nav class="side" aria-label="全书目录"><div class="chap cur" aria-current="page">🏠 导读与导航（首页）</div>
 <ul>
 <li><a href="index.html#sec-u-9d988aa5ab">1. 这是一份什么样的教程</a></li>
@@ -320,7 +540,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li><a href="index.html#sec-u-ccd87eee7f">9. 常见问题</a></li>
 <li><a href="index.html#sec-u-cc2724a31a">附录：下一步清单</a></li>
 </ul></nav></details>
-<span id="sec-1" class="anchor-alias" aria-hidden="true"></span><h1 id="sec-u-50ba72ce3a">多麦克风阵列信号处理教程 · 导读与导航</h1>
+<span id="sec-1" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-50ba72ce3a">多麦克风阵列信号处理教程 · 导读与导航</h2>
 <p>本页是全套教程的入口，教程正文一共 16 个文件：本页导读＋13 章正文（含两篇扩展专题）＋2 篇附录。另有 6 篇<a href="research/index.html">源码研究手册</a>网页，展开实现与工业复现，不计入正文篇数。</p>
 <p>13 章正文和 2 篇附录既可顺序阅读，也可按第 5 节的学习路径选读。每篇开头都列出上一篇、下一篇和首页链接。</p>
 <p>全套教程配了 80 张编号图，另有 1 张附录 B 房间题补充图，图 18～20、图 26～32、图 36～39 以及图57～58、图74在第 6 章。插图分为几何示意、指定条件下的仿真和系统框图，阅读时要同时核对图注中的参数。</p>
@@ -1591,4 +1811,46 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <footer class="foot">麦克风阵列信号处理教程 · 静态站由 scripts/build_site.py 生成</footer>
 </main></div><a class="topbtn" href="#top" title="回顶部" aria-label="回到页面顶部">↑</a>
 <script>if(!navigator.onLine)document.getElementById('offnote').style.display='block';</script>
-</body></html>
+<script>(() => {
+  const scene = document.querySelector(".course-demo");
+  const switches = scene.querySelector(".course-switch");
+  const arrival = scene.querySelector(".course-arrival");
+  const sources = [...scene.querySelectorAll("[data-course-source]")];
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const replay = scene.querySelector("[data-course-replay]");
+  switches.hidden = false;
+
+  function animate() {
+    scene.classList.remove("course-playing");
+    if (reduced.matches) return;
+    // Resolve the removed state before restarting the finite animation.
+    void scene.offsetWidth;
+    scene.classList.add("course-playing");
+  }
+
+  function motionPreferenceChanged() {
+    replay.hidden = reduced.matches;
+    animate();
+  }
+
+  for (const button of sources) {
+    button.addEventListener("click", () => {
+      const side = button.dataset.courseSource;
+      scene.dataset.source = side;
+      for (const option of sources) option.setAttribute("aria-pressed", String(button === option));
+      arrival.textContent = side === "left" ? "左边 A 发声：1 → 2 → 3 → 4" : "右边 B 发声：4 → 3 → 2 → 1";
+      animate();
+    });
+  }
+  replay.addEventListener("click", animate);
+  reduced.addEventListener("change", motionPreferenceChanged);
+  motionPreferenceChanged();
+
+  const clips = [...document.querySelectorAll(".course-clips audio")];
+  for (const clip of clips) {
+    clip.addEventListener("play", () => {
+      for (const other of clips) if (other !== clip) other.pause();
+    });
+  }
+})();
+</script></body></html>

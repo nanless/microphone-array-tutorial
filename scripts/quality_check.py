@@ -1513,6 +1513,8 @@ def site_source_digest():
                        TRACKING_AUDIO_ROOT, GSS_AUDIO_ROOT, BINAURAL_AUDIO_ROOT, SPECTRAL_AUDIO_ROOT, STFT_AUDIO_ROOT, SWEEP_AUDIO_ROOT, BASELINE_AUDIO_ROOT, REFLECTION_AUDIO_ROOT, PHASE_AUDIO_ROOT, BINAURAL_BEAMFORMING_ROOT, GEOMETRY_AUDIO_ROOT, FOCUS_AUDIO_ROOT, DERIVATIVE_AUDIO_ROOT, APA_AUDIO_ROOT, REFERENCE_AUDIO_ROOT, DELAY_AUDIO_ROOT, CSS_AUDIO_ROOT, MINT_AUDIO_ROOT, MASK_AUDIO_ROOT, NOISE_AUDIO_ROOT, CHANNEL_AUDIO_ROOT, SCENARIO_AUDIO_ROOT, WEIGHTED_AUDIO_ROOT, RESPONSE_AUDIO_ROOT, IMAGING_AUDIO_ROOT, DISTRIBUTED_AUDIO_ROOT):
         paths += sorted(asset_root.glob("*"))
     paths += sorted((ROOT / "figures").glob("fig*.png"))
+    paths += [ROOT / "scripts/course_home" / name for name in ("index.html", "home.css", "home.js")]
+    paths += [ROOT / "assets/readme/lab" / name for name in ("single.wav", "left.wav", "right.wav")]
     paths += [ROOT / "scripts" / name for name in
               ("build_site.py", "build_markdown_helpers.py", "inline_layout.js", "heading_aliases.py",
                "chapter_identity.py", "chapter_numbering.json", "legacy_sequential_anchors.json", "code_layout.py", "make_figures.py",

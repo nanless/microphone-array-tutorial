@@ -1,0 +1,125 @@
+<div class="course" id="course-home" tabindex="-1">
+  <header class="course-header course-width">
+    <a class="course-brand" href="#course-home"><span class="course-mark" aria-hidden="true">∿</span> 麦克风阵列入门</a>
+    <nav aria-label="课程入口">
+      <a href="#course-listen">试听</a>
+      <a href="#course-path">课程</a>
+      <a href="#main-content">全书导读</a>
+      <a href="../dist/microphone-array-tutorial.pdf">PDF</a>
+    </nav>
+  </header>
+
+  <section class="course-hero course-width" aria-labelledby="course-title">
+    <div class="course-intro">
+      <p class="course-kicker">用耳朵开始的中文技术课</p>
+      <h1 id="course-title">把声音<br>听出<span>方向。</span></h1>
+      <p class="course-deck">同一句话，四支麦克风收到的时间不一样。这点先后，能用来找人，也能让设备朝那个人拾音。</p>
+      <div class="course-actions">
+        <a class="course-cta" href="01_problem-definition.html">读第一章 <span aria-hidden="true">→</span></a>
+        <a class="course-quiet" href="#course-listen">先听一遍 <span aria-hidden="true">↓</span></a>
+      </div>
+      <p class="course-note">试听不用设备或编程基础。要复算时，再打开代码和数学附录。</p>
+    </div>
+
+    <figure class="course-demo" data-source="left">
+      <div class="course-demo-heading"><span>01 / 到达先后</span><span>传播示意</span></div>
+      <svg class="course-plot" viewBox="0 0 500 272" role="img" aria-labelledby="course-plot-title course-plot-desc">
+        <title id="course-plot-title">声音怎样依次抵达四支麦克风</title>
+        <desc id="course-plot-desc">左边发声时从 1 号到 4 号依次收到，右边发声时顺序相反。下方文字给出当前顺序。</desc>
+        <defs>
+          <pattern id="course-dots" width="17" height="17" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="#a7b3c7" opacity=".38"/></pattern>
+        </defs>
+        <rect width="500" height="272" rx="12" fill="#eaf0f7"/>
+        <rect width="500" height="272" rx="12" fill="url(#course-dots)"/>
+        <path d="M55 144H445" stroke="#8497b3" stroke-width="2" stroke-dasharray="4 6"/>
+        <g class="course-from-left" fill="none" stroke="#b74731" stroke-width="3" stroke-linecap="round">
+          <path d="M104 129a25 25 0 0 1 0 30M120 114a47 47 0 0 1 0 60M137 98a70 70 0 0 1 0 92" opacity=".72"/>
+          <path class="course-wave" d="M170 67a119 119 0 0 1 0 154"/>
+        </g>
+        <g class="course-from-right" fill="none" stroke="#b74731" stroke-width="3" stroke-linecap="round" transform="translate(500 0) scale(-1 1)">
+          <path d="M104 129a25 25 0 0 1 0 30M120 114a47 47 0 0 1 0 60M137 98a70 70 0 0 1 0 92" opacity=".72"/>
+          <path class="course-wave" d="M170 67a119 119 0 0 1 0 154"/>
+        </g>
+        <rect x="148" y="119" width="204" height="50" rx="17" fill="#192940"/>
+        <g fill="#1b304c" stroke="#99b6f1" stroke-width="2">
+          <circle cx="175" cy="144" r="10"/><circle cx="225" cy="144" r="10"/>
+          <circle cx="275" cy="144" r="10"/><circle cx="325" cy="144" r="10"/>
+        </g>
+        <g class="course-hits" fill="#ffe095">
+          <circle cx="175" cy="144" r="8"/><circle cx="225" cy="144" r="8"/>
+          <circle cx="275" cy="144" r="8"/><circle cx="325" cy="144" r="8"/>
+        </g>
+        <g font-family="system-ui,sans-serif" font-weight="700" font-size="18" text-anchor="middle" fill="#2a4263">
+          <text x="175" y="200">1</text><text x="225" y="200">2</text><text x="275" y="200">3</text><text x="325" y="200">4</text>
+        </g>
+        <g class="course-emitters" font-family="system-ui,sans-serif" font-size="22" font-weight="750" text-anchor="middle">
+          <circle cx="72" cy="144" r="24"/><circle cx="428" cy="144" r="24"/>
+          <text x="72" y="152">A</text><text x="428" y="152">B</text>
+        </g>
+      </svg>
+      <figcaption>
+        <div class="course-switch" role="group" aria-label="选一个发声位置" hidden>
+          <button type="button" data-course-source="left" aria-pressed="true">左边 A</button>
+          <button type="button" data-course-source="right" aria-pressed="false">右边 B</button>
+          <button type="button" data-course-replay aria-label="重播传播动画">重播</button>
+        </div>
+        <p class="course-arrival" aria-live="polite">左边 A 发声：1 → 2 → 3 → 4</p>
+      </figcaption>
+    </figure>
+  </section>
+
+  <section class="course-preface course-width" aria-labelledby="course-preface-title">
+    <p class="course-kicker">序言</p>
+    <h2 id="course-preface-title">一次通话，三个问题</h2>
+    <div>
+      <p>视频会议里，对方没听清坐在桌子另一端的人，倒听见了敲键盘。更奇怪的是，他还能听到自己刚说过的话。看起来都是「声音太杂」，排查时却得问三个不同的问题。</p>
+      <dl class="course-questions">
+        <div><dt>人在哪边？</dt><dd>量同一句话在不同录音里错开了多少，用时差推方向。</dd></div>
+        <div><dt>怎样朝他拾音？</dt><dd>按这个方向的时差把他的声音对齐再平均。别的方向通常对不齐，削弱多少要看频率和房间。</dd></div>
+        <div><dt>为什么听见自己？</dt><dd>对方的设备可以拿已知的播放信号来估计回到麦克风的回声。这个线索和时差不同。</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="course-listen" id="course-listen" aria-labelledby="course-listen-title">
+    <div class="course-width">
+      <p class="course-kicker">第一个实验</p>
+      <h2 id="course-listen-title">同一组录音，挑一边听。</h2>
+      <p class="course-section-intro">左边是长音，右边是成对的短音。先调低音量，猜一猜切换方向后哪种节奏会变轻。每段约三秒，三段没有分别调音量。</p>
+      <div class="course-clips">
+        <div>
+          <span class="course-clip-number" aria-hidden="true">01</span><h3 id="course-single-label">单支麦克风</h3>
+          <p>留意两种节奏重叠的地方。</p>
+          <audio controls preload="none" aria-labelledby="course-single-label" src="../assets/readme/lab/single.wav"></audio>
+          <a href="../assets/readme/lab/single.wav">打开 WAV</a>
+        </div>
+        <div>
+          <span class="course-clip-number" aria-hidden="true">02</span><h3 id="course-left-label">四支麦，对准左边</h3>
+          <p>长音还在，短音弱了多少？</p>
+          <audio controls preload="none" aria-labelledby="course-left-label" src="../assets/readme/lab/left.wav"></audio>
+          <a href="../assets/readme/lab/left.wav">打开 WAV</a>
+        </div>
+        <div>
+          <span class="course-clip-number" aria-hidden="true">03</span><h3 id="course-right-label">四支麦，对准右边</h3>
+          <p>这次注意成对的短音。</p>
+          <audio controls preload="none" aria-labelledby="course-right-label" src="../assets/readme/lab/right.wav"></audio>
+          <a href="../assets/readme/lab/right.wav">打开 WAV</a>
+        </div>
+      </div>
+      <p class="course-note">这是为了看清因果而设计的合成实验。把右边换成低音，效果会怎样？<a href="../assets/readme/lab/array-lab.html">打开交互实验 →</a></p>
+    </div>
+  </section>
+
+  <section class="course-width course-path" id="course-path" aria-labelledby="course-path-title">
+    <p class="course-kicker">课程地图</p>
+    <h2 id="course-path-title">从一段录音，到一台设备。</h2>
+    <p class="course-section-intro">初学按顺序读第 1～5 章，先把声音到达、定位和拾音连起来。已有项目可以按下面的任务跳读。</p>
+    <ol class="course-stops">
+      <li><span>01</span><h3>从录音找方向</h3><p>两路波形前后滑一滑，找到最吻合的位置。这个时差能排除哪些方向？</p><div><a href="01_problem-definition.html">问题定义</a><a href="02_basics-signal-model.html">信号模型</a><a href="03_array-geometry.html">阵列几何</a><a href="04_doa-estimation.html">定位</a></div></li>
+      <li><span>02</span><h3>让设备朝人拾音</h3><p>对齐再平均；故意转错方向，看看目标损失多少。说话人走动时，再用多帧观测跟上他。</p><div><a href="05_beamforming.html">波束形成</a><a href="09_source-tracking.html">声源追踪</a></div></li>
+      <li><span>03</span><h3>分辨房间里的麻烦</h3><p>自己说过的话传回来、一声响拖了尾、两个人同时开口，各自能利用什么线索？</p><div><a href="06_aec.html">回声消除</a><a href="07_wpe-dereverberation.html">去混响</a><a href="08_speech-separation.html">语音分离</a></div></li>
+      <li><span>04</span><h3>接上设备并验收</h3><p>量工作距离、延迟和场景变化时的效果。先排查通道同步与标定，再比较算法。</p><div><a href="10_engineering-practice.html">工程实践</a><a href="11_selection-guide.html">选型验收</a><a href="real_audio/README.md">真实录音</a></div></li>
+    </ol>
+    <p class="course-extra"><a href="12_acoustic-imaging.html">声学成像</a><a href="13_distributed-enhancement.html">分布式阵列</a><a href="14_appendix-symbols-math.html">数学与符号</a><a href="15_appendix-guide.html">房间仿真</a><a href="research/index.html">代码与复现</a><a href="#main-content">继续读完整导读 ↓</a></p>
+  </section>
+</div>

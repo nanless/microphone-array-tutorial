@@ -81,7 +81,7 @@
 | 图13统计生成物 | `scripts/make_figures.py` → `codes/chapters/ch04/reports/figure13_gcc_reverb.json` | 9 条件各 150 次的逐次事件、峰对比度和计数 | 与图片同次计算生成；保留共享随机性、失败和区间口径，不手改结果 |
 | 源码研究文档 | `codes/chapters/ch00/research/*.md` | 逐算法源码入口、实现差异、工业配置与复现实验 | 与正文和覆盖表互链；区分建议实验和已执行结果 |
 | 项目说明源文件 | `README.md`、`README_EN.md`、`scripts/README.md`、`codes/chapters/README.md`、`codes/chapters/ch00/{research,upstream}/README.md`、`codes/chapters/ch02/real_audio/README.md`、`scripts/vendor/mathjax-3.2.2/README.md` | 八份本书维护的源README：入口、英文、构建、代码、研究、获取、数据与公式资源 | 按真实内容修改；中英文共有信息同步，派生站点README由构建更新，上游忽略缓存原README保留身份 |
-| GitHub 首页配图 | `assets/readme/cover/{room,room-still,four-tracks}.svg`；`assets/readme/delay-and-sum.svg` | 双语首页的会议桌动图与四路录音示意、实验页的补时差示意；旧图保留原链接 | SVG 是可编辑源，不计入 80 张教材编号图；静态替代图随首页实验一并导出，改后检查双语、手机显示和减少动态效果 |
+| 课程首页与 GitHub 入口 | `scripts/course_home/{index.html,home.css,home.js,export_portable.py}` → `site/index.html` 的课程部分及 `assets/readme/course-{intro.html,cover.svg,cover-still.svg}` | 同源的课程页、断网单文件版和 GitHub 动图；原导读及所有锚点仍在 `site/index.html` | 模板、样式、交互和三段试听 WAV 计入站点源摘要；单文件与两张封面图由导出器生成，`--check` 只读校验。旧图保留路径；不计入 80 张教材编号图 |
 | GitHub 首页互动实验 | `assets/readme/lab/{README.md,README_EN.md,array-lab.html,export-lab.mjs}` → 同目录三个 WAV 和首页静态替代图 | 双语、离线、不需麦克风权限的四路合成试听，区分单麦和两种补时差方式 | HTML 内只有一份合成与数值核；改源后用导出脚本重生，`--check` 逐字节只读重放；全段浮点分量功率与混合 PCM 分开，不计入教材音频目录和出版物 |
 | 图 21 数值报告 | `scripts/make_figures.py::fig_wpe` → `codes/chapters/ch07/reports/figure21_wpe.json` | 同一信号的参数、帧选择、能量分母与谱域误差 | 随图重生；不将谱图显示频带当成指标统计频带 |
 | 图64选型报告与图 | `scripts/make_figures.py::fig_selection_scenarios` → `codes/chapters/ch11/reports/figure64_selection_scenarios.json` | 两场景实际PCM误差与解析控制、共同权重及最坏值 | 随独立音频清单真实生成；保留整数NMSE分母，不平均dB替代线性误差；不是设备排名 |

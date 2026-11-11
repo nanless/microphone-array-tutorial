@@ -8,6 +8,20 @@
 
 <a id="audio-regeneration"></a>
 
+## 课程入口
+
+打开 [`site/index.html`](../site/index.html) 可进入课程页；在本地直接用浏览器打开即可。互动示意和试听不需要网络；往下仍是原来的全书导读。GitHub 使用同源的[单文件课程页](../assets/readme/course-intro.html)，把三个试听 WAV 内嵌进文件，下载后可断网播放，进入 GitHub 章节时再联网。
+
+课程页面、样式和交互的源文件在 [`course_home/`](course_home/)。改动后从仓库根目录运行：
+
+```bash
+.venv/bin/python scripts/course_home/export_portable.py
+.venv/bin/python scripts/course_home/export_portable.py --check
+.venv/bin/python scripts/build_site.py
+```
+
+只改课程模板、样式或交互时，站点源摘要改变，合订本内容不受影响。若同时改了共享的 `build_site.py`，按下方顺序重新构建 PDF。
+
 ## 完整重生成顺序
 
 已有发布资产可直接核验和构建。需要从生成源重建时，先运行主清单与以下27套独立数学合成生成器，再绘图。第28套房间仿真及DEMAND真实数据按后文独立流程处理，不能用普通生成命令覆盖旧房间或取得未固定录音。

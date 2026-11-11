@@ -203,6 +203,8 @@ CHAPTERS = [
     ("15_appendix-guide.md", "第 15 章 · 附录 B：路径地图与练习"),
 ]
 HOME_FNAME = "00_overview.md"
+COURSE_HOME_ROOT = ROOT / "scripts" / "course_home"
+COURSE_HOME_FILES = ("index.html", "home.css", "home.js")
 RESEARCH = [
     ("README.md", "源码研究导读"),
     ("01_spatial_and_tracking.md", "空间处理与追踪源码研究"),
@@ -1193,6 +1195,8 @@ def source_digest():
                        TRACKING_AUDIO_ROOT, GSS_AUDIO_ROOT, BINAURAL_AUDIO_ROOT, SPECTRAL_AUDIO_ROOT, STFT_AUDIO_ROOT, SWEEP_AUDIO_ROOT, BASELINE_AUDIO_ROOT, REFLECTION_AUDIO_ROOT, PHASE_AUDIO_ROOT, BINAURAL_BEAMFORMING_ROOT, GEOMETRY_AUDIO_ROOT, FOCUS_AUDIO_ROOT, DERIVATIVE_AUDIO_ROOT, APA_AUDIO_ROOT, REFERENCE_AUDIO_ROOT, DELAY_AUDIO_ROOT, CSS_AUDIO_ROOT, MINT_AUDIO_ROOT, MASK_AUDIO_ROOT, NOISE_AUDIO_ROOT, CHANNEL_AUDIO_ROOT, SCENARIO_AUDIO_ROOT, WEIGHTED_AUDIO_ROOT, RESPONSE_AUDIO_ROOT, IMAGING_AUDIO_ROOT, DISTRIBUTED_AUDIO_ROOT):
         paths += sorted(asset_root.glob("*"))
     paths += sorted((ROOT / "figures").glob("fig*.png"))
+    paths += [COURSE_HOME_ROOT / name for name in COURSE_HOME_FILES]
+    paths += [ROOT / "assets/readme/lab" / name for name in ("single.wav", "left.wav", "right.wav")]
     paths += [Path(__file__), ROOT / "scripts" / "build_markdown_helpers.py",
               INLINE_LAYOUT_PATH,
               ROOT / "scripts" / "heading_aliases.py",
@@ -1808,6 +1812,18 @@ def publish_files(replacements, removals=(), *, boundary=None):
             shutil.rmtree(backup_dir)
 
 
+def with_course_landing(page):
+    """Put the course before the guide without moving any published guide anchor."""
+    template, css, script = (
+        (COURSE_HOME_ROOT / name).read_text(encoding="utf-8") for name in COURSE_HOME_FILES
+    )
+    return (page.replace('</head>', '<style>' + css + '</style></head>', 1)
+            .replace('<body id="top">', '<body id="top" class="course-page">', 1)
+            .replace('href="#main-content">跳到正文', 'href="#course-home">跳到课程入口', 1)
+            .replace('<div class="wrap">', template + '\n<div class="wrap">', 1)
+            .replace('</body>', '<script>' + script + '</script></body>', 1))
+
+
 def main():
     names = [f for f, _ in CHAPTERS]
     expected = set(source_outputs().values())
@@ -1821,13 +1837,15 @@ def main():
         home_html, home_n = render(home_md, SRC / HOME_FNAME)
         assert home_n == len(home_heads), f"首页锚点 {home_n} vs 标题 {len(home_heads)}"
         toc, _ = sub_list("index.html", home_heads)
-        (temp_out / "index.html").write_text(PAGE.format(
-            title="导读与导航", css=CSS, crumb="导读与导航",
+        home_html = re.sub(r"<h1(\b[^>]*>.*?)</h1>", r"<h2\1</h2>", home_html, count=1, flags=re.S)
+        home_page = PAGE.format(
+            title="从零开始", css=CSS, crumb="导读与导航",
             home_href="index.html",
             source_digest=build_digest,
             inline_layout_script=inline_layout_script,
             sidebar=sidebar_with_anchors(None, home_heads), toc=toc,
-            body=home_html, pn=""), encoding="utf-8")
+            body=home_html, pn="")
+        (temp_out / "index.html").write_text(with_course_landing(home_page), encoding="utf-8")
         for i, (fname, label) in enumerate(CHAPTERS):
             md = (SRC / fname).read_text(encoding="utf-8")
             heads = parse_headings(md)

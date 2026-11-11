@@ -11,9 +11,7 @@
 
 ## Start here
 
-[Open the Chinese course](https://nanless.github.io/microphone-array-tutorial/) in your browser. Switch between the two sound sources in the animation, compare the three audio clips, and pick a chapter from the learning route.
-
-Or listen here: **[One mic](assets/readme/lab/single.wav?raw=true) → [steered left](assets/readme/lab/left.wav?raw=true) → [steered right](assets/readme/lab/right.wav?raw=true)**. Turn down the volume first. Each clip is about three seconds. Long tones are on the left, pairs of short tones on the right, and all three clips use the same simulated recordings.
+[Open the Chinese course](https://nanless.github.io/microphone-array-tutorial/) in your browser. Switch between the two sound sources in the animation, explore two real recording cases, and pick a chapter from the learning route. [Jump to the case studies →](https://nanless.github.io/microphone-array-tutorial/site/#course-cases)
 
 ## Preface · Why record the same words four times?
 
@@ -36,6 +34,6 @@ Start with Chapter 1 and consult the [math and notation appendix](chapters/14_ap
 
 **13 chapters · 2 appendices · 363 runnable exercises · 80 numbered figures**
 
-[Code and audio by chapter](codes/chapters/README.md) · [Listening experiment explained](assets/readme/lab/README_EN.md) · [Implementation notes](codes/chapters/ch00/research/README.md) · [Web and PDF builds](scripts/README.md) · [Third-party sources and terms](codes/chapters/ch00/THIRD_PARTY.md)
+[Code and audio by chapter](codes/chapters/README.md) · [Implementation notes](codes/chapters/ch00/research/README.md) · [Web and PDF builds](scripts/README.md) · [Third-party sources and terms](codes/chapters/ch00/THIRD_PARTY.md)
 
 The repository does not have a general root license. Third-party code and data retain their own terms.

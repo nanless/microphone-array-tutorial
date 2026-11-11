@@ -32,11 +32,4 @@
   replay.addEventListener("click", animate);
   reduced.addEventListener("change", motionPreferenceChanged);
   motionPreferenceChanged();
-
-  const clips = [...document.querySelectorAll(".course-clips audio")];
-  for (const clip of clips) {
-    clip.addEventListener("play", () => {
-      for (const other of clips) if (other !== clip) other.pause();
-    });
-  }
 })();

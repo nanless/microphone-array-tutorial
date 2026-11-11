@@ -11,9 +11,7 @@
 
 ## 第一次来，从这里开始
 
-[打开在线课程](https://nanless.github.io/microphone-array-tutorial/)。点选左右声源看动图，用页面上的三个播放器听差别，再按学习路线选章节。手机和电脑都能直接打开。
-
-也可以就在 GitHub 上先听：**[单支麦](assets/readme/lab/single.wav?raw=true) → [对准左边](assets/readme/lab/left.wav?raw=true) → [对准右边](assets/readme/lab/right.wav?raw=true)**。先调低音量。每段约三秒，左边是一串长音，右边是成对短音，三段用的是同一组模拟录音。
+[打开在线课程](https://nanless.github.io/microphone-array-tutorial/)。点选左右声源看动图，看两个真实录音案例，再按学习路线选章节。手机和电脑都能直接打开。 [直接看定位与波束形成案例 →](https://nanless.github.io/microphone-array-tutorial/site/#course-cases)
 
 ## 序言 · 同一句话，为什么录了四份？
 
@@ -36,6 +34,6 @@
 
 **13 章正文 · 2 篇附录 · 363 道可运行练习 · 80 张编号图**
 
-[按章找代码和音频](codes/chapters/README.md) · [试听实验的推导](assets/readme/lab/README.md) · [研究手册](codes/chapters/ch00/research/README.md) · [网页与 PDF 构建](scripts/README.md) · [第三方来源与许可](codes/chapters/ch00/THIRD_PARTY.md)
+[按章找代码和音频](codes/chapters/README.md) · [研究手册](codes/chapters/ch00/research/README.md) · [网页与 PDF 构建](scripts/README.md) · [第三方来源与许可](codes/chapters/ch00/THIRD_PARTY.md)
 
 仓库根目录没有通用许可证。第三方代码和数据按各自条款使用。

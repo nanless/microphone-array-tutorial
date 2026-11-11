@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>从零开始 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="0162253cd8e5"><style>
+<meta name="source-digest" content="565e819440a3"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -301,17 +301,23 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 .course-questions div { display:grid; grid-template-columns:8.5rem 1fr; gap:5px 12px; padding:10px 0; border-top:1px solid var(--line); }
 .course-questions dt { font-weight:750; }
 .course-questions dd { margin:0; }
-.course-listen { background:#1d304b; color:#fff8ea; padding-block:clamp(36px,6vw,72px); }
-.course-listen .course-kicker { color:#ffbb9a; }
-.course-listen a,.course-listen .course-note { color:#e3ecfb; }
-.course-listen :is(a,button):focus-visible { outline-color:#f6b27a; }
+.course-cases { border-top:1px solid var(--line); padding-block:clamp(36px,6vw,72px) 0; }
 .course-section-intro { max-width:47rem; margin:0 0 22px; }
-.course-clips { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
-.course-clips > div { padding:16px; border:1px solid #7186a0; background:#263d5d; border-radius:9px; }
-.course-clips p { font-size:.92rem; margin:6px 0 10px; }
-.course-clip-number { font-size:.83rem; font-weight:700; color:#ffca9c; }
-.course-clips audio { width:100%; height:44px; display:block; margin-bottom:4px; }
-.course-clips a { font-size:.8rem; }
+.course-case-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; }
+.course-case { --case-accent:#204c98; --case-bg:#ecf2fa; display:flex; flex-direction:column; gap:12px; padding:clamp(16px,3vw,29px); border:1px solid var(--line); border-top:4px solid var(--case-accent); border-radius:10px; background:#fff; }
+.course-case-beam { --case-accent:#8d3423; --case-bg:#fcf0e8; }
+.course-case p,.course-case h3 { margin:0; }
+.course-case .course-case-tag { color:var(--case-accent); font-size:.84rem; font-weight:750; }
+.course-case h3 { font-size:clamp(1.22rem,2.35vw,1.65rem); }
+.course-case-chart { margin:3px 0; padding:14px; border-radius:7px; background:var(--case-bg); }
+.course-case-chart figcaption,.course-case-row { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:baseline; gap:4px 9px; }
+.course-case-chart figcaption { font-weight:750; margin-bottom:8px; }
+.course-case-chart small { color:var(--quiet); font-size:.78rem; font-weight:500; }
+.course-case-row { margin:6px 0 9px; font-size:.92rem; }
+.course-case-row strong { font-size:1.24rem; color:var(--case-accent); font-variant-numeric:tabular-nums; }
+.course-case-track { grid-column:1 / -1; height:8px; border-radius:4px; background:#15243b18; }
+.course-case-track > span { display:block; height:100%; width:var(--amount); border-radius:inherit; background:var(--case-accent); }
+.course-case-links { display:flex; flex-wrap:wrap; gap:4px 17px; margin-top:auto; padding-top:8px; font-size:.9rem; }
 .course-path { padding-block:clamp(43px,7vw,84px); }
 .course-stops { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; list-style:none; margin:0; padding:0; }
 .course-stops li { border-top:3px solid var(--blue); background:#fff; padding:16px; }
@@ -320,12 +326,15 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 .course-stops div,.course-extra { display:flex; flex-wrap:wrap; gap:8px 17px; }
 .course-stops a,.course-extra a { font-size:.92rem; }
 .course-extra { margin:23px 0 0; }
+@media (min-width:791px) {
+  .course-case { display:grid; grid-row:span 6; grid-template-rows:subgrid; }
+}
 @media (max-width:790px) {
   .course-width { width:calc(100% - 36px); }
   .course-hero,.course-preface { grid-template-columns:1fr; }
   .course-hero { padding-block:36px 40px; gap:24px; }
   .course h1 { font-size:clamp(3rem,11vw,5.3rem); }
-  .course-clips { grid-template-columns:1fr; }
+  .course-case-grid { grid-template-columns:1fr; }
 }
 @media (max-width:500px) {
   .course-header { flex-wrap:wrap; padding-block:12px; }
@@ -340,7 +349,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
   <header class="course-header course-width">
     <a class="course-brand" href="#course-home"><span class="course-mark" aria-hidden="true">∿</span> 麦克风阵列入门</a>
     <nav aria-label="课程入口">
-      <a href="#course-listen">试听</a>
+      <a href="#course-cases">案例</a>
       <a href="#course-path">课程</a>
       <a href="#main-content">全书导读</a>
       <a href="../dist/microphone-array-tutorial.pdf">PDF</a>
@@ -355,13 +364,13 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
       <p class="course-deck">同一句话，四支麦克风收到的时间不一样。这点先后，能用来找人，也能让设备朝那个人拾音。</p>
       <div class="course-actions">
         <a class="course-cta" href="01_problem-definition.html">读第一章 <span aria-hidden="true">→</span></a>
-        <a class="course-quiet" href="#course-listen">先听一遍 <span aria-hidden="true">↓</span></a>
+        <a class="course-quiet" href="#course-cases">看真实案例 <span aria-hidden="true">↓</span></a>
       </div>
-      <p class="course-note">试听不用设备或编程基础。要复算时，再打开代码和数学附录。</p>
+      <p class="course-note">先读图和案例。需要复算时，再查代码和数学附录。</p>
     </div>
 
     <figure class="course-demo" data-source="left">
-      <div class="course-demo-heading"><span>01 / 到达先后</span><span>传播示意</span></div>
+      <div class="course-demo-heading"><span>到达先后</span><span>传播示意</span></div>
       <svg class="course-plot" viewBox="0 0 500 272" role="img" aria-labelledby="course-plot-title course-plot-desc">
         <title id="course-plot-title">声音怎样依次抵达四支麦克风</title>
         <desc id="course-plot-desc">左边发声时从 1 号到 4 号依次收到，右边发声时顺序相反。下方文字给出当前顺序。</desc>
@@ -420,32 +429,48 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
     </div>
   </section>
 
-  <section class="course-listen" id="course-listen" aria-labelledby="course-listen-title">
-    <div class="course-width">
-      <p class="course-kicker">第一个实验</p>
-      <h2 id="course-listen-title">同一组录音，挑一边听。</h2>
-      <p class="course-section-intro">左边是长音，右边是成对的短音。先调低音量，猜一猜切换方向后哪种节奏会变轻。每段约三秒，三段没有分别调音量。</p>
-      <div class="course-clips">
-        <div>
-          <span class="course-clip-number" aria-hidden="true">01</span><h3 id="course-single-label">单支麦克风</h3>
-          <p>留意两种节奏重叠的地方。</p>
-          <audio controls preload="none" aria-labelledby="course-single-label" src="../assets/readme/lab/single.wav"></audio>
-          <a href="../assets/readme/lab/single.wav">打开 WAV</a>
-        </div>
-        <div>
-          <span class="course-clip-number" aria-hidden="true">02</span><h3 id="course-left-label">四支麦，对准左边</h3>
-          <p>长音还在，短音弱了多少？</p>
-          <audio controls preload="none" aria-labelledby="course-left-label" src="../assets/readme/lab/left.wav"></audio>
-          <a href="../assets/readme/lab/left.wav">打开 WAV</a>
-        </div>
-        <div>
-          <span class="course-clip-number" aria-hidden="true">03</span><h3 id="course-right-label">四支麦，对准右边</h3>
-          <p>这次注意成对的短音。</p>
-          <audio controls preload="none" aria-labelledby="course-right-label" src="../assets/readme/lab/right.wav"></audio>
-          <a href="../assets/readme/lab/right.wav">打开 WAV</a>
-        </div>
-      </div>
-      <p class="course-note">这是为了看清因果而设计的合成实验。把右边换成低音，效果会怎样？<a href="../assets/readme/lab/array-lab.html">打开交互实验 →</a></p>
+  <section class="course-width course-cases" id="course-cases" aria-labelledby="course-cases-title">
+    <h2 id="course-cases-title">阵列用在什么地方？</h2>
+    <p class="course-section-intro">下面两项研究都在真实房间里录音。一个量方向猜得准不准，另一个量语音识别错了多少词。</p>
+    <div class="course-case-grid">
+      <article class="course-case">
+        <p class="course-case-tag">声源定位 · LOCATA 实录</p>
+        <h3>阵列在移动，还能找准方向吗？</h3>
+        <p>一个人在房间里边走边说。研究人员同时录下阵列信号，并用光学系统记录人和阵列的位置，供算法估计的方向对照。</p>
+        <figure class="course-case-chart">
+          <figcaption>平均水平角误差 <small>越小越准</small></figcaption>
+          <div class="course-case-row">
+            <span>阵列固定</span><strong>5.5°</strong>
+            <span class="course-case-track" aria-hidden="true"><span style="--amount:45.833%"></span></span>
+          </div>
+          <div class="course-case-row">
+            <span>阵列也在移动</span><strong>9.7°</strong>
+            <span class="course-case-track" aria-hidden="true"><span style="--amount:80.833%"></span></span>
+          </div>
+          <small>横条从 0° 起，满格是 12°。</small>
+        </figure>
+        <p>两种任务中，说话人都在移动。论文汇总了同一组参赛方案及对应阵列。从上往下看，估计方向和实测方向之间的夹角就是这里的误差。</p>
+        <div class="course-case-links"><a href="04_doa-estimation.html">读第 4 章 · 声源定位 →</a><a href="https://arxiv.org/pdf/1909.01008#page=14">论文 §VII-A</a></div>
+      </article>
+      <article class="course-case course-case-beam">
+        <p class="course-case-tag">波束形成 · 真实房间重放</p>
+        <h3>离麦克风远，怎样让识别少错词？</h3>
+        <p>研究人员在真实房间里用扬声器播放预录语音，用同一套 32 麦球形阵列录音。声源在论文标记的 68° 方向。</p>
+        <figure class="course-case-chart">
+          <figcaption>词错误率 <small>越小越好</small></figcaption>
+          <div class="course-case-row">
+            <span>对齐再相加</span><strong>13.5%</strong>
+            <span class="course-case-track" aria-hidden="true"><span style="--amount:84.375%"></span></span>
+          </div>
+          <div class="course-case-row">
+            <span>超指向波束形成</span><strong>9.7%</strong>
+            <span class="course-case-track" aria-hidden="true"><span style="--amount:60.625%"></span></span>
+          </div>
+          <small>横条从 0% 起，满格是 16%。</small>
+        </figure>
+        <p>按论文表 5 的同一识别轮次，词错误率低了 3.8 个百分点。这个指标把错词、漏词和多出来的词一起计入。</p>
+        <div class="course-case-links"><a href="05_beamforming.html">读第 5 章 · 波束形成 →</a><a href="https://doi.org/10.1109/MSP.2012.2205285">论文表 5</a></div>
+      </article>
     </div>
   </section>
 
@@ -1846,12 +1871,5 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
   replay.addEventListener("click", animate);
   reduced.addEventListener("change", motionPreferenceChanged);
   motionPreferenceChanged();
-
-  const clips = [...document.querySelectorAll(".course-clips audio")];
-  for (const clip of clips) {
-    clip.addEventListener("play", () => {
-      for (const other of clips) if (other !== clip) other.pause();
-    });
-  }
 })();
 </script></body></html>

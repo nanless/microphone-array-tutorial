@@ -1,6 +1,5 @@
 """Export the offline course introduction and GitHub diagram from the course sources."""
 import argparse
-from base64 import b64encode
 from html import escape
 from pathlib import Path
 import re
@@ -10,7 +9,10 @@ SOURCE = Path(__file__).resolve().parent
 DEST = ROOT / "assets/readme"
 REPOSITORY = "https://github.com/nanless/microphone-array-tutorial"
 BLOB = REPOSITORY + "/blob/main/"
-AUDIO = ("single.wav", "left.wav", "right.wav")
+CASE_SOURCES = {
+    "https://arxiv.org/pdf/1909.01008#page=14",
+    "https://doi.org/10.1109/MSP.2012.2205285",
+}
 
 
 def portable(template, css, script):
@@ -26,20 +28,11 @@ def portable(template, css, script):
             path = BLOB + "codes/chapters/ch02/real_audio/README.md"
         elif re.fullmatch(r"\d{2}_[a-z-]+\.html", path):
             path = BLOB + "chapters/" + path.removesuffix(".html") + ".md"
-        elif path != REPOSITORY and not path.startswith("#"):
+        elif path != REPOSITORY and path not in CASE_SOURCES and not path.startswith("#"):
             raise ValueError(f"Unmapped portable link: {path}")
         return f'href="{escape(path, quote=True)}"'
 
-    for name in AUDIO:
-        original = f'../assets/readme/lab/{name}'
-        encoded = b64encode((DEST / "lab" / name).read_bytes()).decode("ascii")
-        for attr in ("src", "href"):
-            token = f'{attr}="{original}"'
-            if template.count(token) != 1:
-                raise ValueError(f"Unexpected portable audio layout: {token}")
-            template = template.replace(token, f'{attr}="data:audio/wav;base64,{encoded}"' +
-                                        (f' download="{name}"' if attr == "href" else ""))
-    template = re.sub(r'href="(?!data:)([^"]+)"', link, template)
+    template = re.sub(r'href="([^"]+)"', link, template)
     template = template.replace('<div class="course" id="course-home" tabindex="-1">',
                                 '<main class="course" id="course-home" tabindex="-1">', 1)
     template = template.removesuffix("</div>\n") + "</main>\n"

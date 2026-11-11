@@ -15,10 +15,12 @@ function exportAsset(name, bytes) {
     writeFileSync(dest, bytes);
   }
 }
-const hero = readFileSync(file("../listening-room.svg"), "utf8");
-const still = hero.replace(/<style>[\s\S]*?<\/style>/, "<style>.pulse { opacity: 0; }</style>");
-if (still === hero) throw new Error("Hero animation stylesheet not found");
-exportAsset("../listening-room-still.svg", Buffer.from(still));
+for (const [name, hidden] of [["listening-room", ".pulse"], ["cover/room", ".move, .hit"]]) {
+  const hero = readFileSync(file("../" + name + ".svg"), "utf8");
+  const still = hero.replace(/<style>[\s\S]*?<\/style>/, `<style>${hidden} { opacity: 0; }</style>`);
+  if (still === hero) throw new Error("Hero animation stylesheet not found: " + name);
+  exportAsset("../" + name + "-still.svg", Buffer.from(still));
+}
 for (const mode of ["single", "left", "right"]) {
   const {output, fractions} = Lab.render(Lab.synthesize(false), mode);
   exportAsset(mode + ".wav", Buffer.from(Lab.wav(output)));

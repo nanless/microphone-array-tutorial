@@ -1,85 +1,64 @@
-# 麦克风阵列信号处理
+# 麦克风阵列入门
 
-**一群麦克风，怎么知道该听谁？** 从声音抵达四支麦的先后，学到让会议麦克风朝人拾音、让机器人跟上移动的说话者。
+**一张会议桌，四个麦克风。离得远的那个人，怎样才能被听清？**
 
-[先听四支麦的效果](#先听同一段声音选两种方向) · [新手课程路线](#按这条路线学) · [全书 PDF](dist/microphone-array-tutorial.pdf) · [English](README_EN.md)
+[读第一章 →](chapters/01_problem-definition.md) · [学习路线](#学习路线) · [PDF](dist/microphone-array-tutorial.pdf) · [English](README_EN.md)
 
 <picture>
-  <source media="(prefers-reduced-motion: reduce)" srcset="assets/readme/listening-room-still.svg">
-  <img alt="左边的声源 A 先到 M1，右边的声源 B 先到 M4。动图放慢展示各自到达四支麦克风的顺序。" src="assets/readme/listening-room.svg">
+  <source media="(prefers-reduced-motion: reduce)" srcset="assets/readme/cover/room-still.svg">
+  <img alt="俯视会议桌。左边的人开口，声波传过桌面。桌上的四个麦克风由近到远依次亮起，示意声音抵达的先后。" src="assets/readme/cover/room.svg">
 </picture>
 
-## 先听：同一段声音，选两种方向
+## 序言：会议桌上，四份不同的录音
 
-把上图想成一张桌子。左边 A 发出一串较长的音，右边 B 发出成对的短音。**先猜：如果只改处理方式，能不能让左边和右边轮流占上风？**
+视频会议开到一半，坐在桌子另一头的同事问了一句：「你们听得见吗？」耳机里听到的却是半句话、键盘响声，还有自己上一句话的回声。换个座位，问题又变了。
 
-1. **[▶ 单支麦 M1](assets/readme/lab/single.wav?raw=true)**：长音和两下短音都在。
-2. **[▶ 对准左边 A](assets/readme/lab/left.wav?raw=true)**：长音留下，两下短音变轻。
-3. **[▶ 对准右边 B](assets/readme/lab/right.wav?raw=true)**：这次主要听见两下短音。
+假设把会议机里的四路原始录音拆开听。它们录的是同一个房间，可是同一句话到达每个麦克风的时间不一样。图里的说话人离 1 号麦克风最近；在直达声里，2、3、4 号会稍晚收到。平时几乎听不出这点先后，把波形摊开就看得见。
 
-先把设备音量调低。三段都是单声道，可以直接用手机扬声器；如果浏览器下载了 WAV，用播放器打开即可。效果来自对四路信号做不同的时间补偿，音频没有逐段调音量。这是**有意选用容易对比的合成音**，实录不会这么干净。
+![同一小段声音在四路波形里逐渐向右错开。横轴向右是时间；黄色圆点标出每路的起点。示意图，不是实际录音。](assets/readme/cover/four-tracks.svg)
 
-**[在电脑上下载互动实验](assets/readme/lab/array-lab.html)** → 点 **Download raw file**（下载原始文件），再用浏览器打开保存的 HTML。不用装 Python，也不用给网页麦克风权限。先对准 A，再勾选「把右边 B 换成低音」：B 没挪位置，怎么又听得见了？
+这点先后有两种用法。**想找人**，就量一量同一段声音在不同录音里错开多少，再结合麦克风的位置推方向，这叫**声源定位**。**想朝那个人拾音**，就用这个方向的时差把他的话对齐再合成，这叫**波束形成**。键盘若在另一个方向，按同一套时差处理，它的声音通常对不齐；究竟能压下多少，要看频率、间距和房间。
 
-## 序言：为什么要让最先听见的麦克风等一等？
+再想想耳机里的回声。它可能是远端的声音经扬声器播出，又绕回麦克风。会议机知道自己放了什么，于是可以用播放信号来估计这份回声。至于房间里的拖尾、两个人同时开口、说话人边走边讲，各有各的难点。这本书从桌上的四路录音讲起，逐步把这些问题拆开。
 
-会议桌另一端有人刚开口，旁边又响起键盘声。把四支麦的录音直接混在一起，两种声音通常都还在。四支麦的价值，是它们记录下了**不同的先后顺序**：左边的声音先到左端，右边的声音先到右端。同一件事，既给了我们一个线索来找方向，也给了我们一个办法来选方向。
+**现在就听一段。** 同一组录音里有两种合成节奏。[听单支麦](assets/readme/lab/single.wav?raw=true)，再[听朝左拾音](assets/readme/lab/left.wav?raw=true)和[朝右拾音](assets/readme/lab/right.wav?raw=true)。先调低音量；每段约 3 秒。[去实验页动手换方向 →](assets/readme/lab/README.md)
 
-以左边的 A 为例。假设同一个波峰依次在第 0、2、4、6 格到达四支麦。让最先听到的 M1 等 6 格，M2 等 4 格，M3 等 2 格，最后到的 M4 不用等。现在四个波峰都在第 6 格。
+## 学习路线
 
-![横轴是采样格数。M1、M2、M3 的空心点经箭头所示的等待移到第 6 格，M4 原本就在第 6 格。四个实心点对齐。](assets/readme/delay-and-sum.svg)
+没学过阵列处理，从第 1 章开始。图和试听可以先看，代码可以后跑。遇到复数、矩阵或分贝换算，再查[数学与符号附录](chapters/14_appendix-symbols-math.md)。已有项目在做，直接选遇到的问题。
 
-这时再取四路平均，A 的波峰能和波峰叠在一起，保持原来的强度。B 的到达顺序正好相反，照 A 的规则补时间，B 的波峰和波谷就可能相抵。这就是最简单的**波束形成**：麦克风没有转动，改变的是我们合成录音的方式。
+### 01　从录音看出位置
 
-但方向不同并不保证能把另一边压下去。实验里，换成 **250 Hz** 的低音后，同样对准 A，B 仍留下单麦参照约 **82% 的功率**：低音一轮起伏更长，这点时差只够错开一小段。学阵列有趣的地方就在这里：先弄懂一个方法为什么有效，再找出它在哪些条件下不够用。
+[第 1 章：哪些声音要留下](chapters/01_problem-definition.md) → [第 2 章：声音怎样到达麦克风](chapters/02_basics-signal-model.md) → [第 3 章：阵列怎样摆](chapters/03_array-geometry.md) → [第 4 章：从时差找方向](chapters/04_doa-estimation.md)
 
-## 按这条路线学
+拿两条波形左右滑，找出最像是同一段声音的位置。再算一算：知道这个时差，能确定一个方向，还是有多个可能的方向？
 
-第一次学可以从第 1 站开始，也可以带着手头的问题跳进去。浏览上面的实验不用数学基础；往后用到三角函数、复数和矩阵时，可以随时查[附录 A](chapters/14_appendix-symbols-math.md)。
+### 02　把拾音转向想听的人
 
-### 第 1 站 · 看懂四路录音为什么不同
+[第 5 章：波束形成](chapters/05_beamforming.md) → [第 9 章：跟上移动的说话人](chapters/09_source-tracking.md)
 
-[第 1 章：任务](chapters/01_problem-definition.md) → [第 2 章：信号模型](chapters/02_basics-signal-model.md) → [第 3 章：阵列几何](chapters/03_array-geometry.md)
+先做会对齐再平均的固定波束；把方向故意拨错，听听目标会损失多少。遇到讲话的人在走动，再让连续几次方向观测互相参照，少被某一帧带偏。
 
-看一段波形，判断哪一路先收到；算一算间距改变后，时差会怎么变。
+### 03　分别对付回声、拖尾和串话
 
-### 第 2 站 · 找到声音，再朝它拾音
+[第 6 章：用播放信号消回声](chapters/06_aec.md) · [第 7 章：减轻房间拖尾](chapters/07_wpe-dereverberation.md) · [第 8 章：分离同时说话的人](chapters/08_speech-separation.md)
 
-[第 4 章：声源定位](chapters/04_doa-estimation.md) → [第 5 章：波束形成](chapters/05_beamforming.md)
+先辨认现象：听到的是自己刚说过的话、一个字尾部拖出来的反射，还是另一个人同时在说？三种问题能利用的线索不同。
 
-把两路录音前后滑动，找最吻合的位置；再比较朝对方向和朝错方向的输出。
+### 04　拿实录验证，把方法装进设备
 
-### 第 3 站 · 分清回声、混响和串话
+[十六支麦录下的溪流](codes/chapters/ch02/real_audio/README.md) · [第 10 章：同步、标定与延迟](chapters/10_engineering-practice.md) · [第 11 章：选型与验收](chapters/11_selection-guide.md)
 
-[第 6 章：消回声](chapters/06_aec.md) · [第 7 章：去混响](chapters/07_wpe-dereverberation.md) · [第 8 章：语音分离](chapters/08_speech-separation.md)
+先用同一段实录比较单麦和多麦平均，看看相关的噪声会怎样影响结果。再给自己的设备订验收条件：坐多远、延迟多少、环境一变效果会不会掉下来。
 
-通话听见自己、房间里有拖尾、两个人同时开口，是三道不同的题。先描述你听见的现象，再挑相应的方法。
-
-### 第 4 站 · 把方法装进真实设备
-
-[第 9 章：追踪](chapters/09_source-tracking.md) · [第 10 章：工程实践](chapters/10_engineering-practice.md) · [第 11 章：选型](chapters/11_selection-guide.md)
-
-处理偶尔找错方向的帧；检查通道是否同步，分开量延迟和拾音效果。
-
-想从**真实录音**开始？试试[十六支麦录下的同一条溪流](codes/chapters/ch02/real_audio/README.md)：先听单麦和多麦平均，再看看为什么声道加多了，噪声功率也不一定按课本里的简单比例下降。
-
-想继续做空间成像或把几台设备连起来？接着读[第 12 章：声学成像](chapters/12_acoustic-imaging.md)和[第 13 章：分布式阵列](chapters/13_distributed-enhancement.md)。
+如果你要画出机器里**哪里在响**，读[第 12 章：声学成像](chapters/12_acoustic-imaging.md)。如果麦克风散在不同设备上，还要处理各自的采样时钟，读[第 13 章：分布式阵列](chapters/13_distributed-enhancement.md)。
 
 ## 全书与配套材料
 
-[章节总目录](chapters/00_overview.md) · [离线合订 PDF](dist/microphone-array-tutorial.pdf) · [按章查代码和音频](codes/chapters/README.md) · [练习与音频手册](codes/chapters/ch00/research/05_exercises_and_audio.md)
+[完整章节目录](chapters/00_overview.md) · [按章查代码和音频](codes/chapters/README.md) · [练习与音频手册](codes/chapters/ch00/research/05_exercises_and_audio.md) · [房间仿真实验](chapters/15_appendix-guide.md)
 
-全书有 **13 章正文、2 篇附录、363 道可运行练习和 80 张编号图**，另有一张房间练习补图。每章可以沿着「看解释 → 复算 → 跑代码 → 听结果」往下走；[附录 B](chapters/15_appendix-guide.md)另有一份可动手的房间仿真题。
+全书有 **13 章正文、2 篇附录、363 道可运行练习和 80 张编号图**，另有一张房间练习补图。书里明确区分可手算的合成对照、房间仿真和真实录音，方便判断每项结果能说明什么。
 
 [源码研究手册](codes/chapters/ch00/research/README.md) · [第三方来源与许可](codes/chapters/ch00/THIRD_PARTY.md) · [构建说明](scripts/README.md)
-
-<details>
-<summary>复算首页实验</summary>
-
-[互动页面](assets/readme/lab/array-lab.html)内含完整合成和处理代码。A、B 的到达时间以 16 kHz 的采样点为单位，分别是 `[0, 2, 4, 6]` 和 `[6, 4, 2, 0]`。每个百分比都用已知声源的浮点分量单独计算：输出平方和 ÷ 单麦平方和，保留完整延迟尾部。试听文件是两分量相加后量化得到的 PCM WAV。
-
-已安装 Node.js 的话，在仓库根目录运行 `node assets/readme/lab/export-lab.mjs --check` 可重算并逐字节核对三段音频。这组数值只解释这里的合成对照；它不是实测阵列的降噪指标。
-
-</details>
 
 仓库根目录没有通用许可证。第三方代码和数据按各自条款使用。

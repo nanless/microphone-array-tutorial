@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 470" role="img" aria-labelledby="title desc">
+  <title id="title">A voice crosses the room</title>
+  <desc id="desc">A conference table viewed from above. A voice spreads from the person at the left toward a four-microphone bar. The microphones light up in arrival order. The second person and the laptop illustrate the setting. This is a schematic.</desc>
+  <defs>
+    <pattern id="paper" width="20" height="20" patternUnits="userSpaceOnUse">
+      <circle cx="1.5" cy="1.5" r="1" fill="#253a48" opacity=".11"/>
+    </pattern>
+    <linearGradient id="desk" x2="0" y2="1">
+      <stop stop-color="#fffbec"/><stop offset="1" stop-color="#f3e6c9"/>
+    </linearGradient>
+    <linearGradient id="shell" x2="0" y2="1">
+      <stop stop-color="#304856"/><stop offset="1" stop-color="#172d3b"/>
+    </linearGradient>
+    <pattern id="grille" width="8" height="8" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.25" fill="#93b0b3" opacity=".45"/>
+    </pattern>
+    <clipPath id="table">
+      <rect x="210" y="108" width="560" height="254" rx="111"/>
+    </clipPath>
+    <clipPath id="cover">
+      <rect x="1" y="1" width="958" height="468" rx="26"/>
+    </clipPath>
+  </defs>
+  <style>
+    .move, .hit { opacity:0; }
+    @media (prefers-reduced-motion: no-preference) {
+      .move { animation:expand 3.6s linear 3; transform-origin:210px 222px; }
+      .hit { animation:arrive 3.6s ease-out 3; }
+      .h1 { animation-delay:.82s; } .h2 { animation-delay:1.03s; }
+      .h3 { animation-delay:1.24s; } .h4 { animation-delay:1.45s; }
+      @keyframes expand {
+        0% { opacity:0; transform:scale(.09); } 11% { opacity:.75; }
+        39% { opacity:.7; } 51% { opacity:0; transform:scale(1.3); } 100% { opacity:0; transform:scale(1.3); }
+      }
+      @keyframes arrive { 0%,13%,100% { opacity:0; } 3% { opacity:1; } }
+    }
+  </style>
+  <g clip-path="url(#cover)">
+    <path fill="#eee8d8" d="M0 0h960v470H0z"/>
+    <path fill="url(#paper)" d="M0 0h960v470H0z"/>
+    <path d="M51 396V80a26 26 0 0 1 26-26h806a26 26 0 0 1 26 26v316" fill="none" stroke="#c4b797" stroke-width="2"/>
+    <path d="M51 418H909M120 418v-25m720 25v-25M74 91h27m-13-13v26m771-13h27m-13-13v26" fill="none" stroke="#bcac8d" stroke-width="2"/>
+    <path d="M54 151h39m-39 16h27m-27 16h27m-27 16h39m-39 16h27m-27 16h27m-27 16h39m-39 16h27m-27 16h27m-27 16h39"
+          fill="none" stroke="#cbbda0" stroke-width="2"/>
+    <!-- Table, underside and top. -->
+    <rect x="205" y="133" width="577" height="246" rx="114" fill="#3e4035" opacity=".13"/>
+    <rect x="210" y="119" width="560" height="254" rx="111" fill="#bc9a5d" stroke="#736448" stroke-width="2.5"/>
+    <rect x="210" y="108" width="560" height="254" rx="111" fill="url(#desk)" stroke="#736448" stroke-width="2.5"/>
+    <g clip-path="url(#table)">
+      <path d="M218 156h528m-542 55h568m-570 55h570m-554 55h531" stroke="#c1a879" opacity=".27" fill="none"/>
+      <path d="M257 125c117 37 287 16 456 23m-471 190c171-8 302-11 495-3" fill="none" stroke="#ccb684" opacity=".42" stroke-width="2"/>
+    </g>
+    <!-- Listener's laptop and coffee, seen from overhead. -->
+    <g transform="rotate(-12 690 288)">
+      <rect x="645" y="256" width="88" height="58" rx="5" fill="#495968" opacity=".16" transform="translate(3 6)"/>
+      <rect x="645" y="253" width="88" height="59" rx="5" fill="#9aa6a0" stroke="#344b55" stroke-width="2"/>
+      <rect x="651" y="257" width="76" height="16" rx="2" fill="#293f4a"/>
+      <path d="M655 279h69m-69 6h69m-69 6h69m-47 8h23" stroke="#506367" stroke-width="2.6" stroke-linecap="round"/>
+    </g>
+    <circle cx="641" cy="143" r="14" fill="#dbc8a0"/><circle cx="640" cy="141" r="9" fill="#8b6548"/>
+    <circle cx="646" cy="137" r="4" fill="none" stroke="#9f8357" stroke-width="1.8"/>
+    <!-- Two people and their chairs. The voice starts at the left person's mouth. -->
+    <path d="M166 184c-36-4-55 17-55 44s20 49 55 43l18-11v-66z" fill="#b7755c" stroke="#7b5147" stroke-width="2"/>
+    <path d="M126 207c2-12 13-22 30-24v88c-18-3-29-12-31-25" fill="#d19476" opacity=".72"/>
+    <path d="M141 207c13-14 35-16 46-8l10 9v29l-10 9c-14 9-32 6-46-7z" fill="#326765" stroke="#234947" stroke-width="2.5"/>
+    <circle cx="184" cy="221" r="22" fill="#d29970" stroke="#57392e" stroke-width="2"/>
+    <path d="M199 204c-13-13-33-6-36 8s4 22 15 28c-5-16 0-31 21-36z" fill="#423a38"/>
+    <circle cx="205" cy="222" r="5" fill="#d29970"/>
+    <path d="M800 219c35-8 54 13 55 38s-13 46-47 45l-17-8-7-62z" fill="#75939b" stroke="#415d65" stroke-width="2"/>
+    <path d="M801 232c18 2 34 9 39 23s-6 29-24 33l-32-12-4-21z" fill="#647399" stroke="#455570" stroke-width="2"/>
+    <circle cx="795" cy="258" r="21" fill="#c98b63" stroke="#57392e" stroke-width="2"/>
+    <path d="M778 248c5-14 23-17 33-6 8 9 5 21 0 26-5-12-13-18-33-20z" fill="#3b3232"/>
+    <!-- Static wavefronts and animated pulse are schematic. -->
+    <g fill="none" stroke="#1b7971" stroke-linecap="round">
+      <path d="M232 206a28 28 0 0 1 0 32" stroke-width="4"/>
+      <path d="M249 192a49 49 0 0 1 0 60" stroke-width="3.5" opacity=".87"/>
+      <path d="M275 176a79 79 0 0 1 0 92" stroke-width="3" opacity=".68"/>
+      <path d="M316 149a129 129 0 0 1 0 146" stroke-width="2.5" opacity=".46"/>
+      <path d="M355 132a172 172 0 0 1 0 180" stroke-width="2" opacity=".26"/>
+      <path class="move" d="M533 107a343 343 0 0 1 0 230" stroke-width="8"/>
+    </g>
+    <path d="M354 222H413" fill="none" stroke="#32786e" stroke-width="2" stroke-dasharray="4 6"/>
+    <!-- The four microphones form a horizontal row on the conference bar. -->
+    <rect x="422" y="205" width="204" height="49" rx="16" fill="#293d43" opacity=".2" transform="translate(5 5)"/>
+    <rect x="420" y="198" width="204" height="49" rx="16" fill="url(#shell)" stroke="#142c3b" stroke-width="2"/>
+    <rect x="431" y="204" width="182" height="35" rx="10" fill="url(#grille)"/>
+    <path d="M454 222h134" stroke="#b2d3ce" stroke-width="1.4" opacity=".5"/>
+    <g fill="#223c46" stroke="#9be4d2" stroke-width="2.6">
+      <circle cx="450" cy="222" r="9"/><circle cx="498" cy="222" r="9"/>
+      <circle cx="546" cy="222" r="9"/><circle cx="594" cy="222" r="9"/>
+    </g>
+    <g fill="#92ffdb">
+      <circle class="hit h1" cx="450" cy="222" r="8"/><circle class="hit h2" cx="498" cy="222" r="8"/>
+      <circle class="hit h3" cx="546" cy="222" r="8"/><circle class="hit h4" cx="594" cy="222" r="8"/>
+    </g>
+    <!-- A tape measure connects to the schematic idea of arrival time, without stating a scale. -->
+    <path d="M447 269h150m-147-6v12m48-12v12m48-12v12m48-12v12" fill="none" stroke="#846f48" stroke-width="1.5"/>
+    <g fill="#35525b" font-family="system-ui,sans-serif" font-size="20" font-weight="700" text-anchor="middle">
+      <text x="450" y="300">1</text><text x="498" y="300">2</text><text x="546" y="300">3</text><text x="594" y="300">4</text>
+    </g>
+    <path d="M339 375h282" stroke="#bdaa80" stroke-width="2" opacity=".5"/>
+  </g>
+  <rect x="1" y="1" width="958" height="468" rx="26" fill="none" stroke="#ab9e80" stroke-width="2"/>
+</svg>

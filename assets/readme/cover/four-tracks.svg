@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 292" role="img" aria-labelledby="title desc">
+  <title id="title">One sound, four delayed copies</title>
+  <desc id="desc">Four schematic recordings from microphones 1 to 4. The same short waveform appears progressively later from the first to the fourth track. Time increases to the right.</desc>
+  <defs>
+    <pattern id="rule" width="28" height="28" patternUnits="userSpaceOnUse">
+      <path d="M28 0H0V28" stroke="#ffffff" stroke-opacity=".07" fill="none"/>
+    </pattern>
+    <path id="voice" d="M0 0l7-2 6 5 6-12 6 22 6-29 6 35 6-26 6 14 6-11 6 7 6-3 7 0"/>
+  </defs>
+  <rect x="1" y="1" width="798" height="290" rx="23" fill="#203847"/>
+  <rect x="91" y="24" width="644" height="223" fill="url(#rule)"/>
+  <path d="M90 48h645M90 103h645M90 158h645M90 213h645" stroke="#7d929a" opacity=".55"/>
+  <g fill="#f4eee1" font-family="system-ui,sans-serif" font-size="25" font-weight="650" text-anchor="middle">
+    <text x="55" y="57">1</text><text x="55" y="112">2</text>
+    <text x="55" y="167">3</text><text x="55" y="222">4</text>
+  </g>
+  <path d="M207 48 303 103 399 158 495 213" stroke="#eec487" stroke-width="2.5" stroke-dasharray="5 7" fill="none"/>
+  <g stroke="#8df2d0" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <use href="#voice" x="207" y="48"/><use href="#voice" x="303" y="103"/>
+    <use href="#voice" x="399" y="158"/><use href="#voice" x="495" y="213"/>
+  </g>
+  <g fill="#eec487">
+    <circle cx="207" cy="48" r="4"/><circle cx="303" cy="103" r="4"/>
+    <circle cx="399" cy="158" r="4"/><circle cx="495" cy="213" r="4"/>
+  </g>
+  <path d="M90 256h645l-11-7m11 7-11 7" fill="none" stroke="#c9d4d4" stroke-width="2"/>
+  <text x="741" y="264" fill="#e5e9e8" font-family="system-ui,sans-serif" font-size="25" font-style="italic">t</text>
+</svg>

@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>从零开始 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="565e819440a3"><style>
+<meta name="source-digest" content="7f97433700a5"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -309,14 +309,34 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 .course-case p,.course-case h3 { margin:0; }
 .course-case .course-case-tag { color:var(--case-accent); font-size:.84rem; font-weight:750; }
 .course-case h3 { font-size:clamp(1.22rem,2.35vw,1.65rem); }
-.course-case-chart { margin:3px 0; padding:14px; border-radius:7px; background:var(--case-bg); }
-.course-case-chart figcaption,.course-case-row { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:baseline; gap:4px 9px; }
-.course-case-chart figcaption { font-weight:750; margin-bottom:8px; }
-.course-case-chart small { color:var(--quiet); font-size:.78rem; font-weight:500; }
-.course-case-row { margin:6px 0 9px; font-size:.92rem; }
-.course-case-row strong { font-size:1.24rem; color:var(--case-accent); font-variant-numeric:tabular-nums; }
-.course-case-track { grid-column:1 / -1; height:8px; border-radius:4px; background:#15243b18; }
-.course-case-track > span { display:block; height:100%; width:var(--amount); border-radius:inherit; background:var(--case-accent); }
+.course-case-diagram { margin:3px 0; border-radius:9px; overflow:hidden; background:var(--case-bg); }
+.course-case-diagram svg { display:block; width:100%; height:auto; font:700 21px system-ui,sans-serif; }
+.course-case-diagram figcaption { padding:2px 14px 13px; font-size:.9rem; }
+.course-case-diagram strong { display:block; margin-top:5px; color:var(--case-accent); }
+.course-case-diagram .case-inset { border-top:1px solid #c8d0da; }
+.case-inset-axis { fill:none; stroke:#8a9aad; stroke-width:1.5; }
+.case-inset-trace { stroke-width:2.8; }
+.case-field { fill:#fff8; stroke:#c3ccd8; }
+.case-gridlines { fill:none; stroke:#8090a2; stroke-opacity:.19; }
+.case-candidate { fill:none; stroke:#65768b; stroke-width:2; stroke-dasharray:6 6; }
+.case-flight { fill:none; stroke:#385d8a; stroke-opacity:.45; stroke-width:1.8; stroke-dasharray:3 6; }
+.case-target-ray { fill:none; stroke:#204c98; stroke-width:4; stroke-linejoin:round; }
+.case-side-ray { fill:none; stroke:#a7482f; stroke-width:2.8; stroke-dasharray:6 6; }
+.case-target-dot { fill:#204c98; stroke:#fff; stroke-width:3; }
+.case-side-dot { fill:#ad4d34; stroke:#fff; stroke-width:3; }
+.case-target-label { fill:#204c98; }
+.case-side-label { fill:#8d3423; }
+.case-quiet-label { fill:#4b5e76; font-size:18px; }
+.case-callout { fill:#f8fbff; stroke:#8aa6cc; }
+.case-array { fill:none; stroke:#26394d; stroke-width:9; stroke-linecap:round; }
+.case-array-origin { fill:#26394d; stroke:#fff; stroke-width:2; }
+.course-case-audio { margin-top:18px; padding:clamp(17px,3vw,28px); border:1px solid var(--line); background:#fff; border-radius:10px; }
+.course-case-audio h3 { margin-top:0; }
+.course-case-audio p { margin:7px 0 12px; }
+.course-audio-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+.course-audio-grid > div { padding:11px 13px; background:#ecf2fa; border-radius:7px; }
+.course-audio-grid h4 { margin:0 0 6px; font-size:.93rem; }
+.course-audio-grid audio { display:block; width:100%; height:44px; }
 .course-case-links { display:flex; flex-wrap:wrap; gap:4px 17px; margin-top:auto; padding-top:8px; font-size:.9rem; }
 .course-path { padding-block:clamp(43px,7vw,84px); }
 .course-stops { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; list-style:none; margin:0; padding:0; }
@@ -334,7 +354,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
   .course-hero,.course-preface { grid-template-columns:1fr; }
   .course-hero { padding-block:36px 40px; gap:24px; }
   .course h1 { font-size:clamp(3rem,11vw,5.3rem); }
-  .course-case-grid { grid-template-columns:1fr; }
+  .course-case-grid,.course-audio-grid { grid-template-columns:1fr; }
 }
 @media (max-width:500px) {
   .course-header { flex-wrap:wrap; padding-block:12px; }
@@ -430,48 +450,97 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
   </section>
 
   <section class="course-width course-cases" id="course-cases" aria-labelledby="course-cases-title">
-    <h2 id="course-cases-title">阵列用在什么地方？</h2>
-    <p class="course-section-intro">下面两项研究都在真实房间里录音。一个量方向猜得准不准，另一个量语音识别错了多少词。</p>
+    <h2 id="course-cases-title">先找到方向，再朝它拾音</h2>
+    <p class="course-section-intro">同一个房间里，A、B 两个扬声器播放不同的语音。我们用 LOCATA 的 15 路 DICIT 实录，先找 A 的方向，再试着保留 A、削弱旁边的 B。</p>
     <div class="course-case-grid">
       <article class="course-case">
-        <p class="course-case-tag">声源定位 · LOCATA 实录</p>
-        <h3>阵列在移动，还能找准方向吗？</h3>
-        <p>一个人在房间里边走边说。研究人员同时录下阵列信号，并用光学系统记录人和阵列的位置，供算法估计的方向对照。</p>
-        <figure class="course-case-chart">
-          <figcaption>平均水平角误差 <small>越小越准</small></figcaption>
-          <div class="course-case-row">
-            <span>阵列固定</span><strong>5.5°</strong>
-            <span class="course-case-track" aria-hidden="true"><span style="--amount:45.833%"></span></span>
-          </div>
-          <div class="course-case-row">
-            <span>阵列也在移动</span><strong>9.7°</strong>
-            <span class="course-case-track" aria-hidden="true"><span style="--amount:80.833%"></span></span>
-          </div>
-          <small>横条从 0° 起，满格是 12°。</small>
+        <p class="course-case-tag">声源定位</p>
+        <h3>阵列怎么找到 A？</h3>
+        <p>A 发出的声音先到右侧麦克风，晚一点才到左侧。每个候选方向都对应一套到达时差，算法挑出与录音最吻合的方向。</p>
+        <figure class="course-case-diagram">
+          <svg viewBox="0 0 500 294" role="img" aria-labelledby="course-doa-title course-doa-desc">
+            <title id="course-doa-title">在房间实录中估计 A 的方向</title>
+            <desc id="course-doa-desc">房间俯视图，A 在阵列右前方，B 更靠正前方。以正前方的零度为参考，示出几条候选射线。实测 A 方向为 34.4 度，录音扫描最高分在 35 度。两条方向几乎重合。</desc>
+            <rect class="case-field" x="12" y="12" width="476" height="270" rx="13"/>
+            <path class="case-gridlines" d="M42 78h416M42 130h416M42 182h416M42 234h416M101 31v219m72-219v219m72-219v219m72-219v219m72-219v219"/>
+            <path class="case-candidate" d="M245 246 148 78M245 246V60"/>
+            <text class="case-quiet-label" x="125" y="73">−30°</text>
+            <text class="case-quiet-label" x="229" y="54">0°</text>
+            <path class="case-flight" d="M360 78 105 246M360 78 385 246"/>
+            <path class="case-target-ray" d="M245 246 365 75"/>
+            <circle class="case-side-dot" cx="313" cy="42" r="10"/>
+            <text class="case-quiet-label" x="331" y="48">B</text>
+            <circle class="case-target-dot" cx="360" cy="78" r="12"/>
+            <text class="case-target-label" x="381" y="86">A</text>
+            <rect class="case-callout" x="301" y="145" width="161" height="37" rx="7"/>
+            <text class="case-target-label" x="316" y="170">最高分 35°</text>
+            <path class="case-array" d="M105 246h280"/>
+            <circle class="case-array-origin" cx="245" cy="246" r="8"/>
+            <text class="case-quiet-label" x="196" y="274">15 麦阵列</text>
+          </svg>
+          <svg class="case-inset" viewBox="0 0 500 126" role="img" aria-label="从负 90 度扫描到正 90 度，35 度得分最高">
+            <text class="case-quiet-label" x="45" y="22">实录扫描得分</text>
+            <path class="case-inset-axis" d="M48 30v58h404"/>
+            <polyline class="case-target-ray case-inset-trace" points="48.0,81.6 50.2,81.7 52.5,81.6 54.7,81.6 57.0,81.5 59.2,81.3 61.5,81.2 63.7,80.9 66.0,80.7 68.2,80.4 70.4,80.1 72.7,79.8 74.9,79.4 77.2,79.0 79.4,78.6 81.7,78.2 83.9,77.8 86.2,77.4 88.4,77.1 90.6,76.8 92.9,76.6 95.1,76.5 97.4,76.5 99.6,76.6 101.9,76.8 104.1,77.2 106.4,77.8 108.6,78.3 110.8,78.9 113.1,79.5 115.3,80.1 117.6,80.6 119.8,81.0 122.1,81.4 124.3,81.7 126.6,81.8 128.8,81.7 131.0,81.5 133.3,81.4 135.5,81.6 137.8,81.9 140.0,82.4 142.3,82.6 144.5,82.4 146.8,81.9 149.0,81.4 151.2,80.8 153.5,80.3 155.7,80.0 158.0,79.9 160.2,79.9 162.5,80.1 164.7,80.2 167.0,80.0 169.2,79.7 171.4,79.5 173.7,79.4 175.9,79.4 178.2,79.5 180.4,79.5 182.7,79.6 184.9,79.6 187.2,79.6 189.4,79.4 191.6,79.0 193.9,78.8 196.1,79.1 198.4,79.4 200.6,79.3 202.9,78.9 205.1,78.9 207.4,79.2 209.6,79.4 211.8,79.5 214.1,79.4 216.3,78.9 218.6,77.7 220.8,76.8 223.1,76.8 225.3,77.2 227.6,77.7 229.8,77.9 232.0,77.6 234.3,76.8 236.5,76.1 238.8,75.8 241.0,75.3 243.3,74.2 245.5,73.0 247.8,72.1 250.0,71.7 252.2,71.7 254.5,71.6 256.7,71.0 259.0,70.0 261.2,69.0 263.5,67.7 265.7,66.2 268.0,65.1 270.2,64.8 272.4,64.7 274.7,64.2 276.9,62.6 279.2,60.0 281.4,57.3 283.7,55.9 285.9,56.1 288.2,57.6 290.4,59.0 292.6,58.7 294.9,56.8 297.1,54.7 299.4,52.9 301.6,50.4 303.9,47.5 306.1,47.0 308.4,49.8 310.6,52.7 312.8,52.4 315.1,50.3 317.3,49.5 319.6,49.5 321.8,47.1 324.1,41.6 326.3,36.4 328.6,35.0 330.8,37.9 333.0,42.8 335.3,47.5 337.5,50.5 339.8,51.5 342.0,50.8 344.3,49.4 346.5,48.0 348.8,47.3 351.0,47.3 353.2,48.3 355.5,50.7 357.7,54.6 360.0,59.4 362.2,64.4 364.5,68.8 366.7,72.4 369.0,75.1 371.2,77.1 373.4,78.3 375.7,78.9 377.9,79.1 380.2,79.1 382.4,79.0 384.7,79.1 386.9,79.2 389.2,79.4 391.4,79.6 393.6,79.9 395.9,80.3 398.1,80.8 400.4,81.3 402.6,81.9 404.9,82.5 407.1,83.0 409.4,83.5 411.6,84.0 413.8,84.4 416.1,84.7 418.3,85.1 420.6,85.4 422.8,85.7 425.1,86.0 427.3,86.3 429.6,86.6 431.8,86.8 434.0,87.1 436.3,87.3 438.5,87.5 440.8,87.6 443.0,87.7 445.3,87.8 447.5,87.9 449.8,88.0 452.0,88.0"/>
+            <path class="case-candidate" d="M328.6 39V88"/>
+            <circle class="case-target-dot" cx="328.6" cy="35.0" r="6"/>
+            <text class="case-quiet-label" x="36" y="113">−90°</text>
+            <text class="case-quiet-label" x="238" y="113">0°</text>
+            <text class="case-target-label" x="314.6" y="113">35°</text>
+            <text class="case-quiet-label" x="428" y="113">90°</text>
+          </svg>
+          <figcaption>圆点标出实测位置。灰虚线示意候选方向，蓝线是录音扫描选出的方向。<strong>估计 35°，实测 34.4°</strong></figcaption>
         </figure>
-        <p>两种任务中，说话人都在移动。论文汇总了同一组参赛方案及对应阵列。从上往下看，估计方向和实测方向之间的夹角就是这里的误差。</p>
-        <div class="course-case-links"><a href="04_doa-estimation.html">读第 4 章 · 声源定位 →</a><a href="https://arxiv.org/pdf/1909.01008#page=14">论文 §VII-A</a></div>
+        <p>这里用 A 单独出声的片段，扫描正前方左右各 90°。实测位置用来核对结果。估计只给出方向，图上的距离来自实测。</p>
+        <div class="course-case-links"><a href="04_doa-estimation.html">读第 4 章 · 声源定位 →</a><a href="https://arxiv.org/pdf/1909.01008#page=14">LOCATA 论文</a></div>
       </article>
       <article class="course-case course-case-beam">
-        <p class="course-case-tag">波束形成 · 真实房间重放</p>
-        <h3>离麦克风远，怎样让识别少错词？</h3>
-        <p>研究人员在真实房间里用扬声器播放预录语音，用同一套 32 麦球形阵列录音。声源在论文标记的 68° 方向。</p>
-        <figure class="course-case-chart">
-          <figcaption>词错误率 <small>越小越好</small></figcaption>
-          <div class="course-case-row">
-            <span>对齐再相加</span><strong>13.5%</strong>
-            <span class="course-case-track" aria-hidden="true"><span style="--amount:84.375%"></span></span>
-          </div>
-          <div class="course-case-row">
-            <span>超指向波束形成</span><strong>9.7%</strong>
-            <span class="course-case-track" aria-hidden="true"><span style="--amount:60.625%"></span></span>
-          </div>
-          <small>横条从 0% 起，满格是 16%。</small>
+        <p class="course-case-tag">波束形成</p>
+        <h3>对准 A 后，B 为什么变轻？</h3>
+        <p>根据 A 的实测位置，补上 15 路录音各自的传播时差再平均。A 的声音对齐了。B 从另一个方向来，按 A 的时差处理后仍然错开，平均时会部分抵消。</p>
+        <figure class="course-case-diagram">
+          <svg viewBox="0 0 500 294" role="img" aria-labelledby="course-beam-title course-beam-desc">
+            <title id="course-beam-title">朝 A 拾音，削弱相邻的 B</title>
+            <desc id="course-beam-desc">与定位图相同的俯视位置。蓝色实线从阵列指向目标 A，橙色虚线连接旁边的 B。以原始第 7 路为参照，A 单独发声片段的输出功率低 1.2 分贝，B 单独发声片段低 9.2 分贝。</desc>
+            <rect class="case-field" x="12" y="12" width="476" height="270" rx="13"/>
+            <path class="case-gridlines" d="M42 78h416M42 130h416M42 182h416M42 234h416M101 31v219m72-219v219m72-219v219m72-219v219m72-219v219"/>
+            <path class="case-side-ray" d="M313 42 245 246"/>
+            <path class="case-target-ray" d="M245 246 360 78m-3 16 3-16-15 7"/>
+            <circle class="case-side-dot" cx="313" cy="42" r="11"/>
+            <text class="case-side-label" x="211" y="49">旁边 B</text>
+            <circle class="case-target-dot" cx="360" cy="78" r="12"/>
+            <text class="case-target-label" x="381" y="86">目标 A</text>
+            <rect class="case-callout" x="318" y="142" width="144" height="37" rx="7"/>
+            <text class="case-target-label" x="332" y="167">朝 A 对准</text>
+            <text class="case-side-label" x="75" y="151">B 被削弱</text>
+            <path class="case-array" d="M105 246h280"/>
+            <circle class="case-array-origin" cx="245" cy="246" r="8"/>
+            <text class="case-quiet-label" x="196" y="274">15 麦阵列</text>
+          </svg>
+          <svg class="case-inset" viewBox="0 0 500 126" role="img" aria-label="按 A 补完时差后，第 1、7、14 路的 A 对齐，B 在三个不同的时刻">
+            <text class="case-target-label" x="47" y="25">A 对齐</text>
+            <text class="case-side-label" x="273" y="25">B 仍错开</text>
+            <path class="case-inset-axis" d="M47 50h180m-180 21h180m-180 21h180m46-42h180m-180 21h180m-180 21h180"/>
+            <path class="case-candidate" d="M134 40v61m229-61v61"/>
+            <g class="case-target-dot"><circle cx="134" cy="50" r="6"/><circle cx="134" cy="71" r="6"/><circle cx="134" cy="92" r="6"/></g>
+            <g class="case-side-dot"><circle cx="418" cy="50" r="6"/><circle cx="363" cy="71" r="6"/><circle cx="322" cy="92" r="6"/></g>
+            <text class="case-quiet-label" x="47" y="117">每条横线是一支麦，时间向右</text>
+          </svg>
+          <figcaption>箭头指向 A。下方三条横线对应第 1、7、14 路，圆点标出补完时差后的到达时刻。与原始单路相比，<strong>A 单独发声时低 1.2 dB，B 单独发声时低 9.2 dB。</strong></figcaption>
         </figure>
-        <p>按论文表 5 的同一识别轮次，词错误率低了 3.8 个百分点。这个指标把错词、漏词和多出来的词一起计入。</p>
-        <div class="course-case-links"><a href="05_beamforming.html">读第 5 章 · 波束形成 →</a><a href="https://doi.org/10.1109/MSP.2012.2205285">论文表 5</a></div>
+        <p>这两个数比较的是各自单独出声时的录音功率。两段语音叠在一起时，直接听下方对照。</p>
+        <div class="course-case-links"><a href="05_beamforming.html">读第 5 章 · 波束形成 →</a><a href="https://doi.org/10.1109/MSP.2012.2205285">远场识别研究</a></div>
       </article>
     </div>
+    <section class="course-case-audio" aria-labelledby="course-real-audio-title">
+      <h3 id="course-real-audio-title">听同一段房间录音</h3>
+      <p>先调低音量。原始录音里，约 2.6～3.1 秒主要听到 A，约 3.4～4.8 秒主要听到 B。切到处理后的录音，听这两处，再回到两种声音重叠的地方。</p>
+      <div class="course-audio-grid">
+        <div><h4 id="course-before-title">处理前 · 原始第 7 路</h4><audio controls preload="none" aria-labelledby="course-before-title" src="../assets/readme/cases/locata/before.wav"></audio></div>
+        <div><h4 id="course-after-title">处理后 · 15 路对准 A 再平均</h4><audio controls preload="none" aria-labelledby="course-after-title" src="../assets/readme/cases/locata/after.wav"></audio></div>
+      </div>
+      <p class="course-note">两段来自同一时间区间，使用同一导出增益。<a href="https://zenodo.org/records/3630471">LOCATA 原始数据</a> · <a href="../assets/readme/cases/locata/NOTICE.txt">署名、许可和复算方式</a></p>
+    </section>
   </section>
 
   <section class="course-width course-path" id="course-path" aria-labelledby="course-path-title">
@@ -1871,5 +1940,12 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
   replay.addEventListener("click", animate);
   reduced.addEventListener("change", motionPreferenceChanged);
   motionPreferenceChanged();
+
+  const clips = [...document.querySelectorAll(".course-audio-grid audio")];
+  for (const clip of clips) {
+    clip.addEventListener("play", () => {
+      for (const other of clips) if (other !== clip) other.pause();
+    });
+  }
 })();
 </script></body></html>

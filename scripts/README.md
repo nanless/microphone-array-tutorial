@@ -10,7 +10,7 @@
 
 ## 课程入口
 
-从 [GitHub Pages 课程首页](https://nanless.github.io/microphone-array-tutorial/) 可以直接看互动示意、阅读案例和选课。推送站点或配套媒体到 `main` 后，[发布工作流](../.github/workflows/pages.yml)会发布生成好的 `site/`、插图、试听文件和 PDF。本地开发可直接在浏览器中打开 [`site/index.html`](../site/index.html)。
+从 [GitHub Pages 课程首页](https://nanless.github.io/microphone-array-tutorial/) 可以直接看互动示意、听 LOCATA 房间实录的处理前后对照和选课。推送站点或配套媒体到 `main` 后，[发布工作流](../.github/workflows/pages.yml)会发布生成好的 `site/`、插图、试听文件和 PDF。本地开发可直接在浏览器中打开 [`site/index.html`](../site/index.html)。
 
 课程页面、样式和交互的源文件在 [`course_home/`](course_home/)。改动后从仓库根目录运行：
 

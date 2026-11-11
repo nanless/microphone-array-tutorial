@@ -9,6 +9,7 @@ on:
       - 'figures/**'
       - 'dist/microphone-array-tutorial.pdf'
       - 'assets/readme/lab/**'
+      - 'assets/readme/cases/**'
   workflow_dispatch:
 
 permissions:
@@ -31,6 +32,7 @@ jobs:
           mkdir -p _pages/assets/readme/lab _pages/dist
           cp -R site figures _pages/
           cp assets/readme/lab/{array-lab.html,single.wav,left.wav,right.wav} _pages/assets/readme/lab/
+          cp -R assets/readme/cases _pages/assets/readme/
           cp dist/microphone-array-tutorial.pdf _pages/dist/
           cat > _pages/index.html <<'HTML'
           <!doctype html>

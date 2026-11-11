@@ -11,7 +11,7 @@
 
 ## 第一次来，从这里开始
 
-[打开在线课程](https://nanless.github.io/microphone-array-tutorial/)。点选左右声源看动图，看两个真实录音案例，再按学习路线选章节。手机和电脑都能直接打开。 [直接看定位与波束形成案例 →](https://nanless.github.io/microphone-array-tutorial/site/#course-cases)
+[打开在线课程](https://nanless.github.io/microphone-array-tutorial/)。点选左右声源看动图，用一段房间实录看定位、听波束形成前后，再按学习路线选章节。手机和电脑都能直接打开。 [直接看定位与波束形成案例 →](https://nanless.github.io/microphone-array-tutorial/site/#course-cases)
 
 ## 序言 · 同一句话，为什么录了四份？
 

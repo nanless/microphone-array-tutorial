@@ -1,0 +1,34 @@
+LOCATA 实录试听对照 / LOCATA recording, before and after
+
+Dataset: Christine Evers, Heinrich W. Löllmann, Heinrich Mellmann, Alexander Schmidt,
+Hendrik Barfuss, Patrick A. Naylor, and Walter Kellermann. Data Corpus for the
+IEEE-AASP Challenge on Acoustic Source Localization and Tracking (LOCATA), v1.
+Source: https://zenodo.org/records/3630471
+Dataset license: Open Data Commons Attribution 1.0
+https://opendatacommons.org/licenses/by/1-0/
+The original speech played in Tasks 1–2 is CSTR VCTK speech, likewise credited
+and identified as Open Data Commons Attribution in LOCATA documentation §3.1.
+https://www.locata.lms.tf.fau.de/files/2020/01/Documentation_LOCATA_final_release_V1.pdf
+Challenge paper: https://doi.org/10.1109/TASLP.2020.2990485
+
+Source take: dev.zip, dev/task2/recording1/dicit/audio_array_dicit.wav.
+A denotes loudspeaker 3; B denotes loudspeaker 4. Both clips cover the entire
+6.302667-second take at 48 kHz. Before is channel 7. After is offline delay and
+sum over all 15 channels, steered with the optical position of A and measured
+microphone positions. Both clips receive the same fixed gain of four and are
+converted to mono PCM16 without separate peak normalization. The displayed
+power changes use the release's A-only and B-only activity labels, including
+room reverberation and background. These numbers do not quantify source power
+during overlapping speech.
+
+Localization selects frames whose centers have an A-only activity label, uses
+375–3000 Hz, and calls the repository
+SRP-PHAT implementation. Scan angles are relative to global positive y, with
+positive x to the right. The optical measurement supplies the position markers
+and the comparison direction. The scan estimates a bearing, not a range.
+
+MANIFEST.json records the upstream members and checksums, configuration,
+angle scan, source geometry and integer PCM energies. With the named members
+extracted into PATH/dev and FFmpeg on PATH, run from the repository root:
+  .venv/bin/python -m scripts.course_home.prepare_locata PATH --check
+Omit --check only when intentionally regenerating the pair and its manifest.

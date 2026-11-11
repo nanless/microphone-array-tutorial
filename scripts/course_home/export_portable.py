@@ -9,7 +9,9 @@ SOURCE = Path(__file__).resolve().parent
 DEST = ROOT / "assets/readme"
 REPOSITORY = "https://github.com/nanless/microphone-array-tutorial"
 BLOB = REPOSITORY + "/blob/main/"
+PAGES = "https://nanless.github.io/microphone-array-tutorial/"
 CASE_SOURCES = {
+    "https://zenodo.org/records/3630471",
     "https://arxiv.org/pdf/1909.01008#page=14",
     "https://doi.org/10.1109/MSP.2012.2205285",
 }
@@ -33,6 +35,7 @@ def portable(template, css, script):
         return f'href="{escape(path, quote=True)}"'
 
     template = re.sub(r'href="([^"]+)"', link, template)
+    template = template.replace('src="../assets/readme/cases/', f'src="{PAGES}assets/readme/cases/')
     template = template.replace('<div class="course" id="course-home" tabindex="-1">',
                                 '<main class="course" id="course-home" tabindex="-1">', 1)
     template = template.removesuffix("</div>\n") + "</main>\n"

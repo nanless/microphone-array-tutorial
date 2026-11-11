@@ -1,81 +1,84 @@
-# 麦克风阵列入门
+# 麦克风阵列信号处理
 
-[English](README_EN.md) · [第一课](chapters/01_problem-definition.md) · [全书目录](chapters/00_overview.md) · [下载 PDF](dist/microphone-array-tutorial.pdf)
+**一群麦克风，怎么知道该听谁？** 从声音抵达四支麦的先后，学到让会议麦克风朝人拾音、让机器人跟上移动的说话者。
 
-**同一句话，两支麦克风都录到了，为什么一混合反而少了一部分声音？** 你在会议桌一端说话，近处的麦克风先收到，远处的晚一点。声源定位利用的正是这点先后，混合之前也得先想办法对齐它们。
+[先听四支麦的效果](#先听同一段声音选两种方向) · [新手课程路线](#按这条路线学) · [全书 PDF](dist/microphone-array-tutorial.pdf) · [English](README_EN.md)
 
-![同一个声音沿不同长短的路径到达两支麦克风，右边的两条波形先后起振。](assets/readme/array-listening.svg)
+![左边的声源 A 先到 M1，右边的声源 B 先到 M4。动图放慢展示各自到达四支麦克风的顺序。](assets/readme/listening-room.svg)
 
-## 先听：只差一个采样点，高音去哪儿了？
+## 先听：同一段声音，选两种方向
 
-把一个低音和一个高音叠起来，让 M2 比 M1 晚记下一格。数字录音每隔固定时间记一个数，这一格就是一个**采样点**。下面是同一段合成声音的两种混合结果，没有加噪声，也没有分别调音量。先调低音量，按 A、B 各听一次，每段 2 秒。
+把上图想成一张桌子。左边 A 发出一串较长的音，右边 B 发出成对的短音。**先猜：如果只改处理方式，能不能让左边和右边轮流占上风？**
 
-**[▶ A · 直接平均](codes/chapters/ch02/audio/alignment_unaligned.wav?raw=true)**　　**[▶ B · 对齐再平均](codes/chapters/ch02/audio/alignment_aligned.wav?raw=true)**
-
-如果浏览器下载了 WAV，用本地播放器打开即可。比较时，留意 B 中较尖的那层音，低一点的音变化小得多。听不出也没关系：下一张图能告诉你变化来自哪里。
-
-## 再看：同一次到达，为什么变成了两个小峰？
-
-用一个短脉冲代替整段声音。图里的横轴是采样编号，每根竖线的高度就是这一点的振幅；`½ Σ` 表示把两路相加再除以二。
-
-![脉冲对齐示意。A：两路分别在第 2、3 点出现峰值，直接平均留下两个半高峰。B：让先到的 M1 晚一格，两路在第 3 点叠出一个全高峰。](assets/readme/one-sample-shift.svg)
-
-- **A，直接平均。** 第 2 点是 `(1 + 0) ÷ 2 = 0.5`，第 3 点是 `(0 + 1) ÷ 2 = 0.5`。原来的尖峰被分到了两格。
-- **B，对齐再平均。** 让先到的 M1 等一格。两路的峰都落到第 3 点，得到 `(1 + 1) ÷ 2 = 1`。等的是先到那路，所以不需要预知下一点。
-
-脉冲图解释了**怎么对齐**。刚才听的是连续的音，每一周期还有正、负两半。两路一旦错开，一个音的正值就可能碰上另一路的负值；平均后的振幅会变小。
-
-## 算一步：同样晚一格，为什么高音损失更多？
-
-这组音频每秒记录 16,000 点，一格是 **62.5 微秒**。1 kHz 的音每周期有 16 点，4 kHz 的音每周期只有 4 点。同样错开一格，前者只错开周期的 **1/16**，后者却错开了 **1/4**。
-
-![从两段 WAV 读回的振幅。A 在 1 kHz 保留 98.1%，在 4 kHz 保留 70.7%；B 两个频率均保留 100%。](assets/readme/two-tone-result.svg)
-
-图中的 100% 指[干净参照](codes/chapters/ch02/audio/alignment_reference.wav?raw=true)在相同频率上的振幅。4 kHz 直接平均后只剩约七成，1 kHz 则仍接近原值。这是**振幅**的比例；实验没有噪声，也没有测真人语音的清晰度。
-
-<details>
-<summary>想手算 70.7%？只用四个点</summary>
-
-4 kHz 在 16 kHz 采样率下每周期正好四点。把原始正弦的振幅看作 1，一路依次是 `0, 1, 0, −1`；晚一格的那路是 `−1, 0, 1, 0`（取稳态的一周期）。
-
-两路平均得到 `−0.5, 0.5, 0.5, −0.5`。这四个点碰巧都没踩在新正弦的峰上。要算峰值，可把平均写成 `0.5 × sin(θ) − 0.5 × cos(θ)`；这两个相差四分之一周期的分量合起来，振幅是 `√(0.5² + 0.5²) = 1/√2 ≈ 0.707`。完整解答和音频测量见 [E01-05](chapters/01_problem-definition.md#e01-05差一个采样点为什么高频损失更大)。
-
-</details>
-
-## 下一课，按你想解决的问题选
-
-| 你想弄懂什么 | 从这里读 |
+| 播放同一段 3 秒声音 | 留意什么 |
 | --- | --- |
-| **两支麦为什么有用？** | [第 1 章：哪些声音想保留，哪些想去掉](chapters/01_problem-definition.md) → [第 2 章：把到达先后写成模型](chapters/02_basics-signal-model.md) |
-| **怎么知道声音从哪边来，又怎样朝那边拾音？** | [第 4 章：先找两路最吻合的错位](chapters/04_doa-estimation.md) → [第 5 章：让目标方向的声音对齐再合成](chapters/05_beamforming.md) |
-| **为什么通话会听见自己的回声，空房间里又会拖尾？** | [第 6 章：借助设备知道的播放信号消回声](chapters/06_aec.md) · [第 7 章：处理房间反射造成的混响](chapters/07_wpe-dereverberation.md) |
-| **要把算法装进设备，该测什么？** | [第 10 章：延迟、同步与标定](chapters/10_engineering-practice.md) · [第 11 章：从场景和验收条件反推选型](chapters/11_selection-guide.md) |
+| [▶ 单支麦 M1](assets/readme/lab/single.wav?raw=true) | 长音和两下短音都在。 |
+| [▶ 四支麦对准左边 A](assets/readme/lab/left.wav?raw=true) | 长音留下，两下短音变轻。 |
+| [▶ 四支麦对准右边 B](assets/readme/lab/right.wav?raw=true) | 这次主要听见两下短音。 |
 
-用到达先后推断方向，是**声源定位**的起点；按目标方向补时差、再合成，是最简单的**波束形成**。这里直接给了正确时差。真实录音里，如何找到它、什么时候会找错，正是后续课程要解决的问题。
+先把设备音量调低。三段都是单声道，可以直接用手机扬声器；如果浏览器下载了 WAV，用播放器打开即可。效果来自对四路信号做不同的时间补偿，音频没有逐段调音量。这是**有意选用容易对比的合成音**，实录不会这么干净。
+
+**[在电脑上下载互动实验](assets/readme/lab/array-lab.html)** → 点 **Download raw file**（下载原始文件），再用浏览器打开保存的 HTML。不用装 Python，也不用给网页麦克风权限。先对准 A，再勾选「把右边 B 换成低音」：B 没挪位置，怎么又听得见了？
+
+## 序言：为什么要让最先听见的麦克风等一等？
+
+会议桌另一端有人刚开口，旁边又响起键盘声。把四支麦的录音直接混在一起，两种声音通常都还在。四支麦的价值，是它们记录下了**不同的先后顺序**：左边的声音先到左端，右边的声音先到右端。同一件事，既给了我们一个线索来找方向，也给了我们一个办法来选方向。
+
+以左边的 A 为例。假设同一个波峰依次在第 0、2、4、6 格到达四支麦。让最先听到的 M1 等 6 格，M2 等 4 格，M3 等 2 格，最后到的 M4 不用等。现在四个波峰都在第 6 格。
+
+![横轴是采样格数。M1、M2、M3 的空心点经箭头所示的等待移到第 6 格，M4 原本就在第 6 格。四个实心点对齐。](assets/readme/delay-and-sum.svg)
+
+这时再取四路平均，A 的波峰能和波峰叠在一起，保持原来的强度。B 的到达顺序正好相反，照 A 的规则补时间，B 的波峰和波谷就可能相抵。这就是最简单的**波束形成**：麦克风没有转动，改变的是我们合成录音的方式。
+
+但方向不同并不保证能把另一边压下去。实验里，换成 **250 Hz** 的低音后，同样对准 A，B 仍留下单麦参照约 **82% 的功率**：低音一轮起伏更长，这点时差只够错开一小段。学阵列有趣的地方就在这里：先弄懂一个方法为什么有效，再找出它在哪些条件下不够用。
+
+## 按这条路线学
+
+第一次学可以从第 1 站开始，也可以带着手头的问题跳进去。浏览上面的实验不用数学基础；往后用到三角函数、复数和矩阵时，可以随时查[附录 A](chapters/14_appendix-symbols-math.md)。
+
+### 第 1 站 · 看懂四路录音为什么不同
+
+[第 1 章：任务](chapters/01_problem-definition.md) → [第 2 章：信号模型](chapters/02_basics-signal-model.md) → [第 3 章：阵列几何](chapters/03_array-geometry.md)
+
+看一段波形，判断哪一路先收到；算一算间距改变后，时差会怎么变。
+
+### 第 2 站 · 找到声音，再朝它拾音
+
+[第 4 章：声源定位](chapters/04_doa-estimation.md) → [第 5 章：波束形成](chapters/05_beamforming.md)
+
+把两路录音前后滑动，找最吻合的位置；再比较朝对方向和朝错方向的输出。
+
+### 第 3 站 · 分清回声、混响和串话
+
+[第 6 章：消回声](chapters/06_aec.md) · [第 7 章：去混响](chapters/07_wpe-dereverberation.md) · [第 8 章：语音分离](chapters/08_speech-separation.md)
+
+通话听见自己、房间里有拖尾、两个人同时开口，是三道不同的题。先描述你听见的现象，再挑相应的方法。
+
+### 第 4 站 · 把方法装进真实设备
+
+[第 9 章：追踪](chapters/09_source-tracking.md) · [第 10 章：工程实践](chapters/10_engineering-practice.md) · [第 11 章：选型](chapters/11_selection-guide.md)
+
+处理偶尔找错方向的帧；检查通道是否同步，分开量延迟和拾音效果。
+
+想从**真实录音**开始？试试[十六支麦录下的同一条溪流](codes/chapters/ch02/real_audio/README.md)：先听单麦和多麦平均，再看看为什么声道加多了，噪声功率也不一定按课本里的简单比例下降。
+
+想继续做空间成像或把几台设备连起来？接着读[第 12 章：声学成像](chapters/12_acoustic-imaging.md)和[第 13 章：分布式阵列](chapters/13_distributed-enhancement.md)。
+
+## 全书与配套材料
+
+[章节总目录](chapters/00_overview.md) · [离线合订 PDF](dist/microphone-array-tutorial.pdf) · [按章查代码和音频](codes/chapters/README.md) · [练习与音频手册](codes/chapters/ch00/research/05_exercises_and_audio.md)
+
+全书有 **13 章正文、2 篇附录、363 道可运行练习和 80 张编号图**，另有一张房间练习补图。每章可以沿着「看解释 → 复算 → 跑代码 → 听结果」往下走；[附录 B](chapters/15_appendix-guide.md)另有一份可动手的房间仿真题。
+
+[源码研究手册](codes/chapters/ch00/research/README.md) · [第三方来源与许可](codes/chapters/ch00/THIRD_PARTY.md) · [构建说明](scripts/README.md)
 
 <details>
-<summary>在自己电脑上复算这段音频</summary>
+<summary>复算首页实验</summary>
 
-需要 Git 和 Python。本书用 Python 3.13 验证；依赖版本见 [requirements.txt](requirements.txt)。
+[互动页面](assets/readme/lab/array-lab.html)内含完整合成和处理代码。A、B 的到达时间以 16 kHz 的采样点为单位，分别是 `[0, 2, 4, 6]` 和 `[6, 4, 2, 0]`。每个百分比都用已知声源的浮点分量单独计算：输出平方和 ÷ 单麦平方和，保留完整延迟尾部。试听文件是两分量相加后量化得到的 PCM WAV。
 
-```bash
-git clone https://github.com/nanless/microphone-array-tutorial.git
-cd microphone-array-tutorial
-python3 -m venv .venv
-.venv/bin/python -m pip install -r requirements.txt
-.venv/bin/python -c 'import json; from codes.chapters.ch01.chapter01_experiments import published_alignment_measurements as measure; print(json.dumps(measure()["pcm_measurements"], indent=2))'
-```
-
-Windows 将 `.venv/bin/python` 换成 `.venv\Scripts\python.exe`。结果分别列出 1 kHz 和 4 kHz 的振幅及比值。函数直接读取随仓库提供的 WAV，核对格式和摘要后再测量，不改写音频。
+已安装 Node.js 的话，在仓库根目录运行 `node assets/readme/lab/export-lab.mjs --check` 可重算并逐字节核对三段音频。这组数值只解释这里的合成对照；它不是实测阵列的降噪指标。
 
 </details>
 
-## 全书与资料
-
-[章节导览](chapters/00_overview.md) · [离线合订 PDF](dist/microphone-array-tutorial.pdf) · [按章查代码与音频](codes/chapters/README.md) · [练习与音频手册](codes/chapters/ch00/research/05_exercises_and_audio.md)
-
-全书含 **13 章正文、2 篇附录、363 道可运行练习和 80 张编号图**，另有一张房间题补图。可按问题跳读；几何、语音分离、追踪、声学成像和分布式阵列都在[全书导读](chapters/00_overview.md)中有各自入口。[音频目录](codes/chapters/README.md#audio-inventory)把合成实验与 DEMAND 真实录音分开列出。
-
-[源码研究手册](codes/chapters/ch00/research/README.md) · [第三方来源与许可](codes/chapters/ch00/THIRD_PARTY.md) · [网站、PDF 和实验的构建说明](scripts/README.md)
-
-仓库根目录没有通用许可证；公开可见不等于获准再分发。第三方代码和数据按各自条款使用。
+仓库根目录没有通用许可证。第三方代码和数据按各自条款使用。

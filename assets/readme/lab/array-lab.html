@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>四支麦，听哪边？ / Which side should four mics listen to?</title>
+<style>
+  :root { color-scheme: dark; --bg:#0d1925; --panel:#152a3b; --ink:#ecf5f9; --muted:#b7cbd7; --a:#69e5d2; --b:#ffc077; --line:#486576; }
+  * { box-sizing:border-box; }
+  body { margin:0; color:var(--ink); background:var(--bg); font:16px/1.6 system-ui,sans-serif; }
+  main { max-width:48rem; margin:auto; padding:clamp(1rem,4vw,2.5rem); }
+  header { margin-bottom:1.1rem; }
+  header button { float:right; }
+  .kicker { color:var(--a); font-weight:700; font-size:.875rem; margin:0; }
+  h1 { font-size:clamp(1.85rem,5.8vw,2.9rem); line-height:1.15; margin:.5rem 0; }
+  h2 { font-size:1.12rem; margin:0 0 .5rem; }
+  p { margin:.65rem 0; }
+  .sub, small { color:var(--muted); }
+  section { background:var(--panel); border:1px solid var(--line); border-radius:1rem; padding:1rem; margin:0 0 .85rem; }
+  .actions { display:flex; gap:.5rem; flex-wrap:wrap; margin:.8rem 0; }
+  button { min-height:44px; border-radius:.6rem; padding:.4rem .7rem; border:1px solid var(--line); background:#102131; color:var(--ink); font:inherit; cursor:pointer; }
+  button[aria-pressed="true"] { background:var(--a); color:#0c2327; border-color:var(--a); font-weight:700; }
+  :focus-visible { outline:3px solid var(--b); outline-offset:3px; }
+  audio { width:100%; max-width:31rem; display:block; margin:.65rem 0; }
+  label { display:flex; min-height:44px; align-items:center; gap:.55rem; cursor:pointer; }
+  input { width:1.18rem; height:1.18rem; accent-color:var(--a); flex:none; }
+  .readout { display:grid; grid-template-columns:minmax(6.2rem,auto) minmax(2rem,1fr) auto; gap:.5rem; align-items:center; margin:.55rem 0; }
+  .a { color:var(--a); } .b { color:var(--b); }
+  .meter { height:.55rem; background:#091521; border-radius:8px; overflow:hidden; }
+  .meter span { display:block; height:100%; border-radius:8px; background:currentColor; }
+  output { font-variant-numeric:tabular-nums; }
+  .mic-grid { width:100%; border-collapse:collapse; text-align:center; font-variant-numeric:tabular-nums; }
+  .mic-grid th,.mic-grid td { padding:.35rem .12rem; border-bottom:1px solid var(--line); }
+  .mic-grid th[scope=row] { text-align:left; font-size:.9rem; font-weight:550; }
+  .mic-grid th[scope=col] { width:12%; }
+  details { margin-top:1rem; }
+  summary { cursor:pointer; font-weight:700; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <button id="language" type="button" lang="en" aria-label="Switch to English">English</button>
+    <p class="kicker" data-label="eyebrow">麦克风阵列 · 第一个实验</p>
+    <h1 data-label="title">四支麦，听哪边？</h1>
+    <p class="sub" data-label="intro">同一组录音，只换对齐方向。先猜哪一种节奏会变轻，再试听。</p>
+  </header>
+  <section aria-labelledby="control-title">
+    <h2 id="control-title" data-label="try">01 / 换个方向，听一听</h2>
+    <div class="actions" role="group" aria-labelledby="control-title">
+      <button type="button" data-mode="single" data-label="single" aria-pressed="true">单支麦 M1</button>
+      <button type="button" data-mode="left" data-label="left" aria-pressed="false">对准左边 A</button>
+      <button type="button" data-mode="right" data-label="right" aria-pressed="false">对准右边 B</button>
+    </div>
+    <p class="sub" data-label="volume">先调低设备音量。每次切换后，从头播放同一段 3 秒声音。</p>
+    <audio id="audio" controls preload="metadata" aria-labelledby="control-title"></audio>
+    <label><input id="bass" type="checkbox"><span data-label="bass">把右边 B 换成低音（250 Hz）</span></label>
+    <noscript>此实验需要启用 JavaScript。 This lab requires JavaScript.</noscript>
+  </section>
+  <section aria-labelledby="result-title">
+    <h2 id="result-title" data-label="result">02 / 还有多少声音留下？</h2>
+    <p class="sub" data-label="power">分别计算 A、B 相对单支麦的保留功率。两条刻度都从 0 到 100%。</p>
+    <div id="meters" aria-live="polite" aria-atomic="true">
+      <div class="readout a"><span data-label="sourceA">A · 左边</span><span class="meter" aria-hidden="true"><span id="bar-a"></span></span><output id="power-a">—</output></div>
+      <div class="readout b"><span data-label="sourceB">B · 右边</span><span class="meter" aria-hidden="true"><span id="bar-b"></span></span><output id="power-b">—</output></div>
+    </div>
+    <p id="result-note"></p>
+  </section>
+  <section aria-labelledby="timing-title">
+    <h2 id="timing-title" data-label="timing">03 / 哪支麦要等多久？</h2>
+    <p class="sub" data-label="samples">数字是采样格数；每格 62.5 微秒。M1 在最左端，M4 在最右端。</p>
+    <table class="mic-grid">
+      <thead><tr><th scope="col" data-label="timingCol">时间</th><th scope="col">M1</th><th scope="col">M2</th><th scope="col">M3</th><th scope="col">M4</th></tr></thead>
+      <tbody>
+        <tr class="a"><th scope="row" data-label="arriveA">A 的到达</th><td>0</td><td>2</td><td>4</td><td>6</td></tr>
+        <tr class="b"><th scope="row" data-label="arriveB">B 的到达</th><td>6</td><td>4</td><td>2</td><td>0</td></tr>
+        <tr><th scope="row" data-label="wait">现在补等</th><td data-wait>—</td><td data-wait>—</td><td data-wait>—</td><td data-wait>—</td></tr>
+      </tbody>
+    </table>
+    <p id="timing-note"></p>
+    <details>
+      <summary data-label="model">实验条件和数字怎么算</summary>
+      <p data-label="model1">两路是合成节奏。模型只模拟四支等间距麦克风的整数到达时差，所有麦等增益，没有反射、额外噪声或自动方向估计。</p>
+      <p data-label="model2">用相同的补等量分别处理 A 和 B 的已知分量，再各自把整段输出的平方和除以单支麦收到该分量的平方和。保留了延迟尾部；百分比用浮点分量计算，播放器播放的是二者相加后量化的单声道 WAV，无逐段归一化。</p>
+    </details>
+  </section>
+</main>
+<!-- export-lab.mjs executes this same model to produce the README's three WAV files. -->
+<script id="lab-model">
+const Lab = (() => {
+  const fs = 16000;
+  const length = 3 * fs + 12;
+  const arrivals = [[0, 2, 4, 6], [6, 4, 2, 0]];
+  const waits = {single:null, left:[6, 4, 2, 0], right:[0, 2, 4, 6]};
+
+  function tone(t, notes, duration, frequencies, amplitude) {
+    let value = 0;
+    for (const start of notes) {
+      const u = t - start;
+      if (u <= 0 || u >= duration) continue;
+      const envelope = Math.sin(Math.PI * u / duration) ** 2;
+      const carrier = frequencies.reduce((sum, [f, weight]) => sum + weight * Math.sin(2 * Math.PI * f * u), 0);
+      value += amplitude * envelope * carrier;
+    }
+    return value;
+  }
+
+  function synthesize(bass) {
+    const sources = [new Float64Array(3 * fs), new Float64Array(3 * fs)];
+    for (let n = 0; n < 3 * fs; n++) {
+      const t = n / fs;
+      sources[0][n] = tone(t, [0.10, 0.78, 1.46, 2.14], 0.54, [[1000, .86], [3000, .14]], .31);
+      sources[1][n] = tone(t, [0.29, 0.48, 0.97, 1.16, 1.65, 1.84, 2.33, 2.52], .145,
+        bass ? [[250, 1]] : [[3000, .84], [5000, .16]], .26);
+    }
+    return sources;
+  }
+
+  function delayedAverage(source, delays) {
+    const output = new Float64Array(length);
+    for (const delay of delays) {
+      for (let n = 0; n < source.length; n++) output[n + delay] += source[n] / delays.length;
+    }
+    return output;
+  }
+
+  function render(sources, mode) {
+    const wait = waits[mode];
+    const fractions = [];
+    const output = new Float64Array(length);
+    for (const [i, source] of sources.entries()) {
+      const delays = wait ? arrivals[i].map((arrival, m) => arrival + wait[m]) : [arrivals[i][0]];
+      const component = delayedAverage(source, delays);
+      fractions.push(component.reduce((sum, x) => sum + x*x, 0) / source.reduce((sum, x) => sum + x*x, 0));
+      for (let n = 0; n < length; n++) output[n] += component[n];
+    }
+    return {output, fractions, wait};
+  }
+
+  function wav(samples) {
+    const bytes = new Uint8Array(44 + 2 * samples.length);
+    const view = new DataView(bytes.buffer);
+    function tag(offset, value) { for (let i=0; i<value.length; i++) bytes[offset+i] = value.charCodeAt(i); }
+    tag(0, "RIFF"); view.setUint32(4, bytes.length - 8, true); tag(8, "WAVE");
+    tag(12, "fmt "); view.setUint32(16, 16, true); view.setUint16(20, 1, true);
+    view.setUint16(22, 1, true); view.setUint32(24, fs, true); view.setUint32(28, fs * 2, true);
+    view.setUint16(32, 2, true); view.setUint16(34, 16, true);
+    tag(36, "data"); view.setUint32(40, samples.length * 2, true);
+    for (let n=0; n<samples.length; n++) view.setInt16(44 + 2*n, Math.round(samples[n] * 32768), true);
+    return bytes;
+  }
+  return {fs, synthesize, render, wav};
+})();
+</script>
+<script>
+const zh = {
+  eyebrow:"麦克风阵列 · 第一个实验", title:"四支麦，听哪边？", intro:"同一组录音，只换对齐方向。先猜哪一种节奏会变轻，再试听。",
+  try:"01 / 换个方向，听一听", single:"单支麦 M1", left:"对准左边 A", right:"对准右边 B",
+  volume:"先调低设备音量。每次切换后，从头播放同一段 3 秒声音。", bass:"把右边 B 换成低音（250 Hz）",
+  result:"02 / 还有多少声音留下？", power:"分别计算 A、B 相对单支麦的保留功率。两条刻度都从 0 到 100%。",
+  sourceA:"A · 左边", sourceB:"B · 右边", timing:"03 / 哪支麦要等多久？",
+  samples:"数字是采样格数；每格 62.5 微秒。M1 在最左端，M4 在最右端。",
+  timingCol:"时间", arriveA:"A 的到达", arriveB:"B 的到达", wait:"现在补等",
+  model:"实验条件和数字怎么算",
+  model1:"两路是合成节奏。模型只模拟四支等间距麦克风的整数到达时差，所有麦等增益，没有反射、额外噪声或自动方向估计。",
+  model2:"用相同的补等量分别处理 A 和 B 的已知分量，再各自把整段输出的平方和除以单支麦收到该分量的平方和。保留了延迟尾部；百分比用浮点分量计算，播放器播放的是二者相加后量化的单声道 WAV，无逐段归一化。",
+  baseline:"这是参照。长音和两下短音都在同一条录音里。",
+  matched:"对准的一侧基本保持原样。另一侧的波峰和波谷错开，平均后明显变弱。",
+  low:"同样的时差只占低音周期的一小段。B 没换位置，却比高音时更难压下去。",
+  timingSingle:"单支麦直接录下两种节奏，不做对齐。",
+  timingLeft:"让最早收到 A 的 M1 等 6 格。A 在四路都落到第 6 格；B 则落在 12、8、4、0。",
+  timingRight:"让最早收到 B 的 M4 等 6 格。B 在四路都落到第 6 格；A 则落在 0、4、8、12。"
+};
+const en = {
+  eyebrow:"Microphone arrays · first experiment", title:"Which side should four mics listen to?", intro:"Use the same recordings and change only the steering direction. Predict which rhythm will get quieter, then listen.",
+  try:"01 / Pick a direction and listen", single:"Single mic M1", left:"Steer left to A", right:"Steer right to B",
+  volume:"Turn your device volume down first. After each change, play the same three-second clip from the start.", bass:"Change source B on the right to a low tone (250 Hz)",
+  result:"02 / How much of each sound remains?", power:"Each bar shows the retained power of one source relative to the single mic, from 0 to 100%.",
+  sourceA:"A · Left", sourceB:"B · Right", timing:"03 / How long should each mic wait?",
+  samples:"Times are in samples, 62.5 microseconds each. M1 is on the far left; M4 is on the far right.",
+  timingCol:"Time", arriveA:"A arrives", arriveB:"B arrives", wait:"Added wait",
+  model:"Model assumptions and how the numbers are calculated",
+  model1:"Both rhythms are synthetic. The model uses integer arrival delays and equal gain at four equally spaced microphones, without reflections, added noise, or automatic direction estimation.",
+  model2:"Apply the same delays to each known source component separately. For each, divide the sum of squared output samples by the sum of squared samples at the single mic. The full delay tail is included. Percentages use floating point components; the player uses their sum quantized to mono WAV, with no per-clip normalization.",
+  baseline:"This is the reference. The long tone and the double taps are both in the same recording.",
+  matched:"The side you picked is nearly unchanged. The other side's peaks and troughs are offset across the channels and largely cancel when averaged.",
+  low:"The same timing offset spans a smaller part of the low tone's cycle. B hasn't moved, but it is harder to suppress.",
+  timingSingle:"A single mic picks up both rhythms. No alignment is applied.",
+  timingLeft:"M1 hears A first, so make it wait six samples. A now lands at sample 6 on all channels; B lands at 12, 8, 4, and 0.",
+  timingRight:"M4 hears B first, so make it wait six samples. B now lands at sample 6 on all channels; A lands at 0, 4, 8, and 12."
+};
+let isEnglish = false;
+let mode = "single";
+let clipURL;
+const byId = id => document.getElementById(id);
+const controls = document.querySelectorAll("[data-mode]");
+function paint({audioChanged = true} = {}) {
+  const bass = byId("bass").checked;
+  const labels = isEnglish ? en : zh;
+  const {output, fractions, wait} = Lab.render(Lab.synthesize(bass), mode);
+  if (audioChanged) {
+    const audio = byId("audio");
+    audio.pause();
+    if (clipURL) URL.revokeObjectURL(clipURL);
+    clipURL = URL.createObjectURL(new Blob([Lab.wav(output)], {type:"audio/wav"}));
+    audio.src = clipURL;
+  }
+  controls.forEach(button => button.setAttribute("aria-pressed", String(button.dataset.mode === mode)));
+  for (const [i, key] of ["a", "b"].entries()) {
+    const pct = 100 * fractions[i];
+    byId("bar-" + key).style.width = Math.min(100, pct) + "%";
+    byId("power-" + key).textContent = pct < .01 ? "<0.01%" : pct.toFixed(pct >= 99.95 ? 0 : 1) + "%";
+  }
+  document.querySelectorAll("[data-wait]").forEach((cell, i) => cell.textContent = wait ? wait[i] : "—");
+  byId("result-note").textContent = labels[mode === "single" ? "baseline" : bass && mode === "left" ? "low" : "matched"];
+  byId("timing-note").textContent = labels[{single:"timingSingle", left:"timingLeft", right:"timingRight"}[mode]];
+}
+controls.forEach(button => button.addEventListener("click", () => { mode = button.dataset.mode; paint(); }));
+byId("bass").addEventListener("change", () => paint());
+byId("language").addEventListener("click", () => {
+  isEnglish = !isEnglish;
+  document.documentElement.lang = isEnglish ? "en" : "zh-CN";
+  const language = byId("language");
+  language.lang = isEnglish ? "zh-CN" : "en";
+  language.textContent = isEnglish ? "简体中文" : "English";
+  language.setAttribute("aria-label", isEnglish ? "切换到简体中文" : "Switch to English");
+  const labels = isEnglish ? en : zh;
+  document.querySelectorAll("[data-label]").forEach(node => node.textContent = labels[node.dataset.label]);
+  document.title = labels.title;
+  paint({audioChanged:false});
+});
+paint();
+</script>
+</body>
+</html>

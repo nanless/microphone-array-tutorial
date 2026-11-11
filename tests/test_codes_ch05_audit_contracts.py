@@ -16,6 +16,7 @@ import warnings
 
 import numpy as np
 
+from codes.chapters.ch00.core.source_history import verify_status_binding
 from codes.chapters.ch04.core import upstream_contracts as contracts
 from codes.chapters.ch05.examples import (
     audit_upstream_beamformers as upstream,
@@ -28,10 +29,11 @@ EXECUTORS = ('build_report', 'run_experiment', 'run_audit')
 OLD_NAMES = ('upstream_beamformers.json', 'beamformer_reference_audit.json', 'sof_tdfb_design_audit.json')
 REPORTS = contracts.ROOT / 'codes/chapters/ch05/reports'
 HISTORICAL_REVISION = '747ec3fec96ef20c7c128cc4291fd7bb9ee36c34'
+REFERENCE_REPORT_REVISION = '09d08ad68abf0b964d07833e786588811f72caa5'
 
 
-def old_bytes(path):
-    spec = HISTORICAL_REVISION + ':' + str(Path(path).resolve().relative_to(contracts.ROOT))
+def old_bytes(path, revision=HISTORICAL_REVISION):
+    spec = revision + ':' + str(Path(path).resolve().relative_to(contracts.ROOT))
     payload = (contracts.git(contracts.ROOT, 'show', spec) + '\n').encode()
     if len(payload) != int(contracts.git(contracts.ROOT, 'cat-file', '-s', spec)):
         raise ValueError('Historical Git object is not byte-exact')
@@ -129,14 +131,13 @@ class CurrentReportTests(unittest.TestCase):
         self.assertEqual(report['report_source_sha256'], contracts.dependencies(Path(tool.__file__)))
         return report
 
-    def assert_identity(self, identity):
-        lock, status, lock_sha, status_sha = contracts.source_documents()
-        self.assertEqual(identity['lock_sha256'], lock_sha)
-        self.assertEqual(identity['status_sha256'], status_sha)
-        entry = next(r for r in lock['projects'] if r['id'] == identity['project'])
-        recorded = next(r for r in status['projects'] if r['id'] == identity['project'])
-        self.assertEqual(identity['lock_entry'], entry)
-        self.assertEqual(identity['recorded_complete_selection'], recorded)
+    def assert_identity(self, identity, expected_sources):
+        project = identity['project']
+        binding = verify_status_binding(identity['status_sha256'], identity['lock_sha256'], [project])
+        entry = binding['lock_binding']['records'][project]
+        recorded = binding['records'][project]
+        self.assertTrue(contracts.same_metadata(identity['lock_entry'], entry))
+        self.assertTrue(contracts.same_metadata(identity['recorded_complete_selection'], recorded))
         self.assertEqual(identity['live_complete_selection']['status'], recorded['status'])
         self.assertEqual(identity['used_source_identity'], 'verified')
         self.assertTrue(identity['clean_before'])
@@ -145,6 +146,8 @@ class CurrentReportTests(unittest.TestCase):
         url, revision, license_name, license_path, license_sha = contracts.PROJECTS[identity['project']]
         self.assertEqual((identity['origin'], identity['head'], entry['license']), (url, revision, license_name))
         self.assertEqual(identity['used_files'][license_path]['sha256'], license_sha)
+        for relative, digest in expected_sources.items():
+            self.assertEqual(identity['used_files'][relative]['sha256'], digest)
         for relative, metadata in identity['used_files'].items():
             path = Path(identity['checkout'])/relative
             payload = contracts.ordinary_file(path).read_bytes()
@@ -156,7 +159,8 @@ class CurrentReportTests(unittest.TestCase):
 
     def test_current_original_asts_and_phase_axis_counterexample(self):
         report = self.read(upstream)
-        self.assert_identity(report['source_identity'])
+        self.assert_identity(report['source_identity'], upstream.SOURCE_SHA)
+        self.assertEqual(set(report['source_identity']['used_files']), set(upstream.SOURCE_SHA))
         self.assertEqual(report['case_count'], 33)
         self.assertEqual(len(report['results']), 33)
         self.assertEqual(len(report['original_functions']), 13)
@@ -182,8 +186,10 @@ class CurrentReportTests(unittest.TestCase):
 
     def test_current_reference_preserves_package_and_method_failures(self):
         report = self.read(reference)
-        for identity in report['source_identities'].values():
-            self.assert_identity(identity)
+        self.assertEqual(set(report['source_identities']), set(reference.SOURCES))
+        for project, identity in report['source_identities'].items():
+            self.assertEqual(identity['project'], project)
+            self.assert_identity(identity, reference.SOURCES[project]['files'])
         self.assertEqual(report['status'], 'original_failures_preserved')
         pb, pra = report['pb_bss'], report['pyroomacoustics']
         self.assertEqual(pb['package_import_probe']['status'], 'failed')
@@ -196,12 +202,36 @@ class CurrentReportTests(unittest.TestCase):
         for relative, digest in pra['installed_python_preflight_sha256'].items():
             self.assertEqual(digest, report['source_identities']['pyroomacoustics']['used_files'][relative]['sha256'])
         self.assertIn('no fixed-Git binary', pra['installed_artifact_scope'])
+        installed = Path(pra['installed_path'])
+        if not installed.exists() and not installed.is_symlink():
+            # The temporary package is not a release dependency. In its absence,
+            # verify the saved install identity and both complete artifact rows
+            # against the actual historical Git bytes, not a replacement package.
+            saved = contracts.strict_json_loads(
+                old_bytes(reference.CURRENT_REPORT, REFERENCE_REPORT_REVISION)
+            )['pyroomacoustics']
+            for key in ('installed_path', 'installed_artifact_sha256', 'installed_python_preflight_sha256'):
+                self.assertTrue(contracts.same_metadata(pra[key], saved[key]), key)
+
+    def test_reference_installed_artifact_bytes_when_original_package_available(self):
+        pra = self.read(reference)['pyroomacoustics']
+        installed = Path(pra['installed_path'])
+        if not installed.exists() and not installed.is_symlink():
+            self.skipTest('original temporary pyroomacoustics installation is unavailable')
+        self.assertEqual(len(pra['installed_artifact_sha256']), 2)
+        self.assertEqual({name.split('.')[0] for name in pra['installed_artifact_sha256']},
+                         {'build_rir', 'libroom'})
         for relative, metadata in pra['installed_artifact_sha256'].items():
-            self.assertEqual(metadata['sha256'], contracts.sha(Path(pra['installed_path'])/relative))
+            payload = contracts.ordinary_file(installed/relative).read_bytes()
+            self.assertEqual(metadata['sha256'], hashlib.sha256(payload).hexdigest())
+            self.assertEqual(metadata['size_bytes'], len(payload))
+        for relative, digest in pra['installed_python_preflight_sha256'].items():
+            self.assertEqual(digest, contracts.sha(installed / Path(relative).relative_to('pyroomacoustics')))
 
     def test_current_sof_static_boundaries_and_defaults(self):
         report = self.read(sof)
-        self.assert_identity(report['source_identity'])
+        self.assert_identity(report['source_identity'], sof.SOURCE_HASHES)
+        self.assertEqual(set(report['source_identity']['used_files']), set(sof.SOURCE_HASHES))
         scope = report['execution_scope']
         for field in ('matlab_or_octave_design', 'fir_filter_generation', 'firmware_or_hardware', 'upstream_modified'):
             self.assertFalse(scope[field])

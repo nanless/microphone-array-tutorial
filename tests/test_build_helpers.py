@@ -599,6 +599,7 @@ class BuildHelpersTest(unittest.TestCase):
 
         # Exercise labels are wrapped only in the real generated TOC, not in
         # source headings, bookmark text, link destinations or code content.
+        # This reduced corpus has no imaging example to paginate.
         with tempfile.TemporaryDirectory() as directory:
             source = Path(directory)
             filename = '11_selection-guide.md'
@@ -615,6 +616,7 @@ class BuildHelpersTest(unittest.TestCase):
                     mock.patch.object(build_pdf, 'PDF_THIRD_LEVEL_CHAPTER_IDS', {'ch-11'}), \
                     mock.patch.object(build_pdf, 'source_digest', return_value='fixture'), \
                     mock.patch.object(build_pdf, 'check_mathjax_assets'), \
+                    mock.patch.object(build_pdf, 'keep_imaging_hand_example', side_effect=lambda page: page), \
                     mock.patch('sys.stdout', new=io.StringIO()):
                 actual, actual_outline = build_pdf.build_html('2026-10-02')
                 with mock.patch.object(build_pdf, 'toc_label', side_effect=lambda text: text):
@@ -649,10 +651,12 @@ class BuildHelpersTest(unittest.TestCase):
                 '## 数学\n\n### 12.1 原主题\n\n<a id="e14-01"></a>\n\n末段。\n')
             (source / names[3]).write_text('## 路径\n\n### 13.1 原路径\n\n末段。\n')
             chapters = [(name, name) for name in names]
+            # The synthetic imaging chapter lacks the real two-point example.
             with mock.patch.object(build_pdf, 'SRC', source), \
                     mock.patch.object(build_pdf, 'CHAPTERS', chapters), \
                     mock.patch.object(build_pdf, 'source_digest', return_value='fixture'), \
                     mock.patch.object(build_pdf, 'check_mathjax_assets'), \
+                    mock.patch.object(build_pdf, 'keep_imaging_hand_example', side_effect=lambda page: page), \
                     mock.patch('sys.stdout', new=io.StringIO()):
                 page, outline = build_pdf.build_html('2026-10-04')
             self.assertEqual([item[1] for item in outline],

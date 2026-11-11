@@ -1,11 +1,11 @@
 {
   "schema_version": 2,
-  "executed_at_utc": "2026-10-04T22:54:26.456470+00:00",
+  "executed_at_utc": "2026-11-11T08:23:48.783549+00:00",
   "audit_source": "codes/chapters/ch02/examples/audit_upstream_models.py",
   "audit_source_sha256": "efd9bf05059d48360201bd2078933791b402d8259dccabd94308a1acc75f92e0",
   "sources": {
-    "lock_sha256": "ea8ce3cf679d70d06305f4942dbf9afeee94b69bd0ad7a5b9b09470c327a598f",
-    "status_sha256": "be926fccb75979e2f2ac428ac6c65c76a46d672771e21a01d589908d776fcac0",
+    "lock_sha256": "60ebc7b692d28b5d5406e3cb137d2dcc43b154ea2c4e3d3ac739cf7fda18abeb",
+    "status_sha256": "b57d21d42651084303252c66fee49ea8d0ccfcc4108e2e89c5c79b99f8ef8690",
     "projects": {
       "pyroomacoustics": {
         "url": "https://github.com/LCAV/pyroomacoustics.git",
@@ -1017,10 +1017,10 @@
     "codes/chapters/ch00/upstream/fetch_upstreams.py": "442d17a5818ef0edf620bde85cc7959c1e73602a47f75e1cc8fce2b227ae11b4"
   },
   "source_verification": {
-    "started_at_utc": "2026-10-04T22:54:25.819871+00:00",
+    "started_at_utc": "2026-11-11T08:23:48.131969+00:00",
     "before_after_equal": true,
-    "canonical_sources_before_sha256": "0fa1f682c4264e8ede0578c1358d240617f05cbfd1b7b57b0ed439b45d75b087",
-    "canonical_sources_after_sha256": "0fa1f682c4264e8ede0578c1358d240617f05cbfd1b7b57b0ed439b45d75b087",
+    "canonical_sources_before_sha256": "ebe845c308c6400711686a66f82d690499f3a97bfe8bd3599030714a1590b312",
+    "canonical_sources_after_sha256": "ebe845c308c6400711686a66f82d690499f3a97bfe8bd3599030714a1590b312",
     "shared_dependencies_before_after_equal": true,
     "scope": "Actual origin/HEAD/used blobs/licences/clean tree, complete live selection, lock/status bytes and local helper SHA rechecked after execution"
   },
@@ -2058,6 +2058,6 @@
     "-m",
     "codes.chapters.ch02.examples.audit_upstream_models",
     "--report",
-    "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch02/reports/upstream_model_contracts.json"
+    "codes/chapters/ch02/reports/upstream_model_contracts.json"
   ]
 }

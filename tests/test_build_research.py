@@ -128,7 +128,7 @@ class ResearchBuildTest(unittest.TestCase):
                 self.assertEqual({path.name for path in output.iterdir()}, {combined.name, pdf.name})
 
     def test_print_figures_reserve_space_for_chapter_and_section_headings(self):
-        self.assertIn("h1,h2,h3,h4{break-after:avoid}", build_pdf.CSS)
+        self.assertRegex(build_pdf.CSS, r"h1,h2,h3,h4\{[^}]*\bbreak-after:avoid(?:;|\})")
         self.assertIn("img{max-height:225mm;object-fit:contain}", build_pdf.CSS)
         self.assertIn(".chap>h1{margin:0 0 3mm;line-height:1.3}", build_pdf.CSS)
         self.assertIn(".chap>h2:first-of-type{margin-top:3mm;margin-bottom:2mm;line-height:1.3}", build_pdf.CSS)

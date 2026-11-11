@@ -1,9 +1,9 @@
 {
   "schema_version": 2,
-  "created_utc": "2026-10-05T02:18:37.256337+00:00",
-  "verified_date_asia_shanghai": "2026-10-05",
+  "created_utc": "2026-11-11T08:25:35.267109+00:00",
+  "verified_date_asia_shanghai": "2026-11-11",
   "audit_source_sha256": "4f6197e23f2558bf96da7dc33bc3d12779dd7a87d98ea1bd495a89dc739bc020",
-  "lock_sha256": "ea8ce3cf679d70d06305f4942dbf9afeee94b69bd0ad7a5b9b09470c327a598f",
+  "lock_sha256": "60ebc7b692d28b5d5406e3cb137d2dcc43b154ea2c4e3d3ac739cf7fda18abeb",
   "actual_dependency_sha256": {
     "codes/chapters/ch07/examples/audit_upstream_wpe_contracts.py": "4f6197e23f2558bf96da7dc33bc3d12779dd7a87d98ea1bd495a89dc739bc020",
     "codes/chapters/ch04/core/upstream_contracts.py": "8669f007ee16a15433598b8f451f226cceb3163bdbc2bf690709504874743167",
@@ -32,12 +32,12 @@
           "nara_wpe/tf_wpe.py"
         ]
       },
-      "lock_sha256": "ea8ce3cf679d70d06305f4942dbf9afeee94b69bd0ad7a5b9b09470c327a598f",
+      "lock_sha256": "60ebc7b692d28b5d5406e3cb137d2dcc43b154ea2c4e3d3ac739cf7fda18abeb",
       "source_document_paths": {
         "lock": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/SOURCES.lock.json",
         "status": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/SOURCE_STATUS.json"
       },
-      "status_sha256": "be926fccb75979e2f2ac428ac6c65c76a46d672771e21a01d589908d776fcac0",
+      "status_sha256": "b57d21d42651084303252c66fee49ea8d0ccfcc4108e2e89c5c79b99f8ef8690",
       "recorded_complete_selection": {
         "id": "nara_wpe",
         "revision": "a166779cca2088817e330481bd20af1a2c598555",
@@ -132,12 +132,12 @@
           "tests/collections/audio/test_audio_modules.py"
         ]
       },
-      "lock_sha256": "ea8ce3cf679d70d06305f4942dbf9afeee94b69bd0ad7a5b9b09470c327a598f",
+      "lock_sha256": "60ebc7b692d28b5d5406e3cb137d2dcc43b154ea2c4e3d3ac739cf7fda18abeb",
       "source_document_paths": {
         "lock": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/SOURCES.lock.json",
         "status": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/SOURCE_STATUS.json"
       },
-      "status_sha256": "be926fccb75979e2f2ac428ac6c65c76a46d672771e21a01d589908d776fcac0",
+      "status_sha256": "b57d21d42651084303252c66fee49ea8d0ccfcc4108e2e89c5c79b99f8ef8690",
       "recorded_complete_selection": {
         "id": "nemo_wpe",
         "revision": "2381f42f6979449b5b99538f8f80135831009b51",
@@ -440,7 +440,7 @@
     }
   },
   "identity_selection_boundary": "Used original file identity and complete acquisition selection are independent; no method run upgrades acquisition or full-framework execution",
-  "source_status_sha256": "be926fccb75979e2f2ac428ac6c65c76a46d672771e21a01d589908d776fcac0",
+  "source_status_sha256": "b57d21d42651084303252c66fee49ea8d0ccfcc4108e2e89c5c79b99f8ef8690",
   "lock_entries": {
     "nara_wpe": {
       "id": "nara_wpe",
@@ -714,7 +714,7 @@
     "python": "3.13.12 | packaged by conda-forge | (main, Feb  5 2026, 06:11:05) [Clang 19.1.7 ]",
     "numpy": "2.5.3",
     "platform": "macOS-26.6.1-arm64-arm-64bit-Mach-O",
-    "executable": "/private/tmp/masp-appb-pra-venv/bin/python",
+    "executable": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/.venv/bin/python",
     "upstream_bytecode_writes": false,
     "nemo_or_torch_imported": false
   },

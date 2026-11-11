@@ -1,8 +1,8 @@
 {
-  "run_utc": "2026-10-05T02:18:28.323494+00:00",
-  "run_asia_shanghai": "2026-10-05T10:18:28.325189+08:00",
+  "run_utc": "2026-11-11T08:25:36.963517+00:00",
+  "run_asia_shanghai": "2026-11-11T16:25:36.963733+08:00",
   "audit_source_sha256": "626a9a7ae981696bc332fe62f995c668a1b8f65549718920777ca2c1c6b6e169",
-  "lock_sha256": "ea8ce3cf679d70d06305f4942dbf9afeee94b69bd0ad7a5b9b09470c327a598f",
+  "lock_sha256": "60ebc7b692d28b5d5406e3cb137d2dcc43b154ea2c4e3d3ac739cf7fda18abeb",
   "lock_entries": {
     "pyroomacoustics": {
       "id": "pyroomacoustics",
@@ -91,7 +91,7 @@
     "wheel_source_equal": "byte exact"
   },
   "python": "3.13.12 | packaged by conda-forge | (main, Feb  5 2026, 06:11:05) [Clang 19.1.7 ]",
-  "executable": "/private/tmp/masp-appb-pra-venv/bin/python",
+  "executable": "/private/tmp/masp-damas-stage-V8smia/venv/bin/python",
   "environment": {
     "numpy": "2.5.3",
     "scipy": "1.18.1",
@@ -162,12 +162,12 @@
           "pyroomacoustics/bss/trinicon.py"
         ]
       },
-      "lock_sha256": "ea8ce3cf679d70d06305f4942dbf9afeee94b69bd0ad7a5b9b09470c327a598f",
+      "lock_sha256": "60ebc7b692d28b5d5406e3cb137d2dcc43b154ea2c4e3d3ac739cf7fda18abeb",
       "source_document_paths": {
         "lock": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/SOURCES.lock.json",
         "status": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/SOURCE_STATUS.json"
       },
-      "status_sha256": "be926fccb75979e2f2ac428ac6c65c76a46d672771e21a01d589908d776fcac0",
+      "status_sha256": "b57d21d42651084303252c66fee49ea8d0ccfcc4108e2e89c5c79b99f8ef8690",
       "recorded_complete_selection": {
         "id": "pyroomacoustics",
         "revision": "0dd39f2614b7fc44b2cc63dbe7d60f4641068890",
@@ -300,12 +300,12 @@
           "doatools/utils/conversion.py"
         ]
       },
-      "lock_sha256": "ea8ce3cf679d70d06305f4942dbf9afeee94b69bd0ad7a5b9b09470c327a598f",
+      "lock_sha256": "60ebc7b692d28b5d5406e3cb137d2dcc43b154ea2c4e3d3ac739cf7fda18abeb",
       "source_document_paths": {
         "lock": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/SOURCES.lock.json",
         "status": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/SOURCE_STATUS.json"
       },
-      "status_sha256": "be926fccb75979e2f2ac428ac6c65c76a46d672771e21a01d589908d776fcac0",
+      "status_sha256": "b57d21d42651084303252c66fee49ea8d0ccfcc4108e2e89c5c79b99f8ef8690",
       "recorded_complete_selection": {
         "id": "doatools",
         "revision": "9469db201e0418aef6b97583ef54b6fec2769502",

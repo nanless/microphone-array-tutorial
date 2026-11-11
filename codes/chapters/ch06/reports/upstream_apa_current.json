@@ -1,9 +1,9 @@
 {
   "schema_version": 2,
-  "created_utc": "2026-10-05T02:18:35.290570+00:00",
-  "verified_date_asia_shanghai": "2026-10-05",
+  "created_utc": "2026-11-11T08:25:34.882370+00:00",
+  "verified_date_asia_shanghai": "2026-11-11",
   "audit_source_sha256": "55431e1476831bbc38ffadb67e008eaaab8e9313a369af67a63d1cba815fdff3",
-  "lock_sha256": "ea8ce3cf679d70d06305f4942dbf9afeee94b69bd0ad7a5b9b09470c327a598f",
+  "lock_sha256": "60ebc7b692d28b5d5406e3cb137d2dcc43b154ea2c4e3d3ac739cf7fda18abeb",
   "lock_entry": {
     "id": "pyaec",
     "url": "https://github.com/ewan-xu/pyaec.git",
@@ -51,12 +51,12 @@
         "frequency_domain_adaptive_filters/pfdkf.py"
       ]
     },
-    "lock_sha256": "ea8ce3cf679d70d06305f4942dbf9afeee94b69bd0ad7a5b9b09470c327a598f",
+    "lock_sha256": "60ebc7b692d28b5d5406e3cb137d2dcc43b154ea2c4e3d3ac739cf7fda18abeb",
     "source_document_paths": {
       "lock": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/SOURCES.lock.json",
       "status": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/SOURCE_STATUS.json"
     },
-    "status_sha256": "be926fccb75979e2f2ac428ac6c65c76a46d672771e21a01d589908d776fcac0",
+    "status_sha256": "b57d21d42651084303252c66fee49ea8d0ccfcc4108e2e89c5c79b99f8ef8690",
     "recorded_complete_selection": {
       "id": "pyaec",
       "revision": "5b9c02c57075d790b7df8652884618189d49bbc4",
@@ -271,7 +271,7 @@
   "environment": {
     "python": "3.13.12 | packaged by conda-forge | (main, Feb  5 2026, 06:11:05) [Clang 19.1.7 ]",
     "numpy": "2.5.3",
-    "executable": "/private/tmp/masp-appb-pra-venv/bin/python",
+    "executable": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/.venv/bin/python",
     "platform": "macOS-26.6.1-arm64-arm-64bit-Mach-O"
   },
   "scope": {

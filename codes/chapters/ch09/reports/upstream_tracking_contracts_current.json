@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-10-05T02:18:49.769579+00:00",
+  "generated_at": "2026-11-11T08:26:35.327437+00:00",
   "tool_sha256": "c0217b37c0f745c55f615d3fb90ddda6af9ad1d2396c42612f80fdaf31be03a6",
-  "source_lock_sha256": "ea8ce3cf679d70d06305f4942dbf9afeee94b69bd0ad7a5b9b09470c327a598f",
-  "source_status_sha256": "be926fccb75979e2f2ac428ac6c65c76a46d672771e21a01d589908d776fcac0",
+  "source_lock_sha256": "60ebc7b692d28b5d5406e3cb137d2dcc43b154ea2c4e3d3ac739cf7fda18abeb",
+  "source_status_sha256": "b57d21d42651084303252c66fee49ea8d0ccfcc4108e2e89c5c79b99f8ef8690",
   "actual_dependencies_sha256": {
     "codes/chapters/ch09/examples/audit_upstream_tracking_contracts.py": "c0217b37c0f745c55f615d3fb90ddda6af9ad1d2396c42612f80fdaf31be03a6",
     "codes/chapters/ch04/core/upstream_contracts.py": "8669f007ee16a15433598b8f451f226cceb3163bdbc2bf690709504874743167",
@@ -13,7 +13,7 @@
   },
   "environment": {
     "python": "3.13.12 | packaged by conda-forge | (main, Feb  5 2026, 06:11:05) [Clang 19.1.7 ]",
-    "executable": "/private/tmp/masp-appb-pra-venv/bin/python",
+    "executable": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/.venv/bin/python",
     "numpy": "2.5.3",
     "platform": "macOS-26.6.1-arm64-arm-64bit-Mach-O"
   },
@@ -46,12 +46,12 @@
           "demo/odaslive/parameters.c"
         ]
       },
-      "lock_sha256": "ea8ce3cf679d70d06305f4942dbf9afeee94b69bd0ad7a5b9b09470c327a598f",
+      "lock_sha256": "60ebc7b692d28b5d5406e3cb137d2dcc43b154ea2c4e3d3ac739cf7fda18abeb",
       "source_document_paths": {
         "lock": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/SOURCES.lock.json",
         "status": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/SOURCE_STATUS.json"
       },
-      "status_sha256": "be926fccb75979e2f2ac428ac6c65c76a46d672771e21a01d589908d776fcac0",
+      "status_sha256": "b57d21d42651084303252c66fee49ea8d0ccfcc4108e2e89c5c79b99f8ef8690",
       "recorded_complete_selection": {
         "id": "odas",
         "revision": "bcb845434495e293df3d48f1203b7a86e1852449",
@@ -262,12 +262,12 @@
           "extras/safmex/safmex_tracker3d.m"
         ]
       },
-      "lock_sha256": "ea8ce3cf679d70d06305f4942dbf9afeee94b69bd0ad7a5b9b09470c327a598f",
+      "lock_sha256": "60ebc7b692d28b5d5406e3cb137d2dcc43b154ea2c4e3d3ac739cf7fda18abeb",
       "source_document_paths": {
         "lock": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/SOURCES.lock.json",
         "status": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/SOURCE_STATUS.json"
       },
-      "status_sha256": "be926fccb75979e2f2ac428ac6c65c76a46d672771e21a01d589908d776fcac0",
+      "status_sha256": "b57d21d42651084303252c66fee49ea8d0ccfcc4108e2e89c5c79b99f8ef8690",
       "recorded_complete_selection": {
         "id": "spatial-audio-framework",
         "revision": "18fd5aba46e20787b51f28f7197a68506c965c07",
@@ -560,12 +560,12 @@
           "filterpy/kalman/unscented_transform.py"
         ]
       },
-      "lock_sha256": "ea8ce3cf679d70d06305f4942dbf9afeee94b69bd0ad7a5b9b09470c327a598f",
+      "lock_sha256": "60ebc7b692d28b5d5406e3cb137d2dcc43b154ea2c4e3d3ac739cf7fda18abeb",
       "source_document_paths": {
         "lock": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/SOURCES.lock.json",
         "status": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/SOURCE_STATUS.json"
       },
-      "status_sha256": "be926fccb75979e2f2ac428ac6c65c76a46d672771e21a01d589908d776fcac0",
+      "status_sha256": "b57d21d42651084303252c66fee49ea8d0ccfcc4108e2e89c5c79b99f8ef8690",
       "recorded_complete_selection": {
         "id": "filterpy",
         "revision": "3b51149ebcff0401ff1e10bf08ffca7b6bbc4a33",
@@ -845,12 +845,12 @@
           "stonesoup/hypothesiser/probability.py"
         ]
       },
-      "lock_sha256": "ea8ce3cf679d70d06305f4942dbf9afeee94b69bd0ad7a5b9b09470c327a598f",
+      "lock_sha256": "60ebc7b692d28b5d5406e3cb137d2dcc43b154ea2c4e3d3ac739cf7fda18abeb",
       "source_document_paths": {
         "lock": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/SOURCES.lock.json",
         "status": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/SOURCE_STATUS.json"
       },
-      "status_sha256": "be926fccb75979e2f2ac428ac6c65c76a46d672771e21a01d589908d776fcac0",
+      "status_sha256": "b57d21d42651084303252c66fee49ea8d0ccfcc4108e2e89c5c79b99f8ef8690",
       "recorded_complete_selection": {
         "id": "stonesoup",
         "revision": "8d1edeb07ef8505ed065cbef435cfb5e517d9bdc",
@@ -1303,12 +1303,12 @@
         "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/odas/src/system/kalman2kalman.c",
         "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/odas/src/signal/kalman.c",
         "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/odas/src/utils/matrix.c",
-        "/var/folders/45/yy0c7x29677b72dxs1t0bfgr0000gn/T/masp-tracking-e8meu1u2/odas_contract.c",
+        "/var/folders/45/yy0c7x29677b72dxs1t0bfgr0000gn/T/masp-tracking-uejv3pwx/odas_contract.c",
         "-lm",
         "-o",
-        "/var/folders/45/yy0c7x29677b72dxs1t0bfgr0000gn/T/masp-tracking-e8meu1u2/odas_contract"
+        "/var/folders/45/yy0c7x29677b72dxs1t0bfgr0000gn/T/masp-tracking-uejv3pwx/odas_contract"
       ],
-      "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin",
+      "compiler": "Apple clang version 21.0.0 (clang-2100.4.1.1)\nTarget: arm64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin",
       "compile_stdout": "",
       "compile_stderr": "",
       "harness_sha256": "31e3043f4111308262b7e1e349c9afa11f41060b97286061d05b0ac305aac736",
@@ -1377,12 +1377,12 @@
         "/usr/bin/cc",
         "-std=c11",
         "-O0",
-        "/var/folders/45/yy0c7x29677b72dxs1t0bfgr0000gn/T/masp-tracking-e8meu1u2/saf_step_contract.c",
+        "/var/folders/45/yy0c7x29677b72dxs1t0bfgr0000gn/T/masp-tracking-uejv3pwx/saf_step_contract.c",
         "-lm",
         "-o",
-        "/var/folders/45/yy0c7x29677b72dxs1t0bfgr0000gn/T/masp-tracking-e8meu1u2/saf_step_contract"
+        "/var/folders/45/yy0c7x29677b72dxs1t0bfgr0000gn/T/masp-tracking-uejv3pwx/saf_step_contract"
       ],
-      "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin",
+      "compiler": "Apple clang version 21.0.0 (clang-2100.4.1.1)\nTarget: arm64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin",
       "compile_stdout": "",
       "compile_stderr": "",
       "harness_sha256": "56097d9a5fad50577a9853a60e4a89ea8fa224abe106ffeec3f1eb79391c9e7a",
@@ -1559,12 +1559,12 @@
             "filterpy/kalman/unscented_transform.py"
           ]
         },
-        "lock_sha256": "ea8ce3cf679d70d06305f4942dbf9afeee94b69bd0ad7a5b9b09470c327a598f",
+        "lock_sha256": "60ebc7b692d28b5d5406e3cb137d2dcc43b154ea2c4e3d3ac739cf7fda18abeb",
         "source_document_paths": {
           "lock": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/SOURCES.lock.json",
           "status": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/SOURCE_STATUS.json"
         },
-        "status_sha256": "be926fccb75979e2f2ac428ac6c65c76a46d672771e21a01d589908d776fcac0",
+        "status_sha256": "b57d21d42651084303252c66fee49ea8d0ccfcc4108e2e89c5c79b99f8ef8690",
         "recorded_complete_selection": {
           "id": "filterpy",
           "revision": "3b51149ebcff0401ff1e10bf08ffca7b6bbc4a33",
@@ -2119,12 +2119,12 @@
             "stonesoup/hypothesiser/probability.py"
           ]
         },
-        "lock_sha256": "ea8ce3cf679d70d06305f4942dbf9afeee94b69bd0ad7a5b9b09470c327a598f",
+        "lock_sha256": "60ebc7b692d28b5d5406e3cb137d2dcc43b154ea2c4e3d3ac739cf7fda18abeb",
         "source_document_paths": {
           "lock": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/SOURCES.lock.json",
           "status": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/SOURCE_STATUS.json"
         },
-        "status_sha256": "be926fccb75979e2f2ac428ac6c65c76a46d672771e21a01d589908d776fcac0",
+        "status_sha256": "b57d21d42651084303252c66fee49ea8d0ccfcc4108e2e89c5c79b99f8ef8690",
         "recorded_complete_selection": {
           "id": "stonesoup",
           "revision": "8d1edeb07ef8505ed065cbef435cfb5e517d9bdc",
@@ -2317,12 +2317,12 @@
             "filterpy/kalman/unscented_transform.py"
           ]
         },
-        "lock_sha256": "ea8ce3cf679d70d06305f4942dbf9afeee94b69bd0ad7a5b9b09470c327a598f",
+        "lock_sha256": "60ebc7b692d28b5d5406e3cb137d2dcc43b154ea2c4e3d3ac739cf7fda18abeb",
         "source_document_paths": {
           "lock": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/SOURCES.lock.json",
           "status": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/SOURCE_STATUS.json"
         },
-        "status_sha256": "be926fccb75979e2f2ac428ac6c65c76a46d672771e21a01d589908d776fcac0",
+        "status_sha256": "b57d21d42651084303252c66fee49ea8d0ccfcc4108e2e89c5c79b99f8ef8690",
         "recorded_complete_selection": {
           "id": "filterpy",
           "revision": "3b51149ebcff0401ff1e10bf08ffca7b6bbc4a33",
@@ -2894,7 +2894,7 @@
         },
         "scipy": {
           "version": "1.18.1",
-          "file": "/private/tmp/masp-appb-pra-venv/lib/python3.13/site-packages/scipy/__init__.py"
+          "file": "/private/tmp/masp-current-06-07-09-m6auLd/deps/scipy/__init__.py"
         }
       },
       "ekf_predict_update_none": {

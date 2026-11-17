@@ -1,4 +1,4 @@
-"""E03-08..18: deterministic geometry, ambiguity and calibration calculations.
+"""E03-08..20: deterministic geometry, ambiguity and calibration calculations.
 
 Run ``.venv/bin/python -m codes.chapters.ch03.chapter03_experiments``. The extra
 E03-07 result and metadata are separate from the exercise IDs. No imports write
@@ -25,6 +25,10 @@ from codes.chapters.ch00.core.audio_samples import dma_calibration_case, read_pc
 from codes.chapters.ch03.coarray_covariance_exercise import average_ordered_lags, virtual_toeplitz
 from codes.chapters.ch03.core.geometry_audio import geometry_parameters
 from codes.chapters.ch03.core.baseline_calibration import solve_baseline
+from codes.chapters.ch03.core.baffle_and_vent import (
+    mems_gasket_leakage_example,
+    rigid_baffle_aperture_example,
+)
 
 ROOT = Path(__file__).resolve().parents[3]
 
@@ -432,7 +436,7 @@ def run_exercises():
     return {f'E03-{number:02}':function() for number,function in enumerate(
         (exact_beamwidths,hexagon_ambiguity,planar_mirror,coupling_regularization,gain_least_squares,coprime_holes,dma_gain_mismatch,
          noisy_calibration_reference,nearly_planar_geometry,multi_frequency_ambiguity,
-         known_direction_baseline),8)}
+         known_direction_baseline,rigid_baffle_aperture_example,mems_gasket_leakage_example),8)}
 
 
 if __name__=='__main__':

@@ -4,13 +4,14 @@ import math
 import unittest
 import numpy as np
 from codes.chapters.ch03 import chapter03_experiments as ch3
+from codes.chapters.ch03.core import baffle_and_vent as bv
 from codes.chapters.ch00.core.audio_samples import dma_calibration_case, prepare_exports, read_pcm16
 
 
 class Chapter03ExperimentsTest(unittest.TestCase):
-    def test_registry_has_eleven_serializable_exercises(self):
+    def test_registry_has_thirteen_serializable_exercises(self):
         result=ch3.run_exercises()
-        self.assertEqual(set(result),{f'E03-{n:02}' for n in range(8,19)})
+        self.assertEqual(set(result),{f'E03-{n:02}' for n in range(8,21)})
         json.dumps(result,allow_nan=False)
 
     def test_known_direction_baseline_matches_scalar_hand_solution(self):
@@ -257,6 +258,79 @@ class Chapter03ExperimentsTest(unittest.TestCase):
             self.assertAlmostEqual(row['exact_hpbw_deg'],expected,places=9)
             self.assertEqual(row['wng_linear'],6)
             self.assertAlmostEqual(row['wng_db'],10*math.log10(6))
+
+    def test_rigid_sphere_wronskian_rayleigh_limit_and_doa_bias(self):
+        # Independent closed-form monopole/dipole check via outgoing spherical Hankel h_n^(2) = j_n - j*y_n:
+        # h_0^(2)'(x) = -h_1^(2)(x), h_1^(2)'(x) = h_0^(2)(x) - 2*h_1^(2)(x)/x.
+        ka = .15
+        h0 = (math.sin(ka) + 1j * math.cos(ka)) / ka
+        h1 = ((math.sin(ka) / ka - math.cos(ka)) + 1j * (math.cos(ka) / ka + math.sin(ka))) / ka
+        b0_closed = -1j / (ka * ka * (-h1))
+        b1_closed = -1j / (ka * ka * (h0 - 2. * h1 / ka))
+        modes = bv._rigid_sphere_mode_weights(ka, 4)
+        self.assertAlmostEqual(modes[0], b0_closed, places=13)
+        self.assertAlmostEqual(modes[1], b1_closed, places=12)
+        # Verify illuminated side (+a, 0, 0) at +30 deg has higher pressure magnitude than shadowed side (-a, 0, 0).
+        high_f = bv.rigid_sphere_antipodal_response(.05, [2000., 8000.], [math.radians(30.)])
+        self.assertTrue(all(abs(p1) > abs(p0) for p0, p1 in zip(
+            high_f['pressure_mic0_left'][:, 0], high_f['pressure_mic1_right'][:, 0])))
+
+        # Also check large-argument Miller branch against exact j_1(x) = sin(x)/x^2 - cos(x)/x.
+        x_hi = 14.5
+        self.assertAlmostEqual(bv._spherical_jn_scalar(1, x_hi),
+                               math.sin(x_hi)/(x_hi*x_hi) - math.cos(x_hi)/x_hi, places=13)
+
+        result = bv.rigid_baffle_aperture_example(.05, 343.)
+        self.assertAlmostEqual(result['critical_overflow_lf_deg'], math.degrees(math.asin(2 / 3)), places=12)
+        crit_hf_rad = math.radians(result['critical_overflow_hf_deg'])
+        self.assertAlmostEqual(crit_hf_rad + math.sin(crit_hf_rad), 2., places=13)
+        self.assertLess(abs(result['helmholtz_exact_ratio_30deg_20hz'] - 1.5), 2e-4)
+
+        table = {row['true_azimuth_deg']: row for row in result['angle_table']}
+        self.assertAlmostEqual(table[30.]['theta_hat_lf_deg'], math.degrees(math.asin(.75)), places=12)
+        self.assertAlmostEqual(table[30.]['theta_hat_hf_deg'],
+                               math.degrees(math.asin(.5 * (math.pi / 6 + .5))), places=12)
+        self.assertTrue(table[45.]['lf_arcsin_overflow'])
+        self.assertIsNone(table[45.]['theta_hat_lf_deg'])
+        self.assertFalse(table[45.]['hf_arcsin_overflow'])
+        self.assertAlmostEqual(table[45.]['theta_hat_hf_deg'],
+                               math.degrees(math.asin(.5 * (math.pi / 4 + math.sqrt(.5)))), places=12)
+
+        for bad in ((0., [100.], [.1]), (.05, [0.], [.1]), (.05, [100.], [1j])):
+            with self.subTest(bad=bad), self.assertRaises(ValueError):
+                bv.rigid_sphere_antipodal_response(*bad)
+        with self.assertRaises(ValueError):
+            bv.rigid_sphere_antipodal_response(.05, [100.], [.1], max_order=1)
+
+    def test_mems_gasket_rational_arctangent_and_cardioid_inversion(self):
+        result = bv.mems_gasket_leakage_example(25., 80., .02, 343.)
+        qa = result['qa_at_1000hz']
+        # At 1000 Hz: |H(1000)| = 1 / sqrt(1 + (fc/1000)^2).
+        expected_1k_db = 20 * math.log10(math.sqrt(1 + .025 ** 2) / math.sqrt(1 + .08 ** 2))
+        self.assertAlmostEqual(qa['relative_level_db'], expected_1k_db, places=13)
+        self.assertGreater(qa['relative_level_db'], -.03)
+
+        mm = result['mismatch_at_100hz']
+        # Exact rational addition identity: atan(4/5) - atan(1/4) = atan(11/24).
+        exact_vent_rad = math.atan(11 / 24)
+        self.assertAlmostEqual(mm['mag_sealed'], 4 / math.sqrt(17), places=15)
+        self.assertAlmostEqual(mm['mag_leaky'], 5 / math.sqrt(41), places=15)
+        self.assertAlmostEqual(mm['phase_error_rad'], exact_vent_rad, places=15)
+        self.assertAlmostEqual(mm['phase_error_deg'], math.degrees(exact_vent_rad), places=13)
+        self.assertAlmostEqual(mm['max_propagation_phase_deg'], 720 / 343, places=13)
+        self.assertAlmostEqual(mm['error_to_propagation_phase_ratio'],
+                               exact_vent_rad / (4 * math.pi / 343), places=12)
+
+        dma = result['cardioid_dma_100hz']
+        self.assertAlmostEqual(dma['ideal_front_gain'], 2 * math.sin(4 * math.pi / 343), places=14)
+        self.assertEqual(dma['ideal_back_gain'], 0.)
+        self.assertGreater(dma['leaky_back_gain'], dma['leaky_front_gain'])
+        self.assertLess(dma['leaky_front_to_back_db'], -1.2)
+
+        with self.assertRaises(ValueError):
+            bv.acoustic_vent_highpass([100.], 0.)
+        with self.assertRaises(ValueError):
+            bv.mems_gasket_leakage_example(-25., 80., .02, 343.)
 
 
 if __name__=='__main__':unittest.main()

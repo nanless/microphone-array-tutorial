@@ -1,4 +1,4 @@
-"""E02-09--20: geometry, statistics, windows and inverse-model boundaries.
+"""E02-09--22: geometry, statistics, windows and inverse-model boundaries.
 
 Run ``.venv/bin/python -m codes.chapters.ch02.chapter02_experiments``. Results are
 mathematical examples, not room/device or listening measurements. The module
@@ -26,6 +26,10 @@ from codes.chapters.ch02.core.spectral import istft, periodic_hann, stft
 from codes.chapters.ch02.core.stft_convolution import finite_window_example
 from codes.chapters.ch02.core.deconvolution import regularized_inverse, score_impulse_response
 from codes.chapters.ch02.core.stft_consistency import consistency_example
+from codes.chapters.ch02.core.diffuse_and_fractional import (
+    diffuse_field_mismatch_example,
+    fractional_delay_notch_example,
+)
 
 ROOT = Path(__file__).resolve().parents[3]
 
@@ -402,7 +406,9 @@ def run_exercises() -> dict:
             'E02-13': four_sample_stft(), 'E02-14': sample_centering(),
             'E02-15': short_fir_convolution(), 'E02-16': finite_window_convolution(),
             'E02-17': correlated_source_noise(), 'E02-18': window_calibration(),
-            'E02-19': known_excitation_inverse(), 'E02-20': consistency_example()}
+            'E02-19': known_excitation_inverse(), 'E02-20': consistency_example(),
+            'E02-21': diffuse_field_mismatch_example(),
+            'E02-22': fractional_delay_notch_example()}
 
 
 if __name__ == '__main__':

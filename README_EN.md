@@ -32,7 +32,7 @@ This book starts with what you can hear. At each step, ask what signals you have
 
 If you are new to the subject, begin with Chapter 1 and consult the math appendix as needed. For device work, go straight to the engineering tasks and the implementation guide. The main text is in Chinese. [Math and notation](chapters/14_appendix-symbols-math.md) · [Engineering tasks](https://nanless.github.io/microphone-array-tutorial/site/#course-engineering) · [Industrial implementation notes](codes/chapters/ch00/research/03_industrial_deployment.md)
 
-**15 chapters · 2 appendices · 397 runnable exercises · 88 numbered figures**
+**15 chapters · 2 appendices · 399 runnable exercises · 88 numbered figures**
 
 [Code and audio by chapter](codes/chapters/README.md) · [Implementation notes](codes/chapters/ch00/research/README.md) · [Web and PDF builds](scripts/README.md) · [Third-party sources and terms](codes/chapters/ch00/THIRD_PARTY.md)
 

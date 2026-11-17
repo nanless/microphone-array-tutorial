@@ -12,6 +12,7 @@ import wave
 import numpy as np
 
 from codes.chapters.ch02 import chapter02_experiments as ch2
+from codes.chapters.ch02.core import diffuse_and_fractional as df
 from codes.chapters.ch00.core.audio_samples import (room_decay_case, room_decay_components,
                                                prepare_exports, read_pcm16)
 from codes.chapters.ch02.core.spectral import istft
@@ -20,7 +21,7 @@ from codes.chapters.ch02.core.spectral import istft
 class Chapter02ExperimentsTest(unittest.TestCase):
     def test_ids_and_serializable_results(self):
         result = ch2.run_exercises()
-        self.assertEqual(set(result), {f'E02-{number:02}' for number in range(9, 21)})
+        self.assertEqual(set(result), {f'E02-{number:02}' for number in range(9, 23)})
         json.dumps(result, allow_nan=False)
 
     def test_near_field_hand_geometry_and_endfire_counterexample(self):
@@ -262,6 +263,99 @@ class Chapter02ExperimentsTest(unittest.TestCase):
             (root/'codes/chapters/ch02/core/spectral.py').write_text('stale source')
             with self.assertRaisesRegex(ValueError, 'source is stale'):
                 ch2.published_room_decay_measurements(root)
+
+    def test_diffuse_field_mismatch_against_closed_forms_and_quadrature(self):
+        # Independent 512-point Riemann sum on [0, pi] verifies all three bessel_j0 regimes.
+        grid = (np.arange(512, dtype=float) + .5) * (math.pi / 512.)
+        test_x = np.array([0., -2.404825557695773, math.pi, 18.5, 42.0])
+        expected_j0 = [float(np.mean(np.cos(val * np.cos(grid)))) for val in test_x]
+        np.testing.assert_allclose(df.bessel_j0(test_x), expected_j0, atol=2e-14)
+        self.assertAlmostEqual(float(df.bessel_j0(0.)), 1., places=15)
+        self.assertAlmostEqual(float(df.bessel_j0(df.FIRST_BESSEL_J0_ROOT)), 0., places=15)
+
+        result = df.diffuse_field_mismatch_example()
+        self.assertAlmostEqual(result['first_zero_3d_hz'], 343 / .08, places=12)
+        self.assertAlmostEqual(result['first_zero_2d_hz'],
+                               343 * df.FIRST_BESSEL_J0_ROOT / (.08 * math.pi), places=12)
+        self.assertAlmostEqual(result['first_zero_2d_relative_drop'],
+                               1. - df.FIRST_BESSEL_J0_ROOT / math.pi, places=14)
+
+        asymp = result['low_freq_limit_3d_supercardioid_in_2d']
+        self.assertAlmostEqual(asymp['p_out_3d_predicted'], .25, places=15)
+        self.assertAlmostEqual(asymp['p_out_2d_actual'], 11 / 32, places=15)
+        self.assertAlmostEqual(asymp['q_2d_actual'], 32 / 11, places=14)
+        self.assertAlmostEqual(asymp['noise_leakage_db'], 10 * math.log10(11 / 8), places=13)
+
+        # Independent scalar closed form for 2x2 Toeplitz MVDR:
+        # w_3d^H Gamma_3d w_3d = (1 - rho_3d^2) / (2 * (1 - rho_3d * cos(kd))).
+        rows = result['spot_frequencies']
+        self.assertEqual(len(rows), 3)
+        for row in rows:
+            kd, r3, r2 = row['kappa_d_rad'], row['gamma_3d'], row['gamma_2d']
+            c_kd = math.cos(kd)
+            p3_closed = (1. - r3 * r3) / (2. * (1. - r3 * c_kd))
+            w_norm_sq = (1. + r3 * r3 - 2. * r3 * c_kd) / (2. * (1. - r3 * c_kd) ** 2)
+            # Off-diagonal cross term 2*Re(w0* w1) = (c_kd*(1 + r3^2) - 2*r3) / (2 * (1 - r3*c_kd)^2)
+            cross_2re = (c_kd * (1. + r3 * r3) - 2. * r3) / (2. * (1. - r3 * c_kd) ** 2)
+            p2_closed = w_norm_sq + r2 * cross_2re
+            self.assertAlmostEqual(row['p_out_3d_predicted'], p3_closed, places=12)
+            self.assertAlmostEqual(row['p_out_2d_actual'], p2_closed, places=12)
+            self.assertAlmostEqual(row['wng_db'], -10 * math.log10(w_norm_sq), places=11)
+        # At 4287.5 Hz (kd = pi), 3D diffuse is white (p_3d = 0.5), while 2D actual is (1 - J0(pi))/2.
+        self.assertAlmostEqual(rows[2]['p_out_3d_predicted'], .5, places=14)
+        self.assertAlmostEqual(rows[2]['p_out_2d_actual'],
+                               .5 * (1. - expected_j0[2]), places=13)
+
+        for bad_x in ([1j], True, [math.nan], [math.inf]):
+            with self.subTest(bad_x=bad_x), self.assertRaises(ValueError):
+                df.bessel_j0(bad_x)
+        with self.assertRaises(ValueError):
+            df.bessel_j0(1., max_terms=10)
+        with self.assertRaises(ValueError):
+            df.isotropic_diffuse_coherence_pair([1000.], 0.)
+        with self.assertRaises(ValueError):
+            df.isotropic_diffuse_coherence_pair([-100.], .04)
+
+    def test_fractional_delay_notch_and_windowed_sinc_hand_sums(self):
+        result = df.fractional_delay_notch_example(16000.)
+        four = result['four_point_linear_half_sample']
+        self.assertEqual(four['dft_real'], [1., .5, 0., .5])
+        self.assertEqual(four['dft_imag'], [0., -.5, 0., .5])
+        self.assertEqual(four['y_dc'], [1., 1., 1., 1.])
+        self.assertEqual(four['y_quarter_fs'], [.5, .5, -.5, -.5])
+        self.assertEqual(four['y_nyquist'], [0., 0., 0., 0.])
+
+        rows = {row['frequency_hz']: row for row in result['frequency_comparison']}
+        r4k, r8k = rows[4000.], rows[8000.]
+        self.assertAlmostEqual(r4k['linear_mag'], 1 / math.sqrt(2), places=15)
+        self.assertAlmostEqual(r4k['linear_dsb_gain'], .5 * (1 + 1 / math.sqrt(2)), places=15)
+        self.assertAlmostEqual(r4k['linear_null_residual'], 1 - 1 / math.sqrt(2), places=15)
+        self.assertAlmostEqual(r8k['linear_mag'], 0., places=15)
+        self.assertIsNone(r8k['linear_mag_db'])
+        self.assertAlmostEqual(r8k['linear_dsb_gain'], .5, places=15)
+        self.assertAlmostEqual(r8k['linear_null_residual'], 1., places=15)
+
+        h8 = np.asarray(result['wsinc8_coefficients'])
+        np.testing.assert_allclose(h8, h8[::-1], atol=1e-15)
+        self.assertAlmostEqual(float(np.sum(h8)), 1., places=15)
+        # Every even-length symmetric Type-II FIR vanishes at omega_d = pi.
+        alternating = float(sum(((-1) ** n) * float(h8[n]) for n in range(8)))
+        self.assertAlmostEqual(alternating, 0., places=15)
+        # At 4 kHz (quarter fs), 8-tap Hamming sinc suppresses null residual below -48 dB (< 0.004).
+        self.assertLess(r4k['wsinc8_null_residual'], .004)
+        self.assertLess(r4k['wsinc8_null_residual_db'], -48.)
+
+        # Exact integer delay must collapse to a unit Kronecker delta.
+        delta_3 = df.windowed_sinc_fractional_delay(3., num_taps=8, window='hamming')
+        np.testing.assert_allclose(delta_3, [0, 0, 0, 1, 0, 0, 0, 0], atol=1e-15)
+
+        for bad_args in ((-.1, 8), (7.1, 8), (1.5, 1), (1.5, True)):
+            with self.subTest(bad_args=bad_args), self.assertRaises(ValueError):
+                df.windowed_sinc_fractional_delay(*bad_args)
+        with self.assertRaises(ValueError):
+            df.windowed_sinc_fractional_delay(1.5, 8, window='kaiser')
+        with self.assertRaises(ValueError):
+            df.fractional_delay_notch_example(0.)
 
 
 if __name__ == '__main__':

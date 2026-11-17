@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>从入门到工业实践 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="4bb0843caa07"><style>
+<meta name="source-digest" content="8a992b27f5ea"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -415,7 +415,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
         <a class="course-cta" href="01_problem-definition.html">读第一章 <span aria-hidden="true">→</span></a>
         <a class="course-quiet" href="#course-engineering">工程实践 <span aria-hidden="true">↓</span></a>
       </div>
-      <p class="course-note">15 章正文、2 篇附录、397 道可运行练习。</p>
+      <p class="course-note">15 章正文、2 篇附录、399 道可运行练习。</p>
     </div>
 
     <figure class="course-demo" data-source="left">
@@ -1815,7 +1815,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <p>核对完基础输出后，可运行单元测试套件检验正常输入、退化边界与异常输入处理；若想针对某一章单独调试，可按<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/README.md">代码地图</a>定位对应模块与测试文件：</p>
 <pre><code class="language-bash">.venv/bin/python -m unittest discover -s tests -p 'test_codes*.py' -v
 </code></pre>
-<p>需要从头重新生成音频或重绘插图时，可参照<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/scripts/README.md">构建说明</a>与附录 B <a href="15_appendix-guide.html#sec-15-7">§15.7</a> 操作（附录 B 房间仿真练习需在固定版本 <code>pyroomacoustics</code> 独立环境中生成）。此外，全书共配 397 道稳定编号代码练习（<code>E01-01</code> 至 <code>E17-16</code>）：其中第 1～13 章与附录 A、B 的 365 道汇总于<a href="research/05_exercises_and_audio.html">章节代码练习与音频实验</a>，第 16、17 章的 32 道分别见<a href="16_spatial-wearable-arrays.html#sec-16-11">专题Ⅲ §16.11</a>与<a href="17_target-extraction-diarization.html#sec-17-10">专题Ⅳ §17.10</a>，每道题均给出明确输入、运行入口与可核查数值结果。</p>
+<p>需要从头重新生成音频或重绘插图时，可参照<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/scripts/README.md">构建说明</a>与附录 B <a href="15_appendix-guide.html#sec-15-7">§15.7</a> 操作（附录 B 房间仿真练习需在固定版本 <code>pyroomacoustics</code> 独立环境中生成）。此外，全书共配 399 道稳定编号代码练习（<code>E01-01</code> 至 <code>E17-16</code>）：其中第 1～13 章与附录 A、B 的 367 道汇总于<a href="research/05_exercises_and_audio.html">章节代码练习与音频实验</a>，第 16、17 章的 32 道分别见<a href="16_spatial-wearable-arrays.html#sec-16-11">专题Ⅲ §16.11</a>与<a href="17_target-extraction-diarization.html#sec-17-10">专题Ⅳ §17.10</a>，每道题均给出明确输入、运行入口与可核查数值结果。</p>
 <p><a id="audio-assets"></a></p>
 <p>仓库配套音频分为两类：除表格末行的 DEMAND 为真实自然环境多通道录音摘录外，其余 31 套均为受控数学模型生成的确定性合成音频（用于隔离单一物理因素、精确对比解析理论值与 16 位脉冲编码调制（Pulse-Code Modulation，PCM）量化读回值）。试听前请先调低耳机或扬声器音量；网页音频播放器默认不自动播放。下表列出全部 32 套音频资产的清单入口、文件数量与观察重点：</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>

@@ -175,7 +175,7 @@ EXPECTED_SUBSECTION_COUNTS = {
     "06_aec.md": 73,  # reference-gain topic and E40/E41/E42 are four independent h4 topics
     "07_wpe-dereverberation.md": 60,
     "08_speech-separation.md": 65,  # OverIVA topic and three separately navigable exercises
-    "09_source-tracking.md": 62,  # three independent topics and E09-24/25/26
+    "09_source-tracking.md": 64,  # three independent topics and E09-24/25/26
     "10_engineering-practice.md": 56,
     "11_selection-guide.md": 41,  # two evidence topics and E11-26/27 are independently navigable
     "14_appendix-symbols-math.md": 37,
@@ -220,15 +220,15 @@ EXPECTED_LEGACY_ROUTES = {
     "13_appendix-guide.html": "15_appendix-guide.html",
 }
 EXPECTED_SECTION_COUNT = 173
-EXPECTED_SUBSECTION_COUNT = 849
-EXPECTED_OUTLINE_ITEM_COUNT = 1040
+EXPECTED_SUBSECTION_COUNT = 851
+EXPECTED_OUTLINE_ITEM_COUNT = 1042
 EXPECTED_FIGURE_NUMBERS = set(range(1, 89))
-EXPECTED_EXERCISE_COUNT = 411
+EXPECTED_EXERCISE_COUNT = 413
 EXPECTED_EXERCISE_COUNTS = {
     '01_problem-definition.md': 12, '02_basics-signal-model.md': 22,
     '03_array-geometry.md': 20, '04_doa-estimation.md': 27,
     '05_beamforming.md': 29, '06_aec.md': 44, '07_wpe-dereverberation.md': 26,
-    '08_speech-separation.md': 34, '09_source-tracking.md': 26,
+    '08_speech-separation.md': 34, '09_source-tracking.md': 28,
     '10_engineering-practice.md': 34, '11_selection-guide.md': 27,
     '14_appendix-symbols-math.md': 20, '15_appendix-guide.md': 15,
     '12_acoustic-imaging.md': 18, '13_distributed-enhancement.md': 25,
@@ -594,11 +594,11 @@ def check_sources(errors: list[str], notices: list[str]):
                           ROOT / "scripts" / "README.md",
                           ROOT / "codes" / "chapters" / "README.md") if p.exists()]
     readme_zh = ROOT / "README.md"
-    if readme_zh.exists() and "15 章正文 · 2 篇附录 · 411 道可运行练习 · 88 张编号图" not in readme_zh.read_text(encoding="utf-8"):
-        fail(errors, "README.md 全书统计基线过期：应含 15 章正文 · 2 篇附录 · 411 道可运行练习 · 88 张编号图")
+    if readme_zh.exists() and "15 章正文 · 2 篇附录 · 413 道可运行练习 · 88 张编号图" not in readme_zh.read_text(encoding="utf-8"):
+        fail(errors, "README.md 全书统计基线过期：应含 15 章正文 · 2 篇附录 · 413 道可运行练习 · 88 张编号图")
     readme_en = ROOT / "README_EN.md"
-    if readme_en.exists() and "15 chapters · 2 appendices · 411 runnable exercises · 88 numbered figures" not in readme_en.read_text(encoding="utf-8"):
-        fail(errors, "README_EN.md 全书统计基线过期：应含 15 chapters · 2 appendices · 411 runnable exercises · 88 numbered figures")
+    if readme_en.exists() and "15 chapters · 2 appendices · 413 runnable exercises · 88 numbered figures" not in readme_en.read_text(encoding="utf-8"):
+        fail(errors, "README_EN.md 全书统计基线过期：应含 15 chapters · 2 appendices · 413 runnable exercises · 88 numbered figures")
     for path in paths:
         original = path.read_text(encoding="utf-8")
         errors.extend(f"{path.relative_to(ROOT)}: {issue}"

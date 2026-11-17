@@ -40,7 +40,9 @@
 
 从几何可观测性看，单个固定阵列仅凭方位角无法唯一确定声源距离。仍以原点处的阵列为例，位于 $(1\ \mathrm{m},1\ \mathrm{m})$ 与 $(2\ \mathrm{m},2\ \mathrm{m})$ 的两个声源处在同一条射线上，$\operatorname{atan2}$ 均输出 $45^\circ$，沿径向按任意正比例缩放坐标完全不改变方位角读数。
 
-即便把多帧方位角串联起来，只要阵列静止且声源做未知速度的匀速直线运动，把初始位置与初始速度同时乘以任意正数 $a>0$，整条轨迹在任意时刻的瞬时方位角依然逐帧重合（练习 [E09-21](#e09-21) 给出了三时刻完整复算与雅可比零空间证明）。多攒几帧观测只能压低可观测切向上的角度噪声，无法凭空消除径向尺度歧义；即便把线性卡尔曼滤波换成扩展卡尔曼滤波（Extended Kalman Filter，EKF）或无迹卡尔曼滤波（Unscented Kalman Filter，UKF），滤波器也无法从仅测方位数据中“算出”真实距离。要实现二维或三维位置级追踪，必须引入空间分离的多个子阵、到达时间差（Time Difference of Arrival，TDOA）曲率/距离观测，或让阵列自身做满足可观测性条件（如存在相对机动加速度）的已知运动（理论判据详见 [Nardone 与 Aidala 1981 / Fogel 与 Gavish 1989 仅测方位可观测性分析](https://doi.org/10.1080/00207178908559665)）。
+即便把多帧方位角串联起来，只要阵列静止且声源做未知速度的匀速直线运动，把初始位置与初始速度同时乘以任意正数 $a>0$，整条轨迹在任意时刻的瞬时方位角依然逐帧重合（练习 [E09-21](#e09-21) 给出了三时刻完整复算与雅可比零空间证明）。多攒几帧观测只能压低可观测切向上的角度噪声，无法凭空消除径向尺度歧义；即便把线性卡尔曼滤波换成扩展卡尔曼滤波（Extended Kalman Filter，EKF）或无迹卡尔曼滤波（Unscented Kalman Filter，UKF），滤波器也无法从仅测方位数据中“算出”真实距离。
+
+要实现二维或三维位置级追踪，必须引入空间分离的多个子阵、到达时间差（Time Difference of Arrival，TDOA）曲率/距离观测，或让阵列自身做满足可观测性条件（如存在相对机动加速度）的已知运动（理论判据详见 [Nardone 与 Aidala 1981 / Fogel 与 Gavish 1989 仅测方位可观测性分析](https://doi.org/10.1080/00207178908559665)）。
 
 当多阵列或已知阵列机动使位置可观测时，还需处理 $\operatorname{atan2}$ 的非线性。EKF 在当前预测均值处用一阶泰勒展开（雅可比矩阵）将非线性观测局部线性化；UKF 则在预测均值附近按协方差结构确定性地挑出少量代表点（称为 Sigma 点，并非额外检测到的物理声源），把每个点直接代入原非线性观测函数，再由变换后的点集加权恢复观测均值与协方差。
 
@@ -59,11 +61,13 @@ $$\begin{aligned}
 
 其中 $\mathbf{F}\in\mathbb{R}^{d\times d}$ 为状态转移矩阵，刻画相邻两帧之间的确定性运动规律；$\mathbf{H}\in\mathbb{R}^{p\times d}$ 为观测矩阵，把 $d$ 维内部状态映射到 $p$ 维观测量；$\vec{v}_t\in\mathbb{R}^d$ 与 $\vec{w}_t\in\mathbb{R}^p$ 分别表示过程噪声（未建模的随机加减速或转身扰动）与观测噪声（单帧 DOA 估计误差）。
 
-标准卡尔曼推导假定 $\vec{v}_t$ 与 $\vec{w}_t$ 均为零均值白噪声序列，彼此互不相关且均与初始状态估计误差正交。在此前提下，过程噪声协方差矩阵 $\mathbf{Q}=\mathbb{E}[\vec{v}_t\vec{v}_t^\top]\in\mathbb{R}^{d\times d}$ 与观测噪声协方差矩阵 $\mathbf{R}=\mathbb{E}[\vec{w}_t\vec{w}_t^\top]\in\mathbb{R}^{p\times p}$ 均为对称半正定（通常要求 $\mathbf{R}$ 正定以保证求逆良态）。若定位器存在系统性角度安装偏置（噪声均值非零），需将偏置增广进状态或先行校准；若相邻重叠分析窗导致观测噪声跨帧强相关，则需恢复交叉协方差项或做状态增广。
+标准卡尔曼推导假定 $\vec{v}_t$ 与 $\vec{w}_t$ 均为零均值白噪声序列，彼此互不相关且均与初始状态估计误差正交。在此前提下，过程噪声协方差矩阵 $\mathbf{Q}=\mathbb{E}[\vec{v}_t\vec{v}_t^\top]$（维数 $d\times d$）与观测噪声协方差矩阵 $\mathbf{R}=\mathbb{E}[\vec{w}_t\vec{w}_t^\top]$（维数 $p\times p$）均为对称半正定（通常要求 $\mathbf{R}$ 正定以保证求逆良态）。若定位器存在系统性角度安装偏置（噪声均值非零），需将偏置增广进状态或先行校准；若相邻重叠分析窗导致观测噪声跨帧强相关，则需恢复交叉协方差项或做状态增广。
 
-记给定截至 $t-1$ 帧观测时的本帧先验预测均值为 $\hat{\vec{s}}_t^-$、先验误差协方差矩阵为 $\mathbf{P}_t^-=\mathbb{E}[(\vec{s}_t-\hat{\vec{s}}_t^-)(\vec{s}_t-\hat{\vec{s}}_t^-)^\top]\in\mathbb{R}^{d\times d}$；融入本帧观测 $\vec{z}_t$ 后的后验均值与误差协方差矩阵分别记为 $\hat{\vec{s}}_t$ 与 $\mathbf{P}_t$，卡尔曼增益记为 $\mathbf{K}_t\in\mathbb{R}^{d\times p}$。只要上述零均值与不相关二阶统计条件成立，卡尔曼递推在所有线性无偏估计器中达到最小均方误差（LMMSE）；若进一步假定初态与噪声服从联合高斯分布，后验分布严格保持高斯并由 $(\hat{\vec{s}}_t,\mathbf{P}_t)$ 完整刻画，该递推同时给出全局贝叶斯条件均值（见 [Kalman 1960 奠基论文 §Optimal Estimates 与 Theorem 3](https://people.duke.edu/~hpgavin/SystemID/References/Kalman-JBE-1960.pdf)）。
+记给定截至 $t-1$ 帧观测时的本帧先验预测均值为 $\hat{\vec{s}}_t^-$，先验误差为 $\vec{e}_t^-=\vec{s}_t-\hat{\vec{s}}_t^-$，先验误差协方差矩阵 $\mathbf{P}_t^-$ 定义为 $\mathbb{E}[\vec{e}_t^-(\vec{e}_t^-)^\top]$（维数 $d\times d$）；融入本帧观测 $\vec{z}_t$ 后的后验均值与误差协方差矩阵分别记为 $\hat{\vec{s}}_t$ 与 $\mathbf{P}_t$，卡尔曼增益记为 $\mathbf{K}_t\in\mathbb{R}^{d\times p}$。只要上述零均值与不相关二阶统计条件成立，卡尔曼递推在所有线性无偏估计器中达到最小均方误差（LMMSE）；若进一步假定初态与噪声服从联合高斯分布，后验分布严格保持高斯并由 $(\hat{\vec{s}}_t,\mathbf{P}_t)$ 完整刻画，该递推同时给出全局贝叶斯条件均值（见 [Kalman 1960 奠基论文 §Optimal Estimates 与 Theorem 3](https://people.duke.edu/~hpgavin/SystemID/References/Kalman-JBE-1960.pdf)）。
 
-阅读矩阵维度与量纲时，协方差矩阵第 $(i,j)$ 个元素的单位等于第 $i$ 个与第 $j$ 个状态分量单位的乘积。以两分量角运动状态 $\vec{s}_t=[\theta_t,\dot{\theta}_t]^\top$（角度用 $\mathrm{deg}$，角速度用 $\mathrm{deg/frame}$）为例，$\mathbf{P}_t$ 主对角线两项的单位分别是 $\mathrm{deg}^2$ 与 $(\mathrm{deg/frame})^2$，非对角互协方差的单位则是 $\mathrm{deg}^2/\mathrm{frame}$，对应的观测矩阵为 $\mathbf{H}=[1,\ 0]$（若采用含角加速度的三分量状态 $[\theta,\dot{\theta},\ddot{\theta}]^\top$，则 $\mathbf{H}=[1,\ 0,\ 0]$，切勿将其误读为三维空间坐标）。当定位器每帧只输出单个方位角时，$p=1$，观测向量退化为标量 $\theta_t^{\mathrm{obs}}$，观测噪声矩阵 $\mathbf{R}$ 与新息协方差矩阵 $\mathbf{S}_t$ 均退化为 $1\times 1$ 标量方差，下文在标量情形下分别记作 $R$ 与 $S_t$，在一般多维推导中保持正粗体 $\mathbf{R}$ 与 $\mathbf{S}_t$。
+阅读矩阵维度与量纲时，协方差矩阵第 $(i,j)$ 个元素的单位等于第 $i$ 个与第 $j$ 个状态分量单位的乘积。以两分量角运动状态 $\vec{s}_t=[\theta_t,\dot{\theta}_t]^\top$（角度用 $\mathrm{deg}$，角速度用 $\mathrm{deg/frame}$）为例，$\mathbf{P}_t$ 主对角线两项的单位分别是 $\mathrm{deg}^2$ 与 $(\mathrm{deg/frame})^2$，非对角互协方差的单位则是 $\mathrm{deg}^2/\mathrm{frame}$，对应的观测矩阵为 $\mathbf{H}=[1,\ 0]$（若采用含角加速度的三分量状态 $[\theta,\dot{\theta},\ddot{\theta}]^\top$，则 $\mathbf{H}=[1,\ 0,\ 0]$，切勿将其误读为三维空间坐标）。
+
+当定位器每帧只输出单个方位角时，$p=1$，观测向量退化为标量 $\theta_t^{\mathrm{obs}}$，观测噪声矩阵 $\mathbf{R}$ 与新息协方差矩阵 $\mathbf{S}_t$ 均退化为 $1\times 1$ 标量方差，下文在标量情形下分别记作 $R$ 与 $S_t$，在一般多维推导中保持正粗体 $\mathbf{R}$ 与 $\mathbf{S}_t$。
 
 整个递推由“时间预测”和“观测更新”两步交替组成：预测步顺着运动学模型向前推演均值并累加过程不确定度；更新步先算出实际观测与预测观测之差（称为新息），再按预测与观测各自的不确定度比例修正状态并收缩误差协方差。
 
@@ -75,7 +79,10 @@ $$\begin{aligned}
 
 2. **预测协方差**：
 
-    $$\mathbf{P}^-_t = \mathbf{F}\mathbf{P}_{t-1}\mathbf{F}^\top + \mathbf{Q}.\tag{9-3}$$
+    $$\begin{aligned}
+    \mathbf{P}^-_t&=\mathbf{F}\mathbf{P}_{t-1}\mathbf{F}^\top
+    +\mathbf{Q}.
+    \end{aligned}\tag{9-3}$$
 
     $\mathbf{F}$ 先把上一帧误差协方差映射并耦合到当前帧，$\mathbf{Q}$ 再叠加未建模运动的过程噪声。注意不能笼统断言任意 $\mathbf{F}$ 下 $\mathbf{P}_t^-$ 的每个矩阵元素都必然变大（见练习 E09-18 的负互协方差反例）；但在本章初态正交或同号互协方差的匀速外推算例中，角度方差会随缺测帧数持续增长。
 
@@ -99,7 +106,9 @@ $$\begin{aligned}
 
 5. **更新协方差**：
 
-    $$\mathbf{P}_t = (\mathbf{I}-\mathbf{K}_t\mathbf{H})\mathbf{P}^-_t.\tag{9-6}$$
+    $$\begin{aligned}
+    \mathbf{P}_t&=(\mathbf{I}-\mathbf{K}_t\mathbf{H})\mathbf{P}^-_t.
+    \end{aligned}\tag{9-6}$$
 
 方位角跨越表示区间边界时，式(9-5)中的角度新息不能直接做普通实数减法。若全系统统一将水平方位角主值固定在半开区间 $[-180^\circ,180^\circ)$，可定义最短圆周角环绕算子：
 
@@ -109,19 +118,28 @@ r&=b\bmod 360^\circ,\\
 \operatorname{wrap}_{180}(\alpha)&=r-180^\circ.
 \end{aligned}\tag{9-7}$$
 
-这里 $\bmod$ 取与除数同号的非负余数 $r\in[0^\circ,360^\circ)$。第 4 步计算新息时应改为 $\nu_t=\operatorname{wrap}_{180}(\theta_t^{\mathrm{obs}}-\mathbf{H}\hat{\vec{s}}_t^-)$；预测步与更新步结束后，同样需要把状态向量中的角度分量按式(9-7)映射回 $[-180^\circ,180^\circ)$，而角速度 $\dot{\theta}_t$ 属于切空间实数，绝不能做角度环绕。数值实现时应先保证输入角度已处于规范区间附近再做差环绕，避免对极小角差反复加减 $180^\circ$ 引入额外的浮点尾数损失。
+这里 $\bmod$ 取与除数同号的非负余数 $r\in[0^\circ,360^\circ)$。第 4 步计算新息时应先对原始角差 $\theta_t^{\mathrm{obs}}-\mathbf{H}\hat{\vec{s}}_t^-$（记为 $\Delta\theta_t$）施加环绕，即 $\nu_t=\operatorname{wrap}_{180}(\Delta\theta_t)$；预测步与更新步结束后，同样需要把状态向量中的角度分量按式(9-7)映射回 $[-180^\circ,180^\circ)$，而角速度 $\dot{\theta}_t$ 属于切空间实数，绝不能做角度环绕。数值实现时应先保证输入角度已处于规范区间附近再做差环绕，避免对极小角差反复加减 $180^\circ$ 引入额外的浮点尾数损失。
 
-看一个直观例子：设预测方位为 $+179^\circ$，本帧实测方位为 $-179^\circ$。在圆周上声源其实只跨过背向分界线顺时针走了 $+2^\circ$，直接相减却算出 $-358^\circ$——若不环绕，滤波器会误以为目标在反方向横跨了近一整圈而把状态猛拉过头，后面的新息门控也会把这条本来很准的观测误判成野点剔除。若预测与观测恰好相差 $180^\circ$（对跖方向），顺时针与逆时针弧长相等，式(9-7)按半开区间约定统一返回 $-180^\circ$，此时单靠当前新息符号无法判断真实转向。还需注意：环绕算子仅解决单峰局部高斯跨越人为坐标接缝的问题，若真实后验本身横跨宽扇区或呈前后对称双峰，则应改用圆周统计或粒子滤波；反之，若贴墙安装的线阵仅在 $[-90^\circ,90^\circ]$ 有限扇区内工作，两端并非物理相邻方向，不能套用 $360^\circ$ 环绕。
+看一个直观例子：设预测方位为 $+179^\circ$，本帧实测方位为 $-179^\circ$。在圆周上声源其实只跨过背向分界线顺时针走了 $+2^\circ$，直接相减却算出 $-358^\circ$——若不环绕，滤波器会误以为目标在反方向横跨了近一整圈而把状态猛拉过头，后面的新息门控也会把这条本来很准的观测误判成野点剔除。
 
-为什么协方差更新能写成式(9-6)，而工程代码里又普遍改用更长一截的 **Joseph 稳定形式**？我们不妨把后验误差协方差从头推一遍，顺便把最优增益式(9-4)也一并推出来。对于**任意**给定的线性增益矩阵 $\mathbf{K}_t\in\mathbb{R}^{d\times p}$，把观测方程 $\vec{z}_t=\mathbf{H}\vec{s}_t+\vec{w}_t$ 代入更新式 $\hat{\vec{s}}_t=\hat{\vec{s}}_t^-+\mathbf{K}_t(\vec{z}_t-\mathbf{H}\hat{\vec{s}}_t^-)$，后验估计误差 $\vec{e}_t=\vec{s}_t-\hat{\vec{s}}_t$ 可整理为先验误差 $\vec{e}_t^-=\vec{s}_t-\hat{\vec{s}}_t^-$ 与观测噪声 $\vec{w}_t$ 的线性组合：
+若预测与观测恰好相差 $180^\circ$（对跖方向），顺时针与逆时针弧长相等，式(9-7)按半开区间约定统一返回 $-180^\circ$，此时单靠当前新息符号无法判断真实转向。还需注意：环绕算子仅解决单峰局部高斯跨越人为坐标接缝的问题，若真实后验本身横跨宽扇区或呈前后对称双峰，则应改用圆周统计或粒子滤波；反之，若贴墙安装的线阵仅在 $[-90^\circ,90^\circ]$ 有限扇区内工作，两端并非物理相邻方向，不能套用 $360^\circ$ 环绕。
 
-$$\vec{e}_t=\vec{s}_t-\hat{\vec{s}}_t^--\mathbf{K}_t(\mathbf{H}\vec{e}_t^-+\vec{w}_t)=(\mathbf{I}-\mathbf{K}_t\mathbf{H})\vec{e}_t^--\mathbf{K}_t\vec{w}_t.$$
+为什么协方差更新能写成式(9-6)，而工程代码里又普遍改用更长一截的 **Joseph 稳定形式**？我们不妨把后验误差协方差从头推一遍，顺便把最优增益式(9-4)也一并推出来。对于**任意**给定的线性增益矩阵 $\mathbf{K}_t\in\mathbb{R}^{d\times p}$，把观测方程 $\vec{z}_t=\mathbf{H}\vec{s}_t+\vec{w}_t$ 代入更新量 $\mathbf{K}_t\vec{\nu}_t$（其中 $\vec{\nu}_t=\vec{z}_t-\mathbf{H}\hat{\vec{s}}_t^-$），后验估计误差 $\vec{e}_t=\vec{s}_t-\hat{\vec{s}}_t$ 可整理为先验误差 $\vec{e}_t^-=\vec{s}_t-\hat{\vec{s}}_t^-$ 与观测噪声 $\vec{w}_t$ 的线性组合：
+
+$$\begin{aligned}
+\vec{e}_t
+&=\vec{s}_t-\hat{\vec{s}}_t^-
+-\mathbf{K}_t(\mathbf{H}\vec{e}_t^-+\vec{w}_t)\\
+&=(\mathbf{I}-\mathbf{K}_t\mathbf{H})\vec{e}_t^-
+-\mathbf{K}_t\vec{w}_t.
+\end{aligned}$$
 
 由于先验误差 $\vec{e}_t^-$ 只依赖历史信息，与本帧白观测噪声 $\vec{w}_t$ 互不相关（$\mathbb{E}[\vec{e}_t^-\vec{w}_t^\top]=\mathbf{0}$），计算外积期望 $\mathbf{P}_t=\mathbb{E}[\vec{e}_t\vec{e}_t^\top]$ 时交叉项严格为零，立刻得到对**任意增益矩阵**都成立的通用 **Joseph 协方差更新式**：
 
 $$\begin{aligned}
 \mathbf{A}_t&=\mathbf{I}-\mathbf{K}_t\mathbf{H},\\
-\mathbf{P}_t&=\mathbf{A}_t\mathbf{P}_t^-\mathbf{A}_t^\top+\mathbf{K}_t\mathbf{R}\mathbf{K}_t^\top.
+\mathbf{P}_t&=\mathbf{A}_t\mathbf{P}_t^-\mathbf{A}_t^\top
++\mathbf{K}_t\mathbf{R}\mathbf{K}_t^\top.
 \end{aligned}\tag{9-8}$$
 
 #### 增益为什么按不确定度加权
@@ -136,11 +154,27 @@ k_*&=\frac{P^-}{P^-+R}.
 
 代回 $P^-=4$、$R=1$，最优权重为 $k_*=4/(4+1)=4/5$，后验方差收缩至 $P^+=(1/5)^2\times 4+(4/5)^2\times 1=4/5$（与 $(1-k_*)P^-$ 一致）：谁的方差更小、确定性更高，更新后均值就更偏向谁；反过来，若观测本身带有未建模的混响固定偏置，盲目把 $R$ 设小反而会把估计强行拉向偏置方向。
 
-把完全相同的求导搬到多维矩阵上：将式(9-8)展开为 $\mathbf{P}_t=\mathbf{P}_t^--\mathbf{K}_t\mathbf{H}\mathbf{P}_t^--\mathbf{P}_t^-\mathbf{H}^\top\mathbf{K}_t^\top+\mathbf{K}_t(\mathbf{H}\mathbf{P}_t^-\mathbf{H}^\top+\mathbf{R})\mathbf{K}_t^\top$，记括号内的新息协方差为 $\mathbf{S}_t=\mathbf{H}\mathbf{P}_t^-\mathbf{H}^\top+\mathbf{R}$。利用矩阵迹求导恒等式 $\frac{\partial}{\partial\mathbf{K}}\operatorname{tr}(\mathbf{K}\mathbf{B})=\mathbf{B}^\top$ 与 $\frac{\partial}{\partial\mathbf{K}}\operatorname{tr}(\mathbf{K}\mathbf{S}\mathbf{K}^\top)=2\mathbf{K}\mathbf{S}$（其中 $\mathbf{P}_t^-$ 与 $\mathbf{S}_t$ 均对称），对 $\mathbf{K}_t$ 求偏导并令梯度为零矩阵：
+把完全相同的求导搬到多维矩阵上：记式(9-4)的新息协方差矩阵为 $\mathbf{S}_t$（等于 $\mathbf{H}\mathbf{P}_t^-\mathbf{H}^\top+\mathbf{R}$），将式(9-8)完整乘开得
 
-$$\frac{\partial\operatorname{tr}(\mathbf{P}_t)}{\partial\mathbf{K}_t}=-2\mathbf{P}_t^-\mathbf{H}^\top+2\mathbf{K}_t\mathbf{S}_t=\mathbf{0}\implies \mathbf{K}_t=\mathbf{P}_t^-\mathbf{H}^\top\mathbf{S}_t^{-1}.$$
+$$\begin{aligned}
+\mathbf{P}_t
+&=\mathbf{P}_t^--\mathbf{K}_t\mathbf{H}\mathbf{P}_t^-
+-\mathbf{P}_t^-\mathbf{H}^\top\mathbf{K}_t^\top
++\mathbf{K}_t\mathbf{S}_t\mathbf{K}_t^\top.
+\end{aligned}$$
 
-这正是第 3 步的最优卡尔曼增益式(9-4)。再把刚证出的最优关系 $\mathbf{K}_t\mathbf{S}_t=\mathbf{P}_t^-\mathbf{H}^\top$ 代回上面展开式的最后一项，有 $\mathbf{K}_t\mathbf{S}_t\mathbf{K}_t^\top=\mathbf{P}_t^-\mathbf{H}^\top\mathbf{K}_t^\top$，恰好与倒数第二项 $-\mathbf{P}_t^-\mathbf{H}^\top\mathbf{K}_t^\top$ 正负相消，只剩下 $\mathbf{P}_t=\mathbf{P}_t^--\mathbf{K}_t\mathbf{H}\mathbf{P}_t^-=(\mathbf{I}-\mathbf{K}_t\mathbf{H})\mathbf{P}_t^-$，即第 5 步的简写式(9-6)。由此可见，简写式(9-6)只有在增益**精确等于**最优卡尔曼增益时才与式(9-8)等价：手算时式(9-6)最省力，但在有限字长浮点运算或对增益做了工程限幅时，$(\mathbf{I}-\mathbf{K}_t\mathbf{H})\mathbf{P}_t^-$ 两个非对称矩阵相乘极易因舍入误差破坏对称性甚至算出负对角方差，而 Joseph 形式式(9-8)显式将两个对称半正定二次型相加，数值稳定性好得多（实现中仍应校验输入协方差的对称半正定性，不能用 Joseph 公式去掩盖非法的负方差输入）。
+利用矩阵迹对 $\mathbf{K}$ 的梯度规则（线性项 $\operatorname{tr}(\mathbf{K}\mathbf{B})$ 的梯度为 $\mathbf{B}^\top$，对称二次项 $\operatorname{tr}(\mathbf{K}\mathbf{S}\mathbf{K}^\top)$ 的梯度为 $2\mathbf{K}\mathbf{S}$，其中 $\mathbf{P}_t^-$ 与 $\mathbf{S}_t$ 均对称），对 $\mathbf{K}_t$ 求偏导并令梯度为零矩阵：
+
+$$\begin{aligned}
+\frac{\partial\operatorname{tr}(\mathbf{P}_t)}{\partial\mathbf{K}_t}
+&=-2\mathbf{P}_t^-\mathbf{H}^\top
++2\mathbf{K}_t\mathbf{S}_t=\mathbf{0},\\
+\mathbf{K}_t&=\mathbf{P}_t^-\mathbf{H}^\top\mathbf{S}_t^{-1}.
+\end{aligned}$$
+
+这正是第 3 步的最优卡尔曼增益式(9-4)。再把刚证出的最优关系 $\mathbf{K}_t\mathbf{S}_t=\mathbf{P}_t^-\mathbf{H}^\top$ 右乘 $\mathbf{K}_t^\top$ 代回上面展开式的末项，恰好与倒数第二项 $-\mathbf{P}_t^-\mathbf{H}^\top\mathbf{K}_t^\top$ 正负相消，只剩下第 5 步的简写式(9-6)（即 $\mathbf{P}_t=\mathbf{A}_t\mathbf{P}_t^-$）。
+
+由此可见，简写式(9-6)只有在增益**精确等于**最优卡尔曼增益时才与式(9-8)等价：手算时式(9-6)最省力，但在有限字长浮点运算或对增益做了工程限幅时，$(\mathbf{I}-\mathbf{K}_t\mathbf{H})\mathbf{P}_t^-$ 两个非对称矩阵相乘极易因舍入误差破坏对称性甚至算出负对角方差，而 Joseph 形式式(9-8)显式将两个对称半正定二次型相加，数值稳定性好得多（实现中仍应校验输入协方差的对称半正定性，不能用 Joseph 公式去掩盖非法的负方差输入）。
 
 #### 新息门控与协方差有效性
 
@@ -160,7 +194,7 @@ p=1:\quad\epsilon_\nu&=\nu_t^2/S_t.
 **输入与模型口径。** 取两分量角运动状态 $\vec{s}_t=[\theta_t,\dot{\theta}_t]^\top$，角度以度（$\mathrm{deg}$）计，角速度以度/帧（$\mathrm{deg/frame}$）计。省略角加速度的常速度模型适合平缓移动阶段；若目标频繁启停或急转，可换用含加速度状态或 §9.2.3 的交互多模型（Interacting Multiple Model，IMM）。给定本步输入参数如下：
 
 - 上一帧后验状态均值：$\hat{\vec{s}}_{t-1}=[30,\ 0.5]^\top$，即估计方位在 $30^\circ$，正以 $0.5^\circ/\mathrm{frame}$ 的角速度向正方向移动；
-- 上一帧后验协方差：$\mathbf{P}_{t-1}=\begin{bmatrix}4&0\\0&0.25\end{bmatrix}$，对应角度标准差 $2^\circ$（方差 $4\ \mathrm{deg}^2$）、角速度标准差 $0.5\ \mathrm{deg/frame}$（方差 $0.25\ (\mathrm{deg/frame})^2$），且初始误差不相关；
+- 上一帧后验协方差：$\mathbf{P}_{t-1}=\operatorname{diag}(4,0.25)$，对应角度标准差 $2^\circ$（方差 $4\ \mathrm{deg}^2$）、角速度标准差 $0.5\ \mathrm{deg/frame}$（方差 $0.25\ (\mathrm{deg/frame})^2$），且初始误差不相关；
 - 状态转移矩阵（步长为 $1$ 帧的匀速外推）：$\mathbf{F}=\begin{bmatrix}1&1\\0&1\end{bmatrix}$，表示 $\theta_t=\theta_{t-1}+1\cdot\dot{\theta}_{t-1}$、$\dot{\theta}_t=\dot{\theta}_{t-1}$；
 - 过程噪声协方差：$\mathbf{Q}=\begin{bmatrix}0.1&0\\0&0.01\end{bmatrix}$，刻画相邻两帧间未建模的微小运动波动，$\mathbf{Q}$ 越大代表运动先验越宽松；
 - 观测模型与本帧读数：定位器只输出标量方位角，故 $\mathbf{H}=[1,\ 0]$；本帧测得 $\theta_t^{\mathrm{obs}}=32^\circ$，标量观测噪声方差 $R=25\ \mathrm{deg}^2$（即 $1\times 1$ 矩阵 $\mathbf{R}=[25]$，对应单帧 DOA 标准差 $5^\circ$，比先验预测粗糙）。
@@ -176,13 +210,16 @@ $$\begin{aligned}
 
 尚未看本帧新观测前，模型外推声源到达 $30.5^\circ$，角速度维持 $0.5^\circ/\mathrm{frame}$。
 
-**第 2 步：协方差预测** $\mathbf{P}_t^-=\mathbf{F}\mathbf{P}_{t-1}\mathbf{F}^\top+\mathbf{Q}$。分两步做矩阵乘法，先算左半部分 $\mathbf{F}\mathbf{P}_{t-1}=\begin{bmatrix}1&1\\0&1\end{bmatrix}\begin{bmatrix}4&0\\0&0.25\end{bmatrix}=\begin{bmatrix}4&0.25\\0&0.25\end{bmatrix}$，再右乘 $\mathbf{F}^\top=\begin{bmatrix}1&0\\1&1\end{bmatrix}$：
+**第 2 步：协方差预测**（按式(9-3)计算 $\mathbf{P}_t^-$）。分两步做矩阵乘法，先算左半部分 $\mathbf{F}\mathbf{P}_{t-1}$ 再右乘 $\mathbf{F}^\top=\begin{bmatrix}1&0\\1&1\end{bmatrix}$：
 
 $$\begin{aligned}
+\mathbf{F}\mathbf{P}_{t-1}
+&=\begin{bmatrix}1&1\\0&1\end{bmatrix}
+\begin{bmatrix}4&0\\0&0.25\end{bmatrix}
+=\begin{bmatrix}4&0.25\\0&0.25\end{bmatrix},\\
 \mathbf{F}\mathbf{P}_{t-1}\mathbf{F}^\top
-&=\begin{bmatrix}4&0.25\\0&0.25\end{bmatrix}\begin{bmatrix}1&0\\1&1\end{bmatrix}\\
-&=\begin{bmatrix}4+0.25&0.25\\0.25&0.25\end{bmatrix}\\
-&=\begin{bmatrix}4.25&0.25\\0.25&0.25\end{bmatrix}.
+&=\begin{bmatrix}4+0.25&0.25\\0.25&0.25\end{bmatrix}
+=\begin{bmatrix}4.25&0.25\\0.25&0.25\end{bmatrix}.
 \end{aligned}$$
 
 可以看到，即便还没加 $\mathbf{Q}$，左上角的角度方差已从 $4$ 涨到 $4.25$，同时非对角元出现了 $+0.25$ 的正相关——这是因为角速度原本存在 $0.25$ 的方差，经过一帧位移外推后，速度估偏多少就会同方向带偏角度预测。接着加上过程噪声 $\mathbf{Q}$：
@@ -195,17 +232,23 @@ $$\begin{aligned}
 
 此时预测角度标准差为 $\sqrt{4.35}\approx 2.09^\circ$。
 
-**第 3 步：计算卡尔曼增益** $\mathbf{K}_t=\mathbf{P}_t^-\mathbf{H}^\top(\mathbf{H}\mathbf{P}_t^-\mathbf{H}^\top+\mathbf{R})^{-1}$。由于 $\mathbf{H}=[1,\ 0]$ 只提取第一维角度，$\mathbf{H}\mathbf{P}_t^-\mathbf{H}^\top$ 直接挑出 $\mathbf{P}_t^-$ 的左上角元素 $4.35$，标量新息方差为
+**第 3 步：计算卡尔曼增益** $\mathbf{K}_t=\mathbf{P}_t^-\mathbf{H}^\top S_t^{-1}$。由于 $\mathbf{H}=[1,\ 0]$ 只提取第一维角度，$\mathbf{H}\mathbf{P}_t^-\mathbf{H}^\top$ 直接挑出 $\mathbf{P}_t^-$ 的左上角元素 $4.35$，标量新息方差为
 
-$$S_t=\mathbf{H}\mathbf{P}_t^-\mathbf{H}^\top+R=4.35+25=29.35\ \mathrm{deg}^2.$$
+$$\begin{aligned}
+S_t&=\mathbf{H}\mathbf{P}_t^-\mathbf{H}^\top+R\\
+&=4.35+25=29.35\ \mathrm{deg}^2.
+\end{aligned}$$
 
-分子 $\mathbf{P}_t^-\mathbf{H}^\top=\begin{bmatrix}4.35&0.25\\0.25&0.26\end{bmatrix}\begin{bmatrix}1\\0\end{bmatrix}=\begin{bmatrix}4.35\\0.25\end{bmatrix}$ 恰好是 $\mathbf{P}_t^-$ 的第一列，除以标量 $S_t$ 得 $2\times 1$ 增益向量：
+分子 $\mathbf{P}_t^-\mathbf{H}^\top=[4.35,\ 0.25]^\top$ 恰好是 $\mathbf{P}_t^-$ 的第一列，除以标量 $S_t$ 得 $2\times 1$ 增益向量：
 
-$$\mathbf{K}_t=\frac{1}{29.35}\begin{bmatrix}4.35\\0.25\end{bmatrix}\approx\begin{bmatrix}0.148\\0.0085\end{bmatrix}.$$
+$$\begin{aligned}
+\mathbf{K}_t&=\frac{1}{29.35}\begin{bmatrix}4.35\\0.25\end{bmatrix}
+\approx\begin{bmatrix}0.148\\0.0085\end{bmatrix}.
+\end{aligned}$$
 
 更精细的中间商依次为 $K_1\approx 0.148211$ 与 $K_2\approx 0.008518$（上式仅作展示舍入）。这里两个分量各有清晰的物理含义：$K_1\approx 0.148$ 表明，由于单帧观测噪声方差（$25$）远大于预测角度方差（$4.35$），角度更新只采纳本帧新息的约 $14.8\%$；而定位器虽然根本没测角速度，但由于第 2 步预测协方差的非对角项 $P_{21}^-=0.25>0$ 建立了角度误差与速度误差的耦合，正的角度残差同样顺带把角速度往上微调了 $K_2\approx 0.0085\ (\mathrm{frame})^{-1}$。
 
-**第 4 步：状态更新** $\hat{\vec{s}}_t=\hat{\vec{s}}_t^-+\mathbf{K}_t\nu_t$。本帧角度新息 $\nu_t=\theta_t^{\mathrm{obs}}-\mathbf{H}\hat{\vec{s}}_t^-=32^\circ-30.5^\circ=1.5^\circ$ 未跨越 $\pm 180^\circ$ 边界，保留精确分数增益代入得
+**第 4 步：状态更新** $\hat{\vec{s}}_t=\hat{\vec{s}}_t^-+\mathbf{K}_t\nu_t$。本帧角度新息为 $\nu_t=32^\circ-30.5^\circ=1.5^\circ$（即 $\theta_t^{\mathrm{obs}}-\mathbf{H}\hat{\vec{s}}_t^-$，未跨越 $\pm 180^\circ$ 边界），保留精确分数增益代入得
 
 $$\begin{aligned}
 \hat{\vec{s}}_t&=\begin{bmatrix}30.5\\0.5\end{bmatrix}
@@ -215,13 +258,14 @@ $$\begin{aligned}
 
 更新后方位角为 $30.72^\circ$（落在预测值 $30.5^\circ$ 与粗糙观测值 $32^\circ$ 之间，且明显偏向更可信的预测一侧），角速度同步微调至 $0.513^\circ/\mathrm{frame}$。
 
-**第 5 步：协方差更新** $\mathbf{P}_t=(\mathbf{I}-\mathbf{K}_t\mathbf{H})\mathbf{P}_t^-$。手算时务必代入未舍入的精确分数增益 $\mathbf{K}_t=[4.35,\ 0.25]^\top/29.35$（若中途拿两位或三位展示小数回代，不仅末位失真，还可能使算出的上下三角非对角元不相等）：
-
-$$\mathbf{I}-\mathbf{K}_t\mathbf{H}=\begin{bmatrix}1-4.35/29.35&0\\-0.25/29.35&1\end{bmatrix}=\begin{bmatrix}25/29.35&0\\-0.25/29.35&1\end{bmatrix},$$
+**第 5 步：协方差更新**（按式(9-6)计算 $\mathbf{P}_t$）。手算时务必代入未舍入的精确分数增益 $\mathbf{K}_t=[4.35,\ 0.25]^\top/29.35$（若中途拿两位或三位展示小数回代，不仅末位失真，还可能使算出的上下三角非对角元不相等）：
 
 $$\begin{aligned}
-\mathbf{P}_t&=(\mathbf{I}-\mathbf{K}_t\mathbf{H})\mathbf{P}_t^-\\
-&\approx\begin{bmatrix}3.705&0.213\\0.213&0.258\end{bmatrix}.
+\mathbf{I}-\mathbf{K}_t\mathbf{H}
+&=\begin{bmatrix}1-4.35/29.35&0\\-0.25/29.35&1\end{bmatrix}
+=\begin{bmatrix}25/29.35&0\\-0.25/29.35&1\end{bmatrix},\\
+\mathbf{P}_t&=(\mathbf{I}-\mathbf{K}_t\mathbf{H})\mathbf{P}_t^-
+\approx\begin{bmatrix}3.705&0.213\\0.213&0.258\end{bmatrix}.
 \end{aligned}$$
 
 逐项核对精确分数：$P_{11}=25\times 4.35/29.35\approx 3.705281$，$P_{12}=P_{21}=25\times 0.25/29.35\approx 0.212947$，$P_{22}=0.26-0.25^2/29.35\approx 0.257871$，全部算完后再统一保留三位小数（若中途把 $25/29.35\approx 0.8518$ 粗略截成 $0.852$，则会算成 $0.852\times 4.35=3.7062$，末位偏差一目了然）。
@@ -262,17 +306,26 @@ $$\begin{aligned}
 
 当状态取平面位置与速度 $\vec{s}=[x,y,\dot{x},\dot{y}]^\top$、阵列几何中心位于 $(x_0,y_0)$ 时，令相对位移为 $a=x-x_0$、$b=y-y_0$，水平距离平方为 $r^2=a^2+b^2>0$。沿用本书“$+y$ 轴为 $0\ \mathrm{rad}$、向 $+x$ 轴顺时针为正”的方位角约定，以弧度输出的非线性观测函数为 $h(\vec{s})=\operatorname{atan2}(a,b)$。
 
-我们来一步步算出 $h(\vec{s})$ 对状态各分量的偏导数，切勿直接盲抄教科书极角公式。在 $b\neq 0$ 的局部扇区内，$\theta=\operatorname{atan2}(a,b)$ 满足 $\tan\theta=a/b$。利用反正切导数 $\frac{\mathrm{d}}{\mathrm{d}u}\arctan(u)=\frac{1}{1+u^2}$ 并令中间变量 $u=a/b$，按复合函数链式法则分别对 $x$（即对 $a$）和对 $y$（即对 $b$）求偏导：
+我们来一步步算出 $h(\vec{s})$ 对状态各分量的偏导数，切勿直接盲抄教科书极角公式。在 $b\neq 0$ 的局部扇区内，$\theta=\operatorname{atan2}(a,b)$ 满足 $\tan\theta=a/b$。利用反正切导数 $(\arctan u)'=(1+u^2)^{-1}$ 并令中间变量 $u=a/b$，按复合函数链式法则分别对 $x$（即对 $a$）和对 $y$（即对 $b$）求偏导：
 
-$$\frac{\partial h}{\partial x}=\frac{1}{1+(a/b)^2}\cdot\frac{\partial(a/b)}{\partial a}=\frac{b^2}{a^2+b^2}\cdot\frac{1}{b}=+\frac{b}{r^2},$$
-
-$$\frac{\partial h}{\partial y}=\frac{1}{1+(a/b)^2}\cdot\frac{\partial(a/b)}{\partial b}=\frac{b^2}{a^2+b^2}\cdot\left(-\frac{a}{b^2}\right)=-\frac{a}{r^2}.$$
+$$\begin{aligned}
+\frac{\partial h}{\partial x}
+&=\frac{1}{1+(a/b)^2}\cdot\frac{\partial(a/b)}{\partial a}
+=\frac{b^2}{a^2+b^2}\cdot\frac{1}{b}=+\frac{b}{r^2},\\
+\frac{\partial h}{\partial y}
+&=\frac{1}{1+(a/b)^2}\cdot\frac{\partial(a/b)}{\partial b}
+=\frac{b^2}{a^2+b^2}\cdot\left(-\frac{a}{b^2}\right)
+=-\frac{a}{r^2}.
+\end{aligned}$$
 
 对恒等式 $a=r\sin\theta$、$b=r\cos\theta$ 两边取全微分（$b\,\mathrm{d}a-a\,\mathrm{d}b=r^2\,\mathrm{d}\theta$）可以验证，上述两个偏导在 $b=0,r>0$ 处同样光滑成立；观测函数不含速度项，故对 $\dot{x},\dot{y}$ 的偏导均为 $0$。在先验预测状态 $\hat{\vec{s}}_t^-$ 处求值，得到 EKF 一步更新所需的 $1\times 4$ 观测雅可比矩阵与环绕新息：
 
 $$\begin{aligned}
-\mathbf{H}_t&=\left.\frac{\partial h}{\partial\vec{s}}\right|_{\hat{\vec{s}}_t^-}=\begin{bmatrix}b/r^2&-a/r^2&0&0\end{bmatrix},\\
-\nu_t&=\operatorname{wrap}_{\pi}\!\left(z_t-h(\hat{\vec{s}}_t^-)\right).
+\mathbf{H}_t
+&=\nabla_{\vec{s}}h(\hat{\vec{s}}_t^-)
+=\begin{bmatrix}b/r^2&-a/r^2&0&0\end{bmatrix},\\
+\nu_t
+&=\operatorname{wrap}_{\pi}\!\bigl(z_t-h(\hat{\vec{s}}_t^-)\bigr).
 \end{aligned}\tag{9-12}$$
 
 这里务必留意**正负号与参数次序**：标准数学极角 $\varphi=\operatorname{atan2}(y-y_0,x-x_0)$ 的位置偏导是 $[-b/r^2,\ +a/r^2]$，与本书式(9-12)的 $[+b/r^2,\ -a/r^2]$ **符号恰好全反**！先做个物理方向自检：设声源在正前方偏右 $(a,b)=(1\ \mathrm{m},2\ \mathrm{m})$ 处（$r^2=5\ \mathrm{m}^2$），向右微移 $\Delta x>0$ 会使顺时针方位角变大，故 $\partial h/\partial x=+2/5=+0.4\ \mathrm{rad/m}>0$；向前远离 $\Delta y>0$ 会使方位角向 $0^\circ$ 回缩，故 $\partial h/\partial y=-1/5=-0.2\ \mathrm{rad/m}<0$，与直觉严丝合缝（完整一步 EKF 数值复算见练习 [E09-10](#e09-10)）。若代码在 `atan2` 用了本书约定，雅可比却抄成数学极角符号，卡尔曼增益将把位置往反方向推导致发散。
@@ -285,28 +338,40 @@ $$\begin{aligned}
 
 $$\begin{aligned}
 \vec{\chi}_0&=\vec{m},\\
-\vec{\chi}_i&=\vec{m}+\vec{A}_i,\quad \vec{\chi}_{i+L}=\vec{m}-\vec{A}_i,\\
-W_0^{(m)}&=\frac{\lambda}{L+\lambda},\quad W_0^{(c)}=W_0^{(m)}+1-\alpha^2+\beta,\\
+\vec{\chi}_i&=\vec{m}+\vec{A}_i,\qquad
+\vec{\chi}_{i+L}=\vec{m}-\vec{A}_i,\\
+W_0^{(m)}&=\frac{\lambda}{L+\lambda},\qquad
+W_0^{(c)}=W_0^{(m)}+1-\alpha^2+\beta,\\
 W_i^{(m)}&=W_i^{(c)}=\frac{1}{2(L+\lambda)}.
 \end{aligned}\tag{9-13}$$
 
 其中 $\alpha$（常取 $10^{-3}$～$1$）与 $\kappa$ 控制 Sigma 点离中心 $\vec{m}$ 的张开半径，$\beta$ 用于补偿高阶矩（高斯先验下常取 $\beta=2$）；注意当 $\lambda<0$ 时中心权重 $W_0^{(m)}<0$，说明 Sigma 点是一组代数求积节点而非非负概率粒子。我们可以两步验证这组点确实严丝合缝地还原了先验前两阶矩：
 
-1. **还原先验均值**：全部均值权重之和为 $W_0^{(m)}+2L\cdot\frac{1}{2(L+\lambda)}=\frac{\lambda+L}{L+\lambda}=1$，且第 $i$ 点与第 $i+L$ 点的对称偏移 $+\vec{A}_i$ 与 $-\vec{A}_i$ 等权相消，故 $\sum_{i=0}^{2L}W_i^{(m)}\vec{\chi}_i=\vec{m}$。
-2. **还原先验协方差**：中心点偏差 $\vec{\chi}_0-\vec{m}=\vec{0}$（无论 $W_0^{(c)}$ 取何值均不贡献零阶外积），其余 $L$ 对正负对称点的加权外积和为 $\sum_{i=1}^L\frac{1}{2(L+\lambda)}\bigl[\vec{A}_i\vec{A}_i^\top+(-\vec{A}_i)(-\vec{A}_i)^\top\bigr]=\frac{1}{L+\lambda}\sum_{i=1}^L\vec{A}_i\vec{A}_i^\top=\frac{1}{L+\lambda}\mathbf{A}\mathbf{A}^\top=\mathbf{P}$。
+1. **还原先验均值**：全部均值权重之和为 $W_0^{(m)}+2L/[2(L+\lambda)]=(\lambda+L)/(L+\lambda)=1$，且第 $i$ 点与第 $i+L$ 点的对称偏移 $+\vec{A}_i$ 与 $-\vec{A}_i$ 等权相消，故 $\sum_{i=0}^{2L}W_i^{(m)}\vec{\chi}_i=\vec{m}$。
+2. **还原先验协方差**：中心点偏差 $\vec{\chi}_0-\vec{m}=\vec{0}$（无论 $W_0^{(c)}$ 取何值均不贡献零阶外积），而每对对称偏移 $+\vec{A}_i$ 与 $-\vec{A}_i$ 的外积同为 $\vec{A}_i\vec{A}_i^\top$（相加得 $2\vec{A}_i\vec{A}_i^\top$），故其余 $L$ 对点的加权外积和为
+
+    $$\begin{aligned}
+    \sum_{i=1}^L\frac{2\vec{A}_i\vec{A}_i^\top}{2(L+\lambda)}
+    &=\frac{1}{L+\lambda}\mathbf{A}\mathbf{A}^\top=\mathbf{P}.
+    \end{aligned}$$
 
 把每个 Sigma 点直接送入非线性观测函数得到 $\vec{y}_i=h(\vec{\chi}_i)$。对普通欧氏向量观测，变换后的预测观测均值、无噪观测协方差及状态—观测互协方差由同一组权重汇总：
 
 $$\begin{aligned}
 \bar{\vec{y}}&=\sum_{i=0}^{2L} W_i^{(m)}\vec{y}_i,\\
-\delta\vec{y}_i&=\vec{y}_i-\bar{\vec{y}},\quad\delta\vec{s}_i=\vec{\chi}_i-\vec{m},\\
-\mathbf{S}_y&=\sum_{i=0}^{2L} W_i^{(c)}\delta\vec{y}_i\delta\vec{y}_i^\top,\\
-\mathbf{P}_{sy}&=\sum_{i=0}^{2L} W_i^{(c)}\delta\vec{s}_i\delta\vec{y}_i^\top.
+\delta\vec{y}_i&=\vec{y}_i-\bar{\vec{y}},\qquad
+\delta\vec{s}_i=\vec{\chi}_i-\vec{m},\\
+\mathbf{S}_y&=\sum_{i=0}^{2L}
+W_i^{(c)}\delta\vec{y}_i\delta\vec{y}_i^\top,\\
+\mathbf{P}_{sy}&=\sum_{i=0}^{2L}
+W_i^{(c)}\delta\vec{s}_i\delta\vec{y}_i^\top.
 \end{aligned}\tag{9-14}$$
 
-随后加上加性观测噪声协方差得到 $\mathbf{S}=\mathbf{S}_y+\mathbf{R}$，令增益 $\mathbf{K}=\mathbf{P}_{sy}\mathbf{S}^{-1}$，即可按 $\vec{m}^+=\vec{m}+\mathbf{K}(\vec{z}-\bar{\vec{y}})$ 与 $\mathbf{P}^+=\mathbf{P}-\mathbf{K}\mathbf{S}\mathbf{K}^\top$ 完成测量更新。
+随后加上加性观测噪声协方差得到 $\mathbf{S}=\mathbf{S}_y+\mathbf{R}$，令增益 $\mathbf{K}=\mathbf{P}_{sy}\mathbf{S}^{-1}$，即可更新均值 $\vec{m}^+=\vec{m}+\mathbf{K}(\vec{z}-\bar{\vec{y}})$，并从先验 $\mathbf{P}$ 中减去 $\mathbf{K}\mathbf{S}\mathbf{K}^\top$ 得到后验协方差 $\mathbf{P}^+$。
 
-当观测量是圆周方位角 $y_i=h(\vec{\chi}_i)\in[-\pi,\pi)$ 时，式(9-14)第一行绝不能直接对 $y_i$ 做线性加权（否则 $+179^\circ$ 与 $-179^\circ$ 会算术平均到完全背离的 $0^\circ$）。工程上有两种稳健的圆周适配做法：若全部权重非负且方向集中，可按后文式(9-19)对单位相量 $(\cos y_i,\sin y_i)$ 求加权合向量方向；而在缩放 UT 出现负中心权重 $W_0^{(m)}<0$ 时（负权重可能导致合向量反向），更通用的做法是以中心点预测角 $y_0=h(\vec{\chi}_0)$ 为局部切空间锚点，先把其余各点做最短角展开 $\tilde{y}_i=y_0+\operatorname{wrap}_\pi(y_i-y_0)$，求得局部加权均值后再环绕回主值区间 $\bar{y}=\operatorname{wrap}_\pi\bigl(\sum_{i=0}^{2L}W_i^{(m)}\tilde{y}_i\bigr)$，并将式(9-14)中的观测残差统一替换为 $\delta y_i=\operatorname{wrap}_\pi(y_i-\bar{y})$。练习 [E09-11](#e09-11) 用平方观测 $h(x)=x^2$ 对比了 UT 与 EKF：UT 能够精确捕获 EKF 因导数为零而彻底漏掉的二阶方差项，但当真实后验呈正负对称双峰时，单高斯均值更新依然存在固有可辨识性边界（理论详见 [Julier 与 Uhlmann 2004](https://doi.org/10.1109/JPROC.2003.823141)）。
+当观测量是圆周方位角 $y_i=h(\vec{\chi}_i)\in[-\pi,\pi)$ 时，式(9-14)第一行绝不能直接对 $y_i$ 做线性加权（否则 $+179^\circ$ 与 $-179^\circ$ 会算术平均到完全背离的 $0^\circ$）。工程上有两种稳健的圆周适配做法：若全部权重非负且方向集中，可按后文式(9-19)对单位相量 $(\cos y_i,\sin y_i)$ 求加权合向量方向。
+
+而在缩放 UT 出现负中心权重 $W_0^{(m)}<0$ 时（负权重可能导致合向量反向），更通用的做法是以中心点预测角 $y_0=h(\vec{\chi}_0)$ 为局部切空间锚点，先把其余各点做最短角展开 $\tilde{y}_i=y_0+\operatorname{wrap}_\pi(y_i-y_0)$，求得局部加权和 $\tilde{y}_*=\sum_{i=0}^{2L}W_i^{(m)}\tilde{y}_i$ 后再环绕回主值区间 $\bar{y}=\operatorname{wrap}_\pi(\tilde{y}_*)$，并将式(9-14)中的观测残差统一替换为 $\delta y_i=\operatorname{wrap}_\pi(y_i-\bar{y})$。练习 [E09-11](#e09-11) 用平方观测 $h(x)=x^2$ 对比了 UT 与 EKF：UT 能够精确捕获 EKF 因导数为零而彻底漏掉的二阶方差项，但当真实后验呈正负对称双峰时，单高斯均值更新依然存在固有可辨识性边界（理论详见 [Julier 与 Uhlmann 2004](https://doi.org/10.1109/JPROC.2003.823141)）。
 
 #### IMM：先交互，再预测与更新
 
@@ -344,7 +409,7 @@ $$\mu_j^+=\frac{c_jL_j}{\sum_k c_kL_k}.\tag{9-16}$$
 球面几何有两处极易踩错的陷阱：
 
 1. **天顶与天底极点奇异性**：当声源位于正上方天顶（$\phi_{\mathrm{el}}=+90^\circ$）或正下方天底时，无论 $\theta$ 取何值，三维指向声源的单位向量都固定为 $[0,0,\pm 1]^\top$。此时三维单位向量依然良定且连续，而方位角 $\theta$ 本身失去定义——绝不能在极点附近拿两个受微弱噪声扰动跳变的 $\operatorname{atan2}$ 角度做算术平均。
-2. **球面立体角测度与均匀性**：在等步长 $(\theta,\phi_{\mathrm{el}})$ 经纬网格上，靠近极点的高俯仰网格对应的实际球面面积按 $\cos\phi_{\mathrm{el}}$ 急剧收缩；若给每个经纬网格赋相等先验权重，实质上是把概率人为堆积到了两极。定义在二维单位球面 $\mathbb{S}^2$ 立体角面积元上的 **von Mises–Fisher（vMF）分布** $f(\vec{u};\vec{\mu}_{\mathrm{vMF}},\kappa_{\mathrm{vMF}})\propto\exp(\kappa_{\mathrm{vMF}}\vec{\mu}_{\mathrm{vMF}}^\top\vec{u})$ 彻底消除了经纬坐标奇点：集中方向 $\vec{\mu}_{\mathrm{vMF}}$ 为单位向量，集中度 $\kappa_{\mathrm{vMF}}\ge 0$ 越大分布越尖锐（$\kappa_{\mathrm{vMF}}=0$ 退化为球面严格均匀分布，但一般有限 $\kappa_{\mathrm{vMF}}$ 不能简单等同于欧氏角方差的精确倒数）。
+2. **球面立体角测度与均匀性**：在等步长 $(\theta,\phi_{\mathrm{el}})$ 经纬网格上，靠近极点的高俯仰网格对应的实际球面面积按 $\cos\phi_{\mathrm{el}}$ 急剧收缩；若给每个经纬网格赋相等先验权重，实质上是把概率人为堆积到了两极。定义在二维单位球面 $\mathbb{S}^2$ 立体角面积元上的 **von Mises–Fisher（vMF）分布**满足密度正比于指数核 $\exp(k\,\vec{m}^\top\vec{u})$，彻底消除了经纬坐标奇点：集中方向 $\vec{m}=\vec{\mu}_{\mathrm{vMF}}$ 为单位向量，集中度 $k=\kappa_{\mathrm{vMF}}\ge 0$ 越大分布越尖锐（$k=0$ 退化为球面严格均匀分布，但一般有限 $k$ 不能简单等同于欧氏角方差的精确倒数）。
 
 球面声源滤波的完整 vMF 密度、右手姿态旋转与位置条件化自然参数加法可参见 [Traa 与 Smaragdis 2014（MLSP 作者稿 §2 与 §4.2）](https://www.mit.edu/~paris/pubs/traa-mlsp2014.pdf)；本章练习 [E09-26](#e09-26) 手算核对了阵列—世界姿态转换、向量归一化对切平面协方差的一阶投影以及单步球面 vMF 贝叶斯更新。
 
@@ -375,8 +440,8 @@ $$\begin{aligned}
 **第 1 步：计算未归一化似然权重。** 由于各粒子先验权重均为 $1/10$，且高斯似然前置常数 $(2\pi\sigma^2)^{-1/2}$ 对所有粒子相同，二者在下一步相除归一化时会完全约去，故可直接取指数核计算相对权重 $w_i$：
 
 $$\begin{aligned}
-w_i&=\exp\!\left(-\frac{(x_i-\theta^{\mathrm{obs}})^2}{2\sigma^2}\right)\\
-&=\exp\!\left(-\frac{(x_i-31)^2}{50}\right).
+w_i&=\exp\!\bigl(-(x_i-\theta^{\mathrm{obs}})^2/(2\sigma^2)\bigr)\\
+&=\exp\!\bigl(-(x_i-31)^2/50\bigr).
 \end{aligned}$$
 
 逐一列出各粒子偏离观测的平方差与指数值（保留四位小数）：
@@ -426,7 +491,11 @@ $$N_{\mathrm{eff}}=\frac{1}{\sum_i\tilde{w}_i^2}.\tag{9-18}$$
 
 代入上表十个归一化权重的平方和 $\sum_{i=1}^{10}\tilde{w}_i^2\approx 0.1101$，得
 
-$$N_{\mathrm{eff}}=\frac{1}{\sum_{i=1}^{10}\tilde{w}_i^2}\approx\frac{1}{0.1101}\approx 9.08.$$
+$$\begin{aligned}
+N_{\mathrm{eff}}
+&=\frac{1}{\sum_{i=1}^{10}\tilde{w}_i^2}
+\approx\frac{1}{0.1101}\approx 9.08.
+\end{aligned}$$
 
 检查两个极端边界即可看懂式(9-18)：当 $N$ 个粒子完全等权（$\tilde{w}_i=1/N$）时，$\sum_i\tilde{w}_i^2=N\cdot(1/N^2)=1/N$，故 $N_{\mathrm{eff}}=N=10$ 达到最大值；当某个粒子独占权重 $1$、其余全为 $0$ 时，$N_{\mathrm{eff}}=1$ 退化至单点。实用系统通常在 $N_{\mathrm{eff}}<N_{\mathrm{th}}$（常取阈值 $N_{\mathrm{th}}=N/2$）时才按需触发重采样，以减少不必要的蒙特卡洛方差与样本贫化。
 
@@ -434,7 +503,8 @@ $$N_{\mathrm{eff}}=\frac{1}{\sum_{i=1}^{10}\tilde{w}_i^2}\approx\frac{1}{0.1101}
 
 $$\begin{aligned}
 \hat{\theta}&=\sum_{i=1}^{10}\tilde{w}_i\,x_i\\
-&=0.0621\times 25+0.0927\times 27+0.1066\times 28+0.1251\times 30+\cdots+0.0253\times 40\\
+&=0.0621\times 25+0.0927\times 27+0.1066\times 28\\
+&\quad+0.1251\times 30+\cdots+0.0253\times 40\\
 &\approx 30.65^\circ.
 \end{aligned}$$
 
@@ -514,7 +584,9 @@ S&=\sum_i w_i\sin\phi_i,\\
 
 #### 9.3.2 三帧关联手算与方法概览
 
-**三帧关联辅助算例。** 先用一组最小数字手算看清数据关联的核心矛盾。设两条匀速轨迹在 $t=1,2,3$ 三帧的先验预测方位依次为轨迹 A：$20^\circ,30^\circ,40^\circ$，轨迹 B：$60^\circ,50^\circ,40^\circ$；定位器在三帧给出的观测集合依次为 $Z_1=\{22^\circ,58^\circ\}$、$Z_2=\{15^\circ,31^\circ,48^\circ\}$、$Z_3=\{39^\circ,41^\circ\}$。为聚焦关联计算，设每条轨迹预测观测残差独立服从零均值高斯分布、标准差均为 $\sigma=3^\circ$（即新息方差 $S=\sigma^2=9\ \mathrm{deg}^2$；完整 KF 中 $S$ 由预测方差与测量方差相加得到）。
+**三帧关联辅助算例。** 先用一组最小数字手算看清数据关联的核心矛盾。设两条匀速轨迹在 $t=1,2,3$ 三帧的先验预测方位依次为轨迹 A：$20^\circ,30^\circ,40^\circ$，轨迹 B：$60^\circ,50^\circ,40^\circ$。定位器在三帧给出的观测集合依次为 $Z_1=\{22^\circ,58^\circ\}$、$Z_2=\{15^\circ,31^\circ,48^\circ\}$、$Z_3=\{39^\circ,41^\circ\}$。
+
+为聚焦关联计算，设每条轨迹预测观测残差独立服从零均值高斯分布、标准差均为 $\sigma=3^\circ$（即新息方差 $S=\sigma^2=9\ \mathrm{deg}^2$；完整 KF 中 $S$ 由预测方差与测量方差相加得到）。
 
 先看假定无漏检、无杂波且全局关联先验等权的第 1 帧与第 3 帧：
 
@@ -522,10 +594,11 @@ S&=\sum_i w_i\sin\phi_i,\\
 - **第 3 帧（轨迹恰好交叉）**：两条轨迹预测同为 $40^\circ$，“A 配 $39^\circ$、B 配 $41^\circ$”与“A 配 $41^\circ$、B 配 $39^\circ$”的残差平方和均为 $(-1)^2+1^2=2$，联合似然同为 $e^{-2/18}\approx 0.895$。归一化后两个全局事件后验概率各占 $0.5$，边缘化到单条轨迹上，A 关联 $39^\circ$ 或 $41^\circ$ 的概率也完全对半——单靠这一帧几何角度已无法区分两人是谁。
 - **第 2 帧（混入杂波假峰 $15^\circ$）**：观测数多于轨迹数，若只算最近两对残差 $(1^2+(-2)^2)/18=5/18\approx 0.278$ 无法回答“$15^\circ$ 有多大可能是杂波、又有多少可能是某条轨迹漏检而另一条偏出来的”。要算出严格后验，必须显式引入检测概率 $p_D$ 与空间杂波强度 $\kappa$。
 
-为把第 2 帧完整算透，给定每条轨迹的检测概率 $p_D=0.9$，泊松（Poisson）杂波在各观测处的空间强度均为 $\kappa=0.01\ \mathrm{deg}^{-1}$，高斯角度似然密度为 $g(z\mid\theta)=\frac{1}{3\sqrt{2\pi}}\exp\bigl[-(z-\theta)^2/18\bigr]\ \mathrm{deg}^{-1}$。记 $A$ 为满足“每条轨迹至多配一个观测、每个观测至多配一条轨迹”的一对一关联子集，$d=|A|\in\{0,1,2\}$ 为该事件下被检出的轨迹条数，未被占用的其余观测均归入泊松杂波。消去所有事件共有的全体杂波乘积因子 $\prod_{z\in Z_2}\kappa(z)$ 后，事件 $A$ 的相对似然权重 $L(A)$ 与后验概率为
+为把第 2 帧完整算透，给定每条轨迹的检测概率 $p_D=0.9$，泊松（Poisson）杂波在各观测处的空间强度均为 $\kappa=0.01\ \mathrm{deg}^{-1}$，高斯角度似然密度 $g(z\mid\theta)$ 为 $(3\sqrt{2\pi})^{-1}\exp[-(z-\theta)^2/18]$（单位：$\mathrm{deg}^{-1}$）。记 $A$ 为满足“每条轨迹至多配一个观测、每个观测至多配一条轨迹”的一对一关联子集，$d=|A|\in\{0,1,2\}$ 为该事件下被检出的轨迹条数，未被占用的其余观测均归入泊松杂波。消去所有事件共有的全体杂波乘积因子 $\prod_{z\in Z_2}\kappa(z)$ 后，事件 $A$ 的相对似然权重 $L(A)$ 与后验概率为
 
 $$\begin{aligned}
-L(A)&=p_D^d(1-p_D)^{2-d}\prod_{(i,j)\in A}\frac{g(z_j\mid\theta_i)}{\kappa(z_j)},\\
+L(A)&=p_D^d(1-p_D)^{2-d}
+\prod_{(i,j)\in A}\frac{g(z_j\mid\theta_i)}{\kappa(z_j)},\\
 \Pr(A\mid Z)&=\frac{L(A)}{\sum_{A'}L(A')}.
 \end{aligned}\tag{9-20}$$
 
@@ -542,7 +615,8 @@ L(A)&=p_D^d(1-p_D)^{2-d}\prod_{(i,j)\in A}\frac{g(z_j\mid\theta_i)}{\kappa(z_j)}
 $$\begin{aligned}
 \bar{\vec{m}}&=\sum_j\beta_j\vec{m}_j,\\
 \vec{\delta}_j&=\vec{m}_j-\bar{\vec{m}},\\
-\bar{\mathbf{P}}&=\sum_j\beta_j\left(\mathbf{P}_j+\vec{\delta}_j\vec{\delta}_j^\top\right).
+\bar{\mathbf{P}}&=\sum_j\beta_j
+\bigl(\mathbf{P}_j+\vec{\delta}_j\vec{\delta}_j^\top\bigr).
 \end{aligned}\tag{9-21}$$
 
 与 IMM 交互式(9-15)同理，$\bar{\mathbf{P}}$ 除了加权平均各条件下的滤波协方差 $\mathbf{P}_j$，还多出一项正半定的**关联不确定度扩散项** $\sum_j\beta_j\vec{\delta}_j\vec{\delta}_j^\top$：当两条相近观测各占一半概率时，若偷懒先把两个观测算术平均成一个伪观测再跑一次普通 KF，均值虽一样，协方差却会漏掉“根本拿不准哪条观测才是真的”这笔分歧账（练习 [E09-13](#e09-13) 手算展示了条件方差 $0.8$、真实混合方差涨至 $3.36$ 的显著对比；组合新息等价写法详见 [Fortmann、Bar-Shalom 与 Scheffe 1983 JPDA 原文 §II 式(2.11)–(2.13)](https://doi.org/10.1109/JOE.1983.1145560)）。也正因每帧都把多假设强行压回单高斯，当两人交叉并行时，两条轨迹会因共享中间观测而相互吸引靠拢（即轨迹合并现象，track coalescence），单靠软关联并不能保住说话人身份。
@@ -552,7 +626,7 @@ $$\begin{aligned}
 针对第 3 帧交叉时的身份歧义，不同方法给出了各自的破局思路：
 
 - **多假设跟踪（MHT）**：不急于在第 3 帧当场合并，而是把“顺接”和“交换”两棵全局历史分支同时留在假设树里，等第 4、5 帧两人重新分开后，再凭后续观测与速度连续性的累计似然剪掉错误分支（奠基框架见 [Reid 1979 MHT 原始论文](https://doi.org/10.1109/TAC.1979.1102177)）。当然，若两人交叉后双双停步或转身折返使运动学完全对称，没有声纹等外观特征辅助，保留再长的历史也无法区分身份。
-- **标签多伯努利（Labeled Multi-Bernoulli，LMB）与 δ-GLMB**：在随机有限集框架下显式补齐轨迹身份。一个 **LMB 随机有限集**用一组相互独立的带标签伯努利分量参数化多目标后验分布，记为 $\bigl\{\bigl(r^{(i)},\ p^{(i)}(x),\ \ell^{(i)}\bigr)\bigr\}_{i=1}^{M}$：其中 $\ell^{(i)}=(t_b,k)$ 是目标新生时刻 $t_b$ 赋予的唯一不可变标签，随该轨迹跨帧传递；标量 $r^{(i)}\in[0,1]$ 是轨迹 $\ell^{(i)}$ 真实存在的概率（单分量空观测更新手算见练习 [E09-22](#e09-22)）；$p^{(i)}(x)$ 是在该目标存在条件下关于状态 $x$（如方位与角速度）的概率密度函数（满足 $\int p^{(i)}(x)\,\mathrm{d}x=1$）。与只维护一条无名总强度曲线的 PHD 不同，LMB 中期望目标数为 $\sum_{i=1}^M r^{(i)}$，工程上提取 $r^{(i)}$ 高于确认门限的分量即可直接输出带持续标签 $\ell^{(i)}$ 的轨迹；δ-GLMB 则在更新步完整保留多关联历史假设的精确加权和，LMB 可视为每次更新后按标签边缘化回单伯努利分量的高效率近似。
+- **标签多伯努利（Labeled Multi-Bernoulli，LMB）与 δ-GLMB**：在随机有限集框架下显式补齐轨迹身份。一个 **LMB 随机有限集**用一组相互独立的带标签伯努利分量参数化多目标后验分布，记为 $\{(r^{(i)},p^{(i)}(x),\ell^{(i)})\}_{i=1}^{M}$：其中 $\ell^{(i)}=(t_b,k)$ 是目标新生时刻 $t_b$ 赋予的唯一不可变标签，随该轨迹跨帧传递；标量 $r^{(i)}\in[0,1]$ 是轨迹 $\ell^{(i)}$ 真实存在的概率（单分量空观测更新手算见练习 [E09-22](#e09-22)）；$p^{(i)}(x)$ 是在该目标存在条件下关于状态 $x$（如方位与角速度）的概率密度函数（满足 $\int p^{(i)}(x)\,\mathrm{d}x=1$）。与只维护一条无名总强度曲线的 PHD 不同，LMB 中期望目标数为 $\sum_{i=1}^M r^{(i)}$，工程上提取 $r^{(i)}$ 高于确认门限的分量即可直接输出带持续标签 $\ell^{(i)}$ 的轨迹；δ-GLMB 则在更新步完整保留多关联历史假设的精确加权和，LMB 可视为每次更新后按标签边缘化回单伯努利分量的高效率近似。
 - **检测前追踪（TBD）与 ACCDOA 输出表示**：TBD 不对 SRP-PHAT 空间谱或神经网络定位谱做硬阈值寻峰，而是直接把整幅角度谱送入贝叶斯递推，让连续多帧微弱但方向一致的语音尾音得以累积浮现。工程接入 TBD 前必须在独立验证集上完成“谱幅/网络打分 $\to$ 观测似然比”的概率校准（含温度缩放、角度网格分辨率与信噪比/混响匹配），因为分类网络的 `softmax` 只在当帧类别间强行归一为 $1$，无人说话时纯背景噪声同样会分出总和为 $1$ 的分数，绝不能未经校准直接充当似然 $g(z\mid x)$。同理，第 4 章介绍的活动耦合笛卡尔 DOA（Activity-Coupled Cartesian DOA，ACCDOA）把单位圆内向量的方向编码为 DOA、模长编码为发声活动度，它本质上仍是逐帧声事件检测与定位（SELD）输出表示；只有在其后端接上时序滤波、缺测保持与跨帧标签关联，才能构成完整追踪器。
 
 下面把无标签 RFS 的基石——PHD 强度递推——单独拆开讲透，看看它如何在完全不枚举关联配对的前提下同步更新人数期望与方位分布。
@@ -582,9 +656,19 @@ D_t(x)=[1-p_D(x)]D_t^-(x)\\
 初学者初看式(9-23)容易被积分和求和吓住，其实它的物理账本极其直观，就是**“漏检留存 + 每条观测按贝叶斯责任瓜分”**两笔账相加：
 
 1. **第一项 $[1-p_D(x)]D_t^-(x)$（漏检留存账）**：即便位置 $x$ 处真有说话人，本帧他可能恰好换气停顿或被噪声掩蔽而未产生观测（漏检概率为 $1-p_D(x)$）。这部分未检出的期望人数不能凭空抹掉，原封不动留存下来；若本帧观测集为空（$Z_t=\varnothing$），后面求和项消失，全空间强度就只剩这一项衰减。
-2. **第二项求和 $\sum_{z\in Z_t}\frac{g_t(z\mid x)u_t(x)}{\eta_t(z)}$（观测按贝叶斯责任瓜分账）**：本帧每收到一条点观测 $z\in Z_t$，在“每个目标至多产生一条观测”的规则下，这条 $z$ **至多代表 $1$ 个真实声源**。谁来认领这 $1$ 份人数呢？全体候选位置 $\xi$ 按各自的可检出似然权重 $g_t(z\mid\xi)u_t(\xi)$ 参与竞标，同时杂波模型也拿出强度 $\kappa_t(z)$ 参与竞标，所有竞标者的总盘子正是第一式的分母 $\eta_t(z)$。位置 $x$ 按自身权重占总盘子的比例领走 $\frac{g_t(z\mid x)u_t(x)}{\eta_t(z)}$ 份强度；把这一分式对全空间 $x$ 积分，得到的总人数贡献为 $\frac{\int g_t(z\mid x)u_t(x)\,\mathrm{d}x}{\kappa_t(z)+\int g_t(z\mid\xi)u_t(\xi)\,\mathrm{d}\xi}<1$，而剩下的 $\frac{\kappa_t(z)}{\eta_t(z)}$ 份额则被杂波自然分流吸收——这就是为什么杂波强度 $\kappa_t(z)$ 设得越高，单条可疑观测能催生出的目标强度就越保守。
+2. **第二项求和 $\sum_{z\in Z_t}\frac{g_t(z\mid x)u_t(x)}{\eta_t(z)}$（观测按贝叶斯责任瓜分账）**：本帧每收到一条点观测 $z\in Z_t$，在“每个目标至多产生一条观测”的规则下，这条 $z$ **至多代表 $1$ 个真实声源**。谁来认领这 $1$ 份人数呢？全体候选位置 $\xi$ 按各自的可检出似然权重 $g_t(z\mid\xi)u_t(\xi)$ 参与竞标，同时杂波模型也拿出强度 $\kappa_t(z)$ 参与竞标，所有竞标者的总盘子正是第一式的分母 $\eta_t(z)$。位置 $x$ 按自身权重占总盘子的比例领走 $g_t(z\mid x)u_t(x)/\eta_t(z)$ 份强度；记目标竞标总积分为 $I_t(z)=\int g_t(z\mid x)u_t(x)\,\mathrm{d}x$，则全空间领走的目标总人数贡献为 $I_t(z)/[\kappa_t(z)+I_t(z)]<1$，而剩下的 $\kappa_t(z)/\eta_t(z)$ 份额则被杂波自然分流吸收——这就是为什么杂波强度 $\kappa_t(z)$ 设得越高，单条可疑观测能催生出的目标强度就越保守。
 
-立刻用两个离散角度网格核对一遍这笔瓜分账。设两个网格上的预测期望目标数质量为 $\vec{D}^-=[0.8,\ 0.6]$（合计期望 $1.4$ 人；注意这里 $\vec{D}^-$ 已是乘过网格宽度的离散质量，若用连续密度做数值积分还须乘以网格步长 $\Delta\theta$）。为突出第二项，先取理想检出率 $p_D=1$（漏检留存项为 $0$），设本帧只收到 $1$ 条观测 $z$，两个网格对该观测的离散似然为 $\vec{g}=[0.9,\ 0.1]$，同测度下的杂波强度为 $\kappa=0.1$。竞标总盘子为 $\eta=0.1+0.9\times 0.8+0.1\times 0.6=0.88$：网格 1 领走 $(0.9\times 0.8)/0.88=0.72/0.88\approx 0.818$，网格 2 领走 $(0.1\times 0.6)/0.88=0.06/0.88\approx 0.068$，杂波领走 $0.1/0.88\approx 0.114$。更新后两网格总期望人数为 $0.818+0.068\approx 0.886<1$，三者相加恰好还原 $1$ 份观测证据；若实际 $p_D<1$，只需再把第一项 $(1-p_D)\vec{D}^-$ 叠加上去即可。当然，室内强镜面反射往往与直达声成对出现（违背杂波独立于目标的假设），近场大尺寸声源也可能单帧触发多个局部峰（违背点目标假设），遇到这两类情形需引入扩展目标或混响感知似然模型。
+立刻用两个离散角度网格核对一遍这笔瓜分账。设两个网格上的预测期望目标数质量为 $\vec{D}^-=[0.8,\ 0.6]$（合计期望 $1.4$ 人；注意这里 $\vec{D}^-$ 已是乘过网格宽度的离散质量，若用连续密度做数值积分还须乘以网格步长 $\Delta\theta$）。为突出第二项，先取理想检出率 $p_D=1$（漏检留存项为 $0$），设本帧只收到 $1$ 条观测 $z$，两个网格对该观测的离散似然为 $\vec{g}=[0.9,\ 0.1]$，同测度下的杂波强度为 $\kappa=0.1$。
+
+竞标总盘子为 $\eta=0.1+0.9\times 0.8+0.1\times 0.6=0.88$，三方按未归一化竞标权重瓜分这 $1$ 份观测证据的精确账目如下表所示：
+
+| 竞标主体 | 未归一化竞标权重 | 瓜分后的责任份额 |
+|---|---:|---:|
+| 角度网格 $1$（先验 $0.8$，似然 $0.9$） | $0.72$ | $0.72/0.88=9/11\approx 0.818$ |
+| 角度网格 $2$（先验 $0.6$，似然 $0.1$） | $0.06$ | $0.06/0.88=3/44\approx 0.068$ |
+| 泊松杂波（强度 $\kappa=0.1$） | $0.10$ | $0.10/0.88=5/44\approx 0.114$ |
+
+更新后两网格总期望人数为 $39/44\approx 0.886<1$，加上杂波吸收的 $5/44$ 恰好还原完整的 $1$ 份观测证据；若实际 $p_D<1$，只需再把第一项 $(1-p_D)\vec{D}^-$ 叠加上去即可。当然，室内强镜面反射往往与直达声成对出现（违背杂波独立于目标的假设），近场大尺寸声源也可能单帧触发多个局部峰（违背点目标假设），遇到这两类情形需引入扩展目标或混响感知似然模型。
 
 粒子或高斯混合只是表示和计算强度函数的不同方法。高斯混合 PHD（GM-PHD）在线性高斯条件下以闭式更新一组高斯分量的权重、均值与协方差，粒子 PHD（SMC-PHD）则用带权粒子近似任意非线性强度积分，人数由总权重和给出，声源方位再从主峰或聚类中心提取（理论奠基见 [Mahler 2003 PHD 原始论文](https://doi.org/10.1109/TAES.2003.1261119)，视听粒子流实现可参考 [Liu et al. 2019](https://openresearch.surrey.ac.uk/esploro/outputs/journalArticle/Audio-Visual-Particle-Flow-SMC-PHD-Filtering-for/99513411302346)）。
 
@@ -624,7 +708,7 @@ D_t(x)=[1-p_D(x)]D_t^-(x)\\
 
 顺着时间轴读这张表，能一眼看出两条核心规律：第一，看第 $2\ \mathrm{s}$ 行，即使账面方差仍维持在看似很小的 $0.68\ \mathrm{deg}^2$，错配不仅把反方向的观测拉进了更新，还因速度耦合拖偏了后验均值，使滤波角误差从理想关联的 $0.32^\circ$ 放大了五倍多（达 $1.68^\circ$）；第二，看第 $3\ \mathrm{s}$ 至第 $4\ \mathrm{s}$ 行，说话人 A 短暂停顿缺测使轨迹 A 只做预测外推，角度方差从 $0.68\ \mathrm{deg}^2$ 迅速膨胀至 $1.80\ \mathrm{deg}^2$，幸而轨迹 A 仍携带着正向角速度惯性继续朝 $50^\circ$ 外推，才没在交叉口被 B 的 $30^\circ$ 观测吸走，等到第 $4\ \mathrm{s}$ A 在 $60^\circ$ 重新开口时得以顺利找回配对并将方差压回 $0.79\ \mathrm{deg}^2$。
 
-同一脚本还演示了无观测外推期间**波束转向限速（slew-rate limiting）**的滞后账：设另一条轨迹从初态 $[20^\circ,10^\circ/\mathrm{s}]^\top$、$\mathbf{P}_0=\mathbf{I}$ 起连续两秒缺测，预测角依次推进至 $30^\circ$ 与 $40^\circ$，角度方差按式(9-3)由 $\mathbf{P}_1^-=\mathbf{F}\mathbf{I}\mathbf{F}^\top+\mathbf{Q}$ 涨到 $2.10\ \mathrm{deg}^2$，第 2 秒再涨到 $2.10+2\times 1.00+1.01+0.10=5.21\ \mathrm{deg}^2$。若下游波束控制器为防听感突变将转向速率硬限在最高 $5^\circ/\mathrm{s}$，实际波束指向两步只能走到 $25^\circ$ 与 $30^\circ$，相对预测方位产生 $5^\circ$ 与 $10^\circ$ 的确定性机械/算法跟随滞后。因此，转向限速值必须结合帧间隔、说话人正常走动最大角速度与波束主瓣宽度联合整定。
+同一脚本还演示了无观测外推期间**波束转向限速（slew-rate limiting）**的滞后账：设另一条轨迹从初态 $[20^\circ,10^\circ/\mathrm{s}]^\top$、$\mathbf{P}_0=\mathbf{I}$ 起连续两秒缺测，预测角依次推进至 $30^\circ$ 与 $40^\circ$，第一步先验协方差 $\mathbf{P}_1^-$ 按 $\mathbf{F}\mathbf{I}\mathbf{F}^\top+\mathbf{Q}$ 使角度方差涨到 $2.10\ \mathrm{deg}^2$，第 $2\ \mathrm{s}$ 再涨到 $2.10+2\times 1.00+1.01+0.10=5.21\ \mathrm{deg}^2$。若下游波束控制器为防听感突变将转向速率硬限在最高 $5^\circ/\mathrm{s}$，实际波束指向两步只能走到 $25^\circ$ 与 $30^\circ$，相对预测方位产生 $5^\circ$ 与 $10^\circ$ 的确定性机械/算法跟随滞后。因此，转向限速值必须结合帧间隔、说话人正常走动最大角速度与波束主瓣宽度联合整定。
 
 #### 上游实现与适用范围
 
@@ -632,7 +716,7 @@ D_t(x)=[1-p_D(x)]D_t^-(x)\\
 
 把雷达或平面视觉教程代码迁移到麦克风阵列方向追踪时，至少要同步改写三处底层接口：观测残差与新息门控必须接入圆周角环绕算子；空间杂波强度 $\kappa$ 的量纲必须从“每平方米假点数”切换为观测角空间测度（如每弧度或每立体角的预期反射假峰数）；检测概率 $p_D$ 则须同时反映定位器漏检与人类自然说话的音节停顿，不能直接套用雷达的恒定高 $p_D$。
 
-GM-PHD 的高斯权重和表示期望目标数，不要求归一到 1。出生分布没有覆盖某个方向时，新目标可能一直不能形成足够强的分量；剪枝阈值过高则会删掉弱源，因此应记录每帧删去的总强度质量。
+GM-PHD 的高斯权重和表示期望目标数，不要求归一到 $1$。出生分布没有覆盖某个方向时，新目标可能一直不能形成足够强的分量；剪枝阈值过高则会删掉弱源，因此应记录每帧删去的总强度质量。
 
 JPDA 也需要明确漏检事件和一对一约束；在两人交叉时，软关联可能混合轨迹，并不自动保持说话人身份（实现细节可对照 [Stone Soup JPDA 教程源码](https://github.com/dstl/Stone-Soup/blob/8d1edeb07ef8505ed065cbef435cfb5e517d9bdc/docs/tutorials/08_JPDATutorial.py)与 [GM-PHD 官方教程](https://stonesoup.readthedocs.io/en/v1.9.1/auto_tutorials/filters/GMPHDTutorial.html)，核实于 2026-09-22）。
 
@@ -649,11 +733,14 @@ MHT 已有可阅读的受限参考：Stone Soup 的 [`mht_example.py`](https://g
 在线性高斯模型下，若前向卡尔曼滤波已保存时刻 $t$ 的滤波后验 $(\vec{m}_{t|t},\mathbf{P}_{t|t})$、一步预测 $(\vec{m}_{t+1|t},\mathbf{P}_{t+1|t})$ 以及时刻 $t+1$ 更新后的 $(\vec{m}_{t+1|t+1},\mathbf{P}_{t+1|t+1})$，即可直接写出经典的 **Rauch–Tung–Striebel（RTS）平滑器**一步反向回修递推（设 $\mathbf{F}_{t+1}$ 为 $t\to t+1$ 的状态转移矩阵，$\mathbf{P}_{t+1|t}$ 非奇异）：
 
 $$\begin{aligned}
-\mathbf{C}_t&=\mathbf{P}_{t|t}\mathbf{F}_{t+1}^\top(\mathbf{P}_{t+1|t})^{-1},\\
+\mathbf{C}_t
+&=\mathbf{P}_{t|t}\mathbf{F}_{t+1}^\top
+(\mathbf{P}_{t+1|t})^{-1},\\
 \vec{a}_t&=\vec{m}_{t+1|t+1}-\vec{m}_{t+1|t},\\
 \mathbf{B}_t&=\mathbf{P}_{t+1|t+1}-\mathbf{P}_{t+1|t},\\
 \vec{m}_{t|t+1}&=\vec{m}_{t|t}+\mathbf{C}_t\vec{a}_t,\\
-\mathbf{P}_{t|t+1}&=\mathbf{P}_{t|t}+\mathbf{C}_t\mathbf{B}_t\mathbf{C}_t^\top.
+\mathbf{P}_{t|t+1}
+&=\mathbf{P}_{t|t}+\mathbf{C}_t\mathbf{B}_t\mathbf{C}_t^\top.
 \end{aligned}\tag{9-24}$$
 
 式(9-24)的物理含义可由联合高斯条件分布一眼看穿：给定 $t$ 帧及以前观测时，$\vec{s}_t$ 与 $\vec{s}_{t+1}=\mathbf{F}_{t+1}\vec{s}_t+\vec{v}_{t+1}$ 的跨帧互协方差正是 $\mathbf{P}_{t|t}\mathbf{F}_{t+1}^\top$，故平滑增益 $\mathbf{C}_t$ 把下一帧获得的状态修正量 $\vec{a}_t$ 按回归系数折算回时刻 $t$；同时由于观测更新使 $\mathbf{P}_{t+1|t+1}\preceq\mathbf{P}_{t+1|t}$，差矩阵 $\mathbf{B}_t$ 半负定，二次型 $\mathbf{C}_t\mathbf{B}_t\mathbf{C}_t^\top$ 进一步削减（或保持）时刻 $t$ 的历史协方差（练习 [E09-16](#e09-16) 给出了标量从头推导与数值核对；注意圆周方位角回修同样需对差值做最短角环绕）。
@@ -664,8 +751,8 @@ $$\begin{aligned}
 
 读图 23 时重点留意数据面与控制面的解耦设计：定位与追踪运行在多通道 AEC 残差之上（切勿拿已经做过窄波束增强的单路信号再去跑定位，否则会形成“波束指哪、定位就只能看到哪”的自激正反馈死锁），追踪器只向解析波束形成器输出平滑或外推方向，而不直接干预导引源分离（GSS）的时频掩码迭代；反过来，控制面将 VAD、远端参考活动以及双讲检测（DTD）信号同步馈入追踪器。在实际智能音箱、会议终端与带屏设备中，这一控制接口还有两项决定成败的工程门控要点：
 
-- **扬声器回声与自发声方位门控**：当设备扬声器正在大音量播报音乐或远端语音时，即便前级第 6 章线性 AEC 已消去主体直达回声，功放与微型扬声器的非线性谐波、腔体结构振动以及房间早期强反射仍常在**固定机构方位**产生显著的残余相关性，使 GCC-PHAT 或 SRP-PHAT 在本机扬声器方向频繁报出高置信伪峰。若追踪器照单全收，波束会迅速转向本机喇叭并锁死。工程上必须联合接入远端播放活动标志、DTD 状态与已知扬声器几何排斥扇区：在确认无近端双讲的纯远端回声期冻结新候选轨迹创建，并对落在已知回声扇区内的观测调高门限或直接门控屏蔽。
-- **视听多模态融合的视场角（FOV）边界与异构延迟对齐**：带摄像头的会议终端常引入人脸或唇动检测辅助声源追踪，接入时须解开两处物理失配。第一是**空间视场不对称**：水平环形麦克风阵覆盖 $360^\circ$ 全向，而普通摄像头仅覆盖有限水平视场角（Field of View，FOV，常见 $70^\circ$～$120^\circ$），当说话人走到画面外的侧后方时，“无视觉检测框”属于传感器几何盲区而非“无人存在”的负证据，严禁在 FOV 之外套用高视觉检出率去扣减声学轨迹的存在概率；同时需校正摄像头光心与麦克风阵中心的空间视差。第二是**异构采样率与流水线延迟**：声学定位通常每 10～20 ms 产出一帧，而视频曝光、ISP 与神经网络推理往往滞后 50～150 ms；融合层必须把视觉框绑定回图像**曝光中心时间戳**，采用历史状态回放或跨时刻协方差更新（见练习 [E09-23](#e09-23)），绝不能把刚算完的旧视觉方位直接当作当前音频帧的同步观测。
+- **扬声器回声与自发声方位门控**：当设备扬声器正在大音量播报音乐或远端语音时，即便前级第 6 章线性 AEC 已消去主体直达回声，功放与微型扬声器的非线性谐波、腔体结构振动以及早期强反射仍常在**固定机构方位** $\theta_{\mathrm{spk}}$ 附近产生显著残余相关性，使 GCC-PHAT 或 SRP-PHAT 频繁报出高置信伪峰。若不加屏蔽，既有轨迹可能被回声峰劫持，即便靠式(9-10) NIS 门控挡在既有轨迹门外，连续多帧被拒的回声峰若仍流入新生逻辑，照样会在 $\theta_{\mathrm{spk}}$ 处催生出虚假“幽灵轨迹”并抢走波束。工程上需将远端活动标志、双讲检测（DTD）与已知扬声器半宽 $\Delta\theta_{\mathrm{spk}}$ 联合门控：在“远端活跃且无近端双讲”期间，记观测峰与喇叭的最短环绕角距为 $\delta_{\mathrm{spk}}(z)$（定义为 $|\operatorname{wrap}_{180}(z-\theta_{\mathrm{spk}})|$），凡满足 $\delta_{\mathrm{spk}}(z)\le\Delta\theta_{\mathrm{spk}}$ 的观测峰必须在进入**轨迹关联与候选新生之前**先行剔除；而一旦 DTD 判出近端双讲，则立即放开该扇区，避免站在设备正前方的真实说话人被误屏蔽（两步劫持与三帧伪生复算见后文式(9-43)与[练习 E09-27](#e09-27)）。
+- **视听多模态融合的视场角（FOV）边界与异构延迟对齐**：带摄像头的会议终端引入人脸或唇动框辅助声源追踪时，必须解开两处物理失配。第一是**空间视场不对称**：水平环阵覆盖 $360^\circ$ 全向，而普通镜头仅覆盖有限视场角（Field of View，FOV，光轴 $\theta_{\mathrm{cam}}$、半宽 $\Delta\theta_{\mathrm{FOV}}/2$），分段视觉检出率在视场内为 $p_{D,v}^{\mathrm{in}}$、在视场外严格为 $p_{D,v}(\theta)=0$；按后文式(9-33)伯努利空观测更新，当轨迹位于视场盲区（$p_{D,v}=0$）且画面无检测框时，存在概率精确保持 $r^+=r$（“看不见”绝不等于“人不在”），同时近场还需补偿光心与阵心的空间视差。第二是**异构采样率与流水线延迟**：音频定位每 10～20 ms 产出一帧，而视频曝光、ISP 与检测推理常滞后 $\Delta t_{\mathrm{lag}}\in[30,150]\ \mathrm{ms}$；在局部常速度且滞后窗内过程噪声可忽略时，可直接构造逆向回溯观测行向量 $\mathbf{H}_{\mathrm{retro}}$（取 $[1,-\Delta t_{\mathrm{lag}}]$，即 $\mathbf{H}\mathbf{F}(-\Delta t_{\mathrm{lag}})$）将当前状态 $\vec{s}_t$ 无偏映射回图像曝光时刻 $t-\Delta t_{\mathrm{lag}}$ 计算新息，若滞后期内机动噪声显著则按物理时间戳重排历史缓存回放（见[练习 E09-23](#e09-23)、式(9-44)与[练习 E09-28](#e09-28)）。
 
 #### 状态时间、活动与生命周期
 
@@ -689,9 +776,11 @@ $$\begin{aligned}
 
 **时间戳基准错认 $40\ \mathrm{ms}$ 会造成多大目标语音衰减？** 我们用第 5 章的八麦均匀线阵算一笔硬账：设工作频点 $f=3\ \mathrm{kHz}$ 处阵元间距恰为半波长 $d=\lambda/2$，已知真实状态所属时刻 $t_{\mathrm{state}}$ 声源位于 $30^\circ$、正以近距离快速掠过的角速度 $250^\circ/\mathrm{s}$ 移动；消息经 $40\ \mathrm{ms}$ 计算调度后在 $t_{\mathrm{pub}}$ 发出，又经缓冲在 $80\ \mathrm{ms}$ 后的 $t_{\mathrm{apply}}$ 作用于波束输出。在匀速运动下，$t_{\mathrm{apply}}$ 时刻声源已走到真实的 $\theta=30^\circ+250\times 0.080=50^\circ$；若消费方误把消息发出的 $t_{\mathrm{pub}}$ 当作状态所属时刻，只外推了后半截 $40\ \mathrm{ms}$，波束就只会指到 $\theta_b=40^\circ$。代入八麦等权延迟求和波束的归一化阵列因子幅度公式：
 
-$$
-\left|\frac{1}{8}\sum_{m=0}^{7}e^{\mathrm{j}\pi m(\sin\theta-\sin\theta_b)}\right|.
-$$
+$$\begin{aligned}
+B(\theta,\theta_b)
+&=\frac{1}{8}\left|\sum_{m=0}^{7}
+e^{\mathrm{j}\pi m(\sin\theta-\sin\theta_b)}\right|.
+\end{aligned}$$
 
 将真实方向 $\theta=50^\circ$ 与三种波束指向 $\theta_b\in\{30^\circ,\ 40^\circ,\ 50^\circ\}$ 代入，按 $20\log_{10}(\cdot)$ 换算出的 $3\ \mathrm{kHz}$ 目标方向增益依次为 **$-24.20\ \mathrm{dB}$**（完全不外推，已掉进旁瓣零陷附近）、**$-3.75\ \mathrm{dB}$**（错从发布时刻起算漏掉一半外推，跌出 $-3\ \mathrm{dB}$ 半功率主瓣）与 **$0\ \mathrm{dB}$**（按 `state_time` 准确外推）。孔径越大、频率越高，时间戳错位导致的语音高频吃字就越严重。
 
@@ -717,7 +806,7 @@ $$
 
 多目标追踪每帧输出估计集合 $Y=\{y_1,\ldots,y_n\}$，而真值集合为 $X=\{x_1,\ldots,x_m\}$，当 $m\neq n$ 时普通单目标 RMSE 根本无法计算。多目标跟踪领域普遍采用**最优子模式分配距离（Optimal Subpattern Assignment，OSPA）**将“位置偏了多少”与“人数估错几个”统一折算进同一个具有物理角度/距离量纲的严格度量中（见 Schuhmacher、Vo 与 Vo 2008 原始论文，IEEE TSP 56(8), pp. 3447–3457，[DOI 10.1109/TSP.2008.920469](https://doi.org/10.1109/TSP.2008.920469)）。
 
-设底层单点距离为 $d(x,y)$（完整圆周方位取最短环绕角差 $d(\theta_1,\theta_2)=|\operatorname{wrap}_{180}(\theta_1-\theta_2)|$，图 22 那类不跨接缝的有限扇区则取普通绝对差），给定截断距离 $c>0$（与 $d$ 同单位，设定单个未配对漏检/虚警的封顶惩罚尺度）与阶数 $1\le p<\infty$。先定义截断基距离 $d_c(x,y)=\min\{c,d(x,y)\}$ 及 $p$ 次方代价 $a_{ij}=d_c(x_i,y_j)^p$。当 $n\ge m>0$ 时，令 $\pi$ 遍历 $\{1,\ldots,n\}$ 的全部排列，挑出与 $m$ 个真值一对一配对总代价最小的排列 $J_*$，再为多出来的 $(n-m)$ 个未配对估计点每点罚一个 $c^p$ 组成基数代价 $C$，除以较大集合基数 $n$ 后开 $p$ 次方：
+设底层单点距离为 $d(x,y)$（完整圆周方位取最短环绕角差 $|\operatorname{wrap}_{180}(\theta_1-\theta_2)|$，图 22 那类不跨接缝的有限扇区则取普通绝对差），给定截断距离 $c>0$（与 $d$ 同单位，设定单个未配对漏检/虚警的封顶惩罚尺度）与阶数 $1\le p<\infty$。先定义截断基距离 $d_c(x,y)=\min\{c,d(x,y)\}$ 及 $p$ 次方代价 $a_{ij}=d_c(x_i,y_j)^p$。当 $n\ge m>0$ 时，令 $\pi$ 遍历 $\{1,\ldots,n\}$ 的全部排列，挑出与 $m$ 个真值一对一配对总代价最小的排列 $J_*$，再为多出来的 $(n-m)$ 个未配对估计点每点罚一个 $c^p$ 组成基数代价 $C$，除以较大集合基数 $n$ 后开 $p$ 次方：
 
 $$\begin{aligned}
 J_*&=\min_{\pi}\sum_{i=1}^m a_{i,\pi(i)},\\
@@ -742,7 +831,19 @@ D_{\mathrm{G}}^p&=\min_\gamma J.
 
 最后开根得到 $D_{\mathrm{G}}=(D_{\mathrm{G}}^p)^{1/p}$（注意 $p>1$ 时具有可加性的是开根前的 $p$ 次方分量 $D_{\mathrm{G}}^p$，开根后的各项不能直接算术相加）。为什么式(9-26)里的 $d(x_i,y_j)$ 不用再写 $\min\{c,\cdot\}$ 截断了呢？因为一旦某对候选距离 $d(x_i,y_j)>c$，把这对强行匹配拆开变成“$1$ 个漏检 + $1$ 个虚警”，付出的基数代价恰为 $\frac{c^p}{2}+\frac{c^p}{2}=c^p<d(x_i,y_j)^p$，最优解会自动拒绝距离超过 $c$ 的牵强配对！在临界点 $d(x_i,y_j)=c$ 处配与不配总分相等，按原论文附录的规范分解约定只保留严格满足 $d<c$ 的配对（例如 $p=1,c=10^\circ$，真值 $0^\circ$、估计 $10^\circ$ 时总 GOSPA 为 $10^\circ$，按此规则拆分为 $5^\circ$ 漏检加 $5^\circ$ 虚警、定位项记 $0^\circ$；练习 [E09-15](#e09-15) 对比了加入共同正确目标前后 OSPA 与 GOSPA 的行为差异）。
 
-最后务必牢记：无论是 OSPA 还是 GOSPA，都是在**单帧无标签点集**上重新寻找当帧最优配对。假如两帧真值均在 $\{0^\circ,30^\circ\}$，追踪器第 1 帧输出 $\{\text{ID1}:0^\circ,\ \text{ID2}:30^\circ\}$，第 2 帧把标签彻底搞反输出 $\{\text{ID1}:30^\circ,\ \text{ID2}:0^\circ\}$，两帧的 OSPA 与 GOSPA 全都等于完美的 $0^\circ$，而下游绑定 `ID1` 的语音分离流已经把说话人切到了另一个人身上！因此评价完整多目标追踪器时，除集合误差外必须单独统计跨帧身份切换次数（Identity Switch，ID switch）或采用针对整条带时序轨迹集的度量（见 [García-Fernández 等 2020 轨迹集度量](https://arxiv.org/abs/1605.01177)）。
+最后务必牢记：无论是 OSPA 还是 GOSPA，都是在**单帧无标签点集**上重新寻找当帧最优配对。假如两帧真值均在 $\{-20^\circ,+20^\circ\}$，追踪器第 $1$ 帧输出 $\{\text{ID1}:-20^\circ,\ \text{ID2}:+20^\circ\}$，第 $2$ 帧把标签彻底搞反输出 $\{\text{ID1}:+20^\circ,\ \text{ID2}:-20^\circ\}$，两帧的 OSPA 与 GOSPA 全都等于完美的 $0^\circ$，而下游绑定 `ID1` 的语音分离流或说话人日志已经把声道切到了另一个人身上！
+
+为了显式考核轨迹身份连续性，多目标视听追踪基准（如 LOCATA 与 AV16.3）普遍并行报告 **CLEAR MOT** 指标族中的多目标跟踪准确度（Multiple Object Tracking Accuracy，`MOTA`）与身份切换次数（Identity Switch，`IDSW`，见 Bernardin 与 Stiefelhagen 2008）：设第 $t$ 帧有 $g_t$ 个真值活跃声源，在门限 $\tau_{\mathrm{match}}$ 内优先沿用上一帧已建立的“真值—轨迹 ID”对应关系后再对剩余点做最小距离匹配，记当帧漏检数为 $\mathrm{FN}_t$、虚警轨迹数为 $\mathrm{FP}_t$、真值目标绑定的预测 `track_id` 相比上一次匹配发生变更的次数为 $\mathrm{IDSW}_t$，则全序列汇总的 `MOTA` 定义为
+
+$$\begin{aligned}
+E_{\mathrm{tot}}
+&=\sum_t\bigl(\mathrm{FN}_t+\mathrm{FP}_t
++\mathrm{IDSW}_t\bigr),\\
+\mathrm{MOTA}
+&=1-\frac{E_{\mathrm{tot}}}{\sum_t g_t}.
+\end{aligned}$$
+
+用这把尺子重算刚才的两帧身份互换：总真值人次为 $\sum_t g_t=2+2=4$，虽然 $\mathrm{FN}=\mathrm{FP}=0$ 且逐帧 $\mathrm{OSPA}=0^\circ$，但第 $2$ 帧两位说话人同时换号产生 $\mathrm{IDSW}_2=2$，把 $\mathrm{MOTA}$ 直接从满分 $1.00$ 拉低至 $1-2/4=0.50$；若第 $2$ 帧还因未屏蔽扬声器残余回声多冒出一条 $-45^\circ$ 虚假轨迹（$\mathrm{FP}_2=1$），则 $\mathrm{MOTA}$ 进一步跌至 $1-(2+1)/4=0.25$（注意因虚警无上界，极端高虚警下 $\mathrm{MOTA}$ 甚至可取负值；精确配对与回声虚警复算见[练习 E09-28](#e09-28)，更严格的整条轨迹集距离可参见 [García-Fernández 等 2020 轨迹集度量](https://arxiv.org/abs/1605.01177)）。
 
 ### 9.5 自由场移动声源的双麦音频与传播真值
 
@@ -781,7 +882,7 @@ r'_m(u)&=\vec{n}_m(u)^\top\vec{v},\\
 
 清单每 $160$ 个采样点（即每 $10\ \mathrm{ms}$）记录一次声源轨迹真值：
 
-- **方位角演化**：按 $+y$ 轴为 $0^\circ$、向 $+x$ 轴为正计算，发射时刻 $u=0\ \mathrm{s}$ 时位于 $(-0.8,1.5)\ \mathrm{m}$，方位角 $\theta_0=\operatorname{atan2}(-0.8,1.5)\approx -28.07^\circ$；行至 $u=0.99\ \mathrm{s}$ 时横坐标为 $-0.8+0.8\times 0.99=-0.008\ \mathrm{m}$，方位角逼近正前方的 $-0.31^\circ$；末段 $u=1.99\ \mathrm{s}$ 时横坐标达 $+0.792\ \mathrm{m}$，方位角转至 $+27.83^\circ$。
+- **方位角演化**：按 $+y$ 轴为 $0^\circ$、向 $+x$ 轴为正计算，发射时刻 $u=0\ \mathrm{s}$ 时位于 $(-0.8,1.5)\ \mathrm{m}$，初始方位角 $\theta_0=\operatorname{atan2}(-0.8,1.5)$ 约为 $-28.07^\circ$；行至 $u=0.99\ \mathrm{s}$ 时横坐标为 $-0.8+0.8\times 0.99=-0.008\ \mathrm{m}$，方位角逼近正前方的 $-0.31^\circ$；末段 $u=1.99\ \mathrm{s}$ 时横坐标达 $+0.792\ \mathrm{m}$，方位角转至 $+27.83^\circ$。
 - **有符号 TDOA 符号翻转**：定义同一发射波前到达麦 1 与麦 0 的传播时间差为 $\tau_{1-0}(u)=[r_1(u)-r_0(u)]/343$。起点处声源偏左、离左麦（麦 0）更近，故 $r_1>r_0$，算得 $\tau_{1-0}(0)\approx +0.0001372\ \mathrm{s}$（折合 $16\ \mathrm{kHz}$ 下 $+2.19$ 个采样点，表示麦 1 晚收到）；末段声源移至右侧、离右麦（麦 1）更近，变为 $\tau_{1-0}(1.99)\approx -0.0001361\ \mathrm{s}$（约 $-2.18$ 个采样点）。两侧正负号严格反转，印证了定位接口绝不能丢失 TDOA 的符号（生成脚本 [`moving_source_audio.py`](../codes/chapters/ch09/examples/moving_source_audio.py) 的静止极限与正负号均由 [`test_codes_moving_source.py`](../tests/test_codes_moving_source.py) 独立核验）。
 
 需要注意：清单该栏按发射时刻 $u$ 记录同一波前到达两麦的传播差，而接收端信号处理是在固定接收采样时间窗 $t$ 上截取两路波形。若需在真实房间混响与自然人体走动录音上评测，可选用前文提到的 LOCATA 任务 3（静止阵列录制单个移动说话人，见 [LOCATA 综述论文 §III 表 I 与 §IV.C](https://arxiv.org/pdf/1909.01008)），使用公开位置真值的开发集按统一时间戳对齐打分。
@@ -793,11 +894,16 @@ r'_m(u)&=\vec{n}_m(u)^\top\vec{v},\\
 - [源参考：32音调与一次静默](../codes/chapters/ch09/tracking_audio/source.wav)
 - [运动传播后的带噪双麦信号](../codes/chapters/ch09/tracking_audio/array_noisy.wav)
 
-**合成信号与静默段设计。** 阵列几何、声源匀速轨迹及声速与上一小节完全一致（$16\ \mathrm{kHz}$，$2\ \mathrm{s}$）。为提供丰富的宽带相位信息以利 GCC-PHAT 寻峰，源信号由 300～3400 Hz、间隔 $100\ \mathrm{Hz}$ 的 $32$ 个等幅正弦分量叠加（每条幅度 $1/\sqrt{32}$）；使用 `PCG64` 随机数生成器（固定种子 `9001`）依次抽取 $32$ 个均匀随机初相以及两通道独立的传感器高斯白噪声（导出前噪声标准差为 $0.01$）。源信号首尾各加 $20\ \mathrm{ms}$ 线性淡入淡出，并在发射时间轴中途人为插入一段模拟换气停顿的静音区：0.80～0.82 s 线性淡出、0.82～1.08 s 归零静默、1.08～1.10 s 线性淡入。两份 WAV 采用同一公共导出增益（约 $0.4023136344$）将全局峰值缩至 $0.7$ 后量化为 16 位整数 PCM；后续定位与滤波全部从读回的实际 16 位 PCM 波形出发（公共增益仅用于将固定能量门限折算回物理尺度，全程不读取干净源或位置真值）。
+**合成信号与静默段设计。** 阵列几何、声源匀速轨迹及声速与上一小节完全一致（$16\ \mathrm{kHz}$，$2\ \mathrm{s}$）。为提供丰富的宽带相位信息以利 GCC-PHAT 寻峰，源信号由 300～3400 Hz、间隔 $100\ \mathrm{Hz}$ 的 $32$ 个等幅正弦分量叠加（每条幅度 $1/\sqrt{32}$）；使用 `PCG64` 随机数生成器（固定种子 `9001`）依次抽取 $32$ 个均匀随机初相以及两通道独立的传感器高斯白噪声（导出前噪声标准差为 $0.01$）。
+
+源信号首尾各加 $20\ \mathrm{ms}$ 线性淡入淡出，并在发射时间轴中途人为插入一段模拟换气停顿的静音区：0.80～0.82 s 线性淡出、0.82～1.08 s 归零静默、1.08～1.10 s 线性淡入。两份 WAV 采用同一公共导出增益（约 $0.4023136344$）将全局峰值缩至 $0.7$ 后量化为 16 位整数 PCM；后续定位与滤波全部从读回的实际 16 位 PCM 波形出发（公共增益仅用于将固定能量门限折算回物理尺度，全程不读取干净源或位置真值）。
 
 **逐帧能量门控与 GCC-PHAT 定位。** 取帧长 $N_w=512$ 点、帧移 $160$ 点（每帧步进 $10\ \mathrm{ms}$），$32000$ 点录音共切出 $\lfloor(32000-512)/160\rfloor+1=197$ 个完整帧。每帧先计算未加窗双通道样本的均方根（Root Mean Square，RMS）幅度：折算回导出前尺度后，仅当 $\mathrm{RMS}>0.04$ 时才判定本帧有声并执行定位，否则直接记为缺测。有效帧乘以对称 Hann 窗 `numpy.hanning(512)` 后送入第 4 章的 `gcc_phat(ch1, ch0)`，在物理最大时差范围 $|\tau|\le 0.1/343\ \mathrm{s}$ 内做抛物线峰值亚采样插值，再按远场平面波关系换算水平方位角：
 
-$$\theta^{\mathrm{obs}}=\arcsin\!\left(-\frac{343\,\tau_{1-0}}{0.1}\right).$$
+$$\begin{aligned}
+\theta^{\mathrm{obs}}
+&=\arcsin\!\left(-\frac{343\,\tau_{1-0}}{0.1}\right).
+\end{aligned}$$
 
 若插值时差偶超物理界使反正弦自变量落出 $[-1,1]$，同样记为缺测而不硬裁成 $\pm 90^\circ$。注意沿 $x$ 轴放置的双麦存在固有的前后镜像对称（$(1,2)\ \mathrm{m}$ 与 $(1,-2)\ \mathrm{m}$ 产生完全相同的时差），反正弦主值 $[-90^\circ,90^\circ]$ 只是把解锁定在声源实际所在的 $+y$ 前半平面。
 
@@ -808,7 +914,8 @@ $$\theta^{\mathrm{obs}}=\arcsin\!\left(-\frac{343\,\tau_{1-0}}{0.1}\right).$$
 $$\begin{aligned}
 t_{\mathrm{state}}&=\frac{n_0+255.5}{16000},\\
 t_{\mathrm{available}}&=\frac{n_0+512}{16000},\\
-\Delta t&=t_{\mathrm{available}}-t_{\mathrm{state}}=16.03125\ \mathrm{ms}.
+\Delta t&=t_{\mathrm{available}}-t_{\mathrm{state}}\\
+&=16.03125\ \mathrm{ms}.
 \end{aligned}\tag{9-29}$$
 
 因此，窗中心状态天然滞后于整窗收齐时刻约 $16.03\ \mathrm{ms}$（尚未计入 FFT 计算与线程调度耗时）；评分所用的真值方位同样严格按接收窗中心 $t_{\mathrm{state}}$ 反解到达阵列中心的迟滞发射时刻来计算。在清单记录中，`state_time_s` 给出每帧所属的**状态时间轴**历元，`measurement_time_s` 记录当帧有效观测时刻（缺测帧记 `null`），`last_valid_measurement_time_s` 锁定最近一次有效观测中心时刻：在状态时间轴上，两者之差 `state_time_s - last_valid_measurement_time_s` 即为当时的观测滞后时长（观测龄期）；而在实时硬件调度中，则应用 `available_time_s`（或波束生效时刻）减去同一 `last_valid_measurement_time_s` 来核查证据是否超时。
@@ -823,7 +930,10 @@ t_{\mathrm{available}}&=\frac{n_0+512}{16000},\\
 
 为定量评估追踪收益，对指定帧索引集合 $\mathcal{I}$ 定义基于最短圆周角差 $e_k=\operatorname{wrap}_{180}(\hat{\theta}_k-\theta_k)$ 的均方根误差（Root Mean Square Error，RMSE）：
 
-$$\mathrm{RMSE}_{\mathcal{I}}=\sqrt{\frac{1}{|\mathcal{I}|}\sum_{k\in\mathcal{I}}e_k^2}.\tag{9-30}$$
+$$\begin{aligned}
+\mathrm{RMSE}_{\mathcal{I}}
+&=\sqrt{\frac{1}{|\mathcal{I}|}\sum_{k\in\mathcal{I}}e_k^2}.
+\end{aligned}\tag{9-30}$$
 
 | 统计帧集 | 分母 | 实际PCM结果 |
 |---|---:|---:|
@@ -842,8 +952,10 @@ $$\mathrm{RMSE}_{\mathcal{I}}=\sqrt{\frac{1}{|\mathcal{I}|}\sum_{k\in\mathcal{I}
     **答案要点**：每帧角度外推 $+0.513^\circ$，两帧后到达约 $31.75^\circ$；在本题给定的 $\mathbf{F}$ 与 $\mathbf{Q}$ 下，角度方差按 $3.705\to 4.49\to 5.80$ 逐帧增长。一次预测和两次预测后的完整协方差矩阵依次约为
 
     $$\begin{aligned}
-    \text{一次预测：}&\quad\begin{bmatrix}4.49&0.47\\0.47&0.27\end{bmatrix},\\
-    \text{两次预测：}&\quad\begin{bmatrix}5.80&0.74\\0.74&0.28\end{bmatrix}.
+    \mathbf{P}_1^-
+    &\approx\begin{bmatrix}4.49&0.47\\0.47&0.27\end{bmatrix},\\
+    \mathbf{P}_2^-
+    &\approx\begin{bmatrix}5.80&0.74\\0.74&0.28\end{bmatrix}.
     \end{aligned}$$
 
     短时静默期间波束可沿用上述外推方向。若目标允许的最大物理角速度为 $\omega_{\max}$、帧间隔为 $\Delta t$，单帧波束转角上限应按 $\omega_{\max}\Delta t$ 同量级整定（并兼顾允许跟随滞后与听感平滑），切忌脱离帧率硬写固定的“3°～5°/帧”。
@@ -868,13 +980,13 @@ $$\mathrm{RMSE}_{\mathcal{I}}=\sqrt{\frac{1}{|\mathcal{I}|}\sum_{k\in\mathcal{I}
 
 #### 可运行练习的入口与约定
 
-本章共设 $26$ 道可复算练习（E09-01～E09-26），覆盖物理时间单位离散化、卡尔曼与非线性滤波、粒子重采样、多目标数据关联、集合距离及双麦实测波形追踪：其中 E09-20～E09-23 重点剖析重叠帧相关观测、仅测方位尺度歧义、伯努利空观测存在概率更新与乱序迟到观测，E09-24～E09-26 进一步展开完整对数模式似然 IMM、双麦 PCM 整数时钟生命周期状态机以及三维姿态旋转与球面 vMF 更新。
+本章共设 $28$ 道可复算练习（E09-01～E09-28），覆盖物理时间单位离散化、卡尔曼与非线性滤波、粒子重采样、多目标数据关联、集合距离及双麦实测波形追踪：其中 E09-20～E09-23 重点剖析重叠帧相关观测、仅测方位尺度歧义、伯努利空观测存在概率更新与乱序迟到观测，E09-24～E09-26 进一步展开完整对数模式似然 IMM、双麦 PCM 整数时钟生命周期状态机以及三维姿态旋转与球面 vMF 更新，E09-27～E09-28 则补齐本机扬声器残余回声扇区门控与视听异构延迟回溯、视场盲区及 `MOTA` 身份评测。
 
 运行入口按模块归口如下：E09-01～E09-05 由 `.venv/bin/python -m codes.chapters.ch00.cross_chapter.exercises_enhancement` 执行（源码见 [`exercises_enhancement.py`](../codes/chapters/ch00/cross_chapter/exercises_enhancement.py)），E09-06 对应 §9.3.3 的双轨交叉脚本，E09-07～E09-08 归口至 `tracking_time_exercises.py`，E09-09 归口至 `enhancement_structure_exercises.py`。所有练习均直接处理物理方位或真实传播时延，不用双声道音量平衡（声像移动）冒充阵列时延线索。
 
 #### 新练习的实现边界
 
-E09-10～E09-26 的统一运行入口为 `.venv/bin/python -m codes.chapters.ch09.chapter09_experiments`（源码见 [`chapter09_experiments.py`](../codes/chapters/ch09/chapter09_experiments.py)）。其中 E09-19 与 E09-25 直接读取随仓 16 位双麦 PCM 波形完成定位、滤波与生命周期事件核验，其余各题聚焦单个核心公式或统计边界的独立数值复算（例如集合距离先按截断尺度缩放以防止极小正距离平方下溢）。
+E09-10～E09-28 的统一运行入口为 `.venv/bin/python -m codes.chapters.ch09.chapter09_experiments`（源码见 [`chapter09_experiments.py`](../codes/chapters/ch09/chapter09_experiments.py)）。其中 E09-19 与 E09-25 直接读取随仓 16 位双麦 PCM 波形完成定位、滤波与生命周期事件核验，其余各题聚焦单个核心公式或统计边界的独立数值复算（例如集合距离先按截断尺度缩放以防止极小正距离平方下溢）。
 
 #### E09-01：把“每帧”改为“每秒”
 
@@ -884,7 +996,8 @@ E09-10～E09-26 的统一运行入口为 `.venv/bin/python -m codes.chapters.ch0
 
 $$\begin{aligned}
 \mathbf{P}_1^-&=\begin{bmatrix}4.11&0.1\\0.1&1.01\end{bmatrix},\\
-\mathbf{P}_2^-&=\begin{bmatrix}4.2401&0.201\\0.201&1.02\end{bmatrix}.
+\mathbf{P}_2^-
+&=\begin{bmatrix}4.2401&0.201\\0.201&1.02\end{bmatrix}.
 \end{aligned}$$
 
 若后续更改采样间隔，必须回到连续运动噪声模型（见 E09-04）重新积分计算对应步长的 $\mathbf{Q}$。
@@ -908,11 +1021,17 @@ $$\begin{aligned}
 **解答**：在连续白角加速度模型中，距本步终点剩余时长为 $u\in[0,\Delta t]$ 的无穷小冲激对终点角度与角速度的传播向量为 $[u,\ 1]^\top$，在 $[0,\Delta t]$ 上积分外积即得式(9-11)：
 
 $$\begin{aligned}
-\mathbf{Q}_c&=q\int_0^{\Delta t}\begin{bmatrix}u^2&u\\u&1\end{bmatrix}\mathrm{d}u=q\begin{bmatrix}\Delta t^3/3&\Delta t^2/2\\\Delta t^2/2&\Delta t\end{bmatrix}\\
+\mathbf{Q}_c
+&=q\int_0^{\Delta t}
+\begin{bmatrix}u^2&u\\u&1\end{bmatrix}\mathrm{d}u\\
+&=q\begin{bmatrix}
+\Delta t^3/3&\Delta t^2/2\\
+\Delta t^2/2&\Delta t
+\end{bmatrix}\\
 &\approx\begin{bmatrix}0.000666667&0.01\\0.01&0.2\end{bmatrix}.
 \end{aligned}$$
 
-而在分段恒定加速度模型中，整步恒定加速度 $a$ 使角度改变 $\frac{1}{2}a\Delta t^2$、角速度改变 $a\Delta t$，噪声增益列向量为 $\vec{G}=[\Delta t^2/2,\ \Delta t]^\top=[0.005,\ 0.1]^\top$，故 $\mathbf{Q}_d=\sigma_a^2\vec{G}\vec{G}^\top=\begin{bmatrix}0.0001&0.002\\0.002&0.04\end{bmatrix}$（左上、非对角、右下元素单位依次为 $\mathrm{deg}^2$、$\mathrm{deg}^2/\mathrm{s}$、$\mathrm{deg}^2/\mathrm{s}^2$）。可见 $q$ 与 $\sigma_a^2$ 连物理量纲都不同（$\mathbf{Q}_c$ 满秩正定，单步 $\mathbf{Q}_d$ 秩为 $1$），调用第三方库时务必分清连续与离散白噪声接口（可对照 [FilterPy `discretization.py` 中的 `Q_continuous_white_noise()` 与 `Q_discrete_white_noise()`](https://filterpy.readthedocs.io/en/latest/_modules/filterpy/common/discretization.html)，核实于 2026-09-22）。
+而在分段恒定加速度模型中，整步恒定加速度 $a$ 使角度改变 $\frac{1}{2}a\Delta t^2$、角速度改变 $a\Delta t$，噪声增益列向量为 $\vec{G}=[\Delta t^2/2,\ \Delta t]^\top$，数值为 $[0.005,\ 0.1]^\top$，故离散协方差 $\mathbf{Q}_d=\sigma_a^2\vec{G}\vec{G}^\top$ 等于 $[0.0001,0.002;\ 0.002,0.04]$（左上、非对角、右下元素单位依次为 $\mathrm{deg}^2$、$\mathrm{deg}^2/\mathrm{s}$、$\mathrm{deg}^2/\mathrm{s}^2$）。可见 $q$ 与 $\sigma_a^2$ 连物理量纲都不同（$\mathbf{Q}_c$ 满秩正定，单步 $\mathbf{Q}_d$ 秩为 $1$），调用第三方库时务必分清连续与离散白噪声接口（可对照 [FilterPy `discretization.py` 中的 `Q_continuous_white_noise()` 与 `Q_discrete_white_noise()`](https://filterpy.readthedocs.io/en/latest/_modules/filterpy/common/discretization.html)，核实于 2026-09-22）。
 
 #### E09-05：环绕新息怎样影响门控？
 
@@ -930,15 +1049,18 @@ $$\begin{aligned}
 
 两个静止粒子位于 $0^\circ$ 与 $10^\circ$，初始等权 $[0.5,\ 0.5]$。连续两帧收到条件独立的观测 $z_1=0^\circ,z_2=0^\circ$（高斯观测噪声标准差均为 $\sigma=10^\circ$，中间不重采样、无过程噪声与杂波）。计算正确递推的两次后验权重，并与“每帧丢弃旧权重直接用当帧似然覆盖”的错误做法对比。
 
-**解答**：按式(9-17) Bootstrap 权重递推，消去公共高斯系数后单次相对似然向量为 $[1,\ e^{-10^2/(2\times 10^2)}]=[1,\ e^{-0.5}]$。第 1 帧乘均匀初权归一化得 $[1,\ e^{-0.5}]/(1+e^{-0.5})\approx [0.622459,\ 0.377541]$；第 2 帧必须继续乘在旧权重上，变为 $[1,\ e^{-1}]/(1+e^{-1})\approx [0.731059,\ 0.268941]$，正确反映了两份独立观测对 $0^\circ$ 的累积支持。若每帧覆盖旧权重，第 2 帧仍原地停在 $[0.622459,\ 0.377541]$，把第 1 帧证据彻底丢光（注：这里两帧是噪声独立的两次真实采样，切勿把同一帧音频数据重复输入滤波器两遍伪造证据；一般提议分布的完整权重递推可参考 [Stone Soup 1.9.1 粒子滤波教程](https://stonesoup.readthedocs.io/en/v1.9.1/auto_tutorials/04_ParticleFilter.html)，核实于 2026-09-26）。
+**解答**：按式(9-17) Bootstrap 权重递推，消去公共高斯系数后单次相对似然向量为 $[1,\ e^{-10^2/(2\times 10^2)}]=[1,\ e^{-0.5}]$。第 1 帧乘均匀初权归一化得 $[1,\ e^{-0.5}]/(1+e^{-0.5})$，数值约为 $[0.622459,\ 0.377541]$；第 2 帧必须继续乘在旧权重上，变为 $[1,\ e^{-1}]/(1+e^{-1})$，数值约为 $[0.731059,\ 0.268941]$，正确反映了两份独立观测对 $0^\circ$ 的累积支持。若每帧覆盖旧权重，第 2 帧仍原地停在 $[0.622459,\ 0.377541]$，把第 1 帧证据彻底丢光（注：这里两帧是噪声独立的两次真实采样，切勿把同一帧音频数据重复输入滤波器两遍伪造证据；一般提议分布的完整权重递推可参考 [Stone Soup 1.9.1 粒子滤波教程](https://stonesoup.readthedocs.io/en/v1.9.1/auto_tutorials/04_ParticleFilter.html)，核实于 2026-09-26）。
 
 #### E09-08：发布时刻不是状态所属时刻
 
-某方向状态所属采样时刻为 $t_{\mathrm{state}}=1.00\ \mathrm{s}$，定位与追踪处理完于 $t_{\mathrm{pub}}=1.05\ \mathrm{s}$ 发布消息，波束形成器在 $t_{\mathrm{apply}}=1.08\ \mathrm{s}$ 将其作用于音频帧（接口规定证据有效期 $0.10\ \mathrm{s}$）。已知该状态为 $[30^\circ,30^\circ/\mathrm{s}]^\top$，协方差 $\mathbf{P}=\begin{bmatrix}4&1\\1&9\end{bmatrix}$（单位依次为 $\mathrm{deg}^2$、$\mathrm{deg}^2/\mathrm{s}$、$\mathrm{deg}^2/\mathrm{s}^2$），采用 E09-04 的连续白角加速度模型（$q=2\ \mathrm{deg}^2/\mathrm{s}^3$），求 $1.08\ \mathrm{s}$ 生效时的外推状态与协方差。
+某方向状态所属采样时刻为 $t_{\mathrm{state}}=1.00\ \mathrm{s}$，定位与追踪处理完于 $t_{\mathrm{pub}}=1.05\ \mathrm{s}$ 发布消息，波束形成器在 $t_{\mathrm{apply}}=1.08\ \mathrm{s}$ 将其作用于音频帧（接口规定证据有效期 $0.10\ \mathrm{s}$）。已知该状态为 $[30^\circ,30^\circ/\mathrm{s}]^\top$，协方差 $\mathbf{P}=[4,1;\ 1,9]$（单位依次为 $\mathrm{deg}^2$、$\mathrm{deg}^2/\mathrm{s}$、$\mathrm{deg}^2/\mathrm{s}^2$），采用 E09-04 的连续白角加速度模型（$q=2\ \mathrm{deg}^2/\mathrm{s}^3$），求 $1.08\ \mathrm{s}$ 生效时的外推状态与协方差。
 
-**解答**：外推步长必须取 $h=t_{\mathrm{apply}}-t_{\mathrm{state}}=1.08-1.00=0.08\ \mathrm{s}$（观测龄期 $0.08\ \mathrm{s}\le 0.10\ \mathrm{s}$ 未超时），而不能错取消息传输耗时 $1.08-1.05=0.03\ \mathrm{s}$。生效角度外推至 $30^\circ+30\times 0.08=32.4^\circ$（不外推会滞后 $2.4^\circ$）。协方差传播先算确定性耦合项 $P_{11}\leftarrow 4+2\times 0.08\times 1+0.08^2\times 9=4.2176$，再加过程噪声 $2\times 0.08^3/3\approx 0.000341333$；非对角元为 $1+0.08\times 9+2\times 0.08^2/2=1.7264$，右下速度方差为 $9+2\times 0.08=9.16$：
+**解答**：外推步长必须取 $h=t_{\mathrm{apply}}-t_{\mathrm{state}}$，即 $1.08-1.00=0.08\ \mathrm{s}$（观测龄期 $0.08\ \mathrm{s}\le 0.10\ \mathrm{s}$ 未超时），而不能错取消息传输耗时 $1.08-1.05=0.03\ \mathrm{s}$。生效角度外推至 $30^\circ+30\times 0.08=32.4^\circ$（不外推会滞后 $2.4^\circ$）。协方差传播先算确定性耦合项 $4+2\times 0.08\times 1+0.08^2\times 9=4.2176$，再加过程噪声 $2\times 0.08^3/3\approx 0.000341333$；非对角元为 $1+0.08\times 9+2\times 0.08^2/2=1.7264$，右下速度方差为 $9+2\times 0.08=9.16$：
 
-$$\mathbf{P}_{1.08}\approx\begin{bmatrix}4.217941&1.7264\\1.7264&9.16\end{bmatrix}.$$
+$$\begin{aligned}
+\mathbf{P}_{1.08}
+&\approx\begin{bmatrix}4.217941&1.7264\\1.7264&9.16\end{bmatrix}.
+\end{aligned}$$
 
 若上游在发布前已代为预测至 $1.08\ \mathrm{s}$，则发布消息中的 `state_time` 必须同步改为 $1.08\ \mathrm{s}$ 以防下游二次外推；若消费延迟到 $1.20\ \mathrm{s}$（超出 $0.10\ \mathrm{s}$ 有效期），则拒绝使用并触发降级搜索（E09-07 与 E09-08 复算入口为 `.venv/bin/python -m codes.chapters.ch00.cross_chapter.tracking_time_exercises`，源码见 [`tracking_time_exercises.py`](../codes/chapters/ch00/cross_chapter/tracking_time_exercises.py)，测试见 [`test_codes_time_state_exercises.py`](../tests/test_codes_time_state_exercises.py)；乱序迟到观测融合策略可对比 [Stone Soup 固定延迟 OOSM 示例](https://stonesoup.readthedocs.io/en/v1.9.1/auto_examples/oosm/KalmanFilterOOSMExample.html)）。
 
@@ -946,7 +1068,7 @@ $$\mathbf{P}_{1.08}\approx\begin{bmatrix}4.217941&1.7264\\1.7264&9.16\end{bmatri
 
 #### E09-09：IMM 为什么不能只平均两个模型的方差？
 
-为单独检验式(9-15)的交互混合步，设两个模式共享同一局部标量角度状态，上一帧模式后验概率为 $\vec{\mu}=[3/4,\ 1/4]$，模式均值为 $x_1=0^\circ,x_2=10^\circ$，模式内方差为 $P_1=1\ \mathrm{deg}^2,P_2=4\ \mathrm{deg}^2$。行随机转移矩阵取 $\mathbf{T}=\left[\begin{smallmatrix}0.9&0.1\\0.2&0.8\end{smallmatrix}\right]$，其中 $T_{ij}=\Pr(\text{新模式}=j\mid\text{旧模式}=i)$。
+为单独检验式(9-15)的交互混合步，设两个模式共享同一局部标量角度状态，上一帧模式后验概率为 $\vec{\mu}=[3/4,\ 1/4]$，模式均值为 $x_1=0^\circ,x_2=10^\circ$，模式内方差为 $P_1=1\ \mathrm{deg}^2,P_2=4\ \mathrm{deg}^2$。行随机转移矩阵取 $\mathbf{T}=[0.9,0.1;\ 0.2,0.8]$，其中 $T_{ij}=\Pr(\text{新模式}=j\mid\text{旧模式}=i)$。
 
 **第 1 步：计算新模式先验概率 $c_j$。** 转入新模式 1 的两条路径概率为 $(3/4)(9/10)=27/40$ 与 $(1/4)(1/5)=2/40$，相加得 $c_1=29/40$；同理转入新模式 2 得 $c_2=3/40+8/40=11/40$，$c_1+c_2=1$。
 
@@ -962,7 +1084,7 @@ $$\mathbf{P}_{1.08}\approx\begin{bmatrix}4.217941&1.7264\\1.7264&9.16\end{bmatri
 
 以新模式 1 为例，均值分歧项为 $(27/29)(0-20/29)^2+(2/29)(10-20/29)^2=5400/841$；用“总二阶矩减均值平方” $(27/29)(1+0^2)+(2/29)(4+10^2)-(20/29)^2=6415/841$ 独立复核分毫不差。若漏掉分歧项只留 $35/29\approx 1.21\ \mathrm{deg}^2$，就会严重低估模式切换瞬间的不确定性（混合总方差 $7.63\ \mathrm{deg}^2$ 同时大于原方差 $1$ 和 $4$ 完全正常，因为 $0^\circ$ 与 $10^\circ$ 两处均值跨度本身构成了巨大的不确定度）。
 
-**第 3 步：融入模式似然更新后验权重。** 若两模式随后完成各自预测与更新并给出本帧观测似然 $L_1=0.2,L_2=0.8$，按式(9-16)得未归一权重 $[29/200,\ 44/200]$，归一化后模式后验翻转为 $\vec{\mu}^+=[29/73,\ 44/73]\approx [0.397260,\ 0.602740]$。
+**第 3 步：融入模式似然更新后验权重。** 若两模式随后完成各自预测与更新并给出本帧观测似然 $L_1=0.2,L_2=0.8$，按式(9-16)得未归一权重 $[29/200,\ 44/200]$，归一化后模式后验翻转为 $\vec{\mu}^+=[29/73,\ 44/73]$（数值约为 $[0.397260,\ 0.602740]$）。
 
 **边界与开源代码核对。** 当 $\mathbf{T}=\mathbf{I}$ 时各模式互不串流；当某列使 $c_j=0$ 时目标模式不可达，需跳过除零；跨 $\pm 180^\circ$ 混合须先做局部角度展开。阅读固定版本 [FilterPy `IMM.py`](https://github.com/rlabbe/filterpy/blob/3b51149ebcff0401ff1e10bf08ffca7b6bbc4a33/filterpy/kalman/IMM.py) 时需留意：其 `_compute_mixing_probabilities()` 实际执行行向量右乘 `mu @ M`（与本题行随机约定一致），但其文档注释对行列方向的文字描述存在出入，工程接入时务必用非对称 $\mathbf{T}$ 小算例实测验证（复算脚本见 [`enhancement_structure_exercises.py`](../codes/chapters/ch00/cross_chapter/enhancement_structure_exercises.py)，有理数测试见 [`test_codes_enhancement_structure.py`](../tests/test_codes_enhancement_structure.py)，上游细节见[追踪实现核查](../codes/chapters/ch00/research/01_spatial_and_tracking.md#tracking-upstream-audit)）。
 
@@ -972,24 +1094,26 @@ $$\mathbf{P}_{1.08}\approx\begin{bmatrix}4.217941&1.7264\\1.7264&9.16\end{bmatri
 
 **题设。** 取二维平面位置状态，阵列中心位于原点 $(0,0)$，先验预测位置 $\vec{m}^-=[1,\ 2]^\top\ \mathrm{m}$，先验协方差 $\mathbf{P}^-=\frac{1}{4}\mathbf{I}\ \mathrm{m}^2$。采用本书方位约定 $h(x,y)=\operatorname{atan2}(x,y)$，观测噪声方差 $R=0.01\ \mathrm{rad}^2$，本帧测得 $z=h(\vec{m}^-)+0.1\ \mathrm{rad}$。求观测雅可比、卡尔曼增益与更新后验，并验证径向距离为何未被约束。
 
-**第 1 步：雅可比线性化与新息。** 距离平方 $r^2=1^2+2^2=5\ \mathrm{m}^2$，代入式(9-12)得 $\mathbf{H}=[b/r^2,\ -a/r^2]=[2/5,\ -1/5]\ \mathrm{rad/m}$（即 $[0.4,\ -0.2]\ \mathrm{rad/m}$）。先验预测角为 $\operatorname{atan2}(1,2)\approx 0.463648\ \mathrm{rad}$，本帧新息 $\nu=0.1\ \mathrm{rad}$。
+**第 1 步：雅可比线性化与新息。** 距离平方 $r^2=1^2+2^2=5\ \mathrm{m}^2$，代入式(9-12)得雅可比 $\mathbf{H}=[b/r^2,\ -a/r^2]=[2/5,\ -1/5]$（单位：$\mathrm{rad/m}$，即 $[0.4,\ -0.2]\ \mathrm{rad/m}$）。先验预测角为 $\operatorname{atan2}(1,2)\approx 0.463648\ \mathrm{rad}$，本帧新息 $\nu=0.1\ \mathrm{rad}$。
 
 **第 2 步：计算新息方差与卡尔曼增益。**
 
 $$\begin{aligned}
-S&=\mathbf{H}\mathbf{P}^-\mathbf{H}^\top+R=\frac{1}{4}\left[\left(\frac{2}{5}\right)^2+\left(-\frac{1}{5}\right)^2\right]+0.01=0.06\ \mathrm{rad}^2,\\
+S&=\mathbf{H}\mathbf{P}^-\mathbf{H}^\top+R\\
+&=\frac{1}{4}\bigl[(2/5)^2+(-1/5)^2\bigr]+0.01
+=0.06\ \mathrm{rad}^2,\\
 \mathbf{K}&=\frac{1}{0.06}\begin{bmatrix}0.1\\-0.05\end{bmatrix}
 =\begin{bmatrix}5/3\\-5/6\end{bmatrix}\ \mathrm{m/rad}.
 \end{aligned}$$
 
-**第 3 步：更新位置均值与协方差。** 代入 $\vec{m}^+=\vec{m}^-+0.1\mathbf{K}=[7/6,\ 23/12]^\top\approx [1.166667,\ 1.916667]^\top\ \mathrm{m}$。注意到 $\mathbf{H}\mathbf{P}^-=[0.1,\ -0.05]$，协方差更新为
+**第 3 步：更新位置均值与协方差。** 代入 $\vec{m}^+=\vec{m}^-+0.1\mathbf{K}=[7/6,\ 23/12]^\top$（数值约为 $[1.166667,\ 1.916667]^\top\ \mathrm{m}$）。注意到 $\mathbf{H}\mathbf{P}^-=[0.1,\ -0.05]$，协方差更新为
 
 $$\begin{aligned}
 \mathbf{P}^+&=\mathbf{P}^--\mathbf{K}\mathbf{H}\mathbf{P}^-\\
 &=\begin{bmatrix}1/12&1/12\\1/12&5/24\end{bmatrix}\ \mathrm{m}^2,
 \end{aligned}$$
 
-用式(9-8) Joseph 形式独立复算结果完全一致。沿预测径向向量 $\vec{r}=[1,\ 2]^\top$ 检验可知 $\mathbf{H}\vec{r}=0.4\times 1-0.2\times 2=0$，因此径向方差 $\frac{\vec{r}^\top\mathbf{P}^+\vec{r}}{\|\vec{r}\|^2}=\frac{1}{4}\ \mathrm{m}^2$ 与更新前丝毫未变——单次方位观测只压缩了垂直于视线的切向不确定度，对径向距离毫无分辨力。
+用式(9-8) Joseph 形式独立复算结果完全一致。沿预测径向向量 $\vec{r}=[1,\ 2]^\top$ 检验可知 $\mathbf{H}\vec{r}=0.4\times 1-0.2\times 2=0$，因此径向方差 $\vec{r}^\top\mathbf{P}^+\vec{r}/\|\vec{r}\|^2$ 仍等于 $1/4\ \mathrm{m}^2$，与更新前丝毫未变——单次方位观测只压缩了垂直于视线的切向不确定度，对径向距离毫无分辨力。
 
 <a id="e09-11"></a>
 
@@ -997,13 +1121,13 @@ $$\begin{aligned}
 
 **题设。** 标量高斯先验 $x\sim\mathcal{N}(0,1)$，非线性观测函数为偶函数 $h(x)=x^2$；取缩放 UT 参数 $\alpha=1,\kappa=0,\beta=2$，暂设测量噪声为零。对比 UT 与 EKF 给出的预测观测均值与方差，并计算线性更新互协方差 $P_{xy}$。
 
-**第 1 步：构造 Sigma 点。** $L=1$ 时 $\lambda=\alpha^2(1+0)-1=0$，$3$ 个 Sigma 点依次为 $\chi_0=0,\chi_1=+1,\chi_2=-1$；均值权重为 $[0,\ 1/2,\ 1/2]$，协方差权重为 $[2,\ 1/2,\ 1/2]$。代入 $y_i=\chi_i^2$ 得 $0,1,1$，故预测观测均值为 $\bar{y}=0\times 0+\frac{1}{2}\times 1+\frac{1}{2}\times 1=1$。
+**第 1 步：构造 Sigma 点。** $L=1$ 时 $\lambda=\alpha^2(1+0)-1=0$，$3$ 个 Sigma 点依次为 $\chi_0=0,\chi_1=+1,\chi_2=-1$；均值权重为 $[0,\ 1/2,\ 1/2]$，协方差权重为 $[2,\ 1/2,\ 1/2]$。代入 $y_i=\chi_i^2$ 得 $0,1,1$，故预测观测均值为 $\bar{y}=0\cdot 0+(1+1)/2=1$。
 
 **第 2 步：传播观测方差。** 中心点虽然均值权重为 $0$，其协方差权重 $W_0^{(c)}=2$ 却承担了高阶曲率补偿：
 
 $$S_y=2(0-1)^2+\frac{1}{2}(1-1)^2+\frac{1}{2}(1-1)^2=2.$$
 
-对照标准正态分布精确解析矩 $\mathbb{E}[x^2]=1,\mathbb{E}[x^4]=3\implies\operatorname{Var}(x^2)=3-1^2=2$，UT 在二次非线性上达到了精确匹配；反观 EKF，由于在先验均值 $x=0$ 处一阶导数 $h'(0)=0$，只能给出荒谬的预测均值 $0$ 与预测方差 $0$。
+对照标准正态分布精确解析矩 $\mathbb{E}[x^2]=1$ 与 $\mathbb{E}[x^4]=3$，真实方差为 $\operatorname{Var}(x^2)=3-1^2=2$，UT 在二次非线性上达到了精确匹配；反观 EKF，由于在先验均值 $x=0$ 处一阶导数 $h'(0)=0$，只能给出荒谬的预测均值 $0$ 与预测方差 $0$。
 
 **第 3 步：检验正负号可辨识性。** 计算状态—观测互协方差 $P_{xy}$：两侧对称点 $\chi_{1,2}=\pm 1$ 处均有 $y_i-\bar{y}=1-1=0$，中心点又有 $\chi_0-0=0$，三项相加恒得 $P_{xy}=0$，导致 UKF 卡尔曼增益 $K=0$！这并非算法缺陷，而是物理真相：$z=x^2$ 丢失了 $x$ 的正负号，真实后验在 $\pm\sqrt{z}$ 处呈等权对称双峰（条件均值为 $0$），任何单一高斯线性更新都无法替对称双峰做出左右选择。
 
@@ -1040,7 +1164,12 @@ $$S_y=2(0-1)^2+\frac{1}{2}(1-1)^2+\frac{1}{2}(1-1)^2=2.$$
 
 **混合方差膨胀。** 第二问中单条件卡尔曼增益为 $K=4/(4+1)=0.8$，关联 $-2$ 或 $+2$ 各自得到的条件后验均值为 $-1.6$ 与 $+1.6$、条件方差同为 $(1-0.8)\times 4=0.8$。按式(9-21)等权混合后总体均值为 $0$，而总体方差为
 
-$$\bar{P}=\frac{1}{2}\bigl[0.8+(-1.6)^2\bigr]+\frac{1}{2}\bigl[0.8+(+1.6)^2\bigr]=0.8+2.56=3.36.$$
+$$\begin{aligned}
+\bar{P}
+&=\frac{1}{2}\bigl[0.8+(-1.6)^2\bigr]
++\frac{1}{2}\bigl[0.8+(+1.6)^2\bigr]\\
+&=0.8+2.56=3.36.
+\end{aligned}$$
 
 若偷懒先把两条观测平均成 $0$ 再做一次普通 KF 更新，虽然均值同为 $0$，方差却只剩 $0.8$，白白漏掉了高达 $2.56$ 的关联归属不确定度。
 
@@ -1048,7 +1177,9 @@ $$\bar{P}=\frac{1}{2}\bigl[0.8+(-1.6)^2\bigr]+\frac{1}{2}\bigl[0.8+(+1.6)^2\bigr
 
 #### E09-14：同一强度不决定人数分布
 
-**题设。** 设离散状态空间仅含两个互斥方位格点 $\{a,b\}$。模型 A 场内恒定只有 $1$ 人，落在 $\{a\}$ 或 $\{b\}$ 的概率各为 $0.5$；模型 B 场内要么无人（空集 $\varnothing$，概率 $0.5$），要么 $\{a,b\}$ 两处同时各站 $1$ 人（概率 $0.5$）。求两模型的 PHD 强度向量、总人数均值与方差；再对预测强度 $\vec{D}^-=[0.5,\ 0.5]$、$p_D=0.8$ 执行一次标准泊松 PHD 空观测更新。
+**题设。** 设离散状态空间仅含两个互斥方位格点 $\{a,b\}$：模型 A 场内恒定只有 $1$ 人，落在 $\{a\}$ 或 $\{b\}$ 的概率各为 $0.5$；模型 B 场内要么无人（空集 $\varnothing$，概率 $0.5$），要么 $\{a,b\}$ 两处同时各站 $1$ 人（概率 $0.5$）。
+
+求两模型的 PHD 强度向量、总人数均值与方差，并对预测强度 $\vec{D}^-=[0.5,\ 0.5]$、$p_D=0.8$ 执行一次标准泊松 PHD 空观测更新。
 
 **第 1 步：计算各格点 PHD 强度质量。** 模型 A 与模型 B 在格点 $a$ 上的期望目标数均为 $0.5\times 1+0.5\times 0=0.5$，格点 $b$ 同为 $0.5$，故两者具有完全相同的 PHD 强度向量 $\vec{D}=[0.5,\ 0.5]$ 与总期望人数 $1$。
 
@@ -1081,15 +1212,15 @@ $$\vec{D}^+=(1-0.8)\vec{D}^-=[0.1,\ 0.1],\qquad \hat{N}^+=0.2.$$
 **第 1 步：两步前向因果滤波。** 时刻 $1$ 预测均值 $0$、预测方差 $P_{1|0}=1+1=2$，增益 $K_1=2/(2+1)=2/3$，更新得 $m_{1|1}=2/3,P_{1|1}=2/3$。时刻 $2$ 预测均值 $m_{2|1}=2/3$、预测方差 $P_{2|1}=2/3+1=5/3$，增益 $K_2=(5/3)/(5/3+1)=5/8$，代入 $z_2=0$ 更新得
 
 $$\begin{aligned}
-m_{2|2}&=\frac{2}{3}+\frac{5}{8}\left(0-\frac{2}{3}\right)=\frac{1}{4},\\
+m_{2|2}&=\frac{2}{3}+\frac{5}{8}(0-2/3)=\frac{1}{4},\\
 P_{2|2}&=\left(1-\frac{5}{8}\right)\frac{5}{3}=\frac{5}{8}.
 \end{aligned}$$
 
 **第 2 步：一步固定滞后 RTS 回修。** 这里 $F_2=1$，平滑增益为 $C_1=P_{1|1}/P_{2|1}=(2/3)/(5/3)=2/5$，代入式(9-24)得
 
 $$\begin{aligned}
-m_{1|2}&=\frac{2}{3}+\frac{2}{5}\left(\frac{1}{4}-\frac{2}{3}\right)=\frac{1}{2},\\
-P_{1|2}&=\frac{2}{3}+\left(\frac{2}{5}\right)^2\left(\frac{5}{8}-\frac{5}{3}\right)=\frac{1}{2}.
+m_{1|2}&=\frac{2}{3}+\frac{2}{5}(1/4-2/3)=\frac{1}{2},\\
+P_{1|2}&=\frac{2}{3}+(2/5)^2(5/8-5/3)=\frac{1}{2}.
 \end{aligned}$$
 
 融合一步未来观测 $z_2=0$ 后，时刻 $1$ 的估计方差从因果滤波的 $2/3$ 进一步压低到 $1/2$。在线系统可在时刻 $2$ 输出这组高精度的 $(m_{1|2},P_{1|2})$ 供延迟一帧的后端使用，但它的时间戳仍属于时刻 $1$，不能充当时刻 $2$ 的实时波束指向。
@@ -1098,9 +1229,9 @@ P_{1|2}&=\frac{2}{3}+\left(\frac{2}{5}\right)^2\left(\frac{5}{8}-\frac{5}{3}\rig
 
 #### E09-17：改变角度单位，滤波结果应怎样变化
 
-**题设。** 初态 $[30^\circ,5^\circ/\mathrm{s}]^\top$，协方差 $\mathbf{P}=\left[\begin{smallmatrix}4&1\\1&9\end{smallmatrix}\right]$，步长 $1\ \mathrm{s}$ 的过程噪声 $\mathbf{Q}=\operatorname{diag}(1,0)$；本帧观测 $37^\circ$，测量方差 $R=9\ \mathrm{deg}^2$。分别在度制与弧度制下求后验均值、协方差与 NIS，验证物理一致性。
+**题设。** 初态 $[30^\circ,5^\circ/\mathrm{s}]^\top$，协方差 $\mathbf{P}=[4,1;\ 1,9]$，步长 $1\ \mathrm{s}$ 的过程噪声 $\mathbf{Q}=\operatorname{diag}(1,0)$；本帧观测 $37^\circ$，测量方差 $R=9\ \mathrm{deg}^2$。分别在度制与弧度制下求后验均值、协方差与 NIS，验证物理一致性。
 
-**度制计算。** 一步预测均值为 $[35,\ 5]^\top$，预测协方差 $\mathbf{P}^-=\left[\begin{smallmatrix}16&10\\10&9\end{smallmatrix}\right]$。新息 $\nu=37^\circ-35^\circ=2^\circ$，新息方差 $S=16+9=25\ \mathrm{deg}^2$，卡尔曼增益 $\mathbf{K}=[16,\ 10]^\top/25=[0.64,\ 0.4]^\top$，更新得
+**度制计算。** 一步预测均值为 $[35,\ 5]^\top$，预测协方差 $\mathbf{P}^-=[16,10;\ 10,9]$。新息 $\nu=37^\circ-35^\circ=2^\circ$，新息方差 $S=16+9=25\ \mathrm{deg}^2$，卡尔曼增益 $\mathbf{K}=[16,\ 10]^\top/25=[0.64,\ 0.4]^\top$，更新得
 
 $$\begin{aligned}
 \vec{m}^+&=\begin{bmatrix}36.28\\5.8\end{bmatrix},\\
@@ -1119,13 +1250,15 @@ $$\begin{aligned}
 **噪声传播叠加关系。** 第一个半步产生的过程噪声 $\mathbf{Q}(h)$ 在第二个半步期间还会随状态转移矩阵 $\mathbf{F}(h)$ 继续耦合进角度分量，因此两半步等效噪声为
 
 $$\begin{aligned}
-\mathbf{Q}(2h)&=\mathbf{F}(h)\mathbf{Q}(h)\mathbf{F}(h)^\top+\mathbf{Q}(h)\\
+\mathbf{Q}(2h)
+&=\mathbf{F}(h)\mathbf{Q}(h)\mathbf{F}(h)^\top
++\mathbf{Q}(h)\\
 &=\begin{bmatrix}0.005333333&0.04\\0.04&0.4\end{bmatrix},
 \end{aligned}$$
 
-与直接把 $2h=0.2\ \mathrm{s}$ 代入式(9-11)的 $q[(2h)^3/3,\ (2h)^2/2;\ (2h)^2/2,\ 2h]$ 逐项相等；若偷懒写成 $2\mathbf{Q}(h)=\left[\begin{smallmatrix}0.001333333&0.02\\0.02&0.4\end{smallmatrix}\right]$，左上角角度方差就足足漏掉了四分之三！
+与直接把 $2h=0.2\ \mathrm{s}$ 代入式(9-11)的 $q[(2h)^3/3,\ (2h)^2/2;\ (2h)^2/2,\ 2h]$ 逐项相等；若偷懒写成 $2\mathbf{Q}(h)=[0.001333333,0.02;\ 0.02,0.4]$，左上角角度方差就足足漏掉了四分之三！
 
-**缺测预测角度方差减小的正定反例。** 取对称正定先验 $\mathbf{P}=\left[\begin{smallmatrix}4&-1\\-1&1\end{smallmatrix}\right]$（行列式 $4-1=3>0$）、$\mathbf{Q}=\mathbf{0}$，步长 $1\ \mathrm{s}$ 外推一步得 $\mathbf{F}\mathbf{P}\mathbf{F}^\top=\operatorname{diag}(3,1)$，左上角角度方差竟从 $4$ 降到了 $3$！原因在于初态具有负的角度—速度互协方差（即“角度若偏大，速度大概率偏负”），一秒运动后两项反向误差恰好抵消了一部分——这也解释了为何前文强调“$\mathbf{Q}$ 增加半正定项”不能粗率简写成“预测后每个矩阵对角元必大于上一帧”。
+**缺测预测角度方差减小的正定反例。** 取对称正定先验 $\mathbf{P}=[4,-1;\ -1,1]$（行列式 $4-1=3>0$）、$\mathbf{Q}=\mathbf{0}$，步长 $1\ \mathrm{s}$ 外推一步得到 $\mathbf{F}\mathbf{P}\mathbf{F}^\top=[3,0;\ 0,1]$，左上角角度方差竟从 $4$ 降到了 $3$！原因在于初态具有负的角度—速度互协方差（即“角度若偏大，速度大概率偏负”），一秒运动后两项反向误差恰好抵消了一部分——这也解释了为何前文强调“$\mathbf{Q}$ 增加半正定项”不能粗率简写成“预测后每个矩阵对角元必大于上一帧”。
 
 <a id="e09-19"></a>
 
@@ -1145,9 +1278,9 @@ $$\begin{aligned}
 
 #### E09-20：两条相关观测有多少独立信息？
 
-**题设。** 静止标量状态先验 $x\sim\mathcal{N}(0,1)$，同一时刻（或极短高度重叠窗内）获得两条含相关噪声的观测 $z_i=x+n_i$，实测读数 $\vec{z}=[1,\ 1]^\top$。设零均值高斯噪声向量与 $x$ 独立，噪声协方差矩阵为 $\mathbf{R}=\left[\begin{smallmatrix}1&\rho\\\rho&1\end{smallmatrix}\right]$（取强相关 $\rho=0.9$）。推导精确后验均值与方差，并与忽略相关性（误设 $\rho=0$）导致的过度自信结果对比。
+**题设。** 静止标量状态先验 $x\sim\mathcal{N}(0,1)$，同一时刻（或极短高度重叠窗内）获得两条含相关噪声的观测 $z_i=x+n_i$，实测读数 $\vec{z}=[1,\ 1]^\top$。设零均值高斯噪声向量与 $x$ 独立，噪声协方差矩阵为 $\mathbf{R}=[1,\rho;\ \rho,1]$（取强相关 $\rho=0.9$）。推导精确后验均值与方差，并与忽略相关性（误设 $\rho=0$）导致的过度自信结果对比。
 
-**第 1 步：区分测量噪声协方差 $\mathbf{R}$ 与新息协方差 $\mathbf{S}$。** 观测矩阵为 $\mathbf{H}=[1,\ 1]^\top\in\mathbb{R}^{2\times 1}$。先验误差方差 $P^-=1$ 同时进入两条观测，故总新息协方差为 $\mathbf{S}=\mathbf{H}P^-\mathbf{H}^\top+\mathbf{R}=\left[\begin{smallmatrix}2&1+\rho\\1+\rho&2\end{smallmatrix}\right]$（非对角元除了噪声互协方差 $\rho$，还叠加了共享状态贡献的 $1$）。对 $|\rho|<1$，$\mathbf{S}$ 正定可逆，代入式(9-4)与式(9-6)化简可得闭式解：
+**第 1 步：区分测量噪声协方差 $\mathbf{R}$ 与新息协方差 $\mathbf{S}$。** 观测矩阵为 $\mathbf{H}=[1,\ 1]^\top\in\mathbb{R}^{2\times 1}$。先验误差方差 $P^-=1$ 同时进入两条观测，故总新息协方差 $\mathbf{S}=\mathbf{H}P^-\mathbf{H}^\top+\mathbf{R}$ 等于 $[2,1+\rho;\ 1+\rho,2]$（非对角元除了噪声互协方差 $\rho$，还叠加了共享状态贡献的 $1$）。对 $|\rho|<1$，$\mathbf{S}$ 正定可逆，代入式(9-4)与式(9-6)化简可得闭式解：
 
 $$\begin{aligned}
 \mathbf{K}&=\frac{[1,\ 1]}{3+\rho},\\
@@ -1155,7 +1288,7 @@ m^+&=\frac{2}{3+\rho},\\
 P^+&=1-\mathbf{K}\mathbf{H}=\frac{1+\rho}{3+\rho}.
 \end{aligned}\tag{9-31}$$
 
-**第 2 步：代入 $\rho=0.9$ 与误设 $\rho=0$ 对比。** 当 $\rho=0.9$ 时，$\mathbf{S}=\left[\begin{smallmatrix}2&1.9\\1.9&2\end{smallmatrix}\right]$，行列式为 $4-3.61=0.39=39/100$，求逆左乘 $[1,\ 1]$ 得 $\mathbf{K}=[10/39,\ 10/39]$，故真实后验均值为 $m^+=20/39\approx 0.512821$、真实后验方差为 $P^+=19/39\approx 0.487179$。反之，若忽略帧间重叠把两条强相关观测当成独立证据（误填 $\rho=0$），则会算出 $\mathbf{K}=[1/3,\ 1/3]$、$m^+=2/3$，账面方差更是虚报为偏小的 $1/3\approx 0.333$！再看极限自检：当 $\rho\to 1$ 时两条噪声完全全同，式(9-31)平滑收敛至 $m^+=P^+=0.5$，恰好退化为只测了一条观测的结果（$\rho=1$ 正点处 $\mathbf{S}$ 秩亏不可直接求逆），直观解释了为什么高重叠率音频帧加密推送并不能无限压低真实方差。
+**第 2 步：代入 $\rho=0.9$ 与误设 $\rho=0$ 对比。** 当 $\rho=0.9$ 时，$\mathbf{S}=[2,1.9;\ 1.9,2]$，行列式为 $4-3.61=0.39=39/100$，求逆左乘 $[1,\ 1]$ 得 $\mathbf{K}=[10/39,\ 10/39]$，故真实后验均值为 $m^+=20/39\approx 0.512821$、真实后验方差为 $P^+=19/39\approx 0.487179$。反之，若忽略帧间重叠把两条强相关观测当成独立证据（误填 $\rho=0$），则会算出 $\mathbf{K}=[1/3,\ 1/3]$、$m^+=2/3$，账面方差更是虚报为偏小的 $1/3\approx 0.333$！再看极限自检：当 $\rho\to 1$ 时两条噪声完全全同，式(9-31)平滑收敛至 $m^+=P^+=0.5$，恰好退化为只测了一条观测的结果（$\rho=1$ 正点处 $\mathbf{S}$ 秩亏不可直接求逆），直观解释了为什么高重叠率音频帧加密推送并不能无限压低真实方差。
 
 <a id="e09-21"></a>
 
@@ -1181,13 +1314,20 @@ h(\vec{p}_a(t))&=h(\vec{p}(t)).
 
 **第 2 步：四维初态雅可比零空间核验。** 将式(9-12)位置偏导 $[b/r^2,\ -a/r^2]$ 右乘线性运动映射 $[\mathbf{I},\ t\mathbf{I}]$，可得各时刻方位对四维初态 $[x_0,y_0,v_x,v_y]^\top$ 的行梯度；剥离各行非零标量因子 $1/r(t)^2$ 后，三时刻堆叠成的 $3\times 4$ 矩阵为
 
-$$\mathbf{J}_0=\begin{bmatrix}2&-1&0&0\\2&-2&2&-2\\2&-3&4&-6\end{bmatrix}.$$
+$$\begin{aligned}
+\mathbf{J}_0
+&=\begin{bmatrix}
+2&-1&0&0\\
+2&-2&2&-2\\
+2&-3&4&-6
+\end{bmatrix}.
+\end{aligned}$$
 
 行消元易知 $\operatorname{rank}(\mathbf{J}_0)=3$，而沿整体缩放方向 $\vec{u}=[x_0,y_0,v_x,v_y]^\top=[1,\ 2,\ 1,\ 0]^\top$ 逐行右乘恰好得到 $[2-2,\ 2-4+2,\ 2-6+4]^\top=\vec{0}$，证实无论再多采多少帧无噪方位，该尺度维始终躺在观测零空间里。
 
 ![图61 相关观测与仅测方位的尺度信息](../figures/fig61_tracking_information.png)
 
-结合图 61 的左右两栏可以一图看懂 E09-20 与 E09-21 揭示的两类信息边界：左子图画出后验方差随观测相关系数 $\rho\in[0,1)$ 的变化曲线，真实后验方差（实线）随 $\rho$ 增大从 $1/3$ 单调升至 $1/2$，而忽略相关性的误配滤波器（虚线）一直停在 $1/3$ 造成虚假高置信；右子图画出平面上按比例放大的两条匀速直线轨迹，从原点引出的虚线视线在每个时刻都同时穿过两条轨迹的对应时刻点，直观展示了为什么打破这一尺度盲区必须引入多阵列基线、已知阵列加减速机动或独立距离线索。
+结合图 61 的左右两栏可以一图看懂 E09-20 与 E09-21 揭示的两类信息边界：左子图横轴为无量纲相关系数 $\rho\in[0,1)$、纵轴为标量后验方差，真实后验方差（实线）随 $\rho$ 增大从 $1/3$ 单调升至 $1/2$，而忽略相关性的误配滤波器（虚线）一直停在 $1/3$ 造成虚假高置信；右子图横纵轴为平面笛卡尔坐标 $(x,y)$（单位：$\mathrm{m}$），从阵列原点 $(0,0)$ 引出的虚线视线在每个时刻都同时穿过原轨迹与两倍放大轨迹的对应时刻点，直观展示了为什么打破这一尺度盲区必须引入多阵列基线、已知阵列加减速机动或独立距离线索。
 
 <a id="e09-22"></a>
 
@@ -1219,11 +1359,13 @@ r^+&=\Pr(\text{存在}\mid Z=\varnothing)=\frac{r(1-p_D)}{1-rp_D},\\
 
 #### E09-23：迟到观测应回放、丢弃还是当作当前观测？
 
-**题设。** 标量随机游走 $x_t=x_{t-1}+v_t$，观测 $z_t=x_t+n_t$，初态 $x_0\sim\mathcal{N}(0,1)$，过程与测量方差同为 $Q=R=1$（初态及各步噪声相互独立零均值高斯）。真实观测值为 $z_1=2,z_2=-1$，但因异构流水线（如视频帧或远端子阵延迟）使到达顺序颠倒为“先收到 $z_2$，后收到迟到的 $z_1$”。目标是在时刻 $2$ 给出 $x_2$ 的估计，定量对比三种处理策略：（1）按原采样时刻历史回放；（2）丢弃迟到观测 $z_1$；（3）直接把迟到的 $z_1$ 当作时刻 $2$ 的新独立观测硬做更新。
+**题设。** 标量随机游走 $x_t=x_{t-1}+v_t$，观测 $z_t=x_t+n_t$，初态 $x_0\sim\mathcal{N}(0,1)$，过程与测量方差同为 $Q=R=1$（初态及各步噪声相互独立零均值高斯）。真实观测值为 $z_1=2,z_2=-1$，但因异构流水线（如视频帧或远端子阵延迟）使到达顺序颠倒为“先收到 $z_2$，后收到迟到的 $z_1$”。
+
+目标是在时刻 $2$ 给出 $x_2$ 的估计，定量对比三种处理策略：（1）按原采样时刻历史回放；（2）丢弃迟到观测 $z_1$；（3）直接把迟到的 $z_1$ 当作时刻 $2$ 的新独立观测硬做更新。
 
 **第 1 步：按原发生时刻顺序回放（精确基准）。** 从 $x_0$ 预测到时刻 $1$ 得 $P_1^-=2$、增益 $K_1=2/3$，融入 $z_1=2$ 得 $m_1=4/3,P_1=2/3$；再预测到时刻 $2$ 得 $P_2^-=5/3$、增益 $K_2=5/8$，融入 $z_2=-1$ 得 $m_2=4/3+(5/8)(-1-4/3)=-1/8$、$P_2=5/8$。只要缓存了短窗内的历史状态与观测，迟到帧到达后按物理时间戳重排回放即可无损恢复该最优后验。
 
-**第 2 步：用联合高斯条件分布独立验证。** 展开状态和 $x_1=x_0+v_1,x_2=x_0+v_1+v_2$，易知 $\operatorname{Var}(x_1)=2,\operatorname{Var}(x_2)=3,\operatorname{Cov}(x_1,x_2)=2$。叠加独立测量噪声后，联合观测向量 $\vec{Z}=[z_1,z_2]^\top$ 的协方差矩阵为 $\mathbf{S}_Z=\left[\begin{smallmatrix}3&2\\2&4\end{smallmatrix}\right]$，$x_2$ 与 $\vec{Z}$ 的 $1\times 2$ 互协方差行向量为 $\mathbf{C}=\operatorname{Cov}(x_2,\vec{Z})=[2,\ 3]$，条件高斯公式直接给出
+**第 2 步：用联合高斯条件分布独立验证。** 展开状态和 $x_1=x_0+v_1,x_2=x_0+v_1+v_2$，易知先验矩为 $\operatorname{Var}(x_1)=2$、$\operatorname{Var}(x_2)=3$、$\operatorname{Cov}(x_1,x_2)=2$。叠加独立测量噪声后，联合观测向量 $\vec{Z}=[z_1,z_2]^\top$ 的协方差矩阵为 $\mathbf{S}_Z=[3,2;\ 2,4]$，$x_2$ 与 $\vec{Z}$ 的 $1\times 2$ 互协方差行向量为 $\mathbf{C}=\operatorname{Cov}(x_2,\vec{Z})=[2,\ 3]$，条件高斯公式直接给出
 
 $$\begin{aligned}
 \mathbf{K}_Z&=\mathbf{C}\mathbf{S}_Z^{-1},\\
@@ -1231,7 +1373,7 @@ m_{2\mid Z}&=\mathbf{K}_Z\vec{Z},\\
 P_{2\mid Z}&=3-\mathbf{C}\mathbf{S}_Z^{-1}\mathbf{C}^\top.
 \end{aligned}\tag{9-34}$$
 
-代入 $\mathbf{S}_Z^{-1}=\frac{1}{8}\left[\begin{smallmatrix}4&-2\\-2&3\end{smallmatrix}\right]$ 得 $\mathbf{K}_Z=[1/4,\ 5/8]$，算得均值 $\frac{1}{4}\times 2+\frac{5}{8}\times(-1)=-1/8$、后验方差 $3-(\frac{2}{4}+\frac{15}{8})=5/8$，与顺时回放丝毫不差。
+代入逆矩阵 $\mathbf{S}_Z^{-1}=[4,-2;\ -2,3]/8$ 得 $\mathbf{K}_Z=[1/4,\ 5/8]$，算得均值 $\frac{1}{4}\times 2+\frac{5}{8}\times(-1)=-1/8$、后验方差 $3-(\frac{2}{4}+\frac{15}{8})=5/8$，与顺时回放丝毫不差。
 
 **第 3 步：对比丢弃与错当当前观测的偏差。** 若 $z_2=-1$ 先到时从 $x_0$ 直接跨两步预测（$P_2^-=1+1+1=3$，增益 $3/4$），得 $m_2=-3/4,P_2=3/4$：选择“丢弃迟到 $z_1$”即保留该无偏但方差略宽的结果；反之，若在 $(-3/4,\ 3/4)$ 基础上把迟到的 $z_1=2$ 错当成时刻 $2$ 的新鲜独立观测再调一次 `update()`，新增益为 $(3/4)/(3/4+1)=3/7$，均值被强拉到 $-3/4+(3/7)(2+3/4)=+3/7$（符号彻底颠倒！），账面方差还虚降到看似更准的 $3/7$：
 
@@ -1247,7 +1389,7 @@ P_{2\mid Z}&=3-\mathbf{C}\mathbf{S}_Z^{-1}\mathbf{C}^\top.
 
 #### E09-24：完整模式似然与连续缺测的 IMM
 
-**题设。** 两个同坐标系标量随机游走模式 $x_t=x_{t-1}+v_t,z_t=x_t+n_t$（步长 $1\ \mathrm{s}$），过程方差分别为低波动 $Q_1=0$ 与高波动 $Q_2=4\ \mathrm{deg}^2$，观测方差同为 $R=1\ \mathrm{deg}^2$。初态均值同为 $0^\circ$、方差同为 $1\ \mathrm{deg}^2$，初始模式概率 $(0.8,\ 0.2)$，行随机转移矩阵 $\mathbf{T}=\left[\begin{smallmatrix}0.9&0.1\\0.2&0.8\end{smallmatrix}\right]$。时刻 $1$ 测得 $z_1=3^\circ$，时刻 $2,3$ 连续两步缺测，逐步复算模式概率与总体均值、方差。
+**题设。** 两个同坐标系标量随机游走模式 $x_t=x_{t-1}+v_t,z_t=x_t+n_t$（步长 $1\ \mathrm{s}$），过程方差分别为低波动 $Q_1=0$ 与高波动 $Q_2=4\ \mathrm{deg}^2$，观测方差同为 $R=1\ \mathrm{deg}^2$。初态均值同为 $0^\circ$、方差同为 $1\ \mathrm{deg}^2$，初始模式概率 $(0.8,\ 0.2)$，行随机转移矩阵 $\mathbf{T}=[0.9,0.1;\ 0.2,0.8]$。时刻 $1$ 测得 $z_1=3^\circ$，时刻 $2,3$ 连续两步缺测，逐步复算模式概率与总体均值、方差。
 
 **第 1 步：交互与预测。** 新模式先验为 $(0.8,\ 0.2)\mathbf{T}=(0.76,\ 0.24)$。因初态两模式均值与方差完全相同，交互后仍各为 $(0^\circ,\ 1\ \mathrm{deg}^2)$；叠加上各自 $Q_j$ 后，预测方差分别为 $1$ 与 $5\ \mathrm{deg}^2$，时刻 $1$ 新息同为 $\nu_1=\nu_2=3^\circ$，新息方差分别为 $S_1=2\ \mathrm{deg}^2$ 与 $S_2=6\ \mathrm{deg}^2$。
 
@@ -1260,7 +1402,7 @@ b&=\ln\sum_k a_k,\\
 \mu_j^+&=\exp(\ln a_j-b).
 \end{aligned}\tag{9-35}$$
 
-代入得 $L_1=e^{-9/4}/\sqrt{4\pi}\approx 0.029732572306\ \mathrm{deg}^{-1}$、$L_2=e^{-9/12}/\sqrt{12\pi}\approx 0.076933161403\ \mathrm{deg}^{-1}$，乘先验 $(0.76,\ 0.24)$ 归一化后得 $\vec{\mu}^+\approx (0.550325430862,\ 0.449674569138)$（顺便一验：若两模式新息同为 $0^\circ$，似然比恰为 $L_1/L_2=\sqrt{3}>1$，窄方差模式凭借更高的密度峰值自动占优；若换用弧度制，两密度同乘 $180/\pi$，后验概率不变）。
+代入得 $L_1=e^{-9/4}/\sqrt{4\pi}$（约 $0.029732572306\ \mathrm{deg}^{-1}$）、$L_2=e^{-9/12}/\sqrt{12\pi}$（约 $0.076933161403\ \mathrm{deg}^{-1}$），乘先验 $(0.76,\ 0.24)$ 归一化后得 $\vec{\mu}^+\approx (0.550325430862,\ 0.449674569138)$（顺便一验：若两模式新息同为 $0^\circ$，似然比恰为 $L_1/L_2=\sqrt{3}>1$，窄方差模式凭借更高的密度峰值自动占优；若换用弧度制，两密度同乘 $180/\pi$，后验概率不变）。
 
 **第 3 步：模式内更新与总体矩融合。** 两模式卡尔曼增益分别为 $1/2$ 与 $5/6$，更新后模式均值为 $1.5^\circ$ 与 $2.5^\circ$，模式内方差为 $1/2$ 与 $5/6\ \mathrm{deg}^2$。按全方差公式融合总体输出：
 
@@ -1312,9 +1454,9 @@ a_{\max}&=0.20(2f_s)=6400.
 | 再建候选 | 106 | 2 | 1.07596875 | 1.092 |
 | 再次确认 | 108 | 2 | 1.09596875 | 1.112 |
 
-重点复算第 $100$ 帧的退役触发：进入静默前最后一次有效观测在第 $81$ 帧，中心刻度为 $k_{\mathrm{last}}=2\times(81\times 160)+511=26431$（即 $0.82596875\ \mathrm{s}$）。到第 $99$ 帧整窗收齐时 $k_{\mathrm{avail}}=2\times(99\times 160+512)=32704$，观测龄期 $a_{99}=32704-26431=6273\le 6400$，继续保持发布；到第 $100$ 帧整窗收齐时 $k_{\mathrm{avail}}=33024$，观测龄期 $a_{100}=33024-26431=6593\ \text{ticks}=0.20603125\ \mathrm{s}>0.20\ \mathrm{s}$，当场触发 `ID1` 退役；等到第 $106$ 帧重新检出声音时，系统按规分配全新 `ID2`，并于第 $108$ 帧攒满连续 $3$ 帧再次确认（整段 $197$ 帧在实时可用时钟下累计确认发布 $187$ 帧）。
+重点复算第 $100$ 帧的退役触发：进入静默前最后一次有效观测在第 $81$ 帧，中心刻度为 $k_{\mathrm{last}}=2\times(81\times 160)+511=26431$（即 $0.82596875\ \mathrm{s}$）。到第 $99$ 帧整窗收齐时 $k_{\mathrm{avail}}=2\times(99\times 160+512)=32704$，观测龄期 $a_{99}=32704-26431=6273\le 6400$，继续保持发布；到第 $100$ 帧整窗收齐时 $k_{\mathrm{avail}}=33024$，观测龄期 $a_{100}=33024-26431=6593\ \mathrm{ticks}$（折合 $0.20603125\ \mathrm{s}>0.20\ \mathrm{s}$），当场触发 `ID1` 退役；等到第 $106$ 帧重新检出声音时，系统按规分配全新 `ID2`，并于第 $108$ 帧攒满连续 $3$ 帧再次确认（整段 $197$ 帧在实时可用时钟下累计确认发布 $187$ 帧）。
 
-**第 3 步：对比“状态时间轴”龄期口径。** 倘若离线分析时改用“当前窗中心状态时刻减最近有效测量中心时刻” $k_{\mathrm{state}}-k_{\mathrm{last}}$ 计算龄期，第 $101$ 帧差值为 $32831-26431=6400$（恰踩在门限上保留），要到第 $102$ 帧（$6720\ \text{ticks}$）才退役，比实时因果可用时钟整整晚了两帧（确认发布变为 $189$ 帧），再次印证半窗采集延迟对超时边界的直接影响。
+**第 3 步：对比“状态时间轴”龄期口径。** 倘若离线分析时改用“当前窗中心状态时刻减最近有效测量中心时刻” $k_{\mathrm{state}}-k_{\mathrm{last}}$ 计算龄期，第 $101$ 帧差值为 $32831-26431=6400$（恰踩在门限上保留），要到第 $102$ 帧（$6720\ \mathrm{ticks}$）才退役，比实时因果可用时钟整整晚了两帧（确认发布变为 $189$ 帧），再次印证半窗采集延迟对超时边界的直接影响。
 
 ![图77：实际双麦PCM检测及两个时钟下的单槽候选、确认与退役](../figures/fig77_tracking_lifecycle.png)
 
@@ -1324,7 +1466,9 @@ a_{\max}&=0.20(2f_s)=6400.
 
 #### E09-26：三维姿态转换、极点与一次 vMF 更新
 
-**题设。** 沿用本书三维角度约定：方位角 $\theta$ 以 $+y$ 为 $0^\circ$、朝 $+x$ 为正，俯仰角 $\phi_{\mathrm{el}}$ 从水平面朝 $+z$ 为正（公式三角函数取弧度，数值展示用度）。设阵列相对世界坐标系的已知姿态为绕世界 $+z$ 轴按右手定则正转 $+90^\circ$：（1）将阵列局部测得的声源方向 $(\theta_{\mathrm{A}},\phi_{\mathrm{el}})=(30^\circ,0^\circ)$ 转入世界坐标系；（2）推导三维向量归一化对切平面协方差的一阶投影；（3）核算极点奇异性与球面面积元雅可比；（4）完成一次单位球面 vMF 分布静态贝叶斯更新。
+**题设。** 沿用本书三维角度约定：方位角 $\theta$ 以 $+y$ 为 $0^\circ$、朝 $+x$ 为正，俯仰角 $\phi_{\mathrm{el}}$ 从水平面朝 $+z$ 为正（公式三角函数取弧度，数值展示用度）。设阵列相对世界坐标系的已知姿态为绕世界 $+z$ 轴按右手定则正转 $+90^\circ$。
+
+依次完成四项复算：（1）将阵列局部测得的声源方向 $\theta_{\mathrm{A}}=30^\circ,\phi_{\mathrm{el}}=0^\circ$ 转入世界坐标系；（2）推导三维向量归一化对切平面协方差的一阶投影；（3）核算极点奇异性与球面面积元雅可比；（4）完成一次单位球面 vMF 分布静态贝叶斯更新。
 
 **第 1 步：指向声源的单位向量与姿态旋转。**
 
@@ -1334,13 +1478,15 @@ $$\begin{aligned}
 \cos\phi_{\mathrm{el}}\cos\theta\\
 \sin\phi_{\mathrm{el}}
 \end{bmatrix},\\
-\vec{u}_{\mathrm{W}}&=\mathbf{R}_{\mathrm{WA}}\vec{u}_{\mathrm{A}},\\
-\mathbf{R}_{\mathrm{WA}}&=\begin{bmatrix}0&-1&0\\1&0&0\\0&0&1\end{bmatrix}.
+\vec{u}_{\mathrm{W}}
+&=\mathbf{R}_{\mathrm{WA}}\vec{u}_{\mathrm{A}},\\
+\mathbf{R}_{\mathrm{WA}}
+&=\begin{bmatrix}0&-1&0\\1&0&0\\0&0&1\end{bmatrix}.
 \end{aligned}\tag{9-38}$$
 
-代入 $(30^\circ,0^\circ)$ 得阵列系指向声源的单位向量 $\vec{u}_{\mathrm{A}}=[1/2,\ \sqrt{3}/2,\ 0]^\top$，左乘 $\mathbf{R}_{\mathrm{WA}}$ 得世界系单位向量 $\vec{u}_{\mathrm{W}}=[-\sqrt{3}/2,\ 1/2,\ 0]^\top$，反解世界方位角为 $\operatorname{atan2}(-\sqrt{3}/2,1/2)=-60^\circ$、俯仰角仍为 $0^\circ$（逆旋转左乘正交阵转置 $\mathbf{R}_{\mathrm{WA}}^\top$ 即还原 $\vec{u}_{\mathrm{A}}$）。特别留意符号方向：由于本书方位角 $\theta$ 顺时针为正，而绕 $+z$ 轴右手旋转角 $\psi$ 逆时针为正，水平面内有 $\theta_{\mathrm{W}}=\operatorname{wrap}_{180}(\theta_{\mathrm{A}}-\psi)=30^\circ-90^\circ=-60^\circ$，接入惯导 IMU 偏航角（yaw）前务必先拿单位基向量核准正负号。
+代入 $(30^\circ,0^\circ)$ 得阵列系指向声源的单位向量 $\vec{u}_{\mathrm{A}}=[1/2,\ \sqrt{3}/2,\ 0]^\top$，左乘 $\mathbf{R}_{\mathrm{WA}}$ 得世界系单位向量 $\vec{u}_{\mathrm{W}}=[-\sqrt{3}/2,\ 1/2,\ 0]^\top$，反解世界方位角为 $\operatorname{atan2}(-\sqrt{3}/2,1/2)=-60^\circ$、俯仰角仍为 $0^\circ$（逆旋转左乘正交阵转置 $\mathbf{R}_{\mathrm{WA}}^\top$ 即还原 $\vec{u}_{\mathrm{A}}$）。特别留意符号方向：由于本书方位角 $\theta$ 顺时针为正，而绕 $+z$ 轴右手旋转角 $\psi$ 逆时针为正，水平面内差角环绕 $\operatorname{wrap}_{180}(\theta_{\mathrm{A}}-\psi)$ 代入 $30^\circ-90^\circ$ 恰得世界角 $\theta_{\mathrm{W}}=-60^\circ$，接入惯导 IMU 偏航角（yaw）前务必先拿单位基向量核准正负号。
 
-**第 2 步：向量归一化伴随的切平面协方差投影。** 设非零三维估计向量 $\vec{v}$ 模长为 $r=\|\vec{v}\|_2$，归一化为单位方向 $\vec{u}=\vec{v}/r$。对 $r^2=\vec{v}^\top\vec{v}$ 求微分得 $\mathrm{d}r=\vec{u}^\top\mathrm{d}\vec{v}$，从而 $\mathrm{d}\vec{u}=\frac{\mathrm{d}\vec{v}}{r}-\frac{\vec{v}(\vec{u}^\top\mathrm{d}\vec{v})}{r^2}$，一阶雅可比与局部误差协方差传播为
+**第 2 步：向量归一化伴随的切平面协方差投影。** 设非零三维估计向量 $\vec{v}$ 模长为 $r=\|\vec{v}\|_2$，归一化为单位方向 $\vec{u}=\vec{v}/r$。对 $r^2=\vec{v}^\top\vec{v}$ 求微分得 $\mathrm{d}r=\vec{u}^\top\mathrm{d}\vec{v}$，代入商法则把 $\mathrm{d}(\vec{v}/r)$ 展开为 $(\mathrm{d}\vec{v}-\vec{u}\,\mathrm{d}r)/r$，一阶雅可比与局部误差协方差传播为
 
 $$\begin{aligned}
 \mathrm{d}\vec{u}&=\mathbf{J}\,\mathrm{d}\vec{v},\\
@@ -1350,9 +1496,10 @@ $$\begin{aligned}
 
 以 $\vec{v}=[0,\ 2,\ 0]^\top$、各向同性协方差 $\mathbf{C}_v=0.04\mathbf{I}$ 为例，归一化得 $\vec{u}=[0,\ 1,\ 0]^\top$，正交投影雅可比 $\mathbf{J}=\operatorname{diag}(0.5,\ 0,\ 0.5)$，故 $\mathbf{C}_u\approx\operatorname{diag}(0.01,\ 0,\ 0.01)$：满足 $\mathbf{J}\vec{u}=\vec{0}$ 自动滤除了无意义的径向伸缩扰动，只把误差留在垂直于 $\vec{u}$ 的二维球面切平面内。
 
-**第 3 步：天顶极点与球面立体角面积元。** 当 $\phi_{\mathrm{el}}=90^\circ$ 时，$\vec{u}=[0,\ 0,\ 1]^\top$ 与 $\theta$ 无关，程序应显式标记方位角未定义而非任由 `atan2(0, 0)` 输出假零度。对式(9-38)求偏导可知，$\partial\vec{u}/\partial\theta$ 模长为 $\cos\phi_{\mathrm{el}}$，$\partial\vec{u}/\partial\phi_{\mathrm{el}}$ 模长为 $1$ 且二者正交，故球面立体角面积元（单位：球面度 $\mathrm{sr}$）为
+**第 3 步：天顶极点与球面立体角面积元。** 当 $\phi_{\mathrm{el}}=90^\circ$ 时，$\vec{u}=[0,\ 0,\ 1]^\top$ 与 $\theta$ 无关，程序应显式标记方位角未定义而非任由 `atan2(0, 0)` 输出假零度。对式(9-38)求偏导可知，$\partial\vec{u}/\partial\theta$ 模长为 $\cos\phi_{\mathrm{el}}$，$\partial\vec{u}/\partial\phi_{\mathrm{el}}$ 模长为 $1$ 且二者正交，简记俯仰角 $\beta=\phi_{\mathrm{el}}$，球面立体角面积元（单位：球面度 $\mathrm{sr}$）为
 
-$$\mathrm{d}\Omega=\cos\phi_{\mathrm{el}}\,\mathrm{d}\theta\,\mathrm{d}\phi_{\mathrm{el}}.\tag{9-40}$$
+$$\mathrm{d}\Omega
+=\cos\beta\,\mathrm{d}\theta\,\mathrm{d}\beta.\tag{9-40}$$
 
 球面均匀分布相对于立体角密度恒为 $1/(4\pi)\ \mathrm{sr}^{-1}$，换算到弧度经纬角 $(\theta,\phi_{\mathrm{el}})$ 上密度则为 $\cos\phi_{\mathrm{el}}/(4\pi)$：若误在等步长经纬网格上赋等权重，俯仰 $80^\circ$ 处的真实单位球面密度会被人为垫高至赤道处的 $1/\cos 80^\circ\approx 5.758770483144$ 倍；同理，天顶周围半锥角 $10^\circ$（即俯仰 $80^\circ$～$90^\circ$）球冠立体角为 $2\pi(1-\cos 10^\circ)\ \mathrm{sr}$，占整球面均匀概率仅为 $(1-\cos 10^\circ)/2\approx 0.007596123494$（远小于纬度区间长度占比 $10^\circ/180^\circ\approx 0.0556$）。
 
@@ -1372,7 +1519,78 @@ k_+&=\|\vec{\eta}^+\|_2,\\
 \vec{m}_+&=\vec{\eta}^+/k_+,\quad k_+>0.
 \end{aligned}\tag{9-42}$$
 
-代入即得 $\vec{\eta}^+=[4,\ 3,\ 0]^\top$，后验集中度 $k_+=\sqrt{4^2+3^2}=5$，后验集中方向 $\vec{m}_+=[0.8,\ 0.6,\ 0]^\top$，对应世界方位角 $\operatorname{atan2}(0.8,0.6)\approx 53.130102354156^\circ$（注意它不同于对 $0^\circ$ 与 $90^\circ$ 按 $3:4$ 做线性角度加权得到的 $51.43^\circ$；若两方向恰好等集中度反向使 $\vec{\eta}^+=\vec{0}$，后验退化为 $k_+=0$ 的球面均匀分布，集中方向标记为未定义）。最后区分集中方向与欧氏数学期望：当 $k>0$ 时，球面平均长度因子为 $A(k)=\coth k-1/k$（本例 $A(5)\approx 0.800090803982<1$），故期望向量 $\mathbb{E}[\vec{u}]=A(5)\vec{m}_+$ 落在单位球内部而非球面上（数值核见 [`spherical_tracking.py`](../codes/chapters/ch09/core/spherical_tracking.py)）。
+代入即得 $\vec{\eta}^+=[4,\ 3,\ 0]^\top$，后验集中度 $k_+=\sqrt{4^2+3^2}=5$，后验集中方向 $\vec{m}_+=[0.8,\ 0.6,\ 0]^\top$，对应世界方位角 $\theta_+=\operatorname{atan2}(0.8,0.6)$，数值约为 $53.130102354156^\circ$（注意它不同于对 $0^\circ$ 与 $90^\circ$ 按 $3:4$ 做线性角度加权得到的 $51.43^\circ$；若两方向恰好等集中度反向使 $\vec{\eta}^+=\vec{0}$，后验退化为 $k_+=0$ 的球面均匀分布，集中方向标记为未定义）。最后区分集中方向与欧氏数学期望：当 $k>0$ 时，球面平均长度因子为 $A(k)=\coth k-1/k$（本例 $A(5)\approx 0.800090803982<1$），故期望向量 $\mathbb{E}[\vec{u}]=A(5)\vec{m}_+$ 落在单位球内部而非球面上（数值核见 [`spherical_tracking.py`](../codes/chapters/ch09/core/spherical_tracking.py)）。
+
+<a id="e09-27"></a>
+
+#### E09-27：本机扬声器残余回声杂波扇区门控
+
+**题设。** 某近端说话人已确认轨迹在 $t=0$ 时的状态为 $\hat{\vec{s}}_0=[20^\circ,\ 0^\circ/\mathrm{s}]^\top$，协方差为 $\mathbf{P}_0=\operatorname{diag}(4,1)$，采样步长 $\Delta t=1\ \mathrm{s}$，常速度过程噪声为 $\mathbf{Q}=\operatorname{diag}(1,0)$，标量角度测量方差为 $R=4\ \mathrm{deg}^2$。已知本机扬声器位于固定方位 $\theta_{\mathrm{spk}}=-45^\circ$，机构排斥半宽为 $\tau_{\mathrm{spk}}=10^\circ$。记远端播放活动指示量为 $I_{\mathrm{far}}\in\{0,1\}$、双讲指示量为 $I_{\mathrm{dt}}\in\{0,1\}$，观测峰距扬声器的圆周角距 $\delta(z)$ 为 $|\operatorname{wrap}_{180}(z-\theta_{\mathrm{spk}})|$，关联与候选新生前的声学观测集门控规则为
+
+$$\begin{aligned}
+\widetilde{Z}_t
+&=\begin{cases}
+\{z\in Z_t:\ \delta(z)>\tau_{\mathrm{spk}}\},&
+I_{\mathrm{far}}=1,\ I_{\mathrm{dt}}=0,\\
+Z_t,&\text{其他情形}.
+\end{cases}
+\end{aligned}\tag{9-43}$$
+
+考察近端说话人静默而本机扬声器持续播报的连续帧（非线性残余回声每帧在 $z=-45^\circ$ 报出一个伪峰），依次复算：（1）完全不设门控时既有轨迹被两帧残余回声劫持的后验；（2）仅启用 $\epsilon_\nu\le 9$ 的 NIS 门控却未启用式(9-43)时，连续 $3$ 帧命中新生规则为何仍会产生虚假轨迹；（3）启用式(9-43)在单讲回声期与近端双讲期（观测集 $\{-45^\circ,\ 22^\circ\}$）的行为。
+
+**第 1 步：无门控下的两步轨迹劫持。** 第 $1$ 步先验预测为 $\hat{\vec{s}}_1^-=[20,\ 0]^\top$、$\mathbf{P}_1^-=[6,1;\ 1,1]$，新息方差 $S_1=6+4=10\ \mathrm{deg}^2$，卡尔曼增益 $\mathbf{K}_1=[0.6,\ 0.1]^\top$。若直接吞入残余回声 $z_1=-45^\circ$，新息达 $\nu_1=-65^\circ$，状态瞬间被拽偏至 $\hat{\vec{s}}_1=[-19,\ -6.5]^\top$（方位 $-19^\circ$、角速度 $-6.5^\circ/\mathrm{s}$，不仅方位被拉过零轴，还凭空注入了朝向喇叭的负角速度），后验协方差缩为 $\mathbf{P}_1=[2.4,0.4;\ 0.4,0.9]$。
+
+第 $2$ 步继续外推得先验 $\hat{\vec{s}}_2^-=[-25.5,\ -6.5]^\top$，确定性外推项 $[4.1,1.3;\ 1.3,0.9]$ 叠加上 $\mathbf{Q}$ 后得 $\mathbf{P}_2^-=[5.1,1.3;\ 1.3,0.9]$，新息方差 $S_2=5.1+4=9.1\ \mathrm{deg}^2$，增益 $\mathbf{K}_2=[51/91,\ 13/91]^\top$，再次吞入 $z_2=-45^\circ$（$\nu_2=-19.5^\circ$）后状态进一步滑向喇叭：
+
+$$\begin{aligned}
+\hat{\vec{s}}_2
+&=\begin{bmatrix}-255/7\\-65/7\end{bmatrix}
+\approx\begin{bmatrix}-36.428571\\-9.285714\end{bmatrix}.
+\end{aligned}$$
+
+短短两步内，原本停在 $+20^\circ$ 的目标轨迹已被本机扬声器劫持至约 $-36.43^\circ$（角速度约 $-9.29^\circ/\mathrm{s}$），偏离逾 $56^\circ$！
+
+**第 2 步：为什么单靠 NIS 门控挡不住虚假轨迹新生？** 在第 $1$ 步启用式(9-10) NIS 门控时，$\epsilon_{\nu,1}=(-65)^2/10=422.5>9$，既有 $+20^\circ$ 轨迹确实成功拒收了 $-45^\circ$。但在多目标状态机中，凡未被既有轨迹认领的剩余观测都会自动送入“候选轨迹新生池”——由于残余回声死死钉在 $-45^\circ$ 纹丝不动，连续 $3$ 帧被拒的 $-45^\circ$ 伪峰反而在新生池里完美凑齐“连续 $3$ 次命中确认”，凭空孵化出一条高置信虚假扬声器轨迹 `ID_echo`！
+
+**第 3 步：式(9-43)扇区门控与双讲放行验证。** 启用式(9-43)后，在纯远端播放期（$I_{\mathrm{far}}=1,I_{\mathrm{dt}}=0$），$|-45^\circ-(-45^\circ)|=0^\circ\le 10^\circ$ 在关联与新生之前即被清空（$\widetilde{Z}_t=\varnothing$），既有轨迹安全保持在 $[20^\circ,\ 0^\circ/\mathrm{s}]^\top$ 平滑外推（角度方差按 $4\to 6\to 10\ \mathrm{deg}^2$ 自然张开），虚假轨迹出生数严格为 $0$。而一旦第 $1$ 步近端说话人插话形成双讲（$I_{\mathrm{dt}}=1$，实测 $Z_1=\{-45^\circ,\ 22^\circ\}$），式(9-43)自动解除扇区屏蔽保留全集：既有轨迹以 $\nu=2^\circ$（$\epsilon_\nu=4/10=0.4\le 9$）顺利吸纳 $+22^\circ$ 更新至 $[21.2^\circ,\ +0.2^\circ/\mathrm{s}]^\top$，即使真有另一位近端说话人正站在扬声器前方 $-43^\circ$ 开口，双讲期也能正常建轨而不被误伤（代码核验见 [`echo_av_fusion.py`](../codes/chapters/ch09/core/echo_av_fusion.py) 与 `E09-27`）。
+
+<a id="e09-28"></a>
+
+#### E09-28：视听异构延迟回溯、视场盲区与身份指标
+
+**题设分成三项连贯复算。** （1）**异构延迟回溯**：音频追踪器在 $t_4=0.04\ \mathrm{s}$ 的状态为 $\hat{\vec{s}}_4^a=[13,\ 100]^\top$（方位 $13^\circ$、角速度 $100^\circ/\mathrm{s}$）、协方差为 $\mathbf{P}_4^a=[9,20;\ 20,100]$（设 $[t_1,t_4]$ 短窗内过程噪声近似为零），此时收到曝光中心在 $t_1=0.01\ \mathrm{s}$（滞后 $\Delta t_{\mathrm{lag}}=0.03\ \mathrm{s}$）的人脸方位观测 $z_v(t_1)=10^\circ$（测量方差 $R_v=1\ \mathrm{deg}^2$）。在常速度无过程噪声逆映射下，以曝光时刻预测观测构造一步回溯更新矩阵：
+
+$$\begin{aligned}
+\mathbf{H}_{\mathrm{retro}}
+&=\mathbf{H}\mathbf{F}(-\Delta t_{\mathrm{lag}})
+=\begin{bmatrix}1&-\Delta t_{\mathrm{lag}}\end{bmatrix},\\
+\nu_{\mathrm{retro}}
+&=\operatorname{wrap}_{180}\!\bigl(z_v(t_1)
+-\mathbf{H}_{\mathrm{retro}}\hat{\vec{s}}_t^a\bigr).
+\end{aligned}\tag{9-44}$$
+
+对比错当当前时刻更新（$\mathbf{H}=[1,\ 0]$）、式(9-44)一步回溯更新以及从 $t_1$ 历史缓存重放三种结果。（2）**视场角盲区存在概率**：设摄像头光轴位于 $0^\circ$、水平视场角为 $90^\circ$（即 $[-45^\circ,+45^\circ]$），视场内检出率 $p_{D,v}^{\mathrm{in}}=0.95$；一条位于 $+60^\circ$ 的声学轨迹先验存在概率为 $r=0.8$，本帧视觉检测为空集，对比视场感知与全向盲套 $p_{D,v}=0.95$ 的伯努利后验存在概率。（3）**`MOTA` 与 `OSPA` 对照**：真值两帧均为 $\{\text{GT1}:-20^\circ,\ \text{GT2}:+20^\circ\}$，对比“第 $2$ 帧两轨互换 ID”与“互换 ID 同时多出一条 $-45^\circ$ 回声虚警轨迹”下的 `OSPA`（$p=1,c=10^\circ$）和 `MOTA`（匹配门限 $10^\circ$）。
+
+**第 1 部分解答：滞后视觉框的无偏回溯融合。** 若忽略 $30\ \mathrm{ms}$ 曝光滞后硬套 $\mathbf{H}=[1,\ 0]$，伪新息为 $10^\circ-13^\circ=-3^\circ$（$S=10$，增益 $[0.9,\ 2.0]^\top$），会把 $t_4$ 状态错误拽回 $[10.3^\circ,\ 94^\circ/\mathrm{s}]^\top$，凭空制造 $-2.7^\circ$ 的滞后偏置并拖慢角速度。改用式(9-44)代入 $\mathbf{H}_{\mathrm{retro}}=[1,\ -0.03]$，回溯到 $t_1$ 的预测角恰为 $13^\circ-0.03\times 100^\circ=10^\circ$，新息精确为 $\nu_{\mathrm{retro}}=0^\circ$，状态均值无偏保持 $[13^\circ,\ 100^\circ/\mathrm{s}]^\top$！同时高精度视觉测量仍大幅收紧了当前协方差：由乘积 $\mathbf{P}_4^a\mathbf{H}_{\mathrm{retro}}^\top$ 算得 $[8.4,\ 17]^\top$，故 $S_{\mathrm{retro}}=7.89+1=8.89=889/100$，增益 $\mathbf{K}_{\mathrm{retro}}=[840/889,\ 1700/889]^\top$，更新后协方差精确化简为（分子分母对前两项约去公因子 $7$）：
+
+$$\begin{aligned}
+\mathbf{P}_4^{\mathrm{retro}}
+&=\begin{bmatrix}945/889&3500/889\\3500/889&60000/889\end{bmatrix}
+=\begin{bmatrix}135/127&500/127\\500/127&60000/889\end{bmatrix},
+\end{aligned}$$
+
+数值约为 $[1.062992,3.937008;\ 3.937008,67.491564]$，与将状态逆推回 $t_1$ 先验均值 $[10^\circ,100^\circ/\mathrm{s}]^\top$ 及先验协方差 $[7.89,17;\ 17,100]$ 更新后再顺推至 $t_4$ 的历史重放结果逐项恒等。
+
+**第 2 部分解答：视场外空帧不应惩罚存在概率。** 声源方位 $+60^\circ$ 超出 $[-45^\circ,+45^\circ]$ 镜头视场，真实视觉检出率为 $p_{D,v}(60^\circ)=0$，代入式(9-33)得 $r^+=0.8\times 1/(1-0)=0.8$，声学轨迹存在概率毫发无损；反之，若遗漏视场裁剪而盲套 $p_{D,v}=0.95$，分子为 $0.8\times 0.05=0.04$、分母为 $1-0.8\times 0.95=0.24$，空视觉帧会把存在概率误杀至 $0.04/0.24=1/6\approx 0.166667$，导致走入镜头侧后方的说话人被错误删轨。
+
+**第 3 部分解答：集合误差与身份连续性的正交分工。** 两种多目标输出序列在两项指标下的逐项得分对比如下：
+
+| 评测序列 | 第 $1$ 帧 / 第 $2$ 帧 `OSPA` | $\mathrm{FN}$ | $\mathrm{FP}$ | $\mathrm{IDSW}$ | 全序列 `MOTA` |
+|---|---|---|---|---|---|
+| 仅第 $2$ 帧两轨互换 ID | $0^\circ$ / $0^\circ$ | $0$ | $0$ | $2$ | $1-2/4=0.50$ |
+| 互换 ID 加第 $2$ 帧 $-45^\circ$ 虚警 | $0^\circ$ / $10/3^\circ$（约 $3.33^\circ$） | $0$ | $1$ | $2$ | $1-3/4=0.25$ |
+
+第一行中无标签集合完美重合使 `OSPA` 全程为 $0^\circ$，唯有 `MOTA` 捕获了 $2$ 次身份跳变并扣掉一半分数；第二行在第 $2$ 帧多出 $-45^\circ$ 残余回声假轨后，`OSPA` 罚入 $(0+0+10)/3=10/3^\circ$ 基数误差，而 `MOTA` 同时计入 $\mathrm{IDSW}=2$ 与 $\mathrm{FP}=1$ 将总分压至 $0.25$（完整核验见 [`echo_av_fusion.py`](../codes/chapters/ch09/core/echo_av_fusion.py) 与 `E09-28`）。
 
 ---
 

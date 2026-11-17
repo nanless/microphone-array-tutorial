@@ -11,6 +11,12 @@ import numpy as np
 from codes.chapters.ch09.chapter09_experiments import (
     actual_tracking_audio, run_experiments, small_set_distances, white_acceleration_covariance,
 )
+from codes.chapters.ch09.core.echo_av_fusion import (
+    clear_mot_angular_summary,
+    echo_sector_gate,
+    fov_bernoulli_missed_detection_update,
+    oosm_cv_retrodiction_update,
+)
 from codes.chapters.ch09.examples.chapter09_tracking_audio import generate
 
 
@@ -25,7 +31,7 @@ class Chapter09ExperimentsTests(unittest.TestCase):
         cls.results = run_experiments(audio_directory=cls.audio_directory)
 
     def test_seventeen_stable_ids(self):
-        self.assertEqual(set(self.results), {f'E09-{i:02}' for i in range(10, 27)})
+        self.assertEqual(set(self.results), {f'E09-{i:02}' for i in range(10, 29)})
 
     def test_bearing_ekf_geometry_and_fraction_posterior(self):
         item = self.results['E09-10']
@@ -251,6 +257,117 @@ class Chapter09ExperimentsTests(unittest.TestCase):
         self.assertEqual(item['drop_late_observation'], {'mean': -.75, 'variance': .75})
         self.assertAlmostEqual(item['wrong_current_time_update']['mean'], 3/7)
         self.assertAlmostEqual(item['wrong_current_time_update']['variance'], 3/7)
+
+    def test_echo_sector_gating_hijack_and_double_talk(self):
+        item = self.results['E09-27']
+        hijack = item['ungated_hijack']
+        # Step 1 exact fractions: P1^- = [[6, 1], [1, 1]], S1 = 10, K1 = [3/5, 1/10], nu1 = -65.
+        self.assertEqual(hijack['step1_nis'], float(F((-65) ** 2, 10)))
+        self.assertTrue(hijack['nis_gate_9_rejects_step1'])
+        np.testing.assert_allclose(hijack['step1_posterior_state'], [-19.0, -6.5], atol=1e-14)
+        np.testing.assert_allclose(
+            hijack['step1_posterior_covariance'],
+            [[float(F(12, 5)), float(F(2, 5))], [float(F(2, 5)), float(F(9, 10))]],
+            atol=1e-14,
+        )
+        # Step 2 exact fractions: P2^- = [[51/10, 13/10], [13/10, 9/10]], S2 = 91/10, K2 = [51/91, 13/91], nu2 = -39/2.
+        s2_angle = F(-51, 2) + F(51, 91) * F(-39, 2)
+        s2_vel = F(-13, 2) + F(13, 91) * F(-39, 2)
+        self.assertEqual((s2_angle, s2_vel), (F(-255, 7), F(-65, 7)))
+        np.testing.assert_allclose(
+            hijack['step2_posterior_state'],
+            [float(F(-255, 7)), float(F(-65, 7))],
+            atol=1e-13,
+        )
+        self.assertEqual(hijack['unmasked_3hit_false_track_births'], 1)
+
+        gated = item['sector_gated_single_talk']
+        self.assertTrue(gated['gate_active'])
+        self.assertEqual(gated['retained_detections_deg'], [])
+        self.assertEqual(gated['suppressed_detections_deg'], [-45.0])
+        np.testing.assert_allclose(gated['step1_coasted_covariance'], [[6.0, 1.0], [1.0, 1.0]])
+        np.testing.assert_allclose(gated['step2_coasted_covariance'], [[10.0, 2.0], [2.0, 1.0]])
+        self.assertEqual(gated['false_track_births'], 0)
+
+        dt_ctrl = item['double_talk_control']
+        self.assertFalse(dt_ctrl['gate_active'])
+        np.testing.assert_allclose(dt_ctrl['near_end_22deg_posterior_state'], [float(F(106, 5)), float(F(1, 5))])
+
+        # Wrap-around sector boundary check near -180/+180 deg.
+        wrapped_gate = echo_sector_gate(
+            np.array([176.0, 160.0]),
+            speaker_angle_deg=-178.0,
+            sector_half_width_deg=8.0,
+            far_end_active=True,
+            double_talk=False,
+        )
+        np.testing.assert_allclose(wrapped_gate['retained_detections_deg'], [160.0])
+        np.testing.assert_allclose(wrapped_gate['suppressed_detections_deg'], [176.0])
+        with self.assertRaises(ValueError):
+            echo_sector_gate(
+                np.array([0.0]),
+                speaker_angle_deg=0.0,
+                sector_half_width_deg=10.0,
+                far_end_active=1,  # type: ignore[arg-type]
+                double_talk=False,
+            )
+
+    def test_av_oosm_retrodiction_fov_and_mota_vs_ospa(self):
+        item = self.results['E09-28']
+        oosm = item['oosm_retrodiction']
+        # Naive H = [1, 0]: innovation = 10 - 13 = -3, S = 10, K = [9/10, 2], posterior = [103/10, 94].
+        naive = oosm['naive_current_time']
+        self.assertAlmostEqual(naive['innovation_deg'], -3.0, places=12)
+        np.testing.assert_allclose(naive['posterior_state'], [float(F(103, 10)), 94.0], atol=1e-13)
+
+        # Exact retrodiction H_retro = [1, -3/100]: P H^T = [42/5, 17], S = 889/100, K = [840/889, 1700/889].
+        retro = oosm['retrodiction']
+        self.assertAlmostEqual(retro['innovation_deg'], 0.0, places=14)
+        self.assertAlmostEqual(retro['innovation_variance_deg2'], float(F(889, 100)), places=12)
+        np.testing.assert_allclose(
+            retro['kalman_gain'],
+            [float(F(840, 889)), float(F(1700, 889))],
+            atol=1e-13,
+        )
+        np.testing.assert_allclose(retro['posterior_state'], [13.0, 100.0], atol=1e-13)
+        p11 = F(9) - F(840, 889) * F(42, 5)
+        p12 = F(20) - F(840, 889) * F(17)
+        p22 = F(100) - F(1700, 889) * F(17)
+        self.assertEqual((p11, p12, p22), (F(135, 127), F(500, 127), F(60000, 889)))
+        expected_cov = [[float(p11), float(p12)], [float(p12), float(p22)]]
+        np.testing.assert_allclose(retro['posterior_covariance'], expected_cov, atol=1e-12)
+        np.testing.assert_allclose(oosm['chronological_replay_state_at_t4'], [13.0, 100.0], atol=1e-13)
+        np.testing.assert_allclose(oosm['chronological_replay_covariance_at_t4'], expected_cov, atol=1e-12)
+
+        # Out-of-FOV Bernoulli missed detection: r = 4/5, p_D = 0 outside [-45, 45] vs naive p_D = 19/20.
+        fov = item['camera_fov_existence']
+        self.assertFalse(fov['in_fov'])
+        self.assertAlmostEqual(fov['fov_aware_posterior_existence'], float(F(4, 5)), places=14)
+        naive_r = F(4, 5) * F(1, 20) / (1 - F(4, 5) * F(19, 20))
+        self.assertEqual(naive_r, F(1, 6))
+        self.assertAlmostEqual(fov['naive_posterior_existence'], float(naive_r), places=14)
+
+        # CLEAR MOT vs label-free OSPA.
+        swap = item['identity_vs_set_metrics']['pure_id_swap']
+        self.assertEqual(swap['ospa_per_frame_deg'], [0.0, 0.0])
+        self.assertEqual(swap['clear_mot']['idsw'], 2)
+        self.assertEqual(swap['clear_mot']['fn'], 0)
+        self.assertEqual(swap['clear_mot']['fp'], 0)
+        self.assertAlmostEqual(swap['clear_mot']['mota'], float(F(1, 2)), places=14)
+
+        swap_echo = item['identity_vs_set_metrics']['id_swap_plus_echo_false_track']
+        self.assertAlmostEqual(swap_echo['ospa_per_frame_deg'][1], float(F(10, 3)), places=12)
+        self.assertEqual(swap_echo['clear_mot']['fp'], 1)
+        self.assertEqual(swap_echo['clear_mot']['idsw'], 2)
+        self.assertAlmostEqual(swap_echo['clear_mot']['mota'], float(F(1, 4)), places=14)
+
+        for bad_call in (
+            lambda: oosm_cv_retrodiction_update(np.array([0.0, 0.0]), np.eye(2), 0.0, 1.0, -0.01),
+            lambda: fov_bernoulli_missed_detection_update(1.0, 0.0, in_fov_detection_prob=1.0),
+            lambda: clear_mot_angular_summary([{}], [{}]),
+        ):
+            with self.assertRaises(ValueError):
+                bad_call()
 
 
 if __name__ == '__main__':

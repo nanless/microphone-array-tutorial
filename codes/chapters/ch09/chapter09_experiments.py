@@ -1,4 +1,4 @@
-"""Teaching experiments E09-10..26; no writes on import/run.
+"""Teaching experiments E09-10..28; no writes on import/run.
 
 These are small arithmetic/controlled-signal examples, not complete EKF, UKF,
 JPDA, PHD, GOSPA tracking systems or device evaluations. No upstream imports.
@@ -19,6 +19,10 @@ import math
 from pathlib import Path
 import numpy as np
 from codes.chapters.ch02.core.conventions import finite_real_array, finite_real_scalar
+from codes.chapters.ch09.core.echo_av_fusion import (
+    av_oosm_and_mot_experiment,
+    echo_clutter_gating_experiment,
+)
 from codes.chapters.ch09.core.tracking import (
     CircularParticleFilter, ConstantVelocityKalman, wrap_angle,
     white_acceleration_covariance,
@@ -387,6 +391,8 @@ def run_experiments(*, audio_directory=TRACKING_OUTPUT):
         'equal_theta_phi_grid_density_ratio_at_80deg': 1/math.cos(math.radians(80)),
         'scope': 'known proper rotation and one static independent vMF likelihood; not dynamic FvMFF, pose estimation or a calibrated tangent filter',
     }
+    result['E09-27'] = echo_clutter_gating_experiment()
+    result['E09-28'] = av_oosm_and_mot_experiment()
     return _plain(result)
 
 

@@ -1,4 +1,4 @@
-"""E04-12..25: deterministic DOA anchors, boundaries and PCM phase checks.
+"""E04-12..27: deterministic DOA anchors, boundaries and PCM phase checks.
 
 Run with ``python -m codes.chapters.ch04.chapter04_experiments``. No files are
 written; no external implementation is imported or run. Local bounds and
@@ -19,6 +19,9 @@ import wave
 import numpy as np
 from codes.chapters.ch04.core.doa import (
     esprit_ula, srp_phat, aic_source_count, mdl_source_count, music_spectrum,
+)
+from codes.chapters.ch04.core.uca_cdr import (
+    two_mic_cdr_example, uca_phase_mode_example,
 )
 from codes.chapters.ch03.core.geometry import plane_wave_steering
 from codes.chapters.ch00.core.audio_samples import doa_ambiguity_case, prepare_exports, read_pcm16
@@ -195,7 +198,6 @@ def audio_phase_ambiguity(*, audio_root=None, manifest_path=None):
     return {'candidate_tau12_samples': [-6, 2], 'candidate_angles_deg': angles.tolist(),
             'physical_max_delay_samples': 16000*.2/343, 'common_export_gain': groups['doa_ambiguity']['common_export_gain'],
             'score_interval_samples': [8192, 9216], 'rows': rows}
-
 
 
 def nonunitary_focusing_noise():
@@ -402,14 +404,25 @@ def exact_ctf_cross_relation():
     }
 
 
+def exercise_04_26():
+    """E04-26: UCA circular-harmonics Vandermonde transform, M=8 vs M=4 aliasing, and Bessel zeros."""
+    return uca_phase_mode_example()
+
+
+def exercise_04_27():
+    """E04-27: blind DOA-independent two-mic coherent-to-diffuse ratio (CDR) estimator."""
+    return two_mic_cdr_example()
+
+
 def run_exercises():
     functions = [nyquist_interpolation, srp_frequency_and_grid, phat_order_and_floors,
                  esprit_basis_and_alias, gauss_newton_one_step, local_delay_crlb, audio_phase_ambiguity,
                  nonunitary_focusing_noise, aic_mdl_comparison, correlated_tdoa_gls,
                  unitary_coherent_focusing, root_music_polynomial,
-                 coherent_reflection_false_peak, exact_ctf_cross_relation]
+                 coherent_reflection_false_peak, exact_ctf_cross_relation,
+                 exercise_04_26, exercise_04_27]
     return {f'E04-{i:02d}': function() for i, function in enumerate(functions, 12)}
 
 
 if __name__ == '__main__':
-    print(json.dumps(run_exercises(), ensure_ascii=False, indent=2))
+    print(json.dumps(run_exercises(), ensure_ascii=False, indent=2, allow_nan=False))

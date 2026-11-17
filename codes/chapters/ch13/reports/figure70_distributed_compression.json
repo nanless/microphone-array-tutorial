@@ -83,23 +83,23 @@
       },
       "compressed_white": {
         "analytic": {
-          "target_distortion": 0.00016094674556213,
-          "noise_power": 0.000885207100591716,
-          "total_mse": 0.001046153846153846,
+          "target_distortion": 0.00016094674556213043,
+          "noise_power": 0.0008852071005917159,
+          "total_mse": 0.0010461538461538464,
           "reference_target_power": 0.0068000000000000005,
-          "normalized_mse": 0.1538461538461538,
+          "normalized_mse": 0.15384615384615388,
           "target_noise_cross_term": 0.0,
           "cross_term_scope": "uncorrelated covariance model"
         },
         "float": {
           "samples": 28800,
           "reference_power": 0.006799999999999997,
-          "target_distortion_power": 0.00016094674556212988,
-          "noise_power": 0.0008852071005917134,
-          "other_error_power": 9.312250920890247e-35,
-          "target_noise_cross_power": 6.262698090636929e-19,
-          "target_other_cross_power": 1.5949813899355966e-19,
-          "noise_other_cross_power": -3.7199815349831223e-22,
+          "target_distortion_power": 0.00016094674556213034,
+          "noise_power": 0.0008852071005917132,
+          "other_error_power": 8.141446608856749e-35,
+          "target_noise_cross_power": 6.2952241558114935e-19,
+          "target_other_cross_power": -1.3070715653529426e-19,
+          "noise_other_cross_power": -1.9527620229788307e-21,
           "total_mse": 0.001046153846153844,
           "normalized_mse": 0.1538461538461536,
           "component_sum": 0.001046153846153844,
@@ -145,27 +145,27 @@
       },
       "stale_correlated": {
         "analytic": {
-          "target_distortion": 0.00016094674556213002,
+          "target_distortion": 0.00016094674556213043,
           "noise_power": 0.000885207100591716,
-          "total_mse": 0.001046153846153846,
+          "total_mse": 0.0010461538461538464,
           "reference_target_power": 0.0068000000000000005,
-          "normalized_mse": 0.1538461538461538,
+          "normalized_mse": 0.15384615384615388,
           "target_noise_cross_term": 0.0,
           "cross_term_scope": "uncorrelated covariance model"
         },
         "float": {
           "samples": 28800,
           "reference_power": 0.006799999999999997,
-          "target_distortion_power": 0.00016094674556212988,
-          "noise_power": 0.0008852071005917174,
-          "other_error_power": 9.955365578065743e-35,
-          "target_noise_cross_power": 5.505714157152952e-19,
-          "target_other_cross_power": 1.7263646926900638e-19,
-          "noise_other_cross_power": 1.9374091857705306e-22,
+          "target_distortion_power": 0.00016094674556213034,
+          "noise_power": 0.0008852071005917173,
+          "other_error_power": 7.334331408844541e-35,
+          "target_noise_cross_power": 5.52694644969746e-19,
+          "target_other_cross_power": -1.1789099573944232e-19,
+          "noise_other_cross_power": -5.492207609027387e-21,
           "total_mse": 0.001046153846153848,
           "normalized_mse": 0.15384615384615416,
-          "component_sum": 0.001046153846153848,
-          "decomposition_residual": 0.0
+          "component_sum": 0.0010461538461538481,
+          "decomposition_residual": -2.168404344971009e-19
         },
         "pcm": {
           "E": 32353470360,
@@ -208,5 +208,5 @@
     },
     "comparison_scope": "same inputs within each panel; two noise covariance models differ"
   },
-  "audio_manifest_sha256": "b72d3ee248d79b4341e3e88827c19c99eb11ec8e9f01c317e1d502a13a8e7d2d"
+  "audio_manifest_sha256": "39e2235076caae1483bd7969dde625935f609b484f7b8ba313c33fe5fd538bd9"
 }

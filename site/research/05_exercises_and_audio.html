@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>章节代码练习与音频实验 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="5064f54696c6"><style>
+<meta name="source-digest" content="30366ba49985"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -4241,7 +4241,7 @@ e^{-\mathrm j2\pi 2000n/24000},\\
 <span id="sec-148" class="anchor-alias" aria-hidden="true"></span><span id="554-通道掩码为什么要重新检查空间模型" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-55-4">55.4 通道掩码为什么要重新检查空间模型</h3>
 <p>E05-24固定原目标向量 $\vec a=[1,1]^T$。各通道乘平方根掩码 $[1,1/2]$ 后，向量变为 $[1,1/2]^T$，其外积为 $[[1,1/2],[1/2,1/4]]$。若噪声协方差设为单位阵，从这个处理后的RTF算得权重 $[0.8,0.4]^T$；应用于处理后目标时响应为1，应用于原目标时却为1.2。必须说明协方差和最终权重应用在预滤波前还是预滤波后，不能只凭单位归一说原声像不失真。</p>
 <p>若两帧掩码轮换为 $[1,1/4]$ 和 $[1/4,1]$，处理后两向量为 $[1,1/2]^T$ 与 $[1/2,1]^T$。除以帧数2的外积均值为 $[[5/8,1/2],[1/2,5/8]]$，特征值是9/8和1/8，行列式9/64，有效秩2。原两帧同为 $[1,1]^T$，外积均值秩1；逐通道、逐帧变化可以改变这个结构，而不是在原矩阵外乘一个公共数。</p>
-<p>对应共同标量掩码0.625时，除以帧数得到0.625乘全1矩阵；按正文式(5-21)除以掩码和则得到全1矩阵。这是两个不同分母。上面逐通道控制采用每帧预滤波后除以帧数，并不使用式(5-21)的掩码和归一；其半正定性也不保证保留原始RTF或秩。2026年的滑窗方法原文与完整算法未运行边界见<a href="01_spatial_and_tracking.html#per-channel-mask-evidence">空间研究补充</a>。</p>
+<p>对应共同标量掩码0.625时，除以帧数得到0.625乘全1矩阵；按正文式(5-22)除以掩码和则得到全1矩阵。这是两个不同分母。上面逐通道控制采用每帧预滤波后除以帧数，并不使用式(5-22)的掩码和归一；其半正定性也不保证保留原始RTF或秩。2026年的滑窗方法原文与完整算法未运行边界见<a href="01_spatial_and_tracking.html#per-channel-mask-evidence">空间研究补充</a>。</p>
 <span id="sec-149" class="anchor-alias" aria-hidden="true"></span><span id="56-第6章播放增益的位置与历史回声" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-88a7535bcf">56. 第6章：播放增益的位置与历史回声</h2>
 <p>本节对应正文<a href="../06_aec.html#e06-40">E06-40</a>、<a href="../06_aec.html#e06-41">E06-41</a>和<a href="../06_aec.html#e06-42">E06-42</a>。先用五点与十二点手算弄清运算顺序，再核对六份独立PCM。路径和增益均为给定真值，没有训练、时延估计、增益拟合、近端声或噪声；它们解释接口条件，不提供产品排名。</p>
 <span id="sec-150" class="anchor-alias" aria-hidden="true"></span><span id="561-五个样本当前增益不能搬到卷积之后" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-56-1">56.1 五个样本：当前增益不能搬到卷积之后</h3>

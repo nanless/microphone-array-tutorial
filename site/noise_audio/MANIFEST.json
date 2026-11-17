@@ -313,7 +313,7 @@
   "environment": {
     "python": "3.13.12",
     "numpy": "2.5.3",
-    "platform": "macOS-26.6.1-arm64-arm-64bit-Mach-O"
+    "platform": "macOS-27.2.1-arm64-arm-64bit-Mach-O"
   },
   "files": {
     "noise_reference.wav": {

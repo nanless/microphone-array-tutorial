@@ -17,7 +17,7 @@
     "python": "3.13.12",
     "numpy": "2.5.3",
     "byteorder": "little",
-    "platform": "macOS-26.6.1-arm64-arm-64bit-Mach-O"
+    "platform": "macOS-27.2.1-arm64-arm-64bit-Mach-O"
   },
   "parameters": {
     "frequencies_hz": [

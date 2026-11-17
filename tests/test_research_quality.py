@@ -222,6 +222,8 @@ class PublishedResearchQualityTests(unittest.TestCase):
             temporary = Path(directory)
             site = temporary / "site"
             (temporary / "figures").symlink_to(quality.ROOT / "figures", target_is_directory=True)
+            (temporary / "dist").symlink_to(quality.ROOT / "dist", target_is_directory=True)
+            (temporary / "assets").symlink_to(quality.ROOT / "assets", target_is_directory=True)
             with patch.object(build_site, "OUT", site), redirect_stdout(io.StringIO()):
                 build_site.main()
             errors = []

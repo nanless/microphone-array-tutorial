@@ -19,12 +19,12 @@
         "float_components": {
           "samples": 28800,
           "reference_power": 0.006799999999999997,
-          "target_distortion_power": 0.00016094674556212988,
-          "noise_power": 0.0008852071005917134,
-          "other_error_power": 9.312250920890247e-35,
-          "target_noise_cross_power": 6.262698090636929e-19,
-          "target_other_cross_power": 1.5949813899355966e-19,
-          "noise_other_cross_power": -3.7199815349831223e-22,
+          "target_distortion_power": 0.00016094674556213034,
+          "noise_power": 0.0008852071005917132,
+          "other_error_power": 8.141446608856749e-35,
+          "target_noise_cross_power": 6.2952241558114935e-19,
+          "target_other_cross_power": -1.3070715653529426e-19,
+          "noise_other_cross_power": -1.9527620229788307e-21,
           "total_mse": 0.001046153846153844,
           "normalized_mse": 0.1538461538461536,
           "component_sum": 0.001046153846153844,
@@ -288,8 +288,8 @@
     },
     "cross_terms": [
       [
-        1.3694486648368016e-32,
-        1.1549940439761096e-16
+        1.197271560125993e-32,
+        7.306801426807007e-17
       ],
       [
         8.422387034550341e-33,
@@ -302,5 +302,5 @@
     ],
     "scope": "known-rate SRC and two fixed missing-packet policies; not blind synchronization or network measurements"
   },
-  "audio_manifest_sha256": "b72d3ee248d79b4341e3e88827c19c99eb11ec8e9f01c317e1d502a13a8e7d2d"
+  "audio_manifest_sha256": "39e2235076caae1483bd7969dde625935f609b484f7b8ba313c33fe5fd538bd9"
 }

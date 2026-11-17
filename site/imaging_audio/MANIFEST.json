@@ -1097,12 +1097,12 @@
           0.4999999999999921
         ],
         "inverse_source_mean_square": [
-          0.0199999999999995,
-          0.004999999999999966
+          0.019999999999999497,
+          0.004999999999999967
         ],
         "normalized_inverse_source_mean_square": [
-          0.9999999999999748,
-          0.24999999999999828
+          0.9999999999999747,
+          0.2499999999999983
         ],
         "scan_residual": [
           0.0,
@@ -1348,21 +1348,21 @@
         ],
         "inverse_source_mean_square": [
           0.019999664920005798,
-          0.004999655882699142
+          0.0049996558826991425
         ],
         "normalized_inverse_source_mean_square": [
           0.9999832460002896,
-          0.24998279413495703
+          0.24998279413495708
         ],
         "scan_residual": [
           0.0,
           0.0
         ],
         "full_csm_residual": {
-          "frobenius_squared": 2.738871241280591e-12,
+          "frobenius_squared": 2.7388712412808365e-12,
           "reference_frobenius_squared": 0.0018999155109091833,
-          "relative_frobenius": 3.7968082431294036e-05,
-          "upper_unweighted_squared": 2.7371981550501923e-12,
+          "relative_frobenius": 3.796808243129539e-05,
+          "upper_unweighted_squared": 2.737198155050315e-12,
           "squared_underflow": {
             "frobenius_squared": false,
             "reference_frobenius_squared": false,
@@ -1609,18 +1609,18 @@
         ],
         "inverse_source_mean_square": [
           0.023999999999999383,
-          0.008999999999999949
+          0.00899999999999995
         ],
         "normalized_inverse_source_mean_square": [
           1.1999999999999689,
-          0.44999999999999735
+          0.44999999999999746
         ],
         "scan_residual": [
           0.0,
           0.0
         ],
         "full_csm_residual": {
-          "frobenius_squared": 0.0005399999999999916,
+          "frobenius_squared": 0.0005399999999999914,
           "reference_frobenius_squared": 0.003599999999999856,
           "relative_frobenius": 0.38729833462074637,
           "upper_unweighted_squared": 0.0005039999999999932,
@@ -1859,21 +1859,21 @@
         ],
         "inverse_source_mean_square": [
           0.023999020262426927,
-          0.008999412372574537
+          0.008999412372574539
         ],
         "normalized_inverse_source_mean_square": [
           1.199951013121346,
-          0.4499706186287268
+          0.44997061862872684
         ],
         "scan_residual": [
           0.0,
-          0.0
+          1.734723475976807e-18
         ],
         "full_csm_residual": {
           "frobenius_squared": 0.0005398766352267005,
           "reference_frobenius_squared": 0.0035996003814175075,
           "relative_frobenius": 0.3872755876967564,
-          "upper_unweighted_squared": 0.0005038742889811343,
+          "upper_unweighted_squared": 0.0005038742889811345,
           "squared_underflow": {
             "frobenius_squared": false,
             "reference_frobenius_squared": false,

@@ -661,7 +661,7 @@
   "environment": {
     "python": "3.13.12",
     "numpy": "2.5.3",
-    "platform": "macOS-26.6.1-arm64-arm-64bit-Mach-O"
+    "platform": "macOS-27.2.1-arm64-arm-64bit-Mach-O"
   },
   "truth_time_axis": "emission-event clock: path position at u and both microphone travel times for this same u; not simultaneous receiver samples",
   "propagation_scope": "assigned retarded-time 1/r pressure model; no moving-monopole radiation-amplitude correction"

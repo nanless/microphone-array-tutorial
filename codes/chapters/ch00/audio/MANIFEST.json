@@ -2742,21 +2742,21 @@
       },
       "float_analysis": {
         "clean_fitted_amplitudes": {
-          "500": 0.19999999999999768,
+          "500": 0.19999999999999774,
           "1500": 0.19999999999999873,
-          "3500": 2.3865130038523602e-17
+          "3500": 1.3673958540192639e-16
         },
         "mixture_fitted_amplitudes": {
-          "500": 0.199999999999998,
-          "1500": 0.19999999999999868,
-          "3500": 0.20000000000000034
+          "500": 0.19999999999999776,
+          "1500": 0.19999999999999882,
+          "3500": 0.20000000000000032
         },
         "candidates": {
           "selection_fir3": {
             "fitted_amplitudes": {
-              "500": 0.20000000000000007,
+              "500": 0.20000000000000012,
               "1500": 0.17983290756914788,
-              "3500": 0.09388131165469878
+              "3500": 0.09388131165469876
             },
             "target_500_retention": 1.000000000000012,
             "target_1500_retention": 0.8991645378457451,
@@ -2767,14 +2767,14 @@
           },
           "selection_fir9": {
             "fitted_amplitudes": {
-              "500": 0.2000000000000005,
-              "1500": 0.04118215949591789,
-              "3500": 0.003918231641663657
+              "500": 0.20000000000000057,
+              "1500": 0.041182159495917955,
+              "3500": 0.003918231641663597
             },
             "target_500_retention": 1.0000000000000142,
-            "target_1500_retention": 0.20591079747959076,
-            "noise_3500_retention": 0.019591158208318252,
-            "noise_attenuation_db": 34.158797764421045,
+            "target_1500_retention": 0.20591079747959107,
+            "noise_3500_retention": 0.019591158208317954,
+            "noise_attenuation_db": 34.15879776442117,
             "aligned_total_nmse": 0.31548073751972067,
             "aligned_total_nmse_db": -5.010271525665317
           }
@@ -2782,39 +2782,39 @@
       },
       "pcm_analysis": {
         "clean_fitted_amplitudes": {
-          "500": 0.15999632810839498,
-          "1500": 0.15999296072465355,
-          "3500": 4.633836204709735e-06
+          "500": 0.15999632810839493,
+          "1500": 0.15999296072465352,
+          "3500": 4.633836204616677e-06
         },
         "mixture_fitted_amplitudes": {
-          "500": 0.15999714273218962,
-          "1500": 0.16000027250383436,
-          "3500": 0.1600009321450408
+          "500": 0.1599971427321895,
+          "1500": 0.16000027250383422,
+          "3500": 0.16000093214504074
         },
         "candidates": {
           "selection_fir3": {
             "fitted_amplitudes": {
               "500": 0.15999392436061463,
-              "1500": 0.14387093046629526,
-              "3500": 0.07510442703656867
+              "1500": 0.14387093046629523,
+              "3500": 0.0751044270365687
             },
-            "target_500_retention": 0.9999849762315876,
+            "target_500_retention": 0.9999849762315879,
             "target_1500_retention": 0.8992328775882574,
-            "noise_3500_retention": 0.46939993429842347,
-            "noise_attenuation_db": 6.569139510506263,
+            "noise_3500_retention": 0.4693999342984238,
+            "noise_attenuation_db": 6.5691395105062576,
             "aligned_total_nmse": 0.1152401155126502,
             "aligned_total_nmse_db": -9.38396315069849
           },
           "selection_fir9": {
             "fitted_amplitudes": {
-              "500": 0.16000578851490466,
-              "1500": 0.03294801040409392,
-              "3500": 0.003134905476714214
+              "500": 0.16000578851490477,
+              "1500": 0.03294801040409399,
+              "3500": 0.0031349054767141654
             },
-            "target_500_retention": 1.0000591288976537,
-            "target_1500_retention": 0.20593412519440246,
-            "noise_3500_retention": 0.01959304508221504,
-            "noise_attenuation_db": 34.157961244749096,
+            "target_500_retention": 1.0000591288976546,
+            "target_1500_retention": 0.2059341251944029,
+            "noise_3500_retention": 0.019593045082214745,
+            "noise_attenuation_db": 34.157961244749224,
             "aligned_total_nmse": 0.3154562031816209,
             "aligned_total_nmse_db": -5.010609281373436
           }
@@ -4112,7 +4112,7 @@
         "algorithm_delay_samples": 0
       },
       "limits": "Both mixing matrices are known; this is inverse-problem noise amplification, not blind separation or a benchmark of AuxIVA.",
-      "common_export_gain": 0.6882001719162989
+      "common_export_gain": 0.6882001719162985
     },
     "nonlinear": {
       "parameters": {
@@ -5316,7 +5316,7 @@
       "peak": 0.17218017578125,
       "rms": 0.021823528115692083,
       "common_export_gain": 1.0,
-      "quantization_max_abs_error": 1.5258157098475486e-05
+      "quantization_max_abs_error": 1.5258157042884538e-05
     },
     {
       "file": "separation_source1.wav",
@@ -5581,8 +5581,8 @@
       "duration_s": 2.0,
       "peak": 0.279083251953125,
       "rms": 0.10320828537234884,
-      "common_export_gain": 0.6882001719162989,
-      "quantization_max_abs_error": 1.5258644697452306e-05
+      "common_export_gain": 0.6882001719162985,
+      "quantization_max_abs_error": 1.525864469749394e-05
     },
     {
       "file": "conditioning_well_input.wav",
@@ -5595,8 +5595,8 @@
       "duration_s": 2.0,
       "peak": 0.416290283203125,
       "rms": 0.11540486521929373,
-      "common_export_gain": 0.6882001719162989,
-      "quantization_max_abs_error": 1.525842208825734e-05
+      "common_export_gain": 0.6882001719162985,
+      "quantization_max_abs_error": 1.5258422088292034e-05
     },
     {
       "file": "conditioning_ill_input.wav",
@@ -5609,8 +5609,8 @@
       "duration_s": 2.0,
       "peak": 0.5506591796875,
       "rms": 0.14524562797762564,
-      "common_export_gain": 0.6882001719162989,
-      "quantization_max_abs_error": 1.5258714106652915e-05
+      "common_export_gain": 0.6882001719162985,
+      "quantization_max_abs_error": 1.5258714106763938e-05
     },
     {
       "file": "conditioning_well_output.wav",
@@ -5623,8 +5623,8 @@
       "duration_s": 2.0,
       "peak": 0.2845458984375,
       "rms": 0.10323656787346863,
-      "common_export_gain": 0.6882001719162989,
-      "quantization_max_abs_error": 1.5258354845962274e-05
+      "common_export_gain": 0.6882001719162985,
+      "quantization_max_abs_error": 1.5258354845996969e-05
     },
     {
       "file": "conditioning_ill_output.wav",
@@ -5637,8 +5637,8 @@
       "duration_s": 2.0,
       "peak": 0.79998779296875,
       "rms": 0.17833129631558983,
-      "common_export_gain": 0.6882001719162989,
-      "quantization_max_abs_error": 1.5258137621848578e-05
+      "common_export_gain": 0.6882001719162985,
+      "quantization_max_abs_error": 1.5258137621945722e-05
     },
     {
       "file": "nonlinear_reference.wav",

@@ -2,7 +2,7 @@
 <link rel="canonical" href="14_appendix-symbols-math.html"><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 14 章 · 附录 A：符号术语数学 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="5064f54696c6"><style>
+<meta name="source-digest" content="30366ba49985"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -350,27 +350,27 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="14_appendix-symbols-math.html#sec-u-28d6db2836">E14-20：相关噪声为什么会产生负权重，白化后还须改变什么？</a></li>
 </ul></nav></details>
 <blockquote>
-<p>⚠️ 本篇是第 14 章，即附录 A（正文共 13 章（其中第 12、13 章为扩展专题），另有附录 A/B），可独立查阅，前后篇见下方导航。</p>
+<p>⚠️ 本篇是第 14 章，即附录 A（正文共 13 章，其中第 12、13 章为扩展专题；另有附录 A/B），可独立查阅，前后篇见下方导航。</p>
 <p>🏠 首页导读：<a href="index.html">🏠 导读与导航</a> ｜ 上一篇：<a href="13_distributed-enhancement.html">第 13 章 · 分布式麦克风协同增强</a> ｜ 下一篇：<a href="15_appendix-guide.html">第 15 章 · 附录 B：路径地图与练习</a></p>
 </blockquote>
 <hr />
 <span id="sec-u-78b6668a18" class="anchor-alias" aria-hidden="true"></span><span id="sec-1" class="anchor-alias" aria-hidden="true"></span><h1 id="sec-u-2bfed502b9">第 14 章 · 附录 A：符号、术语与数学基础</h1>
-<p>本附录的 14.1～14.3 汇总符号、术语和数学工具，14.4 用小矩阵、短序列与边界反例练习复算；下一篇是附录 B。遇到不熟悉的符号，可以先查 14.1，再回到使用它的章节核对模型条件；同一个字母在不同算法中可能有不同含义。</p>
+<p>本附录的 §14.1～§14.3 汇总全书通用的数学符号、声学与阵列处理核心术语以及高频使用的线性代数与复分析工具，§14.4 则通过小矩阵、短序列和边界反例手算巩固这些工具的适用条件；下一篇为附录 B。阅读正文时若遇到陌生的记号或变换，可以先查 §14.1～§14.3 建立直观图景，再回到所在章节核对具体的信号模型假设。</p>
 <span id="sec-12-1" class="anchor-alias" aria-hidden="true"></span><span id="sec-2" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-14-1">14.1 符号表</h2>
-<p>约定同 §2.3：<strong>斜体 = 标量，头顶箭头 = 向量，加粗大写 = 矩阵</strong>；$^H$ 表示共轭转置，$^\top$ 表示转置，$\hat{\ }$ 表示估计值。$X(f)$、$X(f_k,\ell)$ 这类大写字母按语音文献惯例表示逐频点复数<strong>标量</strong>。</p>
-<p>本书采用前向傅里叶核 $e^{-\mathrm j2\pi ft}$。</p>
-<p>阵列坐标约定为：麦 1 位于 $x=0$，麦 2 位于 $+x$；正横为 0°，正角朝麦 2；$\vec u$ 从阵列指向声源，传播方向为 $-\vec u$。</p>
-<p>球谐公式常改用从 $+x$ 轴起算的方位角 $\alpha$ 和从 $+z$ 轴起算的极角 $\vartheta$。与本书从 $+y$ 朝 $+x$ 起算的声源方位角 $\theta$、从水平面起算的俯仰角 $\phi_{\mathrm{el}}$ 对接时，应先换算 $\alpha=\pi/2-\theta$（按 $2\pi$ 周期取值）、$\vartheta=\pi/2-\phi_{\mathrm{el}}$，再调用相应公式或接口，见<a href="05_beamforming.html#sec-5-8">§5.8</a>。</p>
-<p><strong>字母复用</strong>（与 §2.3 一致）：本符号表把波数记为 $\kappa=2\pi f/c$，与 STFT 频点索引 $k$ 区分；其他章节的局部推导或文献仍可能用 $k$ 表示波数，第7章局部也用 $k$ 表示 WPE 的滞后帧号。$D$ 可表示阵列孔径或 PHD 强度函数；$\lambda$ 可表示波长、WPE 功率谱或矩阵特征值；$K$ 可表示声源数或 WPE 预测阶数；$s$ 可表示源信号或追踪状态。具体含义以所在公式的定义为准。</p>
-<p>本表区分 STFT 网格时，默认 $k$ 是频点索引、$\ell$ 是帧索引，$n$ 是离散采样索引，$t$ 是连续时间。各章沿用不同公式时会另定义下标：第 5 章的 $\vec x(k,n)$ 按（频点，帧）排列；第 8 章的 $X_m(f,k)$ 也按（频点，帧）排列，活动推导还用 $t$ 表示离散帧。跨章比较先按物理含义对齐，不能仅凭同一个字母判断是哪条轴。</p>
-<p>实信号的<strong>单边谱</strong>取 $0\leq k\leq\lfloor N/2\rfloor$，对应非负频率 $f_k=kf_s/N$（Hz）。若存储完整 $N$ 点 DFT，后半段索引表示负频率：偶数 $N$ 的 $k>N/2$ 或奇数 $N$ 的 $k>(N-1)/2$ 应解释为 $(k-N)f_s/N$。偶数 $N$ 的 Nyquist 格点 $k=N/2$ 对实信号自共轭，可按单边谱约定记作 $+f_s/2$；不能把完整 DFT 的末格直接解释成接近 $+f_s$ 的新物理频率。E14-06 给出八点算例。</p>
-<p>若必须给<strong>完整双边频谱</strong>的每个格点指定有符号代表频率，本书采用与 NumPy 的 fftfreq 接口一致的排列：</p>
+<p>本书的排版约定与 §2.3 保持一致：<strong>斜体表示标量，头顶箭头表示列向量，加粗大写表示矩阵</strong>；上标 $^H$ 表示共轭转置（厄米转置），上标 $^\top$ 表示普通转置，顶帽 $\hat{\ }$ 表示估计量。按照语音信号处理文献的惯例，$X(f)$、$X(f_k,\ell)$ 这类带频点自变量的大写斜体字母表示单个频点或单个时频格点上的复数<strong>标量</strong>。</p>
+<p>本书统一采用前向傅里叶核 $e^{-\mathrm{j}2\pi ft}$，其中 $\mathrm{j}=\sqrt{-1}$ 为虚数单位。</p>
+<p>阵列几何参考系约定为：麦 1 位于原点 $x=0$，麦 2 位于 $+x$ 半轴；正横方向（$+y$ 轴）记为 $0^\circ$，正方位角朝麦 2（$+x$ 轴）顺时针旋转度量；方向单位向量 $\vec{u}$ 从阵列参考点指向声源，声波传播方向为 $-\vec{u}$。</p>
+<p>球谐域公式通常改用从 $+x$ 轴逆时针起算的方位角 $\alpha$ 和从 $+z$ 轴向下起算的极角（余纬角）$\vartheta$。将其与本书从 $+y$ 朝 $+x$ 起算的声源方位角 $\theta$、从水平面朝 $+z$ 起算的俯仰角 $\phi_{\mathrm{el}}$ 对接时，必须先做角度换算 $\alpha=\pi/2-\theta$（按 $2\pi$ 周期折叠取值）、$\vartheta=\pi/2-\phi_{\mathrm{el}}$，再代入球谐基函数或开源库接口，详见<a href="05_beamforming.html#sec-5-8">§5.8</a>。</p>
+<p><strong>字母复用</strong>（与 §2.3 一致）：由于阵列、自适应滤波、去混响与多目标追踪分属不同研究传统，同一个字母在不同章节可能承担不同角色。例如本表将波数记为 $\kappa=2\pi f/c$，以区别于离散频点索引 $k$，但部分文献与局部推导仍用 $k$ 记波数，第 7 章局部还用 $k$ 记 WPE 的滞后帧号；$D$ 可表示阵列孔径或 PHD 强度函数；$\lambda$ 可表示声波波长、RLS 指数遗忘因子、WPE 时变方差或矩阵特征值；$K$ 可表示声源个数或 WPE 预测阶数；$s$ 可表示源信号或追踪状态。具体含义以所在公式的定义为准。</p>
+<p>本表区分 STFT 网格时，默认 $k$ 是频点索引、$\ell$ 是帧索引，$n$ 是离散采样索引，$t$ 是连续时间。各章沿用各自领域的经典记号时会另行声明下标：例如第 5 章的 $\vec{x}(k,n)$ 按（频点，帧）排列；第 8 章的 $X_m(f,k)$ 或 $\vec{x}_{ft}$ 也按（频点，帧）排列，其中用 $t$ 表示离散帧号。跨章对照公式时，应当先对齐每个维度的物理意义，不能仅凭字母相同就默认代表同一条坐标轴。</p>
+<p>实信号的<strong>单边谱</strong>取 $0\leq k\leq\lfloor N/2\rfloor$，对应非负物理频率 $f_k=kf_s/N$（单位：Hz）。若在内存中保存完整的 $N$ 点 DFT，后半段索引对应负频率：偶数 $N$ 下的 $k>N/2$ 或奇数 $N$ 下的 $k>(N-1)/2$ 应换算为 $(k-N)f_s/N$。偶数 $N$ 的奈奎斯特（Nyquist）格点 $k=N/2$ 对实信号满足自共轭，在单边谱中常记作 $+f_s/2$；切勿把完整 DFT 的末尾格点误读成接近 $+f_s$ 的新高频分量。练习 E14-06 给出了八点序列的逐格复算。</p>
+<p>若需要为<strong>完整双边频谱</strong>的每一个离散格点赋予唯一的有符号代表频率，本书采用与 NumPy 的 <code>fftfreq</code> 函数一致的排列规则：</p>
 <p>$$f_k^{\mathrm{full}}=
 \begin{cases}
 kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 (k-N)f_s/N,&\lceil N/2\rceil\leq k\lt N.
 \end{cases}\tag{14-1}$$</p>
-<p>偶数 $N$ 的 Nyquist 格点在式(14-1)中记为 $-f_s/2$，在实信号单边谱中记为 $+f_s/2$；这两个复指数在整数采样时刻完全相同，并不是两个可独立观测的频点。<a href="https://numpy.org/doc/stable/reference/generated/numpy.fft.fftfreq.html" title="citation">NumPy 完整频率排列</a>与<a href="https://numpy.org/doc/stable/reference/generated/numpy.fft.rfftfreq.html" title="citation">实谱单边排列</a>分别说明了这两种约定（NumPy 2.5 在线文档，2026-09-28 核实）。</p>
+<p>偶数 $N$ 的奈奎斯特格点在式(14-1)双边约定下记为 $-f_s/2$，而在实信号单边谱约定下记为 $+f_s/2$；由于 $e^{-\mathrm{j}\pi n}=e^{+\mathrm{j}\pi n}=(-1)^n$ 在所有整数采样时刻 $n$ 取值完全相同，这两个记号指代同一个离散频点，并非两次独立观测。<a href="https://numpy.org/doc/stable/reference/generated/numpy.fft.fftfreq.html">NumPy 完整频率排列文档</a>与<a href="https://numpy.org/doc/stable/reference/generated/numpy.fft.rfftfreq.html">实谱单边频率排列文档</a>分别规定了这两种下标映射（NumPy 2.5 在线文档，2026-09-28 核实）。</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table class="tutorial-budget-table" style="--tutorial-table-width:34em">
 <thead>
 <tr>
@@ -381,135 +381,147 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 <tbody>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">$M$, $d$, $D$</td>
-<td>麦数、阵元间距、阵列孔径</td>
+<td>麦克风数量、相邻阵元间距、阵列总孔径</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:8em">$N_{\mathrm{tar}}$（第8章OverIVA）</td>
-<td>单独输出的目标数量；$N_{\mathrm{tar}}\lt M$，不同于式(8-1)统计全部物理声源的$N$。背景可含多种混合干扰</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">$f_s$, $N$, $H$</td>
+<td>采样率（Hz）、DFT/STFT 窗长（点数）与帧移（hop size，相邻两帧起点的采样点数间隔，§2.5）</td>
+</tr>
+<tr>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">$N_{\mathrm{tar}}$（第 8 章 OverIVA）</td>
+<td>单独提取的目标声源数量；满足 $N_{\mathrm{tar}}\lt M$，不同于第 8 章式(8-1)统计全部物理声源数的 $N$，其余背景通道可包含多种混合干扰</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">$c$, $\lambda$, $f$，$f_k$</td>
-<td>声速（示例常取 343 m/s）、波长、连续物理频率（Hz）、单边 DFT/STFT 第 $k$ 个频点的非负物理频率 $f_k=kf_s/N$；完整双边 DFT 的负频率索引按上文换算</td>
+<td>声速（算例常取 $343\ \mathrm{m/s}$）、波长、连续物理频率（Hz）、单边 DFT/STFT 第 $k$ 个频点的非负物理频率 $f_k=kf_s/N$；完整双边 DFT 的负频率索引按式(14-1)换算</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">$\kappa=2\pi f/c$</td>
-<td>波数，单位为 $\mathrm{rad/m}$，使传播相位 $\kappa d$ 无量纲；与频点索引 $k$ 区分。条件数 $\kappa_2(\mathbf A)$ 和球面概率集中度 $\kappa_{\mathrm{vMF}}$ 是另外的局部定义，不能按波数解释</td>
+<td>波数，单位为 $\mathrm{rad/m}$，使空间传播相位 $\kappa d$ 无量纲，并避免与频点索引 $k$ 混淆。矩阵二范数条件数 $\kappa_2(\mathbf{A})$ 与球面分布集中度 $\kappa_{\mathrm{vMF}}$ 为各自语境下的独立记号</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">$\theta$, $\theta_0$</td>
-<td>正横方向起算的入射角、波束指向角；端射为 $\pm90°$</td>
+<td>从正横方向起算的声源方位角、波束指向角；端射方向为 $\pm90^\circ$</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:8em">$\vec u(\theta)$</td>
-<td>从阵列指向声源的单位向量；声波传播方向为 $-\vec u$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">$\vec{u}(\theta)$</td>
+<td>从阵列参考点指向声源的单位向量；声波传播方向为 $-\vec{u}$</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:8em">$\phi_{\mathrm{el}}$, $\vec u(\theta,\phi_{\mathrm{el}})$（第3、9章三维方向）</td>
-<td>俯仰从水平面朝+z为正，范围$[-90^\circ,90^\circ]$；方位仍从+y朝+x为正。极点方位无定义，积分的球面面积因子以弧度写成$\cos\phi_{\mathrm{el}}$（E09-26）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">$\phi_{\mathrm{el}}$, $\vec{u}(\theta,\phi_{\mathrm{el}})$（第 3、9 章三维方向）</td>
+<td>俯仰角从水平面朝 $+z$ 为正，取值范围 $[-90^\circ,90^\circ]$；方位角仍从 $+y$ 朝 $+x$ 为正。天顶与天底极点处方位角无唯一定义，球面积分的面积微元因子按弧度写为 $\cos\phi_{\mathrm{el}}$（E09-26）</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:8em">$\mathbf R_{\mathrm{WA}}$（第9章姿态）</td>
-<td>把阵列坐标的指源单位向量转换到世界坐标的已知正交旋转，行列式为+1、逆变换为其转置；不是空间协方差。右手z轴正旋转与本书方位的正方向相反（E09-26）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">$\mathbf{R}_{\mathrm{WA}}$（第 9 章姿态）</td>
+<td>将阵列局部坐标系下的指源单位向量变换到世界坐标系的已知三维正交旋转矩阵，满足 $\det(\mathbf{R}_{\mathrm{WA}})=+1$ 且逆矩阵等于其转置 $\mathbf{R}_{\mathrm{WA}}^\top$；注意与空间协方差矩阵区分。右手系绕 $+z$ 轴的正旋转与本书方位角的正方向相反（E09-26）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">$\vec{r}_m$, $\vec{p}$</td>
-<td>第 $m$ 个麦克风的位置向量、声源位置向量</td>
+<td>第 $m$ 个麦克风的三维位置向量、近场声源位置向量</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">$t$, $n$, $k$, $\ell$, $L$</td>
-<td>连续时间、离散采样索引、频点索引、帧索引、用于统计的快拍数；第 2 章式(2-6)、式(2-7)及本附录式(14-3)均用 $L$。其他章节若用 $T$ 或复用 $k$ 作滞后号，以当地公式的定义为准</td>
+<td>连续时间、离散采样索引、频点索引、帧索引、统计平均所用的快拍数；第 2 章式(2-6)、式(2-7)及本附录式(14-3)均用 $L$ 记快拍数</td>
+</tr>
+<tr>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">$v_m[n]$, $\vec{v}(f_k,\ell)$</td>
+<td>第 $m$ 个麦克风的时域加性传感器噪声与频域多通道噪声列向量（§2.3 主记号）；部分章节在无下标歧义时亦记为 $n_m[n]$ 或 $\vec{n}$</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">$\psi$</td>
-<td>相邻两麦在指向补偿后的残余相位差（§2.6、§5.2）；E09-26局部另定义为右手绕+z的已知姿态角，两者不能混用</td>
+<td>相邻两麦经过波束指向相位补偿后的残余空间相位差（§2.6、§5.2）；E09-26 局部另用 $\psi$ 记右手绕 $+z$ 轴的姿态偏航角，两处语境不同</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">$\vec{a}(\theta)$, $\vec{w}$</td>
-<td>导向矢量、波束权重</td>
+<td>阵列导向矢量、窄带复数波束权重向量</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">$\hat{\mathbf{R}}$, $\mathbf{R}_{nn}$, $\mathbf{R}_{ss}$</td>
-<td>空间协方差矩阵、噪声协方差矩阵、目标协方差矩阵</td>
+<td>样本空间协方差矩阵、噪声空间协方差矩阵、目标语音空间协方差矩阵</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">$\mathbf{\Gamma}$</td>
-<td>球面各向同性弥散噪声场的相干矩阵；水平面入射模型另见 §5.1</td>
+<td>三维球面各向同性弥散噪声场的空间相干矩阵；二维水平面各向同性入射模型另见 §5.1</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:8em">$\mathbf{E}_n$（$\mathbf{E}_s$）</td>
-<td>噪声（信号）子空间的特征向量基（§4.6）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">$\mathbf{E}_n$, $\mathbf{E}_s$, $\boldsymbol{\Psi}$（第 4 章子空间）</td>
+<td>噪声子空间特征向量基、信号子空间特征向量基，以及 ESPRIT 算法连接平移不变双子阵信号子空间的旋转不变算子 $\boldsymbol{\Psi}$（§4.6）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">$\sigma^2$</td>
-<td>噪声方差/功率（白噪声下协方差为 $\sigma^2\mathbf{I}$）</td>
+<td>噪声方差（平均功率）；各通道独立同功率空间白噪声的协方差矩阵为 $\sigma^2\mathbf{I}$</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">$\mathbf{C}$, $\vec{f}$</td>
-<td>LCMV 约束矩阵与约束值向量，$\mathbf{C}^H\vec{w}=\vec{f}$（§5.5）</td>
+<td>LCMV 波束形成器的线性约束矩阵与期望响应向量，满足 $\mathbf{C}^H\vec{w}=\vec{f}$（§5.5）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">$\vec{e}_r$</td>
-<td>参考麦选择向量（第 $r$ 位为 1 的单位向量，见<a href="05_beamforming.html#sec-u-fb93744989">第 5 章 MWF 专题</a>的参考麦选择，MWF/SDW 用）</td>
+<td>参考麦克风选择向量（第 $r$ 个分量为 $1$、其余为 $0$ 的标准基向量，用于 MWF 与 SDW-MWF 指定参考通道，见<a href="05_beamforming.html#sec-u-fb93744989">第 5 章 MWF 专题</a>）</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:8em">$U,u$（专题Ⅱ）</td>
-<td>节点总数与节点索引；节点 $u$ 持有 $M_u$ 个本地麦克风，总麦数为 $M=\sum_u M_u$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">$U, u$（专题Ⅱ）</td>
+<td>分布式声学传感器网络的节点总数与节点索引；节点 $u$ 配备 $M_u$ 个本地麦克风，全网总麦数 $M=\sum_{u=1}^U M_u$</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:8em">$S,Q$（专题Ⅱ）</td>
-<td>潜在共同信号维数与每节点广播维数；原证明常要求 $Q=S$。此处 $Q$ 不是房间声学的声源指向因子</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">$S, Q$（专题Ⅱ）</td>
+<td>潜在共同目标信号维数与每个节点向邻居广播的压缩信号维数；经典 DANSE 收敛定理常要求 $Q=S$。注意与房间声学的声源指向因子 $Q$ 区分</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:8em">$\mathbf T_u,\vec h_u$（专题Ⅱ）</td>
-<td>$\mathbf T_u^H$将全观测压缩为节点可用观测，$\vec h_u$是相应接收权重；压缩后代价仍针对同一节点参考目标</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">$\mathbf{T}_u, \vec{h}_u, \vec{f}_u, \vec{g}_u$（专题Ⅱ）</td>
+<td>$\mathbf{T}_u^H$ 将全网观测映射为节点 $u$ 可获取的本地加邻居压缩观测；$\vec{h}_u=[\vec{f}_u^\top,\vec{g}_u^\top]^\top$ 为节点 $u$ 的接收组合权重，其中 $\vec{f}_u$ 作用于本地麦克风信号、$\vec{g}_u$ 作用于接收到的邻居广播信号</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">$\mathbf{B}$</td>
-<td>GSC 阻塞矩阵，满足 $\mathbf{B}^H\vec{a}(\theta_0)=\vec{0}$（§5.6）</td>
+<td>广义旁瓣相消器（GSC）的阻塞矩阵，满足正交阻塞条件 $\mathbf{B}^H\vec{a}(\theta_0)=\vec{0}$（§5.6）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">$\Phi(f)$</td>
-<td>在 §4.2 表示 GCC 的频率加权函数；在 §5.7 表示功率谱。两处符号相同，含义须根据所在公式区分。</td>
+<td>在 §4.2 中表示广义互相关（GCC）的频域加权函数；在 §5.7 中表示信号或噪声功率谱密度，阅读时按所在章节公式区分</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">$\mathbf{P}$, $\mathbf{K}$, $\mathbf{Q}$, $\mathbf{F}$, $\mathbf{H}$</td>
-<td>卡尔曼滤波：误差协方差、卡尔曼增益、过程噪声协方差、状态转移、观测矩阵（§9.2）</td>
+<td>卡尔曼滤波核心矩阵：状态估计误差协方差、卡尔曼增益、过程噪声协方差、状态转移矩阵、观测矩阵（§9.2）</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:8em">$\mu_j$, $c_j$, $L_j$（第9章IMM）</td>
-<td>模式后验概率、经过行转移矩阵的模式先验、模式条件观测似然密度。标量度制角观测的$L_j$单位为$\mathrm{deg}^{-1}$，它不是无量纲事件概率；缺测不提供新$L_j$（E09-24）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">$\vec{\nu}_t$, $\mathbf{S}_t$, $N_{\mathrm{eff}}$（第 9 章追踪）</td>
+<td>卡尔曼滤波第 $t$ 帧的新息向量（观测减预测）与新息协方差矩阵，以及粒子滤波衡量权重退化程度的有效粒子数 $N_{\mathrm{eff}}=1/\sum_i (w_t^{(i)})^2$（§9.2）</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:8em">$\kappa_{\mathrm{vMF}}$, $\vec\mu_{\mathrm{vMF}}$, $A(k)$（第9章球面概率）</td>
-<td>vMF无量纲集中度、单位集中方向、期望向量的长度。E09-26局部缩写为$k$和$\vec m$；均匀分布集中方向无定义。它们不同于IMM模式概率$\mu_j$、PHD杂波强度$\kappa_t(z)$和标量均值（E09-26）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">$\mu_j$, $c_j$, $L_j$（第 9 章 IMM）</td>
+<td>交互式多模型（IMM）的模式后验概率、经马尔可夫转移混合后的模式先验概率、模式条件观测似然密度。以角度（deg）为单位的标量观测似然密度 $L_j$ 量纲为 $\mathrm{deg}^{-1}$，并非无量纲概率；漏检帧不产生新的 $L_j$（E09-24）</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:8em">$V$, $A$, $S$, $\bar\alpha$</td>
-<td>房间体积、等效吸声面积、总表面积、平均吸声系数（§2.4）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">$\kappa_{\mathrm{vMF}}$, $\vec{\mu}_{\mathrm{vMF}}$, $A(\kappa)$（第 9 章球面概率）</td>
+<td>von Mises–Fisher（vMF）方向分布的无量纲集中度、单位均值方向向量与期望向量模长函数（E09-26 局部简记为 $k$ 与 $\vec{m}$）；完全均匀分布时集中方向无定义。注意与 IMM 模式概率 $\mu_j$ 及 PHD 杂波强度 $\kappa_t(z)$ 区分</td>
+</tr>
+<tr>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">$V$, $A$, $S$, $\bar{\alpha}$</td>
+<td>房间体积、等效吸声面积、内表面总面积、平均吸声系数（§2.4）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">$\mu_{\mathrm{NLMS}}$</td>
-<td>归一化最小均方（Normalized Least Mean Squares，NLMS）步长（§6.1）；第 6 章给出理想无噪声单步收缩条件 $0\lt \mu\lt 2$；它不是任意有色随机输入的均方稳定保证，实际取值还受正则项、观测误差和时变路径影响</td>
+<td>归一化最小均方（Normalized Least Mean Squares，NLMS）步长（§6.1）；第 6 章导出理想无噪单步误差收缩条件 $0\lt \mu\lt 2$，工程取值还受分母正则项、近端噪声和时变路径制约</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">$\mu_{\mathrm{SDW}}$</td>
-<td>语音失真加权多通道维纳滤波（Speech-Distortion-Weighted Multichannel Wiener Filter，SDW-MWF）的失真—降噪折中系数（<a href="05_beamforming.html#sec-u-fb93744989">第 5 章 MWF 专题</a>）；与上一行的 NLMS 步长不是同一物理量</td>
+<td>语音失真加权多通道维纳滤波（Speech-Distortion-Weighted Multichannel Wiener Filter，SDW-MWF）的失真—降噪折中系数（<a href="05_beamforming.html#sec-u-fb93744989">第 5 章 MWF 专题</a>）；与 NLMS 步长不是同一物理量</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">$\varepsilon_{\mathrm{NLMS}}$</td>
-<td>归一化最小均方（Normalized Least Mean Squares，NLMS）更新分母中的小正数，与输入能量同量纲，使零输入时分母仍为正，并限制低能量时的更新幅度（§6.1）</td>
+<td>NLMS 更新分母中的正定保护常数，与输入信号能量同量纲，防止静音帧除零并抑制极低能量段的权重跳变（§6.1）</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:8em">$\delta$, $\eta$</td>
-<td>绝对对角加载 $\mathbf R+\delta\mathbf I$ 中的 $\delta$ 与 $\mathbf R$ 同量纲；相对加载 $\mathbf R+\eta\,\mathrm{tr}(\mathbf R)\mathbf I/M$ 中的 $\eta$ 无量纲（§5.4）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">$\varepsilon$, $\alpha$, $\delta$, $\eta$（对角加载与稳健界）</td>
+<td>第 5 章将绝对对角加载写为 $\mathbf{R}+\varepsilon\mathbf{I}$（文献与本附录局部亦记 $\delta$），参数与 $\mathbf{R}$ 同量纲；相对对角加载写为 $\mathbf{R}+\alpha\,\operatorname{tr}(\mathbf{R})\mathbf{I}/M$（文献与 E14-13 亦记 $\eta$），参数无量纲；范数有界导向误差球半径记为 $\|\vec{\Delta}\|_2\leq\delta$（§5.4）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">$\tau_{ij}$，TDOA</td>
-<td>$\tau_{ij}=t_i-t_j$；到达时间差（Time Difference of Arrival，TDOA）。远场下 $\tau_{m1}=-(\vec r_m-\vec r_1)^\top\vec u/c$</td>
+<td>$\tau_{ij}=t_i-t_j$，到达时间差（Time Difference of Arrival，TDOA）；远场平面波下相对麦 1 的时差为 $\tau_{m1}=-(\vec{r}_m-\vec{r}_1)^\top\vec{u}/c$</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">$T_{60}$，DRR，$d_c$</td>
-<td>混响时间、直达混响比（Direct-to-Reverberant Ratio，DRR；dB 域读数）、临界距离</td>
+<td>混响时间、直达混响比（Direct-to-Reverberant Ratio，DRR；常取 dB 读数）、临界距离</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">WNG，DI，HPBW，SLL</td>
@@ -517,40 +529,44 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">RTF</td>
-<td>波束与空间模型中指相对传递函数（Relative Transfer Function）；工程与选型中指实时因子（Real-Time Factor），即声明统计区间内累计服务耗时/新推进音频时长；重叠分析窗不能把重复样本再计入分母。第10章遥测的可选<code>frame_service_rtf</code>另记单帧比，两者不互代。两种RTF缩写按章节语境区分</td>
+<td>在波束与空间建模中指相对传递函数（Relative Transfer Function）；在系统评测与选型中指实时因子（Real-Time Factor），即统计窗口内累计处理耗时除以新推进音频时长（帧间重叠样本不得重复计入分母，第 10 章遥测另用 <code>frame_service_rtf</code> 记录单帧比值）</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:8em">$h(n)$，$\hat{\vec{w}}$，ERLE</td>
-<td>回声路径、AEC 自适应滤波器、回声返回损失增强（Echo Return Loss Enhancement，ERLE）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">$x[n], d[n], y[n], e[n]$，$h[n], \hat{\vec{w}}, \lambda$，ERLE</td>
+<td>AEC 远端播放参考、麦克风拾音信号、线性估计回声与残差信号，真实回声路径、自适应滤波器抽头向量、RLS 指数遗忘因子（$0\lt \lambda\leq 1$），以及回声返回损失增强（Echo Return Loss Enhancement，ERLE；§6.1、§6.2）</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:8em">$G(k,f)$, $\Delta$, $K$</td>
-<td>WPE 预测系数、保护延迟、预测阶数。第 7 章局部用 $k$ 表示滞后帧号、$f$ 表示<strong>无量纲离散频点索引</strong>，不同于上表按 Hz 计的连续物理频率 $f$；换算及索引范围见 §7.1</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">$G(k,f)$, $\lambda_{ft}$, $\Delta$, $K$</td>
+<td>WPE 线性预测系数、目标早期语音的时变方差（功率谱）$\lambda_{ft}$、保护延迟帧数与预测阶数。第 7 章局部用 $k$ 记滞后帧号、$f$ 记<strong>无量纲离散频点索引</strong>（时变方差亦记作 $\lambda(f,t)$），阅读时与按 Hz 计的连续频率 $f$ 区分（§7.1）</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:8em">$\mathbf A$, $\mathbf P$, $\vec q$, $\vec b$（专题Ⅰ）</td>
-<td>成像传播字典、PSF矩阵、参考位置的候选源均方值、扫描输出均方值；$P_{ij}=|\vec w_i^H\vec a_j|^2$，行是扫描格、列是源格。与第9章卡尔曼误差协方差$\mathbf P$分开定义（§12.4）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">$\mathbf{W}_f$, $\pi$（第 8 章分离）</td>
+<td>第 $f$ 个频点的盲源分离解混矩阵（$\hat{\vec{s}}_{ft}=\mathbf{W}_f\vec{x}_{ft}$）与对齐输出声道归属的源排列映射 $\pi$（§8.1、§8.3）</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:8em">CSM、$\mathbf R$（专题Ⅰ）</td>
-<td>互谱矩阵（Cross-Spectral Matrix）；未归一化FFT外积、每Hz谱密度、每频点均方值与单频复幅度均方矩阵有不同标度，见§12.3；数字量未校准时不能称Pa²</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">$\mathbf{A}$, $\mathbf{P}$, $\vec{q}$, $\vec{b}$（专题Ⅰ）</td>
+<td>声学成像传播字典、点扩散函数（PSF）矩阵、参考面处的候选源均方强度向量、波束扫描脏图向量；满足 $P_{ij}=|\vec{w}_i^H\vec{a}_j|^2$（行对应扫描格点、列对应真实源格点），注意与第 9 章卡尔曼误差协方差 $\mathbf{P}$ 区分（§12.4）</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:8em">PHD/RFS</td>
-<td>概率假设密度（Probability Hypothesis Density，PHD）/随机有限集（Random Finite Set，RFS）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">CSM、$\mathbf{R}$、$p_{\mathrm{ref}}$（专题Ⅰ）</td>
+<td>互谱矩阵（Cross-Spectral Matrix）与空气声学参考有效声压 $p_{\mathrm{ref}}=20\ \mu\mathrm{Pa}$；未归一化 FFT 外积、每 Hz 功率谱密度与单频均方幅度的量纲标度不同，数字幅值未经声压灵敏度校准前不得直接标为 $\mathrm{Pa}^2$ 或 dB SPL（§12.3）</td>
+</tr>
+<tr>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">PHD / RFS</td>
+<td>概率假设密度（Probability Hypothesis Density，PHD）与随机有限集（Random Finite Set，RFS）</td>
 </tr>
 </tbody>
 </table></div>
-<p>表中 $\psi$ 的“残余”是相对于目标指向 $\theta_0$ 而言：来自 $\theta$ 的波先按 $\theta_0$ 补偿，之后相邻两麦还相差</p>
+<p>表中残余相位 $\psi$ 的“残余”二字是相对于波束指向角 $\theta_0$ 而言的：当平面波从方位 $\theta$ 入射时，等间距线阵先按目标方向 $\theta_0$ 施加补偿时延，补偿后相邻两麦之间剩余的相位差即为</p>
 <p>$$\psi=\frac{2\pi d}{\lambda}(\sin\theta-\sin\theta_0)\text{。}$$</p>
-<p>这里 $d/\lambda$ 和正弦差都无量纲，所以 $\psi$ 的单位是弧度。$\theta=\theta_0$ 时残余相位为零，各通道在目标方向对齐；偏离目标方向时，残余相位决定主瓣、零点和旁瓣的位置（§5.2）。</p>
-<p>球面各向同性弥散噪声模型下，第 $i,j$ 个麦克风的相干系数写成</p>
+<p>式中 $d/\lambda$ 与正弦差均为无量纲比值，因此 $\psi$ 的单位是弧度（rad）。当入射方向恰与指向重合（$\theta=\theta_0$）时，$\psi=0$，各通道信号同相叠加形成主瓣峰值；当 $\theta$ 偏离 $\theta_0$ 时，$\psi$ 随角度的变化规律直接决定了主瓣宽度、零陷位置与旁瓣高度（§5.2）。</p>
+<p>在三维球面各向同性弥散噪声场模型下，第 $i,j$ 个麦克风在频率 $f$ 处的空间相干系数为</p>
 <p>$$[\mathbf{\Gamma}]_{ij}=\operatorname{sinc}\!\left(\frac{2fd_{ij}}{c}\right),\qquad \operatorname{sinc}(x)=\frac{\sin(\pi x)}{\pi x}\text{。}$$</p>
-<p>$d_{ij}$ 是两麦间距，$f$ 是 Hz 频率，$c$ 是声速；当 $i=j$ 或 $f=0$ 时取极限值 1。这一形状依赖声源从三维球面各方向入射的假设。若声源只从水平面各方向入射，相应形状为零阶贝塞尔函数 $J_0(2\pi f d_{ij}/c)$；两种声场不能混为同一个矩阵模型（§5.1）。</p>
-<p>手算（14.1）：在无失真归一化、各通道自噪声独立且等功率时，$M=6$ 的 DSB WNG 是多少 dB？$2\times2$ 对角协方差 $\mathrm{diag}(4, 1)$ 的特征值是哪两个数？</p>
-<p>答案：$10\log_{10}6\approx7.8$ dB；对角阵的特征值就是对角元 4 和 1。这里的特征向量是两条传感器空间坐标轴，不一定对应真实空间中的两个入射方向。</p>
+<p>其中 $d_{ij}=\|\vec{r}_i-\vec{r}_j\|_2$ 为两麦间距，$f$ 为物理频率（Hz），$c$ 为声速；当 $i=j$ 或 $f=0$ 时，按连续极限取 $[\mathbf{\Gamma}]_{ij}=1$。这一 $\operatorname{sinc}$ 公式依赖噪声能量从三维球面均匀入射的几何假设；若噪声仅在二维水平面内各向同性入射，相干系数则变为零阶第一类贝塞尔函数 $J_0(2\pi fd_{ij}/c)$，两类声场模型不能混用（§5.1）。</p>
+<p>手算（14.1）：设 $M=6$ 元阵列在目标方向已完成无失真归一化（$\vec{w}^H\vec{a}=1$），各通道传感器自噪声相互独立且功率相等，求等权延迟求和波束形成（DSB）的白噪声增益（WNG，以 dB 表示）；再写出二阶对角空间协方差矩阵 $\operatorname{diag}(4, 1)$ 的两个特征值，并说明其特征向量的物理含义。</p>
+<p>输入与代入：在理想等幅目标导向 $|\vec{a}|=[1,\ldots,1]^\top$ 下，满足 $\vec{w}^H\vec{a}=1$ 的等权 DSB 权重为 $\vec{w}=\vec{a}/M$，权重范数平方为 $\|\vec{w}\|_2^2=M\times(1/M)^2=1/M$，故线性白噪声增益为 $\mathrm{WNG}=1/\|\vec{w}\|_2^2=6$，换算为分贝得 $10\log_{10}6\approx7.78\ \mathrm{dB}$（约 $7.8\ \mathrm{dB}$）。对于对角矩阵 $\operatorname{diag}(4, 1)$，非对角元全为零，特征方程 $(4-\lambda)(1-\lambda)=0$ 直接给出两个特征值 $4$ 和 $1$，对应标准正交特征向量 $[1,0]^\top$ 与 $[0,1]^\top$。需要注意，协方差矩阵的特征向量张成的是传感器观测空间中的正交主轴，一般并不直接对应物理空间中的两个声源入射方向。</p>
 <span id="sec-12-2" class="anchor-alias" aria-hidden="true"></span><span id="sec-3" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-14-2">14.2 术语词典</h2>
-<p>下表按主题解释正文和相关文献中常见的术语。</p>
+<p>下表按知识模块梳理正文中反复出现的核心术语、物理含义与使用边界。</p>
 <span id="sec-4" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-e2e1cb6329">信号与数学基础</h3>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table class="tutorial-budget-table" style="--tutorial-table-width:32em">
 <thead>
@@ -562,83 +578,83 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 <tbody>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">STFT（短时傅里叶变换）</td>
-<td>把波形分成重叠短帧，并对每帧计算频谱，得到时间—频率复数表示。窗长与帧移按频率分辨率、时变性和延迟要求选择；逐频点处理可把宽带问题近似拆成多个窄带问题（§2.5）</td>
+<td>将连续长波形按固定帧移切分为重叠短帧，加窗后逐帧计算 DFT，得到时间—频率二维复数谱。窗长与帧移需在频率分辨率、语音短时平稳性与系统延迟之间折中；在满足窄带近似条件时，可把时域宽带卷积拆解为逐频点复数乘加（§2.5）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">快拍（snapshot）</td>
-<td>某一帧、某一频点上，$M$ 个麦克风复数谱排成的列向量——阵列的一张“空间照片”（§2.5）</td>
+<td>某一帧、某一频点上，$M$ 个麦克风的复数频谱分量按通道顺序排成的 $M$ 维列向量，相当于阵列在该时频格点拍下的一帧空间采样（§2.5）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">空间协方差矩阵 $\hat{\mathbf{R}}$</td>
-<td>阵列文献常把快拍外积的时间平均称为空间协方差。若未减均值，它严格说是未中心化样本二阶矩；与采用相同分母的中心化样本协方差只在<strong>本批快拍的样本均值恰为零</strong>时相等。总体零均值并不能保证有限样本均值为零。它是 Capon/MVDR/MUSIC 的常见输入，准确口径见第 2 章式(2-6)、式(2-7)。</td>
+<td>阵列信号处理中常把快拍外积的时间平均 $\frac{1}{L}\sum_\ell \vec{x}_\ell\vec{x}_\ell^H$ 简称为样本空间协方差矩阵。若未先减去样本均值，它严格来说是未中心化样本二阶矩，仅当<strong>当前这批快拍的样本均值恰好为零向量</strong>时才与同分母的中心化样本协方差相等；总体零均值并不能保证有限样本均值为零。它是 Capon、MVDR 与 MUSIC 的核心输入，定义见第 2 章式(2-6)、式(2-7)</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">特征分解 / 子空间</td>
-<td>把厄米矩阵拆成特征值与特征向量。要把 $K$ 个较大特征值对应的特征向量解释为 $K$ 维信号子空间，需源协方差满秩、由各源导向矢量组成的矩阵满列秩、$K\lt M$、空间白噪声、源与噪声的交叉二阶矩为零及模型正确；有限快拍还会带来估计误差。其余噪声底特征向量张成噪声子空间（图6d、§4.6）</td>
+<td>将厄米矩阵分解为实特征值与正交特征向量。要把前 $K$ 个大特征值对应的特征向量解释为 $K$ 维信号子空间，需同时满足源协方差满秩、导向矩阵满列秩、源数 $K\lt M$、空间白噪声、源与噪声互二阶矩为零以及流形模型准确；其余对应噪声底的特征向量张成噪声子空间（图 6d、§4.6）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">超定方程组</td>
-<td>方程比未知数多。右端落在系数矩阵的列空间中时有精确解；不相容时可求最小二乘近似。TDOA 定位中，多个麦对的时差还可能共享到达时刻，方程多不等于独立信息多（§4.4）</td>
+<td>独立方程条数多于未知数个数的线性方程组。当右端观测向量恰好落在系数矩阵列空间内时存在精确解，不相容时则通过最小二乘寻找残差范数最小的近似解。在 TDOA 定位中，多组麦克风对的时差往往共享同一个参考到达时刻，方程条数增加并不代表独立几何约束等量增加（§4.4）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">双曲线定位</td>
-<td>在二维平面，一对麦测出的非退化距离差对应以两麦为焦点的双曲线的一支；在三维空间，对应双叶双曲面的一叶。多个独立麦对的交集可约束声源位置，退化时也可能没有唯一交点（§4.4）。</td>
+<td>在二维平面中，一对麦克风测得的非退化到达距离差对应以这两只麦克风为焦点的双曲线的一支；在三维空间中则对应双叶双曲面的一叶。联立多组独立基线求交即可定位近场声源，但在共线或端射退化几何下可能不存在唯一交点（§4.4）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">常规波束分辨率 / 超分辨</td>
-<td>常规波束主瓣宽度的量级约为 $\lambda/D$；子空间方法在模型正确、信噪比和快拍数足够时可形成更窄谱峰，因此称为超分辨（§2.6、§4.6）</td>
+<td>常规延迟求和波束的主瓣角宽量级受限于瑞利限 $\lambda/D$；子空间类方法（如 MUSIC、ESPRIT）在流形准确、信噪比与快拍数充足且声源非完全相干时，能够分辨角间距小于 $\lambda/D$ 的多个声源，故称超分辨（§2.6、§4.6）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">波束图（beampattern）</td>
-<td>波束形成器对各个方向的增益图，主瓣/旁瓣/零陷都在上面读（图7a）</td>
+<td>波束形成器固定权重后对空间各入射方向平面波的复响应模值（或功率增益）随角度变化的曲线，用于直观读取主瓣宽度、旁瓣高度与干扰零陷位置（图 7a）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">自由度（DOF）</td>
-<td>可调参数的个数。逐频点 $M$ 麦复权重有 $M$ 个复数参数；每条<strong>独立的复线性约束</strong>通常减少一个复自由度，重复约束不再额外消耗，约束相矛盾则无可行解（§5.5）。稀疏阵用差分协同阵在满足二阶统计模型条件时增加虚拟维数，不能把它当作额外的物理麦克风（§3.3）。</td>
+<td>优化问题中可独立调节的参数维数。窄带 $M$ 麦波束权重拥有 $M$ 个复自由度；每施加一条<strong>线性独立的复数等式约束</strong>消耗 $1$ 个复自由度，冗余约束不额外消耗自由度，相互矛盾的约束则导致可行集为空（§5.5）。稀疏阵借助差分协同阵可在二阶统计域扩展虚拟阵元数，但虚拟滞后不能等同于真实的物理麦克风通道（§3.3）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">抽头（tap）</td>
-<td>FIR 滤波器的一个系数。“128 个抽头”表示 128 个系数；按多项式阶数定义时对应 127 阶，阅读文献时需核对作者采用的口径（§6.1）</td>
+<td>有限长冲激响应（FIR）滤波器的单个乘加系数。“128 抽头滤波器”代表共有 128 个脉冲响应系数，对应 $z^{-1}$ 多项式的最高阶数为 127 阶，查阅文献与代码接口时应留意“长度”与“阶数”相差 1 的惯例（§6.1）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">优先效应（precedence effect）</td>
-<td>先到声与短延迟后到声携带不同方向线索时，在两声相似、延迟及听觉任务满足相应条件下，方位判断常更偏向先到声；不表示所有反射都被忽略。<a href="01_problem-definition.html#sec-1-1">第 1 章 §1.1</a>给出定义与 Wallach 等 1949 年原始出处；§2.4 解释房间反射模型。</td>
+<td>当直达声与短延迟早期反射声从不同方向先后到达双耳且声学特征相近时，人类听觉系统对声源方位的感知主要由先到达的直达声主导；这并不意味着反射声的能量或音色影响被完全忽略。<a href="01_problem-definition.html#sec-1-1">第 1 章 §1.1</a>给出了现象定义与 Wallach 等（1949）的实验出处，§2.4 讨论了房间脉冲响应建模</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">拉格朗日乘子法</td>
-<td>带约束求极值的标准工具：“约束写成等式加到目标里，再求导令零”，MVDR 的闭式解就是这么推的（§5.4）</td>
+<td>求解等式约束极值问题的经典解析方法：通过引入拉格朗日乘子将线性约束并入目标函数，构造实值拉格朗日函数并对复权重共轭求驻点，即可导出 MVDR 与 LCMV 的闭式解（§5.4、§14.3.6）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">GCC-PHAT 频谱相位加权</td>
-<td>每个频点把非零互功率谱 $G_{12}(f)$ 除以 $|G_{12}(f)|$，使其模为 1、保留相位；零模频点须跳过或作数值保护。它改变时延估计中的频率权重，不能据此声称麦克风间噪声已被空间白化（§4.2）。<a href="https://doi.org/10.1109/TASSP.1976.1162830" title="citation">Knapp 与 Carter 的 GCC 原始论文</a></td>
+<td>在每个非零互谱频点将互功率谱 $G_{12}(f)$ 除以其模值 $|G_{12}(f)|$，使各频点幅值归一为 $1$、仅保留相位差信息，零模值频点需加正则分母或跳过。该操作均衡的是单对通道的<strong>频域幅度谱形状</strong>，并不能将多通道间的空间相关噪声白化（§4.2；参见<a href="https://doi.org/10.1109/TASSP.1976.1162830">Knapp 与 Carter（1976）广义互相关论文</a>）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">空间噪声白化（spatial noise whitening）</td>
-<td>在同一频点、正定噪声协方差 $\mathbf R_{nn}$ 已知时，对通道快拍施加矩阵 $\mathbf W$，使 $\mathbf W\mathbf R_{nn}\mathbf W^H=\mathbf I$；导向矢量也须改为 $\mathbf W\vec a$。它处理的是通道间的噪声协方差，不能与 GCC-PHAT 的逐频点标量加权混用。估计误差或病态矩阵需另行处理（E14-04）。</td>
+<td>在固定频点已知厄米正定噪声协方差 $\mathbf{R}_{nn}$ 时，左乘白化矩阵 $\mathbf{W}$ 使变换后噪声协方差满足 $\mathbf{W}\mathbf{R}_{nn}\mathbf{W}^H=\mathbf{I}$；与此同时，目标导向矢量也必须同步变换为 $\mathbf{W}\vec{a}$。它消除的是通道间的噪声相关性与功率差异，切勿与 GCC-PHAT 的逐频点标量归一化混为一谈（E14-04）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">sinc 函数</td>
-<td>本书定义 $\mathrm{sinc}(x)=\sin(\pi x)/(\pi x)$。球面各向同性弥散场中的两麦相干系数具有 sinc 形式；若声源只在水平面各向同性分布，则对应零阶贝塞尔函数 $J_0(2\pi fd/c)$（§5.1）。另一些文献把 sinc 定义为 $\sin x/x$，代入公式前必须先核对定义</td>
+<td>本书统一采用归一化定义 $\operatorname{sinc}(x)=\sin(\pi x)/(\pi x)$。三维球面各向同性弥散场的两麦空间相干系数服从该形式；二维水平面各向同性场则对应零阶贝塞尔函数 $J_0(2\pi fd/c)$（§5.1）。部分数学文献将未归一化的 $\sin x/x$ 记作 $\operatorname{sinc}(x)$，代入公式前需先核对因子 $\pi$</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">SNR（信噪比）</td>
-<td>信号功率与噪声功率之比，常以 dB 表示。输出 SNR 减去输入 SNR 得到 SNR 增益。SER 在 AEC 语境中比较近端目标与回声功率，使用时应明确分子、分母和测量时段（§5.1、§6.1）</td>
+<td>目标信号功率与噪声功率的比值，常取 $10\log_{10}$ 换算为 dB；阵列处理后的输出 SNR 减去参考通道输入 SNR 即为阵列 SNR 增益。在回声消除（AEC）中常另用信回比（SER）衡量近端语音与远端回声的功率比，汇报时须写明参考取点与统计时段（§5.1、§6.1）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">dB（分贝）</td>
-<td>比值的对数表示；功率比使用 $10\log_{10}$，幅度比使用 $20\log_{10}$。两种写法只有在两边功率与幅度平方使用相同比例常数时才对应同一物理变化（§14.3.2）。</td>
+<td>物理量相对参考值比值的对数标度：功率或能量之比乘 $10\log_{10}$，声压或电压等幅度之比乘 $20\log_{10}$。两种算式仅在分子与分母满足相同的“功率正比于幅度平方”阻抗比例关系时才给出完全一致的分贝值（§14.3.2）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">FFT（快速傅里叶变换）</td>
-<td>离散傅里叶变换的高效算法，把一帧时域样本转换为各频点的复数谱；STFT 对连续短帧重复这一运算（§2.5）</td>
+<td>离散傅里叶变换（DFT）的分治快速算法，将长度为 $N$ 的时域帧映射为 $N$ 个离散频点的复数谱，计算复杂度由 $O(N^2)$ 降至 $O(N\log N)$；STFT 即对滑动加窗帧连续执行 FFT（§2.5）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">DNN（深度神经网络）</td>
-<td>由多层参数化变换组成、通过数据优化的模型。本教程主要用于估计时频掩码、方向概率或增强信号（§4.7、§5.9）</td>
+<td>由多层线性变换与非线性激活函数复合而成的参数化模型，通过大规模带标注或自监督音频数据训练权重。在阵列前端中常用于预测时频掩码、声源方向后验分布或直接映射增强频谱（§4.7、§5.9）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">远场 / 近场</td>
-<td>远场中波前可近似为平面，导向模型主要由方向决定；近场采用球面波模型，还要考虑距离和通道幅度差。$2D^2/\lambda$ 可作为检查波前相位曲率的距离尺度，但不是单独决定远近场的硬边界；还要检查 $r\gg D$、允许的相位误差和通道幅度差（§2.2）</td>
+<td>远场假设声源距离远大于阵列孔径，波前近似为平面波，导向矢量仅取决于入射角度；近场则必须采用球面波模型，同时计入阵元到声源的精确距离差与球面扩散幅度衰减。夫琅禾费距离 $2D^2/\lambda$ 常作为检验波前二次相位弯曲的参考尺度，实际工程中还需结合 $r\gg D$、容许相位误差上限与通道间幅度差综合判定（§2.2）</td>
 </tr>
 </tbody>
 </table></div>
@@ -653,27 +669,27 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 <tbody>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">RIR（房间脉冲响应）</td>
-<td>在指定声源、接收位置和系统近似线性时，RIR 描述从声源到麦克风的声学传递路径；干净信号与 RIR 卷积可得到该路径下的接收信号（§2.4）</td>
+<td>在声源位置、麦克风位置固定且声学传播满足线性时不变假设时，从声源发出单位冲激到麦克风接收到的完整时域响应序列（含直达声、早期反射与晚期混响）；干声源与 RIR 做线性卷积即可合成麦克风接收信号（§2.4）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">$T_{60}$</td>
-<td>混响时间：房间声能衰减 60 dB 所需时间。具体数值取决于房间体积、表面吸声和测量频带</td>
+<td>混响时间，定义为稳态声源停止发声后室内声能密度衰减 $60\ \mathrm{dB}$ 所需的时间（秒），其数值随房间体积、墙面吸声材料与测量频带而变化</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">直达混响比（Direct-to-Reverberant Ratio，DRR）</td>
-<td>直达声能量 ÷ 混响声能量，dB 域读数：DRR（dB）&gt;0 直达占优，DRR（dB）&lt;0 混响占优；负值绝对值越大，混响能量相对越高</td>
+<td>RIR 中直达声部分能量与全部反射混响部分能量之比，dB 读数大于 $0\ \mathrm{dB}$ 表示直达声占优，小于 $0\ \mathrm{dB}$ 表示混响能量超过直达声</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">临界距离 $d_c$</td>
-<td>在给定声源指向性与扩散场假设下，直达声和混响声能量相等、即 DRR=0 的距离；Sabine 近似下常写成 $d_c\approx0.057\sqrt{QV/T_{60}}$，其中 $Q$ 是声源指向因子。取全向声源 $Q=1$ 时才化为 $0.057\sqrt{V/T_{60}}$（§2.4）</td>
+<td>在给定声源指向性与稳态扩散混响场假设下，直达声能量与混响声能量恰好相等（即 $\mathrm{DRR}=0\ \mathrm{dB}$）的收发距离；赛宾（Sabine）近似下常写为 $d_c\approx0.057\sqrt{QV/T_{60}}$，其中 $Q$ 为声源指向因子，仅当全向声源 $Q=1$ 时才退化为 $0.057\sqrt{V/T_{60}}$（§2.4）</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:8em">镜像法</td>
-<td>把墙面反射等效成墙后镜像声源的仿真方法（Allen &amp; Berkley 1979），pyroomacoustics 的核心</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">镜像法（Image-Source Method）</td>
+<td>将刚性或部分吸声墙面的镜面反射等效为墙体背面虚拟镜像声源辐射叠加的几何声学仿真方法（Allen &amp; Berkley，1979），也是 <code>pyroomacoustics</code> 规则房间仿真的基础内核</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:8em">弥散噪声场</td>
-<td>来自大量方向、没有单一主导入射方向的声场模型。晚期混响常用这一模型近似；麦克风附近的湍流风噪通常不满足各向同性弥散场假设</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">弥散噪声场（diffuse noise field）</td>
+<td>声能从空间各方向均匀随机入射、不存在单一主传播方向的理想统计声场模型。房间晚期混响尾音常近似为球面弥散场，但麦克风防风罩表面的局部湍流风噪空间相关性极短，不服从声学弥散场相干规律</td>
 </tr>
 </tbody>
 </table></div>
@@ -688,59 +704,59 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 <tbody>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">LMS / NLMS / RLS</td>
-<td>最小均方（Least Mean Squares，LMS）结构简单；归一化最小均方（Normalized LMS，NLMS）按输入功率归一化步长；递归最小二乘（Recursive Least Squares，RLS）利用输入相关矩阵的递推逆，通常收敛更快，但计算量和存储量也更大。实际差距取决于输入相关性、滤波长度和参数设置（<a href="05_beamforming.html#sec-5-6">GSC §5.6</a>、<a href="06_aec.html#sec-6-1-2">NLMS §6.1.2</a>、<a href="06_aec.html#sec-6-2-5">RLS §6.2.5</a>）</td>
+<td>最小均方（Least Mean Squares，LMS）结构最简；归一化最小均方（Normalized LMS，NLMS）用当前输入帧能量对步长做动态归一化；递归最小二乘（Recursive Least Squares，RLS）利用输入相关矩阵的递推求逆对有色激励做去相关更新，通常收敛更快，但单步复杂度与存储开销也更高。三者的实际权衡取决于激励谱平坦度、滤波器阶数与正则参数（<a href="05_beamforming.html#sec-5-6">GSC §5.6</a>、<a href="06_aec.html#sec-6-1-2">NLMS §6.1.2</a>、<a href="06_aec.html#sec-6-2-5">RLS §6.2.5</a>）</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:8em">音乐噪声</td>
-<td>谱减类方法过度估计噪声后残留的随机孤立谱峰，听起来像叮咚作响的流水声（§5.7）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">音乐噪声（musical noise）</td>
+<td>传统谱减或过激实数掩码在噪声功率估计波动时留下的随机孤立窄带谱峰，逆变换回时域后听感类似零星闪烁的水滴或金属泛音（§5.7）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">ICA / IVA</td>
-<td>ICA 利用源间统计独立性估计解混矩阵；IVA 把同一输出在各频点的分量组成向量联合估计，以降低频点间排列不一致（§8.3）</td>
+<td>独立成分分析（ICA）利用源信号的非高斯统计独立性逐频点估计解混矩阵 $\mathbf{W}_f$；独立向量分析（IVA）将同一声源在全部频点的复分量捆绑为球面联合分布向量统一优化，从源模型层面抑制频点间的排列错位（§8.3）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">NMF（非负矩阵分解）</td>
-<td>把非负谱量近似表示为谱基与激活的乘积；它本身不直接给出多通道解混矩阵，见<a href="08_speech-separation.html#sec-8-3">§8.3</a></td>
+<td>将非负幅度谱或功率谱矩阵近似分解为低秩谱字典基矩阵与时间激活矩阵的乘积；单通道 NMF 本身不包含空间相位信息，不直接给出多通道解混滤波器，见<a href="08_speech-separation.html#sec-8-3">§8.3</a></td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">AuxIVA</td>
-<td>辅助函数型独立向量分析；联合频点估计解混矩阵，输出各源的复数谱，仍需处理尺度和跨录音身份，见<a href="08_speech-separation.html#sec-8-3">§8.3</a></td>
+<td>基于辅助函数（Majorization-Minimization）无步长迭代求解的独立向量分析算法；输出各分离通道的复数谱后，仍需利用投影回推（projection back）恢复参考麦物理尺度，见<a href="08_speech-separation.html#sec-8-3">§8.3</a></td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">ILRMA</td>
-<td>独立低秩矩阵分析；结合确定型解混与NMF源功率模型，交替更新解混、谱基与激活，见<a href="08_speech-separation.html#sec-8-3">§8.3</a></td>
+<td>独立低秩矩阵分析；将正定线性解混模型（AuxIVA）与各声源的 NMF 低秩功率谱模型统一在同一负对数似然代价下交替更新，见<a href="08_speech-separation.html#sec-8-3">§8.3</a></td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">MNMF</td>
-<td>多通道NMF；联合拟合源功率谱与空间协方差，常用多通道维纳滤波重构源图像。能表示欠定模型不等于这些源必然可辨认，见<a href="08_speech-separation.html#sec-8-3">§8.3</a></td>
+<td>多通道非负矩阵分解；为每个声源同时拟合 NMF 时频功率谱与满秩空间协方差矩阵，再通过多通道维纳滤波重构各源声像。需要注意，模型能写出欠定混合表达式并不代表所有源在有限数据下都具备参数可辨识性，见<a href="08_speech-separation.html#sec-8-3">§8.3</a></td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">FastMNMF</td>
-<td>利用空间矩阵共同合同对角化加速MNMF；该共享表示有模型条件，不能省略对角化变换的Jacobian项，见<a href="08_speech-separation.html#sec-8-3">§8.3</a>及E08-25～26</td>
+<td>假设各声源的空间协方差矩阵在每个频点可由同一个非奇异变换矩阵联合对角化，从而把矩阵求逆简化为标量运算以大幅加速 MNMF；优化该对角化矩阵时不可漏掉似然函数中的对数行列式雅可比（Jacobian）项，见<a href="08_speech-separation.html#sec-8-3">§8.3</a>及 E08-25～E08-26</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">cACGMM</td>
-<td>复角中心高斯混合模型；拟合归一化复观测的方向分布并输出责任度或掩码，方向归一化后不直接保留声功率尺度，见<a href="08_speech-separation.html#sec-8-4-2">§8.4.2</a></td>
+<td>复角中心高斯混合模型；对单位范数归一化后的多通道复方向向量建立混合分布，利用 EM 算法输出各声源的时频归属后验概率（掩码），方向归一化步骤本身会隐去原始声压绝对功率尺度，见<a href="08_speech-separation.html#sec-8-4-2">§8.4.2</a></td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">CSS（连续语音分离）</td>
-<td>在长录音上分窗分离、匹配输出排列并拼接；需要同时解决重叠区身份、尺度与相位问题，见<a href="08_speech-separation.html#sec-8-6">§8.6</a></td>
+<td>将长流式音频切分为带重叠的滑动时间窗，逐窗独立分离后对齐相邻窗的输出通道排列 $\pi$ 并拼接输出；工程实现需同时协调重叠区的说话人身份对齐、幅度尺度与相位连续性，见<a href="08_speech-separation.html#sec-8-6">§8.6</a></td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">TSE（目标说话人提取）</td>
-<td>按说话人嵌入等目标条件输出指定说话人的语音；条件可靠性与未见说话人的泛化需单独验证，见<a href="08_speech-separation.html#sec-8-6">§8.6</a></td>
+<td>以目标说话人的注册声纹嵌入、方向区间或视觉线索作为辅助条件，仅提取指定说话人语音；实际部署时需重点评估线索缺失、声纹相似干扰与未见说话人泛化边界，见<a href="08_speech-separation.html#sec-8-6">§8.6</a></td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:8em">PIT</td>
-<td>排列不变训练在训练时选择与参考源匹配代价最小的输出排列；它不保证跨长录音的身份连续（§8.1）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">PIT（排列不变训练）</td>
+<td>监督分离网络的训练准则：在计算单句损失时遍历输出通道的全部排列 $\pi$，选取与真值参考源误差最小的一组排列回传梯度；单窗 PIT 本身不自动维持跨窗长录音的说话人通道固定（§8.1）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">DANSE</td>
-<td>分布式自适应节点特定信号估计（Distributed Adaptive Node-Specific Signal Estimation）；节点交换压缩本地信号并更新接收权重。参数更新异步与采样时钟异步分别处理，见<a href="13_distributed-enhancement.html">专题Ⅱ</a></td>
+<td>分布式自适应节点特定信号估计；网络中各节点仅向邻居广播线性压缩后的低维本地信号并迭代更新接收组合权重 $\vec{h}_u$。算法的参数迭代异步与硬件晶振的采样时钟异步属于两类不同机制，需分别处理，见<a href="13_distributed-enhancement.html">专题Ⅱ</a></td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">GEVD</td>
-<td>广义特征值分解（Generalized Eigenvalue Decomposition）；在噪声度量中分解混合统计。GEVD-MWF按选定秩重构目标协方差，不等于最大信噪比的GEV波束，见<a href="13_distributed-enhancement.html#sec-13-12">专题Ⅱ§13.12</a></td>
+<td>广义特征值分解；在噪声协方差度量下联合对角化混合协方差与噪声协方差。GEVD-MWF 利用主广义特征向量做低秩目标协方差重构以提升维纳滤波稳健性，其优化准则不同于直接最大化输出信噪比的 GEV 波束，见<a href="13_distributed-enhancement.html#sec-13-12">专题Ⅱ §13.12</a></td>
 </tr>
 </tbody>
 </table></div>
@@ -755,82 +771,82 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 <tbody>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">导向矢量 $\vec{a}(\theta)$</td>
-<td>指定频率和声源方向或位置时，各通道相对参考的复响应向量，包含幅度与相位；理想远场、同增益全向麦模型常简化为仅有相位差，近场与实测流形还要保留幅度差（§2.3）</td>
+<td>在给定频率与声源方向（或近场坐标）下，各麦克风通道相对参考点的复数传递响应列向量；理想远场全向同增益阵列中仅含传播相位差，近场球面波或带障板实测流形则同时包含通道间幅度差与相位差（§2.3）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">转向（steering）</td>
-<td>把波束对准某个方向：按导向矢量补偿各通道时延/相位</td>
+<td>按候选方向的导向矢量补偿各麦克风通道的传播时延或相位差，使波束主瓣对准指定空间方向</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">主瓣 / 旁瓣 / 零陷</td>
-<td>波束图中目标指向附近的主要响应区、主瓣外的局部峰，以及响应接近零的方向（图 7a）</td>
+<td>波束方向图中包含目标指向的中心高增益波瓣、主瓣以外的次级局部峰值，以及响应幅度趋近于零的空间抑制凹槽（图 7a）</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:8em">栅瓣</td>
-<td>空间采样混叠产生的高旁瓣；均匀线阵在特定间距和转向下可出现与主瓣等高的方向歧义（§2.6、图 7b）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">栅瓣（grating lobe）</td>
+<td>阵元间距过大违背空间奈奎斯特采样条件时产生的空间混叠旁瓣；均匀线阵在高频或大转向角下会出现与主瓣等高的栅瓣，造成真实方向与混叠方向无法由空间滤波区分（§2.6、图 7b）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">白噪声增益（White Noise Gain，WNG）</td>
-<td>衡量波束权重对各通道独立等功率白噪声的放大或抑制；在等幅理想目标导向、目标已对齐且无失真归一化下，$M$ 元等权 DSB 达到 $10\log_{10}M$ dB（§2.6）</td>
+<td>波束形成器输出端信噪比相对单通道输入端信噪比在空间独立同功率白噪声假设下的比值；满足无失真约束 $\vec{w}^H\vec{a}=1$ 且等幅理想导向时，等权 DSB 取得最大白噪声增益 $10\log_{10}M\ \mathrm{dB}$（§2.6）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">指向性指数（Directivity Index，DI）</td>
-<td>指定各向同性弥散场与归一化口径下的方向性收益（§2.6）</td>
+<td>波束形成器在目标方向的功率响应与各向同性弥散噪声场平均功率响应之比的分贝值，需注明采用三维球面还是二维水平面弥散场口径（§2.6）</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:8em">半功率波束宽度（Half-Power Beamwidth，HPBW）/旁瓣电平（Side-Lobe Level，SLL）</td>
-<td>HPBW 是主瓣两侧 −3 dB 交点间的角宽；SLL 是最高旁瓣相对主瓣的电平。所报扫描域缺少一侧交点或没有可识别的旁瓣时，应分别注明该量未定义或不可测（§2.6、§5.2）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">半功率波束宽度（HPBW）/ 旁瓣电平（SLL）</td>
+<td>HPBW 为主瓣峰值两侧下降 $3\ \mathrm{dB}$（功率减半）交点之间的角度跨度；SLL 为最高旁瓣峰值相对主瓣峰值的分贝差。若扫描角域内主瓣一侧未跌破 $-3\ \mathrm{dB}$ 或不存在局部次峰，应如实标注该指标未闭合或无旁瓣（§2.6、§5.2）</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:8em">CRLB / CRB（克拉美－罗下界，Cramér–Rao Lower Bound）</td>
-<td>给定概率模型和正则条件下，无偏估计器方差的下界；模型、参数化或偏差条件改变，下界也改变（§2.6）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">CRLB / CRB（克拉美－罗下界）</td>
+<td>在指定观测概率分布与正则可微条件下，任何无偏参数估计器的协方差矩阵所能达到的理论下界；一旦改变噪声统计假设、未知干扰参数化方式或允许有偏估计，下界本身也会随之改变（§2.6）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">MVDR（最小方差无失真响应）</td>
-<td>在 $\vec{w}^H\vec{a}=1$ 的约束下最小化输出噪声功率。它保护目标方向或 RTF，同时压低噪声（§5.4）</td>
+<td>在目标方向线性无失真约束 $\vec{w}^H\vec{a}=1$ 下最小化输出噪声（或干扰加噪声）方差的自适应波束形成器；混响环境中常将自由场导向矢量替换为目标早期相对传递函数（§5.4）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">MWF（多通道维纳滤波）</td>
-<td>最小化指定参考目标与输出之间的均方误差，允许目标失真与噪声残留共同进入代价；SDW-MWF 改变噪声项的权重。秩一化简和极限的条件见本表后的独立说明及<a href="05_beamforming.html#sec-u-fb93744989">第 5 章 MWF 专题</a>。</td>
+<td>以最小化波束输出与选定参考通道目标语音声像之间的均方误差为准则，允许在微量语音失真与大幅噪声抑制之间折中；SDW-MWF 引入失真加权参数调节该平衡，秩一化简与极限性质见下文独立小节及<a href="05_beamforming.html#sec-u-fb93744989">第 5 章 MWF 专题</a></td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:8em">相对传递函数（Relative Transfer Function，RTF）</td>
-<td>各通道相对参考通道的声学传递响应；是否包含早期反射取决于估计目标和时间窗，混响中 MVDR 常保护 RTF 而不是自由场导向矢量（§5.4）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">相对传递函数（RTF）</td>
+<td>各麦克风通道的目标声学传递函数除以参考麦克风通道传递函数所得的复数比值；取决于估计窗口长度，RTF 可涵盖直达声与部分早期反射，比理想自由场平面波导向更贴合真实房间声像（§5.4）</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:8em">对角加载</td>
-<td>求逆前在协方差矩阵上增加对角项，以改善条件数并降低对失配的敏感性。绝对加载写成 $\mathbf R+\delta\mathbf I$，相对加载写成 $\mathbf R+\eta\operatorname{tr}(\mathbf R)\mathbf I/M$；两种参数的量纲和缩放行为不同（§5.4、§14.3）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">对角加载（diagonal loading）</td>
+<td>在样本协方差矩阵求逆前向主对角线加上正数项，以压低条件数、增强对导向失配与有限快拍误差的稳健性。第 5 章将绝对加载记为 $\mathbf{R}+\varepsilon\mathbf{I}$（文献与本附录算例亦记 $\delta$），相对加载记为 $\mathbf{R}+\alpha\,\operatorname{tr}(\mathbf{R})\mathbf{I}/M$（亦记 $\eta$）；前者与协方差同量纲，后者无量纲且随输入功率整体缩放保持条件数不变（§5.4、§14.3.8）</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:8em">相干源</td>
-<td>在所分析频点，完全相干的多个源分量互为固定复数倍，使源协方差降秩；未去相关的标准 MUSIC 因此失去相应信号子空间条件。高度相关但非完全相干时未必严格降秩，却可能更难在有限快拍下分辨；空间平滑可在满足阵列与维数条件时改善这一问题（§4.6）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">相干源（coherent sources）</td>
+<td>在同一频点上，多个声源信号互为确定性复常数倍（如直达声与强镜面反射），导致源协方差矩阵发生秩亏损，直接破坏标准 MUSIC 对信号子空间维数的满秩前提；满足均匀线阵几何与阵元数条件时可通过空间平滑恢复秩（§4.6）</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:8em">空间平滑</td>
-<td>第4章把物理线阵切成重叠子阵，对子阵协方差取平均，以孔径代价恢复相干源所需的秩；其元素单位为观测幅度平方。第3章差分协同阵的滞后向量外积平滑则基于二阶统计再构造矩阵，元素单位为观测幅度四次方；两者输入与统计对象不同，不能直接混用（<a href="04_doa-estimation.html#sec-4-6">§4.6</a>、<a href="03_array-geometry.html#sec-3-3">§3.3</a>）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">空间平滑（spatial smoothing）</td>
+<td>第 4 章将均匀线阵划分为若干重叠子阵并对子阵二阶协方差求平均，以牺牲有效孔径换取相干源去相关（矩阵元素量纲为观测幅度平方）；第 3 章差分协同阵空间平滑则对虚拟滞后信号再构造外积矩阵（元素量纲为观测幅度四次方），两者的输入统计量与物理假设不可混用（<a href="04_doa-estimation.html#sec-4-6">§4.6</a>、<a href="03_array-geometry.html#sec-3-3">§3.3</a>）</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:8em">差分协同阵</td>
-<td>由全部阵元位置差组成的有符号滞后集合。在互不相干源和通道响应一致等条件下，可由二阶统计重构虚拟协方差；连续滞后数、虚拟矩阵维数和物理孔径须分别计算，不能把差集的正负跨度当作物理孔径增加一倍（§3.3）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">差分协同阵（difference coarray）</td>
+<td>由物理阵元坐标两两作差生成的全部有符号空间滞后集合。在声源互不相关、准平稳且各通道增益一致的假设下，可利用二阶互相关向量重排构造更高维的虚拟均匀线阵协方差，但不能把正负对称滞后跨度误算为物理孔径翻倍（§3.3）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">GEV 波束形成器</td>
-<td>最大化输出信噪比的波束形成器（广义特征值问题的解），与 MVDR（见本组 MVDR 行）并列的掩码后处理选项（§5.9）</td>
+<td>直接最大化输出端目标与噪声广义瑞利商（即输出信噪比）的波束形成器，求解广义特征值问题得到主特征向量，常配合盲尺度后滤波（如 BAN）作为神经掩码后端（§5.9）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">GSS（导引源分离）</td>
-<td>§8.4 讲解的原方案用说话人活动时间约束 cACGMM 的分量标签，再由掩码估计空间统计并作波束形成；方向先验可另作约束，不能替代该原方案的活动标注</td>
+<td>§8.4 介绍的经典会议分离框架：利用外部说话人活动起止时间（diarization）硬约束 cACGMM 各混合分量的活跃区间以消除跨频点排列模糊，再由估计掩码统计目标与干扰协方差并执行波束形成</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:8em">WDO（W-不重叠正交性，W-disjoint orthogonality）</td>
-<td>近似认为不同源在时频平面的非零支撑较少重叠，从而可逐时频点选取主导声源；它强于“互不相关”。例如两组系数 $[1,1]$ 与 $[1,-1]$ 的内积为 0，但两个位置都同时非零，故不能由正交或零互协方差推出 WDO。强混响或多人同时发声会削弱这一近似（§8.6）。<a href="https://doi.org/10.1109/TSP.2004.828896" title="citation">Yılmaz 与 Rickard 原始论文</a></td>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">WDO（W-不重叠正交性）</td>
+<td>假设多个语音源在短时傅里叶时频平面上的高能量支撑集几乎互不重叠，使得每个时频格点近似由单一声源主导；该条件严格强于统计不相关或内积正交（例如向量 $[1,1]$ 与 $[1,-1]$ 内积为零，但两个坐标均同时非零，不满足支撑集分离）。强混响拖尾与多人密集叠讲会削弱这一近似（§8.6；参见<a href="https://doi.org/10.1109/TSP.2004.828896">Yılmaz 与 Rickard（2004）原始论文</a>）</td>
 </tr>
 </tbody>
 </table></div>
 <h3 id="sec-u-c1e472a7cd">MWF 的参考目标、秩一化简与噪声权重极限</h3>
-<p>多通道维纳滤波（Multichannel Wiener Filter，MWF）的参考目标是所选麦克风上的目标声像，不必等于原始源信号。语音失真加权多通道维纳滤波（Speech-Distortion-Weighted Multichannel Wiener Filter，SDW-MWF）最小化“目标失真 + $\mu$ 倍残余噪声”的均方代价。本书第 5 章式(5-12)定义 $\vec w_{\mathrm{SDW}}=(\mathbf R_{ss}+\mu\mathbf R_{nn})^{-1}\mathbf R_{ss}\vec e_r$；当目标与噪声的互二阶矩 $E[\vec s\vec n^H]=\mathbf0$ 时，$\mu=1$ 对应混合观测的普通MWF；零均值且不相关是一组充分条件。若存在非零均值，只说“协方差为零”还不够。增大 $\mu$ 会提高残余噪声的代价。相关原始模型及参考取点见<a href="05_beamforming.html#sec-u-fb93744989">第 5 章专题</a>。</p>
-<p>若目标是秩一模型 $\mathbf R_{ss}=\phi_s\vec a\vec a^H$，源功率 $\phi_s>0$，权重参数 $\mu>0$，噪声协方差 $\mathbf R_{nn}$ 厄米正定，并把参考响应归一化为 $a_r=\vec e_r^H\vec a=1$，则令 $q=\vec a^H\mathbf R_{nn}^{-1}\vec a>0$，可把 SDW-MWF 写成无失真 MVDR 权重乘实标量 $G_\mu=\phi_s q/(\mu+\phi_s q)$。此处 $\mu>0$ 保证正定噪声项使总矩阵可逆；$\mu\to0^+$ 的秩一极限不等于把 $\mu=0$ 直接代入一般矩阵逆。参考归一化条件不能省略：一般复参考响应还会带来 $a_r^*$ 因子，输出保护的是该参考声像。<a href="05_beamforming.html#e05-20">第 5 章 E05-20</a>给出复参考的具体计算；<a href="https://arxiv.org/pdf/1707.00201" title="citation">Wang 等作者预印本（2017），§§2、3.1～3.2，式(1)～(13)</a>说明了对应的失真加噪声目标和秩一形式。</p>
-<p>对于固定、半正定的 $\mathbf R_{ss}$，若 $\mathbf R_{nn}$ 正定，可把总矩阵写成 $\mu(\mathbf R_{nn}+\mathbf R_{ss}/\mu)$，括号中的矩阵最小特征值不低于 $\lambda_{\min}(\mathbf R_{nn})>0$，其逆范数有统一上界。因此总逆矩阵包含趋零的 $1/\mu$，权重在 $\mu\to\infty$ 时趋零。若噪声矩阵有零空间，这个论证缺少可逆的极限矩阵，不能照搬。E14-12 比较正定噪声与噪声零空间；“每个有限 $\mu$ 下总矩阵可逆”不是权重必趋零的充分条件。</p>
+<p>多通道维纳滤波（MWF）拟合的参考目标是选定参考麦克风 $r$ 所接收到的目标语音声像 $s_r=\vec{e}_r^H\vec{s}$，而非声源嘴边的干信号。语音失真加权多通道维纳滤波（SDW-MWF）将“目标语音失真均方 + $\mu$ 倍残余噪声均方”作为联合代价函数。本书第 5 章式(5-13)给出其闭式解 $\vec{w}_{\mathrm{SDW}}=(\mathbf{R}_{ss}+\mu\mathbf{R}_{nn})^{-1}\mathbf{R}_{ss}\vec{e}_r$；当目标信号与加性噪声的互二阶矩满足 $\mathbb{E}[\vec{s}\vec{n}^H]=\mathbf{0}$（例如零均值且统计不相关；若均值非零，仅协方差为零并不足以消去交叉二阶矩）时，取 $\mu=1$ 即退化为混合观测下的标准 MWF，而调大 $\mu>1$ 则以容忍更大语音衰减为代价换取更深的残余噪声抑制，详见<a href="05_beamforming.html#sec-u-fb93744989">第 5 章 MWF 专题</a>。</p>
+<p>当目标声场满足单点源秩一模型 $\mathbf{R}_{ss}=\phi_s\vec{a}\vec{a}^H$（源功率 $\phi_s>0$）、噪声惩罚权重 $\mu>0$、噪声协方差 $\mathbf{R}_{nn}$ 厄米正定，且导向矢量已按参考通道归一化为 $a_r=\vec{e}_r^H\vec{a}=1$ 时，记输出信噪比因子 $q=\vec{a}^H\mathbf{R}_{nn}^{-1}\vec{a}>0$，利用矩阵求逆引理可将 SDW-MWF 分解为“无失真 MVDR 波束权重 $\times$ 标量维纳后滤波增益 $G_\mu=\phi_s q/(\mu+\phi_s q)$”。这里 $\mu>0$ 与 $\mathbf{R}_{nn}\succ\mathbf{0}$ 共同保证了括号内总矩阵可逆；令 $\mu\to0^+$ 在秩一模型下收敛到无失真 MVDR，但不能机械地把 $\mu=0$ 直接代入含不可逆 $\mathbf{R}_{ss}^{-1}$ 的一般公式。若未做参考通道归一化（即 $a_r\neq 1$），分解式右侧还会保留共轭因子 $a_r^*$，表明滤波器始终以复现参考通道声像为基准（复参考通道算例见<a href="05_beamforming.html#e05-20">第 5 章 E05-20</a>，理论推导参见<a href="https://arxiv.org/pdf/1707.00201">Wang 等（2017）预印本 §§2、3.1～3.2</a>）。</p>
+<p>进一步考察 $\mu\to\infty$ 的渐近行为：对任意固定的半正定 $\mathbf{R}_{ss}$，只要 $\mathbf{R}_{nn}$ 严格正定，就可提取因子写成 $(\mathbf{R}_{ss}+\mu\mathbf{R}_{nn})^{-1}=\frac{1}{\mu}(\mathbf{R}_{nn}+\mathbf{R}_{ss}/\mu)^{-1}$。由于括号内矩阵的最小特征值始终不低于 $\lambda_{\min}(\mathbf{R}_{nn})>0$，其逆矩阵二范数一致有界，乘以前面的 $1/\mu$ 后必然随 $\mu\to\infty$ 收敛到零向量。反之，一旦 $\mathbf{R}_{nn}$ 存在非平凡零空间，即便对每一个有限的 $\mu>0$ 总矩阵 $\mathbf{R}_{ss}+\mu\mathbf{R}_{nn}$ 恰好都可逆，落在噪声零空间内的目标分量也不会受到 $\mu$ 的惩罚，极限权重便不再归零——练习 E14-12 将用二阶对角阵手算对比这两种情形。</p>
 <span id="sec-8" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-9dd3091211">定位与追踪</h3>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table class="tutorial-budget-table" style="--tutorial-table-width:32em">
 <thead>
@@ -842,79 +858,79 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 <tbody>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">到达时间差（Time Difference of Arrival，TDOA）</td>
-<td>本书定义 $\tau_{ij}=t_i-t_j$；同一声源到达一对麦克风的带符号时间差，是远场和近场定位的重要观测量（§2.1）</td>
+<td>本书定义为 $\tau_{ij}=t_i-t_j$，即同一声波波前到达第 $i$ 个与第 $j$ 个麦克风的带符号时间差，是远场测角与近场双曲线定位的基础观测量（§2.1）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">DOA（波达方向）</td>
-<td>声从哪个方向来，一般指角度。TDOA 是两路麦克风信号的到达时间差；紧凑阵列中常为几十到几百微秒。远场模型下，可结合麦克风间距和声速把 TDOA 换算成入射角（§4.1、§4.4）</td>
+<td>声源相对阵列参考系的入射角度（一维方位角或二维方位—俯仰角）。紧凑消费级阵列的两麦 TDOA 通常在几十至几百微秒量级；远场平面波假设下可结合阵元间距与声速将 TDOA 反解为入射角（§4.1、§4.4）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">ITD / ILD</td>
-<td>本书ITD取左耳到达时间减右耳到达时间，ILD取右耳声级减左耳声级（§1.1）；符号由这两种分别定义的差决定。双耳时间差（Interaural Time Difference，ITD）/双耳声级差（Interaural Level Difference，ILD）。双重理论把低频细结构 ITD 与高频 ILD 视为主要线索，但不是硬分界：低频可有 ILD，调制高频声也可提供包络 ITD（§1.1）</td>
+<td>双耳时间差（Interaural Time Difference）与双耳声级差（Interaural Level Difference）。本书规定 ITD 取左耳到达时间减右耳到达时间，ILD 取右耳声级减左耳声级（§1.1）。瑞利双工理论指出低频细结构相位主要提供 ITD、高频头影效应主要提供 ILD，但这并非绝对分界：近场低频同样存在显著 ILD，高频幅度调制信号也可提供包络 ITD（§1.1）</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:8em">HRTF</td>
-<td>头相关传递函数：头、耳廓和躯干对声音的方向相关滤波；其谱形是判断俯仰和减少前后混淆的重要线索之一，并非唯一线索（§1.1）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">HRTF（头相关传递函数）</td>
+<td>头部、耳廓与躯干对不同空间方向入射声波产生的频域滤波响应；耳廓造成的方向性谱陷是人类判断俯仰角与消解前后镜像模糊的关键声学线索之一（§1.1）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">鸡尾酒会效应</td>
-<td>人类在多人嘈杂环境中选择性聆听的能力；机器处理中的相关任务包括波束形成和语音分离（§1.1、§8.1）</td>
+<td>人类听觉系统在多人交谈与强背景噪声环境中将注意力聚焦于单一说话人的感知能力；对应的阵列信号处理任务涵盖定向波束形成、盲源分离与目标说话人提取（§1.1、§8.1）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">GCC-PHAT</td>
-<td>广义互相关的相位变换加权：每个非零互谱频点先除以该频点的模，再对频率求逆变换并按约定搜索时延峰。噪声、混响、周期信号或零互谱频点可能造成多峰、偏峰或无定义，峰值不是无需核查的真值（§4.2、E14-09）。</td>
+<td>采用相位变换加权的广义互相关时延估计：先将非零互功率谱逐频点除以其模值，再做逆傅里叶变换并在物理可行的最大时差范围内搜索主峰。强混响反射、低信噪比、强周期谐波或零互谱频点都可能引起多峰竞争与偏峰（§4.2、E14-09）</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:8em">SRP-PHAT</td>
-<td>遍历候选位置并汇总各麦对 PHAT 相关值的定位方法，是常用的稳健基线之一（§4.3）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">SRP-PHAT（可控响应功率）</td>
+<td>在候选方向或三维空间网格上遍历累积所有麦克风对的 GCC-PHAT 值，寻找全局能量极值点的稳健定位基线方法（§4.3）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">Capon / MUSIC / ESPRIT</td>
-<td>Capon 逐方向计算最小方差谱；MUSIC 利用导向矢量与噪声子空间的正交性形成伪谱；ESPRIT 利用阵列的平移不变结构直接估计参数。三者的协方差、源数和几何条件不同（§4.5、§4.6）</td>
+<td>三类高分辨空间谱与参数化定位方法：Capon 逐方向计算自适应最小方差输出功率；MUSIC 利用目标导向矢量与噪声子空间的正交性构造伪谱尖峰；ESPRIT 利用平移不变双子阵的旋转不变算子 $\boldsymbol{\Psi}$ 直接代数求根。三者对协方差满秩性、已知源数与阵列几何对称性的要求各不相同（§4.5、§4.6）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">GDOP（几何精度因子）</td>
-<td>同样的时延误差经过不同几何布局会产生不同的位置误差。阵列孔径较小、麦对基线方向单一或目标位于不利方位时，几何误差放大通常更明显（§4.4）</td>
+<td>刻画空间几何布局对测时误差放大倍数的指标。阵列有效孔径偏小、基线近似共线或声源处于端射低灵敏度区时，微小的 TDOA 抖动会被显著放大为较大的坐标或角度误差（§4.4）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">VAD（语音活动检测）</td>
-<td>判断“当前帧有没有人在说话”，给定位/更新做门控</td>
+<td>逐帧判别当前信号中是否存在人声活动，常用于门控 DOA 输出以及决定何时更新噪声或目标协方差矩阵</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:8em">时频掩码（Time-Frequency Mask，TF-mask）</td>
-<td>定义在时频网格上的权重或选择函数。可用非负实权重给多通道外积赋权，也可逐点乘输入谱或波束输出谱；后者的掩码若取复数就能改变相位。使用时写明取值域和作用对象（§5.9、§8.1、§8.4）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">时频掩码（Time-Frequency Mask）</td>
+<td>定义在 STFT 时频网格上的归属度或增益系数。既可以取 $[0,1]$ 区间内的实值权重去加权累加目标与噪声外积协方差，也可以直接逐格点乘在频谱上做时频滤波（复数掩码还能同时修正频谱相位）；工程实现须明确取值范围与作用对象（§5.9、§8.1、§8.4）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">新息（innovation）</td>
-<td>卡尔曼滤波里“观测 − 预测”的差，用它修正状态估计（§9.2）</td>
+<td>卡尔曼滤波在时刻 $t$ 实际接收到的观测量减去由一步预测状态推算出的预测观测量所得的残差 $\vec{\nu}_t$，代表新观测带来的增量信息，乘以卡尔曼增益后修正状态估计（§9.2）</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:8em">EKF（扩展卡尔曼滤波） / UKF（无迹卡尔曼滤波）</td>
-<td>两种非线性卡尔曼滤波。EKF 用雅可比做局部线性化；UKF 让一组 sigma 点通过非线性函数。UKF 可减小某些非线性变换的近似误差，但不保证总比 EKF 稳或准，仍取决于模型、调参和数值实现（§9.2）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">EKF / UKF</td>
+<td>处理非线性状态转移或非线性观测方程的两类卡尔曼滤波器：扩展卡尔曼滤波（EKF）在当前估计点用一阶雅可比矩阵做局部泰勒线性化；无迹卡尔曼滤波（UKF）通过一组确定性采样的 Sigma 点直接穿过非线性函数传递均值与协方差。UKF 在强非线性处通常减小了截断误差，但实际稳定性仍取决于噪声协方差标定与正定性数值维护（§9.2）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">JPDA / MHT</td>
-<td>多目标追踪中解决“观测属于谁”的两类经典方法：联合概率数据关联 / 多假设跟踪（§9.3）</td>
+<td>多目标追踪中解决“哪个观测对应哪条航迹”数据关联难题的两类经典方法：联合概率数据关联（JPDA）按关联概率对落入波门的候选观测做软加权更新，多假设跟踪（MHT）则在多帧窗口内维护并剪枝关联假设树（§9.3）</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:8em">锥面模糊</td>
-<td>线阵只观测方向在阵列轴上的投影，同一时延可对应绕阵列轴的一圈方向；平面阵的两侧则是法向镜像歧义，二者不要混为一种（§3.1）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">锥面模糊（cone of confusion）</td>
+<td>一维均匀线阵只能感知波传播向量在阵列轴上的投影余弦，同一组时延对应绕阵列轴旋转一周的圆锥面；二维平面阵的上下半空间对称性则表现为关于阵列平面的法向镜像歧义，两类几何模糊机制不同（§3.1）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">FIR 滤波器</td>
-<td>有限长冲激响应滤波器：输出 = 输入最近若干样本的加权和，抽头数（抽头见本表“信号与数学基础”组）就是加权长度（§5.1、§6.1）</td>
+<td>有限长冲激响应滤波器，当前时刻输出等于最近若干采样时刻输入的有限加权和，其脉冲响应在有限个抽头之后恒为零（§5.1、§6.1）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">重采样（粒子滤波）</td>
-<td>按当前权重抽取粒子索引并重置等权；高权粒子被保留或复制的机会较大，但不是确定性删小留大（<a href="09_source-tracking.html#sec-9-2-4">§9.2.4 算例 9-2：粒子加权与重采样</a>）</td>
+<td>当有效粒子数 $N_{\mathrm{eff}}$ 过低、少数粒子垄断权重时，按归一化权重分布有放回地随机抽取新粒子集并将权重重置为 $1/N_p$；高权重粒子被多次复制的概率更大，但这是随机抽样而非硬阈值截断（<a href="09_source-tracking.html#sec-9-2-4">§9.2.4 算例 9-2</a>）</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:8em">概率假设密度（Probability Hypothesis Density，PHD）滤波</td>
-<td>传播随机有限集（Random Finite Set，RFS）的一阶矩（强度函数）。某一区域上 $D(\vec x)$ 的积分给出该区域内目标数的期望值；实际目标状态常从强度峰或高斯分量提取，峰的个数本身不等于人数（§9.3）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">PHD（概率假设密度）滤波</td>
+<td>在随机有限集（RFS）框架下直接递推多目标点过程的一阶矩强度函数 $D(\vec{x})$。强度函数在任意空间区域上的积分等于该区域内期望存在的目标个数；工程上常从强度峰值或高斯混合分量提取目标航迹，但局部峰的数量本身并不恒等于真实人数（§9.3）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">OSPA（最优子模式分配距离）</td>
-<td>多目标追踪误差度量，同时罚定位误差和人数错误（§10.5 评测指标表）</td>
+<td>统一衡量多目标定位偏差与目标基数（漏检或虚警人数）错误的综合度量指标（§10.5）</td>
 </tr>
 </tbody>
 </table></div>
@@ -928,124 +944,124 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 </thead>
 <tbody>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:8em">AEC</td>
-<td>声学回声消除（Acoustic Echo Cancellation，AEC）：用已知的播放信号做参考，估计回声副本再相减（§6.1）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">AEC（声学回声消除）</td>
+<td>以设备端已知的扬声器播放参考信号 $x[n]$ 为输入，通过自适应滤波器在线辨识扬声器到麦克风的声学回声路径并从拾音信号 $d[n]$ 中减去估计回声 $y[n]$（§6.1）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">DTD（双讲检测）</td>
-<td>检测近端语音与远端播放同时活动的状态，用于冻结、减小步长或切换到稳健的 AEC 更新策略（<a href="06_aec.html#sec-6-4">§6.4</a>）</td>
+<td>实时判别远端扬声器播放与近端说话人发声是否同时发生，用于在双讲期间冻结或收紧线性自适应滤波器的更新步长，防止近端语音冲毁已收敛的回声滤波器权重（<a href="06_aec.html#sec-6-4">§6.4</a>）</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:8em">回声返回损失增强（Echo Return Loss Enhancement，ERLE）</td>
-<td>衡量同一窗口内回声分量的能量衰减；真实录音通常用远端单讲近似。双讲若无独立回声及残余回声真值，不能用混合输入／总输出功率比代替；设备、路径、取点与窗口须说明（§6.7）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">ERLE（回声返回损失增强）</td>
+<td>同一评估窗口内线性或整链处理前后的纯回声功率衰减分贝数；实录测试通常在远端单讲静音近端段统计。双讲期间若无法分离纯回声与近端语音真值，切勿把混合输入与混合残差的总功率比误报为 ERLE（§6.7）</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:8em">WPE</td>
-<td>加权预测误差去混响：用过去帧预测晚期混响拖尾再减掉（§7.1）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">WPE（加权预测误差去混响）</td>
+<td>在 STFT 域跳过早期反射保护延迟 $\Delta$，用过去多帧观测线性预测并减去晚期混响拖尾，同时交替更新目标早期语音的时变方差 $\lambda_{ft}$（§7.1）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">SI-SDR / STOI / PESQ / WER</td>
-<td>尺度不变信号失真比 / 短时客观可懂度 / 感知语音质量客观评估 / 词错误率。它们的输入、对齐、单位和解释不同；PESQ 是旧研究常用客观指标，不是受试者主观评分，ITU-T P.862 的撤销及 P.863 现行口径见 §10.5。</td>
+<td>语音增强与分离常用的四项客观指标：尺度不变信号失真比、短时客观可懂度、感知语音质量客观评估与自动语音识别词错误率。四者的对齐规则、量纲与敏感失真类型各异；其中 PESQ 属于侵入式信号级预测模型而非真人主观打分，ITU-T P.862 的历史演进与现行 P.863（POLQA）标准见 §10.5</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">SDR / SIR / SAR</td>
-<td>BSS Eval 原始指标组：信号失真比 / 信号干扰比 / 信号伪影比。原始定义允许参考滤波对齐；不同工具和版本的尺度、排列及滤波窗口口径不能直接互换。复现旧论文时记录具体实现与版本，和尺度不变的 SI-SDR 分开报告（§10.5）。</td>
+<td>BSS Eval 工具包的经典三项分解指标：信号失真比、信号干扰比与信号伪影比。原始 <code>bss_eval_sources</code> 允许对真值参考做短 FIR 滤波对齐，不同开源实现与版本的滤波长度及尺度可变约定不能直接横向混比，汇报时应注明软件版本并与尺度不变的 SI-SDR 区分（§10.5）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">MEMS 麦克风</td>
-<td>使用微机电工艺制造的微型麦克风，是小型阵列中的常见器件</td>
+<td>采用微机电系统（Micro-Electro-Mechanical Systems）硅振膜工艺封装的微型驻极或电容麦克风，具有体积小、回流焊一致性高等特点，广泛用于消费电子与车载麦克风阵列</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">PDM / I2S / TDM</td>
-<td>常见数字音频接口。单线承载的通道数、时隙和位宽由具体控制器及协议配置决定；阵列通道应共享或校准采样时钟（§10.2）</td>
+<td>板级数字麦克风常用串行传输总线：脉冲密度调制（PDM）、集成电路内置音频总线（I2S）与时分复用总线（TDM）。单根数据线承载的声道上限、位宽与边沿采样时序取决于主控外设配置，同一阵列的全部麦克风必须锁定于同一主采样时钟域（§10.2）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">dBA</td>
-<td>A 计权声级：按规定的 A 计权频率响应处理后得到的声级。它不是未加权 dB，比较数据时要核对参考量和计权方式</td>
+<td>经过 IEC 标准 A 计权滤波器（模拟人耳对低频不敏感的等响特性）加权后的声压级读数，查阅底噪手册时不可与线性未计权的 dB SPL 直接混比</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">AOP（声学过载点）</td>
-<td>在数据手册规定的测试条件下，麦克风输出达到指定失真阈值时的输入声压级；比较器件时必须同时核对阈值、频率和供电条件（§10.2）</td>
+<td>在芯片手册规定的供电电压与测试频率（常为 $1\ \mathrm{kHz}$）下，麦克风输出总谐波失真（THD）达到指定阈值（如 $10\%$）时的最大输入声压级（§10.2）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">孔径（aperture）</td>
-<td>阵列的最大跨度 $D$。常规波束的角宽具有 $\lambda/D$ 的量级关系，系数随几何、转向和加权变化；它不能统一代表所有DOA算法的分辨率或估计误差，见<a href="03_array-geometry.html#sec-3-1">§3.1</a>及<a href="02_basics-signal-model.html#sec-2-6">§2.6</a></td>
+<td>阵列几何外轮廓的最大物理跨度 $D$。常规波束形成的主瓣宽度与 $\lambda/D$ 成正比（具体比例系数随阵型、转向角与窗权变化），但它并不能单独决定子空间或非线性算法的最终测角精度，见<a href="03_array-geometry.html#sec-3-1">§3.1</a>及<a href="02_basics-signal-model.html#sec-2-6">§2.6</a></td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:8em">阵列流形（manifold）</td>
-<td>全体候选方向或位置的导向矢量集合，即阵列的方向响应模型；几何定义见 §2.3，实测标定见 §3.4 与 §10.2</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">阵列流形（array manifold）</td>
+<td>固定频率下遍历全部候选空间方向（或位置）所构成的导向矢量集合，代表阵列的完整空间复响应特征；理想几何流形见 §2.3，带壳体衍射的消声室实测标定流形见 §3.4 与 §10.2</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">AFE（音频前端）</td>
-<td>Audio Front End：位于采集与识别、通信或交互后端之间的音频处理部分，可包含 AEC、去混响、波束、降噪和电平控制；实际模块由任务决定（§10.1）</td>
+<td>Audio Front End，部署在硬件麦克风采集与后端语音识别、通话编码或声学事件检测之间的信号处理流水线，典型链路串联 AEC、WPE 去混响、波束形成、后置降噪与自动增益控制（§10.1）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">双讲（double-talk）</td>
-<td>远端播放与近端用户同时发声。近端语音出现在麦克风或误差信号中，不应出现在理想的远端参考信号中；它会使 AEC 的误差不再只含路径失配，因此需用 DTD 控制自适应更新（<a href="06_aec.html#sec-6-4">§6.4</a>）</td>
+<td>远端播放声与近端人声同时进入麦克风的工作状态。此时残差 $e[n]$ 中混有强近端语音，不再纯粹反映回声路径拟合误差，若不加控制地全速更新自适应滤波器会导致权重发散并损伤近端音质（<a href="06_aec.html#sec-6-4">§6.4</a>）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">MOS（平均意见分）</td>
-<td>按规定听测流程收集受试者评分并取统计量。量表、问题、材料和受试者筛选由具体标准规定；客观模型只能在其验证范围内近似预测主观质量（§10.5）</td>
+<td>Mean Opinion Score，按国际标准（如 ITU-T P.800 / P.808）组织受试者试听并在规定量表上打分所得的算术平均主观音质评价；无参考神经网络 MOS 预测器仅在其训练分布内提供近似参考（§10.5）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">CHiME</td>
-<td>面向复杂声学场景的公开挑战系列，不同届次覆盖远场识别、会议转写、分离或增强等不同任务；数据生成方式和指标应按当届说明读取（附录 B 15.2）</td>
+<td>远场多通道语音识别、分离与增强领域的代表性国际公开评测挑战赛系列，各届次的任务设定、阵列配置与官方基线详见附录 B §15.2</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">KWS（关键词唤醒）</td>
-<td>Keyword Spotting：检测预设关键词的模型。可作为低功耗常驻任务，也可与 VAD、AEC 或增强共享前端；取点和运行方式由功耗及训练数据决定（§10.3、§10.9）</td>
+<td>Keyword Spotting，实时监听预定义唤醒词的轻量级识别模块；低功耗待机态与设备外放播放态下的音频取点位置及误唤醒抑制策略见 §10.3、§10.9</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">BOM（物料清单）</td>
-<td>Bill of Materials：列明设备所需物料及数量；按目标产量的采购单价汇总才得到 BOM 成本。未列入清单的接口、结构增量及标定、维护费用另行核算，已列入的物料不得重复计费（§11.1）</td>
+<td>Bill of Materials，量产硬件所需的全部元器件型号与用量清单；BOM 成本需按目标量产阶梯采购价核算，外壳开模、产线声学校准工时与软件授权费需另列计入总工程成本（§11.1）</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:8em">HATS（人工头）</td>
-<td>Head and Torso Simulator：带耳廓、耳模拟器和躯干声学结构的测试装置；测量话筒位于设备规定的测量位置，并按其校准口径表示耳参考点或近似鼓膜处的声压，不能写成“话筒置于人的鼓膜”。装置定义与耳模拟器的测量位置须分别查 <a href="https://www.itu.int/rec/T-REC-P.58/en" title="citation">ITU-T P.58（03/2023，§§3.1.3～3.1.5、9.2）</a> 与 <a href="https://www.itu.int/rec/T-REC-P.57/en" title="citation">ITU-T P.57（06/2021）</a>（2026-09-28 核实）。</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">HATS（人工头与躯干模拟器）</td>
+<td>Head and Torso Simulator，具备标准声学阻抗耳模拟器、耳廓与躯干衍射结构的电声测量假人；内置测量传声器安装于耳模拟器规定的参考平面以等效鼓膜参考点声压，结构规范与耳模拟器耦合要求分别见 <a href="https://www.itu.int/rec/T-REC-P.58/en">ITU-T P.58（03/2023，§§3.1.3～3.1.5、9.2）</a> 与 <a href="https://www.itu.int/rec/T-REC-P.57/en">ITU-T P.57（06/2021）</a>（2026-09-28 核实）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">NLP（非线性处理）</td>
-<td>Non-Linear Processing：AEC 里接在线性滤波器之后的残余回声抑制（谱减式/神经式），对付扬声器非线性失真等线性滤波器消不掉的部分；<a href="06_aec.html#sec-6-8">§6.8</a>解释处理结构，<a href="06_aec.html#sec-6-12">§6.12</a>解释工作点。注意与自然语言处理（Natural Language Processing）同缩写，语境区分</td>
+<td>Non-Linear Processing，串联在 AEC 线性自适应滤波器之后的频域增益或神经掩码抑制模块，用于压低微型扬声器谐波失真、机壳振动及路径突变留下的残余回声；系统级结构见<a href="06_aec.html#sec-6-8">§6.8</a>，抑制深度与双讲保真度的工作点折中见<a href="06_aec.html#sec-6-12">§6.12</a>（注意与自然语言处理同缩写，按上下文区分）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">PBFDAF</td>
-<td>分区块频域自适应滤波：把长回声路径分块并用 FFT 计算卷积与更新。第 6 章式(6-5)与同配置的频域多抽头 NLMS 更新逐分量相同；相对逐样本时域实现能节省多少计算取决于滤波长度、分块、FFT 库和硬件（§6.2）</td>
+<td>分区块频域自适应滤波：将长回声脉冲响应切分为若干等长短块，结合重叠保留法用 FFT 高效完成块卷积与梯度计算，在低块延迟下兼顾长混响回声尾覆盖与实时算力开销（§6.2）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">IPNLMS</td>
-<td>改进比例 NLMS：按抽头幅度分配各系数的更新量。原论文常用 $\alpha$ 表示混合系数，第6章改记 $\kappa$。$\kappa=-1$ 时各抽头权重均为 $1/L$，还须取 $\varepsilon_{\mathrm{NLMS}}=L\delta_{\mathrm{IPNLMS}}$ 才与相应NLMS正则项完全一致；$\kappa=1$ 为纯比例端点，零初值可能使所有更新权重为零；$\kappa=0$ 混合均匀与比例两部分。具体取值要与所用公式和数据一同验证（§6.2）</td>
+<td>改进比例归一化最小均方算法：按当前滤波器各抽头幅值大小按比例分配更新步长，加速稀疏回声路径收敛。原文献常用 $\alpha$ 记比例混合因子，本书第 6 章改记为 $\kappa\in[-1,1]$：取 $\kappa=-1$（且匹配分母正则 $\varepsilon_{\mathrm{NLMS}}=L\delta_{\mathrm{IPNLMS}}$）时退化为标准均匀步长 NLMS，取 $\kappa=1$ 为纯比例端点（全零初值会导致更新停滞），取 $\kappa=0$ 则均衡兼顾均匀底与稀疏大抽头（§6.2）</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:8em">CNG（舒适噪声）</td>
-<td>Comfort Noise Generation：残余抑制压得太狠时补回的轻微背景噪声，避免通话“死寂”听感（§6.8）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">CNG（舒适噪声生成）</td>
+<td>Comfort Noise Generation，当后置降噪或 AEC 非线性抑制将静音段压至极低电平时，人为注入频谱包络匹配的低电平平稳底噪，消除通道开闭切换带来的“忽断忽通”突兀听感（§6.8）</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:8em">pAEC</td>
-<td>个性化 AEC：把目标说话人的声纹嵌入作为条件，在双讲中增强目标说话人；定义和隐私要求见 §6.5、§6.13</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">pAEC（个性化回声消除）</td>
+<td>结合注册用户的声纹嵌入向量，在消除远端回声的同时压制房间内非目标旁人干扰的联合神经前端；声纹注册与本地隐私合规要求见 §6.5、§6.13</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:8em">barge-in（打断）</td>
-<td>设备播放 TTS 或音乐时用户直接说话的交互状态。系统需在自发声期间保留近端语音或唤醒词，并让 VAD/KWS 使用合适的 AEC 后取点（§6.5）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">barge-in（语音打断）</td>
+<td>智能音箱或车载主机正在大音量播报语音合成（TTS）或音乐时，近端用户直接开口说出唤醒词或指令的交互工况；要求 AEC 在高回声电平下完整保留近端语音起始音节供 VAD 与 KWS 检出（§6.5）</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:8em">TCLw</td>
-<td>加权终端耦合损耗：免提终端回声衰减的测试指标。阈值、信号和收敛窗口必须按产品适用的标准版本及测试条款核对，不能跨标准套用一个固定数值（§6.7）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">TCLw（加权终端耦合损耗）</td>
+<td>衡量免提通信终端扬声器至麦克风全链路回声衰减能力的核心认证指标；具体合格门限、测试激励信号与收敛预热时长须严格对照目标市场适用的通信标准条款（§6.7）</td>
 </tr>
 </tbody>
 </table></div>
-<p>手算（14.2）：幅度减半是多少 dB？功率减半又是多少 dB？这是两个不同的物理变化；§14.3.2 还会说明同一物理变化怎样用幅度比或功率比等价表示。</p>
-<p>答案：幅度减半为 $20\log_{10}0.5\approx-6$ dB；功率减半为 $10\log_{10}0.5\approx-3$ dB。前者对应功率变为四分之一，后者对应幅度变为 $1/\sqrt{2}$。</p>
+<p>手算（14.2）：信号幅度减半对应多少 dB？信号功率减半又对应多少 dB？请说明为什么这两个数字不同。</p>
+<p>输入与代入：幅度减半即幅度比 $A_2/A_1=0.5$，按幅度分贝定义代入得 $20\log_{10}0.5\approx-6.02\ \mathrm{dB}$（常简记为 $-6\ \mathrm{dB}$）；在同一负载阻抗下功率与幅度平方成正比，幅度变为 $1/2$ 意味着功率变为原来的 $(1/2)^2=1/4$。反过来，功率减半即功率比 $P_2/P_1=0.5$，按功率分贝定义代入得 $10\log_{10}0.5\approx-3.01\ \mathrm{dB}$（常简记为 $-3\ \mathrm{dB}$，对应幅度变为 $1/\sqrt{2}\approx0.707$）。两者描述的是不同强度的物理衰减，紧接着的 §14.3.2 将进一步列表对照。</p>
 <span id="sec-12-3" class="anchor-alias" aria-hidden="true"></span><span id="sec-10" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-14-3">14.3 预备知识速览</h2>
-<p>本节为已接触三角函数、复数和初步线性代数的读者集中解释正文反复使用的数学操作。每个式子先看输入维度、单位与成立条件，再看计算；较长的算法推导仍留在对应正文。</p>
+<p>本节面向已具备基础三角函数、复数运算与初步矩阵代数知识的读者，把正文各章反复调用的核心推导步骤拆开讲透。阅读每个公式时，建议先看清各变量的维度、物理量纲与可逆性前提，再顺着代数变形核对符号约定。</p>
 <span id="sec-12-3-1" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-14-3-1">14.3.1 复数与相位：时延的符号</h3>
-<p>本书用 $e^{+j2\pi ft}$ 表示正频率复正弦，并采用前向傅里叶变换 $X(f)=\int x(t)e^{-j2\pi ft}\,\mathrm dt$。复数可写成 $z=Ae^{j\phi}$，且 $e^{j\phi}=\cos\phi+j\sin\phi$。</p>
-<p>在此约定下，延迟 $\tau$ 对应乘子 $e^{-j2\pi f\tau}$。对麦 1 参考的远场导向矢量，$\tau_{m1}=-(\vec r_m-\vec r_1)^\top\vec u/c$，所以</p>
-<p>$$a_m=e^{-j2\pi f\tau_{m1}}=e^{+j2\pi f(\vec r_m-\vec r_1)^\top\vec u/c}\text{。}$$</p>
-<p>例如麦 2 在麦 1 的 $+x$ 侧 $0.04$ m、声源位于 $\theta=+30^\circ$，以 $c=343$ m/s、$f=1$ kHz 计算，$\tau_{21}=-0.04\sin30^\circ/343\approx-58.31$ μs。因此麦 2 <strong>先收到</strong>，但其正频率导向分量相对麦 1 的相位为 $-2\pi(1000)\tau_{21}\approx+0.3664$ rad。负到达时差与正频域相位并不矛盾，分别来自到达时间的定义和前向傅里叶核。</p>
-<p>若采用相反傅里叶约定，相关公式的相位符号也要整体改变，不能只改其中一式（§2.3、§4.2）。</p>
+<p>本书以 $e^{+\mathrm{j}2\pi ft}$ 表示正频率单频复指数信号，并配套前向连续时间傅里叶变换 $X(f)=\int_{-\infty}^{\infty} x(t)e^{-\mathrm{j}2\pi ft}\,\mathrm{d}t$。任意复数可写成极坐标形式 $z=Ae^{\mathrm{j}\phi}$，并服从欧拉公式 $e^{\mathrm{j}\phi}=\cos\phi+\mathrm{j}\sin\phi$。</p>
+<p>在这一傅里叶正负号约定下，若时域波形整体晚到 $\tau$ 秒（即变成 $x(t-\tau)$），作变量代换 $t'=t-\tau$ 代入傅里叶积分，就会提出频域相位乘子 $e^{-\mathrm{j}2\pi f\tau}$。对于以麦 1 为参考原点的远场平面波导向矢量，第 $m$ 个麦克风相对麦 1 的到达时间差为 $\tau_{m1}=-(\vec{r}_m-\vec{r}_1)^\top\vec{u}/c$，因此其导向矢量第 $m$ 个分量为</p>
+<p>$$a_m=e^{-\mathrm{j}2\pi f\tau_{m1}}=e^{+\mathrm{j}2\pi f(\vec{r}_m-\vec{r}_1)^\top\vec{u}/c}\text{。}$$</p>
+<p>用一个具体算例核对正负号：设麦 2 位于麦 1 的 $+x$ 方向 $0.04\ \mathrm{m}$ 处，声源位于右前方 $\theta=+30^\circ$，取声速 $c=343\ \mathrm{m/s}$、频率 $f=1000\ \mathrm{Hz}$。此时波前先扫过麦 2 再到达麦 1，故到达时差 $\tau_{21}=-0.04\sin30^\circ/343\approx-58.31\ \mu\mathrm{s}$ 为负值；代入上式，麦 2 正频率分量相对麦 1 的相位超前量为 $-2\pi(1000)\tau_{21}\approx+0.3664\ \mathrm{rad}$。负的到达时差对应正的频域相位超前，二者物理图景完全自洽。</p>
+<p>阅读外部文献或调用第三方声学库时，若对方采用反向傅里叶核 $e^{+\mathrm{j}2\pi ft}$，则时延乘子、导向矢量与波束内积中的共轭位置必须成套翻转，切忌只替换单条公式（§2.3、§4.2）。</p>
 <span id="sec-12-3-2" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-14-3-2">14.3.2 分贝：幅度比与功率比</h3>
-<p>能量或功率比用 $10\log_{10}(\cdot)$，幅度比在两边使用相同的“功率与幅度平方”比例常数时用 $20\log_{10}(\cdot)$。系数相差一倍，是因为相应功率与幅度平方成正比。</p>
-<p>因此，同一物理变化用两种比值表示时，dB 数相同：幅度变为 0.5 时功率变为 0.25，$20\log_{10}0.5=10\log_{10}0.25\approx-6$ dB。</p>
+<p>分贝（dB）用十进制对数压缩大动态范围的无量纲比值：比较两个功率或能量时取 $10\log_{10}(P_2/P_1)$；在相同声阻抗或负载电阻下比较声压、电压或数字波形幅度时，由于功率与幅度平方成正比（$P_2/P_1=(A_2/A_1)^2$），对数前的系数翻倍为 $20\log_{10}(A_2/A_1)$。</p>
+<p>因此，对于<strong>同一个物理信号衰减过程</strong>，无论用幅度比还是功率比计算，所得分贝数完全一致：例如波形幅度乘以 $0.5$ 时，其均方功率同步变为 $0.25$，有 $20\log_{10}0.5=10\log_{10}0.25\approx-6.02\ \mathrm{dB}$。</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
 <thead>
 <tr>
@@ -1056,205 +1072,200 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 </thead>
 <tbody>
 <tr>
-<td>约 +6.02 dB</td>
-<td>×2</td>
-<td>×4</td>
+<td>约 $+6.02\ \mathrm{dB}$</td>
+<td>$\times 2$</td>
+<td>$\times 4$</td>
 </tr>
 <tr>
-<td>约 +3.01 dB</td>
-<td>×1.414（$\sqrt{2}$）</td>
-<td>×2</td>
+<td>约 $+3.01\ \mathrm{dB}$</td>
+<td>$\times 1.414$（$\sqrt{2}$）</td>
+<td>$\times 2$</td>
 </tr>
 <tr>
-<td>0 dB</td>
-<td>×1</td>
-<td>×1</td>
+<td>$0\ \mathrm{dB}$</td>
+<td>$\times 1$</td>
+<td>$\times 1$</td>
 </tr>
 <tr>
-<td>约 −3.01 dB</td>
-<td>×0.707（$1/\sqrt{2}$）</td>
-<td><strong>×1/2（半功率点）</strong></td>
+<td>约 $-3.01\ \mathrm{dB}$</td>
+<td>$\times 0.707$（$1/\sqrt{2}$）</td>
+<td><strong>$\times 1/2$（半功率点）</strong></td>
 </tr>
 <tr>
-<td>约 −6.02 dB</td>
-<td><strong>×1/2（幅度减半）</strong></td>
-<td>×1/4</td>
+<td>约 $-6.02\ \mathrm{dB}$</td>
+<td><strong>$\times 1/2$（幅度减半）</strong></td>
+<td>$\times 1/4$</td>
 </tr>
 <tr>
-<td>−20 dB</td>
-<td>×0.1</td>
-<td>×0.01</td>
+<td>$-20\ \mathrm{dB}$</td>
+<td>$\times 0.1$</td>
+<td>$\times 0.01$</td>
 </tr>
 </tbody>
 </table></div>
-<p>对数把连乘转为相加，便于表示跨越多个数量级的增益、信噪比和衰减。</p>
-<p>dB 练习：① 功率先乘 4 再乘 2，总增益是多少 dB？② 电压增益为 −6 dB 时，幅度比约为多少？</p>
-<p>答案：① $10\log_{10}(4\times2)\approx9$ dB；② 电压幅度比为 $10^{-6/20}\approx0.501$。若前后测量的是同一阻值上的电压，平均功率与均方电压成正比，功率约为原来的四分之一；负载改变时，还需要阻值才能换算。</p>
-<p><strong>SNR 换算例。</strong> 目标功率为 3、噪声功率为 1 时，线性 SNR 为 3，对应 $10\log_{10}3\approx4.8$ dB。若处理后输出 SNR 为 12 dB，则 SNR 增益约为 $12-4.8=7.2$ dB。输入 SNR、输出 SNR 和 SNR 增益是三个不同的量（§5.1）。</p>
+<p>阅读上表时可横向对照三列：第一列为工程高频出现的典型分贝刻度，第二列为对应的线性幅度缩放倍数，第三列为对应的线性功率缩放倍数。尤其要注意第四行与第五行的区分：波束主瓣宽度定义中的“$-3\ \mathrm{dB}$ 半功率点”指功率减半（幅度仍保留约 $0.707$），而时域波形幅度减半则落在第五行的约 $-6\ \mathrm{dB}$（功率仅剩四分之一）。对数运算还将多级串联系统的增益连乘转化为分贝相加，极大方便了链路预算核算。</p>
+<p>dB 练习：① 某信号功率先放大 $4$ 倍、再放大 $2$ 倍，总增益约为多少 dB？② 某放大器电压增益为 $-6\ \mathrm{dB}$，输出与输入的电压幅度比约为多少？</p>
+<p>输入与代入：① 总功率倍数为 $4\times2=8$，取对数得 $10\log_{10}8\approx9.03\ \mathrm{dB}$（约 $9\ \mathrm{dB}$，恰等于 $6\ \mathrm{dB}+3\ \mathrm{dB}$）；② 由 $20\log_{10}(V_2/V_1)=-6$ 反解得电压幅度比为 $10^{-6/20}\approx0.501$。若输入与输出端接在相同阻值的负载上，平均电功率与均方电压成正比，功率同步降为约四分之一；若前后级负载阻抗不同，换算功率比时还必须计入阻值之比。</p>
+<p><strong>信噪比（SNR）换算例。</strong> 设阵列参考麦处目标语音功率为 $3$、背景噪声功率为 $1$（相同量纲），则输入线性信噪比为 $3/1=3$，换算为分贝即 $10\log_{10}3\approx4.77\ \mathrm{dB}$（约 $4.8\ \mathrm{dB}$）。若经波束形成后输出端信噪比提升至 $12\ \mathrm{dB}$，则该处理链带来的 SNR 增益约为 $12-4.8=7.2\ \mathrm{dB}$。汇报实验结果时应明确区分输入 SNR、输出 SNR 与阵列 SNR 增益这三个量（§5.1）。</p>
 <span id="sec-12-3-3" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-14-3-3">14.3.3 卷积与相关</h3>
-<p>卷积 $y=x*h$ 表示信号 $x$ 经过线性时不变系统 $h$ 后的输出；在固定声源和接收位置的近似下，$h$ 可以取房间脉冲响应（§2.4）。</p>
-<p>对离散时间序列，$y[n]=\sum_k h[k]x[n-k]$。先选定输出时刻 $n$，再把各个偏移处的输入 $x[n-k]$ 乘上对应系数 $h[k]$ 并相加。若系统因果，$k\lt 0$ 的抽头全为零，故只需当前及过去的输入；若离线使用含负下标的滤波器，则可能还需要未来输入。附录练习 E14-01 用两个因果抽头逐项计算。</p>
-<p>相关 $R(\tau)$ 衡量两段信号在相对位移 $\tau$ 下的相似度；峰值位置可作为时延候选（§4.2）。</p>
-<p>先约定有限序列在给定范围以外取零。对复数序列，本书的相关与时延次序为</p>
-<p>$$R_{12}[q]=\sum_{n\in\mathbb Z}x_1[n]x_2^*[n-q]\text{。}\tag{14-2}$$</p>
-<p>$q$ 是整数采样延迟，第二路的星号是复共轭；实值录音中可省略星号。在<strong>无噪声、同波形同极性且正相关峰唯一</strong>的延迟例子里，若第一路比第二路晚到一采样，最大正峰在 $q=+1$；交换两路，峰位变为 $-1$。</p>
-<p>例如 $x_2=[1,0,0]$、$x_1=[0,1,0]$，则 $R_{12}[1]=1$，$R_{12}[0]=R_{12}[-1]=0$。若第一路脉冲反相，$q=+1$ 处会是负峰，不能直接套用“取最大正峰”的规则。E14-09 会把同极性脉冲的全部滞后列出。</p>
-<p>有限序列若不补足零而直接在原长度上用 FFT 相乘，得到的是<strong>循环相关</strong>，边界绕回会改变峰及其含义。<a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.correlate.html" title="citation">SciPy 1.18.0 的相关定义</a>采用同一复共轭次序（在线文档 2026-09-28 核实）；使用其他接口仍须核对其参数顺序和滞后数组。</p>
-<p>傅里叶变换把线性卷积转成频域乘法，配合快速傅里叶变换可降低长卷积的计算量，但分帧、补零和重叠相加仍要按实现条件处理。</p>
-<p>这里的卷积恒等式属于精确代数，float64 FFT 还有舍入误差与有限数值支持范围。输入有限不保证中间频谱、乘积或最终输出都可可靠表示；教学核对检测到的支持丢失明确报错，不能把中间下溢得到的零解释为真实静音。一般 FFT 结果也不承诺逐点精确，E14-01、E14-08 的普通尺度例子只检验补零和块边界。</p>
+<p>线性卷积 $y=x*h$ 刻画输入信号 $x$ 通过线性时不变（LTI）系统 $h$ 后的输出波形；在声源与麦克风静止、空气介质线性传播的假设下，$h$ 即为声源到该麦克风的房间脉冲响应（§2.4）。</p>
+<p>对于离散时间序列，线性卷积定义为 $y[n]=\sum_{k} h[k]x[n-k]$：固定当前输出采样时刻 $n$，将历史偏移输入 $x[n-k]$ 与对应滤波器抽头 $h[k]$ 逐项相乘再求和。物理可实现的因果系统满足 $k\lt 0$ 时 $h[k]=0$，因此计算 $y[n]$ 只需用到当前与过去时刻的输入样本；非因果离线居中滤波器则还会读取 $n$ 之后的未来样本。练习 E14-01 给出了两抽头因果卷积的逐点展开。</p>
+<p>互相关函数则用于衡量两路信号在施加相对时间平移后的波形对齐程度，其主峰对应的位移常作为到达时间差（TDOA）的粗估计（§4.2）。约定有限长序列在记录区间外补零，本书对复数离散序列统一的互相关定义为</p>
+<p>$$R_{12}[q]=\sum_{n\in\mathbb{Z}}x_1[n]x_2^*[n-q]\text{。}\tag{14-2}$$</p>
+<p>式中整数 $q$ 为滞后采样点数，第二路信号 $x_2$ 上标 $^*$ 表示取复共轭（实值音频波形中复共轭自然退化为自身）。物理图景很直观：式(14-2)把第二路波形向右平移 $q$ 点后与第一路做内积。因此，在<strong>无噪声、两路波形相同同相且相关主峰唯一</strong>的理想延迟场景下，若麦 1 比麦 2 晚收到信号 $1$ 个采样点（例如 $x_2=[1,0,0]$、$x_1=[0,1,0]$），把 $x_2$ 向右推 $q=+1$ 点恰好与 $x_1$ 重合，此时 $R_{12}[1]=1$、$R_{12}[0]=R_{12}[-1]=0$，正峰值出现在 $q=+1$；若把输入顺序对调计算 $R_{21}[q]$，峰值便移至 $q=-1$（见 E14-09）。反之，倘若其中一路传感器接线反相，对齐位置呈现的是负向极值，便不能机械照搬“取最大正值”的寻峰逻辑。</p>
+<p>利用快速傅里叶变换（FFT）加速卷积或互相关时，若不在时域补足零而直接对长度为 $N$ 的两段序列做频域逐点乘积再逆变换，数学上得到的是周期延拓下的<strong>循环卷积</strong>或<strong>循环相关</strong>，尾部能量会从右边界绕回左端污染起始样本（见 E14-01 与 E14-08）。<a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.correlate.html">SciPy 1.18.0 的 <code>scipy.signal.correlate</code> 文档</a>采用与式(14-2)完全相同的复共轭与滞后方向约定（2026-09-28 核实）；调用其他信号处理库时，仍建议先用一对错位单脉冲核实其正负滞后定义，同时留意双精度浮点 FFT 固有的有限机器精度舍入误差。</p>
 <span id="sec-12-3-4" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-14-3-4">14.3.4 期望、方差与协方差矩阵</h3>
-<p>期望 $E[\cdot]$ 表示概率模型下的平均；有限数据里的样本平均是对实际观测求和，两者不能直接画等号。实变量的方差是偏离均值的平方平均；复变量须取<strong>模平方</strong> $E|z-Ez|^2$，这样功率才是非负实数。两个复变量的协方差也要给第二项取共轭。对一批 $M$ 维列快拍 $\vec x_1,\ldots,\vec x_L$，阵列文献常用的未中心化矩阵为</p>
-<p>$$\hat{\mathbf R}=\frac1L\sum_{\ell=1}^{L}\vec x_\ell\vec x_\ell^H,
+<p>数学期望 $\mathbb{E}[\cdot]$ 表示概率分布下的集总平均，而实际工程手头只有有限长录音的样本算术平均，两者不能直接画等号。实随机变量的方差定义为偏离均值的平方期望；到了复数域，必须取<strong>模平方</strong> $\mathbb{E}[|z-\mathbb{E}[z]|^2]=\mathbb{E}[(z-\mathbb{E}[z])(z-\mathbb{E}[z])^*]$，才能保证方差（波动功率）是非负实数。同理，两个复变量的协方差也必须对第二项取复共轭。给定同一频点的 $L$ 帧 $M$ 维列快拍 $\vec{x}_1,\ldots,\vec{x}_L$，阵列文献中最常用的未中心化样本空间协方差矩阵定义为</p>
+<p>$$\hat{\mathbf{R}}=\frac{1}{L}\sum_{\ell=1}^{L}\vec{x}_\ell\vec{x}_\ell^H,
 \qquad
-\vec x_\ell\in\mathbb C^M,\quad
-\hat{\mathbf R}\in\mathbb C^{M\times M}\text{。}\tag{14-3}$$</p>
-<p>外积的第 $i,j$ 项是 $x_{i,\ell}x_{j,\ell}^*$，所以 $\hat R_{ji}=\hat R_{ij}^*$。任取 $\vec v\in\mathbb C^M$，
-$\vec v^H\hat{\mathbf R}\vec v=L^{-1}\sum_\ell|\vec v^H\vec x_\ell|^2\geq0$；这说明式(14-3)是厄米、半正定矩阵，但不保证正定或可逆。例如只有一张两麦快拍 $\vec x=[1,\mathrm j]^\top$ 时，外积为 $\left[\begin{smallmatrix}1&-\mathrm j\\ \mathrm j&1\end{smallmatrix}\right]$，特征值为 $2$ 和 $0$，秩只有 $1$。</p>
-<p>如果在同一批快拍上先计算样本均值 $\bar{\vec x}$，再用相同分母 $L$ 计算中心化矩阵 $\hat{\mathbf C}_L$，逐项展开得到 $\hat{\mathbf R}=\hat{\mathbf C}_L+\bar{\vec x}\bar{\vec x}^H$（第 2 章式(2-7)）。因此两者逐批相等的条件是<strong>本批</strong> $\bar{\vec x}=0$。即使产生这些快拍的随机过程总体均值为零，有限一批数据的样本均值也可能不为零；E14-02 用复快拍直接算出差别，E14-10 再检查中心化如何影响秩。</p>
-<p>厄米半正定只验证了二阶矩的合法形状，不自动给出 proper 复高斯概率模型。实信号的 DC 与偶数长度 Nyquist 格点是实量，不能直接套用内点的非退化 proper 复高斯密度；端点建模与适用范围见<a href="07_wpe-dereverberation.html#sec-7-1">第 7 章 §7.1</a>。</p>
-<p>取独立、零均值、方差为 1 的实高斯变量 $X,Y$。复变量 $Z_1=X$ 与 $Z_2=(X+\mathrm jY)/\sqrt2$ 的 $E|Z|^2$ 都是 1，但 $E[Z_1^2]=1$，而 $E[Z_2^2]=(E[X^2]-E[Y^2]+2\mathrm jE[XY])/2=0$。对零均值复向量，后一类不取共轭的二阶矩写成 $E[\vec z\vec z^\top]$，称为伪协方差。它为零时称该复向量为 proper。功率相等时，两种分布仍可具有不同的实、虚部结构。这也解释了实值频谱端点为何需要单独建模。 <a href="https://doi.org/10.1109/78.539051" title="citation">Picinbono 的复向量二阶统计论文</a></p>
+\vec{x}_\ell\in\mathbb{C}^M,\quad
+\hat{\mathbf{R}}\in\mathbb{C}^{M\times M}\text{。}\tag{14-3}$$</p>
+<p>外积矩阵 $\vec{x}_\ell\vec{x}_\ell^H$ 的第 $(i,j)$ 个元素为 $x_{i,\ell}x_{j,\ell}^*$，天然满足共轭对称性 $\hat{R}_{ji}=\hat{R}_{ij}^*$。对任意测试向量 $\vec{v}\in\mathbb{C}^M$，二次型 $\vec{v}^H\hat{\mathbf{R}}\vec{v}=\frac{1}{L}\sum_{\ell=1}^L|\vec{v}^H\vec{x}_\ell|^2\geq0$ 恒为非负实数，因此式(14-3)必然是厄米半正定矩阵；但半正定并不保证正定可逆——例如仅用单帧两麦快拍 $\vec{x}=[1,\mathrm{j}]^\top$ 构造外积 $\left[\begin{smallmatrix}1&-\mathrm{j}\\ \mathrm{j}&1\end{smallmatrix}\right]$ 时，其特征值为 $2$ 与 $0$，矩阵秩仅为 $1$。</p>
+<p>若在同一批快拍上先算出样本均值 $\bar{\vec{x}}=\frac{1}{L}\sum_{\ell=1}^L\vec{x}_\ell$，再以相同分母 $L$ 计算中心化样本协方差 $\hat{\mathbf{C}}_L=\frac{1}{L}\sum_{\ell=1}^L(\vec{x}_\ell-\bar{\vec{x}})(\vec{x}_\ell-\bar{\vec{x}})^H$，将括号逐项乘开即可得到恒等式 $\hat{\mathbf{R}}=\hat{\mathbf{C}}_L+\bar{\vec{x}}\bar{\vec{x}}^H$（即第 2 章式(2-7)）。由此可见，两种矩阵在同一批数据上完全相等的充要条件是<strong>本批样本均值</strong> $\bar{\vec{x}}=\vec{0}$；即便底层随机过程的理论均值为零，有限帧样本均值也往往非零（练习 E14-02 与 E14-10 将具体核算二者的数值与秩差异）。</p>
+<p>此外，厄米半正定只保证了二阶矩矩阵的结构合法，并不自动意味着信号服从圆对称（proper，恰当）复高斯分布。以独立同分布的零均值单位方差实高斯变量 $X,Y$ 为例，构造复变量 $Z_1=X$ 与 $Z_2=(X+\mathrm{j}Y)/\sqrt{2}$：两者的平均功率 $\mathbb{E}[|Z|^2]$ 均为 $1$，但未共轭平方期望却截然不同——$\mathbb{E}[Z_1^2]=1$，而 $\mathbb{E}[Z_2^2]=(\mathbb{E}[X^2]-\mathbb{E}[Y^2]+2\mathrm{j}\mathbb{E}[XY])/2=0$。对于零均值复随机向量 $\vec{z}$，这类不带共轭的二阶矩 $\mathbb{E}[\vec{z}\vec{z}^\top]$ 称为伪协方差（互补协方差）矩阵；唯有当伪协方差为零矩阵时，该复随机向量才称为圆对称（proper，恰当）的（参见<a href="https://doi.org/10.1109/78.539051">Picinbono（1996）关于复随机向量二阶统计的经典论文</a>）。实值时域信号的直流（DC，$k=0$）与偶数长奈奎斯特（$k=N/2$）频点恒为实数，伪协方差非零，因此不能直接套用内部频点的圆对称（proper，恰当）复高斯概率密度，端点单独建模见<a href="07_wpe-dereverberation.html#sec-7-1">第 7 章 §7.1</a>。</p>
 <span id="sec-12-3-5" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-14-3-5">14.3.5 最小二乘</h3>
-<p>方程多于未知数时，要看各条方程是否相容。例如 $x=3$、$2x=6$ 有同一个精确解；若把第二条改成 $2x=7$，就没有一个 $x$ 能同时满足两条约束。最小二乘在两种情况下都可用，求使总残差平方最小的 $\hat{\vec{x}}$：</p>
-<p>$$\min_{\vec{x}}\|\mathbf{A}\vec{x}-\vec{b}\|^2\text{。}$$</p>
-<p>设 $\mathbf A\in\mathbb C^{m\times p}$、$\vec x\in\mathbb C^p$、$\vec b\in\mathbb C^m$。残差 $\vec r=\mathbf A\vec x-\vec b$ 是 $m$ 维，平方范数 $\|\vec r\|_2^2=\vec r^H\vec r$ 是非负实数。展开为 $\vec x^H\mathbf A^H\mathbf A\vec x-\vec x^H\mathbf A^H\vec b-\vec b^H\mathbf A\vec x+\vec b^H\vec b$；对 $\vec x^*$ 求驻点，得到正规方程</p>
-<p>$$\mathbf A^H\mathbf A\hat{\vec x}=\mathbf A^H\vec b\text{。}\tag{14-4}$$</p>
-<p>式(14-4)左、右两边都是 $p$ 维列向量。当 $\mathbf A$ 满列秩时，$\mathbf A^H\mathbf A$ 正定且可逆，闭式解为 $\hat{\vec{x}}=(\mathbf{A}^H\mathbf{A})^{-1}\mathbf{A}^H\vec{b}$；若不满列秩，不能直接使用这个普通逆矩阵。</p>
-<p>闭式表达式不是要求程序显式形成逆矩阵；即使满列秩，形成 $\mathbf A^H\mathbf A$ 也会使二范数条件数由 $\kappa_2(\mathbf A)$ 变为 $\kappa_2(\mathbf A)^2$。小奇异值因此更容易受舍入误差影响。QR 或奇异值分解（Singular Value Decomposition，SVD）通常更适合作为数值求解入口；E14-11 用一个对角矩阵把条件数平方算出来。</p>
-<p>秩不足时最小二乘解可能不唯一，Moore–Penrose 伪逆给出其中二范数最小的一解。<code>numpy.linalg.lstsq</code> 同时返回秩与奇异值；判秩取决于截断比率 <code>rcond</code> 和浮点精度，须连同输入版本或显式参数记录。对秩不足的输入，接口返回的残差数组可能是空的；空数组不等于“残差已测为零”，应自行计算 $\|\mathbf A\hat{\vec x}-\vec b\|_2$。<a href="https://numpy.org/doc/stable/reference/generated/numpy.linalg.lstsq.html" title="citation">NumPy 2.5 最小二乘接口说明</a>（在线文档 2026-09-28 核实）。E14-03 给出两列完全相关的例子。</p>
-<p>式(14-4)等价于 $\mathbf A^H\vec r=\vec0$：最优残差与 $\mathbf A$ 每个列方向正交。拟合向量 $\mathbf A\hat{\vec x}$ 是 $\vec b$ 在这些列张成空间上的正交投影。令其他系数产生增量 $\vec d$，展开 $\|\vec r+\mathbf A\vec d\|_2^2$，交叉项因 $\mathbf A^H\vec r=0$ 消失，只剩 $\|\vec r\|_2^2+\|\mathbf A\vec d\|_2^2$，所以任何这样的改变量都不能进一步减小残差。E14-14 用两维复向量核对共轭和正交性。</p>
-<p>对复标量 $z=u+\mathrm jv$，形式偏导 $\partial/\partial z^*=\tfrac12(\partial/\partial u+\mathrm j\partial/\partial v)$，$\partial/\partial z=\tfrac12(\partial/\partial u-\mathrm j\partial/\partial v)$。实值目标的 $\partial J/\partial z^*=0$ 等价于实部、虚部两个偏导同时为零；向量按分量使用同一规则。本节展开式的导数是 $\mathbf A^H\mathbf A\vec x-\mathbf A^H\vec b$，因此得到式(14-4)。这些偏导的定义与实坐标解释见<a href="https://arxiv.org/pdf/0906.4835" title="citation">Kreutz–Delgado 作者预印本（2009），§§3.1～3.2，式(8)、(9)、(18)、(19)</a>；无须假设实值平方误差是关于 $z$ 的解析函数。</p>
-<p>TDOA 几何解算（§4.4）和 WPE 系数估计（§7.2）都会用到这一思想。已知噪声权重如何改变正交度量见 §14.3.9。</p>
+<p>当线性方程组的方程条数多于未知参数个数时，首先要看各条方程是否相容：例如 $x=3$ 与 $2x=6$ 共享精确解 $x=3$，而一旦第二条由于测量噪声变成 $2x=7$，就不存在任何标量能同时令两条等式精确成立。普通最小二乘（OLS）不要求方程组相容，而是寻找使残差向量二范数平方最小的估计量 $\hat{\vec{x}}$：</p>
+<p>$$\min_{\vec{x}}\|\mathbf{A}\vec{x}-\vec{b}\|_2^2\text{。}$$</p>
+<p>设设计矩阵 $\mathbf{A}\in\mathbb{C}^{m\times p}$、待估参数 $\vec{x}\in\mathbb{C}^p$、观测向量 $\vec{b}\in\mathbb{C}^m$。定义 $m$ 维残差向量 $\vec{r}=\mathbf{A}\vec{x}-\vec{b}$，利用 $(\mathbf{A}\vec{x}-\vec{b})^H=\vec{x}^H\mathbf{A}^H-\vec{b}^H$ 将非负实值目标函数逐项展开：</p>
+<p>$$\|\vec{r}\|_2^2=\vec{r}^H\vec{r}=\vec{x}^H\mathbf{A}^H\mathbf{A}\vec{x}-\vec{x}^H\mathbf{A}^H\vec{b}-\vec{b}^H\mathbf{A}\vec{x}+\vec{b}^H\vec{b}\text{。}$$</p>
+<p>为了对复数变量求极值，Wirtinger 微积分对复标量 $z=u+\mathrm{j}v$ 定义形式偏导算子 $\frac{\partial}{\partial z^*}=\frac{1}{2}\bigl(\frac{\partial}{\partial u}+\mathrm{j}\frac{\partial}{\partial v}\bigr)$ 与 $\frac{\partial}{\partial z}=\frac{1}{2}\bigl(\frac{\partial}{\partial u}-\mathrm{j}\frac{\partial}{\partial v}\bigr)$。对于任意实值可微代价函数 $J$，令共轭梯度 $\frac{\partial J}{\partial\vec{x}^*}=\vec{0}$ 与令所有分量的实部偏导、虚部偏导同时为零完全等价，无需假设实值函数满足复解析（Cauchy–Riemann）条件（详细实坐标映射见<a href="https://arxiv.org/pdf/0906.4835">Kreutz-Delgado（2009）复梯度推导教程 §§3.1～3.2</a>）。在计算共轭梯度时，形式上把 $\vec{x}$ 视作常数、仅对 $\vec{x}^*$（即行向量 $\vec{x}^H$ 的转置）求导：上式右侧第三项与第四项不含 $\vec{x}^*$ 故导数为零，前两项求导后给出 $\mathbf{A}^H\mathbf{A}\vec{x}-\mathbf{A}^H\vec{b}$，令其等于零向量即得正规方程：</p>
+<p>$$\mathbf{A}^H\mathbf{A}\hat{\vec{x}}=\mathbf{A}^H\vec{b}\text{。}\tag{14-4}$$</p>
+<p>式(14-4)左右两侧均为 $p$ 维列向量。当 $\mathbf{A}$ 满列秩（$\operatorname{rank}(\mathbf{A})=p$）时，$\mathbf{A}^H\mathbf{A}$ 为厄米正定可逆矩阵，唯一闭式解写作 $\hat{\vec{x}}=(\mathbf{A}^H\mathbf{A})^{-1}\mathbf{A}^H\vec{b}$；若 $\mathbf{A}$ 列秩亏损，则 $\mathbf{A}^H\mathbf{A}$ 奇异不可逆。即便在满列秩情形下，写出闭式逆矩阵也只是为了理论分析——显式计算乘积 $\mathbf{A}^H\mathbf{A}$ 会把二范数条件数从 $\kappa_2(\mathbf{A})$ 平方放大至 $\kappa_2(\mathbf{A})^2$（见 E14-11），加剧小奇异值方向的浮点舍入损失，工程代码应优先采用基于 Householder QR 或奇异值分解（SVD）的求解器。</p>
+<p>当 $\mathbf{A}$ 不满列秩时，满足式(14-4)的最小二乘解有无穷多个，Moore–Penrose 伪逆 $\mathbf{A}^+\vec{b}$ 从中唯一挑出参数二范数 $\|\hat{\vec{x}}\|_2$ 最小的那一个（见 E14-03）。调用 <code>numpy.linalg.lstsq</code> 时，数值秩由相对截断阈值 <code>rcond</code> 决定；此外，当方程行数 $m\leq p$ 或数值判秩不满秩时，该接口返回的 <code>residuals</code> 数组为空数组，切勿将空数组误判为零误差，而应显式复算 $\|\mathbf{A}\hat{\vec{x}}-\vec{b}\|_2$（参见<a href="https://numpy.org/doc/stable/reference/generated/numpy.linalg.lstsq.html">NumPy 2.5 <code>lstsq</code> 接口文档</a>，2026-09-28 核实）。</p>
+<p>将式(14-4)移项改写为 $\mathbf{A}^H(\mathbf{A}\hat{\vec{x}}-\vec{b})=\mathbf{A}^H\hat{\vec{r}}=\vec{0}$，几何图景一目了然：最优残差向量 $\hat{\vec{r}}$ 与 $\mathbf{A}$ 的每一个列向量在复欧氏内积下正交，即拟合向量 $\mathbf{A}\hat{\vec{x}}$ 是观测 $\vec{b}$ 在 $\mathbf{A}$ 列空间上的正交投影。对任意参数偏离量 $\vec{d}\in\mathbb{C}^p$，展开 $\|\hat{\vec{r}}+\mathbf{A}\vec{d}\|_2^2=\|\hat{\vec{r}}\|_2^2+2\operatorname{Re}\{\vec{d}^H\mathbf{A}^H\hat{\vec{r}}\}+\|\mathbf{A}\vec{d}\|_2^2$，因交叉项为零即得 $\|\hat{\vec{r}}\|_2^2+\|\mathbf{A}\vec{d}\|_2^2\geq\|\hat{\vec{r}}\|_2^2$，直观印证了全局最优性（见 E14-14）。第 4 章 TDOA 线性化定位（§4.4）与第 7 章 WPE 滤波器求解（§7.2）均建立在这一正交投影原理之上。</p>
 <span id="sec-12-3-6" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-14-3-6">14.3.6 带约束的最小化：MVDR 拉格朗日推导</h3>
-<p>先取同一频点的噪声协方差 $\mathbf R=\mathbf R_{nn}\in\mathbb C^{M\times M}$ 为厄米正定矩阵，目标导向矢量 $\vec a\in\mathbb C^M$ 非零，权重 $\vec w\in\mathbb C^M$ 满足 $\vec w^H\vec a=1$；$\lambda\in\mathbb C$ 是约束乘子。这些前提保证逆矩阵与后面的正实数分母存在；协方差仅半正定时需另行求解，见 E14-05。</p>
-<p><strong>第 1 步：写拉格朗日函数。</strong> 复约束必须同时包含约束及其共轭，常写成实值函数</p>
-<p>$$\mathcal L(\vec w,\lambda)=\vec{w}^H\mathbf{R}\vec{w}+2\operatorname{Re}\!\left\{\lambda^*(\vec{w}^H\vec{a}-1)\right\}\text{。}$$</p>
-<p><strong>第 2 步：求驻点。</strong> 对 $\vec w^*$ 做 Wirtinger 求导并令零，得到 $\mathbf R\vec w+\lambda^*\vec a=0$。</p>
-<p><strong>第 3 步：写出比例关系。</strong> 乘子的命名可吸收共轭与负号，因此得到 $\vec w\propto\mathbf R^{-1}\vec a$。</p>
-<p><strong>第 4 步：代回约束。</strong> 写 $\vec w=\gamma\mathbf R^{-1}\vec a$，则 $\vec w^H\vec a=\gamma^*\vec a^H\mathbf R^{-1}\vec a=1$。若 $\mathbf R$ 厄米正定，分母 $q=\vec a^H\mathbf R^{-1}\vec a$ 是正实数，所以 $\gamma=1/q$，得到 $\vec w=\mathbf R^{-1}\vec a/(\vec a^H\mathbf R^{-1}\vec a)$，即 §5.4 式(5-9)。</p>
-<p><strong>再检查它是唯一最小值。</strong> 记刚得到的权重为 $\vec w_*$。任意其他可行权重可写为 $\vec w_*+\vec d$，并满足 $\vec d^H\vec a=0$。因为 $\mathbf R\vec w_*=\vec a/q$，展开功率时交叉项 $2\operatorname{Re}(\vec d^H\mathbf R\vec w_*)$ 为零，增加的功率只剩 $\vec d^H\mathbf R\vec d$。正定矩阵使它在 $\vec d\ne0$ 时严格大于零，因此没有第二个可行权重能取得同样的最小功率。</p>
-<p>若协方差奇异，不能直接使用这一逆矩阵形式；需另行处理秩或加载。LCMV 把标量约束和乘子换成向量形式（§5.5）。</p>
-<p><strong>Wirtinger 求导。</strong> 对实值目标函数，可在 Wirtinger 微积分中把 $\vec{w}$ 和 $\vec{w}^*$ 视为形式上独立的变量，对 $\vec{w}^*$ 求偏导并令其为零。§5.4 给出了与实部、虚部分别求导等价的完整推导。</p>
+<p>现在将复向量求导工具用于第 5 章的核心问题——最小方差无失真响应（MVDR）波束形成器推导。设同一频点的噪声空间协方差矩阵 $\mathbf{R}=\mathbf{R}_{nn}\in\mathbb{C}^{M\times M}$ 厄米正定，目标导向矢量 $\vec{a}\in\mathbb{C}^M$ 非零，我们要在复线性无失真约束 $\vec{w}^H\vec{a}=1$ 下求波束权重 $\vec{w}\in\mathbb{C}^M$ 使输出噪声平均功率 $\vec{w}^H\mathbf{R}\vec{w}$ 最小（当 $\mathbf{R}$ 半正定奇异时闭式逆不再适用，见 E14-05）。在动笔前，先把 §14.3.5 的分量偏导汇总为三条最常用的<strong>复向量 Wirtinger 求导法则</strong>（其中 $\vec{a}$ 为常向量、$\mathbf{R}$ 为厄米矩阵）：</p>
+<p>$$\frac{\partial(\vec{w}^H\vec{a})}{\partial\vec{w}^*}=\vec{a},\qquad
+\frac{\partial(\vec{a}^H\vec{w})}{\partial\vec{w}^*}=\vec{0},\qquad
+\frac{\partial(\vec{w}^H\mathbf{R}\vec{w})}{\partial\vec{w}^*}=\mathbf{R}\vec{w}\text{。}$$</p>
+<p>按分量很容易核对这三条法则：$\vec{w}^H\vec{a}=\sum_{m=1}^M w_m^* a_m$ 对 $w_m^*$ 求偏导恰剩 $a_m$；$\vec{a}^H\vec{w}=\sum_{m=1}^M a_m^* w_m$ 完全不含 $w_m^*$，故对 $\vec{w}^*$ 求导恒为零向量；二次型 $\vec{w}^H\mathbf{R}\vec{w}=\sum_{m,i}w_m^* R_{mi} w_i$ 将 $w_i$ 视为独立于 $w_m^*$ 的变量，对 $w_m^*$ 求偏导即得第 $m$ 行乘积 $\sum_i R_{mi}w_i=[\mathbf{R}\vec{w}]_m$。握住这三条法则后，拉格朗日推导只需四步：</p>
+<p><strong>第 1 步：构造实值拉格朗日函数。</strong> 由于 $\vec{w}^H\vec{a}=1$ 包含实部与虚部两个实等式约束，引入复拉格朗日乘子 $\lambda\in\mathbb{C}$，利用恒等式 $2\operatorname{Re}\{z\}=z+z^*$ 把约束项配成实值对称形式：</p>
+<p>$$\mathcal{L}(\vec{w},\lambda)=\vec{w}^H\mathbf{R}\vec{w}+2\operatorname{Re}\!\left\{\lambda^*(\vec{w}^H\vec{a}-1)\right\}
+=\vec{w}^H\mathbf{R}\vec{w}+\lambda^*(\vec{w}^H\vec{a}-1)+\lambda(\vec{a}^H\vec{w}-1)\text{。}$$</p>
+<p><strong>第 2 步：对 $\vec{w}^*$ 求偏导令零（为什么因子 $2$ 自然消失）。</strong> 直接套用上面三条向量求导法则：第一项二次型给出 $\mathbf{R}\vec{w}$；第二项 $\lambda^*(\vec{w}^H\vec{a}-1)$ 给出 $\lambda^*\vec{a}$；第三项 $\lambda(\vec{a}^H\vec{w}-1)$ 只含 $\vec{w}$ 而不含 $\vec{w}^*$，对 $\vec{w}^*$ 的偏导恰好为 $\vec{0}$！因此展开式虽源于 $2\operatorname{Re}\{\cdot\}$，求共轭梯度后却只保留一半，因子 $2$ 自然消去，驻点方程简洁地化为 $\mathbf{R}\vec{w}+\lambda^*\vec{a}=\vec{0}$。</p>
+<p><strong>第 3 步：反解权重的方向比例。</strong> 因 $\mathbf{R}$ 正定可逆，左乘 $\mathbf{R}^{-1}$ 得 $\vec{w}=-\lambda^*\mathbf{R}^{-1}\vec{a}$。标量复因子 $-\lambda^*$ 只改变整体复缩放，记 $\gamma=-\lambda^*$，即有 $\vec{w}=\gamma\mathbf{R}^{-1}\vec{a}$。</p>
+<p><strong>第 4 步：代回无失真约束确定归一化常数。</strong> 将 $\vec{w}=\gamma\mathbf{R}^{-1}\vec{a}$ 代入 $\vec{w}^H\vec{a}=1$，注意共轭转置会把标量 $\gamma$ 变为 $\gamma^*$，得到 $\gamma^*(\vec{a}^H\mathbf{R}^{-1}\vec{a})=1$。由于 $\mathbf{R}$ 厄米正定且 $\vec{a}\neq\vec{0}$，其逆矩阵 $\mathbf{R}^{-1}$ 同样厄米正定，二次型分母 $q=\vec{a}^H\mathbf{R}^{-1}\vec{a}>0$ 是严格正实数，从而 $\gamma^*=1/q$ 也是正实数（即 $\gamma=1/q$），代回即得第 5 章式(5-9)的 MVDR 闭式解 $\vec{w}_*=\frac{\mathbf{R}^{-1}\vec{a}}{\vec{a}^H\mathbf{R}^{-1}\vec{a}}$。</p>
+<p><strong>全局唯一最小值检验。</strong> 任取另一个满足无失真约束的可行权重 $\vec{w}=\vec{w}_*+\vec{d}$，相减可知扰动向量满足 $\vec{d}^H\vec{a}=0$。结合 $\mathbf{R}\vec{w}_*=\vec{a}/q$，展开输出功率得 $\vec{w}^H\mathbf{R}\vec{w}=\vec{w}_*^H\mathbf{R}\vec{w}_*+2\operatorname{Re}\{\vec{d}^H\vec{a}/q\}+\vec{d}^H\mathbf{R}\vec{d}=\frac{1}{q}+\vec{d}^H\mathbf{R}\vec{d}$。因 $\mathbf{R}$ 严格正定，只要 $\vec{d}\neq\vec{0}$ 就有 $\vec{d}^H\mathbf{R}\vec{d}>0$，证明 $\vec{w}_*$ 是唯一全局最优解；将该推导中的单列约束 $\vec{a}$ 推广为多列满秩约束矩阵 $\mathbf{C}$，即得 §5.5 的 LCMV 闭式解。</p>
 <span id="sec-12-3-7" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-14-3-7">14.3.7 特征值分解</h3>
-<p>对厄米（Hermitian）协方差矩阵可写 $\mathbf{R}=\mathbf{E}\boldsymbol\Lambda\mathbf{E}^H$。特征向量是传感器观测空间中的正交主轴，特征值表示沿这些主轴的能量；它们通常不等于真实空间中的 DOA。</p>
-<p>MUSIC（§4.6）在源统计满秩、导向矩阵满列秩、源数小于麦数、空间白噪声、源与噪声交叉二阶矩为零及模型正确的条件下，把较大特征值对应的特征向量所张成的空间解释为信号子空间，把噪声底对应的特征向量所张成的空间解释为噪声子空间。特征值是标量；张成空间的是特征向量。白噪声条件不自动消除源—噪声交叉项，<a href="02_basics-signal-model.html#sec-u-f997371ee0">第 2 章 E02-17</a>给出反例。</p>
-<p>调用 <code>numpy.linalg.eigh</code> 前仍要独立核查输入的厄米性与半正定性。该接口按 <code>UPLO</code> 选择一个三角部分，并忽略对角元素的虚部；它可以从一个不合法的原输入返回有限特征值，不能把调用成功视作协方差验证。<a href="https://numpy.org/doc/stable/reference/generated/numpy.linalg.eigh.html" title="citation">NumPy 2.5 官方参数与 Notes</a>及 E14-18 说明了具体行为。厄米半正定输入也可能是奇异矩阵，合法不等于可逆。</p>
-<p>手算（14.3）：协方差 $\begin{bmatrix}4&0\\0&1\end{bmatrix}$ 的特征值和特征向量各是什么？若两个共轭对称的非对角元都变成 0.5，哪个特征值变大？</p>
-<p>答案：特征值为 4 和 1，对应特征向量可取 $[1,0]^{\top}$ 和 $[0,1]^{\top}$。非对角元都变为 0.5 后，特征方程为 $(4-\lambda)(1-\lambda)-0.5^2=0$，即 $\lambda^2-5\lambda+3.75=0$。两个根为 $(5\pm\sqrt{10})/2$，约 4.08 和 0.92，仍都非负；在这个固定对角元的例子里，非零通道相关使特征值间隔增大。这不是“所有相关性增加都会改善定位”的结论，MUSIC 还需要源模型、阵列几何和足够的快拍。</p>
+<p>任意厄米（Hermitian）空间协方差矩阵均可对角化为 $\mathbf{R}=\mathbf{E}\boldsymbol{\Lambda}\mathbf{E}^H$，其中 $\mathbf{E}$ 为正交归一特征向量组成的酉矩阵（$\mathbf{E}^H\mathbf{E}=\mathbf{I}$），对角阵 $\boldsymbol{\Lambda}$ 的对角元为实特征值。几何上，特征向量给出 $M$ 维传感器观测空间中的一组正交能量主轴，特征值则是信号与噪声沿各条主轴投影的平均功率；单条特征向量一般并不直接等同于单个物理声源的导向矢量。</p>
+<p>第 4 章 MUSIC 算法（§4.6）只有在源协方差满秩、导向矩阵满列秩、声源数 $K\lt M$、噪声为空间各向同性白噪声（$\sigma^2\mathbf{I}$）、源与噪声互二阶矩严格为零且阵列流形无失配的前提下，才能把前 $K$ 个大特征值对应的特征向量张成的子空间等同于导向矢量张成的<strong>信号子空间</strong>，并把其余 $M-K$ 个特征向量张成的正交补空间作为<strong>噪声子空间</strong>（注意特征值是能量标量，张成线性子空间的是特征向量；关于空间白噪声并不自动保证源—噪声交叉项为零的反例见<a href="02_basics-signal-model.html#sec-u-f997371ee0">第 2 章 E02-17</a>）。</p>
+<p>工程代码中调用 <code>numpy.linalg.eigh</code> 之前，务必先独立检验输入矩阵是否满足厄米对称与半正定。<code>eigh</code> 默认只读取由参数 <code>UPLO</code> 指定的上三角或下三角元素，并直接丢弃主对角线元素的虚部——哪怕传入一个严重非厄米或带虚对角的错误矩阵，它也会静默返回有限实特征值，因此“函数未报错”绝不构成协方差矩阵合法性的证明（详见<a href="https://numpy.org/doc/stable/reference/generated/numpy.linalg.eigh.html">NumPy 2.5 <code>eigh</code> 官方文档</a>与练习 E14-18）。</p>
+<p>手算（14.3）：写出二阶协方差矩阵 $\begin{bmatrix}4&0\\0&1\end{bmatrix}$ 的特征值与标准正交特征向量；若两个共轭对称的非对角元由 $0$ 变为 $0.5$，哪一个特征值会增大？</p>
+<p>输入与代入：对角阵 $\begin{bmatrix}4&0\\0&1\end{bmatrix}$ 的特征值直接读出为 $4$ 与 $1$，对应特征向量可取 $[1,0]^\top$ 与 $[0,1]^\top$。当非对角元变为 $0.5$ 时，列特征多项式 $\det\begin{bmatrix}4-\lambda&0.5\\0.5&1-\lambda\end{bmatrix}=(4-\lambda)(1-\lambda)-0.5^2=\lambda^2-5\lambda+3.75=0$，由求根公式解得 $\lambda=(5\pm\sqrt{25-15})/2=(5\pm\sqrt{10})/2$，数值分别约为 $4.08$ 与 $0.92$（两者之和仍等于矩阵迹 $5$，且均非负）。可以看到较大特征值由 $4$ 升至约 $4.08$、较小特征值由 $1$ 降至约 $0.92$，特征值间距拉宽；但这只是固定对角功率下通道相关性引起的主轴能量重分配，不能脱离信号模型泛化为“通道相关性越强则定位越准”。</p>
 <span id="sec-12-3-8" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-14-3-8">14.3.8 病态矩阵与对角加载</h3>
-<p>当最大、最小奇异值相差很大时，矩阵条件数高，求逆在不利扰动方向上可能显著放大数据和舍入误差；不是每个扰动都达到这一最坏放大量。低频小间距的超指向设计（§5.3）是常见例子。</p>
+<p>当矩阵的最大奇异值与最小奇异值悬殊（即二范数条件数 $\kappa_2$ 极大）时，直接求逆会在小奇异值对应的弱观测方向上剧烈放大传感器幅相误差、有限快拍扰动与浮点舍入误差；低频小孔径阵列的超指向波束设计（§5.3）便是典型的病态求逆场景。为控制条件数，工程上常在求逆前引入对角加载（与第 5 章 §5.4 记号对齐）：</p>
 <ul>
-<li>绝对加载写作 $\mathbf R+\delta\mathbf I$，$\delta$ 与协方差元素同量纲；</li>
-<li>相对加载写作 $\mathbf R+\eta\operatorname{tr}(\mathbf R)\mathbf I/M$，$\eta$ 无量纲，整体缩放 $\mathbf R$ 时加载也同比缩放。</li>
+<li><strong>绝对对角加载</strong>：第 5 章记作 $\mathbf{R}+\varepsilon\mathbf{I}$（部分文献与本附录算例亦记作 $\mathbf{R}+\delta\mathbf{I}$；注意第 5 章同时用 $\delta$ 记最坏导向误差范数界 $\|\vec{\Delta}\|_2\leq\delta$），加载参数与协方差矩阵元素具有相同的物理量纲；</li>
+<li><strong>相对对角加载</strong>：第 5 章记作 $\mathbf{R}+\alpha\,\operatorname{tr}(\mathbf{R})\mathbf{I}/M$（文献与练习 E14-13 亦记作 $\eta$），加载比例系数无量纲，当输入信号整体缩放使 $\mathbf{R}$ 乘上正常数时，加载项按同比例缩放，归一化波束权重与条件数保持不变。</li>
 </ul>
-<p>对厄米半正定矩阵，正加载可抬高小特征值，并可能改变最优权重和指向性。变化不是必然：若 $\mathbf R=\operatorname{diag}(4,1)$、$\vec a=[1,0]^\top$，任意正加载下的归一化 MVDR 都是 $[1,0]^\top$。报告参数时必须说明采用哪一种口径，不能只写一个无单位的“$\varepsilon$”。</p>
-<p>若输入恰为零矩阵，则迹为零，纯相对加载仍给零矩阵。实现若允许这一输入，须明确如何处理，例如暂停自适应，或采用有单位的正地板并记录求解目标的改变。</p>
-<p><a href="15_appendix-guide.html#sec-15-6-2">附录 B §15.6.2 的第 5 章题 8：改变六麦圆阵半径并比较 WNG、DI 与条件数</a>提供相应练习；它不是综合编号 E15-08。数值由脚本参数决定，不预设固定区间。</p>
+<p>对于厄米半正定矩阵 $\mathbf{R}$，正加载将全部特征值统一向上平移，从而改善可逆性并压低白噪声放大（提高 WNG），但一般也会使自适应零陷变浅或主瓣展宽（除非目标导向矢量恰好本身就是 $\mathbf{R}$ 的特征向量，例如 $\mathbf{R}=\operatorname{diag}(4,1)$、$\vec{a}=[1,0]^\top$ 时任意正加载下的归一化 MVDR 权重恒为 $[1,0]^\top$）。撰写实验报告与配置文档时，必须指明使用的是同量纲绝对加载还是无量纲相对加载；此外，若静音异常导致输入矩阵全为零（$\operatorname{tr}(\mathbf{R})=0$），纯相对加载加上的仍是零，程序需配套正底噪下限或冻结保护（圆阵半径、WNG、DI 与条件数的联动实验见<a href="15_appendix-guide.html#sec-15-6-2">附录 B §15.6.2 第 5 章题 8</a>）。</p>
 <span id="sec-12-3-9" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-14-3-9">14.3.9 已知噪声加权：在哪个度量下投影？</h3>
-<p>设观测模型为 $\vec b=\mathbf A\vec x_*+\vec n$，其中 $\mathbf A\in\mathbb C^{m\times p}$ 是设计矩阵，$\vec x_*\in\mathbb C^p$ 是真实参数，$\vec b,\vec n\in\mathbb C^m$ 分别是观测和噪声。$\vec n$ 均值为零，已知协方差 $\mathbf C=E[\vec n\vec n^H]$ 厄米正定。本节的 $\mathbf C$ 是 $m\times m$ 噪声协方差，不是符号表中的 LCMV 约束矩阵。普通最小二乘（Ordinary Least Squares，OLS）把每个观测残差等权计入；加权最小二乘（Weighted Least Squares，WLS）用 $\mathbf C^{-1}$ 计入观测可信度。相关噪声需要矩阵权重，不能只按对角元素分别相除。</p>
-<p>令 $\vec r=\mathbf A\vec x-\vec b$，加权目标与满列秩闭式解为</p>
+<p>考虑带噪线性观测模型 $\vec{b}=\mathbf{A}\vec{x}_*+\vec{n}$，其中设计矩阵 $\mathbf{A}\in\mathbb{C}^{m\times p}$ 满列秩，$\vec{x}_*\in\mathbb{C}^p$ 为未知确定性参数，$\vec{b},\vec{n}\in\mathbb{C}^m$ 分别为观测向量与零均值加性噪声，且已知噪声协方差矩阵 $\mathbf{C}=\mathbb{E}[\vec{n}\vec{n}^H]\in\mathbb{C}^{m\times m}$ 厄米正定（注意本节的 $\mathbf{C}$ 表示观测噪声协方差，不同于符号表中的 LCMV 约束矩阵）。普通最小二乘（OLS）对所有观测分量的误差一视同仁；当各通道噪声功率不等甚至彼此相关时，怎样构造最优线性估计？最直观的推导路线是<strong>先白化、再套普通最小二乘</strong>：</p>
+<p>由于 $\mathbf{C}$ 厄米正定，存在可逆下三角 Cholesky 分解 $\mathbf{C}=\mathbf{L}\mathbf{L}^H$。令白化矩阵为 $\mathbf{W}=\mathbf{L}^{-1}$，将原观测方程左右两侧同时左乘 $\mathbf{W}$，得到变换后的线性模型 $\tilde{\vec{b}}=\tilde{\mathbf{A}}\vec{x}_*+\tilde{\vec{n}}$，其中白化观测 $\tilde{\vec{b}}=\mathbf{W}\vec{b}$、白化设计矩阵 $\tilde{\mathbf{A}}=\mathbf{W}\mathbf{A}$、白化噪声 $\tilde{\vec{n}}=\mathbf{W}\vec{n}$（切记设计矩阵与观测向量必须同步左乘 $\mathbf{W}$！）。检验新噪声的二阶矩：</p>
+<p>$$\mathbb{E}[\tilde{\vec{n}}\tilde{\vec{n}}^H]=\mathbf{W}\,\mathbb{E}[\vec{n}\vec{n}^H]\,\mathbf{W}^H=\mathbf{L}^{-1}(\mathbf{L}\mathbf{L}^H)(\mathbf{L}^{-1})^H=\mathbf{I}\text{。}$$</p>
+<p>经过这一步坐标变换，各维噪声变得互不相关且方差全为 $1$！在新坐标系下直接最小化欧氏残差平方 $\|\tilde{\mathbf{A}}\vec{x}-\tilde{\vec{b}}\|_2^2=(\mathbf{A}\vec{x}-\vec{b})^H\mathbf{W}^H\mathbf{W}(\mathbf{A}\vec{x}-\vec{b})$，并注意到 $\mathbf{W}^H\mathbf{W}=(\mathbf{L}^{-1})^H\mathbf{L}^{-1}=(\mathbf{L}\mathbf{L}^H)^{-1}=\mathbf{C}^{-1}$，令原坐标残差为 $\vec{r}=\mathbf{A}\vec{x}-\vec{b}$，直接把 $\tilde{\mathbf{A}}=\mathbf{W}\mathbf{A}$ 与 $\tilde{\vec{b}}=\mathbf{W}\vec{b}$ 代入 §14.3.5 的 OLS 正规方程式(14-4) $\tilde{\mathbf{A}}^H\tilde{\mathbf{A}}\hat{\vec{x}}=\tilde{\mathbf{A}}^H\tilde{\vec{b}}$，便一步不跳地还原出广义最小二乘（GLS，亦称矩阵加权最小二乘 WLS）的目标函数、正规方程与闭式解（等价推导亦见<a href="https://netlib.org/lapack/lug/node28.html">LAPACK《用户指南》第 3 版广义线性模型说明</a>）：</p>
 <p>$$\begin{aligned}
-\hat{\vec x}_{\mathrm{WLS}}
-&=\mathop{\arg\min}_{\vec x}\ \vec r^H\mathbf C^{-1}\vec r,\\
-\mathbf A^H\mathbf C^{-1}\mathbf A\hat{\vec x}_{\mathrm{WLS}}
-&=\mathbf A^H\mathbf C^{-1}\vec b,\\
-\hat{\vec x}_{\mathrm{WLS}}
-&=(\mathbf A^H\mathbf C^{-1}\mathbf A)^{-1}
-\mathbf A^H\mathbf C^{-1}\vec b\text{。}
+\hat{\vec{x}}_{\mathrm{WLS}}
+&=\mathop{\arg\min}_{\vec{x}}\ \vec{r}^H\mathbf{C}^{-1}\vec{r},\\
+\mathbf{A}^H\mathbf{C}^{-1}\mathbf{A}\hat{\vec{x}}_{\mathrm{WLS}}
+&=\mathbf{A}^H\mathbf{C}^{-1}\vec{b},\\
+\hat{\vec{x}}_{\mathrm{WLS}}
+&=(\mathbf{A}^H\mathbf{C}^{-1}\mathbf{A})^{-1}
+\mathbf{A}^H\mathbf{C}^{-1}\vec{b}\text{。}
 \end{aligned}\tag{14-5}$$</p>
-<p>$\mathbf A^H\mathbf C^{-1}\mathbf A$ 是 $p\times p$；满列秩与正定 $\mathbf C$ 保证它正定。选择可逆的 $m\times m$ 噪声白化矩阵 $\mathbf W$ 使 $\mathbf W\mathbf C\mathbf W^H=\mathbf I$，则 $\mathbf W^H\mathbf W=\mathbf C^{-1}$，加权代价就是 $\|\mathbf W\mathbf A\vec x-\mathbf W\vec b\|_2^2$。白化后必须同时变换设计矩阵和观测。本书从这一等式推导式(14-5)；<a href="https://netlib.org/lapack/lug/node28.html" title="citation">LAPACK 作者《用户指南》第 3 版的广义线性模型说明</a>也给出可逆噪声因子下的加权最小二乘等价关系。</p>
-<p>驻点条件是 $\mathbf A^H\mathbf C^{-1}\vec r=\vec0$，所以加权残差在 $\mathbf C^{-1}$ 度量下与设计列正交。它一般不满足普通的 $\mathbf A^H\vec r=0$。E14-15 直接算出这两个量的区别。</p>
-<p>若 $\mathbf A$ 与真实 $\mathbf C$ 已知、$\mathbf A$ 满列秩，式(14-5)是线性无偏估计：代入 $E\vec b=\mathbf A\vec x_*$ 后得到 $E\hat{\vec x}=\vec x_*$。E14-15 在两观测标量模型中直接比较无偏权重的方差；这不要求噪声高斯，也不保证每一次观测都比 OLS 更接近真值。噪声模型估错、协方差奇异或设计矩阵本身带误差时，需要另行检验。用共同目标的两路确定性音频比较权重见 E14-19；那些正交频点不是独立随机过程的实测证明。</p>
-<p>两路噪声相关时，非对角元素会改变最优组合。权重不一定落在 0 与 1 之间；负权重可以抵消相关噪声，而权重和仍保持目标响应。<a href="#e14-20">E14-20</a>用完整二阶矩、方差完成平方和显式 Cholesky 白化逐步核对这一点。</p>
+<p>这里 $\mathbf{A}^H\mathbf{C}^{-1}\mathbf{A}=\tilde{\mathbf{A}}^H\tilde{\mathbf{A}}\in\mathbb{C}^{p\times p}$；因 $\mathbf{A}$ 满列秩且 $\mathbf{W}$ 可逆，$\tilde{\mathbf{A}}$ 亦满列秩，从而保证了括号内 $p\times p$ 矩阵严格正定可逆。将中间那行正规方程移项可得 $\mathbf{A}^H\mathbf{C}^{-1}\hat{\vec{r}}=\vec{0}$：最优残差并非在普通欧氏内积下与 $\mathbf{A}$ 的列正交（一般 $\mathbf{A}^H\hat{\vec{r}}\neq\vec{0}$），而是在以 $\mathbf{C}^{-1}$ 为度量的加权内积下正交（见 E14-15）。</p>
+<p>在 $\mathbf{A}$ 与真实 $\mathbf{C}$ 准确已知的前提下，对式(14-5)两边取期望并代入 $\mathbb{E}[\vec{b}]=\mathbf{A}\vec{x}_*$，立得 $\mathbb{E}[\hat{\vec{x}}_{\mathrm{WLS}}]=\vec{x}_*$，表明它是无偏线性估计，且无需假设噪声服从高斯分布就在所有线性无偏估计器中达到最小误差协方差（Gauss–Markov 定理；这指的是集总平均方差最小，并不保证单次随机抽样结果必定比 OLS 更贴近真值，见 E14-15 与 E14-19）。更有趣的是，当两通道噪声存在强正相关时，$\mathbf{C}^{-1}$ 的非对角负元素甚至会使某一路观测分得<strong>负权重</strong>，利用通道相减抵消共模相关噪声，同时令权重之和仍等于 $1$ 以无失真保留目标（见<a href="#e14-20">E14-20</a>的逐步手算）。</p>
 <span id="sec-12-3-10" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-14-3-10">14.3.10 数值截断与正则：删去还是收缩弱方向？</h3>
-<p>奇异值分解把设计矩阵写成 $\mathbf A=\mathbf U\boldsymbol\Sigma\mathbf V^H$，其中非负奇异值 $\sigma_i$ 表示对应方向的观测强度。没有截断时，一个非零奇异方向的逆因子是 $1/\sigma_i$，小奇异值会放大该方向上的观测误差。截断奇异值分解（Truncated Singular Value Decomposition，TSVD）选择一个阈值，直接不估计低于保留标准的方向；它改变了有效估计空间。</p>
-<p>这里用 $\delta\|\vec x\|_2^2$ 惩罚参数范数，即岭正则（ridge），也是一般 Tikhonov 正则中惩罚矩阵取单位阵的特例。若改用 $\|\mathbf L\vec x\|_2^2$ 来惩罚差分等结构，原设计矩阵的奇异向量未必还能把问题逐方向拆开。令 $\delta>0$，截断和岭正则的解在奇异坐标下为</p>
+<p>为什么小奇异值会让最小二乘解剧烈振荡？用完全奇异值分解 $\mathbf{A}=\mathbf{U}\boldsymbol{\Sigma}\mathbf{V}^H$（其中 $\mathbf{U}\in\mathbb{C}^{m\times m}$、$\mathbf{V}\in\mathbb{C}^{p\times p}$ 均为酉矩阵，非负对角元 $\sigma_1\geq\sigma_2\geq\cdots\geq 0$ 衡量各正交方向上的观测灵敏度）做一次正交旋转就一目了然。利用酉变换保持向量二范数不变的性质（$\|\mathbf{U}^H\vec{z}\|_2^2=\|\vec{z}\|_2^2$、$\|\mathbf{V}^H\vec{x}\|_2^2=\|\vec{x}\|_2^2$），定义旋转后的参数坐标 $\tilde{\vec{x}}=\mathbf{V}^H\vec{x}$ 与旋转后的观测投影 $\tilde{\vec{b}}=\mathbf{U}^H\vec{b}$（第 $i$ 个分量即 $\tilde{b}_i=\vec{u}_i^H\vec{b}$）。将 $\vec{x}=\mathbf{V}\tilde{\vec{x}}$ 代入带岭正则（Ridge，即惩罚矩阵取单位阵的零阶 Tikhonov 正则；若惩罚差分算子 $\|\mathbf{L}\vec{x}\|_2^2$ 则一般需广义奇异值分解才能解耦）的目标函数，原本耦合在一起的矩阵二次型瞬间解耦为逐个奇异方向互不干扰的标量二次函数之和：</p>
 <p>$$\begin{aligned}
-\hat{\vec x}_{\mathrm{TSVD}}
+\|\mathbf{A}\vec{x}-\vec{b}\|_2^2+\delta\|\vec{x}\|_2^2
+&=\|\boldsymbol{\Sigma}\tilde{\vec{x}}-\tilde{\vec{b}}\|_2^2+\delta\|\tilde{\vec{x}}\|_2^2\\
+&=\sum_{i=1}^{\min(m,p)}\!\bigl(|\sigma_i\tilde{x}_i-\tilde{b}_i|^2+\delta|\tilde{x}_i|^2\bigr)\\
+&\quad+\sum_{i=\min(m,p)+1}^{m}\!|\tilde{b}_i|^2
++\delta\sum_{i=\min(m,p)+1}^{p}\!|\tilde{x}_i|^2\text{。}
+\end{aligned}$$</p>
+<p>观察第一组求和里的第 $i$ 个标量项：若不做任何正则（$\delta=0$）且 $\sigma_i>0$，令 $|\sigma_i\tilde{x}_i-\tilde{b}_i|^2$ 最小直接给出 $\tilde{x}_i=\tilde{b}_i/\sigma_i$——一旦 $\sigma_i$ 极小，观测噪声投影 $\tilde{b}_i$ 就会被 $1/\sigma_i$ 成千上万倍地放大。面对这种弱观测方向，工程上有两条截然不同的压制路线：截断奇异值分解（TSVD）设定无量纲相对门限 $\rho\geq0$，将满足 $\sigma_i\leq\rho\sigma_{\max}$ 的弱方向系数硬性置零（$\tilde{x}_i=0$）；岭正则（$\delta>0$）则对上述标量二次项关于 $\tilde{x}_i^*$ 求导令零，由 $(\sigma_i^2+\delta)\tilde{x}_i-\sigma_i\tilde{b}_i=0$ 解得软收缩系数 $\tilde{x}_i=\frac{\sigma_i}{\sigma_i^2+\delta}\tilde{b}_i$（且当 $p>m$ 时末尾多余自由度因 $\delta|\tilde{x}_i|^2$ 惩罚自动归零）。最后左乘 $\mathbf{V}$ 变回原坐标 $\vec{x}=\sum_i \tilde{x}_i\vec{v}_i$，便得到两类方法在奇异向量基底下的对照表达式：</p>
+<p>$$\begin{aligned}
+\hat{\vec{x}}_{\mathrm{TSVD}}
 &=\sum_{\sigma_i>\rho\sigma_{\max}}
-\frac{\vec u_i^H\vec b}{\sigma_i}\vec v_i,\\
-\hat{\vec x}_{\delta}
-&=\mathop{\arg\min}_{\vec x}
-\bigl(\|\mathbf A\vec x-\vec b\|_2^2
-+\delta\|\vec x\|_2^2\bigr),\\
-(\mathbf A^H\mathbf A+\delta\mathbf I)\hat{\vec x}_{\delta}
-&=\mathbf A^H\vec b,\\
-\hat{\vec x}_{\delta}
+\frac{\vec{u}_i^H\vec{b}}{\sigma_i}\vec{v}_i,\\
+\hat{\vec{x}}_{\delta}
+&=\mathop{\arg\min}_{\vec{x}}
+\bigl(\|\mathbf{A}\vec{x}-\vec{b}\|_2^2
++\delta\|\vec{x}\|_2^2\bigr),\\
+(\mathbf{A}^H\mathbf{A}+\delta\mathbf{I})\hat{\vec{x}}_{\delta}
+&=\mathbf{A}^H\vec{b},\\
+\hat{\vec{x}}_{\delta}
 &=\sum_i\frac{\sigma_i}{\sigma_i^2+\delta}
-(\vec u_i^H\vec b)\vec v_i\text{。}
+(\vec{u}_i^H\vec{b})\vec{v}_i\text{。}
 \end{aligned}\tag{14-6}$$</p>
-<p>$\vec u_i\in\mathbb C^m$、$\vec v_i\in\mathbb C^p$ 分别是左、右奇异向量；和式遍历薄 SVD 的奇异方向。$\rho\geq0$ 是无量纲的相对截断比率，本式显式定义保留 $\sigma_i>\rho\sigma_{\max}$ 的项；实际接口阈值的相等边界还须按该实现核对。$\delta$ 与 $\mathbf A^H\mathbf A$ 的元素同量纲，不能把 <code>rcond</code> 的无量纲数直接当作加性加载量。零奇异值在 ridge 的和式中贡献零，正则后的正规矩阵则因 $\delta>0$ 可逆。这里的零中心范数惩罚表达了对参数规模的偏好，没有增加观测信息。</p>
-<p>式(14-6)由把 $\mathbf A=\mathbf U\boldsymbol\Sigma\mathbf V^H$ 代入目标、逐奇异方向求驻点得到。TSVD 的弱方向贡献直接为零，ridge 的弱方向贡献随 $\delta$ 连续缩小；二者都可能引入相对于真实参数的偏差，却不是同一个优化问题。E14-16 用 $10^{-8}$ 的弱方向比较完整解、截断解和半幅收缩。</p>
-<p><a href="https://netlib.org/lapack/lug/node27.html" title="citation">LAPACK 作者的最小二乘说明</a>区分满秩 QR/LQ 与秩不足的最小范数解；<a href="https://numpy.org/doc/stable/reference/generated/numpy.linalg.lstsq.html" title="citation">NumPy 2.5 <code>lstsq</code> 文档的 <code>rcond</code> 和 Returns</a>说明数值判秩及空残差数组。以上接口说明核实于 2026-10-02。程序还应报告显式阈值与实际残差，不能仅因返回了有限参数就称原问题已被可靠辨识。</p>
+<p>式中 $\vec{u}_i\in\mathbb{C}^m$、$\vec{v}_i\in\mathbb{C}^p$ 分别为第 $i$ 对左、右奇异向量，和式遍历薄 SVD 的正奇异值方向。对比两者的滤波因子可见：TSVD 在阈值处发生全留（$1/\sigma_i$）与全砍（$0$）的硬跳变；Ridge 则乘上平滑衰减权 $\frac{\sigma_i^2}{\sigma_i^2+\delta}\cdot\frac{1}{\sigma_i}$，强方向（$\sigma_i^2\gg\delta$）几乎无损通过，弱方向（$\sigma_i^2\ll\delta$）按 $\sigma_i/\delta$ 连续收缩至零。还要特别区分参数量纲：相对截断比 $\rho$（如 <code>numpy.linalg.lstsq</code> 的 <code>rcond</code>）无量纲，而岭参数 $\delta$ 与 $\mathbf{A}^H\mathbf{A}$ 元素同量纲，绝不能把无量纲 <code>rcond</code> 数值直接填进加性加载项（见 E14-16；关于满秩 QR/LQ 与秩亏损最小范数解的数值实现细节参见<a href="https://netlib.org/lapack/lug/node27.html">LAPACK 最小二乘说明</a>与<a href="https://numpy.org/doc/stable/reference/generated/numpy.linalg.lstsq.html">NumPy 2.5 <code>lstsq</code> 文档</a>，2026-10-02 核实）。</p>
+<p>在实时自适应滤波（第 6 章 RLS）与在线波束形成（第 5 章递推 MVDR、MWF 秩一化简）中，我们还会频繁遇到“已知基矩阵 $\mathbf{M}$ 的逆，再加上一个低秩修正项后如何免除重算 $O(M^3)$ 矩阵求逆”的问题。设 $\mathbf{M}\in\mathbb{C}^{M\times M}$ 与 $\mathbf{C}\in\mathbb{C}^{K\times K}$ 均可逆，$\mathbf{U}\in\mathbb{C}^{M\times K}$、$\mathbf{V}\in\mathbb{C}^{K\times M}$ 使修正后矩阵与容度矩阵 $\mathbf{C}^{-1}+\mathbf{V}\mathbf{M}^{-1}\mathbf{U}$ 可逆，直接把右式与原矩阵相乘验算单位阵，即可核实著名的<strong>Woodbury 矩阵求逆引理</strong>：</p>
+<p>$$(\mathbf{M}+\mathbf{U}\mathbf{C}\mathbf{V})^{-1}
+=\mathbf{M}^{-1}-\mathbf{M}^{-1}\mathbf{U}\bigl(\mathbf{C}^{-1}+\mathbf{V}\mathbf{M}^{-1}\mathbf{U}\bigr)^{-1}\mathbf{V}\mathbf{M}^{-1}\text{。}$$</p>
+<p>当修正项退化为秩一外积（取 $K=1$，$\mathbf{U}=\vec{u}$，$\mathbf{V}=\vec{v}^H$，$\mathbf{C}=1$，且标量分母 $1+\vec{v}^H\mathbf{M}^{-1}\vec{u}\neq 0$）时，上式里的内部求逆直接变成标量除法，化为<strong>Sherman–Morrison 秩一更新公式</strong>：</p>
+<p>$$(\mathbf{M}+\vec{u}\vec{v}^H)^{-1}
+=\mathbf{M}^{-1}-\frac{\mathbf{M}^{-1}\vec{u}\vec{v}^H\mathbf{M}^{-1}}{1+\vec{v}^H\mathbf{M}^{-1}\vec{u}}\text{。}$$</p>
+<p>这正是实时阵列处理得以落地的算力关键：在线估计空间协方差或输入相关矩阵常采用指数遗忘递推 $\mathbf{R}_t=\lambda\mathbf{R}_{t-1}+\vec{x}_t\vec{x}_t^H$（$0\lt \lambda\leq 1$）。若每来一帧新快拍 $\vec{x}_t\in\mathbb{C}^M$ 都对 $\mathbf{R}_t$ 重新做高斯消元或 Cholesky 分解求逆，每帧每频点要付出 $O(M^3)$ 次复数乘加；而改用 Sherman–Morrison 公式（令 $\mathbf{M}=\lambda\mathbf{R}_{t-1}$，则 $\mathbf{M}^{-1}=\lambda^{-1}\mathbf{R}_{t-1}^{-1}$，再令 $\vec{u}=\vec{v}=\vec{x}_t$），只需先算一次矩阵乘列向量 $\vec{g}_t=\mathbf{R}_{t-1}^{-1}\vec{x}_t$（耗时 $O(M^2)$），再做一次外积减法，就把单帧单频点复杂度从 $O(M^3)$ 降到了 $O(M^2)$（有限字长长期递推时需定期对称化 $\frac{1}{2}(\mathbf{P}+\mathbf{P}^H)$ 抑制舍入漂移）。</p>
 <span id="sec-12-4" class="anchor-alias" aria-hidden="true"></span><span id="sec-11" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-14-4">14.4 计算练习</h2>
-<p>E14-01～04 使用跨章入口复算：</p>
+<p>本节共 20 道手算与对照练习，先把短序列或小矩阵在纸上一步步推到底，再运行配套脚本核对数值。其中 E14-01～E14-04 使用跨章工程练习入口复算：</p>
 <pre><code class="language-bash">.venv/bin/python -m codes.chapters.ch00.cross_chapter.exercises_engineering
 </code></pre>
-<p>E14-05 的奇异矩阵反例使用空间模型入口：</p>
+<p>E14-05 的半正定奇异协方差反例使用空间模型练习入口：</p>
 <pre><code class="language-bash">.venv/bin/python -m codes.chapters.ch00.cross_chapter.spatial_model_exercises
 </code></pre>
-<p>E14-06～20 使用附录 A 的入口，输出按练习 ID 分组的结果：</p>
+<p>E14-06～E14-20 使用附录 A 专属实验入口（输出按练习编号分组，并对 E14-08 的主清单音频与 E14-19 的五个独立 WAV 执行只读摘要校验）：</p>
 <pre><code class="language-bash">.venv/bin/python -m codes.chapters.appendix_a.appendix_a_experiments
 </code></pre>
-<p>题中数组均为本书构造的输入；下列答案先从短序列或代数独立求出，再用代码核对。图 48～49 与配套音频只说明明确给定的离散模型，不等于自然语音或实测房间。入口还严格只读检查 E14-08 的主音频与 E14-19 的五个独立 WAV，缺失或过期资产会报错，不自动重生。</p>
 <span id="sec-u-a894d7ee57" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-28b8343a11">E14-01：FFT 乘法为什么需要补零</h3>
-<p>取 $x=[1,2]$、$h=[1,0.5]$，下标都从 0 开始。求完整线性卷积，再比较 FFT 长度为 2 和 3 时的结果。</p>
-<p>线性卷积逐点为 $y_0=1\times1=1$、$y_1=1\times0.5+2\times1=2.5$、$y_2=2\times0.5=1$，共 $2+2-1=3$ 点。</p>
-<p>FFT 长度为 2 时，频域相乘给出的是 2 点循环卷积，第三点绕回第零点，结果为 $[1+1,2.5]=[2,2.5]$。补零到 3 点或更长，才可容纳这次完整线性卷积；FFT 长度不必是 2 的幂，但不同长度的执行效率可能不同。</p>
-<p>这道题只检查一次有限卷积。连续音频还需要正确保留重叠与历史，不能对每个短块独立补零、丢掉尾部，再假定拼接结果等于整段卷积。</p>
+<p>给定两条从下标 $0$ 起算的短序列 $x=[1,2]$、$h=[1,0.5]$，先逐点手算完整线性卷积，再对比直接采用 FFT 长度 $N=2$ 与补零至 $N=3$ 后频域相乘逆变换的结果。</p>
+<p>按离散卷积定义 $y[n]=\sum_k h[k]x[n-k]$ 逐点代入：$y[0]=1\times1=1$，$y[1]=1\times0.5+2\times1=2.5$，$y[2]=2\times0.5=1$，完整线性卷积长度为 $2+2-1=3$ 点，即 $[1,2.5,1]$。</p>
+<p>若直接取 FFT 长度 $N=2$，频域逐点相乘再做 2 点逆变换给出的是 2 点循环卷积：原本落在 $n=2$ 的尾项 $1$ 按周期 $2$ 折叠加回 $n=0$，输出变成 $[1+1,2.5]=[2,2.5]$，首样本发生混叠错误。唯有把两段序列先补零到长度 $N\geq 3$，频域乘积才与这次有限长线性卷积严格一致（FFT 长度在数学上不必局限于 $2$ 的整次幂，不同合数长度仅影响蝶形分解的运算速度）。若进一步处理长连续音频流，除了单块补足零，还必须用重叠相加法或重叠保留法衔接跨块历史拖尾，详见 E14-08。</p>
 <span id="sec-u-152b8861e4" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-b7d691e5ef">E14-02：未中心化二阶矩为什么不总等于协方差</h3>
-<p>一个频点上有两路麦克风、两个快拍（$L=2$），列向量为 $\vec x_1=[1,\mathrm j]^\top$、$\vec x_2=[1,-\mathrm j]^\top$。分别计算以快拍数 2 为分母的二阶矩，以及先减样本均值的协方差。本题不使用无偏估计的 $L-1$ 分母。</p>
-<p>两个外积为</p>
-<p>$$
-\vec x_1\vec x_1^H=\begin{bmatrix}1&-\mathrm j\\\mathrm j&1\end{bmatrix},\qquad
-\vec x_2\vec x_2^H=\begin{bmatrix}1&\mathrm j\\-\mathrm j&1\end{bmatrix}.
-$$</p>
-<p>相加除以 2 得 $\mathbf I$。均值是 $\bar{\vec x}=[1,0]^\top$；减均值后的两列为 $[0,\mathrm j]^\top$ 和 $[0,-\mathrm j]^\top$，所以中心化结果为 $\operatorname{diag}(0,1)$。</p>
-<p>第一路始终为 1，有二阶矩能量，却没有相对样本均值的波动。这个例子说明减均值会改变秩，不能把两种估计混着解释。复外积还必须使用共轭转置：$\mathrm j\,\mathrm j^*=1$，若误写成 $\mathrm j^2=-1$，会把非负功率算成负数。</p>
+<p>在固定频点观测到两路麦克风的两个快拍（$L=2$）：$\vec{x}_1=[1,\mathrm{j}]^\top$、$\vec{x}_2=[1,-\mathrm{j}]^\top$。均以快拍数 $L=2$ 为分母（不采用 $L-1$ 无偏分母），分别计算未中心化样本二阶矩 $\hat{\mathbf{R}}$ 与先减去样本均值后的中心化样本协方差 $\hat{\mathbf{C}}_2$。</p>
+<p>逐步代入计算两帧外积（注意第二项必须取共轭转置）：</p>
+<p>$$\vec{x}_1\vec{x}_1^H=\begin{bmatrix}1&-\mathrm{j}\\\mathrm{j}&1\end{bmatrix},\qquad
+\vec{x}_2\vec{x}_2^H=\begin{bmatrix}1&\mathrm{j}\\-\mathrm{j}&1\end{bmatrix}\text{。}$$</p>
+<p>将两个外积相加再除以 $2$，非对角虚部正负抵消，得到未中心化二阶矩 $\hat{\mathbf{R}}=\mathbf{I}$，矩阵满秩（秩为 $2$）。再算样本均值 $\bar{\vec{x}}=\frac{1}{2}(\vec{x}_1+\vec{x}_2)=[1,0]^\top$；减去均值后两帧零均值残差分别为 $[0,\mathrm{j}]^\top$ 与 $[0,-\mathrm{j}]^\top$，求外积平均得到中心化协方差 $\hat{\mathbf{C}}_2=\operatorname{diag}(0,1)$，矩阵秩降为 $1$。</p>
+<p>物理原因很清楚：第一路信号在两帧里恒定为 $1$，具备非零的平均功率，却没有任何围绕样本均值的起伏波动，因此减均值操作直接抹去了这个恒定分量并改变了矩阵秩。顺便核对共轭细节：第二路能量来自 $\mathrm{j}\cdot\mathrm{j}^*=1$，若误用普通转置算出 $\mathrm{j}^2=-1$，就会把正功率算成荒谬的负数。</p>
 <span id="sec-u-3899a8c1b7" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-2e0ba2b3e6">E14-03：零残差是否意味着参数唯一</h3>
-<p>给定</p>
-<p>$$
-\mathbf A=\begin{bmatrix}1&1\\2&2\end{bmatrix},\qquad
-\vec b=\begin{bmatrix}2\\4\end{bmatrix}.
-$$</p>
-<p>求所有满足 $\mathbf A\vec x=\vec b$ 的解，并找出范数最小者。<code>numpy.linalg.lstsq</code> 应报告多大的秩？</p>
-<p>第二行是第一行的两倍，只有 $x_1+x_2=2$ 这一条独立约束，所以在复数域里所有解可写成 $[t,2-t]^\top$，其中 $t\in\mathbb C$。不能把复数向量的范数写成分量直接平方之和；正确的平方二范数为</p>
+<p>给定秩亏损线性方程组的系数矩阵与右端观测向量：</p>
+<p>$$\mathbf{A}=\begin{bmatrix}1&1\\2&2\end{bmatrix},\qquad
+\vec{b}=\begin{bmatrix}2\\4\end{bmatrix}\text{。}$$</p>
+<p>写出复数域内满足 $\mathbf{A}\vec{x}=\vec{b}$ 的通解，求出其中二范数最小的解，并指出 <code>numpy.linalg.lstsq</code> 报告的有效秩。</p>
+<p>观察系数矩阵可知第二行恰为第一行的 $2$ 倍，两条方程等价于同一条标量约束 $x_1+x_2=2$，因此复数域通解可参数化为 $\vec{x}(t)=[t,2-t]^\top$（$t\in\mathbb{C}$）。计算复向量二范数平方时必须对每个分量取模平方（例如取 $t=\mathrm{j}$ 时，真实平方范数为 $|\mathrm{j}|^2+|2-\mathrm{j}|^2=1+5=6$，若误写为不带共轭的平方和 $t^2+(2-t)^2$ 则会得出复数 $2-4\mathrm{j}$）：</p>
 <p>$$\left\|\begin{bmatrix}t\\2-t\end{bmatrix}\right\|_2^2
 =|t|^2+|2-t|^2
 =2|t-1|^2+2\text{。}$$</p>
-<p>模平方非负，因此 $t=1$ 唯一使范数最小；最小范数解为 $[1,1]^\top$，矩阵秩为 1。作为边界检查，取 $t=\mathrm j$ 时，真实平方范数为 $|\mathrm j|^2+|2-\mathrm j|^2=1+5=6$，而误写 $t^2+(2-t)^2$ 会得到非实数 $2-4\mathrm j$。奇异值的解析值为 $\sqrt{10}$ 和 0；浮点运算可能把后者显示成接近零的小正数。运行代码时记录 NumPy 版本、截断比率和对应的奇异值阈值，不把显示出来的近零值当成数学上的独立观测。</p>
-<p>残差为零只说明输入方程被满足，没有说明两个参数可分别辨认。增加同一参数方向的重复行仍不改变秩：即使重复测量的噪声相互独立，也不能消除参数零空间。要从观测中辨认两个参数，新增行必须提供新的参数方向；例如追加 $[1,-1]$ 可使设计矩阵从秩1升至秩2，而追加 $[1,1]$ 仍是秩1。明确的先验约束也可选出一个解，但该信息来自先验，不能称为观测新增了方向。</p>
+<p>由于模平方 $|t-1|^2\geq 0$ 且仅在 $t=1$ 时取零，最小范数解唯一确定为 $\hat{\vec{x}}_{\min}=[1,1]^\top$，对应矩阵秩为 $1$（两个精确奇异值分别为 $\sqrt{10}$ 与 $0$；双精度浮点 SVD 可能把第二个奇异值算成 $10^{-16}$ 量级的微小正数，通过 <code>rcond</code> 阈值截断后正确判秩为 $1$）。</p>
+<p>这道题提醒我们：“残差严格为零”只代表当前观测恰好落在 $\mathbf{A}$ 的列空间中，丝毫不代表各个未知参数能够被独立辨识。哪怕沿着同一方向再重复观测一百次 $[1,1]$ 行向量（无论每次测量的随机噪声是否独立），设计矩阵的秩依然停留在 $1$，参数零空间丝毫未减；唯有补充线性无关的新观测方向（例如增补一行 $[1,-1]$ 使矩阵升至秩 $2$），才能从数据本身解开两个参数的耦合。</p>
 <span id="sec-u-9c73a9ff7c" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-3d25e3aac5">E14-04：频谱相位加权能使空间噪声白化吗？</h3>
-<p>在一个固定频点，设两麦噪声零均值，协方差为 $\mathbf R_{nn}=\operatorname{diag}(4,1)$，两个通道的噪声功率单位相同。求一个对角白化矩阵 $\mathbf W$，算出白化后的噪声协方差；若目标导向矢量原为 $\vec a=[1,1]^\top$，处理后应使用哪一个导向矢量？最后判断只对互功率谱作 PHAT 加权能否得到同样的结果。</p>
-<p>第一路噪声功率是第二路的 4 倍，所以把第一路幅度乘 $1/2$，第二路保持原样：</p>
-<p>$$
-\mathbf W=\begin{bmatrix}1/2&0\\0&1\end{bmatrix},\quad
-\mathbf W\mathbf R_{nn}\mathbf W^H
+<p>在固定频点上，设两通道零均值噪声的空间协方差矩阵为 $\mathbf{R}_{nn}=\operatorname{diag}(4,1)$（两通道量纲一致）。试构造一个对角空间白化矩阵 $\mathbf{W}$ 使白化后噪声协方差变为单位阵；若原坐标系下的目标导向矢量为 $\vec{a}=[1,1]^\top$，白化后应改用哪个导向矢量？再判断对两麦互功率谱做 GCC-PHAT 相位加权能否替代这一空间白化操作。</p>
+<p>由于第一通道噪声方差是第二通道的 $4$ 倍（标准差为 $2$ 倍），只需将第一通道复幅度乘以 $1/2$、第二通道乘以 $1$，即可拉平噪声功率：</p>
+<p>$$\mathbf{W}=\begin{bmatrix}1/2&0\\0&1\end{bmatrix},\qquad
+\mathbf{W}\mathbf{R}_{nn}\mathbf{W}^H
 =\begin{bmatrix}(1/2)^2\!\times4&0\\0&1^2\!\times1\end{bmatrix}
-=\mathbf I,\quad
-\mathbf W\vec a=\begin{bmatrix}1/2\\1\end{bmatrix}。
-$$</p>
-<p>这里两个特征值由 $4,1$ 变为 $1,1$，但目标导向矢量也改变了。若用白化后的数据与原导向矢量 $[1,1]^\top$ 匹配，空间模型就不一致。这个矩阵例子由本书构造，并非实测噪声。</p>
-<p>PHAT 的运算对象却是<strong>一个频点的一对通道的互功率谱</strong>：当 $G_{12}(f)\ne0$ 时，$G_{12}(f)/|G_{12}(f)|$ 是一个模为 1 的复数，不会把两路快拍分别乘上 $1/2$ 和 $1$。例如两路确定的复频谱值为 $X_1=2$、$X_2=1$ 时，互谱为 2，PHAT 后为 1，但这不是把噪声协方差变成单位阵。</p>
-<p>本题两路噪声互不相关，理论噪声互功率谱为 0；此时 PHAT 还须跳过或保护分母，更不能从零互谱推得 $\mathbf W$。这反驳了“PHAT 等于空间白化”的说法，但不否定 PHAT 在时延估计中抑制源谱幅度影响的用途。复算入口为 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/exercises_engineering.py"><code>exercises_engineering.py</code></a> 的 <code>E14-04</code>。</p>
-<p>第 4 章 E04-11 进一步给出非对角噪声协方差与完整方向搜索：只白化协方差会得到 −4.8°，同步变换导向才得到给定的 0° 真值。那是已知噪声模型下的确定性例子，不是一般噪声中的定位精度保证。</p>
+=\mathbf{I},\qquad
+\mathbf{W}\vec{a}=\begin{bmatrix}1/2\\1\end{bmatrix}\text{。}$$</p>
+<p>可以看到，噪声特征值从 $(4,1)$ 拉平为 $(1,1)$ 的同时，目标信号在两通道的相对幅度比也被改写成了 $\tilde{\vec{a}}=\mathbf{W}\vec{a}=[1/2,1]^\top$；倘若数据乘了 $\mathbf{W}$ 却仍拿旧导向矢量 $[1,1]^\top$ 去匹配波束或搜索 DOA，就会引入人为的模型失配（第 4 章 E04-11 在带非对角相关噪声的方向扫描算例中演示过：漏变导向矢量会使谱峰从 $0^\circ$ 真值偏到 $-4.8^\circ$，同步变换导向矢量后才回到 $0^\circ$）。</p>
+<p>反观 GCC-PHAT 的运算公式 $G_{12}(f)/|G_{12}(f)|$：它操作的对象是<strong>单一频点上一对通道的标量互功率谱</strong>。只要 $G_{12}(f)\neq 0$，除以其模值只是把该复标量缩放到单位圆上（例如确定性频谱 $X_1=2,X_2=1$ 的互谱为 $2$，PHAT 归一化后变成标量 $1$），根本不会对两路快拍施加不同的通道增益矩阵 $\mathbf{W}$；更何况本题两路噪声互不相关，理论纯噪声互谱 $G_{n_1 n_2}(f)=0$，从零互谱里更不可能反推出通道方差比 $4:1$。因此，GCC-PHAT 的物理作用是拉平宽带激励的<strong>频域幅度谱起伏</strong>以锐化互相关峰，绝不能与消除通道间噪声差异的<strong>空间噪声白化</strong>混为一谈（复算见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/exercises_engineering.py"><code>exercises_engineering.py</code></a> 中的 <code>E14-04</code>）。</p>
 <span id="sec-u-935c1036ea" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-84ef8c9584">E14-05：奇异协方差中，把逆换成伪逆是否总能得到 MVDR？</h3>
-<p>考虑明确的一组输入：</p>
-<p>$$\mathbf R=\begin{bmatrix}0&0\\0&1\end{bmatrix},\qquad
-\vec a=\begin{bmatrix}1\\1\end{bmatrix},\qquad
-\min_{\vec w}\ \vec w^H\mathbf R\vec w
-\quad\text{使 }\vec w^H\vec a=1\text{。}$$</p>
-<p>这里第一通道在该理想模型中完全没有噪声，第二通道噪声功率为 1；目标在两路的响应都是 1。协方差是半正定而非正定，不能直接套用第 5 章式(5-9)的可逆前提。</p>
-<p><strong>第一步：先用原问题求答案。</strong> 令权重为 $[w_1,w_2]^\top$。约束是 $w_1^*+w_2^*=1$，目标函数是 $|w_2|^2$。非负量的下界为 0；取 $w_2=0,w_1=1$ 同时满足约束并达到下界，因此 $\vec w_*=[1,0]^\top$ 是全局最优解，输出噪声功率为 0。</p>
-<p><strong>第二步：检查机械替换的结果。</strong> 本题 Moore–Penrose 伪逆为 $\mathbf R^+=\operatorname{diag}(0,1)$。若未经条件检查就用</p>
-<p>$$\vec w_+=\frac{\mathbf R^+\vec a}{\vec a^H\mathbf R^+\vec a}
-=[0,1]^\top,$$</p>
-<p>它的分母为 1，约束也确实满足，但输出噪声功率为 1。程序没有除零、没有 NaN、也没有违反名义响应，却仍然没有解对原优化问题。</p>
-<p>原因在于 $\mathbf R^+$ 把零特征值方向映射成零；而本题第一通道方向恰好可以在不付噪声代价的同时满足目标约束。机械替换把这个有用的零空间分量丢掉了。这个反例只推翻“所有奇异协方差都可以这样替换”的说法，不表示伪逆在所有波束或最小二乘问题中都无效。</p>
-<p><strong>第三步：对照正加载的极限。</strong> 对 $\delta>0$，$\mathbf R_\delta=\mathbf R+\delta\mathbf I=\operatorname{diag}(\delta,1+\delta)$ 可逆，式(5-9)给出</p>
-<p>$$\vec w_\delta
+<p>考察下面这组半正定奇异协方差输入下的 MVDR 优化问题：</p>
+<p>$$\mathbf{R}=\begin{bmatrix}0&0\\0&1\end{bmatrix},\qquad
+\vec{a}=\begin{bmatrix}1\\1\end{bmatrix},\qquad
+\min_{\vec{w}}\ \vec{w}^H\mathbf{R}\vec{w}
+\quad\text{使 }\vec{w}^H\vec{a}=1\text{。}$$</p>
+<p>物理图景上，第一通道在该理想模型中噪声功率为 $0$，第二通道噪声功率为 $1$，而目标信号在两通道的导向响应均为 $1$。此时 $\mathbf{R}$ 仅半正定而非正定，不再满足第 5 章式(5-9)要求 $\mathbf{R}$ 可逆的前提。</p>
+<p><strong>第一步：直接从原约束优化求真解。</strong> 设权重向量为 $\vec{w}=[w_1,w_2]^\top$，则线性约束写作 $w_1^*+w_2^*=1$，输出噪声功率目标函数写作 $\vec{w}^H\mathbf{R}\vec{w}=|w_2|^2\geq 0$。令 $w_2=0,w_1=1$ 既满足无失真约束，又使非负目标函数取到理论下界 $0$，因此唯一全局最优解是全靠无噪第一通道拾音的 $\vec{w}_*=[1,0]^\top$，最小输出噪声功率为 $0$。</p>
+<p><strong>第二步：检验把逆矩阵机械替换为 Moore–Penrose 伪逆的后果。</strong> 对角阵 $\mathbf{R}$ 的伪逆为 $\mathbf{R}^+=\operatorname{diag}(0,1)$。若不检查零空间条件，直接把式(5-9)里的 $\mathbf{R}^{-1}$ 换成 $\mathbf{R}^+$，会算出</p>
+<p>$$\vec{w}_+=\frac{\mathbf{R}^+\vec{a}}{\vec{a}^H\mathbf{R}^+\vec{a}}
+=\begin{bmatrix}0\\1\end{bmatrix}\text{。}$$</p>
+<p>注意看发生了什么：分母等于 $1$，代码运行既不报除零错误、也不产生 <code>NaN</code>，甚至检验 $\vec{w}_+^H\vec{a}=1$ 也完美成立，可它在原声场下的输出噪声功率却是 $|1|^2=1$！症结在于伪逆 $\mathbf{R}^+$ 会把零特征值对应的零空间方向直接清零，而恰恰是这个零噪声的第一通道方向能够在不付出任何噪声代价的情况下承载目标信号。</p>
+<p><strong>第三步：与正对角加载 $\delta\to 0^+$ 的连续极限对照。</strong> 引入正加载量 $\delta>0$（对应第 5 章绝对加载 $\varepsilon>0$），加载后矩阵 $\mathbf{R}_\delta=\mathbf{R}+\delta\mathbf{I}=\operatorname{diag}(\delta,1+\delta)$ 严格正定，代入式(5-9)得</p>
+<p>$$\vec{w}_\delta
 =\frac{[1/\delta,\ 1/(1+\delta)]^\top}{1/\delta+1/(1+\delta)}
 =\begin{bmatrix}(1+\delta)/(1+2\delta)\\\delta/(1+2\delta)\end{bmatrix}\text{。}$$</p>
-<p>为了比较同一声场，仍用原始 $\mathbf R$ 评分，输出噪声功率为 $[\delta/(1+2\delta)]^2$：</p>
+<p>为了在同一声场基准下横向公平对比，把各组权重统一代回原始噪声协方差 $\mathbf{R}$ 计算真实输出噪声功率 $\vec{w}_\delta^H\mathbf{R}\vec{w}_\delta=[\delta/(1+2\delta)]^2$，汇总如下表：</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
 <thead>
 <tr>
@@ -1297,24 +1308,20 @@ $$</p>
 </tr>
 </tbody>
 </table></div>
-<p>当 $\delta\to0^+$，加载解趋向 $[1,0]^\top$，并不趋向机械替换的 $[0,1]^\top$。数值截断、伪逆与加载极限是不同操作，不能仅因都涉及“小特征值”就互换。</p>
-<p><strong>同一矩阵换一个导向，再看何时伪逆可用。</strong> 若把目标改成 $\vec a=[0,1]^\top$，约束固定 $w_2=1$；无论 $w_1$ 取什么值，噪声功率都为 1。此时归一化伪逆解 $[0,1]^\top$ 是最优解之一，零空间内的任意加量都不改变结果。</p>
-<p>一般地，若目标在零空间中的正交投影为非零 $\vec a_0$，取 $\vec a_0/\|\vec a_0\|_2^2$ 就能满足约束且功率为零。若投影为零，目标全在 $\mathbf R$ 的值域；在该值域中 $\mathbf R$ 正定，可按 §14.3.6 求解，结果正是归一化伪逆解。再加任意零空间权重，约束和最小功率都不变。</p>
-<p><strong>工程解释。</strong> 真实麦克风一般不会拥有完全零噪声通道；这个精确半正定模型用于揭示优化前提，不能据此推荐把实际加载降到零。有限快拍、通道重复或秩约束模型都可能产生奇异样本协方差。此时应先判断目标是否含零空间分量，再选加载、明确的子空间约束或其他相应求解方法。E14-03 中伪逆给出最小范数最小二乘解的结论仍然成立，那是另一个目标函数与约束问题。</p>
-<p>本题是本书自行构造的代数反例，运行 <code>.venv/bin/python -m codes.chapters.ch00.cross_chapter.spatial_model_exercises</code> 的 <code>E14-05</code> 可核对可行性、两种输出功率与加载极限；<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/spatial_model_exercises.py">源码</a>使用给定矩阵，不把反例扩写成通用奇异 MVDR 求解器。</p>
+<p>顺着上表从上往下读：第一列列出求解方案，第二、三列展示两通道权重分配（每行之和均等于 $1$，满足无失真约束），第四列给出原声场输出噪声功率。随着正加载 $\delta$ 从 $1$ 逐步减小到 $0.01$，权重平滑地向第一通道集中，在 $\delta\to 0^+$ 时连续收敛到真解 $[1,0]^\top$（噪声功率归零），与第一行伪逆解 $[0,1]^\top$ 背道而驰——可见伪逆截断与正加载极限是完全不同的代数操作。</p>
+<p><strong>何时伪逆解才恰好有效？</strong> 若固定同一个 $\mathbf{R}=\operatorname{diag}(0,1)$，但把目标导向改为 $\vec{a}=[0,1]^\top$（完全落在 $\mathbf{R}$ 的值域内，在零空间上的正交投影为零），则无失真约束强制 $w_2=1$，无论 $w_1$ 取何值输出噪声功率恒为 $1$，此时归一化伪逆解 $[0,1]^\top$ 确实是最优解之一。一般而言，面对快拍不足或降秩建模导致的奇异协方差：若目标导向在 $\mathbf{R}$ 零空间上的正交投影 $\vec{a}_0\neq\vec{0}$，取 $\vec{a}_0/\|\vec{a}_0\|_2^2$ 即可在满足约束的同时令输出噪声功率为零；唯有当 $\vec{a}_0=\vec{0}$（目标完全位于 $\mathbf{R}$ 值域内）时，归一化伪逆解才给出最优解（真实硬件麦克风总含热底噪，工程上通常结合物理底噪量级施加对角加载，复算见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/spatial_model_exercises.py"><code>spatial_model_exercises.py</code></a> 中的 <code>E14-05</code>）。</p>
 <span id="sec-u-99706c9759" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-53cdc056b8">E14-06：完整 FFT 的末格是接近采样率的正频率吗？</h3>
-<p>给定 $N=8$、$f_s=8$ kHz，列出完整 DFT 从 $k=0$ 到 $7$ 的有符号代表频率，以及实信号单边 FFT 保留的频率。再分别考虑 $x[n]=\cos(2\pi n/8)$ 与 $z[n]=(-1)^n$（$n=0,\ldots,7$）：两者的非零频点在哪里？本题使用前向 DFT 无 $1/N$、逆变换带 $1/N$ 的约定。</p>
-<p><strong>频率格。</strong> 格点间隔是 $f_s/N=1$ kHz。由式(14-1)，完整频率依次是 $[0,1,2,3,-4,-3,-2,-1]$ kHz；实输入单边谱是 $[0,1,2,3,4]$ kHz。故 $k=7$ 的有符号代表是 $-1$ kHz。把它写作 $+7$ kHz 时，整数采样点上的复指数完全相同，二者相差一个采样率，不是两个独立格点。$k=4$ 在完整 fftfreq 口径记作 $-4$ kHz，在单边 rfftfreq 口径记作 $+4$ kHz。</p>
-<p><strong>复谱核对。</strong> $\cos(2\pi n/8)=\tfrac12e^{\mathrm j2\pi n/8}+\tfrac12e^{-\mathrm j2\pi n/8}$，所以无归一化完整 DFT 只有 $X[1]=X[7]=8/2=4$ 非零。$(-1)^n=e^{\mathrm j\pi n}=e^{-\mathrm j\pi n}$ 对整数 $n$ 完全相同，因此它只有 $Z[4]=8$ 一个 Nyquist 格点；不能把 $+4$ 与 $-4$ kHz 各计成一份独立能量。正负频率分量对实余弦互为共轭，但填入阵列导向相位时须用与所取谱格一致的有符号频率。</p>
-<p>用 Parseval 等式核对样本平方和：余弦的两个共轭格各贡献 $4^2/8$，合计 4；交替序列的 Nyquist 格只贡献一次 $8^2/8=8$。因此用单边谱算能量时，内部频点要补上没有存储的共轭项，DC 和 Nyquist 则只计一次。若谱处理后仍要逆变换为实信号，这两个自共轭端点的值也必须为实数。</p>
+<p>设 DFT 点数 $N=8$、采样率 $f_s=8\ \mathrm{kHz}$（前向 DFT 不乘 $1/N$，逆 DFT 乘 $1/N$）。列出完整双边 DFT 从 $k=0$ 到 $k=7$ 的有符号代表频率与实信号单边 FFT 保留的非负频率，再求余弦序列 $x[n]=\cos(2\pi n/8)$ 与交变序列 $z[n]=(-1)^n$（$n=0,\ldots,7$）的非零频谱位置与帕塞瓦尔（Parseval）能量。</p>
+<p><strong>频率网格核对。</strong> 频率分辨率间隔为 $f_s/N=1\ \mathrm{kHz}$。按式(14-1)的双边 <code>fftfreq</code> 规则，$k=0,\ldots,7$ 依次对应 $[0,1,2,3,-4,-3,-2,-1]\ \mathrm{kHz}$；按实信号单边 <code>rfftfreq</code> 规则，$k=0,\ldots,4$ 依次对应 $[0,1,2,3,4]\ \mathrm{kHz}$。因此，末格 $k=7$ 的有符号物理频率是 $-1\ \mathrm{kHz}$：由于离散采样时刻 $e^{+\mathrm{j}2\pi(7)n/8}=e^{-\mathrm{j}2\pi n/8}$ 相差整数倍采样率而完全等价，绝不能把 $k=7$ 误当成 $7\ \mathrm{kHz}$ 的高频新分量。同理，$k=4$ 在双边谱中记作 $-4\ \mathrm{kHz}$、在单边谱中记作 $+4\ \mathrm{kHz}$，指代同一个奈奎斯特格点。</p>
+<p><strong>复谱与能量核对。</strong> 由欧拉公式 $\cos(2\pi n/8)=\frac{1}{2}e^{+\mathrm{j}2\pi n/8}+\frac{1}{2}e^{-\mathrm{j}2\pi n/8}$，8 点无归一化完整 DFT 仅在共轭对称格点 $X[1]=X[7]=8/2=4$ 处非零（构造阵列导向矢量时，$k=1$ 必须代入 $+1\ \mathrm{kHz}$，若处理完整双边谱的 $k=7$ 则必须代入 $-1\ \mathrm{kHz}$）。而交变序列 $(-1)^n=e^{\mathrm{j}\pi n}=e^{-\mathrm{j}\pi n}$ 仅在奈奎斯特格点 $Z[4]=8$ 处非零。再用 Parseval 定理 $\sum_{n=0}^{7}|x[n]|^2=\frac{1}{8}\sum_{k=0}^{7}|X[k]|^2$ 验算总能量：余弦序列由 $k=1$ 与 $k=7$ 各贡献 $4^2/8=2$，合计为 $4$；交变序列的奈奎斯特格点只存在一份 $8^2/8=8$。因此，用实信号单边谱计算总能量或做逆变换前，内部频点（$1\leq k\leq N/2-1$）需计入未存储负频共轭项的双倍能量，而直流（$k=0$）与偶数长奈奎斯特（$k=N/2$）两个自共轭端点只能计一次且虚部必须保持为零。</p>
 <p><img alt="图48 完整八点 DFT 的有符号频率与实谱单边频率" src="../figures/fig48_fft_frequencies.png" onerror="this.alt+='（图缺失）'" /></p>
-<p>图 48（a）按 fftfreq 约定画出 $N=8$、$f_s=8$ kHz 的全部格点，$k=4$ 记为 $-4$ kHz；（b）只保存实信号的非负格点，$k=4$ 记为 $+4$ kHz。两幅图中的 Nyquist 标注是<strong>同一个离散格点</strong>，不是两次观测。图示给的是频率坐标约定，不表示补零增加了频率分辨能力。<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/appendix_a/appendix_a_experiments.py">代码复算</a>还列出余弦的两个非零格点。</p>
+<p>对照图 48 的两个子图可以直观记住这一映射：横轴均为 DFT 索引 $k$，纵轴为对应的物理频率（kHz）。子图（a）展示完整 8 点 <code>fftfreq</code> 排列，$k=0$～$3$ 线性升至 $+3\ \mathrm{kHz}$，在 $k=4$ 处跳变至 $-4\ \mathrm{kHz}$ 后回升到 $k=7$ 的 $-1\ \mathrm{kHz}$；子图（b）展示实信号 <code>rfftfreq</code> 单边排列，仅保留 $k=0$～$4$ 共 5 个格点，并将 $k=4$ 标为 $+4\ \mathrm{kHz}$。两幅图特意标出奈奎斯特格点是同一个离散采样频率点（复算代码见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/appendix_a/appendix_a_experiments.py"><code>appendix_a_experiments.py</code></a>）。</p>
 <span id="sec-u-601bb171ef" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-26323254d5">E14-07：复向量为什么不能用普通转置计算能量？</h3>
-<p>取 $\vec x=[1,\mathrm j]^\top$。分别计算 $\vec x^H\vec x$ 和 $\vec x^\top\vec x$，并说明哪个可作为模平方之和。</p>
-<p>共轭转置后，$\vec x^H=[1,-\mathrm j]$，所以 $\vec x^H\vec x=1+(-\mathrm j)\mathrm j=2$。普通转置却给 $\vec x^\top\vec x=1+\mathrm j^2=0$；它发生相消，不能表示这路非零向量的能量。与 E14-02 一样，外积 $\vec x\vec x^H=\left[\begin{smallmatrix}1&-\mathrm j\\\mathrm j&1\end{smallmatrix}\right]$ 是厄米半正定的，但单个外积的秩仅为 1。这个确定性复向量只说明复共轭的必要性；要称为统计功率，仍须定义平均区间或概率模型。</p>
+<p>取二维复列向量 $\vec{x}=[1,\mathrm{j}]^\top$，分别计算厄米内积 $\vec{x}^H\vec{x}$ 与不带共轭的转置乘积 $\vec{x}^\top\vec{x}$，说明哪一个才能度量复信号能量。</p>
+<p>先取共轭转置得行向量 $\vec{x}^H=[1,-\mathrm{j}]$，于是厄米内积为 $\vec{x}^H\vec{x}=1\times 1+(-\mathrm{j})\times\mathrm{j}=1+1=2$，恰等于各分量模平方之和 $|1|^2+|\mathrm{j}|^2=2$。若误用普通转置计算，则会得到 $\vec{x}^\top\vec{x}=1^2+\mathrm{j}^2=1-1=0$——明明是一个非零复向量，实部平方与虚部平方却因 $\mathrm{j}^2=-1$ 相互抵消为零！同理，构造样本空间协方差时也必须写成厄米外积 $\vec{x}\vec{x}^H=\left[\begin{smallmatrix}1&-\mathrm{j}\\\mathrm{j}&1\end{smallmatrix}\right]$（半正定，秩为 $1$），才能保证主对角线代表各通道的非负能量。</p>
 <span id="sec-u-af429c1fb4" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-058974ea15">E14-08：连续信号分块后，尾部能直接丢弃吗？</h3>
-<p>输入 $x=[1,2,3,4]$、两抽头 FIR $h=[1,0.5]$，每块新输入 $B=2$ 点。求完整线性卷积；再比较“每块独立做长度 2 的 FFT 乘法，把两点逆 FFT 结果直接拼接”的错误结果。本题是确定性离散序列，不涉及窗函数或房间测量。</p>
-<p>整段线性卷积为 $[1,2.5,4,5.5,2]$。正确的重叠相加逐块计算如下：</p>
+<p>设离散输入序列为 $x=[1,2,3,4]$、两抽头因果 FIR 滤波器为 $h=[1,0.5]$，按每块新输入 $B=2$ 点分块流式处理。先求整段完整线性卷积，再对比正确的重叠相加法（Overlap-Add）与“每块直接做 2 点 FFT 乘积并拼接输出”的错误做法。</p>
+<p>整段直接做线性卷积的结果为 $[1,2.5,4,5.5,2]$（总长 $4+2-1=5$ 点）。若按块长 $B=2$ 切分，每块与长度 $L_h=2$ 的滤波器做线性卷积都会产生 $B+L_h-1=3$ 点输出，因此单块 FFT 长度至少取 $3$，且跨块重叠点必须累加，如下表逐列所示：</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
 <thead>
 <tr>
@@ -1336,53 +1343,50 @@ $$</p>
 </tr>
 </tbody>
 </table></div>
-<p>两块在 $n=2$ 重叠，故该点为 $1+3=4$，其余点照原位置保留。错误的两点循环卷积则分别为 $[2,2.5]$、$[5,5.5]$，拼接成 $[2,2.5,5,5.5]$：第一块尾项 1 绕回到 $n=0$，第二块尾项 2 绕回到 $n=2$，末尾 $n=4$ 也丢失。E14-01 只检查一次短卷积；本题说明连续分块时还必须保留并相加跨块尾部。对于长度 $B$ 的新输入和 $L_h$ 抽头 FIR，每块的线性结果长 $B+L_h-1$，FFT 长度至少达到这个长度才可避免本块循环别名。</p>
-<p>补零与保留尾部可分开检查：若每块都正确补到 3 点，但仍丢弃每块第三点，拼接得到 $[1,2.5,3,5.5]$。这时没有绕回；问题是 $n=2$ 少了上一块的 1，且 $n=4$ 没有输出。只改 FFT 长度不能修好跨块相加。</p>
+<p>阅读上表：第一列给出相邻两帧不重叠的输入块及其全局起始时刻，第二列列出补零至 3 点算出的单块线性卷积，第三列标出放回全局时间轴的区间。由于第一块的尾项（落在 $n=2$ 的 $1$）与第二块的首项（落在 $n=2$ 的 $3$）占据同一个全局采样点，相加后得到 $n=2$ 处的正确值 $1+3=4$，整段还原为 $[1,2.5,4,5.5,2]$。</p>
+<p>再来拆解两种常见的工程实现失误：第一种失误是不补零而直接做 2 点循环卷积，两块各自算出 $[2,2.5]$ 与 $[5,5.5]$，硬拼为 $[2,2.5,5,5.5]$——第一块尾项 $1$ 绕回污染了 $n=0$，第二块尾项 $2$ 绕回污染了 $n=2$，且末尾 $n=4$ 彻底丢失；第二种失误是每块虽然补零算出了 3 点线性卷积，却把超出块长 $B=2$ 的第 3 点直接截断丢弃，硬拼成 $[1,2.5,3,5.5]$——虽无本块前向绕回，但 $n=2$ 漏加了上一块的拖尾 $1$，末尾 $n=4$ 同样丢失。可见“单块补足零”与“跨块累加拖尾”缺一不可。</p>
 <p><img alt="图49 分块线性卷积的重叠尾部与错误循环绕回" src="../figures/fig49_fft_block_boundary.png" onerror="this.alt+='（图缺失）'" /></p>
-<p>图 49 把上述两点手算扩展到下文的 16 kHz PCM 脉冲音频，而不是直接画小序列 $x=[1,2,3,4]$。（a）为正确线性卷积，（b）为刻意构造的错误逐块循环卷积；两图使用相同的 $B=512$、$h[0]=1$、$h[120]=0.6$、输入脉冲与共同导出增益 1。首脉冲在 $n=500$（$31.25\,\mathrm{ms}$），竖虚线标出 $n=512$（$32\,\mathrm{ms}$）块边界。正确尾部在 $n=620$（$38.75\,\mathrm{ms}$），错误实现却将尾部绕回到 $n=108$（$6.75\,\mathrm{ms}$）。左、右两图的纵轴都是最终 PCM 读回幅度；图中的提前脉冲不是物理声学预回声。</p>
-<p>下面三个<a href="research/05_exercises_and_audio.html">数学合成音频</a>把同一问题换成可听的块边界。先降低音量，再分别播放。</p>
+<p>图 49 将这一分块机制放到 $16\ \mathrm{kHz}$ 采样率的脉冲音频上直观对比：横轴为时间（与采样点 $n$ 对应，竖直虚线标出 $n=512$ 即 $32\ \mathrm{ms}$ 的第一块右边界），纵轴为导出 PCM16 后读回的归一化波形幅度。两幅子图共用相同的块长 $B=512$、稀疏两抽头滤波器 $h[0]=1,h[120]=0.6$ 与位于 $n=500$（$31.25\ \mathrm{ms}$）的首个输入干脉冲。子图（a）展示正确的重叠相加线性卷积：主脉冲落在块内 $n=500$，延迟 $120$ 点的衰减副脉冲平滑跨过块边界出现在下一块的 $n=620$（$38.75\ \mathrm{ms}$）；子图（b）展示未补零的逐块 512 点循环卷积：由于 $500+120=620$ 超出块长 $512$，副脉冲按模 $512$ 折叠绕回到 $620-512=108$（$6.75\ \mathrm{ms}$），在主脉冲尚未到达之前就凭空制造出一记虚假的“超前伪脉冲”。</p>
+<p>下面三段配套<a href="research/05_exercises_and_audio.html">数学合成音频</a>（均为 $16\ \mathrm{kHz}$、$2\ \mathrm{s}$ 单声道 PCM16，共同导出增益为 $1$，包含 $10$ 记位于 $n=500+3072i$、幅度 $0.3$ 的脉冲）让你直接听辨正确拖尾与循环绕回的差异，试听前请先调低音量：</p>
 <ul>
 <li><a href="audio/math_block_dry.wav">干脉冲</a><audio class="audio-sample" controls preload="none" aria-label="干脉冲" src="audio/math_block_dry.wav">请使用上方 WAV 链接下载。</audio></li>
 <li><a href="audio/math_block_linear.wav">正确线性 FIR</a><audio class="audio-sample" controls preload="none" aria-label="正确线性 FIR" src="audio/math_block_linear.wav">请使用上方 WAV 链接下载。</audio></li>
 <li><a href="audio/math_block_circular.wav">错误逐块循环</a><audio class="audio-sample" controls preload="none" aria-label="错误逐块循环" src="audio/math_block_circular.wav">请使用上方 WAV 链接下载。</audio></li>
 </ul>
-<p>三路均为 16 kHz、2 s、单声道 PCM16，使用同一导出增益 1；输入含 10 个幅度 0.3 的数学脉冲，位置为 $500+3072i$（$i=0,\ldots,9$），滤波器仅 $h[0]=1,h[120]=0.6$，块长 512。第一个脉冲的正确副脉冲在 $n=620$，错误循环实现却把它绕回本块的 $n=108$。导出 PCM 读回分别约为 0.299988 和 0.179993；错误文件的 $n=620$ 为 0。这是刻意构造的错误分块示例，不是实测房间回声，也不等于听测通过。</p>
-<p>本题入口先严格只读核验主清单、生成源摘要和三个实际 WAV，再读取 PCM 样值；浮点模型结果另列。资产缺失或摘要不一致时检查失败，不自动重生。实际 PCM 的首脉冲为 $9830/32768$，线性副脉冲及错误绕回脉冲均为 $5898/32768$；本题展示有限支持下的普通 FFT 数值结果，不承诺所有有限输入都能可靠计算。</p>
-<p>当前唯一 FFT 教学核采用保守支持规则：两个输入都含非零值时，各自非零绝对值的二进制指数跨度不得超过 40，最小非零乘积须处于正常 float64 数的支持区，并检查中间频谱和输出是否有限。超出这些限制会明确报错；这不等于精确数学卷积不可表示，更不等于结果为零。限制用于拒绝已发现的中间支持丢失，不保证一般相消场景下的逐点相对精度。</p>
+<p>实验脚本先只读校验主音频清单与源文件摘要，再读取 PCM16 整数样值核对：主脉冲量化值为 $9830/32768\approx 0.299988$，正确文件在 $n=620$ 处的副脉冲与错误文件绕回到 $n=108$ 处的伪脉冲均为 $5898/32768\approx 0.179993$（错误文件在真实延迟位置 $n=620$ 处读数为 $0$）。</p>
 <span id="sec-u-84f5f318d2" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-a43cc286e7">E14-09：交换互相关的两路输入会怎样改变延迟符号？</h3>
-<p>给定 $x_1=[0,1,0]$、$x_2=[1,0,0]$，两段以同一全局 $n=0$ 起点记录，范围外补零。按式(14-2)计算 $q=-2,-1,0,1,2$ 的 $R_{12}[q]$ 和交换输入后的 $R_{21}[q]$，指出峰位与哪一路较晚到。</p>
-<p>$x_1$ 仅在 $n=1$ 为 1，$x_2$ 仅在 $n=0$ 为 1。$R_{12}[q]$ 的唯一非零项要求 $n=1$ 且 $n-q=0$，所以 $q=+1$；依上述滞后顺序，五个值为 $[0,0,0,1,0]$。交换后唯一非零项要求 $n=0$ 且 $n-q=1$，所以 $q=-1$，五个值为 $[0,1,0,0,0]$。这是“麦 1 比麦 2 晚一采样”在本书相关定义下的符号。若改用另一调用顺序、未补零的循环相关或周期信号，这一单峰表不能直接照搬；GCC-PHAT 还会进一步按频率归一化互谱，并非只做这里的普通相关。</p>
+<p>设两路同起点（$n=0$）短序列为 $x_1=[0,1,0]$、$x_2=[1,0,0]$，区间外补零。按本书式(14-2)逐点写出滞后 $q=-2,-1,0,1,2$ 处的互相关 $R_{12}[q]$ 以及对调输入顺序后的 $R_{21}[q]$，说明峰值正负号对应的物理早晚关系。</p>
+<p>序列 $x_1$ 仅在 $n=1$ 处取 $1$，序列 $x_2$ 仅在 $n=0$ 处取 $1$（即第 1 路比第 2 路晚到 $1$ 个采样点）。代入 $R_{12}[q]=\sum_n x_1[n]x_2^*[n-q]$，唯一非零乘积要求 $n=1$ 且 $n-q=0$，解得 $q=+1$，故 $q=-2,-1,0,1,2$ 五个滞后点上的取值为 $[0,0,0,1,0]$。对调两路输入后，$R_{21}[q]=\sum_n x_2[n]x_1^*[n-q]$ 要求 $n=0$ 且 $n-q=1$，峰值翻转至 $q=-1$，五个滞后点取值为 $[0,1,0,0,0]$。记住“第 1 路晚到则 $R_{12}[q]$ 在正滞后出峰”，调用外部互相关库或叠加 GCC-PHAT 频域白化权重时就能稳稳对齐方向符号。</p>
 <span id="sec-u-f444abd308" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-9002f4999c">E14-10：减样本均值会怎样改变协方差的秩？</h3>
-<p>在一个固定频点，取两个三通道快拍 $\vec x_1=[1,0,0]^\top$、$\vec x_2=[0,1,0]^\top$。都以 $L=2$ 为分母，计算未中心化二阶矩、样本均值与中心化协方差，再比较它们的秩和特征值。本题不使用无偏估计分母 $L-1$。</p>
-<p>两个外积之和除以 2 得 $\hat{\mathbf R}=\operatorname{diag}(1/2,1/2,0)$，秩为 2，特征值为 $1/2,1/2,0$。样本均值为 $\bar{\vec x}=[1/2,1/2,0]^\top$；中心化后的两个向量互为相反数，分别为 $[1/2,-1/2,0]^\top$ 与 $[-1/2,1/2,0]^\top$。由此</p>
-<p>$$\hat{\mathbf C}_2=
+<p>在固定频点给定两帧三通道快拍 $\vec{x}_1=[1,0,0]^\top$、$\vec{x}_2=[0,1,0]^\top$，统一以快拍数 $L=2$ 为分母（不用 $L-1$），分别计算未中心化二阶矩 $\hat{\mathbf{R}}$、样本均值 $\bar{\vec{x}}$ 与中心化样本协方差 $\hat{\mathbf{C}}_2$，对比两者的秩与特征值。</p>
+<p>两帧外积相加除以 $2$ 得 $\hat{\mathbf{R}}=\operatorname{diag}(1/2,1/2,0)$，矩阵秩为 $2$，三个特征值为 $\{1/2,1/2,0\}$。再求样本均值 $\bar{\vec{x}}=[1/2,1/2,0]^\top$；减去均值后两帧中心化向量变成互为相反数的 $[1/2,-1/2,0]^\top$ 与 $[-1/2,1/2,0]^\top$，求外积平均得</p>
+<p>$$\hat{\mathbf{C}}_2=
 \begin{bmatrix}
 1/4&-1/4&0\\
 -1/4&1/4&0\\
 0&0&0
 \end{bmatrix},
 \qquad
-\operatorname{eig}(\hat{\mathbf C}_2)=\{1/2,0,0\}\text{。}$$</p>
-<p>它是半正定但秩只有 1，并满足 $\hat{\mathbf R}-\hat{\mathbf C}_2=\bar{\vec x}\bar{\vec x}^H$。两快拍中心化后至多剩 $L-1=1$ 个独立方向；这不是“真实声源必定只有一个”的估计，不能只为提高估计秩而任意决定是否去均值。E14-02 用复数两通道展示了同一恒等式的另一种输入。</p>
+\operatorname{eig}(\hat{\mathbf{C}}_2)=\{1/2,0,0\}\text{。}$$</p>
+<p>逐项核对可知恒等式 $\hat{\mathbf{R}}-\hat{\mathbf{C}}_2=\bar{\vec{x}}\bar{\vec{x}}^H$ 精确成立。因为 $L$ 个中心化向量的和恒为零向量，它们至多只能张成 $L-1$ 维子空间——本例 $L=2$ 帧中心化后矩阵秩必然不超过 $1$。这完全是有限样本减均值带来的代数自由度缩减，绝不能据此断言空间中只存在一个物理声源。</p>
 <span id="sec-u-7b57cb80a9" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-b24d0eb12a">E14-11：为什么不建议直接形成正规方程？</h3>
-<p>取 $\mathbf A=\operatorname{diag}(1,10^{-4})$、$\vec b=[1,10^{-4}]^\top$。求 $\mathbf A\vec x=\vec b$ 的解、$\mathbf A$ 的二范数条件数，以及式(14-4)左边矩阵 $\mathbf A^H\mathbf A$ 的二范数条件数。</p>
-<p>$\mathbf A$ 的两个奇异值为 $1$ 和 $10^{-4}$，所以 $\kappa_2(\mathbf A)=10^4$。正规方程矩阵为 $\operatorname{diag}(1,10^{-8})$，条件数升至 $10^8$；右边是 $\mathbf A^H\vec b=[1,10^{-8}]^\top$。解析解仍为 $\vec x=[1,1]^\top$，在这个可精确描述的小例中，“条件数增大”不等于已经测得某个特定求解器产生了误差。它说明真实数据若含扰动或有限精度误差，直接形成正规方程可能更敏感；复杂矩阵优先考虑 QR/SVD，并按任务评估代价。</p>
+<p>取二阶对角设计矩阵 $\mathbf{A}=\operatorname{diag}(1,10^{-4})$ 与右端向量 $\vec{b}=[1,10^{-4}]^\top$。求精确解 $\vec{x}$、原矩阵 $\mathbf{A}$ 的二范数条件数 $\kappa_2(\mathbf{A})$，以及正规方程式(14-4)左端矩阵 $\mathbf{A}^H\mathbf{A}$ 的二范数条件数。</p>
+<p>正对角阵的奇异值就是对角元本身（$1$ 与 $10^{-4}$），因此 $\kappa_2(\mathbf{A})=1/10^{-4}=10^4$，精确解显然为 $\vec{x}=[1,1]^\top$。然而一旦显式乘出正规方程矩阵 $\mathbf{A}^H\mathbf{A}=\operatorname{diag}(1,10^{-8})$（右端变为 $\mathbf{A}^H\vec{b}=[1,10^{-8}]^\top$），特征值之比瞬间平方放大到 $\kappa_2(\mathbf{A}^H\mathbf{A})=10^8$！在双精度浮点只有约 $16$ 位有效十进制数字的有限字长机器上，若原矩阵条件数达到 $10^8$，形成 $\mathbf{A}^H\mathbf{A}$ 后条件数飙升至 $10^{16}$，弱奇异方向的信息在矩阵相乘阶段就会被大奇异值方向的舍入底噪彻底淹没——这就是数值线性代数优先推荐对 $\mathbf{A}$ 直接做 QR 或 SVD 分解的根本原因。</p>
 <span id="sec-u-f2a35d6e39" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-2a6196d983">E14-12：SDW-MWF 的噪声权重趋大时一定归零吗？</h3>
-<p>取目标协方差 $\mathbf R_{ss}=\operatorname{diag}(1,0)$，参考选择向量 $\vec e_r=[1,0]^\top$。先令噪声协方差为 $\mathbf R_{nn}=\operatorname{diag}(0,1)$，再改为 $\mathbf I$；两种情况下都用 $\vec w_\mu=(\mathbf R_{ss}+\mu\mathbf R_{nn})^{-1}\mathbf R_{ss}\vec e_r$，逐一计算 $\mu=1,10,10^6$ 的权重及 $\mu\to\infty$ 的极限。</p>
-<p><strong>噪声有零空间。</strong> 第一种矩阵的和为 $\operatorname{diag}(1,\mu)$，对每个 $\mu>0$ 都可逆。右边为 $[1,0]^\top$，所以三个权重均为 $[1,0]^\top$，极限也不为零。第一通道恰在噪声零空间中，增大它的噪声惩罚不会改变该通道的输出；这不表示真实麦克风有完全无噪声通道。</p>
-<p><strong>噪声正定。</strong> 将噪声矩阵改为 $\mathbf I$，则 $\vec w_\mu=[1/(1+\mu),0]^\top$。$\mu=1,10,10^6$ 时第一权重分别为 $0.5$、约 $0.090909$、约 $9.99999\times10^{-7}$，极限为零。两组的目标与参考完全相同，改变的只有噪声矩阵是否正定。因此“$\mu$ 趋大则零输出”必须写出充分条件；“总矩阵每次可逆”本身不足以推出极限。<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/appendix_a/appendix_a_experiments.py">代码复算</a>返回两组权重，结果属于本书代数反例，不是实际语音质量比较。</p>
+<p>固定目标语音空间协方差 $\mathbf{R}_{ss}=\operatorname{diag}(1,0)$ 与第一通道参考选择向量 $\vec{e}_r=[1,0]^\top$。分别考察半正定奇异噪声协方差 $\mathbf{R}_{nn}=\operatorname{diag}(0,1)$ 与严格正定噪声协方差 $\mathbf{R}_{nn}=\mathbf{I}$ 两种输入，代入第 5 章式(5-13) $\vec{w}_\mu=(\mathbf{R}_{ss}+\mu\mathbf{R}_{nn})^{-1}\mathbf{R}_{ss}\vec{e}_r$，计算 $\mu=1,10,10^6$ 时的权重以及 $\mu\to\infty$ 的渐近极限。</p>
+<p><strong>情形一：噪声协方差含零空间（$\mathbf{R}_{nn}=\operatorname{diag}(0,1)$）。</strong> 对任意有限的 $\mu>0$，括号内总矩阵 $\mathbf{R}_{ss}+\mu\mathbf{R}_{nn}=\operatorname{diag}(1,\mu)$ 都严格可逆！右端向量为 $\mathbf{R}_{ss}\vec{e}_r=[1,0]^\top$，左乘逆矩阵 $\operatorname{diag}(1,1/\mu)$ 后，无论 $\mu$ 取 $1$、$10$ 还是 $10^6$，权重恒为 $\vec{w}_\mu=[1,0]^\top$，$\mu\to\infty$ 的极限仍是 $[1,0]^\top$ 而非零向量。物理原因在于第一通道恰好落在噪声零空间内，调大噪声惩罚系数 $\mu$ 对零噪声通道毫无约束力。</p>
+<p><strong>情形二：噪声协方差严格正定（$\mathbf{R}_{nn}=\mathbf{I}$）。</strong> 此时总矩阵为 $\operatorname{diag}(1+\mu,\mu)$，解得 $\vec{w}_\mu=[1/(1+\mu),0]^\top$：在 $\mu=1,10,10^6$ 时第一权重依次衰减为 $0.5$、约 $0.090909$、约 $9.99999\times10^{-7}$，当 $\mu\to\infty$ 时严格收敛到 $\vec{0}$。两组算例共用完全相同的目标与参考通道，有力印证了 §14.2 的结论：必须要求 $\mathbf{R}_{nn}\succ\mathbf{0}$，才能保证 $\mu\to\infty$ 时 SDW-MWF 权重归零；仅仅满足“每个有限 $\mu>0$ 下总矩阵可逆”并不足以推出零极限（复算见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/appendix_a/appendix_a_experiments.py"><code>appendix_a_experiments.py</code></a>）。</p>
 <span id="sec-u-9ad8275b24" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-3335e1dd38">E14-13：绝对与相对对角加载在整体缩放后有何不同？</h3>
-<p>本书手算：取两麦同一频点的协方差 $\mathbf R=\operatorname{diag}(4,1)$、$M=2$、非零目标导向矢量 $\vec a=[1,1]^\top$。分别以绝对参数 $\delta=1$ 和相对参数 $\eta=0.4$ 加载，按第 5 章式(5-9)求 MVDR 权重及加载矩阵的二范数条件数。然后仅将 $\mathbf R$ 乘以 10，保持 $\delta$、$\eta$ 的数值不变，重新计算。这里的数是确定性代数输入，不是估计协方差或硬件实测值。</p>
-<p><strong>先算加载量。</strong> 原矩阵的平均对角元素为 $\operatorname{tr}(\mathbf R)/M=(4+1)/2=2.5$，所以相对加载增加 $\eta\operatorname{tr}(\mathbf R)/M=0.4\times2.5=1$，恰与绝对加载 $\delta=1$ 相同，两者都得到 $\operatorname{diag}(5,2)$。$\delta$ 和协方差元素同量纲；$\eta$ 无量纲，乘上平均对角元素后的加性项才具有协方差量纲。</p>
-<p><strong>再求权重。</strong> 对任意正对角加载矩阵 $\mathbf D=\operatorname{diag}(d_1,d_2)$，有 $\mathbf D^{-1}\vec a=[1/d_1,1/d_2]^\top$，式(5-9)的归一化分母为 $\vec a^H\mathbf D^{-1}\vec a=1/d_1+1/d_2$，因此 $\vec w=[d_2/(d_1+d_2),\ d_1/(d_1+d_2)]^\top$。初始加载时分母为 $1/5+1/2=7/10$，权重为 $[2/7,5/7]^\top$；约束检查为 $\vec w^H\vec a=2/7+5/7=1$。正对角矩阵的二范数条件数是较大对角元除以较小对角元，此处为 $5/2=2.5$。</p>
-<p>整体缩放后的 $10\mathbf R=\operatorname{diag}(40,10)$，其平均对角元素为 25。固定 $\delta=1$ 时加性项仍是 1，归一化分母为 $1/41+1/11=52/451$；固定 $\eta=0.4$ 时加性项变为 $0.4\times25=10$，归一化分母为 $1/50+1/20=7/100$。代入上面的二元权重式得到：</p>
+<p>设两麦阵列（$M=2$）在某频点的空间协方差为 $\mathbf{R}=\operatorname{diag}(4,1)$，目标导向矢量为 $\vec{a}=[1,1]^\top$。分别采用绝对加载参数 $\delta=1$（即第 5 章记号 $\varepsilon=1$）与相对加载参数 $\eta=0.4$（即第 5 章记号 $\alpha=0.4$），按第 5 章式(5-9)求 MVDR 权重与加载后矩阵的二范数条件数；随后将输入信号整体放大使协方差变为 $10\mathbf{R}=\operatorname{diag}(40,10)$，保持参数 $\delta=1$、$\eta=0.4$ 不变，重新核算并对比。</p>
+<p><strong>第一步：初始协方差下的加载量与权重。</strong> 初始矩阵对角平均功率为 $\operatorname{tr}(\mathbf{R})/M=(4+1)/2=2.5$，因此相对加载项 $\eta\,\operatorname{tr}(\mathbf{R})/M=0.4\times 2.5=1$，数值上与绝对加载 $\delta=1$ 完全重合，两者都给出加载后矩阵 $\mathbf{D}=\operatorname{diag}(5,2)$（注意 $\delta$ 与协方差同量纲，而 $\eta$ 无量纲）。对任意正二阶对角阵 $\mathbf{D}=\operatorname{diag}(d_1,d_2)$，代入式(5-9)有 $\mathbf{D}^{-1}\vec{a}=[1/d_1,1/d_2]^\top$，归一化分母为 $1/d_1+1/d_2=(d_1+d_2)/(d_1 d_2)$，化简得通式 $\vec{w}=[d_2/(d_1+d_2),\ d_1/(d_1+d_2)]^\top$。代入 $d_1=5,d_2=2$ 得初始权重 $[2/7,5/7]^\top$（满足 $\vec{w}^H\vec{a}=1$），条件数 $\kappa_2(\mathbf{D})=5/2=2.5$。</p>
+<p><strong>第二步：协方差整体乘 $10$ 后的分化。</strong> 缩放后 $10\mathbf{R}=\operatorname{diag}(40,10)$ 的对角平均功率变为 $25$：固定绝对加载 $\delta=1$ 时只加上常数 $1$，得到 $\operatorname{diag}(41,11)$；固定无量纲相对加载 $\eta=0.4$ 时加载量同比放大为 $0.4\times 25=10$，得到 $\operatorname{diag}(50,20)$。将三种工况汇总对照如下：</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
 <thead>
 <tr>
 <th scope="col">情况</th>
-<th scope="col">加载矩阵 $\mathbf D$</th>
-<th scope="col">MVDR 权重 $\vec w$</th>
-<th scope="col" style="text-align: right;">$\kappa_2(\mathbf D)$</th>
+<th scope="col">加载矩阵 $\mathbf{D}$</th>
+<th scope="col">MVDR 权重 $\vec{w}$</th>
+<th scope="col" style="text-align: right;">$\kappa_2(\mathbf{D})$</th>
 </tr>
 </thead>
 <tbody>
@@ -1393,78 +1397,67 @@ $$</p>
 <td style="text-align: right;">$2.5$</td>
 </tr>
 <tr>
-<td>$10\mathbf R$，绝对 $\delta=1$</td>
+<td>$10\mathbf{R}$，绝对 $\delta=1$</td>
 <td>$\operatorname{diag}(41,11)$</td>
 <td>$[11/52,41/52]^\top$</td>
 <td style="text-align: right;">$41/11\approx3.7273$</td>
 </tr>
 <tr>
-<td>$10\mathbf R$，相对 $\eta=0.4$</td>
+<td>$10\mathbf{R}$，相对 $\eta=0.4$</td>
 <td>$\operatorname{diag}(50,20)$</td>
 <td>$[2/7,5/7]^\top$</td>
 <td style="text-align: right;">$2.5$</td>
 </tr>
 </tbody>
 </table></div>
-<p>相对加载随 $\mathbf R$ 同比例变化，所以在仅把协方差乘 10、导向矢量不变的这道代数题中，加载矩阵也整体乘 10，归一化 MVDR 权重与条件数保持不变。固定数值的绝对加载没有这种尺度不变性。</p>
-<p>若协方差使用固定物理单位，且有独立标定的加性噪声底或固定正则强度，可以选同量纲的绝对加载；若输入功率或协方差归一化尺度会变化，并希望保留相同的相对加载强度，可选无量纲参数。参数仍须依据噪声估计误差、目标失真和所需约束检验，不能凭本题的条件数给不同物理场景的语音性能排名。</p>
-<p>$\mathbf R=\mathbf0$ 时纯相对加载量也为零，无法使矩阵可逆；协方差若明显不满足厄米半正定，加载也不能替代输入检查。</p>
+<p>对比上表第二行与第三行：当录音电平或 FFT 归一化改变使 $\mathbf{R}$ 整体乘以 $10$ 时，相对加载矩阵整体变为初始时的 $10$ 倍，公因子 $10$ 在式(5-9)分子与分母中完美约掉，MVDR 权重 $[2/7,5/7]^\top$ 与条件数 $2.5$ 纹丝不动；而固定数值的绝对加载被大信号能量“稀释”，有效正则强度减弱，条件数升至约 $3.7273$，权重也偏移为 $[11/52,41/52]^\top$。工程选型时，若设备已完成固定声压标定且希望锚定已知的传感器热噪声底，宜选同量纲绝对加载；若面对说话人远近音量大幅波动的未标定流式音频，则常选无量纲相对加载并辅以微小正底限（防止全零帧 $\mathbf{R}=\mathbf{0}$ 时相对加载失效）。</p>
 <p><span id="e12-14" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e14-14"></a></p>
 <span id="sec-u-9df103a899" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-c5006e2461">E14-14：复数最小二乘残差正交于谁？</h3>
-<p>本书构造两条复观测：$\mathbf A=[1,\mathrm j]^\top$、$\vec b=[1,1]^\top$，未知数 $x$ 是复标量。取残差 $\vec r=\mathbf A x-\vec b$，求最小二乘解、残差平方范数及 $\mathbf A^H\vec r$；再检查把共轭转置误换成普通转置会发生什么。</p>
-<p>共轭转置是 $\mathbf A^H=[1,-\mathrm j]$，因此 $\mathbf A^H\mathbf A=1+(-\mathrm j)\mathrm j=2$，$\mathbf A^H\vec b=1-\mathrm j$。式(14-4)给出 $\hat x=(1-\mathrm j)/2$。两条拟合观测为 $[(1-\mathrm j)/2,(1+\mathrm j)/2]^\top$，减去 $\vec b$ 后得到</p>
-<p>$$\vec r=
-\begin{bmatrix}\frac{-1-\mathrm j}{2}\\\frac{-1+\mathrm j}{2}\end{bmatrix},
+<p>给定单列复设计矩阵 $\mathbf{A}=[1,\mathrm{j}]^\top$ 与观测向量 $\vec{b}=[1,1]^\top$，未知参数 $x\in\mathbb{C}$ 为复标量。记残差向量为 $\vec{r}=\mathbf{A}x-\vec{b}$，求普通最小二乘解 $\hat{x}$、残差二范数平方 $\|\hat{\vec{r}}\|_2^2$ 及内积 $\mathbf{A}^H\hat{\vec{r}}$；并检验若把共轭转置 $\mathbf{A}^H$ 误写为普通转置 $\mathbf{A}^\top$ 会发生什么。</p>
+<p>先取共轭转置 $\mathbf{A}^H=[1,-\mathrm{j}]$，算得标量正规方程左端系数 $\mathbf{A}^H\mathbf{A}=1+(-\mathrm{j})\mathrm{j}=2$、右端投影 $\mathbf{A}^H\vec{b}=1-\mathrm{j}$，由式(14-4)解出 $\hat{x}=(1-\mathrm{j})/2$。代回拟合值 $\mathbf{A}\hat{x}=[(1-\mathrm{j})/2,(1+\mathrm{j})/2]^\top$，减去 $\vec{b}=[1,1]^\top$ 得到最优残差与平方范数：</p>
+<p>$$\hat{\vec{r}}=
+\begin{bmatrix}\frac{-1-\mathrm{j}}{2}\\\frac{-1+\mathrm{j}}{2}\end{bmatrix},
 \qquad
-\|\vec r\|_2^2=\frac12+\frac12=1\text{。}$$</p>
-<p>逐项检查正交条件：$\mathbf A^H\vec r=(-1-\mathrm j)/2+(-\mathrm j)(-1+\mathrm j)/2=0$。观测无法完全落在 $\mathbf A$ 的一维复列空间内，最优残差仍非零，但沿该设计列再改参数已经不能减小它。</p>
-<p>若改用普通转置，则 $\mathbf A^\top\mathbf A=1+\mathrm j^2=0$，尽管设计列非零而且满列秩。这个“零分母”由错误内积造成，不是原问题不可辨识。E14-07 说明共轭模平方定义能量，本题进一步说明它如何进入参数拟合。复算入口为 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/appendix_a/appendix_a_experiments.py"><code>appendix_a_experiments.py</code></a> 的 <code>E14-14</code>。</p>
+\|\hat{\vec{r}}\|_2^2=\frac{1}{2}+\frac{1}{2}=1\text{。}$$</p>
+<p>逐项验算复欧氏内积：$\mathbf{A}^H\hat{\vec{r}}=1\cdot\frac{-1-\mathrm{j}}{2}+(-\mathrm{j})\cdot\frac{-1+\mathrm{j}}{2}=\frac{-1-\mathrm{j}+\mathrm{j}+1}{2}=0$，残差与设计列严格正交。反之，若在代码里漏掉共轭误写成普通转置，正规方程分母会算出 $\mathbf{A}^\top\mathbf{A}=1^2+\mathrm{j}^2=0$——明明是满列秩的非零向量，却因用错了内积而触发除零崩溃（复算见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/appendix_a/appendix_a_experiments.py"><code>appendix_a_experiments.py</code></a> 中的 <code>E14-14</code>）。</p>
 <p><span id="e12-15" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e14-15"></a></p>
 <span id="sec-u-b4090abdbf" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-a9e3cd8d47">E14-15：已知噪声协方差怎样改变最小二乘答案？</h3>
-<p>观测模型 $\vec b=\mathbf A x_*+\vec n$ 中，$\mathbf A=[1,1]^\top$，$E\vec n=0$，已知 $\mathbf C=E[\vec n\vec n^H]=\operatorname{diag}(1,4)$。本次观测为 $\vec b=[0,2]^\top$。分别求 OLS 和式(14-5)的 WLS，检查残差正交条件，并比较两种线性估计在这个统计模型中的方差。</p>
-<p>OLS 的分子是 $0+2=2$，分母是 $1+1=2$，所以 $\hat x_{\mathrm{OLS}}=1$。WLS 使用 $\mathbf C^{-1}=\operatorname{diag}(1,1/4)$，分子为 $0+2/4=1/2$，分母为 $1+1/4=5/4$，因此 $\hat x_{\mathrm{WLS}}=(1/2)/(5/4)=2/5$。它把方差较小的第一条观测赋予更大权重，可写成 $(4/5)b_1+(1/5)b_2$。</p>
-<p>WLS 残差为 $\vec r=[2/5,-8/5]^\top$。左乘 $\mathbf A^H\mathbf C^{-1}$ 得 $2/5+(-8/5)/4=0$，满足加权正交条件；普通内积却是 $\mathbf A^H\vec r=2/5-8/5=-6/5$。加权残差代价为 $(2/5)^2+(1/4)(-8/5)^2=4/5$。OLS 的残差 $[1,-1]^\top$ 在普通内积下正交，但它的加权代价是 $1+1/4=5/4$。两种最优性针对不同度量。</p>
-<p>对所有满足权重和为 1 的线性估计 $\hat x=t b_1+(1-t)b_2$，估计误差均值为零，方差为 $|t|^2+4|1-t|^2=5|t-4/5|^2+4/5$；这个模平方式也适用于复数权重 $t$。所以最优的 $t=4/5$ 给出方差 $4/5$，OLS 的 $t=1/2$ 给出 $5/4$。这个标量模型直接证明了本题的方差比较，不需要把一次观测的残差当成统计平均。</p>
-<p>本题只给出一次 $\vec b$，没有给出 $x_*$；不能据 $2/5$ 与 1 的大小判断谁在这一次更接近真值。错误的噪声权重可能降低真实性能；设计矩阵自身有观测误差时也不再是本题模型。E14-19 在同目标、同噪声输入上比较正确与反向权重。代码返回两种系数、残差度量与解析方差。</p>
+<p>在线性观测模型 $\vec{b}=\mathbf{A}x_*+\vec{n}$ 中，设单列设计矩阵 $\mathbf{A}=[1,1]^\top$，噪声满足零均值 $\mathbb{E}[\vec{n}]=\vec{0}$ 且已知协方差 $\mathbf{C}=\mathbb{E}[\vec{n}\vec{n}^H]=\operatorname{diag}(1,4)$。若某次观测读数为 $\vec{b}=[0,2]^\top$，分别求普通最小二乘（OLS）估计与式(14-5)的加权最小二乘（WLS）估计，核对两者的残差正交度量，并对比两种线性无偏估计器的理论方差。</p>
+<p><strong>第一步：对比估计值与残差正交度量。</strong> OLS 等权求平均，分子为 $0+2=2$、分母为 $1+1=2$，得 $\hat{x}_{\mathrm{OLS}}=1$。WLS 代入逆协方差 $\mathbf{C}^{-1}=\operatorname{diag}(1,1/4)$，分子为 $1\times 0+\frac{1}{4}\times 2=1/2$，分母为 $1+1/4=5/4$，解得 $\hat{x}_{\mathrm{WLS}}=(1/2)/(5/4)=2/5$——等价于按组合权重 $(4/5)b_1+(1/5)b_2$ 向更安静的第一通道倾斜。此时 WLS 残差为 $\hat{\vec{r}}_{\mathrm{WLS}}=\mathbf{A}\hat{x}_{\mathrm{WLS}}-\vec{b}=[2/5,-8/5]^\top$：在加权内积下有 $\mathbf{A}^H\mathbf{C}^{-1}\hat{\vec{r}}_{\mathrm{WLS}}=2/5+(-8/5)/4=0$（加权代价 $(2/5)^2+\frac{1}{4}(-8/5)^2=4/5$），而普通欧氏内积 $\mathbf{A}^H\hat{\vec{r}}_{\mathrm{WLS}}=-6/5\neq 0$；反观 OLS 残差 $[1,-1]^\top$ 虽满足普通正交，其加权代价却高达 $1+1/4=5/4$。</p>
+<p><strong>第二步：配方证明全局最小方差。</strong> 任意满足无偏条件（权重之和为 $1$）的线性估计均可写成 $\hat{x}(t)=t b_1+(1-t)b_2$（允许复权重 $t\in\mathbb{C}$），其估计误差均值为零，集总方差为 $|t|^2\times 1+|1-t|^2\times 4=5|t-4/5|^2+4/5$。平方项非负，故 $t=4/5$（WLS）唯一取得最小总体方差 $4/5$，而 $t=1/2$（OLS）的总体方差为 $5/4$。注意总体方差最小刻画的是大量重复实验下的平均离散度：面对单次观测 $\vec{b}=[0,2]^\top$，在未知真值 $x_*$ 时并不能断言本次 $2/5$ 就比 $1$ 离真值更近（紧接着的 E14-19 将在已知真值的双通道音频上进一步对比正确权重与反向权重）。</p>
 <p><span id="e12-16" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e14-16"></a></p>
 <span id="sec-u-8b58184472" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-97d3fa9bb1">E14-16：数值判秩截断与 ridge 是否是同一种操作？</h3>
-<p>取 $\mathbf A=\operatorname{diag}(1,10^{-8})$、$\vec b=[1,10^{-8}]^\top$。完整精确解为 $[1,1]^\top$。分别以显式 <code>rcond=1e-10</code> 和 <code>rcond=1e-6</code> 调用 <code>numpy.linalg.lstsq</code>，记录奇异值、有效阈值、数值秩及实际残差；再按式(14-6)求 $\delta=10^{-16}$ 的 ridge 解。本题不把不同截断值称为同一估计任务的自动优劣排序。</p>
-<p>最大奇异值为 1，另一个为 $10^{-8}$。第一种阈值为 $10^{-10}$，两个值均超过阈值，数值秩为 2，解为 $[1,1]^\top$，解析残差为零。第二种阈值为 $10^{-6}$，弱方向被截断，数值秩为 1，最小范数解为 $[1,0]^\top$。它的残差是 $[0,-10^{-8}]^\top$，范数 $10^{-8}$，平方范数 $10^{-16}$。</p>
-<p>两次原接口的 residual 数组都为空：本题 $m=p=2$，满足文档中 $m\leq p$ 的空数组条件，即使第一种满秩也如此。必须用原矩阵和返回解自行计算残差，不能把空数组当作零误差。题中数值秩依赖所选阈值，数学矩阵的秩始终为 2。</p>
-<p>ridge 的两条标量方程为 $(1+\delta)x_1=1$ 和 $(10^{-16}+\delta)x_2=10^{-16}$。取 $\delta=10^{-16}$，精确解为 $[1/(1+10^{-16}),1/2]^\top$：弱方向保留了一半，而非被截断为零。第一分量在 float64 中可能舍入为 1；这不表示正则在数学上完全没有改变它。</p>
-<p>ridge 残差满足 $\mathbf A^H\vec r=-\delta\hat{\vec x}_\delta$，不满足普通 LS 的零残差投影条件。$\delta$ 的单位与 $\mathbf A^H\mathbf A$ 相同，<code>rcond</code> 无量纲。E14-11 算条件数平方，本题说明求解器的截断选择与有明确惩罚目标的收缩不能混称。返回结果保留 NumPy 版本、显式 <code>rcond</code>、阈值、原 residual 数组与自行计算的残差。</p>
+<p>给定病态对角矩阵 $\mathbf{A}=\operatorname{diag}(1,10^{-8})$ 与右端观测 $\vec{b}=[1,10^{-8}]^\top$（数学精确解为 $[1,1]^\top$）。先分别传入显式阈值 <code>rcond=1e-10</code> 与 <code>rcond=1e-6</code> 调用 <code>numpy.linalg.lstsq</code>，记录数值秩与真实残差；再按式(14-6)计算 $\delta=10^{-16}$ 时的岭正则（Ridge）解析解并对比。</p>
+<p><strong>第一步：对比两种 <code>rcond</code> 门限下的硬截断。</strong> $\mathbf{A}$ 的两个奇异值为 $\sigma_1=1$ 与 $\sigma_2=10^{-8}$。当设 <code>rcond=1e-10</code> 时，截断门限为 $10^{-10}$，两个奇异值均保留，报告数值秩为 $2$，返回完整解 $[1,1]^\top$，真实残差为零；当设 <code>rcond=1e-6</code> 时，$\sigma_2=10^{-8}\lt 10^{-6}$ 被硬性置零，报告数值秩降为 $1$，返回截断最小范数解 $[1,0]^\top$，代回原方程算得真实残差为 $[0,-10^{-8}]^\top$（二范数为 $10^{-8}$）。特别留意接口细节：由于本题行数 $m=2$ 不大于列数 $p=2$，两次调用返回的 <code>residuals</code> 字段均为空数组——哪怕第二次实际存在 $10^{-8}$ 的非零残差也是如此，因此工程代码必须显式用 $\|\mathbf{A}\hat{\vec{x}}-\vec{b}\|_2$ 复算残差。</p>
+<p><strong>第二步：对比 $\delta=10^{-16}$ 的 Ridge 软收缩。</strong> 将 $\delta=10^{-16}$ 代入式(14-6)的两条解耦标量方程 $(1+\delta)x_1=1$ 与 $(10^{-16}+\delta)x_2=10^{-8}$，精确解为 $\hat{\vec{x}}_\delta=[1/(1+10^{-16}),\ 1/2]^\top$（双精度浮点下第一分量会舍入显示为 $1.0$）：由于在弱方向上恰有 $\delta=\sigma_2^2=10^{-16}$，软收缩因子 $\frac{\sigma_2^2}{\sigma_2^2+\delta}=\frac{1}{2}$ 将第二分量平滑压缩为精确值的一半，既不像全秩解那样原样放行，也不像 TSVD 那样一刀砍成 $0$；其残差满足 $\mathbf{A}^H\hat{\vec{r}}_\delta=-\delta\hat{\vec{x}}_\delta$。这也再次印证了无量纲相对比值 <code>rcond</code> 与同量纲惩罚系数 $\delta$ 对应着不同的数学目标。</p>
 <p><span id="e12-17" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e14-17"></a></p>
 <span id="sec-u-0e9dab8b8b" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-e05d86e60e">E14-17：复相关漏共轭会把真正的延迟峰抵消吗？</h3>
-<p>取 $x_2=[1,\mathrm j,0]$、$x_1=[0,1,\mathrm j]$，两段全局起点相同，范围外为零；第一路是第二路晚一采样。按式(14-2)逐项求 $q=-2,-1,0,1,2$ 的相关，再交换输入，并与漏掉共轭的错误运算比较。</p>
-<p>正确计算在 $q=0$ 时只有 $1\times\mathrm j^*=-\mathrm j$，在 $q=1$ 时为 $1\times1^*+\mathrm j\times\mathrm j^*=2$，在 $q=2$ 时为 $\mathrm j\times1^*=\mathrm j$；负滞后没有重叠非零项。因此五个值为 $[0,0,-\mathrm j,2,\mathrm j]$，模最大的峰在 $q=1$。</p>
-<p>令求和变量换成 $m=n-q$，再取共轭，可得 $R_{21}[q]=R_{12}^*[-q]$。本题交换后的五个值为 $[-\mathrm j,2,\mathrm j,0,0]$，峰在 $q=-1$。交换时既反转滞后又取共轭；只有实值序列可以只看普通反序。</p>
-<p>漏共轭时，$q=1$ 的两项变为 $1\times1+\mathrm j\times\mathrm j=0$，五值为 $[0,0,\mathrm j,0,\mathrm j]$。真正同波形延迟的峰被错误相消，不能以这个结果判断没有延迟。这里用有限复序列检验代数约定，不代表任意有噪或周期信号都会有唯一时延峰，也没有加入 PHAT 权重。</p>
+<p>设同起点（$n=0$）的两段复数短序列为 $x_2=[1,\mathrm{j},0]$、$x_1=[0,1,\mathrm{j}]$（区间外为零，第 1 路严格等于第 2 路延迟 $1$ 个采样点）。按式(14-2)逐点计算 $q=-2,-1,0,1,2$ 处的正确复互相关 $R_{12}[q]$ 与交换顺序后的 $R_{21}[q]$，再观察若漏掉第二路复共轭会发生什么。</p>
+<p>按正确定义 $R_{12}[q]=\sum_n x_1[n]x_2^*[n-q]$ 逐点代入：$q=-2,-1$ 无重叠非零项故为 $0$；$q=0$ 仅有 $n=1$ 处的 $1\times\mathrm{j}^*=-\mathrm{j}$；$q=1$ 两点完全对齐，给出 $1\times 1^*+\mathrm{j}\times\mathrm{j}^*=1+1=2$；$q=2$ 仅有 $n=2$ 处的 $\mathrm{j}\times 1^*=\mathrm{j}$。故五个滞后点依次为 $[0,0,-\mathrm{j},2,\mathrm{j}]$，模长主峰清晰落在真实延迟 $q=+1$。作求和下标代换 $m=n-q$ 可证共轭反对称性质 $R_{21}[q]=R_{12}^*[-q]$，因此交换输入后的五点取值为 $[-\mathrm{j},2,\mathrm{j},0,0]$，主峰移至 $q=-1$（比实序列多了一次复共轭翻转）。</p>
+<p>倘若写代码时漏掉了共轭号、误算成 $\sum_n x_1[n]x_2[n-q]$，在真实对齐点 $q=1$ 处两项乘积变成 $1\times 1+\mathrm{j}\times\mathrm{j}=1-1=0$，五点结果塌缩为 $[0,0,\mathrm{j},0,\mathrm{j}]$——明明两路波形一模一样仅差 $1$ 点延迟，真正的对齐主峰却因实部与虚部自相抵消而彻底归零！</p>
 <p><span id="e12-18" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e14-18"></a></p>
 <span id="sec-u-b849e6d52a" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-e87d05bc4d">E14-18：eigh 返回有限特征值能证明输入是协方差吗？</h3>
-<p>本题实际调用 NumPy 的厄米特征分解接口，输入分别为 $\mathbf A=\left[\begin{smallmatrix}1&100\\0&2\end{smallmatrix}\right]$ 与 $\mathbf D=\operatorname{diag}(1+5\mathrm j,2-3\mathrm j)$。对第一矩阵分别选择 <code>UPLO='L'</code> 和 <code>'U'</code>；对第二矩阵检查虚对角怎样处理。保存返回特征值和特征向量 $\mathbf E$，用原输入计算 Frobenius 残差 $\|\mathbf A\mathbf E-\mathbf E\boldsymbol\Lambda\|_F$，不要只用接口自己重建的厄米矩阵评分。</p>
-<p>选择下三角时，实际解释的厄米矩阵是 $\operatorname{diag}(1,2)$，所以特征值为 1、2，特征向量可取单位阵。原输入乘单位阵与返回对角特征值矩阵相差上三角的 100，Frobenius 残差为 100。原输入不厄米，尽管这两数也恰好是其三角矩阵特征值，返回的那套正交向量并不是原矩阵的特征分解。</p>
-<p>选择上三角时，实际解释的矩阵是 $\left[\begin{smallmatrix}1&100\\100&2\end{smallmatrix}\right]$。特征方程 $(1-\lambda)(2-\lambda)-10000=0$ 给出 $\lambda=1.5\pm\sqrt{10000.25}$，约为 $-98.50125$、$101.50125$。这次解释的矩阵还有一个负特征值。它与原输入的差位于下三角，范数为 100；右乘酉矩阵 $\mathbf E$ 不改变 Frobenius 范数，所以针对原输入的特征方程残差仍为 100，浮点值可能有舍入差。</p>
-<p>对 $\mathbf D$，接口忽略虚对角后处理 $\operatorname{diag}(1,2)$，返回实特征值 1、2。对原输入评分的残差范数为 $\sqrt{|5\mathrm j|^2+|-3\mathrm j|^2}=\sqrt{34}$，不是零。虚对角不能作为合法复随机变量的自协方差。</p>
-<p>以上行为是<a href="https://numpy.org/doc/stable/reference/generated/numpy.linalg.eigh.html" title="citation">NumPy 官方 <code>eigh</code> 文档 Parameters、Notes 和非厄米示例</a>明确规定的接口合同，不是上游 bug。调用者先核原输入是否厄米、统计模型是否半正定，再求解；数值舍入容差也应说明。有限输出不证明输入协方差合法，更不证明可逆或源数正确。</p>
+<p>向 NumPy 的厄米特征分解函数 <code>numpy.linalg.eigh</code> 分别传入非对称实矩阵 $\mathbf{A}=\left[\begin{smallmatrix}1&100\\0&2\end{smallmatrix}\right]$（先后指定 <code>UPLO='L'</code> 与 <code>UPLO='U'</code>）以及对角线带虚部的矩阵 $\mathbf{D}=\operatorname{diag}(1+5\mathrm{j},2-3\mathrm{j})$。读取返回的特征值对角阵 $\boldsymbol{\Lambda}$ 与特征向量矩阵 $\mathbf{E}$，直接用<strong>原始输入矩阵</strong>核算特征方程 Frobenius 残差 $\|\mathbf{A}\mathbf{E}-\mathbf{E}\boldsymbol{\Lambda}\|_F$。</p>
+<p>对矩阵 $\mathbf{A}$ 指定默认下三角 <code>UPLO='L'</code> 时，<code>eigh</code> 完全无视上三角的 $100$，把它当成 $\operatorname{diag}(1,2)$ 分解，返回特征值 $(1,2)$ 与单位特征向量阵 $\mathbf{E}=\mathbf{I}$；代回原矩阵检验得 $\|\mathbf{A}\mathbf{I}-\mathbf{I}\operatorname{diag}(1,2)\|_F=100$（$\mathbf{I}$ 根本不是上三角阵 $\mathbf{A}$ 的右特征向量基）。改用上三角 <code>UPLO='U'</code> 时，<code>eigh</code> 又把左下角镜像补成 $100$，按对称阵 $\left[\begin{smallmatrix}1&100\\100&2\end{smallmatrix}\right]$ 解特征方程 $(1-\lambda)(2-\lambda)-10000=0$，返回一正一负两个特征值 $1.5\pm\sqrt{10000.25}$（约 $-98.50125$ 与 $101.50125$）；因酉矩阵右乘保持 Frobenius 范数不变，相对原输入 $\mathbf{A}$ 的特征残差依然高达 $100$。再看复对角阵 $\mathbf{D}$：<code>eigh</code> 直接抹去对角线虚部，返回实特征值 $(1,2)$，代回原输入算得残差范数为 $\sqrt{|5\mathrm{j}|^2+|-3\mathrm{j}|^2}=\sqrt{34}\approx 5.831$。</p>
+<p>上述行为并非库函数的缺陷，而是<a href="https://numpy.org/doc/stable/reference/generated/numpy.linalg.eigh.html">NumPy 官方 <code>eigh</code> 文档</a>明确声明的接口约定：调用方有责任保证传入矩阵本身满足厄米对称。因此，在把估计出的互谱矩阵送入子空间分解或波束求逆之前，应当先核验 $\|\hat{\mathbf{R}}-\hat{\mathbf{R}}^H\|_F$ 是否处于浮点舍入容差之内，以及最小特征值是否非负。</p>
 <p><span id="e12-19" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e14-19"></a></p>
 <span id="sec-u-333ee075d5" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-2870269265">E14-19：已知噪声权重如何进入实际双通道输出？</h3>
-<p>本书构造同目标的两通道模型 $x_1[n]=s[n]+n_1[n]$、$x_2[n]=s[n]+n_2[n]$，采样率 $16000\ \mathrm{Hz}$、32000 点。定义共同包络 $e[n]=\min(1,n/640,(31999-n)/640)$，$0\leq n\lt 32000$，两端恰为零；源和噪声分别为</p>
+<p>构造共享同一目标源的双通道观测模型 $x_1[n]=s[n]+n_1[n]$、$x_2[n]=s[n]+n_2[n]$，采样率 $f_s=16000\ \mathrm{Hz}$，总长 $32000$ 点（$2.0\ \mathrm{s}$）。两端施加斜坡包络 $e[n]=\min(1,n/640,(31999-n)/640)$（$0\leq n\lt 32000$），源与两通道干扰分别定义为：</p>
 <p>$$\begin{aligned}
-s[n]&=0.2e[n]\cos(2\pi700n/16000),\\
-n_1[n]&=0.03e[n]\cos(2\pi3500n/16000),\\
-n_2[n]&=0.06e[n]\cos(2\pi4000n/16000)\text{。}
+s[n]&=0.2e[n]\cos(2\pi\cdot 700n/16000),\\
+n_1[n]&=0.03e[n]\cos(2\pi\cdot 3500n/16000),\\
+n_2[n]&=0.06e[n]\cos(2\pi\cdot 4000n/16000)\text{。}
 \end{aligned}$$</p>
-<p>这是已知分量的确定性数学合成音频。评分窗取半开区间 $[1600,30400)$，共 28800 点、1.8 秒，包络在整个窗口内为 1，各频率恰有整数周期且互相正交。目标均方为 $P_s=0.2^2/2=0.02$；两路噪声均方为 $0.03^2/2=0.00045$ 与 $0.06^2/2=0.0018$，比值为 1:4。窗内零互乘是这些频率和取点的结果，不是两路独立随机噪声的实测证明。</p>
-<p>比较 OLS 权重 $(1/2,1/2)$、已知相对协方差 $\operatorname{diag}(1,4)$ 对应的 GLS 权重 $(4/5,1/5)$，以及故意反权 $(1/5,4/5)$。广义最小二乘（Generalized Least Squares，GLS）在这里指使用完整已知噪声协方差的 WLS。三个输出都是 $y=w_1x_1+w_2x_2$，权重和为 1，所以目标响应均为 1，不需要通过牺牲目标幅度解释误差差异。</p>
-<p>本题的均方误差（Mean Squared Error，MSE）和归一化均方误差（Normalized Mean Squared Error，NMSE）均比较固定时间轴、固定增益的输出与目标。令 $\mathcal W=\{1600,\ldots,30399\}$、$N_{\mathcal W}=28800$，参考 $s$ 的窗口能量须为正，定义</p>
+<p>取包络恒为 $1$ 的稳定内窗 $\mathcal{W}=\{1600,\ldots,30399\}$（半开区间 $[1600,30400)$，长 $N_{\mathcal{W}}=28800$ 点即 $1.8\ \mathrm{s}$）作为评估区间。在此窗口内，$700\ \mathrm{Hz}$、$3500\ \mathrm{Hz}$ 与 $4000\ \mathrm{Hz}$ 恰含整数个周期且彼此离散正交，交叉乘积求和严格为零：目标均方功率为 $P_s=0.2^2/2=0.02$，两路干扰均方功率分别为 $P_{n_1}=0.03^2/2=0.00045$ 与 $P_{n_2}=0.06^2/2=0.0018$，功率比恰为 $1:4$。</p>
+<p>在同一线性组合框架 $y[n]=w_1 x_1[n]+w_2 x_2[n]$（满足无失真约束 $w_1+w_2=1$，目标增益恒为 $1$）下对比三组固定权重：等权 OLS $(1/2,1/2)$、匹配噪声功率比 $\operatorname{diag}(1,4)$ 的最优 GLS 权重 $(4/5,1/5)$，以及故意颠倒轻重的反权 $(1/5,4/5)$。在固定时间轴与固定增益下定义窗口均方误差（MSE，单位为数字幅度平方）与归一化均方误差（NMSE，无量纲）：</p>
 <p>$$\begin{aligned}
-\mathrm{MSE}_{\mathcal W}
-&=\frac1{N_{\mathcal W}}\sum_{n\in\mathcal W}|y[n]-s[n]|^2,\\
-\mathrm{NMSE}_{\mathcal W}
-&=\frac{\sum_{n\in\mathcal W}|y[n]-s[n]|^2}
-{\sum_{n\in\mathcal W}|s[n]|^2}\text{。}
+\mathrm{MSE}_{\mathcal{W}}
+&=\frac{1}{N_{\mathcal{W}}}\sum_{n\in\mathcal{W}}|y[n]-s[n]|^2,\\
+\mathrm{NMSE}_{\mathcal{W}}
+&=\frac{\sum_{n\in\mathcal{W}}|y[n]-s[n]|^2}
+{\sum_{n\in\mathcal{W}}|s[n]|^2}\text{。}
 \end{aligned}\tag{14-7}$$</p>
-<p>MSE 的单位是数字幅度平方，NMSE 无量纲；解析或浮点比较使用对应浮点目标，PCM 比较使用实际读回的量化目标。不能混用两种参考分母。将解析目标项消去，误差是 $y-s=w_1n_1+w_2n_2$。窗口内交叉平均为零，解析误差均方为 $w_1^2P_{n_1}+w_2^2P_{n_2}$：</p>
+<p>因 $w_1+w_2=1$ 使目标分量相减抵消，输出误差简化为 $y[n]-s[n]=w_1 n_1[n]+w_2 n_2[n]$；利用窗口内两频正交性，解析 MSE 直接等于 $w_1^2 P_{n_1}+w_2^2 P_{n_2}$，逐项核算如下表：</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table class="tutorial-budget-table" style="--tutorial-table-width:52em">
 <thead>
 <tr>
@@ -1495,10 +1488,9 @@ n_2[n]&=0.06e[n]\cos(2\pi4000n/16000)\text{。}
 </tr>
 </tbody>
 </table></div>
-<p>GLS 的较小误差来自正确地降低高噪声通道的权重。反向使用同样的不等权重反而更差，因此“不等权”本身不是收益来源。前题的方差模型与本题的确定性窗内二阶量可以导出相同权重，但不能据这个例子宣称已经估出了未知噪声协方差。</p>
+<p>横向对照上表四列：第二列拆解了两通道噪声经 $w_1^2$ 与 $w_2^2$ 加权后的贡献，第三、四列给出解析 MSE 与除以 $P_s=0.02$ 后的解析 NMSE。可以看到，GLS 把高噪第 2 路的平方权重压低到 $0.04$，使 NMSE 从 OLS 的 $0.028125$ 降至 $0.018000$；而反权把大权重压在高噪通道上，NMSE 恶化到 $0.058500$——清晰说明增益源于<strong>权重与真实噪声协方差匹配</strong>，而非“不等权”本身。</p>
 <p><img alt="图65 已知相对噪声权重与同目标输出误差" src="../figures/fig65_weighted_noise.png" onerror="this.alt+='（图缺失）'" /></p>
-<p>图 65 左面板比较三组权重，右面板区分解析误差与实际 PCM 读回误差。目标响应均为 1，使用共同导出增益 1；它展示给定噪声模型下的线性合成，不是实语音、盲估计或工业性能。浮点分量可分别计算，PCM 总误差则直接比较量化输出与量化目标，不把后者拆成独立量化噪声之和。</p>
-<p>先降低音量，再比较以下五个文件。输入文件为左路 $x_1$、右路 $x_2$ 的双声道，其他文件单声道；均为同一时间轴、16 kHz、32000 点 PCM16。</p>
+<p>图 65 将上述解析计算与实际导出 PCM16 音频的读回误差并排对照：左子图画出 OLS、GLS 与反权三组通道权重柱状分布（每组两柱之和均为 $1$）；右子图对比三组方案的解析 NMSE 与实际 PCM16 读回 NMSE，两者高度吻合，直观印证了正确压低高噪通道带来的残差下降。下面五段 $16\ \mathrm{kHz}$、$32000$ 点 PCM16 合成音频（共同导出增益 $1$，其中双通道输入文件左声道为 $x_1$、右声道为 $x_2$，其余为单声道）可供试听对比，播放前请先调低音量：</p>
 <ul>
 <li><a href="weighted_audio/weighted_target.wav">目标参考</a><audio class="audio-sample" controls preload="none" aria-label="目标参考" src="weighted_audio/weighted_target.wav">请使用上方 WAV 链接下载。</audio></li>
 <li><a href="weighted_audio/weighted_array.wav">双通道输入</a><audio class="audio-sample" controls preload="none" aria-label="双通道输入" src="weighted_audio/weighted_array.wav">请使用上方 WAV 链接下载。</audio></li>
@@ -1506,8 +1498,7 @@ n_2[n]&=0.06e[n]\cos(2\pi4000n/16000)\text{。}
 <li><a href="weighted_audio/weighted_gls.wav">GLS 输出</a><audio class="audio-sample" controls preload="none" aria-label="GLS 输出" src="weighted_audio/weighted_gls.wav">请使用上方 WAV 链接下载。</audio></li>
 <li><a href="weighted_audio/weighted_reversed.wav">反权输出</a><audio class="audio-sample" controls preload="none" aria-label="反权输出" src="weighted_audio/weighted_reversed.wav">请使用上方 WAV 链接下载。</audio></li>
 </ul>
-<p>输出由同一未量化输入加权后分别量化；发布的双通道输入另外量化，重加权其 PCM 不要求与发布输出逐字节相同。没有为评分拟合额外增益或时延。PCM16 按整数除以 32768 解码；若 $E_I$ 是输出与目标的整数差平方和、$D_I$ 是目标整数平方和，MSE 的分母为 $28800\times32768^2$，NMSE 为 $E_I/D_I$。各文件摘要、真实生成源、解析/浮点/PCM 三种口径与实际整数和见<a href="weighted_audio/MANIFEST.json">独立清单</a>。</p>
-<p>正式五个 WAV 经严格只读核验后，本书再用标准库 <code>wave</code>、<code>struct</code> 读出整数样值独立求和。28800 点目标整数能量为 $D_I=618489148320$，MSE 的整数分母为 $28800\times32768^2=30923764531200$。结果如下；表中 PCM 小数为舍入显示，精确比值可由整数和复算。</p>
+<p>各输出 WAV 由未量化双精度浮点混合波形加权后独立量化生成（PCM16 按有符号整数除以 $32768$ 解码，不拟合额外增益或时延；完整元数据与 SHA 校验见<a href="weighted_audio/MANIFEST.json">独立清单</a>）。评估实际 PCM 误差时，直接对读回的 16 位整数样值在 $\mathcal{W}$ 窗内精确求和：目标参考整数平方和为 $D_I=618489148320$，MSE 归一化分母为 $28800\times 32768^2=30923764531200$，实际 PCM NMSE 记为 $E_I/D_I$（严格区分浮点参考分母与量化参考分母 $D_I$）：</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table class="tutorial-budget-table" style="--tutorial-table-width:50em">
 <thead>
 <tr>
@@ -1538,20 +1529,17 @@ n_2[n]&=0.06e[n]\cos(2\pi4000n/16000)\text{。}
 </tr>
 </tbody>
 </table></div>
-<p>浮点目标均方约为 $0.020000000000000004$，三个浮点 NMSE 在舍入精度内分别为 $0.028125$、$0.018000$、$0.058500$；PCM 表采用实际量化参考的 $D_I$，不把解析 $0.02$ 当作其精确分母。两种结果的微小差别来自量化和浮点舍入，不改变本例权重的排序。这些数值是固定模型、固定窗口的客观读回，不是多次随机实验或听测统计。</p>
-<p>复算命令为 <code>.venv/bin/python -m codes.chapters.appendix_a.appendix_a_experiments</code>，资产严格只读核验为 <code>.venv/bin/python -m codes.chapters.appendix_a.examples.generate_weighted_audio --check</code>；生成模型位于 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/appendix_a/core/weighted_audio.py"><code>weighted_audio.py</code></a>。入口检查正式文件，不自动重生缺失或过期资产。本例频率、噪声比例与稳定窗口均已知；有限包络边缘不纳入此解析评分，也没有执行人工听测。真实噪声相关、协方差未知、时变或目标两路响应不同的情况，应重新建模而不能照搬这组权重。</p>
+<p>对比两张表可以读出：双精度浮点目标均方约为 $0.020000000000000004$，浮点 NMSE 在舍入精度内与解析值一致，而上表第四列的实际 PCM NMSE 与解析值的微弱尾数差异完全来自 16 位定点量化舍入，丝毫不改变 $\text{GLS}\lt \text{OLS}\lt \text{反权}$ 的误差排序（复算与只读资产校验分别运行 <code>.venv/bin/python -m codes.chapters.appendix_a.appendix_a_experiments</code> 与 <code>.venv/bin/python -m codes.chapters.appendix_a.examples.generate_weighted_audio --check</code>，核心合成逻辑见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/appendix_a/core/weighted_audio.py"><code>weighted_audio.py</code></a>；遇到真实录音中噪声协方差未知、通道间相关或时变的情况，则需在线估计空间协方差并转入下一题的一般矩阵白化框架）。</p>
 <p><span id="e12-20" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e14-20"></a></p>
 <span id="sec-u-97f33585ea" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-28d6db2836">E14-20：相关噪声为什么会产生负权重，白化后还须改变什么？</h3>
-<p><strong>题目与输入。</strong> 两次观测包含同一个未知标量 $x_*$，模型为 $\vec b=\vec a x_*+\vec n$，其中 $\vec a=[1,1]^\top$。设计矩阵是这一列 $\mathbf A=\vec a$，不是待估的阵列导向。噪声均值为零，给定真实协方差</p>
-<p>$$\mathbf C=\begin{bmatrix}1&3/2\\3/2&4\end{bmatrix}。$$</p>
-<p>这两路噪声的相关系数为 $(3/2)/\sqrt{1\times4}=3/4$；协方差项与方差同单位。如果观测以数字幅度计，矩阵元素以数字幅度平方计。第一主子式为 1，行列式为 $4-(3/2)^2=7/4>0$，所以 $\mathbf C$ 正定，具有可逆的 Cholesky 因子。本题给定这些总体统计，不从一对观测反推协方差，也不要求噪声服从高斯分布。</p>
-<p>求线性无偏估计 $\hat x=\vec h^H\vec b$ 的最优有效权重，与 OLS 和仅使用协方差对角元素的权重比较。随后用显式白化复算，并检查只变换观测、漏变设计矩阵会发生什么。</p>
-<p><strong>第一步：保留相关项，求完整权重。</strong> 两行都含单位增益的目标，故无偏约束为 $\vec h^H\vec a=1$。由式(14-5)可得 $\vec h=\mathbf C^{-1}\vec a/(\vec a^H\mathbf C^{-1}\vec a)$。先用二阶矩阵的伴随公式计算</p>
-<p>$$\mathbf C^{-1}=\frac47
-\begin{bmatrix}4&-3/2\\-3/2&1\end{bmatrix}。\tag{14-8}$$</p>
-<p>因此 $\mathbf C^{-1}\vec a=[10/7,-2/7]^\top$，归一化分母为 $\vec a^H\mathbf C^{-1}\vec a=8/7$，得到 $\vec h=[5/4,-1/4]^\top$。第二个权重为负，两个权重之和仍为 1；输出中的目标项恰为 $x_*$，没有通过衰减目标来降低噪声。</p>
-<p>噪声输出为 $(5/4)n_1-(1/4)n_2$。为看清消掉多少，写 $n_2=(3/2)n_1+\xi$。由协方差可得 $E[n_1\xi^*]=0$、$E[|\xi|^2]=7/4$。代回得到 $(7/8)n_1-\xi/4$；共同分量只被部分抵消，剩余两项的总功率是 $49/64+7/64=7/8$。这一步只需零互协方差，不要求两项独立。权重是线性组合系数，不能当成取值限制在 $[0,1]$ 的活动掩码或概率。</p>
-<p><strong>第二步：在同一个真实协方差下比较。</strong> 对给定权重，参数误差为 $\hat x-x_*=\vec h^H\vec n$，总体误差方差为 $\vec h^H\mathbf C\vec h$。这里的协方差不随所选方法更换。只按方差倒数归一化会得到 $[4/5,1/5]^\top$；它对应忽略相关项的模型，评分时仍必须使用完整的 $\mathbf C$。</p>
+<p><strong>输入与模型口径。</strong> 设两通道观测共享同一个未知确定性标量 $x_*$，线性模型为 $\vec{b}=\vec{a}x_*+\vec{n}$，其中单列设计矩阵为 $\mathbf{A}=\vec{a}=[1,1]^\top$，零均值噪声 $\vec{n}$ 的真实空间协方差矩阵已知为</p>
+<p>$$\mathbf{C}=\begin{bmatrix}1&3/2\\3/2&4\end{bmatrix}\text{。}$$</p>
+<p>两通道噪声的相关系数高达 $(3/2)/\sqrt{1\times 4}=3/4$；一阶顺序主子式为 $1>0$，行列式为 $1\times 4-(3/2)^2=7/4>0$，故 $\mathbf{C}$ 严格正定并存在可逆 Cholesky 分解（无需假设噪声服从高斯分布）。求线性无偏估计 $\hat{x}=\vec{h}^H\vec{b}$ 的最小方差权重，与 OLS 等权及忽略非对角相关项的对角加权对比；再用显式 Cholesky 白化独立复算，并检验漏变设计矩阵造成的目标缩放偏差。</p>
+<p><strong>第一步：保留非对角相关项，手算完整 GLS 权重。</strong> 无偏条件要求 $\vec{h}^H\vec{a}=1$。由式(14-5)知最优线性组合向量为 $\vec{h}=\mathbf{C}^{-1}\vec{a}/(\vec{a}^H\mathbf{C}^{-1}\vec{a})$。先由二阶矩阵伴随求逆公式写出</p>
+<p>$$\mathbf{C}^{-1}=\frac{4}{7}
+\begin{bmatrix}4&-3/2\\-3/2&1\end{bmatrix}\text{。}\tag{14-8}$$</p>
+<p>右乘 $\vec{a}=[1,1]^\top$ 得 $\mathbf{C}^{-1}\vec{a}=[10/7,-2/7]^\top$，再算归一化分母 $\vec{a}^H\mathbf{C}^{-1}\vec{a}=10/7-2/7=8/7$，相除即得最优权重 $\vec{h}=[5/4,-1/4]^\top$！注意看：第二个通道的权重变成了负数 $-1/4$，但两通道权重之和 $5/4+(-1/4)=1$ 依然精确保持目标无失真通过。为什么负权重反而能降噪？将第二路噪声正交分解为 $n_2=(3/2)n_1+\xi$，由协方差矩阵算得 $\mathbb{E}[n_1\xi^*]=0$ 且独立残差功率 $\mathbb{E}[|\xi|^2]=4-(9/4)\times 1=7/4$；代入输出噪声 $(5/4)n_1-(1/4)n_2=(7/8)n_1-(1/4)\xi$，部分共模相关噪声 $n_1$ 被相减抵消，剩余两正交项功率之和仅为 $(7/8)^2\times 1+(1/4)^2\times(7/4)=49/64+7/64=7/8$（可见线性滤波权重允许取负值或大于 $1$，不能套用 $[0,1]$ 时频活动掩码的直觉）。</p>
+<p><strong>第二步：在同一真实协方差 $\mathbf{C}$ 下横向核算方差。</strong> 对任意满足无偏条件的权重 $\vec{h}$，估计误差为 $\hat{x}-x_*=\vec{h}^H\vec{n}$，真实总体方差必须统一用完整的 $\vec{h}^H\mathbf{C}\vec{h}$ 评估（包括忽略相关项算出的对角加权 $[4/5,1/5]^\top$）：</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
 <thead>
 <tr>
@@ -1582,30 +1570,26 @@ n_2[n]&=0.06e[n]\cos(2\pi4000n/16000)\text{。}
 </tr>
 </tbody>
 </table></div>
-<p>例如 OLS 的方差为 $1/4+4/4+2(1/2)(1/2)(3/2)=2$；对角权重的方差为 $16/25+4/25+12/25=32/25$。完整权重的两个自身项之和为 $25/16+4/16=29/16$，交叉项为 $2(5/4)(-1/4)(3/2)=-15/16$，故总方差为 $14/16=7/8$。漏掉交叉项会把这一抵消机制和最终数字同时算错。</p>
-<p><strong>第三步：完成平方，检查是否只是选中了三组候选中的较好者。</strong> 所有线性无偏权重可写成 $\vec h=[t,1-t]^\top$，其中 $t$ 允许为复数。这是因为 $\vec h^H\vec a=t^*+(1-t)^*=1$。记 $V(t)$ 为它的误差方差；两个自身项为 $|t|^2+4|1-t|^2$，交叉项为 $3\operatorname{Re}[t^*(1-t)]$。展开并完成平方得</p>
+<p>逐行核对上表第四列的二次型展开：OLS 为 $\frac{1}{4}(1)+\frac{1}{4}(4)+2(\frac{1}{2})(\frac{1}{2})(\frac{3}{2})=2$；只看对角方差的权重为 $\frac{16}{25}(1)+\frac{1}{25}(4)+2(\frac{4}{5})(\frac{1}{5})(\frac{3}{2})=\frac{32}{25}=1.28$；完整 GLS 的两项自身功率之和虽升至 $\frac{25}{16}(1)+\frac{1}{16}(4)=\frac{29}{16}$，但正负异号权重在非对角相关项上产生负交叉功率 $2(\frac{5}{4})(-\frac{1}{4})(\frac{3}{2})=-\frac{15}{16}$，使总方差大幅降至 $\frac{14}{16}=\frac{7}{8}=0.875$。</p>
+<p><strong>第三步：复数域配方证明全局唯一最优。</strong> 任意满足 $\vec{h}^H\vec{a}=1$ 的复线性无偏权重均可写为 $\vec{h}=[t,1-t]^\top$（$t\in\mathbb{C}$）。将其代入真实误差方差 $V(t)=|t|^2+4|1-t|^2+3\operatorname{Re}\{t^*(1-t)\}$，利用 $|1-t|^2=1-2\operatorname{Re}t+|t|^2$ 与 $\operatorname{Re}\{t^*(1-t)\}=\operatorname{Re}t-|t|^2$ 合并同类项并配方：</p>
 <p>$$\begin{aligned}
 V(t)&=2|t|^2-5\operatorname{Re}t+4,\\
-&=2|t-5/4|^2+7/8。
+&=2|t-5/4|^2+7/8\text{。}
 \end{aligned}\tag{14-9}$$</p>
-<p>平方项非负，且仅在 $t=5/4$ 时为零。因此 $[5/4,-1/4]^\top$ 是所有复线性无偏权重中的唯一最小方差解，不只是三个候选中的最小者。本例与 E14-15 的对角模型共有无偏约束，但目标函数多了真实相关项，所以不能照搬对角模型的权重。</p>
-<p><strong>第四步：用 Cholesky 白化复算。</strong> 直接相乘可检验下面的 $\mathbf C=\mathbf L\mathbf L^H$ 和 $\mathbf W=\mathbf L^{-1}$：</p>
+<p>由于模平方 $2|t-5/4|^2\geq 0$ 且仅当 $t=5/4$ 时取零，证明 $[5/4,-1/4]^\top$ 在全体复线性无偏估计器中唯一达到理论最低方差 $7/8$。</p>
+<p><strong>第四步：用 §14.3.9 的 Cholesky 白化路线复算。</strong> 直接矩阵相乘可验算 $\mathbf{C}=\mathbf{L}\mathbf{L}^H$ 及其逆矩阵 $\mathbf{W}=\mathbf{L}^{-1}$：</p>
 <p>$$\begin{aligned}
-\mathbf L&=\begin{bmatrix}1&0\\3/2&\sqrt7/2\end{bmatrix},\\
-\mathbf W&=\begin{bmatrix}1&0\\-3/\sqrt7&2/\sqrt7\end{bmatrix}。
+\mathbf{L}&=\begin{bmatrix}1&0\\3/2&\sqrt{7}/2\end{bmatrix},\\
+\mathbf{W}&=\begin{bmatrix}1&0\\-3/\sqrt{7}&2/\sqrt{7}\end{bmatrix}\text{。}
 \end{aligned}\tag{14-10}$$</p>
-<p>$\mathbf W$ 不是厄米平方根，但仍满足 $\mathbf W\mathbf C\mathbf W^H=\mathbf I$。因此白化后的模型应为 $\vec b'=\vec a'x_*+\vec n'$，其中 $\vec a'=\mathbf W\vec a=[1,-1/\sqrt7]^\top$，$\vec b'=\mathbf W\vec b$，$E[\vec n'\vec n'^H]=\mathbf I$。设计和观测必须使用同一个变换；这一关系与 <a href="https://netlib.org/lapack/lug/node28.html" title="citation">LAPACK 作者的广义线性模型说明</a>中可逆噪声因子下的加权最小二乘等价关系一致。</p>
-<p>在白化空间中解普通最小二乘。由于 $\vec a'^H\vec a'=1+1/7=8/7$，白化坐标的权重为 $\vec h'=\vec a'/(\vec a'^H\vec a')=[7/8,-\sqrt7/8]^\top$。它乘的是白化观测，不能直接拿来组合原观测。将输出写回原坐标：$\vec h'^H\mathbf W\vec b=(\mathbf W^H\vec h')^H\vec b$，所以原有效权重为 $\mathbf W^H\vec h'=[5/4,-1/4]^\top$，与第一步一致。</p>
-<p><strong>第五步：只白化观测会改变目标。</strong> 假如把 $\vec b$ 换成 $\mathbf W\vec b$，却仍把设计列写成 $[1,1]^\top$，程序会按这个错误模型给出白化坐标权重 $[1/2,1/2]^\top$。回到原观测后，第一权重为 $(1-3/\sqrt7)/2$，第二权重为 $1/\sqrt7$。其真实目标响应为</p>
+<p>虽然下三角阵 $\mathbf{W}$ 本身不是厄米矩阵，但它严格满足 $\mathbf{W}\mathbf{C}\mathbf{W}^H=\mathbf{I}$。将设计列与观测同步左乘 $\mathbf{W}$ 得到白化模型 $\vec{b}'=\vec{a}'x_*+\vec{n}'$，其中 $\vec{a}'=\mathbf{W}\vec{a}=[1,-1/\sqrt{7}]^\top$、$\vec{b}'=\mathbf{W}\vec{b}$、$\mathbb{E}[\vec{n}'\vec{n}'^H]=\mathbf{I}$（与<a href="https://netlib.org/lapack/lug/node28.html">LAPACK《用户指南》广义线性模型说明</a>一致）。在白化空间解普通最小二乘：因 $\vec{a}'^H\vec{a}'=1+1/7=8/7$，白化坐标下的组合权重为 $\vec{h}'=\vec{a}'/(\vec{a}'^H\vec{a}')=[7/8,-\sqrt{7}/8]^\top$；代回原观测 $\vec{h}'^H(\mathbf{W}\vec{b})=(\mathbf{W}^H\vec{h}')^H\vec{b}$，折算回原坐标的有效权重恰为 $\mathbf{W}^H\vec{h}'=[5/4,-1/4]^\top$，与第一步严丝合缝。</p>
+<p><strong>第五步：检验“只白化观测、漏变设计矩阵”造成的有偏衰减。</strong> 假如代码把输入换成了 $\mathbf{W}\vec{b}$，却忘了同步更新模型、仍拿旧设计列 $[1,1]^\top$ 去做等权平均 $\vec{h}'_{\mathrm{wrong}}=[1/2,1/2]^\top$，折算回原观测的权重就会变成 $\vec{h}_{\mathrm{wrong}}=\mathbf{W}^H[1/2,1/2]^\top=\bigl[(1-3/\sqrt{7})/2,\ 1/\sqrt{7}\bigr]^\top$，其真实目标响应跌落为</p>
 <p>$$\begin{aligned}
-H_{\mathrm{wrong}}&=\vec h_{\mathrm{wrong}}^H\vec a,\\
-&=\frac{1-1/\sqrt7}{2},\\
-&\approx0.3110177635。
+H_{\mathrm{wrong}}&=\vec{h}_{\mathrm{wrong}}^H\vec{a},\\
+&=\frac{1-1/\sqrt{7}}{2},\\
+&\approx0.3110177635\text{。}
 \end{aligned}\tag{14-11}$$</p>
-<p>这条处理链仍返回有限估计，噪声也确实被白化；但真实目标被缩放了。它没有保持本题的无偏约束，不能与前表三种单位响应方案混为一谈。这与 E14-04 及第4章的同步变换规则相通：坐标改变后，模型也要跟着改变。</p>
-<p><strong>一次观测与总体结论分开。</strong> 若恰给 $\vec b=[0,2]^\top$，OLS、仅对角加权和完整 GLS 分别得到 $1$、$2/5$ 与 $-1/2$。白化后的观测为 $[0,4/\sqrt7]^\top$；同步变换的最小二乘估计仍为 $-1/2$，错误处理链却得到 $2/\sqrt7$。负的估计值是参数值，不是负方差。未知 $x_*$ 时，仅凭这些数不能排列这一次观测的真实误差；$7/8$ 与 $32/25$ 等数字比较的是给定零均值噪声模型下的总体方差。</p>
-<p><strong>可运行代码与边界。</strong> <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/appendix_a/appendix_a_experiments.py">附录 A 入口</a>中的 <code>correlated_gls_demo()</code> 返回 <code>E14-20</code> 的输入矩阵、Cholesky 因子、白化矩阵、三组原有效权重、真实方差、给定观测的估计以及错误处理链的响应。程序用 NumPy 的 <code>lstsq</code> 解白化问题，不另写通用 GLS 求解器；手算则采用二阶伴随矩阵和完成平方，两种路线独立核对。运行完整入口的命令见本节开头。</p>
-<p>本题没有估计协方差、生成新音频或验证未知时变噪声。$\mathbf C$ 不正定时，本题的可逆白化步骤不成立；估错相关项或目标两路增益时，负权重也可能放大误差。实际系统应验证协方差、目标模型和数值条件，不能只凭“用了负权重”判断方法更好。</p>
+<p>程序运行不会报任何数值异常，噪声也确实被白化了，但目标幅度被暗中砍掉了近七成，彻底破坏了无偏性！若代入单次读数 $\vec{b}=[0,2]^\top$，OLS、对角加权与完整 GLS 分别输出 $1$、$2/5$ 与 $-1/2$（注意 $-1/2$ 是带噪单次参数估计值，而非负方差），而上述漏变设计列的错误链路则给出 $2/\sqrt{7}\approx 0.7559$（完整复算见<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/appendix_a/appendix_a_experiments.py">附录 A 实验入口</a>中的 <code>correlated_gls_demo()</code>；实际阵列处理中若协方差估计存在偏差或目标通道增益失配，过高幅度的正负相消权重会放大模型误差，这正是第 5 章需配合对角加载约束白噪声增益的原因）。</p>
 <hr />
 <blockquote>
 <p>📄 本篇信息：配图 3 张 ｜ <a href="index.html">回首页</a></p>

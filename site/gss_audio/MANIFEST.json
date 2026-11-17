@@ -294,14 +294,14 @@
   ],
   "si_sdr_db": {
     "reference_mic0": 1.2803283205764548,
-    "correct_activity_output": 13.761976569952274
+    "correct_activity_output": 13.761976569952202
   },
   "activity_error": {
     "missed_target_interval_seconds": [
       0.1,
       1.5
     ],
-    "correct_output_scored_si_sdr_db": 13.761976569952274,
+    "correct_output_scored_si_sdr_db": 13.761976569952202,
     "missed_output_scored_si_sdr_db": 1.2803283205764548,
     "missed_target_max_posterior": 0.0
   },
@@ -357,7 +357,7 @@
       "sha256": "ebfad9f73fdf061140f04917e1449b1d47187728bccba3c9fe332a60901ee247"
     },
     "STATE.npz": {
-      "sha256": "ee8766f0bc82053d4cef26082809682d7cf22c6c8cb97c9728ae6fc524ec1d0f"
+      "sha256": "97ad208053c117a08eb87815eba4dc464b7ab76860004e0164e500990363496f"
     }
   }
 }

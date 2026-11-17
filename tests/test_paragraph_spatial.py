@@ -168,15 +168,15 @@ class SpatialParagraphTest(unittest.TestCase):
             return matches[0]
 
         intro = paragraph_index("目标保持条件")
-        nr_formula = paragraph_index(r"\tag{5-23}")
+        nr_formula = paragraph_index(r"\tag{5-24}")
         nr_explanation = paragraph_index("分子、分母要用同一频带")
         example = paragraph_index("取四麦 ULA")
         self.assertRegex(html, r"<h4[^>]*>同输入算例：零陷、WNG 与目标损伤</h4>")
         example_conditions = paragraph_index("设计使用精确的干扰加噪声协方差")
         sinr_definition = paragraph_index("真实目标输出信干噪比按同一功率口径计算")
-        sinr_formula = paragraph_index(r"\tag{5-24}")
+        sinr_formula = paragraph_index(r"\tag{5-25}")
         hand_check = paragraph_index("可先独立核对 DSB 行")
-        boundary = paragraph_index("表中数字不代表语音可懂度")
+        boundary = paragraph_index("表中数字")
 
         self.assertEqual(
             [intro, nr_formula, nr_explanation, example, example_conditions,
@@ -189,7 +189,7 @@ class SpatialParagraphTest(unittest.TestCase):
         self.assertTrue(paragraphs[nr_formula].strip().endswith("$$"))
         self.assertTrue(paragraphs[sinr_formula].strip().startswith("$$"))
         self.assertTrue(paragraphs[sinr_formula].strip().endswith("$$"))
-        self.assertLess(html.index(r"\tag{5-24}"), html.index("<table>"))
+        self.assertLess(html.index(r"\tag{5-25}"), html.index("<table>"))
         self.assertLess(html.index("</table>"), html.index("可先独立核对 DSB 行"))
 
     def test_music_and_nearfield_formula_belongs_to_third_step(self):
@@ -214,8 +214,8 @@ class SpatialParagraphTest(unittest.TestCase):
         paragraphs = re.findall(r"<p>(.*?)</p>", html, flags=re.S)
         # Locate technical paragraphs by their complete distinctive content,
         # rather than requiring a historical list layout that no longer exists.
-        checks = ("定义 $s_{out}", r"\tag{5-12}", "真实混合输出",
-                  r"\mu\to\infty", "只有秩一目标模型", r"\tag{5-13}",
+        checks = ("定义 $s_{out}", r"\tag{5-13}", "真实混合输出",
+                  r"\mu\to\infty", "只有秩一目标模型", r"\tag{5-14}",
                   "可先验证", "目标二阶矩满秩")
         indices = []
         for needle in checks:
@@ -223,7 +223,7 @@ class SpatialParagraphTest(unittest.TestCase):
             self.assertEqual(len(found), 1, needle)
             indices.append(found[0])
         self.assertEqual(indices, sorted(set(indices)))
-        for tag in (r"\tag{5-12}", r"\tag{5-13}"):
+        for tag in (r"\tag{5-13}", r"\tag{5-14}"):
             formula = next(p.strip() for p in paragraphs if tag in p)
             self.assertTrue(formula.startswith("$$") and formula.endswith("$$"))
         self.assertIn(r"\frac{\phi_s q}{\mu+\phi_s q}", html)

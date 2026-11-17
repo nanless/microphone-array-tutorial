@@ -721,13 +721,13 @@
       "float_measurements": {
         "channels": 1,
         "samples_per_channel": 32000,
-        "peak_all_samples": 0.1553965064946426,
+        "peak_all_samples": 0.15539650649464257,
         "reference_key": "reference_node1",
         "windows": {
           "steady": {
             "samples": 28800,
             "mean_square_by_channel": [
-              0.005753846153846146
+              0.005753846153846144
             ],
             "reference_energy": 195.83999999999992,
             "total_mse": 0.001046153846153844,
@@ -736,7 +736,7 @@
           "packet": {
             "samples": 800,
             "mean_square_by_channel": [
-              0.005753846153846181
+              0.0057538461538461805
             ],
             "reference_energy": 5.439999999999962,
             "total_mse": 0.0010461538461539605,
@@ -746,20 +746,20 @@
       },
       "finite_window_analytic_expected": {
         "steady": {
-          "target_distortion": 0.00016094674556213,
-          "noise_power": 0.000885207100591716,
-          "total_mse": 0.001046153846153846,
+          "target_distortion": 0.00016094674556213043,
+          "noise_power": 0.0008852071005917159,
+          "total_mse": 0.0010461538461538464,
           "reference_target_power": 0.0068000000000000005,
-          "normalized_mse": 0.1538461538461538,
+          "normalized_mse": 0.15384615384615388,
           "target_noise_cross_term": 0.0,
           "cross_term_scope": "uncorrelated covariance model"
         },
         "packet": {
-          "target_distortion": 0.00016094674556213,
-          "noise_power": 0.000885207100591716,
-          "total_mse": 0.001046153846153846,
+          "target_distortion": 0.00016094674556213043,
+          "noise_power": 0.0008852071005917159,
+          "total_mse": 0.0010461538461538464,
           "reference_target_power": 0.0068000000000000005,
-          "normalized_mse": 0.1538461538461538,
+          "normalized_mse": 0.15384615384615388,
           "target_noise_cross_term": 0.0,
           "cross_term_scope": "uncorrelated covariance model"
         }
@@ -768,12 +768,12 @@
         "steady": {
           "samples": 28800,
           "reference_power": 0.006799999999999997,
-          "target_distortion_power": 0.00016094674556212988,
-          "noise_power": 0.0008852071005917134,
-          "other_error_power": 9.312250920890247e-35,
-          "target_noise_cross_power": 6.262698090636929e-19,
-          "target_other_cross_power": 1.5949813899355966e-19,
-          "noise_other_cross_power": -3.7199815349831223e-22,
+          "target_distortion_power": 0.00016094674556213034,
+          "noise_power": 0.0008852071005917132,
+          "other_error_power": 8.141446608856749e-35,
+          "target_noise_cross_power": 6.2952241558114935e-19,
+          "target_other_cross_power": -1.3070715653529426e-19,
+          "noise_other_cross_power": -1.9527620229788307e-21,
           "total_mse": 0.001046153846153844,
           "normalized_mse": 0.1538461538461536,
           "component_sum": 0.001046153846153844,
@@ -782,12 +782,12 @@
         "packet": {
           "samples": 800,
           "reference_power": 0.006799999999999953,
-          "target_distortion_power": 0.00016094674556212885,
-          "noise_power": 0.000885207100591823,
-          "other_error_power": 9.095958756273552e-35,
-          "target_noise_cross_power": 8.391182713951561e-18,
-          "target_other_cross_power": 1.544351375357122e-19,
-          "noise_other_cross_power": 1.6806470281068074e-20,
+          "target_distortion_power": 0.00016094674556212934,
+          "noise_power": 0.0008852071005918229,
+          "other_error_power": 8.04767934283313e-35,
+          "target_noise_cross_power": 8.393893219382776e-18,
+          "target_other_cross_power": -1.2900735289650342e-19,
+          "noise_other_cross_power": -2.080282488571022e-21,
           "total_mse": 0.0010461538461539605,
           "normalized_mse": 0.15384615384617173,
           "component_sum": 0.0010461538461539605,
@@ -1087,13 +1087,13 @@
       "float_measurements": {
         "channels": 1,
         "samples_per_channel": 32000,
-        "peak_all_samples": 0.15522956396958318,
+        "peak_all_samples": 0.15522956396958315,
         "reference_key": "reference_node1",
         "windows": {
           "steady": {
             "samples": 28800,
             "mean_square_by_channel": [
-              0.005753846153846149
+              0.0057538461538461485
             ],
             "reference_energy": 195.83999999999992,
             "total_mse": 0.001046153846153848,
@@ -1112,20 +1112,20 @@
       },
       "finite_window_analytic_expected": {
         "steady": {
-          "target_distortion": 0.00016094674556213002,
+          "target_distortion": 0.00016094674556213043,
           "noise_power": 0.000885207100591716,
-          "total_mse": 0.001046153846153846,
+          "total_mse": 0.0010461538461538464,
           "reference_target_power": 0.0068000000000000005,
-          "normalized_mse": 0.1538461538461538,
+          "normalized_mse": 0.15384615384615388,
           "target_noise_cross_term": 0.0,
           "cross_term_scope": "uncorrelated covariance model"
         },
         "packet": {
-          "target_distortion": 0.00016094674556213002,
+          "target_distortion": 0.00016094674556213043,
           "noise_power": 0.000885207100591716,
-          "total_mse": 0.001046153846153846,
+          "total_mse": 0.0010461538461538464,
           "reference_target_power": 0.0068000000000000005,
-          "normalized_mse": 0.1538461538461538,
+          "normalized_mse": 0.15384615384615388,
           "target_noise_cross_term": 0.0,
           "cross_term_scope": "uncorrelated covariance model"
         }
@@ -1134,26 +1134,26 @@
         "steady": {
           "samples": 28800,
           "reference_power": 0.006799999999999997,
-          "target_distortion_power": 0.00016094674556212988,
-          "noise_power": 0.0008852071005917174,
-          "other_error_power": 9.955365578065743e-35,
-          "target_noise_cross_power": 5.505714157152952e-19,
-          "target_other_cross_power": 1.7263646926900638e-19,
-          "noise_other_cross_power": 1.9374091857705306e-22,
+          "target_distortion_power": 0.00016094674556213034,
+          "noise_power": 0.0008852071005917173,
+          "other_error_power": 7.334331408844541e-35,
+          "target_noise_cross_power": 5.52694644969746e-19,
+          "target_other_cross_power": -1.1789099573944232e-19,
+          "noise_other_cross_power": -5.492207609027387e-21,
           "total_mse": 0.001046153846153848,
           "normalized_mse": 0.15384615384615416,
-          "component_sum": 0.001046153846153848,
-          "decomposition_residual": 0.0
+          "component_sum": 0.0010461538461538481,
+          "decomposition_residual": -2.168404344971009e-19
         },
         "packet": {
           "samples": 800,
           "reference_power": 0.006799999999999953,
-          "target_distortion_power": 0.00016094674556212885,
-          "noise_power": 0.0008852071005918236,
-          "other_error_power": 9.222379747092539e-35,
-          "target_noise_cross_power": 9.761072158886997e-18,
-          "target_other_cross_power": 1.6315638142840283e-19,
-          "noise_other_cross_power": 1.2651627643086779e-20,
+          "target_distortion_power": 0.00016094674556212934,
+          "noise_power": 0.0008852071005918234,
+          "other_error_power": 7.528622983372878e-35,
+          "target_noise_cross_power": 9.772998382784337e-18,
+          "target_other_cross_power": -1.2773077738650022e-19,
+          "noise_other_cross_power": -9.148356623392338e-21,
           "total_mse": 0.0010461538461539622,
           "normalized_mse": 0.15384615384617198,
           "component_sum": 0.0010461538461539624,
@@ -1202,7 +1202,7 @@
         "pcm_decode_divisor": 32768,
         "integer_power_scale_denominator": 1073741824
       },
-      "quantization_max_abs_error": 1.5251771569649297e-05
+      "quantization_max_abs_error": 1.5251771569663175e-05
     },
     "central_node2_correlated": {
       "file": "central_node2_correlated.wav",

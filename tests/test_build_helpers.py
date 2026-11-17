@@ -251,7 +251,7 @@ class BuildHelpersTest(unittest.TestCase):
             (ROOT / 'chapters/05_beamforming.md',
              ('', 'Frost（1972）', 'GSC'), 46, {1: 8, 2: 19, 3: 19}),
             (ROOT / 'chapters/05_beamforming.md',
-             ('权重', '总质量', '正支持数', '集中程度对应数量', '输出矩阵'),
+             ('权重', '权重总和', '正支持数', r'有效样本量 $N_{\mathrm{eff}}$', '输出矩阵'),
              54, {1: 8, 2: 12, 3: 9, 4: 12, 5: 13}),
             (ROOT / 'chapters/05_beamforming.md',
              ('参考麦', r'参考目标传递 $b_r$', r'Souden 权重 $\vec w_{S,r}$', r'输出目标响应 $\vec w^H\vec b$', '输出噪声功率'),
@@ -272,7 +272,7 @@ class BuildHelpersTest(unittest.TestCase):
              ('方法', '优化目标或固定规则', '需要的统计量/先验', '目标保持条件', '主要失败模式', '主要计算'),
              85, {1: 10, 2: 15, 3: 16, 4: 14, 5: 16, 6: 14}),
             (ROOT / 'chapters/08_speech-separation.md',
-             ('后窗输出', '每声道整数误差', '实际PCM MSE', '实际PCM相对误差'),
+             ('后窗输出', '每声道整数误差', '实际 PCM MSE', '实际 PCM 相对平方误差'),
              44, {1: 8, 2: 13, 3: 11, 4: 12}),
             (ROOT / 'chapters/14_appendix-symbols-math.md',
              ('权重', '误差均方的逐项计算', '解析 MSE', '解析 NMSE（除以 $0.02$）'),
@@ -297,7 +297,7 @@ class BuildHelpersTest(unittest.TestCase):
         ]
         cases.extend([
             (ROOT / 'chapters/13_distributed-enhancement.md',
-             ('音频组', '实际文件', '该组回答的问题'), 48, {1: 8, 2: 22, 3: 18}),
+             ('音频分组', '对应 WAV 文件', '听感与数值对照重点'), 48, {1: 8, 2: 22, 3: 18}),
             (ROOT / 'chapters/09_source-tracking.md',
              ('t（s）', '观测与真标签', '分配至 A/B', '错配数', '硬关联角误差 A/B（度）',
               '真值关联角误差 A/B（度）', 'A 角度方差（度²）'),

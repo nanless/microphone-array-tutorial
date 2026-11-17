@@ -56,10 +56,10 @@
       "active_scale_aligned_nmse_db": -8.66696520469487
     },
     "output": {
-      "quiet_energy": 4119.550343239196,
-      "total_energy": 424136.9458755755,
-      "quiet_energy_ratio_db": -20.12656290238649,
-      "active_scale_aligned_nmse_db": -7.697679148898113
+      "quiet_energy": 4119.550343237339,
+      "total_energy": 424136.9458754826,
+      "quiet_energy_ratio_db": -20.12656290238749,
+      "active_scale_aligned_nmse_db": -7.69767914889961
     }
   }
 }

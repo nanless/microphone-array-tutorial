@@ -164,7 +164,9 @@ table{border-collapse:collapse;margin:12px 0;display:table;width:100%;table-layo
 th,td{border:1px solid #dfe3ea;padding:5px 9px;font-size:13.5px;text-align:left}
 th{background:#f0f4f9}code{font-family:"STHeiti",monospace;background:#f0f3f7;padding:1px 5px;border-radius:4px;font-size:13px}
 td,th{word-break:break-word;overflow-wrap:anywhere}
-mjx-container{font-size:100%!important;max-width:100%}
+mjx-container{font-size:100%!important;max-width:100%;break-inside:avoid;page-break-inside:avoid}
+mjx-container[jax="SVG"][display="true"]{display:inline-block!important;width:100%;padding:2px 0;box-sizing:border-box}
+mjx-container[jax="SVG"]:not([display="true"]){display:inline-block;padding:1.5px 0}
 pre{font-family:"STHeiti",monospace;background:#f4f6f9;padding:12px;border-radius:6px;overflow-x:visible;white-space:pre-wrap}
 pre code{background:none;padding:0}
 blockquote{border-left:3px solid #2f6db3;margin:12px 0;padding:6px 12px;background:#f2f7fd}
@@ -204,7 +206,9 @@ thead{display:table-header-group}
 tr{break-inside:avoid}
 td,th{word-break:break-word;overflow-wrap:anywhere}
 /* MathJax 的行内长式与展示式均需留在 A4 正文宽度内。 */
-mjx-container{font-size:100%!important;max-width:100%}
+mjx-container{font-size:100%!important;max-width:100%;break-inside:avoid;page-break-inside:avoid}
+mjx-container[jax="SVG"][display="true"]{display:inline-block!important;width:100%;padding:2px 0;box-sizing:border-box}
+mjx-container[jax="SVG"]:not([display="true"]){display:inline-block;padding:1.5px 0}
 h1,h2,h3,h4{break-after:avoid;break-inside:avoid;page-break-inside:avoid}
 .pdf-imaging-hand-example{break-inside:avoid;page-break-inside:avoid}
 .chap p.tutorial-short-lead{break-after:avoid;page-break-after:avoid}

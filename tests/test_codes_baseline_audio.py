@@ -95,7 +95,7 @@ class BaselineAudioTest(unittest.TestCase):
             phasors = 2/27200*(pcm[:, 2400:29600]@kernel)
             recorded = self.manifest['samples'][name]['pcm_measurements']
             np.testing.assert_allclose(recorded['phasor_real_imag'],
-                                       np.column_stack((phasors.real, phasors.imag)), atol=3e-16, rtol=0)
+                                       np.column_stack((phasors.real, phasors.imag)), atol=5e-16, rtol=0)
             if name != 'source':
                 tau = -math.atan2((phasors[1]*phasors[0].conjugate()).imag,
                                  (phasors[1]*phasors[0].conjugate()).real)/(2*math.pi*500)

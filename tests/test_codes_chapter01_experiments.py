@@ -10,13 +10,27 @@ import wave
 import numpy as np
 
 from codes.chapters.ch01.chapter01_experiments import run_exercises
+from codes.chapters.ch01.core.spatial_coherence_and_dba import (
+    color_white_samples,
+    differential_1f_noise_budget,
+    equicorrelated_coherence,
+    hermitian_psd_sqrt_coloring,
+    iec61672_a_weighting,
+    sofa_spherical_to_cartesian_and_colatitude,
+)
 from codes.chapters.ch00.core.audio_samples import alignment_error_case, prepare_exports, read_pcm16
 
 
 class Chapter01ExperimentsTest(unittest.TestCase):
     def test_result_ids_and_finite_json(self):
         results = run_exercises()
-        self.assertEqual(set(results), {'E01-04', 'E01-05', 'E01-06', 'E01-07', 'E01-08', 'E01-09', 'E01-10'})
+        self.assertEqual(
+            set(results),
+            {
+                'E01-04', 'E01-05', 'E01-06', 'E01-07', 'E01-08',
+                'E01-09', 'E01-10', 'E01-11', 'E01-12',
+            },
+        )
         json.dumps(results, allow_nan=False)
 
     def test_short_record_cross_terms_are_not_assumed_zero(self):
@@ -187,6 +201,106 @@ class Chapter01ExperimentsTest(unittest.TestCase):
             self.assertAlmostEqual(row['left_power_gain'], 1.25 + sign*cosine)
             self.assertAlmostEqual(row['right_power_gain'], 1.25 - sign*cosine)
         self.assertTrue(all(row['finite_metrics_rejected'] for row in result['zero_support_controls']))
+
+    def test_spatial_coherence_coloring_matches_rational_and_singular_identities(self):
+        result = run_exercises()['E01-11']
+        two_real = result['two_mic_real']
+        # Independent rational derivation for rho = 24/25:
+        # lambda_min = 1/25, lambda_max = 49/25; sqrt = 1/5, 7/5 -> [[4/5, 3/5], [3/5, 4/5]].
+        np.testing.assert_allclose(two_real['eigenvalues'], [1 / 25, 49 / 25], atol=1e-14, rtol=0)
+        np.testing.assert_allclose(two_real['evd_sqrt_matrix'], [[4 / 5, 3 / 5], [3 / 5, 4 / 5]], atol=1e-14, rtol=0)
+        # Cholesky: L21 = 24/25, L22 = sqrt(1 - 576/625) = 7/25.
+        np.testing.assert_allclose(two_real['cholesky_lower_matrix'], [[1.0, 0.0], [24 / 25, 7 / 25]], atol=1e-14, rtol=0)
+        np.testing.assert_allclose(two_real['evd_colored_samples'],
+                                   [[7 / 5, 1 / 5, -1 / 5, -7 / 5], [7 / 5, -1 / 5, 1 / 5, -7 / 5]],
+                                   atol=1e-14, rtol=0)
+        np.testing.assert_allclose(two_real['cholesky_colored_samples'],
+                                   [[1.0, 1.0, -1.0, -1.0], [31 / 25, 17 / 25, -17 / 25, -31 / 25]],
+                                   atol=1e-14, rtol=0)
+        expected_cov = [[1.0, 24 / 25], [24 / 25, 1.0]]
+        np.testing.assert_allclose(two_real['evd_sample_covariance'], expected_cov, atol=1e-14, rtol=0)
+        np.testing.assert_allclose(two_real['cholesky_sample_covariance'], expected_cov, atol=1e-14, rtol=0)
+
+        two_complex = result['two_mic_quadrature_complex']
+        np.testing.assert_allclose(two_complex['sqrt_real'], [[4 / 5, 0.0], [0.0, 4 / 5]], atol=1e-14, rtol=0)
+        np.testing.assert_allclose(two_complex['sqrt_imag'], [[0.0, 3 / 5], [-3 / 5, 0.0]], atol=1e-14, rtol=0)
+        np.testing.assert_allclose(two_complex['hermitian_diagonal_real'], [1.0, 1.0], atol=1e-14, rtol=0)
+        # Unconjugated transpose gives (4/5)^2 + (3j/5)^2 = 16/25 - 9/25 = 7/25 = 0.28.
+        np.testing.assert_allclose(two_complex['unconjugated_transpose_diagonal_real'], [7 / 25, 7 / 25], atol=1e-14, rtol=0)
+
+        four_sing = result['four_mic_singular_boundary']
+        self.assertEqual(four_sing['numerical_rank'], 3)
+        np.testing.assert_allclose(four_sing['eigenvalues'], [0.0, 4 / 3, 4 / 3, 4 / 3], atol=1e-14, rtol=0)
+        diag_val = math.sqrt(3) / 2
+        off_val = -math.sqrt(3) / 6
+        expected_sqrt_4 = [[diag_val if r == c else off_val for c in range(4)] for r in range(4)]
+        np.testing.assert_allclose(four_sing['evd_sqrt_matrix'], expected_sqrt_4, atol=1e-14, rtol=0)
+        np.testing.assert_allclose(four_sing['cholesky_pivots_1_to_3'],
+                                   [1.0, 2 * math.sqrt(2) / 3, math.sqrt(6) / 3], atol=1e-14, rtol=0)
+        self.assertAlmostEqual(four_sing['cholesky_fourth_radicand'], 0.0, places=14)
+        np.testing.assert_allclose(four_sing['colored_basis_column_sums'], [0.0, 0.0, 0.0, 0.0], atol=1e-14, rtol=0)
+        self.assertTrue(result['non_psd_rejection_control']['rejected'])
+        self.assertAlmostEqual(result['non_psd_rejection_control']['min_eigenvalue_analytic'], -1 / 5, places=14)
+
+    def test_spatial_coloring_validates_hermitian_and_psd_contracts(self):
+        # Tiny numerical round-off negative eigenvalue within psd_rtol is clamped to 0, while genuine negative raises.
+        near_singular = np.array([[1.0, 1.0 + 1e-13], [1.0 + 1e-13, 1.0]], dtype=np.float64)
+        clamped = hermitian_psd_sqrt_coloring(near_singular, psd_rtol=1e-10)
+        self.assertEqual(clamped['numerical_rank'], 1)
+        self.assertEqual(float(clamped['eigenvalues'][0]), 0.0)
+
+        with self.assertRaises(ValueError):
+            hermitian_psd_sqrt_coloring(np.array([[1.0, 0.5], [0.2, 1.0]]))
+        with self.assertRaises(np.linalg.LinAlgError):
+            hermitian_psd_sqrt_coloring(equicorrelated_coherence(4, -0.4))
+        with self.assertRaises(ValueError):
+            equicorrelated_coherence(True, 0.0)
+        with self.assertRaises(ValueError):
+            color_white_samples(np.eye(2), np.ones((3, 4)))
+
+    def test_sensor_dba_budget_and_sofa_coordinates_match_closed_forms(self):
+        result = run_exercises()['E01-12']
+        spot_by_f = {row['frequency_hz']: row for row in result['iec61672_spot_table']}
+        self.assertEqual(spot_by_f[1000.0]['a_db'], 0.0)
+        self.assertEqual(spot_by_f[1000.0]['power_weight'], 1.0)
+        # Independent direct evaluation of IEC 61672-1 at 100 Hz and 1000 Hz.
+        f1, f2, f3, f4 = 20.598997, 107.65265, 737.86223, 12194.217
+        ra_100 = (f4**2 * 100.0**4) / ((100.0**2 + f1**2) * math.sqrt((100.0**2 + f2**2) * (100.0**2 + f3**2)) * (100.0**2 + f4**2))
+        ra_1k = (f4**2 * 1000.0**4) / ((1000.0**2 + f1**2) * math.sqrt((1000.0**2 + f2**2) * (1000.0**2 + f3**2)) * (1000.0**2 + f4**2))
+        self.assertAlmostEqual(result['r_a_1000'], ra_1k, places=14)
+        self.assertAlmostEqual(spot_by_f[100.0]['a_db'], 20.0 * math.log10(ra_100 / ra_1k), places=12)
+        self.assertAlmostEqual(spot_by_f[100.0]['power_weight'], (ra_100 / ra_1k) ** 2, places=14)
+
+        self.assertEqual(result['mic_b_over_a_unweighted_100hz'], 11 / 2)
+        self.assertAlmostEqual(result['mic_b_over_a_unweighted_100hz_db'], 10.0 * math.log10(5.5), places=13)
+        self.assertEqual(result['dba_band_50_8000_hz']['num_points'], 796)
+        self.assertLess(result['dba_band_50_8000_hz']['a_weighted_ratio_b_over_a'], 1.0)
+        self.assertGreater(result['dba_band_50_8000_hz']['apparent_dba_advantage_b_db'], 1.5)
+
+        diff = result['endfire_differential_1cm']
+        expected_wng_100 = 2.0 * math.sin(2.0 * math.pi * 100.0 * 0.01 / 343.0) ** 2
+        self.assertAlmostEqual(diff['wng_100hz'], expected_wng_100, places=15)
+        # Closed-form asymptotic integral ratio over [100, 4000] Hz is exact rational 49 / 16 = 3.0625.
+        self.assertAlmostEqual(diff['speech_band_100_4000_asymptotic_ratio_b_over_a'], 49 / 16, places=14)
+        self.assertAlmostEqual(diff['speech_band_100_4000_asymptotic_penalty_b_db'], 20.0 * math.log10(7 / 4), places=13)
+        self.assertGreater(diff['speech_band_100_4000_grid_ratio_b_over_a'], 3.1)
+
+        sofa_pt = result['sofa_reference_point']
+        self.assertEqual(sofa_pt['colatitude_deg'], 60.0)
+        self.assertEqual(sofa_pt['book_azimuth_deg'], 30.0)
+        self.assertEqual(sofa_pt['azimuth_sofa_wrapped_360_deg'], 330.0)
+        np.testing.assert_allclose(sofa_pt['cartesian_sofa_m'], [3 / 4, -math.sqrt(3) / 4, 1 / 2], atol=1e-14, rtol=0)
+        np.testing.assert_allclose(sofa_pt['cartesian_book_m'], [math.sqrt(3) / 4, 3 / 4, 1 / 2], atol=1e-14, rtol=0)
+
+        # Validation error checks on frequency zeros, spatial aliasing, and out-of-range SOFA angles.
+        with self.assertRaises(ValueError):
+            iec61672_a_weighting(0.0)
+        with self.assertRaises(ValueError):
+            differential_1f_noise_budget(np.array([17150.0]), 0.01, sound_speed=343.0)
+        with self.assertRaises(ValueError):
+            sofa_spherical_to_cartesian_and_colatitude(0.0, 95.0, 1.0)
+        with self.assertRaises(ValueError):
+            sofa_spherical_to_cartesian_and_colatitude(0.0, 0.0, 0.0)
 
 
 if __name__ == '__main__':

@@ -1,6 +1,6 @@
 """Chapter 1: finite records, alignment error and two distinct head models.
 
-Run ``.venv/bin/python -m codes.chapters.ch01.chapter01_experiments``. E01-04--10
+Run ``.venv/bin/python -m codes.chapters.ch01.chapter01_experiments``. E01-04--12
 use deterministic mathematical inputs and actual published mathematical WAVs,
 not device or listener measurements.
 No files are written. Powers are dimensionless digital mean squares, without
@@ -14,6 +14,10 @@ from pathlib import Path
 import numpy as np
 
 from codes.chapters.ch00.core.audio_samples import alignment_error_case, read_pcm16
+from codes.chapters.ch01.core.spatial_coherence_and_dba import (
+    sensor_dba_trap_and_sofa_coordinates,
+    spatial_coherence_coloring_and_boundary,
+)
 from codes.chapters.ch01.examples.generate_binaural_cues import check_assets, wav_metadata
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -272,7 +276,9 @@ def run_exercises() -> dict:
             "E01-05": residual_sample_delay(), "E01-06": woodworth_comparison(),
             "E01-07": mixture_power_and_identifiability(),
             "E01-08": binaural_level_and_delay(), "E01-09": white_noise_gain(),
-            "E01-10": spectral_response_and_source_spectrum()}
+            "E01-10": spectral_response_and_source_spectrum(),
+            "E01-11": spatial_coherence_coloring_and_boundary(),
+            "E01-12": sensor_dba_trap_and_sofa_coordinates()}
 
 
 if __name__ == "__main__":

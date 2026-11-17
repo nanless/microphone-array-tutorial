@@ -13,7 +13,7 @@
 | [ch04](ch04/) | `ch04.chapter04_experiments`、`ch04.doa_resolution_trials` | E04-08、E04-12～27；包括非酉聚焦噪声、AIC/MDL、相关误差GLS、双频酉秩与解析root-MUSIC；分辨率试验保留分类计数与统计分母 |
 | [ch05](ch05/) | `ch05.chapter05_experiments`、`ch05.beamformer_common_input_demo` | 单章入口E05-08～24、28～29；E05-25～27 用 `ch05.examples.binaural_beamforming_demo`；E05-01～07由跨章入口提供；同输入波束、独立导数约束与逐频相位PCM限于所声明条件；`ch05.examples.generate_derivative_audio --check`只读核验八源/实际PCM，`ch05.examples.generate_phase_audio --check`核五源及三PCM；当前原方法审计与历史报告分开 |
 | [ch06](ch06/) | `ch06.chapter06_experiments`、`ch06.aec_algorithm_minicases`、`ch06.aec_partitioned_demo`、`ch06.aec_affine_projection_demo`、`ch06.examples.generate_apa_audio`、`ch06.examples.generate_reference_audio` | E06-22～44及AEC算法缩例；已知增益/历史尾声六PCM严格只读核验与冻结预测，APA训练/留出另计；原方法current报告与历史报告分开，外部库/录音有独立依赖 |
-| [ch07](ch07/) | `ch07.chapter07_experiments`、`ch07.wpe_temporal_contract`、`ch07.examples.mint_teaching_demo`、`ch07.examples.generate_delay_audio`、`ch07.examples.audit_upstream_wpe_contracts` | 单章入口E07-08～24，E07-01～07由跨章入口提供；在线WPE时间/排列、设计矩阵求解、已知到达与历史PCM控制及逆滤波噪声权衡；`mint_teaching_demo --check`只读核验，NeMo仅固定源码静态检查 |
+| [ch07](ch07/) | `ch07.chapter07_experiments`、`ch07.wpe_temporal_contract`、`ch07.examples.mint_teaching_demo`、`ch07.examples.generate_delay_audio`、`ch07.examples.audit_upstream_wpe_contracts` | 单章入口E07-08～26，E07-01～07由跨章入口提供；在线WPE时间/排列、设计矩阵求解、已知到达与历史PCM控制及逆滤波噪声权衡；`mint_teaching_demo --check`只读核验，NeMo仅固定源码静态检查 |
 | [ch08](ch08/) | `ch08.chapter08_experiments`、`ch08.gss_activity_error_demo`、`ch08.examples.mask_representation_demo`、`ch08.examples.generate_css_audio`、`ch08.examples.audit_upstream_separation_contracts` | 单章入口E08-12～32，E08-01～11由跨章入口提供；另有固定密度下活动标注误差；不是官方 GPU 整链 |
 | [ch09](ch09/) | `ch09.chapter09_experiments`、`ch09.tracking_crossing_dropout_demo` | E09-10～26；轨迹交叉、缺测、模式密度、双时钟生命周期与球面方向的限定例 |
 | [ch10](ch10/) | `ch10.chapter10_experiments`、`ch10.spectral_subtraction_demo`、`ch10.sro_closed_loop_demo` | E10-13、E10-18～34；合成时间戳及有状态插值，不是声卡实时实测 |
@@ -38,7 +38,7 @@
 `MVDR target response` 应接近 1；STFT 重建误差接近浮点舍入。极高的匹配无噪声 AEC ERLE 是算术
 收敛检查，队列示例中的超期次数则来自构造的负载，二者均不代表设备测量。完整核对步骤见导读。
 
-旧的 `codes.examples.*` 和 `codes.array_tutorial.*` 导入路径已经退出仓内接口。运行时使用上表中的章节模块；修改题目时改唯一真实源文件，再核对全书 407 个稳定练习 ID、对应章节和覆盖表。
+旧的 `codes.examples.*` 和 `codes.array_tutorial.*` 导入路径已经退出仓内接口。运行时使用上表中的章节模块；修改题目时改唯一真实源文件，再核对全书 409 个稳定练习 ID、对应章节和覆盖表。
 
 E10-17 的变长回调时序在 [跨章工程边界入口](ch00/cross_chapter/engineering_boundary_exercises.py) 内复算。 [MacBook Air 单麦实测](ch10/examples/macbook_audio_latency/README.md)提供原生测量程序、回调时间戳日志和逐次声学偏移。第 11 章统一入口的 E11-13 同时报迟到、未交付、分场景分母和合并结果；[R01 实录](ch02/real_audio/README.md)另用于检查整段和最差窗口的区别。
 

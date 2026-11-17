@@ -1,4 +1,4 @@
-"""Seventeen WPE/MINT arithmetic and audio experiments, E07-08 through E07-24.
+"""Nineteen WPE/MINT arithmetic and audio experiments, E07-08 through E07-26.
 
 These are small declared models, not benchmarks. Complex arrays are encoded
 as separate real/imag lists for strict JSON. Importing does not run or write.
@@ -346,13 +346,24 @@ def actual_delay_audio(directory=None) -> dict:
     return check_assets(DEFAULT_OUTPUT if directory is None else Path(directory))
 
 
+def online_silence_pullback() -> dict:
+    from codes.chapters.ch07.core.online_and_cascade import rls_wpe_silence_pullback
+    return rls_wpe_silence_pullback()
+
+
+def cascade_ordering_and_tap_budget() -> dict:
+    from codes.chapters.ch07.core.online_and_cascade import cascaded_aec_wpe_ordering
+    return cascaded_aec_wpe_ordering()
+
+
 def run_experiments(*, repo_root=ROOT, mint_directory=None, delay_directory=None) -> dict:
     functions = [complex_weighted_fit, power_floor_and_smoothing, history_permutation,
                  frame_count_and_rank, frame_window_overlap, exponential_statistics,
                  mint_near_common_zero, wpe_resource_budget, loaded_wpd_factorization,
                  predictable_target_audio, real_cepstrum_phase_ambiguity,
                  design_normal_comparison, constrained_regularized_mint, actual_mint_audio,
-                 source_clock_delays, late_power_unit_conversion, actual_delay_audio]
+                 source_clock_delays, late_power_unit_conversion, actual_delay_audio,
+                 online_silence_pullback, cascade_ordering_and_tap_budget]
     result = {}
     for i, function in enumerate(functions, 8):
         if function is predictable_target_audio:

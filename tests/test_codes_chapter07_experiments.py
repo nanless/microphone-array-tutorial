@@ -1,7 +1,8 @@
-"""Independent rational, polynomial, DFT and actual PCM anchors for E07-08..24."""
+"""Independent rational, polynomial, DFT and actual PCM anchors for E07-08..26."""
 import cmath
 import hashlib
 import json
+import math
 from pathlib import Path
 import shutil
 import struct
@@ -11,6 +12,7 @@ import wave
 from fractions import Fraction as F
 import numpy as np
 from codes.chapters.ch07 import chapter07_experiments as ex
+from codes.chapters.ch07.core import online_and_cascade as oc
 
 
 def z(encoded):
@@ -147,7 +149,7 @@ class Chapter07Experiments(unittest.TestCase):
 
     def test_stable_ids_and_finite_json(self):
         r = ex.run_experiments(repo_root=self.root, mint_directory=self.mint)
-        self.assertEqual(set(r),{f'E07-{i:02d}' for i in range(8,25)})
+        self.assertEqual(set(r), {f'E07-{i:02d}' for i in range(8, 27)})
         self.assertEqual(len(r['E07-17']['files']),4)
         self.assertEqual(r['E07-22']['cases']['common']['residual'], [0,0,0,0])
         self.assertEqual(r['E07-22']['cases']['aligned']['residual'], [0,1,0,0])
@@ -245,6 +247,78 @@ class Chapter07Experiments(unittest.TestCase):
         self.assertEqual(reflected*(a-b)+lam*(u1-u2),0)
         self.assertEqual(d['weights'],[-16,17]); self.assertEqual(d['total_cost'],.1634)
         self.assertEqual(r['exact_inverse']['cost_at_regularization_1e_4'],.4901)
+
+    def test_online_rls_wpe_silence_pop_and_convex_pullback(self):
+        r = ex.online_silence_pullback()
+        s = 0.99 ** (-1000)
+        k1_u = (s * 0.01) / (0.99 + s * 1e-4)
+        g1_u = 0.5 + k1_u * 0.995
+        e1002_u = 1.0 - g1_u
+        u = r['unguarded']
+        self.assertAlmostEqual(u['inflation_factor'], s, places=8)
+        self.assertAlmostEqual(u['frame_1001_prior_output'], 0.995, places=15)
+        self.assertAlmostEqual(u['frame_1001_gain'][0], k1_u, places=10)
+        self.assertAlmostEqual(u['frame_1001_posterior_weights'][0], g1_u, places=10)
+        self.assertAlmostEqual(u['frame_1002_prior_output'], e1002_u, places=10)
+        self.assertAlmostEqual(u['frame_1002_overshoot_db'], 10.0 * math.log10(e1002_u ** 2), places=10)
+
+        aniso = r['anisotropic_pullback_check']
+        np.testing.assert_allclose(aniso['p1'], np.diag([float(F(7, 2)), 2.0]), atol=1e-15)
+        np.testing.assert_allclose(aniso['p2'], np.diag([float(F(25, 8)), 2.0]), atol=1e-15)
+        self.assertEqual((aniso['trace_p1'], aniso['trace_p2']), (float(F(11, 2)), float(F(41, 8))))
+
+        g = r['guarded_pullback']
+        np.testing.assert_allclose(g['post_silence_inverse_correlation'], np.eye(2), atol=1e-14)
+        np.testing.assert_allclose(g['frame_1001_gain'], [float(F(100, 9901)), 0.0], atol=1e-15)
+        np.testing.assert_allclose(g['frame_1001_posterior_weights'], [float(F(5050, 9901)), 0.0], atol=1e-15)
+        self.assertAlmostEqual(g['frame_1002_prior_output'], float(F(4851, 9901)), places=15)
+
+        with self.assertRaises(ValueError):
+            oc.convex_diagonal_pullback_step([[1.0, 2.0], [2.0, 1.0]], beta=0.1, delta=1.0)
+
+    def test_cascaded_aec_wpe_identifiability_nlp_defect_and_tap_budget(self):
+        r = ex.cascade_ordering_and_tap_budget()
+        np.testing.assert_allclose(r['reverberant_near_end'], [1., 1., .5, .75, .5, .5], atol=1e-15)
+        np.testing.assert_allclose(r['microphone_signal'], [1., 1., 2.5, 1.75, .5, .5], atol=1e-15)
+        self.assertEqual(r['non_commutativity_defect_frames_4_5'], {'4': 0.25, '5': 0.125})
+
+        arch = r['architectures']
+        lin = arch['linear_aec_then_wpe']
+        np.testing.assert_allclose(lin['normal_matrix'], [[float(F(29, 16)), float(F(15, 8))], [float(F(15, 8)), float(F(9, 4))]], atol=1e-15)
+        np.testing.assert_allclose(lin['cross_vector'], [float(F(11, 8)), float(F(3, 2))], atol=1e-15)
+        self.assertAlmostEqual(lin['determinant'], float(F(9, 16)), places=15)
+        np.testing.assert_allclose(lin['estimated_weights'], [0.5, 0.25], atol=1e-15)
+        np.testing.assert_allclose(lin['tail_residual'], [0.0, 0.0, 0.0], atol=1e-15)
+
+        nlp = arch['linear_aec_then_nlp_then_wpe']
+        np.testing.assert_allclose(nlp['normal_matrix'], [[float(F(25, 16)), 1.0], [1.0, 2.0]], atol=1e-15)
+        np.testing.assert_allclose(nlp['cross_vector'], [float(F(9, 8)), float(F(5, 4))], atol=1e-15)
+        np.testing.assert_allclose(nlp['estimated_weights'], [float(F(8, 17)), float(F(53, 136))], atol=1e-15)
+        np.testing.assert_allclose(
+            nlp['tail_residual'],
+            [float(F(-15, 136)), float(F(15, 136)), float(F(20, 136))],
+            atol=1e-15,
+        )
+        self.assertAlmostEqual(nlp['tail_residual_sum_of_squares'], float(F(25, 544)), places=15)
+
+        rev = arch['wpe_then_linear_aec']
+        np.testing.assert_allclose(
+            rev['normal_matrix'],
+            [[float(F(165, 16)), float(F(63, 8))], [float(F(63, 8)), float(F(33, 4))]],
+            atol=1e-15,
+        )
+        np.testing.assert_allclose(rev['cross_vector'], [float(F(31, 8)), float(F(7, 2))], atol=1e-15)
+        self.assertAlmostEqual(rev['determinant'], float(F(369, 16)), places=13)
+        np.testing.assert_allclose(rev['estimated_weights'], [float(F(47, 246)), float(F(119, 492))], atol=1e-15)
+        self.assertAlmostEqual(rev['tail_residual_sum_of_squares'], float(F(81, 41)), places=14)
+
+        b = r['frequency_dependent_taps_budget']
+        self.assertEqual(b['uniform_K12']['correlation_bytes'], 37896192)
+        self.assertEqual(b['uniform_K12']['cholesky_cubic_proxy'], 227377152)
+        self.assertEqual(b['three_band_K12_8_4']['correlation_bytes'], 15876096)
+        self.assertEqual(b['three_band_K12_8_4']['cholesky_cubic_proxy'], 78479360)
+        self.assertAlmostEqual(b['correlation_memory_ratio'], float(F(323, 771)), places=15)
+        self.assertAlmostEqual(b['cholesky_proxy_ratio'], float(F(2395, 6939)), places=15)
 
 
 if __name__ == '__main__':

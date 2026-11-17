@@ -1,4 +1,4 @@
-"""E11-10..27: computed selection examples, not product benchmark scores.
+"""E11-10..29: computed selection examples, not product benchmark scores.
 
 Run ``python -m codes.chapters.ch11.chapter11_experiments``. No network, model or
 recording is used. Tables are constructed; E11-19/25 strictly check and read
@@ -291,13 +291,23 @@ def physical_selection_anchor():
     return beamformer_selection_case()
 
 
+def multizone_cabin_anchor():
+    from codes.chapters.ch11.core.automotive_selection import multizone_cabin_selection_case
+    return multizone_cabin_selection_case()
+
+
+def icc_certification_anchor():
+    from codes.chapters.ch11.core.automotive_selection import icc_and_certification_selection_case
+    return icc_and_certification_selection_case()
+
+
 def run_experiments(*, scenario_directory=None):
     functions = [pareto_anchor, composition_anchor, missing_score_anchor, simultaneous_risk_anchor,
                  interval_anchor, interaction_anchor, slots_anchor, threshold_anchor, exact_sro_anchor, audio_anchor,
                  unsupported_weight_anchor, interval_dominance_anchor, poisson_exposure_anchor,
                  utterance_boundary_anchor, time_edit_anchor,
                  lambda: scenario_audio_anchor(scenario_directory), scoring_events_anchor,
-                 physical_selection_anchor]
+                 physical_selection_anchor, multizone_cabin_anchor, icc_certification_anchor]
     return {f'E11-{i}': function() for i, function in enumerate(functions, 10)}
 
 

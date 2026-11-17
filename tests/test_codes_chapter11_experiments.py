@@ -12,6 +12,7 @@ import wave
 import numpy as np
 from codes.chapters.ch11.core.selection import (upper_limit_verdict, pareto_minima,
                                             small_slot_word_errors, token_edit_distance)
+from codes.chapters.ch11.core.automotive_selection import bus_clock_drift_metrics, icc_comb_and_howling_metrics
 from codes.chapters.ch00.core.audio_samples import selection_tradeoff_case
 from codes.chapters.ch11.chapter11_experiments import run_experiments, audio_anchor, scenario_audio_anchor
 from codes.chapters.ch11.examples.generate_selection_audio import generate, check_main_selection_assets
@@ -32,7 +33,7 @@ class Chapter11ExperimentsTests(unittest.TestCase):
         cls.audio = selection_tradeoff_case()
 
     def test_identifiers_and_pareto_analytic_intersection(self):
-        self.assertEqual(list(self.results), [f'E11-{i}' for i in range(10, 28)])
+        self.assertEqual(list(self.results), [f'E11-{i}' for i in range(10, 30)])
         x = self.results['E11-10']
         self.assertEqual(x['feasible'], ['A', 'B', 'C'])
         self.assertEqual(x['pareto'], ['A', 'B'])
@@ -351,6 +352,57 @@ class Chapter11ExperimentsTests(unittest.TestCase):
             before=(wav.read_bytes(),wav.stat().st_mtime_ns)
             with self.assertRaises(ValueError):check_main_selection_assets(d)
             self.assertEqual((wav.read_bytes(),wav.stat().st_mtime_ns),before)
+
+    def test_multizone_cabin_selection_independent_geometry_and_guard(self):
+        res = self.results['E11-28']
+        self.assertEqual(res['bus_verdicts'], {'a2b_sync': 'pass', 'bt_async_uncorrected': 'fail'})
+        bt = res['bus_clocks']['bt_async_uncorrected']
+        expected_drift_s = float(Fraction(60 * 50, 1_000_050))
+        self.assertAlmostEqual(bt['exact_drift_s'], expected_drift_s, places=15)
+        self.assertAlmostEqual(bt['max_allowed_drift_us'], 1e6 / 288_000, places=12)
+
+        cands = res['candidates']
+        # Independent rational checks on ceiling & headrest distances and weight norms.
+        self.assertAlmostEqual(cands['ceiling_dsb']['driver_output_power'], float(Fraction(25, 164)), places=14)
+        self.assertAlmostEqual(cands['ceiling_dsb']['weight_norm_squared'], float(Fraction(761, 1417)), places=14)
+        self.assertAlmostEqual(cands['headrest_dsb']['weight_norm_squared'], float(Fraction(36, 61)), places=14)
+        self.assertAlmostEqual(cands['headrest_dsb']['WNG_dB'], 10 * math.log10(61 / 36), places=12)
+        self.assertLess(cands['headrest_lcmv']['WNG_dB'], -3.0)
+        self.assertGreater(cands['headrest_dsb_cross_cancel_unguarded']['dt_target_loss_db'], 1.0)
+        self.assertGreater(cands['headrest_dsb_cross_cancel_unguarded']['driver_only_self_cancel_loss_db'], 30.0)
+        guarded = cands['headrest_dsb_cross_cancel_guarded']
+        self.assertGreaterEqual(guarded['LCR_dB'], 25.0)
+        self.assertGreaterEqual(guarded['WNG_dB'], -3.0)
+        self.assertLessEqual(guarded['dt_target_loss_db'], 1.0)
+        self.assertEqual(res['eligible_architectures'], ['headrest_dsb_cross_cancel_guarded'])
+        self.assertEqual(res['selected_architecture'], 'headrest_dsb_cross_cancel_guarded')
+        with self.assertRaises(ValueError):
+            bus_clock_drift_metrics(True, 60.0, 4000.0, 5.0)
+
+    def test_icc_comb_notches_howling_margin_and_teams_interval_verdict(self):
+        res = self.results['E11-29']
+        pa = res['path_A_8ms']
+        pb = res['path_B_22ms']
+        # Independent odd-multiple enumeration in [300, 3400] Hz.
+        notches_a = [62.5 * (2 * m + 1) for m in range(100) if 300 <= 62.5 * (2 * m + 1) <= 3400]
+        notches_b = [float(Fraction(250, 11) * (2 * m + 1))
+                     for m in range(200) if Fraction(300) <= Fraction(250, 11) * (2 * m + 1) <= Fraction(3400)]
+        self.assertEqual((pa['p1150_verdict'], pb['p1150_verdict']), ('pass', 'fail'))
+        self.assertEqual((pa['notch_count'], pb['notch_count']), (25, 68))
+        self.assertEqual(pa['notch_frequencies_hz'], notches_a)
+        np.testing.assert_allclose(pb['notch_frequencies_hz'], notches_b, rtol=0, atol=1e-12)
+        self.assertAlmostEqual(res['peak_to_notch_ripple_db'], 20 * math.log10(9), places=12)
+        self.assertAlmostEqual(res['howling_max_gain_db'], 12.0, places=12)
+        self.assertAlmostEqual(res['howling_max_gain_linear'], 10 ** 0.6, places=12)
+        self.assertEqual(
+            {k: v['verdict'] for k, v in res['howling_gain_candidates'].items()},
+            {'12.0dB': 'pass', '15.0dB': 'fail', '18.0dB': 'fail'},
+        )
+        self.assertEqual(res['teams_certification_verdict'], 'undetermined')
+        self.assertEqual(res['teams_certification']['per_metric_verdicts']['tclw_max_volume_db'], 'undetermined')
+        for bad_delay in (3.0, 4.0):  # excess delay = dsp + 1.0 - 5.0 <= 0 ms
+            with self.assertRaises(ValueError):
+                icc_comb_and_howling_metrics(bad_delay)
 
     def test_computed_results_are_strict_json(self):
         json.loads(json.dumps(self.results,allow_nan=False))

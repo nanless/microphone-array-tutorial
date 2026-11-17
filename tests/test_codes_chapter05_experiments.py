@@ -6,6 +6,7 @@ import warnings
 import numpy as np
 
 from codes.chapters.ch05.core.beamforming import lcmv_weights, mvdr_weights
+from codes.chapters.ch05.core.dma_kronecker import first_order_dma_weights, kronecker_mvdr_weights
 from codes.chapters.ch04.core.doa import capon_spectrum
 from codes.chapters.ch05 import chapter05_experiments as ex
 from codes.chapters.ch05.beamformer_common_input_demo import run_experiment
@@ -14,7 +15,7 @@ from codes.chapters.ch05.beamformer_common_input_demo import run_experiment
 class ChapterFiveExamplesTest(unittest.TestCase):
     def test_catalog_is_complete_and_strict_json(self):
         results = ex.run_exercises()
-        self.assertEqual(set(results), {f'E05-{i:02d}' for i in range(8, 25)})
+        self.assertEqual(set(results), {f'E05-{i:02d}' for i in range(8, 25)} | {'E05-28', 'E05-29'})
         json.dumps(results, allow_nan=False)
 
     def test_gsc_solution_matches_inverse_variance_weights(self):
@@ -29,7 +30,6 @@ class ChapterFiveExamplesTest(unittest.TestCase):
     def test_single_snapshot_and_correlated_waveform_are_different_objectives(self):
         r = ex.gsc_statistical_boundary()
         a = r['sixty_degree_case']
-        # (1+e^jphi)/(1-e^jphi) = j*cot(phi/2).
         cotangent = 1/math.tan(math.pi*math.sqrt(3)/4)
         self.assertAlmostEqual(a['oracle_h'], -.5j*cotangent)
         self.assertAlmostEqual(a['single_snapshot_ls_h'], .5-1j*cotangent)
@@ -142,7 +142,6 @@ class ChapterFiveExamplesTest(unittest.TestCase):
         self.assertAlmostEqual(nominal['worst_case_amplitude'], 1-math.sqrt(2)/10)
         self.assertAlmostEqual(robust['general_wng_linear'], 2)
         self.assertNotAlmostEqual(robust['unit_response_only_shortcut'], 2)
-        # Cauchy: every feasible w has ||w|| >= 1/(sqrt(2)-epsilon).
         self.assertAlmostEqual(robust['weight_norm_squared'], 1/(math.sqrt(2)-.2)**2)
 
     def test_souden_selects_complex_reference_not_unit_source_response(self):
@@ -196,10 +195,56 @@ class ChapterFiveExamplesTest(unittest.TestCase):
             self.assertAlmostEqual(row['interference_plus_noise_output_power'], power)
             self.assertAlmostEqual(row['true_target_output_sinr_db'], 10*math.log10(abs(response)**2/power))
 
+    def test_e05_28_first_order_dma_wng_slope_and_gasket_leakage(self):
+        r = ex.exercise_05_28()
+        q_factors = [row['directivity_factor_3d'] for row in r['classical_patterns']]
+        np.testing.assert_allclose(q_factors, [3.0, 4.0, 2.0 + math.sqrt(3.0), 3.0], atol=1e-14)
+        kd_200 = 4.0 * math.pi / 343.0
+        kd_100 = 2.0 * math.pi / 343.0
+        self.assertAlmostEqual(r['cardioid_200hz']['equalized_wng'], 2.0 * math.sin(kd_200) ** 2, places=14)
+        self.assertAlmostEqual(r['cardioid_100hz']['equalized_wng'], 2.0 * math.sin(kd_100) ** 2, places=14)
+        self.assertAlmostEqual(r['octave_wng_drop_db'], 10.0 * math.log10((math.sin(kd_100) / math.sin(kd_200)) ** 2), places=13)
+        expected_leak = math.sin(math.radians(2.5)) / math.sin(kd_200)
+        self.assertAlmostEqual(r['gasket_mismatch_200hz']['ideal_rear_null_gain'], 0.0, places=14)
+        self.assertAlmostEqual(r['gasket_mismatch_200hz']['mismatched_rear_gain'], expected_leak, places=13)
+        self.assertGreater(r['gasket_mismatch_200hz']['mismatched_rear_gain'], 1.19)
+        for bad_angle in (45.0, 185.0):
+            with self.assertRaises(ValueError):
+                first_order_dma_weights(200.0, 0.01, bad_angle)
+        # Spatial aliasing at f = c / (2*d) = 17150 Hz makes cardioid target response vanish:
+        with self.assertRaises(ValueError):
+            first_order_dma_weights(17150.0, 0.01, 180.0, c=343.0, equalize=True)
+
+    def test_e05_29_kronecker_mvdr_exactness_vs_point_interferer_line_null(self):
+        r = ex.exercise_05_29()
+        sep = r['separable_mvdr']
+        expected_wx = np.array([(2 + 1j) / 4, (2 - 1j) / 4])
+        expected_wy = np.array([3 / 4, 1 / 4])
+        expected_wk = np.array([(6 + 3j) / 16, (2 + 1j) / 16, (6 - 3j) / 16, (2 - 1j) / 16])
+        np.testing.assert_allclose(sep['w_x_mvdr'], expected_wx, atol=1e-15)
+        np.testing.assert_allclose(sep['w_y_mvdr'], expected_wy, atol=1e-15)
+        np.testing.assert_allclose(sep['w_kron_mvdr'], expected_wk, atol=1e-15)
+        np.testing.assert_allclose(sep['w_joint_mvdr'], expected_wk, atol=1e-15)
+        self.assertAlmostEqual(sep['output_noise_power'], 9.0 / 16.0, places=15)
+        self.assertEqual(sep['complexity_ratio_8x8'], 256.0)
+
+        pt = r['point_interferer_lcmv']
+        np.testing.assert_allclose(pt['w_kron_doubly_nulled'], [0.5j, 0.5, 0.5, -0.5j], atol=1e-15)
+        np.testing.assert_allclose(pt['w_joint_lcmv'], [(2 + 1j) / 6, 1 / 6, 1 / 6, (2 - 1j) / 6], atol=1e-15)
+        self.assertAlmostEqual(pt['wng_kron_doubly_nulled'], 1.0, places=14)
+        self.assertAlmostEqual(pt['wng_kron_x_only'], 2.0, places=14)
+        self.assertAlmostEqual(pt['wng_joint_lcmv'], 3.0, places=14)
+        self.assertLess(pt['interferer_response_kron_abs'], 1e-15)
+        self.assertLess(pt['interferer_response_joint_abs'], 1e-15)
+        self.assertLess(pt['bystander_power_kron_doubly_nulled'], 1e-30)
+        self.assertLess(pt['bystander_power_kron_x_only'], 1e-30)
+        self.assertAlmostEqual(pt['bystander_power_joint_lcmv'], 2.0 / 9.0, places=14)
+        with self.assertRaises(ValueError):
+            kronecker_mvdr_weights(np.eye(2)[None], np.eye(2), np.ones((1, 2)), np.ones(2))
+
 
 class BeamCovarianceBoundaryTest(unittest.TestCase):
     def test_tiny_negative_direction_cannot_be_a_minimum(self):
-        # Feasible w=[t,1] has cost 1-1e-11*t² and is unbounded below.
         for solver in (mvdr_weights, capon_spectrum):
             for scale in (1e-18, 1., 1e18):
                 with self.subTest(solver=solver.__name__, scale=scale):
@@ -227,7 +272,6 @@ class BeamCovarianceBoundaryTest(unittest.TestCase):
         complex_large = lcmv_weights(np.eye(2), 1e-10*np.eye(2), [1e298+1e298j, 1e298-1e298j])
         np.testing.assert_allclose(complex_large.real/1e308, [1, 1], rtol=1e-14)
         np.testing.assert_allclose(complex_large.imag/1e308, [1, -1], rtol=1e-14)
-        # Independent constraints with wildly different units must remain feasible.
         np.testing.assert_allclose(lcmv_weights(np.eye(2), np.diag([1e-200, 1e200]), [1e-200, 1e200]), [1, 1])
 
     def test_covariance_options_reject_non_scalar_and_complex_inputs(self):

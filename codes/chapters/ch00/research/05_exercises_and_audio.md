@@ -2,7 +2,7 @@
 
 先按章节做手算，再运行对应脚本，最后听同一模型产生的音频。代码输出不是预填的答案表；程序从输入重新计算结果，回归测试另外保留手算、解析边界或已知模型作为判据。
 
-本页索引 403 道带稳定编号的代码题，以及独立的真实录音练习 R01。`E01-01` 表示第 1 章的第 1 道代码题；附录 B 中另有按 1～17 编号的综合题，两套题号各自使用。
+本页索引 405 道带稳定编号的代码题，以及独立的真实录音练习 R01。`E01-01` 表示第 1 章的第 1 道代码题；附录 B 中另有按 1～17 编号的综合题，两套题号各自使用。
 
 E06-07～E06-20 使用无量纲回声模型检查 AEC 的计算与边界，其中 E06-11～20 可用精确答案程序核对。第 15、16 节另提供参数不同的合成音频；试听文件本身不是题目真值。
 
@@ -68,7 +68,7 @@ E06-07～E06-20 使用无量纲回声模型检查 AEC 的计算与边界，其�
 | 第 4 章 E04-01～09 | 延迟正号、相干源秩、栅瓣歧义、空间平滑、MDL、双源分辨率重复抽样与 ESPRIT 最小二乘 | [空间练习](../cross_chapter/exercises_spatial.py)（01～07、09）；[分辨率 E04-08](../../ch04/doa_resolution_trials.py) |
 | 第 4 章 E04-12～27 | Nyquist插值、SRP直求和、PHAT平均顺序、ESPRIT基与分支、GN/GLS一步、CRLB、纯音歧义、聚焦噪声、AIC/MDL、多频秩、root-MUSIC多项式、相干反射假峰、人工CTF首比、UCA相位模态变换与相干直混比筛选 | [定位逐步实验](../../ch04/chapter04_experiments.py) |
 | 第 5 章 E05-01～05 | 秩一条件、MVDR 加载、输出残噪、复响应约束与有限干扰抑制 | [空间练习](../cross_chapter/exercises_spatial.py) |
-| 第 5 章 E05-08～24 | GSC总体/快拍、Frost投影、Zelinski非负性、相干噪声反解、失配自消、GEV尺度、球谐秩、门控音频、非负掩码、导数与范数球约束、Souden参考、Bayes增益、逐频相位与通道掩码统计 | [波束逐步实验](../../ch05/chapter05_experiments.py) |
+| 第 5 章 E05-08～24、E05-28～29 | GSC总体/快拍、Frost投影、Zelinski非负性、相干噪声反解、失配自消、GEV尺度、球谐秩、门控音频、非负掩码、导数与范数球约束、Souden参考、Bayes增益、逐频相位、通道掩码统计、一阶差分心形/超心形波束与Kronecker积可分离波束 | [波束逐步实验](../../ch05/chapter05_experiments.py) |
 | 第 6 章 E06-01～20 | NLMS、分区卷积、子带交叉项及全交叉更新、IPNLMS 正则项、RLS 遗忘与批量核对、Kalman 双讲与协方差；另含回声模型边界 | [增强练习](../cross_chapter/exercises_enhancement.py)（01～06）；[AEC 小例](../../ch06/aec_algorithm_minicases.py)（07～10）；[进阶手算](../../ch06/aec_advanced_exercises.py)（11～20） |
 | 第 6 章 E06-22～33 | 多参考共同分母与可辨识性、因果对齐、漂移、参考断流、NCC、先验评分、冻结、PSD、dB平均、归一化偏差和注入增量分解 | [AEC逐步实验](../../ch06/chapter06_experiments.py) |
 | 第6章 E06-40～42 | 已知播放增益与卷积顺序、参考当前静音与纯回声尾声、三个实际PCM评分窗 | [逐样本控制](../../ch06/core/reference_timing.py)、[章节入口](../../ch06/chapter06_experiments.py)、[六WAV生成/核验](../../ch06/examples/generate_reference_audio.py)；完整展开见§56 |

@@ -1,4 +1,4 @@
-"""E05-08--24: small models and strictly checked published waveform fixtures.
+"""E05-08--24 and E05-28--29: small models and strictly checked published waveform fixtures.
 
 Run .venv/bin/python -m codes.chapters.ch05.chapter05_experiments. No files are
 written. These are original deterministic examples, not upstream benchmarks.
@@ -21,6 +21,10 @@ import numpy as np
 
 from codes.chapters.ch00.core.audio_samples import gsc_gate_case
 from codes.chapters.ch05.core.beamforming import lcmv_weights, mvdr_weights
+from codes.chapters.ch05.core.dma_kronecker import (
+    first_order_dma_example,
+    kronecker_beamforming_example,
+)
 from codes.chapters.ch08.core.separation import masked_spatial_covariance
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -146,7 +150,6 @@ def target_covariance_contamination() -> dict:
 def gev_mwf_scale() -> dict:
     noise, target = np.diag([2., 1.]), np.ones(2)
     speech = 3*np.outer(target, target)
-    # Generalized eigenproblem by whitening; canonicalize the otherwise free scale.
     whitener = np.diag([1/np.sqrt(2), 1])
     eigenvalues, vectors = np.linalg.eigh(whitener@speech@whitener)
     gev = whitener@vectors[:, -1]
@@ -221,7 +224,7 @@ def gsc_audio_results(*, audio_dir: Path | None = None, manifest_path: Path | No
                        'samples_per_channel': decoded.shape[1], 'common_export_gain': 1.0}
     start, stop = 16000, 30000
     reference = integer['gsc_reference.wav'][0, start:stop]
-    denominator = int(reference@reference)  # bounded PCM16, 14000 points: safe int64
+    denominator = int(reference@reference)
     if denominator <= 0:
         raise ValueError('published GSC reference needs positive PCM energy in the scoring interval')
     scores = {}
@@ -410,7 +413,7 @@ def channel_mask_prefilter_model() -> dict:
     The response test applies a deliberately inferred pseudo-RTF to ORIGINAL
     observations, rather than reproducing the paper's full Souden pipeline.
     """
-    x = np.ones((2, 2))  # channels x snapshots, two copies of the same direction
+    x = np.ones((2, 2))
     original = x@x.T/2
     rows = []
     for name, mask in [('constant_channel_gains', np.array([[1., 1.], [.25, .25]])),
@@ -436,6 +439,16 @@ def channel_mask_prefilter_model() -> dict:
             'Souden paper reproduction, online state or speech enhancement performance is run.'}
 
 
+def exercise_05_28() -> dict:
+    """E05-28: first-order DMA frequency-invariant null synthesis, +6 dB/oct WNG drop, and gasket leak."""
+    return first_order_dma_example()
+
+
+def exercise_05_29() -> dict:
+    """E05-29: separable planar Kronecker MVDR vs non-separable point-interferer LCMV null coupling."""
+    return kronecker_beamforming_example()
+
+
 def _pack(value):
     if isinstance(value, np.ndarray):
         return {'real': value.real.tolist(), 'imag': value.imag.tolist()} if np.iscomplexobj(value) else value.tolist()
@@ -451,19 +464,44 @@ def _pack(value):
 
 
 def run_exercises() -> dict:
-    functions = [gsc_lcmv_equivalence, gsc_statistical_boundary, frost_finite_step,
-                 zelinski_pair_difference, coherent_noise_pair, target_covariance_contamination,
-                 gev_mwf_scale, first_order_spatial_rank, gsc_audio_results, nonnegative_mask_model,
-                 derivative_lcmv, norm_ball_robust, souden_reference_channel,
-                 om_lsa_probability_combination, derivative_audio_results,
-                 frequency_phase_ambiguity, channel_mask_prefilter_model]
+    entries = [
+        *(
+            (f'E05-{index:02d}', function)
+            for index, function in enumerate(
+                [
+                    gsc_lcmv_equivalence,
+                    gsc_statistical_boundary,
+                    frost_finite_step,
+                    zelinski_pair_difference,
+                    coherent_noise_pair,
+                    target_covariance_contamination,
+                    gev_mwf_scale,
+                    first_order_spatial_rank,
+                    gsc_audio_results,
+                    nonnegative_mask_model,
+                    derivative_lcmv,
+                    norm_ball_robust,
+                    souden_reference_channel,
+                    om_lsa_probability_combination,
+                    derivative_audio_results,
+                    frequency_phase_ambiguity,
+                    channel_mask_prefilter_model,
+                ],
+                8,
+            )
+        ),
+        ('E05-28', exercise_05_28),
+        ('E05-29', exercise_05_29),
+    ]
     results = {}
-    for index, function in enumerate(functions, 8):
+    for ex_id, function in entries:
         result = function()
-        result['metadata'] = {'kind': 'original deterministic teaching experiment',
-                              'numpy_version': np.__version__,
-                              'randomness': 'fixed white-noise seed 20260522' if index == 22 else 'none'}
-        results[f'E05-{index:02d}'] = _pack(result)
+        result['metadata'] = {
+            'kind': 'original deterministic teaching experiment',
+            'numpy_version': np.__version__,
+            'randomness': 'fixed white-noise seed 20260522' if ex_id == 'E05-22' else 'none',
+        }
+        results[ex_id] = _pack(result)
     return results
 
 

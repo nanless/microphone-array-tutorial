@@ -9,7 +9,7 @@
 - **原理索引**：已有原理或来源依据，但尚未形成唯一、许可明确且承担对应计算的源码映射；代码可见而许可不明时也保留此状态，并说明原因。
 - **明确排除**：指定软件的身份或许可不满足本书当前收录方式；不表示删除相应方法的学术讨论。
 
-算法表共 375 行：本仓库可运行基线 89 行、外部参考实现 197 行、原理索引 88 行、明确排除 1 行。练习映射单独计数。双耳波束新增一行本地可复算控制，复用已有 MVDR/LCMV 求解器，另有一行 openMHA 的固定源码对照。已知激励的逐频正则反卷积教学核同一行保留 pyfar 外部对照及其限定运行边界；第 6 章已知播放增益和历史尾声控制复用 NLMS 与 NCC。扩展专题Ⅲ与Ⅳ新增七行本地可运行数值基线，覆盖空间参数化采集、双耳匹配、跨模态融合、条件目标提取、近场距离气泡、空谱 TS-VAD/GSS 门控与视听异步回退。覆盖表中的原理索引不表示相应算法已经运行。
+算法表共 376 行：本仓库可运行基线 90 行、外部参考实现 197 行、原理索引 88 行、明确排除 1 行。练习映射单独计数。双耳波束新增一行本地可复算控制，复用已有 MVDR/LCMV 求解器，另有一行 openMHA 的固定源码对照。已知激励的逐频正则反卷积教学核同一行保留 pyfar 外部对照及其限定运行边界；第 6 章已知播放增益和历史尾声控制复用 NLMS 与 NCC。扩展专题Ⅲ与Ⅳ新增七行本地可运行数值基线，覆盖空间参数化采集、双耳匹配、跨模态融合、条件目标提取、近场距离气泡、空谱 TS-VAD/GSS 门控与视听异步回退。覆盖表中的原理索引不表示相应算法已经运行。
 
 源码取得与入口核对见 [SOURCE_STATUS.json](SOURCE_STATUS.json)；该文件中的依赖验证和执行字段未开展时为 `not_run`，不承载方法级数值实验结果。实际运行及数值对照见[复现记录](research/04_source_reproduction.md)、[增强研究记录](research/02_aec_wpe_separation.md)和 [WPE 独立对照脚本](../ch07/examples/compare_wpe_reference.py)。工业接口与 SBL 的限定实验报告按主题放在 `codes/chapters/ch04/reports/`、`codes/chapters/ch10/reports/` 等对应章节；实际调用外部代码不将它改列为本仓库教学基线。覆盖状态不是测试结果。完整提交、官方地址、许可与来源 ID 见 [SOURCES.lock.json](SOURCES.lock.json)。表内本仓库教学源文件使用相对于仓库根目录的完整路径；第三方项目的内部路径仍相对于各自项目根目录。出现“同文件”时仅继承上一行文件，不继承其算法或验证结论。
 
@@ -398,6 +398,7 @@
 | 专题Ⅳ §17.4、E17-04～07、16 | 菲涅尔近场判据与球面波同向距离气泡 LCMV | 本仓库可运行基线 | `codes/chapters/ch17/core/distance_bubble.py::fresnel_distance`、`spherical_ula_steering`、`broadside_distance_bubble_weights`；六份独立PCM与图86 | 依靠曲率波前差在同向0°抑制远场干扰；小孔径下Gram矩阵病态需Tikhonov正则 |
 | 专题Ⅳ §17.5～17.6、E17-08～12 | 重叠会议 DER 三分量分解、单标签下界与空谱联合 TS-VAD + GSS 门控 | 本仓库可运行基线 | `codes/chapters/ch17/core/diarization_tsvad.py::compute_der_components`、`single_label_overlap_der_bound`、`tsvad_spatial_spectral_posterior`、`gss_soft_gated_mvdr` | 帧级排列最优匹配与排他目标掩码构造，非大规模预训练声纹模型推理 |
 | 专题Ⅳ §17.7、E17-13～15 | 异构音视频帧率映射、正滞后词首截断审计与唇部遮挡置信度门控 | 本仓库可运行基线 | `codes/chapters/ch17/core/av_alignment.py::map_video_to_audio_frames`、`av_confidence_gated_mask` | 最近邻曝光中心对齐与软门控回退纯音频掩码，非视觉唇读网络推理 |
+| §5.2、§5.7、E05-28～29 | 一阶差分麦克风阵列（心形/超心形/八字形）WNG-DI 折中与 Kronecker 积双线性可分离波束 | 本仓库可运行基线 | `codes/chapters/ch05/core/dma_kronecker.py::first_order_dma_metrics`、`kronecker_separable_beamformer` | 小间距低频一阶差分存在 6 dB/oct 自噪声放大；Kronecker 可分离假设限于可分解干扰结构 |
 | §4.5、§4.7、E04-26～27 | 均匀圆阵相位模态变换（UCA-RB-MUSIC/ESPRIT 虚拟流形）与相干直混比（CDR）时频块筛选 | 本仓库可运行基线 | `codes/chapters/ch04/core/uca_cdr.py::uca_phase_mode_manifold`、`estimate_cdr_and_screen_bins` | 贝塞尔模态零点导致径向均衡病态；无向CDR估计依赖双麦三维球面弥散相干基准 |
 | §3.2、§3.4、E03-19～20 | 刚性球障板模态径向散射增益与麦克风声孔亥姆霍兹谐振相位失配 | 本仓库可运行基线 | `codes/chapters/ch03/core/baffle_and_vent.py::rigid_sphere_baffle_response`、`helmholtz_port_mismatch` | 采用 e^{-j2πft} 下外行球 Hankel h_n^{(2)}；集总声孔二阶谐振仅覆盖短腔体波长条件 |
 | §2.4～2.5、E02-21～22 | 二维圆柱与三维球面各向同性弥散相干对比及 Lagrange 分数延迟滤波器 | 本仓库可运行基线 | `codes/chapters/ch02/core/diffuse_and_fractional.py::cylindrical_vs_spherical_coherence`、`lagrange_fractional_delay_fir` | 区分 J0(kd) 与 sinc(kd) 首次零点；有限阶多项式高频滚降边界显式保留 |
@@ -456,7 +457,7 @@
 
 ## 章节代码练习与音频映射
 
-403 道代码练习使用稳定 ID，旧数字题号继续可查。下表只登记学习入口，不改变上面的 375 行算法统计。补充的空间精算、增强步骤、时间状态模块分别提供 3/5/4 道题，双耳波束另有 3 道题。三个原有 `exercises_` 模块各自提供 `run_exercises()`，分别有 28/23/25 道题；AEC 小实验另有 4 道，进阶 AEC 手算另有 10 道；E03-07、E04-08、E09-06 与 E10-13 由独立实验入口提供。E04-08 的 200 次独立双源抽样只说明固定模型中的分辨事件频率和 Wilson 区间。E04-04 是固定矩阵的前向空间平滑演示，不扩称为支持任意阵列的公共估计接口。
+405 道代码练习使用稳定 ID，旧数字题号继续可查。下表只登记学习入口，不改变上面的 376 行算法统计。补充的空间精算、增强步骤、时间状态模块分别提供 3/5/4 道题，双耳波束另有 3 道题。三个原有 `exercises_` 模块各自提供 `run_exercises()`，分别有 28/23/25 道题；AEC 小实验另有 4 道，进阶 AEC 手算另有 10 道；E03-07、E04-08、E09-06 与 E10-13 由独立实验入口提供。E04-08 的 200 次独立双源抽样只说明固定模型中的分辨事件频率和 Wilson 区间。E04-04 是固定矩阵的前向空间平滑演示，不扩称为支持任意阵列的公共估计接口。
 
 | 章节与稳定 ID | 练习入口 | 回归测试 |
 |---|---|---|
@@ -467,7 +468,7 @@
 | 第6章：E06-34～39（6题） | [APA五个完整缩例](../ch06/aec_affine_projection_demo.py)、[有色参考训练/留出](../ch06/examples/generate_apa_audio.py) | [状态/手算测试](../../../tests/test_codes_aec_affine_projection.py)、[PCM实验测试](../../../tests/test_codes_aec_apa_audio.py) |
 | 第6章：E06-40～42（3题） | [增益与尾声逐样本控制](../ch06/core/reference_timing.py)、[章节入口](../ch06/chapter06_experiments.py)、[六份PCM生成/只读核验](../ch06/examples/generate_reference_audio.py) | [独立手算边界](../../../tests/test_codes_ch06_reference_timing.py)、[完整PCM回放](../../../tests/test_codes_ch06_reference_audio.py)、[发布与整数评分](../../../tests/test_ch06_reference_publication.py) |
 | 第 6 章：E06-22～33（12题） | [AEC 状态、数值与指标实验](../ch06/chapter06_experiments.py) | [独立测试](../../../tests/test_codes_chapter06_experiments.py)、[数值边界](../../../tests/test_codes_aec_numerical_boundaries.py) |
-| 第 5 章：E05-08～24（17题） | [约束、谱估计与状态实验](../ch05/chapter05_experiments.py) | [独立测试](../../../tests/test_codes_chapter05_experiments.py)、[GSC状态测试](../../../tests/test_codes_gsc.py)、[相位/掩码独立模型](../../../tests/test_codes_ch05_phase_mask_models.py)、[三PCM全回放](../../../tests/test_codes_ch05_phase_audio.py) |
+| 第 5 章：E05-08～24、28～29（19题） | [约束、谱估计与状态实验](../ch05/chapter05_experiments.py) | [独立测试](../../../tests/test_codes_chapter05_experiments.py)、[GSC状态测试](../../../tests/test_codes_gsc.py)、[相位/掩码独立模型](../../../tests/test_codes_ch05_phase_mask_models.py)、[三PCM全回放](../../../tests/test_codes_ch05_phase_audio.py) |
 | 第 4 章：E04-12～27（16题） | [定位逐步实验](../ch04/chapter04_experiments.py) | [原逐步实验测试](../../../tests/test_codes_chapter04_experiments.py)、[直达路径与CTF独立测试](../../../tests/test_codes_ch04_direct_path.py)、[相干反射PCM测试](../../../tests/test_codes_ch04_reflection_audio.py) |
 | 第 3 章：E03-08～20（13题） | [几何与校准逐步实验](../ch03/chapter03_experiments.py)、[已知方向唯一逆核](../ch03/core/baseline_calibration.py)、[六PCM训练/留出清单](../ch03/baseline_audio/MANIFEST.json)、[当前原方法合同](../ch03/reports/upstream_coarray_contracts.json) | [独立题目测试](../../../tests/test_codes_chapter03_experiments.py)、[独立逆核测试](../../../tests/test_codes_ch03_baseline_calibration.py)、[完整音频回放](../../../tests/test_codes_baseline_audio.py)、[来源与写入合同](../../../tests/test_codes_ch03_upstream_coarray.py) |
 | 第 2 章：E02-09～22（14题） | [声学模型逐步实验](../ch02/chapter02_experiments.py) | [独立测试](../../../tests/test_codes_chapter02_experiments.py) |

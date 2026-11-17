@@ -2,7 +2,7 @@
 
 先按章节做手算，再运行对应脚本，最后听同一模型产生的音频。代码输出不是预填的答案表；程序从输入重新计算结果，回归测试另外保留手算、解析边界或已知模型作为判据。
 
-本页索引 405 道带稳定编号的代码题，以及独立的真实录音练习 R01。`E01-01` 表示第 1 章的第 1 道代码题；附录 B 中另有按 1～17 编号的综合题，两套题号各自使用。
+本页索引 407 道带稳定编号的代码题，以及独立的真实录音练习 R01。`E01-01` 表示第 1 章的第 1 道代码题；附录 B 中另有按 1～17 编号的综合题，两套题号各自使用。
 
 E06-07～E06-20 使用无量纲回声模型检查 AEC 的计算与边界，其中 E06-11～20 可用精确答案程序核对。第 15、16 节另提供参数不同的合成音频；试听文件本身不是题目真值。
 
@@ -71,7 +71,7 @@ E06-07～E06-20 使用无量纲回声模型检查 AEC 的计算与边界，其�
 | 第 5 章 E05-08～24、E05-28～29 | GSC总体/快拍、Frost投影、Zelinski非负性、相干噪声反解、失配自消、GEV尺度、球谐秩、门控音频、非负掩码、导数与范数球约束、Souden参考、Bayes增益、逐频相位、通道掩码统计、一阶差分心形/超心形波束与Kronecker积可分离波束 | [波束逐步实验](../../ch05/chapter05_experiments.py) |
 | 第 6 章 E06-01～20 | NLMS、分区卷积、子带交叉项及全交叉更新、IPNLMS 正则项、RLS 遗忘与批量核对、Kalman 双讲与协方差；另含回声模型边界 | [增强练习](../cross_chapter/exercises_enhancement.py)（01～06）；[AEC 小例](../../ch06/aec_algorithm_minicases.py)（07～10）；[进阶手算](../../ch06/aec_advanced_exercises.py)（11～20） |
 | 第 6 章 E06-22～33 | 多参考共同分母与可辨识性、因果对齐、漂移、参考断流、NCC、先验评分、冻结、PSD、dB平均、归一化偏差和注入增量分解 | [AEC逐步实验](../../ch06/chapter06_experiments.py) |
-| 第6章 E06-40～42 | 已知播放增益与卷积顺序、参考当前静音与纯回声尾声、三个实际PCM评分窗 | [逐样本控制](../../ch06/core/reference_timing.py)、[章节入口](../../ch06/chapter06_experiments.py)、[六WAV生成/核验](../../ch06/examples/generate_reference_audio.py)；完整展开见§56 |
+| 第6章 E06-40～44 | 已知播放增益与卷积顺序、参考当前静音与纯回声尾声、三个实际PCM评分窗、奇次幂锤stein功放非线性AEC与立体声回声路径非唯一去相关 | [逐样本控制](../../ch06/core/reference_timing.py)、[章节入口](../../ch06/chapter06_experiments.py)、[六WAV生成/核验](../../ch06/examples/generate_reference_audio.py)；完整展开见§56 |
 | 第 7 章 E07-01～05 | 有效帧、复数预测、秩亏加载、离线因果性、WPD | [增强练习](../cross_chapter/exercises_enhancement.py) |
 | 第 7 章 E07-08～21 | 复数拟合、功率约束、历史置换、秩、窗重叠、递推先验、MINT、资源、WPD加载与目标损伤音频、倒谱相位、设计求解及逆滤波噪声 | [WPE逐步实验](../../ch07/chapter07_experiments.py) |
 | 第7章 E07-22～24 | 接收与源时刻、历史因果边界、T60功率单位与真实整数PCM控制 | [唯一数值核](../../ch07/core/prediction_delays.py)、[章节入口](../../ch07/chapter07_experiments.py)、[六WAV生成/只读核验](../../ch07/examples/generate_delay_audio.py)；逐步展开见§57 |

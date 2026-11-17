@@ -1,10 +1,11 @@
-"""Hand fractions and independent physical/metric anchors for E06-22..33,40..41."""
+"""Hand fractions and independent physical/metric anchors for E06-22..33,40..41,43..44."""
 from fractions import Fraction as F
 import json
 import math
 import unittest
 import numpy as np
 from codes.chapters.ch06.chapter06_experiments import run_experiments
+from codes.chapters.ch06.core import nonlinear_and_stereo as ns
 
 
 class Chapter06Experiments(unittest.TestCase):
@@ -13,7 +14,10 @@ class Chapter06Experiments(unittest.TestCase):
         cls.results = run_experiments()
 
     def test_ids_and_finite_serialization(self):
-        self.assertEqual(set(self.results), {f'E06-{n}' for n in range(22,34)} | {'E06-40', 'E06-41'})
+        self.assertEqual(
+            set(self.results),
+            {f'E06-{n}' for n in range(22, 34)} | {'E06-40', 'E06-41', 'E06-43', 'E06-44'},
+        )
         json.dumps(self.results, allow_nan=False)
 
     def test_shared_normalization_independent_error_recurrence(self):
@@ -91,6 +95,111 @@ class Chapter06Experiments(unittest.TestCase):
         self.assertAlmostEqual(r['gain_error_term'], float(F(1,25)))
         self.assertAlmostEqual(r['orthogonal_error_term'], float(F(9,100)))
         self.assertAlmostEqual(r['total_relative_squared_error'], float(F(13,100)))
+
+    def test_hammerstein_legendre_conditioning_and_decoupling(self):
+        r = self.results['E06-43']
+        expected_raw = [[float(F(1, p + q + 1)) for q in (1, 3, 5)] for p in (1, 3, 5)]
+        np.testing.assert_allclose(r['raw_power_gram'], expected_raw, rtol=1e-15, atol=1e-15)
+        self.assertAlmostEqual(r['raw_power_determinant'], float(F(256, 22920975)), places=18)
+        self.assertAlmostEqual(
+            r['raw_power_condition_number_2branch'],
+            (25.0 + math.sqrt(541.0)) / (25.0 - math.sqrt(541.0)),
+            places=12,
+        )
+        # Verify 3-branch raw eigenvalues satisfy exact characteristic polynomial:
+        # mu^3 - (131/231) mu^2 + (19816/1091475) mu - (256/22920975) = 0.
+        raw_eigs = r['raw_power_eigenvalues_ascending']
+        for mu in raw_eigs:
+            poly = (
+                mu ** 3
+                - float(F(131, 231)) * (mu ** 2)
+                + float(F(19816, 1091475)) * mu
+                - float(F(256, 22920975))
+            )
+            self.assertAlmostEqual(poly, 0.0, places=14)
+        self.assertAlmostEqual(r['raw_power_condition_number_3branch'], 849.5758546, places=5)
+
+        # Unit-variance normalized power Gram cubic: lam^3 - 3 lam^2 + (53176/99225) lam - 256/99225 = 0.
+        self.assertAlmostEqual(r['unit_power_determinant'], float(F(256, 99225)), places=15)
+        self.assertAlmostEqual(
+            r['unit_power_condition_number_2branch'],
+            (5.0 + math.sqrt(21.0)) / (5.0 - math.sqrt(21.0)),
+            places=12,
+        )
+        for lam in r['unit_power_eigenvalues_ascending']:
+            poly = (
+                lam ** 3
+                - 3.0 * (lam ** 2)
+                + float(F(53176, 99225)) * lam
+                - float(F(256, 99225))
+            )
+            self.assertAlmostEqual(poly, 0.0, places=14)
+        self.assertAlmostEqual(r['unit_power_condition_number_3branch'], 567.4541521, places=5)
+        self.assertAlmostEqual(r['legendre_condition_number_3branch'], float(F(11, 3)), places=14)
+        self.assertEqual(r['orthonormal_legendre_condition_number_3branch'], 1.0)
+
+        # Exact Fraction weights [97/100, 2/25, 2/25] and variance decomposition.
+        np.testing.assert_allclose(
+            r['legendre_coefficients'],
+            [float(F(97, 100)), float(F(2, 25)), float(F(2, 25))],
+            rtol=1e-15,
+            atol=1e-15,
+        )
+        self.assertAlmostEqual(r['best_linear_truncation_gain'], float(F(97, 100)), places=15)
+        self.assertTrue(r['linear_gain_matches_first_legendre_weight'])
+        self.assertAlmostEqual(r['linear_explained_variance'], float(F(9409, 30000)), places=15)
+        self.assertAlmostEqual(r['residual_nonlinear_variance'], float(F(72, 48125)), places=15)
+        self.assertAlmostEqual(r['total_output_variance'], float(F(727949, 2310000)), places=15)
+        self.assertLessEqual(r['max_pointwise_basis_difference'], 1e-15)
+
+    def test_stereo_tv_allpass_deadlines_and_switching_contracts(self):
+        r = self.results['E06-44']
+        lti = r['stereo_decorrelation']['lti_allpass']
+        np.testing.assert_allclose(
+            lti['x2'],
+            [float(F(1, 2)), float(F(3, 4)), float(F(-3, 8)), float(F(11, 16)), float(F(21, 32))],
+            atol=1e-15,
+        )
+        self.assertAlmostEqual(lti['determinant'], 0.0, places=15)
+        self.assertEqual(lti['rank'], 3)
+        np.testing.assert_allclose(lti['null_product'], [0.0, 0.0, 0.0, 0.0], atol=1e-15)
+
+        tv = r['stereo_decorrelation']['time_varying_allpass']
+        np.testing.assert_allclose(tv['x2'], [0.0, 1.0, 0.0, 0.5, 0.75], atol=1e-15)
+        self.assertAlmostEqual(tv['determinant'], 0.25, places=15)
+        self.assertEqual(tv['rank'], 4)
+        np.testing.assert_allclose(tv['echo_snapshots'], [0.8, 0.6, 1.0, 0.55], atol=1e-15)
+        np.testing.assert_allclose(tv['recovered_stereo_path'], [0.8, 0.2, 0.4, 0.1], atol=1e-15)
+
+        anc = r['loop_deadlines']['anc']
+        self.assertAlmostEqual(anc['max_electronic_delay_ms'], float(F(100, 343)), places=12)
+        self.assertAlmostEqual(anc['max_electronic_delay_samples'], float(F(1600, 343)), places=11)
+        self.assertAlmostEqual(anc['block_to_budget_ratio'], 27.44, places=12)
+        self.assertFalse(anc['broadband_causal_anc_feasible'])
+        self.assertTrue(r['loop_deadlines']['digital_aec']['ram_reference_alignment_feasible'])
+
+        icc = r['loop_deadlines']['icc_itu_t_p1150']
+        self.assertAlmostEqual(icc['comb_peak_to_notch_swing_db'], 20.0 * math.log10(9.0), places=12)
+        self.assertAlmostEqual(icc['howling_gain_margin_db'], 20.0 * math.log10(2.0), places=12)
+        c10, c25 = icc['cases']
+        self.assertEqual(
+            (c10['itu_t_p1150_compliant'], c10['comb_notch_spacing_hz'], c10['first_notch_hz'], c10['notches_in_0_to_1000_hz']),
+            (True, 100.0, 50.0, 10),
+        )
+        self.assertEqual(
+            (c25['itu_t_p1150_compliant'], c25['comb_notch_spacing_hz'], c25['first_notch_hz'], c25['notches_in_0_to_1000_hz']),
+            (False, 40.0, 20.0, 25),
+        )
+
+        wins = r['dual_filter_switching']['windows']
+        self.assertEqual(wins['window_A_path_change']['action'], 'copy_shadow_to_foreground')
+        self.assertEqual(wins['window_B_double_talk_diverged']['action'], 'reset_shadow_from_foreground')
+        self.assertEqual(wins['window_C_double_talk_overfit_blocked']['action'], 'hold')
+
+        with self.assertRaises(ValueError):
+            ns.first_order_allpass_decorrelate([1.0, 0.0], [1.0, 0.0])
+        with self.assertRaises(ValueError):
+            ns.dual_filter_switch_decision(True, 0.1, 0.9)
 
 
 if __name__ == '__main__':

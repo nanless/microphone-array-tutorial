@@ -1,4 +1,4 @@
-"""E10-18..34: engineering calculations and checked PCM, not hardware benchmarks.
+"""E10-18..36: engineering calculations and checked PCM, not hardware benchmarks.
 
 Run ``python -m codes.chapters.ch10.chapter10_experiments``. Every answer is computed
 from the stated inputs. Published audio is checked read-only, never regenerated.
@@ -26,6 +26,7 @@ from codes.chapters.ch10.sro_closed_loop_demo import StatefulLinearClockCorrecto
 from codes.chapters.ch10.core.noise_mismatch import build_fixture, analyze_fixture, analyze_pcm, STEMS
 from codes.chapters.ch10.examples.generate_noise_mismatch import check_assets, OUTPUT as NOISE_OUTPUT
 from codes.chapters.ch10.core.channel_selection import teaching_channel_selection
+from codes.chapters.ch10.core.pdm_and_eval import pdm_cic_teaching_case, p340_p808_teaching_case
 
 
 def rtf_anchor():
@@ -406,12 +407,21 @@ def channel_selection_anchor(directory=None):
             'scope': manifest['limits']}
 
 
+def pdm_cic_anchor():
+    return pdm_cic_teaching_case()
+
+
+def p340_p808_anchor():
+    return p340_p808_teaching_case()
+
+
 def run_experiments():
     functions = [rtf_anchor, subtraction_anchor, q15_anchor, critical_path_anchor,
                  phase_drift_anchor, memory_anchor, streaming_anchor, alias_anchor,
                  telemetry_anchor, agc_anchor, noise_update_anchor, finite_rir_anchor,
                  blocking_anchor, clock_identifiability_anchor, padded_rtf_anchor,
-                 noise_mismatch_anchor, channel_selection_anchor]
+                 noise_mismatch_anchor, channel_selection_anchor, pdm_cic_anchor,
+                 p340_p808_anchor]
     return {f'E10-{number:02d}': function() for number, function in enumerate(functions, 18)}
 
 

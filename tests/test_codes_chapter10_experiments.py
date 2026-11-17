@@ -1,4 +1,4 @@
-"""Independent answers for E10-18..34 and read-only PCM contract failures."""
+"""Independent answers for E10-18..36 and read-only PCM contract failures."""
 import math
 import json
 import shutil
@@ -11,6 +11,7 @@ import unittest
 import numpy as np
 from codes.chapters.ch10.chapter10_experiments import run_experiments, agc_anchor, noise_mismatch_anchor, channel_selection_anchor, ROOT
 from codes.chapters.ch10.core.noise_mismatch import build_fixture
+from codes.chapters.ch10.core.pdm_and_eval import cic_decimation_metrics, p340_and_p808_evaluation
 from codes.chapters.ch10.examples.generate_noise_mismatch import OUTPUT as NOISE_OUTPUT
 from codes.chapters.ch00.core.audio_samples import agc_blocks_case, prepare_exports, read_pcm16
 
@@ -21,7 +22,7 @@ class Chapter10ExperimentsTests(unittest.TestCase):
         cls.answers = run_experiments()
 
     def test_identifiers(self):
-        self.assertEqual(list(self.answers), [f'E10-{i}' for i in range(18, 35)])
+        self.assertEqual(list(self.answers), [f'E10-{i}' for i in range(18, 37)])
 
     def test_channel_selection_separates_target_loss_and_noise(self):
         answer = self.answers['E10-34']
@@ -336,3 +337,68 @@ class Chapter10ExperimentsTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 noise_mismatch_anchor(destination)
             self.assertEqual(path.read_bytes(), changed)
+
+    def test_pdm_cic_register_droop_and_half_clock_skew_independent(self):
+        ans = self.answers['E10-35']
+        r16 = ans['stage1_R16']
+        r64 = ans['stage1_R64']
+        r64_16k = ans['single_16khz_R64_7khz']
+        # Independent moving-average DFT sum for 16-tap and 64-tap boxcars.
+        omega_pdm = 2 * math.pi * 7000 / 3_072_000
+        box16 = abs(sum(np.exp(-1j * omega_pdm * k) for k in range(16)) / 16)
+        box64 = abs(sum(np.exp(-1j * omega_pdm * k) for k in range(64)) / 64)
+        self.assertEqual((r16['dc_gain'], r16['max_register_bits'], r16['fits_signed_24bit']),
+                         (65536, 17, True))
+        self.assertEqual((r64['dc_gain'], r64['max_register_bits'], r64['fits_signed_24bit']),
+                         (16777216, 25, False))
+        self.assertAlmostEqual(r16['passband_gain'], box16**4, places=12)
+        self.assertAlmostEqual(r16['passband_droop_db'], 80 * math.log10(box16), places=11)
+        self.assertAlmostEqual(r64['passband_droop_db'], 80 * math.log10(box64), places=11)
+        self.assertAlmostEqual(r16['group_delay_us'], float(Fraction(4 * 15 * 1_000_000, 6_144_000)), places=12)
+        self.assertAlmostEqual(r64['group_delay_us'], float(Fraction(4 * 63 * 1_000_000, 6_144_000)), places=12)
+        # Independent check of 16 kHz single-stage R=64 droop at 7 kHz (-11.7216 dB vs continuous -11.7243 dB).
+        exact_16k_stage = math.sin(7 * math.pi / 16) / (64 * math.sin(7 * math.pi / 1024))
+        self.assertAlmostEqual(r64_16k['passband_droop_db'], 80 * math.log10(exact_16k_stage), places=11)
+        self.assertAlmostEqual(r64_16k['continuous_sinc_droop_db'],
+                               80 * math.log10(math.sin(7 * math.pi / 16) / (7 * math.pi / 16)), places=11)
+        # Independent stereo half-clock skew and 2-mic cardioid null shift.
+        self.assertAlmostEqual(ans['half_clock_skew_ns'], 1e9 / 6_144_000, places=9)
+        self.assertAlmostEqual(ans['phase_error_7khz_deg'], float(Fraction(105, 256)), places=12)
+        expected_null = math.degrees(math.acos(-(1 - (343 / 6_144_000) / 0.012)))
+        self.assertAlmostEqual(ans['endfire_null_deg'], expected_null, places=12)
+        self.assertAlmostEqual(ans['endfire_null_shift_deg'], 180 - expected_null, places=12)
+        # Independent HAL (1.0, 0.8) 180-deg to 0-deg differential ratio at 1 kHz.
+        two_omega_tau = 4 * math.pi * 1000 * 0.012 / 343
+        expected_hal = 0.2 / math.sqrt(1 + 0.64 - 1.6 * math.cos(two_omega_tau))
+        self.assertAlmostEqual(ans['hal_voice_comm_180_rel_linear'], expected_hal, places=12)
+        for bad_kwargs in (
+            dict(pdm_clock_hz=3_072_000.0, decimation=True, order=4, eval_freq_hz=7000.0),
+            dict(pdm_clock_hz=3_072_000.0, decimation=64, order=4, eval_freq_hz=24000.0),
+            dict(pdm_clock_hz=float('nan'), decimation=16, order=4, eval_freq_hz=7000.0),
+        ):
+            with self.assertRaises(ValueError):
+                cic_decimation_metrics(**bad_kwargs)
+
+    def test_p340_duplex_types_and_p808_exact_fraction_screening(self):
+        ans = self.answers['E10-36']
+        p340 = ans['p340']
+        self.assertEqual([p340[k]['overall_type'] for k in ('A', 'B', 'C')],
+                         ['Type 3', 'Type 2b', 'Type 1'])
+        self.assertAlmostEqual(p340['A']['sending_dt_attenuation_db'], 20 * math.log10(5), places=12)
+        self.assertAlmostEqual(p340['B']['sending_dt_attenuation_db'], 20 * math.log10(2.5), places=12)
+        self.assertAlmostEqual(p340['B']['receiving_dt_attenuation_db'], 20 * math.log10(2), places=12)
+        self.assertAlmostEqual(p340['C']['sending_dt_attenuation_db'], 20 * math.log10(1.25), places=12)
+        self.assertAlmostEqual(p340['C']['receiving_dt_attenuation_db'], 20 * math.log10(10 / 9), places=12)
+        p808 = ans['p808']
+        self.assertEqual(p808['accepted_workers'], ['w1', 'w2', 'w3', 'w4'])
+        self.assertEqual(p808['rejected_workers'], ['w5', 'w6'])
+        self.assertEqual((p808['raw_mos_fraction'], p808['screened_mos_fraction'], p808['mos_debias_fraction']),
+                         ('29/8', '69/16', '11/16'))
+        self.assertEqual((p808['raw_mos'], p808['screened_mos'], p808['mos_debias_delta']),
+                         (3.625, 4.3125, 0.6875))
+        self.assertEqual(p808['worker_retention_fraction'], '2/3')
+        with self.assertRaises(ValueError):
+            p340_and_p808_evaluation(
+                (0.2, 0.2), {'C': (0.16, 0.18)},
+                [{'worker_id': 'bad', 'trap': 3, 'gold': (3, 3), 'clips': [3, 3]}],
+            )

@@ -431,7 +431,7 @@
 .venv/bin/python -m unittest discover -s tests -p 'test_codes*.py' -v
 ```
 
-需要从头重新生成音频或重绘插图时，可参照[构建说明](../scripts/README.md)与附录 B [§15.7](15_appendix-guide.md#sec-15-7) 操作（附录 B 房间仿真练习需在固定版本 `pyroomacoustics` 独立环境中生成）。此外，全书共配 413 道稳定编号代码练习（`E01-01` 至 `E17-16`）：其中第 1～13 章与附录 A、B 的 381 道汇总于[章节代码练习与音频实验](../codes/chapters/ch00/research/05_exercises_and_audio.md)，第 16、17 章的 32 道分别见[专题Ⅲ §16.11](16_spatial-wearable-arrays.md#sec-16-11)与[专题Ⅳ §17.10](17_target-extraction-diarization.md#sec-17-10)，每道题均给出明确输入、运行入口与可核查数值结果。
+需要从头重新生成音频或重绘插图时，可参照[构建说明](../scripts/README.md)与附录 B [§15.7](15_appendix-guide.md#sec-15-7) 操作（附录 B 房间仿真练习需在固定版本 `pyroomacoustics` 独立环境中生成）。此外，全书共配 415 道稳定编号代码练习（`E01-01` 至 `E17-16`）：其中第 1～13 章与附录 A、B 的 383 道汇总于[章节代码练习与音频实验](../codes/chapters/ch00/research/05_exercises_and_audio.md)，第 16、17 章的 32 道分别见[专题Ⅲ §16.11](16_spatial-wearable-arrays.md#sec-16-11)与[专题Ⅳ §17.10](17_target-extraction-diarization.md#sec-17-10)，每道题均给出明确输入、运行入口与可核查数值结果。
 
 <a id="audio-assets"></a>
 

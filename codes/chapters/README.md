@@ -16,7 +16,7 @@
 | [ch07](ch07/) | `ch07.chapter07_experiments`、`ch07.wpe_temporal_contract`、`ch07.examples.mint_teaching_demo`、`ch07.examples.generate_delay_audio`、`ch07.examples.audit_upstream_wpe_contracts` | 单章入口E07-08～26，E07-01～07由跨章入口提供；在线WPE时间/排列、设计矩阵求解、已知到达与历史PCM控制及逆滤波噪声权衡；`mint_teaching_demo --check`只读核验，NeMo仅固定源码静态检查 |
 | [ch08](ch08/) | `ch08.chapter08_experiments`、`ch08.gss_activity_error_demo`、`ch08.examples.mask_representation_demo`、`ch08.examples.generate_css_audio`、`ch08.examples.audit_upstream_separation_contracts` | 单章入口E08-12～34，E08-01～11由跨章入口提供；另有固定密度下活动标注误差；不是官方 GPU 整链 |
 | [ch09](ch09/) | `ch09.chapter09_experiments`、`ch09.tracking_crossing_dropout_demo` | E09-10～28；轨迹交叉、缺测、模式密度、双时钟生命周期与球面方向的限定例 |
-| [ch10](ch10/) | `ch10.chapter10_experiments`、`ch10.spectral_subtraction_demo`、`ch10.sro_closed_loop_demo` | E10-13、E10-18～34；合成时间戳及有状态插值，不是声卡实时实测 |
+| [ch10](ch10/) | `ch10.chapter10_experiments`、`ch10.spectral_subtraction_demo`、`ch10.sro_closed_loop_demo` | E10-13、E10-18～36；合成时间戳及有状态插值，不是声卡实时实测 |
 | [ch11](ch11/) | `ch11.chapter11_experiments` | E11-10～27；硬约束、评分和 FIR 取舍，示意分数不代表产品测量 |
 | [ch12](ch12/) | `ch12.chapter12_exercises`、`ch12.examples.generate_imaging_audio`、`ch12.examples.audit_upstream_imaging_contracts` | E12-01～18；球面CSM/PSF、DAMAS前/双向、有限小矩阵NNLS、作者full-CSM CLEAN-SC及目标失配；五独立PCM及固定原方法差异分开 |
 | [ch13](ch13/) | `ch13.chapter13_exercises`、`ch13.examples.generate_distributed_audio`、`ch13.examples.audit_upstream_distributed_contracts` | E13-01～25；指定MWF任务与压缩、真实广播后接收状态、GEVD/树控制；17独立PCM及限定原helper合同分开 |
@@ -38,7 +38,7 @@
 `MVDR target response` 应接近 1；STFT 重建误差接近浮点舍入。极高的匹配无噪声 AEC ERLE 是算术
 收敛检查，队列示例中的超期次数则来自构造的负载，二者均不代表设备测量。完整核对步骤见导读。
 
-旧的 `codes.examples.*` 和 `codes.array_tutorial.*` 导入路径已经退出仓内接口。运行时使用上表中的章节模块；修改题目时改唯一真实源文件，再核对全书 413 个稳定练习 ID、对应章节和覆盖表。
+旧的 `codes.examples.*` 和 `codes.array_tutorial.*` 导入路径已经退出仓内接口。运行时使用上表中的章节模块；修改题目时改唯一真实源文件，再核对全书 415 个稳定练习 ID、对应章节和覆盖表。
 
 E10-17 的变长回调时序在 [跨章工程边界入口](ch00/cross_chapter/engineering_boundary_exercises.py) 内复算。 [MacBook Air 单麦实测](ch10/examples/macbook_audio_latency/README.md)提供原生测量程序、回调时间戳日志和逐次声学偏移。第 11 章统一入口的 E11-13 同时报迟到、未交付、分场景分母和合并结果；[R01 实录](ch02/real_audio/README.md)另用于检查整段和最差窗口的区别。
 

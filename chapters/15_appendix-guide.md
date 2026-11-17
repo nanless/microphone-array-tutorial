@@ -1,4 +1,4 @@
-> ⚠️ 本篇是第 15 章，即附录 B（正文共 13 章，其中第 12、13 章为扩展专题；另有附录 A/B），可独立查阅，前后篇见下方导航。
+> ⚠️ 本篇是第 15 章，即附录 B（正文与扩展专题共 15 章，其中第 12、13、16、17 章为扩展专题，另有附录 A、B），可独立查阅，前后篇见下方导航。
 >
 > 🏠 首页导读：[`00_overview.md`](00_overview.md) ｜ 上一篇：[14_appendix-symbols-math.md](14_appendix-symbols-math.md) ｜ 下一篇：（无）
 
@@ -19,11 +19,13 @@
 
     1. 运行 `codes/` 中仅依赖 NumPy 的教学实现，逐项核对手算算例、张量维度与退化边界。
     2. 在隔离环境中用 pyroomacoustics 验证 DSB、MVDR、MUSIC 和 SRP-PHAT 基线，完整记录房间尺寸、阵列坐标与随机种子。
-    3. 先按 §15.7 生成插图所需的合成音频与追踪清单，再运行 `scripts/` 中的 9 个绘图脚本，在固定参数下复现全部 80 张编号图，并对照正文逐图核验成立条件。
+    3. 先按 §15.7 生成插图所需的合成音频与追踪清单，再运行 `scripts/` 中的 11 个绘图脚本，在固定参数下复现全部 88 张编号图，并对照正文逐图核验成立条件。
     4. 围绕具体任务选定公开数据集与固定版本参考系统，分别核实源码、模型权重和数据集的使用许可与评分口径。
     5. 在多通道采集硬件上实测处理延迟、时钟同步与幅相标定；仿真指标不能代替真实设备测量。
 
-读完第 2、3、5 章后，若关注声源强度反演与区域声场诊断，可选读[扩展专题Ⅰ](12_acoustic-imaging.md)；读完第 2、5、10 章后，若关注带宽受限与异步时钟下的多设备协同处理，可选读[扩展专题Ⅱ](13_distributed-enhancement.md)。这两篇专题按工程任务按需选学即可，并非基础入门的必经环节。
+读完第 2、3、5 章后，若关注声源强度反演与区域声场诊断，可选读[扩展专题Ⅰ：声学成像与噪声源诊断](12_acoustic-imaging.md)；读完第 2、5、10 章后，若关注带宽受限与异步时钟下的多设备协同处理，可选读[扩展专题Ⅱ：分布式麦克风协同增强](13_distributed-enhancement.md)。
+
+读完第 1、2、5 章后，若关注全景声球谐采集、双耳信号匹配与可穿戴跨模态降噪，可选读[扩展专题Ⅲ：空间声场采集、参数化编码与可穿戴阵列](16_spatial-wearable-arrays.md)；读完第 5、8、9、10 章后，若关注声纹、近场或视听线索驱动的目标提取与多人重叠日志，可选读[扩展专题Ⅳ：条件目标提取、多通道日志与远场多模态前端](17_target-extraction-diarization.md)。这四篇专题按工程任务按需选学即可，并非基础入门的必经环节。
 
 ### 15.2 领域地图：教材、会议、期刊与挑战赛
 
@@ -39,7 +41,7 @@
 | Johnson & Dudgeon, *Array Signal Processing: Concepts and Techniques*（Prentice Hall，1993） | 通用阵列信号处理经典教材，呈现雷达、声呐与声学阵列的同源理论 |
 | Van Trees, *Optimum Array Processing*（Wiley，2002） | 严密推导统计最优阵列处理与性能界，适合深入查阅数学细节 |
 | Vincent, Virtanen & Gannot (eds.), *Audio Source Separation and Speech Enhancement*（Wiley，2018） | 现代音源分离与多通道语音增强方法的系统合集 |
-| Rafaely, *Fundamentals of Spherical Array Processing*（Springer，第一版 2015，DOI 10.1007/978-3-662-45664-4；第二版在线 2018、版权 2019，DOI 10.1007/978-3-319-99561-8） | 系统讲授球面阵列与球谐域波束形成，可配合 §5.8 延伸阅读 |
+| Rafaely, *Fundamentals of Spherical Array Processing*（Springer，第一版 2015，DOI 10.1007/978-3-662-45664-4；第二版在线 2018、版权 2019，DOI 10.1007/978-3-319-99561-8） | 系统讲授球面阵列与球谐域波束形成，可配合 §5.8 与[扩展专题Ⅲ §16.2](16_spatial-wearable-arrays.md#sec-16-2) 延伸阅读 |
 
 **核心会议**：ICASSP（信号处理旗舰年会）、Interspeech（语音科学旗舰年会）、WASPAA（音频与声学信号处理研讨会，每两年一届）、IWAENC（声学信号增强国际研讨会）、HSCMA（免提语音通信与麦克风阵列研讨会）、DCASE Workshop（声事件检测与声学场景分析）。
 
@@ -53,7 +55,7 @@ DCASE 2026 的系统提交已于 2026 年 6 月 15 日截止，并于同年 7 �
 
 需要留意的是，[DCASE 2026 Task 3](https://dcase.community/challenge2026/task-semantic-acoustic-imaging-for-sound-event-localization-and-detection-from-spatial-audio-and-audiovisual-scenes) 要求同时输出声事件类别与空间能量分布，并按官方图像匹配及相关性指标打分。本书第 12 章的 DAS、DAMAS 或 CMF 虽能给出给定传播模型下的空间功率图，但本身不包含声事件分类器或赛事输出封装；若将其用作前端基线对照，应分别汇报物理成像误差与下游语义评测得分，不能拿功率图颜色或第 12 章的内部残差指标替代赛事总分。
 
-其他代表性评测还包括 REVERB 去混响评测、ICASSP DNS/AEC Challenge，以及已结项的 [SPEAR Challenge 2023](https://signalprocessingsociety.org/publications-resources/data-challenges/speech-enhancement-augmented-reality-spear-challenge-2023)。SPEAR 采用 6 通道头戴设备研究增强现实（AR）场景的语音增强，引用时应注明其特定年份、佩戴几何与评测条件，不宜外推为持续更新的通用榜单。
+其他代表性评测还包括 REVERB 去混响评测、ICASSP DNS/AEC Challenge，以及已结项的 [SPEAR Challenge 2023](https://signalprocessingsociety.org/publications-resources/data-challenges/speech-enhancement-augmented-reality-spear-challenge-2023)。SPEAR 采用 6 通道头戴设备研究增强现实（AR）场景的语音增强（头戴式双耳信号匹配 BSM/MagLS 与双耳相干度保持原理见[扩展专题Ⅲ §16.5～§16.7](16_spatial-wearable-arrays.md#sec-16-5)），引用时应注明其特定年份、佩戴几何与评测条件，不宜外推为持续更新的通用榜单。
 
 **技术演进脉络**（麦克风阵列处理很大程度上是从雷达、声呐与地震阵列向宽带房间语音迁移并不断融合统计学习的历史）：
 
@@ -86,11 +88,11 @@ DCASE 2026 的系统提交已于 2026 年 6 月 15 日截止，并于同年 7 �
 
 #### 研究方向二：阵列无关系统
 
-Cornell 等在 [CHiME-8 DASR 任务报告](https://www.isca-archive.org/chime_2024/cornell24_chime.pdf)中定义了跨异构设备的远场多说话人识别任务，并提供了 ESPnet 与 NeMo 两条官方基线。该报告并非针对某一特定通道聚合网络的算法论文，两条基线在说话人分割、多通道前端增强与识别后端上的具体配置需要对照原文 §5 与 §6 分别查阅，其跨设备泛化表现也以该任务的训练语料、测试硬件与评分脚本为界。
+Cornell 等在 [CHiME-8 DASR 任务报告](https://www.isca-archive.org/chime_2024/cornell24_chime.pdf)中定义了跨异构设备的远场多说话人识别任务，并提供了 ESPnet 与 NeMo 两条官方基线。该报告并非针对某一特定通道聚合网络的算法论文，两条基线在说话人日志（说话人分割）、多通道前端增强与识别后端上的具体配置需要对照原文 §5 与 §6 分别查阅，其跨设备泛化表现也以该任务的训练语料、测试硬件与评分脚本为界。
 
 #### 研究方向三：目标说话人提取
 
-目标说话人提取（Target Speaker Extraction，TSE）利用预先录制的注册语音、视觉口型或空间方向提示来刻画目标说话人，再从多源混合语音中分离出对应的单人语音轨。头戴式 AR 眼镜阵列与手机声学微结构则进一步拓展了空间条件线索的获取方式。
+目标说话人提取（Target Speaker Extraction，TSE）利用预先录制的注册语音、视觉口型或空间方向提示来刻画目标说话人，再从多源混合语音中分离出对应的单人语音轨。头戴式 AR 眼镜阵列与手机声学微结构则进一步拓展了空间条件线索的获取方式；有关特征级线性调制（FiLM）、目标沉默段双态能量地板损失与近场球面波声学距离气泡的完整推导详见[扩展专题Ⅳ §17.1～§17.3](17_target-extraction-diarization.md#sec-17-1)。
 
 查阅文献时需注意版本演进：发表于 ICASSP 2022 的 [TEA-PSE 原工作](https://doi.org/10.1109/ICASSP43922.2022.9747765)与后续评测迭代的 [TEA-PSE 3.0](https://arxiv.org/abs/2303.07704) 在网络结构与训练配置上存在差异，不宜混为一谈。发表于 ICASSP 2024 的 [CIENet](https://cmsworkshops.com/ICASSP2024/view_paper.php?PaperNum=3147)（方法细节可对照[作者预印本](https://arxiv.org/abs/2402.17146)）则将注册语音与混合语音的时频表示送入跨注意力交互模块，逐帧计算随时间变化的目标关联权重，而非把整段注册语音压缩为单一静态嵌入向量后简单拼接到混合频谱上。
 
@@ -112,7 +114,7 @@ SonicSieve（CHI 2026，见[项目主页](https://www.witechlab.com/sonicsieve.h
 
 #### 研究方向六：几何无关前端的期刊研究
 
-Kamo 等在 *Computer Speech & Language* 95:101820（2026，见[期刊正式页](https://www.sciencedirect.com/science/article/pii/S0885230825000452)与[作者 v2 全文](https://arxiv.org/html/2502.09859v2)）中系统梳理了一套面向真实会议录音的几何无关多说话人远场识别流水线。对照作者 v2 原文第 2 节与第 4.1～4.3.6 节可以看到，系统并非由单个端到端分离掩码包办一切：前端先做局部说话人分割，利用初步 GSS 输出提取说话人声纹嵌入，再经跨块全局聚类确定说话人数，最后由目标说话人语音活动检测（TS-VAD）精细修正每人的发声起止区间——说话人活动、总人数与身份归属在级联步骤中各司其职。
+Kamo 等在 *Computer Speech & Language* 95:101820（2026，见[期刊正式页](https://www.sciencedirect.com/science/article/pii/S0885230825000452)与[作者 v2 全文](https://arxiv.org/html/2502.09859v2)）中系统梳理了一套面向真实会议录音的几何无关多说话人远场识别流水线。对照作者 v2 原文第 2 节与第 4.1～4.3.6 节可以看到，系统并非由单个端到端分离掩码包办一切：前端先做局部说话人日志，利用初步 GSS 输出提取说话人声纹嵌入，再经跨块全局聚类确定说话人数，最后由目标说话人语音活动检测（TS-VAD，多通道空谱扩展与排他掩码闭环见[§17.5](17_target-extraction-diarization.md#sec-17-5)）精细修正每人的发声起止区间——说话人活动、总人数与身份归属在级联步骤中各司其职。
 
 在多通道增强环节，系统先按空间协方差最大特征值（EV）和早晚混响能量比（$C_{50}$）筛选可用通道，随后串联 WPE 去混响、GSS 分离与空间预测多通道维纳滤波（SP-MWF），再依据估计输出信噪比挑出参考通道、施加盲解析归一化（BAN）后送入语音识别后端（其中涉及的波束、WPE 与 GSS 原理及手算可分别对照第 5、7、8 章）。这里所说的“几何无关”，是指算法不依赖预先写入的阵列三维坐标，但仍假定参与融合的通道已完成同步对齐，并不能直接免疫跨设备时钟漂移或剧烈的声学域失配。
 
@@ -120,7 +122,7 @@ Kamo 等在 *Computer Speech & Language* 95:101820（2026，见[期刊正式页]
 
 [CHiME-9 官方任务页](https://www.chimechallenge.org/challenges/chime9/index)设置了两项输入模态与优化目标截然不同的赛道：MCoRec 利用房间中央的 360° 全景音视频，要求转写多人对话并聚类出会话群组；ECHI 则面向助听场景，要求佩戴者端以流式因果方式增强对话对象语音，[官方规则](https://www.chimechallenge.org/challenges/chime9/task2/rules)规定算法总延迟不超过 20 ms。因此，两项赛道的得分不能合并为同一张“CHiME-9 语音增强”榜单。
 
-围绕多人重叠语音中“只转写指定说话人”的任务，DiCoW（Polok et al., *Computer Speech & Language* 95:101841，2026，[DOI 10.1016/j.csl.2025.101841](https://doi.org/10.1016/j.csl.2025.101841)）直接把说话人分割给出的时序活动标签作为条件注入 Whisper 模型，端到端输出目标说话人的文本，跳过了“先还原分离波形、再送入常规识别器”的中间环节。
+围绕多人重叠语音中“只转写指定说话人”的任务，DiCoW（Polok et al., *Computer Speech & Language* 95:101841，2026，[DOI 10.1016/j.csl.2025.101841](https://doi.org/10.1016/j.csl.2025.101841)）直接把说话人日志给出的时序活动标签作为条件注入 Whisper 模型，端到端输出目标说话人的文本，跳过了“先还原分离波形、再送入常规识别器”的中间环节（与级联链路及 SOT 的选型对比见[§17.7](17_target-extraction-diarization.md#sec-17-7)）。
 
 查阅其公开仓库时需区分代码入口与演进分支：在[演示仓固定提交](https://github.com/BUTSpeechFIT/DiCoW/tree/e9326bd536bf632e823357438b210102903ba620)中，[`example.py`](https://github.com/BUTSpeechFIT/DiCoW/blob/e9326bd536bf632e823357438b210102903ba620/example.py#L8-L14) 调用 DiCoW v1 配合 Pyannote 3.1，而 [`app.py`](https://github.com/BUTSpeechFIT/DiCoW/blob/e9326bd536bf632e823357438b210102903ba620/app.py#L31-L39) 调用 DiCoW v2 配合 Pyannote 3.1，不能仅凭同一仓库提交号视为同一模型版本；配套的[训练与推理源码仓](https://github.com/BUTSpeechFIT/TS-ASR-Whisper/tree/0ea6679d44405f5ff39188030123524686c198e9)则独立维护（演示仓后续主分支新增的 DiariZen 依赖并非上述固定提交的运行前提）。此外，代码与模型权重的许可边界必须分开核查：源码采用 Apache-2.0，[DiCoW v1 权重](https://huggingface.co/BUT-FIT/DiCoW_v1)与 [DiCoW v2 权重](https://huggingface.co/BUT-FIT/DiCoW_v2)采用 CC BY 4.0，后续演示引入的 [DiariZen 权重](https://github.com/BUTSpeechFIT/DiariZen/blob/main/MODEL_LICENSE)限定为非商用的 CC BY-NC 4.0，而 [Pyannote 3.1](https://huggingface.co/pyannote/speaker-diarization-3.1) 则设有门控申请要求。实验对比时应固定说话人活动标签来源、音频切片与文本规范化规则，并留意其面向转写的离线架构不能直接充当 ECHI 赛道的 20 ms 助听增强基线。
 
@@ -155,7 +157,7 @@ VarArray（[ICASSP 2022](https://doi.org/10.1109/ICASSP43922.2022.9746876)）进
 
 ### 15.4 常见问题与调试指南
 
-工程联调与算法复现中常遇到“跑通了代码，输出指标或听感却异常”的情况。下面先按“典型现象 → 优先排查顺序”列出基础链路最常见的八类问题，再用一张扩展速查表覆盖去混响、分离、追踪、声学成像与分布式阵列的排错要点。
+工程联调与算法复现中常遇到“跑通了代码，输出指标或听感却异常”的情况。下面先按“典型现象 → 优先排查顺序”列出基础链路最常见的八类问题，再用一张扩展速查表覆盖去混响、分离、追踪、声学成像、分布式阵列、空间可穿戴以及条件目标提取与多人日志的排错要点。
 
 1. **MUSIC 没有峰 / 峰位置不稳定** → 先核查样本协方差矩阵的秩与二范数条件数。若直接用 $T$ 个 $M$ 维频域快拍计算未中心化二阶矩，矩阵秩至多为 $T$，因此 $T<M$ 时必然奇异；若先减去样本均值，中心化后的 $T$ 个向量满足零和约束，矩阵秩至多为 $\min(M,T-1)$，故 $T\le M$ 时必然奇异。即便快拍数越过了这一代数下界，快拍过少仍会导致特征子空间剧烈抖动。
 
@@ -185,7 +187,7 @@ VarArray（[ICASSP 2022](https://doi.org/10.1109/ICASSP43922.2022.9746876)）进
 
     位置容差应按最高工作频率所允许的相位误差上限（如 $\pi/12$ 或 $\pi/8$）换算为物理毫米数，不同频段与波束算法并不共用同一个固定毫米阈值。完成幅相与几何标定后，还应在公差包络与多个方位距离点上交叉复测。
 
-对于后半部章节涉及的去混响、多源分离、动态追踪以及两篇扩展专题，若调试中遇到输出退化，可按下面这张扩展速查表逐列对照排查（表中第一列为模块名称，第二列描述典型异常表征，第三列给出优先核查的参数与物理边界，第四列指向正文详述章节）：
+对于后半部章节涉及的去混响、多源分离、动态追踪以及四篇扩展专题，若调试中遇到输出退化，可按下面这张扩展速查表逐列对照排查（表中第一列为模块名称，第二列描述典型异常表征，第三列给出优先核查的参数与物理边界，第四列指向正文详述章节）：
 
 | 模块与任务 | 典型异常现象 | 优先排查项与物理边界 | 对应章节 |
 |---|---|---|---|
@@ -194,15 +196,17 @@ VarArray（[ICASSP 2022](https://doi.org/10.1109/ICASSP43922.2022.9746876)）进
 | 多声源追踪 | 轨迹明显滞后于说话人走动、短暂停顿即断轨重分配 ID，或粒子坍缩 | 区分关联门控阈值过严与状态转移过程噪声过小；核查航迹生命周期管理是否混用了“观测可用时刻龄期”与“物理状态时钟龄期”（见图 77）；在粒子滤波中检查有效粒子数 $N_{\mathrm{eff}}$ 重采样触发率及有界扇区反射边界 | §9.2～§9.4 |
 | 声学成像（DAS / DAMAS / CMF） | 常规空间谱主瓣宽大、旁瓣伪峰密集，或反卷积源强和与目标声压级不符 | 先绘制当前频带与网格下的阵列点扩散函数（PSF）排查空间分辨率极限；检查强相干反射是否破坏互谱矩阵（CSM）的不相关源假设；核查 CSM 对角线自噪声剥离是否破坏半正定性，并区分逐格峰值与区域积分口径（见图 67～69、图 80） | §12.1～§12.4 |
 | 分布式阵列协同增强 | 多节点融合信噪比反低于单节点本地波束，或随时间推移出现梳状滤波失真 | 首要排查跨节点采样率偏移（SRO）与块起始时差是否破坏跨设备互谱相干性；其次检查无线丢包缺口窗是否把零填充或陈旧统计量混入协方差更新；在 DANSE 迭代中确认广播压缩系数更新后接收端是否同步重组了缓存权重（见图 70～72） | §13.2～§13.4 |
+| 空间采集与可穿戴阵列（FOA / BSM / 跨模态 / 通透） | 高频球阵全向能量塌陷、眼镜阵列高频音色空洞、助听背景噪声明显缩进头中、户外低频风噪暴涨或通透模式空心金属声 | 核查开球 $\kappa R=\pi$ 零陷与空间混叠边界；高频切换 BSM-MagLS 释放绝对相位；调节 BMVDR 参考混合系数 $\beta$ 恢复双耳相干度；用跨麦低频相干度检测风噪并切入耳内闭塞麦 MVDR 融合（忌对骨导高频直接做无噪逆均衡）；核查通透链路延迟是否满足 $\tau_{\mathrm{proc}}\le 100\,\mu\mathrm{s}$ | [§16.2～§16.10](16_spatial-wearable-arrays.md#sec-16-2) |
+| 条件目标提取与多人日志（TSE / 距离气泡 / TS-VAD / 视听） | 目标沉默时漏出旁人说话声、单人擦音发闷、小孔径距离气泡底噪轰鸣、多人讨论 DER 卡在 $25\%$ 以上或视听前端吞掉词首第一个字 | 启用式(17-6)双态静音地板损失并补充沉默训练切片；开启式(17-8)双槽零重叠能量比旁路；核验菲涅耳半径 $r_F=2D^2/\lambda$ 防 $\mathrm{WNG}\propto d^4$ 塌缩；将单标签聚类升级为多标签空谱 TS-VAD 并用式(17-25)排他掩码驱动 GSS；标定补偿摄像头正滞后 $\Delta t_{\mathrm{av}}$ 并加唇部遮挡置信度回退 | [§17.2～§17.6](17_target-extraction-diarization.md#sec-17-2) |
 
 ### 15.5 核心公式速查卡
 
-下表按章节脉络汇总全书正文及两篇扩展专题的核心公式与物理意义（第一列为公式或模型入口，第二列说明物理含义与关键边界条件，第三列指向推导章节），便于日常推导与复习速查；各项严格前提仍以对应章节正文为准。
+下表按章节脉络汇总全书正文及四篇扩展专题的核心公式与物理意义（第一列为公式或模型入口，第二列说明物理含义与关键边界条件，第三列指向推导章节），便于日常推导与复习速查；各项严格前提仍以对应章节正文为准。
 
 | 公式 | 含义与关键成立边界 | 章节 |
 |---|---|---|
 | $10\log_{10}M$ | 目标导向矢量各分量模长为 1、满足无失真归一化且各通道为独立等功率白噪声时，$M$ 元 DSB 的白噪声增益（WNG，单位 dB）；阵元含不等增益时不可直接套用 | §1、§5.2 |
-| $r_F=2D^2/\lambda$ | Fraunhofer 远场球面波相位曲率检验尺度，并非远近场硬截断分界；套用平面波流形前仍须联立核查 $r\gg D$、阵元间球面扩散幅度差及容许相位误差 | §2.2 |
+| $r_F=2D^2/\lambda$ | Fraunhofer 远场球面波相位曲率检验尺度，并非远近场硬截断分界；套用平面波流形前仍须联立核查 $r\gg D$、阵元间球面扩散幅度差及容许相位误差 | §2.2、[§17.3](17_target-extraction-diarization.md#sec-17-3) |
 | $T_{60} = 0.161V/A$ | 赛宾（Sabine）混响时间经验公式（均匀弱吸声近似扩散声场） | §2.4 |
 | $d_c = 0.057\sqrt{QV/T_{60}}$ | 临界距离：直达声与混响声能量相等处；$Q$ 为声源指向因子，$Q=1$ 时退化为全向点源形式 | §2.4 |
 | $\vec{x} = \vec{a}(\theta)s + \vec{n}$ | 远场窄带单源阵列接收信号模型 | §2.3 |
@@ -229,9 +233,13 @@ VarArray（[ICASSP 2022](https://doi.org/10.1109/ICASSP43922.2022.9746876)）进
 | KF 五步递推 | 状态与协方差预测 → 卡尔曼增益 → 状态与协方差更新；圆周方位角新息须先做角度折叠（wrap），有限精度下宜采用 Joseph 对称保正定形式 | §9.2 |
 | PHD 强度递推，见式(9-22)、式(9-23) | 概率假设密度（PHD）多目标强度函数的预测与贝叶斯更新；完整积分式在表后展开 | §9.3 |
 | $\varepsilon=(f_{s,m}-f_{s,0})/f_{s,0}$，$T_{\mathrm{alg}}=T_{\mathrm{win}}+T_{\mathrm{lookahead}}$ | 异步设备相对采样率偏移（SRO，引发累积时延漂移 $\varepsilon t$ 与频域线性相位旋转 $2\pi f\varepsilon t$）及帧级流式前瞻缓冲下界；端到端延迟还须计入采集缓冲、计算与调度 | §10.1、§10.2 |
-| $\mathrm{SI\text{-}SDR}=10\log_{10}\dfrac{\|\alpha s\|^2}{\|\hat{s}-\alpha s\|^2}$，$\max_i J_i$ | 尺度不变信失比（投影系数 $\alpha=\langle\hat{s},s\rangle/\|s\|^2$，零能量无定义）与多场景验收中的最坏工况风险（需与场景加权均值 $\sum_i q_i J_i$ 分开考核） | §11.1、§11.2 |
-| $b_g=\vec{w}_g^H\hat{\mathbf{C}}\vec{w}_g$，$\vec{b}=\mathbf{A}\vec{q}\ (\vec{q}\ge\vec{0})$ | 互谱矩阵（CSM）扫描功率图与不相关源点扩散正向模型（DAMAS / CMF 反卷积基础；空间功率分布图不等于增强音频波形） | §12.1～§12.3 |
-| $\hat{s}=\sum_{k=1}^K \vec{w}_k^H\vec{x}_k$，$z_k=\vec{g}_k^H\vec{x}_k$ | 分布式节点线性融合与 DANSE 局部压缩广播信号；逼近集中式维纳解需满足同步采样、无丢包缺口及连通拓扑假设 | §13.2、§13.3 |
+| $\mathrm{SI\text{-}SDR}=10\log_{10}\dfrac{\|\alpha s\|^2}{\|\hat{s}-\alpha s\|^2}$，$\max_i J_i$ | 尺度不变信号失真比（投影系数 $\alpha=\langle\hat{s},s\rangle/\|s\|^2$，零能量无定义）与多场景验收中的最坏工况风险（需与场景加权均值 $\sum_i q_i J_i$ 分开考核） | §11.1、§11.2 |
+| $b_i=\vec{w}_i^H\hat{\mathbf{R}}\vec{w}_i$，$\vec{b}=\mathbf{P}\vec{q}+\vec{b}_n$（$\vec{q}\ge\vec{0}$） | 互谱矩阵（CSM）扫描功率图与不相关源点扩散正向模型（DAMAS / CMF 反卷积基础；空间功率分布图不等于增强音频波形） | §12.3～§12.5 |
+| $\hat d_u=\vec f_u^H\vec x_u+\vec g_u^H\vec z_{-u}$，$\vec z_u=\mathbf F_u^H\vec x_u$ | 分布式节点本地加邻居融合输出与 DANSE 局部压缩广播信号；逼近集中式维纳解需满足同步采样、无丢包缺口及连通拓扑假设 | §13.5、§13.9 |
+| $\psi=1-\dfrac{\|\bar{\vec I}_a\|_2}{c\bar E}$，$\psi\in[0,1]$ | FOA 时间平均有功声强 $\bar{\vec I}_a=\mathbb{E}[\vec I_a]$ 与平均声能密度 $\bar E=\mathbb{E}[E]$ 定义的 DirAC 扩散度；多同频反向源干涉时会出现 $\psi\to 1$ 幻象扩散边界 | [§16.4](16_spatial-wearable-arrays.md#sec-16-4) |
+| BSM-MagLS 交替投影，见式(16-18)；$f_m=\dfrac{2m+1}{2\tau_{\mathrm{proc}}}$ | 高频释放目标耳绝对相位消除幅度零陷（低频仍须保 ITD 相位）；以及主动通透模式电声重放与被动漏声相消的梳状陷波频率 | [§16.6](16_spatial-wearable-arrays.md#sec-16-6)、[§16.10](16_spatial-wearable-arrays.md#sec-16-10) |
+| $\mathcal{L}_{\mathrm{dual}}$ 双态损失，见式(17-6)；气泡 $\mathrm{WNG}=\dfrac{8}{3}\sin^2(\phi_1/2)$ | 解决目标沉默段 $\vec{s}_{\mathrm{ref}}=\vec{0}$ 时 SI-SDR 的 $0/0$ 奇异；三麦正侧向近场距离气泡白噪声增益在微孔径下按 $d^4$ 陡降 | [§17.2](17_target-extraction-diarization.md#sec-17-2)、[§17.3](17_target-extraction-diarization.md#sec-17-3) |
+| $\mathrm{DER}$ 下界，见式(17-21)～(17-22)；排他掩码 $m_{k,t}^{\mathrm{tar}}$ 取 $\gamma_{k,t}\prod_{j\ne k}(1-\gamma_{j,t})$ | 漏检、虚警与混淆占参考总说话人时长之比（虚警高时可合法 $>100\%$）；GSS 排他目标掩码防止双讲重叠帧污染目标协方差 | [§17.4](17_target-extraction-diarization.md#sec-17-4)、[§17.5](17_target-extraction-diarization.md#sec-17-5) |
 
 上表中四组带多维上下标或积分号的表达式单独在下方展开，以便在窄屏与印刷版面看清共轭及积分变量；此处沿用原章节记号，不再重复赋予附录公式编号。
 
@@ -375,13 +383,13 @@ D_t(x)&=[1-p_{D,t}(x)]D_t^-(x)\\
 12. 手算与系统设计题：
 
     1. 某双输出语音分离网络对两条参考干净语音计算出的逐对损失矩阵为 $\begin{bmatrix}1.2&0.3\\0.4&1.5\end{bmatrix}$，求置换不变训练（PIT）选出的最优输出—参考对应关系及最小总损失。
-    2. 在某一频点上观测到两帧双通道频域快拍 $\mathbf{X}_1=[1,1]^\top$ 与 $\mathbf{X}_2=[1,-1]^\top$，已知目标时频掩码序列为 $\gamma=[0.75,0.25]$，试计算归一化掩码加权的目标空间协方差矩阵与互补掩码空间协方差矩阵。
+    2. 在某一频点上观测到两帧双通道频域快拍 $\vec{x}_1=[1,1]^\top$ 与 $\vec{x}_2=[1,-1]^\top$，已知目标时频掩码序列为 $\gamma=[0.75,0.25]$，试计算归一化掩码加权的目标空间协方差矩阵与互补掩码空间协方差矩阵。
     3. 若将该短片段分离模型部署到长达数十分钟的连续多人会议转写场景，系统层面至少还需补齐哪三类工程机制？
 
     **参考答案**：
 
     1. 恒等排列（输出 1 配参考 1、输出 2 配参考 2）的总损失为 $1.2+1.5=2.7$；交叉排列（输出 1 配参考 2、输出 2 配参考 1）的总损失为 $0.3+0.4=0.7$，故 PIT 选中交叉排列，最小损失和为 $0.7$。
-    2. 目标掩码之和 $0.75+0.25=1$，互补掩码 $1-\gamma=[0.25,0.75]$ 之和亦为 $1$。代入加权外积得目标协方差 $\mathbf{R}_{\mathrm{tar}}=0.75\mathbf{X}_1\mathbf{X}_1^H+0.25\mathbf{X}_2\mathbf{X}_2^H=\begin{bmatrix}1&0.5\\0.5&1\end{bmatrix}$，互补掩码协方差 $\mathbf{R}_{\mathrm{int}}=0.25\mathbf{X}_1\mathbf{X}_1^H+0.75\mathbf{X}_2\mathbf{X}_2^H=\begin{bmatrix}1&-0.5\\-0.5&1\end{bmatrix}$。注意：在“多竞争说话人 + 环境底噪”共存场景下，互补掩码 $1-\gamma$ 聚合的是“除当前目标外的一切干扰与背景之和”，不能一律简称为纯环境底噪。
+    2. 目标掩码之和 $0.75+0.25=1$，互补掩码 $1-\gamma=[0.25,0.75]$ 之和亦为 $1$。代入加权外积得目标协方差 $\mathbf{R}_{\mathrm{tar}}=0.75\vec{x}_1\vec{x}_1^H+0.25\vec{x}_2\vec{x}_2^H=\begin{bmatrix}1&0.5\\0.5&1\end{bmatrix}$，互补掩码协方差 $\mathbf{R}_{\mathrm{int}}=0.25\vec{x}_1\vec{x}_1^H+0.75\vec{x}_2\vec{x}_2^H=\begin{bmatrix}1&-0.5\\-0.5&1\end{bmatrix}$。注意：在“多竞争说话人 + 环境底噪”共存场景下，互补掩码 $1-\gamma$ 聚合的是“除当前目标外的一切干扰与背景之和”，不能一律简称为纯环境底噪。
     3. 迈向连续长会议录音时，至少需要补齐三块机制：① 滑动分块窗长、步长与双侧上下文缓冲设计；② 相邻重叠块之间的输出流排列对齐、极性校正与平滑相加拼接（CSS）；③ 面向可变说话人数的输出通道动态回收与全局说话人身份聚类（若下游需要按人归档文本）。
 
 **第 9 章（追踪）**
@@ -410,6 +418,8 @@ D_t(x)&=[1-p_{D,t}(x)]D_t^-(x)\\
 15. 思考题：针对“乘用车四音区分布式 4 麦 + 怠速与高速强低频发动机/胎噪 + 免唤醒词全双工连续对话”场景撰写一份前端技术选型方案，分别论证阵列几何布局、音区定位、空间波束与多路回声消除的取舍依据。
 
     **提示**：先按 §11.1 的需求六问补齐约束边界：排查跨车厢总线或独立采集模块是否存在采样率偏移风险（§10.2）；评估强低频车内噪声下若强推微分超指向波束是否会引发白噪声增益（WNG）崩塌与麦克风振动噪声放大；核查车载娱乐主机经音效均衡、混音与功放后的多声道 AEC 参考回采点是否完整覆盖非线性失真；并明确免唤醒长开启状态下唤醒监听与全通道增强的功耗分级策略（§10.4、§10.9）。
+
+此外，四篇扩展专题各自配有完整的确定性数值与合成音频练习集：[扩展专题Ⅰ](12_acoustic-imaging.md#sec-12-13)（`E12-01`～`E12-18`，入口 `codes.chapters.ch12.chapter12_exercises`）、[扩展专题Ⅱ](13_distributed-enhancement.md#sec-13-16)（`E13-01`～`E13-25`，入口 `codes.chapters.ch13.chapter13_exercises`）、[扩展专题Ⅲ](16_spatial-wearable-arrays.md#sec-16-11)（`E16-01`～`E16-16`，入口 `codes.chapters.ch16.chapter16_exercises`）与[扩展专题Ⅳ](17_target-extraction-diarization.md#sec-17-10)（`E17-01`～`E17-16`，入口 `codes.chapters.ch17.chapter17_exercises`），可在选读对应专题时逐题复核。
 
 #### 15.6.5 房间仿真：第 16 题的输入、测量和结果
 
@@ -868,7 +878,7 @@ $$
 
 若进一步开展真实硬件或公开评测复现，可从[工业实现研究](../codes/chapters/ch00/research/03_industrial_deployment.md)的 `I01`～`I32` 专题中按需选取采集路由、连续重采样、DSP 定点固件或端侧推理运行时等切入点，严格区分“源码已拉取”“本地已编译”与“目标板已实测”三级状态。复现多说话人会议转写（如 CHiME-8）时，还须锁定数据预处理与文本规范化版本：例如 [CHiME-8 官方评分工具 `chime-utils`](https://github.com/chimechallenge/chime-utils/tree/152882404f572d40769ef02bf91c5a9a9cfc9c78) 定义了 SegLST 转写格式与 cpWER/tcpWER 计算口径（开启忽略缺失场景开关会直接改变分母计分集合），正式跑分前建议先构造涵盖完全匹配、说话人串槽、漏词与时间戳偏移的简短算例核实评分脚本行为。
 
-**全书 80 张编号插图的分组依赖与复现导览**。本教程全部绘图脚本均位于 `scripts/` 目录下，输出至 `figures/`（共 80 张编号插图，外加本章第 16 题的独立房间仿真图 `ROOM_RESULTS.png`）。其中部分插图直接由确定性解析公式绘出，另一部分则需先运行各章音频生成脚本导出带 SHA256 校验清单的合成 PCM16 WAV（使读者既能看到双精度解析曲线，又能核对量化读回的实际整数误差；此外，第 5 章 `E05-27` 配套的四份双耳波束合成样本可通过 `.venv/bin/python -m codes.chapters.ch05.examples.binaural_beamforming_demo --check` 做只读回放校验，详见[双耳波束练习](05_beamforming.md#e05-27)）。下表按图号区间梳理了全书插图的数据来源、前置资产与核心物理检验边界（第一列为图号组，第二列说明前置音频或数据依赖，第三列提炼该组插图验证的核心结论与解读边界）：
+**全书 88 张编号插图的分组依赖与复现导览**。本教程全部绘图脚本均位于 `scripts/` 目录下，输出至 `figures/`（共 88 张编号插图，外加本章第 16 题的独立房间仿真图 `ROOM_RESULTS.png`）。其中部分插图直接由确定性解析公式绘出，另一部分则需先运行各章音频生成脚本导出带 SHA256 校验清单的合成 PCM16 WAV（使读者既能看到双精度解析曲线，又能核对量化读回的实际整数误差；此外，第 5 章 `E05-27` 配套的四份双耳波束合成样本可通过 `.venv/bin/python -m codes.chapters.ch05.examples.binaural_beamforming_demo --check` 做只读回放校验，详见[双耳波束练习](05_beamforming.md#e05-27)）。下表按图号区间梳理了全书插图的数据来源、前置资产与核心物理检验边界（第一列为图号组，第二列说明前置音频或数据依赖，第三列提炼该组插图验证的核心结论与解读边界）：
 
 | 插图编号区间 | 前置音频 / 清单依赖与生成脚本 | 核心验证内容与解读边界 |
 |---|---|---|
@@ -877,10 +887,12 @@ $$
 | 图 50～56 | 纯确定性解析参数直接计算（无需预先生成额外 WAV），由 `make_figures.py` 绘出 | 依次核验有限窗 STFT 逐帧乘积与完整线性卷积的六点偏差（图 50）、近共面几何线性敏感度与六麦圆阵多频流形（图 51～52）、非酉聚焦矩阵噪声着色与双频相干源池化秩（图 53～54）、导数约束波束期望代价（图 55，系解析统计期望而非单次 PCM）及贝叶斯后验组合（图 56） |
 | 图 57～60 | 图 57 为解析几何；图 58～60 依次读取第 6 章 APA 六 WAV、第 7 章已知稀疏路径逆（MINT）六 WAV、第 8 章掩码表示边界六 WAV 独立清单 | 图 57～58 展现二阶仿射投影（APA）几何更新及冻结权重留出窗的浮点/PCM 功率分解；图 59 并列已知稀疏多径逆滤波的噪声放大与 27200 点窗口实测误差；图 60 对比 $500$ Hz 幅度截断与 $1250$ Hz 相位旋转下的理想掩码表示上限 |
 | 图 61～66 | 图 61（报告存 `ch09/reports/figure61_tracking_information.json`）与图 62 为解析计算；图 63～66 依次读取[第 10 章噪声失配六 WAV 清单](../codes/chapters/ch10/noise_audio/MANIFEST.json)、第 11 章八 WAV、附录 A 加权噪声五 WAV、本章同 DRR 短 RIR 五 WAV | 图 61 揭示相关量测不可重复记作独立信息及纯方位观测的距离—速度尺度不可辨识性；图 62～63 剖析噪声方差软更新、有限尾积分与目标泄漏污染；图 64 对比场景均值与最坏工况风险；图 65～66 验证正确噪声权重与同 DRR 频响差异 |
-| 图 67～72、图 80 | 两篇扩展专题控制：图 67～69、图 80 对应[扩展专题Ⅰ：声学成像](12_acoustic-imaging.md)（另配五份快拍音频）；图 70～72 对应[扩展专题Ⅱ：分布式协同增强](13_distributed-enhancement.md)（读取 17 份已知统计合成 WAV） | 图 67～69 检验点扩散函数（PSF）、相干源失配、CSM 对角剥离与区域声功率校准，图 80 在同一合法 CSM 下对比扫描平方残差与完整 Frobenius 残差（对应 `E12-17` 的 `G=DP, h=Db` 推导与 `E12-18` 列线性相关分析）；图 70～72 分离展示分布式广播更新、SRO 与丢包缺口误差 |
+| 图 67～72、图 80 | 两篇扩展专题控制：图 67～69、图 80 对应[扩展专题Ⅰ：声学成像](12_acoustic-imaging.md)（另配五份快拍音频）；图 70～72 对应[扩展专题Ⅱ：分布式协同增强](13_distributed-enhancement.md)（读取 17 份已知统计合成 WAV） | 图 67～69 检验点扩散函数（PSF）、相干源失配、CSM 对角剥离与区域声功率校准，图 80 在同一合法 CSM 下对比扫描平方残差与完整 Frobenius 残差（对应 `E12-17` 的 $\mathbf{G}=\boldsymbol\Lambda_a\mathbf{P}$、$\vec{h}=\boldsymbol\Lambda_a\vec{b}$ 推导与 `E12-18` 列线性相关分析）；图 70～72 分离展示分布式广播更新、SRO 与丢包缺口误差 |
 | 图 73～79 | 7 个独立专项绘图脚本（`make_beamforming_figures.py` 等），分别读取第 5～10 章专项合成 PCM 清单或第 11 章 `E11-27` 三麦解析模型（图 79） | 逐章钉死易错边界：逐频相位失真保持稳态功率却拉大波形误差（图 73）、播放增益跳变与停止后历史回声尾 `near_only` 边界（图 74）、WPE 保护间隔历史对齐（图 75）、CSS 正确排列下的极性/增益反转（图 76）、197 帧双龄期时钟航迹生命周期（图 77）、单麦失效相消与重算权重（图 78）及硬约束先于未测设备指标的选型铁律（图 79） |
+| 图 81～84 | `make_wearable_figures.py`；图 81～82 为确定性解析与迭代控制，图 83～84 读取第 16 章可穿戴六 WAV 清单（`generate_wearable_audio.py`） | 检验 FOA 双波干涉扩散度与 $\kappa R=\pi$ 开球零陷（图 81）、高频 BSM-LS 零陷与 MagLS 恢复及双耳参考混合相干度（图 82）、Corcos 风噪与气导/闭塞内麦跨模态融合（图 83）及通透模式 $2\,\mathrm{ms}$ 延迟梳状相消（图 84） |
+| 图 85～88 | `make_tse_figures.py`；图 85、87、88 为确定性解析模型，图 86 读取第 17 章距离气泡六 WAV 清单（`generate_tse_audio.py`） | 检验 FiLM 调制、沉默段双态地板损失与单人擦音旁路（图 85）、$10\,\mathrm{cm}$ 对 $2\,\mathrm{cm}$ 近场球面波距离气泡径向抑制与底噪放大（图 86）、六帧重叠会议 DER 下界/超百反例与空谱 TS-VAD+GSS 排他掩码（图 87）及视听异构帧率、`+120 ms` 吃字与遮挡门控回退（图 88） |
 
-按以下顺序依次生成全部合成音频清单并执行 9 个绘图脚本，即可完整重现 `figures/` 目录下的全部 80 张编号插图：
+按以下顺序依次生成全部合成音频清单并执行 11 个绘图脚本，即可完整重现 `figures/` 目录下的全部 88 张编号插图：
 
 ```bash
 .venv/bin/python codes/chapters/ch00/examples/generate_audio_samples.py
@@ -906,6 +918,8 @@ $$
 .venv/bin/python -m codes.chapters.appendix_b.examples.generate_response_audio
 .venv/bin/python -m codes.chapters.ch12.examples.generate_imaging_audio  # 配套成像音频；图67～69由解析控制生成
 .venv/bin/python -m codes.chapters.ch13.examples.generate_distributed_audio
+.venv/bin/python -m codes.chapters.ch16.examples.generate_wearable_audio
+.venv/bin/python -m codes.chapters.ch17.examples.generate_tse_audio
 .venv/bin/python scripts/make_figures.py      # 图 1～25、图 33～36、40～72、80
 .venv/bin/python scripts/make_aec_figures.py  # 图 26～32、37～39（回声消除专题）
 .venv/bin/python scripts/make_beamforming_figures.py  # 图73：已知双音的实际PCM与解析相位
@@ -915,6 +929,8 @@ $$
 .venv/bin/python scripts/make_tracking_figures.py  # 图77：实际PCM生命周期与两个龄期时钟
 .venv/bin/python scripts/make_channel_figures.py  # 图78：已知坏麦、重建约束与实际PCM
 .venv/bin/python scripts/make_selection_figures.py  # 图79：已知物理模型的硬条件与设备证据
+.venv/bin/python scripts/make_wearable_figures.py  # 图81～84：空间声场编码与可穿戴阵列
+.venv/bin/python scripts/make_tse_figures.py  # 图85～88：条件目标提取与多通道日志
 .venv/bin/python -m codes.chapters.ch10.examples.generate_channel_audio --check  # 六独立WAV只读核验
 ```
 

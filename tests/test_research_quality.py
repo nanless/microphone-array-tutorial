@@ -65,16 +65,20 @@ class ResearchQualityTests(unittest.TestCase):
         self.assertEqual(self.issues(), [])
 
     def test_explicit_baselines_preserve_tutorial_pdf_and_figure_counts(self):
-        self.assertEqual(quality.EXPECTED_CHAPTER_COUNT, 16)
-        self.assertEqual(quality.EXPECTED_SECTION_COUNT, 151)
-        self.assertEqual(quality.EXPECTED_SUBSECTION_COUNT, 743)
-        self.assertEqual(quality.EXPECTED_OUTLINE_ITEM_COUNT, 910)
-        self.assertEqual(quality.EXPECTED_FIGURE_NUMBERS, set(range(1, 81)))
-        self.assertEqual(quality.EXPECTED_EXERCISE_COUNT, 363)
+        self.assertEqual(quality.EXPECTED_CHAPTER_COUNT, 18)
+        self.assertEqual(quality.EXPECTED_SECTION_COUNT, 173)
+        self.assertEqual(quality.EXPECTED_SUBSECTION_COUNT, 830)
+        self.assertEqual(quality.EXPECTED_OUTLINE_ITEM_COUNT, 1021)
+        self.assertEqual(quality.EXPECTED_FIGURE_NUMBERS, set(range(1, 89)))
+        self.assertEqual(quality.EXPECTED_EXERCISE_COUNT, 395)
         self.assertEqual(quality.EXPECTED_SUBSECTION_COUNTS['15_appendix-guide.md'], 30)
         self.assertEqual(quality.EXPECTED_EXERCISE_COUNTS['15_appendix-guide.md'], 15)
         self.assertEqual(quality.EXPECTED_SECTION_COUNTS['13_distributed-enhancement.md'], 16)
         self.assertEqual(quality.EXPECTED_SUBSECTION_COUNTS['13_distributed-enhancement.md'], 65)
+        self.assertEqual(quality.EXPECTED_SECTION_COUNTS['16_spatial-wearable-arrays.md'], 12)
+        self.assertEqual(quality.EXPECTED_SUBSECTION_COUNTS['16_spatial-wearable-arrays.md'], 46)
+        self.assertEqual(quality.EXPECTED_SECTION_COUNTS['17_target-extraction-diarization.md'], 10)
+        self.assertEqual(quality.EXPECTED_SUBSECTION_COUNTS['17_target-extraction-diarization.md'], 41)
         self.assertEqual(quality.EXPECTED_RESEARCH_PAGE_COUNT, 6)
         self.assertEqual(quality.EXPECTED_RESEARCH_PAGES, (
             ("README.md", "index.html"),
@@ -180,7 +184,8 @@ class PublishedResearchQualityTests(unittest.TestCase):
         self.assertEqual(quality.collaboration_baseline_issues(current), [])
         self.assertEqual(quality.collaboration_baseline_issues("历史记录196/329。\n" + current), [])
         self.assertTrue(quality.collaboration_baseline_issues(current.replace("个章级", "个旧章级")))
-        self.assertTrue(quality.collaboration_baseline_issues(current.replace("16 个章级", "15 个章级")))
+        self.assertTrue(quality.collaboration_baseline_issues(
+            current.replace(f"{quality.EXPECTED_CHAPTER_COUNT} 个章级", "15 个章级")))
         self.assertTrue(quality.collaboration_baseline_issues(current + "\n" + current))
 
     def test_independent_source_digests_match_publishers(self):

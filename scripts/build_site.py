@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
-"""把 chapters/ 16 篇及 codes/chapters/ch00/research/ 6 篇 Markdown 建成静态站。
+"""把 chapters/ 18 篇及 codes/chapters/ch00/research/ 6 篇 Markdown 建成静态站。
 
 用法（报告根目录）：
     .venv/bin/python scripts/build_site.py
 
-产物：site/index.html（首页）+ site/01..15_*.html（15 篇正文/专题/附录），
-另有 site/research/index.html 和 5 篇独立研究页、主清单 109 个与独立实验 158 个合成 WAV，
+产物：site/index.html（首页）+ site/01..17_*.html（17 篇正文/专题/附录），
+另有 site/research/index.html 和 5 篇独立研究页、主清单 109 个与独立实验 170 个合成 WAV，
 以及 4 个真实录音/派生 WAV；源码按章保存，发布 URL 保持原样。
-左侧边栏 = 首页 + 15 篇 + 每篇的二级及以下小节锚点，顶部面包屑，
+左侧边栏 = 首页 + 17 篇 + 每篇的二级及以下小节锚点，顶部面包屑，
 文末上一篇/下一篇（首页不输出该盒）。图片直接引用 ../figures/（不复制）。
 数学公式用 MathJax CDN 渲染（离线时显示源码，页面顶部有提示）。
 """
@@ -96,6 +96,18 @@ DISTRIBUTED_AUDIO_WAVS = {
         "remote_scalar_white", "transport_pcm16_white", "clock_misaligned_white",
         "clock_linear_corrected_white", "packet_zerofill_white", "packet_local_fallback_white",
     )
+}
+WEARABLE_AUDIO_ROOT = CODE_CHAPTERS / "ch16" / "wearable_audio"
+WEARABLE_AUDIO_WAVS = {
+    "wearable_clean_ref.wav", "wearable_air_wind_2ch.wav",
+    "wearable_inear_occluded.wav", "wearable_inear_equalized.wav",
+    "wearable_fused_output.wav", "wearable_hearthrough_comb.wav",
+}
+TSE_AUDIO_ROOT = CODE_CHAPTERS / "ch17" / "tse_audio"
+TSE_AUDIO_WAVS = {
+    "tse_near_target_ref.wav", "tse_far_interferer_ref.wav",
+    "tse_array_3ch.wav", "tse_farfield_dsb.wav",
+    "tse_bubble_d10cm.wav", "tse_bubble_d2cm_illcond.wav",
 }
 IMAGING_AUDIO_WAVS = {"source_1.wav", "source_2_phase_code.wav", "source_2_coherent.wav",
                      "array_phase_code.wav", "array_coherent.wav"}
@@ -199,6 +211,8 @@ CHAPTERS = [
     ("11_selection-guide.md", "第 11 章 · 总结与选型指南"),
     ("12_acoustic-imaging.md", "第 12 章 · 声学成像与噪声源诊断"),
     ("13_distributed-enhancement.md", "第 13 章 · 分布式麦克风协同增强"),
+    ("16_spatial-wearable-arrays.md", "第 16 章 · 空间声场与可穿戴阵列"),
+    ("17_target-extraction-diarization.md", "第 17 章 · 条件目标提取与多通道日志"),
     ("14_appendix-symbols-math.md", "第 14 章 · 附录 A：符号术语数学"),
     ("15_appendix-guide.md", "第 15 章 · 附录 B：路径地图与练习"),
 ]
@@ -1060,6 +1074,32 @@ def stage_distributed_audio(source, destination):
     return expected
 
 
+def stage_wearable_audio(source, destination):
+    """Publish six fully replayed wearable/spatial teaching WAVs."""
+    expected = WEARABLE_AUDIO_WAVS | {"MANIFEST.json"}
+    _preflight_asset_stage(source, destination, expected)
+    from codes.chapters.ch16.examples.generate_wearable_audio import check_assets
+    check_assets(source)
+    validate_asset_directory(destination, expected, check=False)
+    destination.mkdir()
+    for name in sorted(expected):
+        shutil.copy2(source / name, destination / name)
+    return expected
+
+
+def stage_tse_audio(source, destination):
+    """Publish six fully replayed near-field bubble / TSE teaching WAVs."""
+    expected = TSE_AUDIO_WAVS | {"MANIFEST.json"}
+    _preflight_asset_stage(source, destination, expected)
+    from codes.chapters.ch17.examples.generate_tse_audio import check_assets
+    check_assets(source)
+    validate_asset_directory(destination, expected, check=False)
+    destination.mkdir()
+    for name in sorted(expected):
+        shutil.copy2(source / name, destination / name)
+    return expected
+
+
 def _check_tracking_members(folder, expected):
     """Reject unexpected directories as well as linked or special members."""
     if (folder.is_symlink() or not folder.is_dir()
@@ -1192,7 +1232,7 @@ def source_digest():
     paths += [main_audio_manifest_path(CODE_CHAPTERS)]
     paths += sorted(main_audio_sources())
     for asset_root in (REAL_AUDIO_ROOT, ROOM_AUDIO_ROOT, MOVING_AUDIO_ROOT,
-                       TRACKING_AUDIO_ROOT, GSS_AUDIO_ROOT, BINAURAL_AUDIO_ROOT, SPECTRAL_AUDIO_ROOT, STFT_AUDIO_ROOT, SWEEP_AUDIO_ROOT, BASELINE_AUDIO_ROOT, REFLECTION_AUDIO_ROOT, PHASE_AUDIO_ROOT, BINAURAL_BEAMFORMING_ROOT, GEOMETRY_AUDIO_ROOT, FOCUS_AUDIO_ROOT, DERIVATIVE_AUDIO_ROOT, APA_AUDIO_ROOT, REFERENCE_AUDIO_ROOT, DELAY_AUDIO_ROOT, CSS_AUDIO_ROOT, MINT_AUDIO_ROOT, MASK_AUDIO_ROOT, NOISE_AUDIO_ROOT, CHANNEL_AUDIO_ROOT, SCENARIO_AUDIO_ROOT, WEIGHTED_AUDIO_ROOT, RESPONSE_AUDIO_ROOT, IMAGING_AUDIO_ROOT, DISTRIBUTED_AUDIO_ROOT):
+                       TRACKING_AUDIO_ROOT, GSS_AUDIO_ROOT, BINAURAL_AUDIO_ROOT, SPECTRAL_AUDIO_ROOT, STFT_AUDIO_ROOT, SWEEP_AUDIO_ROOT, BASELINE_AUDIO_ROOT, REFLECTION_AUDIO_ROOT, PHASE_AUDIO_ROOT, BINAURAL_BEAMFORMING_ROOT, GEOMETRY_AUDIO_ROOT, FOCUS_AUDIO_ROOT, DERIVATIVE_AUDIO_ROOT, APA_AUDIO_ROOT, REFERENCE_AUDIO_ROOT, DELAY_AUDIO_ROOT, CSS_AUDIO_ROOT, MINT_AUDIO_ROOT, MASK_AUDIO_ROOT, NOISE_AUDIO_ROOT, CHANNEL_AUDIO_ROOT, SCENARIO_AUDIO_ROOT, WEIGHTED_AUDIO_ROOT, RESPONSE_AUDIO_ROOT, IMAGING_AUDIO_ROOT, DISTRIBUTED_AUDIO_ROOT, WEARABLE_AUDIO_ROOT, TSE_AUDIO_ROOT):
         paths += sorted(asset_root.glob("*"))
     paths += sorted((ROOT / "figures").glob("fig*.png"))
     paths += [COURSE_HOME_ROOT / name for name in COURSE_HOME_FILES]
@@ -1214,7 +1254,10 @@ def source_digest():
               ROOT / "scripts" / "make_css_figures.py",
               ROOT / "scripts" / "make_tracking_figures.py",
               ROOT / "scripts" / "make_channel_figures.py",
-              ROOT / "scripts" / "make_selection_figures.py", ROOT / "requirements.txt"]
+              ROOT / "scripts" / "make_selection_figures.py",
+              ROOT / "scripts" / "make_wearable_figures.py",
+              ROOT / "scripts" / "make_tse_figures.py",
+              ROOT / "requirements.txt"]
     paths.append(ROOT / "codes/chapters/ch00/io_contracts.py")
     for path in paths:
         digest.update(path.relative_to(ROOT).as_posix().encode("utf-8"))
@@ -1398,6 +1441,12 @@ def rewrite_site_links(html, source_path):
         if target.parent == DISTRIBUTED_AUDIO_ROOT.resolve() and target.name in (DISTRIBUTED_AUDIO_WAVS | {"MANIFEST.json"}):
             relative = os.path.relpath("distributed_audio/" + target.name, Path(current).parent).replace(os.sep, "/")
             return urlunsplit(("", "", relative, parsed.query, parsed.fragment))
+        if target.parent == WEARABLE_AUDIO_ROOT.resolve() and target.name in (WEARABLE_AUDIO_WAVS | {"MANIFEST.json"}):
+            relative = os.path.relpath("wearable_audio/" + target.name, Path(current).parent).replace(os.sep, "/")
+            return urlunsplit(("", "", relative, parsed.query, parsed.fragment))
+        if target.parent == TSE_AUDIO_ROOT.resolve() and target.name in (TSE_AUDIO_WAVS | {"MANIFEST.json"}):
+            relative = os.path.relpath("tse_audio/" + target.name, Path(current).parent).replace(os.sep, "/")
+            return urlunsplit(("", "", relative, parsed.query, parsed.fragment))
         if target.parent == IMAGING_AUDIO_ROOT.resolve() and target.name in (IMAGING_AUDIO_WAVS | {"MANIFEST.json"}):
             relative = os.path.relpath("imaging_audio/" + target.name, Path(current).parent).replace(os.sep, "/")
             return urlunsplit(("", "", relative, parsed.query, parsed.fragment))
@@ -1428,7 +1477,7 @@ def rewrite_site_links(html, source_path):
         # input as a download link; only the explicit mono derivatives play.
         if parsed.path.endswith("real_audio/demand_nriver_16ch_10s.wav"):
             return match.group(0)
-        if parsed.scheme or parsed.query or parsed.fragment or not re.fullmatch(r"(?:\.\./)?(?:audio|real_audio|moving_audio|tracking_audio|gss_audio|binaural_audio|spectral_audio|stft_audio|sweep_audio|baseline_audio|reflection_audio|phase_audio|binaural_beamforming_audio|geometry_audio|focus_audio|derivative_audio|apa_audio|reference_audio|delay_audio|css_audio|mint_audio|mask_audio|noise_audio|channel_audio|scenario_audio|weighted_audio|response_audio|imaging_audio|distributed_audio)/[a-z0-9_]+\.wav", parsed.path):
+        if parsed.scheme or parsed.query or parsed.fragment or not re.fullmatch(r"(?:\.\./)?(?:audio|real_audio|moving_audio|tracking_audio|gss_audio|binaural_audio|spectral_audio|stft_audio|sweep_audio|baseline_audio|reflection_audio|phase_audio|binaural_beamforming_audio|geometry_audio|focus_audio|derivative_audio|apa_audio|reference_audio|delay_audio|css_audio|mint_audio|mask_audio|noise_audio|channel_audio|scenario_audio|weighted_audio|response_audio|imaging_audio|distributed_audio|wearable_audio|tse_audio)/[a-z0-9_]+\.wav", parsed.path):
             return match.group(0)
         safe_href = escape(href, quote=True)
         safe_label = escape(re.sub(r'<[^>]+>', '', unescape(label)), quote=True)
@@ -1752,6 +1801,8 @@ def _validate_site_output(directory):
     from codes.chapters.ch00.io_contracts import validate_asset_directory as validate_imaging
     validate_imaging(directory / "imaging_audio", IMAGING_AUDIO_WAVS | {"MANIFEST.json"}, check=False)
     validate_imaging(directory / "distributed_audio", DISTRIBUTED_AUDIO_WAVS | {"MANIFEST.json"}, check=False)
+    validate_imaging(directory / "wearable_audio", WEARABLE_AUDIO_WAVS | {"MANIFEST.json"}, check=False)
+    validate_imaging(directory / "tse_audio", TSE_AUDIO_WAVS | {"MANIFEST.json"}, check=False)
     validate_imaging(directory / "spectral_audio", SPECTRAL_AUDIO_WAVS | {"MANIFEST.json"}, check=False)
     validate_imaging(directory / 'sweep_audio', SWEEP_AUDIO_WAVS | {'MANIFEST.json'}, check=False)
     validate_imaging(directory / 'baseline_audio', BASELINE_AUDIO_WAVS | {'MANIFEST.json'}, check=False)
@@ -1764,7 +1815,7 @@ def _validate_site_output(directory):
     subdirectories = ('research', 'audio', 'real_audio', 'room_audio', 'moving_audio',
                       'tracking_audio', 'gss_audio', 'binaural_audio', 'spectral_audio', 'stft_audio', 'sweep_audio', 'baseline_audio', 'reflection_audio', 'phase_audio', 'binaural_beamforming_audio',
                       'geometry_audio', 'focus_audio', 'derivative_audio', 'apa_audio', 'reference_audio', 'delay_audio', 'css_audio',
-                      'mint_audio', 'mask_audio', 'noise_audio', 'channel_audio', 'scenario_audio', 'weighted_audio', 'response_audio', 'imaging_audio', 'distributed_audio')
+                      'mint_audio', 'mask_audio', 'noise_audio', 'channel_audio', 'scenario_audio', 'weighted_audio', 'response_audio', 'imaging_audio', 'distributed_audio', 'wearable_audio', 'tse_audio')
     for folder in (directory, *(directory/name for name in subdirectories)):
         if folder.is_symlink() or (folder.exists() and not folder.is_dir()):
             raise ValueError('站点目标必须为普通目录：'+str(folder))
@@ -1983,6 +2034,14 @@ def main():
         (OUT / "imaging_audio").mkdir(exist_ok=True)
         distributed_names = stage_distributed_audio(DISTRIBUTED_AUDIO_ROOT, temp_out / "distributed_audio")
         (OUT / "distributed_audio").mkdir(exist_ok=True)
+        wearable_names = stage_wearable_audio(WEARABLE_AUDIO_ROOT, temp_out / "wearable_audio")
+        (OUT / "wearable_audio").mkdir(exist_ok=True)
+        stale += [path for path in (OUT / "wearable_audio").iterdir()
+                  if path.is_file() and path.name not in wearable_names]
+        tse_names = stage_tse_audio(TSE_AUDIO_ROOT, temp_out / "tse_audio")
+        (OUT / "tse_audio").mkdir(exist_ok=True)
+        stale += [path for path in (OUT / "tse_audio").iterdir()
+                  if path.is_file() and path.name not in tse_names]
         spectral_names = stage_spectral_audio(SPECTRAL_AUDIO_ROOT, temp_out / "spectral_audio")
         (OUT / "spectral_audio").mkdir(exist_ok=True)
         sweep_names = stage_sweep_audio(SWEEP_AUDIO_ROOT, temp_out / 'sweep_audio')
@@ -2044,6 +2103,10 @@ def main():
                        for name in sorted(imaging_names)] +
                       [(temp_out / "distributed_audio" / name, OUT / "distributed_audio" / name)
                        for name in sorted(distributed_names)] +
+                      [(temp_out / "wearable_audio" / name, OUT / "wearable_audio" / name)
+                       for name in sorted(wearable_names)] +
+                      [(temp_out / "tse_audio" / name, OUT / "tse_audio" / name)
+                       for name in sorted(tse_names)] +
                       [(temp_out / "spectral_audio" / name, OUT / "spectral_audio" / name)
                        for name in sorted(spectral_names)] +
                       [(temp_out / 'sweep_audio' / name, OUT / 'sweep_audio' / name)

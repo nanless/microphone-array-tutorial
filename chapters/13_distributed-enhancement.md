@@ -1,6 +1,6 @@
 > 本篇是第 13 章（扩展专题Ⅱ），接在第 12 章声学成像之后，介绍多个拾音节点怎样在有限通信下协作增强声音。数学预备内容可回查第 14 章附录 A。
 >
-> 🏠 首页导读：[00_overview.md](00_overview.md) ｜ 上一篇：[12_acoustic-imaging.md](12_acoustic-imaging.md) ｜ 下一篇：[14_appendix-symbols-math.md](14_appendix-symbols-math.md)
+> 🏠 首页导读：[00_overview.md](00_overview.md) ｜ 上一篇：[12_acoustic-imaging.md](12_acoustic-imaging.md) ｜ 下一篇：[16_spatial-wearable-arrays.md](16_spatial-wearable-arrays.md)
 
 ---
 
@@ -863,7 +863,7 @@ $$\tilde{\mathbf R}_1=\begin{bmatrix}2 & 1/2 & 17\\1/2 & 5/4 & 17\\17 & 17 & 185
 
 **题目。** 设 $3 \times 3$ 矩阵 $\mathbf R$ 主对角元全为 $1$、非对角元全为 $0.9$，右端向量 $\vec r = [1, 1, 1]^\top$。从零初值出发执行块同时迭代 $\vec w^{i+1} = \vec w^i + \alpha(\vec r - \mathbf R\vec w^i)$，对比全步长 $\alpha = 1$ 与半步松弛 $\alpha = 1/2$ 的收敛性。
 
-**解答。** 矩阵 $\mathbf R = 0.1\mathbf I_3 + 0.9\,\mathbf 1\mathbf 1^\top$ 的特征值为 $2.8, 0.1, 0.1$，是严格对称正定矩阵，精确解为 $\vec w^\star = \frac{1}{2.8}[1, 1, 1]^\top = \frac{5}{14}[1, 1, 1]^\top$。记误差向量 $\vec e^i = \vec w^i - \vec w^\star$，递推关系为 $\vec e^{i+1} = (\mathbf I_3 - \alpha\mathbf R)\vec e^i$，沿特征值 $\lambda$ 方向的误差每步缩放 $(1 - \alpha\lambda)$ 倍，收敛充要条件为谱半径 $\max_\lambda |1 - \alpha\lambda| < 1$，即 $0 < \alpha < 2 / 2.8 = 5/7$。
+**解答。** 矩阵 $\mathbf R = 0.1\mathbf I_3 + 0.9\,\vec 1\vec 1^\top$ 的特征值为 $2.8, 0.1, 0.1$，是严格对称正定矩阵，精确解为 $\vec w^\star = \frac{1}{2.8}[1, 1, 1]^\top = \frac{5}{14}[1, 1, 1]^\top$。记误差向量 $\vec e^i = \vec w^i - \vec w^\star$，递推关系为 $\vec e^{i+1} = (\mathbf I_3 - \alpha\mathbf R)\vec e^i$，沿特征值 $\lambda$ 方向的误差每步缩放 $(1 - \alpha\lambda)$ 倍，收敛充要条件为谱半径 $\max_\lambda |1 - \alpha\lambda| < 1$，即 $0 < \alpha < 2 / 2.8 = 5/7$。
 
 当取 $\alpha = 1$（即标准的无松弛 Jacobi 同时替换：每个坐标固定其余两个旧值单独精确最小化二次代价！）时，沿全 $1$ 特征方向的放大因子为 $1 - 2.8 = -1.8$（模长大于 $1$），各分量依次跳出 $1, -0.8, 2.44, -3.392, \ldots$，剧烈震荡发散！改取满足谱半径条件的松弛步长 $\alpha = 1/2 < 5/7$ 后，主方向缩放因子收进 $1 - 1.4 = -0.4$，各分量依次走出 $0.5, 0.3, 0.38, 0.348, \ldots$，平稳收敛至 $5/14$。这一精炼反例直观解释了为何“每个节点在旧快照上各自求局部最优”并不自动保证全网同时替换稳定（注意此例为线性定常 Jacobi 迭代，而 DANSE 同时更新还涉及非线性子空间重构，其严格收敛条件由下一题式(13-15)给出）。
 
@@ -967,4 +967,4 @@ J_{\mathrm{mix}}&=\left(\frac{23}{31}-1\right)^2+\frac{11^2+12^2}{31^2}=\frac{64
 
 ---
 
-[返回导读](00_overview.md) ｜ [上一篇：扩展专题Ⅰ：声学成像与噪声源诊断](12_acoustic-imaging.md) ｜ [下一篇：附录 A：符号、术语与数学预备](14_appendix-symbols-math.md)
+[返回导读](00_overview.md) ｜ [上一篇：扩展专题Ⅰ：声学成像与噪声源诊断](12_acoustic-imaging.md) ｜ [下一篇：扩展专题Ⅲ：空间声场与可穿戴阵列](16_spatial-wearable-arrays.md)

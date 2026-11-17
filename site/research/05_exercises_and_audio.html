@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>章节代码练习与音频实验 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="30366ba49985"><style>
+<meta name="source-digest" content="9b634b8b6fd1"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -423,6 +423,10 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="05_exercises_and_audio.html#sec-60-2">60.2 六份同源音频与固定权重</a></li>
 <li>&nbsp;&nbsp;<a href="05_exercises_and_audio.html#sec-60-3">60.3 相同总误差可能对应不同目标状态</a></li>
 <li>&nbsp;&nbsp;<a href="05_exercises_and_audio.html#sec-60-4">60.4 真实PCM整数复算</a></li>
+<li><a href="05_exercises_and_audio.html#sec-u-c3cb1966de">61. 第16章空间声场与可穿戴阵列对照实验</a></li>
+<li>&nbsp;&nbsp;<a href="05_exercises_and_audio.html#sec-61-1">61.1 六份 16 kHz 数学合成对照音频</a></li>
+<li><a href="05_exercises_and_audio.html#sec-u-3d1374a482">62. 第17章条件目标提取与近场距离气泡对照实验</a></li>
+<li>&nbsp;&nbsp;<a href="05_exercises_and_audio.html#sec-62-1">62.1 六份 16 kHz 近场球面波距离气泡对照音频</a></li>
 </ul>
 <div class="chap"><a href="../01_problem-definition.html">第 1 章 · 问题定义与双耳启示</a></div>
 <div class="chap"><a href="../02_basics-signal-model.html">第 2 章 · 声音到达阵列时发生了什么</a></div>
@@ -437,6 +441,8 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <div class="chap"><a href="../11_selection-guide.html">第 11 章 · 总结与选型指南</a></div>
 <div class="chap"><a href="../12_acoustic-imaging.html">第 12 章 · 声学成像与噪声源诊断</a></div>
 <div class="chap"><a href="../13_distributed-enhancement.html">第 13 章 · 分布式麦克风协同增强</a></div>
+<div class="chap"><a href="../16_spatial-wearable-arrays.html">第 16 章 · 空间声场与可穿戴阵列</a></div>
+<div class="chap"><a href="../17_target-extraction-diarization.html">第 17 章 · 条件目标提取与多通道日志</a></div>
 <div class="chap"><a href="../14_appendix-symbols-math.html">第 14 章 · 附录 A：符号术语数学</a></div>
 <div class="chap"><a href="../15_appendix-guide.html">第 15 章 · 附录 B：路径地图与练习</a></div></nav>
 <main class="main" id="main-content" tabindex="-1"><div class="offline-note" id="offnote">当前离线：公式显示为源码，正文讲解不受影响。</div>
@@ -614,12 +620,16 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="05_exercises_and_audio.html#sec-60-2">60.2 六份同源音频与固定权重</a></li>
 <li>&nbsp;&nbsp;<a href="05_exercises_and_audio.html#sec-60-3">60.3 相同总误差可能对应不同目标状态</a></li>
 <li>&nbsp;&nbsp;<a href="05_exercises_and_audio.html#sec-60-4">60.4 真实PCM整数复算</a></li>
+<li><a href="05_exercises_and_audio.html#sec-u-c3cb1966de">61. 第16章空间声场与可穿戴阵列对照实验</a></li>
+<li>&nbsp;&nbsp;<a href="05_exercises_and_audio.html#sec-61-1">61.1 六份 16 kHz 数学合成对照音频</a></li>
+<li><a href="05_exercises_and_audio.html#sec-u-3d1374a482">62. 第17章条件目标提取与近场距离气泡对照实验</a></li>
+<li>&nbsp;&nbsp;<a href="05_exercises_and_audio.html#sec-62-1">62.1 六份 16 kHz 近场球面波距离气泡对照音频</a></li>
 </ul></nav></details>
 <span id="sec-1" class="anchor-alias" aria-hidden="true"></span><span id="章节代码练习与音频实验" class="anchor-alias" aria-hidden="true"></span><h1 id="sec-u-c621965c02">章节代码练习与音频实验</h1>
 <p>先按章节做手算，再运行对应脚本，最后听同一模型产生的音频。代码输出不是预填的答案表；程序从输入重新计算结果，回归测试另外保留手算、解析边界或已知模型作为判据。</p>
-<p>本页索引 363 道带稳定编号的代码题，以及独立的真实录音练习 R01。<code>E01-01</code> 表示第 1 章的第 1 道代码题；附录 B 中另有按 1～17 编号的综合题，两套题号各自使用。</p>
+<p>本页索引 395 道带稳定编号的代码题，以及独立的真实录音练习 R01。<code>E01-01</code> 表示第 1 章的第 1 道代码题；附录 B 中另有按 1～17 编号的综合题，两套题号各自使用。</p>
 <p>E06-07～E06-20 使用无量纲回声模型检查 AEC 的计算与边界，其中 E06-11～20 可用精确答案程序核对。第 15、16 节另提供参数不同的合成音频；试听文件本身不是题目真值。</p>
-<p>第 3～11、13～16、18、21～30、32～34 节对应主清单的 109 个数学合成样本。第 17 节的 18 个房间白噪声合成样本使用独立清单；第 12 节使用另行授权的真实同步录音。第 31 节的 2 份从 PCM 形成定位观测的追踪样本也使用独立清单。第35～39节分别保存双耳、有限窗卷积、多频几何、已知聚焦与导数约束的独立样本。第48节保存分布式协同增强的17个独立样本；第47节保存成像的五个快拍样本。第46节另保存附录B同DRR短RIR的五个独立样本；第55节保存第5章逐频相位的三份独立PCM；第56节保存第6章已知播放增益与历史尾声的六份独立PCM；第57节保存第7章已知到达与历史索引的六份独立PCM。不同音频的来源和可作的比较不同，试听前先查看各节的条件。</p>
+<p>第 3～11、13～16、18、21～30、32～34 节对应主清单的 109 个数学合成样本。第 17 节的 18 个房间白噪声合成样本使用独立清单；第 12 节使用另行授权的真实同步录音。第 31 节的 2 份从 PCM 形成定位观测的追踪样本也使用独立清单。第35～39节分别保存双耳、有限窗卷积、多频几何、已知聚焦与导数约束的独立样本。第48节保存分布式协同增强的17个独立样本；第47节保存成像的五个快拍样本。第46节另保存附录B同DRR短RIR的五个独立样本；第55节保存第5章逐频相位的三份独立PCM；第56节保存第6章已知播放增益与历史尾声的六份独立PCM；第57节保存第7章已知到达与历史索引的六份独立PCM；第61节保存第16章空间与可穿戴阵列的六个独立样本；第62节保存第17章近场距离气泡与目标提取的六个独立样本。不同音频的来源和可作的比较不同，试听前先查看各节的条件。</p>
 <p>主音频按章存放，统一由<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/examples/generate_audio_samples.py">生成器</a>和<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/audio/MANIFEST.json">清单</a>管理。清单记录每组模型、种子、共同导出增益、采样率、通道、帧数、量化误差、运行环境、源文件摘要与逐 WAV 摘要；不把某组的谐波模板套到其他组。PCM16 编码按最近偶数舍入，不加抖动或自动限幅，RMS 对全部通道与采样一起计算。运行生成器并附加 <code>--check</code> 时只在内存重算和读回比对，不重写资产；严格字节核对也比较 Python、NumPy 和平台记录，异机不通过不等于算法错误。生成中断造成清单与 WAV 不一致时，先保留异常目录，再生成到新的空目录核对，通过后更新受影响资产并构建图和网站；不要手改单个生成文件。样本没有真人录音或模型权重，客观读回和浏览器加载不等于正式听测。</p>
 <p><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/io_contracts.py">共享文件IO</a>负责写入前的普通父目录、文件成员与严格JSON检查；各生成器继续负责自己的模型、清单结构和评分。已有非空目录须符合该资产的完整成员集合，重复键、非有限数值与把布尔值写成数值参数都会被拒绝。检查适用于本地非并发工作流，不把有限的写前检查当成并发文件系统安全保证。</p>
 <span id="sec-2" class="anchor-alias" aria-hidden="true"></span><span id="1-按章节运行" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-08633b42fc">1. 按章节运行</h2>
@@ -657,6 +667,10 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 .venv/bin/python -m codes.chapters.ch10.spectral_subtraction_demo
 .venv/bin/python -m codes.chapters.ch03.coarray_covariance_exercise
 .venv/bin/python -m codes.chapters.ch04.doa_resolution_trials
+.venv/bin/python -m codes.chapters.ch16.chapter16_exercises
+.venv/bin/python -m codes.chapters.ch16.examples.generate_wearable_audio --check
+.venv/bin/python -m codes.chapters.ch17.chapter17_exercises
+.venv/bin/python -m codes.chapters.ch17.examples.generate_tse_audio --check
 .venv/bin/python codes/chapters/ch00/examples/generate_audio_samples.py --check
 .venv/bin/python -m unittest discover -s tests -p 'test_codes*.py' -v
 </code></pre>
@@ -783,6 +797,16 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <td>第 11 章 E11-10～27</td>
 <td>非支配候选、场景权重、评分缺失、同时风险、硬界三态、模块交互、CSS槽位、唤醒阈值、精确SRO、FIR取舍、非支持加权、区间支配、零FA暴露、话段/时间及跨场景选型</td>
 <td><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch11/chapter11_experiments.py">选型逐步实验</a>；音频见§33与§44</td>
+</tr>
+<tr>
+<td>第 16 章 E16-01～16</td>
+<td>四面体 FOA 编码、开球零陷、欧拉旋转、声强 DirAC、BSM-LS/MagLS、双耳参考混合、跨模态抗风噪融合与通透梳状滤波</td>
+<td><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch16/chapter16_exercises.py">可穿戴逐步实验</a>；六WAV见§61</td>
+</tr>
+<tr>
+<td>第 17 章 E17-01～16</td>
+<td>FiLM 调制、双态地板损失、零重叠旁路、球面波距离气泡与孔径病态、DER 下界、空谱 TS-VAD/GSS 与视听门控回退</td>
+<td><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch17/chapter17_exercises.py">目标提取逐步实验</a>；六WAV见§62</td>
 </tr>
 <tr>
 <td>附录 A E14-01～04</td>
@@ -3105,7 +3129,7 @@ PSD还须写采样率、Hz分母、单边折叠和去均值策略。
 <span id="sec-105" class="anchor-alias" aria-hidden="true"></span><span id="46-附录-b通道聚合数值尺度与同drr输出" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-a6996550c6">46. 附录 B：通道聚合、数值尺度与同DRR输出</h2>
 <p>本节补齐<a href="../15_appendix-guide.html#e15-11">E15-11～15</a>的输入、中间量、答案与独立音频。五题分别处理结构性质、幅度尺度、时间尺度、源谱加权和有限尾部；这些练习不增加分离算法种类，也不把静态源码检查或数学合成WAV当作原神经网络、真实房间或听测成绩。</p>
 <span id="sec-106" class="anchor-alias" aria-hidden="true"></span><span id="461-e15-11平均不变与逐通道等变" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-46-1">46.1 E15-11：平均不变与逐通道等变</h3>
-<p><strong>输入和目标。</strong> 只处理一帧通道特征。所有通道使用相同的映射，先令 $u_m=P(x_m)$，再求 $\bar u=M^{-1}\sum_m u_m$；各路输出为 $o_m=x_m+S([u_m,R(\bar u)])$。拼接发生在特征轴，残差相加的两项必须同维。该结构来自<a href="https://arxiv.org/html/1910.14104v3" title="citation">TAC作者论文v3 §2.1式(1)～(4)</a>；以下改用本书固定标量映射，避免把训练参数与结构性质混在一起。</p>
+<p><strong>输入和目标。</strong> 只处理一帧通道特征。所有通道使用相同的映射，先令 $u_m=P(x_m)$，再求 $\bar u=M^{-1}\sum_m u_m$；各路输出为 $o_m=x_m+S([u_m,R(\bar u)])$。拼接发生在特征轴，残差相加的两项必须同维。该结构来自<a href="https://arxiv.org/html/1910.14104v3">TAC作者论文v3 §2.1式(1)～(4)</a>；以下改用本书固定标量映射，避免把训练参数与结构性质混在一起。</p>
 <p>取 $P(x)=2x$、$R(z)=z$、$S([u,v])=u+v$。于是 $o_m=3x_m+\bar u$。给定 $x=[1,3]$，逐项求 $u=[2,6]$，平均 $(2+6)/2=4$，故输出为 $[3\times1+4,3\times3+4]=[7,13]$。</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
 <thead>
@@ -4564,7 +4588,7 @@ e^{-\mathrm j2\pi 2000n/24000},\\
 <span id="sec-171" class="anchor-alias" aria-hidden="true"></span><span id="601-先改观测坐标再重算权重" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-60-1">60.1 先改观测坐标，再重算权重</h3>
 <p><a href="../10_engineering-practice.html#e10-34">E10-34</a>给定目标响应<code>[1,1,1]</code>与已知噪声矩阵<code>R=[[1,1,0],[1,2,1],[0,1,2]]</code>。它是<code>B Bᵀ</code>，其中<code>B=[[1,0,0],[1,1,0],[0,1,1]]</code>；三个顺序主子式均为1，因此正定。解<code>R q=d</code>得<code>q=[2,-1,1]</code>，再除以<code>dᵀq=2</code>，健康权重为<code>[1,-1/2,1/2]</code>。</p>
 <p>已知第0路不可用，选择矩阵必须同时作用于观测、目标响应与协方差的行列。剩余矩阵为<code>[[2,1],[1,2]]</code>，响应为<code>[1,1]</code>。旧权重仅截去第一项后是<code>[-1/2,1/2]</code>，两目标项相消；重新求解得到<code>[1/2,1/2]</code>，目标响应回到1。直接把坏通道置零再保留旧权重，不会自动满足新约束。</p>
-<p><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch10/core/channel_selection.py">唯一选集适配核</a>拒绝布尔/重复/越界或空索引，先检查完整输入统计，再选择两个协方差轴；它复用第5章唯一MVDR实现。没有自动猜坏麦、自动伪逆或自动对角加载；本题也是给定约束的控制，并未执行论文中的最优麦克风子集搜索。<a href="https://arxiv.org/pdf/1705.08255" title="citation">原论文选择矩阵条件</a>可与第10章正文对照。</p>
+<p><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch10/core/channel_selection.py">唯一选集适配核</a>拒绝布尔/重复/越界或空索引，先检查完整输入统计，再选择两个协方差轴；它复用第5章唯一MVDR实现。没有自动猜坏麦、自动伪逆或自动对角加载；本题也是给定约束的控制，并未执行论文中的最优麦克风子集搜索。<a href="https://arxiv.org/pdf/1705.08255">原论文选择矩阵条件</a>可与第10章正文对照。</p>
 <span id="sec-172" class="anchor-alias" aria-hidden="true"></span><span id="602-六份同源音频与固定权重" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-60-2">60.2 六份同源音频与固定权重</h3>
 <p>六份都是16kHz、32000点PCM16数学合成样本。目标为500Hz、振幅0.1的正弦，三路噪声基为1500、2500、3500Hz同幅正弦；使用共同绝对采样起点，首尾各320点平滑包络，共同导出增益1。通道混合矩阵为上一节的B，三个输出用固定实权重，没有随机生成、学习统计或按输出响度归一化。</p>
 <ul>
@@ -4656,6 +4680,42 @@ e^{-\mathrm j2\pi 2000n/24000},\\
 </code></pre>
 <p>前两条只读计算与核验；最后一条从正式PCM生成图78及<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch10/reports/figure78_channel_failure.json">数值报告</a>，绑定九个真实源及清单、六WAV。更改生成源后先实际生成并核验资产，不手改SHA。旧噪声失配生成器也在任何写入前检查固定参数的类型、全部值和实际方程、种子与分解结果；漂移要明确失败，不能生成后再发现清单不合格。本节没有盲故障检测、自然语音、随机噪声独立性、阵列实录或工业成绩。</p>
 <p><strong>双耳波束形成 E05-25～27。</strong> <a href="../05_beamforming.html#e05-25">第 5 章习题</a>使用共同的三通道观测。E05-25 比较同等方向干扰功率下的左右复比；E05-26 将背景相干性单列；E05-27 检查零陷处的相位无定义及复约束共轭。运行 <code>python -m codes.chapters.ch05.examples.binaural_beamforming_demo</code> 输出三题；加 <code>--check</code> 核验<a href="../binaural_beamforming_audio/MANIFEST.json">四个双声道 WAV 与清单</a>。音频固定 16 kHz，窗口 [2400,29600)，共同增益 1；定向干扰的单频结果不能代替双耳听感或宽带设备性能。</p>
+<p><a id="wearable-exercises-audio"></a></p>
+<span id="sec-175" class="anchor-alias" aria-hidden="true"></span><span id="61-第16章空间声场与可穿戴阵列对照实验" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-c3cb1966de">61. 第16章空间声场与可穿戴阵列对照实验</h2>
+<p><a href="../16_spatial-wearable-arrays.html">扩展专题Ⅲ</a>通过 E16-01～16 复算四面体 FOA 编码、开球径向模态零陷、三维欧拉旋转对偶、有功声强与扩散度参数化分析、BSM-LS 与 BSM-MagLS 双耳匹配、BMVDR 参考混合、Corcos 风噪相干、气导与耳内闭塞跨模态 MVDR 融合，以及 TWS 通透模式（Hear-Through）处理延迟导致的耳道梳状滤波效应。</p>
+<span id="sec-176" class="anchor-alias" aria-hidden="true"></span><span id="611-六份-16-khz-数学合成对照音频" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-61-1">61.1 六份 16 kHz 数学合成对照音频</h3>
+<p>六份样本均为 16 kHz、每通道 32000 点（2.0 s）有符号 PCM16 文件，首尾各 1600 点余弦升起包络，稳态评分窗口固定为半开区间 <code>[1600, 30400)</code>（共 28800 点），共同导出增益为 <code>1.0</code>。目标信号为 <code>250 Hz</code> 与 <code>4000 Hz</code> 等幅（各 <code>0.1</code>）双音叠加，稳态总功率为 <code>0.01</code>。播放前请先调低音量：</p>
+<ul>
+<li><a href="../wearable_audio/wearable_clean_ref.wav">干净双音自语音参考</a><audio class="audio-sample" controls preload="none" aria-label="干净双音自语音参考" src="../wearable_audio/wearable_clean_ref.wav">请使用上方 WAV 链接下载。</audio></li>
+<li><a href="../wearable_audio/wearable_air_wind_2ch.wav">低频受风双麦气导观测</a><audio class="audio-sample" controls preload="none" aria-label="低频受风双麦气导观测" src="../wearable_audio/wearable_air_wind_2ch.wav">请使用上方 WAV 链接下载。</audio></li>
+<li><a href="../wearable_audio/wearable_inear_occluded.wav">耳道闭塞内麦原始观测</a><audio class="audio-sample" controls preload="none" aria-label="耳道闭塞内麦原始观测" src="../wearable_audio/wearable_inear_occluded.wav">请使用上方 WAV 链接下载。</audio></li>
+<li><a href="../wearable_audio/wearable_inear_equalized.wav">内麦单通道朴素逆均衡</a><audio class="audio-sample" controls preload="none" aria-label="内麦单通道朴素逆均衡" src="../wearable_audio/wearable_inear_equalized.wav">请使用上方 WAV 链接下载。</audio></li>
+<li><a href="../wearable_audio/wearable_fused_output.wav">气导与内麦跨模态 MVDR 融合</a><audio class="audio-sample" controls preload="none" aria-label="气导与内麦跨模态 MVDR 融合" src="../wearable_audio/wearable_fused_output.wav">请使用上方 WAV 链接下载。</audio></li>
+<li><a href="../wearable_audio/wearable_hearthrough_comb.wav">直达漏声叠加 2 ms 通透梳状滤波</a><audio class="audio-sample" controls preload="none" aria-label="直达漏声叠加 2 ms 通透梳状滤波" src="../wearable_audio/wearable_hearthrough_comb.wav">请使用上方 WAV 链接下载。</audio></li>
+</ul>
+<p>外麦在 <code>125/375 Hz</code> 承受大幅非相干风噪干扰，内麦在 <code>250 Hz</code> 增益 <code>2.0</code> 而在 <code>4000 Hz</code> 衰减至 <code>0.1</code>；单通道朴素逆均衡会将 <code>5000 Hz</code> 传感器底噪放大 100 倍功率，而分频带跨模态 MVDR 融合把稳态参考误差降至 <code>0.000297</code>。通透模式 <code>32</code> 点（<code>2.0 ms</code>）延迟使 <code>250 Hz</code> 恰好半波长反相相消、<code>4000 Hz</code> 同相倍增。解析期望、浮点分解与实际 PCM16 整型平方和记录于<a href="../wearable_audio/MANIFEST.json">独立清单</a>，绑定六个真实生成源。</p>
+<pre><code class="language-bash">.venv/bin/python -m codes.chapters.ch16.chapter16_exercises
+.venv/bin/python -m codes.chapters.ch16.examples.generate_wearable_audio --check
+.venv/bin/python scripts/make_wearable_figures.py
+</code></pre>
+<p><a id="tse-exercises-audio"></a></p>
+<span id="sec-177" class="anchor-alias" aria-hidden="true"></span><span id="62-第17章条件目标提取与近场距离气泡对照实验" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-3d1374a482">62. 第17章条件目标提取与近场距离气泡对照实验</h2>
+<p><a href="../17_target-extraction-diarization.html">扩展专题Ⅳ</a>通过 E17-01～16 复算 FiLM 线索条件化调制、目标存在与沉默双态能量地板损失、单人擦音零重叠旁路门限、菲涅尔近场球面波导向矢量与同向距离气泡 LCMV 波束形成、重叠会议单标签 DER 理论下界、空谱联合 TS-VAD 后验与排他 GSS 掩码，以及异构音视频曝光对齐与唇部遮挡软门控回退。</p>
+<span id="sec-178" class="anchor-alias" aria-hidden="true"></span><span id="621-六份-16-khz-近场球面波距离气泡对照音频" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-62-1">62.1 六份 16 kHz 近场球面波距离气泡对照音频</h3>
+<p>六份样本均为 16 kHz、每通道 32000 点（2.0 s）有符号 PCM16 文件，首尾各 800 点线性渐变，稳态评分窗口固定为半开区间 <code>[1600, 30400)</code>（共 28800 点），共同导出增益为 <code>1.0</code>。正侧向 <code>0°</code> 同时存在 <code>r = 0.40 m</code> 的 <code>3200 Hz</code> 近场目标（稳态均方 <code>0.0128</code>）与 <code>r = 4.00 m</code> 的 <code>2500 Hz</code> 远场同向干扰（稳态均方 <code>0.0128</code>），并叠加正交传感器底噪。播放前请先调低音量：</p>
+<ul>
+<li><a href="../tse_audio/tse_near_target_ref.wav">正侧向 0.4 m 近场目标参考</a><audio class="audio-sample" controls preload="none" aria-label="正侧向 0.4 m 近场目标参考" src="../tse_audio/tse_near_target_ref.wav">请使用上方 WAV 链接下载。</audio></li>
+<li><a href="../tse_audio/tse_far_interferer_ref.wav">正侧向 4.0 m 同向远场干扰参考</a><audio class="audio-sample" controls preload="none" aria-label="正侧向 4.0 m 同向远场干扰参考" src="../tse_audio/tse_far_interferer_ref.wav">请使用上方 WAV 链接下载。</audio></li>
+<li><a href="../tse_audio/tse_array_3ch.wav">10 cm 间距三元线阵原始混合观测</a><audio class="audio-sample" controls preload="none" aria-label="10 cm 间距三元线阵原始混合观测" src="../tse_audio/tse_array_3ch.wav">请使用上方 WAV 链接下载。</audio></li>
+<li><a href="../tse_audio/tse_farfield_dsb.wav">远场平面波 DSB 输出</a><audio class="audio-sample" controls preload="none" aria-label="远场平面波 DSB 输出" src="../tse_audio/tse_farfield_dsb.wav">请使用上方 WAV 链接下载。</audio></li>
+<li><a href="../tse_audio/tse_bubble_d10cm.wav">10 cm 间距球面波距离气泡输出</a><audio class="audio-sample" controls preload="none" aria-label="10 cm 间距球面波距离气泡输出" src="../tse_audio/tse_bubble_d10cm.wav">请使用上方 WAV 链接下载。</audio></li>
+<li><a href="../tse_audio/tse_bubble_d2cm_illcond.wav">2 cm 微小孔径病态距离气泡输出</a><audio class="audio-sample" controls preload="none" aria-label="2 cm 微小孔径病态距离气泡输出" src="../tse_audio/tse_bubble_d2cm_illcond.wav">请使用上方 WAV 链接下载。</audio></li>
+</ul>
+<p>远场平面波 DSB 无法区分同一 <code>0°</code> 方向的近场目标与远场干扰（实际 PCM 归一化误差比 <code>1.2226</code>）；<code>d = 10 cm</code> 二抽头因果距离气泡利用球面波曲率差在保持近场目标的同时将远场干扰压低逾 <code>21.7 dB</code>（实际 PCM 归一化误差比降至 <code>0.0246</code>）；而当阵元间距缩至 <code>d = 2 cm</code> 时，球面波与平面波导向矢量近似共线导致传感器底噪剧烈放大（误差比升至 <code>2.2760</code>）。解析期望、浮点投影与实际 PCM16 整型分子/分母记录于<a href="../tse_audio/MANIFEST.json">独立清单</a>，绑定六个真实生成源。</p>
+<pre><code class="language-bash">.venv/bin/python -m codes.chapters.ch17.chapter17_exercises
+.venv/bin/python -m codes.chapters.ch17.examples.generate_tse_audio --check
+.venv/bin/python scripts/make_tse_figures.py
+</code></pre>
 <footer class="foot">麦克风阵列信号处理教程 · 静态站由 scripts/build_site.py 生成</footer>
 </main></div><a class="topbtn" href="#top" title="回顶部" aria-label="回到页面顶部">↑</a>
 <script>if(!navigator.onLine)document.getElementById('offnote').style.display='block';</script>

@@ -2,7 +2,7 @@
 <link rel="canonical" href="14_appendix-symbols-math.html"><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 14 章 · 附录 A：符号术语数学 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="30366ba49985"><style>
+<meta name="source-digest" content="9b634b8b6fd1"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -257,6 +257,8 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <div class="chap"><a href="11_selection-guide.html">第 11 章 · 总结与选型指南</a></div>
 <div class="chap"><a href="12_acoustic-imaging.html">第 12 章 · 声学成像与噪声源诊断</a></div>
 <div class="chap"><a href="13_distributed-enhancement.html">第 13 章 · 分布式麦克风协同增强</a></div>
+<div class="chap"><a href="16_spatial-wearable-arrays.html">第 16 章 · 空间声场与可穿戴阵列</a></div>
+<div class="chap"><a href="17_target-extraction-diarization.html">第 17 章 · 条件目标提取与多通道日志</a></div>
 <div class="chap cur" aria-current="page">第 14 章 · 附录 A：符号术语数学</div>
 <ul>
 <li><a href="14_appendix-symbols-math.html#sec-u-2bfed502b9">第 14 章 · 附录 A：符号、术语与数学基础</a></li>
@@ -350,8 +352,8 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="14_appendix-symbols-math.html#sec-u-28d6db2836">E14-20：相关噪声为什么会产生负权重，白化后还须改变什么？</a></li>
 </ul></nav></details>
 <blockquote>
-<p>⚠️ 本篇是第 14 章，即附录 A（正文共 13 章，其中第 12、13 章为扩展专题；另有附录 A/B），可独立查阅，前后篇见下方导航。</p>
-<p>🏠 首页导读：<a href="index.html">🏠 导读与导航</a> ｜ 上一篇：<a href="13_distributed-enhancement.html">第 13 章 · 分布式麦克风协同增强</a> ｜ 下一篇：<a href="15_appendix-guide.html">第 15 章 · 附录 B：路径地图与练习</a></p>
+<p>⚠️ 本篇是第 14 章，即附录 A（正文与扩展专题共 15 章，其中第 12、13、16、17 章为扩展专题，另有附录 A、B），可独立查阅，前后篇见下方导航。</p>
+<p>🏠 首页导读：<a href="index.html">🏠 导读与导航</a> ｜ 上一篇：<a href="17_target-extraction-diarization.html">第 17 章 · 条件目标提取与多通道日志</a> ｜ 下一篇：<a href="15_appendix-guide.html">第 15 章 · 附录 B：路径地图与练习</a></p>
 </blockquote>
 <hr />
 <span id="sec-u-78b6668a18" class="anchor-alias" aria-hidden="true"></span><span id="sec-1" class="anchor-alias" aria-hidden="true"></span><h1 id="sec-u-2bfed502b9">第 14 章 · 附录 A：符号、术语与数学基础</h1>
@@ -360,7 +362,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <p>本书的排版约定与 §2.3 保持一致：<strong>斜体表示标量，头顶箭头表示列向量，加粗大写表示矩阵</strong>；上标 $^H$ 表示共轭转置（厄米转置），上标 $^\top$ 表示普通转置，顶帽 $\hat{\ }$ 表示估计量。按照语音信号处理文献的惯例，$X(f)$、$X(f_k,\ell)$ 这类带频点自变量的大写斜体字母表示单个频点或单个时频格点上的复数<strong>标量</strong>。</p>
 <p>本书统一采用前向傅里叶核 $e^{-\mathrm{j}2\pi ft}$，其中 $\mathrm{j}=\sqrt{-1}$ 为虚数单位。</p>
 <p>阵列几何参考系约定为：麦 1 位于原点 $x=0$，麦 2 位于 $+x$ 半轴；正横方向（$+y$ 轴）记为 $0^\circ$，正方位角朝麦 2（$+x$ 轴）顺时针旋转度量；方向单位向量 $\vec{u}$ 从阵列参考点指向声源，声波传播方向为 $-\vec{u}$。</p>
-<p>球谐域公式通常改用从 $+x$ 轴逆时针起算的方位角 $\alpha$ 和从 $+z$ 轴向下起算的极角（余纬角）$\vartheta$。将其与本书从 $+y$ 朝 $+x$ 起算的声源方位角 $\theta$、从水平面朝 $+z$ 起算的俯仰角 $\phi_{\mathrm{el}}$ 对接时，必须先做角度换算 $\alpha=\pi/2-\theta$（按 $2\pi$ 周期折叠取值）、$\vartheta=\pi/2-\phi_{\mathrm{el}}$，再代入球谐基函数或开源库接口，详见<a href="05_beamforming.html#sec-5-8">§5.8</a>。</p>
+<p>球谐域公式通常改用从 $+x$ 轴逆时针起算的方位角 $\alpha$ 和从 $+z$ 轴向下起算的极角（余纬角）$\vartheta$。将其与本书从 $+y$ 朝 $+x$ 起算的声源方位角 $\theta$、从水平面朝 $+z$ 起算的俯仰角 $\phi_{\mathrm{el}}$ 对接时，必须先做角度换算 $\alpha=\pi/2-\theta$（按 $2\pi$ 周期折叠取值）、$\vartheta=\pi/2-\phi_{\mathrm{el}}$，再代入球谐基函数或开源库接口，详见<a href="05_beamforming.html#sec-5-8">§5.8</a>。同理，国际标准 AmbiX 与一阶全景声（FOA）采用 $+x$ 朝正前方、$+y$ 朝正左方、$+z$ 朝正上方的三维右手系，其水平方位角从 $+x$ 逆时针转向 $+y$、俯仰角从水平面转向 $+z$，与上段平面阵列坐标系（$+y$ 正前、顺时针方位角）之间的对照详见<a href="16_spatial-wearable-arrays.html#sec-16-2">专题Ⅲ §16.2</a>。</p>
 <p><strong>字母复用</strong>（与 §2.3 一致）：由于阵列、自适应滤波、去混响与多目标追踪分属不同研究传统，同一个字母在不同章节可能承担不同角色。例如本表将波数记为 $\kappa=2\pi f/c$，以区别于离散频点索引 $k$，但部分文献与局部推导仍用 $k$ 记波数，第 7 章局部还用 $k$ 记 WPE 的滞后帧号；$D$ 可表示阵列孔径或 PHD 强度函数；$\lambda$ 可表示声波波长、RLS 指数遗忘因子、WPE 时变方差或矩阵特征值；$K$ 可表示声源个数或 WPE 预测阶数；$s$ 可表示源信号或追踪状态。具体含义以所在公式的定义为准。</p>
 <p>本表区分 STFT 网格时，默认 $k$ 是频点索引、$\ell$ 是帧索引，$n$ 是离散采样索引，$t$ 是连续时间。各章沿用各自领域的经典记号时会另行声明下标：例如第 5 章的 $\vec{x}(k,n)$ 按（频点，帧）排列；第 8 章的 $X_m(f,k)$ 或 $\vec{x}_{ft}$ 也按（频点，帧）排列，其中用 $t$ 表示离散帧号。跨章对照公式时，应当先对齐每个维度的物理意义，不能仅凭字母相同就默认代表同一条坐标轴。</p>
 <p>实信号的<strong>单边谱</strong>取 $0\leq k\leq\lfloor N/2\rfloor$，对应非负物理频率 $f_k=kf_s/N$（单位：Hz）。若在内存中保存完整的 $N$ 点 DFT，后半段索引对应负频率：偶数 $N$ 下的 $k>N/2$ 或奇数 $N$ 下的 $k>(N-1)/2$ 应换算为 $(k-N)f_s/N$。偶数 $N$ 的奈奎斯特（Nyquist）格点 $k=N/2$ 对实信号满足自共轭，在单边谱中常记作 $+f_s/2$；切勿把完整 DFT 的末尾格点误读成接近 $+f_s$ 的新高频分量。练习 E14-06 给出了八点序列的逐格复算。</p>
@@ -429,7 +431,7 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">$\psi$</td>
-<td>相邻两麦经过波束指向相位补偿后的残余空间相位差（§2.6、§5.2）；E09-26 局部另用 $\psi$ 记右手绕 $+z$ 轴的姿态偏航角，两处语境不同</td>
+<td>相邻两麦经过波束指向相位补偿后的残余空间相位差（§2.6、§5.2）；E09-26 局部用 $\psi$ 记右手绕 $+z$ 轴的姿态偏航角，<a href="16_spatial-wearable-arrays.html#sec-16-4">专题Ⅲ §16.4</a> 式(16-12) 另用 $\psi\in[0,1]$ 表示声场扩散度（diffuseness）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">$\vec{a}(\theta)$, $\vec{w}$</td>
@@ -550,6 +552,42 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">CSM、$\mathbf{R}$、$p_{\mathrm{ref}}$（专题Ⅰ）</td>
 <td>互谱矩阵（Cross-Spectral Matrix）与空气声学参考有效声压 $p_{\mathrm{ref}}=20\ \mu\mathrm{Pa}$；未归一化 FFT 外积、每 Hz 功率谱密度与单频均方幅度的量纲标度不同，数字幅值未经声压灵敏度校准前不得直接标为 $\mathrm{Pa}^2$ 或 dB SPL（§12.3）</td>
+</tr>
+<tr>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">$W, X, Y, Z$，$\vec{b}_{\mathrm{WXYZ}}$，$\vec{b}_{\mathrm{ACN}}$（专题Ⅲ）</td>
+<td>一阶全景声（FOA）在 SN3D 归一化下的零阶全向与三个一阶偶极通道，以及直观序 $[W,X,Y,Z]^\top$ 与标准 ACN 序 $[W,Y,Z,X]^\top$（<a href="16_spatial-wearable-arrays.html#sec-16-2">§16.2</a>）</td>
+</tr>
+<tr>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">$b_l(\kappa R)$（专题Ⅲ）</td>
+<td>半径 $R$ 球面阵列的第 $l$ 阶径向模态权重；开球全向阵在 $\kappa R=\pi$ 处出现 $b_0^{\mathrm{open}}(\pi)=0$ 零陷（<a href="16_spatial-wearable-arrays.html#sec-16-2">§16.2</a>）</td>
+</tr>
+<tr>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">$\vec{I}_a, \vec{I}_r$，$E, \psi$（专题Ⅲ）</td>
+<td>时间平均有功声强、无功声强、总声能密度与声场扩散度 $\psi=1-\|\bar{\vec{I}}_a\|_2/(c\bar{E})$（其中 $\bar{\vec{I}}_a=\mathbb{E}[\vec{I}_a]$、$\bar{E}=\mathbb{E}[E]$，取值 $\psi\in[0,1]$，<a href="16_spatial-wearable-arrays.html#sec-16-4">§16.4</a>）</td>
+</tr>
+<tr>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">$\mathbf{H}, \vec{p}_e, \vec{\phi}$；$\mathrm{IC}, \beta$（专题Ⅲ）</td>
+<td>可穿戴阵列 $Q$ 方向流形矩阵、目标耳 HRTF 向量与 MagLS 辅助自由相位向量（由 $\mathbf{H}^H\vec{w}_e$ 拟合共轭目标 $\vec{p}_e^*$，<a href="16_spatial-wearable-arrays.html#sec-16-5">§16.5</a>～<a href="16_spatial-wearable-arrays.html#sec-16-6">§16.6</a>）；双耳相干度与参考麦混合系数 $\beta\in[0,1]$（<a href="16_spatial-wearable-arrays.html#sec-16-7">§16.7</a>）</td>
+</tr>
+<tr>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">$U_c, \gamma_{\mathrm{wind}}(f)$；$H_{\mathrm{occ}}(f)$；$\tau_{\mathrm{proc}}$（专题Ⅲ）</td>
+<td>Corcos 湍流风噪对流速度与空间相干度（<a href="16_spatial-wearable-arrays.html#sec-16-8">§16.8</a>）；耳道闭塞内麦/骨导相对外麦的跨模态自语音传递函数（<a href="16_spatial-wearable-arrays.html#sec-16-9">§16.9</a>）；主动通透模式端到端处理延迟（<a href="16_spatial-wearable-arrays.html#sec-16-10">§16.10</a>）</td>
+</tr>
+<tr>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">$\mathcal{C}, \vec{e}, \vec{\gamma}, \vec{\beta}$；$\mathcal{L}_{\mathrm{dual}}$，$\tau_{\mathrm{floor}}$（专题Ⅳ）</td>
+<td>目标先验线索、条件嵌入向量与 FiLM 通道缩放/偏置向量；兼顾发声段负 SI-SDR 与沉默段相对混合能量地板系数的双态损失（<a href="17_target-extraction-diarization.html#sec-17-2">§17.2</a>）</td>
+</tr>
+<tr>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">$r_F=2D^2/\lambda$，$\vec{w}_{\mathrm{bubble}}$（专题Ⅳ）</td>
+<td>菲涅耳近场曲率边界与三麦正侧向声学距离气泡二阶空间差分权重（<a href="17_target-extraction-diarization.html#sec-17-3">§17.3</a>）</td>
+</tr>
+<tr>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">$\mathrm{DER}$，$E_{\mathrm{miss}}$，$E_{\mathrm{FA}}$，$E_{\mathrm{conf}}$（专题Ⅳ）</td>
+<td>说话人日志误差率及逐帧漏检、虚警、说话人混淆人数误差；虚警较高时合法 $\mathrm{DER}$ 可大于 $100\%$（<a href="17_target-extraction-diarization.html#sec-17-4">§17.4</a>）</td>
+</tr>
+<tr>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">$\gamma_{k,t}$，$m_{k,t}^{\mathrm{tar}}$，$m_{k,t}^{\mathrm{int}}$；$\Delta t_{\mathrm{av}}, \alpha_\ell$（专题Ⅳ）</td>
+<td>TS-VAD 独立伯努利活动后验与 GSS 目标排他掩码/干扰掩码（<a href="17_target-extraction-diarization.html#sec-17-5">§17.5</a>）；视听管线正滞后与逐帧视觉可见度置信度门控权重（<a href="17_target-extraction-diarization.html#sec-17-6">§17.6</a>）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">PHD / RFS</td>
@@ -744,7 +782,7 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">TSE（目标说话人提取）</td>
-<td>以目标说话人的注册声纹嵌入、方向区间或视觉线索作为辅助条件，仅提取指定说话人语音；实际部署时需重点评估线索缺失、声纹相似干扰与未见说话人泛化边界，见<a href="08_speech-separation.html#sec-8-6">§8.6</a></td>
+<td>目标说话人提取（Target Speaker Extraction，亦称目标语音提取 Target Speech Extraction，TSE）：以注册声纹嵌入、空间方向/近场距离区间或视觉唇动线索作为辅助条件，仅提取指定说话人语音；双态静音损失、单人擦音旁路与未见说话人泛化边界见<a href="08_speech-separation.html#sec-8-6">§8.6</a>及<a href="17_target-extraction-diarization.html#sec-17-1">专题Ⅳ §17.1～§17.2</a></td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">PIT（排列不变训练）</td>
@@ -757,6 +795,14 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">GEVD</td>
 <td>广义特征值分解；在噪声协方差度量下联合对角化混合协方差与噪声协方差。GEVD-MWF 利用主广义特征向量做低秩目标协方差重构以提升维纳滤波稳健性，其优化准则不同于直接最大化输出信噪比的 GEV 波束，见<a href="13_distributed-enhancement.html#sec-13-12">专题Ⅱ §13.12</a></td>
+</tr>
+<tr>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">说话人日志（Speaker Diarization）与 DER</td>
+<td>工程文献亦称说话人分割聚类，回答“谁在什么时段说话”；说话人日志误差率（DER）累加漏检、虚警与混淆时长并除以参考总说话人时长，硬单标签聚类在重叠对话中存在理论误差下界，见<a href="17_target-extraction-diarization.html#sec-17-4">专题Ⅳ §17.4</a></td>
+</tr>
+<tr>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">TS-VAD / SOT / DiCoW</td>
+<td>目标说话人语音活动检测（TS-VAD）以声纹与空谱特征并行输出多说话人重叠活动后验；序列化输出训练（SOT）与基于日志条件化的 Whisper（DiCoW）则分别代表单流多说话人转写与条件化端到端目标转写架构，见<a href="17_target-extraction-diarization.html#sec-17-5">专题Ⅳ §17.5</a>、<a href="17_target-extraction-diarization.html#sec-17-7">§17.7</a></td>
 </tr>
 </tbody>
 </table></div>
@@ -835,11 +881,23 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">GSS（导引源分离）</td>
-<td>§8.4 介绍的经典会议分离框架：利用外部说话人活动起止时间（diarization）硬约束 cACGMM 各混合分量的活跃区间以消除跨频点排列模糊，再由估计掩码统计目标与干扰协方差并执行波束形成</td>
+<td>§8.4 介绍的经典会议分离框架：利用外部说话人活动起止时间（diarization）硬约束 cACGMM 各混合分量的活跃区间以消除跨频点排列模糊，再由估计掩码统计目标与干扰协方差并执行波束形成；结合 TS-VAD 软后验构造目标排他掩码 $m_{k,t}^{\mathrm{tar}}$ 抑制双讲协方差泄漏的闭环见<a href="17_target-extraction-diarization.html#sec-17-5">专题Ⅳ §17.5</a></td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">WDO（W-不重叠正交性）</td>
 <td>假设多个语音源在短时傅里叶时频平面上的高能量支撑集几乎互不重叠，使得每个时频格点近似由单一声源主导；该条件严格强于统计不相关或内积正交（例如向量 $[1,1]$ 与 $[1,-1]$ 内积为零，但两个坐标均同时非零，不满足支撑集分离）。强混响拖尾与多人密集叠讲会削弱这一近似（§8.6；参见<a href="https://doi.org/10.1109/TSP.2004.828896">Yılmaz 与 Rickard（2004）原始论文</a>）</td>
+</tr>
+<tr>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">FOA / Ambisonics 与 DirAC</td>
+<td>一阶全景声（First-Order Ambisonics）用零阶全向声压 $W$ 与三个一阶正交偶极分量 $X,Y,Z$ 表征三维局部声场；定向音频编码（DirAC）进一步由有功声强与总声能密度估计瞬时波达方向和扩散度 $\psi$，见<a href="16_spatial-wearable-arrays.html#sec-16-2">专题Ⅲ §16.2</a>、<a href="16_spatial-wearable-arrays.html#sec-16-4">§16.4</a></td>
+</tr>
+<tr>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">BSM / MagLS 与双耳相干度（IC）</td>
+<td>双耳信号匹配（BSM）用非规则可穿戴阵列线性逼近目标耳 HRTF，高频切换幅度最小二乘（MagLS）释放绝对相位以消除幅度凹坑；双耳相干度（IC）衡量左右耳背景场互相关模长，可通过参考麦混合抑制头中缩像，见<a href="16_spatial-wearable-arrays.html#sec-16-5">专题Ⅲ §16.5～§16.7</a></td>
+</tr>
+<tr>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">声学距离气泡（Acoustic Distance Bubble）</td>
+<td>在菲涅耳近场半径 $r_F=2D^2/\lambda$ 内利用球面波前曲率差异，对远场同向平面波施加零陷而保留近处目标的二阶空间差分滤波器；微孔径低频段需严防白噪声增益按 $d^4$ 陡降，见<a href="17_target-extraction-diarization.html#sec-17-3">专题Ⅳ §17.3</a></td>
 </tr>
 </tbody>
 </table></div>
@@ -1046,6 +1104,10 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">TCLw（加权终端耦合损耗）</td>
 <td>衡量免提通信终端扬声器至麦克风全链路回声衰减能力的核心认证指标；具体合格门限、测试激励信号与收敛预热时长须严格对照目标市场适用的通信标准条款（§6.7）</td>
+</tr>
+<tr>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">耳道闭塞效应（OE）与主动通透（Hear-Through）</td>
+<td>封闭耳道使佩戴者骨导自语音在耳内低频显著增强而免疫外部湍流风噪，可与外麦做跨模态融合；主动通透模式将外麦拾音实时重放至耳道，端到端处理延迟须控制在百微秒量级以防与被动漏声产生语音频带梳状相消，见<a href="16_spatial-wearable-arrays.html#sec-16-9">专题Ⅲ §16.9～§16.10</a></td>
 </tr>
 </tbody>
 </table></div>
@@ -1593,7 +1655,7 @@ H_{\mathrm{wrong}}&=\vec{h}_{\mathrm{wrong}}^H\vec{a},\\
 <hr />
 <blockquote>
 <p>📄 本篇信息：配图 3 张 ｜ <a href="index.html">回首页</a></p>
-</blockquote><div class="pn"><span><a href="13_distributed-enhancement.html">← 上一篇</a></span><span><a href="15_appendix-guide.html">下一篇 →</a></span></div>
+</blockquote><div class="pn"><span><a href="17_target-extraction-diarization.html">← 上一篇</a></span><span><a href="15_appendix-guide.html">下一篇 →</a></span></div>
 <footer class="foot">麦克风阵列信号处理教程 · 静态站由 scripts/build_site.py 生成</footer>
 </main></div><a class="topbtn" href="#top" title="回顶部" aria-label="回到页面顶部">↑</a>
 <script>if(!navigator.onLine)document.getElementById('offnote').style.display='block';</script>

@@ -214,7 +214,7 @@ class SpatialParagraphTest(unittest.TestCase):
         paragraphs = re.findall(r"<p>(.*?)</p>", html, flags=re.S)
         # Locate technical paragraphs by their complete distinctive content,
         # rather than requiring a historical list layout that no longer exists.
-        checks = ("定义 $s_{out}", r"\tag{5-13}", "真实混合输出",
+        checks = (r"定义 $s_{\mathrm{out}}", r"\tag{5-13}", "真实混合输出",
                   r"\mu\to\infty", "只有秩一目标模型", r"\tag{5-14}",
                   "可先验证", "目标二阶矩满秩")
         indices = []

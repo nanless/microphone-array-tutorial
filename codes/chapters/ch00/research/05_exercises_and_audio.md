@@ -2,11 +2,11 @@
 
 先按章节做手算，再运行对应脚本，最后听同一模型产生的音频。代码输出不是预填的答案表；程序从输入重新计算结果，回归测试另外保留手算、解析边界或已知模型作为判据。
 
-本页索引 363 道带稳定编号的代码题，以及独立的真实录音练习 R01。`E01-01` 表示第 1 章的第 1 道代码题；附录 B 中另有按 1～17 编号的综合题，两套题号各自使用。
+本页索引 395 道带稳定编号的代码题，以及独立的真实录音练习 R01。`E01-01` 表示第 1 章的第 1 道代码题；附录 B 中另有按 1～17 编号的综合题，两套题号各自使用。
 
 E06-07～E06-20 使用无量纲回声模型检查 AEC 的计算与边界，其中 E06-11～20 可用精确答案程序核对。第 15、16 节另提供参数不同的合成音频；试听文件本身不是题目真值。
 
-第 3～11、13～16、18、21～30、32～34 节对应主清单的 109 个数学合成样本。第 17 节的 18 个房间白噪声合成样本使用独立清单；第 12 节使用另行授权的真实同步录音。第 31 节的 2 份从 PCM 形成定位观测的追踪样本也使用独立清单。第35～39节分别保存双耳、有限窗卷积、多频几何、已知聚焦与导数约束的独立样本。第48节保存分布式协同增强的17个独立样本；第47节保存成像的五个快拍样本。第46节另保存附录B同DRR短RIR的五个独立样本；第55节保存第5章逐频相位的三份独立PCM；第56节保存第6章已知播放增益与历史尾声的六份独立PCM；第57节保存第7章已知到达与历史索引的六份独立PCM。不同音频的来源和可作的比较不同，试听前先查看各节的条件。
+第 3～11、13～16、18、21～30、32～34 节对应主清单的 109 个数学合成样本。第 17 节的 18 个房间白噪声合成样本使用独立清单；第 12 节使用另行授权的真实同步录音。第 31 节的 2 份从 PCM 形成定位观测的追踪样本也使用独立清单。第35～39节分别保存双耳、有限窗卷积、多频几何、已知聚焦与导数约束的独立样本。第48节保存分布式协同增强的17个独立样本；第47节保存成像的五个快拍样本。第46节另保存附录B同DRR短RIR的五个独立样本；第55节保存第5章逐频相位的三份独立PCM；第56节保存第6章已知播放增益与历史尾声的六份独立PCM；第57节保存第7章已知到达与历史索引的六份独立PCM；第61节保存第16章空间与可穿戴阵列的六个独立样本；第62节保存第17章近场距离气泡与目标提取的六个独立样本。不同音频的来源和可作的比较不同，试听前先查看各节的条件。
 
 主音频按章存放，统一由[生成器](../examples/generate_audio_samples.py)和[清单](../audio/MANIFEST.json)管理。清单记录每组模型、种子、共同导出增益、采样率、通道、帧数、量化误差、运行环境、源文件摘要与逐 WAV 摘要；不把某组的谐波模板套到其他组。PCM16 编码按最近偶数舍入，不加抖动或自动限幅，RMS 对全部通道与采样一起计算。运行生成器并附加 `--check` 时只在内存重算和读回比对，不重写资产；严格字节核对也比较 Python、NumPy 和平台记录，异机不通过不等于算法错误。生成中断造成清单与 WAV 不一致时，先保留异常目录，再生成到新的空目录核对，通过后更新受影响资产并构建图和网站；不要手改单个生成文件。样本没有真人录音或模型权重，客观读回和浏览器加载不等于正式听测。
 
@@ -50,6 +50,10 @@ E06-07～E06-20 使用无量纲回声模型检查 AEC 的计算与边界，其�
 .venv/bin/python -m codes.chapters.ch10.spectral_subtraction_demo
 .venv/bin/python -m codes.chapters.ch03.coarray_covariance_exercise
 .venv/bin/python -m codes.chapters.ch04.doa_resolution_trials
+.venv/bin/python -m codes.chapters.ch16.chapter16_exercises
+.venv/bin/python -m codes.chapters.ch16.examples.generate_wearable_audio --check
+.venv/bin/python -m codes.chapters.ch17.chapter17_exercises
+.venv/bin/python -m codes.chapters.ch17.examples.generate_tse_audio --check
 .venv/bin/python codes/chapters/ch00/examples/generate_audio_samples.py --check
 .venv/bin/python -m unittest discover -s tests -p 'test_codes*.py' -v
 ```
@@ -79,6 +83,8 @@ E06-07～E06-20 使用无量纲回声模型检查 AEC 的计算与边界，其�
 | 第 10 章 E10-18～27 | 重叠帧 RTF、谱减均值与地板、Q15、关键路径、时钟相位、内存寿命、流式插值、混叠、遥测与整块 AGC 音频 | [工程逐步实验](../../ch10/chapter10_experiments.py) |
 | 第 11 章 E11-01～07 | 资源约束、失败率统计、WER 聚合、延迟分位数和三个场景选型决策 | [工程练习](../cross_chapter/exercises_engineering.py) |
 | 第 11 章 E11-10～27 | 非支配候选、场景权重、评分缺失、同时风险、硬界三态、模块交互、CSS槽位、唤醒阈值、精确SRO、FIR取舍、非支持加权、区间支配、零FA暴露、话段/时间及跨场景选型 | [选型逐步实验](../../ch11/chapter11_experiments.py)；音频见§33与§44 |
+| 第 16 章 E16-01～16 | 四面体 FOA 编码、开球零陷、欧拉旋转、声强 DirAC、BSM-LS/MagLS、双耳参考混合、跨模态抗风噪融合与通透梳状滤波 | [可穿戴逐步实验](../../ch16/chapter16_exercises.py)；六WAV见§61 |
+| 第 17 章 E17-01～16 | FiLM 调制、双态地板损失、零重叠旁路、球面波距离气泡与孔径病态、DER 下界、空谱 TS-VAD/GSS 与视听门控回退 | [目标提取逐步实验](../../ch17/chapter17_exercises.py)；六WAV见§62 |
 | 附录 A E14-01～04 | 卷积、复二阶矩、秩亏最小二乘、空间白化与 PHAT 的区别 | [工程练习](../cross_chapter/exercises_engineering.py) |
 | 附录 A E14-06～20 | 有符号 FFT 频点、复内积、分块卷积、相关符号、有限快拍秩、正规方程条件数、SDW 噪声零空间极限、加载尺度、复LS残差、已知噪声WLS、数值秩、共轭反序、`eigh` 前提及完整相关噪声GLS | [附录 A 逐步实验](../../appendix_a/appendix_a_experiments.py)；音频见§34与§45 |
 | 附录 B E15-01 | 同组共同增益与独立归一化 | [工程练习](../cross_chapter/exercises_engineering.py) |
@@ -1693,7 +1699,7 @@ PSD例进一步用独立约束推导说明：方程最小二乘返回值经归�
 
 ### 46.1 E15-11：平均不变与逐通道等变
 
-**输入和目标。** 只处理一帧通道特征。所有通道使用相同的映射，先令 $u_m=P(x_m)$，再求 $\bar u=M^{-1}\sum_m u_m$；各路输出为 $o_m=x_m+S([u_m,R(\bar u)])$。拼接发生在特征轴，残差相加的两项必须同维。该结构来自[TAC作者论文v3 §2.1式(1)～(4)](https://arxiv.org/html/1910.14104v3 "citation")；以下改用本书固定标量映射，避免把训练参数与结构性质混在一起。
+**输入和目标。** 只处理一帧通道特征。所有通道使用相同的映射，先令 $u_m=P(x_m)$，再求 $\bar u=M^{-1}\sum_m u_m$；各路输出为 $o_m=x_m+S([u_m,R(\bar u)])$。拼接发生在特征轴，残差相加的两项必须同维。该结构来自[TAC作者论文v3 §2.1式(1)～(4)](https://arxiv.org/html/1910.14104v3)；以下改用本书固定标量映射，避免把训练参数与结构性质混在一起。
 
 取 $P(x)=2x$、$R(z)=z$、$S([u,v])=u+v$。于是 $o_m=3x_m+\bar u$。给定 $x=[1,3]$，逐项求 $u=[2,6]$，平均 $(2+6)/2=4$，故输出为 $[3\times1+4,3\times3+4]=[7,13]$。
 
@@ -2588,7 +2594,7 @@ E42将这个运算顺序扩为可播放的数学模型。采样率16kHz，源320
 
 已知第0路不可用，选择矩阵必须同时作用于观测、目标响应与协方差的行列。剩余矩阵为`[[2,1],[1,2]]`，响应为`[1,1]`。旧权重仅截去第一项后是`[-1/2,1/2]`，两目标项相消；重新求解得到`[1/2,1/2]`，目标响应回到1。直接把坏通道置零再保留旧权重，不会自动满足新约束。
 
-[唯一选集适配核](../../ch10/core/channel_selection.py)拒绝布尔/重复/越界或空索引，先检查完整输入统计，再选择两个协方差轴；它复用第5章唯一MVDR实现。没有自动猜坏麦、自动伪逆或自动对角加载；本题也是给定约束的控制，并未执行论文中的最优麦克风子集搜索。[原论文选择矩阵条件](https://arxiv.org/pdf/1705.08255 "citation")可与第10章正文对照。
+[唯一选集适配核](../../ch10/core/channel_selection.py)拒绝布尔/重复/越界或空索引，先检查完整输入统计，再选择两个协方差轴；它复用第5章唯一MVDR实现。没有自动猜坏麦、自动伪逆或自动对角加载；本题也是给定约束的控制，并未执行论文中的最优麦克风子集搜索。[原论文选择矩阵条件](https://arxiv.org/pdf/1705.08255)可与第10章正文对照。
 
 ### 60.2 六份同源音频与固定权重
 
@@ -2636,3 +2642,53 @@ E42将这个运算顺序扩为可播放的数学模型。采样率16kHz，源320
 前两条只读计算与核验；最后一条从正式PCM生成图78及[数值报告](../../ch10/reports/figure78_channel_failure.json)，绑定九个真实源及清单、六WAV。更改生成源后先实际生成并核验资产，不手改SHA。旧噪声失配生成器也在任何写入前检查固定参数的类型、全部值和实际方程、种子与分解结果；漂移要明确失败，不能生成后再发现清单不合格。本节没有盲故障检测、自然语音、随机噪声独立性、阵列实录或工业成绩。
 
 **双耳波束形成 E05-25～27。** [第 5 章习题](../../../../chapters/05_beamforming.md#e05-25)使用共同的三通道观测。E05-25 比较同等方向干扰功率下的左右复比；E05-26 将背景相干性单列；E05-27 检查零陷处的相位无定义及复约束共轭。运行 `python -m codes.chapters.ch05.examples.binaural_beamforming_demo` 输出三题；加 `--check` 核验[四个双声道 WAV 与清单](../../ch05/binaural_beamforming_audio/MANIFEST.json)。音频固定 16 kHz，窗口 [2400,29600)，共同增益 1；定向干扰的单频结果不能代替双耳听感或宽带设备性能。
+
+<a id="wearable-exercises-audio"></a>
+
+## 61. 第16章空间声场与可穿戴阵列对照实验
+
+[扩展专题Ⅲ](../../../../chapters/16_spatial-wearable-arrays.md)通过 E16-01～16 复算四面体 FOA 编码、开球径向模态零陷、三维欧拉旋转对偶、有功声强与扩散度参数化分析、BSM-LS 与 BSM-MagLS 双耳匹配、BMVDR 参考混合、Corcos 风噪相干、气导与耳内闭塞跨模态 MVDR 融合，以及 TWS 通透模式（Hear-Through）处理延迟导致的耳道梳状滤波效应。
+
+### 61.1 六份 16 kHz 数学合成对照音频
+
+六份样本均为 16 kHz、每通道 32000 点（2.0 s）有符号 PCM16 文件，首尾各 1600 点余弦升起包络，稳态评分窗口固定为半开区间 `[1600, 30400)`（共 28800 点），共同导出增益为 `1.0`。目标信号为 `250 Hz` 与 `4000 Hz` 等幅（各 `0.1`）双音叠加，稳态总功率为 `0.01`。播放前请先调低音量：
+
+- [干净双音自语音参考](../../ch16/wearable_audio/wearable_clean_ref.wav)
+- [低频受风双麦气导观测](../../ch16/wearable_audio/wearable_air_wind_2ch.wav)
+- [耳道闭塞内麦原始观测](../../ch16/wearable_audio/wearable_inear_occluded.wav)
+- [内麦单通道朴素逆均衡](../../ch16/wearable_audio/wearable_inear_equalized.wav)
+- [气导与内麦跨模态 MVDR 融合](../../ch16/wearable_audio/wearable_fused_output.wav)
+- [直达漏声叠加 2 ms 通透梳状滤波](../../ch16/wearable_audio/wearable_hearthrough_comb.wav)
+
+外麦在 `125/375 Hz` 承受大幅非相干风噪干扰，内麦在 `250 Hz` 增益 `2.0` 而在 `4000 Hz` 衰减至 `0.1`；单通道朴素逆均衡会将 `5000 Hz` 传感器底噪放大 100 倍功率，而分频带跨模态 MVDR 融合把稳态参考误差降至 `0.000297`。通透模式 `32` 点（`2.0 ms`）延迟使 `250 Hz` 恰好半波长反相相消、`4000 Hz` 同相倍增。解析期望、浮点分解与实际 PCM16 整型平方和记录于[独立清单](../../ch16/wearable_audio/MANIFEST.json)，绑定六个真实生成源。
+
+```bash
+.venv/bin/python -m codes.chapters.ch16.chapter16_exercises
+.venv/bin/python -m codes.chapters.ch16.examples.generate_wearable_audio --check
+.venv/bin/python scripts/make_wearable_figures.py
+```
+
+<a id="tse-exercises-audio"></a>
+
+## 62. 第17章条件目标提取与近场距离气泡对照实验
+
+[扩展专题Ⅳ](../../../../chapters/17_target-extraction-diarization.md)通过 E17-01～16 复算 FiLM 线索条件化调制、目标存在与沉默双态能量地板损失、单人擦音零重叠旁路门限、菲涅尔近场球面波导向矢量与同向距离气泡 LCMV 波束形成、重叠会议单标签 DER 理论下界、空谱联合 TS-VAD 后验与排他 GSS 掩码，以及异构音视频曝光对齐与唇部遮挡软门控回退。
+
+### 62.1 六份 16 kHz 近场球面波距离气泡对照音频
+
+六份样本均为 16 kHz、每通道 32000 点（2.0 s）有符号 PCM16 文件，首尾各 800 点线性渐变，稳态评分窗口固定为半开区间 `[1600, 30400)`（共 28800 点），共同导出增益为 `1.0`。正侧向 `0°` 同时存在 `r = 0.40 m` 的 `3200 Hz` 近场目标（稳态均方 `0.0128`）与 `r = 4.00 m` 的 `2500 Hz` 远场同向干扰（稳态均方 `0.0128`），并叠加正交传感器底噪。播放前请先调低音量：
+
+- [正侧向 0.4 m 近场目标参考](../../ch17/tse_audio/tse_near_target_ref.wav)
+- [正侧向 4.0 m 同向远场干扰参考](../../ch17/tse_audio/tse_far_interferer_ref.wav)
+- [10 cm 间距三元线阵原始混合观测](../../ch17/tse_audio/tse_array_3ch.wav)
+- [远场平面波 DSB 输出](../../ch17/tse_audio/tse_farfield_dsb.wav)
+- [10 cm 间距球面波距离气泡输出](../../ch17/tse_audio/tse_bubble_d10cm.wav)
+- [2 cm 微小孔径病态距离气泡输出](../../ch17/tse_audio/tse_bubble_d2cm_illcond.wav)
+
+远场平面波 DSB 无法区分同一 `0°` 方向的近场目标与远场干扰（实际 PCM 归一化误差比 `1.2226`）；`d = 10 cm` 二抽头因果距离气泡利用球面波曲率差在保持近场目标的同时将远场干扰压低逾 `21.7 dB`（实际 PCM 归一化误差比降至 `0.0246`）；而当阵元间距缩至 `d = 2 cm` 时，球面波与平面波导向矢量近似共线导致传感器底噪剧烈放大（误差比升至 `2.2760`）。解析期望、浮点投影与实际 PCM16 整型分子/分母记录于[独立清单](../../ch17/tse_audio/MANIFEST.json)，绑定六个真实生成源。
+
+```bash
+.venv/bin/python -m codes.chapters.ch17.chapter17_exercises
+.venv/bin/python -m codes.chapters.ch17.examples.generate_tse_audio --check
+.venv/bin/python scripts/make_tse_figures.py
+```

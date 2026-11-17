@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 6 章 · 声学回声消除（AEC） · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="30366ba49985"><style>
+<meta name="source-digest" content="9b634b8b6fd1"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -347,6 +347,8 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <div class="chap"><a href="11_selection-guide.html">第 11 章 · 总结与选型指南</a></div>
 <div class="chap"><a href="12_acoustic-imaging.html">第 12 章 · 声学成像与噪声源诊断</a></div>
 <div class="chap"><a href="13_distributed-enhancement.html">第 13 章 · 分布式麦克风协同增强</a></div>
+<div class="chap"><a href="16_spatial-wearable-arrays.html">第 16 章 · 空间声场与可穿戴阵列</a></div>
+<div class="chap"><a href="17_target-extraction-diarization.html">第 17 章 · 条件目标提取与多通道日志</a></div>
 <div class="chap"><a href="14_appendix-symbols-math.html">第 14 章 · 附录 A：符号术语数学</a></div>
 <div class="chap"><a href="15_appendix-guide.html">第 15 章 · 附录 B：路径地图与练习</a></div>
 <div class="chap"><a href="research/index.html">源码研究</a></div></nav>
@@ -443,7 +445,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li><a href="06_aec.html#sec-6-17">6.17 延伸阅读</a></li>
 </ul></nav></details>
 <blockquote>
-<p>⚠️ 本篇是教程正文第 6 章（正文共 13 章，其中第 12、13 章为扩展专题，另有附录 A/B），可独立阅读，前后篇见下方导航。</p>
+<p>⚠️ 本篇是教程正文第 6 章（正文共 15 章，含第 12、13、16、17 章四篇扩展专题，另有附录 A、B），可独立阅读，前后篇见下方导航。</p>
 <p>🏠 首页导读：<a href="index.html">🏠 导读与导航</a> ｜ 上一篇：<a href="05_beamforming.html">第 5 章 · 波束形成</a> ｜ 下一篇：<a href="07_wpe-dereverberation.html">第 7 章 · 去混响（WPE）</a></p>
 </blockquote>
 <hr />
@@ -528,7 +530,8 @@ y[n]&=\sum_{\ell=0}^{L-1}h[\ell]x[n-\ell].
 <p>更棘手的是，直达声与第 $1,2,\ldots$ 次墙面反射的几何路程各不相同：路程越长的晚期反射，绝对时延漂移越大，因此整条冲激响应发生的是“时间轴拉伸或压缩”，而非整体平移固定的 $50.9\ \mu\mathrm{s}$。<a href="https://www.iwaenc.org/proceedings/2003/data/0025.pdf">Elko, Diethorn &amp; Gänsler（IWAENC 2003）</a>与 <a href="https://www.frontiersin.org/journals/signal-processing/articles/10.3389/frsip.2024.1426082/full">Frontiers in Signal Processing（2024）</a>的实测均表明，这种肉眼不可见的热漂移足以让出厂静态标定的固定滤波器彻底失效，说明在线自适应是声学回声消除不可省略的根基。</p>
 </blockquote>
 <p>在进入推导前，还需要厘清两对容易混淆的物理概念：</p>
-<p>第一对是<strong>数字域波形相减（AEC）与空气声场物理相消（ANC / 车载 ICC）的本质分野</strong>。AEC 在数字处理器内部用麦克风采样 $d[n]$ 减去估计副本 $\hat y[n]$，目的是不让本机播放声传回远端通话方，房间里的本地人耳依然听得到扬声器外放；只要副本相位误差过大，复数减法甚至可能令残余能量反超原回声（见练习 E06-04）。相比之下，主动噪声控制（Active Noise Control，ANC）通过次级扬声器向空气辐射反相声波，在耳道等局部空间形成物理声压相消；而车载座舱通话增强（In-Car Communication，ICC）则是把前排驾驶员语音拾取放大后直接从后排扬声器实时播放出来。在车载 ICC 这类同舱扩声回路中，采集、处理加播放的总环路延迟必须严控在 $15\ \mathrm{ms}$ 以内（哈斯效应融合阈值之下）：一旦延迟偏大，后排乘客耳中同时到达的空气直达人声与扬声器扩声就会发生周期性相长与相消干涉，产生刺耳的金属感梳状滤波（comb filtering）乃至声反馈啸叫，而这类已经在空气中叠加进入人耳的物理干涉是无法靠发送端数字 AEC 事后抹除的。</p>
+<p>第一对是<strong>数字域波形相减（AEC）与空气声场物理相消（ANC / 车载 ICC）的本质分野</strong>。AEC 在数字处理器内部用麦克风采样 $d[n]$ 减去估计副本 $\hat y[n]$，目的是不让本机播放声传回远端通话方，房间里的本地人耳依然听得到扬声器外放；只要副本相位误差过大，复数减法甚至可能令残余能量反超原回声（见练习 E06-04）。相比之下，主动噪声控制（Active Noise Control，ANC）通过次级扬声器向空气辐射反相声波，在耳道等局部空间形成物理声压相消；而车载座舱通话增强（In-Car Communication，ICC）则是把前排驾驶员语音拾取放大后直接从后排扬声器实时播放出来。</p>
+<p>在车载 ICC 这类同舱扩声回路中，采集、处理加播放的总环路延迟必须严控在 $15\ \mathrm{ms}$ 以内（哈斯效应融合阈值之下）：一旦延迟偏大，后排乘客耳中同时到达的空气直达人声与扬声器扩声就会发生周期性相长与相消干涉，产生刺耳的金属感梳状滤波（comb filtering）乃至声反馈啸叫，而这类已经在空气中叠加进入人耳的物理干涉是无法靠发送端数字 AEC 事后抹除的。而在入耳式耳机通透模式（Hear-Through）中，耳塞被动漏声与电声重放直接在鼓膜叠加，端到端延迟上限会进一步收紧至百微秒级（详见<a href="16_spatial-wearable-arrays.html#sec-16-10">第 16 章 §16.10</a>）。</p>
 <p>第二对是<strong>波形减法与谱幅度乘法的分工</strong>。线性 AEC 握有参考波形 $x[n]$，能够同时估计回声的幅度与相位并直接作波形相减，在近端语音与回声同频重叠时依然可以只剥离回声而保留语音。当缺少精确波形参考（例如抑制线性未建模残余或未知背景噪声）时，经典后置滤波（如 §5.7 维纳后置滤波与 §6.8 的传统 NLP）往往退而估计功率谱，再对混合时频系数乘以 $0$～$1$ 之间的实数标量增益——这会把同一时频格内的回声与近端语音按相同比例一并压低。至于多通道复数滤波、复数掩码或深度滤波（§6.5），则额外引入了跨通道或跨帧复数自由度，阅读时应按各自的数学算子准确区分。</p>
 <p><img alt="图27 AEC 基本结构" src="../figures/fig27_aec_concept.png" onerror="this.alt+='（图缺失）'" /></p>
 <p>图27概括了单通道线性 AEC 的标准信号流：远端参考信号 $x[n]$ 一路经扬声器和房间物理链路变成真实回声进入麦克风，另一路送入横向自适应滤波器 $\hat{\vec w}[n]$ 合成估计回声 $\hat y[n]$；加法器执行 $e[n]=d[n]-\hat y[n]$ 完成数字相减，顶部的双讲检测（DTD）模块监测两路信号以控制滤波器在双讲期间暂停或放缓更新。</p>
@@ -607,9 +610,9 @@ e[n]&=(d[n]-\hat y[n]).
 <p>即便参考不是离散纯单音，而是在一段连续窄带数字角频率区间 $[-b,b]\subset[-\pi,\pi]$（$b>0$）内具有平坦功率谱密度、带外功率严格为零的带限随机过程，相关矩阵虽然在数学上满秩，也会随着带宽变窄而迅速病态化。我们可以把这个经典的傅里叶对偶关系完整推出来：</p>
 <p>设零均值平稳实过程 $x[n]$ 的方差归一化为 $r[0]=\mathbb{E}[x^2[n]]=1$。为了使逆离散时间傅里叶变换（IDTFT）在零滞后处积分为 $1$，其在数字角频率 $\Omega_{\mathrm{d}}\in[-b,b]$ 上的常数功率谱密度须取 $S_{xx}(\Omega_{\mathrm{d}})=\pi/b$（带外 $b\lt |\Omega_{\mathrm{d}}|\le\pi$ 处 $S_{xx}(\Omega_{\mathrm{d}})=0$）。按维纳—辛钦定理计算整数滞后 $k$ 处的自相关序列 $r[k]=\mathbb{E}[x[n]x[n-k]]$：</p>
 <p>$$\begin{aligned}
-r[k]&=\frac{1}{2\pi}\int_{-\pi}^{\pi}S_{xx}(\Omega_{\mathrm{d}})\,\mathrm{e}^{\mathrm{j}\Omega_{\mathrm{d}} k}\,\mathrm{d}\Omega_{\mathrm{d}}
-=\frac{1}{2\pi}\int_{-b}^{b}\frac{\pi}{b}\mathrm{e}^{\mathrm{j}\Omega_{\mathrm{d}} k}\,\mathrm{d}\Omega_{\mathrm{d}}\\
-&=\frac{1}{2b}\left[\frac{\mathrm{e}^{\mathrm{j}kb}-\mathrm{e}^{-\mathrm{j}kb}}{\mathrm{j}k}\right]
+r[k]&=\frac{1}{2\pi}\int_{-\pi}^{\pi}S_{xx}(\Omega_{\mathrm{d}})\,e^{\mathrm{j}\Omega_{\mathrm{d}} k}\,\mathrm{d}\Omega_{\mathrm{d}}
+=\frac{1}{2\pi}\int_{-b}^{b}\frac{\pi}{b}e^{\mathrm{j}\Omega_{\mathrm{d}} k}\,\mathrm{d}\Omega_{\mathrm{d}}\\
+&=\frac{1}{2b}\left[\frac{e^{\mathrm{j}kb}-e^{-\mathrm{j}kb}}{\mathrm{j}k}\right]
 =\frac{\sin(kb)}{kb}=\operatorname{sinc}\!\left(\frac{kb}{\pi}\right),\quad k\neq 0,
 \end{aligned}$$</p>
 <p>且连续极限给出 $r[0]=1$。于是，一个 $L=3$ 抽头回归向量 $\vec x[n]=[x[n],x[n-1],x[n-2]]^\top$ 的 $3\times 3$ 实对称 Toeplitz 自相关矩阵（第 $(i,j)$ 元为 $r[i-j]$）显式写为：</p>
@@ -685,7 +688,7 @@ e_m[r]&=d_m[r]-\hat y_m[r].
 <li><strong>无梯度约束核心项</strong>：每块含 $3$ 次变换与 $2\times 8$ 次复谱相乘，共 $3\times 4096 + 16\times 1024 = 12288+16384=28672$ 次/块，折合每样本 $28672/128 = 224$ 次；</li>
 <li><strong>每块全分区约束核心项</strong>：再加 $16$ 次变换 $16\times 4096=65536$ 次/块，合计 $94208$ 次/块，折合每样本 $94208/128 = 736$ 次。</li>
 </ul>
-<p>若像本书教学代码那样每块对全部 $8$ 个分区的复频点显式重算模平方 $|X|^2=(\Re X)^2+(\Im X)^2$，还需外加 $2\times 256\times 8=4096$ 次实乘法/块（即 $32$ 次/样本），两项分别升至 $256$ 与 $768$ 次/样本（仍未计入求和、除法与步长缩放；且教学代码为便于对照观察，即便关闭约束也会额外执行 IFFT 导出候选系数）。仅对比上述核心乘加分项，$224$ 与 $736$ 相对朴素时域 NLMS 的 $3072$ 分别缩减至约 $1/13.7$ 与 $1/4.17$（相对递推能量版 $2048$ 则约为 $1/9.1$ 与 $1/2.8$）。注意这一缩减比针对的是<strong>逐样本时域 NLMS</strong>；若对比对象本身已是相同块长、分区数与约束策略的“频域多抽头 NLMS”，二者执行的就是同一套频域算子，不存在额外加速（参见 <a href="https://www.mathworks.com/help/dsp/ref/dsp.frequencydomainadaptivefilter-system-object.html">MathWorks 频域自适应滤波文档</a>对分区与约束模式的分类）。</p>
+<p>若像本书教学代码那样每块对全部 $8$ 个分区的复频点显式重算模平方 $|X|^2=(\operatorname{Re} X)^2+(\operatorname{Im} X)^2$，还需外加 $2\times 256\times 8=4096$ 次实乘法/块（即 $32$ 次/样本），两项分别升至 $256$ 与 $768$ 次/样本（仍未计入求和、除法与步长缩放；且教学代码为便于对照观察，即便关闭约束也会额外执行 IFFT 导出候选系数）。仅对比上述核心乘加分项，$224$ 与 $736$ 相对朴素时域 NLMS 的 $3072$ 分别缩减至约 $1/13.7$ 与 $1/4.17$（相对递推能量版 $2048$ 则约为 $1/9.1$ 与 $1/2.8$）。注意这一缩减比针对的是<strong>逐样本时域 NLMS</strong>；若对比对象本身已是相同块长、分区数与约束策略的“频域多抽头 NLMS”，二者执行的就是同一套频域算子，不存在额外加速（参见 <a href="https://www.mathworks.com/help/dsp/ref/dsp.frequencydomainadaptivefilter-system-object.html">MathWorks 频域自适应滤波文档</a>对分区与约束模式的分类）。</p>
 <p><strong>块长与等待延迟的折中</strong>。在 $N=128$、采样率 $8\ \mathrm{kHz}$ 下，凑齐一块新采样需 $128/8000=16\ \mathrm{ms}$；注意 $2N=256$ 点 FFT 的前半段取自已到齐的上一块历史，<strong>并不需要额外再等 $16\ \mathrm{ms}$ 的未来数据</strong>。端到端系统延迟还叠加了声卡播放/采集缓冲与线程调度开销。例如固定总路径长度 $L=4096$、采样率 $16\ \mathrm{kHz}$（总覆盖 $256\ \mathrm{ms}$），调整新块长度 $N$ 只改变“单块等待时长”与“分区遍历次数”之间的权衡：</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
 <thead>
@@ -768,7 +771,7 @@ R_m&=\delta+\sum_{q=0}^{P-1}|X_{m-q}|^2,\\
 \widetilde{\vec W}_{m+1}(k)&=\vec W_m(k)+\Delta\vec W_m(k),
 \end{aligned}$$</p>
 <p>其中上标 $*$ 表示逐元素取复共轭。例如在某频点取 $P=2$、$\vec X=[1,2]^\top$、$E=0.3$、$\mu=0.5$、$\delta=1$，分母为 $1^2+2^2+1=6$，两个分区的候选增量即 $0.5\times 0.3\times[1,2]^\top/6=[0.025,0.05]^\top$。从表面形式看，它酷似“每个频点各自跑一条 $P$ 抽头复数 NLMS”；但它究竟为什么能优化时域有效残差？为什么不能省掉前半块补零和时域投影？我们用四步矩阵推导把底牌亮出来。</p>
-<p>记 $\mathbf F\in\mathbb C^{2N\times 2N}$ 为标准正向 DFT 矩阵（第 $(k,r)$ 元为 $\mathrm{e}^{-\mathrm{j}2\pi kr/(2N)}$），其共轭转置满足正交关系 $\mathbf F^H\mathbf F=2N\,\mathbf I_{2N}$，因此带 $1/(2N)$ 归一化的逆变换矩阵满足关键恒等式：</p>
+<p>记 $\mathbf F\in\mathbb C^{2N\times 2N}$ 为标准正向 DFT 矩阵（第 $(k,r)$ 元为 $e^{-\mathrm{j}2\pi kr/(2N)}$），其共轭转置满足正交关系 $\mathbf F^H\mathbf F=2N\,\mathbf I_{2N}$，因此带 $1/(2N)$ 归一化的逆变换矩阵满足关键恒等式：</p>
 <p>$$\mathbf F^{-1}=\frac{1}{2N}\mathbf F^H\quad\Longleftrightarrow\quad \mathbf F^H=2N\,\mathbf F^{-1},\quad (\mathbf F^{-1})^H=\frac{1}{2N}\mathbf F.$$</p>
 <p>再定义两个实数选择/补零矩阵：取后半块矩阵 $\mathbf S=[\mathbf 0_{N\times N}\ \ \mathbf I_N]\in\mathbb R^{N\times 2N}$（左乘列向量时截取后 $N$ 点，而右转置 $\mathbf S^\top=[\mathbf 0_{N\times N}\ \ \mathbf I_N]^\top$ 则在前 $N$ 点补零），以及前半块补零矩阵 $\mathbf U=[\mathbf I_N\ \ \mathbf 0_{N\times N}]^\top\in\mathbb R^{2N\times N}$（把长度 $N$ 的合法时域抽头 $\vec w_p\in\mathbb R^N$ 尾部补 $N$ 个零扩成 $2N$ 点，而 $\mathbf U^\top=[\mathbf I_N\ \ \mathbf 0_{N\times N}]$ 则截取前 $N$ 个合法抽头）。</p>
 <p>令 $Q_m=\sum_{p=0}^{P-1}W_{p,m}\odot X_{m-p}$（$\odot$ 表示逐频点 Hadamard 乘积），则有效时域预测为 $\hat{\vec y}_m=\mathbf S\mathbf F^{-1}Q_m$。将有效残差 $\vec e_m=\vec d_m-\hat{\vec y}_m$ 经 $\mathbf S^\top$ 在前半块补零后变到频域，正确的误差谱为：</p>
@@ -845,7 +848,7 @@ J_m&=\frac{1}{2}\|\vec e_m\|_2^2,\\
 <li><strong>为什么要清零后半段？</strong> 看首分区候选 $[0.25,0,1/3,0]$ 的第 $2$ 号位置（从 $0$ 起计，即第 $3$ 个元素 $1/3$）：它代表首分区内的滞后 $2$，而第二分区的合法首抽头 $[1/3,0,0,0]$ 同样代表整条路径的滞后 $2$！若不执行时域梯度约束把首分区后两点清零，同一个物理滞后就会被两个分区重复表达，且首分区的非法第 $2$ 号位在下一次块循环卷积中还会破坏重叠保存假设。执行逐分区后 $N$ 点清零后，两分区合法抽头拼接为 $[0.25,0\mid 1/3,0]$，恢复唯一的四抽头 FIR 物理含义。</li>
 </ol>
 <h3 id="sec-u-b4bfa3ef6a">算例 6-4：逐频归一化为什么不等于时域 NLMS</h3>
-<p><strong>输入与口径</strong>：取单分区 $N=2$、$P=1$、零初值、$\mu=\delta=1$，当前重叠保存输入 $u=[0,0,1,2]$，有效麦克风块 $d=[1,0]$（故有效先验误差 $e=[1,0]$，补零后为 $[0,0,1,0]$）。按正向 DFT 负指数 $\mathrm{e}^{-\mathrm{j}2\pi kr/4}$、逆变换除以 $4$ 的标准约定，逐频点计算 $X(k)$、$E(k)$、功率分母 $|X(k)|^2+1$ 与候选增量 $\Delta W(k)=X^*(k)E(k)/(|X(k)|^2+1)$：</p>
+<p><strong>输入与口径</strong>：取单分区 $N=2$、$P=1$、零初值、$\mu=\delta=1$，当前重叠保存输入 $u=[0,0,1,2]$，有效麦克风块 $d=[1,0]$（故有效先验误差 $e=[1,0]$，补零后为 $[0,0,1,0]$）。按正向 DFT 负指数 $e^{-\mathrm{j}2\pi kr/4}$、逆变换除以 $4$ 的标准约定，逐频点计算 $X(k)$、$E(k)$、功率分母 $|X(k)|^2+1$ 与候选增量 $\Delta W(k)=X^*(k)E(k)/(|X(k)|^2+1)$：</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
 <thead>
 <tr>
@@ -887,7 +890,7 @@ J_m&=\frac{1}{2}\|\vec e_m\|_2^2,\\
 </tr>
 </tbody>
 </table></div>
-<p>以 $k=1$ 行复核共轭符号：$X(1)=0+0\mathrm{e}^{-\mathrm{j}\pi/2}+1\mathrm{e}^{-\mathrm{j}\pi}+2\mathrm{e}^{-\mathrm{j}3\pi/2}=-1+2\mathrm{j}$，取共轭得 $X^*(1)=-1-2\mathrm{j}$，乘以 $E(1)=\mathrm{e}^{-\mathrm{j}\pi}=-1$ 得 $1+2\mathrm{j}$，再除以 $|{-1+2\mathrm{j}}|^2+1=5+1=6$，即 $(1+2\mathrm{j})/6$。</p>
+<p>以 $k=1$ 行复核共轭符号：$X(1)=0+0e^{-\mathrm{j}\pi/2}+1e^{-\mathrm{j}\pi}+2e^{-\mathrm{j}3\pi/2}=-1+2\mathrm{j}$，取共轭得 $X^*(1)=-1-2\mathrm{j}$，乘以 $E(1)=e^{-\mathrm{j}\pi}=-1$ 得 $1+2\mathrm{j}$，再除以 $|{-1+2\mathrm{j}}|^2+1=5+1=6$，即 $(1+2\mathrm{j})/6$。</p>
 <p>现在把最后一列四个频点作四点 IFFT：第 $0$ 点为 $\frac{1}{4}[3/10 + 1/6 - 1/2 + 1/6]=\frac{1}{4}\times\frac{2}{15}=1/30$；第 $1$ 点乘相位因子 $[1,\mathrm{j},-1,-\mathrm{j}]$ 得 $\frac{1}{4}[3/10 + (-2+\mathrm{j})/6 + 1/2 + (-2-\mathrm{j})/6]=\frac{1}{4}\times\frac{2}{15}=1/30$；完整四点候选序列为 $[1/30,1/30,-2/15,11/30]$，清零后两点非法区后得到合法两抽头更新 $[1/30,\ 1/30]^\top$。</p>
 <p><strong>对比时域块梯度</strong>：如果不做逐频点不同分母的除法，直接算 $\operatorname{IFFT}(X^*\odot E)$，结果是 $[1,0,0,2]$，截取前两点合法抽头为 $[1,0]^\top$——无论外层再除以哪一个公共标量能量，第二个抽头的更新量都恒为 $0$！逐频功率预条件压低了强频点 $k=0$（除以 $10$）、放大了弱频点 $k=2$（仅除以 $2$），经时域投影耦合后直接旋转了参数空间的更新方向，从而激活了第 $1$ 号抽头。这正是频域预条件加速有色信号收敛的代数本质，也说明它与时域 NLMS 具有不同的更新轨迹。</p>
 <h3 id="sec-u-c875bee6d3">算例 6-5：预测残差很小，不一定辨识了路径</h3>
@@ -1455,7 +1458,7 @@ c_{xd}&=\frac{\left|\sum_{b=0}^{B-1}\tilde x_b\tilde d_b\right|}{\sqrt{P_x P_d}}
 <h3 id="sec-u-2f4c8cafba">混合式结构：线性估计加学习型残余抑制</h3>
 <p>为什么工业产品普遍偏爱“先跑线性自适应滤波器、再接神经网络后置滤波”的混合式架构？因为自适应滤波器直接利用已知参考波形 $x[n]$ 做因果减法，无需任何训练语料就能消除绝大部分线性回声，不仅大幅压缩了后端神经网络需要处理的动态范围，还保留了抽头权重、纯延迟与收敛状态等清晰的诊断探针；后端神经网络则专注对付线性模型啃不动的扬声器非线性谐波、快速路径扰动残余以及稳态/非稳态环境噪声。</p>
 <p>用一个信号回声比（Signal-to-Echo Ratio，SER）低至 $-20\ \mathrm{dB}$ 的双讲时频格算一笔账，就能看穿“波形减法”与“实数谱增益乘法”的根本差别：$\mathrm{SER}=-20\ \mathrm{dB}$ 意味着该时频格内的回声功率高达近端人声功率的 $100$ 倍（幅度为 $10$ 倍）。</p>
-<p>假设前置线性 AEC 的相位已经对齐，仅存在 $10\%$ 的幅度欠估计（真实回声复频谱为 $Y$，线性副本为 $\hat Y=0.9Y$），做完复数减法后残余回声降为 $Y-\hat Y=0.1Y$，残余回声能量骤降至原回声的 $|0.1|^2=1\%$（即线性段先替后端扛下了 $20\ \mathrm{dB}$ 衰减，把进入后滤波器的有效 $\mathrm{SER}$ 从绝望的 $-20\ \mathrm{dB}$ 拉回到了 $0\ \mathrm{dB}$；若副本同时带有相位误差 $\phi$ 与幅度比 $\alpha$，则残余能量比按复数余弦定理 $|1-\alpha\mathrm{e}^{\mathrm{j}\phi}|^2=1+\alpha^2-2\alpha\cos\phi$ 核算）。</p>
+<p>假设前置线性 AEC 的相位已经对齐，仅存在 $10\%$ 的幅度欠估计（真实回声复频谱为 $Y$，线性副本为 $\hat Y=0.9Y$），做完复数减法后残余回声降为 $Y-\hat Y=0.1Y$，残余回声能量骤降至原回声的 $|0.1|^2=1\%$（即线性段先替后端扛下了 $20\ \mathrm{dB}$ 衰减，把进入后滤波器的有效 $\mathrm{SER}$ 从绝望的 $-20\ \mathrm{dB}$ 拉回到了 $0\ \mathrm{dB}$；若副本同时带有相位误差 $\phi$ 与幅度比 $\alpha$，则残余能量比按复数余弦定理 $|1-\alpha e^{\mathrm{j}\phi}|^2=1+\alpha^2-2\alpha\cos\phi$ 核算）。</p>
 <p>反过来想：如果不做前置波形相减，直接让一个实数掩码后滤波器给混合频谱 $S+Y$ 乘上同一个标量增益 $g\in[0,1]$，那么近端语音 $gS$ 与强回声 $gY$ 会被一视同仁地按同比例压低，该时频格内的信回比 $|gS|^2/|gY|^2=|S|^2/|Y|^2$ 纹丝不动——要想把回声压掉 $40\ \mathrm{dB}$，该格里的近端语音也会跟着灰飞烟灭！这正是混合式架构“先减法剥离线性主体、再乘法压制非线性残余”的物理根基。</p>
 <p><img alt="图32 混合处理流程与选型条件" src="../figures/fig32_aec_hybrid_select.png" onerror="this.alt+='（图缺失）'" /></p>
 <p>观察图32的混合式信号流框图：远端参考 $x[n]$ 经延迟对齐模块得到 $x_a[n]$，驱动线性自适应滤波器（可选用 NLMS、PBFDAF 或 FDKF）生成回声副本并从麦克风观测中减出先验残差 $e[n]$；自适应控制支路综合参考、麦克风或残差统计量调节更新步长；最后由学习型残余抑制网络综合线性残差 $e[n]$ 与对齐参考谱输出最终增强语音，验收时须在“线性残差”与“最终输出”两个节点分别挂表测量回声泄漏与近端失真。</p>
@@ -1477,9 +1480,9 @@ c_{xd}&=\frac{\left|\sum_{b=0}^{B-1}\tilde x_b\tilde d_b\right|}{\sqrt{P_x P_d}}
 <p>从工程分层视角看，无论是用网络预测自适应步长、预测卡尔曼协方差，还是预测后置残余掩码，保留解析滤波骨架的核心价值都在于“物理因果可解释、冷启动零样本可用、出问题有中间残差可查”。</p>
 <h3 id="sec-u-02307edfbb">个性化 AEC（personalized AEC，pAEC）</h3>
 <p>在开放办公区或家庭客厅开免提会议时，麦克风除了录进扬声器回声，还会录进旁边同事或家人的交谈人声。通用 AEC 会把房间里所有非回声人声都当作“近端目标”原样保留；而 <strong>个性化回声消除（personalized AEC，pAEC；参见 <a href="https://doi.org/10.1109/OJSP.2024.3376289">Cutler et al., <em>IEEE OJSP</em>, 2024</a>）</strong> 则要求在消除扬声器回声的同时，只保留已注册主讲人的声音，将旁人干扰人声一并压制。</p>
-<p>其实现架构与目标说话人提取（Target Speaker Extraction，TSE；详见 §8.6 及 §15.3，代表结构如 <a href="https://www.isca-archive.org/interspeech_2022/zhang22t_interspeech.pdf">GTCNN, Interspeech 2022</a>）一脉相承：先从用户预先录制的数秒注册语音中提取固定维度的声纹嵌入向量 $\vec e_{\mathrm{enroll}}$，再将其通过特征线性调制（FiLM）或注意力层注入残余抑制网络（隐私合规与共享设备回退条款见 §6.13）。</p>
+<p>其实现架构与目标说话人提取（Target Speaker Extraction，TSE；详见 <a href="08_speech-separation.html#sec-8-6">§8.6</a>、<a href="17_target-extraction-diarization.html#sec-17-1">第 17 章 §17.1～§17.2</a> 及 <a href="15_appendix-guide.html#sec-15-3">附录 B §15.3</a>，代表结构如 <a href="https://www.isca-archive.org/interspeech_2022/zhang22t_interspeech.pdf">GTCNN, Interspeech 2022</a>）一脉相承：先从用户预先录制的数秒注册语音中提取固定维度的声纹嵌入向量 $\vec e_{\mathrm{enroll}}$，再将其通过特征线性调制（FiLM）或注意力层注入残余抑制网络（隐私合规与共享设备回退条款见 §6.13）。</p>
 <p><strong>pAEC 声纹门限与三区间回退。</strong> 设非零实数注册声纹向量为 $\vec e_{\mathrm{enroll}}$，当前帧提取的非零局部声纹向量为 $\vec e_t$，可用归一化余弦相似度衡量声纹匹配程度：</p>
-<p>$$c=\frac{\vec e_t^\top\vec e_{\mathrm{enroll}}}{\|\vec e_t\|\,\|\vec e_{\mathrm{enroll}}\|}.\tag{6-27}$$</p>
+<p>$$c=\frac{\vec e_t^\top\vec e_{\mathrm{enroll}}}{\|\vec e_t\|_2\,\|\vec e_{\mathrm{enroll}}\|_2}.\tag{6-27}$$</p>
 <p>当静音或强噪导致任一嵌入范数趋零时，式(6-27)无定义，必须直接回退到通用无条件模式而非强行比对阈值。在双讲重叠帧中，局部嵌入 $\vec e_t$ 本身被回声残余或旁人语音污染，$c$ 值往往落入不高不低的模糊地带；因此工程上常在目标硬件与拾音距离下用目标人/非目标人验证集标定高、中、低三个区间：高置信度放行目标人，低置信度压制旁人，而在中间不确定区间则主动减弱或旁路<strong>身份条件抑制分支</strong>（仅维持常规线性回声抵消），宁可少量放过旁人背景声，也绝不把主讲人自己的话音误砍掉。验收时须分别统计“目标人误抑制率”“旁人语音泄漏率”与“常规双讲语音质量”三项指标。</p>
 <p><strong>向多麦克风通道扩展</strong>时，深度网络的输入维度受训练拓扑约束，工程上主要有三种组织方式：</p>
 <ol>
@@ -1729,8 +1732,8 @@ e[n]&=d[n]-\hat y[n].
 <p>其中，早期电话会议常用的轻微半波非线性 $x'_r[n]=x_r[n]+\alpha_r|x_r[n]|$ 靠注入偶次谐波打破线性相关，对人声尚可接受，但播放高保真音乐时会引入可闻毛刺；独立小频移与加噪则分别受音乐和弦拍频与安静段底噪制约。因此在兼顾音乐品质的现代智能音箱与座舱系统中，<strong>时变全通滤波（Time-Varying All-Pass Filtering，TV-APF；参见 Ali, ICASSP 1998；Herre, Buchner &amp; Kellermann, WASPAA 2007）</strong>成为极具代表性的线性时变去相关方案。</p>
 <p>为什么全通滤波器<strong>必须是“时变”的</strong>，固定不变的全通滤波器不行？不妨从立体声非唯一性的根源想一想：当远端单个说话人 $S_{\mathrm{far}}(z)$ 经远端房间两条固定传递函数 $G_1(z),G_2(z)$ 形成左右播放声道 $X_1(z)=G_1(z)S_{\mathrm{far}}(z)$、$X_2(z)=G_2(z)S_{\mathrm{far}}(z)$ 时，两声道满足恒等式 $G_2(z)X_1(z)-G_1(z)X_2(z)=0$。倘若我们在左右声道串入两个<strong>固定线性时不变（LTI）</strong>全通滤波器 $A_1(z),A_2(z)$，新参考 $\tilde X_r(z)=A_r(z)X_r(z)$ 依然严格满足 $(G_2 A_2)\tilde X_1-(G_1 A_1)\tilde X_2=0$——零空间只不过转了个角度，秩亏一点也没消除！</p>
 <p>现在把第 $r$ 声道的一阶实全通节极点/零点系数改成随时间 $n$ 缓慢调制的 $a_r[n]\in(-1,1)$（例如取亚赫兹到数赫兹的低频正弦或平滑随机慢调制 $a_r[n]=a_{r,0}+\delta_r\sin(2\pi f_{\mathrm{mod},r}n/f_s)$，左右声道调制速率互质或反相）。在任意冻结瞬态下，一阶全通传递函数为：</p>
-<p>$$A_r(\mathrm{e}^{\mathrm{j}\Omega_{\mathrm{d}}},n)=\frac{a_r[n]+\mathrm{e}^{-\mathrm{j}\Omega_{\mathrm{d}}}}{1+a_r[n]\mathrm{e}^{-\mathrm{j}\Omega_{\mathrm{d}}}},\qquad \left|A_r(\mathrm{e}^{\mathrm{j}\Omega_{\mathrm{d}}},n)\right|\equiv 1.$$</p>
-<p>由于分子与分母互为复共轭倍数（$|a_r+\mathrm{e}^{-\mathrm{j}\Omega_{\mathrm{d}}}|=|\mathrm{e}^{-\mathrm{j}\Omega_{\mathrm{d}}}(a_r\mathrm{e}^{\mathrm{j}\Omega_{\mathrm{d}}}+1)|=|1+a_r\mathrm{e}^{-\mathrm{j}\Omega_{\mathrm{d}}}|$），它在全部频率上的短时幅频增益恒等于 $1$，既不改变音色频谱包络、不抬高底噪，也不制造非线性谐波；与此同时，慢变系数 $a_r[n]$ 令左右声道的群延迟与瞬时相位差随时间持续微幅滑移，把原本锁死的 LTI 共线方程打散为<strong>线性时变（LTV）去相关激励</strong>，有效压低多通道相关矩阵条件数！工程调校时须守住两条边界：一是调制深度 $\delta_r$ 与调制频率 $f_{\mathrm{mod},r}$ 不能贪大，否则钢琴或弦乐长音会出现可闻颤音（vibrato）或立体声声像游移；二是<strong>去相关模块必须真正串入扬声器物理播放通路，且 AEC 参考取点必须设在去相关处理之后</strong>。</p>
+<p>$$A_r(e^{\mathrm{j}\Omega_{\mathrm{d}}},n)=\frac{a_r[n]+e^{-\mathrm{j}\Omega_{\mathrm{d}}}}{1+a_r[n]e^{-\mathrm{j}\Omega_{\mathrm{d}}}},\qquad \left|A_r(e^{\mathrm{j}\Omega_{\mathrm{d}}},n)\right|\equiv 1.$$</p>
+<p>由于分子与分母互为复共轭倍数（$|a_r+e^{-\mathrm{j}\Omega_{\mathrm{d}}}|=|e^{-\mathrm{j}\Omega_{\mathrm{d}}}(a_r e^{\mathrm{j}\Omega_{\mathrm{d}}}+1)|=|1+a_r e^{-\mathrm{j}\Omega_{\mathrm{d}}}|$），它在全部频率上的短时幅频增益恒等于 $1$，既不改变音色频谱包络、不抬高底噪，也不制造非线性谐波；与此同时，慢变系数 $a_r[n]$ 令左右声道的群延迟与瞬时相位差随时间持续微幅滑移，把原本锁死的 LTI 共线方程打散为<strong>线性时变（LTV）去相关激励</strong>，有效压低多通道相关矩阵条件数！工程调校时须守住两条边界：一是调制深度 $\delta_r$ 与调制频率 $f_{\mathrm{mod},r}$ 不能贪大，否则钢琴或弦乐长音会出现可闻颤音（vibrato）或立体声声像游移；二是<strong>去相关模块必须真正串入扬声器物理播放通路，且 AEC 参考取点必须设在去相关处理之后</strong>。</p>
 <p>用四点正交序列手算一下违反第二条边界（“只改内部参考、不改扬声器播放”）会发生什么荒唐事：取基础序列 $\vec x=[1,1,-1,-1]^\top$ 与正交微扰 $\vec a=[1,-1,1,-1]^\top$（$\vec x^\top\vec a=0$，$\|\vec x\|^2=\|\vec a\|^2=4$），构造去相关双通道参考 $\vec x_1=\vec x$、$\vec x_2=\vec x+\vec a$，其归一化样本相关矩阵 $\frac{1}{4}\bigl[\begin{smallmatrix}4&4\\4&8\end{smallmatrix}\bigr]=\bigl[\begin{smallmatrix}1&1\\1&2\end{smallmatrix}\bigr]$ 行列式为 $1$，条件数良态满秩。</p>
 <ul>
 <li><strong>正确接法</strong>（左右扬声器真实播出 $\vec x$ 与 $\vec x+\vec a$）：若真实单抽头路径为 $(h_1,h_2)=(0.8,0.2)$，麦克风收到的物理回声为 $0.8\vec x+0.2(\vec x+\vec a)=\vec x+0.2\vec a$，满秩正规方程唯一解出真值 $(0.8,0.2)$；</li>
@@ -1822,7 +1825,7 @@ e_{\mathrm{a}}[n]=\sum_{\ell=0}^{L-1}h[\ell]\Delta g_{n,\ell}\,x[n-\ell],\\
 <p>最后从系统端到端时延角度，把<strong>远程通话云/端 AEC 划分</strong>与<strong>同舱本地扩声物理干涉边界</strong>一并厘清：</p>
 <ul>
 <li><strong>远程全双工通话（端侧 AEC vs 云端 AES）</strong>：AEC 在上行发送链路内部作<strong>数字波形相减</strong>，本地扬声器外放声波并不会在房间空气里被消掉。若外接无线音箱、HDMI 电视或云端服务器拿不到与本地麦克风同源时钟对齐的 T5 参考流，云端就无法运行高精度线性自适应滤波，通常只能在端侧就近完成硬件环回线性 AEC，云端仅补充弱参考/无参考声学回声抑制（Acoustic Echo Suppression，AES）；</li>
-<li><strong>同舱扩声与主动降噪的物理声波叠加边界（车载 ICC / 本地扩声 vs ANC）</strong>：如果麦克风拾取的语音不是发往千里之外的远端手机，而是像<strong>车载座舱通话增强（In-Car Communication，ICC）</strong>那样把前排驾驶员话音放大后实时从后排扬声器播出来，处理后的声波就会在车舱空气中与驾驶员传向后排人耳的直达声 $s(t)+\alpha s(t-\tau_{\mathrm{loop}})$ 发生<strong>物理声压叠加</strong>！两列同源声波相差环路总延迟 $\tau_{\mathrm{loop}}$ 叠加时，功率谱 $|1+\alpha\mathrm{e}^{-\mathrm{j}2\pi f\tau_{\mathrm{loop}}}|^2$ 会每隔 $\Delta f=1/\tau_{\mathrm{loop}}$ 产生周期性峰谷——一旦采集、分块滤波加播放的总环路延迟逼近或突破 $15\ \mathrm{ms}$ 哈斯融合上限（$\tau_{\mathrm{loop}}=15\ \mathrm{ms}$ 时语音通带内每隔约 $66.7\ \mathrm{Hz}$ 就挖出一道深陷波），乘客耳中就会听到明显的空心管金属梳状滤波（comb filtering）乃至重度声反馈啸叫，而这种发生在空气与鼓膜处的物理干涉是任何数字端相减都无法挽回的；至于耳机/座舱<strong>主动噪声控制（ANC）</strong>，更是要求次级扬声器在亚毫秒级严苛电声因果预算内辐射反相声波以实现局部空间物理相消，切不可与远程通话的数字域 AEC 混为一谈。</li>
+<li><strong>同舱扩声与主动降噪的物理声波叠加边界（车载 ICC / 本地扩声 vs ANC）</strong>：如果麦克风拾取的语音不是发往千里之外的远端手机，而是像<strong>车载座舱通话增强（In-Car Communication，ICC）</strong>那样把前排驾驶员话音放大后实时从后排扬声器播出来，处理后的声波就会在车舱空气中与驾驶员传向后排人耳的直达声 $s(t)+\alpha s(t-\tau_{\mathrm{loop}})$ 发生<strong>物理声压叠加</strong>！两列同源声波相差环路总延迟 $\tau_{\mathrm{loop}}$ 叠加时，功率谱 $|1+\alpha e^{-\mathrm{j}2\pi f\tau_{\mathrm{loop}}}|^2$ 会每隔 $\Delta f=1/\tau_{\mathrm{loop}}$ 产生周期性峰谷——一旦采集、分块滤波加播放的总环路延迟逼近或突破 $15\ \mathrm{ms}$ 哈斯融合上限（$\tau_{\mathrm{loop}}=15\ \mathrm{ms}$ 时语音通带内每隔约 $66.7\ \mathrm{Hz}$ 就形成一道深陷波），乘客耳中就会听到明显的空心管金属梳状滤波（comb filtering）乃至重度声反馈啸叫，而这种发生在空气与鼓膜处的物理干涉是任何数字端相减都无法挽回的；至于耳机/座舱<strong>主动噪声控制（ANC）</strong>，更是要求次级扬声器在亚毫秒级严苛电声因果预算内辐射反相声波以实现局部空间物理相消，切不可与远程通话的数字域 AEC 混为一谈。</li>
 </ul>
 <span id="sec-6-1-12" class="anchor-alias" aria-hidden="true"></span><span id="sec-20" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-6-11">6.11 测试覆盖与验收矩阵</h2>
 <p>把算法装进整机之后，测试团队需要一张覆盖稳态、暂态、双讲、异常时钟与下游任务的完整验收清单。若目标产品须通过特定行业认证（如电信终端 ITU-T P.340/P.1100/P.1110、车载免提或平台语音助手规范），应直接锁定对应标准号、版本号、标准测试序列与声学人工头摆位条款作为合格判据：</p>
@@ -2637,8 +2640,8 @@ E_{\Delta}&=\frac{\sum_{n\in W}(\Delta[n]-s[n])^2}{\sum_{n\in W}s^2[n]}.
 <p>令参考 $x=[1,1,1,1]$、麦克风观测 $d=[1,1,2,2]$（真实单抽头回声路径恒为 $1$，后两拍叠加了幅度为 $1$ 的近端信号），单抽头初值 $\hat w_0=0.9$，步长 $\mu=0.5$、$\varepsilon=0$。对比后两拍冻结更新与继续更新的权重轨迹，并计算前两拍远端单讲段的 $\mathrm{ERLE}$。</p>
 <p><strong>解答</strong>：前两拍单讲更新依次将权重从 $0.9$ 推向 $0.95$ 与 $0.975$（先验残差分别为 $0.1$ 与 $0.05$）。后两拍若启动双讲冻结，权重稳在 $0.975$，双讲期输出残差 $[1.025,1.025]$ 完好保留了幅度为 $1$ 的近端信号；若失控继续更新，后两拍权重会被近端信号猛拽至 $1.4875$ 与 $1.74375$，严重偏离真值 $1$！仅在单讲前两拍统计能量：回声均方为 $1$，先验残差均方为 $(0.1^2+0.05^2)/2=0.00625$，得 $\mathrm{ERLE}=10\log_{10}(1/0.00625)\approx 22.04\ \mathrm{dB}$。</p>
 <h3 id="sec-u-f0ea6cbea7">E06-04：相减为什么反而更响？</h3>
-<p>在单个频点上，设真实回声为非零复数 $Y$，估计副本幅度完全准确但带有相位误差 $\phi$，即 $\hat Y=\mathrm{e}^{\mathrm{j}\phi}Y$。分别计算 $\phi=0^\circ,60^\circ,180^\circ$ 时残余回声功率与原回声功率之比及对应理想 $\mathrm{ERLE}$。</p>
-<p><strong>解答</strong>：由复数模平方展开得功率比 $|Y-\mathrm{e}^{\mathrm{j}\phi}Y|^2/|Y|^2=|1-\mathrm{e}^{\mathrm{j}\phi}|^2=(1-\cos\phi)^2+\sin^2\phi=2-2\cos\phi$。代入三个角度：$\phi=0^\circ$ 时比值为 $0$（理想完全抵消，软件 JSON 中以 <code>null</code> 标记正无穷分贝）；$\phi=60^\circ$ 时 $\cos 60^\circ=0.5$，比值为 $1$（$\mathrm{ERLE}=0\ \mathrm{dB}$，不增不减，这便是相位误差不能超过 $60^\circ$ 才谈得上有衰减的几何边界！）；$\phi=180^\circ$ 时副本反相变成 $-Y$，相减变成同相叠加 $Y-(-Y)=2Y$，残余功率暴涨为原回声的 $4$ 倍，$\mathrm{ERLE}=10\log_{10}(1/4)\approx -6.02\ \mathrm{dB}$，越减反而越响！</p>
+<p>在单个频点上，设真实回声为非零复数 $Y$，估计副本幅度完全准确但带有相位误差 $\phi$，即 $\hat Y=e^{\mathrm{j}\phi}Y$。分别计算 $\phi=0^\circ,60^\circ,180^\circ$ 时残余回声功率与原回声功率之比及对应理想 $\mathrm{ERLE}$。</p>
+<p><strong>解答</strong>：由复数模平方展开得功率比 $|Y-e^{\mathrm{j}\phi}Y|^2/|Y|^2=|1-e^{\mathrm{j}\phi}|^2=(1-\cos\phi)^2+\sin^2\phi=2-2\cos\phi$。代入三个角度：$\phi=0^\circ$ 时比值为 $0$（理想完全抵消，软件 JSON 中以 <code>null</code> 标记正无穷分贝）；$\phi=60^\circ$ 时 $\cos 60^\circ=0.5$，比值为 $1$（$\mathrm{ERLE}=0\ \mathrm{dB}$，不增不减，这便是相位误差不能超过 $60^\circ$ 才谈得上有衰减的几何边界！）；$\phi=180^\circ$ 时副本反相变成 $-Y$，相减变成同相叠加 $Y-(-Y)=2Y$，残余功率暴涨为原回声的 $4$ 倍，$\mathrm{ERLE}=10\log_{10}(1/4)\approx -6.02\ \mathrm{dB}$，越减反而越响！</p>
 <h3 id="sec-u-2434bb4bfe">E06-05：噪声底能否掩盖继续改善的回声抵消？</h3>
 <p>取真实回声序列 $\vec y=[1,1,-1,-1]^\top/2$、正交背景底噪 $\vec v=[1,-1,1,-1]^\top/20$，麦克风混合输入为 $\vec d=\vec y+\vec v$。假设线性 AEC 已将回声 $100\%$ 完美抵消（输出仅剩底噪 $\vec e=\vec v$），求实测麦克风输入与输出总能量之比的分贝数。</p>
 <p><strong>解答</strong>：由于 $\vec y^\top\vec v=0$，总输入能量为 $\|\vec y\|^2+\|\vec v\|^2=1+0.01=1.01$，完美抵消后的输出能量为 $\|\vec v\|^2=0.01$，总能量比为 $10\log_{10}(1.01/0.01)=10\log_{10}(101)\approx 20.04\ \mathrm{dB}$。明明回声残余已经降到绝对零（真实分量 $\mathrm{ERLE}=\infty$），但受 $20\ \mathrm{dB}$ 环境信噪比封顶，外部输入/输出功率表最高只能读出约 $20.04\ \mathrm{dB}$——现场测试若在嘈杂机房录单讲，切勿把环境底噪封顶误判成算法抵消能力不足。</p>
@@ -2683,7 +2686,7 @@ E_{\Delta}&=\frac{\sum_{n\in W}(\Delta[n]-s[n])^2}{\sum_{n\in W}s^2[n]}.
 <p><strong>解答</strong>：代入 $\kappa=1$ 使均匀探索项 $(1-\kappa)/(2L)=0$，而全零初值又使比例项分子 $(1+\kappa)|\hat w_l|=0$（正数 $\varepsilon_g>0$ 虽保住了分母不除零，却救不了分子为零），导致对角阵 $\mathbf G=\mathbf 0$、更新方向 $\mathbf G\vec x=\vec 0$，两抽头永久卡死在零点！因此实用比例算法必须取 $\kappa\lt 1$ 保留均匀底座（或如原始 PNLMS 那样给 $|\hat w_l|$ 设定正的下限地板）。</p>
 <h3 id="sec-u-bea493c66f">E06-15：RLS 的“记忆长度”换成秒是多少？</h3>
 <p>在无冻结连续更新下取遗忘因子 $\lambda=0.99$，计算某次历史观测经过 $100$ 次更新后的指数权重衰减倍率；再分别按“$16\ \mathrm{kHz}$ 逐采样更新”与“每 $10\ \mathrm{ms}$ 逐帧更新”换算对应的物理秒数。</p>
-<p><strong>解答</strong>：经过 $100$ 次更新后的相对权重为 $0.99^{100}\approx 0.3660$（近似 $\mathrm{e}^{-1}\approx 0.3679$）。若每采样更新一次，$100$ 步仅走过 $100/16000=0.00625\ \mathrm{s}$（$6.25\ \mathrm{ms}$）；若每 $10\ \mathrm{ms}$ 分帧更新一次，$100$ 步则跨越整整 $1.0\ \mathrm{s}$！可见脱离更新周期空谈“$\lambda=0.99$ 记忆多长”毫无物理意义。</p>
+<p><strong>解答</strong>：经过 $100$ 次更新后的相对权重为 $0.99^{100}\approx 0.3660$（近似 $e^{-1}\approx 0.3679$）。若每采样更新一次，$100$ 步仅走过 $100/16000=0.00625\ \mathrm{s}$（$6.25\ \mathrm{ms}$）；若每 $10\ \mathrm{ms}$ 分帧更新一次，$100$ 步则跨越整整 $1.0\ \mathrm{s}$！可见脱离更新周期空谈“$\lambda=0.99$ 记忆多长”毫无物理意义。</p>
 <h3 id="sec-u-a03b55678c">E06-16：双讲若误当路径变化会怎样？</h3>
 <p>沿用 §6.2.6 末尾的单抽头标量 Kalman 模型：首拍单讲观测后状态已达 $w_0=10/11,P_0=1/11$（$a=1,\Phi=0$）。第二拍 $x=1$，真实路径仍为 $1$，但叠加了近端语音 $s=2$ 使麦克风观测升至 $d=3$。对比“漏检双讲维持低 $\Psi=0.1$”“准确检出双讲抬升 $\Psi=10$”与“理想冻结”三种策略的第二拍后验权重。</p>
 <p><strong>解答</strong>：第二拍先验新息为 $e_1^-=3-10/11=23/11$。维持低观测方差 $\Psi=0.1$ 时，滤波器误以为观测极可靠，卡尔曼增益高达 $K=(1/11)/(1/11+1/10)=10/21$，把权重一把拽偏到 $10/11+(10/21)(23/11)=440/231\approx 1.905$；抬升 $\Psi=10$ 后，增益急剧收缩为 $K=(1/11)/(1/11+10)=1/111$，后验权重稳守在 $10/11+23/1221\approx 0.928$，紧贴理想冻结值 $10/11\approx 0.909$。</p>
@@ -2797,7 +2800,7 @@ e^+_{\mathrm{local}}&=(1-2\mu)e=-2e.
 <p><strong>逐步代入</strong>：$t=1\ \mathrm{s}$ 时累积滑移 $\Delta n(1)=250\times 10^{-6}\times 16000=4$ 个采样；$t=2\ \mathrm{s}$ 时滑移 $\Delta n(2)=8$ 个采样。折算为 $1\ \mathrm{kHz}$ 处的相位差与归一化残余功率比：</p>
 <p>$$\begin{aligned}
 |\phi(t)|&=2\pi\frac{1000}{16000}\Delta n(t),\\
-R(t)&=\left|1-\mathrm{e}^{-\mathrm{j}\phi(t)}\right|^2
+R(t)&=\left|1-e^{-\mathrm{j}\phi(t)}\right|^2
 =2-2\cos\phi(t).
 \end{aligned}$$</p>
 <p><strong>结果与启示</strong>：在 $t=1\ \mathrm{s}$ 与 $2\ \mathrm{s}$ 处，相位偏差分别高达 $\pi/2$（$90^\circ$）与 $\pi$（$180^\circ$ 反相），使残余功率比飙升至 $R(1)=2$（比不消还响 $+3.01\ \mathrm{dB}$）与 $R(2)=4$（反相叠加响 $+6.02\ \mathrm{dB}$）！短短一两秒内的微小晶振频差就能彻底瓦解高频相位对齐，直观说明了跨时钟域硬件必须引入异步重采样跟踪（SRC）。</p>

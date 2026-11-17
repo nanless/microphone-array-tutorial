@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 2 章 · 声音到达阵列时发生了什么 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="30366ba49985"><style>
+<meta name="source-digest" content="9b634b8b6fd1"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -316,6 +316,8 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <div class="chap"><a href="11_selection-guide.html">第 11 章 · 总结与选型指南</a></div>
 <div class="chap"><a href="12_acoustic-imaging.html">第 12 章 · 声学成像与噪声源诊断</a></div>
 <div class="chap"><a href="13_distributed-enhancement.html">第 13 章 · 分布式麦克风协同增强</a></div>
+<div class="chap"><a href="16_spatial-wearable-arrays.html">第 16 章 · 空间声场与可穿戴阵列</a></div>
+<div class="chap"><a href="17_target-extraction-diarization.html">第 17 章 · 条件目标提取与多通道日志</a></div>
 <div class="chap"><a href="14_appendix-symbols-math.html">第 14 章 · 附录 A：符号术语数学</a></div>
 <div class="chap"><a href="15_appendix-guide.html">第 15 章 · 附录 B：路径地图与练习</a></div>
 <div class="chap"><a href="research/index.html">源码研究</a></div></nav>
@@ -381,7 +383,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="02_basics-signal-model.html#sec-u-9fc99c5f2f">E02-20：每帧都能逆变换，为何仍不是一致的 STFT？</a></li>
 </ul></nav></details>
 <blockquote>
-<p>⚠️ 本篇是教程正文第 2 章（正文共 13 章，含第 12、13 章两篇扩展专题，另有附录 A、B），可独立阅读，前后篇见下方导航。</p>
+<p>⚠️ 本篇是教程正文第 2 章（正文共 15 章，含第 12、13、16、17 章四篇扩展专题，另有附录 A、B），可独立阅读，前后篇见下方导航。</p>
 <p>🏠 首页导读：<a href="index.html">🏠 导读与导航</a> ｜ 上一篇：<a href="01_problem-definition.html">第 1 章 · 问题定义与双耳启示</a> ｜ 下一篇：<a href="03_array-geometry.html">第 3 章 · 阵列几何形态</a></p>
 </blockquote>
 <hr />
@@ -923,11 +925,11 @@ G_\theta&=M(M^2-1)\eta^2(\theta),\\
 <li><strong>WNG 的 dB 值</strong>：正横目标方向各麦同相，$\vec a(0°)=[1,1,1,1]^\top$，$\vec w=[1/4,1/4,1/4,1/4]^\top$，满足 $\vec w^H\vec a=1$ 且 $\|\vec w\|_2^2=4\times(1/16)=1/4$，达到线性上限 $\mathrm{WNG}=4$，故 $\mathrm{WNG}_{\mathrm{dB}} = 10\log_{10}4 \approx$ <strong>6.02 dB</strong>（约 <strong>6 dB</strong>）；</li>
 <li>
 <p><strong>DI</strong>：把 4 元半波线阵的 DSB 波束图代入式(2-12)在整个三维球面上积分（逐项积分过程详见 E02-10），同样得到 $\mathrm{DI} = 10\log_{10}4 \approx$ <strong>6.02 dB</strong>（约 <strong>6 dB</strong>）。</p>
-<p>为什么在 $d=\lambda/2$ 时，三维各向同性弥散场的 $\mathrm{DI}$ 会与电路白噪声的 $\mathrm{WNG}_{\mathrm{dB}}$ 精确相等？第 5 章 §5.1 将证明，三维球面各向同性声场在间距为 $r_{mn}$ 的两只全向麦之间产生的空间相干系数为 $\mathrm{sinc}(2r_{mn}/\lambda)$。当阵元间距取半波长 $d=\lambda/2$ 时，相距 $q=|m-n|$ 个间隔的两麦满足 $2r_{mn}/\lambda=q$，相干系数恰为 $\mathrm{sinc}(q)$：对任意不同阵元（非零整数 $q\ne0$）都有 $\mathrm{sinc}(q)=0$！也就是说，在该单一频点上，球面弥散噪声在半波长线阵上的空间协方差矩阵恰好退化为单位阵 $\mathbf I_M$，与跨通道独立白噪声拥有同比例的二阶空间统计结构。</p>
-<p>口径注：本例与 §5.1、<a href="14_appendix-symbols-math.html#sec-14-1">附录A</a>统一采用归一化定义 $\mathrm{sinc}(x)=\sin(\pi x)/(\pi x)$（在 $x=0$ 处取连续极限 $1$），因此非零整数点直接写作 $\mathrm{sinc}(q)=0$；若对照采用未归一化 $\sin x/x$ 的文献，同一零点对应自变量 $q\pi$。</p>
+<p>为什么在 $d=\lambda/2$ 时，三维各向同性弥散场的 $\mathrm{DI}$ 会与电路白噪声的 $\mathrm{WNG}_{\mathrm{dB}}$ 精确相等？第 5 章 §5.1 将证明，三维球面各向同性声场在间距为 $r_{mn}$ 的两只全向麦之间产生的空间相干系数为 $\operatorname{sinc}(2r_{mn}/\lambda)$。当阵元间距取半波长 $d=\lambda/2$ 时，相距 $q=|m-n|$ 个间隔的两麦满足 $2r_{mn}/\lambda=q$，相干系数恰为 $\operatorname{sinc}(q)$：对任意不同阵元（非零整数 $q\ne0$）都有 $\operatorname{sinc}(q)=0$！也就是说，在该单一频点上，球面弥散噪声在半波长线阵上的空间协方差矩阵恰好退化为单位阵 $\mathbf I_M$，与跨通道独立白噪声拥有同比例的二阶空间统计结构。</p>
+<p>口径注：本例与 §5.1、<a href="14_appendix-symbols-math.html#sec-14-1">附录A</a>统一采用归一化定义 $\operatorname{sinc}(x)=\sin(\pi x)/(\pi x)$（在 $x=0$ 处取连续极限 $1$），因此非零整数点直接写作 $\operatorname{sinc}(q)=0$；若对照采用未归一化 $\sin x/x$ 的文献，同一零点对应自变量 $q\pi$。</p>
 </li>
 </ul>
-<p>量级结论：在本例的半波间距与三维各向同性弥散场二阶统计下，4 元等权 DSB 的 $\mathrm{WNG}_{\mathrm{dB}}$ 和 $\mathrm{DI}$ 均约为 $6\ \mathrm{dB}$。一旦到低频段（$d\ll\lambda/2$），相邻麦上的弥散噪声变得高度相关（$\mathrm{sinc}(2d/\lambda)\approx1$），等权 DSB 的 $\mathrm{WNG}_{\mathrm{dB}}$ 仍保持 $6\ \mathrm{dB}$，而 $\mathrm{DI}$ 会跌向 $0\ \mathrm{dB}$；若此时改用超指向权重强行拉高 $\mathrm{DI}$，$\mathrm{WNG}_{\mathrm{dB}}$ 就会反过来大幅跌落。</p>
+<p>量级结论：在本例的半波间距与三维各向同性弥散场二阶统计下，4 元等权 DSB 的 $\mathrm{WNG}_{\mathrm{dB}}$ 和 $\mathrm{DI}$ 均约为 $6\ \mathrm{dB}$。一旦到低频段（$d\ll\lambda/2$），相邻麦上的弥散噪声变得高度相关（$\operatorname{sinc}(2d/\lambda)\approx1$），等权 DSB 的 $\mathrm{WNG}_{\mathrm{dB}}$ 仍保持 $6\ \mathrm{dB}$，而 $\mathrm{DI}$ 会跌向 $0\ \mathrm{dB}$；若此时改用超指向权重强行拉高 $\mathrm{DI}$，$\mathrm{WNG}_{\mathrm{dB}}$ 就会反过来大幅跌落。</p>
 <p>以上四项指标均建立在远场平面波流形之上；当说话人贴近阵列、进入 §2.2 所述的近场区时，导向矢量、扫描网格和待估参数都需要把距离维度显式纳入进来。</p>
 <span id="sec-8" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-2-7">2.7 近场模型：球面导向、距离信息与模型选择</h2>
 <p>远场平面波模型把到达阵列的波前看作平面，相对时延只由方向决定（水平面定位求单个方位角 $\theta$，三维空间定位求 $(\theta,\phi_{\mathrm{el}})$），无法单靠相对相位差反推声源离阵列有多远。当声源走近阵列、波前呈现显著球面弯曲时，各麦克风到声源的<strong>真实距离</strong>同时改变了传播相位与接收幅度，使阵列不仅能测向，还能在一定条件下估计距离。</p>
@@ -961,6 +963,7 @@ r_m&=r-\vec u^\top\vec q_m
 <p>这个展开还顺手揭示了一个常被忽略的几何退化情形：如果是一条直线阵，且点声源恰好位于线阵延长线外侧的<strong>端射方向</strong>（所有 $\vec q_m$ 都与 $\vec u$ 平行），那么横向位移恒为零（$\|\vec q_m\|_2^2-(\vec u^\top\vec q_m)^2=0$），真实路程差精确等于一阶线性项，<strong>球面相位曲率彻底消失为零</strong>！此时仅靠相位无法从曲率分辨远近，但近端麦与远端麦的幅度比 $r_1/r_m$ 依然显著偏离 $1$（章末 E02-09 在 $0.2\ \mathrm{m}$ 端射下算出最右麦幅度高达中心麦的 $2$ 倍，而相位曲率误差却严格为 $0°$）。这也提醒我们：孔径太小或距离过远导致 $D^2/(r\lambda)\ll1$ 时，球面流形退化为平面流形，单阵列测距会变得高度病态，工程上若需远距离稳健定位三维坐标，常改用多组空间分离的子阵列交叉定位。</p>
 <h3 id="sec-2-7-3">2.7.3 模型选择需要同时检查相位和幅度</h3>
 <p>综合 §2.2 与本节分析，在决定算法采用远场平面导向 $\vec a(f,\theta)$ 还是近场球面导向 $\vec a(f,\vec p)$ 时，应按目标频带的<strong>最高工作频率</strong>（最短波长 $\lambda_{\min}$）依次核对三件事：半孔径距离比是否满足 $r\gg a$、曲率相位差是否落在算法允许的容限内（如常规波束参考 $r>2D^2/\lambda_{\min}$，深零陷自适应波束则要求更严），以及最近阵元与最远阵元的幅度比 $r_{\max}/r_{\min}$ 是否接近 $1$。任一条件不满足时，就应切换为式(2-15)的球面波流形，并把第 4 章的定位搜索网格从纯角度维扩展到“角度 × 距离”或三维空间坐标网格（如 §4.3 的可控响应功率 SRP-PHAT 直接按空间候选点坐标计算精确距离差）。</p>
+<p>进一步利用球面波二次曲率在正横同方向上保留近处说话人、零陷远处干扰的“声学距离气泡”闭式设计与孔径四次方（$d^4$）底噪边界，详见<a href="17_target-extraction-diarization.html#sec-17-3">第 17 章 §17.3</a>。</p>
 <p>至此，本章已经把阵列信号处理的物理语言与数学底座全部搭好：从几何时延与复数相位出发，建立了远近场导向模型与室内混响模型，明确了 STFT 分帧重构与空间协方差统计的工程细节，并给出了衡量波束优劣的四把标尺。下一章我们将聚焦麦克风的物理排布，探讨线阵、圆阵、平面阵、球阵与稀疏阵各自的几何能力边界与校准方法。</p>
 <span id="sec-9" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-f7a201edb9">本章练习</h2>
 <p>本章共设 20 道分级练习，建议先动笔手算关键中间数字，再运行配套脚本对照核验（本章所有合成测试音频均由数学模型精确生成，用于隔离并验证特定物理量或数值边界，不等同于真实房间语音录音）：</p>

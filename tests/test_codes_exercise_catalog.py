@@ -1,4 +1,4 @@
-"""Explicit cross-module, chapter and research inventory for 363 exercises."""
+"""Explicit cross-module, chapter and research inventory for 395 exercises."""
 
 import json
 import re
@@ -7,6 +7,8 @@ from pathlib import Path
 
 from codes.chapters.ch12 import chapter12_exercises
 from codes.chapters.ch13 import chapter13_exercises
+from codes.chapters.ch16 import chapter16_exercises
+from codes.chapters.ch17 import chapter17_exercises
 from codes.chapters.ch06 import aec_advanced_exercises
 from codes.chapters.ch06 import aec_algorithm_minicases
 from codes.chapters.ch00.cross_chapter import exercises_engineering
@@ -45,6 +47,8 @@ from codes.chapters.appendix_b import interpolation_exercise
 
 ROOT = Path(__file__).resolve().parents[1]
 EXPECTED = {
+    "tse": {f"E17-{n:02d}" for n in range(1, 17)},
+    "wearable": {f"E16-{n:02d}" for n in range(1, 17)},
     "distributed": {f"E13-{n:02d}" for n in range(1, 26)},
     "imaging": {f"E12-{n:02d}" for n in range(1, 19)},
     "apa": {f"E06-{n:02d}" for n in range(34, 39)},
@@ -98,7 +102,7 @@ EXPECTED = {
 }
 AEC_CASE_KEYS = {"E06-07": "overlap_save", "E06-08": "ipnlms",
                  "E06-09": "geigel", "E06-10": "delay_polarity"}
-RUNNERS = {"distributed": lambda: chapter13_exercises.run_experiments()["exercises"], "imaging": lambda: chapter12_exercises.run_experiments()["exercises"], "apa": lambda: {k: v for k, v in apa_demo().items() if k != "scope"}, "apa_audio": lambda: {"E06-39": apa_audio_experiment()[1]}, "reference_audio": lambda: {"E06-42": reference_audio_assets()[1]}, "appendix_b": appendix_b_experiments.run_exercises,
+RUNNERS = {"tse": lambda: chapter17_exercises.run_experiments()["exercises"], "wearable": lambda: chapter16_exercises.run_experiments()["exercises"], "distributed": lambda: chapter13_exercises.run_experiments()["exercises"], "imaging": lambda: chapter12_exercises.run_experiments()["exercises"], "apa": lambda: {k: v for k, v in apa_demo().items() if k != "scope"}, "apa_audio": lambda: {"E06-39": apa_audio_experiment()[1]}, "reference_audio": lambda: {"E06-42": reference_audio_assets()[1]}, "appendix_b": appendix_b_experiments.run_exercises,
            "appendix_a": appendix_a_experiments.run_experiments,
            "chapter11": chapter11_experiments.run_experiments,
            "chapter09": chapter09_experiments.run_experiments,
@@ -149,9 +153,9 @@ class ExerciseCatalogTest(unittest.TestCase):
     def setUpClass(cls):
         cls.results = {name: run() for name, run in RUNNERS.items()}
 
-    def test_independent_inventory_has_363_unique_ids(self):
-        self.assertEqual(len(ALL_IDS), 363)
-        self.assertEqual(sum(map(len, EXPECTED.values())), 363)
+    def test_independent_inventory_has_395_unique_ids(self):
+        self.assertEqual(len(ALL_IDS), 395)
+        self.assertEqual(sum(map(len, EXPECTED.values())), 395)
 
     def test_each_module_returns_exact_assigned_ids(self):
         for name, results in self.results.items():
@@ -174,7 +178,7 @@ class ExerciseCatalogTest(unittest.TestCase):
                 text = chapters[0].read_text(encoding="utf-8")
                 self.assertRegex(text, rf"\b{re.escape(exercise_id)}\b")
 
-    def test_chapter_and_research_inventories_cover_exactly_363_ids(self):
+    def test_chapter_and_research_inventories_cover_exactly_395_ids(self):
         chapters = "\n".join(path.read_text(encoding="utf-8")
                              for path in (ROOT / "chapters").glob("*.md"))
         research = (ROOT / "codes/chapters/ch00/research/05_exercises_and_audio.md").read_text(encoding="utf-8")

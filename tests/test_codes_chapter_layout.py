@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 CODES = ROOT / "codes"
 CHAPTERS = CODES / "chapters"
 EXPECTED_DIRS = {*(f"ch{number:02d}" for number in range(12)),
-                 "appendix_a", "appendix_b", "ch12", "ch13"}
+                 "appendix_a", "appendix_b", "ch12", "ch13", "ch16", "ch17"}
 
 
 class ChapterLayoutTest(unittest.TestCase):
@@ -35,7 +35,7 @@ class ChapterLayoutTest(unittest.TestCase):
         infrastructure = {CHAPTERS / "ch00/io_contracts.py"}
         self.assertEqual(infrastructure & set(implementations), infrastructure)
         teaching_entries = set(implementations) - infrastructure
-        self.assertEqual(len(teaching_entries), 38)
+        self.assertEqual(len(teaching_entries), 40)
         self.assertIn(CHAPTERS / "ch06/aec_affine_projection_demo.py", implementations)
         for path in implementations:
             with self.subTest(path=path):

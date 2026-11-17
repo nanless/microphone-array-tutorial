@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 3 章 · 阵列几何形态 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="30366ba49985"><style>
+<meta name="source-digest" content="9b634b8b6fd1"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -296,6 +296,8 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <div class="chap"><a href="11_selection-guide.html">第 11 章 · 总结与选型指南</a></div>
 <div class="chap"><a href="12_acoustic-imaging.html">第 12 章 · 声学成像与噪声源诊断</a></div>
 <div class="chap"><a href="13_distributed-enhancement.html">第 13 章 · 分布式麦克风协同增强</a></div>
+<div class="chap"><a href="16_spatial-wearable-arrays.html">第 16 章 · 空间声场与可穿戴阵列</a></div>
+<div class="chap"><a href="17_target-extraction-diarization.html">第 17 章 · 条件目标提取与多通道日志</a></div>
 <div class="chap"><a href="14_appendix-symbols-math.html">第 14 章 · 附录 A：符号术语数学</a></div>
 <div class="chap"><a href="15_appendix-guide.html">第 15 章 · 附录 B：路径地图与练习</a></div>
 <div class="chap"><a href="research/index.html">源码研究</a></div></nav>
@@ -341,7 +343,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="03_array-geometry.html#sec-u-fd5bb0b3d9">E03-18：已知方向能把麦克风位置与固定时延分开吗？</a></li>
 </ul></nav></details>
 <blockquote>
-<p>⚠️ 本篇是教程正文第 3 章（正文共 13 章，含第 12、13 章两篇扩展专题，另有附录 A、B），可独立阅读，前后篇见下方导航。</p>
+<p>⚠️ 本篇是教程正文第 3 章（正文共 15 章，含第 12、13、16、17 章四篇扩展专题，另有附录 A、B），可独立阅读，前后篇见下方导航。</p>
 <p>🏠 首页导读：<a href="index.html">🏠 导读与导航</a> ｜ 上一篇：<a href="02_basics-signal-model.html">第 2 章 · 声音到达阵列时发生了什么</a> ｜ 下一篇：<a href="04_doa-estimation.html">第 4 章 · 声源定位（DOA 估计）</a></p>
 </blockquote>
 <hr />
@@ -439,7 +441,7 @@ Y(f)&=X_1(f)-e^{-\mathrm{j}2\pi fd/c}X_2(f)\text{。}
 <p>$$\Delta\phi=2\pi f\Delta\tau=\frac{2\pi\times1000\times0.01}{343}\approx0.1832\ \mathrm{rad}\approx10.50°\text{。}$$</p>
 </li>
 <li>
-<p><strong>看后方来声（$180°$）：声学抢跑恰好被电延迟追平</strong>：从正后方传来的干扰声先到达后麦 $x_2$，再花 $\Delta\tau=d/c$ 传到前麦 $x_1$，即 $x_1(t)=x_2(t-d/c)$。而式(3-2)偏偏又给后麦 $x_2$ 补上了同样长的电延迟 $d/c$！两路信号在减法器入口处波形一模一样，相减后理想输出恒为 $y(t)=0$，在正后方挖出一个完美的相消零陷。</p>
+<p><strong>看后方来声（$180°$）：声学抢跑恰好被电延迟追平</strong>：从正后方传来的干扰声先到达后麦 $x_2$，再花 $\Delta\tau=d/c$ 传到前麦 $x_1$，即 $x_1(t)=x_2(t-d/c)$。而式(3-2)偏偏又给后麦 $x_2$ 补上了同样长的电延迟 $d/c$！两路信号在减法器入口处波形一模一样，相减后理想输出恒为 $y(t)=0$，在正后方形成完全相消零陷。</p>
 </li>
 <li>
 <p><strong>看前方来声（$0°$）：提取半角公因子算剩余幅度</strong>：从正前方嘴部传来的目标语音先到达前麦 $x_1$，晚 $\Delta\tau$ 才到后麦 $x_2$；接着后麦信号又被电延迟往后推迟了一个 $\Delta\tau$，两路一共错开了双倍时间 $2\Delta\tau$（即双倍相位角 $2\Delta\phi\approx21.0°$）。设单麦输入目标谱幅度归一化为 $1$，则输出复响应为 $1-e^{-\mathrm{j}2\Delta\phi}$。不要跳步，提出半角中心相位因子 $e^{-\mathrm{j}\Delta\phi}$ 凑出欧拉正弦式：</p>
@@ -739,7 +741,7 @@ R_{ij}&=\sum_{k=1}^{K}P_k\,e^{\mathrm{j}\kappa\vec b_{ij}^\top\vec u_k}+\sigma_v
   \end{bmatrix}\text{。}
   \end{aligned}$$</p>
 <ul>
-<li><strong>第 2 步：按位置差 $\ell=p_i-p_j$ 查表抽出连续滞后 $r[-3]\sim r[+3]$</strong>：</li>
+<li><strong>第 2 步：按位置差 $\ell=p_i-p_j$ 查表抽出连续滞后 $r[-3]$～$r[+3]$</strong>：</li>
 <li>零滞后 $\ell=0$（对角元 $0-0,1-1,3-3$）：$r[0]=2.1$；</li>
 <li>滞后 $\ell=+1$（来自 $p_1-p_0=1-0$，即第 $2$ 行第 $1$ 列 $R_{10}$）：$r[1]=1+\mathrm{j}$；</li>
 <li>滞后 $\ell=+2$（来自 $p_2-p_1=3-1$，即第 $3$ 行第 $2$ 列 $R_{21}$）：$r[2]=0$；</li>
@@ -768,9 +770,9 @@ R_{ij}&=\sum_{k=1}^{K}P_k\,e^{\mathrm{j}\kappa\vec b_{ij}^\top\vec u_k}+\sigma_v
 <p><img alt="图10 稀疏阵列与差分协同阵" src="../figures/fig10_sparse_array.png" onerror="this.alt+='（图缺失）'" /></p>
 <p>对照图 10 的左右两栏，三种 6 麦线阵的“物理阵元位置”与“有符号差分滞后”关系一目了然（横轴单位均为半波长 $\lambda/2$）：</p>
 <ul>
-<li><strong>第一行（均匀线阵 $\{0,1,2,3,4,5\}$）</strong>：左栏 6 颗阵元紧挨排列，右栏差分协同阵仅覆盖 $-5\sim +5$ 共 $11$ 个连续滞后；</li>
-<li><strong>第二行（嵌套阵 $\{0,1,2,3,7,11\}$）</strong>：左栏同样只用 6 颗阵元，右栏差分协同阵无空洞地铺满 $-11\sim +11$ 共 $23$ 个连续滞后，可直接构造 $12\times12$ 虚拟协方差；</li>
-<li><strong>第三行（互质阵 $\{0,3,4,6,8,9\}$）</strong>：左栏由互质步长子阵并集构成，右栏总跨度覆盖 $-9\sim +9$ 共 $17$ 个滞后，但注意观察 $\pm7$ 两格是空的（存在<strong>滞后孔洞 hole</strong>）！因此在不引入额外矩阵补全假设的前提下，直接可用的无洞连续中心段只有 $-6\sim +6$ 共 $13$ 个滞后，对应 $7\times7$ 虚拟矩阵（逐项核对见 E03-13）。</li>
+<li><strong>第一行（均匀线阵 $\{0,1,2,3,4,5\}$）</strong>：左栏 6 颗阵元紧挨排列，右栏差分协同阵仅覆盖 $-5$～$+5$ 共 $11$ 个连续滞后；</li>
+<li><strong>第二行（嵌套阵 $\{0,1,2,3,7,11\}$）</strong>：左栏同样只用 6 颗阵元，右栏差分协同阵无空洞地铺满 $-11$～$+11$ 共 $23$ 个连续滞后，可直接构造 $12\times12$ 虚拟协方差；</li>
+<li><strong>第三行（互质阵 $\{0,3,4,6,8,9\}$）</strong>：左栏由互质步长子阵并集构成，右栏总跨度覆盖 $-9$～$+9$ 共 $17$ 个滞后，但注意观察 $\pm7$ 两格是空的（存在<strong>滞后孔洞 hole</strong>）！因此在不引入额外矩阵补全假设的前提下，直接可用的无洞连续中心段只有 $-6$～$+6$ 共 $13$ 个滞后，对应 $7\times7$ 虚拟矩阵（逐项核对见 E03-13）。</li>
 </ul>
 <span id="sec-u-d14b5899a5" class="anchor-alias" aria-hidden="true"></span><span id="sec-9" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-3-3-3">3.3.3 代价与边界：差分空缺、宽带和混响</h3>
 <p>嵌套阵（<a href="https://doi.org/10.1109/TSP.2010.2049264">Pal 与 Vaidyanathan 2010</a>）与互质阵（<a href="https://doi.org/10.1109/TSP.2010.2089682">Vaidyanathan 与 Pal 2010</a>）在雷达与窄带阵列理论中大放异彩，但搬到室内语音麦克风阵列时，必须看清三道现实门槛：</p>

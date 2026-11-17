@@ -1,0 +1,44 @@
+{
+  "figure": 83,
+  "exercise_ids": [
+    "E16-12",
+    "E16-13",
+    "E16-16"
+  ],
+  "source_sha256": {
+    "codes/chapters/ch16/core/spatial_parametric.py": "a0a5162265a7be04b0e0956a414cd14a9e34843754d9f0f0923a5c6a376eabc7",
+    "codes/chapters/ch16/core/binaural_matching.py": "a6d18a54486a598137f0c8796c73f69fd34ddac7da6490dcba116936e6205598",
+    "codes/chapters/ch16/core/wearable_fusion.py": "5deae74694ec39faece6a4cd8464c81b9f8e50f9716e8553ca0f88516aef1e63",
+    "codes/chapters/ch16/core/wearable_audio.py": "2a8835a3df66a90da40fb67f1a2b4aef5d97e40a4a541dce1cbb47265461494e",
+    "codes/chapters/ch16/examples/generate_wearable_audio.py": "f3d7e5097f64f8ae4e4b1376f3731a02a62724cc5167c7da9257324839edeb56",
+    "codes/chapters/ch02/core/conventions.py": "4e80a27490f05ddd5f4826361420c0c8d0b331464d1e5629c5def492da47b1d7",
+    "codes/chapters/ch00/core/audio_samples.py": "8fb4e9e822129d0019ef047299effd53b4f02f90ff68b5198016d04ddad31cf8",
+    "codes/chapters/ch00/io_contracts.py": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974",
+    "scripts/make_figures.py": "4eb6e4fcf9e7f26c29d61552046e1528bcfe5634758577f94798adba9e1333a4",
+    "scripts/make_wearable_figures.py": "ddefa7bb6205e795d18e7caa676f10b4f4fe6120a806eacd6124c90c696dd02b"
+  },
+  "audio_manifest_sha256": "1e66ff815225b5c829219f9355dd9af89c737e66c8658620caafe67c9a6ff4a2",
+  "wav_sha256": {
+    "wearable_clean_ref.wav": "3cfd9f7cbbccef6ffeb82084a2b6b3f80ba4843453e2f63bb13f42e9128a1558",
+    "wearable_air_wind_2ch.wav": "180d2f053e9753dd9dc8f6f7a55c016abc9d782d21acf29077c638eec426749e",
+    "wearable_inear_occluded.wav": "635cc1b0aad47c14ce4d992a62ff49f69191b11822c816cb2fb6146a33aa8ca9",
+    "wearable_inear_equalized.wav": "18dc236027aa2e602d934cbcea763eb88315f66c50fa76fdf7f0256b510a87ed",
+    "wearable_fused_output.wav": "18beb5f9f6d632857e9e41e405ea650c558828132e85cb97803e56633e276c23",
+    "wearable_hearthrough_comb.wav": "fa6df05a71db03bd87283cf1f8fc5fd41751f39dd9974e4bda11dadb499b564a"
+  },
+  "anchor_250hz_sinr_db": 20.010843812922197,
+  "anchor_4000hz_sinr_db": 13.064250275506875,
+  "pcm_reference_mse_ch0": {
+    "wearable_air_wind_2ch": 0.020250439236406237,
+    "wearable_inear_occluded": 0.009449585004767868,
+    "wearable_inear_equalized": 0.020049446924531367,
+    "wearable_fused_output": 0.0002967964464914985
+  },
+  "analytic_reference_mse_ch0": {
+    "wearable_air_wind_2ch": 0.02025,
+    "wearable_inear_occluded": 0.00945,
+    "wearable_inear_equalized": 0.020050000000000002,
+    "wearable_fused_output": 0.00029678889196761184
+  },
+  "plot_scope": "Corcos wind vs diffuse coherence, parametric cross-modal SINR, and actual PCM16 excerpt/MSE from checked wearable_audio assets"
+}

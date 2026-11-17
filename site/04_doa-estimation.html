@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 4 章 · 声源定位（DOA 估计） · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="30366ba49985"><style>
+<meta name="source-digest" content="9b634b8b6fd1"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -318,6 +318,8 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <div class="chap"><a href="11_selection-guide.html">第 11 章 · 总结与选型指南</a></div>
 <div class="chap"><a href="12_acoustic-imaging.html">第 12 章 · 声学成像与噪声源诊断</a></div>
 <div class="chap"><a href="13_distributed-enhancement.html">第 13 章 · 分布式麦克风协同增强</a></div>
+<div class="chap"><a href="16_spatial-wearable-arrays.html">第 16 章 · 空间声场与可穿戴阵列</a></div>
+<div class="chap"><a href="17_target-extraction-diarization.html">第 17 章 · 条件目标提取与多通道日志</a></div>
 <div class="chap"><a href="14_appendix-symbols-math.html">第 14 章 · 附录 A：符号术语数学</a></div>
 <div class="chap"><a href="15_appendix-guide.html">第 15 章 · 附录 B：路径地图与练习</a></div>
 <div class="chap"><a href="research/index.html">源码研究</a></div></nav>
@@ -385,7 +387,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="04_doa-estimation.html#sec-u-581e3d1df1">E04-25：首CTF系数比怎样从交叉关系中求出？</a></li>
 </ul></nav></details>
 <blockquote>
-<p>⚠️ 本篇是本书正文第 4 章（正文共 13 章，其中第 12、13 章为扩展专题，另有附录 A/B），可独立阅读，前后篇见下方导航。</p>
+<p>⚠️ 本篇是本书正文第 4 章（正文共 15 章，含第 12、13、16、17 章四篇扩展专题，另有附录 A、B），可独立阅读，前后篇见下方导航。</p>
 <p>🏠 首页导读：<a href="index.html">🏠 导读与导航</a> ｜ 上一篇：<a href="03_array-geometry.html">第 3 章 · 阵列几何形态</a> ｜ 下一篇：<a href="05_beamforming.html">第 5 章 · 波束形成</a></p>
 </blockquote>
 <hr />
@@ -676,7 +678,8 @@ G[k]&=X_1[k]X_2^*[k]=[6,\ -6\mathrm{j},\ -6,\ 6\mathrm{j},\ 6,\ -6\mathrm{j},\ -
 <p>为什么式(4-4)明明是在对两两不同的麦克风对 $i\lt j$ 求互相关之和，算法名字却叫“可控响应<strong>功率</strong>”？把频域延迟求和波束形成器的输出功率展开，两者的代数等价关系就一目了然了。设第 $m$ 路频谱经单位模白化后记为 $\tilde X_m(f)=X_m(f)/|X_m(f)|$（对非零频点），将波束转向候选位置 $\vec r$（传播时延补偿因子为 $e^{+\mathrm{j}2\pi ft_m(\vec r)}$，满足 $t_i(\vec r)-t_j(\vec r)=\tau_{ij}(\vec r)$），波束输出谱为 $Y(f,\vec r)=\sum_{m=1}^M\tilde X_m(f)e^{+\mathrm{j}2\pi ft_m(\vec r)}$。把它的模平方拆成 $M$ 个对角自乘项与 $M(M-1)$ 个非对角交叉项：</p>
 <p>$$\begin{aligned}
 |Y(f,\vec r)|^2&=\left|\sum_{m=1}^M\tilde X_m(f)e^{+\mathrm{j}2\pi ft_m(\vec r)}\right|^2\\
-&=\sum_{m=1}^M|\tilde X_m(f)|^2+2\sum_{1\le i\lt j\le M}\Re\!\left\{\tilde X_i(f)\tilde X_j^*(f)\,e^{+\mathrm{j}2\pi f\tau_{ij}(\vec r)}\right\}\text{。}
+&=\sum_{m=1}^M|\tilde X_m(f)|^2\\
+&\quad+2\sum_{1\le i\lt j\le M}\operatorname{Re}\!\left\{\tilde X_i(f)\tilde X_j^*(f)\,e^{+\mathrm{j}2\pi f\tau_{ij}(\vec r)}\right\}\text{。}
 \end{aligned}$$</p>
 <p>看右边两项：第一项 $\sum_{m=1}^M|\tilde X_m(f)|^2$ 是各通道自身的白化能量和，<strong>完全不含候选坐标 $\vec r$</strong>，改变搜索位置时它只是一个平移整张响应图的常数底，不会移动任何峰值；把它减掉并沿频率积分（或对离散频点求和），剩下的第二项恰好就是 $2\sum_{i\lt j}R^{\mathrm{PHAT}}_{x_ix_j}(\tau_{ij}(\vec r))$，只差一个正的常数因子 $2$（系统推导见 <a href="https://www.glat.info/ma/av16.3/2000-DiBiaseThesis.pdf">DiBiase, Brown University 博士论文, 2000</a>）。去掉对角自功率项不仅省算力，还顺带消除了不提供方向信息的通道自噪声基底。</p>
 <h3 id="sec-u-b6569914a1">几何预测与离散实现的对应</h3>
@@ -687,7 +690,7 @@ Q&=\begin{cases}G/|G|,&|G|>\varepsilon g_{ij},\\0,&\text{其余频点帧},\end{c
 g_{ij}&=\max_{k,\ell}|G_{ij}(k,\ell)|,\\
 \overline Q_{ij}(k)&=\frac1L\sum_{\ell=1}^L Q_{ij}(k,\ell),\\
 v_{ij}(k,\theta)&=e^{+\mathrm{j}2\pi f_k\tau_{ij}(\theta)},\\
-C_{ij}(\theta)&=\frac1F\sum_{k=1}^F\Re\{\overline Q_{ij}v_{ij}\},\\
+C_{ij}(\theta)&=\frac1F\sum_{k=1}^F\operatorname{Re}\{\overline Q_{ij}v_{ij}\},\\
 S(\theta)&=\frac1B\sum_{i\lt j}C_{ij}(\theta)\text{。}
 \end{aligned}\tag{4-5}$$</p>
 <p>式(4-5)中分段式省略了 $Q$、$G$ 的 $(i,j,k,\ell)$ 下标，$C_{ij}(\theta)$ 求和号内省略了随 $k$ 变化的括号参数 $\overline Q_{ij}(k)$ 与 $v_{ij}(k,\theta)$：这里 $v_{ij}(k,\theta)$ 是候选方位 $\theta$ 的时差相位补偿因子，$C_{ij}(\theta)$ 是单个麦对跨频平均后的匹配得分，$S(\theta)$ 再对全部 $B$ 个麦对取平均。对照前面波束功率展开式要注意三处实现细节：第一，式(4-5)按每个麦对各自的门限 $\varepsilon g_{ij}$ 置零弱频点，并采用“先逐帧 PHAT 归一化、再沿时间帧平均”的次序（若反过来先跨帧平均互谱再做 PHAT，大幅度帧会主导相位，本章练习 E04-14 给出具体反例）；第二，求和直接在所给单边频点上等权平均，没有给内部正频点乘 $2$，因此数值尺度与完整双边 IFFT 略有常数比例差（练习 E04-13 用两麦两频点亲手复算该尺度）；第三，分母固定为总帧数 $L$、总频点数 $F$ 与总麦对数 $B$，被门限置零的弱项仍计入分母。若整段输入全为零或仅有不含相位时差的直流分量，函数会报错拒绝；但对一般非零输入，调用者仍须检查 $S(\theta)$ 是否真的形成可辨识尖峰，不能盲信平坦数组上 <code>argmax</code> 返回的第一个下标。</p>
@@ -1011,7 +1014,7 @@ u_y&=-\frac{0.0282975}{0.04}=-0.7074375\text{。}
 <p><strong>为什么聚焦矩阵优先要求酉矩阵（正交 Procrustes 闭式构造）？</strong> 初学者最容易忽略的一点是：聚焦矩阵在搬移信号导向矢量的同时，也在变换背景噪声！如果频点 $f_j$ 上原本是空间白噪声 $\sigma_j^2\mathbf I_M$，左乘 $\mathbf T_j$、右乘 $\mathbf T_j^H$ 后，噪声协方差就变成了 $\sigma_j^2\mathbf T_j\mathbf T_j^H$。倘若 $\mathbf T_j$ 不是酉矩阵（$\mathbf T_j\mathbf T_j^H\ne\mathbf I_M$），原本各向同性的白噪声就会被拉扯成空间有色噪声，甚至在某个纯噪声方向上放大出超过真实信号的最大特征值，导致普通 MUSIC 指鹿为马（后文 <a href="#e04-19">E04-19</a> 与图 53 用一个 $2\times 2$ 精确算例展示了这一现象；若确需使用非酉聚焦，必须按聚焦后的总噪声协方差同步白化，参见 <a href="https://www.researchgate.net/publication/3319689_TOPS_new_DOA_estimator_for_wideband_signals">TOPS 原论文 §II-C</a>）。</p>
 <p>要让变换自动保持空间白噪声不变，只需强制聚焦矩阵满足酉约束 $\mathbf T_j\mathbf T_j^H=\mathbf I_M$，这就是 Hung 与 Kaveh 提出的<strong>旋转信号子空间（Rotational Signal-Subspace，RSS）聚焦</strong>。先由 Bartlett 或 SRP-PHAT 粗扫选出一组初始聚焦角 $\{\theta_1,\ldots,\theta_Q\}$，把它们在 $f_j$ 与参考频点 $f_0$ 处的导向矢量排成矩阵 $\mathbf A(f_j),\mathbf A(f_0)\in\mathbb C^{M\times Q}$，在酉矩阵群上最小化流形对齐残差——这在矩阵分析中称为<strong>正交 Procrustes 问题</strong>：</p>
 <p>$$\min_{\mathbf T_j\mathbf T_j^H=\mathbf I_M}\;\|\mathbf A(f_0)-\mathbf T_j\mathbf A(f_j)\|_F^2\text{。}$$</p>
-<p>因为酉变换不改变向量模长，$\operatorname{tr}(\mathbf T_j\mathbf A(f_j)\mathbf A^H(f_j)\mathbf T_j^H)=\operatorname{tr}(\mathbf A(f_j)\mathbf A^H(f_j))$ 与 $\mathbf T_j$ 无关，最小化上式等价于最大化交叉内积实部 $\Re\operatorname{tr}\!\big(\mathbf T_j\mathbf A(f_j)\mathbf A^H(f_0)\big)$。对交叉矩阵 $\mathbf A(f_j)\mathbf A^H(f_0)\in\mathbb C^{M\times M}$ 做奇异值分解，立刻得到闭式最优酉聚焦矩阵：</p>
+<p>因为酉变换不改变向量模长，$\operatorname{tr}(\mathbf T_j\mathbf A(f_j)\mathbf A^H(f_j)\mathbf T_j^H)=\operatorname{tr}(\mathbf A(f_j)\mathbf A^H(f_j))$ 与 $\mathbf T_j$ 无关，最小化上式等价于最大化交叉内积实部 $\operatorname{Re}\operatorname{tr}(\mathbf T_j\mathbf A(f_j)\mathbf A^H(f_0))$。对交叉矩阵 $\mathbf A(f_j)\mathbf A^H(f_0)\in\mathbb C^{M\times M}$ 做奇异值分解，立刻得到闭式最优酉聚焦矩阵：</p>
 <p>$$\mathbf A(f_j)\mathbf A^H(f_0)=\mathbf U\boldsymbol\Sigma\mathbf V^H,\qquad \mathbf T_j=\mathbf V\mathbf U^H\text{。}$$</p>
 <p>一行就能验算酉性质：$\mathbf T_j\mathbf T_j^H=\mathbf V\mathbf U^H\mathbf U\mathbf V^H=\mathbf I_M$，白噪声经过它之后丝毫不变色！与此同时，宽带聚焦还带来一个极有价值的副产品——<strong>跨频平均去相干</strong>：室内直达声与反射声存在固定传播时延差 $\Delta\tau$ 时，虽然在每一个单独频点 $f_j$ 上两路复比例 $e^{-\mathrm{j}2\pi f_j\Delta\tau}$ 固定、单频源协方差秩塌缩为 $1$，但只要这个复相位随频率 $f_j$ 旋转变化，把各频点聚焦到同一参考流形 $\mathbf A(f_0)$ 后再做跨频平均，多个不同相位的秩 $1$ 矩阵平均起来就能重新恢复满秩（后文 <a href="#e04-22">E04-22</a> 与图 54 用双频延迟副本完整复算了秩从 $1$ 恢复到 $2$ 的过程；当然，若两路信号零时差完全同相使比例不随频率变化，跨频平均仍无法恢复满秩，届时还需结合空间平滑）。</p>
 <p>围绕“要不要依赖初始聚焦角”和“合并协方差还是合并子空间”，宽带子空间家族还有两条常见演进分支：</p>
@@ -1611,8 +1614,8 @@ P'(\theta)=\frac{1}{\|\mathbf E_n'^H\vec a'(\theta)\|_2^2}\text{。}
 <p>取两路完全相同的 $4$ 点脉冲 $x_1=x_2=[1,0,0,0]$，线性相关最短需 $7$ 点，故先做 $N=8$ 点 FFT：两路频谱全为 $1$，实信号单边非负半谱为 $H=[1,1,1,1,1]$（对应 $k=0,1,2,3,4$），$8$ 点逆变换在滞后 $0$ 处为 $1$、其余整数格点全为 $0$。现欲在频域补零把时延网格加密 $2$ 倍到 $16$ 点，并要求插值曲线在全部原整数格点上严格保持原值，推导实周期三角插值式并对比漏拆奈奎斯特点或漏乘尺度因子的后果。</p>
 <p><strong>第一步：分清直流、内部共轭对与旧奈奎斯特频点</strong>。在偶数 $N$ 点 DFT 中，$k=0$ 是直流项，$k=1,\ldots,N/2-1$ 与各自的负频共轭项成对出现（系数带因子 $2$），而唯独旧奈奎斯特频点 $k=N/2$ 正负频率重合，只出现一次！以原始采样周期为单位记连续插值位置为 $t$，偶数 $N$ 的实周期三角插值公式为</p>
 <p>$$\begin{aligned}
-Ng(t)&=H_0+2\sum_{k=1}^{N/2-1}\Re\!\left\{H_ke^{+\mathrm{j}2\pi kt/N}\right\}\\
-&\quad+H_{N/2}\cos(\pi t)\text{。}
+Ng(t)&=H_0+H_{N/2}\cos(\pi t)\\
+&\quad+2\sum_{k=1}^{N/2-1}\operatorname{Re}\{H_ke^{+\mathrm{j}2\pi kt/N}\}\text{。}
 \end{aligned}\tag{4-22}$$</p>
 <p>将 $N=8$、$H_k=1$ 代入式(4-22)：$t=0$ 时 $g(0)=(1+2\times 3+1)/8=1$；$t=1$ 时余弦项配对相消得 $g(1)=0$；半格点 $t=0.5$ 时 $\cos(\pi\times 0.5)=0$，得</p>
 <p>$$8g(0.5)=1+2\cos(\pi/8)+2\cos(\pi/4)+2\cos(3\pi/8),\qquad g(0.5)\approx 0.628417437\text{。}$$</p>

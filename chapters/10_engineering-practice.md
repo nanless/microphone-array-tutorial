@@ -1,4 +1,4 @@
-> ⚠️ 本篇是教程正文第 10 章（正文共 13 章，其中第 12、13 章为扩展专题，另有附录 A、B），可独立阅读，前后篇见下方导航。
+> ⚠️ 本篇是教程正文第 10 章（正文与扩展专题共 15 章，其中第 12、13、16、17 章为扩展专题，另有附录 A、B），可独立阅读，前后篇见下方导航。
 >
 > 🏠 首页导读：[`00_overview.md`](00_overview.md) ｜ 上一篇：[09_source-tracking.md](09_source-tracking.md) ｜ 下一篇：[11_selection-guide.md](11_selection-guide.md)
 
@@ -551,7 +551,7 @@ $$
 | AEC | 回声返回损失增强（Echo Return Loss Enhancement，ERLE）、双讲恢复、残余回声主观分 | ERLE 高不等于近端语音无损 |
 | 定位 | 角误差、漏检率、虚警率、均方根误差（Root Mean Square Error，RMSE） | 单源 RMSE 不代表多人追踪稳定 |
 | 波束/分离 | 尺度不变信号失真比（Scale-Invariant Signal-to-Distortion Ratio，SI-SDR）、串扰；多输出转写用 cpWER、ORC-WER 或 sa-WER | 单个客观分不代表听感或内容正确；排列/身份口径见第 11 章“多人重叠”决策表 |
-| 说话人分割 | 分割错误率（Diarization Error Rate，DER）、Jaccard 错误率（Jaccard Error Rate，JER） | 必须固定说话起止边界的容差时长（collar）、多人重叠片段怎样计分、参考区域和评分工具版本；分割正确不等于分离内容正确 |
+| 说话人日志（说话人分割） | 说话人日志误差率（亦称分割错误率，Diarization Error Rate，DER）、Jaccard 错误率（Jaccard Error Rate，JER） | 必须固定说话起止边界的容差时长（collar）、多人重叠片段怎样计分、参考区域和评分工具版本（重叠下界见[§17.4](17_target-extraction-diarization.md#sec-17-4)）；日志正确不等于分离内容正确 |
 | 增强 | 短时客观可懂度（Short-Time Objective Intelligibility，STOI）、旧研究复现中的感知语音质量评估（Perceptual Evaluation of Speech Quality，PESQ）、感知客观听音质量分析（Perceptual Objective Listening Quality Analysis，POLQA）、主观听测 | 客观模型可能在新失真上失准 |
 | 追踪 | 最优子模式分配距离（Optimal Sub-Pattern Assignment，OSPA）、轨迹完整度、轨迹中断/碎片数、轨迹身份切换（ID switch） | 位置准确不等于身份连续；OSPA 的 $p,c$ 和角度距离见 §9.4 |
 | 系统 | 端到端延迟、RTF、功耗、崩溃/丢帧 | 平均值不代表尾延迟和最坏状态 |
@@ -1333,7 +1333,7 @@ $$
 
 第 2 式减第 1 式得 $q_1+q_2=0$，与第 3 式相减立即解出 $q_2=1,\ q_1=-1$，回代第 1 式得 $q_0=2$，即 $\vec{q}=[2,-1,1]^\top$。归一化分母为 $\vec{d}^\top\vec{q}=2-1+1=2$，故健康完整阵列的最优 MVDR 权重为 $\vec{w}=[1,-1/2,1/2]^\top$。验算得 $\mathbf{R}\vec{w}=[1/2,1/2,1/2]^\top$，目标响应 $\vec{w}^\top\vec{d}=1$，输出归一化噪声功率为 $\vec{w}^\top\mathbf{R}\vec{w}=1/2=0.5$。
 
-**第二步：通道 $0$ 失效后沿用旧权重的灾难性抵消。** 当通道 $0$ 输入变为全零（或直接把旧权重首项置零）时，实际作用在健康通道 $(1,2)$ 上的残缺旧权重变为 $\vec{w}_{\mathrm{old},\mathcal{I}}=[-1/2,1/2]^\top$。它对目标信号 $[1,1]^\top$ 的总响应变成 $-1/2+1/2=\mathbf{0}$——**目标语音被一正一负两颗健康麦精确对消得干干净净**！无论后级 AGC 再乘多大的有限增益，零乘任何常数依然是零；而此时残余噪声功率却仍有 $\vec{w}_{\mathrm{old},\mathcal{I}}^\top\mathbf{R}_{\mathcal{I}}\vec{w}_{\mathrm{old},\mathcal{I}}=[-1/2,1/2]\begin{bmatrix}2&1\\1&2\end{bmatrix}\begin{bmatrix}-1/2\\1/2\end{bmatrix}=1/2=0.5$，如果监控只看输出能量而不看目标保真度，甚至察觉不到输出里早已只剩纯噪声！
+**第二步：通道 $0$ 失效后沿用旧权重的灾难性抵消。** 当通道 $0$ 输入变为全零（或直接把旧权重首项置零）时，实际作用在健康通道 $(1,2)$ 上的残缺旧权重变为 $\vec{w}_{\mathrm{old},\mathcal{I}}=[-1/2,1/2]^\top$。它对目标信号 $[1,1]^\top$ 的总响应变成 $-1/2+1/2=0$——**目标语音被一正一负两颗健康麦精确对消得干干净净**！无论后级 AGC 再乘多大的有限增益，零乘任何常数依然是零；而此时残余噪声功率却仍有 $\vec{w}_{\mathrm{old},\mathcal{I}}^\top\mathbf{R}_{\mathcal{I}}\vec{w}_{\mathrm{old},\mathcal{I}}=[-1/2,1/2]\begin{bmatrix}2&1\\1&2\end{bmatrix}\begin{bmatrix}-1/2\\1/2\end{bmatrix}=1/2=0.5$，如果监控只看输出能量而不看目标保真度，甚至察觉不到输出里早已只剩纯噪声！
 
 **第三步：按式(10-17)、式(10-18)同步抽取子阵重算权重。** 令有序健康集为 $\mathcal{I}=(1,2)$，代入式(10-17)同步抽取选择矩阵、子协方差与子目标向量：
 

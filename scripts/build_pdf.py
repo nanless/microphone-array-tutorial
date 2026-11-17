@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""合订本构建脚本：16 篇文档 → 单页 HTML → Chrome 无头打印 A4 PDF。
+"""合订本构建脚本：18 篇文档 → 单页 HTML → Chrome 无头打印 A4 PDF。
 
 做的事情（按顺序）：
-  1. 读 chapters/ 16 篇 Markdown，用 markdown 库转 HTML（数学段先 shield 再贴回，
+  1. 读 chapters/ 18 篇 Markdown，用 markdown 库转 HTML（数学段先 shield 再贴回，
      与 build_site.py 同逻辑，保证两端渲染一致）。
   2. 每篇包进 <div class="chap">，篇标题记 id="ch-{i}"；统一标题层级后，
      编号小节使用 ch-{i}-sec-x-y 稳定标识，并保留旧顺序别名。
@@ -24,7 +24,7 @@
 或 which 回退）。PDF 公式使用本地 MathJax 3.2.2 SVG 与 SRE 4.0.6 英文结构说明，构建不联网。
 
 已知边界（诚实写在前面）：
-  - PDF 书签与合订本 TOC 包含篇/节/子节三级；第 1～15 章（含附录）的源 h4 作为第三级。
+  - PDF 书签与合订本 TOC 包含篇/节/子节三级；第 1～17 章（含附录）的源 h4 作为第三级。
   - Chrome 输出结构标签；克隆页面写书签以保留标签。仍需人工检查公式辅助文本和阅读顺序。
   - 页眉页脚关闭（--no-pdf-header-footer），PDF 内无页码——Chrome 无头打印不支持
     CSS 生成页码，要页码得换 WeasyPrint/Prince 链路。
@@ -120,6 +120,8 @@ CHAPTERS = [
     ("11_selection-guide.md", "第 11 章 · 总结与选型指南"),
     ("12_acoustic-imaging.md", "第 12 章 · 声学成像与噪声源诊断"),
     ("13_distributed-enhancement.md", "第 13 章 · 分布式麦克风协同增强"),
+    ("16_spatial-wearable-arrays.md", "第 16 章 · 空间声场与可穿戴阵列"),
+    ("17_target-extraction-diarization.md", "第 17 章 · 条件目标提取与多通道日志"),
     ("14_appendix-symbols-math.md", "第 14 章 · 附录 A：符号术语数学"),
     ("15_appendix-guide.md", "第 15 章 · 附录 B：路径地图与练习"),
 ]
@@ -134,6 +136,8 @@ PDF_THIRD_LEVEL_FILES = {
     "15_appendix-guide.md",
     "12_acoustic-imaging.md",
     "13_distributed-enhancement.md",
+    "16_spatial-wearable-arrays.md",
+    "17_target-extraction-diarization.md",
 }
 
 
@@ -166,7 +170,7 @@ th{background:#f0f4f9}code{font-family:"STHeiti",monospace;background:#f0f3f7;pa
 td,th{word-break:break-word;overflow-wrap:anywhere}
 mjx-container{font-size:100%!important;max-width:100%;break-inside:avoid;page-break-inside:avoid}
 mjx-container[jax="SVG"][display="true"]{display:inline-block!important;width:100%;padding:2px 0;box-sizing:border-box}
-mjx-container[jax="SVG"]:not([display="true"]){display:inline-block;padding:1.5px 0}
+mjx-container[jax="SVG"]:not([display="true"]){display:inline-block}
 pre{font-family:"STHeiti",monospace;background:#f4f6f9;padding:12px;border-radius:6px;overflow-x:visible;white-space:pre-wrap}
 pre code{background:none;padding:0}
 blockquote{border-left:3px solid #2f6db3;margin:12px 0;padding:6px 12px;background:#f2f7fd}
@@ -208,7 +212,7 @@ td,th{word-break:break-word;overflow-wrap:anywhere}
 /* MathJax 的行内长式与展示式均需留在 A4 正文宽度内。 */
 mjx-container{font-size:100%!important;max-width:100%;break-inside:avoid;page-break-inside:avoid}
 mjx-container[jax="SVG"][display="true"]{display:inline-block!important;width:100%;padding:2px 0;box-sizing:border-box}
-mjx-container[jax="SVG"]:not([display="true"]){display:inline-block;padding:1.5px 0}
+mjx-container[jax="SVG"]:not([display="true"]){display:inline-block}
 h1,h2,h3,h4{break-after:avoid;break-inside:avoid;page-break-inside:avoid}
 .pdf-imaging-hand-example{break-inside:avoid;page-break-inside:avoid}
 .chap p.tutorial-short-lead{break-after:avoid;page-break-after:avoid}
@@ -248,6 +252,10 @@ h1,h2,h3,h4{break-after:avoid;break-inside:avoid;page-break-inside:avoid}
 #ch-12 p:has(>a#ch-12-e14-20)~p>mjx-container[display="true"]{margin:.5em 0}
 #ch-12 p:has(>a#ch-12-e14-20)~table{margin:6px 0;break-inside:avoid;page-break-inside:avoid}
 #ch-12 p:has(>a#ch-12-e14-20)~table :is(th,td){padding:3px 7px}
+/* 第13章末题 E13-25 保留字号与全部推导，仅收紧段间与公式外间距，避免章末导航独占一页。 */
+#ch-15 p:has(>a#ch-15-e13-25)~h3{margin-bottom:8px}
+#ch-15 p:has(>a#ch-15-e13-25)~p{margin-bottom:.42em;line-height:1.6}
+#ch-15 p:has(>a#ch-15-e13-25)~p>mjx-container[display="true"]{margin:.5em 0}
 /* 章末独立练习与研究小节从完整页开始，避免最后几行独占一页。 */
 p:has(>a#ch-8-e08-11){break-before:page;page-break-before:always}
 #ch-0-sec-u-cc2724a31a+ul{break-inside:avoid;page-break-inside:avoid}
@@ -310,7 +318,10 @@ def source_digest():
               ROOT / "scripts" / "make_css_figures.py",
               ROOT / "scripts" / "make_tracking_figures.py",
               ROOT / "scripts" / "make_channel_figures.py",
-              ROOT / "scripts" / "make_selection_figures.py", ROOT / "requirements.txt"]
+              ROOT / "scripts" / "make_selection_figures.py",
+              ROOT / "scripts" / "make_wearable_figures.py",
+              ROOT / "scripts" / "make_tse_figures.py",
+              ROOT / "requirements.txt"]
     paths.append(ROOT / "codes/chapters/ch00/io_contracts.py")
     for path in paths:
         digest.update(path.relative_to(ROOT).as_posix().encode("utf-8"))
@@ -685,7 +696,7 @@ def tag_pdf_formulas(writer, sources):
         # BDC role/ActualText; no geometry or paint operation is rewritten.
         serialized = DecodedStreamObject()
         serialized.set_data(content.get_data())
-        page[NameObject('/Contents')] = writer._add_object(serialized.flate_encode())
+        page[NameObject('/Contents')] = writer._add_object(serialized.flate_encode(9))
         for mcid, (identity, speech) in slots.items():
             node = found[identity]
             node[NameObject('/T')] = TextStringObject('pdf-math-' + identity)
@@ -817,7 +828,7 @@ def build_html(build_date=None):
     cover = (f'<div class="cover"><h1>麦克风阵列信号处理教程</h1>'
              f'<div class="sub">从入门到工业实践（合订本）</div>'
              f'<div class="meta">构建日期 {date_s} · 源文件 sha256 {source_digest()}<br>'
-             f'共 {len(CHAPTERS)} 篇：导读、13 章正文（含两篇扩展专题）、2 篇附录</div></div>')
+             f'共 {len(CHAPTERS)} 篇：导读、15 章正文（含四篇扩展专题）、2 篇附录</div></div>')
     # Chrome emits named destinations for referenced anchors. A transparent,
     # out-of-flow reference strip makes every real heading addressable without
     # adding entries to the visible TOC or affecting pagination. Alias names are
@@ -1106,6 +1117,190 @@ def normalize_pdf_semantics(writer, outline, aliases=None):
     metadata[NameObject("/Subtype")] = NameObject("/XML")
 
 
+def recompress_pdf_images_losslessly(writer):
+    """Apply lossless PNG Up predictor (/Predictor 12) + zlib level 9 to raw 8-bit Flate images."""
+    import zlib
+    try:
+        import numpy as np
+    except ImportError:
+        return 0, 0
+    from pypdf.generic import (DictionaryObject, EncodedStreamObject,
+                               IndirectObject, NameObject, NumberObject, StreamObject)
+
+    saved_bytes = 0
+    updated_count = 0
+    for idx, obj in enumerate(writer._objects):
+        if not isinstance(obj, StreamObject) or obj.get("/Subtype") != "/Image":
+            continue
+        if obj.get("/DecodeParms") is not None or obj.get("/SMaskInData") is not None:
+            continue
+        flt = obj.get("/Filter")
+        if flt not in (None, "/FlateDecode", [NameObject("/FlateDecode")]):
+            continue
+        bpc = obj.get("/BitsPerComponent")
+        width = obj.get("/Width")
+        height = obj.get("/Height")
+        if bpc != 8 or not isinstance(width, int) or not isinstance(height, int) or width <= 0 or height <= 0:
+            continue
+        cs = obj.get("/ColorSpace")
+        if cs == "/DeviceRGB":
+            colors = 3
+        elif cs == "/DeviceGray":
+            colors = 1
+        else:
+            continue
+        raw_pixels = obj.get_data()
+        stride = width * colors
+        if len(raw_pixels) != stride * height:
+            continue
+        old_encoded = getattr(obj, "_data", None)
+        old_len = (len(old_encoded) if isinstance(old_encoded, (bytes, bytearray)) and flt is not None
+                   else len(zlib.compress(raw_pixels, 6)))
+        arr = np.frombuffer(raw_pixels, dtype=np.uint8).reshape(height, stride)
+        up = np.empty((height, stride + 1), dtype=np.uint8)
+        up[:, 0] = 2  # PNG Up filter per scanline
+        up[0, 1:] = arr[0]
+        if height > 1:
+            np.subtract(arr[1:], arr[:-1], out=up[1:, 1:], casting="unsafe")
+        compressed = zlib.compress(up.tobytes(), 9)
+        if len(compressed) + 96 < old_len:
+            encoded = EncodedStreamObject()
+            for k, v in obj.items():
+                if k not in ("/Length", "/Filter", "/DecodeParms"):
+                    encoded[NameObject(k)] = v
+            encoded._data = compressed
+            encoded[NameObject("/Filter")] = NameObject("/FlateDecode")
+            encoded[NameObject("/DecodeParms")] = DictionaryObject({
+                NameObject("/Predictor"): NumberObject(12),
+                NameObject("/Colors"): NumberObject(colors),
+                NameObject("/BitsPerComponent"): NumberObject(8),
+                NameObject("/Columns"): NumberObject(width),
+            })
+            encoded[NameObject("/Length")] = NumberObject(len(compressed))
+            encoded.indirect_reference = obj.indirect_reference or IndirectObject(idx + 1, 0, writer)
+            writer._objects[idx] = encoded
+            saved_bytes += old_len - len(compressed)
+            updated_count += 1
+    return updated_count, saved_bytes
+
+
+def write_pdf_with_object_streams(writer, out_stream, *, chunk_size=200):
+    """Write PdfWriter with ISO 32000-1 lossless compressed /ObjStm and /XRef streams."""
+    import io
+    import struct
+    import zlib
+    from pypdf.generic import (ArrayObject, DictionaryObject,
+                               EncodedStreamObject, NameObject, NumberObject, StreamObject)
+
+    writer._resolve_links()
+    recompress_pdf_images_losslessly(writer)
+
+    protected_ids = set()
+    root_ref = writer.root_object.indirect_reference
+    if root_ref is not None:
+        protected_ids.add(root_ref.idnum)
+    info_obj = getattr(writer, "_info", None)
+    info_ref = getattr(info_obj, "indirect_reference", None) if info_obj is not None else None
+    if info_ref is not None:
+        protected_ids.add(info_ref.idnum)
+    doc_id = getattr(writer, "_ID", None)
+    if doc_id is not None and getattr(doc_id, "indirect_reference", None) is not None:
+        protected_ids.add(doc_id.indirect_reference.idnum)
+    encrypt_entry = getattr(writer, "_encrypt_entry", None)
+    if encrypt_entry is not None and getattr(encrypt_entry, "indirect_reference", None) is not None:
+        protected_ids.add(encrypt_entry.indirect_reference.idnum)
+
+    # Keep /Catalog, /Pages, /Page, and all StreamObjects top-level; pack StructElem/Annot/etc.
+    packable = []
+    top_level = []
+    for idx, obj in enumerate(writer._objects):
+        idnum = idx + 1
+        if obj is None:
+            continue
+        if (idnum in protected_ids
+                or isinstance(obj, StreamObject)
+                or (isinstance(obj, DictionaryObject)
+                    and obj.get("/Type") in ("/Pages", "/Page", "/Catalog"))):
+            top_level.append((idnum, obj))
+        else:
+            packable.append((idnum, obj))
+
+    next_id = len(writer._objects) + 1
+    obj_streams = []
+    for start in range(0, len(packable), chunk_size):
+        batch = packable[start:start + chunk_size]
+        header_parts = []
+        body_buf = io.BytesIO()
+        batch_ids = []
+        for idnum, obj in batch:
+            offset = body_buf.tell()
+            header_parts.append(f"{idnum} {offset} ".encode("ascii"))
+            obj.write_to_stream(body_buf)
+            body_buf.write(b"\n")
+            batch_ids.append(idnum)
+        header_bytes = b"".join(header_parts)
+        comp_stm = zlib.compress(header_bytes + body_buf.getvalue(), 9)
+        ostm = EncodedStreamObject()
+        ostm._data = comp_stm
+        ostm[NameObject("/Type")] = NameObject("/ObjStm")
+        ostm[NameObject("/N")] = NumberObject(len(batch))
+        ostm[NameObject("/First")] = NumberObject(len(header_bytes))
+        ostm[NameObject("/Filter")] = NameObject("/FlateDecode")
+        ostm[NameObject("/Length")] = NumberObject(len(comp_stm))
+        ostm_id = next_id
+        next_id += 1
+        obj_streams.append((ostm_id, ostm, batch_ids))
+
+    xref_id = next_id
+    total_size = xref_id + 1
+    xref_entries = {0: (0, 0, 65535)}
+
+    pdf_header = getattr(writer, "pdf_header", "%PDF-1.7")
+    if not isinstance(pdf_header, str) or pdf_header < "%PDF-1.5":
+        pdf_header = "%PDF-1.7"
+    out_stream.write(pdf_header.encode("ascii") + b"\n%\xe2\xe3\xcf\xd3\n")
+
+    for idnum, obj in top_level:
+        xref_entries[idnum] = (1, out_stream.tell(), 0)
+        out_stream.write(f"{idnum} 0 obj\n".encode("ascii"))
+        obj.write_to_stream(out_stream)
+        out_stream.write(b"\nendobj\n")
+
+    for ostm_id, ostm, batch_ids in obj_streams:
+        xref_entries[ostm_id] = (1, out_stream.tell(), 0)
+        out_stream.write(f"{ostm_id} 0 obj\n".encode("ascii"))
+        ostm.write_to_stream(out_stream)
+        out_stream.write(b"\nendobj\n")
+        for idx_in_stm, member_id in enumerate(batch_ids):
+            xref_entries[member_id] = (2, ostm_id, idx_in_stm)
+
+    xref_offset = out_stream.tell()
+    xref_entries[xref_id] = (1, xref_offset, 0)
+
+    xref_raw = bytearray()
+    for idnum in range(total_size):
+        entry = xref_entries.get(idnum, (0, 0, 65535))
+        xref_raw.extend(struct.pack(">BIH", entry[0], entry[1], entry[2]))
+    xref_comp = zlib.compress(bytes(xref_raw), 9)
+
+    xref_stm = EncodedStreamObject()
+    xref_stm._data = xref_comp
+    xref_stm[NameObject("/Type")] = NameObject("/XRef")
+    xref_stm[NameObject("/Size")] = NumberObject(total_size)
+    xref_stm[NameObject("/W")] = ArrayObject([NumberObject(1), NumberObject(4), NumberObject(2)])
+    xref_stm[NameObject("/Root")] = root_ref
+    if info_ref is not None:
+        xref_stm[NameObject("/Info")] = info_ref
+    if doc_id is not None:
+        xref_stm[NameObject("/ID")] = doc_id
+    xref_stm[NameObject("/Filter")] = NameObject("/FlateDecode")
+    xref_stm[NameObject("/Length")] = NumberObject(len(xref_comp))
+
+    out_stream.write(f"{xref_id} 0 obj\n".encode("ascii"))
+    xref_stm.write_to_stream(out_stream)
+    out_stream.write(f"\nendobj\nstartxref\n{xref_offset}\n%%EOF\n".encode("ascii"))
+
+
 def add_bookmarks(pdf_path, outline, aliases=None):
     """按 outline 写三级大纲（篇 + 节 + 指定子节），校验后原子替换 PDF。"""
     try:
@@ -1159,7 +1354,7 @@ def add_bookmarks(pdf_path, outline, aliases=None):
     tmp_path = Path(tmp_name)
     try:
         with open(tmp_path, "wb") as f:
-            writer.write(f)
+            write_pdf_with_object_streams(writer, f)
         tagged = PdfReader(str(tmp_path))
         validate_pdf_structure_tags(tagged)
         if aliases is not None:
@@ -1351,7 +1546,7 @@ def print_pdf(combined, pdf, timeout_min_pages=100):
 
 
 def check_figures():
-    """合订前检查：正文引用的图必须存在、非空，并覆盖 80 个编号文件。"""
+    """合订前检查：正文引用的图必须存在、非空，并覆盖 88 个编号文件。"""
     missing = []
     refs = set()
     for fname, _ in CHAPTERS:
@@ -1363,8 +1558,8 @@ def check_figures():
                 missing.append(f"{fname}: {m.group(1)}")
     if missing:
         raise SystemExit("缺图，中止：\n" + "\n".join(missing))
-    if len(refs) != 80:
-        raise SystemExit(f"唯一图片数异常：期望 80，实际 {len(refs)}")
+    if len(refs) != 88:
+        raise SystemExit(f"唯一图片数异常：期望 88，实际 {len(refs)}")
     print(f"图片检查通过（{len(CHAPTERS)} 篇、{len(refs)} 张唯一图片）")
 
 

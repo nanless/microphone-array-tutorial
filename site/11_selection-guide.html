@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 11 章 · 总结与选型指南 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="30366ba49985"><style>
+<meta name="source-digest" content="9b634b8b6fd1"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -307,6 +307,8 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 </ul>
 <div class="chap"><a href="12_acoustic-imaging.html">第 12 章 · 声学成像与噪声源诊断</a></div>
 <div class="chap"><a href="13_distributed-enhancement.html">第 13 章 · 分布式麦克风协同增强</a></div>
+<div class="chap"><a href="16_spatial-wearable-arrays.html">第 16 章 · 空间声场与可穿戴阵列</a></div>
+<div class="chap"><a href="17_target-extraction-diarization.html">第 17 章 · 条件目标提取与多通道日志</a></div>
 <div class="chap"><a href="14_appendix-symbols-math.html">第 14 章 · 附录 A：符号术语数学</a></div>
 <div class="chap"><a href="15_appendix-guide.html">第 15 章 · 附录 B：路径地图与练习</a></div>
 <div class="chap"><a href="research/index.html">源码研究</a></div></nav>
@@ -363,7 +365,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li><a href="11_selection-guide.html#sec-11-7">11.7 后续阅读</a></li>
 </ul></nav></details>
 <blockquote>
-<p>⚠️ 本篇是教程正文第 11 章（正文共 13 章，其中第 12、13 章为扩展专题，另有附录 A/B），可独立阅读，前后篇见下方导航。</p>
+<p>⚠️ 本篇是教程正文第 11 章（正文与扩展专题共 15 章，其中第 12、13、16、17 章为扩展专题，另有附录 A、B），可独立阅读，前后篇见下方导航。</p>
 <p>🏠 首页导读：<a href="index.html">🏠 导读与导航</a> ｜ 上一篇：<a href="10_engineering-practice.html">第 10 章 · 工程实现、评测与产业实践</a> ｜ 下一篇：<a href="12_acoustic-imaging.html">第 12 章 · 声学成像与噪声源诊断</a></p>
 </blockquote>
 <hr />
@@ -502,7 +504,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <tr>
 <td>多人重叠</td>
 <td>下游只消费单路语音时先试多波束择优或掩码波束</td>
-<td>要求完整保留重叠段各方说话内容时评估分离/CSS；仅需锁定特定目标且具备可靠先验线索时评估 TSE</td>
+<td>要求完整保留重叠段各方说话内容时评估分离/CSS；仅需锁定特定目标且具备可靠先验线索时评估 TSE（见<a href="17_target-extraction-diarization.html">扩展专题Ⅳ</a>）</td>
 <td>最大并发说话人数、总参会人数固定或可变、整句或流式拼接、跨块槽位跳变、内容篡改与算力峰值</td>
 </tr>
 <tr>
@@ -530,9 +532,15 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <p>设单次会话共有 $S$ 名真实说话人，其全部 $U$ 条按时间排序的参考话段 $\{u_m\}_{m=1}^U$ 按真实说话人拼接后得到参考序列 $\{R_s\}_{s=1}^S$，参考总词数为 $N_{\mathrm{ref}} = \sum_{s=1}^S |R_s| > 0$。对于输出 $K$ 条匿名流 $\{H_k\}_{k=1}^K$ 的分离转写系统，计算 cpWER 时将流数较少的一侧补空序列 $\varnothing$ 至 $M = \max(S, K)$，并在全部 $M!$ 个全局排列集合 $\mathcal{P}_M$ 上搜索最小值；计算 ORC-WER 时，为每条参考话段 $u_m$ 指派一个目标槽位 $z_m \in \{1,\dots,K\}$，将指派给槽位 $k$ 的参考话段按原时间顺序拼接成重组参考 $R_k^{\mathrm{orc}}(\vec z)$。对于输出实名归属序列 $\{\hat{H}_s\}$ 的系统，令 $\mathcal{S}_{\mathrm{all}}$ 表示真实说话人与系统预测说话人标签的并集（若某标签只在预测中出现，则其参考序列记为空串 $R_s = \varnothing$）。以 $\mathcal{D}(\cdot,\cdot)$ 表示标准词级编辑距离（插入、删除、替换的最小操作次数），三种指标统一写作：</p>
 <p>$$
 \begin{aligned}
-\mathrm{cpWER} &= \frac{1}{N_{\mathrm{ref}}} \min_{\pi \in \mathcal{P}_M} \sum_{s=1}^{M} \mathcal{D}\!\left(R_s,\, H_{\pi(s)}\right), \\
-\mathrm{ORC\text{-}WER} &= \frac{1}{N_{\mathrm{ref}}} \min_{\vec z \in \{1,\dots,K\}^U} \sum_{k=1}^{K} \mathcal{D}\!\left(R_k^{\mathrm{orc}}(\vec z),\, H_k\right), \\
-\mathrm{sa\text{-}WER} &= \frac{1}{N_{\mathrm{ref}}} \sum_{s \in \mathcal{S}_{\mathrm{all}}} \mathcal{D}\!\left(R_s,\, \hat{H}_s\right).
+\mathrm{cpWER} &= \frac{1}{N_{\mathrm{ref}}}
+  \min_{\pi \in \mathcal{P}_M}
+  \sum_{s=1}^{M} \mathcal{D}\!\left(R_s,\, H_{\pi(s)}\right), \\
+\mathrm{ORC\text{-}WER} &= \frac{1}{N_{\mathrm{ref}}}
+  \min_{\vec z \in \{1,\dots,K\}^U} \sum_{k=1}^{K}
+  \mathcal{D}\!\left(R_k^{\mathrm{orc}}(\vec z),\, H_k\right), \\
+\mathrm{sa\text{-}WER} &= \frac{1}{N_{\mathrm{ref}}}
+  \sum_{s \in \mathcal{S}_{\mathrm{all}}}
+  \mathcal{D}\!\left(R_s,\, \hat{H}_s\right).
 \end{aligned}\tag{11-1}
 $$</p>
 <p>式(11-1)清晰揭示了三者的约束递进关系：当 $S=K=1$ 且实名标签正确时，三式完全退化为普通单人 WER；在多人场景下，ORC-WER 的可行重排空间最大（共有 $K^U$ 种逐话段指派），cpWER 将重排收紧到整场唯一的 $M!$ 种全局槽位置换，而 sa-WER 将重排自由度彻底收紧到 $1$ 种固定实名映射，因此对同一组转写内容恒有 $\mathrm{ORC\text{-}WER} \le \mathrm{cpWER} \le \mathrm{sa\text{-}WER}$（当实名标签由槽位全局一一绑定产生时）。</p>
@@ -582,7 +590,7 @@ $$</p>
 </ul>
 <p><strong>算例结论与选型启示</strong>：完全相同的四个识别词，在三种口径下分别给出 <strong>ORC-WER = 0%</strong>、<strong>cpWER = 50%</strong> 与 <strong>sa-WER = 100%</strong>！这组强烈反差把三项指标的物理分工刻画得一清二楚：ORC-WER 为零仅证明“语音内容一字未漏”，绝不证明同一输出流始终对应同一人；cpWER 升至 50% 精准暴露了第 2 段的匿名跨块换槽；而 sa-WER 飙升至 100% 则说明，哪怕声纹模块跨槽追上了各自音色，一旦实名注册档案错绑，需要落实发言人责任的会议纪要就会全盘张冠李戴。</p>
 <p>工程复现时，除选定指标名称外，还必须把话段切分规则、文本规范化流程与评分软件包的具体提交哈希一并固化。例如开源评测工具 MeetEval 在提交 <a href="https://github.com/fgnt/meeteval/blob/6e3dc81284f2d6928f7ef9e620fd3b6906daa429/doc/algorithms.md"><code>6e3dc81284f2d6928f7ef9e620fd3b6906daa429</code></a> 的算法文档中明确定义了 cpWER、ORC-WER、MIMO-WER 与 DI-cpWER，但并未内置 sa-WER；涉及实名归属验收时须另行锁定评测脚本版本，不能只登记随时变动的默认分支名 <code>main</code>。</p>
-<p>此外，原始 CSS 的少量输出槽位天生由多位参会者轮流复用。若甲、乙、丙三人先后不重叠地各说一个词 <code>a</code>、<code>b</code>、<code>c</code>，而双槽 CSS 输出槽 1 为 <code>a c</code>、槽 2 为 <code>b</code>，即使内容与时序完美无缺，一个输出槽也无法在全局排列中同时一一匹配两位参考说话人——章末练习 E11-16 将算出此时 $\mathrm{ORC\text{-}WER} = 0\%$，而 $\mathrm{cpWER} = 2/3 \approx 66.67\%$。因此，只验收全文内容检索时可选用固定话段边界的 ORC-WER；若要求输出按人分轨的会议纪要，则须在 CSS 之后级联说话人日志（diarization）或声纹关联，再评测 cpWER 或 sa-WER。正如 <a href="https://arxiv.org/pdf/2307.11394">MeetEval 作者论文第 3.2～3.5 节</a>所证，ORC-WER 不允许在单条参考话段内部拆词换流，且必须保持参考话段的先后时序，故参考分段边界与同起点排序规则都属于不可事后篡改的评测基准。</p>
+<p>此外，原始 CSS 的少量输出槽位天生由多位参会者轮流复用。若甲、乙、丙三人先后不重叠地各说一个词 <code>a</code>、<code>b</code>、<code>c</code>，而双槽 CSS 输出槽 1 为 <code>a c</code>、槽 2 为 <code>b</code>，即使内容与时序完美无缺，一个输出槽也无法在全局排列中同时一一匹配两位参考说话人——章末练习 E11-16 将算出此时 $\mathrm{ORC\text{-}WER} = 0\%$，而 $\mathrm{cpWER} = 2/3 \approx 66.67\%$。因此，只验收全文内容检索时可选用固定话段边界的 ORC-WER；若要求输出按人分轨的会议纪要，则须在 CSS 之后级联说话人日志（diarization，指标与重叠下界见<a href="17_target-extraction-diarization.html#sec-17-4">§17.4</a>）或声纹关联，再评测 cpWER 或 sa-WER。正如 <a href="https://arxiv.org/pdf/2307.11394">MeetEval 作者论文第 3.2～3.5 节</a>所证，ORC-WER 不允许在单条参考话段内部拆词换流，且必须保持参考话段的先后时序，故参考分段边界与同起点排序规则都属于不可事后篡改的评测基准。</p>
 <h3 id="sec-u-13a69615e6">话段边界与时间也属于评分协议</h3>
 <p>哪怕参考词序列一字不改，人为切碎参考话段也会暗中放宽 ORC-WER 的分配约束：因为每拆出一段，就多给评分器一次跨槽切换的自由度（见章末 <a href="#e11-23">E11-23</a> 的两词对比手算）。参考话段边界必须按数据集预定的停顿与句法规则冻结，绝不能迁就某个待测系统的分块边界去重新切分。</p>
 <p>不带时间约束的编辑距离还会引入另一重隐患：在长达数十分钟的会议录音里，“好”“对”“是的”等高频词反复出现，普通动态规划会把第 1 秒漏掉的参考词拿去与第 10 分钟误插入的同词配成“零错误”（见 <a href="#e11-24">E11-24</a>）。为此，<a href="https://www.isca-archive.org/chime_2023/neumann23_chime.pdf">MeetEval 2023 原论文 §4（印刷第 29～30 页）</a>引入了时间约束最小排列词错误率（Time-Constrained minimum-Permutation Word Error Rate，tcpWER），规定只有当参考词与假设词的时间区间在预定容差（collar）内发生重叠时，才允许作正确匹配或替换。使用时间约束指标时，必须同步写明词级时间戳来自人工标注、强制对齐还是按字符长度比例近似，并核对端点刚好相接时算不算重叠。</p>
@@ -632,13 +640,14 @@ $$</p>
 </tbody>
 </table></div>
 <p>对比这三列可以看出，模型越复杂并不意味着越适合手头的产品：若下游通话链路或单路唤醒引擎只接收一路音频，强行上马多输出 CSS 只会徒增跨块排列跳变与数倍算力开销；反过来，若产品需求是把会议室里所有临时来访者的发言一字不漏地转写成纪要，要求提前采集每个人声纹或人脸线索的 TSE 就会在功能入口上直接卡壳。</p>
+<p>当任务确需引入条件线索或多说话人归属时，目标沉默段的双态能量地板损失（<a href="17_target-extraction-diarization.html#sec-17-2">§17.2</a>）、抑制同向远端干扰的近场声学距离气泡（<a href="17_target-extraction-diarization.html#sec-17-3">§17.3</a>）、视听唇动异步与遮挡置信度门控（<a href="17_target-extraction-diarization.html#sec-17-6">§17.6</a>），以及模块化 <code>TS-VAD + GSS + ASR</code> 与联合建模 <code>SOT / DiCoW</code> 的架构取舍（<a href="17_target-extraction-diarization.html#sec-17-5">§17.5</a>、<a href="17_target-extraction-diarization.html#sec-17-7">§17.7</a>），详见<a href="17_target-extraction-diarization.html">扩展专题Ⅳ</a>。</p>
 <span id="sec-4" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-11-3">11.3 几何与算法要一起选</h2>
 <p>阵列几何决定了物理声场中有哪些空间相位差被采样下来，信号处理算法则决定了如何提取和组合这些相位差；一旦几何布局丢失了某个维度的可辨识性，后续无论堆叠多深的子空间分解或神经网络都无法凭空无中生有：</p>
 <ul>
 <li><strong>双麦与均匀/近似线阵</strong>：只能唯一测量波达方向在阵列轴线上的方向余弦投影；在三维自由场中，同一轴向投影对应一整个圆锥面的等时延轨迹，即便限制在水平面内也存在前后镜像对称二解。工业设计中几毫米的微弱错位折线往往在低频段提供的垂直相位差远小于传感器幅相公差，适用前提是设备靠墙摆放或结合心形指向性壳体已知目标处于单一半平面扇区。</li>
 <li><strong>非共线三麦与平面阵</strong>：在平面内提供两个线性无关的坐标基向量，足以唯一确定水平方位角，但对阵面法线上下两侧 $(+z \leftrightarrow -z)$ 的自由场平面波完全对称。工程落地时通常贴合桌面或吸顶安装，利用物理刚性边界面消除下半空间镜像。</li>
 <li><strong>均匀圆阵</strong>：各向同性地覆盖水平面全周向，是桌面会议终端与智能音箱的常见选择。阵元数 $M$ 与半径 $r$ 须由目标角分辨率、最高无混叠工作频率及整机直径联合反推（见章末 E11-05 的四麦与六麦对照筛查），不存在脱离频带与孔径的所谓“万能麦数”。</li>
-<li><strong>球阵与三维立体阵</strong>：支持全空间方位角与俯仰角联合解析及高阶声场重构。实际可用球谐阶数同时受阵元空间采样定理、无量纲波数孔径积 $\kappa r$（其中 $\kappa = 2\pi f/c$ 为波数，$r$ 为球半径）、开球零点或低频径向滤波的传感器白噪声放大以及阵元标定残差制约，详见<a href="05_beamforming.html#sec-5-8">第 5 章 §5.8</a> 与<a href="10_engineering-practice.html#sec-10-8">第 10 章 §10.8</a>。</li>
+<li><strong>球阵与三维立体阵</strong>：支持全空间方位角与俯仰角联合解析及高阶声场重构。实际可用球谐阶数同时受阵元空间采样定理、无量纲波数孔径积 $\kappa r$（其中 $\kappa = 2\pi f/c$ 为波数，$r$ 为球半径）、开球零点或低频径向滤波的传感器白噪声放大以及阵元标定残差制约，详见<a href="05_beamforming.html#sec-5-8">第 5 章 §5.8</a>、<a href="10_engineering-practice.html#sec-10-8">第 10 章 §10.8</a> 及<a href="16_spatial-wearable-arrays.html#sec-16-2">扩展专题Ⅲ §16.2～§16.4</a>（一阶全景声正四面体编码、$\kappa R=\pi$ 开球零陷与 DirAC 声强参数化）。</li>
 <li><strong>稀疏非均匀阵</strong>：利用阵元位置差集构造的差分协同阵（difference coarray）能够在平稳二阶统计域扩展虚拟连续滞后数，但它并未增加单帧物理采样通道数；遇到短快拍瞬态语音、强相干早期反射或宽带非平稳干扰时，必须回到第 3 章的协方差重构前提逐项核验。</li>
 </ul>
 <p>确定阵列形态后，波束参数设计始终围绕白噪声增益（White Noise Gain，WNG）与指向性指数（Directivity Index，DI）之间的物理权衡展开：试图在低频小孔径下挤出过窄的主瓣或极深的自适应零陷，必然导致滤波器权重范数剧增，把麦克风本底热噪声与微米级装配误差成倍放大。对角加载、显式 WNG 下界约束与按频段切换固定/自适应权重，本质上都是用适度放宽空间零陷深度来换取实机鲁棒性。</p>
@@ -675,7 +684,7 @@ $$</p>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:6em">耳机或助听设备</td>
 <td>若监听路径对延迟和电池很敏感</td>
-<td>监听与通话上行可采用不同链路。固定双麦波束和轻量 NS 是候选基线，不是必选答案；法规、反馈路径、佩戴变化和听觉安全优先。</td>
+<td>监听与通话上行可采用不同链路。固定双麦波束和轻量 NS 是候选基线，不是必选答案；法规、反馈路径、佩戴变化和听觉安全优先。非规则镜框双耳信号匹配（BSM/MagLS）、双耳相干度保持、抗风噪跨模态自语音融合及主动通透模式百微秒级防梳状滤波约束详见<a href="16_spatial-wearable-arrays.html#sec-16-5">扩展专题Ⅲ §16.5～§16.10</a>。</td>
 </tr>
 </tbody>
 </table></div>
@@ -688,12 +697,17 @@ $$</p>
 </ul>
 <p>$$
 \begin{aligned}
-\mathrm{LCR}_{z,q} &= 10\log_{10}\!\left(\frac{P_{z\leftarrow z}}{P_{z\leftarrow q}}\right), \\
-\left|H_{\mathrm{ICC}}(f)\right|^2 &= \left|1 + g\,\mathrm{e}^{-\mathrm{j}2\pi f\Delta_{\mathrm{Rx}}}\right|^2 = 1 + g^2 + 2g\cos\!\left(2\pi f\Delta_{\mathrm{Rx}}\right), \\
-f_m &= \frac{2m + 1}{2\Delta_{\mathrm{Rx}}}, \qquad m = 0, 1, 2, \dots
+\mathrm{LCR}_{z,q} &= 10\log_{10}\!\left(
+  \frac{P_{z\leftarrow z}}{P_{z\leftarrow q}}\right), \\
+\left|H_{\mathrm{ICC}}(f)\right|^2 &=
+  \left|1 + g\,e^{-\mathrm{j}2\pi f\Delta_{\mathrm{Rx}}}\right|^2 \\
+&= 1 + g^2 + 2g\cos\!\left(2\pi f\Delta_{\mathrm{Rx}}\right), \\
+f_m &= \frac{2m + 1}{2\Delta_{\mathrm{Rx}}},
+  \qquad m = 0, 1, 2, \dots
 \end{aligned}\tag{11-2}
 $$</p>
-<p>式(11-2)从物理上划定了两条截然不同的车载选型路线：第一行中，头枕距本区嘴部仅约 $15\text{～}25\ \mathrm{cm}$，而距邻座嘴部约 $70\text{～}100\ \mathrm{cm}$ 且有人头声影遮挡，仅靠物理近场球面衰减与心形指向即可获得 $10\text{～}15\ \mathrm{dB}$ 的原始声学隔离，再配合零陷对准邻座的头枕 LCMV 波束与音区比值门控，可将系统级 $\mathrm{LCR}_{z,q}$ 推高至 $25\text{～}35\ \mathrm{dB}$ 以上，从而无须上马高算力盲分离就能可靠阻断邻座误唤醒。第二、三行则揭示了 ICC 链路为何不能照搬语音识别前端：当余弦项取 $-1$ 时，直达声与扩声在频域每隔 $\Delta f = 1/\Delta_{\mathrm{Rx}}$ 发生一次相消干涉，形成密集的梳状滤波凹陷 $f_m$。若套用帧长 $32\ \mathrm{ms}$、帧移 $16\ \mathrm{ms}$ 的常规 STFT 增强或带 $40\ \mathrm{ms}$ 前瞻的神经分离器，仅算法缓冲就使 $\Delta_{\mathrm{Rx}} \ge 25\ \mathrm{ms}$，在 $300\text{～}3400\ \mathrm{Hz}$ 核心语音频带内每隔 $40\ \mathrm{Hz}$ 就挖出一个深谷（多达 70 余处凹陷），产生刺耳的空桶金属音并破坏哈斯优先效应（Haas effect）的声像融合。因此 <strong>ITU-T P.1150 强制要求强化延迟 $\Delta_{\mathrm{Rx}} \lt  15\ \mathrm{ms}$</strong>（工程上常严控在 $4\text{～}10\ \mathrm{ms}$）：凡在 ICC 路径上的反馈抑制、固定波束与降噪模块，都只能在时域短抽头 FIR 或超短帧低延迟子带架构中选型，一切长窗与前瞻模块在此均被硬约束一票否决。</p>
+<p>式(11-2)从物理上划定了两条截然不同的车载选型路线：第一行中，头枕距本区嘴部仅约 $15\text{～}25\ \mathrm{cm}$，而距邻座嘴部约 $70\text{～}100\ \mathrm{cm}$ 且有人头声影遮挡，仅靠物理近场球面衰减与心形指向即可获得 $10\text{～}15\ \mathrm{dB}$ 的原始声学隔离，再配合零陷对准邻座的头枕 LCMV 波束与音区比值门控，可将系统级 $\mathrm{LCR}_{z,q}$ 推高至 $25\text{～}35\ \mathrm{dB}$ 以上，从而无须上马高算力盲分离就能可靠阻断邻座误唤醒。</p>
+<p>后两式则揭示了 ICC 链路为何不能照搬语音识别前端：当余弦项取 $-1$ 时，直达声与扩声在频域每隔 $\Delta f = 1/\Delta_{\mathrm{Rx}}$ 发生一次相消干涉，形成密集的梳状滤波凹陷 $f_m$。若套用帧长 $32\ \mathrm{ms}$、帧移 $16\ \mathrm{ms}$ 的常规 STFT 增强或带 $40\ \mathrm{ms}$ 前瞻的神经分离器，仅算法缓冲就使 $\Delta_{\mathrm{Rx}} \ge 25\ \mathrm{ms}$，在 $300\text{～}3400\ \mathrm{Hz}$ 核心语音频带内每隔 $40\ \mathrm{Hz}$ 就挖出一个深谷（多达 70 余处凹陷），产生刺耳的空桶金属音并破坏哈斯优先效应（Haas effect）的声像融合。因此 <strong>ITU-T P.1150 强制要求强化延迟 $\Delta_{\mathrm{Rx}} \lt  15\ \mathrm{ms}$</strong>（工程上常严控在 $4\text{～}10\ \mathrm{ms}$）：凡在 ICC 路径上的反馈抑制、固定波束与降噪模块，都只能在时域短抽头 FIR 或超短帧低延迟子带架构中选型，一切长窗与前瞻模块在此均被硬约束一票否决。</p>
 <span id="sec-6" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-11-5">11.5 把候选方案写成可验证的规格</h2>
 <h3 id="sec-11-5-1">11.5.1 先写规格和证据口径</h3>
 <p>选型讨论不能停留在口头形容词上；要把候选方案送上同一张评审桌，规格书必须逐项锁定以下九类信息：</p>
@@ -903,7 +917,7 @@ $$</p>
 <span id="sec-8" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-b322947d6d">题 1：带播放的周向语音终端（E11-05）</h3>
 <p>某桌面语音终端要求水平面 $360^\circ$ 周向覆盖，支持音乐播放期间随时唤醒与单人语音指令，目标工作频率上限为 $4\ \mathrm{kHz}$（取声速 $c = 343\ \mathrm{m/s}$）。现有半径同为 $r = 4\ \mathrm{cm}$ 的 4 麦与 6 麦均匀圆阵两套几何方案：先按相邻阵元弦长 $d_{\mathrm{adjacent}} = 2r\sin(\pi/M)$ 及单对半波长边界 $c/(2d_{\mathrm{adjacent}})$ 作初步筛查，再说明必需的前端模块与两项关键声学对照试验。</p>
 <p><strong>答案要点</strong>：4 麦圆阵相邻弦长为 $0.08\sin 45^\circ \approx 0.05657\ \mathrm{m}$，对应单对无混叠上限约为 $343/(2\times 0.05657) \approx 3032\ \mathrm{Hz} \lt  4\ \mathrm{kHz}$；6 麦圆阵相邻弦长为 $0.08\sin 30^\circ = 0.04\ \mathrm{m}$，对应上限为 $4287.5\ \mathrm{Hz} > 4\ \mathrm{kHz}$。因此初筛淘汰 4 麦方案、保留 6 麦候选，后续仍须结合整阵三维流形与机械开孔核验宽带波束性能。</p>
-<p><strong>整阵流形复核 4 麦在 $4\ \mathrm{kHz}$ 下的精确方向歧义</strong>：将 4 只麦克风置于水平面 $(\pm r, 0)$ 与 $(0, \pm r)$，构造一对单位方向向量 $\vec u_\pm = (v \pm h/2,\,-v \pm h/2)^\top$，其中 $h = c/(2fr) = 343/(2\times 4000\times 0.04) = 1.071875$，$v = \sqrt{(1 - h^2/2)/2}$。不难验证 $\|\vec u_\pm\|_2 = 1$ 且差向量为 $\vec u_+ - \vec u_- = (h, h)^\top$。将该差向量点乘任意阵元坐标均得到 $\pm r h$，再乘波数 $2\pi f/c$ 后相位差恰好为 $\pm \pi$，即两方向在每只麦克风上的复导向元素之比恒为 $\mathrm{e}^{\pm\mathrm{j}\pi} = -1$；以第 1 麦作参考通道归一化后，两个不同方位的整阵导向矢量完全重合！</p>
+<p><strong>整阵流形复核 4 麦在 $4\ \mathrm{kHz}$ 下的精确方向歧义</strong>：将 4 只麦克风置于水平面 $(\pm r, 0)$ 与 $(0, \pm r)$，构造一对单位方向向量 $\vec u_\pm = (v \pm h/2,\,-v \pm h/2)^\top$，其中 $h = c/(2fr) = 343/(2\times 4000\times 0.04) = 1.071875$，$v = \sqrt{(1 - h^2/2)/2}$。不难验证 $\|\vec u_\pm\|_2 = 1$ 且差向量为 $\vec u_+ - \vec u_- = (h, h)^\top$。将该差向量点乘任意阵元坐标均得到 $\pm r h$，再乘波数 $2\pi f/c$ 后相位差恰好为 $\pm \pi$，即两方向在每只麦克风上的复导向元素之比恒为 $e^{\pm\mathrm{j}\pi} = -1$；以第 1 麦作参考通道归一化后，两个不同方位的整阵导向矢量完全重合！</p>
 <p>在链路模块配置上，因外放音乐期间须持续待机唤醒，必须启用覆盖完整混音与音效链路的 AEC，并配合周向 DOA 或多波束择优增强；近距离家居环境下无须默认串联 WPE 或多流分离。关键实测对照至少应包含“静音待机与外放音乐下的唤醒率—误触发率曲线”以及“开启与旁路 AEC 时的近端语音失真与残余回声对比”（可运行 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/exercises_engineering.py"><code>exercises_engineering.py</code></a> 中的 <code>E11-05</code> 核对数值）。</p>
 <span id="sec-9" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-7b9a84ce60">题 2：多人会议（E11-06）</h3>
 <p>某混响明显的会议室偶有两人抢话，但后端通话系统仅接收单路音频输入，且要求端到端延迟不超过 $150\ \mathrm{ms}$。现有三条候选链路：单路自适应波束、波束串联 WPE、双路语音分离器，实测端到端延迟依次为 $90\ \mathrm{ms}$、$115\ \mathrm{ms}$ 与 $180\ \mathrm{ms}$。前两条单路方案在同一份含 100 个参考词的录音及统一分词规范下分别产生 25 个与 20 个词错误；双路分离器因尚未定义双流合并转写协议，未给出单路 WER。试先按硬约束筛选，再说明何时值得保留 WPE、何种需求变化才会重新引入分离器。</p>
@@ -1205,16 +1219,16 @@ x[n] &= s[n] + v[n].
 \end{aligned}
 $$</p>
 <p>两个候选滤波器均只接收混合信号 $x[n]$，分别采用 $L = 3$ 抽头与 $L = 9$ 抽头等权滑动平均 FIR，并将抽头系数统一缩放使 $500\ \mathrm{Hz}$ 处的幅度响应精确等于 $1$（零初始历史因果线性卷积，截取前 $32000$ 点输出）。</p>
-<p><strong>第一步：从有限等比级数推导因果频率响应。</strong> 记数字角频率 $\Omega_{\mathrm{d}} = 2\pi f / f_s$。长度为 $L$ 的未缩放滑动平均滤波器频率响应为 $H_L^{(0)}(f) = \frac{1}{L}\sum_{k=0}^{L-1} \mathrm{e}^{-\mathrm{j}\Omega_{\mathrm{d}} k}$。利用等比数列求和公式 $\frac{1 - \mathrm{e}^{-\mathrm{j}L\Omega_{\mathrm{d}}}}{1 - \mathrm{e}^{-\mathrm{j}\Omega_{\mathrm{d}}}}$ 提取半角中心线性相位因子 $\mathrm{e}^{-\mathrm{j}\Omega_{\mathrm{d}} d_L}$（其中群延迟 $d_L = (L - 1)/2$ 点），记实数有符号 Dirichlet 核为 $D_L(f)$，再除以 $500\ \mathrm{Hz}$ 处的幅度 $b_L$ 完成归一化：</p>
+<p><strong>第一步：从有限等比级数推导因果频率响应。</strong> 记数字角频率 $\Omega_{\mathrm{d}} = 2\pi f / f_s$。长度为 $L$ 的未缩放滑动平均滤波器频率响应为 $H_L^{(0)}(f) = \frac{1}{L}\sum_{k=0}^{L-1} e^{-\mathrm{j}\Omega_{\mathrm{d}} k}$。利用等比数列求和公式 $\frac{1 - e^{-\mathrm{j}L\Omega_{\mathrm{d}}}}{1 - e^{-\mathrm{j}\Omega_{\mathrm{d}}}}$ 提取半角中心线性相位因子 $e^{-\mathrm{j}\Omega_{\mathrm{d}} d_L}$（其中群延迟 $d_L = (L - 1)/2$ 点），记实数有符号 Dirichlet 核为 $D_L(f)$，再除以 $500\ \mathrm{Hz}$ 处的幅度 $b_L$ 完成归一化：</p>
 <p>$$
 \begin{aligned}
 D_L(f) &= \frac{\sin(L\Omega_{\mathrm{d}} / 2)}{L\sin(\Omega_{\mathrm{d}} / 2)}, \\
-H_L^{(0)}(f) &= \mathrm{e}^{-\mathrm{j}\Omega_{\mathrm{d}} d_L} D_L(f), \\
+H_L^{(0)}(f) &= e^{-\mathrm{j}\Omega_{\mathrm{d}} d_L} D_L(f), \\
 b_L &= |D_L(500)|, \\
 h_L[k] &= \frac{1}{L b_L}, \qquad k = 0, \dots, L - 1.
 \end{aligned}\tag{11-17}
 $$</p>
-<p>（可去奇点 $f = 0$ 处按连续极限取 $D_L(0) = 1$。）归一化后的完整复频率响应为 $H_L(f) = \mathrm{e}^{-\mathrm{j}\Omega_{\mathrm{d}} d_L} D_L(f)/b_L$。注意 $D_L(f)$ 是<strong>带正负号的实数</strong>：当频率越过零点进入旁瓣区时 $D_L(f) \lt  0$，对应 $\pi$ 相位翻转，计算波形误差时绝不能用无符号幅度 $|D_L(f)|$ 代替！代入 $f_s = 16000\ \mathrm{Hz}$、$f = 500\ \mathrm{Hz}$（即 $\Omega_{\mathrm{d}} = \pi/16$）：对 $L = 3$，$D_3(f) = [1 + 2\cos(\Omega_{\mathrm{d}})]/3$，每抽头系数为 $1/[1 + 2\cos(\pi/16)] \approx 0.33765868$，群延迟 $d_3 = 1$ 点（$0.0625\ \mathrm{ms}$）；对 $L = 9$，每抽头系数约为 $0.12679924$，群延迟 $d_9 = 4$ 点（$0.25\ \mathrm{ms}$）。</p>
+<p>（可去奇点 $f = 0$ 处按连续极限取 $D_L(0) = 1$。）归一化后的完整复频率响应为 $H_L(f) = e^{-\mathrm{j}\Omega_{\mathrm{d}} d_L} D_L(f)/b_L$。注意 $D_L(f)$ 是<strong>带正负号的实数</strong>：当频率越过零点进入旁瓣区时 $D_L(f) \lt  0$，对应 $\pi$ 相位翻转，计算波形误差时绝不能用无符号幅度 $|D_L(f)|$ 代替！代入 $f_s = 16000\ \mathrm{Hz}$、$f = 500\ \mathrm{Hz}$（即 $\Omega_{\mathrm{d}} = \pi/16$）：对 $L = 3$，$D_3(f) = [1 + 2\cos(\Omega_{\mathrm{d}})]/3$，每抽头系数为 $1/[1 + 2\cos(\pi/16)] \approx 0.33765868$，群延迟 $d_3 = 1$ 点（$0.0625\ \mathrm{ms}$）；对 $L = 9$，每抽头系数约为 $0.12679924$，群延迟 $d_9 = 4$ 点（$0.25\ \mathrm{ms}$）。</p>
 <p><strong>第二步：计算稳态区解析误差与抑噪量。</strong> 记去除群延迟后的带符号实增益为 $A_L(f) = D_L(f)/b_L$。代入 $1500\ \mathrm{Hz}$ 与 $3500\ \mathrm{Hz}$ 核算：3 抽头的 $|A_3|$ 分别约为 $0.89916454$ 与 $0.46940656$；9 抽头的 $|A_9|$ 分别约为 $0.20591080$ 与 $0.01959116$（其中 $A_9(3500) \approx -0.01959116$ 发生反相）。可见 9 抽头在猛烈压低 $3500\ \mathrm{Hz}$ 干扰的同时，也把属于目标的 $1500\ \mathrm{Hz}$ 谐波砍掉了近八成幅度！</p>
 <p>为避开首尾 $20\ \mathrm{ms}$ 淡变区与卷积启动瞬态，固定在包络恒为 $1$ 的稳态区间 $\mathcal{I} = [1600, 30400)$（共 $28800$ 点、时长 $1.8\ \mathrm{s}$，恰好容纳三个频点的整数个周期，不同频率正交交叉和严格为零）内评分。将滤波器输出补偿已知群延迟 $d_L$ 后定义逐点误差 $e_L[n] = y[n + d_L] - s[n]$（即 3 抽头取输出区间 $[1601, 30401)$，9 抽头取 $[1604, 30404)$，不作额外幅度拟合），简记 $a_v = A_L(3500)$，归一化均方误差（NMSE）与干扰衰减量定义为：</p>
 <p>$$
@@ -1310,10 +1324,10 @@ $$</p>
 <p><a id="e11-22"></a></p>
 <h3 id="sec-u-77c060e225">题 22：两小时零误触发能支持多低的小时率（E11-22）</h3>
 <p>唤醒系统在预先固定时长 $T = 2\ \mathrm{h}$ 的连续负样本测试中观察到 $0$ 次误触发。假设误触发事件服从恒定强度 $\lambda$（单位：次/小时）的<strong>齐次泊松过程（Homogeneous Poisson Process，HPP）</strong>——即任意不相交时段内的误触发计数相互独立，长度为 $T$ 的区间内事件总数 $N$ 服从均值 $\lambda T$ 的泊松分布。试推导单侧 $95\%$（$\alpha = 0.05$）置信水平下的真实小时误触发率上界 $\lambda_{\mathrm{U}}$，以及要凭零误触发证明 $\lambda_{\mathrm{U}} \le \lambda_0 = 0.1$ 次/小时所需的最短预定测试时长。</p>
-<p><strong>答案要点</strong>：由 <a href="https://www.itl.nist.gov/div898/handbook/eda/section3/eda366j.htm">NIST 泊松分布概率质量函数</a>，时长 $T$ 内恰好出现零次事件的概率为 $P(N = 0) = \mathrm{e}^{-\lambda T}$。令临界尾概率等于 $\alpha$ 并取自然对数反解（与 <a href="https://www.itl.nist.gov/div898/handbook/apr/section4/apr451.htm">NIST 齐次泊松过程零故障置信界</a>给出的平均无故障间隔下界 $T/(-\ln\alpha)$ 互为倒数）：</p>
+<p><strong>答案要点</strong>：由 <a href="https://www.itl.nist.gov/div898/handbook/eda/section3/eda366j.htm">NIST 泊松分布概率质量函数</a>，时长 $T$ 内恰好出现零次事件的概率为 $P(N = 0) = e^{-\lambda T}$。令临界尾概率等于 $\alpha$ 并取自然对数反解（与 <a href="https://www.itl.nist.gov/div898/handbook/apr/section4/apr451.htm">NIST 齐次泊松过程零故障置信界</a>给出的平均无故障间隔下界 $T/(-\ln\alpha)$ 互为倒数）：</p>
 <p>$$
 \begin{aligned}
-\mathrm{e}^{-\lambda_{\mathrm{U}} T} &= \alpha, \\
+e^{-\lambda_{\mathrm{U}} T} &= \alpha, \\
 \lambda_{\mathrm{U}} &= \frac{-\ln\alpha}{T}, \\
 \lambda_{\mathrm{U}} \le \lambda_0 &\Longleftrightarrow T \ge \frac{-\ln\alpha}{\lambda_0}.
 \end{aligned}\tag{11-20}
@@ -1743,7 +1757,9 @@ $$</p>
 </ul>
 <span id="sec-15" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-11-7">11.7 后续阅读</h2>
 <p>如果工程任务从“提取增强语音流”转向“定位并量化机械设备、风洞或车体表面的噪声辐射源强”，请继续阅读<a href="12_acoustic-imaging.html">扩展专题Ⅰ：声学成像</a>，重点区分空间扫描功率图、反卷积源强反演、绝对声压级校准与频带积分量。</p>
-<p>如果系统由多台物理分离、通过无线受限带宽组网的麦克风节点协同完成语音增强，请继续阅读<a href="13_distributed-enhancement.html">扩展专题Ⅱ：分布式协同增强</a>，先核对第 5 章的参考通道定义与第 10 章的跨设备采样率同步前提（若所有麦克风已通过同步总线接入同一颗处理器，直接采用集中式多通道链路即可，无须引入分布式迭代传输协议）。</p>
+<p>如果系统由多台物理分离、通过无线受限带宽组网的麦克风节点协同完成语音增强，请继续阅读<a href="13_distributed-enhancement.html">扩展专题Ⅱ：分布式麦克风协同增强</a>，先核对第 5 章的参考通道定义与第 10 章的跨设备采样率同步前提（若所有麦克风已通过同步总线接入同一颗处理器，直接采用集中式多通道链路即可，无须引入分布式迭代传输协议）。</p>
+<p>如果产品形态转向全景声采集、扩展现实（XR）头显、智能眼镜、数字助听器或真无线立体声（TWS）耳机，请继续阅读<a href="16_spatial-wearable-arrays.html">扩展专题Ⅲ：空间声场采集、参数化编码与可穿戴阵列</a>，依次核查一阶全景声（FOA）球谐编码与 DirAC 声强参数化、头部追踪三维旋转、非规则镜框双耳信号匹配（BSM/MagLS）、双耳相干度保持、湍流风噪下气导与耳道闭塞内麦/骨导跨模态融合，以及主动通透模式百微秒级防梳状滤波延迟硬约束。</p>
+<p>如果声场中存在多位说话人、同向远端串音或频繁抢话重叠，需要结合声纹、空间近场距离、说话人日志或视觉唇动线索提取目标语音与归属文本，请继续阅读<a href="17_target-extraction-diarization.html">扩展专题Ⅳ：条件目标提取、多通道日志与远场多模态前端</a>，重点掌握特征级线性调制（FiLM）与沉默段双态能量地板损失、近场球面波声学距离气泡、多人重叠说话人日志误差率（DER）理论下界、多通道空谱 TS-VAD 与排他掩码 GSS 闭环、视听管线正滞后与唇部遮挡门控回退，以及级联链路与端到端 SOT/DiCoW 的会议架构选型。</p>
 <p>需要回查单项模块的数学推导与实现细节时，可按模块查阅第 4～9 章的声源定位、波束形成、AEC、WPE、语音分离与声源追踪，结合<a href="10_engineering-practice.html">第 10 章</a>制定设备级资源预算与联调验收方案；全书统一数学符号与线性代数预备工具见<a href="14_appendix-symbols-math.html">附录 A</a>，分角色阅读路线、全书练习索引与常见故障速查表见<a href="15_appendix-guide.html">附录 B</a>。</p>
 <hr />
 <blockquote>

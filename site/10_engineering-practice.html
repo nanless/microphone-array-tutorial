@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 10 章 · 工程实现、评测与产业实践 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="30366ba49985"><style>
+<meta name="source-digest" content="9b634b8b6fd1"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -327,6 +327,8 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <div class="chap"><a href="11_selection-guide.html">第 11 章 · 总结与选型指南</a></div>
 <div class="chap"><a href="12_acoustic-imaging.html">第 12 章 · 声学成像与噪声源诊断</a></div>
 <div class="chap"><a href="13_distributed-enhancement.html">第 13 章 · 分布式麦克风协同增强</a></div>
+<div class="chap"><a href="16_spatial-wearable-arrays.html">第 16 章 · 空间声场与可穿戴阵列</a></div>
+<div class="chap"><a href="17_target-extraction-diarization.html">第 17 章 · 条件目标提取与多通道日志</a></div>
 <div class="chap"><a href="14_appendix-symbols-math.html">第 14 章 · 附录 A：符号术语数学</a></div>
 <div class="chap"><a href="15_appendix-guide.html">第 15 章 · 附录 B：路径地图与练习</a></div>
 <div class="chap"><a href="research/index.html">源码研究</a></div></nav>
@@ -403,7 +405,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li><a href="10_engineering-practice.html#sec-10-12">10.12 本章小结</a></li>
 </ul></nav></details>
 <blockquote>
-<p>⚠️ 本篇是教程正文第 10 章（正文共 13 章，其中第 12、13 章为扩展专题，另有附录 A、B），可独立阅读，前后篇见下方导航。</p>
+<p>⚠️ 本篇是教程正文第 10 章（正文与扩展专题共 15 章，其中第 12、13、16、17 章为扩展专题，另有附录 A、B），可独立阅读，前后篇见下方导航。</p>
 <p>🏠 首页导读：<a href="index.html">🏠 导读与导航</a> ｜ 上一篇：<a href="09_source-tracking.html">第 9 章 · 声源追踪</a> ｜ 下一篇：<a href="11_selection-guide.html">第 11 章 · 总结与选型指南</a></p>
 </blockquote>
 <hr />
@@ -1168,9 +1170,9 @@ $$</p>
 <td>单个客观分不代表听感或内容正确；排列/身份口径见第 11 章“多人重叠”决策表</td>
 </tr>
 <tr>
-<td>说话人分割</td>
-<td>分割错误率（Diarization Error Rate，DER）、Jaccard 错误率（Jaccard Error Rate，JER）</td>
-<td>必须固定说话起止边界的容差时长（collar）、多人重叠片段怎样计分、参考区域和评分工具版本；分割正确不等于分离内容正确</td>
+<td>说话人日志（说话人分割）</td>
+<td>说话人日志误差率（亦称分割错误率，Diarization Error Rate，DER）、Jaccard 错误率（Jaccard Error Rate，JER）</td>
+<td>必须固定说话起止边界的容差时长（collar）、多人重叠片段怎样计分、参考区域和评分工具版本（重叠下界见<a href="17_target-extraction-diarization.html#sec-17-4">§17.4</a>）；日志正确不等于分离内容正确</td>
 </tr>
 <tr>
 <td>增强</td>
@@ -2318,7 +2320,7 @@ q_1+2q_2&=1.
 \end{aligned}
 $$</p>
 <p>第 2 式减第 1 式得 $q_1+q_2=0$，与第 3 式相减立即解出 $q_2=1,\ q_1=-1$，回代第 1 式得 $q_0=2$，即 $\vec{q}=[2,-1,1]^\top$。归一化分母为 $\vec{d}^\top\vec{q}=2-1+1=2$，故健康完整阵列的最优 MVDR 权重为 $\vec{w}=[1,-1/2,1/2]^\top$。验算得 $\mathbf{R}\vec{w}=[1/2,1/2,1/2]^\top$，目标响应 $\vec{w}^\top\vec{d}=1$，输出归一化噪声功率为 $\vec{w}^\top\mathbf{R}\vec{w}=1/2=0.5$。</p>
-<p><strong>第二步：通道 $0$ 失效后沿用旧权重的灾难性抵消。</strong> 当通道 $0$ 输入变为全零（或直接把旧权重首项置零）时，实际作用在健康通道 $(1,2)$ 上的残缺旧权重变为 $\vec{w}_{\mathrm{old},\mathcal{I}}=[-1/2,1/2]^\top$。它对目标信号 $[1,1]^\top$ 的总响应变成 $-1/2+1/2=\mathbf{0}$——<strong>目标语音被一正一负两颗健康麦精确对消得干干净净</strong>！无论后级 AGC 再乘多大的有限增益，零乘任何常数依然是零；而此时残余噪声功率却仍有 $\vec{w}_{\mathrm{old},\mathcal{I}}^\top\mathbf{R}_{\mathcal{I}}\vec{w}_{\mathrm{old},\mathcal{I}}=[-1/2,1/2]\begin{bmatrix}2&1\\1&2\end{bmatrix}\begin{bmatrix}-1/2\\1/2\end{bmatrix}=1/2=0.5$，如果监控只看输出能量而不看目标保真度，甚至察觉不到输出里早已只剩纯噪声！</p>
+<p><strong>第二步：通道 $0$ 失效后沿用旧权重的灾难性抵消。</strong> 当通道 $0$ 输入变为全零（或直接把旧权重首项置零）时，实际作用在健康通道 $(1,2)$ 上的残缺旧权重变为 $\vec{w}_{\mathrm{old},\mathcal{I}}=[-1/2,1/2]^\top$。它对目标信号 $[1,1]^\top$ 的总响应变成 $-1/2+1/2=0$——<strong>目标语音被一正一负两颗健康麦精确对消得干干净净</strong>！无论后级 AGC 再乘多大的有限增益，零乘任何常数依然是零；而此时残余噪声功率却仍有 $\vec{w}_{\mathrm{old},\mathcal{I}}^\top\mathbf{R}_{\mathcal{I}}\vec{w}_{\mathrm{old},\mathcal{I}}=[-1/2,1/2]\begin{bmatrix}2&1\\1&2\end{bmatrix}\begin{bmatrix}-1/2\\1/2\end{bmatrix}=1/2=0.5$，如果监控只看输出能量而不看目标保真度，甚至察觉不到输出里早已只剩纯噪声！</p>
 <p><strong>第三步：按式(10-17)、式(10-18)同步抽取子阵重算权重。</strong> 令有序健康集为 $\mathcal{I}=(1,2)$，代入式(10-17)同步抽取选择矩阵、子协方差与子目标向量：</p>
 <p>$$
 \begin{aligned}

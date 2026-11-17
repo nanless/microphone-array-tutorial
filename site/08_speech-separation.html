@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 8 章 · 语音分离 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="30366ba49985"><style>
+<meta name="source-digest" content="9b634b8b6fd1"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -330,6 +330,8 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <div class="chap"><a href="11_selection-guide.html">第 11 章 · 总结与选型指南</a></div>
 <div class="chap"><a href="12_acoustic-imaging.html">第 12 章 · 声学成像与噪声源诊断</a></div>
 <div class="chap"><a href="13_distributed-enhancement.html">第 13 章 · 分布式麦克风协同增强</a></div>
+<div class="chap"><a href="16_spatial-wearable-arrays.html">第 16 章 · 空间声场与可穿戴阵列</a></div>
+<div class="chap"><a href="17_target-extraction-diarization.html">第 17 章 · 条件目标提取与多通道日志</a></div>
 <div class="chap"><a href="14_appendix-symbols-math.html">第 14 章 · 附录 A：符号术语数学</a></div>
 <div class="chap"><a href="15_appendix-guide.html">第 15 章 · 附录 B：路径地图与练习</a></div>
 <div class="chap"><a href="research/index.html">源码研究</a></div></nav>
@@ -409,7 +411,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="08_speech-separation.html#sec-u-6695554cf2">E08-32：把极性与增益问题变成连续的两块音频</a></li>
 </ul></nav></details>
 <blockquote>
-<p>⚠️ 本篇是教程正文第 8 章（正文共 13 章，其中第 12、13 章为扩展专题，另有附录 A/B），可独立阅读，前后篇见下方导航。</p>
+<p>⚠️ 本篇是教程正文第 8 章（正文共 15 章，含第 12、13、16、17 章四篇扩展专题，另有附录 A、B），可独立阅读，前后篇见下方导航。</p>
 <p>🏠 首页导读：<a href="index.html">🏠 导读与导航</a> ｜ 上一篇：<a href="07_wpe-dereverberation.html">第 7 章 · 去混响（WPE）</a> ｜ 下一篇：<a href="09_source-tracking.html">第 9 章 · 声源追踪</a></p>
 </blockquote>
 <span id="sec-1" class="anchor-alias" aria-hidden="true"></span><h1 id="sec-u-7c0095c9a8">8. 语音分离</h1>
@@ -524,7 +526,7 @@ a_m(f,\theta)&=e^{\mathrm{j}(m-1)\phi},\\
 <td>活动导引空间聚类</td>
 <td><strong>cACGMM → GSS → MVDR</strong></td>
 <td>利用说话人活动时间标注锁住跨频排列，在复单位球面上做方向 EM 聚类并驱动波束形成</td>
-<td>免训练模型权重，适应真实强混响会议，但依赖外部说话人分割标注与多帧上下文</td>
+<td>免训练模型权重，适应真实强混响会议，但依赖外部说话人日志标注与多帧上下文</td>
 </tr>
 <tr>
 <td>深度学习监督分离</td>
@@ -564,7 +566,7 @@ $$</p>
 <li><strong>全双工场景下线性 AEC 永远打头阵</strong>：扬声器参考信号与麦克风接收回声之间的线性卷积关系一旦被后续时变自适应波束、动态增益或非线性网络扭曲，AEC 就无法建立稳定的回声路径模型（见 §7.6 与<a href="10_engineering-practice.html#sec-10-1">第 10 章 §10.1</a>）；</li>
 <li><strong>多通道 MIMO-WPE 置于空间分离与波束形成之前</strong>：长混响拖尾会把原本秩一的点声源空间协方差弥散成高秩矩阵，既破坏窄带混合近似式(8-2)，又削弱 MVDR 的零陷深度。先用线性 MIMO-WPE 剥离晚期拖尾可显著纯化空间统计量（但各通道 WPE 滤波器独立求解时可能引入轻微跨麦幅相偏移，后级宜采用从去混响后目标 SCM 提取 RTF 的自适应波束，而非死守自由场几何导向矢量）；</li>
 <li><strong>定位/追踪或时频掩码作为控制支路输入给解析波束</strong>：固定波束（DSB）与导向矢量型 MVDR 从 DOA/追踪支路获取角度；掩码型 MVDR（从目标 SCM 主特征向量提取 RTF）与 GEV 则从时频掩码支路获取目标和干扰协方差矩阵，无需显式解算几何角度（见<a href="05_beamforming.html">第 5 章</a>与<a href="09_source-tracking.html">第 9 章</a>）；</li>
-<li><strong>说话人分割（diarization）在 GSS 空间聚类之前，GSS 掩码在 MVDR 求权之前</strong>：说话人分割先给出“哪位说话人在哪段帧区间活跃”的时间门控，用来锁住 cACGMM 在不同频点上的簇标签排列；聚类收敛吐出软掩码后，再加权计算目标/干扰 SCM 并解算波束权重（见 §8.4）；</li>
+<li><strong>说话人日志（Speaker Diarization，亦称说话人分割聚类）在 GSS 空间聚类之前，GSS 掩码在 MVDR 求权之前</strong>：说话人日志先给出“哪位说话人在哪段帧区间活跃”的时间门控，用来锁住 cACGMM 在不同频点上的簇标签排列；聚类收敛吐出软掩码后，再加权计算目标/干扰 SCM 并解算波束权重（见 §8.4）；</li>
 <li><strong>深度神经网络的位置取决于其输出对象</strong>：逐通道独立修改复谱或波形的单通道增强网络会破坏跨麦相位差，只能放在多通道线性处理之后；仅预测跨通道共享掩码、协方差或 WPE 功率 $\lambda$ 的网络可嵌入解析多麦算法内部；而端到端多通道神经分离器（或 CSS 网络）则直接从 WPE 后的多通道谱生成分离音频流，构成替代解析波束的另一条主干分支（同时须核查其未来帧前瞻量）。</li>
 </ol>
 <p>在研究诸如“AEC 与降噪孰先孰后”的实验对比时，还要警惕真值泄漏陷阱：例如开源对比库 <a href="https://github.com/Arnout-Roebben/Integrated_AEC_NR/tree/23c6b567c7863a8ee9bafd38bad0d3ff2f25e185">Integrated_AEC_NR</a> 虽在同一框架下提供了 <code>AEC→NR</code>、<code>NR→AEC</code> 与联合结构，但其 <code>process.m</code> 脚本直接读取了真实设备根本拿不到的干净近端语音真值与干净回声真值来生成理想语音活动判决，工程选型时必须换回盲估双讲/活动检测重新实测。</p>
@@ -579,9 +581,9 @@ $$</p>
 </thead>
 <tbody>
 <tr>
-<td>说话人分割 + GSS 聚类</td>
-<td>“说话人分割 → GSS/cACGMM 掩码”控制支路</td>
-<td>分割仅提供二值时间门控约束跨频排列，本身不直接输出协方差或音频</td>
+<td>说话人日志 + GSS 聚类</td>
+<td>“说话人日志 → GSS/cACGMM 掩码”控制支路</td>
+<td>日志仅提供二值时间门控约束跨频排列，本身不直接输出协方差或音频</td>
 </tr>
 <tr>
 <td>掩码 SCM + 解析波束</td>
@@ -762,7 +764,7 @@ J_{\mathrm{FastMNMF}}&=\sum_{f,t,m}\left(\frac{|z_{ftm}|^2}{d_{ftm}}+\ln d_{ftm}
 <p><strong>为什么式(8-17)的球面密度会出现陌生的 $-M$ 次幂 $q_n^{-M}$？</strong> 它的几何图像其实极其直观：设想原始多通道复谱向量服从零均值复高斯分布 $\vec y\sim\mathcal{CN}(\vec 0,\mathbf B_n)$，密度为 $\pi^{-M}(\det\mathbf B_n)^{-1}\exp(-\vec y^H\mathbf B_n^{-1}\vec y)$。将其在极坐标下分解为径向总幅度 $r=\|\vec y\|_2\in(0,\infty)$ 与复单位球面上的方向向量 $\vec z=\vec y/r$（满足 $\|\vec z\|_2=1$）：在 $\mathbb{C}^M\cong\mathbb{R}^{2M}$ 的 $2M$ 维实欧氏空间中，球壳体积元随半径按 $r^{2M-1}\,\mathrm{d}r$ 增长，指数二次型则变成 $\exp(-r^2\vec z^H\mathbf B_n^{-1}\vec z)=\exp(-r^2 q_n)$。为了彻底摆脱语音包络忽大忽小的干扰，我们沿径向半径 $r$ 从 $0$ 到 $\infty$ <strong>把幅度边缘化积分掉</strong>（同时积掉不影响通道间相位差的全局公用相角）：作换元 $u=r^2 q_n$（$\mathrm{d}u=2r q_n\,\mathrm{d}r$），伽马函数积分 $\int_0^\infty r^{2M-1}e^{-r^2 q_n}\,\mathrm{d}r=\frac{1}{2}q_n^{-M}\int_0^\infty u^{M-1}e^{-u}\,\mathrm{d}u=\frac{(M-1)!}{2}q_n^{-M}$ 立刻就把高斯指数函数变成了纯方向二次型的负 $M$ 次幂 $q_n^{-M}$！同时也要认清该离散类别混合模型的物理近似：它假设每个时频点由某单一类别主导（见 <a href="https://eurasip.org/Proceedings/Eusipco/Eusipco2016/papers/1570256519.pdf">Ito 等，2016，§II-A 式(3)</a>），算出的 $\gamma_n(f,k)\in[0,1]$ 是类别归属责任概率，而非叠加源的复数幅度比，真正承担空间相消滤波的是最后一步的线性波束形成器。</p>
 </li>
 <li>
-<p><strong>导引（Guided）</strong>：若在每个频点独立跑无约束 cACGMM，频点 $f_1$ 的“簇 1”和频点 $f_2$ 的“簇 1”根本不知道彼此是不是同一个人，依然会陷入严重的跨频簇标签置换。GSS 引入<strong>说话人活动时间标注</strong> $a_j(k)\in\{0,1\}$ 来充当全频带统一的锚点：当标注显示第 $k$ 帧说话人乙并未开口（$a_2(k)=0$）时，所有频点上说话人乙对应的簇在该帧一律被强制禁用！只要每位说话人在上下文窗口内有各自的独白或停顿差异，各频点的同名簇就会被自动对齐到同一说话人身上（注意 CHiME-5 原论文使用赛方人工转写时间戳作为理想导引；实际部署若接入自动说话人分割 diarization，漏标与误标会直接传递到掩码中）。此外，系统额外常驻一个始终允许活跃（$a_0(k)\equiv 1$）的背景噪声类，确保全员停顿静音的帧上后验分母依然严格为正；</p>
+<p><strong>导引（Guided）</strong>：若在每个频点独立跑无约束 cACGMM，频点 $f_1$ 的“簇 1”和频点 $f_2$ 的“簇 1”根本不知道彼此是不是同一个人，依然会陷入严重的跨频簇标签置换。GSS 引入<strong>说话人活动时间标注</strong> $a_j(k)\in\{0,1\}$ 来充当全频带统一的锚点：当标注显示第 $k$ 帧说话人乙并未开口（$a_2(k)=0$）时，所有频点上说话人乙对应的簇在该帧一律被强制禁用！只要每位说话人在上下文窗口内有各自的独白或停顿差异，各频点的同名簇就会被自动对齐到同一说话人身上（注意 CHiME-5 原论文使用赛方人工转写时间戳作为理想导引；实际部署若接入自动说话人日志（diarization），漏标与误标会直接传递到掩码中）。此外，系统额外常驻一个始终允许活跃（$a_0(k)\equiv 1$）的背景噪声类，确保全员停顿静音的帧上后验分母依然严格为正；</p>
 </li>
 <li>
 <p><strong>级联</strong>：完整流水线依次执行 <strong>MIMO-WPE 去混响 → 活动导引 cACGMM 估计软掩码 → 掩码加权计算目标/干扰原始功率 SCM → MVDR 波束形成</strong>（见 <a href="https://www.isca-archive.org/chime_2018/boeddecker18_chime.pdf">Boeddeker 等，CHiME-5 2018，§3.3 式(9)～(12)及表 1～2</a>）。</p>
@@ -807,12 +809,13 @@ q_t^{(r)}&=\vec z_t^H(\mathbf B^{(r)})^{-1}\vec z_t,\\
 <p>由于式(8-21)多了减号后面那一项同样依赖 $\pi_j$ 的活动归一化对数和，直接套用无门控混合模型的帧均值公式 $\pi_j\leftarrow\frac{1}{T}\sum_t\gamma_{jt}$ <strong>并不保证使式(8-21)的条件对数似然单调上升</strong>！练习 <a href="#e08-18">E08-18</a> 构造了一个干净的三帧反例，更新 $\pi$ 后 $\ell$ 反而从 $\ln 5$ 降到了 $\ln 3.4$（此外，上游官方 GPU-GSS 默认开启 <code>bss_iterations_post=1</code> 在最后一轮撤除活动硬门控并附带非零地板，因此其输出掩码在非活动帧上未必严格等于数学零，详见 <a href="research/02_aec_wpe_separation.html#bss">GSS 活动门控源码说明</a>）。</p>
 <h3 id="sec-8-4-3">8.4.3 活动门控手算与错误标注反例</h3>
 <p>先用两帧极简算例把式(8-18)的 E 步门控算熟：按“说话人 1、说话人 2、背景噪声”顺序排列，固定混合权重 $\pi=[0.5,\ 0.3,\ 0.2]$，假设三类在相邻两帧上的相对方向密度均为 $[2,\ 1,\ 1]$。第 1 帧仅说话人 1 开口，活动向量为 $[1,0,1]$，逐项相乘得未归一化分数 $[1\times 0.5\times 2,\ 0,\ 1\times 0.2\times 1]=[1,\ 0,\ 0.2]$，除以总和 $1.2$ 得软掩码后验 $[5/6,\ 0,\ 1/6]$；第 2 帧两人均停顿，活动向量为 $[0,0,1]$，分数为 $[0,0,0.2]$，归一化后验顺理成章变为 $[0,0,1]$（见练习 <a href="#e08-07">E08-07</a>）。</p>
-<p><strong>自动说话人分割漏标与误标的三帧反例</strong>：保持同样三类顺序，设 $\pi=[0.4,\ 0.4,\ 0.2]$，三帧相对方向密度依次为 $[8,1,1]$、$[1,8,1]$ 与 $[1,1,1]$，真实说话状态依次为“仅说话人 1 独白、仅说话人 2 独白、全员静音”。</p>
+<p><strong>自动说话人日志漏标与误标的三帧反例</strong>：保持同样三类顺序，设 $\pi=[0.4,\ 0.4,\ 0.2]$，三帧相对方向密度依次为 $[8,1,1]$、$[1,8,1]$ 与 $[1,1,1]$，真实说话状态依次为“仅说话人 1 独白、仅说话人 2 独白、全员静音”。</p>
 <ul>
 <li><strong>标注完全准确时</strong>：第 1 帧活动为 $[1,0,1]$，说话人 1 得分为 $0.4\times 8=3.2$、背景得分为 $0.2\times 1=0.2$，目标后验高达 $3.2/3.4=16/17\approx0.9412$；第 3 帧活动为 $[0,0,1]$，目标后验精确为 $0$。</li>
-<li><strong>发生漏标（miss）时</strong>：若上游分割器漏掉了第 1 帧的说话人 1（误标为 $a_1=0$），即便该点空间方向与说话人 1 吻合得再完美（密度高达 $8$），乘法门控也会一票否决将其后验硬砍为 $0$，导致目标协方差丢失关键样本！</li>
-<li><strong>发生误报（false alarm）时</strong>：若上游分割器在第 3 帧纯噪声段把说话人 1 错标为活跃（活动变为 $[1,0,1]$），目标后验瞬间从 $0$ 窜升至 $0.4/(0.4+0.2)=2/3$，把纯背景噪声外积堂而皇之地灌进了目标协方差矩阵！（复算脚本见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch08/gss_activity_error_demo.py"><code>gss_activity_error_demo.py</code></a>，原始机制见 <a href="https://www.isca-archive.org/chime_2018/boeddecker18_chime.pdf">Boeddeker 等，2018，§3.2 图 3 与式(5)～(8)</a>）。</li>
+<li><strong>发生漏标（miss）时</strong>：若上游说话人日志模块漏掉了第 1 帧的说话人 1（误标为 $a_1=0$），即便该点空间方向与说话人 1 吻合得再完美（密度高达 $8$），乘法门控也会一票否决将其后验硬砍为 $0$，导致目标协方差丢失关键样本！</li>
+<li><strong>发生误报（false alarm）时</strong>：若上游说话人日志模块在第 3 帧纯噪声段把说话人 1 错标为活跃（活动变为 $[1,0,1]$），目标后验瞬间从 $0$ 窜升至 $0.4/(0.4+0.2)=2/3$，把纯背景噪声外积堂而皇之地灌进了目标协方差矩阵！（复算脚本见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch08/gss_activity_error_demo.py"><code>gss_activity_error_demo.py</code></a>，原始机制见 <a href="https://www.isca-archive.org/chime_2018/boeddecker18_chime.pdf">Boeddeker 等，2018，§3.2 图 3 与式(5)～(8)</a>）。</li>
 </ul>
+<p>外部说话人日志的误差构成（DER 漏检、虚警、说话人混淆及硬单标签聚类的重叠盲区下界）、空谱联合目标说话人语音活动检测（TS-VAD），以及将重叠帧从目标协方差中剥离的排他乘积门控（对非目标活动取互补乘积 $\gamma_{k,t}\prod_{j\ne k}(1-\gamma_{j,t})$），将在<a href="17_target-extraction-diarization.html#sec-17-4">第 17 章 §17.4～§17.5</a> 定量展开。</p>
 <p>这也解释了为什么原论文强调在截取目标话语段做 EM 聚类时，必须在话语前后各向外扩充数秒至十余秒的<strong>上下文窗口（context window）</strong>：倘若只截取目标说话人从头说到尾的那短短两秒，其活动指示恒为 $1$，与同样恒为 $1$ 的背景噪声类在时间轴上毫无区分度，目标簇与背景簇依然可能发生互换！只有扩宽窗口让每位说话人都露出停顿间隙，时间门控才能真正锁死簇身份。</p>
 <h3 id="sec-8-4-4">8.4.4 协方差、波束权重与适用边界</h3>
 <p>在实际会议处理中，先算清一段上下文窗口的网格吞吐量：以 $16\ \mathrm{kHz}$ 采样、$512$ 点窗、$128$ 点帧移（每秒 $125$ 帧）处理一段 $30\ \mathrm{s}$ 上下文为例，不补零完整帧数为 $\lfloor(480000-512)/128\rfloor+1=3747$ 帧，乘以 $257$ 个单边频点共有 $962\,979$（约 $96.3$ 万）个时频观测点参与多轮 EM 更新。当阵列通道数 $M\ge 2$ 时才具备方向聚类基础；若重叠人数 $N\le M$，后续线性波束拥有充足零陷自由度，即便遇到 $N>M$ 的多人混战，仍可依靠时频稀疏占优与活动门控逐人为目标估计软掩码与波束。</p>
@@ -880,10 +883,10 @@ $$</p>
 <p>$$\begin{gathered}
 \alpha=\frac{\langle\hat s,s\rangle}{\|s\|_2^2},\\
 s_{\mathrm{tar}}=\alpha s,\\
-\mathrm{SI\!\text{-}\!SDR}=10\log_{10}\frac{\|s_{\mathrm{tar}}\|_2^2}{\|\hat s-s_{\mathrm{tar}}\|_2^2}.
+\mathrm{SI\text{-}SDR}=10\log_{10}\frac{\|s_{\mathrm{tar}}\|_2^2}{\|\hat s-s_{\mathrm{tar}}\|_2^2}.
 \end{gathered}\tag{8-24}$$</p>
 <p>投影系数 $\alpha$ 正是一维最小二乘 $\min_\alpha\|\hat s-\alpha s\|_2^2$ 的闭式解（求导令 $-2s^\top\hat s+2\alpha s^\top s=0$ 即得），它保证了目标分量 $s_{\mathrm{tar}}$ 与失真分量 $\hat s-s_{\mathrm{tar}}$ 严格正交（满足勾股定理 $\|\hat s\|_2^2=\|s_{\mathrm{tar}}\|_2^2+\|\hat s-s_{\mathrm{tar}}\|_2^2$），从而防止模型靠把整体增益缩到极小来欺骗分母。<strong>SI-SDR 提升量（SI-SDRi）</strong>定义为分离输出 SI-SDR 减去参考麦克风混合输入 SI-SDR，计算两者时必须锁定完全相同的去均值与数值下限约定。</p>
-<p>不过，把 SI-SDR 搬到<strong>多麦克风波束形成与混响房间分离</strong>时，一定要警惕它的重大盲区——<strong><code>SI-SDR</code> 与卷积不变信号失真比（Convolutive-Invariant SDR，<code>CI-SDR</code>）的本质区别</strong>！式(8-24)的投影系数 $\alpha$ 只是一个<strong>零阶单标量</strong>：只要估计波形相对于参考波形发生了哪怕 $1\sim 2$ 个采样点的分数传播时移（见练习 E08-01），或者经过了线性波束形成器/均衡器带来的轻微平坦频响染色，人耳与后端 ASR 都觉得极其清晰，单标量 SI-SDR 却会把这部分良性线性滤波差全部判为正交失真，打出极低甚至负数的冤枉分！为此，多通道与远场评测（如 SMS-WSJ、URGENT 与远场分离基准）广泛采用 <strong><code>CI-SDR</code></strong>（Boeddeker 等，ICASSP 2021）：把单标量投影升级为长度为 $L$（在 $16\ \mathrm{kHz}$ 下通常取 $512$ 抽头，即 $32\ \mathrm{ms}$）的<strong>短时域 FIR 滤波器子空间正交投影</strong> $s_{\mathrm{tar}}=h_\star * s$，允许评估器自动对齐短传播时延与线性信道频响，同时如实惩罚漏音串扰与非线性失真。此外，正如 §8.1 开头所强调的，评分前必须声明参考 $s$ 究竟是无混响干声，还是指定参考麦克风上的<strong>源图像</strong>。</p>
+<p>不过，把 SI-SDR 搬到<strong>多麦克风波束形成与混响房间分离</strong>时，一定要警惕它的重大盲区——<strong><code>SI-SDR</code> 与卷积不变信号失真比（Convolutive-Invariant SDR，<code>CI-SDR</code>）的本质区别</strong>！式(8-24)的投影系数 $\alpha$ 只是一个<strong>零阶单标量</strong>：只要估计波形相对于参考波形发生了哪怕 $1$～$2$ 个采样点的分数传播时移（见练习 E08-01），或者经过了线性波束形成器/均衡器带来的轻微平坦频响染色，人耳与后端 ASR 都觉得极其清晰，单标量 SI-SDR 却会把这部分良性线性滤波差全部判为正交失真，打出极低甚至负数的冤枉分！为此，多通道与远场评测（如 SMS-WSJ、URGENT 与远场分离基准）广泛采用 <strong><code>CI-SDR</code></strong>（Boeddeker 等，ICASSP 2021）：把单标量投影升级为长度为 $L$（在 $16\ \mathrm{kHz}$ 下通常取 $512$ 抽头，即 $32\ \mathrm{ms}$）的<strong>短时域 FIR 滤波器子空间正交投影</strong> $s_{\mathrm{tar}}=h_\star * s$，允许评估器自动对齐短传播时延与线性信道频响，同时如实惩罚漏音串扰与非线性失真。此外，正如 §8.1 开头所强调的，评分前必须声明参考 $s$ 究竟是无混响干声，还是指定参考麦克风上的<strong>源图像</strong>。</p>
 <h3 id="sec-u-bb03e8a10f">分离指标的报告口径</h3>
 <p>为了使实验数字具备可复现、可对比的工程价值，报告任何分离指标时须完整交代以下四项要素：</p>
 <ul>
@@ -938,7 +941,7 @@ s_{\mathrm{tar}}=\alpha s,\\
 <p>阅读与引用各数据集实验数字时，逐项核对以下具体口径：</p>
 <ul>
 <li><strong>REVERB</strong>：基于 WSJCAM0 朗读语音，仿真集设 $0.25/0.5/0.7\ \mathrm{s}$ 三档 $T_{60}$，另含 MC-WSJ-AV 真实房间集，分 $8$ 麦、$2$ 麦与单麦赛道；对比 WPE 时须注明通道数、声学识别后端与绝对/相对 WER 变化。</li>
-<li><strong>CHiME-5 与 CHiME-6</strong>：在真实厨房、餐厅与客厅部署 $6$ 台四麦 Kinect 设备（共 $24$ 个远场通道，<strong>绝不可缩写为“$6$ 麦阵列”</strong>），4 名参与者另佩戴双耳近讲麦（共 $8$ 通道，仅作人工转写与同步参考，并非无串音干净真值）。注意两版的官方边界差异：原始 <a href="https://www.chimechallenge.org/challenges/chime5/overview">CHiME-5 数据集</a>仅在训练/开发集提供双耳通道，评测集不提供（见 <a href="https://www.isca-archive.org/chime_2018/boeddecker18_chime.pdf">Boeddeker 等，2018，§2</a>）；而重新做了跨设备时钟对齐的 <a href="https://www.chimechallenge.org/challenges/chime6">CHiME-6</a> 在 <a href="https://www.chimechallenge.org/challenges/chime6/track2_data">Track 2 官方规则</a>中明确限定评测集（evaluation set）的双耳麦仅允许用于阵列时钟同步，严禁用于说话人分割、增强或识别。</li>
+<li><strong>CHiME-5 与 CHiME-6</strong>：在真实厨房、餐厅与客厅部署 $6$ 台四麦 Kinect 设备（共 $24$ 个远场通道，<strong>绝不可缩写为“$6$ 麦阵列”</strong>），4 名参与者另佩戴双耳近讲麦（共 $8$ 通道，仅作人工转写与同步参考，并非无串音干净真值）。注意两版的官方边界差异：原始 <a href="https://www.chimechallenge.org/challenges/chime5/overview">CHiME-5 数据集</a>仅在训练/开发集提供双耳通道，评测集不提供（见 <a href="https://www.isca-archive.org/chime_2018/boeddecker18_chime.pdf">Boeddeker 等，2018，§2</a>）；而重新做了跨设备时钟对齐的 <a href="https://www.chimechallenge.org/challenges/chime6">CHiME-6</a> 在 <a href="https://www.chimechallenge.org/challenges/chime6/track2_data">Track 2 官方规则</a>中明确限定评测集（evaluation set）的双耳麦仅允许用于阵列时钟同步，严禁用于说话人日志、增强或识别。</li>
 <li><strong>WHAMR!</strong>：在 WSJ0-2mix 与 WHAM! 街景/咖啡馆实录噪声基础上引入合成房间冲激响应，低、中、高三档 $T_{60}$ 分别在 $0.1\text{～}0.3\ \mathrm{s}$、$0.2\text{～}0.6\ \mathrm{s}$、$0.4\text{～}1.0\ \mathrm{s}$ 均匀采样，提供 $8/16\ \mathrm{kHz}$ 与 <code>min</code>（按较短句截齐）/ <code>max</code>（全长补零）版本，汇报分数时须写明学习目标是去混响干声还是保留混响的源图像（见 <a href="https://doi.org/10.1109/ICASSP40776.2020.9053327">WHAMR! 论文 §2 与表 1</a>）。</li>
 <li><strong>WSJ0-2mix / 3mix</strong>：深度学习分离的早期标准沙盒（<a href="https://www.merl.com/publications/TR2016-003">Hershey 等，2016，§3.1</a> 双人集含 $30\ \mathrm{h}$ 训练、$10\ \mathrm{h}$ 验证、$5\ \mathrm{h}$ 测试，默认 $8\ \mathrm{kHz}$）；<a href="https://shadow.merl.com/research/highlights/deep-clustering">MERL 官方脚本</a>需配合受商业许可保护的 <a href="https://catalog.ldc.upenn.edu/LDC93S6A">LDC93S6A 原始语料</a>本地合成。</li>
 <li><strong>LibriMix</strong>：开源规模更大，分 <code>clean</code> 与 <code>noisy</code> 两版、<code>train-100</code>/<code>train-360</code> 规模及 <code>8/16 kHz</code>、<code>min/max</code> 组合，并衍生出模拟低重叠比例的 <code>SparseLibriMix</code>（见 <a href="https://arxiv.org/abs/2005.11262">LibriMix 预印本论文</a>与<a href="https://github.com/JorisCos/LibriMix">官方生成仓库</a>）。</li>
@@ -951,7 +954,7 @@ s_{\mathrm{tar}}=\alpha s,\\
 <li><strong>滑窗分块与上下文边界</strong>：每个处理块（例如 $1.2\ \mathrm{s}$ 或 $2.4\ \mathrm{s}$）向左保留多少历史上下文、向右允许等待多少未来前瞻；</li>
 <li><strong>相邻块重叠加权拼接</strong>：块移步长如何设置，重叠窗口权重之和是否严格恒为 $1$；</li>
 <li><strong>跨块输出槽位对齐（stitching）</strong>：由于每一块独立推理都存在槽位置换歧义，前一块的“输出槽 0”与后一块的“输出槽 1”很可能对应同一位说话人，必须借助重叠区波形相关性或声纹嵌入把相邻块的槽位重新穿成连续音轨；</li>
-<li><strong>单人语音段旁路防切碎准则</strong>：真实会议中约 $70\%\text{～}85\%$ 的有声时段其实<strong>只有单人独白</strong>；若对单人段无条件硬跑双输出分离网络，模型稍有犹豫就会把同一句话的辅音或尾音切分漏到第二个槽位里（俗称“切碎吃字”），反而拉高后端语音识别词错率！因此工业级 CSS 前端都会监控重叠语音检测（OSD）或次槽位相对能量比：一旦判定当前滑窗为单人独白，立即触发<strong>单人段旁路保护</strong>，直接输出主波束或将多槽位安全合并，绝不强行一分为二。</li>
+<li><strong>单人语音段旁路防切碎准则</strong>：真实会议中约 $70\%\text{～}85\%$ 的有声时段其实<strong>只有单人独白</strong>；若对单人段无条件硬跑双输出分离网络，模型稍有犹豫就会把同一句话的辅音或尾音切分漏到第二个槽位里（俗称“切碎吃字”），反而拉高后端语音识别词错率！因此工业级 CSS 前端都会监控重叠语音检测（OSD）或次槽位相对能量比：一旦判定当前滑窗为单人独白，立即触发<strong>单人段旁路保护</strong>，直接输出主波束或将多槽位安全合并，绝不强行一分为二（基于次槽对主槽分贝能量比 $R_{21,\mathrm{dB}}$ 的零重叠旁路判据与清擦音保护算例见<a href="17_target-extraction-diarization.html#sec-17-2">第 17 章 §17.2</a>）。</li>
 </ol>
 <p>在没有干净参考真值的在线部署中，最轻量级的跨块槽位对齐方法是比对<strong>相邻两块在公共时间重叠区内的输出波形相似度</strong>。记前一块第 $i$ 个输出槽与当前块第 $j$ 个输出槽在重叠采样区间内的去均值列向量分别为 $\vec u_i,\vec v_j$，当两者能量均大于静音门限时，计算绝对值归一化互相关矩阵 $C_{ij}$ 并搜索最优排列 $\hat\pi$：</p>
 <p>$$\begin{aligned}
@@ -1074,6 +1077,7 @@ Y&=P_{\mathcal S}(Y).
 <p>许多端侧通话与语音助手场景并不需要把房间里所有人的声音全都分出来，而是只想提取“提前录过几秒声纹的那位机主”。<strong>目标说话人提取（Target Speaker Extraction，TSE，如 <a href="https://arxiv.org/abs/1705.10687">SpeakerBeam 系列</a>）</strong>把预训练声纹编码器从注册语音中提取的定长声纹嵌入向量（speaker embedding，或辅以视觉唇动、到达方向角等线索）通过特征拼接、特征线性调制（FiLM）或交叉注意力注入分离骨干网，直接输出单条目标音轨——既省去了 PIT 排列与多路后开销，又从根源上消除了跨块换人问题（与第 6 章 §6.5 个性化回声消除 pAEC 思路相通，端侧声纹特征的加密存储与隐私合规要求同样遵循 §6.13）。工程验收时须重点覆盖短注册语音信道失配、同性别相似音色抗串音泄漏以及目标独白误抑制三项测试。</p>
 <h3 id="sec-u-5f34c47dfc">用文字指定要分离的声音</h3>
 <p>如果连预先录好的声纹也没有，而是希望像搜索引擎一样输入自然语言提示词（如 <code>"键盘敲击声"</code>、<code>"婴儿哭声"</code> 或 <code>"男声演讲"</code>）来剥离特定声源呢？这就是近年兴起的<strong>语言查询通用音源分离（Language-Queried Audio Source Separation）</strong>。典型系统先借助对比语言—音频预训练模型（如 <a href="https://arxiv.org/abs/2206.04769">CLAP</a>）将文本描述编码为语义条件向量，再通过门控调制控制音频分离网络提取匹配声源（代表工作 <strong>AudioSep</strong> 已正式发表于 <em>IEEE/ACM TASLP</em> 2024 年第 33 卷第 458–471 页，见 <a href="https://doi.org/10.1109/TASLP.2024.3520017">正式论文</a>与<a href="https://github.com/audio-agi/audiosep">官方仓库</a>）。需注意文本查询瞄准的是声音事件或宽泛声学类别，无法替代声纹级 TSE 对特定个人身份的精细区分。</p>
+<p>从声纹、空间与文本条件注入算子（FiLM 与交叉注意力）、消除目标沉默段零除零奇异性的双态训练损失，到视听多模态唇动帧率对齐、相机管线滞后截断与遮挡置信度回退，再到远场多人会议中模块化级联（<code>TS-VAD → WPE + GSS → ASR</code>）与联合识别架构（<code>SOT</code>、<code>DiCoW</code>）的工程选型，将在<a href="17_target-extraction-diarization.html">第 17 章</a> 系统展开。</p>
 <span id="sec-8-1-5" class="anchor-alias" aria-hidden="true"></span><span id="sec-7" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-8-7">8.7 教学代码与源码复现</h2>
 <h3 id="sec-u-856e6b31e6">本地可运行模块与回退</h3>
 <p>本仓库 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch08/core/separation.py"><code>codes/chapters/ch08/core/separation.py</code></a> 提供了五个零外部黑盒依赖的纯 NumPy 核心函数，方便读者逐步拆解验证：</p>
@@ -1433,7 +1437,7 @@ J_2&=4\sqrt{2}+2\ln 2+2\ln 3\approx9.240373.
 <p><a id="e08-23"></a></p>
 <h3 id="sec-u-da0a2d6c18">E08-23：用实际重叠区关联输出，再拼接长音频</h3>
 <p><strong>题设。</strong> 合成两条时长 $2\text{ s}$、采样率 $16\text{ kHz}$（共 $32000$ 点）的正弦信号，频率分别为 $250\text{ Hz}$ 与 $625\text{ Hz}$，峰值幅度均为 $0.12$，全段首尾各加 $320$ 点平方正弦淡入淡出。构造带串音的模拟分离槽位 $v_1=s_1+0.1s_2$、$v_2=s_2+0.1s_1$：第 $1$ 块覆盖采样区间 $[0,19200)$，槽位顺序为 $[v_1,v_2]$；第 $2$ 块覆盖 $[12800,32000)$，槽位翻转成 $[v_2,v_1]$。</p>
-<p><strong>第一步：仅凭重叠区观测波形关联排列。</strong> 相邻两块的共享重叠区为 $[12800,19200)$，长 $6400$ 点（对应 $0.8\text{ s}\sim1.2\text{ s}$，共 $0.4\text{ s}$）。在该区间内，$250\text{ Hz}$ 与 $625\text{ Hz}$ 均包含完整整数个周期，两正弦严格正交且能量相等（记单源能量为 $E$）。于是两条模拟槽位各自的能量均为 $(1^2+0.1^2)E=1.01E$，不同槽位之间的内积为 $(0.1+0.1)E=0.2E$，归一化互相关为 $20/101$，而同一说话人槽位跨块相关为 $1$。以前块槽位为行、后块槽位为列写出重叠相关矩阵：</p>
+<p><strong>第一步：仅凭重叠区观测波形关联排列。</strong> 相邻两块的共享重叠区为 $[12800,19200)$，长 $6400$ 点（对应 $0.8$～$1.2\text{ s}$，共 $0.4\text{ s}$）。在该区间内，$250\text{ Hz}$ 与 $625\text{ Hz}$ 均包含完整整数个周期，两正弦严格正交且能量相等（记单源能量为 $E$）。于是两条模拟槽位各自的能量均为 $(1^2+0.1^2)E=1.01E$，不同槽位之间的内积为 $(0.1+0.1)E=0.2E$，归一化互相关为 $20/101$，而同一说话人槽位跨块相关为 $1$。以前块槽位为行、后块槽位为列写出重叠相关矩阵：</p>
 <p>$${\mathbf C}=\begin{bmatrix}20/101&1\\1&20/101\end{bmatrix}.$$</p>
 <p>保持原顺序 <code>[0, 1]</code> 的对角平均得分为 $20/101$，交换顺序 <code>[1, 0]</code> 的反对角平均得分为 $1$（领先优势达 $81/101$）。匹配器无需访问任何干净参考，仅凭重叠区相关矩阵就准确选出排列 <code>[1, 0]</code>，把后块第 $1$ 路接到前块第 $0$ 路之后。</p>
 <p><strong>第二步：线性互补交叉淡变拼接。</strong> 在 $6400$ 点重叠区内，后块权重从 $0$ 线性递增至 $1$（含两端点），前块取互补权重 $1-w$，非重叠区直接保留对应块样本。经排列对齐后，前后块同槽位波形在重叠区逐点相等，加权相加严丝合缝地还原出连续的 $[v_1,v_2]$；反之若直接按原槽位硬拼，重叠区内会发生 $0.4\text{ s}$ 的交叉串人，并在 $1.2\text{ s}$ 之后彻底互换说话人。</p>
@@ -1445,7 +1449,7 @@ J_2&=4\sqrt{2}+2\ln 2+2\ln 3\approx9.240373.
 <li><a href="audio/css_overlap_aligned.wav">按实际重叠关联的双声道拼接</a><audio class="audio-sample" controls preload="none" aria-label="按实际重叠关联的双声道拼接" src="audio/css_overlap_aligned.wav">请使用上方 WAV 链接下载。</audio></li>
 </ul>
 <p><img alt="图43：模拟分离槽位在第二块交换，重叠相关用于恢复对应，再检查PCM输出" src="../figures/fig43_css_overlap.png" onerror="this.alt+='（图缺失）'" /></p>
-<p>观察图 43 的三幅子图：图 43(a) 热力图展示了重叠区相关矩阵 ${\mathbf C}$，反对角线上的亮格（$1.00$）清晰压过主对角线（$20/101\approx0.198$），直观指示第 $2$ 块发生了槽位翻转；图 43(b) 与图 43(c) 分别对未关联拼接和重叠关联拼接的第 $1$ 输出槽位 PCM 波形每 $80\text{ ms}$ 拟合 $250\text{ Hz}$ 与 $625\text{ Hz}$ 幅度包络，可以看到图 43(b) 在灰色阴影标出的 $0.8\sim1.2\text{ s}$ 重叠区内 $250\text{ Hz}$ 主分量一路跌落而 $625\text{ Hz}$ 串上来鸠占鹊巢，图 43(c) 则在整个 $2\text{ s}$ 内稳稳锁住 $250\text{ Hz}$ 目标源。</p>
+<p>观察图 43 的三幅子图：图 43(a) 热力图展示了重叠区相关矩阵 ${\mathbf C}$，反对角线上的亮格（$1.00$）清晰压过主对角线（$20/101\approx0.198$），直观指示第 $2$ 块发生了槽位翻转；图 43(b) 与图 43(c) 分别对未关联拼接和重叠关联拼接的第 $1$ 输出槽位 PCM 波形每 $80\text{ ms}$ 拟合 $250\text{ Hz}$ 与 $625\text{ Hz}$ 幅度包络，可以看到图 43(b) 在灰色阴影标出的 $0.8$～$1.2\text{ s}$ 重叠区内 $250\text{ Hz}$ 主分量一路跌落而 $625\text{ Hz}$ 串上来鸠占鹊巢，图 43(c) 则在整个 $2\text{ s}$ 内稳稳锁住 $250\text{ Hz}$ 目标源。</p>
 <p><strong>静音与同波形退化保护。</strong> 若重叠区恰逢全员静音（波形全零），相关分母归零；若两槽位输出了完全相同的波形，四格相关全为 $1$，两种排列同分；若前块为 $(s,0)$、后块为 $(0,s)$，只有一对通道具备非零能量证据。仓内教学匹配器通过去均值 RMS 下限（$>10^{-8}$）、配对最小相关门限（$\ge0.5$）和最优排列领先裕度（$>0.05$）拦截上述退化情形，统一返回 <code>status="ambiguous"</code> 而不强行盲猜排列。</p>
 <p><a id="e08-24"></a></p>
 <h3 id="sec-u-24699eb4c1">E08-24：白化后零相关，为什么仍可能不独立？</h3>
@@ -1540,9 +1544,9 @@ J_2&=4\sqrt{2}+2\ln 2+2\ln 3\approx9.240373.
 <p>若不区分置信度强行平分残差（$\delta_1=\delta_2=1$，输出 $[2,2]^\top$），加权代价则升至 $\frac{1}{2}(1+1/3)=2/3>1/2$。物理上，哪一路估计的方差/不确定度更大，哪一路就应当吸收更大比例的未解释残差（注意使用混合一致性前必须确保所有输出处于同一参考麦尺度，若混合中含明显环境噪声则必须单列一个噪声槽位共同参与分摊，否则会把底噪硬塞回说话人语音中）。</p>
 <p><a id="e08-28"></a></p>
 <h3 id="sec-u-16ec1a5a54">E08-28：放开幅度上限以后，为什么仍不能修复相位？</h3>
-<p><strong>题设与取点口径。</strong> 将 E08-22 的两个复频点映射为时长 $2\text{ s}$、采样率 $16\text{ kHz}$（$32000$ 点）的实双音合成波形。按实信号相量约定 $s(t)=\operatorname{Re}\{S\mathrm{e}^{\mathrm{j}2\pi ft}\}$，取目标源 $s(t)=0.1\cos(2\pi\cdot500t)-0.1\sin(2\pi\cdot1250t)$，干扰源 $v(t)=-0.08\cos(2\pi\cdot500t)+0.1\cos(2\pi\cdot1250t)$，叠加为无噪混合 $x(t)=s(t)+v(t)$。对整段周期波形做全长 FFT，在正频率第 $1000$ 点（$500\text{ Hz}$）与第 $2500$ 点（$1250\text{ Hz}$）上施加三类掩码并共轭对称逆变换回时域。</p>
+<p><strong>题设与取点口径。</strong> 将 E08-22 的两个复频点映射为时长 $2\text{ s}$、采样率 $16\text{ kHz}$（$32000$ 点）的实双音合成波形。按实信号相量约定 $s(t)=\operatorname{Re}\{Se^{\mathrm{j}2\pi ft}\}$，取目标源 $s(t)=0.1\cos(2\pi\cdot500t)-0.1\sin(2\pi\cdot1250t)$，干扰源 $v(t)=-0.08\cos(2\pi\cdot500t)+0.1\cos(2\pi\cdot1250t)$，叠加为无噪混合 $x(t)=s(t)+v(t)$。对整段周期波形做全长 FFT，在正频率第 $1000$ 点（$500\text{ Hz}$）与第 $2500$ 点（$1250\text{ Hz}$）上施加三类掩码并共轭对称逆变换回时域。</p>
 <p>随后对全部 $6$ 条波形统一乘以首尾各 $320$ 点（$20\text{ ms}$）的平方正弦淡入淡出包络，以共同增益 $1$ 导出 PCM16 WAV。评分区间取包络恒为 $1$ 的稳定窗 $[2400,29600)$（共 $27200$ 点，恰含两频率整数个周期），直接按固定时间轴计算均方误差，不拟合增益或时延。</p>
-<p><strong>第一步：频域复相量与三类掩码上限对照。</strong> 在 $\operatorname{Re}\{S\mathrm{e}^{\mathrm{j}2\pi ft}\}$ 约定下，$-\sin$ 对应 $+\mathrm{j}$ 相量，故目标源在 $500\text{ Hz}$ 与 $1250\text{ Hz}$ 上的相量为 $[0.1,\;0.1\mathrm{j}]$，干扰源为 $[-0.08,\;0.1]$，混合相量为 $[0.02,\;0.1+0.1\mathrm{j}]$：$500\text{ Hz}$ 处两源反相抵消使目标幅度为混合的 $5$ 倍；$1250\text{ Hz}$ 处混合相位为 $45^\circ$ 而目标相位为 $90^\circ$。三类理想掩码的最优取值与输出相量如下表所示：</p>
+<p><strong>第一步：频域复相量与三类掩码上限对照。</strong> 在 $\operatorname{Re}\{Se^{\mathrm{j}2\pi ft}\}$ 约定下，$-\sin$ 对应 $+\mathrm{j}$ 相量，故目标源在 $500\text{ Hz}$ 与 $1250\text{ Hz}$ 上的相量为 $[0.1,\;0.1\mathrm{j}]$，干扰源为 $[-0.08,\;0.1]$，混合相量为 $[0.02,\;0.1+0.1\mathrm{j}]$：$500\text{ Hz}$ 处两源反相抵消使目标幅度为混合的 $5$ 倍；$1250\text{ Hz}$ 处混合相位为 $45^\circ$ 而目标相位为 $90^\circ$。三类理想掩码的最优取值与输出相量如下表所示：</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
 <thead>
 <tr>

@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 1 章 · 问题定义与双耳启示 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="30366ba49985"><style>
+<meta name="source-digest" content="9b634b8b6fd1"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -281,6 +281,8 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <div class="chap"><a href="11_selection-guide.html">第 11 章 · 总结与选型指南</a></div>
 <div class="chap"><a href="12_acoustic-imaging.html">第 12 章 · 声学成像与噪声源诊断</a></div>
 <div class="chap"><a href="13_distributed-enhancement.html">第 13 章 · 分布式麦克风协同增强</a></div>
+<div class="chap"><a href="16_spatial-wearable-arrays.html">第 16 章 · 空间声场与可穿戴阵列</a></div>
+<div class="chap"><a href="17_target-extraction-diarization.html">第 17 章 · 条件目标提取与多通道日志</a></div>
 <div class="chap"><a href="14_appendix-symbols-math.html">第 14 章 · 附录 A：符号术语数学</a></div>
 <div class="chap"><a href="15_appendix-guide.html">第 15 章 · 附录 B：路径地图与练习</a></div>
 <div class="chap"><a href="research/index.html">源码研究</a></div></nav>
@@ -311,7 +313,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-dcdd7fffd2">E01-10：源谱改变，双耳声级差会怎样改变</a></li>
 </ul></nav></details>
 <blockquote>
-<p>⚠️ 本篇是本书正文第 1 章（正文共 13 章，含第 12、13 章两篇扩展专题，另有附录 A、B），可独立阅读，前后篇见下方导航。</p>
+<p>⚠️ 本篇是本书正文第 1 章（正文共 15 章，含第 12、13、16、17 章四篇扩展专题，另有附录 A、B），可独立阅读，前后篇见下方导航。</p>
 <p>🏠 首页导读：<a href="index.html">🏠 导读与导航</a> ｜ 上一篇：（无） ｜ 下一篇：<a href="02_basics-signal-model.html">第 2 章 · 声音到达阵列时发生了什么</a></p>
 </blockquote>
 <hr />
@@ -423,7 +425,7 @@ $$</p>
 </tbody>
 </table></div>
 <p>读这张表时，最容易混淆的概念是 WNG 里的“白”。信号处理里常说的“时间白噪声”是指单路信号在所有频率上功率谱平坦；而白噪声增益（WNG）要求的则是<strong>空间白（spatially white）</strong>——也就是完成目标对齐之后，不同麦克风通道之间的噪声互不相关（跨通道乘积的数学期望为零），且各通道噪声功率相等。这是跨通道的空间统计条件，与单路噪声在时间上是不是白噪声完全两码事：哪怕你生成一段频谱绝对平坦的时间白噪声，只要把它原封不动复制四份送进四个通道，四路噪声在空间上就是 $100\%$ 完全相关的，求平均一点也降不了噪；反之，四只麦克风各自独立的电路低频热噪声即便频谱并不平坦，只要彼此统计独立、功率相同，就满足某频点上的空间白假设。</p>
-<p>在实际室内环境中，声波经墙壁多次反射后的晚期混响常被近似当作各向同性弥散场，因而可用 DI 大致衡量阵列对混响背景的抑制能力；第 5 章（§5.3、§5.4）将会看到，小孔径超指向波束为了在低频把 DI 做高，往往要让相邻通道做剧烈相减，导致 WNG 跌成负数（即放大传感器自噪声），而针对特定干扰方向挖出的深零陷也必须连同目标方向保真度和指向偏差敏感度一起评估。</p>
+<p>在实际室内环境中，声波经墙壁多次反射后的晚期混响常被近似当作各向同性弥散场，因而可用 DI 大致衡量阵列对混响背景的抑制能力；第 5 章（§5.3、§5.4）将会看到，小孔径超指向波束为了在低频把 DI 做高，往往要让相邻通道做剧烈相减，导致 WNG 跌成负数（即放大传感器自噪声），而在特定干扰方向形成的深零陷也必须连同目标方向保真度和指向偏差敏感度一起评估。</p>
 <h3 id="sec-u-d2f01ae3f8">从求和到平均：四麦的 6 dB 怎样得到</h3>
 <p>现在我们亲手推算最经典的阵列增益基准。假设目标声源处于远场，各麦克风灵敏度一致，且我们已经精确补偿了声波到达各阵元的时间差。对齐之后的第 $m$ 路观测信号（$m=1,\ldots,M$，$M$ 为麦克风总数）可以写成</p>
 <p>$$
@@ -547,7 +549,7 @@ $$</p>
 <h3 id="sec-u-5221e22cae">声级差、细结构与包络要分别判断</h3>
 <p>除了到达先后，两耳听到的响度强弱也不同。<strong>双耳声级差（Interaural Level Difference，ILD）</strong>度量左右两耳接收声压级的差值。当波长比头部直径短得多（中高频段）时，头部就像一堵挡音墙，在远侧耳处投下明显的“声影”，使远耳声级显著低于近耳；而在波长远大于头尺寸的低频段，声波轻松绕过头部，两耳声级差随之大幅减小。因此，远场双耳 ILD 主要源于头部的频率相关散射与遮挡，而不是自由空间里那十几厘米微不足道的球面距离衰减差。</p>
 <p>在正负号约定上，本书统一取<strong>“右耳声级减左耳声级”</strong>：右耳更强时 $\mathrm{ILD} > 0$，左耳更强时 $\mathrm{ILD} \lt  0$。这样规定后，右侧声源同时对应正的 ITD 与正的 ILD，符号直觉高度一致（阅读外部文献时需留心部分论文采用左减右；本章练习 E01-08 将亲手复算幅度比、功率比与通道增益对 ILD 的影响）。</p>
-<p>早在 1907 年，瑞利勋爵（Lord Rayleigh）就在经典论文<a href="https://doi.org/10.1080/14786440709463595">《On our perception of sound direction》</a>中指出，人耳在低频主要依赖双耳相位/时间差定位，在高频则主要依赖双耳强度差定位，后世称之为听觉定位的<strong>双重理论（duplex theory）</strong>。不过，现代心理声学实验表明，这两类线索绝不是在某个固定频率上“一刀切切换”的机械开关。要把实验证据读准，先得区分声波里的两种时间尺度：<strong>细结构（fine structure）</strong>是指载波逐个周期毫秒、亚毫秒级的快速正负振荡；<strong>包络（envelope）</strong>则是指整团声音幅度强弱随时间较慢的起伏轮廓——一段 $4\ \mathrm{kHz}$ 的高频声虽然载波周期极短，却完全可以披上一层每秒起伏几十次的慢包络。下表汇总了图 1(c) 三栏对应的核心实验认识与常见误读：</p>
+<p>早在 1907 年，瑞利勋爵（Lord Rayleigh）就在经典论文<a href="https://doi.org/10.1080/14786440709463595">《On our perception of sound direction》</a>中指出，人耳在低频主要依赖双耳相位/时间差定位，在高频则主要依赖双耳强度差定位，后世称之为听觉定位的<strong>双工理论（Duplex Theory，亦译双重理论）</strong>。不过，现代心理声学实验表明，这两类线索绝不是在某个固定频率上“一刀切切换”的机械开关。要把实验证据读准，先得区分声波里的两种时间尺度：<strong>细结构（fine structure）</strong>是指载波逐个周期毫秒、亚毫秒级的快速正负振荡；<strong>包络（envelope）</strong>则是指整团声音幅度强弱随时间较慢的起伏轮廓——一段 $4\ \mathrm{kHz}$ 的高频声虽然载波周期极短，却完全可以披上一层每秒起伏几十次的慢包络。下表汇总了图 1(c) 三栏对应的核心实验认识与常见误读：</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
 <thead>
 <tr>
@@ -622,11 +624,12 @@ $$</p>
 <tr>
 <td>嘈杂聚会中的鸡尾酒会效应</td>
 <td>融合空域自适应波束形成与时频域语音分离，持续跟踪并提取目标说话人</td>
-<td>第 5 章、§8.1</td>
+<td>第 5 章、§8.1、第 17 章</td>
 </tr>
 </tbody>
 </table></div>
-<p>沿着上表对比可以发现：阵列的物理几何与腔体结构决定了传感器<strong>能观测到多少空间差异</strong>，而信号处理与机器学习算法则决定了<strong>如何把这些差异提炼成清晰的目标输出</strong>。在动手设计算法前，工程上还要先问清“增强后的音频是给机器听还是给人耳听”：语音识别前端通常把多只麦克风合成为单声道音频；而助听器、AR/VR 眼镜等双耳穿戴设备则需要交付左、右两路输出——如果图省事把同一条单路波束输出同时送入左右耳机，两耳非零频点的复数比值恒等于 $1$（$\mathrm{ILD}=0\ \mathrm{dB}$、$\mathrm{IPD}=0$），佩戴者就会瞬间丧失所有空间方位感，感觉声音全挤在脑壳正中央（保留耳间线索的双耳波束形成将在第 5 章专门展开）。下一章（第 2 章），我们将从最基础的声传播时延出发，把这些物理现象正式写成严谨的阵列信号数学模型。</p>
+<p>沿着上表对比可以发现：阵列的物理几何与腔体结构决定了传感器<strong>能观测到多少空间差异</strong>，而信号处理与机器学习算法则决定了<strong>如何把这些差异提炼成清晰的目标输出</strong>。在动手设计算法前，工程上还要先问清“增强后的音频是给机器听还是给人耳听”：语音识别前端通常把多只麦克风合成为单声道音频；而助听器、AR/VR 眼镜等双耳穿戴设备则需要交付左、右两路输出——如果图省事把同一条单路波束输出同时送入左右耳机，两耳非零频点的复数比值恒等于 $1$（$\mathrm{ILD}=0\ \mathrm{dB}$、$\mathrm{IPD}=0$），佩戴者就会瞬间丧失所有空间方位感，感觉声音全挤在脑壳正中央。</p>
+<p>保留耳间线索的双耳波束形成将在<a href="05_beamforming.html#sec-5-5">第 5 章 §5.5</a> 展开；面向智能眼镜与真无线耳机的非规则阵列双耳信号匹配（BSM）、气导与耳道闭塞跨模态自语音融合及通透模式百微秒延迟约束，则将在<a href="16_spatial-wearable-arrays.html#sec-16-5">第 16 章</a> 深入推导。下一章（第 2 章），我们将从最基础的声传播时延出发，把这些物理现象正式写成严谨的阵列信号数学模型。</p>
 <span id="sec-3" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-f7a201edb9">本章练习</h2>
 <p>本章练习 E01-01～E01-03 对应跨章脚本 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/exercises_spatial.py"><code>exercises_spatial.py</code></a>，E01-04～E01-10 对应本章脚本 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch01/chapter01_experiments.py"><code>chapter01_experiments.py</code></a>。两套脚本均无需联网下载外部数据，直接在仓库根目录运行即可：</p>
 <pre><code class="language-bash">.venv/bin/python -m codes.chapters.ch00.cross_chapter.exercises_spatial

@@ -1,4 +1,4 @@
-> ⚠️ 本篇是本书正文第 4 章（正文共 13 章，其中第 12、13 章为扩展专题，另有附录 A/B），可独立阅读，前后篇见下方导航。
+> ⚠️ 本篇是本书正文第 4 章（正文共 15 章，含第 12、13、16、17 章四篇扩展专题，另有附录 A、B），可独立阅读，前后篇见下方导航。
 >
 > 🏠 首页导读：[`00_overview.md`](00_overview.md) ｜ 上一篇：[03_array-geometry.md](03_array-geometry.md) ｜ 下一篇：[05_beamforming.md](05_beamforming.md)
 
@@ -231,7 +231,8 @@ $$\hat{\vec p} = \arg\max_{\vec r} \sum_{i<j} R^{\mathrm{PHAT}}_{x_ix_j}\!\big(\
 
 $$\begin{aligned}
 |Y(f,\vec r)|^2&=\left|\sum_{m=1}^M\tilde X_m(f)e^{+\mathrm{j}2\pi ft_m(\vec r)}\right|^2\\
-&=\sum_{m=1}^M|\tilde X_m(f)|^2+2\sum_{1\le i<j\le M}\Re\!\left\{\tilde X_i(f)\tilde X_j^*(f)\,e^{+\mathrm{j}2\pi f\tau_{ij}(\vec r)}\right\}\text{。}
+&=\sum_{m=1}^M|\tilde X_m(f)|^2\\
+&\quad+2\sum_{1\le i<j\le M}\operatorname{Re}\!\left\{\tilde X_i(f)\tilde X_j^*(f)\,e^{+\mathrm{j}2\pi f\tau_{ij}(\vec r)}\right\}\text{。}
 \end{aligned}$$
 
 看右边两项：第一项 $\sum_{m=1}^M|\tilde X_m(f)|^2$ 是各通道自身的白化能量和，**完全不含候选坐标 $\vec r$**，改变搜索位置时它只是一个平移整张响应图的常数底，不会移动任何峰值；把它减掉并沿频率积分（或对离散频点求和），剩下的第二项恰好就是 $2\sum_{i<j}R^{\mathrm{PHAT}}_{x_ix_j}(\tau_{ij}(\vec r))$，只差一个正的常数因子 $2$（系统推导见 [DiBiase, Brown University 博士论文, 2000](https://www.glat.info/ma/av16.3/2000-DiBiaseThesis.pdf)）。去掉对角自功率项不仅省算力，还顺带消除了不提供方向信息的通道自噪声基底。
@@ -247,7 +248,7 @@ Q&=\begin{cases}G/|G|,&|G|>\varepsilon g_{ij},\\0,&\text{其余频点帧},\end{c
 g_{ij}&=\max_{k,\ell}|G_{ij}(k,\ell)|,\\
 \overline Q_{ij}(k)&=\frac1L\sum_{\ell=1}^L Q_{ij}(k,\ell),\\
 v_{ij}(k,\theta)&=e^{+\mathrm{j}2\pi f_k\tau_{ij}(\theta)},\\
-C_{ij}(\theta)&=\frac1F\sum_{k=1}^F\Re\{\overline Q_{ij}v_{ij}\},\\
+C_{ij}(\theta)&=\frac1F\sum_{k=1}^F\operatorname{Re}\{\overline Q_{ij}v_{ij}\},\\
 S(\theta)&=\frac1B\sum_{i<j}C_{ij}(\theta)\text{。}
 \end{aligned}\tag{4-5}$$
 
@@ -613,7 +614,7 @@ $$\begin{aligned}
 
 $$\min_{\mathbf T_j\mathbf T_j^H=\mathbf I_M}\;\|\mathbf A(f_0)-\mathbf T_j\mathbf A(f_j)\|_F^2\text{。}$$
 
-因为酉变换不改变向量模长，$\operatorname{tr}(\mathbf T_j\mathbf A(f_j)\mathbf A^H(f_j)\mathbf T_j^H)=\operatorname{tr}(\mathbf A(f_j)\mathbf A^H(f_j))$ 与 $\mathbf T_j$ 无关，最小化上式等价于最大化交叉内积实部 $\Re\operatorname{tr}\!\big(\mathbf T_j\mathbf A(f_j)\mathbf A^H(f_0)\big)$。对交叉矩阵 $\mathbf A(f_j)\mathbf A^H(f_0)\in\mathbb C^{M\times M}$ 做奇异值分解，立刻得到闭式最优酉聚焦矩阵：
+因为酉变换不改变向量模长，$\operatorname{tr}(\mathbf T_j\mathbf A(f_j)\mathbf A^H(f_j)\mathbf T_j^H)=\operatorname{tr}(\mathbf A(f_j)\mathbf A^H(f_j))$ 与 $\mathbf T_j$ 无关，最小化上式等价于最大化交叉内积实部 $\operatorname{Re}\operatorname{tr}(\mathbf T_j\mathbf A(f_j)\mathbf A^H(f_0))$。对交叉矩阵 $\mathbf A(f_j)\mathbf A^H(f_0)\in\mathbb C^{M\times M}$ 做奇异值分解，立刻得到闭式最优酉聚焦矩阵：
 
 $$\mathbf A(f_j)\mathbf A^H(f_0)=\mathbf U\boldsymbol\Sigma\mathbf V^H,\qquad \mathbf T_j=\mathbf V\mathbf U^H\text{。}$$
 
@@ -1023,8 +1024,8 @@ $$\mathbf W=\begin{bmatrix}1-q&\mathrm{j}q&q\\-\mathrm{j}q&1-q&\mathrm{j}q\\q&-\
 **第一步：分清直流、内部共轭对与旧奈奎斯特频点**。在偶数 $N$ 点 DFT 中，$k=0$ 是直流项，$k=1,\ldots,N/2-1$ 与各自的负频共轭项成对出现（系数带因子 $2$），而唯独旧奈奎斯特频点 $k=N/2$ 正负频率重合，只出现一次！以原始采样周期为单位记连续插值位置为 $t$，偶数 $N$ 的实周期三角插值公式为
 
 $$\begin{aligned}
-Ng(t)&=H_0+2\sum_{k=1}^{N/2-1}\Re\!\left\{H_ke^{+\mathrm{j}2\pi kt/N}\right\}\\
-&\quad+H_{N/2}\cos(\pi t)\text{。}
+Ng(t)&=H_0+H_{N/2}\cos(\pi t)\\
+&\quad+2\sum_{k=1}^{N/2-1}\operatorname{Re}\{H_ke^{+\mathrm{j}2\pi kt/N}\}\text{。}
 \end{aligned}\tag{4-22}$$
 
 将 $N=8$、$H_k=1$ 代入式(4-22)：$t=0$ 时 $g(0)=(1+2\times 3+1)/8=1$；$t=1$ 时余弦项配对相消得 $g(1)=0$；半格点 $t=0.5$ 时 $\cos(\pi\times 0.5)=0$，得

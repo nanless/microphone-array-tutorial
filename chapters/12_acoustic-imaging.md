@@ -64,7 +64,7 @@ $$\begin{aligned}
 \mathbf A&=[\vec a_1,\ldots,\vec a_J].
 \end{aligned}\tag{12-1}$$
 
-式中 $\vec s_\ell = [s_{1,\ell},\ldots,s_{J,\ell}]^\top \in \mathbb{C}^{J \times 1}$ 汇集了所有网格点的源系数——没有物理声源的空白网格点只需令对应分量 $s_{j,\ell} = 0$。用有限个离散格点去近似连续分布的设备表面是对空间的离散化建模；真实噪声源当然未必刚好落在某个网格交点上，这种“离网格”失配的影响将在 §12.9 专门剖析。
+式中 $\vec s_\ell = [s_{1,\ell},\ldots,s_{J,\ell}]^\top$（维数 $J \times 1$）汇集了所有网格点的源系数——没有物理声源的空白网格点只需令对应分量 $s_{j,\ell} = 0$。用有限个离散格点去近似连续分布的设备表面是对空间的离散化建模；真实噪声源当然未必刚好落在某个网格交点上，这种“离网格”失配的影响将在 §12.9 专门剖析。
 
 为使推导清爽，后文在单频分析时省去频点索引 $f_k$：凡未特别注明的 $\vec a_j$、权重 $\vec w_i$、互谱矩阵 $\mathbf R$ 和源功率 $q_j$，均默认处在同一频点下。跨频点求解后如何按物理量纲合并成倍频程或宽带总声级，将在 §12.10 展开。
 
@@ -74,13 +74,15 @@ $$\begin{aligned}
 
 $$\begin{gathered}
 \Delta r_{mj}=r_{mj}-r_{0j},\\
-a_{mj}(f)=\frac{r_{0j}}{r_{mj}}\exp[-\mathrm{j}\kappa\Delta r_{mj}],\\
+a_{mj}(f)=\frac{r_{0j}}{r_{mj}}e^{-\mathrm{j}\kappa\Delta r_{mj}},\\
 \kappa=\frac{2\pi f}{c}.
 \end{gathered}\tag{12-2}$$
 
-初学者第一次看到幅度项 $\frac{r_{0j}}{r_{mj}}$ 时，很容易疑惑“为什么分子是参考距 $r_{0j}$、分母才是麦克风距 $r_{mj}$”。我们可以从自由场球面波的反比衰减律一眼看清它的物理来历：点声源辐射的球面波声压幅值与距离成反比（$\propto 1/r$），设比例常数为 $C_j$，则该源在参考点 $\vec r_0$ 处产生的复声压为 $s_j = \frac{C_j}{r_{0j}} e^{-\mathrm{j}\kappa r_{0j}}$，而在第 $m$ 支麦克风处产生的复声压为 $x_{mj} = \frac{C_j}{r_{mj}} e^{-\mathrm{j}\kappa r_{mj}}$。把两式相除消去源端常数 $C_j$，立即得到 $x_{mj} = \frac{r_{0j}}{r_{mj}} e^{-\mathrm{j}\kappa(r_{mj}-r_{0j})} s_j = a_{mj}(f) s_j$。换言之，当我们将待求的源系数 $s_j$ 定义为“该声源独自在参考点 $\vec r_0$ 处贡献的声压”时，如果某支麦克风比参考点离声源更远（$r_{mj} > r_{0j}$），它收到的声压自然比参考点弱，幅度比 $\frac{r_{0j}}{r_{mj}} < 1$；反之若麦克风比参考点更近，幅度比就大于 $1$；而在参考点自身处（$r_{mj} = r_{0j}$），传播系数恰好归一为 $1$（参见 [Sarradj 2012，§2 式(1)～(4)](https://doi.org/10.1155/2012/292695)）。当然，式(12-2)要求 $r_{mj} > 0$，且未计入机体遮挡、地面反射、偶极子/四极子指向性以及风洞剪切层折射。
+初学者第一次看到幅度项 $\frac{r_{0j}}{r_{mj}}$ 时，很容易疑惑“为什么分子是参考距 $r_{0j}$、分母才是麦克风距 $r_{mj}$”。我们可以从自由场球面波的反比衰减律一眼看清它的物理来历：点声源辐射的球面波声压幅值与距离成反比（$\propto 1/r$），设比例常数为 $C_j$，则该源在参考点 $\vec r_0$ 处产生的复声压为 $s_j = (C_j / r_{0j})e^{-\mathrm{j}\kappa r_{0j}}$，而在第 $m$ 支麦克风处产生的复声压为 $x_{mj} = (C_j / r_{mj})e^{-\mathrm{j}\kappa r_{mj}}$。把两式相除消去源端常数 $C_j$，立即得到比值 $x_{mj}/s_j$ 等于 $(r_{0j}/r_{mj})e^{-\mathrm{j}\kappa\Delta r_{mj}}$，即 $x_{mj} = a_{mj}(f)s_j$。
 
-再核对指数项的正负号：本书全书前向傅里叶变换核统一采用 $e^{-\mathrm{j}2\pi f t}$，因此信号晚到达（正时延 $\tau = \Delta r_{mj}/c > 0$，即 $r_{mj} > r_{0j}$）必然乘上负相位因子 $e^{-\mathrm{j}2\pi f \tau} = e^{-\mathrm{j}\kappa \Delta r_{mj}}$。[第 5 章](05_beamforming.md)远场平面波公式中之所以在正入射角方向看到正指数，是因为位于来波方向前侧的阵元比参考点更早收到波前（$\Delta r_{mj} < 0$），负负得正，两套符号约定完全自洽。
+换言之，当我们将待求的源系数 $s_j$ 定义为“该声源独自在参考点 $\vec r_0$ 处贡献的声压”时，如果某支麦克风比参考点离声源更远（$r_{mj} > r_{0j}$），它收到的声压自然比参考点弱，幅度比 $\frac{r_{0j}}{r_{mj}} < 1$；反之若麦克风比参考点更近，幅度比就大于 $1$；而在参考点自身处（$r_{mj} = r_{0j}$），传播系数恰好归一为 $1$（参见 [Sarradj 2012，§2 式(1)～(4)](https://doi.org/10.1155/2012/292695)）。当然，式(12-2)要求 $r_{mj} > 0$，且未计入机体遮挡、地面反射、偶极子/四极子指向性以及风洞剪切层折射。
+
+再核对指数项的正负号：本书全书前向傅里叶变换核统一采用 $e^{-\mathrm{j}2\pi f t}$，因此信号晚到达（正时延 $\tau = \Delta r_{mj}/c > 0$，即 $r_{mj} > r_{0j}$）必然乘上负相位因子 $e^{-\mathrm{j}2\pi f\tau}$，写成波数即为 $e^{-\mathrm{j}\kappa\Delta r_{mj}}$。[第 5 章](05_beamforming.md)远场平面波公式中之所以在正入射角方向看到正指数，是因为位于来波方向前侧的阵元比参考点更早收到波前（$\Delta r_{mj} < 0$），负负得正，两套符号约定完全自洽。
 
 在本章贯穿始终的双麦克风两格手算锚点例中，我们设定第二个候选源到达麦 2 比麦 1 **晚**，对应相位因子为 $e^{-\mathrm{j}2\pi/3}$。如果在代码里不小心把传播向量取了共轭，虽然模平方形式的 PSF 和常规扫描功率看似不变，但互谱矩阵非对角元的虚部会整体反号，一旦与真实录音数据的 FFT 互谱对接就会把声源左右方向彻底颠倒。因此，传播公式、合成音频延迟与互谱共轭方向必须严格锁定同一套约定。
 
@@ -100,7 +102,7 @@ a_{mj}(f)=\frac{r_{0j}}{r_{mj}}\exp[-\mathrm{j}\kappa\Delta r_{mj}],\\
 
 $$\begin{aligned}
 \mathbf R&=\mathbb{E}[\vec x\vec x^H],\\
-\hat{\mathbf R}&=\frac{1}{L}\sum_{\ell=1}^{L}\vec x_\ell\vec x_\ell^H.
+\hat{\mathbf R}&=\frac{1}{L}\sum_{\ell=1}^L\vec x_\ell\vec x_\ell^H.
 \end{aligned}\tag{12-3}$$
 
 不妨写出双通道（$M = 2$）时单个快拍外积 $\vec x_\ell\vec x_\ell^H$ 的具体元素，看看它究竟存了什么信息：
@@ -116,8 +118,8 @@ x_{2,\ell}x_{1,\ell}^* & |x_{2,\ell}|^2
 进一步检查样本互谱矩阵 $\hat{\mathbf R}$ 的正定性：任取一个 $M$ 维复向量 $\vec v$，左乘 $\vec v^H$、右乘 $\vec v$ 构成二次型，把求和号提出来可得
 
 $$\begin{aligned}
+\vec v^H\vec x_\ell\vec x_\ell^H\vec v&=|\vec v^H\vec x_\ell|^2,\\
 \vec v^H\hat{\mathbf R}\vec v
-&=\frac{1}{L}\sum_{\ell=1}^{L}\vec v^H\vec x_\ell\vec x_\ell^H\vec v\\
 &=\frac{1}{L}\sum_{\ell=1}^{L}|\vec v^H\vec x_\ell|^2\ge 0.
 \end{aligned}$$
 
@@ -125,10 +127,11 @@ $$\begin{aligned}
 
 #### 峰值复幅度与均方复系数
 
-用正弦波构造校验算例时，最容易出岔子的是“峰值幅度”与“均方根（RMS）幅度”相差的因子 $2$。考虑频率既非直流（DC）也非 Nyquist 端点的实正弦序列 $x[n] = \operatorname{Re}\{z e^{\mathrm{j}\Omega_{\mathrm{d}} n}\}$（其中数字角频率 $\Omega_{\mathrm{d}} = 2\pi f / f_s \in (0,\pi)$，$z$ 为峰值复幅度）。由于余弦平方在整数个周期内的平均值为 $1/2$，该实正弦的时域均方功率等于 $|z|^2 / 2$。为了使式(12-3)算出的 CSM 对角元直接等于时域均方功率，我们可以先定义均方根复系数 $\vec s_\ell = \vec z_\ell / \sqrt{2}$，等价地在外积上除以 $2$：
+用正弦波构造校验算例时，最容易出岔子的是“峰值幅度”与“均方根（RMS）幅度”相差的因子 $2$。考虑频率既非直流（DC）也非 Nyquist 端点的实正弦序列：记复指数为 $\xi[n] = z e^{\mathrm{j}\Omega_{\mathrm{d}} n}$（其中数字角频率 $\Omega_{\mathrm{d}} = 2\pi f / f_s \in (0,\pi)$，$z$ 为峰值复幅度），实正弦取其实部 $x[n] = \operatorname{Re}\{\xi[n]\}$。由于余弦平方在整数个周期内的平均值为 $1/2$，该实正弦的时域均方功率等于 $|z|^2 / 2$。为了使式(12-3)算出的 CSM 对角元直接等于时域均方功率，我们可以先定义均方根复系数 $\vec s_\ell = \vec z_\ell / \sqrt{2}$，等价地在外积上除以 $2$：
 
 $$\begin{aligned}
-\mathbf R_{\mathrm{tone}}&=\frac{1}{2L}\sum_{\ell=1}^{L}\vec z_\ell\vec z_\ell^H\\
+\mathbf R_{\mathrm{tone}}
+&=\frac{1}{2L}\sum_{\ell=1}^{L}\vec z_\ell\vec z_\ell^H\\
 &=\frac{1}{L}\sum_{\ell=1}^{L}\vec s_\ell\vec s_\ell^H.
 \end{aligned}\tag{12-4}$$
 
@@ -139,9 +142,11 @@ $$\begin{aligned}
 处理真实宽带录音时，通常对每帧 $N$ 点加窗后直接做未归一化的快速傅里叶变换（FFT）。设实分析窗为 $v[n]$（$n = 0,\ldots,N-1$），定义窗能量归一化因子 $U = \sum_{n=0}^{N-1} v[n]^2$，第 $\ell$ 帧加窗后的多通道 FFT 输出记为 $\vec X_\ell[k]$。对实信号而言，负频率信息与正频率共轭对称，工程上普遍采用单边谱（$0 \le k \le \lfloor N/2 \rfloor$）表示单边互功率谱密度 $\mathbf S[k]$ 与单频格均方功率矩阵 $\mathbf R_{\mathrm{bin}}[k]$：
 
 $$\begin{aligned}
-\mathbf S[k]&=\frac{\epsilon_k}{L f_s U}\sum_{\ell=1}^{L}\vec X_\ell[k]\vec X_\ell[k]^H,\\
-\mathbf R_{\mathrm{bin}}[k]&=\mathbf S[k]\Delta f,\\
-\Delta f&=\frac{f_s}{N}.
+\hat{\mathbf R}_X[k]
+&=\frac{1}{L}\sum_{\ell=1}^{L}\vec X_\ell[k]\vec X_\ell[k]^H,\\
+\mathbf S[k]&=\frac{\epsilon_k}{f_s U}\hat{\mathbf R}_X[k],\\
+\mathbf R_{\mathrm{bin}}[k]&=\mathbf S[k]\Delta f,\qquad
+\Delta f=\frac{f_s}{N}.
 \end{aligned}\tag{12-5}$$
 
 式中单边折叠因子在内部正频点（$1 \le k < N/2$）取 $\epsilon_k = 2$，以把对称负频格的能量合拢过来；而在直流点（$k = 0$）以及偶数 $N$ 的 Nyquist 点（$k = N/2$）没有独立的共轭伙伴，故取 $\epsilon_k = 1$。若输入信号已完成声压灵敏度校准（单位 $\mathrm{Pa}$），则互功率谱密度 $\mathbf S[k]$ 的量纲为 $\mathrm{Pa}^2/\mathrm{Hz}$，乘上频格宽度 $\Delta f$ 后的单频格均方功率矩阵 $\mathbf R_{\mathrm{bin}}[k]$ 量纲为 $\mathrm{Pa}^2$；若输入是未标定的数字音频，则对应数字满量程幅度平方单位。
@@ -150,16 +155,21 @@ $$\begin{aligned}
 
 对任意第 $m$ 路麦克风，把全部单边频格的对角元相加，由离散傅里叶变换的 Parseval 定理可以直接验证时频功率关系：
 
-$$\sum_{k=0}^{\lfloor N/2\rfloor} [\mathbf R_{\mathrm{bin}}[k]]_{mm}
-=\frac{1}{LU}\sum_{\ell=1}^{L}\sum_{n=0}^{N-1}v[n]^2|x_{m,\ell}[n]|^2.$$
+$$\begin{aligned}
+\sum_{k=0}^{\lfloor N/2\rfloor}[\mathbf R_{\mathrm{bin}}[k]]_{mm}
+&=\frac{1}{LU}\sum_{\ell=1}^{L}E_{m,\ell},\\
+E_{m,\ell}&=\sum_{n=0}^{N-1}v[n]^2|x_{m,\ell}[n]|^2.
+\end{aligned}$$
 
 等式右边表明，单边谱全频带积分精确等于时域信号的**窗平方加权均方值**。当采用矩形窗（$v[n] = 1, U = N$）时，它退化为普通的样本均方功率；而对非平稳瞬态信号改用锥形窗时，两者完全可能不同。
 
-我们可以举一个极简的四点瞬态例子看清这一点：取 $N = 4$ 的周期 Hann 窗 $v = [0, 1/2, 1, 1/2]$，其窗平方和为 $U = 0 + 1/4 + 1 + 1/4 = 3/2$。倘若一个单位冲激信号恰好落在第 $0$ 点（即 $x = [1, 0, 0, 0]$），或者落在窗中心的第 $2$ 点（即 $x = [0, 0, 1, 0]$），两者的普通帧均方功率都是 $1/4$；然而按式(12-5)把单边谱加起来，前者结果为 $0$，后者结果却变为 $1 / (3/2) = 2/3$。前者为零是因为瞬态脉冲刚好撞在窗函数两端的零值死区里被彻底遮蔽（这也是工程上处理非平稳信号必须配合 $50\%$～$75\%$ 帧重叠的原因），绝不是 FFT 计算丢了功率。此外，对不同通道 $m \ne m'$，单边互谱的非对角元保留了正频率复相位，虚部通常非零；若想从单边谱还原两个实信号的零时延互相关，只需对全频带单边互谱之和取实部，因为正负频率的虚部在双边求和时恰好正负抵消。
+我们可以举一个极简的四点瞬态例子看清这一点：取 $N = 4$ 的周期 Hann 窗 $v = [0, 1/2, 1, 1/2]$，其窗平方和为 $U = 0 + 1/4 + 1 + 1/4 = 3/2$。倘若一个单位冲激信号恰好落在第 $0$ 点（即 $x = [1, 0, 0, 0]$），或者落在窗中心的第 $2$ 点（即 $x = [0, 0, 1, 0]$），两者的普通帧均方功率都是 $1/4$；然而按式(12-5)把单边谱加起来，前者结果为 $0$，后者结果却变为 $1 / (3/2) = 2/3$。前者为零是因为瞬态脉冲刚好撞在窗函数两端的零值死区里被彻底遮蔽（这也是工程上处理非平稳信号必须配合 $50\%$～$75\%$ 帧重叠的原因），绝不是 FFT 计算丢了功率。
+
+此外，对不同通道 $m \ne m'$，单边互谱的非对角元保留了正频率复相位，虚部通常非零；若想从单边谱还原两个实信号的零时延互相关，只需对全频带单边互谱之和取实部，因为正负频率的虚部在双边求和时恰好正负抵消。
 
 #### 非相干源假设发生在哪一步
 
-现在把式(12-1)的多源观测模型 $\vec x = \mathbf A\vec s + \vec n$ 代入总体二阶矩 $\mathbf R = \mathbb{E}[\vec x\vec x^H]$。展开乘积时会出现源与噪声的交叉项 $\mathbf A\mathbb{E}[\vec s\vec n^H]$ 与 $\mathbb{E}[\vec n\vec s^H]\mathbf A^H$。当源信号与加性噪声满足二阶正交条件 $\mathbb{E}[\vec s\vec n^H] = \mathbf 0$（例如零均值且统计不相关；注意若两者均值皆非零，仅中心化协方差为零还不足以令未中心化交叉二阶矩为零）时，源噪交叉项消去，得到 $\mathbf R = \mathbf A\mathbf R_s\mathbf A^H + \mathbf R_n$，其中 $\mathbf R_s = \mathbb{E}[\vec s\vec s^H]$ 为 $J \times J$ 的源互谱矩阵。
+现在把式(12-1)的多源观测模型 $\vec x = \mathbf A\vec s + \vec n$ 代入总体二阶矩 $\mathbf R = \mathbb{E}[\vec x\vec x^H]$。展开乘积时会出现源与噪声的交叉项 $\mathbf A\mathbb{E}[\vec s\vec n^H]$ 与 $\mathbb{E}[\vec n\vec s^H]\mathbf A^H$。当源信号与加性噪声满足二阶正交条件 $\mathbb{E}[\vec s\vec n^H] = \mathbf 0$（例如零均值且统计不相关；注意若两者均值皆非零，仅中心化协方差为零还不足以令未中心化交叉二阶矩为零）时，源噪交叉项消去，观测二阶矩满足 $\mathbf R - \mathbf R_n$ 等于 $\mathbf A\mathbf R_s\mathbf A^H$，其中 $\mathbf R_s = \mathbb{E}[\vec s\vec s^H]$ 为 $J \times J$ 的源互谱矩阵。
 
 常规波束扫描与标准 DAMAS、CMF 算法的核心物理假设就在下一步——假定不同位置上的声源彼此**互不相干（incoherent）**，即对任意 $j \ne h$ 都有互谱 $R_{s,jh} = \mathbb{E}[s_j s_h^*] = 0$。只有在这条假设成立时，$\mathbf R_s = \operatorname{diag}(q_1,\ldots,q_J)$ 才退化为实非负对角阵，观测 CSM 才能拆成各个候选源秩一模板的非负线性叠加：
 
@@ -168,7 +178,7 @@ $$\begin{aligned}
 q_j&=\mathbb{E}[|s_j|^2]\ge 0.
 \end{aligned}\tag{12-6}$$
 
-一旦不同位置的发声体由同一根转轴激励，或者声源发出的直达声经过地面、风洞壁面反射形成强相干镜像源，源互谱矩阵就会多出非零交叉项 $R_{s,jh}\vec a_j\vec a_h^H + R_{s,jh}^*\vec a_h\vec a_j^H$（$j \ne h$）。这些复数干涉项既可能在空间某处相长叠加，也可能相消抵消，绝不能等效成若干个非负独立点源的功率简单相加。
+一旦不同位置的发声体由同一根转轴激励，或者声源发出的直达声经过地面、风洞壁面反射形成强相干镜像源，源互谱矩阵就会多出成对非零交叉项 $R_{s,jh}\vec a_j\vec a_h^H$ 与共轭转置 $R_{s,jh}^*\vec a_h\vec a_j^H$（$j \ne h$）。这些复数干涉项既可能在空间某处相长叠加，也可能相消抵消，绝不能等效成若干个非负独立点源的功率简单相加。
 
 还要区分“总体统计不相干”与“有限快拍样本互谱为零”：哪怕两个随机声源在理论上严格独立，有限个快拍算出的样本互谱也会围绕零值存在随机涨落；拉长平均时间能压低涨落，但高度重叠的 STFT 帧并非统计独立快拍。反之，在教学合成音频中通过人为设计跨块交替相位让 $20$ 个快拍的样本互谱精确相消为零，也只是一种便于剥离变量验证公式的确定性正交编码，不能反过来当作真实随机声源相互独立的证据（[E12-04](#e12-04) 将专门对比单帧完全相干与跨帧编码抵消的本质差异）。
 
@@ -194,7 +204,7 @@ $$\begin{aligned}
 \vec w_i^H\vec a_i&=\frac{\vec a_i^H\vec a_i}{\vec a_i^H\vec a_i}=1.
 \end{aligned}\tag{12-8}$$
 
-利用这条归一化性质，倘若空间里真的只有第 $i$ 格存在一个功率为 $q_i$ 的单源且无噪声（$\mathbf R = q_i\vec a_i\vec a_i^H$），扫描第 $i$ 格就准确读出 $b_i = q_i|\vec w_i^H\vec a_i|^2 = q_i$。在各通道等幅的远场平面波模型（$|a_{mi}| = 1$）下，分母 $\vec a_i^H\vec a_i = M$，式(12-8)便退化为我们熟悉的第 5 章延迟求和权重 $\vec a_i / M$。若背景中还叠有各通道等方差的空间白噪声 $\mathbf R_n = \sigma^2\mathbf I$，它在第 $i$ 格扫描值上附加的底噪偏置为 $\sigma^2\|\vec w_i\|_2^2 = \sigma^2 / (\vec a_i^H\vec a_i)$（例如等幅双麦时为 $\sigma^2 / 2$）。
+利用这条归一化性质，倘若空间里真的只有第 $i$ 格存在一个功率为 $q_i$ 的单源且无噪声（$\mathbf R = q_i\vec a_i\vec a_i^H$），扫描第 $i$ 格就准确读出 $b_i = q_i|\vec w_i^H\vec a_i|^2 = q_i$。在各通道等幅的远场平面波模型（$|a_{mi}| = 1$）下，分母 $\vec a_i^H\vec a_i = M$，式(12-8)便退化为我们熟悉的第 5 章延迟求和权重 $\vec a_i / M$。若背景中还叠有各通道等方差的空间白噪声 $\mathbf R_n = \sigma^2\mathbf I$，它在第 $i$ 格扫描值上附加的底噪偏置为 $\sigma^2\|\vec w_i\|_2^2$，即 $\sigma^2 / (\vec a_i^H\vec a_i)$（例如等幅双麦时为 $\sigma^2 / 2$）。
 
 #### 匹配点单位响应不保证三维峰位
 
@@ -209,10 +219,11 @@ Sarradj 在三维声源映射研究中系统对比了四类常见导向权重约
 为什么真实空间只有两个离散点声源，常规波束扫描画出来的热力图却是大片弥散的光斑，甚至还会冒出虚假的旁瓣亮区？把式(12-6)的非相干多源互谱矩阵代入式(12-7)的扫描二次型，答案便一目了然：
 
 $$\begin{aligned}
-b_i&=\vec w_i^H\left(\sum_{j=1}^{J}q_j\vec a_j\vec a_j^H+\mathbf R_n\right)\vec w_i\\
-&=\sum_{j=1}^{J}q_j(\vec w_i^H\vec a_j)(\vec a_j^H\vec w_i)+b_{n,i}\\
-&=\sum_{j=1}^{J}q_j|\vec w_i^H\vec a_j|^2+b_{n,i},\\
-P_{ij}&=|\vec w_i^H\vec a_j|^2,\qquad b_{n,i}=\vec w_i^H\mathbf R_n\vec w_i,\\
+b_i&=\vec w_i^H\mathbf R\vec w_i\\
+&=\sum_{j=1}^J q_j(\vec w_i^H\vec a_j)(\vec a_j^H\vec w_i)+b_{n,i}\\
+&=\sum_{j=1}^J q_j|\vec w_i^H\vec a_j|^2+b_{n,i},\\
+P_{ij}&=|\vec w_i^H\vec a_j|^2,\qquad
+b_{n,i}=\vec w_i^H\mathbf R_n\vec w_i,\\
 \vec b&=\mathbf P\vec q+\vec b_n.
 \end{aligned}\tag{12-9}$$
 
@@ -231,16 +242,21 @@ $$\begin{aligned}
 \vec q=\begin{pmatrix}1\\1/4\end{pmatrix}.
 \end{aligned}\tag{12-10}$$
 
-**逐步代入与中间数字**：先求两个格点之间的复数交叉响应 $\vec w_1^H\vec a_2$。注意 $e^{-\mathrm{j}2\pi/3} = -\frac{1}{2} - \mathrm{j}\frac{\sqrt{3}}{2}$，代入共轭内积得
+**逐步代入与中间数字**：先求两个格点之间的复数交叉响应 $\vec w_1^H\vec a_2$。注意 $e^{-\mathrm{j}2\pi/3} = -1/2 - \mathrm{j}\sqrt{3}/2$，代入共轭内积得
 
-$$\vec w_1^H\vec a_2=\frac{1}{2}\left(1+e^{-\mathrm{j}2\pi/3}\right)=\frac{1}{2}\left(\frac{1}{2}-\mathrm{j}\frac{\sqrt{3}}{2}\right)=\frac{1}{4}-\mathrm{j}\frac{\sqrt{3}}{4}.$$
+$$\begin{aligned}
+\vec w_1^H\vec a_2&=\frac{1}{2}\left(1+e^{-\mathrm{j}2\pi/3}\right)\\
+&=\frac{1}{2}\left(\frac{1}{2}-\mathrm{j}\frac{\sqrt{3}}{2}\right)
+=\frac{1}{4}-\mathrm{j}\frac{\sqrt{3}}{4}.
+\end{aligned}$$
 
-取模平方可得非对角耦合系数 $P_{12} = |1/4 - \mathrm{j}\sqrt{3}/4|^2 = 1/16 + 3/16 = 1/4$；同理 $P_{21} = |\vec w_2^H\vec a_1|^2 = |\vec a_1^H\vec w_2|^2 = 1/4$。假设无传感器噪声（$\vec b_n = \vec 0$），**最终结果**为：
+取模平方得非对角耦合系数 $P_{12} = |1/4 - \mathrm{j}\sqrt{3}/4|^2$，即 $1/16 + 3/16 = 1/4$；同理 $P_{21} = |\vec w_2^H\vec a_1|^2$ 亦等于 $|\vec a_1^H\vec w_2|^2 = 1/4$。假设无传感器噪声（$\vec b_n = \vec 0$），**最终结果**为：
 
 $$\begin{aligned}
 \mathbf P&=\begin{pmatrix}1&1/4\\1/4&1\end{pmatrix},\\
 \vec b&=\mathbf P\vec q
-=\begin{pmatrix}1\times 1 + \frac{1}{4}\times\frac{1}{4}\\\frac{1}{4}\times 1 + 1\times\frac{1}{4}\end{pmatrix}
+=\begin{pmatrix}1\times 1 + \frac{1}{4}\times\frac{1}{4}\\
+\frac{1}{4}\times 1 + 1\times\frac{1}{4}\end{pmatrix}
 =\begin{pmatrix}17/16\\1/2\end{pmatrix}.
 \end{aligned}\tag{12-11}$$
 
@@ -251,11 +267,11 @@ $$\begin{aligned}
 图 67 将两格解析手算与一个二维近场平面算例放在一起，帮我们把“真实源分布、单源 PSF 与多源常规扫描图”三者的关系一次看透（所有量均按共同参考源强归一化）：
 
 - **子图 (a) 阵列与源面几何**：蓝色圆点为平面 $z = 0$ 上半径 $0.2\,\mathrm{m}$ 的 $8$ 麦克风均匀圆环阵，原点黑色十字为公共参考点；虚线框标出距离阵列 $z = 0.6\,\mathrm{m}$ 处的 $21 \times 21 = 441$ 点二维扫描网格（$x, y \in [-0.3, 0.3]\,\mathrm{m}$，步长 $0.03\,\mathrm{m}$），两颗红星分别标出左侧强源 $(-0.15, 0, 0.6)\,\mathrm{m}$（源量 $1.0$）和右侧弱源 $(0.15, 0, 0.6)\,\mathrm{m}$（源量 $0.25$）。
-- **子图 (b) 两格 PSF 矩阵**：对应式(12-11)的 $2 \times 2$ 矩阵热力块，每一列代表在对应源格放一个单位源时各扫描格收到的响应——主对角线为 $1.00$，非对角线为 $0.25$ 的跨格串扰。
+- **子图 (b) 两格 PSF 矩阵**：对应式(12-11)的 $2 \times 2$ 矩阵热力块（横轴列号对应真实源格 $j$，纵轴行号对应扫描格 $i$），每一列代表在对应源格放一个单位源时各扫描格收到的响应——主对角线为 $1.00$，非对角线为 $0.25$ 的跨格串扰。
 - **子图 (c) 二维强源 PSF**：在 $4\,\mathrm{kHz}$（$c = 343\,\mathrm{m/s}$）下单独点亮左侧强源时整张 $441$ 格扫描面的归一化响应。左侧白色十字真值处匹配响应精确为 $1$，但有限圆阵孔径不仅在周围产生宽阔的主瓣光斑，还在画面右侧和上下边缘激发出明显的弧形旁瓣，其中右侧白色十字（弱源待测位）已被垫起约 $0.255$ 的泄漏底色。
 - **子图 (d) 双源叠加常规扫描图**：同时点亮非相干的强源（$1.0$）和弱源（$0.25$）后，强源旁瓣的斜坡叠加在弱源主瓣上，把右侧局部极大值（黄色叉号）向右推偏了一个网格步长（$30\,\mathrm{mm}$，落到 $x = 0.18\,\mathrm{m}$），直观展示了即使两个声源都精确位于网格交点上，常规波束扫描的局部峰值也未必对准弱源真值（详见 [E12-06](#e12-06)）。
 - **子图 (e) 两格反演与总量对比**：对比格 $1$ 和格 $2$ 上的源真值（绿柱：$1.00, 0.25$）、常规扫描值（蓝柱：$1.0625, 0.50$）以及两格反演恢复值（橙柱：$1.00, 0.25$），一眼可见常规扫描会系统性高估各格读数，绝不能直接把整张扫描图的像素值相加当作源强总和。
-- **子图 (f) 传播模型失配剖面**：沿 $y = 0$ 水平切线截取扫描曲线，保持同一份近场球面波观测 CSM 不变，蓝色实线采用匹配的球面波传播向量式(12-2)，红色虚线改用忽略距离比与球面曲率的远场平面波权重——可以看到错误套用平面波模型会明显压低主峰读数并扭曲空间剖面。
+- **子图 (f) 传播模型失配剖面**：沿 $y = 0$ 水平切线截取扫描曲线（横轴为横向坐标 $x \in [-0.3, 0.3]\,\mathrm{m}$，纵轴为归一化扫描输出 $b_i$），保持同一份近场球面波观测 CSM 不变，蓝色实线采用匹配的球面波传播向量式(12-2)，红色虚线改用忽略距离比与球面曲率的远场平面波权重——可以看到错误套用平面波模型会明显压低主峰读数并扭曲空间剖面。
 
 ### 12.5 从PSF方程学习DAMAS与NNLS
 
@@ -263,9 +279,14 @@ $$\begin{aligned}
 
 算出点扩散函数矩阵 $\mathbf P$ 和常规扫描图 $\vec b$ 后，我们的目标是逆向求解真实网格源功率向量 $\vec q$。首先写出无噪线性模型 $\mathbf P\vec q = \vec b$ 的第 $i$ 行，把对角自响应项与其余格点的跨格串扰项拆开：
 
-$$P_{ii}q_i+\sum_{j\ne i}P_{ij}q_j=b_i\quad\Longrightarrow\quad q_i=\frac{b_i-\sum_{j\ne i}P_{ij}q_j}{P_{ii}}.$$
+$$\begin{aligned}
+P_{ii}q_i+\sum_{j\ne i}P_{ij}q_j&=b_i,\\
+q_i&=\frac{b_i-\sum_{j\ne i}P_{ij}q_j}{P_{ii}}.
+\end{aligned}$$
 
-在式(12-11)这样条件良好的 $2 \times 2$ 理想算例里，$\mathbf P$ 满秩可逆且观测无误差，直接求线性逆 $\mathbf P^{-1}\vec b$ 就能精确还原 $[1, 1/4]^\top$。然而到了真实声学成像中，直接求逆立刻会撞上两堵墙：第一，候选网格点数 $J$ 动辄成百上千（例如图 67 中的 $J = 441$），而 $M$ 支麦克风的互谱矩阵最多只有 $M^2$ 个实线性独立自由度（当 $J \gg M^2$ 时，$\mathbf P$ 必然严重秩亏，存在无穷多组线性解）；第二，相邻细密网格的传播列高度近似，矩阵极度病态，哪怕混入微小的有限快拍统计涨落或几何误差，无约束线性逆或伪逆也会把误差剧烈放大，在相邻格点上产生正负交替振荡——一边算出很大的正功率，紧挨着的格点却算出物理上荒谬的**负声源功率**，用正负抵消去硬凑扫描图。
+在式(12-11)这样条件良好的 $2 \times 2$ 理想算例里，$\mathbf P$ 满秩可逆且观测无误差，直接求线性逆 $\mathbf P^{-1}\vec b$ 就能精确还原 $[1, 1/4]^\top$。然而到了真实声学成像中，直接求逆立刻会撞上两堵墙：第一，候选网格点数 $J$ 动辄成百上千（例如图 67 中的 $J = 441$），而 $M$ 支麦克风的互谱矩阵最多只有 $M^2$ 个实线性独立自由度；当 $J \gg M^2$ 时，$\mathbf P$ 必然严重秩亏，存在无穷多组线性解。
+
+第二，相邻细密网格的传播列高度近似，矩阵极度病态，哪怕混入微小的有限快拍统计涨落或几何误差，无约束线性逆或伪逆也会把误差剧烈放大。结果往往在相邻格点上产生正负交替振荡——一边算出很大的正功率，紧挨着的格点却算出物理上荒谬的**负声源功率**，用正负抵消去硬凑扫描图。
 
 回看式(12-6)的定义，独立声源均方功率 $q_j = \mathbb{E}[|s_j|^2]$ 在物理上绝不可能小于零（相干干涉交叉项并不属于独立源功率模型）。Brooks 与 Humphreys 提出的 DAMAS 算法正是抓住了这条物理底线：用上面的逐行移项关系配合每次更新后的**非负截断**，避免无约束求逆的正负振荡，在稀疏源场中剥离旁瓣污染（以下推导沿用本章符号，对应 [Brooks 与 Humphreys 2004 原论文式(18)、(23)、(24)](https://ntrs.nasa.gov/api/citations/20080015889/downloads/20080015889.pdf)）。
 
@@ -294,9 +315,9 @@ q_i&\leftarrow\max\left\{0,\frac{t_i}{P_{ii}}\right\}.
 
 我们把式(12-11)的两格算例（$P_{11} = P_{22} = 1$，$P_{12} = P_{21} = 1/4$，$\vec b = [17/16, 1/2]^\top$）一步步代进式(12-12)，手算前三次前向单向遍历，亲眼看看旁瓣污染是怎样被逐次剥掉的：
 
-- **第 1 次前向遍历**：初值 $q_1^{(0)} = 0, q_2^{(0)} = 0$。先算第 $1$ 格：$q_1^{(1)} = 17/16 - \frac{1}{4}\times 0 = 17/16$；立刻拿这个新值去扣第 $2$ 格的串扰：$t_2 = 1/2 - \frac{1}{4}\times\frac{17}{16} = \frac{32 - 17}{64} = 15/64 > 0$，故 $q_2^{(1)} = 15/64$。
-- **第 2 次前向遍历**：用刚算出的 $q_2^{(1)} = 15/64$ 修正第 $1$ 格：$q_1^{(2)} = 17/16 - \frac{1}{4}\times\frac{15}{64} = \frac{272 - 15}{256} = 257/256$；再用 $q_1^{(2)}$ 更新第 $2$ 格：$q_2^{(2)} = 1/2 - \frac{1}{4}\times\frac{257}{256} = \frac{512 - 257}{1024} = 255/1024$。
-- **第 3 次前向遍历**：同理算出 $q_1^{(3)} = 17/16 - \frac{1}{4}\times\frac{255}{1024} = 4097/4096$，$q_2^{(3)} = 1/2 - \frac{1}{4}\times\frac{4097}{4096} = 4095/16384$。
+- **第 1 次前向遍历**：初值 $q_1^{(0)} = 0, q_2^{(0)} = 0$。先算第 $1$ 格：$q_1^{(1)} = 17/16 - \frac{1}{4}\times 0 = 17/16$；立刻拿这个新值去扣第 $2$ 格的串扰：$t_2 = 1/2 - \frac{1}{4}\times\frac{17}{16} = 15/64 > 0$，故 $q_2^{(1)} = 15/64$。
+- **第 2 次前向遍历**：用刚算出的 $q_2^{(1)} = 15/64$ 修正第 $1$ 格：$q_1^{(2)} = 17/16 - \frac{15}{256} = 257/256$；再用 $q_1^{(2)}$ 更新第 $2$ 格：$q_2^{(2)} = 1/2 - \frac{257}{1024} = 255/1024$。
+- **第 3 次前向遍历**：同理算出 $q_1^{(3)} = 17/16 - \frac{255}{4096} = 4097/4096$，以及 $q_2^{(3)} = 1/2 - \frac{4097}{16384} = 4095/16384$。
 
 | 前向单向遍历次数 | $q_1$ | $q_2$ |
 |---|---:|---:|
@@ -325,7 +346,9 @@ $$\begin{gathered}
 q_i g_i=0\quad\text{对每个 }i=1,\ldots,J.
 \end{gathered}\tag{12-14}$$
 
-很多初学者误以为 DAMAS 的截断 GS 迭代就是在求解式(12-13)的扫描域 NNLS，其实不然！我们只需看一个极简反例：仍用式(12-11)的 $\mathbf P$，但取扫描观测 $\vec b = [1, 0]^\top$。按式(12-12)做 DAMAS 更新，从零出发第一步得 $q_1 = 1$、$q_2 = \max(0, -1/4) = 0$，此后永远停在固定点 $[1, 0]^\top$ 上，扫描平方残差 $\|\mathbf P\vec q - \vec b\|_2^2 = 1/16 \approx 0.0625$；而按式(12-14)求解扫描域 NNLS（[E12-08](#e12-08)），因为把 $q_1$ 稍微调小一点虽然在第一格付出微小代价，却能显著压低泄漏到第二格的残差，真正最小点落在 $[16/17, 0]^\top$，扫描平方残差降为 $1/17 \approx 0.0588$。这提醒我们：DAMAS 固定点对应的并不是式(12-13)（它在完整 CSM 下真正对应的凸目标将在 §12.7 揭晓），讨论反演结果前必须先指明所最小化的数学代价函数。
+很多初学者误以为 DAMAS 的截断 GS 迭代就是在求解式(12-13)的扫描域 NNLS，其实不然！我们只需看一个极简反例：仍用式(12-11)的 $\mathbf P$，但取扫描观测 $\vec b = [1, 0]^\top$。按式(12-12)做 DAMAS 更新，从零出发第一步得 $q_1 = 1$、$q_2 = \max(0, -1/4) = 0$，此后永远停在固定点 $[1, 0]^\top$ 上，扫描平方残差 $\|\mathbf P\vec q - \vec b\|_2^2 = 1/16 \approx 0.0625$；而按式(12-14)求解扫描域 NNLS（[E12-08](#e12-08)），因为把 $q_1$ 稍微调小一点虽然在第一格付出微小代价，却能显著压低泄漏到第二格的残差，真正最小点落在 $[16/17, 0]^\top$，扫描平方残差降为 $1/17 \approx 0.0588$。
+
+这提醒我们：DAMAS 固定点对应的并不是式(12-13)（它在完整 CSM 下真正对应的凸目标将在 §12.7 揭晓），讨论反演结果前必须先指明所最小化的数学代价函数。
 
 ### 12.6 CLEAN-SC如何逐次扣除相干成分
 
@@ -344,7 +367,11 @@ B&=\vec w_p^H\mathbf D\vec w_p,\\
 
 为什么 $\vec h = \mathbf D\vec w_p / B$ 这一步能从混杂的观测矩阵里把主导声源的真实传播向量“钓”出来？让我们拆开物理图景看一看：假设残差矩阵 $\mathbf D$ 由位于 $p$ 处的强源真实秩一贡献 $q_p\vec g_p\vec g_p^H$（这里 $\vec g_p$ 是包含真实传播微扰甚至弱相干反射的实际通道导向向量，按匹配尺度满足 $\vec w_p^H\vec g_p = 1$）与其余互不相干的弱源/背景项 $\mathbf D_{\mathrm{other}}$ 组成。当我们拿峰值波束权重 $\vec w_p$ 从右边去乘 $\mathbf D$ 时，本质上是在计算各支麦克风原始信号 $x_m$ 与峰值波束输出 $y_p = \vec w_p^H\vec x$ 之间的互相关向量 $\mathbb{E}[\vec x y_p^*] = \mathbf D\vec w_p$：如果波束主瓣已经较好地压制了其他方向的弱源（使 $\mathbf D_{\mathrm{other}}\vec w_p \approx \vec 0$），那么
 
-$$\mathbf D\vec w_p \approx q_p\vec g_p(\vec g_p^H\vec w_p) = q_p\vec g_p,\qquad B = \vec w_p^H\mathbf D\vec w_p \approx q_p|\vec w_p^H\vec g_p|^2 = q_p.$$
+$$\begin{aligned}
+\mathbf D\vec w_p&\approx q_p\vec g_p(\vec g_p^H\vec w_p),\\
+q_p\vec g_p(\vec g_p^H\vec w_p)&=q_p\vec g_p,\\
+B&=\vec w_p^H\mathbf D\vec w_p\approx q_p|\vec w_p^H\vec g_p|^2=q_p.
+\end{aligned}$$
 
 两者一除，$\vec h = \mathbf D\vec w_p / B \approx \vec g_p$ 便顺着峰值波束这根“鱼线”，把强源在全部 $M$ 支麦克风上的真实复数幅相结构原原本本地提了出来！随后构造秩一矩阵 $\mathbf G = B\vec h\vec h^H$ 并从 $\mathbf D$ 中扣去 $\phi\mathbf G$，强源连同它在实际通道下产生的一切真实旁瓣就同步消退了。工程上常取较保守的循环增益（如 $\phi = 0.5$ 或 $0.6$），分多轮稳健剥离；注意每轮在“干净源图（clean map）”的峰位 $p$ 上累加记账的功率也必须是实际扣掉的份额 $\phi B$，绝不能只扣一半矩阵却记满额 $B$。
 
@@ -352,20 +379,20 @@ $$\mathbf D\vec w_p \approx q_p\vec g_p(\vec g_p^H\vec w_p) = q_p\vec g_p,\qquad
 
 #### 为什么完整CSM扣除后仍可半正定
 
-一个非常漂亮的性质是：只要当前残差矩阵 $\mathbf D \succeq 0$ 是 Hermitian 半正定的，按式(12-15)扣掉相干秩一成分后，无论各源是否存在串扰，下一轮残差矩阵依然严格保持半正定，绝不会扣出负特征值。我们来一步步完成这个简短而严密的代数证明：首先注意到 $\vec w_p^H\vec h = \vec w_p^H\mathbf D\vec w_p / B = B / B = 1$；因为 $\mathbf D \succeq 0$，它存在唯一的 Hermitian 半正定平方根 $\mathbf D^{1/2}$。令辅助向量 $\vec u = \mathbf D^{1/2}\vec w_p / \sqrt{B}$，立即可验证其单位欧氏范数：$\vec u^H\vec u = \frac{\vec w_p^H\mathbf D^{1/2}\mathbf D^{1/2}\vec w_p}{B} = \frac{\vec w_p^H\mathbf D\vec w_p}{B} = 1$。将 $\mathbf G$ 用 $\mathbf D^{1/2}$ 和 $\vec u$ 改写：
+一个非常漂亮的性质是：只要当前残差矩阵 $\mathbf D \succeq 0$ 是 Hermitian 半正定的，按式(12-15)扣掉相干秩一成分后，无论各源是否存在串扰，下一轮残差矩阵依然严格保持半正定，绝不会扣出负特征值。我们来一步步完成这个简短而严密的代数证明：首先由 $\vec w_p^H\vec h = (\vec w_p^H\mathbf D\vec w_p)/B = 1$ 可知匹配响应归一；因为 $\mathbf D \succeq 0$，它存在唯一的 Hermitian 半正定平方根 $\mathbf D^{1/2}$。令辅助向量 $\vec u = \mathbf D^{1/2}\vec w_p / \sqrt{B}$，立即可验证其单位欧氏范数：$\vec u^H\vec u = (\vec w_p^H\mathbf D\vec w_p)/B = 1$。将 $\mathbf G$ 用 $\mathbf D^{1/2}$ 和 $\vec u$ 改写：
 
 $$\begin{aligned}
-\mathbf G&=B\left(\frac{\mathbf D\vec w_p}{B}\right)\left(\frac{\vec w_p^H\mathbf D}{B}\right)
-=\frac{\mathbf D\vec w_p\vec w_p^H\mathbf D}{B}
+\mathbf G&=\frac{(\mathbf D\vec w_p)(\vec w_p^H\mathbf D)}{B}
 =\mathbf D^{1/2}\vec u\vec u^H\mathbf D^{1/2},\\
-\mathbf D-\mathbf G&=\mathbf D^{1/2}(\mathbf I-\vec u\vec u^H)\mathbf D^{1/2}\succeq 0.
+\mathbf D-\mathbf G
+&=\mathbf D^{1/2}(\mathbf I-\vec u\vec u^H)\mathbf D^{1/2}\succeq 0.
 \end{aligned}\tag{12-16}$$
 
-看中间的投影矩阵 $\mathbf I - \vec u\vec u^H$：因为 $\|\vec u\|_2 = 1$，它在 $\vec u$ 方向上的特征值为 $0$，在其余 $M - 1$ 个正交方向上的特征值全为 $1$，因此本身是半正定正交投影阵；前后夹乘 $\mathbf D^{1/2}$ 后自然保持半正定。当 $0 < \phi < 1$ 时，$\mathbf D - \phi\mathbf G = \mathbf D^{1/2}(\mathbf I - \phi\vec u\vec u^H)\mathbf D^{1/2}$ 在 $\vec u$ 方向保留正特征值 $1 - \phi > 0$，同样半正定。当然，这条矩阵代数性质只保证每次剥离在二阶统计意义上不会越界变负，并不意味着当两源靠得很近、波束主瓣发生明显串扰时，单轮提取出的 $\vec h$ 就一定等于某个孤立物理源的真实传播向量。
+看中间的投影矩阵 $\mathbf I - \vec u\vec u^H$：因为 $\|\vec u\|_2 = 1$，它在 $\vec u$ 方向上的特征值为 $0$，在其余 $M - 1$ 个正交方向上的特征值全为 $1$，因此本身是半正定正交投影阵；前后夹乘 $\mathbf D^{1/2}$ 后自然保持半正定。当 $0 < \phi < 1$ 时，$\mathbf D - \phi\mathbf G$ 因子化为前后夹乘 $\mathbf D^{1/2}$ 的 $\mathbf I - \phi\vec u\vec u^H$，在 $\vec u$ 方向保留正特征值 $1 - \phi > 0$，同样半正定。当然，这条矩阵代数性质只保证每次剥离在二阶统计意义上不会越界变负，并不意味着当两源靠得很近、波束主瓣发生明显串扰时，单轮提取出的 $\vec h$ 就一定等于某个孤立物理源的真实传播向量。
 
 #### 双源首轮完整计算与干净图
 
-我们马上用式(12-10)的非相干双源锚点例，手算一轮 $\phi = 1$ 的完整 CSM CLEAN-SC，亲眼检验当弱源泄漏进强源波束时会发生什么。**输入与口径**：由 $\mathbf R = 1\cdot\vec a_1\vec a_1^H + \frac{1}{4}\vec a_2\vec a_2^H$ 及 $e^{+\mathrm{j}2\pi/3} = -1/2 + \mathrm{j}\sqrt{3}/2$，先写出双通道观测 CSM：
+我们马上用式(12-10)的非相干双源锚点例，手算一轮 $\phi = 1$ 的完整 CSM CLEAN-SC，亲眼检验当弱源泄漏进强源波束时会发生什么。**输入与口径**：由双源叠加 $\mathbf R = \vec a_1\vec a_1^H + 0.25\vec a_2\vec a_2^H$ 及 $e^{+\mathrm{j}2\pi/3} = -1/2 + \mathrm{j}\sqrt{3}/2$，先写出双通道观测 CSM：
 
 $$\mathbf R=
 \begin{pmatrix}
@@ -393,9 +420,12 @@ $$\vec h=\frac{\mathbf R\vec w_1}{17/16}=\begin{pmatrix}
 1-\mathrm{j}\sqrt{3}/17
 \end{pmatrix}.$$
 
-**最终结果与边界解读**：计算 $\mathbf G = \frac{17}{16}\vec h\vec h^H$（其对角元为 $\frac{17}{16}(1 + 3/289) = 19/17$，右上元为 $\frac{17}{16}\frac{286 + \mathrm{j}34\sqrt{3}}{289} = \frac{143}{136} + \mathrm{j}\frac{\sqrt{3}}{8}$），取 $\phi = 1$ 从 $\mathbf R$ 中整块扣除后，剩余残差矩阵为
+**最终结果与边界解读**：计算 $\mathbf G = \frac{17}{16}\vec h\vec h^H$（其对角元为 $\frac{17}{16}(1 + 3/289) = 19/17$，右上元由 $\frac{17}{16}(1 + \mathrm{j}\sqrt{3}/17)^2$ 化简得 $\frac{143}{136} + \mathrm{j}\frac{\sqrt{3}}{8}$），取 $\phi = 1$ 从 $\mathbf R$ 中整块扣除后，剩余残差矩阵为
 
-$$\mathbf D_{\mathrm{next}}=\mathbf R-\mathbf G=\frac{3}{17}\begin{pmatrix}1&-1\\-1&1\end{pmatrix},$$
+$$\begin{aligned}
+\mathbf D_{\mathrm{next}}&=\mathbf R-\mathbf G\\
+&=\frac{3}{17}\begin{pmatrix}1&-1\\-1&1\end{pmatrix},
+\end{aligned}$$
 
 特征值恰为 $0$ 与 $6/17$，验证了式(12-16)的半正定保证！但请仔细观察提出来的 $\vec h$：第一源真正的传播向量明明是 $[1, 1]^\top$，这里钓出来的 $\vec h$ 却带上了虚部 $\pm\mathrm{j}\sqrt{3}/17$——原因正是第二源有 $1/16$ 的功率顺着第一格波束漏了进来，把首轮提取方向微微拉偏了（紧接着做第二轮剥离的变化见 [E12-11](#e12-11)）。
 
@@ -427,15 +457,16 @@ $$\begin{aligned}
 \min_{\vec q\ge 0}\;&\|\mathbf H\vec q-\vec c\|_2^2.
 \end{aligned}\tag{12-18}$$
 
-式中字典矩阵 $\mathbf H \in \mathbb{C}^{M^2 \times J}$ 的每一列 $\vec h_j$ 是一个 $M^2$ 维复向量（注意与 §12.6 中 $M$ 维的相干通道向量 $\vec h$ 区分维度）。因为向量拉直后的欧氏范数平方恰好等于原矩阵所有元素模平方之和，式(12-18)等价于在 $\vec q \ge 0$ 下最小化矩阵 Frobenius 范数平方 $\bigl\|\sum_{j=1}^J q_j\vec a_j\vec a_j^H - \hat{\mathbf R}\bigr\|_F^2$。这一基础形式暂未引入未知噪声方差估计、稀疏 $\ell_1$ 预算或相关源交叉项。
+式中字典矩阵 $\mathbf H \in \mathbb{C}^{M^2 \times J}$ 的每一列 $\vec h_j$ 是一个 $M^2$ 维复向量（注意与 §12.6 中 $M$ 维的相干通道向量 $\vec h$ 区分维度）。记模型重构为 $\mathbf M(\vec q) = \sum_{j=1}^J q_j\vec a_j\vec a_j^H$，矩阵残差为 $\mathbf E = \mathbf M(\vec q) - \hat{\mathbf R}$：因为向量拉直后的欧氏范数平方恰好等于原矩阵所有元素模平方之和，式(12-18)等价于在 $\vec q \ge 0$ 下最小化 $\|\mathbf E\|_F^2$。这一基础形式暂未引入未知噪声方差估计、稀疏 $\ell_1$ 预算或相关源交叉项。
 
 #### 实向量化为什么有平方根2
 
-绝大多数标准 NNLS 优化器（如 Lawson–Hanson 有效集法）只接收实数矩阵和实数向量，而式(12-18)中的字典 $\mathbf H$ 和观测 $\vec c$ 都是复数，该如何无损改写成实数问题？首先注意待求源强 $\vec q \in \mathbb{R}_+^J$ 本来就是实向量，因此矩阵残差 $\mathbf E = \sum_{j=1}^J q_j\vec a_j\vec a_j^H - \hat{\mathbf R}$ 始终是 Hermitian 矩阵：主对角元素 $E_{mm}$ 纯实，且下三角元素是对应上三角元素的复共轭（$|E_{nm}|^2 = |E_{mn}|^2 = (\operatorname{Re} E_{mn})^2 + (\operatorname{Im} E_{mn})^2$）。把全部 $M^2$ 个元素的模平方按对角线与上下三角合并同类项，立刻得到：
+绝大多数标准 NNLS 优化器（如 Lawson–Hanson 有效集法）只接收实数矩阵和实数向量，而式(12-18)中的字典 $\mathbf H$ 和观测 $\vec c$ 都是复数，该如何无损改写成实数问题？首先注意待求源强 $\vec q \in \mathbb{R}_+^J$ 本来就是实向量，因此残差矩阵 $\mathbf E$ 始终是 Hermitian 矩阵：主对角元素 $E_{mm}$ 纯实，且下三角元素是对应上三角元素的复共轭，满足 $|E_{nm}|^2 = |E_{mn}|^2$（即实部平方 $(\operatorname{Re} E_{mn})^2$ 加虚部平方 $(\operatorname{Im} E_{mn})^2$）。把全部 $M^2$ 个元素的模平方按对角线与上下三角合并同类项，立刻得到：
 
 $$\begin{aligned}
-\|\mathbf E\|_F^2&=\sum_{m=1}^{M} E_{mm}^2\\
-&\quad+2\sum_{1\le m<n\le M}\bigl[(\operatorname{Re} E_{mn})^2+(\operatorname{Im} E_{mn})^2\bigr].
+\|\mathbf E\|_F^2&=\sum_{m=1}^{M}E_{mm}^2
++2\sum_{1\le m<n\le M}(\operatorname{Re} E_{mn})^2\\
+&\quad+2\sum_{1\le m<n\le M}(\operatorname{Im} E_{mn})^2.
 \end{aligned}\tag{12-19}$$
 
 式(12-19)清楚地告诉我们紧凑实数字典该如何构造：对每个 $M \times M$ Hermitian 矩阵，只需提取 $M$ 个对角实部、$\frac{M(M-1)}{2}$ 个上三角实部（**乘以 $\sqrt{2}$**）以及 $\frac{M(M-1)}{2}$ 个上三角虚部（**同样乘以 $\sqrt{2}$**），拼成长度恰为 $M + M(M-1) = M^2$ 的实列向量！乘上 $\sqrt{2}$ 后平方正好还原系数 $2$，从而与完整复数 Frobenius 范数一分不差。
@@ -446,21 +477,25 @@ $$\begin{aligned}
 
 前面 §12.5 留了一个悬念：既然 DAMAS 的逐坐标截断 GS 迭代并不是在最小化扫描域残差 $\|\mathbf P\vec q - \vec b\|_2^2$，那它到底在优化什么？Chardon 等人的理论分析揭开了这个漂亮的谜底：在**完整 CSM** 且采用**式(12-8)匹配权重**的前提下，未加松弛的 DAMAS 迭代本质上正是在对式(12-18)的**完整 CSM Frobenius 拟合目标**执行单坐标轮换下降（Coordinate Descent）！
 
-我们不必等到习题，现在就用三步初等矩阵代数把这个联系当场拆穿。记第 $j$ 格的秩一模板矩阵为 $\mathbf T_j = \vec a_j\vec a_j^H$。展开 Frobenius 目标 $F(\vec q) = \bigl\|\sum_{j=1}^J q_j\mathbf T_j - \hat{\mathbf R}\bigr\|_F^2$ 时，二次项系数是两个秩一模板的 Frobenius 内积 $G_{ij} = \langle\mathbf T_i, \mathbf T_j\rangle_F = \operatorname{tr}(\mathbf T_i^H\mathbf T_j)$。利用矩阵迹的循环移位恒等式 $\operatorname{tr}(\mathbf X\mathbf Y) = \operatorname{tr}(\mathbf Y\mathbf X)$，把列向量移到最右端缩成标量：
+我们不必等到习题，现在就用三步初等矩阵代数把这个联系当场拆穿。记第 $j$ 格的秩一模板矩阵为 $\mathbf T_j = \vec a_j\vec a_j^H$。展开 Frobenius 目标 $F(\vec q) = \|\mathbf E\|_F^2$ 时，二次项系数是两个秩一模板的 Frobenius 内积 $G_{ij} = \langle\mathbf T_i, \mathbf T_j\rangle_F$，即 $\operatorname{tr}(\mathbf T_i^H\mathbf T_j)$。利用矩阵迹的循环移位恒等式 $\operatorname{tr}(\mathbf X\mathbf Y)$ 等于 $\operatorname{tr}(\mathbf Y\mathbf X)$，把列向量移到最右端缩成标量：
 
 $$\begin{aligned}
-G_{ij}&=\operatorname{tr}\!\big((\vec a_i\vec a_i^H)(\vec a_j\vec a_j^H)\big)
-=\operatorname{tr}\!\big(\vec a_j^H\vec a_i\vec a_i^H\vec a_j\big)\\
+G_{ij}&=\operatorname{tr}(\vec a_i\vec a_i^H\vec a_j\vec a_j^H)
+=\operatorname{tr}(\vec a_j^H\vec a_i\vec a_i^H\vec a_j)\\
 &=(\vec a_j^H\vec a_i)(\vec a_i^H\vec a_j)
 =|\vec a_i^H\vec a_j|^2.
 \end{aligned}$$
 
-同理，一次项系数为 $h_i = \langle\mathbf T_i, \hat{\mathbf R}\rangle_F = \operatorname{tr}(\vec a_i\vec a_i^H\hat{\mathbf R}) = \vec a_i^H\hat{\mathbf R}\vec a_i$。现在回头对照 §12.4 式(12-8)～(12-9)中匹配权重 $\vec w_i = \vec a_i / (\vec a_i^H\vec a_i)$ 下的 PSF 元素与扫描值：
+同理，一次项系数为 $h_i = \langle\mathbf T_i, \hat{\mathbf R}\rangle_F$，用迹移位把 $\operatorname{tr}(\vec a_i\vec a_i^H\hat{\mathbf R})$ 化为二次型 $\vec a_i^H\hat{\mathbf R}\vec a_i$。现在回头对照 §12.4 式(12-8)～(12-9)中匹配权重 $\vec w_i = \vec a_i / (\vec a_i^H\vec a_i)$ 下的 PSF 元素与扫描值（记行尺度常数 $\Lambda_{a,ii} = (\vec a_i^H\vec a_i)^2 > 0$）：
 
-$$P_{ij}=\frac{|\vec a_i^H\vec a_j|^2}{(\vec a_i^H\vec a_i)^2}=\frac{G_{ij}}{(\vec a_i^H\vec a_i)^2},\qquad
-b_i=\frac{\vec a_i^H\hat{\mathbf R}\vec a_i}{(\vec a_i^H\vec a_i)^2}=\frac{h_i}{(\vec a_i^H\vec a_i)^2}.$$
+$$\begin{aligned}
+P_{ij}&=\frac{|\vec a_i^H\vec a_j|^2}{\Lambda_{a,ii}}
+=\frac{G_{ij}}{\Lambda_{a,ii}},\\
+b_i&=\frac{\vec a_i^H\hat{\mathbf R}\vec a_i}{\Lambda_{a,ii}}
+=\frac{h_i}{\Lambda_{a,ii}}.
+\end{aligned}$$
 
-看清了吗？矩阵拟合的 Gram 矩阵第 $i$ 行 $G_{ij}$ 与扫描 PSF 第 $i$ 行 $P_{ij}$，仅仅相差同一个严格为正的行尺度常数 $\Lambda_{a,ii} = (\vec a_i^H\vec a_i)^2 > 0$（对右侧 $h_i$ 与 $b_i$ 也是同一个常数）！当我们固定其余坐标 $q_{j\ne i}$，单独对 $q_i \ge 0$ 最小化凸二次函数 $F(\vec q)$ 时，单坐标无约束极小值 $q_i = (h_i - \sum_{j\ne i} G_{ij}q_j) / G_{ii}$ 分子分母上下同时约去正因子 $\Lambda_{a,ii}$，一字不差地化成了 DAMAS 的式(12-12)更新 $q_i \leftarrow \max\bigl\{0, (b_i - \sum_{j\ne i} P_{ij}q_j) / P_{ii}\bigr\}$（完整定理参见 [Chardon 等，§3.1～3.3 定理 1～3 与式(15)～(18)](https://gilleschardon.fr/papers/damascmf.pdf)）！
+看清了吗？矩阵拟合的 Gram 矩阵第 $i$ 行 $G_{ij}$ 与扫描 PSF 第 $i$ 行 $P_{ij}$，仅仅相差同一个严格为正的行尺度常数 $\Lambda_{a,ii} > 0$（对右侧 $h_i$ 与 $b_i$ 也是同一个常数）！当我们固定其余坐标 $q_{j\ne i}$，单独对 $q_i \ge 0$ 最小化凸二次函数 $F(\vec q)$ 时，单坐标无约束极小值 $q_i = (h_i - \sum_{j\ne i} G_{ij}q_j) / G_{ii}$ 分子分母上下同时约去正因子 $\Lambda_{a,ii}$，一字不差地化成了 DAMAS 的式(12-12)更新 $q_i \leftarrow \max\{0, t_i / P_{ii}\}$（完整定理参见 [Chardon 等，§3.1～3.3 定理 1～3 与式(15)～(18)](https://gilleschardon.fr/papers/damascmf.pdf)）！
 
 这一等价关系要求观测 CSM 与模板均保留完整对角线、不预先裁剪负扫描值，且不含额外噪声列、$\ell_1$ 预算或常数截距（各传播列 $\vec a_i$ 的范数则无需相等）；同时要注意，坐标下降法只有收敛到满足互补条件的固定点时才达到全局最优，不能把任意有限轮未收敛的中间输出直接宣称为唯一最优解。[E12-17](#e12-17) 将写出式(12-29)～(12-31)的完整矩阵记号，在同一输入下并列复算“完整 CSM 拟合”与“扫描域 NNLS”两个不同的最优点，并进一步对照一致去对角投影下的变形（参见 [Chardon 等，§3.5](https://gilleschardon.fr/papers/damascmf.pdf)）。
 
@@ -469,9 +504,11 @@ b_i=\frac{\vec a_i^H\hat{\mathbf R}\vec a_i}{(\vec a_i^H\vec a_i)^2}=\frac{h_i}{
 在实际测量中，观测互谱矩阵常含有未知功率的空间白噪声 $\sigma^2\mathbf I$，且候选网格数 $J$ 远大于阵元平方数 $M^2$，需要借助稀疏先验压制伪峰。Yardibi 等人在经典 CMF 框架中引入了单位范数传播列归一化、未知对角噪声项与源功率总和的 $\ell_1$ 稀疏预算约束。为看清这三项改动如何重塑数学目标，我们写出如下联合拟合模型（这里将单位范数传播列拼成的字典记作 $\tilde{\mathbf A}$，对应的源功率参数记作 $\vec d$，以便与本章参考点口径下的 $\vec q$ 严格区分）：
 
 $$\begin{aligned}
-\mathbf R_{\mathrm{model}}&=\tilde{\mathbf A}\operatorname{diag}(\vec d)\tilde{\mathbf A}^H+\sigma^2\mathbf I,\\
-\min_{\vec d,\sigma^2}\;&\|\hat{\mathbf R}-\mathbf R_{\mathrm{model}}\|_F^2,\\
-\text{s.t.}\;&d_j\ge 0,\quad\sigma^2\ge 0,\quad\sum_{j=1}^{J}d_j\le\Lambda.
+\mathbf M_d
+&=\tilde{\mathbf A}\operatorname{diag}(\vec d)\tilde{\mathbf A}^H
++\sigma^2\mathbf I,\\
+\min_{\vec d,\sigma^2}\;&\|\hat{\mathbf R}-\mathbf M_d\|_F^2,\\
+\text{s.t.}\;&d_j\ge 0,\;\sigma^2\ge 0,\;\sum_{j=1}^J d_j\le\Lambda.
 \end{aligned}\tag{12-20}$$
 
 式(12-20)中的预算上限 $\Lambda \ge 0$ 直接控制允许分配给所有候选网格的总能量（等价于非负条件下的 $\ell_1$ 正则化），其数值必须与单位范数列 $\tilde{\vec a}_j = \vec a_j / \|\vec a_j\|_2$ 下 $\vec d$ 的量纲配套；若想换回参考位置声压均方量，还须按每列原有的范数平方逐格做尺度折算（原论文中的自适应预算选取策略详见 [Yardibi 等 2008](https://doi.org/10.1121%2F1.2896754)）。切勿将不含噪声列与预算约束的基础式(12-18)与式(12-20)混同。
@@ -488,7 +525,7 @@ $$\begin{aligned}
 
 #### 对角项包含目标与通道噪声
 
-在风洞试验或高速气流旁测量时，气流掠过麦克风保护网会在各传感器上产生很强的局部湍流脉动自噪声。如果各支麦克风间距足够大，这类局部自噪声以及前置放大器的热噪声在不同通道之间近似互不相关——在无限快拍极限下，它们的统计贡献 $\mathbf R_n = \operatorname{diag}(\sigma_1^2,\ldots,\sigma_M^2)$ 全部集中于 CSM 的主对角线上，而非对角互谱元不受污染。于是工程上普遍采用**对角删除（Diagonal Removal，DR）**技巧，直接把观测 CSM 的主对角线置零：
+在风洞试验或高速气流旁测量时，气流掠过麦克风保护网会在各传感器上产生很强的局部湍流脉动自噪声。如果各支麦克风间距足够大，这类局部自噪声以及前置放大器的热噪声在不同通道之间近似互不相关——在无限快拍极限下，它们的对角统计贡献 $\mathbf R_n$（第 $m$ 个对角元为 $\sigma_m^2$，其余为零）全部集中于 CSM 的主对角线上，而非对角互谱元不受污染。于是工程上普遍采用**对角删除（Diagonal Removal，DR）**技巧，直接把观测 CSM 的主对角线置零：
 
 $$\begin{gathered}
 \mathbf D_R=\operatorname{diag}(R_{11},\ldots,R_{MM}),\\
@@ -501,19 +538,26 @@ $$\begin{gathered}
 
 #### 为什么会出现负扫描值
 
-初学者第一次跑开启对角删除的波束扫描程序时，经常被热力图数组里冒出来的负数吓一跳：“功率怎么算成负的了？是不是代码写错了？”我们用两行 $2 \times 2$ 算术就能彻底看明白：取主对角置零后的实对称互谱矩阵 $\mathbf R_{\mathrm{trim}} = \begin{pmatrix}0 & 1/2 \\ 1/2 & 0\end{pmatrix}$，并用反相导向权重 $\vec w = [1/2, -1/2]^\top$ 计算扫描二次型：
+初学者第一次跑开启对角删除的波束扫描程序时，经常被热力图数组里冒出来的负数吓一跳：“功率怎么算成负的了？是不是代码写错了？”我们用两行 $2 \times 2$ 算术就能彻底看明白：取主对角置零、非对角均为 $1/2$ 的实对称互谱矩阵 $\mathbf R_{\mathrm{trim}}$，并用反相导向权重 $\vec w = [1/2, -1/2]^\top$ 计算扫描二次型：
 
-$$\mathbf R_{\mathrm{trim}}\vec w=\begin{pmatrix}0 & 1/2 \\ 1/2 & 0\end{pmatrix}\begin{pmatrix}1/2 \\ -1/2\end{pmatrix}=\begin{pmatrix}-1/4 \\ 1/4\end{pmatrix},\qquad
-b=\vec w^H\mathbf R_{\mathrm{trim}}\vec w=-\frac{1}{4}<0.$$
+$$\begin{aligned}
+\mathbf R_{\mathrm{trim}}&=
+\begin{pmatrix}0&1/2\\1/2&0\end{pmatrix},\\
+\mathbf R_{\mathrm{trim}}\vec w&=
+\begin{pmatrix}-1/4\\1/4\end{pmatrix},\\
+b&=\vec w^H\mathbf R_{\mathrm{trim}}\vec w=-\frac{1}{4}<0.
+\end{aligned}$$
 
 为什么会算出 $-1/4$？看一眼迹和特征值就懂了：$\operatorname{tr}(\mathbf R_{\mathrm{trim}}) = 0$，两个特征值分别是 $+1/2$ 和 $-1/2$——**删掉主对角正能量之后，$\mathbf R_{\mathrm{trim}}$ 根本不再是半正定矩阵！** 它的二次型只代表跨通道互相关之和，出现负值恰恰反映了两路信号在该扫描相位下呈反相抵消，绝不代表物理空间里有什么“负声能”。画声压级热力图时为了取对数，软件常把小于等于零的像素截断到显示下限；但在送入去对角反演或核查拟合残差前，必须保留截断前的有符号原始值（正如 [E12-17](#e12-17) 去对角对照所演示的那样）。
 
 #### 麦数补偿因子有适用条件
 
-由于对角删除挖掉了目标声源自身的对角功率，即便在真实单源位置上（$\mathbf R = q_i\vec a_i\vec a_i^H$），用式(12-8)权重算出的删对角扫描值也会缩水为
+由于对角删除挖掉了目标声源自身的对角功率，即便在真实单源位置上（$\mathbf R = q_i\vec a_i\vec a_i^H$），记单源对角阵 $\mathbf D_{a,i}$ 的主对角元为 $|a_{mi}|^2$（$m=1,\ldots,M$），用式(12-8)权重算出的删对角扫描值也会缩水为
 
-$$\vec w_i^H\big(\vec a_i\vec a_i^H-\operatorname{diag}(|a_{1i}|^2,\ldots,|a_{Mi}|^2)\big)\vec w_i
-=1-\frac{\sum_{m=1}^{M}|a_{mi}|^4}{(\vec a_i^H\vec a_i)^2}.$$
+$$\begin{aligned}
+\vec w_i^H(\vec a_i\vec a_i^H-\mathbf D_{a,i})\vec w_i
+&=1-\frac{\sum_{m=1}^{M}|a_{mi}|^4}{(\vec a_i^H\vec a_i)^2}.
+\end{aligned}$$
 
 要想在第 $i$ 个候选格点上把单源匹配响应重新拉回单位尺度 $1$，就必须乘上与位置相关的精确补偿因子 $\gamma_i$：
 
@@ -524,7 +568,9 @@ $$\gamma_i=
 
 先看退化边界：若分母为零（例如极端情况下只有 $1$ 支麦克风有非零响应，其余通道全为零），对角删除已经把该源的全部观测信息删得干干净净，任何有限因子都无法恢复。再看远场等幅特例：当各通道幅度相等（$|a_{mi}| = c_0 > 0$，$M > 1$）时，$(\vec a_i^H\vec a_i)^2 = M^2 c_0^4$，$\sum_m |a_{mi}|^4 = M c_0^4$，式(12-22)恰好化简为教科书里常见的常数因子 $\frac{M^2}{M^2 - M} = \frac{M}{M - 1}$（也就是把完整扫描分母里的 $M^2$ 换成非对角项个数 $M(M - 1)$）。
 
-然而在近场各通道距离衰减显著不等时，盲目套用常数因子 $\frac{M}{M - 1}$ 就会引入幅度偏差！举个例子：取两麦近场不等幅传播向量 $\vec a = [1, 2]^\top$，匹配权重为 $\vec w = \vec a / 5 = [1/5, 2/5]^\top$。完整 CSM 下单源扫描响应为 $1$；删去对角元 $1$ 和 $4$ 后，只剩两个等于 $2$ 的非对角元，二次型跌至 $2 \times \frac{1}{5} \times \frac{2}{5} \times 2 = 8/25 = 0.32$。此时若按两麦远场公式 $\frac{M}{M-1} = 2$ 补偿，只恢复到 $16/25 = 0.64$，差了一大截；唯有代入式(12-22)算出 $\gamma = \frac{5^2}{5^2 - (1^2 + 4^2)} = \frac{25}{25 - 17} = \frac{25}{8}$，才能精确还原单位源强 $1$（见 [E12-07](#e12-07) 与图 69(b)）。
+然而在近场各通道距离衰减显著不等时，盲目套用常数因子 $\frac{M}{M - 1}$ 就会引入幅度偏差！举个例子：取两麦近场不等幅传播向量 $\vec a = [1, 2]^\top$，匹配权重为 $\vec w = \vec a / 5 = [1/5, 2/5]^\top$。完整 CSM 下单源扫描响应为 $1$；删去对角元 $1$ 和 $4$ 后，只剩两个等于 $2$ 的非对角元，二次型跌至 $2 \times (1/5) \times (2/5) \times 2 = 8/25 = 0.32$。
+
+此时若按两麦远场公式 $\frac{M}{M-1} = 2$ 补偿，只恢复到 $16/25 = 0.64$，差了一大截；唯有代入式(12-22)算出 $\gamma = 25 / (25 - 17) = 25/8$，才能精确还原单位源强 $1$（见 [E12-07](#e12-07) 与图 69(b)）。
 
 ### 12.9 哪些条件改变后，漂亮的图会误导
 
@@ -534,22 +580,22 @@ $$\gamma_i=
 
 **输入与口径**：沿用式(12-10)的双麦两格传播向量 $\vec a_1 = [1, 1]^\top$、$\vec a_2 = [1, e^{-\mathrm{j}2\pi/3}]^\top$，但令两个声源发出完全相干的同频信号——源向量固定为 $\vec s = \alpha[1, 1/2]^\top$，其中公共复随机振幅满足 $\mathbb{E}[|\alpha|^2] = 1$。此时两源各自的边际均方功率依然是 $q_1 = 1$ 和 $q_2 = 1/4$，但源间互谱 $\mathbb{E}[s_1 s_2^*] = 1/2 \ne 0$，绝不能套用式(12-6)丢掉交叉项。
 
-**逐步代入与中间数字**：当 $\alpha = 1$ 时，阵列接收向量为 $\vec x = \vec a_1 + \frac{1}{2}\vec a_2 = [3/2,\; 3/4 - \mathrm{j}\sqrt{3}/4]^\top$。计算外积 $\mathbf R_{\mathrm{coh}} = \mathbb{E}[\vec x\vec x^H]$ 并代入两个格点的匹配权重扫描（记辅助复数 $\zeta = 9 + \mathrm{j}3\sqrt{3}$）：
+**逐步代入与中间数字**：当 $\alpha = 1$ 时，阵列接收向量 $\vec x = \vec a_1 + \frac{1}{2}\vec a_2$ 化为 $[3/2,\; 3/4 - \mathrm{j}\sqrt{3}/4]^\top$。计算外积 $\mathbf R_{\mathrm{coh}} = \mathbb{E}[\vec x\vec x^H]$ 并代入两个格点的匹配权重扫描（记辅助复数 $\zeta = 9 + \mathrm{j}3\sqrt{3}$）：
 
 $$\begin{gathered}
-\zeta=9+\mathrm{j}3\sqrt{3},\\
+\zeta=9+\mathrm{j}3\sqrt{3},\qquad
 \mathbf R_{\mathrm{coh}}=\frac{1}{8}
 \begin{pmatrix}
 18 & \zeta\\
 \zeta^* & 6
-\end{pmatrix},\qquad
-\vec b=\begin{pmatrix}\vec w_1^H\mathbf R_{\mathrm{coh}}\vec w_1\\\vec w_2^H\mathbf R_{\mathrm{coh}}\vec w_2\end{pmatrix}
-=\begin{pmatrix}21/16\\3/4\end{pmatrix}.
+\end{pmatrix},\\
+b_i=\vec w_i^H\mathbf R_{\mathrm{coh}}\vec w_i,\qquad
+\vec b=\begin{pmatrix}21/16\\3/4\end{pmatrix}.
 \end{gathered}\tag{12-23}$$
 
 矩阵非对角元 $R_{12} = \zeta / 8$、$R_{21} = \zeta^* / 8$ 依然共轭对称，而两路自功率因干涉相长/相消变成了不等的 $9/4$ 与 $3/4$。
 
-**最终结果与失效剖析**：若操作者不知两源相干，照搬非相干 PSF 方程 $\mathbf P\vec q = \vec b$ 求解，会得到非负解 $\vec q_{\mathrm{wrong}} = [6/5, 9/20]^\top = [1.20, 0.45]^\top$。代回 $\mathbf P\vec q_{\mathrm{wrong}}$，扫描残差**精确等于零**！然而不仅两个源功率都偏离了真实边际功率 $[1, 0.25]^\top$，代回式(12-6)重构的非相干 CSM 两个对角元都是 $33/20 = 1.65$，与真实观测自功率 $9/4 = 2.25$、$3/4 = 0.75$ 相差甚远，完整 CSM Frobenius 平方残差高达 $27/20 = 1.35$（见 [E12-05](#e12-05)）。
+**最终结果与失效剖析**：若操作者不知两源相干，照搬非相干 PSF 方程 $\mathbf P\vec q = \vec b$ 求解，会得到非负逆解 $\vec q_{\mathrm{wrong}} = [6/5, 9/20]^\top$（即 $[1.20, 0.45]^\top$）。代回 $\mathbf P\vec q_{\mathrm{wrong}}$，扫描残差**精确等于零**！然而不仅两个源功率都偏离了真实边际功率 $[1, 0.25]^\top$，代回式(12-6)重构的非相干 CSM 两个对角元都是 $33/20 = 1.65$，与真实观测自功率 $9/4 = 2.25$、$3/4 = 0.75$ 相差甚远，完整 CSM Frobenius 平方残差高达 $27/20 = 1.35$（见 [E12-05](#e12-05)）。
 
 这个反例表明：“存在一组非负点源能完美复现扫描图”，绝不等于“这组数字就是现场真实的独立源功率”。同样地，当刚性壁面反射声与直达声强相干时，CLEAN-SC 会把直达波与反射波合成一个联合相干向量 $\vec h$ 抽走，不可将单轮峰位简单拆解成多个独立物理声源。
 
@@ -569,7 +615,9 @@ $$\begin{gathered}
 
 对于**远场等幅均匀线阵（ULA）**，实维数上限远低于 $M^2$。固定频点，令 $\psi_j$ 为第 $j$ 个方向的相邻阵元相位差，以首麦为参考，模板第 $(m, n)$ 项为 $e^{\mathrm{j}(m - n)\psi_j}$，仅取决于阵元下标差 $m - n$。
 
-我们可以直接数出这种 Toeplitz 模板的独立实维数：所有主对角项（$m - n = 0$）恒为实数 $1$；正间隔 $m - n \in \{1, \ldots, M - 1\}$ 只有 $M - 1$ 种，每种至多提供一个实部和一个虚部；负间隔完全由共轭决定。因此模板张成的实线性空间维数至多为 $1 + 2(M - 1) = 2M - 1$，去对角后至多为 $2M - 2$——例如 $8$ 麦均匀线阵上限仅为 $15$ 和 $14$，远非 $8^2 = 64$（差分共阵原理可回查[第 3 章](03_array-geometry.md)）。这只是矩阵秩上限而非稳定分辨源数，近场球面波与二维非规则螺旋阵正是通过打破等间隔冗余来扩展独立观测维度的。
+我们可以直接数出这种 Toeplitz 模板的独立实维数：所有主对角项（$m - n = 0$）恒为实数 $1$；正间隔 $m - n \in \{1, \ldots, M - 1\}$ 只有 $M - 1$ 种，每种至多提供一个实部和一个虚部；负间隔完全由共轭决定。因此模板张成的实线性空间维数至多为 $1 + 2(M - 1) = 2M - 1$，去对角后至多为 $2M - 2$——例如 $8$ 麦均匀线阵上限仅为 $15$ 和 $14$，远非 $8^2 = 64$（差分共阵原理可回查[第 3 章](03_array-geometry.md)）。
+
+当然，这只是矩阵秩上限而非稳定分辨源数；近场球面波与二维非规则螺旋阵正是通过打破等间隔平移冗余来扩展独立观测维度的。
 
 #### 离网格、源区外与深度错误
 
@@ -605,7 +653,7 @@ $$\begin{gathered}
 $$Q_{\mathcal G}=\sum_{j\in\mathcal G}q_j.
 \tag{12-24}$$
 
-切勿在此基础上额外乘网格面积 $\Delta A_j$，否则加密网格会让同一离散点源的区域总量随面积缩小而人为缩水！只有当软件将图像定义为连续面源功率密度 $\rho_q(\vec p)$（单位 $\mathrm{Pa}^2/\mathrm{m}^2$）时，离散积分才是 $Q_{\mathcal G} \approx \sum_{j\in\mathcal G}\rho_{q,j}\Delta A_j$，且网格细化时单格点源量与密度须同步转换（见 [E12-15](#e12-15)）。此外，区域线性相加依赖区域内各源互不相干且共享同一参考点 $\vec r_0$。
+切勿在此基础上额外乘网格面积 $\Delta A_j$，否则加密网格会让同一离散点源的区域总量随面积缩小而人为缩水！只有当软件将图像定义为连续面源功率密度 $\rho_q(\vec p)$（单位 $\mathrm{Pa}^2/\mathrm{m}^2$）时，离散积分才是面积加权和 $\sum_{j\in\mathcal G}\rho_{q,j}\Delta A_j$，且网格细化时单格点源量与密度须同步转换（见 [E12-15](#e12-15)）。此外，区域线性相加依赖区域内各源互不相干且共享同一参考点 $\vec r_0$。
 
 我们用一个两源算例区分**“共同物理参考点声压”与“离各源固定 $1\,\mathrm{m}$ 处声压”**：设两个不相干全向点源距阵列中心分别为 $1\,\mathrm{m}$ 和 $2\,\mathrm{m}$，各自在阵列中心贡献 $0.25\,\mathrm{Pa}^2$，则阵列中心这一共同物理点的总均方声压确为 $0.50\,\mathrm{Pa}^2$。
 
@@ -667,9 +715,9 @@ $$\begin{aligned}
 图 69 用四个解析子图串联起通道增益校准、近场对角删除补偿、矩阵拟合目标差异与区域分贝汇总四项关键准则（对应 [E12-09](#e12-09)、[E12-07](#e12-07)、[E12-12](#e12-12) 与 [E12-10](#e12-10)）：
 
 - **子图 (a) 通道幅度增益对绝对源强的影响**：固定第 $1$ 通道增益为 $1$，横轴改变第 $2$ 通道幅度增益 $g \in [0.4, 2.2]$。未校准时（红实线）同相单位源扫描量按 $((1+g)/2)^2$ 在 $0.49$～$2.56$ 之间大幅偏离（若每张图各自按峰值归一化就会掩盖这一绝对误差）；按式(12-28)除以已知增益校正后（绿虚线），全区间恒定恢复为 $1.0$。
-- **子图 (b) 近场不等幅单源的对角删除补偿**：对传播列 $\vec a = [1, 2]^\top$，完整 CSM 匹配响应为 $1$（绿柱），删对角后降至 $8/25 = 0.32$（蓝柱）；套用远场等幅两麦因子 $2$ 仅达 $16/25 = 0.64$（红柱），必须乘式(12-22)的精确因子 $25/8$ 才能恢复单位响应 $1$（橙柱）。
-- **子图 (c) 不同 CSM 拟合代价的最优解差异**：对同一观测 $\mathbf R = \operatorname{diag}(1, 10)$ 与 $\vec a = [1, 2]^\top$，完整 Frobenius 拟合得 $41/25 = 1.64$（绿柱），上三角漏乘 $\sqrt{2}$ 的未加权拟合得 $41/21 \approx 1.952$（蓝柱），而若混入常数截距项则会跳至 $87/35 \approx 2.486$ 并伴随 $-1.6$ 的非物理负截距（红柱）。
-- **子图 (d) 区域汇总的线性求和与取对数顺序**：在真值 $[1, 0.25]$ 的两格算例中，源量线性相加后取对数为 $+0.9691\,\mathrm{dB\ re}\ 1$（绿柱）；直接把含旁瓣重叠的扫描值相加取对数会虚高至 $+1.9382\,\mathrm{dB\ re}\ 1$（蓝柱）；而直接平均两源分贝数更会错算成 $-3.0103\,\mathrm{dB\ re}\ 1$（红柱）。
+- **子图 (b) 近场不等幅单源的对角删除补偿**：横轴为四种补偿类别，纵轴为归一化扫描输出。对传播列 $\vec a = [1, 2]^\top$，完整 CSM 匹配响应为 $1$（绿柱），删对角后降至 $8/25 = 0.32$（蓝柱）；套用远场等幅两麦因子 $2$ 仅达 $16/25 = 0.64$（红柱），必须乘式(12-22)的精确因子 $25/8$ 才能恢复单位响应 $1$（橙柱）。
+- **子图 (c) 不同 CSM 拟合代价的最优解差异**：横轴为三类矩阵回归模型，纵轴为估计源强 $q$。对同一观测 $\mathbf R = \operatorname{diag}(1, 10)$ 与 $\vec a = [1, 2]^\top$，完整 Frobenius 拟合得 $41/25 = 1.64$（绿柱），上三角漏乘 $\sqrt{2}$ 的未加权拟合得 $41/21 \approx 1.952$（蓝柱），而若混入常数截距项则会跳至 $87/35 \approx 2.486$ 并伴随 $-1.6$ 的非物理负截距（红柱）。
+- **子图 (d) 区域汇总的线性求和与取对数顺序**：横轴为三种汇总口径，纵轴为相对分贝值（单位：$\mathrm{dB\ re}\ 1$）。在真值 $[1, 0.25]$ 的两格算例中，源量线性相加后取对数为 $+0.9691\,\mathrm{dB\ re}\ 1$（绿柱）；直接把含旁瓣重叠的扫描值相加取对数会虚高至 $+1.9382\,\mathrm{dB\ re}\ 1$（蓝柱）；而直接平均两源分贝数更会错算成 $-3.0103\,\mathrm{dB\ re}\ 1$（红柱）。
 
 #### 现场校准与运行记录
 
@@ -691,12 +739,35 @@ NASA 的外场阵列部署规程明确区分“部署前后的台架绝对标定
 | 移动、旋转声源成像 | 建立发射/接收时刻随时间连续变化的时延与距离衰减模型 | 适用于运动车辆或旋转叶片（传播时刻语义可对照[第 9 章](09_source-tracking.md)）；静态平均 CSM 不适用 |
 | 流场成像 | 在传播向量中计入背景流动、声折射或开口风洞剪切层修正 | 用于风洞流场外阵列测量；未修正折射时表观源位会向下游偏移 |
 | 近场声全息（NAH） | 从近距全息测量面逆传播重建源面声压、法向振速与有功声强 | 属近场声场重构问题，需亚波长密集采样与倏逝波噪声正则化，不同于远距点源反卷积 |
+| 函数波束形成（FB） | 对完整半正定 CSM 的特征值取 $1/\nu$ 次幂后再扫描并还原 $\nu$ 次幂 | 无需迭代反卷积即可按指数 $\nu$ 压低单源旁瓣；破坏多源线性叠加与积分功率守恒，离网格弱源易被低估 |
 
 面对具体工程难题时，应按实际出现的物理失配对症选型：若存在强相干反射或同轴激励交叉项（如 [E12-05](#e12-05) 所示），需引入显式建模源间互谱的 DAMAS-C 或 CMF-C（参见 [Yardibi 等 2008](https://doi.org/10.1121%2F1.2896754)），不可将式(12-18)的非负标量模型直接当作相关源求解器。
 
 HR-CLEAN-SC 先确定候选源区域，再在主瓣内寻找对目标源仍有足够响应、但受邻源 PSF 泄漏污染较小的源标记点（source marker）提取相干向量 $\vec h$，随后扫描该纯净成分来更新源位置（参见 [Sijtsma 与 Snellen 2016，§2.5](https://www.bebec.eu/fileadmin/bebec/downloads/bebec-2016/papers/BeBeC-2016-S1.pdf)）；若标记点选在目标源自身响应过弱处，提取同样会失稳。
 
 SODIX 直接拟合 CSM 并为每对“候选源—麦克风”引入非负辐射幅度，使单一声源不再受同一个标量 $q_j$ 束缚所有通道幅度；由于未知数规模达到 $J \times M$，必须配合方向与空间平滑正则化才能稳定求解（参见 [Funke 等 2014，式(6)～(10)](https://elib.dlr.de/94587/1/BeBeC-2014-11_Funke_SODIX.pdf)）。至于近场声全息（NAH），其核心是从测量面到源表面的波动逆传播：极近场除行进波外还含有随距离指数衰减的倏逝波分量，逆传播会剧烈放大对应的测量噪声，因此测量距离、空间采样间隔、孔径截断与正则化缺一不可（参见 [Maynard 等 1985，§III](https://doi.org/10.1121/1.392911)）。
+
+#### 函数波束形成：对互谱矩阵开方压低旁瓣
+
+工程现场有时希望像常规波束扫描一样无需成百上千轮反卷积迭代就能实时刷新热力图，同时又能大幅压低有限孔径旁瓣。Dougherty 提出的**函数波束形成（Functional Beamforming，FB）**给出了一个巧妙的谱分解算子技巧（参见 [Dougherty 2014，BeBeC-2014-01](https://www.bebec.eu/fileadmin/bebec/downloads/bebec-2014/papers/BeBeC-2014-01.pdf)）。
+
+其核心直觉非常直接：设完整互谱矩阵 $\mathbf R \succeq 0$ 的正交特征分解为 $\mathbf R = \sum_{m=1}^M \lambda_m \vec u_m \vec u_m^H$（其中特征值 $\lambda_m \ge 0$，标准正交特征向量满足 $\vec u_m^H\vec u_{m'} = \delta_{mm'}$）。给定阶数参数 $\nu \ge 1$（在 Acoular 的 `BeamformerFunctional` 中记作 `gamma`），先对每个非负特征值取 $1/\nu$ 次幂构造矩阵分数幂 $\mathbf R^{1/\nu}$，用单位范数导向向量 $\tilde{\vec a}_i = \vec a_i / \|\vec a_i\|_2$ 计算压缩扫描二次型，最后整体取 $\nu$ 次幂并除以 $\|\vec a_i\|_2^2$ 还原式(12-8)的参考点源强尺度：
+
+$$\begin{aligned}
+\mathbf R^{1/\nu}
+&=\sum_{m=1}^{M}\lambda_m^{1/\nu}\vec u_m\vec u_m^H,\\
+\tilde{\vec a}_i&=\frac{\vec a_i}{\|\vec a_i\|_2},\qquad
+b_{\mathrm{FB},i}(\nu)=\frac{1}{\|\vec a_i\|_2^2}
+\bigl(\tilde{\vec a}_i^H\mathbf R^{1/\nu}\tilde{\vec a}_i\bigr)^\nu.
+\end{aligned}$$
+
+先检验两个基本特例：当 $\nu = 1$ 时，$\mathbf R^{1} = \mathbf R$，且 $\tilde{\vec a}_i / \|\vec a_i\|_2 = \vec w_i$，上式精确退化为式(12-7)的常规匹配波束扫描 $b_{\mathrm{FB},i}(1) = b_i$（即 $\vec w_i^H\mathbf R\vec w_i$）；当空间中仅存在单个无噪点源 $\mathbf R = q_1\vec a_1\vec a_1^H$ 时，唯一非零特征值为 $\lambda_1 = q_1\|\vec a_1\|_2^2$（特征向量 $\vec u_1 = \tilde{\vec a}_1$），在真实源格 $i = 1$ 处因 $|\tilde{\vec a}_1^H\tilde{\vec a}_1| = 1$ 恒有 $b_{\mathrm{FB},1}(\nu) = q_1$ 精确保峰，而在等范数旁瓣格点上旁瓣幅度 $|\tilde{\vec a}_i^H\tilde{\vec a}_1|^2 < 1$ 被直接压低为原来的 $\nu$ 次幂（例如单源 $-6\,\mathrm{dB}$ 旁瓣在 $\nu = 2$ 时压至 $-12\,\mathrm{dB}$，在 $\nu = 4$ 时压至 $-24\,\mathrm{dB}$，见 [E12-19](#e12-19)）！
+
+然而天下同样没有免费的非线性午餐，使用函数波束形成前必须看清三条硬边界：
+
+1. **严禁对角删除**：分数幂算子依赖 Hermitian 半正定矩阵的正交特征分解与非负特征值（$\lambda_m \ge 0$）；一旦像 §12.8 那样删去主对角线产生负特征值，实数分数幂在物理与代数上均告失效（因此 Acoular 中 `BeamformerFunctional` 将 `r_diag` 硬锁定为 `False`）。
+2. **多源积分功率不再守恒**：当 $\nu > 1$ 时，矩阵开方不满足加法分配律——$(\mathbf R_1 + \mathbf R_2)^{1/2}$ 并不等于 $\mathbf R_1^{1/2} + \mathbf R_2^{1/2}$！多源 FB 输出既不等于各单源 FB 图的线性叠加，也不能再除以单源 PSF 列和还原真实总功率（见 [E12-20](#e12-20) 的 $2 \times 2$ 精确平方根手算）。
+3. **离网格或导向失配下弱源易被低估**：在阵元数多于声源数（$M > J$）的实际阵列中，无噪或高信噪比 CSM 存在 $M - J$ 个零（或极小噪声底）特征值。一旦弱源落在离散网格间隙或存在轻微导向向量失配，使得扫描向量能量只有比例 $\eta \in (0, 1)$ 投影在信号子空间内、其余 $1 - \eta$ 掉进零特征值子空间，取 $\nu$ 次幂后弱源读数就会按 $\eta^\nu q_2$ 指数衰减（例如温和失配 $\eta = 0.8$ 在 $\nu = 8$ 时会凭空损失近 $7.75\,\mathrm{dB}$，见 [E12-20](#e12-20)）。因此 FB 适合快速排查主声源方位，定量区域积分仍须回到线性功率守恒框架。
 
 #### 开源实现要逐项核对接口
 
@@ -711,13 +782,13 @@ SODIX 直接拟合 CSM 并为每对“候选源—麦克风”引入非负辐射
 
 #### 先运行不写文件的练习
 
-本章核心算法实现在[声学成像数值核](../codes/chapters/ch12/core/imaging.py)中，18 道练习的统一复算入口位于[练习入口](../codes/chapters/ch12/chapter12_exercises.py)。从仓库根目录可直接运行：
+本章核心算法实现在[声学成像数值核](../codes/chapters/ch12/core/imaging.py)与[函数波束形成数值核](../codes/chapters/ch12/core/functional_beamforming.py)中，20 道练习的统一复算入口位于[练习入口](../codes/chapters/ch12/chapter12_exercises.py)。从仓库根目录可直接运行：
 
 ```bash
 .venv/bin/python -m codes.chapters.ch12.chapter12_exercises
 ```
 
-`run_experiments()` 返回可序列化字典，`exercises` 键下按稳定题号收录 `E12-01`～`E12-18`，并将精确解析矩阵、双精度浮点合成波形与 16 位整型 PCM 读回统计分栏记录。为避免极小非零信号在求模平方时因 `float64` 下溢被误判成“物理无声”，数值核在形成 CSM 与计算相对 Frobenius 残差时均采用公共尺度缩放并显式标记数值上下溢边界。
+`run_experiments()` 返回可序列化字典，`exercises` 键下按稳定题号收录 `E12-01`～`E12-20`，并将精确解析矩阵、双精度浮点合成波形与 16 位整型 PCM 读回统计分栏记录。为避免极小非零信号在求模平方时因 `float64` 下溢被误判成“物理无声”，数值核在形成 CSM 与计算相对 Frobenius 残差时均采用公共尺度缩放并显式标记数值上下溢边界。
 
 #### 已知延迟音频保留什么
 
@@ -779,9 +850,9 @@ $$\mathbf W^H\mathbf A=
 1/4+\mathrm{j}\sqrt{3}/4 & 1
 \end{pmatrix}.$$
 
-对 $\mathbf W^H\mathbf A$ 的**每一个元素分别取模平方**（注意是逐元素 Hadamard 模平方，绝不是矩阵乘法平方！），非对角元的模平方为 $(1/4)^2 + (\sqrt{3}/4)^2 = 1/16 + 3/16 = 1/4$，由此得到式(12-11)中的 $\mathbf P = \begin{pmatrix}1 & 1/4 \\ 1/4 & 1\end{pmatrix}$，右乘 $\vec q = [1, 1/4]^\top$ 即得扫描图 $\vec b = [17/16, 1/2]^\top$。
+对 $\mathbf W^H\mathbf A$ 的**每一个元素分别取模平方**（注意是逐元素 Hadamard 模平方，绝不是矩阵乘法平方！），非对角元的模平方为 $(1/4)^2 + (\sqrt{3}/4)^2 = 1/16 + 3/16 = 1/4$，由此得到式(12-11)中主对角为 $1$、非对角为 $1/4$ 的矩阵 $\mathbf P$，右乘 $\vec q = [1, 1/4]^\top$ 即得扫描图 $\vec b = [17/16, 1/2]^\top$。
 
-再核对观测互谱矩阵 $\mathbf R = \mathbf A\operatorname{diag}(\vec q)\mathbf A^H$：右上角元素 $R_{12} = 1 + \frac{1}{4}e^{+\mathrm{j}2\pi/3} = 7/8 + \mathrm{j}\sqrt{3}/8$，左下角元素 $R_{21} = 7/8 - \mathrm{j}\sqrt{3}/8$ 恰为其复共轭。第 $2$ 源在麦 2 晚到（传播相位为负），而 $R_{12} = x_1 x_2^*$ 对第 $2$ 通道取了共轭，负负得正，因此右上元虚部为正，两者完全自洽。
+再核对观测互谱矩阵 $\mathbf R = \vec a_1\vec a_1^H + 0.25\vec a_2\vec a_2^H$：右上角元素 $R_{12} = 1 + \frac{1}{4}e^{+\mathrm{j}2\pi/3}$ 化简为 $7/8 + \mathrm{j}\sqrt{3}/8$，左下角元素 $R_{21} = 7/8 - \mathrm{j}\sqrt{3}/8$ 恰为其复共轭。第 $2$ 源在麦 2 晚到（传播相位为负），而 $R_{12} = x_1 x_2^*$ 对第 $2$ 通道取了共轭，负负得正，因此右上元虚部为正，两者完全自洽。
 
 <a id="e12-03"></a>
 
@@ -834,12 +905,11 @@ $$\vec q_{\mathrm{wrong}}=\begin{pmatrix}
 
 **答案。** 联立线性方程组 $q_1 + q_2 / 4 = 21/16$ 与 $q_1 / 4 + q_2 = 3/4$，解得 $q_1 = 6/5 = 1.20$、$q_2 = 9/20 = 0.45$。将这组正数代回原方程，两条等式严丝合缝，**扫描域平方残差精确为零**。
 
-然而拿 $\vec q_{\mathrm{wrong}} = [6/5, 9/20]^\top$ 代回式(12-6)重构非相干 CSM，得到的两个主对角元都是 $6/5 + 9/20 = 33/20$，右上角互谱元为 $6/5 + \frac{9}{20}(-1/2 + \mathrm{j}\sqrt{3}/2) = 39/40 + \mathrm{j}9\sqrt{3}/40$。与式(12-23)的实际相干观测 $\mathbf R_{\mathrm{coh}}$ 作差，主对角误差分别为 $33/20 - 9/4 = -3/5$ 与 $33/20 - 3/4 = +9/10$，右上非对角误差为 $-3/20 - \mathrm{j}3\sqrt{3}/20$。代入式(12-19)汇总完整 Frobenius 平方残差：
+然而拿 $\vec q_{\mathrm{wrong}} = [6/5, 9/20]^\top$ 代回式(12-6)重构非相干 CSM，得到的两个主对角元都是 $6/5 + 9/20 = 33/20$，右上角互谱元由 $6/5 + \frac{9}{20}e^{+\mathrm{j}2\pi/3}$ 化简为 $39/40 + \mathrm{j}9\sqrt{3}/40$。与式(12-23)的实际相干观测 $\mathbf R_{\mathrm{coh}}$ 作差，主对角误差分别为 $33/20 - 9/4 = -3/5$ 与 $33/20 - 3/4 = +9/10$，右上非对角误差为 $-3/20 - \mathrm{j}3\sqrt{3}/20$。代入式(12-19)汇总完整 Frobenius 平方残差：
 
 $$\begin{aligned}
-\|\mathbf E\|_F^2&=\left(-\frac{3}{5}\right)^2+\left(\frac{9}{10}\right)^2
-+2\left[\left(-\frac{3}{20}\right)^2+\left(-\frac{3\sqrt{3}}{20}\right)^2\right]\\
-&=\frac{9}{25}+\frac{81}{100}+2\left(\frac{9}{400}+\frac{27}{400}\right)=\frac{27}{20}=1.35.
+\|\mathbf E\|_F^2&=(-0.6)^2+0.9^2+2(9/400+27/400)\\
+&=\frac{9}{25}+\frac{81}{100}+\frac{72}{400}=\frac{27}{20}=1.35.
 \end{aligned}$$
 
 庞大的矩阵域残差当场揭穿了“非相干假设失效”的真相（两源真实边际功率仍是 $1$ 和 $1/4$）。数值核进一步扫描不同源间相干系数 $\gamma \in [-1, 1]$（即图 68(b)），并将每个工况的真值协方差与相干系数随结果一并存档，以区分确定性参数扫描与同一分布下的随机重复采样。
@@ -869,9 +939,9 @@ $$\begin{aligned}
 $$\mathbf P_{\mathrm{DR}}=2\mathbf P-\vec 1\vec 1^\top
 =\begin{pmatrix}1 & -1/2\\-1/2 & 1\end{pmatrix}.$$
 
-用 $\mathbf P_{\mathrm{DR}}$ 右乘真实源量 $[1, 1/4]^\top$，恰好验证 $\begin{pmatrix}1 - 1/8 \\ -1/2 + 1/4\end{pmatrix} = \begin{pmatrix}7/8 \\ -1/4\end{pmatrix}$——倘若错误沿用未删对角的原 $\mathbf P$，线性模型从根上就对不上。此时删对角观测矩阵的非对角元模长为 $\sqrt{(7/8)^2 + (\sqrt{3}/8)^2} = \sqrt{52}/8 = \sqrt{13}/4$，故两个特征值一正一负，为 $\pm\sqrt{13}/4 \approx \pm 0.90138782$；若在反演前先把负扫描值 $-1/4$ 截断为零，同样会人为篡改方程右侧。
+用 $\mathbf P_{\mathrm{DR}}$ 右乘真实源量 $[1, 1/4]^\top$，第 $1$ 行为 $1 - 1/8 = 7/8$、第 $2$ 行为 $-1/2 + 1/4 = -1/4$，恰好验证 $\mathbf P_{\mathrm{DR}}\vec q = [7/8, -1/4]^\top$——倘若错误沿用未删对角的原 $\mathbf P$，线性模型从根上就对不上。此时删对角观测矩阵的非对角元模长为 $\sqrt{49/64 + 3/64} = \sqrt{13}/4$，故两个特征值一正一负，为 $\pm\sqrt{13}/4 \approx \pm 0.90138782$；若在反演前先把负扫描值 $-1/4$ 截断为零，同样会人为篡改方程右侧。
 
-再看近场不等幅单源 $\vec a = [1, 2]^\top$：模板自谱分别为 $1$ 和 $4$，匹配权重为 $[1/5, 2/5]^\top$，保留的两个非对角互谱均为 $2$，故删对角二次型为 $2 \times \frac{1}{5} \times \frac{2}{5} \times 2 = 8/25 = 0.32$。代入式(12-22)得精确补偿因子 $\gamma = \frac{25}{25 - (1 + 16)} = 25/8$，不能再用等幅两麦因子 $2$ 替代。
+再看近场不等幅单源 $\vec a = [1, 2]^\top$：模板自谱分别为 $1$ 和 $4$，匹配权重为 $[1/5, 2/5]^\top$，保留的两个非对角互谱均为 $2$，故删对角二次型为 $2 \times (1/5) \times (2/5) \times 2 = 8/25 = 0.32$。代入式(12-22)得精确补偿因子 $\gamma = 25 / (25 - 17) = 25/8$，不能再用等幅两麦因子 $2$ 替代。
 
 <a id="e12-08"></a>
 
@@ -882,8 +952,8 @@ $$\mathbf P_{\mathrm{DR}}=2\mathbf P-\vec 1\vec 1^\top
 **答案。** 先算三种求解路径的结果：
 
 1. **截断 GS（DAMAS）固定点**：更新规则为 $q_1 \leftarrow \max(0, 1 - q_2 / 4)$、$q_2 \leftarrow \max(0, 0 - q_1 / 4)$。从零起步第一步即得 $[1, 0]^\top$，此后 $q_2$ 括号内为 $-1/4 < 0$ 持续被截断为零，永远停在 $[1, 0]^\top$。此时残差 $\mathbf P\vec q - \vec b = [0, 1/4]^\top$，扫描平方残差为 $1/16 = 0.0625$。
-2. **扫描域 NNLS 最优解**：在边界 $q_2 = 0$ 上，扫描平方残差为 $(q_1 - 1)^2 + (q_1 / 4 - 0)^2 = \frac{17}{16}q_1^2 - 2q_1 + 1$。对 $q_1$ 求导置零得 $q_1 = 16/17$，残差向量为 $[-1/17, 4/17]^\top$，扫描平方残差降至 $1/17 \approx 0.05882353 < 1/16$。按式(12-13)带 $1/2$ 因子的目标核验梯度：$\vec g = \mathbf P^\top(\mathbf P\vec q - \vec b) = [-1/17 + 1/17,\; -1/68 + 4/17]^\top$，即 $\vec g = [0, 15/68]^\top$——正分量 $q_1 = 16/17 > 0$ 处梯度 $g_1 = 0$，零分量 $q_2 = 0$ 处梯度 $g_2 = 15/68 > 0$，完美满足式(12-14)的 KKT 互补条件！（无约束线性逆解为 $[16/15, -4/15]^\top$，因含负分量被非负约束排除。）
-3. **半正定 CSM 可实现性**：这组 $\vec b = [1, 0]^\top$ 并非凭空编造的非法输入！只需取单快拍观测向量 $\vec v = \sqrt{4/3}[1, e^{+\mathrm{j}\pi/3}]^\top$ 构造秩一半正定矩阵 $\mathbf R = \vec v\vec v^H \succeq 0$：第 $2$ 格波束响应 $\vec w_2^H\vec v$ 因相位相差 $\pi$ 恰好完全相消为零（$b_2 = 0$），而第 $1$ 格扫描值恰为 $b_1 = \frac{4/3}{4}|1 + e^{+\mathrm{j}\pi/3}|^2 = \frac{1}{3} \times 3 = 1$。之所以出现边界截断，纯粹是因为该真实声源不在候选的两格字典上。
+2. **扫描域 NNLS 最优解**：在边界 $q_2 = 0$ 上，扫描平方残差 $(q_1 - 1)^2 + (q_1 / 4)^2$ 展开为 $\frac{17}{16}q_1^2 - 2q_1 + 1$。对 $q_1$ 求导置零得 $q_1 = 16/17$，残差向量为 $[-1/17, 4/17]^\top$，扫描平方残差降至 $1/17 \approx 0.05882353 < 1/16$。按式(12-13)带 $1/2$ 因子的目标核验梯度 $\vec g = \mathbf P^\top(\mathbf P\vec q - \vec b)$，逐行相加得 $[-1/17 + 1/17,\; -1/68 + 4/17]^\top = [0, 15/68]^\top$——正分量 $q_1 = 16/17 > 0$ 处梯度 $g_1 = 0$，零分量 $q_2 = 0$ 处梯度 $g_2 = 15/68 > 0$，完美满足式(12-14)的 KKT 互补条件！（无约束线性逆解为 $[16/15, -4/15]^\top$，因含负分量被非负约束排除。）
+3. **半正定 CSM 可实现性**：这组 $\vec b = [1, 0]^\top$ 并非凭空编造的非法输入！只需取单快拍观测向量 $\vec v = \sqrt{4/3}[1, e^{+\mathrm{j}\pi/3}]^\top$ 构造秩一半正定矩阵 $\mathbf R = \vec v\vec v^H \succeq 0$：第 $2$ 格波束响应 $\vec w_2^H\vec v$ 因相位相差 $\pi$ 恰好完全相消为零（$b_2 = 0$），而第 $1$ 格扫描值恰为 $b_1 = \frac{1}{3}|1 + e^{+\mathrm{j}\pi/3}|^2 = 1$。之所以出现边界截断，纯粹是因为该真实声源不在候选的两格字典上。
 
 <a id="e12-09"></a>
 
@@ -893,7 +963,7 @@ $$\mathbf P_{\mathrm{DR}}=2\mathbf P-\vec 1\vec 1^\top
 
 **答案。** 未校准数字观测向量为 $\vec d = [1, g]^\top$，波束输出幅度为 $(1 + g)/2$，故扫描均方功率为 $(1 + g)^2 / 4$——在 $g = 0.5, 1, 2$ 下依次算出 $0.5625$、$1$、$2.25$，随通道增益剧烈漂移。
 
-未校准互谱矩阵为 $\mathbf R_d = \begin{pmatrix}1 & g \\ g & g^2\end{pmatrix}$。按式(12-28)左右同时夹乘 $\mathbf K$ 与 $\mathbf K^H$，得到 $\mathbf R_x = \mathbf K\mathbf R_d\mathbf K^H = \begin{pmatrix}1 & 1 \\ 1 & 1\end{pmatrix}$，三种增益下的扫描功率全部精确恢复为 $1$（若只左乘 $\mathbf K$ 漏掉右乘 $\mathbf K^H$，则会破坏对称性与第 $2$ 路自功率）。工程中还须留意传感器后级电路噪声的位置：若电路热噪声在可变增益放大器之后混入，乘以 $1/g$ 在校准目标声压的同时也会同步缩放该通道的底噪方差。
+未校准互谱矩阵为外积 $\mathbf R_d = \vec d\vec d^\top$（主对角 $1, g^2$，非对角 $g$）。按式(12-28)左右同时夹乘 $\mathbf K$ 与 $\mathbf K^H$，校准后矩阵 $\mathbf R_x = \mathbf K\mathbf R_d\mathbf K^H$ 恢复为全 $1$ 矩阵 $\vec 1\vec 1^\top$，三种增益下的扫描功率全部精确恢复为 $1$（若只左乘 $\mathbf K$ 漏掉右乘 $\mathbf K^H$，则会破坏对称性与第 $2$ 路自功率）。工程中还须留意传感器后级电路噪声的位置：若电路热噪声在可变增益放大器之后混入，乘以 $1/g$ 在校准目标声压的同时也会同步缩放该通道的底噪方差。
 
 <a id="e12-10"></a>
 
@@ -901,9 +971,9 @@ $$\mathbf P_{\mathrm{DR}}=2\mathbf P-\vec 1\vec 1^\top
 
 **题干。** 对本章两格锚点例，以共同数字参考功率 $1$ 为基准，比较真实源功率总和与常规扫描总和的相对分贝值（$\mathrm{dB\ re}\ 1$），检验“两源各自转分贝后求平均”是否等于合成总分贝；最后结合配套音频核对解析值与 PCM 读回值。
 
-**答案。** 真实源功率总和为 $1 + 0.25 = 1.25$，转成相对分贝为 $10\log_{10}(1.25) \approx +0.96910013\,\mathrm{dB\ re}\ 1$；常规扫描两格之和为 $17/16 + 1/2 = 1.5625$，对应 $10\log_{10}(1.5625) \approx +1.93820026\,\mathrm{dB\ re}\ 1$（因 PSF 空间重叠虚高约 $0.97\,\mathrm{dB}$）。
+**答案。** 真实源功率总和为 $1 + 0.25 = 1.25$，转成相对分贝 $10\log_{10}(1.25)$ 约为 $+0.96910013\,\mathrm{dB\ re}\ 1$；常规扫描两格之和为 $17/16 + 1/2 = 1.5625$，$10\log_{10}(1.5625)$ 约为 $+1.93820026\,\mathrm{dB\ re}\ 1$（因 PSF 空间重叠虚高约 $0.97\,\mathrm{dB}$）。
 
-若分别对两源取分贝，第 $1$ 源为 $0\,\mathrm{dB\ re}\ 1$，第 $2$ 源为 $10\log_{10}(0.25) \approx -6.02059991\,\mathrm{dB\ re}\ 1$，两者算术平均为 $-3.01029996\,\mathrm{dB\ re}\ 1$——这其实对应几何平均功率 $\sqrt{1 \times 0.25} = 0.5$，根本不是总辐射功率！
+若分别对两源取分贝，第 $1$ 源为 $0\,\mathrm{dB\ re}\ 1$，第 $2$ 源 $10\log_{10}(0.25)$ 约为 $-6.02059991\,\mathrm{dB\ re}\ 1$，两者算术平均为 $-3.01029996\,\mathrm{dB\ re}\ 1$——这其实对应几何平均功率 $\sqrt{1 \times 0.25} = 0.5$，根本不是总辐射功率！
 
 在配套音频中，峰值幅度 $0.2$ 和 $0.1$ 对应解析均方功率 $0.02$ 和 $0.005$（源量总和 $0.025$，扫描总和 $0.03125$）。练习脚本将磁盘上的 16 位 PCM 波形重新解码，在 $20$ 个稳定窗上提取 $2\,\mathrm{kHz}$ 复幅度并按式(12-4)除以 $2$ 构造样本 CSM，清单中的 `pcm_measurements` 完整记录了含真实量化舍入的读回数值。
 
@@ -916,7 +986,7 @@ $$\mathbf P_{\mathrm{DR}}=2\mathbf P-\vec 1\vec 1^\top
 **答案。** 分单源与双源两步复算式(12-15)：
 
 1. **单源指数收敛过程**：第 $1$ 轮峰值 $B_1 = 2$，相干向量 $\vec h_1 = \vec 1$，剥离并记账 $\phi B_1 = 1.2$，残差矩阵缩为原矩阵的 $1 - 0.6 = 0.4$ 倍；第 $2$ 轮峰值 $B_2 = 0.8$，剥离 $0.48$，累计 $1.68$；第 $3$ 轮峰值 $B_3 = 0.32$，剥离 $0.192$，累计 $1.872$。递推至第 $20$ 轮，干净图累计功率为 $2(1 - 0.4^{20}) \approx 1.9999999780$，残差剩余峰值仅为 $2 \times 0.4^{20} \approx 2.1990 \times 10^{-8}$。
-2. **双源 $\phi = 1$ 两轮完全剥离**：第 $1$ 轮已在 §12.6 算出，第 $1$ 格记账 $B_1 = 17/16$，剩余残差矩阵为 $\mathbf D_1 = \frac{3}{17}\begin{pmatrix}1 & -1 \\ -1 & 1\end{pmatrix}$。接着做第 $2$ 轮扫描：第 $1$ 格读数已降为 $\vec w_1^H\mathbf D_1\vec w_1 = 0$，第 $2$ 格读数为 $B_2 = \vec w_2^H\mathbf D_1\vec w_2 = \frac{3}{17} \times \frac{1}{4}|1 - e^{-\mathrm{j}2\pi/3}|^2 = \frac{3}{68} \times 3 = 9/68$。按 $\phi = 1$ 把这秩一残差整块扣掉后，残差矩阵 $\mathbf D_2 = \mathbf 0$ **精确归零**！然而看一眼两格累计干净图：$[17/16, 9/68]^\top \approx [1.0625, 0.13235]^\top$，与真实源功率 $[1, 0.25]^\top$ 明显不同（若改算两个剥离矩阵的通道平均迹 $\operatorname{tr}(\mathbf G_1)/2 = 73/68$ 与 $\operatorname{tr}(\mathbf G_2)/2 = 3/17 = 12/68$，总和虽守恒为 $85/68 = 1.25$，但单成分依然因首轮串扰而重分配）。这清楚说明“残差 CSM 扣到零”并不保证相近多源功率已被无偏拆开。
+2. **双源 $\phi = 1$ 两轮完全剥离**：第 $1$ 轮已在 §12.6 算出，第 $1$ 格记账 $B_1 = 17/16$，剩余残差矩阵 $\mathbf D_1$ 为 $\frac{3}{17}[1,-1]^\top[1,-1]$。接着做第 $2$ 轮扫描：第 $1$ 格读数已降为 $\vec w_1^H\mathbf D_1\vec w_1 = 0$，第 $2$ 格读数 $B_2 = \vec w_2^H\mathbf D_1\vec w_2$ 由 $\frac{3}{68}|1 - e^{-\mathrm{j}2\pi/3}|^2$ 算得 $9/68$。按 $\phi = 1$ 把这秩一残差整块扣掉后，残差矩阵 $\mathbf D_2 = \mathbf 0$ **精确归零**！然而看一眼两格累计干净图：$[17/16, 9/68]^\top \approx [1.0625, 0.13235]^\top$，与真实源功率 $[1, 0.25]^\top$ 明显不同（若改算两个剥离矩阵的通道平均迹 $\operatorname{tr}(\mathbf G_1)/2 = 73/68$ 与 $\operatorname{tr}(\mathbf G_2)/2 = 3/17 = 12/68$，总和虽守恒为 $85/68 = 1.25$，但单成分依然因首轮串扰而重分配）。这清楚说明“残差 CSM 扣到零”并不保证相近多源功率已被无偏拆开。
 
 <a id="e12-12"></a>
 
@@ -924,7 +994,7 @@ $$\mathbf P_{\mathrm{DR}}=2\mathbf P-\vec 1\vec 1^\top
 
 **题干。** 已知单源传播列 $\vec a = [1, 2]^\top$，观测互谱矩阵 $\mathbf R = \operatorname{diag}(1, 10)$。用单源模型 $q\vec a\vec a^H$ 拟合，对比完整 Frobenius 目标与上三角漏乘 $\sqrt{2}$ 的未加权目标；若在未加权实字典中再多塞一列全 $1$ 常数截距项，它还能代表物理白噪声吗？
 
-**答案。** 单源秩一模板为 $\vec a\vec a^H = \begin{pmatrix}1 & 2 \\ 2 & 4\end{pmatrix}$。先按式(12-19)写出完整 Frobenius 平方残差目标 $F(q)$：
+**答案。** 单源秩一模板 $\vec a\vec a^H$ 主对角为 $1, 4$、非对角均为 $2$。先按式(12-19)写出完整 Frobenius 平方残差目标 $F(q)$：
 
 $$\begin{aligned}
 F(q)&=(q-1)^2+(4q-10)^2+2(2q-0)^2\\
@@ -935,7 +1005,7 @@ F(q)&=(q-1)^2+(4q-10)^2+2(2q-0)^2\\
 
 倘若只取对角与上三角一次残差、忘了给非对角项乘 $\sqrt{2}$，目标函数就变成了 $(q - 1)^2 + (4q - 10)^2 + (2q)^2 = 21q^2 - 82q + 101$，极小点偏移到 $q = 41/21 \approx 1.95238095$。
 
-再检查误开回归器默认截距的后果：在未加权四维实向量（依次存 $R_{11}, R_{22}, \operatorname{Re} R_{12}, \operatorname{Im} R_{12}$）下，源字典列为 $[1, 4, 2, 0]^\top$，观测向量为 $[1, 10, 0, 0]^\top$。若混入一列全 $1$ 截距向量 $[1, 1, 1, 1]^\top$，二元最小二乘解出斜率 $q = 87/35 \approx 2.48571429$、常数截距 $-8/5 = -1.6$。注意这列全 $1$ 向量不仅加在对角自谱上，还同时往非对角互谱的实部和虚部里硬塞了 $-1.6$，根本不是空间白噪声对角阵 $\sigma^2\mathbf I$（合法白噪声列应当是 $[1, 1, 0, 0]^\top$，见 [E12-16](#e12-16)）。
+再检查误开回归器默认截距的后果：在未加权四维实向量（依次存 $R_{11}, R_{22}$ 以及 $\operatorname{Re} R_{12}, \operatorname{Im} R_{12}$）下，源字典列为 $[1, 4, 2, 0]^\top$，观测向量为 $[1, 10, 0, 0]^\top$。若混入一列全 $1$ 截距向量 $[1, 1, 1, 1]^\top$，二元最小二乘解出斜率 $q = 87/35 \approx 2.48571429$、常数截距 $-8/5 = -1.6$。注意这列全 $1$ 向量不仅加在对角自谱上，还同时往非对角互谱的实部和虚部里硬塞了 $-1.6$，根本不是空间白噪声对角阵 $\sigma^2\mathbf I$（合法白噪声列应当是 $[1, 1, 0, 0]^\top$，见 [E12-16](#e12-16)）。
 
 <a id="e12-13"></a>
 
@@ -951,7 +1021,7 @@ $$x_v[n]=0.1\cos\!\left(\frac{2\pi\cdot 2n}{24}\right)
 -0.05\cos\!\left(\frac{2\pi n}{24}\right)
 -0.05\cos\!\left(\frac{2\pi\cdot 3n}{24}\right).$$
 
-由此直接读出正频格 $k = 1, 2, 3$ 的未归一化 FFT 模值分别为 $24 \times 0.05 / 2 = 0.6$、$24 \times 0.1 / 2 = 1.2$、$0.6$。代入式(12-5)（分母 $N U = 24 \times 9 = 216$，$\epsilon_k = 2$），三格的单频格均方功率依次为 $\frac{2 \times 0.36}{216} = \frac{1}{300}$、$\frac{2 \times 1.44}{216} = \frac{4}{300} = \frac{1}{75}$、$\frac{1}{300}$。虽然中心格读数从 $0.02$ 降到了 $1/75 \approx 0.01333$，但把相邻三格加起来恰为 $\frac{1 + 4 + 1}{300} = 0.02$，总均方功率毫发无损！
+由此直接读出正频格 $k = 1, 2, 3$ 的未归一化 FFT 模值分别为 $24 \times 0.05 / 2 = 0.6$、$24 \times 0.1 / 2 = 1.2$、$0.6$。代入式(12-5)（分母 $N U = 24 \times 9 = 216$，$\epsilon_k = 2$），三格的单频格均方功率依次为 $\frac{2 \times 0.36}{216} = \frac{1}{300}$、$\frac{2 \times 1.44}{216} = \frac{1}{75}$、$\frac{1}{300}$。虽然中心格读数从 $0.02$ 降到了 $1/75 \approx 0.01333$，但把相邻三格加起来恰为 $\frac{1 + 4 + 1}{300} = 0.02$，总均方功率毫发无损！
 
 最后回到矩形窗核对两个端点：直流常值 $x[n] = 0.2$ 在 $k = 0$ 处的 FFT 幅值为 $24 \times 0.2 = 4.8$；Nyquist 序列 $x[n] = 0.2(-1)^n$ 在 $k = 12$ 处的 FFT 幅值同样为 $4.8$。由于这两个端点在单边谱中没有对称负频率伙伴，折叠因子取 $\epsilon_0 = \epsilon_{12} = 1$，单频格均方功率均为 $\frac{1 \times 4.8^2}{24 \times 24} = 0.04$，与时域均方值 $0.2^2 = 0.04$ 完全吻合（既不能乘 $\epsilon = 2$，也不能套用内部正弦除以 $2$ 的规则）。
 
@@ -967,7 +1037,7 @@ $$\vec q'=\frac{153}{73}\begin{pmatrix}1\\1/4\end{pmatrix}
 =\begin{pmatrix}153/73\\153/292\end{pmatrix}
 \approx\begin{pmatrix}2.09589041\\0.52397260\end{pmatrix}.$$
 
-为什么源量数字翻了一倍多，麦克风录到的物理 CSM 却纹丝不动？对照式(12-2)，换用新参考点后，新传播向量为 $\vec a'_j = \vec a_j \frac{r_1}{r_0} e^{\mathrm{j}\kappa(r_1 - r_0)}$，而新源复系数为 $s'_j = s_j \frac{r_0}{r_1} e^{-\mathrm{j}\kappa(r_1 - r_0)}$——距离比与公共参考相移一乘一除刚好全部抵消，通道接收声压 $\vec a'_j s'_j = \vec a_j s_j$ 恒等不变，外积 $q'_j\vec a'_j(\vec a'_j)^H = q_j\vec a_j\vec a_j^H$ 自然分毫不差。
+为什么源量数字翻了一倍多，麦克风录到的物理 CSM 却纹丝不动？对照式(12-2)，记参考距离差 $\delta_r = r_1 - r_0$、比例因子 $\eta_0 = (r_1/r_0)e^{\mathrm{j}\kappa\delta_r}$：换用新参考点后，新传播向量为 $\vec a'_j = \eta_0\vec a_j$，而新源复系数为 $s'_j = \eta_0^{-1} s_j$——距离比与公共参考相移一乘一除刚好全部抵消，通道接收声压 $\vec a'_j s'_j = \vec a_j s_j$ 恒等不变，外积 $q'_j\vec a'_j(\vec a'_j)^H = q_j\vec a_j\vec a_j^H$ 自然分毫不差。
 
 <a id="e12-15"></a>
 
@@ -984,12 +1054,18 @@ $$\vec q'=\frac{153}{73}\begin{pmatrix}1\\1/4\end{pmatrix}
 
 #### E12-16：已知白噪声模型能否分开源与噪声
 
-**题干。** 已知单源传播向量 $\vec a = [1, 2]^\top$，观测 CSM 为 $\mathbf R = \begin{pmatrix}2.5 & 4 \\ 4 & 8.5\end{pmatrix}$，按模型 $q\vec a\vec a^H + \sigma^2\mathbf I$ 联合估计源功率 $q$ 与空间白噪声方差 $\sigma^2$：写出实向量化字典列、Gram 矩阵与正规方程的解；若退化为单支麦克风（$a = 1, R = 2.5$），还能把两者分开吗？
+**题干。** 已知单源传播向量 $\vec a = [1, 2]^\top$，观测 CSM 主对角为 $2.5, 8.5$、非对角均为 $4$，按模型 $q\vec a\vec a^H + \sigma^2\mathbf I$ 联合估计源功率 $q$ 与空间白噪声方差 $\sigma^2$：写出实向量化字典列、Gram 矩阵与正规方程的解；若退化为单支麦克风（$a = 1, R = 2.5$），还能把两者分开吗？
 
-**答案。** 按式(12-19)构造四维完整 Frobenius 实向量（依次排列 $(1,1)$、$(2,2)$、$\sqrt{2}\operatorname{Re}(1,2)$、$\sqrt{2}\operatorname{Im}(1,2)$）：单源模板 $\vec a\vec a^H = \begin{pmatrix}1 & 2 \\ 2 & 4\end{pmatrix}$ 拉直为第 $1$ 列 $\vec h_1 = [1, 4, 2\sqrt{2}, 0]^\top$，单位阵 $\mathbf I_2$ 拉直为第 $2$ 列 $\vec h_2 = [1, 1, 0, 0]^\top$，观测拉直为 $\vec c = [2.5, 8.5, 4\sqrt{2}, 0]^\top$。计算两列内积组成 $2 \times 2$ Gram 矩阵与右侧内积向量：
+**答案。** 按式(12-19)构造四维完整 Frobenius 实向量（依次排列 $(1,1)$、$(2,2)$、$\sqrt{2}\operatorname{Re}(1,2)$、$\sqrt{2}\operatorname{Im}(1,2)$）：单源模板 $\vec a\vec a^H$（主对角 $1, 4$、非对角 $2$）拉直为第 $1$ 列 $\vec h_1 = [1, 4, 2\sqrt{2}, 0]^\top$，单位阵 $\mathbf I_2$ 拉直为第 $2$ 列 $\vec h_2 = [1, 1, 0, 0]^\top$，观测拉直为 $\vec c = [2.5, 8.5, 4\sqrt{2}, 0]^\top$。计算两列内积组成 $2 \times 2$ Gram 矩阵与右侧内积向量：
 
-$$\mathbf H^\top\mathbf H=\begin{pmatrix}1+16+8 & 1+4\\1+4 & 1+1\end{pmatrix}=\begin{pmatrix}25 & 5\\5 & 2\end{pmatrix},\qquad
-\mathbf H^\top\vec c=\begin{pmatrix}2.5+34+16\\2.5+8.5\end{pmatrix}=\begin{pmatrix}52.5\\11\end{pmatrix}.$$
+$$\begin{aligned}
+\mathbf H^\top\mathbf H
+&=\begin{pmatrix}1+16+8&1+4\\1+4&1+1\end{pmatrix}
+=\begin{pmatrix}25&5\\5&2\end{pmatrix},\\
+\mathbf H^\top\vec c
+&=\begin{pmatrix}2.5+34+16\\2.5+8.5\end{pmatrix}
+=\begin{pmatrix}52.5\\11\end{pmatrix}.
+\end{aligned}$$
 
 联立 $25q + 5\sigma^2 = 52.5$ 与 $5q + 2\sigma^2 = 11$：把第 $2$ 式乘以 $5$ 减去第 $1$ 式得 $5\sigma^2 = 2.5 \Rightarrow \sigma^2 = 0.5$，回代得 $q = 2$（均严格非负，代回 $2\vec a\vec a^H + 0.5\mathbf I$ 精确复现全部观测元素）。
 
@@ -1003,7 +1079,7 @@ $$\mathbf H^\top\mathbf H=\begin{pmatrix}1+16+8 & 1+4\\1+4 & 1+1\end{pmatrix}=\b
 
 **答案。** 先用一般矩阵记号梳理 §12.7 导出的完整 CSM 拟合目标，再代入本题数字逐步复算。
 
-记第 $j$ 格秩一模板为 $\mathbf T_j = \vec a_j\vec a_j^H$，沿用式(12-8)的匹配权重 $\vec w_i = \vec a_i / (\vec a_i^H\vec a_i)$，保留完整对角线。由 §12.7 的迹恒等式已知 $\langle\mathbf T_i, \mathbf T_j\rangle_F = |\vec a_i^H\vec a_j|^2$。为避免与 §12.6 的残差矩阵 $\mathbf D$ 重名，我们将第 $i$ 列能量平方组成的正定对角行尺度阵记作 $\boldsymbol\Lambda_a \in \mathbb{R}^{J \times J}$，与 $J \times J$ 实对称模板 Gram 矩阵 $\mathbf G$、$J$ 维拟合右侧向量 $\vec h$ 汇总如下：
+记第 $j$ 格秩一模板为 $\mathbf T_j = \vec a_j\vec a_j^H$，沿用式(12-8)的匹配权重 $\vec w_i = \vec a_i / (\vec a_i^H\vec a_i)$，保留完整对角线。由 §12.7 的迹恒等式已知内积 $\langle\mathbf T_i, \mathbf T_j\rangle_F$ 等于 $|\vec a_i^H\vec a_j|^2$。为避免与 §12.6 的残差矩阵 $\mathbf D$ 重名，我们将第 $i$ 列能量平方组成的正定对角行尺度阵记作 $\boldsymbol\Lambda_a \in \mathbb{R}^{J \times J}$，与 $J \times J$ 实对称模板 Gram 矩阵 $\mathbf G$、$J$ 维拟合右侧向量 $\vec h$ 汇总如下：
 
 $$\begin{aligned}
 G_{ij}&=|\vec a_i^H\vec a_j|^2,\qquad
@@ -1013,31 +1089,32 @@ h_i=\vec a_i^H\hat{\mathbf R}\vec a_i,\\
 \vec h=\boldsymbol\Lambda_a\vec b.
 \end{aligned}\tag{12-29}$$
 
-将式(12-18)的完整 CSM Frobenius 平方目标记作 $F(\vec q)$，把线性组合模平方逐项展开：
+将式(12-18)的完整 CSM Frobenius 平方目标记作 $F(\vec q)$，令矩阵残差 $\mathbf E_q = \sum_j q_j\mathbf T_j - \hat{\mathbf R}$，把模平方逐项展开：
 
 $$\begin{aligned}
-F(\vec q)&=\left\|\sum_{j=1}^{J}q_j\mathbf T_j-\hat{\mathbf R}\right\|_F^2\\
-&=\vec q^\top\mathbf G\vec q-2\vec h^\top\vec q+\|\hat{\mathbf R}\|_F^2.
+F(\vec q)&=\|\mathbf E_q\|_F^2\\
+&=\vec q^\top\mathbf G\vec q-2\vec h^\top\vec q
++\|\hat{\mathbf R}\|_F^2.
 \end{aligned}\tag{12-30}$$
 
-展开式中二次项来自第 $i, j$ 个模板的内积 $q_i q_j\langle\mathbf T_i, \mathbf T_j\rangle_F = q_i q_j G_{ij}$，一次项来自模板与观测矩阵的内积 $-2q_i\langle\mathbf T_i, \hat{\mathbf R}\rangle_F = -2q_i h_i$，常数项 $\|\hat{\mathbf R}\|_F^2$ 不含 $\vec q$，不影响极小点位置。
+展开式中二次项来自第 $i, j$ 个模板内积 $q_i q_j\langle\mathbf T_i, \mathbf T_j\rangle_F$（即 $q_i q_j G_{ij}$），一次项来自模板与观测矩阵的内积 $-2q_i\langle\mathbf T_i, \hat{\mathbf R}\rangle_F$（即 $-2q_i h_i$），常数项 $\|\hat{\mathbf R}\|_F^2$ 不含 $\vec q$，不影响极小点位置。
 
 固定其余坐标 $q_{j\ne i}$，单独对第 $i$ 个非负分量最小化 $F(\vec q)$。把扣除其余格点贡献后的净余量分别记为 $r_i^G = h_i - \sum_{j\ne i} G_{ij} q_j$ 与 $r_i^P = b_i - \sum_{j\ne i} P_{ij} q_j$，单坐标非负极小点更新为：
 
 $$\begin{aligned}
-q_i&\leftarrow\max\left(0,\frac{r_i^G}{G_{ii}}\right)
-=\max\left(0,\frac{\Lambda_{a,ii} r_i^P}{\Lambda_{a,ii} P_{ii}}\right)\\
-&=\max\left(0,\frac{r_i^P}{P_{ii}}\right).
+q_i&\leftarrow\max(0,r_i^G/G_{ii})
+=\max\bigl(0,(\Lambda_{a,ii}r_i^P)/(\Lambda_{a,ii}P_{ii})\bigr)\\
+&=\max(0,r_i^P/P_{ii}).
 \end{aligned}\tag{12-31}$$
 
 分子分母消去正因子 $\Lambda_{a,ii}$ 后，正好还原成未松弛的 DAMAS 逐坐标更新式(12-12)！因为 $\mathbf G$ 是模板向量的 Gram 矩阵（必半正定），$F(\vec q)$ 为凸二次函数，满足互补条件 $\vec q \ge 0$、$\mathbf G\vec q - \vec h \ge 0$、$q_i(\mathbf G\vec q - \vec h)_i = 0$ 的固定点即为式(12-30)的全局最优解（参见 [Chardon 等，§3.1～3.3 定理 1～3 与式(15)～(18)](https://gilleschardon.fr/papers/damascmf.pdf)）。哪怕各列传播向量范数不等导致 $\mathbf P$ 不对称，左乘 $\boldsymbol\Lambda_a$ 后的 $\mathbf G = \boldsymbol\Lambda_a\mathbf P$ 依然严格对称；同时切记，扫描域 NNLS 目标 $S(\vec q) = \|\mathbf P\vec q - \vec b\|_2^2$ 的二次项矩阵是 $\mathbf P^\top\mathbf P$ 而非 $\mathbf G$，两者并不是同一个优化问题。
 
-现在代入本题具体数字：两列传播向量范数平方均为 $2$，故行尺度阵为 $\boldsymbol\Lambda_a = 4\mathbf I_2$；两列内积模平方 $|\vec a_1^H\vec a_2|^2 = 1$，且 $\|\mathbf R\|_F^2 = (\vec v^H\vec v)^2 = (8/3)^2 = 64/9$。由于 $\vec a_2^H\vec v = \sqrt{4/3}(1 + e^{\mathrm{j}\pi}) = 0$、$\vec a_1^H\vec v = \sqrt{4/3}(1 + e^{\mathrm{j}\pi/3})$，立刻算出：
+现在代入本题具体数字：两列传播向量范数平方均为 $2$，故行尺度阵为 $\boldsymbol\Lambda_a = 4\mathbf I_2$；两列内积模平方 $|\vec a_1^H\vec a_2|^2 = 1$，且 $\|\mathbf R\|_F^2 = (\vec v^H\vec v)^2 = (8/3)^2 = 64/9$。由于 $\vec a_2^H\vec v$ 相位相差 $\pi$ 抵消为 $0$，而 $\vec a_1^H\vec v = \sqrt{4/3}(1 + e^{\mathrm{j}\pi/3})$，立刻算出：
 
 $$\begin{gathered}
-\mathbf G=\begin{pmatrix}4 & 1\\1 & 4\end{pmatrix},\qquad
-\vec b=\begin{pmatrix}1\\0\end{pmatrix},\qquad
-\vec h=\boldsymbol\Lambda_a\vec b=\begin{pmatrix}4\\0\end{pmatrix},\qquad
+\mathbf G=\begin{pmatrix}4&1\\1&4\end{pmatrix},\qquad
+\vec b=\begin{pmatrix}1\\0\end{pmatrix},\\
+\vec h=\boldsymbol\Lambda_a\vec b=[4,\;0]^\top,\qquad
 \|\mathbf R\|_F^2=\frac{64}{9}.
 \end{gathered}\tag{12-32}$$
 
@@ -1048,7 +1125,9 @@ F(u,v)&=4u^2+2uv+4v^2-8u+\frac{64}{9},\\
 S(u,v)&=\left(u+\frac{v}{4}-1\right)^2+\left(\frac{u}{4}+v\right)^2.
 \end{aligned}\tag{12-33}$$
 
-先检验完整 CSM 目标 $F(u, v)$：在点 $[1, 0]^\top$ 处，半梯度向量为 $\mathbf G\vec q - \vec h = [4 - 4,\; 1 - 0]^\top = [0, 1]^\top \ge 0$，满足 KKT 互补条件；由于 $\mathbf G$ 的特征值为 $3$ 和 $5$（严格正定），$[1, 0]^\top$ 是唯一的全局最小点，对应 $F(1, 0) = 4 - 8 + 64/9 = 28/9$（未松弛 GS 从零起步一步即停在此处）。再检验扫描域目标 $S(u, v)$：在边界 $v = 0$ 上，$S(u, 0) = (u - 1)^2 + u^2 / 16$，求导 $2(u - 1) + u / 8 = 0$ 得 $u = 16/17$，半梯度 $\mathbf P^\top(\mathbf P\vec q - \vec b) = [0, 15/68]^\top \ge 0$，同样满足各自的 KKT 互补条件！将两个最优点交叉代回两套指标并列核对（在 $v = 0$ 轴上可利用配方式 $F(u, 0) = 4(u - 1)^2 + 28/9$ 快速算出 $F(16/17, 0) = 28/9 + 4/289 = 8128/2601$）：
+先检验完整 CSM 目标 $F(u, v)$：在点 $[1, 0]^\top$ 处，半梯度向量 $\mathbf G\vec q - \vec h = [0, 1]^\top \ge 0$，满足 KKT 互补条件；由于 $\mathbf G$ 的特征值为 $3$ 和 $5$（严格正定），$[1, 0]^\top$ 是唯一的全局最小点，对应 $F(1, 0) = 4 - 8 + 64/9 = 28/9$（未松弛 GS 从零起步一步即停在此处）。
+
+再检验扫描域目标 $S(u, v)$：在边界 $v = 0$ 上，$S(u, 0) = (u - 1)^2 + u^2 / 16$，求导 $2(u - 1) + u / 8 = 0$ 得 $u = 16/17$，半梯度 $\mathbf P^\top(\mathbf P\vec q - \vec b)$ 恰为 $[0, 15/68]^\top \ge 0$，同样满足各自的 KKT 互补条件！将两个最优点交叉代回两套指标并列核对（在 $v = 0$ 轴上可利用配方式 $F(u, 0) = 4(u - 1)^2 + 28/9$ 快速算出 $F(16/17, 0) = 28/9 + 4/289 = 8128/2601$）：
 
 | 求解方案 | 最优非负源强 $\vec q$ | 扫描平方残差 $S(\vec q)$ | 完整 CSM 平方残差 $F(\vec q)$ |
 |---|---|---:|---:|
@@ -1057,23 +1136,21 @@ S(u,v)&=\left(u+\frac{v}{4}-1\right)^2+\left(\frac{u}{4}+v\right)^2.
 
 看表中的对角对比：第一行在完整 CSM 残差 $F$ 上更小（$28/9 < 8128/2601$），第二行在扫描平方残差 $S$ 上更小（$1/17 < 1/16$）——双方都在各自声明的标尺下做到了全局最优，绝不能拿 $0.05882 < 3.11111$ 跨标尺宣布扫描域 NNLS 更准；而且因为生成 $\mathbf R$ 的真实源位于两格之外，这两组边界解也都不是物理真实源功率。
 
-**延伸核验一（一致去对角对照）**：令投影算子 $\mathcal O(\cdot)$ 将矩阵主对角元置零，记去对角模板 $\mathbf T'_i = \mathcal O(\mathbf T_i)$、去对角观测 $\mathbf R' = \mathcal O(\mathbf R)$。同步重算 Frobenius 内积可得
+**延伸核验一（一致去对角对照）**：令投影算子 $\mathcal O(\cdot)$ 将矩阵主对角元置零，记去对角模板 $\mathbf T'_i = \mathcal O(\mathbf T_i)$、去对角观测 $\mathbf R' = \mathcal O(\mathbf R)$。同步重算 Frobenius 内积 $G'_{ij} = \langle\mathbf T'_i, \mathbf T'_j\rangle_F$ 与 $h'_i = \langle\mathbf T'_i, \mathbf R'\rangle_F$ 可得
 
-$$\mathbf G'=\begin{pmatrix}\langle\mathbf T'_1,\mathbf T'_1\rangle_F & \langle\mathbf T'_1,\mathbf T'_2\rangle_F\\
-\langle\mathbf T'_2,\mathbf T'_1\rangle_F & \langle\mathbf T'_2,\mathbf T'_2\rangle_F\end{pmatrix}
-=\begin{pmatrix}2 & -1\\-1 & 2\end{pmatrix},\qquad
-\vec h'=\begin{pmatrix}\langle\mathbf T'_1,\mathbf R'\rangle_F\\
-\langle\mathbf T'_2,\mathbf R'\rangle_F\end{pmatrix}
-=\begin{pmatrix}4/3\\-8/3\end{pmatrix}.$$
+$$\begin{gathered}
+\mathbf G'=\begin{pmatrix}2 & -1\\-1 & 2\end{pmatrix},\qquad
+\vec h'=\begin{pmatrix}4/3\\-8/3\end{pmatrix}.
+\end{gathered}$$
 
-按 §12.8 等幅两麦因子 $2$ 补偿使去对角自响应归一后，去对角 PSF 与扫描向量分别为 $\mathbf G'/2 = \begin{pmatrix}1 & -1/2 \\ -1/2 & 1\end{pmatrix}$ 和 $\vec h'/2 = [2/3, -4/3]^\top$（注意负扫描值 $-4/3$ 必须原样保留参与运算，不能预先截零）。在边界 $q_2 = 0$ 上求导核验：去对角 CSM 拟合由 $2q_1 - 4/3 = 0$ 得最优解 $[2/3, 0]^\top$（第 $2$ 分量半梯度为 $-2/3 + 8/3 = 2 > 0$）；去对角扫描域 NNLS 则最小化 $(q_1 - 2/3)^2 + (-q_1/2 + 4/3)^2$，求导得最优解 $[16/15, 0]^\top$（第 $2$ 分量半梯度为 $3/5 > 0$）：
+按 §12.8 等幅两麦因子 $2$ 补偿使去对角自响应归一后，去对角 PSF 矩阵 $\mathbf G'/2$ 主对角为 $1$、非对角为 $-1/2$，补偿后扫描向量为 $\vec h'/2 = [2/3, -4/3]^\top$（注意负扫描值 $-4/3$ 必须原样保留参与运算，不能预先截零）。在边界 $q_2 = 0$ 上求导核验：去对角 CSM 拟合由 $2q_1 - 4/3 = 0$ 得最优解 $[2/3, 0]^\top$（第 $2$ 分量半梯度为 $-2/3 + 8/3 = 2 > 0$）；去对角扫描域 NNLS 则最小化 $(q_1 - 2/3)^2 + (-q_1/2 + 4/3)^2$，求导得最优解 $[16/15, 0]^\top$（第 $2$ 分量半梯度为 $3/5 > 0$）：
 
 | 去对角求解方案 | 最优非负源强 $\vec q$ | 补偿后扫描平方残差 | 去对角 CSM 平方残差 |
 |---|---|---:|---:|
 | 去对角 CSM 非负拟合 | $[2/3, 0]^\top$ | $1$ | $8/3 \approx 2.66667$ |
 | 去对角扫描域 NNLS | $[16/15, 0]^\top$ | $4/5 = 0.8$ | $224/75 \approx 2.98667$ |
 
-**延伸核验二（不等范数传播列）**：若将字典第 $2$ 列放大 $2$ 倍（列范数平方变为 $8$），行尺度阵变为 $\boldsymbol\Lambda_a = \operatorname{diag}(4, 64)$。此时 $\mathbf P = \begin{pmatrix}1 & 1 \\ 1/16 & 1\end{pmatrix}$ 不再对称，但左乘 $\boldsymbol\Lambda_a$ 后 $\mathbf G = \boldsymbol\Lambda_a\mathbf P = \begin{pmatrix}4 & 4 \\ 4 & 64\end{pmatrix}$ 依然严格对称，验证了式(12-29)无需等范数假设。
+**延伸核验二（不等范数传播列）**：若将字典第 $2$ 列放大 $2$ 倍（列范数平方变为 $8$），行尺度阵变为 $\boldsymbol\Lambda_a = \operatorname{diag}(4, 64)$。此时 $\mathbf P$ 的两行分别为 $[1, 1]$ 与 $[1/16, 1]$（不再对称），但左乘 $\boldsymbol\Lambda_a$ 后得到的 $\mathbf G = \boldsymbol\Lambda_a\mathbf P$ 两行分别为 $[4, 4]$ 与 $[4, 64]$，依然严格对称，验证了式(12-29)无需等范数假设。
 
 ![图80 两种成像目标的非负等值线与不同最小点](../figures/fig80_imaging_objectives.png)
 
@@ -1088,11 +1165,15 @@ $$\mathbf G'=\begin{pmatrix}\langle\mathbf T'_1,\mathbf T'_1\rangle_F & \langle\
 
 **题干。** 已知传感器噪声为零，双麦克风阵列包含四个相位各不相同的候选传播列 $\vec a_j = [1, z_j]^\top$，其中 $z_j$ 依次取 $1, \mathrm{j}, -1, -\mathrm{j}$。证明两组互不重叠的两源分布 $[1, 0, 1, 0]^\top$ 与 $[0, 1, 0, 1]^\top$ 生成完全相同的完整 CSM；计算扫描向量 $\vec b$、实字典秩与通解族，最后讨论把未知空间白噪声并入模型后的变化。
 
-**答案。** 先写出四个候选列各自的 $2 \times 2$ 秩一互谱模板 $\mathbf T_j = \vec a_j\vec a_j^H$：虽然每列相位各异，但相位相差 $\pi$ 的两对模板非对角互谱恰好正负抵消：
+**答案。** 先写出四个候选列各自的 $2 \times 2$ 秩一互谱模板 $\mathbf T_j = \vec a_j\vec a_j^H$（其中 $\mathbf T_1, \mathbf T_3$ 非对角分别为 $+1, -1$，$\mathbf T_2, \mathbf T_4$ 上三角分别为 $-\mathrm{j}, +\mathrm{j}$）：虽然每列相位各异，但相位相差 $\pi$ 的两对模板非对角互谱恰好正负抵消：
 
 $$\begin{aligned}
-\mathbf T_1+\mathbf T_3&=\begin{pmatrix}1 & 1\\1 & 1\end{pmatrix}+\begin{pmatrix}1 & -1\\-1 & 1\end{pmatrix}=2\mathbf I_2,\\
-\mathbf T_2+\mathbf T_4&=\begin{pmatrix}1 & -\mathrm{j}\\\mathrm{j} & 1\end{pmatrix}+\begin{pmatrix}1 & \mathrm{j}\\-\mathrm{j} & 1\end{pmatrix}=2\mathbf I_2.
+\mathbf T_1+\mathbf T_3
+&=\begin{pmatrix}1&1\\1&1\end{pmatrix}
++\begin{pmatrix}1&-1\\-1&1\end{pmatrix}=2\mathbf I_2,\\
+\mathbf T_2+\mathbf T_4
+&=\begin{pmatrix}1&-\mathrm{j}\\\mathrm{j}&1\end{pmatrix}
++\mathbf T_2^\top=2\mathbf I_2.
 \end{aligned}\tag{12-34}$$
 
 因此，无论是点亮第 $1$、$3$ 格（$[1, 0, 1, 0]^\top$）还是点亮第 $2$、$4$ 格（$[0, 1, 0, 1]^\top$），生成的完整复数 CSM 一字不差，都是 $2\mathbf I_2$！
@@ -1114,11 +1195,90 @@ $$\mathbf P=\frac{1}{2}\begin{pmatrix}
 
 $$\begin{gathered}
 \vec q(t)=\frac{1}{2}\begin{pmatrix}1\\1\\1\\1\end{pmatrix}
-+t\begin{pmatrix}1\\-1\\1\\-1\end{pmatrix},\qquad
++t\begin{pmatrix}1\\-1\\1\\-1\end{pmatrix},\\
 -\frac{1}{2}\le t\le\frac{1}{2}.
 \end{gathered}\tag{12-36}$$
 
 线段左端点 $t = -1/2$ 为 $[0, 1, 0, 1]^\top$，右端点 $t = +1/2$ 为 $[1, 0, 1, 0]^\top$，内部点则是四格全亮的分布：在这一族解上，源功率总和恒定为 $2$（即 $\ell_1$ 稀疏约束也完全无法区分两个同样只含两个非零元、$\ell_1$ 范数同为 $2$ 的端点！）。最后，若把未知空间白噪声 $\sigma^2\mathbf I_2$ 也添进模型，观测 $2\mathbf I_2$ 还会多出“$\vec q = \vec 0, \sigma^2 = 2$”这一纯背景噪声解释；数值核会显式返回零空间方向与多组代表解，提示使用者当前观测存在本质几何歧义。
+
+<a id="e12-19"></a>
+
+#### E12-19：函数波束形成为何能保住单源峰值并按指数压低旁瓣
+
+**题干。** 对完整半正定互谱矩阵 $\mathbf R \succeq 0$ 与阶数 $\nu \ge 1$，按 §12.11 写出匹配尺度函数波束形成公式。（1）设无噪单源 $\mathbf R = q_1\vec a_1\vec a_1^H$（$q_1 > 0$），严格推导任意扫描格 $i$ 的输出 $b_{\mathrm{FB},i}(\nu)$，证明无论近场各列范数是否相等，真实源格 $i = 1$ 恒有 $b_{\mathrm{FB},1}(\nu) = q_1$，并在等范数下化简为单源 PSF 的 $\nu$ 次幂；（2）在本章两格基准（$q_1 = 1, q_2 = 0, P_{21} = 1/4$）上手算 $\nu = 1, 2, 4$ 的扫描向量与旁瓣分贝值，并说明为何对角删除矩阵不能代入该函数。
+
+**答案。** 先将完整半正定矩阵正交特征分解为 $\mathbf R = \sum_{m=1}^M \lambda_m\vec u_m\vec u_m^H$（$\lambda_m \ge 0$），记单位范数导向向量为 $\tilde{\vec a}_i = \vec a_i / \|\vec a_i\|_2$，式(12-8)真实声级口径的函数波束形成定义为：
+
+$$\begin{aligned}
+\mathbf R^{1/\nu}
+&=\sum_{m=1}^{M}\lambda_m^{1/\nu}\vec u_m\vec u_m^H,\\
+b_{\mathrm{FB},i}(\nu)&=\frac{1}{\|\vec a_i\|_2^2}
+\bigl(\tilde{\vec a}_i^H\mathbf R^{1/\nu}\tilde{\vec a}_i\bigr)^\nu.
+\end{aligned}\tag{12-37}$$
+
+现在代入无噪单源 $\mathbf R = q_1\vec a_1\vec a_1^H$，用单位向量改写为 $\lambda_1\tilde{\vec a}_1\tilde{\vec a}_1^H$：它的秩为 $1$，唯一非零特征值为 $\lambda_1 = q_1\|\vec a_1\|_2^2$（对应单位特征向量 $\vec u_1 = \tilde{\vec a}_1$），其余 $M - 1$ 个特征值全为 $0$（满足 $0^{1/\nu} = 0$）。因此分数幂矩阵直接化为秩一形式 $\lambda_1^{1/\nu}\tilde{\vec a}_1\tilde{\vec a}_1^H$，代入式(12-37)逐项展开：
+
+$$\begin{aligned}
+\tilde{\vec a}_i^H\mathbf R^{1/\nu}\tilde{\vec a}_i
+&=(q_1\|\vec a_1\|_2^2)^{1/\nu}
+\bigl|\tilde{\vec a}_i^H\tilde{\vec a}_1\bigr|^2,\\
+b_{\mathrm{FB},i}(\nu)&=q_1\frac{\|\vec a_1\|_2^2}{\|\vec a_i\|_2^2}
+\bigl|\tilde{\vec a}_i^H\tilde{\vec a}_1\bigr|^{2\nu}.
+\end{aligned}\tag{12-38}$$
+
+检查式(12-38)的两大结论：第一，在真实源格 $i = 1$ 处，$\|\vec a_1\|_2^2 / \|\vec a_1\|_2^2 = 1$ 且 $|\tilde{\vec a}_1^H\tilde{\vec a}_1| = 1$，故对一切 $\nu \ge 1$ 恒有 $b_{\mathrm{FB},1}(\nu) = q_1$（哪怕在近场球面波下各格传播列范数完全不等，单源峰值依然分毫不差！）；第二，当各格传播列范数相等（$\|\vec a_i\|_2 = \|\vec a_1\|_2$）时，单源归一化 PSF 恰为 $P_{i1} = |\vec w_i^H\vec a_1|^2$，即 $|\tilde{\vec a}_i^H\tilde{\vec a}_1|^2$，式(12-38)直接化简为 $b_{\mathrm{FB},i}(\nu) = q_1 P_{i1}^\nu$！
+
+代入本章双麦两格单源基准（$q_1 = 1, q_2 = 0, P_{21} = 1/4$）：
+
+- $\nu = 1$（常规扫描）：$\vec b_{\mathrm{FB}}(1) = [1, 1/4]^\top$（即 $[1, 0.25]^\top$），旁瓣级为 $-6.0206\,\mathrm{dB}$；
+- $\nu = 2$（矩阵平方根）：$\vec b_{\mathrm{FB}}(2) = [1, 1/16]^\top$（即 $[1, 0.0625]^\top$），旁瓣级压低一倍至 $-12.0412\,\mathrm{dB}$；
+- $\nu = 4$（四次方根）：$\vec b_{\mathrm{FB}}(4) = [1, 1/256]^\top$（第 $2$ 格约 $0.003906$），旁瓣级压至 $-24.0824\,\mathrm{dB}$。
+
+最后核对去对角禁忌：若将本例单源 CSM 主对角清零，所得实对称矩阵的特征值变为 $+1$ 和 $-1 < 0$，不再半正定，实数分数幂 $(-1)^{1/\nu}$ 无定义，数值核对此类不定输入会显式报错拦截。
+
+<a id="e12-20"></a>
+
+#### E12-20：二阶矩阵平方根手算、积分功率不守恒与弱源低估机理
+
+**题干。** （1）在本章非相干双源基准（$\vec q = [1, 1/4]^\top$）上，利用二阶 Hermitian 正定矩阵 Cayley–Hamilton 平方根公式手算 $\mathbf R^{1/2}$ 与 $\nu = 2$ 函数波束形成精确值 $\vec b_{\mathrm{FB}}(2)$；（2）检验两格扫描和以及除以单源 PSF 列和之后是否仍等于真实总源量 $1.25$；（3）构造三麦克风双源算例（强源 $q_1 = 1$ 在格上，正交弱源 $q_2 = 1/4$ 因网格离散存在余弦平方匹配度 $\eta = 4/5$），手算 $\nu = 1, 2, 8$ 下的弱源读数并解释低估机理。
+
+**答案。** 分三步把多源非线性效应拆解到底：
+
+**第一步：二阶矩阵平方根与双源精确闭式解。** 由 [E12-02](#e12-02) 已知双源互谱矩阵 $\mathbf R$ 的主对角元均为 $5/4$，右上元为 $R_{12} = (7 + \mathrm{j}\sqrt{3})/8$。先算矩阵迹与行列式：$\operatorname{tr}(\mathbf R) = 5/2$，$|R_{12}|^2 = (49 + 3)/64 = 13/16$，故 $\det(\mathbf R) = 25/16 - 13/16 = 3/4 > 0$（两个特征值为 $(5 \pm \sqrt{13})/4 > 0$）。对任意二阶 Hermitian 半正定矩阵 $\mathbf R$，记迹 $T_R = \operatorname{tr}(\mathbf R)$、根号行列式 $D_R = \sqrt{\det\mathbf R}$ 以及 $\tau_R = T_R + 2D_R$，由特征多项式恒等式可直接验证唯一半正定平方根公式：
+
+$$\begin{aligned}
+\mathbf R^{1/2}&=\frac{\mathbf R+\sqrt{\det\mathbf R}\,\mathbf I_2}
+{\sqrt{\tau_R}},\\
+\sqrt{\det\mathbf R}&=\frac{\sqrt{3}}{2},\qquad
+\tau_R=\frac{5+2\sqrt{3}}{2}.
+\end{aligned}\tag{12-39}$$
+
+注意到两格传播列均满足 $\|\vec a_i\|_2^2 = 2$，单位向量二次型满足 $\tilde{\vec a}_i^H\mathbf R\tilde{\vec a}_i = 2b_i$ 且 $\tilde{\vec a}_i^H\mathbf I_2\tilde{\vec a}_i = 1$！无需逐元素乘特征向量，把式(12-39)直接代入式(12-37)的 $\nu = 2$ 表达式，立刻得到关于常规扫描值 $b_i$ 的简洁关系：
+
+$$\begin{aligned}
+\tilde{\vec a}_i^H\mathbf R^{1/2}\tilde{\vec a}_i
+&=\frac{2b_i+\sqrt{3}/2}{\sqrt{(5+2\sqrt{3})/2}},\\
+b_{\mathrm{FB},i}(2)&=\frac{(4b_i+\sqrt{3})^2}{4(5+2\sqrt{3})}.
+\end{aligned}\tag{12-40}$$
+
+将 $b_1 = 17/16$（即 $4b_1 = 17/4$）与 $b_2 = 1/2$（即 $4b_2 = 2$）代入式(12-40)，利用平方差 $(5 + 2\sqrt{3})(5 - 2\sqrt{3}) = 13$ 有理化分母：
+
+- 第 $1$ 格：$b_{\mathrm{FB},1}(2) = (869 + 6\sqrt{3})/832$（约 $1.05696190$，常规扫描 $1.0625$，真值 $1.00$）；
+- 第 $2$ 格：$b_{\mathrm{FB},2}(2) = (11 + 6\sqrt{3})/52$（约 $0.41139048$，常规扫描 $0.5000$，真值 $0.25$）。
+
+**第二步：积分功率不守恒与算子单调性。** 在 $\nu = 1$ 常规线性扫描下，两格之和 $25/16 = 1.5625$ 除以单源 PSF 列和 $1 + 1/4 = 5/4$，恰好精确还原真实总功率 $1.25 = q_1 + q_2$。而在 $\nu = 2$ 下，由于 $(\mathbf R_1 + \mathbf R_2)^{1/2}$ 并不等于 $\mathbf R_1^{1/2} + \mathbf R_2^{1/2}$，两格 FB 之和为 $(1045 + 102\sqrt{3})/832 \approx 1.46835238$（既不等于 $1.25$，也不等于把 PSF 逐元素平方后乘 $\vec q$ 所得的线性假想和 $85/64 = 1.328125$）；即便除以 $\nu = 2$ 的单源 PSF 列和 $1 + 1/16 = 17/16$，仍得到 $(1045 + 102\sqrt{3})/884 \approx 1.38197871 \ne 1.25$！
+
+顺便留意：由算子单调的 Loewner–Heinz 定理（$\nu \ge 1$ 时 $\mathbf R \succeq q_j\vec a_j\vec a_j^H$ 蕴含各自的 $1/\nu$ 次幂保持半正定序），当不相干各源都精确落在网格交点上时，理论上必有 $b_{\mathrm{FB},j}(\nu) \ge q_j$。
+
+**第三步：多阵元离网格弱源低估机理。** 既然在网格上不会低估，为什么风洞多麦阵列（$M > J$）实测中大指数 $\nu$ 常常把弱源压低好几个分贝？根源在于 $\operatorname{rank}(\mathbf R) = J < M$ 留下了 $M - J$ 个**零特征值方向**！设 $M = 3$ 支麦克风，强源 $\vec a_1 = [1, 1, 1]^\top$（$q_1 = 1$）正中第 $1$ 格；正交真实弱源为 $\vec a_{\mathrm{true},2} = [1, z, z^2]^\top$（其中 $z = e^{-\mathrm{j}2\pi/3}$，$q_2 = 1/4$），此时 $\mathbf R$ 的三个特征值为 $\lambda_1 = 3, \lambda_2 = 3/4, \lambda_3 = 0$。
+
+若第 $2$ 个离散扫描格点的单位导向向量 $\vec v_{\mathrm{s}}$ 与 $\vec a_1$ 正交，但与真实弱源单位向量 $\vec v_{\mathrm{t}}$ 存在轻微离网格失配，使其内积模平方 $\eta = |\vec v_{\mathrm{s}}^H\vec v_{\mathrm{t}}|^2$ 为 $4/5 = 0.8$，其余 $1 - \eta = 1/5$ 掉进 $\lambda_3 = 0$ 的核空间，代入式(12-37)得压缩二次型 $(3q_2)^{1/\nu}\eta$，还原 $\nu$ 次幂并除以 $3$ 后弱源读数恰为 $b_{\mathrm{FB},\mathrm{scan},2}(\nu) = \eta^\nu q_2$：
+
+- $\nu = 1$（常规扫描）：$0.8 \times 0.25 = 0.2000$（相对真值仅低 $-0.9691\,\mathrm{dB}$）；
+- $\nu = 2$（开平方根）：$0.8^2 \times 0.25 = 0.1600$（偏差扩大一倍至 $-1.9382\,\mathrm{dB}$）；
+- $\nu = 8$（高阶锐化）：$0.8^8 \times 0.25 = 0.04194304$（严重低估达 $-7.7528\,\mathrm{dB}$！）。
+
+此外，若两源存在相消相干（如偶极干涉 $\vec x = \vec a_1 - 0.5\,e^{\mathrm{j}\pi/3}\vec a_2$，第 $2$ 源自身功率仍为 $0.25$），即便完全落在网格上，因 $\vec a_2^H\vec x = 0$，$b_{\mathrm{FB},2}(\nu)$ 也会直接跌至 $0 < 0.25$。
 
 ### 12.14 原始资料与继续阅读
 
@@ -1130,6 +1290,7 @@ $$\begin{gathered}
 - Yardibi, T. 等，*Sparsity constrained deconvolution approaches for acoustic source mapping*，*J. Acoust. Soc. Am.* 123(5)，2008：建立带对角噪声与稀疏预算约束的 CMF 及相关源 CMF-C 模型（[DOI](https://doi.org/10.1121%2F1.2896754)）。
 - Sarradj, E.，*Three-Dimensional Acoustic Source Mapping with Different Beamforming Steering Vector Formulations*，*Advances in Acoustics and Vibration*，2012：§2～§3 对比四类导向权重归一化在二维固定平面与三维深度扫描中的峰位与幅值特性（[DOI](https://doi.org/10.1155/2012/292695)）。
 - Humphreys, W. M. 等，*Evaluation of Methods for In-Situ Calibration of Field-Deployable Microphone Phased Arrays*，AIAA 2017-4176：§II～IV 区分实验室台架基准标定与外场原位声源漂移监测（[NASA 报告全文](https://ntrs.nasa.gov/api/citations/20170006081/downloads/20170006081.pdf)）。
+- Dougherty, R. P.，*Functional Beamforming*，BeBeC-2014-01，2014：提出对完整半正定互谱矩阵取分数幂 $\mathbf R^{1/\nu}$ 后扫描并还原 $\nu$ 次幂的非迭代旁瓣抑制方法，分析单源保峰特性与多源弱源低估边界（[BeBeC 会议论文](https://www.bebec.eu/fileadmin/bebec/downloads/bebec-2014/papers/BeBeC-2014-01.pdf)）。
 - Sijtsma, P. 与 Snellen, M.，*High resolution CLEAN-SC*，BeBeC-2016-S1：§2.5 给出主瓣内源标记点选择与位置回扫更新策略（[BeBeC 会议论文](https://www.bebec.eu/fileadmin/bebec/downloads/bebec-2016/papers/BeBeC-2016-S1.pdf)）。
 - Funke, S.、Dougherty, R. P. 与 Michel, U.，*SODIX in comparison with various deconvolution methods*，BeBeC-2014-11：式(6)～(10)建立指向性源参数拟合与空间/方向平滑正则化（[DLR 公开论文](https://elib.dlr.de/94587/1/BeBeC-2014-11_Funke_SODIX.pdf)）。
 - Maynard, J. D.、Williams, E. G. 与 Lee, Y.，*Nearfield acoustic holography: I. Theory of generalized holography and the development of NAH*，*J. Acoust. Soc. Am.* 78(4)，1985：§III 阐述近场行进波、倏逝波逆传播与测量噪声放大机理（[DOI](https://doi.org/10.1121/1.392911)）。

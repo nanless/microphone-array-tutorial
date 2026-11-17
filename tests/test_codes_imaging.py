@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 import os
 from pathlib import Path
 import tempfile
@@ -18,6 +19,10 @@ from codes.chapters.ch12.core.imaging import (
     clean_sc_full_csm, hermitian_real_vector, csm_residual, single_source_csm_fit,
     one_sided_csm_density, integrate_psd, region_power, two_cell_experiment,
     spherical_scan_experiment,
+)
+from codes.chapters.ch12.core.functional_beamforming import (
+    hermitian_fractional_power, closed_form_2x2_sqrt, functional_beamforming_map,
+    functional_beamforming_controls,
 )
 from codes.chapters.ch12.core.imaging_audio import (
     make_signals, extract_snapshot_amplitudes, measure_signal, measure_source_pairs,
@@ -174,7 +179,54 @@ class ImagingAlgebraTests(unittest.TestCase):
         self.assertAlmostEqual(region_power([1.,.25],[True,True],cell_area_m2=[.04,.04]),.05)
         self.assertEqual(region_power([1.,.25],[False,False]),0.)
 
+    def test_functional_beamforming_single_source_and_2x2_sqrt(self):
+        # E12-19: Single-source peak invariance and P_21^nu = (1/4)^nu sidelobe scaling.
+        r1 = np.outer(self.a[:, 0], self.a[:, 0].conj())
+        for nu, expected_sidelobe in [(1, 1/4), (2, 1/16), (4, 1/256)]:
+            np.testing.assert_allclose(
+                functional_beamforming_map(r1, self.a, nu=nu),
+                [1., expected_sidelobe],
+                atol=2e-15,
+            )
+        # Near-field unequal-norm columns a_1=[1,2]^T (||a_1||^2=5), a_2=[1,-0.5+0.5j]^T (||a_2||^2=1.5):
+        # |a_2^H a_1|^2 = |1 + (-0.5-0.5j)*2|^2 = |-j|^2 = 1 => cos^2 = 1/7.5 = 2/15.
+        a_near = np.array([[1., 1.], [2., -.5+.5j]])
+        r_near = 1.5 * np.outer(a_near[:, 0], a_near[:, 0].conj())
+        for nu in (1, 2, 4):
+            np.testing.assert_allclose(
+                functional_beamforming_map(r_near, a_near, nu=nu),
+                [1.5, 5. * (2/15)**nu],
+                atol=3e-15,
+            )
+
+        # E12-20: Exact 2x2 Cayley-Hamilton square root and closed-form FB(nu=2) values.
+        r_two = source_power_csm(self.a, [1., .25])
+        sqrt3 = math.sqrt(3.)
+        denom = math.sqrt((5. + 2.*sqrt3) / 2.)
+        expected_sqrt = np.array([
+            [(5. + 2.*sqrt3) / 4., (7. + 1j*sqrt3) / 8.],
+            [(7. - 1j*sqrt3) / 8., (5. + 2.*sqrt3) / 4.],
+        ]) / denom
+        np.testing.assert_allclose(closed_form_2x2_sqrt(r_two), expected_sqrt, atol=2e-15)
+        np.testing.assert_allclose(hermitian_fractional_power(r_two, .5), expected_sqrt, atol=2e-15)
+        np.testing.assert_allclose(expected_sqrt @ expected_sqrt, r_two, atol=2e-15)
+        expected_fb2 = [(869. + 6.*sqrt3) / 832., (11. + 6.*sqrt3) / 52.]
+        fb2 = functional_beamforming_map(r_two, self.a, nu=2.)
+        np.testing.assert_allclose(fb2, expected_fb2, atol=2e-15)
+        self.assertAlmostEqual(float(np.sum(fb2)), (1045. + 102.*sqrt3) / 832., places=14)
+        self.assertAlmostEqual(float(np.sum(fb2)) / (17/16), (1045. + 102.*sqrt3) / 884., places=14)
+
+        # Off-grid weak source in 3-mic array scales as q_2 * eta^nu = 0.25 * 0.8^nu.
+        controls = functional_beamforming_controls()
+        offgrid = {c['nu']: c['scan_map'] for c in controls['E12-20']['offgrid_weak_source_3mic']['nu_cases']}
+        np.testing.assert_allclose(offgrid[1], [1., .20], atol=2e-15)
+        np.testing.assert_allclose(offgrid[2], [1., .16], atol=2e-15)
+        np.testing.assert_allclose(offgrid[8], [1., .25 * (.8**8)], atol=2e-15)
+        self.assertAlmostEqual(float(controls['E12-20']['coherent_dipole_fb_nu_2'][1]), 0., places=15)
+
     def test_invalid_inputs_and_floating_range(self):
+        removed = source_power_csm(self.a, [1., .25])
+        removed = removed - np.diag(np.diag(removed))
         calls = [lambda: conventional_weights([[0., 0.]]),
                  lambda: conventional_weights([[True]]),
                  lambda: source_power_csm(self.a, [1.,-.1]),
@@ -189,7 +241,13 @@ class ImagingAlgebraTests(unittest.TestCase):
                  lambda: integrate_psd([.1],[-1.]),
                  lambda: region_power([1.],[1]),
                  lambda: conventional_weights([[1e308]]),
-                 lambda: source_power_csm([[1e-200]], [1e-200])]
+                 lambda: source_power_csm([[1e-200]], [1e-200]),
+                 lambda: hermitian_fractional_power(np.eye(2), 0.),
+                 lambda: hermitian_fractional_power(np.eye(2), True),
+                 lambda: closed_form_2x2_sqrt(np.eye(3)),
+                 lambda: functional_beamforming_map(removed, self.a, nu=2.),
+                 lambda: functional_beamforming_map(np.eye(2), self.a, nu=.5),
+                 lambda: functional_beamforming_map(np.eye(2), [[0.], [0.]], nu=2.)]
         for call in calls:
             with self.subTest(call=call),self.assertRaises(ValueError):
                 call()
@@ -227,10 +285,12 @@ class ImagingAudioTests(unittest.TestCase):
 
     def test_all_eighteen_ids_and_finite_json(self):
         results=run_experiments()
-        self.assertEqual(set(results['exercises']),{'E12-'+str(i).zfill(2) for i in range(1,19)})
+        self.assertEqual(set(results['exercises']),{'E12-'+str(i).zfill(2) for i in range(1,21)})
         json.dumps(results,allow_nan=False)
         self.assertFalse(results['exercises']['E12-12']['sklearn_executed'])
         self.assertAlmostEqual(results['exercises']['E12-12']['affine_math_q'],87/35)
+        self.assertTrue(results['exercises']['E12-19']['diagonal_removed_rejected'])
+        self.assertLess(results['exercises']['E12-20']['fb_map_nu_2_max_abs_error'],2e-15)
 
 
 class ImagingAssetContractTests(unittest.TestCase):

@@ -32,7 +32,7 @@
 
 第一次学可以从第 1 章读起，遇到复数、矩阵和符号再查附录。正在做设备，可以直接进入工程任务和工业源码手册。 [数学与符号](chapters/14_appendix-symbols-math.md) · [工程任务入口](https://nanless.github.io/microphone-array-tutorial/site/#course-engineering) · [工业源码手册](codes/chapters/ch00/research/03_industrial_deployment.md)
 
-**15 章正文 · 2 篇附录 · 417 道可运行练习 · 88 张编号图**
+**15 章正文 · 2 篇附录 · 419 道可运行练习 · 88 张编号图**
 
 [按章找代码和音频](codes/chapters/README.md) · [研究手册](codes/chapters/ch00/research/README.md) · [网页与 PDF 构建](scripts/README.md) · [第三方来源与许可](codes/chapters/ch00/THIRD_PARTY.md)
 

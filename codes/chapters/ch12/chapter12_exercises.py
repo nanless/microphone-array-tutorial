@@ -1,4 +1,4 @@
-"""Run E12-01..18 without writing files, downloading data or importing Acoular.
+"""Run E12-01..20 without writing files, downloading data or importing Acoular.
 
 Usage: python -m codes.chapters.ch12.chapter12_exercises [--exercise E12-06]
 The JSON wrapper keeps metadata separate from the stable ID-to-result map.
@@ -25,8 +25,9 @@ from codes.chapters.ch12.core.imaging import (
 from codes.chapters.ch12.core.imaging_audio import (
     make_signals, measure_signal, measure_source_pairs, SAMPLE_RATE, parameters,
 )
+from codes.chapters.ch12.core.functional_beamforming import functional_beamforming_controls
 
-EXERCISE_IDS = tuple('E12-'+str(i).zfill(2) for i in range(1, 19))
+EXERCISE_IDS = tuple('E12-'+str(i).zfill(2) for i in range(1, 21))
 
 
 def _json(value):
@@ -46,7 +47,7 @@ def _json(value):
 
 
 def run_experiments():
-    """Return finite JSON with exercises[E12-01..18]; no file IO or side effects."""
+    """Return finite JSON with exercises[E12-01..20]; no file IO or side effects."""
     toy = two_cell_experiment(); a, w, p = toy['A'], toy['W'], toy['P']
     cases = toy['cases']; independent = cases['independent']; coherent = cases['coherent']
     sphere = spherical_scan_experiment()
@@ -117,6 +118,7 @@ def run_experiments():
                                    'integrated_mean_square': float(integrate_psd(density, fs/n_fft))}
     all_cells = np.ones(2, dtype=bool)
     joint_r = np.array([[2.5, 4.], [4., 8.5]], complex)
+    fb_controls = functional_beamforming_controls()
     exercises = {
         'E12-01': {'peak_amplitude': .2, 'mean_square': .2**2/2,
                    'normalization_power_scale': .02, 'CSM_scaling_for_double_amplitude': 4.,
@@ -192,7 +194,11 @@ def run_experiments():
                    'scope': 'known single steering, independent equal white sensor noise; not constrained production CMF'},
         'E12-17': damas_csm_objective_experiment(),
         'E12-18': distinct_column_ambiguity_experiment(),
+        'E12-19': fb_controls['E12-19'],
+        'E12-20': fb_controls['E12-20'],
     }
+    if set(exercises) != set(EXERCISE_IDS):
+        raise AssertionError('exercise ID set differs')
     return _json({'schema_version': 1, 'scope': 'original finite known-model teaching experiments, no industrial ranking',
                   'complex_encoding': 'last dimension [real,imag] for keys marked real_imag and complex states',
                   'exercises': exercises})

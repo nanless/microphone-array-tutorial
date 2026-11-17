@@ -1,4 +1,4 @@
-"""Original small experiments E08-12..32, without upstream imports.
+"""Original small experiments E08-12..34, without upstream imports.
 
 Run with python -m codes.chapters.ch08.chapter08_experiments. No files are written.
 Substeps and supplied source/slot models are not complete separation systems.
@@ -23,6 +23,10 @@ from codes.chapters.ch00.core.audio_samples import css_overlap_case
 from codes.chapters.ch08.core.css import match_two_source_overlap, overlap_application_gain
 from codes.chapters.ch08.core.gss_teaching import guided_cacgmm_mvdr
 from codes.chapters.ch08.core.separation import guided_activity_posterior, masked_spatial_covariance, si_sdr
+from codes.chapters.ch08.core.separation_metrics_streaming import (
+    ci_sdr_vs_si_sdr_experiment,
+    streaming_mac_and_bypass_experiment,
+)
 from codes.chapters.ch00.cross_chapter.enhancement_step_exercises import ip_row
 from codes.chapters.ch00.cross_chapter.enhancement_structure_exercises import cacg_relative_density
 
@@ -385,6 +389,8 @@ def run_experiments() -> dict:
                         'floating_point_measurements': {name: measure_signal(value, css_signals['reference'])
                                                         for name, value in css_signals.items()},
                         'published_audio': check_css_assets()}
+    result['E08-33'] = ci_sdr_vs_si_sdr_experiment()
+    result['E08-34'] = streaming_mac_and_bypass_experiment()
     return _plain(result)
 
 

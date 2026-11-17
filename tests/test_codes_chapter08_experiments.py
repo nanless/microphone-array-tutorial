@@ -1,11 +1,19 @@
-"""Analytic/fractional expectations and actual PCM for E08-12..32."""
+"""Analytic/fractional expectations and actual PCM for E08-12..34."""
+from fractions import Fraction as F
 import hashlib
 import json
+import math
 from pathlib import Path
 import tempfile
 import unittest
 import numpy as np
 from codes.chapters.ch08.chapter08_experiments import ROOT, css_published_audio, run_experiments
+from codes.chapters.ch08.core.separation import si_sdr
+from codes.chapters.ch08.core.separation_metrics_streaming import (
+    ci_sdr_toeplitz,
+    single_speaker_bypass_gate,
+    streaming_subband_mac_budget,
+)
 
 
 def complex_array(value):
@@ -18,7 +26,7 @@ class Chapter08Exercises(unittest.TestCase):
         cls.r = run_experiments()
 
     def test_ids_and_finite_json(self):
-        self.assertEqual(set(self.r), {f'E08-{i:02}' for i in range(12, 33)})
+        self.assertEqual(set(self.r), {f'E08-{i:02}' for i in range(12, 35)})
         json.dumps(self.r, allow_nan=False)
 
     def test_sequential_complex_rows(self):
@@ -246,3 +254,97 @@ class Chapter08Exercises(unittest.TestCase):
         np.testing.assert_array_equal(second['naive_equal_overlap'], -.5*p)
         np.testing.assert_array_equal(second['polarity_only_overlap'], 1.5*p)
         np.testing.assert_array_equal(second['direct_application_gain'], [-.5, -.5])
+
+    def test_ci_sdr_vs_si_sdr_and_overfitting_boundary(self):
+        r = self.r['E08-33']['cases']
+        # Case 1: pure 1-sample causal delay s_1 = [0, 1, 0, -1] against s_0 = [1, 0, -1, 0].
+        delay_case = r['pure_one_sample_delay']
+        self.assertEqual(delay_case['si_sdr_L1']['ci_sdr_db'], -120.0)
+        self.assertEqual(delay_case['ci_sdr_L2']['ci_sdr_db'], 120.0)
+        np.testing.assert_allclose(delay_case['ci_sdr_L2']['filter_taps'], [0.0, 1.0], atol=1e-15)
+        np.testing.assert_array_equal(delay_case['ci_sdr_L2']['gram_matrix'], [[2.0, 0.0], [0.0, 2.0]])
+
+        # Case 2: 2-tap room response s_0 + s_1 + w, where ||s_0||^2=2, ||s_1||^2=2, ||w||^2=1/25.
+        room_case = r['two_tap_room_plus_distortion']
+        expected_l1_ratio = F(2, 1) / (F(2, 1) + F(1, 25))  # 50/51
+        self.assertEqual(expected_l1_ratio, F(50, 51))
+        self.assertAlmostEqual(
+            room_case['si_sdr_L1']['ci_sdr_db'],
+            10.0 * math.log10(float(expected_l1_ratio)),
+            places=12,
+        )
+        np.testing.assert_allclose(room_case['ci_sdr_L2']['filter_taps'], [1.0, 1.0], atol=1e-15)
+        self.assertAlmostEqual(room_case['ci_sdr_L2']['target_energy'], 4.0, places=14)
+        self.assertAlmostEqual(room_case['ci_sdr_L2']['residual_energy'], 0.04, places=14)
+        self.assertAlmostEqual(room_case['ci_sdr_L2']['ci_sdr_db'], 20.0, places=12)
+
+        # Case 3: L = N = 4 unit lower-triangular Toeplitz matrix fits pure orthogonal distortion.
+        overfit_case = r['overparameterized_L_equals_N']
+        self.assertEqual(overfit_case['toeplitz_L4_determinant'], 1.0)
+        self.assertEqual(overfit_case['si_sdr_L1']['ci_sdr_db'], -120.0)
+        self.assertEqual(overfit_case['ci_sdr_L2']['ci_sdr_db'], -120.0)
+        self.assertTrue(overfit_case['ci_sdr_L4']['overparameterized'])
+        self.assertEqual(overfit_case['ci_sdr_L4']['rank'], 4)
+        np.testing.assert_allclose(overfit_case['ci_sdr_L4']['filter_taps'], [1.0, -1.0, 2.0, -2.0], atol=1e-14)
+        self.assertEqual(overfit_case['ci_sdr_L4']['ci_sdr_db'], 120.0)
+
+        # Verify L=1 agreement with Chapter 8 si_sdr and strict invalid-input rejection.
+        vec_est = np.array([1.2, -0.4, -0.8, 0.5])
+        vec_ref = np.array([1.0, -0.5, -1.0, 0.5])
+        self.assertAlmostEqual(
+            ci_sdr_toeplitz(vec_est, vec_ref, filter_length=1, zero_mean=True)['ci_sdr_db'],
+            si_sdr(vec_est, vec_ref, zero_mean=True),
+            places=12,
+        )
+        for bad_args, bad_kwargs in (
+            ((np.zeros(4), vec_ref), {'filter_length': 1}),
+            ((vec_est, np.ones(4)), {'filter_length': 1, 'zero_mean': True}),
+            ((vec_est, vec_ref), {'filter_length': 0}),
+            ((vec_est, vec_ref), {'filter_length': 5}),
+            ((vec_est, vec_ref), {'filter_length': True}),
+        ):
+            with self.assertRaises(ValueError):
+                ci_sdr_toeplitz(*bad_args, **bad_kwargs)
+
+    def test_streaming_mac_budget_and_bypass_gate(self):
+        r = self.r['E08-34']
+        mac = r['mac_budget']
+        # Independent exact integer MAC/s: (16000 // 128) * 4 * F * 4 * 64^2.
+        self.assertEqual(mac['fullband_256']['macs_per_second'], 125 * 4 * 256 * 4 * 4096)
+        self.assertEqual(mac['fullband_256']['macs_per_second'], 2_097_152_000)
+        self.assertEqual(mac['mel_band_64']['macs_per_second'], 125 * 4 * 64 * 4 * 4096)
+        self.assertEqual(mac['mel_band_64']['macs_per_second'], 524_288_000)
+        self.assertEqual(mac['compression_factor'], 4.0)
+
+        fric = r['fricative_splitting_case']
+        self.assertAlmostEqual(fric['slot1_uncentered_si_sdr_db'], 10.0 * math.log10(99.0), places=12)
+        self.assertAlmostEqual(
+            fric['bypass_gate']['secondary_to_primary_db'],
+            10.0 * math.log10(1.0 / 99.0),
+            places=12,
+        )
+        self.assertTrue(fric['bypass_gate']['bypass'])
+        self.assertAlmostEqual(fric['bypassed_reconstruction_error_energy'], 0.0, places=14)
+        self.assertEqual(fric['unbypassed_wer'], float(F(1, 4)))
+        self.assertEqual(fric['bypassed_wer'], 0.0)
+
+        ovl = r['two_speaker_overlap_case']['bypass_gate']
+        self.assertAlmostEqual(ovl['secondary_to_primary_db'], -10.0, places=12)
+        self.assertFalse(ovl['bypass'])
+
+        # Exact -18 dB boundary and invalid inputs.
+        at_boundary = np.array([[1.0, 0.0], [0.0, 10.0 ** (-0.9)]])
+        self.assertTrue(single_speaker_bypass_gate(at_boundary, threshold_db=-18.0)['bypass'])
+        above_boundary = np.array([[1.0, 0.0], [0.0, 10.0 ** (-0.89)]])
+        self.assertFalse(single_speaker_bypass_gate(above_boundary, threshold_db=-18.0)['bypass'])
+        for bad_call in (
+            lambda: single_speaker_bypass_gate(np.zeros((2, 4))),
+            lambda: single_speaker_bypass_gate(at_boundary, threshold_db=0.0),
+            lambda: streaming_subband_mac_budget(16000, 0, 64, 4, 64),
+        ):
+            with self.assertRaises(ValueError):
+                bad_call()
+
+
+if __name__ == '__main__':
+    unittest.main()

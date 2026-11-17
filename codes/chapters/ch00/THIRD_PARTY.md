@@ -1,8 +1,8 @@
 # 第三方实现与工业生态索引
 
-此索引包含 116 个 Git 上游项目；已在 `codes/chapters/ch00/upstream/_downloads/` 取得 99 个独立源码工作区。2026-11-11 新增 openMHA v4.18.1 的双耳波束形成选集。原有索引核实于 2026-09-22，新增 RLS/Kalman AEC 来源核实于 2026-09-23。其中 pyaec、PFDKF 与 Subband_Kalman_AEC 于 2026-09-24 按固定提交取得指定源码和许可文件，DiCoW v1 演示与 TS-ASR-Whisper v1 训练源码于 2026-09-28 按固定提交取得。2026-09-30 新增原作者湿空气声速模型，2026-10-01取得SAID及NeMo WPE固定源码，2026-10-02取得TAC四文件，2026-10-04另取得作者WOLA-DANSE、paderwasn与TI-DANSE+ batch三个限定源码选集，并取得WASN的11个与LibriCSS的27个源码/说明/许可文件。
+此索引包含 129 个 Git 上游项目；已在 `codes/chapters/ch00/upstream/_downloads/` 取得 112 个独立源码工作区。2026-11-11 新增 openMHA v4.18.1 的双耳波束形成选集；2026-11-17 新增 spharpy、sofar、spaudiopy、anf-generator、rir-generator、sc-wind-noise-generator、ci-sdr、py-motmetrics、oboe、p808、dasf-toolbox、wesep 与 gtcrn 共 13 项固定纯文本源码选集。原有索引核实于 2026-09-22，新增 RLS/Kalman AEC 来源核实于 2026-09-23。其中 pyaec、PFDKF 与 Subband_Kalman_AEC 于 2026-09-24 按固定提交取得指定源码和许可文件，DiCoW v1 演示与 TS-ASR-Whisper v1 训练源码于 2026-09-28 按固定提交取得。2026-09-30 新增原作者湿空气声速模型，2026-10-01取得SAID及NeMo WPE固定源码，2026-10-02取得TAC四文件，2026-10-04另取得作者WOLA-DANSE、paderwasn与TI-DANSE+ batch三个限定源码选集，并取得WASN的11个与LibriCSS的27个源码/说明/许可文件。
 
-当前离线核验逐条比较完整源码包含规则及32条扩展名排除规则：76项通过（含 openMHA）、22项旧工作区仅有20条排除规则而记为 `source_selection_mismatch`、17项仅登记来源。AEC Challenge 的5个真实录音有本地变动，保留为1项失败。旧工作区不自动补规则或覆盖内容。pystoi 是软件作者维护的 Python 实现，不称为原论文作者的官方 Python 程序。获取状态与完整提交见 [SOURCE_STATUS.json](SOURCE_STATUS.json) 和 [SOURCES.lock.json](SOURCES.lock.json)。状态报告由获取工具离线生成；不能用源码获取结果证明新增项目已运行。
+当前离线核验逐条比较完整源码包含规则及32条扩展名排除规则：89项通过（含 openMHA 及 2026-11-17 新增 13 项）、22项旧工作区仅有20条排除规则而记为 `source_selection_mismatch`、17项仅登记来源。AEC Challenge 的5个真实录音有本地变动，保留为1项失败。旧工作区不自动补规则或覆盖内容。pystoi 是软件作者维护的 Python 实现，不称为原论文作者的官方 Python 程序。获取状态与完整提交见 [SOURCE_STATUS.json](SOURCE_STATUS.json) 和 [SOURCES.lock.json](SOURCES.lock.json)。状态报告由获取工具离线生成；不能用源码获取结果证明新增项目已运行。
 
 “已取得”表示本地存在独立来源工作区；是否符合当前提交、工作区状态、指定入口和完整选集政策，以状态报告分别判断。取得源码不表示已经安装依赖、编译、运行训练、取得权重、完成声学测试或取得产品使用资格。每项的完整入口和限制保存在锁定清单；逐算法解释、最小实验和失效条件见[研究手册](research/README.md)。
 
@@ -133,6 +133,19 @@ TS-ASR-Whisper v1 的 `inference_pipeline` 子模块固定指向表中 DiCoW 提
 | [e2e-ad-aec](https://github.com/ThomasHaubner/e2e_dnn_ad_control_for_lin_aec/tree/7a003133d742698de7acba9510d9586d7d57a584) | DNN 控制线性 CTF 回声消除 | BSD-4-Clause | 已取得源码子集 |
 | [integrated-aec-nr](https://github.com/Arnout-Roebben/Integrated_AEC_NR/tree/23c6b567c7863a8ee9bafd38bad0d3ff2f25e185) | 联合与级联多通道 AEC/降噪 | MIT for code; recording permissions separate | 已取得源码子集 |
 | [nbss](https://github.com/Audio-WestlakeU/NBSS/tree/cc42fc8ad2e6642c09b8f4169a85b4766dc22b7e) | OnlineSpatialNet 长序列多通道增强 | MIT | 已取得源码子集 |
+| [spharpy](https://github.com/pyfar/spharpy/tree/e5202db197ddd84733e051bf4f21e45da4da2fa5) | 球谐变换、球阵模态权重、球谐波束与旋转算子 | MIT | 已取得限定纯文本源码选集；未取文档图像或安装执行 |
+| [sofar](https://github.com/pyfar/sofar/tree/2de8a680db9219ad25aa4bb813d16f98d1a9ebac) | AES69 SOFA 空间声学约定、球面/直角坐标元数据规则与读写接口 | MIT | 已取得限定纯文本源码选集；不含二进制 SOFA/HRTF 数据集，未安装执行 |
+| [spaudiopy](https://github.com/chris-hld/spaudiopy/tree/a75c282a2ba3fc24b0b2aea27ac20c149ffc709a) | Ambisonics ACN/SN3D 球谐、AllRAD/EPAD 解码、MagLS 双耳渲染与 DirAC 参数分析 | MIT | 已取得限定纯文本源码选集；不含二进制 HRIR/SOFA 资产，未安装执行 |
+| [anf-generator](https://github.com/audiolabs/anf-generator/tree/999b0dfd9d7215371fd9ad3335c2da8b5834b4e3) | 逐频相干矩阵与 EVD/Cholesky 任意空间噪声场着色合成 | MIT | 已取得限定纯文本源码选集；未取测试音频，未安装执行 |
+| [rir-generator](https://github.com/audiolabs/rir-generator/tree/0def8a289b10b6e54dc83935a197008c498064be) | Allen-Berkley 镜像声源房间冲激响应、分数延迟 sinc 插值与指向性 C++ 核心 | MIT | 已取得限定纯文本源码选集；未编译 CFFI 扩展或执行 |
+| [sc-wind-noise-generator](https://github.com/audiolabs/SC-Wind-Noise-Generator/tree/ff9e74c40329c11d6437a01e1c9b164ac228c944) | 单通道及可穿戴麦克风参数化湍流风噪合成参考 | MIT | 已取得限定纯文本源码选集；未取音频资产，未执行脚本 |
+| [ci-sdr](https://github.com/fgnt/ci_sdr/tree/ab4f88c14f34cf4dfd9d39789154b041ec61c72e) | 卷积传递函数不变信号失真比（CI-SDR）有限长 FIR Toeplitz 投影评分 | MIT | 已取得限定纯文本源码选集；未安装或执行 PyTorch/SciPy 算子 |
+| [py-motmetrics](https://github.com/cheind/py-motmetrics/tree/e5ae766fab03b804f485d7c95ee1809b94d32dcc) | CLEAR MOT 多目标追踪指标（MOTA、MOTP、漏检、误报与身份切换）计算 | MIT | 已取得限定纯文本源码选集；未取基准数据集，未安装执行 |
+| [oboe](https://github.com/google/oboe/tree/6925acbd57590ded8b449030e46b0bd5c017a2ca) | Android C++ 低延迟音频回调流、全双工回声毛刺测试与多通道输入参考 | Apache-2.0 | 已取得限定纯文本源码选集；未执行 NDK 编译、APK 构建或实机测试 |
+| [p808](https://github.com/microsoft/P.808/tree/d90e9cc5f1f89caad54dfa3f568e7144c5906136) | ITU-T P.808 众包主观语音质量评测解析、金标/陷阱题过滤与方差分析聚合 | MIT | 已取得限定纯文本源码选集；不含语音样本或云平台执行 |
+| [dasf-toolbox](https://github.com/AlexanderBertrandLab/DASF_toolbox/tree/a2bdfa80c4352e45d739bc3fc7192244bfa111e6) | 分布式自适应信号融合（DASF）框架下的 MMSE、LCMV、GEVD 与 QCQP 求解参考 | BSD-3-Clause | 已取得限定纯文本源码选集（保留根 `LICENSE.md`）；未取仿真数据或安装执行 |
+| [wesep](https://github.com/wenet-e2e/wesep/tree/c2437a64d314baa3b7a49421d0030c608adf5a32) | 目标说话人提取声纹/空间/视觉线索构造与流式 C++ 推理头文件参考 | Apache-2.0 | 已取得限定纯文本源码选集；不含权重与语料，未安装或执行 PyTorch/C++ |
+| [gtcrn](https://github.com/Xiaobin-Rong/gtcrn/tree/502ebfab64da7c4a9af78dcb9c6ceef1ebb01c73) | 超轻量分组时域卷积循环语音增强网络与因果流式缓存参考 | MIT | 已取得限定纯文本源码选集；不含模型权重与示例音频，未执行推理 |
 
 `e2e-ad-aec` 保留 BSD-4-Clause 的广告署名条款；不能简写成三条款 BSD。`integrated-aec-nr` 的 MIT 代码许可不覆盖 VCTK/MYRiAD 录音，本地未取 `Audio/`；其许可文件名为 `LICENSE.md`。`pystoi` 仅取 Python 核心与根说明，未取得 MATLAB 测试资产。`visqol` 未取 `model/`、`testdata/`，也未启动 Bazel 拉取依赖，因此此源码子集不是完整可运行的评分包。`lib-xcore-math` 保留 XMOS 硬件使用限制，不能概括为任意硬件上的自由商用库。
 

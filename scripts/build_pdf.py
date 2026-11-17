@@ -242,8 +242,8 @@ h1,h2,h3,h4{break-after:avoid;break-inside:avoid;page-break-inside:avoid}
 #ch-5 h3#ch-5-sec-u-bca30faf33~table{margin:8px 0}
 /* 显式短引导及第5章表格题注跟随内容，长推导仍可自然跨页。 */
 .chap p.keep-next,#ch-5 p:has(+table){break-after:avoid;page-break-after:avoid}
-/* 第10章末尾四条总结作为一个完整列表，避免仅末两条占据下一页。 */
-#ch-10-sec-10-12+ol{break-inside:avoid;page-break-inside:avoid}
+/* 第6章延伸阅读与第10章末尾总结作为一个完整列表，避免末一两条独占下一页。 */
+#ch-6-sec-6-17+ol,#ch-10-sec-10-12+ol{break-inside:avoid;page-break-inside:avoid}
 /* 第11章的四条试听链接在纸版紧凑逐行排列，保留链接并避免章末短节孤页。 */
 #ch-11 p:has(>a[href$=".wav"]:only-child){margin-bottom:0}
 /* 附录 A 末题保留字号，收紧公式外间距，避免边界说明独占一页。 */

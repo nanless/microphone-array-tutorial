@@ -9,7 +9,7 @@
 - **原理索引**：已有原理或来源依据，但尚未形成唯一、许可明确且承担对应计算的源码映射；代码可见而许可不明时也保留此状态，并说明原因。
 - **明确排除**：指定软件的身份或许可不满足本书当前收录方式；不表示删除相应方法的学术讨论。
 
-算法表共 358 行：本仓库可运行基线 85 行、外部参考实现 184 行、原理索引 88 行、明确排除 1 行。练习映射单独计数。双耳波束新增一行本地可复算控制，复用已有 MVDR/LCMV 求解器，另有一行 openMHA 的固定源码对照。已知激励的逐频正则反卷积教学核同一行保留 pyfar 外部对照及其限定运行边界；第 6 章已知播放增益和历史尾声控制复用 NLMS 与 NCC。扩展专题Ⅲ与Ⅳ新增七行本地可运行数值基线，覆盖空间参数化采集、双耳匹配、跨模态融合、条件目标提取、近场距离气泡、空谱 TS-VAD/GSS 门控与视听异步回退。覆盖表中的原理索引不表示相应算法已经运行。
+算法表共 371 行：本仓库可运行基线 85 行、外部参考实现 197 行、原理索引 88 行、明确排除 1 行。练习映射单独计数。双耳波束新增一行本地可复算控制，复用已有 MVDR/LCMV 求解器，另有一行 openMHA 的固定源码对照。已知激励的逐频正则反卷积教学核同一行保留 pyfar 外部对照及其限定运行边界；第 6 章已知播放增益和历史尾声控制复用 NLMS 与 NCC。扩展专题Ⅲ与Ⅳ新增七行本地可运行数值基线，覆盖空间参数化采集、双耳匹配、跨模态融合、条件目标提取、近场距离气泡、空谱 TS-VAD/GSS 门控与视听异步回退。覆盖表中的原理索引不表示相应算法已经运行。
 
 源码取得与入口核对见 [SOURCE_STATUS.json](SOURCE_STATUS.json)；该文件中的依赖验证和执行字段未开展时为 `not_run`，不承载方法级数值实验结果。实际运行及数值对照见[复现记录](research/04_source_reproduction.md)、[增强研究记录](research/02_aec_wpe_separation.md)和 [WPE 独立对照脚本](../ch07/examples/compare_wpe_reference.py)。工业接口与 SBL 的限定实验报告按主题放在 `codes/chapters/ch04/reports/`、`codes/chapters/ch10/reports/` 等对应章节；实际调用外部代码不将它改列为本仓库教学基线。覆盖状态不是测试结果。完整提交、官方地址、许可与来源 ID 见 [SOURCES.lock.json](SOURCES.lock.json)。表内本仓库教学源文件使用相对于仓库根目录的完整路径；第三方项目的内部路径仍相对于各自项目根目录。出现“同文件”时仅继承上一行文件，不继承其算法或验证结论。
 
@@ -436,10 +436,23 @@
 | 研究扩展：工业 I31 | FastEnhancer-Medium 独立 C11/int8 流式运行时 | 外部参考实现 | `faster-enhancer-c`：`include/`、`src/`；[接口研究](research/03_industrial_deployment.md#i31) | 与原 Python 项目不同作者及配置；MIT 源码与 NOTICE 已核，权重/测试音频未取，未编译推理或测硬件 |
 | 研究扩展：增强 N15 | TF-Locoformer 复谱语音分离 | 外部参考实现 | `tf-locoformer`：`standalone/tflocoformer_separator.py`、`espnet2/enh/separator/tflocoformer_separator.py` | 固定作者源码；静态接口疑点单列；无权重推理或完整训练复现 |
 | 附录B E15-02；工业 I29 | STK DelayL 固定分数延迟与连续状态 | 外部参考实现 | `stk`：`include/DelayL.h`、`src/DelayL.cpp`；`codes/chapters/ch10/examples/run_stk_delay_probe.py` | 已运行标量接口、零/.5/1采样与分块状态；未测设备或变时延 |
+| §3.2、专题Ⅲ §16.2～16.4 | 球谐变换、球阵模态权重与旋转算子 | 外部参考实现 | `spharpy`：`spharpy/spherical.py`、`spharpy/beamforming/beamforming.py`、`spharpy/transforms/rotations.py` | MIT固定纯文本选集已取得；未安装或运行整包 |
+| §1.1、专题Ⅲ §16.6 | AES69 SOFA 空间坐标约定与元数据读写规则 | 外部参考实现 | `sofar`：`sofar/sofa.py`、`sofar/io.py`、`sofar/utils.py` | MIT固定纯文本选集已取得；不含二进制SOFA数据集，未安装执行 |
+| 专题Ⅲ §16.2～16.7 | Ambisonics AllRAD/EPAD 解码、MagLS 双耳渲染与 DirAC 分析 | 外部参考实现 | `spaudiopy`：`spaudiopy/sph.py`、`spaudiopy/decoder.py`、`spaudiopy/parsa.py` | MIT固定纯文本选集已取得；不含HRIR资产，未安装执行 |
+| §1.2、§2.4 | 逐频相干矩阵与 EVD/Cholesky 任意空间噪声场着色合成 | 外部参考实现 | `anf-generator`：`anf_generator/CoherenceMatrix.py`、`anf_generator/MixingMatrix.py` | MIT固定纯文本选集已取得；未取测试音频，未安装执行 |
+| §2.4、§3.1 | 镜像声源房间冲激响应分数延迟插值与指向性核心 | 外部参考实现 | `rir-generator`：`src/rir_generator/_cffi/rir_generator_core.cpp`、`rir_generator_core.h` | MIT固定纯文本选集已取得；未编译CFFI扩展或执行 |
+| 专题Ⅲ §16.8 | 单通道及可穿戴麦克风参数化湍流风噪合成 | 外部参考实现 | `sc-wind-noise-generator`：`sc_wind_noise_generator.py` | MIT固定纯文本选集已取得；未取音频资产，未执行脚本 |
+| §8.1、§10.5 | 卷积传递函数不变信号失真比（CI-SDR）有限长 FIR 投影评分 | 外部参考实现 | `ci-sdr`：`ci_sdr/np/wiener_filter.py`、`ci_sdr/pt/sdr.py`、`ci_sdr/pt/toeplitz.py` | MIT固定纯文本选集已取得；未安装或执行PyTorch/SciPy算子 |
+| §9.5 | CLEAR MOT 多目标追踪指标（MOTA/MOTP/IDSW）计算 | 外部参考实现 | `py-motmetrics`：`motmetrics/mot.py`、`motmetrics/metrics.py`、`motmetrics/distances.py` | MIT固定纯文本选集已取得；未取基准数据，未安装执行 |
+| §10.2、§10.4 | Android C++ 低延迟全双工回调流与多通道输入参考 | 外部参考实现 | `oboe`：`apps/OboeTester/app/src/main/cpp/FullDuplexEcho.cpp`、`MultiChannelRecording.h` | Apache-2.0固定纯文本选集已取得；未执行NDK构建或实机测试 |
+| §10.5、§11.2 | ITU-T P.808 众包主观听测金标/陷阱题过滤与方差分析聚合 | 外部参考实现 | `p808`：`src/result_parser.py`、`src/anova.py`、`src/create_gold_clips.py` | MIT固定纯文本选集已取得；不含语音样本或云平台执行 |
+| 专题Ⅱ §13.9～13.12 | 分布式自适应信号融合（DASF）MMSE/LCMV/GEVD/QCQP 求解器 | 外部参考实现 | `dasf-toolbox`：`dasftoolbox/dasf.py`、`dasftoolbox/optimization_problems/lcmv_problem.py`、`mmse_problem.py`、`gevd_problem.py` | BSD-3-Clause固定纯文本选集已取得；未取仿真数据或安装执行 |
+| 专题Ⅳ §17.2～17.3 | 目标说话人提取多模态线索构造与流式推理接口 | 外部参考实现 | `wesep`：`runtime/separate/separate_engine.h`、`examples/spatial/mc_librimix/local/build_spatial_cues.py`、`examples/audio/librimix/local/build_audio_cues.py` | Apache-2.0固定纯文本选集已取得；不含权重与语料，未安装执行 |
+| §10.7、专题Ⅲ §16.9 | 超轻量分组时域卷积循环增强与因果流式缓存参考 | 外部参考实现 | `gtcrn`：`gtcrn.py`、`stream/gtcrn_stream.py`、`stream/modules/convolution.py` | MIT固定纯文本选集已取得；不含权重与音频，未执行推理 |
 
 ## 章节代码练习与音频映射
 
-395 道代码练习使用稳定 ID，旧数字题号继续可查。下表只登记学习入口，不改变上面的 358 行算法统计。补充的空间精算、增强步骤、时间状态模块分别提供 3/5/4 道题，双耳波束另有 3 道题。三个原有 `exercises_` 模块各自提供 `run_exercises()`，分别有 28/23/25 道题；AEC 小实验另有 4 道，进阶 AEC 手算另有 10 道；E03-07、E04-08、E09-06 与 E10-13 由独立实验入口提供。E04-08 的 200 次独立双源抽样只说明固定模型中的分辨事件频率和 Wilson 区间。E04-04 是固定矩阵的前向空间平滑演示，不扩称为支持任意阵列的公共估计接口。
+395 道代码练习使用稳定 ID，旧数字题号继续可查。下表只登记学习入口，不改变上面的 371 行算法统计。补充的空间精算、增强步骤、时间状态模块分别提供 3/5/4 道题，双耳波束另有 3 道题。三个原有 `exercises_` 模块各自提供 `run_exercises()`，分别有 28/23/25 道题；AEC 小实验另有 4 道，进阶 AEC 手算另有 10 道；E03-07、E04-08、E09-06 与 E10-13 由独立实验入口提供。E04-08 的 200 次独立双源抽样只说明固定模型中的分辨事件频率和 Wilson 区间。E04-04 是固定矩阵的前向空间平滑演示，不扩称为支持任意阵列的公共估计接口。
 
 | 章节与稳定 ID | 练习入口 | 回归测试 |
 |---|---|---|

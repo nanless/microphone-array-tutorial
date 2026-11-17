@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>从入门到工业实践 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="9b634b8b6fd1"><style>
+<meta name="source-digest" content="4ad09de9f301"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -929,10 +929,11 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <span id="sec-4" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-a438cc3d02">3. 各篇内容与学习目标</h2>
 <span id="sec-5" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-14154617a8"><a href="01_problem-definition.html">01 · 问题定义与双耳启示</a></h3>
 <p>本章配图 1 张，面向零基础读者。全章从客厅远场语音交互切入，依次拆解环境背景噪声、房间混响、旁人语音干扰、麦克风自噪声与扬声器回声五类困难，明确声源定位、波束形成和声源追踪各自的输入与输出边界。</p>
-<p>在评价口径上，本章先区分波形整体音量缩放与信噪比改善，再对比三类阵列收益指标：空间互不相关同方差噪声下看白噪声增益（White Noise Gain，WNG），各向同性弥散声场下看指向性指数（Directivity Index，DI），特定方向强干扰下看零陷抑制深度。随后从人类听觉的双耳时间差（ITD）、双耳声级差（ILD）和头相关传递函数（HRTF）谱形线索出发，讲清几何绕射模型、心理声学实验与机器阵列相位观测之间的异同。</p>
-<p>读完本章，读者应能说明同步多麦克风相对单麦克风多出了哪些空间可观测信息，独立手算理想空间白噪声下的四麦平均增益及其成立前提，并辨析双耳听觉线索与机器阵列流形的对应关系。</p>
+<p>在评价口径上，本章先区分波形整体音量缩放与信噪比改善，剖析硅麦器件手册 $\mathrm{dB(A)}$ 计权指标对低频 $1/f$ 自噪声的掩盖效应，再对比三类阵列收益指标：空间互不相关同方差噪声下看白噪声增益（White Noise Gain，WNG），各向同性弥散声场下看指向性指数（Directivity Index，DI），特定方向强干扰下看零陷抑制深度，并引出任意半正定空间相干矩阵的特征分解平方根噪声着色。</p>
+<p>随后，本章从人类听觉的双耳时间差（ITD）、双耳声级差（ILD）和头相关传递函数（HRTF）谱形线索出发，讲清几何绕射模型、心理声学辨别阈值与机器阵列高频相位混叠之间的异同，并对照 AES69（SOFA）球面俯仰角与球谐余纬角的坐标约定。</p>
+<p>读完本章，读者应能说明同步多麦克风相对单麦克风多出了哪些空间可观测信息，独立手算理想空间白噪声下的四麦平均增益、空间相关噪声着色矩阵与一阶差分低频自噪声预算，并辨析双耳听觉线索与机器阵列流形的对应关系。</p>
 <span id="sec-6" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-535b10e632"><a href="02_basics-signal-model.html">02 · 基础：声音到达阵列时发生了什么</a></h3>
-<p>本章配图 7 张，建立全书后续章节共用的物理与数学底座，建议通读一遍并在后续查阅符号时随时回翻：</p>
+<p>本章配图 7 张，建立全书后续章节共用的物理与数学基础，建议通读一遍并在后续查阅符号时随时回翻：</p>
 <ul>
 <li><strong>传播时延（§2.1）</strong>：声波到达不同阵元存在先后时间差。以 $16\ \mathrm{kHz}$ 采样率为例，相邻两个采样点间隔 $62.5\ \mu\mathrm{s}$，声波在 $343\ \mathrm{m/s}$ 声速下传播约 $2.14\ \mathrm{cm}$；要分辨更细的角度变化，往往需要通过互相关插值或频域相位斜率估计亚采样时差，并保证多通道采样时钟同步。</li>
 <li><strong>近场球面波与远场平面波（§2.2）</strong>：声源离阵列足够远时，球面波前在阵列孔径范围内可近似为平面波；远近场分界尺度同时取决于阵列孔径大小与声波波长。</li>
@@ -964,7 +965,8 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <span id="sec-10" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-eaccb0e42d"><a href="06_aec.html">06 · 声学回声消除 AEC</a></h3>
 <p>本章配图 17 张（另引用系统链路总图 23），深入剖析全双工语音交互中的声学回声消除问题：设备扬声器播放的声音经功放、喇叭和房间多径反射耦合回自身麦克风，系统如何利用播放参考信号将这部分回声干净减除而不损伤近端说话人语音。</p>
 <p>在线性自适应滤波主线上，本章从归一化最小均方（Normalized Least Mean Squares，NLMS）的基本更新出发，详细拆解长房间回声路径必备的分区块频域自适应滤波（Partitioned-Block Frequency-Domain Adaptive Filtering，PBFDAF，阐明其作为分块频域多抽头 NLMS 精确实现的重叠保留与梯度约束机制），并横向对比子带滤波（含跨子带混叠交叉项）、针对稀疏冲激响应分配步长的改进比例算法（Improved Proportionate NLMS，IPNLMS）、复用多帧历史观测加速有色信号收敛的仿射投影算法（Affine Projection Algorithm，APA）以及显式维护状态不确定度的频域卡尔曼滤波（Frequency-Domain Kalman Filter，FDKF）。</p>
-<p>在工程控制与系统集成上，本章重点剖析参考信号采集取点（播放数字增益与声学路径卷积不可随意交换顺序、参考延迟超窗失效与静音切换后的残余回声尾部）、近端与远端同时发声时的双讲检测（Double-Talk Detection，DTD）及冻结策略、功放与微型扬声器非线性失真带来的线性消除上限、线性滤波结合残余回声抑制或神经网络的混合架构，以及 AEC 与多麦波束形成的先后级联条件（配合 §10.1）和公开工业实现 WebRTC AEC3。评测部分强调必须联合核查远端单讲回声返回损失增强（Echo Return Loss Enhancement，ERLE）、双讲稳定性与近端语音保真度。</p>
+<p>在工程控制上，本章重点剖析参考信号采集取点（播放数字增益与声学路径卷积不可随意交换顺序、参考延迟超窗失效与静音切换后的残余回声尾部）、近端与远端同时发声时的双讲检测（Double-Talk Detection，DTD）及冻结策略、功放与微型扬声器非线性失真带来的线性消除上限，以及线性滤波结合残余回声抑制或神经网络的混合架构。</p>
+<p>在系统集成与评测上，本章进一步梳理 AEC 与多麦波束形成的先后级联条件（配合 §10.1）和公开工业实现 WebRTC AEC3，并强调必须联合核查远端单讲回声返回损失增强（Echo Return Loss Enhancement，ERLE）、双讲稳定性与近端语音保真度。</p>
 <p>读完本章，读者应能正确规划硬件回声参考取点与延迟对齐缓冲区，排定位移、非线性与双讲导致的收敛异常，并为不同产品形态设计完整的 AEC 验收方案。</p>
 <span id="sec-11" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-526b37e71a"><a href="07_wpe-dereverberation.html">07 · 去混响 WPE</a></h3>
 <p>本章配图 4 张，讨论在没有干净参考信号的盲观测条件下，如何利用跨帧线性预测削弱房间晚期混响拖尾。</p>
@@ -1002,7 +1004,8 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <p>全章从同步多通道频域快拍构造互谱矩阵（Cross-Spectral Matrix，CSM）出发，阐明常规波束扫描图为何等于真实源强分布与阵列点扩散函数（Point Spread Function，PSF）的空间卷积——扫描图上的亮斑宽度与旁瓣伪影并不直接等于各网格点的真实声源功率。随后逐步推导并对比声源映射反卷积算法（DAMAS）、非负最小二乘（NNLS）、相干源清理算法（CLEAN-SC）与协方差矩阵拟合（CMF），剖析相干声源、网格外声源、互谱对角线自噪声删除与传声器幅度相位校准误差的影响，并严格区分数字均方值、声压均方值（$\mathrm{Pa}^2$）与辐射声功率（$\mathrm{W}$）的物理量纲换算及区域积分条件。</p>
 <span id="sec-u-2d4b4b193b" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-ed573e6015"><a href="13_distributed-enhancement.html">13 · 扩展专题Ⅱ：分布式麦克风协同增强</a></h3>
 <p>本专题（第 13 章，配图 3 张）面向多台智能终端、多机位会议拾音器或无线传感器网络在受限通信带宽下协同增强同一目标声源的场景，建议在读完第 2、5、10 章后选读。</p>
-<p>各节点拥有本地麦克风子阵，但受链路带宽与功耗限制，无法把全部原始多通道波形集中上传，只能向邻居或汇聚节点广播低维线性压缩信号。本专题以集中式多通道维纳滤波（MWF）为性能参照，推导跨节点线性压缩达到集中式最优解的代数条件（揭示即便远端压缩信号中目标分量恰好相消，其携带的相关干扰观测仍可帮助本地节点抵消噪声），继而剖析分布式自适应节点特定信号估计（Distributed Adaptive Node-specific Signal Estimation，DANSE 及其拓扑无关形式 TI-DANSE）在顺序更新、同步更新与有限步松弛迭代下的收敛行为，并结合工程实际讨论传输量化误差、压缩系数版本切换后的统计量坐标变换、节点间采样率偏移（如 $100\ \mathrm{ppm}$ 频偏）补偿以及网络丢包时的补零与本地回退策略（完整无线实验复现指引见<a href="13_distributed-enhancement.html#sec-13-13">专题 §13.13</a>）。</p>
+<p>各节点拥有本地麦克风子阵，但受链路带宽与功耗限制，无法把全部原始多通道波形集中上传，只能向邻居或汇聚节点广播低维线性压缩信号。本专题以集中式多通道维纳滤波（MWF）为性能参照，推导跨节点线性压缩达到集中式最优解的代数条件（揭示即便远端压缩信号中目标分量恰好相消，其携带的相关干扰观测仍可帮助本地节点抵消噪声），继而剖析分布式自适应节点特定信号估计（Distributed Adaptive Node-specific Signal Estimation，DANSE 及其拓扑无关形式 TI-DANSE）在顺序更新、同步更新与有限步松弛迭代下的收敛行为。</p>
+<p>围绕真实无线链路，本专题进一步讨论传输量化误差、压缩系数版本切换后的统计量坐标变换、节点间采样率偏移（如 $100\ \mathrm{ppm}$ 频偏）补偿以及网络丢包时的补零与本地回退策略（完整无线实验复现指引见<a href="13_distributed-enhancement.html#sec-13-13">专题 §13.13</a>）。</p>
 <h3 id="sec-u-6dcf2e71ad"><a href="16_spatial-wearable-arrays.html">16 · 扩展专题Ⅲ：空间声场采集、参数化编码与可穿戴阵列</a></h3>
 <p>本专题（第 16 章，配图 4 张）面向全景声录制、扩展现实头显、智能眼镜、真无线耳机与数字助听器，建议在读完第 1、2、5 章后选读。与交付单路增强波形的桌面阵列不同，全景声采集与可穿戴设备需要在受限孔径和头部散射条件下保留三维方位线索与自然听觉包围感。</p>
 <p>全章从一阶全景声（FOA）ACN/SN3D 约定、正四面体编码均衡与头部追踪三维声场逆旋转出发，推导方向性音频编码（DirAC）的有功声强与扩散度参数化分析；随后展开非规则阵列双耳信号匹配（BSM-LS 与高频幅度最小二乘 MagLS）及用参考麦克风混合抑制背景噪声头中坍缩的解析折中，并剖析 Corcos 湍流风噪模型、气导与耳道闭塞内麦跨模态 MVDR 自语音融合，以及耳机通透模式（Hear-Through）的百微秒梳状滤波延迟边界（配套练习 <code>E16-01</code>～<code>E16-16</code> 与 <code>wearable_audio</code> 见<a href="16_spatial-wearable-arrays.html#sec-16-11">专题 §16.11</a>）。</p>
@@ -1739,7 +1742,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <ol>
 <li><strong>定位—追踪—波束闭环</strong>：第 4 章估计单帧方向，第 9 章滤除野点并平滑出连续运动轨迹，第 5 章据此实时更新导向矢量定向拾音，完整反馈回路见 §9.4 与图 23。</li>
 <li><strong>前端模块级联与参考信号依赖</strong>：AEC、WPE、波束形成与分离谁先谁后、各自从哪个节点取参考信号，集中梳理于 §10.1 和图 23。</li>
-<li><strong>导向矢量贯穿全书</strong>：第 2 章 §2.3 从传播时延定义导向矢量后，第 4 章空间扫描、第 5 章约束波束、第 8 章导引分离与第 12 章声学成像全部以它为空间几何底座。</li>
+<li><strong>导向矢量贯穿全书</strong>：第 2 章 §2.3 从传播时延定义导向矢量后，第 4 章空间扫描、第 5 章约束波束、第 8 章导引分离与第 12 章声学成像全部以它为空间几何基础。</li>
 <li><strong>空间协方差与对角加载</strong>：第 2 章 §2.5 引入样本空间协方差矩阵，第 4、5、6、8 章反复对其作特征分解或求逆；正的对角加载能改善病态矩阵条件数并抑制自噪声放大，但无法凭空补出阵列几何原本不可观测的方向维度（详见<a href="14_appendix-symbols-math.html#sec-u-3899a8c1b7">附录 A E14-03</a>）。</li>
 <li><strong>WNG 与 DI 的物理权衡</strong>：第 2 章 §2.6 建立定义，第 5 章推导超指向与稳健波束的折中曲线，第 11 章将其转化为硬件孔径与麦克风选型约束；第 16 章（<a href="16_spatial-wearable-arrays.html#sec-16-8">§16.8～§16.9</a>）与第 17 章（<a href="17_target-extraction-diarization.html#sec-17-3">§17.3</a>）进一步揭示可穿戴微孔径阵列的湍流风噪放大与气导/耳内跨模态融合，以及近场距离气泡二阶差分的孔径四次方（$d^4$）底噪边界。</li>
 <li><strong>室内混响的多模块应对</strong>：第 2 章 §2.4 建立房间冲激响应模型，第 4 章分析多径对相关峰的展宽，第 5 章讨论波束对混响场的抑制上限，第 6 章用长分区滤波器覆盖回声尾，第 7 章用跨帧线性预测专门削弱晚期混响。</li>
@@ -1995,8 +1998,8 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <p><img alt="图34 合成音频的波形与分段能量" src="../figures/fig34_audio_examples.png" onerror="this.alt+='（图缺失）'" /></p>
 <p>阅读图 34 时，<strong>请先注意子图 <code>(a)</code> 与子图 <code>(b)(c)</code> 之间横、纵坐标轴的物理量切换</strong>：</p>
 <ul>
-<li><strong>子图 <code>(a)</code> 看毫秒级瞬时波形</strong>：横轴是局部放大的时间窗口（<code>500.0～520.0 ms</code>，跨度仅 <code>20 ms</code>），纵轴是带正负号的瞬时归一化波形 <code>PCM 幅度 / 满量程</code>，用来逐个波峰波谷核对相位对齐精度与高频随机毛刺；</li>
-<li><strong>子图 <code>(b)</code> 与 <code>(c)</code> 切换为秒级短时能量包络</strong>：横轴扩展到整段 <code>0～2.0 s</code>（或 <code>2.2 s</code>）的完整时长，纵轴切换为非负的 <code>20 ms 块 RMS / 满量程</code>（每 <code>20 ms</code> 计算一次均方根幅度）。之所以切换坐标，是因为自适应滤波收敛、双讲切换与混响拖尾演化跨越数百毫秒至数秒，用分块均方根包络才能一眼看清能量消长趋势。</li>
+<li><strong>子图 <code>(a)</code> 看毫秒级瞬时波形</strong>：横轴是局部放大的时间窗口（$500.0$～$520.0\ \mathrm{ms}$，跨度仅 $20\ \mathrm{ms}$），纵轴是带正负号的瞬时归一化波形 <code>PCM 幅度 / 满量程</code>，用来逐个波峰波谷核对相位对齐精度与高频随机毛刺；</li>
+<li><strong>子图 <code>(b)</code> 与 <code>(c)</code> 切换为秒级短时能量包络</strong>：横轴扩展到整段 $0$～$2.0\ \mathrm{s}$（或 $2.2\ \mathrm{s}$）的完整时长，纵轴切换为非负的 <code>20 ms 块 RMS / 满量程</code>（每 $20\ \mathrm{ms}$ 计算一次均方根幅度）。之所以切换坐标，是因为自适应滤波收敛、双讲切换与混响拖尾演化跨越数百毫秒至数秒，用分块均方根包络才能一眼看清能量消长趋势。</li>
 </ul>
 <p>结合三幅子图的曲线特征与下方对应的九条音频（每组第一条“观察参照”用于对比目标结构，并非输入给算法的先验信号），可以分别读出三条关键结论：</p>
 <p><strong>(a) 双麦时延对齐与平均（配置详见<a href="research/05_exercises_and_audio.html#sec-u-560a2e89d2">音频手册§3</a>）。</strong> 图 <code>(a)</code> 中蓝色实线（<code>单麦</code>）叠加了明显的高频随机毛刺；绿色点线（<code>延迟参考</code>）是晚到 3 个采样点的干净目标波形；橙色虚线（<code>对齐平均</code>）在补偿两麦 3 个采样点的传播时差并等权平均后，不仅过零点与波峰位置紧贴绿色参考，单麦上的随机噪声尖峰幅度也明显收窄：</p>
@@ -2005,13 +2008,15 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li><a href="audio/spatial_mic1.wav">展示输入：单麦</a><audio class="audio-sample" controls preload="none" aria-label="展示输入：单麦" src="audio/spatial_mic1.wav">请使用上方 WAV 链接下载。</audio></li>
 <li><a href="audio/spatial_aligned.wav">处理输出：对齐平均</a><audio class="audio-sample" controls preload="none" aria-label="处理输出：对齐平均" src="audio/spatial_aligned.wav">请使用上方 WAV 链接下载。</audio></li>
 </ul>
-<p><strong>(b) AEC 收敛与双讲权重冻结（配置详见<a href="research/05_exercises_and_audio.html#sec-u-0f3ea05cf9">音频手册§4</a>）。</strong> 图 <code>(b)</code> 中蓝色实线（<code>回声 + 近端</code>）在 <code>0～1.2 s</code> 远端单讲期维持在约 <code>0.10</code> 的块均方根水平，进入浅橙色阴影标出的 <code>1.2～1.8 s</code> 已知双讲时段后因叠加近端语音而升至约 <code>0.15</code>。重点看橙色虚线（<code>冻结残差</code>）：它在开头几十毫秒内迅速从初值跌落到接近 <code>0.00</code>，说明自适应滤波器已准确抵消线性回声；而在 <code>1.2～1.8 s</code> 双讲阴影区内，由于及时冻结了滤波器权重更新，橙色虚线与绿色点线（<code>近端参考</code>，非播放参考 <code>aec_far.wav</code>）几乎完全重合，既没有发散也没有把近端说话人当作回声抵消掉：</p>
+<p><strong>(b) AEC 收敛与双讲权重冻结（配置详见<a href="research/05_exercises_and_audio.html#sec-u-0f3ea05cf9">音频手册§4</a>）。</strong> 图 <code>(b)</code> 中蓝色实线（<code>回声 + 近端</code>）在 $0$～$1.2\ \mathrm{s}$ 远端单讲期维持在约 $0.10$ 的块均方根水平，进入浅橙色阴影标出的 $1.2$～$1.8\ \mathrm{s}$ 已知双讲时段后因叠加近端语音而升至约 $0.15$。</p>
+<p>重点看橙色虚线（<code>冻结残差</code>）：它在开头几十毫秒内迅速从初值跌落到接近 $0.00$，说明自适应滤波器已准确抵消线性回声；而在 $1.2$～$1.8\ \mathrm{s}$ 双讲阴影区内，由于及时冻结了滤波器权重更新，橙色虚线与绿色点线（<code>近端参考</code>，非播放参考 <code>aec_far.wav</code>）几乎完全重合，既没有发散也没有把近端说话人当作回声抵消掉：</p>
 <ul>
 <li><a href="audio/aec_near.wav">观察参照：干净近端</a><audio class="audio-sample" controls preload="none" aria-label="观察参照：干净近端" src="audio/aec_near.wav">请使用上方 WAV 链接下载。</audio></li>
 <li><a href="audio/aec_microphone.wav">展示输入：麦克风混合</a><audio class="audio-sample" controls preload="none" aria-label="展示输入：麦克风混合" src="audio/aec_microphone.wav">请使用上方 WAV 链接下载。</audio></li>
 <li><a href="audio/aec_frozen.wav">处理输出：已知双讲冻结残差</a><audio class="audio-sample" controls preload="none" aria-label="处理输出：已知双讲冻结残差" src="audio/aec_frozen.wav">请使用上方 WAV 链接下载。</audio></li>
 </ul>
-<p><strong>(c) WPE 线性预测与周期谐波目标自消风险（配置详见<a href="research/05_exercises_and_audio.html#sec-u-1958d3c7fa">音频手册§5</a>）。</strong> 图 <code>(c)</code> 中绿色点线（<code>无回声参考</code>）在 <code>0～2.0 s</code> 呈规律起伏并在 <code>2.0 s</code> 准时归零；蓝色实线（<code>稀疏回声输入</code>）因叠加 <code>40 ms</code> 与 <code>80 ms</code> 延迟反射副本，有声段峰值抬高到约 <code>0.33</code>，且在 <code>2.0 s</code> 停音后拖出一条衰减尾巴。再看橙色虚线（<code>离线 WPE 输出</code>）：它虽然压低了 <code>2.0 s</code> 之后的混响拖尾，但在 <code>0～2.0 s</code> 有声段内却一路跌到 <code>0.04</code> 以下，远低于绿色无回声参考！原因在于这段合成目标是强周期性谐波信号，相隔几十毫秒的历史帧依然能线性预测当前帧的目标本身，导致离线 WPE 把目标谐波连同反射一起减掉了。这幅子图直观提醒我们：<strong>输出总能量变小不等于去混响更好</strong>，必须同时核查停音后的拖尾衰减与有声段的目标保真度：</p>
+<p><strong>(c) WPE 线性预测与周期谐波目标自消风险（配置详见<a href="research/05_exercises_and_audio.html#sec-u-1958d3c7fa">音频手册§5</a>）。</strong> 图 <code>(c)</code> 中绿色点线（<code>无回声参考</code>）在 $0$～$2.0\ \mathrm{s}$ 呈规律起伏并在 $2.0\ \mathrm{s}$ 准时归零；蓝色实线（<code>稀疏回声输入</code>）因叠加 $40\ \mathrm{ms}$ 与 $80\ \mathrm{ms}$ 延迟反射副本，有声段峰值抬高到约 $0.33$，且在 $2.0\ \mathrm{s}$ 停音后拖出一条衰减尾巴。再看橙色虚线（<code>离线 WPE 输出</code>）：它虽然压低了 $2.0\ \mathrm{s}$ 之后的混响拖尾，但在 $0$～$2.0\ \mathrm{s}$ 有声段内却一路跌到 $0.04$ 以下，远低于绿色无回声参考！</p>
+<p>原因在于这段合成目标是强周期性谐波信号，相隔几十毫秒的历史帧依然能线性预测当前帧的目标本身，导致离线 WPE 把目标谐波连同反射一起减掉了。这幅子图直观提醒我们：<strong>输出总能量变小不等于去混响更好</strong>，必须同时核查停音后的拖尾衰减与有声段的目标保真度：</p>
 <ul>
 <li><a href="audio/wpe_dry.wav">观察参照：无回声合成目标</a><audio class="audio-sample" controls preload="none" aria-label="观察参照：无回声合成目标" src="audio/wpe_dry.wav">请使用上方 WAV 链接下载。</audio></li>
 <li><a href="audio/wpe_reverberant.wav">展示输入：稀疏回声</a><audio class="audio-sample" controls preload="none" aria-label="展示输入：稀疏回声" src="audio/wpe_reverberant.wav">请使用上方 WAV 链接下载。</audio></li>

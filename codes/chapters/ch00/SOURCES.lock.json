@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "verified_at": "2026-10-05",
+  "verified_at": "2026-11-17",
   "notes": "Fixed source revisions for independent local research checkouts. Acquisition does not mean runtime validation or redistribution permission. LFS objects, submodules and common model/audio/archive files are omitted in new sparse working trees; upstream Git objects can still contain embedded assets. Code, models and datasets retain their respective terms.",
   "projects": [
     {
@@ -2569,6 +2569,339 @@
       ],
       "verified_at": "2026-11-11",
       "note": "Official annotated tag v4.18.1 resolves to the pinned commit. Retain the root AGPLv3 text and the original file notices. The selected numeric table is the filter data shipped with this example, not the underlying HRIR corpus. Do not copy the example WAV, HRIR database, runtime binaries, or other assets into the selected checkout or the tutorial Git history. No build, plugin execution, recorded-data test or embedded-device validation."
+    },
+    {
+      "id": "spharpy",
+      "url": "https://github.com/pyfar/spharpy.git",
+      "revision": "e5202db197ddd84733e051bf4f21e45da4da2fa5",
+      "license": "MIT",
+      "fetch_enabled": true,
+      "scope": "Spherical harmonic transforms, spherical microphone array modal weights, beamforming, and rotation operators",
+      "acquisition": "independent_source_checkout",
+      "source_paths": [
+        "LICENSE",
+        "README.md",
+        "spharpy/__init__.py",
+        "spharpy/spherical.py",
+        "spharpy/beamforming/beamforming.py",
+        "spharpy/transforms/rotations.py"
+      ],
+      "entrypoints": [
+        "LICENSE",
+        "README.md",
+        "spharpy/spherical.py",
+        "spharpy/beamforming/beamforming.py",
+        "spharpy/transforms/rotations.py"
+      ],
+      "verified_at": "2026-11-17",
+      "note": "Fixed text-only source selection retaining the root MIT LICENSE. No documentation plot assets, test fixtures, or package installation executed."
+    },
+    {
+      "id": "sofar",
+      "url": "https://github.com/pyfar/sofar.git",
+      "revision": "2de8a680db9219ad25aa4bb813d16f98d1a9ebac",
+      "license": "MIT",
+      "fetch_enabled": true,
+      "scope": "AES69 SOFA spatial acoustic convention definitions, spherical/Cartesian coordinate metadata rules, and NetCDF4 I/O helpers",
+      "acquisition": "independent_source_checkout",
+      "source_paths": [
+        "LICENSE",
+        "README.md",
+        "sofar/__init__.py",
+        "sofar/sofa.py",
+        "sofar/io.py",
+        "sofar/utils.py"
+      ],
+      "entrypoints": [
+        "LICENSE",
+        "README.md",
+        "sofar/sofa.py",
+        "sofar/io.py",
+        "sofar/utils.py"
+      ],
+      "verified_at": "2026-11-17",
+      "note": "Fixed text-only source selection retaining the root MIT LICENSE. No binary SOFA HRTF/DRIR datasets selected and no package execution."
+    },
+    {
+      "id": "spaudiopy",
+      "url": "https://github.com/chris-hld/spaudiopy.git",
+      "revision": "a75c282a2ba3fc24b0b2aea27ac20c149ffc709a",
+      "license": "MIT",
+      "fetch_enabled": true,
+      "scope": "Ambisonics ACN/SN3D spherical harmonics, AllRAD/EPAD loudspeaker decoding, MagLS binaural rendering, and parametric DirAC analysis",
+      "acquisition": "independent_source_checkout",
+      "source_paths": [
+        "LICENSE",
+        "README.md",
+        "spaudiopy/__init__.py",
+        "spaudiopy/sph.py",
+        "spaudiopy/decoder.py",
+        "spaudiopy/parsa.py",
+        "spaudiopy/grids.py"
+      ],
+      "entrypoints": [
+        "LICENSE",
+        "README.md",
+        "spaudiopy/sph.py",
+        "spaudiopy/decoder.py",
+        "spaudiopy/parsa.py"
+      ],
+      "verified_at": "2026-11-17",
+      "note": "Fixed text-only source selection retaining the root MIT LICENSE. No binary HRIR/SOFA assets selected and no package execution."
+    },
+    {
+      "id": "anf-generator",
+      "url": "https://github.com/audiolabs/anf-generator.git",
+      "revision": "999b0dfd9d7215371fd9ad3335c2da8b5834b4e3",
+      "license": "MIT",
+      "fetch_enabled": true,
+      "scope": "Arbitrary spatial noise field simulation via frequency-dependent coherence matrices and EVD/Cholesky coloring",
+      "acquisition": "independent_source_checkout",
+      "source_paths": [
+        "LICENSE",
+        "README.md",
+        "anf_generator/__init__.py",
+        "anf_generator/CoherenceMatrix.py",
+        "anf_generator/MixingMatrix.py"
+      ],
+      "entrypoints": [
+        "LICENSE",
+        "README.md",
+        "anf_generator/CoherenceMatrix.py",
+        "anf_generator/MixingMatrix.py"
+      ],
+      "verified_at": "2026-11-17",
+      "note": "Fixed text-only source selection retaining the root MIT LICENSE. No test audio files selected and no package execution."
+    },
+    {
+      "id": "rir-generator",
+      "url": "https://github.com/audiolabs/rir-generator.git",
+      "revision": "0def8a289b10b6e54dc83935a197008c498064be",
+      "license": "MIT",
+      "fetch_enabled": true,
+      "scope": "Allen-Berkley image-source room impulse response C++ core with fractional delay sinc interpolation and microphone directivity",
+      "acquisition": "independent_source_checkout",
+      "source_paths": [
+        "LICENSE",
+        "README.md",
+        "src/rir_generator/__init__.py",
+        "src/rir_generator/_cffi/rir_generator_core.cpp",
+        "src/rir_generator/_cffi/rir_generator_core.h"
+      ],
+      "entrypoints": [
+        "LICENSE",
+        "README.md",
+        "src/rir_generator/__init__.py",
+        "src/rir_generator/_cffi/rir_generator_core.cpp",
+        "src/rir_generator/_cffi/rir_generator_core.h"
+      ],
+      "verified_at": "2026-11-17",
+      "note": "Fixed text-only source selection retaining the root MIT LICENSE. No CFFI compilation or binary wheel build executed."
+    },
+    {
+      "id": "sc-wind-noise-generator",
+      "url": "https://github.com/audiolabs/SC-Wind-Noise-Generator.git",
+      "revision": "ff9e74c40329c11d6437a01e1c9b164ac228c944",
+      "license": "MIT",
+      "fetch_enabled": true,
+      "scope": "Parametric single-channel and wearable-microphone wind buffeting turbulence noise synthesis reference",
+      "acquisition": "independent_source_checkout",
+      "source_paths": [
+        "LICENSE",
+        "README.md",
+        "sc_wind_noise_generator.py",
+        "generate_example.py"
+      ],
+      "entrypoints": [
+        "LICENSE",
+        "README.md",
+        "sc_wind_noise_generator.py"
+      ],
+      "verified_at": "2026-11-17",
+      "note": "Fixed text-only source selection retaining the root MIT LICENSE. No audio assets selected and no script execution."
+    },
+    {
+      "id": "ci-sdr",
+      "url": "https://github.com/fgnt/ci_sdr.git",
+      "revision": "ab4f88c14f34cf4dfd9d39789154b041ec61c72e",
+      "license": "MIT",
+      "fetch_enabled": true,
+      "scope": "Convolutive transfer-function invariant SDR (CI-SDR) finite-FIR Toeplitz projection loss and evaluation reference",
+      "acquisition": "independent_source_checkout",
+      "source_paths": [
+        "LICENSE",
+        "README.md",
+        "ci_sdr/__init__.py",
+        "ci_sdr/np/wiener_filter.py",
+        "ci_sdr/pt/sdr.py",
+        "ci_sdr/pt/toeplitz.py",
+        "ci_sdr/pt/wiener_filter.py"
+      ],
+      "entrypoints": [
+        "LICENSE",
+        "README.md",
+        "ci_sdr/np/wiener_filter.py",
+        "ci_sdr/pt/sdr.py",
+        "ci_sdr/pt/toeplitz.py"
+      ],
+      "verified_at": "2026-11-17",
+      "note": "Fixed text-only source selection retaining the root MIT LICENSE. No PyTorch/SciPy package execution."
+    },
+    {
+      "id": "py-motmetrics",
+      "url": "https://github.com/cheind/py-motmetrics.git",
+      "revision": "e5ae766fab03b804f485d7c95ee1809b94d32dcc",
+      "license": "MIT",
+      "fetch_enabled": true,
+      "scope": "CLEAR MOT multi-object tracking evaluation reference (MOTA, MOTP, misses, false positives, and identity switches)",
+      "acquisition": "independent_source_checkout",
+      "source_paths": [
+        "LICENSE",
+        "README.md",
+        "motmetrics/__init__.py",
+        "motmetrics/mot.py",
+        "motmetrics/metrics.py",
+        "motmetrics/distances.py"
+      ],
+      "entrypoints": [
+        "LICENSE",
+        "README.md",
+        "motmetrics/mot.py",
+        "motmetrics/metrics.py",
+        "motmetrics/distances.py"
+      ],
+      "verified_at": "2026-11-17",
+      "note": "Fixed text-only source selection retaining the root MIT LICENSE. No benchmark dataset files selected and no package execution."
+    },
+    {
+      "id": "oboe",
+      "url": "https://github.com/google/oboe.git",
+      "revision": "6925acbd57590ded8b449030e46b0bd5c017a2ca",
+      "license": "Apache-2.0",
+      "fetch_enabled": true,
+      "scope": "Low-latency Android C++ audio callback stream, full-duplex echo glitch harness, and multi-channel input interface reference",
+      "acquisition": "independent_source_checkout",
+      "source_paths": [
+        "LICENSE",
+        "README.md",
+        "apps/OboeTester/app/src/main/cpp/FullDuplexEcho.cpp",
+        "apps/OboeTester/app/src/main/cpp/FullDuplexEcho.h",
+        "apps/OboeTester/app/src/main/cpp/MultiChannelRecording.h"
+      ],
+      "entrypoints": [
+        "LICENSE",
+        "README.md",
+        "apps/OboeTester/app/src/main/cpp/FullDuplexEcho.cpp",
+        "apps/OboeTester/app/src/main/cpp/MultiChannelRecording.h"
+      ],
+      "verified_at": "2026-11-17",
+      "note": "Fixed text-only source selection retaining the root Apache-2.0 LICENSE. No Android NDK build, APK assets, or hardware execution."
+    },
+    {
+      "id": "p808",
+      "url": "https://github.com/microsoft/P.808.git",
+      "revision": "d90e9cc5f1f89caad54dfa3f568e7144c5906136",
+      "license": "MIT",
+      "fetch_enabled": true,
+      "scope": "ITU-T P.808 crowdsourced subjective speech quality listening test parser, gold-clip/trapping-question filtering, and ANOVA aggregation",
+      "acquisition": "independent_source_checkout",
+      "source_paths": [
+        "LICENSE",
+        "README.md",
+        "src/result_parser.py",
+        "src/anova.py",
+        "src/create_gold_clips.py",
+        "src/create_trapping_stimuli.py"
+      ],
+      "entrypoints": [
+        "LICENSE",
+        "README.md",
+        "src/result_parser.py",
+        "src/anova.py",
+        "src/create_gold_clips.py"
+      ],
+      "verified_at": "2026-11-17",
+      "note": "Fixed text-only source selection retaining the root MIT LICENSE. No speech clips, trapping WAV assets, or cloud platform execution."
+    },
+    {
+      "id": "dasf-toolbox",
+      "url": "https://github.com/AlexanderBertrandLab/DASF_toolbox.git",
+      "revision": "a2bdfa80c4352e45d739bc3fc7192244bfa111e6",
+      "license": "BSD-3-Clause",
+      "fetch_enabled": true,
+      "scope": "Distributed Adaptive Signal Fusion (DASF) solver reference for distributed MMSE, LCMV, GEVD, and QCQP spatial filtering",
+      "acquisition": "independent_source_checkout",
+      "source_paths": [
+        "LICENSE.md",
+        "README.md",
+        "dasftoolbox/__init__.py",
+        "dasftoolbox/dasf.py",
+        "dasftoolbox/optimization_problems/lcmv_problem.py",
+        "dasftoolbox/optimization_problems/mmse_problem.py",
+        "dasftoolbox/optimization_problems/gevd_problem.py"
+      ],
+      "entrypoints": [
+        "LICENSE.md",
+        "README.md",
+        "dasftoolbox/dasf.py",
+        "dasftoolbox/optimization_problems/lcmv_problem.py",
+        "dasftoolbox/optimization_problems/mmse_problem.py",
+        "dasftoolbox/optimization_problems/gevd_problem.py"
+      ],
+      "verified_at": "2026-11-17",
+      "note": "Fixed text-only source selection retaining the root BSD LICENSE.md. No simulation datasets or package execution."
+    },
+    {
+      "id": "wesep",
+      "url": "https://github.com/wenet-e2e/wesep.git",
+      "revision": "c2437a64d314baa3b7a49421d0030c608adf5a32",
+      "license": "Apache-2.0",
+      "fetch_enabled": true,
+      "scope": "Target speaker extraction toolkit with enrollment/spatial/visual cue builders and C++ streaming runtime header interfaces",
+      "acquisition": "independent_source_checkout",
+      "source_paths": [
+        "LICENSE",
+        "README.md",
+        "setup.py",
+        "runtime/separate/separate_engine.h",
+        "examples/spatial/mc_librimix/local/build_spatial_cues.py",
+        "examples/audio/librimix/local/build_audio_cues.py"
+      ],
+      "entrypoints": [
+        "LICENSE",
+        "README.md",
+        "runtime/separate/separate_engine.h",
+        "examples/spatial/mc_librimix/local/build_spatial_cues.py",
+        "examples/audio/librimix/local/build_audio_cues.py"
+      ],
+      "verified_at": "2026-11-17",
+      "note": "Fixed text-only source selection retaining the root Apache-2.0 LICENSE. No pretrained checkpoints, speech corpora, or PyTorch/C++ execution."
+    },
+    {
+      "id": "gtcrn",
+      "url": "https://github.com/Xiaobin-Rong/gtcrn.git",
+      "revision": "502ebfab64da7c4a9af78dcb9c6ceef1ebb01c73",
+      "license": "MIT",
+      "fetch_enabled": true,
+      "scope": "Ultra-lightweight grouped temporal convolutional recurrent speech enhancement architecture and causal streaming cache reference",
+      "acquisition": "independent_source_checkout",
+      "source_paths": [
+        "LICENSE",
+        "README.md",
+        "gtcrn.py",
+        "loss.py",
+        "stream/gtcrn_stream.py",
+        "stream/modules/convolution.py"
+      ],
+      "entrypoints": [
+        "LICENSE",
+        "README.md",
+        "gtcrn.py",
+        "stream/gtcrn_stream.py",
+        "stream/modules/convolution.py"
+      ],
+      "verified_at": "2026-11-17",
+      "note": "Fixed text-only source selection retaining the root MIT LICENSE. No model checkpoints or audio samples selected and no PyTorch execution."
     }
   ]
 }

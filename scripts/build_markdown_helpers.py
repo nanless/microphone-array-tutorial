@@ -6,6 +6,7 @@ math in parsed code as literal code, rather than guessing whether four spaces
 mean a code block or a paragraph inside a list.
 """
 
+from bisect import bisect_right
 import re
 from html.parser import HTMLParser
 from urllib.parse import urlparse
@@ -129,13 +130,32 @@ def _backslashes_before(text, position):
     return position - start
 
 
+def _inside_sorted_ranges(starts, ends, start, end=None):
+    i = bisect_right(starts, start) - 1
+    if i < 0:
+        return False
+    return (end <= ends[i]) if end is not None else (start < ends[i])
+
+
+def _replace_non_overlapping(text, ordered_spans, tokens):
+    pieces, cursor = [], 0
+    for (start, end), token in zip(ordered_spans, tokens):
+        pieces.append(text[cursor:start])
+        pieces.append(token)
+        cursor = end
+    pieces.append(text[cursor:])
+    return "".join(pieces)
+
+
 def protect_code(md_text):
     """Protect native fences/backticks and raw HTML boundaries before math."""
     repo = _Stash(md_text, "CODETOKEN")
     ranges = code_block_ranges(md_text)
     math_ranges = _math_ranges(md_text)
+    m_starts = [a for a, _ in math_ranges]
+    m_ends = [b for _, b in math_ranges]
     ranges.extend((m.start(), m.end()) for m in HTML_TAG_RE.finditer(md_text)
-                  if not any(a <= m.start() and m.end() <= b for a, b in math_ranges))
+                  if not _inside_sorted_ranges(m_starts, m_ends, m.start(), m.end()))
     ranges.extend((m.start(), m.end()) for m in INLINE_CODE_RE.finditer(md_text)
                   if m.group(2))
     merged = []
@@ -144,10 +164,9 @@ def protect_code(md_text):
             merged[-1] = (merged[-1][0], max(end, merged[-1][1]))
         else:
             merged.append((start, end))
-    text = md_text
-    for start, end in reversed(merged):
-        text = text[:start] + repo.stash(text[start:end]) + text[end:]
-    return text, repo
+    tokens = [repo.stash(md_text[start:end]) for start, end in reversed(merged)]
+    tokens.reverse()
+    return _replace_non_overlapping(md_text, merged, tokens), repo
 
 
 def restore_code(text, repo):
@@ -161,23 +180,29 @@ def shield_math(text):
     repo = _Stash(source, "MATH")
     replacements = [(a - _backslashes_before(text, a), b, False)
                     for a, b in _math_ranges(text)]
+    r_starts = [a for a, _, _ in replacements]
+    r_ends = [b for _, b, _ in replacements]
     # Keep escape parity through Markdown's own backslash processing.
     for match in re.finditer(r"\\+\$", text):
-        if len(match[0][:-1]) % 2 and not any(a <= match.start() < b for a, b, _ in replacements):
+        if len(match[0][:-1]) % 2 and not _inside_sorted_ranges(r_starts, r_ends, match.start()):
             replacements.append((match.start(), match.end(), True))
-    for start, end, literal in sorted(replacements, reverse=True):
-        text = text[:start] + repo.stash(text[start:end], literal) + text[end:]
+    ordered = sorted(replacements)
+    tokens = [repo.stash(text[start:end], literal) for start, end, literal in reversed(ordered)]
+    tokens.reverse()
+    text = _replace_non_overlapping(text, [(s, e) for s, e, _ in ordered], tokens)
     return restore_code(text, code_repo), repo
 
 
 def unshield_math(html, repo):
     """Restore TeX in prose, but original escaped text in parsed code nodes."""
     from html import escape
-    code_ranges = _raw_code_ranges(html)
+    code_ranges = sorted(_raw_code_ranges(html))
+    c_starts = [a for a, _ in code_ranges]
+    c_ends = [b for _, b in code_ranges]
     def restore(match):
         index = int(match[1])
         value = repo[index]
-        if any(start <= match.start() < end for start, end in code_ranges):
+        if _inside_sorted_ranges(c_starts, c_ends, match.start()):
             return escape(value, quote=True)
         return value if index in repo.literal else value.replace("<", r"\lt ")
     return re.sub(re.escape(repo.prefix) + r"(\d+)@@", restore, html)

@@ -7,6 +7,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
+from codes.chapters.ch00.core.source_history import verify_status_binding
 from codes.chapters.ch04.core import upstream_contracts as contracts
 from codes.chapters.ch09.examples import audit_tracking_upstream_interfaces as interfaces
 from codes.chapters.ch09.examples import audit_upstream_tracking_contracts as tracking
@@ -74,9 +75,16 @@ class CurrentReportOracles(unittest.TestCase):
             report = json.loads(tool.CURRENT.read_text())
             self.assertEqual(report['actual_dependencies_sha256'],
                              contracts.dependencies(Path(tool.__file__), extras))
-            self.assertEqual(report['source_lock_sha256'], contracts.sha(contracts.LOCK))
-            self.assertEqual(report['source_status_sha256'], contracts.sha(contracts.STATUS))
+            binding = verify_status_binding(
+                report['source_status_sha256'],
+                report['source_lock_sha256'],
+                list(report['source_identities']),
+            )
             for name, identity in report['source_identities'].items():
+                self.assertTrue(contracts.same_metadata(
+                    identity['lock_entry'], binding['lock_binding']['records'][name]))
+                self.assertTrue(contracts.same_metadata(
+                    identity['recorded_complete_selection'], binding['records'][name]))
                 self.assertIs(identity['clean_before'], True)
                 self.assertIs(identity['clean_after'], True)
                 expected = 'source_verified' if name == 'odas' else 'source_selection_mismatch'

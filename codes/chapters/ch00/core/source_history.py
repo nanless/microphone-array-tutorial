@@ -32,6 +32,7 @@ _HISTORICAL_SNAPSHOTS = {
         'e3478006c7dbc6cec442bf6bccc4df9eca946d7d353b661e947596dd8b87608a',
         '6dab41b1542cfa2cd4731ef4c8a3e807b343dc807f209c4eea17503e203ebf59',
         'ea8ce3cf679d70d06305f4942dbf9afeee94b69bd0ad7a5b9b09470c327a598f',
+        '60ebc7b692d28b5d5406e3cb137d2dcc43b154ea2c4e3d3ac739cf7fda18abeb',
     }),
     'SOURCE_STATUS': frozenset({
         '56f4a2b5bbd1e2debb57e71e2e6b362a27c8f9ab430ec6dd46aee1f15eea8469',
@@ -44,6 +45,7 @@ _HISTORICAL_SNAPSHOTS = {
         'b113b63c97767d19b76ceb44677303961ff310ce8d96f4e9e777944b44916d3c',
         '1142cc2290d93ea33e6b2dcdf72b9b52307efdd837b84c1739262c2c968186d6',
         'be926fccb75979e2f2ac428ac6c65c76a46d672771e21a01d589908d776fcac0',
+        'b57d21d42651084303252c66fee49ea8d0ccfcc4108e2e89c5c79b99f8ef8690',
     }),
 }
 

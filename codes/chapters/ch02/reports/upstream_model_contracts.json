@@ -1,11 +1,11 @@
 {
   "schema_version": 2,
-  "executed_at_utc": "2026-11-11T08:23:48.783549+00:00",
+  "executed_at_utc": "2026-11-17T12:52:21.247775+00:00",
   "audit_source": "codes/chapters/ch02/examples/audit_upstream_models.py",
   "audit_source_sha256": "efd9bf05059d48360201bd2078933791b402d8259dccabd94308a1acc75f92e0",
   "sources": {
-    "lock_sha256": "60ebc7b692d28b5d5406e3cb137d2dcc43b154ea2c4e3d3ac739cf7fda18abeb",
-    "status_sha256": "b57d21d42651084303252c66fee49ea8d0ccfcc4108e2e89c5c79b99f8ef8690",
+    "lock_sha256": "55721fbe8027f67bf3159827b8b58c14bc327ea5e0221b216303681340e890e7",
+    "status_sha256": "96e37d461be3c0c5c07986b48100e935405334d22f346d8efb59ca49b07aa502",
     "projects": {
       "pyroomacoustics": {
         "url": "https://github.com/LCAV/pyroomacoustics.git",
@@ -1017,10 +1017,10 @@
     "codes/chapters/ch00/upstream/fetch_upstreams.py": "442d17a5818ef0edf620bde85cc7959c1e73602a47f75e1cc8fce2b227ae11b4"
   },
   "source_verification": {
-    "started_at_utc": "2026-11-11T08:23:48.131969+00:00",
+    "started_at_utc": "2026-11-17T12:52:20.400685+00:00",
     "before_after_equal": true,
-    "canonical_sources_before_sha256": "ebe845c308c6400711686a66f82d690499f3a97bfe8bd3599030714a1590b312",
-    "canonical_sources_after_sha256": "ebe845c308c6400711686a66f82d690499f3a97bfe8bd3599030714a1590b312",
+    "canonical_sources_before_sha256": "3eff6e19f40b8f7181d8ee36135fdd000b7525be412456358d85e9aea8bd8c7e",
+    "canonical_sources_after_sha256": "3eff6e19f40b8f7181d8ee36135fdd000b7525be412456358d85e9aea8bd8c7e",
     "shared_dependencies_before_after_equal": true,
     "scope": "Actual origin/HEAD/used blobs/licences/clean tree, complete live selection, lock/status bytes and local helper SHA rechecked after execution"
   },
@@ -1037,7 +1037,7 @@
     "python": "3.13.12 | packaged by conda-forge | (main, Feb  5 2026, 06:11:05) [Clang 19.1.7 ]",
     "executable": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/.venv/bin/python",
     "numpy": "2.5.3",
-    "platform": "macOS-26.6.1-arm64-arm-64bit-Mach-O"
+    "platform": "macOS-27.2.1-arm64-arm-64bit-Mach-O"
   },
   "tolerances": {
     "default_absolute": 1e-12,

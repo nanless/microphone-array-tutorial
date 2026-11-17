@@ -8,6 +8,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
+from codes.chapters.ch00.core.source_history import verify_status_binding
 from codes.chapters.ch00.upstream.fetch_upstreams import inspect_project
 from codes.chapters.ch04.core import upstream_contracts as contracts
 from codes.chapters.ch04.examples import (
@@ -270,12 +271,18 @@ class CurrentReportTests(unittest.TestCase):
         for tool in (doa, said):
             report = contracts.strict_json_loads(tool.CURRENT_REPORT.read_bytes())
             self.assertEqual(report['audit_source_sha256'], contracts.sha(tool.__file__))
-            self.assertEqual(report['lock_sha256'], contracts.sha(contracts.LOCK))
             self.assertEqual(report['report_source_sha256'], contracts.dependencies(tool.__file__))
             identities = (report['source_contracts'].values() if tool is doa
                           else (report['source_contract'],))
             for identity in identities:
-                self.assertEqual(identity['status_sha256'], contracts.sha(contracts.STATUS))
+                binding = verify_status_binding(
+                    identity['status_sha256'], report['lock_sha256'], [identity['project']]
+                )
+                self.assertEqual(identity['lock_sha256'], report['lock_sha256'])
+                self.assertTrue(contracts.same_metadata(
+                    identity['lock_entry'], binding['lock_binding']['records'][identity['project']]))
+                self.assertTrue(contracts.same_metadata(
+                    identity['recorded_complete_selection'], binding['records'][identity['project']]))
                 self.assertEqual(identity['used_source_identity'], 'verified')
                 self.assertTrue(identity['clean_before'])
                 self.assertTrue(identity['clean_after'])

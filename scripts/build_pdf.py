@@ -253,9 +253,9 @@ h1,h2,h3,h4{break-after:avoid;break-inside:avoid;page-break-inside:avoid}
 #ch-12 p:has(>a#ch-12-e14-20)~table{margin:6px 0;break-inside:avoid;page-break-inside:avoid}
 #ch-12 p:has(>a#ch-12-e14-20)~table :is(th,td){padding:3px 7px}
 /* 第13章末题 E13-25 保留字号与全部推导，仅收紧段间与公式外间距，避免章末导航独占一页。 */
-#ch-15 p:has(>a#ch-15-e13-25)~h3{margin-bottom:8px}
-#ch-15 p:has(>a#ch-15-e13-25)~p{margin-bottom:.42em;line-height:1.6}
-#ch-15 p:has(>a#ch-15-e13-25)~p>mjx-container[display="true"]{margin:.5em 0}
+#ch-15 p:has(>a#ch-15-e13-27)~h3{margin-bottom:8px}
+#ch-15 p:has(>a#ch-15-e13-27)~p{margin-bottom:.42em;line-height:1.6}
+#ch-15 p:has(>a#ch-15-e13-27)~p>mjx-container[display="true"]{margin:.5em 0}
 /* 章末独立练习与研究小节从完整页开始，避免最后几行独占一页。 */
 p:has(>a#ch-8-e08-11){break-before:page;page-break-before:always}
 #ch-0-sec-u-cc2724a31a+ul{break-inside:avoid;page-break-inside:avoid}

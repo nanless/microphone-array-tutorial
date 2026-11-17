@@ -1,10 +1,14 @@
 """Independent algebra, input boundaries and update-time contracts for ch13."""
 import json
+import math
 import unittest
 import numpy as np
 from codes.chapters.ch13.core.distributed import (
     known_models, mwf_weights, mse_components, compressed_mwf, distributed_updates,
     jacobi_control, step_size_control, tree_sum_control, gevd_control,
+)
+from codes.chapters.ch13.core.dasf_and_ptp import (
+    ptp_vs_sro_phase_budget, centralized_lcmv, dasf_lcmv_updates, dasf_unification_control,
 )
 from codes.chapters.ch13.chapter13_exercises import run_experiments, resource_control
 
@@ -228,9 +232,84 @@ class DistributedTests(unittest.TestCase):
         self.assertEqual(result['network'][1]['compressed_full_mesh_unicast_PCM16_bits_per_second'], 3072000)
         self.assertEqual(result['network'][1]['network_full_complex128_covariance_bytes'], 1600)
 
+    def test_ptp_vs_sro_phase_budget_hand_anchors(self):
+        budget = ptp_vs_sro_phase_budget()
+        self.assertAlmostEqual(budget['sample_period_us'], 125/6, places=13)
+        ptp = budget['ptp_hardware_sync']
+        self.assertAlmostEqual(ptp['single_node_samples'], .048, places=15)
+        self.assertAlmostEqual(ptp['single_node_phase_deg'], .864, places=14)
+        self.assertAlmostEqual(ptp['worst_two_node_samples'], .096, places=15)
+        self.assertAlmostEqual(ptp['worst_two_node_phase_deg'], 1.728, places=14)
+        self.assertAlmostEqual(ptp['equal_sum_power_gain'], math.cos(.0048*math.pi)**2, places=15)
+        self.assertAlmostEqual(ptp['target_waveform_phase_mse'], math.sin(.0048*math.pi)**2, places=18)
+        self.assertFalse(ptp['accumulates_over_time'])
+
+        sro = budget['free_running_sro']
+        self.assertAlmostEqual(sro['sample_drift_per_s'], 4.8, places=14)
+        self.assertAlmostEqual(sro['seconds_per_integer_sample_slip'], 5/24, places=15)
+        self.assertAlmostEqual(sro['phase_drift_deg_per_s'], 86.4, places=13)
+        self.assertAlmostEqual(sro['first_destructive_null_s'], 25/12, places=14)
+        self.assertAlmostEqual(sro['first_destructive_null_samples'], 10., places=14)
+        self.assertAlmostEqual(sro['wola']['drift_samples_per_hop'], .0512, places=15)
+        self.assertAlmostEqual(sro['wola']['phase_drift_deg_per_hop'], .9216, places=14)
+        self.assertAlmostEqual(sro['wola']['hops_per_integer_sample_slip'], 625/32, places=13)
+        with self.assertRaises(ValueError):
+            ptp_vs_sro_phase_budget(fs_hz=True)
+
+    def test_dasf_unification_stale_subspace_and_dof_lockup(self):
+        ctrl = dasf_unification_control()
+        r1 = ctrl['rank1_shared_subspace']
+        np.testing.assert_allclose(r1['r_nn_inv_a'], np.array([25, 4, 11, -24])/8, atol=2e-15)
+        self.assertAlmostEqual(r1['q_snr'], 61/8, places=14)
+        np.testing.assert_allclose(r1['mwf_central_weights'], np.array([25, 4, 11, -24])/69, atol=2e-15)
+        np.testing.assert_allclose(r1['mvdr_central_weights'], np.array([25, 4, 11, -24])/61, atol=2e-15)
+        self.assertAlmostEqual(r1['mvdr_min_noise_power'], 8/61, places=15)
+        self.assertAlmostEqual(r1['gevd_lambda_max'], 69/8, places=14)
+        np.testing.assert_allclose(
+            r1['gevd_central_weights'],
+            np.array([25, 4, 11, -24])/(2*math.sqrt(122)),
+            atol=2e-15,
+        )
+        np.testing.assert_allclose(r1['compressed_node1_mvdr_h'], np.array([25, 4, 1])/61, atol=2e-15)
+        self.assertLess(r1['compressed_node1_mwf_error_l2'], 1e-14)
+        self.assertLess(r1['compressed_node1_mvdr_error_l2'], 1e-14)
+        self.assertLess(r1['compressed_node1_gevd_error_l2'], 1e-14)
+
+        lcmv2 = ctrl['two_constraint_lcmv']
+        expected_w2 = np.array([125, -13, 13, -117])/203
+        np.testing.assert_allclose(lcmv2['central_weights'], expected_w2, atol=2e-15)
+        self.assertAlmostEqual(lcmv2['central_noise_power'], 34/203, places=15)
+        np.testing.assert_allclose(lcmv2['stale_mvdr_subspace_h'], np.array([5210, -2002, 182])/10397, atol=2e-15)
+        np.testing.assert_allclose(lcmv2['stale_mvdr_subspace_weights'], np.array([5210, -2002, 2002, -4368])/10397, atol=2e-15)
+        self.assertAlmostEqual(lcmv2['stale_mvdr_subspace_noise_power'], 2116/10397, places=15)
+        self.assertAlmostEqual(lcmv2['stale_excess_noise_power'], 76050/2110591, places=15)
+        self.assertTrue(lcmv2['dasf_r1_monotone'])
+        np.testing.assert_allclose(lcmv2['dasf_r1_final_weights'], expected_w2, atol=1e-12)
+        self.assertAlmostEqual(lcmv2['dasf_r1_final_noise_power'], 34/203, places=13)
+
+        dof3 = ctrl['three_constraint_dof_boundary']
+        expected_w3 = np.array([34, -26, 26, 0])/73
+        np.testing.assert_allclose(dof3['central_weights'], expected_w3, atol=2e-15)
+        self.assertAlmostEqual(dof3['central_noise_power'], 196/365, places=14)
+        self.assertEqual(dof3['r1_locked_remaining_dofs'], [0, 0])
+        np.testing.assert_allclose(dof3['r1_locked_weights'], [1., 0., 0., 0.], atol=2e-15)
+        self.assertAlmostEqual(dof3['r1_locked_noise_power'], 1., places=15)
+        self.assertEqual(dof3['r2_unlocked_remaining_dofs'], [1, 1])
+        np.testing.assert_allclose(dof3['r2_unlocked_weights'], expected_w3, atol=1e-13)
+        self.assertAlmostEqual(dof3['r2_unlocked_noise_power'], 196/365, places=14)
+
+        for bad_call in (
+            lambda: centralized_lcmv([[1., 2.], [2., 1.]], [[1.], [0.]], [1.]),
+            lambda: centralized_lcmv(np.eye(2), [[1., 1.], [1., 1.]], [1., 0.]),
+            lambda: dasf_lcmv_updates(self.rn, np.eye(4), [1., 0., 0., 0.], node_sizes=(2, 2), num_filters=1),
+            lambda: dasf_lcmv_updates(self.rn, self.a[:, None], [1.], node_sizes=(2, 2), num_filters=3),
+        ):
+            with self.assertRaises(ValueError):
+                bad_call()
+
     def test_independent_exercise_id_set_and_finite_json(self):
         result = run_experiments()
-        expected = {'E13-'+str(i).zfill(2) for i in range(1, 26)}
+        expected = {'E13-'+str(i).zfill(2) for i in range(1, 28)}
         self.assertEqual(set(result['exercises']), expected)
         self.assertNotIn('schema_version', result['exercises'])
         json.dumps(result, allow_nan=False)

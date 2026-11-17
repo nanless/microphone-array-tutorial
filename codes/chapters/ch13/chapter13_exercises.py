@@ -1,4 +1,4 @@
-"""Run E13-01..25 with NumPy and in-memory PCM; never write or download.
+"""Run E13-01..27 with NumPy and in-memory PCM; never write or download.
 
 Usage: python -m codes.chapters.ch13.chapter13_exercises [--exercise E13-06]
 Metadata is outside the stable exercise-ID map. Known-model controls are not
@@ -23,8 +23,11 @@ from codes.chapters.ch13.core.distributed import (
 from codes.chapters.ch13.core.distributed_audio import (
     SAMPLE_RATE, POWER, run_experiment, measure_signal, OUTPUT_REFERENCES,
 )
+from codes.chapters.ch13.core.dasf_and_ptp import (
+    ptp_vs_sro_phase_budget, dasf_unification_control,
+)
 
-EXERCISE_IDS = tuple('E13-'+str(i).zfill(2) for i in range(1, 26))
+EXERCISE_IDS = tuple('E13-'+str(i).zfill(2) for i in range(1, 28))
 
 
 def _json(value):
@@ -172,6 +175,8 @@ def run_experiments():
         'E13-23': tree_sum_control(),
         'E13-24': gevd_control(),
         'E13-25': broadcast_statistics_control(),
+        'E13-26': ptp_vs_sro_phase_budget(),
+        'E13-27': dasf_unification_control(),
     }
     if set(exercises) != set(EXERCISE_IDS):
         raise AssertionError('exercise ID set differs')

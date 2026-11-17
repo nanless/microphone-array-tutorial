@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>从入门到工业实践 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="d949a633bb56"><style>
+<meta name="source-digest" content="066145ac759e"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -415,7 +415,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
         <a class="course-cta" href="01_problem-definition.html">读第一章 <span aria-hidden="true">→</span></a>
         <a class="course-quiet" href="#course-engineering">工程实践 <span aria-hidden="true">↓</span></a>
       </div>
-      <p class="course-note">15 章正文、2 篇附录、419 道可运行练习。</p>
+      <p class="course-note">15 章正文、2 篇附录、421 道可运行练习。</p>
     </div>
 
     <figure class="course-demo" data-source="left">
@@ -1815,7 +1815,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <p>核对完基础输出后，可运行单元测试套件检验正常输入、退化边界与异常输入处理；若想针对某一章单独调试，可按<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/README.md">代码地图</a>定位对应模块与测试文件：</p>
 <pre><code class="language-bash">.venv/bin/python -m unittest discover -s tests -p 'test_codes*.py' -v
 </code></pre>
-<p>需要从头重新生成音频或重绘插图时，可参照<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/scripts/README.md">构建说明</a>与附录 B <a href="15_appendix-guide.html#sec-15-7">§15.7</a> 操作（附录 B 房间仿真练习需在固定版本 <code>pyroomacoustics</code> 独立环境中生成）。此外，全书共配 419 道稳定编号代码练习（<code>E01-01</code> 至 <code>E17-16</code>）：其中第 1～13 章与附录 A、B 的 387 道汇总于<a href="research/05_exercises_and_audio.html">章节代码练习与音频实验</a>，第 16、17 章的 32 道分别见<a href="16_spatial-wearable-arrays.html#sec-16-11">专题Ⅲ §16.11</a>与<a href="17_target-extraction-diarization.html#sec-17-10">专题Ⅳ §17.10</a>，每道题均给出明确输入、运行入口与可核查数值结果。</p>
+<p>需要从头重新生成音频或重绘插图时，可参照<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/scripts/README.md">构建说明</a>与附录 B <a href="15_appendix-guide.html#sec-15-7">§15.7</a> 操作（附录 B 房间仿真练习需在固定版本 <code>pyroomacoustics</code> 独立环境中生成）。此外，全书共配 421 道稳定编号代码练习（<code>E01-01</code> 至 <code>E17-16</code>）：其中第 1～13 章与附录 A、B 的 389 道汇总于<a href="research/05_exercises_and_audio.html">章节代码练习与音频实验</a>，第 16、17 章的 32 道分别见<a href="16_spatial-wearable-arrays.html#sec-16-11">专题Ⅲ §16.11</a>与<a href="17_target-extraction-diarization.html#sec-17-10">专题Ⅳ §17.10</a>，每道题均给出明确输入、运行入口与可核查数值结果。</p>
 <p><a id="audio-assets"></a></p>
 <p>仓库配套音频分为两类：除表格末行的 DEMAND 为真实自然环境多通道录音摘录外，其余 31 套均为受控数学模型生成的确定性合成音频（用于隔离单一物理因素、精确对比解析理论值与 16 位脉冲编码调制（Pulse-Code Modulation，PCM）量化读回值）。试听前请先调低耳机或扬声器音量；网页音频播放器默认不自动播放。下表列出全部 32 套音频资产的清单入口、文件数量与观察重点：</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
@@ -2054,7 +2054,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>[ ] 完成附录 B 综合练习（入门阶段建议先做第 2、3、5、7、10、11、14 题，进阶阶段再做第 6、8、12、13、16、17 题）。</li>
 <li>[ ] 对照附录 B §15.4 演练常见异常排查，并按第 10 章模板试着编制一份延迟、时钟同步与通道标定预算表。</li>
 </ul>
-<p>需要进一步动手演练四篇扩展专题的读者，声学成像的 20 道配套代码题与合成快拍音频实验见<a href="12_acoustic-imaging.html">扩展专题Ⅰ</a>及<a href="research/05_exercises_and_audio.html#sec-47-1">实验手册第 47 节</a>；分布式麦克风协同增强的 25 道配套代码题与多节点音频实验见<a href="13_distributed-enhancement.html">扩展专题Ⅱ</a>及<a href="research/05_exercises_and_audio.html#sec-48-1">实验手册第 48 节</a>。空间声场与可穿戴阵列的 16 道配套代码题及跨模态/通透合成音频实验（<code>wearable_audio</code>）见<a href="16_spatial-wearable-arrays.html#sec-16-11">扩展专题Ⅲ §16.11</a>；条件目标说话人提取与多通道会议说话人日志的 16 道配套代码题及近场距离气泡合成音频实验（<code>tse_audio</code>）见<a href="17_target-extraction-diarization.html#sec-17-8">扩展专题Ⅳ §17.8～§17.10</a>。</p>
+<p>需要进一步动手演练四篇扩展专题的读者，声学成像的 20 道配套代码题与合成快拍音频实验见<a href="12_acoustic-imaging.html">扩展专题Ⅰ</a>及<a href="research/05_exercises_and_audio.html#sec-47-1">实验手册第 47 节</a>；分布式麦克风协同增强的 27 道配套代码题与多节点音频实验见<a href="13_distributed-enhancement.html">扩展专题Ⅱ</a>及<a href="research/05_exercises_and_audio.html#sec-48-1">实验手册第 48 节</a>。空间声场与可穿戴阵列的 16 道配套代码题及跨模态/通透合成音频实验（<code>wearable_audio</code>）见<a href="16_spatial-wearable-arrays.html#sec-16-11">扩展专题Ⅲ §16.11</a>；条件目标说话人提取与多通道会议说话人日志的 16 道配套代码题及近场距离气泡合成音频实验（<code>tse_audio</code>）见<a href="17_target-extraction-diarization.html#sec-17-8">扩展专题Ⅳ §17.8～§17.10</a>。</p>
 <footer class="foot">麦克风阵列信号处理教程 · 静态站由 scripts/build_site.py 生成</footer>
 </main></div><a class="topbtn" href="#top" title="回顶部" aria-label="回到页面顶部">↑</a>
 <script>if(!navigator.onLine)document.getElementById('offnote').style.display='block';</script>

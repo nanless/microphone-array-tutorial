@@ -72,6 +72,7 @@
 1. **因果滑窗的结构延迟只取决于帧移与前瞻，而非历史窗长**：在稳态运行中，分析窗左半侧的 $N-H=384$ 个样本（$24\ \mathrm{ms}$）早已躺在历史环形缓冲区里。只要算法不偷看当前帧右边界之后的未来帧（零前瞻），每当新攒够 $H=128$ 个样本（$T_{\mathrm{hop}}=H/f_s=8\ \mathrm{ms}$），就能拼出完整的 $512$ 点因果窗完成一次 FFT、频域滤波、IFFT，并由重叠相加输出这批最新完成的 $128$ 个时域样本。
 
     因此，纯因果 WOLA 框架本身的帧步进结构等待是 $T_{\mathrm{hop}}=8\ \mathrm{ms}$，而不是 $32\ \mathrm{ms}$；只有当分析采用以当前点为中心的对称非因果窗，或神经网络掩码显式要求向右多看 $K_{\mathrm{look}}$ 个未来帧时，才会额外引入 $K_{\mathrm{look}}H/f_s$ 的算法前瞻等待。
+
 2. **声卡 DMA 块周期与算法帧移的公倍数拼接缓冲**：若底层音频驱动按 $B_{\mathrm{io}}=160$ 点（$10\ \mathrm{ms}$）的中断周期搬运样本，而频域前端按 $H=128$ 点（$8\ \mathrm{ms}$）步进，两者块长不整除，中间环形缓冲就会出现周期性余量等待（见练习 E10-08 的逐回调余量推演）；反之，若将驱动 DMA 周期设为 $128$ 点（$8\ \mathrm{ms}$）与帧移严格对齐，每次回调到达即可触发一次频域帧处理，省去跨块凑帧等待。
 
     这也解释了为什么把因果 STFT 的分析窗长从 $32\ \mathrm{ms}$ 砍到 $16\ \mathrm{ms}$ 并保持帧移 $8\ \mathrm{ms}$ 不变时，除了冷启动首帧填窗稍快一点外，稳态流式音频的端到端延迟一毫秒都不会减少——盲目缩短窗长反而会白白牺牲低频频率分辨率与混响覆盖能力。同理，在线先预测后更新的 WPE、递归协方差平滑、卡尔曼追踪状态与因果 AGC 的平滑记忆全都只读取过去帧，属于历史状态，绝不能当成未来前瞻加进延迟账本。
@@ -275,9 +276,11 @@ $$
 - **`libsamplerate`（`src_process`）**：比例定义为**“输出采样率 / 输入采样率”**（见 [`libsamplerate` 官方完整 API 文档](https://libsndfile.github.io/libsamplerate/api_full.html)）。当采集设备偏快 $100\ \mathrm{ppm}$ 时，向标准参考时钟对齐的比例应传 $1/1.0001\approx 0.99990001$；每次调用后必须检查结构体返回的实际已消费输入帧数与产出输出帧数，把尚未消费完的尾部输入留到下一块开头。
 
     本书运行的 [`libsamplerate` 两段已知频偏实验](../codes/chapters/ch00/research/03_industrial_deployment.md#i04libsamplerate-的有状态重采样)（前 $5\ \mathrm{s}$ 为 $+100\ \mathrm{ppm}$、后 $5\ \mathrm{s}$ 跳变为 $+150\ \mathrm{ppm}$）实测表明：未补偿组在 $1\text{～}9\ \mathrm{s}$ 内脉冲标记累积漂移 $16$ 帧，而按已知速率在线更新比例后该段残余漂移降为 $0$ 帧。
+
 - **估计—插值闭环与缺口隔离实验**：随仓脚本 [`sro_closed_loop_demo.py`](../codes/chapters/ch10/sro_closed_loop_demo.py) 把时间戳拟合与有状态分块插值串成完整闭环——参考率 $2000\ \mathrm{Hz}$，设备偏快 $150\ \mathrm{ppm}$、首样本迟到 $2\ \mathrm{ms}$，并在设备索引 $12000$ 处人为制造 $1$ 点丢样。前 $2\ \mathrm{s}$ 的 $9$ 个时间戳锚点满足 $t_n=0.002+n/2000.3\ \mathrm{s}$，线性回归准确分离出截距 $-2\ \mathrm{ms}$ 与斜率 $150\times 10^{-6}/(1+150\times 10^{-6})$（一阶值 $149.9775\ \mathrm{ppm}$，按式(10-4)精确反解还原 $150\ \mathrm{ppm}$），同时由时间戳差分单独捕获丢样缺口而不污染斜率。
 
     随后以 $257$ 点分块连续重采样，跨过缺口的参考索引 $12002$、$12003$ 被精确隔离为无效，缺口前 $6000$ 点与缺口后 $9000$ 点有效波形相对解析真值的均方误差分别从未校正的 $0.02869$、$0.02131$ 降至 $2.773\times 10^{-6}$ 与 $2.477\times 10^{-6}$。
+
 - **`libsoxr`（`soxr_set_io_ratio`）的比例反转注意**：切换到 `libsoxr` 时，其可变比率接口定义的却是**“输入采样率 / 输出采样率”**（见 [`libsoxr` 官方变比率示例 `5-variable-rate.c`](https://sourceforge.net/p/soxr/code/ci/945b592b70470e29f917f4de89b4281fbbd540c0/tree/examples/5-variable-rate.c)），同一个偏快 $100\ \mathrm{ppm}$ 的输入必须传入 $1.0001$ 而非 $0.99990001$，一旦按习惯传反就会让漂移翻倍恶化！
 
     在本书基于 `libsoxr 0.1.3` 的已知时钟变比率探针中（标称 $48\ \mathrm{kHz}$ 输入前 $5\ \mathrm{s}$ 快 $100\ \mathrm{ppm}$、后 $5\ \mathrm{s}$ 快 $150\ \mathrm{ppm}$ 共 $480060$ 帧，降采样至 $16\ \mathrm{kHz}$，在第 $80000$ 输出帧处用 $160$ 输出帧即 $10\ \mathrm{ms}$ 渐变切换新比率）：沿用旧比率输出 $160004$ 帧、第 $9\ \mathrm{s}$ 标记落在 $144005$，更新比率并排空尾部后恢复至 $160000$ 帧、第 $9\ \mathrm{s}$ 标记落在 $144002$（扣除滤波器固有的 $2$ 帧群延迟偏移后漂移归零），且 $127$ 帧流式分块与整段处理逐点吻合，立即跳变与 $160/320$ 帧平滑过渡的最大逐点幅差分别约为 $6.25\times 10^{-4}$ 与 $1.25\times 10^{-3}$（详细消费计数见 [`libsoxr` 比率渐变与输出延迟实验说明](../codes/chapters/ch00/research/03_industrial_deployment.md#i22libsoxr-的比率渐变与输出延迟)）。
@@ -860,6 +863,7 @@ $$
     $$
 
     都必然逼近于 $1$。倘若在语音活动段，唯独通道 $m$ 与周围**所有**其他通道在低频段的相干系数均趋近于 $0$，即便该通道能量看似正常，也可确证它吐出的是互不相关的电子热噪声、错位时钟乱码或重度非线性失真。
+
 4. **本机外放自检回声一致性判据（带扬声器设备的主动内建自测试）**：智能音箱、会议机与车机在开机提示音或日常外放期间天然拥有已知的数字播放参考信号，通过对比各麦克风与播放参考的归一化互相关峰值及 AEC 滤波器主抽头能量相对出厂黄金基线的偏移，无需外部声源即可在数秒内揪出灵敏度衰落或声孔封堵的异常阵元。
 
 一旦健康监控模块确诊某颗（或某几颗）麦克风失效并上报给控制层，紧接着就是致命的工程后半题：**千万不能图省事直接把故障麦克风通道数据清零（或把原波束权重向量里对应的那一项置零）了事！** 为什么直接置零会闯大祸？因为原 $M$ 通道自适应波束权重 $\vec{w}$ 是利用跨通道相消关系整体求出来的，满足整体无失真约束 $\vec{w}^H\vec{d}=1$；抠掉其中一个乘积项后，剩余健康通道上的旧权重之和完全可能严重偏离 $1$，甚至在极端情况下正负恰好相消变成 $0$，把目标语音彻底抹杀且乘多大后置增益都救不回来！
@@ -901,17 +905,13 @@ $$
 
 - **E10-01～E10-12 与 E10-14**（时钟偏移、迟滞门控、环形缓冲、队列截止期与定点算术）：运行 [`exercises_engineering.py`](../codes/chapters/ch00/cross_chapter/exercises_engineering.py)：
 
-    ```bash
-    .venv/bin/python -m codes.chapters.ch00.cross_chapter.exercises_engineering
-    ```
+        .venv/bin/python -m codes.chapters.ch00.cross_chapter.exercises_engineering
 
 - **E10-13、E10-15 与 E10-16～E10-17**：E10-13 对应单频点谱减脚本 [`spectral_subtraction_demo.py`](../codes/chapters/ch10/spectral_subtraction_demo.py)；E10-15 归口至时序状态脚本 [`tracking_time_exercises.py`](../codes/chapters/ch00/cross_chapter/tracking_time_exercises.py)；E10-16～E10-17 归口至边界语义脚本 [`engineering_boundary_exercises.py`](../codes/chapters/ch00/cross_chapter/engineering_boundary_exercises.py)。
 
 - **E10-18～E10-36**（增量 RTF、截断偏置、分块 AGC、MCRA 软更新、RIR 截尾、非抢占阻塞、噪声失配、坏麦子阵重构、PDM 抽取偏斜与 P.340/P.808 评测筛查）：统一运行 [`chapter10_experiments.py`](../codes/chapters/ch10/chapter10_experiments.py)：
 
-    ```bash
-    .venv/bin/python -m codes.chapters.ch10.chapter10_experiments
-    ```
+        .venv/bin/python -m codes.chapters.ch10.chapter10_experiments
 
 #### E10-01：把初始错位与 SRO 分开
 

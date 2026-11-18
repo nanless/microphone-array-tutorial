@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 16 章 · 空间声场与可穿戴阵列 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="04ceb7d1f09c"><style>
+<meta name="source-digest" content="c1e13cc91b8b"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -816,7 +816,7 @@ J_{\mathrm{MagLS}}(\vec w_e,\vec\phi)
 &=(1-\beta)\vec w_{\mathrm{R},\mathrm{BMVDR}}
 +\beta\vec e_{r_{\mathrm{R}}}.
 \end{aligned}\tag{16-21}$$</p>
-<p>先核验目标保真度：因为 $\vec w_{e,\mathrm{BMVDR}}^H \vec a = a_{r_e}$ 且原始参考麦满足 $\vec e_{r_e}^H \vec a = a_{r_e}$，对任意 $\beta \in [0, 1]$ 都有线性组合响应 $(1 - \beta)a_{r_e} + \beta a_{r_e} = a_{r_e}$，即 $\tilde{\vec w}_e^H(\beta)\vec a = a_{r_e}$——<strong>目标声源的双耳时间差与双耳声级差在任何混合比例下都严格无失真保留。</strong> 与此同时，只要 $\beta > 0$，$\vec e_{r_{\mathrm{L}}}$ 与 $\vec e_{r_{\mathrm{R}}}$ 线性无关，打破了共线秩一锁死。记单耳输出噪声方差为 $\sigma_{e,\mathrm{out}}^2(\beta)$（$e \in \{\mathrm{L}, \mathrm{R}\}$），跨耳噪声互协方差为 $r_{\mathrm{LR}}(\beta)$，定义归一化互相关模长为输出耳间相干度（注意此处取未平方模长 $\mathrm{IC}_{\mathrm{out}} \in [0, 1]$，其平方即<a href="05_beamforming.html#sec-5-5">第 5 章 §5.5</a> 式(5-14)定义的模平方耳间相干度，满足 $\mathrm{MSC}_{\mathrm{LR}}$ 等于 $\mathrm{IC}_{\mathrm{out}}^2$）：</p>
+<p>先核验目标保真度：因为 $\vec w_{e,\mathrm{BMVDR}}^H \vec a = a_{r_e}$ 且原始参考麦满足 $\vec e_{r_e}^H \vec a = a_{r_e}$，对任意 $\beta \in [0, 1]$ 都有线性组合响应 $(1 - \beta)a_{r_e} + \beta a_{r_e} = a_{r_e}$，即 $\tilde{\vec w}_e^H(\beta)\vec a = a_{r_e}$——<strong>目标声源的双耳时间差与双耳声级差在任何混合比例下都严格无失真保留。</strong> 与此同时，只要 $\beta > 0$，$\vec e_{r_{\mathrm{L}}}$ 与 $\vec e_{r_{\mathrm{R}}}$ 线性无关，打破了共线秩一锁死。记单耳输出噪声方差为 $\sigma_{e,\mathrm{out}}^2(\beta)$（$e \in \{\mathrm{L}, \mathrm{R}\}$），跨耳噪声互协方差为 $r_{\mathrm{LR}}(\beta)$，定义归一化互相关模长为输出耳间相干度（注意此处取未平方模长 $\mathrm{IC}_{\mathrm{out}} \in [0, 1]$，其平方即<a href="05_beamforming.html#sec-5-5">第 5 章 §5.5</a>定义的模平方耳间相干度，满足 $\mathrm{MSC}_{\mathrm{LR}}$ 等于 $\mathrm{IC}_{\mathrm{out}}^2$）：</p>
 <p>$$\begin{aligned}
 \sigma_{e,\mathrm{out}}^2(\beta)
 &=\tilde{\vec w}_e^H(\beta)\,\mathbf R_{nn}\,
@@ -858,7 +858,7 @@ r_{\mathrm{LR}}(\beta)
 <p>图 82 将 §16.5～§16.7 的高频双耳匹配与背景耳间相干度折中汇总在四幅子图中：</p>
 <ul>
 <li><strong>子图 (a) 双麦三方向手算算例幅度对比</strong>：横轴为端射 $+90^\circ$、正横 $0^\circ$、端射 $-90^\circ$ 三个离散方向，纵轴为无量纲合成幅度增益。在正横 $0^\circ$ 处，红色柱（BSM-LS）因目标反相冲突跌至 $0$，两侧端射也衰减至 $1/\sqrt{2} \approx 0.707$；而绿色柱（BSM-MagLS）经一步投影便与深灰目标柱在全部三个方向等高重合于 $1.0$。</li>
-<li><strong>子图 (b) $4\ \mathrm{kHz}$ 左耳（$+90^\circ$）全方位合成幅度方向图</strong>：横轴为水平方位角（$0^\circ$～$355^\circ$，步长 $5^\circ$ 共 $72$ 个方向），纵轴为幅度响应（单位：$\mathrm{dB}$）。实验模拟半径 $4\ \mathrm{cm}$ 的正交四麦圆环在正则化 $\lambda = 0.05$ 下拟合 $+90^\circ$ 左耳带头影幅度与跨头快速相移的目标耳响应（深灰实线）：红色虚线（BSM-LS）在以 $270^\circ$ 为中心的 $210^\circ$～$330^\circ$ 对侧头影相位缠绕区出现逾 $12\ \mathrm{dB}$ 的剧烈波纹凹陷，而绿色点划线（$25$ 轮 BSM-MagLS）平滑贴合目标声影包络。</li>
+<li><strong>子图 (b) $4\ \mathrm{kHz}$ 左耳（$+90^\circ$）全方位合成幅度方向图</strong>：横轴为水平方位角（$0^\circ$～$355^\circ$，步长 $5^\circ$ 共 $72$ 个方向），纵轴为幅度响应（单位：$\mathrm{dB}$）。实验模拟半径 $2.5\ \mathrm{cm}$ 的正交四麦圆环在正则化 $\lambda = 0.05$ 下拟合 $+90^\circ$ 左耳带头影幅度与跨头快速相移的目标耳响应（深灰实线）：红色虚线（BSM-LS）在以 $270^\circ$ 为中心的 $210^\circ$～$330^\circ$ 对侧头影相位缠绕区出现逾 $12\ \mathrm{dB}$ 的剧烈波纹凹陷，而绿色点划线（$25$ 轮 BSM-MagLS）平滑贴合目标声影包络。</li>
 <li><strong>子图 (c) BSM-MagLS 迭代目标单调下降曲线</strong>：横轴为交替相位投影迭代轮次 $t \in [1, 25]$，纵轴为子图 (b) 算例对应的正则化目标值 $J(\vec w, \vec\phi)$。蓝色折线验证了目标值在前 $10$ 轮内迅速下降、全程严格满足 $J^{(t+1)} \le J^{(t)}$ 并平稳收敛。</li>
 <li><strong>子图 (d) BMVDR 参考混合系数 $\beta$ 折中曲线</strong>：横轴为原始参考麦克风混合比例 $\beta \in [0, 1]$，纵轴为共用无量纲刻度。紫色实线及方框锚点（$\beta = 0, 0.2, 0.5, 1.0$）显示输出背景噪声耳间相干度 $\mathrm{IC}_{\mathrm{out}}(\beta)$ 从完全相干的 $1.0$ 平滑回落至真实环境值 $0.2$；橙色虚线绘制按 $2.5\ \mathrm{dB}$ 归一化的单耳信噪比增益（即 $\mathrm{SNR\ 增益}/2.5\ \mathrm{dB}$，$\beta = 0$ 处读数 $0.887$ 对应 $+2.22\ \mathrm{dB}$），直观展示小比例混合（如 $\beta \in [0.3, 0.5]$）可用很小的降噪代价换回显著的背景空间包围感。</li>
 </ul>
@@ -876,7 +876,7 @@ r_{\mathrm{LR}}(\beta)
 \end{aligned}\tag{16-23}$$</p>
 <p>其中 $\alpha_{\mathrm{long}} \approx 0.14$ 为流向衰减常数（横向垂直于流向时衰减更快，$\alpha_{\mathrm{lat}} \approx 0.7$）。把一组真实耳机参数 $d = 0.015\ \mathrm{m}$、$U_c = 3.0\ \mathrm{m/s}$、$c = 343\ \mathrm{m/s}$ 代入式(16-23)看 $f = 250\ \mathrm{Hz}$ 处的悬殊对比：声波无量纲相位积仅为 $2\pi fd / c \approx 0.0687\ \mathrm{rad}$，扩散声场相干度高达 $\gamma_{\mathrm{acoustic}} \approx 0.9992$（两麦上的环境声几乎同相一致）；而湍流对流相位积高达 $2\pi fd / U_c = 2.5\pi \approx 7.854\ \mathrm{rad}$，风噪相干度骤降至 $\gamma_{\mathrm{wind}}(250\ \mathrm{Hz}) \approx 0.333$，到 $1000\ \mathrm{Hz}$ 时更跌至 $0.012$，在两支近在咫尺的麦克风上已近似<strong>空间互不相关</strong>。</p>
 <span id="sec-30" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-df39003e3f">小孔径超指向性放大风噪的机理与检测门控</h3>
-<p>看清“风噪空间不相干”这一物理特性，就能理解<a href="05_beamforming.html#sec-5-3">第 5 章 §5.3 超指向波束（Superdirective Beamformer）</a> 在户外风中剧烈恶化的根源。在 $250\ \mathrm{Hz}$（声波波长 $1.37\ \mathrm{m}$）处，间距 $d = 1.5\ \mathrm{cm}$ 的双麦端射阵列若设计为一阶后向零陷心形差分（内延时 $\tau = d/c$，在后方 $180^\circ$ 形成零陷），前向差分的固有幅度响应仅为 $2\sin(\kappa d) \approx \frac{4\pi fd}{c}$，为了维持佩戴者嘴部方向单位增益，必须乘上 $1/[2\sin(\kappa d)]$（约等于 $\frac{c}{4\pi fd} \approx 7.3$ 倍，即 $+17.3\ \mathrm{dB}$）的均衡增益；而若采用零内延时的双麦偶极差分（在正横方向形成零陷），所需均衡增益更翻倍至 $\frac{c}{2\pi fd} \approx 14.6$ 倍（$+23.3\ \mathrm{dB}$）。对于空间高度相关的远场环境声，两麦相减能够有效抵消；然而对于近似互不相关的双麦风噪，两路相减先使噪声方差相加翻倍（$+3.0\ \mathrm{dB}$），再叠加上述一阶差分均衡放大，心形与偶极差分输出端的低频风噪功率反而比单支裸麦克风分别高出约 $+20.3\ \mathrm{dB}$ 与 $+26.3\ \mathrm{dB}$。</p>
+<p>看清“风噪空间不相干”这一物理特性，就能理解<a href="05_beamforming.html#sec-5-3">第 5 章 §5.3 超指向波束（Superdirective Beamformer）</a> 在户外风中剧烈恶化的根源。在 $250\ \mathrm{Hz}$（声波波长 $1.37\ \mathrm{m}$）处，间距 $d = 1.5\ \mathrm{cm}$ 的双麦端射阵列若设计为一阶后向零陷心形差分（内延时 $\tau = d/c$，在后方 $180^\circ$ 形成零陷），前向差分的固有幅度响应仅为 $2\sin(\kappa d) \approx \frac{4\pi fd}{c}$，为了维持佩戴者嘴部方向单位增益，必须乘上 $1/[2\sin(\kappa d)]$（约等于 $\frac{c}{4\pi fd} \approx 7.3$ 倍，即 $+17.2\ \mathrm{dB}$）的均衡增益；而若采用零内延时的双麦偶极差分（在正横方向形成零陷），所需均衡增益更翻倍至 $\frac{c}{2\pi fd} \approx 14.6$ 倍（$+23.3\ \mathrm{dB}$）。对于空间高度相关的远场环境声，两麦相减能够有效抵消；然而对于近似互不相关的双麦风噪，两路相减先使噪声方差相加翻倍（$+3.0\ \mathrm{dB}$），再叠加上述一阶差分均衡放大，心形与偶极差分输出端的低频风噪功率反而比单支裸麦克风分别高出约 $+20.3\ \mathrm{dB}$ 与 $+26.3\ \mathrm{dB}$。</p>
 <p>因此，商业耳机语音链路普遍配备基于<strong>低频跨麦相干度跌落与高能低频斜率</strong>的实时风噪检测器：一旦监测到 $50$～$500\ \mathrm{Hz}$ 子带的麦间实测相干度显著低于声学下界且能量突增，系统立即增大自适应波束的对角加载量（自动退化为正权延迟求和），或者将低频段话音拾取平滑切换给封闭耳道内的跨模态传感器。</p>
 <span id="sec-31" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-16-9">16.9 气导麦克风与耳道闭塞内麦 / 骨导传感器的跨模态自语音融合</h2>
 <span id="sec-32" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-d4e886693e">耳道闭塞效应（Occlusion Effect）与高频骨导衰减特性</h3>
@@ -1082,8 +1082,8 @@ E(\Delta\phi)
 <p><strong>解答。</strong> 由 §16.6 手算得 $(\mathbf H\mathbf H^H)^{-1}$ 对角元为 $3/8$、非对角元为 $-1/8$，右端项 $\mathbf H\vec p_e^* = [1, -1]^\top$，故 $\vec w_{\mathrm{LS}} = [0.5, -0.5]^\top$。三方向合成复响应依次为 $(1 - \mathrm{j})/2$、$0$ 与 $(1 + \mathrm{j})/2$，正横 $0^\circ$ 方向幅度严格跌落至 $0$。三方向复误差模平方依次为 $0.5, 1.0, 0.5$，算术平均复均方误差为 $2/3 \approx 0.666667$；归一化幅度均方误差为 $\frac{4 - 2\sqrt{2}}{3} \approx 0.390524$。</p>
 <p><a id="e16-08"></a></p>
 <span id="sec-49" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-66f1d99a44">E16-08：BSM-MagLS 交替相位投影一步精确恢复与目标单调性验证</h3>
-<p><strong>题目。</strong> （1）在 <a href="#e16-07">E16-07</a> 同一阵列上，从零相位初值出发执行 $1$ 步 BSM-MagLS 更新，验证其输出幅度与目标幅度完全一致；（2）在半径 $4\ \mathrm{cm}$ 四麦圆阵、$4\ \mathrm{kHz}$、$12$ 个等间隔水平方位角与正则化 $\lambda = 0.05$ 下运行 $25$ 轮 BSM-MagLS，核对目标序列单调不增且加权幅度误差显著低于 BSM-LS。</p>
-<p><strong>解答。</strong> （1）零初相下右端项为 $\mathbf H[1, 1, 1]^\top = [3, 1]^\top$，左乘 $(\mathbf H\mathbf H^H)^{-1}$ 得 $\vec w^{(1)} = [1, 0]^\top$，合成响应 $[1, 1, 1]^\top$，幅度均方误差一步归零。（2）调用 <code>chapter16_exercises</code> 的 <code>E16-08</code> 条目：四麦 $12$ 方向算例中 BSM-LS 的平均幅度均方误差约为 $0.2528$，而 $25$ 轮 BSM-MagLS 将其压低至约 $0.0256$（降低近一个数量级），且全部相邻迭代步满足 $J^{(t+1)} - J^{(t)} \le 0$。</p>
+<p><strong>题目。</strong> （1）在 <a href="#e16-07">E16-07</a> 同一阵列上，从零相位初值出发执行 $1$ 步 BSM-MagLS 更新，验证其输出幅度与目标幅度完全一致；（2）在半径 $2.5\ \mathrm{cm}$ 四麦圆阵、$4\ \mathrm{kHz}$、$12$ 个等间隔水平方位角与正则化 $\lambda = 0.05$ 下运行 $25$ 轮 BSM-MagLS，核对目标序列单调不增且加权幅度误差显著低于 BSM-LS。</p>
+<p><strong>解答。</strong> （1）零初相下右端项为 $\mathbf H[1, 1, 1]^\top = [3, 1]^\top$，左乘 $(\mathbf H\mathbf H^H)^{-1}$ 得 $\vec w^{(1)} = [1, 0]^\top$，合成响应 $[1, 1, 1]^\top$，幅度均方误差一步归零。（2）调用 <code>chapter16_exercises</code> 的 <code>E16-08</code> 条目：四麦 $12$ 方向算例中 BSM-LS 的平均幅度均方误差约为 $0.2441$，而 $25$ 轮 BSM-MagLS 将其压低至约 $0.0005$（最大方向幅度偏差仅约 $0.34\ \mathrm{dB}$），且全部相邻迭代步满足 $J^{(t+1)} - J^{(t)} \le 0$。</p>
 <p><a id="e16-09"></a></p>
 <span id="sec-50" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-b9fd40787f">E16-09：BSM 方向加权矩阵与 Tikhonov 正则化权衡</h3>
 <p><strong>题目。</strong> 在式(16-19)模型中，若将方向权重改为优先保护正前方正横 $0^\circ$ 的 $\mathbf W_\Omega = \operatorname{diag}(1, 4, 1)$，分别在 $\lambda = 0$ 与 $\lambda = 2.0$ 下求 BSM-LS 权重 $\vec w$、权重范数平方 $\|\vec w\|_2^2$（白噪声放大指标）及正前方合成幅度 $|\hat p_2|$。</p>

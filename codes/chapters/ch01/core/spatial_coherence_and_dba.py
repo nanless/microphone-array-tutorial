@@ -56,8 +56,8 @@ def hermitian_psd_sqrt_coloring(
     Validates finite 2-D square numeric input, checks relative Hermitian symmetry
     within ``hermitian_rtol``, computes ``np.linalg.eigh`` on the symmetrized matrix,
     rejects genuinely negative eigenvalues ``< -psd_rtol * max_scale`` with
-    ``np.linalg.LinAlgError``, clamps tiny round-off negatives in
-    ``[-psd_rtol * max_scale, 0)`` to ``0.0``, and returns eigenvalues, numerical
+    ``np.linalg.LinAlgError``, clamps near-zero eigenvalues in
+    ``[-psd_rtol * max_scale, psd_rtol * max_scale]`` to ``0.0``, and returns eigenvalues, numerical
     rank, Hermitian square-root matrix, and reconstruction error.
     """
     h_tol = _finite_real_scalar(hermitian_rtol, "hermitian_rtol")

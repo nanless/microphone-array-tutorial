@@ -17,7 +17,9 @@ Start with multichannel recordings and array geometry. Work through localization
 
 Halfway through a call, someone at the far end of the table asks, “Can you hear me?” In your headphones you get half a sentence, some keystrokes, and an echo of what you just said. Those sounds pile up, but they give the device different clues.
 
-Separate the four raw recordings. The voice reaches the nearest microphone first and the farthest one later. **To find the speaker**, slide the recordings and measure how far apart they are. **To listen toward them**, use that offset to line up the voice before averaging the channels. Your own words can echo back if the remote loudspeaker plays them and the microphones pick them up again. In that case the device has another clue: it knows what it just played.
+Separate the four raw recordings. The voice reaches the nearest microphone first and the farthest one later.
+
+**To find the speaker**, slide the recordings and measure how far apart they are. **To listen toward them**, use that offset to line up the voice before averaging the channels. Your own words can echo back if the remote loudspeaker plays them and the microphones pick them up again. In that case the device has another clue: it knows what it just played.
 
 This book starts with what you can hear. At each step, ask what signals you have, what they can tell you, and when they might lead you astray.
 

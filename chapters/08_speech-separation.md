@@ -572,7 +572,7 @@ $$\begin{aligned}
 
 $\mathbf R_{\mathrm{tar}}$ 的非对角元 $+0.8$ 清晰反映了目标同相占优，其最大特征值 $1.8$ 对应的主特征向量（按第 $1$ 麦归一）给出估计相对传递函数 $\vec v=[1,1]^\top$；而 $\vec v$ 恰好又是干扰矩阵 $\mathbf R_{\mathrm{int}}$ 对应最小特征值 $0.2$ 的特征向量，故 $\mathbf R_{\mathrm{int}}^{-1}\vec v=5\vec v$，归一化分母为 $\vec v^H(5\vec v)=10$，一步算出 MVDR 权重 $\vec w=[0.5,\ 0.5]^\top$——它对目标同相快照输出 $1$，对反相干扰快照精确输出 $0$！（完整特征值与 GEV 对比见练习 [E08-10](#e08-10)）。
 
-同时也要清楚“主特征向量提取 RTF”的失效边界：只有当 $\mathbf R_{\mathrm{tar}}$ 接近秩一目标外积 $\phi\vec a\vec a^H$ 时主特征向量才对准真实 $\vec a$。若掩码混入强各向异性干扰，例如真实 $\vec a=[1,1]^\top$ 而污染后的目标矩阵变成 $\vec a\vec a^H+\operatorname{diag}(0,3)$，主特征向量就会被掰歪到 $[1,\ (3+\sqrt{13})/2]^\top\approx[1,\ 3.3028]^\top$，导致 MVDR 对真实目标的增益跌至约 $0.3613$！
+同时也要清楚“主特征向量提取 RTF”的失效边界：只有当 $\mathbf R_{\mathrm{tar}}$ 接近秩一目标外积 $\phi\vec a\vec a^H$ 时主特征向量才对准真实 $\vec a$。若掩码混入强各向异性干扰，例如真实 $\vec a=[1,1]^\top$ 而污染后的目标矩阵变成 $\vec a\vec a^H+\operatorname{diag}(0,3)$，主特征向量就会被掰歪到 $[1,\ (3+\sqrt{13})/2]^\top\approx[1,\ 3.3028]^\top$，在空间白噪声协方差 $\mathbf R_{\mathrm{int}}=\mathbf I_2$ 下在空间白噪声协方差 $\mathbf R_{\mathrm{int}}=\mathbf I_2$ 下在空间白噪声协方差 $\mathbf R_{\mathrm{int}}=\mathbf I_2$ 下导致 MVDR 对真实目标的增益跌至约 $0.3613$！
 
 #### 8.4.5 可运行的 cACGMM—SCM—MVDR 受控链
 
@@ -1315,17 +1315,18 @@ $$\begin{aligned}
 
 1. **原参数下的完整代价**：二次型项为 $1/4+1/3=7/12$，对数方差和为 $\ln 4+\ln 3=\ln 12$，雅可比项为 $-2\ln|\det{\mathbf Q}|=-2\ln 1=0$，三项相加得
 
-$$J=\frac{7}{12}+\ln 12\approx3.068240.$$
+    $$J=\frac{7}{12}+\ln 12\approx3.068240.$$
 
 2. **等价尺度重参数化**：令 ${\mathbf Q}'=2{\mathbf Q}$，则变换域观测变为 ${\vec z}'=2{\vec z}=[2,2]^\top$，同时令对角方差同步放大 $4$ 倍为 ${\vec d}'=4{\vec d}=[16,12]^\top$。还原回原麦克风域的物理总协方差矩阵检查：
 
-$$\begin{aligned}
-{\mathbf Q}'^{-1}\operatorname{diag}({\vec d}'){\mathbf Q}'^{-H}
-&={\mathbf Q}^{-1}\operatorname{diag}({\vec d}){\mathbf Q}^{-H}
-=\begin{bmatrix}7&3\\3&3\end{bmatrix},
-\end{aligned}$$
+    $$\begin{aligned}
+    {\mathbf Q}'^{-1}\operatorname{diag}({\vec d}'){\mathbf Q}'^{-H}
+    &={\mathbf Q}^{-1}\operatorname{diag}({\vec d}){\mathbf Q}^{-H}
+    =\begin{bmatrix}7&3\\3&3\end{bmatrix},
+    \end{aligned}$$
 
-物理观测分布分毫未变！逐项核对式(8-14)中的三笔账：二次型变为 $4/16+4/12=7/12$（保持不变），对数方差项变为 $\ln 16+\ln 12=\ln 12+2\ln 4$（增加了 $2\ln 4$），而 $2\times2$ 行列式变为 $\det{\mathbf Q}'=2^2\det{\mathbf Q}=4$，使雅可比项 $-2\ln|\det{\mathbf Q}'|=-2\ln 4$ 恰好把多出来的 $2\ln 4$ 分毫不差地抵消，完整目标函数保持 $3.068240$ 不变。
+    物理观测分布分毫未变！逐项核对式(8-14)中的三笔账：二次型变为 $4/16+4/12=7/12$（保持不变），对数方差项变为 $\ln 16+\ln 12=\ln 12+2\ln 4$（增加了 $2\ln 4$），而 $2\times2$ 行列式变为 $\det{\mathbf Q}'=2^2\det{\mathbf Q}=4$，使雅可比项 $-2\ln|\det{\mathbf Q}'|=-2\ln 4$ 恰好把多出来的 $2\ln 4$ 分毫不差地抵消，完整目标函数保持 $3.068240$ 不变。
+
 3. **漏掉雅可比项的灾难**：倘若在优化目标中省掉 $-2\ln|\det{\mathbf Q}|$，上述完全等价的参数缩放会让错误目标凭空暴涨 $2\ln 4\approx2.772589$；反过来只要优化器不断把 ${\mathbf Q}$ 和 ${\vec d}$ 往零缩，就能在完全不改善物理分离的前提下把错误损失刷向 $-\infty$。
 
 <a id="e08-27"></a>

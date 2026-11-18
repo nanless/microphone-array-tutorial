@@ -428,7 +428,7 @@ def _build_fig87(sources: dict[str, str], manifest_sha: str) -> None:
         ylabel="DER 分量占比 / %",
         xticks=x_pos,
         xticklabels=["单标签\n下界", "含混淆\n双簇", "过触发\n(>100%)", "空谱联合\nTS-VAD"],
-        ylim=(0.0, 158.0),
+        ylim=(0.0, 172.0),
     )
     axes[0, 1].legend(ncol=2, loc="upper left")
 

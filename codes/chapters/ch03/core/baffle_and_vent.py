@@ -43,7 +43,8 @@ def _spherical_jn_scalar(n: int, x: float) -> float:
         if abs(vals[m - 1]) > 1e100:
             vals[: m + 1] *= 1e-100
     j0_exact = math.sin(x) / x
-    scale = j0_exact / vals[0]
+    j1_exact = math.sin(x) / (x * x) - math.cos(x) / x
+    scale = (j0_exact / vals[0]) if abs(j0_exact) >= abs(j1_exact) else (j1_exact / vals[1])
     return float(vals[n] * scale)
 
 

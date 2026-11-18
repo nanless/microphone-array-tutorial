@@ -202,12 +202,13 @@ class ResearchBuildTest(unittest.TestCase):
         for width in (22, 3, 18):
             self.assertEqual(table.group(2).count(f'--tutorial-column-width:{width}em'), 6)
 
-    def test_explicit_page_map_has_16_tutorial_4_legacy_and_6_research_pages(self):
+    def test_explicit_page_map_has_18_tutorial_4_legacy_and_6_research_pages(self):
         paths = list(build_site.source_outputs().values())
-        self.assertEqual(len(paths), 26)
+        self.assertEqual(len(paths), 28)
         self.assertEqual(sum(path.startswith("research/") for path in paths), 6)
         self.assertTrue({"14_acoustic-imaging.html", "15_distributed-enhancement.html",
-                         "12_appendix-symbols-math.html", "13_appendix-guide.html"}
+                         "12_appendix-symbols-math.html", "13_appendix-guide.html",
+                         "16_spatial-wearable-arrays.html", "17_target-extraction-diarization.html"}
                         <= set(paths))
         self.assertEqual(build_site.source_outputs()[RESEARCH / "README.md"], "research/index.html")
 
@@ -468,7 +469,7 @@ class ResearchBuildTest(unittest.TestCase):
                 parser = Links()
                 parser.feed(path.read_text(encoding="utf-8"))
                 pages[path.resolve()] = parser
-            self.assertEqual(len(pages), 26)
+            self.assertEqual(len(pages), 28)
             home = pages[(output / "index.html").resolve()]
             case_audio = {src for src in home.audio if src.startswith("../assets/readme/cases/locata/")}
             self.assertEqual(case_audio, {f"../assets/readme/cases/locata/{name}" for name in
@@ -548,7 +549,9 @@ class ResearchBuildTest(unittest.TestCase):
                                              (output / "scenario_audio").resolve(),
                                              (output / "weighted_audio").resolve(),
                                              (output / "response_audio").resolve(),
-                                             (output / "distributed_audio").resolve()}:
+                                             (output / "distributed_audio").resolve(),
+                                             (output / "wearable_audio").resolve(),
+                                             (output / "tse_audio").resolve()}:
                             owner = {"gss_audio": "ch08", "moving_audio": "ch09",
                                      "tracking_audio": "ch09", "binaural_audio": "ch01", "spectral_audio": "ch01", "stft_audio": "ch02", "sweep_audio": "ch02",
                                      "geometry_audio": "ch03", "baseline_audio": "ch03", "reflection_audio": "ch04", "focus_audio": "ch04", "derivative_audio": "ch05", "phase_audio": "ch05",
@@ -556,7 +559,7 @@ class ResearchBuildTest(unittest.TestCase):
                                      "apa_audio": "ch06", "reference_audio": "ch06", "delay_audio": "ch07", "css_audio": "ch08", "mint_audio": "ch07", "mask_audio": "ch08",
                                      "noise_audio": "ch10", "channel_audio": "ch10", "scenario_audio": "ch11",
                                      "weighted_audio": "appendix_a", "response_audio": "appendix_b",
-                                     "distributed_audio": "ch13"}[target.parent.name]
+                                     "distributed_audio": "ch13", "wearable_audio": "ch16", "tse_audio": "ch17"}[target.parent.name]
                             if target.parent.name == "apa_audio":
                                 self.assertIn(target.name, apa_names)
                                 apa_links.add(target.name)

@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 6 章 · 声学回声消除（AEC） · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="04ceb7d1f09c"><style>
+<meta name="source-digest" content="c1e13cc91b8b"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -759,10 +759,14 @@ e_m[r]&=d_m[r]-\hat y_m[r].
 <p>现在用重叠保存分区卷积逐块复算：</p>
 <ol>
 <li><strong>第 $m=0$ 块（输出时刻 $n=0,1$）</strong>：将两点历史零与新块 $[1,2]$ 拼成四点输入 $u_0=[0,0,1,2]$，与补零后的首分区 $[1,2,0,0]$ 作四点循环卷积得 $[0,0,1,4]$；此时前一块历史谱 $X_{-1}$ 为零，丢弃前两点 $[0,0]$，保留后两点得 $\hat y_0=[1,4]$，与真值前两拍完全吻合。</li>
-<li><strong>第 $m=1$ 块（输出时刻 $n=2,3$）</strong>：将上块 $[1,2]$ 与新块 $[3,4]$ 拼成 $u_1=[1,2,3,4]$。
-   - 首分区支路（$p=0$）：若将 $u_1=[1,2,3,4]$ 与未补零的 $[1,2]$ 做完整五点线性卷积，结果为 $[1,4,7,10,8]$；在长度 $4$ 上做循环卷积时，第 $5$ 点末尾值 $8$ 会折回加到第 $0$ 点上（$1+8=9$），变成 $[9,4,7,10]$。可见第 $0$ 点已被循环混叠污染，第 $1$ 点虽未混叠但属于上一块时刻，把前两点 $[9,4]$ 一并丢弃，后两点 $[7,10]$ 干净无损。
-   - 第二分区支路（$p=1$）：读取<strong>上一块</strong>输入 $u_0=[0,0,1,2]$ 与补零后的第二分区 $[3,4,0,0]$ 作四点循环卷积得 $[8,0,3,10]$（末尾 $2\times 4=8$ 折回到第 $0$ 点），同样丢弃前两点 $[8,0]$，取出有效后两点 $[3,10]$。
-   - 两支路有效半块相加：$[7,10]+[3,10]=[10,20]$，与时域直接卷积真值丝毫不差！倘若第二分区误读当前块 $u_1$，或者误把循环卷积前两点留作输出，结果都会立即出错。</li>
+<li>
+<p><strong>第 $m=1$ 块（输出时刻 $n=2,3$）</strong>：将上块 $[1,2]$ 与新块 $[3,4]$ 拼成 $u_1=[1,2,3,4]$。</p>
+<ul>
+<li>首分区支路（$p=0$）：若将 $u_1=[1,2,3,4]$ 与未补零的 $[1,2]$ 做完整五点线性卷积，结果为 $[1,4,7,10,8]$；在长度 $4$ 上做循环卷积时，第 $5$ 点末尾值 $8$ 会折回加到第 $0$ 点上（$1+8=9$），变成 $[9,4,7,10]$。可见第 $0$ 点已被循环混叠污染，第 $1$ 点虽未混叠但属于上一块时刻，把前两点 $[9,4]$ 一并丢弃，后两点 $[7,10]$ 干净无损。</li>
+<li>第二分区支路（$p=1$）：读取<strong>上一块</strong>输入 $u_0=[0,0,1,2]$ 与补零后的第二分区 $[3,4,0,0]$ 作四点循环卷积得 $[8,0,3,10]$（末尾 $2\times 4=8$ 折回到第 $0$ 点），同样丢弃前两点 $[8,0]$，取出有效后两点 $[3,10]$。</li>
+<li>两支路有效半块相加：$[7,10]+[3,10]=[10,20]$，与时域直接卷积真值丝毫不差！倘若第二分区误读当前块 $u_1$，或者误把循环卷积前两点留作输出，结果都会立即出错。</li>
+</ul>
+</li>
 </ol>
 <p><strong>PBFDAF 的频域更新式。</strong> 记第 $m$ 块、频点 $k$ 处由零填充有效残差 $[0_N,e_m]$ 变换得到的先验误差谱为 $E_m=E(k,m)$，$\mu$ 为块步长，$\delta>0$ 为防止静音除零的功率地板。在固定频点 $k$ 上按全部 $P$ 个分区的参考功率总和作归一化，可得<strong>投影前候选权重</strong>更新式：</p>
 <p>$$\begin{aligned}
@@ -885,10 +889,16 @@ J_m&=\frac{1}{2}\|\vec e_m\|_2^2,\\
 <p><strong>接续算例 6-3：两块自适应更新如何剔除非法抽头。</strong> 取 $N=P=2$（$L=4$）、$\mu=0.5$、$\delta=1$，初始权重与负时刻参考全零，给定测试序列 $x=[1,0,0,0]$、$d=[1,0,2,0]$（配套代码见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/aec_partitioned_demo.py"><code>aec_partitioned_demo.py</code></a> 与测试 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/tests/test_codes_aec_partitioned.py"><code>test_codes_aec_partitioned.py</code></a>）：</p>
 <ol>
 <li><strong>第 $m=0$ 块</strong>：重叠输入 $u_0=[0,0,1,0]$ 的四点 FFT 为 $X_0=[1,-1,1,-1]$；旧权重为零，有效误差 $e_0=[1,0]$ 补零变换得 $E_0=[1,-1,1,-1]=X_0$，各频点分母 $|X_0|^2+\delta=1+1=2$。按式(6-5)得首分区频域增量 $\Delta W_{0,0}=0.5\times X_0^*\odot E_0/2$，算得 $[0.25,0.25,0.25,0.25]$，IFFT 回时域恰为 $[0.25,0,0,0]$（后两点本就为零）；第二分区因 $X_{-1}=\vec 0$ 保持全零。</li>
-<li><strong>第 $m=1$ 块</strong>：新采样全零，但拼接输入为 $u_1=[1,0,0,0]$，故 $X_1=[1,1,1,1]$，历史谱 $X_0=[1,-1,1,-1]$ 仍在缓存中。先验预测为零，有效误差 $e_1=[2,0]$ 补零变换得 $E_1=[2,-2,2,-2]$，各频点分母为 $|X_1|^2+|X_0|^2+\delta=1+1+1=3$。
-   - 首分区（$p=0$）：$X_1^*\odot E_1=[2,-2,2,-2]$，乘 $\mu/3=1/6$ 得增量 $[1/3,-1/3,1/3,-1/3]$，其四点 IFFT 为 $[0,0,1/3,0]$；叠加上一块的 $[0.25,0,0,0]$ 后，首分区候选时域序列变为 $[0.25,0,1/3,0]$！
-   - 第二分区（$p=1$）：$X_0^*\odot E_1=[2,2,2,2]$，乘 $1/6$ 后作四点 IFFT 得候选序列 $[1/3,0,0,0]$。</li>
-<li><strong>为什么要清零后半段？</strong> 看首分区候选 $[0.25,0,1/3,0]$ 的第 $2$ 号位置（从 $0$ 起计，即第 $3$ 个元素 $1/3$）：它代表首分区内的滞后 $2$，而第二分区的合法首抽头 $[1/3,0,0,0]$ 同样代表整条路径的滞后 $2$！若不执行时域梯度约束把首分区后两点清零，同一个物理滞后就会被两个分区重复表达，且首分区的非法第 $2$ 号位在下一次块循环卷积中还会破坏重叠保存假设。执行逐分区后 $N$ 点清零后，两分区合法抽头拼接为 $[0.25,0\mid 1/3,0]$，恢复唯一的四抽头 FIR 物理含义。</li>
+<li>
+<p><strong>第 $m=1$ 块</strong>：新采样全零，但拼接输入为 $u_1=[1,0,0,0]$，故 $X_1=[1,1,1,1]$，历史谱 $X_0=[1,-1,1,-1]$ 仍在缓存中。先验预测为零，有效误差 $e_1=[2,0]$ 补零变换得 $E_1=[2,-2,2,-2]$，各频点分母为 $|X_1|^2+|X_0|^2+\delta=1+1+1=3$。</p>
+<ul>
+<li>首分区（$p=0$）：$X_1^*\odot E_1=[2,-2,2,-2]$，乘 $\mu/3=1/6$ 得增量 $[1/3,-1/3,1/3,-1/3]$，其四点 IFFT 为 $[0,0,1/3,0]$；叠加上一块的 $[0.25,0,0,0]$ 后，首分区候选时域序列变为 $[0.25,0,1/3,0]$！</li>
+<li>第二分区（$p=1$）：$X_0^*\odot E_1=[2,2,2,2]$，乘 $1/6$ 后作四点 IFFT 得候选序列 $[1/3,0,0,0]$。</li>
+</ul>
+</li>
+<li>
+<p><strong>为什么要清零后半段？</strong> 看首分区候选 $[0.25,0,1/3,0]$ 的第 $2$ 号位置（从 $0$ 起计，即第 $3$ 个元素 $1/3$）：它代表首分区内的滞后 $2$，而第二分区的合法首抽头 $[1/3,0,0,0]$ 同样代表整条路径的滞后 $2$！若不执行时域梯度约束把首分区后两点清零，同一个物理滞后就会被两个分区重复表达，且首分区的非法第 $2$ 号位在下一次块循环卷积中还会破坏重叠保存假设。执行逐分区后 $N$ 点清零后，两分区合法抽头拼接为 $[0.25,0\mid 1/3,0]$，恢复唯一的四抽头 FIR 物理含义。</p>
+</li>
 </ol>
 <h3 id="sec-u-b4bfa3ef6a">算例 6-4：逐频归一化为什么不等于时域 NLMS</h3>
 <p><strong>输入与口径</strong>：取单分区 $N=2$、$P=1$、零初值、$\mu=\delta=1$，当前重叠保存输入 $u=[0,0,1,2]$，有效麦克风块 $d=[1,0]$（故有效先验误差 $e=[1,0]$，补零后为 $[0,0,1,0]$）。按正向 DFT 负指数 $e^{-\mathrm{j}2\pi kr/4}$、逆变换除以 $4$ 的标准约定，逐频点计算 $X(k)$、$E(k)$、功率分母 $|X(k)|^2+1$ 与候选增量 $\Delta W(k)=X^*(k)E(k)/(|X(k)|^2+1)$：</p>
@@ -1796,11 +1806,17 @@ E_e&=\sum_{n\in\mathcal W}|e_{\mathrm{echo}}[n]|^2,\\
 <ul>
 <li><strong>多带分块与播放参考缓冲（<code>RenderBuffer</code>）</strong>：外部每 $10\ \mathrm{ms}$ 送入一帧音频，内部拆分为 $64$ 样本子块推进，并将远端播放信号存入环形历史缓冲区 <code>RenderBuffer</code>，同时服务于大范围延迟搜索与频域分区卷积；</li>
 <li><strong>降采样匹配滤波延迟估计</strong>：<a href="https://webrtc.googlesource.com/src/+/0467d2b91cc20b9b001c2bbb73d43ea6b2491f3e/modules/audio_processing/aec3/echo_path_delay_estimator.cc"><code>echo_path_delay_estimator.cc</code></a> 对降采样后的播放与采集流运行一组并行的时域匹配滤波器，由滞后汇总器（lag aggregator）统计稳定峰值位置，再交由 <a href="https://webrtc.googlesource.com/src/+/0467d2b91cc20b9b001c2bbb73d43ea6b2491f3e/modules/audio_processing/aec3/block_processor.cc"><code>block_processor.cc</code></a> 动态拨动 <code>RenderBuffer</code> 的读取偏移指针（注意这一步专门解决宏观纯延迟对齐，与下文两套消除滤波器的系数更新各司其职）；</li>
-<li><strong>主滤波器（<code>refined</code>）与阴影滤波器（<code>coarse</code>）的双向协同闭环</strong>：为什么 <a href="https://webrtc.googlesource.com/src/+/0467d2b91cc20b9b001c2bbb73d43ea6b2491f3e/modules/audio_processing/aec3/subtractor.cc"><code>subtractor.cc</code></a> 与 <a href="https://webrtc.googlesource.com/src/+/0467d2b91cc20b9b001c2bbb73d43ea6b2491f3e/modules/audio_processing/aec3/echo_remover.cc"><code>echo_remover.cc</code></a> 要在同一条对齐参考上并行维护两套分区块频域自适应滤波器？这正是为了破解“双讲稳健性”与“路径突变敏捷性”的天然矛盾：
-  1. <strong>快慢增益分工</strong>：前台主滤波器（源码名 <code>refined</code>）采用保守的误差谱受控步长（<code>RefinedFilterUpdateGain</code>），根据近端干扰与噪声底估计严密压低双讲期更新幅度，确保稳态失调极低且不吞噬近端人声；后台阴影滤波器（源码名 <code>coarse</code>）则采用激进的类 NLMS 大步长（<code>CoarseFilterUpdateGain</code>），对新息变化高度敏感，专门充当探索路径突变的“侦察兵”；
-  2. <strong>突变时的正向扶正拷贝</strong>：当用户拿起设备、房门推开或声道切换引发真实回声路径突变时，主滤波器受保守门控限制跟进较慢，而大步长的阴影滤波器能在远端活跃期内率先锁定新路径并把残差 $e_{\mathrm{coarse}}$ 显著压到主残差 $e_{\mathrm{refined}}$ 之下；一旦该优势持续得到确认，系统不仅将线性输出平滑切向阴影支路，还把阴影滤波器的频域权重直接复制覆盖给主滤波器，助其一步跨越暂态；
-  3. <strong>双讲发散时的反向纠偏重置</strong>：阴影滤波器步长大，在激烈双讲中极易被近端人声带偏；一旦监测到阴影残差持续劣于主滤波器，<code>subtractor.cc</code> 便反过来拿稳如泰山的主滤波器系数覆盖重置阴影滤波器，并将其防泄漏状态拉回正轨（双讲过拟合拦截与三态切换门控见练习 <a href="#e06-44">E06-44</a>）；此外若检测到播放或采集饱和削顶标志，两套增益同步收紧以防非线性污染；</li>
-<li><strong>残余回声谱估计、频域抑制与舒适噪声</strong>：线性减法之后，残余回声估计器综合线性回声功率、混响衰减模型与滤波器收敛度估算未抵消回声谱，驱动频域抑制增益与舒适噪声生成器输出最终帧。</li>
+<li>
+<p><strong>主滤波器（<code>refined</code>）与阴影滤波器（<code>coarse</code>）的双向协同闭环</strong>：为什么 <a href="https://webrtc.googlesource.com/src/+/0467d2b91cc20b9b001c2bbb73d43ea6b2491f3e/modules/audio_processing/aec3/subtractor.cc"><code>subtractor.cc</code></a> 与 <a href="https://webrtc.googlesource.com/src/+/0467d2b91cc20b9b001c2bbb73d43ea6b2491f3e/modules/audio_processing/aec3/echo_remover.cc"><code>echo_remover.cc</code></a> 要在同一条对齐参考上并行维护两套分区块频域自适应滤波器？这正是为了破解“双讲稳健性”与“路径突变敏捷性”的天然矛盾：</p>
+<ol>
+<li><strong>快慢增益分工</strong>：前台主滤波器（源码名 <code>refined</code>）采用保守的误差谱受控步长（<code>RefinedFilterUpdateGain</code>），根据近端干扰与噪声底估计严密压低双讲期更新幅度，确保稳态失调极低且不吞噬近端人声；后台阴影滤波器（源码名 <code>coarse</code>）则采用激进的类 NLMS 大步长（<code>CoarseFilterUpdateGain</code>），对新息变化高度敏感，专门充当探索路径突变的“侦察兵”；</li>
+<li><strong>突变时的正向扶正拷贝</strong>：当用户拿起设备、房门推开或声道切换引发真实回声路径突变时，主滤波器受保守门控限制跟进较慢，而大步长的阴影滤波器能在远端活跃期内率先锁定新路径并把残差 $e_{\mathrm{coarse}}$ 显著压到主残差 $e_{\mathrm{refined}}$ 之下；一旦该优势持续得到确认，系统不仅将线性输出平滑切向阴影支路，还把阴影滤波器的频域权重直接复制覆盖给主滤波器，助其一步跨越暂态；</li>
+<li><strong>双讲发散时的反向纠偏重置</strong>：阴影滤波器步长大，在激烈双讲中极易被近端人声带偏；一旦监测到阴影残差持续劣于主滤波器，<code>subtractor.cc</code> 便反过来拿稳如泰山的主滤波器系数覆盖重置阴影滤波器，并将其防泄漏状态拉回正轨（双讲过拟合拦截与三态切换门控见练习 <a href="#e06-44">E06-44</a>）；此外若检测到播放或采集饱和削顶标志，两套增益同步收紧以防非线性污染；</li>
+</ol>
+</li>
+<li>
+<p><strong>残余回声谱估计、频域抑制与舒适噪声</strong>：线性减法之后，残余回声估计器综合线性回声功率、混响衰减模型与滤波器收敛度估算未抵消回声谱，驱动频域抑制增益与舒适噪声生成器输出最终帧。</p>
+</li>
 </ul>
 <p><strong>如何在线导出 AEC3 的内部线性残差？</strong> 调测混合式或工业引擎时，切忌只盯着 NLP 压完后的最终输出盲调。在 WebRTC 音频处理模块（APM，见公开头文件 <a href="https://webrtc.googlesource.com/src/+/0467d2b91cc20b9b001c2bbb73d43ea6b2491f3e/api/audio/audio_processing.h"><code>audio_processing.h</code></a>）中，将配置项 <code>EchoCanceller::export_linear_aec_output</code> 显式开启后，即可在每帧 <code>ProcessStream()</code> 之后调用 <code>GetLinearAecOutput()</code> 取出 $16\ \mathrm{kHz}$ 子带线性段波形（多通道配置下的缓冲区形状与返回布尔值检查详见<a href="research/03_industrial_deployment.html">工业部署研究手册</a>；另注意外部提示接口 <code>set_stream_delay_ms()</code> 会将越界请求截断在 $0$～$500\ \mathrm{ms}$ 并告警，排障时应核对实际生效值而非传入参数）。</p>
 <p><strong>异步缓冲队列欠载的经典假故障。</strong> 许多嵌入式团队集成 <a href="https://gitlab.xiph.org/xiph/speexdsp/-/blob/8e29a256ef0235ebbe7fcb8417b5ac7731eb8307/libspeexdsp/mdf.c">SpeexDSP 的 <code>mdf.c</code></a> 异步双线程接口 <code>speex_echo_playback()</code> / <code>speex_echo_capture()</code> 时，一上来发现完全没有回声抵消就急着改步长，殊不知当采集回调早于播放回调启动、或播放线程偶发抖动导致内部参考环形队列欠载（underrun）时，异步封装会直接把原始未抵消麦克风帧原样旁路吐出！因此上机联调前，务必先核查播放/采集回调先后次序、欠载计数器与多通道交织跨度（多麦或多扬声器通道映射核验应向各物理通道依次打入<strong>不同时刻</strong>的单脉冲，切忌所有声道同时灌入一模一样的测试音而漏检声道错位）。</p>
@@ -2473,28 +2489,28 @@ e_{\mathrm{a}}[n]
 <ol>
 <li>
 <p><strong>四个核心算术微实验</strong>（<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/aec_algorithm_minicases.py"><code>aec_algorithm_minicases.py</code></a>，对应单元测试 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/tests/test_codes_aec_minicases.py"><code>test_codes_aec_minicases.py</code></a>）：一次性输出 $N=2,P=2$ 重叠保存有效半块、两抽头 IPNLMS 比例分配、Geigel 多径误报与零参考门控、以及负极性路径使最大正相关峰选错延迟四组精确 JSON：</p>
-<p><code>bash
-.venv/bin/python -m codes.chapters.ch06.aec_algorithm_minicases</code></p>
+<pre><code>.venv/bin/python -m codes.chapters.ch06.aec_algorithm_minicases
+</code></pre>
 </li>
 <li>
 <p><strong>分区频域 PBFDAF 演示</strong>（核心见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/core/aec_partitioned.py"><code>core/aec_partitioned.py</code></a>，测试见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/tests/test_codes_aec_partitioned.py"><code>test_codes_aec_partitioned.py</code></a>）：串联式(6-4)～式(6-5)的重叠保存预测、前半块补零有效误差谱、逐频功率归一化与可选时域合法抽头清零投影，同时复现 §6.2.2 两块手算与算例 6-5 的纯音/宽带留出对照：</p>
-<p><code>bash
-.venv/bin/python -m codes.chapters.ch06.aec_partitioned_demo</code></p>
+<pre><code>.venv/bin/python -m codes.chapters.ch06.aec_partitioned_demo
+</code></pre>
 </li>
 <li>
 <p><strong>逐样本全矩阵 RLS 演示</strong>（核心见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/core/aec_rls.py"><code>core/aec_rls.py</code></a>）：维护逆相关矩阵与跨块参考历史（<code>freeze=True</code> 时同步暂停拟合与 $\lambda^{-1}$ 膨胀，仅推进参考滑窗），并同屏比对式(6-18)递推解与批量正规方程解：</p>
-<p><code>bash
-.venv/bin/python -m codes.chapters.ch06.aec_rls_demo</code></p>
+<pre><code>.venv/bin/python -m codes.chapters.ch06.aec_rls_demo
+</code></pre>
 </li>
 <li>
 <p><strong>时域全矩阵 Joseph 形式 Kalman 演示</strong>（核心见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/core/aec_kalman_matrix.py"><code>core/aec_kalman_matrix.py</code></a>）：按式(6-22)维护完整路径误差协方差矩阵（注意其 <code>freeze=True</code> 仅跳过麦克风观测修正，仍照常推进时间预测步 $\mathbf A\hat{\vec h}_{n-1}$ 与参考历史，故 $a\neq 1$ 时冻结并不等于权重静止），直观展示跨抽头负相关非对角元的生成过程：</p>
-<p><code>bash
-.venv/bin/python -m codes.chapters.ch06.aec_kalman_matrix_demo</code></p>
+<pre><code>.venv/bin/python -m codes.chapters.ch06.aec_kalman_matrix_demo
+</code></pre>
 </li>
 <li>
 <p><strong>单频点标量与复数共轭 Kalman 演示</strong>（<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/aec_kalman_scalar_demo.py"><code>aec_kalman_scalar_demo.py</code></a>，测试见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/tests/test_codes_aec_kalman_scalar_demo.py"><code>test_codes_aec_kalman_scalar_demo.py</code></a>）：逐项复算式(6-21)的实数单讲、纯虚参考谱共轭方向与双讲高观测方差软门控：</p>
-<p><code>bash
-.venv/bin/python -m codes.chapters.ch06.aec_kalman_scalar_demo</code></p>
+<pre><code>.venv/bin/python -m codes.chapters.ch06.aec_kalman_scalar_demo
+</code></pre>
 </li>
 </ol>
 <p>在指标核算函数 <code>erle_db()</code> 中，除通过 <code>double_talk_mask</code> 剔除双讲区间外，调用方还须通过 <code>valid_mask</code> 排除初始收敛过渡段、近端单讲段与静音段。函数要求有效统计窗内的输入均方严格大于能量门槛 <code>epsilon</code>（例如默认 <code>epsilon=1e-15</code> 时，幅度 $10^{-8}$、均方 $10^{-16}$ 的微弱信号会被当作无效静音拒绝打分），达标后在分子与分母均方上各加 <code>epsilon</code> 求对数比，因此零残差理想抵消返回的是由地板决定的有限分贝数而非浮点无穷大（回归测试套件见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/tests/test_codes_aec_wpe_sep_track.py"><code>tests/test_codes_aec_wpe_sep_track.py</code></a> 与 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/tests/test_codes_aec_streaming.py"><code>tests/test_codes_aec_streaming.py</code></a>）。</p>
@@ -3071,6 +3087,7 @@ R(t)&=\left|1-e^{-\mathrm{j}\phi(t)}\right|^2
 \mathbf P_2=\begin{bmatrix}1&2\\2&1\end{bmatrix}.$$</p>
 <p><strong>半正定性与数值校验边界</strong>：$\mathbf P_1$ 的特征值为 $2$ 和 $0$，属于合法的奇异半正定协方差矩阵（对应两随机变量完全相等，不能一见行列式为零就粗暴拒收）；而 $\mathbf P_2$ 虽然对角元全正（均为 $1$），特征值却是 $3$ 和 $-1$，取差模测试向量 $\vec z=[1,-1]^\top$ 立得二次型 $\vec z^\top\mathbf P_2\vec z=-2\lt 0$，意味着差模组合的方差为荒谬的负数！</p>
 <p>同样地，对极小尺度上三角非对称矩阵 $\mathbf P_3$（对角元与右上元均为 $10^{-20}$、左下元为 $0$，反对称分量与自身范数同阶，不能用绝对容差 $10^{-12}$ 放过）以及含真实负特征值的 $\mathbf P_4=\operatorname{diag}(-10^{-11},1)$，本书 <code>KalmanAECState</code>（固定两抽头、$a=1,Q=0,\Psi=1$）只接受合法半正定的 $\mathbf P_1$，而将其余三者全部明确拦截报错——数值校验切忌靠悄悄取绝对值或强行抹掉虚部来掩盖上游统计量计算错误。</p>
+<p><a id="e06-31"></a></p>
 <h3 id="sec-u-4aea4f8347">E06-31：块 ERLE 的 dB 均值等于整窗 ERLE 吗？</h3>
 <p>设连续两个有效远端单讲数据块的真实回声能量分别为 $[1,100]$，消除后残余回声能量分别为 $[0.01,100]$（无底噪与近端语音）。对比“先逐块算 $\mathrm{dB}$ 再求算术平均”与“先汇总整窗总能量再按式(6-29)求 $\mathrm{dB}$”的结果差异。</p>
 <p><strong>两种统计口径对照</strong>：逐块计算时，第 $1$ 块（弱音段）为 $10\log_{10}(1/0.01)=20\ \mathrm{dB}$，第 $2$ 块（强音失配段）为 $10\log_{10}(100/100)=0\ \mathrm{dB}$，算术均值给出看似不错的 <strong>$10\ \mathrm{dB}$</strong>；而按式(6-29)汇总整窗总能量再取对数，结果为：</p>

@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 3 章 · 阵列几何形态 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="04ceb7d1f09c"><style>
+<meta name="source-digest" content="c1e13cc91b8b"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -617,7 +617,7 @@ G(f)=\frac{|B(f,0)|^2}{2}=\frac{(2\sin p)^2}{2}=2\sin^2 p,\\
 <ol>
 <li><strong>常规波束的角分辨尺度由孔径波长比决定（量级约 $\lambda/D$）</strong>：直径 $7.5\ \mathrm{cm}$ 的桌面小圆阵在 $1\ \mathrm{kHz}$ 时孔径还不到四分之一波长，等权主瓣宽逾半周；要到 $4\ \mathrm{kHz}$ 以上主瓣才收窄到几十度量级（见下节算例 3-3）。高频虽然增大了电尺寸 $D/\lambda$，却同时把阵列推向空间混叠区并放大毫米级位置误差，因此孔径设计必须在低频分辨率与高频防混叠之间统筹兼顾。</li>
 <li><strong>圆阵与线阵服务于不同的方向分布</strong>：均匀线阵把全部孔径押在正横轴附近，一旦声源偏到端射两侧，投影孔径与测角灵敏度同步缩水；均匀圆阵则在水平 $360°$ 各方位保持均衡的有效投影孔径，三维球阵进一步补齐俯仰覆盖。远距离语音识别到底选线阵还是圆阵，取决于设备摆放位置、房间混响与说话人方位分布，不能脱离应用场景孤立排名（系统综述参见 <a href="https://course.ece.cmu.edu/~ece792/handouts/KumataniEtAl12.pdf">Kumatani、McDonough 与 Raj 2012，《Microphone Array Processing for Distant Speech Recognition》，IEEE Signal Processing Magazine</a>）。</li>
-<li><strong>刚性机身与挡板效应必须写进阵列流形</strong>：实际麦克风很少悬空挂在自由场里，而是嵌在音箱圆柱壳体、屏幕边框或机器人头壳上。以半径为 $a$ 的刚性球壳对径平齐嵌麦为例，声实质点法向速度在刚性表面被迫归零，气流绕行球体产生的偶极附加质量使低频段（$\kappa a\ll1$）跨麦有效时延相对自由场直径 $2a$ 整整放大到 $1.5$ 倍，而在高频段（$\kappa a\gg1$）则过渡为沿球面爬行的伍德沃思（Woodworth）弧线绕射并伴随背面声影衰减（章末练习 E03-19 将推导这一频变散射偏差及自由场反推越界角）。工程上应采用对应的刚性球／柱解析散射流形或消声室实测流形，不能把挡板简单折算成与频率和角度无关的固定倍数“虚拟自由场孔径”。</li>
+<li><strong>刚性机身与挡板效应必须写进阵列流形</strong>：实际麦克风很少悬空挂在自由场里，而是嵌在音箱圆柱壳体、屏幕边框或机器人头壳上。以半径为 $a$ 的刚性球壳对径平齐嵌麦为例，空气质点法向速度在刚性表面被迫归零，气流绕行球体产生的偶极附加质量使低频段（$\kappa a\ll1$）跨麦有效时延相对自由场直径 $2a$ 整整放大到 $1.5$ 倍，而在高频段（$\kappa a\gg1$）则过渡为沿球面爬行的伍德沃思（Woodworth）弧线绕射并伴随背面声影衰减（章末练习 E03-19 将推导这一频变散射偏差及自由场反推越界角）。工程上应采用对应的刚性球／柱解析散射流形或消声室实测流形，不能把挡板简单折算成与频率和角度无关的固定倍数“虚拟自由场孔径”。</li>
 <li><strong>麦克风数量受边际收益与硬件代价双重制约</strong>：增加阵元数 $M$ 能提供更多干扰置零自由度并压低电路底噪——在目标同相、各通道自噪声独立同方差的理想基准下，等权 DSB 的线性白噪声增益为 $\mathrm{WNG}=M$，分贝值为 $\mathrm{WNG}_{\mathrm{dB}}=10\log_{10}M$，即<strong>麦数每翻一倍，白噪声信噪比仅提升约 $3.01\ \mathrm{dB}$</strong>（从 2 麦升到 4 麦涨 $3\ \mathrm{dB}$，从 4 麦升到 8 麦再涨 $3\ \mathrm{dB}$，从 8 麦堆到 16 麦才再涨 $3\ \mathrm{dB}$）。与此同时，ADC 接口、PCB 布线以及 $O(M^2)$ 规模的协方差矩阵更新与求逆开销却在加速增长。</li>
 </ol>
 <h3 id="sec-3-2-2">3.2.2 算例 3-3：6 麦圆环的数字</h3>
@@ -653,9 +653,11 @@ G(f)=\frac{|B(f,0)|^2}{2}=\frac{(2\sin p)^2}{2}=2\sin^2 p,\\
 <p>式中 $\mathbb{Z}$ 为整数集。在临界点 $\lambda_*=\sqrt{3}d$ 处，上述 $\theta=0°$ 与 $180°$ 在三层上的路程差除以 $\lambda_*$ 恰为整数 $-1,0,+1$，六维导向矢量完全重合；章末 E03-09 还会在 $8\ \mathrm{kHz}$ 下显式构造出一对同在水平面内却让全部 6 个通道相位一模一样的方向（另需注意，单层平面圆环在低频以下依然存在 §3.1 所述的上下半空间平面镜像，那属于三维基线秩为 $2$ 的时延镜像，与这里的窄带空间混叠不是同一回事）。</p>
 </li>
 <li>
-<p><strong>第 3 步：核算孔径与波长之比</strong>。圆环最大外径孔径为 $D=2r=7.5\ \mathrm{cm}=0.075\ \mathrm{m}$，取语音低频段 $1\ \mathrm{kHz}$ 与中高频段 $4\ \mathrm{kHz}$ 对比电尺寸：
-   - 在 $1\ \mathrm{kHz}$ 处：波长 $\lambda=343/1000=0.343\ \mathrm{m}=34.3\ \mathrm{cm}$，孔径波长比 $D/\lambda=0.075/0.343\approx0.219$——<strong>整座圆环只有约五分之一波长大</strong>；
-   - 在 $4\ \mathrm{kHz}$ 处：波长 $\lambda=343/4000=0.08575\ \mathrm{m}$（约 $8.58\ \mathrm{cm}$），孔径波长比 $D/\lambda=0.075/0.08575\approx0.875$——阵列直径已接近一个完整波长。</p>
+<p><strong>第 3 步：核算孔径与波长之比</strong>。圆环最大外径孔径为 $D=2r=7.5\ \mathrm{cm}=0.075\ \mathrm{m}$，取语音低频段 $1\ \mathrm{kHz}$ 与中高频段 $4\ \mathrm{kHz}$ 对比电尺寸：</p>
+<ul>
+<li>在 $1\ \mathrm{kHz}$ 处：波长 $\lambda=343/1000=0.343\ \mathrm{m}=34.3\ \mathrm{cm}$，孔径波长比 $D/\lambda=0.075/0.343\approx0.219$——<strong>整座圆环只有约五分之一波长大</strong>；</li>
+<li>在 $4\ \mathrm{kHz}$ 处：波长 $\lambda=343/4000=0.08575\ \mathrm{m}$（约 $8.58\ \mathrm{cm}$），孔径波长比 $D/\lambda=0.075/0.08575\approx0.875$——阵列直径已接近一个完整波长。</li>
+</ul>
 </li>
 <li>
 <p><strong>第 4 步：精确计算圆环自身的等权波束宽度</strong>。$\lambda/D$ 在 $1\ \mathrm{kHz}$ 与 $4\ \mathrm{kHz}$ 下分别约为 $4.57\ \mathrm{rad}$ 与 $1.14\ \mathrm{rad}$，这只是粗略量级参考，绝不能把均匀线阵的 $0.886\lambda/D$ 公式硬套到圆环上。按 §3.1 的 6 麦圆环坐标（不含中心第 7 麦），记波数 $\kappa=2\pi f/c$，对水平入射角 $\theta$、目标指向 $\theta_0=0°$ 做等权延迟求和，把 $6$ 路相对目标方向的残余相位因子相加求平均：</p>
@@ -1698,7 +1700,7 @@ x_2(t)&=1.01\bigl[F(t-b-\tau)+B(t-b)\bigr]\text{。}
 <p><strong>参考答案</strong>：</p>
 <ol>
 <li>
-<p><strong>从刚性边界条件看低频 $1.5$ 倍孔径扩展与高频弧长绕射</strong>：在本书前向傅里叶核 $e^{-\mathrm{j}2\pi ft}$（单频时间因子 $e^{+\mathrm{j}2\pi ft}$）下，刚性球面 $r=a$ 处要求总声压径向导数 $\partial p_{\mathrm{tot}}/\partial r=0$。球谐展开中第 $n$ 阶向外散射径向权重 $b_n(\kappa a)$ 由第二类球汉克尔函数导数给出为 $-\mathrm{j}/[(\kappa a)^2 h_n^{(2)\prime}(\kappa a)]$（与<a href="05_beamforming.html#sec-5-8">§5.8</a>式(5-21)一致）：在低频 $\kappa a\ll1$ 时，单极项 $b_0\to1$，而偶极项 $(2\cdot1+1)\mathrm{j}\,b_1(\kappa a)$ 趋近 $+\mathrm{j}\frac32\kappa a$（自由场无球体时仅为 $+\mathrm{j}\kappa a$）——声波被迫绕开刚性球壳流动时附加上了 $+\frac12$ 偶极质量，使对径双麦的低频相位斜率与等效时差恒定放大到自由场的 <strong>$1.5$ 倍</strong>（截断亥姆霍兹精确级数在 $\theta=30°$、$20\ \mathrm{Hz}$ 处算得比值 $1.500157$，到 $200\ \mathrm{Hz}$ 因低阶球面驻波微升至 $1.514823$）。而在高频 $\kappa a\gg1$ 时，迎声侧麦 $1$ 直接被照亮（提前 $a\sin\theta/c$），背声侧麦 $0$ 则需波前绕球面爬过弧长 $a\theta$（推迟 $a\theta/c$），总时差与自由场反推公式对比如下：</p>
+<p><strong>从刚性边界条件看低频 $1.5$ 倍孔径扩展与高频弧长绕射</strong>：在本书前向傅里叶核 $e^{-\mathrm{j}2\pi ft}$（单频时间因子 $e^{+\mathrm{j}2\pi ft}$）下，刚性球面 $r=a$ 处要求总声压径向导数 $\partial p_{\mathrm{tot}}/\partial r=0$。球谐展开中第 $n$ 阶向外散射径向权重 $b_n(\kappa a)$ 由第二类球汉克尔函数导数给出为 $-\mathrm{j}/[(\kappa a)^2 h_n^{(2)\prime}(\kappa a)]$（乘球谐因子 $4\pi\mathrm{j}^n$ 后即<a href="05_beamforming.html#sec-5-8">§5.8</a>刚性球径向函数 $b_n^{\mathrm{rigid}}$）：在低频 $\kappa a\ll1$ 时，单极项 $b_0\to1$，而偶极项 $(2\cdot1+1)\mathrm{j}\,b_1(\kappa a)$ 趋近 $+\mathrm{j}\frac32\kappa a$（自由场无球体时仅为 $+\mathrm{j}\kappa a$）——声波被迫绕开刚性球壳流动时附加上了 $+\frac12$ 偶极质量，使对径双麦的低频相位斜率与等效时差恒定放大到自由场的 <strong>$1.5$ 倍</strong>（截断亥姆霍兹精确级数在 $\theta=30°$、$20\ \mathrm{Hz}$ 处算得比值 $1.500157$，到 $200\ \mathrm{Hz}$ 因低阶球面驻波微升至 $1.514823$）。而在高频 $\kappa a\gg1$ 时，迎声侧麦 $1$ 直接被照亮（提前 $a\sin\theta/c$），背声侧麦 $0$ 则需波前绕球面爬过弧长 $a\theta$（推迟 $a\theta/c$），总时差与自由场反推公式对比如下：</p>
 <p>$$\begin{aligned}
     \tau_{10,\mathrm{LF}}^{\mathrm{sphere}}(\theta)
     &\approx-\frac{3a\sin\theta}{c}

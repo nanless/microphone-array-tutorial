@@ -204,6 +204,8 @@ def multizone_cabin_selection_case() -> dict[str, object]:
         y_d_pri * h_d_ref.conjugate() + y_p_pri * h_p_ref.conjugate()
     ) / (abs(h_d_ref) ** 2 + abs(h_p_ref) ** 2 + sensor_noise_power)
     y_d_unfrozen_dt = y_d_pri - g_unfrozen_equal_dt * h_d_ref
+    y_p_unfrozen_dt = y_p_pri - g_unfrozen_equal_dt * h_p_ref
+    lcr_unguarded = 10.0 * math.log10(float(abs(y_d_unfrozen_dt) ** 2) / float(abs(y_p_unfrozen_dt) ** 2))
     dt_loss_unguarded_equal_db = -10.0 * math.log10(float(abs(y_d_unfrozen_dt) ** 2) / p_d_hr_dsb)
 
     g_unfrozen_driver_only = (y_d_pri * h_d_ref.conjugate()) / (abs(h_d_ref) ** 2 + sensor_noise_power)
@@ -214,7 +216,7 @@ def multizone_cabin_selection_case() -> dict[str, object]:
     wng_unguarded = 10.0 * math.log10(float(abs(y_d_unfrozen_dt) ** 2) / norm2_unguarded)
     verdict_unguarded = upper_limit_verdict(
         [
-            [-lcr_guarded, -lcr_guarded],
+            [-lcr_unguarded, -lcr_unguarded],
             [-wng_unguarded, -wng_unguarded],
             [dt_loss_unguarded_equal_db, dt_loss_unguarded_equal_db],
         ],
@@ -266,7 +268,7 @@ def multizone_cabin_selection_case() -> dict[str, object]:
         "headrest_dsb_cross_cancel_unguarded": {
             "label": "头枕 DSB + 未加双讲保护跨区抵消",
             "weight_norm_squared": norm2_unguarded,
-            "LCR_dB": lcr_guarded,
+            "LCR_dB": lcr_unguarded,
             "WNG_dB": wng_unguarded,
             "dt_target_loss_db": dt_loss_unguarded_equal_db,
             "driver_only_self_cancel_loss_db": driver_only_self_cancel_db,

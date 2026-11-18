@@ -16,7 +16,7 @@
     "codes/chapters/ch00/core/audio_samples.py": "8fb4e9e822129d0019ef047299effd53b4f02f90ff68b5198016d04ddad31cf8",
     "codes/chapters/ch00/io_contracts.py": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974",
     "scripts/make_figures.py": "4eb6e4fcf9e7f26c29d61552046e1528bcfe5634758577f94798adba9e1333a4",
-    "scripts/make_wearable_figures.py": "ddefa7bb6205e795d18e7caa676f10b4f4fe6120a806eacd6124c90c696dd02b"
+    "scripts/make_wearable_figures.py": "55dfb22dd3f95994e7ac05fac263ecff5f9178824804e7636cb3de70107cc3a0"
   },
   "audio_manifest_sha256": "1e66ff815225b5c829219f9355dd9af89c737e66c8658620caafe67c9a6ff4a2",
   "anchor_points": {

@@ -368,6 +368,7 @@ class Chapter11ExperimentsTests(unittest.TestCase):
         self.assertAlmostEqual(cands['headrest_dsb']['weight_norm_squared'], float(Fraction(36, 61)), places=14)
         self.assertAlmostEqual(cands['headrest_dsb']['WNG_dB'], 10 * math.log10(61 / 36), places=12)
         self.assertLess(cands['headrest_lcmv']['WNG_dB'], -3.0)
+        self.assertLess(cands['headrest_dsb_cross_cancel_unguarded']['LCR_dB'], 25.0)
         self.assertGreater(cands['headrest_dsb_cross_cancel_unguarded']['dt_target_loss_db'], 1.0)
         self.assertGreater(cands['headrest_dsb_cross_cancel_unguarded']['driver_only_self_cancel_loss_db'], 30.0)
         guarded = cands['headrest_dsb_cross_cancel_guarded']

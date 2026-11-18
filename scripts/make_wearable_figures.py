@@ -236,15 +236,17 @@ def build_fig82(inputs: dict[str, str], manifest_sha: str) -> None:
     m_ls3 = bsm_directional_metrics(h3, p3, w_ls3)["synthesized_magnitude"]
     m_mag3 = bsm_directional_metrics(h3, p3, w_mag3)["synthesized_magnitude"]
 
-    # Panel (b) & (c): 4-mic circular frame (r=0.04 m) at 4000 Hz across 72 azimuths
+    # Panel (b) & (c): 4-mic circular frame (r=0.025 m) at 4000 Hz across 72 azimuths
     az_deg = np.linspace(0.0, 360.0, 72, endpoint=False)
     az_rad = np.deg2rad(az_deg)
     mic_angles = np.array([0.0, 0.5 * np.pi, np.pi, 1.5 * np.pi])
-    kr = 2.0 * np.pi * 4000.0 * 0.04 / SPEED_OF_SOUND
+    kr = 2.0 * np.pi * 4000.0 * 0.025 / SPEED_OF_SOUND
     h72 = np.exp(1j * kr * np.cos(mic_angles[:, None] - az_rad[None, :]))
-    p72 = (1.0 + 0.55 * np.sin(az_rad)) * np.exp(-1j * 1.45 * kr * np.sin(az_rad))
+    p72 = (1.0 + 0.55 * np.sin(az_rad)) * np.exp(1j * 2.0 * kr * np.sin(az_rad))
     w_ls72 = bsm_ls_weights(h72, p72, reg=0.05)
-    w_mag72, hist72 = bsm_magls_weights(h72, np.abs(p72), reg=0.05, n_iters=25)
+    w_mag72, hist72 = bsm_magls_weights(
+        h72, np.abs(p72), reg=0.05, n_iters=25, init_phases=np.angle(p72)
+    )
     mag_target72 = np.abs(p72)
     mag_ls72 = bsm_directional_metrics(h72, p72, w_ls72)["synthesized_magnitude"]
     mag_magls72 = bsm_directional_metrics(h72, p72, w_mag72)["synthesized_magnitude"]
@@ -271,9 +273,10 @@ def build_fig82(inputs: dict[str, str], manifest_sha: str) -> None:
         xticks=x3,
         xticklabels=["端射 +90°", "正横 0° (零陷)", "端射 -90°"],
         ylabel="合成幅度增益",
-        ylim=(0.0, 1.32),
+        xlim=(-0.55, 2.55),
+        ylim=(0.0, 1.40),
     )
-    axes[0, 0].legend(ncol=3, loc="upper center")
+    axes[0, 0].legend(ncol=3, loc="upper center", fontsize=8.5)
 
     axes[0, 1].axvspan(210.0, 330.0, color=C_RED, alpha=0.08, label="对侧头影区 210°～330°")
     axes[0, 1].plot(az_deg, 20.0 * np.log10(mag_target72), color=C_MAIN, linewidth=2.0, label="目标左耳幅度")
@@ -361,11 +364,11 @@ def build_fig83(manifest: dict, signals: dict[str, np.ndarray], inputs: dict[str
     coh = corcos_wind_coherence(f_coh, d_m=0.015, u_conv_mps=3.0, alpha_long=0.14)
 
     # Panel (b): Parametric cross-modal fusion SINR across frequency
-    f_fus = np.geomspace(100.0, 6000.0, 120)
-    # Smooth parametric transition matching 250 Hz and 4000 Hz anchor values!
-    # Check 250 Hz & 4000 Hz points explicitly overlaid!
-    h_occ_curve = 0.1 + 1.9 / (1.0 + (f_fus / 600.0) ** 2.2)
-    sigma_air_curve = 0.05 + 3.95 / (1.0 + (f_fus / 450.0) ** 2.6)
+    f_fus = np.unique(np.concatenate([np.geomspace(100.0, 6000.0, 120), [250.0, 4000.0]]))
+    u_fus = np.clip((np.log(f_fus) - np.log(250.0)) / (np.log(4000.0) - np.log(250.0)), 0.0, 1.0)
+    blend_fus = 0.5 * (1.0 - np.cos(np.pi * u_fus))
+    h_occ_curve = 2.0 + (0.1 - 2.0) * blend_fus
+    sigma_air_curve = 4.0 + (0.05 - 4.0) * blend_fus
     sigma_in_curve = np.full_like(f_fus, 0.04)
 
     sinr_air_db, sinr_in_db, sinr_fus_db = [], [], []
@@ -446,7 +449,7 @@ def build_fig83(manifest: dict, signals: dict[str, np.ndarray], inputs: dict[str
         xticks=xd,
         xticklabels=labels_d,
         ylabel="均方误差 MSE",
-        ylim=(0.0, max(pcm_mses) * 1.28),
+        ylim=(0.0, max(pcm_mses) * 1.48),
     )
     axes[1, 1].legend(loc="upper right")
 

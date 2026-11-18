@@ -267,9 +267,9 @@ class Chapter02ExperimentsTest(unittest.TestCase):
     def test_diffuse_field_mismatch_against_closed_forms_and_quadrature(self):
         # Independent 512-point Riemann sum on [0, pi] verifies all three bessel_j0 regimes.
         grid = (np.arange(512, dtype=float) + .5) * (math.pi / 512.)
-        test_x = np.array([0., -2.404825557695773, math.pi, 18.5, 42.0])
+        test_x = np.array([0., -2.404825557695773, math.pi, 18.5, 29.0, 42.0, 64.0])
         expected_j0 = [float(np.mean(np.cos(val * np.cos(grid)))) for val in test_x]
-        np.testing.assert_allclose(df.bessel_j0(test_x), expected_j0, atol=2e-14)
+        np.testing.assert_allclose(df.bessel_j0(test_x), expected_j0, rtol=0.0, atol=1e-14)
         self.assertAlmostEqual(float(df.bessel_j0(0.)), 1., places=15)
         self.assertAlmostEqual(float(df.bessel_j0(df.FIRST_BESSEL_J0_ROOT)), 0., places=15)
 

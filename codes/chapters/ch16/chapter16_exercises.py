@@ -207,15 +207,17 @@ def _ex08_bsm_magls_monotonic() -> dict:
     w_mag1, hist1 = bsm_magls_weights(h_mat, np.abs(p_ear), n_iters=1)
     metrics1 = bsm_directional_metrics(h_mat, p_ear, w_mag1)
 
-    # 4-mic circular array (r=0.04 m) at 4000 Hz across 12 azimuths
+    # 4-mic circular array (r=0.025 m) at 4000 Hz across 12 azimuths
     az = np.linspace(0.0, 2.0 * np.pi, 12, endpoint=False)
     mic_angles = np.array([0.0, 0.5 * np.pi, np.pi, 1.5 * np.pi])
-    kr = 2.0 * np.pi * 4000.0 * 0.04 / SPEED_OF_SOUND
+    kr = 2.0 * np.pi * 4000.0 * 0.025 / SPEED_OF_SOUND
     h_12 = np.exp(1j * kr * np.cos(mic_angles[:, None] - az[None, :]))
-    # Synthetic ear target with head-shadow magnitude + rapid interaural phase wrap
-    p_12 = (1.0 + 0.6 * np.sin(az)) * np.exp(-1j * 1.4 * kr * np.sin(az))
+    # Synthetic +90 deg left-ear target with head-shadow magnitude + rapid phase advance
+    p_12 = (1.0 + 0.6 * np.sin(az)) * np.exp(1j * 2.0 * kr * np.sin(az))
     w_ls_12 = bsm_ls_weights(h_12, p_12, reg=0.05)
-    w_mag_12, hist_12 = bsm_magls_weights(h_12, np.abs(p_12), reg=0.05, n_iters=25)
+    w_mag_12, hist_12 = bsm_magls_weights(
+        h_12, np.abs(p_12), reg=0.05, n_iters=25, init_phases=np.angle(p_12)
+    )
     return {
         "anchor_1step_w": w_mag1,
         "anchor_1step_metrics": metrics1,

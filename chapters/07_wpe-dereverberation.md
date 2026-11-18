@@ -1080,7 +1080,9 @@ $$\vec g^H\vec q=3-13\mathrm{j}+4+12\mathrm{j}+0+11=18-\mathrm{j}.$$
     \end{aligned}$$
 
     故 $g_3=r_3/R_3=117/140\approx0.835714$（漏掉 $\alpha^3 R_0$ 与 $\alpha^3 r_0$ 就会算错）。
+
 2. **先验输出时序**：三次更新后的新系数依次为 $0.65,0.77,0.835714$，而式(7-18)的先验输出依次读取上一帧旧系数 $0.5,0.65,0.77$，输出残差依次为 $0.8-0.5\times 1=0.3$、$1.6-0.65\times 2=0.3$ 与 $1.0-0.77\times 1=0.23$。
+
 3. **长静音数值溢出实测**：若后续两帧历史全为零，继续遗忘会使 $(R,r)$ 衰减为 $(7/8,117/160)$，冻结统计则保持 $(7/2,117/40)$——而切换到 §7.4 讲过的 RLS 逆矩阵更新 $\mathbf K_t\leftarrow\mathbf K_{t-1}/\alpha$ 时，锁定的 `nara_wpe` 在连续零输入下，$\alpha=0.95$ 于第 $13838$ 次调用首次溢出为非有限值，$\alpha=0.5$ 于第 $1024$ 次调用即溢出（完整复现脚本与报告见 [`wpe_silence_boundary.py`](../codes/chapters/ch07/examples/wpe_silence_boundary.py) 与 [`chapter07_online_wpe_silence.json`](../codes/chapters/ch07/reports/chapter07_online_wpe_silence.json)）。
 
 <a id="e07-14"></a>
@@ -1128,6 +1130,7 @@ $$\begin{aligned}
     \end{aligned}\tag{7-27}$$
 
     代入本题得 $\mathbf R_z=\operatorname{diag}(14/9,1)$，要还原 $\mathbf S_\delta=\operatorname{diag}(8/3,2)$ 必须补上加载修正项 $\delta(\mathbf I_2+\mathbf G_\delta^H\mathbf G_\delta)$，即 $\operatorname{diag}(10/9,1)$！
+
 3. **验证权重差异**：使用精确 $\mathbf S_\delta$ 求得空间权重 $[3/7,4/7]^\top$、历史权重 $[-1/7,0]^\top$（与直接解四维带加载方程完全一致，目标值 $8/7$）；倘若后级惯性地只在残差协方差上加一个单位阵 $\mathbf R_z+\mathbf I_2=\operatorname{diag}(23/9,2)$，漏掉了历史抽头放大项 $\delta\mathbf G_\delta^H\mathbf G_\delta$，求出的权重就会偏离为 $[18/41,23/41]^\top$ 与 $[-6/41,0]^\top$。
 
 #### E07-17：拖尾减少时，持续目标还保住了吗？
@@ -1443,6 +1446,7 @@ $$\begin{aligned}
     \end{bmatrix},$$
 
     行列式 $\det\mathbf R_{\mathrm{lin}}=9/16>0$，唯一解精确恢复 $\hat{\vec g}_{\mathrm{lin}}=[1/2,1/4]^\top$，尾音残差精确为 $[0,0,0]^\top$！
+
 2. **错误前置 NLP（线性 AEC → NLP → WPE）**：假设前置 NLP 在远端突发帧 $t=2$ 施加压制掩码 $\gamma_{0:5}=[1,1,0,1,1,1]$，送入 WPE 的序列变为 $\widetilde Z_{0:5}=[1,1,0,3/4,1/2,1/2]$。由式(7-37)算出第 $4,5$ 帧的非交换缺陷高达 $\Delta_{\mathrm{nlp}}[4]=1/4$ 与 $\Delta_{\mathrm{nlp}}[5]=1/8$！正规方程畸变为
 
     $$\mathbf R_{\mathrm{nlp}}=\begin{bmatrix}
@@ -1455,6 +1459,7 @@ $$\begin{aligned}
     \end{bmatrix},$$
 
     由 $\det\mathbf R_{\mathrm{nlp}}=17/8$ 解得失真抽头 $\hat{\vec g}_{\mathrm{nlp}}=[8/17,53/136]^\top$（约 $[0.470588,0.389706]^\top$），尾音残差冒出 $[-15/136,15/136,20/136]^\top$（残差平方和 $25/544\approx 0.045956$）。
+
 3. **颠倒顺序（WPE → 线性 AEC）**：未消除的强回声 $D_{0:5}$ 直接灌入 WPE，正规方程被回声脉冲严重劫持：
 
     $$\mathbf R_{\mathrm{rev}}=\begin{bmatrix}

@@ -21,7 +21,7 @@
 | [ch12](ch12/) | `ch12.chapter12_exercises`、`ch12.examples.generate_imaging_audio`、`ch12.examples.audit_upstream_imaging_contracts` | E12-01～20；球面CSM/PSF、DAMAS前/双向、有限小矩阵NNLS、作者full-CSM CLEAN-SC及目标失配；五独立PCM及固定原方法差异分开 |
 | [ch13](ch13/) | `ch13.chapter13_exercises`、`ch13.examples.generate_distributed_audio`、`ch13.examples.audit_upstream_distributed_contracts` | E13-01～27；指定MWF任务与压缩、真实广播后接收状态、GEVD/树控制；17独立PCM及限定原helper合同分开 |
 | [ch16](ch16/) | `ch16.chapter16_exercises`、`ch16.examples.generate_wearable_audio` | E16-01～18；FOA四面体编码、声强DirAC、BSM-LS/MagLS、BMVDR参考混合、跨模态抗风噪融合与通透梳状滤波；6份独立PCM分开解析/浮点/整型评分 |
-| [ch17](ch17/) | `ch17.chapter17_exercises`、`ch17.examples.generate_tse_audio` | E17-01～16；FiLM条件调制、双态地板损失、近场球面波距离气泡、空谱TS-VAD/GSS门控与视听异步回退；6份独立PCM分开解析/浮点/整型评分 |
+| [ch17](ch17/) | `ch17.chapter17_exercises`、`ch17.examples.generate_tse_audio` | E17-01～18；FiLM条件调制、双态地板损失、近场球面波距离气泡、空谱TS-VAD/GSS门控与视听异步回退；6份独立PCM分开解析/浮点/整型评分 |
 | [appendix_a](appendix_a/) | `appendix_a.appendix_a_experiments` | E14-06～20；复投影、已知噪声加权、截断与正则、相关共轭、EVD前提、实际PCM及完整相关噪声GLS/同步白化；旧01～05仍复用跨章唯一实现 |
 | [appendix_b](appendix_b/) | `appendix_b.appendix_b_experiments`、`appendix_b.interpolation_exercise` | E15-02～15；E15-02 读回主音频 PCM，E15-03～15 核查房间结果、PCM、来源证据、TAC共享结构、能量尺度、时间条件化与同DRR输出，不重跑房间仿真 |
 
@@ -38,7 +38,7 @@
 `MVDR target response` 应接近 1；STFT 重建误差接近浮点舍入。极高的匹配无噪声 AEC ERLE 是算术
 收敛检查，队列示例中的超期次数则来自构造的负载，二者均不代表设备测量。完整核对步骤见导读。
 
-旧的 `codes.examples.*` 和 `codes.array_tutorial.*` 导入路径已经退出仓内接口。运行时使用上表中的章节模块；修改题目时改唯一真实源文件，再核对全书 423 个稳定练习 ID、对应章节和覆盖表。
+旧的 `codes.examples.*` 和 `codes.array_tutorial.*` 导入路径已经退出仓内接口。运行时使用上表中的章节模块；修改题目时改唯一真实源文件，再核对全书 425 个稳定练习 ID、对应章节和覆盖表。
 
 E10-17 的变长回调时序在 [跨章工程边界入口](ch00/cross_chapter/engineering_boundary_exercises.py) 内复算。 [MacBook Air 单麦实测](ch10/examples/macbook_audio_latency/README.md)提供原生测量程序、回调时间戳日志和逐次声学偏移。第 11 章统一入口的 E11-13 同时报迟到、未交付、分场景分母和合并结果；[R01 实录](ch02/real_audio/README.md)另用于检查整段和最差窗口的区别。
 

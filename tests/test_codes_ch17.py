@@ -18,6 +18,7 @@ from codes.chapters.ch17.core import (
     conditional_tse,
     diarization_tsvad,
     distance_bubble,
+    eend_enrollment_robustness,
     tse_audio,
 )
 from codes.chapters.ch17.examples import generate_tse_audio as tse_gen
@@ -123,7 +124,7 @@ class DistanceBubbleTests(unittest.TestCase):
         delta_r2 = math.hypot(4.00, 0.10) - 4.00
         phi2 = -2.0 * math.pi * delta_r2 / 0.10
         expected_b2_r2 = (math.sin(0.5 * phi2) / math.sin(0.5 * phi1)) ** 2
-        w_out_expected = 1.0 / (2.0 * ( complex(math.cos(-phi1), math.sin(-phi1)) - 1.0 ))
+        w_out_expected = 1.0 / (2.0 * (complex(math.cos(-phi1), math.sin(-phi1)) - 1.0))
         expected_w10 = np.array([w_out_expected, -2.0 * w_out_expected, w_out_expected])
 
         res10 = distance_bubble.broadside_distance_bubble_weights(
@@ -269,6 +270,85 @@ class AVAlignmentTests(unittest.TestCase):
             av_alignment.av_confidence_gated_mask(m2d_aud, m2d_av, True)
 
 
+class EendAndEnrollmentRobustnessTests(unittest.TestCase):
+    def test_e17_17_eend_eda_variable_stopping_vs_fixed_slot_pit_bound(self):
+        w_exist = np.array([1.0, 1.0, 1.0], dtype=np.float64)
+        emb_3spk = np.array(
+            [
+                [2.0, 2.0, 2.0, -2.0],
+                [-2.0, 2.0, 2.0, -2.0],
+                [-2.0, -2.0, 2.0, 2.0],
+            ],
+            dtype=np.float64,
+        )
+        attr_2spk = np.array([[2.0, 0.0, 0.1], [0.0, 2.0, 0.1], [0.0, 0.0, 0.0]], dtype=np.float64)
+        stop2 = eend_enrollment_robustness.eend_eda_inference(emb_3spk, attr_2spk, w_exist, b_exist=-1.0)
+        # Logits: [2-1, 2-1, 0.2-1] = [1.0, 1.0, -0.8] -> stops at s_hat = 2
+        np.testing.assert_allclose(stop2["existence_logits"], [1.0, 1.0, -0.8], atol=1e-15)
+        self.assertEqual(stop2["estimated_num_speakers"], 2)
+
+        attr_3spk = np.array(
+            [[2.0, 0.0, 0.0, 0.1], [0.0, 2.0, 0.0, 0.1], [0.0, 0.0, 2.0, 0.1]],
+            dtype=np.float64,
+        )
+        stop3 = eend_enrollment_robustness.eend_eda_inference(emb_3spk, attr_3spk, w_exist, b_exist=-1.0)
+        self.assertEqual(stop3["estimated_num_speakers"], 3)
+        ref_3spk = np.array([[1, 1, 1, 0], [0, 1, 1, 0], [0, 0, 1, 1]], dtype=np.int64)
+        np.testing.assert_array_equal(stop3["binary_activity"], ref_3spk)
+        der_eda = diarization_tsvad.compute_der_components(ref_3spk, stop3["binary_activity"], 0.5)
+        self.assertAlmostEqual(der_eda["der"], 0.0, places=15)
+
+        # Fixed 2-slot PIT lower bound on 3-speaker scene [3, 2, 2] frames (total 7 frames): 2/7
+        pit_bound = eend_enrollment_robustness.fixed_slot_der_lower_bound(ref_3spk, max_slots=2, frame_dur_s=0.5)
+        self.assertEqual(pit_bound["min_unmatched_frames"], 2)
+        self.assertEqual(pit_bound["ref_speaker_frames"], 7)
+        self.assertAlmostEqual(pit_bound["der_lower_bound"], 2.0 / 7.0, places=15)
+        der_oracle = diarization_tsvad.compute_der_components(ref_3spk, pit_bound["oracle_slot_hypothesis"], 0.5)
+        self.assertAlmostEqual(der_oracle["der"], 2.0 / 7.0, places=15)
+
+    def test_e17_18_enrollment_contamination_and_diarization_gated_pooling(self):
+        e_tar = np.array([1.0, 0.0, 0.0], dtype=np.float64)
+        e_int_orth = np.array([0.0, 1.0, 0.0], dtype=np.float64)
+        orth = eend_enrollment_robustness.contaminated_enrollment_metrics(e_tar, e_int_orth, leakage_alpha=0.5)
+        # Orthogonal: e_cont = [1, 0.5, 0] / sqrt(1.25) => cos_tar = 2/sqrt(5), cos_int = 1/sqrt(5)
+        self.assertAlmostEqual(orth["target_cosine"], 2.0 / math.sqrt(5.0), places=15)
+        self.assertAlmostEqual(orth["interferer_cosine"], 1.0 / math.sqrt(5.0), places=15)
+        self.assertAlmostEqual(orth["clean_interferer_gate"], 1.0 / (1.0 + math.exp(3.2)), places=15)
+
+        # Correlated rho_12 = 0.3, alpha = 0.5: ||e_1 + 0.5 e_2|| = sqrt(1 + 0.3 + 0.25) = sqrt(1.55)
+        e_int_corr = np.array([0.3, math.sqrt(0.91), 0.0], dtype=np.float64)
+        corr = eend_enrollment_robustness.contaminated_enrollment_metrics(e_tar, e_int_corr, leakage_alpha=0.5)
+        self.assertAlmostEqual(corr["target_cosine"], 1.15 / math.sqrt(1.55), places=15)
+        self.assertAlmostEqual(corr["interferer_cosine"], 0.80 / math.sqrt(1.55), places=15)
+
+        # 6-frame enrollment buffer where frames 4, 5 are high-SNR interferer crosstalk during target pause
+        enr_frames = np.column_stack([e_tar, e_tar, e_tar, e_tar, e_int_orth, e_int_orth])
+        enr_snr = np.array([20.0, 20.0, 20.0, 20.0, 15.0, 15.0], dtype=np.float64)
+        enr_gamma = np.array(
+            [[0.95, 0.95, 0.95, 0.95, 0.05, 0.05], [0.04, 0.04, 0.04, 0.04, 0.92, 0.92]],
+            dtype=np.float64,
+        )
+        pooled = eend_enrollment_robustness.gated_enrollment_pooling(
+            enr_frames, enr_snr, enr_gamma, target_index=0, min_snr_db=10.0, min_exclusive_prob=0.6
+        )
+        self.assertEqual(pooled["vad_selected_indices"], [0, 1, 2, 3, 4, 5])
+        self.assertEqual(pooled["joint_selected_indices"], [0, 1, 2, 3])
+        self.assertEqual(pooled["rejected_crosstalk_indices"], [4, 5])
+        # VAD-only mean is (4*e_tar + 2*e_int)/6 -> normalized [2/sqrt(5), 1/sqrt(5), 0]
+        np.testing.assert_allclose(
+            pooled["vad_only_embedding"], [2.0 / math.sqrt(5.0), 1.0 / math.sqrt(5.0), 0.0], atol=1e-15
+        )
+        np.testing.assert_allclose(pooled["gated_embedding"], [1.0, 0.0, 0.0], atol=1e-15)
+
+        # Negative controls
+        with self.assertRaises(ValueError):
+            eend_enrollment_robustness.fixed_slot_der_lower_bound(np.ones((2, 3), dtype=int), max_slots=True)  # type: ignore[arg-type]
+        with self.assertRaises(ValueError):
+            eend_enrollment_robustness.contaminated_enrollment_metrics([2.0, 0.0], [0.0, 1.0])
+        with self.assertRaises(ValueError):
+            eend_enrollment_robustness.gated_enrollment_pooling(enr_frames, enr_snr, enr_gamma, min_snr_db=50.0)
+
+
 class DefensiveContractsTests(unittest.TestCase):
     def test_extreme_scale_invariance_and_nonfinite_rejection(self):
         s_ref = np.array([1.0, 1.0, -1.0, -1.0], dtype=np.float64)
@@ -332,13 +412,13 @@ class DefensiveContractsTests(unittest.TestCase):
 
 
 class TSEAudioAndExercisesTests(unittest.TestCase):
-    def test_exercise_runner_covers_all_16_ids_and_hand_values(self):
+    def test_exercise_runner_covers_all_18_ids_and_hand_values(self):
         payload = ex17.run_experiments()
         json_text = json.dumps(payload, allow_nan=False)
         self.assertTrue(len(json_text) > 100)
         ex = payload["exercises"]
         self.assertEqual(tuple(ex.keys()), ex17.EXERCISE_IDS)
-        self.assertEqual(len(ex), 16)
+        self.assertEqual(len(ex), 18)
 
         self.assertEqual(ex["E17-01"]["enrolled_modulated"], [[1.5, -1.5, 3.5], [0.5, 1.0, -0.25]])
         self.assertAlmostEqual(ex["E17-02"]["target_present"]["loss_db"], -20.0, places=12)
@@ -363,6 +443,13 @@ class TSEAudioAndExercisesTests(unittest.TestCase):
         )
         np.testing.assert_allclose(ex["E17-15"]["mask_fused"], [0.946, 0.752, 0.7815], rtol=0.0, atol=1e-14)
         self.assertLess(ex["E17-16"]["pcm"]["bubble_d10cm"]["integer_reference_nmse"], 0.025)
+        self.assertEqual(ex["E17-17"]["two_speaker_stopping_check"]["estimated_num_speakers"], 2)
+        self.assertAlmostEqual(ex["E17-17"]["three_speaker_eend_eda"]["der"], 0.0, places=14)
+        self.assertAlmostEqual(ex["E17-17"]["fixed_2slot_oracle_der"], 2.0 / 7.0, places=14)
+        self.assertAlmostEqual(
+            ex["E17-18"]["orthogonal_speakers_alpha0p5"]["target_cosine"], 2.0 / math.sqrt(5.0), places=14
+        )
+        self.assertAlmostEqual(ex["E17-18"]["six_frame_enrollment_remedy"]["gated_target_cosine"], 1.0, places=14)
 
     def test_generate_and_strict_check_tse_audio_in_tempdir(self):
         with self.assertRaises(ValueError):

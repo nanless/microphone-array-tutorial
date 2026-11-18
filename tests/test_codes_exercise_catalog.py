@@ -1,4 +1,4 @@
-"""Explicit cross-module, chapter and research inventory for 423 exercises."""
+"""Explicit cross-module, chapter and research inventory for 425 exercises."""
 
 import json
 import re
@@ -47,7 +47,7 @@ from codes.chapters.appendix_b import interpolation_exercise
 
 ROOT = Path(__file__).resolve().parents[1]
 EXPECTED = {
-    "tse": {f"E17-{n:02d}" for n in range(1, 17)},
+    "tse": {f"E17-{n:02d}" for n in range(1, 19)},
     "wearable": {f"E16-{n:02d}" for n in range(1, 19)},
     "distributed": {f"E13-{n:02d}" for n in range(1, 28)},
     "imaging": {f"E12-{n:02d}" for n in range(1, 21)},
@@ -154,8 +154,8 @@ class ExerciseCatalogTest(unittest.TestCase):
         cls.results = {name: run() for name, run in RUNNERS.items()}
 
     def test_independent_inventory_has_395_unique_ids(self):
-        self.assertEqual(len(ALL_IDS), 423)
-        self.assertEqual(sum(map(len, EXPECTED.values())), 423)
+        self.assertEqual(len(ALL_IDS), 425)
+        self.assertEqual(sum(map(len, EXPECTED.values())), 425)
 
     def test_each_module_returns_exact_assigned_ids(self):
         for name, results in self.results.items():

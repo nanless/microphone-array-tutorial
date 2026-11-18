@@ -67,10 +67,10 @@ class ResearchQualityTests(unittest.TestCase):
     def test_explicit_baselines_preserve_tutorial_pdf_and_figure_counts(self):
         self.assertEqual(quality.EXPECTED_CHAPTER_COUNT, 18)
         self.assertEqual(quality.EXPECTED_SECTION_COUNT, 173)
-        self.assertEqual(quality.EXPECTED_SUBSECTION_COUNT, 863)
-        self.assertEqual(quality.EXPECTED_OUTLINE_ITEM_COUNT, 1054)
+        self.assertEqual(quality.EXPECTED_SUBSECTION_COUNT, 865)
+        self.assertEqual(quality.EXPECTED_OUTLINE_ITEM_COUNT, 1056)
         self.assertEqual(quality.EXPECTED_FIGURE_NUMBERS, set(range(1, 89)))
-        self.assertEqual(quality.EXPECTED_EXERCISE_COUNT, 423)
+        self.assertEqual(quality.EXPECTED_EXERCISE_COUNT, 425)
         self.assertEqual(quality.EXPECTED_SUBSECTION_COUNTS['15_appendix-guide.md'], 30)
         self.assertEqual(quality.EXPECTED_EXERCISE_COUNTS['15_appendix-guide.md'], 15)
         self.assertEqual(quality.EXPECTED_SECTION_COUNTS['13_distributed-enhancement.md'], 16)
@@ -78,7 +78,7 @@ class ResearchQualityTests(unittest.TestCase):
         self.assertEqual(quality.EXPECTED_SECTION_COUNTS['16_spatial-wearable-arrays.md'], 12)
         self.assertEqual(quality.EXPECTED_SUBSECTION_COUNTS['16_spatial-wearable-arrays.md'], 48)
         self.assertEqual(quality.EXPECTED_SECTION_COUNTS['17_target-extraction-diarization.md'], 10)
-        self.assertEqual(quality.EXPECTED_SUBSECTION_COUNTS['17_target-extraction-diarization.md'], 41)
+        self.assertEqual(quality.EXPECTED_SUBSECTION_COUNTS['17_target-extraction-diarization.md'], 43)
         self.assertEqual(quality.EXPECTED_RESEARCH_PAGE_COUNT, 6)
         self.assertEqual(quality.EXPECTED_RESEARCH_PAGES, (
             ("README.md", "index.html"),

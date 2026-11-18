@@ -1,4 +1,4 @@
-"""Run E17-01..16 with pure NumPy and in-memory PCM16; never write files or access network.
+"""Run E17-01..18 with pure NumPy and in-memory PCM16; never write files or access network.
 
 Usage: .venv/bin/python -m codes.chapters.ch17.chapter17_exercises [--exercise E17-05]
 """
@@ -37,6 +37,12 @@ from codes.chapters.ch17.core.distance_bubble import (
     fresnel_distance,
     spherical_ula_steering,
 )
+from codes.chapters.ch17.core.eend_enrollment_robustness import (
+    contaminated_enrollment_metrics,
+    eend_eda_inference,
+    fixed_slot_der_lower_bound,
+    gated_enrollment_pooling,
+)
 from codes.chapters.ch17.core.tse_audio import (
     OUTPUT_KEYS,
     SAMPLE_RATE,
@@ -44,7 +50,7 @@ from codes.chapters.ch17.core.tse_audio import (
     run_experiment,
 )
 
-EXERCISE_IDS = tuple(f"E17-{i:02d}" for i in range(1, 17))
+EXERCISE_IDS = tuple(f"E17-{i:02d}" for i in range(1, 19))
 
 
 def _json(value):
@@ -241,6 +247,58 @@ def run_experiments() -> dict:
         for key in OUTPUT_KEYS
     }
 
+    # E17-17: EEND-EDA variable-speaker attractors vs fixed 2-slot PIT failure
+    w_exist = np.array([1.0, 1.0, 1.0], dtype=np.float64)
+    attr_2spk = np.array([[2.0, 0.0, 0.1], [0.0, 2.0, 0.1], [0.0, 0.0, 0.0]], dtype=np.float64)
+    emb_3spk = np.array(
+        [
+            [2.0, 2.0, 2.0, -2.0],
+            [-2.0, 2.0, 2.0, -2.0],
+            [-2.0, -2.0, 2.0, 2.0],
+        ],
+        dtype=np.float64,
+    )
+    eda_2spk_stop = eend_eda_inference(emb_3spk, attr_2spk, w_exist, b_exist=-1.0)
+
+    ref_3spk = np.array(
+        [
+            [1, 1, 1, 0],
+            [0, 1, 1, 0],
+            [0, 0, 1, 1],
+        ],
+        dtype=np.int64,
+    )
+    attr_3spk = np.array(
+        [[2.0, 0.0, 0.0, 0.1], [0.0, 2.0, 0.0, 0.1], [0.0, 0.0, 2.0, 0.1]],
+        dtype=np.float64,
+    )
+    eda_3spk = eend_eda_inference(emb_3spk, attr_3spk, w_exist, b_exist=-1.0)
+    der_eda_3spk = compute_der_components(ref_3spk, eda_3spk["binary_activity"], frame_dur_s=0.5)
+    pit_2slot_bound = fixed_slot_der_lower_bound(ref_3spk, max_slots=2, frame_dur_s=0.5)
+    der_pit_oracle = compute_der_components(
+        ref_3spk, pit_2slot_bound["oracle_slot_hypothesis"], frame_dur_s=0.5
+    )
+
+    # E17-18: Enrollment crosstalk contamination & diarization-gated pooling remedy
+    e_tar = np.array([1.0, 0.0, 0.0], dtype=np.float64)
+    e_int_orth = np.array([0.0, 1.0, 0.0], dtype=np.float64)
+    e_int_corr = np.array([0.3, math.sqrt(0.91), 0.0], dtype=np.float64)
+    cont_orth = contaminated_enrollment_metrics(e_tar, e_int_orth, leakage_alpha=0.5)
+    cont_corr = contaminated_enrollment_metrics(e_tar, e_int_corr, leakage_alpha=0.5)
+
+    enr_frames = np.column_stack([e_tar, e_tar, e_tar, e_tar, e_int_orth, e_int_orth])
+    enr_snr_db = np.array([20.0, 20.0, 20.0, 20.0, 15.0, 15.0], dtype=np.float64)
+    enr_gamma = np.array(
+        [
+            [0.95, 0.95, 0.95, 0.95, 0.05, 0.05],
+            [0.04, 0.04, 0.04, 0.04, 0.92, 0.92],
+        ],
+        dtype=np.float64,
+    )
+    enr_pool = gated_enrollment_pooling(
+        enr_frames, enr_snr_db, enr_gamma, target_index=0, min_snr_db=10.0, min_exclusive_prob=0.6
+    )
+
     exercises = {
         "E17-01": {
             "features": h_feat,
@@ -339,6 +397,30 @@ def run_experiments() -> dict:
             "analytic": {k: audio_report["analytic_expectations"][k] for k in OUTPUT_KEYS},
             "float": {k: audio_report["float_measurements"][k] for k in OUTPUT_KEYS},
             "pcm": {k: pcm_scores[k]["pcm_integer_measurements"] for k in OUTPUT_KEYS},
+        },
+        "E17-17": {
+            "two_speaker_stopping_check": {
+                "existence_logits": eda_2spk_stop["existence_logits"],
+                "existence_probs": eda_2spk_stop["existence_probs"],
+                "estimated_num_speakers": eda_2spk_stop["estimated_num_speakers"],
+            },
+            "three_speaker_eend_eda": {
+                **eda_3spk,
+                "der": der_eda_3spk["der"],
+            },
+            "fixed_2slot_pit_bound": pit_2slot_bound,
+            "fixed_2slot_oracle_der": der_pit_oracle["der"],
+        },
+        "E17-18": {
+            "orthogonal_speakers_alpha0p5": cont_orth,
+            "correlated_rho0p3_alpha0p5": cont_corr,
+            "six_frame_enrollment_remedy": {
+                **enr_pool,
+                "vad_only_target_cosine": float(np.dot(enr_pool["vad_only_embedding"], e_tar)),
+                "vad_only_interferer_cosine": float(np.dot(enr_pool["vad_only_embedding"], e_int_orth)),
+                "gated_target_cosine": float(np.dot(enr_pool["gated_embedding"], e_tar)),
+                "gated_interferer_cosine": float(np.dot(enr_pool["gated_embedding"], e_int_orth)),
+            },
         },
     }
     if set(exercises) != set(EXERCISE_IDS):

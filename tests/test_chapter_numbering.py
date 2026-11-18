@@ -11,12 +11,15 @@ ROOT = Path(__file__).resolve().parents[1]
 class ChapterNumberingTests(unittest.TestCase):
     def test_current_numbers_keep_original_pdf_topics(self):
         expected = {'12_acoustic-imaging.md':14, '13_distributed-enhancement.md':15,
-                    '14_appendix-symbols-math.md':12, '15_appendix-guide.md':13}
+                    '14_spatial-wearable-arrays.md':16, '15_target-extraction-diarization.md':17,
+                    '16_appendix-symbols-math.md':12, '17_appendix-guide.md':13}
         for name, topic in expected.items():
             self.assertEqual(build_pdf.chapter_number(name), topic)
         self.assertEqual(set(chapter_identity.LEGACY_HTML_ROUTES), {
             '14_acoustic-imaging.html', '15_distributed-enhancement.html',
-            '12_appendix-symbols-math.html', '13_appendix-guide.html'})
+            '12_appendix-symbols-math.html', '14_appendix-symbols-math.html',
+            '13_appendix-guide.html', '15_appendix-guide.html',
+            '16_spatial-wearable-arrays.html', '17_target-extraction-diarization.html'})
 
     def reader(self, wrong_alias=False):
         writer = PdfWriter()
@@ -66,7 +69,13 @@ class ChapterNumberingTests(unittest.TestCase):
         aliases=build_pdf.pdf_alias_targets()
         self.assertEqual(aliases['ch-14-e14-17'],'ch-14-e12-17')
         self.assertEqual(aliases['ch-15-e15-25'],'ch-15-e13-25')
-        self.assertEqual(aliases['ch-12-e12-20'],'ch-12-e14-20')
-        self.assertEqual(aliases['ch-13-e13-02'],'ch-13-e15-02')
+        self.assertEqual(aliases['ch-12-e12-20'],'ch-12-e16-20')
+        self.assertEqual(aliases['ch-12-e14-20'],'ch-12-e16-20')
+        self.assertEqual(aliases['ch-13-e13-02'],'ch-13-e17-02')
+        self.assertEqual(aliases['ch-13-e15-02'],'ch-13-e17-02')
+        self.assertEqual(aliases['ch-16-e16-18'],'ch-16-e14-18')
+        self.assertEqual(aliases['ch-17-e17-18'],'ch-17-e15-18')
+        self.assertEqual(aliases['ch-16-sec-16-1'],'ch-16-sec-14-1')
+        self.assertEqual(aliases['ch-17-sec-17-1'],'ch-17-sec-15-1')
         self.assertEqual(aliases['ch-14-sec-14-1'],'ch-14-sec-12-1')
         self.assertEqual(aliases['ch-15-sec-15-1'],'ch-15-sec-13-1')

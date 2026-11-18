@@ -245,7 +245,7 @@ SMP-PHAT 的原版复现发现了失败：在本机 Apple clang/arm64 上，固�
 
 ### 附录 A：最小二乘回退、数值秩与物理目标
 
-矩阵求解成功后还要问两个问题：结果是否满足所需的优化目标，数组类型是否保存了求解器返回的数值。[附录 A 的 E14-03](../../../../chapters/14_appendix-symbols-math.md#sec-u-3899a8c1b7)说明零残差不保证参数唯一；[E14-05](../../../../chapters/14_appendix-symbols-math.md#sec-u-935c1036ea)说明奇异协方差中的最小范数线性方程解，不自动成为约束噪声最小化的解。这两个判断分别涉及代数目标和物理目标，不能用“输出有限”替代。
+矩阵求解成功后还要问两个问题：结果是否满足所需的优化目标，数组类型是否保存了求解器返回的数值。[附录 A 的 E16-03](../../../../chapters/16_appendix-symbols-math.md#sec-u-3899a8c1b7)说明零残差不保证参数唯一；[E16-05](../../../../chapters/16_appendix-symbols-math.md#sec-u-935c1036ea)说明奇异协方差中的最小范数线性方程解，不自动成为约束噪声最小化的解。这两个判断分别涉及代数目标和物理目标，不能用“输出有限”替代。
 
 [旧历史报告](../../appendix_a/reports/upstream_solver_contracts.json)记录本书于2026-10-02在Python 3.13.12、NumPy 2.5.3环境中运行[当时版本的限定工具](https://github.com/nanless/microphone-array-tutorial/blob/241513c8f35d952747f16ccbb40cf85a5363b5ae/codes/chapters/appendix_a/examples/audit_upstream_solver_contracts.py)。旧报告登记完整加载固定 `pb_bss` 提交 `10acc347fc9ea21e3d312806a0bd751d0d0af183` 的[原 `pb_bss/math/solve.py`](https://github.com/fgnt/pb_bss/blob/10acc347fc9ea21e3d312806a0bd751d0d0af183/pb_bss/math/solve.py "citation")，仅调用 `stable_solve`；不做AST提取、源码补丁或算法替身，也不导入完整 `pb_bss` 包。该模块是维护者提供的通用求解助手，按原[MIT许可证](https://github.com/fgnt/pb_bss/blob/10acc347fc9ea21e3d312806a0bd751d0d0af183/LICENSE "citation")使用，不是本书自行实现的求解器。
 
@@ -264,7 +264,7 @@ $\left[\begin{smallmatrix}1/10&1/5\\1/10&1/5\end{smallmatrix}\right]$。
 
 另外两例直接调用NumPy接口，与上游调用分栏记录。取 $\mathbf A=\operatorname{diag}(1,10^{-8})$、$\vec b=[1,10^{-8}]^\top$，显式 `rcond=1e-6` 得秩1、解 $[1,0]^\top$、残差范数 $10^{-8}$；`rcond=1e-10` 得秩2、解 $[1,1]^\top$、残差零。两次返回的残差数组都为空，因为矩阵为方阵，接口条件是 $M\leq N$。判秩和残差各自记录，依据[NumPy 2.5接口的Parameters/Returns](https://numpy.org/doc/stable/reference/generated/numpy.linalg.lstsq.html "citation")（2026-10-02核实）。`stable_solve` 本身没有向调用者暴露这两个 `rcond` 参数。
 
-[E14-16截断与ridge](../../../../chapters/14_appendix-symbols-math.md#e14-16)进一步区分删去弱方向与连续收缩；[E14-18厄米输入检查](../../../../chapters/14_appendix-symbols-math.md#e14-18)则提醒 `eigh` 使用指定三角且忽略对角虚部，不能把分解成功当作输入协方差有效的证明。这两个练习由本书入口实现，不属于上述原函数的执行范围。[Netlib LAPACK最小二乘驱动说明](https://www.netlib.org/lapack/lug/node27.html "citation")的式(2.1)/表2.3区分满秩QR/LQ与秩亏求解，支持先说明目标、秩假设和截断策略，再选择接口；本书没有另行编译这些Fortran驱动。
+[E14-16截断与ridge](../../../../chapters/16_appendix-symbols-math.md#e16-16)进一步区分删去弱方向与连续收缩；[E14-18厄米输入检查](../../../../chapters/16_appendix-symbols-math.md#e16-18)则提醒 `eigh` 使用指定三角且忽略对角虚部，不能把分解成功当作输入协方差有效的证明。这两个练习由本书入口实现，不属于上述原函数的执行范围。[Netlib LAPACK最小二乘驱动说明](https://www.netlib.org/lapack/lug/node27.html "citation")的式(2.1)/表2.3区分满秩QR/LQ与秩亏求解，支持先说明目标、秩假设和截断策略，再选择接口；本书没有另行编译这些Fortran驱动。
 
 ```bash
 .venv/bin/python -B -m codes.chapters.appendix_a.examples.audit_upstream_solver_contracts
@@ -292,7 +292,7 @@ $\left[\begin{smallmatrix}1/10&1/5\\1/10&1/5\end{smallmatrix}\right]$。
 
 ### 附录 B：先对齐研究方向的任务与版本
 
-[附录B的研究速览](../../../../chapters/15_appendix-guide.md#sec-15-3)包含八类方向，但它们并不输出同一种结果。目标说话人提取输出音轨，DiCoW输出指定说话人的文字，CHiME-9 ECHI输出低延迟增强流；ArrayDPS的输出又有参考通道与混响源像的定义。选型前先固定目标，不能把不同任务的WER、SI-SDR或延迟写成统一排名。
+[附录B的研究速览](../../../../chapters/17_appendix-guide.md#sec-17-3)包含八类方向，但它们并不输出同一种结果。目标说话人提取输出音轨，DiCoW输出指定说话人的文字，CHiME-9 ECHI输出低延迟增强流；ArrayDPS的输出又有参考通道与混响源像的定义。选型前先固定目标，不能把不同任务的WER、SI-SDR或延迟写成统一排名。
 
 以下定位与实现边界于2026-10-02核查。论文只用实际阅读的相关节说明方法，不转引条件不齐的性能数字；各项目的完整固定提交、许可与本地选集仍以[锁表](../SOURCES.lock.json)为准。
 
@@ -333,7 +333,7 @@ ArrayDPS固定 `750ac2b7c75458f4ca5bad203dafda528f575e55` 的真实采样入口�
 
 ### TAC作者源：共享结构核验与未执行原网络的界线
 
-附录B的通道置换问题需要区分两个性质：通道顺序改变时，通道索引输出按相同顺序重排，这是置换等变；跨通道平均不随顺序变化，这是聚合量的置换不变。加入一个通道通常改变平均值，所以支持可变通道数不等于数值输出不随麦数变化。[TAC作者论文v3 §2.1式(1)～(4)](https://arxiv.org/html/1910.14104v3 "citation")用共享变换、平均、拼接与残差连接说明这一步；[E15-11](../../../../chapters/15_appendix-guide.md#e15-11)分别手算交换通道、只复制一路与复制全部通道。
+附录B的通道置换问题需要区分两个性质：通道顺序改变时，通道索引输出按相同顺序重排，这是置换等变；跨通道平均不随顺序变化，这是聚合量的置换不变。加入一个通道通常改变平均值，所以支持可变通道数不等于数值输出不随麦数变化。[TAC作者论文v3 §2.1式(1)～(4)](https://arxiv.org/html/1910.14104v3 "citation")用共享变换、平均、拼接与残差连接说明这一步；[E17-11](../../../../chapters/17_appendix-guide.md#e17-11)分别手算交换通道、只复制一路与复制全部通道。
 
 本书通过获取工具取得作者[固定提交 `e3373b73358a96af6f64fdbe25327def8d6bd973`](https://github.com/yluo42/TAC/tree/e3373b73358a96af6f64fdbe25327def8d6bd973 "citation")的 `README.md`、`FaSNet.py`、`utility/__init__.py`、`utility/models.py` 四个文件，独立保存在被忽略的上游工作树。README明确声明CC-BY-NC-SA-3.0-US，源代码未随本教程再分发；没有取得音频、数据、权重或另一 `iFaSNet.py` 扩展。NumPy/PyTorch是原模块的依赖，但这一审计只使用标准库解析Python语法，不导入两模块或Torch。
 
@@ -356,7 +356,7 @@ ArrayDPS固定 `750ac2b7c75458f4ca5bad203dafda528f575e55` 的真实采样入口�
 
 [历史报告](../../appendix_b/reports/tac_contracts.json)保留2026-10-01实际运行时的100项目锁表与原工具身份；旧锁表原字节已登记在[来源快照](../source_snapshots/SOURCES.55ab323ba665633141c4864763095046f9c6161ce2d88ca2aa9332dde7ec23f0.json)。当前报告绑定115项目锁表及其获取状态，完整选集核对与十项静态结构证据分别记录。原历史报告不换摘要、不升级成神经运行；共享核后续变化也不追溯改写先前报告的真实依赖身份。
 
-附录B的房间仿真、分数延迟和通道聚合数学例仍按各自的输入、脚本、PCM与统计窗口解释。对照时，[E15-12](../../../../chapters/15_appendix-guide.md#e15-12)复算共同尺度不变的DRR与极端数值边界，[E15-13](../../../../chapters/15_appendix-guide.md#e15-13)条件化时间原点与跨度后外推T20，[E15-14](../../../../chapters/15_appendix-guide.md#e15-14)按同源PCM与稳定评分窗比较同DRR的两条短RIR。这些独立练习不能由静态来源报告统一登记成原神经系统已运行。
+附录B的房间仿真、分数延迟和通道聚合数学例仍按各自的输入、脚本、PCM与统计窗口解释。对照时，[E17-12](../../../../chapters/17_appendix-guide.md#e17-12)复算共同尺度不变的DRR与极端数值边界，[E17-13](../../../../chapters/17_appendix-guide.md#e17-13)条件化时间原点与跨度后外推T20，[E17-14](../../../../chapters/17_appendix-guide.md#e17-14)按同源PCM与稳定评分窗比较同DRR的两条短RIR。这些独立练习不能由静态来源报告统一登记成原神经系统已运行。
 
 ## 6. 何时可以进入设备比较
 
@@ -508,7 +508,7 @@ e3b3176d835837441224e4906b7c2befadcdc4fe2ce6163245b7d9a9ad0d9229
 
 无固定构造值时，`__call__(..., sro)`中的参数直接参与延迟递推，原方法没有再次除以一百万。因此调用参数应是无量纲相对速差：80 ppm在这个入口传$80\times10^{-6}$，而不是80。同名参数在构造与逐块调用中有不同单位，照搬数值会产生一百万倍的尺度错误。
 
-例如80 ppm表示相对采样率差$80\times10^{-6}$；按16 kHz名义时钟持续10 s，相对累计样本差的量级为$16000\times10\times80\times10^{-6}=12.8$点。这是单位换算的数学例子，不是原程序执行结果；取样率比值、延迟正负与接收端时间原点仍要在所选接口下解释。导读工程基线和[第15章](../../../../chapters/13_distributed-enhancement.md)提供可独立复算的教学入口。
+例如80 ppm表示相对采样率差$80\times10^{-6}$；按16 kHz名义时钟持续10 s，相对累计样本差的量级为$16000\times10\times80\times10^{-6}=12.8$点。这是单位换算的数学例子，不是原程序执行结果；取样率比值、延迟正负与接收端时间原点仍要在所选接口下解释。导读工程基线和[第13章](../../../../chapters/13_distributed-enhancement.md)提供可独立复算的教学入口。
 
 [`sim_sro.py`](https://github.com/CN-UPB/WASN/blob/9b2590eb104abcde2a35af52c74d64ce30bf5ae2/sync_sed/system/sim_sro.py "citation")逐块调用上述重采样器，只在返回非空时向输出管道写块。重采样器保留内部缓冲；此封装没有显式排空记录尾部的步骤。实际流还需明确块长、首次可用输出、积累状态与记录尾部；等待期间的空返回或块延迟不能直接解释为音频丢失，结束时的剩余样本则要另行处理。
 

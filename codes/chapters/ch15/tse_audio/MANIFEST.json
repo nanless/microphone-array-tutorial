@@ -1,0 +1,575 @@
+{
+  "schema_version": 1,
+  "origin": "original synthetic broadside near-field distance-bubble controls",
+  "sample_rate_hz": 16000,
+  "samples_per_channel": 32000,
+  "common_export_gain": 1.0,
+  "source_sha256": {
+    "codes/chapters/ch15/core/distance_bubble.py": "9e26329091896ecd396125ce04eeb4f6dcb3deb2478c087e08ccc26aa1cb7bd4",
+    "codes/chapters/ch15/core/tse_audio.py": "be0c52fca85cee0b12ef2b761fbb0a8f1b84af7be4531ae0cfb2babc030fee2f",
+    "codes/chapters/ch15/examples/generate_tse_audio.py": "94daeab0073e8b261282572946802d44ef212423134abe6eb0e5da779986e195",
+    "codes/chapters/ch02/core/conventions.py": "4e80a27490f05ddd5f4826361420c0c8d0b331464d1e5629c5def492da47b1d7",
+    "codes/chapters/ch00/core/audio_samples.py": "bf1145e19e2ec99623c0583220192922c24f0ed3d293212309fe4a2f3bfc8385",
+    "codes/chapters/ch00/io_contracts.py": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974"
+  },
+  "parameters": {
+    "exercise_ids": [
+      "E15-05",
+      "E15-07",
+      "E15-16"
+    ],
+    "sample_rate_hz": 16000,
+    "samples_per_channel": 32000,
+    "fade_samples_each_end": 800,
+    "steady_scoring_window": [
+      1600,
+      30400
+    ],
+    "steady_scoring_samples": 28800,
+    "speed_of_sound_m_per_s": 343.0,
+    "target_frequency_hz": 3200.0,
+    "interferer_frequency_hz": 2500.0,
+    "sensor_floor_frequencies_hz": [
+      1100.0,
+      1300.0,
+      1700.0
+    ],
+    "target_range_m": 0.4,
+    "interferer_range_m": 4.0,
+    "broadside_angle_deg": 0.0,
+    "ula_spacing_good_m": 0.1,
+    "ula_spacing_tiny_m": 0.02,
+    "tiny_aperture_tikhonov_reg": 0.0002,
+    "target_peak_amplitude": 0.16,
+    "interferer_peak_amplitude": 0.16,
+    "sensor_floor_peak_amplitude": 0.012,
+    "target_steady_mean_square": 0.0128,
+    "interferer_steady_mean_square": 0.0128,
+    "sensor_floor_steady_mean_square": 7.2e-05,
+    "common_export_gain": 1.0
+  },
+  "files": {
+    "tse_near_target_ref.wav": {
+      "channels": 1,
+      "samples_per_channel": 32000,
+      "sample_rate_hz": 16000,
+      "sha256": "4b5b384a60e236fcdca3159078897ffa43e607a1677438241dbbd0e0e1202acc"
+    },
+    "tse_far_interferer_ref.wav": {
+      "channels": 1,
+      "samples_per_channel": 32000,
+      "sample_rate_hz": 16000,
+      "sha256": "8e2d289e8057635c607689b5fb6e2278328862f26ae4e712ebd253672bc5d190"
+    },
+    "tse_array_3ch.wav": {
+      "channels": 3,
+      "samples_per_channel": 32000,
+      "sample_rate_hz": 16000,
+      "sha256": "621c27873649737e824f57b9bd11a1bc348bce911651b51bd2696bc65b7a9f55"
+    },
+    "tse_farfield_dsb.wav": {
+      "channels": 1,
+      "samples_per_channel": 32000,
+      "sample_rate_hz": 16000,
+      "sha256": "5c9e64b62f677e7a6dca289ee0fced65fc7929353902372692876d40b94c76f8"
+    },
+    "tse_bubble_d10cm.wav": {
+      "channels": 1,
+      "samples_per_channel": 32000,
+      "sample_rate_hz": 16000,
+      "sha256": "ab7e8553f017cf8c3dd3c2449f7a4f1ecf51788ca1fa62ce0a5cf31428b715a2"
+    },
+    "tse_bubble_d2cm_illcond.wav": {
+      "channels": 1,
+      "samples_per_channel": 32000,
+      "sample_rate_hz": 16000,
+      "sha256": "6f30b5f4fffa8f1276f2107ec48e8aa5f078aadf8baaabe55e8b2971f9c25a25"
+    }
+  },
+  "samples": {
+    "near_target_ref": {
+      "file": "tse_near_target_ref.wav",
+      "analytic": {
+        "mean_square_per_channel": [
+          0.0128
+        ]
+      },
+      "float_measurements": {
+        "steady_window": [
+          1600,
+          30400
+        ],
+        "scoring_samples_per_channel": 28800,
+        "peak_all_samples": 0.16,
+        "mean_square_per_channel": [
+          0.012800000000000422
+        ],
+        "target_phasor_real_imag": [
+          [
+            0.16000000000000777,
+            4.145176973105152e-17
+          ]
+        ],
+        "interferer_phasor_real_imag": [
+          [
+            5.681594012797568e-16,
+            5.262709538840584e-16
+          ]
+        ]
+      },
+      "pcm_measurements": {
+        "steady_window": [
+          1600,
+          30400
+        ],
+        "scoring_samples_per_channel": 28800,
+        "peak_all_samples": 0.160003662109375,
+        "mean_square_per_channel": [
+          0.012801397033035756
+        ],
+        "target_phasor_real_imag": [
+          [
+            0.16000873098208135,
+            -2.0761486948001478e-14
+          ]
+        ],
+        "interferer_phasor_real_imag": [
+          [
+            -1.1735537322684512e-16,
+            1.4779210575850009e-16
+          ]
+        ],
+        "pcm_integer_measurements": {
+          "pcm_decode_divisor": 32768,
+          "integer_squared_sum_E_per_channel": [
+            395867387520
+          ],
+          "integer_denominator_D_per_channel": 30923764531200,
+          "integer_squared_sum_E_all_channels": 395867387520,
+          "integer_denominator_D_all_channels": 30923764531200,
+          "mean_square_all_channels": 0.012801397033035756
+        }
+      },
+      "quantization_max_abs_error": 1.5255919877964208e-05
+    },
+    "far_interferer_ref": {
+      "file": "tse_far_interferer_ref.wav",
+      "analytic": {
+        "mean_square_per_channel": [
+          0.0128
+        ]
+      },
+      "float_measurements": {
+        "steady_window": [
+          1600,
+          30400
+        ],
+        "scoring_samples_per_channel": 28800,
+        "peak_all_samples": 0.16,
+        "mean_square_per_channel": [
+          0.012800000000000042
+        ],
+        "target_phasor_real_imag": [
+          [
+            5.682546886386435e-16,
+            -1.2045984993793327e-15
+          ]
+        ],
+        "interferer_phasor_real_imag": [
+          [
+            0.1600000000000014,
+            6.357222878771416e-16
+          ]
+        ]
+      },
+      "pcm_measurements": {
+        "steady_window": [
+          1600,
+          30400
+        ],
+        "scoring_samples_per_channel": 28800,
+        "peak_all_samples": 0.160003662109375,
+        "mean_square_per_channel": [
+          0.012799618823919445
+        ],
+        "target_phasor_real_imag": [
+          [
+            6.856125583010852e-16,
+            -1.2727038378890191e-15
+          ]
+        ],
+        "interferer_phasor_real_imag": [
+          [
+            0.15999761733044762,
+            3.9109534544212614e-14
+          ]
+        ],
+        "pcm_integer_measurements": {
+          "pcm_decode_divisor": 32768,
+          "integer_squared_sum_E_per_channel": [
+            395812398600
+          ],
+          "integer_denominator_D_per_channel": 30923764531200,
+          "integer_squared_sum_E_all_channels": 395812398600,
+          "integer_denominator_D_all_channels": 30923764531200,
+          "mean_square_all_channels": 0.012799618823919445
+        }
+      },
+      "quantization_max_abs_error": 1.524508267868735e-05
+    },
+    "array_3ch": {
+      "file": "tse_array_3ch.wav",
+      "analytic": {
+        "mean_square_per_channel": [
+          0.025672,
+          0.025672,
+          0.025672
+        ]
+      },
+      "float_measurements": {
+        "steady_window": [
+          1600,
+          30400
+        ],
+        "scoring_samples_per_channel": 28800,
+        "peak_all_samples": 0.32690328021222625,
+        "mean_square_per_channel": [
+          0.025671999999999855,
+          0.025672000000000535,
+          0.025671999999999865
+        ],
+        "target_phasor_real_imag": [
+          [
+            0.1201169568714166,
+            -0.10569728791199334
+          ],
+          [
+            0.1600000000000057,
+            -9.434332173510442e-16
+          ],
+          [
+            0.12011695687141663,
+            -0.10569728791199341
+          ]
+        ],
+        "interferer_phasor_real_imag": [
+          [
+            0.15973799638814862,
+            -0.009152732373422108
+          ],
+          [
+            0.1600000000000011,
+            1.185537008069954e-15
+          ],
+          [
+            0.15973799638814878,
+            -0.009152732373422125
+          ]
+        ]
+      },
+      "pcm_measurements": {
+        "steady_window": [
+          1600,
+          30400
+        ],
+        "scoring_samples_per_channel": 28800,
+        "peak_all_samples": 0.326904296875,
+        "mean_square_per_channel": [
+          0.025671904941555114,
+          0.025672026752727107,
+          0.02567205731756985
+        ],
+        "target_phasor_real_imag": [
+          [
+            0.12011588064566657,
+            -0.10569649891117239
+          ],
+          [
+            0.16000055064153998,
+            1.5897740448010446e-06
+          ],
+          [
+            0.12011735086888983,
+            -0.10569694735573143
+          ]
+        ],
+        "interferer_phasor_real_imag": [
+          [
+            0.15973875077958585,
+            -0.009152833645546386
+          ],
+          [
+            0.15999957269071965,
+            1.7266558154820107e-06
+          ],
+          [
+            0.15973830734657812,
+            -0.009151842675685634
+          ]
+        ],
+        "pcm_integer_measurements": {
+          "pcm_decode_divisor": 32768,
+          "integer_squared_sum_E_per_channel": [
+            793871943480,
+            793875710340,
+            793876655520
+          ],
+          "integer_denominator_D_per_channel": 30923764531200,
+          "integer_squared_sum_E_all_channels": 2381624309340,
+          "integer_denominator_D_all_channels": 92771293593600,
+          "mean_square_all_channels": 0.025671996337284023
+        }
+      },
+      "quantization_max_abs_error": 1.5242904834095183e-05
+    },
+    "farfield_dsb": {
+      "file": "tse_farfield_dsb.wav",
+      "analytic": {
+        "mean_square_per_channel": [
+          0.024196620560343888
+        ],
+        "target_output_power": 0.011381936244320628,
+        "target_distortion_power": 0.0028361275113587396,
+        "interferer_leakage_power": 0.012790684316023261,
+        "sensor_noise_output_power": 2.4e-05,
+        "reference_mse": 0.015650811827382,
+        "reference_nmse": 1.2227196740142188,
+        "interferer_rejection_db": 0.0031618930349797984
+      },
+      "float_measurements": {
+        "steady_window": [
+          1600,
+          30400
+        ],
+        "scoring_samples_per_channel": 28800,
+        "peak_all_samples": 0.308918251100341,
+        "mean_square_per_channel": [
+          0.02419662056034009
+        ],
+        "target_phasor_real_imag": [
+          [
+            0.13341130458094616,
+            -0.07046485860799578
+          ]
+        ],
+        "interferer_phasor_real_imag": [
+          [
+            0.15982533092543325,
+            -0.006101821582281013
+          ]
+        ],
+        "reference_mse": 0.015650811827389106,
+        "reference_nmse": 1.2227196740147335
+      },
+      "pcm_measurements": {
+        "steady_window": [
+          1600,
+          30400
+        ],
+        "scoring_samples_per_channel": 28800,
+        "peak_all_samples": 0.308929443359375,
+        "mean_square_per_channel": [
+          0.02419665645575151
+        ],
+        "target_phasor_real_imag": [
+          [
+            0.1334116386453288,
+            -0.07046448208897517
+          ]
+        ],
+        "interferer_phasor_real_imag": [
+          [
+            0.15982538765590834,
+            -0.006104094537789906
+          ]
+        ],
+        "reference_mse": 0.01565102649619803,
+        "reference_nmse": 1.2226030062038085,
+        "pcm_integer_measurements": {
+          "pcm_decode_divisor": 32768,
+          "integer_squared_sum_E_per_channel": [
+            748251706680
+          ],
+          "integer_denominator_D_per_channel": 30923764531200,
+          "integer_squared_sum_E_all_channels": 748251706680,
+          "integer_denominator_D_all_channels": 30923764531200,
+          "mean_square_all_channels": 0.02419665645575151,
+          "integer_reference_error_E": 483988658040,
+          "integer_reference_power_P": 395867387520,
+          "integer_reference_nmse": 1.2226030062038085
+        }
+      },
+      "quantization_max_abs_error": 1.525096682052085e-05
+    },
+    "bubble_d10cm": {
+      "file": "tse_bubble_d10cm.wav",
+      "analytic": {
+        "mean_square_per_channel": [
+          0.01311431876841931
+        ],
+        "target_output_power": 0.012800000000000013,
+        "target_distortion_power": 3.155443620884048e-33,
+        "interferer_leakage_power": 8.60873043924749e-05,
+        "sensor_noise_output_power": 0.0002282314640268222,
+        "reference_mse": 0.0003143187684192971,
+        "reference_nmse": 0.024556153782757585,
+        "interferer_rejection_db": 21.722708604570506
+      },
+      "float_measurements": {
+        "steady_window": [
+          1600,
+          30400
+        ],
+        "scoring_samples_per_channel": 28800,
+        "peak_all_samples": 0.2013639405922408,
+        "mean_square_per_channel": [
+          0.013114318768454404
+        ],
+        "target_phasor_real_imag": [
+          [
+            0.16000000000021278,
+            -8.141004739467963e-14
+          ]
+        ],
+        "interferer_phasor_real_imag": [
+          [
+            0.010824190859072963,
+            0.007416973846140343
+          ]
+        ],
+        "reference_mse": 0.00031431876842082026,
+        "reference_nmse": 0.024556153782875772
+      },
+      "pcm_measurements": {
+        "steady_window": [
+          1600,
+          30400
+        ],
+        "scoring_samples_per_channel": 28800,
+        "peak_all_samples": 0.20135498046875,
+        "mean_square_per_channel": [
+          0.01311427692999132
+        ],
+        "target_phasor_real_imag": [
+          [
+            0.1599999784369497,
+            7.255985178898851e-07
+          ]
+        ],
+        "interferer_phasor_real_imag": [
+          [
+            0.010822783158641833,
+            0.007415845375199171
+          ]
+        ],
+        "reference_mse": 0.0003142804547678679,
+        "reference_nmse": 0.024550481010535353,
+        "pcm_integer_measurements": {
+          "pcm_decode_divisor": 32768,
+          "integer_squared_sum_E_per_channel": [
+            405542811780
+          ],
+          "integer_denominator_D_per_channel": 30923764531200,
+          "integer_squared_sum_E_all_channels": 405542811780,
+          "integer_denominator_D_all_channels": 30923764531200,
+          "mean_square_all_channels": 0.01311427692999132,
+          "integer_reference_error_E": 9718734780,
+          "integer_reference_power_P": 395867387520,
+          "integer_reference_nmse": 0.024550481010535353
+        }
+      },
+      "quantization_max_abs_error": 1.525460905033027e-05
+    },
+    "bubble_d2cm_illcond": {
+      "file": "tse_bubble_d2cm_illcond.wav",
+      "analytic": {
+        "mean_square_per_channel": [
+          0.0366667593160814
+        ],
+        "target_output_power": 0.008073932455078162,
+        "target_distortion_power": 0.000542052519863074,
+        "interferer_leakage_power": 0.0007709153168556496,
+        "sensor_noise_output_power": 0.027821911544147586,
+        "reference_mse": 0.02913487938086631,
+        "reference_nmse": 2.27616245163018,
+        "interferer_rejection_db": 12.20203295153568
+      },
+      "float_measurements": {
+        "steady_window": [
+          1600,
+          30400
+        ],
+        "scoring_samples_per_channel": 28800,
+        "peak_all_samples": 0.46389422740083525,
+        "mean_square_per_channel": [
+          0.036666759315746915
+        ],
+        "target_phasor_real_imag": [
+          [
+            0.12707424959282929,
+            5.887502085345508e-14
+          ]
+        ],
+        "interferer_phasor_real_imag": [
+          [
+            0.039185174986345,
+            0.002520455297168886
+          ]
+        ],
+        "reference_mse": 0.029134879380894655,
+        "reference_nmse": 2.27616245163232
+      },
+      "pcm_measurements": {
+        "steady_window": [
+          1600,
+          30400
+        ],
+        "scoring_samples_per_channel": 28800,
+        "peak_all_samples": 0.463897705078125,
+        "mean_square_per_channel": [
+          0.036666995350969955
+        ],
+        "target_phasor_real_imag": [
+          [
+            0.12707452068634437,
+            1.8996416228865458e-06
+          ]
+        ],
+        "interferer_phasor_real_imag": [
+          [
+            0.0391852994229339,
+            0.0025196960067051166
+          ]
+        ],
+        "reference_mse": 0.02913535959669389,
+        "reference_nmse": 2.2759515638415175,
+        "pcm_integer_measurements": {
+          "pcm_decode_divisor": 32768,
+          "integer_squared_sum_E_per_channel": [
+            1133881530300
+          ],
+          "integer_denominator_D_per_channel": 30923764531200,
+          "integer_squared_sum_E_all_channels": 1133881530300,
+          "integer_denominator_D_all_channels": 30923764531200,
+          "mean_square_all_channels": 0.036666995350969955,
+          "integer_reference_error_E": 900974999700,
+          "integer_reference_power_P": 395867387520,
+          "integer_reference_nmse": 2.2759515638415175
+        }
+      },
+      "quantization_max_abs_error": 1.5251109280689512e-05
+    }
+  },
+  "environment": {
+    "python": "3.13.12",
+    "numpy": "2.5.3",
+    "system": "Darwin",
+    "machine": "arm64"
+  },
+  "pcm_encode_multiplier": 32768,
+  "pcm_decode_divisor": 32768,
+  "pcm_half_step_error_bound": 1.52587890625e-05,
+  "pcm": "signed little-endian PCM16, nearest-even rounding; no dither, saturation, or per-file gain",
+  "limits": "Deterministic interior-frequency sinusoids (3200/2500/1100/1300/1700 Hz) with exact integer cycles on [1600, 30400) and known broadside spherical propagation; not natural speech, a measured room, blind source range estimation, or a subjective listening test. Digital amplitude squared is not Pa^2; common export gain 1.0 with no per-file normalization, fitted gain, or post-hoc delay alignment.",
+  "listening": "Start at low device volume; no autoplay or subjective listening claim."
+}

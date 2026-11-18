@@ -1,4 +1,4 @@
-> 本篇是第 12 章（扩展专题Ⅰ），接在第 11 章选型指南之后。数学预备内容可随时回查第 14 章附录 A。
+> 本篇是第 12 章（扩展专题Ⅰ），接在第 11 章选型指南之后。数学预备内容可随时回查第 16 章附录 A。
 >
 > 🏠 首页导读：[00_overview.md](00_overview.md) ｜ 上一篇：[11_selection-guide.md](11_selection-guide.md) ｜ 下一篇：[13_distributed-enhancement.md](13_distributed-enhancement.md)
 
@@ -46,7 +46,7 @@
 
 #### 先修内容与本篇的量
 
-多通道时延与复指数相位约定可回查[第 2 章 §2.3](02_basics-signal-model.md#sec-2-3)，阵列孔径、差分共阵与通道校准可回查[第 3 章](03_array-geometry.md)，空间内积与匹配波束权重可回查[第 5 章 §5.1](05_beamforming.md#sec-5-1)，Hermitian 半正定矩阵与最小二乘基础见[附录 A §14.3](14_appendix-symbols-math.md#sec-14-3)。
+多通道时延与复指数相位约定可回查[第 2 章 §2.3](02_basics-signal-model.md#sec-2-3)，阵列孔径、差分共阵与通道校准可回查[第 3 章](03_array-geometry.md)，空间内积与匹配波束权重可回查[第 5 章 §5.1](05_beamforming.md#sec-5-1)，Hermitian 半正定矩阵与最小二乘基础见[附录 A §16.3](16_appendix-symbols-math.md#sec-16-3)。
 
 全章沿用全书统一的数学记号：列向量加箭头（如 $\vec x$），矩阵用大写正粗体（如 $\mathbf R$），实转置记为 $^\top$，复共轭转置记为 $^H$。麦克风通道数记为 $M$，候选网格点总数记为 $J$，统计平均所用的快拍数记为 $L$；时域采样下标为 $n$，频点下标为 $k$，帧或快拍下标为 $\ell$。为避免与频点索引 $k$ 混淆，空间波数统一记作 $\kappa = 2\pi f / c$（单位：$\mathrm{rad/m}$）。
 
@@ -123,7 +123,7 @@ $$\begin{aligned}
 &=\frac{1}{L}\sum_{\ell=1}^{L}|\vec v^H\vec x_\ell|^2\ge 0.
 \end{aligned}$$
 
-因为每一项都是复数内积的模平方，所以只要保留完整的对角与非对角元素，$\hat{\mathbf R}$ 必然是 Hermitian 半正定矩阵（$\hat{\mathbf R} \succeq 0$）。注意这一性质纯粹由外积平方和结构保证，并不要求这 $L$ 个快拍的样本均值恰好为零；严格来说，式(12-3)定义的是未中心化的二阶矩矩阵，中心化样本协方差还需额外减去均值外积 $\bar{\vec x}\bar{\vec x}^H$（详见[附录 A E14-02](14_appendix-symbols-math.md#sec-u-152b8861e4)）。
+因为每一项都是复数内积的模平方，所以只要保留完整的对角与非对角元素，$\hat{\mathbf R}$ 必然是 Hermitian 半正定矩阵（$\hat{\mathbf R} \succeq 0$）。注意这一性质纯粹由外积平方和结构保证，并不要求这 $L$ 个快拍的样本均值恰好为零；严格来说，式(12-3)定义的是未中心化的二阶矩矩阵，中心化样本协方差还需额外减去均值外积 $\bar{\vec x}\bar{\vec x}^H$（详见[附录 A E16-02](16_appendix-symbols-math.md#sec-u-152b8861e4)）。
 
 #### 峰值复幅度与均方复系数
 

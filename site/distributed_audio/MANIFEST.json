@@ -12,7 +12,7 @@
     "codes/chapters/ch04/core/covariance.py": "d704be037100ee53caf6e2130fbabbe14ce6eeff9e3d11dde389fd368d271249",
     "codes/chapters/ch10/sro_closed_loop_demo.py": "a572e60eaac16cdb20c378b955e2bea4590b6531d788ad72d27cce9ad9ac400a",
     "codes/chapters/ch10/core/engineering.py": "22f5fcbbfdaedc399b5de1eb4c718c4f0c692dcb5dd1bdf49c7ef4569e43ae1b",
-    "codes/chapters/ch00/core/audio_samples.py": "8fb4e9e822129d0019ef047299effd53b4f02f90ff68b5198016d04ddad31cf8",
+    "codes/chapters/ch00/core/audio_samples.py": "bf1145e19e2ec99623c0583220192922c24f0ed3d293212309fe4a2f3bfc8385",
     "codes/chapters/ch00/io_contracts.py": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974"
   },
   "parameters": {

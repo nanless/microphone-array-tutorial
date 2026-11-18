@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>源码获取与独立复现记录 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="c1e13cc91b8b"><style>
+<meta name="source-digest" content="820e0688bd26"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -9,8 +9,8 @@ h1,h2,h3,h4{scroll-margin-top:60px}
 @media screen{.main a[id^="e"],.main .exercise-alias{scroll-margin-top:80px}}
 @media screen{.main .exercise-alias{top:0}}
 @media screen{.main a[id="e05-20"]{scroll-margin-top:60px}}
-@media screen{.main a[id="e15-11"],.main a[id="e15-12"],.main a[id="e15-13"],.main a[id="e15-14"],.main a[id="e15-15"]{scroll-margin-top:140px}}
-@media screen{.main .exercise-alias[id="e13-11"],.main .exercise-alias[id="e13-12"],.main .exercise-alias[id="e13-13"],.main .exercise-alias[id="e13-14"],.main .exercise-alias[id="e13-15"]{scroll-margin-top:140px}}
+@media screen{.main a[id="e17-11"],.main a[id="e17-12"],.main a[id="e17-13"],.main a[id="e17-14"],.main a[id="e17-15"]{scroll-margin-top:140px}}
+@media screen{.main .exercise-alias[id="e13-11"],.main .exercise-alias[id="e13-12"],.main .exercise-alias[id="e13-13"],.main .exercise-alias[id="e13-14"],.main .exercise-alias[id="e13-15"],.main .exercise-alias[id="e15-11"],.main .exercise-alias[id="e15-12"],.main .exercise-alias[id="e15-13"],.main .exercise-alias[id="e15-14"],.main .exercise-alias[id="e15-15"]{scroll-margin-top:140px}}
 @media screen{.main a[id^="e06-"]{scroll-margin-top:60px}}
 @media screen{.main a[id^="e07-"],.main a[id^="e08-"]{scroll-margin-top:60px}}
 @media screen{.main a[id^="e11-"]{scroll-margin-top:60px}}
@@ -301,10 +301,10 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <div class="chap"><a href="../11_selection-guide.html">第 11 章 · 总结与选型指南</a></div>
 <div class="chap"><a href="../12_acoustic-imaging.html">第 12 章 · 声学成像与噪声源诊断</a></div>
 <div class="chap"><a href="../13_distributed-enhancement.html">第 13 章 · 分布式麦克风协同增强</a></div>
-<div class="chap"><a href="../16_spatial-wearable-arrays.html">第 16 章 · 空间声场与可穿戴阵列</a></div>
-<div class="chap"><a href="../17_target-extraction-diarization.html">第 17 章 · 条件目标提取与多通道日志</a></div>
-<div class="chap"><a href="../14_appendix-symbols-math.html">第 14 章 · 附录 A：符号术语数学</a></div>
-<div class="chap"><a href="../15_appendix-guide.html">第 15 章 · 附录 B：路径地图与练习</a></div></nav>
+<div class="chap"><a href="../14_spatial-wearable-arrays.html">第 14 章 · 空间声场与可穿戴阵列</a></div>
+<div class="chap"><a href="../15_target-extraction-diarization.html">第 15 章 · 条件目标提取与多通道日志</a></div>
+<div class="chap"><a href="../16_appendix-symbols-math.html">第 16 章 · 附录 A：符号术语数学</a></div>
+<div class="chap"><a href="../17_appendix-guide.html">第 17 章 · 附录 B：路径地图与练习</a></div></nav>
 <main class="main" id="main-content" tabindex="-1"><div class="offline-note" id="offnote">当前离线：公式显示为源码，正文讲解不受影响。</div>
 <details class="toc-mobile"><summary>本页目录</summary><nav aria-label="本页目录"><ul>
 <li><a href="04_source_reproduction.html#sec-u-630cc32c87">1. 先确定复现对象</a></li>
@@ -688,7 +688,7 @@ ViSQOL 还需固定 speech/audio 模式、采样率和映射模型，不能混�
 <p>这个证据能揭示同词错时、仅端点相接、正重叠与空输入的固定版本行为。原时间核的两个严格不等式还允许假设点落在正长度参考区间内部，两端点则不允许；本书小核先要求正持续时间，这个更窄输入域不能冒称原核拒绝点输入，对应 <a href="../11_selection-guide.html#e11-24">E11-24 词时间</a>；<a href="../11_selection-guide.html#e11-23">E11-23 话段边界</a>则由本书独立枚举解释。原核工具不运行生产 cpWER/ORC-WER/tcpWER 包装器，更不运行 ASR、身份关联或设备。2026-09-28旧接口报告中的完整 Python 调用缺扩展失败保留为历史事实；新的原生两核成功不能覆盖那次失败，也不能说明完整包依赖已齐。</p>
 <p><a id="appendix-solver-contracts"></a></p>
 <span id="sec-13" class="anchor-alias" aria-hidden="true"></span><span id="附录-a最小二乘回退数值秩与物理目标" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-1cd13055df">附录 A：最小二乘回退、数值秩与物理目标</h3>
-<p>矩阵求解成功后还要问两个问题：结果是否满足所需的优化目标，数组类型是否保存了求解器返回的数值。<a href="../14_appendix-symbols-math.html#sec-u-3899a8c1b7">附录 A 的 E14-03</a>说明零残差不保证参数唯一；<a href="../14_appendix-symbols-math.html#sec-u-935c1036ea">E14-05</a>说明奇异协方差中的最小范数线性方程解，不自动成为约束噪声最小化的解。这两个判断分别涉及代数目标和物理目标，不能用“输出有限”替代。</p>
+<p>矩阵求解成功后还要问两个问题：结果是否满足所需的优化目标，数组类型是否保存了求解器返回的数值。<a href="../16_appendix-symbols-math.html#sec-u-3899a8c1b7">附录 A 的 E16-03</a>说明零残差不保证参数唯一；<a href="../16_appendix-symbols-math.html#sec-u-935c1036ea">E16-05</a>说明奇异协方差中的最小范数线性方程解，不自动成为约束噪声最小化的解。这两个判断分别涉及代数目标和物理目标，不能用“输出有限”替代。</p>
 <p><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/appendix_a/reports/upstream_solver_contracts.json">旧历史报告</a>记录本书于2026-10-02在Python 3.13.12、NumPy 2.5.3环境中运行<a href="https://github.com/nanless/microphone-array-tutorial/blob/241513c8f35d952747f16ccbb40cf85a5363b5ae/codes/chapters/appendix_a/examples/audit_upstream_solver_contracts.py">当时版本的限定工具</a>。旧报告登记完整加载固定 <code>pb_bss</code> 提交 <code>10acc347fc9ea21e3d312806a0bd751d0d0af183</code> 的<a href="https://github.com/fgnt/pb_bss/blob/10acc347fc9ea21e3d312806a0bd751d0d0af183/pb_bss/math/solve.py" title="citation">原 <code>pb_bss/math/solve.py</code></a>，仅调用 <code>stable_solve</code>；不做AST提取、源码补丁或算法替身，也不导入完整 <code>pb_bss</code> 包。该模块是维护者提供的通用求解助手，按原<a href="https://github.com/fgnt/pb_bss/blob/10acc347fc9ea21e3d312806a0bd751d0d0af183/LICENSE" title="citation">MIT许可证</a>使用，不是本书自行实现的求解器。</p>
 <p>原函数先尝试 <code>numpy.linalg.solve</code>；矩阵奇异时，逐矩阵回退到 <code>numpy.linalg.lstsq</code>。对
 $\mathbf A=\left[\begin{smallmatrix}1&1\\2&2\end{smallmatrix}\right]$、$\mathbf B=\mathbf I_2$，令两行参数之和为 $s$，第一列残差最小化为 $(s-1)^2+(2s)^2$，驻点 $s=1/5$；第二列则为 $s^2+(2s-1)^2$，驻点 $s=2/5$。在每列固定和的解中，两个分量取相等值使范数最小，因此独立期望为
@@ -726,7 +726,7 @@ $\left[\begin{smallmatrix}1/10&1/5\\1/10&1/5\end{smallmatrix}\right]$。</p>
 </table></div>
 <p>最后一行的物理对照完全由本书手算：若把 $\mathbf A$ 视为噪声协方差、目标导向取 $[1,1]^\top$，约束是 $w_1+w_2=1$，输出噪声功率为 $|w_2|^2$。权重 $[1,0]^\top$ 满足约束且功率为零；归一化后的最小二乘方向 $[0,1]^\top$ 则功率为1。工具没有调用上游波束形成器，不能把这个目标差异诊断写成已运行完整MVDR链。</p>
 <p>另外两例直接调用NumPy接口，与上游调用分栏记录。取 $\mathbf A=\operatorname{diag}(1,10^{-8})$、$\vec b=[1,10^{-8}]^\top$，显式 <code>rcond=1e-6</code> 得秩1、解 $[1,0]^\top$、残差范数 $10^{-8}$；<code>rcond=1e-10</code> 得秩2、解 $[1,1]^\top$、残差零。两次返回的残差数组都为空，因为矩阵为方阵，接口条件是 $M\leq N$。判秩和残差各自记录，依据<a href="https://numpy.org/doc/stable/reference/generated/numpy.linalg.lstsq.html" title="citation">NumPy 2.5接口的Parameters/Returns</a>（2026-10-02核实）。<code>stable_solve</code> 本身没有向调用者暴露这两个 <code>rcond</code> 参数。</p>
-<p><a href="../14_appendix-symbols-math.html#e14-16">E14-16截断与ridge</a>进一步区分删去弱方向与连续收缩；<a href="../14_appendix-symbols-math.html#e14-18">E14-18厄米输入检查</a>则提醒 <code>eigh</code> 使用指定三角且忽略对角虚部，不能把分解成功当作输入协方差有效的证明。这两个练习由本书入口实现，不属于上述原函数的执行范围。<a href="https://www.netlib.org/lapack/lug/node27.html" title="citation">Netlib LAPACK最小二乘驱动说明</a>的式(2.1)/表2.3区分满秩QR/LQ与秩亏求解，支持先说明目标、秩假设和截断策略，再选择接口；本书没有另行编译这些Fortran驱动。</p>
+<p><a href="../16_appendix-symbols-math.html#e16-16">E14-16截断与ridge</a>进一步区分删去弱方向与连续收缩；<a href="../16_appendix-symbols-math.html#e16-18">E14-18厄米输入检查</a>则提醒 <code>eigh</code> 使用指定三角且忽略对角虚部，不能把分解成功当作输入协方差有效的证明。这两个练习由本书入口实现，不属于上述原函数的执行范围。<a href="https://www.netlib.org/lapack/lug/node27.html" title="citation">Netlib LAPACK最小二乘驱动说明</a>的式(2.1)/表2.3区分满秩QR/LQ与秩亏求解，支持先说明目标、秩假设和截断策略，再选择接口；本书没有另行编译这些Fortran驱动。</p>
 <pre><code class="language-bash">.venv/bin/python -B -m codes.chapters.appendix_a.examples.audit_upstream_solver_contracts
 .venv/bin/python -B -m codes.chapters.appendix_a.examples.audit_upstream_solver_contracts --report codes/chapters/appendix_a/reports/upstream_solver_contracts_current.json
 </code></pre>
@@ -768,7 +768,7 @@ $\left[\begin{smallmatrix}1/10&1/5\\1/10&1/5\end{smallmatrix}\right]$。</p>
 <p>工具保留输入类型、输出、独立期望、容差、警告和失败分类，不修补上游，也不把四个控制并入旧四例的通过计数。完整包、波束音频、模型和设备都未在这个审计中运行。<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/tests/test_codes_appendix_a_source_guards.py">独立负控</a>检查有效旧pyc与被拒报告目标，正常原源执行另由<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/tests/test_codes_upstream_solver_contracts.py">接口测试</a>核验。</p>
 <p><a id="appendix-b-reproduction"></a></p>
 <span id="sec-14" class="anchor-alias" aria-hidden="true"></span><span id="附录-b先对齐研究方向的任务与版本" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-6882e0b4c8">附录 B：先对齐研究方向的任务与版本</h3>
-<p><a href="../15_appendix-guide.html#sec-15-3">附录B的研究速览</a>包含八类方向，但它们并不输出同一种结果。目标说话人提取输出音轨，DiCoW输出指定说话人的文字，CHiME-9 ECHI输出低延迟增强流；ArrayDPS的输出又有参考通道与混响源像的定义。选型前先固定目标，不能把不同任务的WER、SI-SDR或延迟写成统一排名。</p>
+<p><a href="../17_appendix-guide.html#sec-17-3">附录B的研究速览</a>包含八类方向，但它们并不输出同一种结果。目标说话人提取输出音轨，DiCoW输出指定说话人的文字，CHiME-9 ECHI输出低延迟增强流；ArrayDPS的输出又有参考通道与混响源像的定义。选型前先固定目标，不能把不同任务的WER、SI-SDR或延迟写成统一排名。</p>
 <p>以下定位与实现边界于2026-10-02核查。论文只用实际阅读的相关节说明方法，不转引条件不齐的性能数字；各项目的完整固定提交、许可与本地选集仍以<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/SOURCES.lock.json">锁表</a>为准。</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
 <thead>
@@ -834,7 +834,7 @@ $\left[\begin{smallmatrix}1/10&1/5\\1/10&1/5\end{smallmatrix}\right]$。</p>
 <p>这项候选的选型前提包括目标域的语音先验、剩余噪声的高斯/协方差近似、有效多通道混合与采样计算预算。2026-10-02核查的<a href="https://www.cmsworkshops.com/ICASSP2026/view_paper.php?PaperNum=6235&amp;bare=1" title="citation">ICASSP 2026正式程序单篇</a>确认该论文的会议报告身份；方法引用仍明确使用作者v1，不补未核定的出版DOI或页码。<a href="https://xzwy.github.io/ArrayDPSRefineDemo/" title="citation">作者演示页</a>提供方法与试听，没有给出可核代码/权重许可入口。本书只保留这项问题、步骤与假设的研究索引，未取得或执行模型，未将它加入已复现算法或低延迟基线目录。</p>
 <p><a id="tac-contracts"></a></p>
 <span id="sec-17" class="anchor-alias" aria-hidden="true"></span><span id="tac作者源共享结构核验与未执行原网络的界线" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-16e8efe96b">TAC作者源：共享结构核验与未执行原网络的界线</h3>
-<p>附录B的通道置换问题需要区分两个性质：通道顺序改变时，通道索引输出按相同顺序重排，这是置换等变；跨通道平均不随顺序变化，这是聚合量的置换不变。加入一个通道通常改变平均值，所以支持可变通道数不等于数值输出不随麦数变化。<a href="https://arxiv.org/html/1910.14104v3" title="citation">TAC作者论文v3 §2.1式(1)～(4)</a>用共享变换、平均、拼接与残差连接说明这一步；<a href="../15_appendix-guide.html#e15-11">E15-11</a>分别手算交换通道、只复制一路与复制全部通道。</p>
+<p>附录B的通道置换问题需要区分两个性质：通道顺序改变时，通道索引输出按相同顺序重排，这是置换等变；跨通道平均不随顺序变化，这是聚合量的置换不变。加入一个通道通常改变平均值，所以支持可变通道数不等于数值输出不随麦数变化。<a href="https://arxiv.org/html/1910.14104v3" title="citation">TAC作者论文v3 §2.1式(1)～(4)</a>用共享变换、平均、拼接与残差连接说明这一步；<a href="../17_appendix-guide.html#e17-11">E17-11</a>分别手算交换通道、只复制一路与复制全部通道。</p>
 <p>本书通过获取工具取得作者<a href="https://github.com/yluo42/TAC/tree/e3373b73358a96af6f64fdbe25327def8d6bd973" title="citation">固定提交 <code>e3373b73358a96af6f64fdbe25327def8d6bd973</code></a>的 <code>README.md</code>、<code>FaSNet.py</code>、<code>utility/__init__.py</code>、<code>utility/models.py</code> 四个文件，独立保存在被忽略的上游工作树。README明确声明CC-BY-NC-SA-3.0-US，源代码未随本教程再分发；没有取得音频、数据、权重或另一 <code>iFaSNet.py</code> 扩展。NumPy/PyTorch是原模块的依赖，但这一审计只使用标准库解析Python语法，不导入两模块或Torch。</p>
 <p><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/appendix_b/examples/audit_tac_contracts.py">只读合同工具</a>核对origin、完整HEAD、四文件SHA与Git blob、README许可、当前锁表及获取状态摘要、完整选集与所用文件的独立身份、四项直接执行源的前后摘要及前后洁净状态，再执行十项静态AST检查。它不编译或执行原 <code>forward</code>，也没有把本书的独立NumPy夹具作为网络运行证据。</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table class="source-contract-readable-table">
@@ -878,7 +878,7 @@ $\left[\begin{smallmatrix}1/10&1/5\\1/10&1/5\end{smallmatrix}\right]$。</p>
 </code></pre>
 <p>默认只输出JSON；仅显式 <code>--report</code> 原子保存<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/appendix_b/reports/tac_contracts_current.json">当前独立报告</a>。报告状态是 <code>passed_static_contracts</code>，保存十项结构定位与方法片段摘要，原运行调用计数为零；仓内只允许此指定当前报告；仓外普通报告仍可显式保存。工具拒绝旧报告、仓内源码、锁表、状态和快照等其他目标，并核对重复JSON字段、非有限数字、词法 <code>..</code>、符号链接、非普通目标和上游缓存。写前及替换前的有限核验不保证消除并发竞态。报告不替代分离性能、权重/数据授权或设备验收。</p>
 <p><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/appendix_b/reports/tac_contracts.json">历史报告</a>保留2026-10-01实际运行时的100项目锁表与原工具身份；旧锁表原字节已登记在<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/source_snapshots/SOURCES.55ab323ba665633141c4864763095046f9c6161ce2d88ca2aa9332dde7ec23f0.json">来源快照</a>。当前报告绑定115项目锁表及其获取状态，完整选集核对与十项静态结构证据分别记录。原历史报告不换摘要、不升级成神经运行；共享核后续变化也不追溯改写先前报告的真实依赖身份。</p>
-<p>附录B的房间仿真、分数延迟和通道聚合数学例仍按各自的输入、脚本、PCM与统计窗口解释。对照时，<a href="../15_appendix-guide.html#e15-12">E15-12</a>复算共同尺度不变的DRR与极端数值边界，<a href="../15_appendix-guide.html#e15-13">E15-13</a>条件化时间原点与跨度后外推T20，<a href="../15_appendix-guide.html#e15-14">E15-14</a>按同源PCM与稳定评分窗比较同DRR的两条短RIR。这些独立练习不能由静态来源报告统一登记成原神经系统已运行。</p>
+<p>附录B的房间仿真、分数延迟和通道聚合数学例仍按各自的输入、脚本、PCM与统计窗口解释。对照时，<a href="../17_appendix-guide.html#e17-12">E17-12</a>复算共同尺度不变的DRR与极端数值边界，<a href="../17_appendix-guide.html#e17-13">E17-13</a>条件化时间原点与跨度后外推T20，<a href="../17_appendix-guide.html#e17-14">E17-14</a>按同源PCM与稳定评分窗比较同DRR的两条短RIR。这些独立练习不能由静态来源报告统一登记成原神经系统已运行。</p>
 <span id="sec-18" class="anchor-alias" aria-hidden="true"></span><span id="6-何时可以进入设备比较" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-56cf8b0bbf">6. 何时可以进入设备比较</h2>
 <p>只有两套候选实现使用同一输入、评分区域和延迟口径，性能比较才有明确含义。硬件上再分别测量启动加载、
 稳定运行、最慢帧、峰值内存和功耗状态；平均实时系数小于一仍可能发生连续帧超期。</p>
@@ -1065,7 +1065,7 @@ $\left[\begin{smallmatrix}1/10&1/5\\1/10&1/5\end{smallmatrix}\right]$。</p>
 <p>独立设备的采样率有微小差异时，两路记录的相对时移随记录长度积累。估计器从观测中推测采样率偏差，重采样器则使用给定偏差改变取样位置；两者的输入和输出不同。DXCP-PhaT入口用于定位前者的实现，管道读写用于观察数据怎样传递。此次没有完整复审DXCP数学主体或运行它，不能从文件取得推断估计精度。</p>
 <p><a href="https://github.com/CN-UPB/WASN/blob/9b2590eb104abcde2a35af52c74d64ce30bf5ae2/sync_sed/system/resample.py" title="citation"><code>resample.py::STFTResampler</code></a>的构造参数<code>sro</code>以ppm输入，构造器除以一百万；该参数非空时，逐次调用传入的<code>sro</code>被忽略。原注释把这个配置用于<strong>模拟</strong>给定偏差，补偿已知$x$ ppm则要求构造器传入$-x$。这说明符号与单位需要从实际接口确认，不能看见“resample”就认定程序会盲估计时钟。</p>
 <p>无固定构造值时，<code>__call__(..., sro)</code>中的参数直接参与延迟递推，原方法没有再次除以一百万。因此调用参数应是无量纲相对速差：80 ppm在这个入口传$80\times10^{-6}$，而不是80。同名参数在构造与逐块调用中有不同单位，照搬数值会产生一百万倍的尺度错误。</p>
-<p>例如80 ppm表示相对采样率差$80\times10^{-6}$；按16 kHz名义时钟持续10 s，相对累计样本差的量级为$16000\times10\times80\times10^{-6}=12.8$点。这是单位换算的数学例子，不是原程序执行结果；取样率比值、延迟正负与接收端时间原点仍要在所选接口下解释。导读工程基线和<a href="../13_distributed-enhancement.html">第15章</a>提供可独立复算的教学入口。</p>
+<p>例如80 ppm表示相对采样率差$80\times10^{-6}$；按16 kHz名义时钟持续10 s，相对累计样本差的量级为$16000\times10\times80\times10^{-6}=12.8$点。这是单位换算的数学例子，不是原程序执行结果；取样率比值、延迟正负与接收端时间原点仍要在所选接口下解释。导读工程基线和<a href="../13_distributed-enhancement.html">第13章</a>提供可独立复算的教学入口。</p>
 <p><a href="https://github.com/CN-UPB/WASN/blob/9b2590eb104abcde2a35af52c74d64ce30bf5ae2/sync_sed/system/sim_sro.py" title="citation"><code>sim_sro.py</code></a>逐块调用上述重采样器，只在返回非空时向输出管道写块。重采样器保留内部缓冲；此封装没有显式排空记录尾部的步骤。实际流还需明确块长、首次可用输出、积累状态与记录尾部；等待期间的空返回或块延迟不能直接解释为音频丢失，结束时的剩余样本则要另行处理。</p>
 <p>所取文件涉及NumPy、SciPy、sounddevice或Pyro4等导入，没有安装或执行。本次也没有取得固件、访问麦克风设备、部署MARVELO/SED或验证网络性能。未选择的包安装模板含MIT分类而根许可为Apache-2.0，其空依赖列表也不能代替直接导入核对；这里没有把选集称为完整可安装包。</p>
 <span id="sec-28" class="anchor-alias" aria-hidden="true"></span><span id="libricss评分协议也是系统输入的一部分" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-d50665334b">LibriCSS：评分协议也是系统输入的一部分</h3>

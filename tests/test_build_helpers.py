@@ -274,7 +274,7 @@ class BuildHelpersTest(unittest.TestCase):
             (ROOT / 'chapters/08_speech-separation.md',
              ('后窗输出', '每声道整数误差', '实际 PCM MSE', '实际 PCM 相对平方误差'),
              44, {1: 8, 2: 13, 3: 11, 4: 12}),
-            (ROOT / 'chapters/14_appendix-symbols-math.md',
+            (ROOT / 'chapters/16_appendix-symbols-math.md',
              ('权重', '误差均方的逐项计算', '解析 MSE', '解析 NMSE（除以 $0.02$）'),
              52, {1: 6}),
             (build_site.RESEARCH_ROOT / '02_aec_wpe_separation.md',
@@ -346,7 +346,7 @@ class BuildHelpersTest(unittest.TestCase):
                 self.assertIs(region.find('table'), table)
 
     def test_narrow_table_budget_rejects_similar_headers_and_wrong_file(self):
-        path = ROOT / 'chapters/14_appendix-symbols-math.md'
+        path = ROOT / 'chapters/16_appendix-symbols-math.md'
         headers = ('符号', '含义')
         source = self.budget_fixture(headers)
         # resolve() accepts the same file spelled through a parent directory.
@@ -642,13 +642,13 @@ class BuildHelpersTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             source = Path(directory)
             names = ('00_overview.md', '12_acoustic-imaging.md',
-                     '14_appendix-symbols-math.md', '15_appendix-guide.md')
+                     '16_appendix-symbols-math.md', '17_appendix-guide.md')
             (source / names[0]).write_text('# 导读\n\n## 路径\n\n末段。\n')
             (source / names[1]).write_text(
                 '## 专题\n\n### 14.1 模型\n\n'
-                '[旧附录](14_appendix-symbols-math.html#e14-01)\n\n末段。\n')
+                '[旧附录](14_appendix-symbols-math.html#e14-14)\n\n末段。\n')
             (source / names[2]).write_text(
-                '## 数学\n\n### 12.1 原主题\n\n<a id="e14-01"></a>\n\n末段。\n')
+                '## 数学\n\n### 12.1 原主题\n\n<a id="e16-14"></a>\n\n末段。\n')
             (source / names[3]).write_text('## 路径\n\n### 13.1 原路径\n\n末段。\n')
             chapters = [(name, name) for name in names]
             # The synthetic imaging chapter lacks the real two-point example.
@@ -662,8 +662,9 @@ class BuildHelpersTest(unittest.TestCase):
             self.assertEqual([item[1] for item in outline],
                              ['ch-0', 'ch-14', 'ch-12', 'ch-13'])
             self.assertIn('id="ch-12-sec-12-1"', page)
-            self.assertIn('id="ch-12-e14-01"', page)
-            self.assertIn('href="#ch-12-e14-01"', page)
+            self.assertIn('id="ch-12-e14-14"', page)
+            self.assertIn('id="ch-12-e16-14"', page)
+            self.assertIn('href="#ch-12-e14-14"', page)
             self.assertNotIn('id="ch-2-sec-12-1"', page)
             self.assertIn('全书完', page)
             documents = {name: (source / name).read_text() for name in names}
@@ -1089,7 +1090,7 @@ class BuildHelpersTest(unittest.TestCase):
             self.assertIn('<table class="selection-readable-table">', html)
             self.assertEqual(html.count('scope="col"'), len(labels))
             self.assertIn('class="table-scroll" tabindex="0" role="region"', html)
-            for other in ('10_engineering-practice.md', '14_appendix-symbols-math.md'):
+            for other in ('10_engineering-practice.md', '16_appendix-symbols-math.md'):
                 html, _ = build_site.render(source, ROOT/'chapters'/other)
                 self.assertNotIn('selection-readable-table', html)
             for near in (source.replace(labels[0], '其他表头', 1),

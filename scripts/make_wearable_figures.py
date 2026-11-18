@@ -1,7 +1,7 @@
-"""Generate figures 81..84 and numerical JSON reports for Chapter 16.
+"""Generate figures 81..84 and numerical JSON reports for Chapter 14.
 
-Run from the repository root after generating ``codes/chapters/ch16/wearable_audio``:
-    .venv/bin/python -m codes.chapters.ch16.examples.generate_wearable_audio
+Run from the repository root after generating ``codes/chapters/ch14/wearable_audio``:
+    .venv/bin/python -m codes.chapters.ch14.examples.generate_wearable_audio
     .venv/bin/python scripts/make_wearable_figures.py
 """
 from __future__ import annotations
@@ -24,22 +24,22 @@ from codes.chapters.ch00.io_contracts import (
     write_json_report,
 )
 from codes.chapters.ch02.core.conventions import SPEED_OF_SOUND
-from codes.chapters.ch16.core.binaural_matching import (
+from codes.chapters.ch14.core.binaural_matching import (
     binaural_coherence_with_mixing,
     bsm_directional_metrics,
     bsm_ls_weights,
     bsm_magls_weights,
 )
-from codes.chapters.ch16.core.spatial_parametric import (
+from codes.chapters.ch14.core.spatial_parametric import (
     active_intensity_and_diffuseness,
     open_sphere_foa_radial_weights,
 )
-from codes.chapters.ch16.core.wearable_fusion import (
+from codes.chapters.ch14.core.wearable_fusion import (
     corcos_wind_coherence,
     cross_modal_mvdr_mmse,
     hear_through_response,
 )
-from codes.chapters.ch16.examples.generate_wearable_audio import (
+from codes.chapters.ch14.examples.generate_wearable_audio import (
     DEFAULT_OUTPUT,
     check_assets,
 )
@@ -54,15 +54,15 @@ from scripts.make_figures import (
     plt,
 )
 
-REPORT_DIR = ROOT / "codes/chapters/ch16/reports"
+REPORT_DIR = ROOT / "codes/chapters/ch14/reports"
 FIG_DIR = ROOT / "figures"
 
 SCRIPT_INPUT_PATHS = (
-    "codes/chapters/ch16/core/spatial_parametric.py",
-    "codes/chapters/ch16/core/binaural_matching.py",
-    "codes/chapters/ch16/core/wearable_fusion.py",
-    "codes/chapters/ch16/core/wearable_audio.py",
-    "codes/chapters/ch16/examples/generate_wearable_audio.py",
+    "codes/chapters/ch14/core/spatial_parametric.py",
+    "codes/chapters/ch14/core/binaural_matching.py",
+    "codes/chapters/ch14/core/wearable_fusion.py",
+    "codes/chapters/ch14/core/wearable_audio.py",
+    "codes/chapters/ch14/examples/generate_wearable_audio.py",
     "codes/chapters/ch02/core/conventions.py",
     "codes/chapters/ch00/core/audio_samples.py",
     "codes/chapters/ch00/io_contracts.py",
@@ -195,7 +195,7 @@ def build_fig81(inputs: dict[str, str], manifest_sha: str) -> None:
 
     report = {
         "figure": 81,
-        "exercise_ids": ["E16-02", "E16-04", "E16-05", "E16-06"],
+        "exercise_ids": ["E14-02", "E14-04", "E14-05", "E14-06"],
         "source_sha256": inputs,
         "audio_manifest_sha256": manifest_sha,
         "anchor_points": {
@@ -328,7 +328,7 @@ def build_fig82(inputs: dict[str, str], manifest_sha: str) -> None:
 
     report = {
         "figure": 82,
-        "exercise_ids": ["E16-07", "E16-08", "E16-10", "E16-11"],
+        "exercise_ids": ["E14-07", "E14-08", "E14-10", "E14-11"],
         "source_sha256": inputs,
         "audio_manifest_sha256": manifest_sha,
         "anchor_3dir": {
@@ -460,7 +460,7 @@ def build_fig83(manifest: dict, signals: dict[str, np.ndarray], inputs: dict[str
 
     report = {
         "figure": 83,
-        "exercise_ids": ["E16-12", "E16-13", "E16-16"],
+        "exercise_ids": ["E14-12", "E14-13", "E14-16"],
         "source_sha256": inputs,
         "audio_manifest_sha256": manifest_sha,
         "wav_sha256": {name: rec["sha256"] for name, rec in manifest["files"].items()},
@@ -559,7 +559,7 @@ def build_fig84(manifest: dict, signals: dict[str, np.ndarray], inputs: dict[str
 
     report = {
         "figure": 84,
-        "exercise_ids": ["E16-14", "E16-15", "E16-16"],
+        "exercise_ids": ["E14-14", "E14-15", "E14-16"],
         "source_sha256": inputs,
         "audio_manifest_sha256": manifest_sha,
         "wav_sha256": {

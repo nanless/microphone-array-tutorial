@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>工业音频实现研究 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="c1e13cc91b8b"><style>
+<meta name="source-digest" content="820e0688bd26"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -9,8 +9,8 @@ h1,h2,h3,h4{scroll-margin-top:60px}
 @media screen{.main a[id^="e"],.main .exercise-alias{scroll-margin-top:80px}}
 @media screen{.main .exercise-alias{top:0}}
 @media screen{.main a[id="e05-20"]{scroll-margin-top:60px}}
-@media screen{.main a[id="e15-11"],.main a[id="e15-12"],.main a[id="e15-13"],.main a[id="e15-14"],.main a[id="e15-15"]{scroll-margin-top:140px}}
-@media screen{.main .exercise-alias[id="e13-11"],.main .exercise-alias[id="e13-12"],.main .exercise-alias[id="e13-13"],.main .exercise-alias[id="e13-14"],.main .exercise-alias[id="e13-15"]{scroll-margin-top:140px}}
+@media screen{.main a[id="e17-11"],.main a[id="e17-12"],.main a[id="e17-13"],.main a[id="e17-14"],.main a[id="e17-15"]{scroll-margin-top:140px}}
+@media screen{.main .exercise-alias[id="e13-11"],.main .exercise-alias[id="e13-12"],.main .exercise-alias[id="e13-13"],.main .exercise-alias[id="e13-14"],.main .exercise-alias[id="e13-15"],.main .exercise-alias[id="e15-11"],.main .exercise-alias[id="e15-12"],.main .exercise-alias[id="e15-13"],.main .exercise-alias[id="e15-14"],.main .exercise-alias[id="e15-15"]{scroll-margin-top:140px}}
 @media screen{.main a[id^="e06-"]{scroll-margin-top:60px}}
 @media screen{.main a[id^="e07-"],.main a[id^="e08-"]{scroll-margin-top:60px}}
 @media screen{.main a[id^="e11-"]{scroll-margin-top:60px}}
@@ -328,10 +328,10 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <div class="chap"><a href="../11_selection-guide.html">第 11 章 · 总结与选型指南</a></div>
 <div class="chap"><a href="../12_acoustic-imaging.html">第 12 章 · 声学成像与噪声源诊断</a></div>
 <div class="chap"><a href="../13_distributed-enhancement.html">第 13 章 · 分布式麦克风协同增强</a></div>
-<div class="chap"><a href="../16_spatial-wearable-arrays.html">第 16 章 · 空间声场与可穿戴阵列</a></div>
-<div class="chap"><a href="../17_target-extraction-diarization.html">第 17 章 · 条件目标提取与多通道日志</a></div>
-<div class="chap"><a href="../14_appendix-symbols-math.html">第 14 章 · 附录 A：符号术语数学</a></div>
-<div class="chap"><a href="../15_appendix-guide.html">第 15 章 · 附录 B：路径地图与练习</a></div></nav>
+<div class="chap"><a href="../14_spatial-wearable-arrays.html">第 14 章 · 空间声场与可穿戴阵列</a></div>
+<div class="chap"><a href="../15_target-extraction-diarization.html">第 15 章 · 条件目标提取与多通道日志</a></div>
+<div class="chap"><a href="../16_appendix-symbols-math.html">第 16 章 · 附录 A：符号术语数学</a></div>
+<div class="chap"><a href="../17_appendix-guide.html">第 17 章 · 附录 B：路径地图与练习</a></div></nav>
 <main class="main" id="main-content" tabindex="-1"><div class="offline-note" id="offnote">当前离线：公式显示为源码，正文讲解不受影响。</div>
 <details class="toc-mobile"><summary>本页目录</summary><nav aria-label="本页目录"><ul>
 <li><a href="03_industrial_deployment.html#sec-u-ffac6d1f19">1. 采集、时钟与连续流</a></li>
@@ -1035,7 +1035,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <p><strong>本机已执行。</strong> <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch10/examples/stk_delay_probe.cpp">原创C++探针</a>与<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch10/examples/run_stk_delay_probe.py">运行入口</a>只编译锁定版<code>Stk.cpp</code>和<code>DelayL.cpp</code>，临时生成物不写回上游。输入为512点、16 kHz、500/6000 Hz双音，两个分量幅度均0.18；无淡入淡出、初始历史为零。它与2 s试听素材使用相同频率，但长度和边界不同，不能借用试听文件代替此接口测试输入。</p>
 <p>在Darwin arm64、Apple clang 21.0.0、C++17/O2、STK默认double下，半采样输出相对独立FIR的最大绝对误差为0；零延迟、一采样延迟的已知边界误差也为0。把同一标量tick调用分成37点组且保留对象状态，输出差为0；每组前清空对象，最大绝对差为0.1519102855。结果、输入条件、编译器和实际源码摘要保存于<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch10/reports/stk_delay.json">STK接口报告</a>。这里的0只表示这组输入在该编译环境下的计算结果，不是任意平台的零误差保证。</p>
 <p>复跑命令为 <code>.venv/bin/python -m codes.chapters.ch10.examples.run_stk_delay_probe --report codes/chapters/ch10/reports/stk_delay_current.json</code>，需已取得锁定源码与C++编译器，不联网、不安装依赖。该检查只覆盖标量tick及固定延迟；没有测试StkFrames多通道接口、设备时间戳、实时期限或语音质量。</p>
-<p>幅度和延迟需分别验证。一次半采样线性插值对6000 Hz的幅度比约0.382683，两次则约0.146447，即使累计相位对应一采样，仍不等同纯一采样移位。完整本书推导、PCM统计区间与图41见<a href="../15_appendix-guide.html#e15-02">附录B E15-02</a>。工业选型须另查目标频带误差、可变延迟的状态转换和存储上限；本节不把一个组件检查外推为完整重采样器验收。</p>
+<p>幅度和延迟需分别验证。一次半采样线性插值对6000 Hz的幅度比约0.382683，两次则约0.146447，即使累计相位对应一采样，仍不等同纯一采样移位。完整本书推导、PCM统计区间与图41见<a href="../17_appendix-guide.html#e17-02">附录B E17-02</a>。工业选型须另查目标频带误差、可变延迟的状态转换和存储上限；本节不把一个组件检查外推为完整重采样器验收。</p>
 <p><a id="rnnoise-stream-contract"></a></p>
 <span id="sec-50" class="anchor-alias" aria-hidden="true"></span><span id="i30rnnoise-的幅度单位帧状态与演示程序首尾" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-9dcb4f43fe">I30：RNNoise 的幅度单位、帧状态与演示程序首尾</h3>
 <p>RNNoise 将传统分析、基音相关处理与神经增益估计结合；原始依据是 Valin 的 <a href="https://arxiv.org/pdf/1709.08243"><em>A Hybrid DSP/Deep Learning Approach to Real-Time Full-Band Speech Enhancement</em></a>（MMSP 2018）。固定源码为 <code>70f1d256acd4b34a572f999a05c87bf00b67730d</code>，根 <code>COPYING</code> 为 BSD-3-Clause；文件头仍单独保留。这里核对当前锁版的接口，不能把2018论文网络规模或实验数字自动套到此后更新的网络与模型文件。</p>

@@ -1,4 +1,4 @@
-> ⚠️ 本篇是本书正文第 1 章（正文共 15 章，含第 12、13、16、17 章四篇扩展专题，另有附录 A、B），可独立阅读，前后篇见下方导航。
+> ⚠️ 本篇是本书正文第 1 章（正文共 15 章，含第 12～15 章四篇扩展专题，另有附录 A、B），可独立阅读，前后篇见下方导航。
 >
 > 🏠 首页导读：[`00_overview.md`](00_overview.md) ｜ 上一篇：（无） ｜ 下一篇：[02_basics-signal-model.md](02_basics-signal-model.md)
 
@@ -206,7 +206,7 @@ $$
 
 #### 空间相关噪声的矩阵着色与半正定边界
 
-如果各通道噪声不再像电子热噪声那样彼此独立，而是像空调风声或房间混响那样在麦克风之间存在相关性，仿真实验里又该如何生成符合真实空间统计的多通道测试噪声呢？在频率 $f$ 处，假设 $M$ 只麦克风的噪声方差归一化为 $1$，所有通道两两之间的复相关系数可以排成一个 $M \times M$ 的**空间相干矩阵（spatial coherence matrix）** $\mathbf{\Gamma}(f)$，满足共轭对称性 $\mathbf{\Gamma}^H = \mathbf{\Gamma}$（称为厄米矩阵，矩阵与共轭转置 $^H$ 的基础复习见[附录 A §14.3](14_appendix-symbols-math.md#sec-14-3)）。给定零均值、跨通道互不相关的标准白噪声列向量 $\vec z$（满足 $\mathbb{E}[\vec z\vec z^H] = \mathbf{I}_M$），用线性着色矩阵 $\mathbf{C}$ 混合出 $\vec v = \mathbf{C}\vec z$，要使输出协方差 $\mathbb{E}[\vec v\vec v^H] = \mathbf{C}\mathbf{C}^H$ 精确等于目标 $\mathbf{\Gamma}(f)$，核心就落在了求解矩阵平方根分解上（经典球面与圆柱各向同性噪声场合成方法见 [Habets 等，JASA，124(5)，2911–2917，2008](https://doi.org/10.1121/1.2987429)）。
+如果各通道噪声不再像电子热噪声那样彼此独立，而是像空调风声或房间混响那样在麦克风之间存在相关性，仿真实验里又该如何生成符合真实空间统计的多通道测试噪声呢？在频率 $f$ 处，假设 $M$ 只麦克风的噪声方差归一化为 $1$，所有通道两两之间的复相关系数可以排成一个 $M \times M$ 的**空间相干矩阵（spatial coherence matrix）** $\mathbf{\Gamma}(f)$，满足共轭对称性 $\mathbf{\Gamma}^H = \mathbf{\Gamma}$（称为厄米矩阵，矩阵与共轭转置 $^H$ 的基础复习见[附录 A §16.3](16_appendix-symbols-math.md#sec-16-3)）。给定零均值、跨通道互不相关的标准白噪声列向量 $\vec z$（满足 $\mathbb{E}[\vec z\vec z^H] = \mathbf{I}_M$），用线性着色矩阵 $\mathbf{C}$ 混合出 $\vec v = \mathbf{C}\vec z$，要使输出协方差 $\mathbb{E}[\vec v\vec v^H] = \mathbf{C}\mathbf{C}^H$ 精确等于目标 $\mathbf{\Gamma}(f)$，核心就落在了求解矩阵平方根分解上（经典球面与圆柱各向同性噪声场合成方法见 [Habets 等，JASA，124(5)，2911–2917，2008](https://doi.org/10.1121/1.2987429)）。
 
 并不是随便写一个对称矩阵都能充当合法的空间相干矩阵。对任意复权重向量 $\vec w \in \mathbb{C}^M$，线性加权输出 $\vec w^H\vec v$ 的平均功率绝不可能是负数，将其与厄米矩阵的酉特征分解 $\mathbf\Gamma = \mathbf U\mathbf\Lambda\mathbf U^H$ 并列写出：
 
@@ -318,7 +318,7 @@ $$
 
 工程中读取公开实测 HRTF 数据库或球面麦克风阵列校准数据时，最容易踩中的接口陷阱是三维角度定义不一致。国际音频工程协会标准 **AES69（Spatially Oriented Format for Acoustics，简称 SOFA）** 规定了头部局部右手笛卡尔坐标系：$+x_{\mathrm{SOFA}}$ 朝正前方，$+y_{\mathrm{SOFA}}$ 朝正左方，$+z_{\mathrm{SOFA}}$ 朝正上方；对应的球面坐标三元组记为 $(\phi_{\mathrm{SOFA}}, \delta_{\mathrm{SOFA}}, r)$，其中水平方位角 $\phi_{\mathrm{SOFA}}$ 从正前 $+x_{\mathrm{SOFA}}$ 向正左 $+y_{\mathrm{SOFA}}$ **逆时针**起算（与本章图 1(a) 向右顺时针为正的方位角 $\theta$ 恰成反号，满足 $\phi_{\mathrm{SOFA}} \equiv -\theta \pmod{360^\circ}$），**俯仰角（elevation）** $\delta_{\mathrm{SOFA}} \in [-90^\circ, +90^\circ]$ 则从水平赤道面朝头顶 $+z_{\mathrm{SOFA}}$ 度量。
 
-而在球谐域波束形成（[§5.8](05_beamforming.md#sec-5-8)、[§16.2](16_spatial-wearable-arrays.md#sec-16-2) 与[附录 A §14.1](14_appendix-symbols-math.md#sec-14-1)）中，数学物理公式常改用从天顶 $+z$ 轴向下度量的**极角 / 余纬角（colatitude）** $\vartheta = 90^\circ - \delta_{\mathrm{SOFA}}$（取值范围 $[0^\circ, 180^\circ]$）——注意水平面对应的是 $\vartheta = 90^\circ$ 而非 $0^\circ$！下表列出六个典型单位距离（$r=1\ \mathrm{m}$）方向在四套坐标表示下的精确换算，供写代码加载数据时逐项核对（手算推导与错传角度的后果见练习 E01-12，开源库 `libmysofa` 的球面插值细节见[源码研究手册第 1 篇](../codes/chapters/ch00/research/01_spatial_and_tracking.md)）：
+而在球谐域波束形成（[§5.8](05_beamforming.md#sec-5-8)、[§14.2](14_spatial-wearable-arrays.md#sec-14-2) 与[附录 A §16.1](16_appendix-symbols-math.md#sec-16-1)）中，数学物理公式常改用从天顶 $+z$ 轴向下度量的**极角 / 余纬角（colatitude）** $\vartheta = 90^\circ - \delta_{\mathrm{SOFA}}$（取值范围 $[0^\circ, 180^\circ]$）——注意水平面对应的是 $\vartheta = 90^\circ$ 而非 $0^\circ$！下表列出六个典型单位距离（$r=1\ \mathrm{m}$）方向在四套坐标表示下的精确换算，供写代码加载数据时逐项核对（手算推导与错传角度的后果见练习 E01-12，开源库 `libmysofa` 的球面插值细节见[源码研究手册第 1 篇](../codes/chapters/ch00/research/01_spatial_and_tracking.md)）：
 
 | 物理方位描述 | 本书水平角 $\theta$ | SOFA 球坐标 $(\phi_{\mathrm{SOFA}}, \delta_{\mathrm{SOFA}})$ | 球谐余纬角 $\vartheta$ | SOFA 笛卡尔 $(x, y, z)\ [\mathrm{m}]$ |
 |---|---|---|---|---|
@@ -341,13 +341,13 @@ $$
 | 头部与耳廓的散射遮挡 | 智能音箱圆柱壳体、屏幕边框与桌面反射同样会改变各方向幅相响应 | §3.2 |
 | 方向相关传递函数（HRTF） | 标定或建模目标方向到各阵元的复响应向量（导向矢量）与全方向阵列流形 | §3.4、§10.2 |
 | 短延迟反射下的优先效应 | 区分有益的直达声/早期反射与有害的晚期混响拖尾，用保护延迟设计去混响 | §2.4、§7.1 |
-| 嘈杂聚会中的鸡尾酒会效应 | 融合空域自适应波束形成与时频域语音分离，持续跟踪并提取目标说话人 | 第 5 章、§8.1、第 17 章 |
+| 嘈杂聚会中的鸡尾酒会效应 | 融合空域自适应波束形成与时频域语音分离，持续跟踪并提取目标说话人 | 第 5 章、§8.1、第 15 章 |
 
 沿着上表对比可以发现：阵列的物理几何与腔体结构决定了传感器**能观测到多少空间差异**，而信号处理与机器学习算法则决定了**如何把这些差异提炼成清晰的目标输出**。
 
 在动手设计算法前，工程上还要先问清“增强后的音频是给机器听还是给人耳听”：语音识别前端通常把多只麦克风合成为单声道音频；而助听器、AR/VR 眼镜等双耳穿戴设备则需要交付左、右两路输出——如果图省事把同一条单路波束输出同时送入左右耳机，两耳非零频点的复数比值恒等于 $1$（$\mathrm{ILD}=0\ \mathrm{dB}$、$\mathrm{IPD}=0$），佩戴者就会瞬间丧失所有空间方位感，感觉声音全挤在脑壳正中央。
 
-保留耳间线索的双耳波束形成将在[第 5 章 §5.5](05_beamforming.md#sec-5-5) 展开；面向智能眼镜与真无线耳机的非规则阵列双耳信号匹配（BSM）、气导与耳道闭塞跨模态自语音融合及通透模式百微秒延迟约束，则将在[第 16 章](16_spatial-wearable-arrays.md#sec-16-5) 深入推导。下一章（第 2 章），我们将从最基础的声传播时延出发，把这些物理现象正式写成严谨的阵列信号数学模型。
+保留耳间线索的双耳波束形成将在[第 5 章 §5.5](05_beamforming.md#sec-5-5) 展开；面向智能眼镜与真无线耳机的非规则阵列双耳信号匹配（BSM）、气导与耳道闭塞跨模态自语音融合及通透模式百微秒延迟约束，则将在[第 14 章](14_spatial-wearable-arrays.md#sec-14-5) 深入推导。下一章（第 2 章），我们将从最基础的声传播时延出发，把这些物理现象正式写成严谨的阵列信号数学模型。
 
 ### 本章练习
 
@@ -409,7 +409,7 @@ $$
     + \rho\left(\sum_{m=1}^{4}w_m\right)^2.
     $$
 
-    结合正文证明过的均值平方不等式（记权重和为 $S_w = \sum_{m=1}^{4}w_m$，则 $4\sum_{m=1}^{4}w_m^2 \ge S_w^2$），只要 $-1/3 \le \rho \le 1$，上式对一切权重都保证非负（第 2 章 §2.5 与[附录 A §14.3](14_appendix-symbols-math.md#sec-14-3) 将把这一物理非负要求总结为空间协方差矩阵的半正定性）。
+    结合正文证明过的均值平方不等式（记权重和为 $S_w = \sum_{m=1}^{4}w_m$，则 $4\sum_{m=1}^{4}w_m^2 \ge S_w^2$），只要 $-1/3 \le \rho \le 1$，上式对一切权重都保证非负（第 2 章 §2.5 与[附录 A §16.3](16_appendix-symbols-math.md#sec-16-3) 将把这一物理非负要求总结为空间协方差矩阵的半正定性）。
 
 例如在合法区间内取 $\rho=-0.2$，式(1-7)给出 $P_{v,\mathrm{out}}=0.1$，SNR 改善高达 $10\ \mathrm{dB}$——这并不违背四麦 WNG 的 $6.02\ \mathrm{dB}$ 上界，因为负相关噪声已经不再是空间白噪声；若取到临界点 $\rho=-1/3$，理想模型中四路噪声之和恒等于零，但实际工程里只要混入丁点儿独立的麦克风自噪声或幅度失配，这种脆弱的精确全抵消就会立刻打破。此外，实际房间弥散声场的通道相关性会随频率与麦间距剧烈变化（§2.6），不能把整段宽带语音简化成单一固定常数 $\rho$。
 
@@ -644,7 +644,7 @@ $$
 
 **第一步：补齐最小欧拉公式铺垫，写出双抽头频率响应。** 用离散单位冲激序列 $\delta[n]$（仅在 $n=0$ 处为 $1$，其余全为 $0$）表示，左右滤波器的时域差分方程为 $y_L[n] = s[n] + 0.5s[n-1]$ 与 $y_R[n] = s[n] - 0.5s[n-1]$（规定源起点之前与结束之后的样本为零）。
 
-要把“延迟 1 个采样点”翻译到频域，只需用到复数里的**欧拉公式（Euler's formula）**（完整复数运算复习见[附录 A §14.3](14_appendix-symbols-math.md#sec-14-3)）：记虚数单位为正体 $\mathrm{j}$（满足 $\mathrm{j}^2 = -1$，工程中用 $\mathrm{j}$ 避开电流符号 $i$），任意实角度 $\phi$ 的复指数定义为 $e^{\mathrm{j}\phi} = \cos\phi + \mathrm{j}\sin\phi$，其复共轭为 $e^{-\mathrm{j}\phi} = \cos\phi - \mathrm{j}\sin\phi$，模恒为 $1$，且共轭对相加得 $e^{\mathrm{j}\phi} + e^{-\mathrm{j}\phi} = 2\cos\phi$。
+要把“延迟 1 个采样点”翻译到频域，只需用到复数里的**欧拉公式（Euler's formula）**（完整复数运算复习见[附录 A §16.3](16_appendix-symbols-math.md#sec-16-3)）：记虚数单位为正体 $\mathrm{j}$（满足 $\mathrm{j}^2 = -1$，工程中用 $\mathrm{j}$ 避开电流符号 $i$），任意实角度 $\phi$ 的复指数定义为 $e^{\mathrm{j}\phi} = \cos\phi + \mathrm{j}\sin\phi$，其复共轭为 $e^{-\mathrm{j}\phi} = \cos\phi - \mathrm{j}\sin\phi$，模恒为 $1$，且共轭对相加得 $e^{\mathrm{j}\phi} + e^{-\mathrm{j}\phi} = 2\cos\phi$。
 
 在采样率 $f_s$ 下，记频率 $f$ 对应的数字角频率为 $\Omega_{\mathrm{d}} = 2\pi f / f_s$（单位：$\mathrm{rad}/\text{样本}$）；按前向傅里叶变换核 $e^{-\mathrm{j}\Omega_{\mathrm{d}} n}$ 的标准约定，时域推迟 1 个采样点 $s[n-1]$ 在频域恰好对应乘以相位因子 $e^{-\mathrm{j}\Omega_{\mathrm{d}}}$。记输入源在频率 $f$ 处的复数谱为 $S(f)$，左、右输出复数谱为 $Y_L(f), Y_R(f)$，对完整卷积做傅里叶变换可得
 

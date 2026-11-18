@@ -1,6 +1,6 @@
-> 本篇是第 13 章（扩展专题Ⅱ），接在第 12 章声学成像之后，介绍多个拾音节点怎样在有限通信下协作增强声音。数学预备内容可回查第 14 章附录 A。
+> 本篇是第 13 章（扩展专题Ⅱ），接在第 12 章声学成像之后，介绍多个拾音节点怎样在有限通信下协作增强声音。数学预备内容可回查第 16 章附录 A。
 >
-> 🏠 首页导读：[00_overview.md](00_overview.md) ｜ 上一篇：[12_acoustic-imaging.md](12_acoustic-imaging.md) ｜ 下一篇：[16_spatial-wearable-arrays.md](16_spatial-wearable-arrays.md)
+> 🏠 首页导读：[00_overview.md](00_overview.md) ｜ 上一篇：[12_acoustic-imaging.md](12_acoustic-imaging.md) ｜ 下一篇：[14_spatial-wearable-arrays.md](14_spatial-wearable-arrays.md)
 
 ---
 
@@ -38,7 +38,7 @@
 | WOLA | 加权重叠相加（Weighted Overlap-Add） | 将时域流分帧加窗变换至频域滤波，再经逆变换加合成窗重叠拼回连续波形的时频框架 |
 | SRO | 采样率偏移（Sampling Rate Offset） | 不同拾音节点独立晶振之间的相对采样时钟速率偏差（常以百万分比 $\mathrm{ppm}$ 计） |
 
-阅读本章前，建议先温习[第 5 章多通道维纳滤波（MWF）专题](05_beamforming.md#sec-u-fb93744989)，复向量共轭内积、Hermitian 正定矩阵与正规方程求导基础可回查[附录 A §14.3](14_appendix-symbols-math.md#sec-14-3)。为了先把“为什么压缩成一路广播居然可以不丢性能”的几何直觉立住，我们在前十一节先从理想同步采样下的单频点、已知精确二阶统计模型起步；待看清子空间压缩与迭代收敛的本质后，再从 §13.12 起依次引入子空间估计、WOLA 帧边界时序、带宽算力预算以及采样率偏差与丢包处理。
+阅读本章前，建议先温习[第 5 章多通道维纳滤波（MWF）专题](05_beamforming.md#sec-u-fb93744989)，复向量共轭内积、Hermitian 正定矩阵与正规方程求导基础可回查[附录 A §16.3](16_appendix-symbols-math.md#sec-16-3)。为了先把“为什么压缩成一路广播居然可以不丢性能”的几何直觉立住，我们在前十一节先从理想同步采样下的单频点、已知精确二阶统计模型起步；待看清子空间压缩与迭代收敛的本质后，再从 §13.12 起依次引入子空间估计、WOLA 帧边界时序、带宽算力预算以及采样率偏差与丢包处理。
 
 ### 13.2 把本地观测与节点参考分别写出来
 
@@ -72,7 +72,7 @@ $$\begin{aligned}
 
 这里 $\phi_s \ge 0$ 为实标量，$\mathbf R_{nn}$ 与 $\mathbf R_{xx}$ 均为 $M \times M$ Hermitian 半正定矩阵。若输入为未标定数字音频，上述二阶矩采用无量纲数字幅度平方单位；仅当全部通道已完成物理声压标定时才具有 $\mathrm{Pa}^2$ 量纲（此时我们将传递向量 $\vec a$ 与滤波权重 $\vec w$ 均约定为无量纲比值）。切换不同 FFT 归一化比例时，$\mathbf R_{xx}$、互相关向量与参考功率 $\phi_{d_u}$ 必须按同一尺度同步缩放。
 
-顺便提醒一点统计细节：用有限 $L$ 帧样本算出的外积平均 $\frac{1}{L}\sum_{\ell=1}^L \vec x_\ell\vec x_\ell^H$ 是未中心化的样本二阶矩；即便总体均值为零，有限样本算术平均也未必精确为零，因此它与减去样本均值后的中心化样本协方差并不完全相等（见[附录 A E14-02](14_appendix-symbols-math.md#sec-u-152b8861e4)）。本章前半部分的理论推导直接代入精确总体二阶矩，而 §13.15 的确定性合成音频实验则会严格交待有限稳定窗内的整数周期平均口径。
+顺便提醒一点统计细节：用有限 $L$ 帧样本算出的外积平均 $\frac{1}{L}\sum_{\ell=1}^L \vec x_\ell\vec x_\ell^H$ 是未中心化的样本二阶矩；即便总体均值为零，有限样本算术平均也未必精确为零，因此它与减去样本均值后的中心化样本协方差并不完全相等（见[附录 A E16-02](16_appendix-symbols-math.md#sec-u-152b8861e4)）。本章前半部分的理论推导直接代入精确总体二阶矩，而 §13.15 的确定性合成音频实验则会严格交待有限稳定窗内的整数周期平均口径。
 
 ### 13.3 集中式MWF究竟最小化什么
 
@@ -91,7 +91,7 @@ J_u(\vec w)&=\mathbb{E}\big[|d_u-\vec w^H\vec x|^2\big]\\
 
 注意中间两项 $\vec w^H\vec r_{xd_u}$ 与 $\vec r_{xd_u}^H\vec w$ 互为复共轭标量，相加正好化为两倍实部 $2\operatorname{Re}(\vec w^H\vec r_{xd_u})$。请牢记式(13-3)的普适性：**无论 $\vec w$ 是全局最优解、迭代中途尚未收敛的近似权重，还是因远端广播突变而暂时失配的陈旧权重，只要把实际生效的全局权重代进式(13-3)，就能算出毫无水分的真实均方误差！**
 
-当全局观测协方差矩阵严格正定（$\mathbf R_{xx} \succ 0$）时，对式(13-3)关于共轭权重 $\vec w^*$ 求 Wirtinger 梯度（见[附录 A §14.3](14_appendix-symbols-math.md#sec-14-3)）得 $\mathbf R_{xx}\vec w - \vec r_{xd_u}$，令其为零便导出唯一的集中式维纳—霍夫（Wiener–Hopf）正规方程、最优权重 $\vec w_u^\star$ 以及集中式最小均方误差下界 $J_u^\star$：
+当全局观测协方差矩阵严格正定（$\mathbf R_{xx} \succ 0$）时，对式(13-3)关于共轭权重 $\vec w^*$ 求 Wirtinger 梯度（见[附录 A §16.3](16_appendix-symbols-math.md#sec-16-3)）得 $\mathbf R_{xx}\vec w - \vec r_{xd_u}$，令其为零便导出唯一的集中式维纳—霍夫（Wiener–Hopf）正规方程、最优权重 $\vec w_u^\star$ 以及集中式最小均方误差下界 $J_u^\star$：
 
 $$\begin{aligned}
 \mathbf R_{xx}\vec w_u^\star&=\vec r_{xd_u},\qquad
@@ -1134,4 +1134,4 @@ P_{n,\mathrm{stale}}-P_{n,\mathrm{LCMV}}^\star
 
 ---
 
-[返回导读](00_overview.md) ｜ [上一篇：扩展专题Ⅰ：声学成像与噪声源诊断](12_acoustic-imaging.md) ｜ [下一篇：扩展专题Ⅲ：空间声场与可穿戴阵列](16_spatial-wearable-arrays.md)
+[返回导读](00_overview.md) ｜ [上一篇：扩展专题Ⅰ：声学成像与噪声源诊断](12_acoustic-imaging.md) ｜ [下一篇：扩展专题Ⅲ：空间声场与可穿戴阵列](14_spatial-wearable-arrays.md)

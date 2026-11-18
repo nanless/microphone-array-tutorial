@@ -1,4 +1,4 @@
-> ⚠️ 本篇是教程正文第 6 章（正文共 15 章，含第 12、13、16、17 章四篇扩展专题，另有附录 A、B），可独立阅读，前后篇见下方导航。
+> ⚠️ 本篇是教程正文第 6 章（正文共 15 章，含第 12～15 章四篇扩展专题，另有附录 A、B），可独立阅读，前后篇见下方导航。
 >
 > 🏠 首页导读：[`00_overview.md`](00_overview.md) ｜ 上一篇：[05_beamforming.md](05_beamforming.md) ｜ 下一篇：[07_wpe-dereverberation.md](07_wpe-dereverberation.md)
 
@@ -75,7 +75,7 @@ y[n]&=\sum_{\ell=0}^{L-1}h[\ell]x[n-\ell].
 
 第一对是**数字域波形相减（AEC）与空气声场物理相消（ANC / 车载 ICC）的本质分野**。AEC 在数字处理器内部用麦克风采样 $d[n]$ 减去估计副本 $\hat y[n]$，目的是不让本机播放声传回远端通话方，房间里的本地人耳依然听得到扬声器外放；只要副本相位误差超过 $60^\circ$，复数减法甚至可能令残余能量反超原回声（见练习 E06-04）。相比之下，主动噪声控制（Active Noise Control，ANC）通过次级扬声器向空气辐射反相声波，电子控制时延 $\tau_{\mathrm{elec}}$ 须严格小于主次声路飞行时差 $\tau_{\mathrm{acoust}}-\tau_{\mathrm{sec}}$（常为亚毫秒级），才能赶在主噪声波到达耳道前完成物理声压相消；而车载座舱通话增强（In-Car Communication，ICC）则是把前排驾驶员语音拾取放大后直接从后排扬声器实时播放出来。
 
-按照国际电联车载座舱通信标准 **ITU-T P.1150**，同舱扩声的端到端增强延迟须严控在 $\Delta_{\mathrm{Rx}}<15\ \mathrm{ms}$（哈斯效应融合阈值之下）：一旦总环路延迟 $\tau_{\mathrm{loop}}$ 偏大，后排乘客耳中同时到达的空气直达人声与扬声器扩声就会发生间隔 $\Delta f=1/\tau_{\mathrm{loop}}$ 的周期性相长与相消干涉，产生刺耳的金属感梳状滤波（comb filtering）乃至闭环声反馈啸叫（定量复算见练习 [E06-44](#e06-44)），而这类已经在空气中叠加进入人耳的物理干涉是无法靠发送端数字 AEC 事后抹除的。而在入耳式耳机通透模式（Hear-Through）中，耳塞被动漏声与电声重放直接在鼓膜叠加，端到端延迟上限会进一步收紧至百微秒级（详见[第 16 章 §16.10](16_spatial-wearable-arrays.md#sec-16-10)）。
+按照国际电联车载座舱通信标准 **ITU-T P.1150**，同舱扩声的端到端增强延迟须严控在 $\Delta_{\mathrm{Rx}}<15\ \mathrm{ms}$（哈斯效应融合阈值之下）：一旦总环路延迟 $\tau_{\mathrm{loop}}$ 偏大，后排乘客耳中同时到达的空气直达人声与扬声器扩声就会发生间隔 $\Delta f=1/\tau_{\mathrm{loop}}$ 的周期性相长与相消干涉，产生刺耳的金属感梳状滤波（comb filtering）乃至闭环声反馈啸叫（定量复算见练习 [E06-44](#e06-44)），而这类已经在空气中叠加进入人耳的物理干涉是无法靠发送端数字 AEC 事后抹除的。而在入耳式耳机通透模式（Hear-Through）中，耳塞被动漏声与电声重放直接在鼓膜叠加，端到端延迟上限会进一步收紧至百微秒级（详见[第 14 章 §14.10](14_spatial-wearable-arrays.md#sec-14-10)）。
 
 第二对是**波形减法与谱幅度乘法的分工**。线性 AEC 握有参考波形 $x[n]$，能够同时估计回声的幅度与相位并直接作波形相减，在近端语音与回声同频重叠时依然可以只剥离回声而保留语音。当缺少精确波形参考（例如抑制线性未建模残余或未知背景噪声）时，经典后置滤波（如 §5.7 维纳后置滤波与 §6.8 的传统 NLP）往往退而估计功率谱，再对混合时频系数乘以 $0$～$1$ 之间的实数标量增益——这会把同一时频格内的回声与近端语音按相同比例一并压低。至于多通道复数滤波、复数掩码或深度滤波（§6.5），则额外引入了跨通道或跨帧复数自由度，阅读时应按各自的数学算子准确区分。
 
@@ -1173,7 +1173,7 @@ c_{xd}&=\frac{\left|\sum_{b=0}^{B-1}\tilde x_b\tilde d_b\right|}
 
 在开放办公区或家庭客厅开免提会议时，麦克风除了录进扬声器回声，还会录进旁边同事或家人的交谈人声。通用 AEC 会把房间里所有非回声人声都当作“近端目标”原样保留；而 **个性化回声消除（personalized AEC，pAEC；参见 [Cutler et al., *IEEE OJSP*, 2024](https://doi.org/10.1109/OJSP.2024.3376289)）** 则要求在消除扬声器回声的同时，只保留已注册主讲人的声音，将旁人干扰人声一并压制。
 
-其实现架构与目标说话人提取（Target Speaker Extraction，TSE；详见 [§8.6](08_speech-separation.md#sec-8-6)、[第 17 章 §17.1～§17.2](17_target-extraction-diarization.md#sec-17-1) 及 [附录 B §15.3](15_appendix-guide.md#sec-15-3)，代表结构如 [GTCNN, Interspeech 2022](https://www.isca-archive.org/interspeech_2022/zhang22t_interspeech.pdf)）一脉相承：先从用户预先录制的数秒注册语音中提取固定维度的声纹嵌入向量 $\vec e_{\mathrm{enroll}}$，再将其通过特征线性调制（FiLM）或注意力层注入残余抑制网络（隐私合规与共享设备回退条款见 §6.13）。
+其实现架构与目标说话人提取（Target Speaker Extraction，TSE；详见 [§8.6](08_speech-separation.md#sec-8-6)、[第 15 章 §15.1～§15.2](15_target-extraction-diarization.md#sec-15-1) 及 [附录 B §17.3](17_appendix-guide.md#sec-17-3)，代表结构如 [GTCNN, Interspeech 2022](https://www.isca-archive.org/interspeech_2022/zhang22t_interspeech.pdf)）一脉相承：先从用户预先录制的数秒注册语音中提取固定维度的声纹嵌入向量 $\vec e_{\mathrm{enroll}}$，再将其通过特征线性调制（FiLM）或注意力层注入残余抑制网络（隐私合规与共享设备回退条款见 §6.13）。
 
 **pAEC 声纹门限与三区间回退。** 设非零实数注册声纹向量为 $\vec e_{\mathrm{enroll}}$，当前帧提取的非零局部声纹向量为 $\vec e_t$，可用归一化余弦相似度衡量声纹匹配程度：
 

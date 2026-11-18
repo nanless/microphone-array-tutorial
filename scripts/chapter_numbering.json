@@ -8,26 +8,60 @@
       "source": "12_acoustic-imaging.md",
       "number": 12,
       "pdf_identity": 14,
-      "original_sha256": "b32c412daf8b581757cbacce5cceaf15465ef5ad44bc98c121374bc9178dec23"
+      "original_sha256": "b32c412daf8b581757cbacce5cceaf15465ef5ad44bc98c121374bc9178dec23",
+      "legacy_sources": [
+        "14_acoustic-imaging.md"
+      ]
     },
     {
       "original_source": "15_distributed-enhancement.md",
       "source": "13_distributed-enhancement.md",
       "number": 13,
       "pdf_identity": 15,
-      "original_sha256": "6fe9cb2e4e42bf589e10b1fb6e63a1fc5b8f9d529c6aea1cf970ce2eb8f6ce72"
+      "original_sha256": "6fe9cb2e4e42bf589e10b1fb6e63a1fc5b8f9d529c6aea1cf970ce2eb8f6ce72",
+      "legacy_sources": [
+        "15_distributed-enhancement.md"
+      ]
+    },
+    {
+      "original_source": "16_spatial-wearable-arrays.md",
+      "legacy_sources": [
+        "16_spatial-wearable-arrays.md"
+      ],
+      "source": "14_spatial-wearable-arrays.md",
+      "number": 14,
+      "pdf_identity": 16,
+      "original_sha256": "8204fa4f8ec61d9306bade98dc7253abd9bdfd6485e5ea0a9a8b83fd2ee9b16a"
+    },
+    {
+      "original_source": "17_target-extraction-diarization.md",
+      "legacy_sources": [
+        "17_target-extraction-diarization.md"
+      ],
+      "source": "15_target-extraction-diarization.md",
+      "number": 15,
+      "pdf_identity": 17,
+      "original_sha256": "1fff9cc1bb152a4f0a2aec438a03fd9fa85c25a25acc410f6c9316e296ecbe46"
     },
     {
       "original_source": "12_appendix-symbols-math.md",
-      "source": "14_appendix-symbols-math.md",
-      "number": 14,
+      "legacy_sources": [
+        "12_appendix-symbols-math.md",
+        "14_appendix-symbols-math.md"
+      ],
+      "source": "16_appendix-symbols-math.md",
+      "number": 16,
       "pdf_identity": 12,
       "original_sha256": "8fc5e1806186301d2a89ce514051202ff2091a4159c0a5d41a03354eb96d269c"
     },
     {
       "original_source": "13_appendix-guide.md",
-      "source": "15_appendix-guide.md",
-      "number": 15,
+      "legacy_sources": [
+        "13_appendix-guide.md",
+        "15_appendix-guide.md"
+      ],
+      "source": "17_appendix-guide.md",
+      "number": 17,
       "pdf_identity": 13,
       "original_sha256": "b365d9cb245bdd8053b231406aec1ab092278afe681958c4bc8be2de8c8b429e"
     }
@@ -36,76 +70,147 @@
     "00_overview.md": {
       "sec-u-58e340bcdc": "sec-u-3998a41808",
       "sec-u-2d4b4b193b": "sec-u-ed573e6015",
-      "sec-u-01420ec5a6": "sec-u-69afa9f448",
-      "sec-u-ec7064739f": "sec-u-df0df6b6aa"
+      "sec-u-01420ec5a6": "sec-u-40bcb86655",
+      "sec-u-ec7064739f": "sec-u-72b906da5d",
+      "sec-u-6dcf2e71ad": "sec-u-3e47e38b8d",
+      "sec-u-a79ebcacde": "sec-u-bbb1d49208",
+      "sec-u-69afa9f448": "sec-u-40bcb86655",
+      "sec-u-df0df6b6aa": "sec-u-72b906da5d"
     },
-    "14_appendix-symbols-math.md": {
-      "sec-u-78b6668a18": "sec-u-2bfed502b9",
-      "sec-12-1": "sec-14-1",
-      "sec-12-2": "sec-14-2",
-      "sec-12-3": "sec-14-3",
-      "sec-12-3-1": "sec-14-3-1",
-      "sec-12-3-2": "sec-14-3-2",
-      "sec-12-3-3": "sec-14-3-3",
-      "sec-12-3-4": "sec-14-3-4",
-      "sec-12-3-5": "sec-14-3-5",
-      "sec-12-3-6": "sec-14-3-6",
-      "sec-12-3-7": "sec-14-3-7",
-      "sec-12-3-8": "sec-14-3-8",
-      "sec-12-3-9": "sec-14-3-9",
-      "sec-12-3-10": "sec-14-3-10",
-      "sec-12-4": "sec-14-4",
-      "sec-u-a894d7ee57": "sec-u-28b8343a11",
-      "sec-u-152b8861e4": "sec-u-b7d691e5ef",
-      "sec-u-3899a8c1b7": "sec-u-2e0ba2b3e6",
-      "sec-u-9c73a9ff7c": "sec-u-3d25e3aac5",
-      "sec-u-935c1036ea": "sec-u-84ef8c9584",
-      "sec-u-99706c9759": "sec-u-53cdc056b8",
-      "sec-u-601bb171ef": "sec-u-26323254d5",
-      "sec-u-af429c1fb4": "sec-u-058974ea15",
-      "sec-u-84f5f318d2": "sec-u-a43cc286e7",
-      "sec-u-f444abd308": "sec-u-9002f4999c",
-      "sec-u-7b57cb80a9": "sec-u-b24d0eb12a",
-      "sec-u-f2a35d6e39": "sec-u-2a6196d983",
-      "sec-u-9ad8275b24": "sec-u-3335e1dd38",
-      "sec-u-9df103a899": "sec-u-c5006e2461",
-      "sec-u-b4090abdbf": "sec-u-a9e3cd8d47",
-      "sec-u-8b58184472": "sec-u-97d3fa9bb1",
-      "sec-u-0e9dab8b8b": "sec-u-e05d86e60e",
-      "sec-u-b849e6d52a": "sec-u-e87d05bc4d",
-      "sec-u-333ee075d5": "sec-u-2870269265",
-      "sec-u-97f33585ea": "sec-u-28d6db2836"
+    "16_appendix-symbols-math.md": {
+      "sec-u-78b6668a18": "sec-u-1a278edffc",
+      "sec-12-1": "sec-16-1",
+      "sec-12-2": "sec-16-2",
+      "sec-12-3": "sec-16-3",
+      "sec-12-3-1": "sec-16-3-1",
+      "sec-12-3-2": "sec-16-3-2",
+      "sec-12-3-3": "sec-16-3-3",
+      "sec-12-3-4": "sec-16-3-4",
+      "sec-12-3-5": "sec-16-3-5",
+      "sec-12-3-6": "sec-16-3-6",
+      "sec-12-3-7": "sec-16-3-7",
+      "sec-12-3-8": "sec-16-3-8",
+      "sec-12-3-9": "sec-16-3-9",
+      "sec-12-3-10": "sec-16-3-10",
+      "sec-12-4": "sec-16-4",
+      "sec-u-a894d7ee57": "sec-u-b15397190b",
+      "sec-u-152b8861e4": "sec-u-e77b562c1e",
+      "sec-u-3899a8c1b7": "sec-u-7b35821392",
+      "sec-u-9c73a9ff7c": "sec-u-3d79b5e440",
+      "sec-u-935c1036ea": "sec-u-fc346cf32d",
+      "sec-u-99706c9759": "sec-u-338771a699",
+      "sec-u-601bb171ef": "sec-u-6ce2c569c7",
+      "sec-u-af429c1fb4": "sec-u-10a0b6ac2d",
+      "sec-u-84f5f318d2": "sec-u-e9ca3332f8",
+      "sec-u-f444abd308": "sec-u-723599188d",
+      "sec-u-7b57cb80a9": "sec-u-d2443c8742",
+      "sec-u-f2a35d6e39": "sec-u-058a6268ba",
+      "sec-u-9ad8275b24": "sec-u-aebef34090",
+      "sec-u-9df103a899": "sec-u-7bf1c7588b",
+      "sec-u-b4090abdbf": "sec-u-a87d89ce6d",
+      "sec-u-8b58184472": "sec-u-ff8521801e",
+      "sec-u-0e9dab8b8b": "sec-u-7cb5badab0",
+      "sec-u-b849e6d52a": "sec-u-401a933cc4",
+      "sec-u-333ee075d5": "sec-u-0cf65b9988",
+      "sec-u-97f33585ea": "sec-u-670d7ca59e",
+      "sec-u-2bfed502b9": "sec-u-1a278edffc",
+      "sec-14-1": "sec-16-1",
+      "sec-14-2": "sec-16-2",
+      "sec-14-3": "sec-16-3",
+      "sec-14-3-1": "sec-16-3-1",
+      "sec-14-3-2": "sec-16-3-2",
+      "sec-14-3-3": "sec-16-3-3",
+      "sec-14-3-4": "sec-16-3-4",
+      "sec-14-3-5": "sec-16-3-5",
+      "sec-14-3-6": "sec-16-3-6",
+      "sec-14-3-7": "sec-16-3-7",
+      "sec-14-3-8": "sec-16-3-8",
+      "sec-14-3-9": "sec-16-3-9",
+      "sec-14-3-10": "sec-16-3-10",
+      "sec-14-3-11": "sec-16-3-11",
+      "sec-14-4": "sec-16-4",
+      "sec-u-28b8343a11": "sec-u-b15397190b",
+      "sec-u-b7d691e5ef": "sec-u-e77b562c1e",
+      "sec-u-2e0ba2b3e6": "sec-u-7b35821392",
+      "sec-u-3d25e3aac5": "sec-u-3d79b5e440",
+      "sec-u-84ef8c9584": "sec-u-fc346cf32d",
+      "sec-u-53cdc056b8": "sec-u-338771a699",
+      "sec-u-26323254d5": "sec-u-6ce2c569c7",
+      "sec-u-058974ea15": "sec-u-10a0b6ac2d",
+      "sec-u-a43cc286e7": "sec-u-e9ca3332f8",
+      "sec-u-9002f4999c": "sec-u-723599188d",
+      "sec-u-b24d0eb12a": "sec-u-d2443c8742",
+      "sec-u-2a6196d983": "sec-u-058a6268ba",
+      "sec-u-3335e1dd38": "sec-u-aebef34090",
+      "sec-u-c5006e2461": "sec-u-7bf1c7588b",
+      "sec-u-a9e3cd8d47": "sec-u-a87d89ce6d",
+      "sec-u-97d3fa9bb1": "sec-u-ff8521801e",
+      "sec-u-e05d86e60e": "sec-u-7cb5badab0",
+      "sec-u-e87d05bc4d": "sec-u-401a933cc4",
+      "sec-u-2870269265": "sec-u-0cf65b9988",
+      "sec-u-28d6db2836": "sec-u-670d7ca59e",
+      "sec-u-3440263fc7": "sec-u-0e76cc66ab"
     },
-    "15_appendix-guide.md": {
-      "sec-u-636d9cd65b": "sec-u-46e4e43b0d",
-      "sec-13-1": "sec-15-1",
-      "sec-13-2": "sec-15-2",
-      "sec-13-3": "sec-15-3",
-      "sec-13-4": "sec-15-4",
-      "sec-13-5": "sec-15-5",
-      "sec-13-6": "sec-15-6",
-      "sec-13-6-1": "sec-15-6-1",
-      "sec-13-6-2": "sec-15-6-2",
-      "sec-13-6-3": "sec-15-6-3",
-      "sec-13-6-4": "sec-15-6-4",
-      "sec-13-6-5": "sec-15-6-5",
-      "sec-13-6-6": "sec-15-6-6",
-      "sec-13-6-7": "sec-15-6-7",
-      "sec-13-6-8": "sec-15-6-8",
-      "sec-u-aeab2c07bf": "sec-u-b49c593bd2",
-      "sec-u-060a92560a": "sec-u-e00531ea3b",
-      "sec-u-199b14fd60": "sec-u-d48fc3234f",
-      "sec-u-ed97781131": "sec-u-b371f71f02",
-      "sec-u-15b2b5a118": "sec-u-14fddc2280",
-      "sec-u-7325fcb112": "sec-u-8ddb3293a1",
-      "sec-u-abe16bf972": "sec-u-98a1d69c6e",
-      "sec-u-35e4061f5e": "sec-u-ddac2aaf91",
-      "sec-u-25ccd9c48f": "sec-u-cf3e54e982",
-      "sec-u-21c0740952": "sec-u-f7006880c9",
-      "sec-u-6bac564963": "sec-u-f5745ca938",
-      "sec-u-0c2386925c": "sec-u-be757ffdfa",
-      "sec-u-68046aa090": "sec-u-0be34c7472",
-      "sec-13-7": "sec-15-7"
+    "17_appendix-guide.md": {
+      "sec-u-636d9cd65b": "sec-u-18ff3cd376",
+      "sec-13-1": "sec-17-1",
+      "sec-13-2": "sec-17-2",
+      "sec-13-3": "sec-17-3",
+      "sec-13-4": "sec-17-4",
+      "sec-13-5": "sec-17-5",
+      "sec-13-6": "sec-17-6",
+      "sec-13-6-1": "sec-17-6-1",
+      "sec-13-6-2": "sec-17-6-2",
+      "sec-13-6-3": "sec-17-6-3",
+      "sec-13-6-4": "sec-17-6-4",
+      "sec-13-6-5": "sec-17-6-5",
+      "sec-13-6-6": "sec-17-6-6",
+      "sec-13-6-7": "sec-17-6-7",
+      "sec-13-6-8": "sec-17-6-8",
+      "sec-u-aeab2c07bf": "sec-u-057df74953",
+      "sec-u-060a92560a": "sec-u-69358b3568",
+      "sec-u-199b14fd60": "sec-u-69adc71a3e",
+      "sec-u-ed97781131": "sec-u-ddd1562ee5",
+      "sec-u-15b2b5a118": "sec-u-fd4c1380d6",
+      "sec-u-7325fcb112": "sec-u-84c390b4b7",
+      "sec-u-abe16bf972": "sec-u-290348b839",
+      "sec-u-35e4061f5e": "sec-u-5e2cfdc863",
+      "sec-u-25ccd9c48f": "sec-u-852b50db5d",
+      "sec-u-21c0740952": "sec-u-a41bfbbab5",
+      "sec-u-6bac564963": "sec-u-d44d703e08",
+      "sec-u-0c2386925c": "sec-u-a237f010d4",
+      "sec-u-68046aa090": "sec-u-def2767fe6",
+      "sec-13-7": "sec-17-7",
+      "sec-u-46e4e43b0d": "sec-u-18ff3cd376",
+      "sec-15-1": "sec-17-1",
+      "sec-15-2": "sec-17-2",
+      "sec-15-3": "sec-17-3",
+      "sec-15-4": "sec-17-4",
+      "sec-15-5": "sec-17-5",
+      "sec-15-6": "sec-17-6",
+      "sec-15-6-1": "sec-17-6-1",
+      "sec-15-6-2": "sec-17-6-2",
+      "sec-15-6-3": "sec-17-6-3",
+      "sec-15-6-4": "sec-17-6-4",
+      "sec-15-6-5": "sec-17-6-5",
+      "sec-15-6-6": "sec-17-6-6",
+      "sec-15-6-7": "sec-17-6-7",
+      "sec-15-6-8": "sec-17-6-8",
+      "sec-u-b49c593bd2": "sec-u-057df74953",
+      "sec-u-e00531ea3b": "sec-u-69358b3568",
+      "sec-u-d48fc3234f": "sec-u-69adc71a3e",
+      "sec-u-b371f71f02": "sec-u-ddd1562ee5",
+      "sec-u-14fddc2280": "sec-u-fd4c1380d6",
+      "sec-u-8ddb3293a1": "sec-u-84c390b4b7",
+      "sec-u-98a1d69c6e": "sec-u-290348b839",
+      "sec-u-ddac2aaf91": "sec-u-5e2cfdc863",
+      "sec-u-cf3e54e982": "sec-u-852b50db5d",
+      "sec-u-f7006880c9": "sec-u-a41bfbbab5",
+      "sec-u-f5745ca938": "sec-u-d44d703e08",
+      "sec-u-be757ffdfa": "sec-u-a237f010d4",
+      "sec-u-0be34c7472": "sec-u-def2767fe6",
+      "sec-u-b34f74502b": "sec-u-3396687cce",
+      "sec-15-7": "sec-17-7"
     },
     "12_acoustic-imaging.md": {
       "sec-u-a92e514598": "sec-u-ab429db433",
@@ -185,63 +290,202 @@
       "sec-u-1d70029682": "sec-u-0b8e41071b",
       "sec-u-e427641230": "sec-u-7e45f79bb0",
       "sec-u-2c78c71398": "sec-u-632be6e3e5"
+    },
+    "14_spatial-wearable-arrays.md": {
+      "sec-u-249721cb95": "sec-u-6aa93b0b38",
+      "sec-16-1": "sec-14-1",
+      "sec-16-2": "sec-14-2",
+      "sec-16-3": "sec-14-3",
+      "sec-16-4": "sec-14-4",
+      "sec-u-b51d792db0": "sec-u-8262e96115",
+      "sec-16-5": "sec-14-5",
+      "sec-16-6": "sec-14-6",
+      "sec-u-1b8a1742e5": "sec-u-e2ef560f47",
+      "sec-16-7": "sec-14-7",
+      "sec-u-0e916756eb": "sec-u-82e576bd7f",
+      "sec-16-8": "sec-14-8",
+      "sec-16-9": "sec-14-9",
+      "sec-u-11eef6c952": "sec-u-75904574c2",
+      "sec-16-10": "sec-14-10",
+      "sec-u-615e612fa5": "sec-u-2446522ba9",
+      "sec-16-11": "sec-14-11",
+      "sec-u-f1d7ba65e4": "sec-u-a6c1c68b18",
+      "sec-u-555e5b8dc1": "sec-u-922936cd4d",
+      "sec-u-cb969a1450": "sec-u-327e074871",
+      "sec-u-4a7708fbc3": "sec-u-aaed61c801",
+      "sec-u-739dd27b65": "sec-u-4d29765748",
+      "sec-u-40aff547b4": "sec-u-3bbb9fdf58",
+      "sec-u-9b7fc82e9e": "sec-u-998d17d4b8",
+      "sec-u-66f1d99a44": "sec-u-7932ba5f44",
+      "sec-u-b9fd40787f": "sec-u-2a0c89082a",
+      "sec-u-09786a7d33": "sec-u-1772a2308a",
+      "sec-u-236a8c3ad0": "sec-u-e3dbfefc58",
+      "sec-u-249b9bc7b1": "sec-u-4b9298cdaa",
+      "sec-u-52efead2ef": "sec-u-6385bcdab7",
+      "sec-u-a12dadb51a": "sec-u-6c58daa8de",
+      "sec-u-e682b38d9c": "sec-u-d9fe9adc55",
+      "sec-u-3a0083e39d": "sec-u-5a34d829b8",
+      "sec-u-c7c051388e": "sec-u-a2a77f50a2",
+      "sec-u-d7b38e683b": "sec-u-d3076b1ca1",
+      "sec-16-12": "sec-14-12"
+    },
+    "15_target-extraction-diarization.md": {
+      "sec-u-a6b1dc83f6": "sec-u-75f51bf541",
+      "sec-17-1": "sec-15-1",
+      "sec-17-2": "sec-15-2",
+      "sec-u-89a0bfca89": "sec-u-5f567be7d9",
+      "sec-17-3": "sec-15-3",
+      "sec-u-3f3f377afd": "sec-u-180e9089b7",
+      "sec-17-4": "sec-15-4",
+      "sec-17-5": "sec-15-5",
+      "sec-u-19d7aff4d7": "sec-u-dfc94cae66",
+      "sec-17-6": "sec-15-6",
+      "sec-u-87507db679": "sec-u-c419fd5563",
+      "sec-17-7": "sec-15-7",
+      "sec-17-8": "sec-15-8",
+      "sec-17-9": "sec-15-9",
+      "sec-17-10": "sec-15-10",
+      "sec-u-dcccc65379": "sec-u-7260e8bb52",
+      "sec-u-9096f27904": "sec-u-477f784bc2",
+      "sec-u-ec772424a6": "sec-u-972638914c",
+      "sec-u-cae1713593": "sec-u-dba20ea272",
+      "sec-u-22bad309c0": "sec-u-3219c8f9e8",
+      "sec-u-9bac32c23b": "sec-u-f8d6da3847",
+      "sec-u-706d73c86d": "sec-u-c101fdacd3",
+      "sec-u-cbf18e17ff": "sec-u-cba35fb5e1",
+      "sec-u-d9c9a35c2c": "sec-u-babc01c78f",
+      "sec-u-82195cd377": "sec-u-98c35aede6",
+      "sec-u-aec08aabb1": "sec-u-f030237235",
+      "sec-u-6e4fb90e86": "sec-u-76e2b3cbad",
+      "sec-u-acba13f751": "sec-u-5427085a40",
+      "sec-u-a7e7674a48": "sec-u-fcb2ba8992",
+      "sec-u-64df9ed6df": "sec-u-617b8246f6",
+      "sec-u-b8250b64be": "sec-u-22086f7ea6",
+      "sec-u-d8c17a15e2": "sec-u-c7cc19996d",
+      "sec-u-71d2429e6f": "sec-u-6fb2bbba75"
     }
   },
   "exercise_aliases": {
-    "14_appendix-symbols-math.md": {
-      "e14-14": {
+    "16_appendix-symbols-math.md": {
+      "e16-14": {
         "original_id": "e12-14",
-        "heading_id": "sec-u-c5006e2461"
+        "legacy_ids": [
+          "e12-14",
+          "e14-14"
+        ],
+        "heading_id": "sec-u-7bf1c7588b"
       },
-      "e14-15": {
+      "e16-15": {
         "original_id": "e12-15",
-        "heading_id": "sec-u-a9e3cd8d47"
+        "legacy_ids": [
+          "e12-15",
+          "e14-15"
+        ],
+        "heading_id": "sec-u-a87d89ce6d"
       },
-      "e14-16": {
+      "e16-16": {
         "original_id": "e12-16",
-        "heading_id": "sec-u-97d3fa9bb1"
+        "legacy_ids": [
+          "e12-16",
+          "e14-16"
+        ],
+        "heading_id": "sec-u-ff8521801e"
       },
-      "e14-17": {
+      "e16-17": {
         "original_id": "e12-17",
-        "heading_id": "sec-u-e05d86e60e"
+        "legacy_ids": [
+          "e12-17",
+          "e14-17"
+        ],
+        "heading_id": "sec-u-7cb5badab0"
       },
-      "e14-18": {
+      "e16-18": {
         "original_id": "e12-18",
-        "heading_id": "sec-u-e87d05bc4d"
+        "legacy_ids": [
+          "e12-18",
+          "e14-18"
+        ],
+        "heading_id": "sec-u-401a933cc4"
       },
-      "e14-19": {
+      "e16-19": {
         "original_id": "e12-19",
-        "heading_id": "sec-u-2870269265"
+        "legacy_ids": [
+          "e12-19",
+          "e14-19"
+        ],
+        "heading_id": "sec-u-0cf65b9988"
       },
-      "e14-20": {
+      "e16-20": {
         "original_id": "e12-20",
-        "heading_id": "sec-u-28d6db2836"
+        "legacy_ids": [
+          "e12-20",
+          "e14-20"
+        ],
+        "heading_id": "sec-u-670d7ca59e"
+      },
+      "e16-21": {
+        "original_id": "e14-21",
+        "legacy_ids": [
+          "e14-21"
+        ],
+        "heading_id": "sec-u-0e76cc66ab"
       }
     },
-    "15_appendix-guide.md": {
-      "e15-02": {
+    "17_appendix-guide.md": {
+      "e17-02": {
         "original_id": "e13-02",
-        "heading_id": "sec-15-6-8"
+        "legacy_ids": [
+          "e13-02",
+          "e15-02"
+        ],
+        "heading_id": "sec-17-6-8"
       },
-      "e15-11": {
+      "e17-11": {
         "original_id": "e13-11",
-        "heading_id": "sec-u-cf3e54e982"
+        "legacy_ids": [
+          "e13-11",
+          "e15-11"
+        ],
+        "heading_id": "sec-u-852b50db5d"
       },
-      "e15-12": {
+      "e17-12": {
         "original_id": "e13-12",
-        "heading_id": "sec-u-f7006880c9"
+        "legacy_ids": [
+          "e13-12",
+          "e15-12"
+        ],
+        "heading_id": "sec-u-a41bfbbab5"
       },
-      "e15-13": {
+      "e17-13": {
         "original_id": "e13-13",
-        "heading_id": "sec-u-f5745ca938"
+        "legacy_ids": [
+          "e13-13",
+          "e15-13"
+        ],
+        "heading_id": "sec-u-d44d703e08"
       },
-      "e15-14": {
+      "e17-14": {
         "original_id": "e13-14",
-        "heading_id": "sec-u-be757ffdfa"
+        "legacy_ids": [
+          "e13-14",
+          "e15-14"
+        ],
+        "heading_id": "sec-u-a237f010d4"
       },
-      "e15-15": {
+      "e17-15": {
         "original_id": "e13-15",
-        "heading_id": "sec-u-0be34c7472"
+        "legacy_ids": [
+          "e13-15",
+          "e15-15"
+        ],
+        "heading_id": "sec-u-def2767fe6"
+      },
+      "e17-16": {
+        "original_id": "e15-16",
+        "legacy_ids": [
+          "e15-16"
+        ],
+        "heading_id": "sec-u-3396687cce"
       }
     },
     "12_acoustic-imaging.md": {
@@ -418,6 +662,262 @@
       "e13-25": {
         "original_id": "e15-25",
         "heading_id": "sec-u-632be6e3e5"
+      }
+    },
+    "14_spatial-wearable-arrays.md": {
+      "e14-01": {
+        "original_id": "e16-01",
+        "legacy_ids": [
+          "e16-01"
+        ],
+        "heading_id": "sec-u-a6c1c68b18"
+      },
+      "e14-02": {
+        "original_id": "e16-02",
+        "legacy_ids": [
+          "e16-02"
+        ],
+        "heading_id": "sec-u-922936cd4d"
+      },
+      "e14-03": {
+        "original_id": "e16-03",
+        "legacy_ids": [
+          "e16-03"
+        ],
+        "heading_id": "sec-u-327e074871"
+      },
+      "e14-04": {
+        "original_id": "e16-04",
+        "legacy_ids": [
+          "e16-04"
+        ],
+        "heading_id": "sec-u-aaed61c801"
+      },
+      "e14-05": {
+        "original_id": "e16-05",
+        "legacy_ids": [
+          "e16-05"
+        ],
+        "heading_id": "sec-u-4d29765748"
+      },
+      "e14-06": {
+        "original_id": "e16-06",
+        "legacy_ids": [
+          "e16-06"
+        ],
+        "heading_id": "sec-u-3bbb9fdf58"
+      },
+      "e14-07": {
+        "original_id": "e16-07",
+        "legacy_ids": [
+          "e16-07"
+        ],
+        "heading_id": "sec-u-998d17d4b8"
+      },
+      "e14-08": {
+        "original_id": "e16-08",
+        "legacy_ids": [
+          "e16-08"
+        ],
+        "heading_id": "sec-u-7932ba5f44"
+      },
+      "e14-09": {
+        "original_id": "e16-09",
+        "legacy_ids": [
+          "e16-09"
+        ],
+        "heading_id": "sec-u-2a0c89082a"
+      },
+      "e14-10": {
+        "original_id": "e16-10",
+        "legacy_ids": [
+          "e16-10"
+        ],
+        "heading_id": "sec-u-1772a2308a"
+      },
+      "e14-11": {
+        "original_id": "e16-11",
+        "legacy_ids": [
+          "e16-11"
+        ],
+        "heading_id": "sec-u-e3dbfefc58"
+      },
+      "e14-12": {
+        "original_id": "e16-12",
+        "legacy_ids": [
+          "e16-12"
+        ],
+        "heading_id": "sec-u-4b9298cdaa"
+      },
+      "e14-13": {
+        "original_id": "e16-13",
+        "legacy_ids": [
+          "e16-13"
+        ],
+        "heading_id": "sec-u-6385bcdab7"
+      },
+      "e14-14": {
+        "original_id": "e16-14",
+        "legacy_ids": [
+          "e16-14"
+        ],
+        "heading_id": "sec-u-6c58daa8de"
+      },
+      "e14-15": {
+        "original_id": "e16-15",
+        "legacy_ids": [
+          "e16-15"
+        ],
+        "heading_id": "sec-u-d9fe9adc55"
+      },
+      "e14-16": {
+        "original_id": "e16-16",
+        "legacy_ids": [
+          "e16-16"
+        ],
+        "heading_id": "sec-u-5a34d829b8"
+      },
+      "e14-17": {
+        "original_id": "e16-17",
+        "legacy_ids": [
+          "e16-17"
+        ],
+        "heading_id": "sec-u-a2a77f50a2"
+      },
+      "e14-18": {
+        "original_id": "e16-18",
+        "legacy_ids": [
+          "e16-18"
+        ],
+        "heading_id": "sec-u-d3076b1ca1"
+      }
+    },
+    "15_target-extraction-diarization.md": {
+      "e15-01": {
+        "original_id": "e17-01",
+        "legacy_ids": [
+          "e17-01"
+        ],
+        "heading_id": "sec-u-7260e8bb52"
+      },
+      "e15-02": {
+        "original_id": "e17-02",
+        "legacy_ids": [
+          "e17-02"
+        ],
+        "heading_id": "sec-u-477f784bc2"
+      },
+      "e15-03": {
+        "original_id": "e17-03",
+        "legacy_ids": [
+          "e17-03"
+        ],
+        "heading_id": "sec-u-972638914c"
+      },
+      "e15-04": {
+        "original_id": "e17-04",
+        "legacy_ids": [
+          "e17-04"
+        ],
+        "heading_id": "sec-u-dba20ea272"
+      },
+      "e15-05": {
+        "original_id": "e17-05",
+        "legacy_ids": [
+          "e17-05"
+        ],
+        "heading_id": "sec-u-3219c8f9e8"
+      },
+      "e15-06": {
+        "original_id": "e17-06",
+        "legacy_ids": [
+          "e17-06"
+        ],
+        "heading_id": "sec-u-f8d6da3847"
+      },
+      "e15-07": {
+        "original_id": "e17-07",
+        "legacy_ids": [
+          "e17-07"
+        ],
+        "heading_id": "sec-u-c101fdacd3"
+      },
+      "e15-08": {
+        "original_id": "e17-08",
+        "legacy_ids": [
+          "e17-08"
+        ],
+        "heading_id": "sec-u-cba35fb5e1"
+      },
+      "e15-09": {
+        "original_id": "e17-09",
+        "legacy_ids": [
+          "e17-09"
+        ],
+        "heading_id": "sec-u-babc01c78f"
+      },
+      "e15-10": {
+        "original_id": "e17-10",
+        "legacy_ids": [
+          "e17-10"
+        ],
+        "heading_id": "sec-u-98c35aede6"
+      },
+      "e15-11": {
+        "original_id": "e17-11",
+        "legacy_ids": [
+          "e17-11"
+        ],
+        "heading_id": "sec-u-f030237235"
+      },
+      "e15-12": {
+        "original_id": "e17-12",
+        "legacy_ids": [
+          "e17-12"
+        ],
+        "heading_id": "sec-u-76e2b3cbad"
+      },
+      "e15-13": {
+        "original_id": "e17-13",
+        "legacy_ids": [
+          "e17-13"
+        ],
+        "heading_id": "sec-u-5427085a40"
+      },
+      "e15-14": {
+        "original_id": "e17-14",
+        "legacy_ids": [
+          "e17-14"
+        ],
+        "heading_id": "sec-u-fcb2ba8992"
+      },
+      "e15-15": {
+        "original_id": "e17-15",
+        "legacy_ids": [
+          "e17-15"
+        ],
+        "heading_id": "sec-u-617b8246f6"
+      },
+      "e15-16": {
+        "original_id": "e17-16",
+        "legacy_ids": [
+          "e17-16"
+        ],
+        "heading_id": "sec-u-22086f7ea6"
+      },
+      "e15-17": {
+        "original_id": "e17-17",
+        "legacy_ids": [
+          "e17-17"
+        ],
+        "heading_id": "sec-u-c7cc19996d"
+      },
+      "e15-18": {
+        "original_id": "e17-18",
+        "legacy_ids": [
+          "e17-18"
+        ],
+        "heading_id": "sec-u-6fb2bbba75"
       }
     }
   }

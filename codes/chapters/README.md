@@ -20,10 +20,10 @@
 | [ch11](ch11/) | `ch11.chapter11_experiments` | E11-10～29；硬约束、评分和 FIR 取舍，示意分数不代表产品测量 |
 | [ch12](ch12/) | `ch12.chapter12_exercises`、`ch12.examples.generate_imaging_audio`、`ch12.examples.audit_upstream_imaging_contracts` | E12-01～20；球面CSM/PSF、DAMAS前/双向、有限小矩阵NNLS、作者full-CSM CLEAN-SC及目标失配；五独立PCM及固定原方法差异分开 |
 | [ch13](ch13/) | `ch13.chapter13_exercises`、`ch13.examples.generate_distributed_audio`、`ch13.examples.audit_upstream_distributed_contracts` | E13-01～27；指定MWF任务与压缩、真实广播后接收状态、GEVD/树控制；17独立PCM及限定原helper合同分开 |
-| [ch16](ch16/) | `ch16.chapter16_exercises`、`ch16.examples.generate_wearable_audio` | E16-01～18；FOA四面体编码、声强DirAC、BSM-LS/MagLS、BMVDR参考混合、跨模态抗风噪融合与通透梳状滤波；6份独立PCM分开解析/浮点/整型评分 |
-| [ch17](ch17/) | `ch17.chapter17_exercises`、`ch17.examples.generate_tse_audio` | E17-01～18；FiLM条件调制、双态地板损失、近场球面波距离气泡、空谱TS-VAD/GSS门控与视听异步回退；6份独立PCM分开解析/浮点/整型评分 |
-| [appendix_a](appendix_a/) | `appendix_a.appendix_a_experiments` | E14-06～21；复投影、已知噪声加权、截断与正则、相关共轭、EVD前提、实际PCM及完整相关噪声GLS/同步白化；旧01～05仍复用跨章唯一实现 |
-| [appendix_b](appendix_b/) | `appendix_b.appendix_b_experiments`、`appendix_b.interpolation_exercise` | E15-02～16；E15-02 读回主音频 PCM，E15-03～15 核查房间结果、PCM、来源证据、TAC共享结构、能量尺度、时间条件化与同DRR输出，不重跑房间仿真 |
+| [ch14](ch14/) | `ch14.chapter14_exercises`、`ch14.examples.generate_wearable_audio` | E14-01～18；FOA四面体编码、声强DirAC、BSM-LS/MagLS、BMVDR参考混合、跨模态抗风噪融合与通透梳状滤波；6份独立PCM分开解析/浮点/整型评分 |
+| [ch15](ch15/) | `ch15.chapter15_exercises`、`ch15.examples.generate_tse_audio` | E15-01～18；FiLM条件调制、双态地板损失、近场球面波距离气泡、空谱TS-VAD/GSS门控与视听异步回退；6份独立PCM分开解析/浮点/整型评分 |
+| [appendix_a](appendix_a/) | `appendix_a.appendix_a_experiments` | E16-06～21；复投影、已知噪声加权、截断与正则、相关共轭、EVD前提、实际PCM及完整相关噪声GLS/同步白化；旧01～05仍复用跨章唯一实现 |
+| [appendix_b](appendix_b/) | `appendix_b.appendix_b_experiments`、`appendix_b.interpolation_exercise` | E17-02～16；E17-02 读回主音频 PCM，E17-03～15 核查房间结果、PCM、来源证据、TAC共享结构、能量尺度、时间条件化与同DRR输出，不重跑房间仿真 |
 
 从仓库根目录使用模块形式运行，例如：
 
@@ -95,8 +95,8 @@ E10-17 的变长回调时序在 [跨章工程边界入口](ch00/cross_chapter/en
 | [ch11/scenario_audio](ch11/scenario_audio/MANIFEST.json) | 8 | `ch11.examples.generate_selection_audio` | 两场景3/9抽头；权重/逐场景最坏分开 |
 | [ch12/imaging_audio](ch12/imaging_audio/MANIFEST.json) | 5 | `ch12.examples.generate_imaging_audio` | 指定快拍相位与CSM；音频混合不能证明源量反演 |
 | [ch13/distributed_audio](ch13/distributed_audio/MANIFEST.json) | 17 | `ch13.examples.generate_distributed_audio` | 已知统计/速率/缺口；非盲DANSE或实网络 |
-| [ch16/wearable_audio](ch16/wearable_audio/MANIFEST.json) | 6 | `ch16.examples.generate_wearable_audio` | 双音风噪/耳道闭塞跨模态融合与2ms通透梳状滤波；非实测人耳录音 |
-| [ch17/tse_audio](ch17/tse_audio/MANIFEST.json) | 6 | `ch17.examples.generate_tse_audio` | 同向近场目标与远场干扰二抽头因果距离气泡；非自然语音盲分离 |
+| [ch14/wearable_audio](ch14/wearable_audio/MANIFEST.json) | 6 | `ch14.examples.generate_wearable_audio` | 双音风噪/耳道闭塞跨模态融合与2ms通透梳状滤波；非实测人耳录音 |
+| [ch15/tse_audio](ch15/tse_audio/MANIFEST.json) | 6 | `ch15.examples.generate_tse_audio` | 同向近场目标与远场干扰二抽头因果距离气泡；非自然语音盲分离 |
 | [appendix_a/weighted_audio](appendix_a/weighted_audio/MANIFEST.json) | 5 | `appendix_a.examples.generate_weighted_audio` | 已知噪声权重；纯音正交不等于随机独立 |
 | [appendix_b/response_audio](appendix_b/response_audio/MANIFEST.json) | 5 | `appendix_b.examples.generate_response_audio` | 同RIR DRR两短FIR；源加权反射功率另命名 |
 | [appendix_b/room_audio](appendix_b/room_audio/MANIFEST.json) | 18 | `appendix_b.examples.room_srp_exercise` | 固定PRA六位置白噪声仿真；隔离依赖、非真实房间 |
@@ -174,13 +174,13 @@ E08-30沿用第2章唯一STFT核，逐共享样本核对两个一致性次序；
 
 目标和两个不同频率干扰共同包络/增益1，OLS/GLS/反权用同一双通道输入，三权重和均1；稳态28800点的解析、浮点分量和实际PCM整数评分分开。E14-20另用已知完整协方差复算相关噪声下的负权重与同步白化，不借用这五个互正交纯音WAV证明随机相关模型。`appendix_a.examples.audit_upstream_solver_contracts` 从已核原源码字节执行完整模块，保留原四例、另列四个形状/复数批次控制和两个独立NumPy例。仓内显式 `--report` 仅可写 `reports/upstream_solver_contracts_current.json`，历史报告保留原字节。
 
-附录B共16题。E15-15以固定指数模型比较有限尾部与无限衰减，复用唯一房间指标核，不生成新WAV。E15-03～15入口统一为 `appendix_b.appendix_b_experiments`；主插值四WAV先核20真实源与完整PCM回放。E15-11～13分别拆解TAC共享聚合、安全能量尺度和T20时间条件化，E15-14使用[五个独立同DRR对照WAV](appendix_b/response_audio/MANIFEST.json)，四真实源、共同增益1及完整两点尾。
+附录B共16题。E15-15以固定指数模型比较有限尾部与无限衰减，复用唯一房间指标核，不生成新WAV。E17-03～15入口统一为 `appendix_b.appendix_b_experiments`；主插值四WAV先核20真实源与完整PCM回放。E17-11～13分别拆解TAC共享聚合、安全能量尺度和T20时间条件化，E15-14使用[五个独立同DRR对照WAV](appendix_b/response_audio/MANIFEST.json)，四真实源、共同增益1及完整两点尾。
 
 `appendix_b.examples.generate_response_audio --check`只读核全部清单/字节/实际整数评分；不并入主109。房间资产的 `appendix_b.examples.check_room_assets` 核21普通成员、七真实源、固定DOA和81抽头/40点延迟声明、报告绑定和18PCM。
 
 `--replay`需隔离PRA环境真实重跑。`appendix_b.examples.audit_tac_contracts`默认stdout核固定原源的10个静态合同和当前完整选集，四项直接执行源前后绑定；显式报告仅仓内新`tac_contracts_current.json`或仓外普通路径，不导入Torch或执行原网络。
 
-第12章为扩展专题Ⅰ，接第11章后；第13章为扩展专题Ⅱ，第16、17章为扩展专题Ⅲ、Ⅳ，附录A/B分别为第14、15章。`ch12.chapter12_exercises`只读复算20题。
+第12章为扩展专题Ⅰ，接第11章后；第13章为扩展专题Ⅱ，第14、15章为扩展专题Ⅲ、Ⅳ，附录A/B分别为第16、17章。`ch12.chapter12_exercises`只读复算20题。
 
 `ch12.examples.generate_imaging_audio --check`严格核六普通成员及当前真实源、完整PCM回放，五份WAV不并入主109。`ch12.examples.audit_upstream_imaging_contracts`默认终端，只在显式`--report`时写当前合同；固定Acoular源码身份、整选集不匹配、方法相符/已确认差异/未执行分开。没有运行完整Acoular包、JIT/HDF5或风洞录音。
 
@@ -188,9 +188,9 @@ E08-30沿用第2章唯一STFT核，逐共享样本核对两个一致性次序；
 
 九真实源与整数E/D随清单保存，`--check`严格核18普通成员并完整只读重放。已知100ppm线性SRC改变频响与噪声统计，不是盲时钟估计。当前原合同仅执行paderwasn三个AST原helper和MATLAB静态审读；没有原MATLAB、完整DWACD或无线设备成绩。
 
-第16章扩展专题Ⅲ接第13章后。`ch16.chapter16_exercises`只读复算18题；`ch16.examples.generate_wearable_audio --check`严格核七普通成员与六个真实源，六份16kHz数学合成WAV在1600:30400稳窗分开解析、浮点与实际PCM整数评分，不并入主109。
+第14章扩展专题Ⅲ接第13章后。`ch14.chapter14_exercises`只读复算18题；`ch14.examples.generate_wearable_audio --check`严格核七普通成员与六个真实源，六份16kHz数学合成WAV在1600:30400稳窗分开解析、浮点与实际PCM整数评分，不并入主109。
 
-第17章扩展专题Ⅳ接第16章后。`ch17.chapter17_exercises`只读复算18题；`ch17.examples.generate_tse_audio --check`严格核七普通成员与六个真实源，六份16kHz数学合成WAV在1600:30400稳窗分开解析、浮点与实际PCM整数E/D评分，不并入主109。
+第15章扩展专题Ⅳ接第14章后。`ch15.chapter15_exercises`只读复算18题；`ch15.examples.generate_tse_audio --check`严格核七普通成员与六个真实源，六份16kHz数学合成WAV在1600:30400稳窗分开解析、浮点与实际PCM整数E/D评分，不并入主109。
 
 E10-34的[通道选集核](ch10/core/channel_selection.py)同时处理观测轴、目标响应与协方差双轴，复用第5章唯一MVDR；[六WAV独立清单](ch10/channel_audio/MANIFEST.json)使用确定性正交音与固定实权重。[生成入口](ch10/examples/generate_channel_audio.py)的`--check`完整只读重放。图78和手册分开目标损伤、噪声与真实PCM总误差，不把失效后的两项解析NMSE相同写成PCM严格相同。
 

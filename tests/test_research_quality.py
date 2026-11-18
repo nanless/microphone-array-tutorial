@@ -71,14 +71,14 @@ class ResearchQualityTests(unittest.TestCase):
         self.assertEqual(quality.EXPECTED_OUTLINE_ITEM_COUNT, 1059)
         self.assertEqual(quality.EXPECTED_FIGURE_NUMBERS, set(range(1, 89)))
         self.assertEqual(quality.EXPECTED_EXERCISE_COUNT, 427)
-        self.assertEqual(quality.EXPECTED_SUBSECTION_COUNTS['15_appendix-guide.md'], 31)
-        self.assertEqual(quality.EXPECTED_EXERCISE_COUNTS['15_appendix-guide.md'], 16)
+        self.assertEqual(quality.EXPECTED_SUBSECTION_COUNTS['17_appendix-guide.md'], 31)
+        self.assertEqual(quality.EXPECTED_EXERCISE_COUNTS['17_appendix-guide.md'], 16)
         self.assertEqual(quality.EXPECTED_SECTION_COUNTS['13_distributed-enhancement.md'], 16)
         self.assertEqual(quality.EXPECTED_SUBSECTION_COUNTS['13_distributed-enhancement.md'], 68)
-        self.assertEqual(quality.EXPECTED_SECTION_COUNTS['16_spatial-wearable-arrays.md'], 12)
-        self.assertEqual(quality.EXPECTED_SUBSECTION_COUNTS['16_spatial-wearable-arrays.md'], 48)
-        self.assertEqual(quality.EXPECTED_SECTION_COUNTS['17_target-extraction-diarization.md'], 10)
-        self.assertEqual(quality.EXPECTED_SUBSECTION_COUNTS['17_target-extraction-diarization.md'], 43)
+        self.assertEqual(quality.EXPECTED_SECTION_COUNTS['14_spatial-wearable-arrays.md'], 12)
+        self.assertEqual(quality.EXPECTED_SUBSECTION_COUNTS['14_spatial-wearable-arrays.md'], 48)
+        self.assertEqual(quality.EXPECTED_SECTION_COUNTS['15_target-extraction-diarization.md'], 10)
+        self.assertEqual(quality.EXPECTED_SUBSECTION_COUNTS['15_target-extraction-diarization.md'], 43)
         self.assertEqual(quality.EXPECTED_RESEARCH_PAGE_COUNT, 6)
         self.assertEqual(quality.EXPECTED_RESEARCH_PAGES, (
             ("README.md", "index.html"),
@@ -163,7 +163,7 @@ class ResearchQualityTests(unittest.TestCase):
 class PublishedResearchQualityTests(unittest.TestCase):
     def test_appendix_b_room_steps_keep_original_deep_links_in_both_editions(self):
         from scripts import build_pdf, build_site
-        source = quality.ROOT / "chapters/15_appendix-guide.md"
+        source = quality.ROOT / "chapters/17_appendix-guide.md"
         markdown = source.read_text(encoding="utf-8")
         site_body, _heading_count = build_site.render(markdown, source)
         combined, _outline = build_pdf.build_html(build_date="2026-09-29")

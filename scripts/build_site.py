@@ -97,13 +97,13 @@ DISTRIBUTED_AUDIO_WAVS = {
         "clock_linear_corrected_white", "packet_zerofill_white", "packet_local_fallback_white",
     )
 }
-WEARABLE_AUDIO_ROOT = CODE_CHAPTERS / "ch16" / "wearable_audio"
+WEARABLE_AUDIO_ROOT = CODE_CHAPTERS / "ch14" / "wearable_audio"
 WEARABLE_AUDIO_WAVS = {
     "wearable_clean_ref.wav", "wearable_air_wind_2ch.wav",
     "wearable_inear_occluded.wav", "wearable_inear_equalized.wav",
     "wearable_fused_output.wav", "wearable_hearthrough_comb.wav",
 }
-TSE_AUDIO_ROOT = CODE_CHAPTERS / "ch17" / "tse_audio"
+TSE_AUDIO_ROOT = CODE_CHAPTERS / "ch15" / "tse_audio"
 TSE_AUDIO_WAVS = {
     "tse_near_target_ref.wav", "tse_far_interferer_ref.wav",
     "tse_array_3ch.wav", "tse_farfield_dsb.wav",
@@ -211,10 +211,10 @@ CHAPTERS = [
     ("11_selection-guide.md", "第 11 章 · 总结与选型指南"),
     ("12_acoustic-imaging.md", "第 12 章 · 声学成像与噪声源诊断"),
     ("13_distributed-enhancement.md", "第 13 章 · 分布式麦克风协同增强"),
-    ("16_spatial-wearable-arrays.md", "第 16 章 · 空间声场与可穿戴阵列"),
-    ("17_target-extraction-diarization.md", "第 17 章 · 条件目标提取与多通道日志"),
-    ("14_appendix-symbols-math.md", "第 14 章 · 附录 A：符号术语数学"),
-    ("15_appendix-guide.md", "第 15 章 · 附录 B：路径地图与练习"),
+    ("14_spatial-wearable-arrays.md", "第 14 章 · 空间声场与可穿戴阵列"),
+    ("15_target-extraction-diarization.md", "第 15 章 · 条件目标提取与多通道日志"),
+    ("16_appendix-symbols-math.md", "第 16 章 · 附录 A：符号术语数学"),
+    ("17_appendix-guide.md", "第 17 章 · 附录 B：路径地图与练习"),
 ]
 HOME_FNAME = "00_overview.md"
 COURSE_HOME_ROOT = ROOT / "scripts" / "course_home"
@@ -300,13 +300,13 @@ NARROW_TABLE_POLICIES = {
         ("候选", "1500 Hz目标幅度保留", "3500 Hz噪声衰减（dB）", "对齐NMSE（dB）"): (44, {1: 6}),
         ("场景与候选", "目标整数能量D", "误差整数能量E", "实际PCM线性NMSE"): (50, {1: 8}),
     },
-    SRC / "14_appendix-symbols-math.md": {
+    SRC / "16_appendix-symbols-math.md": {
         ("符号", "含义"): (34, {1: 8}),
         ("术语", "解释"): (32, {1: 8}),
         ("权重", "误差均方的逐项计算", "解析 MSE", "解析 NMSE（除以 $0.02$）"): (52, {1: 6}),
         ("输出", "实际整数误差平方和 $E_I$", "实际 PCM MSE", "实际 PCM NMSE"): (50, {1: 6}),
     },
-    SRC / "15_appendix-guide.md": {
+    SRC / "17_appendix-guide.md": {
         ("声源位置", "距离 (m)", "真方位 (°)", "$T_{20}$ 外推 $T_{60}$ (s)", "DRR (dB)", "SRP 方位 (°)", "绝对误差 (°)"): (64, {1: 8}),
         ("声源位置", "完整 WAV 帧数", "前 1 秒 SRP 方位", "整段 SRP 方位", "后者减前者"): (60, {1: 8}),
         ("完整输出", "整数误差平方和 $E$", "实际PCM MSE", "实际PCM NMSE"): (48, {1: 6}),
@@ -348,8 +348,8 @@ h1,h2,h3,h4{scroll-margin-top:60px}
 @media screen{.main a[id^="e"],.main .exercise-alias{scroll-margin-top:80px}}
 @media screen{.main .exercise-alias{top:0}}
 @media screen{.main a[id="e05-20"]{scroll-margin-top:60px}}
-@media screen{.main a[id="e15-11"],.main a[id="e15-12"],.main a[id="e15-13"],.main a[id="e15-14"],.main a[id="e15-15"]{scroll-margin-top:140px}}
-@media screen{.main .exercise-alias[id="e13-11"],.main .exercise-alias[id="e13-12"],.main .exercise-alias[id="e13-13"],.main .exercise-alias[id="e13-14"],.main .exercise-alias[id="e13-15"]{scroll-margin-top:140px}}
+@media screen{.main a[id="e17-11"],.main a[id="e17-12"],.main a[id="e17-13"],.main a[id="e17-14"],.main a[id="e17-15"]{scroll-margin-top:140px}}
+@media screen{.main .exercise-alias[id="e13-11"],.main .exercise-alias[id="e13-12"],.main .exercise-alias[id="e13-13"],.main .exercise-alias[id="e13-14"],.main .exercise-alias[id="e13-15"],.main .exercise-alias[id="e15-11"],.main .exercise-alias[id="e15-12"],.main .exercise-alias[id="e15-13"],.main .exercise-alias[id="e15-14"],.main .exercise-alias[id="e15-15"]{scroll-margin-top:140px}}
 @media screen{.main a[id^="e06-"]{scroll-margin-top:60px}}
 @media screen{.main a[id^="e07-"],.main a[id^="e08-"]{scroll-margin-top:60px}}
 @media screen{.main a[id^="e11-"]{scroll-margin-top:60px}}
@@ -1079,7 +1079,7 @@ def stage_wearable_audio(source, destination):
     """Publish six fully replayed wearable/spatial teaching WAVs."""
     expected = WEARABLE_AUDIO_WAVS | {"MANIFEST.json"}
     _preflight_asset_stage(source, destination, expected)
-    from codes.chapters.ch16.examples.generate_wearable_audio import check_assets
+    from codes.chapters.ch14.examples.generate_wearable_audio import check_assets
     check_assets(source)
     validate_asset_directory(destination, expected, check=False)
     destination.mkdir()
@@ -1092,7 +1092,7 @@ def stage_tse_audio(source, destination):
     """Publish six fully replayed near-field bubble / TSE teaching WAVs."""
     expected = TSE_AUDIO_WAVS | {"MANIFEST.json"}
     _preflight_asset_stage(source, destination, expected)
-    from codes.chapters.ch17.examples.generate_tse_audio import check_assets
+    from codes.chapters.ch15.examples.generate_tse_audio import check_assets
     check_assets(source)
     validate_asset_directory(destination, expected, check=False)
     destination.mkdir()

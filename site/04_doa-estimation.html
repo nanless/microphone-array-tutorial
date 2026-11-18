@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 4 章 · 声源定位（DOA 估计） · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="c1e13cc91b8b"><style>
+<meta name="source-digest" content="820e0688bd26"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -9,8 +9,8 @@ h1,h2,h3,h4{scroll-margin-top:60px}
 @media screen{.main a[id^="e"],.main .exercise-alias{scroll-margin-top:80px}}
 @media screen{.main .exercise-alias{top:0}}
 @media screen{.main a[id="e05-20"]{scroll-margin-top:60px}}
-@media screen{.main a[id="e15-11"],.main a[id="e15-12"],.main a[id="e15-13"],.main a[id="e15-14"],.main a[id="e15-15"]{scroll-margin-top:140px}}
-@media screen{.main .exercise-alias[id="e13-11"],.main .exercise-alias[id="e13-12"],.main .exercise-alias[id="e13-13"],.main .exercise-alias[id="e13-14"],.main .exercise-alias[id="e13-15"]{scroll-margin-top:140px}}
+@media screen{.main a[id="e17-11"],.main a[id="e17-12"],.main a[id="e17-13"],.main a[id="e17-14"],.main a[id="e17-15"]{scroll-margin-top:140px}}
+@media screen{.main .exercise-alias[id="e13-11"],.main .exercise-alias[id="e13-12"],.main .exercise-alias[id="e13-13"],.main .exercise-alias[id="e13-14"],.main .exercise-alias[id="e13-15"],.main .exercise-alias[id="e15-11"],.main .exercise-alias[id="e15-12"],.main .exercise-alias[id="e15-13"],.main .exercise-alias[id="e15-14"],.main .exercise-alias[id="e15-15"]{scroll-margin-top:140px}}
 @media screen{.main a[id^="e06-"]{scroll-margin-top:60px}}
 @media screen{.main a[id^="e07-"],.main a[id^="e08-"]{scroll-margin-top:60px}}
 @media screen{.main a[id^="e11-"]{scroll-margin-top:60px}}
@@ -320,10 +320,10 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <div class="chap"><a href="11_selection-guide.html">第 11 章 · 总结与选型指南</a></div>
 <div class="chap"><a href="12_acoustic-imaging.html">第 12 章 · 声学成像与噪声源诊断</a></div>
 <div class="chap"><a href="13_distributed-enhancement.html">第 13 章 · 分布式麦克风协同增强</a></div>
-<div class="chap"><a href="16_spatial-wearable-arrays.html">第 16 章 · 空间声场与可穿戴阵列</a></div>
-<div class="chap"><a href="17_target-extraction-diarization.html">第 17 章 · 条件目标提取与多通道日志</a></div>
-<div class="chap"><a href="14_appendix-symbols-math.html">第 14 章 · 附录 A：符号术语数学</a></div>
-<div class="chap"><a href="15_appendix-guide.html">第 15 章 · 附录 B：路径地图与练习</a></div>
+<div class="chap"><a href="14_spatial-wearable-arrays.html">第 14 章 · 空间声场与可穿戴阵列</a></div>
+<div class="chap"><a href="15_target-extraction-diarization.html">第 15 章 · 条件目标提取与多通道日志</a></div>
+<div class="chap"><a href="16_appendix-symbols-math.html">第 16 章 · 附录 A：符号术语数学</a></div>
+<div class="chap"><a href="17_appendix-guide.html">第 17 章 · 附录 B：路径地图与练习</a></div>
 <div class="chap"><a href="research/index.html">源码研究</a></div></nav>
 <main class="main" id="main-content" tabindex="-1"><div class="offline-note" id="offnote">当前离线：公式显示为源码，正文讲解不受影响。</div>
 <details class="toc-mobile"><summary>本页目录</summary><nav aria-label="本页目录"><ul>
@@ -391,7 +391,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="04_doa-estimation.html#sec-u-b8f5035311">E04-27：双麦盲相干扩散比怎样闭式筛除混响频点？</a></li>
 </ul></nav></details>
 <blockquote>
-<p>⚠️ 本篇是本书正文第 4 章（正文共 15 章，含第 12、13、16、17 章四篇扩展专题，另有附录 A、B），可独立阅读，前后篇见下方导航。</p>
+<p>⚠️ 本篇是本书正文第 4 章（正文共 15 章，含第 12～15 章四篇扩展专题，另有附录 A、B），可独立阅读，前后篇见下方导航。</p>
 <p>🏠 首页导读：<a href="index.html">🏠 导读与导航</a> ｜ 上一篇：<a href="03_array-geometry.html">第 3 章 · 阵列几何形态</a> ｜ 下一篇：<a href="05_beamforming.html">第 5 章 · 波束形成</a></p>
 </blockquote>
 <hr />
@@ -453,7 +453,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 </tr>
 </tbody>
 </table></div>
-<p>本章统一把列向量记为带箭头的 $\vec a,\vec w,\vec x$，矩阵记为大写正粗体 $\mathbf A,\mathbf I$，空间协方差矩阵采用双下标 $\mathbf R_{xx},\mathbf R_{ss},\mathbf R_{nn}$（有限快拍样本估计加帽记作 $\hat{\mathbf R}_{xx}$），以区别于标量互相关函数 $R_{x_1x_2}(\tau)$ 与整数滞后相关序列 $R[l]$。矩阵的复共轭转置记为 $^H$，实转置记为 $^\top$，虚数单位记为正体 $\mathrm{j}$，数学期望记为 $\mathbb{E}[\cdot]$；$M$ 表示麦克风通道数，$K$ 表示声源数。涉及快拍统计、厄米矩阵特征分解和复向量求导时，可随时对照<a href="14_appendix-symbols-math.html">附录 A 的数学工具</a>。本章配套的多组合成 WAV 音频均由已知几何与解析信号模型生成，专用于核验时延符号、亚采样对齐与矩阵秩变化，不代表真实房间语音录音的盲定位性能。</p>
+<p>本章统一把列向量记为带箭头的 $\vec a,\vec w,\vec x$，矩阵记为大写正粗体 $\mathbf A,\mathbf I$，空间协方差矩阵采用双下标 $\mathbf R_{xx},\mathbf R_{ss},\mathbf R_{nn}$（有限快拍样本估计加帽记作 $\hat{\mathbf R}_{xx}$），以区别于标量互相关函数 $R_{x_1x_2}(\tau)$ 与整数滞后相关序列 $R[l]$。矩阵的复共轭转置记为 $^H$，实转置记为 $^\top$，虚数单位记为正体 $\mathrm{j}$，数学期望记为 $\mathbb{E}[\cdot]$；$M$ 表示麦克风通道数，$K$ 表示声源数。涉及快拍统计、厄米矩阵特征分解和复向量求导时，可随时对照<a href="16_appendix-symbols-math.html">附录 A 的数学工具</a>。本章配套的多组合成 WAV 音频均由已知几何与解析信号模型生成，专用于核验时延符号、亚采样对齐与矩阵秩变化，不代表真实房间语音录音的盲定位性能。</p>
 <span id="sec-2" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-4-1">4.1 总览：四大类思路</h2>
 <pre><code>声源定位算法
 ├── 两阶段法：先从一对或多对麦克风估计到达时差，再按几何关系解位置（§4.2、§4.4）
@@ -968,7 +968,7 @@ P_B(\theta)&=\vec a^H(\theta)\hat{\mathbf R}_{xx}
 \min_{\vec w\in\mathbb C^M}\;&\vec w^H\hat{\mathbf R}_{xx}\vec w,\\
 \text{s.t.}\;&\vec w^H\vec a(\theta)=1\text{。}
 \end{aligned}$$</p>
-<p>假定 $\hat{\mathbf R}_{xx}$ 正定可逆，我们用复数拉格朗日乘子法与 Wirtinger 复梯度（将 $\vec w$ 与共轭变量 $\vec w^*$ 视为形式上独立的变量，对 $\vec w^*$ 求导，详见<a href="14_appendix-symbols-math.html">附录 A</a>）分三步把闭式解推出来：</p>
+<p>假定 $\hat{\mathbf R}_{xx}$ 正定可逆，我们用复数拉格朗日乘子法与 Wirtinger 复梯度（将 $\vec w$ 与共轭变量 $\vec w^*$ 视为形式上独立的变量，对 $\vec w^*$ 求导，详见<a href="16_appendix-symbols-math.html">附录 A</a>）分三步把闭式解推出来：</p>
 <ol>
 <li>
 <p><strong>构造实值拉格朗日函数并对 $\vec w^*$ 求梯度</strong>：引入复乘子 $\lambda$ 及其共轭项以保持目标函数为实数，写出</p>
@@ -1429,7 +1429,7 @@ u_k&=\frac{\lambda\arg\hat\psi_k}{2\pi\Delta d},\\
 <li><strong>波束能量与语音活动存在性（VAD）</strong>：结合转向该方向后的波束信噪比或语音活动概率，在静音段直接冻结角度更新，当连续缺测帧数超过验证集标定的容忍门限时通知追踪器释放旧轨迹、转入重捕获（参见第 9 章图 44 的能量与物理时差门控及图 77 的轨迹生命周期状态机）。</li>
 </ol>
 <h3 id="sec-4-8-1">4.8.1 双源分辨率：先规定成功，再重复抽样</h3>
-<p>章首图 11 只画了相隔 $50^\circ$ 的单次样本谱，回答不了“两个声源靠到多近时算法还能把它们双双认出来”。下面把附录 §15.6.2 第 6 题落成可复算的蒙特卡洛重复抽样试验：锁死阵列、网格与双峰匹配判据，只把两源角间隔依次收窄为 $50^\circ,15^\circ,8^\circ$，逐次统计成功分离次数。</p>
+<p>章首图 11 只画了相隔 $50^\circ$ 的单次样本谱，回答不了“两个声源靠到多近时算法还能把它们双双认出来”。下面把附录 §17.6.2 第 6 题落成可复算的蒙特卡洛重复抽样试验：锁死阵列、网格与双峰匹配判据，只把两源角间隔依次收窄为 $50^\circ,15^\circ,8^\circ$，逐次统计成功分离次数。</p>
 <p><strong>实验模型与配对抽样口径</strong>。采用 $M=8$ 元半波长均匀线阵（正横为 $0^\circ$），两个互不相关的圆对称复高斯窄带源功率均为 $1$，对称放置在 $\pm\Delta\theta/2$（间隔 $\Delta\theta\in\{50^\circ,15^\circ,8^\circ\}$），无混响、无幅相失配。对比两组观测条件：</p>
 <ul>
 <li><strong>高信噪比充足快拍组（$20\ \mathrm{dB}$、$400$ 快拍）</strong>：每通道独立复高斯白噪声方差为 $0.02$，两源总功率相对单麦噪声功率为 $2/0.02=100$（$20\ \mathrm{dB}$），每次抽取 $400$ 个独立快拍计算未中心化样本协方差 $\hat{\mathbf R}_{xx}$；</li>
@@ -1735,7 +1735,7 @@ F_k&=N\left[(M-k)\ln a_k-\sum_{i=k+1}^{M}\ln\hat\lambda_i\right]\\
 <p><strong>附：网格量化误差小检验</strong>。在格点 $\{0^\circ,2^\circ,4^\circ\}$（步长 $\Delta=2^\circ$）上，真值取 $2^\circ,2.5^\circ,3^\circ$ 时，最近格点绝对误差依次为 $0^\circ,0.5^\circ,1^\circ$，印证最近格点量化上界为 $\Delta/2=1^\circ$ 而非“至少偏 $2^\circ$”（复算入口见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/spatial_precision_exercises.py"><code>spatial_precision_exercises.py</code></a> 的 <code>E04-10</code>）。</p>
 <p><a id="e04-11"></a></p>
 <h3 id="sec-u-b0738d4f79">E04-11：已知有色噪声时，只把协方差白化够不够？</h3>
-<p>附录 A 的练习 E14-04 指出空间白化必须同步变换信号模型。本题在三元半波距均匀线阵（$a_m(\theta)=e^{+\mathrm{j}\pi m\sin\theta}$，$m=0,1,2$，自正横起算）上跑通完整 MUSIC 扫描，看看“只白化协方差矩阵、忘了改候选导向矢量”会把谱峰推偏到哪里。设待定位目标位于 $0^\circ$（$\vec a=[1,1,1]^\top$，功率为 $1$），另有一个已知统计特性的强方向性干扰源位于 $30^\circ$（$\vec b=[1,\mathrm{j},-1]^\top$，功率为 $9$）叠加每通道方差为 $1$ 的独立白噪声，把干扰并入<strong>已知有色噪声协方差 $\mathbf R_{nn}$</strong>，单目标源数固定取 $K=1$：</p>
+<p>附录 A 的练习 E16-04 指出空间白化必须同步变换信号模型。本题在三元半波距均匀线阵（$a_m(\theta)=e^{+\mathrm{j}\pi m\sin\theta}$，$m=0,1,2$，自正横起算）上跑通完整 MUSIC 扫描，看看“只白化协方差矩阵、忘了改候选导向矢量”会把谱峰推偏到哪里。设待定位目标位于 $0^\circ$（$\vec a=[1,1,1]^\top$，功率为 $1$），另有一个已知统计特性的强方向性干扰源位于 $30^\circ$（$\vec b=[1,\mathrm{j},-1]^\top$，功率为 $9$）叠加每通道方差为 $1$ 的独立白噪声，把干扰并入<strong>已知有色噪声协方差 $\mathbf R_{nn}$</strong>，单目标源数固定取 $K=1$：</p>
 <p>$$\begin{aligned}
 \mathbf R_{nn}&=\mathbf I_3+9\vec b\vec b^H
 =\begin{bmatrix}

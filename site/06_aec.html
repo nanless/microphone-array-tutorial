@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 6 章 · 声学回声消除（AEC） · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="c1e13cc91b8b"><style>
+<meta name="source-digest" content="820e0688bd26"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -9,8 +9,8 @@ h1,h2,h3,h4{scroll-margin-top:60px}
 @media screen{.main a[id^="e"],.main .exercise-alias{scroll-margin-top:80px}}
 @media screen{.main .exercise-alias{top:0}}
 @media screen{.main a[id="e05-20"]{scroll-margin-top:60px}}
-@media screen{.main a[id="e15-11"],.main a[id="e15-12"],.main a[id="e15-13"],.main a[id="e15-14"],.main a[id="e15-15"]{scroll-margin-top:140px}}
-@media screen{.main .exercise-alias[id="e13-11"],.main .exercise-alias[id="e13-12"],.main .exercise-alias[id="e13-13"],.main .exercise-alias[id="e13-14"],.main .exercise-alias[id="e13-15"]{scroll-margin-top:140px}}
+@media screen{.main a[id="e17-11"],.main a[id="e17-12"],.main a[id="e17-13"],.main a[id="e17-14"],.main a[id="e17-15"]{scroll-margin-top:140px}}
+@media screen{.main .exercise-alias[id="e13-11"],.main .exercise-alias[id="e13-12"],.main .exercise-alias[id="e13-13"],.main .exercise-alias[id="e13-14"],.main .exercise-alias[id="e13-15"],.main .exercise-alias[id="e15-11"],.main .exercise-alias[id="e15-12"],.main .exercise-alias[id="e15-13"],.main .exercise-alias[id="e15-14"],.main .exercise-alias[id="e15-15"]{scroll-margin-top:140px}}
 @media screen{.main a[id^="e06-"]{scroll-margin-top:60px}}
 @media screen{.main a[id^="e07-"],.main a[id^="e08-"]{scroll-margin-top:60px}}
 @media screen{.main a[id^="e11-"]{scroll-margin-top:60px}}
@@ -349,10 +349,10 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <div class="chap"><a href="11_selection-guide.html">第 11 章 · 总结与选型指南</a></div>
 <div class="chap"><a href="12_acoustic-imaging.html">第 12 章 · 声学成像与噪声源诊断</a></div>
 <div class="chap"><a href="13_distributed-enhancement.html">第 13 章 · 分布式麦克风协同增强</a></div>
-<div class="chap"><a href="16_spatial-wearable-arrays.html">第 16 章 · 空间声场与可穿戴阵列</a></div>
-<div class="chap"><a href="17_target-extraction-diarization.html">第 17 章 · 条件目标提取与多通道日志</a></div>
-<div class="chap"><a href="14_appendix-symbols-math.html">第 14 章 · 附录 A：符号术语数学</a></div>
-<div class="chap"><a href="15_appendix-guide.html">第 15 章 · 附录 B：路径地图与练习</a></div>
+<div class="chap"><a href="14_spatial-wearable-arrays.html">第 14 章 · 空间声场与可穿戴阵列</a></div>
+<div class="chap"><a href="15_target-extraction-diarization.html">第 15 章 · 条件目标提取与多通道日志</a></div>
+<div class="chap"><a href="16_appendix-symbols-math.html">第 16 章 · 附录 A：符号术语数学</a></div>
+<div class="chap"><a href="17_appendix-guide.html">第 17 章 · 附录 B：路径地图与练习</a></div>
 <div class="chap"><a href="research/index.html">源码研究</a></div></nav>
 <main class="main" id="main-content" tabindex="-1"><div class="offline-note" id="offnote">当前离线：公式显示为源码，正文讲解不受影响。</div>
 <details class="toc-mobile"><summary>本页目录</summary><nav aria-label="本页目录"><ul>
@@ -449,7 +449,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li><a href="06_aec.html#sec-6-17">6.17 延伸阅读</a></li>
 </ul></nav></details>
 <blockquote>
-<p>⚠️ 本篇是教程正文第 6 章（正文共 15 章，含第 12、13、16、17 章四篇扩展专题，另有附录 A、B），可独立阅读，前后篇见下方导航。</p>
+<p>⚠️ 本篇是教程正文第 6 章（正文共 15 章，含第 12～15 章四篇扩展专题，另有附录 A、B），可独立阅读，前后篇见下方导航。</p>
 <p>🏠 首页导读：<a href="index.html">🏠 导读与导航</a> ｜ 上一篇：<a href="05_beamforming.html">第 5 章 · 波束形成</a> ｜ 下一篇：<a href="07_wpe-dereverberation.html">第 7 章 · 去混响（WPE）</a></p>
 </blockquote>
 <hr />
@@ -535,7 +535,7 @@ y[n]&=\sum_{\ell=0}^{L-1}h[\ell]x[n-\ell].
 </blockquote>
 <p>在进入推导前，还需要厘清两对容易混淆的物理概念：</p>
 <p>第一对是<strong>数字域波形相减（AEC）与空气声场物理相消（ANC / 车载 ICC）的本质分野</strong>。AEC 在数字处理器内部用麦克风采样 $d[n]$ 减去估计副本 $\hat y[n]$，目的是不让本机播放声传回远端通话方，房间里的本地人耳依然听得到扬声器外放；只要副本相位误差超过 $60^\circ$，复数减法甚至可能令残余能量反超原回声（见练习 E06-04）。相比之下，主动噪声控制（Active Noise Control，ANC）通过次级扬声器向空气辐射反相声波，电子控制时延 $\tau_{\mathrm{elec}}$ 须严格小于主次声路飞行时差 $\tau_{\mathrm{acoust}}-\tau_{\mathrm{sec}}$（常为亚毫秒级），才能赶在主噪声波到达耳道前完成物理声压相消；而车载座舱通话增强（In-Car Communication，ICC）则是把前排驾驶员语音拾取放大后直接从后排扬声器实时播放出来。</p>
-<p>按照国际电联车载座舱通信标准 <strong>ITU-T P.1150</strong>，同舱扩声的端到端增强延迟须严控在 $\Delta_{\mathrm{Rx}}\lt 15\ \mathrm{ms}$（哈斯效应融合阈值之下）：一旦总环路延迟 $\tau_{\mathrm{loop}}$ 偏大，后排乘客耳中同时到达的空气直达人声与扬声器扩声就会发生间隔 $\Delta f=1/\tau_{\mathrm{loop}}$ 的周期性相长与相消干涉，产生刺耳的金属感梳状滤波（comb filtering）乃至闭环声反馈啸叫（定量复算见练习 <a href="#e06-44">E06-44</a>），而这类已经在空气中叠加进入人耳的物理干涉是无法靠发送端数字 AEC 事后抹除的。而在入耳式耳机通透模式（Hear-Through）中，耳塞被动漏声与电声重放直接在鼓膜叠加，端到端延迟上限会进一步收紧至百微秒级（详见<a href="16_spatial-wearable-arrays.html#sec-16-10">第 16 章 §16.10</a>）。</p>
+<p>按照国际电联车载座舱通信标准 <strong>ITU-T P.1150</strong>，同舱扩声的端到端增强延迟须严控在 $\Delta_{\mathrm{Rx}}\lt 15\ \mathrm{ms}$（哈斯效应融合阈值之下）：一旦总环路延迟 $\tau_{\mathrm{loop}}$ 偏大，后排乘客耳中同时到达的空气直达人声与扬声器扩声就会发生间隔 $\Delta f=1/\tau_{\mathrm{loop}}$ 的周期性相长与相消干涉，产生刺耳的金属感梳状滤波（comb filtering）乃至闭环声反馈啸叫（定量复算见练习 <a href="#e06-44">E06-44</a>），而这类已经在空气中叠加进入人耳的物理干涉是无法靠发送端数字 AEC 事后抹除的。而在入耳式耳机通透模式（Hear-Through）中，耳塞被动漏声与电声重放直接在鼓膜叠加，端到端延迟上限会进一步收紧至百微秒级（详见<a href="14_spatial-wearable-arrays.html#sec-14-10">第 14 章 §14.10</a>）。</p>
 <p>第二对是<strong>波形减法与谱幅度乘法的分工</strong>。线性 AEC 握有参考波形 $x[n]$，能够同时估计回声的幅度与相位并直接作波形相减，在近端语音与回声同频重叠时依然可以只剥离回声而保留语音。当缺少精确波形参考（例如抑制线性未建模残余或未知背景噪声）时，经典后置滤波（如 §5.7 维纳后置滤波与 §6.8 的传统 NLP）往往退而估计功率谱，再对混合时频系数乘以 $0$～$1$ 之间的实数标量增益——这会把同一时频格内的回声与近端语音按相同比例一并压低。至于多通道复数滤波、复数掩码或深度滤波（§6.5），则额外引入了跨通道或跨帧复数自由度，阅读时应按各自的数学算子准确区分。</p>
 <p><img alt="图27 AEC 基本结构" src="../figures/fig27_aec_concept.png" onerror="this.alt+='（图缺失）'" /></p>
 <p>图27概括了单通道线性 AEC 的标准信号流：远端参考信号 $x[n]$ 一路经扬声器和房间物理链路变成真实回声进入麦克风，另一路送入横向自适应滤波器 $\hat{\vec w}[n]$ 合成估计回声 $\hat y[n]$；加法器执行 $e[n]=d[n]-\hat y[n]$ 完成数字相减，顶部的双讲检测（DTD）模块监测两路信号以控制滤波器在双讲期间暂停或放缓更新。</p>
@@ -1649,7 +1649,7 @@ c_{xd}&=\frac{\left|\sum_{b=0}^{B-1}\tilde x_b\tilde d_b\right|}
 <p>从工程分层视角看，无论是用网络预测自适应步长、预测卡尔曼协方差，还是预测后置残余掩码，保留解析滤波骨架的核心价值都在于“物理因果可解释、冷启动零样本可用、出问题有中间残差可查”。</p>
 <h3 id="sec-u-02307edfbb">个性化 AEC（personalized AEC，pAEC）</h3>
 <p>在开放办公区或家庭客厅开免提会议时，麦克风除了录进扬声器回声，还会录进旁边同事或家人的交谈人声。通用 AEC 会把房间里所有非回声人声都当作“近端目标”原样保留；而 <strong>个性化回声消除（personalized AEC，pAEC；参见 <a href="https://doi.org/10.1109/OJSP.2024.3376289">Cutler et al., <em>IEEE OJSP</em>, 2024</a>）</strong> 则要求在消除扬声器回声的同时，只保留已注册主讲人的声音，将旁人干扰人声一并压制。</p>
-<p>其实现架构与目标说话人提取（Target Speaker Extraction，TSE；详见 <a href="08_speech-separation.html#sec-8-6">§8.6</a>、<a href="17_target-extraction-diarization.html#sec-17-1">第 17 章 §17.1～§17.2</a> 及 <a href="15_appendix-guide.html#sec-15-3">附录 B §15.3</a>，代表结构如 <a href="https://www.isca-archive.org/interspeech_2022/zhang22t_interspeech.pdf">GTCNN, Interspeech 2022</a>）一脉相承：先从用户预先录制的数秒注册语音中提取固定维度的声纹嵌入向量 $\vec e_{\mathrm{enroll}}$，再将其通过特征线性调制（FiLM）或注意力层注入残余抑制网络（隐私合规与共享设备回退条款见 §6.13）。</p>
+<p>其实现架构与目标说话人提取（Target Speaker Extraction，TSE；详见 <a href="08_speech-separation.html#sec-8-6">§8.6</a>、<a href="15_target-extraction-diarization.html#sec-15-1">第 15 章 §15.1～§15.2</a> 及 <a href="17_appendix-guide.html#sec-17-3">附录 B §17.3</a>，代表结构如 <a href="https://www.isca-archive.org/interspeech_2022/zhang22t_interspeech.pdf">GTCNN, Interspeech 2022</a>）一脉相承：先从用户预先录制的数秒注册语音中提取固定维度的声纹嵌入向量 $\vec e_{\mathrm{enroll}}$，再将其通过特征线性调制（FiLM）或注意力层注入残余抑制网络（隐私合规与共享设备回退条款见 §6.13）。</p>
 <p><strong>pAEC 声纹门限与三区间回退。</strong> 设非零实数注册声纹向量为 $\vec e_{\mathrm{enroll}}$，当前帧提取的非零局部声纹向量为 $\vec e_t$，可用归一化余弦相似度衡量声纹匹配程度：</p>
 <p>$$\begin{aligned}
 c&=\frac{\vec e_t^\top\vec e_{\mathrm{enroll}}}

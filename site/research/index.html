@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>源码研究导读 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="c1e13cc91b8b"><style>
+<meta name="source-digest" content="820e0688bd26"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -9,8 +9,8 @@ h1,h2,h3,h4{scroll-margin-top:60px}
 @media screen{.main a[id^="e"],.main .exercise-alias{scroll-margin-top:80px}}
 @media screen{.main .exercise-alias{top:0}}
 @media screen{.main a[id="e05-20"]{scroll-margin-top:60px}}
-@media screen{.main a[id="e15-11"],.main a[id="e15-12"],.main a[id="e15-13"],.main a[id="e15-14"],.main a[id="e15-15"]{scroll-margin-top:140px}}
-@media screen{.main .exercise-alias[id="e13-11"],.main .exercise-alias[id="e13-12"],.main .exercise-alias[id="e13-13"],.main .exercise-alias[id="e13-14"],.main .exercise-alias[id="e13-15"]{scroll-margin-top:140px}}
+@media screen{.main a[id="e17-11"],.main a[id="e17-12"],.main a[id="e17-13"],.main a[id="e17-14"],.main a[id="e17-15"]{scroll-margin-top:140px}}
+@media screen{.main .exercise-alias[id="e13-11"],.main .exercise-alias[id="e13-12"],.main .exercise-alias[id="e13-13"],.main .exercise-alias[id="e13-14"],.main .exercise-alias[id="e13-15"],.main .exercise-alias[id="e15-11"],.main .exercise-alias[id="e15-12"],.main .exercise-alias[id="e15-13"],.main .exercise-alias[id="e15-14"],.main .exercise-alias[id="e15-15"]{scroll-margin-top:140px}}
 @media screen{.main a[id^="e06-"]{scroll-margin-top:60px}}
 @media screen{.main a[id^="e07-"],.main a[id^="e08-"]{scroll-margin-top:60px}}
 @media screen{.main a[id^="e11-"]{scroll-margin-top:60px}}
@@ -267,10 +267,10 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <div class="chap"><a href="../11_selection-guide.html">第 11 章 · 总结与选型指南</a></div>
 <div class="chap"><a href="../12_acoustic-imaging.html">第 12 章 · 声学成像与噪声源诊断</a></div>
 <div class="chap"><a href="../13_distributed-enhancement.html">第 13 章 · 分布式麦克风协同增强</a></div>
-<div class="chap"><a href="../16_spatial-wearable-arrays.html">第 16 章 · 空间声场与可穿戴阵列</a></div>
-<div class="chap"><a href="../17_target-extraction-diarization.html">第 17 章 · 条件目标提取与多通道日志</a></div>
-<div class="chap"><a href="../14_appendix-symbols-math.html">第 14 章 · 附录 A：符号术语数学</a></div>
-<div class="chap"><a href="../15_appendix-guide.html">第 15 章 · 附录 B：路径地图与练习</a></div></nav>
+<div class="chap"><a href="../14_spatial-wearable-arrays.html">第 14 章 · 空间声场与可穿戴阵列</a></div>
+<div class="chap"><a href="../15_target-extraction-diarization.html">第 15 章 · 条件目标提取与多通道日志</a></div>
+<div class="chap"><a href="../16_appendix-symbols-math.html">第 16 章 · 附录 A：符号术语数学</a></div>
+<div class="chap"><a href="../17_appendix-guide.html">第 17 章 · 附录 B：路径地图与练习</a></div></nav>
 <main class="main" id="main-content" tabindex="-1"><div class="offline-note" id="offnote">当前离线：公式显示为源码，正文讲解不受影响。</div>
 <details class="toc-mobile"><summary>本页目录</summary><nav aria-label="本页目录"><ul>
 <li><a href="index.html#sec-u-32dc3845c0">从一个问题开始阅读</a></li>
@@ -304,12 +304,12 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <tbody>
 <tr>
 <td><a href="01_spatial_and_tracking.html">空间处理与声源追踪</a></td>
-<td>第 1～5、9、12、16 章</td>
+<td>第 1～5、9、12、14 章</td>
 <td>宽带定位、稳健波束、球阵与可穿戴空间阵列、工业声源成像、数据关联和多目标状态</td>
 </tr>
 <tr>
 <td><a href="02_aec_wpe_separation.html">回声、去混响与语音分离</a></td>
-<td>第 6～8、17 章</td>
+<td>第 6～8、15 章</td>
 <td>自适应控制、在线状态、盲分离与条件目标提取、多通道日志、神经结构与推理依赖</td>
 </tr>
 <tr>
@@ -386,11 +386,11 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <p>第4章另有 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch04/reports/doatools_esprit_reference.json">doatools ESPRIT 固定接口对照</a>和<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch04/reports/figure13_gcc_reverb.json">图13的逐次统计</a>。默认加权的原版偏差、取消加权与独立参考分开记录；完整数字、适用范围与源码入口见空间篇第14节。</p>
 <p>第12章扩展专题Ⅰ提供<a href="../12_acoustic-imaging.html">声学成像正文</a>、<a href="01_spatial_and_tracking.html#imaging-contract-audit">逐层源码合同</a>和<a href="05_exercises_and_audio.html#471-十八题分别核对什么">18题及五WAV实验</a>。输出是参考声压贡献及区域量；原算法、教学控制和工业条件分别核对。</p>
 <p>分布式专题Ⅱ将<a href="../13_distributed-enhancement.html">节点目标与压缩条件</a>、<a href="03_industrial_deployment.html#distributed-network-deployment">原论文与工业网络</a>、<a href="04_source_reproduction.html#distributed-reproduction">固定源码合同</a>和<a href="05_exercises_and_audio.html#distributed-exercises-audio">25题及17WAV</a>互链。原统计算法、已知真值音频、源码获取与完整设备执行分别记录。</p>
-<p>空间与可穿戴阵列专题Ⅲ提供<a href="../16_spatial-wearable-arrays.html">球谐采集、双耳匹配与跨模态融合正文</a>以及<a href="05_exercises_and_audio.html#wearable-exercises-audio">16题与六WAV实验</a>。条件目标提取与多通道日志专题Ⅳ提供<a href="../17_target-extraction-diarization.html">线索条件化、近场距离气泡与TS-VAD/GSS正文</a>以及<a href="05_exercises_and_audio.html#tse-exercises-audio">16题与六WAV实验</a>。</p>
+<p>空间与可穿戴阵列专题Ⅲ提供<a href="../14_spatial-wearable-arrays.html">球谐采集、双耳匹配与跨模态融合正文</a>以及<a href="05_exercises_and_audio.html#wearable-exercises-audio">18题与六WAV实验</a>。条件目标提取与多通道日志专题Ⅳ提供<a href="../15_target-extraction-diarization.html">线索条件化、近场距离气泡与TS-VAD/GSS正文</a>以及<a href="05_exercises_and_audio.html#tse-exercises-audio">18题与六WAV实验</a>。</p>
 <p>导读推荐的<a href="04_source_reproduction.html#overview-source-entrypoints">WASN同步与LibriCSS公开评测源码</a>现已按固定提交取得限定选集。代码身份核验、原接口静态观察与未执行的依赖/评分/设备边界分别保留，不能用源码文件数代表工业验收。</p>
 <span id="sec-4" class="anchor-alias" aria-hidden="true"></span><span id="文档命令与结果的对应关系" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-c039b2bc79">文档、命令与结果的对应关系</h2>
 <ul>
-<li>学习入口与章号：<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/README.md">项目首页</a>和<a href="../index.html">导读</a>。第12、13、16、17章是专题，第14、15章是附录。</li>
+<li>学习入口与章号：<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/README.md">项目首页</a>和<a href="../index.html">导读</a>。第12～15章是专题，第16、17章是附录。</li>
 <li>395个稳定代码题与30套独立音频：<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/README.md#audio-inventory">代码目录</a>和本手册的练习篇；题数、WAV数、算法数分别统计。</li>
 <li>从资产到网页/PDF：<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/scripts/README.md#audio-regeneration">构建说明</a>，先核真实生成源与清单，再发布副本。</li>
 <li>取得固定源码：<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/upstream/README.md">获取说明</a>；它不会安装或执行上游。当前选集状态与限定原方法结果分别保留。</li>

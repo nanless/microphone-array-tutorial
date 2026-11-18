@@ -1,11 +1,11 @@
 """Cascade bottleneck attribution and troubleshooting roadmap kernels for Appendix B.
 
-Implements E15-16:
+Implements E17-16:
 1. Exact SINR / dB accounting across a 3-disturbance cascade (Linear AEC ->
    MIMO-WPE -> Spatial MVDR), contrasting downstream-only tuning under an
    unfixed upstream echo bottleneck against upstream-first remediation.
 2. Deterministic upstream-to-downstream fault triage mapping 6 canonical
-   telemetry signatures across Chapters 6, 7, 8, 10, 13, 16, and 17.
+   telemetry signatures across Chapters 6, 7, 8, 10, 13, 14, and 15.
 
 Pure Python/NumPy implementation with strict finite non-bool input validation.
 """
@@ -76,7 +76,7 @@ def cascade_bottleneck_budget(
     wrong_mvdr_diffuse_factor: float = 0.50,
     full_mvdr_factor: float = 0.25,
 ) -> dict[str, object]:
-    """Compute exact 3-stage cascade SINR attribution (E15-16)."""
+    """Compute exact 3-stage cascade SINR attribution (E17-16)."""
     p_s = _validate_real_scalar(target_power, "target_power")
     p_echo = _validate_real_scalar(echo_power, "echo_power")
     p_rev = _validate_real_scalar(late_reverb_power, "late_reverb_power")
@@ -216,7 +216,7 @@ def diagnose_pipeline_symptom(telemetry: dict[str, object]) -> dict[str, object]
             "fault_id": "hear_through_latency_comb",
             "priority_rank": 2,
             "stage": "hear_through_codec_path",
-            "chapter_pointer": "§16.10",
+            "chapter_pointer": "§14.10",
             "first_comb_notch_hz": comb_first_notch_hz,
             "action": (
                 "Reduce converter + DSP hear-through path to <= 100 us or attenuate "
@@ -230,7 +230,7 @@ def diagnose_pipeline_symptom(telemetry: dict[str, object]) -> dict[str, object]
             "fault_id": "wearable_wind_saturation",
             "priority_rank": 3,
             "stage": "sensor_mechanical_and_cross_modal",
-            "chapter_pointer": "§16.8 / §16.9",
+            "chapter_pointer": "§14.8 / §14.9",
             "action": (
                 "Detect wind via low spatial coherence, enforce WNG / high-pass "
                 "protection, and fuse occluded in-ear microphone below crossover"
@@ -273,7 +273,7 @@ def diagnose_pipeline_symptom(telemetry: dict[str, object]) -> dict[str, object]
             "fault_id": "overlap_diarization_gss",
             "priority_rank": 6,
             "stage": "separation_and_diarization",
-            "chapter_pointer": "§8.4 / §17.5",
+            "chapter_pointer": "§8.4 / §15.5",
             "action": (
                 "Upgrade single-label clustering to multi-label spatial TS-VAD and "
                 "drive GSS covariance estimation with exclusive target masks"
@@ -284,13 +284,13 @@ def diagnose_pipeline_symptom(telemetry: dict[str, object]) -> dict[str, object]
         "fault_id": "nominal",
         "priority_rank": 0,
         "stage": "healthy",
-        "chapter_pointer": "§11.2 / §15.4",
+        "chapter_pointer": "§11.2 / §17.4",
         "action": "All upstream physical preconditions satisfied; proceed to worst-case scenario acceptance",
     }
 
 
 def diagnostic_roadmap_controls() -> dict[str, object]:
-    """Return JSON-safe E15-16 cascade attribution and fault-routing fixture."""
+    """Return JSON-safe E17-16 cascade attribution and fault-routing fixture."""
     budget = cascade_bottleneck_budget()
     canonical_cases = {
         "clock_drift": diagnose_pipeline_symptom({"sro_ppm": 100.0}),
@@ -315,11 +315,11 @@ def diagnostic_roadmap_controls() -> dict[str, object]:
         "healthy_pipeline": diagnose_pipeline_symptom({}),
     }
     return {
-        "exercise_id": "E15-16",
+        "exercise_id": "E17-16",
         "cascade_budget": budget,
         "symptom_triage": canonical_cases,
         "scope": (
             "deterministic power-budget attribution and upstream-first diagnostic "
-            "triage across Ch 6/7/8/10/13/16/17; not a blind estimator or live telemetry daemon"
+            "triage across Ch 6/7/8/10/13/14/15; not a blind estimator or live telemetry daemon"
         ),
     }

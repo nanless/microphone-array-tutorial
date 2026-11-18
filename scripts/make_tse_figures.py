@@ -1,4 +1,4 @@
-"""Generate Chapter 17 figures (fig85..fig88) and numerical JSON reports.
+"""Generate Chapter 15 figures (fig85..fig88) and numerical JSON reports.
 
 Run from the repository root after generating tse_audio:
     .venv/bin/python scripts/make_tse_figures.py
@@ -23,27 +23,27 @@ from codes.chapters.ch00.io_contracts import (
     validate_report_destination,
     write_json_report,
 )
-from codes.chapters.ch17.core.av_alignment import (
+from codes.chapters.ch15.core.av_alignment import (
     av_confidence_gated_mask,
     map_video_to_audio_frames,
 )
-from codes.chapters.ch17.core.conditional_tse import (
+from codes.chapters.ch15.core.conditional_tse import (
     film_conditioning,
     tse_dual_state_loss,
     zero_overlap_bypass_decision,
 )
-from codes.chapters.ch17.core.diarization_tsvad import (
+from codes.chapters.ch15.core.diarization_tsvad import (
     compute_der_components,
     gss_soft_gated_mvdr,
     single_label_overlap_der_bound,
     tsvad_spatial_spectral_posterior,
 )
-from codes.chapters.ch17.core.distance_bubble import (
+from codes.chapters.ch15.core.distance_bubble import (
     broadside_distance_bubble_weights,
     fresnel_distance,
     spherical_ula_steering,
 )
-from codes.chapters.ch17.examples.generate_tse_audio import DEFAULT_OUTPUT, check_assets
+from codes.chapters.ch15.examples.generate_tse_audio import DEFAULT_OUTPUT, check_assets
 from scripts.make_figures import (
     C_BLUE,
     C_GREEN,
@@ -55,16 +55,16 @@ from scripts.make_figures import (
     plt,
 )
 
-REPORT_DIR = ROOT / "codes/chapters/ch17/reports"
+REPORT_DIR = ROOT / "codes/chapters/ch15/reports"
 FIG_DIR = ROOT / "figures"
 
 SCRIPT_INPUT_PATHS = (
-    "codes/chapters/ch17/core/conditional_tse.py",
-    "codes/chapters/ch17/core/distance_bubble.py",
-    "codes/chapters/ch17/core/diarization_tsvad.py",
-    "codes/chapters/ch17/core/av_alignment.py",
-    "codes/chapters/ch17/core/tse_audio.py",
-    "codes/chapters/ch17/examples/generate_tse_audio.py",
+    "codes/chapters/ch15/core/conditional_tse.py",
+    "codes/chapters/ch15/core/distance_bubble.py",
+    "codes/chapters/ch15/core/diarization_tsvad.py",
+    "codes/chapters/ch15/core/av_alignment.py",
+    "codes/chapters/ch15/core/tse_audio.py",
+    "codes/chapters/ch15/examples/generate_tse_audio.py",
     "codes/chapters/ch02/core/conventions.py",
     "codes/chapters/ch00/core/audio_samples.py",
     "codes/chapters/ch00/io_contracts.py",
@@ -143,7 +143,7 @@ def _build_fig85(sources: dict[str, str], manifest_sha: str) -> None:
 
     report = {
         "figure": 85,
-        "exercise_ids": ["E17-01", "E17-02", "E17-03"],
+        "exercise_ids": ["E15-01", "E15-02", "E15-03"],
         "source_sha256": sources,
         "audio_manifest_sha256": manifest_sha,
         "film_input": h_feat.tolist(),
@@ -262,7 +262,7 @@ def _build_fig86(manifest: dict, sources: dict[str, str], manifest_sha: str) -> 
 
     report = {
         "figure": 86,
-        "exercise_ids": ["E17-04", "E17-05", "E17-07", "E17-16"],
+        "exercise_ids": ["E15-04", "E15-05", "E15-07", "E15-16"],
         "source_sha256": sources,
         "audio_manifest_sha256": manifest_sha,
         "wav_sha256": {name: rec["sha256"] for name, rec in manifest["files"].items()},
@@ -382,7 +382,7 @@ def _build_fig87(sources: dict[str, str], manifest_sha: str) -> None:
 
     report = {
         "figure": 87,
-        "exercise_ids": ["E17-08", "E17-09", "E17-10", "E17-11", "E17-12"],
+        "exercise_ids": ["E15-08", "E15-09", "E15-10", "E15-11", "E15-12"],
         "source_sha256": sources,
         "audio_manifest_sha256": manifest_sha,
         "ref_activity": ref_act.tolist(),
@@ -494,7 +494,7 @@ def _build_fig88(sources: dict[str, str], manifest_sha: str) -> None:
 
     report = {
         "figure": 88,
-        "exercise_ids": ["E17-13", "E17-14", "E17-15"],
+        "exercise_ids": ["E15-13", "E15-14", "E15-15"],
         "source_sha256": sources,
         "audio_manifest_sha256": manifest_sha,
         "sync_video_indices": sync_map["video_frame_indices"].tolist(),

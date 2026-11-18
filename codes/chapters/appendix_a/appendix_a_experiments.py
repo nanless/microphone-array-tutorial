@@ -1,4 +1,4 @@
-"""E14-06..21: reproducible mathematical counterexamples for Appendix A.
+"""E16-06..21: reproducible mathematical counterexamples for Appendix A.
 
 All values are constructed teaching inputs, not measurements. The audio case
 is mathematical PCM16 synthesis; no file is written by importing or running
@@ -27,7 +27,7 @@ from codes.chapters.appendix_a.core.kronecker_khatri_rao import kronecker_khatri
 
 
 def correlated_gls_demo() -> dict:
-    """E14-20: one fixed known correlated-noise model, without asset IO.
+    """E16-20: one fixed known correlated-noise model, without asset IO.
 
     Both measurements contain the same scalar target. Solve the whitened
     least-squares problem using NumPy's existing implementation; this is not
@@ -68,7 +68,7 @@ def correlated_gls_demo() -> dict:
     wrong_weight = whitening.conj().T @ wrong_row.conj().T[:, 0]
     wrong_solution = np.linalg.lstsq(design, whitened_rhs, rcond=None)[0]
     return {
-        'exercise_id': 'E14-20', 'numpy_version': np.__version__,
+        'exercise_id': 'E16-20', 'numpy_version': np.__version__,
         'design': design.tolist(), 'noise_covariance': covariance.tolist(),
         'determinant': float(np.linalg.det(covariance)),
         'fixed_observation': rhs.tolist(), 'cholesky_factor': factor.tolist(),
@@ -104,7 +104,7 @@ def run_experiments(*, repo_root=ROOT, weighted_directory=OUTPUT) -> dict:
     spectrum = np.fft.fft(cosine)
     alternating = (-1.) ** np.arange(n)
     alternating_spectrum = np.fft.fft(alternating)
-    results['E14-06'] = {
+    results['E16-06'] = {
         'sample_rate_hz': sample_rate, 'fft_length': n,
         'signed_frequency_hz_by_bin': signed_frequencies.tolist(),
         'one_sided_frequency_hz_by_bin': one_sided_frequencies.tolist(),
@@ -120,7 +120,7 @@ def run_experiments(*, repo_root=ROOT, weighted_directory=OUTPUT) -> dict:
     }
 
     vector = np.array([1, 1j], dtype=complex)
-    results['E14-07'] = {
+    results['E16-07'] = {
         'vector_real': vector.real.tolist(), 'vector_imag': vector.imag.tolist(),
         'hermitian_norm_squared': float(np.vdot(vector, vector).real),
         'transpose_square': float(np.dot(vector, vector).real),
@@ -130,7 +130,7 @@ def run_experiments(*, repo_root=ROOT, weighted_directory=OUTPUT) -> dict:
     x = np.array([1., 2., 3., 4.])
     h = np.array([1., .5])
     audio = check_main_math_assets(repo_root)
-    results['E14-08'] = {
+    results['E16-08'] = {
         'input': x.tolist(), 'filter': h.tolist(), 'block_size': 2,
         'linear_output': fft_overlap_add(x, h, 2).tolist(),
         'block_circular_output': blockwise_circular_convolution(x, h, 2).tolist(),
@@ -152,7 +152,7 @@ def run_experiments(*, repo_root=ROOT, weighted_directory=OUTPUT) -> dict:
     lags = np.arange(-2, 3)
     r12 = np.correlate(x1, x2, mode='full')
     r21 = np.correlate(x2, x1, mode='full')
-    results['E14-09'] = {
+    results['E16-09'] = {
         'x1': x1.tolist(), 'x2': x2.tolist(),
         'lags_samples': lags.tolist(), 'r12': r12.tolist(), 'r21': r21.tolist(),
         'r12_peak_lag_samples': int(lags[np.argmax(r12)]),
@@ -164,7 +164,7 @@ def run_experiments(*, repo_root=ROOT, weighted_directory=OUTPUT) -> dict:
     mean = snapshots.mean(axis=1, keepdims=True)
     moment = snapshots @ snapshots.T / 2
     centered = (snapshots - mean) @ (snapshots - mean).T / 2
-    results['E14-10'] = {
+    results['E16-10'] = {
         'snapshots_columns': snapshots.tolist(), 'sample_mean': mean[:, 0].tolist(),
         'uncentered_second_moment': moment.tolist(), 'centered_covariance': centered.tolist(),
         'uncentered_rank': int(np.linalg.matrix_rank(moment)),
@@ -175,7 +175,7 @@ def run_experiments(*, repo_root=ROOT, weighted_directory=OUTPUT) -> dict:
 
     matrix = np.diag([1., 1e-4])
     rhs = np.array([1., 1e-4])
-    results['E14-11'] = {
+    results['E16-11'] = {
         'matrix': matrix.tolist(), 'example_rhs': rhs.tolist(),
         'condition_A': float(np.linalg.cond(matrix)),
         'condition_normal': float(np.linalg.cond(matrix.T @ matrix)),
@@ -195,7 +195,7 @@ def run_experiments(*, repo_root=ROOT, weighted_directory=OUTPUT) -> dict:
                                                 target @ reference).tolist())
         identity_weights.append(np.linalg.solve(target + mu * identity_noise,
                                                target @ reference).tolist())
-    results['E14-12'] = {
+    results['E16-12'] = {
         'target_covariance': target.tolist(), 'reference': reference.tolist(),
         'singular_noise_covariance': singular_noise.tolist(),
         'identity_noise_covariance': identity_noise.tolist(), 'mus': mus,
@@ -224,7 +224,7 @@ def run_experiments(*, repo_root=ROOT, weighted_directory=OUTPUT) -> dict:
                 'condition_2': float(np.linalg.cond(loaded)),
                 'target_response': float(np.vdot(weights, steering).real),
             })
-    results['E14-13'] = {
+    results['E16-13'] = {
         'covariance': covariance.tolist(), 'steering': steering.tolist(),
         'microphones': 2, 'absolute_loading': absolute_load,
         'relative_coefficient': relative_coefficient,
@@ -239,7 +239,7 @@ def run_experiments(*, repo_root=ROOT, weighted_directory=OUTPUT) -> dict:
     rhs = np.ones(2, dtype=complex)
     solution = np.linalg.lstsq(design, rhs, rcond=None)[0]
     residual = design@solution-rhs
-    results['E14-14'] = {'design':complex_record(design), 'rhs':complex_record(rhs),
+    results['E16-14'] = {'design':complex_record(design), 'rhs':complex_record(rhs),
         'solution':complex_record(solution), 'residual':complex_record(residual),
         'hermitian_orthogonality':complex_record(design.conj().T@residual),
         'transpose_gram':complex_record(design.T@design),
@@ -260,7 +260,7 @@ def run_experiments(*, repo_root=ROOT, weighted_directory=OUTPUT) -> dict:
             'weighted_residual_squared_sum':float(residual@weight@residual),
             'common_noise_precision_cost':float(residual@precision@residual),
             'parameter_variance':float((coefficient@covariance@coefficient.T)[0,0])}
-    results['E14-15'] = {'design':design.tolist(),'rhs':rhs.tolist(),
+    results['E16-15'] = {'design':design.tolist(),'rhs':rhs.tolist(),
         'noise_covariance':covariance.tolist(),'cases':rows,
         'variance_scope':'zero-mean noise with stated covariance; separate from this fixed rhs residual'}
 
@@ -277,7 +277,7 @@ def run_experiments(*, repo_root=ROOT, weighted_directory=OUTPUT) -> dict:
             'actual_residual_norm':float(np.linalg.norm(residual))})
     delta = 1e-16
     ridge = np.linalg.solve(design.T@design+delta*np.eye(2),design.T@rhs)
-    results['E14-16'] = {'numpy_version':np.__version__,
+    results['E16-16'] = {'numpy_version':np.__version__,
         'design':design.tolist(),'rhs':rhs.tolist(),'cases':cases,
         'ridge_delta':delta,'ridge_solution':ridge.tolist(),
         'ridge_residual_squared_sum':float(np.sum((design@ridge-rhs)**2)),
@@ -289,7 +289,7 @@ def run_experiments(*, repo_root=ROOT, weighted_directory=OUTPUT) -> dict:
     proper = np.array([sum(x1[n]*x2[n-q].conjugate() for n in range(3) if 0<=n-q<3) for q in lags])
     exchanged = np.array([sum(x2[n]*x1[n-q].conjugate() for n in range(3) if 0<=n-q<3) for q in lags])
     wrong = np.array([sum(x1[n]*x2[n-q] for n in range(3) if 0<=n-q<3) for q in lags])
-    results['E14-17'] = {'x1':complex_record(x1),'x2':complex_record(x2),'lags_samples':lags,
+    results['E16-17'] = {'x1':complex_record(x1),'x2':complex_record(x2),'lags_samples':lags,
         'r12':complex_record(proper),'r21':complex_record(exchanged),
         'r21_magnitude_peak_lag_samples':lags[int(np.argmax(np.abs(exchanged)))],
         'without_conjugate':complex_record(wrong),
@@ -312,15 +312,15 @@ def run_experiments(*, repo_root=ROOT, weighted_directory=OUTPUT) -> dict:
             'eigenvectors':complex_record(eigenvectors),
             'original_matrix_residual_frobenius':float(np.linalg.norm(matrix@eigenvectors-eigenvectors*eigenvalues)),
             'effective_matrix_residual_frobenius':float(np.linalg.norm(effective@eigenvectors-eigenvectors*eigenvalues))})
-    results['E14-18'] = {'cases':cases,'scope':'raw NumPy interface demonstration, not a validated EVD or permission to repair invalid covariance'}
+    results['E16-18'] = {'cases':cases,'scope':'raw NumPy interface demonstration, not a validated EVD or permission to repair invalid covariance'}
 
     published = check_assets(weighted_directory)
     fixture = build_fixture()
-    results['E14-19'] = {'parameters':fixture['parameters'],'analytic':analytic_results(),
+    results['E16-19'] = {'parameters':fixture['parameters'],'analytic':analytic_results(),
         'floating_point':analyze_fixture(fixture),'pcm_analysis':published['pcm_analysis'],
         'published_files':published['files'],'source_sha256':published['source_sha256']}
-    results['E14-20'] = correlated_gls_demo()
-    results['E14-21'] = kronecker_khatri_rao_controls()
+    results['E16-20'] = correlated_gls_demo()
+    results['E16-21'] = kronecker_khatri_rao_controls()
     return results
 
 

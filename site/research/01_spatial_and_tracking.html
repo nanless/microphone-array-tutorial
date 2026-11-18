@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>空间处理与追踪源码研究 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="c1e13cc91b8b"><style>
+<meta name="source-digest" content="820e0688bd26"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -9,8 +9,8 @@ h1,h2,h3,h4{scroll-margin-top:60px}
 @media screen{.main a[id^="e"],.main .exercise-alias{scroll-margin-top:80px}}
 @media screen{.main .exercise-alias{top:0}}
 @media screen{.main a[id="e05-20"]{scroll-margin-top:60px}}
-@media screen{.main a[id="e15-11"],.main a[id="e15-12"],.main a[id="e15-13"],.main a[id="e15-14"],.main a[id="e15-15"]{scroll-margin-top:140px}}
-@media screen{.main .exercise-alias[id="e13-11"],.main .exercise-alias[id="e13-12"],.main .exercise-alias[id="e13-13"],.main .exercise-alias[id="e13-14"],.main .exercise-alias[id="e13-15"]{scroll-margin-top:140px}}
+@media screen{.main a[id="e17-11"],.main a[id="e17-12"],.main a[id="e17-13"],.main a[id="e17-14"],.main a[id="e17-15"]{scroll-margin-top:140px}}
+@media screen{.main .exercise-alias[id="e13-11"],.main .exercise-alias[id="e13-12"],.main .exercise-alias[id="e13-13"],.main .exercise-alias[id="e13-14"],.main .exercise-alias[id="e13-15"],.main .exercise-alias[id="e15-11"],.main .exercise-alias[id="e15-12"],.main .exercise-alias[id="e15-13"],.main .exercise-alias[id="e15-14"],.main .exercise-alias[id="e15-15"]{scroll-margin-top:140px}}
 @media screen{.main a[id^="e06-"]{scroll-margin-top:60px}}
 @media screen{.main a[id^="e07-"],.main a[id^="e08-"]{scroll-margin-top:60px}}
 @media screen{.main a[id^="e11-"]{scroll-margin-top:60px}}
@@ -400,10 +400,10 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <div class="chap"><a href="../11_selection-guide.html">第 11 章 · 总结与选型指南</a></div>
 <div class="chap"><a href="../12_acoustic-imaging.html">第 12 章 · 声学成像与噪声源诊断</a></div>
 <div class="chap"><a href="../13_distributed-enhancement.html">第 13 章 · 分布式麦克风协同增强</a></div>
-<div class="chap"><a href="../16_spatial-wearable-arrays.html">第 16 章 · 空间声场与可穿戴阵列</a></div>
-<div class="chap"><a href="../17_target-extraction-diarization.html">第 17 章 · 条件目标提取与多通道日志</a></div>
-<div class="chap"><a href="../14_appendix-symbols-math.html">第 14 章 · 附录 A：符号术语数学</a></div>
-<div class="chap"><a href="../15_appendix-guide.html">第 15 章 · 附录 B：路径地图与练习</a></div></nav>
+<div class="chap"><a href="../14_spatial-wearable-arrays.html">第 14 章 · 空间声场与可穿戴阵列</a></div>
+<div class="chap"><a href="../15_target-extraction-diarization.html">第 15 章 · 条件目标提取与多通道日志</a></div>
+<div class="chap"><a href="../16_appendix-symbols-math.html">第 16 章 · 附录 A：符号术语数学</a></div>
+<div class="chap"><a href="../17_appendix-guide.html">第 17 章 · 附录 B：路径地图与练习</a></div></nav>
 <main class="main" id="main-content" tabindex="-1"><div class="offline-note" id="offnote">当前离线：公式显示为源码，正文讲解不受影响。</div>
 <details class="toc-mobile"><summary>本页目录</summary><nav aria-label="本页目录"><ul>
 <li><a href="01_spatial_and_tracking.html#sec-u-37b31460d5">阅读与复现方式</a></li>
@@ -928,7 +928,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <span id="22-用生成的-rir-检查结果" class="anchor-alias" aria-hidden="true"></span><h4 id="sec-2-2">2.2 用生成的 RIR 检查结果</h4>
 <p>建议按由简单到复杂的顺序检查：无反射时核对首达时刻和距离衰减；单面反射时核对镜像路径的几何长度；加入多次反射后，才检查衰减曲线、直达混响比和阶数增加后的变化。每一步先确认时间原点、库引入的分数延迟滤波器延迟、高通和截断处理。</p>
 <p>附录 B 第 16 题已经用锁定 pyroomacoustics 0.10.0 在隔离环境中实际运行<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/appendix_b/examples/room_srp_exercise.py">六位置房间脚本</a>，保存<a href="../room_audio/MANIFEST.json">18 个合成白噪声 WAV 与参数清单</a>。该版本逐条 RIR 默认使用 10 Hz 零相位高通；若用较短的零阶直达 RIR 补零后去减高阶完整 RIR，高通边界差会混入“反射能量”。脚本以相同镜像阶数和长度，令直达对照房间墙面完全吸收，并用原始单直达镜像源及同长度滤波独立核对。</p>
-<p>六位置 $T_{20}$ 外推 $T_{60}$ 为约 0.546～0.563 s，低于反推设计值 0.6 s；定位误差为约 0.604～2°。这些数是一个房间、一次固定输入的仿真，不是实测混响时间或跨房间定位准确率。图、逐麦 DRR 和阶数收敛检查见<a href="../15_appendix-guide.html">附录题目</a>。</p>
+<p>六位置 $T_{20}$ 外推 $T_{60}$ 为约 0.546～0.563 s，低于反推设计值 0.6 s；定位误差为约 0.604～2°。这些数是一个房间、一次固定输入的仿真，不是实测混响时间或跨房间定位准确率。图、逐麦 DRR 和阶数收敛检查见<a href="../17_appendix-guide.html">附录题目</a>。</p>
 <p><code>experimental/rt60.py::measure_rt60</code> 对实 RIR 平方后反向累加，得到 Schroeder 剩余能量曲线，再拟合衰减斜率并外推 60 dB。<code>decay_db</code> 控制拟合跨度，默认值是 60；要使用 20 dB 跨度需显式设定。它还接受 <code>energy_thres</code> 和线性域拟合选项，改变这些参数会改变评分口径。<a href="https://github.com/LCAV/pyroomacoustics/blob/0dd39f2614b7fc44b2cc63dbe7d60f4641068890/pyroomacoustics/experimental/rt60.py">固定版测量代码</a>。</p>
 <p>原方法提取调用现已运行三个确定输入，全部显式使用 <code>fs=16000</code>、<code>decay_db=20</code>、<code>energy_thres=1</code>、<code>linear_domain_fit=False</code>、<code>plot=False</code>。有效样本为 32000 点的 $h[n]=\exp[-3\ln(10)n/(f_s\,0.6)]$；平方后的能量按每秒 100 dB 衰减，反向几何级数积分在远离截断处保持相同斜率，因此独立期望的外推 $T_{60}$ 是 0.6 s。</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
@@ -1986,7 +1986,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <td>记录加载参数的单位和尺度；用未加载协方差评分，分别报告干扰残留与白噪声增益</td>
 </tr>
 <tr>
-<td><a href="../14_appendix-symbols-math.html">E14-05：奇异协方差反例</a></td>
+<td><a href="../16_appendix-symbols-math.html">E16-05：奇异协方差反例</a></td>
 <td>明确的 $\mathbf R=\operatorname{diag}(0,1)$、$\vec a=[1,1]^\top$</td>
 <td>机械伪逆替换给出可行但非最优的 $[0,1]^\top$；直接约束解及加载极限为 $[1,0]^\top$</td>
 <td>不能从“可计算且满足响应”推出最优；须检查零空间与目标导向的关系，不泛化成“伪逆均失效”</td>

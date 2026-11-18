@@ -641,7 +641,7 @@ STK（The Synthesis ToolKit in C++）提供音频合成与处理组件。本节�
 
 复跑命令为 `.venv/bin/python -m codes.chapters.ch10.examples.run_stk_delay_probe --report codes/chapters/ch10/reports/stk_delay_current.json`，需已取得锁定源码与C++编译器，不联网、不安装依赖。该检查只覆盖标量tick及固定延迟；没有测试StkFrames多通道接口、设备时间戳、实时期限或语音质量。
 
-幅度和延迟需分别验证。一次半采样线性插值对6000 Hz的幅度比约0.382683，两次则约0.146447，即使累计相位对应一采样，仍不等同纯一采样移位。完整本书推导、PCM统计区间与图41见[附录B E15-02](../../../../chapters/15_appendix-guide.md#e15-02)。工业选型须另查目标频带误差、可变延迟的状态转换和存储上限；本节不把一个组件检查外推为完整重采样器验收。
+幅度和延迟需分别验证。一次半采样线性插值对6000 Hz的幅度比约0.382683，两次则约0.146447，即使累计相位对应一采样，仍不等同纯一采样移位。完整本书推导、PCM统计区间与图41见[附录B E17-02](../../../../chapters/17_appendix-guide.md#e17-02)。工业选型须另查目标频带误差、可变延迟的状态转换和存储上限；本节不把一个组件检查外推为完整重采样器验收。
 
 <a id="rnnoise-stream-contract"></a>
 

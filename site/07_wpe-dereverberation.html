@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 7 章 · 去混响（WPE） · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="c1e13cc91b8b"><style>
+<meta name="source-digest" content="820e0688bd26"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -9,8 +9,8 @@ h1,h2,h3,h4{scroll-margin-top:60px}
 @media screen{.main a[id^="e"],.main .exercise-alias{scroll-margin-top:80px}}
 @media screen{.main .exercise-alias{top:0}}
 @media screen{.main a[id="e05-20"]{scroll-margin-top:60px}}
-@media screen{.main a[id="e15-11"],.main a[id="e15-12"],.main a[id="e15-13"],.main a[id="e15-14"],.main a[id="e15-15"]{scroll-margin-top:140px}}
-@media screen{.main .exercise-alias[id="e13-11"],.main .exercise-alias[id="e13-12"],.main .exercise-alias[id="e13-13"],.main .exercise-alias[id="e13-14"],.main .exercise-alias[id="e13-15"]{scroll-margin-top:140px}}
+@media screen{.main a[id="e17-11"],.main a[id="e17-12"],.main a[id="e17-13"],.main a[id="e17-14"],.main a[id="e17-15"]{scroll-margin-top:140px}}
+@media screen{.main .exercise-alias[id="e13-11"],.main .exercise-alias[id="e13-12"],.main .exercise-alias[id="e13-13"],.main .exercise-alias[id="e13-14"],.main .exercise-alias[id="e13-15"],.main .exercise-alias[id="e15-11"],.main .exercise-alias[id="e15-12"],.main .exercise-alias[id="e15-13"],.main .exercise-alias[id="e15-14"],.main .exercise-alias[id="e15-15"]{scroll-margin-top:140px}}
 @media screen{.main a[id^="e06-"]{scroll-margin-top:60px}}
 @media screen{.main a[id^="e07-"],.main a[id^="e08-"]{scroll-margin-top:60px}}
 @media screen{.main a[id^="e11-"]{scroll-margin-top:60px}}
@@ -329,10 +329,10 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <div class="chap"><a href="11_selection-guide.html">第 11 章 · 总结与选型指南</a></div>
 <div class="chap"><a href="12_acoustic-imaging.html">第 12 章 · 声学成像与噪声源诊断</a></div>
 <div class="chap"><a href="13_distributed-enhancement.html">第 13 章 · 分布式麦克风协同增强</a></div>
-<div class="chap"><a href="16_spatial-wearable-arrays.html">第 16 章 · 空间声场与可穿戴阵列</a></div>
-<div class="chap"><a href="17_target-extraction-diarization.html">第 17 章 · 条件目标提取与多通道日志</a></div>
-<div class="chap"><a href="14_appendix-symbols-math.html">第 14 章 · 附录 A：符号术语数学</a></div>
-<div class="chap"><a href="15_appendix-guide.html">第 15 章 · 附录 B：路径地图与练习</a></div>
+<div class="chap"><a href="14_spatial-wearable-arrays.html">第 14 章 · 空间声场与可穿戴阵列</a></div>
+<div class="chap"><a href="15_target-extraction-diarization.html">第 15 章 · 条件目标提取与多通道日志</a></div>
+<div class="chap"><a href="16_appendix-symbols-math.html">第 16 章 · 附录 A：符号术语数学</a></div>
+<div class="chap"><a href="17_appendix-guide.html">第 17 章 · 附录 B：路径地图与练习</a></div>
 <div class="chap"><a href="research/index.html">源码研究</a></div></nav>
 <main class="main" id="main-content" tabindex="-1"><div class="offline-note" id="offnote">当前离线：公式显示为源码，正文讲解不受影响。</div>
 <details class="toc-mobile"><summary>本页目录</summary><nav aria-label="本页目录"><ul>
@@ -409,7 +409,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li><a href="07_wpe-dereverberation.html#sec-7-10">7.10 研究方向</a></li>
 </ul></nav></details>
 <blockquote>
-<p>⚠️ 本篇是教程正文第 7 章（正文共 15 章，含第 12、13、16、17 章四篇扩展专题，另有附录 A、B），可独立阅读，前后篇见下方导航。</p>
+<p>⚠️ 本篇是教程正文第 7 章（正文共 15 章，含第 12～15 章四篇扩展专题，另有附录 A、B），可独立阅读，前后篇见下方导航。</p>
 <p>🏠 首页导读：<a href="index.html">🏠 导读与导航</a> ｜ 上一篇：<a href="06_aec.html">第 6 章 · 声学回声消除（AEC）</a> ｜ 下一篇：<a href="08_speech-separation.html">第 8 章 · 语音分离</a></p>
 </blockquote>
 <span id="sec-1" class="anchor-alias" aria-hidden="true"></span><h1 id="sec-u-4a68625d05">7. 去混响（WPE）</h1>
@@ -1083,7 +1083,7 @@ T_v&=\max(0,T-t_{\min}).
 \sigma_r^2(u+H,f)&=\rho(f)\sigma_r^2(u,f),\\
 10\log_{10}\rho(f)&=-60H/T_{60}(f).
 \end{aligned}\tag{7-23}$$</p>
-<p>在 <a href="https://israelcohen.com/wp-content/uploads/2018/05/SPL_Sep2009.pdf">Habets、Gannot 与 Cohen（2009）§III 式(10)～(12)</a> 的自然指数记法中，幅度阻尼率定为 $\alpha=3\ln(10)/(T_{60}f_s)$，幅度包络按 $e^{-\alpha\ell H_s}$ 衰减，功率谱方差则按平方后的 $e^{-2\alpha\ell H_s}$ 衰减——将 $e^{-2\cdot 3\ln(10)H/T_{60}}=10^{-6H/T_{60}}$ 展开，与式(7-23)分毫不差。练习 <a href="#e07-23">E07-23</a> 将具体代入 $T_{60}=0.6\ \mathrm{s}$、帧移 $8\ \mathrm{ms}$ 检验这一换算，并展示若误把幅度因子 $10^{-3H/T_{60}}$ 当作功率因子代入，经过 $0.6\ \mathrm{s}$ 后功率竟只衰减了 $30\ \mathrm{dB}$ 的典型量纲事故（注：完整的谱方差抑制器还需结合直达混响比与源发声期的能量注入项，关于实测脉冲响应施罗德反向积分曲线的 $T_{20}$ 斜率拟合则见附录 <a href="15_appendix-guide.html#sec-u-199b14fd60">E15-05</a>）。</p>
+<p>在 <a href="https://israelcohen.com/wp-content/uploads/2018/05/SPL_Sep2009.pdf">Habets、Gannot 与 Cohen（2009）§III 式(10)～(12)</a> 的自然指数记法中，幅度阻尼率定为 $\alpha=3\ln(10)/(T_{60}f_s)$，幅度包络按 $e^{-\alpha\ell H_s}$ 衰减，功率谱方差则按平方后的 $e^{-2\alpha\ell H_s}$ 衰减——将 $e^{-2\cdot 3\ln(10)H/T_{60}}=10^{-6H/T_{60}}$ 展开，与式(7-23)分毫不差。练习 <a href="#e07-23">E07-23</a> 将具体代入 $T_{60}=0.6\ \mathrm{s}$、帧移 $8\ \mathrm{ms}$ 检验这一换算，并展示若误把幅度因子 $10^{-3H/T_{60}}$ 当作功率因子代入，经过 $0.6\ \mathrm{s}$ 后功率竟只衰减了 $30\ \mathrm{dB}$ 的典型量纲事故（注：完整的谱方差抑制器还需结合直达混响比与源发声期的能量注入项，关于实测脉冲响应施罗德反向积分曲线的 $T_{20}$ 斜率拟合则见附录 <a href="17_appendix-guide.html#sec-u-199b14fd60">E17-05</a>）。</p>
 <h3 id="sec-u-884aaada8f">WPD将历史与空间约束放入同一目标</h3>
 <p>既然“MIMO-WPE 去混响 + MVDR/MPDR 波束形成”在工程中如此常用，能不能把“当前帧空间滤波”和“历史帧混响抵消”直接写进<strong>同一个约束优化问题</strong>一次性求解？加权功率最小无失真响应（Weighted Power minimization Distortionless response，WPD；<a href="https://doi.org/10.1109/LSP.2019.2911179">Nakatani 与 Kinoshita，2019</a>）正是这一思想的结晶。</p>
 <p>将当前第 $t$ 帧的 $M$ 通道复谱 $\vec x_t$ 与保护延迟后的多帧多通道历史 $\vec x_{t-\Delta},\dots,\vec x_{t-\Delta-K+1}$ 纵向拼成一根维度为 $(M+MK)\times 1$ 的增广时空列向量 $\bar{\vec x}_t$（将 $\vec x_t$ 与各滞后帧依序叠放）；同时将当前帧的目标相对传递函数（或导向矢量）$\vec v\in\mathbb{C}^{M\times 1}$ 补零扩展为同维度的时空约束向量 $\bar{\vec v}=[\vec v^\top,\vec 0^\top,\dots]^\top$（要求对当前帧目标方向保持单位无失真响应，而对延迟历史不加硬约束）。在给定正语音功率 $\lambda_t>0$ 下，累加时空加权协方差矩阵 $\bar{\mathbf R}$（定义为 $\sum_t\bar{\vec x}_t\bar{\vec x}_t^H/\lambda_t$），WPD 求解如下线性约束二次规划：</p>

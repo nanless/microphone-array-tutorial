@@ -1,0 +1,994 @@
+> ⚠️ 本篇是第 14 章（扩展专题Ⅲ；正文与扩展专题共 15 章，其中第 12～15 章为四篇扩展专题，另有附录 A、B），接在第 13 章分布式麦克风协同增强之后，系统介绍三维空间声场采集、参数化空间编码与可穿戴麦克风阵列处理。数学预备内容可回查第 16 章附录 A。
+>
+> [🏠 首页](00_overview.md) ｜ 上一篇：[13 分布式麦克风协同增强](13_distributed-enhancement.md) ｜ 下一篇：[15 条件目标提取与多模态前端](15_target-extraction-diarization.md)
+
+---
+
+## 第 14 章：空间声场采集、参数化编码与可穿戴阵列
+
+### 14.1 从单路增强走向全向空间采集与随身听觉
+
+#### 两端需求如何统一在同一套物理波动方程下
+
+前面各章讨论的桌面圆阵、线性电视阵列与会议吊麦，大多追求同一个单声道目标：把远处目标说话人的语音尽可能干净地提取成一路波形，送给自动语音识别或远端通话对端。然而在全景声录制、扩展现实（Extended Reality，XR）头显、智能眼镜、真无线立体声（True Wireless Stereo，TWS）耳机与数字助听器中，音频系统面对的任务发生了两个根本转变。
+
+第一个转变是**输出不再是一路抹平方向的单声道信号，而是携带完整三维方向感与环境包围感的声场或双耳声压**。无论是用紧凑的四胶囊四面体麦克风采集三维一阶全景声（First-Order Ambisonics，FOA），还是用智能眼镜框上的多支微型麦克风合成佩戴者双耳鼓膜处的声学传递响应，系统都必须在保留精确双耳时间差（Interaural Time Difference，ITD）、双耳声级差（Interaural Level Difference，ILD）和环境扩散感的同时完成空间滤波。当佩戴者转动头部时，渲染出的虚拟声像还必须反方向平滑旋转，才能让声源稳稳锚定在真实物理世界中。
+
+第二个转变是**可穿戴设备的物理约束与声学干扰形态截然不同**。TWS 耳机单侧外壳长度通常不足 $2\ \mathrm{cm}$，麦克风间距远小于中低频声波波长；人体头部与耳廓的强散射使自由场平面波导向矢量不再适用；户外行走或骑行时的局部湍流风噪在毫米尺度剧烈起伏，极易淹没外露气导麦克风。
+
+与此同时，开启主动通透模式（Hear-Through）时，哪怕数字处理链路只有 $2\ \mathrm{ms}$ 的端到端延迟，电声重放信号与耳道缝隙被动漏入的直达声叠加后也会在语音频带内切出周期性梳状陷波。为突破单一气导麦克风的物理局限，现代耳戴式设备普遍在封闭耳道内增设内向反馈麦克风或骨导拾音传感器，通过跨模态统计融合提取佩戴者本人的清晰语音。
+
+| 应用形态 | 典型传感器配置 | 期望输出目标 | 核心物理与工程瓶颈 |
+|---|---|---|---|
+| 紧凑全景声采集 | 正四面体 $4$ 胶囊球阵 | 正交球谐通道与参数化声场流 | 高频空间混叠、开球径向零陷与多源干涉偏置 |
+| 智能眼镜 / 头显拾音 | 镜腿与鼻梁 $4$～$6$ 支非规则微麦 | 双耳匹配信号（BSM）或定向增强流 | 高频相位缠绕引发幅度凹坑、头部遮挡散射 |
+| 双耳助听器协同增强 | 左右耳挂各 $2$ 支麦克风加双耳无线链路 | 保留双耳线索的低噪双耳音频 | 单目标波束把背景扩散噪声压成头中单点声像 |
+| TWS 通话与通透模式 | 耳外双气导麦 + 耳内闭塞麦 / 骨导传感器 | 抗风噪自语音上行流与自然通透重放 | 湍流风噪空间不相干、骨导高频衰减与漏声梳状滤波 |
+
+上表展示了四类典型系统的硬件边界与任务差异。尽管它们的产品形态各异，底层却共享同一套声压—质点振速波动关系、受限孔径空间匹配优化与多传感器二阶统计融合准则。本章便沿着“三维声场球谐表示 $\to$ 声强参数化分析 $\to$ 可穿戴双耳匹配与相干度保持 $\to$ 抗风噪跨模态自语音融合与超低延迟通透重放”的脉络逐层展开。
+
+#### 本章的核心术语与先修路线
+
+本章集中出现的核心术语与缩写汇总如下表，阅读推导时可随时回查：
+
+| 缩写 | 中文名与英文全称 | 在本章中的作用 |
+|---|---|---|
+| FOA | 一阶全景声（First-Order Ambisonics） | 用零阶全向声压 $W$ 与三个一阶正交偶极分量 $X, Y, Z$ 表征三维局部声场 |
+| ACN | 全景声通道编号（Ambisonic Channel Number） | 按球谐阶次 $(l, m)$ 排列的标准通道顺序，一阶对应 $[W, Y, Z, X]^\top$ |
+| SN3D | 施密特半归一化三维球谐约定（Schmidt Semi-Normalized 3D） | 使零阶与一阶实球谐基函数峰值幅度统一为 $1$ 的标准幅度归一化 |
+| DirAC | 定向音频编码（Directional Audio Coding） | 从短时频域声压与振速估计瞬时波达方向及扩散度 $\psi$ 的参数化空间分析框架 |
+| BSM | 双耳信号匹配（Binaural Signal Matching） | 用任意几何可穿戴阵列线性逼近目标头相关传递函数（Head-Related Transfer Function，HRTF）的设计方法 |
+| MagLS | 幅度最小二乘（Magnitude Least-Squares） | 在高频放弃刚性相位拟合、通过交替相位投影优先保障方向幅度平滑的准则 |
+| IC | 耳间相干度（Interaural Coherence；亦称双耳相干度） | 衡量左右耳背景声场归一化互相关模长的感知指标，决定声像宽度与包围感 |
+| OE | 耳道闭塞效应（Occlusion Effect） | 耳塞封闭外耳道后，佩戴者自身发声经颅骨振动在耳道腔内激起低频声压增益的现象 |
+
+阅读本章前，建议先熟悉[第 1 章 §1.1 双耳听觉的三类定位线索](01_problem-definition.md#sec-1-1)、[第 2 章 §2.3 平面波与频域内积约定](02_basics-signal-model.md#sec-2-3)，以及[第 5 章 §5.4 MVDR](05_beamforming.md#sec-5-4) 与 [§5.5 双耳波束形成](05_beamforming.md#sec-5-5)；复矩阵 Wirtinger 求导、Hermitian 正定 Cholesky 分解与柯西—施瓦茨（Cauchy-Schwarz）不等式可回查[附录 A](16_appendix-symbols-math.md)。全章严格沿用本书前向傅里叶核 $e^{-\mathrm{j}2\pi f t}$（对应正频率复相量时间因子 $e^{+\mathrm{j}\omega t}$，角频率 $\omega = 2\pi f$，波数 $\kappa = \omega / c$）以及共轭内积滤波器输出 $y = \vec w^H \vec x$。
+
+### 14.2 一阶 Ambisonics（FOA）与正四面体阵列编码
+
+#### 球面角、一阶实球谐基与 SN3D / ACN 通道约定
+
+在三维空间声场采集中，首先要厘清坐标轴方向与二维平面阵列正横（broadside）零点的换算关系。按照国际通用的三维全景声右手笛卡尔坐标系（AmbiX / ISO 约定），令原点位于阵列几何中心，$+x$ 轴指向佩戴者正前方，$+y$ 轴指向正左方，$+z$ 轴垂直向上。设远场声源相对原点的水平方位角为 $\theta \in (-\pi, \pi]$（在水平面内从正前方 $+x$ 轴向正左方 $+y$ 轴逆时针旋转为正；对照[第 3 章 §3.1](03_array-geometry.md#sec-3-1) 及[附录 A §16.1](16_appendix-symbols-math.md#sec-16-1) 以 $+y$ 为正横 $0^\circ$、顺时针度量的平面阵列方位角 $\theta_{\mathrm{book}}$，AmbiX 方位角 $\theta$ 满足换算关系 $\theta = 90^\circ - \theta_{\mathrm{book}}$），俯仰角简记为 $\phi \equiv \phi_{\mathrm{el}} \in [-\pi/2, \pi/2]$（向上偏向 $+z$ 轴为正），则从阵列中心**指向声源**的单位波达方向向量 $\vec n_{\mathrm{src}}$ 为：
+
+$$\vec n_{\mathrm{src}}(\theta,\phi)
+=\begin{bmatrix}n_x\\n_y\\n_z\end{bmatrix}
+=\begin{bmatrix}
+\cos\phi\cos\theta\\
+\cos\phi\sin\theta\\
+\sin\phi
+\end{bmatrix}.
+\tag{14-1}$$
+
+观察式(14-1)的四个初等函数：$1$ 不随方向改变，恰对应球面上零阶（$l = 0$）全向单极子响应；而 $n_x, n_y, n_z$ 分别沿前后、左右、上下呈正负对称的“8 字形”余弦指向性，恰对应球面上三个正交的一阶（$l = 1$）偶极子实球谐基函数。在 **SN3D（Schmidt Semi-Normalized 3D）** 幅度约定下，零阶与一阶基函数的方向峰值均归一化为 $1$（早期 FuMa 约定曾将零阶 $W$ 额外乘上 $1/\sqrt{2}$，现代工程与开源工具包已普遍转向 AmbiX 标准，即 **ACN 通道序 + SN3D 归一化**）。若一列原点处复声压相量为 $p \in \mathbb{C}$ 的平面波从方向 $\vec n_{\mathrm{src}}(\theta,\phi)$ 入射，其理想一阶 B-format 四通道信号按直观笛卡尔序 $\vec b_{\mathrm{WXYZ}}$ 与标准 ACN 序 $\vec b_{\mathrm{ACN}}$ 分别记作：
+
+$$\begin{aligned}
+\vec b_{\mathrm{WXYZ}}
+&=\begin{bmatrix}W & X & Y & Z\end{bmatrix}^\top\\
+&=p\begin{bmatrix}1 & n_x & n_y & n_z\end{bmatrix}^\top,\\
+\vec b_{\mathrm{ACN}}
+&=\begin{bmatrix}W & Y & Z & X\end{bmatrix}^\top\\
+&=p\begin{bmatrix}1 & n_y & n_z & n_x\end{bmatrix}^\top.
+\end{aligned}\tag{14-2}$$
+
+在推导三维几何旋转与声强公式时，采用 $\vec b_{\mathrm{WXYZ}} = [W, X, Y, Z]^\top$ 能让后三维直接对齐笛卡尔坐标 $[x, y, z]^\top$，矩阵分块一目了然；而在读写标准多声道全景声文件时，只需对后三路执行固定置换即可无损切换到 ACN 编号 $[0, 1, 2, 3] \leftrightarrow [W, Y, Z, X]$（配套函数 `reorder_foa` 对两种通道序提供双向严格校验与转换）。
+
+#### 正四面体 A-format 到 B-format 的精确转换矩阵
+
+物理上无法把四个具有理想正交偶极指向性的传感器毫无体积地塞进同一个几何点，工程上最经典的紧凑三维采集结构是**正四面体麦克风阵（Tetrahedral Array）**。在单位立方体的八个顶点中交替选取四个不相邻顶点，即可构成内接于球面的正四面体，其四个胶囊的朝向单位向量（习惯按前左上 FLU、前右下 FRD、后左下 BLD、后右上 BRU 排序，统称 **A-format** 原始四通道）拼成方向矩阵 $\mathbf U \in \mathbb{R}^{4 \times 3}$：
+
+$$\begin{aligned}
+\mathbf U
+&=\bigl[\vec u_1,\vec u_2,\vec u_3,\vec u_4\bigr]^\top\\
+&=\frac{1}{\sqrt{3}}\begin{bmatrix}
++1 & +1 & +1\\
++1 & -1 & -1\\
+-1 & +1 & -1\\
+-1 & -1 & +1
+\end{bmatrix}.
+\end{aligned}\tag{14-3}$$
+
+动手算两步内积就能看清正四面体为何如此对称：其一，$\mathbf U$ 的每一列都有两个 $+1$ 和两个 $-1$，故四支胶囊方向之和严格为零向量 $\vec 1_4^\top \mathbf U = \vec 0^\top$；其二，任意两列逐元素相乘后都是两个 $+1$ 加两个 $-1$，严格正交，而每列自身的平方和为 $4/3$，即满足各向同性正交恒等式 $\mathbf U^\top \mathbf U = \frac{4}{3}\mathbf I_3$。
+
+先考察低频共点近似下的指向性胶囊模型。设第 $q$ 支胶囊（$q = 1, 2, 3, 4$）为一阶心形族传感器，一阶混合系数为 $\alpha \in (0, 1)$（标准心形指向性取 $\alpha = 1/2$），对来自 $\vec n_{\mathrm{src}}$、中心声压为 $p$ 的平面波输出响应等于全向项 $(1 - \alpha)p$ 与方向项 $\alpha(\vec u_q^\top\vec n_{\mathrm{src}})p$ 之和。写成四维列向量 $\vec a = [a_1, a_2, a_3, a_4]^\top$，有：
+
+$$\vec a
+=(1-\alpha)p\vec 1_4+\alpha p\mathbf U\vec n_{\mathrm{src}}.
+\tag{14-4}$$
+
+怎样从四路 A-format 观测 $\vec a$ 中精确解出式(14-2)的 $W = p$ 和 $[X, Y, Z]^\top = p\vec n_{\mathrm{src}}$？利用刚才验证过的两条正交性质直接左乘即可：
+
+1. 用全一向量 $\vec 1_4^\top$ 左乘 $\vec a$：因 $\vec 1_4^\top \mathbf U = \vec 0^\top$，方向项彻底抵消，只剩 $\vec 1_4^\top \vec a = 4(1 - \alpha)p$，两边同除以 $4(1 - \alpha)$ 立得 $W = p$。
+2. 用 $\mathbf U^\top$ 左乘 $\vec a$：因 $\mathbf U^\top \vec 1_4 = \vec 0$，全向项彻底抵消，乘积 $\mathbf U^\top\vec a$ 等于 $\frac{4\alpha}{3}p\vec n_{\mathrm{src}}$，两边同乘 $\frac{3}{4\alpha}$ 立得 $[X, Y, Z]^\top = p\vec n_{\mathrm{src}}$。
+
+把因子 $\frac{3}{4\alpha}$ 乘进 $\mathbf U^\top$（化简系数得 $\frac{\sqrt{3}}{4\alpha}$），就得到了共点四面体从 A-format 到 SN3D B-format（`WXYZ` 序）的 $4 \times 4$ 实编码矩阵 $\mathbf E_{\mathrm{A}\to\mathrm{B}}$：
+
+$$\begin{aligned}
+\vec b_{\mathrm{WXYZ}}
+&=\mathbf E_{\mathrm{A}\to\mathrm{B}}\vec a,\\
+\mathbf E_{\mathrm{A}\to\mathrm{B}}
+&=\begin{bmatrix}
+g_W & g_W & g_W & g_W\\
+g_1 & g_1 & -g_1 & -g_1\\
+g_1 & -g_1 & g_1 & -g_1\\
+g_1 & -g_1 & -g_1 & g_1
+\end{bmatrix},
+\end{aligned}\tag{14-5}$$
+
+其中全向增益为 $g_W = \frac{1}{4(1 - \alpha)}$，偶极增益为 $g_1 = \frac{\sqrt{3}}{4\alpha}$。代入标准心形胶囊 $\alpha = 1/2$，立得 $g_W = \frac{1}{2}$、$g_1 = \frac{\sqrt{3}}{2} \approx 0.866025$。请留意两个极端退化情形：若 $\alpha \to 0$（四支全向麦重合在同一点），$g_1 \to \infty$，系统丧失空间梯度可观测性；若 $\alpha \to 1$（四支纯 8 字形偶极麦），$g_W \to \infty$，四个偶极子相加恒为零，无法恢复全向声压 $W$。
+
+#### 开球与刚性球径向模态权重及 $\kappa R = \pi$ 禁频零陷
+
+真实四面体阵列的四支胶囊分布在半径 $R > 0$ 的球面上而非几何同一点。若在半径为 $R$ 的假想透声球面（开球阵列，Open Sphere）上放置全向声压麦克风，根据平面波的雅可比—安格尔（Jacobi-Anger）球谐展开，第 $l$ 阶球谐分量会额外乘上一个与无量纲波数孔径积 $\kappa R = 2\pi f R / c$ 相关的**径向模态权重** $b_l(\kappa R)$。这里配合峰值归一为 $1$ 的 SN3D 实球谐基，定义球面平均归一化开球径向模态权重如下（注意其吸收了球面立体角归一化因子，与[第 5 章 §5.8](05_beamforming.md#sec-5-8) 式(5-21)配正交归一复球谐基的 $4\pi\mathrm{j}^n j_n(\kappa r)$ 相差常数因子 $4\pi$，而径向零陷位置 $\kappa R = \pi$ 完全一致）：
+
+$$\begin{aligned}
+b_0^{\mathrm{open}}(\kappa R)
+&=j_0(\kappa R)
+=\frac{\sin(\kappa R)}{\kappa R},\\
+b_1^{\mathrm{open}}(\kappa R)
+&=\mathrm{j}\,j_1(\kappa R)\\
+&=\mathrm{j}\,\frac{\sin(\kappa R)-\kappa R\cos(\kappa R)}
+{(\kappa R)^2}.
+\end{aligned}\tag{14-6}$$
+
+式(14-6)揭示了球面阵列设计中至关重要的两道物理边界：
+
+- **高频开球禁频零陷（$\kappa R = \pi$）**：当声波半波长恰好等于球半径、即 $\kappa R = \pi$（对应频率 $f_{\mathrm{null}} = \frac{c}{2R}$）时，$\sin(\pi) = 0$ 使 $b_0^{\mathrm{open}}(\pi) = 0$。此时球面上全向声压积分恰好正负相消，无论后端施加多大的数字逆滤波增益，都只能把电路热噪声放大而无法找回丢失的零阶声压 $W$。若将麦克风齐平嵌装在**刚性实心球体（Rigid Sphere）**表面，球体散射波会补足相位，消除 $\kappa R = \pi$ 处的内部本征零点，并在低频段使一阶偶极有效孔径增强 $3/2$ 倍。
+- **低频白噪声放大与高频空间混叠窗口**：在极低频 $\kappa R \ll 1$ 时，泰勒展开给出偶极模长 $|b_1(\kappa R)| \approx \kappa R / 3$，以 $6\ \mathrm{dB/oct}$ 斜率随频率下降，因此径向均衡器 $1/b_1(\kappa R)$ 必须大幅提升低频增益（需加 Tikhonov 限幅以免放大传感器底噪）；而在高频段，四胶囊阵列至多提供 $4 = (1 + 1)^2$ 个独立实观测，一旦 $\kappa R > 1$（经验上限 $f_{\mathrm{alias}} \approx \frac{c}{2\pi R}$），二阶及以上高阶球谐波（$l \ge 2$）就会混叠进 $W, X, Y, Z$ 四个通道中，导致方向估计扭曲（见 [E14-02](#e14-02)）。
+
+### 14.3 三维声场旋转与头部追踪坐标变换
+
+#### 欧拉角串联旋转矩阵与零阶全向不变性
+
+FOA 之所以成为全景声制作与虚拟现实渲染的工业基石，核心优势在于：**要在三维空间任意旋转整个声场，无需知道房间里有多少个声源，也不必先做声源分离，只需对四通道 B-format 向量做一次 $4 \times 4$ 实正交矩阵乘法。** 原因就在式(14-2)的几何结构里：$W = p$ 是标量，在任何绕原点的旋转下严格保持不变；而 $[X, Y, Z]^\top = p\vec n_{\mathrm{src}}$ 与三维笛卡尔位置向量具有完全相同的正交旋转变换律。
+
+采用右手系内旋 $Z$-$Y$-$X$ 欧拉角约定（本节用 $(\alpha, \beta, \gamma)$ 暂记欧拉三轴转角，注意与 §14.2 的胶囊指向性系数 $\alpha$ 及 §14.7 的参考混合比例 $\beta$ 区分）：偏航角（Yaw）$\alpha$ 绕竖直 $+z$ 轴旋转，俯仰角（Pitch）$\beta$ 绕侧向 $+y$ 轴旋转，翻滚角（Roll）$\gamma$ 绕前向 $+x$ 轴旋转。三个基本轴旋转矩阵分别为：
+
+$$\begin{aligned}
+\mathbf R_z(\alpha)&=\begin{bmatrix}
+\cos\alpha & -\sin\alpha & 0\\
+\sin\alpha & \cos\alpha & 0\\
+0 & 0 & 1
+\end{bmatrix},\\
+\mathbf R_y(\beta)&=\begin{bmatrix}
+\cos\beta & 0 & \sin\beta\\
+0 & 1 & 0\\
+-\sin\beta & 0 & \cos\beta
+\end{bmatrix},\\
+\mathbf R_x(\gamma)&=\begin{bmatrix}
+1 & 0 & 0\\
+0 & \cos\gamma & -\sin\gamma\\
+0 & \sin\gamma & \cos\gamma
+\end{bmatrix}.
+\end{aligned}\tag{14-7}$$
+
+将 $\mathbf R_z(\alpha)$、$\mathbf R_y(\beta)$ 与 $\mathbf R_x(\gamma)$ 依次相乘得到三维旋转矩阵 $\mathbf R_{\mathrm{scene}}$，它属于特殊正交群 $\mathrm{SO}(3)$，其转置 $\mathbf R_{\mathrm{scene}}^\top$ 即等于逆阵 $\mathbf R_{\mathrm{scene}}^{-1}$ 且 $\det\mathbf R_{\mathrm{scene}} = +1$。拼上左上角标量 $1$，即得作用于 $\vec b_{\mathrm{WXYZ}}$ 的 $4 \times 4$ 声场主动旋转矩阵：
+
+$$\vec b'_{\mathrm{WXYZ}}
+=\begin{bmatrix}
+1 & \vec 0^\top\\
+\vec 0 & \mathbf R_{\mathrm{scene}}(\alpha,\beta,\gamma)
+\end{bmatrix}\vec b_{\mathrm{WXYZ}}.
+\tag{14-8}$$
+
+注意三维有限角旋转不可交换顺序（例如先偏航 $90^\circ$ 再俯仰 $90^\circ$，与先俯仰 $90^\circ$ 再偏航 $90^\circ$ 最终指向截然不同），工程联调惯性测量单元（Inertial Measurement Unit，IMU）四元数或欧拉角时必须先核对轴序。
+
+#### 声场主动旋转与佩戴者头部追踪逆旋转
+
+在 XR 头显与空间音频耳机（如动态头部追踪渲染）中，最容易写反的符号是**“把虚拟声源主动转过去”与“佩戴者自己扭了头”之间的转置逆关系**。我们用一个极简例子当场算清：假设世界坐标系正前方 $+x$ 处（$\vec n_{\mathrm{world}} = [1, 0, 0]^\top$）站着一位静止不动的演讲者，其世界系 FOA 向量为 $[1, 1, 0, 0]^\top$。
+
+现在佩戴者把头向左偏航转过 $\alpha = +90^\circ$（即鼻尖从世界 $+x$ 转向世界 $+y$，右耳朝向世界 $+x$）。站在佩戴者自己的头部局部坐标系看，原本在世界 $+x$ 处的演讲者此刻已经位于佩戴者的**正右方**（即头部坐标系的 $-y_{\mathrm{head}}$ 方向，$\vec n_{\mathrm{head}} = [0, -1, 0]^\top$）。也就是说，当头部姿态相对世界系旋转了 $\mathbf R_{\mathrm{head}} = \mathbf R_{\mathrm{scene}}$ 时，将世界固定声场变换到佩戴者头部坐标系的矩阵必须是其**逆矩阵（正交转置）** $\mathbf R_{\mathrm{head}}^\top$：
+
+$$\vec b_{\mathrm{head}}
+=\begin{bmatrix}
+1 & \vec 0^\top\\
+\vec 0 & \mathbf R_{\mathrm{scene}}^\top(\alpha,\beta,\gamma)
+\end{bmatrix}\vec b_{\mathrm{world}}.
+\tag{14-9}$$
+
+一旦代码漏掉了式(14-9)右上角的转置符号 $^\top$，佩戴者向左转头 $+90^\circ$ 时，声源反而会跟着头部再向左偏转 $90^\circ$ 落到脑后，直接引发视听方向倒置与眩晕感（见 [E14-03](#e14-03) 对照验证）。
+
+在把旋转后的声场送入双耳头相关冲激响应（HRIR）卷积渲染之前，工程链路还须把好两道物理关卡。其一是校验 `SOFA`（AES69-2022）测量文件的球面或笛卡尔坐标属性与双耳通道极性，防止球面角度被误读为米制坐标或左右耳颠倒。其二是将姿态传感、无线传输与音频缓冲构成的“动作到声音（Motion-to-Sound）”总延迟压在动态感知容限以内，否则快速转头时的角度滞后仍会破坏声像世界锁定感（定量审计与线性前瞻补偿见 [E14-18](#e14-18)）。
+
+### 14.4 有功声强、总声能密度与参数化空间音频（DirAC）
+
+#### 欧拉动量方程下的声压—振速相位与方向正负号
+
+只靠四路一阶球谐信号直接做线性波束解码（如虚拟心形扬声器馈送），空间主瓣非常宽，在多扬声器或双耳重放时会造成声像展宽与高频音色染色。Pulkki（2007）提出的**定向音频编码（Directional Audio Coding，DirAC）**开辟了另一条参数化路径：人耳在同一时刻、同一临界频带内通常只能分辨一个主导波达方向外加一层环绕扩散感；因此可以在短时傅里叶变换（Short-Time Fourier Transform，STFT）的每个时频格点 $(k, \ell)$ 上，直接由原点声压相量 $p \in \mathbb{C}$ 与三维质点振速相量 $\vec u = [u_x, u_y, u_z]^\top \in \mathbb{C}^3$ 算出能量输运方向及无方向混响占比。
+
+在动笔写声强公式前，必须先把前向傅里叶核 $e^{-\mathrm{j}\omega t}$ 下**波传播方向与声源波达方向的符号**彻底理顺。在线性无黏流体中，牛顿第二定律给出时域欧拉动量方程 $\rho_0 \partial_t \vec u = -\nabla p$，其中 $\rho_0$ 为媒质静态密度。对时间求导在复相量域（逆变换核 $e^{+\mathrm{j}\omega t}$）对应乘以 $+\mathrm{j}\omega$，故频域动量方程为 $+\mathrm{j}\omega\rho_0\vec u = -\nabla p$。
+
+考察一列从声源方向 $\vec n_{\mathrm{src}}$ 入射的平面波：它的波前朝着 $\vec d_{\mathrm{prop}} = -\vec n_{\mathrm{src}}$ 传播，按照本书[第 3 章 §3.1 导向矢量相位约定](03_array-geometry.md#sec-3-1)，靠近声源的位置提前到达（相位超前），令空间相位 $\varphi$ 为 $\kappa\vec n_{\mathrm{src}}^\top\vec r$，声压分布即为 $p(\vec r) = p_0 e^{\mathrm{j}\varphi}$。对其求空间梯度得 $\nabla p = +\mathrm{j}\kappa \vec n_{\mathrm{src}} p$，代入 $+\mathrm{j}\omega\rho_0\vec u = -\nabla p$ 并利用 $\kappa / \omega = 1/c$，立得物理质点振速与 FOA 偶极分量的精确对应关系：
+
+$$\begin{aligned}
+\vec u
+&=-\frac{p}{\rho_0 c}\vec n_{\mathrm{src}}
+=+\frac{p}{\rho_0 c}\vec d_{\mathrm{prop}}\\
+&=-\frac{1}{\rho_0 c}\begin{bmatrix}X & Y & Z\end{bmatrix}^\top.
+\end{aligned}\tag{14-10}$$
+
+式(14-10)明确区分了声学文献中最易混淆的两组方向正负号：物理质点振速 $\vec u$ 与声压同相时指向**声能流传播方向** $\vec d_{\mathrm{prop}}$，而 FOA 的 $[X, Y, Z]^\top = p\vec n_{\mathrm{src}}$ 指向**声源所在方向** $\vec n_{\mathrm{src}} = -\vec d_{\mathrm{prop}}$。定义复声强 $\vec I_c = \frac{1}{2}p^*\vec u$（分解为 $\vec I_a + \mathrm{j}\vec I_r$），其实部为**时间平均有功声强（Active Intensity）** $\vec I_a$，虚部为来回吞吐而不做净传输的**无功声强（Reactive Intensity）** $\vec I_r$；同时写出势能密度与动能密度之和构成的**时间平均总声能密度** $E$：
+
+$$\begin{aligned}
+\vec I_a&=\frac{1}{2}\operatorname{Re}\{p^*\vec u\},\\
+\vec I_r&=\frac{1}{2}\operatorname{Im}\{p^*\vec u\},\\
+E&=\frac{|p|^2}{4\rho_0 c^2}+\frac{\rho_0\|\vec u\|_2^2}{4}.
+\end{aligned}\tag{14-11}$$
+
+注意因子 $1/4$ 的来历：正弦峰值模平方转为时间均方值有一个因子 $1/2$，而瞬时势能密度 $\frac{p^2(t)}{2\rho_0 c^2}$ 与瞬时动能密度 $\frac{1}{2}\rho_0\|\vec u(t)\|_2^2$ 本身各带一个物理系数 $1/2$，两者相乘恰为 $1/4$。检验单列自由场行波：将 $\|\vec u\|_2 = |p|/(\rho_0 c)$ 代入式(14-11)，势能与动能各占 $\frac{|p|^2}{4\rho_0 c^2}$，相加得 $E = \frac{|p|^2}{2\rho_0 c^2}$，而 $\|\vec I_a\|_2 = \frac{|p|^2}{2\rho_0 c} = cE$——声能正好以声速 $c$ 全部向前输运。记平均有功声强为 $\bar{\vec I}_a = \mathbb{E}[\vec I_a]$，当 $\|\bar{\vec I}_a\|_2 > 0$ 时，指向声源的单位波达方向 $\hat{\vec n}_{\mathrm{DOA}}$ 即等于 $-\bar{\vec I}_a / \|\bar{\vec I}_a\|_2$。
+
+#### 扩散度 $\psi \in [0, 1]$ 的柯西—施瓦茨严格证明
+
+在房间混响、驻波或多源干涉场中，一部分声能原地来回振荡或相互抵消，净输运速率 $\|\mathbb{E}[\vec I_a]\|_2$ 低于理论上限 $c\,\mathbb{E}[E]$。据此定义无量纲**声场扩散度（Diffuseness）** $\psi$：
+
+$$\psi
+=1-\frac{\|\mathbb{E}[\vec I_a]\|_2}{c\,\mathbb{E}[E]}.
+\tag{14-12}$$
+
+为什么式(14-12)中的 $\psi$ 对任意复声压、任意三维复振速和任意快拍统计分布都保证严格落在闭区间 $[0, 1]$ 内？我们用四步初等不等式完整证明。先看单个快拍上的差值 $cE - \|\vec I_a\|_2$：实部范数不超过复向量模长 $|p|\,\|\vec u\|_2$，故
+
+$$\begin{aligned}
+cE-\|\vec I_a\|_2
+&=\frac{|p|^2}{4\rho_0 c}+\frac{\rho_0 c\|\vec u\|_2^2}{4}
+-\frac{1}{2}\|\operatorname{Re}\{p^*\vec u\}\|_2\\
+&\ge\frac{|p|^2}{4\rho_0 c}+\frac{\rho_0 c\|\vec u\|_2^2}{4}
+-\frac{1}{2}|p|\,\|\vec u\|_2\\
+&=\frac{1}{4}\left(\frac{|p|}{\sqrt{\rho_0 c}}
+-\sqrt{\rho_0 c}\,\|\vec u\|_2\right)^2\ge 0.
+\end{aligned}\tag{14-13}$$
+
+再对多帧快拍取数学期望 $\mathbb{E}[\cdot]$：由向量范数的三角不等式（凸函数 Jensen 不等式），必有 $\|\bar{\vec I}_a\|_2 \le \mathbb{E}[\|\vec I_a\|_2]$，结合式(14-13)即得 $\|\bar{\vec I}_a\|_2 \le c\,\mathbb{E}[E]$。只要 $\mathbb{E}[E] > 0$，两边同除以 $c\,\mathbb{E}[E]$ 立即证得 $0 \le \psi \le 1$。更进一步，从式(14-13)与三角不等式的取等条件可以直接读出两个端点的充要物理意义：
+
+- $\psi = 0$ 当且仅当所有快拍上 $|p| = \rho_0 c\|\vec u\|_2$、声压与振速处处同相（$\vec I_r = \vec 0$）且各快拍的能流方向完全一致——即**纯粹的单方向自由场行进波**。
+- $\psi = 1$ 当且仅当时间平均净有功声强 $\mathbb{E}[\vec I_a] = \vec 0$——既包括各向同性的混响扩散声场，也包括两列等幅反向平面波形成的纯驻波（或声压与振速相差 $90^\circ$ 的纯无功近场）。
+
+拿到 $(E, \psi, \hat{\vec n}_{\mathrm{DOA}})$ 后，DirAC 解码器在每个时频格点将输入信号拆成两支：能量占比 $(1 - \psi)E$ 的**直达定向流**按 $\hat{\vec n}_{\mathrm{DOA}}$ 投射到扬声器或对应方向的 HRTF，能量占比 $\psi E$ 的**扩散环境流**则经去相关滤波器均匀馈送到四周，从而兼顾清晰的单源定位与自然的混响包围感。
+
+#### 锚点手算 14-1：单波、同相双波与正交双波的幻象声像与扩散度
+
+为了亲手核验相位关系如何改变声强与扩散度，我们取归一化媒质常数 $\rho_0 = 1$、$c = 1$，逐步手算三种代表性波场配置（对应函数 `active_intensity_and_diffuseness`）：
+
+1. **单列沿 $+x$ 传播的平面波**：输入 $p = 1$、$\vec u = [1, 0, 0]^\top$。代入式(14-11)得 $\vec I_a = \frac{1}{2}[1, 0, 0]^\top$（模长 $\|\vec I_a\|_2 = 0.5$），总声能密度 $E = \frac{1}{4} + \frac{1}{4} = 0.5$。代入式(14-12)得 $\psi = 1 - \frac{0.5}{0.5} = 0$，准确识别为无扩散纯行波。
+
+2. **两列等幅正交平面波同相叠加（$\Delta\phi = 0^\circ$）**：第 1 波沿 $+x$ 传播（$p_1 = 1$、$\vec u_1 = [1, 0, 0]^\top$），第 2 波沿 $+y$ 传播且同相（$p_2 = 1$、$\vec u_2 = [0, 1, 0]^\top$）。线性叠加后总声压 $p = 2$，总振速 $\vec u = [1, 1, 0]^\top$（范数平方 $\|\vec u\|_2^2 = 2$）。逐项代入得：
+
+    $$\begin{aligned}
+    \vec I_a&=\frac{1}{2}\operatorname{Re}\{2\times[1,1,0]^\top\}
+    =[1,1,0]^\top,\\
+    \|\vec I_a\|_2&=\sqrt{2},\qquad
+    E=\frac{|2|^2}{4}+\frac{2}{4}=1.5,\\
+    \psi&=1-\frac{\sqrt{2}}{1.5}
+    =1-\frac{2\sqrt{2}}{3}\approx 0.057191.
+    \end{aligned}$$
+
+    看这个结果：能流方向指向 $[1, 1, 0]^\top / \sqrt{2}$，即夹在两波正中间的 **$45^\circ$ 幻象方向（Phantom Direction）**。同时因为两波在原点处声压相长干涉（$|p|^2 = 4 > 2$），势能密度（$1.0$）超过了动能密度（$0.5$），式(14-13)中的平方项非零，令瞬时扩散度呈现出 $\psi \approx 0.057191$ 的微小非零值。
+
+3. **两列等幅正交平面波正交相移叠加（$\Delta\phi = 90^\circ$）**：保持第 1 波不变，令第 2 波超前 $90^\circ$，即 $p_2 = \mathrm{j}$、$\vec u_2 = [0, \mathrm{j}, 0]^\top$。叠加后总声压 $p = 1 + \mathrm{j}$（模平方 $|p|^2 = 2$），总振速 $\vec u = [1, \mathrm{j}, 0]^\top$（范数平方 $\|\vec u\|_2^2 = |1|^2 + |\mathrm{j}|^2 = 2$）。展开共轭乘积 $p^*\vec u = (1 - \mathrm{j})[1, \mathrm{j}, 0]^\top$，得 $[1 - \mathrm{j},\ 1 + \mathrm{j},\ 0]^\top$：
+
+    $$\begin{aligned}
+    \vec I_a&=\frac{1}{2}\operatorname{Re}\{p^*\vec u\}
+    =[0.5,0.5,0]^\top,\\
+    \vec I_r&=\frac{1}{2}\operatorname{Im}\{p^*\vec u\}
+    =[-0.5,+0.5,0]^\top,\\
+    \|\vec I_a\|_2&=\frac{1}{\sqrt{2}},\qquad E=0.5+0.5=1.0,\\
+    \psi&=1-\frac{1/\sqrt{2}}{1.0}
+    =1-\frac{1}{\sqrt{2}}\approx 0.292893.
+    \end{aligned}$$
+
+**这个例子说明了什么？** 把两列正交波的相对相位从 $0^\circ$ 改为 $90^\circ$ 后，幻象能流方位角虽仍指在 $45^\circ$，但原本向前输运的一部分耦合能量转化成了横向吞吐的无功声强 $\vec I_r = [-0.5, +0.5, 0]^\top$，导致扩散度从 $0.057191$ 升至 $0.292893$（若两波跨帧互不相关，长窗统计平均同样收敛到 $1 - 1/\sqrt{2} \approx 0.292893$，见 [E14-05](#e14-05)）。
+
+**结论在哪些条件下不成立？** 单主方向参数化模型假定每个时频格点至多由一个直达源主导；当两个说话人在同一频点同时发声时，有功声强只能给出两者的能量加权矢量和（幻象折中方向）。特别地，当两源等功率面对面（$+x$ 与 $-x$）发声时，相反能流正负抵消使 $\mathbb{E}[\vec I_a] = \vec 0$、$\psi = 1$，系统会把两路清晰人声误判成纯混响扩散声（见 [E14-06](#e14-06)）。
+
+#### 图 81 解读与参数化空间编码的多源失效边界
+
+![图81：FOA 声强参数化分析：双波干涉、扩散度映射与开球模态边界](../figures/fig81_foa_intensity_diffuseness.png)
+
+读图 81 时，可沿四个子图的横纵轴依次核对双波干涉、混响映射与球阵物理频带边界：
+
+- **子图 (a) 正交等幅双波的声强模与总声能**：横轴为两列正交等幅平面波的相对相位差 $\Delta\phi \in [0^\circ, 180^\circ]$，纵轴为归一化媒质（$\rho_0 = 1$、$c = 1$）下的无量纲能量密度与声强模值。蓝色实线总声能密度 $E(\Delta\phi) = 1 + \frac{1}{2}\cos\Delta\phi$ 与红色虚线有功声强模 $\|\vec I_a(\Delta\phi)\|_2$（等于 $\frac{\sqrt{2}}{2}(1 + \cos\Delta\phi)$）上的圆点标出 $0^\circ$ 与 $90^\circ$ 两组手算锚点；当 $\Delta\phi \to 180^\circ$ 时，原点处于声压波节（$p = 0$），有功声强降为零，但质点振速动能仍保留 $E = 0.5$。
+- **子图 (b) 相位干涉诱发的瞬时扩散度变化**：横轴仍为双波相位差 $\Delta\phi$（单位：$^\circ$），纵轴为无量纲瞬时扩散度 $\psi \in [0, 1]$。紫色实线从 $0^\circ$ 时的 $0.057$ 平滑升至 $90^\circ$ 时的 $0.293$，并在 $180^\circ$ 声压相消处触顶 $1.000$，说明实际 DirAC 编码器必须在短时窗上对 $\vec I_a$ 与 $E$ 做时间平滑以抑制单帧干涉跳变。
+- **子图 (c) 直达扩散声能比（Direct-to-Diffuse Ratio，DDR）映射**：横轴为稳态平面波与各向同性扩散场声能密度比的分贝值 $\mathrm{DDR}$（定义为 $10\log_{10}(E_{\mathrm{dir}}/E_{\mathrm{diff}})$，单位：$\mathrm{dB}$，范围 $-15$～$+20\ \mathrm{dB}$；注意区别于[第 2 章 §2.4.3](02_basics-signal-model.md#sec-2-4-3) 按房间冲激响应早晚时段积分定义的直达混响比 $\mathrm{DRR}$），纵轴为统计扩散度 $\psi$。绿色实线绘出闭式关系 $\psi = 1/(1 + \mathrm{DDR}_{\mathrm{lin}})$，深灰竖向点线标出 $\mathrm{DDR} = 0\ \mathrm{dB}$ 时 $\psi = 0.5$ 的对称分界点。
+- **子图 (d) 开球四面体阵列径向模态幅度**：横轴为无量纲波数孔径积 $\kappa R \in [0.05, 4.5]$（图轴简记为 $kr$，即正文的 $\kappa R$），纵轴为开球径向模态幅度增益 $|b_l(\kappa R)|$。蓝色实线零阶全向权重 $|b_0(\kappa R)|$ 从直流 $1.0$ 随频率回落，在红色竖向点线 $\kappa R = \pi$ 处跌入零点；橙色虚线一阶偶极权重 $|b_1(\kappa R)|$ 在 $\kappa R \to 0$ 处趋于零（导致低频逆均衡放大底噪），在 $\kappa R \approx 2.08$ 附近升至约 $0.436$ 的主峰，共同框定了紧凑球阵的有效工作频段。
+
+在多扬声器阵列或虚拟扬声器双耳重放中，参数化 DirAC 常与线性一阶球谐解码配合使用。低频段（约 $700\ \mathrm{Hz}$ 以下）保持一阶偶极模态权重 $g_1 = 1$ 的基础（Basic）解码以还原精确的 Gerzon 速度矢量，中高频段则切换为最大化 Gerzon 能量矢量模长的 $\max\text{-}r_E$ 阶次加权（二维正多边形环阵取 $1/\sqrt{2}$，三维正八面体球面阵取 $1/\sqrt{3}$）或消除反相负旁瓣的同相（in-phase）加权，从而收窄高频声像展宽并抑制对侧扬声器反相串扰（二维切比雪夫根与三维勒让德根的严格区分见 [E14-17](#e14-17)）。
+
+### 14.5 可穿戴非规则小孔径阵列与双耳信号匹配（BSM）
+
+#### 眼镜腿、耳机壳体散射与双耳信号匹配目标函数
+
+当我们把视线从规则球面麦克风移向智能眼镜、AR 头显或耳戴式助听器时，正四面体的对称球谐正交性立刻不复存在：$M$ 支微型麦克风被迫分散镶嵌在鼻托、前镜框与两侧镜腿上，中间隔着对中高频声波产生强烈遮挡与衍射的人体头颅。如果直接采集佩戴者的双耳沉浸式录音，或者为重放合成保留真实空间方位的双耳信号，怎样用这组非规则排列的机身麦克风观测 $\vec x(f) \in \mathbb{C}^{M \times 1}$，线性组合出与佩戴者左耳（$e = \mathrm{L}$）和右耳（$e = \mathrm{R}$）鼓膜入口声压尽可能一致的信号 $\hat p_e(f) = \vec w_e^H(f)\vec x(f)$？
+
+这正是近年可穿戴空间音频的核心方法——**双耳信号匹配（Binaural Signal Matching，BSM）**。其建模思路直接而务实：在消声室或边界元仿真中，围绕佩戴者头部选取 $Q$ 个离散采样方向 $\Omega_1, \ldots, \Omega_Q$（覆盖水平面或全空间的方位—俯仰网格）。对固定频率 $f$（后文暂省频率记号），记第 $q$ 个方向单位幅度的远场源到达机身 $M$ 支可穿戴麦克风的阵列流形列向量为 $\vec h(\Omega_q) \in \mathbb{C}^{M \times 1}$，同时记该源到达目标耳（左耳或右耳）的真实头相关传递函数（HRTF）复响应为 $p_e(\Omega_q) \in \mathbb{C}$。将 $Q$ 个方向的阵列传递向量横向拼成矩阵 $\mathbf H \in \mathbb{C}^{M \times Q}$，目标耳复响应排成列向量 $\vec p_e \in \mathbb{C}^{Q \times 1}$：
+
+$$\begin{aligned}
+\mathbf H&=\bigl[\vec h(\Omega_1),\ldots,\vec h(\Omega_Q)\bigr]
+\in\mathbb{C}^{M\times Q},\\
+\vec p_e&=\bigl[p_e(\Omega_1),\ldots,p_e(\Omega_Q)\bigr]^\top
+\in\mathbb{C}^{Q\times 1}.
+\end{aligned}\tag{14-14}$$
+
+请仔细核对本书共轭内积约定下的合成响应共轭关系：对第 $q$ 个方向，波束输出为 $\hat p_e(\Omega_q) = \vec w_e^H \vec h(\Omega_q)$。若把所有 $Q$ 个方向的合成复响应写成列向量，行向量 $\vec w_e^H \mathbf H$ 转置后为 $\hat{\vec p}_e = \mathbf H^\top \vec w_e^*$；对两边取复共轭，即有 **$\mathbf H^H \vec w_e = \hat{\vec p}_e^*$**。也就是说，在标准左乘列向量 $\vec w_e$ 的矩阵方程中，$\mathbf H^H \vec w_e$ 逼近的是目标耳响应的**复共轭向量 $\vec p_e^*$**（切不可漏掉共轭星号，否则合成相位将整体颠倒，导致左右耳超前滞后彻底反号）。
+
+#### 复数最小二乘（BSM-LS）的正规方程推导
+
+引入非负方向求积权重对角阵 $\mathbf W_\Omega$（对角元为 $w_{\Omega,1},\ldots,w_{\Omega,Q}$，可用于补偿球面非均匀网格面积，或对佩戴者正前方视野赋予更高保真权重）以及抑制传感器自噪声放大的 Tikhonov 正则化系数 $\lambda \ge 0$，**复数最小二乘双耳信号匹配（BSM-LS）**代价函数写为：
+
+$$\begin{aligned}
+J_{\mathrm{LS}}(\vec w_e)
+&=\bigl(\mathbf H^H\vec w_e-\vec p_e^*\bigr)^H
+\mathbf W_\Omega\bigl(\mathbf H^H\vec w_e-\vec p_e^*\bigr)\\
+&\quad+\lambda\|\vec w_e\|_2^2.
+\end{aligned}\tag{14-15}$$
+
+将式(14-15)完全展开为关于 $\vec w_e$ 和 $\vec w_e^H$ 的二次型：
+
+$$\begin{aligned}
+J_{\mathrm{LS}}(\vec w_e)
+&=\vec w_e^H\bigl(\mathbf H\mathbf W_\Omega\mathbf H^H
++\lambda\mathbf I_M\bigr)\vec w_e\\
+&\quad-\vec w_e^H\mathbf H\mathbf W_\Omega\vec p_e^*
+-\vec p_e^\top\mathbf W_\Omega\mathbf H^H\vec w_e\\
+&\quad+\vec p_e^\top\mathbf W_\Omega\vec p_e^*.
+\end{aligned}$$
+
+按照[附录 A §16.3](16_appendix-symbols-math.md#sec-16-3) 的 Wirtinger 复梯度法则，记加权 Gram 阵为 $\mathbf G = \mathbf H\mathbf W_\Omega\mathbf H^H$、正规矩阵为 $\mathbf A = \mathbf G + \lambda\mathbf I_M$，将 $\vec w_e$ 视为常数对共轭向量 $\vec w_e^*$ 求偏导并令其等于零向量，即得线性正规方程 $\mathbf A\vec w_e = \vec b_e$（其中右端向量 $\vec b_e = \mathbf H\mathbf W_\Omega\vec p_e^*$）。当 $\mathbf A$ 严格正定时，唯一全局最优闭式解为：
+
+$$\begin{aligned}
+\mathbf A
+&=\mathbf G+\lambda\mathbf I_M,\\
+\vec w_{e,\mathrm{LS}}
+&=\mathbf A^{-1}\vec b_e
+=\mathbf A^{-1}\mathbf H\mathbf W_\Omega\vec p_e^*.
+\end{aligned}\tag{14-16}$$
+
+在约 $1.5\ \mathrm{kHz}$ 以下的中低频段，声波波长大于头宽，HRTF 相位跨方向变化平缓，且人耳对低频双耳时间差（ITD）极为敏感，式(14-16)的 BSM-LS 能够同时高精度还原双耳相位差与幅度包络。然而一旦频率跨过 $1.5$～$2\ \mathrm{kHz}$ 进入高频段，这套线性复数拟合就会遭遇严重的幅度塌陷。
+
+### 14.6 高频幅度最小二乘（BSM-MagLS）与交替相位投影
+
+#### 为什么高频相位硬匹配会诱发严重幅度梳状凹坑
+
+为什么 BSM-LS 强行拟合复数相位，反而在高频段引起严重的幅度凹陷？根源在于自由度与几何孔径的悬殊对比：一副智能眼镜通常只有 $M = 4$ 支麦克风，却要拟合 $Q = 72$ 甚至数百个空间方向的 HRTF。当频率升至 $4\ \mathrm{kHz}$（波长约 $8.6\ \mathrm{cm}$）以上时，若机身阵列中心与耳道口之间存在几厘米的几何位移，目标耳复响应 $p_e(\Omega_q)$ 的相位会随方位角 $\Omega_q$ 快速旋转缠绕，低维的 $M$ 维阵列流形空间无法同时跟踪如此密集的高频相位变化。
+
+进一步看复平面上的几何代价机制：对于一个模长为 $1$、目标相位为 $180^\circ$（即复数 $-1$）的方向响应，如果受限于低维子空间无法凑出负号而只能输出正实数 $+1$，复数距离平方 $|1 - (-1)|^2 = 4$ 很大；反之，如果求解器直接**将该方向的输出幅度压向 $0$**，复数距离平方 $|0 - (-1)|^2 = 1$ 立刻缩小到原来的四分之一。于是 BSM-LS 为了降低复平面矢量误差，会在相位冲突的方向上形成极深的幅度凹陷，听感上表现为明显的音色空洞与高频能量缺失。
+
+心理声学的双工理论（Duplex Theory）恰好给出了物理突破口：在约 $1.5\ \mathrm{kHz}$ 以上的高频区，人耳听觉神经已无法锁相追踪精细载波相位，空间定位主要依赖由头影遮挡和耳廓散射决定的**双耳声级差（ILD）与单耳频谱包络幅度** $|p_e(\Omega_q)|$。既然高频绝对相位对听感并不敏感，我们便可以把各方向的目标相位释放为自由辅助变量 $\vec\phi = [\phi_1,\ldots,\phi_Q]^\top$（各分量属于 $(-\pi, \pi]$），只要求合成幅度 $|\vec w_e^H\vec h(\Omega_q)|$ 贴紧目标耳幅度 $m_{e,q} = |p_e(\Omega_q)|$——这就是 **BSM-MagLS（幅度最小二乘双耳信号匹配）**（Schörkhuber 等，2018；Madmoni 等，2021）。
+
+#### 交替相位投影算法与目标函数单调不增证明
+
+引入自由目标相位向量 $\vec\phi$ 后，将式(14-15)中的固定复目标 $\vec p_e^*$ 替换为带可变相位的目标共轭向量 $\vec m_e \odot e^{-\mathrm{j}\vec\phi}$（其中 $\vec m_e = [m_{e,1},\ldots,m_{e,Q}]^\top \ge 0$，$\odot$ 表示逐元素乘积），构造联合优化目标：
+
+$$\begin{aligned}
+J_{\mathrm{MagLS}}(\vec w_e,\vec\phi)
+&=\bigl\|\mathbf W_\Omega^{1/2}\bigl(\mathbf H^H\vec w_e
+-\vec m_e\odot e^{-\mathrm{j}\vec\phi}\bigr)\bigr\|_2^2\\
+&\quad+\lambda\|\vec w_e\|_2^2.
+\end{aligned}\tag{14-17}$$
+
+注意对于任意给定的滤波器 $\vec w_e$，第 $q$ 项复误差模平方满足下界不等式：
+
+$$\begin{aligned}
+\bigl|(\mathbf H^H\vec w_e)_q-m_{e,q}e^{-\mathrm{j}\phi_q}\bigr|^2
+&=\bigl|\hat p_e(\Omega_q)-m_{e,q}e^{\mathrm{j}\phi_q}\bigr|^2\\
+&\ge\bigl(|\hat p_e(\Omega_q)|-m_{e,q}\bigr)^2,
+\end{aligned}$$
+
+当且仅当 $\phi_q = \angle\hat p_e(\Omega_q)$ 时取等号，此时式(14-17)精确化为加权幅度均方误差加正则项。尽管该问题关于 $\vec w_e$ 非凸，但采用**交替相位投影（Alternating Phase Projection）**迭代求解十分简洁且保证每步目标单调不增。复用式(14-16)的正规矩阵 $\mathbf A = \mathbf G + \lambda\mathbf I_M$，设第 $t$ 轮相位初值为 $\vec\phi^{(t)}$，第 $t + 1$ 轮分两步交替更新：
+
+$$\begin{aligned}
+\vec w_e^{(t+1)}&=\mathbf A^{-1}\mathbf H\mathbf W_\Omega
+\bigl(\vec m_e\odot e^{-\mathrm{j}\vec\phi^{(t)}}\bigr),\\
+\phi_q^{(t+1)}
+&=\angle\bigl(\vec w_e^{(t+1)H}\vec h(\Omega_q)\bigr),\\
+&\quad q=1,\ldots,Q.
+\end{aligned}\tag{14-18}$$
+
+（若某方向偶遇 $\vec w_e^{(t+1)H}\vec h(\Omega_q) = 0$，则保持上一轮相位 $\phi_q^{(t+1)} = \phi_q^{(t)}$ 不变。）记式(14-17)目标简写为 $J(\vec w, \vec\phi)$，我们来严格证明目标序列 $J^{(t)} = J(\vec w_e^{(t)}, \vec\phi^{(t)})$ 单调不增：
+
+1. **固定相位更新权重步**：在 $\vec\phi^{(t)}$ 固定时，$J(\vec w_e, \vec\phi^{(t)})$ 是关于 $\vec w_e$ 的严格凸二次函数，式(14-18)第一式正是其唯一全局极小点，更新后目标值 $J(\vec w_e^{(t+1)}, \vec\phi^{(t)})$ 必不大于旧值 $J^{(t)}$。
+2. **固定权重投影相位步**：在 $\vec w_e^{(t+1)}$ 固定时，正则项 $\lambda\|\vec w_e^{(t+1)}\|_2^2$ 不随 $\vec\phi$ 改变，而求和中的 $Q$ 个方向彼此完全解耦；对每个方向 $q$，令目标相量对齐当前合成响应相角 $\phi_q^{(t+1)} = \angle\hat p_e^{(t+1)}(\Omega_q)$，使两复数同向相减，模平方由 $|\hat p - m e^{\mathrm{j}\phi^{(t)}}|^2$ 压到最小下界 $(|\hat p| - m)^2$，故投影后目标 $J^{(t+1)}$ 必不大于中间值 $J(\vec w_e^{(t+1)}, \vec\phi^{(t)})$。
+
+两步串联即得 $J^{(t+1)} \le J^{(t)}$，又因目标函数有非负下界 $0$，目标值序列必然收敛。在工程实现中，正规矩阵 $\mathbf A = \mathbf G + \lambda\mathbf I_M$ 在整套迭代中保持不变，只需在循环外做一次 $M \times M$ Cholesky 分解，循环内每次只做三角回代，计算开销很低；跨频点处理时，通常拿相邻低一格频点的收敛相位为当前频点热启动，以保持群延迟连续。
+
+#### 锚点手算 14-2：双麦三方向 BSM-LS 正横零陷与 MagLS 一步恢复
+
+我们用一个横置在镜框前方的 $M = 2$ 支麦克风、$Q = 3$ 个方向（本一维双麦算例沿用[第 3 章 §3.1](03_array-geometry.md#sec-3-1) 线阵正横起算角约定：左侧端射 $+90^\circ$、正前方正横 $0^\circ$、右侧端射 $-90^\circ$）的精确手算例子，定量对比 BSM-LS 在相位冲突方向造成的 $-\infty\ \mathrm{dB}$ 幅度零陷，以及 BSM-MagLS 如何通过一次交替投影恢复平坦幅度响应（对应函数 `bsm_ls_weights` 与 `bsm_magls_weights`）。取等权 $\mathbf W_\Omega = \mathbf I_3$、无正则 $\lambda = 0$，设阵列传递矩阵 $\mathbf H$ 与目标耳复响应向量 $\vec p_e$（三方向真实幅度全为 $1$，仅正横 $0^\circ$ 方向因耳位偏移带有相位翻转 $-1$）为：
+
+$$\mathbf H
+=\begin{bmatrix}
+1 & 1 & 1\\
+\mathrm{j} & 1 & -\mathrm{j}
+\end{bmatrix},\qquad
+\vec p_e
+=\begin{bmatrix}1\\-1\\1\end{bmatrix}.
+\tag{14-19}$$
+
+**先算 BSM-LS 闭式解。** 计算 Gram 矩阵 $\mathbf H\mathbf H^H$ 及其 $2 \times 2$ 逆矩阵：第 $(1,1)$ 与 $(2,2)$ 元均为 $1 + 1 + 1 = 3$，第 $(1,2)$ 元为 $1(-\mathrm{j}) + 1(1) + 1(+\mathrm{j}) = 1$，行列式为 $3 \times 3 - 1 \times 1 = 8$，故
+
+$$\mathbf H\mathbf H^H
+=\begin{bmatrix}3 & 1\\1 & 3\end{bmatrix},\qquad
+(\mathbf H\mathbf H^H)^{-1}
+=\frac{1}{8}\begin{bmatrix}3 & -1\\-1 & 3\end{bmatrix}.$$
+
+接着算右端项 $\mathbf H\vec p_e^*$：第一行为 $1 - 1 + 1 = 1$，第二行为 $\mathrm{j} - 1 - \mathrm{j} = -1$，故 $\mathbf H\vec p_e^* = [1, -1]^\top$。代入式(14-16)解出 BSM-LS 权重与三方向合成响应向量 $\hat{\vec p}_{\mathrm{LS}}$：
+
+$$\begin{aligned}
+\vec w_{\mathrm{LS}}
+&=\frac{1}{8}\begin{bmatrix}3 & -1\\-1 & 3\end{bmatrix}
+\begin{bmatrix}1\\-1\end{bmatrix}
+=\begin{bmatrix}1/2\\-1/2\end{bmatrix},\\
+\hat{\vec p}_{\mathrm{LS}}
+&=\begin{bmatrix}
+(1-\mathrm{j})/2 & 0 & (1+\mathrm{j})/2
+\end{bmatrix}^\top,\\
+|\hat{\vec p}_{\mathrm{LS}}|
+&=\begin{bmatrix}1/\sqrt{2} & 0 & 1/\sqrt{2}\end{bmatrix}^\top.
+\end{aligned}$$
+
+对比三方向合成幅度可见：原本三个方向全都是 $0\ \mathrm{dB}$（幅度 $1$）的平坦目标，BSM-LS 不仅使两侧端射功率各衰减一半（$-3.01\ \mathrm{dB}$），更在正前方正横 $0^\circ$ 方向（第 $2$ 列 $[1, 1]^\top$）直接相减形成了**幅度严格等于 $0$（$-\infty\ \mathrm{dB}$）的完全相消零陷**。三方向平均幅度均方误差为两侧 $(1/\sqrt{2} - 1)^2$ 与正横 $(0 - 1)^2$ 的算术均值，化简得 $\frac{4 - 2\sqrt{2}}{3} \approx 0.390524$。
+
+**再算 BSM-MagLS 一步迭代。** 取目标幅度 $\vec m_e = |\vec p_e| = [1, 1, 1]^\top$，从零相位初值 $\vec\phi^{(0)} = [0, 0, 0]^\top$ 出发执行式(14-18)第 $1$ 步：右端项变为 $\mathbf H[1, 1, 1]^\top = [3, 1]^\top$，左乘 $(\mathbf H\mathbf H^H)^{-1}$ 得
+
+$$\vec w_{\mathrm{MagLS}}^{(1)}
+=\frac{1}{8}\begin{bmatrix}3 & -1\\-1 & 3\end{bmatrix}
+\begin{bmatrix}3\\1\end{bmatrix}
+=\frac{1}{8}\begin{bmatrix}8\\0\end{bmatrix}
+=\begin{bmatrix}1\\0\end{bmatrix}.$$
+
+检验合成响应：$\vec w_{\mathrm{MagLS}}^{(1)H}\mathbf H = [1, 1, 1]$，三方向输出幅度 $|\hat{\vec p}_{\mathrm{MagLS}}^{(1)}| = [1, 1, 1]^\top$（全方向精确 $0\ \mathrm{dB}$），**仅用一步投影便将幅度均方误差降为零（$0.0$）**。
+
+**这个例子说明了什么？** 在高频欠定匹配中，释放人耳不敏感的绝对相位自由度能够避免阵列为了迁就相位反转而牺牲主方向能量。
+
+**结论在哪些条件下不成立？** 在 $1.5\ \mathrm{kHz}$ 以下低频段若直接套用无相位约束的 MagLS，左右耳独立迭代出不一致的自由相位会破坏关键的低频双耳时间差（ITD），因此完整双耳渲染器普遍采用“低频 BSM-LS + 高频 BSM-MagLS”的频带平滑拼接架构。
+
+### 14.7 双耳波束形成中的空间线索保持与参考混合
+
+#### 单目标双耳 MVDR 为何把扩散背景噪声压成秩一头中效应
+
+对于双耳助听器与双耳增强耳机，除了还原目标说话人的方向外，**背景环境噪声听起来在什么位置**同样直接决定佩戴舒适度。在真实房间中，四周漫反射的背景噪声在双耳间的归一化互相关模长——即**耳间相干度（Interaural Coherence，IC；亦称双耳相干度）**——在中高频段通常较低（接近零），人耳据此感知到宽广自然、包围在身体外部的环境声场。
+
+现在看如果直接对左右耳分别套用[第 5 章 §5.5](05_beamforming.md#sec-5-5) 的单目标**双耳最小方差无失真响应（Binaural Minimum Variance Distortionless Response，BMVDR；即在保持左右耳目标传递响应无失真的约束下最小化各耳输出噪声方差）**会发生什么。设双耳可穿戴系统共有 $M$ 支麦克风，其中第 $r_{\mathrm{L}}$ 支位于左耳参考位、第 $r_{\mathrm{R}}$ 支位于右耳参考位；单一目标源到达全阵列的传递向量为 $\vec a \in \mathbb{C}^{M \times 1}$，左耳与右耳无失真约束分别为 $\vec w_{\mathrm{L}}^H \vec a = a_{r_{\mathrm{L}}}$ 与 $\vec w_{\mathrm{R}}^H \vec a = a_{r_{\mathrm{R}}}$（或等价地对归一化相对传递函数约束等于 $1$），背景噪声协方差为 $\mathbf R_{nn} \in \mathbb{C}^{M \times M}$。代入 MVDR 闭式解：
+
+$$\begin{aligned}
+\vec w_{\mathrm{L},\mathrm{BMVDR}}
+&=\frac{\mathbf R_{nn}^{-1}\vec a}
+{\vec a^H\mathbf R_{nn}^{-1}\vec a}a_{r_{\mathrm{L}}}^*,\\
+\vec w_{\mathrm{R},\mathrm{BMVDR}}
+&=\frac{\mathbf R_{nn}^{-1}\vec a}
+{\vec a^H\mathbf R_{nn}^{-1}\vec a}a_{r_{\mathrm{R}}}^*.
+\end{aligned}\tag{14-20}$$
+
+观察式(14-20)的左右两个向量：它们仅相差一个复标量倍数 $(a_{r_{\mathrm{R}}}^* / a_{r_{\mathrm{L}}}^*)$，即右耳向量 $\vec w_{\mathrm{R},\mathrm{BMVDR}}$ 与左耳向量严格共线。这意味着无论输入噪声协方差 $\mathbf R_{nn}$ 原本是满秩扩散声场还是多方向鸡尾酒会噪声，经过一对共线滤波器投影后，右耳输出的残余背景噪声 $v_{\mathrm{out},\mathrm{R}}$ 必然逐点等于左耳残余噪声 $v_{\mathrm{out},\mathrm{L}}$ 乘以同一个常数复标量 $a_{r_{\mathrm{R}}} / a_{r_{\mathrm{L}}}$。结果，输出背景噪声的耳间相干度恒等于 $\mathrm{IC}_{\mathrm{out}} = 1$：原本宽松自然的四周环境声瞬间坍缩成与目标说话人同方向（甚至挤压在头中）的单点噪声，造成明显的听觉压迫感。
+
+#### 参考麦克风混合系数 $\beta$ 的耳间相干度与信噪比解析折中
+
+工程上兼顾低算力、目标严格无失真与背景包围感的最经典手段，是**参考麦克风混合法（BMVDR with Reference Mixing）**：引入实混合比例 $\beta \in [0, 1]$，将 $(1 - \beta)$ 倍的 BMVDR 滤波输出与 $\beta$ 倍未滤波的左右耳原始参考麦克风观测（单位抽选向量记作 $\vec e_{r_{\mathrm{L}}}, \vec e_{r_{\mathrm{R}}}$）做凸组合：
+
+$$\begin{aligned}
+\tilde{\vec w}_{\mathrm{L}}(\beta)
+&=(1-\beta)\vec w_{\mathrm{L},\mathrm{BMVDR}}
++\beta\vec e_{r_{\mathrm{L}}},\\
+\tilde{\vec w}_{\mathrm{R}}(\beta)
+&=(1-\beta)\vec w_{\mathrm{R},\mathrm{BMVDR}}
++\beta\vec e_{r_{\mathrm{R}}}.
+\end{aligned}\tag{14-21}$$
+
+先核验目标保真度：因为 $\vec w_{e,\mathrm{BMVDR}}^H \vec a = a_{r_e}$ 且原始参考麦满足 $\vec e_{r_e}^H \vec a = a_{r_e}$，对任意 $\beta \in [0, 1]$ 都有线性组合响应 $(1 - \beta)a_{r_e} + \beta a_{r_e} = a_{r_e}$，即 $\tilde{\vec w}_e^H(\beta)\vec a = a_{r_e}$——**目标声源的双耳时间差与双耳声级差在任何混合比例下都严格无失真保留。** 与此同时，只要 $\beta > 0$，$\vec e_{r_{\mathrm{L}}}$ 与 $\vec e_{r_{\mathrm{R}}}$ 线性无关，打破了共线秩一锁死。记单耳输出噪声方差为 $\sigma_{e,\mathrm{out}}^2(\beta)$（$e \in \{\mathrm{L}, \mathrm{R}\}$），跨耳噪声互协方差为 $r_{\mathrm{LR}}(\beta)$，定义归一化互相关模长为输出耳间相干度（注意此处取未平方模长 $\mathrm{IC}_{\mathrm{out}} \in [0, 1]$，其平方即[第 5 章 §5.5](05_beamforming.md#sec-5-5)定义的模平方耳间相干度，满足 $\mathrm{MSC}_{\mathrm{LR}}$ 等于 $\mathrm{IC}_{\mathrm{out}}^2$）：
+
+$$\begin{aligned}
+\sigma_{e,\mathrm{out}}^2(\beta)
+&=\tilde{\vec w}_e^H(\beta)\,\mathbf R_{nn}\,
+\tilde{\vec w}_e(\beta),\\
+r_{\mathrm{LR}}(\beta)
+&=\tilde{\vec w}_{\mathrm{L}}^H(\beta)\,\mathbf R_{nn}\,
+\tilde{\vec w}_{\mathrm{R}}(\beta),\\
+\mathrm{IC}_{\mathrm{out}}(\beta)
+&=\frac{|r_{\mathrm{LR}}(\beta)|}
+{\sqrt{\sigma_{\mathrm{L},\mathrm{out}}^2(\beta)\,
+\sigma_{\mathrm{R},\mathrm{out}}^2(\beta)}}.
+\end{aligned}\tag{14-22}$$
+
+随着 $\beta$ 从 $0$ 增向 $1$，$\mathrm{IC}_{\mathrm{out}}(\beta)$ 从完全相干的 $1$ 平滑回落至真实环境相干度，代价则是让出一部分阵列降噪增益。
+
+#### 锚点手算 14-3：扩散场耳间相干度坍缩与混合恢复（及图 82 解读）
+
+我们用一个双耳两麦（$M = 2$、$r_{\mathrm{L}} = 1$、$r_{\mathrm{R}} = 2$，代码中零基索引为 `(0, 1)`）对称算例把这条折中曲线算清（对应函数 `binaural_coherence_with_mixing`）。设正前方目标到达两耳幅度相位相同 $\vec a = [1, 1]^\top$、干源功率 $\phi_s = 1$（输入单耳信噪比 $0\ \mathrm{dB}$），扩散背景噪声在两耳方差均为 $1$、实相干系数为 $\gamma_{\mathrm{in}} = 0.2$（对角为 $1$、非对角为 $0.2$ 的 $2 \times 2$ 矩阵 $\mathbf R_{nn}$）。
+
+1. **纯 BMVDR（$\beta = 0$）**：由对称性立得两耳权重均为 $[0.5, 0.5]^\top$。输出单耳噪声方差为 $(1 + \gamma_{\mathrm{in}})/2 = 0.6$，信噪比提升 $10\log_{10}(1 / 0.6) \approx +2.22\ \mathrm{dB}$；但因两耳权重完全相同，跨耳噪声互协方差 $r_{\mathrm{LR}}(0)$ 也等于 $0.6$，输出耳间相干度坍缩为 $\mathrm{IC}_{\mathrm{out}}(0) = 1.00000$。
+
+2. **引入参考混合 $\beta \in (0, 1]$**：代入式(14-21)得左耳混合权重 $\frac{1}{2}[1+\beta, 1-\beta]^\top$、右耳混合权重 $\frac{1}{2}[1-\beta, 1+\beta]^\top$。展开二次型合并同类项，得到任意 $\gamma_{\mathrm{in}}$ 与 $\beta$ 的解析通式：
+
+    $$\begin{aligned}
+    \sigma_{\mathrm{out}}^2(\beta)
+    &=\frac{1+\gamma_{\mathrm{in}}}{2}
+    +\frac{1-\gamma_{\mathrm{in}}}{2}\beta^2
+    =0.6+0.4\beta^2,\\
+    r_{\mathrm{LR}}(\beta)
+    &=\frac{1+\gamma_{\mathrm{in}}}{2}
+    -\frac{1-\gamma_{\mathrm{in}}}{2}\beta^2
+    =0.6-0.4\beta^2,\\
+    \mathrm{IC}_{\mathrm{out}}(\beta)
+    &=\frac{0.6-0.4\beta^2}{0.6+0.4\beta^2}
+    =\frac{3-2\beta^2}{3+2\beta^2}.
+    \end{aligned}$$
+
+    逐点核查关键工作点：取 **$\beta = 0.2$** 时，$\sigma_{\mathrm{out}}^2 = 0.616$（SNR 增益 $+2.10\ \mathrm{dB}$，与纯 BMVDR 的精确差值为 $10\log_{10}(0.616/0.6) \approx 0.11\ \mathrm{dB}$），耳间相干度 $\mathrm{IC}_{\mathrm{out}} = 73/77 \approx 0.94805$；取 **$\beta = 0.5$** 时，$\sigma_{\mathrm{out}}^2 = 0.700$（SNR 增益 $+1.55\ \mathrm{dB}$），背景耳间相干度显著下降至 $\mathrm{IC}_{\mathrm{out}} = 5/7 \approx 0.71429$；取 **$\beta = 1.0$** 时退回原始单耳观测，$\mathrm{IC}_{\mathrm{out}} = 0.20000$，增益 $0\ \mathrm{dB}$。
+
+![图82：高频双耳信号匹配（BSM-LS vs MagLS）与扩散噪声耳间相干度保持](../figures/fig82_bsm_ls_vs_magls.png)
+
+图 82 将 §14.5～§14.7 的高频双耳匹配与背景耳间相干度折中汇总在四幅子图中：
+
+- **子图 (a) 双麦三方向手算算例幅度对比**：横轴为端射 $+90^\circ$、正横 $0^\circ$、端射 $-90^\circ$ 三个离散方向，纵轴为无量纲合成幅度增益。在正横 $0^\circ$ 处，红色柱（BSM-LS）因目标反相冲突跌至 $0$，两侧端射也衰减至 $1/\sqrt{2} \approx 0.707$；而绿色柱（BSM-MagLS）经一步投影便与深灰目标柱在全部三个方向等高重合于 $1.0$。
+- **子图 (b) $4\ \mathrm{kHz}$ 左耳（$+90^\circ$）全方位合成幅度方向图**：横轴为水平方位角（$0^\circ$～$355^\circ$，步长 $5^\circ$ 共 $72$ 个方向），纵轴为幅度响应（单位：$\mathrm{dB}$）。实验模拟半径 $2.5\ \mathrm{cm}$ 的正交四麦圆环在正则化 $\lambda = 0.05$ 下拟合 $+90^\circ$ 左耳带头影幅度与跨头快速相移的目标耳响应（深灰实线）：红色虚线（BSM-LS）在以 $270^\circ$ 为中心的 $210^\circ$～$330^\circ$ 对侧头影相位缠绕区出现逾 $12\ \mathrm{dB}$ 的剧烈波纹凹陷，而绿色点划线（$25$ 轮 BSM-MagLS）平滑贴合目标声影包络。
+- **子图 (c) BSM-MagLS 迭代目标单调下降曲线**：横轴为交替相位投影迭代轮次 $t \in [1, 25]$，纵轴为子图 (b) 算例对应的正则化目标值 $J(\vec w, \vec\phi)$。蓝色折线验证了目标值在前 $10$ 轮内迅速下降、全程严格满足 $J^{(t+1)} \le J^{(t)}$ 并平稳收敛。
+- **子图 (d) BMVDR 参考混合系数 $\beta$ 折中曲线**：横轴为原始参考麦克风混合比例 $\beta \in [0, 1]$，纵轴为共用无量纲刻度。紫色实线及方框锚点（$\beta = 0, 0.2, 0.5, 1.0$）显示输出背景噪声耳间相干度 $\mathrm{IC}_{\mathrm{out}}(\beta)$ 从完全相干的 $1.0$ 平滑回落至真实环境值 $0.2$；橙色虚线绘制按 $2.5\ \mathrm{dB}$ 归一化的单耳信噪比增益（即 $\mathrm{SNR\ 增益}/2.5\ \mathrm{dB}$，$\beta = 0$ 处读数 $0.887$ 对应 $+2.22\ \mathrm{dB}$），直观展示小比例混合（如 $\beta \in [0.3, 0.5]$）可用很小的降噪代价换回显著的背景空间包围感。
+
+### 14.8 可穿戴微孔径阵列的湍流风噪物理模型
+
+#### Corcos 对流湍流相干长度为何远短于声波长
+
+戴着 TWS 耳机在户外快步走、骑车或站在微风街口打电话时，最令传统双麦克风波束形成器棘手的干扰是**气流湍流风噪（Wind Noise）**。初学者容易把“风声”想象成远处吹过来的一列低频声波，误以为只要用两支相距 $d = 1.5\ \mathrm{cm}$ 的耳机外麦做差分对消就能滤掉风噪。物理事实恰恰相反：麦克风振膜拾取到的轰鸣风噪并不是以声速 $c \approx 343\ \mathrm{m/s}$ 传播的辐射声波，而是气流掠过耳廓和耳机外壳棱角时脱落的**局部湍流边界层伪声压脉动（Hydrodynamic Pseudo-sound）**。
+
+流体力学中的 **Corcos（1964）湍流脉动互谱模型**定量刻画了这一现象：涡旋团以远低于声速的对流速度 $U_c$（约为来流风速 $U_\infty$ 的 $0.6$～$0.8$ 倍，微风步行或慢跑时典型值仅 $2$～$5\ \mathrm{m/s}$）顺流迁移并迅速耗散。沿流向相距 $d$ 的两支传感器之间，风噪脉动的空间相干度模长 $\gamma_{\mathrm{wind}}(f)$ 按对流波数 $\kappa_c = 2\pi f / U_c$ 呈指数衰减，可与三维各向同性扩散声场的正弦比值核 $\gamma_{\mathrm{acoustic}}(f)$ 直接并列对比：
+
+$$\begin{aligned}
+\gamma_{\mathrm{wind}}(f)
+&=\exp\!\left(-\alpha_{\mathrm{long}}
+\frac{2\pi f d}{U_c}\right),\\
+\gamma_{\mathrm{acoustic}}(f)
+&=\operatorname{sinc}\!\left(\frac{2fd}{c}\right)\\
+&=\frac{\sin(2\pi fd/c)}{2\pi fd/c},
+\end{aligned}\tag{14-23}$$
+
+其中 $\alpha_{\mathrm{long}} \approx 0.14$ 为流向衰减常数（横向垂直于流向时衰减更快，$\alpha_{\mathrm{lat}} \approx 0.7$）。把一组真实耳机参数 $d = 0.015\ \mathrm{m}$、$U_c = 3.0\ \mathrm{m/s}$、$c = 343\ \mathrm{m/s}$ 代入式(14-23)看 $f = 250\ \mathrm{Hz}$ 处的悬殊对比：声波无量纲相位积仅为 $2\pi fd / c \approx 0.0687\ \mathrm{rad}$，扩散声场相干度高达 $\gamma_{\mathrm{acoustic}} \approx 0.9992$（两麦上的环境声几乎同相一致）；而湍流对流相位积高达 $2\pi fd / U_c = 2.5\pi \approx 7.854\ \mathrm{rad}$，风噪相干度骤降至 $\gamma_{\mathrm{wind}}(250\ \mathrm{Hz}) \approx 0.333$，到 $1000\ \mathrm{Hz}$ 时更跌至 $0.012$，在两支近在咫尺的麦克风上已近似**空间互不相关**。
+
+#### 小孔径超指向性放大风噪的机理与检测门控
+
+看清“风噪空间不相干”这一物理特性，就能理解[第 5 章 §5.3 超指向波束（Superdirective Beamformer）](05_beamforming.md#sec-5-3) 在户外风中剧烈恶化的根源。在 $250\ \mathrm{Hz}$（声波波长 $1.37\ \mathrm{m}$）处，间距 $d = 1.5\ \mathrm{cm}$ 的双麦端射阵列若设计为一阶后向零陷心形差分（内延时 $\tau = d/c$，在后方 $180^\circ$ 形成零陷），前向差分的固有幅度响应仅为 $2\sin(\kappa d) \approx \frac{4\pi fd}{c}$，为了维持佩戴者嘴部方向单位增益，必须乘上 $1/[2\sin(\kappa d)]$（约等于 $\frac{c}{4\pi fd} \approx 7.3$ 倍，即 $+17.2\ \mathrm{dB}$）的均衡增益；而若采用零内延时的双麦偶极差分（在正横方向形成零陷），所需均衡增益更翻倍至 $\frac{c}{2\pi fd} \approx 14.6$ 倍（$+23.3\ \mathrm{dB}$）。对于空间高度相关的远场环境声，两麦相减能够有效抵消；然而对于近似互不相关的双麦风噪，两路相减先使噪声方差相加翻倍（$+3.0\ \mathrm{dB}$），再叠加上述一阶差分均衡放大，心形与偶极差分输出端的低频风噪功率反而比单支裸麦克风分别高出约 $+20.3\ \mathrm{dB}$ 与 $+26.3\ \mathrm{dB}$。
+
+因此，商业耳机语音链路普遍配备基于**低频跨麦相干度跌落与高能低频斜率**的实时风噪检测器：一旦监测到 $50$～$500\ \mathrm{Hz}$ 子带的麦间实测相干度显著低于声学下界且能量突增，系统立即增大自适应波束的对角加载量（自动退化为正权延迟求和），或者将低频段话音拾取平滑切换给封闭耳道内的跨模态传感器。
+
+### 14.9 气导麦克风与耳道闭塞内麦 / 骨导传感器的跨模态自语音融合
+
+#### 耳道闭塞效应（Occlusion Effect）与高频骨导衰减特性
+
+当佩戴者自己开口说话时，声音通过两条截然不同的物理通道传向耳戴设备：一条是绕过脸颊到达机身外置气导麦克风（Air-Conduction Microphone）的外部空气辐射通路；另一条则是声带与声道壁振动经颌骨、颅骨软骨传导至外耳道壁，在被硅胶耳塞封闭的耳道腔内激起声压（由内向耳道麦克风 In-Ear Microphone 拾取），或直接激励骨导语音拾取传感器（Voice Pickup Unit，VPU，常由贴合耳道壁的骨导振动加速度计实现）。
+
+这两条通路呈现出高度互补的声学镜像特征：
+
+- **低频耳道闭塞增益与防风隔离**：在 $100$～$800\ \mathrm{Hz}$ 中低频段，封闭耳道阻断了骨导声能向外泄放，产生显著的**耳道闭塞效应（Occlusion Effect）**，使耳内自语音声压相对耳外气导提升 $+6$～$+15\ \mathrm{dB}$，同时耳塞物理隔绝了外部气流湍流与大部分环境喧嚣。
+- **高频骨导衰减与朴素逆均衡的底噪放大**：在 $2\ \mathrm{kHz}$ 以上的清辅音（如 `/s/`、`/sh/`、`/t/`）频段，颅骨软组织阻尼使骨导振动剧烈衰减（相对耳外气导常跌落 $-15$～$-25\ \mathrm{dB}$），而此时外部风噪能量恰已自然消退，外置气导麦克风拥有良好的高频清晰度。若仅用单支耳内闭塞麦并直接乘上逆滤波 $1/H_{\mathrm{occ}}(f)$ 去拉平高频幅度，就会把耳内传感器自身的电路本底热噪声同步放大数十倍，引入明显的高频白噪。
+
+#### 跨模态无失真 MVDR 与维纳后置滤波（MMSE）融合推导
+
+怎样在每个频点上自动取长补短，既不引入闷罐音色失真，又不放大高频底噪？我们把外置参考气导麦复频谱 $Y_{\mathrm{air}}(f)$ 与耳内闭塞麦（或骨导传感器）复频谱 $Y_{\mathrm{in}}(f)$ 纵向拼成二维跨模态观测向量 $\vec y(f)$，并以**外置气导麦上的干净佩戴者自语音 $S_{\mathrm{air}}(f)$** 作为统一音色参考目标（省略频点记号 $f$）：
+
+$$\begin{aligned}
+\vec y
+&=\begin{bmatrix}Y_{\mathrm{air}}\\Y_{\mathrm{in}}\end{bmatrix}
+=\vec c\,S_{\mathrm{air}}+\vec v,\\
+\vec c
+&=\begin{bmatrix}1\\H_{\mathrm{occ}}\end{bmatrix},\qquad
+\mathbf R_{nn}=\mathbb{E}[\vec v\vec v^H].
+\end{aligned}\tag{14-24}$$
+
+式(14-24)中，$H_{\mathrm{occ}} \in \mathbb{C}$ 是耳内通道相对外置气导参考通道的自语音跨模态相对传递函数（在低频 $|H_{\mathrm{occ}}| > 1$，在高频 $|H_{\mathrm{occ}}| \ll 1$；实际产品可在佩戴者无风安静说话段在线自适应跟踪更新 $H_{\mathrm{occ}}$），$\phi_s = \mathbb{E}[|S_{\mathrm{air}}|^2] > 0$ 为目标自语音功率谱，$\mathbf R_{nn} \succ \mathbf 0$ 为包含外部风噪、环境干扰与内部传感器热噪声的 $2 \times 2$ 跨模态噪声协方差矩阵，且设目标自语音与加性噪声互二阶矩为零（$\mathbb{E}[S_{\mathrm{air}}\vec v^H] = \vec 0^\top$）。
+
+要求线性融合输出 $\hat S = \vec g^H \vec y$ 对参考音色 $S_{\mathrm{air}}$ 严格无失真（即满足约束 $\vec g^H \vec c = 1$），同时最小化输出残余总噪声方差 $\vec g^H\mathbf R_{nn}\vec g$，即得**跨模态无失真 MVDR 融合权重** $\vec g_{\mathrm{MVDR}}$；在此零互相关前提下进一步最小化均方误差 $\mathbb{E}[|\vec g^H\vec y - S_{\mathrm{air}}|^2]$，利用秩一矩阵求逆引理即得级联标量维纳后置滤波的 **MMSE（多通道维纳）融合权重** $\vec g_{\mathrm{MMSE}}$：
+
+$$\begin{aligned}
+\vec g_{\mathrm{MVDR}}
+&=\frac{\mathbf R_{nn}^{-1}\vec c}
+{\vec c^H\mathbf R_{nn}^{-1}\vec c},\\
+\sigma_{\mathrm{out,MVDR}}^2
+&=\frac{1}{\vec c^H\mathbf R_{nn}^{-1}\vec c},\\
+\gamma_{\mathrm{out}}
+&=\phi_s\bigl(\vec c^H\mathbf R_{nn}^{-1}\vec c\bigr),\\
+\vec g_{\mathrm{MMSE}}
+&=\frac{\gamma_{\mathrm{out}}}{1+\gamma_{\mathrm{out}}}
+\vec g_{\mathrm{MVDR}}.
+\end{aligned}\tag{14-25}$$
+
+式中 $\gamma_{\mathrm{out}} = \mathrm{SINR}_{\mathrm{out}}$ 表示线性输出信干噪比。在对角噪声（气导噪声方差 $\sigma_{\mathrm{air}}^2$、耳内噪声方差 $\sigma_{\mathrm{in}}^2$ 互不相关）下把式(14-25)拆成标量分式，记二次型 $q = \vec c^H\mathbf R_{nn}^{-1}\vec c$，物理分工一目了然：
+
+$$\begin{aligned}
+q
+&=\frac{1}{\sigma_{\mathrm{air}}^2}
++\frac{|H_{\mathrm{occ}}|^2}{\sigma_{\mathrm{in}}^2},\\
+g_{\mathrm{MVDR},2}
+&=\frac{H_{\mathrm{occ}}/\sigma_{\mathrm{in}}^2}{q}.
+\end{aligned}$$
+
+由此可见，**融合后的输出信干噪比精确等于气导单通道信噪比与耳内单通道信噪比的代数和**。同时第 $2$ 路耳内权重 $g_{\mathrm{MVDR},2}$ 自动兼顾了幅度相位均衡与信噪比门控：当低频外麦受强风冲击（$\sigma_{\mathrm{air}}^2 \to \infty$）时，权重趋向 $[0, 1/H_{\mathrm{occ}}^*]^\top$，自动执行闭塞逆均衡还原正常音色；当高频骨导衰减至零（$H_{\mathrm{occ}} \to 0$）时，$\vec g_{\mathrm{MVDR}} \to [1, 0]^\top$，自动切断耳内底噪放大通路。
+
+#### 锚点手算 14-4（上）：250 Hz 强风与 4000 Hz 高频衰减下的跨模态融合
+
+设参考自语音功率归一化为 $\phi_s = 1.0$，我们在低频 $250\ \mathrm{Hz}$ 与高频 $4000\ \mathrm{Hz}$ 两个典型频点上手算跨模态融合权重与信干噪比收益（对应函数 `cross_modal_mvdr_mmse`）：
+
+1. **低频 $250\ \mathrm{Hz}$（强风冲击外麦 + 耳道闭塞增效）**：耳道闭塞效应使内麦自语音幅度翻倍 $H_{\mathrm{occ}} = 2.0$（$\vec c = [1, 2]^\top$）；外麦受强风冲击噪声方差达 $\sigma_{\mathrm{air}}^2 = 4.0$（单外麦 $\mathrm{SINR} = -6.02\ \mathrm{dB}$），密封耳道内底噪方差仅为 $\sigma_{\mathrm{in}}^2 = 0.04$（单内麦 $\mathrm{SINR} = 4/0.04 = 100$，即 $+20.00\ \mathrm{dB}$）。代入式(14-25)：
+
+    $$\begin{aligned}
+    \mathbf R_{nn}^{-1}\vec c
+    &=\begin{bmatrix}1/4.0 & 2.0/0.04\end{bmatrix}^\top
+    =\begin{bmatrix}0.25 & 50\end{bmatrix}^\top,\\
+    \vec c^H\mathbf R_{nn}^{-1}\vec c
+    &=0.25+100=\frac{401}{4},\\
+    \vec g_{\mathrm{MVDR}}(250\ \mathrm{Hz})
+    &=\frac{4}{401}\begin{bmatrix}0.25\\50\end{bmatrix}
+    =\begin{bmatrix}1/401\\200/401\end{bmatrix}.
+    \end{aligned}$$
+
+    检验无失真约束：$\frac{1}{401}\times 1 + \frac{200}{401}\times 2 = 1$。融合器将外麦强风权重压低至 $1/401 \approx 0.00249$，同时给内麦赋予接近 $0.5$ 的均衡增益，输出 $\mathrm{SINR}_{\mathrm{out}} = 100.25$（即 **$+20.01\ \mathrm{dB}$**，相比单外麦提升逾 $26\ \mathrm{dB}$）。
+
+2. **高频 $4000\ \mathrm{Hz}$（风噪消退 + 骨导重度衰减）**：高频骨导衰减至 $H_{\mathrm{occ}} = 0.1$（$-20\ \mathrm{dB}$，$\vec c = [1, 0.1]^\top$）；此时外麦风噪已消退至 $\sigma_{\mathrm{air}}^2 = 0.05$（单外麦 $\mathrm{SINR} = 20$，即 $+13.01\ \mathrm{dB}$），内麦传感器底噪仍为 $\sigma_{\mathrm{in}}^2 = 0.04$（单内麦信噪比 $0.01/0.04 = 0.25$，即 $-6.02\ \mathrm{dB}$；若用朴素逆均衡乘上 $1/0.1 = 10$ 倍，内麦底噪方差将放大 $100$ 倍至 $4.0$，恶化 $20.00\ \mathrm{dB}$）。代入式(14-25)：
+
+    $$\begin{aligned}
+    \mathbf R_{nn}^{-1}\vec c
+    &=\begin{bmatrix}1/0.05 & 0.1/0.04\end{bmatrix}^\top
+    =\begin{bmatrix}20 & 2.5\end{bmatrix}^\top,\\
+    \vec c^H\mathbf R_{nn}^{-1}\vec c
+    &=20+0.25=\frac{81}{4},\\
+    \vec g_{\mathrm{MVDR}}(4000\ \mathrm{Hz})
+    &=\frac{4}{81}\begin{bmatrix}20\\2.5\end{bmatrix}
+    =\begin{bmatrix}80/81\\10/81\end{bmatrix}.
+    \end{aligned}$$
+
+    检验无失真约束：$(80 + 1)/81 = 1$。外置气导支路贡献了 $80/81 \approx 98.8\%$ 的无失真目标分量，输出 $\mathrm{SINR}_{\mathrm{out}} = 20.25$（即 **$+13.06\ \mathrm{dB}$**），避免了单内麦逆均衡的高频底噪放大。
+
+#### 图 83 解读：为何朴素逆均衡把高频底噪放大 20 dB
+
+![图83：可穿戴抗风噪与气导/耳内闭塞跨模态 MVDR 自语音融合](../figures/fig83_own_voice_fusion.png)
+
+图 83 将理论相干模型、跨频段融合增益与本章 16 位 PCM 合成音频的实测误差逐一对应：
+
+- **子图 (a) $1.5\ \mathrm{cm}$ 麦间距下声扩散与湍流风噪相干度**：横轴为线性频率（$0$～$4000\ \mathrm{Hz}$），纵轴为无量纲空间相干系数（取 $c = 343\ \mathrm{m/s}$、$\alpha_{\mathrm{long}} = 0.14$）。蓝色实线（三维各向同性扩散声场）在 $2\ \mathrm{kHz}$ 以下始终高于 $0.95$，而红色虚线（$U_c = 3\ \mathrm{m/s}$ 对流湍流风噪）在数百赫兹内迅速衰减趋零，直观说明微孔径气导差分无法低噪对消风噪。
+- **子图 (b) 跨模态自语音融合输出 SINR 频响**：横轴为对数频率（$100$～$6000\ \mathrm{Hz}$），纵轴为输出信干噪比 $\mathrm{SINR}$（单位：$\mathrm{dB}$）。图中用平滑单调过渡曲线刻画低频强风加闭塞增效向高频风消骨导衰减的演变，黑色圆点标出前文 $250\ \mathrm{Hz}$（$+20.01\ \mathrm{dB}$）与 $4000\ \mathrm{Hz}$（$+13.06\ \mathrm{dB}$）两处精确手算锚点：红色虚线（单气导外麦）在低频跌入负分贝，橙色点划线（单耳内闭塞麦）在高频跌入负分贝，绿色实线（跨模态 MVDR 融合）则在全频带包络两条单模态曲线之上。
+- **子图 (c) 实际 PCM 解码波形片段**：横轴为自稳定窗起点（第 $1600$ 个采样点）算起的相对时间（$0$～$6\ \mathrm{ms}$，共 $96$ 点），纵轴为 16 位 PCM 解码数字幅度。红色虚线（外麦受风第 $0$ 声道）呈大幅低频慢摆，橙色点线（内麦朴素逆均衡）叠满密集的 $5\ \mathrm{kHz}$ 高频底噪毛刺，而绿色点划线（跨模态 MVDR 融合）与深灰实线（干净参考）紧密重合。
+- **子图 (d) 稳窗 $[1600, 30400)$ 实际 PCM 参考均方误差**：横轴依次排列外麦受风、内麦未均衡、朴素逆均衡与 MVDR 融合四组输出，纵轴为相对干净参考的无量纲均方误差 $\mathrm{MSE}$（柱顶数字为 PCM 实测值，黑色短横虚线为解析期望值）。外麦受风实测为 $0.02025$，内麦未均衡虽底噪低但因低频翻倍与高频衰减产生 $0.00945$ 的音色失真误差，朴素逆均衡消除了目标失真却把高频底噪放大百倍使误差回升至 $0.02005$，唯有跨模态 MVDR 融合将总误差压低至 $0.00030$，较单模态方案降低近两个数量级。
+
+### 14.10 真无线耳机通透模式（Hear-Through）与处理延迟梳状滤波
+
+#### 被动耳道漏声与主动电声通路的相干叠加模型
+
+除了把佩戴者的声音清晰发往远端，现代入耳式耳机还必须解决“听清周围世界”的需求——即**主动通透模式（Hear-Through / Transparency Mode）**：用机身外向麦克风拾取外部环境声，经数字滤波器补偿耳塞高频隔声损失后，由耳机微型扬声器（Receiver）实时重放进耳道。
+
+通透模式在声学上最苛刻的硬指标不是频响有多宽，而是**端到端电声处理延迟 $\tau_{\mathrm{proc}}$ 必须压到百微秒量级**。原因在于：外部环境声并非只靠扬声器这一条路进入耳朵——中低频声波还会透过硅胶耳塞壁与耳道皮肤缝隙直接**被动漏入（Passive Acoustic Leakage）**鼓膜。设某频段被动漏声路径幅度增益为 $g_{\mathrm{leak}} \in \mathbb{R}$，主动通透电声路径幅度增益为 $g_{\mathrm{ht}} \in \mathbb{R}$、相对被动漏声的总延迟为 $\tau_{\mathrm{proc}} \ge 0$（含 ADC 抗混叠抽取、DSP 缓冲滤波与 DAC 重建延迟），则鼓膜处的总等效传递函数 $H_{\mathrm{total}}(f)$ 与功率增益 $|H_{\mathrm{total}}(f)|^2$ 为：
+
+$$\begin{aligned}
+H_{\mathrm{total}}(f)
+&=g_{\mathrm{leak}}
++g_{\mathrm{ht}}e^{-\mathrm{j}2\pi f\tau_{\mathrm{proc}}},\\
+|H_{\mathrm{total}}(f)|^2
+&=g_{\mathrm{leak}}^2+g_{\mathrm{ht}}^2\\
+&\quad+2g_{\mathrm{leak}}g_{\mathrm{ht}}
+\cos(2\pi f\tau_{\mathrm{proc}}).
+\end{aligned}\tag{14-26}$$
+
+当两路同极性叠加（$g_{\mathrm{leak}} g_{\mathrm{ht}} > 0$）且幅度接近时，一旦延迟相位满足 $2\pi f_m \tau_{\mathrm{proc}} = (2m + 1)\pi$（即延迟恰好等于半波长的奇数倍），余弦项取 $-1$，主动重放声与被动漏声在鼓膜处反相抵消，形成一连串等间距的**周期性梳状陷波（Comb Notches）**：
+
+$$f_m
+=\frac{2m+1}{2\tau_{\mathrm{proc}}},\qquad
+m=0,1,2,\ldots
+\tag{14-27}$$
+
+式(14-27)直接解释了传统长帧频域处理无法用于通透模式的原因：倘若照搬语音通信常用的 $16\ \mathrm{ms}$ STFT 分帧重叠相加算法（即便只计 $8\ \mathrm{ms}$ 帧移延迟），首个相消陷波在 $f_0 = \frac{1}{2 \times 0.008} = 62.5\ \mathrm{Hz}$ 处便已出现，随后每隔 $125\ \mathrm{Hz}$ 产生一处深度陷波，使外部环境声与佩戴者自语音出现明显的金属桶状染色（Hollow / Metallic Coloration）。
+
+#### 锚点手算 14-4（下）：2 ms 延迟引发的 250 Hz 陷波与图 84 解读
+
+即便把算法压缩到极短帧长，使总延迟降至 $\tau_{\mathrm{proc}} = 2.0\ \mathrm{ms}$（在采样率 $f_s = 16\ \mathrm{kHz}$ 下恰好对应整数 $D = 16000 \times 0.002 = 32$ 个采样点），取等幅漏声与重放 $g_{\mathrm{leak}} = g_{\mathrm{ht}} = 1.0$ 代入式(14-26)～(14-27)手算（对应函数 `hear_through_response`）：
+
+- **梳状陷波序列**：首个相消陷波落在 $f_0 = \frac{1}{2 \times 0.002} = 250\ \mathrm{Hz}$。因为 $250\ \mathrm{Hz}$ 的完整周期为 $4\ \mathrm{ms}$（$64$ 个采样点），$32$ 个采样点的延迟恰好等于半个波长，相移因子为 $e^{-\mathrm{j}\pi} = -1$，总响应 $H_{\mathrm{total}}(250\ \mathrm{Hz}) = 1 - 1 = 0$，基频能量完全相消；随后每隔 $1/\tau_{\mathrm{proc}} = 500\ \mathrm{Hz}$，在 $750, 1250, \ldots, 3750\ \mathrm{Hz}$ 等间距出现深度陷波。
+- **高频相长峰**：在 $f = 4000\ \mathrm{Hz}$ 处，$f\tau_{\mathrm{proc}} = 4000 \times 0.002 = 8$ 个完整整数周期，$e^{-\mathrm{j}16\pi} = +1$，总幅度翻倍至 $H_{\mathrm{total}}(4000\ \mathrm{Hz}) = 2.0$（功率增益 $4.0$，即 $+6.02\ \mathrm{dB}$）。
+- **无染色延迟上限**：若要求把首个陷波 $f_0$ 推高到耳塞被动隔声已占主导、漏声微弱的 $5\ \mathrm{kHz}$ 以上，由 $\frac{1}{2\tau_{\mathrm{proc}}} \ge 5000\ \mathrm{Hz}$ 解得端到端总延迟必须满足 **$\tau_{\mathrm{proc}} \le 0.1\ \mathrm{ms}$**（即 $100\ \mu\mathrm{s}$）。
+
+![图84：TWS 通透模式（Hear-Through）处理延迟与耳道漏声梳状滤波效应](../figures/fig84_hear_through_comb.png)
+
+图 84 从频域传递增益、延迟标度律到 16 位 PCM 实测波形逐项印证了通透模式的梳状滤波机理：
+
+- **子图 (a) 通透模式漏声叠加功率增益频响**：横轴为线性频率（$0$～$4500\ \mathrm{Hz}$），纵轴为两路等幅叠加功率增益 $10\log_{10}|H_{\mathrm{total}}(f)|^2$（单位：$\mathrm{dB}$，深谷绘图下限截断于 $-30\ \mathrm{dB}$）。红色实线（$\tau = 2.0\ \mathrm{ms}$）在深灰竖点线标出的 $250\ \mathrm{Hz}$ 及 $750, 1250, \ldots, 4250\ \mathrm{Hz}$ 处周期性跌入相消深谷，而在 $500, 1000, \ldots, 4000\ \mathrm{Hz}$ 处同相叠加抬升至 $+6.02\ \mathrm{dB}$；蓝色虚线（超低延迟 $\tau = 0.1\ \mathrm{ms}$）则在 $0$～$3.5\ \mathrm{kHz}$ 核心语音频带保持平坦，将首个陷波推远至 $5000\ \mathrm{Hz}$。
+- **子图 (b) 处理延迟 $\tau$ 与首个相消陷波位置**：横轴为端到端处理延迟 $\tau$（单位：$\mathrm{ms}$，对数刻度 $0.05$～$8.0\ \mathrm{ms}$），纵轴为首个相消陷波频率 $f_0$（单位：$\mathrm{Hz}$，对数刻度 $50$～$15000\ \mathrm{Hz}$）。紫色斜率为 $-1$ 的直线绘出反比律 $f_0 = 1/(2\tau)$，黑圆点标出 $(0.1\ \mathrm{ms}, 5000\ \mathrm{Hz})$ 与 $(2.0\ \mathrm{ms}, 250\ \mathrm{Hz})$ 两组设计点，绿色水平虚线标出把首陷波推过 $4\ \mathrm{kHz}$ 语音主频带所需的临界延迟上限 $\tau \le 0.125\ \mathrm{ms}$。
+- **子图 (c) 实际 PCM 波形片段**：横轴为自第 $1632$ 个采样点（即稳窗起点 $1600$ 再右移 $32$ 点延迟进入完全稳态处）算起的相对时间（$0$～$8\ \mathrm{ms}$，共 $128$ 点，恰含 $250\ \mathrm{Hz}$ 的两个完整周期），纵轴为 PCM 解码数字幅度。蓝色实线（`wearable_clean_ref.wav`）呈现 $4\ \mathrm{ms}$ 周期的 $250\ \mathrm{Hz}$ 慢波承载 $4\ \mathrm{kHz}$ 快波；红色虚线（`wearable_hearthrough_comb.wav`）经 $32$ 点延迟叠加后，$250\ \mathrm{Hz}$ 慢波包络完全抵消拉平，仅剩峰值翻倍至 $0.20$ 的 $4\ \mathrm{kHz}$ 等幅振荡。
+- **子图 (d) 稳窗实际 PCM 双频投影峰值幅度**：横轴为 $250\ \mathrm{Hz}$ 与 $4000\ \mathrm{Hz}$ 两个目标频点，纵轴为 $28800$ 点稳窗离散傅里叶正弦投影测得的峰值幅度。蓝色柱显示干净参考在两频点均为 $0.1000$；红色柱显示 $2\ \mathrm{ms}$ 延迟叠加后 $250\ \mathrm{Hz}$ 峰值跌至 $0.0000$，而 $4000\ \mathrm{Hz}$ 峰值精确翻倍至 $0.2000$。
+
+#### 端到端微秒级时域硬件链路与毫瓦级算力预算
+
+这笔延迟账直接决定了可穿戴芯片的**异构双通路音频架构**：
+
+1. **本地超低延迟时域协处理器通路（服务主动降噪 Active Noise Cancellation，ANC 与通透模式）**：不走分帧 FFT，而是以 $96$～$384\ \mathrm{kHz}$ 高采样率配合低阶 $\Sigma$-$\Delta$ 调制转换器逐样本流式运行（单样本周期仅 $2.6$～$10.4\ \mu\mathrm{s}$），采用少量级联二阶 IIR 双二阶节（Biquad）或 $16$～$32$ 抽头短时域 FIR 完成耳道补偿，将模拟麦克风到扬声器的总群延迟严格控制在 $30$～$80\ \mu\mathrm{s}$ 以内。
+2. **分帧频域 DSP / NPU 通路（服务上行通话降噪、跨模态融合与空间渲染）**：对端通话听不到佩戴者本人的被动耳道漏声，容许 $10$～$20\ \mathrm{ms}$ 算法缓冲，因此可运行 $16\ \mathrm{kHz}$ 采样率、$N = 256$ 点窗（$16\ \mathrm{ms}$）、$H = 128$ 点帧移（稳定调用周期 $H/f_s = 8\ \mathrm{ms}$）的加权重叠相加（Weighted Overlap-Add，WOLA）时频链路，在 $129$ 个非负频点上执行波束形成与式(14-25)的跨模态融合。受限于耳机几十毫安时的微型纽扣电池，内存与功耗仍须精打细算：以 $M = 3$ 通道（双外麦 + 单内麦）为例，$129$ 个频点维护单精度复数 `complex64`（每复数 $8$ 字节）协方差矩阵仅需 $129 \times 9 \times 8 = 9288$ 字节，全部常驻片上紧耦合 SRAM 即可避免高功耗的外部访存（见 [E14-15](#e14-15)）。
+
+### 14.11 可复算代码入口、合成音频对照与练习（E14-01～E14-18）
+
+#### 本章代码结构与 6 份合成 WAV 对照清单
+
+本章所有公式与锚点算例均由 `codes/chapters/ch14/` 下的纯 NumPy 数值核一一实现：[`spatial_parametric.py`](../codes/chapters/ch14/core/spatial_parametric.py) 实现正四面体 A/B-format 编码、三维欧拉旋转及声强扩散度分析；[`binaural_matching.py`](../codes/chapters/ch14/core/binaural_matching.py) 实现 BSM-LS、单调交替相位投影 BSM-MagLS 与参考混合耳间相干度计算；[`wearable_fusion.py`](../codes/chapters/ch14/core/wearable_fusion.py) 实现跨模态 MVDR/MMSE 融合、通透模式梳状频响与 Corcos 风噪相干模型；[`ambisonic_sofa_rendering.py`](../codes/chapters/ch14/core/ambisonic_sofa_rendering.py) 实现一阶扬声器能量矢量解码、`SOFA` 双耳几何审计与头部追踪延迟核算。
+
+配套音频生成器 [`generate_wearable_audio.py`](../codes/chapters/ch14/examples/generate_wearable_audio.py) 在 `codes/chapters/ch14/wearable_audio/` 下生成 $6$ 份采样率 $16\ \mathrm{kHz}$、长度 $32000$ 点（$2.0\ \mathrm{s}$）的确定性数学合成 PCM16 音频及校验清单 [`MANIFEST.json`](../codes/chapters/ch14/wearable_audio/MANIFEST.json)。全组文件共享导出增益 $1.0$，首尾各设 $1600$ 点升余弦平滑淡入淡出，中间 $[1600, 30400)$ 共 $28800$ 点（$1.8\ \mathrm{s}$）稳定窗恰好容纳所有目标与干扰正弦波的整数个周期。
+
+这组合成样本专用于精确核验跨模态子带权重、16 位量化误差与延迟相消算术，不替代自然语音、真实边界层湍流或实测耳道传递函数；因包含高频纯音，**佩戴耳机试听前请先调低设备音量**：
+
+- [干净双音参考 `wearable_clean_ref.wav`](../codes/chapters/ch14/wearable_audio/wearable_clean_ref.wav)（单声道）：由 $250\ \mathrm{Hz}$ 低音与 $4000\ \mathrm{Hz}$ 高音各按峰值 $0.10$ 叠加而成，每音稳窗均方功率为 $0.005$，总参考均方功率为 $0.010$，听感低高频均衡清晰。
+- [外置双气导麦受风观测 `wearable_air_wind_2ch.wav`](../codes/chapters/ch14/wearable_audio/wearable_air_wind_2ch.wav)（双声道）：模拟微孔径双外麦遭遇空间互不相关的强低频风噪——左声道（第 $0$ 路）叠加峰值 $0.20$ 的 $125\ \mathrm{Hz}$ 低频干扰（均方 $0.020$）及 $3500\ \mathrm{Hz}$ 微弱正交环境音（均方 $0.00025$），右声道（第 $1$ 路）叠加正交的 $375\ \mathrm{Hz}$ 低频干扰与 $4500\ \mathrm{Hz}$ 环境音；稳窗跨麦风噪相关严格为零，听感被低频轰鸣掩蔽（相对参考 $\mathrm{MSE} \approx 0.02025$）。
+- [耳内闭塞原始观测 `wearable_inear_occluded.wav`](../codes/chapters/ch14/wearable_audio/wearable_inear_occluded.wav)（单声道）：模拟封闭耳道拾音——$250\ \mathrm{Hz}$ 目标获 $2.0$ 倍闭塞增强（峰值 $0.20$），$4000\ \mathrm{Hz}$ 目标衰减至 $0.1$ 倍（峰值 $0.01$），并叠加 $175\ \mathrm{Hz}$ 与 $5000\ \mathrm{Hz}$ 各峰值 $0.02$ 的微弱传感器底噪（各均方 $0.0002$）；听感无风噪但低频偏闷、高频微弱（音色失真加底噪总 $\mathrm{MSE} \approx 0.00945$）。
+- [单内麦朴素逆均衡 `wearable_inear_equalized.wav`](../codes/chapters/ch14/wearable_audio/wearable_inear_equalized.wav)（单声道）：对耳内闭塞信号直接乘子带逆增益（低频 $\times 0.5$、高频 $\times 10.0$），目标双音虽恢复为峰值 $0.10$，但 $5000\ \mathrm{Hz}$ 传感器底噪幅度被同步放大 $10$ 倍至 $0.20$（底噪功率放大 $100$ 倍即 $+20\ \mathrm{dB}$ 至 $0.020$），试听时伴随明显的高频底噪（总 $\mathrm{MSE} \approx 0.02005$）。
+- [跨模态分频 MVDR 融合 `wearable_fused_output.wav`](../codes/chapters/ch14/wearable_audio/wearable_fused_output.wav)（单声道）：将外麦第 $0$ 声道与耳内闭塞声道在低频带按 $[1/401, 200/401]^\top$、在高频带按 $[80/81, 10/81]^\top$ 无失真融合，同时抑制低频强风与高频底噪放大，听感干净还原参考双音，稳窗实测 $\mathrm{MSE}$ 降至 $0.000297$。
+- [通透模式 2 ms 梳状滤波 `wearable_hearthrough_comb.wav`](../codes/chapters/ch14/wearable_audio/wearable_hearthrough_comb.wav)（单声道）：将干净参考与延迟 $32$ 个采样点（$2.0\ \mathrm{ms}$）的因果重放支路等幅相加，试听可见 $250\ \mathrm{Hz}$ 低音因半波长反相完全消失，仅剩幅度翻倍至 $0.20$ 的 $4\ \mathrm{kHz}$ 高频单音（稳态解析 $\mathrm{MSE} = 0.010$）。
+
+在仓库根目录下运行以下命令，即可生成或以严格只读模式核验音频资产、重绘本章四张插图，或单独执行任意练习题：
+
+```bash
+.venv/bin/python -m codes.chapters.ch14.examples.generate_wearable_audio
+.venv/bin/python -m codes.chapters.ch14.examples.generate_wearable_audio --check
+.venv/bin/python scripts/make_wearable_figures.py
+.venv/bin/python -m codes.chapters.ch14.chapter14_exercises --exercise E14-07
+```
+
+下面给出 `E14-01`～`E14-18` 共 $18$ 道配套练习的题目、完整复算步骤与边界说明。在评分对账中，我们将理论协方差闭式期望（解析层）、导出前的 `float64` 分量分解（浮点层）与重读 16 位整型 WAV 后的无损平方和（PCM 层，按满量程 $32768$ 对齐）分栏记录：
+
+$$\mathrm{NMSE}_{\mathrm{PCM}}
+=\frac{\sum_{n=1600}^{30399}\bigl(Y_{\mathrm{int}}[n]
+-D_{\mathrm{int}}[n]\bigr)^2}
+{\sum_{n=1600}^{30399}D_{\mathrm{int}}[n]^2}.
+\tag{14-28}$$
+
+<a id="e14-01"></a>
+
+#### E14-01：正四面体 A-format 到 SN3D B-format 编码矩阵与通道排序
+
+**题目。** 验证式(14-3)正四面体四胶囊方向矩阵 $\mathbf U$ 满足 $\vec 1_4^\top\mathbf U = \vec 0^\top$ 与 $\mathbf U^\top\mathbf U = \frac{4}{3}\mathbf I_3$。取标准心形胶囊 $\alpha = 0.5$，手算水平面 $\theta = 45^\circ$、$\phi = 0^\circ$ 单位平面波产生的四路 A-format 响应，并用式(14-5)解码为 `WXYZ` 与 `ACN` 两种通道序的 SN3D B-format 向量。
+
+**解答。** $\mathbf U$ 每列均由两个 $+1/\sqrt{3}$ 与两个 $-1/\sqrt{3}$ 组成，列元素和为零，自身平方和为 $4 \times (1/3) = 4/3$，不同列内积为 $(1 - 1 - 1 + 1)/3 = 0$，故 $\mathbf U^\top\mathbf U = \frac{4}{3}\mathbf I_3$。当 $\theta = 45^\circ$、$\phi = 0^\circ$ 时，源单位向量为 $[1/\sqrt{2}, 1/\sqrt{2}, 0]^\top$。代入式(14-4)（$\alpha = 0.5$）：
+
+- 胶囊 1（FLU）与胶囊 4（BRU）中 $u_{q,x} + u_{q,y}$ 分别为 $+2/\sqrt{3}$ 与 $-2/\sqrt{3}$，故 $a_1 = \frac{1}{2} + \frac{1}{\sqrt{6}} \approx 0.908248$，$a_4 = \frac{1}{2} - \frac{1}{\sqrt{6}} \approx 0.091752$；
+- 胶囊 2（FRD）与胶囊 3（BLD）中 $+1/\sqrt{3}$ 与 $-1/\sqrt{3}$ 正负抵消，故 $a_2 = a_3 = 0.5$。
+
+左乘式(14-5)编码矩阵（$g_W = 1/2$、$g_1 = \sqrt{3}/2$）：全向项 $W = \frac{1}{2}(a_1 + a_2 + a_3 + a_4) = 1$，方向项由 $\frac{\sqrt{3}}{2}\cdot\frac{2}{\sqrt{6}}$ 化简得 $X = 1/\sqrt{2}$、$Y = 1/\sqrt{2}$、$Z = 0$。因此 `WXYZ` 序输出为 $[1, 1/\sqrt{2}, 1/\sqrt{2}, 0]^\top$，置换为 `ACN` 序（$[W, Y, Z, X]^\top$）即为 $[1, 1/\sqrt{2}, 0, 1/\sqrt{2}]^\top$。
+
+<a id="e14-02"></a>
+
+#### E14-02：开球四面体阵列的模态零陷频率 $\kappa R = \pi$ 与空间混叠边界
+
+**题目。** 设开球四面体全向阵列的球面半径为 $R = 1.5\ \mathrm{cm}$，声速 $c = 343\ \mathrm{m/s}$。求：（1）零阶径向权重 $b_0(\kappa R) = 0$ 对应的首个禁频 $f_{\mathrm{null}}$；（2）经验一阶无混叠上限 $\kappa R = 1$ 对应的频率 $f_{\mathrm{alias}}$；（3）在低频 $f = 100\ \mathrm{Hz}$ 处一阶偶极模态幅度 $|b_1(\kappa R)|$ 及径向逆均衡所需的增益分贝数。
+
+**解答。** （1）令 $\kappa R = 2\pi f R / c = \pi$，解得禁频 $f_{\mathrm{null}} = c / (2R) = 343 / 0.03$，约为 $11433.33\ \mathrm{Hz}$，此处 $b_0(\pi) = 0$，开球全向和彻底丢失零阶声压。（2）令 $\kappa R = 1$，由 $f_{\mathrm{alias}} = c / (2\pi R)$ 算出约 $3639.34\ \mathrm{Hz}$，高于该频率后高阶球谐分量将混叠污染一阶估计。（3）在 $f = 100\ \mathrm{Hz}$ 处，无量纲积 $\kappa R = 3\pi / 343 \approx 0.0274775$，代入式(14-6)得 $|b_1| \approx 0.0091585$，逆均衡增益高达 $-20\log_{10}(0.0091585) \approx +40.76\ \mathrm{dB}$，说明超小孔径球阵在低频必须限制径向均衡最大增益以防自噪声淹没信号。
+
+<a id="e14-03"></a>
+
+#### E14-03：三维声场旋转与佩戴者头部追踪逆旋转的区别
+
+**题目。** 世界系中有两个单位源：源 A 在正前 $+x$（$\vec b_A = [1, 1, 0, 0]^\top$），源 B 在正左 $+y$（$\vec b_B = [1, 0, 1, 0]^\top$）。对比：（1）将声场主动偏航旋转 $\alpha = +90^\circ$ 后源 A 的新 FOA 向量；（2）声场静止而佩戴者头部向左偏航 $\alpha = +90^\circ$ 后，源 A 与源 B 在头部坐标系下的 FOA 向量；（3）验证先偏航 $+90^\circ$ 再俯仰 $+90^\circ$ 与交换次序后的矩阵差非零。
+
+**解答。** 代入式(14-7)中 $\alpha = \pi/2$ 的偏航阵 $\mathbf R_z(\pi/2)$（把 $+x$ 映为 $+y$、把 $+y$ 映为 $-x$）。（1）声场主动旋转左乘 $\mathbf R_z(\pi/2)$，源 A 变为 $[1, 0, 1, 0]^\top$（移至 $+y$）。（2）佩戴者头部向左转 $+90^\circ$ 时按式(14-9)左乘转置 $\mathbf R_z^\top(\pi/2)$：世界 $+x$ 处的源 A 变为 $[1, 0, -1, 0]^\top$（落在头部正右方 $-y_{\mathrm{head}}$），世界 $+y$ 处的源 B 变为 $[1, 1, 0, 0]^\top$（正对鼻尖 $+x_{\mathrm{head}}$），与物理体验一致。（3）直接计算乘积 $\mathbf R_z(\pi/2)\mathbf R_y(\pi/2)$ 与交换次序后的 $\mathbf R_y(\pi/2)\mathbf R_z(\pi/2)$ 之差，差矩阵含 $6$ 个幅值为 $1$ 的非零元素，其 Frobenius 范数为 $\sqrt{6} \approx 2.4495 > 0$，证得三维有限欧拉旋转不可交换。
+
+<a id="e14-04"></a>
+
+#### E14-04：有功声强、无功声强与扩散度 $\psi \in [0, 1]$ 的边界验证
+
+**题目。** 在归一化媒质 $\rho_0 = 1$、$c = 1$ 下，分别计算下列三种波场的 $\vec I_a, \vec I_r, E$ 与 $\psi$：（1）单列 $+x$ 行波 $p = 1$、$\vec u = [1, 0, 0]^\top$；（2）两列反向等幅平面波在原点波腹叠加 $p = 2$、$\vec u = [0, 0, 0]^\top$；（3）纯无功正交场 $p = 1$、$\vec u = [\mathrm{j}, 0, 0]^\top$。
+
+**解答。** 代入式(14-11)～(14-12)：（1）行波：$\vec I_a = [0.5, 0, 0]^\top$，$\vec I_r = \vec 0$，$E = 0.5$，$\psi = 0$。（2）驻波声压波腹：$\vec I_a = \vec 0$，$\vec I_r = \vec 0$，$E = \frac{4}{4} + 0 = 1.0$，$\psi = 1.0$，净有功能流为零故无明确定义的主波达方向（`valid_direction = False`）。（3）纯无功正交场：$p^*\vec u = [\mathrm{j}, 0, 0]^\top$，实部 $\vec I_a = \vec 0$，虚部 $\vec I_r = [0.5, 0, 0]^\top$，$E = \frac{1}{4} + \frac{1}{4} = 0.5$，$\psi = 1.0$，能量仅做局部吞吐而不向外净辐射。
+
+<a id="e14-05"></a>
+
+#### E14-05：同频双平面波干涉的幻象声像与扩散度相位依赖
+
+**题目。** 设沿 $+x$ 与 $+y$ 传播的两列等幅平面波相对相位差为 $\Delta\phi$（即 $p = 1 + e^{\mathrm{j}\Delta\phi}$、$\vec u = [1, e^{\mathrm{j}\Delta\phi}, 0]^\top$，$\rho_0 = c = 1$）。推导 $E(\Delta\phi)$、$\|\vec I_a(\Delta\phi)\|_2$ 与 $\psi(\Delta\phi)$ 的解析闭式，并复算 $0^\circ, 60^\circ, 90^\circ, 180^\circ$ 四组相位差下的精确值。
+
+**解答。** 利用恒等式 $|1 + e^{\mathrm{j}\Delta\phi}|^2 = 2 + 2\cos\Delta\phi$ 及 $\|\vec u\|_2^2 = 2$，整理得：
+
+$$\begin{aligned}
+E(\Delta\phi)
+&=1+\frac{1}{2}\cos\Delta\phi,\\
+\vec I_a(\Delta\phi)
+&=\frac{1+\cos\Delta\phi}{2}
+\begin{bmatrix}1 & 1 & 0\end{bmatrix}^\top,\\
+\|\vec I_a(\Delta\phi)\|_2
+&=\frac{\sqrt{2}}{2}(1+\cos\Delta\phi),\\
+\psi(\Delta\phi)
+&=1-\frac{\sqrt{2}(1+\cos\Delta\phi)}{2+\cos\Delta\phi}.
+\end{aligned}$$
+
+当 $\Delta\phi \in [0, \pi)$ 时，能流恒指向 $45^\circ$ 幻象方向。逐点代入：
+
+- $0^\circ$：$E = 1.5$，$\|\vec I_a\|_2 = \sqrt{2}$，$\psi = 1 - 2\sqrt{2}/3 \approx 0.057191$；
+- $60^\circ$：$E = 1.25$，$\|\vec I_a\|_2 = 3\sqrt{2}/4 \approx 1.060660$，$\psi = 1 - 3\sqrt{2}/5 \approx 0.151472$；
+- $90^\circ$：$E = 1.0$，$\|\vec I_a\|_2 = 1/\sqrt{2}$，$\psi = 1 - 1/\sqrt{2} \approx 0.292893$；
+- $180^\circ$：$E = 0.5$，$\|\vec I_a\|_2 = 0$，$\psi = 1.0$。
+
+<a id="e14-06"></a>
+
+#### E14-06：DirAC 参数化空间音频主分量与扩散分量能量分解
+
+**题目。** （1）对 $\Delta\phi = 90^\circ$ 的双正交波（$E = 1.0$、$\psi = 1 - 1/\sqrt{2}$），求 DirAC 解码器分给直达定向流 $(1 - \psi)E$ 与扩散环境流 $\psi E$ 的能量；（2）设有两个等功率、跨帧四相正交（相位依次取 $0^\circ, 90^\circ, 180^\circ, 270^\circ$）的反向声源分别沿 $+x$ 与 $-x$ 入射，求四快拍统计平均下的 $\mathbb{E}[E]$、$\mathbb{E}[\vec I_a]$ 与 $\psi$，说明该结果揭示的模型边界。
+
+**解答。** 分两步核对：
+
+- （1）直达流能量为 $(1 - \psi)E = \frac{1}{\sqrt{2}} \approx 0.707107$，扩散流能量为 $\psi E = 1 - \frac{1}{\sqrt{2}} \approx 0.292893$，两者之和精确守恒为 $1.0$。
+- （2）反向双波在第 $k$ 个快拍有 $p_k = 1 + e^{\mathrm{j}\phi_k}$、$u_{x,k} = 1 - e^{\mathrm{j}\phi_k}$。四快拍平均下交叉项抵消，$\mathbb{E}[|p|^2] = 2$、$\mathbb{E}[|u_x|^2] = 2$，故 $\mathbb{E}[E] = 1.0$，而乘积 $p_k^* u_{x,k} = -2\mathrm{j}\sin\phi_k$ 的实部恒为零，故 $\mathbb{E}[\vec I_a] = \vec 0$、$\psi = 1.0$。此时单波 DirAC 会将全部能量路由至去相关扩散器，丢失两侧说话人的点声像；多说话人同频重叠场景需改用高阶 Ambisonics（HOA）或子空间多源参数化方法（如空间重分配或 COMEDIE）。
+
+<a id="e14-07"></a>
+
+#### E14-07：双麦可穿戴阵列高频 BSM-LS 复数相位冲突与正横零陷
+
+**题目。** 对式(14-19)的双麦三方向传递矩阵 $\mathbf H$ 与目标耳响应 $\vec p_e = [1, -1, 1]^\top$，在 $\mathbf W_\Omega = \mathbf I_3$、$\lambda = 0$ 下复算 BSM-LS 权重 $\vec w_{\mathrm{LS}}$、三方向合成复响应 $\hat{\vec p}_{\mathrm{LS}}$、平均复均方误差与平均幅度均方误差。
+
+**解答。** 由 §14.6 手算得 $(\mathbf H\mathbf H^H)^{-1}$ 对角元为 $3/8$、非对角元为 $-1/8$，右端项 $\mathbf H\vec p_e^* = [1, -1]^\top$，故 $\vec w_{\mathrm{LS}} = [0.5, -0.5]^\top$。三方向合成复响应依次为 $(1 - \mathrm{j})/2$、$0$ 与 $(1 + \mathrm{j})/2$，正横 $0^\circ$ 方向幅度严格跌落至 $0$。三方向复误差模平方依次为 $0.5, 1.0, 0.5$，算术平均复均方误差为 $2/3 \approx 0.666667$；归一化幅度均方误差为 $\frac{4 - 2\sqrt{2}}{3} \approx 0.390524$。
+
+<a id="e14-08"></a>
+
+#### E14-08：BSM-MagLS 交替相位投影一步精确恢复与目标单调性验证
+
+**题目。** （1）在 [E14-07](#e14-07) 同一阵列上，从零相位初值出发执行 $1$ 步 BSM-MagLS 更新，验证其输出幅度与目标幅度完全一致；（2）在半径 $2.5\ \mathrm{cm}$ 四麦圆阵、$4\ \mathrm{kHz}$、$12$ 个等间隔水平方位角与正则化 $\lambda = 0.05$ 下运行 $25$ 轮 BSM-MagLS，核对目标序列单调不增且加权幅度误差显著低于 BSM-LS。
+
+**解答。** （1）零初相下右端项为 $\mathbf H[1, 1, 1]^\top = [3, 1]^\top$，左乘 $(\mathbf H\mathbf H^H)^{-1}$ 得 $\vec w^{(1)} = [1, 0]^\top$，合成响应 $[1, 1, 1]^\top$，幅度均方误差一步归零。（2）调用 `chapter14_exercises` 的 `E14-08` 条目：四麦 $12$ 方向算例中 BSM-LS 的平均幅度均方误差约为 $0.2441$，而 $25$ 轮 BSM-MagLS 将其压低至约 $0.0005$（最大方向幅度偏差仅约 $0.34\ \mathrm{dB}$），且全部相邻迭代步满足 $J^{(t+1)} - J^{(t)} \le 0$。
+
+<a id="e14-09"></a>
+
+#### E14-09：BSM 方向加权矩阵与 Tikhonov 正则化权衡
+
+**题目。** 在式(14-19)模型中，若将方向权重改为优先保护正前方正横 $0^\circ$ 的 $\mathbf W_\Omega = \operatorname{diag}(1, 4, 1)$，分别在 $\lambda = 0$ 与 $\lambda = 2.0$ 下求 BSM-LS 权重 $\vec w$、权重范数平方 $\|\vec w\|_2^2$（白噪声放大指标）及正前方合成幅度 $|\hat p_2|$。
+
+**解答。** 当 $\mathbf W_\Omega = \operatorname{diag}(1, 4, 1)$ 时：
+
+$$\begin{aligned}
+\mathbf H\mathbf W_\Omega\mathbf H^H
+&=\begin{bmatrix}6 & 4\\4 & 6\end{bmatrix},\\
+\mathbf H\mathbf W_\Omega\vec p_e^*
+&=\begin{bmatrix}-2 & -4\end{bmatrix}^\top.
+\end{aligned}$$
+
+（1）$\lambda = 0$ 时：行列式为 $36 - 16 = 20$，求逆相乘解得 $\vec w = [0.2, -0.8]^\top$，正前方合成响应 $\hat p_2 = 0.2 - 0.8 = -0.6$（幅度回升至 $0.6$，消除了等权时的零陷），$\|\vec w\|_2^2 = 0.04 + 0.64 = 0.68$。（2）$\lambda = 2.0$ 时：正规矩阵对角元增至 $8$（行列式 $48$），解得 $\vec w = [0, -0.5]^\top$，$\|\vec w\|_2^2$ 降至 $0.25$（白噪声放大减小 $4.35\ \mathrm{dB}$），正前方幅度调整为 $0.5$。
+
+<a id="e14-10"></a>
+
+#### E14-10：单目标双耳 MVDR 背景噪声耳间相干度坍缩证明与复算
+
+**题目。** 对任意阵元数 $M \ge 2$、满秩噪声协方差 $\mathbf R_{nn} \succ \mathbf 0$ 及非零单目标导向矢量 $\vec a$（满足 $a_{r_{\mathrm{L}}} \ne 0$、$a_{r_{\mathrm{R}}} \ne 0$），严格证明式(14-20)单目标 BMVDR 在 $\beta = 0$ 时的输出背景噪声耳间相干度恒等于 $1$，并复算 $M = 2$、$\gamma_{\mathrm{in}} = 0.2$ 时的输出噪声方差与 SNR 增益。
+
+**解答。** 记标量 $q_a = \vec a^H\mathbf R_{nn}^{-1}\vec a$，令公共向量为 $\vec q = q_a^{-1}\mathbf R_{nn}^{-1}\vec a$。因 $\mathbf R_{nn} \succ \mathbf 0$ 且 $\vec a \ne \vec 0$，二次型 $\sigma_q^2 = \vec q^H\mathbf R_{nn}\vec q > 0$。式(14-20)给出 $\vec w_{\mathrm{L}} = a_{r_{\mathrm{L}}}^*\vec q$、$\vec w_{\mathrm{R}} = a_{r_{\mathrm{R}}}^*\vec q$。代入式(14-22)分子分母：
+
+$$\begin{aligned}
+\mathrm{IC}_{\mathrm{out}}(0)
+&=\frac{\bigl|a_{r_{\mathrm{L}}}a_{r_{\mathrm{R}}}^*\,
+\vec q^H\mathbf R_{nn}\vec q\bigr|}
+{\sqrt{\bigl(|a_{r_{\mathrm{L}}}|^2\sigma_q^2\bigr)
+\bigl(|a_{r_{\mathrm{R}}}|^2\sigma_q^2\bigr)}}\\
+&=\frac{|a_{r_{\mathrm{L}}}|\,|a_{r_{\mathrm{R}}}|\sigma_q^2}
+{|a_{r_{\mathrm{L}}}|\,|a_{r_{\mathrm{R}}}|\sigma_q^2}
+=1.
+\end{aligned}$$
+
+代入 $M = 2$、$\vec a = [1, 1]^\top$、$\gamma_{\mathrm{in}} = 0.2$：两耳权重 $\vec w_{\mathrm{L}} = \vec w_{\mathrm{R}}$ 均为 $[0.5, 0.5]^\top$，输出噪声方差 $\sigma_{\mathrm{out}}^2 = 0.6$，单耳信噪比增益为 $10\log_{10}(1/0.6) \approx +2.2185\ \mathrm{dB}$，$\mathrm{IC}_{\mathrm{out}}(0) = 1.00000$。
+
+<a id="e14-11"></a>
+
+#### E14-11：参考麦克风混合系数 $\beta$ 对耳间相干度与降噪量的精细折中
+
+**题目。** 在锚点手算 14-3 的对称双耳模型（$\gamma_{\mathrm{in}} = 0.2$）中，若感知设计规范要求输出背景噪声耳间相干度不得高于 $\mathrm{IC}_{\max} = 0.5$，求所需最小参考混合系数 $\beta_{\min}$ 及此时仍可保留的单耳信噪比增益。
+
+**解答。** 令解析通式 $(3 - 2\beta^2)/(3 + 2\beta^2) \le 1/2$，去分母得 $6 - 4\beta^2 \le 3 + 2\beta^2$，即 $6\beta^2 \ge 3$，解得 $\beta \ge 1/\sqrt{2} \approx 0.707107$。取临界值 $\beta_{\min} = 1/\sqrt{2}$ 代入方差公式得 $\sigma_{\mathrm{out}}^2 = 0.6 + 0.4 \times 0.5 = 0.8$，此时目标双耳线索完全无损，背景耳间相干度受控于 $0.50000$，同时仍保留 $10\log_{10}(1 / 0.8) \approx +0.9691\ \mathrm{dB}$ 的双耳协同降噪增益。
+
+<a id="e14-12"></a>
+
+#### E14-12：Corcos 湍流风噪相干长度与声学扩散场相干度计算
+
+**题目。** 给定耳机双外麦间距 $d = 1.5\ \mathrm{cm}$、微风对流速度 $U_c = 3.0\ \mathrm{m/s}$、流向衰减系数 $\alpha_{\mathrm{long}} = 0.14$、声速 $c = 343\ \mathrm{m/s}$，计算 $f \in \{100, 250, 500, 1000, 2000\}\ \mathrm{Hz}$ 五个频点上的风噪相干度 $\gamma_{\mathrm{wind}}(f)$ 与声扩散相干度 $\gamma_{\mathrm{acoustic}}(f)$。
+
+**解答。** 按式(14-23)逐点代入（注意 $\frac{2\pi d}{U_c} = 0.01\pi\ \mathrm{s}$）：
+
+- $100\ \mathrm{Hz}$：$\gamma_{\mathrm{wind}} = e^{-0.14\pi} \approx 0.64415$，$\gamma_{\mathrm{acoustic}} \approx 0.99987$；
+- $250\ \mathrm{Hz}$：$\gamma_{\mathrm{wind}} = e^{-0.35\pi} \approx 0.33302$，$\gamma_{\mathrm{acoustic}} \approx 0.99921$；
+- $500\ \mathrm{Hz}$：$\gamma_{\mathrm{wind}} = e^{-0.70\pi} \approx 0.11090$，$\gamma_{\mathrm{acoustic}} \approx 0.99686$；
+- $1000\ \mathrm{Hz}$：$\gamma_{\mathrm{wind}} = e^{-1.40\pi} \approx 0.01230$，$\gamma_{\mathrm{acoustic}} \approx 0.98746$；
+- $2000\ \mathrm{Hz}$：$\gamma_{\mathrm{wind}} = e^{-2.80\pi} \approx 0.00015$，$\gamma_{\mathrm{acoustic}} \approx 0.95042$。
+
+在 $500\ \mathrm{Hz}$ 以上风噪已基本退化为对角白噪声，而环境声直至 $2\ \mathrm{kHz}$ 仍高于 $0.95$，跨麦相干度差值成为区分风噪与远场声的可靠物理判据。
+
+<a id="e14-13"></a>
+
+#### E14-13：气导与耳道闭塞内麦跨模态 MVDR 及 MMSE 融合权重推导
+
+**题目。** 在锚点手算 14-4 的低频 $250\ \mathrm{Hz}$（$H_{\mathrm{occ}} = 2.0$，$\mathbf R_{nn} = \operatorname{diag}(4.0, 0.04)$）与高频 $4000\ \mathrm{Hz}$（$H_{\mathrm{occ}} = 0.1$，$\mathbf R_{nn} = \operatorname{diag}(0.05, 0.04)$）两组参数及 $\phi_s = 1$ 下，继续求出式(14-25)的维纳后置增益、$\vec g_{\mathrm{MMSE}}$ 与最小均方误差 $\mathrm{MSE}_{\mathrm{MMSE}}$，并核对单内麦朴素逆均衡在 $4000\ \mathrm{Hz}$ 的噪声放大倍数。
+
+**解答。** （1）$250\ \mathrm{Hz}$：已知 $\mathrm{SINR}_{\mathrm{out}} = 100.25 = 401/4$，故维纳标量增益为 $401/405 \approx 0.990123$，$\vec g_{\mathrm{MMSE}} = [1/405, 200/405]^\top$，总均方误差为 $\mathrm{MSE}_{\mathrm{MMSE}} = 4/405 \approx 0.009877$。（2）$4000\ \mathrm{Hz}$：已知 $\mathrm{SINR}_{\mathrm{out}} = 20.25 = 81/4$，维纳标量增益为 $81/85 \approx 0.952941$，$\vec g_{\mathrm{MMSE}} = [80/85, 10/85]^\top$，总均方误差为 $\mathrm{MSE}_{\mathrm{MMSE}} = 4/85 \approx 0.047059$。（3）单内麦朴素逆均衡在 $4000\ \mathrm{Hz}$ 乘增益 $1/0.1 = 10$，将传感器底噪方差从 $0.04$ 放大至 $10^2 \times 0.04 = 4.0$（功率恶化 $10\log_{10}(100) = +20.00\ \mathrm{dB}$），是跨模态 MVDR 残余噪声方差（$4/81 \approx 0.04938$）的 $81$ 倍。
+
+<a id="e14-14"></a>
+
+#### E14-14：TWS 通透模式处理延迟与耳道漏声梳状陷波设计核算
+
+**题目。** 设通透模式漏声与电声增益均为 $1.0$。（1）列出 $\tau_{\mathrm{proc}} = 2.0\ \mathrm{ms}$ 时 $[0, 4500]\ \mathrm{Hz}$ 内的全部相消陷波频率；（2）若工程规范要求在 $f \le 2000\ \mathrm{Hz}$ 范围内电声通路相对漏声通路的相位滞后不超过 $30^\circ$（$\pi/6\ \mathrm{rad}$），求允许的最大端到端延迟 $\tau_{\max}$。
+
+**解答。** （1）由式(14-27) $f_m = 250(2m + 1)\ \mathrm{Hz}$，在 $4500\ \mathrm{Hz}$ 以内取 $m = 0, \ldots, 8$，共 $9$ 个陷波，依次为 $250, 750, 1250, 1750\ \mathrm{Hz}$ 以及 $2250, 2750, 3250, 3750, 4250\ \mathrm{Hz}$。（2）相位滞后约束 $2\pi f\tau_{\mathrm{proc}} \le \pi/6$ 在最高频 $f = 2000\ \mathrm{Hz}$ 最紧，由 $\tau_{\max} = 1/(12 \times 2000)\ \mathrm{s}$ 解得上限约为 $41.67\ \mu\mathrm{s}$（此时 $2000\ \mathrm{Hz}$ 处两路叠加幅度为 $2\cos 15^\circ \approx 1.9319$，避免相消凹陷）。
+
+<a id="e14-15"></a>
+
+#### E14-15：眼镜与 TWS 超低功耗算力、内存与帧延迟预算核算
+
+**题目。** 对比同一颗可穿戴音频 SoC 上的两条流水线：（1）上行通话三通道（双外麦 + 单内麦）WOLA 跨模态融合链路，采样率 $f_s = 16\ \mathrm{kHz}$、FFT 窗长 $N = 256$、跳长 $H = 128$，计算分析窗时长、稳定帧调用周期、非负频点数及保存一套 `complex64` 噪声协方差所需的字节数；（2）本地通透模式单耳 $16$ 抽头时域 FIR 滤波器运行在 $96\ \mathrm{kHz}$ 高采样率下，计算单样本采样周期与每秒乘加次数（MAC/s）。
+
+**解答。** 按两条通路分别核算：
+
+- （1）上行链路分析窗时长为 $256 / 16000 = 16.0\ \mathrm{ms}$，新增音频帧调用周期为 $H / f_s = 128 / 16000 = 8.0\ \mathrm{ms}$（按[第 10 章 §10.4.2 实时因子口径](10_engineering-practice.md#sec-10-4-2) 式(10-12)，实时因子分母必须取新增源音频时长 $8.0\ \mathrm{ms}$ 而非分析窗长 $16.0\ \mathrm{ms}$）。非负频点数为 $256/2 + 1 = 129$，每频点 $3 \times 3$ 矩阵含 $9$ 个 `complex64` 元素（每元素 $8$ 字节），共占 $129 \times 9 \times 8 = 9288$ 字节（若用 `complex128` 则翻倍为 $18576$ 字节）。
+- （2）通透时域链路单样本周期为 $10^6 / 96000 \approx 10.417\ \mu\mathrm{s}$，单耳每秒乘加次数仅为 $96000 \times 16 = 1.536 \times 10^6\ \mathrm{MAC/s}$（约 $1.54\ \mathrm{MMAC/s}$），低乘加密度使其可由毫瓦级超低功耗硬件滤波器常驻运行。
+
+<a id="e14-16"></a>
+
+#### E14-16：6 组可穿戴合成音频的解析期望、双精度浮点与 16 位 PCM 三层对账
+
+**题目。** 运行 `chapter14_exercises` 的 `E14-16` 条目，核对稳定窗 $[1600, 30400)$ 上 `wearable_air_wind_2ch`（第 $0$ 声道）、`wearable_inear_equalized`、`wearable_fused_output` 与 `wearable_hearthrough_comb` 四路信号相对干净参考 `wearable_clean_ref` 的解析 MSE、浮点 MSE 与 16 位 PCM 实测 MSE，并解释 `wearable_hearthrough_comb` 解析稳态值与实际因果有限窗值之间微小尾差（浮点 MSE 相差约 $7.83 \times 10^{-9}$，$4000\ \mathrm{Hz}$ 投影幅度相差约 $3.64 \times 10^{-8}$）的物理来源。
+
+**解答。** 在 $28800$ 点整数周期稳定窗上：
+
+- 外麦受风通道：解析与浮点 MSE 均为 $0.020 + 0.00025 = 0.020250$，16 位 PCM 实测约为 $0.020250$（$\mathrm{NMSE} \approx 2.025$）；
+- 内麦朴素逆均衡：目标失真为零，高频底噪放大 $100$ 倍使解析与浮点 MSE 达 $0.00005 + 0.020 = 0.020050$，16 位 PCM 实测约为 $0.020049$（$\mathrm{NMSE} \approx 2.005$）；
+- 跨模态 MVDR 融合：解析与浮点 MSE 精确等于 $0.005/100.25 + 0.005/20.25 \approx 0.00029679$，16 位 PCM 实测约为 $0.00029680$（$\mathrm{NMSE} \approx 0.02968$，相对单模态降低逾 $67$ 倍）；
+- 通透 $2\ \mathrm{ms}$ 梳状叠加：无限稳态解析 MSE 为 $0.005 + 0.005 = 0.010000$，因果有限窗 `float64` 实测 MSE 为 $0.00999999$（$0.0099999922$），16 位 PCM 实测 MSE 为 $0.01000150$（$\mathrm{NMSE} \approx 1.00011$）。浮点实测与稳态解析值相差约 $7.83 \times 10^{-9}$（同时使 $4000\ \mathrm{Hz}$ 投影峰值幅度略降约 $3.64 \times 10^{-8}$），源于因果延迟波形 `s_clean + delay_samples(s_clean, 32)` 在窗口最前端 $n \in [1600, 1632)$ 的 $32$ 个采样点处读取了 $n - 32 \in [1568, 1600)$ 升余弦淡入包络最顶端的过渡点（幅度从 $0.999013$ 升至 $1.0$），清晰区分了无限长周期稳态公式与有限长因果序列边界。
+
+<a id="e14-17"></a>
+
+#### E14-17：一阶 Ambisonics 扬声器能量矢量解码与旁瓣抑制
+
+**题目。** 设 $L$ 支扬声器等距构成中心对称的 $D$ 维 3-design 各向同性布局，一阶与三阶方向矩归零（$\sum_\ell \vec u_\ell = \vec 0$、$\sum_\ell (\vec u_\ell^\top \vec n_s)^2 \vec u_\ell = \vec 0$），二阶矩 $\mathbf U^\top\mathbf U$ 等于 $\frac{L}{D}\mathbf P_D$（$D = 2$ 取水平面正六边形环阵 $L = 6$，$\mathbf P_2 = \operatorname{diag}(1, 1, 0)$；$D = 3$ 取三维正八面体六轴顶点，$\mathbf P_3 = \mathbf I_3$，注意 §14.2 的四元正四面体仅为球面 2-design，不满足三阶矩归零）。
+
+一阶解码器以偶极阶次权重 $g_1 \ge 0$ 向第 $\ell$ 支扬声器馈送增益，求：（1）证明总辐射功率 $\sum_\ell d_\ell^2$ 与源方向 $\vec n_s$ 无关，导出 Gerzon 能量矢量 $\vec r_E$ 的统一闭式并分别求出 $D = 2$ 与 $D = 3$ 下最大化 $\|\vec r_E\|_2$ 的最优权重 $g_1^{\star}$；（2）对正前方源 $\vec n_s = [1, 0, 0]^\top$，复算二维六边形与三维正八面体在基础解码（$g_1 = 1$）、能量矢量最优解码（$\max\text{-}r_E$）及同相解码（$g_1 = 1/D$）下的 $\|\vec r_E\|_2$、最小增益与正后方旁瓣功率抑制比。
+
+**解答。** （1）在满足三阶球面设计的 $D \in \{2, 3\}$ 各向同性流形上，源方向单位向量 $\vec n_s$ 满足一次和 $\sum_{\ell=1}^L (\vec u_\ell^\top \vec n_s) = 0$、二次和 $\sum_{\ell=1}^L (\vec u_\ell^\top \vec n_s)^2 = L / D$ 及三阶奇次矩 $\sum_{\ell=1}^L (\vec u_\ell^\top \vec n_s)^2 \vec u_\ell = \vec 0$。将馈送增益平方后逐项求和，交叉项归零，总功率化简为 $(1 + D g_1^2) / L$，严格不随方向 $\vec n_s$ 变化。再展开加权方向和 $\sum_{\ell=1}^L d_\ell^2 \vec u_\ell$，零次与二次奇对称项全部抵消，仅剩一次交叉项 $\frac{2 g_1}{L}\vec n_s$，相除立得统一能量矢量公式：
+
+$$\begin{aligned}
+d_\ell(\vec n_s)
+&=\frac{1}{L}\bigl(1+D\,g_1\,\vec u_\ell^\top\vec n_s\bigr),\\
+\vec r_E
+&=\frac{\sum_{\ell=1}^L d_\ell^2\vec u_\ell}
+{\sum_{\ell=1}^L d_\ell^2}
+=\frac{2g_1}{1+D\,g_1^2}\,\vec n_s.
+\end{aligned}\tag{14-29}$$
+
+对标量函数 $f(g_1) = 2g_1 / (1 + D g_1^2)$ 求导令分子 $2(1 - D g_1^2) = 0$，即得最优阶次权重 $g_1^{\star} = 1 / \sqrt{D}$。二维水平环阵（$D = 2$）对应二阶切比雪夫多项式 $T_2(g_1) = 2g_1^2 - 1 = 0$ 的正根 $1/\sqrt{2} \approx 0.707107$，三维全空间球面阵（$D = 3$）对应二阶勒让德多项式 $P_2(g_1) = \frac{1}{2}(3g_1^2 - 1) = 0$ 的正根 $1/\sqrt{3} \approx 0.577350$，切不可将二维切比雪夫根误套用于三维球面阵。
+
+（2）取 $\vec n_s = [1, 0, 0]^\top$ 逐项核对（对应 `ambisonic_sofa_rendering.py` 与 `E14-17`）：
+
+- **二维正六边形环阵（$D = 2, L = 6$）**：基础解码（$g_1 = 1$）给出 $\|\vec r_E\|_2 = 2/3 \approx 0.666667$，正后方 $-x$ 扬声器增益为 $-1/6 \approx -0.166667$；切换为 $\max\text{-}r_E$（$g_1 = 1/\sqrt{2}$）后，$\|\vec r_E\|_2$ 升至最大值 $1/\sqrt{2} \approx 0.707107$（能量散布角 $2\arccos\|\vec r_E\|_2$ 收窄至 $90.00^\circ$），正后方增益压低至 $(1 - \sqrt{2})/6 \approx -0.069036$，后向串扰功率比 $(\sqrt{2} - 1)^2$ 折合抑制 $-7.66\ \mathrm{dB}$；同相解码（$g_1 = 0.5$）令后方增益精确归零，同时保持 $\|\vec r_E\|_2 = 2/3$。
+- **三维正八面体阵（$D = 3, L = 6$）**：基础解码（$g_1 = 1$）下六路增益为 $[2/3, -1/3, 1/6, 1/6, 1/6, 1/6]$，$\|\vec r_E\|_2$ 仅为 $1/2 = 0.500000$，正后方 $-x$ 出现高达 $-1/3$ 的反相旁瓣；切换为三维 $\max\text{-}r_E$（$g_1 = 1/\sqrt{3}$）后，$\|\vec r_E\|_2$ 提升至 $1/\sqrt{3} \approx 0.577350$，正后方增益降至 $(1 - \sqrt{3})/6 \approx -0.122008$，功率比 $((\sqrt{3} - 1)/2)^2$ 折合抑制 $-8.73\ \mathrm{dB}$；三维同相解码（$g_1 = 1/3$）给出非负馈送 $[1/3, 0, 1/6, 1/6, 1/6, 1/6]$，彻底消除偏心听音位的反相染色。
+
+<a id="e14-18"></a>
+
+#### E14-18：SOFA 双耳测量坐标约定与头部追踪延迟容限
+
+**题目。** （1）按 AES69-2022（`SOFA 2.1`）`SimpleFreeFieldHRIR` 规范，球面三元组 `[az_deg, el_deg, r_m]` 对应右手笛卡尔系（$+x$ 正前、$+y$ 正左、$+z$ 正上）下的 $x = r\cos\phi\cos\theta$、$y = r\cos\phi\sin\theta$ 与 $z = r\sin\phi$。手算源位置 `[30, 45, 1.5]` 的精确笛卡尔坐标，并指出默认姿态下双耳接收矩阵 `[[90, 0, 0.09], [-90, 0, 0.09]]` 漏标球面属性以及左右耳写成 `[[0, -0.09, 0], [0, +0.09, 0]]` 分别引发的物理故障；（2）设世界系水平面（$\phi = 0^\circ$）有一单位平面波 $|p| = 1$，佩戴者以偏航角速度 $\dot\theta_{\mathrm{yaw}} = 180^\circ/\mathrm{s}$ 转头，推导总延迟 $\tau_{\mathrm{lag}}$ 引起的角度滞后与一阶 B-format 弦长误差，对比 $20\ \mathrm{ms}$、$80\ \mathrm{ms}$ 链路及施加 $\hat\tau = 65\ \mathrm{ms}$ 线性前瞻预测后的稳态滞后与急停超调。
+
+**解答。** （1）代入 $\theta = 30^\circ$（$\cos 30^\circ = \sqrt{3}/2$）、$\phi = 45^\circ$（$\cos 45^\circ = \sin 45^\circ = \sqrt{2}/2$）与 $r = 3/2\ \mathrm{m}$，得精确笛卡尔坐标 $[3\sqrt{6}/8, 3\sqrt{2}/8, 3\sqrt{2}/4]^\top$（单位：$\mathrm{m}$），数值约为 $[0.918559, 0.530330, 1.060660]^\top\ \mathrm{m}$（模长还原 $1.5\ \mathrm{m}$）。默认姿态下听者左耳轴 $\vec v_{\mathrm{up}} \times \vec v_{\mathrm{view}}$ 指向 $+y$，合规球面双耳坐标转换后为左耳 $[0, +0.09, 0]^\top\ \mathrm{m}$、右耳 $[0, -0.09, 0]^\top\ \mathrm{m}$。若漏读 `Type = "spherical"` 属性，解析器会把 $90^\circ$ 当作前方 $x = +90\ \mathrm{m}$ 远场坐标；若首行左耳写成 $y_{\mathrm{L}} = -0.09\ \mathrm{m} < 0$，则双耳 ITD/ILD 左右镜像颠倒（`audit_sofa_simple_freefield_geometry` 自动拦截报警）。
+
+（2）设当前时刻理想头部系方位角为 $\theta$，延迟 $\tau_{\mathrm{lag}}$ 读取的旧姿态使合成方位偏离 $\Delta\theta_{\mathrm{lag}} \in [0, \pi]$（简记为 $\delta$）。因零阶 $W$ 与垂直分量 $Z$ 在纯偏航下不变，误差集中于水平偶极差向量，其模平方由三角恒等式 $2 - 2\cos\delta = 4\sin^2(\delta/2)$ 直接化简，开方即得：
+
+$$\begin{aligned}
+\Delta\theta_{\mathrm{lag}}
+&=|\dot\theta_{\mathrm{yaw}}|\,\tau_{\mathrm{lag}},\\
+\|\vec b_{\mathrm{lag}}-\vec b_{\mathrm{ideal}}\|_2
+&=2|p|\cos\phi\,\sin(\Delta\theta_{\mathrm{lag}}/2).
+\end{aligned}\tag{14-30}$$
+
+在 $\dot\theta_{\mathrm{yaw}} = 180^\circ/\mathrm{s}$、$|p| = 1$、$\phi = 0^\circ$ 下逐档复算：
+
+- **专用低延迟链路（$\tau_{\mathrm{lag}} = 20\ \mathrm{ms}$）**：$\Delta\theta_{\mathrm{lag}} = 3.60^\circ$（弦长误差 $2\sin 1.80^\circ \approx 0.062822$），虽略高于静态正前最小可觉差（MAA 约 $1^\circ$～$2^\circ$），但仍落在人体快速转头时的动态最小可觉运动角（MAMA 约 $4^\circ$～$6^\circ$）容限之内，听感保持稳定锚定；
+- **缓冲无线链路（$\tau_{\mathrm{lag}} = 80\ \mathrm{ms}$）**：$\Delta\theta_{\mathrm{lag}}$ 扩大至 $14.40^\circ$（弦长误差 $\approx 0.250666$），超过静态 MAA 七倍以上且显著突破动态容限，声像在转头瞬间明显拖尾漂移；
+- **线性前瞻补偿（$\hat\tau = 65\ \mathrm{ms}$）**：匀速转头段残余延迟压缩至 $|80 - 65| = 15\ \mathrm{ms}$，角度滞后回落至 $2.70^\circ$（弦长误差 $\approx 0.047120$）；但一旦头部突然刹停，未加角加速度阻尼的纯线性外推会产生 $|\dot\theta_{\mathrm{yaw}}|\hat\tau = 11.70^\circ$ 的瞬态反向超调，因此实用空间音频引擎通常将前瞻时域限制在 $20$～$40\ \mathrm{ms}$ 并配合角加速度门控。
+
+### 14.12 原始资料与延伸阅读
+
+#### 空间声场编码、双耳匹配与可穿戴跨模态核心文献
+
+以下原始文献与标准规范支撑本章的球谐表示、参数化声强分析、双耳匹配优化与可穿戴跨模态融合推导：
+
+- Gerzon, M. A.，*Periphony: With-Height Sound Reproduction*，*Journal of the Audio Engineering Society (JAES)* 21(1)，1973，第 2～10 页：奠定一阶 Ambisonics（$W, X, Y, Z$）与正四面体球面采集几何基础。
+- Nachbar, C.、Zotter, F.、Deleflie, E. 与 Sontacchi, A.，*AmbiX — A Suggested Ambisonics Format*，Ambisonics Symposium 2011：定义现代通用的 ACN 通道编号、SN3D 施密特半归一化约定与旋转变换接口。
+- Rafaely, B.，*Fundamentals of Spherical Array Processing*，Springer，2015（第 2～4 章）：系统推导开球与刚性球麦克风阵列的球谐模态权重 $b_l(\kappa R)$、$\kappa R = \pi$ 开球零陷机理及高阶空间混叠边界。
+- Pulkki, V.，*Spatial Sound Reproduction with Directional Audio Coding*，*JAES* 55(6)，2007，第 503～516 页：提出基于短时声压—振速有功声强与式(14-12)扩散度 $\psi$ 的 DirAC 参数化空间音频编解码框架。
+- Schörkhuber, C.、Zaunschirm, M. 与 Höldrich, R.，*Binaural Rendering of Ambisonic Signals via Magnitude Least Squares*，DAGA 2018，第 339～342 页：提出在高频释放目标相位自由度的幅度最小二乘（MagLS）准则与交替相位投影迭代。
+- Madmoni, L.、Donley, J.、Tourbabin, V. 与 Rafaely, B.，*Beamforming-Based Binaural Reproduction by Matching of Binaural Signals*，AES International Conference on Audio for Virtual and Augmented Reality (AVAR)，2020 / 2021：建立面向智能眼镜与头戴非规则阵列的 BSM-LS 与高频 BSM-MagLS 完整设计流程。
+- Marquardt, D.、Hohmann, V. 与 Doclo, S.，*Interaural Coherence Preservation for Binaural Noise Reduction Using Partial Noise Estimation*，*IEEE/ACM Transactions on Audio, Speech, and Language Processing* 23(12)，2015，第 2172～2185 页：严格分析单目标双耳 MVDR 背景噪声耳间相干度坍缩问题，并对比参考麦克风混合与耳间相干度约束方案。
+- Corcos, G. M.，*The Structure of the Turbulent Pressure Field in Boundary-Layer Flows*，*Journal of Fluid Mechanics* 18(3)，1964，第 353～378 页：建立式(14-23)边界层湍流壁面脉动压力的流向与横向指数互谱衰减模型。
+- Tagliasacchi, M. 等，*SEANet: A Multi-Modal Speech Enhancement Network*（及跨模态气导/骨导统计融合系列研究），Interspeech 2020；以及 Liebich, S. 等，*Acoustic Path Delay and Comb-Filtering Effects in Hear-Through / Active Noise Cancellation Earbuds*，*IEEE/ACM TASLP* 系列研究：定量分析耳道闭塞效应、骨导高频信噪比退化及主动通透模式的百微秒级延迟约束。
+- Zotter, F. 与 Frank, M.，*All-Round Ambisonic Panning and Decoding*，*JAES* 60(10)，2012，第 807～820 页：系统导出二维环阵与三维球面阵的能量矢量最优阶次权重 $\max\text{-}r_E$ 闭式根与双频带解码准则。
+- Audio Engineering Society，*AES69-2022: AES Standard for File Exchange — Spatial Acoustic Data File Format (SOFA 2.1)*，2022：规范头相关冲激响应（`SimpleFreeFieldHRIR`）的球面与笛卡尔坐标体系、听者姿态三轴与双耳接收点元数据合同。
+
+---
+
+[🏠 首页](00_overview.md) ｜ 上一篇：[13 分布式麦克风协同增强](13_distributed-enhancement.md) ｜ 下一篇：[15 条件目标提取与多模态前端](15_target-extraction-diarization.md)

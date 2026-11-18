@@ -60,8 +60,12 @@ class HistoricalHeadingCompatibilityTest(unittest.TestCase):
         "codes/chapters/ch00/research/02_aec_wpe_separation.md",
     )
     OVERVIEW_RENAMES = {
-        "sec-u-01420ec5a6": "sec-u-69afa9f448",  # same Appendix A, now Chapter 14
-        "sec-u-ec7064739f": "sec-u-df0df6b6aa",  # same Appendix B, now Chapter 15
+        "sec-u-01420ec5a6": "sec-u-40bcb86655",  # same Appendix A, now Chapter 16
+        "sec-u-69afa9f448": "sec-u-40bcb86655",  # Appendix A 14 -> 16
+        "sec-u-ec7064739f": "sec-u-72b906da5d",  # same Appendix B, now Chapter 17
+        "sec-u-df0df6b6aa": "sec-u-72b906da5d",  # Appendix B 15 -> 17
+        "sec-u-6dcf2e71ad": "sec-u-3e47e38b8d",  # Spatial/Wearable 16 -> 14
+        "sec-u-a79ebcacde": "sec-u-bbb1d49208",  # TSE/Diarization 17 -> 15
         "sec-u-bd5fecaa8e": "sec-u-d200046a3a",
         "sec-u-461c9549d0": "sec-u-142ea3f046",
         "sec-u-d12b48e159": "sec-u-d200046a3a",

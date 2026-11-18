@@ -1,4 +1,4 @@
-"""Independent analytic and existing-PCM checks for Appendix B E15-03..16."""
+"""Independent analytic and existing-PCM checks for Appendix B E17-03..16."""
 
 from __future__ import annotations
 
@@ -117,8 +117,8 @@ class AppendixBExperimentsTest(unittest.TestCase):
 
     def test_e13_08_evidence_levels_do_not_skip_stages(self):
         result = run_exercises()
-        self.assertEqual(set(result), {f"E15-{number:02d}" for number in range(3, 17)})
-        stages = result["E15-08"]
+        self.assertEqual(set(result), {f"E17-{number:02d}" for number in range(3, 17)})
+        stages = result["E17-08"]
         self.assertTrue(stages["cases_are_hypothetical"])
         self.assertEqual([len(stages[name]) for name in "ABC"], [2, 4, 5])
         self.assertNotIn("source obtained", stages["A"])
@@ -238,7 +238,7 @@ class AppendixBExperimentsTest(unittest.TestCase):
             self.assertEqual(row['nmse'], error/309262788000)
 
     def test_e15_16_cascade_bottleneck_and_diagnostic_triage(self):
-        row = run_exercises()["E15-16"]
+        row = run_exercises()["E17-16"]
         budget = row["cascade_budget"]
 
         # Hand-derived raw SINR = 1 / 10.51, wrong downstream-only = 1 / 10.055

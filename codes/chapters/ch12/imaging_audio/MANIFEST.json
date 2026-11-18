@@ -9,7 +9,7 @@
     "codes/chapters/ch12/core/imaging_audio.py": "d7e8a880e9fb0e374f7a4d5ae2e29ce7266e6da56de27bce9f4ab7b73ef37946",
     "codes/chapters/ch12/examples/generate_imaging_audio.py": "c079f208ae8cbc21ff31c5a999032096a47b679606610228804a58dc9e0de3d0",
     "codes/chapters/ch02/core/conventions.py": "4e80a27490f05ddd5f4826361420c0c8d0b331464d1e5629c5def492da47b1d7",
-    "codes/chapters/ch00/core/audio_samples.py": "8fb4e9e822129d0019ef047299effd53b4f02f90ff68b5198016d04ddad31cf8",
+    "codes/chapters/ch00/core/audio_samples.py": "bf1145e19e2ec99623c0583220192922c24f0ed3d293212309fe4a2f3bfc8385",
     "codes/chapters/ch00/io_contracts.py": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974"
   },
   "parameters": {

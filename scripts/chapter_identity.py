@@ -1,7 +1,7 @@
-"""Published topic identities survive the 12--15 chapter-number permutation.
+"""Published topic identities survive the 12--17 chapter-number permutations.
 
 Display numbers and code directories follow the current book. Hidden PDF names
-retain their original topic, and the four original HTML routes remain aliases.
+retain their original topic, and the eight legacy HTML routes remain aliases.
 The fixed snapshot records real previous headings, not ordinal guesses.
 """
 from __future__ import annotations
@@ -13,9 +13,15 @@ import re
 NUMBERING_PATH = Path(__file__).with_name("chapter_numbering.json")
 NUMBERING = json.loads(NUMBERING_PATH.read_text(encoding="utf-8"))
 TOPICS = {row["source"]: row for row in NUMBERING["chapters"]}
-ORIGINAL_TO_CURRENT = {row["original_source"]: row["source"] for row in TOPICS.values()}
-LEGACY_HTML_ROUTES = {old.replace(".md", ".html"): new.replace(".md", ".html")
-                      for old, new in ORIGINAL_TO_CURRENT.items()}
+ORIGINAL_TO_CURRENT = {
+    old: row["source"]
+    for row in TOPICS.values()
+    for old in row.get("legacy_sources", [row["original_source"]])
+}
+LEGACY_HTML_ROUTES = {
+    old.replace(".md", ".html"): new.replace(".md", ".html")
+    for old, new in ORIGINAL_TO_CURRENT.items()
+}
 
 
 def canonical_source(name: str) -> str:
@@ -41,13 +47,13 @@ def numbering_heading_aliases(name: str) -> dict[str, str]:
     return NUMBERING["heading_aliases"].get(canonical_source(name), {})
 
 
-def exercise_alias_records(name: str) -> dict[str, dict[str, str]]:
+def exercise_alias_records(name: str) -> dict[str, dict[str, object]]:
     return NUMBERING["exercise_aliases"].get(canonical_source(name), {})
 
 
 def canonical_exercise(name: str, fragment: str) -> str:
     for current, row in exercise_alias_records(name).items():
-        if fragment == row["original_id"]:
+        if fragment in row.get("legacy_ids", [row["original_id"]]):
             return current
     return fragment
 
@@ -61,9 +67,16 @@ def inject_exercise_aliases(html: str, name: str, prefix: str = "") -> str:
         row = records.get(current)
         if not row:
             return match.group(0)
-        old = prefix + row["original_id"]
-        return (f'<span id="{old}" class="anchor-alias exercise-alias" '
-                f'aria-hidden="true"></span>' + match.group(0))
+        spans = "".join(
+            f'<span id="{prefix + old_id}" class="anchor-alias exercise-alias" '
+            f'aria-hidden="true"></span>'
+            for old_id in row.get("legacy_ids", [row["original_id"]])
+            if old_id != current
+        )
+        return spans + match.group(0)
 
-    return re.sub(r'(<a\s+id=["\']' + re.escape(prefix)
-                  + r')(e\d{2}-\d{2})(["\']\s*>)', alias, html)
+    return re.sub(
+        r'(<a\s+id=["\']' + re.escape(prefix) + r')(e\d{2}-\d{2})(["\']\s*>)',
+        alias,
+        html,
+    )

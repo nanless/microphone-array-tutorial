@@ -204,11 +204,11 @@ class ResearchBuildTest(unittest.TestCase):
 
     def test_explicit_page_map_has_18_tutorial_4_legacy_and_6_research_pages(self):
         paths = list(build_site.source_outputs().values())
-        self.assertEqual(len(paths), 28)
+        self.assertEqual(len(paths), 32)
         self.assertEqual(sum(path.startswith("research/") for path in paths), 6)
         self.assertTrue({"14_acoustic-imaging.html", "15_distributed-enhancement.html",
                          "12_appendix-symbols-math.html", "13_appendix-guide.html",
-                         "16_spatial-wearable-arrays.html", "17_target-extraction-diarization.html"}
+                         "14_spatial-wearable-arrays.html", "15_target-extraction-diarization.html", "16_appendix-symbols-math.html", "17_appendix-guide.html", "16_spatial-wearable-arrays.html", "17_target-extraction-diarization.html"}
                         <= set(paths))
         self.assertEqual(build_site.source_outputs()[RESEARCH / "README.md"], "research/index.html")
 
@@ -469,7 +469,7 @@ class ResearchBuildTest(unittest.TestCase):
                 parser = Links()
                 parser.feed(path.read_text(encoding="utf-8"))
                 pages[path.resolve()] = parser
-            self.assertEqual(len(pages), 28)
+            self.assertEqual(len(pages), 32)
             home = pages[(output / "index.html").resolve()]
             case_audio = {src for src in home.audio if src.startswith("../assets/readme/cases/locata/")}
             self.assertEqual(case_audio, {f"../assets/readme/cases/locata/{name}" for name in
@@ -559,7 +559,7 @@ class ResearchBuildTest(unittest.TestCase):
                                      "apa_audio": "ch06", "reference_audio": "ch06", "delay_audio": "ch07", "css_audio": "ch08", "mint_audio": "ch07", "mask_audio": "ch08",
                                      "noise_audio": "ch10", "channel_audio": "ch10", "scenario_audio": "ch11",
                                      "weighted_audio": "appendix_a", "response_audio": "appendix_b",
-                                     "distributed_audio": "ch13", "wearable_audio": "ch16", "tse_audio": "ch17"}[target.parent.name]
+                                     "distributed_audio": "ch13", "wearable_audio": "ch14", "tse_audio": "ch15"}[target.parent.name]
                             if target.parent.name == "apa_audio":
                                 self.assertIn(target.name, apa_names)
                                 apa_links.add(target.name)

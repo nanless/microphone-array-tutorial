@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 13 章 · 分布式麦克风协同增强 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="c1e13cc91b8b"><style>
+<meta name="source-digest" content="820e0688bd26"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -9,8 +9,8 @@ h1,h2,h3,h4{scroll-margin-top:60px}
 @media screen{.main a[id^="e"],.main .exercise-alias{scroll-margin-top:80px}}
 @media screen{.main .exercise-alias{top:0}}
 @media screen{.main a[id="e05-20"]{scroll-margin-top:60px}}
-@media screen{.main a[id="e15-11"],.main a[id="e15-12"],.main a[id="e15-13"],.main a[id="e15-14"],.main a[id="e15-15"]{scroll-margin-top:140px}}
-@media screen{.main .exercise-alias[id="e13-11"],.main .exercise-alias[id="e13-12"],.main .exercise-alias[id="e13-13"],.main .exercise-alias[id="e13-14"],.main .exercise-alias[id="e13-15"]{scroll-margin-top:140px}}
+@media screen{.main a[id="e17-11"],.main a[id="e17-12"],.main a[id="e17-13"],.main a[id="e17-14"],.main a[id="e17-15"]{scroll-margin-top:140px}}
+@media screen{.main .exercise-alias[id="e13-11"],.main .exercise-alias[id="e13-12"],.main .exercise-alias[id="e13-13"],.main .exercise-alias[id="e13-14"],.main .exercise-alias[id="e13-15"],.main .exercise-alias[id="e15-11"],.main .exercise-alias[id="e15-12"],.main .exercise-alias[id="e15-13"],.main .exercise-alias[id="e15-14"],.main .exercise-alias[id="e15-15"]{scroll-margin-top:140px}}
 @media screen{.main a[id^="e06-"]{scroll-margin-top:60px}}
 @media screen{.main a[id^="e07-"],.main a[id^="e08-"]{scroll-margin-top:60px}}
 @media screen{.main a[id^="e11-"]{scroll-margin-top:60px}}
@@ -343,10 +343,10 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-60abc8d82d">E13-26 AES67/PTPv2亚微秒硬件同步预算与软件SRO-DANSE对照</a></li>
 <li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-1f2fb8b5ba">E13-27 DASF统一子空间：分布式MWF、MVDR、GEVD与LCMV何时同方向、何时分道扬镳</a></li>
 </ul>
-<div class="chap"><a href="16_spatial-wearable-arrays.html">第 16 章 · 空间声场与可穿戴阵列</a></div>
-<div class="chap"><a href="17_target-extraction-diarization.html">第 17 章 · 条件目标提取与多通道日志</a></div>
-<div class="chap"><a href="14_appendix-symbols-math.html">第 14 章 · 附录 A：符号术语数学</a></div>
-<div class="chap"><a href="15_appendix-guide.html">第 15 章 · 附录 B：路径地图与练习</a></div>
+<div class="chap"><a href="14_spatial-wearable-arrays.html">第 14 章 · 空间声场与可穿戴阵列</a></div>
+<div class="chap"><a href="15_target-extraction-diarization.html">第 15 章 · 条件目标提取与多通道日志</a></div>
+<div class="chap"><a href="16_appendix-symbols-math.html">第 16 章 · 附录 A：符号术语数学</a></div>
+<div class="chap"><a href="17_appendix-guide.html">第 17 章 · 附录 B：路径地图与练习</a></div>
 <div class="chap"><a href="research/index.html">源码研究</a></div></nav>
 <main class="main" id="main-content" tabindex="-1"><div class="offline-note" id="offnote">当前离线：公式显示为源码，正文讲解不受影响。</div>
 <details class="toc-mobile"><summary>本页目录</summary><nav aria-label="本页目录"><ul>
@@ -437,8 +437,8 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-1f2fb8b5ba">E13-27 DASF统一子空间：分布式MWF、MVDR、GEVD与LCMV何时同方向、何时分道扬镳</a></li>
 </ul></nav></details>
 <blockquote>
-<p>本篇是第 13 章（扩展专题Ⅱ），接在第 12 章声学成像之后，介绍多个拾音节点怎样在有限通信下协作增强声音。数学预备内容可回查第 14 章附录 A。</p>
-<p>🏠 首页导读：<a href="index.html">🏠 导读与导航</a> ｜ 上一篇：<a href="12_acoustic-imaging.html">第 12 章 · 声学成像与噪声源诊断</a> ｜ 下一篇：<a href="16_spatial-wearable-arrays.html">第 16 章 · 空间声场与可穿戴阵列</a></p>
+<p>本篇是第 13 章（扩展专题Ⅱ），接在第 12 章声学成像之后，介绍多个拾音节点怎样在有限通信下协作增强声音。数学预备内容可回查第 16 章附录 A。</p>
+<p>🏠 首页导读：<a href="index.html">🏠 导读与导航</a> ｜ 上一篇：<a href="12_acoustic-imaging.html">第 12 章 · 声学成像与噪声源诊断</a> ｜ 下一篇：<a href="14_spatial-wearable-arrays.html">第 14 章 · 空间声场与可穿戴阵列</a></p>
 </blockquote>
 <hr />
 <span id="sec-1" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-0d79586b40" class="anchor-alias" aria-hidden="true"></span><h1 id="sec-u-232577b03e">第 13 章：分布式麦克风协同增强</h1>
@@ -531,7 +531,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 </tr>
 </tbody>
 </table></div>
-<p>阅读本章前，建议先温习<a href="05_beamforming.html#sec-u-fb93744989">第 5 章多通道维纳滤波（MWF）专题</a>，复向量共轭内积、Hermitian 正定矩阵与正规方程求导基础可回查<a href="14_appendix-symbols-math.html#sec-14-3">附录 A §14.3</a>。为了先把“为什么压缩成一路广播居然可以不丢性能”的几何直觉立住，我们在前十一节先从理想同步采样下的单频点、已知精确二阶统计模型起步；待看清子空间压缩与迭代收敛的本质后，再从 §13.12 起依次引入子空间估计、WOLA 帧边界时序、带宽算力预算以及采样率偏差与丢包处理。</p>
+<p>阅读本章前，建议先温习<a href="05_beamforming.html#sec-u-fb93744989">第 5 章多通道维纳滤波（MWF）专题</a>，复向量共轭内积、Hermitian 正定矩阵与正规方程求导基础可回查<a href="16_appendix-symbols-math.html#sec-16-3">附录 A §16.3</a>。为了先把“为什么压缩成一路广播居然可以不丢性能”的几何直觉立住，我们在前十一节先从理想同步采样下的单频点、已知精确二阶统计模型起步；待看清子空间压缩与迭代收敛的本质后，再从 §13.12 起依次引入子空间估计、WOLA 帧边界时序、带宽算力预算以及采样率偏差与丢包处理。</p>
 <span id="sec-5" class="anchor-alias" aria-hidden="true"></span><span id="sec-15-2" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-13-2">13.2 把本地观测与节点参考分别写出来</h2>
 <span id="sec-6" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-52d90c84e3">全局列向量按节点分块</h3>
 <p>设网络共有 $U$ 个协作拾音节点，第 $u$ 个节点配有 $M_u$ 支本地麦克风（$u = 1, \ldots, U$），全网麦克风总数为 $M = \sum_{u=1}^U M_u$。固定频点 $k$，将第 $\ell$ 帧节点 $u$ 的本地频域观测记作列向量 $\vec x_u[k, \ell] \in \mathbb{C}^{M_u \times 1}$。若站在上帝视角把全网 $U$ 个节点的观测按编号顺序纵向拼接起来，就得到 $M$ 维全局观测向量 $\vec x \in \mathbb{C}^{M \times 1}$。先考察单个潜在目标声源标量 $s$ 的接收模型（后续省去固定的 $[k, \ell]$ 索引）：</p>
@@ -552,7 +552,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 =\phi_s\vec a\vec a^H+\mathbf R_{nn}.
 \end{aligned}\tag{13-2}$$</p>
 <p>这里 $\phi_s \ge 0$ 为实标量，$\mathbf R_{nn}$ 与 $\mathbf R_{xx}$ 均为 $M \times M$ Hermitian 半正定矩阵。若输入为未标定数字音频，上述二阶矩采用无量纲数字幅度平方单位；仅当全部通道已完成物理声压标定时才具有 $\mathrm{Pa}^2$ 量纲（此时我们将传递向量 $\vec a$ 与滤波权重 $\vec w$ 均约定为无量纲比值）。切换不同 FFT 归一化比例时，$\mathbf R_{xx}$、互相关向量与参考功率 $\phi_{d_u}$ 必须按同一尺度同步缩放。</p>
-<p>顺便提醒一点统计细节：用有限 $L$ 帧样本算出的外积平均 $\frac{1}{L}\sum_{\ell=1}^L \vec x_\ell\vec x_\ell^H$ 是未中心化的样本二阶矩；即便总体均值为零，有限样本算术平均也未必精确为零，因此它与减去样本均值后的中心化样本协方差并不完全相等（见<a href="14_appendix-symbols-math.html#sec-u-152b8861e4">附录 A E14-02</a>）。本章前半部分的理论推导直接代入精确总体二阶矩，而 §13.15 的确定性合成音频实验则会严格交待有限稳定窗内的整数周期平均口径。</p>
+<p>顺便提醒一点统计细节：用有限 $L$ 帧样本算出的外积平均 $\frac{1}{L}\sum_{\ell=1}^L \vec x_\ell\vec x_\ell^H$ 是未中心化的样本二阶矩；即便总体均值为零，有限样本算术平均也未必精确为零，因此它与减去样本均值后的中心化样本协方差并不完全相等（见<a href="16_appendix-symbols-math.html#sec-u-152b8861e4">附录 A E16-02</a>）。本章前半部分的理论推导直接代入精确总体二阶矩，而 §13.15 的确定性合成音频实验则会严格交待有限稳定窗内的整数周期平均口径。</p>
 <span id="sec-8" class="anchor-alias" aria-hidden="true"></span><span id="sec-15-3" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-13-3">13.3 集中式MWF究竟最小化什么</h2>
 <span id="sec-9" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-abd016302e">对任意权重先写完整代价</h3>
 <p>在讨论分布式压缩之前，我们必须先立好标杆：假如没有通信带宽限制，节点 $u$ 能把全网所有 $M$ 支麦克风的信号 $\vec x$ 全拿过来做线性滤波 $\hat d_u = \vec w^H\vec x$，怎样的权重才算最好？多通道维纳滤波（MWF）以节点参考目标 $d_u$ 与滤波输出 $\hat d_u$ 之间的均方误差（Mean-Squared Error，MSE）作为标尺。记参考目标功率为 $\phi_{d_u} = \mathbb{E}[|d_u|^2]$，观测向量与参考目标的 $M \times 1$ 互相关列向量为 $\vec r_{xd_u} = \mathbb{E}[\vec x d_u^*]$，对<strong>任意给定的</strong>滤波权重 $\vec w \in \mathbb{C}^{M \times 1}$ 展开均方误差代价函数 $J_u(\vec w)$：</p>
@@ -565,7 +565,7 @@ J_u(\vec w)&=\mathbb{E}\big[|d_u-\vec w^H\vec x|^2\big]\\
 +\vec w^H\mathbf R_{xx}\vec w.
 \end{aligned}\tag{13-3}$$</p>
 <p>注意中间两项 $\vec w^H\vec r_{xd_u}$ 与 $\vec r_{xd_u}^H\vec w$ 互为复共轭标量，相加正好化为两倍实部 $2\operatorname{Re}(\vec w^H\vec r_{xd_u})$。请牢记式(13-3)的普适性：<strong>无论 $\vec w$ 是全局最优解、迭代中途尚未收敛的近似权重，还是因远端广播突变而暂时失配的陈旧权重，只要把实际生效的全局权重代进式(13-3)，就能算出毫无水分的真实均方误差！</strong></p>
-<p>当全局观测协方差矩阵严格正定（$\mathbf R_{xx} \succ 0$）时，对式(13-3)关于共轭权重 $\vec w^*$ 求 Wirtinger 梯度（见<a href="14_appendix-symbols-math.html#sec-14-3">附录 A §14.3</a>）得 $\mathbf R_{xx}\vec w - \vec r_{xd_u}$，令其为零便导出唯一的集中式维纳—霍夫（Wiener–Hopf）正规方程、最优权重 $\vec w_u^\star$ 以及集中式最小均方误差下界 $J_u^\star$：</p>
+<p>当全局观测协方差矩阵严格正定（$\mathbf R_{xx} \succ 0$）时，对式(13-3)关于共轭权重 $\vec w^*$ 求 Wirtinger 梯度（见<a href="16_appendix-symbols-math.html#sec-16-3">附录 A §16.3</a>）得 $\mathbf R_{xx}\vec w - \vec r_{xd_u}$，令其为零便导出唯一的集中式维纳—霍夫（Wiener–Hopf）正规方程、最优权重 $\vec w_u^\star$ 以及集中式最小均方误差下界 $J_u^\star$：</p>
 <p>$$\begin{aligned}
 \mathbf R_{xx}\vec w_u^\star&=\vec r_{xd_u},\qquad
 \vec w_u^\star=\mathbf R_{xx}^{-1}\vec r_{xd_u},\\
@@ -1338,7 +1338,7 @@ P_{n,\mathrm{stale}}-P_{n,\mathrm{LCMV}}^\star
 <p>死守旧广播虽然勉强保住了零陷，输出噪声功率却从集中式下界 $34/203 \approx 0.167488$ 恶化到了 $2116/10397 \approx 0.203520$！反之，由于每个节点的局部维数 $L_u = 3 > P = 2$（保有 $L_u - P = 1$ 个降噪自由度），启动顺序轮转 DASF-LCMV 后，两节点交替把各自最新的二维本地分块更新为对外广播方向，全网输出噪声功率每步单调不增，单调渐近收敛回集中式最优值 $34/203$ 与式(13-31)权重。</p>
 <p><strong>第三阶段：$P = 3 = L_u$ 自由度耗尽锁死与双路广播解锁。</strong> 再添入第三列约束 $\vec c_3 = [0, 0, 0, 1]^\top$（要求第 $4$ 麦权重为零，$\vec f_3 = [1, 0, 0]^\top$，总约束数 $P = 3$）：四麦集中式三约束 LCMV 最优解为 $[34, -26, 26, 0]^\top / 73$，最小输出噪声功率为 $196/365 \approx 0.536986$。然而若仍限制每节点只发单路广播（$R = 1$），局部观测维数 $L_u = 2 + 1 = 3$ 恰好等于约束数 $P = 3$，剩余优化自由度 $L_u - P = 0$！从初值 $\vec f_1^{(0)} = [1, 0]^\top$、$\vec f_2^{(0)} = [11, -24]^\top$ 出发，节点 $1$ 的 $3 \times 3$ 满秩约束方程 $\tilde{\mathbf C}_1^\top\vec h_1 = [1, 0, 0]^\top$ 直接把局部解唯一焊死在 $\vec h_1 = [1, 0, 0]^\top$，节点 $2$ 同样被焊死在有效全局权重 $[1, 0, 0, 0]^\top$，无论轮转多少轮噪声功率都死锁在 $1.0 > 196/365$；一旦将广播扩充至 $R = 2$（恢复 $L_u = 4 > P = 3$），首轮即解锁恢复集中式最优噪声功率 $196/365$（可在仓库根目录下运行 <code>.venv/bin/python -m codes.chapters.ch13.chapter13_exercises --exercise E13-27</code> 复核全部三阶段结果）。</p>
 <hr />
-<p><a href="index.html">返回导读</a> ｜ <a href="12_acoustic-imaging.html">上一篇：扩展专题Ⅰ：声学成像与噪声源诊断</a> ｜ <a href="16_spatial-wearable-arrays.html">下一篇：扩展专题Ⅲ：空间声场与可穿戴阵列</a></p><div class="pn"><span><a href="12_acoustic-imaging.html">← 上一篇</a></span><span><a href="16_spatial-wearable-arrays.html">下一篇 →</a></span></div>
+<p><a href="index.html">返回导读</a> ｜ <a href="12_acoustic-imaging.html">上一篇：扩展专题Ⅰ：声学成像与噪声源诊断</a> ｜ <a href="14_spatial-wearable-arrays.html">下一篇：扩展专题Ⅲ：空间声场与可穿戴阵列</a></p><div class="pn"><span><a href="12_acoustic-imaging.html">← 上一篇</a></span><span><a href="14_spatial-wearable-arrays.html">下一篇 →</a></span></div>
 <footer class="foot">麦克风阵列信号处理教程 · 静态站由 scripts/build_site.py 生成</footer>
 </main></div><a class="topbtn" href="#top" title="回顶部" aria-label="回到页面顶部">↑</a>
 <script>if(!navigator.onLine)document.getElementById('offnote').style.display='block';</script>

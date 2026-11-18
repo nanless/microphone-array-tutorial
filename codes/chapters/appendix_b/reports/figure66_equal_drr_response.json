@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "script_sha256": "4eb6e4fcf9e7f26c29d61552046e1528bcfe5634758577f94798adba9e1333a4",
-  "audio_manifest_sha256": "a4e56ec78254bb6ed08e3fa2ee041e3a7abd0833238ddcfdec5a6d2710739a25",
+  "audio_manifest_sha256": "3907a51ae41d3f08576421b0eb7eb5bac313cb29549bf7bf62a34063a066861f",
   "scope": "known short FIRs and equal-power tones; no real room, blind estimation or listening test",
   "score_window": [
     1600,

@@ -29,7 +29,7 @@
 | 类型 | 路径 | 作用 | 修改规则 |
 |---|---|---|---|
 | 教程源文件 | `chapters/*.md` | 导读、15 章正文（含四篇扩展专题）和 2 篇附录 | 直接修改；改后检查跨章引用 |
-| 教学代码源文件 | `codes/chapters/{ch00,ch01～ch11,ch12,ch13,ch16,ch17,appendix_a,appendix_b}/` 中的 `core/`、`examples/` 与单章入口 | 共享数值核按首讲章节唯一归档，跨章练习在 `ch00/cross_chapter/` | 修改唯一真实实现；同步测试、覆盖表和对应章节；旧 `codes.array_tutorial`、`codes.examples` 路径已退出仓内接口 |
+| 教学代码源文件 | `codes/chapters/{ch00,ch01～ch15,appendix_a,appendix_b}/` 中的 `core/`、`examples/` 与单章入口 | 共享数值核按首讲章节唯一归档，跨章练习在 `ch00/cross_chapter/` | 修改唯一真实实现；同步测试、覆盖表和对应章节；旧 `codes.array_tutorial`、`codes.examples` 路径已退出仓内接口 |
 | 共享文件IO源文件 | `codes/chapters/ch00/io_contracts.py` | 普通父链与成员、严格JSON、元数据类型及报告写入的公共原语 | 生成器和获取工具复用原语；各资产的schema、评分和来源边界由调用者负责。参与生成时须绑定真实SHA；有限写前检查不宣称消除并发竞态或保证崩溃持久性 |
 | 主音频布局 | `codes/chapters/ch00/audio/MANIFEST.json`、各章 `audio/*.wav`；`scripts/code_layout.py` 固定组→章节映射 | 27 组、109 个数学合成 WAV，单一总清单、分章存放 | 改生成源后按新布局重生；清单绑定20个真实源，记录每条所属章、生成源 SHA 与 WAV SHA；禁止手改单个 WAV |
 | 已知噪声加权源与生成物 | `codes/chapters/appendix_a/core/weighted_audio.py`、`codes/chapters/appendix_a/examples/generate_weighted_audio.py` → `codes/chapters/appendix_a/weighted_audio/` | 5个16kHz、32000点单/双声道数学合成WAV，独立清单 | 同一700Hz目标与3500/4000Hz干扰，已知固定权重和均1；28800点稳窗解析/浮点分量/实际PCM整数分开，四真实源/增益1；不是盲估噪声、真实阵列或随机独立性证据；只接受六普通成员；首次写目录前独立核固定参数、波形、分量、权重与量化；`--check`严格只读完整回放 |
@@ -46,8 +46,8 @@
 | 分布式已知统计源与生成物 | `codes/chapters/ch13/core/distributed.py`、`core/distributed_audio.py`、`examples/generate_distributed_audio.py` → `codes/chapters/ch13/distributed_audio/` | 17个16kHz、32000点单/四声道数学合成WAV、独立清单 | 九真实源、共同增益1；28800点稳窗/800点缺口窗分开解析/浮点/PCM整数E/D；首次写前独立核固定类型参数、波形、功率与范围，拒绝内部模型漂移；广播改变后用缓存接收系数重组实际权重，旧提案另列；已知速率SRC改变观测统计，不称盲DANSE、完整WOLA、真实网络或工业性能；严格18普通成员，`--check`只读完整回放 |
 | 第4章当前原源合同 | `ch04/examples/audit_upstream_doa.py`、`audit_said_compression.py` → 显式新 `upstream_doa_contracts.json`、`said_compression_contracts.json` | 固定PRA/doatools限定原方法及SAID压缩接口 | 默认只读stdout；原身份和完整选集分栏，原失败与未运行保留，不覆盖历史；四旧reproduce入口仅仓外普通output/workdir，执行前核路径及前后原源身份 |
 | 分布式图与原源合同 | `scripts/make_figures.py::fig_distributed_*` → `ch13/reports/figure70～72*.json`；`ch13/examples/audit_upstream_distributed_contracts.py` → `upstream_distributed_contracts_current.json` | 固定方向、当前广播更新、时钟/缺口与原MATLAB静态/paderwasn助手合同 | 真实求解数与当前输出分开记录；MATLAB未执行，三个原Python助手限定调用不等于完整同步器。DWACD原活动切片仅静态核对与独立数组门控，不称原估计器执行；当前锁表/状态、完整选集、所用原blob与实际依赖前后身份分别记录。原失败和无观测、许可冲突、未运行边界如实保存，不修改上游或历史报告 |
-| 可穿戴空间阵列源与生成物 | `codes/chapters/ch16/core/wearable_audio.py`、`codes/chapters/ch16/examples/generate_wearable_audio.py` → `codes/chapters/ch16/wearable_audio/`；`scripts/make_wearable_figures.py` → 图81～84及`ch16/reports/figure81～84*.json` | 六个16kHz、32000点单/双声道数学合成WAV与独立清单 | 共同增益1，1600:30400窗28800点分开解析、浮点与实际PCM整数评分；六真实源、严格七普通成员，`--check`只读完整重放；非实测耳道或风洞录音 |
-| 条件提取与距离气泡源与生成物 | `codes/chapters/ch17/core/tse_audio.py`、`codes/chapters/ch17/examples/generate_tse_audio.py` → `codes/chapters/ch17/tse_audio/`；`scripts/make_tse_figures.py` → 图85～88及`ch17/reports/figure85～88*.json` | 六个16kHz、32000点单/三声道数学合成WAV与独立清单 | 共同增益1，1600:30400窗28800点分开解析、浮点与实际PCM整数E/D；六真实源、严格七普通成员，`--check`只读完整重放；非自然语音盲分离 |
+| 可穿戴空间阵列源与生成物 | `codes/chapters/ch14/core/wearable_audio.py`、`codes/chapters/ch14/examples/generate_wearable_audio.py` → `codes/chapters/ch14/wearable_audio/`；`scripts/make_wearable_figures.py` → 图81～84及`ch14/reports/figure81～84*.json` | 六个16kHz、32000点单/双声道数学合成WAV与独立清单 | 共同增益1，1600:30400窗28800点分开解析、浮点与实际PCM整数评分；六真实源、严格七普通成员，`--check`只读完整重放；非实测耳道或风洞录音 |
+| 条件提取与距离气泡源与生成物 | `codes/chapters/ch15/core/tse_audio.py`、`codes/chapters/ch15/examples/generate_tse_audio.py` → `codes/chapters/ch15/tse_audio/`；`scripts/make_tse_figures.py` → 图85～88及`ch15/reports/figure85～88*.json` | 六个16kHz、32000点单/三声道数学合成WAV与独立清单 | 共同增益1，1600:30400窗28800点分开解析、浮点与实际PCM整数E/D；六真实源、严格七普通成员，`--check`只读完整重放；非自然语音盲分离 |
 | 成像快拍源与生成物 | `codes/chapters/ch12/core/imaging_audio.py`、`codes/chapters/ch12/examples/generate_imaging_audio.py` → `codes/chapters/ch12/imaging_audio/` | 五个24kHz、48004点单/双声道数学合成WAV、独立清单 | 共同增益1、完整4点传播尾；20个快拍的252:2160窗共38160点，解析/浮点/实际PCM复幅度和CSM分开；严格六普通成员、当前真实依赖SHA与只读重放；生成前独立核固定类型参数、波形、浮点与PCM，内部模型漂移先拒绝，不把相位编码交叉项抵消当随机独立或工业性能 |
 | 成像图与原源合同 | `scripts/make_figures.py::fig_imaging_*` → `ch12/reports/figure67～69*.json`、`figure80_imaging_objectives.json`；`ch12/examples/audit_upstream_imaging_contracts.py` → `upstream_imaging_contracts_current.json` | 两格、球面441格、目标与校准控制及固定Acoular原方法 | 图绑定真实数值核，不反演441未知源或称功率图为增强波形；原full CLEAN-SC差异、CMF目标和谱端点真实保留；完整选集状态与所用源码身份分栏，不修改上游或历史 |
 | 作者DAMAS原模块合同 | `ch12/examples/audit_damas_author_contracts.py` → 显式 `damas_author_contracts_current.json` | 固定作者GPL完整Python模块九限定控制；8数值吻合、1原NameError | 默认只读stdout；完整模块原imports执行，前后核原文件及三个直接库入口，不称传递闭包、MATLAB/MEX或论文大实验；不覆盖历史报告 |
@@ -99,16 +99,16 @@
 | 构建源文件 | `scripts/build_site.py`、`scripts/build_pdf.py`、`scripts/build_markdown_helpers.py`、`scripts/inline_layout.js`、`scripts/pdf_math.js`、`scripts/heading_aliases.py`、`scripts/legacy_sequential_anchors.json`、`scripts/chapter_identity.py`、`scripts/chapter_numbering.json` | 生成站点、合订 HTML 和 PDF，共用Markdown数学/代码边界处理及有限行内排版保护，并保护已发布深链的原语义 | 页面结构或渲染有问题时修改这里；标题改号后逐项校验历史语义锚；共享脚本变化须进入两种产物的源摘要 |
 | PDF 公式第三方资源 | `scripts/vendor/mathjax-3.2.2/` | 固定MathJax3.2.2 SVG、SRE4.0.6英文规则与许可；保留历史CHTML字体 | 保留上游许可及来源摘要；更新版本时同步更新构建核验与渲染抽查，不手改压缩脚本或字体 |
 | 插图生成物 | `figures/fig*.png` | 正文插图 | 由绘图脚本生成，不直接编辑 |
-| 站点生成物 | `site/*.html`、`site/research/*.html`、`site/real_audio/`、`site/room_audio/`、`site/gss_audio/`、`site/moving_audio/`、`site/tracking_audio/`、`site/noise_audio/`、`site/channel_audio/`、`site/scenario_audio/`、`site/weighted_audio/`、`site/response_audio/`、`site/binaural_audio/`、`site/spectral_audio/`、`site/stft_audio/`、`site/sweep_audio/`、`site/geometry_audio/`、`site/baseline_audio/`、`site/focus_audio/`、`site/reflection_audio/`、`site/derivative_audio/`、`site/phase_audio/`、`site/binaural_beamforming_audio/`、`site/apa_audio/`、`site/reference_audio/`、`site/delay_audio/`、`site/css_audio/`、`site/mint_audio/`、`site/mask_audio/`、`site/imaging_audio/`、`site/distributed_audio/`、`site/wearable_audio/`、`site/tse_audio/` | 18 篇当前教程、4 个旧路径兼容页面、6 篇研究手册页面与真实录音、独立合成实验的媒体副本 | 由 `build_site.py` 生成，不直接编辑 |
+| 站点生成物 | `site/*.html`、`site/research/*.html`、`site/real_audio/`、`site/room_audio/`、`site/gss_audio/`、`site/moving_audio/`、`site/tracking_audio/`、`site/noise_audio/`、`site/channel_audio/`、`site/scenario_audio/`、`site/weighted_audio/`、`site/response_audio/`、`site/binaural_audio/`、`site/spectral_audio/`、`site/stft_audio/`、`site/sweep_audio/`、`site/geometry_audio/`、`site/baseline_audio/`、`site/focus_audio/`、`site/reflection_audio/`、`site/derivative_audio/`、`site/phase_audio/`、`site/binaural_beamforming_audio/`、`site/apa_audio/`、`site/reference_audio/`、`site/delay_audio/`、`site/css_audio/`、`site/mint_audio/`、`site/mask_audio/`、`site/imaging_audio/`、`site/distributed_audio/`、`site/wearable_audio/`、`site/tse_audio/` | 18 篇当前教程、8 个旧路径兼容页面、6 篇研究手册页面与真实录音、独立合成实验的媒体副本 | 由 `build_site.py` 生成，不直接编辑 |
 | 本次验收证据 | `reviews/2026-10-05-*.json`、`reviews/2026-10-05-human-listening-register.csv` | 发布音频技术检查、未执行真人计划/登记、可选测试与公式/浏览器验收的日期快照 | 实际结果与未执行条件分开；这些是注明日期的证据，不自动宣称未来修改后的资产已验收 |
 | 合订生成物 | `dist/combined.html`、`dist/microphone-array-tutorial.pdf` | 合订 HTML 和 PDF | 由 `build_pdf.py` 生成，不直接编辑 |
 
 `chapters/` 当前包含 18 篇 Markdown，研究手册另有 6 篇网页源文件，项目当前有 88 张编号图和附录 B 房间题的一张补充结果图。文件数量、图号、章节名称或构建入口发生变化时，要同步
 更新本节、README、导读中的文件地图和构建说明。
 
-`codes/chapters/` 含导读 `ch00`、第 1～11 章、扩展专题 `ch12`/`ch13`/`ch16`/`ch17` 和附录 A/B。跨章内核按首次完整讲解所在章放入一个 `core/`，其他章节直接导入这一实现；全书索引、来源锁表、获取工具和跨章练习归 `ch00/`。原 `codes/examples/` 的 35 个薄兼容入口已经移除，仓内命令使用新模块名。生成音频、房间、状态和报告时，清单或报告记录的源路径与 SHA 必须来自当前真实源；迁移后要从新源重生并核对每个资产，不可只改清单字符串伪造一致性。历史运行报告中的旧路径代表当时的执行条件，不应改写为新路径下实测。
+`codes/chapters/` 含导读 `ch00`、第 1～11 章、扩展专题 `ch12`/`ch13`/`ch14`/`ch15` 和附录 A/B。跨章内核按首次完整讲解所在章放入一个 `core/`，其他章节直接导入这一实现；全书索引、来源锁表、获取工具和跨章练习归 `ch00/`。原 `codes/examples/` 的 35 个薄兼容入口已经移除，仓内命令使用新模块名。生成音频、房间、状态和报告时，清单或报告记录的源路径与 SHA 必须来自当前真实源；迁移后要从新源重生并核对每个资产，不可只改清单字符串伪造一致性。历史运行报告中的旧路径代表当时的执行条件，不应改写为新路径下实测。
 
-第12、13、16、17章为四篇扩展专题，分别使用E12/E13/E16/E17与公式12-x/13-x/16-x/17-x；第14、15章分别为附录A/B，使用E14/E15与公式14-x/15-x。文件、代码目录、标题、练习与正文引用采用当前章号。为保留已发布链接，PDF隐藏目标对第12～15章沿用原主题身份：成像ch-14、分布式ch-15、附录A ch-12、附录B ch-13，第16、17章使用ch-16、ch-17；前四者不表示当前章号。`scripts/chapter_identity.py`读取`chapter_numbering.json`的真实旧标题快照，构建四个旧HTML路径的同主题兼容页面及旧片段别名；独立门禁须核主题和定位，不能只核目标存在。
+第12～15章为四篇扩展专题，分别使用E12～E15与公式12-x～15-x；第16、17章分别为附录A/B，使用E16/E17与公式16-x/17-x。文件、代码目录、标题、练习与正文引用采用当前章号。为保留已发布链接，PDF隐藏目标对第12～17章沿用原主题身份：成像ch-14、分布式ch-15、可穿戴ch-16、目标提取ch-17、附录A ch-12、附录B ch-13；这六者不表示当前章号。`scripts/chapter_identity.py`读取`chapter_numbering.json`的真实旧标题快照，构建八个旧HTML路径的同主题兼容页面及旧片段别名；独立门禁须核主题和定位，不能只核目标存在。
 
 ### 1.3 构建入口
 
@@ -145,8 +145,8 @@
 .venv/bin/python -m codes.chapters.appendix_b.examples.check_room_assets  # 只核21个房间成员/当前源，不重新仿真
 .venv/bin/python -m codes.chapters.ch12.examples.generate_imaging_audio  # 五独立成像快拍WAV；--check只读
 .venv/bin/python -m codes.chapters.ch13.examples.generate_distributed_audio  # 17 independent WAVs; --check只读
-.venv/bin/python -m codes.chapters.ch16.examples.generate_wearable_audio  # 六独立可穿戴空间WAV；--check只读
-.venv/bin/python -m codes.chapters.ch17.examples.generate_tse_audio  # 六独立距离气泡/目标提取WAV；--check只读
+.venv/bin/python -m codes.chapters.ch14.examples.generate_wearable_audio  # 六独立可穿戴空间WAV；--check只读
+.venv/bin/python -m codes.chapters.ch15.examples.generate_tse_audio  # 六独立距离气泡/目标提取WAV；--check只读
 .venv/bin/python scripts/make_figures.py      # 图 1～25、图 33～36、40～72及80
 .venv/bin/python scripts/make_aec_figures.py  # 图 26～32、图 37～39
 .venv/bin/python scripts/make_beamforming_figures.py  # 图73：读取已核验实际PCM
@@ -727,7 +727,7 @@ MathJax 公式统一缩到明显小于相邻正文；优先拆行、使用 `alig
 | 网页与 PDF 可访问性 | 自动检查网页语言、图片替代文本、标题层级、表头、焦点和导航；检查 PDF 文本层、语言、书签、结构标签和阅读顺序，并人工抽查宽表的键盘横向滚动 | 已支持的项目通过；构建链没有结构标签或不能保证阅读顺序时，必须在交付中明确写成限制，不能用“文本可搜索”代替标签化验收 |
 | 构建脚本或依赖 | 运行受影响命令及最小回归；检查退出状态和输出文件 | 命令正常结束；输出完整；未引入无关依赖或文件变化 |
 
-当前完整构建的基线是 88 张编号 PNG 和 1 张房间补图、18 个当前教程页面（首页加17篇）、4 个旧路径兼容页面与 6 个研究手册页面（共28页），以及 PDF 的 18 个章级、173 个节级、
+当前完整构建的基线是 88 张编号 PNG 和 1 张房间补图、18 个当前教程页面（首页加17篇）、8 个旧路径兼容页面与 6 个研究手册页面（共32页），以及 PDF 的 18 个章级、173 个节级、
 868 个子节级书签，共 1059 个大纲项。子节级书签来自第 1～11 章、扩展专题Ⅰ～Ⅳ与附录 A/B；各篇独立数量见 `scripts/quality_check.py` 的显式清单。
 质量门禁应从独立的发布清单或显式常量读取这些基线，不能只从待检 Markdown 动态生成“期望值”
 再自我比较。构建后应核对数量和名称。若本次任务改变章节或图表结构，先更新发布清单、README 和本节，

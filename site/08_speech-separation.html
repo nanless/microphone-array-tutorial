@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 8 章 · 语音分离 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="c1e13cc91b8b"><style>
+<meta name="source-digest" content="820e0688bd26"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -9,8 +9,8 @@ h1,h2,h3,h4{scroll-margin-top:60px}
 @media screen{.main a[id^="e"],.main .exercise-alias{scroll-margin-top:80px}}
 @media screen{.main .exercise-alias{top:0}}
 @media screen{.main a[id="e05-20"]{scroll-margin-top:60px}}
-@media screen{.main a[id="e15-11"],.main a[id="e15-12"],.main a[id="e15-13"],.main a[id="e15-14"],.main a[id="e15-15"]{scroll-margin-top:140px}}
-@media screen{.main .exercise-alias[id="e13-11"],.main .exercise-alias[id="e13-12"],.main .exercise-alias[id="e13-13"],.main .exercise-alias[id="e13-14"],.main .exercise-alias[id="e13-15"]{scroll-margin-top:140px}}
+@media screen{.main a[id="e17-11"],.main a[id="e17-12"],.main a[id="e17-13"],.main a[id="e17-14"],.main a[id="e17-15"]{scroll-margin-top:140px}}
+@media screen{.main .exercise-alias[id="e13-11"],.main .exercise-alias[id="e13-12"],.main .exercise-alias[id="e13-13"],.main .exercise-alias[id="e13-14"],.main .exercise-alias[id="e13-15"],.main .exercise-alias[id="e15-11"],.main .exercise-alias[id="e15-12"],.main .exercise-alias[id="e15-13"],.main .exercise-alias[id="e15-14"],.main .exercise-alias[id="e15-15"]{scroll-margin-top:140px}}
 @media screen{.main a[id^="e06-"]{scroll-margin-top:60px}}
 @media screen{.main a[id^="e07-"],.main a[id^="e08-"]{scroll-margin-top:60px}}
 @media screen{.main a[id^="e11-"]{scroll-margin-top:60px}}
@@ -332,10 +332,10 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <div class="chap"><a href="11_selection-guide.html">第 11 章 · 总结与选型指南</a></div>
 <div class="chap"><a href="12_acoustic-imaging.html">第 12 章 · 声学成像与噪声源诊断</a></div>
 <div class="chap"><a href="13_distributed-enhancement.html">第 13 章 · 分布式麦克风协同增强</a></div>
-<div class="chap"><a href="16_spatial-wearable-arrays.html">第 16 章 · 空间声场与可穿戴阵列</a></div>
-<div class="chap"><a href="17_target-extraction-diarization.html">第 17 章 · 条件目标提取与多通道日志</a></div>
-<div class="chap"><a href="14_appendix-symbols-math.html">第 14 章 · 附录 A：符号术语数学</a></div>
-<div class="chap"><a href="15_appendix-guide.html">第 15 章 · 附录 B：路径地图与练习</a></div>
+<div class="chap"><a href="14_spatial-wearable-arrays.html">第 14 章 · 空间声场与可穿戴阵列</a></div>
+<div class="chap"><a href="15_target-extraction-diarization.html">第 15 章 · 条件目标提取与多通道日志</a></div>
+<div class="chap"><a href="16_appendix-symbols-math.html">第 16 章 · 附录 A：符号术语数学</a></div>
+<div class="chap"><a href="17_appendix-guide.html">第 17 章 · 附录 B：路径地图与练习</a></div>
 <div class="chap"><a href="research/index.html">源码研究</a></div></nav>
 <main class="main" id="main-content" tabindex="-1"><div class="offline-note" id="offnote">当前离线：公式显示为源码，正文讲解不受影响。</div>
 <details class="toc-mobile"><summary>本页目录</summary><nav aria-label="本页目录"><ul>
@@ -415,7 +415,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="08_speech-separation.html#sec-u-31024c5e17">E08-34：窄带跨带流式算力预算与单人段旁路门控</a></li>
 </ul></nav></details>
 <blockquote>
-<p>⚠️ 本篇是教程正文第 8 章（正文共 15 章，含第 12、13、16、17 章四篇扩展专题，另有附录 A、B），可独立阅读，前后篇见下方导航。</p>
+<p>⚠️ 本篇是教程正文第 8 章（正文共 15 章，含第 12～15 章四篇扩展专题，另有附录 A、B），可独立阅读，前后篇见下方导航。</p>
 <p>🏠 首页导读：<a href="index.html">🏠 导读与导航</a> ｜ 上一篇：<a href="07_wpe-dereverberation.html">第 7 章 · 去混响（WPE）</a> ｜ 下一篇：<a href="09_source-tracking.html">第 9 章 · 声源追踪</a></p>
 </blockquote>
 <span id="sec-1" class="anchor-alias" aria-hidden="true"></span><h1 id="sec-u-7c0095c9a8">8. 语音分离</h1>
@@ -901,7 +901,7 @@ q_t^{(r)}&=\vec z_t^H(\mathbf B^{(r)})^{-1}\vec z_t,\\
 <li><strong>发生漏标（miss）时</strong>：若上游说话人日志模块漏掉了第 1 帧的说话人 1（误标为 $a_1=0$），即便该点空间方向与说话人 1 吻合得再完美（密度高达 $8$），乘法门控也会一票否决将其后验硬砍为 $0$，导致目标协方差丢失关键样本！</li>
 <li><strong>发生误报（false alarm）时</strong>：若上游说话人日志模块在第 3 帧纯噪声段把说话人 1 错标为活跃（活动变为 $[1,0,1]$），目标后验瞬间从 $0$ 窜升至 $0.4/(0.4+0.2)=2/3$，把纯背景噪声外积堂而皇之地灌进了目标协方差矩阵！（复算脚本见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch08/gss_activity_error_demo.py"><code>gss_activity_error_demo.py</code></a>，原始机制见 <a href="https://www.isca-archive.org/chime_2018/boeddecker18_chime.pdf">Boeddeker 等，2018，§3.2 图 3 与式(5)～(8)</a>）。</li>
 </ul>
-<p>外部说话人日志的误差构成（DER 漏检、虚警、说话人混淆及硬单标签聚类的重叠盲区下界）、空谱联合目标说话人语音活动检测（TS-VAD），以及将重叠帧从目标协方差中剥离的排他乘积门控（对非目标活动取互补乘积 $\gamma_{k,t}\prod_{j\ne k}(1-\gamma_{j,t})$），将在<a href="17_target-extraction-diarization.html#sec-17-4">第 17 章 §17.4～§17.5</a> 定量展开。</p>
+<p>外部说话人日志的误差构成（DER 漏检、虚警、说话人混淆及硬单标签聚类的重叠盲区下界）、空谱联合目标说话人语音活动检测（TS-VAD），以及将重叠帧从目标协方差中剥离的排他乘积门控（对非目标活动取互补乘积 $\gamma_{k,t}\prod_{j\ne k}(1-\gamma_{j,t})$），将在<a href="15_target-extraction-diarization.html#sec-15-4">第 15 章 §15.4～§15.5</a> 定量展开。</p>
 <p>这也解释了为什么原论文强调在截取目标话语段做 EM 聚类时，必须在话语前后各向外扩充数秒至十余秒的<strong>上下文窗口（context window）</strong>：倘若只截取目标说话人从头说到尾的那短短两秒，其活动指示恒为 $1$，与同样恒为 $1$ 的背景噪声类在时间轴上毫无区分度，目标簇与背景簇依然可能发生互换！只有扩宽窗口让每位说话人都露出停顿间隙，时间门控才能真正锁死簇身份。</p>
 <h3 id="sec-8-4-4">8.4.4 协方差、波束权重与适用边界</h3>
 <p>在实际会议处理中，先算清一段上下文窗口的网格吞吐量：以 $16\ \mathrm{kHz}$ 采样、$512$ 点窗、$128$ 点帧移（每秒 $125$ 帧）处理一段 $30\ \mathrm{s}$ 上下文为例，不补零完整帧数为 $\lfloor(480000-512)/128\rfloor+1=3747$ 帧，乘以 $257$ 个单边频点共有 $962\,979$（约 $96.3$ 万）个时频观测点参与多轮 EM 更新。当阵列通道数 $M\ge 2$ 时才具备方向聚类基础；若重叠人数 $N\le M$，后续线性波束拥有充足零陷自由度，即便遇到 $N>M$ 的多人混战，仍可依靠时频稀疏占优与活动门控逐人为目标估计软掩码与波束。</p>
@@ -1065,7 +1065,7 @@ s_{\mathrm{tar}}=\alpha s,\\
 <li><strong>跨块输出槽位对齐（stitching）</strong>：由于每一块独立推理都存在槽位置换歧义，前一块的“输出槽 0”与后一块的“输出槽 1”很可能对应同一位说话人，必须借助重叠区波形相关性或声纹嵌入把相邻块的槽位重新穿成连续音轨；</li>
 <li>
 <p><strong>单人语音段旁路防切碎准则</strong>：真实会议（如 <code>LibriCSS</code> 的零重叠 <code>0S</code>/<code>0L</code> 子集及日常讨论中 $70\%\text{～}85\%$ 的有声段）大多时候<strong>只有单人独白</strong>。清擦音（如 <code>/s/, /f/</code>）本身功率往往比元音低约 $20\ \mathrm{dB}$：若对单人段无条件硬跑双槽位分离器，模型一旦把高频清擦音错切进第 $2$ 槽位，主槽位虽然只丢了 $1\%$ 的能量、单看 <code>SI-SDR</code> 仍高达近 $+20\ \mathrm{dB}$，辅音缺失（如 <code>"see"</code> 变成 <code>"ee"</code>）却会直接抬高后端词错率！</p>
-<p>因此工业级 CSS 前端都会监控重叠语音检测（OSD）或次主槽能量比 $\eta_{\mathrm{dB}}=10\log_{10}(E_{(2)}/E_{(1)})$：一旦低于门限（典型如 $\eta_{\mathrm{dB}}\le -18\ \mathrm{dB}$），立即触发<strong>单人段旁路保护</strong>，直接输出主波束或将双槽合并、静音副槽（定量算例见本章<a href="#e08-34">练习 E08-34</a>、系统评测与选型联动见<a href="10_engineering-practice.html#sec-10-5">第 10 章 §10.5</a>、<a href="11_selection-guide.html#sec-11-2">第 11 章 §11.2</a> 及<a href="17_target-extraction-diarization.html#sec-17-2">第 17 章 §17.2</a>）。</p>
+<p>因此工业级 CSS 前端都会监控重叠语音检测（OSD）或次主槽能量比 $\eta_{\mathrm{dB}}=10\log_{10}(E_{(2)}/E_{(1)})$：一旦低于门限（典型如 $\eta_{\mathrm{dB}}\le -18\ \mathrm{dB}$），立即触发<strong>单人段旁路保护</strong>，直接输出主波束或将双槽合并、静音副槽（定量算例见本章<a href="#e08-34">练习 E08-34</a>、系统评测与选型联动见<a href="10_engineering-practice.html#sec-10-5">第 10 章 §10.5</a>、<a href="11_selection-guide.html#sec-11-2">第 11 章 §11.2</a> 及<a href="15_target-extraction-diarization.html#sec-15-2">第 15 章 §15.2</a>）。</p>
 </li>
 </ol>
 <p>在没有干净参考真值的在线部署中，最轻量级的跨块槽位对齐方法是比对<strong>相邻两块在公共时间重叠区内的输出波形相似度</strong>。记前一块第 $i$ 个输出槽与当前块第 $j$ 个输出槽在重叠采样区间内的去均值列向量分别为 $\vec u_i,\vec v_j$，当两者能量均大于静音门限时，计算绝对值归一化互相关矩阵 $C_{ij}$ 并搜索最优排列 $\hat\pi$：</p>
@@ -1199,7 +1199,7 @@ Y&=P_{\mathcal S}(Y).
 <p>许多端侧通话与语音助手场景并不需要把房间里所有人的声音全都分出来，而是只想提取“提前录过几秒声纹的那位机主”。<strong>目标说话人提取（Target Speaker Extraction，TSE，如 <a href="https://arxiv.org/abs/1705.10687">SpeakerBeam 系列</a>）</strong>把预训练声纹编码器从注册语音中提取的定长声纹嵌入向量（speaker embedding，或辅以视觉唇动、到达方向角等线索）通过特征拼接、特征线性调制（FiLM）或交叉注意力注入分离骨干网，直接输出单条目标音轨——既省去了 PIT 排列与多路后开销，又从根源上消除了跨块换人问题（与第 6 章 §6.5 个性化回声消除 pAEC 思路相通，端侧声纹特征的加密存储与隐私合规要求同样遵循 §6.13）。工程验收时须重点覆盖短注册语音信道失配、同性别相似音色抗串音泄漏以及目标独白误抑制三项测试。</p>
 <h3 id="sec-u-5f34c47dfc">用文字指定要分离的声音</h3>
 <p>如果连预先录好的声纹也没有，而是希望像搜索引擎一样输入自然语言提示词（如 <code>"键盘敲击声"</code>、<code>"婴儿哭声"</code> 或 <code>"男声演讲"</code>）来剥离特定声源呢？这就是近年兴起的<strong>语言查询通用音源分离（Language-Queried Audio Source Separation）</strong>。典型系统先借助对比语言—音频预训练模型（如 <a href="https://arxiv.org/abs/2206.04769">CLAP</a>）将文本描述编码为语义条件向量，再通过门控调制控制音频分离网络提取匹配声源（代表工作 <strong>AudioSep</strong> 已正式发表于 <em>IEEE/ACM TASLP</em> 2024 年第 33 卷第 458–471 页，见 <a href="https://doi.org/10.1109/TASLP.2024.3520017">正式论文</a>与<a href="https://github.com/audio-agi/audiosep">官方仓库</a>）。需注意文本查询瞄准的是声音事件或宽泛声学类别，无法替代声纹级 TSE 对特定个人身份的精细区分。</p>
-<p>从声纹、空间与文本条件注入算子（FiLM 与交叉注意力）、消除目标沉默段零除零奇异性的双态训练损失，到视听多模态唇动帧率对齐、相机管线滞后截断与遮挡置信度回退，再到远场多人会议中模块化级联（<code>TS-VAD → WPE + GSS → ASR</code>）与联合识别架构（<code>SOT</code>、<code>DiCoW</code>）的工程选型，将在<a href="17_target-extraction-diarization.html">第 17 章</a> 系统展开。</p>
+<p>从声纹、空间与文本条件注入算子（FiLM 与交叉注意力）、消除目标沉默段零除零奇异性的双态训练损失，到视听多模态唇动帧率对齐、相机管线滞后截断与遮挡置信度回退，再到远场多人会议中模块化级联（<code>TS-VAD → WPE + GSS → ASR</code>）与联合识别架构（<code>SOT</code>、<code>DiCoW</code>）的工程选型，将在<a href="15_target-extraction-diarization.html">第 15 章</a> 系统展开。</p>
 <span id="sec-8-1-5" class="anchor-alias" aria-hidden="true"></span><span id="sec-7" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-8-7">8.7 教学代码与源码复现</h2>
 <h3 id="sec-u-856e6b31e6">本地可运行模块与回退</h3>
 <p>本仓库 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch08/core/separation.py"><code>codes/chapters/ch08/core/separation.py</code></a> 提供了五个零外部黑盒依赖的纯 NumPy 核心函数，方便读者逐步拆解验证：</p>

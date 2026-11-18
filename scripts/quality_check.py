@@ -86,30 +86,30 @@ DISTRIBUTED_AUDIO_SOURCES = (
     'codes/chapters/ch10/core/engineering.py', 'codes/chapters/ch00/core/audio_samples.py',
     'codes/chapters/ch00/io_contracts.py',
 )
-WEARABLE_AUDIO_ROOT = CODE_CHAPTERS / "ch16" / "wearable_audio"
+WEARABLE_AUDIO_ROOT = CODE_CHAPTERS / "ch14" / "wearable_audio"
 WEARABLE_AUDIO_CHANNELS = {
     "wearable_clean_ref.wav": 1, "wearable_air_wind_2ch.wav": 2,
     "wearable_inear_occluded.wav": 1, "wearable_inear_equalized.wav": 1,
     "wearable_fused_output.wav": 1, "wearable_hearthrough_comb.wav": 1,
 }
 WEARABLE_AUDIO_SOURCES = (
-    "codes/chapters/ch16/core/wearable_fusion.py",
-    "codes/chapters/ch16/core/wearable_audio.py",
-    "codes/chapters/ch16/examples/generate_wearable_audio.py",
+    "codes/chapters/ch14/core/wearable_fusion.py",
+    "codes/chapters/ch14/core/wearable_audio.py",
+    "codes/chapters/ch14/examples/generate_wearable_audio.py",
     "codes/chapters/ch02/core/conventions.py",
     "codes/chapters/ch00/core/audio_samples.py",
     "codes/chapters/ch00/io_contracts.py",
 )
-TSE_AUDIO_ROOT = CODE_CHAPTERS / "ch17" / "tse_audio"
+TSE_AUDIO_ROOT = CODE_CHAPTERS / "ch15" / "tse_audio"
 TSE_AUDIO_CHANNELS = {
     "tse_near_target_ref.wav": 1, "tse_far_interferer_ref.wav": 1,
     "tse_array_3ch.wav": 3, "tse_farfield_dsb.wav": 1,
     "tse_bubble_d10cm.wav": 1, "tse_bubble_d2cm_illcond.wav": 1,
 }
 TSE_AUDIO_SOURCES = (
-    "codes/chapters/ch17/core/distance_bubble.py",
-    "codes/chapters/ch17/core/tse_audio.py",
-    "codes/chapters/ch17/examples/generate_tse_audio.py",
+    "codes/chapters/ch15/core/distance_bubble.py",
+    "codes/chapters/ch15/core/tse_audio.py",
+    "codes/chapters/ch15/examples/generate_tse_audio.py",
     "codes/chapters/ch02/core/conventions.py",
     "codes/chapters/ch00/core/audio_samples.py",
     "codes/chapters/ch00/io_contracts.py",
@@ -157,12 +157,12 @@ EXPECTED_SECTION_COUNTS = {
     "09_source-tracking.md": 6,
     "10_engineering-practice.md": 12,
     "11_selection-guide.md": 7,
-    "14_appendix-symbols-math.md": 4,
-    "15_appendix-guide.md": 7,
     "12_acoustic-imaging.md": 14,
     "13_distributed-enhancement.md": 16,
-    "16_spatial-wearable-arrays.md": 12,
-    "17_target-extraction-diarization.md": 10,
+    "14_spatial-wearable-arrays.md": 12,
+    "15_target-extraction-diarization.md": 10,
+    "16_appendix-symbols-math.md": 4,
+    "17_appendix-guide.md": 7,
 }
 # 第 1～17 章的源 h4 进入合订目录和 PDF 第三级书签。此表是独立发布
 # 基线，不从构建脚本或待检产物反推。
@@ -178,13 +178,13 @@ EXPECTED_SUBSECTION_COUNTS = {
     "09_source-tracking.md": 64,  # three independent topics and E09-24/25/26
     "10_engineering-practice.md": 58,
     "11_selection-guide.md": 43,  # two evidence topics and E11-26/27 are independently navigable
-    "14_appendix-symbols-math.md": 39,
-    "15_appendix-guide.md": 31,
     "12_acoustic-imaging.md": 68,
     # 40 separately navigable topics and 25 exercise headings, manually read.
     "13_distributed-enhancement.md": 68,
-    "16_spatial-wearable-arrays.md": 48,
-    "17_target-extraction-diarization.md": 43,
+    "14_spatial-wearable-arrays.md": 48,
+    "15_target-extraction-diarization.md": 43,
+    "16_appendix-symbols-math.md": 39,
+    "17_appendix-guide.md": 31,
 }
 # 上表为独立发布基线，不从待检 HTML 或构建器反推。
 EXPECTED_CHAPTERS = [
@@ -202,22 +202,27 @@ EXPECTED_CHAPTERS = [
     ("11_selection-guide.md", "第 11 章 · 总结与选型指南"),
     ("12_acoustic-imaging.md", "第 12 章 · 声学成像与噪声源诊断"),
     ("13_distributed-enhancement.md", "第 13 章 · 分布式麦克风协同增强"),
-    ("16_spatial-wearable-arrays.md", "第 16 章 · 空间声场与可穿戴阵列"),
-    ("17_target-extraction-diarization.md", "第 17 章 · 条件目标提取与多通道日志"),
-    ("14_appendix-symbols-math.md", "第 14 章 · 附录 A：符号术语数学"),
-    ("15_appendix-guide.md", "第 15 章 · 附录 B：路径地图与练习"),
+    ("14_spatial-wearable-arrays.md", "第 14 章 · 空间声场与可穿戴阵列"),
+    ("15_target-extraction-diarization.md", "第 15 章 · 条件目标提取与多通道日志"),
+    ("16_appendix-symbols-math.md", "第 16 章 · 附录 A：符号术语数学"),
+    ("17_appendix-guide.md", "第 17 章 · 附录 B：路径地图与练习"),
 ]
 EXPECTED_CHAPTER_COUNT = 18
 # Independent published-topic identities; current display numbers differ.
 EXPECTED_PDF_TOPIC_IDS = {
     "12_acoustic-imaging.md": 14, "13_distributed-enhancement.md": 15,
-    "14_appendix-symbols-math.md": 12, "15_appendix-guide.md": 13,
+    "14_spatial-wearable-arrays.md": 16, "15_target-extraction-diarization.md": 17,
+    "16_appendix-symbols-math.md": 12, "17_appendix-guide.md": 13,
 }
 EXPECTED_LEGACY_ROUTES = {
     "14_acoustic-imaging.html": "12_acoustic-imaging.html",
     "15_distributed-enhancement.html": "13_distributed-enhancement.html",
-    "12_appendix-symbols-math.html": "14_appendix-symbols-math.html",
-    "13_appendix-guide.html": "15_appendix-guide.html",
+    "12_appendix-symbols-math.html": "16_appendix-symbols-math.html",
+    "14_appendix-symbols-math.html": "16_appendix-symbols-math.html",
+    "13_appendix-guide.html": "17_appendix-guide.html",
+    "15_appendix-guide.html": "17_appendix-guide.html",
+    "16_spatial-wearable-arrays.html": "14_spatial-wearable-arrays.html",
+    "17_target-extraction-diarization.html": "15_target-extraction-diarization.html",
 }
 EXPECTED_SECTION_COUNT = 173
 EXPECTED_SUBSECTION_COUNT = 868
@@ -230,9 +235,9 @@ EXPECTED_EXERCISE_COUNTS = {
     '05_beamforming.md': 29, '06_aec.md': 44, '07_wpe-dereverberation.md': 26,
     '08_speech-separation.md': 34, '09_source-tracking.md': 28,
     '10_engineering-practice.md': 36, '11_selection-guide.md': 29,
-    '14_appendix-symbols-math.md': 21, '15_appendix-guide.md': 16,
     '12_acoustic-imaging.md': 20, '13_distributed-enhancement.md': 27,
-    '16_spatial-wearable-arrays.md': 18, '17_target-extraction-diarization.md': 18,
+    '14_spatial-wearable-arrays.md': 18, '15_target-extraction-diarization.md': 18,
+    '16_appendix-symbols-math.md': 21, '17_appendix-guide.md': 16,
 }
 # 研究附站使用独立显式清单，不挤占 16 篇教程或教程 PDF 大纲基线。
 # 此清单不能从构建器或待检 HTML 反推。
@@ -661,7 +666,7 @@ def expected_site_content(name: str, source: str):
                      for _alt, figure_name, _number in extract_figure_references(source))
     if name == "00_overview.md":
         images["../assets/readme/cases/locata/levels.svg"] += 1
-    if name == "15_appendix-guide.md":
+    if name == "17_appendix-guide.md":
         if not re.search(r"!\[[^\]]+\]\(\.\./codes/chapters/appendix_b/room_audio/ROOM_RESULTS\.png\)", source):
             raise ValueError("附录 B 缺少房间仿真补充图源引用")
         images["room_audio/ROOM_RESULTS.png"] += 1
@@ -1291,7 +1296,7 @@ def check_site(errors: list[str]):
                         for name, _label in EXPECTED_CHAPTERS[1:]}
     expected_pages = canonical_pages | set(EXPECTED_LEGACY_ROUTES)
     if {page.name for page in pages} != expected_pages:
-        fail(errors, "站点教程页面集合应为18个当前页面及4个旧路径兼容页面")
+        fail(errors, "站点教程页面集合应为18个当前页面及8个旧路径兼容页面")
     for old, current in EXPECTED_LEGACY_ROUTES.items():
         if not (SITE / old).is_file() or not (SITE / current).is_file():
             continue
@@ -1510,7 +1515,7 @@ def check_combined_html(errors: list[str]):
             f"../figures/{figure_name}"
             for _alt, figure_name, _number in extract_figure_references(documents[name])
         )
-        if name == "15_appendix-guide.md":
+        if name == "17_appendix-guide.md":
             expected_images["../codes/chapters/appendix_b/room_audio/ROOM_RESULTS.png"] += 1
     missing_ids = sorted(expected_ids - ids)
     if missing_ids:
@@ -2090,7 +2095,7 @@ def check_room_audio(errors):
             if actual[0] != baseline[0] or any(round(value, 3) != reference
                                                for value, reference in zip(actual[1:], baseline[1:])):
                 raise ValueError(f"房间结果报告与已发布三位小数表不符：{row['name']}")
-        chapter = (CHAPTERS / "15_appendix-guide.md").read_text(encoding="utf-8")
+        chapter = (CHAPTERS / "17_appendix-guide.md").read_text(encoding="utf-8")
         for label, distance, azimuth, t60, drr, estimate, error in published_rows:
             # The publication table is checked by its six rounded numeric columns,
             # not by position-only labels that might be edited independently.
@@ -2115,7 +2120,7 @@ def check_room_audio(errors):
             if (record["channels"] != channels or record["frames"] < 16000 or
                     np.max(np.abs(pcm)) > 26215):
                 raise ValueError(f"房间 WAV 通道、长度或峰值不符：{path.name}")
-        appendix = (SITE / "15_appendix-guide.html").read_text(encoding="utf-8")
+        appendix = (SITE / "17_appendix-guide.html").read_text(encoding="utf-8")
         if ('src="room_audio/ROOM_RESULTS.png"' not in appendix or
                 'href="room_audio/MANIFEST.json"' not in appendix):
             raise ValueError("附录站点未发布房间图或音频清单")
@@ -3099,7 +3104,7 @@ def check_weighted_audio(errors):
             row = manifest['pcm_analysis']['candidates'][filename]
             for field, expected in measured.items():
                 _compare_selection_report(row[field], expected, 'weighted PCM/' + filename + '/' + field)
-        for page, prefix in ((SITE / '14_appendix-symbols-math.html', ''),
+        for page, prefix in ((SITE / '16_appendix-symbols-math.html', ''),
                              (SITE / 'research/05_exercises_and_audio.html', '../')):
             _check_visible_audio(page, prefix, 'weighted_audio', WEIGHTED_AUDIO_WAVS, {'MANIFEST.json'})
     except (OSError, ValueError, KeyError, TypeError, struct.error, wave.Error) as exc:
@@ -3182,7 +3187,7 @@ def check_response_audio(errors):
             for field, expected in measured.items():
                 _compare_selection_report(manifest['pcm_analysis']['candidates'][name][field], expected,
                                           'response PCM/'+name+'/'+field)
-        for page, prefix in ((SITE/'15_appendix-guide.html', ''),
+        for page, prefix in ((SITE/'17_appendix-guide.html', ''),
                              (SITE/'research/05_exercises_and_audio.html', '../')):
             _check_visible_audio(page, prefix, 'response_audio', RESPONSE_AUDIO_WAVS, {'MANIFEST.json'})
     except (OSError, ValueError, KeyError, TypeError, struct.error, wave.Error) as error:
@@ -4767,7 +4772,7 @@ def check_audio(errors):
 def check_wearable_audio(errors):
     """Independent member/copy checks, source SHA verification, and stdlib PCM16 integer scoring."""
     try:
-        from codes.chapters.ch16.examples.generate_wearable_audio import check_assets
+        from codes.chapters.ch14.examples.generate_wearable_audio import check_assets
         source, published = WEARABLE_AUDIO_ROOT, SITE / "wearable_audio"
         members = set(WEARABLE_AUDIO_CHANNELS) | {"MANIFEST.json"}
         validate_asset_directory(source, members, check=True)
@@ -4819,7 +4824,7 @@ def check_wearable_audio(errors):
             actual = row["pcm_measurements"]["pcm_integer_metrics"]
             if not same_metadata(actual, expected):
                 raise ValueError("wearable independent integer metrics differ: " + key)
-        for page, prefix in ((SITE / "16_spatial-wearable-arrays.html", ""),
+        for page, prefix in ((SITE / "14_spatial-wearable-arrays.html", ""),
                              (SITE / "research/05_exercises_and_audio.html", "../")):
             _check_visible_audio(page, prefix, "wearable_audio", set(WEARABLE_AUDIO_CHANNELS), {"MANIFEST.json"})
     except (OSError, ValueError, KeyError, TypeError, wave.Error, struct.error) as error:
@@ -4834,8 +4839,8 @@ def check_wearable_figures(errors):
         manifest = strict_json_loads(manifest_path.read_bytes())
         manifest_sha = hashlib.sha256(manifest_path.read_bytes()).hexdigest()
         expected_sources = set(WEARABLE_AUDIO_SOURCES) | {
-            "codes/chapters/ch16/core/spatial_parametric.py",
-            "codes/chapters/ch16/core/binaural_matching.py",
+            "codes/chapters/ch14/core/spatial_parametric.py",
+            "codes/chapters/ch14/core/binaural_matching.py",
             "scripts/make_figures.py",
             "scripts/make_wearable_figures.py",
         }
@@ -4846,7 +4851,7 @@ def check_wearable_figures(errors):
             (84, "fig84_hear_through_comb.png", "figure84_hear_through_comb.json"),
         )
         for num, png_name, json_name in specs:
-            report_path = ROOT / "codes/chapters/ch16/reports" / json_name
+            report_path = ROOT / "codes/chapters/ch14/reports" / json_name
             report_bytes = validate_parent_chain(report_path).read_bytes()
             report = strict_json_loads(report_bytes)
             if (type(report.get("figure")) is not int or report["figure"] != num
@@ -4893,7 +4898,7 @@ def check_wearable_figures(errors):
 def check_tse_audio(errors):
     """Independent member/copy checks, source SHA verification, and stdlib PCM16 integer scoring."""
     try:
-        from codes.chapters.ch17.examples.generate_tse_audio import check_assets
+        from codes.chapters.ch15.examples.generate_tse_audio import check_assets
         source, published = TSE_AUDIO_ROOT, SITE / "tse_audio"
         members = set(TSE_AUDIO_CHANNELS) | {"MANIFEST.json"}
         validate_asset_directory(source, members, check=True)
@@ -4950,7 +4955,7 @@ def check_tse_audio(errors):
             actual = row["pcm_measurements"]["pcm_integer_measurements"]
             if not same_metadata(actual, expected):
                 raise ValueError("tse independent integer E/D differs: " + key)
-        for page, prefix in ((SITE / "17_target-extraction-diarization.html", ""),
+        for page, prefix in ((SITE / "15_target-extraction-diarization.html", ""),
                              (SITE / "research/05_exercises_and_audio.html", "../")):
             _check_visible_audio(page, prefix, "tse_audio", set(TSE_AUDIO_CHANNELS), {"MANIFEST.json"})
     except (OSError, ValueError, KeyError, TypeError, wave.Error, struct.error) as error:
@@ -4965,9 +4970,9 @@ def check_tse_figures(errors):
         manifest = strict_json_loads(manifest_path.read_bytes())
         manifest_sha = hashlib.sha256(manifest_path.read_bytes()).hexdigest()
         expected_sources = set(TSE_AUDIO_SOURCES) | {
-            "codes/chapters/ch17/core/conditional_tse.py",
-            "codes/chapters/ch17/core/diarization_tsvad.py",
-            "codes/chapters/ch17/core/av_alignment.py",
+            "codes/chapters/ch15/core/conditional_tse.py",
+            "codes/chapters/ch15/core/diarization_tsvad.py",
+            "codes/chapters/ch15/core/av_alignment.py",
             "scripts/make_figures.py",
             "scripts/make_tse_figures.py",
         }
@@ -4978,7 +4983,7 @@ def check_tse_figures(errors):
             (88, "fig88_av_asynchrony_occlusion.png", "figure88_av_asynchrony_occlusion.json"),
         )
         for num, png_name, json_name in specs:
-            report_path = ROOT / "codes/chapters/ch17/reports" / json_name
+            report_path = ROOT / "codes/chapters/ch15/reports" / json_name
             report_bytes = validate_parent_chain(report_path).read_bytes()
             report = strict_json_loads(report_bytes)
             if (type(report.get("figure")) is not int or report["figure"] != num

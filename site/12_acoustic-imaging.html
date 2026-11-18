@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 12 章 · 声学成像与噪声源诊断 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="c1e13cc91b8b"><style>
+<meta name="source-digest" content="820e0688bd26"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -9,8 +9,8 @@ h1,h2,h3,h4{scroll-margin-top:60px}
 @media screen{.main a[id^="e"],.main .exercise-alias{scroll-margin-top:80px}}
 @media screen{.main .exercise-alias{top:0}}
 @media screen{.main a[id="e05-20"]{scroll-margin-top:60px}}
-@media screen{.main a[id="e15-11"],.main a[id="e15-12"],.main a[id="e15-13"],.main a[id="e15-14"],.main a[id="e15-15"]{scroll-margin-top:140px}}
-@media screen{.main .exercise-alias[id="e13-11"],.main .exercise-alias[id="e13-12"],.main .exercise-alias[id="e13-13"],.main .exercise-alias[id="e13-14"],.main .exercise-alias[id="e13-15"]{scroll-margin-top:140px}}
+@media screen{.main a[id="e17-11"],.main a[id="e17-12"],.main a[id="e17-13"],.main a[id="e17-14"],.main a[id="e17-15"]{scroll-margin-top:140px}}
+@media screen{.main .exercise-alias[id="e13-11"],.main .exercise-alias[id="e13-12"],.main .exercise-alias[id="e13-13"],.main .exercise-alias[id="e13-14"],.main .exercise-alias[id="e13-15"],.main .exercise-alias[id="e15-11"],.main .exercise-alias[id="e15-12"],.main .exercise-alias[id="e15-13"],.main .exercise-alias[id="e15-14"],.main .exercise-alias[id="e15-15"]{scroll-margin-top:140px}}
 @media screen{.main a[id^="e06-"]{scroll-margin-top:60px}}
 @media screen{.main a[id^="e07-"],.main a[id^="e08-"]{scroll-margin-top:60px}}
 @media screen{.main a[id^="e11-"]{scroll-margin-top:60px}}
@@ -341,10 +341,10 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li><a href="12_acoustic-imaging.html#sec-12-14">12.14 原始资料与继续阅读</a></li>
 </ul>
 <div class="chap"><a href="13_distributed-enhancement.html">第 13 章 · 分布式麦克风协同增强</a></div>
-<div class="chap"><a href="16_spatial-wearable-arrays.html">第 16 章 · 空间声场与可穿戴阵列</a></div>
-<div class="chap"><a href="17_target-extraction-diarization.html">第 17 章 · 条件目标提取与多通道日志</a></div>
-<div class="chap"><a href="14_appendix-symbols-math.html">第 14 章 · 附录 A：符号术语数学</a></div>
-<div class="chap"><a href="15_appendix-guide.html">第 15 章 · 附录 B：路径地图与练习</a></div>
+<div class="chap"><a href="14_spatial-wearable-arrays.html">第 14 章 · 空间声场与可穿戴阵列</a></div>
+<div class="chap"><a href="15_target-extraction-diarization.html">第 15 章 · 条件目标提取与多通道日志</a></div>
+<div class="chap"><a href="16_appendix-symbols-math.html">第 16 章 · 附录 A：符号术语数学</a></div>
+<div class="chap"><a href="17_appendix-guide.html">第 17 章 · 附录 B：路径地图与练习</a></div>
 <div class="chap"><a href="research/index.html">源码研究</a></div></nav>
 <main class="main" id="main-content" tabindex="-1"><div class="offline-note" id="offnote">当前离线：公式显示为源码，正文讲解不受影响。</div>
 <details class="toc-mobile"><summary>本页目录</summary><nav aria-label="本页目录"><ul>
@@ -433,7 +433,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li><a href="12_acoustic-imaging.html#sec-12-14">12.14 原始资料与继续阅读</a></li>
 </ul></nav></details>
 <blockquote>
-<p>本篇是第 12 章（扩展专题Ⅰ），接在第 11 章选型指南之后。数学预备内容可随时回查第 14 章附录 A。</p>
+<p>本篇是第 12 章（扩展专题Ⅰ），接在第 11 章选型指南之后。数学预备内容可随时回查第 16 章附录 A。</p>
 <p>🏠 首页导读：<a href="index.html">🏠 导读与导航</a> ｜ 上一篇：<a href="11_selection-guide.html">第 11 章 · 总结与选型指南</a> ｜ 下一篇：<a href="13_distributed-enhancement.html">第 13 章 · 分布式麦克风协同增强</a></p>
 </blockquote>
 <hr />
@@ -522,7 +522,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 </table></div>
 <p>最顺畅的学习路径是顺着信号处理的因果链条推进：先为每个候选网格点建立球面波传播向量，再从多通道同步录音估计互谱矩阵（CSM），接着用空间权重计算常规波束扫描二次型并看清点扩散函数（PSF）为何产生主瓣与旁瓣，最后进入反演与相干成分剥离。DAMAS、CLEAN-SC 与 CMF 分别改动了这条链路中不同的一环，工程选型时需要对照各自的数学目标与失效条件，而不能只看哪张示例图斑点更细。</p>
 <span id="sec-6" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-f894f2fd98">先修内容与本篇的量</h3>
-<p>多通道时延与复指数相位约定可回查<a href="02_basics-signal-model.html#sec-2-3">第 2 章 §2.3</a>，阵列孔径、差分共阵与通道校准可回查<a href="03_array-geometry.html">第 3 章</a>，空间内积与匹配波束权重可回查<a href="05_beamforming.html#sec-5-1">第 5 章 §5.1</a>，Hermitian 半正定矩阵与最小二乘基础见<a href="14_appendix-symbols-math.html#sec-14-3">附录 A §14.3</a>。</p>
+<p>多通道时延与复指数相位约定可回查<a href="02_basics-signal-model.html#sec-2-3">第 2 章 §2.3</a>，阵列孔径、差分共阵与通道校准可回查<a href="03_array-geometry.html">第 3 章</a>，空间内积与匹配波束权重可回查<a href="05_beamforming.html#sec-5-1">第 5 章 §5.1</a>，Hermitian 半正定矩阵与最小二乘基础见<a href="16_appendix-symbols-math.html#sec-16-3">附录 A §16.3</a>。</p>
 <p>全章沿用全书统一的数学记号：列向量加箭头（如 $\vec x$），矩阵用大写正粗体（如 $\mathbf R$），实转置记为 $^\top$，复共轭转置记为 $^H$。麦克风通道数记为 $M$，候选网格点总数记为 $J$，统计平均所用的快拍数记为 $L$；时域采样下标为 $n$，频点下标为 $k$，帧或快拍下标为 $\ell$。为避免与频点索引 $k$ 混淆，空间波数统一记作 $\kappa = 2\pi f / c$（单位：$\mathrm{rad/m}$）。</p>
 <p>在矩阵符号上，候选网格传播矩阵记作 $\mathbf A \in \mathbb{C}^{M \times J}$，点扩散函数矩阵记作 $\mathbf P \in \mathbb{R}^{J \times J}$，观测互谱矩阵记作 $\mathbf R \in \mathbb{C}^{M \times M}$（注意<a href="09_source-tracking.html">第 9 章</a>卡尔曼滤波中的 $\mathbf P$ 表示状态误差协方差，切勿与本章的 PSF 矩阵混同）。</p>
 <span id="sec-7" class="anchor-alias" aria-hidden="true"></span><span id="sec-14-2" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-12-2">12.2 先给每个候选源一个传播模型</h2>
@@ -570,7 +570,7 @@ x_{2,\ell}x_{1,\ell}^* & |x_{2,\ell}|^2
 \vec v^H\hat{\mathbf R}\vec v
 &=\frac{1}{L}\sum_{\ell=1}^{L}|\vec v^H\vec x_\ell|^2\ge 0.
 \end{aligned}$$</p>
-<p>因为每一项都是复数内积的模平方，所以只要保留完整的对角与非对角元素，$\hat{\mathbf R}$ 必然是 Hermitian 半正定矩阵（$\hat{\mathbf R} \succeq 0$）。注意这一性质纯粹由外积平方和结构保证，并不要求这 $L$ 个快拍的样本均值恰好为零；严格来说，式(12-3)定义的是未中心化的二阶矩矩阵，中心化样本协方差还需额外减去均值外积 $\bar{\vec x}\bar{\vec x}^H$（详见<a href="14_appendix-symbols-math.html#sec-u-152b8861e4">附录 A E14-02</a>）。</p>
+<p>因为每一项都是复数内积的模平方，所以只要保留完整的对角与非对角元素，$\hat{\mathbf R}$ 必然是 Hermitian 半正定矩阵（$\hat{\mathbf R} \succeq 0$）。注意这一性质纯粹由外积平方和结构保证，并不要求这 $L$ 个快拍的样本均值恰好为零；严格来说，式(12-3)定义的是未中心化的二阶矩矩阵，中心化样本协方差还需额外减去均值外积 $\bar{\vec x}\bar{\vec x}^H$（详见<a href="16_appendix-symbols-math.html#sec-u-152b8861e4">附录 A E16-02</a>）。</p>
 <span id="sec-13" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-12d341ebd4">峰值复幅度与均方复系数</h3>
 <p>用正弦波构造校验算例时，最容易出岔子的是“峰值幅度”与“均方根（RMS）幅度”相差的因子 $2$。考虑频率既非直流（DC）也非 Nyquist 端点的实正弦序列：记复指数为 $\xi[n] = z e^{\mathrm{j}\Omega_{\mathrm{d}} n}$（其中数字角频率 $\Omega_{\mathrm{d}} = 2\pi f / f_s \in (0,\pi)$，$z$ 为峰值复幅度），实正弦取其实部 $x[n] = \operatorname{Re}\{\xi[n]\}$。由于余弦平方在整数个周期内的平均值为 $1/2$，该实正弦的时域均方功率等于 $|z|^2 / 2$。为了使式(12-3)算出的 CSM 对角元直接等于时域均方功率，我们可以先定义均方根复系数 $\vec s_\ell = \vec z_\ell / \sqrt{2}$，等价地在外积上除以 $2$：</p>
 <p>$$\begin{aligned}

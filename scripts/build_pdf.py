@@ -120,10 +120,10 @@ CHAPTERS = [
     ("11_selection-guide.md", "第 11 章 · 总结与选型指南"),
     ("12_acoustic-imaging.md", "第 12 章 · 声学成像与噪声源诊断"),
     ("13_distributed-enhancement.md", "第 13 章 · 分布式麦克风协同增强"),
-    ("16_spatial-wearable-arrays.md", "第 16 章 · 空间声场与可穿戴阵列"),
-    ("17_target-extraction-diarization.md", "第 17 章 · 条件目标提取与多通道日志"),
-    ("14_appendix-symbols-math.md", "第 14 章 · 附录 A：符号术语数学"),
-    ("15_appendix-guide.md", "第 15 章 · 附录 B：路径地图与练习"),
+    ("14_spatial-wearable-arrays.md", "第 14 章 · 空间声场与可穿戴阵列"),
+    ("15_target-extraction-diarization.md", "第 15 章 · 条件目标提取与多通道日志"),
+    ("16_appendix-symbols-math.md", "第 16 章 · 附录 A：符号术语数学"),
+    ("17_appendix-guide.md", "第 17 章 · 附录 B：路径地图与练习"),
 ]
 
 # 独立算法、工业实验与可直接练习的源 h4 纳入第三级导航。
@@ -132,12 +132,12 @@ PDF_THIRD_LEVEL_FILES = {
     "04_doa-estimation.md", "05_beamforming.md",
     "06_aec.md", "07_wpe-dereverberation.md", "08_speech-separation.md",
     "09_source-tracking.md", "10_engineering-practice.md",
-    "11_selection-guide.md", "14_appendix-symbols-math.md",
-    "15_appendix-guide.md",
+    "11_selection-guide.md", "16_appendix-symbols-math.md",
+    "17_appendix-guide.md",
     "12_acoustic-imaging.md",
     "13_distributed-enhancement.md",
-    "16_spatial-wearable-arrays.md",
-    "17_target-extraction-diarization.md",
+    "14_spatial-wearable-arrays.md",
+    "15_target-extraction-diarization.md",
 }
 
 
@@ -247,11 +247,11 @@ h1,h2,h3,h4{break-after:avoid;break-inside:avoid;page-break-inside:avoid}
 /* 第11章的四条试听链接在纸版紧凑逐行排列，保留链接并避免章末短节孤页。 */
 #ch-11 p:has(>a[href$=".wav"]:only-child){margin-bottom:0}
 /* 附录 A 末题保留字号，收紧公式外间距，避免边界说明独占一页。 */
-#ch-12 p:has(>a#ch-12-e14-21)~h3{margin-bottom:8px}
-#ch-12 p:has(>a#ch-12-e14-21)~p{margin-bottom:.3em;line-height:1.55}
-#ch-12 p:has(>a#ch-12-e14-21)~p>mjx-container[display="true"]{margin:.5em 0}
-#ch-12 p:has(>a#ch-12-e14-21)~table{margin:6px 0;break-inside:avoid;page-break-inside:avoid}
-#ch-12 p:has(>a#ch-12-e14-21)~table :is(th,td){padding:3px 7px}
+#ch-12 p:has(>a#ch-12-e16-21)~h3{margin-bottom:8px}
+#ch-12 p:has(>a#ch-12-e16-21)~p{margin-bottom:.3em;line-height:1.55}
+#ch-12 p:has(>a#ch-12-e16-21)~p>mjx-container[display="true"]{margin:.5em 0}
+#ch-12 p:has(>a#ch-12-e16-21)~table{margin:6px 0;break-inside:avoid;page-break-inside:avoid}
+#ch-12 p:has(>a#ch-12-e16-21)~table :is(th,td){padding:3px 7px}
 /* 第13章末题 E13-25 保留字号与全部推导，仅收紧段间与公式外间距，避免章末导航独占一页。 */
 #ch-15 p:has(>a#ch-15-e13-27)~h3{margin-bottom:8px}
 #ch-15 p:has(>a#ch-15-e13-27)~p{margin-bottom:.42em;line-height:1.6}
@@ -957,8 +957,9 @@ def pdf_alias_targets():
         for current, record in exercise_alias_records(name).items():
             # An exercise can begin with a bold block label instead of an h4.
             # Keep its real explicit anchor, including its original offset from
-            # the heading, and copy that exact destination to the old ID.
-            bind(prefix + record["original_id"], prefix + current)
+            # the heading, and copy that exact destination to every legacy ID.
+            for old_id in record.get("legacy_ids", [record["original_id"]]):
+                bind(prefix + old_id, prefix + current)
     return aliases
 
 

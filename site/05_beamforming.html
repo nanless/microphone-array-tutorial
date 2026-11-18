@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 5 章 · 波束形成 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="c1e13cc91b8b"><style>
+<meta name="source-digest" content="820e0688bd26"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -9,8 +9,8 @@ h1,h2,h3,h4{scroll-margin-top:60px}
 @media screen{.main a[id^="e"],.main .exercise-alias{scroll-margin-top:80px}}
 @media screen{.main .exercise-alias{top:0}}
 @media screen{.main a[id="e05-20"]{scroll-margin-top:60px}}
-@media screen{.main a[id="e15-11"],.main a[id="e15-12"],.main a[id="e15-13"],.main a[id="e15-14"],.main a[id="e15-15"]{scroll-margin-top:140px}}
-@media screen{.main .exercise-alias[id="e13-11"],.main .exercise-alias[id="e13-12"],.main .exercise-alias[id="e13-13"],.main .exercise-alias[id="e13-14"],.main .exercise-alias[id="e13-15"]{scroll-margin-top:140px}}
+@media screen{.main a[id="e17-11"],.main a[id="e17-12"],.main a[id="e17-13"],.main a[id="e17-14"],.main a[id="e17-15"]{scroll-margin-top:140px}}
+@media screen{.main .exercise-alias[id="e13-11"],.main .exercise-alias[id="e13-12"],.main .exercise-alias[id="e13-13"],.main .exercise-alias[id="e13-14"],.main .exercise-alias[id="e13-15"],.main .exercise-alias[id="e15-11"],.main .exercise-alias[id="e15-12"],.main .exercise-alias[id="e15-13"],.main .exercise-alias[id="e15-14"],.main .exercise-alias[id="e15-15"]{scroll-margin-top:140px}}
 @media screen{.main a[id^="e06-"]{scroll-margin-top:60px}}
 @media screen{.main a[id^="e07-"],.main a[id^="e08-"]{scroll-margin-top:60px}}
 @media screen{.main a[id^="e11-"]{scroll-margin-top:60px}}
@@ -321,10 +321,10 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <div class="chap"><a href="11_selection-guide.html">第 11 章 · 总结与选型指南</a></div>
 <div class="chap"><a href="12_acoustic-imaging.html">第 12 章 · 声学成像与噪声源诊断</a></div>
 <div class="chap"><a href="13_distributed-enhancement.html">第 13 章 · 分布式麦克风协同增强</a></div>
-<div class="chap"><a href="16_spatial-wearable-arrays.html">第 16 章 · 空间声场与可穿戴阵列</a></div>
-<div class="chap"><a href="17_target-extraction-diarization.html">第 17 章 · 条件目标提取与多通道日志</a></div>
-<div class="chap"><a href="14_appendix-symbols-math.html">第 14 章 · 附录 A：符号术语数学</a></div>
-<div class="chap"><a href="15_appendix-guide.html">第 15 章 · 附录 B：路径地图与练习</a></div>
+<div class="chap"><a href="14_spatial-wearable-arrays.html">第 14 章 · 空间声场与可穿戴阵列</a></div>
+<div class="chap"><a href="15_target-extraction-diarization.html">第 15 章 · 条件目标提取与多通道日志</a></div>
+<div class="chap"><a href="16_appendix-symbols-math.html">第 16 章 · 附录 A：符号术语数学</a></div>
+<div class="chap"><a href="17_appendix-guide.html">第 17 章 · 附录 B：路径地图与练习</a></div>
 <div class="chap"><a href="research/index.html">源码研究</a></div></nav>
 <main class="main" id="main-content" tabindex="-1"><div class="offline-note" id="offnote">当前离线：公式显示为源码，正文讲解不受影响。</div>
 <details class="toc-mobile"><summary>本页目录</summary><nav aria-label="本页目录"><ul>
@@ -393,7 +393,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="05_beamforming.html#sec-u-da0e0596f8">E05-29：平面阵克罗内克分解何时精确最优、何时误伤旁向？</a></li>
 </ul></nav></details>
 <blockquote>
-<p>⚠️ 本篇是教程正文第 5 章（正文共 15 章，含第 12、13、16、17 章四篇扩展专题，另有附录 A、B），可独立阅读，前后篇见下方导航。</p>
+<p>⚠️ 本篇是教程正文第 5 章（正文共 15 章，含第 12～15 章四篇扩展专题，另有附录 A、B），可独立阅读，前后篇见下方导航。</p>
 <p>🏠 首页导读：<a href="index.html">🏠 导读与导航</a> ｜ 上一篇：<a href="04_doa-estimation.html">第 4 章 · 声源定位（DOA 估计）</a> ｜ 下一篇：<a href="06_aec.html">第 6 章 · 声学回声消除（AEC）</a></p>
 </blockquote>
 <hr />
@@ -471,7 +471,7 @@ e^{\mathrm{j}\kappa d_{ij}\cos\vartheta}\sin\vartheta\,
 \end{aligned}$$</p>
 <p>本书统一采用归一化定义 $\operatorname{sinc}(x)=\sin(\pi x)/(\pi x)$，因 $\kappa d_{ij}=2\pi fd_{ij}/c=\pi(2fd_{ij}/c)$，两种写法完全衔接；阅读采用非归一化 $\sin x/x$ 的文献时注意自变量相差 $\pi$ 倍。</p>
 <p>从上式可以直接读出频率与间距的物理效应：低频或极小间距（$fd_{ij}\ll c$）时 $[\mathbf\Gamma]_{ij}\to 1$，各麦收到的弥散噪声几乎同相，这正是紧凑阵列做差分消噪的依据；当麦距恰为半波长的整数倍（$d_{ij}=l\lambda/2$，$l\in\mathbb Z^+$）时 $[\mathbf\Gamma]_{ij}=0$，球面弥散噪声在两麦间不相关；高频大间距时非对角元振荡衰减，整个 $\mathbf\Gamma$ 趋近单位阵 $\mathbf I$。</p>
-<p>需要注意，室外风噪源于麦克风防风罩附近的局部气压湍流，相关尺度远小于声波长，更接近空间白噪声而非各向同性声波场（可穿戴微孔径阵列的 Corcos 湍流风噪相干长度模型及气导与耳道内麦跨模态抗风融合详见<a href="16_spatial-wearable-arrays.html#sec-16-8">第 16 章 §16.8～§16.9</a>）。</p>
+<p>需要注意，室外风噪源于麦克风防风罩附近的局部气压湍流，相关尺度远小于声波长，更接近空间白噪声而非各向同性声波场（可穿戴微孔径阵列的 Corcos 湍流风噪相干长度模型及气导与耳道内麦跨模态抗风融合详见<a href="14_spatial-wearable-arrays.html#sec-14-8">第 14 章 §14.8～§14.9</a>）。</p>
 <p>若声波主要限制在水平面内从各方位角等概率入射（<strong>柱面各向同性弥散场</strong>），把上述积分改为对水平方位角 $\alpha\in[0,2\pi)$ 平均，相干系数则变为第一类零阶贝塞尔函数 $J_0(2\pi fd_{ij}/c)$（参见 <a href="https://israelcohen.com/wp-content/uploads/2018/05/JASA_Nov2008.pdf">Habets &amp; Gannot, <em>JASA</em>, 2008</a>）。实际会议室由于吸音吊顶、桌面反射和空调出风口分布不均，空间相干性往往介于球面与柱面理想模型之间，建模时应优先核对实测静音段的互谱相干曲线。</p>
 <p>有了 $\mathbf I$ 与 $\mathbf\Gamma$ 两套基准模型，任意权重 $\vec w$ 在期望导向 $\vec a$ 上的白噪声增益与指向因数统一定义为</p>
 <p>$$\begin{aligned}
@@ -761,7 +761,7 @@ L(\vec w,\lambda)&=\vec w^H\mathbf R_{nn}\vec w
 <p>顺带澄清一个常见术语混淆：严格意义上的空间白化矩阵是厄米平方根逆 $\mathbf R_{nn}^{-1/2}$（记 $\mathbf W_n=\mathbf R_{nn}^{-1/2}$，它满足 $\mathbf W_n\mathbf R_{nn}\mathbf W_n=\mathbf I$，在白化域内问题退化为普通空间匹配滤波 $\tilde{\vec w}\propto\mathbf R_{nn}^{-1/2}\vec a$）；再从白化域变换回阵元域乘上一次 $\mathbf R_{nn}^{-1/2}$，才合并成我们看到的 $\mathbf R_{nn}^{-1}\vec a$。</p>
 <p><strong>第 3 步：代入无失真约束定出归一化乘子。</strong> 将 $\vec w=\lambda\mathbf R_{nn}^{-1}\vec a$ 代回 $\vec w^H\vec a=1$（注意对标量 $\lambda$ 也要取共轭）：</p>
 <p>$$\lambda^*\,\vec{a}^H\mathbf{R}_{nn}^{-1}\vec{a} = 1。$$</p>
-<p>因为 $\mathbf R_{nn}$ 厄米正定，其逆矩阵 $\mathbf R_{nn}^{-1}$ 同样厄米正定；对任意非零导向矢量 $\vec a$，二次型 $q=\vec a^H\mathbf R_{nn}^{-1}\vec a>0$ 恒为严格正实数，故 $\lambda^*=1/q$ 本身就是正实数，$\lambda=\lambda^*=1/(\vec a^H\mathbf R_{nn}^{-1}\vec a)$。若快拍数少于通道数（$N\lt M$）导致采样协方差矩阵奇异，切忌不加区分地把 $\mathbf R_{nn}^{-1}$ 机械替换成 Moore–Penrose 伪逆 $\mathbf R_{nn}^+$——附录 A 练习 E14-05 用一个两通道反例严格证明了当真实无噪方向落在矩阵零空间时，伪逆会错失零噪声可行解。</p>
+<p>因为 $\mathbf R_{nn}$ 厄米正定，其逆矩阵 $\mathbf R_{nn}^{-1}$ 同样厄米正定；对任意非零导向矢量 $\vec a$，二次型 $q=\vec a^H\mathbf R_{nn}^{-1}\vec a>0$ 恒为严格正实数，故 $\lambda^*=1/q$ 本身就是正实数，$\lambda=\lambda^*=1/(\vec a^H\mathbf R_{nn}^{-1}\vec a)$。若快拍数少于通道数（$N\lt M$）导致采样协方差矩阵奇异，切忌不加区分地把 $\mathbf R_{nn}^{-1}$ 机械替换成 Moore–Penrose 伪逆 $\mathbf R_{nn}^+$——附录 A 练习 E16-05 用一个两通道反例严格证明了当真实无噪方向落在矩阵零空间时，伪逆会错失零噪声可行解。</p>
 <p><strong>第 4 步：合成为 MVDR 闭式解并算出最小残留噪声功率。</strong> 将正实数乘子 $\lambda$ 代回第 2 步，即得著名的 MVDR（Capon）闭式权重：</p>
 <p>$$\begin{aligned}
 \vec w_{\mathrm{MVDR}}
@@ -1113,7 +1113,7 @@ L(\vec w,\vec\lambda)&=\vec w^H\mathbf R_{nn}\vec w
 \qquad(e\in\{\mathrm{L},\mathrm{R}\})\text{。}
 \end{aligned}\tag{5-12}$$</p>
 <p>只要 $\eta>0$ 且 $b_{\mathrm{L}},b_{\mathrm{R}}\ne 0$，干扰被衰减 $20\log_{10}(1/\eta)\ \mathrm{dB}$ 的同时，双耳输出右／左复比 $(\eta b_{\mathrm{R}})/(\eta b_{\mathrm{L}})$ 精确还原 $b_{\mathrm{R}}/b_{\mathrm{L}}$，双耳相位差与声级差得以完整保留（若取 $\eta=0$ 则退化为完全抹除干扰，复比呈 $0/0$ 无定义）。章末练习 <a href="#e05-25">E05-25</a>～<a href="#e05-27">E05-27</a> 用三麦闭式手算与四段双声道耳机试听音频把这一现象完整复现了出来。</p>
-<p>当阵列装上镜框或入耳式耳塞时，非规则壳体散射下的双耳信号匹配（低频 BSM-LS 与高频幅度最小二乘 BSM-MagLS）以及用参考麦克风混合系数 $\beta$ 抑制扩散背景噪声“头中坍缩”的解析折中，将在<a href="16_spatial-wearable-arrays.html#sec-16-5">第 16 章 §16.5～§16.7</a> 展开；若目标与干扰处于同一水平方位角而仅靠远近球面波曲率区分，对应的三麦正横声学距离气泡闭式解见<a href="17_target-extraction-diarization.html#sec-17-3">第 17 章 §17.3</a>。</p>
+<p>当阵列装上镜框或入耳式耳塞时，非规则壳体散射下的双耳信号匹配（低频 BSM-LS 与高频幅度最小二乘 BSM-MagLS）以及用参考麦克风混合系数 $\beta$ 抑制扩散背景噪声“头中坍缩”的解析折中，将在<a href="14_spatial-wearable-arrays.html#sec-14-5">第 14 章 §14.5～§14.7</a> 展开；若目标与干扰处于同一水平方位角而仅靠远近球面波曲率区分，对应的三麦正横声学距离气泡闭式解见<a href="15_target-extraction-diarization.html#sec-15-3">第 15 章 §15.3</a>。</p>
 <h2 id="sec-u-fb93744989">多通道维纳滤波与秩一目标模型</h2>
 <p>前面各节都把“目标方向无失真”当作不可妥协的硬等式。但在强背景噪声频点上，宁可让目标语音轻微衰减一点点，往往能换来残余噪声更大幅度的下降，使整体波形误差更小。多通道维纳滤波（Multichannel Wiener Filter，简称 MWF）正是从最小化指定参考麦克风目标声像与波束输出之间的均方误差（MSE）出发；语音失真加权多通道维纳滤波（Speech Distortion Weighted MWF，简称 SDW-MWF）则进一步引入失真—降噪权衡参数 $\mu>0$，允许工程师连续调节目标失真与残余噪声的惩罚比重。</p>
 <p>固定单个频点，令阵列观测为 $\vec x=\vec s+\vec n$。定义 $s_{\mathrm{out}}=\vec w^H\vec s$、$n_{\mathrm{out}}=\vec w^H\vec n$、$s_{\mathrm{ref}}=\vec e_r^H\vec s$，其中 $\vec e_r$ 是第 $r$ 个分量为 $1$、其余为 $0$ 的参考麦克风选择列向量（即以第 $r$ 支麦克风收到的干净目标分量 $s_r$ 为逼近目标，无需显式估计导向矢量！）。记输出残余噪声功率 $J_n=\mathbb{E}[|n_{\mathrm{out}}|^2]$（即 $\vec w^H\mathbf R_{nn}\vec w$），目标误差 $\Delta s=s_{\mathrm{out}}-s_{\mathrm{ref}}$，目标失真功率 $J_s=\mathbb{E}[|\Delta s|^2]$ 等于 $(\vec w-\vec e_r)^H\mathbf R_{ss}(\vec w-\vec e_r)$，这里 $\mathbf R_{ss}=\mathbb{E}[\vec s\vec s^H]$ 与 $\mathbf R_{nn}=\mathbb{E}[\vec n\vec n^H]$ 为未中心化二阶矩矩阵（零均值时即协方差矩阵）。最小化加权代价 $J(\vec w)=J_n+J_s/\mu$（等价于最小化 $J_s+\mu J_n$），按 Wirtinger 法则对 $\vec w^*$ 求导置零得驻点式 $(\mathbf R_{ss}+\mu\mathbf R_{nn})\vec w$ 等于 $\mathbf R_{ss}\vec e_r$，在 $\mathbf R_{ss}+\mu\mathbf R_{nn}$ 正定可逆时解出</p>
@@ -1424,7 +1424,7 @@ h_n^{(2)}(\kappa r)\right]\\
 <li><strong>模态域波束综合与特征波束正则</strong>：在 $\varphi_{nm}$ 域内，既可按固定系数合成轴对称最大 DI 超心形并通过 Wigner-$D$ 矩阵转向任意目标方向，也可统计模态协方差矩阵求解球谐域 MVDR/LCMV，对病态高阶模态施加对角加载。</li>
 <li><strong>端到端平面波闭环校准</strong>：上线前输入已知方位的单频合成平面波，逐一核验实/复球谐基定义、Condon–Shortley 相位符号 $(-1)^m$、通道物理编号与 $(\vartheta,\alpha)$ 坐标映射，并画出全频段模态 $\mathrm{WNG}_{\mathrm{dB}}$ 与 $\mathrm{DI}$ 曲线。</li>
 </ol>
-<p>围绕一阶全景声（FOA）工业标准 ACN/SN3D 通道约定、正四面体 A-format 到 B-format 编码均衡、头部追踪三维声场逆旋转解耦以及方向性音频编码（DirAC）的有功声强与扩散度参数化分析，将在<a href="16_spatial-wearable-arrays.html#sec-16-2">第 16 章 §16.2～§16.4</a> 完整推导。</p>
+<p>围绕一阶全景声（FOA）工业标准 ACN/SN3D 通道约定、正四面体 A-format 到 B-format 编码均衡、头部追踪三维声场逆旋转解耦以及方向性音频编码（DirAC）的有功声强与扩散度参数化分析，将在<a href="14_spatial-wearable-arrays.html#sec-14-2">第 14 章 §14.2～§14.4</a> 完整推导。</p>
 <span id="sec-15" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-5-9">5.9 深度神经网络（Deep Neural Network，简称 DNN）波束形成</h2>
 <p>传统自适应波束形成在非平稳强噪声与重叠语音下最头疼的难题是“去哪里找干净的无目标帧估计 $\mathbf R_{nn}$、去哪里找无干扰帧估计 $\mathbf R_{ss}$”。深度神经网络恰恰擅长从时频语谱结构中分辨语音谐波与背景噪声：让神经网络逐时频点预测实数非负的目标掩码 $m_s(k,n)\in[0,1]$ 与噪声掩码 $m_n(k,n)\in[0,1]$，再把掩码作为统计权重送回本章前面的解析波束形成公式求解多麦线性滤波器，便构成了工业界远场语音识别与通话增强最主流的<strong>掩码统计混合波束形成（Mask-based Beamforming）</strong>范式。注意此处用作外积统计权重的掩码必须为实数非负标量，唯有如此才能保证加权外积和厄米半正定。一个可复现的处理顺序如下。</p>
 <ol>

@@ -1,4 +1,4 @@
-"""Appendix B E15-03..15: fixed-room calculations and evidence boundaries.
+"""Appendix B E15-03..16: fixed-room calculations and evidence boundaries.
 
 This module does not execute pyroomacoustics or create assets. E15-03,
 E15-07 and E15-09 read checked-in synthetic room results or PCM; the other
@@ -23,6 +23,7 @@ import numpy as np
 
 from codes.chapters.ch02.core.spectral import stft
 from codes.chapters.ch04.core.doa import srp_phat
+from codes.chapters.appendix_b.core.diagnostic_roadmap import diagnostic_roadmap_controls
 from codes.chapters.appendix_b.core.room_metrics import t20_from_edc_points, drr_db, measured_t60_from_t20
 from codes.chapters.appendix_b.examples.check_room_assets import check_assets as check_room_assets
 
@@ -243,7 +244,7 @@ def equal_drr_different_spectra() -> dict:
                       "reflected_rir": reflected.tolist(), "full_rir": full.tolist(),
                       "direct_energy": direct_energy,
                       "reflected_energy": reflected_energy,
-                      "drr_db": 10.0 * math.log10(direct_energy / reflected_energy),
+                      "drr_db": 10.0 * np.log10(direct_energy / reflected_energy),
                       "reflected_dc_response": float(sum(reflected)),
                       "reflected_nyquist_response":
                           float(sum(value * (-1) ** index
@@ -363,7 +364,7 @@ def truncated_edc_fixture() -> dict:
     # crossing selection and from the fitted metric returned above.
     point_index, point_count = 1600, 3200
     finite = (math.exp(log_q * point_index)
-              * math.expm1(log_q * (point_count - point_index))
+              * np.expm1(log_q * (point_count - point_index))
               / math.expm1(log_q * point_count))
     scale_control_samples = 3200
     scale_impulse = np.exp(0.5 * log_q * np.arange(scale_control_samples, dtype=float))
@@ -411,6 +412,7 @@ def run_exercises() -> dict:
         "E15-13": conditioned_t20_times(),
         "E15-14": response_audio_anchor(),
         "E15-15": truncated_edc_fixture(),
+        "E15-16": diagnostic_roadmap_controls(),
     }
 
 

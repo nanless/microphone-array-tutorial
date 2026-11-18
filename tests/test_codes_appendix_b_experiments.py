@@ -1,4 +1,4 @@
-"""Independent analytic and existing-PCM checks for Appendix B E15-03..10."""
+"""Independent analytic and existing-PCM checks for Appendix B E15-03..16."""
 
 from __future__ import annotations
 
@@ -17,6 +17,10 @@ from codes.chapters.appendix_b.appendix_b_experiments import (
     room_pcm_srp_windows, run_exercises,
     t20_from_edc_points, two_mic_srp_phase, shared_tac_fixture, scaled_rir_metrics,
     conditioned_t20_times, response_audio_anchor,
+)
+from codes.chapters.appendix_b.core.diagnostic_roadmap import (
+    cascade_bottleneck_budget,
+    diagnose_pipeline_symptom,
 )
 from codes.chapters.appendix_b.examples.room_srp_exercise import plot_results, write_results
 
@@ -113,7 +117,7 @@ class AppendixBExperimentsTest(unittest.TestCase):
 
     def test_e13_08_evidence_levels_do_not_skip_stages(self):
         result = run_exercises()
-        self.assertEqual(set(result), {f"E15-{number:02d}" for number in range(3, 16)})
+        self.assertEqual(set(result), {f"E15-{number:02d}" for number in range(3, 17)})
         stages = result["E15-08"]
         self.assertTrue(stages["cases_are_hypothetical"])
         self.assertEqual([len(stages[name]) for name in "ABC"], [2, 4, 5])
@@ -232,6 +236,42 @@ class AppendixBExperimentsTest(unittest.TestCase):
             self.assertEqual(row['integer_reference_squared_sum'], 309262788000)
             self.assertEqual(row['scored_samples'], 28800)
             self.assertEqual(row['nmse'], error/309262788000)
+
+    def test_e15_16_cascade_bottleneck_and_diagnostic_triage(self):
+        row = run_exercises()["E15-16"]
+        budget = row["cascade_budget"]
+
+        # Hand-derived raw SINR = 1 / 10.51, wrong downstream-only = 1 / 10.055
+        self.assertAlmostEqual(budget["raw"]["sinr_db"], 10.0 * math.log10(1.0 / 10.51), places=13)
+        self.assertAlmostEqual(budget["raw"]["dominant_share"], 10.0 / 10.51, places=15)
+        self.assertAlmostEqual(
+            budget["wrong_downstream_only"]["sinr_db"], 10.0 * math.log10(1.0 / 10.055), places=13
+        )
+
+        # Correct upstream-first cascade: 1/0.61 -> 1/0.21 -> 400/21
+        stages = budget["upstream_first_cascade"]
+        self.assertAlmostEqual(stages[0]["sinr_db"], 10.0 * math.log10(1.0 / 0.61), places=13)
+        self.assertEqual(stages[0]["dominant_bottleneck"], "late_reverb")
+        self.assertAlmostEqual(stages[1]["sinr_db"], 10.0 * math.log10(1.0 / 0.21), places=13)
+        self.assertAlmostEqual(stages[2]["sinr_db"], 10.0 * math.log10(400.0 / 21.0), places=13)
+        self.assertAlmostEqual(
+            budget["wrong_vs_correct_final_gap_db"], 10.0 * math.log10(4022.0 / 21.0), places=13
+        )
+
+        # Priority triage checks
+        triage = row["symptom_triage"]
+        self.assertEqual(triage["hear_through_comb"]["first_comb_notch_hz"], 250.0)
+        self.assertEqual(triage["compound_clock_plus_overlap"]["fault_id"], "clock_sro_drift")
+        self.assertEqual(triage["compound_clock_plus_overlap"]["priority_rank"], 1)
+        self.assertEqual(triage["healthy_pipeline"]["fault_id"], "nominal")
+
+        # Negative controls
+        with self.assertRaises(ValueError):
+            cascade_bottleneck_budget(target_power=0.0)
+        with self.assertRaises(ValueError):
+            diagnose_pipeline_symptom({"unknown_metric": 1.0})
+        with self.assertRaises(ValueError):
+            diagnose_pipeline_symptom({"sro_ppm": True})
 
 
 if __name__ == "__main__":

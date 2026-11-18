@@ -1,4 +1,4 @@
-"""Explicit cross-module, chapter and research inventory for 425 exercises."""
+"""Explicit cross-module, chapter and research inventory for 426 exercises."""
 
 import json
 import re
@@ -55,7 +55,7 @@ EXPECTED = {
     "apa_audio": {"E06-39"},
     "reference_audio": {"E06-42"},
     "appendix_b": {f"E15-{n:02d}" for n in range(3, 16)},
-    "appendix_a": {f"E14-{n:02d}" for n in range(6, 21)},
+    "appendix_a": {f"E14-{n:02d}" for n in range(6, 22)},
     "chapter11": {f"E11-{n:02d}" for n in range(10, 30)},
     "chapter10": {f"E10-{n:02d}" for n in range(18, 37)},
     "chapter09": {f"E09-{n:02d}" for n in range(10, 29)},
@@ -154,8 +154,8 @@ class ExerciseCatalogTest(unittest.TestCase):
         cls.results = {name: run() for name, run in RUNNERS.items()}
 
     def test_independent_inventory_has_395_unique_ids(self):
-        self.assertEqual(len(ALL_IDS), 425)
-        self.assertEqual(sum(map(len, EXPECTED.values())), 425)
+        self.assertEqual(len(ALL_IDS), 426)
+        self.assertEqual(sum(map(len, EXPECTED.values())), 426)
 
     def test_each_module_returns_exact_assigned_ids(self):
         for name, results in self.results.items():

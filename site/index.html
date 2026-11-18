@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>从入门到工业实践 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="aeb3a76b3010"><style>
+<meta name="source-digest" content="75a6fde37c0c"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -415,7 +415,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
         <a class="course-cta" href="01_problem-definition.html">读第一章 <span aria-hidden="true">→</span></a>
         <a class="course-quiet" href="#course-engineering">工程实践 <span aria-hidden="true">↓</span></a>
       </div>
-      <p class="course-note">15 章正文、2 篇附录、425 道可运行练习。</p>
+      <p class="course-note">15 章正文、2 篇附录、426 道可运行练习。</p>
     </div>
 
     <figure class="course-demo" data-source="left">
@@ -1017,7 +1017,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <ul>
 <li><strong>§14.1 全局符号表</strong>：统一规定全书标量、列向量、矩阵、转置与共轭转置、频率变量及常用物理常数的记法。</li>
 <li><strong>§14.2 中英术语词典</strong>：按信号与数学基础、房间声学、自适应滤波与盲分离、波束形成与阵列度量、定位与追踪、硬件与系统评测六大主题分组解释核心概念。</li>
-<li><strong>§14.3～§14.4 数学工具铺垫与复算练习</strong>：用直观语言和手算小例子串讲复数与欧拉公式、分贝（$10\log_{10}$ 与 $20\log_{10}$ 的口径区分）、线性卷积与循环卷积边界、随机变量期望与空间协方差矩阵、最小二乘与广义加权最小二乘（白化变换）、特征值分解及奇异值截断与吉洪诺夫正则化，并配有 20 道代码复算练习巩固矩阵维度、共轭符号与数值秩判据。</li>
+<li><strong>§14.3～§14.4 数学工具铺垫与复算练习</strong>：用直观语言和手算小例子串讲复数与欧拉公式、分贝（$10\log_{10}$ 与 $20\log_{10}$ 的口径区分）、线性卷积与循环卷积边界、随机变量期望与空间协方差矩阵、最小二乘与广义加权最小二乘（白化变换）、特征值分解及奇异值截断与吉洪诺夫正则化，并配有 21 道代码复算练习巩固矩阵维度、共轭符号与数值秩判据。</li>
 </ul>
 <span id="sec-u-ec7064739f" class="anchor-alias" aria-hidden="true"></span><span id="sec-17" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-df0df6b6aa"><a href="15_appendix-guide.html">15 · 附录 B：路径、地图、前沿、排错、练习、复现</a></h3>
 <p>本篇（配 3 张编号图与 1 张房间仿真补充图）汇集进阶学习与实战排错资源：</p>
@@ -1815,7 +1815,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <p>核对完基础输出后，可运行单元测试套件检验正常输入、退化边界与异常输入处理；若想针对某一章单独调试，可按<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/README.md">代码地图</a>定位对应模块与测试文件：</p>
 <pre><code class="language-bash">.venv/bin/python -m unittest discover -s tests -p 'test_codes*.py' -v
 </code></pre>
-<p>需要从头重新生成音频或重绘插图时，可参照<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/scripts/README.md">构建说明</a>与附录 B <a href="15_appendix-guide.html#sec-15-7">§15.7</a> 操作（附录 B 房间仿真练习需在固定版本 <code>pyroomacoustics</code> 独立环境中生成）。此外，全书共配 425 道稳定编号代码练习（<code>E01-01</code> 至 <code>E17-18</code>）：其中第 1～13 章与附录 A、B 的 389 道汇总于<a href="research/05_exercises_and_audio.html">章节代码练习与音频实验</a>，第 16、17 章的 36 道分别见<a href="16_spatial-wearable-arrays.html#sec-16-11">专题Ⅲ §16.11</a>与<a href="17_target-extraction-diarization.html#sec-17-10">专题Ⅳ §17.10</a>，每道题均给出明确输入、运行入口与可核查数值结果。</p>
+<p>需要从头重新生成音频或重绘插图时，可参照<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/scripts/README.md">构建说明</a>与附录 B <a href="15_appendix-guide.html#sec-15-7">§15.7</a> 操作（附录 B 房间仿真练习需在固定版本 <code>pyroomacoustics</code> 独立环境中生成）。此外，全书共配 426 道稳定编号代码练习（<code>E01-01</code> 至 <code>E17-18</code>）：其中第 1～13 章与附录 A、B 的 390 道汇总于<a href="research/05_exercises_and_audio.html">章节代码练习与音频实验</a>，第 16、17 章的 36 道分别见<a href="16_spatial-wearable-arrays.html#sec-16-11">专题Ⅲ §16.11</a>与<a href="17_target-extraction-diarization.html#sec-17-10">专题Ⅳ §17.10</a>，每道题均给出明确输入、运行入口与可核查数值结果。</p>
 <p><a id="audio-assets"></a></p>
 <p>仓库配套音频分为两类：除表格末行的 DEMAND 为真实自然环境多通道录音摘录外，其余 31 套均为受控数学模型生成的确定性合成音频（用于隔离单一物理因素、精确对比解析理论值与 16 位脉冲编码调制（Pulse-Code Modulation，PCM）量化读回值）。试听前请先调低耳机或扬声器音量；网页音频播放器默认不自动播放。下表列出全部 32 套音频资产的清单入口、文件数量与观察重点：</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>

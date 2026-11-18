@@ -247,11 +247,11 @@ h1,h2,h3,h4{break-after:avoid;break-inside:avoid;page-break-inside:avoid}
 /* 第11章的四条试听链接在纸版紧凑逐行排列，保留链接并避免章末短节孤页。 */
 #ch-11 p:has(>a[href$=".wav"]:only-child){margin-bottom:0}
 /* 附录 A 末题保留字号，收紧公式外间距，避免边界说明独占一页。 */
-#ch-12 p:has(>a#ch-12-e14-20)~h3{margin-bottom:8px}
-#ch-12 p:has(>a#ch-12-e14-20)~p{margin-bottom:.3em;line-height:1.55}
-#ch-12 p:has(>a#ch-12-e14-20)~p>mjx-container[display="true"]{margin:.5em 0}
-#ch-12 p:has(>a#ch-12-e14-20)~table{margin:6px 0;break-inside:avoid;page-break-inside:avoid}
-#ch-12 p:has(>a#ch-12-e14-20)~table :is(th,td){padding:3px 7px}
+#ch-12 p:has(>a#ch-12-e14-21)~h3{margin-bottom:8px}
+#ch-12 p:has(>a#ch-12-e14-21)~p{margin-bottom:.3em;line-height:1.55}
+#ch-12 p:has(>a#ch-12-e14-21)~p>mjx-container[display="true"]{margin:.5em 0}
+#ch-12 p:has(>a#ch-12-e14-21)~table{margin:6px 0;break-inside:avoid;page-break-inside:avoid}
+#ch-12 p:has(>a#ch-12-e14-21)~table :is(th,td){padding:3px 7px}
 /* 第13章末题 E13-25 保留字号与全部推导，仅收紧段间与公式外间距，避免章末导航独占一页。 */
 #ch-15 p:has(>a#ch-15-e13-27)~h3{margin-bottom:8px}
 #ch-15 p:has(>a#ch-15-e13-27)~p{margin-bottom:.42em;line-height:1.6}

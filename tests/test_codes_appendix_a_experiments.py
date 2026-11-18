@@ -1,6 +1,7 @@
-"""Independent arithmetic and real temporary PCM oracles for E14-06..20."""
+"""Independent arithmetic and real temporary PCM oracles for E14-06..21."""
 
 import json
+import math
 import tempfile
 import unittest
 from pathlib import Path
@@ -8,6 +9,10 @@ from pathlib import Path
 import numpy as np
 
 from codes.chapters.ch00.core.audio_samples import math_block_case, pcm16_bytes, read_pcm16
+from codes.chapters.appendix_a.core.kronecker_khatri_rao import (
+    column_major_vec,
+    khatri_rao_product,
+)
 from codes.chapters.appendix_a.core.math_foundations import (
     blockwise_circular_convolution, fft_overlap_add,
 )
@@ -27,7 +32,7 @@ class AppendixAMathTests(unittest.TestCase):
         cls.rows = run_experiments(repo_root=root, weighted_directory=directory)
 
     def test_exact_ids_and_json(self):
-        self.assertEqual(set(self.rows), {f'E14-{number:02d}' for number in range(6, 21)})
+        self.assertEqual(set(self.rows), {f'E14-{number:02d}' for number in range(6, 22)})
         json.dumps(self.rows, allow_nan=False)
 
     def test_signed_bins_and_complex_norm(self):
@@ -235,6 +240,38 @@ class AppendixAMathTests(unittest.TestCase):
             candidate=pcm['candidates'][name]
             self.assertEqual(candidate['integer_error_squared_sum'],E)
             self.assertEqual(candidate['nmse'],E/618489148320)
+
+    def test_e14_21_kronecker_khatri_rao_identities_and_rejections(self):
+        row = self.rows['E14-21']
+        csm = row['hermitian_csm']
+        # Hand-derived R = [[3, -1-2j], [-1+2j, 3]] -> column-major vec [3, -1+2j, -1-2j, 3]
+        self.assertEqual(csm['vec_R_col_major'], {'real': [3.0, -1.0, -1.0, 3.0], 'imag': [0.0, 2.0, -2.0, 0.0]})
+        self.assertEqual(csm['H_times_q'], {'real': [3.0, -1.0, -1.0, 3.0], 'imag': [0.0, 2.0, -2.0, 0.0]})
+        self.assertEqual(csm['identity_max_abs_error'], 0.0)
+        # Row-major bug swaps off-diagonal conjugates -> discrepancy [0, 4j, -4j, 0], norm = sqrt(32)
+        self.assertAlmostEqual(csm['row_vs_col_imaginary_discrepancy_norm'], math.sqrt(32.0), places=14)
+        # Omitting A^* gives (A odot A)q = [3, -1+2j, -1+2j, -1], breaking PSD diagonal positivity!
+        self.assertEqual(csm['missing_conjugate_last_entry_real'], -1.0)
+
+        rect = row['rectangular_roth_diagonal']
+        self.assertEqual(rect['vec_col_major'], {'real': [4.0, 0.0, 2.0, 0.0], 'imag': [0.0, 4.0, 1.0, 1.0]})
+        self.assertEqual(rect['khatri_rao_max_abs_error'], 0.0)
+        self.assertEqual(rect['roth_lemma_max_abs_error'], 0.0)
+
+        bf = row['separable_kronecker_beamformer']
+        self.assertAlmostEqual(bf['distortionless_gain_real'], 1.0, places=15)
+        self.assertAlmostEqual(bf['distortionless_gain_imag'], 0.0, places=15)
+        self.assertEqual(bf['mixed_product_error'], 0.0)
+        self.assertAlmostEqual(bf['weight_norm_squared'], 0.25, places=15)
+        self.assertAlmostEqual(bf['wng_linear'], 4.0, places=15)
+        self.assertAlmostEqual(bf['wng_db'], 10.0 * math.log10(4.0), places=14)
+
+        # Negative controls for column_major_vec and khatri_rao_product
+        for bad in (True, [1.0, 2.0], [[True, False]], [[1.0, np.nan]]):
+            with self.assertRaises(ValueError):
+                column_major_vec(bad)
+        with self.assertRaises(ValueError):
+            khatri_rao_product([[1.0, 2.0]], [[1.0, 2.0, 3.0]])
 
 
 if __name__ == '__main__':

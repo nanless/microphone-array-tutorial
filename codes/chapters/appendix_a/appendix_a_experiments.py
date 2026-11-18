@@ -1,4 +1,4 @@
-"""E14-06..20: reproducible mathematical counterexamples for Appendix A.
+"""E14-06..21: reproducible mathematical counterexamples for Appendix A.
 
 All values are constructed teaching inputs, not measurements. The audio case
 is mathematical PCM16 synthesis; no file is written by importing or running
@@ -23,6 +23,7 @@ from codes.chapters.appendix_a.core.weighted_audio import build_fixture, analyze
 from codes.chapters.appendix_a.core.math_foundations import (
     blockwise_circular_convolution, fft_overlap_add,
 )
+from codes.chapters.appendix_a.core.kronecker_khatri_rao import kronecker_khatri_rao_controls
 
 
 def correlated_gls_demo() -> dict:
@@ -319,6 +320,7 @@ def run_experiments(*, repo_root=ROOT, weighted_directory=OUTPUT) -> dict:
         'floating_point':analyze_fixture(fixture),'pcm_analysis':published['pcm_analysis'],
         'published_files':published['files'],'source_sha256':published['source_sha256']}
     results['E14-20'] = correlated_gls_demo()
+    results['E14-21'] = kronecker_khatri_rao_controls()
     return results
 
 

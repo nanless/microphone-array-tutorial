@@ -1,4 +1,4 @@
-"""Run E16-01..16 with pure NumPy and in-memory PCM; never write files or use network.
+"""Run E16-01..18 with pure NumPy and in-memory PCM; never write files or use network.
 
 Usage: python -m codes.chapters.ch16.chapter16_exercises [--exercise E16-07]
 """
@@ -16,6 +16,16 @@ import numpy as np
 
 from codes.chapters.ch00.core.audio_samples import pcm16_bytes, read_pcm16
 from codes.chapters.ch02.core.conventions import SPEED_OF_SOUND
+from codes.chapters.ch16.core.ambisonic_sofa_rendering import (
+    REGULAR_HEXAGON_2D_DIRS,
+    REGULAR_OCTAHEDRON_3D_DIRS,
+    audit_sofa_simple_freefield_geometry,
+    foa_loudspeaker_decode_metrics,
+    foa_max_re_order_weight,
+    head_tracking_latency_audit,
+    sofa_cartesian_to_spherical,
+    sofa_spherical_to_cartesian,
+)
 from codes.chapters.ch16.core.binaural_matching import (
     binaural_coherence_with_mixing,
     bsm_directional_metrics,
@@ -44,7 +54,7 @@ from codes.chapters.ch16.core.wearable_fusion import (
     hear_through_response,
 )
 
-EXERCISE_IDS = tuple(f"E16-{i:02d}" for i in range(1, 17))
+EXERCISE_IDS = tuple(f"E16-{i:02d}" for i in range(1, 19))
 
 
 def _json(value):
@@ -344,6 +354,72 @@ def _ex16_audio_three_tier_audit() -> dict:
     }
 
 
+def _ex17_ambisonics_max_re_decoding() -> dict:
+    src_px = np.array([1.0, 0.0, 0.0], dtype=np.float64)
+    modes_2d = {}
+    for mode in ("basic", "max_re", "in_phase"):
+        g1 = foa_max_re_order_weight(spatial_dim=2, mode=mode)
+        modes_2d[mode] = {
+            "g1": g1,
+            **foa_loudspeaker_decode_metrics(REGULAR_HEXAGON_2D_DIRS, src_px, spatial_dim=2, g1=g1),
+        }
+
+    modes_3d = {}
+    for mode in ("basic", "max_re", "in_phase"):
+        g1 = foa_max_re_order_weight(spatial_dim=3, mode=mode)
+        modes_3d[mode] = {
+            "g1": g1,
+            **foa_loudspeaker_decode_metrics(REGULAR_OCTAHEDRON_3D_DIRS, src_px, spatial_dim=3, g1=g1),
+        }
+
+    rear_power_ratio_2d = float((modes_2d["max_re"]["gains"][3] / modes_2d["basic"]["gains"][3]) ** 2)
+    rear_power_ratio_3d = float((modes_3d["max_re"]["gains"][1] / modes_3d["basic"]["gains"][1]) ** 2)
+    return {
+        "hexagon_2d": {
+            "modes": modes_2d,
+            "max_re_rear_power_suppression_db": float(10.0 * np.log10(rear_power_ratio_2d)),
+        },
+        "octahedron_3d": {
+            "modes": modes_3d,
+            "max_re_rear_power_suppression_db": float(10.0 * np.log10(rear_power_ratio_3d)),
+        },
+    }
+
+
+def _ex18_sofa_and_head_tracking_latency() -> dict:
+    src_sph = np.array([30.0, 45.0, 1.5], dtype=np.float64)
+    src_cart = sofa_spherical_to_cartesian(src_sph)
+    src_roundtrip = sofa_cartesian_to_spherical(src_cart)
+
+    valid_sph_ears = np.array([[90.0, 0.0, 0.09], [-90.0, 0.0, 0.09]], dtype=np.float64)
+    swapped_cart_ears = np.array([[0.0, -0.09, 0.0], [0.0, 0.09, 0.0]], dtype=np.float64)
+
+    sofa_valid = audit_sofa_simple_freefield_geometry(
+        [1.0, 0.0, 0.0], [0.0, 0.0, 1.0], valid_sph_ears, coord_type="spherical"
+    )
+    sofa_ear_swap = audit_sofa_simple_freefield_geometry(
+        [1.0, 0.0, 0.0], [0.0, 0.0, 1.0], swapped_cart_ears, coord_type="cartesian"
+    )
+    sofa_missing_type = audit_sofa_simple_freefield_geometry(
+        [1.0, 0.0, 0.0], [0.0, 0.0, 1.0], valid_sph_ears, coord_type="cartesian"
+    )
+
+    low_lat = head_tracking_latency_audit(180.0, 0.020, maa_deg=2.0)
+    high_lat_lookahead = head_tracking_latency_audit(
+        180.0, 0.080, maa_deg=2.0, prediction_horizon_s=0.065
+    )
+    return {
+        "source_position_spherical": src_sph,
+        "source_position_cartesian_m": src_cart,
+        "source_position_roundtrip": src_roundtrip,
+        "sofa_valid_audit": sofa_valid,
+        "sofa_ear_swap_audit": sofa_ear_swap,
+        "sofa_missing_spherical_type_audit": sofa_missing_type,
+        "latency_20ms": low_lat,
+        "latency_80ms_with_65ms_lookahead": high_lat_lookahead,
+    }
+
+
 def run_experiments() -> dict:
     exercises = {
         "E16-01": _ex01_tetra_encoding(),
@@ -362,6 +438,8 @@ def run_experiments() -> dict:
         "E16-14": _ex14_hearthrough_comb(),
         "E16-15": _ex15_wearable_resource_budget(),
         "E16-16": _ex16_audio_three_tier_audit(),
+        "E16-17": _ex17_ambisonics_max_re_decoding(),
+        "E16-18": _ex18_sofa_and_head_tracking_latency(),
     }
     if set(exercises) != set(EXERCISE_IDS):
         raise AssertionError("exercise ID set differs")

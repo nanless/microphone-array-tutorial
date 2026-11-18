@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 16 章 · 空间声场与可穿戴阵列 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="066145ac759e"><style>
+<meta name="source-digest" content="9c717af2e99e"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -297,7 +297,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="16_spatial-wearable-arrays.html#sec-u-da576ba335">被动耳道漏声与主动电声通路的相干叠加模型</a></li>
 <li>&nbsp;&nbsp;<a href="16_spatial-wearable-arrays.html#sec-u-615e612fa5">锚点手算 16-4（下）：2 ms 延迟引发的 250 Hz 陷波与图 84 解读</a></li>
 <li>&nbsp;&nbsp;<a href="16_spatial-wearable-arrays.html#sec-u-a5036ff307">端到端微秒级时域硬件链路与毫瓦级算力预算</a></li>
-<li><a href="16_spatial-wearable-arrays.html#sec-16-11">16.11 可复算代码入口、合成音频对照与练习（E16-01～E16-16）</a></li>
+<li><a href="16_spatial-wearable-arrays.html#sec-16-11">16.11 可复算代码入口、合成音频对照与练习（E16-01～E16-18）</a></li>
 <li>&nbsp;&nbsp;<a href="16_spatial-wearable-arrays.html#sec-u-ab1107bf82">本章代码结构与 6 份合成 WAV 对照清单</a></li>
 <li>&nbsp;&nbsp;<a href="16_spatial-wearable-arrays.html#sec-u-f1d7ba65e4">E16-01：正四面体 A-format 到 SN3D B-format 编码矩阵与通道排序</a></li>
 <li>&nbsp;&nbsp;<a href="16_spatial-wearable-arrays.html#sec-u-555e5b8dc1">E16-02：开球四面体阵列的模态零陷频率 $\kappa R = \pi$ 与空间混叠边界</a></li>
@@ -315,6 +315,8 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="16_spatial-wearable-arrays.html#sec-u-a12dadb51a">E16-14：TWS 通透模式处理延迟与耳道漏声梳状陷波设计核算</a></li>
 <li>&nbsp;&nbsp;<a href="16_spatial-wearable-arrays.html#sec-u-e682b38d9c">E16-15：眼镜与 TWS 超低功耗算力、内存与帧延迟预算核算</a></li>
 <li>&nbsp;&nbsp;<a href="16_spatial-wearable-arrays.html#sec-u-3a0083e39d">E16-16：6 组可穿戴合成音频的解析期望、双精度浮点与 16 位 PCM 三层对账</a></li>
+<li>&nbsp;&nbsp;<a href="16_spatial-wearable-arrays.html#sec-u-c7c051388e">E16-17：一阶 Ambisonics 扬声器能量矢量解码与旁瓣抑制</a></li>
+<li>&nbsp;&nbsp;<a href="16_spatial-wearable-arrays.html#sec-u-d7b38e683b">E16-18：SOFA 双耳测量坐标约定与头部追踪延迟容限</a></li>
 <li><a href="16_spatial-wearable-arrays.html#sec-16-12">16.12 原始资料与延伸阅读</a></li>
 <li>&nbsp;&nbsp;<a href="16_spatial-wearable-arrays.html#sec-u-0b797dff82">空间声场编码、双耳匹配与可穿戴跨模态核心文献</a></li>
 </ul>
@@ -363,7 +365,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="16_spatial-wearable-arrays.html#sec-u-da576ba335">被动耳道漏声与主动电声通路的相干叠加模型</a></li>
 <li>&nbsp;&nbsp;<a href="16_spatial-wearable-arrays.html#sec-u-615e612fa5">锚点手算 16-4（下）：2 ms 延迟引发的 250 Hz 陷波与图 84 解读</a></li>
 <li>&nbsp;&nbsp;<a href="16_spatial-wearable-arrays.html#sec-u-a5036ff307">端到端微秒级时域硬件链路与毫瓦级算力预算</a></li>
-<li><a href="16_spatial-wearable-arrays.html#sec-16-11">16.11 可复算代码入口、合成音频对照与练习（E16-01～E16-16）</a></li>
+<li><a href="16_spatial-wearable-arrays.html#sec-16-11">16.11 可复算代码入口、合成音频对照与练习（E16-01～E16-18）</a></li>
 <li>&nbsp;&nbsp;<a href="16_spatial-wearable-arrays.html#sec-u-ab1107bf82">本章代码结构与 6 份合成 WAV 对照清单</a></li>
 <li>&nbsp;&nbsp;<a href="16_spatial-wearable-arrays.html#sec-u-f1d7ba65e4">E16-01：正四面体 A-format 到 SN3D B-format 编码矩阵与通道排序</a></li>
 <li>&nbsp;&nbsp;<a href="16_spatial-wearable-arrays.html#sec-u-555e5b8dc1">E16-02：开球四面体阵列的模态零陷频率 $\kappa R = \pi$ 与空间混叠边界</a></li>
@@ -381,6 +383,8 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="16_spatial-wearable-arrays.html#sec-u-a12dadb51a">E16-14：TWS 通透模式处理延迟与耳道漏声梳状陷波设计核算</a></li>
 <li>&nbsp;&nbsp;<a href="16_spatial-wearable-arrays.html#sec-u-e682b38d9c">E16-15：眼镜与 TWS 超低功耗算力、内存与帧延迟预算核算</a></li>
 <li>&nbsp;&nbsp;<a href="16_spatial-wearable-arrays.html#sec-u-3a0083e39d">E16-16：6 组可穿戴合成音频的解析期望、双精度浮点与 16 位 PCM 三层对账</a></li>
+<li>&nbsp;&nbsp;<a href="16_spatial-wearable-arrays.html#sec-u-c7c051388e">E16-17：一阶 Ambisonics 扬声器能量矢量解码与旁瓣抑制</a></li>
+<li>&nbsp;&nbsp;<a href="16_spatial-wearable-arrays.html#sec-u-d7b38e683b">E16-18：SOFA 双耳测量坐标约定与头部追踪延迟容限</a></li>
 <li><a href="16_spatial-wearable-arrays.html#sec-16-12">16.12 原始资料与延伸阅读</a></li>
 <li>&nbsp;&nbsp;<a href="16_spatial-wearable-arrays.html#sec-u-0b797dff82">空间声场编码、双耳匹配与可穿戴跨模态核心文献</a></li>
 </ul></nav></details>
@@ -598,6 +602,7 @@ b_1^{\mathrm{open}}(\kappa R)
 \end{bmatrix}\vec b_{\mathrm{world}}.
 \tag{16-9}$$</p>
 <p>一旦代码漏掉了式(16-9)右上角的转置符号 $^\top$，佩戴者向左转头 $+90^\circ$ 时，声源反而会跟着头部再向左偏转 $90^\circ$ 落到脑后，直接引发视听方向倒置与眩晕感（见 <a href="#e16-03">E16-03</a> 对照验证）。</p>
+<p>在把旋转后的声场送入双耳头相关冲激响应（HRIR）卷积渲染之前，工程链路还须把好两道物理关卡。其一是校验 <code>SOFA</code>（AES69-2022）测量文件的球面或笛卡尔坐标属性与双耳通道极性，防止球面角度被误读为米制坐标或左右耳颠倒。其二是将姿态传感、无线传输与音频缓冲构成的“动作到声音（Motion-to-Sound）”总延迟压在动态感知容限以内，否则快速转头时的角度滞后仍会破坏声像世界锁定感（定量审计与线性前瞻补偿见 <a href="#e16-18">E16-18</a>）。</p>
 <span id="sec-12" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-16-4">16.4 有功声强、总声能密度与参数化空间音频（DirAC）</h2>
 <span id="sec-13" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-c945b0159a">欧拉动量方程下的声压—振速相位与方向正负号</h3>
 <p>只靠四路一阶球谐信号直接做线性波束解码（如虚拟心形扬声器馈送），空间主瓣非常宽，在多扬声器或双耳重放时会造成声像展宽与高频音色染色。Pulkki（2007）提出的<strong>定向音频编码（Directional Audio Coding，DirAC）</strong>开辟了另一条参数化路径：人耳在同一时刻、同一临界频带内通常只能分辨一个主导波达方向外加一层环绕扩散感；因此可以在短时傅里叶变换（Short-Time Fourier Transform，STFT）的每个时频格点 $(k, \ell)$ 上，直接由原点声压相量 $p \in \mathbb{C}$ 与三维质点振速相量 $\vec u = [u_x, u_y, u_z]^\top \in \mathbb{C}^3$ 算出能量输运方向及无方向混响占比。</p>
@@ -679,6 +684,7 @@ cE-\|\vec I_a\|_2
 <li><strong>子图 (c) 直达扩散声能比（Direct-to-Diffuse Ratio，DDR）映射</strong>：横轴为稳态平面波与各向同性扩散场声能密度比的分贝值 $\mathrm{DDR}$（定义为 $10\log_{10}(E_{\mathrm{dir}}/E_{\mathrm{diff}})$，单位：$\mathrm{dB}$，范围 $-15$～$+20\ \mathrm{dB}$；注意区别于<a href="02_basics-signal-model.html#sec-2-4-3">第 2 章 §2.4.3</a> 按房间冲激响应早晚时段积分定义的直达混响比 $\mathrm{DRR}$），纵轴为统计扩散度 $\psi$。绿色实线绘出闭式关系 $\psi = 1/(1 + \mathrm{DDR}_{\mathrm{lin}})$，深灰竖向点线标出 $\mathrm{DDR} = 0\ \mathrm{dB}$ 时 $\psi = 0.5$ 的对称分界点。</li>
 <li><strong>子图 (d) 开球四面体阵列径向模态幅度</strong>：横轴为无量纲波数孔径积 $\kappa R \in [0.05, 4.5]$（图轴简记为 $kr$，即正文的 $\kappa R$），纵轴为开球径向模态幅度增益 $|b_l(\kappa R)|$。蓝色实线零阶全向权重 $|b_0(\kappa R)|$ 从直流 $1.0$ 随频率回落，在红色竖向点线 $\kappa R = \pi$ 处跌入零点；橙色虚线一阶偶极权重 $|b_1(\kappa R)|$ 在 $\kappa R \to 0$ 处趋于零（导致低频逆均衡放大底噪），在 $\kappa R \approx 2.08$ 附近升至约 $0.436$ 的主峰，共同框定了紧凑球阵的有效工作频段。</li>
 </ul>
+<p>在多扬声器阵列或虚拟扬声器双耳重放中，参数化 DirAC 常与线性一阶球谐解码配合使用。低频段（约 $700\ \mathrm{Hz}$ 以下）保持一阶偶极模态权重 $g_1 = 1$ 的基础（Basic）解码以还原精确的 Gerzon 速度矢量，中高频段则切换为最大化 Gerzon 能量矢量模长的 $\max\text{-}r_E$ 阶次加权（二维正多边形环阵取 $1/\sqrt{2}$，三维正八面体球面阵取 $1/\sqrt{3}$）或消除反相负旁瓣的同相（in-phase）加权，从而收窄高频声像展宽并抑制对侧扬声器反相串扰（二维切比雪夫根与三维勒让德根的严格区分见 <a href="#e16-17">E16-17</a>）。</p>
 <span id="sec-17" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-16-5">16.5 可穿戴非规则小孔径阵列与双耳信号匹配（BSM）</h2>
 <span id="sec-18" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-7ab45aa42c">眼镜腿、耳机壳体散射与双耳信号匹配目标函数</h3>
 <p>当我们把视线从规则球面麦克风移向智能眼镜、AR 头显或耳戴式助听器时，正四面体的对称球谐正交性立刻不复存在：$M$ 支微型麦克风被迫分散镶嵌在鼻托、前镜框与两侧镜腿上，中间隔着对中高频声波产生强烈遮挡与衍射的人体头颅。如果直接采集佩戴者的双耳沉浸式录音，或者为重放合成保留真实空间方位的双耳信号，怎样用这组非规则排列的机身麦克风观测 $\vec x(f) \in \mathbb{C}^{M \times 1}$，线性组合出与佩戴者左耳（$e = \mathrm{L}$）和右耳（$e = \mathrm{R}$）鼓膜入口声压尽可能一致的信号 $\hat p_e(f) = \vec w_e^H(f)\vec x(f)$？</p>
@@ -994,9 +1000,9 @@ m=0,1,2,\ldots
 <li><strong>本地超低延迟时域协处理器通路（服务主动降噪 Active Noise Cancellation，ANC 与通透模式）</strong>：不走分帧 FFT，而是以 $96$～$384\ \mathrm{kHz}$ 高采样率配合低阶 $\Sigma$-$\Delta$ 调制转换器逐样本流式运行（单样本周期仅 $2.6$～$10.4\ \mu\mathrm{s}$），采用少量级联二阶 IIR 双二阶节（Biquad）或 $16$～$32$ 抽头短时域 FIR 完成耳道补偿，将模拟麦克风到扬声器的总群延迟严格控制在 $30$～$80\ \mu\mathrm{s}$ 以内。</li>
 <li><strong>分帧频域 DSP / NPU 通路（服务上行通话降噪、跨模态融合与空间渲染）</strong>：对端通话听不到佩戴者本人的被动耳道漏声，容许 $10$～$20\ \mathrm{ms}$ 算法缓冲，因此可运行 $16\ \mathrm{kHz}$ 采样率、$N = 256$ 点窗（$16\ \mathrm{ms}$）、$H = 128$ 点帧移（稳定调用周期 $H/f_s = 8\ \mathrm{ms}$）的加权重叠相加（Weighted Overlap-Add，WOLA）时频链路，在 $129$ 个非负频点上执行波束形成与式(16-25)的跨模态融合。受限于耳机几十毫安时的微型纽扣电池，内存与功耗仍须精打细算：以 $M = 3$ 通道（双外麦 + 单内麦）为例，$129$ 个频点维护单精度复数 <code>complex64</code>（每复数 $8$ 字节）协方差矩阵仅需 $129 \times 9 \times 8 = 9288$ 字节，全部常驻片上紧耦合 SRAM 即可避免高功耗的外部访存（见 <a href="#e16-15">E16-15</a>）。</li>
 </ol>
-<span id="sec-40" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-16-11">16.11 可复算代码入口、合成音频对照与练习（E16-01～E16-16）</h2>
+<span id="sec-40" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-16-11">16.11 可复算代码入口、合成音频对照与练习（E16-01～E16-18）</h2>
 <span id="sec-41" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-ab1107bf82">本章代码结构与 6 份合成 WAV 对照清单</h3>
-<p>本章所有公式与锚点算例均由 <code>codes/chapters/ch16/</code> 下的纯 NumPy 数值核一一实现：<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch16/core/spatial_parametric.py"><code>spatial_parametric.py</code></a> 实现正四面体 A/B-format 编码、三维欧拉旋转及声强扩散度分析；<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch16/core/binaural_matching.py"><code>binaural_matching.py</code></a> 实现 BSM-LS、单调交替相位投影 BSM-MagLS 与参考混合耳间相干度计算；<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch16/core/wearable_fusion.py"><code>wearable_fusion.py</code></a> 实现跨模态 MVDR/MMSE 融合、通透模式梳状频响与 Corcos 风噪相干模型。</p>
+<p>本章所有公式与锚点算例均由 <code>codes/chapters/ch16/</code> 下的纯 NumPy 数值核一一实现：<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch16/core/spatial_parametric.py"><code>spatial_parametric.py</code></a> 实现正四面体 A/B-format 编码、三维欧拉旋转及声强扩散度分析；<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch16/core/binaural_matching.py"><code>binaural_matching.py</code></a> 实现 BSM-LS、单调交替相位投影 BSM-MagLS 与参考混合耳间相干度计算；<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch16/core/wearable_fusion.py"><code>wearable_fusion.py</code></a> 实现跨模态 MVDR/MMSE 融合、通透模式梳状频响与 Corcos 风噪相干模型；<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch16/core/ambisonic_sofa_rendering.py"><code>ambisonic_sofa_rendering.py</code></a> 实现一阶扬声器能量矢量解码、<code>SOFA</code> 双耳几何审计与头部追踪延迟核算。</p>
 <p>配套音频生成器 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch16/examples/generate_wearable_audio.py"><code>generate_wearable_audio.py</code></a> 在 <code>codes/chapters/ch16/wearable_audio/</code> 下生成 $6$ 份采样率 $16\ \mathrm{kHz}$、长度 $32000$ 点（$2.0\ \mathrm{s}$）的确定性数学合成 PCM16 音频及校验清单 <a href="wearable_audio/MANIFEST.json"><code>MANIFEST.json</code></a>。全组文件共享导出增益 $1.0$，首尾各设 $1600$ 点升余弦平滑淡入淡出，中间 $[1600, 30400)$ 共 $28800$ 点（$1.8\ \mathrm{s}$）稳定窗恰好容纳所有目标与干扰正弦波的整数个周期。</p>
 <p>这组合成样本专用于精确核验跨模态子带权重、16 位量化误差与延迟相消算术，不替代自然语音、真实边界层湍流或实测耳道传递函数；因包含高频纯音，<strong>佩戴耳机试听前请先调低设备音量</strong>：</p>
 <ul>
@@ -1005,7 +1011,7 @@ m=0,1,2,\ldots
 <li><a href="wearable_audio/wearable_inear_occluded.wav">耳内闭塞原始观测 <code>wearable_inear_occluded.wav</code></a><audio class="audio-sample" controls preload="none" aria-label="耳内闭塞原始观测 wearable_inear_occluded.wav" src="wearable_audio/wearable_inear_occluded.wav">请使用上方 WAV 链接下载。</audio>（单声道）：模拟封闭耳道拾音——$250\ \mathrm{Hz}$ 目标获 $2.0$ 倍闭塞增强（峰值 $0.20$），$4000\ \mathrm{Hz}$ 目标衰减至 $0.1$ 倍（峰值 $0.01$），并叠加 $175\ \mathrm{Hz}$ 与 $5000\ \mathrm{Hz}$ 各峰值 $0.02$ 的微弱传感器底噪（各均方 $0.0002$）；听感无风噪但低频偏闷、高频微弱（音色失真加底噪总 $\mathrm{MSE} \approx 0.00945$）。</li>
 <li><a href="wearable_audio/wearable_inear_equalized.wav">单内麦朴素逆均衡 <code>wearable_inear_equalized.wav</code></a><audio class="audio-sample" controls preload="none" aria-label="单内麦朴素逆均衡 wearable_inear_equalized.wav" src="wearable_audio/wearable_inear_equalized.wav">请使用上方 WAV 链接下载。</audio>（单声道）：对耳内闭塞信号直接乘子带逆增益（低频 $\times 0.5$、高频 $\times 10.0$），目标双音虽恢复为峰值 $0.10$，但 $5000\ \mathrm{Hz}$ 传感器底噪幅度被同步放大 $10$ 倍至 $0.20$（底噪功率放大 $100$ 倍即 $+20\ \mathrm{dB}$ 至 $0.020$），试听时伴随明显的高频底噪（总 $\mathrm{MSE} \approx 0.02005$）。</li>
 <li><a href="wearable_audio/wearable_fused_output.wav">跨模态分频 MVDR 融合 <code>wearable_fused_output.wav</code></a><audio class="audio-sample" controls preload="none" aria-label="跨模态分频 MVDR 融合 wearable_fused_output.wav" src="wearable_audio/wearable_fused_output.wav">请使用上方 WAV 链接下载。</audio>（单声道）：将外麦第 $0$ 声道与耳内闭塞声道在低频带按 $[1/401, 200/401]^\top$、在高频带按 $[80/81, 10/81]^\top$ 无失真融合，同时抑制低频强风与高频底噪放大，听感干净还原参考双音，稳窗实测 $\mathrm{MSE}$ 降至 $0.000297$。</li>
-<li><a href="wearable_audio/wearable_hearthrough_comb.wav">通透模式 2 ms 梳状滤波 <code>wearable_hearthrough_comb.wav</code></a><audio class="audio-sample" controls preload="none" aria-label="通透模式 2 ms 梳状滤波 wearable_hearthrough_comb.wav" src="wearable_audio/wearable_hearthrough_comb.wav">请使用上方 WAV 链接下载。</audio>（单声道）：将干净参考与延迟 $32$ 个采样点（$2.0\ \mathrm{ms}$）的因果重放支路等幅相加，试听可见 $250\ \mathrm{Hz}$ 低音因半波长反相完全消失，仅剩幅度翻倍至 $0.20$ 的 $4000\ \mathrm{Hz}$ 高频单音（稳态解析 $\mathrm{MSE} = 0.010$）。</li>
+<li><a href="wearable_audio/wearable_hearthrough_comb.wav">通透模式 2 ms 梳状滤波 <code>wearable_hearthrough_comb.wav</code></a><audio class="audio-sample" controls preload="none" aria-label="通透模式 2 ms 梳状滤波 wearable_hearthrough_comb.wav" src="wearable_audio/wearable_hearthrough_comb.wav">请使用上方 WAV 链接下载。</audio>（单声道）：将干净参考与延迟 $32$ 个采样点（$2.0\ \mathrm{ms}$）的因果重放支路等幅相加，试听可见 $250\ \mathrm{Hz}$ 低音因半波长反相完全消失，仅剩幅度翻倍至 $0.20$ 的 $4\ \mathrm{kHz}$ 高频单音（稳态解析 $\mathrm{MSE} = 0.010$）。</li>
 </ul>
 <p>在仓库根目录下运行以下命令，即可生成或以严格只读模式核验音频资产、重绘本章四张插图，或单独执行任意练习题：</p>
 <pre><code class="language-bash">.venv/bin/python -m codes.chapters.ch16.examples.generate_wearable_audio
@@ -1013,7 +1019,7 @@ m=0,1,2,\ldots
 .venv/bin/python scripts/make_wearable_figures.py
 .venv/bin/python -m codes.chapters.ch16.chapter16_exercises --exercise E16-07
 </code></pre>
-<p>下面给出 <code>E16-01</code>～<code>E16-16</code> 共 $16$ 道配套练习的题目、完整复算步骤与边界说明。在评分对账中，我们将理论协方差闭式期望（解析层）、导出前的 <code>float64</code> 分量分解（浮点层）与重读 16 位整型 WAV 后的无损平方和（PCM 层，按满量程 $32768$ 对齐）分栏记录：</p>
+<p>下面给出 <code>E16-01</code>～<code>E16-18</code> 共 $18$ 道配套练习的题目、完整复算步骤与边界说明。在评分对账中，我们将理论协方差闭式期望（解析层）、导出前的 <code>float64</code> 分量分解（浮点层）与重读 16 位整型 WAV 后的无损平方和（PCM 层，按满量程 $32768$ 对齐）分栏记录：</p>
 <p>$$\mathrm{NMSE}_{\mathrm{PCM}}
 =\frac{\sum_{n=1600}^{30399}\bigl(Y_{\mathrm{int}}[n]
 -D_{\mathrm{int}}[n]\bigr)^2}
@@ -1146,8 +1152,44 @@ E(\Delta\phi)
 <li>跨模态 MVDR 融合：解析与浮点 MSE 精确等于 $0.005/100.25 + 0.005/20.25 \approx 0.00029679$，16 位 PCM 实测约为 $0.00029680$（$\mathrm{NMSE} \approx 0.02968$，相对单模态降低逾 $67$ 倍）；</li>
 <li>通透 $2\ \mathrm{ms}$ 梳状叠加：无限稳态解析 MSE 为 $0.005 + 0.005 = 0.010000$，因果有限窗 <code>float64</code> 实测 MSE 为 $0.00999999$（$0.0099999922$），16 位 PCM 实测 MSE 为 $0.01000150$（$\mathrm{NMSE} \approx 1.00011$）。浮点实测与稳态解析值相差约 $7.83 \times 10^{-9}$（同时使 $4000\ \mathrm{Hz}$ 投影峰值幅度略降约 $3.64 \times 10^{-8}$），源于因果延迟波形 <code>s_clean + delay_samples(s_clean, 32)</code> 在窗口最前端 $n \in [1600, 1632)$ 的 $32$ 个采样点处读取了 $n - 32 \in [1568, 1600)$ 升余弦淡入包络最顶端的过渡点（幅度从 $0.999013$ 升至 $1.0$），清晰区分了无限长周期稳态公式与有限长因果序列边界。</li>
 </ul>
-<span id="sec-58" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-16-12">16.12 原始资料与延伸阅读</h2>
-<span id="sec-59" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-0b797dff82">空间声场编码、双耳匹配与可穿戴跨模态核心文献</h3>
+<p><a id="e16-17"></a></p>
+<span id="sec-58" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-c7c051388e">E16-17：一阶 Ambisonics 扬声器能量矢量解码与旁瓣抑制</h3>
+<p><strong>题目。</strong> 设 $L$ 支扬声器等距构成中心对称的 $D$ 维 3-design 各向同性布局，一阶与三阶方向矩归零（$\sum_\ell \vec u_\ell = \vec 0$、$\sum_\ell (\vec u_\ell^\top \vec n_s)^2 \vec u_\ell = \vec 0$），二阶矩 $\mathbf U^\top\mathbf U$ 等于 $\frac{L}{D}\mathbf P_D$（$D = 2$ 取水平面正六边形环阵 $L = 6$，$\mathbf P_2 = \operatorname{diag}(1, 1, 0)$；$D = 3$ 取三维正八面体六轴顶点，$\mathbf P_3 = \mathbf I_3$，注意 §16.2 的四元正四面体仅为球面 2-design，不满足三阶矩归零）。</p>
+<p>一阶解码器以偶极阶次权重 $g_1 \ge 0$ 向第 $\ell$ 支扬声器馈送增益，求：（1）证明总辐射功率 $\sum_\ell d_\ell^2$ 与源方向 $\vec n_s$ 无关，导出 Gerzon 能量矢量 $\vec r_E$ 的统一闭式并分别求出 $D = 2$ 与 $D = 3$ 下最大化 $\|\vec r_E\|_2$ 的最优权重 $g_1^{\star}$；（2）对正前方源 $\vec n_s = [1, 0, 0]^\top$，复算二维六边形与三维正八面体在基础解码（$g_1 = 1$）、能量矢量最优解码（$\max\text{-}r_E$）及同相解码（$g_1 = 1/D$）下的 $\|\vec r_E\|_2$、最小增益与正后方旁瓣功率抑制比。</p>
+<p><strong>解答。</strong> （1）在满足三阶球面设计的 $D \in \{2, 3\}$ 各向同性流形上，源方向单位向量 $\vec n_s$ 满足一次和 $\sum_{\ell=1}^L (\vec u_\ell^\top \vec n_s) = 0$、二次和 $\sum_{\ell=1}^L (\vec u_\ell^\top \vec n_s)^2 = L / D$ 及三阶奇次矩 $\sum_{\ell=1}^L (\vec u_\ell^\top \vec n_s)^2 \vec u_\ell = \vec 0$。将馈送增益平方后逐项求和，交叉项归零，总功率化简为 $(1 + D g_1^2) / L$，严格不随方向 $\vec n_s$ 变化。再展开加权方向和 $\sum_{\ell=1}^L d_\ell^2 \vec u_\ell$，零次与二次奇对称项全部抵消，仅剩一次交叉项 $\frac{2 g_1}{L}\vec n_s$，相除立得统一能量矢量公式：</p>
+<p>$$\begin{aligned}
+d_\ell(\vec n_s)
+&=\frac{1}{L}\bigl(1+D\,g_1\,\vec u_\ell^\top\vec n_s\bigr),\\
+\vec r_E
+&=\frac{\sum_{\ell=1}^L d_\ell^2\vec u_\ell}
+{\sum_{\ell=1}^L d_\ell^2}
+=\frac{2g_1}{1+D\,g_1^2}\,\vec n_s.
+\end{aligned}\tag{16-29}$$</p>
+<p>对标量函数 $f(g_1) = 2g_1 / (1 + D g_1^2)$ 求导令分子 $2(1 - D g_1^2) = 0$，即得最优阶次权重 $g_1^{\star} = 1 / \sqrt{D}$。二维水平环阵（$D = 2$）对应二阶切比雪夫多项式 $T_2(g_1) = 2g_1^2 - 1 = 0$ 的正根 $1/\sqrt{2} \approx 0.707107$，三维全空间球面阵（$D = 3$）对应二阶勒让德多项式 $P_2(g_1) = \frac{1}{2}(3g_1^2 - 1) = 0$ 的正根 $1/\sqrt{3} \approx 0.577350$，切不可将二维切比雪夫根误套用于三维球面阵。</p>
+<p>（2）取 $\vec n_s = [1, 0, 0]^\top$ 逐项核对（对应 <code>ambisonic_sofa_rendering.py</code> 与 <code>E16-17</code>）：</p>
+<ul>
+<li><strong>二维正六边形环阵（$D = 2, L = 6$）</strong>：基础解码（$g_1 = 1$）给出 $\|\vec r_E\|_2 = 2/3 \approx 0.666667$，正后方 $-x$ 扬声器增益为 $-1/6 \approx -0.166667$；切换为 $\max\text{-}r_E$（$g_1 = 1/\sqrt{2}$）后，$\|\vec r_E\|_2$ 升至最大值 $1/\sqrt{2} \approx 0.707107$（能量散布角 $2\arccos\|\vec r_E\|_2$ 收窄至 $90.00^\circ$），正后方增益压低至 $(1 - \sqrt{2})/6 \approx -0.069036$，后向串扰功率比 $(\sqrt{2} - 1)^2$ 折合抑制 $-7.66\ \mathrm{dB}$；同相解码（$g_1 = 0.5$）令后方增益精确归零，同时保持 $\|\vec r_E\|_2 = 2/3$。</li>
+<li><strong>三维正八面体阵（$D = 3, L = 6$）</strong>：基础解码（$g_1 = 1$）下六路增益为 $[2/3, -1/3, 1/6, 1/6, 1/6, 1/6]$，$\|\vec r_E\|_2$ 仅为 $1/2 = 0.500000$，正后方 $-x$ 出现高达 $-1/3$ 的反相旁瓣；切换为三维 $\max\text{-}r_E$（$g_1 = 1/\sqrt{3}$）后，$\|\vec r_E\|_2$ 提升至 $1/\sqrt{3} \approx 0.577350$，正后方增益降至 $(1 - \sqrt{3})/6 \approx -0.122008$，功率比 $((\sqrt{3} - 1)/2)^2$ 折合抑制 $-8.73\ \mathrm{dB}$；三维同相解码（$g_1 = 1/3$）给出非负馈送 $[1/3, 0, 1/6, 1/6, 1/6, 1/6]$，彻底消除偏心听音位的反相染色。</li>
+</ul>
+<p><a id="e16-18"></a></p>
+<span id="sec-59" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-d7b38e683b">E16-18：SOFA 双耳测量坐标约定与头部追踪延迟容限</h3>
+<p><strong>题目。</strong> （1）按 AES69-2022（<code>SOFA 2.1</code>）<code>SimpleFreeFieldHRIR</code> 规范，球面三元组 <code>[az_deg, el_deg, r_m]</code> 对应右手笛卡尔系（$+x$ 正前、$+y$ 正左、$+z$ 正上）下的 $x = r\cos\phi\cos\theta$、$y = r\cos\phi\sin\theta$ 与 $z = r\sin\phi$。手算源位置 <code>[30, 45, 1.5]</code> 的精确笛卡尔坐标，并指出默认姿态下双耳接收矩阵 <code>[[90, 0, 0.09], [-90, 0, 0.09]]</code> 漏标球面属性以及左右耳写成 <code>[[0, -0.09, 0], [0, +0.09, 0]]</code> 分别引发的物理故障；（2）设世界系水平面（$\phi = 0^\circ$）有一单位平面波 $|p| = 1$，佩戴者以偏航角速度 $\dot\theta_{\mathrm{yaw}} = 180^\circ/\mathrm{s}$ 转头，推导总延迟 $\tau_{\mathrm{lag}}$ 引起的角度滞后与一阶 B-format 弦长误差，对比 $20\ \mathrm{ms}$、$80\ \mathrm{ms}$ 链路及施加 $\hat\tau = 65\ \mathrm{ms}$ 线性前瞻预测后的稳态滞后与急停超调。</p>
+<p><strong>解答。</strong> （1）代入 $\theta = 30^\circ$（$\cos 30^\circ = \sqrt{3}/2$）、$\phi = 45^\circ$（$\cos 45^\circ = \sin 45^\circ = \sqrt{2}/2$）与 $r = 3/2\ \mathrm{m}$，得精确笛卡尔坐标 $[3\sqrt{6}/8, 3\sqrt{2}/8, 3\sqrt{2}/4]^\top$（单位：$\mathrm{m}$），数值约为 $[0.918559, 0.530330, 1.060660]^\top\ \mathrm{m}$（模长还原 $1.5\ \mathrm{m}$）。默认姿态下听者左耳轴 $\vec v_{\mathrm{up}} \times \vec v_{\mathrm{view}}$ 指向 $+y$，合规球面双耳坐标转换后为左耳 $[0, +0.09, 0]^\top\ \mathrm{m}$、右耳 $[0, -0.09, 0]^\top\ \mathrm{m}$。若漏读 <code>Type = "spherical"</code> 属性，解析器会把 $90^\circ$ 当作前方 $x = +90\ \mathrm{m}$ 远场坐标；若首行左耳写成 $y_{\mathrm{L}} = -0.09\ \mathrm{m} \lt  0$，则双耳 ITD/ILD 左右镜像颠倒（<code>audit_sofa_simple_freefield_geometry</code> 自动拦截报警）。</p>
+<p>（2）设当前时刻理想头部系方位角为 $\theta$，延迟 $\tau_{\mathrm{lag}}$ 读取的旧姿态使合成方位偏离 $\Delta\theta_{\mathrm{lag}} \in [0, \pi]$（简记为 $\delta$）。因零阶 $W$ 与垂直分量 $Z$ 在纯偏航下不变，误差集中于水平偶极差向量，其模平方由三角恒等式 $2 - 2\cos\delta = 4\sin^2(\delta/2)$ 直接化简，开方即得：</p>
+<p>$$\begin{aligned}
+\Delta\theta_{\mathrm{lag}}
+&=|\dot\theta_{\mathrm{yaw}}|\,\tau_{\mathrm{lag}},\\
+\|\vec b_{\mathrm{lag}}-\vec b_{\mathrm{ideal}}\|_2
+&=2|p|\cos\phi\,\sin(\Delta\theta_{\mathrm{lag}}/2).
+\end{aligned}\tag{16-30}$$</p>
+<p>在 $\dot\theta_{\mathrm{yaw}} = 180^\circ/\mathrm{s}$、$|p| = 1$、$\phi = 0^\circ$ 下逐档复算：</p>
+<ul>
+<li><strong>专用低延迟链路（$\tau_{\mathrm{lag}} = 20\ \mathrm{ms}$）</strong>：$\Delta\theta_{\mathrm{lag}} = 3.60^\circ$（弦长误差 $2\sin 1.80^\circ \approx 0.062822$），虽略高于静态正前最小可觉差（MAA 约 $1^\circ$～$2^\circ$），但仍落在人体快速转头时的动态最小可觉运动角（MAMA 约 $4^\circ$～$6^\circ$）容限之内，听感保持稳定锚定；</li>
+<li><strong>缓冲无线链路（$\tau_{\mathrm{lag}} = 80\ \mathrm{ms}$）</strong>：$\Delta\theta_{\mathrm{lag}}$ 扩大至 $14.40^\circ$（弦长误差 $\approx 0.250666$），超过静态 MAA 七倍以上且显著突破动态容限，声像在转头瞬间明显拖尾漂移；</li>
+<li><strong>线性前瞻补偿（$\hat\tau = 65\ \mathrm{ms}$）</strong>：匀速转头段残余延迟压缩至 $|80 - 65| = 15\ \mathrm{ms}$，角度滞后回落至 $2.70^\circ$（弦长误差 $\approx 0.047120$）；但一旦头部突然刹停，未加角加速度阻尼的纯线性外推会产生 $|\dot\theta_{\mathrm{yaw}}|\hat\tau = 11.70^\circ$ 的瞬态反向超调，因此实用空间音频引擎通常将前瞻时域限制在 $20$～$40\ \mathrm{ms}$ 并配合角加速度门控。</li>
+</ul>
+<span id="sec-60" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-16-12">16.12 原始资料与延伸阅读</h2>
+<span id="sec-61" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-0b797dff82">空间声场编码、双耳匹配与可穿戴跨模态核心文献</h3>
 <p>以下原始文献与标准规范支撑本章的球谐表示、参数化声强分析、双耳匹配优化与可穿戴跨模态融合推导：</p>
 <ul>
 <li>Gerzon, M. A.，<em>Periphony: With-Height Sound Reproduction</em>，<em>Journal of the Audio Engineering Society (JAES)</em> 21(1)，1973，第 2～10 页：奠定一阶 Ambisonics（$W, X, Y, Z$）与正四面体球面采集几何基础。</li>
@@ -1159,6 +1201,8 @@ E(\Delta\phi)
 <li>Marquardt, D.、Hohmann, V. 与 Doclo, S.，<em>Interaural Coherence Preservation for Binaural Noise Reduction Using Partial Noise Estimation</em>，<em>IEEE/ACM Transactions on Audio, Speech, and Language Processing</em> 23(12)，2015，第 2172～2185 页：严格分析单目标双耳 MVDR 背景噪声耳间相干度坍缩问题，并对比参考麦克风混合与耳间相干度约束方案。</li>
 <li>Corcos, G. M.，<em>The Structure of the Turbulent Pressure Field in Boundary-Layer Flows</em>，<em>Journal of Fluid Mechanics</em> 18(3)，1964，第 353～378 页：建立式(16-23)边界层湍流壁面脉动压力的流向与横向指数互谱衰减模型。</li>
 <li>Tagliasacchi, M. 等，<em>SEANet: A Multi-Modal Speech Enhancement Network</em>（及跨模态气导/骨导统计融合系列研究），Interspeech 2020；以及 Liebich, S. 等，<em>Acoustic Path Delay and Comb-Filtering Effects in Hear-Through / Active Noise Cancellation Earbuds</em>，<em>IEEE/ACM TASLP</em> 系列研究：定量分析耳道闭塞效应、骨导高频信噪比退化及主动通透模式的百微秒级延迟约束。</li>
+<li>Zotter, F. 与 Frank, M.，<em>All-Round Ambisonic Panning and Decoding</em>，<em>JAES</em> 60(10)，2012，第 807～820 页：系统导出二维环阵与三维球面阵的能量矢量最优阶次权重 $\max\text{-}r_E$ 闭式根与双频带解码准则。</li>
+<li>Audio Engineering Society，<em>AES69-2022: AES Standard for File Exchange — Spatial Acoustic Data File Format (SOFA 2.1)</em>，2022：规范头相关冲激响应（<code>SimpleFreeFieldHRIR</code>）的球面与笛卡尔坐标体系、听者姿态三轴与双耳接收点元数据合同。</li>
 </ul>
 <hr />
 <p><a href="index.html">🏠 首页</a> ｜ 上一篇：<a href="13_distributed-enhancement.html">13 分布式麦克风协同增强</a> ｜ 下一篇：<a href="17_target-extraction-diarization.html">17 条件目标提取与多模态前端</a></p><div class="pn"><span><a href="13_distributed-enhancement.html">← 上一篇</a></span><span><a href="17_target-extraction-diarization.html">下一篇 →</a></span></div>

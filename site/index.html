@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>从入门到工业实践 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="066145ac759e"><style>
+<meta name="source-digest" content="9c717af2e99e"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -415,7 +415,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
         <a class="course-cta" href="01_problem-definition.html">读第一章 <span aria-hidden="true">→</span></a>
         <a class="course-quiet" href="#course-engineering">工程实践 <span aria-hidden="true">↓</span></a>
       </div>
-      <p class="course-note">15 章正文、2 篇附录、421 道可运行练习。</p>
+      <p class="course-note">15 章正文、2 篇附录、423 道可运行练习。</p>
     </div>
 
     <figure class="course-demo" data-source="left">
@@ -1008,7 +1008,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <p>围绕真实无线链路，本专题进一步讨论传输量化误差、压缩系数版本切换后的统计量坐标变换、节点间采样率偏移（如 $100\ \mathrm{ppm}$ 频偏）补偿以及网络丢包时的补零与本地回退策略（完整无线实验复现指引见<a href="13_distributed-enhancement.html#sec-13-13">专题 §13.13</a>）。</p>
 <h3 id="sec-u-6dcf2e71ad"><a href="16_spatial-wearable-arrays.html">16 · 扩展专题Ⅲ：空间声场采集、参数化编码与可穿戴阵列</a></h3>
 <p>本专题（第 16 章，配图 4 张）面向全景声录制、扩展现实头显、智能眼镜、真无线耳机与数字助听器，建议在读完第 1、2、5 章后选读。与交付单路增强波形的桌面阵列不同，全景声采集与可穿戴设备需要在受限孔径和头部散射条件下保留三维方位线索与自然听觉包围感。</p>
-<p>全章从一阶全景声（FOA）ACN/SN3D 约定、正四面体编码均衡与头部追踪三维声场逆旋转出发，推导方向性音频编码（DirAC）的有功声强与扩散度参数化分析；随后展开非规则阵列双耳信号匹配（BSM-LS 与高频幅度最小二乘 MagLS）及用参考麦克风混合抑制背景噪声头中坍缩的解析折中，并剖析 Corcos 湍流风噪模型、气导与耳道闭塞内麦跨模态 MVDR 自语音融合，以及耳机通透模式（Hear-Through）的百微秒梳状滤波延迟边界（配套练习 <code>E16-01</code>～<code>E16-16</code> 与 <code>wearable_audio</code> 见<a href="16_spatial-wearable-arrays.html#sec-16-11">专题 §16.11</a>）。</p>
+<p>全章从一阶全景声（FOA）ACN/SN3D 约定、正四面体编码均衡与头部追踪三维声场逆旋转出发，推导方向性音频编码（DirAC）的有功声强与扩散度参数化分析；随后展开非规则阵列双耳信号匹配（BSM-LS 与高频幅度最小二乘 MagLS）及用参考麦克风混合抑制背景噪声头中坍缩的解析折中，并剖析 Corcos 湍流风噪模型、气导与耳道闭塞内麦跨模态 MVDR 自语音融合，以及耳机通透模式（Hear-Through）的百微秒梳状滤波延迟边界（配套练习 <code>E16-01</code>～<code>E16-18</code> 与 <code>wearable_audio</code> 见<a href="16_spatial-wearable-arrays.html#sec-16-11">专题 §16.11</a>）。</p>
 <h3 id="sec-u-a79ebcacde"><a href="17_target-extraction-diarization.html">17 · 扩展专题Ⅳ：条件目标说话人提取、多通道日志与远场多模态前端</a></h3>
 <p>本专题（第 17 章，配图 4 张）面向个人目标说话人提取与多人重叠会议转写，建议在读完第 2、5、8 章后选读。面对无条件盲分离槽位缺少身份锚点、同方向远近声源重叠与多人抢话等工程难题，系统需要融合声纹、近场距离、说话人活动与视觉唇动线索驱动前端提取。</p>
 <p>全章先推导条件特征仿射调制（FiLM）与交叉注意力注入、消除目标沉默段零除零奇异性的双态训练损失及单人段零重叠清擦音旁路准则，再给出利用球面波曲率区分同向远近声源的三麦正横声学距离气泡闭式解与孔径四次方（$d^4$）底噪边界。随后定量拆解说话人日志误差率（DER）三分量与空谱联合目标说话人语音活动检测（TS-VAD）对导引源分离（GSS）的排他门控，分析视听异构帧率对齐、相机管线滞后截断与唇部遮挡回退，并对比模块化级联（<code>TS-VAD→GSS→ASR</code>）与联合识别架构（<code>SOT</code>、<code>DiCoW</code>）的选型依据（配套练习 <code>E17-01</code>～<code>E17-16</code> 与 <code>tse_audio</code> 见<a href="17_target-extraction-diarization.html#sec-17-8">专题 §17.8～§17.10</a>）。</p>
@@ -1815,7 +1815,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <p>核对完基础输出后，可运行单元测试套件检验正常输入、退化边界与异常输入处理；若想针对某一章单独调试，可按<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/README.md">代码地图</a>定位对应模块与测试文件：</p>
 <pre><code class="language-bash">.venv/bin/python -m unittest discover -s tests -p 'test_codes*.py' -v
 </code></pre>
-<p>需要从头重新生成音频或重绘插图时，可参照<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/scripts/README.md">构建说明</a>与附录 B <a href="15_appendix-guide.html#sec-15-7">§15.7</a> 操作（附录 B 房间仿真练习需在固定版本 <code>pyroomacoustics</code> 独立环境中生成）。此外，全书共配 421 道稳定编号代码练习（<code>E01-01</code> 至 <code>E17-16</code>）：其中第 1～13 章与附录 A、B 的 389 道汇总于<a href="research/05_exercises_and_audio.html">章节代码练习与音频实验</a>，第 16、17 章的 32 道分别见<a href="16_spatial-wearable-arrays.html#sec-16-11">专题Ⅲ §16.11</a>与<a href="17_target-extraction-diarization.html#sec-17-10">专题Ⅳ §17.10</a>，每道题均给出明确输入、运行入口与可核查数值结果。</p>
+<p>需要从头重新生成音频或重绘插图时，可参照<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/scripts/README.md">构建说明</a>与附录 B <a href="15_appendix-guide.html#sec-15-7">§15.7</a> 操作（附录 B 房间仿真练习需在固定版本 <code>pyroomacoustics</code> 独立环境中生成）。此外，全书共配 423 道稳定编号代码练习（<code>E01-01</code> 至 <code>E17-16</code>）：其中第 1～13 章与附录 A、B 的 389 道汇总于<a href="research/05_exercises_and_audio.html">章节代码练习与音频实验</a>，第 16、17 章的 34 道分别见<a href="16_spatial-wearable-arrays.html#sec-16-11">专题Ⅲ §16.11</a>与<a href="17_target-extraction-diarization.html#sec-17-10">专题Ⅳ §17.10</a>，每道题均给出明确输入、运行入口与可核查数值结果。</p>
 <p><a id="audio-assets"></a></p>
 <p>仓库配套音频分为两类：除表格末行的 DEMAND 为真实自然环境多通道录音摘录外，其余 31 套均为受控数学模型生成的确定性合成音频（用于隔离单一物理因素、精确对比解析理论值与 16 位脉冲编码调制（Pulse-Code Modulation，PCM）量化读回值）。试听前请先调低耳机或扬声器音量；网页音频播放器默认不自动播放。下表列出全部 32 套音频资产的清单入口、文件数量与观察重点：</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
@@ -2054,7 +2054,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>[ ] 完成附录 B 综合练习（入门阶段建议先做第 2、3、5、7、10、11、14 题，进阶阶段再做第 6、8、12、13、16、17 题）。</li>
 <li>[ ] 对照附录 B §15.4 演练常见异常排查，并按第 10 章模板试着编制一份延迟、时钟同步与通道标定预算表。</li>
 </ul>
-<p>需要进一步动手演练四篇扩展专题的读者，声学成像的 20 道配套代码题与合成快拍音频实验见<a href="12_acoustic-imaging.html">扩展专题Ⅰ</a>及<a href="research/05_exercises_and_audio.html#sec-47-1">实验手册第 47 节</a>；分布式麦克风协同增强的 27 道配套代码题与多节点音频实验见<a href="13_distributed-enhancement.html">扩展专题Ⅱ</a>及<a href="research/05_exercises_and_audio.html#sec-48-1">实验手册第 48 节</a>。空间声场与可穿戴阵列的 16 道配套代码题及跨模态/通透合成音频实验（<code>wearable_audio</code>）见<a href="16_spatial-wearable-arrays.html#sec-16-11">扩展专题Ⅲ §16.11</a>；条件目标说话人提取与多通道会议说话人日志的 16 道配套代码题及近场距离气泡合成音频实验（<code>tse_audio</code>）见<a href="17_target-extraction-diarization.html#sec-17-8">扩展专题Ⅳ §17.8～§17.10</a>。</p>
+<p>需要进一步动手演练四篇扩展专题的读者，声学成像的 20 道配套代码题与合成快拍音频实验见<a href="12_acoustic-imaging.html">扩展专题Ⅰ</a>及<a href="research/05_exercises_and_audio.html#sec-47-1">实验手册第 47 节</a>；分布式麦克风协同增强的 27 道配套代码题与多节点音频实验见<a href="13_distributed-enhancement.html">扩展专题Ⅱ</a>及<a href="research/05_exercises_and_audio.html#sec-48-1">实验手册第 48 节</a>。空间声场与可穿戴阵列的 18 道配套代码题及跨模态/通透合成音频实验（<code>wearable_audio</code>）见<a href="16_spatial-wearable-arrays.html#sec-16-11">扩展专题Ⅲ §16.11</a>；条件目标说话人提取与多通道会议说话人日志的 16 道配套代码题及近场距离气泡合成音频实验（<code>tse_audio</code>）见<a href="17_target-extraction-diarization.html#sec-17-8">扩展专题Ⅳ §17.8～§17.10</a>。</p>
 <footer class="foot">麦克风阵列信号处理教程 · 静态站由 scripts/build_site.py 生成</footer>
 </main></div><a class="topbtn" href="#top" title="回顶部" aria-label="回到页面顶部">↑</a>
 <script>if(!navigator.onLine)document.getElementById('offnote').style.display='block';</script>

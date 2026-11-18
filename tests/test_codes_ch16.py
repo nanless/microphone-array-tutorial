@@ -10,6 +10,16 @@ import unittest
 import numpy as np
 
 from codes.chapters.ch16.chapter16_exercises import EXERCISE_IDS, main as cli_main, run_experiments
+from codes.chapters.ch16.core.ambisonic_sofa_rendering import (
+    REGULAR_HEXAGON_2D_DIRS,
+    REGULAR_OCTAHEDRON_3D_DIRS,
+    audit_sofa_simple_freefield_geometry,
+    foa_loudspeaker_decode_metrics,
+    foa_max_re_order_weight,
+    head_tracking_latency_audit,
+    sofa_cartesian_to_spherical,
+    sofa_spherical_to_cartesian,
+)
 from codes.chapters.ch16.core.binaural_matching import (
     binaural_coherence_with_mixing,
     bsm_directional_metrics,
@@ -331,6 +341,126 @@ class TestWearableFusion(unittest.TestCase):
         self.assertAlmostEqual(float(coh["acoustic_diffuse_coherence"][1]), expected_sinc_250, places=15)
 
 
+class TestAmbisonicAndSofaRendering(unittest.TestCase):
+    def test_e16_17_foa_max_re_vs_basic_and_in_phase_decoding(self):
+        # Closed-form modal weights: Chebyshev T_2(g1) = 0 -> 1/sqrt(2), Legendre P_2(g1) = 0 -> 1/sqrt(3)
+        self.assertEqual(foa_max_re_order_weight(2, "basic"), 1.0)
+        self.assertAlmostEqual(foa_max_re_order_weight(2, "max_re"), 1.0 / np.sqrt(2.0), places=15)
+        self.assertEqual(foa_max_re_order_weight(2, "in_phase"), 0.5)
+        self.assertEqual(foa_max_re_order_weight(3, "basic"), 1.0)
+        self.assertAlmostEqual(foa_max_re_order_weight(3, "max_re"), 1.0 / np.sqrt(3.0), places=15)
+        self.assertAlmostEqual(foa_max_re_order_weight(3, "in_phase"), 1.0 / 3.0, places=15)
+
+        src_px = np.array([1.0, 0.0, 0.0], dtype=np.float64)
+        # 2-D regular hexagon (L = 6): Basic r_E = 2/3, max-r_E r_E = 1/sqrt(2), in-phase r_E = 2/3
+        hex_basic = foa_loudspeaker_decode_metrics(REGULAR_HEXAGON_2D_DIRS, src_px, spatial_dim=2, g1=1.0)
+        hex_maxre = foa_loudspeaker_decode_metrics(
+            REGULAR_HEXAGON_2D_DIRS, src_px, spatial_dim=2, g1=1.0 / np.sqrt(2.0)
+        )
+        hex_inph = foa_loudspeaker_decode_metrics(REGULAR_HEXAGON_2D_DIRS, src_px, spatial_dim=2, g1=0.5)
+        self.assertTrue(hex_basic["is_isotropic_layout"])
+        self.assertAlmostEqual(hex_basic["r_V_norm"], 1.0, places=15)
+        self.assertAlmostEqual(hex_basic["r_E_norm"], 2.0 / 3.0, places=15)
+        self.assertAlmostEqual(hex_basic["min_gain"], -1.0 / 6.0, places=15)
+        self.assertTrue(hex_basic["has_negative_lobe"])
+
+        self.assertAlmostEqual(hex_maxre["r_V_norm"], 1.0 / np.sqrt(2.0), places=15)
+        self.assertAlmostEqual(hex_maxre["r_E_norm"], 1.0 / np.sqrt(2.0), places=15)
+        self.assertAlmostEqual(hex_maxre["r_E_acos_deg"], 45.0, places=13)
+        self.assertAlmostEqual(hex_maxre["min_gain"], (1.0 - np.sqrt(2.0)) / 6.0, places=15)
+        # Rear speaker l = 3 (-x) power suppression relative to Basic (-1/6): (sqrt(2) - 1)^2
+        rear_supp_2d_db = 10.0 * np.log10((np.sqrt(2.0) - 1.0) ** 2)
+        self.assertAlmostEqual(
+            10.0 * np.log10((hex_maxre["gains"][3] / hex_basic["gains"][3]) ** 2),
+            rear_supp_2d_db,
+            places=13,
+        )
+        self.assertFalse(hex_inph["has_negative_lobe"])
+        self.assertAlmostEqual(hex_inph["min_gain"], 0.0, places=15)
+
+        # 3-D regular octahedron (L = 6): Basic r_E = 1/2, max-r_E r_E = 1/sqrt(3), in-phase min_gain = 0
+        oct_basic = foa_loudspeaker_decode_metrics(REGULAR_OCTAHEDRON_3D_DIRS, src_px, spatial_dim=3, g1=1.0)
+        oct_maxre = foa_loudspeaker_decode_metrics(
+            REGULAR_OCTAHEDRON_3D_DIRS, src_px, spatial_dim=3, g1=1.0 / np.sqrt(3.0)
+        )
+        oct_inph = foa_loudspeaker_decode_metrics(
+            REGULAR_OCTAHEDRON_3D_DIRS, src_px, spatial_dim=3, g1=1.0 / 3.0
+        )
+        self.assertTrue(oct_basic["is_isotropic_layout"])
+        self.assertAlmostEqual(oct_basic["r_V_norm"], 1.0, places=15)
+        self.assertAlmostEqual(oct_basic["r_E_norm"], 0.5, places=15)
+        self.assertAlmostEqual(oct_basic["min_gain"], -1.0 / 3.0, places=15)
+        self.assertAlmostEqual(oct_maxre["r_E_norm"], 1.0 / np.sqrt(3.0), places=15)
+        # Rear speaker l = 1 (-x): gain (1 - sqrt(3))/6 vs Basic -2/6 => ratio (sqrt(3) - 1)/2
+        rear_supp_3d_db = 10.0 * np.log10(((np.sqrt(3.0) - 1.0) / 2.0) ** 2)
+        self.assertAlmostEqual(
+            10.0 * np.log10((oct_maxre["gains"][1] / oct_basic["gains"][1]) ** 2),
+            rear_supp_3d_db,
+            places=13,
+        )
+        self.assertFalse(oct_inph["has_negative_lobe"])
+        self.assertAlmostEqual(oct_inph["min_gain"], 0.0, places=15)
+
+    def test_e16_18_sofa_geometry_and_head_tracking_latency(self):
+        # Exact SOFA spherical [30 deg, 45 deg, 1.5 m] -> [3*sqrt(6)/8, 3*sqrt(2)/8, 3*sqrt(2)/4]
+        expected_cart = np.array(
+            [3.0 * np.sqrt(6.0) / 8.0, 3.0 * np.sqrt(2.0) / 8.0, 3.0 * np.sqrt(2.0) / 4.0],
+            dtype=np.float64,
+        )
+        actual_cart = sofa_spherical_to_cartesian(np.array([30.0, 45.0, 1.5]))
+        np.testing.assert_allclose(actual_cart, expected_cart, atol=1e-15)
+        np.testing.assert_allclose(sofa_cartesian_to_spherical(actual_cart), [30.0, 45.0, 1.5], atol=1e-13)
+
+        valid_sph = np.array([[90.0, 0.0, 0.09], [-90.0, 0.0, 0.09]], dtype=np.float64)
+        ok = audit_sofa_simple_freefield_geometry([1.0, 0.0, 0.0], [0.0, 0.0, 1.0], valid_sph, coord_type="spherical")
+        self.assertTrue(ok["passed"])
+        np.testing.assert_allclose(ok["ear_left_projection_m"], [0.09, -0.09], atol=1e-15)
+
+        # Bug 1: swapped left/right ears
+        swapped = audit_sofa_simple_freefield_geometry(
+            [1.0, 0.0, 0.0], [0.0, 0.0, 1.0], [[0.0, -0.09, 0.0], [0.0, 0.09, 0.0]], coord_type="cartesian"
+        )
+        self.assertFalse(swapped["passed"])
+        self.assertIn("ear_sign_swap_or_nonpositive_left_ear", swapped["issues"])
+        with self.assertRaises(ValueError):
+            audit_sofa_simple_freefield_geometry(
+                [1.0, 0.0, 0.0],
+                [0.0, 0.0, 1.0],
+                [[0.0, -0.09, 0.0], [0.0, 0.09, 0.0]],
+                coord_type="cartesian",
+                strict=True,
+            )
+
+        # Bug 2: spherical degrees parsed as Cartesian metres
+        unconverted = audit_sofa_simple_freefield_geometry(
+            [1.0, 0.0, 0.0], [0.0, 0.0, 1.0], valid_sph, coord_type="cartesian"
+        )
+        self.assertFalse(unconverted["passed"])
+        self.assertTrue(unconverted["likely_unconverted_spherical_degrees"])
+        self.assertIn("implausible_head_radius_m", unconverted["issues"])
+
+        # Head-tracking motion-to-sound latency at 180 deg/s: 20 ms -> 3.6 deg, 80 ms -> 14.4 deg
+        lat20 = head_tracking_latency_audit(180.0, 0.020, maa_deg=2.0)
+        self.assertAlmostEqual(lat20["angular_lag_deg"], 3.6, places=14)
+        self.assertAlmostEqual(lat20["foa_chord_error"], 2.0 * np.sin(np.deg2rad(1.8)), places=15)
+        self.assertTrue(lat20["exceeds_maa"])
+
+        lat80 = head_tracking_latency_audit(180.0, 0.080, maa_deg=2.0, prediction_horizon_s=0.065)
+        self.assertAlmostEqual(lat80["angular_lag_deg"], 14.4, places=13)
+        self.assertAlmostEqual(lat80["compensated_lag_deg"], 2.7, places=13)
+        self.assertAlmostEqual(lat80["abrupt_stop_overshoot_deg"], 11.7, places=13)
+
+        # Defensive boundary rejections
+        with self.assertRaises(ValueError):
+            foa_max_re_order_weight(True, "max_re")  # type: ignore[arg-type]
+        with self.assertRaises(ValueError):
+            foa_loudspeaker_decode_metrics(REGULAR_OCTAHEDRON_3D_DIRS, [1.0, 0.0, 0.0], spatial_dim=2)
+        with self.assertRaises(ValueError):
+            sofa_spherical_to_cartesian([0.0, 95.0, 1.0])
+        with self.assertRaises(ValueError):
+            head_tracking_latency_audit(180.0, -0.01)
+
+
 class TestWearableAudioAndExercises(unittest.TestCase):
     def test_audio_generation_and_strict_readonly_check(self):
         report, signals = run_audio_experiment()
@@ -387,7 +517,7 @@ class TestWearableAudioAndExercises(unittest.TestCase):
 
         payload = run_experiments()
         self.assertEqual(tuple(payload["exercises"].keys()), EXERCISE_IDS)
-        self.assertEqual(len(EXERCISE_IDS), 16)
+        self.assertEqual(len(EXERCISE_IDS), 18)
         ex = payload["exercises"]
 
         # E16-03: exact Frobenius norm of Rz(pi/2)Ry(pi/2) - Ry(pi/2)Rz(pi/2) is sqrt(6)
@@ -419,10 +549,18 @@ class TestWearableAudioAndExercises(unittest.TestCase):
         self.assertLess(ht_ana - ht_flt, 8.5e-9)
         self.assertAlmostEqual(ht_pcm, 0.010001495537419235, places=12)
 
+        # E16-17 & E16-18 exact anchors
+        self.assertAlmostEqual(
+            ex["E16-17"]["octahedron_3d"]["modes"]["max_re"]["r_E_norm"], 1.0 / np.sqrt(3.0), places=14
+        )
+        self.assertTrue(ex["E16-18"]["sofa_valid_audit"]["passed"])
+        self.assertFalse(ex["E16-18"]["sofa_ear_swap_audit"]["passed"])
+        self.assertAlmostEqual(ex["E16-18"]["latency_20ms"]["angular_lag_deg"], 3.6, places=14)
+
         # Ensure JSON serializability without NaN/Inf
         encoded = json.dumps(payload, allow_nan=False)
-        self.assertIn("E16-16", encoded)
-        self.assertEqual(cli_main(["--exercise", "E16-07"]), 0)
+        self.assertIn("E16-18", encoded)
+        self.assertEqual(cli_main(["--exercise", "E16-17"]), 0)
 
 
 if __name__ == "__main__":

@@ -194,7 +194,7 @@
 
 本专题（第 16 章，配图 4 张）面向全景声录制、扩展现实头显、智能眼镜、真无线耳机与数字助听器，建议在读完第 1、2、5 章后选读。与交付单路增强波形的桌面阵列不同，全景声采集与可穿戴设备需要在受限孔径和头部散射条件下保留三维方位线索与自然听觉包围感。
 
-全章从一阶全景声（FOA）ACN/SN3D 约定、正四面体编码均衡与头部追踪三维声场逆旋转出发，推导方向性音频编码（DirAC）的有功声强与扩散度参数化分析；随后展开非规则阵列双耳信号匹配（BSM-LS 与高频幅度最小二乘 MagLS）及用参考麦克风混合抑制背景噪声头中坍缩的解析折中，并剖析 Corcos 湍流风噪模型、气导与耳道闭塞内麦跨模态 MVDR 自语音融合，以及耳机通透模式（Hear-Through）的百微秒梳状滤波延迟边界（配套练习 `E16-01`～`E16-16` 与 `wearable_audio` 见[专题 §16.11](16_spatial-wearable-arrays.md#sec-16-11)）。
+全章从一阶全景声（FOA）ACN/SN3D 约定、正四面体编码均衡与头部追踪三维声场逆旋转出发，推导方向性音频编码（DirAC）的有功声强与扩散度参数化分析；随后展开非规则阵列双耳信号匹配（BSM-LS 与高频幅度最小二乘 MagLS）及用参考麦克风混合抑制背景噪声头中坍缩的解析折中，并剖析 Corcos 湍流风噪模型、气导与耳道闭塞内麦跨模态 MVDR 自语音融合，以及耳机通透模式（Hear-Through）的百微秒梳状滤波延迟边界（配套练习 `E16-01`～`E16-18` 与 `wearable_audio` 见[专题 §16.11](16_spatial-wearable-arrays.md#sec-16-11)）。
 
 ### [17 · 扩展专题Ⅳ：条件目标说话人提取、多通道日志与远场多模态前端](17_target-extraction-diarization.md)
 
@@ -431,7 +431,7 @@
 .venv/bin/python -m unittest discover -s tests -p 'test_codes*.py' -v
 ```
 
-需要从头重新生成音频或重绘插图时，可参照[构建说明](../scripts/README.md)与附录 B [§15.7](15_appendix-guide.md#sec-15-7) 操作（附录 B 房间仿真练习需在固定版本 `pyroomacoustics` 独立环境中生成）。此外，全书共配 421 道稳定编号代码练习（`E01-01` 至 `E17-16`）：其中第 1～13 章与附录 A、B 的 389 道汇总于[章节代码练习与音频实验](../codes/chapters/ch00/research/05_exercises_and_audio.md)，第 16、17 章的 32 道分别见[专题Ⅲ §16.11](16_spatial-wearable-arrays.md#sec-16-11)与[专题Ⅳ §17.10](17_target-extraction-diarization.md#sec-17-10)，每道题均给出明确输入、运行入口与可核查数值结果。
+需要从头重新生成音频或重绘插图时，可参照[构建说明](../scripts/README.md)与附录 B [§15.7](15_appendix-guide.md#sec-15-7) 操作（附录 B 房间仿真练习需在固定版本 `pyroomacoustics` 独立环境中生成）。此外，全书共配 423 道稳定编号代码练习（`E01-01` 至 `E17-16`）：其中第 1～13 章与附录 A、B 的 389 道汇总于[章节代码练习与音频实验](../codes/chapters/ch00/research/05_exercises_and_audio.md)，第 16、17 章的 34 道分别见[专题Ⅲ §16.11](16_spatial-wearable-arrays.md#sec-16-11)与[专题Ⅳ §17.10](17_target-extraction-diarization.md#sec-17-10)，每道题均给出明确输入、运行入口与可核查数值结果。
 
 <a id="audio-assets"></a>
 
@@ -560,4 +560,4 @@
 - [ ] 完成附录 B 综合练习（入门阶段建议先做第 2、3、5、7、10、11、14 题，进阶阶段再做第 6、8、12、13、16、17 题）。
 - [ ] 对照附录 B §15.4 演练常见异常排查，并按第 10 章模板试着编制一份延迟、时钟同步与通道标定预算表。
 
-需要进一步动手演练四篇扩展专题的读者，声学成像的 20 道配套代码题与合成快拍音频实验见[扩展专题Ⅰ](12_acoustic-imaging.md)及[实验手册第 47 节](../codes/chapters/ch00/research/05_exercises_and_audio.md#sec-47-1)；分布式麦克风协同增强的 27 道配套代码题与多节点音频实验见[扩展专题Ⅱ](13_distributed-enhancement.md)及[实验手册第 48 节](../codes/chapters/ch00/research/05_exercises_and_audio.md#sec-48-1)。空间声场与可穿戴阵列的 16 道配套代码题及跨模态/通透合成音频实验（`wearable_audio`）见[扩展专题Ⅲ §16.11](16_spatial-wearable-arrays.md#sec-16-11)；条件目标说话人提取与多通道会议说话人日志的 16 道配套代码题及近场距离气泡合成音频实验（`tse_audio`）见[扩展专题Ⅳ §17.8～§17.10](17_target-extraction-diarization.md#sec-17-8)。
+需要进一步动手演练四篇扩展专题的读者，声学成像的 20 道配套代码题与合成快拍音频实验见[扩展专题Ⅰ](12_acoustic-imaging.md)及[实验手册第 47 节](../codes/chapters/ch00/research/05_exercises_and_audio.md#sec-47-1)；分布式麦克风协同增强的 27 道配套代码题与多节点音频实验见[扩展专题Ⅱ](13_distributed-enhancement.md)及[实验手册第 48 节](../codes/chapters/ch00/research/05_exercises_and_audio.md#sec-48-1)。空间声场与可穿戴阵列的 18 道配套代码题及跨模态/通透合成音频实验（`wearable_audio`）见[扩展专题Ⅲ §16.11](16_spatial-wearable-arrays.md#sec-16-11)；条件目标说话人提取与多通道会议说话人日志的 16 道配套代码题及近场距离气泡合成音频实验（`tse_audio`）见[扩展专题Ⅳ §17.8～§17.10](17_target-extraction-diarization.md#sec-17-8)。

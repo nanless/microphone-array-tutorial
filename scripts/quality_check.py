@@ -183,7 +183,7 @@ EXPECTED_SUBSECTION_COUNTS = {
     "12_acoustic-imaging.md": 68,
     # 40 separately navigable topics and 25 exercise headings, manually read.
     "13_distributed-enhancement.md": 68,
-    "16_spatial-wearable-arrays.md": 46,
+    "16_spatial-wearable-arrays.md": 48,
     "17_target-extraction-diarization.md": 41,
 }
 # 上表为独立发布基线，不从待检 HTML 或构建器反推。
@@ -220,10 +220,10 @@ EXPECTED_LEGACY_ROUTES = {
     "13_appendix-guide.html": "15_appendix-guide.html",
 }
 EXPECTED_SECTION_COUNT = 173
-EXPECTED_SUBSECTION_COUNT = 861
-EXPECTED_OUTLINE_ITEM_COUNT = 1052
+EXPECTED_SUBSECTION_COUNT = 863
+EXPECTED_OUTLINE_ITEM_COUNT = 1054
 EXPECTED_FIGURE_NUMBERS = set(range(1, 89))
-EXPECTED_EXERCISE_COUNT = 421
+EXPECTED_EXERCISE_COUNT = 423
 EXPECTED_EXERCISE_COUNTS = {
     '01_problem-definition.md': 12, '02_basics-signal-model.md': 22,
     '03_array-geometry.md': 20, '04_doa-estimation.md': 27,
@@ -232,7 +232,7 @@ EXPECTED_EXERCISE_COUNTS = {
     '10_engineering-practice.md': 36, '11_selection-guide.md': 29,
     '14_appendix-symbols-math.md': 20, '15_appendix-guide.md': 15,
     '12_acoustic-imaging.md': 20, '13_distributed-enhancement.md': 27,
-    '16_spatial-wearable-arrays.md': 16, '17_target-extraction-diarization.md': 16,
+    '16_spatial-wearable-arrays.md': 18, '17_target-extraction-diarization.md': 16,
 }
 # 研究附站使用独立显式清单，不挤占 16 篇教程或教程 PDF 大纲基线。
 # 此清单不能从构建器或待检 HTML 反推。
@@ -594,11 +594,11 @@ def check_sources(errors: list[str], notices: list[str]):
                           ROOT / "scripts" / "README.md",
                           ROOT / "codes" / "chapters" / "README.md") if p.exists()]
     readme_zh = ROOT / "README.md"
-    if readme_zh.exists() and "15 章正文 · 2 篇附录 · 421 道可运行练习 · 88 张编号图" not in readme_zh.read_text(encoding="utf-8"):
-        fail(errors, "README.md 全书统计基线过期：应含 15 章正文 · 2 篇附录 · 421 道可运行练习 · 88 张编号图")
+    if readme_zh.exists() and "15 章正文 · 2 篇附录 · 423 道可运行练习 · 88 张编号图" not in readme_zh.read_text(encoding="utf-8"):
+        fail(errors, "README.md 全书统计基线过期：应含 15 章正文 · 2 篇附录 · 423 道可运行练习 · 88 张编号图")
     readme_en = ROOT / "README_EN.md"
-    if readme_en.exists() and "15 chapters · 2 appendices · 421 runnable exercises · 88 numbered figures" not in readme_en.read_text(encoding="utf-8"):
-        fail(errors, "README_EN.md 全书统计基线过期：应含 15 chapters · 2 appendices · 421 runnable exercises · 88 numbered figures")
+    if readme_en.exists() and "15 chapters · 2 appendices · 423 runnable exercises · 88 numbered figures" not in readme_en.read_text(encoding="utf-8"):
+        fail(errors, "README_EN.md 全书统计基线过期：应含 15 chapters · 2 appendices · 423 runnable exercises · 88 numbered figures")
     for path in paths:
         original = path.read_text(encoding="utf-8")
         errors.extend(f"{path.relative_to(ROOT)}: {issue}"

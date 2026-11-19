@@ -1,16 +1,17 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 1 章 · 问题定义与双耳启示 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="820e0688bd26"><style>
+<meta name="source-digest" content="ba5ce9940c12"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
 h1,h2,h3,h4{scroll-margin-top:60px}
+@media screen{.main a[id]:not([href]){scroll-margin-top:60px}}
 @media screen{.main a[id^="e"],.main .exercise-alias{scroll-margin-top:80px}}
 @media screen{.main .exercise-alias{top:0}}
 @media screen{.main a[id="e05-20"]{scroll-margin-top:60px}}
 @media screen{.main a[id="e17-11"],.main a[id="e17-12"],.main a[id="e17-13"],.main a[id="e17-14"],.main a[id="e17-15"]{scroll-margin-top:140px}}
-@media screen{.main .exercise-alias[id="e13-11"],.main .exercise-alias[id="e13-12"],.main .exercise-alias[id="e13-13"],.main .exercise-alias[id="e13-14"],.main .exercise-alias[id="e13-15"],.main .exercise-alias[id="e15-11"],.main .exercise-alias[id="e15-12"],.main .exercise-alias[id="e15-13"],.main .exercise-alias[id="e15-14"],.main .exercise-alias[id="e15-15"]{scroll-margin-top:140px}}
+@media screen{.main .exercise-alias[id="e13-11"],.main .exercise-alias[id="e13-12"],.main .exercise-alias[id="e13-13"],.main .exercise-alias[id="e13-14"],.main .exercise-alias[id="e13-15"],.main .exercise-alias[id="e15-11"]:has(~ a[id="e17-11"]),.main .exercise-alias[id="e15-12"]:has(~ a[id="e17-12"]),.main .exercise-alias[id="e15-13"]:has(~ a[id="e17-13"]),.main .exercise-alias[id="e15-14"]:has(~ a[id="e17-14"]),.main .exercise-alias[id="e15-15"]:has(~ a[id="e17-15"]){scroll-margin-top:140px}}
 @media screen{.main a[id^="e06-"]{scroll-margin-top:60px}}
 @media screen{.main a[id^="e07-"],.main a[id^="e08-"]{scroll-margin-top:60px}}
 @media screen{.main a[id^="e11-"]{scroll-margin-top:60px}}
@@ -79,7 +80,7 @@ h4{font-size:15.5px;margin-top:20px;color:#333}
   let printing = false;
 
   function roots() {
-    const candidates = Array.from(document.querySelectorAll("main.main,.chap"));
+    const candidates = Array.from(document.querySelectorAll(".main,.chap"));
     return candidates.filter(root => !candidates.some(other => other !== root && other.contains(root)));
   }
 
@@ -133,12 +134,21 @@ h4{font-size:15.5px;margin-top:20px;color:#333}
       const significant = Array.from(paragraph.childNodes).filter(node =>
         node.nodeType !== Node.TEXT_NODE || node.data.trim());
       const next = paragraph.nextElementSibling;
-      const anchorOnly = significant.length === 1 &&
-        significant[0].nodeType === Node.ELEMENT_NODE &&
-        significant[0].tagName === "A" && significant[0].id &&
-        !significant[0].hasAttribute("href") &&
-        Array.from(significant[0].childNodes).every(node =>
-          node.nodeType === Node.TEXT_NODE && !node.data.trim());
+      const isEmptyAnchor = node =>
+        node.nodeType === Node.ELEMENT_NODE &&
+        node.tagName === "A" && node.id &&
+        !node.hasAttribute("href") &&
+        Array.from(node.childNodes).every(child =>
+          child.nodeType === Node.TEXT_NODE && !child.data.trim());
+      const isAnchorAlias = node =>
+        node.nodeType === Node.ELEMENT_NODE &&
+        node.tagName === "SPAN" && node.id &&
+        node.classList.contains("anchor-alias") &&
+        Array.from(node.childNodes).every(child =>
+          child.nodeType === Node.TEXT_NODE && !child.data.trim());
+      const anchorOnly = significant.length >= 1 &&
+        significant.some(isEmptyAnchor) &&
+        significant.every(node => isEmptyAnchor(node) || isAnchorAlias(node));
       paragraph.classList.toggle("tutorial-anchor-only", !!anchorOnly);
       const short = significant.length === 1 &&
         significant[0].nodeType === Node.ELEMENT_NODE &&
@@ -243,6 +253,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 </head><body id="top"><a class="skip-link" href="#main-content">跳到正文</a>
 <header class="topbar"><a href="index.html">🏠 首页</a> &nbsp;/&nbsp; 第 1 章 · 问题定义与双耳启示</header>
 <div class="wrap"><nav class="side" aria-label="全书目录"><div class="chap"><a href="index.html">🏠 导读与导航（首页）</a></div>
+<div class="chap"><a href="00_math-foundations.html">第 0 章 · 全书数学基础与信号分析预备</a></div>
 <div class="chap cur" aria-current="page">第 1 章 · 问题定义与双耳启示</div>
 <ul>
 <li><a href="01_problem-definition.html#sec-u-5cd90bfd4e">1. 从一个生活场景出发：问题定义</a></li>
@@ -254,7 +265,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-783265321c">三类阵列收益与白噪声增益</a></li>
 <li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-d2f01ae3f8">从求和到平均：四麦的 6 dB 怎样得到</a></li>
 <li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-70eac6767c">空间相关噪声的矩阵着色与半正定边界</a></li>
-<li><a href="01_problem-definition.html#sec-1-1">1.1 双耳听觉的三类定位线索</a></li>
+<li><a href="01_problem-definition.html#sec-u-1d5f9c4fa9">双耳听觉的三类定位线索</a></li>
 <li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-8b017cf10d">双耳时间差：把几何模型算清楚</a></li>
 <li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-5221e22cae">声级差、细结构与包络要分别判断</a></li>
 <li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-dff9e8c5a2">方向相关频谱与头相关传递函数</a></li>
@@ -302,7 +313,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-783265321c">三类阵列收益与白噪声增益</a></li>
 <li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-d2f01ae3f8">从求和到平均：四麦的 6 dB 怎样得到</a></li>
 <li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-70eac6767c">空间相关噪声的矩阵着色与半正定边界</a></li>
-<li><a href="01_problem-definition.html#sec-1-1">1.1 双耳听觉的三类定位线索</a></li>
+<li><a href="01_problem-definition.html#sec-u-1d5f9c4fa9">双耳听觉的三类定位线索</a></li>
 <li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-8b017cf10d">双耳时间差：把几何模型算清楚</a></li>
 <li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-5221e22cae">声级差、细结构与包络要分别判断</a></li>
 <li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-dff9e8c5a2">方向相关频谱与头相关传递函数</a></li>
@@ -323,8 +334,8 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-f135af23e1">E01-12：硅麦 dBA 信噪比陷阱与 SOFA 球面坐标核对</a></li>
 </ul></nav></details>
 <blockquote>
-<p>⚠️ 本篇是本书正文第 1 章（正文共 15 章，含第 12～15 章四篇扩展专题，另有附录 A、B），可独立阅读，前后篇见下方导航。</p>
-<p>🏠 首页导读：<a href="index.html">🏠 导读与导航</a> ｜ 上一篇：（无） ｜ 下一篇：<a href="02_basics-signal-model.html">第 2 章 · 声音到达阵列时发生了什么</a></p>
+<p>本篇是本书正文第 1 章；正文与扩展专题共 16 章（第 0～15 章，其中第 0 章为数学基础，第 12～15 章为四篇扩展专题），另有附录 A、B。本篇可独立阅读，前后篇见下方导航。</p>
+<p>导读首页：<a href="index.html">🏠 导读与导航</a> ｜ 上一篇：<a href="00_math-foundations.html">第 0 章 · 全书数学基础与信号分析预备</a> ｜ 下一篇：<a href="02_basics-signal-model.html">第 2 章 · 声音到达阵列时发生了什么</a></p>
 </blockquote>
 <hr />
 <span id="sec-1" class="anchor-alias" aria-hidden="true"></span><h1 id="sec-u-5cd90bfd4e">1. 从一个生活场景出发：问题定义</h1>
@@ -398,7 +409,7 @@ V_N &= \frac{1}{N}\sum_{n=0}^{N-1}\bigl(u[n]-\bar u\bigr)^2 \\
 $$</p>
 <p>恒等式 $P_u = V_N + \bar u^2$ 在工程上有两层非常实在的含义。第一，真实驻极体或硅麦（MEMS 麦克风）及模数转换电路往往带有微小的<strong>直流偏置（DC offset）</strong>，哪怕在完全安静的屋子里，录下来的波形也会整体悬浮在零线略偏上或略偏下的常数值 $\bar u \neq 0$ 处；如果不先做去均值或隔直高通滤波就直接按式(1-1)算功率，人耳根本听不见的直流分量 $\bar u^2$ 就会虚增底噪功率读数。</p>
 <p>第二，即便理论随机噪声模型的总体数学期望为零（$\mathbb{E}[u[n]]=0$，此时总体均方等于总体方差），截取一段有限长度 $N$ 的样本时，样本均值 $\bar u$ 通常也不会恰好等于零（见练习 E01-04）。</p>
-<p>在受控仿真实验里，我们可以把干净目标语音分量 $s[n]$ 和加性噪声分量 $v[n]$ 分开保存，在同一个时间窗口 $[0, N-1]$ 上分别按式(1-1)算出目标功率 $P_s$ 与噪声功率 $P_v$。由此定义功率口径下的<strong>信噪比（Signal-to-Noise Ratio，SNR）</strong>以及经过算法处理后的信噪比改善倍数 $G$：</p>
+<p>在受控仿真实验里，我们可以把干净目标语音分量 $s[n]$ 和加性噪声分量 $v[n]$ 分开保存，在同一个时间窗口 $[0, N-1]$ 上分别按式(1-1)算出目标功率 $P_s$ 与噪声功率 $P_v$。由此定义功率口径下的<strong>信噪比（Signal-to-Noise Ratio，SNR）</strong>以及经过算法处理后的信噪比改善倍数 $G$（分贝标度与功率/幅度对数换算见<a href="00_math-foundations.html#sec-0-2">第 0 章 §0.2</a>）：</p>
 <p>$$
 \begin{aligned}
 \mathrm{SNR} &= \frac{P_s}{P_v}, &
@@ -467,7 +478,7 @@ $$</p>
 </tr>
 </tbody>
 </table></div>
-<p>对于单只麦克风直接给人耳试听，这种计权基本符合听感；可一旦把麦克风装进小孔径阵列做一阶差分或超指向波束形成（§5.3），情况就会彻底反转。间距 $d$ 远小于声波波长时，相邻麦克风相减虽然能抵消后方干扰，却也会让目标语音在低频按正弦规律呈每倍频程 $-6.02\ \mathrm{dB}$ 滚降；为了拉平目标语音频响，无失真均衡滤波器必须向低频施加反比于 $f^2$（即每倍频程 $+6.02\ \mathrm{dB}$）的功率增益，叠加传感器原有的 $1/f$ 闪烁底噪后，输出低频自噪声会按 $1/f^3$（每倍频程 $+9.03\ \mathrm{dB}$）剧烈膨胀！因此，做小孔径阵列低频噪声预算时必须索取未计权的自噪声功率谱密度曲线，绝不能只看单个 $\mathrm{dB(A)}$ 标称值（本章练习 E01-12 将亲手算出一款 $\mathrm{dB(A)}$ 标称值高出约 $1.59\ \mathrm{dB}$ 的硅麦，在 $1\ \mathrm{cm}$ 差分阵上反而令语音频带自噪声恶化约 $5\ \mathrm{dB}$ 的反转实例）。</p>
+<p>对于单只麦克风直接给人耳试听，这种计权基本符合听感；可一旦把麦克风装进小孔径阵列做一阶差分或超指向波束形成（§5.3），情况就会彻底反转。间距 $d$ 远小于声波波长时，相邻麦克风相减虽然能抵消后方干扰，却也会让目标语音在低频按正弦规律呈每倍频程 $-6.02\ \mathrm{dB}$ 滚降；为了拉平目标语音频响，无失真均衡滤波器必须向低频施加反比于 $f^2$（即每倍频程 $+6.02\ \mathrm{dB}$）的功率增益，叠加传感器原有的 $1/f$ 闪烁底噪后，输出低频自噪声会按 $1/f^3$（每倍频程 $+9.03\ \mathrm{dB}$）剧烈膨胀！因此，做小孔径阵列低频噪声预算时必须索取未计权的自噪声功率谱密度曲线，绝不能只看单个 $\mathrm{dB(A)}$ 标称值（本章练习 E01-12 将亲手算出一款 $\mathrm{dB(A)}$ 标称值在 50 Hz～8 kHz 宽带语音频率网格上平均约 1.59 dB 占优的硅麦，在 $1\ \mathrm{cm}$ 差分阵上反而令语音频带自噪声恶化约 $5\ \mathrm{dB}$ 的反转实例）。</p>
 <h3 id="sec-u-783265321c">三类阵列收益与白噪声增益</h3>
 <p>多麦克风阵列把噪声压低了多少，高度依赖噪声在空间是怎么分布的。面对不同的声场假设，工程上使用三把不同的尺子来衡量阵列收益：</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
@@ -504,7 +515,7 @@ $$</p>
 <p>$$
 x_m[n] = s[n] + v_m[n],
 $$</p>
-<p>其中各路的目标分量已经对齐成同一个波形 $s[n]$（均方功率记为 $P_s=\mathbb{E}[s[n]^2]>0$）；其实即便声源处在近场，只要把传播时延和球面距离衰减都补偿到位，使各通道目标分量恢复成同一波形 $s[n]$，下面的代数推导同样成立。设各通道加性噪声 $v_m[n]$ 满足零均值（$\mathbb{E}[v_m[n]]=0$）、等功率（$\mathbb{E}[v_m[n]^2]=P_v>0$）以及跨通道互不相关（当 $m\ne \ell$ 时，$\mathbb{E}[v_m[n]v_\ell[n]]=0$）。单只麦克风上的输入信噪比为 $\mathrm{SNR}_{\mathrm{in}}=P_s/P_v$。</p>
+<p>其中各路的目标分量已经对齐成同一个波形 $s[n]$（均方功率记为 $P_s=\mathbb{E}[s[n]^2]>0$）；其实即便声源处在近场，只要把传播时延和球面距离衰减都补偿到位，使各通道目标分量恢复成同一波形 $s[n]$，下面的代数推导同样成立。设各通道加性噪声 $v_m[n]$ 满足零均值（$\mathbb{E}[v_m[n]]=0$）、等功率（$\mathbb{E}[v_m[n]^2]=P_v>0$）以及跨通道互不相关（当 $m\ne \ell$ 时，$\mathbb{E}[v_m[n]v_\ell[n]]=0$；数学期望与二阶统计量的基本性质见<a href="00_math-foundations.html#sec-0-6">第 0 章 §0.6</a>）。单只麦克风上的输入信噪比为 $\mathrm{SNR}_{\mathrm{in}}=P_s/P_v$。</p>
 <p><strong>第一步：先看把 $M$ 路信号直接相加。</strong> 记直接求和输出为 $z[n]$，再除以通道数 $M$ 的等权平均输出为 $y[n]$：</p>
 <p>$$
 \begin{aligned}
@@ -536,37 +547,37 @@ G_{\mathrm{dB}} = 10\log_{10}M.
 \end{aligned} \tag{1-4}
 $$</p>
 <p>请注意式(1-4)是在总体二阶矩（数学期望 $\mathbb{E}[\cdot]$）意义下先求功率之比得到的理论增益；如果对许多段有限长度短录音各自算出单段信噪比再取算术平均，由于有限样本交叉项随机起伏且比值与对数都是非线性运算，得到的会是另一个统计量。以每路目标功率 $P_s=1$、噪声功率 $P_v=1$ 的四麦克风阵列（$M=4$）为例，我们可以把单麦、四路直接求和与四路等权平均放在一张表里逐列比对：</p>
-<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
+<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table class="tutorial-budget-table" style="--tutorial-table-width:54em">
 <thead>
 <tr>
-<th scope="col">处理方式</th>
-<th scope="col">输出目标功率</th>
-<th scope="col">输出噪声功率</th>
-<th scope="col">输出 SNR（线性比）</th>
-<th scope="col">相对单麦 SNR 改善</th>
+<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:10em">处理方式</th>
+<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:10em">输出目标功率</th>
+<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:10em">输出噪声功率</th>
+<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:12em">输出 SNR（线性比）</th>
+<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:12em">相对单麦 SNR 改善</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>单只麦克风基准</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>0.00 dB</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:10em">单只麦克风基准</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:10em">1</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:10em">1</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:12em">1</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:12em">0.00 dB</td>
 </tr>
 <tr>
-<td>四路对齐直接求和 $z[n]$</td>
-<td>16</td>
-<td>4</td>
-<td>4</td>
-<td>6.02 dB</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:10em">四路对齐直接求和 $z[n]$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:10em">16</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:10em">4</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:12em">4</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:12em">6.02 dB</td>
 </tr>
 <tr>
-<td>四路对齐等权平均 $y[n]$</td>
-<td>1</td>
-<td>0.25</td>
-<td>4</td>
-<td>6.02 dB</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:10em">四路对齐等权平均 $y[n]$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:10em">1</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:10em">0.25</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:12em">4</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:12em">6.02 dB</td>
 </tr>
 </tbody>
 </table></div>
@@ -586,7 +597,7 @@ $$</p>
 <p>移项即得 $\sum_{m=1}^{M}w_m^2 \ge \frac{1}{M}$，当且仅当每一路权重都取 $w_m = \frac{1}{M}$ 时等号成立（第 2 章与第 5 章把权重推广到频域复数向量后，用柯西—施瓦茨不等式同样会导出完全一致的上界）。换句话说，在等幅对齐、单位目标响应与同方差空间白噪声条件下，任何线性波束形成器的线性 WNG 都不会超过阵元数 $M$，而最朴素的延迟求和（等权平均）恰好达到这一理论最高值。</p>
 <p>反过来，哪怕权重满足 $\sum_{m=1}^{M}w_m = 1$ 保住了目标，只要为了抵消旁向干扰而采用一正一负的大权重（例如双麦取 $w_1=2, w_2=-1$，练习 E01-09 将具体复算），平方和 $\sum_{m=1}^{M}w_m^2$ 就会远大于 $1$，输出自噪声反而比单只麦克风还要吵得多。想进一步了解远场麦克风阵列如何服务于语音识别系统的读者，可参阅 Kumatani、McDonough 与 Raj 的综述论文 <a href="https://doi.org/10.1109/MSP.2012.2205285">《Microphone Array Processing for Distant Speech Recognition: From Close-Talking Microphones to Far-Field Sensors》（IEEE Signal Processing Magazine，29(6)，127–140，2012）</a>（<a href="https://course.ece.cmu.edu/~ece792/handouts/KumataniEtAl12.pdf">CMU 课程页面公开副本</a>）。</p>
 <h3 id="sec-u-70eac6767c">空间相关噪声的矩阵着色与半正定边界</h3>
-<p>如果各通道噪声不再像电子热噪声那样彼此独立，而是像空调风声或房间混响那样在麦克风之间存在相关性，仿真实验里又该如何生成符合真实空间统计的多通道测试噪声呢？在频率 $f$ 处，假设 $M$ 只麦克风的噪声方差归一化为 $1$，所有通道两两之间的复相关系数可以排成一个 $M \times M$ 的<strong>空间相干矩阵（spatial coherence matrix）</strong> $\mathbf{\Gamma}(f)$，满足共轭对称性 $\mathbf{\Gamma}^H = \mathbf{\Gamma}$（称为厄米矩阵，矩阵与共轭转置 $^H$ 的基础复习见<a href="16_appendix-symbols-math.html#sec-16-3">附录 A §16.3</a>）。给定零均值、跨通道互不相关的标准白噪声列向量 $\vec z$（满足 $\mathbb{E}[\vec z\vec z^H] = \mathbf{I}_M$），用线性着色矩阵 $\mathbf{C}$ 混合出 $\vec v = \mathbf{C}\vec z$，要使输出协方差 $\mathbb{E}[\vec v\vec v^H] = \mathbf{C}\mathbf{C}^H$ 精确等于目标 $\mathbf{\Gamma}(f)$，核心就落在了求解矩阵平方根分解上（经典球面与圆柱各向同性噪声场合成方法见 <a href="https://doi.org/10.1121/1.2987429">Habets 等，JASA，124(5)，2911–2917，2008</a>）。</p>
+<p>如果各通道噪声不再像电子热噪声那样彼此独立，而是像空调风声或房间混响那样在麦克风之间存在相关性，仿真实验里又该如何生成符合真实空间统计的多通道测试噪声呢？在频率 $f$ 处，假设 $M$ 只麦克风的噪声方差归一化为 $1$，所有通道两两之间的复相关系数可以排成一个 $M \times M$ 的<strong>空间相干矩阵（spatial coherence matrix）</strong> $\mathbf{\Gamma}(f)$，满足共轭对称性 $\mathbf{\Gamma}^H = \mathbf{\Gamma}$（称为厄米矩阵，复矩阵共轭转置 $^H$ 与特征分解见<a href="00_math-foundations.html#sec-0-3">第 0 章 §0.3</a> 及<a href="16_appendix-symbols-math.html#sec-16-3">附录 A §16.3</a>）。给定零均值、跨通道互不相关的标准白噪声列向量 $\vec z$（满足 $\mathbb{E}[\vec z\vec z^H] = \mathbf{I}_M$），用线性着色矩阵 $\mathbf{C}$ 混合出 $\vec v = \mathbf{C}\vec z$，要使输出协方差 $\mathbb{E}[\vec v\vec v^H] = \mathbf{C}\mathbf{C}^H$ 精确等于目标 $\mathbf{\Gamma}(f)$，核心就落在了求解矩阵平方根分解上（经典球面与圆柱各向同性噪声场合成方法见 <a href="https://doi.org/10.1121/1.2987429">Habets 等，JASA，124(5)，2911–2917，2008</a>）。</p>
 <p>并不是随便写一个对称矩阵都能充当合法的空间相干矩阵。对任意复权重向量 $\vec w \in \mathbb{C}^M$，线性加权输出 $\vec w^H\vec v$ 的平均功率绝不可能是负数，将其与厄米矩阵的酉特征分解 $\mathbf\Gamma = \mathbf U\mathbf\Lambda\mathbf U^H$ 并列写出：</p>
 <p>$$
 \begin{aligned}
@@ -597,7 +608,7 @@ $$</p>
 \end{aligned}
 $$</p>
 <p>这一物理功率非负铁律等价于 $\mathbf{\Gamma}(f)$ 的所有实特征值均满足 $\lambda_m \ge 0$，即矩阵必须是<strong>半正定（positive semidefinite，PSD）</strong>的。许多数值库默认调用下三角 Cholesky 分解（$\mathbf{\Gamma} = \mathbf{L}\mathbf{L}^H$）求着色因子，但它要求矩阵严格正定（所有 $\lambda_m > 0$）；一旦遇到零频弥散声场（各通道噪声完全同相，$\mathbf{\Gamma}(0)=\vec{1}\vec{1}^\top$，秩降为 $1$）或练习 E01-01 中的负相关奇异下界 $\rho = -1/(M-1)$，部分特征值精确归零，朴素 Cholesky 分解就会因主元开方量归零或浮点微负而报错中断，而上式定义的厄米平方根矩阵 $\mathbf{\Gamma}^{1/2}$ 在任意秩亏半正定边界依然精确唯一成立（本章练习 E01-11 将亲手复算二麦有理数算例与四麦奇异边界）。</p>
-<span id="sec-2" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-1-1">1.1 双耳听觉的三类定位线索</h2>
+<span id="sec-1-1" class="anchor-alias" aria-hidden="true"></span><span id="sec-2" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-1d5f9c4fa9">双耳听觉的三类定位线索</h2>
 <p>在正式推导任意几何的麦克风阵列之前，先看看大自然演化出的“双通道接收机”——人类的左右双耳——非常有助于建立物理直觉。从声学结构看，双耳好比架在球形刚性障板（头部）两侧、外加复杂非对称波导（耳廓）的两只传感器；与此同时，人类听觉还会调动转头运动、先验记忆与脑干神经核团协同判别方位。我们先借图 1 把双耳时间差、双耳声级差和方向相关谱形三类物理线索拆开看清（窄屏设备可点击<a href="../figures/fig01_binaural.png">打开图1原图</a>放大阅读）：</p>
 <p><img alt="图1 人类双耳听觉的定位线索" src="../figures/fig01_binaural.png" onerror="this.alt+='（图缺失）'" /></p>
 <p>读图 1 时，可以顺着 <code>(a) → (b) → (c)</code> 从几何模型逐步过渡到听觉感知边界：</p>
@@ -688,59 +699,59 @@ $$</p>
 <p>利用单耳或双耳谱形判断方向有一个天然难点：耳朵实际收到的频谱等于<strong>声源自身频谱乘以传播传递函数</strong>。如果观测到某个频率能量很弱，究竟是耳廓方向滤波切出了谱谷，还是声源自己本来就没发这个频率？单一纯音只占一根谱线，根本无法勾勒谱峰谱谷轮廓；只有当声源具备较宽频带时，系统才能跨频观察谱形，或者在有效频点上做左右通道复数比值来约去未知的共同声源谱（本章练习 E01-10 将用一对双抽头滤波器把“逐频复比消去源谱”与“全带声级差仍受源谱牵制”算得清清楚楚）。在真实听觉中，大脑正是把双耳 ITD、ILD、宽带 HRTF 谱形以及微小的转头动态变化结合起来，才化解了前后与上下混淆（系统综述可参阅 <a href="https://doi.org/10.1146/annurev.ps.42.020191.001031">Middlebrooks 与 Green，Annual Review of Psychology，1991</a>）。</p>
 <h3 id="sec-u-fc1c3d209e">三维 HRTF 坐标约定：SOFA 俯仰角与余纬角对照</h3>
 <p>工程中读取公开实测 HRTF 数据库或球面麦克风阵列校准数据时，最容易踩中的接口陷阱是三维角度定义不一致。国际音频工程协会标准 <strong>AES69（Spatially Oriented Format for Acoustics，简称 SOFA）</strong> 规定了头部局部右手笛卡尔坐标系：$+x_{\mathrm{SOFA}}$ 朝正前方，$+y_{\mathrm{SOFA}}$ 朝正左方，$+z_{\mathrm{SOFA}}$ 朝正上方；对应的球面坐标三元组记为 $(\phi_{\mathrm{SOFA}}, \delta_{\mathrm{SOFA}}, r)$，其中水平方位角 $\phi_{\mathrm{SOFA}}$ 从正前 $+x_{\mathrm{SOFA}}$ 向正左 $+y_{\mathrm{SOFA}}$ <strong>逆时针</strong>起算（与本章图 1(a) 向右顺时针为正的方位角 $\theta$ 恰成反号，满足 $\phi_{\mathrm{SOFA}} \equiv -\theta \pmod{360^\circ}$），<strong>俯仰角（elevation）</strong> $\delta_{\mathrm{SOFA}} \in [-90^\circ, +90^\circ]$ 则从水平赤道面朝头顶 $+z_{\mathrm{SOFA}}$ 度量。</p>
-<p>而在球谐域波束形成（<a href="05_beamforming.html#sec-5-8">§5.8</a>、<a href="14_spatial-wearable-arrays.html#sec-14-2">§14.2</a> 与<a href="16_appendix-symbols-math.html#sec-16-1">附录 A §16.1</a>）中，数学物理公式常改用从天顶 $+z$ 轴向下度量的<strong>极角 / 余纬角（colatitude）</strong> $\vartheta = 90^\circ - \delta_{\mathrm{SOFA}}$（取值范围 $[0^\circ, 180^\circ]$）——注意水平面对应的是 $\vartheta = 90^\circ$ 而非 $0^\circ$！下表列出六个典型单位距离（$r=1\ \mathrm{m}$）方向在四套坐标表示下的精确换算，供写代码加载数据时逐项核对（手算推导与错传角度的后果见练习 E01-12，开源库 <code>libmysofa</code> 的球面插值细节见<a href="research/01_spatial_and_tracking.html">源码研究手册第 1 篇</a>）：</p>
-<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
+<p>而在球谐域波束形成（<a href="00_math-foundations.html#sec-0-1">第 0 章 §0.1</a>、<a href="00_math-foundations.html#sec-0-7">§0.7</a>、<a href="05_beamforming.html#sec-5-8">§5.8</a>、<a href="14_spatial-wearable-arrays.html#sec-14-2">§14.2</a> 与<a href="16_appendix-symbols-math.html#sec-16-1">附录 A §16.1</a>）中，数学物理公式常改用从天顶 $+z$ 轴向下度量的<strong>极角 / 余纬角（colatitude）</strong> $\vartheta = 90^\circ - \delta_{\mathrm{SOFA}}$（取值范围 $[0^\circ, 180^\circ]$）——注意水平面对应的是 $\vartheta = 90^\circ$ 而非 $0^\circ$！下表列出六个典型单位距离（$r=1\ \mathrm{m}$）方向在四套坐标表示下的精确换算，供写代码加载数据时逐项核对（手算推导与错传角度的后果见练习 E01-12，开源库 <code>libmysofa</code> 的球面插值细节见<a href="research/01_spatial_and_tracking.html">源码研究手册第 1 篇</a>）：</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table class="tutorial-budget-table" style="--tutorial-table-width:66em">
 <thead>
 <tr>
-<th scope="col">物理方位描述</th>
-<th scope="col">本书水平角 $\theta$</th>
-<th scope="col">SOFA 球坐标 $(\phi_{\mathrm{SOFA}}, \delta_{\mathrm{SOFA}})$</th>
-<th scope="col">球谐余纬角 $\vartheta$</th>
-<th scope="col">SOFA 笛卡尔 $(x, y, z)\ [\mathrm{m}]$</th>
+<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:10em">物理方位描述</th>
+<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:10em">本书水平角 $\theta$</th>
+<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:18em">SOFA 球坐标 $(\phi_{\mathrm{SOFA}}, \delta_{\mathrm{SOFA}})$</th>
+<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:12em">球谐余纬角 $\vartheta$</th>
+<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:16em">SOFA 笛卡尔 $(x, y, z)\ [\mathrm{m}]$</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>水平正前方</td>
-<td>$0^\circ$</td>
-<td>$0^\circ,\ 0^\circ$</td>
-<td>$90^\circ$</td>
-<td>$(1, 0, 0)$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:10em">水平正前方</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:10em">$0^\circ$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:18em">$0^\circ,\ 0^\circ$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:12em">$90^\circ$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:16em">$(1, 0, 0)$</td>
 </tr>
 <tr>
-<td>水平正右方</td>
-<td>$+90^\circ$</td>
-<td>$-90^\circ$（或 $270^\circ$）, $0^\circ$</td>
-<td>$90^\circ$</td>
-<td>$(0, -1, 0)$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:10em">水平正右方</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:10em">$+90^\circ$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:18em">$-90^\circ$（或 $270^\circ$）, $0^\circ$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:12em">$90^\circ$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:16em">$(0, -1, 0)$</td>
 </tr>
 <tr>
-<td>水平正左方</td>
-<td>$-90^\circ$</td>
-<td>$+90^\circ,\ 0^\circ$</td>
-<td>$90^\circ$</td>
-<td>$(0, 1, 0)$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:10em">水平正左方</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:10em">$-90^\circ$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:18em">$+90^\circ,\ 0^\circ$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:12em">$90^\circ$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:16em">$(0, 1, 0)$</td>
 </tr>
 <tr>
-<td>水平正后方</td>
-<td>$\pm 180^\circ$</td>
-<td>$180^\circ,\ 0^\circ$</td>
-<td>$90^\circ$</td>
-<td>$(-1, 0, 0)$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:10em">水平正后方</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:10em">$\pm 180^\circ$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:18em">$180^\circ,\ 0^\circ$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:12em">$90^\circ$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:16em">$(-1, 0, 0)$</td>
 </tr>
 <tr>
-<td>头顶正上方（天顶）</td>
-<td>任意（轴上奇点）</td>
-<td>$0^\circ,\ +90^\circ$</td>
-<td>$0^\circ$</td>
-<td>$(0, 0, 1)$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:10em">头顶正上方（天顶）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:10em">任意（轴上奇点）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:18em">$0^\circ,\ +90^\circ$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:12em">$0^\circ$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:16em">$(0, 0, 1)$</td>
 </tr>
 <tr>
-<td>右前 $30^\circ$、仰角 $+30^\circ$</td>
-<td>$+30^\circ$</td>
-<td>$-30^\circ$（或 $330^\circ$）, $+30^\circ$</td>
-<td>$60^\circ$</td>
-<td>$(0.75, -0.4330, 0.5)$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:10em">右前 $30^\circ$、仰角 $+30^\circ$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:10em">$+30^\circ$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:18em">$-30^\circ$（或 $330^\circ$）, $+30^\circ$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:12em">$60^\circ$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:16em">$(0.75, -0.4330, 0.5)$</td>
 </tr>
 </tbody>
 </table></div>
@@ -887,33 +898,33 @@ C_{12} &= \frac{1}{N}\sum_{n=0}^{N-1}v_1[n]v_2[n].
 \end{aligned} \tag{1-8}
 $$</p>
 <p>式(1-8)中的 $C_{12}$ 是未去均值的样本交叉二阶矩（注意截取前 3 点时样本均值 $\bar v_1 = \bar v_2 = 1/3 \ne 0$，因此 $C_{12}$ 不等于中心化样本协方差）。将两个截取窗口逐项代入核对：</p>
-<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
+<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table class="tutorial-budget-table" style="--tutorial-table-width:64em">
 <thead>
 <tr>
-<th scope="col">截取窗口</th>
-<th scope="col">逐样本乘积 $v_1[n]v_2[n]$</th>
-<th scope="col">$P_1, P_2$</th>
-<th scope="col">交叉项 $C_{12}$</th>
-<th scope="col">等权平均序列</th>
-<th scope="col">平均输出均方</th>
+<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:9em">截取窗口</th>
+<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:13em">逐样本乘积 $v_1[n]v_2[n]$</th>
+<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:9em">$P_1, P_2$</th>
+<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:10em">交叉项 $C_{12}$</th>
+<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:12em">等权平均序列</th>
+<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:11em">平均输出均方</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>全部四点（$N=4$）</td>
-<td>$[1,-1,-1,1]$</td>
-<td>$1, 1$</td>
-<td>$0$</td>
-<td>$[1,0,0,-1]$</td>
-<td>$2/4=0.5$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:9em">全部四点（$N=4$）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:13em">$[1,-1,-1,1]$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:9em">$1, 1$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:10em">$0$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:12em">$[1,0,0,-1]$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:11em">$2/4=0.5$</td>
 </tr>
 <tr>
-<td>前三点（$N=3$）</td>
-<td>$[1,-1,-1]$</td>
-<td>$1, 1$</td>
-<td>$-1/3$</td>
-<td>$[1,0,0]$</td>
-<td>$1/3$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:9em">前三点（$N=3$）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:13em">$[1,-1,-1]$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:9em">$1, 1$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:10em">$-1/3$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:12em">$[1,0,0]$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:11em">$1/3$</td>
 </tr>
 </tbody>
 </table></div>
@@ -1105,51 +1116,51 @@ f_s &= 16000\ \mathrm{Hz}.
 \end{aligned} \tag{1-12}
 $$</p>
 <p>这里固定右声道延迟 $d_R = 0$，左声道整数延迟 $d_L$ 取 $0$ 或 $8$ 个采样点（$8/16000 = 0.0005\ \mathrm{s} = +500\ \mu\mathrm{s}$）；每条文件均完整保留 $32008$ 帧双声道样本以容纳 $8$ 点延迟尾部，并采用共同导出增益 $1$（请佩戴分清左右耳的耳机从低音量开始试听）：</p>
-<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
+<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table class="tutorial-budget-table" style="--tutorial-table-width:58em">
 <thead>
 <tr>
-<th scope="col">双声道试听样本（左声道在前、右声道在后）</th>
-<th scope="col">左路延迟 $d_L$</th>
-<th scope="col">增益 $g_L, g_R$</th>
-<th scope="col">解析 ITD</th>
-<th scope="col">解析 ILD</th>
+<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:22em">双声道试听样本（左声道在前、右声道在后）</th>
+<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:8em">左路延迟 $d_L$</th>
+<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:10em">增益 $g_L, g_R$</th>
+<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:9em">解析 ITD</th>
+<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:9em">解析 ILD</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><a href="binaural_audio/reference.wav">参考：同相同幅</a><audio class="audio-sample" controls preload="none" aria-label="参考：同相同幅" src="binaural_audio/reference.wav">请使用上方 WAV 链接下载。</audio></td>
-<td>$0$</td>
-<td>$1, 1$</td>
-<td>$0\ \mu\mathrm{s}$</td>
-<td>$0.00\ \mathrm{dB}$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:22em"><a href="binaural_audio/reference.wav">参考：同相同幅</a><audio class="audio-sample" controls preload="none" aria-label="参考：同相同幅" src="binaural_audio/reference.wav">请使用上方 WAV 链接下载。</audio></td>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">$0$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:10em">$1, 1$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:9em">$0\ \mu\mathrm{s}$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:9em">$0.00\ \mathrm{dB}$</td>
 </tr>
 <tr>
-<td><a href="binaural_audio/itd_only.wav">仅改变时间差</a><audio class="audio-sample" controls preload="none" aria-label="仅改变时间差" src="binaural_audio/itd_only.wav">请使用上方 WAV 链接下载。</audio></td>
-<td>$8$</td>
-<td>$1, 1$</td>
-<td>$+500\ \mu\mathrm{s}$</td>
-<td>$0.00\ \mathrm{dB}$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:22em"><a href="binaural_audio/itd_only.wav">仅改变时间差</a><audio class="audio-sample" controls preload="none" aria-label="仅改变时间差" src="binaural_audio/itd_only.wav">请使用上方 WAV 链接下载。</audio></td>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">$8$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:10em">$1, 1$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:9em">$+500\ \mu\mathrm{s}$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:9em">$0.00\ \mathrm{dB}$</td>
 </tr>
 <tr>
-<td><a href="binaural_audio/ild_only.wav">仅改变声级差</a><audio class="audio-sample" controls preload="none" aria-label="仅改变声级差" src="binaural_audio/ild_only.wav">请使用上方 WAV 链接下载。</audio></td>
-<td>$0$</td>
-<td>$0.5, 1$</td>
-<td>$0\ \mu\mathrm{s}$</td>
-<td>$+6.02\ \mathrm{dB}$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:22em"><a href="binaural_audio/ild_only.wav">仅改变声级差</a><audio class="audio-sample" controls preload="none" aria-label="仅改变声级差" src="binaural_audio/ild_only.wav">请使用上方 WAV 链接下载。</audio></td>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">$0$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:10em">$0.5, 1$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:9em">$0\ \mu\mathrm{s}$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:9em">$+6.02\ \mathrm{dB}$</td>
 </tr>
 <tr>
-<td><a href="binaural_audio/consistent.wav">两种线索同向</a><audio class="audio-sample" controls preload="none" aria-label="两种线索同向" src="binaural_audio/consistent.wav">请使用上方 WAV 链接下载。</audio></td>
-<td>$8$</td>
-<td>$0.5, 1$</td>
-<td>$+500\ \mu\mathrm{s}$</td>
-<td>$+6.02\ \mathrm{dB}$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:22em"><a href="binaural_audio/consistent.wav">两种线索同向</a><audio class="audio-sample" controls preload="none" aria-label="两种线索同向" src="binaural_audio/consistent.wav">请使用上方 WAV 链接下载。</audio></td>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">$8$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:10em">$0.5, 1$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:9em">$+500\ \mu\mathrm{s}$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:9em">$+6.02\ \mathrm{dB}$</td>
 </tr>
 <tr>
-<td><a href="binaural_audio/conflicting.wav">两种线索相反</a><audio class="audio-sample" controls preload="none" aria-label="两种线索相反" src="binaural_audio/conflicting.wav">请使用上方 WAV 链接下载。</audio></td>
-<td>$8$</td>
-<td>$1, 0.5$</td>
-<td>$+500\ \mu\mathrm{s}$</td>
-<td>$-6.02\ \mathrm{dB}$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:22em"><a href="binaural_audio/conflicting.wav">两种线索相反</a><audio class="audio-sample" controls preload="none" aria-label="两种线索相反" src="binaural_audio/conflicting.wav">请使用上方 WAV 链接下载。</audio></td>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">$8$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:10em">$1, 0.5$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:9em">$+500\ \mu\mathrm{s}$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:9em">$-6.02\ \mathrm{dB}$</td>
 </tr>
 </tbody>
 </table></div>
@@ -1244,7 +1255,7 @@ $$</p>
 <h3 id="sec-u-dcdd7fffd2">E01-10：源谱改变，双耳声级差会怎样改变</h3>
 <p>练习 E01-08 只使用了与频率无关的常数增益和整点延迟；现在我们保持左右通道的一对两抽头有限冲激响应（Finite Impulse Response，FIR）滤波器固定不变，先后送入高频弱与高频强两种不同频谱的声源，亲手检验<strong>逐频声级差/相位差</strong>与<strong>全频带总声级差</strong>谁会跟着声源频谱变、谁不会变。设左、右通道人工构造的两抽头冲激响应分别为 $h_L=[1, 0.5]$、$h_R=[1, -0.5]$（样本下标从 $0$ 起算）。</p>
 <p><strong>第一步：补齐最小欧拉公式铺垫，写出双抽头频率响应。</strong> 用离散单位冲激序列 $\delta[n]$（仅在 $n=0$ 处为 $1$，其余全为 $0$）表示，左右滤波器的时域差分方程为 $y_L[n] = s[n] + 0.5s[n-1]$ 与 $y_R[n] = s[n] - 0.5s[n-1]$（规定源起点之前与结束之后的样本为零）。</p>
-<p>要把“延迟 1 个采样点”翻译到频域，只需用到复数里的<strong>欧拉公式（Euler's formula）</strong>（完整复数运算复习见<a href="16_appendix-symbols-math.html#sec-16-3">附录 A §16.3</a>）：记虚数单位为正体 $\mathrm{j}$（满足 $\mathrm{j}^2 = -1$，工程中用 $\mathrm{j}$ 避开电流符号 $i$），任意实角度 $\phi$ 的复指数定义为 $e^{\mathrm{j}\phi} = \cos\phi + \mathrm{j}\sin\phi$，其复共轭为 $e^{-\mathrm{j}\phi} = \cos\phi - \mathrm{j}\sin\phi$，模恒为 $1$，且共轭对相加得 $e^{\mathrm{j}\phi} + e^{-\mathrm{j}\phi} = 2\cos\phi$。</p>
+<p>要把“延迟 1 个采样点”翻译到频域，只需用到复数里的<strong>欧拉公式（Euler's formula）</strong>（完整复数相量与傅里叶时移复习见<a href="00_math-foundations.html#sec-0-2">第 0 章 §0.2</a> 及<a href="16_appendix-symbols-math.html#sec-16-3">附录 A §16.3</a>）：记虚数单位为正体 $\mathrm{j}$（满足 $\mathrm{j}^2 = -1$，工程中用 $\mathrm{j}$ 避开电流符号 $i$），任意实角度 $\phi$ 的复指数定义为 $e^{\mathrm{j}\phi} = \cos\phi + \mathrm{j}\sin\phi$，其复共轭为 $e^{-\mathrm{j}\phi} = \cos\phi - \mathrm{j}\sin\phi$，模恒为 $1$，且共轭对相加得 $e^{\mathrm{j}\phi} + e^{-\mathrm{j}\phi} = 2\cos\phi$。</p>
 <p>在采样率 $f_s$ 下，记频率 $f$ 对应的数字角频率为 $\Omega_{\mathrm{d}} = 2\pi f / f_s$（单位：$\mathrm{rad}/\text{样本}$）；按前向傅里叶变换核 $e^{-\mathrm{j}\Omega_{\mathrm{d}} n}$ 的标准约定，时域推迟 1 个采样点 $s[n-1]$ 在频域恰好对应乘以相位因子 $e^{-\mathrm{j}\Omega_{\mathrm{d}}}$。记输入源在频率 $f$ 处的复数谱为 $S(f)$，左、右输出复数谱为 $Y_L(f), Y_R(f)$，对完整卷积做傅里叶变换可得</p>
 <p>$$
 \begin{aligned}
@@ -1292,30 +1303,30 @@ B_{RL}(f)
 $$</p>
 <p>观察最后一行：分母 $1.25 + \cos\Omega_{\mathrm{d}} > 0$ 且分子实部恒为正数 $0.75 > 0$（一般象限须用双参数 <code>atan2</code> 同时保留实部与虚部正负号），因此逐频相位差 $\mathrm{IPD}(f)$ 直接闭式化简为 $\arctan(\sin\Omega_{\mathrm{d}} / 0.75)$！</p>
 <p>取 $f_s = 16000\ \mathrm{Hz}$，考察 $f_1 = 1\ \mathrm{kHz}$（$\Omega_{\mathrm{d}}=\pi/8$）与 $f_2 = 7\ \mathrm{kHz}$（$\Omega_{\mathrm{d}}=7\pi/8$）两个互补频点：它们的余弦值互为相反数（$\cos(\pi/8)\approx +0.923880$，$\cos(7\pi/8)\approx -0.923880$），导致左右功率增益正好对调、逐频 ILD 正负颠倒；但它们的正弦值却完全相等（$\sin(\pi/8) = \sin(7\pi/8) \approx 0.382683$），代入 $\arctan(0.382683/0.75)$ 立得完全相同的逐频相位差 $+27.032701^\circ$：</p>
-<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
+<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table class="tutorial-budget-table" style="--tutorial-table-width:58em">
 <thead>
 <tr>
-<th scope="col">频率 $f$</th>
-<th scope="col">左功率增益 $|H_L(f)|^2$</th>
-<th scope="col">右功率增益 $|H_R(f)|^2$</th>
-<th scope="col">解析逐频 ILD</th>
-<th scope="col">解析逐频 IPD（右减左）</th>
+<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:8em">频率 $f$</th>
+<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:13em">左功率增益 $\lvert H_L(f)\rvert^2$</th>
+<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:13em">右功率增益 $\lvert H_R(f)\rvert^2$</th>
+<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:11em">解析逐频 ILD</th>
+<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:13em">解析逐频 IPD（右减左）</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>$1\ \mathrm{kHz}$</td>
-<td>$2.173880$</td>
-<td>$0.326120$</td>
-<td>$-8.238574\ \mathrm{dB}$</td>
-<td>$+27.032701^\circ$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">$1\ \mathrm{kHz}$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:13em">$2.173880$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:13em">$0.326120$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:11em">$-8.238574\ \mathrm{dB}$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:13em">$+27.032701^\circ$</td>
 </tr>
 <tr>
-<td>$7\ \mathrm{kHz}$</td>
-<td>$0.326120$</td>
-<td>$2.173880$</td>
-<td>$+8.238574\ \mathrm{dB}$</td>
-<td>$+27.032701^\circ$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">$7\ \mathrm{kHz}$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:13em">$0.326120$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:13em">$2.173880$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:11em">$+8.238574\ \mathrm{dB}$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:13em">$+27.032701^\circ$</td>
 </tr>
 </tbody>
 </table></div>
@@ -1347,33 +1358,33 @@ $$</p>
 <li>倾斜源谱双声道滤波输出（全带 ILD 约 $-5.90\ \mathrm{dB}$）：<a href="spectral_audio/tilted_stereo.wav"><code>tilted_stereo.wav</code></a><audio class="audio-sample" controls preload="none" aria-label="tilted_stereo.wav" src="spectral_audio/tilted_stereo.wav">请使用上方 WAV 链接下载。</audio></li>
 </ul>
 <p>脚本 E01-10 在同一稳态区间 $[1600, 30400)$ 上读取 16 位有符号整数样本（除以 $32768$ 解码，整数平方和 $E$ 除以精确分母 $D = 28800 \times 32768^2 = 30923764531200$ 即得实测数字均方功率 $P = E/D$）：</p>
-<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
+<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table class="tutorial-budget-table" style="--tutorial-table-width:64em">
 <thead>
 <tr>
-<th scope="col">输入源谱</th>
-<th scope="col">左 PCM 整数平方和 $E_L$</th>
-<th scope="col">右 PCM 整数平方和 $E_R$</th>
-<th scope="col">左 PCM 均方</th>
-<th scope="col">右 PCM 均方</th>
-<th scope="col">全带 PCM ILD</th>
+<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:10em">输入源谱</th>
+<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:12em">左 PCM 整数平方和 $E_L$</th>
+<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:12em">右 PCM 整数平方和 $E_R$</th>
+<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:10em">左 PCM 均方</th>
+<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:10em">右 PCM 均方</th>
+<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:10em">全带 PCM ILD</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>等幅 <code>flat</code></td>
-<td><code>386556004800</code></td>
-<td><code>386556004800</code></td>
-<td>$0.012500289$</td>
-<td>$0.012500289$</td>
-<td>$0.000000\ \mathrm{dB}$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:10em">等幅 <code>flat</code></td>
+<td class="tutorial-short-column" style="--tutorial-column-width:12em"><code>386556004800</code></td>
+<td class="tutorial-short-column" style="--tutorial-column-width:12em"><code>386556004800</code></td>
+<td class="tutorial-short-column" style="--tutorial-column-width:10em">$0.012500289$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:10em">$0.012500289$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:10em">$0.000000\ \mathrm{dB}$</td>
 </tr>
 <tr>
-<td>倾斜 <code>tilted</code></td>
-<td><code>492118106400</code></td>
-<td><code>126383569200</code></td>
-<td>$0.015913913$</td>
-<td>$0.004086940$</td>
-<td>$-5.903787\ \mathrm{dB}$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:10em">倾斜 <code>tilted</code></td>
+<td class="tutorial-short-column" style="--tutorial-column-width:12em"><code>492118106400</code></td>
+<td class="tutorial-short-column" style="--tutorial-column-width:12em"><code>126383569200</code></td>
+<td class="tutorial-short-column" style="--tutorial-column-width:10em">$0.015913913$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:10em">$0.004086940$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:10em">$-5.903787\ \mathrm{dB}$</td>
 </tr>
 </tbody>
 </table></div>
@@ -1550,7 +1561,7 @@ $$</p>
 <hr />
 <blockquote>
 <p>📄 本篇信息：配图 1 张 ｜ <a href="index.html">回首页</a></p>
-</blockquote><div class="pn"><span><a href="index.html">← 导读</a></span><span><a href="02_basics-signal-model.html">下一篇 →</a></span></div>
+</blockquote><div class="pn"><span><a href="00_math-foundations.html">← 上一篇</a></span><span><a href="02_basics-signal-model.html">下一篇 →</a></span></div>
 <footer class="foot">麦克风阵列信号处理教程 · 静态站由 scripts/build_site.py 生成</footer>
 </main></div><a class="topbtn" href="#top" title="回顶部" aria-label="回到页面顶部">↑</a>
 <script>if(!navigator.onLine)document.getElementById('offnote').style.display='block';</script>

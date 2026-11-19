@@ -273,6 +273,18 @@ class Chapter07Experiments(unittest.TestCase):
         np.testing.assert_allclose(g['frame_1001_posterior_weights'], [float(F(5050, 9901)), 0.0], atol=1e-15)
         self.assertAlmostEqual(g['frame_1002_prior_output'], float(F(4851, 9901)), places=15)
 
+        p_init = np.diag([4.0, 2.0])
+        np.testing.assert_array_equal(
+            oc.convex_diagonal_pullback_step(p_init, beta=0.0, delta=0.5),
+            p_init,
+        )
+        np.testing.assert_array_equal(
+            oc.convex_diagonal_pullback_step(p_init, beta=1.0, delta=0.5),
+            2.0 * np.eye(2),
+        )
+        for bad_beta in (-0.01, 1.01, True):
+            with self.assertRaises(ValueError):
+                oc.convex_diagonal_pullback_step(p_init, beta=bad_beta, delta=0.5)
         with self.assertRaises(ValueError):
             oc.convex_diagonal_pullback_step([[1.0, 2.0], [2.0, 1.0]], beta=0.1, delta=1.0)
 

@@ -1,16 +1,17 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 4 章 · 声源定位（DOA 估计） · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="820e0688bd26"><style>
+<meta name="source-digest" content="ba5ce9940c12"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
 h1,h2,h3,h4{scroll-margin-top:60px}
+@media screen{.main a[id]:not([href]){scroll-margin-top:60px}}
 @media screen{.main a[id^="e"],.main .exercise-alias{scroll-margin-top:80px}}
 @media screen{.main .exercise-alias{top:0}}
 @media screen{.main a[id="e05-20"]{scroll-margin-top:60px}}
 @media screen{.main a[id="e17-11"],.main a[id="e17-12"],.main a[id="e17-13"],.main a[id="e17-14"],.main a[id="e17-15"]{scroll-margin-top:140px}}
-@media screen{.main .exercise-alias[id="e13-11"],.main .exercise-alias[id="e13-12"],.main .exercise-alias[id="e13-13"],.main .exercise-alias[id="e13-14"],.main .exercise-alias[id="e13-15"],.main .exercise-alias[id="e15-11"],.main .exercise-alias[id="e15-12"],.main .exercise-alias[id="e15-13"],.main .exercise-alias[id="e15-14"],.main .exercise-alias[id="e15-15"]{scroll-margin-top:140px}}
+@media screen{.main .exercise-alias[id="e13-11"],.main .exercise-alias[id="e13-12"],.main .exercise-alias[id="e13-13"],.main .exercise-alias[id="e13-14"],.main .exercise-alias[id="e13-15"],.main .exercise-alias[id="e15-11"]:has(~ a[id="e17-11"]),.main .exercise-alias[id="e15-12"]:has(~ a[id="e17-12"]),.main .exercise-alias[id="e15-13"]:has(~ a[id="e17-13"]),.main .exercise-alias[id="e15-14"]:has(~ a[id="e17-14"]),.main .exercise-alias[id="e15-15"]:has(~ a[id="e17-15"]){scroll-margin-top:140px}}
 @media screen{.main a[id^="e06-"]{scroll-margin-top:60px}}
 @media screen{.main a[id^="e07-"],.main a[id^="e08-"]{scroll-margin-top:60px}}
 @media screen{.main a[id^="e11-"]{scroll-margin-top:60px}}
@@ -79,7 +80,7 @@ h4{font-size:15.5px;margin-top:20px;color:#333}
   let printing = false;
 
   function roots() {
-    const candidates = Array.from(document.querySelectorAll("main.main,.chap"));
+    const candidates = Array.from(document.querySelectorAll(".main,.chap"));
     return candidates.filter(root => !candidates.some(other => other !== root && other.contains(root)));
   }
 
@@ -133,12 +134,21 @@ h4{font-size:15.5px;margin-top:20px;color:#333}
       const significant = Array.from(paragraph.childNodes).filter(node =>
         node.nodeType !== Node.TEXT_NODE || node.data.trim());
       const next = paragraph.nextElementSibling;
-      const anchorOnly = significant.length === 1 &&
-        significant[0].nodeType === Node.ELEMENT_NODE &&
-        significant[0].tagName === "A" && significant[0].id &&
-        !significant[0].hasAttribute("href") &&
-        Array.from(significant[0].childNodes).every(node =>
-          node.nodeType === Node.TEXT_NODE && !node.data.trim());
+      const isEmptyAnchor = node =>
+        node.nodeType === Node.ELEMENT_NODE &&
+        node.tagName === "A" && node.id &&
+        !node.hasAttribute("href") &&
+        Array.from(node.childNodes).every(child =>
+          child.nodeType === Node.TEXT_NODE && !child.data.trim());
+      const isAnchorAlias = node =>
+        node.nodeType === Node.ELEMENT_NODE &&
+        node.tagName === "SPAN" && node.id &&
+        node.classList.contains("anchor-alias") &&
+        Array.from(node.childNodes).every(child =>
+          child.nodeType === Node.TEXT_NODE && !child.data.trim());
+      const anchorOnly = significant.length >= 1 &&
+        significant.some(isEmptyAnchor) &&
+        significant.every(node => isEmptyAnchor(node) || isAnchorAlias(node));
       paragraph.classList.toggle("tutorial-anchor-only", !!anchorOnly);
       const short = significant.length === 1 &&
         significant[0].nodeType === Node.ELEMENT_NODE &&
@@ -243,6 +253,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 </head><body id="top"><a class="skip-link" href="#main-content">跳到正文</a>
 <header class="topbar"><a href="index.html">🏠 首页</a> &nbsp;/&nbsp; 第 4 章 · 声源定位（DOA 估计）</header>
 <div class="wrap"><nav class="side" aria-label="全书目录"><div class="chap"><a href="index.html">🏠 导读与导航（首页）</a></div>
+<div class="chap"><a href="00_math-foundations.html">第 0 章 · 全书数学基础与信号分析预备</a></div>
 <div class="chap"><a href="01_problem-definition.html">第 1 章 · 问题定义与双耳启示</a></div>
 <div class="chap"><a href="02_basics-signal-model.html">第 2 章 · 声音到达阵列时发生了什么</a></div>
 <div class="chap"><a href="03_array-geometry.html">第 3 章 · 阵列几何形态</a></div>
@@ -265,7 +276,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="04_doa-estimation.html#sec-u-cad659749e">Chan 线性化与局部迭代</a></li>
 <li>&nbsp;&nbsp;<a href="04_doa-estimation.html#sec-u-be5ad1ce49">几何误差放大与局部有效范围</a></li>
 <li><a href="04_doa-estimation.html#sec-4-5">4.5 波束扫描类：Bartlett 与 Capon</a></li>
-<li>&nbsp;&nbsp;<a href="04_doa-estimation.html#sec-u-1e0973b8ca">算例 4-3：Bartlett 与 Capon——同一个 $\hat{\mathbf{R}}$，两种读法</a></li>
+<li>&nbsp;&nbsp;<a href="04_doa-estimation.html#sec-u-eb21d54fe3">算例 4-3：Bartlett 与 Capon——同一个 $\hat{\mathbf{R}}_{xx}$，两种读法</a></li>
 <li><a href="04_doa-estimation.html#sec-4-6">4.6 子空间类：MUSIC 与 ESPRIT</a></li>
 <li>&nbsp;&nbsp;<a href="04_doa-estimation.html#sec-u-5d3aebe0fb">窄带方法一：MUSIC（多重信号分类，Schmidt, 1986）</a></li>
 <li>&nbsp;&nbsp;<a href="04_doa-estimation.html#sec-u-e9bdae6530">窄带方法二：ESPRIT（借助旋转不变技术估计信号参数，Estimation of Signal Parameters via Rotational Invariance Techniques）</a></li>
@@ -344,7 +355,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="04_doa-estimation.html#sec-u-cad659749e">Chan 线性化与局部迭代</a></li>
 <li>&nbsp;&nbsp;<a href="04_doa-estimation.html#sec-u-be5ad1ce49">几何误差放大与局部有效范围</a></li>
 <li><a href="04_doa-estimation.html#sec-4-5">4.5 波束扫描类：Bartlett 与 Capon</a></li>
-<li>&nbsp;&nbsp;<a href="04_doa-estimation.html#sec-u-1e0973b8ca">算例 4-3：Bartlett 与 Capon——同一个 $\hat{\mathbf{R}}$，两种读法</a></li>
+<li>&nbsp;&nbsp;<a href="04_doa-estimation.html#sec-u-eb21d54fe3">算例 4-3：Bartlett 与 Capon——同一个 $\hat{\mathbf{R}}_{xx}$，两种读法</a></li>
 <li><a href="04_doa-estimation.html#sec-4-6">4.6 子空间类：MUSIC 与 ESPRIT</a></li>
 <li>&nbsp;&nbsp;<a href="04_doa-estimation.html#sec-u-5d3aebe0fb">窄带方法一：MUSIC（多重信号分类，Schmidt, 1986）</a></li>
 <li>&nbsp;&nbsp;<a href="04_doa-estimation.html#sec-u-e9bdae6530">窄带方法二：ESPRIT（借助旋转不变技术估计信号参数，Estimation of Signal Parameters via Rotational Invariance Techniques）</a></li>
@@ -391,8 +402,8 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="04_doa-estimation.html#sec-u-b8f5035311">E04-27：双麦盲相干扩散比怎样闭式筛除混响频点？</a></li>
 </ul></nav></details>
 <blockquote>
-<p>⚠️ 本篇是本书正文第 4 章（正文共 15 章，含第 12～15 章四篇扩展专题，另有附录 A、B），可独立阅读，前后篇见下方导航。</p>
-<p>🏠 首页导读：<a href="index.html">🏠 导读与导航</a> ｜ 上一篇：<a href="03_array-geometry.html">第 3 章 · 阵列几何形态</a> ｜ 下一篇：<a href="05_beamforming.html">第 5 章 · 波束形成</a></p>
+<p>本篇是本书正文第 4 章；正文与扩展专题共 16 章（第 0～15 章，其中第 0 章为数学基础，第 12～15 章为四篇扩展专题），另有附录 A、B。本篇可独立阅读，前后篇见下方导航。</p>
+<p>导读首页：<a href="index.html">🏠 导读与导航</a> ｜ 上一篇：<a href="03_array-geometry.html">第 3 章 · 阵列几何形态</a> ｜ 下一篇：<a href="05_beamforming.html">第 5 章 · 波束形成</a></p>
 </blockquote>
 <hr />
 <span id="sec-1" class="anchor-alias" aria-hidden="true"></span><h1 id="sec-u-e4b7b5c5da">4. 声源定位（波达方向，Direction of Arrival，DOA）</h1>
@@ -453,7 +464,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 </tr>
 </tbody>
 </table></div>
-<p>本章统一把列向量记为带箭头的 $\vec a,\vec w,\vec x$，矩阵记为大写正粗体 $\mathbf A,\mathbf I$，空间协方差矩阵采用双下标 $\mathbf R_{xx},\mathbf R_{ss},\mathbf R_{nn}$（有限快拍样本估计加帽记作 $\hat{\mathbf R}_{xx}$），以区别于标量互相关函数 $R_{x_1x_2}(\tau)$ 与整数滞后相关序列 $R[l]$。矩阵的复共轭转置记为 $^H$，实转置记为 $^\top$，虚数单位记为正体 $\mathrm{j}$，数学期望记为 $\mathbb{E}[\cdot]$；$M$ 表示麦克风通道数，$K$ 表示声源数。涉及快拍统计、厄米矩阵特征分解和复向量求导时，可随时对照<a href="16_appendix-symbols-math.html">附录 A 的数学工具</a>。本章配套的多组合成 WAV 音频均由已知几何与解析信号模型生成，专用于核验时延符号、亚采样对齐与矩阵秩变化，不代表真实房间语音录音的盲定位性能。</p>
+<p>本章统一把列向量记为带箭头的 $\vec a,\vec w,\vec x$，矩阵记为大写正粗体 $\mathbf A,\mathbf I$，空间协方差矩阵采用双下标 $\mathbf R_{xx},\mathbf R_{ss},\mathbf R_{nn}$（有限快拍样本估计加帽记作 $\hat{\mathbf R}_{xx}$），以区别于标量互相关函数 $R_{x_1x_2}(\tau)$ 与整数滞后相关序列 $R[l]$。矩阵的复共轭转置记为 $^H$，实转置记为 $^\top$，虚数单位记为正体 $\mathrm{j}$，数学期望记为 $\mathbb{E}[\cdot]$；$M$ 表示麦克风通道数，$K$ 表示声源数。涉及快拍统计、厄米矩阵特征分解和复向量求导时，可随时对照<a href="00_math-foundations.html#sec-0-8">第 0 章数学基础</a>与<a href="16_appendix-symbols-math.html">附录 A 的数学工具</a>。本章配套的多组合成 WAV 音频均由已知几何与解析信号模型生成，专用于核验时延符号、亚采样对齐与矩阵秩变化，不代表真实房间语音录音的盲定位性能。</p>
 <span id="sec-2" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-4-1">4.1 总览：四大类思路</h2>
 <pre><code>声源定位算法
 ├── 两阶段法：先从一对或多对麦克风估计到达时差，再按几何关系解位置（§4.2、§4.4）
@@ -504,7 +515,7 @@ R[l]&=\sum_n x_1[n]x_2[n-l],\\
 \hat\tau_{12}&=\frac{\arg\max_l R[l]}{f_s}\text{。}
 \end{aligned}\tag{4-1}$$</p>
 <p>式(4-1)中，整数滞后 $l$ 的单位是“采样点”，除以采样率 $f_s$ 后才换算成以秒为单位的到达时差估计 $\hat\tau_{12}$；当 $x_2[n-l]$ 把先到的 $x_2$ 往右推迟 $l>0$ 格后恰好与晚到的 $x_1[n]$ 对齐时，$R[l]$ 在正滞后 $l>0$ 处达到最大，与上面 $\tau_{12}>0$ 的定义严丝合缝。</p>
-<p>为与第 2 章式(2-14)保持同一符号约定，若输入改成复数基带序列，时域互相关的第二项须取复共轭 $x_2^*[n-l]$。需要注意复相关本身是复数：例如有限支撑序列 $x_1=[0,\mathrm{j}]$、$x_2=[1,0]$ 在 $l=+1$ 处的复相关值为 $\mathrm{j}$，盲目取实部会把真峰抹成 $0$；只有当两路实音频保持已知同极性通道响应时，按式(4-1)搜索有符号实相关最大值才是自洽的，若允许未知公共复相位旋转则应改按模长 $|R[l]|$ 选峰。</p>
+<p>为与 <a href="00_math-foundations.html#sec-0-2">第 0 章 §0.2</a> 及 <a href="16_appendix-symbols-math.html">附录 A</a> 式(16-2) 保持同一符号约定，若输入改成复数基带序列，时域互相关的第二项须取复共轭 $x_2^*[n-l]$。需要注意复相关本身是复数：例如有限支撑序列 $x_1=[0,\mathrm{j}]$、$x_2=[1,0]$ 在 $l=+1$ 处的复相关值为 $\mathrm{j}$，盲目取实部会把真峰抹成 $0$；只有当两路实音频保持已知同极性通道响应时，按式(4-1)搜索有符号实相关最大值才是自洽的，若允许未知公共复相位旋转则应改按模长 $|R[l]|$ 选峰。</p>
 <p>直接在时域对长度为 $N$ 的两段序列遍历全部滞后，需要 $O(N^2)$ 次乘加运算。借助傅里叶变换的<strong>相关定理</strong>，时域滑动乘加等价于频域逐频点计算互功率谱 $X_1(f)X_2^*(f)$（先对第二路频谱取共轭，再与第一路频谱相乘）后做一次逆变换；再在互谱前乘上频域加权函数 $\Phi(f)$，就得到了广义互相关（Generalized Cross-Correlation，GCC）框架：</p>
 <p>$$\begin{aligned}
 G_\Phi(f)&=\Phi(f)X_1(f)X_2^*(f),\\
@@ -617,7 +628,7 @@ G[k]&=X_1[k]X_2^*[k]\\
 </tr>
 <tr>
 <td><strong>相位变换（PHAT）</strong></td>
-<td>$1/(|X_1(f)X_2^*(f)|+\varepsilon)$</td>
+<td>$1/(\lvert X_1(f)X_2^*(f)\rvert+\varepsilon)$</td>
 <td>直接消去互谱幅度、仅保留相位斜率，对室内语音包络起伏适应力强；但对低信噪比弱频点敏感，需配下限保护</td>
 </tr>
 <tr>
@@ -968,7 +979,7 @@ P_B(\theta)&=\vec a^H(\theta)\hat{\mathbf R}_{xx}
 \min_{\vec w\in\mathbb C^M}\;&\vec w^H\hat{\mathbf R}_{xx}\vec w,\\
 \text{s.t.}\;&\vec w^H\vec a(\theta)=1\text{。}
 \end{aligned}$$</p>
-<p>假定 $\hat{\mathbf R}_{xx}$ 正定可逆，我们用复数拉格朗日乘子法与 Wirtinger 复梯度（将 $\vec w$ 与共轭变量 $\vec w^*$ 视为形式上独立的变量，对 $\vec w^*$ 求导，详见<a href="16_appendix-symbols-math.html">附录 A</a>）分三步把闭式解推出来：</p>
+<p>假定 $\hat{\mathbf R}_{xx}$ 正定可逆，我们用复数拉格朗日乘子法与 Wirtinger 复梯度（将 $\vec w$ 与共轭变量 $\vec w^*$ 视为形式上独立的变量，对 $\vec w^*$ 求导，详见<a href="00_math-foundations.html#sec-0-5">第 0 章 §0.5</a> 与<a href="16_appendix-symbols-math.html">附录 A</a>）分三步把闭式解推出来：</p>
 <ol>
 <li>
 <p><strong>构造实值拉格朗日函数并对 $\vec w^*$ 求梯度</strong>：引入复乘子 $\lambda$ 及其共轭项以保持目标函数为实数，写出</p>
@@ -993,7 +1004,7 @@ P_C(\theta)&=\frac{1}
 \end{aligned}\tag{4-12}$$</p>
 <p>式(4-12)为什么能把谱峰削尖？当扫描角 $\theta$ 偏离真实声源时，无失真约束只锁死当前空方向 $\theta$，优化器便动用剩余空间自由度在真实强源方向压低增益，使总输出功率 $P_C(\theta)$ 迅速跌落；而当扫描角 $\theta$ 恰好扫到某一个真实声源方向时，$\vec w^H\vec a(\theta)=1$ 强迫滤波器完整放行该声源（同时仍把其他方向的独立干扰源压下去），最小输出功率退回该声源功率加残余噪声，从而打出尖锐谱峰。</p>
 <p>工程使用式(4-12)要注意两个前提：第一，快拍数 $L\lt M$ 时 $\hat{\mathbf R}_{xx}$ 必然奇异不可逆，$L$ 略大于 $M$ 时矩阵也常病态，且强相干反射会引发目标自相消，因此实际实现需要施加对角加载并采用线性方程求解代替显式矩阵求逆；第二，汇报加载参数必须写清口径——<strong>绝对加载</strong> $\hat{\mathbf R}_{xx}+\delta\mathbf I$ 中的 $\delta$ 带功率量纲，换用不同录音电平会改变等效正则强度；<strong>相对加载</strong>令 $\delta_{\mathrm{rel}}$ 取 $\eta\operatorname{tr}(\hat{\mathbf R}_{xx})/M$ 并求解 $\hat{\mathbf R}_{xx}+\delta_{\mathrm{rel}}\mathbf I$，无量纲系数 $\eta$（如图 11 取 $\eta=10^{-6}$）对信号整体幅度缩放保持不变。</p>
-<h3 id="sec-u-1e0973b8ca">算例 4-3：Bartlett 与 Capon——同一个 $\hat{\mathbf{R}}$，两种读法</h3>
+<span id="sec-u-1e0973b8ca" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-eb21d54fe3">算例 4-3：Bartlett 与 Capon——同一个 $\hat{\mathbf{R}}_{xx}$，两种读法</h3>
 <p>下面在同一个 $2\times 2$ 空间协方差矩阵 $\hat{\mathbf R}_{xx}$ 上亲手算出 $0^\circ$ 与 $30^\circ$ 两个方向的谱值，直观看看 Capon 是怎样把偏离方向的泄漏压下去的。</p>
 <p><strong>输入与口径</strong>：取 $M=2$ 只麦克风，半波长间距 $d=\lambda/2$；单个窄带声源位于正横方向 $\theta=0^\circ$，信号功率归一化为 $1$，两通道叠加互不相关的空间白噪声，每通道方差 $\sigma^2=0.25$（单阵元输入信噪比 $10\log_{10}(1/0.25)\approx 6.02\ \mathrm{dB}$）。按第 2 章 §2.6 的半波距导向矢量公式，有 $\vec a(\theta)=[1,\,e^{+\mathrm{j}\pi\sin\theta}]^\top$。</p>
 <p><strong>第一步：写出空间协方差矩阵 $\hat{\mathbf R}_{xx}$</strong>。真源在 $\theta=0^\circ$ 时两麦同相，$\vec a_0=\vec a(0^\circ)=[1,1]^\top$，忽略有限快拍波动直接取理想协方差 $\hat{\mathbf R}_{xx}$，即 $\vec a_0\vec a_0^H+\sigma^2\mathbf I$——主对角元为信号功率 $1$ 加噪声功率 $0.25$，非对角元为两通道完全同相的信号互功率 $1$：</p>
@@ -1021,7 +1032,7 @@ P_C(\theta)&=\frac{1}
 <p>Capon 虽比 Bartlett 锐利，仍是在估计物理输出功率。如果我们已经知道源数 $K$，能否干脆剥离噪声底、直接利用信号与噪声子空间的几何正交性？这正是第 4.6 节 MUSIC 与 ESPRIT 的出发点。</p>
 </blockquote>
 <span id="sec-8" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-4-6">4.6 子空间类：MUSIC 与 ESPRIT</h2>
-<p>子空间类方法把 $M$ 维接收向量空间精确切分为 $K$ 维<strong>信号子空间</strong>与 $M-K$ 维<strong>噪声子空间</strong>。本节先在单个窄带频点上分别推导 MUSIC 的正交投影扫描与 ESPRIT 的平移子阵旋转不变解算，再讨论宽带语音怎样跨频率合并子空间以及室内强混响下怎样筛选直达路径证据。</p>
+<p>子空间类方法把 $M$ 维接收向量空间精确切分为 $K$ 维<strong>信号子空间</strong>与 $M-K$ 维<strong>噪声子空间</strong>（复内积空间、子空间正交投影与奇异值分解预备见<a href="00_math-foundations.html#sec-0-3">第 0 章 §0.3</a>）。本节先在单个窄带频点上分别推导 MUSIC 的正交投影扫描与 ESPRIT 的平移子阵旋转不变解算，再讨论宽带语音怎样跨频率合并子空间以及室内强混响下怎样筛选直达路径证据。</p>
 <span id="sec-u-442f837dd2" class="anchor-alias" aria-hidden="true"></span><span id="sec-9" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-5d3aebe0fb">窄带方法一：MUSIC（多重信号分类，Schmidt, 1986）</h3>
 <p><strong>思想三步</strong>：</p>
 <ol>
@@ -1251,12 +1262,12 @@ u_k&=\frac{\lambda\arg\hat\psi_k}{2\pi\Delta d},\\
 </table></div>
 <p>顺着上表从上往下看清代表性设计的演进脉络：第一行把传统 GCC 特征送入分类器（早期代表作包括 <a href="https://doi.org/10.1109/ICASSP.2015.7178484">Xiao 等, <em>ICASSP</em> 2015</a> 的 GCC 向量 MLP 分类与 <a href="https://www.apsipa.org/proceedings/2021/pdfs/0000974.pdf">Zhao–Ritz, <em>APSIPA</em> 2021</a> 的共素阵 GCC-PHAT 二维图 CNN 分类），输出分辨率受离散角度类别步长限制。</p>
 <p>第二行 <strong>icoDOA</strong>（<a href="https://doi.org/10.1109/TASLP.2022.3224282">Díaz-Guerra、Miguel 与 Beltrán, <em>IEEE/ACM TASLP</em>, 2023</a>，官方复现源码见 <a href="https://github.com/DavidDiazGuerra/icoDOA">icoDOA 仓库</a>，采用 AGPL-3.0 许可）针对经纬度平面展开在两极采样畸变的问题，改在正二十面体细分球面网格上采样 SRP-PHAT 响应并运行具备 $60$ 种离散旋转等变性的图/球面卷积，末端用球面 soft-argmax 回归连续三维方向（评估时务必与同一分辨率 SRP-PHAT 直接取峰作同数据对照）；第三行 <strong>IPDnet</strong>（<a href="https://doi.org/10.1109/TASLP.2024.3507560">Wang、Yang 与 Li, <em>IEEE/ACM TASLP</em>, 2024</a>）则让网络专注于从混响频谱中剥离干净直达声的通道间相位差（IPD），再交回物理几何反解位置。</p>
-<p>最后一行采用的<strong>活动耦合笛卡尔波达方向表示（Activity-Coupled Cartesian DOA，ACCDOA，<a href="https://doi.org/10.1109/ICASSP39728.2021.9413609">Shimada 等, <em>ICASSP</em>, 2021</a>）</strong>巧妙地把“事件发没发生”与“在哪个方向”编码进了同一个笛卡尔向量的模长与方向中。跨代码库对接时务必先换算角度零点：若按外部基准常见的“自 $+x$ 轴逆时针朝 $+y$ 轴计角”，方位 $30^\circ$、活动置信强度 $0.9$ 的二维向量写为 $0.9(\cos 30^\circ,\sin 30^\circ)\approx(0.78,0.45)$；换成本书从 $+y$ 朝 $+x$ 计角，同一方向记为 60°。注意向量模长 $0.9$ 代表声事件活动概率强度，绝不是声源到阵列的物理米制距离！所有学习式定位器在选型对比时，都必须锁死相同的训练房间覆盖度、信噪比、混响时间与阵列几何，防止把训练集记忆当成算法泛化优势。</p>
+<p>最后一行采用的<strong>活动耦合笛卡尔波达方向表示（Activity-Coupled Cartesian DOA，ACCDOA，<a href="https://doi.org/10.1109/ICASSP39728.2021.9413609">Shimada 等, <em>ICASSP</em>, 2021</a>）</strong>巧妙地把“事件发没发生”与“在哪个方向”编码进了同一个笛卡尔向量的模长与方向中。跨代码库对接时务必先换算角度零点：若按外部基准常见的“自 $+x$ 轴逆时针朝 $+y$ 轴计角”，方位 $30^\circ$、活动置信强度 $0.9$ 的二维向量写为 $0.9(\cos 30^\circ,\sin 30^\circ)\approx(0.78,0.45)$；换成本书从 $+y$ 朝 $+x$ 计角，同一方向记为 $60^\circ$。注意向量模长 $0.9$ 代表声事件活动概率强度，绝不是声源到阵列的物理米制距离！所有学习式定位器在选型对比时，都必须锁死相同的训练房间覆盖度、信噪比、混响时间与阵列几何，防止把训练集记忆当成算法泛化优势。</p>
 <h3 id="sec-u-60260ccada">任务和数据：不同届 DCASE 的输出不能混用</h3>
 <p>工业界与学术界评测多源动态场景时，常采用 DCASE 国际挑战赛 Task 3 的<strong>声事件定位与检测（Sound Event Localization and Detection，SELD）</strong>基准，要求系统同时输出“什么声音类别、在哪些时间段活跃、处于什么空间方位（乃至距离）”。需要特别提醒的是，DCASE Task 3 的标注格式与评测输出几乎每年都在演进（例如 <a href="https://dcase.community/challenge2023/task-sound-event-localization-and-detection-evaluated-in-real-spatial-sound-scenes">2023 Task 3</a> 使用的 STARSS23 数据集虽附带距离元数据，当届正式评测输出却只考方向不考距离），复现或引用时绝不能笼统只写“DCASE 基线”。</p>
 <p>这些方法的源码也应分别阅读：例如 <a href="https://github.com/Audio-WestlakeU/FN-SSL/tree/76fcb281be92caf068c712dfb015e354f437260f/IPDnet">IPDnet 官方目录</a>按固定阵列与可变阵列拆分网络定义，阅读时应先核对麦克风对排列顺序与直达相位标签约定，再看网络层。</p>
 <p>DCASE2022 基线则通过多轨 multi-ACCDOA 输出配合辅助复制置换不变训练（ADPIT）解决“同一类别两个声源同时发声”的碰撞问题（见 <a href="https://github.com/sharathadavanne/seld-dcase2022">DCASE2022 官方基线</a>）；模型输出的槽位轨号只服务于单帧集合匹配，不能直接当成第 9 章跨时间持久保持的说话人轨迹身份。</p>
-<p>最小输出检查可以先做手算：设单轨二维 ACCDOA 网络输出预测向量 <code>(0.433, 0.25)</code>，按外部自 $+x$ 朝 $+y$ 计角约定，其方位角为 $\operatorname{atan2}(0.25,0.433)\approx 30^\circ$；换成本书从 $+y$ 朝 $+x$ 计角，用 $90°$ 减去外部方位角，得到约 60°。该向量模长 $\sqrt{0.433^2+0.25^2}\approx 0.5$，如果活动检测阈值设为 $0.6$，即便方向角算得再准，这一帧也会被判为未检出；同时若同一帧出现两个同类别声源，单轨向量就会发生矢量合成指向中间，必须升级为多轨格式。</p>
+<p>最小输出检查可以先做手算：设单轨二维 ACCDOA 网络输出预测向量 <code>(0.433, 0.25)</code>，按外部自 $+x$ 朝 $+y$ 计角约定，其方位角为 $\operatorname{atan2}(0.25,0.433)\approx 30^\circ$；换成本书从 $+y$ 朝 $+x$ 计角，用 $90^\circ$ 减去外部方位角，得到约 $60^\circ$。该向量模长 $\sqrt{0.433^2+0.25^2}\approx 0.5$，如果活动检测阈值设为 $0.6$，即便方向角算得再准，这一帧也会被判为未检出；同时若同一帧出现两个同类别声源，单轨向量就会发生矢量合成指向中间，必须升级为多轨格式。</p>
 <p>换到 DCASE2025 基线时（见 <a href="https://github.com/partha2409/DCASE2025_seld_baseline/blob/42a48b6456b73be35ad0e1a9ffeb6ceef83ae0bd/model.py">DCASE2025 输出层</a>），由于任务改为双声道视频音频（仅评水平方位与距离），每轨的第三个输出分量已不再是旧三维球面的竖直 $z$ 方向余弦，而是物理距离估计——若沿用旧代码把三个分量一起做欧氏单位归一化，就会把方向余弦和米制距离彻底搅混（各基线版本与许可证边界详见<a href="research/01_spatial_and_tracking.html">空间处理研究文档</a>）。</p>
 <blockquote>
 <p><strong>近年 DCASE Task 3 输出格式的演进脉络</strong>：</p>
@@ -2524,7 +2535,7 @@ c_0=-\frac{19}{36},\\
 &=\frac{14/36+24/36}{19/36}=\frac{38}{19}=\mathbf{2}\text{！}
 \end{aligned}$$</p>
 <p>在完全不知道直达相位是 $90^\circ$（$\Gamma_s=\mathrm{j}$）的前提下，式(4-39)精确还原出真值 $\gamma=2$，对应直达声时频可靠性权重 $w_{\mathrm{CDR}}=\gamma/(\gamma+1)=2/3$。</p>
-<p><strong>第三步：检验纯混响、强直达与直流零间距三条物理边界</strong>。在 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch04/core/uca_cdr.py"><code>uca_cdr.py::cdr_nodir</code></a> 中同步核验三组极限控制：① 当某频点完全被扩散混响淹没使 $\Gamma_x=\Gamma_n=1/2$ 时，$a=0$ 且 $b=\frac14-\frac14=0$，输出精确归零（$\widehat{\mathrm{CDR}}=0$，$w_{\mathrm{CDR}}=0$），自动剔除纯混响格点；② 当直达声占绝对主导使 $|\Gamma_x|\to 1^-$（如 $\Gamma_x=0.999\mathrm{j}$）时，分母 $1-|\Gamma_x|^2\to 0^+$，$\widehat{\mathrm{CDR}}\approx 999.125\gg 1$，权重 $w_{\mathrm{CDR}}\to 1$ 全额保留直达相位；③ 到了极低频或直流 $f\to 0$ 时，$\Gamma_n=\operatorname{sinc}(2fd/c)\to 1$ 与正横平面波相干度重合，直达声与扩散场在双麦上失去相干度差异，函数对 $|\Gamma_n|\ge 1$ 明确报错拒绝，工程上低频段须停止依赖双麦相干差筛选（运行 <code>chapter04_experiments</code> 的 <code>E04-27</code> 复算全部精确分数与边界对照）。</p>
+<p><strong>第三步：检验纯混响、强直达与直流零间距三条物理边界</strong>。在 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch04/core/uca_cdr.py"><code>uca_cdr.py::cdr_nodir</code></a> 中同步核验三组极限边界对照：① 当某频点完全被扩散混响淹没使 $\Gamma_x=\Gamma_n=1/2$ 时，$a=0$ 且 $b=\frac14-\frac14=0$，输出精确归零（$\widehat{\mathrm{CDR}}=0$，$w_{\mathrm{CDR}}=0$），自动剔除纯混响格点；② 当直达声占绝对主导使 $|\Gamma_x|\to 1^-$（如 $\Gamma_x=0.999\mathrm{j}$）时，分母 $1-|\Gamma_x|^2\to 0^+$，$\widehat{\mathrm{CDR}}\approx 999.125\gg 1$，权重 $w_{\mathrm{CDR}}\to 1$ 全额保留直达相位；③ 到了极低频或直流 $f\to 0$ 时，$\Gamma_n=\operatorname{sinc}(2fd/c)\to 1$ 与正横平面波相干度重合，直达声与扩散场在双麦上失去相干度差异，函数对 $|\Gamma_n|\ge 1$ 明确报错拒绝，工程上低频段须停止依赖双麦相干差筛选（运行 <code>chapter04_experiments</code> 的 <code>E04-27</code> 复算全部精确分数与边界对照）。</p>
 <hr />
 <blockquote>
 <p>📄 本篇信息：配图 7 张 ｜ <a href="index.html">回首页</a></p>

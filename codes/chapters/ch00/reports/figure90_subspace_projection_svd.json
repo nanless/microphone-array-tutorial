@@ -1,0 +1,25 @@
+{
+  "figure": 90,
+  "exercise_ids": [
+    "E00-06",
+    "E00-07",
+    "E00-08"
+  ],
+  "source_sha256": {
+    "codes/chapters/ch00/core/chapter00_math.py": "14624267b73f4d79c934df2a2ceaa390adb4b1e0d63f38883d7e67c1d47a958e",
+    "codes/chapters/ch00/io_contracts.py": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974",
+    "scripts/make_figures.py": "c71b1078fae86e0ee8535cac1037b1764b85ac66809434c7f7792e93000a3988",
+    "scripts/make_math_figures.py": "52279f49634558fd81af00fa67201448ffadc211f215bfaddfc8484712c722fe"
+  },
+  "anchors": {
+    "norm_sq_b": 2.0,
+    "norm_sq_parallel": 1.333333333333333,
+    "norm_sq_orthogonal": 0.6666666666666667,
+    "condition_number_2": 1000.0000000000001,
+    "unregularized_error_norm": 9.999999999999728,
+    "tikhonov_eps0p1_error_norm": 0.010039835785335299,
+    "woodbury_interferer_attenuation_ratio": 0.1428571428571429,
+    "schur_determinant": 7.000000000000001
+  },
+  "scope": "Chapter 0 column-space projection, Tikhonov SVD spectral filtering, and Woodbury rank-1 update"
+}

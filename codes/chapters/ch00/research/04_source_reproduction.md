@@ -245,9 +245,9 @@ SMP-PHAT 的原版复现发现了失败：在本机 Apple clang/arm64 上，固�
 
 ### 附录 A：最小二乘回退、数值秩与物理目标
 
-矩阵求解成功后还要问两个问题：结果是否满足所需的优化目标，数组类型是否保存了求解器返回的数值。[附录 A 的 E16-03](../../../../chapters/16_appendix-symbols-math.md#sec-u-3899a8c1b7)说明零残差不保证参数唯一；[E16-05](../../../../chapters/16_appendix-symbols-math.md#sec-u-935c1036ea)说明奇异协方差中的最小范数线性方程解，不自动成为约束噪声最小化的解。这两个判断分别涉及代数目标和物理目标，不能用“输出有限”替代。
+矩阵求解成功后还要问两个问题：结果是否满足所需的优化目标，数组类型是否保存了求解器返回的数值。[附录 A 的 E16-03](../../../../chapters/16_appendix-symbols-math.md#sec-u-7b35821392)说明零残差不保证参数唯一；[E16-05](../../../../chapters/16_appendix-symbols-math.md#sec-u-fc346cf32d)说明奇异协方差中的最小范数线性方程解，不自动成为约束噪声最小化的解。这两个判断分别涉及代数目标和物理目标，不能用“输出有限”替代。
 
-[旧历史报告](../../appendix_a/reports/upstream_solver_contracts.json)记录本书于2026-10-02在Python 3.13.12、NumPy 2.5.3环境中运行[当时版本的限定工具](https://github.com/nanless/microphone-array-tutorial/blob/241513c8f35d952747f16ccbb40cf85a5363b5ae/codes/chapters/appendix_a/examples/audit_upstream_solver_contracts.py)。旧报告登记完整加载固定 `pb_bss` 提交 `10acc347fc9ea21e3d312806a0bd751d0d0af183` 的[原 `pb_bss/math/solve.py`](https://github.com/fgnt/pb_bss/blob/10acc347fc9ea21e3d312806a0bd751d0d0af183/pb_bss/math/solve.py "citation")，仅调用 `stable_solve`；不做AST提取、源码补丁或算法替身，也不导入完整 `pb_bss` 包。该模块是维护者提供的通用求解助手，按原[MIT许可证](https://github.com/fgnt/pb_bss/blob/10acc347fc9ea21e3d312806a0bd751d0d0af183/LICENSE "citation")使用，不是本书自行实现的求解器。
+[旧历史报告](../../appendix_a/reports/upstream_solver_contracts.json)记录本书于2026-10-02在Python 3.13.12、NumPy 2.5.3环境中运行[当时版本的限定工具](https://github.com/nanless/microphone-array-tutorial/blob/241513c8f35d952747f16ccbb40cf85a5363b5ae/codes/chapters/appendix_a/examples/audit_upstream_solver_contracts.py)。旧报告登记完整加载固定 `pb_bss` 提交 `10acc347fc9ea21e3d312806a0bd751d0d0af183` 的[原 `pb_bss/math/solve.py`](https://github.com/fgnt/pb_bss/blob/10acc347fc9ea21e3d312806a0bd751d0d0af183/pb_bss/math/solve.py)，仅调用 `stable_solve`；不做AST提取、源码补丁或算法替身，也不导入完整 `pb_bss` 包。该模块是维护者提供的通用求解助手，按原[MIT许可证](https://github.com/fgnt/pb_bss/blob/10acc347fc9ea21e3d312806a0bd751d0d0af183/LICENSE)使用，不是本书自行实现的求解器。
 
 原函数先尝试 `numpy.linalg.solve`；矩阵奇异时，逐矩阵回退到 `numpy.linalg.lstsq`。对
 $\mathbf A=\left[\begin{smallmatrix}1&1\\2&2\end{smallmatrix}\right]$、$\mathbf B=\mathbf I_2$，令两行参数之和为 $s$，第一列残差最小化为 $(s-1)^2+(2s)^2$，驻点 $s=1/5$；第二列则为 $s^2+(2s-1)^2$，驻点 $s=2/5$。在每列固定和的解中，两个分量取相等值使范数最小，因此独立期望为
@@ -262,9 +262,9 @@ $\left[\begin{smallmatrix}1/10&1/5\\1/10&1/5\end{smallmatrix}\right]$。
 
 最后一行的物理对照完全由本书手算：若把 $\mathbf A$ 视为噪声协方差、目标导向取 $[1,1]^\top$，约束是 $w_1+w_2=1$，输出噪声功率为 $|w_2|^2$。权重 $[1,0]^\top$ 满足约束且功率为零；归一化后的最小二乘方向 $[0,1]^\top$ 则功率为1。工具没有调用上游波束形成器，不能把这个目标差异诊断写成已运行完整MVDR链。
 
-另外两例直接调用NumPy接口，与上游调用分栏记录。取 $\mathbf A=\operatorname{diag}(1,10^{-8})$、$\vec b=[1,10^{-8}]^\top$，显式 `rcond=1e-6` 得秩1、解 $[1,0]^\top$、残差范数 $10^{-8}$；`rcond=1e-10` 得秩2、解 $[1,1]^\top$、残差零。两次返回的残差数组都为空，因为矩阵为方阵，接口条件是 $M\leq N$。判秩和残差各自记录，依据[NumPy 2.5接口的Parameters/Returns](https://numpy.org/doc/stable/reference/generated/numpy.linalg.lstsq.html "citation")（2026-10-02核实）。`stable_solve` 本身没有向调用者暴露这两个 `rcond` 参数。
+另外两例直接调用NumPy接口，与上游调用分栏记录。取 $\mathbf A=\operatorname{diag}(1,10^{-8})$、$\vec b=[1,10^{-8}]^\top$，显式 `rcond=1e-6` 得秩1、解 $[1,0]^\top$、残差范数 $10^{-8}$；`rcond=1e-10` 得秩2、解 $[1,1]^\top$、残差零。两次返回的残差数组都为空，因为矩阵为方阵，接口条件是 $M\leq N$。判秩和残差各自记录，依据[NumPy 2.5接口的Parameters/Returns](https://numpy.org/doc/stable/reference/generated/numpy.linalg.lstsq.html)（2026-10-02核实）。`stable_solve` 本身没有向调用者暴露这两个 `rcond` 参数。
 
-[E14-16截断与ridge](../../../../chapters/16_appendix-symbols-math.md#e16-16)进一步区分删去弱方向与连续收缩；[E14-18厄米输入检查](../../../../chapters/16_appendix-symbols-math.md#e16-18)则提醒 `eigh` 使用指定三角且忽略对角虚部，不能把分解成功当作输入协方差有效的证明。这两个练习由本书入口实现，不属于上述原函数的执行范围。[Netlib LAPACK最小二乘驱动说明](https://www.netlib.org/lapack/lug/node27.html "citation")的式(2.1)/表2.3区分满秩QR/LQ与秩亏求解，支持先说明目标、秩假设和截断策略，再选择接口；本书没有另行编译这些Fortran驱动。
+[E16-16截断与ridge](../../../../chapters/16_appendix-symbols-math.md#e16-16)进一步区分删去弱方向与连续收缩；[E16-18厄米输入检查](../../../../chapters/16_appendix-symbols-math.md#e16-18)则提醒 `eigh` 使用指定三角且忽略对角虚部，不能把分解成功当作输入协方差有效的证明。这两个练习由本书入口实现，不属于上述原函数的执行范围。[Netlib LAPACK最小二乘驱动说明](https://www.netlib.org/lapack/lug/node27.html)的式(2.1)/表2.3区分满秩QR/LQ与秩亏求解，支持先说明目标、秩假设和截断策略，再选择接口；本书没有另行编译这些Fortran驱动。
 
 ```bash
 .venv/bin/python -B -m codes.chapters.appendix_a.examples.audit_upstream_solver_contracts
@@ -275,9 +275,9 @@ $\left[\begin{smallmatrix}1/10&1/5\\1/10&1/5\end{smallmatrix}\right]$。
 
 本书于2026-10-05实际执行[当前工具](../../appendix_a/examples/audit_upstream_solver_contracts.py)并保存上述当前报告。它复用既有来源核验，分别保存115项锁表/获取状态、完整选集与实际所用的原源码和许可身份；直接依赖、官方origin、固定HEAD、原文件SHA/Git blob及工作树状态在运行前后核对。旧报告绑定的是100项历史锁表及当时工具；旧锁表由已登记的完整字节快照核验，不给旧报告替换成当前摘要。旧报告没有获取状态摘要，也未记录实际读取的pyc身份，不能倒推这两项已经核验。
 
-[Python字节码说明](https://docs.python.org/3.13/library/sys.html#sys.dont_write_bytecode "citation")只保证`-B`或`dont_write_bytecode`不写新的pyc，已有有效缓存仍可能被普通源码加载器读取；[缓存失效规则](https://docs.python.org/3.13/reference/import.html#cached-bytecode-invalidation "citation")解释时间戳/长度及哈希缓存的判断。因此当前工具从已核完整`solve.py`字节编译执行整个原模块，并保留正常模块元数据、原导入与函数，不做AST提取或源码补丁，也不读取、删除或改写原pyc。工具及三个实际复用的仓内依赖、NumPy入口和线性代数包装文件前后摘要另记；这些是直接文件身份，不代表整个NumPy包或本机LAPACK二进制依赖闭包。
+[Python字节码说明](https://docs.python.org/3.13/library/sys.html#sys.dont_write_bytecode)只保证`-B`或`dont_write_bytecode`不写新的pyc，已有有效缓存仍可能被普通源码加载器读取；[缓存失效规则](https://docs.python.org/3.13/reference/import.html#cached-bytecode-invalidation)解释时间戳/长度及哈希缓存的判断。因此当前工具从已核完整`solve.py`字节编译执行整个原模块，并保留正常模块元数据、原导入与函数，不做AST提取或源码补丁，也不读取、删除或改写原pyc。工具及三个实际复用的仓内依赖、NumPy入口和线性代数包装文件前后摘要另记；这些是直接文件身份，不代表整个NumPy包或本机LAPACK二进制依赖闭包。
 
-原四例与两个独立NumPy例继续分栏，新增四个原函数控制另列。固定[原函数91～114行](https://github.com/fgnt/pb_bss/blob/10acc347fc9ea21e3d312806a0bd751d0d0af183/pb_bss/math/solve.py#L91-L114 "citation")中的形状判断和`zeros_like(B)`回退决定以下行为：
+原四例与两个独立NumPy例继续分栏，新增四个原函数控制另列。固定[原函数91～114行](https://github.com/fgnt/pb_bss/blob/10acc347fc9ea21e3d312806a0bd751d0d0af183/pb_bss/math/solve.py#L91-L114)中的形状判断和`zeros_like(B)`回退决定以下行为：
 
 | 新增原输入控制 | 实际行为 | 比较边界 |
 |---|---|---|
@@ -307,11 +307,11 @@ $\left[\begin{smallmatrix}1/10&1/5\\1/10&1/5\end{smallmatrix}\right]$。
 | CHiME-9与DiCoW | ECHI处理流式助听增强；DiCoW以分割活动条件控制Whisper目标转写 | ECHI规则分别定义算法延迟与输出发射延迟；DiCoW的文字输出不能用于该增强排名。固定作者演示的v1/v2入口、分割权重与目标说话人 |
 | ArrayDPS | 把扩散先验与每采样步的相对RIR/FCP混合估计结合，目标为参考麦的混响源像 | 固定已知源数、同步通道、语音先验域、谱窗/帧移与停止/样本选择；400步采样和内层优化不能直接当作流式模块 |
 
-原始阅读入口分别为[CHiME-7/8作者综述v1](https://arxiv.org/html/2507.18161v1 "citation")、[Cornell等2024原报告§5～6](https://www.isca-archive.org/chime_2024/cornell24_chime.pdf "citation")、[TEA-PSE 3.0 §2](https://arxiv.org/pdf/2303.07704 "citation")、[CIENet §2.1～2.2，式(1)～(5)](https://arxiv.org/pdf/2402.17146 "citation")、[SonicSieve作者v3 §3～4](https://arxiv.org/html/2504.10793v3 "citation")、[TF-GridNet期刊作者稿§II～III](https://zqwang7.github.io/publications/TASLP2023_TF-GridNet.pdf "citation")及[Kamo作者v2 §2、§4](https://arxiv.org/html/2502.09859v2 "citation")。这里只引用对应选节，不称本书复现了这些模型的训练或整套会议系统。
+原始阅读入口分别为[CHiME-7/8作者综述v1](https://arxiv.org/html/2507.18161v1)、[Cornell等2024原报告§5～6](https://www.isca-archive.org/chime_2024/cornell24_chime.pdf)、[TEA-PSE 3.0 §2](https://arxiv.org/pdf/2303.07704)、[CIENet §2.1～2.2，式(1)～(5)](https://arxiv.org/pdf/2402.17146)、[SonicSieve作者v3 §3～4](https://arxiv.org/html/2504.10793v3)、[TF-GridNet期刊作者稿§II～III](https://zqwang7.github.io/publications/TASLP2023_TF-GridNet.pdf)及[Kamo作者v2 §2、§4](https://arxiv.org/html/2502.09859v2)。这里只引用对应选节，不称本书复现了这些模型的训练或整套会议系统。
 
 #### 有效入口、额外资产与计算边界
 
-[SGMSE+原论文](https://arxiv.org/pdf/2208.05830 "citation")的§II-B式(5)～(7)与§III描述条件扩散和采样；[StoRM原论文](https://arxiv.org/pdf/2212.11851 "citation")应单独对应回归与再生成流程。固定SGMSE提交 `1961cf4483e37df1bb92ccf0eb8b28bf6f44cb0e` 的 `sgmse/model.py::ScoreModel.enhance` 在OUVE/SBVE分支使用 `self.sde.sampler_type`，不能只记录同名公开形参；固定StoRM提交 `257e9636a7251ca40aa200753d5c0fe918e31879` 的 `StochasticRegenerationModel.enhance` 则按其形参选择PC/ODE。二者先按整输入峰值归一化，当前入口未显式保护零峰值，并直接使用CUDA；这些是本书的静态源码核查，不是模型运行结果。完整调用还需各自依赖、权重和数据权限，见[增强研究N10](02_aec_wpe_separation.md#sec-u-867bd32313)。
+[SGMSE+原论文](https://arxiv.org/pdf/2208.05830)的§II-B式(5)～(7)与§III描述条件扩散和采样；[StoRM原论文](https://arxiv.org/pdf/2212.11851)应单独对应回归与再生成流程。固定SGMSE提交 `1961cf4483e37df1bb92ccf0eb8b28bf6f44cb0e` 的 `sgmse/model.py::ScoreModel.enhance` 在OUVE/SBVE分支使用 `self.sde.sampler_type`，不能只记录同名公开形参；固定StoRM提交 `257e9636a7251ca40aa200753d5c0fe918e31879` 的 `StochasticRegenerationModel.enhance` 则按其形参选择PC/ODE。二者先按整输入峰值归一化，当前入口未显式保护零峰值，并直接使用CUDA；这些是本书的静态源码核查，不是模型运行结果。完整调用还需各自依赖、权重和数据权限，见[增强研究N10](02_aec_wpe_separation.md#sec-u-867bd32313)。
 
 ESPnet固定 `be79590bb2ff26ffb01bc825c5f68cb9418b7f0d` 的 `espnet2/enh/separator/tfgridnet_separator.py::TFGridNet.forward` 接收批量、采样点、麦克风轴，网络配置固定 `n_imics`，并以整记录的标准差缩放输入。代码中的归一化与因果性要按原实现核对，不能把注释中的RMS或网络名字当作完整接口定义。本书没有导入其Torch网络、取得权重或运行音频推理；Apache-2.0代码许可不扩展到任意训练数据。
 
@@ -319,23 +319,23 @@ DiCoW演示固定 `e9326bd536bf632e823357438b210102903ba620` 的 `example.py` �
 
 FlowSep固定 `d8164db58bd461ef5bb6df8ffd372b536ee6afb4` 仍按无明确代码许可的来源索引处理，未复制其源码或下载VAE/分离权重。TEA-PSE、CIENet、SonicSieve的原文阅读也不等于已有可重用的作者代码与模型。最小实验若缺少必要资产，应先在同一任务下作选型说明，不用一个未训练结构生成假成绩。[FlowSep的独立权重/数据边界](02_aec_wpe_separation.md#sec-u-372b17bd11)随其专题保留。
 
-ArrayDPS固定 `750ac2b7c75458f4ca5bad203dafda528f575e55` 的真实采样入口是 `src/sampler_spatial_v1_reverb_iva_8kHz.py::Sampler`；`separate.py` 是数据、采样预算与评分驾驶器。原论文§2式(1)～(5)定义参考通道1的全部混响源像，式(3)的相对RIR还依赖参考响应可逆的条件。干净语音扩散先验不会自动把输出目标改成无混响波形。[PMLR正式原文](https://proceedings.mlr.press/v267/xu25f.html "citation")的附录C.3使用512点FFT/64点帧移，固定CLI类配置默认为512/128，复现应明确选定其中一套条件。
+ArrayDPS固定 `750ac2b7c75458f4ca5bad203dafda528f575e55` 的真实采样入口是 `src/sampler_spatial_v1_reverb_iva_8kHz.py::Sampler`；`separate.py` 是数据、采样预算与评分驾驶器。原论文§2式(1)～(5)定义参考通道1的全部混响源像，式(3)的相对RIR还依赖参考响应可逆的条件。干净语音扩散先验不会自动把输出目标改成无混响波形。[PMLR正式原文](https://proceedings.mlr.press/v267/xu25f.html)的附录C.3使用512点FFT/64点帧移，固定CLI类配置默认为512/128，复现应明确选定其中一套条件。
 
 固定驾驶器读取干净参考计算SDR，并用它调整停止预算；原采样器本体没有把该真值作为输入。这一源码观察不外推为原论文不盲：论文§4.2分别报告五次样本均值、真值最佳样本与仅根据混合模型的最大似然选择。部署对照应自行声明无需干净参考的固定预算或可用选择准则，并分别计算质量与耗时。本书对这条扩散链只有固定代码的静态证据，未运行400步神经采样、权重或完整SMS-WSJ实验，详见[增强研究N11与独立报告](02_aec_wpe_separation.md#sec-u-3b78d29bc2)。
 
 #### ArrayDPS-Refine：单目标增强的有限研究入口
 
-[ArrayDPS-Refine作者v1](https://arxiv.org/html/2603.24385v1 "citation")的§2～3、式(1)～(16)与算法1讨论单目标增强：先把判别输出通过前向卷积预测与混合对齐，再由残差估计高斯噪声空间协方差，用这一协方差指导扩散采样；初始化也利用判别结果。最终单抽头对齐是另一步，可能继承判别输出中的错误。它针对判别增强中的非线性失真，改变似然模型与采样起点，和2025年的多源参考麦源像分离任务分别比较。
+[ArrayDPS-Refine作者v1](https://arxiv.org/html/2603.24385v1)的§2～3、式(1)～(16)与算法1讨论单目标增强：先把判别输出通过前向卷积预测与混合对齐，再由残差估计高斯噪声空间协方差，用这一协方差指导扩散采样；初始化也利用判别结果。最终单抽头对齐是另一步，可能继承判别输出中的错误。它针对判别增强中的非线性失真，改变似然模型与采样起点，和2025年的多源参考麦源像分离任务分别比较。
 
-这项候选的选型前提包括目标域的语音先验、剩余噪声的高斯/协方差近似、有效多通道混合与采样计算预算。2026-10-02核查的[ICASSP 2026正式程序单篇](https://www.cmsworkshops.com/ICASSP2026/view_paper.php?PaperNum=6235&bare=1 "citation")确认该论文的会议报告身份；方法引用仍明确使用作者v1，不补未核定的出版DOI或页码。[作者演示页](https://xzwy.github.io/ArrayDPSRefineDemo/ "citation")提供方法与试听，没有给出可核代码/权重许可入口。本书只保留这项问题、步骤与假设的研究索引，未取得或执行模型，未将它加入已复现算法或低延迟基线目录。
+这项候选的选型前提包括目标域的语音先验、剩余噪声的高斯/协方差近似、有效多通道混合与采样计算预算。2026-10-02核查的[ICASSP 2026正式程序单篇](https://www.cmsworkshops.com/ICASSP2026/view_paper.php?PaperNum=6235&bare=1)确认该论文的会议报告身份；方法引用仍明确使用作者v1，不补未核定的出版DOI或页码。[作者演示页](https://xzwy.github.io/ArrayDPSRefineDemo/)提供方法与试听，没有给出可核代码/权重许可入口。本书只保留这项问题、步骤与假设的研究索引，未取得或执行模型，未将它加入已复现算法或低延迟基线目录。
 
 <a id="tac-contracts"></a>
 
 ### TAC作者源：共享结构核验与未执行原网络的界线
 
-附录B的通道置换问题需要区分两个性质：通道顺序改变时，通道索引输出按相同顺序重排，这是置换等变；跨通道平均不随顺序变化，这是聚合量的置换不变。加入一个通道通常改变平均值，所以支持可变通道数不等于数值输出不随麦数变化。[TAC作者论文v3 §2.1式(1)～(4)](https://arxiv.org/html/1910.14104v3 "citation")用共享变换、平均、拼接与残差连接说明这一步；[E17-11](../../../../chapters/17_appendix-guide.md#e17-11)分别手算交换通道、只复制一路与复制全部通道。
+附录B的通道置换问题需要区分两个性质：通道顺序改变时，通道索引输出按相同顺序重排，这是置换等变；跨通道平均不随顺序变化，这是聚合量的置换不变。加入一个通道通常改变平均值，所以支持可变通道数不等于数值输出不随麦数变化。[TAC作者论文v3 §2.1式(1)～(4)](https://arxiv.org/html/1910.14104v3)用共享变换、平均、拼接与残差连接说明这一步；[E17-11](../../../../chapters/17_appendix-guide.md#e17-11)分别手算交换通道、只复制一路与复制全部通道。
 
-本书通过获取工具取得作者[固定提交 `e3373b73358a96af6f64fdbe25327def8d6bd973`](https://github.com/yluo42/TAC/tree/e3373b73358a96af6f64fdbe25327def8d6bd973 "citation")的 `README.md`、`FaSNet.py`、`utility/__init__.py`、`utility/models.py` 四个文件，独立保存在被忽略的上游工作树。README明确声明CC-BY-NC-SA-3.0-US，源代码未随本教程再分发；没有取得音频、数据、权重或另一 `iFaSNet.py` 扩展。NumPy/PyTorch是原模块的依赖，但这一审计只使用标准库解析Python语法，不导入两模块或Torch。
+本书通过获取工具取得作者[固定提交 `e3373b73358a96af6f64fdbe25327def8d6bd973`](https://github.com/yluo42/TAC/tree/e3373b73358a96af6f64fdbe25327def8d6bd973)的 `README.md`、`FaSNet.py`、`utility/__init__.py`、`utility/models.py` 四个文件，独立保存在被忽略的上游工作树。README明确声明CC-BY-NC-SA-3.0-US，源代码未随本教程再分发；没有取得音频、数据、权重或另一 `iFaSNet.py` 扩展。NumPy/PyTorch是原模块的依赖，但这一审计只使用标准库解析Python语法，不导入两模块或Torch。
 
 [只读合同工具](../../appendix_b/examples/audit_tac_contracts.py)核对origin、完整HEAD、四文件SHA与Git blob、README许可、当前锁表及获取状态摘要、完整选集与所用文件的独立身份、四项直接执行源的前后摘要及前后洁净状态，再执行十项静态AST检查。它不编译或执行原 `forward`，也没有把本书的独立NumPy夹具作为网络运行证据。
 
@@ -393,7 +393,7 @@ ArrayDPS固定 `750ac2b7c75458f4ca5bad203dafda528f575e55` 的真实采样入口�
 
 <a id="distributed-reproduction"></a>
 
-## 8. 固定分布式源码：静态合同、原函数与完整算法
+## 8. 固定分布式源码：源码核查、原函数与完整算法
 
 2026-10-04的[历史报告](../../ch13/reports/upstream_distributed_contracts.json)保留原工具、输入和105项来源索引的身份。2026-10-05修订的[审计入口](../../ch13/examples/audit_upstream_distributed_contracts.py)只允许另写[当前报告](../../ch13/reports/upstream_distributed_contracts_current.json)，默认仅打印结果。两次均固定下表的两套独立上游工作树。
 
@@ -403,8 +403,8 @@ ArrayDPS固定 `750ac2b7c75458f4ca5bad203dafda528f575e55` 的真实采样入口�
 
 | 上游与完整提交 | 本次所用入口 | 许可与范围 |
 |---|---|---|
-| [AlexanderBertrandLab/Old_Code](https://github.com/AlexanderBertrandLab/Old_Code/tree/a24b73fcd2dc028659535d07bb08068b06108616 "citation")，`a24b73fcd2dc028659535d07bb08068b06108616` | `WOLA_DANSE1.m`，版本1.4；17586B，SHA256 `54fd630bd7f34ac3d9a97db2a30cee6c7a6a1bc496274b53f9ba9f756ce0772b` | 文件头保留2010年版权及三条再分发条件，无根LICENSE且缺标准BSD免责声明，登记为`LicenseRef-Bertrand-DANSE-3-Conditions`。不能标为BSD-3-Clause；未取得四个数据ZIP或运行MATLAB |
-| [fgnt/paderwasn](https://github.com/fgnt/paderwasn/tree/cd7054fcf72da637e4a5e11f035e8979691faf70 "citation")，`cd7054fcf72da637e4a5e11f035e8979691faf70` | `synchronization/sync.py`、`time_shift_estimation.py`、`utils.py`、`sro_estimation.py`，以及根README/setup/许可 | 根[LICENSE](https://github.com/fgnt/paderwasn/blob/cd7054fcf72da637e4a5e11f035e8979691faf70/LICENSE "citation")为MIT，SHA256 `60be4f44a5baa0db1ed1c9f1bc3ea5f7274b2032bb57bd87c054fa27efaa81fe`；仅三个原助手函数受限执行，完整同步包未导入 |
+| [AlexanderBertrandLab/Old_Code](https://github.com/AlexanderBertrandLab/Old_Code/tree/a24b73fcd2dc028659535d07bb08068b06108616)，`a24b73fcd2dc028659535d07bb08068b06108616` | `WOLA_DANSE1.m`，版本1.4；17586B，SHA256 `54fd630bd7f34ac3d9a97db2a30cee6c7a6a1bc496274b53f9ba9f756ce0772b` | 文件头保留2010年版权及三条再分发条件，无根LICENSE且缺标准BSD免责声明，登记为`LicenseRef-Bertrand-DANSE-3-Conditions`。不能标为BSD-3-Clause；未取得四个数据ZIP或运行MATLAB |
+| [fgnt/paderwasn](https://github.com/fgnt/paderwasn/tree/cd7054fcf72da637e4a5e11f035e8979691faf70)，`cd7054fcf72da637e4a5e11f035e8979691faf70` | `synchronization/sync.py`、`time_shift_estimation.py`、`utils.py`、`sro_estimation.py`，以及根README/setup/许可 | 根[LICENSE](https://github.com/fgnt/paderwasn/blob/cd7054fcf72da637e4a5e11f035e8979691faf70/LICENSE)为MIT，SHA256 `60be4f44a5baa0db1ed1c9f1bc3ea5f7274b2032bb57bd87c054fa27efaa81fe`；仅三个原助手函数受限执行，完整同步包未导入 |
 
 ### 三个原函数在16组顶层用例中的实际行为
 
@@ -412,26 +412,26 @@ ArrayDPS固定 `750ac2b7c75458f4ca5bad203dafda528f575e55` 的真实采样入口�
 
 | 原入口 | 顶层用例与独立期望 | 实际记录与含义 |
 |---|---|---|
-| [`sync.py::coarse_sync`，5～34行](https://github.com/fgnt/paderwasn/blob/cd7054fcf72da637e4a5e11f035e8979691faf70/paderwasn/synchronization/sync.py#L5-L34 "citation") | 32点脉冲的−3、0、+4点偏移及+4点反极性；独立峰位置差和保留支持长度 | 四例偏移完全匹配，输入未改动；这是整样本粗对齐，不是SRO估计 |
+| [`sync.py::coarse_sync`，5～34行](https://github.com/fgnt/paderwasn/blob/cd7054fcf72da637e4a5e11f035e8979691faf70/paderwasn/synchronization/sync.py#L5-L34) | 32点脉冲的−3、0、+4点偏移及+4点反极性；独立峰位置差和保留支持长度 | 四例偏移完全匹配，输入未改动；这是整样本粗对齐，不是SRO估计 |
 | 同一`coarse_sync` | 两路相同4点脉冲，请求`len_sync=8`，独立偏移应为0 | 原函数按请求长度减`len_sync-1`，返回−4并把两路裁成空数组；记`observed_original_behavior_difference`，保留原失败 |
 | 同一`coarse_sync` | 两路8点全零，无可辨识相关峰 | 返回−7、两路各剩1点；原数值有限但无可辨识时延，另记无观测状态 |
-| [`time_shift_estimation.py::max_time_lag_search`，9～49行](https://github.com/fgnt/paderwasn/blob/cd7054fcf72da637e4a5e11f035e8979691faf70/paderwasn/synchronization/time_shift_estimation.py#L9-L49 "citation") | 64点全谱的解析线性相位，已知延迟0、3、−5、2.25、31.75、32、33；Nyquist频点显式置零 | 七例按模64比较，误差均在原黄金搜索`1e-4`样本容差内。31.75得到约−32.25002，允许周期等价，不强行把返回值说成始终位于半开有符号区间 |
-| [`utils.py::golden_section_max_search`，5～50行](https://github.com/fgnt/paderwasn/blob/cd7054fcf72da637e4a5e11f035e8979691faf70/paderwasn/synchronization/utils.py#L5-L50 "citation") | 在`(-1,1)`内最大化两条凹二次函数，解析顶点−0.3、0.6 | 两例与独立顶点匹配，使用原默认区间收缩容差 |
+| [`time_shift_estimation.py::max_time_lag_search`，9～49行](https://github.com/fgnt/paderwasn/blob/cd7054fcf72da637e4a5e11f035e8979691faf70/paderwasn/synchronization/time_shift_estimation.py#L9-L49) | 64点全谱的解析线性相位，已知延迟0、3、−5、2.25、31.75、32、33；Nyquist频点显式置零 | 七例按模64比较，误差均在原黄金搜索`1e-4`样本容差内。31.75得到约−32.25002，允许周期等价，不强行把返回值说成始终位于半开有符号区间 |
+| [`utils.py::golden_section_max_search`，5～50行](https://github.com/fgnt/paderwasn/blob/cd7054fcf72da637e4a5e11f035e8979691faf70/paderwasn/synchronization/utils.py#L5-L50) | 在`(-1,1)`内最大化两条凹二次函数，解析顶点−0.3、0.6 | 两例与独立顶点匹配，使用原默认区间收缩容差 |
 | 同一`max_time_lag_search` | 64点全零谱，无时延观测 | 返回约−31.50002；目标函数处处相等，数字不具有测量意义，记无观测状态 |
 
 合计16组顶层用例：13组匹配独立期望，1组短输入差异，2组无峰却返回数值。GCC搜索内部还调用原黄金搜索助手，这个嵌套过程不另计为顶层用例。容差来自优化搜索的区间收缩，不是设备时钟精度、ppm成绩或自然语音同步质量。静音用例说明调用者需要输入/活动和可辨识性检查，不能仅以“返回有限数字”把结果纳入评分。
 
-固定`setup.py`的`install_requires`为空，不表示完整包没有依赖。README另外列出固定的`paderbox`与`lazy_dataset`；同步模块还导入SciPy窗与`paderbox`的STFT/分帧。这里只略去三函数不使用的模块导入以限定执行范围，未安装上述依赖、运行OnlineWACD/DWACD、完整SRO/STO估计、重采样器、波束或录音数据。[原README](https://github.com/fgnt/paderwasn/blob/cd7054fcf72da637e4a5e11f035e8979691faf70/README.md "citation")与[同步源码](https://github.com/fgnt/paderwasn/tree/cd7054fcf72da637e4a5e11f035e8979691faf70/paderwasn/synchronization "citation")提供后续整包研究入口。
+固定`setup.py`的`install_requires`为空，不表示完整包没有依赖。README另外列出固定的`paderbox`与`lazy_dataset`；同步模块还导入SciPy窗与`paderbox`的STFT/分帧。这里只略去三函数不使用的模块导入以限定执行范围，未安装上述依赖、运行OnlineWACD/DWACD、完整SRO/STO估计、重采样器、波束或录音数据。[原README](https://github.com/fgnt/paderwasn/blob/cd7054fcf72da637e4a5e11f035e8979691faf70/README.md)与[同步源码](https://github.com/fgnt/paderwasn/tree/cd7054fcf72da637e4a5e11f035e8979691faf70/paderwasn/synchronization)提供后续整包研究入口。
 
-固定`DynamicWACD`还有一个须与论文活动条件分开的静态边界：[原349行](https://github.com/fgnt/paderwasn/blob/cd7054fcf72da637e4a5e11f035e8979691faf70/paderwasn/synchronization/sro_estimation.py#L343-L349 "citation")的延迟麦克风活动段从`start_delayed+shift`开始，却以`start+shift+seg_len`结束。默认`seg_len=temp_dist=8192`且`shift=0`时，这段长16384点，另三段各长8192点。
+固定`DynamicWACD`还有一个须与论文活动条件分开的静态边界：[原349行](https://github.com/fgnt/paderwasn/blob/cd7054fcf72da637e4a5e11f035e8979691faf70/paderwasn/synchronization/sro_estimation.py#L343-L349)的延迟麦克风活动段从`start_delayed+shift`开始，却以`start+shift+seg_len`结束。默认`seg_len=temp_dist=8192`且`shift=0`时，这段长16384点，另三段各长8192点。
 
-独立数组门控控制将麦克风延迟8192点设为无活动、当前8192点设为活动，参考两段都有活动。原索引取得8192个活动点，按延迟单段取得0点，活动阈值为$0.75\times8192=6144$，四段分别采用严格大于阈值的比较，于是两种门控判断分别为真、假。此处只核切片与门控，不运行原DWACD估计器、不修改上游，也不给时钟或语音性能分数。[DWACD原论文§II～III](https://ris.uni-paderborn.de/download/33807/48990/gburrek_icassp22.pdf "citation")说明四个片段的活动条件；论文条件与固定源码的窗口边界分别保存。
+独立数组门控控制将麦克风延迟8192点设为无活动、当前8192点设为活动，参考两段都有活动。原索引取得8192个活动点，按延迟单段取得0点，活动阈值为$0.75\times8192=6144$，四段分别采用严格大于阈值的比较，于是两种门控判断分别为真、假。此处只核切片与门控，不运行原DWACD估计器、不修改上游，也不给时钟或语音性能分数。[DWACD原论文§II～III](https://ris.uni-paderborn.de/download/33807/48990/gburrek_icassp22.pdf)说明四个片段的活动条件；论文条件与固定源码的窗口边界分别保存。
 
-### 原MATLAB静态合同与五项独立控制
+### 原MATLAB源码核查与五项独立对照
 
-报告保存14项原MATLAB静态行合同，包括帧首VAD、内部/外部滤波器分工、广播版本生效次序、顺序token的作用、普通EVD、直接逆矩阵、窗函数和循环终点；配置与论文实验分开记录，详见[工业I34](03_industrial_deployment.md#distributed-network-deployment)。本轮没有探测或执行MATLAB/Octave运行时，也未安装运行时、运行原WOLA链、GEVD-DANSE、真实网络或数据集。原历史报告中的父任务探测措辞不能当作本次探测结果。
+报告保存14项原MATLAB源码行级核查记录，包括帧首VAD、内部/外部滤波器分工、广播版本生效次序、顺序token的作用、普通EVD、直接逆矩阵、窗函数和循环终点；配置与论文实验分开记录，详见[工业I34](03_industrial_deployment.md#distributed-network-deployment)。本轮没有探测或执行MATLAB/Octave运行时，也未安装运行时、运行原WOLA链、GEVD-DANSE、真实网络或数据集。原历史报告中的父任务探测措辞不能当作本次探测结果。
 
-另有五项**数学控制或控制流复写**，不称原MATLAB运行结果：
+另有五项**数值对照算例或控制流复写**，不称原MATLAB运行结果：
 
 | 独立控制 | 可复算的结果 | 它检查的边界 |
 |---|---|---|
@@ -453,17 +453,17 @@ ArrayDPS固定 `750ac2b7c75458f4ca5bad203dafda528f575e55` 的真实采样入口�
 
 默认仅输出严格JSON，显式`--report`才通过公共IO原语保存当前报告。工具拒绝上游缓存、源码、锁表、审查记录与旧历史报告作为输出，并检查普通父链/成员、符号链接、硬链接、词法`..`及非有限数值。有限写前检查与原子替换不宣称消除并发竞态或保证崩溃持久性。离线测试以独立临时Git仓库验证错误origin、完整HEAD、摘要、脏工作树和控制失败；官方缓存缺失时可选原函数实调明确跳过，版本不符则报错。当前报告状态为`audit_completed_with_original_differences_and_unobserved_peaks`，保留实际差异与无观测输出，不把整份报告改名为全部算法通过。
 
-[p-didier/danse固定提交](https://github.com/p-didier/danse/tree/3f08ffd6e578a8c5301e9310d29dc31112eb20f7 "citation")`3f08ffd6e578a8c5301e9310d29dc31112eb20f7`的完整tree未见明确代码许可，本书只登记索引，未获取代码或其`pyANFgen`子模块；源码可见不等于取得再分发授权。它可帮助定位SRO-DANSE的作者实现，不能因有链接就登记成已运行。
+[p-didier/danse固定提交](https://github.com/p-didier/danse/tree/3f08ffd6e578a8c5301e9310d29dc31112eb20f7)`3f08ffd6e578a8c5301e9310d29dc31112eb20f7`的完整tree未见明确代码许可，本书只登记索引，未获取代码或其`pyANFgen`子模块；源码可见不等于取得再分发授权。它可帮助定位SRO-DANSE的作者实现，不能因有链接就登记成已运行。
 
-[TI-DANSE+作者批处理仓](https://github.com/p-didier/tidanseplus_batch/tree/0fcc0da19ce9e50bafc978ce1f315bac610d4c0b "citation")固定为`0fcc0da19ce9e50bafc978ce1f315bac610d4c0b`。同一提交的[根LICENSE](https://github.com/p-didier/tidanseplus_batch/blob/0fcc0da19ce9e50bafc978ce1f315bac610d4c0b/LICENSE "citation")写MIT及2026版权，[README的License段](https://github.com/p-didier/tidanseplus_batch/blob/0fcc0da19ce9e50bafc978ce1f315bac610d4c0b/README.md "citation")却写GPL-3.0-or-later及2025版权，存在真实矛盾。锁表保留冲突和限定研究范围，不能任选一个标签当作完整可分发许可。该仓用于定位批处理主入口与论文配置，本书未运行TI-DANSE+、原GEVD算法或论文语音指标；2025会议稿与2026扩展预印本的不同证明范围见[工业I35](03_industrial_deployment.md#distributed-network-deployment)。
+[TI-DANSE+作者批处理仓](https://github.com/p-didier/tidanseplus_batch/tree/0fcc0da19ce9e50bafc978ce1f315bac610d4c0b)固定为`0fcc0da19ce9e50bafc978ce1f315bac610d4c0b`。同一提交的[根LICENSE](https://github.com/p-didier/tidanseplus_batch/blob/0fcc0da19ce9e50bafc978ce1f315bac610d4c0b/LICENSE)写MIT及2026版权，[README的License段](https://github.com/p-didier/tidanseplus_batch/blob/0fcc0da19ce9e50bafc978ce1f315bac610d4c0b/README.md)却写GPL-3.0-or-later及2025版权，存在真实矛盾。锁表保留冲突和限定研究范围，不能任选一个标签当作完整可分发许可。该仓用于定位批处理主入口与论文配置，本书未运行TI-DANSE+、原GEVD算法或论文语音指标；2025会议稿与2026扩展预印本的不同证明范围见[工业I35](03_industrial_deployment.md#distributed-network-deployment)。
 
 <a id="historical-source-bindings"></a>
 
 ## 9. 来源索引扩充后怎样核验旧报告
 
-整表SHA标识报告运行时实际读取的全部字节。首次新增五个分布式项目时，锁表从100项变为105项，其摘要自然改变；这不意味着旧报告曾在105项索引下运行。随后导读复核又新增LibriCSS，并改变WASN的获取范围，当次增至106项；后续逐章扩充后的当前索引为115项。直接给旧报告换成当前摘要会伪造执行条件，直接要求所有旧报告等于当前整表摘要也会把无关的索引扩充误判成所用算法来源改变。
+整表SHA标识报告运行时实际读取的全部字节。首次新增五个分布式项目时锁表从100项变为105项，导读复核新增LibriCSS并调整WASN范围后增至106项，随后逐章扩充依次演进为：115项 → 116项（openMHA）→ 当前[129项锁表](../SOURCES.lock.json)（新增第1～3、8～15章十三项纯文本选集，112个本地工作区中89项通过、22项旧选集不匹配、17项仅索引、1项AEC本地修改失败，[第0章](../../../../chapters/00_math-foundations.md)数学基础纯NumPy自包含无外部上游锁项，[第14章](../../../../chapters/14_spatial-wearable-arrays.md)与[第15章](../../../../chapters/15_target-extraction-diarization.md)选集见当前锁表）。直接给旧报告换成当前摘要会伪造执行条件，直接要求所有旧报告等于当前整表摘要也会把无关的索引扩充误判成所用算法来源改变。
 
-本书保存提交`a215b4630c0c21a8744cf27436a2c9ffa9c00053`中两份文件的**原始字节**，文件名包含完整SHA。它们不是重新序列化的JSON，也不是手工删去五项所得的新表。
+本书保存提交`a215b4630c0c21a8744cf27436a2c9ffa9c00053`及后续各扩充节点中锁表与状态文件的**原始字节**（包含已登记于 [`source_snapshots/`](../source_snapshots/) 与 [`source_history.py`](../core/source_history.py) 的115项与116项历史快照），文件名包含完整SHA。它们不是重新序列化的JSON，也不是手工删去新条目所得的新表。
 
 | 固定快照 | 使用范围 |
 |---|---|
@@ -471,6 +471,8 @@ ArrayDPS固定 `750ac2b7c75458f4ca5bad203dafda528f575e55` 的真实采样入口�
 | [当时的获取状态](../source_snapshots/SOURCE_STATUS.e3b3176d835837441224e4906b7c2befadcdc4fe2ce6163245b7d9a9ad0d9229.json) | 第9章追踪报告记录的状态摘要；该状态中的`lock_sha256`精确指向上一行 |
 | [105项来源锁表](../source_snapshots/SOURCES.e3478006c7dbc6cec442bf6bccc4df9eca946d7d353b661e947596dd8b87608a.json) | 原第15章（现第13章）分布式原函数报告运行时的完整锁表；其中所用`danse-wola`和`paderwasn`记录与当前完全一致 |
 | [105项获取状态](../source_snapshots/SOURCE_STATUS.b113b63c97767d19b76ceb44677303961ff310ce8d96f4e9e777944b44916d3c.json) | 扩充前67项通过及原22项选集不匹配、AEC失败等完整记录；绑定上一行105项锁表，不把后来取得的源码追记为当时成功 |
+| [115项来源锁表](../source_snapshots/SOURCES.ea8ce3cf679d70d06305f4942dbf9afeee94b69bd0ad7a5b9b09470c327a598f.json)与[115项获取状态](../source_snapshots/SOURCE_STATUS.be926fccb75979e2f2ac428ac6c65c76a46d672771e21a01d589908d776fcac0.json) | 纳入`damas-author`后的16份当前合同报告绑定快照；保留75项通过与原选集/AEC边界 |
+| [116项来源锁表](../source_snapshots/SOURCES.60ebc7b692d28b5d5406e3cb137d2dcc43b154ea2c4e3d3ac739cf7fda18abeb.json)与[116项获取状态](../source_snapshots/SOURCE_STATUS.b57d21d42651084303252c66fee49ea8d0ccfcc4108e2e89c5c79b99f8ef8690.json) | 纳入`openmha`后、新增十三项纯文本选集前的第4/9/12章四份当前合同报告绑定快照 |
 
 100项锁表的完整SHA-256：
 
@@ -500,33 +502,33 @@ e3b3176d835837441224e4906b7c2befadcdc4fe2ce6163245b7d9a9ad0d9229
 
 ### WASN：先区分估计时钟与按已知时钟重采样
 
-官方[CN-UPB/WASN](https://github.com/CN-UPB/WASN/tree/9b2590eb104abcde2a35af52c74d64ce30bf5ae2 "citation")采用提交`9b2590eb104abcde2a35af52c74d64ce30bf5ae2`的11个限定文件，共52411字节，覆盖README、根LICENSE、DXCP-PhaT实现及封装、拓扑配置、管道读写和`sync_sed/system/`中的重采样/模拟入口。[根LICENSE](https://github.com/CN-UPB/WASN/blob/9b2590eb104abcde2a35af52c74d64ce30bf5ae2/LICENSE "citation")是Apache-2.0，SHA-256为`c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4`；外部安装依赖的许可与兼容性仍分别判断。
+官方[CN-UPB/WASN](https://github.com/CN-UPB/WASN/tree/9b2590eb104abcde2a35af52c74d64ce30bf5ae2)采用提交`9b2590eb104abcde2a35af52c74d64ce30bf5ae2`的11个限定文件，共52411字节，覆盖README、根LICENSE、DXCP-PhaT实现及封装、拓扑配置、管道读写和`sync_sed/system/`中的重采样/模拟入口。[根LICENSE](https://github.com/CN-UPB/WASN/blob/9b2590eb104abcde2a35af52c74d64ce30bf5ae2/LICENSE)是Apache-2.0，SHA-256为`c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4`；外部安装依赖的许可与兼容性仍分别判断。
 
 独立设备的采样率有微小差异时，两路记录的相对时移随记录长度积累。估计器从观测中推测采样率偏差，重采样器则使用给定偏差改变取样位置；两者的输入和输出不同。DXCP-PhaT入口用于定位前者的实现，管道读写用于观察数据怎样传递。此次没有完整复审DXCP数学主体或运行它，不能从文件取得推断估计精度。
 
-[`resample.py::STFTResampler`](https://github.com/CN-UPB/WASN/blob/9b2590eb104abcde2a35af52c74d64ce30bf5ae2/sync_sed/system/resample.py "citation")的构造参数`sro`以ppm输入，构造器除以一百万；该参数非空时，逐次调用传入的`sro`被忽略。原注释把这个配置用于**模拟**给定偏差，补偿已知$x$ ppm则要求构造器传入$-x$。这说明符号与单位需要从实际接口确认，不能看见“resample”就认定程序会盲估计时钟。
+[`resample.py::STFTResampler`](https://github.com/CN-UPB/WASN/blob/9b2590eb104abcde2a35af52c74d64ce30bf5ae2/sync_sed/system/resample.py)的构造参数`sro`以ppm输入，构造器除以一百万；该参数非空时，逐次调用传入的`sro`被忽略。原注释把这个配置用于**模拟**给定偏差，补偿已知$x$ ppm则要求构造器传入$-x$。这说明符号与单位需要从实际接口确认，不能看见“resample”就认定程序会盲估计时钟。
 
 无固定构造值时，`__call__(..., sro)`中的参数直接参与延迟递推，原方法没有再次除以一百万。因此调用参数应是无量纲相对速差：80 ppm在这个入口传$80\times10^{-6}$，而不是80。同名参数在构造与逐块调用中有不同单位，照搬数值会产生一百万倍的尺度错误。
 
 例如80 ppm表示相对采样率差$80\times10^{-6}$；按16 kHz名义时钟持续10 s，相对累计样本差的量级为$16000\times10\times80\times10^{-6}=12.8$点。这是单位换算的数学例子，不是原程序执行结果；取样率比值、延迟正负与接收端时间原点仍要在所选接口下解释。导读工程基线和[第13章](../../../../chapters/13_distributed-enhancement.md)提供可独立复算的教学入口。
 
-[`sim_sro.py`](https://github.com/CN-UPB/WASN/blob/9b2590eb104abcde2a35af52c74d64ce30bf5ae2/sync_sed/system/sim_sro.py "citation")逐块调用上述重采样器，只在返回非空时向输出管道写块。重采样器保留内部缓冲；此封装没有显式排空记录尾部的步骤。实际流还需明确块长、首次可用输出、积累状态与记录尾部；等待期间的空返回或块延迟不能直接解释为音频丢失，结束时的剩余样本则要另行处理。
+[`sim_sro.py`](https://github.com/CN-UPB/WASN/blob/9b2590eb104abcde2a35af52c74d64ce30bf5ae2/sync_sed/system/sim_sro.py)逐块调用上述重采样器，只在返回非空时向输出管道写块。重采样器保留内部缓冲；此封装没有显式排空记录尾部的步骤。实际流还需明确块长、首次可用输出、积累状态与记录尾部；等待期间的空返回或块延迟不能直接解释为音频丢失，结束时的剩余样本则要另行处理。
 
 所取文件涉及NumPy、SciPy、sounddevice或Pyro4等导入，没有安装或执行。本次也没有取得固件、访问麦克风设备、部署MARVELO/SED或验证网络性能。未选择的包安装模板含MIT分类而根许可为Apache-2.0，其空依赖列表也不能代替直接导入核对；这里没有把选集称为完整可安装包。
 
 ### LibriCSS：评分协议也是系统输入的一部分
 
-官方[LibriCSS工具仓](https://github.com/chenzhuo1011/libri_css/tree/9e3b7b0c9bffd8ef6da19f7056f3a2f2c2484ffa "citation")采用提交`9e3b7b0c9bffd8ef6da19f7056f3a2f2c2484ffa`的27个限定文件，共69954字节，覆盖README与许可、环境/安装说明、数据准备、VAD、ASR输入生成和评分的Python及命令入口。源码选择逐项列在[SOURCES.lock.json](../SOURCES.lock.json)，不是把所有`.py`或整仓库当作已经核过的数据闭包。
+官方[LibriCSS工具仓](https://github.com/chenzhuo1011/libri_css/tree/9e3b7b0c9bffd8ef6da19f7056f3a2f2c2484ffa)采用提交`9e3b7b0c9bffd8ef6da19f7056f3a2f2c2484ffa`的27个限定文件，共69954字节，覆盖README与许可、环境/安装说明、数据准备、VAD、ASR输入生成和评分的Python及命令入口。源码选择逐项列在[SOURCES.lock.json](../SOURCES.lock.json)，不是把所有`.py`或整仓库当作已经核过的数据闭包。
 
-[原README](https://github.com/chenzhuo1011/libri_css/blob/9e3b7b0c9bffd8ef6da19f7056f3a2f2c2484ffa/README.md "citation")区分连续会议评测与已切分语音评测。前者要从连续输入得到分离或识别结果，再把带时间与流身份的输出送入会议评分；后者使用给定语音分段，参考信息和排列选择条件不同。因此不能拿分段结果直接证明一个连续系统能够处理未知活动边界。本选集是准备与评分工具，没有CSS神经网络主体、权重或可直接运行的整链。
+[原README](https://github.com/chenzhuo1011/libri_css/blob/9e3b7b0c9bffd8ef6da19f7056f3a2f2c2484ffa/README.md)区分连续会议评测与已切分语音评测。前者要从连续输入得到分离或识别结果，再把带时间与流身份的输出送入会议评分；后者使用给定语音分段，参考信息和排列选择条件不同。因此不能拿分段结果直接证明一个连续系统能够处理未知活动边界。本选集是准备与评分工具，没有CSS神经网络主体、权重或可直接运行的整链。
 
-[`asclite_libricss.py`](https://github.com/chenzhuo1011/libri_css/blob/9e3b7b0c9bffd8ef6da19f7056f3a2f2c2484ffa/scoring/python/asclite_libricss.py "citation")读取STM参考、CTM识别结果、GLM文本规则及SCTK路径，调用外部asclite再汇总错误数与参考词数。最终WER按总错误数除以总参考词数计算；[`report.py`](https://github.com/chenzhuo1011/libri_css/blob/9e3b7b0c9bffd8ef6da19f7056f3a2f2c2484ffa/scoring/python/report.py "citation")跨记录汇总也按参考词数加权。例如10词中2错与100词中10错，应为$(2+10)/(10+100)=10.91\%$，而非两个百分比的算术均值15%。这只是手算协议例，不是已执行的LibriCSS成绩。
+[`asclite_libricss.py`](https://github.com/chenzhuo1011/libri_css/blob/9e3b7b0c9bffd8ef6da19f7056f3a2f2c2484ffa/scoring/python/asclite_libricss.py)读取STM参考、CTM识别结果、GLM文本规则及SCTK路径，调用外部asclite再汇总错误数与参考词数。最终WER按总错误数除以总参考词数计算；[`report.py`](https://github.com/chenzhuo1011/libri_css/blob/9e3b7b0c9bffd8ef6da19f7056f3a2f2c2484ffa/scoring/python/report.py)跨记录汇总也按参考词数加权。例如10词中2错与100词中10错，应为$(2+10)/(10+100)=10.91\%$，而非两个百分比的算术均值15%。这只是手算协议例，不是已执行的LibriCSS成绩。
 
 参考文字、识别文字、时间戳、输出流身份和文本归一化规则都是评分输入；评分输出是错误数、参考词数及其比值，不是增强波形。若缺少参考、时标不一致或分段口径变化，数字即使能够打印，也不具备同协议比较的含义。连续会议的时间/排列问题还可对照[第11章](../../../../chapters/11_selection-guide.md)的MeetEval接口研究，不把两种评分器默认当作同一指标。
 
 静态读取还发现原工具的使用限制：`run_asclite`封装只分Windows/Linux分支，这不是“SCTK算法不能在macOS运行”的结论；数据准备还调用外部下载包内的`segment_libricss.py`。`asr/python/get_wer.py`存在同名函数的后续覆盖及配置循环中的累计量，两份`run_wer_*_utterance.sh`还传入解析器没有的`--data_path`。这些是固定源的静态观察，尚未实际调用验证，原文件未修补；读者不能把取得选集等同于原脚本已经顺畅执行。
 
-[根LICENSE](https://github.com/chenzhuo1011/libri_css/blob/9e3b7b0c9bffd8ef6da19f7056f3a2f2c2484ffa/LICENSE "citation")SHA-256为`e7758cf56804cdf83cde84d0d19f70df9173193f8be5831d31e52625e95b93d7`，保留项目MIT及所含py-webrtcvad MIT文本；上游WebRTC声明的最后免责声明原样截于`DAMAG`，不自行补齐或宣称第三方条款齐备。此次未取WebRTC C源；安装的外部VAD依赖还要检查其实际分发文本。715个CTM、715个STM、说话人JSONL、NIST派生GLM、音频和模型均未取得，数据许可不能由代码MIT代替。SCTK、PyKaldi、Docker环境也未安装或运行。
+[根LICENSE](https://github.com/chenzhuo1011/libri_css/blob/9e3b7b0c9bffd8ef6da19f7056f3a2f2c2484ffa/LICENSE)SHA-256为`e7758cf56804cdf83cde84d0d19f70df9173193f8be5831d31e52625e95b93d7`，保留项目MIT及所含py-webrtcvad MIT文本；上游WebRTC声明的最后免责声明原样截于`DAMAG`，不自行补齐或宣称第三方条款齐备。此次未取WebRTC C源；安装的外部VAD依赖还要检查其实际分发文本。715个CTM、715个STM、说话人JSONL、NIST派生GLM、音频和模型均未取得，数据许可不能由代码MIT代替。SCTK、PyKaldi、Docker环境也未安装或运行。
 
 ### 获取、核验与当前真实状态
 
@@ -594,7 +596,7 @@ e3b3176d835837441224e4906b7c2befadcdc4fe2ce6163245b7d9a9ad0d9229
 
 ## 12. 第8章作者OverIVA与MeCo来源及历史状态
 
-2026-10-04取得[OverIVA作者固定提交](https://github.com/onolab-tmu/overiva/tree/1cb3189112889ebfe2ccbbde0f55b1db6020fc48 "citation")四文件选集，MIT通知、输入/滤波器轴序与PCA入口静态边界见[增强研究B03](02_aec_wpe_separation.md)。未取得语音数据或执行作者论文仿真。
+2026-10-04取得[OverIVA作者固定提交](https://github.com/onolab-tmu/overiva/tree/1cb3189112889ebfe2ccbbde0f55b1db6020fc48)四文件选集，MIT通知、输入/滤波器轴序与PCA入口静态边界见[增强研究B03](02_aec_wpe_separation.md)。未取得语音数据或执行作者论文仿真。
 
 新增前原110项锁表SHA为`eec80748e5f1fcc01d33e281b91a4482f52566d8e6b74bdb737e017604ec6487`，原状态SHA为`4cc8cbd48e3e98b51a24705468415d10654aa349f3946fb98ef48e9c4856f4f6`；原字节保存于[source_snapshots](../source_snapshots/)并由[source_history.py](../core/source_history.py)登记。加入OverIVA后的111项当时用真实工具离线核验，71项通过、22项原选集不匹配、17项仅索引、1项原AEC缓存失败，真实退出1。当时94项有独立受管理工作区。旧报告继续保留真实历史身份，当前方法执行与源码取得状态分别记录。
 
@@ -615,13 +617,13 @@ e3b3176d835837441224e4906b7c2befadcdc4fe2ce6163245b7d9a9ad0d9229
 <a id="imaging-author-source"></a>
 ## 13. 成像原实现：固定作者代码与当前报告
 
-专题Ⅰ的[E12-17](../../../../chapters/12_acoustic-imaging.md#e12-17)比较同一互谱矩阵的两种目标。作者[Chardon、Picheral、Ollivier论文§3.1～3.3](https://gilleschardon.fr/papers/damascmf.pdf "citation")把DAMAS固定点与完整矩阵Frobenius拟合联系起来；扫描图的最小二乘仍是另一目标。论文参考文献[17]给出[作者代码归档DOI](https://doi.org/10.5281/zenodo.4609267 "citation")，本书实际取得的是下面的固定Git文本选集，不把Git提交与归档版本混称同一身份。
+专题Ⅰ的[E12-17](../../../../chapters/12_acoustic-imaging.md#e12-17)比较同一互谱矩阵的两种目标。作者[Chardon、Picheral、Ollivier论文§3.1～3.3](https://gilleschardon.fr/papers/damascmf.pdf)把DAMAS固定点与完整矩阵Frobenius拟合联系起来；扫描图的最小二乘仍是另一目标。论文参考文献[17]给出[作者代码归档DOI](https://doi.org/10.5281/zenodo.4609267)，本书实际取得的是下面的固定Git文本选集，不把Git提交与归档版本混称同一身份。
 
 ### 13.1 实际取得的21个原文本
 
-2026-10-05从[作者官方仓库](https://github.com/gilleschardon/DAMAS/tree/61987952e2237e6b088a169ee891dd96576f2565 "citation")取得提交`61987952e2237e6b088a169ee891dd96576f2565`。21个选定文本共74510字节，含完整GPLv3、README、Python/MATLAB方法与两个C语言MEX源文件；不含三个MAT数据或预编译MEX文件。许可SHA-256为`3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986`。原代码放在`codes/chapters/ch00/upstream/_downloads/damas-author/`的独立受管理工作树，保留GPL条款和源通知，不复制进本书教学数值核。
+2026-10-05从[作者官方仓库](https://github.com/gilleschardon/DAMAS/tree/61987952e2237e6b088a169ee891dd96576f2565)取得提交`61987952e2237e6b088a169ee891dd96576f2565`。21个选定文本共74510字节，含完整GPLv3、README、Python/MATLAB方法与两个C语言MEX源文件；不含三个MAT数据或预编译MEX文件。许可SHA-256为`3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986`。原代码放在`codes/chapters/ch00/upstream/_downloads/damas-author/`的独立受管理工作树，保留GPL条款和源通知，不复制进本书教学数值核。
 
-[固定原README](https://github.com/gilleschardon/DAMAS/blob/61987952e2237e6b088a169ee891dd96576f2565/README.md "citation")明确说明本仓库不再维护，并指向作者后续项目acosolo。这是继续研究的入口；本轮没有因此取得或运行后继项目，也没有把固定原代码称为最新维护版本。
+[固定原README](https://github.com/gilleschardon/DAMAS/blob/61987952e2237e6b088a169ee891dd96576f2565/README.md)明确说明本仓库不再维护，并指向作者后续项目acosolo。这是继续研究的入口；本轮没有因此取得或运行后继项目，也没有把固定原代码称为最新维护版本。
 
 | 原文件与入口 | 在算法中做什么 | 复现时必须分清什么 |
 |---|---|---|
@@ -631,11 +633,11 @@ e3b3176d835837441224e4906b7c2befadcdc4fe2ce6163245b7d9a9ad0d9229
 | `damas.c`、`damas_rand.c` | C语言MEX的顺序/随机坐标更新源码 | 得到C源不代表已编译MEX、启动MATLAB或复现论文实验；本轮均未执行 |
 | `figures/FIGS_2D_EXP.m`、`FIGS_3D_EXP.m`、`FIGS_2D_SIM.m` | 作者实验/仿真作图流程 | 原数据与运行依赖另核；README声明仿真含非确定性，不把一次输出当普遍性能 |
 
-[原Python文件](https://github.com/gilleschardon/DAMAS/blob/61987952e2237e6b088a169ee891dd96576f2565/damas.py "citation")的`lawson_hanson`还有具体边界：循环未进入时`Gram`没有赋值，异常处理写作`except e`；末尾唯一性判断只看当前支持的Gram。正定支持不足以证明整个非负字典只有一个解，四不同列反例见[E12-18](../../../../chapters/12_acoustic-imaging.md#e12-18)。这些静态原语句必须保留，不能先修上游再把改后成功写成原结果。
+[原Python文件](https://github.com/gilleschardon/DAMAS/blob/61987952e2237e6b088a169ee891dd96576f2565/damas.py)的`lawson_hanson`还有具体边界：循环未进入时`Gram`没有赋值，异常处理写作`except e`；末尾唯一性判断只看当前支持的Gram。正定支持不足以证明整个非负字典只有一个解，四不同列反例见[E12-18](../../../../chapters/12_acoustic-imaging.md#e12-18)。这些静态原语句必须保留，不能先修上游再把改后成功写成原结果。
 
 ### 13.2 整表核验与历史身份
 
-新锁表共有115个Git项目，真实离线工具记录75项通过、22项旧选集不匹配、17项仅索引和1项旧AEC缓存失败，退出1。新增作者选集通过，旧114个完整状态记录逐条相同；获取成功没有升级任何算法或数据执行状态。
+当次扩充后的锁表共有115个Git项目（后续扩充至116项与当前129项的演进及历史快照见[§9](#historical-source-bindings)），真实离线工具记录75项通过、22项旧选集不匹配、17项仅索引和1项旧AEC缓存失败，退出1。新增作者选集通过，旧114个完整状态记录逐条相同；获取成功没有升级任何算法或数据执行状态。
 
 扩充前[114项原锁字节](../source_snapshots/SOURCES.ab89e7792c073e807508e9d76acf696e482542a026a7de482ed13b510500861f.json)及[原状态字节](../source_snapshots/SOURCE_STATUS.56f4a2b5bbd1e2debb57e71e2e6b362a27c8f9ab430ec6dd46aee1f15eea8469.json)按完整SHA登记。旧报告保留原源码与执行条件；当前报告必须由实际工具重新执行，不替换JSON中的摘要字符串。
 

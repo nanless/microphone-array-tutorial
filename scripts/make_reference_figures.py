@@ -71,7 +71,7 @@ def main():
         axes[1, 0].bar(position, np.asarray(values)*1000, width=.22, color=color, alpha=.8, label=label)
         analytic = [row['analytic'][w]['mean_square'] for w in ('step', 'stable')]
         axes[1, 0].plot(position, np.asarray(analytic)*1000, 'k_', markersize=13)
-    axes[1, 0].set(title='(c) 实际 PCM 功率与解析控制', ylabel=r'均方幅度 / $10^{-3}$',
+    axes[1, 0].set(title='(c) 实际 PCM 功率与解析基准', ylabel=r'均方幅度 / $10^{-3}$',
                    xticks=x, xticklabels=['切换窗：1600 点', '稳定窗：9600 点'], ylim=(0, 7.3))
     axes[1, 0].plot([], [], 'k_', markersize=13, label='解析均方')
     axes[1, 0].legend(loc='upper left', fontsize=10)
@@ -86,7 +86,7 @@ def main():
     for ax in axes.flat:
         ax.grid(axis='y', alpha=.2)
         ax.set_axisbelow(True)
-    fig.suptitle('参考处理的位置与历史：已知路径冻结的数学控制')
+    fig.suptitle('图74  参考处理的位置与历史：已知路径冻结的数学基准')
     finalize_figure(fig)
     metadata = {'SourceScript': 'scripts/make_reference_figures.py',
                 'SourceScriptDigest': report['source_sha256']['scripts/make_reference_figures.py'],

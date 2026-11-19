@@ -1,6 +1,6 @@
-> ⚠️ 本篇是第 17 章，即附录 B（正文与扩展专题共 15 章，其中第 12～15 章为扩展专题，另有附录 A、B），可独立查阅，前后篇见下方导航。
+> ⚠️ 本篇是第 17 章，即附录 B（正文共 16 章，即第 0～15 章，其中第 12～15 章为四篇扩展专题，另有附录 A、B），可独立查阅，前后篇见下方导航。
 >
-> 🏠 首页导读：[`00_overview.md`](00_overview.md) ｜ 上一篇：[16_appendix-symbols-math.md](16_appendix-symbols-math.md) ｜ 下一篇：（无）
+> 首页导读：[`00_overview.md`](00_overview.md) ｜ 上一篇：[16_appendix-symbols-math.md](16_appendix-symbols-math.md) ｜ 下一篇：（无）
 
 ---
 
@@ -8,7 +8,7 @@
 
 ### 17.1 研究生学习路径
 
-如果你准备系统开展麦克风阵列方向的研究或工程研发，建议先吃透经典物理与统计阵列模型，再逐步过渡到开源基线、公开数据集与真实多通道硬件实验。
+如果你准备系统开展麦克风阵列方向的研究或工程研发，建议先结合[第 0 章全书数学基础](00_math-foundations.md)吃透经典物理与统计阵列模型，再逐步过渡到开源基线、公开数据集与真实多通道硬件实验。
 
 1. **基础阅读**：Van Veen & Buckley, [*Beamforming: A Versatile Approach to Spatial Filtering*](https://doi.org/10.1109/53.665)（*IEEE ASSP Magazine*，1988）；Krim & Viberg, [*Two Decades of Array Signal Processing Research: The Parametric Approach*](https://doi.org/10.1109/79.526899)（*IEEE Signal Processing Magazine*，1996）。
 2. **语音场景综述**：Kumatani、McDonough 与 Raj, [*Microphone Array Processing for Distant Speech Recognition: From Close-Talking Microphones to Far-Field Sensors*](https://doi.org/10.1109/MSP.2012.2205285)（*IEEE Signal Processing Magazine* 29(6):127–140，2012）；Gannot et al., *A Consolidated Perspective on Multimicrophone Speech Enhancement and Source Separation*（*IEEE/ACM TASLP*，2017）。需要注意，Kumatani 等还有一篇主标题相同、副标题为 *Towards Real-World Deployment* 的文章，检索时请连同副标题核对。
@@ -17,9 +17,9 @@
 5. **深度学习方向**：Chakrabarty 与 Habets, [*Multi-Speaker DOA Estimation Using Deep Convolutional Networks Trained With Noise Signals*](https://doi.org/10.1109/JSTSP.2019.2901664)（*IEEE JSTSP* 13(1):8–21，2019）；Gu et al. 全神经波束形成综述（*IEEE/ACM TASLP*, vol. 31, pp. 849–862, DOI 10.1109/TASLP.2022.3229261）。
 6. **递进实验路线**：建议每次只引入一类新变量，并把前一步的确定性输出留作下一步的基准对照。
 
-    1. 运行 `codes/` 中仅依赖 NumPy 的教学实现，逐项核对手算算例、张量维度与退化边界。
+    1. 运行 `codes/` 中仅依赖 NumPy 的教学实现（含[第 0 章 §0.9](00_math-foundations.md#sec-0-9)的 `E00-01`～`E00-16` 数学基础核验），逐项核对手算算例、张量维度与退化边界。
     2. 在隔离环境中用 pyroomacoustics 验证 DSB、MVDR、MUSIC 和 SRP-PHAT 基线，完整记录房间尺寸、阵列坐标与随机种子。
-    3. 先按 §17.7 生成插图所需的合成音频与追踪清单，再运行 `scripts/` 中的 11 个绘图脚本，在固定参数下复现全部 88 张编号图，并对照正文逐图核验成立条件。
+    3. 先按 §17.7 生成插图所需的合成音频与追踪清单，再运行 `scripts/` 中的 12 个绘图脚本，在固定参数下复现全部 92 张编号图，并对照正文逐图核验成立条件。
     4. 围绕具体任务选定公开数据集与固定版本参考系统，分别核实源码、模型权重和数据集的使用许可与评分口径。
     5. 在多通道采集硬件上实测处理延迟、时钟同步与幅相标定；仿真指标不能代替真实设备测量。
 
@@ -211,18 +211,19 @@ VarArray（[ICASSP 2022](https://doi.org/10.1109/ICASSP43922.2022.9746876)）进
 
 | 公式 | 含义与关键成立边界 | 章节 |
 |---|---|---|
+| $\mathbf P_{\mathcal R(\mathbf A)}=\mathbf A(\mathbf A^H\mathbf A)^{-1}\mathbf A^H$；$\dfrac{\partial(\vec w^H\mathbf R\vec w)}{\partial\vec w^*}=\mathbf R\vec w$ | 列满秩子空间正交投影算子（幂等且厄米）与厄米二次型的 Wirtinger 共轭偏导数，构成子空间定位与约束最优波束的统一代数起点 | [§0.3](00_math-foundations.md#sec-0-3)、[§0.5](00_math-foundations.md#sec-0-5) |
 | $10\log_{10}M$ | 目标导向矢量各分量模长为 1、满足无失真归一化且各通道为独立等功率白噪声时，$M$ 元 DSB 的白噪声增益（WNG，单位 dB）；阵元含不等增益时不可直接套用 | §1、§5.2 |
 | $r_F=2D^2/\lambda$ | Fraunhofer 远场球面波相位曲率检验尺度，并非远近场硬截断分界；套用平面波流形前仍须联立核查 $r\gg D$、阵元间球面扩散幅度差及容许相位误差 | §2.2、[§15.3](15_target-extraction-diarization.md#sec-15-3) |
 | $T_{60} = 0.161V/A$ | 赛宾（Sabine）混响时间经验公式（均匀弱吸声近似扩散声场） | §2.4 |
 | $d_c = 0.057\sqrt{QV/T_{60}}$ | 临界距离：直达声与混响声能量相等处；$Q$ 为声源指向因子，$Q=1$ 时退化为全向点源形式 | §2.4 |
 | $\vec{x} = \vec{a}(\theta)s + \vec{n}$ | 远场窄带单源阵列接收信号模型 | §2.3 |
-| $\hat{\mathbf{R}} = \frac{1}{T}\sum_t \vec{x}\vec{x}^H$ | 未中心化的样本空间二阶矩（阵列处理文献常统称样本空间协方差矩阵） | §2.5 |
+| $\hat{\mathbf{R}}_{xx} = \frac{1}{T}\sum_t \vec{x}_t\vec{x}_t^H$ | 未中心化的样本空间二阶矩（阵列处理文献常统称样本空间协方差矩阵） | §2.5 |
 | $d < \lambda/2$ | 均匀线阵（ULA）在整个闭可视角域 $[-90^\circ,+90^\circ]$ 内消除端点周期歧义的充分条件；$d=\lambda/2$ 时两端射方向 $\pm 90^\circ$ 相位完全重合，受限扫描角域可另行分析 | §2.6 |
 | HPBW、DI、WNG | 主瓣半功率全宽、全空间平均指向性指数与白噪声增益定义，见式(2-11)～式(2-13) | §2.6 |
 | CRB 下界 | 给定统计观测模型与正则条件下，任意无偏 DOA 估计器的方差理论下界，见式(2-14) | §2.6 |
 | $\hat\theta = \arcsin(c\hat\tau_{12}/d)$ | 双麦远场时延差到前半平面方位角主值的映射；本书约定 $\tau_{12}=t_1-t_2$ 并由 $X_1X_2^*$ 的互相关峰估计，消除前后镜像歧义需额外基线 | §2.1、§4.2 |
 | $R(\tau)$：$\int\Phi G_{12}e^{\mathrm{j}2\pi f\tau}\mathrm{d}f$ | 广义互相关（GCC）时延谱（互谱 $G_{12}=X_1 X_2^*$），$\Phi=1/|G_{12}|$ 时对应 PHAT 加权 | §4.2 |
-| $\hat{\vec p}=\arg\max_{\vec r}\sum R^{\mathrm{PHAT}}$ | 控制响应功率（SRP-PHAT）多麦对空间网格投票定位 | §4.3 |
+| $\hat{\vec p}=\arg\max_{\vec r}\sum R^{\mathrm{PHAT}}$ | 可控响应功率（SRP-PHAT）多麦对空间网格投票定位 | §4.3 |
 | $P_{\mathrm{C}}=1/(\vec a^H\hat{\mathbf R}^{-1}\vec a)$ | Capon 最小方差空间谱 | §4.5 |
 | $P_{\mathrm{MU}}(\theta)=\|\mathbf E_n^H\vec a\|_2^{-2}$ | MUSIC 噪声子空间正交伪谱 | §4.6 |
 | $\vec{w}_{\mathrm{DSB}} = \vec{a}/M$ | 单位模长导向矢量（$\vec a^H\vec a=M$）下的延迟求和权重；一般幅度流形下的无失真匹配滤波权重为 $\vec a/(\vec a^H\vec a)$ | §5.2 |
@@ -230,7 +231,7 @@ VarArray（[ICASSP 2022](https://doi.org/10.1109/ICASSP43922.2022.9746876)）进
 | $\vec w_{\mathrm{SD}}$：$\mathbf{\Gamma}^{-1}\vec a/q_{\Gamma}$ | 超指向波束权重（$q_{\Gamma}=\vec a^H\mathbf{\Gamma}^{-1}\vec a$）：无失真约束下最小化各向同性弥散噪声输出功率 | §5.3 |
 | $\vec w_{\mathrm{MVDR}}=\mathbf R_{nn}^{-1}\vec a/q$（$q=\vec a^H\mathbf R_{nn}^{-1}\vec a$） | 最小方差无失真响应（MVDR）波束权重 | §5.4 |
 | LCMV 权重，见式(5-11) | 线性约束最小方差波束解；完整矩阵形式与共轭约定在表后展开 | §5.5 |
-| SDW-MWF 权重，见式(5-13) | 语音失真加权多通道维纳滤波；完整矩阵形式在表后展开 | [第 5 章 MWF 专题](05_beamforming.md#sec-u-fb93744989) |
+| SDW-MWF 权重，见式(5-13) | 语音失真加权多通道维纳滤波；完整矩阵形式在表后展开 | [第 5 章 §5.5.1 MWF 专题](05_beamforming.md#sec-5-5-1) |
 | $e=d-y$ | 广义旁瓣相消器（GSC）将固定主支路输出 $d$ 减去阻塞自适应支路输出 $y$；阻塞矩阵理想、自由度充足且收敛时等价于对应 LCMV | §5.6 |
 | NLMS 更新式 | 归一化最小均方自适应回声抵消更新，小能量帧按分母保护或跳更规则处理 | §6.1 |
 | $\mathrm{ERLE}=10\log_{10}(P_y/P_{e,\mathrm{echo}})$ | 远端单讲窗口内的回声返回损失增强；$P_y=\sum_n|y[n]|^2$ 为纯回声能量，$P_{e,\mathrm{echo}}=\sum_n|e_{\mathrm{echo}}[n]|^2$ 为残余回声能量 | [§6.7，式(6-29)](06_aec.md#sec-6-7) |
@@ -257,7 +258,7 @@ $$
 \left(\mathbf{C}^H\mathbf{R}^{-1}\mathbf{C}\right)^{-1}\vec{f}.
 $$
 
-**SDW-MWF 权重，见式(5-13)**：设 $\mathbf{R}_{ss}$ 与 $\mathbf{R}_{nn}$ 分别为目标语音和加性干扰噪声的未中心化空间二阶矩（零均值条件下即协方差矩阵），单位坐标向量 $\vec{e}_r$ 负责挑出第 $r$ 号参考麦克风的目标分量，超参数 $\mu>0$ 控制残余噪声抑制与目标语音失真之间的折中（一般秩条件下它不等同于无失真 MVDR 解；目标函数推导与秩一单源特例见[第 5 章 MWF 专题](05_beamforming.md#sec-u-fb93744989)）：
+**SDW-MWF 权重，见式(5-13)**：设 $\mathbf{R}_{ss}$ 与 $\mathbf{R}_{nn}$ 分别为目标语音和加性干扰噪声的未中心化空间二阶矩（零均值条件下即协方差矩阵），单位坐标向量 $\vec{e}_r$ 负责挑出第 $r$ 号参考麦克风的目标分量，超参数 $\mu>0$ 控制残余噪声抑制与目标语音失真之间的折中（一般秩条件下它不等同于无失真 MVDR 解；目标函数推导与秩一单源特例见[第 5 章 §5.5.1 MWF 专题](05_beamforming.md#sec-5-5-1)）：
 
 $$\vec w_{\mathrm{SDW}}
 =(\mathbf R_{ss}+\mu\mathbf R_{nn})^{-1}\mathbf R_{ss}\vec e_r.$$
@@ -294,7 +295,7 @@ D_t(x)&=[1-p_{D,t}(x)]D_t^-(x)\\
 
 本节按知识模块编排了 17 道综合思考与实验题（其中第 9 题先借助去混响插图熟悉房间混响尾参数，第 10～11 题再回到自适应回声消除），并在第 17.6.7 节起附有 `E17-01`～`E17-16` 共 16 道定量核验算例。数值计算题均附详细参考答案，开放设计与实验题则提供推导切入点。
 
-动手改写 `scripts/` 中的绘图函数开展参数对比实验时，建议先将相关脚本复制到个人实验目录中运行，把新生成的图片与数值写往独立路径，以免覆盖仓库既有的出版插图或 `codes/chapters/ch00/reports/` 下的基准报告。由于这些绘图函数在设计上绑定了固定出版参数，图题、坐标轴范围与底注文字并不会随局部参数自动改写；当你改动实验变量后，记得同步更新个人副本中的标题、图注与配套 JSON 记录，确保图面标注与实际输入参数一一对应。下表列出了各道动手题对应的绘图入口函数：
+动手改写 `scripts/` 中的绘图函数开展参数对比实验时，建议先将相关脚本复制到个人实验目录中运行，把新生成的图片与数值写往独立路径，以免覆盖仓库既有的出版插图或 `codes/chapters/*/reports/` 下各章的基准报告。由于这些绘图函数在设计上绑定了固定出版参数，图题、坐标轴范围与底注文字并不会随局部参数自动改写；当你改动实验变量后，记得同步更新个人副本中的标题、图注与配套 JSON 记录，确保图面标注与实际输入参数一一对应。下表列出了各道动手题对应的绘图入口函数：
 
 | 函数名 | 绘制内容 | 对应题号 |
 |---|---|---|
@@ -315,7 +316,7 @@ D_t(x)&=[1-p_{D,t}(x)]D_t^-(x)\\
 
 1. 思考题：为什么“双耳拾音 + 自由转头”通常比头部静止不动更容易消除前后方向混淆？
 
-    **提示**：即使头部静止，人耳获得的也并非仅仅两个标量，双耳时间差（ITD）、双耳声级差（ILD）与头相关传递函数（HRTF）耳廓谱凹陷均随频率变化；但在前—后镜像方向上，静态线索仍可能十分接近。一旦佩戴者主动微微转头，前方声源与后方声源对应的双耳时延差会朝相反方向连续变化，结合头部运动姿态即可打破静态几何对称性（可联系 §1.1 与 §3.1 的几何可辨识性分析）。
+    **提示**：即使头部静止，人耳获得的也并非仅仅两个标量，双耳时间差（ITD）、双耳声级差（ILD）与头相关传递函数（HRTF）耳廓谱凹陷均随频率变化；但在前—后镜像方向上，静态线索仍可能十分接近。一旦佩戴者主动微微转头，前方声源与后方声源对应的双耳时延差会朝相反方向连续变化，结合头部运动姿态即可打破静态几何对称性（可联系[第 1 章双耳定位线索](01_problem-definition.md#sec-u-1d5f9c4fa9)与 §3.1 的几何可辨识性分析）。
 
 **第 2 章（基础）**
 
@@ -523,37 +524,37 @@ $$\begin{aligned}
 
 **第一步：建立离散线性插值滤波器的频率响应**。设目标小数延迟为 $\alpha\in[0,1]$ 个采样周期，两点因果线性插值在当前样本 $x[n]$ 与上一时刻样本 $x[n-1]$ 之间取凸组合：$y[n]=(1-\alpha)x[n]+\alpha x[n-1]$（例如取中点 $\alpha=0.5$，当相邻两样本为 $0.2$ 与 $0.6$ 时输出 $0.4$——它只是拿两点连线的中点近似连续波形，并不知道采样点之间真实的带限包络弯曲情况；该经典模型的频响分析可参阅 Julius O. Smith III《Physical Audio Signal Processing》2010 年版 [Fractional Delay Filtering by Linear Interpolation 图 4.1～4.2](https://ccrma.stanford.edu/~jos/pasp/Fractional_Delay_Filtering_Linear.html)，2026-09-26 核实，以下双音定量数例为本书独立演算）。
 
-将复指数序列 $x[n]=e^{\mathrm{j}\omega n}$（其中归一化数字角频率 $\omega=2\pi f/f_s$ 代表每采样点的相位增量）代入差分方程，立得离散时间频率响应：
+将复指数序列 $x[n]=e^{\mathrm{j}\Omega_{\mathrm{d}} n}$（其中归一化数字角频率 $\Omega_{\mathrm{d}}=2\pi f/f_s$ 代表每采样点的相位增量）代入差分方程，立得离散时间频率响应：
 
 $$\begin{aligned}
-H_\alpha(e^{\mathrm{j}\omega})
-&=(1-\alpha)+\alpha e^{-\mathrm{j}\omega},\\
-y[n]&=H_\alpha(e^{\mathrm{j}\omega})e^{\mathrm{j}\omega n}.
+H_\alpha(e^{\mathrm{j}\Omega_{\mathrm{d}}})
+&=(1-\alpha)+\alpha e^{-\mathrm{j}\Omega_{\mathrm{d}}},\\
+y[n]&=H_\alpha(e^{\mathrm{j}\Omega_{\mathrm{d}}})e^{\mathrm{j}\Omega_{\mathrm{d}} n}.
 \end{aligned}\tag{17-3}$$
 
-将 $H_\alpha(e^{\mathrm{j}\omega})$ 与其复共轭相乘，利用半角恒等式 $\cos\omega=1-2\sin^2(\omega/2)$ 合并交叉项 $2\alpha(1-\alpha)\cos\omega$，整理得到功率增益表达式：
+将 $H_\alpha(e^{\mathrm{j}\Omega_{\mathrm{d}}})$ 与其复共轭相乘，利用半角恒等式 $\cos\Omega_{\mathrm{d}}=1-2\sin^2(\Omega_{\mathrm{d}}/2)$ 合并交叉项 $2\alpha(1-\alpha)\cos\Omega_{\mathrm{d}}$，整理得到功率增益表达式：
 
 $$
-\lvert H_\alpha(e^{\mathrm{j}\omega})\rvert^2
-=1-4\alpha(1-\alpha)\sin^2(\omega/2).\tag{17-4}
+\lvert H_\alpha(e^{\mathrm{j}\Omega_{\mathrm{d}}})\rvert^2
+=1-4\alpha(1-\alpha)\sin^2(\Omega_{\mathrm{d}}/2).\tag{17-4}
 $$
 
-观察式(17-4)可知：仅在整数延迟端点 $\alpha=0$ 或 $\alpha=1$，或者在直流频点 $\omega=0$ 处，幅度平方恒等于 $1$；只要 $0<\alpha<1$ 且频率非零，$\lvert H_\alpha(e^{\mathrm{j}\omega})\rvert^2<1$ 恒成立，意味着线性插值天然伴随随频率升高而加剧的低通幅度滚降（注意此处推导的是离散二抽头固定延迟滤波器的严格频响，切勿直接套用连续时间三角插值核的 $\mathrm{sinc}^2$ 公式）。
+观察式(17-4)可知：仅在整数延迟端点 $\alpha=0$ 或 $\alpha=1$，或者在直流频点 $\Omega_{\mathrm{d}}=0$ 处，幅度平方恒等于 $1$；只要 $0<\alpha<1$ 且频率非零，$\lvert H_\alpha(e^{\mathrm{j}\Omega_{\mathrm{d}}})\rvert^2<1$ 恒成立，意味着线性插值天然伴随随频率升高而加剧的低通幅度滚降（注意此处推导的是离散二抽头固定延迟滤波器的严格频响，切勿直接套用连续时间三角插值核的 $\mathrm{sinc}^2$ 公式）。
 
-**一般非对称分数延迟还会同时引入相位（群延迟）偏差**。不妨取四分之一采样延迟 $\alpha=1/4$、工作频率 $f=f_s/4$（即 $\omega=\pi/2$）：代入式(17-3)得 $H_{1/4}(e^{\mathrm{j}\pi/2})=(3-\mathrm{j})/4$，其模长为 $\sqrt{10}/4\approx0.7906$，实际相移为 $-\arctan(1/3)\approx-0.3218$ rad，明显偏离理想四分之一采样延迟所需的目标相移 $-\omega/4=-\pi/8\approx-0.3927$ rad。下文半采样点 $\alpha=1/2$ 之所以相位恰好无偏差，纯粹得益于两抽头系数 $[1/2,1/2]$ 严格对称，这一特例不能推广到其他非半采样小数延迟。
+**一般非对称分数延迟还会同时引入相位（群延迟）偏差**。不妨取四分之一采样延迟 $\alpha=1/4$、工作频率 $f=f_s/4$（即 $\Omega_{\mathrm{d}}=\pi/2$）：代入式(17-3)得 $H_{1/4}(e^{\mathrm{j}\pi/2})=(3-\mathrm{j})/4$，其模长为 $\sqrt{10}/4\approx0.7906$，实际相移为 $-\arctan(1/3)\approx-0.3218$ rad，明显偏离理想四分之一采样延迟所需的目标相移 $-\Omega_{\mathrm{d}}/4=-\pi/8\approx-0.3927$ rad。下文半采样点 $\alpha=1/2$ 之所以相位恰好无偏差，纯粹得益于两抽头系数 $[1/2,1/2]$ 严格对称，这一特例不能推广到其他非半采样小数延迟。
 
-**第二步：聚焦半采样延迟 $\alpha=1/2$ 与两次级联**。在式(17-3)中令 $\alpha=1/2$，提取半采样中心相移因子 $e^{-\mathrm{j}\omega/2}$ 后，首尾两个旋转相量恰好合并为实余弦，级联两次则将频响直接平方：
+**第二步：聚焦半采样延迟 $\alpha=1/2$ 与两次级联**。在式(17-3)中令 $\alpha=1/2$，提取半采样中心相移因子 $e^{-\mathrm{j}\Omega_{\mathrm{d}}/2}$ 后，首尾两个旋转相量恰好合并为实余弦，级联两次则将频响直接平方：
 
 $$\begin{aligned}
-H_{1/2}(e^{\mathrm{j}\omega})
-&=e^{-\mathrm{j}\omega/2}\cos(\omega/2),\\
-H_{1/2}^2(e^{\mathrm{j}\omega})
-&=e^{-\mathrm{j}\omega}\cos^2(\omega/2).
+H_{1/2}(e^{\mathrm{j}\Omega_{\mathrm{d}}})
+&=e^{-\mathrm{j}\Omega_{\mathrm{d}}/2}\cos(\Omega_{\mathrm{d}}/2),\\
+H_{1/2}^2(e^{\mathrm{j}\Omega_{\mathrm{d}}})
+&=e^{-\mathrm{j}\Omega_{\mathrm{d}}}\cos^2(\Omega_{\mathrm{d}}/2).
 \end{aligned}\tag{17-5}$$
 
-在正频率基带 $0\le f<f_s/2$ 内，$\cos(\omega/2)>0$，因此单次滤波器的相移精确对应 $0.5$ 个采样延迟，两次级联的相移也精确对应 $1$ 个采样延迟；然而理想整采样延迟 $z^{-1}$ 的频响为 $e^{-\mathrm{j}\omega}$（全频带幅度恒为 $1$），而级联两次半采样插值的幅度却额外乘上了 $\cos^2(\omega/2)$（到达奈奎斯特折叠频率 $\omega=\pi$ 时幅度彻底归零，零幅度处相位无定义）。将 $500$ Hz 与 $6000$ Hz 代入式(17-5)（先按双精度原值算出幅度比，再取 $20\log_{10}\lvert H\rvert$ 换算为 dB，两次级联的 dB 衰减恰为单次的两倍）：
+在正频率基带 $0\le f<f_s/2$ 内，$\cos(\Omega_{\mathrm{d}}/2)>0$，因此单次滤波器的相移精确对应 $0.5$ 个采样延迟，两次级联的相移也精确对应 $1$ 个采样延迟；然而理想整采样延迟 $z^{-1}$ 的频响为 $e^{-\mathrm{j}\Omega_{\mathrm{d}}}$（全频带幅度恒为 $1$），而级联两次半采样插值的幅度却额外乘上了 $\cos^2(\Omega_{\mathrm{d}}/2)$（到达奈奎斯特折叠频率 $\Omega_{\mathrm{d}}=\pi$ 时幅度彻底归零，零幅度处相位无定义）。将 $500$ Hz 与 $6000$ Hz 代入式(17-5)（先按双精度原值算出幅度比，再取 $20\log_{10}\lvert H\rvert$ 换算为 dB，两次级联的 dB 衰减恰为单次的两倍）：
 
-| 正弦频率 $f$ | 半角 $\omega/2=\pi f/f_s$ | 单次幅度比 $\cos(\omega/2)$ | 两次级联幅度比 $\cos^2(\omega/2)$ | 单次幅度增益 | 两次级联幅度增益 |
+| 正弦频率 $f$ | 半角 $\Omega_{\mathrm{d}}/2=\pi f/f_s$ | 单次幅度比 $\cos(\Omega_{\mathrm{d}}/2)$ | 两次级联幅度比 $\cos^2(\Omega_{\mathrm{d}}/2)$ | 单次幅度增益 | 两次级联幅度增益 |
 |---|---|---|---|---|---|
 | 500 Hz | $\pi/32$ | 0.995185 | 0.990393 | −0.04 dB | −0.08 dB |
 | 6000 Hz | $3\pi/8$ | 0.382683 | 0.146447 | −8.34 dB | −16.69 dB |
@@ -659,18 +660,18 @@ $$
 
 #### E17-10：DRR 一样，反射声的频谱也一样吗？
 
-**构造短 RIR 输入**。取两条长度为 $3$ 的实数因果离散 RIR：直达分量同为 $h_{\mathrm d}=[1,0,0]$，反射分量则分别设为同号双反射 $h_{\mathrm r}^{(A)}=[0,\tfrac12,\tfrac12]$ 与反号双反射 $h_{\mathrm r}^{(B)}=[0,\tfrac12,-\tfrac12]$，完整响应为 $h^{(i)}=h_{\mathrm d}+h_{\mathrm r}^{(i)}$（$i\in\{A,B\}$）。下面先按式(17-2)求两者的 DRR，再在直流角频率 $\omega=0$ 与离散时间奈奎斯特折叠角频率 $\omega=\pi$ 处对比三点离散时间傅里叶响应 $H(e^{\mathrm{j}\omega})$（对 $n=0,1,2$ 求和 $h[n]e^{-\mathrm{j}\omega n}$）。
+**构造短 RIR 输入**。取两条长度为 $3$ 的实数因果离散 RIR：直达分量同为 $h_{\mathrm d}=[1,0,0]$，反射分量则分别设为同号双反射 $h_{\mathrm r}^{(A)}=[0,\tfrac12,\tfrac12]$ 与反号双反射 $h_{\mathrm r}^{(B)}=[0,\tfrac12,-\tfrac12]$，完整响应为 $h^{(i)}=h_{\mathrm d}+h_{\mathrm r}^{(i)}$（$i\in\{A,B\}$）。下面先按式(17-2)求两者的 DRR，再在直流数字角频率 $\Omega_{\mathrm{d}}=0$ 与离散时间奈奎斯特折叠角频率 $\Omega_{\mathrm{d}}=\pi$ 处对比三点离散时间傅里叶响应 $H(e^{\mathrm{j}\Omega_{\mathrm{d}}})$（对 $n=0,1,2$ 求和 $h[n]e^{-\mathrm{j}\Omega_{\mathrm{d}} n}$）。
 
 **第一步：验证时域能量比完全相同**。两条反射序列的能量均为 $(1/2)^2+(1/2)^2=1/2$，直达能量均为 $1$，因此两组信道拥有一模一样的直达混响能量比 $\mathrm{DRR}=10\log_{10}2\approx 3.0103$ dB——第二个反射抽头的极性反转并不改变时域平方和，单凭一个 DRR 标量根本无法区分信道 A 与信道 B。
 
-**第二步：对比两个端点频率的频率响应**。写出两条反射滤波器的频响：$H_{\mathrm r}^{(A)}$ 为 $0.5(e^{-\mathrm{j}\omega}+e^{-\mathrm{j}2\omega})$，$H_{\mathrm r}^{(B)}$ 为 $0.5(e^{-\mathrm{j}\omega}-e^{-\mathrm{j}2\omega})$，而直达分量在全频带恒为 $1$。将 $e^{-\mathrm{j}0}=1$、$e^{-\mathrm{j}\pi}=-1$ 与 $e^{-\mathrm{j}2\pi}=1$ 代入可得（注意表中列出的是带正负号的实数频率响应值，若求幅度增益需再取绝对值）：
+**第二步：对比两个端点频率的频率响应**。写出两条反射滤波器的频响：$H_{\mathrm r}^{(A)}$ 为 $0.5(e^{-\mathrm{j}\Omega_{\mathrm{d}}}+e^{-\mathrm{j}2\Omega_{\mathrm{d}}})$，$H_{\mathrm r}^{(B)}$ 为 $0.5(e^{-\mathrm{j}\Omega_{\mathrm{d}}}-e^{-\mathrm{j}2\Omega_{\mathrm{d}}})$，而直达分量在全频带恒为 $1$。将 $e^{-\mathrm{j}0}=1$、$e^{-\mathrm{j}\pi}=-1$ 与 $e^{-\mathrm{j}2\pi}=1$ 代入可得（注意表中列出的是带正负号的实数频率响应值，若求幅度增益需再取绝对值）：
 
 | 短 RIR 编号 | 反射频响 $H_{\mathrm r}(e^{\mathrm{j}0})$ | 反射频响 $H_{\mathrm r}(e^{\mathrm{j}\pi})$ | 完整频响 $H(e^{\mathrm{j}0})$ | 完整频响 $H(e^{\mathrm{j}\pi})$ |
 |---|---:|---:|---:|---:|
 | A：双反射同号 | $1$ | $0$ | $2$ | $1$ |
 | B：第二反射反号 | $0$ | $-1$ | $1$ | $0$ |
 
-由帕塞瓦尔（Parseval）定理可知，反射总能量相等仅锁定了 $|H_{\mathrm r}(e^{\mathrm{j}\omega})|^2$ 在 $[-\pi,\pi]$ 全频带上的平均积分值，丝毫不限制能量在低频与高频之间如何分配：信道 A 的反射能量集中在低频（直流相长增强至 $2$），信道 B 的反射能量则集中推向高频（折叠频率处直达与反射完全相消归零）。因此，“两间房间 DRR 数值相等”绝不保证有色语音激励下的梳状滤波失真、波束形成或时延估计表现相同（运行[逐步实验 `E17-10`](../codes/chapters/appendix_b/appendix_b_experiments.py) 可复核上述计算；后文 `E17-14` 将进一步结合双频合成 PCM 音频定量演示输出误差差异）。
+由帕塞瓦尔（Parseval）定理可知，反射总能量相等仅锁定了 $|H_{\mathrm r}(e^{\mathrm{j}\Omega_{\mathrm{d}}})|^2$ 在 $[-\pi,\pi]$ 全频带上的平均积分值，丝毫不限制能量在低频与高频之间如何分配：信道 A 的反射能量集中在低频（直流相长增强至 $2$），信道 B 的反射能量则集中推向高频（折叠频率处直达与反射完全相消归零）。因此，“两间房间 DRR 数值相等”绝不保证有色语音激励下的梳状滤波失真、波束形成或时延估计表现相同（运行[逐步实验 `E17-10`](../codes/chapters/appendix_b/appendix_b_experiments.py) 可复核上述计算；后文 `E17-14` 将进一步结合双频合成 PCM 音频定量演示输出误差差异）。
 
 #### E17-11：TAC 的平均不变，逐通道输出为何只是等变？
 
@@ -698,7 +699,7 @@ $$
 
 **变长批次补零（zero-padding）与源码契约陷阱**。在批处理不同麦数的样本时，若把双麦样本 $[1,3]$ 末尾补零扩充为三通道张量 $[1,3,0]$，必须配合有效通道掩码只对前两条真实通道求均值（仍得 $\bar u=4$）；一旦漏加掩码把补零虚通道算进分母，均值就会跌落为 $(2+6+0)/3=8/3$（含偏置项的仿射层甚至会把 $0$ 映射为非零常数）。更隐蔽的是：若对补零后的张量做随机通道置换变成 $[0,3,1]$，有效掩码必须跟着通道同步置换，而不能硬编码“只取前 `num_mic` 个前缀切片”。
 
-在[作者原源码静态合同报告](../codes/chapters/appendix_b/reports/tac_contracts_current.json)中核查锁定版 FaSNet 源码可以看到：其变长分支正是按前缀切片 `[:num_mic]` 截取有效通道（不支持任意中间位置的零通道穿插），且外层网络显式指定第 0 号通道作为波形输出参考——这提醒我们，局部子模块满足置换等变，并不自动意味着整套端到端系统对任意通道重排和补零位置完全免疫。
+在[作者原源码静态核查报告](../codes/chapters/appendix_b/reports/tac_contracts_current.json)中核查锁定版 FaSNet 源码可以看到：其变长分支正是按前缀切片 `[:num_mic]` 截取有效通道（不支持任意中间位置的零通道穿插），且外层网络显式指定第 0 号通道作为波形输出参考——这提醒我们，局部子模块满足置换等变，并不自动意味着整套端到端系统对任意通道重排和补零位置完全免疫。
 
 #### E17-12：共同缩放不会改变 DRR，为什么直接平方会算错？
 
@@ -744,7 +745,7 @@ $$
 - **大绝对起点算例**：设三个衰减采样时刻为 $t=[10^{16},\ 10^{16}+2,\ 10^{16}+4]\ \mathrm{s}$，对应相对能量 $d=[-5,-15,-25]\ \mathrm{dB}$。直接用未中心化正规方程在 `float64` 下求解会因 $(10^{16})^2=10^{32}$ 吞没跨度项而彻底失真；而按式(17-8)先减去 $t_0=10^{16}\ \mathrm{s}$ 并除以跨度 $\Delta t=4\ \mathrm{s}$，立即化为良态的 $z=[0,1/2,1]$，心算即得 $\alpha=-5$、$\beta_z=-20$，还原物理斜率 $\beta=-20/4=-5\ \mathrm{dB/s}$，故 $T_{20}=4\ \mathrm{s}$、外推 $T_{60}=12\ \mathrm{s}$。
 - **极端时间跨度与单位约定**：仍以秒为单位，若输入极短跨度 $t=[0,\ 10^{-200},\ 2\times 10^{-200}]\ \mathrm{s}$ 配同一组 $d=[-5,-15,-25]\ \mathrm{dB}$，归一化后依然是 $z=[0,1/2,1]$ 与 $\beta_z=-20$，从而稳健还原出 $T_{20}=2\times 10^{-200}\ \mathrm{s}$、$T_{60}=6\times 10^{-200}\ \mathrm{s}$；换成极大跨度 $t=[0,\ 10^{200},\ 2\times 10^{200}]\ \mathrm{s}$ 则同样稳健还原出 $T_{60}=6\times 10^{200}\ \mathrm{s}$。工程调用时注意：通用代数式(17-8)的输出时长单位与输入 $\Delta t$ 同单位，但本仓库接口显式将形参命名为 `times_s` 并约定返回值固定为**秒**——若原始日志以毫秒（ms）记录时间戳，传入接口前必须先除以 $1000$ 换算成秒。
 
-当然，事后条件化无法凭空找回在输入端就已被浮点舍入抹平的时间差（例如在 `float64` 中计算 $10^{20}+1$ 会直接等于 $10^{20}$，导致 $\Delta t=0$，此时接口会因时间序列未严格单调递增而明确拒绝；关于真实声学曲线拟合区间的选取前提，请一并对照 [E17-05](#sec-u-199b14fd60) 与第 16 题）。
+当然，事后条件化无法凭空找回在输入端就已被浮点舍入抹平的时间差（例如在 `float64` 中计算 $10^{20}+1$ 会直接等于 $10^{20}$，导致 $\Delta t=0$，此时接口会因时间序列未严格单调递增而明确拒绝；关于真实声学曲线拟合区间的选取前提，请一并对照 [E17-05](#sec-u-69adc71a3e) 与第 16 题）。
 
 #### E17-14：两个同 DRR 的短 RIR，实际 PCM 输出还一样吗？
 
@@ -756,21 +757,21 @@ $$
 
 $$\begin{aligned}
 E_{y_{\mathrm r}}&=\frac{1}{2\pi}\int_{-\pi}^{\pi}
-|X(e^{\mathrm{j}\omega})|^2\\
-&\quad\cdot|H_{\mathrm r}(e^{\mathrm{j}\omega})|^2
-\,\mathrm{d}\omega.
+|X(e^{\mathrm{j}\Omega_{\mathrm{d}}})|^2\\
+&\quad\cdot|H_{\mathrm r}(e^{\mathrm{j}\Omega_{\mathrm{d}}})|^2
+\,\mathrm{d}\Omega_{\mathrm{d}}.
 \end{aligned}\tag{17-9}$$
 
-式(17-9)中 $X(e^{\mathrm{j}\omega})$ 为有限长源序列的离散时间傅里叶变换（DTFT），清晰揭示出：**不依赖激励信号的信道 RIR 能量比（DRR），不能直接等同于特定有色语音或双音激励下的实际反射输出功率比**。
+式(17-9)中 $X(e^{\mathrm{j}\Omega_{\mathrm{d}}})$ 为有限长源序列的离散时间傅里叶变换（DTFT），清晰揭示出：**不依赖激励信号的信道 RIR 能量比（DRR），不能直接等同于特定有色语音或双音激励下的实际反射输出功率比**。
 
-**第一步：平稳窗口内的双频解析手算**。截取包络恒等于 $1$ 的平稳中段半开窗口 $[1600,30400)$（共 $N=28800$ 点，恰含 $2000$ Hz 的 $3600$ 个整数周期与 $4000$ Hz 的 $7200$ 个整数周期，两频严格正交）。在 $f_s=16$ kHz 下，$2000$ Hz 对应 $\omega_1=\pi/4$，$4000$ Hz 对应 $\omega_2=\pi/2$；而两条反射核的幅频平方 $|H_{\mathrm r}^{(A)}(e^{\mathrm{j}\omega})|^2$ 与 $|H_{\mathrm r}^{(B)}(e^{\mathrm{j}\omega})|^2$ 分别等于 $\cos^2(\omega/2)$ 与 $\sin^2(\omega/2)$。每个幅度 $0.1$ 的余弦分量平均功率均为 $0.1^2/2=0.005$（总参考干声功率为 $0.005+0.005=0.01$）。将两频点功率分别乘对应增益后相加：
+**第一步：平稳窗口内的双频解析手算**。截取包络恒等于 $1$ 的平稳中段半开窗口 $[1600,30400)$（共 $N=28800$ 点，恰含 $2000$ Hz 的 $3600$ 个整数周期与 $4000$ Hz 的 $7200$ 个整数周期，两频严格正交）。在 $f_s=16$ kHz 下，$2000$ Hz 对应 $\Omega_{\mathrm{d},1}=\pi/4$，$4000$ Hz 对应 $\Omega_{\mathrm{d},2}=\pi/2$；而两条反射核的幅频平方 $|H_{\mathrm r}^{(A)}(e^{\mathrm{j}\Omega_{\mathrm{d}}})|^2$ 与 $|H_{\mathrm r}^{(B)}(e^{\mathrm{j}\Omega_{\mathrm{d}}})|^2$ 分别等于 $\cos^2(\Omega_{\mathrm{d}}/2)$ 与 $\sin^2(\Omega_{\mathrm{d}}/2)$。每个幅度 $0.1$ 的余弦分量平均功率均为 $0.1^2/2=0.005$（总参考干声功率为 $0.005+0.005=0.01$）。将两频点功率分别乘对应增益后相加：
 
-| 反射信道类型 | $2000$ Hz 增益平方（$\omega_1=\pi/4$） | $4000$ Hz 增益平方（$\omega_2=\pi/2$） | 平稳窗解析误差功率 |
+| 反射信道类型 | $2000$ Hz 增益平方（$\Omega_{\mathrm{d},1}=\pi/4$） | $4000$ Hz 增益平方（$\Omega_{\mathrm{d},2}=\pi/2$） | 平稳窗解析误差功率 |
 |---|---|---|---|
 | A：同号双反射 | $\cos^2(\pi/8)=(2+\sqrt2)/4$ | $\cos^2(\pi/4)=1/2$ | $0.005(1+\sqrt2/4)$（$\approx0.006767767$） |
 | B：异号双反射 | $\sin^2(\pi/8)=(2-\sqrt2)/4$ | $\sin^2(\pi/4)=1/2$ | $0.005(1-\sqrt2/4)$（$\approx0.003232233$） |
 
-此处定义的“误差波形”即完整接收波形减去同源直达参考波形，在未量化浮点域内恒等于反射输出本身；除以参考总功率 $0.01$，即得解析归一化均方误差（NMSE）分别约为 $0.6767767$（A）与 $0.3232233$（B）——明明信道 DRR 分毫不差，实际输出反射干扰功率却相差逾两倍！
+此处定义的“误差波形”即完整接收波形减去同源直达参考波形，在未量化浮点域内恒等于反射输出本身；除以参考总功率 $0.01$，即得解析归一化均方误差（NMSE）分别约为 $0.6767767$（A）与 $0.3232233$（B）——明明信道 DRR 分毫不差，实际输出反射干扰功率却相差逾两倍。
 
 **第二步：实际 PCM16 整数读回复算**。对已发布的 16 位有符号整数 PCM 文件（按除以 $32768$ 定标解码，不拟合任何额外增益或时延），由于“完整输出文件”与“直达参考文件”各自独立经历了 16 位定点舍入，两者逐样本整数相减所得的残差并不逐位等同于单独导出的“纯反射 WAV 文件”。在上述 $N=28800$ 点平稳窗内，直接对 PCM16 原始整数统计：参考源整数平方和为 $D=309262788000$，记完整输出整数减去参考源整数的差值平方和为 $E$，则解码幅度域均方误差为 $\mathrm{MSE}=E/(N\cdot 32768^2)=E/30923764531200$，无量纲 $\mathrm{NMSE}=E/D$（先以精确大整数相除再按有效位数展示，可通过[逐步实验](../codes/chapters/appendix_b/appendix_b_experiments.py)中的 `E17-14` 核验）：
 
@@ -781,7 +782,7 @@ E_{y_{\mathrm r}}&=\frac{1}{2\pi}\int_{-\pi}^{\pi}
 
 ![图66 同DRR短RIR的解析频响与同源输出误差](../figures/fig66_equal_drr_response.png)
 
-观察图 66 的三栏对照：左栏画出 A、B 两条短 FIR 的时域抽头极性差异；中栏画出连续幅频平方曲线，标明在 $4000$ Hz 处两者增益同为 $0.5$，而在 $2000$ Hz 处一高一低显著分化；右栏并列解析反射 NMSE 与实际 PCM 整数读回 NMSE，两者高度吻合。读者可先调低播放音量，在恒定音量档位下依次对比试听以下五份合成音频，亲耳分辨“相同 DRR 下截然不同的高低频音色染色”：
+观察图 66 的三栏对照：左栏子图 (a) 画出 A、B 两条短 FIR 的时域抽头极性差异；中栏子图 (b) 以双频分组柱状图对比反射功率增益 $|H_{\mathrm r}|^2$——在 $4000\ \mathrm{Hz}$ 处两条反射核增益同为 $0.500$，而在 $2000\ \mathrm{Hz}$ 处反射 A 高达 $0.854$、反射 B 仅 $0.146$，呈现一高一低的显著分化；右栏子图 (c) 并列解析反射 NMSE 与实际 PCM 整数读回 NMSE，两者高度吻合。读者可先调低播放音量，在恒定音量档位下依次对比试听以下五份合成音频，亲耳分辨“相同 DRR 下截然不同的高低频音色染色”：
 
 - [同源双频参考音频](../codes/chapters/appendix_b/response_audio/response_source.wav)
 - [信道 A 纯反射分量](../codes/chapters/appendix_b/response_audio/response_reflection_a.wav)
@@ -920,6 +921,7 @@ P_{\mathrm{dist}}^{(s)}
 
 ```bash
 .venv/bin/python -m unittest tests.test_codes_engineering -v
+.venv/bin/python -m codes.chapters.ch00.chapter00_exercises
 .venv/bin/python -m codes.chapters.ch10.examples.ch10_engineering_baselines
 .venv/bin/python -m codes.chapters.ch00.cross_chapter.exercises_engineering
 .venv/bin/python -m codes.chapters.appendix_b.appendix_b_experiments
@@ -935,59 +937,66 @@ P_{\mathrm{dist}}^{(s)}
 
 若进一步开展真实硬件或公开评测复现，可从[工业实现研究](../codes/chapters/ch00/research/03_industrial_deployment.md)的 `I01`～`I32` 专题中按需选取采集路由、连续重采样、DSP 定点固件或端侧推理运行时等切入点，严格区分“源码已拉取”“本地已编译”与“目标板已实测”三级状态。复现多说话人会议转写（如 CHiME-8）时，还须锁定数据预处理与文本规范化版本：例如 [CHiME-8 官方评分工具 `chime-utils`](https://github.com/chimechallenge/chime-utils/tree/152882404f572d40769ef02bf91c5a9a9cfc9c78) 定义了 SegLST 转写格式与 cpWER/tcpWER 计算口径（开启忽略缺失场景开关会直接改变分母计分集合），正式跑分前建议先构造涵盖完全匹配、说话人串槽、漏词与时间戳偏移的简短算例核实评分脚本行为。
 
-**全书 88 张编号插图的分组依赖与复现导览**。本教程全部绘图脚本均位于 `scripts/` 目录下，输出至 `figures/`（共 88 张编号插图，外加本章第 16 题的独立房间仿真图 `ROOM_RESULTS.png`）。其中部分插图直接由确定性解析公式绘出，另一部分则需先运行各章音频生成脚本导出带 SHA256 校验清单的合成 PCM16 WAV（使读者既能看到双精度解析曲线，又能核对量化读回的实际整数误差；此外，第 5 章 `E05-27` 配套的四份双耳波束合成样本可通过 `.venv/bin/python -m codes.chapters.ch05.examples.binaural_beamforming_demo --check` 做只读回放校验，详见[双耳波束练习](05_beamforming.md#e05-27)）。下表按图号区间梳理了全书插图的数据来源、前置资产与核心物理检验边界（第一列为图号组，第二列说明前置音频或数据依赖，第三列提炼该组插图验证的核心结论与解读边界）：
+**全书 92 张编号插图的分组依赖与复现导览**。本教程全部绘图脚本均位于 `scripts/` 目录下，输出至 `figures/`（共 92 张编号插图，外加本章第 16 题的独立房间仿真图 `ROOM_RESULTS.png`）。其中部分插图直接由确定性解析公式绘出，另一部分则需先运行各章音频生成脚本导出带 SHA256 校验清单的合成 PCM16 WAV（使读者既能看到双精度解析曲线，又能核对量化读回的实际整数误差；此外，第 5 章 `E05-27` 配套的四份双耳波束合成样本可通过 `.venv/bin/python -m codes.chapters.ch05.examples.binaural_beamforming_demo --check` 做只读回放校验，详见[双耳波束练习](05_beamforming.md#e05-27)）。下表按图号区间梳理了全书插图的数据来源、前置资产与核心物理检验边界（第一列为图号组，第二列说明前置音频或数据依赖，第三列提炼该组插图验证的核心结论与解读边界）：
 
 | 插图编号区间 | 前置音频 / 清单依赖与生成脚本 | 核心验证内容与解读边界 |
 |---|---|---|
 | 图 1～39 | 主音频清单（`generate_audio_samples.py`，图 33～38 按需读取）与确定性模型；由 `make_figures.py` 及 `make_aec_figures.py`（图 26～32、37～39）生成 | 覆盖声学传播、空间谱定位、经典/自适应波束、AEC 双讲与非线性抑制、WPE、语音分离及粒子滤波原理基线（其中图 39 为系统状态转移框图） |
-| 图 40～49 | 主音频与独立专项音频：含双耳/SRO、线性插值（图 41）、GSS、CSS、独立追踪音频清单（图 44，`chapter09_tracking_audio`）及附录 A 数据 | 定量对照跨通道时钟漂移、分数延迟高频滚降、导引源分离迭代、连续分块拼接、从 GCC 量测门控到卡尔曼滤波的逐帧追踪及多场景选型权衡 |
+| 图 40～49 | 主音频清单中的时钟漂移（图 40）、线性插值（图 41）、CSS 重叠（图 43）、分块 AGC（图 45）、FIR 选型权衡（图 47）、分块卷积边界（图 49），第 9 章独立追踪清单（图 44，`chapter09_tracking_audio`）及确定性框图/解析模型（图 42、46、48） | 定量对照跨通道时钟漂移、分数延迟高频滚降、导引源分离数据流、连续分块拼接、从 GCC 量测门控到卡尔曼滤波的逐帧追踪、多场景选型权衡及 DFT 频点与补零卷积边界 |
 | 图 50～56 | 纯确定性解析参数直接计算（无需预先生成额外 WAV），由 `make_figures.py` 绘出 | 依次核验有限窗 STFT 逐帧乘积与完整线性卷积的六点偏差（图 50）、近共面几何线性敏感度与六麦圆阵多频流形（图 51～52）、非酉聚焦矩阵噪声着色与双频相干源池化秩（图 53～54）、导数约束波束期望代价（图 55，系解析统计期望而非单次 PCM）及贝叶斯后验组合（图 56） |
 | 图 57～60 | 图 57 为解析几何；图 58～60 依次读取第 6 章 APA 六 WAV、第 7 章已知稀疏路径逆（MINT）六 WAV、第 8 章掩码表示边界六 WAV 独立清单 | 图 57～58 展现二阶仿射投影（APA）几何更新及冻结权重留出窗的浮点/PCM 功率分解；图 59 并列已知稀疏多径逆滤波的噪声放大与 27200 点窗口实测误差；图 60 对比 $500$ Hz 幅度截断与 $1250$ Hz 相位旋转下的理想掩码表示上限 |
 | 图 61～66 | 图 61（报告存 `ch09/reports/figure61_tracking_information.json`）与图 62 为解析计算；图 63～66 依次读取[第 10 章噪声失配六 WAV 清单](../codes/chapters/ch10/noise_audio/MANIFEST.json)、第 11 章八 WAV、附录 A 加权噪声五 WAV、本章同 DRR 短 RIR 五 WAV | 图 61 揭示相关量测不可重复记作独立信息及纯方位观测的距离—速度尺度不可辨识性；图 62～63 剖析噪声方差软更新、有限尾积分与目标泄漏污染；图 64 对比场景均值与最坏工况风险；图 65～66 验证正确噪声权重与同 DRR 频响差异 |
-| 图 67～72、图 80 | 两篇扩展专题控制：图 67～69、图 80 对应[扩展专题Ⅰ：声学成像](12_acoustic-imaging.md)（另配五份快拍音频）；图 70～72 对应[扩展专题Ⅱ：分布式协同增强](13_distributed-enhancement.md)（读取 17 份已知统计合成 WAV） | 图 67～69 检验点扩散函数（PSF）、相干源失配、CSM 对角剥离与区域声功率校准，图 80 在同一合法 CSM 下对比扫描平方残差与完整 Frobenius 残差（对应 `E12-17` 的 $\mathbf{G}=\boldsymbol\Lambda_a\mathbf{P}$、$\vec{h}=\boldsymbol\Lambda_a\vec{b}$ 推导与 `E12-18` 列线性相关分析）；图 70～72 分离展示分布式广播更新、SRO 与丢包缺口误差 |
+| 图 67～72、图 80 | 两篇扩展专题算例：图 67～69、图 80 对应[扩展专题Ⅰ：声学成像](12_acoustic-imaging.md)（另配五份快拍音频）；图 70～72 对应[扩展专题Ⅱ：分布式协同增强](13_distributed-enhancement.md)（读取 17 份已知统计合成 WAV） | 图 67～69 检验点扩散函数（PSF）、相干源失配、CSM 对角剥离与区域声功率校准，图 80 在同一合法 CSM 下对比扫描平方残差与完整 Frobenius 残差（对应 `E12-17` 的 $\mathbf{G}=\boldsymbol\Lambda_a\mathbf{P}$、$\vec{h}=\boldsymbol\Lambda_a\vec{b}$ 推导与 `E12-18` 列线性相关分析）；图 70～72 分离展示分布式广播更新、SRO 与丢包缺口误差 |
 | 图 73～79 | 7 个独立专项绘图脚本（`make_beamforming_figures.py` 等），分别读取第 5～10 章专项合成 PCM 清单或第 11 章 `E11-27` 三麦解析模型（图 79） | 逐章钉死易错边界：逐频相位失真保持稳态功率却拉大波形误差（图 73）、播放增益跳变与停止后历史回声尾 `near_only` 边界（图 74）、WPE 保护间隔历史对齐（图 75）、CSS 正确排列下的极性/增益反转（图 76）、197 帧双龄期时钟航迹生命周期（图 77）、单麦失效相消与重算权重（图 78）及硬约束先于未测设备指标的选型铁律（图 79） |
-| 图 81～84 | `make_wearable_figures.py`；图 81～82 为确定性解析与迭代控制，图 83～84 读取第 14 章可穿戴六 WAV 清单（`generate_wearable_audio.py`） | 检验 FOA 双波干涉扩散度与 $\kappa R=\pi$ 开球零陷（图 81）、高频 BSM-LS 零陷与 MagLS 恢复及双耳参考混合相干度（图 82）、Corcos 风噪与气导/闭塞内麦跨模态融合（图 83）及通透模式 $2\,\mathrm{ms}$ 延迟梳状相消（图 84） |
+| 图 81～84 | `make_wearable_figures.py`；图 81～82 为确定性解析与迭代算例，图 83～84 读取第 14 章可穿戴六 WAV 清单（`generate_wearable_audio.py`） | 检验 FOA 双波干涉扩散度与 $\kappa R=\pi$ 开球零陷（图 81）、高频 BSM-LS 零陷与 MagLS 恢复及双耳参考混合相干度（图 82）、Corcos 风噪与气导/闭塞内麦跨模态融合（图 83）及通透模式 $2\,\mathrm{ms}$ 延迟梳状相消（图 84） |
 | 图 85～88 | `make_tse_figures.py`；图 85、87、88 为确定性解析模型，图 86 读取第 15 章距离气泡六 WAV 清单（`generate_tse_audio.py`） | 检验 FiLM 调制、沉默段双态地板损失与单人擦音旁路（图 85）、$10\,\mathrm{cm}$ 对 $2\,\mathrm{cm}$ 近场球面波距离气泡径向抑制与底噪放大（图 86）、六帧重叠会议 DER 下界/超百反例与空谱 TS-VAD+GSS 排他掩码（图 87）及视听异构帧率、`+120 ms` 吃字与遮挡门控回退（图 88） |
+| 图 89～92 | `make_math_figures.py`（纯确定性数学核计算，同步写入 `ch00/reports/figure89～92_*.json`） | 复验[第 0 章](00_math-foundations.md)复相量旋转与 COLA 重建（图 89）、子空间投影/SVD/Tikhonov 与 Woodbury 秩一更新（图 90）、厄米瑞利商极值与 GEV/Khatri–Rao 虚拟孔径（图 91）及 Wirtinger 梯度、圆对称复高斯与维纳—卡尔曼递推（图 92） |
 
-按以下顺序依次生成全部合成音频清单并执行 11 个绘图脚本，即可完整重现 `figures/` 目录下的全部 88 张编号插图：
+按以下顺序依次生成全部合成音频清单（主清单与 29 套主环境独立合成音频）并执行 12 个绘图脚本，即可完整重现 `figures/` 目录下的全部 92 张编号插图：
 
 ```bash
 .venv/bin/python codes/chapters/ch00/examples/generate_audio_samples.py
 .venv/bin/python -m codes.chapters.ch01.examples.generate_binaural_cues
+.venv/bin/python -m codes.chapters.ch01.examples.generate_spectral_cues
 .venv/bin/python -m codes.chapters.ch02.examples.generate_stft_convolution
+.venv/bin/python -m codes.chapters.ch02.examples.generate_sweep_audio
 .venv/bin/python -m codes.chapters.ch03.examples.generate_geometry_audio
+.venv/bin/python -m codes.chapters.ch03.examples.generate_baseline_audio
+.venv/bin/python -m codes.chapters.ch04.examples.generate_reflection_audio
 .venv/bin/python -m codes.chapters.ch04.examples.generate_focus_audio
 .venv/bin/python -m codes.chapters.ch05.examples.generate_derivative_audio
 .venv/bin/python -m codes.chapters.ch05.examples.generate_phase_audio
-.venv/bin/python -m codes.chapters.ch08.examples.generate_css_audio  # 四份独立槽位拼接音频
-.venv/bin/python -m codes.chapters.ch08.examples.gss_teaching_demo
-.venv/bin/python -m codes.chapters.ch09.examples.moving_source_audio
-.venv/bin/python -m codes.chapters.ch09.examples.chapter09_tracking_audio
+.venv/bin/python -m codes.chapters.ch05.examples.binaural_beamforming_demo --write
 .venv/bin/python -m codes.chapters.ch06.examples.generate_apa_audio
 .venv/bin/python -m codes.chapters.ch06.examples.generate_reference_audio  # 六份已知播放增益/尾声WAV；--check严格只读
 .venv/bin/python -m codes.chapters.ch07.examples.mint_teaching_demo
 .venv/bin/python -m codes.chapters.ch07.examples.generate_delay_audio
 .venv/bin/python -m codes.chapters.ch08.examples.mask_representation_demo
+.venv/bin/python -m codes.chapters.ch08.examples.generate_css_audio  # 四份独立槽位拼接音频
+.venv/bin/python -m codes.chapters.ch08.examples.gss_teaching_demo
+.venv/bin/python -m codes.chapters.ch09.examples.moving_source_audio
+.venv/bin/python -m codes.chapters.ch09.examples.chapter09_tracking_audio
 .venv/bin/python -m codes.chapters.ch10.examples.generate_noise_mismatch
 .venv/bin/python -m codes.chapters.ch10.examples.generate_channel_audio  # 已知坏麦六独立WAV与清单
 .venv/bin/python -m codes.chapters.ch11.examples.generate_selection_audio
 .venv/bin/python -m codes.chapters.appendix_a.examples.generate_weighted_audio
 .venv/bin/python -m codes.chapters.appendix_b.examples.generate_response_audio
-.venv/bin/python -m codes.chapters.ch12.examples.generate_imaging_audio  # 配套成像音频；图67～69由解析控制生成
+.venv/bin/python -m codes.chapters.ch12.examples.generate_imaging_audio  # 配套成像音频；图67～69由解析算例生成
 .venv/bin/python -m codes.chapters.ch13.examples.generate_distributed_audio
 .venv/bin/python -m codes.chapters.ch14.examples.generate_wearable_audio
 .venv/bin/python -m codes.chapters.ch15.examples.generate_tse_audio
 .venv/bin/python scripts/make_figures.py      # 图 1～25、图 33～36、40～72、80
 .venv/bin/python scripts/make_aec_figures.py  # 图 26～32、37～39（回声消除专题）
 .venv/bin/python scripts/make_beamforming_figures.py  # 图73：已知双音的实际PCM与解析相位
-.venv/bin/python scripts/make_reference_figures.py  # 图74：实际PCM播放增益与尾声控制
-.venv/bin/python scripts/make_delay_figures.py  # 图75：已知到达与历史PCM控制
+.venv/bin/python scripts/make_reference_figures.py  # 图74：实际PCM播放增益与回声尾算例
+.venv/bin/python scripts/make_delay_figures.py  # 图75：已知到达与历史PCM算例
 .venv/bin/python scripts/make_css_figures.py  # 图76：既定槽位极性/增益与实际PCM
 .venv/bin/python scripts/make_tracking_figures.py  # 图77：实际PCM生命周期与两个龄期时钟
 .venv/bin/python scripts/make_channel_figures.py  # 图78：已知坏麦、重建约束与实际PCM
 .venv/bin/python scripts/make_selection_figures.py  # 图79：已知物理模型的硬条件与设备证据
 .venv/bin/python scripts/make_wearable_figures.py  # 图81～84：空间声场编码与可穿戴阵列
 .venv/bin/python scripts/make_tse_figures.py  # 图85～88：条件目标提取与多通道日志
+.venv/bin/python scripts/make_math_figures.py  # 图89～92：复相量时频、子空间SVD、瑞利商GEV与Wirtinger/贝叶斯
 .venv/bin/python -m codes.chapters.ch10.examples.generate_channel_audio --check  # 六独立WAV只读核验
 ```
 

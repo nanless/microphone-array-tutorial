@@ -211,7 +211,8 @@ def single_speaker_bypass_gate(
     ratio_db = -math.inf if e_secondary == 0.0 else float(10.0 * math.log10(linear_ratio))
     bypass = bool(ratio_db <= tau_db)
     if bypass:
-        output_slots = np.vstack((slots[0] + slots[1], np.zeros_like(slots[0])))
+        output_slots = np.zeros_like(slots)
+        output_slots[primary_idx] = slots[0] + slots[1]
     else:
         output_slots = slots.copy()
 

@@ -13,6 +13,16 @@ import numpy as np
 from codes.chapters.ch02.core.conventions import finite_real_array, finite_real_scalar
 
 
+def _contains_bool(value: object) -> bool:
+    if isinstance(value, (bool, np.bool_)):
+        return True
+    if isinstance(value, np.ndarray):
+        return value.dtype.kind == "b"
+    if isinstance(value, (list, tuple)):
+        return any(_contains_bool(item) for item in value)
+    return False
+
+
 def ula_prediction(
     angles_deg: np.ndarray,
     gains: np.ndarray,
@@ -29,9 +39,15 @@ def ula_prediction(
     ``g[m]*exp(+1j*2*pi*f*m*d*sin(theta)/c)``.  Source spectra include their
     unknown frame-wise complex phases and amplitudes.
     """
+    if _contains_bool(angles_deg) or _contains_bool(gains) or _contains_bool(source_spectra):
+        raise ValueError("angles, gains and sources must contain numeric values, not bool")
     angles = finite_real_array(angles_deg, "angles_deg")
-    gain = np.asarray(gains, dtype=complex)
-    source = np.asarray(source_spectra, dtype=complex)
+    raw_gains = np.asarray(gains)
+    raw_sources = np.asarray(source_spectra)
+    if raw_gains.dtype.kind not in "iufc" or raw_sources.dtype.kind not in "iufc":
+        raise ValueError("gains and sources must contain numeric values, not bool or text")
+    gain = np.asarray(raw_gains, dtype=complex)
+    source = np.asarray(raw_sources, dtype=complex)
     if (angles.ndim != 1 or gain.ndim != 1 or source.ndim != 2
             or source.shape[0] != angles.size or gain.size < 2
             or not np.all(np.isfinite(angles)) or not np.all(np.isfinite(gain))
@@ -141,12 +157,14 @@ def fit_anchored_ula(
     update raises ValueError rather than silently clipping a direction.
     """
     raw = np.asarray(observations)
-    if raw.dtype.kind not in "iufc":
-        raise ValueError("observations must be numeric complex spectra")
+    if raw.dtype.kind not in "iufc" or _contains_bool(observations):
+        raise ValueError("observations must be numeric complex spectra, not bool or text")
     x = np.asarray(raw, dtype=complex)
     if (x.ndim != 3 or x.shape[0] < 2 or x.shape[1] < 2 or x.shape[2] < 3
             or not np.all(np.isfinite(x))):
         raise ValueError("observations need finite scenes x frames x channels")
+    if not isinstance(angle_bounds_deg, (tuple, list)) or len(angle_bounds_deg) != 2:
+        raise ValueError("angle_bounds_deg must be a (low, high) pair")
     spacing = finite_real_scalar(spacing_m, "spacing_m")
     frequency = finite_real_scalar(frequency_hz, "frequency_hz")
     speed = finite_real_scalar(sound_speed, "sound_speed")
@@ -157,9 +175,11 @@ def fit_anchored_ula(
     tolerance = finite_real_scalar(relative_tolerance, "relative_tolerance")
     if (spacing <= 0 or frequency <= 0 or speed <= 0
             or not -90 < low < high < 90 or tolerance <= 0
-            or isinstance(max_iterations, bool) or not isinstance(max_iterations, int)
-            or max_iterations < 1):
+            or isinstance(max_iterations, (bool, np.bool_))
+            or not isinstance(max_iterations, (int, np.integer))
+            or int(max_iterations) < 1):
         raise ValueError("invalid physical parameters, angle interval or stopping rule")
+    max_iterations = int(max_iterations)
     kd = 2.0 * np.pi * frequency * spacing / speed
     if not np.isfinite(kd):
         raise ValueError("ULA phase exceeds supported numerical range")
@@ -181,6 +201,8 @@ def fit_anchored_ula(
             raise ValueError("anchored-pair phase implies a direction outside the stated interval")
         angles = np.rad2deg(np.arcsin(sine))
     else:
+        if _contains_bool(initial_angles_deg):
+            raise ValueError("initial angles must be real numbers, not bool")
         angles = finite_real_array(initial_angles_deg, "initial_angles_deg")
         if (angles.shape != (x.shape[0],) or not np.all(np.isfinite(angles))
                 or np.any(angles < low) or np.any(angles > high)):

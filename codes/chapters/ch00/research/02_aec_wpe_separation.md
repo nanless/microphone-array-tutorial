@@ -1,6 +1,6 @@
 # AEC、去混响与语音分离：算法、工业实现与源码研究
 
-AEC 播放增益、历史回声、当前来源合同与 LMPAN/DiffVQE 原文复核日期：2026-10-04；SGMSE+/StoRM实际采样分派与零峰值边界复核日期：2026-10-02；BSS/GSS/CSS 固定源码合同、ArrayDPS 取点与参数层、神经方法身份复核日期：2026-10-01；WPE 原始资料、NARA 多通道历史排列与 NeMo 固定源码复核日期：2026-10-01；AEC 的 APA 原函数、APM 通道边界与神经方法分类复核日期：2026-10-01；AEC 原论文、接口诊断与近年候选原核实日期：2026-09-28；原核实日期：2026-09-22；AEC 工业接口与配对数据说明复核日期：2026-09-23；BSS/GSS 源码入口与实验复核日期：2026-09-24；WPE 与 cACGMM 源码入口于 2026-09-29 扩充并离线重核；推导练习及 Stream.FM、TF-Locoformer 静态审查日期：2026-09-26。对应正文 [第 6 章](../../../../chapters/06_aec.md)、[第 7 章](../../../../chapters/07_wpe-dereverberation.md) 与 [第 8 章](../../../../chapters/08_speech-separation.md)。本篇按处理对象分开说明算法、源码位置和复现实验；正式版本和许可边界由 [SOURCES.lock.json](../SOURCES.lock.json) 固定。
+AEC 播放增益、历史回声、当前来源合同与 LMPAN/DiffVQE 原文复核日期：2026-10-04；SGMSE+/StoRM实际采样分派与零峰值边界复核日期：2026-10-02；BSS/GSS/CSS 固定源码合同、ArrayDPS 取点与参数层、神经方法身份复核日期：2026-10-01；WPE 原始资料、NARA 多通道历史排列与 NeMo 固定源码复核日期：2026-10-01；AEC 的 APA 原函数、APM 通道边界与神经方法分类复核日期：2026-10-01；AEC 原论文、接口诊断与近年候选原核实日期：2026-09-28；原核实日期：2026-09-22；AEC 工业接口与配对数据说明复核日期：2026-09-23；BSS/GSS 源码入口与实验复核日期：2026-09-24；WPE 与 cACGMM 源码入口于 2026-09-29 扩充并离线重核；推导练习及 Stream.FM、TF-Locoformer 静态审查日期：2026-09-26；第 15 章条件目标提取纯文本选集核实日期：2026-11-17。对应正文 [第 6 章](../../../../chapters/06_aec.md)、[第 7 章](../../../../chapters/07_wpe-dereverberation.md)、[第 8 章](../../../../chapters/08_speech-separation.md) 与 [第 15 章](../../../../chapters/15_target-extraction-diarization.md)。本篇按处理对象分开说明算法、源码位置和复现实验；正式版本和许可边界由 [SOURCES.lock.json](../SOURCES.lock.json) 固定。
 
 “外部实现”表示可以找到承担该算法计算的代码，不表示本书已经训练、编译或测完该系统。本篇实际运行的结果单独列出，包括[教学基线测试](../../../../tests/test_codes_aec_wpe_sep_track.py)与 W01 的独立实现对照；未附执行结果的外部实验均为复现设计。外部代码、权重和数据分别遵守各自条款。
 
@@ -755,17 +755,17 @@ PRA 公共函数返回的是最终应用系数的共轭；以单输出 `[1,j]`�
 
 ### B03　OverIVA、FIVE 与过定提取
 
-麦克风数多于目标数量时，先区分“要输出几个目标”与“观测里共有几个物理声源”。OverIVA采用跨频目标模型（时变复高斯或Laplace）与统计段内时不变的联合复高斯背景；背景可以是若干干扰的混合，目标数小于麦数并不表示其余能量不存在。[Scheibler与Ono原论文](https://arxiv.org/html/1905.07880v2 "citation")§2～3给出扩展方阵解混、目标与背景的样本二阶正交约束，以及交替更新。二阶不相关不等于统计独立，原论文的背景分布假设仍然需要单独判断。
+麦克风数多于目标数量时，先区分“要输出几个目标”与“观测里共有几个物理声源”。OverIVA采用跨频目标模型（时变复高斯或Laplace）与统计段内时不变的联合复高斯背景；背景可以是若干干扰的混合，目标数小于麦数并不表示其余能量不存在。[Scheibler与Ono原论文](https://arxiv.org/html/1905.07880v2)§2～3给出扩展方阵解混、目标与背景的样本二阶正交约束，以及交替更新。二阶不相关不等于统计独立，原论文的背景分布假设仍然需要单独判断。
 
 [正文E08-31](../../../../chapters/08_speech-separation.md#e08-31)先用三维二阶矩`diag(9,4,1)`说明：若强背景占第一方向、两个目标占后两方向，保留两个最大主成分将丢掉弱目标。给总矩阵加同一正对角加载不会改变该排序，被删除的方向也不会重新出现。该反例说明按总能量截断的风险，不能推出所有PCA预处理都失效，更不能证明OverIVA在任意混合下成功。
 
 随后给定目标行`W=[1,0.5]`与`C=[[2,1],[1,2]]`，独立复算`J=0.8`、背景行`U=[0.8,-1]`及`W C U^H=0`。扩展矩阵的行列式为`-1.4`，目标和背景二阶矩为`3.5`与`1.68`。这是已给目标行后的背景约束步骤，没有从音频盲估计目标行、更新源模型或复现整套OverIVA。唯一教学核在[overiva_teaching.py](../../ch08/core/overiva_teaching.py)。
 
-2026-10-04实际取得[作者仓库固定提交](https://github.com/onolab-tmu/overiva/tree/1cb3189112889ebfe2ccbbde0f55b1db6020fc48 "citation")的`LICENSE`、`README.md`、`overiva.py`和`auxiva_pca.py`四文件。源码与根许可均为MIT，完整原通知保留；许可SHA-256为`a872a2a232076ca5034f53a33709efecfe61c7481dbda84b595549f7015f03bc`。原源码采用`(帧,频点,通道)`输入，目标滤波器存为`(频点,通道,目标)`列，不能直接当作本书`(频点,目标,通道)`共轭行。`W0`文档写的是行布局，实际直接赋入列布局；回投影只缩放返回波形谱`Y`，返回滤波器`W`没有乘同一回投影系数。这两项是静态接口边界，未调用作者整包。
+2026-10-04实际取得[作者仓库固定提交](https://github.com/onolab-tmu/overiva/tree/1cb3189112889ebfe2ccbbde0f55b1db6020fc48)的`LICENSE`、`README.md`、`overiva.py`和`auxiva_pca.py`四文件。源码与根许可均为MIT，完整原通知保留；许可SHA-256为`a872a2a232076ca5034f53a33709efecfe61c7481dbda84b595549f7015f03bc`。原源码采用`(帧,频点,通道)`输入，目标滤波器存为`(频点,通道,目标)`列，不能直接当作本书`(频点,目标,通道)`共轭行。`W0`文档写的是行布局，实际直接赋入列布局；回投影只缩放返回波形谱`Y`，返回滤波器`W`没有乘同一回投影系数。这两项是静态接口边界，未调用作者整包。
 
 `auxiva_pca.py`原实现先对总二阶矩特征分解，再取最后几个特征向量做降维，随后调用方阵版本，最后使用原参考麦作回投影。代码中的`kwargs.pop('proj_back')`没有默认值；阅读该入口时应核调用者是否传了此键。作者README一处声称返回形状与输入相同，但减少目标数时实际第三轴为目标数，原函数docstring的返回定义更准确。本书保留原代码与说明，不修补上游，也不将静态观察称为完整原包执行。
 
-获取目录是`codes/chapters/ch00/upstream/_downloads/overiva-author/`，受Git忽略管理，可用锁表对应获取工具重新取得。不获取作者的语音数据、`get_data.py`或仿真入口，不自动触发README描述的数据下载。本轮取得四文件不等于运行论文仿真、测量语音分离质量或工业加速比。[piva固定源码](https://github.com/fakufaku/piva/tree/7fa273e9aa597aba57067aef2e7b6c999dadef26 "citation")另提供OverIVA与FIVE路线，但GPL-3.0许可及编译核心依赖与上述MIT作者Python版本分别记录。FIVE面向单目标提取，不等于恢复全部源。
+获取目录是`codes/chapters/ch00/upstream/_downloads/overiva-author/`，受Git忽略管理，可用锁表对应获取工具重新取得。不获取作者的语音数据、`get_data.py`或仿真入口，不自动触发README描述的数据下载。本轮取得四文件不等于运行论文仿真、测量语音分离质量或工业加速比。[piva固定源码](https://github.com/fakufaku/piva/tree/7fa273e9aa597aba57067aef2e7b6c999dadef26)另提供OverIVA与FIVE路线，但GPL-3.0许可及编译核心依赖与上述MIT作者Python版本分别记录。FIVE面向单目标提取，不等于恢复全部源。
 
 进一步的建议实验保持两个目标，从两麦增加到四麦，分别比较背景建模、选两麦和按总能量PCA；另将第三个强非高斯源归为背景，检查模型失配。要固定目标图像、共同参考、回投影、排列评分和算力口径后再比较。此建议尚未执行，不能作为本书成绩。
 
@@ -806,7 +806,7 @@ FastMNMF 以可联合对角化的空间协方差降低反复处理满矩阵的�
 原文假设已经同步、校准，传播延迟相对 STFT 窗较短；其 distributed 描述阵列的空间布置，仍集中处理观测，不是异步设备算法。§4.1 的同步、无附加噪声设置不能支持异步鲁棒结论。收录门槛中的问题、改动和假设可以核实；最小复现仍需阵列间初始化排列与共享谱模型，2026-10-01 未找到可信作者算法代码及明确许可。因此这里只保留选型线索，不新增正文算法目录、锁表条目或运行结果。
 
 
-固定FastMNMF2原源码还有一个静态次序边界：`accelerate=False`分支先以旧`Y`建立`tmp1/tmp2`，再刷新`lambda/Y`，随后H更新读取此前缓存；第一版对应分支的刷新与缓存次序不同。[固定FastMNMF2第143～147行](https://github.com/LCAV/pyroomacoustics/blob/0dd39f2614b7fc44b2cc63dbe7d60f4641068890/pyroomacoustics/bss/fastmnmf2.py#L143-L147 "citation")。当前原方法合同只用零次迭代，没有触发该分支；这是源码静态观察，不称为已测分离失败或论文公式错误。
+固定FastMNMF2原源码还有一个静态次序边界：`accelerate=False`分支先以旧`Y`建立`tmp1/tmp2`，再刷新`lambda/Y`，随后H更新读取此前缓存；第一版对应分支的刷新与缓存次序不同。[固定FastMNMF2第143～147行](https://github.com/LCAV/pyroomacoustics/blob/0dd39f2614b7fc44b2cc63dbe7d60f4641068890/pyroomacoustics/bss/fastmnmf2.py#L143-L147)。当前原方法合同只用零次迭代，没有触发该分支；这是源码静态观察，不称为已测分离失败或论文公式错误。
 
 ### B07　TRINICON 的时域块自适应
 
@@ -913,7 +913,7 @@ GPU-GSS 把频点、段及相同目标的计算合并，提高 GPU 利用率。�
 
 **2026-10-01 的实际复验。** [新审计工具](../../ch08/examples/audit_upstream_separation_contracts.py)与[新结果](../../ch08/reports/upstream_separation_contracts.json)另记当前 Python、NumPy、SciPy、真实解释器路径、全锁及工具摘要。原历史报告中的 `/tmp/room-pra-venv` 表示当时环境；该轮使用 `/private/tmp/masp-ch04-pra-venv` 的 PRA 0.10.0，导入源仍与固定缓存一致。七方法诊断的全部数值与异常结果与历史一致，不改写过去的时间或路径。
 
-新工具同时绑定九个原工作树的 HEAD、Git blob 与逐文件 SHA-256，执行前后检查源码未变。ArrayDPS、NeMo及旧 NOTSOFAR 示例为静态合同核查；GSS 功率 SCM 和后验为原函数提取调用，回投影为原模块调用，PRA 为原包方法调用。ssspy `CACGMM` 的新整包导入尝试因缺少 `packaging` 失败；没有安装依赖或声称完成该类执行。Ono 2011 与 Kitamura 2016 的正式全文未在此次取得，原出处仍保留，不能把作者教材或后续论文的阅读记录改称这两篇全文实读。
+新工具同时绑定九个原工作树的 HEAD、Git blob 与逐文件 SHA-256，执行前后检查源码未变。ArrayDPS、NeMo及旧 NOTSOFAR 示例为源码接口静态核查；GSS 功率 SCM 和后验为原函数提取调用，回投影为原模块调用，PRA 为原包方法调用。ssspy `CACGMM` 的新整包导入尝试因缺少 `packaging` 失败；没有安装依赖或声称完成该类执行。Ono 2011 与 Kitamura 2016 的正式全文未在此次取得，原出处仍保留，不能把作者教材或后续论文的阅读记录改称这两篇全文实读。
 
 **2026-10-02 的当前锁表复验。** 新增TAC后，全锁摘要变化，现有合同用实际工具重新生成。此次第8章报告使用 `/private/tmp/masp-appb-pra-venv`（Python3.13.12、NumPy2.5.3、SciPy1.18.1、PRA0.10.0），既有环境已含 `packaging`，没有为该合同补装依赖。ssspy原包导入成功，并完成零次分离迭代的固定后验与一次形状更新核对，形状矩阵与独立期望最大误差为0；`n_iter_for_separation_quality=0`，不支持分离性能结论。2026-10-01缺依赖的尝试仍是历史事实；当前真实状态、限定输入和源身份见[同一当前报告](../../ch08/reports/upstream_separation_contracts.json)的 `attempted.ssspy_cacgmm_package`，不改写旧历史报告。
 
@@ -930,7 +930,7 @@ PYTHONDONTWRITEBYTECODE=1 /private/tmp/masp-ch04-pra-venv/bin/python -B \
 
 ## 5. 神经分离、目标提取与连续输出
 
-**2026-10-04当前源码合同另存。** 本轮实际重跑[接口合同](../../ch08/reports/separation_upstream_interfaces_current.json)、[分离原方法合同](../../ch08/reports/upstream_separation_contracts_current.json)、[Stream.FM静态合同](../../ch08/reports/streamfm_source_audit_current.json)与[TF-Locoformer静态合同](../../ch08/reports/tflocoformer_source_audit_current.json)。四份历史JSON原字节保留，历史测试绑定`7b80fab1d1012f104cdf441423218bf0898ce918`真实原工具；不替换其原时间、环境或源摘要。
+**2026-10-04当前源码核查另存。** 本轮实际重跑[接口核查报告](../../ch08/reports/separation_upstream_interfaces_current.json)、[分离原方法报告](../../ch08/reports/upstream_separation_contracts_current.json)、[Stream.FM源码核查](../../ch08/reports/streamfm_source_audit_current.json)与[TF-Locoformer源码核查](../../ch08/reports/tflocoformer_source_audit_current.json)。四份历史JSON原字节保留，历史测试绑定`7b80fab1d1012f104cdf441423218bf0898ce918`真实原工具；不替换其原时间、环境或源摘要。
 
 当前工具在计算前检查普通报告目标，运行前后核官方origin、独立Git根、固定HEAD、全部所用原blob及许可、实际依赖SHA与洁净状态；完整获取选集状态另列，不能因用到的文件正确而把旧失配改为通过。PRA与ssspy Python原源直接读取并编译，绕过已存在的字节码缓存，原缓存前后保持原字节；已预加载且未受原源加载器绑定的模块拒绝使用。限定方法、NumPy后端提取、静态神经源码和完整模型运行各自声明，原初始化异常、ILRMA返回差异与TRINICON尾部边界保留。
 
@@ -1187,15 +1187,15 @@ MIT 代码、托管 checkpoint、LibriTTS、SMS-WSJ及其依赖的 WSJ 录音分
 
 ### N19　MeCo：分离器之后的一步平均流纠正
 
-[作者2026预印本v1](https://arxiv.org/html/2606.09677v1 "citation")§2～4把已得到的逐源估计和多麦混合作为条件，学习区间平均速度，以一次位移纠正输出。这里的1 NFE是纠正网络的一次前向，尚需上游分离器；它不是说话人槽位关联方法，也不直接给出系统在线延迟。本书不把论文的指标估计器或硬件计时转写为本机成绩。
+[作者2026预印本v1](https://arxiv.org/html/2606.09677v1)§2～4把已得到的逐源估计和多麦混合作为条件，学习区间平均速度，以一次位移纠正输出。这里的1 NFE是纠正网络的一次前向，尚需上游分离器；它不是说话人槽位关联方法，也不直接给出系统在线延迟。本书不把论文的指标估计器或硬件计时转写为本机成绩。
 
-2026-10-04按[作者固定提交](https://github.com/rlaehghks5/MECO/tree/375ac4dee2a8e193aaa48553289499a6f43d93e6 "citation")取得16个原文本，共95305字节：许可、说明、依赖、训练/评价入口、训练配置，以及`model_MeCo.py`、ODE、求解器、数据与直接工具函数。它们在`codes/chapters/ch00/upstream/_downloads/meco/`，全部逐Gitblob/SHA核验，原文件未改。根MIT许可SHA为`acf88dd4e67d3f5d50a9ec79e6f035339ae1bc072afffed56a73387d1fb1679b`。
+2026-10-04按[作者固定提交](https://github.com/rlaehghks5/MECO/tree/375ac4dee2a8e193aaa48553289499a6f43d93e6)取得16个原文本，共95305字节：许可、说明、依赖、训练/评价入口、训练配置，以及`model_MeCo.py`、ODE、求解器、数据与直接工具函数。它们在`codes/chapters/ch00/upstream/_downloads/meco/`，全部逐Gitblob/SHA核验，原文件未改。根MIT许可SHA为`acf88dd4e67d3f5d50a9ec79e6f035339ae1bc072afffed56a73387d1fb1679b`。
 
 完整树另有GoogleResearch Apache-2.0助手和两个NVIDIA Source Code License-NC CUDA核。16选集不包括它们或完整骨干；根MIT不能覆盖第三方头声明。这是阅读核心方法的部分选集，缺少注册/网络依赖，不能独立运行；没有安装Torch/CUDA、取得权重/语料、训练或执行前向。源码取得、静态接口和原系统运行分开记录。
 
-**从源码看一步到底做什么。** [原ODE](https://github.com/rlaehghks5/MECO/blob/375ac4dee2a8e193aaa48553289499a6f43d93e6/flowmse/odes.py "citation")的均值在干净目标与分离估计之间线性插值，标准差也按流时间线性插值，默认端点为0与0.487。[求解器](https://github.com/rlaehghks5/MECO/blob/375ac4dee2a8e193aaa48553289499a6f43d93e6/flowmse/sampling/odesolvers.py "citation")初值为估计加`0.487*z`，含随机复噪声；默认一步从1到0.03，位移区间为0.97。0.03是无量纲流时间，不是30ms，也不能把随机初值画成无噪声估计。
+**从源码看一步到底做什么。** [原ODE](https://github.com/rlaehghks5/MECO/blob/375ac4dee2a8e193aaa48553289499a6f43d93e6/flowmse/odes.py)的均值在干净目标与分离估计之间线性插值，标准差也按流时间线性插值，默认端点为0与0.487。[求解器](https://github.com/rlaehghks5/MECO/blob/375ac4dee2a8e193aaa48553289499a6f43d93e6/flowmse/sampling/odesolvers.py)初值为估计加`0.487*z`，含随机复噪声；默认一步从1到0.03，位移区间为0.97。0.03是无量纲流时间，不是30ms，也不能把随机初值画成无噪声估计。
 
-[原模型](https://github.com/rlaehghks5/MECO/blob/375ac4dee2a8e193aaa48553289499a6f43d93e6/flowmse/model_MeCo.py "citation")拼接状态、估计与原多麦混合，时间及区间长度另作条件。训练时停止梯度的目标含速度导数项；`xr`损失先给逐样本误差乘区间长度，再平方/平均，保留平方权重，而不是先求均值再乘平均区间的平方。默认训练脚本使用中心有限差分JVP、裁剪与课程控制，不能称其为未裁剪的理想自动微分实现。
+[原模型](https://github.com/rlaehghks5/MECO/blob/375ac4dee2a8e193aaa48553289499a6f43d93e6/flowmse/model_MeCo.py)拼接状态、估计与原多麦混合，时间及区间长度另作条件。训练时停止梯度的目标含速度导数项；`xr`损失先给逐样本误差乘区间长度，再平方/平均，保留平方权重，而不是先求均值再乘平均区间的平方。默认训练脚本使用中心有限差分JVP、裁剪与课程控制，不能称其为未裁剪的理想自动微分实现。
 
 | 要核的条件 | 固定源码静态事实 | 不能推出的判断 |
 |---|---|---|
@@ -1207,17 +1207,31 @@ MIT 代码、托管 checkpoint、LibriTTS、SMS-WSJ及其依赖的 WSJ 录音分
 | 配对与模型 | 需外部准备clean/estimate/mixture配对及检查点；示例评价脚本保留路径占位 | 不负责自动运行上游分离器或分配正确说话人 |
 | 评分 | 训练SI-SNR去均值；评价helper口径另读，SI-SIR/SAR以估计减clean作噪声代理 | 代理残差不是独立干扰真值；不能借名字宣称真实分量分解 |
 
-表内均为静态阅读，未以Torch操作桩替代真实执行。[数据源](https://github.com/rlaehghks5/MECO/blob/375ac4dee2a8e193aaa48553289499a6f43d93e6/flowmse/data_module_multichannel.py "citation")和[评价入口](https://github.com/rlaehghks5/MECO/blob/375ac4dee2a8e193aaa48553289499a6f43d93e6/evaluate.py "citation")可逐项定位。后续建议固定上游输出、随机种子、参考图像和完整计时，再检查内容保留、静音和错槽输入；建议实验尚未执行。
+表内均为静态阅读，未以Torch操作桩替代真实执行。[数据源](https://github.com/rlaehghks5/MECO/blob/375ac4dee2a8e193aaa48553289499a6f43d93e6/flowmse/data_module_multichannel.py)和[评价入口](https://github.com/rlaehghks5/MECO/blob/375ac4dee2a8e193aaa48553289499a6f43d93e6/evaluate.py)可逐项定位。后续建议固定上游输出、随机种子、参考图像和完整计时，再检查内容保留、静音和错槽输入；建议实验尚未执行。
 
 <a id="sis-candidate"></a>
 
 ### N20　SIS：说话人身份作为训练监督
 
-[MERL作者全文TR2026-137](https://www.merl.com/publications/docs/TR2026-137.pdf "citation")§2～3以身份对比目标训练分离器：同一说话人的另一句话作为训练辅助，与排列匹配共同约束输出。辅助音频用于训练，不是推理时注册的目标条件，因此应与SpeakerBeam/TSE区分。冻结嵌入网络参数仍允许其梯度传回分离器；训练数据中的辅助与混合子集还须分开，以避免内容泄漏。
+[MERL作者全文TR2026-137](https://www.merl.com/publications/docs/TR2026-137.pdf)§2～3以身份对比目标训练分离器：同一说话人的另一句话作为训练辅助，与排列匹配共同约束输出。辅助音频用于训练，不是推理时注册的目标条件，因此应与SpeakerBeam/TSE区分。冻结嵌入网络参数仍允许其梯度传回分离器；训练数据中的辅助与混合子集还须分开，以避免内容泄漏。
 
 原文另比较严格混合一致与较松的掩码约束；包含噪声时，把全部混合强制分给目标输出会改变噪声归属，不能只因输出总和一致就称每路干净正确。可联系[E08-27、30](../../../../chapters/08_speech-separation.md#e08-30)理解约束集合与目标质量的区别。本书没有训练该方法或移用其分数排名。
 
-2026-10-04核[论文脚注的作者仓库](https://github.com/merlresearch/sis_sep "citation")，仍只有发布预告README，未提供方法实现或代码许可。本项目仅保留原理研究条目，没有获取名义上的“算法代码”、训练数据或模型，不把仓库存在当作实现可复现。
+2026-10-04核[论文脚注的作者仓库](https://github.com/merlresearch/sis_sep)，仍只有发布预告README，未提供方法实现或代码许可。本项目仅保留原理研究条目，没有获取名义上的“算法代码”、训练数据或模型，不把仓库存在当作实现可复现。
+
+<a id="target-extraction-diarization"></a>
+
+### N21　扩展专题Ⅳ：条件目标提取、多通道日志与远场多模态前端
+
+对应[第 15 章扩展专题Ⅳ](../../../../chapters/15_target-extraction-diarization.md)与[练习音频 §62](05_exercises_and_audio.md#tse-exercises-audio)。盲分离输出无名槽位，而条件目标提取（TSE）与目标说话人日志（TS-VAD）依赖外部线索锚定身份，必须单独核查目标沉默期退化、近场球面波曲率可辨识性、重叠段活动泄漏以及异构多模态时钟对齐。本书以五个纯 NumPy 数值核拆解这些环节，不把受控代数与双音合成实验宣称为自然语音盲分离或端到端会议系统。
+
+- [`conditional_tse.py`](../../ch15/core/conditional_tse.py)：复算特征线性调制（FiLM）、标准零均值 SI-SDR 在零目标下的奇异性、目标存在/沉默双态能量地板损失与单人零重叠擦音保护旁路门限。
+- [`distance_bubble.py`](../../ch15/core/distance_bubble.py)：计算菲涅耳区球面波导向矢量与正侧向同向近场目标/远场干扰的 LCMV“距离气泡”权重，并量化微小孔径下的白噪声增益崩塌。
+- [`diarization_tsvad.py`](../../ch15/core/diarization_tsvad.py)：推导重叠会议中单标签聚类对 DER 的理论漏检下界，联合声纹余弦与空间先验更新 TS-VAD 后验，并构造排他性软门控 GSS 波束形成器。
+- [`av_alignment.py`](../../ch15/core/av_alignment.py)：对齐异步音视频帧率与快门曝光窗口，验证唇部遮挡时的置信度软门控声学回退机制。
+- [`eend_enrollment_robustness.py`](../../ch15/core/eend_enrollment_robustness.py)：核验固定输出槽位上限对多人重叠的 DER 下界、EEND-EDA 吸引子存在性门控推断，以及串音污染注册片段的加权排他池化净化。
+
+外部上游对照登记在 [SOURCES.lock.json](../SOURCES.lock.json) 的 `wesep`（[`c2437a64d314`](https://github.com/wenet-e2e/wesep/tree/c2437a64d314baa3b7a49421d0030c608adf5a32)，Apache-2.0）。本地稀疏工作区仅取得 `runtime/separate/separate_engine.h`、`examples/spatial/mc_librimix/local/build_spatial_cues.py`、`examples/audio/librimix/local/build_audio_cues.py` 等 6 个纯文本文件，离线状态为 `source_verified`（`execution="not_run"`）。该选集用于对照音频声纹线索、多通道空间线索构造脚本与 C++ 流式分离引擎头文件接口；未下载预训练模型权重或 LibriMix 语料，也未编译或运行 PyTorch/C++ 推理链。
 
 ## 6. 复现实验的共同记录表
 

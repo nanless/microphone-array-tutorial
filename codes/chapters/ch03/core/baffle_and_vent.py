@@ -306,7 +306,13 @@ def mems_gasket_leakage_example(
     ideal_back_gain = 0.0
     leaky_front_gain = abs(h1_100 - steer_delay * (h2_100 * steer_delay))
     leaky_back_gain = abs(h1_100 * steer_delay - steer_delay * h2_100)
-    leaky_fbr_db = 20.0 * math.log10(leaky_front_gain / leaky_back_gain)
+    leaky_back_db = -math.inf if leaky_back_gain == 0.0 else 20.0 * math.log10(leaky_back_gain)
+    if leaky_back_gain == 0.0:
+        leaky_fbr_db = math.inf if leaky_front_gain > 0.0 else -math.inf
+    elif leaky_front_gain == 0.0:
+        leaky_fbr_db = -math.inf
+    else:
+        leaky_fbr_db = 20.0 * math.log10(leaky_front_gain / leaky_back_gain)
 
     return {
         "sealed_cutoff_hz": fc1,
@@ -338,6 +344,7 @@ def mems_gasket_leakage_example(
             "ideal_back_gain": ideal_back_gain,
             "leaky_front_gain": leaky_front_gain,
             "leaky_back_gain": leaky_back_gain,
+            "leaky_back_db": leaky_back_db,
             "leaky_front_to_back_db": leaky_fbr_db,
         },
         "limits": (

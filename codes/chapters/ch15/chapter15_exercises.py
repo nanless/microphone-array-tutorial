@@ -56,15 +56,15 @@ EXERCISE_IDS = tuple(f"E15-{i:02d}" for i in range(1, 19))
 def _json(value):
     if isinstance(value, np.ndarray):
         if np.iscomplexobj(value):
-            return np.stack([value.real, value.imag], axis=-1).tolist()
+            return _json(np.stack([value.real, value.imag], axis=-1).tolist())
         return [_json(v) for v in value.tolist()]
     if isinstance(value, (complex, np.complexfloating)):
-        return [float(value.real), float(value.imag)]
+        return [_json(float(value.real)), _json(float(value.imag))]
     if isinstance(value, np.generic):
         return _json(value.item())
     if isinstance(value, float):
         if math.isnan(value):
-            return "NaN"
+            raise ValueError("NaN is not permitted in Chapter 15 exercise JSON output")
         if math.isinf(value):
             return "-Infinity" if value < 0 else "Infinity"
         return value
@@ -438,8 +438,26 @@ def run_experiments() -> dict:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--exercise", choices=EXERCISE_IDS)
+    parser.add_argument("--json", action="store_true", help="emit JSON output (default)")
+    parser.add_argument("--threshold-db", type=float, default=-18.0, help="bypass threshold in dB for E15-03 check")
     args = parser.parse_args(argv)
+    if isinstance(args.threshold_db, bool) or not math.isfinite(args.threshold_db):
+        raise ValueError("threshold_db must be a finite real number")
     result = run_experiments()
+    if args.threshold_db != -18.0:
+        y_pri = np.array([1.0, 0.0, -1.0, 0.0], dtype=np.float64)
+        y_sec_fricative = np.array([0.0, 0.1, 0.0, -0.1], dtype=np.float64)
+        y_sec_overlap = np.array([0.0, 0.5, 0.0, -0.5], dtype=np.float64)
+        result["exercises"]["E15-03"] = _json(
+            {
+                "single_speaker_fricative_bypass": zero_overlap_bypass_decision(
+                    y_pri, y_sec_fricative, threshold_db=args.threshold_db
+                ),
+                "two_speaker_overlap_retained": zero_overlap_bypass_decision(
+                    y_pri, y_sec_overlap, threshold_db=args.threshold_db
+                ),
+            }
+        )
     if args.exercise:
         result["exercises"] = {args.exercise: result["exercises"][args.exercise]}
     print(json.dumps(result, ensure_ascii=False, indent=2, allow_nan=False))

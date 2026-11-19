@@ -6,6 +6,11 @@ Importing this module performs no experiment or file access.
 """
 from __future__ import annotations
 
+if __name__ == "__main__" and not __package__:
+    import sys
+    from pathlib import Path
+    sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
+
 from fractions import Fraction as F
 import json
 from math import sqrt

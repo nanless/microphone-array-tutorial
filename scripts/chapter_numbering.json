@@ -4,6 +4,13 @@
   "scope": "Chapter numbers changed by topic; original sequential snapshot and historical reports retain their original identities.",
   "chapters": [
     {
+      "original_source": "00_math-foundations.md",
+      "legacy_sources": [],
+      "source": "00_math-foundations.md",
+      "number": 0,
+      "pdf_identity": 18
+    },
+    {
       "original_source": "14_acoustic-imaging.md",
       "source": "12_acoustic-imaging.md",
       "number": 12,

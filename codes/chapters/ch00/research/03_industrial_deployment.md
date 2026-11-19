@@ -1,6 +1,6 @@
 # 工业音频实现：从采集、状态到部署和评分
 
-DeepFilterNet 宿主计数与 faster-enhancer.c 生命周期/计时静态复核日期：2026-10-05；AEC 播放音量通知和 XMOS ALT 保持计数静态复核日期：2026-10-04；原核实日期：2026-09-22；AEC 接口 I03/I05 与评分 I20 复核日期：2026-09-23；I01 时间戳、I18 输入输出绑定与 I28 源码接口核对日期：2026-09-26；第10章工业边界及 I30～I32 复核日期：2026-09-28；FastEnhancer 论文发表状态于 2026-09-29 另行复核。2026-10-01另核第10章直接接口，并执行 I32 所列五项受限原源码合同；旧报告保留原日期和环境。对应正文第 10、11 章和附录 B。这里讨论本书算法进入连续音频系统后需要补上的部分：驱动、参考路由、跨块状态、定点内核、模型运行时和评分器。每项的完整提交以 [`SOURCES.lock.json`](../SOURCES.lock.json) 为准；网页文档版本只说明核实依据，不自动等于本机安装版本。
+DeepFilterNet 宿主计数与 faster-enhancer.c 生命周期/计时静态复核日期：2026-10-05；AEC 播放音量通知和 XMOS ALT 保持计数静态复核日期：2026-10-04；原核实日期：2026-09-22；AEC 接口 I03/I05 与评分 I20 复核日期：2026-09-23；I01 时间戳、I18 输入输出绑定与 I28 源码接口核对日期：2026-09-26；第10章工业边界及 I30～I32 复核日期：2026-09-28；FastEnhancer 论文发表状态于 2026-09-29 另行复核。2026-10-01另核第10章直接接口，并执行 I32 所列五项受限原源码合同；旧报告保留原日期和环境。对应正文第 10、11、13 章和附录 B。这里讨论本书算法进入连续音频系统后需要补上的部分：驱动、参考路由、跨块状态、定点内核、模型运行时和评分器。每项的完整提交以 [`SOURCES.lock.json`](../SOURCES.lock.json) 为准；网页文档版本只说明核实依据，不自动等于本机安装版本。
 
 除明确写出输入、环境和实测值的本地接口实验外，下面的试验是建议执行的设备验收步骤，不是已经测得的产品结果。源码下载、依赖安装、编译、运行、声学测量是不同状态。没有硬件、模型或数据时，可以完成源码核对，但不能把该项标成已经通过设备验收。
 
@@ -757,7 +757,7 @@ FastEnhancer的计时器故意返回0和0.01，人工会话输出确定性斜坡
 
 ### I33：原始DANSE的模型与收敛保证
 
-先固定符号。原始[Part I：Sequential Node Updating](https://homes.esat.kuleuven.be/~abertran/reports/09-65.pdf "citation")和[Part II：Simultaneous and Asynchronous Node Updating](https://homes.esat.kuleuven.be/~abertran/reports/09-178.pdf "citation")均发表于2010年；DOI分别为10.1109/TSP.2010.2052612与10.1109/TSP.2010.2052613。原文中的$K$不是节点数：
+先固定符号。原始[Part I：Sequential Node Updating](https://homes.esat.kuleuven.be/~abertran/reports/09-65.pdf)和[Part II：Simultaneous and Asynchronous Node Updating](https://homes.esat.kuleuven.be/~abertran/reports/09-178.pdf)均发表于2010年；DOI分别为10.1109/TSP.2010.2052612与10.1109/TSP.2010.2052613。原文中的$K$不是节点数：
 
 | 含义 | Part I/II原文 | 本书扩展专题Ⅱ |
 |---|---|---|
@@ -765,17 +765,17 @@ FastEnhancer的计时器故意返回0和0.01，人工会话输出确定性斜坡
 | 每节点广播/估计维数 | $K$ | $Q$ |
 | 共同潜在目标维数 | $Q$ | $S$ |
 
-因此原条件$K=Q$对应本书的$Q=S$。在共同频点和样本时间轴上，节点$u$观测$\vec x_u$，各节点目标为同一潜在向量$\vec s$的节点特定变换$\vec d_u=\mathbf B_u\vec s$。$Q=S$时，$\mathbf B_u$须为满秩方阵。集中式LMMSE的权重满足$\mathbf R_{xx}\mathbf W_u^\star=\mathbf R_{xd_u}$；DANSE节点保留自己的原观测，接收其他节点的$Q$维线性组合，先在此局部空间求解，再用解的本地块更新以后广播。广播是本地观测的组合，不是把包含远端观测的完整增强输出再循环广播。模型与更新定位在Part I §II、§III-A、§IV-A；单维与多维顺序结论分别见Theorems III.1、IV.1。[Part I原文](https://homes.esat.kuleuven.be/~abertran/reports/09-65.pdf "citation")
+因此原条件$K=Q$对应本书的$Q=S$。在共同频点和样本时间轴上，节点$u$观测$\vec x_u$，各节点目标为同一潜在向量$\vec s$的节点特定变换$\vec d_u=\mathbf B_u\vec s$。$Q=S$时，$\mathbf B_u$须为满秩方阵。集中式LMMSE的权重满足$\mathbf R_{xx}\mathbf W_u^\star=\mathbf R_{xd_u}$；DANSE节点保留自己的原观测，接收其他节点的$Q$维线性组合，先在此局部空间求解，再用解的本地块更新以后广播。广播是本地观测的组合，不是把包含远端观测的完整增强输出再循环广播。模型与更新定位在Part I §II、§III-A、§IV-A；单维与多维顺序结论分别见Theorems III.1、IV.1。[Part I原文](https://homes.esat.kuleuven.be/~abertran/reports/09-65.pdf)
 
-上述顺序结论讨论满秩的观测二阶矩矩阵 $\mathbf R_{xx}$、共同目标满秩变换、固定精确二阶统计和轮转更新。它说明合适的**自适应**广播可到达集中式最优输出，不能证明任意预先固定的少数混合都无损；本书§13.8给出了相关噪声改变最优远端方向的反例。有限快拍、失配VAD和非平稳输入使局部统计不再是定理中的精确矩阵。若广播维数低于共同目标维数，最优方向可能丢失；过估维数造成的秩亏和伪逆情形，也不能简单套用满秩权重收敛结论。[Part I §IV-C：DANSE Under Rank Deficiency](https://homes.esat.kuleuven.be/~abertran/reports/09-65.pdf "citation")
+上述顺序结论讨论满秩的观测二阶矩矩阵 $\mathbf R_{xx}$、共同目标满秩变换、固定精确二阶统计和轮转更新。它说明合适的**自适应**广播可到达集中式最优输出，不能证明任意预先固定的少数混合都无损；本书§13.8给出了相关噪声改变最优远端方向的反例。有限快拍、失配VAD和非平稳输入使局部统计不再是定理中的精确矩阵。若广播维数低于共同目标维数，最优方向可能丢失；过估维数造成的秩亏和伪逆情形，也不能简单套用满秩权重收敛结论。[Part I §IV-C：DANSE Under Rank Deficiency](https://homes.esat.kuleuven.be/~abertran/reports/09-65.pdf)
 
-同时更新时，各节点求解所用的其他广播随后也改变。Part II §IV-B式(22)～(28)的$rS$-DANSE$^{+}$多了在全部广播空间中优化$\mathbf G$的步骤；其Theorem IV.1要求$0<\alpha_i\le1$、$\alpha_i\to0$且$\sum_i\alpha_i=\infty$，并保留上述统计和共同目标条件。去掉额外$\mathbf G$优化的简化$rS$版本在§IV-C另作经验讨论。固定$0.5$或$0.7$的混合既不满足趋零条件，也不能替代额外优化，故不援用该定理。Part II §IV-D的参数异步允许节点在不同迭代事件更新，但脚注8仍要求采样同步；异步结论还要求各节点持续获得更新机会。[Part II原文，5297～5298页](https://homes.esat.kuleuven.be/~abertran/reports/09-178.pdf "citation")
+同时更新时，各节点求解所用的其他广播随后也改变。Part II §IV-B式(22)～(28)的$rS$-DANSE$^{+}$多了在全部广播空间中优化$\mathbf G$的步骤；其Theorem IV.1要求$0<\alpha_i\le1$、$\alpha_i\to0$且$\sum_i\alpha_i=\infty$，并保留上述统计和共同目标条件。去掉额外$\mathbf G$优化的简化$rS$版本在§IV-C另作经验讨论。固定$0.5$或$0.7$的混合既不满足趋零条件，也不能替代额外优化，故不援用该定理。Part II §IV-D的参数异步允许节点在不同迭代事件更新，但脚注8仍要求采样同步；异步结论还要求各节点持续获得更新机会。[Part II原文，5297～5298页](https://homes.esat.kuleuven.be/~abertran/reports/09-178.pdf)
 
 ### I34：WOLA源码的滤波时序与论文配置
 
-[IWAENC 2010作者全文](https://homes.esat.kuleuven.be/~abertran/reports/IWAENC10.pdf "citation")§III将频域语音失真加权MWF接入加权重叠相加（WOLA）分析/合成，讨论平方根Hann、50%重叠和指数统计更新；其链路模型忽略传输延迟。§IV的实验使用32kHz、512点窗、$\mu=5$、$\alpha=0.5$与理想VAD。这组论文配置不能由另一版演示文件的默认值反推。
+[IWAENC 2010作者全文](https://homes.esat.kuleuven.be/~abertran/reports/IWAENC10.pdf)§III将频域语音失真加权MWF接入加权重叠相加（WOLA）分析/合成，讨论平方根Hann、50%重叠和指数统计更新；其链路模型忽略传输延迟。§IV的实验使用32kHz、512点窗、$\mu=5$、$\alpha=0.5$与理想VAD。这组论文配置不能由另一版演示文件的默认值反推。
 
-本书取得的作者[固定 `WOLA_DANSE1.m` v1.4](https://github.com/AlexanderBertrandLab/Old_Code/blob/a24b73fcd2dc028659535d07bb08068b06108616/WOLA_DANSE1.m "citation")必须显式传入`fs`，没有采样率默认值。其示例输入使用16kHz；默认FFT长为`512*fs/16000`，故该示例对应512点。真正的默认项包括`mu=1`、`alpha=0.7`和同时模式开启；协方差与外部平滑的半衰期分别为2s、0.2s。更新门限分别累计每个VAD类别的三秒等效帧数，不代表输入三秒后必定有可用的两类统计。
+本书取得的作者[固定 `WOLA_DANSE1.m` v1.4](https://github.com/AlexanderBertrandLab/Old_Code/blob/a24b73fcd2dc028659535d07bb08068b06108616/WOLA_DANSE1.m)必须显式传入`fs`，没有采样率默认值。其示例输入使用16kHz；默认FFT长为`512*fs/16000`，故该示例对应512点。真正的默认项包括`mu=1`、`alpha=0.7`和同时模式开启；协方差与外部平滑的半衰期分别为2s、0.2s。更新门限分别累计每个VAD类别的三秒等效帧数，不代表输入三秒后必定有可用的两类统计。
 
 静态控制流还揭示四项接入合同。其一，VAD取每帧首样本；外部`Wext`先用于广播，随后向旧目标平滑，更新事件最后才产生新目标，因而事件产生的新目标在第二个后续广播帧才开始影响消息。其二，即使选择顺序token模式，各节点的内部`Wint`仍逐帧更新，token限制的是外部目标更新。其三，原文件的对称Hann没有逐点COLA校正，循环也没有排出完整尾部。其四，直接`inv`没有加载；普通EVD先取代数最大特征值，再取其绝对值，不能当作噪声白化GEVD或正半定投影。这些是固定源的实际步骤，未执行MATLAB。[当前静态定位与独立控制报告](../../ch13/reports/upstream_distributed_contracts_current.json)
 
@@ -785,28 +785,28 @@ FastEnhancer的计时器故意返回0和0.01，人工会话输出确定性斜坡
 
 | 方法与原文定位 | 改变的计算步骤 | 成立条件与采用范围 |
 |---|---|---|
-| [TI-DANSE，§III～IV、Theorems 1/2](https://homes.esat.kuleuven.be/~abertran/reports/15-87.pdf "citation")；正式发表于2017年，DOI含2016 | 广播使用$\mathbf P_u=\mathbf W_{uu}\mathbf G_u^{-1}$，树上求和并传播总和，节点减去自身贡献；本地维数成为$M_u+Q$ | 保留可逆坐标变换、连通拓扑、同样本准确求和及共同目标条件。只运行树上加法不等于运行TI-DANSE；输出最优与参数坐标是否收敛也须区分 |
-| [GEVD-DANSE，§III式(9)～(17)、§IV](https://ftp.esat.kuleuven.be/SISTA/abertran/reports/GEVD_DS_TSP2016.pdf "citation")；2016 | 对总/噪声协方差做噪声度量下的GEVD，保留选定秩，方向增益为$1-1/\lambda$，再进行分布式更新 | 顺序讨论要求有效噪声统计、局部满秩和相应特征子空间条件。保留秩低于真实目标维数时，可能收敛到对应集中式低秩GEVD结果，目标已不同于完整LMMSE；原MATLAB普通EVD不是此算法 |
-| [TI-GEVD-DANSE，作者稿§III～IV](https://ftp.esat.kuleuven.be/sista/pdidier/eusipco2024/eusipco24_pdidier_submission_v1.pdf "citation")；EUSIPCO 2024 | 在TI结构中使用局部GEVD，增加共同坐标规范化，抑制滤波尺度漂移导致的数值问题 | 同一变换须同时作用于相关协方差和滤波器，不能各节点独立削幅后仍称同一算法；欠秩情形的仿真观察不作为完整证明 |
-| [TI-DANSE+会议作者v1，§III～V](https://arxiv.org/html/2506.20001v1 "citation")；2025 | 更新根分别保留邻居分支的部分和，增加局部自由度，并用最大更新节点树策略选择连接 | 局部维数与根度数有关。该版以固定统计仿真说明收敛行为，未提供完整证明，不把轮数改善换算成设备时间 |
-| [TI-DANSE+扩展v2，§III-C～G、§IV](https://arxiv.org/html/2506.02797v2 "citation")；2026-03-10预印本 | 增加Theorems 1/2及通信、树选择和统计更新讨论 | 满维共同目标、可逆变换、顺序更新等前提仍需满足；跨广播版本混合旧SCM会破坏同一统计坐标。§III-G的低秩GEVD扩展没有同等完整证明；§IV-D的集中应用网络滤波器不等于运行真实WOLA网络 |
-| [SRO感知DANSE，§IV-A～C式(11)～(20)](https://arxiv.org/html/2211.02489v2 "citation")；OJSP 2023 | 从跨帧相干性漂移估计SRO，累计分数相位补偿，并跟踪整数样本滑移；为逐样本发送引入WOLA卷积近似 | 基线讨论静止节点/目标、稳定SRO和理想传输。同节点通道同步，广播变化足够慢以维持声学相位近似；卷积近似仍有分析延迟，不是精确WOLA或零延迟实现 |
+| [TI-DANSE，§III～IV、Theorems 1/2](https://homes.esat.kuleuven.be/~abertran/reports/15-87.pdf)；正式发表于2017年，DOI含2016 | 广播使用$\mathbf P_u=\mathbf W_{uu}\mathbf G_u^{-1}$，树上求和并传播总和，节点减去自身贡献；本地维数成为$M_u+Q$ | 保留可逆坐标变换、连通拓扑、同样本准确求和及共同目标条件。只运行树上加法不等于运行TI-DANSE；输出最优与参数坐标是否收敛也须区分 |
+| [GEVD-DANSE，§III式(9)～(17)、§IV](https://ftp.esat.kuleuven.be/SISTA/abertran/reports/GEVD_DS_TSP2016.pdf)；2016 | 对总/噪声协方差做噪声度量下的GEVD，保留选定秩，方向增益为$1-1/\lambda$，再进行分布式更新 | 顺序讨论要求有效噪声统计、局部满秩和相应特征子空间条件。保留秩低于真实目标维数时，可能收敛到对应集中式低秩GEVD结果，目标已不同于完整LMMSE；原MATLAB普通EVD不是此算法 |
+| [TI-GEVD-DANSE，作者稿§III～IV](https://ftp.esat.kuleuven.be/sista/pdidier/eusipco2024/eusipco24_pdidier_submission_v1.pdf)；EUSIPCO 2024 | 在TI结构中使用局部GEVD，增加共同坐标规范化，抑制滤波尺度漂移导致的数值问题 | 同一变换须同时作用于相关协方差和滤波器，不能各节点独立削幅后仍称同一算法；欠秩情形的仿真观察不作为完整证明 |
+| [TI-DANSE+会议作者v1，§III～V](https://arxiv.org/html/2506.20001v1)；2025 | 更新根分别保留邻居分支的部分和，增加局部自由度，并用最大更新节点树策略选择连接 | 局部维数与根度数有关。该版以固定统计仿真说明收敛行为，未提供完整证明，不把轮数改善换算成设备时间 |
+| [TI-DANSE+扩展v2，§III-C～G、§IV](https://arxiv.org/html/2506.02797v2)；2026-03-10预印本 | 增加Theorems 1/2及通信、树选择和统计更新讨论 | 满维共同目标、可逆变换、顺序更新等前提仍需满足；跨广播版本混合旧SCM会破坏同一统计坐标。§III-G的低秩GEVD扩展没有同等完整证明；§IV-D的集中应用网络滤波器不等于运行真实WOLA网络 |
+| [SRO感知DANSE，§IV-A～C式(11)～(20)](https://arxiv.org/html/2211.02489v2)；OJSP 2023 | 从跨帧相干性漂移估计SRO，累计分数相位补偿，并跟踪整数样本滑移；为逐样本发送引入WOLA卷积近似 | 基线讨论静止节点/目标、稳定SRO和理想传输。同节点通道同步，广播变化足够慢以维持声学相位近似；卷积近似仍有分析延迟，不是精确WOLA或零延迟实现 |
 
-TI-DANSE的正式卷期是TSIPN 3(1)，130～144，2017，DOI为10.1109/TSIPN.2016.2623095；不要用DOI中的年份替代卷期年份。TI-GEVD作者稿式(11)的目标特征值差写法与式(12)增益不一致；本书白化例依据2016年GEVD原文使用$\lambda-1$与$1-1/\lambda$，不照抄该处差式。[2016年GEVD作者稿](https://ftp.esat.kuleuven.be/SISTA/abertran/reports/GEVD_DS_TSP2016.pdf "citation")
+TI-DANSE的正式卷期是TSIPN 3(1)，130～144，2017，DOI为10.1109/TSIPN.2016.2623095；不要用DOI中的年份替代卷期年份。TI-GEVD作者稿式(11)的目标特征值差写法与式(12)增益不一致；本书白化例依据2016年GEVD原文使用$\lambda-1$与$1-1/\lambda$，不直接沿用该处差式。[2016年GEVD作者稿](https://ftp.esat.kuleuven.be/SISTA/abertran/reports/GEVD_DS_TSP2016.pdf)
 
-SRO估计还要区分三层输入。第10章的拟合控制使用精确合成时间戳，不能当作盲音频估计。2023年SRO-DANSE以跨节点相干性变化推测速率，再通过接收计数与整数滑移维持相位历史；丢包、启动错位和声源运动会引入其他变化。16kHz、100ppm的设备每秒多1.6个样本，约0.625s积累一个样本；若帧移为512点，积累一个**整帧移**约需320s。后一个尺度不能用作允许忽略采样偏差的时间。[SRO-DANSE §IV-B](https://arxiv.org/html/2211.02489v2 "citation")
+SRO估计还要区分三层输入。第10章的拟合控制使用精确合成时间戳，不能当作盲音频估计。2023年SRO-DANSE以跨节点相干性变化推测速率，再通过接收计数与整数滑移维持相位历史；丢包、启动错位和声源运动会引入其他变化。16kHz、100ppm的设备每秒多1.6个样本，约0.625s积累一个样本；若帧移为512点，积累一个**整帧移**约需320s。后一个尺度不能用作允许忽略采样偏差的时间。[SRO-DANSE §IV-B](https://arxiv.org/html/2211.02489v2)
 
-[DWACD原文，ICASSP 2022 §II～III](https://ris.uni-paderborn.de/download/33807/48990/gburrek_icassp22.pdf "citation")允许活动说话人在不同局部片段改变位置，但依赖相关性、活动筛选和短片段内近似稳定的声学关系；其STO讨论还利用位置/传播时间信息，不能把初始错位全当作时钟偏差。其公开同步源码可作后续入口，实际仅运行三个小函数的范围见[复现合同](04_source_reproduction.md#distributed-reproduction)。这些方法纳入学习导航，是因为分别解决广播维数、拓扑、低秩统计和采样时钟问题；不将论文中的不同任务与配置排成统一设备排名。
+[DWACD原文，ICASSP 2022 §II～III](https://ris.uni-paderborn.de/download/33807/48990/gburrek_icassp22.pdf)允许活动说话人在不同局部片段改变位置，但依赖相关性、活动筛选和短片段内近似稳定的声学关系；其STO讨论还利用位置/传播时间信息，不能把初始错位全当作时钟偏差。其公开同步源码可作后续入口，实际仅运行三个小函数的范围见[复现合同](04_source_reproduction.md#distributed-reproduction)。这些方法纳入学习导航，是因为分别解决广播维数、拓扑、低秩统计和采样时钟问题；不将论文中的不同任务与配置排成统一设备排名。
 
-广播系数更新还改变了接收统计的坐标。[TI-DANSE+ 2026 §III-G1](https://arxiv.org/html/2506.02797v2 "citation")建议在同一迭代内累计、跨迭代重置，并等待目标活动和纯噪声两类帧都有足够支持。若变化只是已知可逆坐标变换，可以同时转换旧协方差与互相关后累计，完整手算见[E13-25](../../../../chapters/13_distributed-enhancement.md#e13-25)。一般压缩方向改变会丢失旧未保留方向，不能假定仅凭旧压缩统计便可恢复新统计；重置本身也不保证短记录能估准。
+广播系数更新还改变了接收统计的坐标。[TI-DANSE+ 2026 §III-G1](https://arxiv.org/html/2506.02797v2)建议在同一迭代内累计、跨迭代重置，并等待目标活动和纯噪声两类帧都有足够支持。若变化只是已知可逆坐标变换，可以同时转换旧协方差与互相关后累计，完整手算见[E13-25](../../../../chapters/13_distributed-enhancement.md#e13-25)。一般压缩方向改变会丢失旧未保留方向，不能假定仅凭旧压缩统计便可恢复新统计；重置本身也不保证短记录能估准。
 
 ### I36：RTP时间戳、参考时钟与Dante的适用范围
 
-包的到达时间、首样本采样时间与播放时间是三个测点。[RFC 3550 §5.1](https://www.rfc-editor.org/rfc/rfc3550.html#section-5.1 "citation")的RTP序号按包递增；时间戳标记包内首个音频采样时刻，按采样时钟推进，起始值可以随机。两个流的裸时间戳不能直接相减，RTCP发送报告中的NTP/RTP对才提供时间映射。§6.4.1的到达间隔抖动是另一统计量，不能直接作为ADC相对ppm。序号缺口也不自动给出缺失的样本数，须结合载荷、时间戳和发送协议。
+包的到达时间、首样本采样时间与播放时间是三个测点。[RFC 3550 §5.1](https://www.rfc-editor.org/rfc/rfc3550.html#section-5.1)的RTP序号按包递增；时间戳标记包内首个音频采样时刻，按采样时钟推进，起始值可以随机。两个流的裸时间戳不能直接相减，RTCP发送报告中的NTP/RTP对才提供时间映射。§6.4.1的到达间隔抖动是另一统计量，不能直接作为ADC相对ppm。序号缺口也不自动给出缺失的样本数，须结合载荷、时间戳和发送协议。
 
-[RFC 7273 §4～6](https://www.rfc-editor.org/rfc/rfc7273.html "citation")分别声明时间戳参考时钟与媒体时钟来源；`ts-refclk`和`mediaclk`表达不同关系。操作系统墙钟由PTP校准，本身不足以证明音频ADC速率也被该时钟约束。跨节点相干增强应检查参考钟、媒体时钟、初始映射、累计采样计数和不连续事件；缺少关系声明时不能仅以两个文件头相同采样率认定同步。
+[RFC 7273 §4～6](https://www.rfc-editor.org/rfc/rfc7273.html)分别声明时间戳参考时钟与媒体时钟来源；`ts-refclk`和`mediaclk`表达不同关系。操作系统墙钟由PTP校准，本身不足以证明音频ADC速率也被该时钟约束。跨节点相干增强应检查参考钟、媒体时钟、初始映射、累计采样计数和不连续事件；缺少关系声明时不能仅以两个文件头相同采样率认定同步。
 
-Audinate的[Dante Controller官方时钟页](https://dev.audinate.com/GA/dante-controller/userguide/webhelp/content/clock_synchronization.htm "citation")描述Dante设备的领导/跟随时钟：默认使用PTPv1，设备启用RTP时也使用PTPv2；硬件设备可用板载或外部字时钟，Dante Virtual Soundcard使用计算机时钟。[官方延迟页](https://dev.audinate.com/GA/dante-controller/userguide/webhelp/content/latency.htm "citation")中的接收延迟是从输入样本时间戳到预定播放时刻的安排，实际流使用发送与接收设置中较高的值；通用计算机端点还可能需要额外延迟。这属于相应Dante平台的系统合同，不是对普通Wi-Fi设备的硬件采样锁定或任意操作系统的实时保证。部署时仍须检查具体端点、外部字时钟和实际状态；本书没有连接Dante硬件或运行PTP验收。
+Audinate的[Dante Controller官方时钟页](https://dev.audinate.com/GA/dante-controller/userguide/webhelp/content/clock_synchronization.htm)描述Dante设备的领导/跟随时钟：默认使用PTPv1，设备启用RTP时也使用PTPv2；硬件设备可用板载或外部字时钟，Dante Virtual Soundcard使用计算机时钟。[官方延迟页](https://dev.audinate.com/GA/dante-controller/userguide/webhelp/content/latency.htm)中的接收延迟是从输入样本时间戳到预定播放时刻的安排，实际流使用发送与接收设置中较高的值；通用计算机端点还可能需要额外延迟。这属于相应Dante平台的系统合同，不是对普通Wi-Fi设备的硬件采样锁定或任意操作系统的实时保证。部署时仍须检查具体端点、外部字时钟和实际状态；本书没有连接Dante硬件或运行PTP验收。
 
 ### I37：先算有效负载，再讨论链路带宽
 
@@ -816,7 +816,7 @@ Audinate的[Dante Controller官方时钟页](https://dev.audinate.com/GA/dante-c
 
 分帧频谱不能套时域码率。例如FFT512、帧移256、complex64单边257个频点，在16kHz下每秒62.5帧，每路有效负载为$257\times8\times62.5=128500$ B/s，即1.028Mbit/s，尚未加帧标签和控制信息。[E13-15](../../../../chapters/13_distributed-enhancement.md#e13-15)同时列出PCM、float32和复谱口径。
 
-另作一个显式包头算式：单路PCM16每10ms发送160点，载荷320B；若假定无扩展/CSRC的12B RTP基本头、8B UDP头和无选项的20B IPv4头，每包360B，每秒100包，即288kbit/s，比纯载荷高12.5%。这些头长分别见[RFC 3550 §5.1](https://www.rfc-editor.org/rfc/rfc3550.html#section-5.1 "citation")、[RFC 768格式](https://www.rfc-editor.org/rfc/rfc768.html "citation")和[RFC 791 §3.1](https://www.rfc-editor.org/rfc/rfc791.html#section-3.1 "citation")。以太网、VLAN、无线竞争/重传、安全封装和PTP均未计入，所以这是声明条件下的数学预算，不是实测吞吐量。广播维数下降还须与目标信息损失、量化误差、等待和缺口分母一起比较，不能仅凭码率称增强质量无损。
+另作一个显式包头算式：单路PCM16每10ms发送160点，载荷320B；若假定无扩展/CSRC的12B RTP基本头、8B UDP头和无选项的20B IPv4头，每包360B，每秒100包，即288kbit/s，比纯载荷高12.5%。这些头长分别见[RFC 3550 §5.1](https://www.rfc-editor.org/rfc/rfc3550.html#section-5.1)、[RFC 768格式](https://www.rfc-editor.org/rfc/rfc768.html)和[RFC 791 §3.1](https://www.rfc-editor.org/rfc/rfc791.html#section-3.1)。以太网、VLAN、无线竞争/重传、安全封装和PTP均未计入，所以这是声明条件下的数学预算，不是实测吞吐量。广播维数下降还须与目标信息损失、量化误差、等待和缺口分母一起比较，不能仅凭码率称增强质量无损。
 
 
 <a id="industrial-current-interface-contracts"></a>

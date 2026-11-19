@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
-"""把 chapters/ 18 篇及 codes/chapters/ch00/research/ 6 篇 Markdown 建成静态站。
+"""把 chapters/ 19 篇及 codes/chapters/ch00/research/ 6 篇 Markdown 建成静态站。
 
 用法（报告根目录）：
     .venv/bin/python scripts/build_site.py
 
-产物：site/index.html（首页）+ site/01..17_*.html（17 篇正文/专题/附录），
-另有 site/research/index.html 和 5 篇独立研究页、主清单 109 个与独立实验 170 个合成 WAV，
+产物：site/index.html（首页）+ site/00..17_*.html（18 篇正文/专题/附录），
+另有 site/research/index.html 和 5 篇独立研究页、主清单 109 个与独立实验合成 WAV，
 以及 4 个真实录音/派生 WAV；源码按章保存，发布 URL 保持原样。
-左侧边栏 = 首页 + 17 篇 + 每篇的二级及以下小节锚点，顶部面包屑，
+左侧边栏 = 首页 + 18 篇 + 每篇的二级及以下小节锚点，顶部面包屑，
 文末上一篇/下一篇（首页不输出该盒）。图片直接引用 ../figures/（不复制）。
-数学公式用 MathJax CDN 渲染（离线时显示源码，页面顶部有提示）。
+数学公式用 MathJax 渲染（离线时显示源码，页面顶部有提示）。
 """
 import os
 import sys
@@ -27,13 +27,13 @@ from urllib.parse import quote, unquote, urlsplit, urlunsplit
 try:
     from scripts.build_markdown_helpers import (ALLOWED_LINK_SCHEMES, protect_code,
         restore_code, validate_url_schemes, render_markdown, parsed_markdown_headings,
-        map_table_cell_text)
+        map_table_cell_text, shield_math)
     from scripts.code_layout import MAIN_AUDIO_GROUP_CHAPTER, main_audio_manifest_path, main_audio_path
     from scripts.chapter_identity import LEGACY_HTML_ROUTES, inject_exercise_aliases
 except ModuleNotFoundError:  # direct ``python scripts/build_site.py``
     from build_markdown_helpers import (ALLOWED_LINK_SCHEMES, protect_code,
         restore_code, validate_url_schemes, render_markdown, parsed_markdown_headings,
-        map_table_cell_text)
+        map_table_cell_text, shield_math)
     from code_layout import MAIN_AUDIO_GROUP_CHAPTER, main_audio_manifest_path, main_audio_path
     from chapter_identity import LEGACY_HTML_ROUTES, inject_exercise_aliases
 
@@ -198,6 +198,7 @@ def main_audio_sources():
     return result
 
 CHAPTERS = [
+    ("00_math-foundations.md", "第 0 章 · 全书数学基础与信号分析预备"),
     ("01_problem-definition.md", "第 1 章 · 问题定义与双耳启示"),
     ("02_basics-signal-model.md", "第 2 章 · 声音到达阵列时发生了什么"),
     ("03_array-geometry.md", "第 3 章 · 阵列几何形态"),
@@ -238,6 +239,23 @@ NARROW_TABLE_POLICIES = {
         ("编号", "文件", "配图", "难度", "建议学习单元"): (60, {1: 3, 4: 6}),
         ("图", "文件", "所在文档", "类型", "内容"): (60, {1: 5, 4: 6}),
     },
+    SRC / "00_math-foundations.md": {
+        ("章节", "核心声学与信号处理算法", "依赖的本章数学预备节与核心公式", "常见数学误区与数值陷阱"): (68, {1: 8, 2: 18, 3: 22, 4: 20}),
+    },
+    SRC / "01_problem-definition.md": {
+        ("处理方式", "输出目标功率", "输出噪声功率", "输出 SNR（线性比）", "相对单麦 SNR 改善"): (54, {1: 10, 2: 10, 3: 10, 4: 12, 5: 12}),
+        ("物理方位描述", r"本书水平角 $\theta$", r"SOFA 球坐标 $(\phi_{\mathrm{SOFA}}, \delta_{\mathrm{SOFA}})$", r"球谐余纬角 $\vartheta$", r"SOFA 笛卡尔 $(x, y, z)\ [\mathrm{m}]$"): (66, {1: 10, 2: 10, 3: 18, 4: 12, 5: 16}),
+        ("截取窗口", r"逐样本乘积 $v_1[n]v_2[n]$", r"$P_1, P_2$", r"交叉项 $C_{12}$", "等权平均序列", "平均输出均方"): (64, {1: 9, 2: 13, 3: 9, 4: 10, 5: 12, 6: 11}),
+        ("双声道试听样本（左声道在前、右声道在后）", r"左路延迟 $d_L$", r"增益 $g_L, g_R$", "解析 ITD", "解析 ILD"): (58, {1: 22, 2: 8, 3: 10, 4: 9, 5: 9}),
+        (r"频率 $f$", r"左功率增益 $\lvert H_L(f)\rvert^2$", r"右功率增益 $\lvert H_R(f)\rvert^2$", "解析逐频 ILD", "解析逐频 IPD（右减左）"): (58, {1: 8, 2: 13, 3: 13, 4: 11, 5: 13}),
+        ("输入源谱", r"左 PCM 整数平方和 $E_L$", r"右 PCM 整数平方和 $E_R$", "左 PCM 均方", "右 PCM 均方", "全带 PCM ILD"): (64, {1: 10, 2: 12, 3: 12, 4: 10, 5: 10, 6: 10}),
+    },
+    SRC / "02_basics-signal-model.md": {
+        ("参与平均的通道", "仅对角项预测功率", "保留交叉项的实际平均功率", "实际导出 WAV 相对仅对角预测的偏差（dB）"): (54, {1: 12, 2: 12, 3: 14, 4: 16}),
+        ("输入序列与操作", r"原长度 $L$", r"FFT 长度 $N$", "加权模方和", r"原样本均方值 $P_x$"): (52, {1: 14, 2: 8, 3: 8, 4: 11, 5: 11}),
+        ("频率（Hz）", r"$\Gamma_{\mathrm{3D}}$ ／ $\Gamma_{\mathrm{2D}}$", "三维预测 DI（dB）", "二维实测 DI（dB）", "二维漏噪增量（dB）", "二维最优 DI（dB）"): (64, {1: 8, 2: 12, 3: 11, 4: 11, 5: 11, 6: 11}),
+        ("频率（kHz）", "线性插值 DSB（dB）", "线性插值阻塞残差（dB）", "8 抽头 sinc DSB（dB）", "8 抽头 sinc 阻塞残差（dB）"): (56, {1: 8, 2: 12, 3: 12, 4: 12, 5: 12}),
+    },
     SRC / "03_array-geometry.md": {
         ("失配类型", "示例量级", "首先受影响的量", "按该示例计算", "可采取的措施"): (70, {1: 7, 2: 9, 3: 9, 4: 18, 5: 16}),
     },
@@ -250,6 +268,7 @@ NARROW_TABLE_POLICIES = {
         ("参考麦", r"参考目标传递 $b_r$", r"Souden 权重 $\vec w_{S,r}$", r"输出目标响应 $\vec w^H\vec b$", "输出噪声功率"): (64, {1: 8, 2: 12, 3: 19, 4: 13, 5: 12}),
         ("权重", "线性 WNG", "WNG／dB", "复响应误差上界", "可保证的响应幅度下界"): (54, {1: 8, 2: 10, 3: 10, 4: 12, 5: 14}),
         (r"绝对加载 $\varepsilon$", r"相对加载 $\alpha=\varepsilon/11$", "线性 WNG", r"干扰功率增益 $|\vec w^H\vec b|^2$", "原协方差输出噪声功率"): (63, {1: 9, 2: 13, 3: 11, 4: 13, 5: 17}),
+        (r"绝对加载 $\varepsilon$", r"相对加载 $\alpha=\varepsilon/11$", "线性 WNG", r"干扰功率增益 $\lvert\vec w^H\vec b\rvert^2$", "原协方差输出噪声功率"): (63, {1: 9, 2: 13, 3: 11, 4: 13, 5: 17}),
         ("", "Frost（1972）", "GSC"): (46, {1: 8, 2: 19, 3: 19}),
         ("设计变化", "可能获得的能力", "同时增加的风险", "必须固定的比较条件"): (52, {1: 8, 2: 14, 3: 15, 4: 15}),
         (r"$\alpha$ 取值", "加载相对平均特征值的大小", "白噪声增益", "指向性/零陷深度", "稳健性", "适用场合"): (71, {1: 9, 2: 13, 3: 10, 4: 12, 5: 13, 6: 14}),
@@ -277,8 +296,27 @@ NARROW_TABLE_POLICIES = {
         ("对照支路", "目标损伤功率", "残余噪声功率", "总误差功率", "解析NMSE"): (46, {1: 10, 2: 9, 3: 9, 4: 9, 5: 9}),
         ("对照支路", r"PCM误差整数能量 $E$", "实际PCM MSE", "实际PCM NMSE"): (48, {1: 10, 2: 14, 3: 12, 4: 12}),
     },
+    SRC / "07_wpe-dereverberation.md": {
+        ("nara-wpe 0.0.11 接口", "实际读取的旧帧", "当前观测减去预测值", "缓冲取点差异根源"): (52, {1: 12, 2: 12, 3: 13, 4: 15}),
+        (r"阶数分配方案（$M=8$，$F=257$，complex128）", "频带与阶数配置", r"全频带 $\mathbf R(f)$ 驻留内存", r"$\sum_f D(f)^3$ 分解规模代理"): (56, {1: 14, 2: 14, 3: 14, 4: 14}),
+        ("求解器路径", "实际分解与诊断的矩阵", "双精度数值秩", "二范数条件数", "求得系数"): (56, {1: 10, 2: 14, 3: 9, 4: 10, 5: 13}),
+        (r"接收帧 $t$", r"参考源时刻 $t-3$", r"参考当前目标 $y_t$", r"统一延迟历史 $s[t-3]$", r"修正延迟历史 $s[t-6]$"): (54, {1: 8, 2: 11, 3: 11, 4: 12, 5: 12}),
+    },
     SRC / "08_speech-separation.md": {
         ("后窗输出", "每声道整数误差", "实际 PCM MSE", "实际 PCM 相对平方误差"): (44, {1: 8, 2: 13, 3: 11, 4: 12}),
+        ("盲分离测试输入类型", r"混合输入两路 SI-SDR（$\mathrm{dB}$）", r"盲分离输出两路 SI-SDR（$\mathrm{dB}$）", r"平均 SI-SDRi（$\mathrm{dB}$）", "回投影后对参考麦源图像的均方根（RMS）比"): (64, {1: 12, 2: 13, 3: 13, 4: 11, 5: 15}),
+    },
+    SRC / "12_acoustic-imaging.md": {
+        ("求解方案", r"最优非负源强 $\vec q$", r"扫描平方残差 $S(\vec q)$", r"完整 CSM 平方残差 $F(\vec q)$"): (50, {1: 12, 2: 14, 3: 12, 4: 12}),
+        ("去对角求解方案", r"最优非负源强 $\vec q$", "补偿后扫描平方残差", "去对角 CSM 平方残差"): (50, {1: 12, 2: 14, 3: 12, 4: 12}),
+    },
+    SRC / "14_spatial-wearable-arrays.md": {
+        ("应用形态", "典型传感器配置", "期望输出目标", "核心物理与工程瓶颈"): (56, {1: 10, 2: 14, 3: 14, 4: 18}),
+    },
+    SRC / "15_target-extraction-diarization.md": {
+        ("线索模态", "物理可观测量", "典型应用场景", "核心失效条件"): (52, {1: 10, 2: 14, 3: 14, 4: 14}),
+        ("评估维度", "级联链路（TS-VAD → GSS → ASR）", "序列化联合识别（SOT）", "日志条件化大模型（DiCoW）"): (56, {1: 10, 2: 16, 3: 15, 4: 15}),
+        ("音频样本（试听与下载）", "声道、信号构成与稳窗指标核对"): (46, {1: 22, 2: 24}),
     },
     SRC / "09_source-tracking.md": {
         ("t（s）", "观测与真标签", "分配至 A/B", "错配数", "硬关联角误差 A/B（度）", "真值关联角误差 A/B（度）", "A 角度方差（度²）"): (63, {1: 5, 2: 11, 3: 8, 4: 6, 5: 12, 6: 12, 7: 9}),
@@ -345,11 +383,12 @@ CSS = """
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
 h1,h2,h3,h4{scroll-margin-top:60px}
+@media screen{.main a[id]:not([href]){scroll-margin-top:60px}}
 @media screen{.main a[id^="e"],.main .exercise-alias{scroll-margin-top:80px}}
 @media screen{.main .exercise-alias{top:0}}
 @media screen{.main a[id="e05-20"]{scroll-margin-top:60px}}
 @media screen{.main a[id="e17-11"],.main a[id="e17-12"],.main a[id="e17-13"],.main a[id="e17-14"],.main a[id="e17-15"]{scroll-margin-top:140px}}
-@media screen{.main .exercise-alias[id="e13-11"],.main .exercise-alias[id="e13-12"],.main .exercise-alias[id="e13-13"],.main .exercise-alias[id="e13-14"],.main .exercise-alias[id="e13-15"],.main .exercise-alias[id="e15-11"],.main .exercise-alias[id="e15-12"],.main .exercise-alias[id="e15-13"],.main .exercise-alias[id="e15-14"],.main .exercise-alias[id="e15-15"]{scroll-margin-top:140px}}
+@media screen{.main .exercise-alias[id="e13-11"],.main .exercise-alias[id="e13-12"],.main .exercise-alias[id="e13-13"],.main .exercise-alias[id="e13-14"],.main .exercise-alias[id="e13-15"],.main .exercise-alias[id="e15-11"]:has(~ a[id="e17-11"]),.main .exercise-alias[id="e15-12"]:has(~ a[id="e17-12"]),.main .exercise-alias[id="e15-13"]:has(~ a[id="e17-13"]),.main .exercise-alias[id="e15-14"]:has(~ a[id="e17-14"]),.main .exercise-alias[id="e15-15"]:has(~ a[id="e17-15"]){scroll-margin-top:140px}}
 @media screen{.main a[id^="e06-"]{scroll-margin-top:60px}}
 @media screen{.main a[id^="e07-"],.main a[id^="e08-"]{scroll-margin-top:60px}}
 @media screen{.main a[id^="e11-"]{scroll-margin-top:60px}}
@@ -1219,10 +1258,12 @@ def stage_gss_audio(source, destination):
 
 
 def clean_label(text):
-    text = re.sub(r"!\[.*?\]\(.*?\)", "", text)
-    text = re.sub(r"[`*_~]", "", text)
-    text = re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", text)
-    return re.sub(r"\s+", " ", text).strip()
+    protected, repo = shield_math(text)
+    protected = re.sub(r"!\[.*?\]\(.*?\)", "", protected)
+    protected = re.sub(r"[`*_~]", "", protected)
+    protected = re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", protected)
+    restored = repo.substitute(protected)
+    return re.sub(r"\s+", " ", restored).strip()
 
 
 def source_digest():
@@ -1239,7 +1280,7 @@ def source_digest():
     paths += [COURSE_HOME_ROOT / name for name in COURSE_HOME_FILES]
     paths += [ROOT / "assets/readme/lab" / name for name in ("single.wav", "left.wav", "right.wav")]
     paths += [ROOT / "assets/readme/cases/locata" / name for name in
-              ("MANIFEST.json", "NOTICE.txt", "before.wav", "after.wav", "mvdr.wav", "levels.svg")]
+              ("MANIFEST.json", "NOTICE.txt", "before.wav", "after.wav", "mvdr.wav", "focus.wav", "levels.svg")]
     paths += [Path(__file__), ROOT / "scripts" / "build_markdown_helpers.py",
               INLINE_LAYOUT_PATH,
               ROOT / "scripts" / "heading_aliases.py",
@@ -1247,6 +1288,7 @@ def source_digest():
               ROOT / "scripts" / "chapter_numbering.json",
               ROOT / "scripts" / "legacy_sequential_anchors.json",
               ROOT / "scripts" / "code_layout.py",
+              ROOT / "scripts" / "make_math_figures.py",
               ROOT / "scripts" / "make_figures.py",
               ROOT / "scripts" / "make_aec_figures.py",
               ROOT / "scripts" / "make_beamforming_figures.py",
@@ -1478,7 +1520,7 @@ def rewrite_site_links(html, source_path):
         # input as a download link; only the explicit mono derivatives play.
         if parsed.path.endswith("real_audio/demand_nriver_16ch_10s.wav"):
             return match.group(0)
-        if parsed.scheme or parsed.query or parsed.fragment or not re.fullmatch(r"(?:\.\./)?(?:audio|real_audio|moving_audio|tracking_audio|gss_audio|binaural_audio|spectral_audio|stft_audio|sweep_audio|baseline_audio|reflection_audio|phase_audio|binaural_beamforming_audio|geometry_audio|focus_audio|derivative_audio|apa_audio|reference_audio|delay_audio|css_audio|mint_audio|mask_audio|noise_audio|channel_audio|scenario_audio|weighted_audio|response_audio|imaging_audio|distributed_audio|wearable_audio|tse_audio)/[a-z0-9_]+\.wav", parsed.path):
+        if parsed.scheme or parsed.query or parsed.fragment or not re.fullmatch(r"(?:\.\./)?(?:audio|real_audio|room_audio|moving_audio|tracking_audio|gss_audio|binaural_audio|spectral_audio|stft_audio|sweep_audio|baseline_audio|reflection_audio|phase_audio|binaural_beamforming_audio|geometry_audio|focus_audio|derivative_audio|apa_audio|reference_audio|delay_audio|css_audio|mint_audio|mask_audio|noise_audio|channel_audio|scenario_audio|weighted_audio|response_audio|imaging_audio|distributed_audio|wearable_audio|tse_audio)/[a-z0-9_]+\.wav", parsed.path):
             return match.group(0)
         safe_href = escape(href, quote=True)
         safe_label = escape(re.sub(r'<[^>]+>', '', unescape(label)), quote=True)
@@ -1540,8 +1582,11 @@ def render(md_text, source_path=None):
         def wpe_table(match):
             inner = match.group(1)
             headers = re.findall(r'<th\b[^>]*>(.*?)</th>', inner, flags=re.S)
-            labels = [unescape(re.sub(r'<[^>]+>', '', value)).strip() for value in headers]
-            readable = labels == ["实现", "主要源码", "与教学基线的差别", "最小核对实验"]
+            labels = tuple(unescape(re.sub(r'<[^>]+>', '', value)).strip() for value in headers)
+            readable = labels in {
+                ("实现", "主要源码", "与教学基线的差别", "最小核对实验"),
+                ("开源实现", "核心源码入口", "相对本章教学基线的扩展", "移植前最小核验实验"),
+            }
             return '<table'+(' class="wpe-readable-table"' if readable else '')+'>'+inner+'</table>'
         html = re.sub(r'<table>(.*?)</table>', wpe_table, html, flags=re.S)
     if source_path.name == "08_speech-separation.md":
@@ -1551,8 +1596,11 @@ def render(md_text, source_path=None):
             labels = tuple(unescape(re.sub(r'<[^>]+>', '', value)).strip() for value in headers)
             readable = labels in {
                 ("路线", "代表", "思想", "局限"),
+                ("分离路线", "典型代表方法", "核心建模机制", "主要适用前提与边界"),
                 ("结构", "代表", "主要结构", "结果复现要求", "优点与限制"),
+                ("架构流派", "代表模型", "核心网络结构", "复现核查要件", "工程优势与部署限制"),
                 ("固定时轴输出", "解析MSE", "PCM误差整数能量 $E$", "实际PCM MSE", "实际PCM相对平方误差"),
+                ("固定时轴输出", "解析 MSE", "PCM 误差整数能量 $E$", "实际 PCM MSE", "实际 PCM 相对平方误差 $E/D$"),
             }
             return '<table'+(' class="separation-readable-table"' if readable else '')+'>'+inner+'</table>'
         html = re.sub(r'<table>(.*?)</table>', separation_table, html, flags=re.S)
@@ -1634,11 +1682,13 @@ def render(md_text, source_path=None):
             headers = re.findall(r'<th\b[^>]*>(.*?)</th>', inner, flags=re.S)
             labels = tuple(unescape(re.sub(r'<[^>]+>', '', value)).strip() for value in headers)
             policy = policies.get(labels)
-            if (imaging_audio_page and labels == ("文件", "通道", "内容")
-                    and "imaging_audio/" in inner):
-                # Keep the native player, narrow channel count and explanatory
-                # column readable together; only this chapter's five WAVs.
-                policy = (44, {1: 22, 2: 3, 3: 18})
+            if imaging_audio_page and "imaging_audio/" in inner:
+                if labels == ("文件", "通道", "内容"):
+                    # Keep the native player, narrow channel count and explanatory
+                    # column readable together; only this chapter's five WAVs.
+                    policy = (44, {1: 22, 2: 3, 3: 18})
+                elif labels == ("文件", "用途"):
+                    policy = (42, {1: 22, 2: 20})
             if policy is None:
                 return match.group(0)
             width, columns = policy
@@ -1867,14 +1917,24 @@ def publish_files(replacements, removals=(), *, boundary=None):
 
 
 def with_course_landing(page):
-    """Put the course before the guide without moving any published guide anchor."""
+    """Put the course before the guide with top-level <header> and a single <main>."""
     template, css, script = (
         (COURSE_HOME_ROOT / name).read_text(encoding="utf-8") for name in COURSE_HOME_FILES
     )
+    if "</header>\n" not in template or not template.endswith("</div>\n"):
+        raise ValueError("课程主页模板缺少顶栏闭合标签或外层容器结尾")
+    template_main = template.replace(
+        "</header>\n",
+        "</header>\n</div>\n<main id=\"course-page-main\">\n<div class=\"course\">\n",
+        1,
+    )
     return (page.replace('</head>', '<style>' + css + '</style></head>', 1)
             .replace('<body id="top">', '<body id="top" class="course-page">', 1)
-            .replace('href="#main-content">跳到正文', 'href="#course-home">跳到课程入口', 1)
-            .replace('<div class="wrap">', template + '\n<div class="wrap">', 1)
+            .replace('href="#main-content">跳到正文', 'href="#course-title">跳到课程正文', 1)
+            .replace('<header class="topbar"><a href="index.html">🏠 首页</a> &nbsp;/&nbsp; 导读与导航</header>\n', '', 1)
+            .replace('<div class="wrap">', template_main + '<div class="wrap">', 1)
+            .replace('<main class="main" id="main-content" tabindex="-1">', '<div class="main" id="main-content" tabindex="-1">', 1)
+            .replace('</main></div><a class="topbtn"', '</div></div></main><a class="topbtn"', 1)
             .replace('</body>', '<script>' + script + '</script></body>', 1))
 
 
@@ -2009,10 +2069,16 @@ def main():
                   if path.is_file() and path.name not in apa_names]
         reference_names = stage_reference_audio(REFERENCE_AUDIO_ROOT, temp_out / "reference_audio")
         (OUT / "reference_audio").mkdir(exist_ok=True)
+        stale += [path for path in (OUT / "reference_audio").iterdir()
+                  if path.is_file() and path.name not in reference_names]
         delay_names = stage_delay_audio(DELAY_AUDIO_ROOT, temp_out / "delay_audio")
         (OUT / "delay_audio").mkdir(exist_ok=True)
+        stale += [path for path in (OUT / "delay_audio").iterdir()
+                  if path.is_file() and path.name not in delay_names]
         css_names = stage_css_audio(CSS_AUDIO_ROOT, temp_out / "css_audio")
         (OUT / "css_audio").mkdir(exist_ok=True)
+        stale += [path for path in (OUT / "css_audio").iterdir()
+                  if path.is_file() and path.name not in css_names]
         mint_names = stage_mint_audio(MINT_AUDIO_ROOT, temp_out / "mint_audio")
         (OUT / "mint_audio").mkdir(exist_ok=True)
         stale += [path for path in (OUT / "mint_audio").iterdir()
@@ -2023,18 +2089,32 @@ def main():
                   if path.is_file() and path.name not in mask_names]
         noise_names = stage_noise_audio(NOISE_AUDIO_ROOT, temp_out / "noise_audio")
         (OUT / "noise_audio").mkdir(exist_ok=True)
+        stale += [path for path in (OUT / "noise_audio").iterdir()
+                  if path.is_file() and path.name not in noise_names]
         channel_names = stage_channel_audio(CHANNEL_AUDIO_ROOT, temp_out / "channel_audio")
         (OUT / "channel_audio").mkdir(exist_ok=True)
+        stale += [path for path in (OUT / "channel_audio").iterdir()
+                  if path.is_file() and path.name not in channel_names]
         scenario_names = stage_scenario_audio(SCENARIO_AUDIO_ROOT, temp_out / "scenario_audio")
         (OUT / "scenario_audio").mkdir(exist_ok=True)
+        stale += [path for path in (OUT / "scenario_audio").iterdir()
+                  if path.is_file() and path.name not in scenario_names]
         weighted_names = stage_weighted_audio(WEIGHTED_AUDIO_ROOT, temp_out / "weighted_audio")
         (OUT / "weighted_audio").mkdir(exist_ok=True)
+        stale += [path for path in (OUT / "weighted_audio").iterdir()
+                  if path.is_file() and path.name not in weighted_names]
         response_names = stage_response_audio(RESPONSE_AUDIO_ROOT, temp_out / "response_audio")
         (OUT / "response_audio").mkdir(exist_ok=True)
+        stale += [path for path in (OUT / "response_audio").iterdir()
+                  if path.is_file() and path.name not in response_names]
         imaging_names = stage_imaging_audio(IMAGING_AUDIO_ROOT, temp_out / "imaging_audio")
         (OUT / "imaging_audio").mkdir(exist_ok=True)
+        stale += [path for path in (OUT / "imaging_audio").iterdir()
+                  if path.is_file() and path.name not in imaging_names]
         distributed_names = stage_distributed_audio(DISTRIBUTED_AUDIO_ROOT, temp_out / "distributed_audio")
         (OUT / "distributed_audio").mkdir(exist_ok=True)
+        stale += [path for path in (OUT / "distributed_audio").iterdir()
+                  if path.is_file() and path.name not in distributed_names]
         wearable_names = stage_wearable_audio(WEARABLE_AUDIO_ROOT, temp_out / "wearable_audio")
         (OUT / "wearable_audio").mkdir(exist_ok=True)
         stale += [path for path in (OUT / "wearable_audio").iterdir()
@@ -2045,17 +2125,29 @@ def main():
                   if path.is_file() and path.name not in tse_names]
         spectral_names = stage_spectral_audio(SPECTRAL_AUDIO_ROOT, temp_out / "spectral_audio")
         (OUT / "spectral_audio").mkdir(exist_ok=True)
+        stale += [path for path in (OUT / "spectral_audio").iterdir()
+                  if path.is_file() and path.name not in spectral_names]
         sweep_names = stage_sweep_audio(SWEEP_AUDIO_ROOT, temp_out / 'sweep_audio')
         (OUT / 'sweep_audio').mkdir(exist_ok=True)
+        stale += [path for path in (OUT / "sweep_audio").iterdir()
+                  if path.is_file() and path.name not in sweep_names]
         baseline_names = stage_baseline_audio(BASELINE_AUDIO_ROOT, temp_out / 'baseline_audio')
         (OUT / 'baseline_audio').mkdir(exist_ok=True)
+        stale += [path for path in (OUT / "baseline_audio").iterdir()
+                  if path.is_file() and path.name not in baseline_names]
         reflection_names = stage_reflection_audio(REFLECTION_AUDIO_ROOT, temp_out / 'reflection_audio')
         (OUT / 'reflection_audio').mkdir(exist_ok=True)
+        stale += [path for path in (OUT / "reflection_audio").iterdir()
+                  if path.is_file() and path.name not in reflection_names]
         binaural_beamforming_names = stage_binaural_beamforming_audio(
             BINAURAL_BEAMFORMING_ROOT, temp_out / "binaural_beamforming_audio")
         (OUT / "binaural_beamforming_audio").mkdir(exist_ok=True)
+        stale += [path for path in (OUT / "binaural_beamforming_audio").iterdir()
+                  if path.is_file() and path.name not in binaural_beamforming_names]
         phase_names = stage_phase_audio(PHASE_AUDIO_ROOT, temp_out / 'phase_audio')
         (OUT / 'phase_audio').mkdir(exist_ok=True)
+        stale += [path for path in (OUT / "phase_audio").iterdir()
+                  if path.is_file() and path.name not in phase_names]
         publish_files([(temp_out / name, OUT / name) for name in sorted(expected)] +
                       [(temp_out / "audio" / name, OUT / "audio" / name) for name in audio_names] +
                       [(temp_out / "real_audio" / name, OUT / "real_audio" / name)

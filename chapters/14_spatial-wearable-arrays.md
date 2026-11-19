@@ -1,6 +1,6 @@
-> ⚠️ 本篇是第 14 章（扩展专题Ⅲ；正文与扩展专题共 15 章，其中第 12～15 章为四篇扩展专题，另有附录 A、B），接在第 13 章分布式麦克风协同增强之后，系统介绍三维空间声场采集、参数化空间编码与可穿戴麦克风阵列处理。数学预备内容可回查第 16 章附录 A。
+> ⚠️ 本篇是本书正文第 14 章（扩展专题Ⅲ；正文共 16 章，即第 0～15 章，其中第 12～15 章为四篇扩展专题，另有附录 A、B），接在第 13 章分布式麦克风协同增强之后，系统介绍三维空间声场采集、参数化空间编码与可穿戴麦克风阵列处理。三维旋转群 $\mathrm{SO}(3)$、Wirtinger 复梯度与球面调和函数推导见[第 0 章 §0.1](00_math-foundations.md#sec-0-1)、[§0.5](00_math-foundations.md#sec-0-5)与[§0.7](00_math-foundations.md#sec-0-7)，全局符号速查见[第 16 章附录 A](16_appendix-symbols-math.md)。
 >
-> [🏠 首页](00_overview.md) ｜ 上一篇：[13 分布式麦克风协同增强](13_distributed-enhancement.md) ｜ 下一篇：[15 条件目标提取与多模态前端](15_target-extraction-diarization.md)
+> 首页导读：[00_overview.md](00_overview.md) ｜ 上一篇：[13_distributed-enhancement.md](13_distributed-enhancement.md) ｜ 下一篇：[15_target-extraction-diarization.md](15_target-extraction-diarization.md)
 
 ---
 
@@ -42,7 +42,7 @@
 | IC | 耳间相干度（Interaural Coherence；亦称双耳相干度） | 衡量左右耳背景声场归一化互相关模长的感知指标，决定声像宽度与包围感 |
 | OE | 耳道闭塞效应（Occlusion Effect） | 耳塞封闭外耳道后，佩戴者自身发声经颅骨振动在耳道腔内激起低频声压增益的现象 |
 
-阅读本章前，建议先熟悉[第 1 章 §1.1 双耳听觉的三类定位线索](01_problem-definition.md#sec-1-1)、[第 2 章 §2.3 平面波与频域内积约定](02_basics-signal-model.md#sec-2-3)，以及[第 5 章 §5.4 MVDR](05_beamforming.md#sec-5-4) 与 [§5.5 双耳波束形成](05_beamforming.md#sec-5-5)；复矩阵 Wirtinger 求导、Hermitian 正定 Cholesky 分解与柯西—施瓦茨（Cauchy-Schwarz）不等式可回查[附录 A](16_appendix-symbols-math.md)。全章严格沿用本书前向傅里叶核 $e^{-\mathrm{j}2\pi f t}$（对应正频率复相量时间因子 $e^{+\mathrm{j}\omega t}$，角频率 $\omega = 2\pi f$，波数 $\kappa = \omega / c$）以及共轭内积滤波器输出 $y = \vec w^H \vec x$。
+阅读本章前，建议先熟悉[第 1 章双耳听觉的三类定位线索](01_problem-definition.md#sec-u-1d5f9c4fa9)、[第 2 章 §2.3 平面波与频域内积约定](02_basics-signal-model.md#sec-2-3)，以及[第 5 章 §5.4 MVDR](05_beamforming.md#sec-5-4)、[§5.5 LCMV 多约束](05_beamforming.md#sec-5-5)与[§5.8 球谐域波束形成](05_beamforming.md#sec-5-8)；三维旋转矩阵 $\mathrm{SO}(3)$、复矩阵 Wirtinger 求导、球贝塞尔函数及实球谐函数预备可参看[第 0 章 §0.1、§0.5、§0.7](00_math-foundations.md#sec-0-1)与[附录 A](16_appendix-symbols-math.md)。全章严格沿用本书前向傅里叶核 $e^{-\mathrm{j}2\pi f t}$（对应正频率复相量时间因子 $e^{+\mathrm{j}\omega t}$，角频率 $\omega = 2\pi f$，波数 $\kappa = \omega / c$）以及共轭内积滤波器输出 $y = \vec w^H \vec x$。
 
 ### 14.2 一阶 Ambisonics（FOA）与正四面体阵列编码
 
@@ -330,7 +330,7 @@ J_{\mathrm{LS}}(\vec w_e)
 &\quad+\vec p_e^\top\mathbf W_\Omega\vec p_e^*.
 \end{aligned}$$
 
-按照[附录 A §16.3](16_appendix-symbols-math.md#sec-16-3) 的 Wirtinger 复梯度法则，记加权 Gram 阵为 $\mathbf G = \mathbf H\mathbf W_\Omega\mathbf H^H$、正规矩阵为 $\mathbf A = \mathbf G + \lambda\mathbf I_M$，将 $\vec w_e$ 视为常数对共轭向量 $\vec w_e^*$ 求偏导并令其等于零向量，即得线性正规方程 $\mathbf A\vec w_e = \vec b_e$（其中右端向量 $\vec b_e = \mathbf H\mathbf W_\Omega\vec p_e^*$）。当 $\mathbf A$ 严格正定时，唯一全局最优闭式解为：
+按照[第 0 章 §0.5](00_math-foundations.md#sec-0-5)与[附录 A §16.3](16_appendix-symbols-math.md#sec-16-3) 的 Wirtinger 复梯度法则，记加权 Gram 阵为 $\mathbf G = \mathbf H\mathbf W_\Omega\mathbf H^H$、正规矩阵为 $\mathbf A = \mathbf G + \lambda\mathbf I_M$，将 $\vec w_e$ 视为常数对共轭向量 $\vec w_e^*$ 求偏导并令其等于零向量，即得线性正规方程 $\mathbf A\vec w_e = \vec b_e$（其中右端向量 $\vec b_e = \mathbf H\mathbf W_\Omega\vec p_e^*$）。当 $\mathbf A$ 严格正定时，唯一全局最优闭式解为：
 
 $$\begin{aligned}
 \mathbf A
@@ -517,7 +517,7 @@ r_{\mathrm{LR}}(\beta)
 图 82 将 §14.5～§14.7 的高频双耳匹配与背景耳间相干度折中汇总在四幅子图中：
 
 - **子图 (a) 双麦三方向手算算例幅度对比**：横轴为端射 $+90^\circ$、正横 $0^\circ$、端射 $-90^\circ$ 三个离散方向，纵轴为无量纲合成幅度增益。在正横 $0^\circ$ 处，红色柱（BSM-LS）因目标反相冲突跌至 $0$，两侧端射也衰减至 $1/\sqrt{2} \approx 0.707$；而绿色柱（BSM-MagLS）经一步投影便与深灰目标柱在全部三个方向等高重合于 $1.0$。
-- **子图 (b) $4\ \mathrm{kHz}$ 左耳（$+90^\circ$）全方位合成幅度方向图**：横轴为水平方位角（$0^\circ$～$355^\circ$，步长 $5^\circ$ 共 $72$ 个方向），纵轴为幅度响应（单位：$\mathrm{dB}$）。实验模拟半径 $2.5\ \mathrm{cm}$ 的正交四麦圆环在正则化 $\lambda = 0.05$ 下拟合 $+90^\circ$ 左耳带头影幅度与跨头快速相移的目标耳响应（深灰实线）：红色虚线（BSM-LS）在以 $270^\circ$ 为中心的 $210^\circ$～$330^\circ$ 对侧头影相位缠绕区出现逾 $12\ \mathrm{dB}$ 的剧烈波纹凹陷，而绿色点划线（$25$ 轮 BSM-MagLS）平滑贴合目标声影包络。
+- **子图 (b) $4\ \mathrm{kHz}$ 左耳（$+90^\circ$）全方位合成幅度方向图**：横轴为水平方位角（$0^\circ$～$355^\circ$，步长 $5^\circ$ 共 $Q = 72$ 个方向），纵轴为幅度响应（单位：$\mathrm{dB}$）。实验模拟半径 $2.5\ \mathrm{cm}$ 的正交四麦圆环在未归一化方向权 $\mathbf W_\Omega = \mathbf I_{72}$ 与加性正则化 $\lambda = 0.05$（折合每方向平均正则强度 $\lambda / Q \approx 6.94\times 10^{-4}$，目标头影调幅 $1 + 0.55\sin\varphi$；注意章末 [E14-08](#e14-08) 改取 $Q = 12$ 方向与调幅 $1 + 0.60\sin\varphi$，同在 $\lambda = 0.05$ 下每方向平均正则强度升至 $\lambda / Q \approx 4.17\times 10^{-3}$，故两处加权幅度均方误差尾数略有差异：$0.2483\to 0.00058$ 对 $0.2441\to 0.00050$）下拟合 $+90^\circ$ 左耳带头影幅度与跨头快速相移的目标耳响应（深灰实线）：红色虚线（BSM-LS）在以 $270^\circ$ 为中心的 $210^\circ$～$330^\circ$ 对侧头影相位缠绕区出现逾 $12\ \mathrm{dB}$ 的剧烈波纹凹陷，而绿色点划线（$25$ 轮 BSM-MagLS）平滑贴合目标声影包络。
 - **子图 (c) BSM-MagLS 迭代目标单调下降曲线**：横轴为交替相位投影迭代轮次 $t \in [1, 25]$，纵轴为子图 (b) 算例对应的正则化目标值 $J(\vec w, \vec\phi)$。蓝色折线验证了目标值在前 $10$ 轮内迅速下降、全程严格满足 $J^{(t+1)} \le J^{(t)}$ 并平稳收敛。
 - **子图 (d) BMVDR 参考混合系数 $\beta$ 折中曲线**：横轴为原始参考麦克风混合比例 $\beta \in [0, 1]$，纵轴为共用无量纲刻度。紫色实线及方框锚点（$\beta = 0, 0.2, 0.5, 1.0$）显示输出背景噪声耳间相干度 $\mathrm{IC}_{\mathrm{out}}(\beta)$ 从完全相干的 $1.0$ 平滑回落至真实环境值 $0.2$；橙色虚线绘制按 $2.5\ \mathrm{dB}$ 归一化的单耳信噪比增益（即 $\mathrm{SNR\ 增益}/2.5\ \mathrm{dB}$，$\beta = 0$ 处读数 $0.887$ 对应 $+2.22\ \mathrm{dB}$），直观展示小比例混合（如 $\beta \in [0.3, 0.5]$）可用很小的降噪代价换回显著的背景空间包围感。
 
@@ -640,7 +640,7 @@ g_{\mathrm{MVDR},2}
 图 83 将理论相干模型、跨频段融合增益与本章 16 位 PCM 合成音频的实测误差逐一对应：
 
 - **子图 (a) $1.5\ \mathrm{cm}$ 麦间距下声扩散与湍流风噪相干度**：横轴为线性频率（$0$～$4000\ \mathrm{Hz}$），纵轴为无量纲空间相干系数（取 $c = 343\ \mathrm{m/s}$、$\alpha_{\mathrm{long}} = 0.14$）。蓝色实线（三维各向同性扩散声场）在 $2\ \mathrm{kHz}$ 以下始终高于 $0.95$，而红色虚线（$U_c = 3\ \mathrm{m/s}$ 对流湍流风噪）在数百赫兹内迅速衰减趋零，直观说明微孔径气导差分无法低噪对消风噪。
-- **子图 (b) 跨模态自语音融合输出 SINR 频响**：横轴为对数频率（$100$～$6000\ \mathrm{Hz}$），纵轴为输出信干噪比 $\mathrm{SINR}$（单位：$\mathrm{dB}$）。图中用平滑单调过渡曲线刻画低频强风加闭塞增效向高频风消骨导衰减的演变，黑色圆点标出前文 $250\ \mathrm{Hz}$（$+20.01\ \mathrm{dB}$）与 $4000\ \mathrm{Hz}$（$+13.06\ \mathrm{dB}$）两处精确手算锚点：红色虚线（单气导外麦）在低频跌入负分贝，橙色点划线（单耳内闭塞麦）在高频跌入负分贝，绿色实线（跨模态 MVDR 融合）则在全频带包络两条单模态曲线之上。
+- **子图 (b) 跨模态自语音融合输出 SINR 频响**：横轴为对数频率（$100$～$6000\ \mathrm{Hz}$），纵轴为输出信干噪比 $\mathrm{SINR}$（单位：$\mathrm{dB}$）。尽管模型参数 $H_{\mathrm{occ}}(f)$ 与 $\sigma_{\mathrm{air}}^2(f)$ 在 $250$～$4000\ \mathrm{Hz}$ 对数频率轴上按余弦窗单调插值，绿色实线（跨模态 MVDR 融合输出 $\mathrm{SINR}$）本身并非单调曲线：它从 $250\ \mathrm{Hz}$ 手算锚点的 $+20.01\ \mathrm{dB}$ 出发，在 $2.2$～$2.4\ \mathrm{kHz}$ 交越频带（此时骨导增益已衰减而外麦风噪尚未彻底消退）先下探至约 $+6.3\ \mathrm{dB}$ 的局部谷值（约 $2.37\ \mathrm{kHz}$ 处最低为 $+6.34\ \mathrm{dB}$），随后随高频风噪消退回升至 $4000\ \mathrm{Hz}$ 手算锚点的 $+13.06\ \mathrm{dB}$；即便在交越谷底处，它仍全程严格包络在红色虚线（单气导外麦，低频跌入负分贝）与橙色点划线（单耳内闭塞麦，高频跌入负分贝）两条单模态曲线之上。
 - **子图 (c) 实际 PCM 解码波形片段**：横轴为自稳定窗起点（第 $1600$ 个采样点）算起的相对时间（$0$～$6\ \mathrm{ms}$，共 $96$ 点），纵轴为 16 位 PCM 解码数字幅度。红色虚线（外麦受风第 $0$ 声道）呈大幅低频慢摆，橙色点线（内麦朴素逆均衡）叠满密集的 $5\ \mathrm{kHz}$ 高频底噪毛刺，而绿色点划线（跨模态 MVDR 融合）与深灰实线（干净参考）紧密重合。
 - **子图 (d) 稳窗 $[1600, 30400)$ 实际 PCM 参考均方误差**：横轴依次排列外麦受风、内麦未均衡、朴素逆均衡与 MVDR 融合四组输出，纵轴为相对干净参考的无量纲均方误差 $\mathrm{MSE}$（柱顶数字为 PCM 实测值，黑色短横虚线为解析期望值）。外麦受风实测为 $0.02025$，内麦未均衡虽底噪低但因低频翻倍与高频衰减产生 $0.00945$ 的音色失真误差，朴素逆均衡消除了目标失真却把高频底噪放大百倍使误差回升至 $0.02005$，唯有跨模态 MVDR 融合将总误差压低至 $0.00030$，较单模态方案降低近两个数量级。
 
@@ -818,7 +818,7 @@ E(\Delta\phi)
 
 **题目。** （1）在 [E14-07](#e14-07) 同一阵列上，从零相位初值出发执行 $1$ 步 BSM-MagLS 更新，验证其输出幅度与目标幅度完全一致；（2）在半径 $2.5\ \mathrm{cm}$ 四麦圆阵、$4\ \mathrm{kHz}$、$12$ 个等间隔水平方位角与正则化 $\lambda = 0.05$ 下运行 $25$ 轮 BSM-MagLS，核对目标序列单调不增且加权幅度误差显著低于 BSM-LS。
 
-**解答。** （1）零初相下右端项为 $\mathbf H[1, 1, 1]^\top = [3, 1]^\top$，左乘 $(\mathbf H\mathbf H^H)^{-1}$ 得 $\vec w^{(1)} = [1, 0]^\top$，合成响应 $[1, 1, 1]^\top$，幅度均方误差一步归零。（2）调用 `chapter14_exercises` 的 `E14-08` 条目：四麦 $12$ 方向算例中 BSM-LS 的平均幅度均方误差约为 $0.2441$，而 $25$ 轮 BSM-MagLS 将其压低至约 $0.0005$（最大方向幅度偏差仅约 $0.34\ \mathrm{dB}$），且全部相邻迭代步满足 $J^{(t+1)} - J^{(t)} \le 0$。
+**解答。** （1）零初相下右端项为 $\mathbf H[1, 1, 1]^\top = [3, 1]^\top$，左乘 $(\mathbf H\mathbf H^H)^{-1}$ 得 $\vec w^{(1)} = [1, 0]^\top$，合成响应 $[1, 1, 1]^\top$，幅度均方误差一步归零。（2）调用 `chapter14_exercises` 的 `E14-08` 条目：四麦 $Q = 12$ 方向算例（$\mathbf W_\Omega = \mathbf I_{12}$，目标调幅 $1 + 0.60\sin\varphi$，$\lambda = 0.05$ 即每方向平均正则强度 $\lambda / Q \approx 4.17\times 10^{-3}$，区别于图 82(b)(c) 中 $Q = 72$ 方向、调幅 $1 + 0.55\sin\varphi$ 对应的 $\lambda / Q \approx 6.94\times 10^{-4}$）下，BSM-LS 的平均幅度均方误差约为 $0.2441$，而 $25$ 轮 BSM-MagLS 将其压低至约 $0.0005$（最大方向幅度偏差仅约 $0.34\ \mathrm{dB}$），且全部相邻迭代步满足 $J^{(t+1)} - J^{(t)} \le 0$。
 
 <a id="e14-09"></a>
 
@@ -987,8 +987,8 @@ $$\begin{aligned}
 - Corcos, G. M.，*The Structure of the Turbulent Pressure Field in Boundary-Layer Flows*，*Journal of Fluid Mechanics* 18(3)，1964，第 353～378 页：建立式(14-23)边界层湍流壁面脉动压力的流向与横向指数互谱衰减模型。
 - Tagliasacchi, M. 等，*SEANet: A Multi-Modal Speech Enhancement Network*（及跨模态气导/骨导统计融合系列研究），Interspeech 2020；以及 Liebich, S. 等，*Acoustic Path Delay and Comb-Filtering Effects in Hear-Through / Active Noise Cancellation Earbuds*，*IEEE/ACM TASLP* 系列研究：定量分析耳道闭塞效应、骨导高频信噪比退化及主动通透模式的百微秒级延迟约束。
 - Zotter, F. 与 Frank, M.，*All-Round Ambisonic Panning and Decoding*，*JAES* 60(10)，2012，第 807～820 页：系统导出二维环阵与三维球面阵的能量矢量最优阶次权重 $\max\text{-}r_E$ 闭式根与双频带解码准则。
-- Audio Engineering Society，*AES69-2022: AES Standard for File Exchange — Spatial Acoustic Data File Format (SOFA 2.1)*，2022：规范头相关冲激响应（`SimpleFreeFieldHRIR`）的球面与笛卡尔坐标体系、听者姿态三轴与双耳接收点元数据合同。
+- Audio Engineering Society，*AES69-2022: AES Standard for File Exchange — Spatial Acoustic Data File Format (SOFA 2.1)*，2022：规范头相关冲激响应（`SimpleFreeFieldHRIR`）的球面与笛卡尔坐标体系、听者姿态三轴与双耳接收点元数据规范。
 
 ---
 
-[🏠 首页](00_overview.md) ｜ 上一篇：[13 分布式麦克风协同增强](13_distributed-enhancement.md) ｜ 下一篇：[15 条件目标提取与多模态前端](15_target-extraction-diarization.md)
+> 📄 本篇信息：配图 4 张 ｜ [回首页](00_overview.md)

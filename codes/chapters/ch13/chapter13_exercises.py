@@ -17,7 +17,7 @@ import numpy as np
 from codes.chapters.ch00.core.audio_samples import pcm16_bytes, read_pcm16
 from codes.chapters.ch04.core.covariance import _load_covariance
 from codes.chapters.ch13.core.distributed import (
-    known_models, mwf_weights, mse_components, compressed_mwf, distributed_updates,
+    mwf_weights, mse_components, compressed_mwf, distributed_updates,
     run_covariance_experiments, jacobi_control, step_size_control, tree_sum_control, gevd_control, broadcast_statistics_control,
 )
 from codes.chapters.ch13.core.distributed_audio import (

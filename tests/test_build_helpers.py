@@ -664,7 +664,7 @@ class BuildHelpersTest(unittest.TestCase):
             self.assertIn('id="ch-12-sec-12-1"', page)
             self.assertIn('id="ch-12-e14-14"', page)
             self.assertIn('id="ch-12-e16-14"', page)
-            self.assertIn('href="#ch-12-e14-14"', page)
+            self.assertIn('href="#ch-12-e16-14"', page)
             self.assertNotIn('id="ch-2-sec-12-1"', page)
             self.assertIn('全书完', page)
             documents = {name: (source / name).read_text() for name in names}
@@ -1010,10 +1010,10 @@ class BuildHelpersTest(unittest.TestCase):
         )
 
     def test_figure_semantics_accept_any_reuse_and_reject_mismatch_or_orphan(self):
-        refs = [(f"图{i} 示意", f"fig{i:02d}_x.png", i) for i in range(1, 89)]
+        refs = [(f"图{i} 示意", f"fig{i:02d}_x.png", i) for i in range(1, 93)]
         refs.extend([("图1 复用", "fig01_x.png", 1),
                      ("图23 复用", "fig23_x.png", 23)])
-        names = [f"fig{i:02d}_x.png" for i in range(1, 89)]
+        names = [f"fig{i:02d}_x.png" for i in range(1, 93)]
         self.assertEqual(quality_check.figure_inventory_issues(refs, names), [])
         bad_refs = list(refs)
         bad_refs[0] = ("图2 错配", "fig01_x.png", 1)

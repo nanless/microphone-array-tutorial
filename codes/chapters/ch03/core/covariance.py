@@ -7,6 +7,16 @@ import numpy as np
 from codes.chapters.ch02.core.conventions import finite_real_array, finite_real_scalar, hermitian_part, validate_cft
 
 
+def _contains_bool(value: object) -> bool:
+    if isinstance(value, (bool, np.bool_)):
+        return True
+    if isinstance(value, np.ndarray):
+        return value.dtype.kind == "b"
+    if isinstance(value, (list, tuple)):
+        return any(_contains_bool(item) for item in value)
+    return False
+
+
 def spatial_covariance(
     spectra: np.ndarray,
     *,
@@ -29,6 +39,11 @@ def spatial_covariance(
     effective diagonal power that underflows to zero is rejected explicitly.
     Demeaning a constant effective input legitimately returns zero.
     """
+    if not isinstance(demean, (bool, np.bool_)):
+        raise ValueError("demean must be boolean")
+    raw_spectra = np.asarray(spectra)
+    if raw_spectra.dtype.kind not in "iufc" or _contains_bool(spectra):
+        raise ValueError("spectra must contain numeric values, not bool or text")
     x = validate_cft(spectra)
     denominator_floor = finite_real_scalar(denominator_floor, "denominator_floor")
     if not np.isfinite(denominator_floor) or denominator_floor <= 0.0:
@@ -37,6 +52,8 @@ def spatial_covariance(
     if weights is None:
         weight = np.ones((frequencies, frames), dtype=float)
     else:
+        if _contains_bool(weights):
+            raise ValueError("weights must contain real numeric values, not bool")
         weight = finite_real_array(weights, "weights")
         if weight.shape == (frames,):
             weight = np.broadcast_to(weight, (frequencies, frames))
@@ -127,8 +144,13 @@ def recursive_covariance(
     discards the old values, and a nonzero positive diagonal that underflows
     is rejected rather than interpreted as a physically silent channel.
     """
-    old = np.asarray(previous, dtype=complex)
-    x = np.asarray(snapshot, dtype=complex)
+    raw_prev = np.asarray(previous)
+    raw_snap = np.asarray(snapshot)
+    if (raw_prev.dtype.kind not in "iufc" or raw_snap.dtype.kind not in "iufc"
+            or _contains_bool(previous) or _contains_bool(snapshot)):
+        raise ValueError("previous and snapshot must contain numeric values, not bool or text")
+    old = np.asarray(raw_prev, dtype=complex)
+    x = np.asarray(raw_snap, dtype=complex)
     if old.ndim != 3 or old.shape[1] != old.shape[2]:
         raise ValueError("previous must have shape frequency x channels x channels")
     if x.shape != (old.shape[1], old.shape[0]):

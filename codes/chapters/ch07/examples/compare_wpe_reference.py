@@ -14,8 +14,6 @@ through. Random complex inputs keep the power floors inactive in this test.
 
 from __future__ import annotations
 
-import importlib.metadata
-import hashlib
 import json
 import platform
 from pathlib import Path

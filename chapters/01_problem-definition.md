@@ -1,6 +1,6 @@
-> ⚠️ 本篇是本书正文第 1 章（正文共 15 章，含第 12～15 章四篇扩展专题，另有附录 A、B），可独立阅读，前后篇见下方导航。
+> 本篇是本书正文第 1 章；正文与扩展专题共 16 章（第 0～15 章，其中第 0 章为数学基础，第 12～15 章为四篇扩展专题），另有附录 A、B。本篇可独立阅读，前后篇见下方导航。
 >
-> 🏠 首页导读：[`00_overview.md`](00_overview.md) ｜ 上一篇：（无） ｜ 下一篇：[02_basics-signal-model.md](02_basics-signal-model.md)
+> 导读首页：[00_overview.md](00_overview.md) ｜ 上一篇：[00_math-foundations.md](00_math-foundations.md) ｜ 下一篇：[02_basics-signal-model.md](02_basics-signal-model.md)
 
 ---
 
@@ -75,7 +75,7 @@ $$
 
 第二，即便理论随机噪声模型的总体数学期望为零（$\mathbb{E}[u[n]]=0$，此时总体均方等于总体方差），截取一段有限长度 $N$ 的样本时，样本均值 $\bar u$ 通常也不会恰好等于零（见练习 E01-04）。
 
-在受控仿真实验里，我们可以把干净目标语音分量 $s[n]$ 和加性噪声分量 $v[n]$ 分开保存，在同一个时间窗口 $[0, N-1]$ 上分别按式(1-1)算出目标功率 $P_s$ 与噪声功率 $P_v$。由此定义功率口径下的**信噪比（Signal-to-Noise Ratio，SNR）**以及经过算法处理后的信噪比改善倍数 $G$：
+在受控仿真实验里，我们可以把干净目标语音分量 $s[n]$ 和加性噪声分量 $v[n]$ 分开保存，在同一个时间窗口 $[0, N-1]$ 上分别按式(1-1)算出目标功率 $P_s$ 与噪声功率 $P_v$。由此定义功率口径下的**信噪比（Signal-to-Noise Ratio，SNR）**以及经过算法处理后的信噪比改善倍数 $G$（分贝标度与功率/幅度对数换算见[第 0 章 §0.2](00_math-foundations.md#sec-0-2)）：
 
 $$
 \begin{aligned}
@@ -112,7 +112,7 @@ A 计权曲线模仿人耳在安静环境下的等响度感受，以 $1\ \mathrm
 | $1000\ \mathrm{Hz}$ | $0.00\ \mathrm{dB}$ | $1.000000$ | $100\%$（归一化基准） |
 | $2500\ \mathrm{Hz}$ | $+1.27\ \mathrm{dB}$ | $1.339883$ | 约 $134\%$ |
 
-对于单只麦克风直接给人耳试听，这种计权基本符合听感；可一旦把麦克风装进小孔径阵列做一阶差分或超指向波束形成（§5.3），情况就会彻底反转。间距 $d$ 远小于声波波长时，相邻麦克风相减虽然能抵消后方干扰，却也会让目标语音在低频按正弦规律呈每倍频程 $-6.02\ \mathrm{dB}$ 滚降；为了拉平目标语音频响，无失真均衡滤波器必须向低频施加反比于 $f^2$（即每倍频程 $+6.02\ \mathrm{dB}$）的功率增益，叠加传感器原有的 $1/f$ 闪烁底噪后，输出低频自噪声会按 $1/f^3$（每倍频程 $+9.03\ \mathrm{dB}$）剧烈膨胀！因此，做小孔径阵列低频噪声预算时必须索取未计权的自噪声功率谱密度曲线，绝不能只看单个 $\mathrm{dB(A)}$ 标称值（本章练习 E01-12 将亲手算出一款 $\mathrm{dB(A)}$ 标称值高出约 $1.59\ \mathrm{dB}$ 的硅麦，在 $1\ \mathrm{cm}$ 差分阵上反而令语音频带自噪声恶化约 $5\ \mathrm{dB}$ 的反转实例）。
+对于单只麦克风直接给人耳试听，这种计权基本符合听感；可一旦把麦克风装进小孔径阵列做一阶差分或超指向波束形成（§5.3），情况就会彻底反转。间距 $d$ 远小于声波波长时，相邻麦克风相减虽然能抵消后方干扰，却也会让目标语音在低频按正弦规律呈每倍频程 $-6.02\ \mathrm{dB}$ 滚降；为了拉平目标语音频响，无失真均衡滤波器必须向低频施加反比于 $f^2$（即每倍频程 $+6.02\ \mathrm{dB}$）的功率增益，叠加传感器原有的 $1/f$ 闪烁底噪后，输出低频自噪声会按 $1/f^3$（每倍频程 $+9.03\ \mathrm{dB}$）剧烈膨胀！因此，做小孔径阵列低频噪声预算时必须索取未计权的自噪声功率谱密度曲线，绝不能只看单个 $\mathrm{dB(A)}$ 标称值（本章练习 E01-12 将亲手算出一款 $\mathrm{dB(A)}$ 标称值在 50 Hz～8 kHz 宽带语音频率网格上平均约 1.59 dB 占优的硅麦，在 $1\ \mathrm{cm}$ 差分阵上反而令语音频带自噪声恶化约 $5\ \mathrm{dB}$ 的反转实例）。
 
 #### 三类阵列收益与白噪声增益
 
@@ -138,7 +138,7 @@ $$
 x_m[n] = s[n] + v_m[n],
 $$
 
-其中各路的目标分量已经对齐成同一个波形 $s[n]$（均方功率记为 $P_s=\mathbb{E}[s[n]^2]>0$）；其实即便声源处在近场，只要把传播时延和球面距离衰减都补偿到位，使各通道目标分量恢复成同一波形 $s[n]$，下面的代数推导同样成立。设各通道加性噪声 $v_m[n]$ 满足零均值（$\mathbb{E}[v_m[n]]=0$）、等功率（$\mathbb{E}[v_m[n]^2]=P_v>0$）以及跨通道互不相关（当 $m\ne \ell$ 时，$\mathbb{E}[v_m[n]v_\ell[n]]=0$）。单只麦克风上的输入信噪比为 $\mathrm{SNR}_{\mathrm{in}}=P_s/P_v$。
+其中各路的目标分量已经对齐成同一个波形 $s[n]$（均方功率记为 $P_s=\mathbb{E}[s[n]^2]>0$）；其实即便声源处在近场，只要把传播时延和球面距离衰减都补偿到位，使各通道目标分量恢复成同一波形 $s[n]$，下面的代数推导同样成立。设各通道加性噪声 $v_m[n]$ 满足零均值（$\mathbb{E}[v_m[n]]=0$）、等功率（$\mathbb{E}[v_m[n]^2]=P_v>0$）以及跨通道互不相关（当 $m\ne \ell$ 时，$\mathbb{E}[v_m[n]v_\ell[n]]=0$；数学期望与二阶统计量的基本性质见[第 0 章 §0.6](00_math-foundations.md#sec-0-6)）。单只麦克风上的输入信噪比为 $\mathrm{SNR}_{\mathrm{in}}=P_s/P_v$。
 
 **第一步：先看把 $M$ 路信号直接相加。** 记直接求和输出为 $z[n]$，再除以通道数 $M$ 的等权平均输出为 $y[n]$：
 
@@ -206,7 +206,7 @@ $$
 
 #### 空间相关噪声的矩阵着色与半正定边界
 
-如果各通道噪声不再像电子热噪声那样彼此独立，而是像空调风声或房间混响那样在麦克风之间存在相关性，仿真实验里又该如何生成符合真实空间统计的多通道测试噪声呢？在频率 $f$ 处，假设 $M$ 只麦克风的噪声方差归一化为 $1$，所有通道两两之间的复相关系数可以排成一个 $M \times M$ 的**空间相干矩阵（spatial coherence matrix）** $\mathbf{\Gamma}(f)$，满足共轭对称性 $\mathbf{\Gamma}^H = \mathbf{\Gamma}$（称为厄米矩阵，矩阵与共轭转置 $^H$ 的基础复习见[附录 A §16.3](16_appendix-symbols-math.md#sec-16-3)）。给定零均值、跨通道互不相关的标准白噪声列向量 $\vec z$（满足 $\mathbb{E}[\vec z\vec z^H] = \mathbf{I}_M$），用线性着色矩阵 $\mathbf{C}$ 混合出 $\vec v = \mathbf{C}\vec z$，要使输出协方差 $\mathbb{E}[\vec v\vec v^H] = \mathbf{C}\mathbf{C}^H$ 精确等于目标 $\mathbf{\Gamma}(f)$，核心就落在了求解矩阵平方根分解上（经典球面与圆柱各向同性噪声场合成方法见 [Habets 等，JASA，124(5)，2911–2917，2008](https://doi.org/10.1121/1.2987429)）。
+如果各通道噪声不再像电子热噪声那样彼此独立，而是像空调风声或房间混响那样在麦克风之间存在相关性，仿真实验里又该如何生成符合真实空间统计的多通道测试噪声呢？在频率 $f$ 处，假设 $M$ 只麦克风的噪声方差归一化为 $1$，所有通道两两之间的复相关系数可以排成一个 $M \times M$ 的**空间相干矩阵（spatial coherence matrix）** $\mathbf{\Gamma}(f)$，满足共轭对称性 $\mathbf{\Gamma}^H = \mathbf{\Gamma}$（称为厄米矩阵，复矩阵共轭转置 $^H$ 与特征分解见[第 0 章 §0.3](00_math-foundations.md#sec-0-3) 及[附录 A §16.3](16_appendix-symbols-math.md#sec-16-3)）。给定零均值、跨通道互不相关的标准白噪声列向量 $\vec z$（满足 $\mathbb{E}[\vec z\vec z^H] = \mathbf{I}_M$），用线性着色矩阵 $\mathbf{C}$ 混合出 $\vec v = \mathbf{C}\vec z$，要使输出协方差 $\mathbb{E}[\vec v\vec v^H] = \mathbf{C}\mathbf{C}^H$ 精确等于目标 $\mathbf{\Gamma}(f)$，核心就落在了求解矩阵平方根分解上（经典球面与圆柱各向同性噪声场合成方法见 [Habets 等，JASA，124(5)，2911–2917，2008](https://doi.org/10.1121/1.2987429)）。
 
 并不是随便写一个对称矩阵都能充当合法的空间相干矩阵。对任意复权重向量 $\vec w \in \mathbb{C}^M$，线性加权输出 $\vec w^H\vec v$ 的平均功率绝不可能是负数，将其与厄米矩阵的酉特征分解 $\mathbf\Gamma = \mathbf U\mathbf\Lambda\mathbf U^H$ 并列写出：
 
@@ -221,7 +221,7 @@ $$
 
 这一物理功率非负铁律等价于 $\mathbf{\Gamma}(f)$ 的所有实特征值均满足 $\lambda_m \ge 0$，即矩阵必须是**半正定（positive semidefinite，PSD）**的。许多数值库默认调用下三角 Cholesky 分解（$\mathbf{\Gamma} = \mathbf{L}\mathbf{L}^H$）求着色因子，但它要求矩阵严格正定（所有 $\lambda_m > 0$）；一旦遇到零频弥散声场（各通道噪声完全同相，$\mathbf{\Gamma}(0)=\vec{1}\vec{1}^\top$，秩降为 $1$）或练习 E01-01 中的负相关奇异下界 $\rho = -1/(M-1)$，部分特征值精确归零，朴素 Cholesky 分解就会因主元开方量归零或浮点微负而报错中断，而上式定义的厄米平方根矩阵 $\mathbf{\Gamma}^{1/2}$ 在任意秩亏半正定边界依然精确唯一成立（本章练习 E01-11 将亲手复算二麦有理数算例与四麦奇异边界）。
 
-### 1.1 双耳听觉的三类定位线索
+### 双耳听觉的三类定位线索
 
 在正式推导任意几何的麦克风阵列之前，先看看大自然演化出的“双通道接收机”——人类的左右双耳——非常有助于建立物理直觉。从声学结构看，双耳好比架在球形刚性障板（头部）两侧、外加复杂非对称波导（耳廓）的两只传感器；与此同时，人类听觉还会调动转头运动、先验记忆与脑干神经核团协同判别方位。我们先借图 1 把双耳时间差、双耳声级差和方向相关谱形三类物理线索拆开看清（窄屏设备可点击[打开图1原图](../figures/fig01_binaural.png)放大阅读）：
 
@@ -318,7 +318,7 @@ $$
 
 工程中读取公开实测 HRTF 数据库或球面麦克风阵列校准数据时，最容易踩中的接口陷阱是三维角度定义不一致。国际音频工程协会标准 **AES69（Spatially Oriented Format for Acoustics，简称 SOFA）** 规定了头部局部右手笛卡尔坐标系：$+x_{\mathrm{SOFA}}$ 朝正前方，$+y_{\mathrm{SOFA}}$ 朝正左方，$+z_{\mathrm{SOFA}}$ 朝正上方；对应的球面坐标三元组记为 $(\phi_{\mathrm{SOFA}}, \delta_{\mathrm{SOFA}}, r)$，其中水平方位角 $\phi_{\mathrm{SOFA}}$ 从正前 $+x_{\mathrm{SOFA}}$ 向正左 $+y_{\mathrm{SOFA}}$ **逆时针**起算（与本章图 1(a) 向右顺时针为正的方位角 $\theta$ 恰成反号，满足 $\phi_{\mathrm{SOFA}} \equiv -\theta \pmod{360^\circ}$），**俯仰角（elevation）** $\delta_{\mathrm{SOFA}} \in [-90^\circ, +90^\circ]$ 则从水平赤道面朝头顶 $+z_{\mathrm{SOFA}}$ 度量。
 
-而在球谐域波束形成（[§5.8](05_beamforming.md#sec-5-8)、[§14.2](14_spatial-wearable-arrays.md#sec-14-2) 与[附录 A §16.1](16_appendix-symbols-math.md#sec-16-1)）中，数学物理公式常改用从天顶 $+z$ 轴向下度量的**极角 / 余纬角（colatitude）** $\vartheta = 90^\circ - \delta_{\mathrm{SOFA}}$（取值范围 $[0^\circ, 180^\circ]$）——注意水平面对应的是 $\vartheta = 90^\circ$ 而非 $0^\circ$！下表列出六个典型单位距离（$r=1\ \mathrm{m}$）方向在四套坐标表示下的精确换算，供写代码加载数据时逐项核对（手算推导与错传角度的后果见练习 E01-12，开源库 `libmysofa` 的球面插值细节见[源码研究手册第 1 篇](../codes/chapters/ch00/research/01_spatial_and_tracking.md)）：
+而在球谐域波束形成（[第 0 章 §0.1](00_math-foundations.md#sec-0-1)、[§0.7](00_math-foundations.md#sec-0-7)、[§5.8](05_beamforming.md#sec-5-8)、[§14.2](14_spatial-wearable-arrays.md#sec-14-2) 与[附录 A §16.1](16_appendix-symbols-math.md#sec-16-1)）中，数学物理公式常改用从天顶 $+z$ 轴向下度量的**极角 / 余纬角（colatitude）** $\vartheta = 90^\circ - \delta_{\mathrm{SOFA}}$（取值范围 $[0^\circ, 180^\circ]$）——注意水平面对应的是 $\vartheta = 90^\circ$ 而非 $0^\circ$！下表列出六个典型单位距离（$r=1\ \mathrm{m}$）方向在四套坐标表示下的精确换算，供写代码加载数据时逐项核对（手算推导与错传角度的后果见练习 E01-12，开源库 `libmysofa` 的球面插值细节见[源码研究手册第 1 篇](../codes/chapters/ch00/research/01_spatial_and_tracking.md)）：
 
 | 物理方位描述 | 本书水平角 $\theta$ | SOFA 球坐标 $(\phi_{\mathrm{SOFA}}, \delta_{\mathrm{SOFA}})$ | 球谐余纬角 $\vartheta$ | SOFA 笛卡尔 $(x, y, z)\ [\mathrm{m}]$ |
 |---|---|---|---|---|
@@ -644,7 +644,7 @@ $$
 
 **第一步：补齐最小欧拉公式铺垫，写出双抽头频率响应。** 用离散单位冲激序列 $\delta[n]$（仅在 $n=0$ 处为 $1$，其余全为 $0$）表示，左右滤波器的时域差分方程为 $y_L[n] = s[n] + 0.5s[n-1]$ 与 $y_R[n] = s[n] - 0.5s[n-1]$（规定源起点之前与结束之后的样本为零）。
 
-要把“延迟 1 个采样点”翻译到频域，只需用到复数里的**欧拉公式（Euler's formula）**（完整复数运算复习见[附录 A §16.3](16_appendix-symbols-math.md#sec-16-3)）：记虚数单位为正体 $\mathrm{j}$（满足 $\mathrm{j}^2 = -1$，工程中用 $\mathrm{j}$ 避开电流符号 $i$），任意实角度 $\phi$ 的复指数定义为 $e^{\mathrm{j}\phi} = \cos\phi + \mathrm{j}\sin\phi$，其复共轭为 $e^{-\mathrm{j}\phi} = \cos\phi - \mathrm{j}\sin\phi$，模恒为 $1$，且共轭对相加得 $e^{\mathrm{j}\phi} + e^{-\mathrm{j}\phi} = 2\cos\phi$。
+要把“延迟 1 个采样点”翻译到频域，只需用到复数里的**欧拉公式（Euler's formula）**（完整复数相量与傅里叶时移复习见[第 0 章 §0.2](00_math-foundations.md#sec-0-2) 及[附录 A §16.3](16_appendix-symbols-math.md#sec-16-3)）：记虚数单位为正体 $\mathrm{j}$（满足 $\mathrm{j}^2 = -1$，工程中用 $\mathrm{j}$ 避开电流符号 $i$），任意实角度 $\phi$ 的复指数定义为 $e^{\mathrm{j}\phi} = \cos\phi + \mathrm{j}\sin\phi$，其复共轭为 $e^{-\mathrm{j}\phi} = \cos\phi - \mathrm{j}\sin\phi$，模恒为 $1$，且共轭对相加得 $e^{\mathrm{j}\phi} + e^{-\mathrm{j}\phi} = 2\cos\phi$。
 
 在采样率 $f_s$ 下，记频率 $f$ 对应的数字角频率为 $\Omega_{\mathrm{d}} = 2\pi f / f_s$（单位：$\mathrm{rad}/\text{样本}$）；按前向傅里叶变换核 $e^{-\mathrm{j}\Omega_{\mathrm{d}} n}$ 的标准约定，时域推迟 1 个采样点 $s[n-1]$ 在频域恰好对应乘以相位因子 $e^{-\mathrm{j}\Omega_{\mathrm{d}}}$。记输入源在频率 $f$ 处的复数谱为 $S(f)$，左、右输出复数谱为 $Y_L(f), Y_R(f)$，对完整卷积做傅里叶变换可得
 
@@ -704,7 +704,7 @@ $$
 
 取 $f_s = 16000\ \mathrm{Hz}$，考察 $f_1 = 1\ \mathrm{kHz}$（$\Omega_{\mathrm{d}}=\pi/8$）与 $f_2 = 7\ \mathrm{kHz}$（$\Omega_{\mathrm{d}}=7\pi/8$）两个互补频点：它们的余弦值互为相反数（$\cos(\pi/8)\approx +0.923880$，$\cos(7\pi/8)\approx -0.923880$），导致左右功率增益正好对调、逐频 ILD 正负颠倒；但它们的正弦值却完全相等（$\sin(\pi/8) = \sin(7\pi/8) \approx 0.382683$），代入 $\arctan(0.382683/0.75)$ 立得完全相同的逐频相位差 $+27.032701^\circ$：
 
-| 频率 $f$ | 左功率增益 $|H_L(f)|^2$ | 右功率增益 $|H_R(f)|^2$ | 解析逐频 ILD | 解析逐频 IPD（右减左） |
+| 频率 $f$ | 左功率增益 $\lvert H_L(f)\rvert^2$ | 右功率增益 $\lvert H_R(f)\rvert^2$ | 解析逐频 ILD | 解析逐频 IPD（右减左） |
 |---|---|---|---|---|
 | $1\ \mathrm{kHz}$ | $2.173880$ | $0.326120$ | $-8.238574\ \mathrm{dB}$ | $+27.032701^\circ$ |
 | $7\ \mathrm{kHz}$ | $0.326120$ | $2.173880$ | $+8.238574\ \mathrm{dB}$ | $+27.032701^\circ$ |

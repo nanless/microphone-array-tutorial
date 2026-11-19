@@ -112,16 +112,16 @@ def generate_figure(figure_path=FIGURE, report_path=REPORT):
     colors = ['#258065' if row['acoustic_verdict'] == 'pass' else '#be5146' for row in rows]
     noise, total, error, wng, di = values.T
     axes[0, 0].bar(x, noise/target_power, color='#4b83b1', width=.55,
-                   label='输出噪声 / $P_s$（当前 $R_n$）')
-    axes[0, 0].plot(x, total, 'kd', markersize=6, label='总 NMSE（含目标失配）')
+                   label=r'柱：输出噪声 / $P_s$（当前 $\mathbf{R}_n$）')
+    axes[0, 0].plot(x, total, 'kd', markersize=6, label='菱形：总 NMSE（含目标失配）')
     for position, value in zip(x, noise):
         # The alpha=0 total-error marker lies just above the noise bar.
         # Move its noise label left so the two different quantities do not collide.
         offset, alignment = ((-12, 9), 'right') if position == 1 else ((0, 9), 'center')
         axes[0, 0].annotate(f'{value:.4f}', (position, value), xytext=offset,
                            textcoords='offset points', ha=alignment, fontsize=11.5)
-    axes[0, 0].set(title='(a) 当前 $R_n$：噪声与总误差', ylabel='无量纲：噪声 / $P_s$ 或 NMSE',
-                   xticks=x, xticklabels=labels, ylim=(0, 1.22))
+    axes[0, 0].set(title=r'(a) 当前 $\mathbf{R}_n$：噪声与总误差', ylabel='无量纲：噪声 / $P_s$ 或 NMSE',
+                   xticks=x, xticklabels=labels, ylim=(0, 1.32))
     axes[0, 0].legend(loc='upper right'); axes[0, 0].grid(axis='y', alpha=.2)
     axes[0, 1].bar(x, error, color=colors, width=.55)
     limit = parameters['response_amplitude_error_upper_limit']
@@ -161,7 +161,7 @@ def generate_figure(figure_path=FIGURE, report_path=REPORT):
                     ha='center', transform=axes[1, 1].transAxes, fontsize=11.5, linespacing=1.5)
     fig.suptitle('图79  同一已知单频模型：先核硬条件，再比较损失', fontsize=16)
     fig.text(.5, .012, '三麦间距 4 cm · 1 kHz · 名义目标 0° / 干扰 20° / 实际目标 5° · $P_s=1$\n'
-             '已知统计的数学控制；不产生音频，不代表未知失配保证、设备实测或语音识别成绩。',
+             '已知统计的数学基准；不产生音频，不代表未知失配保证、设备实测或语音识别成绩。',
              ha='center', fontsize=11.5)
     fig.tight_layout(rect=(0, .075, 1, .95), h_pad=2.0, w_pad=2.0)
     if _sources() != sources:

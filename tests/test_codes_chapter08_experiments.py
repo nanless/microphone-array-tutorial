@@ -332,11 +332,22 @@ class Chapter08Exercises(unittest.TestCase):
         self.assertAlmostEqual(ovl['secondary_to_primary_db'], -10.0, places=12)
         self.assertFalse(ovl['bypass'])
 
-        # Exact -18 dB boundary and invalid inputs.
+        # Exact -18 dB boundary, primary_idx == 1 preservation, and invalid inputs.
         at_boundary = np.array([[1.0, 0.0], [0.0, 10.0 ** (-0.9)]])
         self.assertTrue(single_speaker_bypass_gate(at_boundary, threshold_db=-18.0)['bypass'])
         above_boundary = np.array([[1.0, 0.0], [0.0, 10.0 ** (-0.89)]])
         self.assertFalse(single_speaker_bypass_gate(above_boundary, threshold_db=-18.0)['bypass'])
+        slot1_primary = np.array([[0.0, 1.0, 0.0, 0.0], [math.sqrt(99.0), 0.0, 0.0, 0.0]])
+        gate_slot1 = single_speaker_bypass_gate(slot1_primary, threshold_db=-18.0)
+        self.assertEqual(gate_slot1['primary_slot_index'], 1)
+        self.assertEqual(gate_slot1['secondary_slot_index'], 0)
+        self.assertTrue(gate_slot1['bypass'])
+        np.testing.assert_array_equal(gate_slot1['output_waveforms'][0], np.zeros(4))
+        np.testing.assert_allclose(
+            gate_slot1['output_waveforms'][1],
+            slot1_primary[0] + slot1_primary[1],
+            atol=1e-15,
+        )
         for bad_call in (
             lambda: single_speaker_bypass_gate(np.zeros((2, 4))),
             lambda: single_speaker_bypass_gate(at_boundary, threshold_db=0.0),

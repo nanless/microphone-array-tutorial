@@ -20,11 +20,11 @@ from urllib.parse import unquote, urlparse
 try:
     from scripts.code_layout import MAIN_AUDIO_GROUP_CHAPTER, main_audio_manifest_path, main_audio_path
     from scripts.build_site import _check_tracking_members, _read_tracking_manifest
-    from scripts.build_markdown_helpers import code_block_ranges, parsed_markdown_headings
+    from scripts.build_markdown_helpers import code_block_ranges, parsed_markdown_headings, shield_math
 except ModuleNotFoundError:  # direct ``python scripts/quality_check.py``
     from code_layout import MAIN_AUDIO_GROUP_CHAPTER, main_audio_manifest_path, main_audio_path
     from build_site import _check_tracking_members, _read_tracking_manifest
-    from build_markdown_helpers import code_block_ranges, parsed_markdown_headings
+    from build_markdown_helpers import code_block_ranges, parsed_markdown_headings, shield_math
 
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -146,11 +146,12 @@ EDITING_MARKERS = re.compile(
 
 EXPECTED_SECTION_COUNTS = {
     "00_overview.md": 10,
+    "00_math-foundations.md": 9,
     "01_problem-definition.md": 3,
     "02_basics-signal-model.md": 8,
     "03_array-geometry.md": 5,
     "04_doa-estimation.md": 11,
-    "05_beamforming.md": 13,
+    "05_beamforming.md": 11,
     "06_aec.md": 17,
     "07_wpe-dereverberation.md": 10,
     "08_speech-separation.md": 8,
@@ -164,14 +165,15 @@ EXPECTED_SECTION_COUNTS = {
     "16_appendix-symbols-math.md": 4,
     "17_appendix-guide.md": 7,
 }
-# 第 1～17 章的源 h4 进入合订目录和 PDF 第三级书签。此表是独立发布
+# 第 0～17 章的源 h4 进入合订目录和 PDF 第三级书签。此表是独立发布
 # 基线，不从构建脚本或待检产物反推。
 EXPECTED_SUBSECTION_COUNTS = {
+    "00_math-foundations.md": 45,
     "01_problem-definition.md": 24,
     "02_basics-signal-model.md": 51,  # 新增E19、独立数字扫频主题与E20
     "03_array-geometry.md": 34,
     "04_doa-estimation.md": 50,
-    "05_beamforming.md": 49,
+    "05_beamforming.md": 51,
     "06_aec.md": 73,  # reference-gain topic and E40/E41/E42 are four independent h4 topics
     "07_wpe-dereverberation.md": 60,
     "08_speech-separation.md": 65,  # OverIVA topic and three separately navigable exercises
@@ -189,6 +191,7 @@ EXPECTED_SUBSECTION_COUNTS = {
 # 上表为独立发布基线，不从待检 HTML 或构建器反推。
 EXPECTED_CHAPTERS = [
     ("00_overview.md", "导读与导航"),
+    ("00_math-foundations.md", "第 0 章 · 全书数学基础与信号分析预备"),
     ("01_problem-definition.md", "第 1 章 · 问题定义与双耳启示"),
     ("02_basics-signal-model.md", "第 2 章 · 声音到达阵列时发生了什么"),
     ("03_array-geometry.md", "第 3 章 · 阵列几何形态"),
@@ -207,9 +210,10 @@ EXPECTED_CHAPTERS = [
     ("16_appendix-symbols-math.md", "第 16 章 · 附录 A：符号术语数学"),
     ("17_appendix-guide.md", "第 17 章 · 附录 B：路径地图与练习"),
 ]
-EXPECTED_CHAPTER_COUNT = 18
+EXPECTED_CHAPTER_COUNT = 19
 # Independent published-topic identities; current display numbers differ.
 EXPECTED_PDF_TOPIC_IDS = {
+    "00_math-foundations.md": 18,
     "12_acoustic-imaging.md": 14, "13_distributed-enhancement.md": 15,
     "14_spatial-wearable-arrays.md": 16, "15_target-extraction-diarization.md": 17,
     "16_appendix-symbols-math.md": 12, "17_appendix-guide.md": 13,
@@ -224,12 +228,13 @@ EXPECTED_LEGACY_ROUTES = {
     "16_spatial-wearable-arrays.html": "14_spatial-wearable-arrays.html",
     "17_target-extraction-diarization.html": "15_target-extraction-diarization.html",
 }
-EXPECTED_SECTION_COUNT = 173
-EXPECTED_SUBSECTION_COUNT = 868
-EXPECTED_OUTLINE_ITEM_COUNT = 1059
-EXPECTED_FIGURE_NUMBERS = set(range(1, 89))
-EXPECTED_EXERCISE_COUNT = 427
+EXPECTED_SECTION_COUNT = 180
+EXPECTED_SUBSECTION_COUNT = 915
+EXPECTED_OUTLINE_ITEM_COUNT = 1114
+EXPECTED_FIGURE_NUMBERS = set(range(1, 93))
+EXPECTED_EXERCISE_COUNT = 443
 EXPECTED_EXERCISE_COUNTS = {
+    '00_math-foundations.md': 16,
     '01_problem-definition.md': 12, '02_basics-signal-model.md': 22,
     '03_array-geometry.md': 20, '04_doa-estimation.md': 27,
     '05_beamforming.md': 29, '06_aec.md': 44, '07_wpe-dereverberation.md': 26,
@@ -267,6 +272,7 @@ class PageParser(HTMLParser):
         self.links: list[str] = []
         self.nav_links: list[str] = []
         self.images: list[tuple[str, str | None]] = []
+        self.audios: list[str] = []
         self.heading_levels: list[int] = []
         self.h1_count = 0
         self.tags: Counter[str] = Counter()
@@ -298,6 +304,8 @@ class PageParser(HTMLParser):
                 self.nav_links.append(data["href"])
         if tag == "img" and "src" in data:
             self.images.append((data["src"], data.get("alt")))
+        if tag == "audio" and "src" in data:
+            self.audios.append(data["src"])
 
     def handle_endtag(self, tag):
         if tag == "nav" and self.nav_depth:
@@ -322,11 +330,13 @@ def strip_inline_code(text: str):
 
 
 def clean_heading_text(text: str):
-    text = re.sub(r"!\[.*?\]\(.*?\)", "", text)
-    text = re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", text)
-    text = re.sub(r"<[^>]+>", "", text)
-    text = re.sub(r"[`*_~]", "", text)
-    return re.sub(r"\s+", " ", unescape(text)).strip()
+    protected, repo = shield_math(text)
+    protected = re.sub(r"!\[.*?\]\(.*?\)", "", protected)
+    protected = re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", protected)
+    protected = re.sub(r"<[^>]+>", "", protected)
+    protected = re.sub(r"[`*_~]", "", protected)
+    restored = repo.substitute(protected)
+    return re.sub(r"\s+", " ", unescape(restored)).strip()
 
 
 def outline_heading_text(text: str):
@@ -595,15 +605,16 @@ def check_sources(errors: list[str], notices: list[str]):
     else:
         fail(errors, "缺少 AGENTS.md 当前协作规范")
     paths = sorted(CHAPTERS.glob("*.md"))
+    paths += sorted(RESEARCH_ROOT.glob("*.md"))
     paths += [p for p in (ROOT / "README.md", ROOT / "README_EN.md",
                           ROOT / "scripts" / "README.md",
                           ROOT / "codes" / "chapters" / "README.md") if p.exists()]
     readme_zh = ROOT / "README.md"
-    if readme_zh.exists() and "15 章正文 · 2 篇附录 · 427 道可运行练习 · 88 张编号图" not in readme_zh.read_text(encoding="utf-8"):
-        fail(errors, "README.md 全书统计基线过期：应含 15 章正文 · 2 篇附录 · 427 道可运行练习 · 88 张编号图")
+    if readme_zh.exists() and "16 章正文 · 2 篇附录 · 443 道可运行练习 · 92 张编号图" not in readme_zh.read_text(encoding="utf-8"):
+        fail(errors, "README.md 全书统计基线过期：应含 16 章正文 · 2 篇附录 · 443 道可运行练习 · 92 张编号图")
     readme_en = ROOT / "README_EN.md"
-    if readme_en.exists() and "15 chapters · 2 appendices · 427 runnable exercises · 88 numbered figures" not in readme_en.read_text(encoding="utf-8"):
-        fail(errors, "README_EN.md 全书统计基线过期：应含 15 chapters · 2 appendices · 427 runnable exercises · 88 numbered figures")
+    if readme_en.exists() and "16 chapters · 2 appendices · 443 runnable exercises · 92 numbered figures" not in readme_en.read_text(encoding="utf-8"):
+        fail(errors, "README_EN.md 全书统计基线过期：应含 16 chapters · 2 appendices · 443 runnable exercises · 92 numbered figures")
     for path in paths:
         original = path.read_text(encoding="utf-8")
         errors.extend(f"{path.relative_to(ROOT)}: {issue}"
@@ -859,7 +870,7 @@ def check_figures(errors: list[str]):
             if width < 800 or height < 300:
                 fail(errors, f"图片分辨率过低：figures/{name}: {width}×{height}")
             number = int(re.match(r"fig(\d{2})_", name).group(1))
-            script_name = ("make_wearable_figures.py" if 81 <= number <= 84 else "make_tse_figures.py" if 85 <= number <= 88 else "make_selection_figures.py" if number == 79 else "make_channel_figures.py" if number == 78 else "make_tracking_figures.py" if number == 77 else "make_css_figures.py" if number == 76 else "make_delay_figures.py" if number == 75 else "make_reference_figures.py" if number == 74 else "make_beamforming_figures.py" if number == 73 else "make_figures.py" if number <= 25 or number in (33, 34, 35, 36, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 80)
+            script_name = ("make_math_figures.py" if 89 <= number <= 92 else "make_wearable_figures.py" if 81 <= number <= 84 else "make_tse_figures.py" if 85 <= number <= 88 else "make_selection_figures.py" if number == 79 else "make_channel_figures.py" if number == 78 else "make_tracking_figures.py" if number == 77 else "make_css_figures.py" if number == 76 else "make_delay_figures.py" if number == 75 else "make_reference_figures.py" if number == 74 else "make_beamforming_figures.py" if number == 73 else "make_figures.py" if number <= 25 or number in (33, 34, 35, 36, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 80)
                            else "make_aec_figures.py")
             script_path = ROOT / "scripts" / script_name
             for issue in png_provenance_issues(path, script_path):
@@ -1451,8 +1462,15 @@ def check_site_links(errors: list[str]):
         parsed[path.resolve()] = parser
     for path, parser in parsed.items():
         name = path.relative_to(SITE.resolve()).as_posix()
-        for issue in url_scheme_issues(parser.links + [src for src, _alt in parser.images]):
+        for issue in url_scheme_issues(parser.links + [src for src, _alt in parser.images] + parser.audios):
             fail(errors, f"站点链接协议错误：{name}: {issue}")
+        for audio_src in parser.audios:
+            aurl = urlparse(audio_src)
+            if not aurl.scheme and not aurl.netloc:
+                atarget = (SITE / unquote(aurl.path).lstrip("/") if aurl.path.startswith("/")
+                           else path.parent / unquote(aurl.path))
+                if not atarget.resolve().is_file():
+                    fail(errors, f"站点音频不存在：{name} -> {audio_src}")
         for href in parser.links:
             url = urlparse(href)
             if url.scheme or url.netloc:
@@ -1497,6 +1515,9 @@ def check_combined_html(errors: list[str]):
         fail(errors, "dist/combined.html 含空引用块，打印后会留下无文字色条")
     parser = PageParser()
     parser.feed(text)
+    dup_ids = [key for key, count in Counter(parser.ids).items() if count > 1]
+    if dup_ids:
+        fail(errors, f"dist/combined.html 存在重复 HTML id：{dup_ids[:8]}")
     ids = set(parser.ids)
     documents = {path.name: path.read_text(encoding="utf-8")
                  for path in CHAPTERS.glob("*.md")}
@@ -1549,7 +1570,7 @@ def source_digest():
                     if path.is_file())
     paths += sorted((ROOT / "figures").glob("fig*.png"))
     paths += [ROOT / "scripts" / name for name in
-              ("build_pdf.py", "pdf_math.js", "make_figures.py", "make_aec_figures.py", "make_beamforming_figures.py", "make_reference_figures.py", "make_delay_figures.py", "make_css_figures.py", "make_tracking_figures.py", "make_channel_figures.py", "make_selection_figures.py", "make_wearable_figures.py", "make_tse_figures.py")]
+              ("build_pdf.py", "pdf_math.js", "make_math_figures.py", "make_figures.py", "make_aec_figures.py", "make_beamforming_figures.py", "make_reference_figures.py", "make_delay_figures.py", "make_css_figures.py", "make_tracking_figures.py", "make_channel_figures.py", "make_selection_figures.py", "make_wearable_figures.py", "make_tse_figures.py")]
     paths.append(ROOT / "requirements.txt")
     paths.append(ROOT / "codes/chapters/ch00/io_contracts.py")
     for path in paths:
@@ -1576,10 +1597,10 @@ def site_source_digest():
     paths += [ROOT / "scripts/course_home" / name for name in ("index.html", "home.css", "home.js")]
     paths += [ROOT / "assets/readme/lab" / name for name in ("single.wav", "left.wav", "right.wav")]
     paths += [ROOT / "assets/readme/cases/locata" / name for name in
-              ("MANIFEST.json", "NOTICE.txt", "before.wav", "after.wav", "mvdr.wav", "levels.svg")]
+              ("MANIFEST.json", "NOTICE.txt", "before.wav", "after.wav", "mvdr.wav", "focus.wav", "levels.svg")]
     paths += [ROOT / "scripts" / name for name in
               ("build_site.py", "build_markdown_helpers.py", "inline_layout.js", "heading_aliases.py",
-               "chapter_identity.py", "chapter_numbering.json", "legacy_sequential_anchors.json", "code_layout.py", "make_figures.py",
+               "chapter_identity.py", "chapter_numbering.json", "legacy_sequential_anchors.json", "code_layout.py", "make_math_figures.py", "make_figures.py",
                "make_aec_figures.py", "make_beamforming_figures.py", "make_reference_figures.py", "make_delay_figures.py", "make_css_figures.py", "make_tracking_figures.py", "make_channel_figures.py", "make_selection_figures.py", "make_wearable_figures.py", "make_tse_figures.py")]
     paths.append(ROOT / "requirements.txt")
     paths.append(ROOT / "codes/chapters/ch00/io_contracts.py")
@@ -1759,7 +1780,12 @@ def check_pdf(errors: list[str], notices: list[str]):
         if image_count == 0 and (not page_text.strip() or pdf_page_is_sparse(page_text, 0, page_no)):
             try:
                 if formula_index is None: formula_index = pdf_formula_index(reader)
-                assessment_text += '\n' + pdf_formula_page_text(reader, page_no - 1, formula_index.get(page_no - 1, []))
+                formula_speech = pdf_formula_page_text(reader, page_no - 1, formula_index.get(page_no - 1, []))
+                # Only treat vector formulas as substantial page content when the page has no text
+                # or carries heavy display-formula derivations (>= 320 non-space speech chars),
+                # so a 4-line text tail with a few inline symbols cannot mask a sparse orphan page.
+                if not page_text.strip() or len(re.sub(r"\s+", "", formula_speech)) >= 320:
+                    assessment_text += '\n' + formula_speech
             except (ValueError, KeyError, TypeError, IndexError) as exc:
                 fail(errors, f'PDF 第 {page_no} 页的向量公式正文核验失败：{exc}')
         if not assessment_text.strip() and pdf_page_is_empty(assessment_text, image_count):
@@ -1816,6 +1842,23 @@ def check_pdf(errors: list[str], notices: list[str]):
     spec.loader.exec_module(module)
     if module.contains_unrendered_math(text):
         fail(errors, "PDF 疑似含未渲染的公式源码")
+    if (DIST / "combined.html").exists():
+        combined_text = (DIST / "combined.html").read_text(encoding="utf-8")
+        named = {str(key).lstrip("/"): reader.get_destination_page_number(dest)
+                 for key, dest in reader.named_destinations.items()
+                 if dest.page is not None}
+        split_exercises = []
+        for match in re.finditer(
+            r'<p>(?:<span\b[^>]*></span>|\s)*<a\s+id="(ch-\d+-e\d{2}-\d{2})"[^>]*></a>\s*</p>\s*'
+            r'(?:<span\b[^>]*class="anchor-alias"[^>]*></span>\s*)*'
+            r'<h[1-4]\b[^>]*\bid="([^"]+)"',
+            combined_text,
+        ):
+            ex_id, hd_id = match.group(1), match.group(2)
+            if ex_id in named and hd_id in named and named[ex_id] != named[hd_id]:
+                split_exercises.append(f"{ex_id}(p{named[ex_id]+1})!={hd_id}(p{named[hd_id]+1})")
+        if split_exercises:
+            fail(errors, f"PDF 练习显式锚点与紧随标题跨页分离（共 {len(split_exercises)} 处）：{split_exercises[:5]}")
 
 
 EXPECTED_AUDIO_STEMS = {
@@ -4865,6 +4908,22 @@ def check_wearable_figures(errors):
             for rel, digest in report["source_sha256"].items():
                 if hashlib.sha256(validate_parent_chain(ROOT / rel).read_bytes()).hexdigest() != digest:
                     raise ValueError(f"figure{num} source SHA differs: {rel}")
+            if num == 81:
+                ap = report.get("anchor_points", {})
+                in0 = ap.get("in_phase_0deg", {})
+                out180 = ap.get("out_of_phase_180deg", {})
+                if (abs(in0.get("intensity_norm", -1) - math.sqrt(2.0)) > 1e-12
+                        or abs(in0.get("diffuseness", -1) - (1.0 - math.sqrt(2.0) / 1.5)) > 1e-12
+                        or abs(out180.get("diffuseness", -1) - 1.0) > 1e-12
+                        or abs(ap.get("open_sphere_first_null_kr", -1) - math.pi) > 1e-12):
+                    raise ValueError("figure81 independent closed-form anchor mismatch")
+            if num == 82:
+                circ = report.get("circular_4khz_72dir", {})
+                hist = circ.get("objective_history", [])
+                if (not circ.get("monotonically_non_increasing")
+                        or not hist or any(b > a + 1e-12 for a, b in zip(hist, hist[1:]))
+                        or circ.get("magls_weighted_mag_mse", 1.0) >= circ.get("ls_weighted_mag_mse", 0.0)):
+                    raise ValueError("figure82 MagLS monotonicity or MSE improvement mismatch")
             if num == 83:
                 keys_d = ("wearable_air_wind_2ch", "wearable_inear_occluded",
                           "wearable_inear_equalized", "wearable_fused_output")
@@ -4873,15 +4932,19 @@ def check_wearable_figures(errors):
                 expected_wav = {n: r["sha256"] for n, r in manifest["files"].items()}
                 if (report.get("wav_sha256") != expected_wav
                         or not same_metadata(report.get("pcm_reference_mse_ch0"), expected_pcm_mse)
-                        or not same_metadata(report.get("analytic_reference_mse_ch0"), expected_ana_mse)):
+                        or not same_metadata(report.get("analytic_reference_mse_ch0"), expected_ana_mse)
+                        or report.get("anchor_250hz_sinr_db", 0.0) < 19.5
+                        or report.get("anchor_4000hz_sinr_db", 0.0) < 12.5):
                     raise ValueError("figure83 actual audio/report mismatch")
             if num == 84:
                 expected_wav = {k: manifest["files"][k]["sha256"]
                                 for k in ("wearable_clean_ref.wav", "wearable_hearthrough_comb.wav")}
                 notches = report.get("comb_notches_2ms_up_to_4500hz")
+                expected_notches = [250.0 + 500.0 * idx for idx in range(9)]
                 if (report.get("wav_sha256") != expected_wav
                         or not isinstance(notches, list) or len(notches) != 9
-                        or any(type(v) not in (int, float) for v in notches)):
+                        or any(type(v) not in (int, float) or abs(v - exp) > 1e-12
+                               for v, exp in zip(notches, expected_notches))):
                     raise ValueError("figure84 actual audio/report mismatch")
             with Image.open(validate_parent_chain(ROOT / "figures" / png_name)) as picture:
                 metadata = picture.info
@@ -4997,6 +5060,13 @@ def check_tse_figures(errors):
             for rel, digest in report["source_sha256"].items():
                 if hashlib.sha256(validate_parent_chain(ROOT / rel).read_bytes()).hexdigest() != digest:
                     raise ValueError(f"figure{num} source SHA differs: {rel}")
+            if num == 85:
+                byp = report.get("bypass_examples", {})
+                sisdr = report.get("present_neg_sisdr_db", [])
+                if (not sisdr or any(abs(v - (-20.0)) > 1e-11 for v in sisdr)
+                        or byp.get("single_fricative_bypass") is not True
+                        or byp.get("dual_overlap_bypass") is not False):
+                    raise ValueError("figure85 scale-invariance or bypass boundary mismatch")
             if num == 86:
                 expected_wav = {n: r["sha256"] for n, r in manifest["files"].items()}
                 expected_nmse = {
@@ -5007,6 +5077,19 @@ def check_tse_figures(errors):
                         or not same_metadata(report.get("pcm_integer_nmse"), expected_nmse)
                         or report.get("limits") != manifest["limits"]):
                     raise ValueError("figure86 actual audio/report mismatch")
+            if num == 87:
+                slb = report.get("single_label_bound", {})
+                dc = report.get("der_cases", {})
+                if (abs(slb.get("der_lower_bound", -1.0) - 2.0 / 7.0) > 1e-12
+                        or dc.get("tsvad_joint", {}).get("der", 1.0) >= dc.get("single_bound", {}).get("der", 0.0)):
+                    raise ValueError("figure87 DER lower bound or TS-VAD improvement mismatch")
+            if num == 88:
+                alpha_v = report.get("occlusion_alpha_v", [])
+                mask_av = report.get("occlusion_mask_av", [])
+                mask_fused = report.get("occlusion_mask_fused", [])
+                if (not alpha_v or len(alpha_v) != len(mask_av) or len(alpha_v) != len(mask_fused)
+                        or report.get("consonant_loss_percent", [1.0])[0] != 0.0):
+                    raise ValueError("figure88 AV alignment/occlusion series mismatch")
             with Image.open(validate_parent_chain(ROOT / "figures" / png_name)) as picture:
                 metadata = picture.info
             if (metadata.get("SourceScript") != "scripts/make_tse_figures.py"
@@ -5017,6 +5100,106 @@ def check_tse_figures(errors):
                 raise ValueError(f"figure{num} PNG provenance or numerical-report identity differs")
     except (OSError, ValueError, KeyError, TypeError) as error:
         fail(errors, "图85～88真实来源与评分：" + str(error))
+
+
+def check_math_figures(errors):
+    """Bind figures 89..92 to Chapter 0 JSON reports, PNG provenance, and closed-form invariants."""
+    try:
+        from PIL import Image
+        expected_sources = {
+            "codes/chapters/ch00/core/chapter00_math.py",
+            "codes/chapters/ch00/io_contracts.py",
+            "scripts/make_figures.py",
+            "scripts/make_math_figures.py",
+        }
+        specs = (
+            (89, "fig89_complex_phasor_fourier.png", "figure89_complex_phasor_fourier.json"),
+            (90, "fig90_subspace_projection_svd.png", "figure90_subspace_projection_svd.json"),
+            (91, "fig91_hermitian_rayleigh_gev.png", "figure91_hermitian_rayleigh_gev.json"),
+            (92, "fig92_wirtinger_probability_bayesian.png", "figure92_wirtinger_probability_bayesian.json"),
+        )
+        for num, png_name, json_name in specs:
+            report_path = ROOT / "codes/chapters/ch00/reports" / json_name
+            report_bytes = validate_parent_chain(report_path).read_bytes()
+            report = strict_json_loads(report_bytes)
+            if (type(report.get("figure")) is not int or report["figure"] != num
+                    or not isinstance(report.get("exercise_ids"), list)
+                    or not report["exercise_ids"]
+                    or any(type(x) is not str for x in report["exercise_ids"])):
+                raise ValueError(f"figure{num} report metadata mismatch")
+            if set(report.get("source_sha256", {})) != expected_sources:
+                raise ValueError(f"figure{num} plotting dependency set differs")
+            for rel, digest in report["source_sha256"].items():
+                if hashlib.sha256(validate_parent_chain(ROOT / rel).read_bytes()).hexdigest() != digest:
+                    raise ValueError(f"figure{num} source SHA differs: {rel}")
+            anchors = report.get("anchors", {})
+            if num == 89:
+                if (abs(anchors.get("quadrature_phasor_magnitude", 0.0) - math.sqrt(2.0)) > 1e-12
+                        or abs(anchors.get("quadrature_phasor_phase_deg", 0.0) - (-45.0)) > 1e-12
+                        or anchors.get("zero_padded_max_abs_error", 1.0) > 1e-13
+                        or anchors.get("hann_50pct_max_abs_error", 1.0) > 1e-13):
+                    raise ValueError("figure89 closed-form Fourier/COLA anchor mismatch")
+            elif num == 90:
+                if abs((anchors.get("norm_sq_parallel", 0.0) + anchors.get("norm_sq_orthogonal", 0.0))
+                       - anchors.get("norm_sq_b", -1.0)) > 1e-12:
+                    raise ValueError("figure90 Pythagorean projection decomposition mismatch")
+            elif num == 91:
+                if (anchors.get("r_nn_eigenvalues") != [1.0, 3.0]
+                        or abs(anchors.get("max_gev_sinr", 0.0) - 4.0 / 3.0) > 1e-12
+                        or anchors.get("khatri_rao_vec_max_abs_error", 1.0) > 1e-13):
+                    raise ValueError("figure91 Rayleigh/GEV/Khatri-Rao anchor mismatch")
+            elif num == 92:
+                if (anchors.get("mvdr_output_power", 1.0) > anchors.get("lcmv_output_power", 0.0) + 1e-12
+                        or anchors.get("improper_pseudo_variance_abs", 0.0) <= 0.0):
+                    raise ValueError("figure92 MVDR/LCMV/proper-Gaussian anchor mismatch")
+            with Image.open(validate_parent_chain(ROOT / "figures" / png_name)) as picture:
+                metadata = picture.info
+            if (metadata.get("SourceScript") != "scripts/make_math_figures.py"
+                    or metadata.get("SourceScriptDigest") != report["source_sha256"]["scripts/make_math_figures.py"]
+                    or metadata.get("NumericalReportDigest") != hashlib.sha256(report_bytes).hexdigest()
+                    or strict_json_loads(metadata.get("GeneratorInputs", "{}").encode("utf-8")) != report["source_sha256"]):
+                raise ValueError(f"figure{num} PNG provenance or numerical-report identity differs")
+    except (OSError, ValueError, KeyError, TypeError) as error:
+        fail(errors, "图89～92真实来源与数学不变量：" + str(error))
+
+
+def check_stft_figure50_report(errors):
+    """Verify figure50_stft_convolution.json source SHA and closed-form linear vs circular WOLA."""
+    try:
+        import numpy as np
+        report_path = ROOT / "codes/chapters/ch02/reports/figure50_stft_convolution.json"
+        report = strict_json_loads(validate_parent_chain(report_path).read_bytes())
+        expected_sha = hashlib.sha256(validate_parent_chain(ROOT / "scripts/make_figures.py").read_bytes()).hexdigest()
+        if (report.get("source_script") != "scripts/make_figures.py"
+                or report.get("source_script_sha256") != expected_sha
+                or report.get("exercise") != "E02-16"):
+            raise ValueError("figure50 report source identity mismatch")
+        inp = np.asarray(report["input"], dtype=float)
+        ir = np.asarray(report["impulse_response"], dtype=float)
+        if (not np.allclose(np.convolve(inp, ir), np.asarray(report["linear_full"], dtype=float), atol=1e-12)
+                or not np.allclose(np.asarray(report["synthesis_denominator"], dtype=float), [1.0, 0.5, 1.0, 0.5, 1.0, 0.5], atol=1e-12)
+                or not np.allclose(np.asarray(report["wola_outputs"]["identity"], dtype=float)[:4], inp, atol=1e-12)):
+            raise ValueError("figure50 linear convolution or WOLA synthesis denominator mismatch")
+    except (OSError, ValueError, KeyError, TypeError) as error:
+        fail(errors, "图50数值报告核验：" + str(error))
+
+
+def check_portable_exports(errors):
+    """Verify portable course-intro.html and README cover SVGs match scripts/course_home sources."""
+    try:
+        from scripts.course_home import export_portable
+        template, css, script = (
+            (export_portable.SOURCE / name).read_text(encoding="utf-8")
+            for name in ("index.html", "home.css", "home.js")
+        )
+        if (export_portable.DEST / "course-intro.html").read_text(encoding="utf-8") != export_portable.portable(template, css, script):
+            raise ValueError("assets/readme/course-intro.html differs from scripts/course_home")
+        if (export_portable.DEST / "course-cover.svg").read_text(encoding="utf-8") != export_portable.cover(template, still=False):
+            raise ValueError("assets/readme/course-cover.svg differs from scripts/course_home")
+        if (export_portable.DEST / "course-cover-still.svg").read_text(encoding="utf-8") != export_portable.cover(template, still=True):
+            raise ValueError("assets/readme/course-cover-still.svg differs from scripts/course_home")
+    except (OSError, ValueError) as error:
+        fail(errors, "便携课程页导出同步核验：" + str(error))
 
 
 def main():
@@ -5069,6 +5252,9 @@ def main():
     check_wearable_figures(errors)
     check_tse_audio(errors)
     check_tse_figures(errors)
+    check_math_figures(errors)
+    check_stft_figure50_report(errors)
+    check_portable_exports(errors)
     check_scenario_audio(errors)
     check_combined_html(errors)
     check_pdf(errors, notices)

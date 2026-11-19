@@ -139,49 +139,47 @@ def build_fig81(inputs: dict[str, str], manifest_sha: str) -> None:
         title="(a) 正交等幅双波：声强模与总声能",
         xlabel="两波相对相位差 Δφ / °",
         ylabel="归一化量值（ρ₀=1, c=1）",
-        xlim=(0.0, 180.0),
+        xlim=(-4.0, 184.0),
         ylim=(0.0, 1.68),
     )
     axes[0, 0].legend(loc="upper right")
 
     axes[0, 1].plot(deg_grid, psis, color=C_PURPLE, linewidth=2.0, label="正交双波瞬时扩散度")
-    for d_pt, p_pt, lbl in (
-        (0.0, 1.0 - 2.0 * np.sqrt(2.0) / 3.0, "0°: 0.057"),
-        (90.0, 1.0 - 1.0 / np.sqrt(2.0), "90°: 0.293"),
-        (180.0, 1.0, "180°: 1.000"),
+    for d_pt, p_pt, lbl, tx, ty, align in (
+        (0.0, 1.0 - 2.0 * np.sqrt(2.0) / 3.0, "0°: 0.057", 6.0, 0.14, "left"),
+        (90.0, 1.0 - 1.0 / np.sqrt(2.0), "90°: 0.293", 85.0, 0.38, "right"),
+        (180.0, 1.0, "180°: 1.000", 148.0, 0.97, "right"),
     ):
         axes[0, 1].plot(d_pt, p_pt, "o", color=C_MAIN)
-        offset_y = 0.06 if d_pt < 150 else -0.10
-        offset_x = 8.0 if d_pt < 120 else -42.0
-        axes[0, 1].text(d_pt + offset_x, p_pt + offset_y, lbl)
+        axes[0, 1].text(tx, ty, lbl, ha=align)
     axes[0, 1].set(
         title="(b) 相位干涉诱发的瞬时扩散度变化",
         xlabel="两波相对相位差 Δφ / °",
         ylabel="扩散度 ψ",
-        xlim=(0.0, 180.0),
-        ylim=(-0.03, 1.12),
+        xlim=(-5.0, 185.0),
+        ylim=(-0.05, 1.15),
     )
     axes[0, 1].legend(loc="upper left")
 
-    axes[1, 0].plot(ddr_db, psi_analytic_ddr, color=C_GREEN, linewidth=2.0, label=r"解析关系 $1/(1+\mathrm{DDR})$")
+    axes[1, 0].plot(ddr_db, psi_analytic_ddr, color=C_GREEN, linewidth=2.0, label=r"解析关系 $1/(1+\mathrm{DDR}_{\mathrm{lin}})$")
     axes[1, 0].axvline(0.0, color=C_MAIN, linestyle=":", label="DDR = 0 dB (ψ = 0.5)")
     axes[1, 0].set(
         title="(c) 直达与扩散声能比（DDR）映射",
         xlabel="直达扩散能量比 DDR / dB",
         ylabel="统计扩散度 ψ",
         xlim=(-15.0, 20.0),
-        ylim=(0.0, 1.05),
+        ylim=(0.0, 1.08),
     )
     axes[1, 0].legend(loc="upper right")
 
-    axes[1, 1].plot(kr_grid, np.abs(b0), color=C_BLUE, linewidth=2.0, label=r"零阶全向 $|b_0(kr)|$")
+    axes[1, 1].plot(kr_grid, np.abs(b0), color=C_BLUE, linewidth=2.0, label=r"零阶全向 $|b_0(\kappa R)|$")
     axes[1, 1].plot(
-        kr_grid, np.abs(b1), color=C_ORANGE, linestyle="--", linewidth=2.0, label=r"一阶偶极 $|b_1(kr)|$"
+        kr_grid, np.abs(b1), color=C_ORANGE, linestyle="--", linewidth=2.0, label=r"一阶偶极 $|b_1(\kappa R)|$"
     )
-    axes[1, 1].axvline(np.pi, color=C_RED, linestyle=":", linewidth=1.6, label=r"开球零陷 $kr=\pi$")
+    axes[1, 1].axvline(np.pi, color=C_RED, linestyle=":", linewidth=1.6, label=r"开球零陷 $\kappa R=\pi$")
     axes[1, 1].set(
         title="(d) 开球四面体阵列径向模态幅度",
-        xlabel="无量纲波数孔径积 kr",
+        xlabel=r"无量纲波数孔径积 $\kappa R$",
         ylabel="模态幅度增益",
         xlim=(0.0, 4.5),
         ylim=(0.0, 1.08),
@@ -191,7 +189,7 @@ def build_fig81(inputs: dict[str, str], manifest_sha: str) -> None:
     for ax in axes.flat:
         ax.grid(True, alpha=0.22)
         ax.set_axisbelow(True)
-    fig.suptitle("FOA 声强参数化分析：双波干涉、扩散度映射与开球模态边界")
+    fig.suptitle("图81  FOA 声强参数化分析：双波干涉、扩散度映射与开球模态边界")
 
     report = {
         "figure": 81,
@@ -228,7 +226,7 @@ def build_fig81(inputs: dict[str, str], manifest_sha: str) -> None:
 
 
 def build_fig82(inputs: dict[str, str], manifest_sha: str) -> None:
-    # Panel (a): Ex 16-2 exact 3-direction anchor
+    # Panel (a): E14-08 exact 3-direction anchor
     h3 = np.array([[1.0, 1.0, 1.0], [1.0j, 1.0, -1.0j]], dtype=np.complex128)
     p3 = np.array([1.0, -1.0, 1.0], dtype=np.complex128)
     w_ls3 = bsm_ls_weights(h3, p3)
@@ -251,7 +249,7 @@ def build_fig82(inputs: dict[str, str], manifest_sha: str) -> None:
     mag_ls72 = bsm_directional_metrics(h72, p72, w_ls72)["synthesized_magnitude"]
     mag_magls72 = bsm_directional_metrics(h72, p72, w_mag72)["synthesized_magnitude"]
 
-    # Panel (d): Ex 16-3 reference mixing sweep
+    # Panel (d): E14-09 reference mixing sweep
     betas = np.linspace(0.0, 1.0, 101)
     r_nn = np.array([[1.0, 0.2], [0.2, 1.0]], dtype=np.complex128)
     w_bmvdr = np.array([0.5, 0.5], dtype=np.complex128)
@@ -265,7 +263,7 @@ def build_fig82(inputs: dict[str, str], manifest_sha: str) -> None:
 
     x3 = np.arange(3)
     width = 0.25
-    axes[0, 0].bar(x3 - width, np.abs(p3), width=width, color=C_MAIN, alpha=0.85, label="目标耳压模")
+    axes[0, 0].bar(x3 - width, np.abs(p3), width=width, color=C_MAIN, alpha=0.85, label="目标耳幅度")
     axes[0, 0].bar(x3, m_ls3, width=width, color=C_RED, alpha=0.85, label="BSM-LS")
     axes[0, 0].bar(x3 + width, m_mag3, width=width, color=C_GREEN, alpha=0.85, label="BSM-MagLS")
     axes[0, 0].set(
@@ -274,7 +272,7 @@ def build_fig82(inputs: dict[str, str], manifest_sha: str) -> None:
         xticklabels=["端射 +90°", "正横 0° (零陷)", "端射 -90°"],
         ylabel="合成幅度增益",
         xlim=(-0.55, 2.55),
-        ylim=(0.0, 1.40),
+        ylim=(0.0, 1.42),
     )
     axes[0, 0].legend(ncol=3, loc="upper center", fontsize=8.5)
 
@@ -291,9 +289,9 @@ def build_fig82(inputs: dict[str, str], manifest_sha: str) -> None:
         xlabel="水平方位角 / °",
         ylabel="幅度响应 / dB",
         xlim=(0.0, 355.0),
-        ylim=(-18.0, 6.5),
+        ylim=(-18.0, 14.5),
     )
-    axes[0, 1].legend(loc="lower left")
+    axes[0, 1].legend(ncol=2, loc="upper right")
 
     iters = np.arange(1, hist72.size + 1)
     axes[1, 0].plot(iters, hist72, "o-", color=C_BLUE, markersize=4, linewidth=1.8, label="交替相位投影目标值")
@@ -301,7 +299,8 @@ def build_fig82(inputs: dict[str, str], manifest_sha: str) -> None:
         title="(c) BSM-MagLS 迭代目标单调下降曲线",
         xlabel="交替投影迭代轮次 t",
         ylabel="正则化目标值 J(w, φ)",
-        xlim=(1, hist72.size),
+        xlim=(0.4, hist72.size + 0.6),
+        ylim=(-0.6, float(hist72[0]) * 1.10),
     )
     axes[1, 0].legend(loc="upper right")
 
@@ -316,7 +315,7 @@ def build_fig82(inputs: dict[str, str], manifest_sha: str) -> None:
         title="(d) BMVDR 参考混合系数 β 折中曲线",
         xlabel="原始参考麦混合比例 β",
         ylabel="无量纲指标（IC 或归一化增益）",
-        xlim=(0.0, 1.0),
+        xlim=(-0.03, 1.03),
         ylim=(0.0, 1.12),
     )
     axes[1, 1].legend(loc="lower left")
@@ -324,7 +323,7 @@ def build_fig82(inputs: dict[str, str], manifest_sha: str) -> None:
     for ax in axes.flat:
         ax.grid(True, alpha=0.22)
         ax.set_axisbelow(True)
-    fig.suptitle("高频双耳信号匹配（BSM-LS vs MagLS）与扩散噪声耳间相干度保持")
+    fig.suptitle("图82  高频双耳信号匹配（BSM-LS vs MagLS）与扩散噪声耳间相干度保持")
 
     report = {
         "figure": 82,
@@ -407,9 +406,9 @@ def build_fig83(manifest: dict, signals: dict[str, np.ndarray], inputs: dict[str
         xlabel="频率 / Hz（对数轴）",
         ylabel="输出信干噪比 SINR / dB",
         xlim=(100.0, 6000.0),
-        ylim=(-10.0, 24.0),
+        ylim=(-10.0, 32.0),
     )
-    axes[0, 1].legend(loc="lower left")
+    axes[0, 1].legend(loc="upper right")
 
     # Panel (c): Actual PCM16 waveform excerpt [1600, 1696) = 6 ms
     start, count = 1600, 96
@@ -423,7 +422,7 @@ def build_fig83(manifest: dict, signals: dict[str, np.ndarray], inputs: dict[str
         xlabel="相对时间 / ms",
         ylabel="数字幅度",
         xlim=(0.0, t_ms[-1]),
-        ylim=(-0.46, 0.46),
+        ylim=(-0.44, 0.66),
     )
     axes[1, 0].legend(ncol=2, loc="upper right")
 
@@ -456,7 +455,7 @@ def build_fig83(manifest: dict, signals: dict[str, np.ndarray], inputs: dict[str
     for ax in axes.flat:
         ax.grid(True, alpha=0.22)
         ax.set_axisbelow(True)
-    fig.suptitle("可穿戴抗风噪与气导/耳内闭塞跨模态 MVDR 自语音融合")
+    fig.suptitle("图83  可穿戴抗风噪与气导/耳内闭塞跨模态 MVDR 自语音融合")
 
     report = {
         "figure": 83,
@@ -491,17 +490,19 @@ def build_fig84(manifest: dict, signals: dict[str, np.ndarray], inputs: dict[str
 
     gain_2ms_db = 10.0 * np.log10(np.maximum(ht_2ms["power_gain"], 1e-3))
     gain_100us_db = 10.0 * np.log10(np.maximum(ht_100us["power_gain"], 1e-3))
+    for f_notch in (750.0, 1250.0, 1750.0, 2250.0, 2750.0, 3250.0, 3750.0, 4250.0):
+        axes[0, 0].axvline(f_notch, color="0.68", linestyle=":", linewidth=1.0, zorder=1)
     axes[0, 0].plot(freqs, gain_2ms_db, color=C_RED, linewidth=1.8, label="处理延迟 τ = 2.0 ms")
     axes[0, 0].plot(freqs, gain_100us_db, color=C_BLUE, linestyle="--", linewidth=2.0, label="超低延迟 τ = 0.1 ms")
-    axes[0, 0].axvline(250.0, color=C_MAIN, linestyle=":", label="首陷波 250 Hz")
+    axes[0, 0].axvline(250.0, color=C_MAIN, linestyle=":", linewidth=1.5, label="首陷波 250 Hz（及高阶陷波）")
     axes[0, 0].set(
         title="(a) 通透模式漏声叠加功率增益频响",
         xlabel="频率 / Hz",
         ylabel="叠加功率增益 / dB",
         xlim=(0.0, 4500.0),
-        ylim=(-30.0, 8.5),
+        ylim=(-30.0, 22.0),
     )
-    axes[0, 0].legend(loc="lower right")
+    axes[0, 0].legend(loc="upper right")
 
     axes[0, 1].loglog(delays_ms, first_notches_hz, color=C_PURPLE, linewidth=2.2, label=r"首梳状陷波 $f_0 = 1/(2\tau)$")
     axes[0, 1].scatter([0.1, 2.0], [5000.0, 250.0], color=C_MAIN, zorder=5)
@@ -527,7 +528,7 @@ def build_fig84(manifest: dict, signals: dict[str, np.ndarray], inputs: dict[str
         xlabel="自第 1632 点起的时间 / ms",
         ylabel="数字幅度",
         xlim=(0.0, t_ms[-1]),
-        ylim=(-0.28, 0.28),
+        ylim=(-0.26, 0.39),
     )
     axes[1, 0].legend(loc="upper right")
 
@@ -548,14 +549,14 @@ def build_fig84(manifest: dict, signals: dict[str, np.ndarray], inputs: dict[str
         xticks=x2,
         xticklabels=["250 Hz（半波长相消）", "4000 Hz（8 周期同相）"],
         ylabel="正弦峰值幅度",
-        ylim=(0.0, 0.25),
+        ylim=(0.0, 0.26),
     )
     axes[1, 1].legend(loc="upper left")
 
     for ax in axes.flat:
         ax.grid(True, alpha=0.22)
         ax.set_axisbelow(True)
-    fig.suptitle("TWS 通透模式（Hear-Through）处理延迟与耳道漏声梳状滤波效应")
+    fig.suptitle("图84  TWS 通透模式（Hear-Through）处理延迟与耳道漏声梳状滤波效应")
 
     report = {
         "figure": 84,

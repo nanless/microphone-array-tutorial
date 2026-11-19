@@ -10,7 +10,7 @@
   let printing = false;
 
   function roots() {
-    const candidates = Array.from(document.querySelectorAll("main.main,.chap"));
+    const candidates = Array.from(document.querySelectorAll(".main,.chap"));
     return candidates.filter(root => !candidates.some(other => other !== root && other.contains(root)));
   }
 
@@ -64,12 +64,21 @@
       const significant = Array.from(paragraph.childNodes).filter(node =>
         node.nodeType !== Node.TEXT_NODE || node.data.trim());
       const next = paragraph.nextElementSibling;
-      const anchorOnly = significant.length === 1 &&
-        significant[0].nodeType === Node.ELEMENT_NODE &&
-        significant[0].tagName === "A" && significant[0].id &&
-        !significant[0].hasAttribute("href") &&
-        Array.from(significant[0].childNodes).every(node =>
-          node.nodeType === Node.TEXT_NODE && !node.data.trim());
+      const isEmptyAnchor = node =>
+        node.nodeType === Node.ELEMENT_NODE &&
+        node.tagName === "A" && node.id &&
+        !node.hasAttribute("href") &&
+        Array.from(node.childNodes).every(child =>
+          child.nodeType === Node.TEXT_NODE && !child.data.trim());
+      const isAnchorAlias = node =>
+        node.nodeType === Node.ELEMENT_NODE &&
+        node.tagName === "SPAN" && node.id &&
+        node.classList.contains("anchor-alias") &&
+        Array.from(node.childNodes).every(child =>
+          child.nodeType === Node.TEXT_NODE && !child.data.trim());
+      const anchorOnly = significant.length >= 1 &&
+        significant.some(isEmptyAnchor) &&
+        significant.every(node => isEmptyAnchor(node) || isAnchorAlias(node));
       paragraph.classList.toggle("tutorial-anchor-only", !!anchorOnly);
       const short = significant.length === 1 &&
         significant[0].nodeType === Node.ELEMENT_NODE &&

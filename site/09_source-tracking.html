@@ -1,16 +1,17 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 9 章 · 声源追踪 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="820e0688bd26"><style>
+<meta name="source-digest" content="ba5ce9940c12"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
 h1,h2,h3,h4{scroll-margin-top:60px}
+@media screen{.main a[id]:not([href]){scroll-margin-top:60px}}
 @media screen{.main a[id^="e"],.main .exercise-alias{scroll-margin-top:80px}}
 @media screen{.main .exercise-alias{top:0}}
 @media screen{.main a[id="e05-20"]{scroll-margin-top:60px}}
 @media screen{.main a[id="e17-11"],.main a[id="e17-12"],.main a[id="e17-13"],.main a[id="e17-14"],.main a[id="e17-15"]{scroll-margin-top:140px}}
-@media screen{.main .exercise-alias[id="e13-11"],.main .exercise-alias[id="e13-12"],.main .exercise-alias[id="e13-13"],.main .exercise-alias[id="e13-14"],.main .exercise-alias[id="e13-15"],.main .exercise-alias[id="e15-11"],.main .exercise-alias[id="e15-12"],.main .exercise-alias[id="e15-13"],.main .exercise-alias[id="e15-14"],.main .exercise-alias[id="e15-15"]{scroll-margin-top:140px}}
+@media screen{.main .exercise-alias[id="e13-11"],.main .exercise-alias[id="e13-12"],.main .exercise-alias[id="e13-13"],.main .exercise-alias[id="e13-14"],.main .exercise-alias[id="e13-15"],.main .exercise-alias[id="e15-11"]:has(~ a[id="e17-11"]),.main .exercise-alias[id="e15-12"]:has(~ a[id="e17-12"]),.main .exercise-alias[id="e15-13"]:has(~ a[id="e17-13"]),.main .exercise-alias[id="e15-14"]:has(~ a[id="e17-14"]),.main .exercise-alias[id="e15-15"]:has(~ a[id="e17-15"]){scroll-margin-top:140px}}
 @media screen{.main a[id^="e06-"]{scroll-margin-top:60px}}
 @media screen{.main a[id^="e07-"],.main a[id^="e08-"]{scroll-margin-top:60px}}
 @media screen{.main a[id^="e11-"]{scroll-margin-top:60px}}
@@ -79,7 +80,7 @@ h4{font-size:15.5px;margin-top:20px;color:#333}
   let printing = false;
 
   function roots() {
-    const candidates = Array.from(document.querySelectorAll("main.main,.chap"));
+    const candidates = Array.from(document.querySelectorAll(".main,.chap"));
     return candidates.filter(root => !candidates.some(other => other !== root && other.contains(root)));
   }
 
@@ -133,12 +134,21 @@ h4{font-size:15.5px;margin-top:20px;color:#333}
       const significant = Array.from(paragraph.childNodes).filter(node =>
         node.nodeType !== Node.TEXT_NODE || node.data.trim());
       const next = paragraph.nextElementSibling;
-      const anchorOnly = significant.length === 1 &&
-        significant[0].nodeType === Node.ELEMENT_NODE &&
-        significant[0].tagName === "A" && significant[0].id &&
-        !significant[0].hasAttribute("href") &&
-        Array.from(significant[0].childNodes).every(node =>
-          node.nodeType === Node.TEXT_NODE && !node.data.trim());
+      const isEmptyAnchor = node =>
+        node.nodeType === Node.ELEMENT_NODE &&
+        node.tagName === "A" && node.id &&
+        !node.hasAttribute("href") &&
+        Array.from(node.childNodes).every(child =>
+          child.nodeType === Node.TEXT_NODE && !child.data.trim());
+      const isAnchorAlias = node =>
+        node.nodeType === Node.ELEMENT_NODE &&
+        node.tagName === "SPAN" && node.id &&
+        node.classList.contains("anchor-alias") &&
+        Array.from(node.childNodes).every(child =>
+          child.nodeType === Node.TEXT_NODE && !child.data.trim());
+      const anchorOnly = significant.length >= 1 &&
+        significant.some(isEmptyAnchor) &&
+        significant.every(node => isEmptyAnchor(node) || isAnchorAlias(node));
       paragraph.classList.toggle("tutorial-anchor-only", !!anchorOnly);
       const short = significant.length === 1 &&
         significant[0].nodeType === Node.ELEMENT_NODE &&
@@ -243,6 +253,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 </head><body id="top"><a class="skip-link" href="#main-content">跳到正文</a>
 <header class="topbar"><a href="index.html">🏠 首页</a> &nbsp;/&nbsp; 第 9 章 · 声源追踪</header>
 <div class="wrap"><nav class="side" aria-label="全书目录"><div class="chap"><a href="index.html">🏠 导读与导航（首页）</a></div>
+<div class="chap"><a href="00_math-foundations.html">第 0 章 · 全书数学基础与信号分析预备</a></div>
 <div class="chap"><a href="01_problem-definition.html">第 1 章 · 问题定义与双耳启示</a></div>
 <div class="chap"><a href="02_basics-signal-model.html">第 2 章 · 声音到达阵列时发生了什么</a></div>
 <div class="chap"><a href="03_array-geometry.html">第 3 章 · 阵列几何形态</a></div>
@@ -409,8 +420,8 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="09_source-tracking.html#sec-u-ead286663f">E09-28：视听异构延迟回溯、视场盲区与身份指标</a></li>
 </ul></nav></details>
 <blockquote>
-<p>⚠️ 本篇是教程正文第 9 章（正文与扩展专题共 15 章，其中第 12～15 章为扩展专题，另有附录 A、B），可独立阅读，前后篇见下方导航。</p>
-<p>🏠 首页导读：<a href="index.html">🏠 导读与导航</a> ｜ 上一篇：<a href="08_speech-separation.html">第 8 章 · 语音分离</a> ｜ 下一篇：<a href="10_engineering-practice.html">第 10 章 · 工程实现、评测与产业实践</a></p>
+<p>本篇是本书正文第 9 章；正文与扩展专题共 16 章（第 0～15 章，其中第 0 章为数学基础，第 12～15 章为四篇扩展专题），另有附录 A、B。本篇可独立阅读，前后篇见下方导航。</p>
+<p>导读首页：<a href="index.html">🏠 导读与导航</a> ｜ 上一篇：<a href="08_speech-separation.html">第 8 章 · 语音分离</a> ｜ 下一篇：<a href="10_engineering-practice.html">第 10 章 · 工程实现、评测与产业实践</a></p>
 </blockquote>
 <hr />
 <span id="sec-1" class="anchor-alias" aria-hidden="true"></span><h1 id="sec-u-6521bc6f00">9. 声源追踪</h1>
@@ -461,7 +472,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>会议与家庭场景中同时发声的人数随时间动态增减；</li>
 <li>阵列测得的波达方向（DOA）与声源笛卡尔坐标之间呈强非线性映射。</li>
 </ul>
-<p>设平面状态包含位置与速度 $[x,y,\dot{x},\dot{y}]^\top$，阵列几何中心位于 $(x_0,y_0)$。沿用第 2～5 章“以 $+y$ 轴为 $0^\circ$、向 $+x$ 轴顺时针旋转为正”的方位角约定，无噪方位观测函数写为 $\theta=\operatorname{atan2}(x-x_0,y-y_0)$。此处 <code>atan2</code> 的第一个自变量是横轴分量 $x-x_0$（对应 $\sin\theta$），第二个自变量是纵轴分量 $y-y_0$（对应 $\cos\theta$），切勿照搬标准数学极角 $\operatorname{atan2}(y-y_0,x-x_0)$ 的参数顺序。</p>
+<p>设平面状态包含位置与速度 $[x,y,\dot{x},\dot{y}]^\top$，阵列几何中心位于 $(x_0,y_0)$。沿用第 2～5 章“以 $+y$ 轴为 $0^\circ$、向 $+x$ 轴顺时针旋转为正”的方位角约定，无噪方位观测函数写为 $\theta=\operatorname{atan2}(x-x_0,y-y_0)$（四象限反正切与圆周角度环绕性质见<a href="00_math-foundations.html#sec-0-1">第 0 章 §0.1</a>）。此处 <code>atan2</code> 的第一个自变量是横轴分量 $x-x_0$（对应 $\sin\theta$），第二个自变量是纵轴分量 $y-y_0$（对应 $\cos\theta$），切勿照搬标准数学极角 $\operatorname{atan2}(y-y_0,x-x_0)$ 的参数顺序。</p>
 <p>以阵列中心位于原点 $(0,0)$、声源位于 $(1\ \mathrm{m},2\ \mathrm{m})$ 为例，本书约定给出 $\operatorname{atan2}(1,2)\approx 26.565^\circ$；若误将两参数颠倒，算出的 $\operatorname{atan2}(2,1)\approx 63.435^\circ$ 实际是以 $+x$ 轴为零点的极角。两套角度本身都合法，但定位模块、追踪器与波束形成器的导向矢量必须共享同一角度约定，直接混传会使波束偏离目标方向。</p>
 <p>从几何可观测性看，单个固定阵列仅凭方位角无法唯一确定声源距离。仍以原点处的阵列为例，位于 $(1\ \mathrm{m},1\ \mathrm{m})$ 与 $(2\ \mathrm{m},2\ \mathrm{m})$ 的两个声源处在同一条射线上，$\operatorname{atan2}$ 均输出 $45^\circ$，沿径向按任意正比例缩放坐标完全不改变方位角读数。</p>
 <p>即便把多帧方位角串联起来，只要阵列静止且声源做未知速度的匀速直线运动，把初始位置与初始速度同时乘以任意正数 $a>0$，整条轨迹在任意时刻的瞬时方位角依然逐帧重合（练习 <a href="#e09-21">E09-21</a> 给出了三时刻完整复算与雅可比零空间证明）。多攒几帧观测只能压低可观测切向上的角度噪声，无法凭空消除径向尺度歧义；即便把线性卡尔曼滤波换成扩展卡尔曼滤波（Extended Kalman Filter，EKF）或无迹卡尔曼滤波（Unscented Kalman Filter，UKF），滤波器也无法从仅测方位数据中“算出”真实距离。</p>
@@ -477,7 +488,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 \end{aligned}\tag{9-1}$$</p>
 <p>其中 $\mathbf{F}\in\mathbb{R}^{d\times d}$ 为状态转移矩阵，刻画相邻两帧之间的确定性运动规律；$\mathbf{H}\in\mathbb{R}^{p\times d}$ 为观测矩阵，把 $d$ 维内部状态映射到 $p$ 维观测量；$\vec{v}_t\in\mathbb{R}^d$ 与 $\vec{w}_t\in\mathbb{R}^p$ 分别表示过程噪声（未建模的随机加减速或转身扰动）与观测噪声（单帧 DOA 估计误差）。</p>
 <p>标准卡尔曼推导假定 $\vec{v}_t$ 与 $\vec{w}_t$ 均为零均值白噪声序列，彼此互不相关且均与初始状态估计误差正交。在此前提下，过程噪声协方差矩阵 $\mathbf{Q}=\mathbb{E}[\vec{v}_t\vec{v}_t^\top]$（维数 $d\times d$）与观测噪声协方差矩阵 $\mathbf{R}=\mathbb{E}[\vec{w}_t\vec{w}_t^\top]$（维数 $p\times p$）均为对称半正定（通常要求 $\mathbf{R}$ 正定以保证求逆良态）。若定位器存在系统性角度安装偏置（噪声均值非零），需将偏置增广进状态或先行校准；若相邻重叠分析窗导致观测噪声跨帧强相关，则需恢复交叉协方差项或做状态增广。</p>
-<p>记给定截至 $t-1$ 帧观测时的本帧先验预测均值为 $\hat{\vec{s}}_t^-$，先验误差为 $\vec{e}_t^-=\vec{s}_t-\hat{\vec{s}}_t^-$，先验误差协方差矩阵 $\mathbf{P}_t^-$ 定义为 $\mathbb{E}[\vec{e}_t^-(\vec{e}_t^-)^\top]$（维数 $d\times d$）；融入本帧观测 $\vec{z}_t$ 后的后验均值与误差协方差矩阵分别记为 $\hat{\vec{s}}_t$ 与 $\mathbf{P}_t$，卡尔曼增益记为 $\mathbf{K}_t\in\mathbb{R}^{d\times p}$。只要上述零均值与不相关二阶统计条件成立，卡尔曼递推在所有线性无偏估计器中达到最小均方误差（LMMSE）；若进一步假定初态与噪声服从联合高斯分布，后验分布严格保持高斯并由 $(\hat{\vec{s}}_t,\mathbf{P}_t)$ 完整刻画，该递推同时给出全局贝叶斯条件均值（见 <a href="https://people.duke.edu/~hpgavin/SystemID/References/Kalman-JBE-1960.pdf">Kalman 1960 奠基论文 §Optimal Estimates 与 Theorem 3</a>）。</p>
+<p>记给定截至 $t-1$ 帧观测时的本帧先验预测均值为 $\hat{\vec{s}}_t^-$，先验误差为 $\vec{e}_t^-=\vec{s}_t-\hat{\vec{s}}_t^-$，先验误差协方差矩阵 $\mathbf{P}_t^-$ 定义为 $\mathbb{E}[\vec{e}_t^-(\vec{e}_t^-)^\top]$（维数 $d\times d$）；融入本帧观测 $\vec{z}_t$ 后的后验均值与误差协方差矩阵分别记为 $\hat{\vec{s}}_t$ 与 $\mathbf{P}_t$，卡尔曼增益记为 $\mathbf{K}_t\in\mathbb{R}^{d\times p}$。只要上述零均值与不相关二阶统计条件成立，卡尔曼递推在所有线性无偏估计器中达到最小均方误差（LMMSE）；若进一步假定初态与噪声服从联合高斯分布，后验分布严格保持高斯并由 $(\hat{\vec{s}}_t,\mathbf{P}_t)$ 完整刻画，该递推同时给出全局贝叶斯条件均值（线性最小均方误差与贝叶斯递推基础见<a href="00_math-foundations.html#sec-0-6">第 0 章 §0.6</a>，原始证明见 <a href="https://people.duke.edu/~hpgavin/SystemID/References/Kalman-JBE-1960.pdf">Kalman 1960 奠基论文 §Optimal Estimates 与 Theorem 3</a>）。</p>
 <p>阅读矩阵维度与量纲时，协方差矩阵第 $(i,j)$ 个元素的单位等于第 $i$ 个与第 $j$ 个状态分量单位的乘积。以两分量角运动状态 $\vec{s}_t=[\theta_t,\dot{\theta}_t]^\top$（角度用 $\mathrm{deg}$，角速度用 $\mathrm{deg/frame}$）为例，$\mathbf{P}_t$ 主对角线两项的单位分别是 $\mathrm{deg}^2$ 与 $(\mathrm{deg/frame})^2$，非对角互协方差的单位则是 $\mathrm{deg}^2/\mathrm{frame}$，对应的观测矩阵为 $\mathbf{H}=[1,\ 0]$（若采用含角加速度的三分量状态 $[\theta,\dot{\theta},\ddot{\theta}]^\top$，则 $\mathbf{H}=[1,\ 0,\ 0]$，切勿将其误读为三维空间坐标）。</p>
 <p>当定位器每帧只输出单个方位角时，$p=1$，观测向量退化为标量 $\theta_t^{\mathrm{obs}}$，观测噪声矩阵 $\mathbf{R}$ 与新息协方差矩阵 $\mathbf{S}_t$ 均退化为 $1\times 1$ 标量方差，下文在标量情形下分别记作 $R$ 与 $S_t$，在一般多维推导中保持正粗体 $\mathbf{R}$ 与 $\mathbf{S}_t$。</p>
 <p>整个递推由“时间预测”和“观测更新”两步交替组成：预测步顺着运动学模型向前推演均值并累加过程不确定度；更新步先算出实际观测与预测观测之差（称为新息），再按预测与观测各自的不确定度比例修正状态并收缩误差协方差。</p>
@@ -725,7 +736,7 @@ S_t&=\mathbf{H}\mathbf{P}_t^-\mathbf{H}^\top+R\\
 <p>这里务必留意<strong>正负号与参数次序</strong>：标准数学极角 $\varphi=\operatorname{atan2}(y-y_0,x-x_0)$ 的位置偏导是 $[-b/r^2,\ +a/r^2]$，与本书式(9-12)的 $[+b/r^2,\ -a/r^2]$ <strong>符号恰好全反</strong>！先做个物理方向自检：设声源在正前方偏右 $(a,b)=(1\ \mathrm{m},2\ \mathrm{m})$ 处（$r^2=5\ \mathrm{m}^2$），向右微移 $\Delta x>0$ 会使顺时针方位角变大，故 $\partial h/\partial x=+2/5=+0.4\ \mathrm{rad/m}>0$；向前远离 $\Delta y>0$ 会使方位角向 $0^\circ$ 回缩，故 $\partial h/\partial y=-1/5=-0.2\ \mathrm{rad/m}\lt 0$，与直觉严丝合缝（完整一步 EKF 数值复算见练习 <a href="#e09-10">E09-10</a>）。若代码在 <code>atan2</code> 用了本书约定，雅可比却抄成数学极角符号，卡尔曼增益将把位置往反方向推导致发散。</p>
 <p>实现式(9-12)时还有三条准则：第一，$\operatorname{wrap}_\pi(\cdot)$ 将弧度差映射回 $[-\pi,\pi)$，若定位器输出角度（$\mathrm{deg}$），则 $\mathbf{H}_t$ 整体乘以 $180/\pi$（单位变为 $\mathrm{deg/m}$）且观测方差 $R$ 同步取 $\mathrm{deg}^2$；第二，$\mathbf{H}_t$ 仅用于传播新息方差 $S_t=\mathbf{H}_t\mathbf{P}_t^-\mathbf{H}_t^\top+R$ 与增益 $\mathbf{K}_t$，计算新息 $\nu_t$ 时必须代入原非线性函数 $h(\hat{\vec{s}}_t^-)$ 而绝不能写成 $\mathbf{H}_t\hat{\vec{s}}_t^-$（事实上沿径向代入会有 $\mathbf{H}_t[a,b,0,0]^\top=(ab-ab)/r^2=0$！）；第三，当声源逼近阵列中心 $r\to 0$ 时，$\|\mathbf{H}_t\|=1/r\to\infty$，局部一阶泰勒展开严重失真，原点 $r=0$ 处方位无定义。</p>
 <h3 id="sec-u-29f00184aa">UKF：传播代表点与非线性矩</h3>
-<p>当声源距阵列较近或先验不确定度较宽时，一阶导数难以代表整片先验分布经过弯曲函数后的变形。无迹变换（Unscented Transform，UT）放弃对函数求导，转而用 $2L+1$ 个确定性 <strong>Sigma 点</strong>精确编码 $L$ 维先验均值 $\vec{m}$ 与协方差 $\mathbf{P}$。常用缩放无迹变换引入尺度参数 $\lambda=\alpha^2(L+\kappa)-L$（要求 $L+\lambda>0$），先通过 Cholesky 分解求出满足 $\mathbf{A}\mathbf{A}^\top=(L+\lambda)\mathbf{P}$ 的平方根矩阵 $\mathbf{A}\in\mathbb{R}^{L\times L}$，记 $\vec{A}_i$ 为 $\mathbf{A}$ 的第 $i$ 列，构造如下点集与均值权重 $W_i^{(m)}$、协方差权重 $W_i^{(c)}$（其中对称偏移点下标 $i=1,\ldots,L$，非中心权重下标统一遍历 $i=1,\ldots,2L$）：</p>
+<p>当声源距阵列较近或先验不确定度较宽时，一阶导数难以代表整片先验分布经过弯曲函数后的变形。无迹变换（Unscented Transform，UT）放弃对函数求导，转而用 $2L+1$ 个确定性 <strong>Sigma 点</strong>精确编码 $L$ 维先验均值 $\vec{m}$ 与协方差 $\mathbf{P}$。常用缩放无迹变换引入尺度参数 $\lambda=\alpha^2(L+\kappa)-L$（要求 $L+\lambda>0$），先通过 Cholesky 分解求出满足 $\mathbf{A}\mathbf{A}^\top=(L+\lambda)\mathbf{P}$ 的平方根矩阵 $\mathbf{A}\in\mathbb{R}^{L\times L}$（正定对称矩阵分解见<a href="00_math-foundations.html#sec-0-3">第 0 章 §0.3</a>），记 $\vec{A}_i$ 为 $\mathbf{A}$ 的第 $i$ 列，构造如下点集与均值权重 $W_i^{(m)}$、协方差权重 $W_i^{(c)}$（其中对称偏移点下标 $i=1,\ldots,L$，非中心权重下标统一遍历 $i=1,\ldots,2L$）：</p>
 <p>$$\begin{aligned}
 \vec{\chi}_0&=\vec{m},\\
 \vec{\chi}_i&=\vec{m}+\vec{A}_i,\qquad

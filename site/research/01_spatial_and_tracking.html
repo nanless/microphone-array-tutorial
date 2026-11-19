@@ -1,16 +1,17 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>空间处理与追踪源码研究 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="820e0688bd26"><style>
+<meta name="source-digest" content="ba5ce9940c12"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
 h1,h2,h3,h4{scroll-margin-top:60px}
+@media screen{.main a[id]:not([href]){scroll-margin-top:60px}}
 @media screen{.main a[id^="e"],.main .exercise-alias{scroll-margin-top:80px}}
 @media screen{.main .exercise-alias{top:0}}
 @media screen{.main a[id="e05-20"]{scroll-margin-top:60px}}
 @media screen{.main a[id="e17-11"],.main a[id="e17-12"],.main a[id="e17-13"],.main a[id="e17-14"],.main a[id="e17-15"]{scroll-margin-top:140px}}
-@media screen{.main .exercise-alias[id="e13-11"],.main .exercise-alias[id="e13-12"],.main .exercise-alias[id="e13-13"],.main .exercise-alias[id="e13-14"],.main .exercise-alias[id="e13-15"],.main .exercise-alias[id="e15-11"],.main .exercise-alias[id="e15-12"],.main .exercise-alias[id="e15-13"],.main .exercise-alias[id="e15-14"],.main .exercise-alias[id="e15-15"]{scroll-margin-top:140px}}
+@media screen{.main .exercise-alias[id="e13-11"],.main .exercise-alias[id="e13-12"],.main .exercise-alias[id="e13-13"],.main .exercise-alias[id="e13-14"],.main .exercise-alias[id="e13-15"],.main .exercise-alias[id="e15-11"]:has(~ a[id="e17-11"]),.main .exercise-alias[id="e15-12"]:has(~ a[id="e17-12"]),.main .exercise-alias[id="e15-13"]:has(~ a[id="e17-13"]),.main .exercise-alias[id="e15-14"]:has(~ a[id="e17-14"]),.main .exercise-alias[id="e15-15"]:has(~ a[id="e17-15"]){scroll-margin-top:140px}}
 @media screen{.main a[id^="e06-"]{scroll-margin-top:60px}}
 @media screen{.main a[id^="e07-"],.main a[id^="e08-"]{scroll-margin-top:60px}}
 @media screen{.main a[id^="e11-"]{scroll-margin-top:60px}}
@@ -79,7 +80,7 @@ h4{font-size:15.5px;margin-top:20px;color:#333}
   let printing = false;
 
   function roots() {
-    const candidates = Array.from(document.querySelectorAll("main.main,.chap"));
+    const candidates = Array.from(document.querySelectorAll(".main,.chap"));
     return candidates.filter(root => !candidates.some(other => other !== root && other.contains(root)));
   }
 
@@ -133,12 +134,21 @@ h4{font-size:15.5px;margin-top:20px;color:#333}
       const significant = Array.from(paragraph.childNodes).filter(node =>
         node.nodeType !== Node.TEXT_NODE || node.data.trim());
       const next = paragraph.nextElementSibling;
-      const anchorOnly = significant.length === 1 &&
-        significant[0].nodeType === Node.ELEMENT_NODE &&
-        significant[0].tagName === "A" && significant[0].id &&
-        !significant[0].hasAttribute("href") &&
-        Array.from(significant[0].childNodes).every(node =>
-          node.nodeType === Node.TEXT_NODE && !node.data.trim());
+      const isEmptyAnchor = node =>
+        node.nodeType === Node.ELEMENT_NODE &&
+        node.tagName === "A" && node.id &&
+        !node.hasAttribute("href") &&
+        Array.from(node.childNodes).every(child =>
+          child.nodeType === Node.TEXT_NODE && !child.data.trim());
+      const isAnchorAlias = node =>
+        node.nodeType === Node.ELEMENT_NODE &&
+        node.tagName === "SPAN" && node.id &&
+        node.classList.contains("anchor-alias") &&
+        Array.from(node.childNodes).every(child =>
+          child.nodeType === Node.TEXT_NODE && !child.data.trim());
+      const anchorOnly = significant.length >= 1 &&
+        significant.some(isEmptyAnchor) &&
+        significant.every(node => isEmptyAnchor(node) || isAnchorAlias(node));
       paragraph.classList.toggle("tutorial-anchor-only", !!anchorOnly);
       const short = significant.length === 1 &&
         significant[0].nodeType === Node.ELEMENT_NODE &&
@@ -382,11 +392,15 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="01_spatial_and_tracking.html#sec-61-2">61.2 从实际PCM观测到确认、过期与新ID</a></li>
 <li>&nbsp;&nbsp;<a href="01_spatial_and_tracking.html#sec-61-3">61.3 三维方向、已知姿态与一次静态vMF更新</a></li>
 <li>&nbsp;&nbsp;<a href="01_spatial_and_tracking.html#sec-61-4">61.4 LOCATA的逐文件取得范围与静态接口差异</a></li>
+<li><a href="01_spatial_and_tracking.html#sec-u-6c9048c3fc">62. 扩展专题Ⅲ：空间声场采集、参数化编码与可穿戴阵列</a></li>
+<li>&nbsp;&nbsp;<a href="01_spatial_and_tracking.html#sec-62-1">62.1 四个本地可运行数值核与解释边界</a></li>
+<li>&nbsp;&nbsp;<a href="01_spatial_and_tracking.html#sec-62-2">62.2 五个锁定上游仓库的源码核验与未执行边界</a></li>
 </ul>
 <div class="chap"><a href="02_aec_wpe_separation.html">AEC、WPE 与分离源码研究</a></div>
 <div class="chap"><a href="03_industrial_deployment.html">工业音频实现研究</a></div>
 <div class="chap"><a href="04_source_reproduction.html">源码获取与独立复现记录</a></div>
 <div class="chap"><a href="05_exercises_and_audio.html">章节代码练习与音频实验</a></div>
+<div class="chap"><a href="../00_math-foundations.html">第 0 章 · 全书数学基础与信号分析预备</a></div>
 <div class="chap"><a href="../01_problem-definition.html">第 1 章 · 问题定义与双耳启示</a></div>
 <div class="chap"><a href="../02_basics-signal-model.html">第 2 章 · 声音到达阵列时发生了什么</a></div>
 <div class="chap"><a href="../03_array-geometry.html">第 3 章 · 阵列几何形态</a></div>
@@ -542,9 +556,12 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="01_spatial_and_tracking.html#sec-61-2">61.2 从实际PCM观测到确认、过期与新ID</a></li>
 <li>&nbsp;&nbsp;<a href="01_spatial_and_tracking.html#sec-61-3">61.3 三维方向、已知姿态与一次静态vMF更新</a></li>
 <li>&nbsp;&nbsp;<a href="01_spatial_and_tracking.html#sec-61-4">61.4 LOCATA的逐文件取得范围与静态接口差异</a></li>
+<li><a href="01_spatial_and_tracking.html#sec-u-6c9048c3fc">62. 扩展专题Ⅲ：空间声场采集、参数化编码与可穿戴阵列</a></li>
+<li>&nbsp;&nbsp;<a href="01_spatial_and_tracking.html#sec-62-1">62.1 四个本地可运行数值核与解释边界</a></li>
+<li>&nbsp;&nbsp;<a href="01_spatial_and_tracking.html#sec-62-2">62.2 五个锁定上游仓库的源码核验与未执行边界</a></li>
 </ul></nav></details>
 <span id="sec-1" class="anchor-alias" aria-hidden="true"></span><span id="空间处理与声源追踪算法实现和工业使用条件" class="anchor-alias" aria-hidden="true"></span><h1 id="sec-u-8b9c858ba6">空间处理与声源追踪：算法、实现和工业使用条件</h1>
-<p>基础索引核实日期：2026-09-22；第 1 章相关研究核实于2026-09-30、原归一化报告执行于2026-10-01 UTC，本轮原始资料/源码复查及原插值控制执行于2026-10-04；第 2 章历史资料与原方法提取调用核实于2026-09-30，当前原始资料/源码及限定合同复核于2026-10-04，第 4 章相关原始资料及有限原方法调用核实于 2026-10-01，第 5 章相关研究小节、原论文与限定原函数审计复核于 2026-10-01（历史报告仍保留原执行日期）；第 9 章原始资料与限定接口合同复核于 2026-10-01，保留 2026-09-28 的历史运行记录；DCASE 2026 任务状态及近年候选的后续复核日期见各条 2026-09-29 记录。对应正文第 1～5 章和第 9 章。这里按算法的输入、计算步骤和可检查结果整理源码，既包括语音前端，也包括直接相关的球阵录音与工业噪声源成像。后两类任务的输出不同，不能把声源功率图或 Ambisonics 解码结果当成增强语音。</p>
+<p>基础索引核实日期：2026-09-22；第 1 章相关研究核实于2026-09-30、原归一化报告执行于2026-10-01 UTC，本轮原始资料/源码复查及原插值控制执行于2026-10-04；第 2 章历史资料与原方法提取调用核实于2026-09-30，当前原始资料/源码及限定合同复核于2026-10-04，第 4 章相关原始资料及有限原方法调用核实于 2026-10-01，第 5 章相关研究小节、原论文与限定原函数审计复核于 2026-10-01（历史报告仍保留原执行日期）；第 9 章原始资料与限定接口合同复核于 2026-10-01，保留 2026-09-28 的历史运行记录；DCASE 2026 任务状态及近年候选的后续复核日期见各条 2026-09-29 记录；第 14 章空间与可穿戴阵列纯文本选集核实于 2026-11-17。对应正文第 1～5、9、12、14 章。这里按算法的输入、计算步骤和可检查结果整理源码，既包括语音前端，也包括直接相关的球阵录音、可穿戴空间阵列与工业噪声源成像。后几类任务的输出不同，不能把声源功率图或 Ambisonics 解码结果当成增强语音。</p>
 <span id="sec-2" class="anchor-alias" aria-hidden="true"></span><span id="阅读与复现方式" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-37b31460d5">阅读与复现方式</h2>
 <p>先运行本书的 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/ch02_05_baselines.py"><code>ch02_05_baselines.py</code></a> 和 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/ch06_09_baselines.py"><code>ch06_09_baselines.py</code></a>，确认时延正负、共轭、通道顺序和角度零点。再按下面的文件入口阅读外部实现。外部目录位于 <code>codes/chapters/ch00/upstream/_downloads/&lt;项目 ID&gt;/</code>，由锁定清单和获取工具管理。下载、导入、单次演示成功、论文实验复现和设备验收是不同结果。</p>
 <p>本文的“最小实验”是建议的独立验证方案，未附运行结果的方案均未在本文中宣称通过。固定版本源码中的静态疑点集中放在末节；它们不能被隐藏在“有官方实现”的分类里。外部包缺少编译器、求解器、MATLAB、模型或测量数据时，仍可阅读源码，但不能据此声称运行验证完成。</p>
@@ -1736,7 +1753,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <p>另一个名称相近的 <code>get_mvdr_vector_merl</code> 有独立问题：固定版本把每个候选参考通道的输出功率全部相加，再对单个标量 <code>argmax</code>，因此总选第 0 列。<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch05/examples/audit_beamformer_reference.py">诊断脚本</a>从固定原文件提取这个函数的原始 AST，仅提供 NumPy 依赖后执行，没有改写函数或执行整个模块；普通包导入因缺少 <code>paderbox</code> 失败。不能把这个提取调用称为原包完整运行。</p>
 <p>输入只有一个频点，噪声 SCM 为 <code>I2</code>、目标 SCM 为 <code>diag(1,4)</code>。独立按标量功率算得两候选输出 SNR 为 1、4，应选权重 <code>(0,0.8)</code>，原函数实际返回 <code>(0.2,0)</code>；交换两路目标功率后，第 0 列恰是正确参考，得到 <code>(0.8,0)</code>。这一对测试说明固定实现的选择缺陷，不能推断同文件的 Souden 接口也有此错。<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch05/reports/beamformer_reference_audit.json">逐项报告</a>记录原文件、函数片段与诊断脚本摘要、环境和两次完整输出；上游源码保持原样，失败仍保留。</p>
 <span id="sec-59" class="anchor-alias" aria-hidden="true"></span><span id="49-mwfsdw-mwf-与秩一化简" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-305fd5299c">49. MWF、SDW-MWF 与秩一化简</h3>
-<p>对应 §5.7、§5.9。以参考通道目标声像为估计对象，一般 SDW-MWF 解由 <code>(Rs+mu Rn)w=Rs e_ref</code> 得到，其中 <code>mu&gt;0</code>，矩阵为目标与噪声的未中心化二阶矩；零均值时也等于协方差。ESPnet <code>get_sdw_mwf_vector</code> 明确提供该解，并有 <code>approx_low_rank_psd_speech</code> 选项；当目标与噪声的互二阶矩为零时，<code>mu=1</code> 对应混合观测的普通MWF，见<a href="../05_beamforming.html#sec-u-fb93744989">正文的代价与条件</a>。其 <code>get_mwf_vector</code> 的参数虽名为 <code>psd_n</code>，docstring 指的是观测协方差，不能因为变量名含 n 就传入纯噪声 SCM。</p>
+<p>对应 §5.5.1、§5.7、§5.9。以参考通道目标声像为估计对象，一般 SDW-MWF 解由 <code>(Rs+mu Rn)w=Rs e_ref</code> 得到，其中 <code>mu&gt;0</code>，矩阵为目标与噪声的未中心化二阶矩；零均值时也等于协方差。ESPnet <code>get_sdw_mwf_vector</code> 明确提供该解，并有 <code>approx_low_rank_psd_speech</code> 选项；当目标与噪声的互二阶矩为零时，<code>mu=1</code> 对应混合观测的普通MWF，见<a href="../05_beamforming.html#sec-5-5-1">正文的代价与条件</a>。其 <code>get_mwf_vector</code> 的参数虽名为 <code>psd_n</code>，docstring 指的是观测协方差，不能因为变量名含 n 就传入纯噪声 SCM。</p>
 <p>pb_bss <code>get_wmwf_vector</code> 实际计算 <code>Phi/(mu+trace(Phi))</code> 的参考列，其中 <code>Phi=Rn^-1 Rs</code>，这是秩一目标条件下的化简。独立手算反例取 <code>Rn=I</code>、<code>Rs=diag(2,1)</code>、<code>mu=1</code>、参考 0：一般解第一项为 <code>2/3</code>，该迹化简第一项为 <code>2/(1+3)=1/2</code>。改成 <code>Rs=diag(2,0)</code> 后两者均为 <code>2/3</code>。本次<a href="#beamformer-upstream-audit">原函数提取调用</a>得到的两个结果分别为 <code>[.5,0]</code> 和 <code>[2/3,0]</code>，与上述手算相符。一般 MWF 的期望由标量 <code>2/(2+1)</code> 独立计算，不从上游输出反造答案。这定位了模型边界，不说明秩一方法本身错误；没有运行完整外部包或增强音频链。</p>
 <p>最小工程实验应同时比较全秩与秩一 SCM，并记录目标失真、残留噪声和所用参考。令 <code>mu→0</code> 在非奇异全秩情形接近参考通道直通，并不普遍等于 MVDR；只有相应秩一模型和极限解释下才能作该联系。源码文档里的简短等价描述应随假设阅读，不能直接复制进算法对比表。</p>
 <span id="sec-60" class="anchor-alias" aria-hidden="true"></span><span id="50-mcra由局部最小值控制噪声更新" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-2973a53a28">50. MCRA：由局部最小值控制噪声更新</h3>
@@ -1746,16 +1763,16 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <p>对应 §5.7。改进 MCRA（IMCRA）进一步在语音存在判断控制下执行两阶段平滑与最小值搜索，目标是降低强语音对噪声估计的污染。<a href="https://israelcohen.com/wp-content/uploads/2018/05/SAP_Sep2003.pdf">Cohen 2003 作者托管原论文</a> §II～III 给出递推与两阶段搜索，§IV 总结实现，§V 评价与 OM-LSA 的联合处理。第一阶段形成粗略语音判断，第二阶段平滑排除较强语音分量，另用偏差补偿校正噪声估计；不能把任何“语音概率控制的递归平均”统称 IMCRA。</p>
 <p>最小实验使用与 MCRA 完全相同的输入和窗长，对照两阶段的平滑谱、最小值、语音判定及最终噪声估计，并同时测试低 SNR 弱语音和噪声突然上升。若只报告更低的噪声输出，却没有目标衰减，就不能证明改进。作者软件页明确介绍 MATLAB OM-LSA/IMCRA 软件，但本次页面中未取得可核验的下载包、版本与许可，故本条保留原论文和软件入口，不以非作者 GitHub 同名代码补齐下载状态。</p>
 <span id="sec-62" class="anchor-alias" aria-hidden="true"></span><span id="52-om-lsa对数谱幅度增益与语音存在不确定性" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-0e0c8616fe">52. OM-LSA：对数谱幅度增益与语音存在不确定性</h3>
-<p>对应 §5.7。OM-LSA 把语音存在概率用于组合语音存在时的 LSA 增益和语音缺席时的增益下限；噪声估计器可用 IMCRA，但两者是不同模块。其低增益区域的处理影响残余噪声的连续性，不能仅以硬门限谱减替代。<a href="https://israelcohen.com/software/">Cohen 与 Berdugo 2001 论文入口及作者实现说明</a>；<a href="https://webee.technion.ac.il/Sites/People/IsraelCohen/Publications/IWAENC2006_Habets.pdf">作者合著的 OM-LSA 推导 §III</a>。</p>
-<p>局部手算若存在时增益为 0.8、缺席时下限为 0.1、存在概率为 0.5，几何组合得到 <code>sqrt(0.8×0.1)≈0.283</code>，不是算术平均 0.45。这个例子只说明增益组合，不包含 LSA 增益内部的先验 SNR 与指数积分计算。完整实验还需保存 decision-directed 先验 SNR、后验 SNR、语音存在概率、增益下限和重叠相加条件；缺失这些状态不能算完成 OM-LSA 复现。当前没有已核许可的作者下载包随书提供。</p>
-<p>Habets 与 Cohen 2006 的 §III 先复述标准几何组合，随后把语音缺席假设下的增益改为依赖平稳/非平稳干扰 PSD 的形式，§IV 还讨论非因果先验 SNR 估计。引用该文时应明确使用的是标准 OM-LSA 还是这个扩展，不能把所有后续公式都写成标准 OM-LSA 的定义。语音存在概率来自特定统计模型及先验，它的名称不保证在新设备、风噪或削波输入上仍校准；需同时检查语音衰减和噪声残留。</p>
+<p>对应 §5.7。OM-LSA 把语音存在概率用于组合语音存在时的 LSA 增益和无语音假设下的增益下限；噪声估计器可用 IMCRA，但两者是不同模块。其低增益区域的处理影响残余噪声的连续性，不能仅以硬门限谱减替代。<a href="https://israelcohen.com/software/">Cohen 与 Berdugo 2001 论文入口及作者实现说明</a>；<a href="https://webee.technion.ac.il/Sites/People/IsraelCohen/Publications/IWAENC2006_Habets.pdf">作者合著的 OM-LSA 推导 §III</a>。</p>
+<p>局部手算若存在时增益为 0.8、无语音时下限为 0.1、存在概率为 0.5，几何组合得到 <code>sqrt(0.8×0.1)≈0.283</code>，不是算术平均 0.45。这个例子只说明增益组合，不包含 LSA 增益内部的先验 SNR 与指数积分计算。完整实验还需保存 decision-directed 先验 SNR、后验 SNR、语音存在概率、增益下限和重叠相加条件；缺失这些状态不能算完成 OM-LSA 复现。当前没有已核许可的作者下载包随书提供。</p>
+<p>Habets 与 Cohen 2006 的 §III 先复述标准几何组合，随后把无语音假设下的增益改为依赖平稳/非平稳干扰 PSD 的形式，§IV 还讨论非因果先验 SNR 估计。引用该文时应明确使用的是标准 OM-LSA 还是这个扩展，不能把所有后续公式都写成标准 OM-LSA 的定义。语音存在概率来自特定统计模型及先验，它的名称不保证在新设备、风噪或削波输入上仍校准；需同时检查语音衰减和噪声残留。</p>
 <span id="sec-63" class="anchor-alias" aria-hidden="true"></span><span id="53-webrtc-分位数噪声估计与语音概率控制" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-d08d24175d">53. WebRTC 分位数噪声估计与语音概率控制</h3>
 <p>对应 §5.7 的工业对照。已下载 WebRTC <code>modules/audio_processing/ns/quantile_noise_estimator.cc::QuantileNoiseEstimator::Estimate</code> 跟踪分位数，<code>noise_estimator.cc::NoiseEstimator::PreUpdate/PostUpdate</code> 管理初始化和噪声更新，<code>speech_probability_estimator.cc::SpeechProbabilityEstimator::Update</code> 估计语音概率。它们提供可检查的产品代码路径，但不是 MCRA、IMCRA 或 OM-LSA 的逐式实现。<a href="https://webrtc.googlesource.com/src/+/0467d2b91cc20b9b001c2bbb73d43ea6b2491f3e/modules/audio_processing/ns/">WebRTC 官方 NS 目录</a>。代码许可及 PATENTS 使用总清单记录的固定提交逐项核对。</p>
 <p>读码须继续到 <code>noise_suppressor.cc</code> 的整帧流程，区分分析、增益施加和通道状态，再检查 <code>suppression_params.h</code> 的模式参数。建议复用噪声阶跃、持续弱语音与静音启动输入，同时检查全零谱及采样率分支。单独调用分位数模块不等于运行整个 WebRTC Audio Processing；没有 APM 集成、采样帧检查和目标设备计时，不报告实时端到端收益。</p>
 <span id="追踪接口工程配置与来源核验" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-2dbc7d07f6">追踪接口、工程配置与来源核验</h2>
-<p><a id="tracking-upstream-audit"></a></p>
+<p><a id="tracking-upstream-audit"></a>
+<a id="tracking-contract-audit"></a></p>
 <span id="54-固定追踪上游的实际调用与失败边界" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-04c8077699">54. 固定追踪上游的实际调用与失败边界</h3>
-<p><a id="tracking-contract-audit"></a></p>
 <p>本节于 2026-09-28 使用既有隔离环境执行<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch09/examples/audit_tracking_upstream_interfaces.py">诊断脚本</a>，原始结果保存在<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch09/reports/tracking_upstream_interfaces.json">JSON 报告</a>。2026-10-01 的<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch09/examples/audit_upstream_tracking_contracts.py">新合同工具</a>在当前隔离环境重新调用该工具的只读函数，把当前执行结果记录在<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch09/reports/upstream_tracking_contracts.json">新报告</a>的 <code>historical_current_recheck</code>，没有改写本节的历史报告。脚本绑定自身摘要、精确输入、上游提交与被调用文件摘要，运行前核查独立 checkout、固定 HEAD 和未修改的跟踪文件。它不下载依赖，不改 FilterPy 或 Stone Soup。此前主环境没有 SciPy、未运行这些接口的记录仍然有效；本节新增的是另一环境中的有限方法调用，不能追溯性地改写旧验证范围。</p>
 <p>2026-10-02 在同一隔离环境复验时，整工作区的稀疏选集核验与所用原文件身份分别记录。SAF、FilterPy 和 Stone Soup 的旧选集不匹配保持原状态；官方 origin、固定提交、许可与所用文件摘要、完整工作区洁净状态独立核对后，才执行上述限定方法。当前报告的 <code>acquisition_record</code> 和 <code>source_selection_verified</code> 保留取得层事实，<code>required_source_identity_verified</code> 只表示所用原文件满足执行合同。</p>
 <p><strong>当前工具与历史报告分开核对。</strong> 2026-10-05 的修订不覆盖上述两份原报告；历史工具字节固定于本仓库提交 <code>982ba05f7562f2e61228cbd4f6e447c8f568e55e</code>。新运行分别保存到<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch09/reports/tracking_upstream_interfaces_current.json">当前接口报告</a>和<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch09/reports/upstream_tracking_contracts_current.json">当前合同报告</a>。两工具默认只向终端输出，显式写报告时先检查目标，再执行计算，写入前重复有限检查。仓内只接受指定的新报告，原历史报告、源码和上游缓存均不作为输出目标。</p>
@@ -1999,7 +2016,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <p>除 §19 已逐项列出的 SBL 与 RobustSBL 外，其他稀疏贝叶斯变体、原子范数、完整最坏情形稳健波束以及本文未逐项收录的神经定位方法，仍需要逐论文确认代码与模型；不能用同名 GitHub 搜索结果替代作者来源。本文已分别记录实际取得的外部实现、官方实现存在但再分发许可未建立的索引、只核实到原理的算法和版本疑点。深度波束与 WPD 的完整增强链、分离及神经噪声抑制见本目录其他研究文档；同一函数在多个算法条目中被调用，不等于取得了多套独立工程系统。本次没有声称穷尽定位算法领域。</p>
 <p><a id="imaging-contract-audit"></a></p>
 <span id="声学成像原始方法固定源码与实际执行边界" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-4dccdaa37d">声学成像：原始方法、固定源码与实际执行边界</h2>
-<p>对应<a href="../12_acoustic-imaging.html">扩展专题Ⅰ</a>，完整输入、推导和18道分步题在那里展开。本节用于选择原始资料、定位源码接口和区分实际执行范围。声学成像输出频率与空间网格上的源量估计；它与输出目标语音波形的增强链具有不同的输出合同。</p>
+<p>对应<a href="../12_acoustic-imaging.html">扩展专题Ⅰ</a>，完整输入、推导和20道分步题在那里展开。本节用于选择原始资料、定位源码接口和区分实际执行范围。声学成像输出频率与空间网格上的源量估计；它与输出目标语音波形的增强链具有不同的输出合同。</p>
 <span id="原始资料怎样连接到实现" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-dc39369d16">原始资料怎样连接到实现</h3>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
 <thead>
@@ -2107,12 +2124,12 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <p>独立合同测试还覆盖错误origin、HEAD、文件摘要、脏工作区、路径与报告写入边界。测试使用本地Git夹具；原实际数值结果由工具调用取得，不用夹具成功替代外部运行。</p>
 <span id="同一合法csm的目标对照与作者原模块" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-de374c4bcb">同一合法CSM的目标对照与作者原模块</h3>
 <p>新Acoular报告的<code>additional_valid_csm_controls</code>另记录一份合法秩一CSM，经原Base与PSF方法形成扫描输入，再调用原DAMAS类；它不是把旧<code>b=(1,0)</code>与任意矩阵拼成一条运行。原结果<code>(1,0)</code>的完整CSM平方残差为<code>28/9</code>，扫描NNLS点<code>(16/17,0)</code>的完整CSM残差为<code>8128/2601</code>；原21项控制的次序与13/8计数保持不变。详细手算、归一化与成立条件见<a href="../12_acoustic-imaging.html#e12-17">E12-17</a>。</p>
-<p><a href="https://github.com/gilleschardon/DAMAS/blob/61987952e2237e6b088a169ee891dd96576f2565/damas.py" title="citation">固定作者DAMAS/CMF原模块</a>已有独立<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch12/examples/audit_damas_author_contracts.py">限定工具</a>与<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch12/reports/damas_author_contracts_current.json">真实当前报告</a>。完整原模块字节及原imports在隔离进程执行，9个控制中8项数值吻合独立期望，1项零CSM保留原<code>NameError</code>。四原求解入口分别针对完整CSM、完整扫描残差、去对角CSM、去对角扫描残差；相同输入下得到<code>(1,0)</code>、<code>(16/17,0)</code>、<code>(2/3,0)</code>、<code>(16/15,0)</code>。不能将它们排成声学性能榜。</p>
+<p><a href="https://github.com/gilleschardon/DAMAS/blob/61987952e2237e6b088a169ee891dd96576f2565/damas.py">固定作者DAMAS/CMF原模块</a>已有独立<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch12/examples/audit_damas_author_contracts.py">限定工具</a>与<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch12/reports/damas_author_contracts_current.json">真实当前报告</a>。完整原模块字节及原imports在隔离进程执行，9个控制中8项数值吻合独立期望，1项零CSM保留原<code>NameError</code>。四原求解入口分别针对完整CSM、完整扫描残差、去对角CSM、去对角扫描残差；相同输入下得到<code>(1,0)</code>、<code>(16/17,0)</code>、<code>(2/3,0)</code>、<code>(16/15,0)</code>。不能将它们排成声学性能榜。</p>
 <p>重复列控制中原<code>unique=True</code>只来自已激活支持的正定Gram；另一个非负解<code>(0,1)</code>仍产生相同观测。作者单源full CLEAN-SC两步得到<code>1.68</code>，与其显式原公式一致；该限定点不覆盖任意双源或DR支路。取得的21个GPL文本与实际使用的LICENSE及一个Python文件分开，三份数据、MATLAB、MEX和论文大规模实验未执行。原NumPy、SciPy与matplotlib三个直接模块入口的前后SHA和版本已记录，未宣称核验这些库全部转依赖或二进制闭包。</p>
 <span id="工业入口与先进方法怎样继续研究" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-fe0d164adb">工业入口与先进方法怎样继续研究</h3>
 <p>固定源码中的风洞入口为 <code>examples/wind_tunnel_examples/example_airfoil_in_open_jet_freq_domain_methods.py</code>，另有CMF、导向与区域选择示例。工业复现应保存测量通道次序、校准文件、CSM窗与完整帧计数、网格/声源参考、剪切层或流动模型、对角处理、正则与区域积分。源码的下载入口使用浮动分支，配套数据许可须独立核实；本轮未取得风洞数据或运行该整链，不记录设备性能排名。</p>
-<p>两个固定风洞入口采用的频带不同：<a href="https://github.com/acoular/acoular/blob/13d3d7df74ac1a8135c7ec71da098cbbc03d8652/examples/wind_tunnel_examples/example_airfoil_in_open_jet_freq_domain_methods.py" title="citation">频域方法示例</a>定义<code>cfreq=4000</code>与<code>num=3</code>，循环调用<code>b.synthetic(cfreq,num)</code>，因此采用三分之一倍频程。<a href="https://github.com/acoular/acoular/blob/13d3d7df74ac1a8135c7ec71da098cbbc03d8652/examples/wind_tunnel_examples/example_airfoil_in_open_jet_cmf.py" title="citation">CMF示例</a>虽有同样的变量声明，实际调用却是<code>b.synthetic(cfreq,1)</code>，采用八度带。两个文件不能互相代替。设置<code>Environment(c=346.04)</code>也不等于已经使用<code>GeneralFlowEnvironment</code>或完成剪切层修正。</p>
-<p><a href="https://github.com/acoular/acoular/blob/13d3d7df74ac1a8135c7ec71da098cbbc03d8652/acoular/calib.py" title="citation">固定calib.py</a>解析XML的实数<code>factor</code>。时域系数按通道排列；频域接口要求把通道与频点的系数展平为长度<code>M*F</code>的一维数组，再对数据块逐行广播相乘，并非直接输入二维<code>M×F</code>系数矩阵。这是应用给定因子，不是从未知录音自动估计频率相关复响应、相位或时钟。数据与传播模型必须保持同一校准约定。</p>
+<p>两个固定风洞入口采用的频带不同：<a href="https://github.com/acoular/acoular/blob/13d3d7df74ac1a8135c7ec71da098cbbc03d8652/examples/wind_tunnel_examples/example_airfoil_in_open_jet_freq_domain_methods.py">频域方法示例</a>定义<code>cfreq=4000</code>与<code>num=3</code>，循环调用<code>b.synthetic(cfreq,num)</code>，因此采用三分之一倍频程。<a href="https://github.com/acoular/acoular/blob/13d3d7df74ac1a8135c7ec71da098cbbc03d8652/examples/wind_tunnel_examples/example_airfoil_in_open_jet_cmf.py">CMF示例</a>虽有同样的变量声明，实际调用却是<code>b.synthetic(cfreq,1)</code>，采用八度带。两个文件不能互相代替。设置<code>Environment(c=346.04)</code>也不等于已经使用<code>GeneralFlowEnvironment</code>或完成剪切层修正。</p>
+<p><a href="https://github.com/acoular/acoular/blob/13d3d7df74ac1a8135c7ec71da098cbbc03d8652/acoular/calib.py">固定calib.py</a>解析XML的实数<code>factor</code>。时域系数按通道排列；频域接口要求把通道与频点的系数展平为长度<code>M*F</code>的一维数组，再对数据块逐行广播相乘，并非直接输入二维<code>M×F</code>系数矩阵。这是应用给定因子，不是从未知录音自动估计频率相关复响应、相位或时钟。数据与传播模型必须保持同一校准约定。</p>
 <p>DAMAS-C/CMF-C用于允许源间相关的模型，HR-CLEAN-SC关注多个分量与峰选择，SODIX引入不同的源表示和约束，移动/旋转源还需要运动轨迹与接收时刻模型。它们应逐一核观测、目标与额外假设，不能只更换算法名就沿用本章非相干PSF矩阵。上述扩展本轮仅保留研究入口，没有宣称运行。近场声全息的重建面与正则逆问题、DCASE的语义事件输出也不由本章功率成像覆盖。</p>
 <span id="58-直达路径证据dpd筛选与dp-rtf不是同一计算" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-1ca23edba5">58. 直达路径证据：DPD筛选与DP-RTF不是同一计算</h2>
 <p>定位器面对的首先是麦克风总声场，不是已经分好的直达声。高相干说明两路在该频点近似由同一个复比例解释；无噪单频信号二阶矩秩一说明该频点的有效空间分量只有一个。若同一声源的直达和反射仍相干，这两个性质都可能成立，却无法据此确认该分量的传播方向。第4章E04-24以两麦半波距、4kHz直达与同源反射给出有限假峰；<a href="05_exercises_and_audio.html#sec-u-ed41d4e99e">四个PCM控制</a>让模型、实文件和评分互相核对。</p>
@@ -2239,7 +2256,7 @@ C_{\rm PAN}&=\frac{\vec w^H\mathbf R_n\vec a}{\vec w^H\mathbf R_n\vec w},\\
 <p>正文E05-24用固定两通道、两帧控制独立复算该差别，没有训练掩码网络、估计未知目标或实现论文完整在线Souden链。原文§4–5使用16kHz、512点STFT、256点hop、平方根Hann窗和200/500/1000ms缓冲；频率上的双向LSTM与时间上的单向LSTM应分别判断。时间单向也还要等分析帧到齐，hop的16ms不能充当全部端到端延迟。论文的紧凑/分布式阵列仿真不等于实际无线时钟、传输或硬件测量。</p>
 <p>本次原文未提供可核对、许可明确的作者源码入口，故仅登记原理与独立教学控制，没有取得或运行完整作者实现。已有<a href="https://www.isca-archive.org/interspeech_2026/deng26d_interspeech.html">Deng等Interspeech2026正式论文</a>仍归§46；其复掩码先构造噪声声像，再平均外积，不当作任意复标量协方差权重，也不重复增设算法章。</p>
 <span id="603-固定sof设计与实际输出的取点" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-60-3">60.3 固定SOF设计与实际输出的取点</h3>
-<p>本轮还实际重新生成<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch05/reports/sof_tdfb_design_current.json">SOF当前静态合同</a>。固定 <code>sof_bf_design.m</code> 的归一化sinc自变量与WNG分母问题保留；新增的可选仿真分支在方位循环内重置 <code>nmi</code>，循环后只留下最后一次方位的数据。这是静态控制流与独立标量控制，不是已经执行MATLAB并生成错误WAV的证据。默认 <code>create_simulation_data=false</code>，没有运行MATLAB/Octave、设计实际FIR、刷写固件或测试设备。</p>
+<p>本轮还实际重新生成<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch05/reports/sof_tdfb_design_current.json">SOF当前源码核查报告</a>。固定 <code>sof_bf_design.m</code> 的归一化sinc自变量与WNG分母问题保留；新增的可选仿真分支在方位循环内重置 <code>nmi</code>，循环后只留下最后一次方位的数据。这是源码控制流审读与独立标量对照，不是已经执行MATLAB并生成错误WAV的证据。默认 <code>create_simulation_data=false</code>，没有运行MATLAB/Octave、设计实际FIR、刷写固件或测试设备。</p>
 <p>固定 <code>tdfb_generic.c</code> 使用每支路FIR累加、Q格式缩放、输出位图路由和饱和；设计脚本的逐麦峰位裁切、有限抽头和板端量化也与理想频率权重不同。应分别记录理论权重、导出的FIR系数、固件输出取点和数字饱和，不能仅用理想WNG曲线证明设备效果。<a href="https://github.com/thesofproject/sof/tree/b6c6a05d52536313fe8e8752b1c4e069b1cc4002/src/audio/tdfb">固定SOF目录</a></p>
 <span id="604-当前调用历史报告与有限收录清单" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-60-4">60.4 当前调用、历史报告与有限收录清单</h3>
 <p><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch05/reports/beamformer_reference_current.json">reference当前报告</a>仍记录pb_bss正常导入缺少paderbox、MERL单原函数提取的误选参考，以及PRA原 <code>rake_distortionless_filters</code> 在浮点切片处真实失败、没有输出滤波器。PRA安装目录的85份Python源与固定Git blob逐字节核对；两个安装二进制只登记本机SHA，不宣称由固定Git源码复现构建。所用原文件身份与完整选集状态分栏，运行前后源码和许可保持洁净。</p>
@@ -2323,10 +2340,31 @@ C_{\rm PAN}&=\frac{\vec w^H\mathbf R_n\vec a}{\vec w^H\mathbf R_n\vec w},\\
 </tbody>
 </table></div>
 <p>VAP起始代码检查0→1转换，初始已经活动的区间还须独立核边界。论文§VI.B.4的指标定义与这份固定程序的行为应分别记录；不能从论文定义推断代码已经正确执行，也不能由这些静态疑点声称论文结果错误。</p>
-<p><strong>双耳输出：论文目标与工程配置。</strong> <a href="../05_beamforming.html#e05-25">第 5 章 E05-25～27</a>复用本书的 MVDR/LCMV 数值核，分别检查两耳目标声像、一个方向干扰的复比，以及残余背景的相干性。<a href="https://sharongannot.group/wp-content/uploads/2021/04/2016030110.pdf" title="citation">Hadad 等的 BLCMV 论文</a>给出双约束及噪声权衡；<a href="https://sharongannot.group/binaural-lcmv/" title="citation">论文作者的试听页</a>提供示范音频，本轮未核实作者求解器的可获取源码与许可。<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC7225838/" title="citation">Gößling 等的双耳感知实验</a>单独验证空间感知取舍；本书的合成分量实验没有复刻真人测试。</p>
-<p>工程对照是 <a href="https://github.com/HoerTech-gGmbH/openMHA/blob/0b9f087e514f9cc0a901fcde9db17de35f9ec438/examples/06-binaural-beamformer/beamformer.cfg" title="citation">openMHA v4.18.1 固定配置</a>。它接受 <code>[front-left, front-right, rear-left, rear-right]</code> 四路，采样率 16 kHz、每块 160 点、分析窗 320 点、FFT 512 点。按该配置的 −180° 到 +180°、5° 步进，零起点下标 40 对应其 +20°，角度正向仍以原配置为准。</p>
-<p><a href="https://github.com/HoerTech-gGmbH/openMHA/blob/0b9f087e514f9cc0a901fcde9db17de35f9ec438/mha/plugins/acSteer/acSteer.cpp" title="citation">acSteer</a>从固定权重表分发左右两组。每个频点有 584 个复系数，即 2 个参考耳乘 73 个角度再乘 4 个输入；257 个单边频点合计 150088 个复系数。原表每组另有一行空白，共 150672 行。<a href="https://github.com/HoerTech-gGmbH/openMHA/blob/0b9f087e514f9cc0a901fcde9db17de35f9ec438/mha/plugins/steerbf/steerbf.cpp" title="citation">steerbf</a>按角度选权重，对四路执行权重共轭乘输入再累加。配置分别输出左右两路，既不在这条执行路径实时求逆，也不等于论文的双约束训练或估计。</p>
-<p><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/SOURCES.lock.json">获取清单</a>锁定 10 个许可文本和权重文件，存于忽略的本地缓存；保留 AGPL-3.0 原条款。实际核对固定提交、工作树和选集；未取示例录音、未编译或运行插件。设备验证还需要校准方向及参考麦、确认左右时钟和播放路径，再分别量化残留干扰、目标响应与空间线索。CHiME-9 的 <a href="https://www.chimechallenge.org/challenges/chime9/task2/index" title="citation">ECHI 听障语音增强任务</a>可作为独立数据与评测入口；其中结果不由这套合成音频或 openMHA 静态核对推出。</p>
+<p><strong>双耳输出：论文目标与工程配置。</strong> <a href="../05_beamforming.html#e05-25">第 5 章 E05-25～27</a>复用本书的 MVDR/LCMV 数值核，分别检查两耳目标声像、一个方向干扰的复比，以及残余背景的相干性。<a href="https://sharongannot.group/wp-content/uploads/2021/04/2016030110.pdf">Hadad 等的 BLCMV 论文</a>给出双约束及噪声权衡；<a href="https://sharongannot.group/binaural-lcmv/">论文作者的试听页</a>提供示范音频，本轮未核实作者求解器的可获取源码与许可。<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC7225838/">Gößling 等的双耳感知实验</a>单独验证空间感知取舍；本书的合成分量实验没有复刻真人测试。</p>
+<p>工程对照是 <a href="https://github.com/HoerTech-gGmbH/openMHA/blob/0b9f087e514f9cc0a901fcde9db17de35f9ec438/examples/06-binaural-beamformer/beamformer.cfg">openMHA v4.18.1 固定配置</a>。它接受 <code>[front-left, front-right, rear-left, rear-right]</code> 四路，采样率 16 kHz、每块 160 点、分析窗 320 点、FFT 512 点。按该配置的 −180° 到 +180°、5° 步进，零起点下标 40 对应其 +20°，角度正向仍以原配置为准。</p>
+<p><a href="https://github.com/HoerTech-gGmbH/openMHA/blob/0b9f087e514f9cc0a901fcde9db17de35f9ec438/mha/plugins/acSteer/acSteer.cpp">acSteer</a>从固定权重表分发左右两组。每个频点有 584 个复系数，即 2 个参考耳乘 73 个角度再乘 4 个输入；257 个单边频点合计 150088 个复系数。原表每组另有一行空白，共 150672 行。<a href="https://github.com/HoerTech-gGmbH/openMHA/blob/0b9f087e514f9cc0a901fcde9db17de35f9ec438/mha/plugins/steerbf/steerbf.cpp">steerbf</a>按角度选权重，对四路执行权重共轭乘输入再累加。配置分别输出左右两路，既不在这条执行路径实时求逆，也不等于论文的双约束训练或估计。</p>
+<p><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/SOURCES.lock.json">获取清单</a>锁定 10 个许可文本和权重文件，存于忽略的本地缓存；保留 AGPL-3.0 原条款。实际核对固定提交、工作树和选集；未取示例录音、未编译或运行插件。设备验证还需要校准方向及参考麦、确认左右时钟和播放路径，再分别量化残留干扰、目标响应与空间线索。CHiME-9 的 <a href="https://www.chimechallenge.org/challenges/chime9/task2/index">ECHI 听障语音增强任务</a>可作为独立数据与评测入口；其中结果不由这套合成音频或 openMHA 静态核对推出。</p>
+<p><a id="spatial-wearable-arrays"></a></p>
+<span id="62-扩展专题ⅲ空间声场采集参数化编码与可穿戴阵列" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-6c9048c3fc">62. 扩展专题Ⅲ：空间声场采集、参数化编码与可穿戴阵列</h2>
+<p>对应<a href="../14_spatial-wearable-arrays.html">第 14 章扩展专题Ⅲ</a>与<a href="05_exercises_and_audio.html#wearable-exercises-audio">练习音频 §61</a>。可穿戴耳机与智能眼镜同时面对异构几何、头部散射、耳道闭塞和湍流风噪，输出目标须先区分空间参数化重放与自语音清晰度增强。本书用四个纯 NumPy 数值核将两类目标分开建模，不把人工两音控制音频当作实测耳道或风洞录音。</p>
+<span id="621-四个本地可运行数值核与解释边界" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-62-1">62.1 四个本地可运行数值核与解释边界</h3>
+<ul>
+<li><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch14/core/spatial_parametric.py"><code>spatial_parametric.py</code></a>：复算四面体 A-format 到 FOA（ACN/SN3D 与 FuMa）编码、开球径向模态零陷正则化、$\mathrm{SO}(3)$ 旋转矩阵及有功声强/扩散度 DirAC 参数化分解。</li>
+<li><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch14/core/binaural_matching.py"><code>binaural_matching.py</code></a>：比较最小二乘双耳信号匹配（BSM-LS）、高频幅度最小二乘（BSM-MagLS）以及带参考通道混合的耳间相干性恢复。</li>
+<li><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch14/core/wearable_fusion.py"><code>wearable_fusion.py</code></a>：建立 Corcos 湍流边界层风噪相干模型、外麦气导与耳内闭塞麦克风分频带跨模态 MVDR/MMSE 融合，以及 TWS 通透模式（Hear-Through）处理延迟引发的耳道梳状滤波。</li>
+<li><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch14/core/ambisonic_sofa_rendering.py"><code>ambisonic_sofa_rendering.py</code></a>：核验 FOA max-$\vec r_E$ 能量矢量阶数加权扬声器解码、AES69/SOFA <code>SimpleFreeFieldHRIR</code> 坐标变换及头部追踪运动到声音延迟（Motion-to-Photon/Sound Latency）预算。</li>
+</ul>
+<p>以上四个模块承载 <code>E14-01</code>～<code>E14-18</code> 与六份 16 kHz 数学合成 WAV 的解析、浮点及 PCM16 整型对照。计算仅验证指定物理方程、矩阵条件数与量化边界，不包含个体化实测 HRTF、骨导传感器硬件标定或主观空间听感评测。</p>
+<span id="622-五个锁定上游仓库的源码核验与未执行边界" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-62-2">62.2 五个锁定上游仓库的源码核验与未执行边界</h3>
+<p><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/SOURCES.lock.json">SOURCES.lock.json</a> 与 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/SOURCE_STATUS.json">SOURCE_STATUS.json</a> 登记了与本章对应的五个 MIT 许可纯文本选集，离线核验状态均为 <code>source_verified</code>（<code>execution="not_run"</code>）：</p>
+<ul>
+<li><code>spharpy</code>（<a href="https://github.com/pyfar/spharpy/tree/e5202db197ddd84733e051bf4f21e45da4da2fa5"><code>e5202db197dd</code></a>，MIT）：选定 <code>spharpy/spherical.py</code>、<code>spharpy/beamforming/beamforming.py</code> 与 <code>spharpy/transforms/rotations.py</code> 等 6 个文本文件，对照球谐基定义、模态权重与旋转算子；未获取文档绘图资产或安装执行。</li>
+<li><code>sofar</code>（<a href="https://github.com/pyfar/sofar/tree/2de8a680db9219ad25aa4bb813d16f98d1a9ebac"><code>2de8a680db92</code></a>，MIT）：选定 <code>sofar/sofa.py</code>、<code>sofar/io.py</code> 与 <code>sofar/utils.py</code> 等 6 个文本文件，核对 AES69/SOFA 维度与坐标约定校验逻辑；未拉取二进制 SOFA HRTF/DRIR 数据集，未运行包。</li>
+<li><code>spaudiopy</code>（<a href="https://github.com/chris-hld/spaudiopy/tree/a75c282a2ba3fc24b0b2aea27ac20c149ffc709a"><code>a75c282a2ba3</code></a>，MIT）：选定 <code>spaudiopy/sph.py</code>、<code>spaudiopy/decoder.py</code>、<code>spaudiopy/parsa.py</code> 与 <code>spaudiopy/grids.py</code> 等 7 个文本文件，对照 Ambisonics 解码（含 AllRAD/max-$\vec r_E$）与参数化空间音频分析接口；未选二进制 HRIR 资产，未执行。</li>
+<li><code>sc-wind-noise-generator</code>（<a href="https://github.com/audiolabs/SC-Wind-Noise-Generator/tree/ff9e74c40329c11d6437a01e1c9b164ac228c944"><code>ff9e74c40329</code></a>，MIT）：选定 <code>sc_wind_noise_generator.py</code> 与 <code>generate_example.py</code> 等 4 个文本文件，阅读参数化湍流风噪合成流程；未取音频素材，未运行生成脚本。</li>
+<li><code>gtcrn</code>（<a href="https://github.com/Xiaobin-Rong/gtcrn/tree/502ebfab64da7c4a9af78dcb9c6ceef1ebb01c73"><code>502ebfab64da</code></a>，MIT）：选定 <code>gtcrn.py</code>、<code>loss.py</code>、<code>stream/gtcrn_stream.py</code> 与 <code>stream/modules/convolution.py</code> 等 6 个文本文件，对照超轻量分组时域卷积循环架构与因果流式缓存切分；不含预训练权重与音频样本，未执行 PyTorch 推理。</li>
+</ul>
+<p>源码选集通过稀疏规则核验仅证明固定提交、文件 SHA 与许可证声明齐备。若在可穿戴终端部署相关方法，仍须单独完成个体化耳道耦合标定、定点缓存对齐、功耗测算与实测风噪验收。</p>
 <footer class="foot">麦克风阵列信号处理教程 · 静态站由 scripts/build_site.py 生成</footer>
 </main></div><a class="topbtn" href="#top" title="回顶部" aria-label="回到页面顶部">↑</a>
 <script>if(!navigator.onLine)document.getElementById('offnote').style.display='block';</script>

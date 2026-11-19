@@ -31,7 +31,7 @@ from codes.chapters.ch00.io_contracts import (
 from codes.chapters.ch00.core import source_history
 from codes.chapters.ch04.core import upstream_contracts as upstream
 from codes.chapters.ch12.examples.audit_upstream_imaging_contracts import (
-    digest, ordinary_file, verify_checkout, extract_original, comparison,
+    digest, ordinary_file, extract_original, comparison,
 )
 
 ROOT = Path(__file__).resolve().parents[4]

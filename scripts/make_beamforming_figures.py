@@ -47,7 +47,7 @@ def main():
     for name, label, color in zip(names, labels, colors):
         axes[0, 0].plot(time, signals[name][start:start+count], label=label, color=color, linewidth=1.5)
     axes[0, 0].set(title='(a) 实际 PCM：同钟、同增益', xlabel='从第 2400 点起的时间 / ms', ylabel='解码幅度')
-    axes[0, 0].set_ylim(-.225, .275)
+    axes[0, 0].set_ylim(-.225, .295)
     axes[0, 0].legend(ncol=3, loc='upper right', fontsize=11)
     x = np.arange(2)
     for i, (name, label, color) in enumerate(zip(names, labels, colors)):
@@ -76,7 +76,7 @@ def main():
     for ax in axes.flat:
         ax.grid(axis='y', alpha=.2)
         ax.set_axisbelow(True)
-    fig.suptitle('已知逐频相位控制：等解析功率仍有不同波形')
+    fig.suptitle('图73  已知逐频相位对照：等解析功率仍有不同波形')
     finalize_figure(fig)
     metadata = {'SourceScript': 'scripts/make_beamforming_figures.py',
                 'SourceScriptDigest': report['source_sha256']['scripts/make_beamforming_figures.py'],

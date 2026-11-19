@@ -1,12 +1,12 @@
 # 按章查找教学实验
 
-这里是全书教学代码与资产的统一检索入口。每章的 `core/` 放算法数值核，`examples/` 放对应实验或外部接口探针；同一个数值核只归一个章节，其他章节直接导入。导读 `ch00/` 保存跨章练习、主音频总清单、全书索引和上游获取工具。
+这里是全书教学代码与资产的统一检索入口。每章的 `core/` 放算法数值核，`examples/` 放对应实验或外部接口探针；同一个数值核只归一个章节，其他章节直接导入。导读与第 0 章共享目录 `ch00/` 保存第 0 章数学基础数值核与十六道练习、跨章练习、主音频总清单、全书索引和上游获取工具。
 
 例如第 4 章 Capon 与第 5 章 MVDR/LCMV 共用的协方差验证和相对对角加载，只在首次用到的 [`ch04/core/covariance.py`](ch04/core/covariance.py) 实现，第 5 章直接导入。
 
 | 目录 | 主要实验模块（统一前缀 `codes.chapters.`） | 复算范围与边界 |
 |---|---|---|
-| [ch00](ch00/) | `ch00.cross_chapter.*` | 全书索引、跨章练习、主音频清单与上游来源 |
+| [ch00](ch00/) | `ch00.chapter00_exercises`、`ch00.core.chapter00_math`、`ch00.cross_chapter.*` | E00-01～16；球面几何、SO(3)旋转、复相量/COLA、子空间投影/SVD/Woodbury、瑞利商/GEV/Khatri–Rao、Wirtinger/NNLS/MM、复高斯/CRLB/维纳/Kalman、匈牙利指派与Bessel/Legendre/球谐函数；另含全书索引、跨章练习、主音频清单与上游来源 |
 | [ch01](ch01/) | `ch01.chapter01_experiments` | E01-04～12；有限记录、残余延迟、球头、混合功率、ILD/WNG与频率相关响应；数学输入及实际PCM读回 |
 | [ch02](ch02/) | `ch02.chapter02_experiments` | E02-09～22；传播、频谱、协方差、采样、已知激励辨识与STFT一致性，不是设备测量 |
 | [ch03](ch03/) | `ch03.chapter03_experiments`、`ch03.coarray_covariance_exercise`、`ch03.examples.self_calibration_demo` | 单章入口E03-08～20，协同阵入口E03-07，与单独的受外部相位锚约束标定示例；几何、模糊、校准和虚拟滞后统计，不是全盲设备标定 |
@@ -23,20 +23,21 @@
 | [ch14](ch14/) | `ch14.chapter14_exercises`、`ch14.examples.generate_wearable_audio` | E14-01～18；FOA四面体编码、声强DirAC、BSM-LS/MagLS、BMVDR参考混合、跨模态抗风噪融合与通透梳状滤波；6份独立PCM分开解析/浮点/整型评分 |
 | [ch15](ch15/) | `ch15.chapter15_exercises`、`ch15.examples.generate_tse_audio` | E15-01～18；FiLM条件调制、双态地板损失、近场球面波距离气泡、空谱TS-VAD/GSS门控与视听异步回退；6份独立PCM分开解析/浮点/整型评分 |
 | [appendix_a](appendix_a/) | `appendix_a.appendix_a_experiments` | E16-06～21；复投影、已知噪声加权、截断与正则、相关共轭、EVD前提、实际PCM及完整相关噪声GLS/同步白化；旧01～05仍复用跨章唯一实现 |
-| [appendix_b](appendix_b/) | `appendix_b.appendix_b_experiments`、`appendix_b.interpolation_exercise` | E17-02～16；E17-02 读回主音频 PCM，E17-03～15 核查房间结果、PCM、来源证据、TAC共享结构、能量尺度、时间条件化与同DRR输出，不重跑房间仿真 |
+| [appendix_b](appendix_b/) | `appendix_b.appendix_b_experiments`、`appendix_b.interpolation_exercise` | E17-02～16；E17-02 读回主音频 PCM，E17-03～16 核查房间结果、PCM、来源证据、TAC共享结构、能量尺度、时间条件化、同DRR输出、有限尾部EDC与全链路级联排障归因，不重跑房间仿真 |
 
 从仓库根目录使用模块形式运行，例如：
 
 ```bash
+.venv/bin/python -m codes.chapters.ch00.chapter00_exercises
 .venv/bin/python -m codes.chapters.ch04.chapter04_experiments
 .venv/bin/python -m codes.chapters.appendix_b.appendix_b_experiments
 ```
 
-所有命令从仓库根目录运行，使用根目录主虚拟环境。第一次运行可先按[导读的动手复现](../../chapters/00_overview.md#8-动手复现)准备环境，再运行三组跨章基线。 它们只打印计算结果，不生成或改写音频。读输出时先找输入与对应约束：`GCC-PHAT tau12 (samples): 3.0` 表示第一个输入相对第二个晚 3 点，在 16 kHz 下是 187.5 μs。
+所有命令从仓库根目录运行，使用根目录主虚拟环境。第一次运行可先按[导读的动手复现](../../chapters/00_overview.md#8-动手复现)准备环境，再运行第 0 章十六道数学基础练习和三组跨章基线。它们只打印计算结果，不生成或改写音频。读输出时先找输入与对应约束：`GCC-PHAT tau12 (samples): 3.0` 表示第一个输入相对第二个晚 3 点，在 16 kHz 下是 187.5 μs。
 
-`DSB target response` 和 `MVDR target response` 应接近 1；STFT 重建误差接近浮点舍入。极高的匹配无噪声 AEC ERLE 是算术 收敛检查，队列示例中的超期次数则来自构造的负载，二者均不代表设备测量。完整核对步骤见导读。
+`DSB target response` 和 `MVDR target response` 应接近 1；STFT 重建误差接近浮点舍入。极高的匹配无噪声 AEC ERLE 是算术收敛检查，队列示例中的超期次数则来自构造的负载，二者均不代表设备测量。完整核对步骤见导读。
 
-旧的 `codes.examples.*` 和 `codes.array_tutorial.*` 导入路径已经退出仓内接口。运行时使用上表中的章节模块；修改题目时改唯一真实源文件，再核对全书 427 个稳定练习 ID、对应章节和覆盖表。
+旧的 `codes.examples.*` 和 `codes.array_tutorial.*` 导入路径已经退出仓内接口。运行时使用上表中的章节模块；修改题目时改唯一真实源文件，再核对全书 443 个稳定练习 ID、对应章节和覆盖表。
 
 E10-17 的变长回调时序在 [跨章工程边界入口](ch00/cross_chapter/engineering_boundary_exercises.py) 内复算。 [MacBook Air 单麦实测](ch10/examples/macbook_audio_latency/README.md)提供原生测量程序、回调时间戳日志和逐次声学偏移。第 11 章统一入口的 E11-13 同时报迟到、未交付、分场景分母和合并结果；[R01 实录](ch02/real_audio/README.md)另用于检查整段和最差窗口的区别。
 
@@ -119,7 +120,7 @@ E10-17 的变长回调时序在 [跨章工程边界入口](ch00/cross_chapter/en
 
 部分公共模块使用通道 × 频点 × 帧，WPE 与分离模块使用频点 × 通道 × 帧；跨模块传值需显式换轴。一个确定性例子数值相符，不能证明任意输入都正确。
 
-`ch00/` 集中保存[跨章练习](ch00/cross_chapter/)、[主音频生成器](ch00/examples/generate_audio_samples.py)、[Git 来源锁表](ch00/SOURCES.lock.json)、[归档锁表](ch00/ARCHIVE_SOURCES.lock.json)、[获取状态](ch00/SOURCE_STATUS.json)和[归档状态](ch00/ARCHIVE_SOURCE_STATUS.json)。状态由[获取工具](ch00/upstream/README.md)核验生成；忽略的 `_downloads/` 工作区可能含本地修改，不能覆盖或纳入提交。
+`ch00/` 集中保存[第 0 章数学基础核](ch00/core/chapter00_math.py)、[第 0 章练习入口](ch00/chapter00_exercises.py)、[跨章练习](ch00/cross_chapter/)、[主音频生成器](ch00/examples/generate_audio_samples.py)、[Git 来源锁表](ch00/SOURCES.lock.json)、[归档锁表](ch00/ARCHIVE_SOURCES.lock.json)、[获取状态](ch00/SOURCE_STATUS.json)和[归档状态](ch00/ARCHIVE_SOURCE_STATUS.json)。状态由[获取工具](ch00/upstream/README.md)核验生成；忽略的 `_downloads/` 工作区可能含本地修改，不能覆盖或纳入提交。
 
 来源索引扩充后，旧运行报告仍保留当时的整表摘要。[历史快照](ch00/source_snapshots/)保存真实原始字节；[只读核验核](ch00/core/source_history.py)检查已登记快照的完整SHA，以及报告实际使用项目的全部来源/获取记录是否仍与当前一致。它不改报告、不重跑算法，也不把旧选集失败改成通过；具体配对和覆盖范围见[复现手册](ch00/research/04_source_reproduction.md#historical-source-bindings)。
 
@@ -131,7 +132,7 @@ E10-17 的变长回调时序在 [跨章工程边界入口](ch00/cross_chapter/en
 
 [DEMAND 数据说明](ch02/real_audio/README.md)记录 10 秒同步 16 通道真实环境录音摘录和 3 个派生文件的来源、通道及 CC BY-SA 3.0 条件。它们没有干净语音或位置真值，不用于声学增强性能结论。另一个 AEC 真实成对录音实验只使用本地忽略的 Microsoft AEC Challenge 缓存；其文件与可选输出不进入本书发布音频。正确、全零及错位参考的结果只是固定片段的接口观察，不是真值 ERLE。
 
-外部代码由[固定 Git 来源清单](ch00/SOURCES.lock.json)和[独立归档清单](ch00/ARCHIVE_SOURCES.lock.json)管理，来源、许可证与用途见[第三方记录](ch00/THIRD_PARTY.md)。截至 2026-10-05，115 个 Git 项目中有 98 个本地工作区；按完整32条排除规则核验，[状态报告](ch00/SOURCE_STATUS.json)分别记录75项通过、22项旧稀疏规则不匹配、17项仅索引和1项本地修改失败。
+外部代码由[固定 Git 来源清单](ch00/SOURCES.lock.json)和[独立归档清单](ch00/ARCHIVE_SOURCES.lock.json)管理，来源、许可证与用途见[第三方记录](ch00/THIRD_PARTY.md)。截至 2026-11-17，129 个 Git 项目中有 112 个启用获取的本地工作区；按完整 32 条排除规则核验，[状态报告](ch00/SOURCE_STATUS.json)分别记录 89 项通过、22 项旧稀疏规则不匹配、17 项仅索引和 1 项本地修改失败。
 
 22个工作区仍只有20条排除规则，保留原样，不自动修复；AEC Challenge 缓存中有本地修改的真实录音，核验没有把它当成通过。取得源码、构建依赖、实际运行和复现论文性能是不同层级；固定版诊断的执行条件与失败记录见[复现手册](ch00/research/04_source_reproduction.md)。
 
@@ -139,7 +140,7 @@ E10-17 的变长回调时序在 [跨章工程边界入口](ch00/cross_chapter/en
 
 上游获取工具放在[源码工具目录](ch00/upstream/README.md)。下载源码留在 Git 忽略的独立工作区，不随本书推送；已有工作区及修改必须保留。
 
-HARKTOOL5 与 Vo RFS 的归档摘要和选择范围单独记录，不混入 115 个 Git 项目数。本仓库根目录目前没有明确的 `LICENSE` 或 `COPYING`，源码可见不等于已经获得复制、修改或再分发许可；第三方项目的许可证也不自动覆盖本书、模型或数据。
+HARKTOOL5 与 Vo RFS 的归档摘要和选择范围单独记录，不混入 129 个 Git 项目数。本仓库根目录目前没有明确的 `LICENSE` 或 `COPYING`，源码可见不等于已经获得复制、修改或再分发许可；第三方项目的许可证也不自动覆盖本书、模型或数据。
 
 
 第二章的`E02-16～18`分别检查有限窗卷积、源噪声二阶交叉项与窗的幅度/功率归一化。
@@ -170,15 +171,15 @@ E08-30沿用第2章唯一STFT核，逐共享样本核对两个一致性次序；
 
 当前13例是历史9例加4个点时间控制，不覆盖完整Python评分器；两历史报告保留。评分接口工具另执行32原模块导入与限定函数，缺扩展和完整选集不匹配如实保留。E26实际记录空输出、缺失、格式异常和回调异常；E27复用第5章波束核计算同阵列候选的噪声与硬条件，未提供设备延迟或宽带音频。
 
-附录A共21题。E14-08通过 `appendix_a.examples.check_main_math_audio` 核当前20个真实源与主清单，再读三个正式脉冲WAV；内存浮点模型分开列出。E14-19的[五个独立已知噪声权重WAV](appendix_a/weighted_audio/MANIFEST.json)由 `appendix_a.examples.generate_weighted_audio` 管理，`--check`只读完整回放，不并入主109。
+附录A共21题。E16-08通过 `appendix_a.examples.check_main_math_audio` 核当前20个真实源与主清单，再读三个正式脉冲WAV；内存浮点模型分开列出。E16-19的[五个独立已知噪声权重WAV](appendix_a/weighted_audio/MANIFEST.json)由 `appendix_a.examples.generate_weighted_audio` 管理，`--check`只读完整回放，不并入主109。
 
-目标和两个不同频率干扰共同包络/增益1，OLS/GLS/反权用同一双通道输入，三权重和均1；稳态28800点的解析、浮点分量和实际PCM整数评分分开。E14-20另用已知完整协方差复算相关噪声下的负权重与同步白化，不借用这五个互正交纯音WAV证明随机相关模型。`appendix_a.examples.audit_upstream_solver_contracts` 从已核原源码字节执行完整模块，保留原四例、另列四个形状/复数批次控制和两个独立NumPy例。仓内显式 `--report` 仅可写 `reports/upstream_solver_contracts_current.json`，历史报告保留原字节。
+目标和两个不同频率干扰共同包络/增益1，OLS/GLS/反权用同一双通道输入，三权重和均1；稳态28800点的解析、浮点分量和实际PCM整数评分分开。E16-20另用已知完整协方差复算相关噪声下的负权重与同步白化，不借用这五个互正交纯音WAV证明随机相关模型。`appendix_a.examples.audit_upstream_solver_contracts` 从已核原源码字节执行完整模块，保留原四例、另列四个形状/复数批次对照和两个独立NumPy例。仓内显式 `--report` 仅可写 `reports/upstream_solver_contracts_current.json`，历史报告保留原字节。
 
-附录B共16题。E15-15以固定指数模型比较有限尾部与无限衰减，复用唯一房间指标核，不生成新WAV。E17-03～15入口统一为 `appendix_b.appendix_b_experiments`；主插值四WAV先核20真实源与完整PCM回放。E17-11～13分别拆解TAC共享聚合、安全能量尺度和T20时间条件化，E15-14使用[五个独立同DRR对照WAV](appendix_b/response_audio/MANIFEST.json)，四真实源、共同增益1及完整两点尾。
+附录B共16题，E17-03～16入口统一为 `appendix_b.appendix_b_experiments`，主插值四WAV先核20真实源与完整PCM回放。E17-15以固定指数模型比较有限尾部与无限衰减，复用唯一房间指标核且不生成新WAV，E17-16逐步核算全链路级联瓶颈归因与六级排障对照。E17-11～13分别拆解TAC共享聚合、安全能量尺度和T20时间条件化，E17-14使用[五个独立同DRR对照WAV](appendix_b/response_audio/MANIFEST.json)，四真实源、共同增益1及完整两点尾。
 
 `appendix_b.examples.generate_response_audio --check`只读核全部清单/字节/实际整数评分；不并入主109。房间资产的 `appendix_b.examples.check_room_assets` 核21普通成员、七真实源、固定DOA和81抽头/40点延迟声明、报告绑定和18PCM。
 
-`--replay`需隔离PRA环境真实重跑。`appendix_b.examples.audit_tac_contracts`默认stdout核固定原源的10个静态合同和当前完整选集，四项直接执行源前后绑定；显式报告仅仓内新`tac_contracts_current.json`或仓外普通路径，不导入Torch或执行原网络。
+`--replay`需隔离PRA环境真实重跑。`appendix_b.examples.audit_tac_contracts`默认stdout核固定原源的10项AST接口约束和当前完整选集，四项直接执行源前后绑定；显式报告仅仓内新`tac_contracts_current.json`或仓外普通路径，不导入Torch或执行原网络。
 
 第12章为扩展专题Ⅰ，接第11章后；第13章为扩展专题Ⅱ，第14、15章为扩展专题Ⅲ、Ⅳ，附录A/B分别为第16、17章。`ch12.chapter12_exercises`只读复算20题。
 

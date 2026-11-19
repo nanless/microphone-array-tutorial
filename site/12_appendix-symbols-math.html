@@ -2,16 +2,17 @@
 <link rel="canonical" href="16_appendix-symbols-math.html"><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 16 章 · 附录 A：符号术语数学 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="820e0688bd26"><style>
+<meta name="source-digest" content="ba5ce9940c12"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
 h1,h2,h3,h4{scroll-margin-top:60px}
+@media screen{.main a[id]:not([href]){scroll-margin-top:60px}}
 @media screen{.main a[id^="e"],.main .exercise-alias{scroll-margin-top:80px}}
 @media screen{.main .exercise-alias{top:0}}
 @media screen{.main a[id="e05-20"]{scroll-margin-top:60px}}
 @media screen{.main a[id="e17-11"],.main a[id="e17-12"],.main a[id="e17-13"],.main a[id="e17-14"],.main a[id="e17-15"]{scroll-margin-top:140px}}
-@media screen{.main .exercise-alias[id="e13-11"],.main .exercise-alias[id="e13-12"],.main .exercise-alias[id="e13-13"],.main .exercise-alias[id="e13-14"],.main .exercise-alias[id="e13-15"],.main .exercise-alias[id="e15-11"],.main .exercise-alias[id="e15-12"],.main .exercise-alias[id="e15-13"],.main .exercise-alias[id="e15-14"],.main .exercise-alias[id="e15-15"]{scroll-margin-top:140px}}
+@media screen{.main .exercise-alias[id="e13-11"],.main .exercise-alias[id="e13-12"],.main .exercise-alias[id="e13-13"],.main .exercise-alias[id="e13-14"],.main .exercise-alias[id="e13-15"],.main .exercise-alias[id="e15-11"]:has(~ a[id="e17-11"]),.main .exercise-alias[id="e15-12"]:has(~ a[id="e17-12"]),.main .exercise-alias[id="e15-13"]:has(~ a[id="e17-13"]),.main .exercise-alias[id="e15-14"]:has(~ a[id="e17-14"]),.main .exercise-alias[id="e15-15"]:has(~ a[id="e17-15"]){scroll-margin-top:140px}}
 @media screen{.main a[id^="e06-"]{scroll-margin-top:60px}}
 @media screen{.main a[id^="e07-"],.main a[id^="e08-"]{scroll-margin-top:60px}}
 @media screen{.main a[id^="e11-"]{scroll-margin-top:60px}}
@@ -80,7 +81,7 @@ h4{font-size:15.5px;margin-top:20px;color:#333}
   let printing = false;
 
   function roots() {
-    const candidates = Array.from(document.querySelectorAll("main.main,.chap"));
+    const candidates = Array.from(document.querySelectorAll(".main,.chap"));
     return candidates.filter(root => !candidates.some(other => other !== root && other.contains(root)));
   }
 
@@ -134,12 +135,21 @@ h4{font-size:15.5px;margin-top:20px;color:#333}
       const significant = Array.from(paragraph.childNodes).filter(node =>
         node.nodeType !== Node.TEXT_NODE || node.data.trim());
       const next = paragraph.nextElementSibling;
-      const anchorOnly = significant.length === 1 &&
-        significant[0].nodeType === Node.ELEMENT_NODE &&
-        significant[0].tagName === "A" && significant[0].id &&
-        !significant[0].hasAttribute("href") &&
-        Array.from(significant[0].childNodes).every(node =>
-          node.nodeType === Node.TEXT_NODE && !node.data.trim());
+      const isEmptyAnchor = node =>
+        node.nodeType === Node.ELEMENT_NODE &&
+        node.tagName === "A" && node.id &&
+        !node.hasAttribute("href") &&
+        Array.from(node.childNodes).every(child =>
+          child.nodeType === Node.TEXT_NODE && !child.data.trim());
+      const isAnchorAlias = node =>
+        node.nodeType === Node.ELEMENT_NODE &&
+        node.tagName === "SPAN" && node.id &&
+        node.classList.contains("anchor-alias") &&
+        Array.from(node.childNodes).every(child =>
+          child.nodeType === Node.TEXT_NODE && !child.data.trim());
+      const anchorOnly = significant.length >= 1 &&
+        significant.some(isEmptyAnchor) &&
+        significant.every(node => isEmptyAnchor(node) || isAnchorAlias(node));
       paragraph.classList.toggle("tutorial-anchor-only", !!anchorOnly);
       const short = significant.length === 1 &&
         significant[0].nodeType === Node.ELEMENT_NODE &&
@@ -244,6 +254,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 </head><body id="top"><a class="skip-link" href="#main-content">跳到正文</a>
 <header class="topbar"><a href="index.html">🏠 首页</a> &nbsp;/&nbsp; 第 16 章 · 附录 A：符号术语数学</header>
 <div class="wrap"><nav class="side" aria-label="全书目录"><div class="chap"><a href="index.html">🏠 导读与导航（首页）</a></div>
+<div class="chap"><a href="00_math-foundations.html">第 0 章 · 全书数学基础与信号分析预备</a></div>
 <div class="chap"><a href="01_problem-definition.html">第 1 章 · 问题定义与双耳启示</a></div>
 <div class="chap"><a href="02_basics-signal-model.html">第 2 章 · 声音到达阵列时发生了什么</a></div>
 <div class="chap"><a href="03_array-geometry.html">第 3 章 · 阵列几何形态</a></div>
@@ -356,12 +367,12 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="16_appendix-symbols-math.html#sec-u-0e76cc66ab">E16-21：Kronecker 与 Khatri–Rao 积怎样把共阵、波束与互谱拟合写成同一条恒等式？</a></li>
 </ul></nav></details>
 <blockquote>
-<p>⚠️ 本篇是第 16 章，即附录 A（正文与扩展专题共 15 章，其中第 12～15 章为扩展专题，另有附录 A、B），可独立查阅，前后篇见下方导航。</p>
-<p>🏠 首页导读：<a href="index.html">🏠 导读与导航</a> ｜ 上一篇：<a href="15_target-extraction-diarization.html">第 15 章 · 条件目标提取与多通道日志</a> ｜ 下一篇：<a href="17_appendix-guide.html">第 17 章 · 附录 B：路径地图与练习</a></p>
+<p>⚠️ 本篇是第 16 章，即附录 A（正文共 16 章，即第 0～15 章，其中第 12～15 章为四篇扩展专题，另有附录 A、B），可独立查阅，前后篇见下方导航。</p>
+<p>首页导读：<a href="index.html">🏠 导读与导航</a> ｜ 上一篇：<a href="15_target-extraction-diarization.html">第 15 章 · 条件目标提取与多通道日志</a> ｜ 下一篇：<a href="17_appendix-guide.html">第 17 章 · 附录 B：路径地图与练习</a></p>
 </blockquote>
 <hr />
 <span id="sec-u-78b6668a18" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-2bfed502b9" class="anchor-alias" aria-hidden="true"></span><span id="sec-1" class="anchor-alias" aria-hidden="true"></span><h1 id="sec-u-1a278edffc">第 16 章 · 附录 A：符号、术语与数学基础</h1>
-<p>本附录的 §16.1～§16.3 汇总全书通用的数学符号、声学与阵列处理核心术语以及高频使用的线性代数与复分析工具，§16.4 则通过小矩阵、短序列和边界反例手算巩固这些工具的适用条件；下一篇为附录 B。阅读正文时若遇到陌生的记号或变换，可以先查 §16.1～§16.3 建立直观图景，再回到所在章节核对具体的信号模型假设。</p>
+<p>本附录与<a href="00_math-foundations.html">第 0 章全书数学基础与信号分析预备</a>互为配套、分工明确：<a href="00_math-foundations.html">第 0 章</a>面向系统学习提供三角与三维旋转几何、傅里叶/STFT、子空间投影与 SVD、瑞利商与张量积、Wirtinger 变分优化、圆对称复高斯与卡尔曼递推及声学特殊函数的完整分步推导和 16 道基础练习（<code>E00-01</code>～<code>E00-16</code>）；本附录则定位为随手翻阅的<strong>全局符号基准、中英术语词典与紧凑公式速查手册</strong>，并在 §16.4 配有 21 道针对维度、共轭符号与量化读回边界的复算练习（<code>E16-01</code>～<code>E16-21</code>），下一篇为附录 B。阅读正文时若遇到陌生的记号或术语，可先查 §16.1～§16.3 快速对齐约定；需要看完整定理证明时再按<a href="00_math-foundations.html#sec-0-8">第 0 章 §0.8</a>跳转。</p>
 <span id="sec-12-1" class="anchor-alias" aria-hidden="true"></span><span id="sec-14-1" class="anchor-alias" aria-hidden="true"></span><span id="sec-2" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-16-1">16.1 符号表</h2>
 <p>本书的排版约定与 §2.3 保持一致：<strong>斜体表示标量，头顶箭头表示列向量，加粗大写表示矩阵</strong>；上标 $^H$ 表示共轭转置（厄米转置），上标 $^\top$ 表示普通转置，顶帽 $\hat{\ }$ 表示估计量。按照语音信号处理文献的惯例，$X(f)$、$X(f_k,\ell)$ 这类带频点自变量的大写斜体字母表示单个频点或单个时频格点上的复数<strong>标量</strong>。</p>
 <p>本书统一采用前向傅里叶核 $e^{-\mathrm{j}2\pi ft}$，其中 $\mathrm{j}=\sqrt{-1}$ 为虚数单位。</p>
@@ -463,7 +474,7 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">$\vec{e}_r$</td>
-<td>参考麦克风选择向量（第 $r$ 个分量为 $1$、其余为 $0$ 的标准基向量，用于 MWF 与 SDW-MWF 指定参考通道，见<a href="05_beamforming.html#sec-u-fb93744989">第 5 章 MWF 专题</a>）</td>
+<td>参考麦克风选择向量（第 $r$ 个分量为 $1$、其余为 $0$ 的标准基向量，用于 MWF 与 SDW-MWF 指定参考通道，见<a href="05_beamforming.html#sec-5-5-1">第 5 章 §5.5.1 MWF 专题</a>）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">$U, u$（专题Ⅱ）</td>
@@ -511,7 +522,7 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">$\mu_{\mathrm{SDW}}$</td>
-<td>语音失真加权多通道维纳滤波（Speech-Distortion-Weighted Multichannel Wiener Filter，SDW-MWF）的失真—降噪折中系数（<a href="05_beamforming.html#sec-u-fb93744989">第 5 章 MWF 专题</a>）；与 NLMS 步长不是同一物理量</td>
+<td>语音失真加权多通道维纳滤波（Speech-Distortion-Weighted Multichannel Wiener Filter，SDW-MWF）的失真—降噪折中系数（<a href="05_beamforming.html#sec-5-5-1">第 5 章 §5.5.1 MWF 专题</a>）；与 NLMS 步长不是同一物理量</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">$\varepsilon_{\mathrm{NLMS}}$</td>
@@ -667,7 +678,7 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">优先效应（precedence effect）</td>
-<td>当直达声与短延迟早期反射声从不同方向先后到达双耳且声学特征相近时，人类听觉系统对声源方位的感知主要由先到达的直达声主导；这并不意味着反射声的能量或音色影响被完全忽略。<a href="01_problem-definition.html#sec-1-1">第 1 章 §1.1</a>给出了现象定义与 Wallach 等（1949）的实验出处，§2.4 讨论了房间脉冲响应建模</td>
+<td>当直达声与短延迟早期反射声从不同方向先后到达双耳且声学特征相近时，人类听觉系统对声源方位的感知主要由先到达的直达声主导；这并不意味着反射声的能量或音色影响被完全忽略。<a href="01_problem-definition.html#sec-u-e0e1bf4258">第 1 章双耳线索与机器阵列对照</a>给出了现象定义与 Wallach 等（1949）的实验出处，§2.4 讨论了房间脉冲响应建模</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">拉格朗日乘子法</td>
@@ -864,7 +875,7 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">MWF（多通道维纳滤波）</td>
-<td>以最小化波束输出与选定参考通道目标语音声像之间的均方误差为准则，允许在微量语音失真与大幅噪声抑制之间折中；SDW-MWF 引入失真加权参数调节该平衡，秩一化简与极限性质见下文独立小节及<a href="05_beamforming.html#sec-u-fb93744989">第 5 章 MWF 专题</a></td>
+<td>以最小化波束输出与选定参考通道目标语音声像之间的均方误差为准则，允许在微量语音失真与大幅噪声抑制之间折中；SDW-MWF 引入失真加权参数调节该平衡，秩一化简与极限性质见下文独立小节及<a href="05_beamforming.html#sec-5-5-1">第 5 章 §5.5.1 MWF 专题</a></td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">相对传递函数（RTF）</td>
@@ -913,7 +924,7 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 </tbody>
 </table></div>
 <h3 id="sec-u-c1e472a7cd">MWF 的参考目标、秩一化简与噪声权重极限</h3>
-<p>多通道维纳滤波（MWF）拟合的参考目标是选定参考麦克风 $r$ 所接收到的目标语音声像 $s_r=\vec{e}_r^H\vec{s}$，而非声源嘴边的干信号。语音失真加权多通道维纳滤波（SDW-MWF）将“目标语音失真均方 + $\mu$ 倍残余噪声均方”作为联合代价函数。本书第 5 章式(5-13)记混合矩阵 $\mathbf M_\mu=\mathbf R_{ss}+\mu\mathbf R_{nn}$，给出闭式解 $\vec w_{\mathrm{SDW}}$ 为 $\mathbf M_\mu^{-1}\mathbf R_{ss}\vec e_r$；当目标信号与加性噪声的互二阶矩满足 $\mathbb{E}[\vec{s}\vec{n}^H]=\mathbf{0}$（例如零均值且统计不相关；若均值非零，仅协方差为零并不足以消去交叉二阶矩）时，取 $\mu=1$ 即退化为混合观测下的标准 MWF，而调大 $\mu>1$ 则以容忍更大语音衰减为代价换取更深的残余噪声抑制，详见<a href="05_beamforming.html#sec-u-fb93744989">第 5 章 MWF 专题</a>。</p>
+<p>多通道维纳滤波（MWF）拟合的参考目标是选定参考麦克风 $r$ 所接收到的目标语音声像 $s_r=\vec{e}_r^H\vec{s}$，而非声源嘴边的干信号。语音失真加权多通道维纳滤波（SDW-MWF）将“目标语音失真均方 + $\mu$ 倍残余噪声均方”作为联合代价函数。本书第 5 章式(5-13)记混合矩阵 $\mathbf M_\mu=\mathbf R_{ss}+\mu\mathbf R_{nn}$，给出闭式解 $\vec w_{\mathrm{SDW}}$ 为 $\mathbf M_\mu^{-1}\mathbf R_{ss}\vec e_r$；当目标信号与加性噪声的互二阶矩满足 $\mathbb{E}[\vec{s}\vec{n}^H]=\mathbf{0}$（例如零均值且统计不相关；若均值非零，仅协方差为零并不足以消去交叉二阶矩）时，取 $\mu=1$ 即退化为混合观测下的标准 MWF，而调大 $\mu>1$ 则以容忍更大语音衰减为代价换取更深的残余噪声抑制，详见<a href="05_beamforming.html#sec-5-5-1">第 5 章 §5.5.1 MWF 专题</a>。</p>
 <p>当目标声场满足单点源秩一模型 $\mathbf{R}_{ss}=\phi_s\vec{a}\vec{a}^H$（源功率 $\phi_s>0$）、噪声惩罚权重 $\mu>0$、噪声协方差 $\mathbf{R}_{nn}$ 厄米正定，且导向矢量已按参考通道归一化为 $a_r=\vec{e}_r^H\vec{a}=1$ 时，记输出信噪比因子 $q=\vec{a}^H\mathbf{R}_{nn}^{-1}\vec{a}>0$，利用矩阵求逆引理可将 SDW-MWF 分解为“无失真 MVDR 波束权重 $\times$ 标量维纳后滤波增益 $G_\mu=\phi_s q/(\mu+\phi_s q)$”。这里 $\mu>0$ 与 $\mathbf{R}_{nn}\succ\mathbf{0}$ 共同保证了括号内总矩阵可逆；令 $\mu\to0^+$ 在秩一模型下收敛到无失真 MVDR，但不能机械地把 $\mu=0$ 直接代入含不可逆 $\mathbf{R}_{ss}^{-1}$ 的一般公式。</p>
 <p>若未做参考通道归一化（即 $a_r\neq 1$），分解式右侧还会保留共轭因子 $a_r^*$，表明滤波器始终以复现参考通道声像为基准（复参考通道算例见<a href="05_beamforming.html#e05-20">第 5 章 E05-20</a>，理论推导参见<a href="https://arxiv.org/pdf/1707.00201">Wang 等（2017）预印本 §§2、3.1～3.2</a>）。</p>
 <p>进一步考察 $\mu\to\infty$ 的渐近行为：对任意固定的半正定 $\mathbf{R}_{ss}$，只要 $\mathbf{R}_{nn}$ 严格正定，就可提取因子将 $(\mathbf R_{ss}+\mu\mathbf R_{nn})^{-1}$ 改写为 $\mu^{-1}(\mathbf R_{nn}+\mathbf R_{ss}/\mu)^{-1}$。由于括号内矩阵的最小特征值始终不低于 $\lambda_{\min}(\mathbf{R}_{nn})>0$，其逆矩阵二范数一致有界，乘以前面的 $1/\mu$ 后必然随 $\mu\to\infty$ 收敛到零向量。反之，一旦 $\mathbf{R}_{nn}$ 存在非平凡零空间，即便对每一个有限的 $\mu>0$ 总矩阵 $\mathbf{R}_{ss}+\mu\mathbf{R}_{nn}$ 恰好都可逆，落在噪声零空间内的目标分量也不会受到 $\mu$ 的惩罚，极限权重便不再归零——练习 E16-12 将用二阶对角阵手算对比这两种情形。</p>
@@ -936,15 +947,15 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">ITD / ILD</td>
-<td>双耳时间差（Interaural Time Difference）与双耳声级差（Interaural Level Difference）。本书规定 ITD 取左耳到达时间减右耳到达时间，ILD 取右耳声级减左耳声级（§1.1）。瑞利双工理论指出低频细结构相位主要提供 ITD、高频头影效应主要提供 ILD，但这并非绝对分界：近场低频同样存在显著 ILD，高频幅度调制信号也可提供包络 ITD（§1.1）</td>
+<td>双耳时间差（Interaural Time Difference）与双耳声级差（Interaural Level Difference）。本书规定 ITD 取左耳到达时间减右耳到达时间，ILD 取右耳声级减左耳声级（<a href="01_problem-definition.html#sec-u-1d5f9c4fa9">第 1 章双耳定位线索</a>）。瑞利双工理论指出低频细结构相位主要提供 ITD、高频头影效应主要提供 ILD，但这并非绝对分界：近场低频同样存在显著 ILD，高频幅度调制信号也可提供包络 ITD</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">HRTF（头相关传递函数）</td>
-<td>头部、耳廓与躯干对不同空间方向入射声波产生的频域滤波响应；耳廓造成的方向性谱陷是人类判断俯仰角与消解前后镜像模糊的关键声学线索之一（§1.1）</td>
+<td>头部、耳廓与躯干对不同空间方向入射声波产生的频域滤波响应；耳廓造成的方向性谱陷是人类判断俯仰角与消解前后镜像模糊的关键声学线索之一（<a href="01_problem-definition.html#sec-u-dff9e8c5a2">第 1 章 HRTF 小节</a>）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">鸡尾酒会效应</td>
-<td>人类听觉系统在多人交谈与强背景噪声环境中将注意力聚焦于单一说话人的感知能力；对应的阵列信号处理任务涵盖定向波束形成、盲源分离与目标说话人提取（§1.1、§8.1）</td>
+<td>人类听觉系统在多人交谈与强背景噪声环境中将注意力聚焦于单一说话人的感知能力；对应的阵列信号处理任务涵盖定向波束形成、盲源分离与目标说话人提取（<a href="01_problem-definition.html#sec-u-2fa0be7e3b">第 1 章</a>、§8.1）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">GCC-PHAT</td>
@@ -1126,7 +1137,7 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 <p>手算（16.2）：信号幅度减半对应多少 dB？信号功率减半又对应多少 dB？请说明为什么这两个数字不同。</p>
 <p>输入与代入：幅度减半即幅度比 $A_2/A_1=0.5$，按幅度分贝定义代入得 $20\log_{10}0.5\approx-6.02\ \mathrm{dB}$（常简记为 $-6\ \mathrm{dB}$）；在同一负载阻抗下功率与幅度平方成正比，幅度变为 $1/2$ 意味着功率变为原来的 $(1/2)^2=1/4$。反过来，功率减半即功率比 $P_2/P_1=0.5$，按功率分贝定义代入得 $10\log_{10}0.5\approx-3.01\ \mathrm{dB}$（常简记为 $-3\ \mathrm{dB}$，对应幅度变为 $1/\sqrt{2}\approx0.707$）。两者描述的是不同强度的物理衰减，紧接着的 §16.3.2 将进一步列表对照。</p>
 <span id="sec-12-3" class="anchor-alias" aria-hidden="true"></span><span id="sec-14-3" class="anchor-alias" aria-hidden="true"></span><span id="sec-10" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-16-3">16.3 预备知识速览</h2>
-<p>本节面向已具备基础三角函数、复数运算与初步矩阵代数知识的读者，把正文各章反复调用的核心推导步骤拆开讲透。阅读每个公式时，建议先看清各变量的维度、物理量纲与可逆性前提，再顺着代数变形核对符号约定。</p>
+<p>本节将正文各章高频调用的复相量、分贝、卷积、空间协方差、加权最小二乘与矩阵分解公式浓缩成紧凑速查条目（不省略中间步的完整证明、几何图解与进阶优化/统计定理详见<a href="00_math-foundations.html#sec-0-1">第 0 章 §0.1</a>～<a href="00_math-foundations.html#sec-0-7">§0.7</a>）。查阅每个公式时，建议先核对变量的维度、物理量纲与可逆性前提，再对照符号表确认转置与共轭约定。</p>
 <span id="sec-12-3-1" class="anchor-alias" aria-hidden="true"></span><span id="sec-14-3-1" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-16-3-1">16.3.1 复数与相位：时延的符号</h3>
 <p>本书以 $e^{+\mathrm{j}2\pi ft}$ 表示正频率单频复指数信号，并配套前向连续时间傅里叶变换 $X(f)$（对 $x(t)e^{-\mathrm{j}2\pi ft}$ 在全时间轴积分）。任意复数可写成极坐标形式 $z=Ae^{\mathrm{j}\phi}$，并服从欧拉公式 $e^{\mathrm{j}\phi}=\cos\phi+\mathrm{j}\sin\phi$。</p>
 <p>在这一傅里叶正负号约定下，若时域波形整体晚到 $\tau$ 秒（即变成 $x(t-\tau)$），作变量代换 $t'=t-\tau$ 代入傅里叶积分，就会提出频域相位乘子 $e^{-\mathrm{j}2\pi f\tau}$。对于以麦 1 为参考原点的远场平面波导向矢量，第 $m$ 个麦克风相对麦 1 的到达时间差为 $\tau_{m1}=-(\vec{r}_m-\vec{r}_1)^\top\vec{u}/c$，因此其导向矢量第 $m$ 个分量为</p>
@@ -1640,7 +1651,7 @@ n_2[n]&=0.06e[n]\cos(2\pi\cdot 4000n/16000).
 </table></div>
 <p>横向对照上表四列：第二列拆解了两通道噪声经 $w_1^2$ 与 $w_2^2$ 加权后的贡献，第三、四列给出解析 MSE 与除以 $P_s=0.02$ 后的解析 NMSE。可以看到，GLS 把高噪第 2 路的平方权重压低到 $0.04$，使 NMSE 从 OLS 的 $0.028125$ 降至 $0.018000$；而反权把大权重压在高噪通道上，NMSE 恶化到 $0.058500$——清晰说明增益源于<strong>权重与真实噪声协方差匹配</strong>，而非“不等权”本身。</p>
 <p><img alt="图65 已知相对噪声权重与同目标输出误差" src="../figures/fig65_weighted_noise.png" onerror="this.alt+='（图缺失）'" /></p>
-<p>图 65 将上述解析计算与实际导出 PCM16 音频的读回误差并排对照：左子图横轴为三组加权方案、纵轴为无量纲通道权重值（每组两柱之和均为 $1$），右子图横轴同为三组方案、纵轴为无量纲归一化均方误差 NMSE，解析柱与实际 PCM16 读回柱高度吻合，直观印证了压低高噪通道带来的残差下降。</p>
+<p>图 65 将上述解析计算与实际导出 PCM16 音频的读回误差并排对照：左子图 (a) 横轴为三组加权方案、纵轴为无量纲通道权重值（每组两柱之和均为 $1$）；右子图 (b) 横轴同为三组方案，纵轴绘制<strong>稳态误差均方 $\mathrm{MSE}\times 10^4$</strong>（归一化幅度平方，解析柱依次为 $5.625$、$3.600$、$11.700$；因参考干声均方功率 $P_s=0.02=1/50$，绝对 $\mathrm{MSE}$ 恰为无量纲 $\mathrm{NMSE}$ 的 $1/50$），解析整数周期柱与实际 PCM16 读回柱高度吻合，直观印证了压低高噪通道带来的残差下降。</p>
 <p>下面五段 $16\ \mathrm{kHz}$、$32000$ 点 PCM16 合成音频（共同导出增益 $1$，其中双通道输入文件左声道为 $x_1$、右声道为 $x_2$，其余为单声道）可供试听对比，播放前请先调低音量：</p>
 <ul>
 <li><a href="weighted_audio/weighted_target.wav">目标参考</a><audio class="audio-sample" controls preload="none" aria-label="目标参考" src="weighted_audio/weighted_target.wav">请使用上方 WAV 链接下载。</audio></li>

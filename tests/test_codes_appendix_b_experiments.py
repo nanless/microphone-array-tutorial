@@ -270,8 +270,18 @@ class AppendixBExperimentsTest(unittest.TestCase):
             cascade_bottleneck_budget(target_power=0.0)
         with self.assertRaises(ValueError):
             diagnose_pipeline_symptom({"unknown_metric": 1.0})
-        with self.assertRaises(ValueError):
-            diagnose_pipeline_symptom({"sro_ppm": True})
+        for bad_telemetry in (
+            {"sro_ppm": True},
+            {"rt60_s": -0.1},
+            {"hear_through_latency_us": -1.0},
+            {"low_freq_wind_coherence": -0.05},
+            {"low_freq_wind_coherence": 1.1},
+            {"far_end_active_ratio": -0.1},
+            {"overlap_speech_ratio": float("nan")},
+            {"der_percent": -1.0},
+        ):
+            with self.subTest(bad_telemetry=bad_telemetry), self.assertRaises(ValueError):
+                diagnose_pipeline_symptom(bad_telemetry)
 
 
 if __name__ == "__main__":

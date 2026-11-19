@@ -1,8 +1,8 @@
 # Microphone Array Signal Processing · From Fundamentals to Industrial Practice
 
-Start with multichannel recordings and array geometry. Work through localization, beamforming, echo cancellation, dereverberation, separation, and tracking, then apply them to device implementation, evaluation, and system selection. Four advanced chapters cover acoustic imaging, distributed arrays, spatial/wearable arrays, and target speech extraction with multichannel diarization.
+Start with mathematical foundations (geometry, complex phasors, subspace linear algebra, Wirtinger calculus, and Bayesian estimation), multichannel recordings, and array geometry. Work through localization, beamforming, echo cancellation, dereverberation, separation, and tracking, then apply them to device implementation, evaluation, and system selection. Four advanced chapters cover acoustic imaging, distributed arrays, spatial/wearable arrays, and conditioned target extraction with multichannel diarization.
 
-**[Open the online course →](https://nanless.github.io/microphone-array-tutorial/)** · [Start at Chapter 1](chapters/01_problem-definition.md) · [Industrial practice](https://nanless.github.io/microphone-array-tutorial/site/#course-engineering) · [Full contents](chapters/00_overview.md) · [PDF](dist/microphone-array-tutorial.pdf) · [简体中文](README.md)
+**[Open the online course →](https://nanless.github.io/microphone-array-tutorial/)** · [Math foundations (Ch 0)](chapters/00_math-foundations.md) · [Start at Chapter 1](chapters/01_problem-definition.md) · [Industrial practice](https://nanless.github.io/microphone-array-tutorial/site/#course-engineering) · [Full contents](chapters/00_overview.md) · [PDF](dist/microphone-array-tutorial.pdf) · [简体中文](README.md)
 
 <picture>
   <source media="(prefers-reduced-motion: reduce)" srcset="assets/readme/course-cover-still.svg">
@@ -27,14 +27,14 @@ This book starts with what you can hear. At each step, ask what signals you have
 
 | Chapters | What you can do | Where to start |
 | --- | --- | --- |
-| 1–3 · Fundamentals and geometry | Model the signals using arrival times, phase, and microphone positions | [Chapter 1](chapters/01_problem-definition.md) |
+| 0–3 · Math foundations and geometry | Master complex phasors, subspace projections, Wirtinger calculus, and Bayesian tools; model signals using arrival times, phase, and microphone positions | [Chapter 0 · Math foundations](chapters/00_math-foundations.md) · [Chapter 1](chapters/01_problem-definition.md) |
 | 4–9 · Algorithm design and validation | Choose algorithms for localization, beamforming, echo cancellation, dereverberation, separation, and tracking, then check them with code and worked examples | [Localization](chapters/04_doa-estimation.md) · [Beamforming](chapters/05_beamforming.md) · [Chapter guide](chapters/00_overview.md) |
 | 10–11 · Industrial practice | Plan synchronization and calibration, measure end-to-end latency, budget compute and power, and define acceptance criteria | [Engineering](chapters/10_engineering-practice.md) · [Selection and validation](chapters/11_selection-guide.md) |
 | 12–15 · Advanced topics | Locate machine noise, coordinate distributed nodes, design spatial/wearable arrays, and run conditioned target extraction & diarization | [Acoustic imaging](chapters/12_acoustic-imaging.md) · [Distributed arrays](chapters/13_distributed-enhancement.md) · [Wearable arrays](chapters/14_spatial-wearable-arrays.md) · [Target extraction & diarization](chapters/15_target-extraction-diarization.md) |
 
-If you are new to the subject, begin with Chapter 1 and consult the math appendix as needed. For device work, go straight to the engineering tasks and the implementation guide. The main text is in Chinese. [Math and notation](chapters/16_appendix-symbols-math.md) · [Engineering tasks](https://nanless.github.io/microphone-array-tutorial/site/#course-engineering) · [Industrial implementation notes](codes/chapters/ch00/research/03_industrial_deployment.md)
+If you are new to the subject, review Chapter 0 for step-by-step mathematical foundations or begin with Chapter 1 and consult Appendix A for notation lookup as needed. For device work, go straight to the engineering tasks and the implementation guide. The main text is in Chinese. [Math foundations (Ch 0)](chapters/00_math-foundations.md) · [Symbols and notation](chapters/16_appendix-symbols-math.md) · [Engineering tasks](https://nanless.github.io/microphone-array-tutorial/site/#course-engineering) · [Industrial implementation notes](codes/chapters/ch00/research/03_industrial_deployment.md)
 
-**15 chapters · 2 appendices · 427 runnable exercises · 88 numbered figures**
+**16 chapters · 2 appendices · 443 runnable exercises · 92 numbered figures**
 
 [Code and audio by chapter](codes/chapters/README.md) · [Implementation notes](codes/chapters/ch00/research/README.md) · [Web and PDF builds](scripts/README.md) · [Third-party sources and terms](codes/chapters/ch00/THIRD_PARTY.md)
 

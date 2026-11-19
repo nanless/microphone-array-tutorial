@@ -70,12 +70,19 @@ def convex_diagonal_pullback_step(
     p_prev = _checked_hpd_matrix(inverse_correlation, "inverse_correlation")
     beta_val = _finite_real_scalar(beta, "beta")
     delta_val = _finite_real_scalar(delta, "delta")
-    if not 0.0 < beta_val < 1.0:
-        raise ValueError("beta must lie strictly in (0, 1)")
+    if not 0.0 <= beta_val <= 1.0:
+        raise ValueError("beta must lie in [0, 1]")
     if delta_val <= 0.0:
         raise ValueError("delta must be strictly positive")
+    inv_delta = 1.0 / delta_val
+    if not math.isfinite(inv_delta):
+        raise ValueError("pullback step overflowed float64")
     dim = p_prev.shape[0]
-    target_diag = (1.0 / delta_val) * np.eye(dim, dtype=p_prev.dtype)
+    if beta_val == 0.0:
+        return p_prev.copy()
+    target_diag = inv_delta * np.eye(dim, dtype=p_prev.dtype)
+    if beta_val == 1.0:
+        return target_diag
     p_next = (1.0 - beta_val) * p_prev + beta_val * target_diag
     if not np.all(np.isfinite(p_next)):
         raise ValueError("pullback step overflowed float64")

@@ -69,6 +69,12 @@ def _validate_spd_covariance(
     tol: float = 1e-12,
     condition_limit: float = 1e12,
 ) -> np.ndarray:
+    tol_val = _validate_real_scalar(tol, "tol")
+    cond_lim = _validate_real_scalar(condition_limit, "condition_limit")
+    if tol_val <= 0.0:
+        raise ValueError("tol must be strictly positive")
+    if cond_lim <= 0.0:
+        raise ValueError("condition_limit must be strictly positive")
     mat = _validate_complex_array(value, name, ndim=2)
     if mat.shape[0] != mat.shape[1]:
         raise ValueError(f"{name} must be square")
@@ -76,22 +82,25 @@ def _validate_spd_covariance(
     if scale <= 0.0:
         raise ValueError(f"{name} must be strictly positive definite")
     norm = mat.real / scale + 1j * (mat.imag / scale)
-    if float(np.max(np.abs(norm - norm.conj().T))) > tol:
+    if float(np.max(np.abs(norm - norm.conj().T))) > tol_val:
         raise ValueError(f"{name} must be Hermitian")
     sym = 0.5 * (mat + mat.conj().T)
     eigs = np.linalg.eigvalsh(sym)
     if float(eigs[0]) <= 0.0:
         raise ValueError(f"{name} must be strictly positive definite")
     cond = float(eigs[-1] / eigs[0])
-    if not math.isfinite(cond) or cond > condition_limit:
+    if not math.isfinite(cond) or cond > cond_lim:
         raise ValueError(f"{name} condition number exceeds limit")
     return sym
 
 
 def _orthonormal_columns(mat: np.ndarray, tol: float = 1e-12) -> np.ndarray:
+    tol_val = _validate_real_scalar(tol, "tol")
+    if tol_val <= 0.0:
+        raise ValueError("tol must be strictly positive")
     q_mat, r_mat = np.linalg.qr(mat, mode="reduced")
     diag = np.abs(np.diag(r_mat))
-    if diag.size == 0 or float(np.max(diag)) <= 0.0 or float(np.min(diag)) <= tol * float(np.max(diag)):
+    if diag.size == 0 or float(np.max(diag)) <= 0.0 or float(np.min(diag)) <= tol_val * float(np.max(diag)):
         raise ValueError("compressor columns are rank-deficient")
     return q_mat
 
@@ -105,10 +114,13 @@ def _complete_compressor_columns(
     ref_norm: float = 1.0,
 ) -> np.ndarray:
     """Build an M_q x R orthonormal compressor whose span contains primary_vec."""
+    tol_val = _validate_real_scalar(tol, "tol")
+    if tol_val <= 0.0:
+        raise ValueError("tol must be strictly positive")
     m_q = primary_vec.shape[0]
     norm_p = float(np.linalg.norm(primary_vec))
     candidates: list[np.ndarray] = []
-    if norm_p > tol * max(ref_norm, 1e-300):
+    if norm_p > tol_val * max(ref_norm, 1e-300):
         candidates.append((primary_vec / norm_p)[:, None])
     candidates.append(fallback)
     candidates.append(np.eye(m_q, dtype=np.complex128))
@@ -119,7 +131,7 @@ def _complete_compressor_columns(
         for basis in cols:
             vec = vec - np.vdot(basis, vec) * basis
         vec_norm = float(np.linalg.norm(vec))
-        if vec_norm > tol:
+        if vec_norm > tol_val:
             cols.append(vec / vec_norm)
             if len(cols) == num_filters:
                 break
@@ -160,7 +172,9 @@ def ptp_vs_sro_phase_budget(
     # |H|^2 = cos^2(diff_phase / 2), |H - 1|^2 = sin^2(diff_phase / 2).
     half_phase = 0.5 * diff_phase_rad
     coherent_power_gain = math.cos(half_phase) ** 2
-    coherent_attenuation_db = -10.0 * math.log10(coherent_power_gain)
+    coherent_attenuation_db = (
+        -10.0 * math.log10(coherent_power_gain) if coherent_power_gain > 0.0 else math.inf
+    )
     waveform_phase_mse = math.sin(half_phase) ** 2
     waveform_phase_mse_db = (
         10.0 * math.log10(waveform_phase_mse) if waveform_phase_mse > 0.0 else -math.inf

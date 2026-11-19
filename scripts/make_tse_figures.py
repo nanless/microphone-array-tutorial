@@ -173,7 +173,7 @@ def _build_fig85(sources: dict[str, str], manifest_sha: str) -> None:
         xlabel="特征帧索引 t",
         ylabel="特征激活值（无量纲）",
         xticks=frames,
-        ylim=(-2.2, 4.3),
+        ylim=(-2.2, 4.9),
     )
     axes[0, 0].legend(ncol=2, loc="upper left")
 
@@ -188,7 +188,7 @@ def _build_fig85(sources: dict[str, str], manifest_sha: str) -> None:
         title="(b) 目标沉默段双态能量地板惩罚",
         xlabel="残余泄漏相对混合能量比 / dB",
         ylabel="沉默态损失 / dB",
-        ylim=(-2.0, 43.0),
+        ylim=(-2.0, 44.0),
     )
     axes[0, 1].legend(loc="upper left")
 
@@ -208,20 +208,27 @@ def _build_fig85(sources: dict[str, str], manifest_sha: str) -> None:
     axes[1, 1].step(ratio_grid, sec_gate, where="post", color=C_MAIN, linewidth=2.0, label="次槽独立保留标志")
     axes[1, 1].axvline(-18.0, color=C_RED, linestyle="--", linewidth=1.4, label="旁路门限 -18 dB")
     axes[1, 1].plot([-20.0], [0.0], "o", color=C_GREEN, markersize=8, label="单人擦音合并 (-20 dB)")
-    axes[1, 1].plot([keep_overlap["energy_ratio_db"]], [1.0], "s", color=C_BLUE, markersize=8, label="双人重叠保留 (-6.0 dB)")
+    axes[1, 1].plot(
+        [keep_overlap["energy_ratio_db"]],
+        [1.0],
+        "s",
+        color=C_BLUE,
+        markersize=8,
+        label=f"双人重叠保留 ({keep_overlap['energy_ratio_db']:.2f} dB)",
+    )
     axes[1, 1].set(
         title="(d) 零重叠旁路门限与擦音保护",
         xlabel="次槽对主槽能量比 / dB",
         ylabel="次槽激活状态 (0=合并, 1=分离)",
         yticks=[0, 1],
-        ylim=(-0.18, 1.35),
+        ylim=(-0.18, 2.05),
     )
-    axes[1, 1].legend(loc="center left")
+    axes[1, 1].legend(loc="upper left", handlelength=1.5)
 
     for ax in axes.flat:
         ax.grid(True, alpha=0.22)
         ax.set_axisbelow(True)
-    fig.suptitle("条件目标说话人提取：特征调制、沉默态损失与单人旁路保护")
+    fig.suptitle("图85  条件目标说话人提取：特征调制、沉默态损失与单人旁路保护")
     _save_report_and_png(
         fig,
         "fig85_tse_conditioning_modes.png",
@@ -289,9 +296,10 @@ def _build_fig86(manifest: dict, sources: dict[str, str], manifest_sha: str) -> 
         title="(a) 正横径向功率响应 (3430 Hz)",
         xlabel="声源径向距离 r / m",
         ylabel="功率增益 / dB",
-        ylim=(-28.0, 9.0),
+        xlim=(0.05, 5.10),
+        ylim=(-25.0, 22.0),
     )
-    axes[0, 0].legend(loc="lower left")
+    axes[0, 0].legend(ncol=2, loc="upper right")
 
     axes[0, 1].plot(spacings * 100.0, wng_curve, "o-", color=C_BLUE, markersize=4, linewidth=1.8, label="无正则 WNG")
     axes[0, 1].axvline(10.0, color=C_GREEN, linestyle="--", label="d=10 cm (-4.21 dB)")
@@ -300,7 +308,8 @@ def _build_fig86(manifest: dict, sources: dict[str, str], manifest_sha: str) -> 
         title="(b) 阵元间距与白噪声增益塌缩",
         xlabel="相邻阵元间距 d / cm",
         ylabel="白噪声增益 WNG / dB",
-        ylim=(-45.0, 2.0),
+        xlim=(0.4, 15.6),
+        ylim=(-46.5, 6.0),
     )
     axes[0, 1].legend(loc="lower right")
 
@@ -313,7 +322,8 @@ def _build_fig86(manifest: dict, sources: dict[str, str], manifest_sha: str) -> 
         title="(c) 实际 PCM 波形对照（第 1600 点起）",
         xlabel="相对时间 / ms",
         ylabel="PCM 解码幅度",
-        ylim=(-0.34, 0.42),
+        xlim=(-0.06, t_ms[-1] + 0.08),
+        ylim=(-0.35, 0.58),
     )
     axes[1, 0].legend(loc="upper right")
 
@@ -324,19 +334,28 @@ def _build_fig86(manifest: dict, sources: dict[str, str], manifest_sha: str) -> 
     axes[1, 1].bar(np.arange(3), bar_vals, color=bar_colors, width=0.55, alpha=0.85)
     for idx, val in enumerate(bar_vals):
         axes[1, 1].text(idx, val + 0.08, f"{val:.4f}", ha="center")
+    axes[1, 1].text(
+        0.03,
+        0.94,
+        r"合成音频：$3200\ \mathrm{Hz}$，$\delta=2\times 10^{-4}$",
+        transform=axes[1, 1].transAxes,
+        ha="left",
+        va="top",
+        bbox=dict(fc="white", ec="0.75", alpha=0.92, boxstyle="round,pad=0.25"),
+    )
     axes[1, 1].set(
-        title="(d) 稳窗实际 PCM16 归一化误差比",
+        title="(d) 稳窗实际 PCM16 误差比 (3200 Hz)",
         xlabel="波束形成方案（共同导出增益 1.0）",
-        ylabel="E_PCM / P_ref（无量纲）",
+        ylabel=r"$E_{\mathrm{PCM}} / P_{\mathrm{ref}}$（无量纲）",
         xticks=np.arange(3),
         xticklabels=bar_labels,
-        ylim=(0.0, 2.75),
+        ylim=(0.0, 3.05),
     )
 
     for ax in axes.flat:
         ax.grid(True, alpha=0.22)
         ax.set_axisbelow(True)
-    fig.suptitle("近场球面波距离气泡：同向远场抑制与小孔径底噪边界")
+    fig.suptitle("图86  近场球面波距离气泡：同向远场抑制与小孔径底噪边界")
     _save_report_and_png(
         fig,
         "fig86_nearfield_distance_bubble.png",
@@ -405,7 +424,7 @@ def _build_fig87(sources: dict[str, str], manifest_sha: str) -> None:
         ylabel="说话活动标志 (0/1)",
         xticks=[0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0],
         yticks=[0, 1],
-        ylim=(0.0, 1.58),
+        ylim=(0.0, 1.72),
     )
     axes[0, 0].legend(loc="upper right")
 
@@ -428,7 +447,7 @@ def _build_fig87(sources: dict[str, str], manifest_sha: str) -> None:
         ylabel="DER 分量占比 / %",
         xticks=x_pos,
         xticklabels=["单标签\n下界", "含混淆\n双簇", "过触发\n(>100%)", "空谱联合\nTS-VAD"],
-        ylim=(0.0, 172.0),
+        ylim=(0.0, 178.0),
     )
     axes[0, 1].legend(ncol=2, loc="upper left")
 
@@ -442,7 +461,8 @@ def _build_fig87(sources: dict[str, str], manifest_sha: str) -> None:
         xlabel="帧索引 $t$",
         ylabel=r"活动后验概率 $\gamma$",
         xticks=frames,
-        ylim=(-0.06, 1.34),
+        xlim=(-0.25, 5.25),
+        ylim=(-0.06, 1.50),
     )
     axes[1, 0].legend(ncol=2, loc="upper right")
 
@@ -454,14 +474,15 @@ def _build_fig87(sources: dict[str, str], manifest_sha: str) -> None:
         xlabel="帧索引 $t$",
         ylabel="协方差累加帧权重",
         xticks=frames,
-        ylim=(-0.05, 1.18),
+        xlim=(-0.25, 5.25),
+        ylim=(-0.06, 1.68),
     )
-    axes[1, 1].legend(loc="center right")
+    axes[1, 1].legend(loc="upper right")
 
     for ax in axes.flat:
         ax.grid(True, alpha=0.22)
         ax.set_axisbelow(True)
-    fig.suptitle("多人重叠会议日志：DER 下界、空谱 TS-VAD 与 GSS 掩码")
+    fig.suptitle("图87  多人重叠会议日志：DER 下界、空谱 TS-VAD 与 GSS 掩码")
     _save_report_and_png(
         fig,
         "fig87_diarization_tsvad_gss.png",
@@ -538,16 +559,23 @@ def _build_fig88(sources: dict[str, str], manifest_sha: str) -> None:
         title="(c) 唇部遮挡下的置信度门控平滑回退",
         xlabel=r"时间块索引 $\ell$",
         ylabel="掩码增益或置信度",
-        ylim=(-0.05, 1.18),
+        ylim=(-0.06, 1.56),
     )
-    axes[1, 0].legend(loc="lower left")
+    axes[1, 0].legend(
+        ncol=2,
+        loc="upper center",
+        handlelength=1.2,
+        handletextpad=0.35,
+        columnspacing=0.65,
+        borderpad=0.3,
+    )
 
     y_pos = np.arange(3)
     axes[1, 1].barh(y_pos, arch_latency_s, color=[C_GREEN, C_BLUE, C_ORANGE], height=0.52, alpha=0.85)
     for idx, val in enumerate(arch_latency_s):
         axes[1, 1].text(val + 0.12, idx, f"{val:.3g} s", va="center")
     axes[1, 1].set(
-        title="(d) 三类远场多说话人前端典型算法等待窗口",
+        title="(d) 三类前端算法等待窗口（典型量级示意）",
         xlabel="典型最小上下文等待窗口 / s",
         yticks=y_pos,
         yticklabels=arch_names,
@@ -557,7 +585,7 @@ def _build_fig88(sources: dict[str, str], manifest_sha: str) -> None:
     for ax in axes.flat:
         ax.grid(True, alpha=0.22)
         ax.set_axisbelow(True)
-    fig.suptitle("远场视听多模态与多说话人架构：异构帧率、滞后截断与遮挡回退")
+    fig.suptitle("图88  远场视听多模态与多说话人架构：异构帧率、滞后截断与遮挡回退")
     _save_report_and_png(
         fig,
         "fig88_av_asynchrony_occlusion.png",

@@ -1,0 +1,26 @@
+{
+  "figure": 92,
+  "exercise_ids": [
+    "E00-11",
+    "E00-13",
+    "E00-14"
+  ],
+  "source_sha256": {
+    "codes/chapters/ch00/core/chapter00_math.py": "14624267b73f4d79c934df2a2ceaa390adb4b1e0d63f38883d7e67c1d47a958e",
+    "codes/chapters/ch00/io_contracts.py": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974",
+    "scripts/make_figures.py": "c71b1078fae86e0ee8535cac1037b1764b85ac66809434c7f7792e93000a3988",
+    "scripts/make_math_figures.py": "52279f49634558fd81af00fa67201448ffadc211f215bfaddfc8484712c722fe"
+  },
+  "seed": 20260089,
+  "anchors": {
+    "mvdr_output_power": 0.36842105263157887,
+    "lcmv_output_power": 0.37499999999999994,
+    "improper_pseudo_variance_abs": 0.7211102550927979,
+    "dft_dc_pseudo_variance": 0.9999999999999999,
+    "dft_nyquist_pseudo_variance": 0.9999999999999999,
+    "wiener_mmse": 0.5454545454545454,
+    "kalman_step1_pred_var0": 5.0,
+    "kalman_step1_post_var0": 1.875
+  },
+  "scope": "Chapter 0 Wirtinger projected gradient, proper/improper complex Gaussian & DFT propriety, and Kalman Joseph covariance"
+}

@@ -196,6 +196,18 @@ def diagnose_pipeline_symptom(telemetry: dict[str, object]) -> dict[str, object]
     for key, raw_val in telemetry.items():
         merged[key] = _validate_real_scalar(raw_val, f"telemetry[{key!r}]")
 
+    if merged["hear_through_latency_us"] < 0.0:
+        raise ValueError("telemetry['hear_through_latency_us'] must be non-negative")
+    if merged["rt60_s"] < 0.0:
+        raise ValueError("telemetry['rt60_s'] must be non-negative")
+    if merged["wpe_prediction_delay_frames"] < 0.0:
+        raise ValueError("telemetry['wpe_prediction_delay_frames'] must be non-negative")
+    if merged["der_percent"] < 0.0:
+        raise ValueError("telemetry['der_percent'] must be non-negative")
+    for ratio_key in ("low_freq_wind_coherence", "far_end_active_ratio", "overlap_speech_ratio"):
+        if not 0.0 <= merged[ratio_key] <= 1.0:
+            raise ValueError(f"telemetry[{ratio_key!r}] must lie in [0, 1]")
+
     # Priority 1: Hardware sample clock / cross-device SRO synchronization
     if abs(merged["sro_ppm"]) > 5.0:
         return {

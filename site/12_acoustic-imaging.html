@@ -1,16 +1,17 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 12 章 · 声学成像与噪声源诊断 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="820e0688bd26"><style>
+<meta name="source-digest" content="ba5ce9940c12"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
 h1,h2,h3,h4{scroll-margin-top:60px}
+@media screen{.main a[id]:not([href]){scroll-margin-top:60px}}
 @media screen{.main a[id^="e"],.main .exercise-alias{scroll-margin-top:80px}}
 @media screen{.main .exercise-alias{top:0}}
 @media screen{.main a[id="e05-20"]{scroll-margin-top:60px}}
 @media screen{.main a[id="e17-11"],.main a[id="e17-12"],.main a[id="e17-13"],.main a[id="e17-14"],.main a[id="e17-15"]{scroll-margin-top:140px}}
-@media screen{.main .exercise-alias[id="e13-11"],.main .exercise-alias[id="e13-12"],.main .exercise-alias[id="e13-13"],.main .exercise-alias[id="e13-14"],.main .exercise-alias[id="e13-15"],.main .exercise-alias[id="e15-11"],.main .exercise-alias[id="e15-12"],.main .exercise-alias[id="e15-13"],.main .exercise-alias[id="e15-14"],.main .exercise-alias[id="e15-15"]{scroll-margin-top:140px}}
+@media screen{.main .exercise-alias[id="e13-11"],.main .exercise-alias[id="e13-12"],.main .exercise-alias[id="e13-13"],.main .exercise-alias[id="e13-14"],.main .exercise-alias[id="e13-15"],.main .exercise-alias[id="e15-11"]:has(~ a[id="e17-11"]),.main .exercise-alias[id="e15-12"]:has(~ a[id="e17-12"]),.main .exercise-alias[id="e15-13"]:has(~ a[id="e17-13"]),.main .exercise-alias[id="e15-14"]:has(~ a[id="e17-14"]),.main .exercise-alias[id="e15-15"]:has(~ a[id="e17-15"]){scroll-margin-top:140px}}
 @media screen{.main a[id^="e06-"]{scroll-margin-top:60px}}
 @media screen{.main a[id^="e07-"],.main a[id^="e08-"]{scroll-margin-top:60px}}
 @media screen{.main a[id^="e11-"]{scroll-margin-top:60px}}
@@ -79,7 +80,7 @@ h4{font-size:15.5px;margin-top:20px;color:#333}
   let printing = false;
 
   function roots() {
-    const candidates = Array.from(document.querySelectorAll("main.main,.chap"));
+    const candidates = Array.from(document.querySelectorAll(".main,.chap"));
     return candidates.filter(root => !candidates.some(other => other !== root && other.contains(root)));
   }
 
@@ -133,12 +134,21 @@ h4{font-size:15.5px;margin-top:20px;color:#333}
       const significant = Array.from(paragraph.childNodes).filter(node =>
         node.nodeType !== Node.TEXT_NODE || node.data.trim());
       const next = paragraph.nextElementSibling;
-      const anchorOnly = significant.length === 1 &&
-        significant[0].nodeType === Node.ELEMENT_NODE &&
-        significant[0].tagName === "A" && significant[0].id &&
-        !significant[0].hasAttribute("href") &&
-        Array.from(significant[0].childNodes).every(node =>
-          node.nodeType === Node.TEXT_NODE && !node.data.trim());
+      const isEmptyAnchor = node =>
+        node.nodeType === Node.ELEMENT_NODE &&
+        node.tagName === "A" && node.id &&
+        !node.hasAttribute("href") &&
+        Array.from(node.childNodes).every(child =>
+          child.nodeType === Node.TEXT_NODE && !child.data.trim());
+      const isAnchorAlias = node =>
+        node.nodeType === Node.ELEMENT_NODE &&
+        node.tagName === "SPAN" && node.id &&
+        node.classList.contains("anchor-alias") &&
+        Array.from(node.childNodes).every(child =>
+          child.nodeType === Node.TEXT_NODE && !child.data.trim());
+      const anchorOnly = significant.length >= 1 &&
+        significant.some(isEmptyAnchor) &&
+        significant.every(node => isEmptyAnchor(node) || isAnchorAlias(node));
       paragraph.classList.toggle("tutorial-anchor-only", !!anchorOnly);
       const short = significant.length === 1 &&
         significant[0].nodeType === Node.ELEMENT_NODE &&
@@ -243,6 +253,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 </head><body id="top"><a class="skip-link" href="#main-content">跳到正文</a>
 <header class="topbar"><a href="index.html">🏠 首页</a> &nbsp;/&nbsp; 第 12 章 · 声学成像与噪声源诊断</header>
 <div class="wrap"><nav class="side" aria-label="全书目录"><div class="chap"><a href="index.html">🏠 导读与导航（首页）</a></div>
+<div class="chap"><a href="00_math-foundations.html">第 0 章 · 全书数学基础与信号分析预备</a></div>
 <div class="chap"><a href="01_problem-definition.html">第 1 章 · 问题定义与双耳启示</a></div>
 <div class="chap"><a href="02_basics-signal-model.html">第 2 章 · 声音到达阵列时发生了什么</a></div>
 <div class="chap"><a href="03_array-geometry.html">第 3 章 · 阵列几何形态</a></div>
@@ -279,7 +290,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li><a href="12_acoustic-imaging.html#sec-12-5">12.5 从PSF方程学习DAMAS与NNLS</a></li>
 <li>&nbsp;&nbsp;<a href="12_acoustic-imaging.html#sec-u-9aacdc109a">为什么需要非负反演</a></li>
 <li>&nbsp;&nbsp;<a href="12_acoustic-imaging.html#sec-u-4f1bf6d183">原DAMAS一轮包含两个更新方向</a></li>
-<li>&nbsp;&nbsp;<a href="12_acoustic-imaging.html#sec-u-d6bcd65a94">三次前向sweep的中间数</a></li>
+<li>&nbsp;&nbsp;<a href="12_acoustic-imaging.html#sec-u-8c3fd50486">三次前向遍历的中间数</a></li>
 <li>&nbsp;&nbsp;<a href="12_acoustic-imaging.html#sec-u-5335992b40">扫描域NNLS改变了目标</a></li>
 <li><a href="12_acoustic-imaging.html#sec-12-6">12.6 CLEAN-SC如何逐次扣除相干成分</a></li>
 <li>&nbsp;&nbsp;<a href="12_acoustic-imaging.html#sec-u-f6de3ba882">峰值与其相干通道结构</a></li>
@@ -323,7 +334,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="12_acoustic-imaging.html#sec-u-1844251c9d">E12-03：一次双向迭代与一次前向遍历相同吗</a></li>
 <li>&nbsp;&nbsp;<a href="12_acoustic-imaging.html#sec-u-ab20495b47">E12-04：时间正交能保证同频谱不相干吗</a></li>
 <li>&nbsp;&nbsp;<a href="12_acoustic-imaging.html#sec-u-2fcef4767e">E12-05：扫描残差为零是否证明源功率正确</a></li>
-<li>&nbsp;&nbsp;<a href="12_acoustic-imaging.html#sec-u-cdd0dc66e7">E12-06：重复列、离网格与二维441格控制</a></li>
+<li>&nbsp;&nbsp;<a href="12_acoustic-imaging.html#sec-u-9936ab612e">E12-06：重复列、离网格与二维441格基准对照</a></li>
 <li>&nbsp;&nbsp;<a href="12_acoustic-imaging.html#sec-u-e1197de104">E12-07：删对角后PSF还能照旧使用吗</a></li>
 <li>&nbsp;&nbsp;<a href="12_acoustic-imaging.html#sec-u-864e5d6a6f">E12-08：截断GS与NNLS为什么得出两个答案</a></li>
 <li>&nbsp;&nbsp;<a href="12_acoustic-imaging.html#sec-u-7731a0181a">E12-09：增益校准怎样改变扫描绝对值</a></li>
@@ -371,7 +382,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li><a href="12_acoustic-imaging.html#sec-12-5">12.5 从PSF方程学习DAMAS与NNLS</a></li>
 <li>&nbsp;&nbsp;<a href="12_acoustic-imaging.html#sec-u-9aacdc109a">为什么需要非负反演</a></li>
 <li>&nbsp;&nbsp;<a href="12_acoustic-imaging.html#sec-u-4f1bf6d183">原DAMAS一轮包含两个更新方向</a></li>
-<li>&nbsp;&nbsp;<a href="12_acoustic-imaging.html#sec-u-d6bcd65a94">三次前向sweep的中间数</a></li>
+<li>&nbsp;&nbsp;<a href="12_acoustic-imaging.html#sec-u-8c3fd50486">三次前向遍历的中间数</a></li>
 <li>&nbsp;&nbsp;<a href="12_acoustic-imaging.html#sec-u-5335992b40">扫描域NNLS改变了目标</a></li>
 <li><a href="12_acoustic-imaging.html#sec-12-6">12.6 CLEAN-SC如何逐次扣除相干成分</a></li>
 <li>&nbsp;&nbsp;<a href="12_acoustic-imaging.html#sec-u-f6de3ba882">峰值与其相干通道结构</a></li>
@@ -415,7 +426,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="12_acoustic-imaging.html#sec-u-1844251c9d">E12-03：一次双向迭代与一次前向遍历相同吗</a></li>
 <li>&nbsp;&nbsp;<a href="12_acoustic-imaging.html#sec-u-ab20495b47">E12-04：时间正交能保证同频谱不相干吗</a></li>
 <li>&nbsp;&nbsp;<a href="12_acoustic-imaging.html#sec-u-2fcef4767e">E12-05：扫描残差为零是否证明源功率正确</a></li>
-<li>&nbsp;&nbsp;<a href="12_acoustic-imaging.html#sec-u-cdd0dc66e7">E12-06：重复列、离网格与二维441格控制</a></li>
+<li>&nbsp;&nbsp;<a href="12_acoustic-imaging.html#sec-u-9936ab612e">E12-06：重复列、离网格与二维441格基准对照</a></li>
 <li>&nbsp;&nbsp;<a href="12_acoustic-imaging.html#sec-u-e1197de104">E12-07：删对角后PSF还能照旧使用吗</a></li>
 <li>&nbsp;&nbsp;<a href="12_acoustic-imaging.html#sec-u-864e5d6a6f">E12-08：截断GS与NNLS为什么得出两个答案</a></li>
 <li>&nbsp;&nbsp;<a href="12_acoustic-imaging.html#sec-u-7731a0181a">E12-09：增益校准怎样改变扫描绝对值</a></li>
@@ -433,8 +444,8 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li><a href="12_acoustic-imaging.html#sec-12-14">12.14 原始资料与继续阅读</a></li>
 </ul></nav></details>
 <blockquote>
-<p>本篇是第 12 章（扩展专题Ⅰ），接在第 11 章选型指南之后。数学预备内容可随时回查第 16 章附录 A。</p>
-<p>🏠 首页导读：<a href="index.html">🏠 导读与导航</a> ｜ 上一篇：<a href="11_selection-guide.html">第 11 章 · 总结与选型指南</a> ｜ 下一篇：<a href="13_distributed-enhancement.html">第 13 章 · 分布式麦克风协同增强</a></p>
+<p>⚠️ 本篇是本书正文第 12 章（扩展专题Ⅰ；正文共 16 章，即第 0～15 章，其中第 12～15 章为四篇扩展专题，另有附录 A、B），接在第 11 章选型指南之后。分步数学推导可回查<a href="00_math-foundations.html">第 0 章</a>（非负最小二乘 KKT 条件见<a href="00_math-foundations.html#sec-0-5">§0.5</a>），全局符号与术语速查见<a href="16_appendix-symbols-math.html">第 16 章附录 A</a>。</p>
+<p>首页导读：<a href="index.html">🏠 导读与导航</a> ｜ 上一篇：<a href="11_selection-guide.html">第 11 章 · 总结与选型指南</a> ｜ 下一篇：<a href="13_distributed-enhancement.html">第 13 章 · 分布式麦克风协同增强</a></p>
 </blockquote>
 <hr />
 <span id="sec-1" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-a92e514598" class="anchor-alias" aria-hidden="true"></span><h1 id="sec-u-ab429db433">第 12 章：声学成像与噪声源诊断</h1>
@@ -570,7 +581,7 @@ x_{2,\ell}x_{1,\ell}^* & |x_{2,\ell}|^2
 \vec v^H\hat{\mathbf R}\vec v
 &=\frac{1}{L}\sum_{\ell=1}^{L}|\vec v^H\vec x_\ell|^2\ge 0.
 \end{aligned}$$</p>
-<p>因为每一项都是复数内积的模平方，所以只要保留完整的对角与非对角元素，$\hat{\mathbf R}$ 必然是 Hermitian 半正定矩阵（$\hat{\mathbf R} \succeq 0$）。注意这一性质纯粹由外积平方和结构保证，并不要求这 $L$ 个快拍的样本均值恰好为零；严格来说，式(12-3)定义的是未中心化的二阶矩矩阵，中心化样本协方差还需额外减去均值外积 $\bar{\vec x}\bar{\vec x}^H$（详见<a href="16_appendix-symbols-math.html#sec-u-152b8861e4">附录 A E16-02</a>）。</p>
+<p>因为每一项都是复数内积的模平方，所以只要保留完整的对角与非对角元素，$\hat{\mathbf R}$ 必然是 Hermitian 半正定矩阵（$\hat{\mathbf R} \succeq 0$）。注意这一性质纯粹由外积平方和结构保证，并不要求这 $L$ 个快拍的样本均值恰好为零；严格来说，式(12-3)定义的是未中心化的二阶矩矩阵，中心化样本协方差还需额外减去均值外积 $\bar{\vec x}\bar{\vec x}^H$（详见<a href="16_appendix-symbols-math.html#sec-u-e77b562c1e">附录 A E16-02</a>）。</p>
 <span id="sec-13" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-12d341ebd4">峰值复幅度与均方复系数</h3>
 <p>用正弦波构造校验算例时，最容易出岔子的是“峰值幅度”与“均方根（RMS）幅度”相差的因子 $2$。考虑频率既非直流（DC）也非 Nyquist 端点的实正弦序列：记复指数为 $\xi[n] = z e^{\mathrm{j}\Omega_{\mathrm{d}} n}$（其中数字角频率 $\Omega_{\mathrm{d}} = 2\pi f / f_s \in (0,\pi)$，$z$ 为峰值复幅度），实正弦取其实部 $x[n] = \operatorname{Re}\{\xi[n]\}$。由于余弦平方在整数个周期内的平均值为 $1/2$，该实正弦的时域均方功率等于 $|z|^2 / 2$。为了使式(12-3)算出的 CSM 对角元直接等于时域均方功率，我们可以先定义均方根复系数 $\vec s_\ell = \vec z_\ell / \sqrt{2}$，等价地在外积上除以 $2$：</p>
 <p>$$\begin{aligned}
@@ -697,7 +708,7 @@ q_i&\leftarrow\max\left\{0,\frac{t_i}{P_{ii}}\right\}.
 \end{aligned}\tag{12-12}$$</p>
 <p>这种“每算出一个新分量就立刻投入下一个分量计算”的就地更新策略，在数值代数上属于带投影截断的 Gauss–Seidel（GS）迭代。</p>
 <p>阅读开源代码时需要留意迭代方向的定义：为消除网格编号顺序带来的方向偏置，Brooks 与 Humphreys 在原论文中明确规定，<strong>完整的一轮 DAMAS 迭代包含正向与反向两次单向遍历</strong>——先从 $1$ 到 $J$ 前向遍历一遍，紧接着从 $J$ 到 $1$ 反向遍历一遍（反向遍历时 $j > i$ 的分量已更新为新值，$j \lt  i$ 的分量尚保持前向遍历结束时的值）。如果教学演示只跑了从 $1$ 到 $J$ 的单程更新，应当准确称为“一次前向遍历”，而不能与原论文的“一轮双向迭代”混为一谈；本书数值核对两种遍历方式分别予以支持和记录。</p>
-<span id="sec-24" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-d6bcd65a94">三次前向sweep的中间数</h3>
+<span id="sec-24" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-d6bcd65a94" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-8c3fd50486">三次前向遍历的中间数</h3>
 <p>我们把式(12-11)的两格算例（$P_{11} = P_{22} = 1$，$P_{12} = P_{21} = 1/4$，$\vec b = [17/16, 1/2]^\top$）一步步代进式(12-12)，手算前三次前向单向遍历，亲眼看看旁瓣污染是怎样被逐次剥掉的：</p>
 <ul>
 <li><strong>第 1 次前向遍历</strong>：初值 $q_1^{(0)} = 0, q_2^{(0)} = 0$。先算第 $1$ 格：$q_1^{(1)} = 17/16 - \frac{1}{4}\times 0 = 17/16$；立刻拿这个新值去扣第 $2$ 格的串扰：$t_2 = 1/2 - \frac{1}{4}\times\frac{17}{16} = 15/64 > 0$，故 $q_2^{(1)} = 15/64$。</li>
@@ -735,15 +746,15 @@ q_i&\leftarrow\max\left\{0,\frac{t_i}{P_{ii}}\right\}.
 <p>既然 $\mathbf P\vec q = \vec b$ 在有噪声或模型失配时无法精确成立，另一种非常自然的思路是直接把问题写成一个标准的凸优化问题——<strong>扫描域非负最小二乘（NNLS）</strong>，显式最小化整张扫描图的欧氏平方残差：</p>
 <p>$$\min_{\vec q\ge 0}\;\frac{1}{2}\|\mathbf P\vec q-\vec b\|_2^2.
 \tag{12-13}$$</p>
-<p>记目标函数关于 $\vec q$ 的梯度为 $\vec g = \mathbf P^\top(\mathbf P\vec q - \vec b)$。没有非负约束时，最优点只需令梯度等于零（$\vec g = \vec 0$）；加上硬边界 $\vec q \ge 0$ 后，怎样的解才算真正到达了谷底？我们可以借助一维开口向上的抛物线撞上“$q_i \ge 0$ 左墙”的几何图像，直观读懂它的 Karush–Kuhn–Tucker（KKT）一阶最优条件：</p>
+<p>记目标函数关于 $\vec q$ 的梯度为 $\vec u = \mathbf P^\top(\mathbf P\vec q - \vec b)$（以避开下文 CLEAN-SC 相干导引向量 $\vec g$ 的记号冲突）。没有非负约束时，最优点只需令梯度等于零（$\vec u = \vec 0$）；加上硬边界 $\vec q \ge 0$ 后，怎样的解才算真正到达了谷底？我们可以借助一维开口向上的抛物线撞上“$q_i \ge 0$ 左墙”的几何图像，直观读懂它的 Karush–Kuhn–Tucker（KKT）一阶最优条件（一般凸约束推导见<a href="00_math-foundations.html#sec-0-5">第 0 章 §0.5</a>）：</p>
 <ul>
-<li><strong>情形一（谷底落在正半轴内部，$q_i > 0$）</strong>：在保持其余坐标不变时，若第 $i$ 个分量处于严格大于零的内部，左移一点和右移一点都是合法的；要想成为最低点，抛物线在该处的切线斜率必须水平，即梯度分量必为零（$g_i = 0$）。</li>
-<li><strong>情形二（无约束谷底跑到负半轴墙外，被挡在边界 $q_i = 0$ 上）</strong>：此时合法可行域只允许向右（增大 $q_i > 0$）移动；要想 $q_i = 0$ 成为可行域内的最低点，向右走时函数值必须上升（或至少不下降），这意味着墙边的切线斜率必须非负（$g_i \ge 0$）。倘若在 $q_i = 0$ 处斜率 $g_i \lt  0$，往正半轴迈一小步就能让残差继续减小，说明还没到最优点。</li>
+<li><strong>情形一（谷底落在正半轴内部，$q_i > 0$）</strong>：在保持其余坐标不变时，若第 $i$ 个分量处于严格大于零的内部，左移一点和右移一点都是合法的；要想成为最低点，抛物线在该处的切线斜率必须水平，即梯度分量必为零（$u_i = 0$）。</li>
+<li><strong>情形二（无约束谷底跑到负半轴墙外，被挡在边界 $q_i = 0$ 上）</strong>：此时合法可行域只允许向右（增大 $q_i > 0$）移动；要想 $q_i = 0$ 成为可行域内的最低点，向右走时函数值必须上升（或至少不下降），这意味着墙边的切线斜率必须非负（$u_i \ge 0$）。倘若在 $q_i = 0$ 处斜率 $u_i \lt  0$，往正半轴迈一小步就能让残差继续减小，说明还没到最优点。</li>
 </ul>
-<p>把这两种情形合在一起，每个坐标 $i$ 都必须满足非负性、梯度非负性，且“坐标值 $q_i$ 与梯度分量 $g_i$ 至少有一个为零”（即互补松弛条件）：</p>
+<p>把这两种情形合在一起，每个坐标 $i$ 都必须满足非负性、梯度非负性，且“坐标值 $q_i$ 与梯度分量 $u_i$ 至少有一个为零”（即互补松弛条件）：</p>
 <p>$$\begin{gathered}
-\vec q\ge 0,\qquad \vec g\ge 0,\\
-q_i g_i=0\quad\text{对每个 }i=1,\ldots,J.
+\vec q\ge 0,\qquad \vec u\ge 0,\\
+q_i u_i=0\quad\text{对每个 }i=1,\ldots,J.
 \end{gathered}\tag{12-14}$$</p>
 <p>很多初学者误以为 DAMAS 的截断 GS 迭代就是在求解式(12-13)的扫描域 NNLS，其实不然！我们只需看一个极简反例：仍用式(12-11)的 $\mathbf P$，但取扫描观测 $\vec b = [1, 0]^\top$。按式(12-12)做 DAMAS 更新，从零出发第一步得 $q_1 = 1$、$q_2 = \max(0, -1/4) = 0$，此后永远停在固定点 $[1, 0]^\top$ 上，扫描平方残差 $\|\mathbf P\vec q - \vec b\|_2^2 = 1/16 \approx 0.0625$；而按式(12-14)求解扫描域 NNLS（<a href="#e12-08">E12-08</a>），因为把 $q_1$ 稍微调小一点虽然在第一格付出微小代价，却能显著压低泄漏到第二格的残差，真正最小点落在 $[16/17, 0]^\top$，扫描平方残差降为 $1/17 \approx 0.0588$。</p>
 <p>这提醒我们：DAMAS 固定点对应的并不是式(12-13)（它在完整 CSM 下真正对应的凸目标将在 §12.7 揭晓），讨论反演结果前必须先指明所最小化的数学代价函数。</p>
@@ -1076,37 +1087,37 @@ b_{\mathrm{FB},i}(\nu)=\frac{1}{\|\vec a_i\|_2^2}
 <span id="sec-60" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-bb8a35f8e2">已知延迟音频保留什么</h3>
 <p>本章配套音频采用 $24\,\mathrm{kHz}$ 采样率、$2\,\mathrm{kHz}$ 正弦载波、双通道与 $20$ 个编码块。第 $1$ 源到达两麦延迟相同；第 $2$ 源在麦 2 上比麦 1 晚到 $4$ 个采样点，对应正频率相位差 $-2\pi \times 2000 \times (4 / 24000) = -2\pi / 3$。两源峰值幅度分别为 $0.2$ 和 $0.1$，共同导出增益为 $1$。</p>
 <p>为对照 §12.3 与 §12.9 的统计条件，音频提供两组双源合成方案：一组对第 $2$ 源施加跨块交替相位编码，使 $20$ 个快拍上的样本源互谱精确抵消；另一组保持两源恒定同相以展示相干失配。每块长 $2400$ 点，统计评分只取块内避开过渡边缘的整数周期稳定窗 $[252, 2160)$（共 $20 \times 1908 = 38160$ 点）；整份文件长 $48004$ 点以保留末尾 $4$ 点因果传播尾。这组确定性正弦合成文件独立存放在 <code>imaging_audio/</code> 目录中（不并入全书主清单的 $109$ 个样本），用于精确核验延迟相位、样本互谱与反演代数：</p>
-<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
+<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table class="tutorial-budget-table" style="--tutorial-table-width:42em">
 <thead>
 <tr>
-<th scope="col">文件</th>
-<th scope="col">用途</th>
+<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:22em">文件</th>
+<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:20em">用途</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><a href="imaging_audio/source_1.wav">第一源</a><audio class="audio-sample" controls preload="none" aria-label="第一源" src="imaging_audio/source_1.wav">请使用上方 WAV 链接下载。</audio></td>
-<td>峰值幅度 $0.2$ 的共同参考源信号</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:22em"><a href="imaging_audio/source_1.wav">第一源</a><audio class="audio-sample" controls preload="none" aria-label="第一源" src="imaging_audio/source_1.wav">请使用上方 WAV 链接下载。</audio></td>
+<td class="tutorial-short-column" style="--tutorial-column-width:20em">峰值幅度 $0.2$ 的共同参考源信号</td>
 </tr>
 <tr>
-<td><a href="imaging_audio/source_2_phase_code.wav">第二源：相位编码</a><audio class="audio-sample" controls preload="none" aria-label="第二源：相位编码" src="imaging_audio/source_2_phase_code.wav">请使用上方 WAV 链接下载。</audio></td>
-<td>跨块相位交替编码，使 $20$ 块平均源互谱抵消为零</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:22em"><a href="imaging_audio/source_2_phase_code.wav">第二源：相位编码</a><audio class="audio-sample" controls preload="none" aria-label="第二源：相位编码" src="imaging_audio/source_2_phase_code.wav">请使用上方 WAV 链接下载。</audio></td>
+<td class="tutorial-short-column" style="--tutorial-column-width:20em">跨块相位交替编码，使 $20$ 块平均源互谱抵消为零</td>
 </tr>
 <tr>
-<td><a href="imaging_audio/source_2_coherent.wav">第二源：相干对照</a><audio class="audio-sample" controls preload="none" aria-label="第二源：相干对照" src="imaging_audio/source_2_coherent.wav">请使用上方 WAV 链接下载。</audio></td>
-<td>与第一源全程保持固定相位关系</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:22em"><a href="imaging_audio/source_2_coherent.wav">第二源：相干对照</a><audio class="audio-sample" controls preload="none" aria-label="第二源：相干对照" src="imaging_audio/source_2_coherent.wav">请使用上方 WAV 链接下载。</audio></td>
+<td class="tutorial-short-column" style="--tutorial-column-width:20em">与第一源全程保持固定相位关系</td>
 </tr>
 <tr>
-<td><a href="imaging_audio/array_phase_code.wav">双通道：相位编码</a><audio class="audio-sample" controls preload="none" aria-label="双通道：相位编码" src="imaging_audio/array_phase_code.wav">请使用上方 WAV 链接下载。</audio></td>
-<td>含已知 $4$ 点麦间差分延迟、跨块互谱抵消的阵列合成观测</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:22em"><a href="imaging_audio/array_phase_code.wav">双通道：相位编码</a><audio class="audio-sample" controls preload="none" aria-label="双通道：相位编码" src="imaging_audio/array_phase_code.wav">请使用上方 WAV 链接下载。</audio></td>
+<td class="tutorial-short-column" style="--tutorial-column-width:20em">含已知 $4$ 点麦间差分延迟、跨块互谱抵消的阵列合成观测</td>
 </tr>
 <tr>
-<td><a href="imaging_audio/array_coherent.wav">双通道：相干对照</a><audio class="audio-sample" controls preload="none" aria-label="双通道：相干对照" src="imaging_audio/array_coherent.wav">请使用上方 WAV 链接下载。</audio></td>
-<td>传播几何相同、两源完全相干的阵列合成观测</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:22em"><a href="imaging_audio/array_coherent.wav">双通道：相干对照</a><audio class="audio-sample" controls preload="none" aria-label="双通道：相干对照" src="imaging_audio/array_coherent.wav">请使用上方 WAV 链接下载。</audio></td>
+<td class="tutorial-short-column" style="--tutorial-column-width:20em">传播几何相同、两源完全相干的阵列合成观测</td>
 </tr>
 <tr>
-<td><a href="imaging_audio/MANIFEST.json">独立清单</a></td>
-<td>记录生成参数、评分窗及浮点/PCM 读回统计量</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:22em"><a href="imaging_audio/MANIFEST.json">独立清单</a></td>
+<td class="tutorial-short-column" style="--tutorial-column-width:20em">记录生成参数、评分窗及浮点/PCM 读回统计量</td>
 </tr>
 </tbody>
 </table></div>
@@ -1174,7 +1185,7 @@ b_2&=\frac{1}{2}-\frac{\sqrt{3}}{4}\approx 0.06698730.
 \end{aligned}$$</p>
 <p>庞大的矩阵域残差当场揭穿了“非相干假设失效”的真相（两源真实边际功率仍是 $1$ 和 $1/4$）。数值核进一步扫描不同源间相干系数 $\gamma \in [-1, 1]$（即图 68(b)），并将每个工况的真值协方差与相干系数随结果一并存档，以区分确定性参数扫描与同一分布下的随机重复采样。</p>
 <p><span id="e14-06" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e12-06"></a></p>
-<span id="sec-68" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-8523691e41" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-cdd0dc66e7">E12-06：重复列、离网格与二维441格控制</h3>
+<span id="sec-68" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-cdd0dc66e7" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-8523691e41" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-9936ab612e">E12-06：重复列、离网格与二维441格基准对照</h3>
 <p><strong>题干。</strong> （1）若 $2 \times 2$ 的 $\mathbf P$ 四个元素全为 $1$、$\vec b = [1.25, 1.25]^\top$，写出三组不同的非负精确解；（2）令单个单位真实源的传播向量落在两格之间的 $[1, e^{-\mathrm{j}\pi/3}]^\top$，仍用本章两格字典反演，检查总功率与 CSM 残差；（3）复核图 67 二维 $441$ 格平面算例的局部峰偏移与全图格点数值总和。</p>
 <p><strong>答案。</strong> 分三步逐一核验空间离散化失配：</p>
 <ol>
@@ -1197,7 +1208,7 @@ b_2&=\frac{1}{2}-\frac{\sqrt{3}}{4}\approx 0.06698730.
 <p><strong>答案。</strong> 先算三种求解路径的结果：</p>
 <ol>
 <li><strong>截断 GS（DAMAS）固定点</strong>：更新规则为 $q_1 \leftarrow \max(0, 1 - q_2 / 4)$、$q_2 \leftarrow \max(0, 0 - q_1 / 4)$。从零起步第一步即得 $[1, 0]^\top$，此后 $q_2$ 括号内为 $-1/4 \lt  0$ 持续被截断为零，永远停在 $[1, 0]^\top$。此时残差 $\mathbf P\vec q - \vec b = [0, 1/4]^\top$，扫描平方残差为 $1/16 = 0.0625$。</li>
-<li><strong>扫描域 NNLS 最优解</strong>：在边界 $q_2 = 0$ 上，扫描平方残差 $(q_1 - 1)^2 + (q_1 / 4)^2$ 展开为 $\frac{17}{16}q_1^2 - 2q_1 + 1$。对 $q_1$ 求导置零得 $q_1 = 16/17$，残差向量为 $[-1/17, 4/17]^\top$，扫描平方残差降至 $1/17 \approx 0.05882353 \lt  1/16$。按式(12-13)带 $1/2$ 因子的目标核验梯度 $\vec g = \mathbf P^\top(\mathbf P\vec q - \vec b)$，逐行相加得 $[-1/17 + 1/17,\; -1/68 + 4/17]^\top = [0, 15/68]^\top$——正分量 $q_1 = 16/17 > 0$ 处梯度 $g_1 = 0$，零分量 $q_2 = 0$ 处梯度 $g_2 = 15/68 > 0$，完美满足式(12-14)的 KKT 互补条件！（无约束线性逆解为 $[16/15, -4/15]^\top$，因含负分量被非负约束排除。）</li>
+<li><strong>扫描域 NNLS 最优解</strong>：在边界 $q_2 = 0$ 上，扫描平方残差 $(q_1 - 1)^2 + (q_1 / 4)^2$ 展开为 $\frac{17}{16}q_1^2 - 2q_1 + 1$。对 $q_1$ 求导置零得 $q_1 = 16/17$，残差向量为 $[-1/17, 4/17]^\top$，扫描平方残差降至 $1/17 \approx 0.05882353 \lt  1/16$。按式(12-13)带 $1/2$ 因子的目标核验梯度 $\vec u = \mathbf P^\top(\mathbf P\vec q - \vec b)$，逐行相加得 $[-1/17 + 1/17,\; -1/68 + 4/17]^\top = [0, 15/68]^\top$——正分量 $q_1 = 16/17 > 0$ 处梯度 $u_1 = 0$，零分量 $q_2 = 0$ 处梯度 $u_2 = 15/68 > 0$，严格满足式(12-14)的 KKT 互补条件。（无约束线性逆解为 $[16/15, -4/15]^\top$，因含负分量被非负约束排除。）</li>
 <li><strong>半正定 CSM 可实现性</strong>：这组 $\vec b = [1, 0]^\top$ 并非凭空编造的非法输入！只需取单快拍观测向量 $\vec v = \sqrt{4/3}[1, e^{+\mathrm{j}\pi/3}]^\top$ 构造秩一半正定矩阵 $\mathbf R = \vec v\vec v^H \succeq 0$：第 $2$ 格波束响应 $\vec w_2^H\vec v$ 因相位相差 $\pi$ 恰好完全相消为零（$b_2 = 0$），而第 $1$ 格扫描值恰为 $b_1 = \frac{1}{3}|1 + e^{+\mathrm{j}\pi/3}|^2 = 1$。之所以出现边界截断，纯粹是因为该真实声源不在候选的两格字典上。</li>
 </ol>
 <p><span id="e14-09" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e12-09"></a></p>
@@ -1310,27 +1321,27 @@ S(u,v)&=\left(u+\frac{v}{4}-1\right)^2+\left(\frac{u}{4}+v\right)^2.
 \end{aligned}\tag{12-33}$$</p>
 <p>先检验完整 CSM 目标 $F(u, v)$：在点 $[1, 0]^\top$ 处，半梯度向量 $\mathbf G\vec q - \vec h = [0, 1]^\top \ge 0$，满足 KKT 互补条件；由于 $\mathbf G$ 的特征值为 $3$ 和 $5$（严格正定），$[1, 0]^\top$ 是唯一的全局最小点，对应 $F(1, 0) = 4 - 8 + 64/9 = 28/9$（未松弛 GS 从零起步一步即停在此处）。</p>
 <p>再检验扫描域目标 $S(u, v)$：在边界 $v = 0$ 上，$S(u, 0) = (u - 1)^2 + u^2 / 16$，求导 $2(u - 1) + u / 8 = 0$ 得 $u = 16/17$，半梯度 $\mathbf P^\top(\mathbf P\vec q - \vec b)$ 恰为 $[0, 15/68]^\top \ge 0$，同样满足各自的 KKT 互补条件！将两个最优点交叉代回两套指标并列核对（在 $v = 0$ 轴上可利用配方式 $F(u, 0) = 4(u - 1)^2 + 28/9$ 快速算出 $F(16/17, 0) = 28/9 + 4/289 = 8128/2601$）：</p>
-<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
+<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table class="tutorial-budget-table" style="--tutorial-table-width:50em">
 <thead>
 <tr>
-<th scope="col">求解方案</th>
-<th scope="col">最优非负源强 $\vec q$</th>
-<th scope="col" style="text-align: right;">扫描平方残差 $S(\vec q)$</th>
-<th scope="col" style="text-align: right;">完整 CSM 平方残差 $F(\vec q)$</th>
+<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:12em">求解方案</th>
+<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:14em">最优非负源强 $\vec q$</th>
+<th scope="col" style="text-align: right;--tutorial-column-width:12em" class="tutorial-short-column">扫描平方残差 $S(\vec q)$</th>
+<th scope="col" style="text-align: right;--tutorial-column-width:12em" class="tutorial-short-column">完整 CSM 平方残差 $F(\vec q)$</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>DAMAS 固定点 / 完整 CSM 非负拟合</td>
-<td>$[1, 0]^\top$</td>
-<td style="text-align: right;">$1/16 \approx 0.06250$</td>
-<td style="text-align: right;">$28/9 \approx 3.11111$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:12em">DAMAS 固定点 / 完整 CSM 非负拟合</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:14em">$[1, 0]^\top$</td>
+<td style="text-align: right;--tutorial-column-width:12em" class="tutorial-short-column">$1/16 \approx 0.06250$</td>
+<td style="text-align: right;--tutorial-column-width:12em" class="tutorial-short-column">$28/9 \approx 3.11111$</td>
 </tr>
 <tr>
-<td>扫描域 NNLS</td>
-<td>$[16/17, 0]^\top$</td>
-<td style="text-align: right;">$1/17 \approx 0.05882$</td>
-<td style="text-align: right;">$8128/2601 \approx 3.12495$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:12em">扫描域 NNLS</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:14em">$[16/17, 0]^\top$</td>
+<td style="text-align: right;--tutorial-column-width:12em" class="tutorial-short-column">$1/17 \approx 0.05882$</td>
+<td style="text-align: right;--tutorial-column-width:12em" class="tutorial-short-column">$8128/2601 \approx 3.12495$</td>
 </tr>
 </tbody>
 </table></div>
@@ -1341,27 +1352,27 @@ S(u,v)&=\left(u+\frac{v}{4}-1\right)^2+\left(\frac{u}{4}+v\right)^2.
 \vec h'=\begin{pmatrix}4/3\\-8/3\end{pmatrix}.
 \end{gathered}$$</p>
 <p>按 §12.8 等幅两麦因子 $2$ 补偿使去对角自响应归一后，去对角 PSF 矩阵 $\mathbf G'/2$ 主对角为 $1$、非对角为 $-1/2$，补偿后扫描向量为 $\vec h'/2 = [2/3, -4/3]^\top$（注意负扫描值 $-4/3$ 必须原样保留参与运算，不能预先截零）。在边界 $q_2 = 0$ 上求导核验：去对角 CSM 拟合由 $2q_1 - 4/3 = 0$ 得最优解 $[2/3, 0]^\top$（第 $2$ 分量半梯度为 $-2/3 + 8/3 = 2 > 0$）；去对角扫描域 NNLS 则最小化 $(q_1 - 2/3)^2 + (-q_1/2 + 4/3)^2$，求导得最优解 $[16/15, 0]^\top$（第 $2$ 分量半梯度为 $3/5 > 0$）：</p>
-<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
+<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table class="tutorial-budget-table" style="--tutorial-table-width:50em">
 <thead>
 <tr>
-<th scope="col">去对角求解方案</th>
-<th scope="col">最优非负源强 $\vec q$</th>
-<th scope="col" style="text-align: right;">补偿后扫描平方残差</th>
-<th scope="col" style="text-align: right;">去对角 CSM 平方残差</th>
+<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:12em">去对角求解方案</th>
+<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:14em">最优非负源强 $\vec q$</th>
+<th scope="col" style="text-align: right;--tutorial-column-width:12em" class="tutorial-short-column">补偿后扫描平方残差</th>
+<th scope="col" style="text-align: right;--tutorial-column-width:12em" class="tutorial-short-column">去对角 CSM 平方残差</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>去对角 CSM 非负拟合</td>
-<td>$[2/3, 0]^\top$</td>
-<td style="text-align: right;">$1$</td>
-<td style="text-align: right;">$8/3 \approx 2.66667$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:12em">去对角 CSM 非负拟合</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:14em">$[2/3, 0]^\top$</td>
+<td style="text-align: right;--tutorial-column-width:12em" class="tutorial-short-column">$1$</td>
+<td style="text-align: right;--tutorial-column-width:12em" class="tutorial-short-column">$8/3 \approx 2.66667$</td>
 </tr>
 <tr>
-<td>去对角扫描域 NNLS</td>
-<td>$[16/15, 0]^\top$</td>
-<td style="text-align: right;">$4/5 = 0.8$</td>
-<td style="text-align: right;">$224/75 \approx 2.98667$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:12em">去对角扫描域 NNLS</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:14em">$[16/15, 0]^\top$</td>
+<td style="text-align: right;--tutorial-column-width:12em" class="tutorial-short-column">$4/5 = 0.8$</td>
+<td style="text-align: right;--tutorial-column-width:12em" class="tutorial-short-column">$224/75 \approx 2.98667$</td>
 </tr>
 </tbody>
 </table></div>
@@ -1476,7 +1487,9 @@ b_{\mathrm{FB},i}(2)&=\frac{(4b_i+\sqrt{3})^2}{4(5+2\sqrt{3})}.
 <li>开源实现与接口比对：Python 声学成像库 <a href="https://github.com/acoular/acoular">Acoular 官方仓库</a>、本书<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/SOURCES.lock.json">外部源码锁定表</a>及<a href="research/01_spatial_and_tracking.html">空间算法研究手册</a>。</li>
 </ul>
 <hr />
-<p><a href="index.html">返回导读</a> ｜ <a href="11_selection-guide.html">上一篇：总结与选型指南</a> ｜ <a href="13_distributed-enhancement.html">下一篇：扩展专题Ⅱ：分布式麦克风协同增强</a></p><div class="pn"><span><a href="11_selection-guide.html">← 上一篇</a></span><span><a href="13_distributed-enhancement.html">下一篇 →</a></span></div>
+<blockquote>
+<p>📄 本篇信息：配图 4 张 ｜ <a href="index.html">回首页</a></p>
+</blockquote><div class="pn"><span><a href="11_selection-guide.html">← 上一篇</a></span><span><a href="13_distributed-enhancement.html">下一篇 →</a></span></div>
 <footer class="foot">麦克风阵列信号处理教程 · 静态站由 scripts/build_site.py 生成</footer>
 </main></div><a class="topbtn" href="#top" title="回顶部" aria-label="回到页面顶部">↑</a>
 <script>if(!navigator.onLine)document.getElementById('offnote').style.display='block';</script>

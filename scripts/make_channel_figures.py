@@ -92,13 +92,13 @@ def generate_figure(figure_path=FIGURE, report_path=REPORT, *, audio_directory=D
                            'Arial Unicode MS', 'DejaVu Sans'],
         'axes.unicode_minus': False, 'font.size': 11, 'axes.titlesize': 12, 'axes.labelsize': 11,
         'legend.fontsize': 10, 'xtick.labelsize': 10, 'ytick.labelsize': 10})
-    fig, axes = plt.subplots(3, 1, figsize=(9.6, 10.0), gridspec_kw={'height_ratios': [.8, 1.15, 1.1]})
+    fig, axes = plt.subplots(3, 1, figsize=(9.6, 10.2), gridspec_kw={'height_ratios': [.82, 1.15, 1.1]})
     axes[0].axis('off')
-    axes[0].set_title('(a) 已知噪声时间协方差与解析控制：$R_n=0.005BB^T$', pad=12)
+    axes[0].set_title(r'(a) 已知噪声时间协方差与解析对照：$\mathbf{R}_n=0.005\mathbf{B}\mathbf{B}^\top$', pad=12)
     rows = [[LABELS[i], ('[1, −0.5, 0.5]', '[0, −0.5, 0.5]', '[0, 0.5, 0.5]')[i],
              str(int(target_gain[i])), f"{data['analytic'][name]['noise_mean_square']:.4f}"]
             for i, name in enumerate(OUTPUT_ROLES)]
-    table = axes[0].table(cellText=rows, colLabels=['控制', '实际参与的通道权重', '目标响应', '已知输出噪声均方'],
+    table = axes[0].table(cellText=rows, colLabels=['对照方案', '实际参与的通道权重', '目标响应', '已知输出噪声均方'],
                          colWidths=[.23, .32, .15, .30], cellLoc='center', loc='center')
     table.auto_set_font_size(False); table.set_fontsize(11); table.scale(1, 1.7)
     for (row, col), cell in table.get_celld().items():
@@ -114,7 +114,7 @@ def generate_figure(figure_path=FIGURE, report_path=REPORT, *, audio_directory=D
                  label='实际 PCM 参考（500 Hz）')
     for name, label, color in zip(OUTPUT_ROLES, LABELS, COLORS):
         axes[1].plot(time, report['plot_data']['waveform_pcm'][name], color=color, linewidth=1.2, alpha=.85, label=label)
-    axes[1].set(xlabel='共同采样时轴 (ms)', ylabel='实际 PCM / 32768',
+    axes[1].set(xlabel='共同采样时轴 (ms)', ylabel='实际 PCM / 32768', ylim=(-.22, .35),
                 title='(b) 同一 128 点片段；各输出仍保留所声明的噪声分量')
     axes[1].grid(alpha=.2); axes[1].legend(ncol=2, loc='upper right')
     x = np.arange(3); width = .32
@@ -129,10 +129,11 @@ def generate_figure(figure_path=FIGURE, report_path=REPORT, *, audio_directory=D
     axes[2].set(xticks=x, xticklabels=LABELS, ylim=(-.13, 2.0), ylabel='无量纲比值',
                 title='(c) 总误差相近，目标保留不同；不对输出拟合增益或时移')
     axes[2].grid(axis='y', alpha=.2); axes[2].legend(ncol=2, loc='upper left')
-    fig.text(.5, .015, '16 kHz · 共同增益 1 · 评分 [2400, 29600) 共 27200 点\n'
+    fig.suptitle('图78  指定通道失效后：旧权重与子阵重算的输出分解', fontsize=15)
+    fig.text(.5, .012, '16 kHz · 共同增益 1 · 评分 [2400, 29600) 共 27200 点\n'
              '确定性正交频点与已知宽带时间统计；不是逐频 SCM、盲故障诊断、设备成绩或正式听测。',
              ha='center', fontsize=10)
-    fig.tight_layout(rect=(0, .055, 1, 1), h_pad=2.3)
+    fig.tight_layout(rect=(0, .055, 1, .96), h_pad=2.1)
     # All numerical/metadata work succeeds before either output is touched.
     write_json_report(report_path, report, forbidden_roots=(audio_directory,))
     figure_path.parent.mkdir(parents=True, exist_ok=True)

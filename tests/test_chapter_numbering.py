@@ -1,4 +1,4 @@
-"""Topic preservation during the explicit 12--15 permutation."""
+"""Topic preservation across chapter-number permutations (00 and 12--17)."""
 import io
 from pathlib import Path
 import unittest
@@ -10,7 +10,8 @@ ROOT = Path(__file__).resolve().parents[1]
 
 class ChapterNumberingTests(unittest.TestCase):
     def test_current_numbers_keep_original_pdf_topics(self):
-        expected = {'12_acoustic-imaging.md':14, '13_distributed-enhancement.md':15,
+        expected = {'00_math-foundations.md':18,
+                    '12_acoustic-imaging.md':14, '13_distributed-enhancement.md':15,
                     '14_spatial-wearable-arrays.md':16, '15_target-extraction-diarization.md':17,
                     '16_appendix-symbols-math.md':12, '17_appendix-guide.md':13}
         for name, topic in expected.items():
@@ -20,6 +21,34 @@ class ChapterNumberingTests(unittest.TestCase):
             '12_appendix-symbols-math.html', '14_appendix-symbols-math.html',
             '13_appendix-guide.html', '15_appendix-guide.html',
             '16_spatial-wearable-arrays.html', '17_target-extraction-diarization.html'})
+
+    def test_numbering_table_rejects_duplicates_conflicts_and_cycles(self):
+        with self.assertRaisesRegex(ValueError, "Duplicate chapter source"):
+            chapter_identity._build_topic_tables({"chapters": [
+                {"source": "01_a.md", "original_source": "01_a.md", "pdf_identity": 1},
+                {"source": "01_a.md", "original_source": "01_a.md", "pdf_identity": 2},
+            ]})
+        with self.assertRaisesRegex(ValueError, "Duplicate pdf_identity"):
+            chapter_identity._build_topic_tables({"chapters": [
+                {"source": "01_a.md", "original_source": "01_a.md", "pdf_identity": 1},
+                {"source": "02_b.md", "original_source": "02_b.md", "pdf_identity": 1},
+            ]})
+        with self.assertRaisesRegex(ValueError, "Conflicting legacy route"):
+            chapter_identity._build_topic_tables({"chapters": [
+                {"source": "01_a.md", "original_source": "99_old.md", "legacy_sources": ["99_old.md"], "pdf_identity": 1},
+                {"source": "02_b.md", "original_source": "99_old.md", "legacy_sources": ["99_old.md"], "pdf_identity": 2},
+            ]})
+        with self.assertRaisesRegex(ValueError, "Cyclic legacy chapter route"):
+            chapter_identity._build_topic_tables({"chapters": [
+                {"source": "01_a.md", "original_source": "02_b.md", "legacy_sources": ["02_b.md"], "pdf_identity": 1},
+                {"source": "02_b.md", "original_source": "01_a.md", "legacy_sources": ["01_a.md"], "pdf_identity": 2},
+            ]})
+        _, multihop = chapter_identity._build_topic_tables({"chapters": [
+            {"source": "02_b.md", "original_source": "01_a.md", "legacy_sources": ["01_a.md"], "pdf_identity": 1},
+            {"source": "03_c.md", "original_source": "02_b.md", "legacy_sources": ["02_b.md"], "pdf_identity": 2},
+        ]})
+        self.assertEqual(multihop["01_a.md"], "03_c.md")
+        self.assertEqual(multihop["02_b.md"], "03_c.md")
 
     def reader(self, wrong_alias=False):
         writer = PdfWriter()

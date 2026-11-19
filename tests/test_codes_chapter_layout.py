@@ -35,7 +35,8 @@ class ChapterLayoutTest(unittest.TestCase):
         infrastructure = {CHAPTERS / "ch00/io_contracts.py"}
         self.assertEqual(infrastructure & set(implementations), infrastructure)
         teaching_entries = set(implementations) - infrastructure
-        self.assertEqual(len(teaching_entries), 40)
+        self.assertEqual(len(teaching_entries), 41)
+        self.assertIn(CHAPTERS / "ch00/chapter00_exercises.py", implementations)
         self.assertIn(CHAPTERS / "ch06/aec_affine_projection_demo.py", implementations)
         for path in implementations:
             with self.subTest(path=path):

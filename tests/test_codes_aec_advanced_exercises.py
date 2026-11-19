@@ -1,6 +1,9 @@
 """Independent fraction and analytic expectations for E06-11..E06-20."""
 import json
 import math
+from pathlib import Path
+import subprocess
+import sys
 import unittest
 
 from codes.chapters.ch06.aec_advanced_exercises import run_exercises
@@ -11,6 +14,9 @@ class AdvancedAECExercisesTest(unittest.TestCase):
         result = run_exercises()
         self.assertEqual(list(result), [f"E06-{n:02d}" for n in range(11, 21)])
         json.dumps(result, allow_nan=False)
+        script = Path(__file__).resolve().parents[1] / "codes/chapters/ch06/aec_advanced_exercises.py"
+        proc = subprocess.run([sys.executable, str(script)], capture_output=True, text=True, check=True)
+        self.assertEqual(json.loads(proc.stdout), result)
 
     def test_haar_and_diagonal_model_are_distinct(self):
         result = run_exercises()

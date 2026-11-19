@@ -107,6 +107,7 @@ def check_mathjax_assets():
 
 CHAPTERS = [
     ("00_overview.md", "导读与导航"),
+    ("00_math-foundations.md", "第 0 章 · 全书数学基础与信号分析预备"),
     ("01_problem-definition.md", "第 1 章 · 问题定义与双耳启示"),
     ("02_basics-signal-model.md", "第 2 章 · 声音到达阵列时发生了什么"),
     ("03_array-geometry.md", "第 3 章 · 阵列几何形态"),
@@ -128,6 +129,7 @@ CHAPTERS = [
 
 # 独立算法、工业实验与可直接练习的源 h4 纳入第三级导航。
 PDF_THIRD_LEVEL_FILES = {
+    "00_math-foundations.md",
     "01_problem-definition.md", "02_basics-signal-model.md", "03_array-geometry.md",
     "04_doa-estimation.md", "05_beamforming.md",
     "06_aec.md", "07_wpe-dereverberation.md", "08_speech-separation.md",
@@ -159,19 +161,21 @@ CSS = """
 span[data-pdf-math-id],mjx-container[jax="SVG"]{font-family:"MASP TeX Metrics";font-weight:normal;font-style:normal;font-synthesis:none}
 /* Match the A4 content width before printing; the print snapshot must not
    receive thousands of late DOM changes from a different screen layout. */
-body{font-family:"STHeiti","Hiragino Sans GB","Microsoft YaHei",sans-serif;font-size:16px;line-height:1.75;color:#1a1a2e;max-width:180mm;margin:0 auto;padding:0}
+body{font-family:"STHeiti","Hiragino Sans GB","Microsoft YaHei",sans-serif;font-variant-ligatures:none;font-size:16px;line-height:1.75;color:#1a1a2e;max-width:180mm;margin:0 auto;padding:0}
 p{margin:0 0 .85em;break-inside:avoid;orphans:2;widows:2}li>p{margin:.3em 0}
+li:not(:has(p,ul,ol,pre,table,blockquote)){break-inside:avoid;page-break-inside:avoid;orphans:2;widows:2}
+svg{break-inside:avoid;page-break-inside:avoid}
 p:has(+ p > mjx-container[display="true"]){break-after:avoid;page-break-after:avoid}
 p:has(> mjx-container[display="true"]){break-before:avoid;page-break-before:avoid}
 img{max-width:100%;height:auto;display:block;margin:12px auto}
 table{border-collapse:collapse;margin:12px 0;display:table;width:100%;table-layout:fixed;overflow-x:visible;max-width:100%}
 th,td{border:1px solid #dfe3ea;padding:5px 9px;font-size:13.5px;text-align:left}
-th{background:#f0f4f9}code{font-family:"STHeiti",monospace;background:#f0f3f7;padding:1px 5px;border-radius:4px;font-size:13px}
+th{background:#f0f4f9}code{font-family:Menlo,Monaco,Consolas,"STHeiti","Hiragino Sans GB","Microsoft YaHei",monospace;font-variant-ligatures:none;background:#f0f3f7;padding:1px 5px;border-radius:4px;font-size:13px}
 td,th{word-break:break-word;overflow-wrap:anywhere}
 mjx-container{font-size:100%!important;max-width:100%;break-inside:avoid;page-break-inside:avoid}
 mjx-container[jax="SVG"][display="true"]{display:inline-block!important;width:100%;padding:2px 0;box-sizing:border-box}
-mjx-container[jax="SVG"]:not([display="true"]){display:inline-block}
-pre{font-family:"STHeiti",monospace;background:#f4f6f9;padding:12px;border-radius:6px;overflow-x:visible;white-space:pre-wrap}
+mjx-container[jax="SVG"]:not([display="true"]){display:inline-block;padding-block:2px}
+pre{font-family:Menlo,Monaco,Consolas,"STHeiti","Hiragino Sans GB","Microsoft YaHei",monospace;font-variant-ligatures:none;background:#f4f6f9;padding:12px;border-radius:6px;overflow-x:visible;white-space:pre-wrap}
 pre code{background:none;padding:0}
 blockquote{border-left:3px solid #2f6db3;margin:12px 0;padding:6px 12px;background:#f2f7fd}
 a{color:#2f6db3;text-decoration:none}
@@ -188,7 +192,7 @@ h3{font-size:16.5px}h4{font-size:15px}
 .toc>li{margin:5px 0;break-inside:avoid-column}
 .toc .sec{font-size:12.5px;color:#333;padding-left:18px}
 .toc .subsec{font-size:11.5px;color:#555;padding-left:18px}
-.anchor-alias{display:none}
+.anchor-alias{position:relative;display:inline-block;width:0;height:0;overflow:hidden;pointer-events:none}
 .pdf-anchor-references{position:absolute;top:-10000px;left:-10000px;font-size:1px;line-height:1px;color:transparent;pointer-events:none}
 .pdf-anchor-references a{color:transparent}
 .tutorial-math-tail{display:inline-block;white-space:nowrap;overflow-wrap:normal;vertical-align:baseline;overflow:visible}
@@ -212,11 +216,12 @@ td,th{word-break:break-word;overflow-wrap:anywhere}
 /* MathJax 的行内长式与展示式均需留在 A4 正文宽度内。 */
 mjx-container{font-size:100%!important;max-width:100%;break-inside:avoid;page-break-inside:avoid}
 mjx-container[jax="SVG"][display="true"]{display:inline-block!important;width:100%;padding:2px 0;box-sizing:border-box}
-mjx-container[jax="SVG"]:not([display="true"]){display:inline-block}
+mjx-container[jax="SVG"]:not([display="true"]){display:inline-block;padding-block:2px}
 h1,h2,h3,h4{break-after:avoid;break-inside:avoid;page-break-inside:avoid}
 .pdf-imaging-hand-example{break-inside:avoid;page-break-inside:avoid}
 .chap p.tutorial-short-lead{break-after:avoid;page-break-after:avoid}
 .chap p.tutorial-anchor-only{margin:0;break-after:avoid;page-break-after:avoid}
+.chap p.tutorial-anchor-only+.anchor-alias,.chap p.tutorial-anchor-only+.anchor-alias+.anchor-alias,.chap p.tutorial-anchor-only+.anchor-alias+.anchor-alias+.anchor-alias{display:block;break-before:avoid;break-after:avoid;page-break-before:avoid;page-break-after:avoid}
 /* 第2章的图注和短引导句随其解释对象排版，避免只剩一行或孤立图注。 */
 #ch-2 p:has(+ol),#ch-2 p:has(+ul){break-after:avoid;page-break-after:avoid}
 #ch-2 p:has(>img[src$="fig03_near_far_field.png"]),#ch-2 p:has(>img[src$="fig05_room_acoustics.png"]){break-after:avoid;page-break-after:avoid}
@@ -228,40 +233,38 @@ h1,h2,h3,h4{break-after:avoid;break-inside:avoid;page-break-inside:avoid}
 #ch-2 p:has(>strong:first-child):has(+p+p > mjx-container){break-after:avoid;page-break-after:avoid}
 /* 第4章的整段粗体算例标题和进阶引导随下一段排版。 */
 #ch-4 p:has(>strong:only-child){break-after:avoid;page-break-after:avoid}
-/* 第4章末题保留全部推导与字号，收紧局部空隙，避免末段单独占一页。 */
-#ch-4 h3#ch-4-sec-u-56493f2d40{margin-bottom:.5em}
-#ch-4 h3#ch-4-sec-u-56493f2d40~p{margin-bottom:.4em;line-height:1.62}
-#ch-4 h3#ch-4-sec-u-56493f2d40~ul{margin-top:.35em;margin-bottom:.35em}
-#ch-4 h3#ch-4-sec-u-56493f2d40~table{margin:6px 0}
-/* E04-23 的字号与公式保持不变，仅收紧段间距，避免三行边界段独占章末页。 */
-#ch-4 h3#ch-4-sec-u-fb9eb739a1~p{margin-bottom:.2em}
-#ch-4 h3#ch-4-sec-u-fb9eb739a1{margin-bottom:.5em}
-#ch-4 h3#ch-4-sec-u-fb9eb739a1~p>mjx-container[display="true"]{margin:.5em 0}
-/* E05-22 保留字号与全部推导，仅收紧段间空隙，避免边界段独占末页。 */
-#ch-5 h3#ch-5-sec-u-bca30faf33~p{margin-bottom:.3em;line-height:1.62}
-#ch-5 h3#ch-5-sec-u-bca30faf33~table{margin:8px 0}
-/* 显式短引导及第5章表格题注跟随内容，长推导仍可自然跨页。 */
-.chap p.keep-next,#ch-5 p:has(+table){break-after:avoid;page-break-after:avoid}
+/* 第5章表格题注跟随内容，长推导仍可自然跨页。 */
+#ch-5 p:has(+table){break-after:avoid;page-break-after:avoid}
 /* 第6章延伸阅读与第10章末尾总结作为一个完整列表，避免末一两条独占下一页。 */
 #ch-6-sec-6-17+ol,#ch-10-sec-10-12+ol{break-inside:avoid;page-break-inside:avoid}
-/* 第11章的四条试听链接在纸版紧凑逐行排列，保留链接并避免章末短节孤页。 */
+/* 第14章延伸阅读紧凑排列，避免最后一条参考文献独占一页。 */
+#ch-16 #ch-16-sec-14-12{margin-top:14px;margin-bottom:6px}
+#ch-16 #ch-16-sec-14-12~h3{margin-top:8px;margin-bottom:6px}
+#ch-16 #ch-16-sec-14-12~p,#ch-16 #ch-16-sec-14-12~ul>li{margin-bottom:.3em;line-height:1.56}
+/* 第9章末题 E09-28 保留字号与全部推导，收紧段间与公式外间距，避免末4行孤立占页。 */
+#ch-9 p:has(>a#ch-9-e09-28)~h3{margin-bottom:8px}
+#ch-9 p:has(>a#ch-9-e09-28)~p{margin-bottom:.42em;line-height:1.6}
+#ch-9 p:has(>a#ch-9-e09-28)~p>mjx-container[display="true"]{margin:.5em 0}
+/* 第11章的四条试听链接、末题 E11-29 与后续阅读在纸版紧凑排列，保留字号与链接并避免章末短节孤页。 */
 #ch-11 p:has(>a[href$=".wav"]:only-child){margin-bottom:0}
+#ch-11 p:has(>a#ch-11-e11-29)~h3,#ch-11 #ch-11-sec-11-7{margin-top:12px;margin-bottom:6px}
+#ch-11 p:has(>a#ch-11-e11-29)~p,#ch-11 #ch-11-sec-11-7~p{margin-bottom:.4em;line-height:1.58}
+#ch-11 p:has(>a#ch-11-e11-29)~ul>li{line-height:1.58}
+#ch-11 p:has(>a#ch-11-e11-29)~p>mjx-container[display="true"]{margin:.45em 0}
 /* 附录 A 末题保留字号，收紧公式外间距，避免边界说明独占一页。 */
 #ch-12 p:has(>a#ch-12-e16-21)~h3{margin-bottom:8px}
 #ch-12 p:has(>a#ch-12-e16-21)~p{margin-bottom:.3em;line-height:1.55}
 #ch-12 p:has(>a#ch-12-e16-21)~p>mjx-container[display="true"]{margin:.5em 0}
 #ch-12 p:has(>a#ch-12-e16-21)~table{margin:6px 0;break-inside:avoid;page-break-inside:avoid}
 #ch-12 p:has(>a#ch-12-e16-21)~table :is(th,td){padding:3px 7px}
-/* 第13章末题 E13-25 保留字号与全部推导，仅收紧段间与公式外间距，避免章末导航独占一页。 */
+/* 第13章末题 E13-27 保留字号与全部推导，仅收紧段间与公式外间距，避免章末孤页。 */
 #ch-15 p:has(>a#ch-15-e13-27)~h3{margin-bottom:8px}
 #ch-15 p:has(>a#ch-15-e13-27)~p{margin-bottom:.42em;line-height:1.6}
 #ch-15 p:has(>a#ch-15-e13-27)~p>mjx-container[display="true"]{margin:.5em 0}
-/* 章末独立练习与研究小节从完整页开始，避免最后几行独占一页。 */
-p:has(>a#ch-8-e08-11){break-before:page;page-break-before:always}
 #ch-0-sec-u-cc2724a31a+ul{break-inside:avoid;page-break-inside:avoid}
 .chap>h1{margin:0 0 3mm;line-height:1.3}
 .chap>h2:first-of-type{margin-top:3mm;margin-bottom:2mm;line-height:1.3}
-blockquote,pre{break-inside:avoid}
+blockquote:not(:has(table)),pre{break-inside:avoid}
 /* A4 可用高度为 263 mm；紧凑的章/首节标题和图外间距共占约 33 mm。 */
 img{max-height:225mm;object-fit:contain}
 th,code,pre,blockquote{-webkit-print-color-adjust:exact;print-color-adjust:exact}
@@ -310,7 +313,9 @@ def source_digest():
               ROOT / "scripts" / "legacy_sequential_anchors.json"]
     paths += sorted(path for path in MATHJAX_DIR.rglob("*") if path.is_file())
     paths += sorted((ROOT / "figures").glob("fig*.png"))
-    paths += [Path(__file__), PDF_MATH_SCRIPT, ROOT / "scripts" / "make_figures.py",
+    paths += [Path(__file__), PDF_MATH_SCRIPT,
+              ROOT / "scripts" / "make_math_figures.py",
+              ROOT / "scripts" / "make_figures.py",
               ROOT / "scripts" / "make_aec_figures.py",
               ROOT / "scripts" / "make_beamforming_figures.py",
               ROOT / "scripts" / "make_reference_figures.py",
@@ -359,6 +364,17 @@ def is_exercise_anchor(fragment, source_path):
         source_path.with_name(name).read_text(encoding="utf-8")))
 
 
+def is_explicit_anchor(fragment, source_path):
+    """接受目标源文实际声明的显式锚点（如导读中的 audio-assets）。"""
+    if not re.fullmatch(r"[a-z0-9][a-z0-9_-]*", fragment):
+        return False
+    source_path = Path(source_path)
+    name = canonical_source(source_path.name)
+    return bool(re.search(
+        rf'<a\s+id=[\"\']{re.escape(fragment)}[\"\']\s*>',
+        source_path.with_name(name).read_text(encoding="utf-8")))
+
+
 def rewrite_book_links(html):
     """把分篇链接改成合订本内部链接，兼容新旧标识。"""
     def repl(m):
@@ -366,12 +382,18 @@ def rewrite_book_links(html):
         idx = HTML_TO_CH.get(fname)
         if idx is None:
             return m.group(0)
+        md_name = "00_overview.md" if fname == "index.html" else fname.replace(".html", ".md")
         if not fragment:
             target = f"ch-{idx}"
+        elif idx == 0 and fragment == "course-cases":
+            target = "ch-0-audio-assets"
         elif re.fullmatch(r"sec-(?:\d+(?:-\d+)*|u-[0-9a-f]{10}(?:-\d+)?)", fragment):
             # sec-1 是分篇页标题；合订时该重复标题被外层 ch-N 标题替代。
             target = f"ch-{idx}" if fragment == "sec-1" else f"ch-{idx}-{fragment}"
-        elif is_exercise_anchor(fragment, SRC / fname.replace(".html", ".md")):
+        elif is_exercise_anchor(fragment, SRC / md_name):
+            canon = canonical_exercise(canonical_source(md_name), fragment)
+            target = f"ch-{idx}-{canon}"
+        elif is_explicit_anchor(fragment, SRC / md_name):
             target = f"ch-{idx}-{fragment}"
         else:
             raise ValueError(f"合订本无法映射章节锚点：{fname}#{fragment}")
@@ -403,9 +425,14 @@ def rewrite_repository_links(html, source_path=None):
             fragment = parsed.fragment
             if not fragment or fragment == "sec-1":
                 return f"#ch-{idx}"
+            if idx == 0 and fragment == "course-cases":
+                return "#ch-0-audio-assets"
             if re.fullmatch(r"sec-(?:\d+(?:-\d+)*|u-[0-9a-f]{10}(?:-\d+)?)", fragment):
                 return f"#ch-{idx}-{fragment}"
             if is_exercise_anchor(fragment, target):
+                canon = canonical_exercise(target.name, fragment)
+                return f"#ch-{idx}-{canon}"
+            if is_explicit_anchor(fragment, target):
                 return f"#ch-{idx}-{fragment}"
             raise ValueError(f"合订本无法映射章节锚点：{target.name}#{fragment}")
         return build_site.repository_url(parsed, target)
@@ -750,7 +777,7 @@ def build_html(build_date=None):
                     f'{m.group(2)}</{m.group(1)}>')
 
         html = re.sub(
-            r'(<a\s+id=[\"\'])(e\d{2}-\d{2})([\"\']\s*>)',
+            r'(<a\s+id=[\"\'])([a-z0-9][a-z0-9_-]*)([\"\']\s*>)',
             lambda m: f'{m.group(1)}ch-{i}-{m.group(2)}{m.group(3)}', html)
         html = inject_exercise_aliases(html, fname, prefix=f"ch-{i}-")
         html = re.sub(r"<(h[1-4])>(.*?)</\1>", tag_source_heading, html, flags=re.S)
@@ -828,7 +855,7 @@ def build_html(build_date=None):
     cover = (f'<div class="cover"><h1>麦克风阵列信号处理教程</h1>'
              f'<div class="sub">从入门到工业实践（合订本）</div>'
              f'<div class="meta">构建日期 {date_s} · 源文件 sha256 {source_digest()}<br>'
-             f'共 {len(CHAPTERS)} 篇：导读、15 章正文（含四篇扩展专题）、2 篇附录</div></div>')
+             f'共 {len(CHAPTERS)} 篇：导读、16 章正文（含第 0 章数学基础与四篇扩展专题）、2 篇附录</div></div>')
     # Chrome emits named destinations for referenced anchors. A transparent,
     # out-of-flow reference strip makes every real heading addressable without
     # adding entries to the visible TOC or affecting pagination. Alias names are
@@ -1064,7 +1091,7 @@ def normalize_pdf_semantics(writer, outline, aliases=None):
     # /Names tree can expose plain strings ("ch-0"). The same leading slash
     # is already removed from the annotation's /Dest below.
     real_targets = {str(key).removeprefix("/") for key in writer.named_destinations}
-    titles = {}
+    titles = {"ch-0-audio-assets": "音频与交互案例说明"}
     for chapter_title, chapter_id, sections in outline:
         titles[chapter_id] = chapter_title
         for title, identity, subsections in sections:
@@ -1185,6 +1212,50 @@ def recompress_pdf_images_losslessly(writer):
     return updated_count, saved_bytes
 
 
+def compact_pdf_page_paths(writer):
+    """Trim redundant sub-micrometer float decimals on standalone Bezier/line path operators."""
+    import zlib
+    from pypdf.generic import EncodedStreamObject, IndirectObject, NameObject, NumberObject, StreamObject
+
+    path_line_re = re.compile(rb"^((?:[+-]?\d+(?:\.\d+)?[ \t]+){2,6})(m|l|c|v|y|re)\r?$", re.M)
+    float_trim_re = re.compile(rb"([+-]?\d+\.\d{2})\d+")
+
+    def _trim(match):
+        return float_trim_re.sub(rb"\1", match.group(1)).replace(b"-0.00", b"0") + match.group(2)
+
+    page_content_ids = set()
+    for page in writer.pages:
+        ref = page.raw_get("/Contents")
+        if hasattr(ref, "idnum"):
+            page_content_ids.add(ref.idnum)
+        elif isinstance(ref, list):
+            for item in ref:
+                if hasattr(item, "idnum"):
+                    page_content_ids.add(item.idnum)
+
+    for idx, obj in enumerate(writer._objects):
+        idnum = idx + 1
+        if idnum not in page_content_ids or not isinstance(obj, StreamObject):
+            continue
+        flt = obj.get("/Filter")
+        if flt not in (None, "/FlateDecode", [NameObject("/FlateDecode")]) or obj.get("/DecodeParms") is not None:
+            continue
+        raw = obj.get_data()
+        slim = path_line_re.sub(_trim, raw)
+        compressed = zlib.compress(slim, 9)
+        old_encoded = getattr(obj, "_data", None)
+        if not isinstance(old_encoded, (bytes, bytearray)) or flt is None or len(compressed) < len(old_encoded):
+            encoded = EncodedStreamObject()
+            for k, v in obj.items():
+                if k not in ("/Length", "/Filter", "/DecodeParms"):
+                    encoded[NameObject(k)] = v
+            encoded._data = compressed
+            encoded[NameObject("/Filter")] = NameObject("/FlateDecode")
+            encoded[NameObject("/Length")] = NumberObject(len(compressed))
+            encoded.indirect_reference = obj.indirect_reference or IndirectObject(idnum, 0, writer)
+            writer._objects[idx] = encoded
+
+
 def write_pdf_with_object_streams(writer, out_stream, *, chunk_size=200):
     """Write PdfWriter with ISO 32000-1 lossless compressed /ObjStm and /XRef streams."""
     import io
@@ -1195,6 +1266,7 @@ def write_pdf_with_object_streams(writer, out_stream, *, chunk_size=200):
 
     writer._resolve_links()
     recompress_pdf_images_losslessly(writer)
+    compact_pdf_page_paths(writer)
 
     protected_ids = set()
     root_ref = writer.root_object.indirect_reference
@@ -1437,8 +1509,7 @@ def validate_pdf_math_example(text, type3_glyph_counts):
         )
 
 
-def validate_pdf_body_scale(reader):
-    """拒绝 Chrome 因过宽内容而缩小整书；CSS 正文固定为 16 px。"""
+def _collect_body_scale_samples(reader):
     samples = []
     for page_number, page in enumerate(reader.pages, 1):
         def inspect(text, cm, tm, _font, font_size):
@@ -1448,6 +1519,13 @@ def validate_pdf_body_scale(reader):
                     abs(cm[1]) < 1e-6 and abs(tm[1]) < 1e-6):
                 samples.append((page_number, abs(cm[0] * tm[0])))
         page.extract_text(visitor_text=inspect)
+    return samples
+
+
+def validate_pdf_body_scale(reader, samples=None):
+    """拒绝 Chrome 因过宽内容而缩小整书；CSS 正文固定为 16 px。"""
+    if samples is None:
+        samples = _collect_body_scale_samples(reader)
     if not samples:
         raise SystemExit("PDF 缺少可检查缩放比例的 16 px 中文正文，不能确认打印尺度")
     # CSS 96 px/in 到 PDF 72 pt/in 正常为 0.75；仅为浮点取整留少量余地。
@@ -1510,7 +1588,15 @@ def print_pdf(combined, pdf, timeout_min_pages=100):
             reader = PdfReader(str(tmp_pdf))
             validate_pdf_structure_tags(reader)
             npages = len(reader.pages)
-            page_texts = [page.extract_text() or "" for page in reader.pages]
+            page_texts = []
+            scale_samples = []
+            for page_number, page in enumerate(reader.pages, 1):
+                def _visit_scale(text, cm, tm, _font, font_size, _pno=page_number):
+                    if (abs(font_size - 16) < 0.01 and
+                            len(re.findall(r"[\u4e00-\u9fff]", text)) >= 8 and
+                            abs(cm[1]) < 1e-6 and abs(tm[1]) < 1e-6):
+                        scale_samples.append((_pno, abs(cm[0] * tm[0])))
+                page_texts.append(page.extract_text(visitor_text=_visit_scale) or "")
             last_text = page_texts[-1]
         except Exception as e:
             raise SystemExit(f"PDF 校验失败（可能被截断）：{e}")
@@ -1538,7 +1624,7 @@ def print_pdf(combined, pdf, timeout_min_pages=100):
         if start < 0 or all_text.find("分区块频域卡尔曼滤波", start) < 0:
             raise SystemExit("PDF 数学字形探针的正文边界缺失；不能验收公式")
         validate_pdf_text_codepoints("\n".join(page_texts))
-        validate_pdf_body_scale(reader)
+        validate_pdf_body_scale(reader, samples=scale_samples)
         os.replace(tmp_pdf, pdf)
     finally:
         tmp_pdf.unlink(missing_ok=True)
@@ -1559,8 +1645,8 @@ def check_figures():
                 missing.append(f"{fname}: {m.group(1)}")
     if missing:
         raise SystemExit("缺图，中止：\n" + "\n".join(missing))
-    if len(refs) != 88:
-        raise SystemExit(f"唯一图片数异常：期望 88，实际 {len(refs)}")
+    if len(refs) != 92:
+        raise SystemExit(f"唯一图片数异常：期望 92，实际 {len(refs)}")
     print(f"图片检查通过（{len(CHAPTERS)} 篇、{len(refs)} 张唯一图片）")
 
 
@@ -1660,6 +1746,7 @@ def main(argv=None):
         replacements = [] if tmp_html is None else [(tmp_html, combined)]
         replacements.append((tmp_pdf, pdf))
         build_site.publish_files(replacements)
+        os.chmod(pdf, 0o644)
         print("saved", pdf)
     finally:
         if tmp_html is not None:

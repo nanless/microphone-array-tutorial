@@ -12,6 +12,7 @@ from codes.chapters.ch09.chapter09_experiments import (
     actual_tracking_audio, run_experiments, small_set_distances, white_acceleration_covariance,
 )
 from codes.chapters.ch09.core.echo_av_fusion import (
+    _wrap_angle_deg,
     clear_mot_angular_summary,
     echo_sector_gate,
     fov_bernoulli_missed_detection_update,
@@ -360,6 +361,36 @@ class Chapter09ExperimentsTests(unittest.TestCase):
         self.assertEqual(swap_echo['clear_mot']['fp'], 1)
         self.assertEqual(swap_echo['clear_mot']['idsw'], 2)
         self.assertAlmostEqual(swap_echo['clear_mot']['mota'], float(F(1, 4)), places=14)
+
+        # Regression checks: 1-to-1 correspondence eviction, angle wrapping, and FoV edge cases.
+        reappear = clear_mot_angular_summary(
+            [{1: 0.0}, {2: 0.0}, {1: 2.0, 2: 0.0}],
+            [{1: 0.0}, {1: 0.0}, {1: 0.0, 2: 2.0}],
+        )
+        self.assertEqual(reappear['idsw'], 0)
+        self.assertEqual(reappear['motp_deg'], 0.0)
+        self.assertEqual(reappear['mota'], 1.0)
+
+        self.assertEqual(_wrap_angle_deg(180.0), -180.0)
+        self.assertEqual(_wrap_angle_deg(-180.0), -180.0)
+        wrapped_oosm = oosm_cv_retrodiction_update(
+            np.array([-170.0, 200.0]), np.eye(2), 170.0, 1.0, 0.1
+        )
+        self.assertAlmostEqual(
+            wrapped_oosm['retrodiction']['predicted_measurement_deg'], 170.0, places=12
+        )
+
+        fov_outside_unit = fov_bernoulli_missed_detection_update(
+            1.0, 60.0, fov_half_width_deg=45.0, in_fov_detection_prob=1.0
+        )
+        self.assertFalse(fov_outside_unit['in_fov'])
+        self.assertEqual(fov_outside_unit['fov_aware_posterior_existence'], 1.0)
+        self.assertIsNone(fov_outside_unit['naive_posterior_existence'])
+        fov_offset_cam = fov_bernoulli_missed_detection_update(
+            0.8, 100.0, fov_half_width_deg=20.0, in_fov_detection_prob=0.5, camera_center_deg=90.0
+        )
+        self.assertTrue(fov_offset_cam['in_fov'])
+        self.assertAlmostEqual(fov_offset_cam['fov_aware_posterior_existence'], float(F(2, 3)), places=14)
 
         for bad_call in (
             lambda: oosm_cv_retrodiction_update(np.array([0.0, 0.0]), np.eye(2), 0.0, 1.0, -0.01),

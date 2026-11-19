@@ -61,7 +61,7 @@ class SpatialParagraphTest(unittest.TestCase):
         for item, phrase in zip(lists[0], ("相邻两麦", "相位以", "取值范围")):
             self.assertIn(phrase, item)
         self.assertIn(r"\psi = 2\pi d\sin\theta/\lambda", lists[0][0])
-        self.assertIn(r"\sin\theta-\sin\theta_0=\dfrac{\lambda}{d}", lists[0][1])
+        self.assertIn(r"\sin\theta-\sin\theta_0=\frac{\lambda}{d}", lists[0][1])
         self.assertIn(r"\lambda/d>2", lists[0][2])
 
     def test_beamforming_derivation_and_postfilters_are_separate_list_items(self):
@@ -86,7 +86,7 @@ class SpatialParagraphTest(unittest.TestCase):
         self.assertEqual([len(items) for items in lists], [3])
         for item, phrase in zip(lists[0], ("从哪来", "病态与对角加载", "混响中的约束对象")):
             self.assertIn(phrase, item)
-        self.assertIn(r"\hat{\mathbf R}+\varepsilon\mathbf I", lists[0][1])
+        self.assertIn(r"\hat{\mathbf R}_{nn}+\varepsilon\mathbf I", lists[0][1])
 
     def test_kalman_five_steps_keep_equations_and_explanations_in_their_items(self):
         source, path = chapter_fragment(
@@ -205,9 +205,9 @@ class SpatialParagraphTest(unittest.TestCase):
             self.assertNotIn("<pre>", html)
 
     def test_mwf_cost_conditions_and_rank_one_relation_have_separate_blocks(self):
-        start = "### 多通道维纳滤波与秩一目标模型"
+        start = "#### 5.5.1 多通道维纳滤波与秩一目标模型"
         source, path = chapter_fragment(
-            "05_beamforming.md", start, "### Frost 波束形成器：时域约束更新"
+            "05_beamforming.md", start, "#### 5.5.2 Frost 波束形成器：时域约束更新"
         )
         html, lists = rendered_lists(start + source, path)
         self.assertEqual(lists, [])
@@ -232,8 +232,8 @@ class SpatialParagraphTest(unittest.TestCase):
 
     def test_accdoa_external_and_book_azimuths_are_complementary(self):
         source = (ROOT / "chapters/04_doa-estimation.md").read_text(encoding="utf-8")
-        self.assertIn("同一方向记为 60°", source)
-        self.assertIn("用 $90°$ 减去外部方位角，得到约 60°", source)
+        self.assertIn(r"同一方向记为 $60^\circ$", source)
+        self.assertIn(r"用 $90^\circ$ 减去外部方位角，得到约 $60^\circ$", source)
         # The published three-decimal vector is rounded, not an exact 30-degree ray.
         x, y = .433, .25
         external = math.degrees(math.atan2(y, x))

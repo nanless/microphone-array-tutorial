@@ -17,7 +17,7 @@ from codes.chapters.ch02.core.spectral import stft, periodic_hann
 from codes.chapters.ch00.core.audio_samples import pcm16_bytes, read_pcm16
 from codes.chapters.ch12.core.imaging import (
     two_cell_experiment, spherical_scan_experiment, scan_power, conventional_weights,
-    point_spread_function, damas_gauss_seidel, finite_nnls, clean_sc_full_csm,
+    damas_gauss_seidel, finite_nnls, clean_sc_full_csm,
     hermitian_real_vector, csm_residual, single_source_csm_fit,
     one_sided_csm_density, integrate_psd, region_power,
     damas_csm_objective_experiment, distinct_column_ambiguity_experiment,

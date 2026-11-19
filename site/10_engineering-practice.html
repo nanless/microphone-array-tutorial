@@ -1,16 +1,17 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 10 章 · 工程实现、评测与产业实践 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="820e0688bd26"><style>
+<meta name="source-digest" content="ba5ce9940c12"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
 h1,h2,h3,h4{scroll-margin-top:60px}
+@media screen{.main a[id]:not([href]){scroll-margin-top:60px}}
 @media screen{.main a[id^="e"],.main .exercise-alias{scroll-margin-top:80px}}
 @media screen{.main .exercise-alias{top:0}}
 @media screen{.main a[id="e05-20"]{scroll-margin-top:60px}}
 @media screen{.main a[id="e17-11"],.main a[id="e17-12"],.main a[id="e17-13"],.main a[id="e17-14"],.main a[id="e17-15"]{scroll-margin-top:140px}}
-@media screen{.main .exercise-alias[id="e13-11"],.main .exercise-alias[id="e13-12"],.main .exercise-alias[id="e13-13"],.main .exercise-alias[id="e13-14"],.main .exercise-alias[id="e13-15"],.main .exercise-alias[id="e15-11"],.main .exercise-alias[id="e15-12"],.main .exercise-alias[id="e15-13"],.main .exercise-alias[id="e15-14"],.main .exercise-alias[id="e15-15"]{scroll-margin-top:140px}}
+@media screen{.main .exercise-alias[id="e13-11"],.main .exercise-alias[id="e13-12"],.main .exercise-alias[id="e13-13"],.main .exercise-alias[id="e13-14"],.main .exercise-alias[id="e13-15"],.main .exercise-alias[id="e15-11"]:has(~ a[id="e17-11"]),.main .exercise-alias[id="e15-12"]:has(~ a[id="e17-12"]),.main .exercise-alias[id="e15-13"]:has(~ a[id="e17-13"]),.main .exercise-alias[id="e15-14"]:has(~ a[id="e17-14"]),.main .exercise-alias[id="e15-15"]:has(~ a[id="e17-15"]){scroll-margin-top:140px}}
 @media screen{.main a[id^="e06-"]{scroll-margin-top:60px}}
 @media screen{.main a[id^="e07-"],.main a[id^="e08-"]{scroll-margin-top:60px}}
 @media screen{.main a[id^="e11-"]{scroll-margin-top:60px}}
@@ -79,7 +80,7 @@ h4{font-size:15.5px;margin-top:20px;color:#333}
   let printing = false;
 
   function roots() {
-    const candidates = Array.from(document.querySelectorAll("main.main,.chap"));
+    const candidates = Array.from(document.querySelectorAll(".main,.chap"));
     return candidates.filter(root => !candidates.some(other => other !== root && other.contains(root)));
   }
 
@@ -133,12 +134,21 @@ h4{font-size:15.5px;margin-top:20px;color:#333}
       const significant = Array.from(paragraph.childNodes).filter(node =>
         node.nodeType !== Node.TEXT_NODE || node.data.trim());
       const next = paragraph.nextElementSibling;
-      const anchorOnly = significant.length === 1 &&
-        significant[0].nodeType === Node.ELEMENT_NODE &&
-        significant[0].tagName === "A" && significant[0].id &&
-        !significant[0].hasAttribute("href") &&
-        Array.from(significant[0].childNodes).every(node =>
-          node.nodeType === Node.TEXT_NODE && !node.data.trim());
+      const isEmptyAnchor = node =>
+        node.nodeType === Node.ELEMENT_NODE &&
+        node.tagName === "A" && node.id &&
+        !node.hasAttribute("href") &&
+        Array.from(node.childNodes).every(child =>
+          child.nodeType === Node.TEXT_NODE && !child.data.trim());
+      const isAnchorAlias = node =>
+        node.nodeType === Node.ELEMENT_NODE &&
+        node.tagName === "SPAN" && node.id &&
+        node.classList.contains("anchor-alias") &&
+        Array.from(node.childNodes).every(child =>
+          child.nodeType === Node.TEXT_NODE && !child.data.trim());
+      const anchorOnly = significant.length >= 1 &&
+        significant.some(isEmptyAnchor) &&
+        significant.every(node => isEmptyAnchor(node) || isAnchorAlias(node));
       paragraph.classList.toggle("tutorial-anchor-only", !!anchorOnly);
       const short = significant.length === 1 &&
         significant[0].nodeType === Node.ELEMENT_NODE &&
@@ -243,6 +253,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 </head><body id="top"><a class="skip-link" href="#main-content">跳到正文</a>
 <header class="topbar"><a href="index.html">🏠 首页</a> &nbsp;/&nbsp; 第 10 章 · 工程实现、评测与产业实践</header>
 <div class="wrap"><nav class="side" aria-label="全书目录"><div class="chap"><a href="index.html">🏠 导读与导航（首页）</a></div>
+<div class="chap"><a href="00_math-foundations.html">第 0 章 · 全书数学基础与信号分析预备</a></div>
 <div class="chap"><a href="01_problem-definition.html">第 1 章 · 问题定义与双耳启示</a></div>
 <div class="chap"><a href="02_basics-signal-model.html">第 2 章 · 声音到达阵列时发生了什么</a></div>
 <div class="chap"><a href="03_array-geometry.html">第 3 章 · 阵列几何形态</a></div>
@@ -409,8 +420,8 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li><a href="10_engineering-practice.html#sec-10-12">10.12 本章小结</a></li>
 </ul></nav></details>
 <blockquote>
-<p>⚠️ 本篇是教程正文第 10 章（正文与扩展专题共 15 章，其中第 12～15 章为扩展专题，另有附录 A、B），可独立阅读，前后篇见下方导航。</p>
-<p>🏠 首页导读：<a href="index.html">🏠 导读与导航</a> ｜ 上一篇：<a href="09_source-tracking.html">第 9 章 · 声源追踪</a> ｜ 下一篇：<a href="11_selection-guide.html">第 11 章 · 总结与选型指南</a></p>
+<p>本篇是本书正文第 10 章；正文与扩展专题共 16 章（第 0～15 章，其中第 0 章为数学基础，第 12～15 章为四篇扩展专题），另有附录 A、B。本篇可独立阅读，前后篇见下方导航。</p>
+<p>导读首页：<a href="index.html">🏠 导读与导航</a> ｜ 上一篇：<a href="09_source-tracking.html">第 9 章 · 声源追踪</a> ｜ 下一篇：<a href="11_selection-guide.html">第 11 章 · 总结与选型指南</a></p>
 </blockquote>
 <hr />
 <span id="sec-1" class="anchor-alias" aria-hidden="true"></span><h1 id="sec-u-5a84f59f93">10. 工程实现、评测与产业实践</h1>
@@ -544,7 +555,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 </tr>
 </tbody>
 </table></div>
-<p>工程中最容易算错的一笔账，是把<strong>因果加权重叠相加（Weighted Overlap-Add，WOLA / STFT）的分析窗长直接等同于稳态算法延迟</strong>。不妨把采样率 $f_s=16\ \mathrm{kHz}$、分析窗长 $N=512$ 点（$32\ \mathrm{ms}$）、帧移 $H=128$ 点（$8\ \mathrm{ms}$）的因果流式频域波束形成拆开细算：</p>
+<p>工程中最容易算错的一笔账，是把<strong>因果加权重叠相加（Weighted Overlap-Add，WOLA / STFT）的分析窗长直接等同于稳态算法延迟</strong>（STFT 重叠相加重构条件与分贝标度基础见<a href="00_math-foundations.html#sec-0-2">第 0 章 §0.2</a>）。不妨把采样率 $f_s=16\ \mathrm{kHz}$、分析窗长 $N=512$ 点（$32\ \mathrm{ms}$）、帧移 $H=128$ 点（$8\ \mathrm{ms}$）的因果流式频域波束形成拆开细算：</p>
 <ol>
 <li>
 <p><strong>因果滑窗的结构延迟只取决于帧移与前瞻，而非历史窗长</strong>：在稳态运行中，分析窗左半侧的 $N-H=384$ 个样本（$24\ \mathrm{ms}$）早已躺在历史环形缓冲区里。只要算法不偷看当前帧右边界之后的未来帧（零前瞻），每当新攒够 $H=128$ 个样本（$T_{\mathrm{hop}}=H/f_s=8\ \mathrm{ms}$），就能拼出完整的 $512$ 点因果窗完成一次 FFT、频域滤波、IFFT，并由重叠相加输出这批最新完成的 $128$ 个时域样本。</p>
@@ -1707,7 +1718,7 @@ $$</p>
 </li>
 </ol>
 <p>一旦健康监控模块确诊某颗（或某几颗）麦克风失效并上报给控制层，紧接着就是致命的工程后半题：<strong>千万不能图省事直接把故障麦克风通道数据清零（或把原波束权重向量里对应的那一项置零）了事！</strong> 为什么直接置零会闯大祸？因为原 $M$ 通道自适应波束权重 $\vec{w}$ 是利用跨通道相消关系整体求出来的，满足整体无失真约束 $\vec{w}^H\vec{d}=1$；抠掉其中一个乘积项后，剩余健康通道上的旧权重之和完全可能严重偏离 $1$，甚至在极端情况下正负恰好相消变成 $0$，把目标语音彻底抹杀且乘多大后置增益都救不回来！</p>
-<p>正确的做法是把波束形成器的输入观测维度从原 $M$ 通道同步收缩到有序健康通道子集 $\mathcal{I}$（设剩余健康通道数为 $K=|\mathcal{I}|\ge 1$），重新建立约束并重算子阵最优权重。构造无量纲实选择矩阵 $\mathbf{S}\in\mathbb{R}^{K\times M}$：其第 $k$ 行仅在第 $k$ 个健康通道对应的原物理通道列上取 $1$，其余元素全取 $0$。沿用第 5 章窄带频域信号模型 $\vec{x}=\vec{d}S+\vec{n}$ 与线性波束输出 $Y=\vec{w}^H\vec{x}$（其中 $S$ 为目标复谱系数，$\vec{d}\in\mathbb{C}^M$ 为已知目标导向矢量或相对传递函数，注意与大写粗体实选择矩阵 $\mathbf{S}$ 区分；噪声空间协方差矩阵为 $\mathbf{R}=\mathbb{E}[\vec{n}\vec{n}^H]$）。由于 $\mathbf{S}$ 为实矩阵（满足 $\mathbf{S}^H=\mathbf{S}^\top$），观测向量、目标响应向量与噪声协方差矩阵必须按<strong>完全相同的行序</strong>同步抽取（协方差矩阵必须同时抽取对应的行与列以构成合法的 $K\times K$ 厄米主子矩阵，参见 <a href="https://arxiv.org/pdf/1705.08255">Zhang 等 2017 子阵选择模型 §II.C 式(9)～(11)</a>）：</p>
+<p>正确的做法是把波束形成器的输入观测维度从原 $M$ 通道同步收缩到有序健康通道子集 $\mathcal{I}$（设剩余健康通道数为 $K=|\mathcal{I}|\ge 1$），重新建立约束并重算子阵最优权重。构造无量纲实选择矩阵 $\mathbf{S}\in\mathbb{R}^{K\times M}$：其第 $k$ 行仅在第 $k$ 个健康通道对应的原物理通道列上取 $1$，其余元素全取 $0$。沿用第 5 章窄带频域信号模型 $\vec{x}=\vec{d}S+\vec{n}$ 与线性波束输出 $Y=\vec{w}^H\vec{x}$（其中 $S$ 为目标复谱系数，$\vec{d}\in\mathbb{C}^M$ 为已知目标导向矢量或相对传递函数，注意与大写粗体实选择矩阵 $\mathbf{S}$ 区分；噪声空间协方差矩阵为 $\mathbf{R}=\mathbb{E}[\vec{n}\vec{n}^H]$）。由于 $\mathbf{S}$ 为实矩阵（满足 $\mathbf{S}^H=\mathbf{S}^\top$），观测向量、目标响应向量与噪声协方差矩阵必须按<strong>完全相同的行序</strong>同步抽取（协方差矩阵必须同时抽取对应的行与列以构成合法的 $K\times K$ 厄米主子矩阵，主子矩阵正定性与分块消元求逆见<a href="00_math-foundations.html#sec-0-3">第 0 章 §0.3</a>，子阵选择模型参见 <a href="https://arxiv.org/pdf/1705.08255">Zhang 等 2017 §II.C 式(9)～(11)</a>）：</p>
 <p>$$
 \begin{aligned}
 \vec x_{\mathcal I}&=\mathbf S\vec x,\\
@@ -2004,7 +2015,7 @@ $$</p>
 <th scope="col" style="text-align: right;">噪声 $V$</th>
 <th scope="col" style="text-align: right;">观测 $Y=S+V$</th>
 <th scope="col" style="text-align: right;">交叉项 $2SV$</th>
-<th scope="col" style="text-align: right;">$|Y|^2-D$</th>
+<th scope="col" style="text-align: right;">$\lvert Y\rvert^2-D$</th>
 <th scope="col" style="text-align: right;">截断后功率</th>
 </tr>
 </thead>

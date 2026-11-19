@@ -1,10 +1,13 @@
 """FOA loudspeaker decoding (Basic / max-r_E / in-phase), SOFA geometry audit, and head-tracking latency.
 
-Conventions follow ``codes/chapters/ch02/core/conventions.py`` and AES69-2022 (SOFA 2.1):
-- Standard right-handed 3-D Cartesian axes: ``+x`` front, ``+y`` left, ``+z`` up.
-- Spherical coordinates ``(azimuth_deg, elevation_deg, radius_m)`` measure azimuth
-  counter-clockwise from ``+x`` toward ``+y`` in the horizontal plane and elevation
-  from the ``xy``-plane toward ``+z``:
+Numeric validation helpers follow ``codes/chapters/ch02/core/conventions.py``, while 3-D
+spatial axes follow AES69-2022 (SOFA 2.1) and ACN/SN3D Ambisonics:
+- Right-handed listener-local 3-D Cartesian axes: ``+x`` front, ``+y`` left, ``+z`` up
+  (distinct from the clockwise-from-``+y`` horizontal ULA convention in Chapters 1-5).
+- SOFA local spherical coordinates ``(azimuth_deg, elevation_deg, radius_m)`` measure
+  azimuth counter-clockwise from ``+x`` (front) toward ``+y`` (left) in the horizontal
+  plane and elevation in ``[-90, 90]`` degrees from the ``xy``-plane toward ``+z`` (up),
+  with radius ``r >= 0``:
   ``[x, y, z] = r * [cos(el)*cos(az), cos(el)*sin(az), sin(el)]``.
 - On an isotropic ``D``-dimensional ``L``-loudspeaker layout (``D = 2`` regular polygon
   ring with ``L >= 4``, or ``D = 3`` spherical 3-design such as the ``L = 6``
@@ -184,7 +187,11 @@ def foa_loudspeaker_decode_metrics(
 
 
 def sofa_spherical_to_cartesian(coords: np.ndarray) -> np.ndarray:
-    """Convert AES69-2022 SOFA spherical ``[az_deg, el_deg, r_m]`` to Cartesian ``[x, y, z]`` m."""
+    """Convert AES69-2022 SOFA spherical ``[az_deg, el_deg, r_m]`` to Cartesian ``[x, y, z]`` m.
+
+    Azimuth ``az_deg`` is measured counter-clockwise from ``+x`` (front) toward ``+y`` (left),
+    elevation ``el_deg`` lies in ``[-90, 90]`` degrees toward ``+z`` (up), and ``r_m >= 0``.
+    """
     arr = finite_real_array(coords, "coords")
     if arr.ndim < 1 or arr.shape[-1] != 3 or arr.size < 3:
         raise ValueError("coords must have trailing dimension 3 as [az_deg, el_deg, r_m]")
@@ -209,7 +216,12 @@ def sofa_spherical_to_cartesian(coords: np.ndarray) -> np.ndarray:
 
 
 def sofa_cartesian_to_spherical(coords: np.ndarray) -> np.ndarray:
-    """Convert AES69-2022 SOFA Cartesian ``[x, y, z]`` m to spherical ``[az_deg, el_deg, r_m]``."""
+    """Convert AES69-2022 SOFA Cartesian ``[x, y, z]`` m to spherical ``[az_deg, el_deg, r_m]``.
+
+    Returns counter-clockwise azimuth ``az_deg`` wrapped to ``(-180, 180]`` degrees (``0.0`` on
+    the ``z``-axis), elevation ``el_deg`` in ``[-90, 90]`` degrees (``0.0`` at the origin), and
+    Euclidean radius ``r_m >= 0`` in the ``(+x front, +y left, +z up)`` listener frame.
+    """
     arr = finite_real_array(coords, "coords")
     if arr.ndim < 1 or arr.shape[-1] != 3 or arr.size < 3:
         raise ValueError("coords must have trailing dimension 3 as [x, y, z]")

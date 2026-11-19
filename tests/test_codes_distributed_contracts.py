@@ -11,6 +11,7 @@ from unittest.mock import patch
 
 import numpy as np
 
+from codes.chapters.ch12.examples.audit_upstream_imaging_contracts import verify_checkout
 from codes.chapters.ch13.examples import audit_upstream_distributed_contracts as audit
 from codes.chapters.ch00.io_contracts import strict_json_loads, write_json_report
 from codes.chapters.ch00.upstream.fetch_upstreams import run_git
@@ -36,7 +37,7 @@ class DistributedIdentityTests(unittest.TestCase):
     def verify(self, **overrides):
         options = {'revision': self.revision, 'origin': audit.PADER_ORIGIN, 'files': self.files}
         options.update(overrides)
-        return audit.verify_checkout(self.repo, **options)
+        return verify_checkout(self.repo, **options)
 
     def test_real_sha_and_blob_agree(self):
         row = self.verify()['files']['LICENSE']
@@ -70,7 +71,7 @@ class DistributedIdentityTests(unittest.TestCase):
         link = self.repo.parent / 'alias'
         link.symlink_to(self.repo, target_is_directory=True)
         with self.assertRaisesRegex(ValueError, 'symbolic link'):
-            audit.verify_checkout(link, revision=self.revision, origin=audit.PADER_ORIGIN, files=self.files)
+            verify_checkout(link, revision=self.revision, origin=audit.PADER_ORIGIN, files=self.files)
         os.link(self.file, self.repo.parent / 'license-copy')
         with self.assertRaisesRegex(ValueError, 'singly linked'):
             self.verify()
@@ -247,6 +248,16 @@ class DistributedOriginalTests(unittest.TestCase):
             self.assertFalse(scope[field])
         self.assertEqual(len(self.report['original_definitions']), 3)
         self.assertEqual(self.report['counts']['unobserved_peaks_with_numeric_output'], 2)
+
+    def test_committed_current_report_direct_sources_match_live_disk_sha256(self):
+        committed = strict_json_loads(audit.CURRENT_REPORT.read_bytes())
+        direct_sources = committed['direct_sources']
+        self.assertTrue(direct_sources)
+        self.assertEqual(direct_sources, audit.actual_dependencies())
+        for rel_path, expected_sha in direct_sources.items():
+            with self.subTest(path=rel_path):
+                live_sha = hashlib.sha256((audit.ROOT / rel_path).read_bytes()).hexdigest()
+                self.assertEqual(live_sha, expected_sha)
 
 
 if __name__ == '__main__':

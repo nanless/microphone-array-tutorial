@@ -183,6 +183,7 @@ def multizone_cabin_selection_case() -> dict[str, object]:
     h_d_ref = complex(h_d_hr2[0])
     h_p_ref = complex(h_p_hr2[0])
 
+    # 2d: Guarded calibrated cross-zone canceller (frozen during speech via zone power-ratio gate)
     g_ideal = y_p_pri / h_p_ref
     g_cal = calibration_retention * g_ideal
     y_d_guarded = y_d_pri - g_cal * h_d_ref
@@ -199,7 +200,7 @@ def multizone_cabin_selection_case() -> dict[str, object]:
         upper_limits,
     )
 
-    # 2d: Unguarded cross-zone canceller (unfrozen scalar Wiener adaptation during speech)
+    # 2c: Unguarded cross-zone canceller (unfrozen scalar Wiener adaptation during speech)
     g_unfrozen_equal_dt = (
         y_d_pri * h_d_ref.conjugate() + y_p_pri * h_p_ref.conjugate()
     ) / (abs(h_d_ref) ** 2 + abs(h_p_ref) ** 2 + sensor_noise_power)

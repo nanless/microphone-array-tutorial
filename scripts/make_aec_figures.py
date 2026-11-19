@@ -211,7 +211,7 @@ def fig_problem():
     d = echo + s + v
     t = np.arange(N) / FS
     fig = plt.figure(figsize=(9.8, 8.0), layout="constrained")
-    fig.suptitle("图26 回声形成：d(n) = s(n) + x(n)*h[ℓ] + v(n)", fontsize=FS_SUP)
+    fig.suptitle("图26 回声形成：d[n] = s[n] + (x*h)[n] + v[n]", fontsize=FS_SUP)
     gs = gridspec.GridSpec(2, 2, figure=fig, height_ratios=[0.9, 1.1])
     ax = fig.add_subplot(gs[0, :])
     ax.set_title("(a) 用脉冲响应 h[ℓ] 表示房间回声路径", fontsize=FS_TITLE)
@@ -222,15 +222,15 @@ def fig_problem():
     ax.grid(ls=":", alpha=0.5); ax.tick_params(labelsize=FS_TINY)
     ax = fig.add_subplot(gs[1, 0])
     ax.set_title("(b) 参考、回声与合成近端分量", fontsize=FS_TITLE)
-    ax.plot(t, x, color=C_BLUE, lw=1, label="远端 x(n)")
-    ax.plot(t, echo, color=C_BLUE, ls="--", lw=1, label="回声 x*h")
-    ax.plot(t, s, color=C_RED, lw=1, label="合成近端干扰 s(n)（非语音）")
+    ax.plot(t, x, color=C_BLUE, lw=1, label="远端 x[n]")
+    ax.plot(t, echo, color=C_BLUE, ls="--", lw=1, label="回声 (x*h)[n]")
+    ax.plot(t, s, color=C_RED, lw=1, label="合成近端干扰 s[n]（非语音）")
     ax.axvspan(0.8, 1.2, color=C_RED, alpha=0.10)
     ax.set_xlim(0, 1.6); ax.set_xlabel("时间 (s)", fontsize=FS_LABEL); ax.set_ylabel("幅度（无量纲）", fontsize=FS_LABEL)
     ax.legend(fontsize=FS_SMALL); ax.grid(ls=":", alpha=0.5); ax.tick_params(labelsize=FS_TINY)
     ax = fig.add_subplot(gs[1, 1])
-    ax.set_title("(c) 麦克风里三者相加得 d(n)", fontsize=FS_TITLE)
-    ax.plot(t, d, color=C_MAIN, lw=1.2, label="麦克风 d(n)")
+    ax.set_title("(c) 麦克风里三者相加得 d[n]", fontsize=FS_TITLE)
+    ax.plot(t, d, color=C_MAIN, lw=1.2, label="麦克风 d[n]")
     ax.plot(t, echo, color=C_BLUE, lw=1.0, ls="--", alpha=0.8, label="回声分量")
     ax.axvspan(0.8, 1.2, color=C_RED, alpha=0.10)
     ax.set_xlim(0, 1.6); ax.set_xlabel("时间 (s)", fontsize=FS_LABEL); ax.set_ylabel("幅度（无量纲）", fontsize=FS_LABEL)
@@ -247,14 +247,14 @@ def fig_concept():
         ax.text(x + w/2, y + h/2, text, ha="center", va="center", fontsize=FS_SMALL, color=C_MAIN)
     def arrow(a, b, c="k", ls="-", w=1.4):
         ax.add_patch(FancyArrowPatch(a, b, arrowstyle="-|>", mutation_scale=14, color=c, lw=w, ls=ls))
-    box(0.3, 2.5, 1.9, 1.4, "播放 x(n)", "#f6e5db")
+    box(0.3, 2.5, 1.9, 1.4, "播放 x[n]", "#f6e5db")
     box(2.7, 2.5, 2.0, 1.4, "扬声器+房间 h", "#dbe9f6")
     box(2.7, 0.4, 2.0, 1.2, "自适应滤波 ŵ\n(NLMS)", "#dbe9f6")
-    box(5.4, 0.4, 1.9, 1.2, "回声副本 ŷ", "#f6dbdb")
-    box(5.4, 2.5, 1.9, 1.4, "麦克风 d\n=回声+s+v", "#f6dbdb")
+    box(5.4, 0.4, 1.9, 1.2, "回声副本 ŷ[n]", "#f6dbdb")
+    box(5.4, 2.5, 1.9, 1.4, "麦克风 d[n]\n=回声+s[n]+v[n]", "#f6dbdb")
     ax.add_patch(Circle((8.2, 3.2), 0.45, fc="white", ec="k", lw=1.4))
     ax.text(8.2, 3.2, "Σ−", ha="center", va="center", fontsize=FS_LABEL + 4)
-    box(9.1, 2.5, 1.6, 1.4, "处理后输出 e\n→波束/识别", "#e8f6db")
+    box(9.1, 2.5, 1.6, 1.4, "处理后输出 e[n]\n→波束/识别", "#e8f6db")
     box(7.7, 4.6, 2.2, 0.9, "DTD（由 x、d 判定）\n控制系数更新", "#f6e5db")
     arrow((2.2, 3.2), (2.7, 3.2), C_BLUE)
     arrow((4.7, 3.2), (5.4, 3.2), C_BLUE)
@@ -351,23 +351,25 @@ def fig_erle():
     envs = [rms_envelope(sig) for sig in (x, d, e)]
     env_scale = max(float(np.max(env)) for env in envs)
     envs = [env / max(env_scale, 1e-12) for env in envs]
-    fig = plt.figure(figsize=(9.8, 8.5), layout="constrained")
+    fig = plt.figure(figsize=(9.8, 9.0), layout="constrained")
     fig.suptitle("图29 NLMS 收敛与合成近端干扰时的冻结", fontsize=FS_SUP)
-    gs = gridspec.GridSpec(4, 1, figure=fig, height_ratios=[0.7, 0.7, 0.7, 1.5])
-    labels = ["参考 x", "麦克风 d", "残差 e"]
+    gs = gridspec.GridSpec(4, 1, figure=fig, height_ratios=[0.75, 0.75, 0.75, 1.5])
+    labels = ["x[n]", "d[n]", "e[n]"]
+    titles = ["(a) 远端参考信号 x[n] 归一化包络", "(b) 麦克风观测 d[n] 归一化包络", "(c) 线性残差 e[n] 归一化包络"]
     colors = [C_BLUE, C_RED, C_GREEN]
-    for row, (env, label, color) in enumerate(zip(envs, labels, colors)):
+    for row, (env, label, title_str, color) in enumerate(zip(envs, labels, titles, colors)):
         ax = fig.add_subplot(gs[row])
+        ax.set_title(title_str, loc="left", fontsize=FS_TITLE)
         ax.plot(t[::16], env[::16], color=color, lw=1.1)
         ax.axvspan(0.8, 1.2, color=C_RED, alpha=0.10)
-        ax.set_xlim(0, 1.6); ax.set_ylim(0, 1.05)
+        ax.set_xlim(0, 1.6); ax.set_ylim(0, 1.08)
         ax.set_ylabel(label, fontsize=FS_LABEL, color=color)
         ax.grid(ls=":", alpha=0.4); ax.tick_params(labelsize=FS_TINY)
         if row < 2:
             ax.tick_params(labelbottom=False)
         else:
             ax.set_xlabel("时间 (s)；纵轴为共同尺度的归一化均方根（RMS）包络", fontsize=FS_SMALL)
-    ax = fig.add_subplot(gs[3]); ax.set_title("ERLE 只在远端单讲区评价", fontsize=FS_TITLE)
+    ax = fig.add_subplot(gs[3]); ax.set_title("(d) ERLE 只在远端单讲区评价", fontsize=FS_TITLE)
     erle_view = erle.copy()
     erle_view[(tcc >= 0.8) & (tcc < 1.2)] = np.nan
     ax.plot(tcc, erle_view, color=C_BLUE, lw=1.6, label="ERLE（干扰段不绘制）")
@@ -514,33 +516,33 @@ def fig_hybrid():
     def arrow(a, b, c="k", w=1.4):
         ax.add_patch(FancyArrowPatch(a, b, arrowstyle="-|>", mutation_scale=14, color=c, lw=w))
     # 音频主链从麦克风信号开始；远端参考是线性 AEC 的第二路输入。
-    box(0.2, 3.2, 2.0, 1.6, "麦克风信号 d(n)\n近端+回声+噪声", "#f6dbdb")
+    box(0.2, 3.2, 2.0, 1.6, "麦克风信号 d[n]\n近端+回声+噪声", "#f6dbdb")
     box(2.8, 3.2, 2.2, 1.6, "线性 AEC\nPBFDAF / FDKF", "#dbe9f6")
-    box(5.5, 3.2, 1.8, 1.6, "线性残差 e(n)", "#dbe9f6")
+    box(5.5, 3.2, 1.8, 1.6, "线性残差 e[n]", "#dbe9f6")
     box(7.8, 3.2, 2.4, 1.6, "学习型残余抑制\n输入可含 e 与 x", "#fde3c8")
     box(10.7, 3.2, 2.0, 1.6, "处理后输出\n→语音识别", "#e8f6db")
     for a, b in [((2.2, 4.0), (2.8, 4.0)), ((5.0, 4.0), (5.5, 4.0)),
                  ((7.3, 4.0), (7.8, 4.0)), ((10.2, 4.0), (10.7, 4.0))]:
         arrow(a, b, C_BLUE)
-    box(0.2, 0.9, 1.9, 1.2, "远端参考 x(n)\n从播放链路末端取", "#f6e5db")
-    box(2.6, 0.9, 1.8, 1.2, "延迟估计与对齐\n得到 x_a(n)", "#dbe9f6")
+    box(0.2, 0.9, 1.9, 1.2, "远端参考 x[n]\n从播放链路末端取", "#f6e5db")
+    box(2.6, 0.9, 1.8, 1.2, "延迟估计与对齐\n得到 $x_a[n]$", "#dbe9f6")
     arrow((2.1, 1.5), (2.6, 1.5), C_BLUE)
     arrow((3.5, 2.1), (3.9, 3.2), C_BLUE)
     # 延迟估计还必须观察麦克风；参考单独不能给出相对传播时差。
     ax.plot([1.2, 1.2, 3.1], [3.2, 2.6, 2.6], color=C_RED, lw=1.2)
     arrow((3.1, 2.6), (3.1, 2.1), C_RED)
-    ax.text(1.3, 2.68, "观测 d", fontsize=FS_SMALL, color=C_RED)
+    ax.text(1.3, 2.68, "观测 d[n]", fontsize=FS_SMALL, color=C_RED)
     # 可选条件参考从对齐框下缘绕行，避开下方更新控制的观测与输出箭头。
     ax.plot([3.5, 3.5, 9.0, 9.0], [0.9, -0.12, -0.12, 3.2],
             color=C_BLUE, lw=1.0, ls=":")
-    ax.text(9.5, 1.85, "可选：x_a 作为\n学习模型输入",
+    ax.text(9.5, 1.85, "可选：$x_a[n]$ 作为\n学习模型输入",
             ha="left", fontsize=FS_SMALL, color=C_BLUE)
     box(5.0, 0.35, 2.0, 0.85, "DTD 与步长控制", "#f6e5db")
     # 此框示意用对齐参考及线性残差统计来约束更新；不是唯一的 DTD 判据。
     arrow((4.4, 1.5), (5.0, 0.78), C_PURPLE)
     arrow((6.4, 3.2), (6.4, 1.2), C_PURPLE)
     arrow((6.0, 1.2), (4.5, 3.2), C_ORANGE)
-    ax.text(3.4, 5.75, "线性 AEC 同时接收麦克风信号 d(n)\n和对齐参考 x_a(n)",
+    ax.text(3.4, 5.75, "线性 AEC 同时接收麦克风信号 d[n]\n和对齐参考 $x_a[n]$",
             fontsize=FS_SMALL, color=C_BLUE, ha="center")
     ax.text(9.6, 5.75, "后处理的适用范围与近端损伤\n须在目标条件下验证",
             fontsize=FS_SMALL, color=C_ORANGE, ha="center")
@@ -686,7 +688,7 @@ def fig_adaptive_state_examples():
     ax.legend(fontsize=FS_SMALL, ncols=2)
     ax.grid(axis="y", ls=":", alpha=0.5)
     ax.tick_params(labelsize=FS_TINY)
-    ax.text(0.99, 0.91, "本例 εg→0；只表示单步份额，不是长期收敛结果。",
+    ax.text(0.99, 0.91, r"本例 $\varepsilon_g \to 0$；只表示单步份额，不是长期收敛结果。",
             transform=ax.transAxes, fontsize=FS_SMALL, ha="right", va="top",
             bbox=dict(fc="white", ec="0.7", alpha=0.95))
 
@@ -745,7 +747,7 @@ def fig_pbfdaf_flow():
     def setup(axis, title):
         axis.set_title(title, fontsize=FS_TITLE, pad=11)
         axis.set_xlim(0, 14)
-        axis.set_ylim(0, 6.4)
+        axis.set_ylim(0, 6.6)
         axis.axis("off")
 
     def box(axis, x, y, width, height, label, fill, *, edge=C_MAIN):
@@ -763,18 +765,18 @@ def fig_pbfdaf_flow():
         "播放参考\n$x[n],\\,b_m$", "#f6e5db")
     box(prediction_ax, 2.25, 4.8, 2.4, 0.95,
         "线性等效路径\n$h$", "#dbe9f6")
-    box(prediction_ax, 5.0, 4.8, 1.55, 0.95, "真实回声\n$r_m$", "#f6dbdb")
+    box(prediction_ax, 5.0, 4.8, 1.55, 0.95, "真实回声\n$y_m$", "#f6dbdb")
     box(prediction_ax, 6.9, 4.8, 2.05, 0.95,
-        "麦克风叠加\n$r_m+s_m+v_m$", "#f6dbdb")
+        "麦克风叠加\n$y_m+s_m+v_m$", "#f6dbdb")
     box(prediction_ax, 9.3, 4.8, 1.35, 0.95, "麦克风\n$d_m$", "#f6dbdb")
     for start, end in [((1.9, 5.275), (2.25, 5.275)),
                        ((4.65, 5.275), (5.0, 5.275)),
                        ((6.55, 5.275), (6.9, 5.275)),
                        ((8.95, 5.275), (9.3, 5.275))]:
         arrow(prediction_ax, start, end)
-    prediction_ax.text(7.925, 6.02, "近端 $s_m$、噪声 $v_m$",
+    prediction_ax.text(7.925, 6.18, "近端 $s_m$、噪声 $v_m$",
                        ha="center", fontsize=FS_SMALL, color=C_RED)
-    arrow(prediction_ax, (7.925, 5.94), (7.925, 5.75), color=C_RED)
+    arrow(prediction_ax, (7.925, 6.08), (7.925, 5.75), color=C_RED)
 
     box(prediction_ax, 0.2, 2.35, 2.05, 0.96,
         "两块参考\n$u_m$", "#f6e5db")
@@ -828,7 +830,7 @@ def fig_pbfdaf_flow():
     box(update_ax, 0.2, 2.7, 1.92, 0.99,
         "参考谱历史\n" r"$X_m,\ldots$", "#dbe9f6")
     box(update_ax, 2.5, 2.7, 2.43, 0.99,
-        "归一化分母\n$D$", "#dbe9f6")
+        "归一化分母\n$R_m$", "#dbe9f6")
     box(update_ax, 5.28, 2.7, 1.57, 0.99,
         "候选更新量\n$\\Delta W_p$", "#e8f6db")
     box(update_ax, 7.2, 2.7, 1.78, 0.99,
@@ -844,7 +846,7 @@ def fig_pbfdaf_flow():
                        ((11.66, 3.195), (12.0, 3.195))]:
         arrow(update_ax, start, end)
     arrow(update_ax, (5.27, 4.72), (5.75, 3.69), color=C_GREEN)
-    # D 只保留功率；更新还需要带相位的复参考共轭。
+    # R_m 只保留功率；更新还需要带相位的复参考共轭。
     update_ax.plot([1.16, 1.16, 6.06], [2.7, 2.10, 2.10], color=C_BLUE, lw=1.5)
     arrow(update_ax, (6.06, 2.10), (6.06, 2.7))
     update_ax.text(3.4, 1.65, r"复参考共轭 $X_{m-p}^*$",
@@ -864,7 +866,7 @@ def fig_pbfdaf_flow():
     update_ax.text(10.55, 1.48, "不约束：直接提交候选",
                    ha="center", fontsize=FS_SMALL, color="0.28")
     update_ax.text(0.2, 0.55,
-                   "$D=\\sum_q|X_{m-q}|^2+\\delta$，$\\Delta W_p=\\mu X_{m-p}^*E_m/D$。\n"
+                   "$R_m=\\sum_q|X_{m-q}|^2+\\delta$，$\\Delta W_p=\\mu X_{m-p}^*E_m/R_m$。\n"
                    "冻结时保留旧权重，参考历史仍移位；末分区的补位也清零。",
                    fontsize=FS_SMALL, color="0.28")
     save(fig, "fig39_aec_pbfdaf_flow.png")

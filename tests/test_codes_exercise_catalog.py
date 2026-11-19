@@ -1,10 +1,11 @@
-"""Explicit cross-module, chapter and research inventory for 427 exercises."""
+"""Explicit cross-module, chapter and research inventory for 443 exercises."""
 
 import json
 import re
 import unittest
 from pathlib import Path
 
+from codes.chapters.ch00 import chapter00_exercises
 from codes.chapters.ch12 import chapter12_exercises
 from codes.chapters.ch13 import chapter13_exercises
 from codes.chapters.ch14 import chapter14_exercises
@@ -47,6 +48,7 @@ from codes.chapters.appendix_b import interpolation_exercise
 
 ROOT = Path(__file__).resolve().parents[1]
 EXPECTED = {
+    "chapter00": {f"E00-{n:02d}" for n in range(1, 17)},
     "tse": {f"E15-{n:02d}" for n in range(1, 19)},
     "wearable": {f"E14-{n:02d}" for n in range(1, 19)},
     "distributed": {f"E13-{n:02d}" for n in range(1, 28)},
@@ -102,7 +104,7 @@ EXPECTED = {
 }
 AEC_CASE_KEYS = {"E06-07": "overlap_save", "E06-08": "ipnlms",
                  "E06-09": "geigel", "E06-10": "delay_polarity"}
-RUNNERS = {"tse": lambda: chapter15_exercises.run_experiments()["exercises"], "wearable": lambda: chapter14_exercises.run_experiments()["exercises"], "distributed": lambda: chapter13_exercises.run_experiments()["exercises"], "imaging": lambda: chapter12_exercises.run_experiments()["exercises"], "apa": lambda: {k: v for k, v in apa_demo().items() if k != "scope"}, "apa_audio": lambda: {"E06-39": apa_audio_experiment()[1]}, "reference_audio": lambda: {"E06-42": reference_audio_assets()[1]}, "appendix_b": appendix_b_experiments.run_exercises,
+RUNNERS = {"chapter00": lambda: chapter00_exercises.run_experiments()["exercises"], "tse": lambda: chapter15_exercises.run_experiments()["exercises"], "wearable": lambda: chapter14_exercises.run_experiments()["exercises"], "distributed": lambda: chapter13_exercises.run_experiments()["exercises"], "imaging": lambda: chapter12_exercises.run_experiments()["exercises"], "apa": lambda: {k: v for k, v in apa_demo().items() if k != "scope"}, "apa_audio": lambda: {"E06-39": apa_audio_experiment()[1]}, "reference_audio": lambda: {"E06-42": reference_audio_assets()[1]}, "appendix_b": appendix_b_experiments.run_exercises,
            "appendix_a": appendix_a_experiments.run_experiments,
            "chapter11": chapter11_experiments.run_experiments,
            "chapter09": chapter09_experiments.run_experiments,
@@ -153,9 +155,9 @@ class ExerciseCatalogTest(unittest.TestCase):
     def setUpClass(cls):
         cls.results = {name: run() for name, run in RUNNERS.items()}
 
-    def test_independent_inventory_has_395_unique_ids(self):
-        self.assertEqual(len(ALL_IDS), 427)
-        self.assertEqual(sum(map(len, EXPECTED.values())), 427)
+    def test_independent_inventory_has_443_unique_ids(self):
+        self.assertEqual(len(ALL_IDS), 443)
+        self.assertEqual(sum(map(len, EXPECTED.values())), 443)
 
     def test_each_module_returns_exact_assigned_ids(self):
         for name, results in self.results.items():
@@ -173,12 +175,15 @@ class ExerciseCatalogTest(unittest.TestCase):
     def test_every_id_appears_in_its_own_chapter(self):
         for exercise_id in sorted(ALL_IDS):
             with self.subTest(exercise_id=exercise_id):
-                chapters = list((ROOT / "chapters").glob(exercise_id[1:3] + "_*.md"))
+                prefix = exercise_id[1:3]
+                chapters = ([ROOT / "chapters/00_math-foundations.md"]
+                            if prefix == "00"
+                            else list((ROOT / "chapters").glob(prefix + "_*.md")))
                 self.assertEqual(len(chapters), 1)
                 text = chapters[0].read_text(encoding="utf-8")
                 self.assertRegex(text, rf"\b{re.escape(exercise_id)}\b")
 
-    def test_chapter_and_research_inventories_cover_exactly_395_ids(self):
+    def test_chapter_and_research_inventories_cover_exactly_443_ids(self):
         chapters = "\n".join(path.read_text(encoding="utf-8")
                              for path in (ROOT / "chapters").glob("*.md"))
         research = (ROOT / "codes/chapters/ch00/research/05_exercises_and_audio.md").read_text(encoding="utf-8")

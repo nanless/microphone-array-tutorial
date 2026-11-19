@@ -2,6 +2,7 @@
 import json
 import math
 import unittest
+import unittest.mock
 import numpy as np
 from codes.chapters.ch13.core.distributed import (
     known_models, mwf_weights, mse_components, compressed_mwf, distributed_updates,
@@ -255,6 +256,10 @@ class DistributedTests(unittest.TestCase):
         self.assertAlmostEqual(sro['wola']['hops_per_integer_sample_slip'], 625/32, places=13)
         with self.assertRaises(ValueError):
             ptp_vs_sro_phase_budget(fs_hz=True)
+        # Quarter-period PTP bound yields destructive coherent-sum zero/near-zero without domain error.
+        with unittest.mock.patch("codes.chapters.ch13.core.dasf_and_ptp.math.cos", return_value=0.0):
+            null_budget = ptp_vs_sro_phase_budget()
+        self.assertEqual(null_budget['ptp_hardware_sync']['equal_sum_attenuation_db'], math.inf)
 
     def test_dasf_unification_stale_subspace_and_dof_lockup(self):
         ctrl = dasf_unification_control()
@@ -301,6 +306,9 @@ class DistributedTests(unittest.TestCase):
         for bad_call in (
             lambda: centralized_lcmv([[1., 2.], [2., 1.]], [[1.], [0.]], [1.]),
             lambda: centralized_lcmv(np.eye(2), [[1., 1.], [1., 1.]], [1., 0.]),
+            lambda: centralized_lcmv(np.eye(2), [[1.], [0.]], [1.], condition_limit=0.0),
+            lambda: centralized_lcmv(np.eye(2), [[1.], [0.]], [1.], condition_limit=True),
+            lambda: centralized_lcmv(np.eye(2), [[1.], [0.]], [1.], condition_limit=float('nan')),
             lambda: dasf_lcmv_updates(self.rn, np.eye(4), [1., 0., 0., 0.], node_sizes=(2, 2), num_filters=1),
             lambda: dasf_lcmv_updates(self.rn, self.a[:, None], [1.], node_sizes=(2, 2), num_filters=3),
         ):

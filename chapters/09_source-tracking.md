@@ -1,6 +1,6 @@
-> ⚠️ 本篇是教程正文第 9 章（正文与扩展专题共 15 章，其中第 12～15 章为扩展专题，另有附录 A、B），可独立阅读，前后篇见下方导航。
+> 本篇是本书正文第 9 章；正文与扩展专题共 16 章（第 0～15 章，其中第 0 章为数学基础，第 12～15 章为四篇扩展专题），另有附录 A、B。本篇可独立阅读，前后篇见下方导航。
 >
-> 🏠 首页导读：[`00_overview.md`](00_overview.md) ｜ 上一篇：[08_speech-separation.md](08_speech-separation.md) ｜ 下一篇：[10_engineering-practice.md](10_engineering-practice.md)
+> 导读首页：[00_overview.md](00_overview.md) ｜ 上一篇：[08_speech-separation.md](08_speech-separation.md) ｜ 下一篇：[10_engineering-practice.md](10_engineering-practice.md)
 
 ---
 
@@ -34,7 +34,7 @@
 - 会议与家庭场景中同时发声的人数随时间动态增减；
 - 阵列测得的波达方向（DOA）与声源笛卡尔坐标之间呈强非线性映射。
 
-设平面状态包含位置与速度 $[x,y,\dot{x},\dot{y}]^\top$，阵列几何中心位于 $(x_0,y_0)$。沿用第 2～5 章“以 $+y$ 轴为 $0^\circ$、向 $+x$ 轴顺时针旋转为正”的方位角约定，无噪方位观测函数写为 $\theta=\operatorname{atan2}(x-x_0,y-y_0)$。此处 `atan2` 的第一个自变量是横轴分量 $x-x_0$（对应 $\sin\theta$），第二个自变量是纵轴分量 $y-y_0$（对应 $\cos\theta$），切勿照搬标准数学极角 $\operatorname{atan2}(y-y_0,x-x_0)$ 的参数顺序。
+设平面状态包含位置与速度 $[x,y,\dot{x},\dot{y}]^\top$，阵列几何中心位于 $(x_0,y_0)$。沿用第 2～5 章“以 $+y$ 轴为 $0^\circ$、向 $+x$ 轴顺时针旋转为正”的方位角约定，无噪方位观测函数写为 $\theta=\operatorname{atan2}(x-x_0,y-y_0)$（四象限反正切与圆周角度环绕性质见[第 0 章 §0.1](00_math-foundations.md#sec-0-1)）。此处 `atan2` 的第一个自变量是横轴分量 $x-x_0$（对应 $\sin\theta$），第二个自变量是纵轴分量 $y-y_0$（对应 $\cos\theta$），切勿照搬标准数学极角 $\operatorname{atan2}(y-y_0,x-x_0)$ 的参数顺序。
 
 以阵列中心位于原点 $(0,0)$、声源位于 $(1\ \mathrm{m},2\ \mathrm{m})$ 为例，本书约定给出 $\operatorname{atan2}(1,2)\approx 26.565^\circ$；若误将两参数颠倒，算出的 $\operatorname{atan2}(2,1)\approx 63.435^\circ$ 实际是以 $+x$ 轴为零点的极角。两套角度本身都合法，但定位模块、追踪器与波束形成器的导向矢量必须共享同一角度约定，直接混传会使波束偏离目标方向。
 
@@ -63,7 +63,7 @@ $$\begin{aligned}
 
 标准卡尔曼推导假定 $\vec{v}_t$ 与 $\vec{w}_t$ 均为零均值白噪声序列，彼此互不相关且均与初始状态估计误差正交。在此前提下，过程噪声协方差矩阵 $\mathbf{Q}=\mathbb{E}[\vec{v}_t\vec{v}_t^\top]$（维数 $d\times d$）与观测噪声协方差矩阵 $\mathbf{R}=\mathbb{E}[\vec{w}_t\vec{w}_t^\top]$（维数 $p\times p$）均为对称半正定（通常要求 $\mathbf{R}$ 正定以保证求逆良态）。若定位器存在系统性角度安装偏置（噪声均值非零），需将偏置增广进状态或先行校准；若相邻重叠分析窗导致观测噪声跨帧强相关，则需恢复交叉协方差项或做状态增广。
 
-记给定截至 $t-1$ 帧观测时的本帧先验预测均值为 $\hat{\vec{s}}_t^-$，先验误差为 $\vec{e}_t^-=\vec{s}_t-\hat{\vec{s}}_t^-$，先验误差协方差矩阵 $\mathbf{P}_t^-$ 定义为 $\mathbb{E}[\vec{e}_t^-(\vec{e}_t^-)^\top]$（维数 $d\times d$）；融入本帧观测 $\vec{z}_t$ 后的后验均值与误差协方差矩阵分别记为 $\hat{\vec{s}}_t$ 与 $\mathbf{P}_t$，卡尔曼增益记为 $\mathbf{K}_t\in\mathbb{R}^{d\times p}$。只要上述零均值与不相关二阶统计条件成立，卡尔曼递推在所有线性无偏估计器中达到最小均方误差（LMMSE）；若进一步假定初态与噪声服从联合高斯分布，后验分布严格保持高斯并由 $(\hat{\vec{s}}_t,\mathbf{P}_t)$ 完整刻画，该递推同时给出全局贝叶斯条件均值（见 [Kalman 1960 奠基论文 §Optimal Estimates 与 Theorem 3](https://people.duke.edu/~hpgavin/SystemID/References/Kalman-JBE-1960.pdf)）。
+记给定截至 $t-1$ 帧观测时的本帧先验预测均值为 $\hat{\vec{s}}_t^-$，先验误差为 $\vec{e}_t^-=\vec{s}_t-\hat{\vec{s}}_t^-$，先验误差协方差矩阵 $\mathbf{P}_t^-$ 定义为 $\mathbb{E}[\vec{e}_t^-(\vec{e}_t^-)^\top]$（维数 $d\times d$）；融入本帧观测 $\vec{z}_t$ 后的后验均值与误差协方差矩阵分别记为 $\hat{\vec{s}}_t$ 与 $\mathbf{P}_t$，卡尔曼增益记为 $\mathbf{K}_t\in\mathbb{R}^{d\times p}$。只要上述零均值与不相关二阶统计条件成立，卡尔曼递推在所有线性无偏估计器中达到最小均方误差（LMMSE）；若进一步假定初态与噪声服从联合高斯分布，后验分布严格保持高斯并由 $(\hat{\vec{s}}_t,\mathbf{P}_t)$ 完整刻画，该递推同时给出全局贝叶斯条件均值（线性最小均方误差与贝叶斯递推基础见[第 0 章 §0.6](00_math-foundations.md#sec-0-6)，原始证明见 [Kalman 1960 奠基论文 §Optimal Estimates 与 Theorem 3](https://people.duke.edu/~hpgavin/SystemID/References/Kalman-JBE-1960.pdf)）。
 
 阅读矩阵维度与量纲时，协方差矩阵第 $(i,j)$ 个元素的单位等于第 $i$ 个与第 $j$ 个状态分量单位的乘积。以两分量角运动状态 $\vec{s}_t=[\theta_t,\dot{\theta}_t]^\top$（角度用 $\mathrm{deg}$，角速度用 $\mathrm{deg/frame}$）为例，$\mathbf{P}_t$ 主对角线两项的单位分别是 $\mathrm{deg}^2$ 与 $(\mathrm{deg/frame})^2$，非对角互协方差的单位则是 $\mathrm{deg}^2/\mathrm{frame}$，对应的观测矩阵为 $\mathbf{H}=[1,\ 0]$（若采用含角加速度的三分量状态 $[\theta,\dot{\theta},\ddot{\theta}]^\top$，则 $\mathbf{H}=[1,\ 0,\ 0]$，切勿将其误读为三维空间坐标）。
 
@@ -334,7 +334,7 @@ $$\begin{aligned}
 
 #### UKF：传播代表点与非线性矩
 
-当声源距阵列较近或先验不确定度较宽时，一阶导数难以代表整片先验分布经过弯曲函数后的变形。无迹变换（Unscented Transform，UT）放弃对函数求导，转而用 $2L+1$ 个确定性 **Sigma 点**精确编码 $L$ 维先验均值 $\vec{m}$ 与协方差 $\mathbf{P}$。常用缩放无迹变换引入尺度参数 $\lambda=\alpha^2(L+\kappa)-L$（要求 $L+\lambda>0$），先通过 Cholesky 分解求出满足 $\mathbf{A}\mathbf{A}^\top=(L+\lambda)\mathbf{P}$ 的平方根矩阵 $\mathbf{A}\in\mathbb{R}^{L\times L}$，记 $\vec{A}_i$ 为 $\mathbf{A}$ 的第 $i$ 列，构造如下点集与均值权重 $W_i^{(m)}$、协方差权重 $W_i^{(c)}$（其中对称偏移点下标 $i=1,\ldots,L$，非中心权重下标统一遍历 $i=1,\ldots,2L$）：
+当声源距阵列较近或先验不确定度较宽时，一阶导数难以代表整片先验分布经过弯曲函数后的变形。无迹变换（Unscented Transform，UT）放弃对函数求导，转而用 $2L+1$ 个确定性 **Sigma 点**精确编码 $L$ 维先验均值 $\vec{m}$ 与协方差 $\mathbf{P}$。常用缩放无迹变换引入尺度参数 $\lambda=\alpha^2(L+\kappa)-L$（要求 $L+\lambda>0$），先通过 Cholesky 分解求出满足 $\mathbf{A}\mathbf{A}^\top=(L+\lambda)\mathbf{P}$ 的平方根矩阵 $\mathbf{A}\in\mathbb{R}^{L\times L}$（正定对称矩阵分解见[第 0 章 §0.3](00_math-foundations.md#sec-0-3)），记 $\vec{A}_i$ 为 $\mathbf{A}$ 的第 $i$ 列，构造如下点集与均值权重 $W_i^{(m)}$、协方差权重 $W_i^{(c)}$（其中对称偏移点下标 $i=1,\ldots,L$，非中心权重下标统一遍历 $i=1,\ldots,2L$）：
 
 $$\begin{aligned}
 \vec{\chi}_0&=\vec{m},\\

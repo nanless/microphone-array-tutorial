@@ -1,16 +1,17 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 7 章 · 去混响（WPE） · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="820e0688bd26"><style>
+<meta name="source-digest" content="ba5ce9940c12"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
 h1,h2,h3,h4{scroll-margin-top:60px}
+@media screen{.main a[id]:not([href]){scroll-margin-top:60px}}
 @media screen{.main a[id^="e"],.main .exercise-alias{scroll-margin-top:80px}}
 @media screen{.main .exercise-alias{top:0}}
 @media screen{.main a[id="e05-20"]{scroll-margin-top:60px}}
 @media screen{.main a[id="e17-11"],.main a[id="e17-12"],.main a[id="e17-13"],.main a[id="e17-14"],.main a[id="e17-15"]{scroll-margin-top:140px}}
-@media screen{.main .exercise-alias[id="e13-11"],.main .exercise-alias[id="e13-12"],.main .exercise-alias[id="e13-13"],.main .exercise-alias[id="e13-14"],.main .exercise-alias[id="e13-15"],.main .exercise-alias[id="e15-11"],.main .exercise-alias[id="e15-12"],.main .exercise-alias[id="e15-13"],.main .exercise-alias[id="e15-14"],.main .exercise-alias[id="e15-15"]{scroll-margin-top:140px}}
+@media screen{.main .exercise-alias[id="e13-11"],.main .exercise-alias[id="e13-12"],.main .exercise-alias[id="e13-13"],.main .exercise-alias[id="e13-14"],.main .exercise-alias[id="e13-15"],.main .exercise-alias[id="e15-11"]:has(~ a[id="e17-11"]),.main .exercise-alias[id="e15-12"]:has(~ a[id="e17-12"]),.main .exercise-alias[id="e15-13"]:has(~ a[id="e17-13"]),.main .exercise-alias[id="e15-14"]:has(~ a[id="e17-14"]),.main .exercise-alias[id="e15-15"]:has(~ a[id="e17-15"]){scroll-margin-top:140px}}
 @media screen{.main a[id^="e06-"]{scroll-margin-top:60px}}
 @media screen{.main a[id^="e07-"],.main a[id^="e08-"]{scroll-margin-top:60px}}
 @media screen{.main a[id^="e11-"]{scroll-margin-top:60px}}
@@ -79,7 +80,7 @@ h4{font-size:15.5px;margin-top:20px;color:#333}
   let printing = false;
 
   function roots() {
-    const candidates = Array.from(document.querySelectorAll("main.main,.chap"));
+    const candidates = Array.from(document.querySelectorAll(".main,.chap"));
     return candidates.filter(root => !candidates.some(other => other !== root && other.contains(root)));
   }
 
@@ -133,12 +134,21 @@ h4{font-size:15.5px;margin-top:20px;color:#333}
       const significant = Array.from(paragraph.childNodes).filter(node =>
         node.nodeType !== Node.TEXT_NODE || node.data.trim());
       const next = paragraph.nextElementSibling;
-      const anchorOnly = significant.length === 1 &&
-        significant[0].nodeType === Node.ELEMENT_NODE &&
-        significant[0].tagName === "A" && significant[0].id &&
-        !significant[0].hasAttribute("href") &&
-        Array.from(significant[0].childNodes).every(node =>
-          node.nodeType === Node.TEXT_NODE && !node.data.trim());
+      const isEmptyAnchor = node =>
+        node.nodeType === Node.ELEMENT_NODE &&
+        node.tagName === "A" && node.id &&
+        !node.hasAttribute("href") &&
+        Array.from(node.childNodes).every(child =>
+          child.nodeType === Node.TEXT_NODE && !child.data.trim());
+      const isAnchorAlias = node =>
+        node.nodeType === Node.ELEMENT_NODE &&
+        node.tagName === "SPAN" && node.id &&
+        node.classList.contains("anchor-alias") &&
+        Array.from(node.childNodes).every(child =>
+          child.nodeType === Node.TEXT_NODE && !child.data.trim());
+      const anchorOnly = significant.length >= 1 &&
+        significant.some(isEmptyAnchor) &&
+        significant.every(node => isEmptyAnchor(node) || isAnchorAlias(node));
       paragraph.classList.toggle("tutorial-anchor-only", !!anchorOnly);
       const short = significant.length === 1 &&
         significant[0].nodeType === Node.ELEMENT_NODE &&
@@ -243,6 +253,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 </head><body id="top"><a class="skip-link" href="#main-content">跳到正文</a>
 <header class="topbar"><a href="index.html">🏠 首页</a> &nbsp;/&nbsp; 第 7 章 · 去混响（WPE）</header>
 <div class="wrap"><nav class="side" aria-label="全书目录"><div class="chap"><a href="index.html">🏠 导读与导航（首页）</a></div>
+<div class="chap"><a href="00_math-foundations.html">第 0 章 · 全书数学基础与信号分析预备</a></div>
 <div class="chap"><a href="01_problem-definition.html">第 1 章 · 问题定义与双耳启示</a></div>
 <div class="chap"><a href="02_basics-signal-model.html">第 2 章 · 声音到达阵列时发生了什么</a></div>
 <div class="chap"><a href="03_array-geometry.html">第 3 章 · 阵列几何形态</a></div>
@@ -409,9 +420,10 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li><a href="07_wpe-dereverberation.html#sec-7-10">7.10 研究方向</a></li>
 </ul></nav></details>
 <blockquote>
-<p>⚠️ 本篇是教程正文第 7 章（正文共 15 章，含第 12～15 章四篇扩展专题，另有附录 A、B），可独立阅读，前后篇见下方导航。</p>
-<p>🏠 首页导读：<a href="index.html">🏠 导读与导航</a> ｜ 上一篇：<a href="06_aec.html">第 6 章 · 声学回声消除（AEC）</a> ｜ 下一篇：<a href="08_speech-separation.html">第 8 章 · 语音分离</a></p>
+<p>本篇是本书正文第 7 章；正文与扩展专题共 16 章（第 0～15 章，其中第 0 章为数学基础，第 12～15 章为四篇扩展专题），另有附录 A、B。本篇可独立阅读，前后篇见下方导航。</p>
+<p>导读首页：<a href="index.html">🏠 导读与导航</a> ｜ 上一篇：<a href="06_aec.html">第 6 章 · 声学回声消除（AEC）</a> ｜ 下一篇：<a href="08_speech-separation.html">第 8 章 · 语音分离</a></p>
 </blockquote>
+<hr />
 <span id="sec-1" class="anchor-alias" aria-hidden="true"></span><h1 id="sec-u-4a68625d05">7. 去混响（WPE）</h1>
 <p>第 6 章讨论了扬声器播放信号耦合回麦克风所形成的声学回声。本章转向另一类由房间声学传播引起的干扰：声波在墙壁、天花板与家具之间反复反射形成的晚期混响拖尾，并重点推导工业界广泛采用的加权预测误差（Weighted Prediction Error，WPE）去混响算法。多说话人混合分离、时频掩码估计以及前端模块的完整串联顺序将在第 8 章展开。</p>
 <span id="sec-2" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-7-1">7.1 问题、模型与直觉算例</h2>
@@ -443,7 +455,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 </tr>
 <tr>
 <td>$\lambda$</td>
-<td>早期成分的时变谱功率方差，与复谱模平方 $|E|^2$ 同量纲</td>
+<td>早期成分的时变谱功率方差，与复谱模平方 $\lvert E\rvert^2$ 同量纲</td>
 </tr>
 <tr>
 <td>$G,g$</td>
@@ -648,7 +660,7 @@ E(n)&=X(n)-\hat r(n)\\
 E(n)&=X(n)-\hat r(n).
 \end{aligned}\tag{7-2}$$</p>
 <p>由于上标 $H$ 表示共轭转置，内积 $\vec g^H\vec x(n)$ 展开为 $\sum_{k=\Delta}^{\Delta+K-1}G^*(k)X(n-k)$，恰好还原式(7-1)的标量预测和。在离线批处理模型中，滤波器系数向量 $\vec g$ 在整段录音内保持时不变（对应房间声学路径固定），而残差功率方差 $\lambda(n)$ 随帧号 $n$ 自由变化（对应说话人语音包络起伏）。正是这一“时不变房间滤波器 + 时变语音方差”的统计分离，构成了 WPE 逆功率加权的物理根基（原始推导见 <a href="https://doi.org/10.1109/TASL.2010.2052251">Nakatani 等，2010</a>；简洁的交替更新总结可对读 <a href="https://www.isca-archive.org/interspeech_2017/kinoshita17_interspeech.pdf">Kinoshita 等，2017，§3.1 式(8)～(12)</a>）。</p>
-<p>为了写出似然函数，需要对残差复谱 $E(n)$ 指定概率分布。令复标量 $E=a+\mathrm{j}b$，假设其实部 $a$ 与虚部 $b$ 为相互独立、零均值且方差均为 $\lambda/2$ 的实高斯随机变量，则总模平方期望 $\mathbb{E}[|E|^2]=\mathbb{E}[a^2]+\mathbb{E}[b^2]$ 等于 $\lambda$，且伪协方差 $\mathbb{E}[E^2]$（即 $\mathbb{E}[a^2-b^2]+\mathrm{j}2\mathbb{E}[ab]$）恒为 $0$。满足这一相位旋转不变条件的分布称为<strong>圆对称（proper）复高斯分布</strong>，其概率密度函数为：</p>
+<p>为了写出似然函数，需要对残差复谱 $E(n)$ 指定概率分布。令复标量 $E=a+\mathrm{j}b$，假设其实部 $a$ 与虚部 $b$ 为相互独立、零均值且方差均为 $\lambda/2$ 的实高斯随机变量，则总模平方期望 $\mathbb{E}[|E|^2]=\mathbb{E}[a^2]+\mathbb{E}[b^2]$ 等于 $\lambda$，且伪协方差 $\mathbb{E}[E^2]$（即 $\mathbb{E}[a^2-b^2]+\mathrm{j}2\mathbb{E}[ab]$）恒为 $0$。满足这一相位旋转不变条件的分布称为<strong>圆对称（proper）复高斯分布</strong>（圆对称复高斯向量密度与最大似然估计详见<a href="00_math-foundations.html#sec-0-6">第 0 章 §0.6</a>），其概率密度函数为：</p>
 <p>$$p(E\mid\lambda)=\frac{1}{\pi\lambda}
 \exp\!\left(-\frac{|E|^2}{\lambda}\right).
 \tag{7-3}$$</p>
@@ -681,7 +693,7 @@ J(\vec g)&=\sum_{n\in\mathcal V}
 \end{aligned}\tag{7-6}$$</p>
 <p>这里每一帧的权重正是早期语音功率的倒数 $w(n)=1/\lambda(n)$：在说话人元音能量极强的帧，$\lambda(n)$ 很大、权重 $1/\lambda(n)$ 很小，防止强直达语音主导回归并把自己抵消掉；而在音节尾声或停顿间隙，直达声消退、$\lambda(n)$ 变小、权重 $1/\lambda(n)$ 变大，算法便集中火力去拟合拖在后面的纯混响尾音。</p>
 <h3 id="sec-u-357fd1b554">展开复数二次型，再解正规方程</h3>
-<p>如何对复向量 $\vec g\in\mathbb{C}^{K\times 1}$ 求实值代价函数 $J(\vec g)$ 的极小值？由于模平方函数 $|z|^2=z z^*$ 包含复共轭，它在复平面上不满足柯西—黎曼方程，不能按普通单复变解析函数求导。信号处理中标准的做法是采用<strong>维尔廷格（Wirtinger）复数微积分</strong>（基础规则见附录 A）：把 $\vec g$ 与其复共轭 $\vec g^*$ 视为形式上相互独立的变量，实值实微可微函数取得极值的充要条件是关于共轭变量的偏导数 $\frac{\partial J}{\partial \vec g^*}=\vec 0$。</p>
+<p>如何对复向量 $\vec g\in\mathbb{C}^{K\times 1}$ 求实值代价函数 $J(\vec g)$ 的极小值？由于模平方函数 $|z|^2=z z^*$ 包含复共轭，它在复平面上不满足柯西—黎曼方程，不能按普通单复变解析函数求导。信号处理中标准的做法是采用<strong>维尔廷格（Wirtinger）复数微积分</strong>（复梯度规则与交替最小化收敛性质见<a href="00_math-foundations.html#sec-0-5">第 0 章 §0.5</a> 及<a href="16_appendix-symbols-math.html">附录 A</a>）：把 $\vec g$ 与其复共轭 $\vec g^*$ 视为形式上相互独立的变量，实值实微可微函数取得极值的充要条件是关于共轭变量的偏导数 $\frac{\partial J}{\partial \vec g^*}=\vec 0$。</p>
 <p>我们不跳步地把单帧残差模平方按复共轭定义 $|z|^2=z^* z$ 拆开（注意标量的共轭转置就是共轭本身，即 $(\vec g^H\vec x)^*=\vec x^H\vec g$）：</p>
 <p>$$\begin{aligned}
 |X(n)-\vec g^H\vec x(n)|^2
@@ -709,7 +721,7 @@ J(\vec g)&=\sum_{n\in\mathcal V}
 \end{aligned}\tag{7-8}$$</p>
 <p>其中 $\epsilon\ge 0$ 是无量纲相对加载比例，乘上对角线平均功率 $\operatorname{tr}(\mathbf R)/K$ 后得到的 $\delta$ 与 $\mathbf R$ 保持完全相同的量纲。从优化角度看，固定 $\lambda$ 与 $\delta$ 后，式(7-8)等价于把目标函数改写为带吉洪诺夫（Tikhonov）$L_2$ 惩罚的 $J(\vec g)+\delta\|\vec g\|_2^2$：它通过压低滤波器系数范数换取数值稳定性，因此求出的解在原无加载目标 $J(\vec g)$ 上的残差平方和反而会略高于无加载最优解（见练习 E07-08）。此外，若某频点输入全为零，则 $\operatorname{tr}(\mathbf R)=0$ 导致相对加载 $\delta=0$，此时应直接旁路输出零谱，正定时则优先用 Cholesky 分解求解线性方程组而不显式求逆。</p>
 <h3 id="sec-u-8b711e16e7">直接设计矩阵求解：避免条件数平方</h3>
-<p>正规方程之所以在工程上需要格外小心，是因为先把数据矩阵乘成自相关矩阵 $\mathbf R=\mathbf A^H\mathbf A$ 会把矩阵的二范数条件数平方，即 $\kappa_2(\mathbf A^H\mathbf A)=\kappa_2(\mathbf A)^2$。当多通道历史特征高度共线时，原本双精度还能分辨的微小差异，在平方后可能直接被浮点舍入抹平。</p>
+<p>正规方程之所以在工程上需要格外小心，是因为先把数据矩阵乘成自相关矩阵 $\mathbf R=\mathbf A^H\mathbf A$ 会把矩阵的二范数条件数平方，即 $\kappa_2(\mathbf A^H\mathbf A)=\kappa_2(\mathbf A)^2$（奇异值分解与最小二乘条件数详见<a href="00_math-foundations.html#sec-0-3">第 0 章 §0.3</a>）。当多通道历史特征高度共线时，原本双精度还能分辨的微小差异，在平方后可能直接被浮点舍入抹平。</p>
 <p>把单通道与 §7.3 的多通道情形统一写进矩阵最小二乘：设每个频点的历史堆叠维数为 $D$（单通道时 $D=K$，多通道时 $D=MK$），有效帧数为 $T_v=|\mathcal V|$，输出通道数为 $M$，正权重记为 $w_n=1/\lambda_n$。构造加权设计矩阵 $\mathbf A\in\mathbb{C}^{T_v\times D}$，其第 $n$ 行取 $\sqrt{w_n}\vec q_n^H$；构造加权目标矩阵 $\mathbf B\in\mathbb{C}^{T_v\times M}$，其第 $n$ 行取 $\sqrt{w_n}\vec X_n^H$（单通道时退化为单列）。之所以取共轭转置放成行向量，是因为对残差等式 $\vec E_n=\vec X_n-\mathbf G^H\vec q_n$ 两边取共轭转置恰好变成右乘未知矩阵 $\vec E_n^H=\vec X_n^H-\vec q_n^H\mathbf G$。</p>
 <p>于是所有有效帧的加权残差平方和精确等于弗罗贝尼乌斯（Frobenius）范数平方 $\|\mathbf A\mathbf G-\mathbf B\|_F^2$，且满足 $\mathbf A^H\mathbf A=\mathbf R$、$\mathbf A^H\mathbf B=\mathbf P$。连同式(7-8)的对角加载一起，可以改写为如下增广最小二乘问题：</p>
 <p>$$\begin{aligned}
@@ -956,33 +968,33 @@ Z = wpe(Y, taps=10, delay=3,   # taps=K（预测阶数），delay=Δ（保护延
 <h3 id="sec-u-bc033fd53b">同名delay参数不保证同一时间戳</h3>
 <p>许多工程师把离线实验迁往流式管线时，直接调用 <code>nara_wpe/wpe.py</code> 中的逐帧状态类 <code>OnlineWPE.step_frame()</code>（每次喂入形状为 <code>(频点, 通道)</code> 的单帧复谱，由实例内部跨帧维护逆相关矩阵、抽头权重和环形历史缓冲；切忌每来一块音频就重新实例化该对象，否则算法永远卡在冷启动阶段）。</p>
 <p>更隐蔽的一处陷阱在于：<strong>锁定版 <code>0.0.11</code> 的三个接口虽然都有名为 <code>delay</code> 的参数，但在相同 <code>delay=1, taps=1</code> 设置下，它们实际抓取的历史帧时间戳并不相同！</strong> 我们不妨构造一组自带时间标签的四帧单通道序列 $[10,20,30,40]$（当前处于零起始第 $t=3$ 帧，观测值为 $40$），人为将单抽头预测系数固定为 $1$，直接对照源码中三种接口实际减掉的是哪一帧：</p>
-<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
+<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table class="tutorial-budget-table" style="--tutorial-table-width:52em">
 <thead>
 <tr>
-<th scope="col"><code>nara-wpe 0.0.11</code> 接口</th>
-<th scope="col" style="text-align: right;">实际读取的旧帧</th>
-<th scope="col" style="text-align: right;">当前观测减去预测值</th>
-<th scope="col">缓冲取点差异根源</th>
+<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:12em"><code>nara-wpe 0.0.11</code> 接口</th>
+<th scope="col" style="text-align: right;--tutorial-column-width:12em" class="tutorial-short-column">实际读取的旧帧</th>
+<th scope="col" style="text-align: right;--tutorial-column-width:13em" class="tutorial-short-column">当前观测减去预测值</th>
+<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:15em">缓冲取点差异根源</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>离线 <code>build_y_tilde()</code></td>
-<td style="text-align: right;">$X_{t-1}=30$</td>
-<td style="text-align: right;">$40-30=10$</td>
-<td>与本章式(7-1)及图 24 的 $\Delta=1$ 定义完全一致</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:12em">离线 <code>build_y_tilde()</code></td>
+<td style="text-align: right;--tutorial-column-width:12em" class="tutorial-short-column">$X_{t-1}=30$</td>
+<td style="text-align: right;--tutorial-column-width:13em" class="tutorial-short-column">$40-30=10$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:15em">与本章式(7-1)及图 24 的 $\Delta=1$ 定义完全一致</td>
 </tr>
 <tr>
-<td>无状态 <code>online_wpe_step()</code></td>
-<td style="text-align: right;">$X_{t-2}=20$</td>
-<td style="text-align: right;">$40-20=20$</td>
-<td>传入包含当前帧的窗口，切片多跳了一帧</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:12em">无状态 <code>online_wpe_step()</code></td>
+<td style="text-align: right;--tutorial-column-width:12em" class="tutorial-short-column">$X_{t-2}=20$</td>
+<td style="text-align: right;--tutorial-column-width:13em" class="tutorial-short-column">$40-20=20$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:15em">传入包含当前帧的窗口，切片多跳了一帧</td>
 </tr>
 <tr>
-<td>有状态 <code>OnlineWPE.step_frame()</code></td>
-<td style="text-align: right;">$X_{t-3}=10$</td>
-<td style="text-align: right;">$40-10=30$</td>
-<td>在把当前帧 $40$ 压入环形缓冲<strong>之前</strong>就按偏移切片读取旧缓冲</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:12em">有状态 <code>OnlineWPE.step_frame()</code></td>
+<td style="text-align: right;--tutorial-column-width:12em" class="tutorial-short-column">$X_{t-3}=10$</td>
+<td style="text-align: right;--tutorial-column-width:13em" class="tutorial-short-column">$40-10=30$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:15em">在把当前帧 $40$ 压入环形缓冲<strong>之前</strong>就按偏移切片读取旧缓冲</td>
 </tr>
 </tbody>
 </table></div>
@@ -1083,7 +1095,7 @@ T_v&=\max(0,T-t_{\min}).
 \sigma_r^2(u+H,f)&=\rho(f)\sigma_r^2(u,f),\\
 10\log_{10}\rho(f)&=-60H/T_{60}(f).
 \end{aligned}\tag{7-23}$$</p>
-<p>在 <a href="https://israelcohen.com/wp-content/uploads/2018/05/SPL_Sep2009.pdf">Habets、Gannot 与 Cohen（2009）§III 式(10)～(12)</a> 的自然指数记法中，幅度阻尼率定为 $\alpha=3\ln(10)/(T_{60}f_s)$，幅度包络按 $e^{-\alpha\ell H_s}$ 衰减，功率谱方差则按平方后的 $e^{-2\alpha\ell H_s}$ 衰减——将 $e^{-2\cdot 3\ln(10)H/T_{60}}=10^{-6H/T_{60}}$ 展开，与式(7-23)分毫不差。练习 <a href="#e07-23">E07-23</a> 将具体代入 $T_{60}=0.6\ \mathrm{s}$、帧移 $8\ \mathrm{ms}$ 检验这一换算，并展示若误把幅度因子 $10^{-3H/T_{60}}$ 当作功率因子代入，经过 $0.6\ \mathrm{s}$ 后功率竟只衰减了 $30\ \mathrm{dB}$ 的典型量纲事故（注：完整的谱方差抑制器还需结合直达混响比与源发声期的能量注入项，关于实测脉冲响应施罗德反向积分曲线的 $T_{20}$ 斜率拟合则见附录 <a href="17_appendix-guide.html#sec-u-199b14fd60">E17-05</a>）。</p>
+<p>在 <a href="https://israelcohen.com/wp-content/uploads/2018/05/SPL_Sep2009.pdf">Habets、Gannot 与 Cohen（2009）§III 式(10)～(12)</a> 的自然指数记法中，幅度阻尼率定为 $\alpha=3\ln(10)/(T_{60}f_s)$，幅度包络按 $e^{-\alpha\ell H_s}$ 衰减，功率谱方差则按平方后的 $e^{-2\alpha\ell H_s}$ 衰减——将 $e^{-2\cdot 3\ln(10)H/T_{60}}=10^{-6H/T_{60}}$ 展开，与式(7-23)分毫不差。练习 <a href="#e07-23">E07-23</a> 将具体代入 $T_{60}=0.6\ \mathrm{s}$、帧移 $8\ \mathrm{ms}$ 检验这一换算，并展示若误把幅度因子 $10^{-3H/T_{60}}$ 当作功率因子代入，经过 $0.6\ \mathrm{s}$ 后功率竟只衰减了 $30\ \mathrm{dB}$ 的典型量纲事故（注：完整的谱方差抑制器还需结合直达混响比与源发声期的能量注入项，关于实测脉冲响应施罗德反向积分曲线的 $T_{20}$ 斜率拟合则见附录 <a href="17_appendix-guide.html#sec-u-69adc71a3e">E17-05</a>）。</p>
 <h3 id="sec-u-884aaada8f">WPD将历史与空间约束放入同一目标</h3>
 <p>既然“MIMO-WPE 去混响 + MVDR/MPDR 波束形成”在工程中如此常用，能不能把“当前帧空间滤波”和“历史帧混响抵消”直接写进<strong>同一个约束优化问题</strong>一次性求解？加权功率最小无失真响应（Weighted Power minimization Distortionless response，WPD；<a href="https://doi.org/10.1109/LSP.2019.2911179">Nakatani 与 Kinoshita，2019</a>）正是这一思想的结晶。</p>
 <p>将当前第 $t$ 帧的 $M$ 通道复谱 $\vec x_t$ 与保护延迟后的多帧多通道历史 $\vec x_{t-\Delta},\dots,\vec x_{t-\Delta-K+1}$ 纵向拼成一根维度为 $(M+MK)\times 1$ 的增广时空列向量 $\bar{\vec x}_t$（将 $\vec x_t$ 与各滞后帧依序叠放）；同时将当前帧的目标相对传递函数（或导向矢量）$\vec v\in\mathbb{C}^{M\times 1}$ 补零扩展为同维度的时空约束向量 $\bar{\vec v}=[\vec v^\top,\vec 0^\top,\dots]^\top$（要求对当前帧目标方向保持单位无失真响应，而对延迟历史不加硬约束）。在给定正语音功率 $\lambda_t>0$ 下，累加时空加权协方差矩阵 $\bar{\mathbf R}$（定义为 $\sum_t\bar{\vec x}_t\bar{\vec x}_t^H/\lambda_t$），WPD 求解如下线性约束二次规划：</p>
@@ -1116,7 +1128,7 @@ T_v&=\max(0,T-t_{\min}).
 <h3 id="sec-u-24aba87cac">低残差不等于保住了目标</h3>
 <p>调试 WPE 代码时，千万不能把“残差能量变得极小”直接当成“算法工作正常”。看一个三行就能心算的极端反例：取单频点、单通道连续六帧恒定复谱 $1+0\mathrm{j}$，设 $K=2$、$\Delta=1$、迭代 $1$ 次、零对角加载。此时四个有效帧 $n=2,3,4,5$ 的二维历史向量全为 $[1,1]^\top$，累加得到秩为 $1$ 的正规矩阵 $\mathbf R=4\begin{bmatrix}1&1\\1&1\end{bmatrix}$ 与互相关 $\vec r=[4,4]^\top$。最小范数解 $\vec g=[1/2,1/2]^\top$ 会把这四帧全部预测为 $1$，使输出残差直接归零（双精度浮点下约为 $10^{-16}$），仅开头两帧因历史不足原样保留——这段输入里根本没有任何混响，高度可预测的稳态目标却被预测器吃得干干净净！</p>
 <p>跨章节联合基线可通过 <code>.venv/bin/python -m codes.chapters.ch00.cross_chapter.ch06_09_baselines</code> 运行（配套单元测试见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/tests/test_codes_aec_wpe_sep_track.py"><code>test_codes_aec_wpe_sep_track.py</code></a> 与 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/tests/test_codes_wpe_mask_diagnostics.py"><code>test_codes_wpe_mask_diagnostics.py</code></a>）。若需进一步阅读工业级开源库中离线、流式、神经网络功率估计与 GPU 批处理的源码，可按下表导航对照（详细源码导读见 <a href="research/02_aec_wpe_separation.html#wpe">WPE 源码研究手册</a>）：</p>
-<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
+<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table class="wpe-readable-table">
 <thead>
 <tr>
 <th scope="col">开源实现</th>
@@ -1184,27 +1196,27 @@ T_v&=\max(0,T-t_{\min}).
 <h3 id="sec-u-ac696f5e3e">根据损伤与数据量选参</h3>
 <p>面对一个新的硬件阵列与使用场景，科学的调参顺序应当“先保底线、再追上限”：首先固定一个中等阶数 $K$，从小到大扫描保护延迟 $\Delta$，利用近讲或安静混响测试集监控早期语音失真与识别插入/替换错误，选定不伤及目标直达声的安全 $\Delta$；随后再结合日常语句长度与算力预算逐步调整阶数 $K$，同时监控正规矩阵条件数、拖尾衰减量与下游识别词错率。切忌脱离麦克风通道数与语句时长单纯按房间 $T_{60}$ 盲目拉大 $K$——在短口令词或嘈杂环境下，过大的 $K$ 只会导致协方差估计欠定过拟合，得不偿失。</p>
 <p>更进一步，真实房间中的混响时间 $T_{60}(f)$ 几乎总是呈现显著的<strong>低频长、高频短</strong>分布：地毯、窗帘、矿棉吊顶等多孔吸声材料以及空气黏滞吸收在 $4\ \mathrm{kHz}$ 以上迅速耗散声能，而 $1\text{～}2\ \mathrm{kHz}$ 以下的长波低频模态衰减缓慢。由于 STFT 域 MIMO-WPE 在每个频点 $f$ 上完全独立求解，工程上根本不必强求全频带使用同一个常数阶数，而应采用<strong>分频带预测阶数 $K(f)$</strong>：在混响绵长的低频段保留充裕阶数，在中高频段阶梯下调 $K(f)$，既避免高频段用过多自由度过拟合短样本，又能成倍削减内存与 $O(D(f)^3)$ 分解算力（精确手算复核见练习 <a href="#e07-26">E07-26</a>）：</p>
-<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
+<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table class="tutorial-budget-table" style="--tutorial-table-width:56em">
 <thead>
 <tr>
-<th scope="col">阶数分配方案（$M=8$，$F=257$，<code>complex128</code>）</th>
-<th scope="col">频带与阶数配置</th>
-<th scope="col" style="text-align: right;">全频带 $\mathbf R(f)$ 驻留内存</th>
-<th scope="col" style="text-align: right;">$\sum_f D(f)^3$ 分解规模代理</th>
+<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:14em">阶数分配方案（$M=8$，$F=257$，<code>complex128</code>）</th>
+<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:14em">频带与阶数配置</th>
+<th scope="col" style="text-align: right;--tutorial-column-width:14em" class="tutorial-short-column">全频带 $\mathbf R(f)$ 驻留内存</th>
+<th scope="col" style="text-align: right;--tutorial-column-width:14em" class="tutorial-short-column">$\sum_f D(f)^3$ 分解规模代理</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>全频带统一高阶</td>
-<td>$257$ 个频点统一取 $K=12$（$D=96$）</td>
-<td style="text-align: right;">$36.14\ \mathrm{MiB}$</td>
-<td style="text-align: right;">$227\,377\,152$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:14em">全频带统一高阶</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:14em">$257$ 个频点统一取 $K=12$（$D=96$）</td>
+<td style="text-align: right;--tutorial-column-width:14em" class="tutorial-short-column">$36.14\ \mathrm{MiB}$</td>
+<td style="text-align: right;--tutorial-column-width:14em" class="tutorial-short-column">$227\,377\,152$</td>
 </tr>
 <tr>
-<td>三频带非均匀 $K(f)$</td>
-<td>低频 $65$ 点取 $12$、中频 $64$ 点取 $8$、高频 $128$ 点取 $4$</td>
-<td style="text-align: right;">$15.14\ \mathrm{MiB}$（省 $58.11\%$）</td>
-<td style="text-align: right;">$78\,479\,360$（省 $65.48\%$）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:14em">三频带非均匀 $K(f)$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:14em">低频 $65$ 点取 $12$、中频 $64$ 点取 $8$、高频 $128$ 点取 $4$</td>
+<td style="text-align: right;--tutorial-column-width:14em" class="tutorial-short-column">$15.14\ \mathrm{MiB}$（省 $58.11\%$）</td>
+<td style="text-align: right;--tutorial-column-width:14em" class="tutorial-short-column">$78\,479\,360$（省 $65.48\%$）</td>
 </tr>
 </tbody>
 </table></div>
@@ -1533,7 +1545,7 @@ L_k\,e^{\mathrm{j}\pi kq/4}.
 <th scope="col">数字角频率 $\omega$（$\mathrm{rad}$/采样点）</th>
 <th scope="col">$H_1(\omega)$</th>
 <th scope="col">$H_2(\omega)$</th>
-<th scope="col" style="text-align: right;">共同模平方 $|H|^2$</th>
+<th scope="col" style="text-align: right;">共同模平方 $\lvert H\rvert^2$</th>
 </tr>
 </thead>
 <tbody>
@@ -1574,30 +1586,30 @@ L_k\,e^{\mathrm{j}\pi kq/4}.
 -10^{-18}
 \end{bmatrix}.$$</p>
 <p>然而 IEEE 754 双精度浮点数（<code>float64</code>）在 $1.0$ 附近的最小可分辨间距（机器精度）约为 $2.22\times 10^{-16}$，远大于 $10^{-18}$！于是右下角的 $1+10^{-18}$ 在存入内存的瞬间被无情舍入为 $1.0$，使 $\mathbf A^\top\mathbf A$ 坍缩成两列完全相同的秩 $1$ 矩阵 $\begin{bmatrix}1&1\\1&1\end{bmatrix}$。对比 <code>solve_prediction_design()</code> 中两条路径的实跑表现：</p>
-<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
+<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table class="tutorial-budget-table" style="--tutorial-table-width:56em">
 <thead>
 <tr>
-<th scope="col">求解器路径</th>
-<th scope="col">实际分解与诊断的矩阵</th>
-<th scope="col" style="text-align: right;">双精度数值秩</th>
-<th scope="col" style="text-align: right;">二范数条件数</th>
-<th scope="col">求得系数</th>
+<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:10em">求解器路径</th>
+<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:14em">实际分解与诊断的矩阵</th>
+<th scope="col" style="text-align: right;--tutorial-column-width:9em" class="tutorial-short-column">双精度数值秩</th>
+<th scope="col" style="text-align: right;--tutorial-column-width:10em" class="tutorial-short-column">二范数条件数</th>
+<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:13em">求得系数</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>normal</code></td>
-<td>舍入后的 $\mathbf A^\top\mathbf A$</td>
-<td style="text-align: right;">$1$</td>
-<td style="text-align: right;">$\infty$</td>
-<td>$-2.5\times 10^{-19}$ $\cdot[1,1]^\top$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:10em"><code>normal</code></td>
+<td class="tutorial-short-column" style="--tutorial-column-width:14em">舍入后的 $\mathbf A^\top\mathbf A$</td>
+<td style="text-align: right;--tutorial-column-width:9em" class="tutorial-short-column">$1$</td>
+<td style="text-align: right;--tutorial-column-width:10em" class="tutorial-short-column">$\infty$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:13em">$-2.5\times 10^{-19}$ $\cdot[1,1]^\top$</td>
 </tr>
 <tr>
-<td><code>design_lstsq</code></td>
-<td>原始设计矩阵 $\mathbf A$</td>
-<td style="text-align: right;">$2$</td>
-<td style="text-align: right;">$\approx 2\times 10^9$</td>
-<td>$[1,\ -1]^\top$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:10em"><code>design_lstsq</code></td>
+<td class="tutorial-short-column" style="--tutorial-column-width:14em">原始设计矩阵 $\mathbf A$</td>
+<td style="text-align: right;--tutorial-column-width:9em" class="tutorial-short-column">$2$</td>
+<td style="text-align: right;--tutorial-column-width:10em" class="tutorial-short-column">$\approx 2\times 10^9$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:13em">$[1,\ -1]^\top$</td>
 </tr>
 </tbody>
 </table></div>
@@ -1617,7 +1629,7 @@ t_\star&=\frac{\lambda-db}{d^2+2\lambda}.
 <th scope="col">正则系数 $\lambda$</th>
 <th scope="col" style="text-align: right;">最优权重 $(u_1,u_2)$</th>
 <th scope="col" style="text-align: right;">残留反射系数 $r$</th>
-<th scope="col" style="text-align: right;">传感器噪声放大倍数 $\|\vec u\|_2^2$</th>
+<th scope="col" style="text-align: right;">传感器噪声放大倍数 $\lVert\vec u\rVert_2^2$</th>
 </tr>
 </thead>
 <tbody>
@@ -1703,44 +1715,44 @@ u_1+u_2&=1.
 <p><a id="e07-22"></a></p>
 <h3 id="sec-u-4a8a10bd2d">E07-22：接收时钟同步，历史里为什么还有当前目标？</h3>
 <p><strong>输入与时序对齐表</strong>：沿用 §7.6 式(7-19)的整数帧模型，设无混响、无噪声的脉冲源仅在 $s[0]=s[4]=1$ 两处非零（其余帧及负时间全为 $0$），观察接收帧 $t=0,\dots,9$。已知参考远麦传播延迟 $d_{\mathrm{ref}}=3$ 帧，辅助近麦传播延迟 $d_m=0$ 帧，期望保护源间隔 $\Delta_0=3$ 帧。在共同有效帧 $t=6,7,8,9$ 上，对比盲目套用统一延迟 $\Delta_m=3$ 与按式(7-20)修正为 $\Delta_m=6$ 时辅助麦历史回归量 $q_t=X_m[t-\Delta_m]$ 的逐帧取值：</p>
-<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
+<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table class="tutorial-budget-table" style="--tutorial-table-width:54em">
 <thead>
 <tr>
-<th scope="col" style="text-align: right;">接收帧 $t$</th>
-<th scope="col" style="text-align: right;">参考源时刻 $t-3$</th>
-<th scope="col" style="text-align: right;">参考当前目标 $y_t$</th>
-<th scope="col" style="text-align: right;">统一延迟历史 $s[t-3]$</th>
-<th scope="col" style="text-align: right;">修正延迟历史 $s[t-6]$</th>
+<th scope="col" style="text-align: right;--tutorial-column-width:8em" class="tutorial-short-column">接收帧 $t$</th>
+<th scope="col" style="text-align: right;--tutorial-column-width:11em" class="tutorial-short-column">参考源时刻 $t-3$</th>
+<th scope="col" style="text-align: right;--tutorial-column-width:11em" class="tutorial-short-column">参考当前目标 $y_t$</th>
+<th scope="col" style="text-align: right;--tutorial-column-width:12em" class="tutorial-short-column">统一延迟历史 $s[t-3]$</th>
+<th scope="col" style="text-align: right;--tutorial-column-width:12em" class="tutorial-short-column">修正延迟历史 $s[t-6]$</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: right;">$6$</td>
-<td style="text-align: right;">$3$</td>
-<td style="text-align: right;">$0$</td>
-<td style="text-align: right;">$0$</td>
-<td style="text-align: right;">$1$</td>
+<td style="text-align: right;--tutorial-column-width:8em" class="tutorial-short-column">$6$</td>
+<td style="text-align: right;--tutorial-column-width:11em" class="tutorial-short-column">$3$</td>
+<td style="text-align: right;--tutorial-column-width:11em" class="tutorial-short-column">$0$</td>
+<td style="text-align: right;--tutorial-column-width:12em" class="tutorial-short-column">$0$</td>
+<td style="text-align: right;--tutorial-column-width:12em" class="tutorial-short-column">$1$</td>
 </tr>
 <tr>
-<td style="text-align: right;">$7$</td>
-<td style="text-align: right;">$4$</td>
-<td style="text-align: right;">$1$</td>
-<td style="text-align: right;">$1$</td>
-<td style="text-align: right;">$0$</td>
+<td style="text-align: right;--tutorial-column-width:8em" class="tutorial-short-column">$7$</td>
+<td style="text-align: right;--tutorial-column-width:11em" class="tutorial-short-column">$4$</td>
+<td style="text-align: right;--tutorial-column-width:11em" class="tutorial-short-column">$1$</td>
+<td style="text-align: right;--tutorial-column-width:12em" class="tutorial-short-column">$1$</td>
+<td style="text-align: right;--tutorial-column-width:12em" class="tutorial-short-column">$0$</td>
 </tr>
 <tr>
-<td style="text-align: right;">$8$</td>
-<td style="text-align: right;">$5$</td>
-<td style="text-align: right;">$0$</td>
-<td style="text-align: right;">$0$</td>
-<td style="text-align: right;">$0$</td>
+<td style="text-align: right;--tutorial-column-width:8em" class="tutorial-short-column">$8$</td>
+<td style="text-align: right;--tutorial-column-width:11em" class="tutorial-short-column">$5$</td>
+<td style="text-align: right;--tutorial-column-width:11em" class="tutorial-short-column">$0$</td>
+<td style="text-align: right;--tutorial-column-width:12em" class="tutorial-short-column">$0$</td>
+<td style="text-align: right;--tutorial-column-width:12em" class="tutorial-short-column">$0$</td>
 </tr>
 <tr>
-<td style="text-align: right;">$9$</td>
-<td style="text-align: right;">$6$</td>
-<td style="text-align: right;">$0$</td>
-<td style="text-align: right;">$0$</td>
-<td style="text-align: right;">$0$</td>
+<td style="text-align: right;--tutorial-column-width:8em" class="tutorial-short-column">$9$</td>
+<td style="text-align: right;--tutorial-column-width:11em" class="tutorial-short-column">$6$</td>
+<td style="text-align: right;--tutorial-column-width:11em" class="tutorial-short-column">$0$</td>
+<td style="text-align: right;--tutorial-column-width:12em" class="tutorial-short-column">$0$</td>
+<td style="text-align: right;--tutorial-column-width:12em" class="tutorial-short-column">$0$</td>
 </tr>
 </tbody>
 </table></div>

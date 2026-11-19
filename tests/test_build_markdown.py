@@ -45,6 +45,14 @@ class MarkdownBoundaryTests(unittest.TestCase):
             self.assertIn('<div title="$a<b$">literal</div>', html)
             self.assertIn('$x\\lt y$', html)
 
+    def test_unshield_math_merges_nested_pre_code_intervals(self):
+        repo = helpers._Stash("source", "MATH")
+        tok = repo.stash("$x<y$")
+        html = f'<pre><code>inner</code> after_code {tok}</pre><p>{tok}</p>'
+        restored = helpers.unshield_math(html, repo)
+        self.assertIn('<pre><code>inner</code> after_code $x&lt;y$</pre>', restored)
+        self.assertIn('<p>$x\\lt y$</p>', restored)
+
     def test_list_math_and_table_pipes_are_not_code_or_columns(self):
         source = ('1. 公式\n\n    $$x<y$$\n\n'
                   '| 量 | 含义 |\n|---|---|\n| $|X|^2$ | 功率 |')

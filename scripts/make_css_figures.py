@@ -48,7 +48,7 @@ def main():
     begin,end=report['waveform_display_interval_samples']
     for key,label,color,style in (('reference','参考＝完整校正',C_BLUE,'-'),('naive','不校正',C_RED,'-'),('polarity','仅翻极性',C_GREEN,'--')):
         axes[0,1].plot(np.arange(begin,end)/16000,signals[key][0,begin:end],style,color=color,linewidth=1.1,label=label)
-    axes[0,1].set(title='(b) 第一槽实际 PCM：经过相消位置',xlabel='共同接收时轴 / s',ylabel='PCM 解码幅度',ylim=(-.17,.19))
+    axes[0,1].set(title='(b) 第一槽实际 PCM：经过相消位置',xlabel='共同接收时轴 / s',ylabel='PCM 解码幅度',ylim=(-.17,.30))
     axes[0,1].set_xticks([.925,.930,.935,.940,.945])
     axes[0,1].legend(fontsize=10,loc='upper right')
     for ax,window,title,ylim in ((axes[1,0],'primary','(c) 主评分窗：含 400 ms 渐变',(-.12,5.2)),(axes[1,1],'post_overlap','(d) 后评分窗：渐变结束之后',(-.2,10.8))):
@@ -62,7 +62,7 @@ def main():
         ax.set(title=title,xlabel=f'半开采样窗 [{interval[0]}, {interval[1]})；合并两槽线性误差',ylabel='实际整数误差 E / 参考整数能量 D',xticks=range(3),xticklabels=['不校正','仅翻极性','完整校正'],ylim=ylim)
     for ax in axes.flat:
         ax.grid(axis='y',alpha=.2);ax.set_axisbelow(True)
-    fig.suptitle('槽位排列正确后，仍须检查极性与增益')
+    fig.suptitle('图76  槽位排列正确后，仍须检查极性与增益')
     finalize_figure(fig)
     metadata={'SourceScript':'scripts/make_css_figures.py','SourceScriptDigest':report['source_sha256']['scripts/make_css_figures.py'],
         'GeneratorInputs':json.dumps(report['source_sha256'],sort_keys=True),'AudioManifestDigest':report['audio_manifest_sha256'],

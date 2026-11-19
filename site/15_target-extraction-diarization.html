@@ -1,16 +1,17 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 15 章 · 条件目标提取与多通道日志 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="820e0688bd26"><style>
+<meta name="source-digest" content="ba5ce9940c12"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
 h1,h2,h3,h4{scroll-margin-top:60px}
+@media screen{.main a[id]:not([href]){scroll-margin-top:60px}}
 @media screen{.main a[id^="e"],.main .exercise-alias{scroll-margin-top:80px}}
 @media screen{.main .exercise-alias{top:0}}
 @media screen{.main a[id="e05-20"]{scroll-margin-top:60px}}
 @media screen{.main a[id="e17-11"],.main a[id="e17-12"],.main a[id="e17-13"],.main a[id="e17-14"],.main a[id="e17-15"]{scroll-margin-top:140px}}
-@media screen{.main .exercise-alias[id="e13-11"],.main .exercise-alias[id="e13-12"],.main .exercise-alias[id="e13-13"],.main .exercise-alias[id="e13-14"],.main .exercise-alias[id="e13-15"],.main .exercise-alias[id="e15-11"],.main .exercise-alias[id="e15-12"],.main .exercise-alias[id="e15-13"],.main .exercise-alias[id="e15-14"],.main .exercise-alias[id="e15-15"]{scroll-margin-top:140px}}
+@media screen{.main .exercise-alias[id="e13-11"],.main .exercise-alias[id="e13-12"],.main .exercise-alias[id="e13-13"],.main .exercise-alias[id="e13-14"],.main .exercise-alias[id="e13-15"],.main .exercise-alias[id="e15-11"]:has(~ a[id="e17-11"]),.main .exercise-alias[id="e15-12"]:has(~ a[id="e17-12"]),.main .exercise-alias[id="e15-13"]:has(~ a[id="e17-13"]),.main .exercise-alias[id="e15-14"]:has(~ a[id="e17-14"]),.main .exercise-alias[id="e15-15"]:has(~ a[id="e17-15"]){scroll-margin-top:140px}}
 @media screen{.main a[id^="e06-"]{scroll-margin-top:60px}}
 @media screen{.main a[id^="e07-"],.main a[id^="e08-"]{scroll-margin-top:60px}}
 @media screen{.main a[id^="e11-"]{scroll-margin-top:60px}}
@@ -79,7 +80,7 @@ h4{font-size:15.5px;margin-top:20px;color:#333}
   let printing = false;
 
   function roots() {
-    const candidates = Array.from(document.querySelectorAll("main.main,.chap"));
+    const candidates = Array.from(document.querySelectorAll(".main,.chap"));
     return candidates.filter(root => !candidates.some(other => other !== root && other.contains(root)));
   }
 
@@ -133,12 +134,21 @@ h4{font-size:15.5px;margin-top:20px;color:#333}
       const significant = Array.from(paragraph.childNodes).filter(node =>
         node.nodeType !== Node.TEXT_NODE || node.data.trim());
       const next = paragraph.nextElementSibling;
-      const anchorOnly = significant.length === 1 &&
-        significant[0].nodeType === Node.ELEMENT_NODE &&
-        significant[0].tagName === "A" && significant[0].id &&
-        !significant[0].hasAttribute("href") &&
-        Array.from(significant[0].childNodes).every(node =>
-          node.nodeType === Node.TEXT_NODE && !node.data.trim());
+      const isEmptyAnchor = node =>
+        node.nodeType === Node.ELEMENT_NODE &&
+        node.tagName === "A" && node.id &&
+        !node.hasAttribute("href") &&
+        Array.from(node.childNodes).every(child =>
+          child.nodeType === Node.TEXT_NODE && !child.data.trim());
+      const isAnchorAlias = node =>
+        node.nodeType === Node.ELEMENT_NODE &&
+        node.tagName === "SPAN" && node.id &&
+        node.classList.contains("anchor-alias") &&
+        Array.from(node.childNodes).every(child =>
+          child.nodeType === Node.TEXT_NODE && !child.data.trim());
+      const anchorOnly = significant.length >= 1 &&
+        significant.some(isEmptyAnchor) &&
+        significant.every(node => isEmptyAnchor(node) || isAnchorAlias(node));
       paragraph.classList.toggle("tutorial-anchor-only", !!anchorOnly);
       const short = significant.length === 1 &&
         significant[0].nodeType === Node.ELEMENT_NODE &&
@@ -243,6 +253,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 </head><body id="top"><a class="skip-link" href="#main-content">跳到正文</a>
 <header class="topbar"><a href="index.html">🏠 首页</a> &nbsp;/&nbsp; 第 15 章 · 条件目标提取与多通道日志</header>
 <div class="wrap"><nav class="side" aria-label="全书目录"><div class="chap"><a href="index.html">🏠 导读与导航（首页）</a></div>
+<div class="chap"><a href="00_math-foundations.html">第 0 章 · 全书数学基础与信号分析预备</a></div>
 <div class="chap"><a href="01_problem-definition.html">第 1 章 · 问题定义与双耳启示</a></div>
 <div class="chap"><a href="02_basics-signal-model.html">第 2 章 · 声音到达阵列时发生了什么</a></div>
 <div class="chap"><a href="03_array-geometry.html">第 3 章 · 阵列几何形态</a></div>
@@ -375,8 +386,8 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-6fb2bbba75">E15-18：条件目标提取中的注册声纹串音污染与排他门控</a></li>
 </ul></nav></details>
 <blockquote>
-<p>本篇是第 15 章（扩展专题Ⅳ），接在<a href="14_spatial-wearable-arrays.html">第 14 章空间声场采集、参数化编码与可穿戴阵列</a>之后，讨论当声场中存在多位说话人、同向远端干扰或重叠对话时，拾音前端如何结合声纹、近场距离、说话人日志与视觉唇动线索完成目标说话人提取与多说话人活动检测。线性代数与概率预备内容可回查<a href="16_appendix-symbols-math.html#sec-16-3">第 16 章附录 A §16.3</a>。</p>
-<p>🏠 首页导读：<a href="index.html">🏠 导读与导航</a> ｜ 上一篇：<a href="14_spatial-wearable-arrays.html">第 14 章 · 空间声场与可穿戴阵列</a> ｜ 下一篇：<a href="16_appendix-symbols-math.html">第 16 章 · 附录 A：符号术语数学</a></p>
+<p>⚠️ 本篇是本书正文第 15 章（扩展专题Ⅳ；正文共 16 章，即第 0～15 章，其中第 12～15 章为四篇扩展专题，另有附录 A、B），接在<a href="14_spatial-wearable-arrays.html">第 14 章空间声场采集、参数化编码与可穿戴阵列</a>之后，讨论当声场中存在多位说话人、同向远端干扰或重叠对话时，拾音前端如何结合声纹、近场距离、说话人日志与视觉唇动线索完成目标说话人提取与多说话人活动检测。菲涅耳球面波近似、约束拉格朗日与匈牙利最优指派推导可回查<a href="00_math-foundations.html#sec-0-1">第 0 章 §0.1</a>、<a href="00_math-foundations.html#sec-0-5">§0.5</a>与<a href="00_math-foundations.html#sec-0-6">§0.6</a>，全局符号与术语速查见<a href="16_appendix-symbols-math.html#sec-16-1">第 16 章附录 A §16.1</a>。</p>
+<p>首页导读：<a href="index.html">🏠 导读与导航</a> ｜ 上一篇：<a href="14_spatial-wearable-arrays.html">第 14 章 · 空间声场与可穿戴阵列</a> ｜ 下一篇：<a href="16_appendix-symbols-math.html">第 16 章 · 附录 A：符号术语数学</a></p>
 </blockquote>
 <hr />
 <span id="sec-1" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-a6b1dc83f6" class="anchor-alias" aria-hidden="true"></span><h1 id="sec-u-75f51bf541">第 15 章：条件目标提取、多通道日志与远场多模态前端</h1>
@@ -391,45 +402,45 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <p><strong>目标说话人提取（Target Speaker Extraction，TSE；文献亦称目标语音提取 Target Speech Extraction）</strong>把问题从“分离所有人”切换为“给定一条描述目标的先验线索 $\mathcal C$，直接从多通道混合观测中只提取与 $\mathcal C$ 匹配的单一目标语音”。如果目标在当前时间段正在说话，系统输出不失真的目标波形；如果目标保持沉默而只有旁人在说话，系统应当输出安静的零信号。</p>
 <span id="sec-4" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-fa145bc099">五类目标线索的物理形态与缩写对照</h3>
 <p>在工程设计中，“先验线索 $\mathcal C$”不局限于预先录好的一段注册语音。只要某种物理量或模态能够把目标说话人与周围干扰区分开，就能编码为条件向量驱动提取器。下表对比了远场与可穿戴设备中最常用的五类目标线索及其失效边界：</p>
-<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
+<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table class="tutorial-budget-table" style="--tutorial-table-width:52em">
 <thead>
 <tr>
-<th scope="col">线索模态</th>
-<th scope="col">物理可观测量</th>
-<th scope="col">典型应用场景</th>
-<th scope="col">核心失效条件</th>
+<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:10em">线索模态</th>
+<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:14em">物理可观测量</th>
+<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:14em">典型应用场景</th>
+<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:14em">核心失效条件</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><strong>注册声纹线索</strong></td>
-<td>3～10 s 注册语音提取的说话人嵌入向量</td>
-<td>个人手机免提、定制语音助手</td>
-<td>双胞胎或音色相近、感冒变声、耳语发声</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:10em"><strong>注册声纹线索</strong></td>
+<td class="tutorial-short-column" style="--tutorial-column-width:14em">3～10 s 注册语音提取的说话人嵌入向量</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:14em">个人手机免提、定制语音助手</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:14em">双胞胎或音色相近、感冒变声、耳语发声</td>
 </tr>
 <tr>
-<td><strong>空间角度锥线索</strong></td>
-<td>目标方位角与俯仰角区间 $(\theta_0 \pm \Delta\theta)$</td>
-<td>智能电视前向拾音、车载主副驾分区</td>
-<td>干扰源恰好站在目标身后同一直线上</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:10em"><strong>空间角度锥线索</strong></td>
+<td class="tutorial-short-column" style="--tutorial-column-width:14em">目标方位角与俯仰角区间 $(\theta_0 \pm \Delta\theta)$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:14em">智能电视前向拾音、车载主副驾分区</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:14em">干扰源恰好站在目标身后同一直线上</td>
 </tr>
 <tr>
-<td><strong>近场距离气泡线索</strong></td>
-<td>球面波前曲率限定的径向距离 $r \le r_{\mathrm{bubble}}$</td>
-<td>开放式工位麦克风、双耳智能眼镜</td>
-<td>阵列孔径过小（$r \gg 2D^2/\lambda$）或低频段</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:10em"><strong>近场距离气泡线索</strong></td>
+<td class="tutorial-short-column" style="--tutorial-column-width:14em">球面波前曲率限定的径向距离 $r \le r_{\mathrm{bubble}}$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:14em">开放式工位麦克风、双耳智能眼镜</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:14em">阵列孔径过小（$r \gg 2D^2/\lambda$）或低频段</td>
 </tr>
 <tr>
-<td><strong>视觉唇动线索</strong></td>
-<td>人脸检测框内嘴唇开合与口型时序特征</td>
-<td>视频会议终端、带摄像头智能屏</td>
-<td>端杯遮挡嘴唇、侧脸转头、相机管线滞后</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:10em"><strong>视觉唇动线索</strong></td>
+<td class="tutorial-short-column" style="--tutorial-column-width:14em">人脸检测框内嘴唇开合与口型时序特征</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:14em">视频会议终端、带摄像头智能屏</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:14em">端杯遮挡嘴唇、侧脸转头、相机管线滞后</td>
 </tr>
 <tr>
-<td><strong>语义/概念提示线索</strong></td>
-<td>文本标签或事件类别嵌入</td>
-<td>听觉场景按需拾音、辅助听觉设备</td>
-<td>多人同属同一宽泛类别（如两位成年男性）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:10em"><strong>语义/概念提示线索</strong></td>
+<td class="tutorial-short-column" style="--tutorial-column-width:14em">文本标签或事件类别嵌入</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:14em">听觉场景按需拾音、辅助听觉设备</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:14em">多人同属同一宽泛类别（如两位成年男性）</td>
 </tr>
 </tbody>
 </table></div>
@@ -734,7 +745,7 @@ E_{\mathrm{miss}}(t)+E_{\mathrm{FA}}(t)
 =\frac{\sum_{t=0}^{T-1}\max\!\bigl(0,\;N_{\mathrm{ref}}(t)-1\bigr)}
 {\sum_{t=0}^{T-1}N_{\mathrm{ref}}(t)}.\tag{15-22}$$</p>
 <p>式(15-22)告诉我们：只要不打破“每帧至多一个标签”的模型假设，把单段声纹编码器换得再大、把聚类相似度矩阵调得再精细，也无法削减分毫由 $\max(0, m_t - 1)$ 锁死的重叠漏检下界。要真正攻克重叠对话，日志模型必须从“单标签互斥划分”升级为“每位候选说话人各自拥有独立二元开关”的多标签检测架构——这正是端到端神经日志（EEND，<a href="https://arxiv.org/abs/1909.06247">Fujita 等，Interspeech 2019</a>）与目标说话人语音活动检测（TS-VAD，<a href="https://arxiv.org/abs/2005.07272">Medennikov 等，Interspeech 2020</a>）诞生的核心动因。</p>
-<p>更进一步，即便把输出层升级为独立二元开关，若仍将输出轨道数固定为常数 $K_{\mathrm{fixed}} = 2$（固定双槽置换不变训练 PIT），一旦真实会议出现第 $3$ 位发言人，最优二分图匹配下至少有一名真实说话人的全部发声帧无法分到独立轨道，同样会产生正比于缺席槽位发言时长的硬性漏检下界。Horiguchi 等人提出的端到端编码器—解码器吸引子网络（EEND-EDA，<em>IEEE/ACM TASLP</em> 2022）通过序列解码动态生成候选说话人吸引子，并以存在性概率门限自动停止扩展，从而在人数未知场景下消除固定槽位截断下界（吸引子停止准则与双槽下界复算见 <a href="#e15-17">E15-17</a>）。</p>
+<p>更进一步，即便把输出层升级为独立二元开关，若仍将输出轨道数固定为常数 $K_{\mathrm{fixed}} = 2$（固定双槽置换不变训练 PIT），一旦真实会议出现第 $3$ 位发言人，最优二分图匹配下至少有一名真实说话人的全部发声帧无法分到独立轨道，同样会产生正比于未分配槽位发言时长的硬性漏检下界。Horiguchi 等人提出的端到端编码器—解码器吸引子网络（EEND-EDA，<em>IEEE/ACM TASLP</em> 2022）通过序列解码动态生成候选说话人吸引子，并以存在性概率门限自动停止扩展，从而在人数未知场景下消除固定槽位截断下界（吸引子停止准则与双槽下界复算见 <a href="#e15-17">E15-17</a>）。</p>
 <span id="sec-18" class="anchor-alias" aria-hidden="true"></span><span id="sec-17-5" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-15-5">15.5 多通道目标说话人语音活动检测（TS-VAD）与 GSS 协同闭环</h2>
 <span id="sec-19" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-021bf8ae7d">空间相位差与声纹相似度的对数几率贝叶斯融合</h3>
 <p>在多麦克风会议室（如 CHiME-6 / CHiME-7 餐厨与客厅多人对话场景）中，单靠单通道声纹做 TS-VAD 仍会在双人强重叠帧上犹豫不决：因为两人声音叠在一起后，该帧混合频谱算出的嵌入向量落在两位说话人声纹中心的中间地带，余弦相似度双双跌落到 $0.45$ 左右。此时麦克风阵列的<strong>空间通道间相位差（Inter-channel Phase Difference，IPD）</strong>恰好提供了与声纹互补的第二维证据——即便两人在同一帧发声，他们在时频平面不同频点上仍暴露出各自不同的到达方向相位！</p>
@@ -849,51 +860,51 @@ M_{\mathrm{fused}}[k,\ell]
 <span id="sec-28" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-ee44f8cb5d">级联链路（Diarization → GSS → ASR）与联合架构（SOT / DiCoW）对比</h3>
 <p>当工程团队接到“开发一套支持重叠抢话的远场多人会议纪要系统”任务时，架构评审往往集中在两条技术路线的取舍上：一条是在 CHiME-6 / CHiME-7 / CHiME-8 远场多通道评测中久经考验的<strong>模块化级联架构</strong>（多通道 TS-VAD 日志 $\to$ WPE 去混响 + GSS 空间掩码波束形成 $\to$ 单人语音识别大模型 ASR）；另一条是近年快速崛起的<strong>端到端或条件化大模型联合架构</strong>，代表方案包括序列化输出训练（Serialized Output Training，SOT，<a href="https://arxiv.org/abs/2003.12687">Kanda 等，Interspeech 2020</a>）与日志条件化 Whisper（Diarization-Conditioned Whisper，DiCoW，<a href="https://arxiv.org/abs/2501.00114">Polok 等，CSL 2026 / arXiv 预印本</a>）。</p>
 <p>我们先看清两类联合方案的内部机制：SOT 不显式输出分离后的多路音频波形，而是在单个注意力解码器的词元序列中插入特殊的说话人切换标记 <code>&lt;sc&gt;</code>，约定按各段语音的首次发声先后次序（First-In, First-Out）依次拼写第一位与第二位说话人的重叠词句；DiCoW 则保留外部多标签说话人日志模块输出的帧级活动矩阵，将其编码为静音/目标单讲/目标重叠/非目标四态条件掩码直接注入预训练 Whisper 编码器各层（FDDT 帧级日志依赖变换），从而免去波形分离重建环节，直接按目标说话人逐路解码文字。下表从六个核心工程维度给出选型对照：</p>
-<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
+<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table class="tutorial-budget-table" style="--tutorial-table-width:56em">
 <thead>
 <tr>
-<th scope="col">评估维度</th>
-<th scope="col">级联链路（TS-VAD → GSS → ASR）</th>
-<th scope="col">序列化联合识别（SOT）</th>
-<th scope="col">日志条件化大模型（DiCoW）</th>
+<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:10em">评估维度</th>
+<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:16em">级联链路（TS-VAD → GSS → ASR）</th>
+<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:15em">序列化联合识别（SOT）</th>
+<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:15em">日志条件化大模型（DiCoW）</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><strong>是否输出独立可听音频</strong></td>
-<td><strong>是</strong>（每段生成干净单人波束波形，可供人工回放取证）</td>
-<td><strong>否</strong>（仅输出插入 <code>&lt;sc&gt;</code> 分隔符的多人文本流）</td>
-<td><strong>否</strong>（直接由条件编码特征解码目标说话人文本）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:10em"><strong>是否输出独立可听音频</strong></td>
+<td class="tutorial-short-column" style="--tutorial-column-width:16em"><strong>是</strong>（每段生成干净单人波束波形，可供人工回放取证）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:15em"><strong>否</strong>（仅输出插入 <code>&lt;sc&gt;</code> 分隔符的多人文本流）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:15em"><strong>否</strong>（直接由条件编码特征解码目标说话人文本）</td>
 </tr>
 <tr>
-<td><strong>物理多麦相位利用率</strong></td>
-<td><strong>极高</strong>（显式复数协方差求逆与线性无失真 MVDR 零陷）</td>
-<td>取决于前端多通道编码层，缺少显式线性零陷保证</td>
-<td>依赖外部日志质量，编码器在特征域抑制非目标语音</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:10em"><strong>物理多麦相位利用率</strong></td>
+<td class="tutorial-short-column" style="--tutorial-column-width:16em"><strong>极高</strong>（显式复数协方差求逆与线性无失真 MVDR 零陷）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:15em">取决于前端多通道编码层，缺少显式线性零陷保证</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:15em">依赖外部日志质量，编码器在特征域抑制非目标语音</td>
 </tr>
 <tr>
-<td><strong>端到端系统等待延迟</strong></td>
-<td>较高（全局聚类与 GSS 统计通常需要数秒上下文缓冲）</td>
-<td>中等（支持 $1$～$2\ \mathrm{s}$ 流式分块 token 缓冲）</td>
-<td>中至高（受限于前端日志窗口与 Whisper 分块长度）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:10em"><strong>端到端系统等待延迟</strong></td>
+<td class="tutorial-short-column" style="--tutorial-column-width:16em">较高（全局聚类与 GSS 统计通常需要数秒上下文缓冲）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:15em">中等（支持 $1$～$2\ \mathrm{s}$ 流式分块 token 缓冲）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:15em">中至高（受限于前端日志窗口与 Whisper 分块长度）</td>
 </tr>
 <tr>
-<td><strong>单模块独立排障与升级</strong></td>
-<td><strong>极强</strong>（可单独听查 GSS 波形定位是日志漏检还是 ASR 错词）</td>
-<td>较难（分离与语言解码耦合在同一黑盒解码器内）</td>
-<td>中等（日志帧掩码可视可调，识别复用预训练基座）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:10em"><strong>单模块独立排障与升级</strong></td>
+<td class="tutorial-short-column" style="--tutorial-column-width:16em"><strong>极强</strong>（可单独听查 GSS 波形定位是日志漏检还是 ASR 错词）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:15em">较难（分离与语言解码耦合在同一黑盒解码器内）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:15em">中等（日志帧掩码可视可调，识别复用预训练基座）</td>
 </tr>
 <tr>
-<td><strong>同时重叠人数上限扩展</strong></td>
-<td>随日志轨道数线性扩展（每人在各自活动窗内独立求波束）</td>
-<td>超过 $3$ 人强重叠时 <code>&lt;sc&gt;</code> 序列长度翻倍易出现漏词</td>
-<td>按检测到的每位活跃说话人分别执行一次条件前向推理</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:10em"><strong>同时重叠人数上限扩展</strong></td>
+<td class="tutorial-short-column" style="--tutorial-column-width:16em">随日志轨道数线性扩展（每人在各自活动窗内独立求波束）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:15em">超过 $3$ 人强重叠时 <code>&lt;sc&gt;</code> 序列长度翻倍易出现漏词</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:15em">按检测到的每位活跃说话人分别执行一次条件前向推理</td>
 </tr>
 <tr>
-<td><strong>小样本领域热词适配</strong></td>
-<td>直接替换后端 ASR 语言模型或热词表，无需重训前端</td>
-<td>需合成多人重叠混合语料微调联合模型以防遗忘 <code>&lt;sc&gt;</code></td>
-<td>可在冻结大部分 Whisper 参数下仅微调轻量条件注入层</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:10em"><strong>小样本领域热词适配</strong></td>
+<td class="tutorial-short-column" style="--tutorial-column-width:16em">直接替换后端 ASR 语言模型或热词表，无需重训前端</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:15em">需合成多人重叠混合语料微调联合模型以防遗忘 <code>&lt;sc&gt;</code></td>
+<td class="tutorial-short-column" style="--tutorial-column-width:15em">可在冻结大部分 Whisper 参数下仅微调轻量条件注入层</td>
 </tr>
 </tbody>
 </table></div>
@@ -927,37 +938,37 @@ h_m[0]\,x_m[n]+h_m[1]\,x_m[n-1]\bigr).\tag{15-32}$$</p>
 .venv/bin/python -m codes.chapters.ch15.examples.generate_tse_audio --check
 </code></pre>
 <p>六个合成音频文件的声道结构与稳窗客观指标汇总如下（试听前请先将播放设备音量调低；全部参数与整型计数见 <a href="tse_audio/MANIFEST.json"><code>MANIFEST.json</code></a>）：</p>
-<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
+<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table class="tutorial-budget-table" style="--tutorial-table-width:46em">
 <thead>
 <tr>
-<th scope="col">音频样本（试听与下载）</th>
-<th scope="col">声道、信号构成与稳窗指标核对</th>
+<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:22em">音频样本（试听与下载）</th>
+<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:24em">声道、信号构成与稳窗指标核对</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><a href="tse_audio/tse_near_target_ref.wav">近场目标参考</a><audio class="audio-sample" controls preload="none" aria-label="近场目标参考" src="tse_audio/tse_near_target_ref.wav">请使用上方 WAV 链接下载。</audio></td>
-<td>单声道；$r_1 = 0.40\ \mathrm{m}$ 处 $3200\ \mathrm{Hz}$ 纯净目标，稳窗均方功率 $0.0128$，用作统一比较基准</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:22em"><a href="tse_audio/tse_near_target_ref.wav">近场目标参考</a><audio class="audio-sample" controls preload="none" aria-label="近场目标参考" src="tse_audio/tse_near_target_ref.wav">请使用上方 WAV 链接下载。</audio></td>
+<td class="tutorial-short-column" style="--tutorial-column-width:24em">单声道；$r_1 = 0.40\ \mathrm{m}$ 处 $3200\ \mathrm{Hz}$ 纯净目标，稳窗均方功率 $0.0128$，用作统一比较基准</td>
 </tr>
 <tr>
-<td><a href="tse_audio/tse_far_interferer_ref.wav">同向远端干扰参考</a><audio class="audio-sample" controls preload="none" aria-label="同向远端干扰参考" src="tse_audio/tse_far_interferer_ref.wav">请使用上方 WAV 链接下载。</audio></td>
-<td>单声道；$r_2 = 4.00\ \mathrm{m}$ 处 $2500\ \mathrm{Hz}$ 同向等幅干扰，稳窗均方功率 $0.0128$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:22em"><a href="tse_audio/tse_far_interferer_ref.wav">同向远端干扰参考</a><audio class="audio-sample" controls preload="none" aria-label="同向远端干扰参考" src="tse_audio/tse_far_interferer_ref.wav">请使用上方 WAV 链接下载。</audio></td>
+<td class="tutorial-short-column" style="--tutorial-column-width:24em">单声道；$r_2 = 4.00\ \mathrm{m}$ 处 $2500\ \mathrm{Hz}$ 同向等幅干扰，稳窗均方功率 $0.0128$</td>
 </tr>
 <tr>
-<td><a href="tse_audio/tse_array_3ch.wav">三麦近场混合观测</a><audio class="audio-sample" controls preload="none" aria-label="三麦近场混合观测" src="tse_audio/tse_array_3ch.wav">请使用上方 WAV 链接下载。</audio></td>
-<td>三声道；$d = 10\ \mathrm{cm}$ 线阵原始拾音（含底噪），各声道稳窗均方功率 $0.025672$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:22em"><a href="tse_audio/tse_array_3ch.wav">三麦近场混合观测</a><audio class="audio-sample" controls preload="none" aria-label="三麦近场混合观测" src="tse_audio/tse_array_3ch.wav">请使用上方 WAV 链接下载。</audio></td>
+<td class="tutorial-short-column" style="--tutorial-column-width:24em">三声道；$d = 10\ \mathrm{cm}$ 线阵原始拾音（含底噪），各声道稳窗均方功率 $0.025672$</td>
 </tr>
 <tr>
-<td><a href="tse_audio/tse_farfield_dsb.wav">传统远场延迟求和</a><audio class="audio-sample" controls preload="none" aria-label="传统远场延迟求和" src="tse_audio/tse_farfield_dsb.wav">请使用上方 WAV 链接下载。</audio></td>
-<td>单声道；等权波束 $[1/3, 1/3, 1/3]$，解析/浮点 NMSE 为 $1.2227$、PCM16 整型 NMSE 为 $1.2226$（$+0.87\ \mathrm{dB}$），同向干扰几乎原样残留</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:22em"><a href="tse_audio/tse_farfield_dsb.wav">传统远场延迟求和</a><audio class="audio-sample" controls preload="none" aria-label="传统远场延迟求和" src="tse_audio/tse_farfield_dsb.wav">请使用上方 WAV 链接下载。</audio></td>
+<td class="tutorial-short-column" style="--tutorial-column-width:24em">单声道；等权波束 $[1/3, 1/3, 1/3]$，解析/浮点 NMSE 为 $1.2227$、PCM16 整型 NMSE 为 $1.2226$（$+0.87\ \mathrm{dB}$），同向干扰几乎原样残留</td>
 </tr>
 <tr>
-<td><a href="tse_audio/tse_bubble_d10cm.wav">10 cm 孔径距离气泡</a><audio class="audio-sample" controls preload="none" aria-label="10 cm 孔径距离气泡" src="tse_audio/tse_bubble_d10cm.wav">请使用上方 WAV 链接下载。</audio></td>
-<td>单声道；无正则二抽头实滤波输出，解析/浮点与 PCM16 整型 NMSE 均降至 <strong>$0.0246$（$-16.10\ \mathrm{dB}$）</strong>，同向 $4\ \mathrm{m}$ 干扰压低 $21.72\ \mathrm{dB}$</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:22em"><a href="tse_audio/tse_bubble_d10cm.wav">10 cm 孔径距离气泡</a><audio class="audio-sample" controls preload="none" aria-label="10 cm 孔径距离气泡" src="tse_audio/tse_bubble_d10cm.wav">请使用上方 WAV 链接下载。</audio></td>
+<td class="tutorial-short-column" style="--tutorial-column-width:24em">单声道；无正则二抽头实滤波输出，解析/浮点与 PCM16 整型 NMSE 均降至 <strong>$0.0246$（$-16.10\ \mathrm{dB}$）</strong>，同向 $4\ \mathrm{m}$ 干扰压低 $21.72\ \mathrm{dB}$</td>
 </tr>
 <tr>
-<td><a href="tse_audio/tse_bubble_d2cm_illcond.wav">2 cm 小孔径正则气泡</a><audio class="audio-sample" controls preload="none" aria-label="2 cm 小孔径正则气泡" src="tse_audio/tse_bubble_d2cm_illcond.wav">请使用上方 WAV 链接下载。</audio></td>
-<td>单声道；$d = 2\ \mathrm{cm}$、阻尼 $\delta = 2\times 10^{-4}$，解析/浮点 NMSE 为 $2.2762$、PCM16 整型 NMSE 为 <strong>$2.2760$（$+3.57\ \mathrm{dB}$）</strong>，目标衰减且底噪显著放大</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:22em"><a href="tse_audio/tse_bubble_d2cm_illcond.wav">2 cm 小孔径正则气泡</a><audio class="audio-sample" controls preload="none" aria-label="2 cm 小孔径正则气泡" src="tse_audio/tse_bubble_d2cm_illcond.wav">请使用上方 WAV 链接下载。</audio></td>
+<td class="tutorial-short-column" style="--tutorial-column-width:24em">单声道；$d = 2\ \mathrm{cm}$、阻尼 $\delta = 2\times 10^{-4}$，解析/浮点 NMSE 为 $2.2762$、PCM16 整型 NMSE 为 <strong>$2.2760$（$+3.57\ \mathrm{dB}$）</strong>，目标衰减且底噪显著放大</td>
 </tr>
 </tbody>
 </table></div>
@@ -1125,7 +1136,9 @@ p_s&=\sigma\bigl(\vec w_{\mathrm{exist}}^\top\vec a_s+b\bigr),\\
 <p><strong>解答</strong>：（1）记未归一化模长 $Z = \sqrt{1 + 2\alpha\rho_{12} + \alpha^2}$，将 $\vec e_{\mathrm{cont}}$ 与 $\vec e_2$ 做内积同理可得干扰余弦 $(\rho_{12} + \alpha) / Z$。当 $\alpha = 0.5$ 且 $\rho_{12} = 0$ 时，$Z = \sqrt{5}/2$，目标余弦从 $1.0$ 跌至 $2/\sqrt{5} \approx 0.894427$（角度漂移 $26.57^\circ$），干扰余弦从 $0$ 跃升至 $1/\sqrt{5} \approx 0.447214$；代入门控函数，干净模板对干扰的门控仅为 $\sigma(-3.2) \approx 0.039166$，受污染模板则升至 $\sigma(8(1/\sqrt{5} - 0.40)) \approx 0.593320$，干扰泄漏门控膨胀约 $15.15$ 倍！当同性别声纹存在基础相关 $\rho_{12} = 0.3$ 时，$Z = \sqrt{1.55}$，目标余弦保持为 $1.15 / \sqrt{1.55} \approx 0.923702$，干扰余弦却飙升至 $0.80 / \sqrt{1.55} \approx 0.642575$，极易在目标沉默段放行旁人语音。</p>
 <p>（2）在 $6$ 帧注册缓冲中，全部 $6$ 帧均满足 $\mathrm{SNR}_t \ge 10\ \mathrm{dB}$，故纯能量 VAD 池化保留全部 $6$ 帧，算术均值 $\frac{1}{6}(4\vec e_1 + 2\vec e_2)$ 归一化后恰为 $[2/\sqrt{5}, 1/\sqrt{5}, 0]^\top$（重现 $\alpha = 0.5$ 串音污染）。引入式(15-25)排他概率 $m_{1,t}^{\mathrm{tar}} = \gamma_{1,t}(1 - \gamma_{2,t})$ 后，前 $4$ 帧排他概率为 $0.95 \times 0.96 = 0.912 \ge 0.60$，后 $2$ 帧串音处骤降至 $0.05 \times 0.08 = 0.004 \lt  0.60$ 被自动剔除，池化均值精确还原纯净目标模板 $\hat{\vec e} = [1, 0, 0]^\top$（目标余弦 $1.000000$，干扰余弦 $0.000000$，见 <code>gated_enrollment_pooling</code>）。</p>
 <hr />
-<p><a href="index.html">返回导读</a> ｜ <a href="14_spatial-wearable-arrays.html">上一篇：扩展专题Ⅲ：空间声场采集、参数化编码与可穿戴阵列</a> ｜ <a href="16_appendix-symbols-math.html">下一篇：附录 A：符号、术语与数学基础</a></p><div class="pn"><span><a href="14_spatial-wearable-arrays.html">← 上一篇</a></span><span><a href="16_appendix-symbols-math.html">下一篇 →</a></span></div>
+<blockquote>
+<p>📄 本篇信息：配图 4 张 ｜ <a href="index.html">回首页</a></p>
+</blockquote><div class="pn"><span><a href="14_spatial-wearable-arrays.html">← 上一篇</a></span><span><a href="16_appendix-symbols-math.html">下一篇 →</a></span></div>
 <footer class="foot">麦克风阵列信号处理教程 · 静态站由 scripts/build_site.py 生成</footer>
 </main></div><a class="topbtn" href="#top" title="回顶部" aria-label="回到页面顶部">↑</a>
 <script>if(!navigator.onLine)document.getElementById('offnote').style.display='block';</script>

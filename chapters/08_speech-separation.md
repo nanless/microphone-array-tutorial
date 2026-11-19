@@ -1,6 +1,8 @@
-> ⚠️ 本篇是教程正文第 8 章（正文共 15 章，含第 12～15 章四篇扩展专题，另有附录 A、B），可独立阅读，前后篇见下方导航。
+> 本篇是本书正文第 8 章；正文与扩展专题共 16 章（第 0～15 章，其中第 0 章为数学基础，第 12～15 章为四篇扩展专题），另有附录 A、B。本篇可独立阅读，前后篇见下方导航。
 >
-> 🏠 首页导读：[`00_overview.md`](00_overview.md) ｜ 上一篇：[07_wpe-dereverberation.md](07_wpe-dereverberation.md) ｜ 下一篇：[09_source-tracking.md](09_source-tracking.md)
+> 导读首页：[00_overview.md](00_overview.md) ｜ 上一篇：[07_wpe-dereverberation.md](07_wpe-dereverberation.md) ｜ 下一篇：[09_source-tracking.md](09_source-tracking.md)
+
+---
 
 ## 8. 语音分离
 
@@ -196,19 +198,19 @@ y_{nf}(k)&=\vec w_{nf}^H\vec x_f(k).
 
 在固定本轮加权协方差矩阵 $\mathbf V$ 之后，如何闭式更新单个解混行向量详见[练习 E08-08](#e08-08)（该题直接给定 $\mathbf V$ 手算线性方程求解与加权二次型归一化的 IP 子步骤），下文的式(8-8)则完整说明 AuxIVA 怎样由跨频点输出范数递推构造 $\mathbf V$。
 
-设统计帧数为 $T$。在第 $k$ 帧把第 $n$ 个源在所有频点上的解混输出拼成一根宽带源谱向量 $\vec y_n(k)=[y_{n1}(k),\dots,y_{nF}(k)]^\top$，采用球对称复拉普拉斯（Laplace）超高斯工作模型 $p(\vec y_n)\propto\exp(-2\|\vec y_n\|_2)$——注意指数里不是各频点模平方的独立相加，而是先跨频点求和再开根号的全带二范数 $r_n(k)=\|\vec y_n(k)\|_2$，正是这个根号把同一个人的所有频点紧紧绑在了一起！
+设统计帧数为 $T$。在第 $t$ 帧（$t=1,\dots,T$）把第 $n$ 个源在所有频点上的解混输出拼成一根 $F$ 维宽带源谱向量 $\bar{\vec y}_n(t)=[y_{n1}(t),\dots,y_{nF}(t)]^\top\in\mathbb{C}^{F\times 1}$（以顶横线与单频点 $M$ 维窄带向量 $\vec y_f(t)=\mathbf W_f\vec x_f(t)\in\mathbb{C}^{M\times 1}$ 相区分），采用球对称复拉普拉斯（Laplace）超高斯工作模型 $p(\bar{\vec y}_n)\propto\exp(-2\|\bar{\vec y}_n\|_2)$——注意指数里不是各频点模平方的独立相加，而是先跨频点求和再开根号的全带二范数 $r_n(t)=\|\bar{\vec y}_n(t)\|_2$，正是这个根号把同一个人的所有频点紧紧绑在了一起！
 
-再由变量代换公式 $\vec y_f=\mathbf W_f\vec x_f$ 把源密度变回观测密度：一个复标量乘法 $w=a+\mathrm{j}b$ 作用在二维实虚部平面上等价于二阶实矩阵 $\begin{bmatrix}a&-b\\b&a\end{bmatrix}$，其行列式为 $a^2+b^2=|w|^2$；推广到 $M$ 维复空间 $\mathbb{C}^M\cong\mathbb{R}^{2M}$ 时，复线性变换 $\mathbf W_f$ 对应的 $2M\times 2M$ 实雅可比（Jacobian）行列式恰好等于模的平方 $|\det\mathbf W_f|^2$！取负自然对数并除以帧数 $T$ 归一化（利用 $\ln(|\det\mathbf W_f|^2)=2\ln|\det\mathbf W_f|$），便得到 AuxIVA 的目标函数：
+再由逐频点变量代换公式 $\vec y_f(t)=\mathbf W_f\vec x_f(t)$ 把源密度变回观测密度：一个复标量乘法 $w=a+\mathrm{j}b$ 作用在二维实虚部平面上等价于二阶实矩阵 $\begin{bmatrix}a&-b\\b&a\end{bmatrix}$，其行列式为 $a^2+b^2=|w|^2$；推广到 $M$ 维复空间 $\mathbb{C}^M\cong\mathbb{R}^{2M}$ 时，复线性变换 $\mathbf W_f$ 对应的 $2M\times 2M$ 实雅可比（Jacobian）行列式恰好等于模的平方 $|\det\mathbf W_f|^2$！取负自然对数并除以帧数 $T$ 归一化（利用 $\ln(|\det\mathbf W_f|^2)=2\ln|\det\mathbf W_f|$），便得到 AuxIVA 的目标函数：
 
 $$\begin{aligned}
-r_n(k)&=\sqrt{\sum_f|y_{nf}(k)|^2},\\
-J_{\mathrm{IVA}}&=\frac{2}{T}\sum_{n,k}r_n(k)
+r_n(t)&=\sqrt{\sum_f|y_{nf}(t)|^2},\\
+J_{\mathrm{IVA}}&=\frac{2}{T}\sum_{n,t}r_n(t)
 -2\sum_f\ln|\det \mathbf W_f|.
 \end{aligned}\tag{8-7}$$
 
 观察式(8-7)的两项博弈：第一项惩罚输出包络范数之和，促使各频点协同分离出稀疏的独立说话人；倘若没有第二项 $-2\sum_f\ln|\det\mathbf W_f|$ 顶住，优化器只要耍赖把 $\mathbf W_f$ 缩成全零矩阵就能让第一项降到 $0$！正是负对数行列式筑起了一道体积屏障，一旦 $\mathbf W_f$ 趋向奇异或缩零，$-\ln|\det\mathbf W_f|$ 就会奔向 $+\infty$。
 
-接下来是整个 AuxIVA 最精彩、也最容易被文献一笔带过的灵魂推导——**如何不调任何梯度步长，从带根号与行列式的非凸目标式(8-7)一步导出简洁的线性方程迭代投影（Iterative Projection，IP）式(8-8)？** 我们分三小步把它彻底拆透：
+接下来是整个 AuxIVA 最精彩、也最容易被文献一笔带过的灵魂推导——**如何不调任何梯度步长，从带根号与行列式的非凸目标式(8-7)一步导出简洁的线性方程迭代投影（Iterative Projection，IP）式(8-8)？** 我们借助辅助函数上界最小化（Majorization-Minimization，MM）与 Wirtinger 复微分（预备推导见[第 0 章 §0.5](00_math-foundations.md#sec-0-5)）分三小步把它彻底拆透：
 
 1. **切线上界消去根号，化为加权二次型**：由于平方根函数 $\sqrt{u}$ 在 $u>0$ 上是严格凹函数，其图形永远位于任意正切点 $u_0>0$ 处切线的下方，即对任意 $u\ge 0,u_0>0$ 恒有不等式 $2\sqrt{u}\le\frac{u}{\sqrt{u_0}}+\sqrt{u_0}$（当且仅当 $u=u_0$ 时取等号）。在当前轮旧输出处令 $\sqrt{u_0}=r_n(t)>0$（即旧输出的全带范数），把 $u=\sum_f|\vec w_{nf}^H\vec x_f(t)|^2$ 代入上界并对帧求平均，目标函数关于待更新行 $\vec w_{nf}^H$ 的可变部分就变成了干净的二次型加负对数行列式（不同频点 $f$ 至此在当轮辅助函数里彻底解耦！）：
 
@@ -228,7 +230,7 @@ J_{\mathrm{IVA}}&=\frac{2}{T}\sum_{n,k}r_n(k)
     =\vec w_{nf}^H\vec c_n,
     \end{aligned}$$
 
-    其中 $\vec c_n=[C_{n1}^*,\dots,C_{nM}^*]^\top$ 由第 $n$ 行各元素的代数余子式共轭组成，它**只依赖其余 $M-1$ 行而与 $\vec w_{nf}$ 完全无关**！不仅如此，由伴随矩阵基本恒等式 $\mathbf W_f\operatorname{adj}(\mathbf W_f)$ 等于 $(\det\mathbf W_f)\mathbf I_M$ 可知，其余任意第 $k\ne n$ 行与第 $n$ 行代数余子式的内积恒为零（“异行乘余子式必为零”，即 $\vec w_{kf}^H\vec c_n=0,\ \forall k\ne n$）。
+    其中 $\vec c_n=[C_{n1}^*,\dots,C_{nM}^*]^\top$ 由第 $n$ 行各元素的代数余子式共轭组成，它**只依赖其余 $M-1$ 行而与 $\vec w_{nf}$ 完全无关**！不仅如此，由伴随矩阵基本恒等式 $\mathbf W_f\operatorname{adj}(\mathbf W_f)$ 等于 $(\det\mathbf W_f)\mathbf I_M$ 可知，其余任意第 $m'\ne n$ 行与第 $n$ 行代数余子式的内积恒为零（“异行乘余子式必为零”，即 $\vec w_{m'f}^H\vec c_n=0,\ \forall m'\ne n$）。
 
 3. **求驻点并借 $\mathbf W_f$ 左乘化为标准线性方程**：利用 $|\det\mathbf W_f|=|\vec w_{nf}^H\vec c_n|$ 将对数项拆成 $-\ln(\vec w_{nf}^H\vec c_n)-\ln(\vec c_n^H\vec w_{nf})$，再将 $Q_{nf}(\vec w_{nf})$ 关于 $\vec w_{nf}^*$ 求 Wirtinger 偏导并令其为零向量（注意 $-\ln(\vec c_n^H\vec w_{nf})$ 仅含 $\vec w_{nf}$、对 $\vec w_{nf}^*$ 导数为零，前一项求导给出 $-\vec c_n/(\vec w_{nf}^H\vec c_n)$）：
 
@@ -239,7 +241,7 @@ J_{\mathrm{IVA}}&=\frac{2}{T}\sum_{n,k}r_n(k)
     &=\frac{\vec c_n}{\vec w_{nf}^H\vec c_n}.
     \end{aligned}$$
 
-    将上式两边左乘 $\vec w_{nf}^H$，右侧分子分母同为 $\vec w_{nf}^H\vec c_n=\det\mathbf W_f$ 而约化为 $1$，立即得出二次型尺度归一化条件 **$\vec w_{nf}^H\mathbf V_{nf}\vec w_{nf}=1$**！再定方向：记当前轮更新该行之前的矩阵为 $\mathbf W_f^{\mathrm{old}}$，由于其余第 $k\ne n$ 行乘 $\vec c_n$ 全为 $0$、唯独第 $n$ 行乘 $\vec c_n$ 等于标量 $\det\mathbf W_f^{\mathrm{old}}$，取未归一化方向向量 $\vec u$ 正比于 $\mathbf V_{nf}^{-1}\vec c_n$（除以 $\det\mathbf W_f^{\mathrm{old}}$），左乘 $\mathbf W_f^{\mathrm{old}}\mathbf V_{nf}$ 后恰好只剩第 $n$ 个坐标为 $1$、其余全为 $0$ 的标准基向量 $\vec e_n$！
+    将上式两边左乘 $\vec w_{nf}^H$，右侧分子分母同为 $\vec w_{nf}^H\vec c_n=\det\mathbf W_f$ 而约化为 $1$，立即得出二次型尺度归一化条件 **$\vec w_{nf}^H\mathbf V_{nf}\vec w_{nf}=1$**！再定方向：记当前轮更新该行之前的矩阵为 $\mathbf W_f^{\mathrm{old}}$，由于其余第 $m'\ne n$ 行乘 $\vec c_n$ 全为 $0$、唯独第 $n$ 行乘 $\vec c_n$ 等于标量 $\det\mathbf W_f^{\mathrm{old}}$，取未归一化方向向量 $\vec u$ 正比于 $\mathbf V_{nf}^{-1}\vec c_n$（除以 $\det\mathbf W_f^{\mathrm{old}}$），左乘 $\mathbf W_f^{\mathrm{old}}\mathbf V_{nf}$ 后恰好只剩第 $n$ 个坐标为 $1$、其余全为 $0$ 的标准基向量 $\vec e_n$！
 
 这就把繁琐的代数余子式彻底消掉，浓缩成了优美的式(8-8)迭代投影（IP）四步公式（以 $t=1,\dots,T$ 记帧号）：
 
@@ -399,9 +401,9 @@ $$\tilde Y_n(f,k)=\hat A_{rn}(f)Y_n(f,k).\tag{8-16}$$
 
 #### 跨频排列的两频点手算
 
-为了直观感受式(8-7)中的全带二范数 $r_n(k)=\sqrt{\sum_f|y_{nf}(k)|^2}$ 是如何自动对齐不同频点说话人槽位的，我们动手算一个两频点、两帧的极简数字例。
+为了直观感受式(8-7)中的全带二范数 $r_n(t)=\sqrt{\sum_f|y_{nf}(t)|^2}$ 是如何自动对齐不同频点说话人槽位的，我们动手算一个两频点、两帧的极简数字例。
 
-**输入与口径**：设两个频点 $f_1,f_2$ 上各自已经分离出两个槽位，两帧的非负幅度包络在 $f_1$ 的槽位 $1,2$ 上分别为 $[2,\ 0.5]$（第 $1$ 帧强、第 $2$ 帧弱）与 $[0.5,\ 2]$（第 $1$ 帧弱、第 $2$ 帧强）；频点 $f_2$ 上也出现了完全相同的两条包络序列，但未知哪条该配给谁。考察式(8-7)第一项的全带范数之和 $C=\sum_{k=1}^2\sum_{n=1}^2\|\vec y_n(k)\|_2$（注意对解混矩阵交换两行只改变行列式正负号，不改变 $|\det\mathbf W_f|$，因此式(8-7)第二项对排列保持中立，全靠第一项拍板！）：
+**输入与口径**：设两个频点 $f_1,f_2$ 上各自已经分离出两个槽位，两帧的非负幅度包络在 $f_1$ 的槽位 $1,2$ 上分别为 $[2,\ 0.5]$（第 $1$ 帧强、第 $2$ 帧弱）与 $[0.5,\ 2]$（第 $1$ 帧弱、第 $2$ 帧强）；频点 $f_2$ 上也出现了完全相同的两条包络序列，但未知哪条该配给谁。考察式(8-7)第一项的全带范数之和 $C=\sum_{t=1}^2\sum_{n=1}^2\|\bar{\vec y}_n(t)\|_2$（注意对解混矩阵交换两行只改变行列式正负号，不改变 $|\det\mathbf W_f|$，因此式(8-7)第二项对排列保持中立，全靠第一项拍板！）：
 
 1. **包络同起同落对齐（$f_2$ 保持槽位 $1$ 配 $1$、$2$ 配 $2$）**：第 $1$ 帧两路宽带向量幅度分别为 $[2,2]$ 与 $[0.5,0.5]$，二范数分别为 $\sqrt{2^2+2^2}=2\sqrt{2}$ 与 $\sqrt{0.5^2+0.5^2}=\frac{1}{\sqrt{2}}$，单帧之和为 $\frac{5}{\sqrt{2}}$；第 $2$ 帧对称相同，两帧总代价为
 
@@ -464,7 +466,7 @@ $$\tilde Y_n(f,k)=\hat A_{rn}(f)Y_n(f,k).\tag{8-16}$$
 **紧凑实现顺序**。下面列出本书带严格门控与正定保护的教学迭代五步流程，理清数据流转与状态依赖：
 
 1. **低能量筛除与球面投影**：从 WPE 输出复谱 $\vec Y(f,k)$ 中剔除 $\|\vec Y(f,k)\|_2\le\varepsilon_E$ 的静默点，对其余有效点计算严格单位方向向量 $\vec z=\vec Y/\|\vec Y\|_2$。为 $J$ 位说话人各分配一个空间分量，并追加恒活跃的背景噪声分量 $j=0$（$a_0(k)\equiv 1$）；用单位阵或初始方向外积初始化正定形状矩阵 $\mathbf B_j(f)$。
-2. **E 步（活动门控责任概率）**：在有效时频点上计算门控非负得分 $q_j(f,k)=a_j(k)\pi_j(f)p(\vec z(f,k)\mid\mathbf B_j(f))$，归一化得软掩码后验 $\gamma_j(f,k)=q_j(f,k)/\sum_{\ell=0}^J q_\ell(f,k)$（实际代码在对数域防下溢计算；正权重的恒活跃背景类保证了全员静音帧仍有合法后验 $\gamma_0=1$，若删去背景类则全员静音时分母归零崩溃）。
+2. **E 步（活动门控责任概率）**：在有效时频点上计算门控非负得分 $q_j(f,k)=a_j(k)\pi_j(f)p(\vec z(f,k)\mid\mathbf B_j(f))$，归一化得软掩码后验 $\gamma_j(f,k)=q_j(f,k)/\sum_{\ell=0}^J q_\ell(f,k)$（贝叶斯后验与混合模型期望最大化（EM）框架见[第 0 章 §0.6](00_math-foundations.md#sec-0-6)；实际代码在对数域防下溢计算，正权重的恒活跃背景类保证了全员静音帧仍有合法后验 $\gamma_0=1$，若删去背景类则全员静音时分母归零崩溃）。
 3. **M 步（形状矩阵不动点更新与迹归一化）**：将每个方向外积 $\vec z\vec z^H$ 除以当轮二次型 $\vec z^H\mathbf B_j^{-1}\vec z$ 后按责任权重 $\gamma_j$ 加权累加，施加向单位阵微弱收缩的正定正则化，再统一缩放使 $\operatorname{tr}(\mathbf B_j)=M$（本书实现中若某分量后验权重总和不足通道数 $M$，则安全重置为单位阵并累加诊断计数）。
 4. **迭代终止与状态记录**：重复 E 步与 M 步至设定轮数上限或变化阈值，显式记录实际轮数与重置次数（引入收缩正则、权重地板和重置保护后，不应再套用理想无约束 EM 的似然单调递增结论）。
 5. **回接原始复谱计算功率 SCM 与波束**：以收敛后的 $\gamma_j(f,k)$ 为权重，回到**同一阶段未做球面归一化的原始复谱外积 $\vec Y\vec Y^H$** 按式(8-22)计算每位目标说话人的 $\mathbf R_{\mathrm{tar}}$ 与非目标干扰协方差 $\mathbf R_{\mathrm{int}}$（汇集其余说话人与背景噪声），最后解算 MVDR 或 GEV 波束权重。
@@ -572,7 +574,7 @@ $$\begin{aligned}
 
 $\mathbf R_{\mathrm{tar}}$ 的非对角元 $+0.8$ 清晰反映了目标同相占优，其最大特征值 $1.8$ 对应的主特征向量（按第 $1$ 麦归一）给出估计相对传递函数 $\vec v=[1,1]^\top$；而 $\vec v$ 恰好又是干扰矩阵 $\mathbf R_{\mathrm{int}}$ 对应最小特征值 $0.2$ 的特征向量，故 $\mathbf R_{\mathrm{int}}^{-1}\vec v=5\vec v$，归一化分母为 $\vec v^H(5\vec v)=10$，一步算出 MVDR 权重 $\vec w=[0.5,\ 0.5]^\top$——它对目标同相快照输出 $1$，对反相干扰快照精确输出 $0$！（完整特征值与 GEV 对比见练习 [E08-10](#e08-10)）。
 
-同时也要清楚“主特征向量提取 RTF”的失效边界：只有当 $\mathbf R_{\mathrm{tar}}$ 接近秩一目标外积 $\phi\vec a\vec a^H$ 时主特征向量才对准真实 $\vec a$。若掩码混入强各向异性干扰，例如真实 $\vec a=[1,1]^\top$ 而污染后的目标矩阵变成 $\vec a\vec a^H+\operatorname{diag}(0,3)$，主特征向量就会被掰歪到 $[1,\ (3+\sqrt{13})/2]^\top\approx[1,\ 3.3028]^\top$，在空间白噪声协方差 $\mathbf R_{\mathrm{int}}=\mathbf I_2$ 下在空间白噪声协方差 $\mathbf R_{\mathrm{int}}=\mathbf I_2$ 下在空间白噪声协方差 $\mathbf R_{\mathrm{int}}=\mathbf I_2$ 下导致 MVDR 对真实目标的增益跌至约 $0.3613$！
+同时也要清楚“主特征向量提取 RTF”的失效边界：只有当 $\mathbf R_{\mathrm{tar}}$ 接近秩一目标外积 $\phi\vec a\vec a^H$ 时主特征向量才对准真实 $\vec a$。若掩码混入强各向异性干扰，例如真实 $\vec a=[1,1]^\top$ 而污染后的目标矩阵变成 $\vec a\vec a^H+\operatorname{diag}(0,3)$，主特征向量就会被掰歪到 $[1,\ (3+\sqrt{13})/2]^\top\approx[1,\ 3.3028]^\top$，在空间白噪声协方差 $\mathbf R_{\mathrm{int}}=\mathbf I_2$ 下导致 MVDR 对真实目标的增益跌至约 $0.3613$！
 
 #### 8.4.5 可运行的 cACGMM—SCM—MVDR 受控链
 
@@ -765,7 +767,7 @@ $$\begin{aligned}
 \text{满足}\quad&\sum_{n=1}^Ny_n=x.
 \end{aligned}\tag{8-29}$$
 
-记当前加和残差为 $r=x-\sum_{j=1}^N\widehat y_j$。引入拉格朗日乘子对实虚部修正量求导，立得各路最优修正量与各自不确定度权重 $v_n$ 成正比，归一化后即得闭式投影公式（见 [Wisdom 等，ICASSP 2019，§3.2 式(6)～(9)](https://arxiv.org/pdf/1811.08521)，练习 [E08-27](#e08-27) 手算对比不等权与等权均分的代价差异）：
+记当前加和残差为 $r=x-\sum_{j=1}^N\widehat y_j$。引入拉格朗日乘子对实虚部修正量求导（仿射子空间最小范数正交投影见[第 0 章 §0.3](00_math-foundations.md#sec-0-3) 与[§0.5](00_math-foundations.md#sec-0-5)），立得各路最优修正量与各自不确定度权重 $v_n$ 成正比，归一化后即得闭式投影公式（见 [Wisdom 等，ICASSP 2019，§3.2 式(6)～(9)](https://arxiv.org/pdf/1811.08521)，练习 [E08-27](#e08-27) 手算对比不等权与等权均分的代价差异）：
 
 $$y_n=\widehat y_n+\frac{v_n}{\sum_jv_j}
 \left(x-\sum_j\widehat y_j\right).\tag{8-30}$$
@@ -832,7 +834,7 @@ Y&=P_{\mathcal S}(Y).
 
 #### AuxIVA 的盲估计实验
 
-为了展示不给混合矩阵真值时真正盲分离的成功条件与失配现象，本仓库 [`reproduce_auxiva_reference.py`](../codes/chapters/ch08/examples/reproduce_auxiva_reference.py) 直接调用锁定版 [`ssspy` 的 `AuxLaplaceIVA`](https://github.com/tky823/ssspy/blob/38b9389e8b1914422561f1936d9b28d042d62d2c/ssspy/bss/iva.py)（按[上游源码锁表](../codes/chapters/ch00/SOURCES.lock.json)检出后运行 `.venv/bin/python -m codes.chapters.ch08.examples.reproduce_auxiva_reference`）：脚本仅向估计器喂入双麦混合复谱，由 IP 算法盲估 $30$ 轮逐频解混矩阵并向参考麦 $0$ 做回投影与逆 STFT，最后与参考麦 $0$ 上的真实源图像做去均值 SI-SDR 对比。
+为了展示不给混合矩阵真值时真正盲分离的成功条件与失配现象，本仓库 [`reproduce_auxiva_reference.py`](../codes/chapters/ch08/examples/reproduce_auxiva_reference.py) 直接调用锁定版 [`ssspy` 的 `AuxLaplaceIVA`](https://github.com/tky823/ssspy/blob/38b9389e8b1914422561f1936d9b28d042d62d2c/ssspy/bss/iva.py)（按[上游源码锁表](../codes/chapters/ch00/SOURCES.lock.json)检出后运行 `.venv/bin/python -m codes.chapters.ch08.examples.reproduce_auxiva_reference`）：脚本仅向估计器输入双麦混合复谱，由 IP 算法盲估 $30$ 轮逐频解混矩阵并向参考麦 $0$ 做回投影与逆 STFT，最后与参考麦 $0$ 上的真实源图像做去均值 SI-SDR 对比。
 
 对比两组具有截然不同源统计特性的双麦瞬时混合输入：第一组采用种子 `2468`、$8\ \mathrm{kHz}$ 下两路独立高斯载波分别乘以不同八段起伏包络，混合矩阵为 $[1,0.9;\ 0.8,1]$（条件数约 $12.24$）；第二组采用 $16\ \mathrm{kHz}$ 下包络同步的确定性双谐波信号，混合矩阵为 $[1,0.5;\ 0.2,1]$（两组输入统计与采样率不同，用于对比可辨识机制而非横向排名）：
 
@@ -1607,21 +1609,23 @@ $$\mathbf{T}_4(\vec{s})
 
 #### E08-34：窄带跨带流式算力预算与单人段旁路门控
 
-**题设分成两部分。** 第一部分核算窄带与跨带交替多通道网络的每秒乘加次数（MAC/s）：设采样率 $16\ \mathrm{kHz}$、帧移 $128$ 点（帧率 $T_{\mathrm{fps}}=125\ \mathrm{帧/s}$），骨干含 $B=4$ 个交替块、隐层维数 $D=64$、每方向单层循环单元门控数 $G=4$（故每时间步每频带单层乘加近似为 $G D^2$），比较全频点 $F=256$ 与梅尔子带压缩后 $F'=64$ 的因果流式算力。第二部分考察单说话人“元音加清擦音”双槽位误切分：设一句含 $4$ 个词的单人语音总能量为 $100$，其中稳态浊元音分量为 $\vec{s}_{\mathrm{v}}$（能量 $99$），词尾高频清擦音 `/s/` 分量为 $\vec{s}_{\mathrm{f}}$（能量 $1$，$\vec{s}_{\mathrm{v}}^\top\vec{s}_{\mathrm{f}}=0$），分离器把两者劈进了两个互斥输出槽位 $\hat{\vec{y}}_1=\vec{s}_{\mathrm{v}}$、$\hat{\vec{y}}_2=\vec{s}_{\mathrm{f}}$。定义按能量降序排列的主次槽位能量比门控规则：
+**题设分成两部分。** 第一部分核算窄带与跨带交替多通道网络的每秒乘加次数（MAC/s）：设采样率 $16\ \mathrm{kHz}$、帧移 $128$ 点（帧率 $T_{\mathrm{fps}}=125\ \mathrm{帧/s}$），骨干含 $B=4$ 个交替块、隐层维数 $D=64$、每方向单层循环单元门控数 $G=4$（故每时间步每频带单层乘加近似为 $G D^2$），比较全频点 $F=256$ 与梅尔子带压缩后 $F'=64$ 的因果流式算力。第二部分考察单说话人“元音加清擦音”双槽位误切分：设一句含 $4$ 个词的单人语音总能量为 $100$，其中稳态浊元音分量为 $\vec{s}_{\mathrm{v}}$（能量 $99$），词尾高频清擦音 `/s/` 分量为 $\vec{s}_{\mathrm{f}}$（能量 $1$，$\vec{s}_{\mathrm{v}}^\top\vec{s}_{\mathrm{f}}=0$），分离器把两者劈进了两个互斥输出槽位 $\hat{\vec{s}}_1=\vec{s}_{\mathrm{v}}$、$\hat{\vec{s}}_2=\vec{s}_{\mathrm{f}}$。记各槽位能量 $E_i=\|\hat{\vec{s}}_i\|_2^2$（$i\in\{1,2\}$），活跃主槽位索引 $p=\arg\max_{i\in\{1,2\}}E_i$（等能量时约定 $p=1$），次主能量比 $\eta_{\mathrm{dB}}=10\log_{10}(E_{3-p}/E_p)$，定义保持双槽位输出对 $(\hat{\vec{s}}_{\mathrm{out},1},\hat{\vec{s}}_{\mathrm{out},2})$ 的单人段旁路门控规则：
 
 $$\begin{aligned}
-\eta_{\mathrm{dB}}
-&=10\log_{10}\frac{E_{(2)}}{E_{(1)}},\\
-\hat{\vec{s}}_{\mathrm{out}}
+p&=\arg\max_{i\in\{1,2\}}E_i,\qquad
+\eta_{\mathrm{dB}}=10\log_{10}\frac{E_{3-p}}{E_p},\\
+(\hat{\vec{s}}_{\mathrm{out},1},\hat{\vec{s}}_{\mathrm{out},2})
 &=\begin{cases}
-\hat{\vec{y}}_1+\hat{\vec{y}}_2,&
-\eta_{\mathrm{dB}}\le\tau_{\mathrm{gate}},\\
-\hat{\vec{y}}_{(1)},&
+(\hat{\vec{s}}_1+\hat{\vec{s}}_2,\ \vec{0}),&
+\eta_{\mathrm{dB}}\le\tau_{\mathrm{gate}},\ p=1,\\
+(\vec{0},\ \hat{\vec{s}}_1+\hat{\vec{s}}_2),&
+\eta_{\mathrm{dB}}\le\tau_{\mathrm{gate}},\ p=2,\\
+(\hat{\vec{s}}_1,\ \hat{\vec{s}}_2),&
 \eta_{\mathrm{dB}}>\tau_{\mathrm{gate}}.
 \end{cases}
 \end{aligned}\tag{8-38}$$
 
-取工程旁路门限 $\tau_{\mathrm{gate}}=-18.0\ \mathrm{dB}$，比较直接取主槽位与启用门控合并后的波形失真与词错率变化，并验证能量比为 $10:1$ 的真实双人重叠段不会被误合并。
+即当 $\eta_{\mathrm{dB}}\le\tau_{\mathrm{gate}}$ 时将两路合并写回活跃主槽位 $\hat{\vec{s}}_{\mathrm{out},p}=\hat{\vec{s}}_1+\hat{\vec{s}}_2$ 并将次槽位清零 $\hat{\vec{s}}_{\mathrm{out},3-p}=\vec{0}$；当 $\eta_{\mathrm{dB}}>\tau_{\mathrm{gate}}$ 时原样保留双槽位分离结果 $(\hat{\vec{s}}_1,\hat{\vec{s}}_2)$。取工程旁路门限 $\tau_{\mathrm{gate}}=-18.0\ \mathrm{dB}$，比较直接取主槽位与启用门控合并后的波形失真与词错率变化，并验证能量比为 $10:1$ 的真实双人重叠段不会被误合并。
 
 **第一部分解答：梅尔子带压缩的精确算力节省。** 在因果单向流式配置下，单个时间—频带网格点在每个交替块内的四组门控线性投影乘加数为 $G D^2=4\times 64^2=4\times 4096=16384$：
 
@@ -1636,9 +1640,9 @@ $$\begin{aligned}
 
 全频点网格每秒高达约 $2.10\ \mathrm{GMAC/s}$，难以塞进低功耗端侧芯片；在跨带交互前将 $256$ 个线性频点压缩到 $64$ 个梅尔子带后，骨干算力精确下降为原来的 $64/256=1/4$（压缩比 $4.0\times$，降至约 $0.524\ \mathrm{GMAC/s}$），同时保留了低频高分辨率的双耳与阵列相位差线索。
 
-**第二部分解答：为什么近 $20\ \mathrm{dB}$ 的高分照样损害识别率？** 对完整单人真值 $\vec{s}=\vec{s}_{\mathrm{v}}+\vec{s}_{\mathrm{f}}$，由于 $\vec{s}_{\mathrm{v}}^\top\vec{s}_{\mathrm{f}}=0$，主槽位 $\hat{\vec{y}}_1=\vec{s}_{\mathrm{v}}$ 在 $\vec{s}$ 上的最优标量投影系数为 $\alpha_\star=99/100=0.99$，投影目标能量为 $0.99^2\times 100=98.01$，正交误差能量 $\|\vec{s}_{\mathrm{v}}-0.99\vec{s}\|_2^2$ 等于 $0.01^2\times 99+0.99^2\times 1=0.99$，比值恰为 $98.01/0.99=99$！因此主槽位的 `SI-SDR` 高达 $10\log_{10}(99)\approx +19.95635\ \mathrm{dB}$，能量占比看似接近满分；但被切到次槽位丢弃的那 $1\%$ 能量恰恰承载着清擦音词尾（如复数或所有格 `/s/`），导致这句 $4$ 词语音直接错掉 $1$ 个词，词错率从 $0\%$ 跳升至 $1/4=25\%$。
+**第二部分解答：为什么近 $20\ \mathrm{dB}$ 的高分照样损害识别率？** 对完整单人真值 $\vec{s}=\vec{s}_{\mathrm{v}}+\vec{s}_{\mathrm{f}}$，由于 $\vec{s}_{\mathrm{v}}^\top\vec{s}_{\mathrm{f}}=0$，主槽位 $\hat{\vec{s}}_1=\vec{s}_{\mathrm{v}}$ 在 $\vec{s}$ 上的最优标量投影系数为 $\alpha_\star=99/100=0.99$，投影目标能量为 $0.99^2\times 100=98.01$，正交误差能量 $\|\vec{s}_{\mathrm{v}}-0.99\vec{s}\|_2^2$ 等于 $0.01^2\times 99+0.99^2\times 1=0.99$，比值恰为 $98.01/0.99=99$！因此主槽位的 `SI-SDR` 高达 $10\log_{10}(99)\approx +19.95635\ \mathrm{dB}$，能量占比看似接近满分；但被切到次槽位丢弃的那 $1\%$ 能量恰恰承载着清擦音词尾（如复数或所有格 `/s/`），导致这句 $4$ 词语音直接错掉 $1$ 个词，词错率从 $0\%$ 跳升至 $1/4=25\%$。
 
-代入式(8-38)核算主次槽位能量比：$E_{(1)}=99$、$E_{(2)}=1$，次主能量比 $\eta_{\mathrm{dB}}=10\log_{10}(1/99)$，数值约为 $-19.95635\ \mathrm{dB}$，满足 $\eta_{\mathrm{dB}}\le -18.0\ \mathrm{dB}$，触发单说话人旁路合并得到输出 $\hat{\vec{y}}_1+\hat{\vec{y}}_2=\vec{s}$，清擦音无损归位，误差归零且词错率回到 $0\%$。反之，当两位说话人真实重叠且主次能量为 $99$ 与 $9.9$ 时，$\eta_{\mathrm{dB}}=10\log_{10}(9.9/99)$，恰为 $-10.0\ \mathrm{dB}$ 并高于门限 $-18.0\ \mathrm{dB}$，门控保持关闭，正常输出分离主槽位而不把干扰说话人混回主路（代码验证见 [`separation_metrics_streaming.py`](../codes/chapters/ch08/core/separation_metrics_streaming.py) 与 `E08-34`）。
+代入式(8-38)核算主次槽位能量比：$E_1=99$、$E_2=1$（主槽位 $p=1$），次主能量比 $\eta_{\mathrm{dB}}=10\log_{10}(1/99)$，数值约为 $-19.95635\ \mathrm{dB}$，满足 $\eta_{\mathrm{dB}}\le -18.0\ \mathrm{dB}$，触发单说话人旁路合并，活跃主槽位输出 $\hat{\vec{s}}_{\mathrm{out},1}=\hat{\vec{s}}_1+\hat{\vec{s}}_2=\vec{s}$、次槽位清零 $\hat{\vec{s}}_{\mathrm{out},2}=\vec{0}$，清擦音无损归位，误差归零且词错率回到 $0\%$（若分离器把主能量吐在槽位 $2$ 即 $p=2$，合并结果同样自动落在活跃主槽位 $\hat{\vec{s}}_{\mathrm{out},2}=\vec{s}$）。反之，当两位说话人真实重叠且主次能量为 $99$ 与 $9.9$ 时，$\eta_{\mathrm{dB}}=10\log_{10}(9.9/99)$，恰为 $-10.0\ \mathrm{dB}$ 并高于门限 $-18.0\ \mathrm{dB}$，门控保持关闭，双槽位原样返回 $(\hat{\vec{s}}_1,\hat{\vec{s}}_2)$ 而不丢弃第二说话人或把干扰说话人混回主路（代码验证见 [`separation_metrics_streaming.py`](../codes/chapters/ch08/core/separation_metrics_streaming.py) 与 `E08-34`）。
 
 ---
 

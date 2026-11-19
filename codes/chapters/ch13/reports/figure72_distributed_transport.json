@@ -2,7 +2,7 @@
   "schema_version": 1,
   "scope": "known-statistics finite teaching controls; not blind DANSE or industrial performance",
   "source_sha256": {
-    "scripts/make_figures.py": "4eb6e4fcf9e7f26c29d61552046e1528bcfe5634758577f94798adba9e1333a4",
+    "scripts/make_figures.py": "c71b1078fae86e0ee8535cac1037b1764b85ac66809434c7f7792e93000a3988",
     "codes/chapters/ch13/core/distributed.py": "3856695f759e02954ef86428cbb15ef885b7a2aaa70b59bd156baad0f493f077",
     "codes/chapters/ch13/core/distributed_audio.py": "4e11d73e7465a2df516ad5ee26155ffdca548201dec7824a1943f53c3fd253fa",
     "codes/chapters/ch13/examples/generate_distributed_audio.py": "64de7ed99e266e0076688506ba9b0f01f561d0831604efea726aae3dbf13f0d3",

@@ -269,8 +269,8 @@ def differential_1f_noise_budget(
     diff_sum_a = float(np.sum(psd_a * diff_gain_power))
     diff_sum_b = float(np.sum(psd_b * diff_gain_power))
 
-    f_min = float(freq[0])
-    f_max = float(freq[-1])
+    f_min = float(np.min(freq))
+    f_max = float(np.max(freq))
     asymp_int_a = (1.0 / f_min) - (1.0 / f_max)
     asymp_int_b = floor_ratio * (
         asymp_int_a + 0.5 * f_c * (1.0 / (f_min * f_min) - 1.0 / (f_max * f_max))

@@ -25,6 +25,16 @@ def _is_hermitian(matrix: np.ndarray) -> bool:
     return bool(np.allclose(scaled, scaled.conj().T, atol=1e-12, rtol=1e-12))
 
 
+def _contains_bool(value: object) -> bool:
+    if isinstance(value, (bool, np.bool_)):
+        return True
+    if isinstance(value, np.ndarray):
+        return value.dtype.kind == "b"
+    if isinstance(value, (list, tuple)):
+        return any(_contains_bool(item) for item in value)
+    return False
+
+
 def average_ordered_lags(covariance: np.ndarray, positions: np.ndarray = POSITIONS) -> dict[int, complex]:
     """Average finite Hermitian R[i,j] over signed integer p[i]-p[j].
 
@@ -32,12 +42,16 @@ def average_ordered_lags(covariance: np.ndarray, positions: np.ndarray = POSITIO
     that an input described as a physical covariance has the required model.
     Python integers preserve differences exceeding a fixed-width integer dtype.
     """
-    matrix = np.asarray(covariance, dtype=complex)
+    raw_cov = np.asarray(covariance)
     coordinates = np.asarray(positions)
+    if (raw_cov.dtype.kind not in "iufc" or coordinates.dtype.kind not in "iuf"
+            or _contains_bool(covariance) or _contains_bool(positions)):
+        raise ValueError("require numeric non-bool covariance and integer positions")
+    matrix = np.asarray(raw_cov, dtype=complex)
     if (matrix.shape != (coordinates.size, coordinates.size)
             or coordinates.ndim != 1 or coordinates.size == 0
             or np.any(~np.isfinite(matrix)) or np.any(~np.isfinite(coordinates))
-            or np.any(coordinates != np.rint(coordinates))):
+            or (coordinates.dtype.kind == "f" and np.any(coordinates != np.rint(coordinates)))):
         raise ValueError("require finite square covariance and integer one-dimensional positions")
     if not _is_hermitian(matrix):
         raise ValueError("input statistics must be Hermitian")
@@ -62,12 +76,26 @@ def average_ordered_lags(covariance: np.ndarray, positions: np.ndarray = POSITIO
 
 def virtual_toeplitz(lags: dict[int, complex], size: int) -> np.ndarray:
     """Fill a contiguous virtual ULA; this operation alone does not ensure PSD."""
-    if isinstance(size, (bool, np.bool_)) or not isinstance(size, (int, np.integer)) or size < 1:
+    if isinstance(size, (bool, np.bool_)) or not isinstance(size, (int, np.integer)) or int(size) < 1:
         raise ValueError("size must be a positive integer")
-    required = set(range(1-size, size))
-    if not required.issubset(lags):
+    size_int = int(size)
+    if not isinstance(lags, dict):
+        raise ValueError("lags must be a dict mapping integer lags to finite numeric scalars")
+    normalized_lags: dict[int, complex] = {}
+    for raw_lag, raw_val in lags.items():
+        if isinstance(raw_lag, (bool, np.bool_)) or not isinstance(raw_lag, (int, np.integer)):
+            raise ValueError("lag keys must be integers, not bool")
+        val_arr = np.asarray(raw_val)
+        if isinstance(raw_val, (bool, np.bool_)) or val_arr.ndim != 0 or val_arr.dtype.kind not in "iufc":
+            raise ValueError("lag values must be numeric scalars, not bool")
+        normalized_lags[int(raw_lag)] = complex(val_arr)
+    required = set(range(1 - size_int, size_int))
+    if not required.issubset(normalized_lags):
         raise ValueError("all signed lags in the requested contiguous segment are required")
-    result = np.array([[lags[i-j] for j in range(size)] for i in range(size)], dtype=complex)
+    result = np.array(
+        [[normalized_lags[i - j] for j in range(size_int)] for i in range(size_int)],
+        dtype=complex,
+    )
     if not np.all(np.isfinite(result)):
         raise ValueError("lag values must be finite")
     if not _is_hermitian(result):

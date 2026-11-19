@@ -1,16 +1,17 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>源码研究导读 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="820e0688bd26"><style>
+<meta name="source-digest" content="ba5ce9940c12"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
 h1,h2,h3,h4{scroll-margin-top:60px}
+@media screen{.main a[id]:not([href]){scroll-margin-top:60px}}
 @media screen{.main a[id^="e"],.main .exercise-alias{scroll-margin-top:80px}}
 @media screen{.main .exercise-alias{top:0}}
 @media screen{.main a[id="e05-20"]{scroll-margin-top:60px}}
 @media screen{.main a[id="e17-11"],.main a[id="e17-12"],.main a[id="e17-13"],.main a[id="e17-14"],.main a[id="e17-15"]{scroll-margin-top:140px}}
-@media screen{.main .exercise-alias[id="e13-11"],.main .exercise-alias[id="e13-12"],.main .exercise-alias[id="e13-13"],.main .exercise-alias[id="e13-14"],.main .exercise-alias[id="e13-15"],.main .exercise-alias[id="e15-11"],.main .exercise-alias[id="e15-12"],.main .exercise-alias[id="e15-13"],.main .exercise-alias[id="e15-14"],.main .exercise-alias[id="e15-15"]{scroll-margin-top:140px}}
+@media screen{.main .exercise-alias[id="e13-11"],.main .exercise-alias[id="e13-12"],.main .exercise-alias[id="e13-13"],.main .exercise-alias[id="e13-14"],.main .exercise-alias[id="e13-15"],.main .exercise-alias[id="e15-11"]:has(~ a[id="e17-11"]),.main .exercise-alias[id="e15-12"]:has(~ a[id="e17-12"]),.main .exercise-alias[id="e15-13"]:has(~ a[id="e17-13"]),.main .exercise-alias[id="e15-14"]:has(~ a[id="e17-14"]),.main .exercise-alias[id="e15-15"]:has(~ a[id="e17-15"]){scroll-margin-top:140px}}
 @media screen{.main a[id^="e06-"]{scroll-margin-top:60px}}
 @media screen{.main a[id^="e07-"],.main a[id^="e08-"]{scroll-margin-top:60px}}
 @media screen{.main a[id^="e11-"]{scroll-margin-top:60px}}
@@ -79,7 +80,7 @@ h4{font-size:15.5px;margin-top:20px;color:#333}
   let printing = false;
 
   function roots() {
-    const candidates = Array.from(document.querySelectorAll("main.main,.chap"));
+    const candidates = Array.from(document.querySelectorAll(".main,.chap"));
     return candidates.filter(root => !candidates.some(other => other !== root && other.contains(root)));
   }
 
@@ -133,12 +134,21 @@ h4{font-size:15.5px;margin-top:20px;color:#333}
       const significant = Array.from(paragraph.childNodes).filter(node =>
         node.nodeType !== Node.TEXT_NODE || node.data.trim());
       const next = paragraph.nextElementSibling;
-      const anchorOnly = significant.length === 1 &&
-        significant[0].nodeType === Node.ELEMENT_NODE &&
-        significant[0].tagName === "A" && significant[0].id &&
-        !significant[0].hasAttribute("href") &&
-        Array.from(significant[0].childNodes).every(node =>
-          node.nodeType === Node.TEXT_NODE && !node.data.trim());
+      const isEmptyAnchor = node =>
+        node.nodeType === Node.ELEMENT_NODE &&
+        node.tagName === "A" && node.id &&
+        !node.hasAttribute("href") &&
+        Array.from(node.childNodes).every(child =>
+          child.nodeType === Node.TEXT_NODE && !child.data.trim());
+      const isAnchorAlias = node =>
+        node.nodeType === Node.ELEMENT_NODE &&
+        node.tagName === "SPAN" && node.id &&
+        node.classList.contains("anchor-alias") &&
+        Array.from(node.childNodes).every(child =>
+          child.nodeType === Node.TEXT_NODE && !child.data.trim());
+      const anchorOnly = significant.length >= 1 &&
+        significant.some(isEmptyAnchor) &&
+        significant.every(node => isEmptyAnchor(node) || isAnchorAlias(node));
       paragraph.classList.toggle("tutorial-anchor-only", !!anchorOnly);
       const short = significant.length === 1 &&
         significant[0].nodeType === Node.ELEMENT_NODE &&
@@ -254,6 +264,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <div class="chap"><a href="03_industrial_deployment.html">工业音频实现研究</a></div>
 <div class="chap"><a href="04_source_reproduction.html">源码获取与独立复现记录</a></div>
 <div class="chap"><a href="05_exercises_and_audio.html">章节代码练习与音频实验</a></div>
+<div class="chap"><a href="../00_math-foundations.html">第 0 章 · 全书数学基础与信号分析预备</a></div>
 <div class="chap"><a href="../01_problem-definition.html">第 1 章 · 问题定义与双耳启示</a></div>
 <div class="chap"><a href="../02_basics-signal-model.html">第 2 章 · 声音到达阵列时发生了什么</a></div>
 <div class="chap"><a href="../03_array-geometry.html">第 3 章 · 阵列几何形态</a></div>
@@ -283,8 +294,8 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <p>材料依据原论文、维护者文档和官方仓库整理；各条目的核实日期以专题记录为准。版本清单见
 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/SOURCES.lock.json">SOURCES.lock.json</a>，逐算法覆盖状态见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/COVERAGE.md">COVERAGE.md</a>。
 同名算法在不同项目中可能采用不同归一化、频谱轴序和输出参考通道，不能直接比较两个函数的数组而不检查约定。</p>
-<p>本手册包括本页入口和以下5篇专题，共6个研究网页；与18个当前教程页合计24个内容页。站点另保留4个同主题旧路径兼容页，实际生成28个HTML文件。兼容页不算新章节或独立研究内容。</p>
-<p>锁表登记 115 个 Git 上游项目，其中 98 个已有本地工作区。截至 2026-10-05，按完整稀疏选集政策离线核验75项通过，22个已取得的工作区仍使用旧排除规则，报告为选集不匹配并保留原样；AEC Challenge 的真实录音文件有本地变动，仍保留失败。另17项只保留来源索引。选集不匹配不等于源码未取得，也不代表算法运行失败。<code>kaldialign</code>作为MeetEval编译依赖仅已取得源码，未构建或执行。TAC作者的四文件选集已在独立忽略目录取得；其README声明的非商业许可、静态结构审计与未运行原网络的边界见<a href="04_source_reproduction.html#tac-contracts">附录B源码合同</a>。</p>
+<p>本手册包括本页入口和以下5篇专题，共6个研究网页；与19个当前教程页（导读页加第0～15章正文与2篇附录共18篇内容页）合计25个当前内容页。站点另保留8个同主题旧路径兼容页，实际生成33个HTML文件。兼容页不算新章节或独立研究内容。</p>
+<p>锁表登记 129 个 Git 上游项目，其中 112 个启用本地获取并已有本地工作区。截至 2026-11-17，按完整稀疏选集政策离线核验 89 项通过（<code>source_verified</code>），22 个已取得的工作区仍使用旧排除规则，报告为选集不匹配（<code>source_selection_mismatch</code>）并保留原样；AEC Challenge 的真实录音文件有本地变动，仍保留失败（1 项）。另 17 项只保留来源索引（<code>index_only</code>）。选集不匹配不等于源码未取得，也不代表算法运行失败。<code>kaldialign</code>作为MeetEval编译依赖仅已取得源码，未构建或执行。TAC作者的四文件选集已在独立忽略目录取得；其README声明的非商业许可、静态结构审计与未运行原网络的边界见<a href="04_source_reproduction.html#tac-contracts">附录B源码合同</a>。</p>
 <p>空间篇从双耳线索、SAF 的 HRIR/HRTF 和 libmysofa 数据接口讲起，再讨论 SBL、RobustSBL、在线子带 GSC、SMP-PHAT 与多帧关联；增强篇讨论在线 WPE 接口对照、DNN 自适应控制和长序列分离；工程篇讨论重采样、响度、STOI/ESTOI、ViSQOL、文件帧读写、块浮点及STK分数延迟状态。增强篇另核查TF-Locoformer固定源码的时频结构、形状和配置边界。</p>
 <p>这份清单仍含未运行和仅原理说明的方法；具体条件与方法级结果以各专题为准。</p>
 <p>已执行的工业三库接口实验与 SBL 合成输入实验提供原创调用程序及<a href="04_source_reproduction.html">运行记录</a>。
@@ -324,8 +335,8 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 </tr>
 <tr>
 <td><a href="05_exercises_and_audio.html">练习与音频实验</a></td>
-<td>第 1～11 章、扩展专题Ⅰ～Ⅳ、附录 A/B</td>
-<td>427 道代码练习、主109个合成WAV、30套独立合成170个WAV与4个真实录音摘录/派生的复算、许可和边界；逐套入口见<a href="../index.html#audio-assets">导读完整音频表</a></td>
+<td>第 0～11 章、扩展专题Ⅰ～Ⅳ、附录 A/B</td>
+<td>443 道代码练习、主109个合成WAV、30套独立合成170个WAV与4个真实录音摘录/派生的复算、许可和边界；逐套入口见<a href="../index.html#audio-assets">导读完整音频表</a></td>
 </tr>
 </tbody>
 </table></div>
@@ -384,14 +395,14 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <p>本地取得源码的状态由获取工具生成，见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/upstream/README.md">源码获取说明</a>。
 许可与依赖属于各上游项目；本手册不把不同项目的源码合并成一个重新授权的软件包。</p>
 <p>第4章另有 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch04/reports/doatools_esprit_reference.json">doatools ESPRIT 固定接口对照</a>和<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch04/reports/figure13_gcc_reverb.json">图13的逐次统计</a>。默认加权的原版偏差、取消加权与独立参考分开记录；完整数字、适用范围与源码入口见空间篇第14节。</p>
-<p>第12章扩展专题Ⅰ提供<a href="../12_acoustic-imaging.html">声学成像正文</a>、<a href="01_spatial_and_tracking.html#imaging-contract-audit">逐层源码合同</a>和<a href="05_exercises_and_audio.html#471-十八题分别核对什么">18题及五WAV实验</a>。输出是参考声压贡献及区域量；原算法、教学控制和工业条件分别核对。</p>
-<p>分布式专题Ⅱ将<a href="../13_distributed-enhancement.html">节点目标与压缩条件</a>、<a href="03_industrial_deployment.html#distributed-network-deployment">原论文与工业网络</a>、<a href="04_source_reproduction.html#distributed-reproduction">固定源码合同</a>和<a href="05_exercises_and_audio.html#distributed-exercises-audio">25题及17WAV</a>互链。原统计算法、已知真值音频、源码获取与完整设备执行分别记录。</p>
+<p>第12章扩展专题Ⅰ提供<a href="../12_acoustic-imaging.html">声学成像正文</a>、<a href="01_spatial_and_tracking.html#imaging-contract-audit">逐层源码合同</a>和<a href="05_exercises_and_audio.html#471-二十题分别核对什么">20题及五WAV实验</a>。输出是参考声压贡献及区域量；原算法、教学算例和工业条件分别核对。</p>
+<p>分布式专题Ⅱ将<a href="../13_distributed-enhancement.html">节点目标与压缩条件</a>、<a href="03_industrial_deployment.html#distributed-network-deployment">原论文与工业网络</a>、<a href="04_source_reproduction.html#distributed-reproduction">固定源码合同</a>和<a href="05_exercises_and_audio.html#distributed-exercises-audio">27题及17WAV</a>互链。原统计算法、已知真值音频、源码获取与完整设备执行分别记录。</p>
 <p>空间与可穿戴阵列专题Ⅲ提供<a href="../14_spatial-wearable-arrays.html">球谐采集、双耳匹配与跨模态融合正文</a>以及<a href="05_exercises_and_audio.html#wearable-exercises-audio">18题与六WAV实验</a>。条件目标提取与多通道日志专题Ⅳ提供<a href="../15_target-extraction-diarization.html">线索条件化、近场距离气泡与TS-VAD/GSS正文</a>以及<a href="05_exercises_and_audio.html#tse-exercises-audio">18题与六WAV实验</a>。</p>
 <p>导读推荐的<a href="04_source_reproduction.html#overview-source-entrypoints">WASN同步与LibriCSS公开评测源码</a>现已按固定提交取得限定选集。代码身份核验、原接口静态观察与未执行的依赖/评分/设备边界分别保留，不能用源码文件数代表工业验收。</p>
 <span id="sec-4" class="anchor-alias" aria-hidden="true"></span><span id="文档命令与结果的对应关系" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-c039b2bc79">文档、命令与结果的对应关系</h2>
 <ul>
-<li>学习入口与章号：<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/README.md">项目首页</a>和<a href="../index.html">导读</a>。第12～15章是专题，第16、17章是附录。</li>
-<li>395个稳定代码题与30套独立音频：<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/README.md#audio-inventory">代码目录</a>和本手册的练习篇；题数、WAV数、算法数分别统计。</li>
+<li>学习入口与章号：<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/README.md">项目首页</a>、<a href="../index.html">导读</a>与<a href="../00_math-foundations.html">第 0 章数学基础</a>。第 0～15 章为正文（其中第 12～15 章是扩展专题），第 16、17 章是附录。</li>
+<li>443个稳定代码题与30套独立合成音频（含1套真实录音共32套清单）：<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/README.md#audio-inventory">代码目录</a>和本手册的练习篇；题数、WAV数、算法数分别统计。</li>
 <li>从资产到网页/PDF：<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/scripts/README.md#audio-regeneration">构建说明</a>，先核真实生成源与清单，再发布副本。</li>
 <li>取得固定源码：<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/upstream/README.md">获取说明</a>；它不会安装或执行上游。当前选集状态与限定原方法结果分别保留。</li>
 </ul>

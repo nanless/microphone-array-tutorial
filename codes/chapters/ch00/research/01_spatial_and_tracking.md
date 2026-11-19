@@ -1,6 +1,6 @@
 # 空间处理与声源追踪：算法、实现和工业使用条件
 
-基础索引核实日期：2026-09-22；第 1 章相关研究核实于2026-09-30、原归一化报告执行于2026-10-01 UTC，本轮原始资料/源码复查及原插值控制执行于2026-10-04；第 2 章历史资料与原方法提取调用核实于2026-09-30，当前原始资料/源码及限定合同复核于2026-10-04，第 4 章相关原始资料及有限原方法调用核实于 2026-10-01，第 5 章相关研究小节、原论文与限定原函数审计复核于 2026-10-01（历史报告仍保留原执行日期）；第 9 章原始资料与限定接口合同复核于 2026-10-01，保留 2026-09-28 的历史运行记录；DCASE 2026 任务状态及近年候选的后续复核日期见各条 2026-09-29 记录。对应正文第 1～5 章和第 9 章。这里按算法的输入、计算步骤和可检查结果整理源码，既包括语音前端，也包括直接相关的球阵录音与工业噪声源成像。后两类任务的输出不同，不能把声源功率图或 Ambisonics 解码结果当成增强语音。
+基础索引核实日期：2026-09-22；第 1 章相关研究核实于2026-09-30、原归一化报告执行于2026-10-01 UTC，本轮原始资料/源码复查及原插值控制执行于2026-10-04；第 2 章历史资料与原方法提取调用核实于2026-09-30，当前原始资料/源码及限定合同复核于2026-10-04，第 4 章相关原始资料及有限原方法调用核实于 2026-10-01，第 5 章相关研究小节、原论文与限定原函数审计复核于 2026-10-01（历史报告仍保留原执行日期）；第 9 章原始资料与限定接口合同复核于 2026-10-01，保留 2026-09-28 的历史运行记录；DCASE 2026 任务状态及近年候选的后续复核日期见各条 2026-09-29 记录；第 14 章空间与可穿戴阵列纯文本选集核实于 2026-11-17。对应正文第 1～5、9、12、14 章。这里按算法的输入、计算步骤和可检查结果整理源码，既包括语音前端，也包括直接相关的球阵录音、可穿戴空间阵列与工业噪声源成像。后几类任务的输出不同，不能把声源功率图或 Ambisonics 解码结果当成增强语音。
 
 ## 阅读与复现方式
 
@@ -1181,7 +1181,7 @@ ESPnet `get_rtf` 明确说明函数自身没有执行参考通道归一化。若
 
 ### 49. MWF、SDW-MWF 与秩一化简
 
-对应 §5.7、§5.9。以参考通道目标声像为估计对象，一般 SDW-MWF 解由 `(Rs+mu Rn)w=Rs e_ref` 得到，其中 `mu>0`，矩阵为目标与噪声的未中心化二阶矩；零均值时也等于协方差。ESPnet `get_sdw_mwf_vector` 明确提供该解，并有 `approx_low_rank_psd_speech` 选项；当目标与噪声的互二阶矩为零时，`mu=1` 对应混合观测的普通MWF，见[正文的代价与条件](../../../../chapters/05_beamforming.md#sec-u-fb93744989)。其 `get_mwf_vector` 的参数虽名为 `psd_n`，docstring 指的是观测协方差，不能因为变量名含 n 就传入纯噪声 SCM。
+对应 §5.5.1、§5.7、§5.9。以参考通道目标声像为估计对象，一般 SDW-MWF 解由 `(Rs+mu Rn)w=Rs e_ref` 得到，其中 `mu>0`，矩阵为目标与噪声的未中心化二阶矩；零均值时也等于协方差。ESPnet `get_sdw_mwf_vector` 明确提供该解，并有 `approx_low_rank_psd_speech` 选项；当目标与噪声的互二阶矩为零时，`mu=1` 对应混合观测的普通MWF，见[正文的代价与条件](../../../../chapters/05_beamforming.md#sec-5-5-1)。其 `get_mwf_vector` 的参数虽名为 `psd_n`，docstring 指的是观测协方差，不能因为变量名含 n 就传入纯噪声 SCM。
 
 pb_bss `get_wmwf_vector` 实际计算 `Phi/(mu+trace(Phi))` 的参考列，其中 `Phi=Rn^-1 Rs`，这是秩一目标条件下的化简。独立手算反例取 `Rn=I`、`Rs=diag(2,1)`、`mu=1`、参考 0：一般解第一项为 `2/3`，该迹化简第一项为 `2/(1+3)=1/2`。改成 `Rs=diag(2,0)` 后两者均为 `2/3`。本次[原函数提取调用](#beamformer-upstream-audit)得到的两个结果分别为 `[.5,0]` 和 `[2/3,0]`，与上述手算相符。一般 MWF 的期望由标量 `2/(2+1)` 独立计算，不从上游输出反造答案。这定位了模型边界，不说明秩一方法本身错误；没有运行完整外部包或增强音频链。
 
@@ -1201,11 +1201,11 @@ pb_bss `get_wmwf_vector` 实际计算 `Phi/(mu+trace(Phi))` 的参考列，其�
 
 ### 52. OM-LSA：对数谱幅度增益与语音存在不确定性
 
-对应 §5.7。OM-LSA 把语音存在概率用于组合语音存在时的 LSA 增益和语音缺席时的增益下限；噪声估计器可用 IMCRA，但两者是不同模块。其低增益区域的处理影响残余噪声的连续性，不能仅以硬门限谱减替代。[Cohen 与 Berdugo 2001 论文入口及作者实现说明](https://israelcohen.com/software/)；[作者合著的 OM-LSA 推导 §III](https://webee.technion.ac.il/Sites/People/IsraelCohen/Publications/IWAENC2006_Habets.pdf)。
+对应 §5.7。OM-LSA 把语音存在概率用于组合语音存在时的 LSA 增益和无语音假设下的增益下限；噪声估计器可用 IMCRA，但两者是不同模块。其低增益区域的处理影响残余噪声的连续性，不能仅以硬门限谱减替代。[Cohen 与 Berdugo 2001 论文入口及作者实现说明](https://israelcohen.com/software/)；[作者合著的 OM-LSA 推导 §III](https://webee.technion.ac.il/Sites/People/IsraelCohen/Publications/IWAENC2006_Habets.pdf)。
 
-局部手算若存在时增益为 0.8、缺席时下限为 0.1、存在概率为 0.5，几何组合得到 `sqrt(0.8×0.1)≈0.283`，不是算术平均 0.45。这个例子只说明增益组合，不包含 LSA 增益内部的先验 SNR 与指数积分计算。完整实验还需保存 decision-directed 先验 SNR、后验 SNR、语音存在概率、增益下限和重叠相加条件；缺失这些状态不能算完成 OM-LSA 复现。当前没有已核许可的作者下载包随书提供。
+局部手算若存在时增益为 0.8、无语音时下限为 0.1、存在概率为 0.5，几何组合得到 `sqrt(0.8×0.1)≈0.283`，不是算术平均 0.45。这个例子只说明增益组合，不包含 LSA 增益内部的先验 SNR 与指数积分计算。完整实验还需保存 decision-directed 先验 SNR、后验 SNR、语音存在概率、增益下限和重叠相加条件；缺失这些状态不能算完成 OM-LSA 复现。当前没有已核许可的作者下载包随书提供。
 
-Habets 与 Cohen 2006 的 §III 先复述标准几何组合，随后把语音缺席假设下的增益改为依赖平稳/非平稳干扰 PSD 的形式，§IV 还讨论非因果先验 SNR 估计。引用该文时应明确使用的是标准 OM-LSA 还是这个扩展，不能把所有后续公式都写成标准 OM-LSA 的定义。语音存在概率来自特定统计模型及先验，它的名称不保证在新设备、风噪或削波输入上仍校准；需同时检查语音衰减和噪声残留。
+Habets 与 Cohen 2006 的 §III 先复述标准几何组合，随后把无语音假设下的增益改为依赖平稳/非平稳干扰 PSD 的形式，§IV 还讨论非因果先验 SNR 估计。引用该文时应明确使用的是标准 OM-LSA 还是这个扩展，不能把所有后续公式都写成标准 OM-LSA 的定义。语音存在概率来自特定统计模型及先验，它的名称不保证在新设备、风噪或削波输入上仍校准；需同时检查语音衰减和噪声残留。
 
 ### 53. WebRTC 分位数噪声估计与语音概率控制
 
@@ -1216,10 +1216,9 @@ Habets 与 Cohen 2006 的 §III 先复述标准几何组合，随后把语音缺
 ## 追踪接口、工程配置与来源核验
 
 <a id="tracking-upstream-audit"></a>
+<a id="tracking-contract-audit"></a>
 
 ### 54. 固定追踪上游的实际调用与失败边界
-
-<a id="tracking-contract-audit"></a>
 
 本节于 2026-09-28 使用既有隔离环境执行[诊断脚本](../../ch09/examples/audit_tracking_upstream_interfaces.py)，原始结果保存在[JSON 报告](../../ch09/reports/tracking_upstream_interfaces.json)。2026-10-01 的[新合同工具](../../ch09/examples/audit_upstream_tracking_contracts.py)在当前隔离环境重新调用该工具的只读函数，把当前执行结果记录在[新报告](../../ch09/reports/upstream_tracking_contracts.json)的 `historical_current_recheck`，没有改写本节的历史报告。脚本绑定自身摘要、精确输入、上游提交与被调用文件摘要，运行前核查独立 checkout、固定 HEAD 和未修改的跟踪文件。它不下载依赖，不改 FilterPy 或 Stone Soup。此前主环境没有 SciPy、未运行这些接口的记录仍然有效；本节新增的是另一环境中的有限方法调用，不能追溯性地改写旧验证范围。
 
@@ -1401,7 +1400,7 @@ FFT 接口约定由 [NumPy `rfft`](https://numpy.org/doc/stable/reference/genera
 
 ## 声学成像：原始方法、固定源码与实际执行边界
 
-对应[扩展专题Ⅰ](../../../../chapters/12_acoustic-imaging.md)，完整输入、推导和18道分步题在那里展开。本节用于选择原始资料、定位源码接口和区分实际执行范围。声学成像输出频率与空间网格上的源量估计；它与输出目标语音波形的增强链具有不同的输出合同。
+对应[扩展专题Ⅰ](../../../../chapters/12_acoustic-imaging.md)，完整输入、推导和20道分步题在那里展开。本节用于选择原始资料、定位源码接口和区分实际执行范围。声学成像输出频率与空间网格上的源量估计；它与输出目标语音波形的增强链具有不同的输出合同。
 
 ### 原始资料怎样连接到实现
 
@@ -1451,7 +1450,7 @@ FFT 接口约定由 [NumPy `rfft`](https://numpy.org/doc/stable/reference/genera
 
 新Acoular报告的`additional_valid_csm_controls`另记录一份合法秩一CSM，经原Base与PSF方法形成扫描输入，再调用原DAMAS类；它不是把旧`b=(1,0)`与任意矩阵拼成一条运行。原结果`(1,0)`的完整CSM平方残差为`28/9`，扫描NNLS点`(16/17,0)`的完整CSM残差为`8128/2601`；原21项控制的次序与13/8计数保持不变。详细手算、归一化与成立条件见[E12-17](../../../../chapters/12_acoustic-imaging.md#e12-17)。
 
-[固定作者DAMAS/CMF原模块](https://github.com/gilleschardon/DAMAS/blob/61987952e2237e6b088a169ee891dd96576f2565/damas.py "citation")已有独立[限定工具](../../ch12/examples/audit_damas_author_contracts.py)与[真实当前报告](../../ch12/reports/damas_author_contracts_current.json)。完整原模块字节及原imports在隔离进程执行，9个控制中8项数值吻合独立期望，1项零CSM保留原`NameError`。四原求解入口分别针对完整CSM、完整扫描残差、去对角CSM、去对角扫描残差；相同输入下得到`(1,0)`、`(16/17,0)`、`(2/3,0)`、`(16/15,0)`。不能将它们排成声学性能榜。
+[固定作者DAMAS/CMF原模块](https://github.com/gilleschardon/DAMAS/blob/61987952e2237e6b088a169ee891dd96576f2565/damas.py)已有独立[限定工具](../../ch12/examples/audit_damas_author_contracts.py)与[真实当前报告](../../ch12/reports/damas_author_contracts_current.json)。完整原模块字节及原imports在隔离进程执行，9个控制中8项数值吻合独立期望，1项零CSM保留原`NameError`。四原求解入口分别针对完整CSM、完整扫描残差、去对角CSM、去对角扫描残差；相同输入下得到`(1,0)`、`(16/17,0)`、`(2/3,0)`、`(16/15,0)`。不能将它们排成声学性能榜。
 
 重复列控制中原`unique=True`只来自已激活支持的正定Gram；另一个非负解`(0,1)`仍产生相同观测。作者单源full CLEAN-SC两步得到`1.68`，与其显式原公式一致；该限定点不覆盖任意双源或DR支路。取得的21个GPL文本与实际使用的LICENSE及一个Python文件分开，三份数据、MATLAB、MEX和论文大规模实验未执行。原NumPy、SciPy与matplotlib三个直接模块入口的前后SHA和版本已记录，未宣称核验这些库全部转依赖或二进制闭包。
 
@@ -1459,9 +1458,9 @@ FFT 接口约定由 [NumPy `rfft`](https://numpy.org/doc/stable/reference/genera
 
 固定源码中的风洞入口为 `examples/wind_tunnel_examples/example_airfoil_in_open_jet_freq_domain_methods.py`，另有CMF、导向与区域选择示例。工业复现应保存测量通道次序、校准文件、CSM窗与完整帧计数、网格/声源参考、剪切层或流动模型、对角处理、正则与区域积分。源码的下载入口使用浮动分支，配套数据许可须独立核实；本轮未取得风洞数据或运行该整链，不记录设备性能排名。
 
-两个固定风洞入口采用的频带不同：[频域方法示例](https://github.com/acoular/acoular/blob/13d3d7df74ac1a8135c7ec71da098cbbc03d8652/examples/wind_tunnel_examples/example_airfoil_in_open_jet_freq_domain_methods.py "citation")定义`cfreq=4000`与`num=3`，循环调用`b.synthetic(cfreq,num)`，因此采用三分之一倍频程。[CMF示例](https://github.com/acoular/acoular/blob/13d3d7df74ac1a8135c7ec71da098cbbc03d8652/examples/wind_tunnel_examples/example_airfoil_in_open_jet_cmf.py "citation")虽有同样的变量声明，实际调用却是`b.synthetic(cfreq,1)`，采用八度带。两个文件不能互相代替。设置`Environment(c=346.04)`也不等于已经使用`GeneralFlowEnvironment`或完成剪切层修正。
+两个固定风洞入口采用的频带不同：[频域方法示例](https://github.com/acoular/acoular/blob/13d3d7df74ac1a8135c7ec71da098cbbc03d8652/examples/wind_tunnel_examples/example_airfoil_in_open_jet_freq_domain_methods.py)定义`cfreq=4000`与`num=3`，循环调用`b.synthetic(cfreq,num)`，因此采用三分之一倍频程。[CMF示例](https://github.com/acoular/acoular/blob/13d3d7df74ac1a8135c7ec71da098cbbc03d8652/examples/wind_tunnel_examples/example_airfoil_in_open_jet_cmf.py)虽有同样的变量声明，实际调用却是`b.synthetic(cfreq,1)`，采用八度带。两个文件不能互相代替。设置`Environment(c=346.04)`也不等于已经使用`GeneralFlowEnvironment`或完成剪切层修正。
 
-[固定calib.py](https://github.com/acoular/acoular/blob/13d3d7df74ac1a8135c7ec71da098cbbc03d8652/acoular/calib.py "citation")解析XML的实数`factor`。时域系数按通道排列；频域接口要求把通道与频点的系数展平为长度`M*F`的一维数组，再对数据块逐行广播相乘，并非直接输入二维`M×F`系数矩阵。这是应用给定因子，不是从未知录音自动估计频率相关复响应、相位或时钟。数据与传播模型必须保持同一校准约定。
+[固定calib.py](https://github.com/acoular/acoular/blob/13d3d7df74ac1a8135c7ec71da098cbbc03d8652/acoular/calib.py)解析XML的实数`factor`。时域系数按通道排列；频域接口要求把通道与频点的系数展平为长度`M*F`的一维数组，再对数据块逐行广播相乘，并非直接输入二维`M×F`系数矩阵。这是应用给定因子，不是从未知录音自动估计频率相关复响应、相位或时钟。数据与传播模型必须保持同一校准约定。
 
 DAMAS-C/CMF-C用于允许源间相关的模型，HR-CLEAN-SC关注多个分量与峰选择，SODIX引入不同的源表示和约束，移动/旋转源还需要运动轨迹与接收时刻模型。它们应逐一核观测、目标与额外假设，不能只更换算法名就沿用本章非相干PSF矩阵。上述扩展本轮仅保留研究入口，没有宣称运行。近场声全息的重建面与正则逆问题、DCASE的语义事件输出也不由本章功率成像覆盖。
 
@@ -1594,7 +1593,7 @@ C_{\rm PAN}&=\frac{\vec w^H\mathbf R_n\vec a}{\vec w^H\mathbf R_n\vec w},\\
 
 ### 60.3 固定SOF设计与实际输出的取点
 
-本轮还实际重新生成[SOF当前静态合同](../../ch05/reports/sof_tdfb_design_current.json)。固定 `sof_bf_design.m` 的归一化sinc自变量与WNG分母问题保留；新增的可选仿真分支在方位循环内重置 `nmi`，循环后只留下最后一次方位的数据。这是静态控制流与独立标量控制，不是已经执行MATLAB并生成错误WAV的证据。默认 `create_simulation_data=false`，没有运行MATLAB/Octave、设计实际FIR、刷写固件或测试设备。
+本轮还实际重新生成[SOF当前源码核查报告](../../ch05/reports/sof_tdfb_design_current.json)。固定 `sof_bf_design.m` 的归一化sinc自变量与WNG分母问题保留；新增的可选仿真分支在方位循环内重置 `nmi`，循环后只留下最后一次方位的数据。这是源码控制流审读与独立标量对照，不是已经执行MATLAB并生成错误WAV的证据。默认 `create_simulation_data=false`，没有运行MATLAB/Octave、设计实际FIR、刷写固件或测试设备。
 
 固定 `tdfb_generic.c` 使用每支路FIR累加、Q格式缩放、输出位图路由和饱和；设计脚本的逐麦峰位裁切、有限抽头和板端量化也与理想频率权重不同。应分别记录理论权重、导出的FIR系数、固件输出取点和数字饱和，不能仅用理想WNG曲线证明设备效果。[固定SOF目录](https://github.com/thesofproject/sof/tree/b6c6a05d52536313fe8e8752b1c4e069b1cc4002/src/audio/tdfb)
 
@@ -1667,10 +1666,37 @@ E09-24 的共同初值均值0、方差1，过程方差分别0、4，测量方差
 
 VAP起始代码检查0→1转换，初始已经活动的区间还须独立核边界。论文§VI.B.4的指标定义与这份固定程序的行为应分别记录；不能从论文定义推断代码已经正确执行，也不能由这些静态疑点声称论文结果错误。
 
-**双耳输出：论文目标与工程配置。** [第 5 章 E05-25～27](../../../../chapters/05_beamforming.md#e05-25)复用本书的 MVDR/LCMV 数值核，分别检查两耳目标声像、一个方向干扰的复比，以及残余背景的相干性。[Hadad 等的 BLCMV 论文](https://sharongannot.group/wp-content/uploads/2021/04/2016030110.pdf "citation")给出双约束及噪声权衡；[论文作者的试听页](https://sharongannot.group/binaural-lcmv/ "citation")提供示范音频，本轮未核实作者求解器的可获取源码与许可。[Gößling 等的双耳感知实验](https://pmc.ncbi.nlm.nih.gov/articles/PMC7225838/ "citation")单独验证空间感知取舍；本书的合成分量实验没有复刻真人测试。
+**双耳输出：论文目标与工程配置。** [第 5 章 E05-25～27](../../../../chapters/05_beamforming.md#e05-25)复用本书的 MVDR/LCMV 数值核，分别检查两耳目标声像、一个方向干扰的复比，以及残余背景的相干性。[Hadad 等的 BLCMV 论文](https://sharongannot.group/wp-content/uploads/2021/04/2016030110.pdf)给出双约束及噪声权衡；[论文作者的试听页](https://sharongannot.group/binaural-lcmv/)提供示范音频，本轮未核实作者求解器的可获取源码与许可。[Gößling 等的双耳感知实验](https://pmc.ncbi.nlm.nih.gov/articles/PMC7225838/)单独验证空间感知取舍；本书的合成分量实验没有复刻真人测试。
 
-工程对照是 [openMHA v4.18.1 固定配置](https://github.com/HoerTech-gGmbH/openMHA/blob/0b9f087e514f9cc0a901fcde9db17de35f9ec438/examples/06-binaural-beamformer/beamformer.cfg "citation")。它接受 `[front-left, front-right, rear-left, rear-right]` 四路，采样率 16 kHz、每块 160 点、分析窗 320 点、FFT 512 点。按该配置的 −180° 到 +180°、5° 步进，零起点下标 40 对应其 +20°，角度正向仍以原配置为准。
+工程对照是 [openMHA v4.18.1 固定配置](https://github.com/HoerTech-gGmbH/openMHA/blob/0b9f087e514f9cc0a901fcde9db17de35f9ec438/examples/06-binaural-beamformer/beamformer.cfg)。它接受 `[front-left, front-right, rear-left, rear-right]` 四路，采样率 16 kHz、每块 160 点、分析窗 320 点、FFT 512 点。按该配置的 −180° 到 +180°、5° 步进，零起点下标 40 对应其 +20°，角度正向仍以原配置为准。
 
-[acSteer](https://github.com/HoerTech-gGmbH/openMHA/blob/0b9f087e514f9cc0a901fcde9db17de35f9ec438/mha/plugins/acSteer/acSteer.cpp "citation")从固定权重表分发左右两组。每个频点有 584 个复系数，即 2 个参考耳乘 73 个角度再乘 4 个输入；257 个单边频点合计 150088 个复系数。原表每组另有一行空白，共 150672 行。[steerbf](https://github.com/HoerTech-gGmbH/openMHA/blob/0b9f087e514f9cc0a901fcde9db17de35f9ec438/mha/plugins/steerbf/steerbf.cpp "citation")按角度选权重，对四路执行权重共轭乘输入再累加。配置分别输出左右两路，既不在这条执行路径实时求逆，也不等于论文的双约束训练或估计。
+[acSteer](https://github.com/HoerTech-gGmbH/openMHA/blob/0b9f087e514f9cc0a901fcde9db17de35f9ec438/mha/plugins/acSteer/acSteer.cpp)从固定权重表分发左右两组。每个频点有 584 个复系数，即 2 个参考耳乘 73 个角度再乘 4 个输入；257 个单边频点合计 150088 个复系数。原表每组另有一行空白，共 150672 行。[steerbf](https://github.com/HoerTech-gGmbH/openMHA/blob/0b9f087e514f9cc0a901fcde9db17de35f9ec438/mha/plugins/steerbf/steerbf.cpp)按角度选权重，对四路执行权重共轭乘输入再累加。配置分别输出左右两路，既不在这条执行路径实时求逆，也不等于论文的双约束训练或估计。
 
-[获取清单](../SOURCES.lock.json)锁定 10 个许可文本和权重文件，存于忽略的本地缓存；保留 AGPL-3.0 原条款。实际核对固定提交、工作树和选集；未取示例录音、未编译或运行插件。设备验证还需要校准方向及参考麦、确认左右时钟和播放路径，再分别量化残留干扰、目标响应与空间线索。CHiME-9 的 [ECHI 听障语音增强任务](https://www.chimechallenge.org/challenges/chime9/task2/index "citation")可作为独立数据与评测入口；其中结果不由这套合成音频或 openMHA 静态核对推出。
+[获取清单](../SOURCES.lock.json)锁定 10 个许可文本和权重文件，存于忽略的本地缓存；保留 AGPL-3.0 原条款。实际核对固定提交、工作树和选集；未取示例录音、未编译或运行插件。设备验证还需要校准方向及参考麦、确认左右时钟和播放路径，再分别量化残留干扰、目标响应与空间线索。CHiME-9 的 [ECHI 听障语音增强任务](https://www.chimechallenge.org/challenges/chime9/task2/index)可作为独立数据与评测入口；其中结果不由这套合成音频或 openMHA 静态核对推出。
+
+<a id="spatial-wearable-arrays"></a>
+
+## 62. 扩展专题Ⅲ：空间声场采集、参数化编码与可穿戴阵列
+
+对应[第 14 章扩展专题Ⅲ](../../../../chapters/14_spatial-wearable-arrays.md)与[练习音频 §61](05_exercises_and_audio.md#wearable-exercises-audio)。可穿戴耳机与智能眼镜同时面对异构几何、头部散射、耳道闭塞和湍流风噪，输出目标须先区分空间参数化重放与自语音清晰度增强。本书用四个纯 NumPy 数值核将两类目标分开建模，不把人工两音控制音频当作实测耳道或风洞录音。
+
+### 62.1 四个本地可运行数值核与解释边界
+
+- [`spatial_parametric.py`](../../ch14/core/spatial_parametric.py)：复算四面体 A-format 到 FOA（ACN/SN3D 与 FuMa）编码、开球径向模态零陷正则化、$\mathrm{SO}(3)$ 旋转矩阵及有功声强/扩散度 DirAC 参数化分解。
+- [`binaural_matching.py`](../../ch14/core/binaural_matching.py)：比较最小二乘双耳信号匹配（BSM-LS）、高频幅度最小二乘（BSM-MagLS）以及带参考通道混合的耳间相干性恢复。
+- [`wearable_fusion.py`](../../ch14/core/wearable_fusion.py)：建立 Corcos 湍流边界层风噪相干模型、外麦气导与耳内闭塞麦克风分频带跨模态 MVDR/MMSE 融合，以及 TWS 通透模式（Hear-Through）处理延迟引发的耳道梳状滤波。
+- [`ambisonic_sofa_rendering.py`](../../ch14/core/ambisonic_sofa_rendering.py)：核验 FOA max-$\vec r_E$ 能量矢量阶数加权扬声器解码、AES69/SOFA `SimpleFreeFieldHRIR` 坐标变换及头部追踪运动到声音延迟（Motion-to-Photon/Sound Latency）预算。
+
+以上四个模块承载 `E14-01`～`E14-18` 与六份 16 kHz 数学合成 WAV 的解析、浮点及 PCM16 整型对照。计算仅验证指定物理方程、矩阵条件数与量化边界，不包含个体化实测 HRTF、骨导传感器硬件标定或主观空间听感评测。
+
+### 62.2 五个锁定上游仓库的源码核验与未执行边界
+
+[SOURCES.lock.json](../SOURCES.lock.json) 与 [SOURCE_STATUS.json](../SOURCE_STATUS.json) 登记了与本章对应的五个 MIT 许可纯文本选集，离线核验状态均为 `source_verified`（`execution="not_run"`）：
+
+- `spharpy`（[`e5202db197dd`](https://github.com/pyfar/spharpy/tree/e5202db197ddd84733e051bf4f21e45da4da2fa5)，MIT）：选定 `spharpy/spherical.py`、`spharpy/beamforming/beamforming.py` 与 `spharpy/transforms/rotations.py` 等 6 个文本文件，对照球谐基定义、模态权重与旋转算子；未获取文档绘图资产或安装执行。
+- `sofar`（[`2de8a680db92`](https://github.com/pyfar/sofar/tree/2de8a680db9219ad25aa4bb813d16f98d1a9ebac)，MIT）：选定 `sofar/sofa.py`、`sofar/io.py` 与 `sofar/utils.py` 等 6 个文本文件，核对 AES69/SOFA 维度与坐标约定校验逻辑；未拉取二进制 SOFA HRTF/DRIR 数据集，未运行包。
+- `spaudiopy`（[`a75c282a2ba3`](https://github.com/chris-hld/spaudiopy/tree/a75c282a2ba3fc24b0b2aea27ac20c149ffc709a)，MIT）：选定 `spaudiopy/sph.py`、`spaudiopy/decoder.py`、`spaudiopy/parsa.py` 与 `spaudiopy/grids.py` 等 7 个文本文件，对照 Ambisonics 解码（含 AllRAD/max-$\vec r_E$）与参数化空间音频分析接口；未选二进制 HRIR 资产，未执行。
+- `sc-wind-noise-generator`（[`ff9e74c40329`](https://github.com/audiolabs/SC-Wind-Noise-Generator/tree/ff9e74c40329c11d6437a01e1c9b164ac228c944)，MIT）：选定 `sc_wind_noise_generator.py` 与 `generate_example.py` 等 4 个文本文件，阅读参数化湍流风噪合成流程；未取音频素材，未运行生成脚本。
+- `gtcrn`（[`502ebfab64da`](https://github.com/Xiaobin-Rong/gtcrn/tree/502ebfab64da7c4a9af78dcb9c6ceef1ebb01c73)，MIT）：选定 `gtcrn.py`、`loss.py`、`stream/gtcrn_stream.py` 与 `stream/modules/convolution.py` 等 6 个文本文件，对照超轻量分组时域卷积循环架构与因果流式缓存切分；不含预训练权重与音频样本，未执行 PyTorch 推理。
+
+源码选集通过稀疏规则核验仅证明固定提交、文件 SHA 与许可证声明齐备。若在可穿戴终端部署相关方法，仍须单独完成个体化耳道耦合标定、定点缓存对齐、功耗测算与实测风噪验收。

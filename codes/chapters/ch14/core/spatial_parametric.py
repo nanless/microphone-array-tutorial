@@ -14,7 +14,6 @@ from __future__ import annotations
 import numpy as np
 
 from codes.chapters.ch02.core.conventions import (
-    SPEED_OF_SOUND,
     finite_real_array,
     finite_real_scalar,
 )

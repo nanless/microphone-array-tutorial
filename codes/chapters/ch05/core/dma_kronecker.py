@@ -138,6 +138,9 @@ def first_order_dma_example(
     )
     ideal_back_leak = abs(complex(np.vdot(w_eq_200, a_back_ideal_200)))
     mismatched_back_leak = abs(complex(np.vdot(w_eq_200, a_back_mismatched_200)))
+    mismatched_rear_gain_db = (
+        -math.inf if mismatched_back_leak == 0.0 else 20.0 * math.log10(mismatched_back_leak)
+    )
 
     return {
         "spacing_m": spacing,
@@ -163,7 +166,7 @@ def first_order_dma_example(
             "phase_mismatch_deg": mismatch_deg,
             "ideal_rear_null_gain": ideal_back_leak,
             "mismatched_rear_gain": mismatched_back_leak,
-            "mismatched_rear_gain_db": 20.0 * math.log10(mismatched_back_leak),
+            "mismatched_rear_gain_db": mismatched_rear_gain_db,
         },
         "limits": (
             "First-order two-mic endfire DMA model for kd << 1; equalized low-frequency WNG falls at "

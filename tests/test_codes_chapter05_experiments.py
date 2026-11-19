@@ -6,7 +6,11 @@ import warnings
 import numpy as np
 
 from codes.chapters.ch05.core.beamforming import lcmv_weights, mvdr_weights
-from codes.chapters.ch05.core.dma_kronecker import first_order_dma_weights, kronecker_mvdr_weights
+from codes.chapters.ch05.core.dma_kronecker import (
+    first_order_dma_example,
+    first_order_dma_weights,
+    kronecker_mvdr_weights,
+)
 from codes.chapters.ch04.core.doa import capon_spectrum
 from codes.chapters.ch05 import chapter05_experiments as ex
 from codes.chapters.ch05.beamformer_common_input_demo import run_experiment
@@ -208,6 +212,9 @@ class ChapterFiveExamplesTest(unittest.TestCase):
         self.assertAlmostEqual(r['gasket_mismatch_200hz']['ideal_rear_null_gain'], 0.0, places=14)
         self.assertAlmostEqual(r['gasket_mismatch_200hz']['mismatched_rear_gain'], expected_leak, places=13)
         self.assertGreater(r['gasket_mismatch_200hz']['mismatched_rear_gain'], 1.19)
+        matched_gasket = first_order_dma_example(0.001, 0.8, gasket_phase_mismatch_deg=0.0)
+        self.assertEqual(matched_gasket['gasket_mismatch_200hz']['mismatched_rear_gain'], 0.0)
+        self.assertEqual(matched_gasket['gasket_mismatch_200hz']['mismatched_rear_gain_db'], -math.inf)
         for bad_angle in (45.0, 185.0):
             with self.assertRaises(ValueError):
                 first_order_dma_weights(200.0, 0.01, bad_angle)

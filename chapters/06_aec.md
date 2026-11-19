@@ -1,6 +1,6 @@
-> ⚠️ 本篇是教程正文第 6 章（正文共 15 章，含第 12～15 章四篇扩展专题，另有附录 A、B），可独立阅读，前后篇见下方导航。
+> 本篇是本书正文第 6 章；正文与扩展专题共 16 章（第 0～15 章，其中第 0 章为数学基础，第 12～15 章为四篇扩展专题），另有附录 A、B。本篇可独立阅读，前后篇见下方导航。
 >
-> 🏠 首页导读：[`00_overview.md`](00_overview.md) ｜ 上一篇：[05_beamforming.md](05_beamforming.md) ｜ 下一篇：[07_wpe-dereverberation.md](07_wpe-dereverberation.md)
+> 导读首页：[00_overview.md](00_overview.md) ｜ 上一篇：[05_beamforming.md](05_beamforming.md) ｜ 下一篇：[07_wpe-dereverberation.md](07_wpe-dereverberation.md)
 
 ---
 
@@ -105,7 +105,7 @@ $$\begin{aligned}
 
 式(6-3)中，$\|\vec x[n]\|^2=\vec x^\top[n]\vec x[n]$（即 $\sum_{\ell=0}^{L-1}x^2[n-\ell]$）是当前参考滑窗的瞬时能量，$\mu$ 是无量纲步长因子，$\varepsilon>0$ 是防止参考静音时分母趋零的正向正则地板（若手算例题人为取 $\varepsilon=0$，则必须在 $\|\vec x[n]\|^2=0$ 时显式跳过更新以避免 $0/0$）。
 
-式(6-3)可以从瞬时平方误差一步步推导出来：
+式(6-3)可以从瞬时平方误差一步步推导出来（向量梯度、超平面正交投影与迭代优化基础见[第 0 章 §0.5](00_math-foundations.md#sec-0-5)）：
 
 1. **定义瞬时目标与梯度**：取当前时刻的先验残差平方 $J[n]=e^2[n]=(d[n]-\hat{\vec w}^\top[n]\vec x[n])^2$ 作为瞬时代价。将 $\vec x[n]$ 与 $d[n]$ 视为给定常数，对列向量 $\hat{\vec w}[n]$ 应用链式法则求偏导，得到瞬时梯度 $\nabla_{\hat{\vec w}}J[n]=2\,e[n]\,(-\vec x[n])$，整理即 $-2\,e[n]\vec x[n]$；
 2. **沿负梯度最速下降（LMS）**：把常数因子 $2$ 吸收进正步长 $\mu'$，令权重沿负梯度方向前进一步，得到 $\hat{\vec w}[n+1]=\hat{\vec w}[n]+\mu'\,e[n]\vec x[n]$，这就是经典的最小均方（Least Mean Squares，LMS）算法；
@@ -122,7 +122,7 @@ $$\begin{aligned}
       \frac{\|\vec x[n]\|^2}{\|\vec x[n]\|^2+\varepsilon}\right).
     \end{aligned}$$
 
-    当 $\varepsilon\ll\|\vec x[n]\|^2$ 时，括号内近似为 $1-\mu$，即 $e'[n]\approx(1-\mu)\,e[n]$。由此可见：$0<\mu<2$ 保证单步后验残差的绝对值严格收缩（$|1-\mu|<1$）；$\mu=1$ 会把当前这一个样本的后验误差一步归零（在无噪且无双讲时对应投影到超平面 $\vec x^\top[n]\vec w=d[n]$ 上，但若有噪声或双讲则会把干扰全盘吃进权重）；$\mu=1.8$ 会让后验误差变号并保留 $80\%$ 幅度（$e'[n]\approx -0.8\,e[n]$），$\mu=2$ 则是单步幅度不衰减的临界边界。实际语音有色、含噪且存在双讲切换，工程步长通常选在 $0.1$～$0.6$ 之间并配合双讲控制扫描标定。
+    当 $\varepsilon\ll\|\vec x[n]\|^2$ 时，括号内近似为 $1-\mu$，即 $e'[n]\approx(1-\mu)\,e[n]$。由此可见：$0<\mu<2$ 保证单步后验残差的绝对值严格收缩（$|1-\mu|<1$）；$\mu=1$ 会把当前这一个样本的后验误差一步归零（在无噪且无双讲时对应投影到超平面 $\vec x^\top[n]\vec w=d[n]$ 上，但若有噪声或双讲则会把干扰全盘并入权重）；$\mu=1.8$ 会让后验误差变号并保留 $80\%$ 幅度（$e'[n]\approx -0.8\,e[n]$），$\mu=2$ 则是单步幅度不衰减的临界边界。实际语音有色、含噪且存在双讲切换，工程步长通常选在 $0.1$～$0.6$ 之间并配合双讲控制扫描标定。
 
 #### 算例 6-1：NLMS 的一步手算
 
@@ -173,8 +173,8 @@ $$\begin{aligned}
 
 再看图28（无噪、无近端干扰的纯线性路径匹配实验）：
 
-- 图28（a）横轴为抽头索引，纵轴为滤波器系数，“0步”虚线代表更新前的全零初值，随着迭代步数推进，$\hat{\vec w}[n]$ 的波形轮廓逐步贴合真实脉冲响应 $h[\ell]$；
-- 图28（b）同时绘制系数欧氏失配 $\|\hat{\vec w}[n]-\vec h\|_2$ 的下降与 $\mathrm{ERLE}$ 的上升。两条曲线整体趋势相反，但并非严格的镜像对称：记抽头误差向量为 $\tilde{\vec w}[n]=\vec h-\hat{\vec w}[n]$，在有色参考激励下，残余回声功率等于 $\tilde{\vec w}^\top[n]\mathbf R_{xx}\tilde{\vec w}[n]$，即由输入相关矩阵 $\mathbf R_{xx}$ 加权。举一个二抽头最小例子即可看明：设零均值回归向量的协方差矩阵为 $\mathbf R_{xx}=\operatorname{diag}(100,1)$，现有两组路径误差向量 $[0.1,0]^\top$ 与 $[0,0.1]^\top$；两者的欧氏范数同为 $0.1$，但前者落在高能量方向上，产生的残余回声功率为 $100\times 0.1^2=1$，后者落在弱能量方向上，残余功率仅为 $1\times 0.1^2=0.01$，两者足足相差 $20\ \mathrm{dB}$；
+- 图28（a）横轴为抽头索引 $\ell$，纵轴为无量纲滤波器系数，随着迭代步数推进（从深蓝实线逐步演化至紫色点线），$\hat{\vec w}[n]$ 的波形轮廓逐步贴合灰色真实脉冲响应 $h[\ell]$；
+- 图28（b）采用双纵轴同时绘制**归一化系数失配分贝值** $10\log_{10}(\lVert\hat{\vec w}[n]-\vec h\rVert_2^2 / \lVert\vec h\rVert_2^2)$（左纵轴红色实线，从 $0\ \mathrm{dB}$ 逐步降至约 $-20\ \mathrm{dB}$）与 $\mathrm{ERLE}$（右纵轴蓝色虚线，单位 $\mathrm{dB}$）。两条曲线整体趋势相反，但并非严格的等量镜像换算：记抽头误差向量为 $\tilde{\vec w}[n]=\vec h-\hat{\vec w}[n]$，在有色参考激励下，残余回声功率等于 $\tilde{\vec w}^\top[n]\mathbf R_{xx}\tilde{\vec w}[n]$，即由输入相关矩阵 $\mathbf R_{xx}$ 加权。举一个二抽头最小例子即可看明：设零均值回归向量的协方差矩阵为 $\mathbf R_{xx}=\operatorname{diag}(100,1)$，现有两组路径误差向量 $[0.1,0]^\top$ 与 $[0,0.1]^\top$；两者的欧氏范数同为 $0.1$（相对失配分贝值完全相同），但前者落在高能量方向上，产生的残余回声功率为 $100\times 0.1^2=1$，后者落在弱能量方向上，残余功率仅为 $1\times 0.1^2=0.01$，两者足足相差 $20\ \mathrm{dB}$；
 - 图28（c）对比不同步长 $\mu$ 在有限观测时段内的收敛轨迹：无观测噪声时 $\mu$ 越接近 $1$ 下降越陡；但在真实含噪系统中，过大的 $\mu$ 会把底噪持续折算进权重，抬高稳态失调（misadjustment）。
 
 ![图29 收敛与双讲冻结](../figures/fig29_aec_erle_freeze.png)
@@ -353,7 +353,7 @@ $$\begin{aligned}
 
 从表面形式看，它酷似“每个频点各自跑一条 $P$ 抽头复数 NLMS”。但它究竟为什么能优化时域有效残差，为什么不能省掉前半块补零和时域投影？下面用四步矩阵推导把底牌亮出来。
 
-记 $\mathbf F\in\mathbb{C}^{2N\times 2N}$ 为标准正向 DFT 矩阵（第 $(k,r)$ 元为 $e^{-\mathrm{j}2\pi kr/(2N)}$），其共轭转置满足正交关系 $\mathbf F^H\mathbf F=2N\,\mathbf I_{2N}$，因此带 $1/(2N)$ 归一化的逆变换矩阵满足关键恒等式：
+记 $\mathbf F\in\mathbb{C}^{2N\times 2N}$ 为标准正向 DFT 矩阵（第 $(k,r)$ 元为 $e^{-\mathrm{j}2\pi kr/(2N)}$；离散傅里叶矩阵与圆周卷积性质见[第 0 章 §0.2](00_math-foundations.md#sec-0-2)），其共轭转置满足正交关系 $\mathbf F^H\mathbf F=2N\,\mathbf I_{2N}$，因此带 $1/(2N)$ 归一化的逆变换矩阵满足关键恒等式：
 
 $$\begin{aligned}
 \mathbf F^{-1}&=\frac{1}{2N}\mathbf F^H,\\
@@ -363,26 +363,26 @@ $$\begin{aligned}
 
 再定义两个实数选择与补零矩阵：取后半块矩阵 $\mathbf S=[\mathbf 0_{N\times N}\ \mathbf I_N]$（维度 $\mathbb{R}^{N\times 2N}$，左乘列向量时截取后 $N$ 点，而转置 $\mathbf S^\top$ 在前 $N$ 点补零），以及前半块补零矩阵 $\mathbf U=[\mathbf I_N\ \mathbf 0_{N\times N}]^\top$（维度 $\mathbb{R}^{2N\times N}$，把合法时域抽头 $\vec w_p\in\mathbb{R}^N$ 尾部补 $N$ 个零扩成 $2N$ 点，而 $\mathbf U^\top=[\mathbf I_N\ \mathbf 0_{N\times N}]$ 则截取前 $N$ 个合法抽头）。
 
-令 $Q_m=\sum_{p=0}^{P-1}W_{p,m}\odot X_{m-p}$（$\odot$ 表示逐频点 Hadamard 乘积），则有效时域预测为 $\hat{\vec y}_m=\mathbf S\mathbf F^{-1}Q_m$。将有效残差 $\vec e_m=\vec d_m-\hat{\vec y}_m$ 经 $\mathbf S^\top$ 在前半块补零后变到频域，正确的误差谱为：
+在跨频点矩阵推导中，我们统一将沿全部 $2N$ 个频点竖排而成的整块频域列向量记作不带频点参数 $(k)$ 的带箭头向量 $\vec W_{p,m},\vec X_{m-p},\vec Q_m,\vec D_m,\vec E_m\in\mathbb{C}^{2N\times 1}$（以区别于前面固定单个频点 $k$、沿 $P$ 个分区排列的 $\vec X_m(k)\in\mathbb{C}^{P\times 1}$）。令 $\vec Q_m=\sum_{p=0}^{P-1}\vec W_{p,m}\odot\vec X_{m-p}$（$\odot$ 表示逐频点 Hadamard 乘积），则有效时域预测为 $\hat{\vec y}_m=\mathbf S\mathbf F^{-1}\vec Q_m$。将有效残差 $\vec e_m=\vec d_m-\hat{\vec y}_m$ 经 $\mathbf S^\top$ 在前半块补零后变到频域，正确的误差谱列向量为：
 
 $$\begin{aligned}
-D_m&=\mathbf F\mathbf S^\top\vec d_m,\\
+\vec D_m&=\mathbf F\mathbf S^\top\vec d_m,\\
 \mathbf C&=\mathbf F\mathbf S^\top\mathbf S\mathbf F^{-1},\\
-E_m&=\mathbf F\mathbf S^\top(\vec d_m-\mathbf S\mathbf F^{-1}Q_m)\\
-&=D_m-\mathbf C Q_m.
+\vec E_m&=\mathbf F\mathbf S^\top(\vec d_m-\mathbf S\mathbf F^{-1}\vec Q_m)\\
+&=\vec D_m-\mathbf C\vec Q_m.
 \end{aligned}\tag{6-6}$$
 
-注意 $\mathbf S^\top\mathbf S$ 为对角分块阵 $\operatorname{diag}(\mathbf 0_N,\mathbf I_N)$，并不等于单位阵 $\mathbf I_{2N}$，因此式(6-6)第二行定义的频域投影矩阵 $\mathbf C$ 绝不是对角矩阵，而是把所有频点耦合在一起的循环卷积算子，所以 $E_m$ **一般不等于** $D_m-Q_m$！用算例 6-3 的四点数据一验便知：设单分区真实抽头为 $[1,2]$、当前滤波器已精确收敛到 $[1,2]$，输入 $u_1=[1,2,3,4]$ 的四点循环卷积为 $q=[9,4,7,10]$，麦克风收到的真实有效输出恰好是 $\vec d=[7,10]^\top$。按式(6-6)计算，有效误差 $\vec e=[7,10]^\top-[7,10]^\top=[0,0]^\top$，补零变换得 $E_m=\vec 0$，已收敛的滤波器稳稳停在真值上；若漏掉投影矩阵 $\mathbf C$ 而错误计算
+注意 $\mathbf S^\top\mathbf S$ 为对角分块阵 $\operatorname{diag}(\mathbf 0_N,\mathbf I_N)$，并不等于单位阵 $\mathbf I_{2N}$，因此式(6-6)第二行定义的频域投影矩阵 $\mathbf C$ 绝不是对角矩阵，而是把所有频点耦合在一起的循环卷积算子，所以 $\vec E_m$ **一般不等于** $\vec D_m-\vec Q_m$！用算例 6-3 的四点数据一验便知：设单分区真实抽头为 $[1,2]$、当前滤波器已精确收敛到 $[1,2]$，输入 $u_1=[1,2,3,4]$ 的四点循环卷积为 $q=[9,4,7,10]$，麦克风收到的真实有效输出恰好是 $\vec d=[7,10]^\top$。按式(6-6)计算，有效误差 $\vec e=[7,10]^\top-[7,10]^\top=[0,0]^\top$，补零变换得 $\vec E_m=\vec 0$，已收敛的滤波器稳稳停在真值上；若漏掉投影矩阵 $\mathbf C$ 而错误计算
 
-$$D_m-Q_m=\mathbf F[0,0,7,10]^\top-\mathbf F[9,4,7,10]^\top
+$$\vec D_m-\vec Q_m=\mathbf F[0,0,7,10]^\top-\mathbf F[9,4,7,10]^\top
 =\mathbf F[-9,-4,0,0]^\top\neq\vec 0,$$
 
 前半块的循环折回垃圾值 $[-9,-4]$ 就会在完美匹配时凭空制造非零假梯度，把原本已经收敛准的抽头重新推偏！
 
-现在把合法时域抽头 $\vec w_p\in\mathbb{R}^N$ 代入预测链路：$W_{p,m}=\mathbf F\mathbf U\vec w_p$，与 $X_{m-p}$ 逐点相乘即左乘对角阵 $\operatorname{diag}(X_{m-p})$，再经 $\mathbf F^{-1}$ 和 $\mathbf S$ 得到第 $p$ 分区对本块有效输出的 $N\times N$ 线性映射矩阵：
+现在把合法时域抽头 $\vec w_p\in\mathbb{R}^N$ 代入预测链路：$\vec W_{p,m}=\mathbf F\mathbf U\vec w_p$，与 $\vec X_{m-p}$ 逐点相乘即左乘对角阵 $\operatorname{diag}(\vec X_{m-p})$，再经 $\mathbf F^{-1}$ 和 $\mathbf S$ 得到第 $p$ 分区对本块有效输出的 $N\times N$ 线性映射矩阵：
 
 $$\mathbf A_{p,m}=\mathbf S\mathbf F^{-1}
-\operatorname{diag}(X_{m-p})\mathbf F\mathbf U.$$
+\operatorname{diag}(\vec X_{m-p})\mathbf F\mathbf U.$$
 
 定义本块有效残差平方和目标 $J_m=\frac{1}{2}\|\vec e_m\|_2^2$，对实向量 $\vec w_p$ 求负梯度并逐步代入刚才的 $\mathbf F^H=2N\,\mathbf F^{-1}$ 与 $(\mathbf F^{-1})^H=\frac{1}{2N}\mathbf F$：
 
@@ -397,22 +397,22 @@ J_m&=\frac{1}{2}\|\vec e_m\|_2^2,\\
 $$\begin{aligned}
 \mathbf A_{p,m}^H\vec e_m
 &=\bigl(\mathbf S\mathbf F^{-1}
-  \operatorname{diag}(X_{m-p})\mathbf F\mathbf U\bigr)^H\vec e_m\\
+  \operatorname{diag}(\vec X_{m-p})\mathbf F\mathbf U\bigr)^H\vec e_m\\
 &=\mathbf U^\top\mathbf F^H
-  \operatorname{diag}(X_{m-p}^*)\,
+  \operatorname{diag}(\vec X_{m-p}^*)\,
   (\mathbf F^{-1})^H\mathbf S^\top\vec e_m\\
 &=\mathbf U^\top\bigl(2N\,\mathbf F^{-1}\bigr)
-  \operatorname{diag}(X_{m-p}^*)
+  \operatorname{diag}(\vec X_{m-p}^*)
   \left(\frac{1}{2N}\mathbf F\right)\mathbf S^\top\vec e_m\\
 &=\mathbf U^\top\mathbf F^{-1}
-  \bigl(X_{m-p}^*\odot(\mathbf F\mathbf S^\top\vec e_m)\bigr)\\
-&=\mathbf U^\top\operatorname{IFFT}_{2N}(X_{m-p}^*\odot E_m).
+  \bigl(\vec X_{m-p}^*\odot(\mathbf F\mathbf S^\top\vec e_m)\bigr)\\
+&=\mathbf U^\top\operatorname{IFFT}_{2N}(\vec X_{m-p}^*\odot\vec E_m).
 \end{aligned}$$
 
-推导水落石出：中间的缩放常数 $2N$ 与 $\frac{1}{2N}$ 恰好抵消，$\mathbf F\mathbf S^\top\vec e_m$ 正是式(6-6)前半块补零后的有效误差谱 $E_m$，而左乘 $\mathbf U^\top$ 正是截取 IFFT 结果的**前 $N$ 个合法时域点**（当输入与误差均为实序列时，虚部严格抵消为零）！由此可以清晰界定各变体的数学身份：
+推导水落石出：中间的缩放常数 $2N$ 与 $\frac{1}{2N}$ 恰好抵消，$\mathbf F\mathbf S^\top\vec e_m$ 正是式(6-6)前半块补零后的有效误差谱 $\vec E_m$，而左乘 $\mathbf U^\top$ 正是截取 IFFT 结果的**前 $N$ 个合法时域点**（当输入与误差均为实序列时，虚部严格抵消为零）！由此可以清晰界定各变体的数学身份：
 
 - 若不做逐频点功率除法，仅对全部分区做合法抽头投影 $\mathbf U^\top$，FFT 算出的就是精确的**时域块 LMS 梯度**；
-- 式(6-5)在投影前先给每个频点乘上对角预条件因子 $R_m(k)^{-1}$，加速了有色语音中弱能量频带的收敛；但由于频域合法抽头投影算子 $\mathbf G$（即 $\mathbf F\mathbf U\mathbf U^\top\mathbf F^{-1}$）会重新混合各个频点，且 $\mathbf G$ 与逐频对角矩阵 $\operatorname{diag}(R_m)^{-1}$ 一般不可交换，受约束 PBFDAF 并非 $2N$ 条彼此绝缘的独立复数 NLMS。
+- 式(6-5)在投影前先给每个频点乘上对角预条件因子 $R_m(k)^{-1}$，加速了有色语音中弱能量频带的收敛；但由于频域合法抽头投影算子 $\mathbf G$（即 $\mathbf F\mathbf U\mathbf U^\top\mathbf F^{-1}$）会重新混合各个频点，且 $\mathbf G$ 与逐频对角矩阵 $\operatorname{diag}(\vec R_m)^{-1}$ 一般不可交换，受约束 PBFDAF 并非 $2N$ 条彼此绝缘的独立复数 NLMS。
 
 下表汇总了五种易混叫法的模型结构与等价条件：
 
@@ -438,7 +438,7 @@ $$\begin{aligned}
 
 **输入与口径**：取单分区 $N=2$、$P=1$、零初值、$\mu=\delta=1$，当前重叠保存输入 $u=[0,0,1,2]$，有效麦克风块 $d=[1,0]$（故有效先验误差 $e=[1,0]$，补零后为 $[0,0,1,0]$）。按正向 DFT 负指数 $e^{-\mathrm{j}2\pi kr/4}$、逆变换除以 $4$ 的标准约定，逐频点计算 $X(k)$、$E(k)$、功率分母 $|X(k)|^2+1$ 与候选增量 $\Delta W(k)=X^*(k)E(k)/(|X(k)|^2+1)$：
 
-| $k$ | $X(k)$ | $E(k)$ | $|X(k)|^2+1$ | 候选更新量 $\Delta W(k)$ |
+| $k$ | $X(k)$ | $E(k)$ | $\lvert X(k)\rvert^2+1$ | 候选更新量 $\Delta W(k)$ |
 |---:|---:|---:|---:|---:|
 | 0 | $3$ | $1$ | $10$ | $3/10$ |
 | 1 | $-1+2\mathrm{j}$ | $-1$ | $6$ | $(1+2\mathrm{j})/6$ |
@@ -455,7 +455,7 @@ $$\begin{aligned}
 
 在 [`aec_partitioned_demo.py`](../codes/chapters/ch06/aec_partitioned_demo.py) 中固定随机种子 `2094`，设真实九抽头稀疏路径为 $h=[0,0,0.7,-0.2,0.08,0,0,0,0.05]$，以无噪直接线性卷积生成麦克风观测；教学 PBFDAF 配置为 $N=16$、$L=9$、$\mu=0.3$、$\delta=0.05$。分别用“标准正态宽带白噪声”与“周期为 $8$ 点的单音正弦”各训练 $4096$ 点，随后冻结权重，换用**同一段** $1024$ 点独立宽带白噪声作留出测试：
 
-| 训练参考 | 训练末 1024 点先验残差均方 | 训练后相对路径误差 $\|\hat h-h\|_2/\|h\|_2$ | 冻结宽带留出残差均方 |
+| 训练参考 | 训练末 1024 点先验残差均方 | 训练后相对路径误差 $\lVert\hat h-h\rVert_2/\lVert h\rVert_2$ | 冻结宽带留出残差均方 |
 |---|---:|---:|---:|
 | 宽带白噪声 | $4.03\times10^{-27}$ | $3.27\times10^{-16}$ | $7.52\times10^{-32}$ |
 | 周期 8 点纯音 | $1.11\times10^{-8}$ | $0.868$ | $0.382$ |
@@ -548,7 +548,7 @@ W_{i,j,k}^{+}&=W_{i,j,k}+\Delta W_{i,j,k}.
 
 结合图37可把子带表示能力与工程折中做一收束：
 
-- 图37（a）画出两带 Haar 结构下 $u_0,u_1$ 到 $v_0,v_1$ 的四条传递支路，斜向箭头即奇数采样延迟跨越两点块边界所诱发的跨带项 $W_{0,1}$ 与 $W_{1,0}$；
+- 图37（a）按横向五框链路依次画出“播放参考 $x[n]$ → 两带 Haar 分析 + $\downarrow 2$ → 一拍路径的子带映射（同时包含同带项 $G_{00},G_{11}$ 与交叉带项 $G_{01},G_{10}$）→ 两带 Haar 合成 + $\uparrow 2$ → 回声 $y[n]$”，并在中间模块下方标出 $G_{01}=(1-z^{-1})/2,\ G_{10}=(z^{-1}-1)/2$ 两项一般不为零——说明分析后立即合成虽能完美重建 $x[n]$，但中间插入延迟路径后不能只保留同带对角项 $G_{00},G_{11}$；
 - 图37（b）横轴为输出采样索引 $n$，纵轴为无量纲幅度，对比单位脉冲输入 $x=[1,0,0,0]$ 经过一拍延迟路径时，“保留完整四路子带矩阵”精确合成 $[0,1,0,0]$，而“强行删去交叉项仅留同带对角项”则合成失真序列 $[0,0.5,0,0.5]$（配套试听见[两带 Haar 交叉项合成 WAV](../codes/chapters/ch00/research/05_exercises_and_audio.md#16-两带-haar-的交叉项音频)）。
 
 工程上若不愿承担全交叉矩阵带来的额外自由度（本例无约束全交叉共有 $4K$ 个实参数，多于原时域 $L$ 个抽头）与跨带辨识病态问题，现代工业子带 AEC 通常采用两条改进路径：一是设计高阻带衰减的**过采样（oversampled）滤波器组**（抽取率小于子带数，把相邻通带交叠混叠压到噪声底以下，从而安全退回对角逐带更新）；二是采用归一化子带自适应滤波（Normalized Subband Adaptive Filter，NSAF；[Lee & Gan, *IEEE SPL*, 2004](https://doi.org/10.1109/LSP.2004.833445) 与 [EUSIPCO 2004](https://www.eurasip.org/Proceedings/Eusipco/Eusipco2004/defevent/papers/cr1587.pdf)），仅利用子带分解后的白化误差去直接更新单一一条**全带时域抽头向量**，从根源上避开子带合成混叠与额外参数膨胀。
@@ -697,7 +697,7 @@ $$\begin{aligned}
 \vec w_n&=\mathbf P_n\vec p_n.
 \end{aligned}\tag{6-17}$$
 
-若每拍对 $\mathbf R_n$ 直接求逆需 $O(L^3)$ 次运算。由于式(6-17)第 3 行是在已知可逆矩阵 $\mathbf A=\lambda\mathbf R_{n-1}$（其逆为 $\mathbf A^{-1}=\lambda^{-1}\mathbf P_{n-1}$）之上叠加一个秩 1 外积 $\vec x_n\vec x_n^\top$，我们可以直接套用附录 A 的 **Woodbury（Sherman–Morrison）矩阵求逆引理**：
+若每拍对 $\mathbf R_n$ 直接求逆需 $O(L^3)$ 次运算。由于式(6-17)第 3 行是在已知可逆矩阵 $\mathbf A=\lambda\mathbf R_{n-1}$（其逆为 $\mathbf A^{-1}=\lambda^{-1}\mathbf P_{n-1}$）之上叠加一个秩 1 外积 $\vec x_n\vec x_n^\top$，我们可以直接套用[第 0 章 §0.3](00_math-foundations.md#sec-0-3) 与[附录 A](16_appendix-symbols-math.md) 的 **Woodbury（Sherman–Morrison）矩阵求逆引理**：
 
 $$(\mathbf A+\vec u\vec v^\top)^{-1}
 =\mathbf A^{-1}
@@ -865,7 +865,7 @@ P_m&=(1-K_mX_m)P_m^-.
 
 - 图38（a）对应前述忽略正则项的两抽头 IPNLMS 手算（$\hat{\vec w}=[0.8,0.2]^\top$），展示 $\kappa$ 从 $-1$（等分 $[0.5,0.5]$）经 $0$（折中 $[0.65,0.35]$）到 $+1$（纯比例 $[0.8,0.2]$）时各抽头分得的更新份额 $g_l$；
 - 图38（b）对应 §6.2.5 两抽头 RLS 手算，绘出逆相关矩阵从对角阵 $\mathbf P_0=\operatorname{diag}(2/3,2)$ 演化到含负非对角耦合项（如非对角元 $-16/19$）矩阵 $\mathbf P_1$ 的全过程；
-- 图38（c）固定 $X=1$，绘出式(6-21)标量卡尔曼增益 $K$ 随先验路径方差 $P^-$ 增大而上升、随观测干扰方差 $\Psi$ 增大而下降的双参数软门控曲面截面。
+- 图38（c）在固定标量参考 $X=1$（无量纲）下，用三根离散柱状图对比三组人为给定统计工况下的卡尔曼增益 $K=P^-/(P^-+\Psi)$（贝叶斯状态空间递推基础见[第 0 章 §0.6](00_math-foundations.md#sec-0-6)）：“基准”（$P^-=1,\Psi=1$）得 $K=0.500$，“假定双讲”（观测干扰方差增大为 $P^-=1,\Psi=10$）收缩至 $K\approx 0.091$，“假定突变”（先验路径方差增大为 $P^-=4,\Psi=1$）则放大至 $K=0.800$。
 
 **从标量走向矩阵状态：对角近似丢掉了什么？为什么要用 Joseph 协方差更新式？** 在时域全矩阵模型下，设状态转移矩阵为 $\mathbf A\in\mathbb{R}^{L\times L}$、过程协方差为 $\mathbf Q$、标量观测干扰方差为 $\Psi$，完整实数卡尔曼递推写为：
 
@@ -1247,12 +1247,12 @@ c&=\frac{\vec e_t^\top\vec e_{\mathrm{enroll}}}
 
 | 算法 | 单通道本书手算 | $M$ 通道关系 | 仍需实测的资源 |
 |---|---:|---:|---|
-| 时域 NLMS | $6144\times16000\approx98.3$ 百万次实乘法/s | 约为 $M_{\mathrm{mic}}\times98.3$ 百万次实乘法/s | 指令数、内存带宽、系数与历史缓冲 |
-| PBFDAF，无逐分区梯度约束 | $352\times16000\approx5.6$ 百万次实乘法/s | 约为 $M_{\mathrm{mic}}\times5.6$ 百万次实乘法/s | FFT 实现、功率估计、约束频率与缓冲 |
-| PBFDAF，每块逐分区梯度约束 | $1376\times16000\approx22.0$ 百万次实乘法/s | 约为 $M_{\mathrm{mic}}\times22.0$ 百万次实乘法/s | 同上，并计入每个分区的一对约束变换；间歇约束另算 |
+| 时域 NLMS | $6144\times16000\approx98.3$ 百万次实乘法/s | 约为 $M\times98.3$ 百万次实乘法/s | 指令数、内存带宽、系数与历史缓冲 |
+| PBFDAF，无逐分区梯度约束 | $352\times16000\approx5.6$ 百万次实乘法/s | 约为 $M\times5.6$ 百万次实乘法/s | FFT 实现、功率估计、约束频率与缓冲 |
+| PBFDAF，每块逐分区梯度约束 | $1376\times16000\approx22.0$ 百万次实乘法/s | 约为 $M\times22.0$ 百万次实乘法/s | 同上，并计入每个分区的一对约束变换；间歇约束另算 |
 | FDKF 或神经后滤波 | 不给固定倍数 | 由状态维度或模型结构决定 | 目标实现的算子、线程、内存和实时因子 |
 
-看表中第 2、3 行的多麦缩放技巧：上表按最朴素的“每只麦克风完全独立跑一套单声道实例”写成 $M_{\mathrm{mic}}$ 倍；但在同一块 DSP 上，由于全部 $M$ 只麦克风面对的是**同一个扬声器播放参考 $x[n]$**（只要采用公共预延迟对齐并统一块边界），拼接参考窗 $u_m$ 的 $256$ 点正变换（$4096/128=32$ 次/样本）与参考功率谱计算全阵列每块**只需算唯一一次**并广播共享！
+看表中第 2、3 行的多麦缩放技巧：上表按最朴素的“每只麦克风完全独立跑一套单声道实例”写成 $M$ 倍；但在同一块 DSP 上，由于全部 $M$ 只麦克风面对的是**同一个扬声器播放参考 $x[n]$**（只要采用公共预延迟对齐并统一块边界），拼接参考窗 $u_m$ 的 $256$ 点正变换（$4096/128=32$ 次/样本）与参考功率谱计算全阵列每块**只需算唯一一次**并广播共享！
 
 扣除重复参考 FFT 后，无约束版核心算子从 $352M$ 降为 $32+320M$（六麦阵列由 $2112$ 降至 $1952$ 次/样本），全约束版从 $1376M$ 降为 $32+1344M$（六麦由 $8256$ 降至 $8096$ 次/样本，若再叠加 SpeexDSP 式的轮流单分区投影还可把 $1024M$ 约束项再砍掉 $15/16$）。由此可见，共享参考谱的分区频域 AEC 在六麦、八麦智能音箱与会议全向麦上完全处于嵌入式实时算力甜区之内。
 
@@ -1572,23 +1572,33 @@ ITU-T 已于 2024 年 1 月 5 日废止 P.862、P.862.1、P.862.2 和 P.862.3（
 
 1. **四个核心算术微实验**（[`aec_algorithm_minicases.py`](../codes/chapters/ch06/aec_algorithm_minicases.py)，对应单元测试 [`test_codes_aec_minicases.py`](../tests/test_codes_aec_minicases.py)）：一次性输出 $N=2,P=2$ 重叠保存有效半块、两抽头 IPNLMS 比例分配、Geigel 多径误报与零参考门控、以及负极性路径使最大正相关峰选错延迟四组精确 JSON：
 
-        .venv/bin/python -m codes.chapters.ch06.aec_algorithm_minicases
+    ```bash
+    .venv/bin/python -m codes.chapters.ch06.aec_algorithm_minicases
+    ```
 
 2. **分区频域 PBFDAF 演示**（核心见 [`core/aec_partitioned.py`](../codes/chapters/ch06/core/aec_partitioned.py)，测试见 [`test_codes_aec_partitioned.py`](../tests/test_codes_aec_partitioned.py)）：串联式(6-4)～式(6-5)的重叠保存预测、前半块补零有效误差谱、逐频功率归一化与可选时域合法抽头清零投影，同时复现 §6.2.2 两块手算与算例 6-5 的纯音/宽带留出对照：
 
-        .venv/bin/python -m codes.chapters.ch06.aec_partitioned_demo
+    ```bash
+    .venv/bin/python -m codes.chapters.ch06.aec_partitioned_demo
+    ```
 
 3. **逐样本全矩阵 RLS 演示**（核心见 [`core/aec_rls.py`](../codes/chapters/ch06/core/aec_rls.py)）：维护逆相关矩阵与跨块参考历史（`freeze=True` 时同步暂停拟合与 $\lambda^{-1}$ 膨胀，仅推进参考滑窗），并同屏比对式(6-18)递推解与批量正规方程解：
 
-        .venv/bin/python -m codes.chapters.ch06.aec_rls_demo
+    ```bash
+    .venv/bin/python -m codes.chapters.ch06.aec_rls_demo
+    ```
 
 4. **时域全矩阵 Joseph 形式 Kalman 演示**（核心见 [`core/aec_kalman_matrix.py`](../codes/chapters/ch06/core/aec_kalman_matrix.py)）：按式(6-22)维护完整路径误差协方差矩阵（注意其 `freeze=True` 仅跳过麦克风观测修正，仍照常推进时间预测步 $\mathbf A\hat{\vec h}_{n-1}$ 与参考历史，故 $a\neq 1$ 时冻结并不等于权重静止），直观展示跨抽头负相关非对角元的生成过程：
 
-        .venv/bin/python -m codes.chapters.ch06.aec_kalman_matrix_demo
+    ```bash
+    .venv/bin/python -m codes.chapters.ch06.aec_kalman_matrix_demo
+    ```
 
 5. **单频点标量与复数共轭 Kalman 演示**（[`aec_kalman_scalar_demo.py`](../codes/chapters/ch06/aec_kalman_scalar_demo.py)，测试见 [`test_codes_aec_kalman_scalar_demo.py`](../tests/test_codes_aec_kalman_scalar_demo.py)）：逐项复算式(6-21)的实数单讲、纯虚参考谱共轭方向与双讲高观测方差软门控：
 
-        .venv/bin/python -m codes.chapters.ch06.aec_kalman_scalar_demo
+    ```bash
+    .venv/bin/python -m codes.chapters.ch06.aec_kalman_scalar_demo
+    ```
 
 在指标核算函数 `erle_db()` 中，除通过 `double_talk_mask` 剔除双讲区间外，调用方还须通过 `valid_mask` 排除初始收敛过渡段、近端单讲段与静音段。函数要求有效统计窗内的输入均方严格大于能量门槛 `epsilon`（例如默认 `epsilon=1e-15` 时，幅度 $10^{-8}$、均方 $10^{-16}$ 的微弱信号会被当作无效静音拒绝打分），达标后在分子与分母均方上各加 `epsilon` 求对数比，因此零残差理想抵消返回的是由地板决定的有限分贝数而非浮点无穷大（回归测试套件见 [`tests/test_codes_aec_wpe_sep_track.py`](../tests/test_codes_aec_wpe_sep_track.py) 与 [`tests/test_codes_aec_streaming.py`](../tests/test_codes_aec_streaming.py)）。
 
@@ -1618,7 +1628,7 @@ ITU-T 已于 2024 年 1 月 5 日废止 P.862、P.862.1、P.862.2 和 P.862.3（
 
 正因工业库集成了内部缓冲延迟、高通直流滤波与非线性抑制，评测时绝不能拿“AEC3 经 NLP 深度压制后的最终输出”去和“纯线性教学 NLMS 残差”直接比谁的总输出能量更小，必须锁定完全一致的输入信号、采样率、对齐窗口并标明各自真实取点。
 
-#### 6.15.3 真实配对录音及双讲控制组
+#### 6.15.3 真实配对录音及双讲对照组
 
 脱离理想合成信号、走上真实消费设备录音时，没有干净分量真值和延迟预对齐会发生什么？下面用三组对照实验把真实录音的诊断方法跑通（完整复现命令与录音校验信息见[研究手册](../codes/chapters/ch00/research/02_aec_wpe_separation.md#aec)，原始配对音频存于本地忽略缓存）。
 
@@ -2025,22 +2035,19 @@ R(t)&=\left|1-e^{-\mathrm{j}\phi(t)}\right|^2
 **逐点卷积核对**：每拍回声由“当前样本 $+0.5\times$ 上一拍样本”给出：
 
 $$\begin{aligned}
-\vec y&=[1,\ 2.5,\ 4,\ 5.5,\ 7,\ 8.5],\\
-\hat{\vec y}&=[1,\ 2.5,\ 1,\ 0,\ 5,\ 8.5],\\
-\vec e&=\vec y-\hat{\vec y}=[0,\ 0,\ 3,\ 5.5,\ 2,\ 0].
+\vec y&=[1,\ 2.5,\ 4,\ 5.5,\ 7,\ 8.5]^\top,\\
+\hat{\vec y}&=[1,\ 2.5,\ 1,\ 0,\ 5,\ 8.5]^\top,\\
+\vec e&=\vec y-\hat{\vec y}=[0,\ 0,\ 3,\ 5.5,\ 2,\ 0]^\top.
 \end{aligned}$$
 
 重点看第 $n=4$ 拍：此时参考流明明已经恢复正常（$x_a[4]=x[4]=5$），为什么残差里还冒出一个 $2$？因为 FIR 滑动窗口里的前一拍历史位置装的还是刚才丢包留下的假零（漏算了 $0.5\times x[3]=0.5\times 4=2$），直到第 $n=5$ 拍全部非零抽头跨度内的历史样本彻底刷成真值，残差才重新归零！一般地，参考缺口引发的残差严格满足线性卷积 $h*(x-x_a)$，其污染持续时长等于“丢包时长 $+$ 路径非零抽头尾长”。
 
 本仓库配套提供了展示这一参考断流尾迹的[四条 $16\ \mathrm{kHz}$、$2\ \mathrm{s}$ 数学合成音频](../codes/chapters/ch00/research/05_exercises_and_audio.md#28-aec-参考断流与历史尾)：固定 $256$ 抽头稀疏路径仅在滞后 $0,80,240$ 点取 $[0.7,-0.3,0.15]$（权重装入真值并全程冻结；远端为固定种子 `20261028` 均匀随机序列加 $310\ \mathrm{Hz}$ 正弦，近端为 $220/330/660\ \mathrm{Hz}$ 三音和弦，首尾 $320$ 点淡入淡出，共同导出增益 $1$）。扬声器真实播放不断，算法参考在 `[0.75, 1.0)` $\mathrm{s}$（样本 $[12000,16000)$）置零；参考在 $16000$ 点恢复后，仍需排空 $240$ 点路径记忆，直至索引 $16240$（$1.015\ \mathrm{s}$）才完全恢复干净：
 
-[近端目标：评分参考](../codes/chapters/ch06/audio/aec_dropout_target.wav)
-
-[麦克风混合：近端加真实回声](../codes/chapters/ch06/audio/aec_dropout_microphone.wav)
-
-[参考完整的残差：用真值冻结路径抵消](../codes/chapters/ch06/audio/aec_dropout_complete_reference_residual.wav)
-
-[参考丢块的残差：相同路径，算法参考被置零](../codes/chapters/ch06/audio/aec_dropout_missing_reference_residual.wav)
+- [近端目标：评分参考](../codes/chapters/ch06/audio/aec_dropout_target.wav)
+- [麦克风混合：近端加真实回声](../codes/chapters/ch06/audio/aec_dropout_microphone.wav)
+- [参考完整的残差：用真值冻结路径抵消](../codes/chapters/ch06/audio/aec_dropout_complete_reference_residual.wav)
+- [参考丢块的残差：相同路径，算法参考被置零](../codes/chapters/ch06/audio/aec_dropout_missing_reference_residual.wav)
 
 读取导出的 16 位 PCM 与近端目标轨逐点比对相对平方误差：参考完整对照轨在丢块期 `[12000, 16000)`、排空恢复尾 `[16000, 16240)` 与完全恢复区 `[16240, 30000)` 均为 $0$；而丢块轨在三段窗口依次录得约 $0.7740$、$0.06483$ 与 $0$，听感与算术双重印证了 $240$ 点历史尾的排空延迟。
 
@@ -2275,7 +2282,7 @@ P_{\mathrm{total}}
 
 ![图58 同源仿射投影学习与含噪留出代价](../figures/fig58_affine_projection_learning.png)
 
-把上表数据与图58左右对读，就能彻底吃透 APA 的调参哲学：在图58的系数误差下降曲线上，无噪虚线组里阶数 $K$ 越高下降越凌厉；但在含噪实线组里，$K=2,4$ 在初期快速下探后，很快就因每拍对病态小矩阵 $(\mathbf G_n+\delta\mathbf I)^{-1}$ 求逆放大了差模方向上的观测噪声 $v[n]$，最终撞上比 $K=1$ 更高的稳态失调地板！这告诉我们：高阶 APA 要想在含噪语音中兑现加速红利，必须同步减小稳态步长 $\mu$ 或增大对角加载 $\delta$（即变步长/变正则 APA），绝不能直接照搬 $K=1$ 的激进步长。
+把上表数据与图58三个面板对照阅读，就能彻底吃透 APA 的调参哲学：左上子图（a）无观测噪声面板的三条实线曲线（蓝 $K=1$、橙 $K=2$、紫 $K=4$，灰色竖虚线标出 $1.5\ \mathrm{s}$ 后冻结）清楚显示阶数 $K$ 越高，相对路径误差 $\|\hat{\vec h}-\vec h\|_2/\|\vec h\|_2$ 下降越凌厉；但切到右上子图（b）观测噪声 $\sigma=0.003$ 面板的三条实线曲线，$K=2,4$ 在初期快速下探后，很快就因每拍对病态小矩阵 $(\mathbf G_n+\delta\mathbf I)^{-1}$ 求逆放大了差模方向上的观测噪声 $v[n]$，最终撞上比 $K=1$ 更高的稳态失调地板（底部子图（c）冻结留出窗的三组柱状图同样印证 $K$ 增大反而抬高了干净回声预测误差与总先验残差）！这告诉我们：高阶 APA 要想在含噪语音中兑现加速红利，必须同步减小稳态步长 $\mu$ 或增大对角加载 $\delta$（即变步长/变正则 APA），绝不能直接照搬 $K=1$ 的激进步长。
 
 **PCM16 整数能量复核与试听入口**：六条音频均由未量化浮点结果按共同增益 $1$ 独立量化导出（按 $32768$ 解码，留出窗分母为 $8000\times 32768^2$）。实测留出窗内三条残差 WAV 的有符号整数平方和依次为 `91975291`、`100494856` 与 `127508700`（除以分母即得表末列 PCM MSE），含噪麦克风整数平方和为 `14743087038`（对应麦克风与总残差功率比依次约 $22.0492$、$21.6644$ 与 $20.6305\ \mathrm{dB}$）。生成与只读校验脚本见 [`generate_apa_audio.py`](../codes/chapters/ch06/examples/generate_apa_audio.py)（核心实现 [`core/apa_audio.py`](../codes/chapters/ch06/core/apa_audio.py)，参数记录见[独立清单](../codes/chapters/ch06/apa_audio/MANIFEST.json)），试听前建议先调低设备音量：
 
@@ -2492,4 +2499,4 @@ $$\begin{aligned}
 
 ---
 
-> 📄 [回首页](00_overview.md)
+> 📄 本篇信息：配图 17 张 ｜ [回首页](00_overview.md)

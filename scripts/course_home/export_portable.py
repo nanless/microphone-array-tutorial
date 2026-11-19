@@ -40,9 +40,14 @@ def portable(template, css, script):
 
     template = re.sub(r'href="([^"]+)"', link, template)
     template = template.replace('src="../assets/readme/cases/', f'src="{PAGES}assets/readme/cases/')
-    template = template.replace('<div class="course" id="course-home" tabindex="-1">',
-                                '<main class="course" id="course-home" tabindex="-1">', 1)
-    template = template.removesuffix("</div>\n") + "</main>\n"
+    root_open = '<div class="course" id="course-home" tabindex="-1">'
+    if not template.startswith(root_open) or not template.endswith("</div>\n"):
+        raise ValueError("Course home template must be wrapped in div#course-home and end with '</div>\\n'")
+    template = (
+        '<main class="course" id="course-home" tabindex="-1">'
+        + template[len(root_open):-len("</div>\n")]
+        + "</main>\n"
+    )
     return f"""<!doctype html>
 <html lang="zh-CN">
 <head>

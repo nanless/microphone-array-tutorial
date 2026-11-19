@@ -48,7 +48,8 @@ def _integer(value, name: str, *, minimum: int | None = None) -> int:
 
 def _wrap_angle_deg(angle: float | np.ndarray) -> float | np.ndarray:
     value = _finite_real_array(angle, "angle")
-    wrapped = (value % 360.0 + 180.0) % 360.0 - 180.0
+    wrapped = ((value + 180.0) % 360.0) - 180.0
+    wrapped = np.where(wrapped >= 180.0, -180.0, wrapped)
     wrapped = np.where(np.abs(value) < 1e-12, value, wrapped)
     return float(wrapped) if wrapped.ndim == 0 else wrapped
 
@@ -129,7 +130,7 @@ def oosm_cv_retrodiction_update(
     eye2 = np.eye(2, dtype=np.float64)
 
     def _joseph_scalar_update(h_row: np.ndarray) -> dict:
-        pred_z = float(h_row @ s_vec)
+        pred_z = float(_wrap_angle_deg(float(h_row @ s_vec)))
         innovation = float(_wrap_angle_deg(z_deg - pred_z))
         ph_t = p_mat @ h_row
         s_innov = float(h_row @ ph_t + r_var)
@@ -168,28 +169,35 @@ def fov_bernoulli_missed_detection_update(
     *,
     fov_half_width_deg: float = 45.0,
     in_fov_detection_prob: float = 0.95,
+    camera_center_deg: float = 0.0,
 ) -> dict:
     """Compare FOV-aware vs naive constant-p_D Bernoulli existence update on empty visual frame."""
     r_prior = _finite_real_scalar(prior_existence, "prior_existence")
     theta = float(_wrap_angle_deg(_finite_real_scalar(angle_deg, "angle_deg")))
     fov_half = _finite_real_scalar(fov_half_width_deg, "fov_half_width_deg")
     pd_in = _finite_real_scalar(in_fov_detection_prob, "in_fov_detection_prob")
+    cam_center = float(_wrap_angle_deg(_finite_real_scalar(camera_center_deg, "camera_center_deg")))
     if not 0.0 <= r_prior <= 1.0:
         raise ValueError("prior_existence must lie in [0, 1]")
     if not 0.0 < fov_half <= 180.0:
         raise ValueError("fov_half_width_deg must satisfy 0 < fov_half_width_deg <= 180")
     if not 0.0 <= pd_in <= 1.0:
         raise ValueError("in_fov_detection_prob must lie in [0, 1]")
-    if r_prior * pd_in >= 1.0:
-        raise ValueError("r_prior * p_D == 1 makes an empty visual frame impossible")
 
-    in_fov = bool(abs(theta) <= fov_half)
+    in_fov = bool(abs(float(_wrap_angle_deg(theta - cam_center))) <= fov_half)
     pd_fov = pd_in if in_fov else 0.0
+    if r_prior * pd_fov >= 1.0:
+        raise ValueError("r_prior * p_D == 1 makes an empty visual frame impossible")
     r_post_fov = float(r_prior * (1.0 - pd_fov) / (1.0 - r_prior * pd_fov))
-    r_post_naive = float(r_prior * (1.0 - pd_in) / (1.0 - r_prior * pd_in))
+    r_post_naive = (
+        None
+        if r_prior * pd_in >= 1.0
+        else float(r_prior * (1.0 - pd_in) / (1.0 - r_prior * pd_in))
+    )
     return {
         "prior_existence": r_prior,
         "angle_deg": theta,
+        "camera_center_deg": cam_center,
         "fov_half_width_deg": fov_half,
         "in_fov": in_fov,
         "fov_aware_detection_prob": pd_fov,
@@ -290,6 +298,11 @@ def clear_mot_angular_summary(
                         current_matches[gt_id] = prev_hyp
                         used_hyps.add(prev_hyp)
                         frame_distances.append(dist)
+                        for old_gid in [
+                            k for k, v in prev_correspondence.items() if v == prev_hyp and k != gt_id
+                        ]:
+                            del prev_correspondence[old_gid]
+                        prev_correspondence[gt_id] = prev_hyp
 
         # Step 2: Exhaustive max-cardinality, min-distance matching on remaining gated pairs.
         rem_gt = [gid for gid in sorted(gt_map) if gid not in current_matches]
@@ -336,9 +349,10 @@ def clear_mot_angular_summary(
             frame_distances.append(dist)
             if gid in prev_correspondence and prev_correspondence[gid] != hid:
                 frame_idsw += 1
-            prev_correspondence[gid] = hid
 
-        for gid, hid in current_matches.items():
+        for gid, hid, _ in best_pairs:
+            for old_gid in [k for k, v in prev_correspondence.items() if v == hid and k != gid]:
+                del prev_correspondence[old_gid]
             prev_correspondence[gid] = hid
 
         frame_fn = len(gt_map) - len(current_matches)

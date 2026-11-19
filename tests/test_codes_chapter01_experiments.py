@@ -4,6 +4,8 @@ import math
 import hashlib
 import io
 from pathlib import Path
+import subprocess
+import sys
 import unittest
 import wave
 
@@ -291,6 +293,22 @@ class Chapter01ExperimentsTest(unittest.TestCase):
         self.assertEqual(sofa_pt['azimuth_sofa_wrapped_360_deg'], 330.0)
         np.testing.assert_allclose(sofa_pt['cartesian_sofa_m'], [3 / 4, -math.sqrt(3) / 4, 1 / 2], atol=1e-14, rtol=0)
         np.testing.assert_allclose(sofa_pt['cartesian_book_m'], [math.sqrt(3) / 4, 3 / 4, 1 / 2], atol=1e-14, rtol=0)
+
+        # Descending frequency grid invariance and direct script bootstrap check.
+        asc_grid = np.array([100.0, 500.0, 1000.0, 4000.0], dtype=np.float64)
+        asc_budget = differential_1f_noise_budget(asc_grid, 0.01)
+        desc_budget = differential_1f_noise_budget(asc_grid[::-1], 0.01)
+        for key in (
+            'unweighted_ratio_b_over_a',
+            'a_weighted_ratio_b_over_a',
+            'differential_grid_ratio_b_over_a',
+            'differential_asymptotic_integral_ratio_b_over_a',
+            'differential_asymptotic_penalty_b_db',
+        ):
+            self.assertAlmostEqual(desc_budget[key], asc_budget[key], places=14)
+        script = Path(__file__).resolve().parents[1] / 'codes/chapters/ch01/chapter01_experiments.py'
+        proc = subprocess.run([sys.executable, str(script)], capture_output=True, text=True, check=True)
+        self.assertEqual(set(json.loads(proc.stdout)), set(run_exercises()))
 
         # Validation error checks on frequency zeros, spatial aliasing, and out-of-range SOFA angles.
         with self.assertRaises(ValueError):

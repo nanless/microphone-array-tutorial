@@ -8,6 +8,7 @@ import math
 from pathlib import Path
 import tempfile
 import unittest
+import unittest.mock
 import wave
 
 import numpy as np
@@ -395,6 +396,13 @@ class DefensiveContractsTests(unittest.TestCase):
             conditional_tse.film_conditioning(np.full((2, 2), 10.0), [1e308, 1.0], [0.0, 0.0])
         with self.assertRaises(ValueError):
             conditional_tse.tse_dual_state_loss(s_ref, s_ref, s_ref, tau_floor=True)
+        for bad_thresh in (True, np.bool_(False), float("nan"), float("inf")):
+            with self.assertRaises(ValueError):
+                conditional_tse.zero_overlap_bypass_decision(y_pri, y_fric, threshold_db=bad_thresh)  # type: ignore[arg-type]
+        with self.assertRaises(ValueError):
+            ex17._json(float("nan"))
+        with self.assertRaises(ValueError):
+            ex17._json({"nested": np.array([1.0, np.nan])})
         with self.assertRaises(ValueError):
             distance_bubble.fresnel_distance(1e200, 1e200, 343.0)
         with self.assertRaises(ValueError):
@@ -450,6 +458,10 @@ class TSEAudioAndExercisesTests(unittest.TestCase):
             ex["E15-18"]["orthogonal_speakers_alpha0p5"]["target_cosine"], 2.0 / math.sqrt(5.0), places=14
         )
         self.assertAlmostEqual(ex["E15-18"]["six_frame_enrollment_remedy"]["gated_target_cosine"], 1.0, places=14)
+        stream = io.StringIO()
+        with unittest.mock.patch("sys.stdout", stream):
+            self.assertEqual(ex17.main(["--json", "--exercise", "E15-03"]), 0)
+        self.assertEqual(set(json.loads(stream.getvalue())["exercises"]), {"E15-03"})
 
     def test_generate_and_strict_check_tse_audio_in_tempdir(self):
         with self.assertRaises(ValueError):

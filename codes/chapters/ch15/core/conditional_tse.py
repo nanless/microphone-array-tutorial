@@ -9,9 +9,20 @@ Conventions:
 
 from __future__ import annotations
 
+import math
+
 import numpy as np
 
 from codes.chapters.ch02.core.conventions import finite_real_array, finite_real_scalar
+
+
+def _finite_nonbool_scalar(value: object, name: str) -> float:
+    if isinstance(value, (bool, np.bool_)):
+        raise ValueError(f"{name} must be a finite real scalar, not bool")
+    scalar = finite_real_scalar(value, name)
+    if not math.isfinite(scalar):
+        raise ValueError(f"{name} must be finite")
+    return scalar
 
 
 def _safe_energy(signal: np.ndarray) -> float:
@@ -134,9 +145,9 @@ def tse_dual_state_loss(
     est = finite_real_array(s_hat, "s_hat")
     ref = finite_real_array(s_ref, "s_ref")
     mix = finite_real_array(x_mix, "x_mix")
-    eps_s_val = finite_real_scalar(eps_s, "eps_s")
-    tau_val = finite_real_scalar(tau_floor, "tau_floor")
-    ratio_eps_val = finite_real_scalar(ratio_eps, "ratio_eps")
+    eps_s_val = _finite_nonbool_scalar(eps_s, "eps_s")
+    tau_val = _finite_nonbool_scalar(tau_floor, "tau_floor")
+    ratio_eps_val = _finite_nonbool_scalar(ratio_eps, "ratio_eps")
     if est.ndim != 1 or ref.ndim != 1 or mix.ndim != 1 or est.size < 1:
         raise ValueError("s_hat, s_ref, and x_mix must be non-empty 1-D real arrays")
     if not (est.shape == ref.shape == mix.shape):
@@ -231,7 +242,7 @@ def zero_overlap_bypass_decision(
     """
     pri = finite_real_array(y_primary, "y_primary")
     sec = finite_real_array(y_secondary, "y_secondary")
-    thresh = finite_real_scalar(threshold_db, "threshold_db")
+    thresh = _finite_nonbool_scalar(threshold_db, "threshold_db")
     if pri.ndim != 1 or sec.ndim != 1 or pri.size < 1 or pri.shape != sec.shape:
         raise ValueError("y_primary and y_secondary must be 1-D real arrays of equal positive length")
 

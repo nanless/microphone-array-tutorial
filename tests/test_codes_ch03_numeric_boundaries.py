@@ -71,5 +71,32 @@ class Chapter03BoundaryTest(unittest.TestCase):
         np.testing.assert_allclose(recursive_covariance([[[0]]],[[1.4e154]],forgetting_factor=.5),[[[.98e308]]],rtol=3e-15)
         np.testing.assert_array_equal(recursive_covariance([[[0]]],[[0]],forgetting_factor=.5),[[[0]]])
 
+    def test_bool_arrays_rejected_and_numpy_integers_accepted(self):
+        with self.assertRaises(ValueError):
+            spatial_covariance(np.ones((2, 1, 3), dtype=bool))
+        with self.assertRaises(ValueError):
+            recursive_covariance(np.ones((1, 2, 2), dtype=bool), np.ones((2, 1)), forgetting_factor=0.5)
+        with self.assertRaises(ValueError):
+            recursive_covariance(np.zeros((1, 2, 2)), np.ones((2, 1), dtype=bool), forgetting_factor=0.5)
+        with self.assertRaises(ValueError):
+            ula_prediction([0.0], np.array([True, True]), [[1.0]], spacing_m=0.04, frequency_hz=1000.0)
+        with self.assertRaises(ValueError):
+            ula_prediction([0.0], [1.0, 1.0], np.array([[True]]), spacing_m=0.04, frequency_hz=1000.0)
+        with self.assertRaises(ValueError):
+            fit_anchored_ula(np.ones((2, 2, 3), dtype=bool), spacing_m=0.04, frequency_hz=1000.0,
+                             measured_relative_phase_rad=0.0)
+        with self.assertRaises(ValueError):
+            average_ordered_lags(np.eye(2, dtype=bool), [0, 1])
+        with self.assertRaises(ValueError):
+            average_ordered_lags(np.eye(2), np.array([False, True]))
+        with self.assertRaises(ValueError):
+            virtual_toeplitz({False: 1.0}, 1)
+        with self.assertRaises(ValueError):
+            virtual_toeplitz({0: True}, 1)
+        np.testing.assert_array_equal(
+            virtual_toeplitz({np.int64(-1): 0.0, np.int64(0): 2.0, np.int64(1): 0.0}, np.int64(2)),
+            2.0 * np.eye(2),
+        )
+
 
 if __name__=='__main__':unittest.main()

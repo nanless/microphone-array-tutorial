@@ -2,6 +2,7 @@
 *.png binary
 *.wav binary
 *.npz binary
+*.woff binary
 
 # Preserve fixed upstream rule bytes, including their original blank lines.
 scripts/vendor/mathjax-3.2.2/sre/mathmaps/base.json whitespace=-blank-at-eol,-blank-at-eof

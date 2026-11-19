@@ -204,9 +204,9 @@ class ResearchBuildTest(unittest.TestCase):
 
     def test_explicit_page_map_has_18_tutorial_4_legacy_and_6_research_pages(self):
         paths = list(build_site.source_outputs().values())
-        self.assertEqual(len(paths), 32)
+        self.assertEqual(len(paths), 33)
         self.assertEqual(sum(path.startswith("research/") for path in paths), 6)
-        self.assertTrue({"14_acoustic-imaging.html", "15_distributed-enhancement.html",
+        self.assertTrue({"00_math-foundations.html", "14_acoustic-imaging.html", "15_distributed-enhancement.html",
                          "12_appendix-symbols-math.html", "13_appendix-guide.html",
                          "14_spatial-wearable-arrays.html", "15_target-extraction-diarization.html", "16_appendix-symbols-math.html", "17_appendix-guide.html", "16_spatial-wearable-arrays.html", "17_target-extraction-diarization.html"}
                         <= set(paths))
@@ -469,7 +469,7 @@ class ResearchBuildTest(unittest.TestCase):
                 parser = Links()
                 parser.feed(path.read_text(encoding="utf-8"))
                 pages[path.resolve()] = parser
-            self.assertEqual(len(pages), 32)
+            self.assertEqual(len(pages), 33)
             home = pages[(output / "index.html").resolve()]
             case_audio = {src for src in home.audio if src.startswith("../assets/readme/cases/locata/")}
             self.assertEqual(case_audio, {f"../assets/readme/cases/locata/{name}" for name in

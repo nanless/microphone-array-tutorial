@@ -69,7 +69,7 @@ def main():
         values = report['source_time_control'][key]
         axes[0, 0].vlines(t+offset, 0, values, colors=color, linewidth=2)
         axes[0, 0].plot(t+offset, values, 'o', color=color, label=label)
-    axes[0, 0].set(title='(a) E22 四点手算：统一历史可含当前目标',
+    axes[0, 0].set(title='(a) E07-22 四点手算：统一历史可含当前目标',
                    xlabel='接收时间索引 t / 无量纲单位', ylabel='给定脉冲幅度',
                    xticks=t, ylim=(-.13, 1.6))
     axes[0, 0].legend(loc='upper right', fontsize=10)
@@ -81,16 +81,16 @@ def main():
             ('aligned_history', '校正历史：晚 24 ms', C_GREEN, '-')):
         axes[0, 1].plot(times, signals[key][0, begin:end], style,
                         color=color, linewidth=1.1, label=label)
-    axes[0, 1].set(title='(b) E24 同一接收时轴：一个 96 ms 周期',
+    axes[0, 1].set(title='(b) E07-24 同一接收时轴：一个 96 ms 周期',
                    xlabel='从第 1536 点起 / ms', ylabel='PCM 解码幅度',
-                   xlim=(0, 96), ylim=(-.14, .18))
+                   xlim=(0, 96), ylim=(-.14, .22))
     axes[0, 1].legend(loc='upper left', fontsize=10)
     values = [report['pcm_integer_errors'][k]['nmse']
               for k in ('common_residual', 'aligned_residual')]
     axes[1, 0].bar([0, 1], [1, 0], width=.5, color=[C_RED, C_GREEN],
-                   alpha=.3, label='给定控制的解析误差')
+                   alpha=.3, label='给定对照的解析误差')
     axes[1, 0].plot([0, 1], values, 'ko', markersize=7, label='实际 PCM 的 E/D')
-    axes[1, 0].set(title='(c) E24 目标误消：共同参考、29184 点',
+    axes[1, 0].set(title='(c) E07-24 目标误消：共同参考、29184 点',
                    xticks=[0, 1], xticklabels=['统一历史：g=1', '校正历史：g=0'],
                    ylabel='参考归一误差 E/D / 无量纲', ylim=(-.1, 1.45))
     axes[1, 0].text(.5, 1.15, 'D = 9715561194\n不拟合输出增益或时延',
@@ -101,7 +101,7 @@ def main():
                         label='正确：功率每帧乘 0.831764')
     axes[1, 1].semilogy(decay['hops'], decay['wrong_amplitude_factor_used_as_power'],
                         '--', color=C_RED, label='错误：把幅度倍率用于功率')
-    axes[1, 1].set(title='(d) E23 独立自由衰减模型：T60=0.6 s',
+    axes[1, 1].set(title='(d) E07-23 独立自由衰减模型：T60=0.6 s',
                    xlabel='已停止激励后的 8 ms 步数', ylabel='相对晚期谱功率',
                    xlim=(0, 75), ylim=(5e-7, 3))
     axes[1, 1].text(73, 7e-5, '−60 dB', ha='right', fontsize=10, color=C_BLUE)
@@ -110,7 +110,7 @@ def main():
     for ax in axes.flat:
         ax.grid(axis='y', alpha=.2)
         ax.set_axisbelow(True)
-    fig.suptitle('保护延迟先核源时刻；晚期衰减先核功率单位')
+    fig.suptitle('图75  保护延迟先核源时刻；晚期衰减先核功率单位（E07-22～24）')
     finalize_figure(fig)
     metadata = {'SourceScript': 'scripts/make_delay_figures.py',
                 'SourceScriptDigest': report['source_sha256']['scripts/make_delay_figures.py'],

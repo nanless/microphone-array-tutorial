@@ -25,6 +25,26 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Verify published assets and portable exports before staging
+        shell: bash
+        run: |
+          node assets/readme/lab/export-lab.mjs --check
+          python3 scripts/course_home/export_portable.py --check
+          python3 - <<'PY'
+          import pathlib, sys
+          pdf = pathlib.Path("dist/microphone-array-tutorial.pdf")
+          if not pdf.is_file() or pdf.stat().st_size == 0 or pdf.stat().st_size >= 100 * 1024 * 1024:
+              sys.exit(f"Invalid PDF size: {pdf.stat().st_size if pdf.exists() else 'missing'}")
+          html_pages = sorted(pathlib.Path("site").rglob("*.html"))
+          if len(html_pages) < 33:
+              sys.exit(f"Expected at least 33 HTML pages in site/, got {len(html_pages)}")
+          if not (pathlib.Path("site/index.html")).is_file():
+              sys.exit("Missing site/index.html")
+          print(f"Verified {len(html_pages)} HTML pages and PDF ({pdf.stat().st_size} bytes)")
+          PY
       - uses: actions/configure-pages@v6
       - name: Stage the course and its media
         shell: bash

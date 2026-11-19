@@ -147,6 +147,16 @@ def _replace_non_overlapping(text, ordered_spans, tokens):
     return "".join(pieces)
 
 
+def _merge_ranges(ranges):
+    merged = []
+    for start, end in sorted(ranges):
+        if merged and start <= merged[-1][1]:
+            merged[-1] = (merged[-1][0], max(end, merged[-1][1]))
+        else:
+            merged.append((start, end))
+    return merged
+
+
 def protect_code(md_text):
     """Protect native fences/backticks and raw HTML boundaries before math."""
     repo = _Stash(md_text, "CODETOKEN")
@@ -158,12 +168,7 @@ def protect_code(md_text):
                   if not _inside_sorted_ranges(m_starts, m_ends, m.start(), m.end()))
     ranges.extend((m.start(), m.end()) for m in INLINE_CODE_RE.finditer(md_text)
                   if m.group(2))
-    merged = []
-    for start, end in sorted(ranges):
-        if merged and start <= merged[-1][1]:
-            merged[-1] = (merged[-1][0], max(end, merged[-1][1]))
-        else:
-            merged.append((start, end))
+    merged = _merge_ranges(ranges)
     tokens = [repo.stash(md_text[start:end]) for start, end in reversed(merged)]
     tokens.reverse()
     return _replace_non_overlapping(md_text, merged, tokens), repo
@@ -196,7 +201,7 @@ def shield_math(text):
 def unshield_math(html, repo):
     """Restore TeX in prose, but original escaped text in parsed code nodes."""
     from html import escape
-    code_ranges = sorted(_raw_code_ranges(html))
+    code_ranges = _merge_ranges(_raw_code_ranges(html))
     c_starts = [a for a, _ in code_ranges]
     c_ends = [b for _, b in code_ranges]
     def restore(match):

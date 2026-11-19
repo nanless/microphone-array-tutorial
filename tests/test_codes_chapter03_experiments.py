@@ -327,6 +327,11 @@ class Chapter03ExperimentsTest(unittest.TestCase):
         self.assertGreater(dma['leaky_back_gain'], dma['leaky_front_gain'])
         self.assertLess(dma['leaky_front_to_back_db'], -1.2)
 
+        matched_dma = bv.mems_gasket_leakage_example(25., 25., .02, 343.)['cardioid_dma_100hz']
+        self.assertEqual(matched_dma['leaky_back_gain'], 0.)
+        self.assertEqual(matched_dma['leaky_back_db'], -math.inf)
+        self.assertEqual(matched_dma['leaky_front_to_back_db'], math.inf)
+
         with self.assertRaises(ValueError):
             bv.acoustic_vent_highpass([100.], 0.)
         with self.assertRaises(ValueError):

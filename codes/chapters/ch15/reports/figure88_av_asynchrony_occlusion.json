@@ -6,7 +6,7 @@
     "E15-15"
   ],
   "source_sha256": {
-    "codes/chapters/ch15/core/conditional_tse.py": "88d27d1144278900ecee34e15808643fc5afe226e448fc4ded446bc49a91b073",
+    "codes/chapters/ch15/core/conditional_tse.py": "dcf5a4e6854650e22330bdc3b3ed2114b355e4acd832f469a504b04c82bf6888",
     "codes/chapters/ch15/core/distance_bubble.py": "9e26329091896ecd396125ce04eeb4f6dcb3deb2478c087e08ccc26aa1cb7bd4",
     "codes/chapters/ch15/core/diarization_tsvad.py": "f3e67dfae6814436fc079fd4f9851ae8bfd522a63467085ddf82e559480a4a8f",
     "codes/chapters/ch15/core/av_alignment.py": "97d5b3f013ea6505ef9bb5b48b13476241a3f289bedd9889bdf153a744d3d5bf",
@@ -15,8 +15,8 @@
     "codes/chapters/ch02/core/conventions.py": "4e80a27490f05ddd5f4826361420c0c8d0b331464d1e5629c5def492da47b1d7",
     "codes/chapters/ch00/core/audio_samples.py": "bf1145e19e2ec99623c0583220192922c24f0ed3d293212309fe4a2f3bfc8385",
     "codes/chapters/ch00/io_contracts.py": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974",
-    "scripts/make_figures.py": "4eb6e4fcf9e7f26c29d61552046e1528bcfe5634758577f94798adba9e1333a4",
-    "scripts/make_tse_figures.py": "60dea76f6003bd68b1ebef8fd64a71a059ae57536a2437ea9f61f650e43d6a60"
+    "scripts/make_figures.py": "c71b1078fae86e0ee8535cac1037b1764b85ac66809434c7f7792e93000a3988",
+    "scripts/make_tse_figures.py": "b484df37c4d03599e57d0ea9751498e0c53a88a88ba8e5ebb9e60eca81685d78"
   },
   "audio_manifest_sha256": "b9434d294b010f7939cd0571c5521a7616abf33afde413d383f64887a3846afb",
   "sync_video_indices": [

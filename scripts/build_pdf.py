@@ -537,29 +537,38 @@ def verified_layout_space_font(font):
                 or descendant.get('/CIDToGIDMap') != '/Identity'):
             return False
         cmap = font['/ToUnicode'].get_data()
-        # Chrome also emits ranges for other glyphs in the same font. They
-        # cannot override this CID: validate the supported three-hex form and
-        # reject overlapping, malformed or unsupported range descriptions.
+        # Chrome also emits ranges for other glyphs in the same font, or folds
+        # CID 0003..0005 into <0003> <0005> <0020> when '!' and '"' appear.
+        # Validate three-hex non-overlapping ranges and require CID 0003 to map
+        # uniquely to U+0020 across both beginbfchar and beginbfrange.
         ranges = re.findall(rb'(\d+)\s+beginbfrange(.*?)endbfrange', cmap, re.S)
         if cmap.count(b'beginbfrange') != len(ranges):
             return False
+        parsed_ranges = []
+        range_mappings = []
         for count, block in ranges:
             rows = [line.strip() for line in block.splitlines() if line.strip()]
             if len(rows) != int(count):
                 return False
             for row in rows:
                 bounds = re.fullmatch(
-                    rb'<([0-9a-fA-F]{4})>\s*<([0-9a-fA-F]{4})>\s*<[0-9a-fA-F]{4}>', row)
+                    rb'<([0-9a-fA-F]{4})>\s*<([0-9a-fA-F]{4})>\s*<([0-9a-fA-F]{4})>', row)
                 if bounds is None:
                     return False
-                lower, upper = (int(value, 16) for value in bounds.groups())
-                if lower > upper or lower <= 3 <= upper:
+                lower, upper, start = (int(value, 16) for value in bounds.groups())
+                if lower > upper or start + (upper - lower) > 0xFFFF:
                     return False
-        mappings = [value.upper()
-                    for block in re.findall(rb'\d+\s+beginbfchar(.*?)endbfchar', cmap, re.S)
-                    for key, value in re.findall(rb'<([0-9a-fA-F]+)>\s*<([0-9a-fA-F]+)>', block)
-                    if key.upper() == b'0003']
-        if mappings != [b'0020']:
+                if any(not (upper < prev_lo or lower > prev_hi)
+                       for prev_lo, prev_hi in parsed_ranges):
+                    return False
+                parsed_ranges.append((lower, upper))
+                if lower <= 3 <= upper:
+                    range_mappings.append(f'{start + (3 - lower):04X}'.encode('ascii'))
+        char_mappings = [value.upper()
+                         for block in re.findall(rb'\d+\s+beginbfchar(.*?)endbfchar', cmap, re.S)
+                         for key, value in re.findall(rb'<([0-9a-fA-F]+)>\s*<([0-9a-fA-F]+)>', block)
+                         if int(key, 16) == 3]
+        if char_mappings + range_mappings != [b'0020']:
             return False
         data = descendant['/FontDescriptor']['/FontFile2'].get_data()
         with TTFont(BytesIO(data)) as embedded:

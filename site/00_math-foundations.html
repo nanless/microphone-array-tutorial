@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 0 章 · 全书数学基础与信号分析预备 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="ba5ce9940c12"><style>
+<meta name="source-digest" content="69493fceb647"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
 .topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
 .topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -74,7 +74,7 @@ h4{font-size:15.5px;margin-top:20px;color:#333}
   const mathClass = "tutorial-math-tail";
   const idClass = "tutorial-exercise-id";
   const ignored = "pre,code,a,script,style,textarea,mjx-container";
-  const suffix = /^(\s*(?:(?:m\/s[²³]?|rad\/s|rad\/m|deg\/s|μs|µs|ns|ms|s|dBFS|dB|kHz|MHz|Hz|ppm|rad|cm|mm|m|V|deg|°|%|％)(?:[²³])?(?=$|[\s，。；、：！？）,.!?;:)\]\u4e00-\u9fff])\s*[，。；、：！？）,.;:!?\]]?|[，。；、：！？）,.;:!?\]]))/;
+  const suffix = /^(\s*(?:(?:m\/s[²³]?|rad\/s|rad\/m|deg\/s|μs|µs|ns|ms|s|dBFS|dB|kHz|MHz|Hz|ppm|rad|cm|mm|m|V|deg|°|%|％)(?:[²³])?(?=$|[\s，。；、：！？）,.!?;:)\]\u4e00-\u9fff])\s*[，。；、：！？）,.;:!?\]]*|[，。；、：！？）,.;:!?\]]+))/;
   let ready = false;
   let scheduled = false;
   let printing = false;
@@ -991,7 +991,7 @@ I_{\mathrm{eff}}(\tau) &= I_{\tau\tau} - \frac{I_{\tau\varphi}^2}{I_{\varphi\var
 \mathbb{E}\!\bigl[(s - \vec w_{\mathrm{W}}^H\vec x)\vec x^H\bigr] &= \vec r_{xs}^H - \vec w_{\mathrm{W}}^H\mathbf R_{xx} = \vec 0^\top\text{，}\\
 \mathrm{MMSE} &= \phi_s - \vec r_{xs}^H\mathbf R_{xx}^{-1}\vec r_{xs}\text{。}
 \end{aligned}\tag{0-38}$$</p>
-<p>正交原理表明：最优线性估计的残差误差 $e_{\mathrm{opt}} = s - \vec w_{\mathrm{W}}^H\vec x$ 与每一个输入通道观测都严格不相关（因此残差功率加上估计量功率恰好等于原信号总功率 $\phi_s = \mathbb{E}[\lvert\hat s\rvert^2] + \mathrm{MMSE}$，又是高维随机变量空间里的勾股定理！）。更进一步，在秩一加性独立噪声模型 $\vec x = \vec a s + \vec v$（$\mathbf R_{xx} = \phi_s\vec a\vec a^H + \mathbf R_{vv}$，$\vec r_{xs} = \phi_s\vec a$）下，将式(0-20) Woodbury 求逆代入 $\mathbf R_{xx}^{-1}\vec a$，立得 $\vec w_{\mathrm{W}} = \left(\frac{\mathrm{SINR}_{\mathrm{MVDR}}}{1 + \mathrm{SINR}_{\mathrm{MVDR}}}\right)\vec w_{\mathrm{MVDR}}$（其中 $\mathrm{SINR}_{\mathrm{MVDR}} = \phi_s\vec a^H\mathbf R_{vv}^{-1}\vec a$）——直接证明多通道维纳滤波严格等价于“无失真 MVDR 空间波束串联一路单通道维纳实标量后置滤波器”（见<a href="05_beamforming.html#sec-5-5-1">第 5 章 §5.5.1</a>、<a href="05_beamforming.html#sec-5-7">§5.7</a> 及 <code>E00-14</code>）。</p>
+<p>正交原理表明：最优线性估计的残差误差 $e_{\mathrm{opt}} = s - \vec w_{\mathrm{W}}^H\vec x$ 与每一个输入通道观测都严格不相关（因此残差功率加上估计量功率恰好等于原信号总功率 $\phi_s = \mathbb{E}[\lvert\hat s\rvert^2] + \mathrm{MMSE}$，又是高维随机变量空间里的勾股定理！）。更进一步，在秩一加性独立噪声模型 $\vec x = \vec a s + \vec v$（$\mathbf R_{xx} = \phi_s\vec a\vec a^H + \mathbf R_{vv}$，$\vec r_{xs} = \phi_s\vec a$）下，将式(0-20) Woodbury 求逆代入 $\mathbf R_{xx}^{-1}\vec a$，立得 $\vec w_{\mathrm{W}} = \bigl[\mathrm{SINR}_{\mathrm{MVDR}} / (1 + \mathrm{SINR}_{\mathrm{MVDR}})\bigr]\vec w_{\mathrm{MVDR}}$（其中 $\mathrm{SINR}_{\mathrm{MVDR}} = \phi_s\vec a^H\mathbf R_{vv}^{-1}\vec a$）——直接证明多通道维纳滤波严格等价于“无失真 MVDR 空间波束串联一路单通道维纳实标量后置滤波器”（见<a href="05_beamforming.html#sec-5-5-1">第 5 章 §5.5.1</a>、<a href="05_beamforming.html#sec-5-7">§5.7</a> 及 <code>E00-14</code>）。</p>
 <p>当待估状态随时间按马尔可夫动力学演化时（如<a href="06_aec.html#sec-6-2-6">第 6 章 §6.2.6</a> 时变卡尔曼回声消除与<a href="09_source-tracking.html#sec-9-2">第 9 章 §9.2</a> 说话人运动轨迹追踪），批处理维纳滤波推广为递推贝叶斯<strong>卡尔曼滤波器（Kalman filter）</strong>。设状态方程为 $\vec s_t = \mathbf F\vec s_{t-1} + \vec w_t$（$\vec w_t \sim \mathcal N(\vec 0, \mathbf Q)$），观测方程为 $\vec z_t = \mathbf H\vec s_t + \vec v_t$（$\vec v_t \sim \mathcal N(\vec 0, \mathbf R)$）。给定上一帧后验 $(\hat{\vec s}_{t-1|t-1}, \mathbf P_{t-1|t-1})$，单步递推由时间预测与测量更新两阶段组成：</p>
 <p>$$\begin{aligned}
 \hat{\vec s}_{t|t-1} &= \mathbf F\hat{\vec s}_{t-1|t-1}\text{，}\qquad
@@ -1255,16 +1255,20 @@ Y_n^m(\vartheta, \alpha)
 <p><strong>题目。</strong> （1）给定本书平面阵坐标系方向 $\theta_{\mathrm{book}} = 30^\circ$、俯仰角 $\phi_{\mathrm{el}} = 45^\circ$、距离 $r = 1.5\ \mathrm{m}$，求对应的逆时针方位角 $\alpha$、球谐余纬角 $\vartheta$、三维笛卡尔坐标 $\vec p$，并用球面余弦定理求其与 $(\theta_2, \phi_{\mathrm{el},2}) = (-60^\circ, 0^\circ)$ 的夹角 $\gamma$；（2）在 $c = 343\ \mathrm{m/s}$、$f = 3430\ \mathrm{Hz}$、孔径 $D = 0.20\ \mathrm{m}$ 下，计算夫琅禾费边界 $r_{\mathrm{F}}$，并对比 $r = 0.50\ \mathrm{m}$、$\theta = 30^\circ$ 处阵元 $x_m = +0.10\ \mathrm{m}$ 的精确程差、平面波近似误差与二阶菲涅耳近似相位误差。</p>
 <p><strong>解答。</strong> 按坐标映射与近场泰勒展开分两步复算：</p>
 <ul>
-<li><strong>（1）坐标桥与空间夹角</strong>：由式(0-5)得 $\alpha = 90^\circ - 30^\circ = 60.0^\circ$、余纬角 $\vartheta = 90^\circ - 45^\circ = 45.0^\circ$。代入三角函数精确值得单位方向向量与三维位置坐标：</li>
-</ul>
+<li>
+<p><strong>（1）坐标桥与空间夹角</strong>：由式(0-5)得 $\alpha = 90^\circ - 30^\circ = 60.0^\circ$、余纬角 $\vartheta = 90^\circ - 45^\circ = 45.0^\circ$。代入三角函数精确值得单位方向向量与三维位置坐标：</p>
 <p>$$\begin{aligned}
-\vec u &= \begin{bmatrix}\frac{\sqrt{2}}{4}\\ \frac{\sqrt{6}}{4}\\ \frac{\sqrt{2}}{2}\end{bmatrix}
-\approx \begin{bmatrix}0.353553\\ 0.612372\\ 0.707107\end{bmatrix}\text{，}\\
-\vec p &= 1.5\vec u
-\approx \begin{bmatrix}0.530330\\ 0.918559\\ 1.060660\end{bmatrix}\ \mathrm{m}\text{。}
-\end{aligned}$$</p>
-<p>对第二方向 $(\theta_2, \phi_{\mathrm{el},2}) = (-60^\circ, 0^\circ)$，有 $\vec u_2 = [-\frac{\sqrt{3}}{2}, \frac{1}{2}, 0]^\top$，直接点积与式(0-4)球面余弦定理均给出 $\cos\gamma = 0$，即空间夹角 $\gamma = 90.0^\circ$。
-- <strong>（2）菲涅耳程差精度对比</strong>：波长 $\lambda = 343 / 3430 = 0.10\ \mathrm{m}$，夫琅禾费远场边界 $r_{\mathrm{F}} = 2(0.20)^2 / 0.10 = 0.80\ \mathrm{m}$，故 $r = 0.50\ \mathrm{m}$ 处于近场菲涅耳区。精确阵元距离 $r_m = \sqrt{0.25 - 0.05 + 0.01} = \sqrt{0.21} \approx 0.458258\ \mathrm{m}$，精确程差 $\Delta r_{\mathrm{exact}} = -0.041742\ \mathrm{m}$；一阶平面波近似 $\Delta r_1 = -0.050000\ \mathrm{m}$ 产生 $8.258\ \mathrm{mm}$（相位 $29.73^\circ$）偏置，而二阶菲涅耳近似 $\Delta r_2 = -0.05 + \frac{0.01\times 0.75}{1.0} = -0.042500\ \mathrm{m}$ 将程差误差压低至 $0.758\ \mathrm{mm}$（相位误差仅 $2.73^\circ$）。</p>
+    \vec u &= \begin{bmatrix}\frac{\sqrt{2}}{4}\\ \frac{\sqrt{6}}{4}\\ \frac{\sqrt{2}}{2}\end{bmatrix}
+    \approx \begin{bmatrix}0.353553\\ 0.612372\\ 0.707107\end{bmatrix}\text{，}\\
+    \vec p &= 1.5\vec u
+    \approx \begin{bmatrix}0.530330\\ 0.918559\\ 1.060660\end{bmatrix}\ \mathrm{m}\text{。}
+    \end{aligned}$$</p>
+<p>对第二方向 $(\theta_2, \phi_{\mathrm{el},2}) = (-60^\circ, 0^\circ)$，有 $\vec u_2 = [-\frac{\sqrt{3}}{2}, \frac{1}{2}, 0]^\top$，直接点积与式(0-4)球面余弦定理均给出 $\cos\gamma = 0$，即空间夹角 $\gamma = 90.0^\circ$。</p>
+</li>
+<li>
+<p><strong>（2）菲涅耳程差精度对比</strong>：波长 $\lambda = 343 / 3430 = 0.10\ \mathrm{m}$，夫琅禾费远场边界 $r_{\mathrm{F}} = 2(0.20)^2 / 0.10 = 0.80\ \mathrm{m}$，故 $r = 0.50\ \mathrm{m}$ 处于近场菲涅耳区。精确阵元距离 $r_m = \sqrt{0.25 - 0.05 + 0.01} = \sqrt{0.21} \approx 0.458258\ \mathrm{m}$，精确程差 $\Delta r_{\mathrm{exact}} = -0.041742\ \mathrm{m}$；一阶平面波近似 $\Delta r_1 = -0.050000\ \mathrm{m}$ 产生 $8.258\ \mathrm{mm}$（相位 $29.73^\circ$）偏置，而二阶菲涅耳近似 $\Delta r_2 = -0.05 + \frac{0.01\times 0.75}{1.0} = -0.042500\ \mathrm{m}$ 将程差误差压低至 $0.758\ \mathrm{mm}$（相位误差仅 $2.73^\circ$）。</p>
+</li>
+</ul>
 <p><a id="e00-02"></a></p>
 <span id="sec-41" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-22e20b83b9">E00-02：三维正交旋转矩阵 $\mathrm{SO}(3)$ 复合、逆变换保范性与刚体坐标映射</h3>
 <p><strong>题目。</strong> 构造式(0-6)基元旋转矩阵 $\mathbf R_z(90^\circ)$ 与 $\mathbf R_y(90^\circ)$：（1）比较复合矩阵 $\mathbf R_{zy} = \mathbf R_z(90^\circ)\mathbf R_y(90^\circ)$ 与 $\mathbf R_{yz} = \mathbf R_y(90^\circ)\mathbf R_z(90^\circ)$ 对基向量 $\vec e_x = [1, 0, 0]^\top$ 的映射结果及交换子范数 $\|\mathbf R_{zy} - \mathbf R_{yz}\|_F$；（2）对向量 $\vec v = [1, 2, 2]^\top$ 验证旋转保范性与转置逆还原 $\mathbf R_{zy}^\top(\mathbf R_{zy}\vec v) = \vec v$。</p>
@@ -1286,50 +1290,60 @@ Y_n^m(\vartheta, \alpha)
 <ul>
 <li><strong>（1）双径干涉相量</strong>：$1000\ \mathrm{Hz}$ 周期为 $1000\ \mu\mathrm{s}$。当 $\tau_q = 250\ \mu\mathrm{s}$ 时相移 $-2\pi f_0\tau_q = -\pi/2$，合成相量 $1 + e^{-\mathrm{j}\pi/2} = 1 - \mathrm{j}$，模长 $\sqrt{2} \approx 1.414214$、功率 $2.0$、相位 $-45.0^\circ$；当 $\tau_d = 500\ \mu\mathrm{s}$ 时相移 $-\pi$，两路反相完全抵消，合成模长为 $0$。</li>
 <li><strong>（2）线性相位斜率还原时延</strong>：跨距 $\Delta f = 2000\ \mathrm{Hz}$ 上相位净变化 $\Delta\phi = -\pi/2\ \mathrm{rad}$，斜率 $-\pi/4000\ \mathrm{rad/Hz}$，故 $\tau_0 = -\frac{1}{2\pi}\frac{\Delta\phi}{\Delta f} = \frac{1}{8000}\ \mathrm{s} = 125.0\ \mu\mathrm{s}$。</li>
-<li><strong>（3）分贝口径与块统计差异</strong>：四麦同相目标增益 $20\log_{10}(4) = 10\log_{10}(16) \approx +12.0412\ \mathrm{dB}$，不相关噪声功率增益 $10\log_{10}(4) \approx +6.0206\ \mathrm{dB}$，净白噪声信噪比增益 $+6.0206\ \mathrm{dB}$。对两帧功率比 $\{1, 99\}$，对比两种统计顺序：</li>
-</ul>
+<li>
+<p><strong>（3）分贝口径与块统计差异</strong>：四麦同相目标增益 $20\log_{10}(4) = 10\log_{10}(16) \approx +12.0412\ \mathrm{dB}$，不相关噪声功率增益 $10\log_{10}(4) \approx +6.0206\ \mathrm{dB}$，净白噪声信噪比增益 $+6.0206\ \mathrm{dB}$。对两帧功率比 $\{1, 99\}$，对比两种统计顺序：</p>
 <p>$$\begin{aligned}
-\overline{L}_{\mathrm{dB}}
-&= \frac{1}{2}\bigl(10\log_{10}1 + 10\log_{10}99\bigr)
-\approx \frac{1}{2}(0 + 19.9564) = +9.9782\ \mathrm{dB}\text{，}\\
-L_{\mathrm{pool},\mathrm{dB}}
-&= 10\log_{10}\!\left(\frac{1 + 99}{2}\right)
-= 10\log_{10}(50) \approx +16.9897\ \mathrm{dB}\text{。}
-\end{aligned}$$</p>
+    \overline{L}_{\mathrm{dB}}
+    &= \frac{1}{2}\bigl(10\log_{10}1 + 10\log_{10}99\bigr)
+    \approx \frac{1}{2}(0 + 19.9564) = +9.9782\ \mathrm{dB}\text{，}\\
+    L_{\mathrm{pool},\mathrm{dB}}
+    &= 10\log_{10}\!\left(\frac{1 + 99}{2}\right)
+    = 10\log_{10}(50) \approx +16.9897\ \mathrm{dB}\text{。}
+    \end{aligned}$$</p>
+</li>
+</ul>
 <p><a id="e00-04"></a></p>
 <span id="sec-43" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-6dfd1e24c5">E00-04：DFT 酉性帕塞瓦尔能量守恒、循环卷积混叠与补零线性卷积精确等价</h3>
 <p><strong>题目。</strong> 给定 $x = [1, 2, -1, 0]^\top$ 与 $h = [1, 0.5, -0.5]^\top$：（1）求 $4$ 点 DFT $X[k]$ 并验证共轭对称性与式(0-10)帕塞瓦尔恒等式；（2）求 $6$ 点线性卷积真值，对比未补零 $N = 4$ 循环卷积的缠绕误差与补零 $N_{\mathrm{pad}} = 8$ FFT 卷积的最大绝对误差。</p>
 <p><strong>解答。</strong> 分两步核对频域能量守恒与卷积边界：</p>
 <ul>
-<li><strong>（1）DFT 与帕塞瓦尔恒等式</strong>：代入 $W_4 = e^{-\mathrm{j}\pi/2} = -\mathrm{j}$ 写出 $4$ 点 DFT 矩阵乘积：</li>
-</ul>
+<li>
+<p><strong>（1）DFT 与帕塞瓦尔恒等式</strong>：代入 $W_4 = e^{-\mathrm{j}\pi/2} = -\mathrm{j}$ 写出 $4$ 点 DFT 矩阵乘积：</p>
 <p>$$\begin{bmatrix}X[0]\\ X[1]\\ X[2]\\ X[3]\end{bmatrix}
-= \begin{bmatrix}
-1 & 1 & 1 & 1\\
-1 & -\mathrm{j} & -1 & \mathrm{j}\\
-1 & -1 & 1 & -1\\
-1 & \mathrm{j} & -1 & -\mathrm{j}
-\end{bmatrix}
-\begin{bmatrix}1\\ 2\\ -1\\ 0\end{bmatrix}
-= \begin{bmatrix}2\\ 2 - \mathrm{j}2\\ -2\\ 2 + \mathrm{j}2\end{bmatrix}\text{，}$$</p>
-<p>满足实信号共轭对称 $X[3] = X^*[1]$ 及实端点 $X[0], X[2] \in \mathbb{R}$。时域能量 $\sum_{n=0}^3 x[n]^2 = 1 + 4 + 1 + 0 = 6.0$，频域能量 $\frac{1}{4}(4 + 8 + 4 + 8) = 6.0$，绝对误差为 $0.0$。
-- <strong>（2）循环缠绕与补零修正</strong>：非零区间长分别为 $L_x = 4$ 与 $L_h = 3$，完整线性卷积长 $L_{\mathrm{lin}} = 6$，逐点滑动相乘得 $y_{\mathrm{lin}} = [1.0, 2.5, -0.5, -1.5, 0.5, 0.0]^\top$。未补零 $N = 4$ 循环卷积将尾部 $y_{\mathrm{lin}}[4] = +0.5$ 折回叠加到 $n = 0$，输出 $[1.5, 2.5, -0.5, -1.5]^\top$（混叠二范数误差 $0.5$）；补零至 $N_{\mathrm{pad}} = 8 \ge 6$ 后，前 $6$ 点输出最大绝对误差仅为 $5.55 \times 10^{-17}$。</p>
+    = \begin{bmatrix}
+    1 & 1 & 1 & 1\\
+    1 & -\mathrm{j} & -1 & \mathrm{j}\\
+    1 & -1 & 1 & -1\\
+    1 & \mathrm{j} & -1 & -\mathrm{j}
+    \end{bmatrix}
+    \begin{bmatrix}1\\ 2\\ -1\\ 0\end{bmatrix}
+    = \begin{bmatrix}2\\ 2 - \mathrm{j}2\\ -2\\ 2 + \mathrm{j}2\end{bmatrix}\text{，}$$</p>
+<p>满足实信号共轭对称 $X[3] = X^*[1]$ 及实端点 $X[0], X[2] \in \mathbb{R}$。时域能量 $\sum_{n=0}^3 x[n]^2 = 1 + 4 + 1 + 0 = 6.0$，频域能量 $\frac{1}{4}(4 + 8 + 4 + 8) = 6.0$，绝对误差为 $0.0$。</p>
+</li>
+<li>
+<p><strong>（2）循环缠绕与补零修正</strong>：非零区间长分别为 $L_x = 4$ 与 $L_h = 3$，完整线性卷积长 $L_{\mathrm{lin}} = 6$，逐点滑动相乘得 $y_{\mathrm{lin}} = [1.0, 2.5, -0.5, -1.5, 0.5, 0.0]^\top$。未补零 $N = 4$ 循环卷积将尾部 $y_{\mathrm{lin}}[4] = +0.5$ 折回叠加到 $n = 0$，输出 $[1.5, 2.5, -0.5, -1.5]^\top$（混叠二范数误差 $0.5$）；补零至 $N_{\mathrm{pad}} = 8 \ge 6$ 后，前 $6$ 点输出最大绝对误差仅为 $5.55 \times 10^{-17}$。</p>
+</li>
+</ul>
 <p><a id="e00-05"></a></p>
 <span id="sec-44" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-dcf1eda498">E00-05：汉宁窗与开方汉宁分析—合成窗的 COLA 重叠相加完美重建检验</h3>
 <p><strong>题目。</strong> 对窗长 $N = 8$ 的周期型汉宁窗 $w_{\mathrm{Hann}}[r] = \frac{1}{2}(1 - \cos(2\pi r/8))$，在 $32$ 点双音测试序列上对比四种配置的稳定内部窗分母包络与重建误差：（1）$50\%$ 重叠汉宁分析 + 矩形合成 OLA；（2）$50\%$ 重叠双端开方汉宁 WOLA；（3）未归一的 $50\%$ 重叠双端完整汉宁窗；（4）分母归一后的 $75\%$ 重叠双端完整汉宁窗。</p>
 <p><strong>解答。</strong> $8$ 点周期汉宁窗抽头为 $[0,\ 0.146447,\ 0.5,\ 0.853553,\ 1.0,\ 0.853553,\ 0.5,\ 0.146447]^\top$：</p>
 <ul>
 <li><strong>配置（1）与（2）</strong>：在 $50\%$ 重叠（$H = 4$）下，$w_{\mathrm{Hann}}[r] + w_{\mathrm{Hann}}[r+4] = 1$，故纯 OLA 与双端开方汉宁 WOLA 的稳定内部叠加分母均恒等于 $1.000000$，重建最大绝对误差分别为 $2.22 \times 10^{-16}$ 与 $4.44 \times 10^{-16}$。</li>
-<li><strong>配置（3）反例</strong>：双端误乘完整汉宁窗且保持 $50\%$ 重叠时，展开相邻两帧平方和：</li>
-</ul>
+<li>
+<p><strong>配置（3）反例</strong>：双端误乘完整汉宁窗且保持 $50\%$ 重叠时，展开相邻两帧平方和：</p>
 <p>$$\begin{aligned}
-w_{\mathrm{Hann}}^2[r] + w_{\mathrm{Hann}}^2[r + 4]
-&= \frac{1}{4}\left(1 - \cos\frac{\pi r}{4}\right)^2 + \frac{1}{4}\left(1 + \cos\frac{\pi r}{4}\right)^2\\
-&= \frac{1}{2}\left(1 + \cos^2\frac{\pi r}{4}\right)
-= \frac{3}{4} + \frac{1}{4}\cos\frac{\pi r}{2} \in [0.50,\ 1.00]\text{，}
-\end{aligned}$$</p>
-<p>在 $r=0$ 处为 $1.00$、在 $r=2$ 处跌至 $0.50$（波纹幅度 $0.50$，峰谷比 $6.0206\ \mathrm{dB}$，波形重建最大误差达 $0.6929$）。
-- <strong>配置（4）高重叠恢复</strong>：将帧移缩短至 $75\%$ 重叠（$H = 2$），四帧平方和恒定为 $1.500000$，除以常数分母 $1.5$ 后最大重建误差回落至 $4.44 \times 10^{-16}$。</p>
+    w_{\mathrm{Hann}}^2[r] + w_{\mathrm{Hann}}^2[r + 4]
+    &= \frac{1}{4}\left(1 - \cos\frac{\pi r}{4}\right)^2 + \frac{1}{4}\left(1 + \cos\frac{\pi r}{4}\right)^2\\
+    &= \frac{1}{2}\left(1 + \cos^2\frac{\pi r}{4}\right)
+    = \frac{3}{4} + \frac{1}{4}\cos\frac{\pi r}{2} \in [0.50,\ 1.00]\text{，}
+    \end{aligned}$$</p>
+<p>在 $r=0$ 处为 $1.00$、在 $r=2$ 处跌至 $0.50$（波纹幅度 $0.50$，峰谷比 $6.0206\ \mathrm{dB}$，波形重建最大误差达 $0.6929$）。</p>
+</li>
+<li>
+<p><strong>配置（4）高重叠恢复</strong>：将帧移缩短至 $75\%$ 重叠（$H = 2$），四帧平方和恒定为 $1.500000$，除以常数分母 $1.5$ 后最大重建误差回落至 $4.44 \times 10^{-16}$。</p>
+</li>
+</ul>
 <p><a id="e00-06"></a></p>
 <span id="sec-45" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-99480bb74a">E00-06：复列空间正交投影算子 $\mathbf P_{\mathcal R(\mathbf A)}$、幂等厄米性与四基本子空间正交分解</h3>
 <p><strong>题目。</strong> 对满列秩复矩阵 $\mathbf A = \begin{bmatrix}1 & 0\\ \mathrm{j} & 1\\ 0 & -\mathrm{j}\end{bmatrix}$ 与向量 $\vec b = [1, 0, \mathrm{j}]^\top$，求列空间投影矩阵 $\mathbf P_{\mathcal R(\mathbf A)}$、左零空间单位基向量 $\vec u_n \in \mathcal N(\mathbf A^H)$、正交分解 $\vec b = \vec b_\parallel + \vec b_\perp$，并核验幂等性、正交内积与勾股范数等式。</p>
@@ -1354,32 +1368,38 @@ w_{\mathrm{Hann}}^2[r] + w_{\mathrm{Hann}}^2[r + 4]
 <p><strong>解答。</strong> $\mathbf G$ 的奇异值为 $\sigma_1 = 10.0$、$\sigma_2 = 0.01$，二范数条件数 $\kappa_2(\mathbf G) = \sigma_1/\sigma_2 = 1000.0$，干净观测 $\vec y_0 = \mathbf G\vec x_{\mathrm{true}}$ 范数为 $10.0$：</p>
 <ul>
 <li><strong>无正则病态逆放大</strong>：直接求逆将弱奇异向量方向的噪声除以 $\sigma_2 = 0.01$，输出 $\hat{\vec x}_{\mathrm{unreg}} = [1.0,\ 0.10/0.01]^\top = [1.0, 10.0]^\top$，解误差二范数高达 $10.0$，恰好达到相对误差紧界 $\kappa_2(\mathbf G)\frac{\|\Delta\vec y\|_2}{\|\vec y_0\|_2} = 1000 \times 0.01 = 10.0$。</li>
-<li><strong>Tikhonov 谱收缩修复</strong>：取 $\varepsilon = 0.10$ 代入式(0-18)，主模态保留权重、弱模态逆增益及正则化解分别为：</li>
-</ul>
+<li>
+<p><strong>Tikhonov 谱收缩修复</strong>：取 $\varepsilon = 0.10$ 代入式(0-18)，主模态保留权重、弱模态逆增益及正则化解分别为：</p>
 <p>$$\begin{aligned}
-\frac{\sigma_1^2}{\sigma_1^2 + \varepsilon} &= \frac{100}{100.1} \approx 0.999001\text{，}\qquad
-\frac{\sigma_2}{\sigma_2^2 + \varepsilon} = \frac{0.01}{0.1001} \approx 0.099900\text{，}\\
-\hat{\vec x}_{0.1} &= \begin{bmatrix}0.999001\\ 0.009990\end{bmatrix}\text{，}\qquad
-\|\hat{\vec x}_{0.1} - \vec x_{\mathrm{true}}\|_2 \approx 0.010040\text{（误差缩减 }996.03\text{ 倍）。}
-\end{aligned}$$</p>
+    \frac{\sigma_1^2}{\sigma_1^2 + \varepsilon} &= \frac{100}{100.1} \approx 0.999001\text{，}\qquad
+    \frac{\sigma_2}{\sigma_2^2 + \varepsilon} = \frac{0.01}{0.1001} \approx 0.099900\text{，}\\
+    \hat{\vec x}_{0.1} &= \begin{bmatrix}0.999001\\ 0.009990\end{bmatrix}\text{，}\qquad
+    \|\hat{\vec x}_{0.1} - \vec x_{\mathrm{true}}\|_2 \approx 0.010040\text{（误差缩减 }996.03\text{ 倍）。}
+    \end{aligned}$$</p>
+</li>
+</ul>
 <p><a id="e00-08"></a></p>
 <span id="sec-47" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-b73da58296">E00-08：Sherman–Morrison–Woodbury 矩阵求逆引理、秩一协方差递推与分块 Schur 补行列式</h3>
 <p><strong>题目。</strong> 设 $\mathbf R = \mathbf I_3 + 2\vec u\vec u^H$，其中 $\vec u = [1, \mathrm{j}, -1]^\top$：（1）用式(0-20)手算逆矩阵 $\mathbf R^{-1}$ 及对干扰方向的模长压缩比 $\|\mathbf R^{-1}\vec u\|_2 / \|\vec u\|_2$；（2）将 $\mathbf R$ 按左上 $2\times 2$ 子块 $\mathbf A_{11}$ 与右下标量 $a_{22}$ 分块，求 Schur 补 $S$ 并验证行列式恒等式 $\det\mathbf R = \det(\mathbf A_{11})\cdot S = 1 + 2\|\vec u\|_2^2$。</p>
 <p><strong>解答。</strong> 分两步核验低秩逆与分块行列式：</p>
 <ul>
-<li><strong>（1）秩一求逆与干扰零陷</strong>：因 $\|\vec u\|_2^2 = 3$，式(0-20)标量分母为 $1 + 2\times 3 = 7$，显式写出逆矩阵与干扰方向响应：</li>
-</ul>
+<li>
+<p><strong>（1）秩一求逆与干扰零陷</strong>：因 $\|\vec u\|_2^2 = 3$，式(0-20)标量分母为 $1 + 2\times 3 = 7$，显式写出逆矩阵与干扰方向响应：</p>
 <p>$$\begin{aligned}
-\mathbf R^{-1} &= \mathbf I_3 - \frac{2}{7}\vec u\vec u^H
-= \frac{1}{7}\begin{bmatrix}
-5 & \mathrm{j}2 & 2\\
--\mathrm{j}2 & 5 & \mathrm{j}2\\
-2 & -\mathrm{j}2 & 5
-\end{bmatrix}\text{，}\\
-\mathbf R^{-1}\vec u &= \left(1 - \frac{6}{7}\right)\vec u = \frac{1}{7}\vec u\text{。}
-\end{aligned}$$</p>
-<p>与直接求逆 Frobenius 差仅 $1.36 \times 10^{-16}$，对角元均为 $5/7 \approx 0.714286$，干扰模长压缩比精确为 $1/7 \approx 0.142857$（$-16.90\ \mathrm{dB}$）。
-- <strong>（2）分块 Schur 补行列式</strong>：原矩阵左上 $2\times 2$ 块 $\mathbf A_{11} = \begin{bmatrix}3 & -\mathrm{j}2\\ \mathrm{j}2 & 3\end{bmatrix}$ 的行列式为 $9 - 4 = 5$，$\mathbf A_{11}^{-1}\vec a_{12} = \frac{1}{5}[-2, -\mathrm{j}2]^\top$，故 Schur 补 $S = 3 - \frac{4+4}{5} = \frac{7}{5} = 1.4$，乘积 $\det(\mathbf A_{11})\cdot S = 5 \times 1.4 = 7.0$，与 Sylvester 公式 $1 + 2\|\vec u\|_2^2 = 7.0$ 完全吻合。</p>
+    \mathbf R^{-1} &= \mathbf I_3 - \frac{2}{7}\vec u\vec u^H
+    = \frac{1}{7}\begin{bmatrix}
+    5 & \mathrm{j}2 & 2\\
+    -\mathrm{j}2 & 5 & \mathrm{j}2\\
+    2 & -\mathrm{j}2 & 5
+    \end{bmatrix}\text{，}\\
+    \mathbf R^{-1}\vec u &= \left(1 - \frac{6}{7}\right)\vec u = \frac{1}{7}\vec u\text{。}
+    \end{aligned}$$</p>
+<p>与直接求逆 Frobenius 差仅 $1.36 \times 10^{-16}$，对角元均为 $5/7 \approx 0.714286$，干扰模长压缩比精确为 $1/7 \approx 0.142857$（$-16.90\ \mathrm{dB}$）。</p>
+</li>
+<li>
+<p><strong>（2）分块 Schur 补行列式</strong>：原矩阵左上 $2\times 2$ 块 $\mathbf A_{11} = \begin{bmatrix}3 & -\mathrm{j}2\\ \mathrm{j}2 & 3\end{bmatrix}$ 的行列式为 $9 - 4 = 5$，$\mathbf A_{11}^{-1}\vec a_{12} = \frac{1}{5}[-2, -\mathrm{j}2]^\top$，故 Schur 补 $S = 3 - \frac{4+4}{5} = \frac{7}{5} = 1.4$，乘积 $\det(\mathbf A_{11})\cdot S = 5 \times 1.4 = 7.0$，与 Sylvester 公式 $1 + 2\|\vec u\|_2^2 = 7.0$ 完全吻合。</p>
+</li>
+</ul>
 <p><a id="e00-09"></a></p>
 <span id="sec-48" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-28b0487901">E00-09：厄米矩阵瑞利商极值、广义特征值问题（GEV）与白化合同联合对角化</h3>
 <p><strong>题目。</strong> 给定噪声协方差 $\mathbf R_{nn} = \begin{bmatrix}2 & 1\\ 1 & 2\end{bmatrix}$ 与目标秩一协方差 $\mathbf R_{ss} = \vec a\vec a^H$（$\vec a = [1, \mathrm{j}]^\top$），通过 Cholesky 白化求解广义特征值与联合对角化矩阵 $\boldsymbol{\Phi}$，对比 GEV 最优信干噪比与未白化匹配滤波 $\vec w = \vec a$ 的信干噪比增益。</p>
@@ -1405,30 +1425,36 @@ w_{\mathrm{Hann}}^2[r] + w_{\mathrm{Hann}}^2[r + 4]
 <p><strong>解答。</strong> 分两步核验复微积分与约束最优权重：</p>
 <ul>
 <li><strong>（1）Wirtinger 偏导差分核验</strong>：解析共轭梯度 $\mathbf R\vec w_0 = [1.8-\mathrm{j}0.2,\ -0.3+\mathrm{j}1.9,\ -1.2+\mathrm{j}0.1]^\top$ 与步长 $\epsilon = 10^{-6}$ 的实虚部中心差分 $\frac{1}{2}(\partial_{\vec w_{\mathrm{R}}}J + \mathrm{j}\partial_{\vec w_{\mathrm{I}}}J)$ 最大绝对偏差仅 $7.74 \times 10^{-11}$；沿扰动 $\delta\vec w = [0.3+\mathrm{j}0.4,\ -0.2+\mathrm{j}0.1,\ 0.5-\mathrm{j}0.3]^\top$ 的解析方向导数 $2\operatorname{Re}\{(\mathbf R\vec w_0)^H\delta\vec w\} = 0.160000$ 与中心差分相差仅 $8.42 \times 10^{-11}$。</li>
-<li><strong>（2）MVDR 与硬零陷 LCMV 闭式对比</strong>：代入式(0-31)得两套闭式权重与输出功率：</li>
-</ul>
+<li>
+<p><strong>（2）MVDR 与硬零陷 LCMV 闭式对比</strong>：代入式(0-31)得两套闭式权重与输出功率：</p>
 <p>$$\begin{aligned}
-\vec w_{\mathrm{MVDR}} &= \frac{1}{19}\begin{bmatrix}7+\mathrm{j}2\\ 5\\ 7-\mathrm{j}2\end{bmatrix}\qquad\left(P_{\min} = \frac{7}{19} \approx 0.368421\right)\text{，}\\
-\vec w_{\mathrm{LCMV}} &= \frac{1}{8}\begin{bmatrix}3+\mathrm{j}\\ 2\\ 3-\mathrm{j}\end{bmatrix}\qquad\left(P_{\mathrm{LCMV}} = \frac{3}{8} = 0.375000\right)\text{。}
-\end{aligned}$$</p>
+    \vec w_{\mathrm{MVDR}} &= \frac{1}{19}\begin{bmatrix}7+\mathrm{j}2\\ 5\\ 7-\mathrm{j}2\end{bmatrix}\qquad\left(P_{\min} = \frac{7}{19} \approx 0.368421\right)\text{，}\\
+    \vec w_{\mathrm{LCMV}} &= \frac{1}{8}\begin{bmatrix}3+\mathrm{j}\\ 2\\ 3-\mathrm{j}\end{bmatrix}\qquad\left(P_{\mathrm{LCMV}} = \frac{3}{8} = 0.375000\right)\text{。}
+    \end{aligned}$$</p>
 <p>LCMV 将干扰方向复响应从 MVDR 的 $\mathrm{j}/19$ 压为绝对零（$3.69 \times 10^{-17}$），同时总输出方差微增 $1/152 \approx 0.006579$。</p>
+</li>
+</ul>
 <p><a id="e00-12"></a></p>
 <span id="sec-51" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-e0b99deb37">E00-12：非负最小二乘（NNLS）KKT 互补松弛条件检验与主化—最小化（MM）替代上界单调下降</h3>
 <p><strong>题目。</strong> （1）对 $\mathbf P = \begin{bmatrix}1.0 & 0.5\\ 0.5 & 1.0\end{bmatrix}$、$\vec b = [1.0, -0.2]^\top$，对比无约束最小二乘解、朴素负值截断解 $\max(\vec q_{\mathrm{LS}}, \vec 0)$ 与真实 NNLS 解的目标函数值及式(0-32) KKT 条件；（2）在平滑稀疏重构目标 $J(\vec x) = \frac{1}{2}\|\mathbf A\vec x - \vec y\|_2^2 + 0.05\sum_i\sqrt{\lvert x_i\rvert^2 + 10^{-4}}$ 上运行 $25$ 步二次上界 MM 迭代，检验替代函数上界性与目标单调下降性。</p>
 <p><strong>解答。</strong> 分别核查不等式约束 KKT 条件与迭代上界性质：</p>
 <ul>
-<li><strong>（1）NNLS 与负值硬截断反例</strong>：无约束解为 $\vec q_{\mathrm{LS}} = [22/15, -14/15]^\top \approx [1.466667, -0.933333]^\top$。若直接把负分量归零得 $[1.466667, 0]^\top$，第 $1$ 个正分量的梯度残留 $+0.933333 \neq 0$，违背 KKT 互补松弛，目标值高达 $49/90 \approx 0.544444$。而在活动子集 $q_2^\star = 0$ 上对第 $1$ 列 $\vec p_1 = [1.0, 0.5]^\top$ 重做正交投影：</li>
-</ul>
+<li>
+<p><strong>（1）NNLS 与负值硬截断反例</strong>：无约束解为 $\vec q_{\mathrm{LS}} = [22/15, -14/15]^\top \approx [1.466667, -0.933333]^\top$。若直接把负分量归零得 $[1.466667, 0]^\top$，第 $1$ 个正分量的梯度残留 $+0.933333 \neq 0$，违背 KKT 互补松弛，目标值高达 $49/90 \approx 0.544444$。而在活动子集 $q_2^\star = 0$ 上对第 $1$ 列 $\vec p_1 = [1.0, 0.5]^\top$ 重做正交投影：</p>
 <p>$$\begin{aligned}
-q_1^\star &= \frac{\vec p_1^\top\vec b}{\|\vec p_1\|_2^2}
-= \frac{1.0(1.0) + 0.5(-0.2)}{1.0^2 + 0.5^2}
-= \frac{0.90}{1.25} = 0.72\text{，}\\
-\vec\mu^\star &= \mathbf P^\top(\mathbf P\vec q^\star - \vec b)
-= \begin{bmatrix}1.0 & 0.5\\ 0.5 & 1.0\end{bmatrix}\begin{bmatrix}-0.28\\ +0.56\end{bmatrix}\\
-&= \begin{bmatrix}0.00\\ +0.42\end{bmatrix} \ge \vec 0\text{，}
-\end{aligned}$$</p>
-<p>互补松弛乘积最大误差仅 $1.60 \times 10^{-16}$，最优目标值降至 $0.196000$。
-- <strong>（2）MM 单调收敛验证</strong>：在 $25$ 步迭代重加权最小二乘中，每步替代上界均满足 $Q(\vec x^{(t+1)}\mid\vec x^{(t)}) \ge J(\vec x^{(t+1)})$，目标函数从零初值处的 $1.520300$ 严格单调不增地收敛至 $0.111532$。</p>
+    q_1^\star &= \frac{\vec p_1^\top\vec b}{\|\vec p_1\|_2^2}
+    = \frac{1.0(1.0) + 0.5(-0.2)}{1.0^2 + 0.5^2}
+    = \frac{0.90}{1.25} = 0.72\text{，}\\
+    \vec\mu^\star &= \mathbf P^\top(\mathbf P\vec q^\star - \vec b)
+    = \begin{bmatrix}1.0 & 0.5\\ 0.5 & 1.0\end{bmatrix}\begin{bmatrix}-0.28\\ +0.56\end{bmatrix}\\
+    &= \begin{bmatrix}0.00\\ +0.42\end{bmatrix} \ge \vec 0\text{，}
+    \end{aligned}$$</p>
+<p>互补松弛乘积最大误差仅 $1.60 \times 10^{-16}$，最优目标值降至 $0.196000$。</p>
+</li>
+<li>
+<p><strong>（2）MM 单调收敛验证</strong>：在 $25$ 步迭代重加权最小二乘中，每步替代上界均满足 $Q(\vec x^{(t+1)}\mid\vec x^{(t)}) \ge J(\vec x^{(t+1)})$，目标函数从零初值处的 $1.520300$ 严格单调不增地收敛至 $0.111532$。</p>
+</li>
+</ul>
 <p><a id="e00-13"></a></p>
 <span id="sec-52" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-2bff59935e">E00-13：圆对称复高斯（Proper vs Improper）伪协方差判据、实频点例外与标量时延 Fisher 信息 CRLB</h3>
 <p><strong>题目。</strong> （1）计算 $(\sigma_u^2, \sigma_v^2, \rho) = (0.5, 0.5, 0)$ 与 $(0.8, 0.2, 0.5)$ 两组零均值复随机变量的方差 $R_{zz}$ 与伪协方差 $C_{zz}$；（2）求单位方差实白噪声 $8$ 点酉 DFT 各频点的理论方差与伪协方差；（3）在 $f = 1000\ \mathrm{Hz}$、$\mathrm{SNR} = 10$、快拍数 $L = 25$ 下，计算双麦时延估计在已知源初相与未知源初相下的 CRLB 标准差。</p>
@@ -1436,69 +1462,79 @@ q_1^\star &= \frac{\vec p_1^\top\vec b}{\|\vec p_1\|_2^2}
 <ul>
 <li><strong>（1）Proper 伪协方差判据</strong>：两组变量总功率均为 $R_{zz} = \sigma_u^2 + \sigma_v^2 = 1.0$；第一组 $C_{zz} = (0.5 - 0.5) + \mathrm{j}0 = 0$，为圆对称 Proper 分布；第二组 $C_{zz} = (0.8 - 0.2) + \mathrm{j}2(0.5)\sqrt{0.16} = 0.6 + \mathrm{j}0.4$（$|C_{zz}| = \sqrt{0.52} \approx 0.721110 > 0$），为非圆对称椭圆分布。</li>
 <li><strong>（2）实白噪声 DFT 端点例外</strong>：对 $\vec x \sim \mathcal N(\vec 0, \mathbf I_8)$，酉 DFT 全频点方差均为 $1.0$；内部复频点 $k \in \{1,2,3,5,6,7\}$ 满足 $\mathbb{E}[X[k]^2] = 0$（最大浮点残差 $8.88 \times 10^{-16}$），唯独直流 $k = 0$ 与奈奎斯特 $k = 4$ 因虚部恒为零而呈现 $\mathbb{E}[X[0]^2] = \mathbb{E}[X[4]^2] = +1.0$。</li>
-<li><strong>（3）双麦时延 CRLB</strong>：角频率 $\omega = 2000\pi\ \mathrm{rad/s}$。对比已知源初相与未知源初相经 Schur 补消元后的下界：</li>
-</ul>
+<li>
+<p><strong>（3）双麦时延 CRLB</strong>：角频率 $\omega = 2000\pi\ \mathrm{rad/s}$。对比已知源初相与未知源初相经 Schur 补消元后的下界：</p>
 <p>$$\begin{aligned}
-\sigma_{\tau,\mathrm{known}}
-&= \frac{1}{\sqrt{2L\omega^2\mathrm{SNR}}}
-= \frac{1}{2000\pi\sqrt{500}} \approx 7.1176\ \mu\mathrm{s}\text{，}\\
-\sigma_{\tau,\mathrm{unknown}}
-&= \frac{1}{\sqrt{L\omega^2\mathrm{SNR}}}
-= \sqrt{2}\,\sigma_{\tau,\mathrm{known}} \approx 10.0658\ \mu\mathrm{s}\text{。}
-\end{aligned}$$</p>
+    \sigma_{\tau,\mathrm{known}}
+    &= \frac{1}{\sqrt{2L\omega^2\mathrm{SNR}}}
+    = \frac{1}{2000\pi\sqrt{500}} \approx 7.1176\ \mu\mathrm{s}\text{，}\\
+    \sigma_{\tau,\mathrm{unknown}}
+    &= \frac{1}{\sqrt{L\omega^2\mathrm{SNR}}}
+    = \sqrt{2}\,\sigma_{\tau,\mathrm{known}} \approx 10.0658\ \mu\mathrm{s}\text{。}
+    \end{aligned}$$</p>
+</li>
+</ul>
 <p><a id="e00-14"></a></p>
 <span id="sec-53" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-2a0f23b1bf">E00-14：LMMSE 维纳—霍夫正交原理验证与线性高斯卡尔曼预测—新息—Joseph 协方差更新</h3>
 <p><strong>题目。</strong> （1）设 $\vec x = \vec a s + \vec v$，其中 $\phi_s = 2.0$、$\vec a = [1, 1]^\top$、$\mathbf R_{vv} = \begin{bmatrix}1.0 & 0.5\\ 0.5 & 1.0\end{bmatrix}$，求维纳权重 $\vec w_{\mathrm{W}}$、最小均方误差 $\mathrm{MMSE}$，验证正交残差 $\mathbb{E}[e\vec x^H] = \vec 0^\top$ 及 MVDR 串联标量维纳后置滤波恒等式；（2）对匀速状态 $\mathbf F = \begin{bmatrix}1 & 1\\ 0 & 1\end{bmatrix}$、$\mathbf H = [1, 0]$、$\mathbf Q = \operatorname{diag}(0, 1)$、$R = 3.0$、初值 $\hat{\vec s}_{0|0} = [10, 2]^\top$、$\mathbf P_{0|0} = \operatorname{diag}(4, 1)$ 与观测 $z_1 = 13.5$，手算单步卡尔曼预测、增益、后验状态与 Joseph 协方差矩阵。</p>
 <p><strong>解答。</strong> 分别核对批处理维纳滤波与递推卡尔曼更新：</p>
 <ul>
 <li><strong>（1）维纳正交原理与波束后置分解</strong>：$\mathbf R_{xx} = \begin{bmatrix}3.0 & 2.5\\ 2.5 & 3.0\end{bmatrix}$，$\vec r_{xs} = [2, 2]^\top$。因 $[1, 1]^\top$ 恰为 $\mathbf R_{xx}$ 对应特征值 $5.5 = 11/2$ 的特征向量，立得 $\vec w_{\mathrm{W}} = [4/11, 4/11]^\top \approx [0.363636, 0.363636]^\top$，正交残差范数为 $0.0$，$\mathrm{MMSE} = 2 - \frac{16}{11} = \frac{6}{11} \approx 0.545455$。同时 $\vec w_{\mathrm{MVDR}} = [0.5, 0.5]^\top$、输出噪声功率 $0.75$、$\mathrm{SINR}_{\mathrm{MVDR}} = 8/3$，乘以标量维纳增益 $\frac{8/3}{1 + 8/3} = 8/11$ 精确重现 $[4/11, 4/11]^\top$（误差 $1.24 \times 10^{-16}$）。</li>
-<li><strong>（2）卡尔曼预测与 Joseph 协方差</strong>：代入式(0-39)分步写出预测矩阵、卡尔曼增益与 Joseph 后验协方差：</li>
-</ul>
+<li>
+<p><strong>（2）卡尔曼预测与 Joseph 协方差</strong>：代入式(0-39)分步写出预测矩阵、卡尔曼增益与 Joseph 后验协方差：</p>
 <p>$$\begin{aligned}
-\hat{\vec s}_{1|0} &= \begin{bmatrix}12\\ 2\end{bmatrix}\text{，}\qquad
-\mathbf P_{1|0} = \begin{bmatrix}5 & 1\\ 1 & 2\end{bmatrix}\text{，}\qquad
-S_1 = 5 + 3 = 8.0\text{，}\\
-\mathbf K_1 &= \begin{bmatrix}0.625\\ 0.125\end{bmatrix}\text{，}\qquad
-\hat{\vec s}_{1|1} = \begin{bmatrix}12.9375\\ 2.1875\end{bmatrix}\text{，}\qquad
-\mathbf P_{1|1}^{\mathrm{Joseph}} = \begin{bmatrix}1.875 & 0.375\\ 0.375 & 1.875\end{bmatrix}\text{。}
-\end{aligned}$$</p>
+    \hat{\vec s}_{1|0} &= \begin{bmatrix}12\\ 2\end{bmatrix}\text{，}\qquad
+    \mathbf P_{1|0} = \begin{bmatrix}5 & 1\\ 1 & 2\end{bmatrix}\text{，}\qquad
+    S_1 = 5 + 3 = 8.0\text{，}\\
+    \mathbf K_1 &= \begin{bmatrix}0.625\\ 0.125\end{bmatrix}\text{，}\qquad
+    \hat{\vec s}_{1|1} = \begin{bmatrix}12.9375\\ 2.1875\end{bmatrix}\text{，}\qquad
+    \mathbf P_{1|1}^{\mathrm{Joseph}} = \begin{bmatrix}1.875 & 0.375\\ 0.375 & 1.875\end{bmatrix}\text{。}
+    \end{aligned}$$</p>
 <p>后验协方差最小特征值为 $1.5 > 0$。若对量化扰动增益 $\tilde{\mathbf K} = [0.75, 0.20]^\top$ 误套简写式 $(\mathbf I - \tilde{\mathbf K}\mathbf H)\mathbf P_{1|0}$，非对称畸变达 $0.3536$，与真实误差协方差偏离 $0.9052$。</p>
+</li>
+</ul>
 <p><a id="e00-15"></a></p>
 <span id="sec-54" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-1b2558ed77">E00-15：置换不变代价矩阵、贪心局部指派次优反例与匈牙利二分图全局最优指派</h3>
 <p><strong>题目。</strong> 对 $3\times 3$ 置换指派代价矩阵 $\mathbf C = \begin{bmatrix}1 & 2 & 9\\ 2 & 9 & 9\\ 9 & 3 & 4\end{bmatrix}$，分别计算局部最小贪心指派与匈牙利全局最优指派的映射关系和总代价，给出线性规划对偶势向量 $(\vec u, \vec v)$ 验证零对偶间隙，并检验行列同步重排下的置换不变性。</p>
 <p><strong>解答。</strong> 对比局部贪心锁死效应与全局对偶最优解：</p>
 <ul>
 <li><strong>贪心局部次优</strong>：全局最小元位于 $(0, 0)$ 处（代价 $1.0$）；一旦锁定第 $0$ 行配第 $0$ 列，第 $1$ 行在剩余第 $1, 2$ 列中只能承受 $9.0$ 的高额惩罚，最终指派 $[0, 2, 1]$ 总代价达 $1 + 9 + 3 = 13.0$。</li>
-<li><strong>匈牙利全局最优与强对偶证书</strong>：式(0-41)匈牙利算法给出列指派 $[1, 0, 2]$（$0\mapsto 1,\ 1\mapsto 0,\ 2\mapsto 2$），总代价为 $2.0 + 2.0 + 4.0 = 8.0$（比贪心法净省 $5.0$）。伴随对偶势 $\vec u = [3, 4, 4]^\top$、$\vec v = [-2, -1, 0]^\top$ 给出非负约化代价矩阵：</li>
-</ul>
+<li>
+<p><strong>匈牙利全局最优与强对偶证书</strong>：式(0-41)匈牙利算法给出列指派 $[1, 0, 2]$（$0\mapsto 1,\ 1\mapsto 0,\ 2\mapsto 2$），总代价为 $2.0 + 2.0 + 4.0 = 8.0$（比贪心法净省 $5.0$）。伴随对偶势 $\vec u = [3, 4, 4]^\top$、$\vec v = [-2, -1, 0]^\top$ 给出非负约化代价矩阵：</p>
 <p>$$\begin{aligned}
-\mathbf C - (\vec u\vec 1^\top + \vec 1\vec v^\top)
-&= \begin{bmatrix}
-0 & 0 & 6\\
-0 & 6 & 5\\
-7 & 0 & 0
-\end{bmatrix} \ge \mathbf 0\text{，}\\
-\sum_{i=1}^3 u_i + \sum_{j=1}^3 v_j &= 11 - 3 = 8.0\text{，}
-\end{aligned}$$</p>
+    \mathbf C - (\vec u\vec 1^\top + \vec 1\vec v^\top)
+    &= \begin{bmatrix}
+    0 & 0 & 6\\
+    0 & 6 & 5\\
+    7 & 0 & 0
+    \end{bmatrix} \ge \mathbf 0\text{，}\\
+    \sum_{i=1}^3 u_i + \sum_{j=1}^3 v_j &= 11 - 3 = 8.0\text{，}
+    \end{aligned}$$</p>
 <p>所选三条匹配边 $(0,1), (1,0), (2,2)$ 恰好全部落在零约化代价元上，对偶间隙精确为 $0.0$；将行列同步按 $[2, 0, 1]$ 置换后最优总代价仍恒等于 $8.0$。</p>
+</li>
+</ul>
 <p><a id="e00-16"></a></p>
 <span id="sec-55" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-5bf6f42855">E00-16：柱/球贝塞尔函数递推、奇次 Legendre 多项式区间正交解耦与球谐函数加法定理检验</h3>
 <p><strong>题目。</strong> （1）计算 $x = 2.0$ 处的柱贝塞尔函数 $J_0(2), J_1(2), J_2(2)$ 验证三项递推式(0-43)，并检验 $\kappa r = 1.8, \phi = 0.65\ \mathrm{rad}$ 处截断阶数 $|m| \le 18$ 的 Jacobi–Anger 展开精度；（2）在开球首个零陷频率 $\kappa R = \pi$ 处核验球贝塞尔朗斯基恒等式，对比开球与刚性球零阶径向模态幅值 $\lvert b_0(\pi)\rvert$；（3）用 $5$ 点高斯—勒让德求积检验 $0$～$3$ 阶 Legendre 多项式在 $[-1, 1]$ 上的正交矩阵，并检验 $0$～$3$ 阶复球谐函数加法定理式(0-47)。</p>
 <p><strong>解答。</strong> 逐一核对三类声学特殊函数恒等式：</p>
 <ul>
 <li><strong>（1）柱贝塞尔递推与平面波圆谐展开</strong>：在 $x = 2.0$ 处幂级数给出 $J_0(2) \approx 0.223891$、$J_1(2) \approx 0.576725$、$J_2(2) \approx 0.352834$，满足 $\frac{2\times 1}{2}J_1(2) = J_0(2) + J_2(2)$（误差 $2.22 \times 10^{-16}$）；式(0-44) Jacobi–Anger 级数截断至 $|m| \le 18$ 时相对精确平面波 $e^{\mathrm{j}1.8\cos 0.65}$ 的绝对误差仅为 $2.62 \times 10^{-16}$。</li>
-<li><strong>（2）刚性球朗斯基去零陷核验</strong>：在 $\kappa R = \pi$ 处，$j_0(\pi) = 0$、$y_0(\pi) = 1/\pi$、$j_0'(\pi) = -1/\pi$、$y_0'(\pi) = 1/\pi^2$，代入朗斯基恒等式与式(0-46)：</li>
-</ul>
+<li>
+<p><strong>（2）刚性球朗斯基去零陷核验</strong>：在 $\kappa R = \pi$ 处，$j_0(\pi) = 0$、$y_0(\pi) = 1/\pi$、$j_0'(\pi) = -1/\pi$、$y_0'(\pi) = 1/\pi^2$，代入朗斯基恒等式与式(0-46)：</p>
 <p>$$\begin{aligned}
-W\{j_0, y_0\}(\pi)
-&= 0\cdot\frac{1}{\pi^2} - \left(-\frac{1}{\pi}\right)\cdot\frac{1}{\pi}
-= \frac{1}{\pi^2} \approx 0.101321\text{，}\\
-\bigl\lvert b_0^{\mathrm{rigid}}(\pi)\bigr\rvert
-&= \frac{4\pi}{\pi^2\sqrt{(-1/\pi)^2 + (-1/\pi^2)^2}}
-= \frac{4}{\sqrt{\pi^2 + 1}} \approx 3.811562\text{，}
-\end{aligned}$$</p>
-<p>开球零阶模态幅值 $\lvert 4\pi j_0(\pi)\rvert \approx 4.90 \times 10^{-16}$ 完全归零，而刚性球保持充沛增益。
-- <strong>（3）Legendre 正交性与球谐加法定理</strong>：$5$ 点高斯—勒让德求积精确积分至 $9$ 次多项式，测得 $0$～$3$ 阶内积矩阵与理论对角阵 $\operatorname{diag}(2,\ 2/3,\ 2/5,\ 2/7)$ 的 Frobenius 误差仅 $1.36 \times 10^{-16}$，奇次多项式反对称误差 $|P_3(-0.6) + P_3(0.6)| = 0.0$；在任意两空间方向 $(\vartheta_1, \alpha_1) = (0.70, 0.45)$ 与 $(\vartheta_2, \alpha_2) = (1.25, -0.85)$ 上，$n = 0, 1, 2, 3$ 各阶式(0-47)加法定理左右两端最大绝对误差仅为 $8.33 \times 10^{-17}$。</p>
+    W\{j_0, y_0\}(\pi)
+    &= 0\cdot\frac{1}{\pi^2} - \left(-\frac{1}{\pi}\right)\cdot\frac{1}{\pi}
+    = \frac{1}{\pi^2} \approx 0.101321\text{，}\\
+    \bigl\lvert b_0^{\mathrm{rigid}}(\pi)\bigr\rvert
+    &= \frac{4\pi}{\pi^2\sqrt{(-1/\pi)^2 + (-1/\pi^2)^2}}
+    = \frac{4}{\sqrt{\pi^2 + 1}} \approx 3.811562\text{，}
+    \end{aligned}$$</p>
+<p>开球零阶模态幅值 $\lvert 4\pi j_0(\pi)\rvert \approx 4.90 \times 10^{-16}$ 完全归零，而刚性球保持充沛增益。</p>
+</li>
+<li>
+<p><strong>（3）Legendre 正交性与球谐加法定理</strong>：$5$ 点高斯—勒让德求积精确积分至 $9$ 次多项式，测得 $0$～$3$ 阶内积矩阵与理论对角阵 $\operatorname{diag}(2,\ 2/3,\ 2/5,\ 2/7)$ 的 Frobenius 误差仅 $1.36 \times 10^{-16}$，奇次多项式反对称误差 $|P_3(-0.6) + P_3(0.6)| = 0.0$；在任意两空间方向 $(\vartheta_1, \alpha_1) = (0.70, 0.45)$ 与 $(\vartheta_2, \alpha_2) = (1.25, -0.85)$ 上，$n = 0, 1, 2, 3$ 各阶式(0-47)加法定理左右两端最大绝对误差仅为 $8.33 \times 10^{-17}$。</p>
+</li>
+</ul>
 <hr />
 <blockquote>
 <p>📄 本篇信息：配图 4 张 ｜ <a href="index.html">回首页</a></p>

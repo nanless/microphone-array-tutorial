@@ -205,6 +205,16 @@ class LayoutSpaceFontTests(unittest.TestCase):
         self.assertEqual(len(artifact_texts(operations(page, writer))), 1)
         self.assertEqual(plain_operations(operations(page, writer)), before)
 
+    def test_skia_bfrange_encoding_cid0003_as_u0020_without_duplicate_bfchar_is_accepted(self):
+        cmap = (unicode_map(b'<0040> <005D>', count=1)
+                + b'1 beginbfrange\n<0003> <0005> <0020>\nendbfrange')
+        writer, page, _, font = page_fixture(SPACE_STREAM, cmap=cmap)
+        self.assertTrue(verified_layout_space_font(font))
+        before = plain_operations(operations(page, writer))
+        tag_pdf_formulas(writer, [])
+        self.assertEqual(len(artifact_texts(operations(page, writer))), 1)
+        self.assertEqual(plain_operations(operations(page, writer)), before)
+
     def test_unsupported_or_ambiguous_ranges_do_not_prove_blank_space(self):
         ranges = [b'1 beginbfrange\n<0002> <0004> <001F>\nendbfrange',
                   b'2 beginbfrange\n<0008> <0009> <0025>\nendbfrange',

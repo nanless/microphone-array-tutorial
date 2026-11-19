@@ -88,6 +88,41 @@
         next.textContent.trim().length > 0;
       paragraph.classList.toggle("tutorial-short-lead", !!short);
       if (short) count++;
+
+      const firstSig = significant[0];
+      const firstStrong = firstSig && firstSig.nodeType === Node.ELEMENT_NODE &&
+        firstSig.tagName === "STRONG" ? firstSig : null;
+      const strongText = firstStrong ? firstStrong.textContent.trim() : "";
+      const isExLead = !!(firstStrong && firstStrong.querySelector("." + idClass) &&
+        /^E\d{2}-\d{2}\b/.test(strongText));
+      const isSolutionLead = !isExLead &&
+        /^(参考答案|解答|答案|解(?=[：:。.\s]|$))/.test(strongText);
+      const isProblemLead = !isExLead && !isSolutionLead &&
+        /^(题目|问题|思考题)/.test(strongText);
+      paragraph.classList.toggle("tutorial-exercise-lead", isExLead);
+      paragraph.classList.toggle("tutorial-solution-lead", isSolutionLead);
+      paragraph.classList.toggle("tutorial-problem-lead", isProblemLead);
+    }
+    for (const heading of root.querySelectorAll("h3,h4")) {
+      const hasExId = !!heading.querySelector("." + idClass);
+      const text = heading.textContent.trim();
+      const isWorked = !hasExId && heading.tagName === "H3" &&
+        (/^(算例\s*\d|例\s*\d)/.test(text) || /完整手算/.test(text));
+      heading.classList.toggle("tutorial-exercise-heading", hasExId);
+      heading.classList.toggle("tutorial-worked-heading", isWorked);
+    }
+    for (const item of root.querySelectorAll("ol > li")) {
+      const existingCard = item.querySelector(":scope > .tutorial-exercise-card");
+      const scopeRoot = existingCard || item;
+      const hasSolution = !!scopeRoot.querySelector(":scope > p.tutorial-solution-lead");
+      const startsQuestion = /^思考题[：:]/.test(scopeRoot.textContent.trim());
+      if ((hasSolution || startsQuestion) && !existingCard) {
+        const card = document.createElement("article");
+        card.className = "tutorial-exercise-card";
+        card.append(...Array.from(item.childNodes));
+        item.append(card);
+      }
+      item.classList.toggle("tutorial-exercise-item", hasSolution || startsQuestion);
     }
     return count;
   }

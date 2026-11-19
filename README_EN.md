@@ -1,41 +1,85 @@
 # Microphone Array Signal Processing · From Fundamentals to Industrial Practice
 
-Start with mathematical foundations (geometry, complex phasors, subspace linear algebra, Wirtinger calculus, and Bayesian estimation), multichannel recordings, and array geometry. Work through localization, beamforming, echo cancellation, dereverberation, separation, and tracking, then apply them to device implementation, evaluation, and system selection. Four advanced chapters cover acoustic imaging, distributed arrays, spatial/wearable arrays, and conditioned target extraction with multichannel diarization.
+A comprehensive, open Chinese textbook and runnable engineering laboratory for beginners, researchers, and audio systems engineers. Starting from spherical geometry, complex phasors, subspace linear algebra, Wirtinger calculus, and Bayesian estimation, the book derives **DOA localization, beamforming, acoustic echo cancellation (AEC), WPE dereverberation, speech separation, and multi-target source tracking** step by step—then bridges directly into real-time hardware synchronization, latency/compute budgeting, system selection, and four frontier chapters on **acoustic imaging, distributed wireless arrays, spatial/wearable arrays, and conditioned target extraction with multichannel diarization**.
 
-**[Open the online course →](https://nanless.github.io/microphone-array-tutorial/)** · [Math foundations (Ch 0)](chapters/00_math-foundations.md) · [Start at Chapter 1](chapters/01_problem-definition.md) · [Industrial practice](https://nanless.github.io/microphone-array-tutorial/site/#course-engineering) · [Full contents](chapters/00_overview.md) · [PDF](dist/microphone-array-tutorial.pdf) · [简体中文](README.md)
+**[Open Interactive Course Website →](https://nanless.github.io/microphone-array-tutorial/)** · **[▶ 1-Click 4-Mic Browser Lab (EN/中文)](https://nanless.github.io/microphone-array-tutorial/assets/readme/lab/array-lab.html)** · **[🔊 15-Mic Real Room Demo](https://nanless.github.io/microphone-array-tutorial/site/#course-cases)** · **[Full Monograph PDF](dist/microphone-array-tutorial.pdf)** · [Math Foundations (Ch 0)](chapters/00_math-foundations.md) · [Full Contents](chapters/00_overview.md) · [简体中文](README.md)
+
+**16 chapters · 2 appendices · 443 runnable exercises · 92 numbered figures** · **283 companion WAV files** · **129 upstream open-source references**
 
 <picture>
   <source media="(prefers-reduced-motion: reduce)" srcset="assets/readme/course-cover-still.svg">
-  <img alt="Source A on the left makes a sound. The four microphones receive it in order from left to right. In the course introduction, move the source to the right to see the order reverse." src="assets/readme/course-cover.svg">
+  <img alt="Three-stage mechanism of microphone array signal processing: top-left shows wavefront arrival time differences across a 4-mic linear array from target speaker A (−35°) and interferer B (+30°); bottom-left compares staggered raw channels against phase-aligned weighted output; right shows the polar MVDR beampattern maintaining 0 dB distortionless gain toward A while carving a deep spatial null toward B." src="assets/readme/course-cover.svg">
 </picture>
 
-## Online case studies
+---
 
-[Open the Chinese course](https://nanless.github.io/microphone-array-tutorial/) in your browser. Switch between the two sound sources in the animation, see how the array finds a source in a real room recording, compare the raw channel with delay-and-sum and MVDR with postfiltering, and pick a chapter from the learning route. [Jump to the case studies →](https://nanless.github.io/microphone-array-tutorial/site/#course-cases)
+## Why Multiple Microphones? Six Core Problems at a Glance
 
-## Preface · Why record the same words four times?
+A single microphone collapses target speech, competing talkers, room reflections, and loudspeaker echo into one scalar waveform. Synchronized microphones unlock **spatial degrees of freedom**—microsecond inter-channel arrival delays, spatial covariance structure, and playback reference signals each solve a distinct problem:
 
-Halfway through a call, someone at the far end of the table asks, “Can you hear me?” In your headphones you get half a sentence, some keystrokes, and an echo of what you just said. Those sounds pile up, but they give the device different clues.
+| Core Module | Practical Question Solved | Physical Clues & Representative Algorithms | Output & Direct Chapter |
+| --- | --- | --- | --- |
+| **DOA Localization** | Where is the talker, and why do reflections create false peaks? | Inter-mic time delays & subspace orthogonality: GCC-PHAT, SRP-PHAT, MUSIC, ESPRIT | Azimuth/elevation or 3D coordinates · [Chapter 4](chapters/04_doa-estimation.md) |
+| **Beamforming** | How do we preserve target speech distortionlessly while suppressing side noise? | Steering-vector constraints & interference covariance inversion: DSB, Superdirective, MVDR, LCMV, GSC, MWF | Enhanced mono or binaural audio · [Chapter 5](chapters/05_beamforming.md) |
+| **Acoustic Echo Cancellation (AEC)** | How do we remove the device's own loudspeaker playback during full-duplex calls? | Synchronized playback loopback & partitioned frequency-domain adaptation: NLMS, PBFDAF, APA, FDKF, DTD | Echo-free near-end speech · [Chapter 6](chapters/06_aec.md) |
+| **Blind Dereverberation (WPE)** | How do we strip late room reflections without a clean reference signal? | Multi-channel delayed linear prediction with guard interval $\Delta$: offline/online WPE, MINT | Dereverberated speech · [Chapter 7](chapters/07_wpe-dereverberation.md) |
+| **Speech Separation** | How do we unmix overlapping talkers (the cocktail party problem)? | Cross-frequency source priors, activity guidance & masks: IVA, ILRMA, GSS, PIT, streaming CSS | Separated speaker streams · [Chapter 8](chapters/08_speech-separation.md) |
+| **Source Tracking** | How do we keep adaptive beams locked when talkers move or pause? | Bayesian state-space filtering & data association: Kalman, Particle Filter, IMM, track lifecycle | Smooth angle trajectories & uncertainty · [Chapter 9](chapters/09_source-tracking.md) |
 
-Separate the four raw recordings. The voice reaches the nearest microphone first and the farthest one later.
+---
 
-**To find the speaker**, slide the recordings and measure how far apart they are. **To listen toward them**, use that offset to line up the voice before averaging the channels. Your own words can echo back if the remote loudspeaker plays them and the microphones pick them up again. In that case the device has another clue: it knows what it just played.
+## Four Defining Strengths
 
-This book starts with what you can hear. At each step, ask what signals you have, what they can tell you, and when they might lead you astray.
+- **Zero-Gap Mathematical Derivations**: [Chapter 0 (*Mathematical & Signal Analysis Foundations*)](chapters/00_math-foundations.md) builds $\mathrm{SO}(3)$ rotations, complex phasors, STFT COLA reconstruction, subspace projections, Sherman–Morrison–Woodbury updates, Wirtinger complex calculus, circular complex Gaussians, CRLB, and Wiener–Kalman recursion from scratch.
+- **443 Hand-Worked Anchors + Pure NumPy Implementations**: Every core equation is paired with small exact-fraction hand calculations and dependency-light NumPy code so you can verify conjugate signs, FFT scaling, and matrix shapes without black-box wrappers.
+- **283 Controlled & Real WAV Assets Exposing Failure Modes**: Alongside enhancement demos, 30 dedicated audio suites reproduce real engineering pitfalls—spatial aliasing grating lobes, coherent reflection false peaks, steering-mismatch target cancellation, superdirective low-frequency white-noise amplification, AEC double-talk divergence, and 100 ppm sampling-rate offset (SRO) drift.
+- **Production Hardware & Upstream Codebase Audits**: [Chapters 10](chapters/10_engineering-practice.md) and [11](chapters/11_selection-guide.md) cover cascade topology, end-to-end latency budgets, fixed-point scaling, MACs/power estimation, and Pareto acceptance specs, backed by [6 implementation manuals](codes/chapters/ch00/research/README.md) auditing WebRTC AEC3, SpeexDSP, nara_wpe, Acoular, pyroomacoustics, and more.
 
-## Learning paths
+---
 
-| Chapters | What you can do | Where to start |
-| --- | --- | --- |
-| 0–3 · Math foundations and geometry | Master complex phasors, subspace projections, Wirtinger calculus, and Bayesian tools; model signals using arrival times, phase, and microphone positions | [Chapter 0 · Math foundations](chapters/00_math-foundations.md) · [Chapter 1](chapters/01_problem-definition.md) |
-| 4–9 · Algorithm design and validation | Choose algorithms for localization, beamforming, echo cancellation, dereverberation, separation, and tracking, then check them with code and worked examples | [Localization](chapters/04_doa-estimation.md) · [Beamforming](chapters/05_beamforming.md) · [Chapter guide](chapters/00_overview.md) |
-| 10–11 · Industrial practice | Plan synchronization and calibration, measure end-to-end latency, budget compute and power, and define acceptance criteria | [Engineering](chapters/10_engineering-practice.md) · [Selection and validation](chapters/11_selection-guide.md) |
-| 12–15 · Advanced topics | Locate machine noise, coordinate distributed nodes, design spatial/wearable arrays, and run conditioned target extraction & diarization | [Acoustic imaging](chapters/12_acoustic-imaging.md) · [Distributed arrays](chapters/13_distributed-enhancement.md) · [Wearable arrays](chapters/14_spatial-wearable-arrays.md) · [Target extraction & diarization](chapters/15_target-extraction-diarization.md) |
+## Listen First: Two Zero-Install Browser Experiments
 
-If you are new to the subject, review Chapter 0 for step-by-step mathematical foundations or begin with Chapter 1 and consult Appendix A for notation lookup as needed. For device work, go straight to the engineering tasks and the implementation guide. The main text is in Chinese. [Math foundations (Ch 0)](chapters/00_math-foundations.md) · [Symbols and notation](chapters/16_appendix-symbols-math.md) · [Engineering tasks](https://nanless.github.io/microphone-array-tutorial/site/#course-engineering) · [Industrial implementation notes](codes/chapters/ch00/research/03_industrial_deployment.md)
+1. **[15-Mic Real Room Localization & MVDR Comparison](https://nanless.github.io/microphone-array-tutorial/site/#course-cases)**: Built on real multichannel room recordings from the LOCATA benchmark. Toggle between speakers A and B to inspect SRP-PHAT spatial spectra (35° estimate vs. 34.4° optical ground truth) and A/B-compare the single mic, 15-mic delay-and-sum, and MVDR with postfiltering (**12.9 dB** extra interferer suppression with **1.5 dB** target loss).
+2. **[Which Side Should Four Mics Listen To? Interactive Browser Lab (Bilingual EN/中文)](https://nanless.github.io/microphone-array-tutorial/assets/readme/lab/array-lab.html)** (offline guide in [`assets/readme/lab/`](assets/readme/lab/README_EN.md)): Click **English** in the top-right corner, steer between source A and source B, then switch B to a **250 Hz low tone**—hear and measure why the exact same sample delays suppress high-frequency B below **0.01%** yet leave **82.1% power** at 250 Hz.
 
-**16 chapters · 2 appendices · 443 runnable exercises · 92 numbered figures**
+---
 
-[Code and audio by chapter](codes/chapters/README.md) · [Implementation notes](codes/chapters/ch00/research/README.md) · [Web and PDF builds](scripts/README.md) · [Third-party sources and terms](codes/chapters/ch00/THIRD_PARTY.md)
+## Complete 19-Part Curriculum & Reading Routes
 
-The repository does not have a general root license. Third-party code and data retain their own terms.
+| Part | Scope | Topics Covered | Direct Links |
+| --- | --- | --- | --- |
+| **Overview & Foundations** | Overview, Ch 0–3 | Course roadmap, self-contained math foundations, SNR metrics & binaural cues, near/far-field propagation & STFT spatial covariance, linear/circular/spherical/nested coarray geometry | [Overview](chapters/00_overview.md) · [Ch 0 Math](chapters/00_math-foundations.md) · [Ch 1](chapters/01_problem-definition.md) · [Ch 2](chapters/02_basics-signal-model.md) · [Ch 3](chapters/03_array-geometry.md) |
+| **Six Core Algorithms** | Ch 4–9 | DOA estimation, fixed/adaptive/neural beamforming, linear & hybrid AEC, WPE dereverberation, blind/guided/neural separation, Bayesian multi-speaker tracking | [Ch 4 DOA](chapters/04_doa-estimation.md) · [Ch 5 Beamforming](chapters/05_beamforming.md) · [Ch 6 AEC](chapters/06_aec.md) · [Ch 7 WPE](chapters/07_wpe-dereverberation.md) · [Ch 8 Separation](chapters/08_speech-separation.md) · [Ch 9 Tracking](chapters/09_source-tracking.md) |
+| **Real-Time Systems & Selection** | Ch 10–11 | Cascade ordering & echo loopback tap points, SRO clock drift, channel calibration & dead-mic fallback, fixed-point/MACs/battery budgets, Pareto selection & testable specs | [Ch 10 Engineering](chapters/10_engineering-practice.md) · [Ch 11 Selection](chapters/11_selection-guide.md) · [Engineering Hub](https://nanless.github.io/microphone-array-tutorial/site/#course-engineering) |
+| **Four Frontier Chapters** | Ch 12–15 | Acoustic camera deconvolution (DAMAS/CLEAN-SC), bandwidth-constrained distributed arrays (DANSE), Ambisonics & wearable/TWS arrays, conditioned target extraction & diarization (acoustic distance bubble / TS-VAD) | [Ch 12 Imaging](chapters/12_acoustic-imaging.md) · [Ch 13 Distributed](chapters/13_distributed-enhancement.md) · [Ch 14 Wearable](chapters/14_spatial-wearable-arrays.md) · [Ch 15 Target Extraction](chapters/15_target-extraction-diarization.md) |
+| **Reference Appendices** | Ch 16–17 | Master notation table, bilingual glossary, compact formula lookup, literature & challenge roadmap, end-to-end troubleshooting trees & capstone exercises | [Ch 16 Appendix A](chapters/16_appendix-symbols-math.md) · [Ch 17 Appendix B](chapters/17_appendix-guide.md) |
+
+---
+
+## Quick Local Setup & Verification (3 Minutes, CPU-Only)
+
+```bash
+git clone https://github.com/nanless/microphone-array-tutorial.git
+cd microphone-array-tutorial
+python3 -m venv .venv
+.venv/bin/pip install -r requirements.txt
+
+# Run all 16 Chapter 0 math foundation exercises (E00-01 to E00-16)
+.venv/bin/python -m codes.chapters.ch00.chapter00_exercises
+
+# Run spatial localization/beamforming and AEC/WPE/separation/tracking baselines
+.venv/bin/python -m codes.chapters.ch00.cross_chapter.ch02_05_baselines
+.venv/bin/python -m codes.chapters.ch00.cross_chapter.ch06_09_baselines
+```
+
+---
+
+## Repository Map
+
+- **Runnable code & 283-WAV inventory by chapter**: [`codes/chapters/README.md`](codes/chapters/README.md)
+- **Algorithm coverage matrix (equations ↔ code ↔ tests ↔ upstream)**: [`codes/chapters/ch00/COVERAGE.md`](codes/chapters/ch00/COVERAGE.md)
+- **Upstream source & industrial deployment manuals (6 guides)**: [`codes/chapters/ch00/research/README.md`](codes/chapters/ch00/research/README.md)
+- **Figure generation, static course website & tagged A4 PDF build**: [`scripts/README.md`](scripts/README.md)
+- **Third-party attributions & dataset terms**: [`codes/chapters/ch00/THIRD_PARTY.md`](codes/chapters/ch00/THIRD_PARTY.md)
+
+The main tutorial prose is written in Chinese. The repository does not have a general root license; third-party code and acoustic datasets retain their own terms.

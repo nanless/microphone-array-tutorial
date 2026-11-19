@@ -1,6 +1,8 @@
-# Scripts：绘图与工具脚本
+# Scripts：插图生成、课程站点与合订本 PDF 构建工具链
 
-本目录放绘图、构建和发布检查工具。算法与工程教学代码在 `codes/`；两类程序都应在**仓库根目录**执行。
+**[← 返回项目主页](../README.md)** · **[全书导读目录](../chapters/00_overview.md)** · **[教学代码与音频索引](../codes/chapters/README.md)** · **[合订本 PDF](../dist/microphone-array-tutorial.pdf)**
+
+本目录集中存放全书 **92 张编号插图绘图器**、**交互式课程站点构建器（`build_site.py`）**、**A4 标签化无障碍合订本构建器（`build_pdf.py`）** 以及 **全仓自动化门禁（`quality_check.py`）**。算法与工程教学代码位于 `codes/`；两类脚本均须在**仓库根目录**下使用主虚拟环境执行。
 
 单章实验的真实实现按 [第 0～15 章及第 16、17 章附录 A/B](../codes/chapters/README.md) 分目录保存；共享目录 `codes/chapters/ch00/` 同时承载第 0 章数学基础数值核与十六道练习、跨章练习、全书索引和主音频总清单。旧 `codes.examples`、`codes.array_tutorial` 入口已移除。音频、房间生成器和部分上游探针与源路径或 SHA 绑定；修改真实源文件后，按当前清单的规则重新生成并核对对应资产或报告。
 

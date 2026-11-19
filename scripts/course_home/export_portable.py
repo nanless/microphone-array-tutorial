@@ -22,6 +22,8 @@ def portable(template, css, script):
         path = match[1]
         if path == "#main-content":
             path = BLOB + "chapters/00_overview.md"
+        elif path == "../assets/readme/lab/array-lab.html":
+            path = PAGES + "assets/readme/lab/array-lab.html"
         elif path.startswith("../"):
             path = BLOB + path[3:]
         elif path == "research/index.html":
@@ -67,23 +69,19 @@ def cover(template, still):
     svg = re.search(r"<svg\b[\s\S]*?</svg>", template).group()
     svg = svg.replace("<svg ", '<svg xmlns="http://www.w3.org/2000/svg" ', 1)
     style = """
-.course-from-right,.course-wave,.course-hits circle{display:none}
-.course-emitters circle{fill:#cbd7e7}
-.course-emitters circle:first-child{fill:#ad402c}
-.course-emitters text{fill:#17273d}
-.course-emitters text:nth-child(3){fill:white}
+.course-out-b,.course-out-caption-right,.course-polar-left,.course-polar-right,.course-polar-markers-left,.course-polar-markers-right,.course-wave,.course-hits circle{display:none}
 """
     if not still:
         style += """
 @media (prefers-reduced-motion:no-preference) {
-.course-wave{display:block;opacity:0;transform-origin:72px 144px;animation:spread 2.6s linear 3}
-.course-hits circle{display:block;opacity:0;animation:hit 2.6s ease-out 3}
-.course-hits circle:nth-child(1){animation-delay:.45s}
-.course-hits circle:nth-child(2){animation-delay:.84s}
-.course-hits circle:nth-child(3){animation-delay:1.22s}
-.course-hits circle:nth-child(4){animation-delay:1.61s}
-@keyframes spread{0%{opacity:0;transform:scale(.22)}12%{opacity:.8}65%{opacity:.62}80%,100%{opacity:0;transform:scale(2.35)}}
-@keyframes hit{0%,19%,100%{opacity:0}5%{opacity:1}}
+.course-wave-a{display:block;opacity:0;transform-origin:104px 108px;animation:spread 2.8s linear 3}
+.course-hits circle{display:block;opacity:0;animation:hit 2.8s ease-out 3}
+.course-hits circle:nth-child(1){animation-delay:.40s}
+.course-hits circle:nth-child(2){animation-delay:.76s}
+.course-hits circle:nth-child(3){animation-delay:1.12s}
+.course-hits circle:nth-child(4){animation-delay:1.48s}
+@keyframes spread{0%{opacity:0;transform:scale(.35)}14%{opacity:.92}70%{opacity:.58}84%,100%{opacity:0;transform:scale(2.45)}}
+@keyframes hit{0%,20%,100%{opacity:0}6%{opacity:1}}
 }
 """
     return svg.replace("</defs>", "</defs>\n<style>" + style + "</style>", 1) + "\n"

@@ -5,6 +5,11 @@
   const sources = [...scene.querySelectorAll("[data-course-source]")];
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
   const replay = scene.querySelector("[data-course-replay]");
+  const modeNotes = {
+    mvdr: "当前模式：MVDR 锁住 −35° 目标 A（0 dB 无失真），同时在 +30° 干扰 B 方向刻出空间零陷。",
+    left: "当前模式：延迟求和（DSB）补齐 A 的到达时差（M1→M4），四路同相平均，白噪声增益 6.02 dB。",
+    right: "当前模式：改向对准 +30° 声源 B（到达次序反转为 M4→M3→M2→M1），B 同相增强而 A 错位削弱。",
+  };
   switches.hidden = false;
 
   function animate() {
@@ -25,7 +30,7 @@
       const side = button.dataset.courseSource;
       scene.dataset.source = side;
       for (const option of sources) option.setAttribute("aria-pressed", String(button === option));
-      arrival.textContent = side === "left" ? "左边 A 发声：1 → 2 → 3 → 4" : "右边 B 发声：4 → 3 → 2 → 1";
+      arrival.textContent = modeNotes[side] || modeNotes.mvdr;
       animate();
     });
   }
@@ -68,7 +73,7 @@
       if (ranges.start(i) <= target && target < ranges.end(i)) {
         clip.currentTime = target;
         pending.delete(clip);
-        if (pending.size === 0) seekStatus.textContent = `已定位到 ${seekSeconds} 秒，可播放任一路。`;
+        if (pending.size === 0) seekStatus.textContent = `已同步定位到 ${seekSeconds} 秒，可点击播放任一路对比。`;
         return;
       }
     }
@@ -84,7 +89,7 @@
   for (const button of jumps.querySelectorAll("[data-course-seek]")) {
     button.addEventListener("click", () => {
       seekSeconds = button.dataset.courseSeek;
-      seekStatus.textContent = `准备跳到 ${seekSeconds} 秒。`;
+      seekStatus.textContent = `准备跳到 ${seekSeconds} 秒…`;
       for (const clip of clips) pending.add(clip);
       for (const clip of clips) {
         clip.pause();

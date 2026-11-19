@@ -161,45 +161,77 @@ CSS = """
 span[data-pdf-math-id],mjx-container[jax="SVG"]{font-family:"MASP TeX Metrics";font-weight:normal;font-style:normal;font-synthesis:none}
 /* Match the A4 content width before printing; the print snapshot must not
    receive thousands of late DOM changes from a different screen layout. */
-body{font-family:"STHeiti","Hiragino Sans GB","Microsoft YaHei",sans-serif;font-variant-ligatures:none;font-size:16px;line-height:1.75;color:#1a1a2e;max-width:180mm;margin:0 auto;padding:0}
-p{margin:0 0 .85em;break-inside:avoid;orphans:2;widows:2}li>p{margin:.3em 0}
+body{font-family:"STHeiti","Hiragino Sans GB","Microsoft YaHei",sans-serif;font-variant-ligatures:none;font-size:16px;line-height:1.74;color:#1e293b;max-width:180mm;margin:0 auto;padding:0}
+p{margin:0 0 1.2em;break-inside:avoid;orphans:2;widows:2}
+ul,ol{margin:.5em 0 1.15em;padding-left:1.55em}
+li{margin:.4em 0}
+li>p{margin:.5em 0}
 li:not(:has(p,ul,ol,pre,table,blockquote)){break-inside:avoid;page-break-inside:avoid;orphans:2;widows:2}
+p>strong:first-child,li>strong:first-child{color:#0f2744}
 svg{break-inside:avoid;page-break-inside:avoid}
 p:has(+ p > mjx-container[display="true"]){break-after:avoid;page-break-after:avoid}
 p:has(> mjx-container[display="true"]){break-before:avoid;page-break-before:avoid}
-img{max-width:100%;height:auto;display:block;margin:12px auto}
-table{border-collapse:collapse;margin:12px 0;display:table;width:100%;table-layout:fixed;overflow-x:visible;max-width:100%}
-th,td{border:1px solid #dfe3ea;padding:5px 9px;font-size:13.5px;text-align:left}
-th{background:#f0f4f9}code{font-family:Menlo,Monaco,Consolas,"STHeiti","Hiragino Sans GB","Microsoft YaHei",monospace;font-variant-ligatures:none;background:#f0f3f7;padding:1px 5px;border-radius:4px;font-size:13px}
+img{max-width:100%;height:auto;display:block;margin:16px auto;border:1px solid #dbe3ee;border-radius:6px;padding:3px;background:#fff;box-sizing:border-box}
+table{border-collapse:collapse;margin:16px 0;display:table;width:100%;table-layout:fixed;overflow-x:visible;max-width:100%}
+th,td{border:1px solid #d5dfec;padding:6px 9px;font-size:13.5px;text-align:left;line-height:1.55}
+th{background:#e8eff9;color:#0f2744;border-bottom:1.5px solid #94a3b8}
+tbody tr:nth-child(even) td{background:#f8fafc}
+code{font-family:Menlo,Monaco,Consolas,"STHeiti","Hiragino Sans GB","Microsoft YaHei",monospace;font-variant-ligatures:none;background:#eef2f7;color:#0f294a;border:1px solid #d8e1ec;padding:1px 5px;border-radius:4px;font-size:13px}
 td,th{word-break:break-word;overflow-wrap:anywhere}
 mjx-container{font-size:100%!important;max-width:100%;break-inside:avoid;page-break-inside:avoid}
-mjx-container[jax="SVG"][display="true"]{display:inline-block!important;width:100%;padding:2px 0;box-sizing:border-box}
+mjx-container[jax="SVG"][display="true"]{display:inline-block!important;width:100%;padding:5px 0;box-sizing:border-box}
 mjx-container[jax="SVG"]:not([display="true"]){display:inline-block;padding-block:2px}
-pre{font-family:Menlo,Monaco,Consolas,"STHeiti","Hiragino Sans GB","Microsoft YaHei",monospace;font-variant-ligatures:none;background:#f4f6f9;padding:12px;border-radius:6px;overflow-x:visible;white-space:pre-wrap}
-pre code{background:none;padding:0}
-blockquote{border-left:3px solid #2f6db3;margin:12px 0;padding:6px 12px;background:#f2f7fd}
-a{color:#2f6db3;text-decoration:none}
-h1{font-size:24px;border-bottom:2px solid #1a1a2e;padding-bottom:6px}
-h2{font-size:20px;margin-top:30px;border-bottom:1px solid #e5e8ee;padding-bottom:5px}
-h3{font-size:16.5px}h4{font-size:15px}
-.cover{text-align:center;padding:120px 0 60px;break-after:page;page-break-after:always}
-.cover h1{font-size:34px;border:none}
-.cover .sub{font-size:17px;color:#444;margin-top:18px}
-.cover .meta{font-size:13.5px;color:#777;margin-top:40px}
+pre{font-family:Menlo,Monaco,Consolas,"STHeiti","Hiragino Sans GB","Microsoft YaHei",monospace;font-variant-ligatures:none;background:#f4f7fb;border:1px solid #d5dfec;border-left:4px solid #334155;padding:11px 14px;margin:14px 0;border-radius:6px;overflow-x:visible;white-space:pre-wrap;font-size:13px;line-height:1.55}
+pre code{background:none;border:none;color:inherit;padding:0}
+blockquote{border-left:4px solid #2563eb;margin:16px 0;padding:9px 14px;background:#f0f6ff;border-radius:0 6px 6px 0;color:#1e293b}
+blockquote p:last-child{margin-bottom:0}
+hr{border:none;border-top:1px solid #cbd5e1;margin:24px 0}
+a{color:#1d4ed8;text-decoration:none}
+h1{font-size:25px;color:#0f2744;background:#edf3fc;border-top:4px solid #1e3a8a;border-left:5px solid #1e3a8a;border-bottom:1px solid #cbd5e1;padding:11px 15px 9px;border-radius:0 6px 6px 0}
+h2{font-size:20px;color:#0f294a;background:#f3f7fc;border-left:4.5px solid #1d4ed8;border-bottom:1px solid #cbd5e1;padding:6px 12px 5px;margin:30px 0 14px;border-radius:0 4px 4px 0;line-height:1.35}
+h3{font-size:17.5px;color:#1e3a8a;border-left:3.5px solid #3b82f6;padding:2px 0 2px 10px;margin:24px 0 11px;line-height:1.4}
+h4{font-size:16px;color:#1e40af;border-left:2.5px solid #93c5fd;padding:1px 0 1px 8px;margin:18px 0 9px;line-height:1.4}
+h3.tutorial-worked-heading{background:#f0fdfa;border:1px solid #99f6e4;border-left:4.5px solid #0d9488;color:#115e59;padding:6px 12px;border-radius:5px;margin:24px 0 12px;font-size:16.8px}
+h3.tutorial-exercise-heading,h4.tutorial-exercise-heading{background:#eff6ff;border:1px solid #bfdbfe;border-left:5px solid #2563eb;color:#1e3a8a;padding:8px 13px;border-radius:6px;margin:28px 0 12px;font-size:16.5px;line-height:1.45}
+p.tutorial-exercise-lead{background:#eff6ff;border:1px solid #bfdbfe;border-left:5px solid #2563eb;padding:10px 14px;border-radius:6px;margin:24px 0 12px}
+ol>li.tutorial-exercise-item{margin:16px 0}
+.tutorial-exercise-card{background:#f8fafc;border:1px solid #d5e0ee;border-left:4px solid #2563eb;border-radius:6px;padding:10px 14px}
+.tutorial-exercise-card>:first-child{margin-top:0}
+.tutorial-exercise-card>:last-child{margin-bottom:0}
+p.tutorial-solution-lead{background:#f0fdf4;border-left:3.5px solid #16a34a;padding:7px 12px;border-radius:0 5px 5px 0;margin-top:8px}
+p.tutorial-solution-lead>strong:first-child{color:#15803d}
+p.tutorial-problem-lead{border-left:3px solid #2563eb;padding-left:10px}
+p.tutorial-problem-lead>strong:first-child{color:#1d4ed8}
+.tutorial-exercise-id{white-space:nowrap;overflow-wrap:normal;font-family:Menlo,Monaco,Consolas,monospace;font-size:.9em;color:#1d4ed8}
+:is(.tutorial-exercise-heading,.tutorial-exercise-lead) .tutorial-exercise-id{color:#1e40af;margin-right:2px}
+.toc .tutorial-exercise-id{color:inherit;font-size:inherit;font-family:inherit}
+.cover{padding:10px 0 8px;break-after:page;page-break-after:always}
+.cover-banner{background:#0f2744;color:#fff;border-top:6px solid #2563eb;border-radius:10px;padding:34px 30px 28px;text-align:left;margin:0 0 16px}
+.cover-kicker{font-size:12.5px;letter-spacing:.1em;color:#93c5fd;margin:0 0 10px}
+.cover h1{font-size:33px;color:#fff;background:none;border:none;padding:0;margin:0 0 10px;line-height:1.22}
+.cover .sub{font-size:16px;color:#dbeafe;margin:0;line-height:1.6}
+.cover-table{width:100%;border-collapse:collapse;margin:0 0 16px;table-layout:fixed}
+.cover-table th{background:#e8eff9;color:#0f2744;border:1px solid #cbd5e1;border-bottom:2px solid #1d4ed8;padding:9px 13px;font-size:14px;text-align:left}
+.cover-table td{background:#f8fafc;border:1px solid #cbd5e1;padding:12px 14px;vertical-align:top;font-size:13px;color:#334155;line-height:1.6}
+.cover-table td strong{display:block;font-size:14.2px;color:#0f2744;margin-bottom:4px}
+.cover-stats-table{width:100%;border-collapse:collapse;margin:0 0 16px;table-layout:fixed}
+.cover-stats-table th{background:#eff6ff;color:#1e3a8a;border:1px solid #bfdbfe;padding:8px 8px 4px;font-size:15.5px;text-align:center}
+.cover-stats-table td{background:#f8fafc;color:#475569;border:1px solid #bfdbfe;padding:5px 8px 8px;font-size:12px;text-align:center}
+.cover .meta{font-size:12.8px;color:#475569;background:#f8fafc;border:1px solid #cbd5e1;border-left:4px solid #1e3a8a;border-radius:6px;padding:11px 15px;line-height:1.65;text-align:left;margin:0}
 .chap{page-break-before:always}
-.toc-page>h1{font-size:28px;margin-bottom:18px}
-.toc{columns:2;column-gap:28px;padding-left:20px}
-.toc>li{margin:5px 0;break-inside:avoid-column}
-.toc .sec{font-size:12.5px;color:#333;padding-left:18px}
-.toc .subsec{font-size:11.5px;color:#555;padding-left:18px}
+.toc-page>h1{font-size:26px;margin:0 0 14px}
+.toc{columns:2;column-gap:26px;padding-left:18px;margin:0}
+.toc>li{margin:5px 0;break-inside:avoid-column;font-size:13.5px;color:#0f2744}
+.toc>li>a{color:#0f2744}
+.toc .sec{font-size:12px;color:#334155;padding-left:16px;margin:2px 0 4px}
+.toc .subsec{font-size:11px;color:#475569;padding-left:15px;margin:1px 0 3px}
 .anchor-alias{position:relative;display:inline-block;width:0;height:0;overflow:hidden;pointer-events:none}
 .pdf-anchor-references{position:absolute;top:-10000px;left:-10000px;font-size:1px;line-height:1px;color:transparent;pointer-events:none}
 .pdf-anchor-references a{color:transparent}
 .tutorial-math-tail{display:inline-block;white-space:nowrap;overflow-wrap:normal;vertical-align:baseline;overflow:visible}
 .tutorial-math-tail mjx-assistive-mml{max-width:1px!important;min-width:0!important;white-space:normal}
-.tutorial-exercise-id{white-space:nowrap;overflow-wrap:normal}
 .tutorial-table-label{white-space:nowrap;overflow-wrap:normal}
-.book-end{text-align:center;color:#777;margin:36px 0 8px;font-size:13px}
+.book-end{text-align:center;color:#475569;margin:32px 0 8px;padding-top:12px;border-top:1px solid #cbd5e1;font-size:13px}
 .book-ending{break-inside:avoid;page-break-inside:avoid}
 /* MathJax 的 serif 中文回退在部分 macOS 字体中会生成部首码位的 ToUnicode。 */
 mjx-mtext>mjx-utext{font-family:MJXZERO,"STHeiti","Hiragino Sans GB","Microsoft YaHei",sans-serif!important}
@@ -215,9 +247,10 @@ tr{break-inside:avoid}
 td,th{word-break:break-word;overflow-wrap:anywhere}
 /* MathJax 的行内长式与展示式均需留在 A4 正文宽度内。 */
 mjx-container{font-size:100%!important;max-width:100%;break-inside:avoid;page-break-inside:avoid}
-mjx-container[jax="SVG"][display="true"]{display:inline-block!important;width:100%;padding:2px 0;box-sizing:border-box}
+mjx-container[jax="SVG"][display="true"]{display:inline-block!important;width:100%;padding:5px 0;box-sizing:border-box}
 mjx-container[jax="SVG"]:not([display="true"]){display:inline-block;padding-block:2px}
 h1,h2,h3,h4{break-after:avoid;break-inside:avoid;page-break-inside:avoid}
+p.tutorial-exercise-lead{break-after:avoid;page-break-after:avoid}
 .pdf-imaging-hand-example{break-inside:avoid;page-break-inside:avoid}
 .chap p.tutorial-short-lead{break-after:avoid;page-break-after:avoid}
 .chap p.tutorial-anchor-only{margin:0;break-after:avoid;page-break-after:avoid}
@@ -267,7 +300,7 @@ h1,h2,h3,h4{break-after:avoid;break-inside:avoid;page-break-inside:avoid}
 blockquote:not(:has(table)),pre{break-inside:avoid}
 /* A4 可用高度为 263 mm；紧凑的章/首节标题和图外间距共占约 33 mm。 */
 img{max-height:225mm;object-fit:contain}
-th,code,pre,blockquote{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.cover,.cover *,h1,h2,h3,h4,th,td,code,pre,blockquote,.tutorial-exercise-id,.tutorial-exercise-lead,.tutorial-exercise-card,.tutorial-solution-lead{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
 """
 
@@ -861,10 +894,49 @@ def build_html(build_date=None):
         toc.append("</li>")
     toc.append("</ul></section>")
     date_s = resolve_build_date(build_date)
-    cover = (f'<div class="cover"><h1>麦克风阵列信号处理教程</h1>'
-             f'<div class="sub">从入门到工业实践（合订本）</div>'
-             f'<div class="meta">构建日期 {date_s} · 源文件 sha256 {source_digest()}<br>'
-             f'共 {len(CHAPTERS)} 篇：导读、16 章正文（含第 0 章数学基础与四篇扩展专题）、2 篇附录</div></div>')
+    cover = (
+        '<div class="cover">'
+        '<article class="cover-banner">'
+        '<p class="cover-kicker">OPEN TECHNICAL MONOGRAPH · 开源中文系统教程与工程实践手册</p>'
+        '<h1>麦克风阵列信号处理教程</h1>'
+        '<p class="sub">从数学基础、核心算法推演到实时硬件选型与前沿声场专题（A4 合订本）</p>'
+        '</article>'
+        '<table class="cover-table">'
+        '<thead><tr>'
+        '<th scope="col">基础建模与六大核心算法（导读、第 0～9 章）</th>'
+        '<th scope="col">实时硬件落地、前沿专题与工具附录（第 10～17 章）</th>'
+        '</tr></thead>'
+        '<tbody>'
+        '<tr>'
+        '<td><strong>第一部分 · 数学底座与声场建模（导读、第 0～3 章）</strong>'
+        '球面几何、复相量 STFT/COLA、子空间投影与 Wirtinger 复变微积分；微秒级波达时差、导向矢量、房间混响及线/圆/球/嵌套稀疏阵物理极限。</td>'
+        '<td><strong>第三部分 · 实时硬件落地与选型（第 10～11 章）</strong>'
+        '前端级联拓扑与回声参考取点、晶振采样率偏移（SRO）、通道标定与坏麦降维容错、定点算力功耗预算及帕累托可执行验收规格书。</td>'
+        '</tr>'
+        '<tr>'
+        '<td><strong>第二部分 · 六大核心阵列算法（第 4～9 章）</strong>'
+        'DOA 声源定位、固定/自适应/神经波束形成、全双工声学回声消除（AEC）、WPE 盲去混响、多通道语音分离与贝叶斯多目标追踪。</td>'
+        '<td><strong>第四部分 · 前沿专题与工具附录（第 12～17 章）</strong>'
+        '工业声学相机反卷积成像、低带宽分布式无线阵列、全景声与可穿戴微阵列、条件目标提取与多通道会议日志，以及全局符号词典与排错树。</td>'
+        '</tr>'
+        '</tbody></table>'
+        '<table class="cover-stats-table">'
+        '<thead><tr>'
+        f'<th scope="col">{len(CHAPTERS)} 篇合订文档</th>'
+        '<th scope="col">443 道可运行练习</th>'
+        '<th scope="col">92 张溯源插图</th>'
+        '<th scope="col">283 段配套音频</th>'
+        '</tr></thead>'
+        '<tbody><tr>'
+        '<td>导读 + 16 章正文 + 2 篇附录</td>'
+        '<td>精确手算锚点 + 纯 NumPy 复算</td>'
+        '<td>脚本生成摘要与数值核验绑定</td>'
+        '<td>真实混响实录与受控合成对照</td>'
+        '</tr></tbody></table>'
+        f'<article class="meta"><p style="margin:0">构建日期 {date_s} · 源文件 sha256 {source_digest()}<br/>'
+        f'共 {len(CHAPTERS)} 篇：导读、16 章正文（含第 0 章数学基础与四篇扩展专题）、2 篇附录 · 支持全文检索、三级书签跳转与公式无障碍语义</p></article>'
+        '</div>'
+    )
     # Chrome emits named destinations for referenced anchors. A transparent,
     # out-of-flow reference strip makes every real heading addressable without
     # adding entries to the visible TOC or affecting pagination. Alias names are

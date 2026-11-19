@@ -1,23 +1,36 @@
-# Listening experiment: which side should four mics listen to?
+# Interactive Lab: Which Side Should Four Mics Listen To?
 
-Four microphones sit in a row. Synthetic source A on the left plays long tones; B on the right plays pairs of short tones. Turn the volume down first, then predict which rhythm will get quieter. All three clips are mono.
+Four equally spaced microphones (`M1` to `M4`) sit in a row. Source **A** on the left plays sustained tones (`1000 / 3000 Hz`); source **B** on the right plays paired short taps (`3000 / 5000 Hz`). Turn your volume down first, then compare these three shared-gain mono WAV clips:
 
-1. [▶ Single mic](single.wav?raw=true): both rhythms are audible.
-2. [▶ Steer left](left.wav?raw=true): the long tones stay; the short pairs get quieter.
-3. [▶ Steer right](right.wav?raw=true): the short pairs stay; the long tones get quieter.
+1. **[▶ Single mic M1](single.wav?raw=true)**: both rhythms remain at 100% reference power.
+2. **[▶ Delay-and-sum · Steer left to A](left.wav?raw=true)**: sustained tone A stays intact (100%); short pairs from B drop below `0.01%` power.
+3. **[▶ Delay-and-sum · Steer right to B](right.wav?raw=true)**: short pairs from B stay intact (100%); sustained tone A drops sharply.
 
-**[Try the interactive lab on a computer](array-lab.html)**: choose **Download raw file** and open the downloaded HTML in a browser. No installation or microphone permission is required. Switch to English, steer left, and change source B on the right to a low tone. The direction stayed the same. Why can you hear B again?
+### Open the Zero-Install Browser Lab (1-Click Online or Offline)
 
-## What changes when you steer?
+- **[Launch Live Browser Lab (EN / 中文) →](https://nanless.github.io/microphone-array-tutorial/assets/readme/lab/array-lab.html)** — switch to **English** in the top-right corner, toggle steering directions, and watch the sample-alignment diagram update live.
+- **Offline mode**: open [`array-lab.html`](array-lab.html), click **Download raw file**, and open the single HTML file in any browser (no server or microphone permission needed).
 
-The same peak from A reaches the four mics at samples 0, 2, 4 and 6. Each sample interval is 62.5 microseconds in this experiment. Delay M1 by six samples, M2 by four, and M3 by two; M4 needs no added delay. All four peaks now land at sample 6.
+Try steering left to A, then check **“Switch B on the right to a 250 Hz low tone”**: neither speaker moved and the delays did not change—why did B become loud again?
+
+---
+
+## What Changes Physically When You Steer?
+
+At `16 kHz` (`62.5 μs` per sample), the same wavefront peak from A reaches `M1, M2, M3, M4` at samples `0, 2, 4, 6`. Delaying `M1` by 6 samples, `M2` by 4, and `M3` by 2 stacks all four copies of A cleanly at sample `6`:
 
 ![The arrivals at M1, M2 and M3 shift to sample 6, where M4 already was.](../delay-and-sum.svg)
 
-Average the four aligned copies and A keeps its strength. B travels a different path. With the delays chosen for A, B's peak in one channel can meet a trough in another, weakening the average. For a 250 Hz tone, the same delays cover only a small part of a cycle. In this experiment about **82% of B's single-mic power** still remains.
+Averaging the four aligned channels preserves 100% of A while spreading opposite-side B across samples `[12, 8, 4, 0]`, where high-frequency peaks and troughs cancel. At `250 Hz`, however, one period spans `64` samples—a 12-sample spread covers less than one-fifth of a cycle, leaving **82.1% of B's single-mic power** intact. Overcoming this low-frequency aperture limit motivates superdirective and MVDR beamforming in [Chapter 5: Beamforming](../../../chapters/05_beamforming.md).
 
-## Reproduce the result
+---
 
-At 16 kHz the arrivals are `[0, 2, 4, 6]` samples for A and `[6, 4, 2, 0]` for B. The [lab HTML](array-lab.html) applies the same delays to each known source component, then divides that component's full output sum of squares by its single-mic sum of squares. The player uses their sum quantized to PCM; all clips share an export gain.
+## Byte-for-Byte Reproduction
 
-With Node.js installed, run `node assets/readme/lab/export-lab.mjs --check` from the repository root to verify the published clips byte for byte. These synthetic sounds make the contrast clear, and the numbers describe only this example. Continue with [Chapter 5: Beamforming](../../../chapters/05_beamforming.md) or [return to the homepage](../../../README_EN.md).
+Both the browser player and the pre-rendered WAV files execute the exact `<script id="lab-model">` kernel inside [`array-lab.html`](array-lab.html) with one shared export gain. From the repository root, run:
+
+```bash
+node assets/readme/lab/export-lab.mjs --check
+```
+
+to verify all published lab assets byte for byte. Continue to [Chapter 5: Beamforming](../../../chapters/05_beamforming.md) or [return to the English README](../../../README_EN.md).

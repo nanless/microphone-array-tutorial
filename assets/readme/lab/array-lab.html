@@ -5,83 +5,110 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>四支麦，听哪边？ / Which side should four mics listen to?</title>
 <style>
-  :root { color-scheme: dark; --bg:#0d1925; --panel:#152a3b; --ink:#ecf5f9; --muted:#b7cbd7; --a:#69e5d2; --b:#ffc077; --line:#486576; }
+  :root { color-scheme: dark; --bg:#091422; --panel:#112338; --panel-deep:#0b1829; --ink:#ecf5fc; --muted:#9fb6ca; --a:#38bdf8; --b:#fb923c; --ok:#34d399; --line:#294666; }
   * { box-sizing:border-box; }
-  body { margin:0; color:var(--ink); background:var(--bg); font:16px/1.6 system-ui,sans-serif; }
-  main { max-width:48rem; margin:auto; padding:clamp(1rem,4vw,2.5rem); }
-  header { margin-bottom:1.1rem; }
-  header button { float:right; }
-  .kicker { color:var(--a); font-weight:700; font-size:.875rem; margin:0; }
-  h1 { font-size:clamp(1.85rem,5.8vw,2.9rem); line-height:1.15; margin:.5rem 0; }
-  h2 { font-size:1.12rem; margin:0 0 .5rem; }
-  p { margin:.65rem 0; }
+  body { margin:0; color:var(--ink); background:var(--bg); font:16px/1.62 system-ui,-apple-system,sans-serif; }
+  main { max-width:56rem; margin:auto; padding:clamp(1rem,3.5vw,2.4rem); }
+  .top-nav { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:.6rem 1rem; padding-bottom:.9rem; margin-bottom:1.1rem; border-bottom:1px solid var(--line); font-size:.9rem; }
+  .top-nav div { display:flex; flex-wrap:wrap; gap:.4rem 1.1rem; }
+  .top-nav a { color:var(--a); text-decoration:none; font-weight:600; }
+  .top-nav a:hover { text-decoration:underline; }
+  header { margin-bottom:1.25rem; }
+  .kicker { color:var(--a); font-weight:750; font-size:.84rem; letter-spacing:.08em; text-transform:uppercase; margin:0; }
+  h1 { font-size:clamp(1.9rem,5vw,2.85rem); line-height:1.12; letter-spacing:-.03em; margin:.4rem 0 .6rem; }
+  h2 { font-size:1.14rem; margin:0 0 .55rem; color:#f8fafc; }
+  p { margin:.6rem 0; }
   .sub, small { color:var(--muted); }
-  section { background:var(--panel); border:1px solid var(--line); border-radius:1rem; padding:1rem; margin:0 0 .85rem; }
-  .actions { display:flex; gap:.5rem; flex-wrap:wrap; margin:.8rem 0; }
-  button { min-height:44px; border-radius:.6rem; padding:.4rem .7rem; border:1px solid var(--line); background:#102131; color:var(--ink); font:inherit; cursor:pointer; }
-  button[aria-pressed="true"] { background:var(--a); color:#0c2327; border-color:var(--a); font-weight:700; }
+  .grid-two { display:grid; grid-template-columns:1.08fr .92fr; gap:1rem; margin-bottom:1rem; }
+  section { background:var(--panel); border:1px solid var(--line); border-radius:.95rem; padding:1.15rem 1.2rem; margin:0 0 1rem; box-shadow:0 10px 28px #0000002b; }
+  .grid-two > section { margin:0; }
+  .actions { display:flex; gap:.5rem; flex-wrap:wrap; margin:.75rem 0; }
+  button { min-height:42px; border-radius:.55rem; padding:.42rem .85rem; border:1px solid var(--line); background:var(--panel-deep); color:var(--ink); font:inherit; font-size:.93rem; font-weight:600; cursor:pointer; }
+  button:hover { border-color:var(--a); }
+  button[aria-pressed="true"] { background:var(--a); color:#061826; border-color:var(--a); font-weight:750; }
   :focus-visible { outline:3px solid var(--b); outline-offset:3px; }
-  audio { width:100%; max-width:31rem; display:block; margin:.65rem 0; }
-  label { display:flex; min-height:44px; align-items:center; gap:.55rem; cursor:pointer; }
-  input { width:1.18rem; height:1.18rem; accent-color:var(--a); flex:none; }
-  .readout { display:grid; grid-template-columns:minmax(6.2rem,auto) minmax(2rem,1fr) auto; gap:.5rem; align-items:center; margin:.55rem 0; }
+  audio { width:100%; display:block; margin:.75rem 0; }
+  label { display:inline-flex; min-height:42px; align-items:center; gap:.55rem; cursor:pointer; padding:.25rem .7rem; border-radius:.5rem; background:var(--panel-deep); border:1px solid #243d59; margin-top:.2rem; }
+  input { width:1.15rem; height:1.15rem; accent-color:var(--b); flex:none; }
+  .readout { display:grid; grid-template-columns:minmax(6.6rem,auto) minmax(2rem,1fr) 4.4rem; gap:.6rem; align-items:center; margin:.7rem 0; }
   .a { color:var(--a); } .b { color:var(--b); }
-  .meter { height:.55rem; background:#091521; border-radius:8px; overflow:hidden; }
-  .meter span { display:block; height:100%; border-radius:8px; background:currentColor; }
-  output { font-variant-numeric:tabular-nums; }
-  .mic-grid { width:100%; border-collapse:collapse; text-align:center; font-variant-numeric:tabular-nums; }
-  .mic-grid th,.mic-grid td { padding:.35rem .12rem; border-bottom:1px solid var(--line); }
-  .mic-grid th[scope=row] { text-align:left; font-size:.9rem; font-weight:550; }
-  .mic-grid th[scope=col] { width:12%; }
-  details { margin-top:1rem; }
-  summary { cursor:pointer; font-weight:700; }
+  .meter { height:.68rem; background:#07111d; border:1px solid #1e344d; border-radius:999px; overflow:hidden; }
+  .meter span { display:block; height:100%; border-radius:999px; background:currentColor; transition:width .2s ease-out; }
+  output { font-variant-numeric:tabular-nums; text-align:right; font-weight:750; }
+  .note-box { padding:.65rem .85rem; border-radius:.55rem; background:var(--panel-deep); border-left:3.5px solid var(--ok); font-size:.93rem; margin-top:.8rem; }
+  .viz-wrap { margin:.75rem 0 .9rem; background:var(--panel-deep); border:1px solid #223b57; border-radius:.7rem; padding:.7rem .8rem; }
+  .viz-wrap svg { display:block; width:100%; height:auto; }
+  .mic-grid { width:100%; border-collapse:collapse; text-align:center; font-variant-numeric:tabular-nums; font-size:.94rem; }
+  .mic-grid th,.mic-grid td { padding:.45rem .25rem; border-bottom:1px solid #233c57; }
+  .mic-grid th[scope=row] { text-align:left; font-weight:600; }
+  .mic-grid th[scope=col] { width:14%; color:var(--muted); font-size:.86rem; }
+  details { margin-top:.9rem; border-top:1px solid #233c57; padding-top:.75rem; }
+  summary { cursor:pointer; font-weight:700; color:#cbd5e1; }
+  @media (max-width:760px) { .grid-two { grid-template-columns:1fr; } }
 </style>
 </head>
 <body>
 <main>
-  <header>
+  <nav class="top-nav" aria-label="课程导航">
+    <div>
+      <a href="../../../site/index.html" data-label="backCourse">← 返回课程首页</a>
+      <a href="../../../site/05_beamforming.html" data-label="readCh5">阅读第 5 章：波束形成推导 →</a>
+    </div>
     <button id="language" type="button" lang="en" aria-label="Switch to English">English</button>
-    <p class="kicker" data-label="eyebrow">麦克风阵列 · 第一个实验</p>
+  </nav>
+  <header>
+    <p class="kicker" data-label="eyebrow">麦克风阵列 · 零安装互动实验</p>
     <h1 data-label="title">四支麦，听哪边？</h1>
-    <p class="sub" data-label="intro">同一组录音，只换对齐方向。先猜哪一种节奏会变轻，再试听。</p>
+    <p class="sub" data-label="intro">同一组四通道录音，只改变补偿时差的对齐方向：左边 A 是长音（1000/3000 Hz），右边 B 是成对短促敲击音。先猜哪一侧会变轻，再点击播放对比。</p>
   </header>
-  <section aria-labelledby="control-title">
-    <h2 id="control-title" data-label="try">01 / 换个方向，听一听</h2>
-    <div class="actions" role="group" aria-labelledby="control-title">
-      <button type="button" data-mode="single" data-label="single" aria-pressed="true">单支麦 M1</button>
-      <button type="button" data-mode="left" data-label="left" aria-pressed="false">对准左边 A</button>
-      <button type="button" data-mode="right" data-label="right" aria-pressed="false">对准右边 B</button>
-    </div>
-    <p class="sub" data-label="volume">先调低设备音量。每次切换后，从头播放同一段 3 秒声音。</p>
-    <audio id="audio" controls preload="metadata" aria-labelledby="control-title"></audio>
-    <label><input id="bass" type="checkbox"><span data-label="bass">把右边 B 换成低音（250 Hz）</span></label>
-    <noscript>此实验需要启用 JavaScript。 This lab requires JavaScript.</noscript>
-  </section>
-  <section aria-labelledby="result-title">
-    <h2 id="result-title" data-label="result">02 / 还有多少声音留下？</h2>
-    <p class="sub" data-label="power">分别计算 A、B 相对单支麦的保留功率。两条刻度都从 0 到 100%。</p>
-    <div id="meters" aria-live="polite" aria-atomic="true">
-      <div class="readout a"><span data-label="sourceA">A · 左边</span><span class="meter" aria-hidden="true"><span id="bar-a"></span></span><output id="power-a">—</output></div>
-      <div class="readout b"><span data-label="sourceB">B · 右边</span><span class="meter" aria-hidden="true"><span id="bar-b"></span></span><output id="power-b">—</output></div>
-    </div>
-    <p id="result-note"></p>
-  </section>
+  <div class="grid-two">
+    <section aria-labelledby="control-title">
+      <h2 id="control-title" data-label="try">01 / 选择拾音模式并试听</h2>
+      <div class="actions" role="group" aria-labelledby="control-title">
+        <button type="button" data-mode="single" data-label="single" aria-pressed="true">单支麦 M1</button>
+        <button type="button" data-mode="left" data-label="left" aria-pressed="false">对准左边 A</button>
+        <button type="button" data-mode="right" data-label="right" aria-pressed="false">对准右边 B</button>
+      </div>
+      <p class="sub" data-label="volume">建议先调低耳机或音箱音量。每次切换后自动生成对应 WAV，从头播放 3 秒片段。</p>
+      <audio id="audio" controls preload="metadata" aria-labelledby="control-title"></audio>
+      <label><input id="bass" type="checkbox"><span data-label="bass">关键反例：把右边 B 换成 250 Hz 低音（波长变长）</span></label>
+      <noscript>此实验需要启用 JavaScript。 This lab requires JavaScript.</noscript>
+    </section>
+    <section aria-labelledby="result-title">
+      <h2 id="result-title" data-label="result">02 / 两路声音各自保留了多少功率？</h2>
+      <p class="sub" data-label="power">相对单支麦 M1 的输出能量百分比（0%～100%）。理想无失真对准应保持 100%。</p>
+      <div id="meters" aria-live="polite" aria-atomic="true">
+        <div class="readout a"><span data-label="sourceA">A · 左边长音</span><span class="meter" aria-hidden="true"><span id="bar-a"></span></span><output id="power-a">—</output></div>
+        <div class="readout b"><span data-label="sourceB">B · 右边短音</span><span class="meter" aria-hidden="true"><span id="bar-b"></span></span><output id="power-b">—</output></div>
+      </div>
+      <p id="result-note" class="note-box"></p>
+    </section>
+  </div>
   <section aria-labelledby="timing-title">
-    <h2 id="timing-title" data-label="timing">03 / 哪支麦要等多久？</h2>
-    <p class="sub" data-label="samples">数字是采样格数；每格 62.5 微秒。M1 在最左端，M4 在最右端。</p>
+    <h2 id="timing-title" data-label="timing">03 / 时延对齐几何：哪支麦补等了多久？</h2>
+    <p class="sub" data-label="samples">横轴刻度为采样点（16 kHz 下每格 = 62.5 微秒）。蓝圆为 A 到达各麦的时刻，橙圆为 B 到达各麦的时刻；加粗竖线表示补完等待延迟后的对齐位置。</p>
+    <div class="viz-wrap">
+      <svg id="timing-svg" viewBox="0 0 620 156" role="img" aria-labelledby="timing-title">
+        <g id="timing-grid" stroke="#1f3650" stroke-width="1"></g>
+        <g id="timing-labels" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="11" fill="#9fb6ca"></g>
+        <g id="timing-dots"></g>
+      </svg>
+    </div>
     <table class="mic-grid">
-      <thead><tr><th scope="col" data-label="timingCol">时间</th><th scope="col">M1</th><th scope="col">M2</th><th scope="col">M3</th><th scope="col">M4</th></tr></thead>
+      <thead><tr><th scope="col" data-label="timingCol">时间（采样点）</th><th scope="col">M1</th><th scope="col">M2</th><th scope="col">M3</th><th scope="col">M4</th></tr></thead>
       <tbody>
-        <tr class="a"><th scope="row" data-label="arriveA">A 的到达</th><td>0</td><td>2</td><td>4</td><td>6</td></tr>
-        <tr class="b"><th scope="row" data-label="arriveB">B 的到达</th><td>6</td><td>4</td><td>2</td><td>0</td></tr>
-        <tr><th scope="row" data-label="wait">现在补等</th><td data-wait>—</td><td data-wait>—</td><td data-wait>—</td><td data-wait>—</td></tr>
+        <tr class="a"><th scope="row" data-label="arriveA">A 原始到达时刻</th><td>0</td><td>2</td><td>4</td><td>6</td></tr>
+        <tr class="b"><th scope="row" data-label="arriveB">B 原始到达时刻</th><td>6</td><td>4</td><td>2</td><td>0</td></tr>
+        <tr><th scope="row" data-label="wait">当前人为补等延迟</th><td data-wait>—</td><td data-wait>—</td><td data-wait>—</td><td data-wait>—</td></tr>
+        <tr class="a"><th scope="row" data-label="landA">补等后 A 落点</th><td data-land-a>0</td><td data-land-a>2</td><td data-land-a>4</td><td data-land-a>6</td></tr>
+        <tr class="b"><th scope="row" data-label="landB">补等后 B 落点</th><td data-land-b>6</td><td data-land-b>4</td><td data-land-b>2</td><td data-land-b>0</td></tr>
       </tbody>
     </table>
-    <p id="timing-note"></p>
+    <p id="timing-note" class="sub"></p>
     <details>
-      <summary data-label="model">实验条件和数字怎么算</summary>
-      <p data-label="model1">两路是合成节奏。模型只模拟四支等间距麦克风的整数到达时差，所有麦等增益，没有反射、额外噪声或自动方向估计。</p>
-      <p data-label="model2">用相同的补等量分别处理 A 和 B 的已知分量，再各自把整段输出的平方和除以单支麦收到该分量的平方和。保留了延迟尾部；百分比用浮点分量计算，播放器播放的是二者相加后量化的单声道 WAV，无逐段归一化。</p>
+      <summary data-label="model">实验物理假设与精确复算说明</summary>
+      <p data-label="model1">两路声源均为确定性数学合成信号。模型模拟四支等间距麦克风的整数采样到达时差，各通道等增益，不含墙面反射、传感器底噪或盲方向估计。</p>
+      <p data-label="model2">程序对 A、B 两个已知分量施加完全相同的通道延迟并求四路均值，再将整段输出（含完整延迟尾部）的平方和除以单麦对应分量的平方和得到保留功率比。播放器输出为两分量相加后按同一增益量化的 16-bit PCM WAV，不做逐段峰值归一化。</p>
     </details>
   </section>
 </main>
@@ -154,46 +181,95 @@ const Lab = (() => {
 </script>
 <script>
 const zh = {
-  eyebrow:"麦克风阵列 · 第一个实验", title:"四支麦，听哪边？", intro:"同一组录音，只换对齐方向。先猜哪一种节奏会变轻，再试听。",
-  try:"01 / 换个方向，听一听", single:"单支麦 M1", left:"对准左边 A", right:"对准右边 B",
-  volume:"先调低设备音量。每次切换后，从头播放同一段 3 秒声音。", bass:"把右边 B 换成低音（250 Hz）",
-  result:"02 / 还有多少声音留下？", power:"分别计算 A、B 相对单支麦的保留功率。两条刻度都从 0 到 100%。",
-  sourceA:"A · 左边", sourceB:"B · 右边", timing:"03 / 哪支麦要等多久？",
-  samples:"数字是采样格数；每格 62.5 微秒。M1 在最左端，M4 在最右端。",
-  timingCol:"时间", arriveA:"A 的到达", arriveB:"B 的到达", wait:"现在补等",
-  model:"实验条件和数字怎么算",
-  model1:"两路是合成节奏。模型只模拟四支等间距麦克风的整数到达时差，所有麦等增益，没有反射、额外噪声或自动方向估计。",
-  model2:"用相同的补等量分别处理 A 和 B 的已知分量，再各自把整段输出的平方和除以单支麦收到该分量的平方和。保留了延迟尾部；百分比用浮点分量计算，播放器播放的是二者相加后量化的单声道 WAV，无逐段归一化。",
-  baseline:"这是参照。长音和两下短音都在同一条录音里。",
-  matched:"对准的一侧基本保持原样。另一侧的波峰和波谷错开，平均后明显变弱。",
-  low:"同样的时差只占低音周期的一小段。B 没换位置，却比高音时更难压下去。",
-  timingSingle:"单支麦直接录下两种节奏，不做对齐。",
-  timingLeft:"让最早收到 A 的 M1 等 6 格。A 在四路都落到第 6 格；B 则落在 12、8、4、0。",
-  timingRight:"让最早收到 B 的 M4 等 6 格。B 在四路都落到第 6 格；A 则落在 0、4、8、12。"
+  backCourse:"← 返回课程首页", readCh5:"阅读第 5 章：波束形成推导 →",
+  eyebrow:"麦克风阵列 · 零安装互动实验", title:"四支麦，听哪边？",
+  intro:"同一组四通道录音，只改变补偿时差的对齐方向：左边 A 是长音（1000/3000 Hz），右边 B 是成对短促敲击音。先猜哪一侧会变轻，再点击播放对比。",
+  try:"01 / 选择拾音模式并试听", single:"单支麦 M1", left:"对准左边 A", right:"对准右边 B",
+  volume:"建议先调低耳机或音箱音量。每次切换后自动生成对应 WAV，从头播放 3 秒片段。",
+  bass:"关键反例：把右边 B 换成 250 Hz 低音（波长变长）",
+  result:"02 / 两路声音各自保留了多少功率？",
+  power:"相对单支麦 M1 的输出能量百分比（0%～100%）。理想无失真对准应保持 100%。",
+  sourceA:"A · 左边长音", sourceB:"B · 右边短音",
+  timing:"03 / 时延对齐几何：哪支麦补等了多久？",
+  samples:"横轴刻度为采样点（16 kHz 下每格 = 62.5 微秒）。蓝圆为 A 到达各麦的时刻，橙圆为 B 到达各麦的时刻；加粗竖线表示补完等待延迟后的对齐位置。",
+  timingCol:"时间（采样点）", arriveA:"A 原始到达时刻", arriveB:"B 原始到达时刻", wait:"当前人为补等延迟",
+  landA:"补等后 A 落点", landB:"补等后 B 落点",
+  model:"实验物理假设与精确复算说明",
+  model1:"两路声源均为确定性数学合成信号。模型模拟四支等间距麦克风的整数采样到达时差，各通道等增益，不含墙面反射、传感器底噪或盲方向估计。",
+  model2:"程序对 A、B 两个已知分量施加完全相同的通道延迟并求四路均值，再将整段输出（含完整延迟尾部）的平方和除以单麦对应分量的平方和得到保留功率比。播放器输出为两分量相加后按同一增益量化的 16-bit PCM WAV，不做逐段峰值归一化。",
+  baseline:"单支麦基准：A 的长音与 B 的成对短音以 100% 原始能量混合在同一条单声道里。",
+  matched:"同相增强与异相抵消：对准的一侧四路波峰严格对齐（保留 100%）；另一侧跨通道错开 0、4、8、12 格，波峰与波谷正负相消！",
+  low:"低频波长陷阱：250 Hz 周期长达 64 个采样点！12 格总跨度不足五分之一个周期，四路低音几乎仍然同相，因此固定孔径延迟求和仍残留 82.1% 的 B 功率（见第 5 章超指向与 MVDR）。",
+  timingSingle:"未启用阵列对齐：仅直接输出最左端 M1 单支麦克风拾取的混合波形。",
+  timingLeft:"对准左边 A：让最早收到 A 的 M1 等待 6 格、M2 等 4 格、M3 等 2 格，四路 A 全部精准落在第 6 格同相叠加；而反方向 B 被拉开到第 12、8、4、0 格。",
+  timingRight:"对准右边 B：让最早收到 B 的 M4 等待 6 格、M3 等 4 格、M2 等 2 格，四路 B 全部精准落在第 6 格同相叠加；而左边 A 被拉开到第 0、4、8、12 格。"
 };
 const en = {
-  eyebrow:"Microphone arrays · first experiment", title:"Which side should four mics listen to?", intro:"Use the same recordings and change only the steering direction. Predict which rhythm will get quieter, then listen.",
-  try:"01 / Pick a direction and listen", single:"Single mic M1", left:"Steer left to A", right:"Steer right to B",
-  volume:"Turn your device volume down first. After each change, play the same three-second clip from the start.", bass:"Change source B on the right to a low tone (250 Hz)",
-  result:"02 / How much of each sound remains?", power:"Each bar shows the retained power of one source relative to the single mic, from 0 to 100%.",
-  sourceA:"A · Left", sourceB:"B · Right", timing:"03 / How long should each mic wait?",
-  samples:"Times are in samples, 62.5 microseconds each. M1 is on the far left; M4 is on the far right.",
-  timingCol:"Time", arriveA:"A arrives", arriveB:"B arrives", wait:"Added wait",
-  model:"Model assumptions and how the numbers are calculated",
-  model1:"Both rhythms are synthetic. The model uses integer arrival delays and equal gain at four equally spaced microphones, without reflections, added noise, or automatic direction estimation.",
-  model2:"Apply the same delays to each known source component separately. For each, divide the sum of squared output samples by the sum of squared samples at the single mic. The full delay tail is included. Percentages use floating point components; the player uses their sum quantized to mono WAV, with no per-clip normalization.",
-  baseline:"This is the reference. The long tone and the double taps are both in the same recording.",
-  matched:"The side you picked is nearly unchanged. The other side's peaks and troughs are offset across the channels and largely cancel when averaged.",
-  low:"The same timing offset spans a smaller part of the low tone's cycle. B hasn't moved, but it is harder to suppress.",
-  timingSingle:"A single mic picks up both rhythms. No alignment is applied.",
-  timingLeft:"M1 hears A first, so make it wait six samples. A now lands at sample 6 on all channels; B lands at 12, 8, 4, and 0.",
-  timingRight:"M4 hears B first, so make it wait six samples. B now lands at sample 6 on all channels; A lands at 0, 4, 8, and 12."
+  backCourse:"← Back to Course Home", readCh5:"Read Chapter 5: Beamforming →",
+  eyebrow:"Microphone Arrays · Zero-Install Interactive Lab", title:"Which side should four mics listen to?",
+  intro:"Use the exact same 4-channel setup and change only the steering delays: A on the left plays sustained tones (1000/3000 Hz); B on the right plays paired short taps. Predict which rhythm gets quieter, then listen.",
+  try:"01 / Pick a steering mode and listen", single:"Single mic M1", left:"Steer left to A", right:"Steer right to B",
+  volume:"Turn your volume down first. Switching modes synthesizes the corresponding mono WAV clip from the start.",
+  bass:"Key counterexample: switch B on the right to a 250 Hz low tone (long wavelength)",
+  result:"02 / How much power of each source remains?",
+  power:"Retained output energy of each component relative to single mic M1 (0% to 100%). Distortionless alignment preserves 100%.",
+  sourceA:"A · Left tone", sourceB:"B · Right taps",
+  timing:"03 / Delay-and-Sum Geometry: How long does each mic wait?",
+  samples:"Horizontal ticks are samples at 16 kHz (62.5 μs per sample). Blue circles mark A; orange circles mark B. In steered modes, aligned copies stack vertically at sample 6.",
+  timingCol:"Time (samples)", arriveA:"A raw arrival", arriveB:"B raw arrival", wait:"Added wait delay",
+  landA:"A after wait", landB:"B after wait",
+  model:"Physical assumptions & exact calculation",
+  model1:"Both rhythms are deterministic synthetic signals across four equally spaced, equal-gain microphones with integer sample arrival offsets—no room reflections, sensor noise, or blind DOA estimation.",
+  model2:"The exact same channel delays are applied to each known source component separately. Retained power divides the full output sum of squares (including delay tail) by the single-mic sum of squares. The audio player renders their sum quantized to 16-bit PCM WAV with one shared gain.",
+  baseline:"Single-mic reference: both the sustained tone A and double-tap B remain at 100% power in one channel.",
+  matched:"Constructive vs. destructive interference: the steered source lands at sample 6 on all four channels (100% retained), while the opposite source spreads across samples 0, 4, 8, and 12—peaks meet troughs and cancel!",
+  low:"Low-frequency aperture limit: at 250 Hz, one period spans 64 samples! A 12-sample spread covers less than one-fifth of a cycle, so B stays mostly in phase and retains 82.1% power (motivating superdirective / MVDR designs in Chapter 5).",
+  timingSingle:"Single-mic mode: outputs channel M1 directly without multi-mic delay compensation.",
+  timingLeft:"Steered left to A: M1 waits 6 samples, M2 waits 4, M3 waits 2, M4 waits 0. All four copies of A stack at sample 6; B spreads to 12, 8, 4, 0.",
+  timingRight:"Steered right to B: M4 waits 6 samples, M3 waits 4, M2 waits 2, M1 waits 0. All four copies of B stack at sample 6; A spreads to 0, 4, 8, 12."
 };
+const baseArrivalsA = [0, 2, 4, 6];
+const baseArrivalsB = [6, 4, 2, 0];
 let isEnglish = false;
 let mode = "single";
 let clipURL;
 const byId = id => document.getElementById(id);
 const controls = document.querySelectorAll("[data-mode]");
+
+function drawTimingDiagram(wait) {
+  const grid = byId("timing-grid");
+  const labels = byId("timing-labels");
+  const dots = byId("timing-dots");
+  const x0 = 72, xSpan = 510;
+  const xOf = sample => x0 + (sample / 12) * xSpan;
+  const yOf = m => 28 + m * 28;
+  let gridHTML = "";
+  let labelHTML = "";
+  for (let s = 0; s <= 12; s += 2) {
+    const x = xOf(s).toFixed(1);
+    gridHTML += `<line x1="${x}" y1="14" x2="${x}" y2="124" stroke="${s === 6 && wait ? '#34d399' : '#1f3650'}" stroke-width="${s === 6 && wait ? '2' : '1'}" stroke-dasharray="${s === 6 && wait ? '4 3' : 'none'}"/>`;
+    labelHTML += `<text x="${x}" y="144" text-anchor="middle">${s}</text>`;
+  }
+  for (let m = 0; m < 4; m++) {
+    const y = yOf(m);
+    const active = !wait ? m === 0 : true;
+    gridHTML += `<line x1="${x0}" y1="${y}" x2="${x0 + xSpan}" y2="${y}" stroke="${active ? '#2c4c70' : '#182b42'}" stroke-width="1.4"/>`;
+    labelHTML += `<text x="20" y="${y + 4}" fill="${active ? '#e2e8f0' : '#64748b'}" font-weight="700">M${m + 1}</text>`;
+  }
+  let dotsHTML = "";
+  for (let m = 0; m < 4; m++) {
+    const y = yOf(m);
+    const op = !wait && m > 0 ? "0.25" : "1";
+    const la = baseArrivalsA[m] + (wait ? wait[m] : 0);
+    const lb = baseArrivalsB[m] + (wait ? wait[m] : 0);
+    dotsHTML += `<circle cx="${xOf(la).toFixed(1)}" cy="${y - 4}" r="5.5" fill="#38bdf8" opacity="${op}"/>`;
+    dotsHTML += `<circle cx="${xOf(lb).toFixed(1)}" cy="${y + 4}" r="5.5" fill="#fb923c" opacity="${op}"/>`;
+  }
+  grid.innerHTML = gridHTML;
+  labels.innerHTML = labelHTML;
+  dots.innerHTML = dotsHTML;
+}
+
 function paint({audioChanged = true} = {}) {
   const bass = byId("bass").checked;
   const labels = isEnglish ? en : zh;
@@ -211,7 +287,10 @@ function paint({audioChanged = true} = {}) {
     byId("bar-" + key).style.width = Math.min(100, pct) + "%";
     byId("power-" + key).textContent = pct < .01 ? "<0.01%" : pct.toFixed(pct >= 99.95 ? 0 : 1) + "%";
   }
-  document.querySelectorAll("[data-wait]").forEach((cell, i) => cell.textContent = wait ? wait[i] : "—");
+  document.querySelectorAll("[data-wait]").forEach((cell, i) => cell.textContent = wait ? "+" + wait[i] : "—");
+  document.querySelectorAll("[data-land-a]").forEach((cell, i) => cell.textContent = baseArrivalsA[i] + (wait ? wait[i] : 0));
+  document.querySelectorAll("[data-land-b]").forEach((cell, i) => cell.textContent = baseArrivalsB[i] + (wait ? wait[i] : 0));
+  drawTimingDiagram(wait);
   byId("result-note").textContent = labels[mode === "single" ? "baseline" : bass && mode === "left" ? "low" : "matched"];
   byId("timing-note").textContent = labels[{single:"timingSingle", left:"timingLeft", right:"timingRight"}[mode]];
 }

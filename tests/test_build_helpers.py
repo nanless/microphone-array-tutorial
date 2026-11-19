@@ -895,8 +895,8 @@ class BuildHelpersTest(unittest.TestCase):
         self.assertIn(":focus-visible", build_site.CSS)
 
     def test_web_and_pdf_define_paragraph_spacing_explicitly(self):
-        self.assertIn(".main p{margin:0 0 1.05em}", build_site.CSS)
-        self.assertIn("p{margin:0 0 .85em;break-inside:avoid;orphans:2;widows:2}", build_pdf.CSS)
+        self.assertIn(".main p{margin:0 0 1.2em}", build_site.CSS)
+        self.assertIn("p{margin:0 0 1.2em;break-inside:avoid;orphans:2;widows:2}", build_pdf.CSS)
 
     def test_aec_mobile_explanation_width_is_local_to_selected_headers(self):
         for label in ("训练参考", "仍需实测的资源", "它实际解决什么"):

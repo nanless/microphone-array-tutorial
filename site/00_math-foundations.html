@@ -1,10 +1,10 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 0 章 · 全书数学基础与信号分析预备 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="74c593002f97"><style>
-*{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
-.topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
-.topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
+<meta name="source-digest" content="10a21c80bda5"><style>
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
+.topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941}
+.topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
 h1,h2,h3,h4{scroll-margin-top:60px}
 @media screen{.main a[id]:not([href]){scroll-margin-top:60px}}
 @media screen{.main a[id^="e"],.main .exercise-alias{scroll-margin-top:80px}}
@@ -17,64 +17,66 @@ h1,h2,h3,h4{scroll-margin-top:60px}
 @media screen{.main a[id^="e11-"]{scroll-margin-top:60px}}
 @media screen{.main .separation-topic-anchor{scroll-margin-top:60px}}
 @media screen{.main .source-reproduction-anchor{scroll-margin-top:60px}}
-a:focus-visible,summary:focus-visible{outline:3px solid #e67e22;outline-offset:3px}
-.skip-link{position:absolute;left:10px;top:-60px;z-index:30;background:#fff;color:#1a1a2e;padding:8px 12px;border:2px solid #e67e22}
+a:focus-visible,summary:focus-visible{outline:2.5px solid #B84A2E;outline-offset:3px}
+.skip-link{position:absolute;left:10px;top:-60px;z-index:30;background:#fff;color:#1C1E21;padding:8px 12px;border:2px solid #B84A2E}
 .skip-link:focus{top:8px}
-.wrap{display:flex;max-width:1280px;margin:0 auto}
-.side{width:300px;flex-shrink:0;padding:20px 14px;position:sticky;top:47px;height:calc(100vh - 47px);overflow-y:auto;background:#fff;border-right:1px solid #e5e8ee;font-size:13.5px}
-.side a{color:#2f6db3;text-decoration:none}.side a:hover{text-decoration:underline}
-.side .chap{margin:10px 0 2px;font-weight:700}.side .chap.cur{color:#c0392b}
-.side ul{margin:2px 0 6px;padding-left:16px;color:#666}.side li{margin:2px 0}
-.main{flex:1;min-width:0;padding:28px 36px;background:#fff;overflow-wrap:anywhere}
+.wrap{display:flex;max-width:1280px;margin:0 auto;border-left:1px solid #E3DED3;border-right:1px solid #E3DED3}
+.side{width:300px;flex-shrink:0;padding:20px 15px;position:sticky;top:47px;height:calc(100vh - 47px);overflow-y:auto;background:#FAF8F3;border-right:1px solid #DDD7CB;font-size:13.5px}
+.side a{color:#1F5A92;text-decoration:none}.side a:hover{text-decoration:underline}
+.side .chap{margin:10px 0 2px;font-weight:700;color:#26292E}.side .chap.cur{color:#B84A2E}
+.side ul{margin:2px 0 6px;padding-left:16px;color:#5A554D}.side li{margin:2px 0}
+.main{flex:1;min-width:0;padding:32px 40px;background:#fff;overflow-wrap:anywhere}
+.main a{color:#1F5A92;text-underline-offset:.2em}
 .main p{margin:0 0 1.2em}.main ul,.main ol{margin:.55em 0 1.2em;padding-left:1.55em}.main li{margin:.42em 0}.main li>p{margin:.5em 0}
-.main p>strong:first-child,.main li>strong:first-child{color:#0f2744}
-.main img{max-width:100%;height:auto;display:block;margin:16px auto;border:1px solid #dbe3ee;border-radius:6px;padding:3px;min-height:40px;background:#fff}
-.audio-sample{display:block;width:min(100%,460px);margin:8px 0 18px}.audio-sample:focus-visible{outline:3px solid #e67e22}
+.main p>strong:first-child,.main li>strong:first-child{color:#14171A}
+.main img{max-width:100%;height:auto;display:block;margin:18px auto;border:1px solid #DFDAD0;border-radius:5px;padding:4px;min-height:40px;background:#fff}
+.audio-sample{display:block;width:min(100%,460px);margin:8px 0 18px}.audio-sample:focus-visible{outline:2.5px solid #B84A2E}
 /* 表格列宽不能压掉原生播放按钮；手机上的表格可横向滚动。 */
 td .audio-sample{width:280px;min-width:280px}
 table:has(td .audio-sample) td:last-child{min-width:180px}
-table{border-collapse:collapse;margin:16px 0;max-width:100%}
+table{border-collapse:collapse;margin:18px 0;max-width:100%;border-top:1.5px solid #2A2E34;border-bottom:1.5px solid #2A2E34}
 .table-scroll{max-width:100%;overflow-x:auto}
-.table-scroll:focus-visible{outline:3px solid #e67e22;outline-offset:2px}
-th,td{border:1px solid #d5dfec;padding:7px 11px;font-size:14px;text-align:left;line-height:1.58}
-th{background:#e8eff9;color:#0f2744;border-bottom:1.5px solid #94a3b8}
-tbody tr:nth-child(even) td{background:#f8fafc}
-code{background:#eef2f7;color:#0f294a;border:1px solid #d8e1ec;padding:1px 5px;border-radius:4px;font-size:13.5px}
-pre{background:#122036;color:#e8ecf3;padding:14px 16px;border-radius:8px;overflow-x:auto}
+.table-scroll:focus-visible{outline:2.5px solid #B84A2E;outline-offset:2px}
+th,td{border-top:1px solid #E3DED3;border-bottom:1px solid #E3DED3;border-left:none;border-right:none;padding:8px 11px;font-size:14px;text-align:left;line-height:1.58}
+th{background:#F5F2EB;color:#1C1E21;border-bottom:1px solid #8A8275;font-weight:700}
+tbody tr:nth-child(even) td{background:#FCFBF9}
+code{background:#F3F0E8;color:#1E3A56;border:1px solid #E0DBD0;padding:1px 5px;border-radius:4px;font-size:13.5px}
+pre{background:#F5F3EE;color:#1F2328;border:1px solid #DFDAD0;border-left:3.5px solid #5C564D;padding:14px 16px;border-radius:8px;overflow-x:auto}
 pre code{background:none;border:none;color:inherit;padding:0}
-blockquote{border-left:4px solid #2563eb;margin:16px 0;padding:10px 15px;background:#f0f6ff;border-radius:0 6px 6px 0;color:#1e293b}
+blockquote{border-left:3.5px solid #B84A2E;margin:18px 0;padding:10px 16px;background:#F7F5F0;border-radius:0 4px 4px 0;color:#2B2E33}
 blockquote p:last-child{margin-bottom:0}
+hr{border:none;border-top:1px solid #DDD7CB;margin:26px 0}
 mjx-container[jax="CHTML"]{font-size:110%!important;overflow-x:auto;overflow-y:hidden;max-width:100%;min-width:0!important}
 body mjx-assistive-mml{width:1px!important;max-width:1px!important;min-width:0!important;height:1px!important;overflow:hidden!important}
 pre,.table-scroll,mjx-container[jax="CHTML"]{overflow-wrap:normal}
-.pn{display:flex;justify-content:space-between;margin:34px 0 12px;padding-top:16px;border-top:1px solid #d5dfec;font-weight:650}
-.pn a{color:#1d4ed8;text-decoration:none}.pn .off{color:#aaa}
-.foot{color:#64748b;font-size:13px;margin:20px 0 40px}
-.main h1{font-size:27px;color:#0f2744;background:#edf3fc;border-top:4px solid #1e3a8a;border-left:5px solid #1e3a8a;border-bottom:1px solid #cbd5e1;padding:13px 17px 11px;border-radius:0 6px 6px 0;margin:0 0 22px;line-height:1.3}
-.main h2{font-size:21px;color:#0f294a;background:#f3f7fc;border-left:4.5px solid #1d4ed8;border-bottom:1px solid #cbd5e1;padding:8px 13px 7px;margin:34px 0 15px;border-radius:0 5px 5px 0;line-height:1.35}
-.main h3{font-size:18px;color:#1e3a8a;border-left:3.5px solid #3b82f6;padding:2px 0 2px 11px;margin:26px 0 12px;line-height:1.4}
-.main h4{font-size:16px;color:#1e40af;border-left:2.5px solid #93c5fd;padding:1px 0 1px 9px;margin:20px 0 10px;line-height:1.4}
-.main h3.tutorial-worked-heading{background:#f0fdfa;border:1px solid #99f6e4;border-left:4.5px solid #0d9488;color:#115e59;padding:7px 13px;border-radius:6px;margin:26px 0 13px;font-size:17.2px}
-.main h3.tutorial-exercise-heading,.main h4.tutorial-exercise-heading{background:#eff6ff;border:1px solid #bfdbfe;border-left:5px solid #2563eb;color:#1e3a8a;padding:9px 14px;border-radius:6px;margin:30px 0 13px;font-size:17px;line-height:1.45}
-.main p.tutorial-exercise-lead{background:#eff6ff;border:1px solid #bfdbfe;border-left:5px solid #2563eb;padding:11px 15px;border-radius:6px;margin:26px 0 13px}
+.pn{display:flex;justify-content:space-between;margin:36px 0 12px;padding-top:16px;border-top:1px solid #DDD7CB;font-weight:650}
+.pn a{color:#1F5A92;text-decoration:none}.pn .off{color:#9C9588}
+.foot{color:#6E695F;font-size:13px;margin:20px 0 40px}
+.main h1{font-size:27px;color:#14171A;border-top:2.5px solid #1F5A92;border-bottom:1.5px solid #1C1E21;padding:12px 0 10px;margin:0 0 24px;line-height:1.3}
+.main h2{font-size:21px;color:#14171A;border-left:3.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;padding:1px 0 7px 11px;margin:36px 0 15px;line-height:1.35}
+.main h3{font-size:18px;color:#1F5A92;margin:26px 0 11px;line-height:1.4}
+.main h4{font-size:16px;color:#2C2F33;border-left:2.5px solid #B84A2E;padding:1px 0 1px 9px;margin:20px 0 9px;line-height:1.4}
+.main h3.tutorial-worked-heading{background:#FAF8F3;border-top:1.5px solid #237263;border-bottom:1px solid #E2DDD2;border-left:3.5px solid #237263;color:#1A574B;padding:7px 13px;border-radius:2px;margin:28px 0 13px;font-size:17.2px}
+.main h3.tutorial-exercise-heading,.main h4.tutorial-exercise-heading{background:#F5F2EB;border-top:1.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;border-left:4px solid #1F5A92;color:#14171A;padding:8px 14px;border-radius:2px;margin:30px 0 13px;font-size:17px;line-height:1.45}
+.main p.tutorial-exercise-lead{background:#F5F2EB;border-top:1.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;border-left:4px solid #1F5A92;padding:10px 15px;border-radius:2px;margin:28px 0 13px}
 .main ol>li.tutorial-exercise-item{margin:18px 0}
-.main .tutorial-exercise-card{background:#f8fafc;border:1px solid #d5e0ee;border-left:4px solid #2563eb;border-radius:6px;padding:12px 16px}
+.main .tutorial-exercise-card{background:#FAF8F3;border:1px solid #E0DBD0;border-left:3.5px solid #1F5A92;border-radius:4px;padding:12px 16px}
 .main .tutorial-exercise-card>:first-child{margin-top:0}
 .main .tutorial-exercise-card>:last-child{margin-bottom:0}
-.main p.tutorial-solution-lead{background:#f0fdf4;border-left:3.5px solid #16a34a;padding:8px 13px;border-radius:0 5px 5px 0;margin-top:9px}
-.main p.tutorial-solution-lead>strong:first-child{color:#15803d}
-.main p.tutorial-problem-lead{border-left:3px solid #2563eb;padding-left:11px}
-.main p.tutorial-problem-lead>strong:first-child{color:#1d4ed8}
-.toc-mobile{display:none;margin:0 0 16px;border:1px solid #e5e8ee;border-radius:8px;padding:10px 14px;background:#f7fafd;font-size:14px}
-.toc-mobile summary{cursor:pointer;font-weight:700}
-.toc-mobile ul{padding-left:18px;margin:8px 0 2px}.toc-mobile a{color:#2f6db3;text-decoration:none}
-.topbtn{display:block;margin:20px auto;background:#1a1a2e;color:#fff;border-radius:50%;width:42px;height:42px;text-align:center;line-height:42px;text-decoration:none;font-size:18px}
-.offline-note{display:none;background:#fff7e6;border:1px solid #e6c87a;color:#7a5b00;padding:8px 14px;font-size:13.5px}
+.main p.tutorial-solution-lead{background:#F3F6F4;border-left:3.5px solid #237263;padding:8px 13px;border-radius:0 3px 3px 0;margin-top:9px}
+.main p.tutorial-solution-lead>strong:first-child{color:#1D5E51}
+.main p.tutorial-problem-lead{border-left:2.5px solid #1F5A92;padding-left:11px}
+.main p.tutorial-problem-lead>strong:first-child{color:#1F5A92}
+.toc-mobile{display:none;margin:0 0 16px;border:1px solid #DDD7CB;border-radius:6px;padding:10px 14px;background:#FAF8F3;font-size:14px}
+.toc-mobile summary{cursor:pointer;font-weight:700;color:#1C1E21}
+.toc-mobile ul{padding-left:18px;margin:8px 0 2px}.toc-mobile a{color:#1F5A92;text-decoration:none}
+.topbtn{display:block;margin:20px auto;background:#24282E;color:#FAF8F3;border-radius:50%;width:42px;height:42px;text-align:center;line-height:42px;text-decoration:none;font-size:18px}
+.offline-note{display:none;background:#F7EFE4;border:1px solid #D9B78E;color:#6E4219;padding:8px 14px;font-size:13.5px}
 .anchor-alias{display:block;position:relative;top:-60px;visibility:hidden}
 .tutorial-math-tail{display:inline-block;white-space:nowrap;overflow-wrap:normal;vertical-align:baseline;overflow:visible}
 .tutorial-math-tail mjx-assistive-mml{max-width:1px!important;min-width:0!important;white-space:normal}
-.tutorial-exercise-id{white-space:nowrap;overflow-wrap:normal;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:.87em;background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;padding:0 5px;border-radius:4px}
-:is(.tutorial-exercise-heading,.tutorial-exercise-lead) .tutorial-exercise-id{background:#1d4ed8;color:#fff;border-color:#1d4ed8;padding:1px 7px;margin-right:4px;font-size:.84em}
+.tutorial-exercise-id{white-space:nowrap;overflow-wrap:normal;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:.88em;background:#F3EFE6;color:#B84A2E;border:1px solid #DDD5C7;padding:0 5px;border-radius:3px;font-weight:700}
+:is(.tutorial-exercise-heading,.tutorial-exercise-lead) .tutorial-exercise-id{background:#1F5A92;color:#fff;border-color:#1F5A92;padding:1px 7px;margin-right:5px;font-size:.84em}
 .tutorial-table-label{white-space:nowrap;overflow-wrap:normal}
 @media(max-width:900px){.selection-readable-table{min-width:760px}.selection-readable-table th,.selection-readable-table td{min-width:10em}.selection-readable-table th:first-child,.selection-readable-table td:first-child{min-width:6em}}
 @media(max-width:900px){.side{display:none}.main{padding:20px}.toc-mobile{display:block}.topbar{font-size:14px}mjx-container[jax="CHTML"]:not([display="true"]){display:inline-block;vertical-align:middle}.aec-readable-table th,.aec-readable-table td,.wpe-readable-table th,.wpe-readable-table td,.separation-readable-table th,.separation-readable-table td{min-width:8em}.tracking-readable-table th,.tracking-readable-table td{min-width:8em}.industrial-readable-table th,.industrial-readable-table td{min-width:8em}}
@@ -534,7 +536,7 @@ r_m &= \|\,r\vec u - \vec r_m\,\|_2
 <li><strong>右手笛卡尔坐标系 $(x, y, z)$</strong>：所有球面参数化的共同三维欧氏基底，阵元位置 $\vec r_m$ 与声源位置 $\vec p = r\vec u$ 均在此基底下求内积与范数。</li>
 <li><strong>本书平面阵列参考系（第 2～13 章默认）</strong>：阵元沿 $x$ 轴排列，$+y$ 轴为正前方正横（broadside，$\theta_{\mathrm{book}} = 0^\circ$），水平方位角 $\theta_{\mathrm{book}}$ 从 $+y$ 轴向 $+x$ 轴<strong>顺时针</strong>旋转为正，俯仰角 $\phi_{\mathrm{el}} \in [-90^\circ, +90^\circ]$ 从水平面朝 $+z$ 轴向上度量。</li>
 <li><strong>同基底球谐函数极角系（<a href="05_beamforming.html#sec-5-8">第 5 章 §5.8</a> 与 §0.7）</strong>：与第 1、2 项共用同一笛卡尔轴 $(x, y, z)$，采用从 $+x$ 轴向 $+y$ 轴<strong>逆时针</strong>起算的水平方位角 $\alpha \in (-\pi, \pi]$，以及从天顶 $+z$ 轴向下起算的极角（余纬角，colatitude）$\vartheta \in [0, \pi]$。</li>
-<li><strong>听者局部全景声 AmbiX 与 AES69（<code>SOFA</code>）系（<a href="01_problem-definition.html#sec-u-fc1c3d209e">第 1 章 SOFA 坐标对照</a> 与<a href="14_spatial-wearable-arrays.html#sec-14-2">第 14 章 §14.2</a>）</strong>：听者正前方定义为 $+x_{\mathrm{A}}$、正左方为 $+y_{\mathrm{A}}$、正上方为 $+z_{\mathrm{A}}$，水平方位角从正前向正左<strong>逆时针</strong>度量为正，俯仰角从水平面向上为正。若以同一听者正前方对齐本书 $+y$ 正横轴，则 $\phi_{\mathrm{SOFA}} = -\theta_{\mathrm{book}}$；若在共享笛卡尔轴 $(x, y, z)$ 下直接比较逆时针角 $(\alpha, \phi_{\mathrm{el}}, r)$ 与本书角度 $(\theta_{\mathrm{book}}, \phi_{\mathrm{el}}, r)$，则满足严格换算：</li>
+<li><strong>听者局部全景声 AmbiX 与 AES69（<code>SOFA</code>）系（<a href="01_problem-definition.html#sec-u-fc1c3d209e">第 1 章 SOFA 坐标对照</a> 与<a href="14_spatial-wearable-arrays.html#sec-14-2">第 14 章 §14.2</a>）</strong>：听者正前方定义为 $+x_{\mathrm{A}}$、正左方为 $+y_{\mathrm{A}}$、正上方为 $+z_{\mathrm{A}}$，水平方位角从正前向正左<strong>逆时针</strong>度量为正，俯仰角从水平面向上为正（特别注意：AES69 / SOFA 标准以 $\phi_{\mathrm{SOFA}}$ 表示<strong>水平方位角</strong>、以 $\delta_{\mathrm{SOFA}}$ 表示俯仰角，切勿将 $\phi_{\mathrm{SOFA}}$ 与本书表示俯仰角的符号 $\phi_{\mathrm{el}}$ 混淆）。若以同一听者正前方对齐本书 $+y$ 正横轴，则 $\phi_{\mathrm{SOFA}} = -\theta_{\mathrm{book}}$；若在共享笛卡尔轴 $(x, y, z)$ 下直接比较逆时针角 $(\alpha, \phi_{\mathrm{el}}, r)$ 与本书角度 $(\theta_{\mathrm{book}}, \phi_{\mathrm{el}}, r)$，则满足严格换算：</li>
 </ol>
 <p>$$\begin{aligned}
 \alpha &= 90^\circ - \theta_{\mathrm{book}}\pmod{360^\circ}\text{（折叠至 }(-180^\circ, 180^\circ]\text{），}\qquad
@@ -623,7 +625,7 @@ N_{\mathrm{pad}} &\ge L_x + L_h - 1\\
 <p>取 $L_x = 4$ 点输入 $x = [1, 2, -1, 0]^\top$ 与 $L_h = 3$ 点脉冲响应 $h = [1, 0.5, -0.5]^\top$。时域能量为 $1^2 + 2^2 + (-1)^2 + 0^2 = 6$；按式(0-9)手算 $4$ 点 DFT（旋转因子 $e^{-\mathrm{j}\pi/2} = -\mathrm{j}$）得 $X[0] = 2$、$X[1] = 1 + 2(-\mathrm{j}) + (-1)(-1) = 2 - \mathrm{j}2$、$X[2] = 1 - 2 - 1 = -2$、$X[3] = 2 + \mathrm{j}2$，频域能量 $\frac{1}{4}(4 + 8 + 4 + 8) = 6$，与式(0-10)分毫不差。</p>
 <p>再算 $L_{\mathrm{lin}} = 4 + 3 - 1 = 6$ 点线性卷积得 $y_{\mathrm{lin}} = [1.0, 2.5, -0.5, -1.5, 0.5, 0.0]^\top$。若直接用未补零的 $N = 4$ 点 FFT 相乘求逆，第 $n = 4$ 点的尾部真值 $+0.5$ 会折回加在 $n = 4 \bmod 4 = 0$ 处，使首点从 $1.0$ 篡改为 $1.5$（误差二范数 $0.5$）；而补零至 $N_{\mathrm{pad}} = 8 \ge 6$ 后，前 $6$ 点输出恢复精确真值（浮点误差 $\lt  10^{-16}$）。</p>
 <span id="sec-11" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-0-2-4">0.2.4 短时傅里叶变换（STFT）频谱泄漏与 COLA / WOLA 完美重建条件</h3>
-<p>语音与环境声是非平稳过程，工程前端采用窗长为 $N$、帧移（hop size）为 $H$ 的滑动分析窗 $w_a[n]$ 将长信号切分为重叠短帧，计算每帧频谱 $X(k, \ell) = \sum_{r=0}^{N-1} x[\ell H + r]w_a[r]e^{-\mathrm{j}2\pi kr/N}$。若后续未改动频谱直接经逆变换乘以合成窗 $w_s[r]$ 并按帧移 $H$ 累加回时域，第 $n$ 个采样点上的总输出为 $\hat x[n] = \sum_{\ell} x[n]\,w_a[n - \ell H]w_s[n - \ell H]$。因此，在已被完整帧覆盖的稳定内部区间上，时域波形无失真重建（$\hat x[n] = x[n]$）的充要条件是<strong>加权恒定重叠相加（COLA / WOLA）条件</strong>：</p>
+<p>语音与环境声是非平稳过程，工程前端采用窗长为 $N$、帧移（hop size）为 $H$ 的滑动分析窗 $w_a[n]$ 将长信号切分为重叠短帧，计算每帧频谱 $X(\ell, k) = \sum_{r=0}^{N-1} x[\ell H + r]w_a[r]e^{-\mathrm{j}2\pi kr/N}$（本书正文统一将<strong>时间帧指标 $\ell$ 写在前、频点指标 $k$ 写在后</strong>；自第 2 章起在无歧义处亦将帧指标与频点指标对应简记为 $(t, f)$，写作第 $m$ 路短时谱 $X_m(t, f)$，而工程代码二维数组常按 $F\times T$ 即“行频列时”存储，调用接口时须核对轴序）。若后续未改动频谱直接经逆变换乘以合成窗 $w_s[r]$ 并按帧移 $H$ 累加回时域，第 $n$ 个采样点上的总输出为 $\hat x[n] = \sum_{\ell} x[n]\,w_a[n - \ell H]w_s[n - \ell H]$。因此，在已被完整帧覆盖的稳定内部区间上，时域波形无失真重建（$\hat x[n] = x[n]$）的充要条件是<strong>加权恒定重叠相加（COLA / WOLA）条件</strong>：</p>
 <p>$$g[n] \triangleq \sum_{\ell \in \mathbb{Z}} w_a[n - \ell H]\,w_s[n - \ell H] = 1\qquad(\forall\,n \in \mathbb{Z})\text{。}\tag{0-12}$$</p>
 <p>考察全书最常用的<strong>周期型（DFT-even）汉宁窗</strong> $w_{\mathrm{Hann}}[r] = \frac{1}{2}\bigl(1 - \cos\frac{2\pi r}{N}\bigr)$（$0 \le r \lt  N$，注意分母是 $N$ 而非对称滤波器设计的 $N-1$）。当帧移取 $50\%$ 重叠（$H = N/2$）时，同一时刻恰有相邻两帧 $r$ 与 $r + N/2$ 叠加，因 $\cos\bigl(\frac{2\pi(r+N/2)}{N}\bigr) = \cos(\frac{2\pi r}{N} + \pi) = -\cos\frac{2\pi r}{N}$，余弦项正负精确抵消：</p>
 <p>$$\begin{aligned}
@@ -740,6 +742,7 @@ w_{\mathrm{Hann}}[r] + w_{\mathrm{Hann}}\!\left[r + \frac{N}{2}\right]
 <p>$$\bigl(\sigma_n^2\mathbf I_M + \sigma_i^2\vec u\vec u^H\bigr)^{-1}
 = \frac{1}{\sigma_n^2}\left(\mathbf I_M - \frac{\sigma_i^2\,\vec u\vec u^H}{\sigma_n^2 + \sigma_i^2\|\vec u\|_2^2}\right)\text{。}\tag{0-20}$$</p>
 <p>将式(0-20)右乘干扰导向矢量 $\vec u$，立刻算出 $\mathbf R^{-1}\vec u = \frac{1}{\sigma_n^2}\bigl(1 - \frac{\mathrm{INR}}{1+\mathrm{INR}}\bigr)\vec u$，即等于 $\frac{1}{\sigma_n^2(1+\mathrm{INR})}\vec u$（其中阵列级干扰噪声比 $\mathrm{INR} = \frac{\sigma_i^2\|\vec u\|_2^2}{\sigma_n^2}$）：无需任何数值近似，我们就从代数上证明了协方差求逆会自动朝着强干扰方向压出深度为 $(1+\mathrm{INR})^{-1}$ 的自适应零陷！</p>
+<p>工程实现中还需警惕 Woodbury 秩一更新在<strong>长时在线递推下的数值失效边界</strong>：当 RLS 或在线自适应波束在有限字长浮点运算下连续执行数千次秩一减法递推逆相关矩阵 $\mathbf P$ 时，舍入误差会逐步累积并破坏 $\mathbf P$ 的厄米对称性与正定性，一旦最小特征值漂移为负数就会触发更新发散。因此工业级在线实现每步须施加厄米对称化投影 $\mathbf P \leftarrow \frac{1}{2}(\mathbf P + \mathbf P^H)$ 与对角下界保护，或改用条件数开方的 Cholesky / QR 平方根递推结构。</p>
 <p>与之同源的另一件分块矩阵利器是 <strong>Schur 补（Schur complement）</strong>。对分块矩阵 $\mathbf M = [[\mathbf A_{11}, \mathbf A_{12}], [\mathbf A_{21}, \mathbf A_{22}]]$（其中 $\mathbf A_{11}$ 可逆），用分块高斯消元消去左下块得到上三角分解，立得 $\mathbf A_{11}$ 在 $\mathbf M$ 中的 Schur 补 $\mathbf S = \mathbf A_{22} - \mathbf A_{21}\mathbf A_{11}^{-1}\mathbf A_{12}$ 及行列式乘法公式：</p>
 <p>$$\begin{aligned}
 \begin{bmatrix}\mathbf I & \mathbf 0\\ -\mathbf A_{21}\mathbf A_{11}^{-1} & \mathbf I\end{bmatrix}
@@ -859,7 +862,7 @@ R(\mathbf H, \vec w) &= \frac{\vec z^H\boldsymbol{\Lambda}\vec z}{\vec z^H\vec z
 <ul>
 <li><strong>子图 (a) 厄米矩阵标准瑞利商轨迹</strong>：对 $\mathbf R_{nn} = \begin{bmatrix}2 & 1\\ 1 & 2\end{bmatrix}$，实单位向量 $\vec w(\psi) = [\cos\psi, \sin\psi]^\top$ 的瑞利商 $2 + \sin(2\psi)$ 严格被夹在最小特征值 $\lambda_{\min} = 1.0$（$\psi = -45^\circ$）与最大特征值 $\lambda_{\max} = 3.0$（$\psi = +45^\circ$）两条水平渐近线之间。</li>
 <li><strong>子图 (b) 广义瑞利商极值与未白化匹配滤波差距</strong>：在 <code>E00-09</code> 相关噪声下，未白化匹配滤波（蓝色圆点 $\phi = 90^\circ$）仅获 $\mathrm{SINR} = 1.00$，而 GEV 闭式解达到全局上界 $\lambda_{\max} = 4/3 \approx 1.333$（红色虚线）。</li>
-<li><strong>子图 (c) 白化合同变换</strong>：原坐标下沿 $+45^\circ$ 压缩的相关噪声等值椭圆 $\vec z^\top\mathbf R_{nn}\vec z = 1$（橙色实线）经 Cholesky 白化后映射为蓝色虚线单位圆，消除噪声各向异性偏置。</li>
+<li><strong>子图 (c) 白化合同变换（二维实对称截面示意）</strong>：以实平面截面 $\vec z \in \mathbb{R}^2$ 直观展示原坐标下沿 $+45^\circ$ 压缩的相关噪声等值椭圆 $\vec z^\top\mathbf R_{nn}\vec z = 1$（橙色实线）经 Cholesky 白化后映射为蓝色虚线各向同性单位圆 $\tilde{\vec z}^\top\tilde{\vec z} = 1$ 的过程，消除噪声方向偏心。</li>
 <li><strong>子图 (d) Khatri–Rao 差分协同阵虚拟孔径对比</strong>：同样仅用 $3$ 支麦克风，稀疏阵 $\{0, 1, 3\}d$（蓝色柱）无空洞铺满 $-3d$～$+3d$ 共 $7$ 个滞后，而等距线阵 $\{0, 1, 2\}d$（橙色柱）把冗余浪费在 $\pm 1d$ 重复项上，仅覆盖 $5$ 个滞后。</li>
 </ul>
 <hr />
@@ -1034,7 +1037,7 @@ I_{\mathrm{eff}}(\tau) &= I_{\tau\tau} - \frac{I_{\tau\varphi}^2}{I_{\varphi\var
 \operatorname{Var}(\hat\tau) &\ge \frac{1}{I_{\mathrm{eff}}(\tau)}
 = \frac{1}{4\pi^2 f^2 L\,\mathrm{SNR}}\text{。}
 \end{aligned}\tag{0-37}$$</p>
-<p>式(0-37)物理图像极其透彻：不知道源初相时，必须拿麦 1 与麦 2 两个含噪相位相减，噪声方差翻倍使信息折半；同时均方根时延误差下界与<strong>频率 $f$、$\sqrt{L}$ 及 $\sqrt{\mathrm{SNR}}$ 成反比</strong>——这正是高频宽带信号比低频窄带信号定位精细得多的根本原因（在 <code>E00-13</code> 中，$f = 1\ \mathrm{kHz}$、$\mathrm{SNR} = 10$、$L = 25$ 时未知相位时延标准差下界约为 $10.07\ \mu\mathrm{s}$）。</p>
+<p>式(0-37)物理图像极其透彻：不知道源初相时，必须拿麦 1 与麦 2 两个含噪相位相减，噪声方差翻倍使信息折半；同时均方根时延误差下界与<strong>频率 $f$、$\sqrt{L}$ 及 $\sqrt{\mathrm{SNR}}$ 成反比</strong>——这正是高频宽带信号比低频窄带信号定位精细得多的根本原因（在 <code>E00-13</code> 中，$f = 1\ \mathrm{kHz}$、$\mathrm{SNR} = 10$、$L = 25$ 时未知相位时延标准差下界约为 $10.07\ \mu\mathrm{s}$）。进一步将双麦几何关系 $\tau = (d\sin\theta)/c$（一阶导数 $\mathrm{d}\tau/\mathrm{d}\theta = (d\cos\theta)/c$）代入式(0-37)，会发现它与<a href="02_basics-signal-model.html#sec-2-6-6">第 2 章 §2.6.6</a> 假定复源幅 $A e^{\mathrm{j}\varphi}$ 整体未知的 $M$ 麦方位角下界式(2-14)在 $M = 2$ 时<strong>精确等价</strong>！其几何根源在于：观测均值 $\vec\mu(A, \varphi, \tau)$ 对实幅度 $A$ 的偏导 $\partial_A\vec\mu = e^{\mathrm{j}\varphi}[1,\ e^{-\mathrm{j}\omega\tau}]^\top$ 与对时延的偏导 $\partial_\tau\vec\mu = A e^{\mathrm{j}\varphi}[0,\ -\mathrm{j}\omega e^{-\mathrm{j}\omega\tau}]^\top$（及相位偏导 $\partial_\varphi\vec\mu = \mathrm{j}A\partial_A\vec\mu$）在 Slepian–Bangs 复内积实部度量下严格正交，满足 $\operatorname{Re}\bigl\{(\partial_A\vec\mu)^H(\partial_\tau\vec\mu)\bigr\} = \operatorname{Re}\{-\mathrm{j}\omega A\} = 0$（径向伸缩与切向相位旋转相互垂直），故实幅度 $A$ 未知丝毫不折损时延与角度的 Fisher 信息。</p>
 <span id="sec-29" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-0-6-3">0.6.3 维纳—霍夫正交原理与卡尔曼预测—新息—Joseph 协方差递推</h3>
 <p>当目标信号 $s \in \mathbb{C}$ 本身也是零均值二阶平稳随机变量（方差 $\phi_s = \mathbb{E}[\lvert s\rvert^2]$，与多通道观测 $\vec x \in \mathbb{C}^M$ 的互相关向量为 $\vec r_{xs} = \mathbb{E}[\vec x s^*]$）时，线性最小均方误差（LMMSE）估计器寻找权重 $\vec w$ 使 $\mathrm{MSE}(\vec w) = \mathbb{E}[\lvert s - \vec w^H\vec x\rvert^2]$（展开为 $\phi_s - \vec w^H\vec r_{xs} - \vec r_{xs}^H\vec w + \vec w^H\mathbf R_{xx}\vec w$）最小。对 $\vec w^*$ 求 Wirtinger 偏导令其为零：$\nabla_{\vec w^*}\mathrm{MSE} = -\vec r_{xs} + \mathbf R_{xx}\vec w = \vec 0$，立即得到<strong>维纳—霍夫（Wiener–Hopf）方程</strong>与<strong>正交原理（Orthogonality Principle）</strong>：</p>
 <p>$$\begin{aligned}
@@ -1067,7 +1070,7 @@ I_{\mathrm{eff}}(\tau) &= I_{\tau\tau} - \frac{I_{\tau\varphi}^2}{I_{\varphi\var
 <p><img alt="图92 Wirtinger 共轭梯度下降、圆对称复高斯伪协方差判据、维纳正交与卡尔曼更新" src="../figures/fig92_wirtinger_probability_bayesian.png" onerror="this.alt+='（图缺失）'" /></p>
 <p>读图 92 时，可将四幅子图与 §0.5～§0.6 的优化及统计结论逐一印证：</p>
 <ul>
-<li><strong>子图 (a) Wirtinger 共轭梯度投影收敛轨迹</strong>：从等权延迟求和初值出发，沿负共轭梯度 $-\mu\mathbf R\vec w$ 迭代并向无失真超平面正交投影（Frost 算法），两种步长均单调收敛至红色点线标出的 MVDR 闭式功率下界 $7/19 \approx 0.368$，低于紫色点划线的双约束 LCMV 硬零陷功率 $3/8 = 0.375$。</li>
+<li><strong>子图 (a) Wirtinger 共轭梯度投影收敛轨迹</strong>：从等权延迟求和初值出发，沿负共轭梯度 $-\mu\mathbf R\vec w$ 迭代并向无失真超平面正交投影（Frost 算法），前 10 步内两种步长均已快速收敛至红色点线标出的 MVDR 闭式功率下界 $7/19 \approx 0.368$（低于紫色点划线的双约束 LCMV 硬零陷功率 $3/8 = 0.375$）：由于正交补子空间上投影算子 $\mathbf P_\perp\mathbf R\mathbf P_\perp$ 的最大特征值为 $\lambda_{\max} = 19/3$，收敛步长上界为 $2/\lambda_{\max} = 6/19 \approx 0.3158$，而秩一单干扰投影结构下的最优单步步长恰为 $1/\lambda_{\max} = 3/19 \approx 0.1579$（故绿色虚线 $\mu = 0.16$ 首步即贴合闭式最优解）。</li>
 <li><strong>子图 (b) 圆对称与非圆对称复高斯分布对比</strong>：圆对称 Proper 样本（$|C_{zz}| = 0$，蓝色圆点与实线圆）在复平面各向同性旋转不变；非圆对称样本（$|C_{zz}| \approx 0.721$，红色三角与虚线椭圆）沿主轴明显拉长倾斜。</li>
 <li><strong>子图 (c) 实白噪声 $8$ 点酉 DFT 的实频点非圆对称性</strong>：虽然所有 $8$ 个频点方差（蓝色柱）均恒等于 $1.0$，但直流 $k = 0$ 与奈奎斯特 $k = 4$ 处的伪协方差模（橙色柱）等于 $1.0$，直观呈现了实信号 DFT 端点频点的实高斯退化现象。</li>
 <li><strong>子图 (d) 卡尔曼预测—新息—Joseph 协方差递推</strong>：尽管每帧单点观测噪声方差高达 $R = 3.0$（蓝色水平点线），且运动过程噪声使先验预测方差（橙色虚线）爬升至约 $6.0$，融合新息后的 Joseph 后验位置方差（绿色实线）首步即从 $5.000$ 压低至 $1.875$，并迅速稳定在约 $2.0$ 的低误差稳态。</li>
@@ -1075,7 +1078,7 @@ I_{\mathrm{eff}}(\tau) &= I_{\tau\tau} - \frac{I_{\tau\varphi}^2}{I_{\varphi\var
 <hr />
 <span id="sec-31" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-0-7">0.7 声学特殊函数、正交多项式与球面调和函数导引</h2>
 <span id="sec-32" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-0-7-1">0.7.1 归一化 $\operatorname{sinc}$ 函数与三维球面扩散噪声场互谱推导</h3>
-<p>在分析混响房间背景噪声时（<a href="05_beamforming.html#sec-5-1">第 5 章 §5.1</a> 与<a href="14_spatial-wearable-arrays.html#sec-14-8">第 14 章 §14.8</a>），经典的三维各向同性弥散声场（3D spherically isotropic diffuse field）将环境声建模为从单位球面 $S^2$ 所有立体角 $\Omega = (\vartheta, \alpha)$ 独立、等功率密度均匀入射的无穷多列平面波叠加。为什么相距 $d = \|\vec r_i - \vec r_j\|_2$ 的两支全向麦克风在波数 $\kappa = 2\pi f/c$ 处的空间相干系数恰好是一个 $\operatorname{sinc}$ 函数？</p>
+<p>在分析混响房间背景噪声时（<a href="05_beamforming.html#sec-5-1">第 5 章 §5.1</a> 与<a href="14_spatial-wearable-arrays.html#sec-14-8">第 14 章 §14.8</a>），经典的三维各向同性弥散声场（3D spherically isotropic diffuse field）将环境声建模为从单位球面 $S^2$ 所有立体角 $\Omega = (\vartheta, \alpha)$ 独立、等功率密度均匀入射的无穷多列平面波叠加。为什么相距 $d = \|\vec r_i - \vec r_j\|_2$ 的两支全向麦克风在波数 $\kappa = 2\pi f/c$（单位 $\mathrm{rad/m}$；部分声学文献与本书第 2、3 章无需离散频点下标 $k$ 的连续波段落亦简记为 $k = 2\pi f/c$，二者完全等价，本书统一用 $\kappa$ 避开 DFT 频点序号 $k$）处的空间相干系数恰好是一个 $\operatorname{sinc}$ 函数？</p>
 <p>利用 §0.1.4 的旋转不变性，不妨旋转坐标系令两麦连线指向 $+z$ 轴（即 $\vec r_i - \vec r_j = [0, 0, d]^\top$），此时入射极角为 $\vartheta \in [0, \pi]$ 的平面波在两麦间的空间相位差仅依赖余纬角：$\vec u(\vartheta, \alpha)^\top(\vec r_i - \vec r_j) = d\cos\vartheta$。在单位球面积分微元 $\mathrm{d}\Omega = \sin\vartheta\,\mathrm{d}\vartheta\,\mathrm{d}\alpha$（总立体角 $\iint_{S^2}\mathrm{d}\Omega = 4\pi$）上对复指数求均匀球面平均，作变量代换 $x = \cos\vartheta$（$\mathrm{d}x = -\sin\vartheta\,\mathrm{d}\vartheta$）：</p>
 <p>$$\begin{aligned}
 \gamma_{\mathrm{3D}}(f)
@@ -1094,9 +1097,9 @@ J_n(x) &= \sum_{m=0}^{\infty}\frac{(-1)^m}{m!(n+m)!}\left(\frac{x}{2}\right)^{2m
 = \frac{1}{\pi}\int_0^\pi \cos(n\alpha - x\sin\alpha)\,\mathrm{d}\alpha\text{，}\\
 J_{n-1}(x) + J_{n+1}(x) &= \frac{2n}{x}J_n(x)\text{，}
 \end{aligned}\tag{0-43}$$</p>
-<p>负整数阶满足 $J_{-n}(x) = (-1)^n J_n(x)$。注意 $J_0(x)$ 的首个零点位于 $x \approx 2.4048$，而三维 $\sin(x)/x$ 的首个零点位于 $x = \pi \approx 3.1416$——切不可把三维球面扩散场 $\operatorname{sinc}(2fd/c)$ 与二维水平扩散场 $J_0(2\pi fd/c)$ 混用！进一步将圆周平面波核按傅里叶级数展开，即得圆阵模态波束设计的 <strong>Jacobi–Anger 平面波展开恒等式</strong>：</p>
-<p>$$e^{\mathrm{j}\kappa r\cos(\phi - \phi_s)}
-= \sum_{m=-\infty}^{\infty}\mathrm{j}^m\,J_m(\kappa r)\,e^{\mathrm{j}m(\phi - \phi_s)}\text{。}\tag{0-44}$$</p>
+<p>负整数阶满足 $J_{-n}(x) = (-1)^n J_n(x)$。注意 $J_0(x)$ 的首个零点位于 $x \approx 2.4048$，而三维 $\sin(x)/x$ 的首个零点位于 $x = \pi \approx 3.1416$——切不可把三维球面扩散场 $\operatorname{sinc}(2fd/c)$ 与二维水平扩散场 $J_0(2\pi fd/c)$ 混用！进一步将阵元极角 $\alpha$ 与平面波入射方位角 $\alpha_s$ 构成的圆周平面波核按傅里叶级数展开，即得圆阵模态波束设计的 <strong>Jacobi–Anger 平面波展开恒等式</strong>：</p>
+<p>$$e^{\mathrm{j}\kappa r\cos(\alpha - \alpha_s)}
+= \sum_{m=-\infty}^{\infty}\mathrm{j}^m\,J_m(\kappa r)\,e^{\mathrm{j}m(\alpha - \alpha_s)}\text{。}\tag{0-44}$$</p>
 <p>当波数半径积 $\kappa r$ 有限时，$|J_m(\kappa r)|$ 在阶数 $|m| > \lceil e\kappa r / 2\rceil$ 后呈超指数衰减（如 <code>E00-16</code> 中 $\kappa r = 1.8$ 截断至 $|m| \le 18$ 时截断误差仅为 $2.62 \times 10^{-16}$），使无限维连续声场得以由有限阶圆谐模态精确表征。</p>
 <span id="sec-34" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-0-7-3">0.7.3 球贝塞尔/汉克尔函数与刚性球障板消除径向零陷的朗斯基证明</h3>
 <p>在三维球面麦克风阵列（<a href="05_beamforming.html#sec-5-8">第 5 章 §5.8</a> 与<a href="14_spatial-wearable-arrays.html#sec-14-2">第 14 章 §14.2</a>）中，亥姆霍兹波动方程 $(\nabla^2 + \kappa^2)p = 0$ 在球坐标径向分离出<strong>第一类球贝塞尔函数</strong> $j_n(x) = \sqrt{\frac{\pi}{2x}}J_{n+1/2}(x)$（驻波正则解）与<strong>第二类球贝塞尔函数</strong> $y_n(x) = \sqrt{\frac{\pi}{2x}}Y_{n+1/2}(x)$（原点奇异解），两者组合成向内或向外传播的<strong>球汉克尔函数</strong> $h_n^{(1,2)}(x) = j_n(x) \pm \mathrm{j}y_n(x)$（在本书逆变换核 $e^{+\mathrm{j}2\pi ft}$ 约定下，向外辐射散射波取第二类 $h_n^{(2)}$）。零阶与一阶闭式初值极为简洁：</p>
@@ -1208,7 +1211,7 @@ Y_n^m(\vartheta, \alpha)
 <td class="tutorial-short-column" style="--tutorial-column-width:8em"><a href="05_beamforming.html#sec-5-4">第 5 章 §5.4</a>、<a href="05_beamforming.html#sec-5-8">§5.8</a></td>
 <td class="tutorial-short-column" style="--tutorial-column-width:18em">DSB、超指向对角加载、MVDR、LCMV、GSC、MWF 与球谐波束</td>
 <td class="tutorial-short-column" style="--tutorial-column-width:22em">§0.3.1 式(0-14) 柯西不等式；§0.5.2 式(0-31) 复拉格朗日闭式解；§0.7 式(0-42)、式(0-47)</td>
-<td class="tutorial-short-column" style="--tutorial-column-width:20em">LCMV 多方向复相位约束右端漏取共轭；超小孔径低频求逆无加载导致白噪声增益坍塌</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:20em">LCMV 多方向复相位约束右端漏取共轭；超小孔径低频求逆无加载导致白噪声增益急剧恶化</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em"><a href="06_aec.html#sec-6-1">第 6 章 §6.1</a>、<a href="06_aec.html#sec-6-2">§6.2</a></td>
@@ -1566,7 +1569,7 @@ Y_n^m(\vartheta, \alpha)
 </ul>
 <p><a id="e00-16"></a></p>
 <span id="sec-55" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-5bf6f42855">E00-16：柱/球贝塞尔函数递推、奇次 Legendre 多项式区间正交解耦与球谐函数加法定理检验</h3>
-<p><strong>题目。</strong> （1）计算 $x = 2.0$ 处的柱贝塞尔函数 $J_0(2), J_1(2), J_2(2)$ 验证三项递推式(0-43)，并检验 $\kappa r = 1.8, \phi = 0.65\ \mathrm{rad}$ 处截断阶数 $|m| \le 18$ 的 Jacobi–Anger 展开精度；（2）在开球首个零陷频率 $\kappa R = \pi$ 处核验球贝塞尔朗斯基恒等式，对比开球与刚性球零阶径向模态幅值 $\lvert b_0(\pi)\rvert$；（3）用 $5$ 点高斯—勒让德求积检验 $0$～$3$ 阶 Legendre 多项式在 $[-1, 1]$ 上的正交矩阵，并检验 $0$～$3$ 阶复球谐函数加法定理式(0-47)。</p>
+<p><strong>题目。</strong> （1）计算 $x = 2.0$ 处的柱贝塞尔函数 $J_0(2), J_1(2), J_2(2)$ 验证三项递推式(0-43)，并检验 $\kappa r = 1.8,\ \alpha - \alpha_s = 0.65\ \mathrm{rad}$ 处截断阶数 $|m| \le 18$ 的 Jacobi–Anger 展开精度；（2）在开球首个零陷频率 $\kappa R = \pi$ 处核验球贝塞尔朗斯基恒等式，对比开球与刚性球零阶径向模态幅值 $\lvert b_0(\pi)\rvert$；（3）用 $5$ 点高斯—勒让德求积检验 $0$～$3$ 阶 Legendre 多项式在 $[-1, 1]$ 上的正交矩阵，并检验 $0$～$3$ 阶复球谐函数加法定理式(0-47)。</p>
 <p><strong>解答。</strong> 逐一核对三类声学特殊函数恒等式：</p>
 <ul>
 <li><strong>（1）柱贝塞尔递推与平面波圆谐展开</strong>：在 $x = 2.0$ 处幂级数给出 $J_0(2) \approx 0.223891$、$J_1(2) \approx 0.576725$、$J_2(2) \approx 0.352834$，满足 $\frac{2\times 1}{2}J_1(2) = J_0(2) + J_2(2)$（误差 $2.22 \times 10^{-16}$）；式(0-44) Jacobi–Anger 级数截断至 $|m| \le 18$ 时相对精确平面波 $e^{\mathrm{j}1.8\cos 0.65}$ 的绝对误差仅为 $2.62 \times 10^{-16}$。</li>

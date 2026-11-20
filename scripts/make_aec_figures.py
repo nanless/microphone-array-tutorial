@@ -25,12 +25,28 @@ from codes.chapters.ch02.core.conventions import finite_real_array, finite_real_
 
 OUT = Path(os.environ.get("AEC_FIGURE_DIR", Path(__file__).parent.parent / "figures"))
 OUT.mkdir(exist_ok=True)
-C_MAIN, C_BLUE, C_RED, C_GREEN, C_ORANGE, C_PURPLE = "#1a1a2e", "#2f6db3", "#c0392b", "#2e8b57", "#e67e22", "#7d3c98"
+C_MAIN, C_BLUE, C_RED, C_GREEN, C_ORANGE, C_PURPLE = "#1E242B", "#1F5A92", "#B84A2E", "#237263", "#C67B1E", "#764B84"
 # 9.8 in 宽图缩放到 A4 正文约 165 mm 后，11 pt 约为 7.3 pt。
 # FS_TINY 只用于刻度；轴名、图例、框字和承担结论的注释不得低于 FS_SMALL。
 FS_SUP, FS_TITLE, FS_LABEL, FS_SMALL, FS_TINY = 15, 13, 11, 11, 10
-plt.rcParams["font.sans-serif"] = ["PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", "Arial Unicode MS"]
-plt.rcParams["axes.unicode_minus"] = False
+plt.rcParams.update({
+    "font.sans-serif": ["PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", "Arial Unicode MS"],
+    "axes.unicode_minus": False,
+    "text.color": "#1E242B",
+    "axes.labelcolor": "#1E242B",
+    "axes.edgecolor": "#4A5058",
+    "axes.linewidth": 0.9,
+    "axes.axisbelow": True,
+    "xtick.color": "#3A3F45",
+    "ytick.color": "#3A3F45",
+    "grid.color": "#DFDCD4",
+    "grid.linestyle": "--",
+    "grid.linewidth": 0.65,
+    "grid.alpha": 0.65,
+    "legend.facecolor": "#FAF9F6",
+    "legend.edgecolor": "#DDD8CE",
+    "legend.framealpha": 0.92,
+})
 FS = 16000
 SOURCE_SCRIPT = "scripts/make_aec_figures.py"
 
@@ -46,6 +62,22 @@ def figure_metadata():
     }
 
 def save(fig, name):
+    for ax in fig.axes:
+        if ax.axison and "top" in ax.spines and "right" in ax.spines and len(ax.images) == 0:
+            ax.spines["top"].set_visible(False)
+            if (ax.yaxis.get_label_position() != "right"
+                    and ax.yaxis.get_ticks_position() not in ("right", "both")):
+                ax.spines["right"].set_visible(False)
+        if not ax.axison:
+            for patch in ax.patches:
+                ec = patch.get_edgecolor()
+                if isinstance(ec, tuple) and len(ec) == 4 and ec[:3] == (0.0, 0.0, 0.0) and ec[3] > 0.8:
+                    patch.set_edgecolor("#3D454F")
+    if fig.get_constrained_layout():
+        pads = getattr(fig, "_custom_constrained_pads", None) or dict(
+            w_pad=0.06, h_pad=0.09, wspace=0.05, hspace=0.06
+        )
+        fig.set_layout_engine("constrained", **pads)
     fig.savefig(
         OUT / name,
         dpi=150,
@@ -226,14 +258,16 @@ def fig_problem():
     ax.plot(t, echo, color=C_BLUE, ls="--", lw=1, label="回声 (x*h)[n]")
     ax.plot(t, s, color=C_RED, lw=1, label="合成近端干扰 s[n]（非语音）")
     ax.axvspan(0.8, 1.2, color=C_RED, alpha=0.10)
-    ax.set_xlim(0, 1.6); ax.set_xlabel("时间 (s)", fontsize=FS_LABEL); ax.set_ylabel("幅度（无量纲）", fontsize=FS_LABEL)
+    ax.set_xlim(0, 1.6); ax.set_ylim(-2.9, 4.1)
+    ax.set_xlabel("时间 (s)", fontsize=FS_LABEL); ax.set_ylabel("幅度（无量纲）", fontsize=FS_LABEL)
     ax.legend(fontsize=FS_SMALL); ax.grid(ls=":", alpha=0.5); ax.tick_params(labelsize=FS_TINY)
     ax = fig.add_subplot(gs[1, 1])
     ax.set_title("(c) 麦克风里三者相加得 d[n]", fontsize=FS_TITLE)
     ax.plot(t, d, color=C_MAIN, lw=1.2, label="麦克风 d[n]")
     ax.plot(t, echo, color=C_BLUE, lw=1.0, ls="--", alpha=0.8, label="回声分量")
     ax.axvspan(0.8, 1.2, color=C_RED, alpha=0.10)
-    ax.set_xlim(0, 1.6); ax.set_xlabel("时间 (s)", fontsize=FS_LABEL); ax.set_ylabel("幅度（无量纲）", fontsize=FS_LABEL)
+    ax.set_xlim(0, 1.6); ax.set_ylim(-2.9, 4.1)
+    ax.set_xlabel("时间 (s)", fontsize=FS_LABEL); ax.set_ylabel("幅度（无量纲）", fontsize=FS_LABEL)
     ax.legend(fontsize=FS_SMALL); ax.grid(ls=":", alpha=0.5); ax.tick_params(labelsize=FS_TINY)
     save(fig, "fig26_aec_problem.png")
 
@@ -247,15 +281,15 @@ def fig_concept():
         ax.text(x + w/2, y + h/2, text, ha="center", va="center", fontsize=FS_SMALL, color=C_MAIN)
     def arrow(a, b, c="k", ls="-", w=1.4):
         ax.add_patch(FancyArrowPatch(a, b, arrowstyle="-|>", mutation_scale=14, color=c, lw=w, ls=ls))
-    box(0.3, 2.5, 1.9, 1.4, "播放 x[n]", "#f6e5db")
-    box(2.7, 2.5, 2.0, 1.4, "扬声器+房间 h", "#dbe9f6")
-    box(2.7, 0.4, 2.0, 1.2, "自适应滤波 ŵ\n(NLMS)", "#dbe9f6")
-    box(5.4, 0.4, 1.9, 1.2, "回声副本 ŷ[n]", "#f6dbdb")
-    box(5.4, 2.5, 1.9, 1.4, "麦克风 d[n]\n=回声+s[n]+v[n]", "#f6dbdb")
+    box(0.3, 2.5, 1.9, 1.4, "播放 x[n]", "#F5ECE4")
+    box(2.7, 2.5, 2.0, 1.4, "扬声器+房间 h", "#E8EFF5")
+    box(2.7, 0.4, 2.0, 1.2, "自适应滤波 ŵ\n(NLMS)", "#E8EFF5")
+    box(5.4, 0.4, 1.9, 1.2, "回声副本 ŷ[n]", "#F4E8E5")
+    box(5.4, 2.5, 1.9, 1.4, "麦克风 d[n]\n=回声+s[n]+v[n]", "#F4E8E5")
     ax.add_patch(Circle((8.2, 3.2), 0.45, fc="white", ec="k", lw=1.4))
     ax.text(8.2, 3.2, "Σ−", ha="center", va="center", fontsize=FS_LABEL + 4)
-    box(9.1, 2.5, 1.6, 1.4, "处理后输出 e[n]\n→波束/识别", "#e8f6db")
-    box(7.7, 4.6, 2.2, 0.9, "DTD（由 x、d 判定）\n控制系数更新", "#f6e5db")
+    box(9.1, 2.5, 1.6, 1.4, "处理后输出 e[n]\n→波束/识别", "#E8F1EE")
+    box(7.7, 4.6, 2.2, 0.9, "DTD（由 x、d 判定）\n控制系数更新", "#F5ECE4")
     arrow((2.2, 3.2), (2.7, 3.2), C_BLUE)
     arrow((4.7, 3.2), (5.4, 3.2), C_BLUE)
     arrow((1.25, 2.5), (3.0, 1.6), C_BLUE)
@@ -292,7 +326,8 @@ def fig_nlms():
     )
     tc = snapshot_samples / FS
     tcc, erle = block_erle(d, e)
-    fig = plt.figure(figsize=(9.8, 8.2), layout="constrained")
+    fig = plt.figure(figsize=(9.8, 8.6), layout="constrained")
+    fig._custom_constrained_pads = dict(w_pad=0.06, h_pad=0.09, wspace=0.12, hspace=0.06)
     grid = fig.add_gridspec(2, 2, height_ratios=(1.05, 1.0))
     axes = [
         fig.add_subplot(grid[0, :]),
@@ -426,7 +461,7 @@ def fig_delay_dtd():
     ax.annotate(
         f"最大正峰约 {tau_hat} 采样",
         xy=(tau_hat, peak_value),
-        xytext=(tau_hat + 55, 0.72),
+        xytext=(tau_hat + 45, 0.36),
         fontsize=FS_SMALL + 1,
         color=C_PURPLE,
         arrowprops=dict(arrowstyle="->", color=C_PURPLE),
@@ -434,7 +469,8 @@ def fig_delay_dtd():
     ax.text(0.03, 0.06, "设置的纯延迟为300采样；\n有色参考与多径会移动相关峰",
             transform=ax.transAxes, fontsize=FS_SMALL, color="0.25",
             bbox=dict(fc="white", ec="0.7", alpha=0.9))
-    ax.set_xlim(-50, delay + 200); ax.set_xlabel("滞后（采样）", fontsize=FS_LABEL)
+    ax.set_xlim(-50, delay + 200); ax.set_ylim(-1.08, 0.62)
+    ax.set_xlabel("滞后（采样）", fontsize=FS_LABEL)
     ax.set_ylabel("归一化有符号互相关", fontsize=FS_LABEL)
     ax.grid(ls=":", alpha=0.5); ax.tick_params(labelsize=FS_TINY)
     ax = axes[1]; ax.set_title("(b) 使用真值 300 点对齐；滤波器 128 抽头", fontsize=FS_TITLE)
@@ -484,7 +520,7 @@ def fig_nonlinear():
     xx = np.linspace(-2, 2, 400)
     ax.plot(xx, xx, color="0.6", ls="--", label="线性")
     ax.plot(xx, np.tanh(1.1*xx)/np.tanh(1.1), color=C_RED, ls="-",
-            marker="o", markevery=40, label="tanh 软削波")
+            marker="o", markevery=40, label=r"归一化软削波 $\tanh(1.1x)/\tanh(1.1)$")
     ax.axvspan(1, 2, color=C_RED, alpha=0.08); ax.axvspan(-2, -1, color=C_RED, alpha=0.08)
     ax.set_aspect("equal", adjustable="box")
     ax.set_xlabel("归一化输入幅度（无量纲）", fontsize=FS_LABEL)
@@ -516,16 +552,16 @@ def fig_hybrid():
     def arrow(a, b, c="k", w=1.4):
         ax.add_patch(FancyArrowPatch(a, b, arrowstyle="-|>", mutation_scale=14, color=c, lw=w))
     # 音频主链从麦克风信号开始；远端参考是线性 AEC 的第二路输入。
-    box(0.2, 3.2, 2.0, 1.6, "麦克风信号 d[n]\n近端+回声+噪声", "#f6dbdb")
-    box(2.8, 3.2, 2.2, 1.6, "线性 AEC\nPBFDAF / FDKF", "#dbe9f6")
-    box(5.5, 3.2, 1.8, 1.6, "线性残差 e[n]", "#dbe9f6")
-    box(7.8, 3.2, 2.4, 1.6, "学习型残余抑制\n输入可含 e 与 x", "#fde3c8")
-    box(10.7, 3.2, 2.0, 1.6, "处理后输出\n→语音识别", "#e8f6db")
+    box(0.2, 3.2, 2.0, 1.6, "麦克风信号 d[n]\n近端+回声+噪声", "#F4E8E5")
+    box(2.8, 3.2, 2.2, 1.6, "线性 AEC\nPBFDAF / FDKF", "#E8EFF5")
+    box(5.5, 3.2, 1.8, 1.6, "线性残差 e[n]", "#E8EFF5")
+    box(7.8, 3.2, 2.4, 1.6, "学习型残余抑制\n输入可含 e 与可选参考", "#F4E9D8")
+    box(10.7, 3.2, 2.0, 1.6, "处理后输出\n→语音识别", "#E8F1EE")
     for a, b in [((2.2, 4.0), (2.8, 4.0)), ((5.0, 4.0), (5.5, 4.0)),
                  ((7.3, 4.0), (7.8, 4.0)), ((10.2, 4.0), (10.7, 4.0))]:
         arrow(a, b, C_BLUE)
-    box(0.2, 0.9, 1.9, 1.2, "远端参考 x[n]\n从播放链路末端取", "#f6e5db")
-    box(2.6, 0.9, 1.8, 1.2, "延迟估计与对齐\n得到 $x_a[n]$", "#dbe9f6")
+    box(0.2, 0.9, 1.9, 1.2, "远端参考 x[n]\n从播放链路末端取", "#F5ECE4")
+    box(2.6, 0.9, 1.8, 1.2, "延迟估计与对齐\n得到 $x_a[n]$", "#E8EFF5")
     arrow((2.1, 1.5), (2.6, 1.5), C_BLUE)
     arrow((3.5, 2.1), (3.9, 3.2), C_BLUE)
     # 延迟估计还必须观察麦克风；参考单独不能给出相对传播时差。
@@ -537,7 +573,7 @@ def fig_hybrid():
             color=C_BLUE, lw=1.0, ls=":")
     ax.text(9.5, 1.85, "可选：$x_a[n]$ 作为\n学习模型输入",
             ha="left", fontsize=FS_SMALL, color=C_BLUE)
-    box(5.0, 0.35, 2.0, 0.85, "DTD 与步长控制", "#f6e5db")
+    box(5.0, 0.35, 2.0, 0.85, "DTD 与步长控制", "#F5ECE4")
     # 此框示意用对齐参考及线性残差统计来约束更新；不是唯一的 DTD 判据。
     arrow((4.4, 1.5), (5.0, 0.78), C_PURPLE)
     arrow((6.4, 3.2), (6.4, 1.2), C_PURPLE)
@@ -555,7 +591,7 @@ def fig_hybrid():
         va="bottom",
         fontsize=FS_SMALL,
         color="0.25",
-        bbox=dict(fc="#f4f4f4", ec="0.7", boxstyle="round,pad=0.3"),
+        bbox=dict(fc="#F4F2EE", ec="0.7", boxstyle="round,pad=0.3"),
     )
     save(fig, "fig32_aec_hybrid_select.png")
 
@@ -610,11 +646,11 @@ def fig_haar_crossband():
         ax.add_patch(FancyArrowPatch(start, end, arrowstyle="-|>",
                                      mutation_scale=15, color=color, lw=1.8))
 
-    box(0.1, 2.05, 1.15, 0.95, "播放参考\nx[n]", "#f6e5db")
-    box(1.8, 2.05, 1.55, 0.95, "两带 Haar\n分析 + ↓2", "#dbe9f6")
-    box(3.9, 1.78, 2.45, 1.5, "一拍路径的子带映射\nG₀₀、G₁₁ + G₀₁、G₁₀\n（含交叉带项）", "#e8f6db")
-    box(6.9, 2.05, 1.55, 0.95, "两带 Haar\n合成 + ↑2", "#dbe9f6")
-    box(9.0, 2.05, 0.9, 0.95, "回声\ny[n]", "#f6dbdb")
+    box(0.1, 2.05, 1.15, 0.95, "播放参考\nx[n]", "#F5ECE4")
+    box(1.8, 2.05, 1.55, 0.95, "两带 Haar\n分析 + ↓2", "#E8EFF5")
+    box(3.9, 1.78, 2.45, 1.5, "一拍路径的子带映射\nG₀₀、G₁₁ + G₀₁、G₁₀\n（含交叉带项）", "#E8F1EE")
+    box(6.9, 2.05, 1.55, 0.95, "两带 Haar\n合成 + ↑2", "#E8EFF5")
+    box(9.0, 2.05, 0.9, 0.95, "回声\ny[n]", "#F4E8E5")
     for start, end in [((1.25, 2.52), (1.8, 2.52)),
                        ((3.35, 2.52), (3.9, 2.52)),
                        ((6.35, 2.52), (6.9, 2.52)),
@@ -762,13 +798,13 @@ def fig_pbfdaf_flow():
 
     setup(prediction_ax, "(a) 旧权重先预测；仅循环卷积的后 N 点是本块有效输出")
     box(prediction_ax, 0.2, 4.8, 1.7, 0.95,
-        "播放参考\n$x[n],\\,b_m$", "#f6e5db")
+        "播放参考\n$x[n],\\,b_m$", "#F5ECE4")
     box(prediction_ax, 2.25, 4.8, 2.4, 0.95,
-        "线性等效路径\n$h$", "#dbe9f6")
-    box(prediction_ax, 5.0, 4.8, 1.55, 0.95, "真实回声\n$y_m$", "#f6dbdb")
+        "线性等效路径\n$h$", "#E8EFF5")
+    box(prediction_ax, 5.0, 4.8, 1.55, 0.95, "真实回声\n$y_m$", "#F4E8E5")
     box(prediction_ax, 6.9, 4.8, 2.05, 0.95,
-        "麦克风叠加\n$y_m+s_m+v_m$", "#f6dbdb")
-    box(prediction_ax, 9.3, 4.8, 1.35, 0.95, "麦克风\n$d_m$", "#f6dbdb")
+        "麦克风叠加\n$y_m+s_m+v_m$", "#F4E8E5")
+    box(prediction_ax, 9.3, 4.8, 1.35, 0.95, "麦克风\n$d_m$", "#F4E8E5")
     for start, end in [((1.9, 5.275), (2.25, 5.275)),
                        ((4.65, 5.275), (5.0, 5.275)),
                        ((6.55, 5.275), (6.9, 5.275)),
@@ -779,17 +815,17 @@ def fig_pbfdaf_flow():
     arrow(prediction_ax, (7.925, 6.08), (7.925, 5.75), color=C_RED)
 
     box(prediction_ax, 0.2, 2.35, 2.05, 0.96,
-        "两块参考\n$u_m$", "#f6e5db")
+        "两块参考\n$u_m$", "#F5ECE4")
     box(prediction_ax, 2.47, 2.35, 1.1, 0.96,
-        "$2N$ 点\nFFT", "#dbe9f6")
+        "$2N$ 点\nFFT", "#E8EFF5")
     box(prediction_ax, 3.75, 2.35, 2.25, 0.96,
-        "参考谱历史\n" r"$X_m,\ldots$", "#dbe9f6")
+        "参考谱历史\n" r"$X_m,\ldots$", "#E8EFF5")
     box(prediction_ax, 6.35, 2.35, 2.68, 0.96,
-        "分区乘积求和\n" r"$Q_m$", "#e8f6db")
+        "分区乘积求和\n" r"$Q_m$", "#E8F1EE")
     box(prediction_ax, 9.35, 2.35, 1.1, 0.96,
-        "$2N$ 点\nIFFT", "#dbe9f6")
+        "$2N$ 点\nIFFT", "#E8EFF5")
     box(prediction_ax, 10.78, 2.35, 2.1, 0.96,
-        "舍前 $N$ 点\n取后 $N$ 点", "#e8f6db")
+        "舍前 $N$ 点\n取后 $N$ 点", "#E8F1EE")
     for start, end in [((2.25, 2.83), (2.47, 2.83)),
                        ((3.57, 2.83), (3.75, 2.83)),
                        ((6.0, 2.83), (6.35, 2.83)),
@@ -799,7 +835,7 @@ def fig_pbfdaf_flow():
     # 同一个播放参考分出声学回路和算法参考；移位历史不受冻结控制。
     arrow(prediction_ax, (1.05, 4.8), (1.05, 3.31))
     box(prediction_ax, 6.6, 3.72, 2.18, 0.67,
-        "旧权重 $W_p(m)$", "#f3f0fa")
+        "旧权重 $W_p(m)$", "#F1EEF5")
     arrow(prediction_ax, (7.69, 3.72), (7.69, 3.31), color=C_PURPLE)
     prediction_ax.add_patch(Circle((11.2, 0.98), 0.30,
                                    fc="white", ec=C_MAIN, lw=1.35))
@@ -819,26 +855,26 @@ def fig_pbfdaf_flow():
 
     setup(update_ax, "(b) 有效误差驱动下一块的候选权重；冻结只阻止更新")
     box(update_ax, 0.2, 4.72, 1.55, 0.88,
-        "有效误差\n$e_m$", "#e8f6db")
+        "有效误差\n$e_m$", "#E8F1EE")
     box(update_ax, 2.12, 4.72, 2.0, 0.88,
-        "前置 $N$ 个零\n$[0_N,e_m]$", "#dbe9f6")
+        "前置 $N$ 个零\n$[0_N,e_m]$", "#E8EFF5")
     box(update_ax, 4.48, 4.72, 1.58, 0.88,
-        "$2N$ 点 FFT\n得到 $E_m$", "#dbe9f6")
+        "$2N$ 点 FFT\n得到 $E_m$", "#E8EFF5")
     arrow(update_ax, (1.75, 5.16), (2.12, 5.16), color=C_GREEN)
     arrow(update_ax, (4.12, 5.16), (4.48, 5.16), color=C_GREEN)
 
     box(update_ax, 0.2, 2.7, 1.92, 0.99,
-        "参考谱历史\n" r"$X_m,\ldots$", "#dbe9f6")
+        "参考谱历史\n" r"$X_m,\ldots$", "#E8EFF5")
     box(update_ax, 2.5, 2.7, 2.43, 0.99,
-        "归一化分母\n$R_m$", "#dbe9f6")
+        "归一化分母\n$R_m$", "#E8EFF5")
     box(update_ax, 5.28, 2.7, 1.57, 0.99,
-        "候选更新量\n$\\Delta W_p$", "#e8f6db")
+        "候选更新量\n$\\Delta W_p$", "#E8F1EE")
     box(update_ax, 7.2, 2.7, 1.78, 0.99,
-        "加旧权重\n" r"$\widetilde W_p$", "#e8f6db")
+        "加旧权重\n" r"$\widetilde W_p$", "#E8F1EE")
     box(update_ax, 9.36, 2.7, 2.30, 0.99,
-        "若约束：时域投影\n清零后 $N$ 点", "#f3f0fa")
+        "若约束：时域投影\n清零后 $N$ 点", "#F1EEF5")
     box(update_ax, 12.0, 2.7, 1.65, 0.99,
-        "下一块权重\n$W_p(m+1)$", "#e8f6db")
+        "下一块权重\n$W_p(m+1)$", "#E8F1EE")
     for start, end in [((2.12, 3.195), (2.5, 3.195)),
                        ((4.93, 3.195), (5.28, 3.195)),
                        ((6.85, 3.195), (7.2, 3.195)),
@@ -851,11 +887,11 @@ def fig_pbfdaf_flow():
     arrow(update_ax, (6.06, 2.10), (6.06, 2.7))
     update_ax.text(3.4, 1.65, r"复参考共轭 $X_{m-p}^*$",
                    ha="center", fontsize=FS_SMALL, color=C_BLUE)
-    box(update_ax, 7.25, 1.20, 1.73, 0.67,
-        "旧权重 $W_p(m)$", "#f3f0fa")
+    box(update_ax, 7.025, 1.20, 2.18, 0.67,
+        "旧权重 $W_p(m)$", "#F1EEF5")
     arrow(update_ax, (8.115, 1.87), (8.115, 2.7), color=C_PURPLE)
     box(update_ax, 7.45, 4.72, 2.20, 0.88,
-        "外部冻结控制\n仅关闭权重更新", "#f6e5db")
+        "外部冻结控制\n仅关闭权重更新", "#F5ECE4")
     arrow(update_ax, (8.05, 4.72), (6.13, 3.69),
           color=C_PURPLE, style="--", width=1.8)
     # 不执行投影时直接提交候选；冻结时保留旧权重，均不停止参考历史移位。

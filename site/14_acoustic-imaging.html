@@ -2,10 +2,10 @@
 <link rel="canonical" href="12_acoustic-imaging.html"><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 12 章 · 声学成像与噪声源诊断 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="74c593002f97"><style>
-*{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
-.topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
-.topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
+<meta name="source-digest" content="10a21c80bda5"><style>
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
+.topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941}
+.topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
 h1,h2,h3,h4{scroll-margin-top:60px}
 @media screen{.main a[id]:not([href]){scroll-margin-top:60px}}
 @media screen{.main a[id^="e"],.main .exercise-alias{scroll-margin-top:80px}}
@@ -18,64 +18,66 @@ h1,h2,h3,h4{scroll-margin-top:60px}
 @media screen{.main a[id^="e11-"]{scroll-margin-top:60px}}
 @media screen{.main .separation-topic-anchor{scroll-margin-top:60px}}
 @media screen{.main .source-reproduction-anchor{scroll-margin-top:60px}}
-a:focus-visible,summary:focus-visible{outline:3px solid #e67e22;outline-offset:3px}
-.skip-link{position:absolute;left:10px;top:-60px;z-index:30;background:#fff;color:#1a1a2e;padding:8px 12px;border:2px solid #e67e22}
+a:focus-visible,summary:focus-visible{outline:2.5px solid #B84A2E;outline-offset:3px}
+.skip-link{position:absolute;left:10px;top:-60px;z-index:30;background:#fff;color:#1C1E21;padding:8px 12px;border:2px solid #B84A2E}
 .skip-link:focus{top:8px}
-.wrap{display:flex;max-width:1280px;margin:0 auto}
-.side{width:300px;flex-shrink:0;padding:20px 14px;position:sticky;top:47px;height:calc(100vh - 47px);overflow-y:auto;background:#fff;border-right:1px solid #e5e8ee;font-size:13.5px}
-.side a{color:#2f6db3;text-decoration:none}.side a:hover{text-decoration:underline}
-.side .chap{margin:10px 0 2px;font-weight:700}.side .chap.cur{color:#c0392b}
-.side ul{margin:2px 0 6px;padding-left:16px;color:#666}.side li{margin:2px 0}
-.main{flex:1;min-width:0;padding:28px 36px;background:#fff;overflow-wrap:anywhere}
+.wrap{display:flex;max-width:1280px;margin:0 auto;border-left:1px solid #E3DED3;border-right:1px solid #E3DED3}
+.side{width:300px;flex-shrink:0;padding:20px 15px;position:sticky;top:47px;height:calc(100vh - 47px);overflow-y:auto;background:#FAF8F3;border-right:1px solid #DDD7CB;font-size:13.5px}
+.side a{color:#1F5A92;text-decoration:none}.side a:hover{text-decoration:underline}
+.side .chap{margin:10px 0 2px;font-weight:700;color:#26292E}.side .chap.cur{color:#B84A2E}
+.side ul{margin:2px 0 6px;padding-left:16px;color:#5A554D}.side li{margin:2px 0}
+.main{flex:1;min-width:0;padding:32px 40px;background:#fff;overflow-wrap:anywhere}
+.main a{color:#1F5A92;text-underline-offset:.2em}
 .main p{margin:0 0 1.2em}.main ul,.main ol{margin:.55em 0 1.2em;padding-left:1.55em}.main li{margin:.42em 0}.main li>p{margin:.5em 0}
-.main p>strong:first-child,.main li>strong:first-child{color:#0f2744}
-.main img{max-width:100%;height:auto;display:block;margin:16px auto;border:1px solid #dbe3ee;border-radius:6px;padding:3px;min-height:40px;background:#fff}
-.audio-sample{display:block;width:min(100%,460px);margin:8px 0 18px}.audio-sample:focus-visible{outline:3px solid #e67e22}
+.main p>strong:first-child,.main li>strong:first-child{color:#14171A}
+.main img{max-width:100%;height:auto;display:block;margin:18px auto;border:1px solid #DFDAD0;border-radius:5px;padding:4px;min-height:40px;background:#fff}
+.audio-sample{display:block;width:min(100%,460px);margin:8px 0 18px}.audio-sample:focus-visible{outline:2.5px solid #B84A2E}
 /* 表格列宽不能压掉原生播放按钮；手机上的表格可横向滚动。 */
 td .audio-sample{width:280px;min-width:280px}
 table:has(td .audio-sample) td:last-child{min-width:180px}
-table{border-collapse:collapse;margin:16px 0;max-width:100%}
+table{border-collapse:collapse;margin:18px 0;max-width:100%;border-top:1.5px solid #2A2E34;border-bottom:1.5px solid #2A2E34}
 .table-scroll{max-width:100%;overflow-x:auto}
-.table-scroll:focus-visible{outline:3px solid #e67e22;outline-offset:2px}
-th,td{border:1px solid #d5dfec;padding:7px 11px;font-size:14px;text-align:left;line-height:1.58}
-th{background:#e8eff9;color:#0f2744;border-bottom:1.5px solid #94a3b8}
-tbody tr:nth-child(even) td{background:#f8fafc}
-code{background:#eef2f7;color:#0f294a;border:1px solid #d8e1ec;padding:1px 5px;border-radius:4px;font-size:13.5px}
-pre{background:#122036;color:#e8ecf3;padding:14px 16px;border-radius:8px;overflow-x:auto}
+.table-scroll:focus-visible{outline:2.5px solid #B84A2E;outline-offset:2px}
+th,td{border-top:1px solid #E3DED3;border-bottom:1px solid #E3DED3;border-left:none;border-right:none;padding:8px 11px;font-size:14px;text-align:left;line-height:1.58}
+th{background:#F5F2EB;color:#1C1E21;border-bottom:1px solid #8A8275;font-weight:700}
+tbody tr:nth-child(even) td{background:#FCFBF9}
+code{background:#F3F0E8;color:#1E3A56;border:1px solid #E0DBD0;padding:1px 5px;border-radius:4px;font-size:13.5px}
+pre{background:#F5F3EE;color:#1F2328;border:1px solid #DFDAD0;border-left:3.5px solid #5C564D;padding:14px 16px;border-radius:8px;overflow-x:auto}
 pre code{background:none;border:none;color:inherit;padding:0}
-blockquote{border-left:4px solid #2563eb;margin:16px 0;padding:10px 15px;background:#f0f6ff;border-radius:0 6px 6px 0;color:#1e293b}
+blockquote{border-left:3.5px solid #B84A2E;margin:18px 0;padding:10px 16px;background:#F7F5F0;border-radius:0 4px 4px 0;color:#2B2E33}
 blockquote p:last-child{margin-bottom:0}
+hr{border:none;border-top:1px solid #DDD7CB;margin:26px 0}
 mjx-container[jax="CHTML"]{font-size:110%!important;overflow-x:auto;overflow-y:hidden;max-width:100%;min-width:0!important}
 body mjx-assistive-mml{width:1px!important;max-width:1px!important;min-width:0!important;height:1px!important;overflow:hidden!important}
 pre,.table-scroll,mjx-container[jax="CHTML"]{overflow-wrap:normal}
-.pn{display:flex;justify-content:space-between;margin:34px 0 12px;padding-top:16px;border-top:1px solid #d5dfec;font-weight:650}
-.pn a{color:#1d4ed8;text-decoration:none}.pn .off{color:#aaa}
-.foot{color:#64748b;font-size:13px;margin:20px 0 40px}
-.main h1{font-size:27px;color:#0f2744;background:#edf3fc;border-top:4px solid #1e3a8a;border-left:5px solid #1e3a8a;border-bottom:1px solid #cbd5e1;padding:13px 17px 11px;border-radius:0 6px 6px 0;margin:0 0 22px;line-height:1.3}
-.main h2{font-size:21px;color:#0f294a;background:#f3f7fc;border-left:4.5px solid #1d4ed8;border-bottom:1px solid #cbd5e1;padding:8px 13px 7px;margin:34px 0 15px;border-radius:0 5px 5px 0;line-height:1.35}
-.main h3{font-size:18px;color:#1e3a8a;border-left:3.5px solid #3b82f6;padding:2px 0 2px 11px;margin:26px 0 12px;line-height:1.4}
-.main h4{font-size:16px;color:#1e40af;border-left:2.5px solid #93c5fd;padding:1px 0 1px 9px;margin:20px 0 10px;line-height:1.4}
-.main h3.tutorial-worked-heading{background:#f0fdfa;border:1px solid #99f6e4;border-left:4.5px solid #0d9488;color:#115e59;padding:7px 13px;border-radius:6px;margin:26px 0 13px;font-size:17.2px}
-.main h3.tutorial-exercise-heading,.main h4.tutorial-exercise-heading{background:#eff6ff;border:1px solid #bfdbfe;border-left:5px solid #2563eb;color:#1e3a8a;padding:9px 14px;border-radius:6px;margin:30px 0 13px;font-size:17px;line-height:1.45}
-.main p.tutorial-exercise-lead{background:#eff6ff;border:1px solid #bfdbfe;border-left:5px solid #2563eb;padding:11px 15px;border-radius:6px;margin:26px 0 13px}
+.pn{display:flex;justify-content:space-between;margin:36px 0 12px;padding-top:16px;border-top:1px solid #DDD7CB;font-weight:650}
+.pn a{color:#1F5A92;text-decoration:none}.pn .off{color:#9C9588}
+.foot{color:#6E695F;font-size:13px;margin:20px 0 40px}
+.main h1{font-size:27px;color:#14171A;border-top:2.5px solid #1F5A92;border-bottom:1.5px solid #1C1E21;padding:12px 0 10px;margin:0 0 24px;line-height:1.3}
+.main h2{font-size:21px;color:#14171A;border-left:3.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;padding:1px 0 7px 11px;margin:36px 0 15px;line-height:1.35}
+.main h3{font-size:18px;color:#1F5A92;margin:26px 0 11px;line-height:1.4}
+.main h4{font-size:16px;color:#2C2F33;border-left:2.5px solid #B84A2E;padding:1px 0 1px 9px;margin:20px 0 9px;line-height:1.4}
+.main h3.tutorial-worked-heading{background:#FAF8F3;border-top:1.5px solid #237263;border-bottom:1px solid #E2DDD2;border-left:3.5px solid #237263;color:#1A574B;padding:7px 13px;border-radius:2px;margin:28px 0 13px;font-size:17.2px}
+.main h3.tutorial-exercise-heading,.main h4.tutorial-exercise-heading{background:#F5F2EB;border-top:1.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;border-left:4px solid #1F5A92;color:#14171A;padding:8px 14px;border-radius:2px;margin:30px 0 13px;font-size:17px;line-height:1.45}
+.main p.tutorial-exercise-lead{background:#F5F2EB;border-top:1.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;border-left:4px solid #1F5A92;padding:10px 15px;border-radius:2px;margin:28px 0 13px}
 .main ol>li.tutorial-exercise-item{margin:18px 0}
-.main .tutorial-exercise-card{background:#f8fafc;border:1px solid #d5e0ee;border-left:4px solid #2563eb;border-radius:6px;padding:12px 16px}
+.main .tutorial-exercise-card{background:#FAF8F3;border:1px solid #E0DBD0;border-left:3.5px solid #1F5A92;border-radius:4px;padding:12px 16px}
 .main .tutorial-exercise-card>:first-child{margin-top:0}
 .main .tutorial-exercise-card>:last-child{margin-bottom:0}
-.main p.tutorial-solution-lead{background:#f0fdf4;border-left:3.5px solid #16a34a;padding:8px 13px;border-radius:0 5px 5px 0;margin-top:9px}
-.main p.tutorial-solution-lead>strong:first-child{color:#15803d}
-.main p.tutorial-problem-lead{border-left:3px solid #2563eb;padding-left:11px}
-.main p.tutorial-problem-lead>strong:first-child{color:#1d4ed8}
-.toc-mobile{display:none;margin:0 0 16px;border:1px solid #e5e8ee;border-radius:8px;padding:10px 14px;background:#f7fafd;font-size:14px}
-.toc-mobile summary{cursor:pointer;font-weight:700}
-.toc-mobile ul{padding-left:18px;margin:8px 0 2px}.toc-mobile a{color:#2f6db3;text-decoration:none}
-.topbtn{display:block;margin:20px auto;background:#1a1a2e;color:#fff;border-radius:50%;width:42px;height:42px;text-align:center;line-height:42px;text-decoration:none;font-size:18px}
-.offline-note{display:none;background:#fff7e6;border:1px solid #e6c87a;color:#7a5b00;padding:8px 14px;font-size:13.5px}
+.main p.tutorial-solution-lead{background:#F3F6F4;border-left:3.5px solid #237263;padding:8px 13px;border-radius:0 3px 3px 0;margin-top:9px}
+.main p.tutorial-solution-lead>strong:first-child{color:#1D5E51}
+.main p.tutorial-problem-lead{border-left:2.5px solid #1F5A92;padding-left:11px}
+.main p.tutorial-problem-lead>strong:first-child{color:#1F5A92}
+.toc-mobile{display:none;margin:0 0 16px;border:1px solid #DDD7CB;border-radius:6px;padding:10px 14px;background:#FAF8F3;font-size:14px}
+.toc-mobile summary{cursor:pointer;font-weight:700;color:#1C1E21}
+.toc-mobile ul{padding-left:18px;margin:8px 0 2px}.toc-mobile a{color:#1F5A92;text-decoration:none}
+.topbtn{display:block;margin:20px auto;background:#24282E;color:#FAF8F3;border-radius:50%;width:42px;height:42px;text-align:center;line-height:42px;text-decoration:none;font-size:18px}
+.offline-note{display:none;background:#F7EFE4;border:1px solid #D9B78E;color:#6E4219;padding:8px 14px;font-size:13.5px}
 .anchor-alias{display:block;position:relative;top:-60px;visibility:hidden}
 .tutorial-math-tail{display:inline-block;white-space:nowrap;overflow-wrap:normal;vertical-align:baseline;overflow:visible}
 .tutorial-math-tail mjx-assistive-mml{max-width:1px!important;min-width:0!important;white-space:normal}
-.tutorial-exercise-id{white-space:nowrap;overflow-wrap:normal;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:.87em;background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;padding:0 5px;border-radius:4px}
-:is(.tutorial-exercise-heading,.tutorial-exercise-lead) .tutorial-exercise-id{background:#1d4ed8;color:#fff;border-color:#1d4ed8;padding:1px 7px;margin-right:4px;font-size:.84em}
+.tutorial-exercise-id{white-space:nowrap;overflow-wrap:normal;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:.88em;background:#F3EFE6;color:#B84A2E;border:1px solid #DDD5C7;padding:0 5px;border-radius:3px;font-weight:700}
+:is(.tutorial-exercise-heading,.tutorial-exercise-lead) .tutorial-exercise-id{background:#1F5A92;color:#fff;border-color:#1F5A92;padding:1px 7px;margin-right:5px;font-size:.84em}
 .tutorial-table-label{white-space:nowrap;overflow-wrap:normal}
 @media(max-width:900px){.selection-readable-table{min-width:760px}.selection-readable-table th,.selection-readable-table td{min-width:10em}.selection-readable-table th:first-child,.selection-readable-table td:first-child{min-width:6em}}
 @media(max-width:900px){.side{display:none}.main{padding:20px}.toc-mobile{display:block}.topbar{font-size:14px}mjx-container[jax="CHTML"]:not([display="true"]){display:inline-block;vertical-align:middle}.aec-readable-table th,.aec-readable-table td,.wpe-readable-table th,.wpe-readable-table td,.separation-readable-table th,.separation-readable-table td{min-width:8em}.tracking-readable-table th,.tracking-readable-table td{min-width:8em}.industrial-readable-table th,.industrial-readable-table td{min-width:8em}}
@@ -615,7 +617,7 @@ a_{mj}(f)=\frac{r_{0j}}{r_{mj}}e^{-\mathrm{j}\kappa\Delta r_{mj}},\\
 <p>文献和软件中也常见其他几种源强口径，例如源表面的体积速度、将传播列向量强行归一化为单位欧氏范数（$\|\tilde{\vec a}_j\|_2 = 1$）后的系数，或者折算到离每个源各自 $1\,\mathrm{m}$ 处的自由场声压。这些口径本身在数学上都完全合法，但在横向对比不同论文或商业声学相机输出的“源功率（source power）”前，必须先查清其传播列归一化方式并完成显式尺度换算。</p>
 <span id="sec-11" class="anchor-alias" aria-hidden="true"></span><span id="sec-14-3" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-12-3">12.3 从同步录音形成互谱矩阵</h2>
 <span id="sec-12" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-6ed1a35d6c">一次外积包含什么</h3>
-<p>声学成像不在单个快拍的瞬时波形上硬解源位置，而是先在频域累积多通道二阶统计量——互谱矩阵（Cross-Spectral Matrix，CSM）。设单频复数观测向量 $\vec x$ 的尺度已经固定，其总体二阶矩矩阵 $\mathbf R$ 与 $L$ 个快拍的样本平均估计 $\hat{\mathbf R}$ 分别为：</p>
+<p>声学成像不在单个快拍的瞬时波形上硬解源位置，而是先在频域累积多通道二阶统计量——互谱矩阵（Cross-Spectral Matrix，CSM）。设单频复数观测向量 $\vec x$ 的尺度已经固定，按声学成像文献惯例将其总体二阶矩矩阵简记为 $\mathbf R$（即前文各章的空间观测协方差矩阵 $\mathbf R_{xx}$），与 $L$ 个快拍的样本平均估计 $\hat{\mathbf R}$ 分别为：</p>
 <p>$$\begin{aligned}
 \mathbf R&=\mathbb{E}[\vec x\vec x^H],\\
 \hat{\mathbf R}&=\frac{1}{L}\sum_{\ell=1}^L\vec x_\ell\vec x_\ell^H.
@@ -663,13 +665,13 @@ E_{m,\ell}&=\sum_{n=0}^{N-1}v[n]^2|x_{m,\ell}[n]|^2.
 <p>我们可以举一个极简的四点瞬态例子看清这一点：取 $N = 4$ 的周期 Hann 窗 $v = [0, 1/2, 1, 1/2]$，其窗平方和为 $U = 0 + 1/4 + 1 + 1/4 = 3/2$。倘若一个单位冲激信号恰好落在第 $0$ 点（即 $x = [1, 0, 0, 0]$），或者落在窗中心的第 $2$ 点（即 $x = [0, 0, 1, 0]$），两者的普通帧均方功率都是 $1/4$；然而按式(12-5)把单边谱加起来，前者结果为 $0$，后者结果却变为 $1 / (3/2) = 2/3$。前者为零是因为瞬态脉冲刚好撞在窗函数两端的零值死区里被彻底遮蔽（这也是工程上处理非平稳信号必须配合 $50\%$～$75\%$ 帧重叠的原因），绝不是 FFT 计算丢了功率。</p>
 <p>此外，对不同通道 $m \ne m'$，单边互谱的非对角元保留了正频率复相位，虚部通常非零；若想从单边谱还原两个实信号的零时延互相关，只需对全频带单边互谱之和取实部，因为正负频率的虚部在双边求和时恰好正负抵消。</p>
 <span id="sec-15" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-02bbce1c66">非相干源假设发生在哪一步</h3>
-<p>现在把式(12-1)的多源观测模型 $\vec x = \mathbf A\vec s + \vec n$ 代入总体二阶矩 $\mathbf R = \mathbb{E}[\vec x\vec x^H]$。展开乘积时会出现源与噪声的交叉项 $\mathbf A\mathbb{E}[\vec s\vec n^H]$ 与 $\mathbb{E}[\vec n\vec s^H]\mathbf A^H$。当源信号与加性噪声满足二阶正交条件 $\mathbb{E}[\vec s\vec n^H] = \mathbf 0$（例如零均值且统计不相关；注意若两者均值皆非零，仅中心化协方差为零还不足以令未中心化交叉二阶矩为零）时，源噪交叉项消去，观测二阶矩满足 $\mathbf R - \mathbf R_n$ 等于 $\mathbf A\mathbf R_s\mathbf A^H$，其中 $\mathbf R_s = \mathbb{E}[\vec s\vec s^H]$ 为 $J \times J$ 的源互谱矩阵。</p>
-<p>常规波束扫描与标准 DAMAS、CMF 算法的核心物理假设就在下一步——假定不同位置上的声源彼此<strong>互不相干（incoherent）</strong>，即对任意 $j \ne h$ 都有互谱 $R_{s,jh} = \mathbb{E}[s_j s_h^*] = 0$。只有在这条假设成立时，$\mathbf R_s = \operatorname{diag}(q_1,\ldots,q_J)$ 才退化为实非负对角阵，观测 CSM 才能拆成各个候选源秩一模板的非负线性叠加：</p>
+<p>现在把式(12-1)的多源观测模型 $\vec x = \mathbf A\vec s + \vec n$ 代入总体二阶矩 $\mathbf R = \mathbb{E}[\vec x\vec x^H]$。展开乘积时会出现源与噪声的交叉项 $\mathbf A\mathbb{E}[\vec s\vec n^H]$ 与 $\mathbb{E}[\vec n\vec s^H]\mathbf A^H$。当源信号与加性噪声满足二阶正交条件 $\mathbb{E}[\vec s\vec n^H] = \mathbf 0$（例如零均值且统计不相关；注意若两者均值皆非零，仅中心化协方差为零还不足以令未中心化交叉二阶矩为零）时，源噪交叉项消去，观测二阶矩满足 $\mathbf R - \mathbf R_{nn} = \mathbf A\mathbf R_{ss}\mathbf A^H$，其中 $\mathbf R_{ss} = \mathbb{E}[\vec s\vec s^H]$ 为 $J \times J$ 的空间源互谱（协方差）矩阵，$\mathbf R_{nn} = \mathbb{E}[\vec n\vec n^H]$ 为空间噪声协方差矩阵。</p>
+<p>常规波束扫描与标准 DAMAS、CMF 算法的核心物理假设就在下一步——假定不同位置上的声源彼此<strong>互不相干（incoherent）</strong>，即对任意 $j \ne h$ 都有互谱 $R_{ss,jh} = \mathbb{E}[s_j s_h^*] = 0$。只有在这条假设成立时，$\mathbf R_{ss} = \operatorname{diag}(q_1,\ldots,q_J)$ 才退化为实非负对角阵，观测 CSM 才能拆成各个候选源秩一模板的非负线性叠加：</p>
 <p>$$\begin{aligned}
-\mathbf R&=\sum_{j=1}^{J}q_j\vec a_j\vec a_j^H+\mathbf R_n,\\
+\mathbf R&=\sum_{j=1}^{J}q_j\vec a_j\vec a_j^H+\mathbf R_{nn},\\
 q_j&=\mathbb{E}[|s_j|^2]\ge 0.
 \end{aligned}\tag{12-6}$$</p>
-<p>一旦不同位置的发声体由同一根转轴激励，或者声源发出的直达声经过地面、风洞壁面反射形成强相干镜像源，源互谱矩阵就会多出成对非零交叉项 $R_{s,jh}\vec a_j\vec a_h^H$ 与共轭转置 $R_{s,jh}^*\vec a_h\vec a_j^H$（$j \ne h$）。这些复数干涉项既可能在空间某处相长叠加，也可能相消抵消，绝不能等效成若干个非负独立点源的功率简单相加。</p>
+<p>一旦不同位置的发声体由同一根转轴激励，或者声源发出的直达声经过地面、风洞壁面反射形成强相干镜像源，源互谱矩阵就会多出成对非零交叉项 $R_{ss,jh}\vec a_j\vec a_h^H$ 与共轭转置 $R_{ss,jh}^*\vec a_h\vec a_j^H$（$j \ne h$）。这些复数干涉项既可能在空间某处相长叠加，也可能相消抵消，绝不能等效成若干个非负独立点源的功率简单相加。</p>
 <p>还要区分“总体统计不相干”与“有限快拍样本互谱为零”：哪怕两个随机声源在理论上严格独立，有限个快拍算出的样本互谱也会围绕零值存在随机涨落；拉长平均时间能压低涨落，但高度重叠的 STFT 帧并非统计独立快拍。反之，在教学合成音频中通过人为设计跨块交替相位让 $20$ 个快拍的样本互谱精确相消为零，也只是一种便于剥离变量验证公式的确定性正交编码，不能反过来当作真实随机声源相互独立的证据（<a href="#e12-04">E12-04</a> 将专门对比单帧完全相干与跨帧编码抵消的本质差异）。</p>
 <span id="sec-16" class="anchor-alias" aria-hidden="true"></span><span id="sec-14-4" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-12-4">12.4 扫描图为什么出现主瓣和旁瓣</h2>
 <span id="sec-17" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-9c872ee382">从复数输出到扫描二次型</h3>
@@ -686,7 +688,7 @@ b_i&=\mathbb{E}[|y_i|^2]\\
 \vec w_i&=\frac{\vec a_i}{\vec a_i^H\vec a_i},\\
 \vec w_i^H\vec a_i&=\frac{\vec a_i^H\vec a_i}{\vec a_i^H\vec a_i}=1.
 \end{aligned}\tag{12-8}$$</p>
-<p>利用这条归一化性质，倘若空间里真的只有第 $i$ 格存在一个功率为 $q_i$ 的单源且无噪声（$\mathbf R = q_i\vec a_i\vec a_i^H$），扫描第 $i$ 格就准确读出 $b_i = q_i|\vec w_i^H\vec a_i|^2 = q_i$。在各通道等幅的远场平面波模型（$|a_{mi}| = 1$）下，分母 $\vec a_i^H\vec a_i = M$，式(12-8)便退化为我们熟悉的第 5 章延迟求和权重 $\vec a_i / M$。若背景中还叠有各通道等方差的空间白噪声 $\mathbf R_n = \sigma^2\mathbf I$，它在第 $i$ 格扫描值上附加的底噪偏置为 $\sigma^2\|\vec w_i\|_2^2$，即 $\sigma^2 / (\vec a_i^H\vec a_i)$（例如等幅双麦时为 $\sigma^2 / 2$）。</p>
+<p>利用这条归一化性质，倘若空间里真的只有第 $i$ 格存在一个功率为 $q_i$ 的单源且无噪声（$\mathbf R = q_i\vec a_i\vec a_i^H$），扫描第 $i$ 格就准确读出 $b_i = q_i|\vec w_i^H\vec a_i|^2 = q_i$。在各通道等幅的远场平面波模型（$|a_{mi}| = 1$）下，分母 $\vec a_i^H\vec a_i = M$，式(12-8)便退化为我们熟悉的第 5 章延迟求和权重 $\vec a_i / M$。若背景中还叠有各通道等方差的空间白噪声 $\mathbf R_{nn} = \sigma^2\mathbf I$，它在第 $i$ 格扫描值上附加的底噪偏置为 $\sigma^2\|\vec w_i\|_2^2$，即 $\sigma^2 / (\vec a_i^H\vec a_i)$（例如等幅双麦时为 $\sigma^2 / 2$）。</p>
 <span id="sec-18" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-ef87dcfb2e">匹配点单位响应不保证三维峰位</h3>
 <p>初学者很容易产生一个错觉：既然式(12-8)在真实源位置 $\vec p_j$ 处已经做到了完美相位对齐和单位幅度响应，那么在三维空间里到处扫描时，最大值难道不就一定出现在真实源位置 $\vec p_j$ 吗？在近场球面波模型下，答案是否定的！原因在于：当我们改变扫描点的纵向深度（离阵列的远近）时，式(12-2)传播向量的相位和距离衰减幅度会同时变化，式(12-8)分母中的 $\|\vec a_i\|_2^2$ 也会跟着扫描深度剧烈缩放——往远处扫描时 $\|\vec a_i\|_2$ 变小，权重范数 $\|\vec w_i\|_2 = 1/\|\vec a_i\|_2$ 反而被放大，完全可能把更深处的扫描输出垫得比真实源位置还要高。</p>
 <p>Sarradj 在三维声源映射研究中系统对比了四类常见导向权重约定：只补偿相位、补偿相位与幅度以保证真实位置源强准确（即式(12-8)，Sarradj Formulation III）、保证无噪单源三维扫描峰值落在真实位置但牺牲源强绝对尺度（单位范数权重 $\vec a_i / \|\vec a_i\|_2$，Formulation IV），以及另两种折中归一化形式。严格的单源代数分析表明，没有任何一种固定的常规波束权重能够在近场三维未知深度扫描中无条件同时满足“峰值位置无偏”与“源强读数无偏”这两项要求（参见 <a href="https://doi.org/10.1155/2012/292695">Sarradj 2012，§2.1～2.5 式(7)～(13)</a>）。</p>
@@ -698,7 +700,7 @@ b_i&=\vec w_i^H\mathbf R\vec w_i\\
 &=\sum_{j=1}^J q_j(\vec w_i^H\vec a_j)(\vec a_j^H\vec w_i)+b_{n,i}\\
 &=\sum_{j=1}^J q_j|\vec w_i^H\vec a_j|^2+b_{n,i},\\
 P_{ij}&=|\vec w_i^H\vec a_j|^2,\qquad
-b_{n,i}=\vec w_i^H\mathbf R_n\vec w_i,\\
+b_{n,i}=\vec w_i^H\mathbf R_{nn}\vec w_i,\\
 \vec b&=\mathbf P\vec q+\vec b_n.
 \end{aligned}\tag{12-9}$$</p>
 <p>仔细端详耦合系数 $P_{ij} = |\vec w_i^H\vec a_j|^2$ 的两个下标：第 $2$ 个下标 $j$ 是<strong>真实声源所在的网格列号</strong>，第 $1$ 个下标 $i$ 是<strong>波束正在观察的扫描行号</strong>。如果我们在第 $j$ 格单独放一个单位功率声源（$q_j = 1$，其余格为零且无噪声），它经阵列扫描后在全部 $J$ 个格点上留下的图像刚好就是矩阵 $\mathbf P$ 的<strong>第 $j$ 列</strong>——这一列就称为第 $j$ 格的点扩散函数（Point Spread Function，PSF）。反过来，固定第 $i$ 行横向看过去，$b_i = \sum_{j=1}^J P_{ij} q_j + b_{n,i}$ 则揭示了第 $i$ 个扫描点的读数是如何被全场所有真实声源的泄漏能量叠加污染的。</p>
@@ -928,7 +930,7 @@ b_i&=\frac{\vec a_i^H\hat{\mathbf R}\vec a_i}{\Lambda_{a,ii}}
 <p>正如 §12.9 即将展示的那样，某些相干双源场景可以让非相干模型的扫描残差精确降为零，而把解代回完整 CSM 残差一查就会立刻暴露破绽；反过来，即便完整 CSM 残差很小，当字典存在线性相关列、扫描平面深度设错或快拍数过少时，依然可能存在多解或位置偏移，必须结合物理几何条件综合研判。</p>
 <span id="sec-37" class="anchor-alias" aria-hidden="true"></span><span id="sec-14-8" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-12-8">12.8 对角删除：少一种污染，也少一部分目标</h2>
 <span id="sec-38" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-b8b8244532">对角项包含目标与通道噪声</h3>
-<p>在风洞试验或高速气流旁测量时，气流掠过麦克风保护网会在各传感器上产生很强的局部湍流脉动自噪声。如果各支麦克风间距足够大，这类局部自噪声以及前置放大器的热噪声在不同通道之间近似互不相关——在无限快拍极限下，它们的对角统计贡献 $\mathbf R_n$（第 $m$ 个对角元为 $\sigma_m^2$，其余为零）全部集中于 CSM 的主对角线上，而非对角互谱元不受污染。于是工程上普遍采用<strong>对角删除（Diagonal Removal，DR）</strong>技巧，直接把观测 CSM 的主对角线置零：</p>
+<p>在风洞试验或高速气流旁测量时，气流掠过麦克风保护网会在各传感器上产生很强的局部湍流脉动自噪声。如果各支麦克风间距足够大，这类局部自噪声以及前置放大器的热噪声在不同通道之间近似互不相关——在无限快拍极限下，它们的对角统计贡献 $\mathbf R_{nn}$（第 $m$ 个对角元为 $\sigma_m^2$，其余为零）全部集中于 CSM 的主对角线上，而非对角互谱元不受污染。于是工程上普遍采用<strong>对角删除（Diagonal Removal，DR）</strong>技巧，直接把观测 CSM 的主对角线置零：</p>
 <p>$$\begin{gathered}
 \mathbf D_R=\operatorname{diag}(R_{11},\ldots,R_{MM}),\\
 \mathbf R_{\mathrm{trim}}=\mathbf R-\mathbf D_R.
@@ -1033,13 +1035,13 @@ Q_{\mathcal G,\mathcal B}
 <p>现场遮挡、壁面反射、声源指向性、近场无功分量与背景流动都会破坏式(12-27)，且不同网格点到公共参考点的距离 $r$ 各异，因此本章默认保留清晰的参考声压平方量纲，不直接改标为瓦特声功率图。</p>
 <span id="sec-52" class="anchor-alias" aria-hidden="true"></span><span id="sec-14-11" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-12-11">12.11 工业测量与先进方法的选择</h2>
 <span id="sec-53" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-4588aca915">通道校准怎样进入CSM</h3>
-<p>真实传声器阵列的传感器、前置放大器和采集通道在灵敏度与相位频响上均有个体差异。记单频点下原始未标定数字通道向量为 $\vec d$，已知的复数通道校准矩阵为 $\mathbf K(f)$（包含数字量到 $\mathrm{Pa}$ 的灵敏度换算与复频响补偿），校准后的声压观测与 CSM 变换为：</p>
+<p>真实传声器阵列的传感器、前置放大器和采集通道在灵敏度与相位频响上均有个体差异。记单频点下原始未标定数字通道向量为 $\vec d$（对应数字域互谱矩阵 $\mathbf R_{dd}=\mathbb{E}[\vec d\vec d^H]$），已知的复数通道校准矩阵为 $\mathbf K(f)$（包含数字量到 $\mathrm{Pa}$ 的灵敏度换算与复频响补偿），校准后的声压观测与空间观测协方差（CSM）变换为：</p>
 <p>$$\begin{aligned}
 \vec x&=\mathbf K\vec d,\\
-\mathbf R_x&=\mathbf K\mathbf R_d\mathbf K^H.
+\mathbf R_{xx}&=\mathbf K\mathbf R_{dd}\mathbf K^H.
 \end{aligned}\tag{12-28}$$</p>
 <p>若全部通道幅度多乘了 $2$，所有平方量会放大 $4$ 倍（声压级虚高约 $6.0206\,\mathrm{dB}$），热力图峰位虽不变但绝对源强全错；若某一路接线反相（多出 $180^\circ$ 相移），原本同相相加的双麦信号就会变成相消抵消，绝非事后统一加减分贝所能修复。幅相标定、阵元坐标、采样同步与传感器健康诊断分属不同检查项（见<a href="03_array-geometry.html">第 3 章</a>），校准后仍应归档原始数字记录与校准系数版本。</p>
-<p>还要注意，式(12-28)“先平均外积得 $\mathbf R_d$、再统一左右夹乘 $\mathbf K(\cdot)\mathbf K^H$”成立的前提，是整个统计窗口内所有快拍共用同一个恒定的 $\mathbf K$。一旦中途发生过量程切换或极性翻转，必须在求平均之前逐快拍恢复一致相位，或从切换点分段统计。</p>
+<p>还要注意，式(12-28)“先平均外积得 $\mathbf R_{dd}$、再统一左右夹乘 $\mathbf K(\cdot)\mathbf K^H$”成立的前提，是整个统计窗口内所有快拍共用同一个恒定的 $\mathbf K$。一旦中途发生过量程切换或极性翻转，必须在求平均之前逐快拍恢复一致相位，或从切换点分段统计。</p>
 <p>我们用一个双麦两快拍算例看清顺序颠倒的后果：采用 §12.3 的均方复系数，设第 $1$ 快拍正常，为 $[1, 1]^\top$；第 $2$ 快拍右路发生已知的极性翻转，变为 $[1, -1]^\top$。若先直接平均两快拍外积，两个非对角互谱一正（$+1$）一负（$-1$）相消为零，得出单位阵 $\mathbf I_2$——此时事后再乘任何固定相位校正，零互谱依然为零，等权同相波束 $[1/2, 1/2]^\top$ 扫描只能算出缩水一半的 $1/2$。</p>
 <p>反过来，若先按切换记录将第 $2$ 快拍右路乘以 $-1$ 恢复为 $[1, 1]^\top$，再平均外积，所得矩阵四个元素全为 $1$，同相波束扫描准确还原为 $1$。因此现场采集设备应保留原始快拍流或按校准版本分段累积，以便及时发现并复核这类跨帧相消。</p>
 <p><img alt="图69 声学成像的通道增益、对角补偿、CSM目标与区域汇总口径" src="../figures/fig69_imaging_calibration.png" onerror="this.alt+='（图缺失）'" /></p>
@@ -1099,6 +1101,11 @@ Q_{\mathcal G,\mathcal B}
 <td>函数波束形成（FB）</td>
 <td>对完整半正定 CSM 的特征值取 $1/\nu$ 次幂后再扫描并还原 $\nu$ 次幂</td>
 <td>无需迭代反卷积即可按指数 $\nu$ 压低单源旁瓣；破坏多源线性叠加与积分功率守恒，离网格弱源易被低估</td>
+</tr>
+<tr>
+<td><strong>球面谐波全景成像（SH-CBF / 模态反卷积）</strong></td>
+<td>将刚性球阵观测投影至球谐（SH）模态域，经径向散射函数 $b_n(\kappa r)$ 均衡后执行 $4\pi$ 全向扫描或球面平移不变反卷积</td>
+<td>适用于汽车座舱异响（BSR）排查与飞机客舱 $4\pi$ 全景声学相机；最高可用阶数受空间混叠边界 $N\approx \kappa r$ 与低频高阶径向逆白噪声放大制约（见<a href="05_beamforming.html#sec-5-8">第 5 章 §5.8</a> 与<a href="14_spatial-wearable-arrays.html#sec-14-2">第 14 章 §14.2</a>）</td>
 </tr>
 </tbody>
 </table></div>
@@ -1267,7 +1274,7 @@ b_2&=\frac{1}{2}-\frac{\sqrt{3}}{4}\approx 0.06698730.
 <span id="sec-71" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-c4ac7e60a3" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-7731a0181a">E12-09：增益校准怎样改变扫描绝对值</h3>
 <p><strong>题干。</strong> 目标源到达两支麦克风的真实复系数为 $[1, 1]^\top$，但第 $2$ 通道混入了未标定的幅度增益 $g \in \{0.5, 1, 2\}$。先用等权波束 $[1/2, 1/2]^\top$ 计算未校准扫描值，再用逆增益矩阵 $\mathbf K = \operatorname{diag}(1, 1/g)$ 按式(12-28)校准 CSM 后重算。</p>
 <p><strong>答案。</strong> 未校准数字观测向量为 $\vec d = [1, g]^\top$，波束输出幅度为 $(1 + g)/2$，故扫描均方功率为 $(1 + g)^2 / 4$——在 $g = 0.5, 1, 2$ 下依次算出 $0.5625$、$1$、$2.25$，随通道增益剧烈漂移。</p>
-<p>未校准互谱矩阵为外积 $\mathbf R_d = \vec d\vec d^\top$（主对角 $1, g^2$，非对角 $g$）。按式(12-28)左右同时夹乘 $\mathbf K$ 与 $\mathbf K^H$，校准后矩阵 $\mathbf R_x = \mathbf K\mathbf R_d\mathbf K^H$ 恢复为全 $1$ 矩阵 $\vec 1\vec 1^\top$，三种增益下的扫描功率全部精确恢复为 $1$（若只左乘 $\mathbf K$ 漏掉右乘 $\mathbf K^H$，则会破坏对称性与第 $2$ 路自功率）。工程中还须留意传感器后级电路噪声的位置：若电路热噪声在可变增益放大器之后混入，乘以 $1/g$ 在校准目标声压的同时也会同步缩放该通道的底噪方差。</p>
+<p>未校准互谱矩阵为外积 $\mathbf R_{dd} = \vec d\vec d^\top$（主对角 $1, g^2$，非对角 $g$）。按式(12-28)左右同时夹乘 $\mathbf K$ 与 $\mathbf K^H$，校准后矩阵 $\mathbf R_{xx} = \mathbf K\mathbf R_{dd}\mathbf K^H$ 恢复为全 $1$ 矩阵 $\vec 1\vec 1^\top$，三种增益下的扫描功率全部精确恢复为 $1$（若只左乘 $\mathbf K$ 漏掉右乘 $\mathbf K^H$，则会破坏对称性与第 $2$ 路自功率）。工程中还须留意传感器后级电路噪声的位置：若电路热噪声在可变增益放大器之后混入，乘以 $1/g$ 在校准目标声压的同时也会同步缩放该通道的底噪方差。</p>
 <p><span id="e14-10" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e12-10"></a></p>
 <span id="sec-72" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-7e62131a27" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-c1484bb4f1">E12-10：区域总量、dB与实际PCM读回</h3>
 <p><strong>题干。</strong> 对本章两格锚点例，以共同数字参考功率 $1$ 为基准，比较真实源功率总和与常规扫描总和的相对分贝值（$\mathrm{dB\ re}\ 1$），检验“两源各自转分贝后求平均”是否等于合成总分贝；最后结合配套音频核对解析值与 PCM 读回值。</p>

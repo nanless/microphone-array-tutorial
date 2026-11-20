@@ -22,7 +22,7 @@ class EngineeringRoundTwoParagraphTest(unittest.TestCase):
         self.assertNotIn("选择开源项目时", lists[0][-1])
 
     def test_symbol_reuse_and_stft_grid_are_distinct_paragraphs(self):
-        start = "**字母复用**"
+        start = "**字母与算符复用**"
         source, path = chapter_fragment("16_appendix-symbols-math.md", start, "| 符号")
         html, lists = rendered_lists(start + source, path)
         paragraphs = re.findall(r"<p>(.*?)</p>", html, re.S)

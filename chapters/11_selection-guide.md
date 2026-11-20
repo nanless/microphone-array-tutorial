@@ -238,7 +238,7 @@ $$
 - pyroomacoustics 适合房间与阵列原型，不证明目标设备实时。
 - WebRTC AEC3 可以对照实时回声链路，但其内部参数不是其他产品的默认值。
 
-选择开源项目时应把规范仓库、固定提交或发布、许可证、支持平台、输入输出契约、维护状态和最小测试一起写入方案，详见 §10.9.1 与 [`codes/chapters/ch00/SOURCES.lock.json`](../codes/chapters/ch00/SOURCES.lock.json)。
+选择开源项目时应把规范仓库、固定提交或发布、许可证、支持平台、输入输出接口约定、维护状态和最小测试一起写入方案，详见 §10.9.1 与 [`codes/chapters/ch00/SOURCES.lock.json`](../codes/chapters/ch00/SOURCES.lock.json)。
 
 本书按 [`codes/chapters/ch00/COVERAGE.md`](../codes/chapters/ch00/COVERAGE.md) 将所涉算法清晰划分为“本仓库可运行基线、外部参考实现、原理索引、明确排除”四类状态（调用外部库的薄封装仅属接口适配，不单独构成第五类状态）。教学基线通过单元测试，证明的是数学公式约定与退化边界条件吻合预期；要迈向工业量产，还必须补齐“接口可接入、目标芯片可编译、长稳压力与故障恢复可通过”三道工程关卡——例如在 Linux 会议终端上核查 ALSA/PipeWire 的采集与播放回采路由，在 Cortex-M 微控制器上核算 TFLM/CMSIS-NN 的算子支持与静态张量内存池，或在 XMOS/SOF 音频固件上验证热插拔恢复、播放参考切换、跨块状态复位与线程过载降级（详见[工业部署研究](../codes/chapters/ch00/research/03_industrial_deployment.md)）。
 
@@ -578,7 +578,7 @@ P\!\left(\bigcap_{j=1}^{J} A_j\right)
 \end{aligned}\tag{11-12}
 $$
 
-若三个场景各自按 $\alpha_j = 0.05$ 套用 §11.5 式(11-4)，虽然单项上界均为 $1 - 0.05^{1/100} \approx 2.9513\%$，但式(11-12) 保证的联合同时覆盖率下限只有 $1 - 3\times 0.05 = 85\%$。要确保联合覆盖率至少达到 $1 - \alpha = 95\%$，预先将总尾概率等分给 $J$ 个场景，联立式(11-4) 与式(11-12) 得：
+若三个场景各自按 $\alpha_j = 0.05$ 套用 §11.5 式(11-4)，虽然单项上界均为 $1 - 0.05^{1/100} \approx 2.9513\%$，但式(11-12) 保证的三场景同时覆盖率下限只有 $1 - 3\times 0.05 = 85\%$。要确保整体同时覆盖率至少达到 $1 - \alpha = 95\%$，预先将总尾概率等分给 $J$ 个场景，联立式(11-4) 与式(11-12) 得：
 
 $$
 \begin{aligned}
@@ -848,7 +848,7 @@ $$
 
 代入本题数据：普通编辑距离无视 $9\ \mathrm{s}$ 时间错位，直接把两个 `"a"` 配对得 $0$ 错；而在式(11-21) 零容差（$c = 0$）下，$[0, 1]\ \mathrm{s}$ 与 $[10, 11]\ \mathrm{s}$ 不相交（$\chi_{11} = 0$），故 $D_{11} = \min\{1+1,\, 1+1,\, 0+2\} = 2$，除以参考词数 $1$ 得时间约束词错误率为 $2/1 = 200\%$（含插入错误时 WER 完全可以超过 $100\%$，切勿人为截断到 $100\%$）。若假设词出现在 $[0.2, 0.8]\ \mathrm{s}$，则 $\chi_{11} = 1$、$u_{11} = 0$，错误率立即回到 $0\%$。
 
-在区间重叠判定细节上，本仓库教学核（`tiny_time_constrained_edit_distance`）对正持续时间参考区间 $[a, b]$ 与假设区间 $[u, v]$ 先将参考双侧扩展为 $[a - c, b + c]$，再检验严格不等式 $a - c < v$ 且 $b + c > u$（仅端点相接不算重叠；论文时间间隔（gap）定义的等号约定及锁定 MeetEval 原生 C++ 核对比详见[评分接口研究](../codes/chapters/ch00/research/03_industrial_deployment.md#meeting-kernel-contracts) 与 [`meeting_kernel_contracts_current.json`](../codes/chapters/ch11/reports/meeting_kernel_contracts_current.json)）。此外，词级时间戳的生成方式本身也属于防作弊协议的一部分：若某系统故意把每个输出词的时间戳都拉宽成整段录音首尾，就能骗过区间相交检查！为此，[MeetEval 2023 原论文 §4.1 及图 2（印刷第 29～30 页）](https://www.isca-archive.org/chime_2023/neumann23_chime.pdf)在仅有话段级时间边界时，建议参考端按去空格字符数比例切分词区间、假设端缩为各词区间的中心时刻点——例如一段 $6\ \mathrm{s}$ 话段含词元 `a`（1 字符）和 `bbb`（3 字符，共 4 字符），按字符比例分配的词区间与中心点如下：
+在区间重叠判定细节上，本仓库教学核（`tiny_time_constrained_edit_distance`）对正持续时间参考区间 $[a, b]$ 与假设区间 $[u, v]$ 先将参考双侧扩展为 $[a - c, b + c]$，再检验严格不等式 $a - c < v$ 且 $b + c > u$（仅端点相接不算重叠；论文时间间隔（gap）定义的等号约定及锁定 MeetEval 原生 C++ 核对比详见[评分接口研究](../codes/chapters/ch00/research/03_industrial_deployment.md#meeting-kernel-contracts) 与 [`meeting_kernel_contracts_current.json`](../codes/chapters/ch11/reports/meeting_kernel_contracts_current.json)）。此外，词级时间戳的生成方式本身也属于防合并失真约束的一部分：若某系统将每个输出词的时间戳都拉宽成整段录音首尾，就会绕过区间相交检查而掩盖跨时段错配！为此，[MeetEval 2023 原论文 §4.1 及图 2（印刷第 29～30 页）](https://www.isca-archive.org/chime_2023/neumann23_chime.pdf)在仅有话段级时间边界时，建议参考端按去空格字符数比例切分词区间、假设端缩为各词区间的中心时刻点——例如一段 $6\ \mathrm{s}$ 话段含词元 `a`（1 字符）和 `bbb`（3 字符，共 4 字符），按字符比例分配的词区间与中心点如下：
 
 | 词元 | 字符数 | 按字符比例分配的区间（s） | 中心点（s） |
 |---|---|---|---|

@@ -1,10 +1,10 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>从入门到工业实践 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="74c593002f97"><style>
-*{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
-.topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
-.topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
+<meta name="source-digest" content="10a21c80bda5"><style>
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
+.topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941}
+.topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
 h1,h2,h3,h4{scroll-margin-top:60px}
 @media screen{.main a[id]:not([href]){scroll-margin-top:60px}}
 @media screen{.main a[id^="e"],.main .exercise-alias{scroll-margin-top:80px}}
@@ -17,64 +17,66 @@ h1,h2,h3,h4{scroll-margin-top:60px}
 @media screen{.main a[id^="e11-"]{scroll-margin-top:60px}}
 @media screen{.main .separation-topic-anchor{scroll-margin-top:60px}}
 @media screen{.main .source-reproduction-anchor{scroll-margin-top:60px}}
-a:focus-visible,summary:focus-visible{outline:3px solid #e67e22;outline-offset:3px}
-.skip-link{position:absolute;left:10px;top:-60px;z-index:30;background:#fff;color:#1a1a2e;padding:8px 12px;border:2px solid #e67e22}
+a:focus-visible,summary:focus-visible{outline:2.5px solid #B84A2E;outline-offset:3px}
+.skip-link{position:absolute;left:10px;top:-60px;z-index:30;background:#fff;color:#1C1E21;padding:8px 12px;border:2px solid #B84A2E}
 .skip-link:focus{top:8px}
-.wrap{display:flex;max-width:1280px;margin:0 auto}
-.side{width:300px;flex-shrink:0;padding:20px 14px;position:sticky;top:47px;height:calc(100vh - 47px);overflow-y:auto;background:#fff;border-right:1px solid #e5e8ee;font-size:13.5px}
-.side a{color:#2f6db3;text-decoration:none}.side a:hover{text-decoration:underline}
-.side .chap{margin:10px 0 2px;font-weight:700}.side .chap.cur{color:#c0392b}
-.side ul{margin:2px 0 6px;padding-left:16px;color:#666}.side li{margin:2px 0}
-.main{flex:1;min-width:0;padding:28px 36px;background:#fff;overflow-wrap:anywhere}
+.wrap{display:flex;max-width:1280px;margin:0 auto;border-left:1px solid #E3DED3;border-right:1px solid #E3DED3}
+.side{width:300px;flex-shrink:0;padding:20px 15px;position:sticky;top:47px;height:calc(100vh - 47px);overflow-y:auto;background:#FAF8F3;border-right:1px solid #DDD7CB;font-size:13.5px}
+.side a{color:#1F5A92;text-decoration:none}.side a:hover{text-decoration:underline}
+.side .chap{margin:10px 0 2px;font-weight:700;color:#26292E}.side .chap.cur{color:#B84A2E}
+.side ul{margin:2px 0 6px;padding-left:16px;color:#5A554D}.side li{margin:2px 0}
+.main{flex:1;min-width:0;padding:32px 40px;background:#fff;overflow-wrap:anywhere}
+.main a{color:#1F5A92;text-underline-offset:.2em}
 .main p{margin:0 0 1.2em}.main ul,.main ol{margin:.55em 0 1.2em;padding-left:1.55em}.main li{margin:.42em 0}.main li>p{margin:.5em 0}
-.main p>strong:first-child,.main li>strong:first-child{color:#0f2744}
-.main img{max-width:100%;height:auto;display:block;margin:16px auto;border:1px solid #dbe3ee;border-radius:6px;padding:3px;min-height:40px;background:#fff}
-.audio-sample{display:block;width:min(100%,460px);margin:8px 0 18px}.audio-sample:focus-visible{outline:3px solid #e67e22}
+.main p>strong:first-child,.main li>strong:first-child{color:#14171A}
+.main img{max-width:100%;height:auto;display:block;margin:18px auto;border:1px solid #DFDAD0;border-radius:5px;padding:4px;min-height:40px;background:#fff}
+.audio-sample{display:block;width:min(100%,460px);margin:8px 0 18px}.audio-sample:focus-visible{outline:2.5px solid #B84A2E}
 /* 表格列宽不能压掉原生播放按钮；手机上的表格可横向滚动。 */
 td .audio-sample{width:280px;min-width:280px}
 table:has(td .audio-sample) td:last-child{min-width:180px}
-table{border-collapse:collapse;margin:16px 0;max-width:100%}
+table{border-collapse:collapse;margin:18px 0;max-width:100%;border-top:1.5px solid #2A2E34;border-bottom:1.5px solid #2A2E34}
 .table-scroll{max-width:100%;overflow-x:auto}
-.table-scroll:focus-visible{outline:3px solid #e67e22;outline-offset:2px}
-th,td{border:1px solid #d5dfec;padding:7px 11px;font-size:14px;text-align:left;line-height:1.58}
-th{background:#e8eff9;color:#0f2744;border-bottom:1.5px solid #94a3b8}
-tbody tr:nth-child(even) td{background:#f8fafc}
-code{background:#eef2f7;color:#0f294a;border:1px solid #d8e1ec;padding:1px 5px;border-radius:4px;font-size:13.5px}
-pre{background:#122036;color:#e8ecf3;padding:14px 16px;border-radius:8px;overflow-x:auto}
+.table-scroll:focus-visible{outline:2.5px solid #B84A2E;outline-offset:2px}
+th,td{border-top:1px solid #E3DED3;border-bottom:1px solid #E3DED3;border-left:none;border-right:none;padding:8px 11px;font-size:14px;text-align:left;line-height:1.58}
+th{background:#F5F2EB;color:#1C1E21;border-bottom:1px solid #8A8275;font-weight:700}
+tbody tr:nth-child(even) td{background:#FCFBF9}
+code{background:#F3F0E8;color:#1E3A56;border:1px solid #E0DBD0;padding:1px 5px;border-radius:4px;font-size:13.5px}
+pre{background:#F5F3EE;color:#1F2328;border:1px solid #DFDAD0;border-left:3.5px solid #5C564D;padding:14px 16px;border-radius:8px;overflow-x:auto}
 pre code{background:none;border:none;color:inherit;padding:0}
-blockquote{border-left:4px solid #2563eb;margin:16px 0;padding:10px 15px;background:#f0f6ff;border-radius:0 6px 6px 0;color:#1e293b}
+blockquote{border-left:3.5px solid #B84A2E;margin:18px 0;padding:10px 16px;background:#F7F5F0;border-radius:0 4px 4px 0;color:#2B2E33}
 blockquote p:last-child{margin-bottom:0}
+hr{border:none;border-top:1px solid #DDD7CB;margin:26px 0}
 mjx-container[jax="CHTML"]{font-size:110%!important;overflow-x:auto;overflow-y:hidden;max-width:100%;min-width:0!important}
 body mjx-assistive-mml{width:1px!important;max-width:1px!important;min-width:0!important;height:1px!important;overflow:hidden!important}
 pre,.table-scroll,mjx-container[jax="CHTML"]{overflow-wrap:normal}
-.pn{display:flex;justify-content:space-between;margin:34px 0 12px;padding-top:16px;border-top:1px solid #d5dfec;font-weight:650}
-.pn a{color:#1d4ed8;text-decoration:none}.pn .off{color:#aaa}
-.foot{color:#64748b;font-size:13px;margin:20px 0 40px}
-.main h1{font-size:27px;color:#0f2744;background:#edf3fc;border-top:4px solid #1e3a8a;border-left:5px solid #1e3a8a;border-bottom:1px solid #cbd5e1;padding:13px 17px 11px;border-radius:0 6px 6px 0;margin:0 0 22px;line-height:1.3}
-.main h2{font-size:21px;color:#0f294a;background:#f3f7fc;border-left:4.5px solid #1d4ed8;border-bottom:1px solid #cbd5e1;padding:8px 13px 7px;margin:34px 0 15px;border-radius:0 5px 5px 0;line-height:1.35}
-.main h3{font-size:18px;color:#1e3a8a;border-left:3.5px solid #3b82f6;padding:2px 0 2px 11px;margin:26px 0 12px;line-height:1.4}
-.main h4{font-size:16px;color:#1e40af;border-left:2.5px solid #93c5fd;padding:1px 0 1px 9px;margin:20px 0 10px;line-height:1.4}
-.main h3.tutorial-worked-heading{background:#f0fdfa;border:1px solid #99f6e4;border-left:4.5px solid #0d9488;color:#115e59;padding:7px 13px;border-radius:6px;margin:26px 0 13px;font-size:17.2px}
-.main h3.tutorial-exercise-heading,.main h4.tutorial-exercise-heading{background:#eff6ff;border:1px solid #bfdbfe;border-left:5px solid #2563eb;color:#1e3a8a;padding:9px 14px;border-radius:6px;margin:30px 0 13px;font-size:17px;line-height:1.45}
-.main p.tutorial-exercise-lead{background:#eff6ff;border:1px solid #bfdbfe;border-left:5px solid #2563eb;padding:11px 15px;border-radius:6px;margin:26px 0 13px}
+.pn{display:flex;justify-content:space-between;margin:36px 0 12px;padding-top:16px;border-top:1px solid #DDD7CB;font-weight:650}
+.pn a{color:#1F5A92;text-decoration:none}.pn .off{color:#9C9588}
+.foot{color:#6E695F;font-size:13px;margin:20px 0 40px}
+.main h1{font-size:27px;color:#14171A;border-top:2.5px solid #1F5A92;border-bottom:1.5px solid #1C1E21;padding:12px 0 10px;margin:0 0 24px;line-height:1.3}
+.main h2{font-size:21px;color:#14171A;border-left:3.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;padding:1px 0 7px 11px;margin:36px 0 15px;line-height:1.35}
+.main h3{font-size:18px;color:#1F5A92;margin:26px 0 11px;line-height:1.4}
+.main h4{font-size:16px;color:#2C2F33;border-left:2.5px solid #B84A2E;padding:1px 0 1px 9px;margin:20px 0 9px;line-height:1.4}
+.main h3.tutorial-worked-heading{background:#FAF8F3;border-top:1.5px solid #237263;border-bottom:1px solid #E2DDD2;border-left:3.5px solid #237263;color:#1A574B;padding:7px 13px;border-radius:2px;margin:28px 0 13px;font-size:17.2px}
+.main h3.tutorial-exercise-heading,.main h4.tutorial-exercise-heading{background:#F5F2EB;border-top:1.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;border-left:4px solid #1F5A92;color:#14171A;padding:8px 14px;border-radius:2px;margin:30px 0 13px;font-size:17px;line-height:1.45}
+.main p.tutorial-exercise-lead{background:#F5F2EB;border-top:1.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;border-left:4px solid #1F5A92;padding:10px 15px;border-radius:2px;margin:28px 0 13px}
 .main ol>li.tutorial-exercise-item{margin:18px 0}
-.main .tutorial-exercise-card{background:#f8fafc;border:1px solid #d5e0ee;border-left:4px solid #2563eb;border-radius:6px;padding:12px 16px}
+.main .tutorial-exercise-card{background:#FAF8F3;border:1px solid #E0DBD0;border-left:3.5px solid #1F5A92;border-radius:4px;padding:12px 16px}
 .main .tutorial-exercise-card>:first-child{margin-top:0}
 .main .tutorial-exercise-card>:last-child{margin-bottom:0}
-.main p.tutorial-solution-lead{background:#f0fdf4;border-left:3.5px solid #16a34a;padding:8px 13px;border-radius:0 5px 5px 0;margin-top:9px}
-.main p.tutorial-solution-lead>strong:first-child{color:#15803d}
-.main p.tutorial-problem-lead{border-left:3px solid #2563eb;padding-left:11px}
-.main p.tutorial-problem-lead>strong:first-child{color:#1d4ed8}
-.toc-mobile{display:none;margin:0 0 16px;border:1px solid #e5e8ee;border-radius:8px;padding:10px 14px;background:#f7fafd;font-size:14px}
-.toc-mobile summary{cursor:pointer;font-weight:700}
-.toc-mobile ul{padding-left:18px;margin:8px 0 2px}.toc-mobile a{color:#2f6db3;text-decoration:none}
-.topbtn{display:block;margin:20px auto;background:#1a1a2e;color:#fff;border-radius:50%;width:42px;height:42px;text-align:center;line-height:42px;text-decoration:none;font-size:18px}
-.offline-note{display:none;background:#fff7e6;border:1px solid #e6c87a;color:#7a5b00;padding:8px 14px;font-size:13.5px}
+.main p.tutorial-solution-lead{background:#F3F6F4;border-left:3.5px solid #237263;padding:8px 13px;border-radius:0 3px 3px 0;margin-top:9px}
+.main p.tutorial-solution-lead>strong:first-child{color:#1D5E51}
+.main p.tutorial-problem-lead{border-left:2.5px solid #1F5A92;padding-left:11px}
+.main p.tutorial-problem-lead>strong:first-child{color:#1F5A92}
+.toc-mobile{display:none;margin:0 0 16px;border:1px solid #DDD7CB;border-radius:6px;padding:10px 14px;background:#FAF8F3;font-size:14px}
+.toc-mobile summary{cursor:pointer;font-weight:700;color:#1C1E21}
+.toc-mobile ul{padding-left:18px;margin:8px 0 2px}.toc-mobile a{color:#1F5A92;text-decoration:none}
+.topbtn{display:block;margin:20px auto;background:#24282E;color:#FAF8F3;border-radius:50%;width:42px;height:42px;text-align:center;line-height:42px;text-decoration:none;font-size:18px}
+.offline-note{display:none;background:#F7EFE4;border:1px solid #D9B78E;color:#6E4219;padding:8px 14px;font-size:13.5px}
 .anchor-alias{display:block;position:relative;top:-60px;visibility:hidden}
 .tutorial-math-tail{display:inline-block;white-space:nowrap;overflow-wrap:normal;vertical-align:baseline;overflow:visible}
 .tutorial-math-tail mjx-assistive-mml{max-width:1px!important;min-width:0!important;white-space:normal}
-.tutorial-exercise-id{white-space:nowrap;overflow-wrap:normal;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:.87em;background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;padding:0 5px;border-radius:4px}
-:is(.tutorial-exercise-heading,.tutorial-exercise-lead) .tutorial-exercise-id{background:#1d4ed8;color:#fff;border-color:#1d4ed8;padding:1px 7px;margin-right:4px;font-size:.84em}
+.tutorial-exercise-id{white-space:nowrap;overflow-wrap:normal;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:.88em;background:#F3EFE6;color:#B84A2E;border:1px solid #DDD5C7;padding:0 5px;border-radius:3px;font-weight:700}
+:is(.tutorial-exercise-heading,.tutorial-exercise-lead) .tutorial-exercise-id{background:#1F5A92;color:#fff;border-color:#1F5A92;padding:1px 7px;margin-right:5px;font-size:.84em}
 .tutorial-table-label{white-space:nowrap;overflow-wrap:normal}
 @media(max-width:900px){.selection-readable-table{min-width:760px}.selection-readable-table th,.selection-readable-table td{min-width:10em}.selection-readable-table th:first-child,.selection-readable-table td:first-child{min-width:6em}}
 @media(max-width:900px){.side{display:none}.main{padding:20px}.toc-mobile{display:block}.topbar{font-size:14px}mjx-container[jax="CHTML"]:not([display="true"]){display:inline-block;vertical-align:middle}.aec-readable-table th,.aec-readable-table td,.wpe-readable-table th,.wpe-readable-table td,.separation-readable-table th,.separation-readable-table td{min-width:8em}.tracking-readable-table th,.tracking-readable-table td{min-width:8em}.industrial-readable-table th,.industrial-readable-table td{min-width:8em}}
@@ -301,53 +303,58 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 </script>
 <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"
  onerror="document.getElementById('offnote').style.display='block';document.getElementById('offnote').textContent='公式渲染脚本加载失败：当前显示的是公式源码。';"></script>
-<style>.course-page { --course-paper:#f4f7fb; }
+<style>.course-page { --course-paper:#F6F4EF; background:#F6F4EF; }
 .course-page .topbar { display:none; }
 .course-page .side { top:0; height:100vh; }
-.course-page .wrap { scroll-margin-top:18px; border-top:2px solid #cbd5e1; }
+.course-page .wrap { scroll-margin-top:18px; border-top:1.5px solid #D5CFC2; }
 .course {
-  --ink:#0f1f36; --quiet:#47586e; --line:#cdd7e4; --paper:#f4f7fb;
-  --blue:#1d4ed8; --blue-deep:#15367c; --red:#b43b1f; --card:#ffffff;
-  background:var(--paper); color:var(--ink); font-size:17px; line-height:1.68;
+  --ink:#1C1E21; --quiet:#5A554D; --line:#DDD7CB; --line-strong:#C5BEB0;
+  --paper:#F6F4EF; --stone:#EFEAE0; --card:#FFFFFF;
+  --blue:#1F5A92; --blue-deep:#16436E; --red:#B84A2E; --green:#237263; --graphite:#24282E;
+  background:var(--paper); color:var(--ink); font-size:17px; line-height:1.7;
 }
 .course-width { width:min(100% - 64px, 1220px); margin-inline:auto; }
 .course a { color:var(--blue); text-underline-offset:.22em; }
-.course :is(a,button):focus-visible { outline:3px solid #d97706; outline-offset:3px; }
+.course :is(a,button):focus-visible { outline:2.5px solid var(--red); outline-offset:3px; }
 
 .course-header { display:flex; align-items:center; justify-content:space-between; gap:12px 20px; padding-block:18px; border-bottom:1px solid var(--line); }
 .course-header nav { display:flex; gap:6px 18px; flex-wrap:wrap; align-items:center; }
-.course-header a { text-decoration:none; color:var(--ink); font-size:15px; font-weight:560; }
+.course-header a { text-decoration:none; color:#2C2F33; font-size:15px; font-weight:560; }
 .course-header a:hover { color:var(--blue); text-decoration:underline; }
-.course-header .course-brand { display:inline-flex; align-items:center; gap:9px; font-size:17.5px; font-weight:800; letter-spacing:-.02em; }
-.course-mark { display:grid; place-items:center; width:31px; height:31px; border-radius:8px; background:#0f2744; color:#7dd3fc; font-size:21px; line-height:1; }
+.course-header .course-brand { display:inline-flex; align-items:center; gap:9px; font-size:17.5px; font-weight:800; letter-spacing:-.02em; color:var(--ink); }
+.course-mark { display:grid; place-items:center; width:30px; height:30px; border-radius:6px; background:var(--graphite); color:#F6F4EF; font-size:20px; line-height:1; }
 
-.course-hero { display:grid; grid-template-columns:minmax(0,.88fr) minmax(0,1.12fr); align-items:center; gap:clamp(28px,4.5vw,56px); padding-block:clamp(40px,6vw,78px) clamp(40px,5.5vw,72px); }
-.course .course-kicker { margin:0 0 10px; font-size:.82rem; letter-spacing:.09em; font-weight:780; color:var(--red); text-transform:uppercase; }
-.course h1 { font-size:clamp(2.65rem,5.4vw,4.55rem); letter-spacing:-.05em; line-height:1.05; margin:0; border:0; padding:0; color:#0b1a2e; }
+.course-hero { display:grid; grid-template-columns:minmax(0,.88fr) minmax(0,1.12fr); align-items:center; gap:clamp(28px,4.5vw,56px); padding-block:clamp(38px,5.5vw,74px) clamp(38px,5vw,68px); }
+.course .course-kicker { margin:0 0 10px; font-size:.81rem; letter-spacing:.09em; font-weight:750; color:var(--red); text-transform:uppercase; }
+.course h1 { font-size:clamp(2.65rem,5.3vw,4.45rem); letter-spacing:-.045em; line-height:1.06; margin:0; border:0; padding:0; color:#14171A; }
 .course h1 span { color:var(--blue); }
-.course-deck { margin:18px 0 22px; max-width:34rem; font-size:clamp(1.02rem,1.55vw,1.14rem); color:#24364d; line-height:1.72; }
+.course-deck { margin:18px 0 22px; max-width:34rem; font-size:clamp(1.01rem,1.5vw,1.12rem); color:#323539; line-height:1.74; }
 .course-actions { display:flex; flex-wrap:wrap; align-items:center; gap:10px 12px; }
-.course .course-cta { display:inline-flex; align-items:center; gap:10px; min-height:45px; padding:9px 18px; background:var(--blue); color:#fff; text-decoration:none; border-radius:7px; font-weight:700; font-size:.97rem; box-shadow:0 4px 14px #1d4ed82e; }
+.course .course-cta { display:inline-flex; align-items:center; gap:9px; min-height:44px; padding:9px 18px; background:var(--blue); color:#fff; text-decoration:none; border-radius:6px; font-weight:680; font-size:.96rem; transition:background .15s ease; }
 .course .course-cta:hover { background:var(--blue-deep); }
-.course .course-secondary { display:inline-flex; align-items:center; gap:6px; min-height:45px; padding:8px 14px; background:#fff; color:var(--ink); border:1px solid #9fb2ca; border-radius:7px; text-decoration:none; font-weight:650; font-size:.94rem; }
-.course .course-secondary:hover { border-color:var(--blue); color:var(--blue); background:#eff6ff; }
-.course-quiet { min-height:45px; display:inline-flex; align-items:center; gap:4px; font-weight:650; font-size:.94rem; padding-inline:4px; }
+.course .course-secondary { display:inline-flex; align-items:center; gap:6px; min-height:44px; padding:8px 14px; background:var(--card); color:var(--ink); border:1px solid var(--line-strong); border-radius:6px; text-decoration:none; font-weight:620; font-size:.93rem; }
+.course .course-secondary:hover { border-color:var(--blue); color:var(--blue); background:#FAF8F3; }
+.course-quiet { min-height:44px; display:inline-flex; align-items:center; gap:4px; font-weight:620; font-size:.93rem; padding-inline:4px; color:#3D4147 !important; }
+.course-quiet:hover { color:var(--blue) !important; }
 
 .course-stats { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px 12px; margin:22px 0 10px; }
-.course-stats > div { background:#fff; border:1px solid #cfd9e6; border-left:3.5px solid var(--blue); border-radius:8px; padding:8px 12px; }
-.course-stats strong { display:block; font-size:.98rem; color:#0f2744; line-height:1.25; }
+.course-stats > div { background:var(--card); border:1px solid var(--line); border-left:3px solid var(--blue); border-radius:5px; padding:9px 13px; }
+.course-stats strong { display:block; font-size:.97rem; color:#181B1F; line-height:1.25; }
 .course-stats span { display:block; font-size:.81rem; color:var(--quiet); margin-top:2px; }
-.course .course-note { color:var(--quiet); font-size:.86rem; margin:10px 0 0; }
+.course .course-note { color:var(--quiet); font-size:.85rem; margin:10px 0 0; }
 
-.course-demo { margin:0; background:#0d1b2e; border:1px solid #294366; border-radius:16px; padding:14px; box-shadow:0 18px 46px #0b192c28; color:#e2e8f0; }
-.course-demo-heading { display:flex; justify-content:space-between; flex-wrap:wrap; padding:0 4px 10px; gap:8px; font-size:.82rem; font-weight:700; color:#93c5fd; }
-.course-plot { display:block; width:100%; height:auto; border-radius:10px; }
+/* Warm Archival Drafting Workbench Figure */
+.course-demo { margin:0; background:var(--card); border:1px solid #D3CDC0; border-radius:12px; padding:14px 14px 13px; box-shadow:0 12px 32px rgba(28,30,33,.06); color:var(--ink); }
+.course-demo-heading { display:flex; justify-content:space-between; flex-wrap:wrap; padding:0 4px 10px; gap:8px; font-size:.82rem; font-weight:700; color:#4A4640; }
+.course-demo-heading span:first-child { color:var(--ink); }
+.course-demo-heading span:last-child { color:var(--blue); font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-weight:650; }
+.course-plot { display:block; width:100%; height:auto; border-radius:8px; }
 .course-demo figcaption { padding:11px 2px 0; }
 .course-switch:not([hidden]) { display:flex; flex-wrap:wrap; gap:7px; }
-.course-switch button { min-height:40px; padding:5px 11px; border-radius:6px; border:1px solid #3c5a82; font:inherit; font-size:.85rem; font-weight:600; color:#e2e8f0; background:#152844; cursor:pointer; }
-.course-switch button:hover { border-color:#7dd3fc; }
-.course-switch button[aria-pressed=true] { color:#091526; background:#38bdf8; border-color:#38bdf8; font-weight:750; }
-.course-arrival { font-size:.85rem; margin:9px 2px 0; color:#cbd5e1; }
+.course-switch button { min-height:38px; padding:5px 11px; border-radius:5px; border:1px solid var(--line-strong); font:inherit; font-size:.84rem; font-weight:600; color:#2C2F33; background:#F6F4EF; cursor:pointer; }
+.course-switch button:hover { border-color:var(--blue); color:var(--blue); }
+.course-switch button[aria-pressed=true] { color:#FFFFFF; background:var(--blue); border-color:var(--blue); font-weight:680; }
+.course-arrival { font-size:.85rem; margin:9px 2px 0; color:#4A4640; }
 
 /* Interactive 3-mode SVG state rules (mvdr / left / right) */
 .course-demo[data-source=left] .course-from-right,
@@ -381,7 +388,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 .course-demo[data-source=right] .course-polar-markers-mvdr,
 .course-demo[data-source=right] .course-polar-markers-left { display:none; }
 
-.course-demo[data-source=right] .course-hits { fill:#fb923c; }
+.course-demo[data-source=right] .course-hits { fill:#B84A2E; }
 .course-wave,.course-hits circle { opacity:0; }
 
 @media (prefers-reduced-motion:no-preference) {
@@ -398,85 +405,80 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
   .course-demo[data-source=right] .course-hits circle:nth-child(2) { animation-delay:1.06s; }
   .course-demo:not([data-source=right]) .course-hits circle:nth-child(4),
   .course-demo[data-source=right] .course-hits circle:nth-child(1) { animation-delay:1.40s; }
-  @keyframes course-wave { from {opacity:0; transform:scale(.35)} 15% {opacity:.95} 75% {opacity:.6} to {opacity:0; transform:scale(2.45)} }
+  @keyframes course-wave { from {opacity:0; transform:scale(.35)} 15% {opacity:.92} 75% {opacity:.55} to {opacity:0; transform:scale(2.45)} }
   @keyframes course-hit { 0%,100% {opacity:0} 28% {opacity:1} }
 }
 
-.course h2 { font-size:clamp(1.75rem,3.4vw,2.65rem); line-height:1.2; letter-spacing:-.03em; border:0; margin:0 0 14px; padding:0; color:#0b1c33; }
-.course h3 { font-size:1.16rem; line-height:1.35; margin:6px 0; color:#0f2744; }
-.course-section-intro { max-width:52rem; margin:0 0 24px; color:#2b3e57; }
+.course h2 { font-size:clamp(1.75rem,3.3vw,2.55rem); line-height:1.2; letter-spacing:-.03em; border:0; margin:0 0 14px; padding:0; color:#14171A; }
+.course h3 { font-size:1.16rem; line-height:1.36; margin:6px 0; color:#181B1F; }
+.course-section-intro { max-width:52rem; margin:0 0 26px; color:#3B3E42; }
 
-/* 6 Core Tasks + 4 Frontier Topics Matrix */
+/* 6 Core Tasks + 4 Frontier Topics Matrix — Uniform Architectural Grid */
 .course-tasks { border-top:1px solid var(--line); padding-block:clamp(38px,5.5vw,68px); }
 .course-task-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }
-.course-task-card { display:flex; flex-direction:column; padding:20px 20px 18px; background:var(--card); border:1px solid var(--line); border-top:4px solid var(--blue); border-radius:10px; box-shadow:0 4px 16px #0f274408; }
-.course-task-card:nth-child(2) { border-top-color:#0284c7; }
-.course-task-card:nth-child(3) { border-top-color:#b45309; }
-.course-task-card:nth-child(4) { border-top-color:#0f766e; }
-.course-task-card:nth-child(5) { border-top-color:#6d28d9; }
-.course-task-card:nth-child(6) { border-top-color:#be123c; }
-.course-task-meta { display:flex; justify-content:space-between; align-items:center; gap:8px; font-size:.79rem; margin-bottom:6px; }
-.course-task-meta span { font-weight:750; color:var(--blue); }
-.course-task-meta strong { font-weight:650; color:#334155; background:#eff4fb; padding:2px 8px; border-radius:999px; }
-.course-task-card h3 { font-size:1.18rem; margin:2px 0 8px; }
-.course-task-card p { margin:0 0 14px; font-size:.94rem; color:#334155; flex:1; }
-.course-task-card a { font-size:.91rem; font-weight:700; text-decoration:none; }
+.course-task-card { display:flex; flex-direction:column; padding:20px 20px 18px; background:var(--card); border:1px solid var(--line); border-top:2.5px solid var(--graphite); border-radius:7px; }
+.course-task-meta { display:flex; justify-content:space-between; align-items:center; gap:8px; font-size:.79rem; margin-bottom:7px; }
+.course-task-meta span { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-weight:700; color:var(--red); }
+.course-task-meta strong { font-weight:620; color:#45423C; background:#F3F0E8; border:1px solid #E2DDD1; padding:2px 8px; border-radius:4px; }
+.course-task-card h3 { font-size:1.17rem; margin:2px 0 8px; color:#14171A; }
+.course-task-card p { margin:0 0 14px; font-size:.94rem; color:#3F4246; flex:1; }
+.course-task-card a { font-size:.91rem; font-weight:680; text-decoration:none; }
 .course-task-card a:hover { text-decoration:underline; }
 
-.course-frontier-bar { margin-top:18px; padding:14px 18px; background:#eaf1fb; border:1px solid #bfd0e8; border-radius:10px; display:flex; flex-wrap:wrap; align-items:center; gap:8px 18px; font-size:.91rem; }
-.course-frontier-bar > span { font-weight:800; color:#0f2744; }
-.course-frontier-bar a { font-weight:650; }
+.course-frontier-bar { margin-top:18px; padding:14px 18px; background:var(--stone); border:1px solid #D6CFC0; border-left:3.5px solid var(--blue); border-radius:6px; display:flex; flex-wrap:wrap; align-items:center; gap:8px 18px; font-size:.91rem; }
+.course-frontier-bar > span { font-weight:760; color:#181B1F; }
+.course-frontier-bar a { font-weight:620; }
 
 /* Real LOCATA Case Studies + Browser Lab */
 .course-cases { border-top:1px solid var(--line); padding-block:clamp(38px,5.5vw,70px) 0; }
 .course-case-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; }
-.course-case { --case-accent:#1d4ed8; --case-bg:#ecf2fa; display:flex; flex-direction:column; gap:12px; padding:clamp(16px,2.8vw,28px); border:1px solid var(--line); border-top:4px solid var(--case-accent); border-radius:10px; background:#fff; }
-.course-case-beam { --case-accent:#9a3412; --case-bg:#fcf1ea; }
+.course-case { --case-accent:#1F5A92; --case-bg:#FAF8F3; display:flex; flex-direction:column; gap:12px; padding:clamp(16px,2.8vw,28px); border:1px solid var(--line); border-top:3px solid var(--case-accent); border-radius:8px; background:var(--card); }
+.course-case-beam { --case-accent:#B84A2E; --case-bg:#FAF8F3; }
 .course-case p,.course-case h3 { margin:0; }
-.course-case .course-case-tag { color:var(--case-accent); font-size:.83rem; font-weight:780; letter-spacing:.03em; }
-.course-case h3 { font-size:clamp(1.2rem,2.2vw,1.55rem); }
-.course-case-diagram { margin:3px 0; border-radius:9px; overflow:hidden; background:var(--case-bg); border:1px solid #d7e1ee; }
+.course-case .course-case-tag { color:var(--case-accent); font-size:.82rem; font-weight:750; letter-spacing:.04em; }
+.course-case h3 { font-size:clamp(1.2rem,2.1vw,1.5rem); color:#14171A; }
+.course-case-diagram { margin:3px 0; border-radius:7px; overflow:hidden; background:var(--case-bg); border:1px solid #DDD7CB; }
 .course-case-diagram svg { display:block; width:100%; height:auto; font:700 21px system-ui,sans-serif; }
-.course-case-diagram figcaption { padding:4px 14px 13px; font-size:.9rem; }
+.course-case-diagram figcaption { padding:6px 14px 13px; font-size:.9rem; color:#3F4246; }
 .course-case-diagram strong { display:block; margin-top:5px; color:var(--case-accent); }
-.course-case-diagram .case-inset { border-top:1px solid #c8d0da; }
+.course-case-diagram .case-inset { border-top:1px solid #DDD7CB; }
 .course-scan-switch:not([hidden]) { display:flex; flex-wrap:wrap; gap:7px; padding:12px 14px 0; }
-.course-scan-switch button { min-height:42px; padding:6px 12px; background:#fff; color:var(--ink); border:1px solid #9badc3; border-radius:6px; font:inherit; font-size:.89rem; font-weight:600; cursor:pointer; }
+.course-scan-switch button { min-height:40px; padding:5px 12px; background:var(--card); color:var(--ink); border:1px solid var(--line-strong); border-radius:5px; font:inherit; font-size:.88rem; font-weight:600; cursor:pointer; }
 .course-scan-switch button[aria-pressed=true] { background:var(--blue); color:#fff; border-color:var(--blue); }
 .course-localization[data-scan=a] .case-scan-b,.course-localization[data-scan=b] .case-scan-a { display:none; }
-.case-inset-axis { fill:none; stroke:#8a9aad; stroke-width:1.5; }
+.case-inset-axis { fill:none; stroke:#989184; stroke-width:1.5; }
 .case-inset-trace { stroke-width:2.8; }
-.case-field { fill:#fff8; stroke:#c3ccd8; }
-.case-gridlines { fill:none; stroke:#8090a2; stroke-opacity:.19; }
-.case-candidate { fill:none; stroke:#65768b; stroke-width:2; stroke-dasharray:6 6; }
-.case-flight { fill:none; stroke:#385d8a; stroke-opacity:.45; stroke-width:1.8; stroke-dasharray:3 6; }
-.case-target-ray { fill:none; stroke:#1d4ed8; stroke-width:4; stroke-linejoin:round; }
-.case-side-ray { fill:none; stroke:#a7482f; stroke-width:2.8; stroke-dasharray:6 6; }
-.case-target-dot { fill:#1d4ed8; stroke:#fff; stroke-width:3; }
-.case-side-dot { fill:#ad4d34; stroke:#fff; stroke-width:3; }
-.case-target-label { fill:#1d4ed8; }
-.case-side-label { fill:#8d3423; }
-.case-quiet-label { fill:#4b5e76; font-size:18px; }
-.case-callout { fill:#f8fbff; stroke:#8aa6cc; }
-.case-array { fill:none; stroke:#26394d; stroke-width:9; stroke-linecap:round; }
-.case-array-origin { fill:#26394d; stroke:#fff; stroke-width:2; }
+.case-field { fill:#FFFFFF; stroke:#DDD7CB; }
+.case-gridlines { fill:none; stroke:#8D8577; stroke-opacity:.2; }
+.case-candidate { fill:none; stroke:#787166; stroke-width:2; stroke-dasharray:6 6; }
+.case-flight { fill:none; stroke:#1F5A92; stroke-opacity:.42; stroke-width:1.8; stroke-dasharray:3 6; }
+.case-target-ray { fill:none; stroke:#1F5A92; stroke-width:3.8; stroke-linejoin:round; }
+.case-side-ray { fill:none; stroke:#B84A2E; stroke-width:2.8; stroke-dasharray:6 6; }
+.case-target-dot { fill:#1F5A92; stroke:#FFFFFF; stroke-width:3; }
+.case-side-dot { fill:#B84A2E; stroke:#FFFFFF; stroke-width:3; }
+.case-target-label { fill:#1F5A92; }
+.case-side-label { fill:#9E3C23; }
+.case-quiet-label { fill:#5A554D; font-size:18px; }
+.case-callout { fill:#FAF8F3; stroke:#9AB3CC; }
+.case-array { fill:none; stroke:#2B3036; stroke-width:9; stroke-linecap:round; }
+.case-array-origin { fill:#2B3036; stroke:#FFFFFF; stroke-width:2; }
 
-.course-case-audio { margin-top:18px; padding:clamp(18px,3vw,28px); border:1px solid var(--line); background:#fff; border-radius:10px; }
-.course-case-audio h3 { margin-top:0; font-size:1.3rem; }
-.course-case-audio p { margin:7px 0 13px; }
+.course-case-audio { margin-top:18px; padding:clamp(18px,3vw,28px); border:1px solid var(--line); background:var(--card); border-radius:8px; }
+.course-case-audio h3 { margin-top:0; font-size:1.28rem; }
+.course-case-audio p { margin:7px 0 13px; color:#3B3E42; }
 .course-audio-jumps:not([hidden]) { display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin:0 0 14px; }
-.course-audio-jumps button { min-height:42px; padding:5px 12px; color:var(--ink); background:#f8fafc; border:1px solid #9badc3; border-radius:6px; font:inherit; font-size:.88rem; font-weight:600; cursor:pointer; }
+.course-audio-jumps button { min-height:40px; padding:5px 12px; color:var(--ink); background:#FAF8F3; border:1px solid var(--line-strong); border-radius:5px; font:inherit; font-size:.87rem; font-weight:600; cursor:pointer; }
 .course-audio-jumps button:hover { border-color:var(--blue); color:var(--blue); }
 .course-seek-status { font-size:.85rem; color:var(--quiet); }
 .course-audio-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
-.course-audio-grid > div { padding:12px 14px; background:#eff4fb; border:1px solid #d5e0ee; border-radius:8px; }
-.course-audio-grid h4 { margin:0 0 7px; font-size:.93rem; color:#0f2744; }
-.course-audio-grid audio { display:block; width:100%; height:44px; }
-.course-audio-grid .course-mvdr-audio { background:#dbeafe; border-color:#93c5fd; }
+.course-audio-grid > div { padding:12px 14px; background:#F7F5F0; border:1px solid #E0DBD0; border-radius:6px; }
+.course-audio-grid h4 { margin:0 0 7px; font-size:.92rem; color:#1C1E21; }
+.course-audio-grid audio { display:block; width:100%; height:42px; }
+.course-audio-grid .course-mvdr-audio { background:#EEF3F7; border-color:#B8CCE0; border-left:3px solid var(--blue); }
 .course-levels { display:grid; grid-template-columns:minmax(0,1.5fr) minmax(0,1fr); align-items:center; gap:14px 25px; margin:22px 0 0; }
-.course-levels img { display:block; width:100%; height:auto; margin:0; border-radius:6px; }
+.course-levels img { display:block; width:100%; height:auto; margin:0; border-radius:5px; border:1px solid #E4DFD5; }
 .course-levels figcaption { padding:12px 0; }
-.course-levels figcaption strong { display:block; color:var(--blue); font-size:1.05rem; }
+.course-levels figcaption strong { display:block; color:var(--blue); font-size:1.04rem; }
 .course-levels figcaption p { margin:7px 0 0; font-size:.94rem; }
 .course-level-legend { display:flex; flex-wrap:wrap; gap:4px 15px; margin:0 0 7px; color:var(--quiet); font-size:.85rem; }
 .course-level-legend span { display:inline-flex; gap:6px; align-items:center; }
@@ -485,41 +487,41 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 .course-level-legend span:nth-child(3)::before { border-top:3px solid #234b91; }
 .course-case-links { display:flex; flex-wrap:wrap; gap:4px 17px; margin-top:auto; padding-top:8px; font-size:.91rem; font-weight:650; }
 
-.course-lab-banner { margin-top:18px; padding:22px 26px; border-radius:12px; background:#0f233d; color:#eef5fc; border:1px solid #2b4c77; display:flex; align-items:center; justify-content:space-between; gap:20px 32px; }
-.course-lab-banner .course-kicker { color:#7dd3fc; margin-bottom:6px; }
-.course-lab-banner h3 { color:#fff; font-size:1.25rem; margin:0 0 8px; }
-.course-lab-banner p { margin:0; color:#cbd5e1; font-size:.95rem; max-width:48rem; }
-.course-lab-banner b { color:#fde68a; }
-.course-lab-banner .course-cta { flex-shrink:0; background:#38bdf8; color:#091526; box-shadow:none; }
-.course-lab-banner .course-cta:hover { background:#7dd3fc; }
+/* Warm Stone Instrument Lab Banner */
+.course-lab-banner { margin-top:18px; padding:22px 26px; border-radius:8px; background:var(--stone); color:var(--ink); border:1px solid #D4CDC0; border-left:4px solid var(--red); display:flex; align-items:center; justify-content:space-between; gap:20px 32px; }
+.course-lab-banner .course-kicker { color:var(--red); margin-bottom:5px; }
+.course-lab-banner h3 { color:#14171A; font-size:1.22rem; margin:0 0 8px; }
+.course-lab-banner p { margin:0; color:#3B3E42; font-size:.95rem; max-width:48rem; }
+.course-lab-banner b { color:var(--red); }
+.course-lab-banner .course-cta { flex-shrink:0; }
 
 /* Learning Paths */
 .course-path { padding-block:clamp(42px,6.5vw,80px); border-top:1px solid var(--line); margin-top:clamp(38px,5.5vw,68px); }
 .course-stops { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; list-style:none; margin:0; padding:0; }
-.course-stops li { border:1px solid var(--line); border-top:4px solid var(--blue); border-radius:10px; background:#fff; padding:20px 22px; }
-.course-stops li > span { color:var(--red); font:750 .88rem system-ui,sans-serif; letter-spacing:.04em; }
-.course-stops h3 { font-size:1.22rem; margin:5px 0 8px; }
-.course-stops p { margin:0 0 12px; font-size:.95rem; color:#334155; }
-.course-stops div,.course-extra { display:flex; flex-wrap:wrap; align-items:center; gap:8px 14px; }
-.course-stops a { font-size:.9rem; font-weight:650; padding:3px 9px; background:#eff4fb; border-radius:5px; text-decoration:none; }
-.course-stops a:hover { background:#dbeafe; text-decoration:underline; }
-.course-extra { margin:22px 0 0; font-size:.92rem; }
-.course-extra > span { font-weight:750; color:#0f2744; }
+.course-stops li { border:1px solid var(--line); border-top:2.5px solid var(--blue); border-radius:7px; background:var(--card); padding:20px 22px; }
+.course-stops li > span { color:var(--red); font:700 .84rem ui-monospace,SFMono-Regular,Menlo,monospace; letter-spacing:.04em; }
+.course-stops h3 { font-size:1.2rem; margin:5px 0 8px; }
+.course-stops p { margin:0 0 13px; font-size:.95rem; color:#3F4246; }
+.course-stops div,.course-extra { display:flex; flex-wrap:wrap; align-items:center; gap:8px 10px; }
+.course-stops a { font-size:.89rem; font-weight:620; padding:3px 10px; background:#F5F2EB; border:1px solid #DFDAD0; border-radius:4px; text-decoration:none; color:#1E4E7E; }
+.course-stops a:hover { background:#EBE6DB; border-color:var(--blue); text-decoration:underline; }
+.course-extra { margin:22px 0 0; font-size:.92rem; gap:8px 16px; }
+.course-extra > span { font-weight:750; color:#181B1F; }
 
-/* Industrial Practice */
-.course-engineering { background:#0f233d; color:#f1f5f9; padding-block:clamp(40px,6vw,74px); }
-.course-engineering .course-kicker { color:#7dd3fc; }
-.course-engineering h2 { color:#fff; }
-.course-engineering .course-section-intro { color:#cbd5e1; }
-.course-engineering a { color:#93c5fd; }
-.course-engineering a:focus-visible { outline-color:#fbbf24; }
+/* Industrial Practice — Matte Architectural Charcoal */
+.course-engineering { background:#1E2227; color:#F2EFE8; padding-block:clamp(40px,6vw,74px); }
+.course-engineering .course-kicker { color:#D99B52; }
+.course-engineering h2 { color:#FAF8F3; }
+.course-engineering .course-section-intro { color:#C8C3B8; }
+.course-engineering a { color:#9AC0E6; }
+.course-engineering a:focus-visible { outline-color:#D99B52; }
 .course-engineering-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }
-.course-engineering-grid article { padding:20px; border:1px solid #304d73; border-top:3px solid #38bdf8; border-radius:10px; background:#162f50; display:flex; flex-direction:column; }
-.course-engineering-grid h3 { margin-top:0; color:#fff; font-size:1.14rem; }
-.course-engineering-grid p { margin:8px 0 14px; color:#cbd5e1; font-size:.94rem; flex:1; }
-.course-engineering-grid article div { display:flex; flex-wrap:wrap; gap:6px 14px; font-size:.9rem; font-weight:650; }
-.course-bridge { margin-top:24px; padding-top:18px; border-top:1px solid #2b476b; display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:12px 24px; font-size:.94rem; }
-.course-bridge-down { font-weight:750; color:#fde68a !important; }
+.course-engineering-grid article { padding:20px; border:1px solid #353B43; border-top:2.5px solid #C67B1E; border-radius:7px; background:#262B31; display:flex; flex-direction:column; }
+.course-engineering-grid h3 { margin-top:0; color:#FAF8F3; font-size:1.13rem; }
+.course-engineering-grid p { margin:8px 0 14px; color:#C8C3B8; font-size:.94rem; flex:1; }
+.course-engineering-grid article div { display:flex; flex-wrap:wrap; gap:6px 14px; font-size:.9rem; font-weight:620; }
+.course-bridge { margin-top:24px; padding-top:18px; border-top:1px solid #353B43; display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:12px 24px; font-size:.94rem; }
+.course-bridge-down { font-weight:700; color:#E7BA78 !important; }
 
 @media (min-width:861px) {
   .course-case { display:grid; grid-row:span 6; grid-template-rows:subgrid; }
@@ -565,7 +567,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 
   <section class="course-hero course-width" aria-labelledby="course-title">
     <div class="course-intro">
-      <p class="course-kicker">开源系统教程 · 数学推导 × 纯 NumPy 复算 × 工程验收</p>
+      <p class="course-kicker">开源系统专著 · 数学推导 × 纯 NumPy 复算 × 工程验收</p>
       <h1 id="course-title">麦克风阵列<br><span>信号处理</span></h1>
       <p class="course-deck">单支麦克风把目标人声、旁人干扰、墙面混响和扬声器回声叠在同一条波形里；多支同步麦克风则打开了<strong>空间维度</strong>。本书从零建立声波时差与复线性代数工具，完整推演六大核心算法与四类前沿阵列，并直通真实硬件的时钟同步、延迟预算与量产验收。</p>
       <div class="course-actions">
@@ -586,172 +588,172 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
     <figure class="course-demo" data-source="mvdr">
       <div class="course-demo-heading">
         <span>空间信号处理三步核心机制</span>
-        <span>波达时差 Δτ → 同相叠加 / 零陷抑制</span>
+        <span>波达时差 Δτ → 空频复加权 → 同相保真与零陷抑制</span>
       </div>
-      <svg class="course-plot" viewBox="0 0 860 440" role="img" aria-labelledby="course-plot-title course-plot-desc">
+      <svg class="course-plot" viewBox="0 0 860 444" role="img" aria-labelledby="course-plot-title course-plot-desc">
         <title id="course-plot-title">四麦克风阵列的空间定位、时延对齐与 MVDR 波束零陷原理图</title>
         <desc id="course-plot-desc">左上方展示目标说话人 A（负 35 度）与干扰源 B（正 30 度）的球面波依次到达 M1 至 M4 四支麦克风；左下方对比四路错位接收波形与时延补偿加权后的输出波形；右侧极坐标方向图展示主瓣无失真对准 A 并在 B 方向刻出深空间零陷。</desc>
         <defs>
           <pattern id="course-dots" width="18" height="18" patternUnits="userSpaceOnUse">
-            <circle cx="2" cy="2" r="1" fill="#3b5275" opacity=".42"/>
+            <circle cx="2" cy="2" r="1" fill="#8D8577" opacity=".24"/>
           </pattern>
         </defs>
-        <rect width="860" height="440" rx="14" fill="#0d1b2e"/>
-        <rect width="860" height="440" rx="14" fill="url(#course-dots)"/>
+        <rect x="1" y="1" width="858" height="442" rx="10" fill="#FAF8F3" stroke="#D5CFC2" stroke-width="1.5"/>
+        <rect x="2" y="2" width="856" height="440" rx="9" fill="url(#course-dots)"/>
 
-        <rect x="16" y="14" width="828" height="32" rx="8" fill="#152844" stroke="#294366"/>
-        <g font-family="system-ui,-apple-system,sans-serif" font-size="12.5" font-weight="700">
-          <text x="30" y="34" fill="#7dd3fc">① 波前传播与麦间时差 Δτ</text>
-          <text x="228" y="34" fill="#64748b">──▶</text>
-          <text x="268" y="34" fill="#a7f3d0">② 时延对齐与空频复加权 wᴴ(f)X(f)</text>
-          <text x="518" y="34" fill="#64748b">──▶</text>
-          <text x="558" y="34" fill="#fde68a">③ 主瓣 0 dB 保真 + 干扰方向深零陷</text>
+        <rect x="16" y="14" width="828" height="32" rx="6" fill="#F1EDE4" stroke="#DDD7CB"/>
+        <g font-family="system-ui,-apple-system,'PingFang SC','Microsoft YaHei',sans-serif" font-size="12.2" font-weight="700">
+          <text x="28" y="34.5" fill="#1F5A92">01 · 波前传播与麦间时差 Δτ</text>
+          <text x="228" y="34.5" fill="#8A8275">──▶</text>
+          <text x="266" y="34.5" fill="#237263">02 · 时延对齐与空频复加权 wᴴ(f)X(f)</text>
+          <text x="524" y="34.5" fill="#8A8275">──▶</text>
+          <text x="562" y="34.5" fill="#B84A2E">03 · 主瓣 0 dB 保真 + 干扰零陷</text>
         </g>
 
-        <rect x="16" y="56" width="496" height="198" rx="10" fill="#12233b" stroke="#284264"/>
-        <text x="30" y="78" fill="#94a3b8" font-family="system-ui,-apple-system,sans-serif" font-size="12" font-weight="700">声场俯视 · 四麦均匀线阵（法线 0°）</text>
-        <path d="M264 72V226" stroke="#475569" stroke-width="1.5" stroke-dasharray="4 5"/>
-        <text x="271" y="82" fill="#94a3b8" font-family="system-ui,-apple-system,sans-serif" font-size="11.5" font-weight="600">0° 法线</text>
+        <rect x="16" y="56" width="496" height="198" rx="8" fill="#FFFFFF" stroke="#DDD7CB"/>
+        <text x="30" y="77" fill="#4A4640" font-family="system-ui,-apple-system,'PingFang SC',sans-serif" font-size="12" font-weight="700">声场俯视 · 四麦均匀线阵（法线 0°）</text>
+        <path d="M264 70V226" stroke="#9C9588" stroke-width="1.3" stroke-dasharray="4 4"/>
+        <text x="272" y="81" fill="#6E695F" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="11" font-weight="600">0° 法线</text>
 
-        <path class="course-ray-a" d="M264 212L118 108" stroke="#38bdf8" stroke-width="2" stroke-dasharray="5 4" opacity=".85"/>
-        <path class="course-ray-b" d="M264 212L388 108" stroke="#fb923c" stroke-width="2" stroke-dasharray="5 4" opacity=".85"/>
+        <path class="course-ray-a" d="M264 212L118 108" stroke="#1F5A92" stroke-width="1.8" stroke-dasharray="5 4" opacity=".82"/>
+        <path class="course-ray-b" d="M264 212L388 108" stroke="#B84A2E" stroke-width="1.8" stroke-dasharray="5 4" opacity=".82"/>
 
-        <g class="course-from-left" fill="none" stroke="#38bdf8" stroke-width="2.4" stroke-linecap="round">
+        <g class="course-from-left" fill="none" stroke="#1F5A92" stroke-width="2.2" stroke-linecap="round">
           <path d="M145 98a34 34 0 0 1 -16 42" opacity=".68"/>
-          <path d="M174 94a68 68 0 0 1 -34 78" opacity=".52"/>
-          <path d="M206 90a106 106 0 0 1 -54 114" opacity=".36"/>
-          <path class="course-wave course-wave-a" d="M160 95a52 52 0 0 1 -26 60"/>
+          <path d="M174 94a68 68 0 0 1 -34 78" opacity=".48"/>
+          <path d="M206 90a106 106 0 0 1 -54 114" opacity=".30"/>
+          <path class="course-wave course-wave-a" d="M160 95a52 52 0 0 1 -26 60" stroke-width="2.6"/>
         </g>
 
-        <g class="course-from-right" fill="none" stroke="#fb923c" stroke-width="2.4" stroke-linecap="round">
+        <g class="course-from-right" fill="none" stroke="#B84A2E" stroke-width="2.2" stroke-linecap="round">
           <path d="M377 140a34 34 0 0 1 -16 -42" opacity=".68"/>
-          <path d="M366 172a68 68 0 0 1 -34 -78" opacity=".52"/>
-          <path d="M354 204a106 106 0 0 1 -54 -114" opacity=".36"/>
-          <path class="course-wave course-wave-b" d="M372 155a52 52 0 0 1 -26 -60"/>
+          <path d="M366 172a68 68 0 0 1 -34 -78" opacity=".48"/>
+          <path d="M354 204a106 106 0 0 1 -54 -114" opacity=".30"/>
+          <path class="course-wave course-wave-b" d="M372 155a52 52 0 0 1 -26 -60" stroke-width="2.6"/>
         </g>
 
-        <rect x="146" y="200" width="236" height="24" rx="12" fill="#091322" stroke="#47668f" stroke-width="1.5"/>
-        <g fill="#162d4c" stroke="#93c5fd" stroke-width="2">
-          <circle cx="174" cy="212" r="7.5"/>
-          <circle cx="234" cy="212" r="7.5"/>
-          <circle cx="294" cy="212" r="7.5"/>
-          <circle cx="354" cy="212" r="7.5"/>
+        <rect x="146" y="200" width="236" height="24" rx="12" fill="#2A2F35" stroke="#555B64" stroke-width="1.2"/>
+        <g fill="#FAF8F3" stroke="#1F5A92" stroke-width="2">
+          <circle cx="174" cy="212" r="7"/>
+          <circle cx="234" cy="212" r="7"/>
+          <circle cx="294" cy="212" r="7"/>
+          <circle cx="354" cy="212" r="7"/>
         </g>
-        <g class="course-hits" fill="#38bdf8">
-          <circle cx="174" cy="212" r="6.5"/>
-          <circle cx="234" cy="212" r="6.5"/>
-          <circle cx="294" cy="212" r="6.5"/>
-          <circle cx="354" cy="212" r="6.5"/>
+        <g class="course-hits" fill="#1F5A92">
+          <circle cx="174" cy="212" r="6"/>
+          <circle cx="234" cy="212" r="6"/>
+          <circle cx="294" cy="212" r="6"/>
+          <circle cx="354" cy="212" r="6"/>
         </g>
-        <g font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-weight="700" font-size="12" text-anchor="middle" fill="#cbd5e1">
+        <g font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-weight="700" font-size="11.5" text-anchor="middle" fill="#3D4249">
           <text x="174" y="242">M1</text>
           <text x="234" y="242">M2</text>
           <text x="294" y="242">M3</text>
           <text x="354" y="242">M4</text>
         </g>
 
-        <g class="course-emitter-a" font-family="system-ui,-apple-system,sans-serif">
-          <circle cx="104" cy="108" r="17" fill="#0284c7" stroke="#bae6fd" stroke-width="2"/>
-          <text x="104" y="113.5" text-anchor="middle" font-size="15" font-weight="800" fill="#ffffff">A</text>
-          <text x="32" y="144" font-size="12" font-weight="700" fill="#7dd3fc">目标语音 −35°</text>
-          <text x="32" y="160" font-size="11" fill="#94a3b8">先到 M1 → 后到 M4</text>
+        <g class="course-emitter-a" font-family="system-ui,-apple-system,'PingFang SC',sans-serif">
+          <circle cx="104" cy="108" r="16.5" fill="#1F5A92" stroke="#FAF8F3" stroke-width="2.5"/>
+          <text x="104" y="113.5" text-anchor="middle" font-size="14.5" font-weight="800" fill="#FFFFFF">A</text>
+          <text x="30" y="144" font-size="12" font-weight="700" fill="#1F5A92">目标语音 −35°</text>
+          <text x="30" y="160" font-size="11" fill="#635E56">先到 M1 → 后到 M4</text>
         </g>
-        <g class="course-emitter-b" font-family="system-ui,-apple-system,sans-serif">
-          <circle cx="402" cy="108" r="17" fill="#c2410c" stroke="#fed7aa" stroke-width="2"/>
-          <text x="402" y="113.5" text-anchor="middle" font-size="15" font-weight="800" fill="#ffffff">B</text>
-          <text x="394" y="144" font-size="12" font-weight="700" fill="#fdba74">旁向干扰 +30°</text>
-          <text x="394" y="160" font-size="11" fill="#94a3b8">先到 M4 → 后到 M1</text>
+        <g class="course-emitter-b" font-family="system-ui,-apple-system,'PingFang SC',sans-serif">
+          <circle cx="402" cy="108" r="16.5" fill="#B84A2E" stroke="#FAF8F3" stroke-width="2.5"/>
+          <text x="402" y="113.5" text-anchor="middle" font-size="14.5" font-weight="800" fill="#FFFFFF">B</text>
+          <text x="394" y="144" font-size="12" font-weight="700" fill="#B84A2E">旁向干扰 +30°</text>
+          <text x="394" y="160" font-size="11" fill="#635E56">先到 M4 → 后到 M1</text>
         </g>
 
-        <rect x="16" y="264" width="496" height="162" rx="10" fill="#12233b" stroke="#284264"/>
-        <text x="30" y="286" fill="#94a3b8" font-family="system-ui,-apple-system,sans-serif" font-size="12" font-weight="700">四路原始采样（存在波达时差）</text>
-        <text x="292" y="286" fill="#94a3b8" font-family="system-ui,-apple-system,sans-serif" font-size="12" font-weight="700">补偿时延并加权合成 y[n]</text>
+        <rect x="16" y="264" width="496" height="166" rx="8" fill="#FFFFFF" stroke="#DDD7CB"/>
+        <text x="30" y="285" fill="#4A4640" font-family="system-ui,-apple-system,'PingFang SC',sans-serif" font-size="12" font-weight="700">四路原始采样（存在波达时差）</text>
+        <text x="292" y="285" fill="#4A4640" font-family="system-ui,-apple-system,'PingFang SC',sans-serif" font-size="12" font-weight="700">补偿时延并加权合成 y[n]</text>
 
-        <g stroke="#294160" stroke-width="1">
+        <g stroke="#E6E1D6" stroke-width="1">
           <path d="M56 308H236M56 334H236M56 360H236M56 386H236"/>
         </g>
-        <g font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="11" fill="#94a3b8">
+        <g font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="11" font-weight="600" fill="#5D5951">
           <text x="30" y="312">M1</text>
           <text x="30" y="338">M2</text>
           <text x="30" y="364">M3</text>
           <text x="30" y="390">M4</text>
         </g>
-        <g class="course-traces-a" fill="none" stroke="#38bdf8" stroke-width="2">
+        <g class="course-traces-a" fill="none" stroke="#1F5A92" stroke-width="1.9" stroke-linejoin="round">
           <path d="M62 308h18l7-11 9 22 9-20 7 9h124"/>
           <path d="M62 334h34l7-11 9 22 9-20 7 9h108"/>
           <path d="M62 360h50l7-11 9 22 9-20 7 9h92"/>
           <path d="M62 386h66l7-11 9 22 9-20 7 9h76"/>
-          <path d="M87 294v102" stroke="#38bdf8" stroke-width="1.2" stroke-dasharray="3 3" opacity=".55"/>
+          <path d="M87 294v102" stroke="#1F5A92" stroke-width="1.1" stroke-dasharray="3 3" opacity=".55"/>
         </g>
-        <g class="course-traces-b" fill="none" stroke="#fb923c" stroke-width="1.8" opacity=".88">
+        <g class="course-traces-b" fill="none" stroke="#B84A2E" stroke-width="1.65" stroke-linejoin="round" opacity=".86">
           <path d="M148 308h28l6-8 7 16 7-16 6 8h34"/>
           <path d="M134 334h28l6-8 7 16 7-16 6 8h48"/>
           <path d="M120 360h28l6-8 7 16 7-16 6 8h62"/>
           <path d="M106 386h28l6-8 7 16 7-16 6 8h76"/>
         </g>
-        <text x="30" y="413" fill="#7dd3fc" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="10.5">到达格 A:[0,2,4,6] · B:[6,4,2,0]</text>
+        <text x="30" y="415" fill="#5D5951" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="10.5">到达格 A:[0,2,4,6] · B:[6,4,2,0]</text>
 
-        <rect x="244" y="330" width="38" height="34" rx="7" fill="#1d3b63" stroke="#60a5fa"/>
-        <text x="263" y="351" text-anchor="middle" fill="#e0f2fe" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="12" font-weight="700">wᴴX</text>
+        <rect x="243" y="330" width="40" height="34" rx="6" fill="#F3EFE6" stroke="#1F5A92" stroke-width="1.3"/>
+        <text x="263" y="351" text-anchor="middle" fill="#1F5A92" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="12" font-weight="700">wᴴX</text>
 
-        <rect x="290" y="296" width="208" height="98" rx="8" fill="#091526" stroke="#2c4c75"/>
-        <path d="M300 345H488" stroke="#243b59" stroke-width="1"/>
+        <rect x="290" y="296" width="208" height="98" rx="6" fill="#FAF8F3" stroke="#D8D2C5"/>
+        <path d="M300 345H488" stroke="#DED9CE" stroke-width="1"/>
         <g class="course-out-a" fill="none">
-          <path d="M302 345h26l9-28 12 56 12-52 10 24h115" stroke="#34d399" stroke-width="2.8" stroke-linejoin="round"/>
-          <path class="course-out-b-residual" d="M412 345h16l4-3 5 6 5-6 4 3h38" stroke="#fb923c" stroke-width="1.6" stroke-dasharray="3 2"/>
+          <path d="M302 345h26l9-28 12 56 12-52 10 24h115" stroke="#237263" stroke-width="2.6" stroke-linejoin="round"/>
+          <path class="course-out-b-residual" d="M412 345h16l4-3 5 6 5-6 4 3h38" stroke="#B84A2E" stroke-width="1.5" stroke-dasharray="3 2"/>
         </g>
         <g class="course-out-b" fill="none">
-          <path d="M302 345h96l8-24 10 48 10-48 8 24h52" stroke="#fb923c" stroke-width="2.8" stroke-linejoin="round"/>
+          <path d="M302 345h96l8-24 10 48 10-48 8 24h52" stroke="#B84A2E" stroke-width="2.6" stroke-linejoin="round"/>
         </g>
-        <text class="course-out-caption-mvdr" x="294" y="413" fill="#6ee7b7" font-family="system-ui,-apple-system,sans-serif" font-size="11" font-weight="700">A 同相保真 (0 dB) · B 相消压低</text>
-        <text class="course-out-caption-right" x="294" y="413" fill="#fdba74" font-family="system-ui,-apple-system,sans-serif" font-size="11" font-weight="700">改对准 +30°：B 同相叠加增强</text>
+        <text class="course-out-caption-mvdr" x="292" y="415" fill="#237263" font-family="system-ui,-apple-system,'PingFang SC',sans-serif" font-size="11" font-weight="700">A 同相保真 (0 dB) · B 相消压低</text>
+        <text class="course-out-caption-right" x="292" y="415" fill="#B84A2E" font-family="system-ui,-apple-system,'PingFang SC',sans-serif" font-size="11" font-weight="700">改对准 +30°：B 同相叠加增强</text>
 
-        <rect x="524" y="56" width="320" height="370" rx="10" fill="#12233b" stroke="#284264"/>
-        <text x="540" y="78" fill="#94a3b8" font-family="system-ui,-apple-system,sans-serif" font-size="12" font-weight="700">空间波束方向图 |B(θ)| (dB)</text>
-        <text x="540" y="96" fill="#64748b" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="11">w_MVDR = R⁻¹a(θ₀) / [aᴴ(θ₀)R⁻¹a(θ₀)]</text>
+        <rect x="524" y="56" width="320" height="374" rx="8" fill="#FFFFFF" stroke="#DDD7CB"/>
+        <text x="540" y="77" fill="#4A4640" font-family="system-ui,-apple-system,'PingFang SC',sans-serif" font-size="12" font-weight="700">空间波束方向图 |B(θ)| (dB)</text>
+        <text x="540" y="95" fill="#6B655B" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="10.8">w_MVDR = R⁻¹a(θ₀) / [aᴴ(θ₀)R⁻¹a(θ₀)]</text>
 
-        <g fill="none" stroke="#294366" stroke-width="1.2">
-          <path d="M546 290a138 138 0 0 1 276 0"/>
-          <path d="M590 290a94 94 0 0 1 188 0" stroke-dasharray="3 4"/>
-          <path d="M636 290a48 48 0 0 1 96 0" stroke-dasharray="2 4"/>
-          <path d="M540 290H828M684 290V144"/>
-          <path d="M684 290L605 177" stroke="#38bdf8" stroke-dasharray="4 4" opacity=".65"/>
-          <path d="M684 290L753 170" stroke="#fb923c" stroke-dasharray="4 4" opacity=".65"/>
+        <g fill="none" stroke="#DAD4C8" stroke-width="1.15">
+          <path d="M546 288a138 138 0 0 1 276 0"/>
+          <path d="M590 288a94 94 0 0 1 188 0" stroke-dasharray="3 4"/>
+          <path d="M636 288a48 48 0 0 1 96 0" stroke-dasharray="2 4"/>
+          <path d="M540 288H828M684 288V142"/>
+          <path d="M684 288L605 175" stroke="#1F5A92" stroke-dasharray="4 4" opacity=".62"/>
+          <path d="M684 288L753 168" stroke="#B84A2E" stroke-dasharray="4 4" opacity=".62"/>
         </g>
-        <g font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="11" fill="#94a3b8" text-anchor="middle">
-          <text x="684" y="136">0°</text>
-          <text x="593" y="168" fill="#7dd3fc">−35° (A)</text>
-          <text x="768" y="163" fill="#fdba74">+30° (B)</text>
-          <text x="548" y="308">−90°</text>
-          <text x="820" y="308">+90°</text>
-          <text x="722" y="203" fill="#64748b" font-size="10">−10 dB</text>
+        <g font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="11" fill="#5E5951" text-anchor="middle">
+          <text x="684" y="135">0°</text>
+          <text x="585" y="158" fill="#1F5A92" font-weight="700">−35° (A)</text>
+          <text x="768" y="161" fill="#B84A2E" font-weight="700">+30° (B)</text>
+          <text x="548" y="305">−90°</text>
+          <text x="820" y="305">+90°</text>
+          <text x="703" y="206" fill="#7D766B" font-size="10">−10 dB</text>
         </g>
 
-        <path class="course-polar-mvdr" d="M592 290 C578 262, 578 214, 605 177 C632 152, 668 188, 682 232 C690 258, 686 284, 686 288 C696 276, 728 242, 742 252 C754 260, 766 276, 760 290 Z" fill="#38bdf8" fill-opacity=".22" stroke="#38bdf8" stroke-width="2.8" stroke-linejoin="round"/>
-        <path class="course-polar-left" d="M572 290 C562 250, 574 202, 605 177 C638 156, 678 190, 696 236 C714 218, 738 214, 748 232 C762 254, 768 274, 758 290 Z" fill="#38bdf8" fill-opacity=".18" stroke="#7dd3fc" stroke-width="2.6" stroke-linejoin="round"/>
-        <path class="course-polar-right" d="M608 290 C602 270, 616 244, 636 236 C654 230, 668 248, 676 240 C696 192, 726 158, 753 170 C782 184, 800 242, 790 290 Z" fill="#fb923c" fill-opacity=".20" stroke="#fb923c" stroke-width="2.6" stroke-linejoin="round"/>
+        <path class="course-polar-mvdr" d="M592 288 C578 260, 578 212, 605 175 C632 150, 668 186, 682 230 C690 256, 686 282, 686 286 C696 274, 728 240, 742 250 C754 258, 766 274, 760 288 Z" fill="#1F5A92" fill-opacity=".14" stroke="#1F5A92" stroke-width="2.6" stroke-linejoin="round"/>
+        <path class="course-polar-left" d="M572 288 C562 248, 574 200, 605 175 C638 154, 678 188, 696 234 C714 216, 738 212, 748 230 C762 252, 768 272, 758 288 Z" fill="#1F5A92" fill-opacity=".11" stroke="#1F5A92" stroke-width="2.4" stroke-linejoin="round"/>
+        <path class="course-polar-right" d="M608 288 C602 268, 616 242, 636 234 C654 228, 668 246, 676 238 C696 190, 726 156, 753 168 C782 182, 800 240, 790 288 Z" fill="#B84A2E" fill-opacity=".13" stroke="#B84A2E" stroke-width="2.4" stroke-linejoin="round"/>
 
         <g class="course-polar-markers-mvdr">
-          <circle cx="605" cy="177" r="5.5" fill="#34d399" stroke="#0d1b2e" stroke-width="2"/>
-          <circle cx="686" cy="288" r="5" fill="#fb923c" stroke="#0d1b2e" stroke-width="2"/>
-          <rect x="540" y="330" width="288" height="78" rx="8" fill="#091526" stroke="#294366"/>
-          <text x="554" y="352" fill="#6ee7b7" font-family="system-ui,-apple-system,sans-serif" font-size="12" font-weight="700">● 无失真约束：wᴴa(−35°) = 1 (0 dB)</text>
-          <text x="554" y="374" fill="#fdba74" font-family="system-ui,-apple-system,sans-serif" font-size="12" font-weight="700">● 自适应零陷：+30° 干扰方向能量陡降</text>
-          <text x="554" y="395" fill="#94a3b8" font-family="system-ui,-apple-system,sans-serif" font-size="11">代价：需核查白噪声增益 WNG 与协方差估计误差</text>
+          <circle cx="605" cy="175" r="5.5" fill="#237263" stroke="#FFFFFF" stroke-width="2"/>
+          <circle cx="686" cy="286" r="5" fill="#B84A2E" stroke="#FFFFFF" stroke-width="2"/>
+          <rect x="540" y="328" width="288" height="84" rx="6" fill="#F6F3EC" stroke="#DDD7CB"/>
+          <text x="554" y="350" fill="#237263" font-family="system-ui,-apple-system,'PingFang SC',sans-serif" font-size="11.8" font-weight="700">● 无失真约束：wᴴa(−35°) = 1 (0 dB)</text>
+          <text x="554" y="372" fill="#B84A2E" font-family="system-ui,-apple-system,'PingFang SC',sans-serif" font-size="11.8" font-weight="700">● 自适应零陷：+30° 干扰方向能量陡降</text>
+          <text x="554" y="394" fill="#5D5951" font-family="system-ui,-apple-system,'PingFang SC',sans-serif" font-size="11">代价：须核查白噪声增益 WNG 与协方差估计误差</text>
         </g>
         <g class="course-polar-markers-left">
-          <circle cx="605" cy="177" r="5.5" fill="#38bdf8" stroke="#0d1b2e" stroke-width="2"/>
-          <rect x="540" y="330" width="288" height="78" rx="8" fill="#091526" stroke="#294366"/>
-          <text x="554" y="352" fill="#7dd3fc" font-family="system-ui,-apple-system,sans-serif" font-size="12" font-weight="700">● 延迟求和（DSB）：四路等权补齐 A 时差</text>
-          <text x="554" y="374" fill="#cbd5e1" font-family="system-ui,-apple-system,sans-serif" font-size="12">白噪声增益最高（WNG = 4 = 6.02 dB）</text>
-          <text x="554" y="395" fill="#94a3b8" font-family="system-ui,-apple-system,sans-serif" font-size="11">局限：主瓣较宽，+30° 旁瓣仍有残余干扰漏入</text>
+          <circle cx="605" cy="175" r="5.5" fill="#1F5A92" stroke="#FFFFFF" stroke-width="2"/>
+          <rect x="540" y="328" width="288" height="84" rx="6" fill="#F6F3EC" stroke="#DDD7CB"/>
+          <text x="554" y="350" fill="#1F5A92" font-family="system-ui,-apple-system,'PingFang SC',sans-serif" font-size="11.8" font-weight="700">● 延迟求和（DSB）：四路等权补齐 A 时差</text>
+          <text x="554" y="372" fill="#2B2E33" font-family="system-ui,-apple-system,'PingFang SC',sans-serif" font-size="11.6">白噪声增益最高（WNG = 4 = 6.02 dB）</text>
+          <text x="554" y="394" fill="#5D5951" font-family="system-ui,-apple-system,'PingFang SC',sans-serif" font-size="11">局限：主瓣较宽，+30° 旁瓣仍有残余干扰漏入</text>
         </g>
         <g class="course-polar-markers-right">
-          <circle cx="753" cy="170" r="5.5" fill="#fb923c" stroke="#0d1b2e" stroke-width="2"/>
-          <rect x="540" y="330" width="288" height="78" rx="8" fill="#091526" stroke="#294366"/>
-          <text x="554" y="352" fill="#fdba74" font-family="system-ui,-apple-system,sans-serif" font-size="12" font-weight="700">● 改向扫描 +30°：到达顺序反转为 M4→M1</text>
-          <text x="554" y="374" fill="#cbd5e1" font-family="system-ui,-apple-system,sans-serif" font-size="12">给最早收到的 M4 补等 6 格，B 同相对齐</text>
-          <text x="554" y="395" fill="#94a3b8" font-family="system-ui,-apple-system,sans-serif" font-size="11">此时 −35° 的声源 A 反而错位抵消</text>
+          <circle cx="753" cy="168" r="5.5" fill="#B84A2E" stroke="#FFFFFF" stroke-width="2"/>
+          <rect x="540" y="328" width="288" height="84" rx="6" fill="#F6F3EC" stroke="#DDD7CB"/>
+          <text x="554" y="350" fill="#B84A2E" font-family="system-ui,-apple-system,'PingFang SC',sans-serif" font-size="11.8" font-weight="700">● 改向扫描 +30°：到达顺序反转为 M4→M1</text>
+          <text x="554" y="372" fill="#2B2E33" font-family="system-ui,-apple-system,'PingFang SC',sans-serif" font-size="11.6">给最早收到的 M4 补等 6 格，B 同相对齐</text>
+          <text x="554" y="394" fill="#5D5951" font-family="system-ui,-apple-system,'PingFang SC',sans-serif" font-size="11">此时 −35° 的声源 A 反而错位抵消</text>
         </g>
       </svg>
       <figcaption>
@@ -772,37 +774,37 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
     <p class="course-section-intro">在智能音箱、会议终端、车载免提或耳机里，看似都是“语音不清”，背后却对应不同的物理可观测量与数学约束。先把手上能拿到什么线索分清，算法选型才不会张冠李戴。</p>
     <div class="course-task-grid">
       <article class="course-task-card">
-        <div class="course-task-meta"><span>第 4 章 · 定位</span><strong>输出方位角 / 坐标</strong></div>
+        <div class="course-task-meta"><span>01 · 第 4 章</span><strong>输出方位角 / 坐标</strong></div>
         <h3>声源定位（DOA）</h3>
         <p>利用同一声波到达各阵元的微秒级时间差或空间协方差子空间，判断说话人在哪边。对比 GCC-PHAT、SRP-PHAT、MUSIC 与 ESPRIT 在混响和多源下的分辨边界。</p>
         <a href="04_doa-estimation.html">进入第 4 章 →</a>
       </article>
       <article class="course-task-card">
-        <div class="course-task-meta"><span>第 5 章 · 空域滤波</span><strong>输出增强音频</strong></div>
+        <div class="course-task-meta"><span>02 · 第 5 章</span><strong>输出增强音频</strong></div>
         <h3>波束形成（Beamforming）</h3>
         <p>按导向矢量约束目标方向无失真通过，再用干扰协方差逆矩阵压低旁向噪声。串讲 DSB、超指向、MVDR、LCMV、GSC、MWF 与时频掩码神经波束形成。</p>
         <a href="05_beamforming.html">进入第 5 章 →</a>
       </article>
       <article class="course-task-card">
-        <div class="course-task-meta"><span>第 6 章 · 全双工通信</span><strong>需同步播放参考</strong></div>
+        <div class="course-task-meta"><span>03 · 第 6 章</span><strong>需同步播放参考</strong></div>
         <h3>声学回声消除（AEC）</h3>
         <p>消除设备自身喇叭播出后绕回麦克风的强回声。详解 NLMS、分区块频域 PBFDAF、仿射投影 APA、频域卡尔曼 FDKF、双讲检测冻结与喇叭非线性上限。</p>
         <a href="06_aec.html">进入第 6 章 →</a>
       </article>
       <article class="course-task-card">
-        <div class="course-task-meta"><span>第 7 章 · 盲去混响</span><strong>跨帧延迟线性预测</strong></div>
+        <div class="course-task-meta"><span>04 · 第 7 章</span><strong>跨帧延迟线性预测</strong></div>
         <h3>加权预测误差去混响（WPE）</h3>
         <p>在无干净参考的盲观测下，跳过保护间隔 Δ 以保留直达声与早期反射，仅用更早的多通道历史帧预测并减除晚期混响拖尾，防止损伤周期性元音。</p>
         <a href="07_wpe-dereverberation.html">进入第 7 章 →</a>
       </article>
       <article class="course-task-card">
-        <div class="course-task-meta"><span>第 8 章 · 鸡尾酒会问题</span><strong>输出多路分离音轨</strong></div>
+        <div class="course-task-meta"><span>05 · 第 8 章</span><strong>输出多路分离音轨</strong></div>
         <h3>多通道语音分离</h3>
         <p>拆解多人同时重叠讲话。打通频域独立向量分析（IVA / ILRMA）、会议活动导引源分离（GSS）、置换不变深度网络（PIT）与流式跨块极性拼接（CSS）。</p>
         <a href="08_speech-separation.html">进入第 8 章 →</a>
       </article>
       <article class="course-task-card">
-        <div class="course-task-meta"><span>第 9 章 · 动态多目标</span><strong>输出连续轨迹状态</strong></div>
+        <div class="course-task-meta"><span>06 · 第 9 章</span><strong>输出连续轨迹状态</strong></div>
         <h3>声源追踪（Tracking）</h3>
         <p>应对边走边说、停顿静默与反射野点。构建卡尔曼滤波、±180° 角度卷绕、马氏距离门控、粒子滤波、交互多模型（IMM）及轨迹确认与退役状态机。</p>
         <a href="09_source-tracking.html">进入第 9 章 →</a>
@@ -834,19 +836,19 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
           <svg viewBox="0 0 500 294" role="img" aria-labelledby="course-doa-title course-doa-desc">
             <title id="course-doa-title">在同一房间定位两个扬声器</title>
             <desc id="course-doa-desc">房间俯视图。A 在阵列右前方，B 更靠正前方。圆点是光学实测位置，蓝箭头按所选的录音时段改变方向。</desc>
-            <rect class="case-field" x="12" y="12" width="476" height="270" rx="13"/>
+            <rect class="case-field" x="12" y="12" width="476" height="270" rx="10"/>
             <path class="case-gridlines" d="M42 78h416M42 130h416M42 182h416M42 234h416M101 31v219m72-219v219m72-219v219m72-219v219m72-219v219"/>
             <path class="case-candidate" d="M245 246 148 78M245 246V60"/>
             <text class="case-quiet-label" x="125" y="73">−30°</text>
             <text class="case-quiet-label" x="229" y="54">0°</text>
             <g class="case-scan-a">
               <path class="case-target-ray" d="M245 246 365 75m-3 16 3-16-15 7"/>
-              <rect class="case-callout" x="316" y="146" width="145" height="38" rx="7"/>
+              <rect class="case-callout" x="316" y="146" width="145" height="38" rx="6"/>
               <text class="case-target-label" x="329" y="171">A · 35°</text>
             </g>
             <g class="case-scan-b">
               <path class="case-target-ray" d="M245 246 302 49m3 16-3-16-11 12"/>
-              <rect class="case-callout" x="80" y="132" width="138" height="38" rx="7"/>
+              <rect class="case-callout" x="80" y="132" width="138" height="38" rx="6"/>
               <text class="case-target-label" x="95" y="157">B · 16°</text>
             </g>
             <circle class="case-side-dot" cx="313" cy="42" r="10"/>
@@ -891,7 +893,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
           <svg viewBox="0 0 500 294" role="img" aria-labelledby="course-beam-title course-beam-desc">
             <title id="course-beam-title">朝 A 拾音，削弱相邻的 B</title>
             <desc id="course-beam-desc">与定位图相同的俯视位置。蓝色实线从阵列指向目标 A，橙色虚线连接旁边的 B。两种波束形成都对准 A。对齐相加后，B 仍错开。增强版本在 MVDR 后用另一路监测 B，再调低 B 较强的部分。</desc>
-            <rect class="case-field" x="12" y="12" width="476" height="270" rx="13"/>
+            <rect class="case-field" x="12" y="12" width="476" height="270" rx="10"/>
             <path class="case-gridlines" d="M42 78h416M42 130h416M42 182h416M42 234h416M101 31v219m72-219v219m72-219v219m72-219v219m72-219v219"/>
             <path class="case-side-ray" d="M313 42 245 246"/>
             <path class="case-target-ray" d="M245 246 360 78m-3 16 3-16-15 7"/>
@@ -899,7 +901,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
             <text class="case-side-label" x="211" y="49">旁边 B</text>
             <circle class="case-target-dot" cx="360" cy="78" r="12"/>
             <text class="case-target-label" x="381" y="86">目标 A</text>
-            <rect class="case-callout" x="318" y="142" width="144" height="37" rx="7"/>
+            <rect class="case-callout" x="318" y="142" width="144" height="37" rx="6"/>
             <text class="case-target-label" x="332" y="167">朝 A 对准</text>
             <text class="case-side-label" x="75" y="151">B 被削弱</text>
             <path class="case-array" d="M105 246h280"/>
@@ -1018,7 +1020,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
         <article>
           <h3>03 · 编写可测验收与排错准则</h3>
           <p>拒绝“听感尚可”的模糊描述，把工作频带、混响 DRR、目标损伤上限、掉帧恢复时间与多场景最坏保障值写成可自动化回归的验收合同。</p>
-          <div><a href="11_selection-guide.html#sec-11-5">可执行验收规格书 →</a><a href="17_appendix-guide.html#sec-17-3">全链路故障排查表 →</a></div>
+          <div><a href="11_selection-guide.html#sec-11-5">可执行验收规格书 →</a><a href="17_appendix-guide.html#sec-17-4">全链路故障排查表 →</a></div>
         </article>
       </div>
       <div class="course-bridge">
@@ -1121,7 +1123,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <ul>
 <li><strong>零基础系统学习</strong>：先读<a href="00_math-foundations.html">第 0 章 · 数学基础</a>与<a href="01_problem-definition.html">第 1 章 · 问题定义</a>，或先到本页<a href="#sec-u-6d43c0086f">第 8 节</a>对照图 34 试听四麦对齐前后差异。</li>
 <li><strong>按算法任务查阅</strong>：直达<a href="04_doa-estimation.html">第 4 章定位</a>、<a href="05_beamforming.html">第 5 章波束形成</a>、<a href="06_aec.html">第 6 章回声消除</a>、<a href="07_wpe-dereverberation.html">第 7 章 WPE 去混响</a>、<a href="08_speech-separation.html">第 8 章语音分离</a>或<a href="09_source-tracking.html">第 9 章声源追踪</a>。</li>
-<li><strong>硬件实现与选型验收</strong>：直达<a href="10_engineering-practice.html">第 10 章工程实践</a>、<a href="11_selection-guide.html">第 11 章选型指南</a>与<a href="17_appendix-guide.html#sec-17-3">附录 B 故障排查表</a>；各篇顶部均提供上一篇、下一篇与返回本页的快捷链接。</li>
+<li><strong>硬件实现与选型验收</strong>：直达<a href="10_engineering-practice.html">第 10 章工程实践</a>、<a href="11_selection-guide.html">第 11 章选型指南</a>与<a href="17_appendix-guide.html#sec-17-4">附录 B 故障排查表</a>；各篇顶部均提供上一篇、下一篇与返回本页的快捷链接。</li>
 </ul>
 <hr />
 <span id="sec-2" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-9d988aa5ab">1. 这是一份什么样的教程</h2>
@@ -1192,126 +1194,126 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <td>导航与复现入口</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:3em">第0章</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:3em">第 0 章</td>
 <td><code><a href="00_math-foundations.html">00_math-foundations.md</a></code></td>
 <td>图89～92，共 4 张</td>
 <td class="tutorial-short-column" style="--tutorial-column-width:6em">入门～进阶</td>
 <td>三角与三维空间几何；复相量与时频分析；子空间代数、复变优化与统计滤波（分三单元）</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:3em">01</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:3em">第 1 章</td>
 <td><code><a href="01_problem-definition.html">01_problem-definition.md</a></code></td>
 <td>图1</td>
 <td class="tutorial-short-column" style="--tutorial-column-width:6em">入门</td>
 <td>问题定义、信噪比口径与双耳定位线索</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:3em">02</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:3em">第 2 章</td>
 <td><code><a href="02_basics-signal-model.html">02_basics-signal-model.md</a></code></td>
 <td>图2～图7、图50，共 7 张</td>
 <td class="tutorial-short-column" style="--tutorial-column-width:6em">进阶</td>
 <td>时延与流形；短时频谱与统计；波束度量（分三单元）</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:3em">03</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:3em">第 3 章</td>
 <td><code><a href="03_array-geometry.html">03_array-geometry.md</a></code></td>
 <td>图8～图10、图51～52，共 5 张</td>
 <td class="tutorial-short-column" style="--tutorial-column-width:6em">进阶</td>
 <td>几何可观测性；通道标定与稀疏协同阵</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:3em">04</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:3em">第 4 章</td>
 <td><code><a href="04_doa-estimation.html">04_doa-estimation.md</a></code></td>
 <td>图11～图14、图33、图53～54，共 7 张</td>
 <td class="tutorial-short-column" style="--tutorial-column-width:6em">较难</td>
 <td>时差与空间扫描；子空间法；宽带聚焦与分辨边界</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:3em">05</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:3em">第 5 章</td>
 <td><code><a href="05_beamforming.html">05_beamforming.md</a></code></td>
 <td>图15～图17、图55～56、图73，共 6 张</td>
 <td class="tutorial-short-column" style="--tutorial-column-width:6em">较难</td>
 <td>线性约束解；稳健设计；时频掩码与双耳/相位接口</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:3em">06</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:3em">第 6 章</td>
 <td><code><a href="06_aec.html">06_aec.md</a></code></td>
 <td>图18～20、图26～32、图36～39、图57～58、图74，共 17 张，另引用图23</td>
 <td class="tutorial-short-column" style="--tutorial-column-width:6em">较难</td>
 <td>参考与卷积；自适应更新；双讲控制与非线性处理（分四单元）</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:3em">07</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:3em">第 7 章</td>
 <td><code><a href="07_wpe-dereverberation.html">07_wpe-dereverberation.md</a></code></td>
 <td>图21、图24、图59、图75，共 4 张</td>
 <td class="tutorial-short-column" style="--tutorial-column-width:6em">进阶</td>
 <td>延迟线性预测模型；迭代求解与多麦时间边界</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:3em">08</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:3em">第 8 章</td>
 <td><code><a href="08_speech-separation.html">08_speech-separation.md</a></code></td>
 <td>图42～43、图60、图76，共 4 张，引用图23</td>
 <td class="tutorial-short-column" style="--tutorial-column-width:6em">进阶</td>
 <td>统计盲分离；活动导引 GSS；深度掩码与跨块拼接</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:3em">09</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:3em">第 9 章</td>
 <td><code><a href="09_source-tracking.html">09_source-tracking.md</a></code></td>
 <td>本章专属图22、图44、图61、图77，共 4 张，另引用图23</td>
 <td class="tutorial-short-column" style="--tutorial-column-width:6em">进阶</td>
 <td>贝叶斯状态递推；多目标关联与轨迹生命周期管理</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:3em">10</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:3em">第 10 章</td>
 <td><code><a href="10_engineering-practice.html">10_engineering-practice.md</a></code></td>
 <td>图23、图25、图40、图45、图62～63、图78，共 7 张</td>
 <td class="tutorial-short-column" style="--tutorial-column-width:6em">进阶</td>
 <td>模块级联依赖；硬件时钟与延迟；算力预算与评测（分三单元）</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:3em">11</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:3em">第 11 章</td>
 <td><code><a href="11_selection-guide.html">11_selection-guide.md</a></code></td>
 <td>图46、图47、图64、图79，共 4 张</td>
 <td class="tutorial-short-column" style="--tutorial-column-width:6em">入门</td>
 <td>硬约束筛除、帕累托权衡、跨场景评分与验收规格</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:3em">第12章（扩展专题Ⅰ）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:3em">第 12 章（扩展专题Ⅰ）</td>
 <td><code><a href="12_acoustic-imaging.html">12_acoustic-imaging.md</a></code></td>
 <td>图67～69、图80，共 4 张</td>
 <td class="tutorial-short-column" style="--tutorial-column-width:6em">较难</td>
 <td>互谱矩阵、点扩散函数、反卷积源强图与声学计量校准</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:3em">第13章（扩展专题Ⅱ）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:3em">第 13 章（扩展专题Ⅱ）</td>
 <td><code><a href="13_distributed-enhancement.html">13_distributed-enhancement.md</a></code></td>
 <td>图70～72，共 3 张</td>
 <td class="tutorial-short-column" style="--tutorial-column-width:6em">较难</td>
 <td>节点线性压缩、分布式迭代更新、时钟偏移与丢包容错</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:3em">第14章（扩展专题Ⅲ）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:3em">第 14 章（扩展专题Ⅲ）</td>
 <td><code><a href="14_spatial-wearable-arrays.html">14_spatial-wearable-arrays.md</a></code></td>
 <td>图81～84，共 4 张</td>
 <td class="tutorial-short-column" style="--tutorial-column-width:6em">较难</td>
 <td>球谐与参数化声场、双耳信号匹配、抗风跨模态与通透延迟</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:3em">第15章（扩展专题Ⅳ）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:3em">第 15 章（扩展专题Ⅳ）</td>
 <td><code><a href="15_target-extraction-diarization.html">15_target-extraction-diarization.md</a></code></td>
 <td>图85～88，共 4 张</td>
 <td class="tutorial-short-column" style="--tutorial-column-width:6em">较难</td>
 <td>条件特征调制、近场距离气泡、空谱说话人日志与视听对齐</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:3em">附录 A（文件 16）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:3em">附录 A</td>
 <td><code><a href="16_appendix-symbols-math.html">16_appendix-symbols-math.md</a></code></td>
 <td>图48、图49、图65，共 3 张</td>
 <td class="tutorial-short-column" style="--tutorial-column-width:6em">查阅</td>
 <td>全书统一符号表、术语词典与线性代数/概率/傅里叶基础</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:3em">附录 B（文件 17）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:3em">附录 B</td>
 <td><code><a href="17_appendix-guide.html">17_appendix-guide.md</a></code></td>
 <td>图35、图41、图66，共 3 张编号图，另有房间题补充图</td>
 <td class="tutorial-short-column" style="--tutorial-column-width:6em">查阅</td>
@@ -1319,7 +1321,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 </tr>
 </tbody>
 </table></div>
-<p>上表最后一列给出了建议切分的学习单元，篇幅较长的第 0、2、6、10 章可分多次读完，每读完一个单元顺手用章末练习复算一遍。时间紧迫时，可先读本页、第 1 章和第 11 章理清问题边界与选型框架，再读第 2 章补齐共用信号模型（需要推导工具时按第 0 章 §0.8 检索）；随后按具体任务选读第 4～9 章，工程落地配合第 10 章与附录 B 排错指南，学术研究则可结合第 4、9 章与附录 B 的前沿地图。</p>
+<p>上表最后一列给出了建议切分的学习单元，篇幅较长的第 0、2、6、10 章可分多次读完，每读完一个单元顺手用章末练习复算一遍。时间紧迫时，可先读本页、第 1 章和第 11 章理清问题边界与选型框架，再读第 2 章补齐共用信号模型（需要推导工具时按第 0 章 §0.8 检索）；随后按具体任务选读第 4～9 章，工程实现配合第 10 章与附录 B 排错指南，学术研究则可结合第 4、9 章与附录 B 的前沿地图。</p>
 <hr />
 <span id="sec-4" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-a438cc3d02">3. 各篇内容与学习目标</h2>
 <h3 id="sec-u-52e35b93a4"><a href="00_math-foundations.html">00 · 全书数学基础与信号分析预备</a></h3>
@@ -1357,7 +1359,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li><strong>两阶段时差解算法</strong>：先用广义互相关相位变换（Generalized Cross-Correlation with Phase Transform，GCC-PHAT）在频域白化幅度、提取相位斜率对应的麦间到达时间差，再通过 Chan 闭式算法或泰勒级数迭代解算声源坐标，并用几何精度稀释（Geometric Dilution of Precision，GDOP）量化阵元摆位对定位误差的放大效应。本章还结合受控混响实验剖析了 $T_{60}$、DRR 与分析窗长对相关峰尖锐度的耦合影响。</li>
 <li><strong>空间扫描谱估计</strong>：可控响应功率（Steered Response Power，SRP-PHAT）在候选空间网格上累加各麦对的相关响应寻找峰值，配合由粗到细的分层搜索降低网格评估开销；窄带与宽带扫描部分对比了常规延迟求和扫描（Bartlett）与最小方差自适应扫描（Capon）对邻近角度响应的区分能力。</li>
 <li><strong>子空间高分辨方法</strong>：多重信号分类（Multiple Signal Classification，MUSIC）利用信号子空间与噪声子空间的正交性构造尖锐谱峰，但在强相干多径反射下信号协方差矩阵会发生秩亏损，均匀线阵需借助空间平滑恢复满秩；旋转不变子空间法（Estimation of Signal Parameters via Rotational Invariance Techniques，ESPRIT）则利用平移不变子阵结构直接求解角度特征根，省去网格扫描。</li>
-<li><strong>宽带聚焦、稀疏重构与深度学习方法</strong>：针对宽带语音介绍相干信号子空间聚焦变换（辨析酉聚焦与非酉聚焦对噪声白化特性的影响），并讨论稀疏表示以及基于深度神经网络（Deep Neural Network，DNN）的数据驱动定位特征学习及其跨阵列、跨房间泛化条件。章末结合 <a href="04_doa-estimation.html#sec-4-10">§4.10 四麦分数采样时差</a> 综合算例与 CRLB 方差下界串联全章概念。</li>
+<li><strong>宽带聚焦、稀疏重构与深度学习方法</strong>：针对宽带语音介绍相干信号子空间聚焦变换（辨析酉聚焦与非酉聚焦对噪声白化特性的影响），并讨论稀疏表示以及基于深度神经网络（Deep Neural Network，DNN）的数据驱动定位特征学习及其跨阵列、跨房间泛化条件。章末结合 <a href="04_doa-estimation.html#sec-4-10">§4.10 四麦亚采样时差</a> 综合算例与 CRLB 方差下界串联全章概念。</li>
 </ul>
 <p>读完本章，读者应能根据阵列拓扑、声源个数、室内混响强度和算力预算合理选型，并从物理与线性代数两个层面解释多径反射拖宽互相关峰、相干声源导致子空间法失效的根源。</p>
 <span id="sec-9" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-b926900cde"><a href="05_beamforming.html">05 · 波束形成 Beamforming</a></h3>
@@ -1390,7 +1392,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <p>针对多说话人场景与在线系统状态管理，本章剖析候选轨迹起始、连续命中确认与超时退役的生命周期规则（区分信号帧中心物理时刻与整帧处理就绪时刻），对比概率假设密度（Probability Hypothesis Density，PHD）、标记多伯努利（Labeled Multi-Bernoulli，LMB）与检测前追踪（Track-Before-Detect，TBD）各自解决的子问题，并在 §9.4 给出追踪器向自适应波束反馈导向角时的限速、静默保持与重捕获设计准则。</p>
 <p>读完本章，读者应能搭建从多麦音频时差观测、马氏距离门控到轨迹状态输出的完整追踪链路，并为移动拾音系统合理配置轨迹确认、保持与波束跟随参数。</p>
 <span id="sec-14" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-12c1de60a0"><a href="10_engineering-practice.html">10 · 工程实现、评测与产业实践</a></h3>
-<p>本章配图 7 张，把前九章的算法放回真实硬件与嵌入式实时系统，解决“仿真跑通之后，上板落地还会遇到什么问题”。</p>
+<p>本章配图 7 张，把前九章的算法放回真实硬件与嵌入式实时系统，解决“仿真跑通之后，嵌入式部署还会遇到什么问题”。</p>
 <p>在系统架构上，本章通过图 23 与 §10.1 梳理 AEC、WPE、DOA、波束形成、后置降噪与自动增益控制（Automatic Gain Control，AGC）的级联次序与信号取点依赖，并按算法前瞻窗、帧移缓冲、计算耗时、非抢占调度排队和后端解码逐项核算端到端延迟关键路径。在硬件与通道层，本章剖析定点与浮点样本动态范围、麦克风灵敏度与相位失配、多设备采样率偏移（Sampling Rate Offset，SRO，如 $100\ \mathrm{ppm}$ 晶振频偏如何令双麦相加随时间发生周期性抵消），以及单个麦克风通道故障后的协方差与导向矢量降维重构。</p>
 <p>在资源与验收层，<a href="10_engineering-practice.html#sec-10-4">§10.4</a> 明确界定每秒乘加数（MACs）、实时率（处理耗时除以新增音频时长）、峰值内存与电池续航（$\mathrm{Wh}$ 除以整机平均功率）的核算口径；<a href="10_engineering-practice.html#sec-10-5">§10.5</a> 则系统对比波形失真比、可懂度、感知语音质量、自动语音识别词错率（WER）、多目标追踪误差与主观听测的适用边界，并剖析噪声谱估计失配与分块 AGC 跳变等常见工程隐患。</p>
 <p>读完本章，读者应能独立编制延迟、时钟同步、通道标定与算力功耗四张工程预算表，并为具体产品任务制定自洽的客观与主观验收指标体系。</p>
@@ -1448,7 +1450,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <p>沿<strong>时频干扰消除线</strong>按需阅读第 6 章（回声消除 AEC）、第 7 章（去混响 WPE）和第 8 章（重叠语音分离），并通过 §10.1 与图 23 理清它们在整条前端链路中的先后位置与参考信号依赖。</p>
 </li>
 <li>
-<p>沿<strong>工程落地线</strong>阅读第 10 章核对时钟同步、实时延迟、算力功耗和客观/主观评测指标，最后在第 11 章汇总成完整的系统选型与验收规格。</p>
+<p>沿<strong>工程实现线</strong>阅读第 10 章核对时钟同步、实时延迟、算力功耗和客观/主观评测指标，最后在第 11 章汇总成完整的系统选型与验收规格。</p>
 </li>
 </ol>
 <p>需要做工业噪声源成像与声学计量诊断时，可在读完第 2、3、5 章后进入<a href="12_acoustic-imaging.html">扩展专题Ⅰ</a>；需要设计多设备受限通信协同增强系统时，可在读完第 2、5、10 章后进入<a href="13_distributed-enhancement.html">扩展专题Ⅱ</a>。关注全景声空间音频、智能眼镜与真无线耳机算法时，可在读完第 1、2、5 章后进入<a href="14_spatial-wearable-arrays.html">扩展专题Ⅲ</a>；关注个人目标说话人提取与多人会议说话人日志时，可在读完第 2、5、8 章后进入<a href="15_target-extraction-diarization.html">扩展专题Ⅳ</a>。</p>

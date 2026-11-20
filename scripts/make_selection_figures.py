@@ -104,32 +104,38 @@ def generate_figure(figure_path=FIGURE, report_path=REPORT):
                            'Arial Unicode MS', 'DejaVu Sans'],
         'axes.unicode_minus': False, 'font.size': 11.5, 'axes.titlesize': 12.5,
         'axes.labelsize': 11.5, 'legend.fontsize': 11.5,
-        'xtick.labelsize': 11.5, 'ytick.labelsize': 11.5})
+        'xtick.labelsize': 11.5, 'ytick.labelsize': 11.5,
+        'text.color': '#1E242B', 'axes.labelcolor': '#1E242B', 'axes.edgecolor': '#4A5058',
+        'axes.linewidth': 0.9, 'axes.spines.top': False, 'axes.spines.right': False,
+        'grid.color': '#DFDCD4', 'grid.linestyle': '--', 'grid.linewidth': 0.65,
+        'legend.facecolor': '#FAF9F6', 'legend.edgecolor': '#DDD8CE', 'legend.framealpha': 0.92})
     # Smaller physical canvas and larger text preserve readability when the
     # complete image is embedded at 165 mm or 860 CSS pixels (AGENTS 5.3).
     fig, axes = plt.subplots(2, 2, figsize=(9.3, 8.3))
     x = np.arange(4)
-    colors = ['#258065' if row['acoustic_verdict'] == 'pass' else '#be5146' for row in rows]
+    colors = ['#237263' if row['acoustic_verdict'] == 'pass' else '#B84A2E' for row in rows]
     noise, total, error, wng, di = values.T
-    axes[0, 0].bar(x, noise/target_power, color='#4b83b1', width=.55,
-                   label=r'柱：输出噪声 / $P_s$（当前 $\mathbf{R}_n$）')
+    axes[0, 0].bar(x, noise/target_power, color='#3E76A3', width=.55,
+                   label=r'柱：输出噪声 / $P_s$（当前 $\mathbf{R}_{nn}$）')
     axes[0, 0].plot(x, total, 'kd', markersize=6, label='菱形：总 NMSE（含目标失配）')
     for position, value in zip(x, noise):
-        # The alpha=0 total-error marker lies just above the noise bar.
-        # Move its noise label left so the two different quantities do not collide.
-        offset, alignment = ((-12, 9), 'right') if position == 1 else ((0, 9), 'center')
+        # The alpha=0 and alpha=0.1 total-error markers lie just above the noise bars.
+        # Shift their noise labels left so the two different quantities do not collide.
+        offset, alignment = ((-11, 9), 'right') if position in (1, 2) else ((0, 9), 'center')
         axes[0, 0].annotate(f'{value:.4f}', (position, value), xytext=offset,
                            textcoords='offset points', ha=alignment, fontsize=11.5)
-    axes[0, 0].set(title=r'(a) 当前 $\mathbf{R}_n$：噪声与总误差', ylabel='无量纲：噪声 / $P_s$ 或 NMSE',
+    axes[0, 0].set(title=r'(a) 当前 $\mathbf{R}_{nn}$：噪声与总误差', ylabel='无量纲：噪声 / $P_s$ 或 NMSE',
                    xticks=x, xticklabels=labels, ylim=(0, 1.32))
     axes[0, 0].legend(loc='upper right'); axes[0, 0].grid(axis='y', alpha=.2)
     axes[0, 1].bar(x, error, color=colors, width=.55)
     limit = parameters['response_amplitude_error_upper_limit']
     axes[0, 1].axhline(limit, color='#444444', linestyle='--', label=f'硬上限 {limit:.2f}')
     for position, value in zip(x, error):
-        axes[0, 1].annotate(f'{value:.5f}', (position, value), xytext=(0, 7),
-                           textcoords='offset points', ha='center', fontsize=11.5)
-    axes[0, 1].set(title='(b) 真实方向 5°：目标响应偏差', ylabel='$|w^H a_{true}-1|$（无量纲）',
+        anchor_y = limit if position == 0 else value
+        axes[0, 1].annotate(f'{value:.5f}', (position, anchor_y), xytext=(0, 6 if position == 0 else 7),
+                           textcoords='offset points', ha='center', fontsize=11.5,
+                           bbox=dict(fc='white', ec='none', alpha=0.88, pad=0.8) if position == 0 else None)
+    axes[0, 1].set(title='(b) 真实方向 5°：目标响应偏差', ylabel=r'$|\vec{w}^H \vec{a}_{\mathrm{true}} - 1|$（无量纲）',
                    xticks=x, xticklabels=labels, ylim=(0, .285))
     axes[0, 1].legend(loc='upper right'); axes[0, 1].grid(axis='y', alpha=.2)
     axes[1, 0].bar(x, wng, color=colors, width=.55)
@@ -150,12 +156,12 @@ def generate_figure(figure_path=FIGURE, report_path=REPORT):
                             colWidths=[.20, .31, .23, .26], cellLoc='center', bbox=[0, .45, 1, .46])
     table.auto_set_font_size(False); table.set_fontsize(11.5)
     for (row, col), cell in table.get_celld().items():
-        cell.set_edgecolor('#c4c9cf')
+        cell.set_edgecolor('#D5CFC4')
         if row == 0:
-            cell.set_facecolor('#e9eff4')
+            cell.set_facecolor('#EFECE5')
         elif col == 2:
             cell.get_text().set_color(colors[row-1])
-    axes[1, 1].text(.5, .27, 'DI 使用独立三维各向同性 $\\Gamma$，\n不是 (a) 的 $R_n$。',
+    axes[1, 1].text(.5, .27, 'DI 使用独立三维各向同性 $\\Gamma$，\n不是 (a) 的 $\\mathbf{R}_{nn}$。',
                     ha='center', transform=axes[1, 1].transAxes, fontsize=11.5, linespacing=1.4)
     axes[1, 1].text(.5, .05, '声学合格者中 α=1 的实际 NMSE 更低；\n全部缺少设备延迟证据，不能宣布整机已选定。',
                     ha='center', transform=axes[1, 1].transAxes, fontsize=11.5, linespacing=1.5)

@@ -42,6 +42,8 @@
 | Van Trees, *Optimum Array Processing*（Wiley，2002） | 严密推导统计最优阵列处理与性能界，适合深入查阅数学细节 |
 | Vincent, Virtanen & Gannot (eds.), *Audio Source Separation and Speech Enhancement*（Wiley，2018） | 现代音源分离与多通道语音增强方法的系统合集 |
 | Rafaely, *Fundamentals of Spherical Array Processing*（Springer，第一版 2015，DOI 10.1007/978-3-662-45664-4；第二版在线 2018、版权 2019，DOI 10.1007/978-3-319-99561-8） | 系统讲授球面阵列与球谐域波束形成，可配合 §5.8 与[扩展专题Ⅲ §14.2](14_spatial-wearable-arrays.md#sec-14-2) 延伸阅读 |
+| Zotter & Frank, *Ambisonics: A Practical 3D Audio Theory for Recording, Studio Production, Sound Reinforcement, and Virtual Reality*（Springer，2019，开放获取，DOI 10.1007/978-3-030-17207-7） | 全面覆盖 ACN/SN3D 球谐编码、$\max\text{-}r_E$ 能量矢量扬声器解码、三维旋转与双耳渲染，可配合[扩展专题Ⅲ](14_spatial-wearable-arrays.md)延伸阅读 |
+| Park et al., *A Review of Speaker Diarization: Recent Advances with Deep Learning*（*Computer Speech & Language* 72:101317，2022，DOI 10.1016/j.csl.2021.101317）；Zmolikova et al., *Neural Target Speech Extraction: An Overview*（*IEEE Signal Processing Magazine* 40(3):8–29，2023，DOI 10.1109/MSP.2023.3240008） | 说话人日志（聚类、EEND、TS-VAD 与 DER 评测）及神经目标说话人提取（声纹、空间与视听线索条件化）的两篇权威综述，可配合[第 8 章 §8.6](08_speech-separation.md#sec-8-6) 与[扩展专题Ⅳ](15_target-extraction-diarization.md)阅读 |
 
 **核心会议**：ICASSP（信号处理旗舰年会）、Interspeech（语音科学旗舰年会）、WASPAA（音频与声学信号处理研讨会，每两年一届）、IWAENC（声学信号增强国际研讨会）、HSCMA（免提语音通信与麦克风阵列研讨会）、DCASE Workshop（声事件检测与声学场景分析）。
 
@@ -216,15 +218,15 @@ VarArray（[ICASSP 2022](https://doi.org/10.1109/ICASSP43922.2022.9746876)）进
 | $r_F=2D^2/\lambda$ | Fraunhofer 远场球面波相位曲率检验尺度，并非远近场硬截断分界；套用平面波流形前仍须联立核查 $r\gg D$、阵元间球面扩散幅度差及容许相位误差 | §2.2、[§15.3](15_target-extraction-diarization.md#sec-15-3) |
 | $T_{60} = 0.161V/A$ | 赛宾（Sabine）混响时间经验公式（均匀弱吸声近似扩散声场） | §2.4 |
 | $d_c = 0.057\sqrt{QV/T_{60}}$ | 临界距离：直达声与混响声能量相等处；$Q$ 为声源指向因子，$Q=1$ 时退化为全向点源形式 | §2.4 |
-| $\vec{x} = \vec{a}(\theta)s + \vec{n}$ | 远场窄带单源阵列接收信号模型 | §2.3 |
-| $\hat{\mathbf{R}}_{xx} = \frac{1}{T}\sum_t \vec{x}_t\vec{x}_t^H$ | 未中心化的样本空间二阶矩（阵列处理文献常统称样本空间协方差矩阵） | §2.5 |
+| $\vec{x} = \vec{a}(\theta)s + \vec{v}$ | 远场窄带单源阵列接收信号模型 | §2.3 |
+| $\hat{\mathbf{R}}_{xx} = \frac{1}{L}\sum_{\ell=1}^L \vec{x}_\ell\vec{x}_\ell^H$ | 未中心化的样本空间二阶矩（阵列处理文献常统称样本空间协方差矩阵） | §2.5 |
 | $d < \lambda/2$ | 均匀线阵（ULA）在整个闭可视角域 $[-90^\circ,+90^\circ]$ 内消除端点周期歧义的充分条件；$d=\lambda/2$ 时两端射方向 $\pm 90^\circ$ 相位完全重合，受限扫描角域可另行分析 | §2.6 |
 | HPBW、DI、WNG | 主瓣半功率全宽、全空间平均指向性指数与白噪声增益定义，见式(2-11)～式(2-13) | §2.6 |
 | CRB 下界 | 给定统计观测模型与正则条件下，任意无偏 DOA 估计器的方差理论下界，见式(2-14) | §2.6 |
 | $\hat\theta = \arcsin(c\hat\tau_{12}/d)$ | 双麦远场时延差到前半平面方位角主值的映射；本书约定 $\tau_{12}=t_1-t_2$ 并由 $X_1X_2^*$ 的互相关峰估计，消除前后镜像歧义需额外基线 | §2.1、§4.2 |
 | $R(\tau)$：$\int\Phi G_{12}e^{\mathrm{j}2\pi f\tau}\mathrm{d}f$ | 广义互相关（GCC）时延谱（互谱 $G_{12}=X_1 X_2^*$），$\Phi=1/|G_{12}|$ 时对应 PHAT 加权 | §4.2 |
 | $\hat{\vec p}=\arg\max_{\vec r}\sum R^{\mathrm{PHAT}}$ | 可控响应功率（SRP-PHAT）多麦对空间网格投票定位 | §4.3 |
-| $P_{\mathrm{C}}=1/(\vec a^H\hat{\mathbf R}^{-1}\vec a)$ | Capon 最小方差空间谱 | §4.5 |
+| $P_C(\theta)=1/\bigl(\vec{a}^H(\theta)\hat{\mathbf{R}}_{xx}^{-1}\vec{a}(\theta)\bigr)$ | Capon 最小方差空间谱 | §4.5 |
 | $P_{\mathrm{MU}}(\theta)=\|\mathbf E_n^H\vec a\|_2^{-2}$ | MUSIC 噪声子空间正交伪谱 | §4.6 |
 | $\vec{w}_{\mathrm{DSB}} = \vec{a}/M$ | 单位模长导向矢量（$\vec a^H\vec a=M$）下的延迟求和权重；一般幅度流形下的无失真匹配滤波权重为 $\vec a/(\vec a^H\vec a)$ | §5.2 |
 | $|B(\theta)|=|\sin(M\psi/2)/[M\sin(\psi/2)]|$ | 等权 ULA 归一化阵因子，空间相位差 $\psi=2\pi d(\sin\theta-\sin\theta_0)/\lambda$ | §5.2 |

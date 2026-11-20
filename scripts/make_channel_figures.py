@@ -28,7 +28,7 @@ REPORT = ROOT/'codes/chapters/ch10/reports/figure78_channel_failure.json'
 SOURCE_PATHS = ('scripts/make_channel_figures.py', *AUDIO_SOURCES)
 OUTPUT_ROLES = ('healthy_output', 'stale_output', 'recomputed_output')
 LABELS = ('健康全阵', '故障后旧权重', '故障后子阵重算')
-COLORS = ('#286ca3', '#d75545', '#258065')
+COLORS = ('#1F5A92', '#B84A2E', '#237263')
 
 
 def _sha(blob):
@@ -91,10 +91,14 @@ def generate_figure(figure_path=FIGURE, report_path=REPORT, *, audio_directory=D
         'font.sans-serif': ['PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei',
                            'Arial Unicode MS', 'DejaVu Sans'],
         'axes.unicode_minus': False, 'font.size': 11, 'axes.titlesize': 12, 'axes.labelsize': 11,
-        'legend.fontsize': 10, 'xtick.labelsize': 10, 'ytick.labelsize': 10})
+        'legend.fontsize': 10, 'xtick.labelsize': 10, 'ytick.labelsize': 10,
+        'text.color': '#1E242B', 'axes.labelcolor': '#1E242B', 'axes.edgecolor': '#4A5058',
+        'axes.linewidth': 0.9, 'axes.spines.top': False, 'axes.spines.right': False,
+        'grid.color': '#DFDCD4', 'grid.linestyle': '--', 'grid.linewidth': 0.65,
+        'legend.facecolor': '#FAF9F6', 'legend.edgecolor': '#DDD8CE', 'legend.framealpha': 0.92})
     fig, axes = plt.subplots(3, 1, figsize=(9.6, 10.2), gridspec_kw={'height_ratios': [.82, 1.15, 1.1]})
     axes[0].axis('off')
-    axes[0].set_title(r'(a) 已知噪声时间协方差与解析对照：$\mathbf{R}_n=0.005\mathbf{B}\mathbf{B}^\top$', pad=12)
+    axes[0].set_title(r'(a) 已知噪声时间协方差与解析对照：$\mathbf{R}_{nn}=0.005\mathbf{B}\mathbf{B}^\top$', pad=12)
     rows = [[LABELS[i], ('[1, −0.5, 0.5]', '[0, −0.5, 0.5]', '[0, 0.5, 0.5]')[i],
              str(int(target_gain[i])), f"{data['analytic'][name]['noise_mean_square']:.4f}"]
             for i, name in enumerate(OUTPUT_ROLES)]
@@ -102,24 +106,24 @@ def generate_figure(figure_path=FIGURE, report_path=REPORT, *, audio_directory=D
                          colWidths=[.23, .32, .15, .30], cellLoc='center', loc='center')
     table.auto_set_font_size(False); table.set_fontsize(11); table.scale(1, 1.7)
     for (row, col), cell in table.get_celld().items():
-        cell.set_edgecolor('#c4c9cf')
+        cell.set_edgecolor('#D5CFC4')
         if row == 0:
-            cell.set_facecolor('#e9eff4')
+            cell.set_facecolor('#EFECE5')
         elif col == 0:
-            cell.set_facecolor('#f5f7f8')
+            cell.set_facecolor('#F8F6F2')
     axes[0].text(.5, -.08, '通道 0 失效已由题设指定；其零输入使旧权重的有效首项为 0。',
                  transform=axes[0].transAxes, ha='center', fontsize=11)
     time = report['plot_data']['waveform_time_ms']
-    axes[1].plot(time, report['plot_data']['waveform_pcm']['reference'], color='#333333', linewidth=2,
+    axes[1].plot(time, report['plot_data']['waveform_pcm']['reference'], color='#1E242B', linewidth=2,
                  label='实际 PCM 参考（500 Hz）')
     for name, label, color in zip(OUTPUT_ROLES, LABELS, COLORS):
-        axes[1].plot(time, report['plot_data']['waveform_pcm'][name], color=color, linewidth=1.2, alpha=.85, label=label)
+        axes[1].plot(time, report['plot_data']['waveform_pcm'][name], color=color, linewidth=1.25, alpha=.88, label=label)
     axes[1].set(xlabel='共同采样时轴 (ms)', ylabel='实际 PCM / 32768', ylim=(-.22, .35),
                 title='(b) 同一 128 点片段；各输出仍保留所声明的噪声分量')
-    axes[1].grid(alpha=.2); axes[1].legend(ncol=2, loc='upper right')
+    axes[1].grid(alpha=.55); axes[1].legend(ncol=2, loc='upper right')
     x = np.arange(3); width = .32
-    bars1 = axes[2].bar(x-width/2, diagnostic, width, color='#5591b7', label='实际 PCM 参考投影（诊断）')
-    bars2 = axes[2].bar(x+width/2, nmse_pcm, width, color='#d77959', label='实际 PCM 总 NMSE')
+    bars1 = axes[2].bar(x-width/2, diagnostic, width, color='#3E76A3', label='实际 PCM 参考投影（诊断）')
+    bars2 = axes[2].bar(x+width/2, nmse_pcm, width, color='#C46B48', label='实际 PCM 总 NMSE')
     axes[2].plot(x-width/2, target_gain, 'k_', markersize=17, markeredgewidth=2, label='解析目标响应')
     axes[2].plot(x+width/2, nmse_analytic, 'kd', markersize=5, label='解析总 NMSE')
     for bars in (bars1, bars2):

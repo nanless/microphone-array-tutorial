@@ -32,7 +32,7 @@
 
 - **不跳关键步骤的数学闭环**：专门设立[第 0 章《全书数学基础与信号分析预备》](chapters/00_math-foundations.md)，从零推导三维旋转 $\mathrm{SO}(3)$、复相量与 STFT 完美重建（COLA）、子空间投影与 Woodbury 秩一更新、Wirtinger 复变求导、复高斯 CRLB 与维纳—卡尔曼递推；正文每条公式均配物理直觉与成立前提。
 - **443 道手算锚点 + 纯 NumPy 复算**：拒绝黑箱调库，核心算法均提供无第三方重依赖的纯 NumPy 实现与小规模精确分数手算例（如 2 麦 4 点 DFT、3 麦距离气泡、2 格反卷积），方便逐元素核对共轭符号、归一化系数与矩阵维度。
-- **283 段配套音频 + 专讲“什么时候会失效”**：除正常增益效果外，配套 30 套受控合成音频与真实混响录音，专门重现**高频空间混叠栅瓣、强相干反射假峰、导向失配目标自消、低频差分白噪声放大、AEC 参考超窗/双讲发散、100 ppm 晶振频偏（SRO）抵消**等典型工程失效现场。
+- **283 段配套音频 + 专讲“什么时候会失效”**：除正常增益效果外，配套 31 套独立专题音频（连同主清单共 32 套、283 段受控合成音频与真实混响录音），专门重现**高频空间混叠栅瓣、强相干反射假峰、导向失配目标自消、低频差分白噪声放大、AEC 参考超窗/双讲发散、100 ppm 晶振频偏（SRO）抵消**等典型工程失效现场。
 - **从仿真脚本直通量产硬件与开源生态**：[第 10 章](chapters/10_engineering-practice.md)与[第 11 章](chapters/11_selection-guide.md)逐项核算级联拓扑、端到端延迟路径、定点动态范围、每秒乘加数（MACs）与帕累托验收规格书；另配 [6 篇源码研究手册](codes/chapters/ch00/research/README.md)，对照 WebRTC AEC3、SpeexDSP、nara_wpe、Acoular、pyroomacoustics 等 129 个上游项目。
 
 ---
@@ -56,7 +56,7 @@
 
 - **零基础入门读者**：建议按 `第 0 章（或按 §0.8 检索）→ 第 1～3 章 → 第 4～5 章` 顺序阅读，边读边跑每章末尾的纯 NumPy 练习。
 - **算法与科研读者**：可从[第 0 章 §0.8 数学检索表](chapters/00_math-foundations.md#sec-0-8)与第 2 章统一记号切入，直奔第 4～9 章、第 12～15 章及[附录 B 文献挑战赛地图](chapters/17_appendix-guide.md#sec-17-2)。
-- **音频硬件与嵌入式工程师**：可直接阅读[第 10 章工程实践](chapters/10_engineering-practice.md)、[第 11 章选型指南](chapters/11_selection-guide.md)、[附录 B 故障排查表](chapters/17_appendix-guide.md#sec-17-3)与[工业部署源码手册](codes/chapters/ch00/research/03_industrial_deployment.md)。
+- **音频硬件与嵌入式工程师**：可直接阅读[第 10 章工程实践](chapters/10_engineering-practice.md)、[第 11 章选型指南](chapters/11_selection-guide.md)、[附录 B 故障排查表](chapters/17_appendix-guide.md#sec-17-4)与[工业部署源码手册](codes/chapters/ch00/research/03_industrial_deployment.md)。
 
 ---
 

@@ -373,6 +373,11 @@ class ResearchBuildTest(unittest.TestCase):
             case_source = ROOT / "assets/readme/cases/locata"
             case_root = Path(temporary) / "assets/readme/cases/locata"
             shutil.copytree(case_source, case_root)
+            lab_source = ROOT / "assets/readme/lab"
+            lab_root = Path(temporary) / "assets/readme/lab"
+            lab_root.mkdir(parents=True)
+            for lab_name in ("array-lab.html", "single.wav", "left.wav", "right.wav"):
+                shutil.copyfile(lab_source / lab_name, lab_root / lab_name)
             pdf_source = ROOT / "dist/microphone-array-tutorial.pdf"
             pdf = Path(temporary) / "dist" / pdf_source.name
             pdf.parent.mkdir()
@@ -584,6 +589,11 @@ class ResearchBuildTest(unittest.TestCase):
                         if target.parent == figure_root.resolve():
                             self.assertTrue(target.is_file())
                             self.assertEqual(target.read_bytes(), (ROOT / "figures" / target.name).read_bytes())
+                            continue
+                        if target == (lab_root / "array-lab.html").resolve():
+                            self.assertTrue(target.is_file())
+                            self.assertEqual(target.read_bytes(), (lab_source / "array-lab.html").read_bytes())
+                            self.assertFalse(uri.fragment)
                             continue
                         if target == pdf.resolve():
                             self.assertTrue(target.is_file())

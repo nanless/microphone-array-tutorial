@@ -65,26 +65,26 @@ def main():
     for offset, key, color, label in (
             (-.14, 'reference', C_BLUE, '当前参考'),
             (0., 'common_history', C_RED, '统一历史：同源时刻'),
-            (.14, 'aligned_history', C_GREEN, '校正历史：早 3 单位')):
+            (.14, 'aligned_history', C_GREEN, '校正历史 q[t]=s[t−6]（距当前目标隔 3 单位）')):
         values = report['source_time_control'][key]
         axes[0, 0].vlines(t+offset, 0, values, colors=color, linewidth=2)
         axes[0, 0].plot(t+offset, values, 'o', color=color, label=label)
     axes[0, 0].set(title='(a) E07-22 四点手算：统一历史可含当前目标',
                    xlabel='接收时间索引 t / 无量纲单位', ylabel='给定脉冲幅度',
-                   xticks=t, ylim=(-.13, 1.6))
-    axes[0, 0].legend(loc='upper right', fontsize=10)
+                   xticks=t, ylim=(-.13, 1.68))
+    axes[0, 0].legend(loc='upper right', fontsize=11)
     begin, end = 1536, 3072
     times = np.arange(end-begin)/16000*1000
     for key, label, color, style in (
             ('reference', '当前参考（实际 PCM）', C_BLUE, '-'),
             ('common_history', '统一历史：与参考逐点相同', C_RED, '--'),
-            ('aligned_history', '校正历史：晚 24 ms', C_GREEN, '-')):
+            ('aligned_history', '校正历史（延迟 48 ms，脉冲右移至 96 ms）', C_GREEN, '-')):
         axes[0, 1].plot(times, signals[key][0, begin:end], style,
                         color=color, linewidth=1.1, label=label)
     axes[0, 1].set(title='(b) E07-24 同一接收时轴：一个 96 ms 周期',
                    xlabel='从第 1536 点起 / ms', ylabel='PCM 解码幅度',
-                   xlim=(0, 96), ylim=(-.14, .22))
-    axes[0, 1].legend(loc='upper left', fontsize=10)
+                   xlim=(0, 96), ylim=(-.14, .24))
+    axes[0, 1].legend(loc='upper left', fontsize=11)
     values = [report['pcm_integer_errors'][k]['nmse']
               for k in ('common_residual', 'aligned_residual')]
     axes[1, 0].bar([0, 1], [1, 0], width=.5, color=[C_RED, C_GREEN],

@@ -59,7 +59,13 @@ $$\vec n_{\mathrm{src}}(\theta,\phi)
 \end{bmatrix}.
 \tag{14-1}$$
 
-观察式(14-1)的四个初等函数：$1$ 不随方向改变，恰对应球面上零阶（$l = 0$）全向单极子响应；而 $n_x, n_y, n_z$ 分别沿前后、左右、上下呈正负对称的“8 字形”余弦指向性，恰对应球面上三个正交的一阶（$l = 1$）偶极子实球谐基函数。在 **SN3D（Schmidt Semi-Normalized 3D）** 幅度约定下，零阶与一阶基函数的方向峰值均归一化为 $1$（早期 FuMa 约定曾将零阶 $W$ 额外乘上 $1/\sqrt{2}$，现代工程与开源工具包已普遍转向 AmbiX 标准，即 **ACN 通道序 + SN3D 归一化**）。若一列原点处复声压相量为 $p \in \mathbb{C}$ 的平面波从方向 $\vec n_{\mathrm{src}}(\theta,\phi)$ 入射，其理想一阶 B-format 四通道信号按直观笛卡尔序 $\vec b_{\mathrm{WXYZ}}$ 与标准 ACN 序 $\vec b_{\mathrm{ACN}}$ 分别记作：
+观察式(14-1)的四个初等函数：$1$ 不随方向改变，恰对应球面上零阶（$l = 0$）全向单极子响应；而 $n_x, n_y, n_z$ 分别沿前后、左右、上下呈正负对称的“8 字形”余弦指向性，恰对应球面上三个正交的一阶（$l = 1$）偶极子实球谐基函数。在 **SN3D（Schmidt Semi-Normalized 3D）** 幅度约定下，零阶与一阶基函数的方向峰值均归一化为 $1$（早期 FuMa 约定曾将零阶 $W$ 额外乘上 $1/\sqrt{2}$，现代工程与开源工具包已普遍转向 AmbiX 标准，即 **ACN 通道序 + SN3D 归一化**）。为打通[第 0 章 §0.7.4](00_math-foundations.md#sec-0-7-4)、[第 5 章 §5.8](05_beamforming.md#sec-5-8) 的单位球面标准正交基 $Y_{l,m}^{\mathrm{ortho}}$（满足 $\int_{S^2}|Y_{l,m}^{\mathrm{ortho}}(\Omega)|^2\,\mathrm{d}\Omega = 1$）以及 `spharpy`、`spaudiopy` 等开源空间音频库常用的 **N3D（Normalized 3D，球面均方归一）** 与 **SN3D**，三套归一化基在任意阶次 $(l, m)$ 下满足精确比例换算：
+
+$$Y_{l,m}^{\mathrm{N3D}}(\Omega)
+=\sqrt{2l+1}\,Y_{l,m}^{\mathrm{SN3D}}(\Omega)
+=\sqrt{4\pi}\,Y_{l,m}^{\mathrm{ortho}}(\Omega).$$
+
+以一阶偶极基（$l = 1$，$2l + 1 = 3$）逐项核对峰值与球面均方值 $\frac{1}{4\pi}\int_{S^2}|\cdot|^2\,\mathrm{d}\Omega$：$Y_{1,m}^{\mathrm{SN3D}}$（即式(14-1)的 $n_y, n_z, n_x$）方向峰值为 $1$、球面均方为 $1/3$；乘上 $\sqrt{3}$ 后，$Y_{1,m}^{\mathrm{N3D}}$ 的方向峰值升为 $\sqrt{3}$、球面均方归一为 $1$（球面积分为 $4\pi$）；再除以 $\sqrt{4\pi}$ 后，$Y_{1,m}^{\mathrm{ortho}}$ 的方向峰值为 $\sqrt{3/(4\pi)}$、球面积分归一为 $1$（零阶 $l = 0$ 时 $Y_{0,0}^{\mathrm{N3D}} = Y_{0,0}^{\mathrm{SN3D}} = 1$，而 $Y_{0,0}^{\mathrm{ortho}} = 1/\sqrt{4\pi}$）。若一列原点处复声压相量为 $p \in \mathbb{C}$ 的平面波从方向 $\vec n_{\mathrm{src}}(\theta,\phi)$ 入射，其理想一阶 B-format 四通道信号按直观笛卡尔序 $\vec b_{\mathrm{WXYZ}}$ 与标准 ACN 序 $\vec b_{\mathrm{ACN}}$ 分别记作：
 
 $$\begin{aligned}
 \vec b_{\mathrm{WXYZ}}
@@ -118,7 +124,13 @@ g_1 & -g_1 & -g_1 & g_1
 
 #### 开球与刚性球径向模态权重及 $\kappa R = \pi$ 禁频零陷
 
-真实四面体阵列的四支胶囊分布在半径 $R > 0$ 的球面上而非几何同一点。若在半径为 $R$ 的假想透声球面（开球阵列，Open Sphere）上放置全向声压麦克风，根据平面波的雅可比—安格尔（Jacobi-Anger）球谐展开，第 $l$ 阶球谐分量会额外乘上一个与无量纲波数孔径积 $\kappa R = 2\pi f R / c$ 相关的**径向模态权重** $b_l(\kappa R)$。这里配合峰值归一为 $1$ 的 SN3D 实球谐基，定义球面平均归一化开球径向模态权重如下（注意其吸收了球面立体角归一化因子，与[第 5 章 §5.8](05_beamforming.md#sec-5-8) 式(5-21)配正交归一复球谐基的 $4\pi\mathrm{j}^n j_n(\kappa r)$ 相差常数因子 $4\pi$，而径向零陷位置 $\kappa R = \pi$ 完全一致）：
+真实四面体阵列的四支胶囊分布在半径 $R > 0$ 的球面上而非几何同一点。若在半径为 $R$ 的假想透声球面（开球阵列，Open Sphere）上放置全向声压麦克风，从 $\vec n_{\mathrm{src}}$ 入射的单位平面波 $p(R,\Omega) = e^{+\mathrm{j}\kappa R\,\vec n_{\mathrm{src}}^\top\vec u(\Omega)}$ 按雅可比—安格尔（Jacobi–Anger）级数展开为 $\sum_{l=0}^{\infty}(2l+1)\mathrm{j}^l j_l(\kappa R)P_l(\vec n_{\mathrm{src}}^\top\vec u)$。配合峰值归一为 $1$ 的 SN3D 实球谐基，定义**球面均值投影**算子（在四胶囊正四面体等权求积网格上，立体角微元 $\mathrm{d}\Omega$ 离散化为 $\frac{4\pi}{4} = \pi$，投影恰好化为简洁矩阵乘法 $\frac{1}{4}[\vec 1_4,\mathbf U]^\top\vec p$）：
+
+$$\tilde{B}_{l,m}(\kappa R)
+=\frac{1}{4\pi}\int_{S^2}p(R,\Omega)\,
+Y_{l,m}^{\mathrm{SN3D}}(\Omega)\,\mathrm{d}\Omega.$$
+
+初看雅可比—安格尔展开的一阶项 $3\mathrm{j}\,j_1(\kappa R)(\vec n_{\mathrm{src}}^\top\vec u)$ 带有阶次系数 $2l + 1 = 3$，为什么最终径向模态权重里这个因子 $3$ 消失了？原因正在于球面方向余弦的各向同性二阶矩积分 $\frac{1}{4\pi}\int_{S^2}(\vec n_{\mathrm{src}}^\top\vec u)\vec u\,\mathrm{d}\Omega = \frac{1}{3}\vec n_{\mathrm{src}}$（离散正四面体上同样由式(14-3)的 $\frac{1}{4}\mathbf U^\top\mathbf U = \frac{1}{3}\mathbf I_3$ 精确给出）：投影产生的因子 $1/3$ 与展开式中的 $2l + 1 = 3$ 恰好相乘抵消，使 $\tilde{B}_{l,m}(\kappa R) = b_l^{\mathrm{open}}(\kappa R)\,Y_{l,m}^{\mathrm{SN3D}}(\Omega_{\mathrm{src}})$。由此得到球面均值归一化的开球径向模态权重（与[第 0 章 §0.7.3](00_math-foundations.md#sec-0-7-3) 式(0-46) 及[第 5 章 §5.8](05_beamforming.md#sec-5-8) 式(5-21) 配标准正交基的 $4\pi\mathrm{j}^l j_l(\kappa R)$ 仅相差立体角常数 $4\pi$，而零点位置 $\kappa R = \pi$ 完全一致）：
 
 $$\begin{aligned}
 b_0^{\mathrm{open}}(\kappa R)
@@ -132,7 +144,18 @@ b_1^{\mathrm{open}}(\kappa R)
 
 式(14-6)揭示了球面阵列设计中至关重要的两道物理边界：
 
-- **高频开球禁频零陷（$\kappa R = \pi$）**：当声波半波长恰好等于球半径、即 $\kappa R = \pi$（对应频率 $f_{\mathrm{null}} = \frac{c}{2R}$）时，$\sin(\pi) = 0$ 使 $b_0^{\mathrm{open}}(\pi) = 0$。此时球面上全向声压积分恰好正负相消，无论后端施加多大的数字逆滤波增益，都只能把电路热噪声放大而无法找回丢失的零阶声压 $W$。若将麦克风齐平嵌装在**刚性实心球体（Rigid Sphere）**表面，球体散射波会补足相位，消除 $\kappa R = \pi$ 处的内部本征零点，并在低频段使一阶偶极有效孔径增强 $3/2$ 倍。
+- **高频开球禁频零陷（$\kappa R = \pi$）与刚性球 $h_l^{(2)}$ 散射闭合解**：当声波半波长恰好等于球半径、即 $\kappa R = \pi$（对应频率 $f_{\mathrm{null}} = \frac{c}{2R}$）时，$\sin(\pi) = 0$ 使 $b_0^{\mathrm{open}}(\pi) = 0$。此时球面上全向声压积分恰好正负相消，无论后端施加多大的数字逆滤波增益，都只能把电路热噪声放大而无法找回丢失的零阶声压 $W$。若将麦克风齐平嵌装在**刚性实心球体（Rigid Sphere）**表面，球面法向振速为零的硬边界条件 $\left.\partial_r p\right|_{r=R} = 0$ 会激发向外辐射的散射波；结合球贝塞尔朗斯基恒等式（详见[第 0 章 §0.7.3](00_math-foundations.md#sec-0-7-3) 式(0-46)），同一球面均值口径下的刚性球径向模态权重闭式解为：
+
+    $$b_l^{\mathrm{rigid}}(\kappa R)
+    =\mathrm{j}^l\left[j_l(\kappa R)
+    -\frac{j_l'(\kappa R)}{h_l^{(2)\prime}(\kappa R)}\,
+    h_l^{(2)}(\kappa R)\right]
+    =\frac{\mathrm{j}^{l-1}}
+    {(\kappa R)^2\,h_l^{(2)\prime}(\kappa R)}.$$
+
+    这里务必留意时间谐波符号约定：在本书前向傅里叶核 $e^{-\mathrm{j}\omega t}$（对应正频率复相量时间因子 $e^{+\mathrm{j}\omega t}$）下，随半径 $r$ 增大而相位滞后的向外散射行波必须选用**第二类球汉克尔函数** $h_l^{(2)}(\kappa r) = j_l(\kappa r) - \mathrm{j}y_l(\kappa r)$；若误套采用 $e^{-\mathrm{j}\omega t}$ 时间因子的声学文献公式而写成第一类 $h_l^{(1)}(\kappa r)$，散射补偿相位将整体共轭反号。
+
+    由于 $h_l^{(2)\prime}(\kappa R)$ 在正实轴上无零点，刚性球在正实轴上消除了 $\kappa R = \pi$ 处的内部本征零陷。进一步考察低频极限 $x = \kappa R \ll 1$，由 $y_1(x) \approx -1/x^2$ 求导得 $h_1^{(2)\prime}(x) \approx -2\mathrm{j}/x^3$，代入上式即证出 $b_1^{\mathrm{rigid}}(x) \approx \frac{1}{x^2(-2\mathrm{j}/x^3)} = \mathrm{j}\frac{x}{2} \approx \frac{3}{2}b_1^{\mathrm{open}}(x)$——实心球体衍射把一阶偶极有效声学孔径拓宽至开球的 $3/2$ 倍，带来 $20\log_{10}(3/2) \approx +3.52\ \mathrm{dB}$ 的低频偶极子灵敏度增益（[第 3 章 E03-19](03_array-geometry.md#e03-19) 从时差孔径视角验证了同一 $3/2$ 因子）。
 - **低频白噪声放大与高频空间混叠窗口**：在极低频 $\kappa R \ll 1$ 时，泰勒展开给出偶极模长 $|b_1(\kappa R)| \approx \kappa R / 3$，以 $6\ \mathrm{dB/oct}$ 斜率随频率下降，因此径向均衡器 $1/b_1(\kappa R)$ 必须大幅提升低频增益（需加 Tikhonov 限幅以免放大传感器底噪）；而在高频段，四胶囊阵列至多提供 $4 = (1 + 1)^2$ 个独立实观测，一旦 $\kappa R > 1$（经验上限 $f_{\mathrm{alias}} \approx \frac{c}{2\pi R}$），二阶及以上高阶球谐波（$l \ge 2$）就会混叠进 $W, X, Y, Z$ 四个通道中，导致方向估计扭曲（见 [E14-02](#e14-02)）。
 
 ### 14.3 三维声场旋转与头部追踪坐标变换
@@ -287,7 +310,7 @@ cE-\|\vec I_a\|_2
 - **子图 (a) 正交等幅双波的声强模与总声能**：横轴为两列正交等幅平面波的相对相位差 $\Delta\phi \in [0^\circ, 180^\circ]$，纵轴为归一化媒质（$\rho_0 = 1$、$c = 1$）下的无量纲能量密度与声强模值。蓝色实线总声能密度 $E(\Delta\phi) = 1 + \frac{1}{2}\cos\Delta\phi$ 与红色虚线有功声强模 $\|\vec I_a(\Delta\phi)\|_2$（等于 $\frac{\sqrt{2}}{2}(1 + \cos\Delta\phi)$）上的圆点标出 $0^\circ$ 与 $90^\circ$ 两组手算锚点；当 $\Delta\phi \to 180^\circ$ 时，原点处于声压波节（$p = 0$），有功声强降为零，但质点振速动能仍保留 $E = 0.5$。
 - **子图 (b) 相位干涉诱发的瞬时扩散度变化**：横轴仍为双波相位差 $\Delta\phi$（单位：$^\circ$），纵轴为无量纲瞬时扩散度 $\psi \in [0, 1]$。紫色实线从 $0^\circ$ 时的 $0.057$ 平滑升至 $90^\circ$ 时的 $0.293$，并在 $180^\circ$ 声压相消处触顶 $1.000$，说明实际 DirAC 编码器必须在短时窗上对 $\vec I_a$ 与 $E$ 做时间平滑以抑制单帧干涉跳变。
 - **子图 (c) 直达扩散声能比（Direct-to-Diffuse Ratio，DDR）映射**：横轴为稳态平面波与各向同性扩散场声能密度比的分贝值 $\mathrm{DDR}$（定义为 $10\log_{10}(E_{\mathrm{dir}}/E_{\mathrm{diff}})$，单位：$\mathrm{dB}$，范围 $-15$～$+20\ \mathrm{dB}$；注意区别于[第 2 章 §2.4.3](02_basics-signal-model.md#sec-2-4-3) 按房间冲激响应早晚时段积分定义的直达混响比 $\mathrm{DRR}$），纵轴为统计扩散度 $\psi$。绿色实线绘出闭式关系 $\psi = 1/(1 + \mathrm{DDR}_{\mathrm{lin}})$，深灰竖向点线标出 $\mathrm{DDR} = 0\ \mathrm{dB}$ 时 $\psi = 0.5$ 的对称分界点。
-- **子图 (d) 开球四面体阵列径向模态幅度**：横轴为无量纲波数孔径积 $\kappa R \in [0.05, 4.5]$（图轴简记为 $kr$，即正文的 $\kappa R$），纵轴为开球径向模态幅度增益 $|b_l(\kappa R)|$。蓝色实线零阶全向权重 $|b_0(\kappa R)|$ 从直流 $1.0$ 随频率回落，在红色竖向点线 $\kappa R = \pi$ 处跌入零点；橙色虚线一阶偶极权重 $|b_1(\kappa R)|$ 在 $\kappa R \to 0$ 处趋于零（导致低频逆均衡放大底噪），在 $\kappa R \approx 2.08$ 附近升至约 $0.436$ 的主峰，共同框定了紧凑球阵的有效工作频段。
+- **子图 (d) 开球四面体阵列径向模态幅度**：横轴为无量纲波数孔径积 $\kappa R \in [0.05, 4.5]$，纵轴为开球径向模态幅度增益 $|b_l(\kappa R)|$。蓝色实线零阶全向权重 $|b_0(\kappa R)|$ 从直流 $1.0$ 随频率回落，在红色竖向点线 $\kappa R = \pi$ 处跌入零点；橙色虚线一阶偶极权重 $|b_1(\kappa R)|$ 在 $\kappa R \to 0$ 处趋于零（导致低频逆均衡放大底噪），在 $\kappa R \approx 2.08$ 附近升至约 $0.436$ 的主峰，共同框定了紧凑球阵的有效工作频段。
 
 在多扬声器阵列或虚拟扬声器双耳重放中，参数化 DirAC 常与线性一阶球谐解码配合使用。低频段（约 $700\ \mathrm{Hz}$ 以下）保持一阶偶极模态权重 $g_1 = 1$ 的基础（Basic）解码以还原精确的 Gerzon 速度矢量，中高频段则切换为最大化 Gerzon 能量矢量模长的 $\max\text{-}r_E$ 阶次加权（二维正多边形环阵取 $1/\sqrt{2}$，三维正八面体球面阵取 $1/\sqrt{3}$）或消除反相负旁瓣的同相（in-phase）加权，从而收窄高频声像展宽并抑制对侧扬声器反相串扰（二维切比雪夫根与三维勒让德根的严格区分见 [E14-17](#e14-17)）。
 
@@ -295,9 +318,11 @@ cE-\|\vec I_a\|_2
 
 #### 眼镜腿、耳机壳体散射与双耳信号匹配目标函数
 
+进入可穿戴双耳处理前，先划清本节**双耳信号匹配（Binaural Signal Matching，BSM）**与[第 5 章 §5.5](05_beamforming.md#sec-5-5)（及[§5.9](05_beamforming.md#sec-5-9) 掩码自适应前端）中**双耳 LCMV / MVDR** 的任务定位边界：双耳 LCMV / MVDR 面向助听器与嘈杂会谈增强，假定已知特定目标（及强点干扰）方向并施加线性保真约束，利用实时噪声协方差矩阵自适应抑制环境干扰；而本节的 BSM 面向 AR/VR 头显与智能眼镜的全景空间音频采集与回放，不针对单一说话人打零陷，而是用一组时不变固定滤波器在整个三维方向网格上逼近佩戴者的自由场双耳 HRTF 流形，忠实还原任意方向声源的空间方位感。
+
 当我们把视线从规则球面麦克风移向智能眼镜、AR 头显或耳戴式助听器时，正四面体的对称球谐正交性立刻不复存在：$M$ 支微型麦克风被迫分散镶嵌在鼻托、前镜框与两侧镜腿上，中间隔着对中高频声波产生强烈遮挡与衍射的人体头颅。如果直接采集佩戴者的双耳沉浸式录音，或者为重放合成保留真实空间方位的双耳信号，怎样用这组非规则排列的机身麦克风观测 $\vec x(f) \in \mathbb{C}^{M \times 1}$，线性组合出与佩戴者左耳（$e = \mathrm{L}$）和右耳（$e = \mathrm{R}$）鼓膜入口声压尽可能一致的信号 $\hat p_e(f) = \vec w_e^H(f)\vec x(f)$？
 
-这正是近年可穿戴空间音频的核心方法——**双耳信号匹配（Binaural Signal Matching，BSM）**。其建模思路直接而务实：在消声室或边界元仿真中，围绕佩戴者头部选取 $Q$ 个离散采样方向 $\Omega_1, \ldots, \Omega_Q$（覆盖水平面或全空间的方位—俯仰网格）。对固定频率 $f$（后文暂省频率记号），记第 $q$ 个方向单位幅度的远场源到达机身 $M$ 支可穿戴麦克风的阵列流形列向量为 $\vec h(\Omega_q) \in \mathbb{C}^{M \times 1}$，同时记该源到达目标耳（左耳或右耳）的真实头相关传递函数（HRTF）复响应为 $p_e(\Omega_q) \in \mathbb{C}$。将 $Q$ 个方向的阵列传递向量横向拼成矩阵 $\mathbf H \in \mathbb{C}^{M \times Q}$，目标耳复响应排成列向量 $\vec p_e \in \mathbb{C}^{Q \times 1}$：
+这正是近年可穿戴空间音频的核心方法——**BSM**。其建模思路直接而务实：在消声室或边界元仿真中，围绕佩戴者头部选取 $Q$ 个离散采样方向 $\Omega_1, \ldots, \Omega_Q$（覆盖水平面或全空间的方位—俯仰网格）。对固定频率 $f$（后文暂省频率记号），记第 $q$ 个方向单位幅度的远场源到达机身 $M$ 支可穿戴麦克风的阵列流形列向量为 $\vec h(\Omega_q) \in \mathbb{C}^{M \times 1}$，同时记该源到达目标耳（左耳或右耳）的真实头相关传递函数（HRTF）复响应为 $p_e(\Omega_q) \in \mathbb{C}$。将 $Q$ 个方向的阵列传递向量横向拼成矩阵 $\mathbf H \in \mathbb{C}^{M \times Q}$，目标耳复响应排成列向量 $\vec p_e \in \mathbb{C}^{Q \times 1}$：
 
 $$\begin{aligned}
 \mathbf H&=\bigl[\vec h(\Omega_1),\ldots,\vec h(\Omega_Q)\bigr]
@@ -354,7 +379,7 @@ $$\begin{aligned}
 
 #### 交替相位投影算法与目标函数单调不增证明
 
-引入自由目标相位向量 $\vec\phi$ 后，将式(14-15)中的固定复目标 $\vec p_e^*$ 替换为带可变相位的目标共轭向量 $\vec m_e \odot e^{-\mathrm{j}\vec\phi}$（其中 $\vec m_e = [m_{e,1},\ldots,m_{e,Q}]^\top \ge 0$，$\odot$ 表示逐元素乘积），构造联合优化目标：
+引入自由目标相位向量 $\vec\phi$ 后，将式(14-15)中的固定复目标 $\vec p_e^*$ 替换为带可变相位的目标共轭向量 $\vec m_e \odot e^{-\mathrm{j}\vec\phi}$（其中 $\vec m_e = [m_{e,1},\ldots,m_{e,Q}]^\top \ge 0$，$\odot$ 在此处表示同维向量的逐元素 Hadamard 乘积，注意与子空间协方差字典中的按列 Khatri–Rao 积区分，见[附录 A §16.1](16_appendix-symbols-math.md#sec-16-1)），构造联合优化目标：
 
 $$\begin{aligned}
 J_{\mathrm{MagLS}}(\vec w_e,\vec\phi)
@@ -669,7 +694,7 @@ $$f_m
 m=0,1,2,\ldots
 \tag{14-27}$$
 
-式(14-27)直接解释了传统长帧频域处理无法用于通透模式的原因：倘若照搬语音通信常用的 $16\ \mathrm{ms}$ STFT 分帧重叠相加算法（即便只计 $8\ \mathrm{ms}$ 帧移延迟），首个相消陷波在 $f_0 = \frac{1}{2 \times 0.008} = 62.5\ \mathrm{Hz}$ 处便已出现，随后每隔 $125\ \mathrm{Hz}$ 产生一处深度陷波，使外部环境声与佩戴者自语音出现明显的金属桶状染色（Hollow / Metallic Coloration）。
+式(14-27)直接解释了传统长帧频域处理无法用于通透模式的原因：倘若照搬语音通信常用的 $16\ \mathrm{ms}$ STFT 分帧重叠相加算法（即便只计 $8\ \mathrm{ms}$ 帧移延迟），首个相消陷波在 $f_0 = \frac{1}{2 \times 0.008} = 62.5\ \mathrm{Hz}$ 处便已出现，随后每隔 $125\ \mathrm{Hz}$ 产生一处深度陷波；与此同时，在满足 $2\pi f_m^{\mathrm{peak}}\tau_{\mathrm{proc}} = 2m\pi$ 的整数倍周期频率 $f_m^{\mathrm{peak}} = m / \tau_{\mathrm{proc}}\;(m = 0, 1, 2, \ldots)$ 处，余弦项取 $+1$ 形成等间距同极性相长峰值，一峰一谷交替使外部环境声与佩戴者自语音出现明显的金属桶状染色（Hollow / Metallic Coloration）。在可穿戴整机硬件联调中还须严查电声通路极性：一旦动铁受话器（Balanced Armature Receiver）焊线反相或通透 DSP 通路符号反接导致 $g_{\mathrm{leak}} g_{\mathrm{ht}} < 0$，式(14-26)中的余弦项正负号翻转会使相长峰与相消谷整体互换，原本位于 $f = 0\ \mathrm{Hz}$ 的相长点瞬间变成直流至百赫兹频段的宽带低频相消空洞，佩戴者会立即感到环境低音空瘪发飘。
 
 #### 锚点手算 14-4（下）：2 ms 延迟引发的 250 Hz 陷波与图 84 解读
 

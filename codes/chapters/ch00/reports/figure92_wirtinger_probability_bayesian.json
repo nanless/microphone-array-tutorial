@@ -8,8 +8,8 @@
   "source_sha256": {
     "codes/chapters/ch00/core/chapter00_math.py": "14624267b73f4d79c934df2a2ceaa390adb4b1e0d63f38883d7e67c1d47a958e",
     "codes/chapters/ch00/io_contracts.py": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974",
-    "scripts/make_figures.py": "c71b1078fae86e0ee8535cac1037b1764b85ac66809434c7f7792e93000a3988",
-    "scripts/make_math_figures.py": "52279f49634558fd81af00fa67201448ffadc211f215bfaddfc8484712c722fe"
+    "scripts/make_figures.py": "1cd277454eb799b40002f7ec682c5c13de871123ee54646e13f49926117bb5eb",
+    "scripts/make_math_figures.py": "d7152a2ec7d3998508b4ff25d27e619e6f0926f7abf30024f214ce29086a26cd"
   },
   "seed": 20260089,
   "anchors": {

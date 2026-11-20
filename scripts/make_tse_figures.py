@@ -90,6 +90,8 @@ def _save_report_and_png(fig, fig_name: str, report_name: str, report_payload: d
     write_json_report(report_path, report_payload, forbidden_roots=(DEFAULT_OUTPUT,))
     report_sha = hashlib.sha256(report_path.read_bytes()).hexdigest()
 
+    if fig.get_constrained_layout():
+        fig.get_layout_engine().set(w_pad=0.06, h_pad=0.09, wspace=0.04, hspace=0.06)
     finalize_figure(fig)
     metadata = {
         "SourceScript": "scripts/make_tse_figures.py",
@@ -162,7 +164,7 @@ def _build_fig85(sources: dict[str, str], manifest_sha: str) -> None:
         "plot_scope": "deterministic FiLM modulation, dual-state TSE loss curves, scale-invariance check, and single-speaker fricative bypass boundary",
     }
 
-    fig, axes = plt.subplots(2, 2, figsize=(9.5, 7.2), constrained_layout=True)
+    fig, axes = plt.subplots(2, 2, figsize=(9.5, 7.8), constrained_layout=True)
     frames = np.arange(3)
     axes[0, 0].plot(frames - 0.06, h_feat[0], "o--", color=C_BLUE, label="原始通道 1")
     axes[0, 0].plot(frames + 0.06, z_mod[0], "s-", color=C_RED, label="调制后通道 1")
@@ -199,9 +201,9 @@ def _build_fig85(sources: dict[str, str], manifest_sha: str) -> None:
         title="(c) 目标存在段：幅度缩放不变性对比",
         xlabel="输出幅度缩放系数 α",
         ylabel="损失或相对误差 / dB",
-        ylim=(-24.0, 8.0),
+        ylim=(-24.0, 13.0),
     )
-    axes[1, 0].legend(loc="lower right")
+    axes[1, 0].legend(loc="upper left")
 
     ratio_grid = np.linspace(-30.0, 0.0, 121, dtype=np.float64)
     sec_gate = (ratio_grid >= -18.0).astype(np.float64)
@@ -286,7 +288,7 @@ def _build_fig86(manifest: dict, sources: dict[str, str], manifest_sha: str) -> 
         "limits": manifest["limits"],
     }
 
-    fig, axes = plt.subplots(2, 2, figsize=(9.5, 7.2), constrained_layout=True)
+    fig, axes = plt.subplots(2, 2, figsize=(9.5, 7.8), constrained_layout=True)
     axes[0, 0].plot(radii, report["radial_gain_db"]["dsb_d10cm"], "--", color=C_RED, linewidth=1.7, label="远场 DSB (d=10 cm)")
     axes[0, 0].plot(radii, report["radial_gain_db"]["bubble_d10cm"], "-", color=C_BLUE, linewidth=2.0, label="距离气泡 (d=10 cm)")
     axes[0, 0].plot(radii, report["radial_gain_db"]["bubble_d2cm_reg5e4"], "-.", color=C_ORANGE, linewidth=1.8, label="正则气泡 (d=2 cm)")
@@ -304,6 +306,8 @@ def _build_fig86(manifest: dict, sources: dict[str, str], manifest_sha: str) -> 
     axes[0, 1].plot(spacings * 100.0, wng_curve, "o-", color=C_BLUE, markersize=4, linewidth=1.8, label="无正则 WNG")
     axes[0, 1].axvline(10.0, color=C_GREEN, linestyle="--", label="d=10 cm (-4.21 dB)")
     axes[0, 1].axvline(2.0, color=C_RED, linestyle="-.", label="d=2 cm (-31.82 dB)")
+    axes[0, 1].axhline(-10.0, color="0.55", linestyle=":", linewidth=1.1)
+    axes[0, 1].text(15.2, -11.6, "−10 dB 参考线", ha="right", va="top", color="0.35")
     axes[0, 1].set(
         title="(b) 阵元间距与白噪声增益塌缩",
         xlabel="相邻阵元间距 d / cm",
@@ -323,7 +327,7 @@ def _build_fig86(manifest: dict, sources: dict[str, str], manifest_sha: str) -> 
         xlabel="相对时间 / ms",
         ylabel="PCM 解码幅度",
         xlim=(-0.06, t_ms[-1] + 0.08),
-        ylim=(-0.35, 0.58),
+        ylim=(-0.35, 0.66),
     )
     axes[1, 0].legend(loc="upper right")
 
@@ -413,7 +417,7 @@ def _build_fig87(sources: dict[str, str], manifest_sha: str) -> None:
         "gss_interference_mask": m_interf.tolist(),
     }
 
-    fig, axes = plt.subplots(2, 2, figsize=(9.5, 7.2), constrained_layout=True)
+    fig, axes = plt.subplots(2, 2, figsize=(9.5, 7.8), constrained_layout=True)
     t_centers = np.arange(6) * 0.5 + 0.25
     axes[0, 0].bar(t_centers - 0.09, ref_act[0], width=0.16, color=C_BLUE, label="说话人 1 真值")
     axes[0, 0].bar(t_centers + 0.09, ref_act[1], width=0.16, color=C_ORANGE, label="说话人 2 真值")
@@ -528,10 +532,16 @@ def _build_fig88(sources: dict[str, str], manifest_sha: str) -> None:
         "architecture_chunk_latency_s": dict(zip(["streaming_tse", "chunked_joint", "offline_gss"], arch_latency_s)),
     }
 
-    fig, axes = plt.subplots(2, 2, figsize=(9.5, 7.2), constrained_layout=True)
+    fig, axes = plt.subplots(2, 2, figsize=(9.5, 7.8), constrained_layout=True)
     aud_idx = np.arange(15)
-    axes[0, 0].step(aud_idx, sync_map["video_frame_indices"], where="mid", color=C_BLUE, linewidth=2.0, label="零滞后 (0 ms)")
-    axes[0, 0].step(aud_idx, lag_map["video_frame_indices"], where="mid", linestyle="--", color=C_RED, linewidth=1.8, label="相机滞后 (+120 ms)")
+    axes[0, 0].step(
+        aud_idx, sync_map["video_frame_indices"], where="mid",
+        marker="o", markersize=4.5, color=C_BLUE, linewidth=2.0, label="零滞后 (0 ms)",
+    )
+    axes[0, 0].step(
+        aud_idx, lag_map["video_frame_indices"], where="mid",
+        marker="s", markersize=4.5, linestyle="--", color=C_RED, linewidth=1.8, label="相机滞后 (+120 ms)",
+    )
     axes[0, 0].set(
         title="(a) 16 ms 音频帧与 25 fps 视频曝光映射",
         xlabel=r"音频 STFT 帧索引 $\ell$",
@@ -559,11 +569,12 @@ def _build_fig88(sources: dict[str, str], manifest_sha: str) -> None:
         title="(c) 唇部遮挡下的置信度门控平滑回退",
         xlabel=r"时间块索引 $\ell$",
         ylabel="掩码增益或置信度",
-        ylim=(-0.06, 1.56),
+        ylim=(0.0, 1.66),
     )
     axes[1, 0].legend(
         ncol=2,
         loc="upper center",
+        framealpha=0.96,
         handlelength=1.2,
         handletextpad=0.35,
         columnspacing=0.65,
@@ -571,7 +582,10 @@ def _build_fig88(sources: dict[str, str], manifest_sha: str) -> None:
     )
 
     y_pos = np.arange(3)
-    axes[1, 1].barh(y_pos, arch_latency_s, color=[C_GREEN, C_BLUE, C_ORANGE], height=0.52, alpha=0.85)
+    axes[1, 1].barh(
+        y_pos, arch_latency_s, color=[C_GREEN, C_BLUE, C_ORANGE],
+        edgecolor=C_MAIN, linewidth=0.75, height=0.52, alpha=0.85,
+    )
     for idx, val in enumerate(arch_latency_s):
         axes[1, 1].text(val + 0.12, idx, f"{val:.3g} s", va="center")
     axes[1, 1].set(

@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "exercise_id": "E09-25",
-  "script_sha256": "308d53a69ccc7414068b644f5619f7d6be8e60acc632a398f11f83159820acc7",
+  "script_sha256": "9685ae223fe08c3a60db32097e992e1f85155ce7f3e7908c8d8523b35208db5d",
   "source_sha256": {
-    "scripts/make_tracking_figures.py": "308d53a69ccc7414068b644f5619f7d6be8e60acc632a398f11f83159820acc7",
+    "scripts/make_tracking_figures.py": "9685ae223fe08c3a60db32097e992e1f85155ce7f3e7908c8d8523b35208db5d",
     "codes/chapters/ch09/core/lifecycle.py": "a310bf9e3681ce207fcb007ffc113b79ff1f64a255c6546b57c5253c10967baa",
     "codes/chapters/ch09/examples/tracking_lifecycle_demo.py": "7cdbb9debbeef63320b5a726a4c4485f9e159aaa3635da7b3126271406764026",
     "codes/chapters/ch09/examples/chapter09_tracking_audio.py": "bb128dbb499063a87849d1b8d2db86cc39dae966c69a792d1734b2dc21433aa3",

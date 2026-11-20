@@ -94,6 +94,8 @@ def _save_figure_and_report(
     write_json_report(report_path, report_payload, forbidden_roots=forbidden)
     report_sha = hashlib.sha256(validate_parent_chain(report_path).read_bytes()).hexdigest()
 
+    if fig.get_constrained_layout():
+        fig.get_layout_engine().set(w_pad=0.06, h_pad=0.09, wspace=0.04, hspace=0.06)
     finalize_figure(fig)
     metadata = {
         "SourceScript": "scripts/make_wearable_figures.py",
@@ -127,7 +129,7 @@ def build_fig81(inputs: dict[str, str], manifest_sha: str) -> None:
     kr_grid = np.linspace(0.05, 4.5, 180)
     b0, b1 = open_sphere_foa_radial_weights(kr_grid)
 
-    fig, axes = plt.subplots(2, 2, figsize=(9.5, 7.0), constrained_layout=True)
+    fig, axes = plt.subplots(2, 2, figsize=(9.5, 7.7), constrained_layout=True)
 
     axes[0, 0].plot(deg_grid, energies, color=C_BLUE, linewidth=2.0, label=r"总声能密度 $E$")
     axes[0, 0].plot(
@@ -259,7 +261,7 @@ def build_fig82(inputs: dict[str, str], manifest_sha: str) -> None:
         ic_vals.append(mix["ic_out"])
         snr_gains.append(float(-10.0 * np.log10(mix["var_L"])))
 
-    fig, axes = plt.subplots(2, 2, figsize=(9.5, 7.0), constrained_layout=True)
+    fig, axes = plt.subplots(2, 2, figsize=(9.5, 7.7), constrained_layout=True)
 
     x3 = np.arange(3)
     width = 0.25
@@ -289,9 +291,9 @@ def build_fig82(inputs: dict[str, str], manifest_sha: str) -> None:
         xlabel="水平方位角 / °",
         ylabel="幅度响应 / dB",
         xlim=(0.0, 355.0),
-        ylim=(-18.0, 14.5),
+        ylim=(-23.5, 9.0),
     )
-    axes[0, 1].legend(ncol=2, loc="upper right")
+    axes[0, 1].legend(ncol=2, loc="lower center")
 
     iters = np.arange(1, hist72.size + 1)
     axes[1, 0].plot(iters, hist72, "o-", color=C_BLUE, markersize=4, linewidth=1.8, label="交替相位投影目标值")
@@ -359,7 +361,7 @@ def build_fig82(inputs: dict[str, str], manifest_sha: str) -> None:
 
 def build_fig83(manifest: dict, signals: dict[str, np.ndarray], inputs: dict[str, str], manifest_sha: str) -> None:
     # Panel (a): Corcos wind coherence vs acoustic diffuse coherence
-    f_coh = np.linspace(20.0, 4000.0, 200)
+    f_coh = np.linspace(0.0, 4000.0, 201)
     coh = corcos_wind_coherence(f_coh, d_m=0.015, u_conv_mps=3.0, alpha_long=0.14)
 
     # Panel (b): Parametric cross-modal fusion SINR across frequency
@@ -380,13 +382,13 @@ def build_fig83(manifest: dict, signals: dict[str, np.ndarray], inputs: dict[str
     low_anchor = cross_modal_mvdr_mmse(2.0, np.diag([4.0, 0.04]), phi_s=1.0)
     high_anchor = cross_modal_mvdr_mmse(0.1, np.diag([0.05, 0.04]), phi_s=1.0)
 
-    fig, axes = plt.subplots(2, 2, figsize=(9.5, 7.0), constrained_layout=True)
+    fig, axes = plt.subplots(2, 2, figsize=(9.5, 7.7), constrained_layout=True)
 
     axes[0, 0].plot(
         f_coh, coh["acoustic_diffuse_coherence"], color=C_BLUE, linewidth=2.0, label="三维扩散声场 sinc(2fd/c)"
     )
     axes[0, 0].plot(
-        f_coh, coh["wind_coherence"], color=C_RED, linestyle="--", linewidth=2.0, label="Corcos 对流风噪 (Uc=3 m/s)"
+        f_coh, coh["wind_coherence"], color=C_RED, linestyle="--", linewidth=2.0, label=r"Corcos 对流风噪（$U_c = 3\ \mathrm{m/s}$）"
     )
     axes[0, 0].set(
         title="(a) 1.5 cm 麦间距：声扩散与湍流风噪相干度",
@@ -422,7 +424,7 @@ def build_fig83(manifest: dict, signals: dict[str, np.ndarray], inputs: dict[str
         xlabel="相对时间 / ms",
         ylabel="数字幅度",
         xlim=(0.0, t_ms[-1]),
-        ylim=(-0.44, 0.66),
+        ylim=(-0.44, 0.76),
     )
     axes[1, 0].legend(ncol=2, loc="upper right")
 
@@ -486,7 +488,7 @@ def build_fig84(manifest: dict, signals: dict[str, np.ndarray], inputs: dict[str
     delays_ms = np.geomspace(0.05, 8.0, 160)
     first_notches_hz = 1000.0 / (2.0 * delays_ms)
 
-    fig, axes = plt.subplots(2, 2, figsize=(9.5, 7.0), constrained_layout=True)
+    fig, axes = plt.subplots(2, 2, figsize=(9.5, 7.7), constrained_layout=True)
 
     gain_2ms_db = 10.0 * np.log10(np.maximum(ht_2ms["power_gain"], 1e-3))
     gain_100us_db = 10.0 * np.log10(np.maximum(ht_100us["power_gain"], 1e-3))
@@ -500,7 +502,7 @@ def build_fig84(manifest: dict, signals: dict[str, np.ndarray], inputs: dict[str
         xlabel="频率 / Hz",
         ylabel="叠加功率增益 / dB",
         xlim=(0.0, 4500.0),
-        ylim=(-30.0, 22.0),
+        ylim=(-30.0, 31.0),
     )
     axes[0, 0].legend(loc="upper right")
 

@@ -10,7 +10,7 @@
 
 ### 16.1 符号表
 
-本书的排版约定与 §2.3 保持一致：**斜体表示标量，头顶箭头表示列向量，加粗大写表示矩阵**；上标 $^H$ 表示共轭转置（厄米转置），上标 $^\top$ 表示普通转置，顶帽 $\hat{\ }$ 表示估计量。按照语音信号处理文献的惯例，$X(f)$、$X(f_k,\ell)$ 这类带频点自变量的大写斜体字母表示单个频点或单个时频格点上的复数**标量**。
+本书的排版约定与 §2.3 保持一致：**斜体表示标量，头顶箭头表示列向量，加粗大写表示矩阵**；上标 $^H$ 表示共轭转置（厄米转置），上标 $^\top$ 表示普通转置，顶帽 $\hat{\ }$ 表示估计量。按照语音信号处理文献的惯例，$X(f)$、$X(f_k,\ell)$ 或离散时频方括号记号 $X_m[k,\ell]$ 这类带频点自变量的大写斜体字母表示单个频点或单个时频格点上的复数**标量**。
 
 本书统一采用前向傅里叶核 $e^{-\mathrm{j}2\pi ft}$，其中 $\mathrm{j}=\sqrt{-1}$ 为虚数单位。
 
@@ -18,7 +18,7 @@
 
 球谐域公式通常改用从 $+x$ 轴逆时针起算的方位角 $\alpha$ 和从 $+z$ 轴向下起算的极角（余纬角）$\vartheta$。将其与本书从 $+y$ 朝 $+x$ 起算的声源方位角 $\theta$、从水平面朝 $+z$ 起算的俯仰角 $\phi_{\mathrm{el}}$ 对接时，必须先做角度换算 $\alpha=\pi/2-\theta$（按 $2\pi$ 周期折叠取值）、$\vartheta=\pi/2-\phi_{\mathrm{el}}$，再代入球谐基函数或开源库接口，详见[§5.8](05_beamforming.md#sec-5-8)。同理，国际标准 AmbiX 与一阶全景声（FOA）采用 $+x$ 朝正前方、$+y$ 朝正左方、$+z$ 朝正上方的三维右手系，其水平方位角从 $+x$ 逆时针转向 $+y$、俯仰角从水平面转向 $+z$，与上段平面阵列坐标系（$+y$ 正前、顺时针方位角）之间的对照详见[专题Ⅲ §14.2](14_spatial-wearable-arrays.md#sec-14-2)。
 
-**字母复用**（与 §2.3 一致）：由于阵列、自适应滤波、去混响与多目标追踪分属不同研究传统，同一个字母在不同章节可能承担不同角色。例如本表将波数记为 $\kappa=2\pi f/c$，以区别于离散频点索引 $k$，但部分文献与局部推导仍用 $k$ 记波数，第 7 章局部还用 $k$ 记 WPE 的滞后帧号，$D$ 可表示阵列孔径或 PHD 强度函数，$\lambda$ 可表示声波波长、RLS 指数遗忘因子、WPE 时变方差或矩阵特征值，$K$ 可表示声源个数或 WPE 预测阶数；$s$ 可表示源信号或追踪状态。具体含义以所在公式的定义为准。
+**字母与算符复用**（与 §2.3 一致）：由于阵列、自适应滤波、去混响与多目标追踪分属不同研究传统，同一个字母或算符在不同章节可能承担不同角色。例如本表将波数记为 $\kappa=2\pi f/c$，以区别于离散频点索引 $k$，但部分文献与局部推导仍用 $k$ 记波数，第 6 章 §6.2.4 另用 $\kappa\in[-1,1]$ 表示 IPNLMS 比例混合系数，第 7 章局部还用 $k$ 记 WPE 的滞后帧号；$D$ 可表示阵列孔径或 PHD 强度函数，$\lambda$ 可表示声波波长、RLS 指数遗忘因子、WPE 时变方差或矩阵特征值，$K$ 可表示声源个数或 WPE 预测阶数，$s$ 可表示源信号或追踪状态。算符 $\odot$ 同样遵循领域双重约定：在子空间与协方差向量化字典（[§0.4.3](00_math-foundations.md#sec-0-4-3)、§3.3、§12.7、§16.3.11）中表示按列 Khatri–Rao 积，而在频域滤波、时频掩码、BSM 相位投影与 FiLM 特征调制（§5、§6、§8、[§14.5～§14.6](14_spatial-wearable-arrays.md#sec-14-5)、[§15.1](15_target-extraction-diarization.md#sec-15-1)）中表示同维或广播 Hadamard 逐元素乘积。具体含义以所在公式的定义为准。
 
 本表区分 STFT 网格时，默认 $k$ 是频点索引、$\ell$ 是帧索引，$n$ 是离散采样索引，$t$ 是连续时间。各章沿用各自领域的经典记号时会另行声明下标：例如第 5 章的 $\vec{x}(k,n)$ 按（频点，帧）排列；第 8 章的 $X_m(f,k)$ 或 $\vec{x}_{ft}$ 也按（频点，帧）排列，其中用 $t$ 表示离散帧号。跨章对照公式时，应当先对齐每个维度的物理意义，不能仅凭字母相同就默认代表同一条坐标轴。
 
@@ -37,10 +37,10 @@ kf_s/N,&0\leq k<\lceil N/2\rceil,\\
 | 符号 | 含义 |
 |---|---|
 | $M$, $d$, $D$ | 麦克风数量、相邻阵元间距、阵列总孔径 |
-| $f_s$, $N$, $H$ | 采样率（Hz）、DFT/STFT 窗长（点数）与帧移（hop size，相邻两帧起点的采样点数间隔，§2.5） |
+| $f_s$, $N$, $N_w$, $H$ | 采样率（Hz）、DFT/FFT 点数 $N$、STFT 实分析窗长度 $N_w$（点数，满足 $N\geq N_w$；不作帧内补零时默认 $N=N_w$，见 §2.5 式(2-5)）与帧移 $H$（hop size，相邻两帧起点的采样点数间隔） |
 | $N_{\mathrm{tar}}$（第 8 章 OverIVA） | 单独提取的目标声源数量；满足 $N_{\mathrm{tar}}<M$，不同于第 8 章式(8-1)统计全部物理声源数的 $N$，其余背景通道可包含多种混合干扰 |
 | $c$, $\lambda$, $f$, $f_k$ | 声速（算例常取 $343\ \mathrm{m/s}$）、波长、连续物理频率（Hz）、单边 DFT/STFT 第 $k$ 个频点的非负物理频率 $f_k=kf_s/N$；完整双边 DFT 的负频率索引按式(16-1)换算 |
-| $\kappa=2\pi f/c$ | 波数，单位为 $\mathrm{rad/m}$，使空间传播相位 $\kappa d$ 无量纲，并避免与频点索引 $k$ 混淆。矩阵二范数条件数 $\kappa_2(\mathbf{A})$ 与球面分布集中度 $\kappa_{\mathrm{vMF}}$ 为各自语境下的独立记号 |
+| $\kappa=2\pi f/c$ | 波数，单位为 $\mathrm{rad/m}$，使空间传播相位 $\kappa d$ 无量纲，并避免与频点索引 $k$ 混淆。第 6 章 §6.2.4 的 IPNLMS 均匀/比例混合系数 $\kappa\in[-1,1]$、矩阵二范数条件数 $\kappa_2(\mathbf{A})$ 与球面分布集中度 $\kappa_{\mathrm{vMF}}$ 为各自语境下的独立记号 |
 | $\theta$, $\theta_0$ | 从正横方向起算的声源方位角、波束指向角；端射方向为 $\pm90^\circ$ |
 | $\vec{u}(\theta)$ | 从阵列参考点指向声源的单位向量；声波传播方向为 $-\vec{u}$ |
 | $\phi_{\mathrm{el}}$, $\vec{u}(\theta,\phi_{\mathrm{el}})$（第 3、9 章三维方向） | 俯仰角从水平面朝 $+z$ 为正，取值范围 $[-90^\circ,90^\circ]$；方位角仍从 $+y$ 朝 $+x$ 为正。天顶与天底极点处方位角无唯一定义，球面积分的面积微元因子按弧度写为 $\cos\phi_{\mathrm{el}}$（E09-26） |
@@ -50,7 +50,7 @@ kf_s/N,&0\leq k<\lceil N/2\rceil,\\
 | $v_m[n]$, $\vec{v}(f_k,\ell)$ | 第 $m$ 个麦克风的时域加性传感器噪声与频域多通道噪声列向量（§2.3 主记号）；部分章节在无下标歧义时亦记为 $n_m[n]$ 或 $\vec{n}$ |
 | $\psi$ | 相邻两麦经过波束指向相位补偿后的残余空间相位差（§2.6、§5.2）；E09-26 局部用 $\psi$ 记右手绕 $+z$ 轴的姿态偏航角，[专题Ⅲ §14.4](14_spatial-wearable-arrays.md#sec-14-4) 式(14-12) 另用 $\psi\in[0,1]$ 表示声场扩散度（diffuseness） |
 | $\vec{a}(\theta)$, $\vec{w}$ | 阵列导向矢量、窄带复数波束权重向量 |
-| $\hat{\mathbf{R}}$, $\mathbf{R}_{nn}$, $\mathbf{R}_{ss}$ | 样本空间协方差矩阵、噪声空间协方差矩阵、目标语音空间协方差矩阵 |
+| $\mathbf{R}_{xx}$, $\hat{\mathbf{R}}_{xx}$（或简记 $\mathbf{R}$, $\hat{\mathbf{R}}$），$\mathbf{R}_{vv}$, $\mathbf{R}_{nn}$, $\mathbf{R}_{ss}$ | 总体与样本观测空间协方差矩阵（无下标歧义时简记为 $\mathbf{R}$, $\hat{\mathbf{R}}$，见 §2.5）、加性噪声（或除目标外的总干扰加噪声）空间协方差矩阵 $\mathbf{R}_{vv}$ / $\mathbf{R}_{nn}$、目标语音空间协方差矩阵 $\mathbf{R}_{ss}$ |
 | $\mathbf{\Gamma}$ | 三维球面各向同性弥散噪声场的空间相干矩阵；二维水平面各向同性入射模型另见 §5.1 |
 | $\mathbf{E}_n$, $\mathbf{E}_s$, $\boldsymbol{\Psi}$（第 4 章子空间） | 噪声子空间特征向量基、信号子空间特征向量基，以及 ESPRIT 算法连接平移不变双子阵信号子空间的旋转不变算子 $\boldsymbol{\Psi}$（§4.6） |
 | $\sigma^2$ | 噪声方差（平均功率）；各通道独立同功率空间白噪声的协方差矩阵为 $\sigma^2\mathbf{I}$ |
@@ -80,7 +80,8 @@ kf_s/N,&0\leq k<\lceil N/2\rceil,\\
 | $\mathbf{A}$, $\mathbf{P}$, $\vec{q}$, $\vec{b}$（专题Ⅰ） | 声学成像传播字典、点扩散函数（PSF）矩阵、参考面处的候选源均方强度向量、波束扫描脏图向量；满足 $P_{ij}=|\vec{w}_i^H\vec{a}_j|^2$（行对应扫描格点、列对应真实源格点），注意与第 9 章卡尔曼误差协方差 $\mathbf{P}$ 区分（§12.4） |
 | CSM、$\mathbf{R}$、$p_{\mathrm{ref}}$（专题Ⅰ） | 互谱矩阵（Cross-Spectral Matrix）与空气声学参考有效声压 $p_{\mathrm{ref}}=20\ \mu\mathrm{Pa}$；未归一化 FFT 外积、每 Hz 功率谱密度与单频均方幅度的量纲标度不同，数字幅值未经声压灵敏度校准前不得直接标为 $\mathrm{Pa}^2$ 或 dB SPL（§12.3） |
 | $W, X, Y, Z$，$\vec{b}_{\mathrm{WXYZ}}$，$\vec{b}_{\mathrm{ACN}}$（专题Ⅲ） | 一阶全景声（FOA）在 SN3D 归一化下的零阶全向与三个一阶偶极通道，以及直观序 $[W,X,Y,Z]^\top$ 与标准 ACN 序 $[W,Y,Z,X]^\top$（[§14.2](14_spatial-wearable-arrays.md#sec-14-2)） |
-| $b_l(\kappa R)$（专题Ⅲ） | 半径 $R$ 球面阵列的第 $l$ 阶径向模态权重；开球全向阵在 $\kappa R=\pi$ 处出现 $b_0^{\mathrm{open}}(\pi)=0$ 零陷（[§14.2](14_spatial-wearable-arrays.md#sec-14-2)） |
+| $J_n, j_l, y_l, h_l^{(2)}, P_l^m, Y_{l,m}$ | $n$ 阶第一类柱贝塞尔函数 $J_n$，$l$ 阶第一/第二类球贝塞尔函数 $j_l, y_l$ 与第二类球汉克尔函数 $h_l^{(2)}=j_l-\mathrm{j}y_l$（本书 $e^{+\mathrm{j}\omega t}$ 时间因子下的向外散射波），连带勒让德函数 $P_l^m$ 与球谐函数 $Y_{l,m}$（亦记 $Y_n^m$，[§0.7](00_math-foundations.md#sec-0-7)、[§5.8](05_beamforming.md#sec-5-8)、[§14.2](14_spatial-wearable-arrays.md#sec-14-2)）。注意归一化换算 $Y_{l,m}^{\mathrm{N3D}}=\sqrt{2l+1}\,Y_{l,m}^{\mathrm{SN3D}}=\sqrt{4\pi}\,Y_{l,m}^{\mathrm{ortho}}$，故第 14 章球面均值径向模态权重 $b_l(\kappa R)$ 与第 0、5 章标准正交基约定的 $4\pi\mathrm{j}^l j_l(\kappa R)$ 相差常数因子 $4\pi$ |
+| $b_l(\kappa R)$（专题Ⅲ） | 半径 $R$ 球面阵列在球面均值（SN3D）口径下的第 $l$ 阶径向模态权重；开球全向阵在 $\kappa R=\pi$ 处出现 $b_0^{\mathrm{open}}(\pi)=0$ 零陷，刚性球由 $h_l^{(2)\prime}(\kappa R)$ 消除正实轴零点（[§14.2](14_spatial-wearable-arrays.md#sec-14-2)） |
 | $\vec{I}_a, \vec{I}_r$，$E, \psi$（专题Ⅲ） | 时间平均有功声强、无功声强、总声能密度与声场扩散度 $\psi=1-\|\bar{\vec{I}}_a\|_2/(c\bar{E})$（其中 $\bar{\vec{I}}_a=\mathbb{E}[\vec{I}_a]$、$\bar{E}=\mathbb{E}[E]$，取值 $\psi\in[0,1]$，[§14.4](14_spatial-wearable-arrays.md#sec-14-4)） |
 | $\mathbf{H}, \vec{p}_e, \vec{\phi}$；$\mathrm{IC}, \beta$（专题Ⅲ） | 可穿戴阵列 $Q$ 方向流形矩阵、目标耳 HRTF 向量与 MagLS 辅助自由相位向量（由 $\mathbf{H}^H\vec{w}_e$ 拟合共轭目标 $\vec{p}_e^*$，[§14.5](14_spatial-wearable-arrays.md#sec-14-5)～[§14.6](14_spatial-wearable-arrays.md#sec-14-6)）；双耳相干度与参考麦混合系数 $\beta\in[0,1]$（[§14.7](14_spatial-wearable-arrays.md#sec-14-7)） |
 | $U_c, \gamma_{\mathrm{wind}}(f)$；$H_{\mathrm{occ}}(f)$；$\tau_{\mathrm{proc}}$（专题Ⅲ） | Corcos 湍流风噪对流速度与空间相干度（[§14.8](14_spatial-wearable-arrays.md#sec-14-8)）；耳道闭塞内麦/骨导相对外麦的跨模态自语音传递函数（[§14.9](14_spatial-wearable-arrays.md#sec-14-9)）；主动通透模式端到端处理延迟（[§14.10](14_spatial-wearable-arrays.md#sec-14-10)） |
@@ -88,7 +89,7 @@ kf_s/N,&0\leq k<\lceil N/2\rceil,\\
 | $r_F=2D^2/\lambda$，$\vec{w}_{\mathrm{bubble}}$（专题Ⅳ） | 菲涅耳近场曲率边界与三麦正侧向声学距离气泡二阶空间差分权重（[§15.3](15_target-extraction-diarization.md#sec-15-3)） |
 | $\mathrm{DER}$，$E_{\mathrm{miss}}$，$E_{\mathrm{FA}}$，$E_{\mathrm{conf}}$（专题Ⅳ） | 说话人日志误差率及逐帧漏检、虚警、说话人混淆人数误差；虚警较高时合法 $\mathrm{DER}$ 可大于 $100\%$（[§15.4](15_target-extraction-diarization.md#sec-15-4)） |
 | $\gamma_{k,t}$，$m_{k,t}^{\mathrm{tar}}$，$m_{k,t}^{\mathrm{int}}$；$\Delta t_{\mathrm{av}}, \alpha_\ell$（专题Ⅳ） | TS-VAD 独立伯努利活动后验与 GSS 目标排他掩码/干扰掩码（[§15.5](15_target-extraction-diarization.md#sec-15-5)）；视听管线正滞后与逐帧视觉可见度置信度门控权重（[§15.6](15_target-extraction-diarization.md#sec-15-6)） |
-| $\otimes$, $\odot$, $\operatorname{vec}(\cdot)$ | Kronecker 积、按列 Khatri–Rao 积与按列优先矩阵拉直算子；满足对角拉直恒等式 $(\mathbf B\odot\mathbf A)\vec q$（§16.3.11、E16-21） |
+| $\otimes$, $\odot$, $\operatorname{vec}(\cdot)$ | $\otimes$ 为 Kronecker 积，$\operatorname{vec}(\cdot)$ 为按列优先矩阵拉直算子；算符 $\odot$ 依语境承担双重约定：在子空间与协方差字典（[§0.4.3](00_math-foundations.md#sec-0-4-3)、§3.3、§12.7、§16.3.11、E16-21）中表示按列 Khatri–Rao 积（满足对角拉直恒等式 $(\mathbf B\odot\mathbf A)\vec q$），而在频域滤波、时频掩码、BSM 相位投影与 FiLM 调制（§5、§6、§8、[§14.5～§14.6](14_spatial-wearable-arrays.md#sec-14-5)、[§15.1](15_target-extraction-diarization.md#sec-15-1)）中表示同维或广播 Hadamard 逐元素乘积 |
 | PHD / RFS | 概率假设密度（Probability Hypothesis Density，PHD）与随机有限集（Random Finite Set，RFS） |
 
 表中残余相位 $\psi$ 的“残余”二字是相对于波束指向角 $\theta_0$ 而言的：当平面波从方位 $\theta$ 入射时，等间距线阵先按目标方向 $\theta_0$ 施加补偿时延，补偿后相邻两麦之间剩余的相位差即为
@@ -120,7 +121,7 @@ $$\begin{gathered}
 |---|---|
 | STFT（短时傅里叶变换） | 将连续长波形按固定帧移切分为重叠短帧，加窗后逐帧计算 DFT，得到时间—频率二维复数谱。窗长与帧移需在频率分辨率、语音短时平稳性与系统延迟之间折中；在满足窄带近似条件时，可把时域宽带卷积拆解为逐频点复数乘加（§2.5） |
 | 快拍（snapshot） | 某一帧、某一频点上，$M$ 个麦克风的复数频谱分量按通道顺序排成的 $M$ 维列向量，相当于阵列在该时频格点拍下的一帧空间采样（§2.5） |
-| 空间协方差矩阵 $\hat{\mathbf{R}}$ | 阵列信号处理中常把快拍外积的时间平均 $\frac{1}{L}\sum_\ell \vec{x}_\ell\vec{x}_\ell^H$ 简称为样本空间协方差矩阵。若未先减去样本均值，它严格来说是未中心化样本二阶矩，仅当**当前这批快拍的样本均值恰好为零向量**时才与同分母的中心化样本协方差相等；总体零均值并不能保证有限样本均值为零。它是 Capon、MVDR 与 MUSIC 的核心输入，定义见第 2 章式(2-6)、式(2-7) |
+| 空间协方差矩阵 $\mathbf{R}_{xx}$, $\hat{\mathbf{R}}_{xx}$（简记 $\mathbf{R}$, $\hat{\mathbf{R}}$） | 阵列信号处理中常把观测总体二阶矩 $\mathbf{R}_{xx}=\mathbb{E}[\vec{x}\vec{x}^H]$ 与快拍外积的时间平均 $\hat{\mathbf{R}}_{xx}=\frac{1}{L}\sum_\ell \vec{x}_\ell\vec{x}_\ell^H$（无歧义时简记为 $\mathbf{R}$, $\hat{\mathbf{R}}$；加性噪声协方差相应记为 $\mathbf{R}_{vv}$ 或 $\mathbf{R}_{nn}$）统称为空间协方差矩阵。若未先减去样本均值，$\hat{\mathbf{R}}_{xx}$ 严格来说是未中心化样本二阶矩，仅当**当前这批快拍的样本均值恰好为零向量**时才与同分母的中心化样本协方差相等；总体零均值并不能保证有限样本均值为零。它是 Capon、MVDR 与 MUSIC 的核心输入，定义见第 2 章式(2-6)、式(2-7) |
 | 特征分解 / 子空间 | 将厄米矩阵分解为实特征值与正交特征向量。要把前 $K$ 个大特征值对应的特征向量解释为 $K$ 维信号子空间，需同时满足源协方差满秩、导向矩阵满列秩、源数 $K<M$、空间白噪声、源与噪声互二阶矩为零以及流形模型准确；其余对应噪声底的特征向量张成噪声子空间（图 6d、§4.6） |
 | 超定方程组 | 独立方程条数多于未知数个数的线性方程组。当右端观测向量恰好落在系数矩阵列空间内时存在精确解，不相容时则通过最小二乘寻找残差范数最小的近似解。在 TDOA 定位中，多组麦克风对的时差往往共享同一个参考到达时刻，方程条数增加并不代表独立几何约束等量增加（§4.4） |
 | 双曲线定位 | 在二维平面中，一对麦克风测得的非退化到达距离差对应以这两只麦克风为焦点的双曲线的一支；在三维空间中则对应双叶双曲面的一叶。联立多组独立基线求交即可定位近场声源，但在共线或端射退化几何下可能不存在唯一交点（§4.4） |
@@ -327,12 +328,13 @@ $$R_{12}[q]=\sum_{n\in\mathbb{Z}}x_1[n]x_2^*[n-q].\tag{16-2}$$
 
 #### 16.3.4 期望、方差与协方差矩阵
 
-数学期望 $\mathbb{E}[\cdot]$ 表示概率分布下的集总平均，而实际工程手头只有有限长录音的样本算术平均，两者不能直接画等号。实随机变量的方差定义为偏离均值的平方期望；到了复数域，记零均值偏差 $\tilde z = z - \mathbb{E}[z]$，必须取**模平方** $\mathbb{E}[|\tilde z|^2]$（即 $\mathbb{E}[\tilde z\,\tilde z^*]$），才能保证方差（波动功率）是非负实数。同理，两个复变量的协方差也必须对第二项取复共轭。给定同一频点的 $L$ 帧 $M$ 维列快拍 $\vec{x}_1,\ldots,\vec{x}_L$，阵列文献中最常用的未中心化样本空间协方差矩阵定义为
+数学期望 $\mathbb{E}[\cdot]$ 表示概率分布下的集总平均，而实际工程手头只有有限长录音的样本算术平均，两者不能直接画等号。实随机变量的方差定义为偏离均值的平方期望；到了复数域，记零均值偏差 $\tilde z = z - \mathbb{E}[z]$，必须取**模平方** $\mathbb{E}[|\tilde z|^2]$（即 $\mathbb{E}[\tilde z\,\tilde z^*]$），才能保证方差（波动功率）是非负实数。同理，两个复变量的协方差也必须对第二项取复共轭。给定同一频点的 $L$ 帧 $M$ 维列快拍 $\vec{x}_1,\ldots,\vec{x}_L$，阵列文献中最常用的未中心化样本空间协方差矩阵 $\hat{\mathbf{R}}_{xx}$（无下标歧义时简记为 $\hat{\mathbf{R}}$，对应总体矩阵 $\mathbf{R}_{xx}=\mathbb{E}[\vec{x}\vec{x}^H]$ 及加性噪声协方差 $\mathbf{R}_{vv}=\mathbb{E}[\vec{v}\vec{v}^H]$）定义为
 
 $$\begin{gathered}
-\hat{\mathbf R}=L^{-1}\sum_{\ell=1}^{L}\vec x_\ell\vec x_\ell^H,\\
+\hat{\mathbf R}_{xx}=L^{-1}\sum_{\ell=1}^{L}\vec x_\ell\vec x_\ell^H
+\quad(\text{简记 }\hat{\mathbf R}),\\
 \vec x_\ell\in\mathbb{C}^M,\quad
-\hat{\mathbf R}\in\mathbb{C}^{M\times M}.
+\hat{\mathbf R}_{xx}\in\mathbb{C}^{M\times M}.
 \end{gathered}\tag{16-3}$$
 
 外积矩阵 $\vec{x}_\ell\vec{x}_\ell^H$ 的第 $(i,j)$ 个元素为 $x_{i,\ell}x_{j,\ell}^*$，天然满足共轭对称性 $\hat{R}_{ji}=\hat{R}_{ij}^*$。对任意测试向量 $\vec{v}\in\mathbb{C}^M$，二次型 $\vec v^H\hat{\mathbf R}\vec v$ 等于 $\frac{1}{L}\sum_{\ell=1}^L|\vec v^H\vec x_\ell|^2\ge 0$，恒为非负实数，因此式(16-3)必然是厄米半正定矩阵；但半正定并不保证正定可逆——例如仅用单帧两麦快拍 $\vec x=[1,\mathrm{j}]^\top$ 构造二阶外积矩阵（首行 $[1,-\mathrm{j}]$、次行 $[\mathrm{j},1]$）时，其特征值为 $2$ 与 $0$，矩阵秩仅为 $1$。

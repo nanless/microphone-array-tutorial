@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "exercise_id": "E11-27",
-  "script_sha256": "fb6853bf4cad8100da23582d480d02d64215382b302a92ed346a2b5f77c0ee9f",
+  "script_sha256": "cabad38179f7c9ac2d85fa67af0db9f7c1e3502ad9205b102d45f61946f59b22",
   "source_sha256": {
-    "scripts/make_selection_figures.py": "fb6853bf4cad8100da23582d480d02d64215382b302a92ed346a2b5f77c0ee9f",
+    "scripts/make_selection_figures.py": "cabad38179f7c9ac2d85fa67af0db9f7c1e3502ad9205b102d45f61946f59b22",
     "codes/chapters/ch11/core/selection_physics.py": "70a2d908422e0b8861ca3ab6759334a488c40d5eb76073ad43a4105355f81eac",
     "codes/chapters/ch11/core/selection.py": "987e61d30e9300941d55816629447110b92d28efa342dfbde895b2912df8e2cf",
     "codes/chapters/ch03/core/geometry.py": "5a680848301358415f74647199a4c57b65086f0b2580f91706c912ad208d7bdb",

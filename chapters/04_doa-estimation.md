@@ -53,7 +53,7 @@
 
 MUSIC 与 ESPRIT 等子空间方法在求方向前，必须先回答“当前观测里共有几个独立信号维度”，即确定源数 $K$。在安静会议室的单人语音段中，如果把 $K$ 估少了，一部分真实信号特征向量会被误划进噪声子空间，破坏真实方向的正交性；如果把 $K$ 估多了，纯噪声特征向量混入信号子空间，又会在空白方位催生虚假谱峰。
 
-此外，子空间维数还受阵列物理通道数硬约束：MUSIC 要求 $K<M$，否则噪声子空间维数 $M-K$ 变成零，根本无法构造正交投影检验；ESPRIT 则要求两个平移子阵各自的阵元数都不小于 $K$，工程上通常还会留出更多阵元余量来抑制有限快拍误差。下面介绍两种最常用的源数估计思路。
+此外，子空间维数还受阵列物理通道数硬约束：MUSIC 要求 $K<M$，否则噪声子空间维数 $M-K$ 变成零，根本无法构造正交投影检验；ESPRIT 同样要求 $K<M$ 以从全阵协方差中分离出信号子空间，且两个平移不变子阵各自的阵元数 $P$ 须满足 $K\le P\le M-1$（均匀线阵相邻错开 $1$ 元取最大重叠子阵 $P=M-1$ 时，理论源数上限同为 $M-1$；若子阵错开更大步长使 $P<M-1$，则可辨识源数上限降为 $P$），工程上通常还会留出更多阵元余量来抑制有限快拍误差。下面介绍两种最常用的源数估计思路。
 
 **方法 1：特征值间隙（eigen-gap）**。固定窄带频点 $f_k$，对 $M\times M$ 样本协方差矩阵 $\hat{\mathbf R}_{xx}(f_k)$ 做厄米特征分解。当 $K$ 个声源互不相关且背景为空间白噪声（方差 $\sigma^2$）时，总体协方差 $\mathbf A\mathbf R_{ss}\mathbf A^H+\sigma^2\mathbf I$ 的前 $K$ 个大特征值同时包含信号贡献与噪声底 $\sigma^2$，而后 $M-K$ 个小特征值在总体期望意义下全都等于 $\sigma^2$（例如后文算例 4-4 的三麦无噪单源给出特征值 $3,0,0$，一眼就能从第一个间隙读出 $K=1$）。
 
@@ -77,7 +77,7 @@ Wax 与 Kailath 在 [1984 年 ICASSP 会议论文式(10)～(15)](https://doi.org
 
 #### 时延符号与时频两种计算
 
-推导时延前，先把几何坐标和正负号钉牢。本章严格沿用第 2 章 §2.1～§2.3 的全书约定：双麦沿 $x$ 轴放置，麦克风 1 位于原点 $x=0$，麦克风 2 位于正向 $x=d>0$；以垂直于连线的正横方向（broadside，$+y$ 轴）为 $0^\circ$，朝麦克风 2（$+x$ 侧）偏转为正角 $\theta>0$。记 $\vec u$ 为从阵列指向声源的单位方向向量，则平面波沿 $-\vec u$ 方向传播，到达第 $i$ 只与第 $j$ 只麦克风的时间差定义为 $\tau_{ij}=t_i-t_j$。
+推导时延前，先把几何坐标和正负号钉牢。本章严格沿用第 2 章 §2.1～§2.3 的全书约定：双麦沿 $x$ 轴放置，麦克风 1 位于原点 $x=0$，麦克风 2 位于正向 $x=d>0$（本章正文推导沿用 $1$ 起点编号 $m=1,\dots,M$，线阵坐标为 $(m-1)d$，与第 3 章及代码练习中的零起点编号 $m'=0,\dots,M-1$ 仅差平移对应 $m'=m-1$）；以垂直于连线的正横方向（broadside，$+y$ 轴）为 $0^\circ$，朝麦克风 2（$+x$ 侧）偏转为正角 $\theta>0$。记 $\vec u$ 为从阵列指向声源的单位方向向量，则平面波沿 $-\vec u$ 方向传播，到达第 $i$ 只与第 $j$ 只麦克风的时间差定义为 $\tau_{ij}=t_i-t_j$。
 
 在傅里叶前向核 $e^{-\mathrm{j}2\pi ft}$ 下，以麦克风 1 为参考的相对传播时延与窄带导向矢量第 $m$ 分量分别为
 
@@ -207,7 +207,7 @@ $$\hat\theta=\arcsin\!\left(\frac{c\hat\tau_{12}}{d}\right)\text{。}
 
 即便 $|\hat\tau_{12}|\le\tau_{\max}$，双麦单基线在三维空间中仍有固有的几何模糊：一对麦克风只给出一个标量时差，三维空间中满足该时差的方向构成绕两麦连线旋转的圆锥面（混淆锥），投影到水平面也会留下前后对称镜像。因此必须联合多条不共线基线才能收紧到三维射线，且平面阵列在无半空间先验时仍保留上下镜像（见[§3.1 的几何可辨识性](03_array-geometry.md#sec-3-1)）。
 
-工程落地式(4-3)时，还有两个绕不开的精度瓶颈：
+在工程系统中实现式(4-3)时，还有两个绕不开的精度瓶颈：
 
 1. **整数采样格点太粗，必须做亚采样插值**。在 $f_s=16\ \mathrm{kHz}$ 下，$1$ 个采样周期为 $T_s=62.5\ \mu\mathrm{s}$。对小间距 $d=4\ \mathrm{cm}$，滞后从 $0$ 格跳到 $1$ 格，角度就直接从 $0^\circ$ 跳到 $\arcsin(cT_s/d)\approx 32.4^\circ$，端射附近反正弦斜率更陡，整数格点无法直接用于定位。提高分辨率常用两条路径：一是在整数峰左右取三点做抛物线局部拟合（`gcc_phat(..., parabolic_interpolation=True)`）；二是在频域对偶数长 $N$ 互谱做 $Q$ 倍补零三角插值，将时延步长细化到 $1/(Qf_s)$。
 
@@ -221,7 +221,7 @@ $$\hat\theta=\arcsin\!\left(\frac{c\hat\tau_{12}}{d}\right)\text{。}
 
 - **图 12(a) 两路信号放大窗口**：横轴截取 $2.0$～$2.45\ \mathrm{ms}$ 片段，纵轴为归一化幅度。设定间距 $d=4\ \mathrm{cm}$、真源方位 $\theta=30^\circ$，理论时差 $\tau_0=d\sin 30^\circ/c$ 为 $0.02/343\approx 58.309\ \mu\mathrm{s}$（折合 $16\ \mathrm{kHz}$ 下约 $0.933$ 个采样点）。图中蓝色圆点线（麦克风 2）波形整体靠左先到，红色方块线（麦克风 1）向右平移约 $58\ \mu\mathrm{s}$ 后到。
 - **图 12(b) 16 倍细化网格上的 GCC-PHAT 曲线**：横轴为时延 $\tau$（单位 $\mu\mathrm{s}$），竖向灰色点线标出原始 $16\ \mathrm{kHz}$ 整数采样格点（间距 $62.5\ \mu\mathrm{s}$），绿色点划线与浅绿阴影框出可见域物理上限 $\pm d/c\approx\pm 116.6\ \mu\mathrm{s}$。若只在灰点线上挑整数峰，只能选到 $1$ 格（$62.5\ \mu\mathrm{s}\Rightarrow 32.4^\circ$）；经 $16$ 倍频域三角插值后，时延步长细化到 $\Delta\tau=62.5/16=3.90625\ \mu\mathrm{s}$，蓝色平滑曲线的红色三角峰值落在 $15$ 个细网格处，即 $\hat\tau_{12}=15\Delta\tau=58.59375\ \mu\mathrm{s}$（图中简标为 $58.6\ \mu\mathrm{s}$，合 $0.9375$ 个原始采样点），紧贴 $58.3\ \mu\mathrm{s}$ 真值竖线。
-- **图 12(c) 平面波几何换算**：将该亚采样峰值代入式(4-3)，得到
+- **图 12(c) 平面波几何示意与亚采样角度反算**：子图 `(c)` 绘出自正横方向（broadside）起算的真值几何关系 $\theta=\arcsin(c\tau_0/d)=\arcsin(0.5)=30^\circ$（双麦间距 $d=4\ \mathrm{cm}$）；将子图 `(b)` 测得的亚采样内插峰值 $0.9375$ 个采样点代入式(4-3)，得到
 
 $$\begin{aligned}
 \tau_{\mathrm{est}}&=58.59375\times 10^{-6}\ \mathrm{s},\\
@@ -229,7 +229,7 @@ $$\begin{aligned}
 \approx 30.16^\circ\text{，}
 \end{aligned}$$
 
-相对 $30^\circ$ 真值仅偏高约 $0.16^\circ$，直观展示了频域插值突破整数采样格点量化的效果。当然，单帧残余误差仍随信号有效带宽、窗长、信噪比与房间反射波动；双麦 GCC 更大的结构性局限在于每帧通常只提取一个主峰，遇到多说话人同时发声或强反射多峰时，不同麦克风对各自挑出的峰值很难正确配对。
+相对图 `(c)` 标示的 $30^\circ$ 真值仅偏高约 $0.16^\circ$，直观展示了频域插值突破整数采样格点量化的效果。当然，单帧残余误差仍随信号有效带宽、窗长、信噪比与房间反射波动；双麦 GCC 更大的结构性局限在于每帧通常只提取一个主峰，遇到多说话人同时发声或强反射多峰时，不同麦克风对各自挑出的峰值很难正确配对。
 
 #### 混响实验：同时说明衰减时间和直达混响比
 
@@ -249,7 +249,7 @@ $$\begin{aligned}
 
 再回到真实物理房间区分 **$T_{60}$ 与 $\mathrm{DRR}$ 的物理职责**：$T_{60}$ 刻画的是声源停发后混响声能衰减 $60\ \mathrm{dB}$ 的斜率，主要由房间体积和壁面吸声决定；而 $\mathrm{DRR}$ 取决于声源到阵列的距离相对临界距离 $r_c$ 的远近。同一个 $T_{60}=0.6\ \mathrm{s}$ 的会议室，说话人站在 $0.4\ \mathrm{m}$ 近讲时直达声占绝对主导，GCC-PHAT 稳如磐石；退到 $3.5\ \mathrm{m}$ 远场后直达声按距离平方衰减而混响场近乎均匀，$\mathrm{DRR}$ 跌成负分贝，定位才急剧恶化。上述合成实验采用两通道独立随机尾隔离“尾长与尾总能量”两个因素（未包含低频扩散相干与几何镜像早反射），清晰证明**汇报混响定位指标时绝不能只写 $T_{60}$ 而漏报 $\mathrm{DRR}$ 或声源距离**。
 
-工程上对抗低 $\mathrm{DRR}$ 混响主要有三道抓手：一是优先抓取音节起始瞬态帧（onset），在壁面反射尚未建立前锁定高 $\mathrm{DRR}$ 直达波前；二是在多帧滑窗上做直方图投票或送入第 9 章卡尔曼门控追踪器滤除反射跳变；三是在每个时频点利用扩散场空间相干先验盲估**相干扩散比（Coherent-to-Diffuse Ratio，CDR）**，在逆变换或空间投票前直接压低混响主导频点的权重（双麦无方向闭式解将在章末 [E04-27](#e04-27) 完整推导）。
+工程上对抗低 $\mathrm{DRR}$ 混响主要有三项措施：一是优先抓取音节起始瞬态帧（onset），在壁面反射尚未建立前锁定高 $\mathrm{DRR}$ 直达波前；二是在多帧滑窗上做直方图投票或送入第 9 章卡尔曼门控追踪器滤除反射跳变；三是在每个时频点利用扩散场空间相干先验盲估**相干扩散比（Coherent-to-Diffuse Ratio，CDR）**，在逆变换或空间投票前直接压低混响主导频点的权重（双麦无方向闭式解将在章末 [E04-27](#e04-27) 完整推导）。
 
 ![图13 GCC-PHAT 随 T60 与 DRR 的联合作用](../figures/fig13_gcc_reverb.png)
 
@@ -762,14 +762,14 @@ $$\begin{aligned}
 
 **为什么聚焦矩阵优先要求酉矩阵（正交 Procrustes 闭式构造）？** 初学者最容易忽略的一点是：聚焦矩阵在搬移信号导向矢量的同时，也在变换背景噪声！如果频点 $f_j$ 上原本是空间白噪声 $\sigma_j^2\mathbf I_M$，左乘 $\mathbf T_j$、右乘 $\mathbf T_j^H$ 后，噪声协方差就变成了 $\sigma_j^2\mathbf T_j\mathbf T_j^H$。倘若 $\mathbf T_j$ 不是酉矩阵（$\mathbf T_j\mathbf T_j^H\ne\mathbf I_M$），原本各向同性的白噪声就会被拉扯成空间有色噪声，甚至在某个纯噪声方向上放大出超过真实信号的最大特征值，导致普通 MUSIC 产生严重系统性偏置（后文 [E04-19](#e04-19) 与图 53 用一个 $2\times 2$ 精确算例展示了这一现象；若确需使用非酉聚焦，必须按聚焦后的总噪声协方差同步白化，参见 [TOPS 原论文 §II-C](https://www.researchgate.net/publication/3319689_TOPS_new_DOA_estimator_for_wideband_signals)）。
 
-要让变换自动保持空间白噪声不变，只需强制聚焦矩阵满足酉约束 $\mathbf T_j\mathbf T_j^H=\mathbf I_M$，这就是 Hung 与 Kaveh 提出的**旋转信号子空间（Rotational Signal-Subspace，RSS）聚焦**。先由 Bartlett 或 SRP-PHAT 粗扫选出一组初始聚焦角 $\{\theta_1,\ldots,\theta_Q\}$，把它们在 $f_j$ 与参考频点 $f_0$ 处的导向矢量排成矩阵 $\mathbf A_j=\mathbf A(f_j)$ 与 $\mathbf A_0=\mathbf A(f_0)\in\mathbb C^{M\times Q}$，在酉矩阵群上最小化流形对齐残差——这在矩阵分析中称为**正交 Procrustes 问题**：
+要让变换自动保持空间白噪声不变，只需强制聚焦矩阵满足酉约束 $\mathbf T_j\mathbf T_j^H=\mathbf I_M$，这就是 [Hung 与 Kaveh（*IEEE TASSP*, 1988）](https://doi.org/10.1109/29.1655)提出的**旋转信号子空间（Rotational Signal-Subspace，RSS）聚焦**。先由 Bartlett 或 SRP-PHAT 粗扫选出一组初始聚焦角 $\{\theta_1,\ldots,\theta_Q\}$，把它们在 $f_j$ 与参考频点 $f_0$ 处的导向矢量排成矩阵 $\mathbf A_j=\mathbf A(f_j)$ 与 $\mathbf A_0=\mathbf A(f_0)\in\mathbb C^{M\times Q}$，在酉矩阵群上最小化流形对齐残差——这在矩阵分析中称为**正交 Procrustes 问题**：
 
 $$\begin{aligned}
 \min_{\mathbf T_j\mathbf T_j^H=\mathbf I_M}\;
 \|\mathbf A_0-\mathbf T_j\mathbf A_j\|_F^2\text{。}
 \end{aligned}$$
 
-因为酉变换不改变向量模长，$\|\mathbf T_j\mathbf A_j\|_F^2=\|\mathbf A_j\|_F^2$ 与 $\mathbf T_j$ 无关；记交叉矩阵 $\mathbf M_j=\mathbf A_j\mathbf A_0^H$（尺寸 $M\times M$），最小化上式等价于最大化交叉内积 $\operatorname{tr}(\mathbf T_j\mathbf M_j)$ 的实部。对 $\mathbf M_j$ 做奇异值分解，立刻得到闭式最优酉聚焦矩阵：
+因为酉变换不改变向量模长，$\|\mathbf T_j\mathbf A_j\|_F^2=\|\mathbf A_j\|_F^2$ 与 $\mathbf T_j$ 无关；记交叉矩阵 $\mathbf M_j=\mathbf A_j\mathbf A_0^H$（尺寸 $M\times M$），最小化上式等价于最大化交叉内积 $\operatorname{Re}\,\operatorname{tr}(\mathbf T_j\mathbf M_j)$。对 $\mathbf M_j=\mathbf U\boldsymbol\Sigma\mathbf V^H$ 做奇异值分解（$\sigma_i\ge 0$），令酉矩阵 $\mathbf Z=\mathbf V^H\mathbf T_j\mathbf U$（因 $\mathbf Z\mathbf Z^H=\mathbf I_M$，对角元满足 $|Z_{ii}|\le 1$），由矩阵迹的循环移位律有 $\operatorname{Re}\,\operatorname{tr}(\mathbf T_j\mathbf U\boldsymbol\Sigma\mathbf V^H)=\operatorname{Re}\,\operatorname{tr}(\mathbf Z\boldsymbol\Sigma)=\sum_{i=1}^M\sigma_i\operatorname{Re}(Z_{ii})\le\sum_{i=1}^M\sigma_i$，上界当 $\mathbf Z=\mathbf I_M$ 时达到，从而唯一锁定闭式最优酉聚焦矩阵（切勿将右端转置次序颠倒误写为 $\mathbf U\mathbf V^H$）：
 
 $$\begin{aligned}
 \mathbf A(f_j)\mathbf A^H(f_0)

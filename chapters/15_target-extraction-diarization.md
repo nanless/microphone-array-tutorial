@@ -403,7 +403,7 @@ $$\begin{aligned}
 \mathbf I_M.
 \end{aligned}\tag{15-26}$$
 
-式中 $\hat{\mathbf R}_{vv,0}^{(k)}$ 为对角加载前的原始干扰协方差，$\delta \ge 0$ 为相对迹加载系数。只要当前对话窗口内存在若干帧单人独白片段（使分母 $\sum_t m_{k,t}^{\mathrm{tar}} > 0$ 且 $\sum_t m_{k,t}^{\mathrm{int}} > 0$），式(15-26)就能在单讲段估计出纯净的目标与干扰空间统计，随后求解[第 5 章 E05-20](05_beamforming.md#e05-20) 推导的 Souden 参考通道无失真 MVDR 权重（选第 $r$ 支麦克风为单位参考列向量 $\vec e_r$）：
+式中 $\hat{\mathbf R}_{vv,0}^{(k)}$ 为对角加载前的原始干扰协方差（注意此处下标 $vv$ 统指目标说话人 $k$ 以外的全部重叠说话人干扰与环境底噪之和，对应[第 5 章 §5.9](05_beamforming.md#sec-5-9) 与[第 8 章 §8.4](08_speech-separation.md#sec-8-4) 中的干扰加噪声协方差记号 $\hat{\mathbf R}_{nn}^{(k)}$），$\delta \ge 0$ 为相对迹加载系数。只要当前对话窗口内存在若干帧单人独白片段（使分母 $\sum_t m_{k,t}^{\mathrm{tar}} > 0$ 且 $\sum_t m_{k,t}^{\mathrm{int}} > 0$），式(15-26)就能在单讲段估计出纯净的目标与干扰空间统计，随后求解[第 5 章 E05-20](05_beamforming.md#e05-20) 推导的 Souden 参考通道无失真 MVDR 权重（选第 $r$ 支麦克风为单位参考列向量 $\vec e_r$）：
 
 $$\begin{aligned}
 \vec w_k&=\frac{\bigl(\hat{\mathbf R}_{vv}^{(k)}\bigr)^{-1}
@@ -515,6 +515,16 @@ M_{\mathrm{fused}}[k,\ell]
 | **小样本领域热词适配** | 直接替换后端 ASR 语言模型或热词表，无需重训前端 | 需合成多人重叠混合语料微调联合模型以防遗忘 `<sc>` | 可在冻结大部分 Whisper 参数下仅微调轻量条件注入层 |
 
 工程落地决策准则十分明确：凡是业务场景要求**保留每位发言人的独立纯净录音归档**（如庭审记录、医疗问诊质检、远程视频会议混音转发）或配备了几何标定清晰的 4～8 麦会议阵列，**`TS-VAD + WPE + GSS + 单人 ASR`** 依然是物理可解释性最强、重度重叠鲁棒性最高的基石方案；反之，若硬件仅有单麦克风或双麦手机录音、不需要导出分离音频且追求端侧紧凑部署，则 `SOT` 或 `DiCoW` 能够规避单麦波形分离引入的非线性伪影（Musical / Neural Artifacts），消除分离器与后端 ASR 之间的声学失配。
+
+为了在同一把标尺上公平评测上表三类异构系统的端到端会议纪要质量，远场多说话人基准（如 CHiME-6/7/8）统一采用**拼接最小排列词错率（Concatenated Minimum-Permutation Word Error Rate，`cpWER`）**。对整场会话中的每位真实说话人 $k$ 与每条系统输出说话人轨 $j$，分别按时间顺序将其全部话段拼接为完整词序列 $\mathcal{W}_k^{\mathrm{ref}}$ 与 $\mathcal{W}_j^{\mathrm{hyp}}$（若预测人数与真实人数不等，较少一方补空词序列 $\varnothing$ 对齐集合基数），遍历全部双射排列 $\pi \in \mathcal{P}$（工程上用[第 0 章 §0.6.4](00_math-foundations.md#sec-0-6-4) 匈牙利算法在多项式时间内精确求解）最小化全局总编辑距离：
+
+$$\mathrm{cpWER}
+=\min_{\pi\in\mathcal{P}}
+\frac{\sum_k \mathrm{EditDist}\bigl(\mathcal{W}_k^{\mathrm{ref}},
+\mathcal{W}_{\pi(k)}^{\mathrm{hyp}}\bigr)}
+{\sum_k |\mathcal{W}_k^{\mathrm{ref}}|}.$$
+
+务必看清发言人身份串槽在 `cpWER` 中引发的**双倍惩罚机理**：哪怕后端 ASR 一字不差地识别出了某句包含 $M_w$ 个词的发言，只要前端日志或连续流拼接（[第 8 章 §8.6](08_speech-separation.md#sec-8-6)）把这句话错误挂到了另一位参会者名下，它在真实说话人参考轨上会造成 $M_w$ 个**删词（Deletion）**，同时在被错挂的输出轨上造成 $M_w$ 个**插词（Insertion）**，单句错归属便直接产生 $2M_w$ 的双倍词错！进一步针对流式系统还需考核**时间约束最小排列词错率（Time-Constrained Minimum-Permutation WER，`tcpWER`）**：它在计算词级编辑距离时只允许时间戳偏差落在容限窗口（如 $\pm 5\ \mathrm{s}$）内的参考词与预测词配对，防止离线系统靠跨话轮长距离漂移侥幸抵消时间戳错位（选型规格与官方评分工具核验分别见[第 8 章 §8.5](08_speech-separation.md#sec-8-5)、[第 11 章 §11.5.2](11_selection-guide.md#sec-11-5-2) 与[附录 B §17.7](17_appendix-guide.md#sec-17-7)）。
 
 #### 注册声纹漂移、双胞胎音色近似与冷启动工程对策
 

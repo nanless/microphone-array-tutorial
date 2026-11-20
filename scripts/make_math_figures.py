@@ -92,6 +92,8 @@ def _save_report_and_png(
     os.chmod(report_path, 0o644)
     report_sha = hashlib.sha256(validate_parent_chain(report_path).read_bytes()).hexdigest()
 
+    if fig.get_constrained_layout():
+        fig.get_layout_engine().set(w_pad=0.06, h_pad=0.09, wspace=0.04, hspace=0.06)
     finalize_figure(fig)
     metadata = {
         "SourceScript": "scripts/make_math_figures.py",
@@ -111,7 +113,7 @@ def _build_fig89(sources: dict[str, str]) -> None:
     ex04 = dft_parseval_and_zero_padded_conv_example()
     ex05 = stft_cola_window_reconstruction_example()
 
-    fig, axes = plt.subplots(2, 2, figsize=(9.5, 7.2), constrained_layout=True)
+    fig, axes = plt.subplots(2, 2, figsize=(9.5, 7.8), constrained_layout=True)
 
     # (a) Complex phasor sum on unit circle
     ax = axes[0, 0]
@@ -138,22 +140,23 @@ def _build_fig89(sources: dict[str, str]) -> None:
         arrowprops=dict(arrowstyle="->", color=C_RED, lw=2.4),
     )
     ax.plot([0.0, 1.0, 1.0], [0.0, 0.0, -1.0], "o", color=C_MAIN, markersize=5)
-    ax.text(0.32, 0.13, r"$Z_1=1$", color=C_BLUE)
-    ax.text(1.07, -0.55, r"$Z_2=-\mathrm{j}$", color=C_ORANGE)
+    ax.text(1.07, 0.12, r"$Z_1=1$", color=C_BLUE)
+    ax.text(1.08, -0.55, r"$Z_2=-\mathrm{j}$", color=C_ORANGE)
     ax.annotate(
         r"$Z=1-\mathrm{j}$" + "\n" + r"$(|Z|=\sqrt{2},\ -45^\circ)$",
-        xy=(0.52, -0.52),
-        xytext=(-1.16, -0.92),
+        xy=(0.56, -0.56),
+        xytext=(-1.52, -1.44),
+        bbox=dict(fc="white", ec="none", alpha=0.90, pad=1.0),
         arrowprops=dict(arrowstyle="->", color=C_RED, lw=1.3),
         color=C_RED,
     )
     ax.set_aspect("equal", adjustable="box")
     ax.set(
         title="(a) 复平面相量合成（1 kHz，Δτ=250 μs）",
-        xlabel="实部 Re{Z}",
-        ylabel="虚部 Im{Z}",
-        xlim=(-1.32, 1.82),
-        ylim=(-1.35, 1.45),
+        xlabel=r"实部 $\mathrm{Re}\{Z\}$",
+        ylabel=r"虚部 $\mathrm{Im}\{Z\}$",
+        xlim=(-1.60, 1.92),
+        ylim=(-1.62, 1.48),
     )
     ax.legend(loc="upper left")
 
@@ -168,13 +171,13 @@ def _build_fig89(sources: dict[str, str]) -> None:
     ):
         phase_rad = -2.0 * np.pi * f_hz * (tau_us * 1e-6)
         ax.plot(f_khz, phase_rad, color=color, linestyle=ls, linewidth=2.0, label=lbl)
-    ax.scatter([0.5, 1.5, 2.5], ex03["unwrapped_phases_rad"], color=C_BLUE, zorder=4)
+    ax.scatter([0.5, 1.5, 2.5], ex03["unwrapped_phases_rad"], color=C_BLUE, zorder=4, label="E00-03 三频点采样")
     ax.set(
         title="(b) 纯时延传递函数的线性相位斜率",
-        xlabel="频率 f / kHz",
-        ylabel="解缠绕相位 φ(f) / rad",
+        xlabel=r"频率 $f$ / kHz",
+        ylabel=r"解缠绕相位 $\phi(f)$ / rad",
         xlim=(0.0, 4.0),
-        ylim=(-6.8, 0.4),
+        ylim=(-7.35, 0.45),
     )
     ax.legend(loc="lower left")
 
@@ -196,8 +199,8 @@ def _build_fig89(sources: dict[str, str]) -> None:
     )
     ax.set(
         title="(c) 循环卷积尾部缠绕与补零线性卷积",
-        xlabel="离散采样索引 n",
-        ylabel="序列幅值 y[n]",
+        xlabel=r"离散采样索引 $n$",
+        ylabel=r"序列幅值 $y[n]$",
         xlim=(-0.35, 5.35),
         ylim=(-3.90, 2.85),
     )
@@ -215,14 +218,22 @@ def _build_fig89(sources: dict[str, str]) -> None:
     sq_50 = stft_wola_roundtrip(sig, w_hann, w_hann, n_win // 2)["cola_denominator"][32:96]
     sq_75 = stft_wola_roundtrip(sig, w_hann, w_hann, n_win // 4)["cola_denominator"][32:96]
     sample_axis = np.arange(64)
-    ax.plot(sample_axis, ola_50, color=C_BLUE, linewidth=2.2, label="50% 重叠周期汉宁 OLA（恒为 1.0）")
-    ax.plot(sample_axis, wola_50, color=C_GREEN, linestyle="--", linewidth=2.0, label="50% 重叠开方汉宁 WOLA（恒为 1.0）")
+    ax.plot(
+        sample_axis, ola_50, color=C_BLUE, linewidth=2.2,
+        marker="o", markevery=(0, 8), markerfacecolor="none", markersize=6.0,
+        label="50% 重叠周期汉宁 OLA（恒为 1.0）",
+    )
+    ax.plot(
+        sample_axis, wola_50, color=C_GREEN, linestyle="--", linewidth=2.0,
+        marker="x", markevery=(4, 8), markersize=6.0,
+        label="50% 重叠开方汉宁 WOLA（恒为 1.0）",
+    )
     ax.plot(sample_axis, sq_50, color=C_RED, linestyle="-.", linewidth=1.9, label="50% 重叠平方汉宁（0.50 至 1.00 波纹）")
     ax.plot(sample_axis, sq_75, color=C_PURPLE, linestyle=":", linewidth=2.0, label="75% 重叠平方汉宁（恒为 1.5）")
     ax.set(
         title="(d) STFT 重叠相加合成窗分母包络",
-        xlabel="稳定窗内局部采样索引 n",
-        ylabel="叠加分母增益 g[n]",
+        xlabel=r"稳定窗内局部采样索引 $n$",
+        ylabel=r"叠加分母增益 $g[n]$",
         xlim=(0, 63),
         ylim=(0.35, 2.45),
     )
@@ -262,7 +273,7 @@ def _build_fig90(sources: dict[str, str]) -> None:
     ex07 = svd_condition_and_tikhonov_loading_example()
     ex08 = woodbury_and_schur_complement_example()
 
-    fig, axes = plt.subplots(2, 2, figsize=(9.5, 7.2), constrained_layout=True)
+    fig, axes = plt.subplots(2, 2, figsize=(9.5, 7.8), constrained_layout=True)
 
     # (a) Column-space orthogonal decomposition & Pythagoras check
     ax = axes[0, 0]
@@ -308,7 +319,7 @@ def _build_fig90(sources: dict[str, str]) -> None:
 
     # (b) Tikhonov spectral shrinkage factor sigma^2 / (sigma^2 + eps)
     ax = axes[0, 1]
-    sig_grid = np.logspace(-3, 2, 240)
+    sig_grid = np.logspace(np.log10(5e-4), np.log10(4e2), 260)
     for eps_val, color, ls in (
         (1e-4, C_BLUE, "-"),
         (1e-2, C_GREEN, "--"),
@@ -319,13 +330,15 @@ def _build_fig90(sources: dict[str, str]) -> None:
         ax.semilogx(sig_grid, shrink, color=color, linestyle=ls, linewidth=2.0, label=rf"$\varepsilon = {eps_val:g}$")
     ax.axvline(0.01, color=C_PURPLE, linestyle=":", linewidth=1.4)
     ax.axvline(10.0, color=C_MAIN, linestyle=":", linewidth=1.4)
-    ax.text(1.25e-3, 0.84, r"$\sigma_2=0.01$", color=C_PURPLE)
-    ax.text(11.8, 0.16, r"$\sigma_1=10$", color=C_MAIN)
+    ax.text(7.8e-3, 0.85, r"$\sigma_2=0.01$", color=C_PURPLE, ha="right",
+            bbox=dict(fc="white", ec="none", alpha=0.88, pad=0.8))
+    ax.text(8.0, 0.16, r"$\sigma_1=10$", color=C_MAIN, ha="right",
+            bbox=dict(fc="white", ec="none", alpha=0.88, pad=0.8))
     ax.set(
         title=r"(b) Tikhonov 谱收缩因子 $\sigma^2/(\sigma^2+\varepsilon)$",
-        xlabel="奇异值 σ（对数坐标）",
+        xlabel=r"奇异值 $\sigma$（对数坐标）",
         ylabel="模态保留权重",
-        xlim=(1e-3, 1e2),
+        xlim=(5e-4, 4e2),
         ylim=(-0.03, 1.06),
     )
     ax.legend(loc="center right")
@@ -427,7 +440,7 @@ def _build_fig91(sources: dict[str, str]) -> None:
     ex09 = rayleigh_quotient_and_gev_diagonalization_example()
     ex10 = vec_kronecker_and_khatri_rao_example()
 
-    fig, axes = plt.subplots(2, 2, figsize=(9.5, 7.2), constrained_layout=True)
+    fig, axes = plt.subplots(2, 2, figsize=(9.5, 7.8), constrained_layout=True)
 
     # (a) Standard Hermitian Rayleigh quotient over 2D unit vectors
     ax = axes[0, 0]
@@ -481,15 +494,19 @@ def _build_fig91(sources: dict[str, str]) -> None:
     r_inv_sqrt = eig_q @ np.diag(1.0 / np.sqrt(eig_v)) @ eig_q.T
     ellipse_pts = r_inv_sqrt @ unit_circle
     ax.plot(ellipse_pts[0], ellipse_pts[1], color=C_ORANGE, linewidth=2.1, label=r"原空间噪声等值椭圆 $\vec{z}^\top\mathbf{R}_{nn}\vec{z}=1$")
-    ax.plot(unit_circle[0], unit_circle[1], color=C_BLUE, linestyle="--", linewidth=2.0, label=r"白化后各向同性圆 $\tilde{\vec{z}}^\top\tilde{\vec{z}}=1$")
+    ax.plot(
+        unit_circle[0], unit_circle[1], color=C_BLUE, linestyle="--", linewidth=2.0,
+        label=r"白化后各向同性圆 $\vec{u}^\top\vec{u}=1$（$\vec{u}=\mathbf{L}_B^\top\vec{z}$）",
+    )
     gev_real = solve_hermitian_gev(np.array([[2.0, -1.5], [-1.5, 2.0]]), r_nn.real)
     v_opt = gev_real["joint_diagonalizer_phi"][:, -1].real
     v_opt = v_opt / np.linalg.norm(v_opt)
     ax.annotate("", xy=0.95 * v_opt, xytext=(0.0, 0.0), arrowprops=dict(arrowstyle="->", color=C_GREEN, lw=2.2))
     ax.annotate(
-        "白化消除噪声方向偏心",
-        xy=(0.65 * v_opt[0], 0.65 * v_opt[1]),
-        xytext=(-2.35, 0.85),
+        "实对称截面：\n白化消除方向偏心",
+        xy=(0.55 * v_opt[0], 0.55 * v_opt[1]),
+        xytext=(-2.22, 0.82),
+        bbox=dict(fc="white", ec="none", alpha=0.90, pad=1.0),
         arrowprops=dict(arrowstyle="->", color=C_GREEN, lw=1.3),
         color=C_GREEN,
     )
@@ -498,9 +515,10 @@ def _build_fig91(sources: dict[str, str]) -> None:
         title="(c) 白化合同变换：相关噪声椭圆化为单位圆",
         xlabel="第一分量坐标",
         ylabel="第二分量坐标",
-        ylim=(-2.25, 1.48),
+        xlim=(-2.45, 2.35),
+        ylim=(-2.38, 1.52),
     )
-    ax.legend(loc="lower center", fontsize=8.5)
+    ax.legend(loc="lower center")
 
     # (d) Khatri-Rao difference coarray virtual lag multiplicity: sparse {0,1,3} vs ULA {0,1,2}
     ax = axes[1, 1]
@@ -514,7 +532,7 @@ def _build_fig91(sources: dict[str, str]) -> None:
     ax.bar(lags_grid + 0.5 * width, ula_counts, width=width, color=C_ORANGE, alpha=0.88, label="等距阵 {0,1,2}d（仅 5 个滞后）")
     ax.set(
         title=r"(d) $\mathbf{A}^*\odot\mathbf{A}$ 差分协同阵虚拟孔径对比",
-        xlabel="整数空间滞后 (m - n) / d",
+        xlabel=r"归一化整数空间滞后 $(x_m - x_n) / d$",
         ylabel="协方差元素重数",
         xticks=lags_grid,
         ylim=(0, 4.35),
@@ -553,7 +571,7 @@ def _build_fig92(sources: dict[str, str]) -> None:
     ex13 = proper_complex_gaussian_and_crlb_example()
     ex14 = wiener_orthogonality_and_kalman_joseph_example()
 
-    fig, axes = plt.subplots(2, 2, figsize=(9.5, 7.2), constrained_layout=True)
+    fig, axes = plt.subplots(2, 2, figsize=(9.5, 7.8), constrained_layout=True)
 
     # (a) Wirtinger projected conjugate-gradient descent to MVDR optimum (Frost / PGD)
     ax = axes[0, 0]
@@ -562,25 +580,26 @@ def _build_fig92(sources: dict[str, str]) -> None:
     r_cov = np.eye(3, dtype=np.complex128) + 2.0 * np.outer(a_int, a_int.conj())
     p_perp = np.eye(3, dtype=np.complex128) - np.outer(a_tar, a_tar.conj()) / 3.0
     w_dsb = a_tar / 3.0
-    for mu_step, color, ls, lbl in (
-        (0.08, C_BLUE, "-", r"步长 $\mu = 0.08$"),
-        (0.16, C_GREEN, "--", r"步长 $\mu = 0.16$"),
+    for mu_step, color, ls, mk, lbl in (
+        (0.08, C_BLUE, "-", "o", r"步长 $\mu = 0.08$"),
+        (0.16, C_GREEN, "--", "s", r"步长 $\mu = 0.16$"),
     ):
         w_cur = w_dsb.copy()
         powers = [float(np.vdot(w_cur, r_cov @ w_cur).real)]
-        for _ in range(25):
+        for _ in range(10):
             # Frost projected Wirtinger gradient step: w <- P_perp(w - mu R w) + w_dsb
             w_cur = p_perp @ (w_cur - mu_step * (r_cov @ w_cur)) + w_dsb
             powers.append(float(np.vdot(w_cur, r_cov @ w_cur).real))
-        ax.plot(np.arange(26), powers, color=color, linestyle=ls, linewidth=2.0, label=lbl)
+        ax.plot(np.arange(11), powers, color=color, linestyle=ls, marker=mk, markersize=4.5, linewidth=2.0, label=lbl)
 
     ax.axhline(ex11["mvdr_output_power"], color=C_RED, linestyle=":", linewidth=2.0, label="MVDR 闭式下界 7/19 ≈ 0.368")
     ax.axhline(ex11["lcmv_output_power"], color=C_PURPLE, linestyle="-.", linewidth=1.6, label="LCMV 硬零陷功率 3/8 = 0.375")
     ax.set(
         title=r"(a) Wirtinger 共轭梯度投影收敛轨迹",
-        xlabel="迭代步数 t",
+        xlabel=r"迭代步数 $t$",
         ylabel=r"输出功率 $\vec{w}^H\mathbf{R}\vec{w}$",
-        xlim=(0, 25),
+        xticks=range(0, 11, 2),
+        xlim=(0, 10),
         ylim=(0.33, 0.60),
     )
     ax.legend(loc="upper right")
@@ -605,10 +624,10 @@ def _build_fig92(sources: dict[str, str]) -> None:
     ax.set_aspect("equal", adjustable="box")
     ax.set(
         title="(b) 圆对称与非圆对称复高斯分布对比",
-        xlabel="实部 Re{z}",
-        ylabel="虚部 Im{z}",
+        xlabel=r"实部 $\mathrm{Re}\{z\}$",
+        ylabel=r"虚部 $\mathrm{Im}\{z\}$",
         xlim=(-2.75, 2.75),
-        ylim=(-2.15, 3.35),
+        ylim=(-2.15, 3.75),
     )
     ax.legend(loc="upper left")
 

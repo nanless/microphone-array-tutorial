@@ -1,10 +1,10 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>空间处理与追踪源码研究 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="74c593002f97"><style>
-*{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
-.topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
-.topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
+<meta name="source-digest" content="10a21c80bda5"><style>
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
+.topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941}
+.topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
 h1,h2,h3,h4{scroll-margin-top:60px}
 @media screen{.main a[id]:not([href]){scroll-margin-top:60px}}
 @media screen{.main a[id^="e"],.main .exercise-alias{scroll-margin-top:80px}}
@@ -17,64 +17,66 @@ h1,h2,h3,h4{scroll-margin-top:60px}
 @media screen{.main a[id^="e11-"]{scroll-margin-top:60px}}
 @media screen{.main .separation-topic-anchor{scroll-margin-top:60px}}
 @media screen{.main .source-reproduction-anchor{scroll-margin-top:60px}}
-a:focus-visible,summary:focus-visible{outline:3px solid #e67e22;outline-offset:3px}
-.skip-link{position:absolute;left:10px;top:-60px;z-index:30;background:#fff;color:#1a1a2e;padding:8px 12px;border:2px solid #e67e22}
+a:focus-visible,summary:focus-visible{outline:2.5px solid #B84A2E;outline-offset:3px}
+.skip-link{position:absolute;left:10px;top:-60px;z-index:30;background:#fff;color:#1C1E21;padding:8px 12px;border:2px solid #B84A2E}
 .skip-link:focus{top:8px}
-.wrap{display:flex;max-width:1280px;margin:0 auto}
-.side{width:300px;flex-shrink:0;padding:20px 14px;position:sticky;top:47px;height:calc(100vh - 47px);overflow-y:auto;background:#fff;border-right:1px solid #e5e8ee;font-size:13.5px}
-.side a{color:#2f6db3;text-decoration:none}.side a:hover{text-decoration:underline}
-.side .chap{margin:10px 0 2px;font-weight:700}.side .chap.cur{color:#c0392b}
-.side ul{margin:2px 0 6px;padding-left:16px;color:#666}.side li{margin:2px 0}
-.main{flex:1;min-width:0;padding:28px 36px;background:#fff;overflow-wrap:anywhere}
+.wrap{display:flex;max-width:1280px;margin:0 auto;border-left:1px solid #E3DED3;border-right:1px solid #E3DED3}
+.side{width:300px;flex-shrink:0;padding:20px 15px;position:sticky;top:47px;height:calc(100vh - 47px);overflow-y:auto;background:#FAF8F3;border-right:1px solid #DDD7CB;font-size:13.5px}
+.side a{color:#1F5A92;text-decoration:none}.side a:hover{text-decoration:underline}
+.side .chap{margin:10px 0 2px;font-weight:700;color:#26292E}.side .chap.cur{color:#B84A2E}
+.side ul{margin:2px 0 6px;padding-left:16px;color:#5A554D}.side li{margin:2px 0}
+.main{flex:1;min-width:0;padding:32px 40px;background:#fff;overflow-wrap:anywhere}
+.main a{color:#1F5A92;text-underline-offset:.2em}
 .main p{margin:0 0 1.2em}.main ul,.main ol{margin:.55em 0 1.2em;padding-left:1.55em}.main li{margin:.42em 0}.main li>p{margin:.5em 0}
-.main p>strong:first-child,.main li>strong:first-child{color:#0f2744}
-.main img{max-width:100%;height:auto;display:block;margin:16px auto;border:1px solid #dbe3ee;border-radius:6px;padding:3px;min-height:40px;background:#fff}
-.audio-sample{display:block;width:min(100%,460px);margin:8px 0 18px}.audio-sample:focus-visible{outline:3px solid #e67e22}
+.main p>strong:first-child,.main li>strong:first-child{color:#14171A}
+.main img{max-width:100%;height:auto;display:block;margin:18px auto;border:1px solid #DFDAD0;border-radius:5px;padding:4px;min-height:40px;background:#fff}
+.audio-sample{display:block;width:min(100%,460px);margin:8px 0 18px}.audio-sample:focus-visible{outline:2.5px solid #B84A2E}
 /* 表格列宽不能压掉原生播放按钮；手机上的表格可横向滚动。 */
 td .audio-sample{width:280px;min-width:280px}
 table:has(td .audio-sample) td:last-child{min-width:180px}
-table{border-collapse:collapse;margin:16px 0;max-width:100%}
+table{border-collapse:collapse;margin:18px 0;max-width:100%;border-top:1.5px solid #2A2E34;border-bottom:1.5px solid #2A2E34}
 .table-scroll{max-width:100%;overflow-x:auto}
-.table-scroll:focus-visible{outline:3px solid #e67e22;outline-offset:2px}
-th,td{border:1px solid #d5dfec;padding:7px 11px;font-size:14px;text-align:left;line-height:1.58}
-th{background:#e8eff9;color:#0f2744;border-bottom:1.5px solid #94a3b8}
-tbody tr:nth-child(even) td{background:#f8fafc}
-code{background:#eef2f7;color:#0f294a;border:1px solid #d8e1ec;padding:1px 5px;border-radius:4px;font-size:13.5px}
-pre{background:#122036;color:#e8ecf3;padding:14px 16px;border-radius:8px;overflow-x:auto}
+.table-scroll:focus-visible{outline:2.5px solid #B84A2E;outline-offset:2px}
+th,td{border-top:1px solid #E3DED3;border-bottom:1px solid #E3DED3;border-left:none;border-right:none;padding:8px 11px;font-size:14px;text-align:left;line-height:1.58}
+th{background:#F5F2EB;color:#1C1E21;border-bottom:1px solid #8A8275;font-weight:700}
+tbody tr:nth-child(even) td{background:#FCFBF9}
+code{background:#F3F0E8;color:#1E3A56;border:1px solid #E0DBD0;padding:1px 5px;border-radius:4px;font-size:13.5px}
+pre{background:#F5F3EE;color:#1F2328;border:1px solid #DFDAD0;border-left:3.5px solid #5C564D;padding:14px 16px;border-radius:8px;overflow-x:auto}
 pre code{background:none;border:none;color:inherit;padding:0}
-blockquote{border-left:4px solid #2563eb;margin:16px 0;padding:10px 15px;background:#f0f6ff;border-radius:0 6px 6px 0;color:#1e293b}
+blockquote{border-left:3.5px solid #B84A2E;margin:18px 0;padding:10px 16px;background:#F7F5F0;border-radius:0 4px 4px 0;color:#2B2E33}
 blockquote p:last-child{margin-bottom:0}
+hr{border:none;border-top:1px solid #DDD7CB;margin:26px 0}
 mjx-container[jax="CHTML"]{font-size:110%!important;overflow-x:auto;overflow-y:hidden;max-width:100%;min-width:0!important}
 body mjx-assistive-mml{width:1px!important;max-width:1px!important;min-width:0!important;height:1px!important;overflow:hidden!important}
 pre,.table-scroll,mjx-container[jax="CHTML"]{overflow-wrap:normal}
-.pn{display:flex;justify-content:space-between;margin:34px 0 12px;padding-top:16px;border-top:1px solid #d5dfec;font-weight:650}
-.pn a{color:#1d4ed8;text-decoration:none}.pn .off{color:#aaa}
-.foot{color:#64748b;font-size:13px;margin:20px 0 40px}
-.main h1{font-size:27px;color:#0f2744;background:#edf3fc;border-top:4px solid #1e3a8a;border-left:5px solid #1e3a8a;border-bottom:1px solid #cbd5e1;padding:13px 17px 11px;border-radius:0 6px 6px 0;margin:0 0 22px;line-height:1.3}
-.main h2{font-size:21px;color:#0f294a;background:#f3f7fc;border-left:4.5px solid #1d4ed8;border-bottom:1px solid #cbd5e1;padding:8px 13px 7px;margin:34px 0 15px;border-radius:0 5px 5px 0;line-height:1.35}
-.main h3{font-size:18px;color:#1e3a8a;border-left:3.5px solid #3b82f6;padding:2px 0 2px 11px;margin:26px 0 12px;line-height:1.4}
-.main h4{font-size:16px;color:#1e40af;border-left:2.5px solid #93c5fd;padding:1px 0 1px 9px;margin:20px 0 10px;line-height:1.4}
-.main h3.tutorial-worked-heading{background:#f0fdfa;border:1px solid #99f6e4;border-left:4.5px solid #0d9488;color:#115e59;padding:7px 13px;border-radius:6px;margin:26px 0 13px;font-size:17.2px}
-.main h3.tutorial-exercise-heading,.main h4.tutorial-exercise-heading{background:#eff6ff;border:1px solid #bfdbfe;border-left:5px solid #2563eb;color:#1e3a8a;padding:9px 14px;border-radius:6px;margin:30px 0 13px;font-size:17px;line-height:1.45}
-.main p.tutorial-exercise-lead{background:#eff6ff;border:1px solid #bfdbfe;border-left:5px solid #2563eb;padding:11px 15px;border-radius:6px;margin:26px 0 13px}
+.pn{display:flex;justify-content:space-between;margin:36px 0 12px;padding-top:16px;border-top:1px solid #DDD7CB;font-weight:650}
+.pn a{color:#1F5A92;text-decoration:none}.pn .off{color:#9C9588}
+.foot{color:#6E695F;font-size:13px;margin:20px 0 40px}
+.main h1{font-size:27px;color:#14171A;border-top:2.5px solid #1F5A92;border-bottom:1.5px solid #1C1E21;padding:12px 0 10px;margin:0 0 24px;line-height:1.3}
+.main h2{font-size:21px;color:#14171A;border-left:3.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;padding:1px 0 7px 11px;margin:36px 0 15px;line-height:1.35}
+.main h3{font-size:18px;color:#1F5A92;margin:26px 0 11px;line-height:1.4}
+.main h4{font-size:16px;color:#2C2F33;border-left:2.5px solid #B84A2E;padding:1px 0 1px 9px;margin:20px 0 9px;line-height:1.4}
+.main h3.tutorial-worked-heading{background:#FAF8F3;border-top:1.5px solid #237263;border-bottom:1px solid #E2DDD2;border-left:3.5px solid #237263;color:#1A574B;padding:7px 13px;border-radius:2px;margin:28px 0 13px;font-size:17.2px}
+.main h3.tutorial-exercise-heading,.main h4.tutorial-exercise-heading{background:#F5F2EB;border-top:1.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;border-left:4px solid #1F5A92;color:#14171A;padding:8px 14px;border-radius:2px;margin:30px 0 13px;font-size:17px;line-height:1.45}
+.main p.tutorial-exercise-lead{background:#F5F2EB;border-top:1.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;border-left:4px solid #1F5A92;padding:10px 15px;border-radius:2px;margin:28px 0 13px}
 .main ol>li.tutorial-exercise-item{margin:18px 0}
-.main .tutorial-exercise-card{background:#f8fafc;border:1px solid #d5e0ee;border-left:4px solid #2563eb;border-radius:6px;padding:12px 16px}
+.main .tutorial-exercise-card{background:#FAF8F3;border:1px solid #E0DBD0;border-left:3.5px solid #1F5A92;border-radius:4px;padding:12px 16px}
 .main .tutorial-exercise-card>:first-child{margin-top:0}
 .main .tutorial-exercise-card>:last-child{margin-bottom:0}
-.main p.tutorial-solution-lead{background:#f0fdf4;border-left:3.5px solid #16a34a;padding:8px 13px;border-radius:0 5px 5px 0;margin-top:9px}
-.main p.tutorial-solution-lead>strong:first-child{color:#15803d}
-.main p.tutorial-problem-lead{border-left:3px solid #2563eb;padding-left:11px}
-.main p.tutorial-problem-lead>strong:first-child{color:#1d4ed8}
-.toc-mobile{display:none;margin:0 0 16px;border:1px solid #e5e8ee;border-radius:8px;padding:10px 14px;background:#f7fafd;font-size:14px}
-.toc-mobile summary{cursor:pointer;font-weight:700}
-.toc-mobile ul{padding-left:18px;margin:8px 0 2px}.toc-mobile a{color:#2f6db3;text-decoration:none}
-.topbtn{display:block;margin:20px auto;background:#1a1a2e;color:#fff;border-radius:50%;width:42px;height:42px;text-align:center;line-height:42px;text-decoration:none;font-size:18px}
-.offline-note{display:none;background:#fff7e6;border:1px solid #e6c87a;color:#7a5b00;padding:8px 14px;font-size:13.5px}
+.main p.tutorial-solution-lead{background:#F3F6F4;border-left:3.5px solid #237263;padding:8px 13px;border-radius:0 3px 3px 0;margin-top:9px}
+.main p.tutorial-solution-lead>strong:first-child{color:#1D5E51}
+.main p.tutorial-problem-lead{border-left:2.5px solid #1F5A92;padding-left:11px}
+.main p.tutorial-problem-lead>strong:first-child{color:#1F5A92}
+.toc-mobile{display:none;margin:0 0 16px;border:1px solid #DDD7CB;border-radius:6px;padding:10px 14px;background:#FAF8F3;font-size:14px}
+.toc-mobile summary{cursor:pointer;font-weight:700;color:#1C1E21}
+.toc-mobile ul{padding-left:18px;margin:8px 0 2px}.toc-mobile a{color:#1F5A92;text-decoration:none}
+.topbtn{display:block;margin:20px auto;background:#24282E;color:#FAF8F3;border-radius:50%;width:42px;height:42px;text-align:center;line-height:42px;text-decoration:none;font-size:18px}
+.offline-note{display:none;background:#F7EFE4;border:1px solid #D9B78E;color:#6E4219;padding:8px 14px;font-size:13.5px}
 .anchor-alias{display:block;position:relative;top:-60px;visibility:hidden}
 .tutorial-math-tail{display:inline-block;white-space:nowrap;overflow-wrap:normal;vertical-align:baseline;overflow:visible}
 .tutorial-math-tail mjx-assistive-mml{max-width:1px!important;min-width:0!important;white-space:normal}
-.tutorial-exercise-id{white-space:nowrap;overflow-wrap:normal;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:.87em;background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;padding:0 5px;border-radius:4px}
-:is(.tutorial-exercise-heading,.tutorial-exercise-lead) .tutorial-exercise-id{background:#1d4ed8;color:#fff;border-color:#1d4ed8;padding:1px 7px;margin-right:4px;font-size:.84em}
+.tutorial-exercise-id{white-space:nowrap;overflow-wrap:normal;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:.88em;background:#F3EFE6;color:#B84A2E;border:1px solid #DDD5C7;padding:0 5px;border-radius:3px;font-weight:700}
+:is(.tutorial-exercise-heading,.tutorial-exercise-lead) .tutorial-exercise-id{background:#1F5A92;color:#fff;border-color:#1F5A92;padding:1px 7px;margin-right:5px;font-size:.84em}
 .tutorial-table-label{white-space:nowrap;overflow-wrap:normal}
 @media(max-width:900px){.selection-readable-table{min-width:760px}.selection-readable-table th,.selection-readable-table td{min-width:10em}.selection-readable-table th:first-child,.selection-readable-table td:first-child{min-width:6em}}
 @media(max-width:900px){.side{display:none}.main{padding:20px}.toc-mobile{display:block}.topbar{font-size:14px}mjx-container[jax="CHTML"]:not([display="true"]){display:inline-block;vertical-align:middle}.aec-readable-table th,.aec-readable-table td,.wpe-readable-table th,.wpe-readable-table td,.separation-readable-table th,.separation-readable-table td{min-width:8em}.tracking-readable-table th,.tracking-readable-table td{min-width:8em}.industrial-readable-table th,.industrial-readable-table td{min-width:8em}}
@@ -1335,7 +1337,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <span id="sec-30" class="anchor-alias" aria-hidden="true"></span><span id="21-lcmvfrost-与-gsc" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-7e24e6c4ae">21. LCMV、Frost 与 GSC</h3>
 <p>对应 §5.5～5.6。LCMV 直接求满足多个线性约束的最小功率解；Frost 在时域抽头空间投影更新以保持约束；GSC 用固定支路和阻塞后的自适应支路实现同类约束结构。本书教学包给 LCMV 闭式解、GSC 阻塞基线及 <code>gsc.py::ScalarGSCNLMS</code> 的单参考状态更新。后者保留复数系数、先输出再更新、逐样本冻结和跨块状态；输入固定支路及参考支路由调用者提供，不估计方向或阻塞矩阵。音频例采用已知活动区间控制更新，只检查目标泄漏与冻结的作用，不能称为实际 VAD 或工业 GSC。持续子带自适应可另读 BTK2.0，不能把其实现直接登记为正文时域 Frost。</p>
 <p>最小实验先检查约束矩阵独立性和阻塞残差，再将目标方向偏移少量，测量目标泄漏到参考支路后被抵消的程度。工业中冻结条件、步长、滤波长度、双讲/活动控制和状态复位必须与滤波器一起审查。约束保持不等于目标真实方向仍在约束集合中。</p>
-<p><strong>求解器返回有限数不等于约束可行。</strong> 本次<a href="#beamformer-upstream-audit">固定 pb_bss 原方法审计</a>实际调用 <code>get_lcmv_vector</code>：两条约束都取 <code>[1,1]</code>，却要求 <code>Cᴴw=[1,0]</code>，本来就无解；原辅助函数遇到奇异约束矩阵改用最小二乘，返回 <code>[.25,.25]</code>，实际 <code>Cᴴw=[.5,.5]</code>，约束残差范数为 <code>1/sqrt(2)</code>。这是不相容输入下的返回行为，不是 LCMV 理论错误。与正文 E05-04 的复响应共轭检查一起，调用者应检查约束独立性、可行性和实际残差。另一个同名族接口 <code>get_lcmv_vector_souden</code> 在固定源码中立即抛 <code>NotImplementedError</code>，本次也保留了该真实异常；不能按函数名认为它已经可用。</p>
+<p><strong>求解器返回有限数不等于约束可行。</strong> 本次<a href="#beamformer-upstream-audit">固定 pb_bss 原方法审计</a>实际调用 <code>get_lcmv_vector</code>：两条约束都取 <code>[1,1]</code>，却要求 <code>Cᴴw=[1,0]</code>，本来就无解；原辅助函数遇到奇异约束矩阵改用最小二乘，返回 <code>[0.25,0.25]</code>，实际 <code>Cᴴw=[0.5,0.5]</code>，约束残差范数为 <code>1/sqrt(2)</code>。这是不相容输入下的返回行为，不是 LCMV 理论错误。与正文 E05-04 的复响应共轭检查一起，调用者应检查约束独立性、可行性和实际残差。另一个同名族接口 <code>get_lcmv_vector_souden</code> 在固定源码中立即抛 <code>NotImplementedError</code>，本次也保留了该真实异常；不能按函数名认为它已经可用。</p>
 <p>BTK2.0 是 Kumatani、McDonough 等作者的空间信号处理工具箱。固定 <code>btk20</code> 源码先读 <code>btk20_src/unit_test/test_online_beamforming.py::online_beamforming</code>，再读 <code>btk20_src/lib/pybeamformer.py::SubbandGSCLMSBeamformer</code> 与 <code>SubbandGSCRLSBeamformer</code>；C++ 对应入口包括 <code>btk20_src/beamformer/beamformer.{h,cc}::SubbandGSCRLS</code>。这些类包含跨帧自适应状态，不只是构造一个阻塞矩阵。<a href="https://github.com/kkumatani/distant_speech_recognition/blob/feff19ec8bcb770f6530fe280dc3ccafc2f5984a/btk20_src/lib/pybeamformer.py">固定 Python 更新器</a>。</p>
 <p>演示输入是逐通道音频、阵列位置、带时间标记的目标方向和分析/合成滤波器组系数。示例声速常数为 <code>343740.0</code>，与毫米制坐标配套；本书米制坐标必须转换。滤波器组的子带数、抽取率、原型滤波器长度决定时频处理与等待，不能直接沿用本书 Hann STFT 的帧数和延迟。</p>
 <p>构建文件默认目标 Python 2.7，要求 SWIG 3、GSL、NumPy 和 libsndfile，CUDA 9 为可选；部分 Python 算法还使用 SciPy 或 pygsl。旧环境说明不能当作现代 Python 或目标设备的相容性保证。滤波器系数演示通过 <code>pickle</code> 载入，只应使用自己生成或可信来源的文件，不能为方便运行而加载不可信二进制对象。<a href="https://github.com/kkumatani/distant_speech_recognition/blob/feff19ec8bcb770f6530fe280dc3ccafc2f5984a/btk20_src/CMakeLists.txt">固定构建条件</a>、<a href="https://github.com/kkumatani/distant_speech_recognition/blob/feff19ec8bcb770f6530fe280dc3ccafc2f5984a/btk20_src/unit_test/test_online_beamforming.py">固定在线演示</a>。</p>
@@ -1394,7 +1396,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <p>本轮在既有隔离环境实际调用了固定 FilterPy，补充了此前主环境缺少 SciPy、没有运行该类的历史记录。<code>ExtendedKalmanFilter.predict_update()</code> 与 <code>predict(); update()</code> 在非线性观测下不能直接互换：前者在状态预测前计算观测雅可比，而预测后的状态才交给观测函数；后者在预测后计算雅可比。前者也没有 <code>residual</code> 参数，角度更新宜显式检查残差入口。完整输入、函数调用顺序与数值见<a href="#tracking-upstream-audit">§54 的上游诊断</a>，没有修改上游。</p>
 <p>UKF 的 <code>sigma_points.py::MerweScaledSigmaPoints</code> 分开给均值权重 <code>Wm</code> 和协方差权重 <code>Wc</code>；负权重不是概率为负，不能用普通粒子权重归一化替代。<code>UKF.py</code> 提供 <code>x_mean_fn</code>、<code>z_mean_fn</code>、<code>residual_x</code>、<code>residual_z</code>，角度量应协调使用。固定版本在 <code>predict()</code> 加入过程协方差后重新生成 sigma 点，不能照搬旧版本“更新点不含 Q”的批评。本轮运行的是一维无迹变换小例，未运行完整非线性声学 UKF。原始方法见 Julier、Uhlmann，<em>Unscented Filtering and Nonlinear Estimation</em>，Proceedings of the IEEE 92(3), 2004, pp.401–422，<a href="https://doi.org/10.1109/JPROC.2003.823141">正式 DOI</a>。</p>
 <p>观测噪声也应检查跨帧或跨接口相关性。<a href="../09_source-tracking.html#e09-20">E09-20</a>的两条相关观测例说明：同一物理信息被重复提供时，逐条独立更新会过度缩小方差；它不由观测数量自动成为两份独立证据。</p>
-<p>过程噪声的名字相近，定义却不同。固定 FilterPy 的 <code>common/discretization.py</code> 将 <code>Q_discrete_white_noise(dim=2,dt=.5,var=2)</code> 解释为每步恒定加速度样本经 <code>[h²/2,h]</code> 的外积，输出 <code>[[.03125,.125],[.125,.5]]</code>；<code>Q_continuous_white_noise(dim=2,dt=.5,spectral_density=2)</code> 则对连续白加速度积分，输出 <code>[[1/12,.25],[.25,1]]</code>。前者参数是加速度方差，后者是谱密度，不能只因数值都为 2 就互换。2026-10-01 的<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch09/examples/audit_upstream_tracking_contracts.py">合同审计工具</a>执行未修改原定义，单块 <code>block_diag</code> 由保留单矩阵的 NumPy 适配器提供；没有运行 SciPy 通用分块函数。独立期望分别来自外积与连续积分，绝对容差 $10^{-15}$。正文 <a href="../09_source-tracking.html#sec-9-6">E09-04</a>与 <a href="../09_source-tracking.html#e09-18">E09-18</a>说明模型与时间间隔的区别。</p>
+<p>过程噪声的名字相近，定义却不同。固定 FilterPy 的 <code>common/discretization.py</code> 将 <code>Q_discrete_white_noise(dim=2,dt=0.5,var=2)</code> 解释为每步恒定加速度样本经 <code>[h²/2,h]</code> 的外积，输出 <code>[[0.03125,0.125],[0.125,0.5]]</code>；<code>Q_continuous_white_noise(dim=2,dt=0.5,spectral_density=2)</code> 则对连续白加速度积分，输出 <code>[[1/12,0.25],[0.25,1]]</code>。前者参数是加速度方差，后者是谱密度，不能只因数值都为 2 就互换。2026-10-01 的<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch09/examples/audit_upstream_tracking_contracts.py">合同审计工具</a>执行未修改原定义，单块 <code>block_diag</code> 由保留单矩阵的 NumPy 适配器提供；没有运行 SciPy 通用分块函数。独立期望分别来自外积与连续积分，绝对容差 $10^{-15}$。正文 <a href="../09_source-tracking.html#sec-9-6">E09-04</a>与 <a href="../09_source-tracking.html#e09-18">E09-18</a>说明模型与时间间隔的区别。</p>
 <p>固定增益可另读 <code>filterpy/gh/gh_filter.py</code> 的 <code>GHFilter</code> 与 <code>GHKFilter</code>。其中位置修正为 <code>g*residual</code>、速度修正为 <code>h*residual/dt</code>；二阶实现的加速度修正含 <code>2*k/dt**2</code>，所以应先说明 γ 的定义再与 α-β-γ 教材公式对照。滑动平均是线性平滑，中值和直方图众数是非线性汇聚；三者不共同构成一个线性低通滤波器。它们都没有自动维护关联、人数或状态协方差，本轮未把这些接口当成完整追踪系统实跑。</p>
 <span id="sec-42" class="anchor-alias" aria-hidden="true"></span><span id="32-sir-粒子滤波与重采样" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-c96c7f9e8c">32. SIR 粒子滤波与重采样</h3>
 <p>对应 §9.2.4。先读本书 <code>CircularParticleFilter</code> 和 <code>systematic_resample</code>，再读 ODAS <code>src/system/particle2particle.c</code> 与 <code>src/module/mod_sst.c</code> 中的持续状态管理。权重应由一致的似然和杂波模型形成，极小概率在对数域计算；重采样只是分配粒子数量，不创造观测信息。</p>
@@ -1474,10 +1476,10 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <p>同一滞后的元素先求平均，得到 $z=[r[-L],\ldots,r[L]]^\top$。代码提供两个分支。</p>
 <ul>
 <li><code>method='da'</code> 是直接增广：依次把 $z$ 的长度 $M_v$ 子段放到矩阵列中，得到 $T_{ij}=r[i-j]$。有限样本下，即使输入物理协方差半正定，$\mathbf T$ 仍可能有负特征值。</li>
-<li>默认 <code>method='ss'</code> 是协同阵空间平滑：取全部 $M_v$ 个长度 $M_v$ 的连续子段 $\vec z_q$，计算 $\mathbf R_{\rm ss}=M_v^{-1}\sum_q\vec z_q\vec z_q^H$。每项外积半正定，所以结果半正定；这不自动证明源独立、模型匹配或快拍数充分。</li>
+<li>默认 <code>method='ss'</code> 是协同阵空间平滑：取全部 $M_v$ 个长度 $M_v$ 的连续子段 $\vec z_q$，计算 $\mathbf R_{\mathrm{ss}}=M_v^{-1}\sum_q\vec z_q\vec z_q^H$。每项外积半正定，所以结果半正定；这不自动证明源独立、模型匹配或快拍数充分。</li>
 </ul>
-<p>若 $\mathbf T$ 是上述子段按列组成的矩阵，列顺序不会改变外积和，因此 $\mathbf R_{\rm ss}=\mathbf T\mathbf T^H/M_v$。在输入滞后共轭对称时，$\mathbf T$ 为厄米矩阵，于是特征值经过平方和尺度变换。直接增广的负特征值不会在平滑后保持符号，特征值大小次序也可能改变；不能据平滑矩阵半正定，反推直接增广原先没有问题。</p>
-<p>两条分支的数值单位不同。若输入麦克风谱单位为 V，$r[\ell]$ 与 $\mathbf T$ 的元素单位为 V²，$\mathbf R_{\rm ss}$ 则为 V⁴；输入幅度整体乘 $b$ 时，两者分别乘 $|b|^2$ 与 $|b|^4$。空间平滑矩阵用于构造子空间，不应直接当作新增物理通道的声功率，或与原始协方差按元素比较功率大小。</p>
+<p>若 $\mathbf T$ 是上述子段按列组成的矩阵，列顺序不会改变外积和，因此 $\mathbf R_{\mathrm{ss}}=\mathbf T\mathbf T^H/M_v$。在输入滞后共轭对称时，$\mathbf T$ 为厄米矩阵，于是特征值经过平方和尺度变换。直接增广的负特征值不会在平滑后保持符号，特征值大小次序也可能改变；不能据平滑矩阵半正定，反推直接增广原先没有问题。</p>
+<p>两条分支的数值单位不同。若输入麦克风谱单位为 V，$r[\ell]$ 与 $\mathbf T$ 的元素单位为 V²，$\mathbf R_{\mathrm{ss}}$ 则为 V⁴；输入幅度整体乘 $b$ 时，两者分别乘 $|b|^2$ 与 $|b|^4$。空间平滑矩阵用于构造子空间，不应直接当作新增物理通道的声功率，或与原始协方差按元素比较功率大小。</p>
 <span id="393-两组可独立复算的矩阵" class="anchor-alias" aria-hidden="true"></span><h4 id="sec-39-3">39.3 两组可独立复算的矩阵</h4>
 <p>正文 <a href="../03_array-geometry.html#e03-07">E03-07</a>使用物理位置 <code>{0,1,3}</code>，两个互不相关的单位功率源来自 0° 与 30°，通道白噪声功率为 0.1。其四维直接增广矩阵特征值为 $0.1,0.1,4.1,4.1$，因而空间平滑的特征值为 $0.0025,0.0025,4.2025,4.2025$，逐项来自原值平方后除以 4。</p>
 <p>同题的一次快拍反例 $\vec x=[1,0,1]^\top$ 给出直接增广特征值 $-1/3,2/3,2/3,5/3$。空间平滑后的值则为 $1/36,1/9,1/9,25/36$。这些结果既用本书独立 NumPy 外积求和与矩阵乘法复算，也已与固定 doatools 原方法的提取调用对齐；一次快拍仍没有恢复真实的两个声源。</p>
@@ -1538,7 +1540,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 </tbody>
 </table></div>
 <p>这些结果绑定上述固定提交与报告环境，不推断后续主分支是否已经修复，也没有补丁改写本地上游缓存。合法前向模型、错误输入表现、未知参数估计及设备验收是不同证据。</p>
-<p>串扰补偿还应注明噪声加入的位置。若观测为 $\vec x=\mathbf C\vec s+\vec n_{\rm post}$，左乘逆矩阵会改变后加噪声为 $\mathbf C^{-1}\vec n_{\rm post}$，病态矩阵可大幅放大它；若噪声在混合前已与信号共同经过 $\mathbf C$，就不能把同一句结论无条件套上去。方向相关壳体散射应进入实测流形，固定串扰矩阵不能代替它。</p>
+<p>串扰补偿还应注明噪声加入的位置。若观测为 $\vec x=\mathbf C\vec s+\vec n_{\mathrm{post}}$，左乘逆矩阵会改变后加噪声为 $\mathbf C^{-1}\vec n_{\mathrm{post}}$，病态矩阵可大幅放大它；若噪声在混合前已与信号共同经过 $\mathbf C$，就不能把同一句结论无条件套上去。方向相关壳体散射应进入实测流形，固定串扰矩阵不能代替它。</p>
 <span id="396-从-toa-距离到同步麦克风-tdoa-自标定" class="anchor-alias" aria-hidden="true"></span><h4 id="sec-39-6">39.6 从 TOA 距离到同步麦克风 TDOA 自标定</h4>
 <p><a href="https://www.lunduniversity.lu.se/lup/publication/e90f122e-669e-44c8-8da8-41fae8645aae">Kuang 等 ICASSP 2013 的大学官方记录</a>明确讨论到达时间（Time of Arrival，TOA）给出的全部接收器—发射器距离。到达时间差（Time Difference of Arrival，TDOA）只提供距离差，未知发声时刻带来另一组未知量，不能直接套用 TOA 的最小数据要求。</p>
 <p>进一步的作者系统见 <a href="https://arxiv.org/html/1610.02392">Zhayida 等 2016 预印本 §2、§5～6</a>。该系统在未知麦克风与声源坐标之间估计几何，接收麦克风仍须同步，声速须已知。论文中的未知发声偏置不是每台独立设备的采样时钟偏移；设备时钟不同步时还要增加同步模型。论文通过多个相关峰、跨通道一致性与稳健拟合处理错误匹配，不能只取一次互相关最高峰就宣称复现了该系统。</p>
@@ -1696,13 +1698,13 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 </thead>
 <tbody>
 <tr>
-<td>高置信检测，能量 <code>[1,.5,.09,0]</code></td>
-<td>保留 <code>[1,.5]</code>，检测 ID、类别及额外元数据保留</td>
-<td>相对峰值下限为 <code>.1</code>；不删除整条检测</td>
+<td>高置信检测，能量 <code>[1,0.5,0.09,0]</code></td>
+<td>保留 <code>[1,0.5]</code>，检测 ID、类别及额外元数据保留</td>
+<td>相对峰值下限为 <code>0.1</code>；不删除整条检测</td>
 </tr>
 <tr>
 <td>低置信单点 <code>(359,0,1)</code></td>
-<td>原点加八个能量 <code>.12</code> 的边界支持点，横坐标绕回、纵坐标裁切</td>
+<td>原点加八个能量 <code>0.12</code> 的边界支持点，横坐标绕回、纵坐标裁切</td>
 <td>边界点是后处理生成，不是额外实测声学观测</td>
 </tr>
 <tr>
@@ -1788,24 +1790,24 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <tbody>
 <tr>
 <td>0</td>
-<td><code>[.5,.5+.5j]</code></td>
+<td><code>[0.5,0.5+0.5j]</code></td>
 <td><code>2</code></td>
 <td><code>b/2</code></td>
 </tr>
 <tr>
 <td>1</td>
-<td><code>[.25−.25j,.5]</code></td>
+<td><code>[0.25−0.25j,0.5]</code></td>
 <td><code>1+j</code></td>
 <td><code>b/(1+j)</code></td>
 </tr>
 </tbody>
 </table></div>
-<p>参考 1 的复数例子专门检验共轭因子；仅测实数参考 0 会掩盖这个错误。对 <code>a=b/b_r</code> 才有 <code>w_rᴴa=1</code>，要求 <code>b_r≠0</code>。本书独立推导和原函数实跑互证，但不把数学符号缺失的论文文本提取当作完整原式目视核验。全秩 <code>Rs=diag(2,1),Rn=I2</code> 时原迹归一化列为 <code>[2/3,0]</code>，不能要求对每个独立目标声像都无失真。自动参考的对照 <code>Rs=diag(1,4),Rn=I2</code> 实际选通道 1、输出 <code>[0,.8]</code>，说明下面 MERL 的固定缺陷不适用于 Souden 接口。</p>
+<p>参考 1 的复数例子专门检验共轭因子；仅测实数参考 0 会掩盖这个错误。对 <code>a=b/b_r</code> 才有 <code>w_rᴴa=1</code>，要求 <code>b_r≠0</code>。本书独立推导和原函数实跑互证，但不把数学符号缺失的论文文本提取当作完整原式目视核验。全秩 <code>Rs=diag(2,1),Rn=I2</code> 时原迹归一化列为 <code>[2/3,0]</code>，不能要求对每个独立目标声像都无失真。自动参考的对照 <code>Rs=diag(1,4),Rn=I2</code> 实际选通道 1、输出 <code>[0,0.8]</code>，说明下面 MERL 的固定缺陷不适用于 Souden 接口。</p>
 <p>另一个名称相近的 <code>get_mvdr_vector_merl</code> 有独立问题：固定版本把每个候选参考通道的输出功率全部相加，再对单个标量 <code>argmax</code>，因此总选第 0 列。<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch05/examples/audit_beamformer_reference.py">诊断脚本</a>从固定原文件提取这个函数的原始 AST，仅提供 NumPy 依赖后执行，没有改写函数或执行整个模块；普通包导入因缺少 <code>paderbox</code> 失败。不能把这个提取调用称为原包完整运行。</p>
 <p>输入只有一个频点，噪声 SCM 为 <code>I2</code>、目标 SCM 为 <code>diag(1,4)</code>。独立按标量功率算得两候选输出 SNR 为 1、4，应选权重 <code>(0,0.8)</code>，原函数实际返回 <code>(0.2,0)</code>；交换两路目标功率后，第 0 列恰是正确参考，得到 <code>(0.8,0)</code>。这一对测试说明固定实现的选择缺陷，不能推断同文件的 Souden 接口也有此错。<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch05/reports/beamformer_reference_audit.json">逐项报告</a>记录原文件、函数片段与诊断脚本摘要、环境和两次完整输出；上游源码保持原样，失败仍保留。</p>
 <span id="sec-59" class="anchor-alias" aria-hidden="true"></span><span id="49-mwfsdw-mwf-与秩一化简" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-305fd5299c">49. MWF、SDW-MWF 与秩一化简</h3>
 <p>对应 §5.5.1、§5.7、§5.9。以参考通道目标声像为估计对象，一般 SDW-MWF 解由 <code>(Rs+mu Rn)w=Rs e_ref</code> 得到，其中 <code>mu&gt;0</code>，矩阵为目标与噪声的未中心化二阶矩；零均值时也等于协方差。ESPnet <code>get_sdw_mwf_vector</code> 明确提供该解，并有 <code>approx_low_rank_psd_speech</code> 选项；当目标与噪声的互二阶矩为零时，<code>mu=1</code> 对应混合观测的普通MWF，见<a href="../05_beamforming.html#sec-5-5-1">正文的代价与条件</a>。其 <code>get_mwf_vector</code> 的参数虽名为 <code>psd_n</code>，docstring 指的是观测协方差，不能因为变量名含 n 就传入纯噪声 SCM。</p>
-<p>pb_bss <code>get_wmwf_vector</code> 实际计算 <code>Phi/(mu+trace(Phi))</code> 的参考列，其中 <code>Phi=Rn^-1 Rs</code>，这是秩一目标条件下的化简。独立手算反例取 <code>Rn=I</code>、<code>Rs=diag(2,1)</code>、<code>mu=1</code>、参考 0：一般解第一项为 <code>2/3</code>，该迹化简第一项为 <code>2/(1+3)=1/2</code>。改成 <code>Rs=diag(2,0)</code> 后两者均为 <code>2/3</code>。本次<a href="#beamformer-upstream-audit">原函数提取调用</a>得到的两个结果分别为 <code>[.5,0]</code> 和 <code>[2/3,0]</code>，与上述手算相符。一般 MWF 的期望由标量 <code>2/(2+1)</code> 独立计算，不从上游输出反造答案。这定位了模型边界，不说明秩一方法本身错误；没有运行完整外部包或增强音频链。</p>
+<p>pb_bss <code>get_wmwf_vector</code> 实际计算 <code>Phi/(mu+trace(Phi))</code> 的参考列，其中 <code>Phi=Rn^-1 Rs</code>，这是秩一目标条件下的化简。独立手算反例取 <code>Rn=I</code>、<code>Rs=diag(2,1)</code>、<code>mu=1</code>、参考 0：一般解第一项为 <code>2/3</code>，该迹化简第一项为 <code>2/(1+3)=1/2</code>。改成 <code>Rs=diag(2,0)</code> 后两者均为 <code>2/3</code>。本次<a href="#beamformer-upstream-audit">原函数提取调用</a>得到的两个结果分别为 <code>[0.5,0]</code> 和 <code>[2/3,0]</code>，与上述手算相符。一般 MWF 的期望由标量 <code>2/(2+1)</code> 独立计算，不从上游输出反造答案。这定位了模型边界，不说明秩一方法本身错误；没有运行完整外部包或增强音频链。</p>
 <p>最小工程实验应同时比较全秩与秩一 SCM，并记录目标失真、残留噪声和所用参考。令 <code>mu→0</code> 在非奇异全秩情形接近参考通道直通，并不普遍等于 MVDR；只有相应秩一模型和极限解释下才能作该联系。源码文档里的简短等价描述应随假设阅读，不能直接复制进算法对比表。</p>
 <span id="sec-60" class="anchor-alias" aria-hidden="true"></span><span id="50-mcra由局部最小值控制噪声更新" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-2973a53a28">50. MCRA：由局部最小值控制噪声更新</h3>
 <p>对应 §5.7。最小值控制递归平均（MCRA）不是直接把短时谱的最小值当作当前噪声，而是由平滑谱相对于局部最小值的关系估计语音存在可能性，再控制噪声谱递推。最小值窗口、谱平滑、语音存在平滑和噪声更新是不同的时间尺度。起点文献为 <a href="https://israelcohen.com/wp-content/uploads/2018/05/SPL_Jan2002.pdf">Cohen 与 Berdugo，IEEE Signal Processing Letters 2002 原文</a>，§II 给递推噪声估计，§III 给由最小值控制的语音存在估计。</p>
@@ -1891,15 +1893,15 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <p>固定 <code>bcb845434495e293df3d48f1203b7a86e1852449</code> 的 <code>config/odaslive/respeaker.cfg</code> 是一份具体配置：处理采样率 16 kHz、帧移 128 样本，即 8 ms；<code>sst.mode="kalman"</code>，<code>add="dynamic"</code>。同一文件也列粒子数 1000 和有效粒子比例阈值 0.7，但在 Kalman 分支下并不执行粒子更新。<code>mod_sst.c</code> 实际用 <code>hopSize/fS</code> 构造动态模型，时间参数必须按该处理帧率解释。</p>
 <p><code>Pfalse/Pnew/Ptrack</code> 分别为 0.1、0.1、0.8；新源后验超过 0.9 才建立候选，候选累计 5 帧的平均活动度至少 0.8 才确认。确认源的低活动计数用 <code>N_inactive[nTracks-1]</code>，不是按轨道 ID 取固定超时。该配置为 <code>(150,200,250,250)</code> 帧，在持续低活动且当前轨道数不变时分别对应 1.2、1.6、2.0、2.0 s；轨道数变化会改变所用门限，不能写成每条轨迹固定等待 2 s。</p>
 <p><code>active/inactive</code> 是定位峰功率的统计模型，观测噪声另区分候选、活动源和预设目标；应由实际前端数据标定，不能把这些功率阈值换成角度置信区间。读取顺序为配置、配置解析、<code>mod_sst.c</code>、<code>kalman2kalman.c</code>/<code>kalman2coherence.c</code> 或 <code>particle2particle.c</code>。固定 C 源使用枚举分支，非法模式有进程退出路径；宿主程序不能把它当成无副作用的 Python 参数异常。生命周期与完整应用仍只读审查，未构建 ODAS 应用或运行硬件。</p>
-<p>原 <code>kalman2kalman_construct</code> 的 <code>Q</code> 仅在三个速度对角线上放 <code>sigmaQ²</code>，<code>R</code> 的三个位置对角是 <code>sigmaR²</code>；<code>Q</code> 中没有随 <code>dt</code> 变化的连续白加速度积分项。这里的位置是方向向量坐标，不是米制声源位置。预测先计算线性 <code>FPFᵀ+Q</code>，再把均值的前三项归一到近似单位球面、后三项投影到切平面；这次非线性均值修正没有配套变换协方差。不能把它的协方差直接解释为球面约束下严格一致的后验，也不能把配置中的 <code>.001</code> 当成正文连续角加速度密度。</p>
-<p>本轮真实编译调用原 <code>kalman2kalman.c</code>、<code>signal/kalman.c</code> 和 <code>utils/matrix.c</code>，包括原头文件；没有改源码或用替身替换矩阵运算。诊断输入为 <code>dt=.5</code>、<code>sigmaQ=.2</code>、<code>sigmaR=.1</code>、<code>epsilon=1e-10</code>、状态 <code>[1,0,0,1,0,0]</code>、协方差 <code>I₆</code>。线性预测的 x 坐标应为 1.5；原均值修正后约为 1、径向速度约为 0，而 <code>Pxx=1.25</code>、<code>Pxv=.5</code>、<code>Pvv≈1.04</code> 仍是线性预测结果。<code>Qvv≈.04</code>、<code>Rxx≈.01</code> 验证平方口径。单精度原调用按绝对容差 $10^{-6}$ 与独立代数比较；这不是关联、更新、音频整链或设备验收。</p>
+<p>原 <code>kalman2kalman_construct</code> 的 <code>Q</code> 仅在三个速度对角线上放 <code>sigmaQ²</code>，<code>R</code> 的三个位置对角是 <code>sigmaR²</code>；<code>Q</code> 中没有随 <code>dt</code> 变化的连续白加速度积分项。这里的位置是方向向量坐标，不是米制声源位置。预测先计算线性 <code>FPFᵀ+Q</code>，再把均值的前三项归一到近似单位球面、后三项投影到切平面；这次非线性均值修正没有配套变换协方差。不能把它的协方差直接解释为球面约束下严格一致的后验，也不能把配置中的 <code>0.001</code> 当成正文连续角加速度密度。</p>
+<p>本轮真实编译调用原 <code>kalman2kalman.c</code>、<code>signal/kalman.c</code> 和 <code>utils/matrix.c</code>，包括原头文件；没有改源码或用替身替换矩阵运算。诊断输入为 <code>dt=0.5</code>、<code>sigmaQ=0.2</code>、<code>sigmaR=0.1</code>、<code>epsilon=1e-10</code>、状态 <code>[1,0,0,1,0,0]</code>、协方差 <code>I₆</code>。线性预测的 x 坐标应为 1.5；原均值修正后约为 1、径向速度约为 0，而 <code>Pxx=1.25</code>、<code>Pxv=0.5</code>、<code>Pvv≈1.04</code> 仍是线性预测结果。<code>Qvv≈0.04</code>、<code>Rxx≈0.01</code> 验证平方口径。单精度原调用按绝对容差 $10^{-6}$ 与独立代数比较；这不是关联、更新、音频整链或设备验收。</p>
 <span id="552-saf关联粒子与条件-kalman-状态" class="anchor-alias" aria-hidden="true"></span><h4 id="sec-55-2">55.2 SAF：关联粒子与条件 Kalman 状态</h4>
 <p>固定 SAF <code>18fd5aba46e20787b51f28f7197a68506c965c07</code> 的 <code>framework/modules/saf_tracker/</code> 以 RBMCDA 为基础：粒子保存关联及出生、死亡假设，每个目标的位置和速度由条件 KF 表示。<a href="https://eurasip.org/Proceedings/Eusipco/Eusipco2021/pdfs/0000206.pdf">McCormack 等 EUSIPCO 2021 原文</a> §III 描述该分工；§IV 使用 LOCATA 任务 1–4、Eigenmike 的 32 路录音转四阶球谐，按开发集分别调各任务参数，再评价盲测集。整链结果不能归因于追踪器单模块。</p>
 <p><code>tracker3d_step</code> 输入为 <code>nObs×3</code> 坐标，可声明为单位方向向量；输出为目标位置、各轴方差、ID 和人数。调用者须每 <code>dt</code> 调用一次，缺测时仍传空指针或 <code>nObs=0</code>，不能停止调用而期待时钟自行推进。不过固定实现的空观测调用只增加 <code>incrementTime</code>，返回的最大权重粒子均值与方差保持旧值；下一次非空观测到来时才补做累计预测。调用时刻与输出状态所属时刻须分开记录，不能把空帧返回值直接当成新预测去控制波束。创建时实际将 <code>dt</code> 限为至少 0.0001 s、测量标准差限为至少 0.001、权重平滑系数限为不超过 0.99；最后一项与头文件注释中的 0.999 不一致，应以固定实现和输入核验为准。</p>
 <p>近距离强制删除较年轻目标是一项可选控制策略，会影响交叉时的轨迹身份，不能与纯几何定位精度混为一谈。模块文件头授权 GPL-2.0-or-later，核心 SAF 的 ISC 许可不能覆盖它；MATLAB 封装另读 <code>extras/safmex/safmex_tracker3d.c/.m</code>。本轮未运行原粒子预测/更新、MEX 或论文 LOCATA 评分。</p>
 <p>固定 <code>tracker3d_step</code> 在 <code>Neff&lt;Np/4</code> 时将所有祖先索引设为当前最大权重粒子，随机重采样调用 <code>resampstr</code> 被注释。这是该版本的最大复制分支，不能描述成一般随机重采样；随后可平滑粒子权重，最终输出仍取最大权重粒子的状态与 ID，而不是对所有关联假设做混合矩。原论文 RBMCDA 的定义与这个固定分支的实现行为分别核验。</p>
 <p><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch09/examples/audit_upstream_tracking_contracts.py">合同工具</a>保留原 <code>tracker3d_step</code> 完整函数体，包括禁用分支；只在临时编译单元中提供结构容器、预测/更新计数器、强制 ESS 分支选择器、权重 argmax、结构复制及内存分配替身。</p>
-<p>两个空帧均不调用预测，输出标记坐标 9、方差 1；下一帧的一条观测先触发三次累计预测，再以计数 3 调用更新。同一帧两条观测只有第一条前新增一次预测，更新的计数依次为 1、0。四粒子的标签 <code>[101,202,303,404]</code>、权重 <code>[.1,.1,.1,.7]</code> 在强制低 ESS 分支后全部复制标签 404，权重重设为 <code>.25</code>。</p>
+<p>两个空帧均不调用预测，输出标记坐标 9、方差 1；下一帧的一条观测先触发三次累计预测，再以计数 3 调用更新。同一帧两条观测只有第一条前新增一次预测，更新的计数依次为 1、0。四粒子的标签 <code>[101,202,303,404]</code>、权重 <code>[0.1,0.1,0.1,0.7]</code> 在强制低 ESS 分支后全部复制标签 404，权重重设为 <code>0.25</code>。</p>
 <p>标记坐标只帮助观察控制流，不是物理目标运动；这些结果不证明真实 ESS、Gaussian 似然、出生/死亡或条件 KF 正确。</p>
 <p>新报告绑定工具与完整来源锁摘要、许可、实际 HEAD、逐文件 SHA/Git blob及执行前后干净状态；<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/tests/test_codes_ch09_upstream_tracking_contracts.py">独立测试</a>分别用外积、积分、明确事件集合与计数期望核对。默认命令只输出 JSON，明确 <code>--report</code> 才保存当前报告；正式缓存缺失或未通过来源状态/摘要检查时不冒充执行成功。</p>
 <span id="56-vo-作者归档cphdlmb-与-glmb-的真实取得范围" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-945eb22241">56. Vo 作者归档：CPHD、LMB 与 GLMB 的真实取得范围</h3>
@@ -2132,8 +2134,8 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <tbody>
 <tr>
 <td>完整CSM扫描与PSF</td>
-<td>两格PSF为 <code>[[1,.25],[.25,1]]</code>；原DAMAS类由扫描图初始化，前向20次得到本控制源量 <code>(1,.2)</code></td>
-<td>正文部分例采用零初始化和 <code>(1,.25)</code>，不能把不同输入或双向轮次混作同一运行记录</td>
+<td>两格PSF为 <code>[[1,0.25],[0.25,1]]</code>；原DAMAS类由扫描图初始化，前向20次得到本控制源量 <code>(1,0.2)</code></td>
+<td>正文部分例采用零初始化和 <code>(1,0.25)</code>，不能把不同输入或双向轮次混作同一运行记录</td>
 </tr>
 <tr>
 <td>GS与扫描NNLS</td>
@@ -2142,12 +2144,12 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 </tr>
 <tr>
 <td>原full CLEAN-SC</td>
-<td><code>C=2·ones(2,2)</code>、扣除比例 <code>.6</code>：2步原输出 <code>2.10176635</code>，作者full式 <code>1.68</code>；20步原输出 <code>4.81250286</code>，作者式 <code>1.99999998</code></td>
+<td><code>C=2·ones(2,2)</code>、扣除比例 <code>0.6</code>：2步原输出 <code>2.10176635</code>，作者full式 <code>1.68</code>；20步原输出 <code>4.81250286</code>，作者式 <code>1.99999998</code></td>
 <td>原 <code>r_diag=False</code> 仍保留删对角分量的内部迭代。上游不改写，正文使用作者full式；原 <code>r_diag=True</code> 对称限定控制一致，不推广到任意输入</td>
 </tr>
 <tr>
 <td>对角删除与裁零</td>
-<td>本控制原输出 <code>(.9,0)</code>，第二格裁零前为 <code>−.3</code></td>
+<td>本控制原输出 <code>(0.9,0)</code>，第二格裁零前为 <code>−0.3</code></td>
 <td>裁零会隐藏负扫描量；不证明删对角观测仍是正定功率矩阵</td>
 </tr>
 <tr>
@@ -2162,7 +2164,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 </tr>
 <tr>
 <td>谱完整帧数</td>
-<td>128点内部整数频余弦原积分 <code>.5</code>；200点记录实际只消费一帧，原除数1.5625导致积分 <code>.32</code></td>
+<td>128点内部整数频余弦原积分 <code>0.5</code>；200点记录实际只消费一帧，原除数1.5625导致积分 <code>0.32</code></td>
 <td>评分按实际完整帧数；没有把部分尾帧当完整帧运行</td>
 </tr>
 <tr>
@@ -2296,11 +2298,11 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <p>相位连续也不自动决定目标的绝对参考相位。<a href="https://groups.uni-paderborn.de/nt/pubs/2006/WaHa06-2.pdf">Warsitz与Haeb-Umbach，2006原文§2–3</a>将最大输出SNR与语音失真控制分开讨论；它的归一公式与后来的实现不能只因同名BAN就互换。<a href="https://graz.elsevierpure.com/en/publications/eigenvector-based-speech-mask-estimation-for-multi-channel-speech">2019作者机构元数据与摘要</a>，DOI10.1109/TASLP.2019.2941592，可核相位感知归一这一研究路线，但本次未以摘要代替全文推导或声称运行作者网络。</p>
 <p><a href="https://www.isca-archive.org/interspeech_2017/pfeifenberger17_interspeech.pdf">Pfeifenberger等2017原ISCA论文</a>§3.1式(12)、(13)给出相位感知归一（PAN）。将该单源秩一模型的目标向量记为 $\vec a$，要求 $\|\vec a\|_2=1$ 且已选择参考复相位；非零GEV方向记为 $\vec w$，噪声矩阵为正定 $\mathbf R_n$：</p>
 <p>$$\begin{aligned}
-C_{\rm PAN}&=\frac{\vec w^H\mathbf R_n\vec a}{\vec w^H\mathbf R_n\vec w},\\
-\vec w_{\rm PAN}&=C_{\rm PAN}\vec w。
+C_{\mathrm{PAN}}&=\frac{\vec w^H\mathbf R_n\vec a}{\vec w^H\mathbf R_n\vec w},\\
+\vec w_{\mathrm{PAN}}&=C_{\mathrm{PAN}}\vec w。
 \end{aligned}$$</p>
 <p>在 $\vec w\propto\mathbf R_n^{-1}\vec a$ 这一精确GEV方向条件下，上式可恢复该已锚定目标向量的MVDR响应；任意非GEV向量不能照搬这项等价。单位范数本身没有确定全局相位：$\vec a$ 和 $e^{\mathrm j\psi}\vec a$ 同范数，估计主特征向量后仍要选参考相位。</p>
-<p>一个独立代数控制取 $\mathbf R_n=\mathbf I$、$\vec a=[1,1]^T/\sqrt2$、$\vec w=\mathrm j\vec a$。分母为1，分子为 $-\mathrm j$，故 $C_{\rm PAN}=-\mathrm j$，新权重等于 $\vec a$，其目标响应为1。只做单位范数缩放则仍留下 $\mathrm j\vec a$，输出目标响应为 $-\mathrm j$。这是手算控制，不是原作者网络或完整PAN音频链运行。</p>
+<p>一个独立代数控制取 $\mathbf R_n=\mathbf I$、$\vec a=[1,1]^\top/\sqrt2$、$\vec w=\mathrm j\vec a$。分母为1，分子为 $-\mathrm j$，故 $C_{\mathrm{PAN}}=-\mathrm j$，新权重等于 $\vec a$，其目标响应为1。只做单位范数缩放则仍留下 $\mathrm j\vec a$，输出目标响应为 $-\mathrm j$。这是手算控制，不是原作者网络或完整PAN音频链运行。</p>
 <p>该2017论文的式(16)使用居中的协方差窗，§6设置250ms窗与32ms STFT、50%重叠；中心窗约需半窗未来观测，还要计入帧可用时刻，不能称零前瞻。2017的逻辑回归系统与上述2019扩展论文分别登记；本次未核到许可明确且可取得的作者网络代码，没有训练、运行网络或复算论文成绩。</p>
 <span id="602-在线逐通道掩码的原始计算" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-60-2">60.2 在线逐通道掩码的原始计算</h3>
 <p><a href="https://arxiv.org/html/2607.26623v1">Middelberg、Voit、Doclo与Corey，2026年7月29日作者预印本v1</a>§3式(5)、(6)、(8)先将各通道观测乘对应掩码的平方根，再对最后P帧的处理后向量外积求均值。分母为P；它与共同标量掩码在原观测外积上的加权、除以掩码总质量是不同操作。每项外积半正定，平均仍半正定，但不能据此推断保留原RTF或单源秩一结构。</p>
@@ -2318,7 +2320,7 @@ C_{\rm PAN}&=\frac{\vec w^H\mathbf R_n\vec a}{\vec w^H\mathbf R_n\vec w},\\
 <p>2026-10-05 的补充对应正文 E09-24～26。已有34式和23题分别覆盖关联、人数、相关观测、尺度与迟到时刻；新增内容补齐三个独立环节，仍归第9章。完整复算步骤见<a href="../09_source-tracking.html#e09-24">正文练习</a>与<a href="05_exercises_and_audio.html#tracking-model-lifecycle-sphere-exercises">音频手册</a>。</p>
 <span id="611-imm-的密度归一与缺测协议" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-61-1">61.1 IMM 的密度归一与缺测协议</h3>
 <p>原始 IMM 的来源身份见§40。教学核<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch09/core/imm_teaching.py">imm_teaching.py</a>只维护同义标量局部角度的低、高过程方差随机游走模式，固定每步1s；它没有角速度、转弯动力学或偏置状态。这个限定使每个模式的预测、观测密度和融合矩都能手算，而不是用外给似然代替两套滤波器。</p>
-<p>E09-24 的共同初值均值0、方差1，过程方差分别0、4，测量方差1，模式概率为0.8、0.2，行转移矩阵为 <code>[[.9,.1],[.2,.8]]</code>。观测3到来时，模式先验0.76、0.24；两个新息相同，方差分别2、6，完整高斯密度约0.0297325723、0.0769331614。后验模式概率约0.5503254309、0.4496745691。密度含 $1/\sqrt{2\pi S_j}$，不能只比较残差指数：在零新息下，方差2的密度仍是方差6的 $\sqrt3$ 倍。</p>
+<p>E09-24 的共同初值均值0、方差1，过程方差分别0、4，测量方差1，模式概率为0.8、0.2，行转移矩阵为 <code>[[0.9,0.1],[0.2,0.8]]</code>。观测3到来时，模式先验0.76、0.24；两个新息相同，方差分别2、6，完整高斯密度约0.0297325723、0.0769331614。后验模式概率约0.5503254309、0.4496745691。密度含 $1/\sqrt{2\pi S_j}$，不能只比较残差指数：在零新息下，方差2的密度仍是方差6的 $\sqrt3$ 倍。</p>
 <p>融合均值约1.9496745691，方差约0.8973588741。随后两步缺测不产生任何观测似然，只推进模式 Markov 先验和条件状态；总体均值保持，方差约增至2.5564476676、4.1178098232。这里的概率变化来自转移模型，不是新声学证据。核保留对数模式质量，显示下溢和真正零先验分别处理；非法输入或不可达模式拒绝后不提交部分新状态。</p>
 <p>固定偏置与真实运动都可能形成持续新息。增加过程方差只能让当前状态更容易移动，不能凭这一变化证明已经识别了运动或估计了传感器偏置；需要增加相应模型或独立标定证据。</p>
 <span id="612-从实际pcm观测到确认过期与新id" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-61-2">61.2 从实际PCM观测到确认、过期与新ID</h3>
@@ -2330,7 +2332,7 @@ C_{\rm PAN}&=\frac{\vec w^H\mathbf R_n\vec a}{\vec w^H\mathbf R_n\vec w},\\
 <p><a href="https://www.mit.edu/~paris/pubs/traa-mlsp2014.pdf">Traa、Smaragdis 的2014年作者原文</a>§2.1式(2)采用单位球面上的 Fisher–von Mises 密度，§2.2式(3)给出右手旋转，§4的动态预测另含近似。本书<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch09/core/spherical_tracking.py">spherical_tracking.py</a>仅运行已知坐标与姿态变换、归一化的局部协方差和一次独立静态似然条件化，不能称完整论文滤波器。</p>
 <p>本书方位从+y朝+x增大，仰角朝+z增大。标准右手z轴旋转+90°会把本书方位30°变为−60°，而不是120°；把阵列向量变到世界坐标的矩阵与其逆必须区分。阵列已知姿态没有增加距离观测，也不能替代姿态误差标定。</p>
 <p>精确极点的方位无定义；等方位、等仰角网格也不是等球面面积，积分须包含 $\cos\phi_{\mathrm{el}}$ 的面积因子。归一化向量的协方差采用 $J=(I-uu^\top)/\|v\|$ 的一阶局部近似，去除径向扰动；它没有把任意三维Gaussian变成精确球面后验。</p>
-<p>静态例的先验浓度3、均值方向+y，独立观测浓度4、方向+x。自然参数相加得到 <code>[4,3,0]</code>，后验浓度5、单位均值方向 <code>[.8,.6,0]</code>。期望向量长度 $A(5)\approx0.800090804$，与单位方向不同。自然参数完全抵消时输出均匀分布与无定义方向；不凭空指定方位。浓度参数也不能在宽分布、极点或任意坐标下直接解释为角度方差的精确倒数。</p>
+<p>静态例的先验浓度3、均值方向+y，独立观测浓度4、方向+x。自然参数相加得到 <code>[4,3,0]</code>，后验浓度5、单位均值方向 <code>[0.8,0.6,0]</code>。期望向量长度 $A(5)\approx0.800090804$，与单位方向不同。自然参数完全抵消时输出均匀分布与无定义方向；不凭空指定方位。浓度参数也不能在宽分布、极点或任意坐标下直接解释为角度方差的精确倒数。</p>
 <span id="614-locata的逐文件取得范围与静态接口差异" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-61-4">61.4 LOCATA的逐文件取得范围与静态接口差异</h3>
 <p>2026-10-05重新检查官方两个仓库的固定原文件头，按明确的逐文件许可取得31个文本文件，总计211383字节。它们在<code>codes/chapters/ch00/upstream/_downloads/{locata-io,locata-eval}/</code>中分别保留独立Git工作树；不随本书提交复制，不包含LOCATA录音、模型或评分数据。全部正选集、固定提交与入口见<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/SOURCES.lock.json">来源锁表</a>，实际离线获取状态见<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/SOURCE_STATUS.json">SOURCE_STATUS.json</a>。</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table class="tutorial-budget-table" style="--tutorial-table-width:48em">

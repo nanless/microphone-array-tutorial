@@ -1,10 +1,10 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 13 章 · 分布式麦克风协同增强 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="74c593002f97"><style>
-*{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
-.topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
-.topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
+<meta name="source-digest" content="10a21c80bda5"><style>
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
+.topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941}
+.topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
 h1,h2,h3,h4{scroll-margin-top:60px}
 @media screen{.main a[id]:not([href]){scroll-margin-top:60px}}
 @media screen{.main a[id^="e"],.main .exercise-alias{scroll-margin-top:80px}}
@@ -17,64 +17,66 @@ h1,h2,h3,h4{scroll-margin-top:60px}
 @media screen{.main a[id^="e11-"]{scroll-margin-top:60px}}
 @media screen{.main .separation-topic-anchor{scroll-margin-top:60px}}
 @media screen{.main .source-reproduction-anchor{scroll-margin-top:60px}}
-a:focus-visible,summary:focus-visible{outline:3px solid #e67e22;outline-offset:3px}
-.skip-link{position:absolute;left:10px;top:-60px;z-index:30;background:#fff;color:#1a1a2e;padding:8px 12px;border:2px solid #e67e22}
+a:focus-visible,summary:focus-visible{outline:2.5px solid #B84A2E;outline-offset:3px}
+.skip-link{position:absolute;left:10px;top:-60px;z-index:30;background:#fff;color:#1C1E21;padding:8px 12px;border:2px solid #B84A2E}
 .skip-link:focus{top:8px}
-.wrap{display:flex;max-width:1280px;margin:0 auto}
-.side{width:300px;flex-shrink:0;padding:20px 14px;position:sticky;top:47px;height:calc(100vh - 47px);overflow-y:auto;background:#fff;border-right:1px solid #e5e8ee;font-size:13.5px}
-.side a{color:#2f6db3;text-decoration:none}.side a:hover{text-decoration:underline}
-.side .chap{margin:10px 0 2px;font-weight:700}.side .chap.cur{color:#c0392b}
-.side ul{margin:2px 0 6px;padding-left:16px;color:#666}.side li{margin:2px 0}
-.main{flex:1;min-width:0;padding:28px 36px;background:#fff;overflow-wrap:anywhere}
+.wrap{display:flex;max-width:1280px;margin:0 auto;border-left:1px solid #E3DED3;border-right:1px solid #E3DED3}
+.side{width:300px;flex-shrink:0;padding:20px 15px;position:sticky;top:47px;height:calc(100vh - 47px);overflow-y:auto;background:#FAF8F3;border-right:1px solid #DDD7CB;font-size:13.5px}
+.side a{color:#1F5A92;text-decoration:none}.side a:hover{text-decoration:underline}
+.side .chap{margin:10px 0 2px;font-weight:700;color:#26292E}.side .chap.cur{color:#B84A2E}
+.side ul{margin:2px 0 6px;padding-left:16px;color:#5A554D}.side li{margin:2px 0}
+.main{flex:1;min-width:0;padding:32px 40px;background:#fff;overflow-wrap:anywhere}
+.main a{color:#1F5A92;text-underline-offset:.2em}
 .main p{margin:0 0 1.2em}.main ul,.main ol{margin:.55em 0 1.2em;padding-left:1.55em}.main li{margin:.42em 0}.main li>p{margin:.5em 0}
-.main p>strong:first-child,.main li>strong:first-child{color:#0f2744}
-.main img{max-width:100%;height:auto;display:block;margin:16px auto;border:1px solid #dbe3ee;border-radius:6px;padding:3px;min-height:40px;background:#fff}
-.audio-sample{display:block;width:min(100%,460px);margin:8px 0 18px}.audio-sample:focus-visible{outline:3px solid #e67e22}
+.main p>strong:first-child,.main li>strong:first-child{color:#14171A}
+.main img{max-width:100%;height:auto;display:block;margin:18px auto;border:1px solid #DFDAD0;border-radius:5px;padding:4px;min-height:40px;background:#fff}
+.audio-sample{display:block;width:min(100%,460px);margin:8px 0 18px}.audio-sample:focus-visible{outline:2.5px solid #B84A2E}
 /* 表格列宽不能压掉原生播放按钮；手机上的表格可横向滚动。 */
 td .audio-sample{width:280px;min-width:280px}
 table:has(td .audio-sample) td:last-child{min-width:180px}
-table{border-collapse:collapse;margin:16px 0;max-width:100%}
+table{border-collapse:collapse;margin:18px 0;max-width:100%;border-top:1.5px solid #2A2E34;border-bottom:1.5px solid #2A2E34}
 .table-scroll{max-width:100%;overflow-x:auto}
-.table-scroll:focus-visible{outline:3px solid #e67e22;outline-offset:2px}
-th,td{border:1px solid #d5dfec;padding:7px 11px;font-size:14px;text-align:left;line-height:1.58}
-th{background:#e8eff9;color:#0f2744;border-bottom:1.5px solid #94a3b8}
-tbody tr:nth-child(even) td{background:#f8fafc}
-code{background:#eef2f7;color:#0f294a;border:1px solid #d8e1ec;padding:1px 5px;border-radius:4px;font-size:13.5px}
-pre{background:#122036;color:#e8ecf3;padding:14px 16px;border-radius:8px;overflow-x:auto}
+.table-scroll:focus-visible{outline:2.5px solid #B84A2E;outline-offset:2px}
+th,td{border-top:1px solid #E3DED3;border-bottom:1px solid #E3DED3;border-left:none;border-right:none;padding:8px 11px;font-size:14px;text-align:left;line-height:1.58}
+th{background:#F5F2EB;color:#1C1E21;border-bottom:1px solid #8A8275;font-weight:700}
+tbody tr:nth-child(even) td{background:#FCFBF9}
+code{background:#F3F0E8;color:#1E3A56;border:1px solid #E0DBD0;padding:1px 5px;border-radius:4px;font-size:13.5px}
+pre{background:#F5F3EE;color:#1F2328;border:1px solid #DFDAD0;border-left:3.5px solid #5C564D;padding:14px 16px;border-radius:8px;overflow-x:auto}
 pre code{background:none;border:none;color:inherit;padding:0}
-blockquote{border-left:4px solid #2563eb;margin:16px 0;padding:10px 15px;background:#f0f6ff;border-radius:0 6px 6px 0;color:#1e293b}
+blockquote{border-left:3.5px solid #B84A2E;margin:18px 0;padding:10px 16px;background:#F7F5F0;border-radius:0 4px 4px 0;color:#2B2E33}
 blockquote p:last-child{margin-bottom:0}
+hr{border:none;border-top:1px solid #DDD7CB;margin:26px 0}
 mjx-container[jax="CHTML"]{font-size:110%!important;overflow-x:auto;overflow-y:hidden;max-width:100%;min-width:0!important}
 body mjx-assistive-mml{width:1px!important;max-width:1px!important;min-width:0!important;height:1px!important;overflow:hidden!important}
 pre,.table-scroll,mjx-container[jax="CHTML"]{overflow-wrap:normal}
-.pn{display:flex;justify-content:space-between;margin:34px 0 12px;padding-top:16px;border-top:1px solid #d5dfec;font-weight:650}
-.pn a{color:#1d4ed8;text-decoration:none}.pn .off{color:#aaa}
-.foot{color:#64748b;font-size:13px;margin:20px 0 40px}
-.main h1{font-size:27px;color:#0f2744;background:#edf3fc;border-top:4px solid #1e3a8a;border-left:5px solid #1e3a8a;border-bottom:1px solid #cbd5e1;padding:13px 17px 11px;border-radius:0 6px 6px 0;margin:0 0 22px;line-height:1.3}
-.main h2{font-size:21px;color:#0f294a;background:#f3f7fc;border-left:4.5px solid #1d4ed8;border-bottom:1px solid #cbd5e1;padding:8px 13px 7px;margin:34px 0 15px;border-radius:0 5px 5px 0;line-height:1.35}
-.main h3{font-size:18px;color:#1e3a8a;border-left:3.5px solid #3b82f6;padding:2px 0 2px 11px;margin:26px 0 12px;line-height:1.4}
-.main h4{font-size:16px;color:#1e40af;border-left:2.5px solid #93c5fd;padding:1px 0 1px 9px;margin:20px 0 10px;line-height:1.4}
-.main h3.tutorial-worked-heading{background:#f0fdfa;border:1px solid #99f6e4;border-left:4.5px solid #0d9488;color:#115e59;padding:7px 13px;border-radius:6px;margin:26px 0 13px;font-size:17.2px}
-.main h3.tutorial-exercise-heading,.main h4.tutorial-exercise-heading{background:#eff6ff;border:1px solid #bfdbfe;border-left:5px solid #2563eb;color:#1e3a8a;padding:9px 14px;border-radius:6px;margin:30px 0 13px;font-size:17px;line-height:1.45}
-.main p.tutorial-exercise-lead{background:#eff6ff;border:1px solid #bfdbfe;border-left:5px solid #2563eb;padding:11px 15px;border-radius:6px;margin:26px 0 13px}
+.pn{display:flex;justify-content:space-between;margin:36px 0 12px;padding-top:16px;border-top:1px solid #DDD7CB;font-weight:650}
+.pn a{color:#1F5A92;text-decoration:none}.pn .off{color:#9C9588}
+.foot{color:#6E695F;font-size:13px;margin:20px 0 40px}
+.main h1{font-size:27px;color:#14171A;border-top:2.5px solid #1F5A92;border-bottom:1.5px solid #1C1E21;padding:12px 0 10px;margin:0 0 24px;line-height:1.3}
+.main h2{font-size:21px;color:#14171A;border-left:3.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;padding:1px 0 7px 11px;margin:36px 0 15px;line-height:1.35}
+.main h3{font-size:18px;color:#1F5A92;margin:26px 0 11px;line-height:1.4}
+.main h4{font-size:16px;color:#2C2F33;border-left:2.5px solid #B84A2E;padding:1px 0 1px 9px;margin:20px 0 9px;line-height:1.4}
+.main h3.tutorial-worked-heading{background:#FAF8F3;border-top:1.5px solid #237263;border-bottom:1px solid #E2DDD2;border-left:3.5px solid #237263;color:#1A574B;padding:7px 13px;border-radius:2px;margin:28px 0 13px;font-size:17.2px}
+.main h3.tutorial-exercise-heading,.main h4.tutorial-exercise-heading{background:#F5F2EB;border-top:1.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;border-left:4px solid #1F5A92;color:#14171A;padding:8px 14px;border-radius:2px;margin:30px 0 13px;font-size:17px;line-height:1.45}
+.main p.tutorial-exercise-lead{background:#F5F2EB;border-top:1.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;border-left:4px solid #1F5A92;padding:10px 15px;border-radius:2px;margin:28px 0 13px}
 .main ol>li.tutorial-exercise-item{margin:18px 0}
-.main .tutorial-exercise-card{background:#f8fafc;border:1px solid #d5e0ee;border-left:4px solid #2563eb;border-radius:6px;padding:12px 16px}
+.main .tutorial-exercise-card{background:#FAF8F3;border:1px solid #E0DBD0;border-left:3.5px solid #1F5A92;border-radius:4px;padding:12px 16px}
 .main .tutorial-exercise-card>:first-child{margin-top:0}
 .main .tutorial-exercise-card>:last-child{margin-bottom:0}
-.main p.tutorial-solution-lead{background:#f0fdf4;border-left:3.5px solid #16a34a;padding:8px 13px;border-radius:0 5px 5px 0;margin-top:9px}
-.main p.tutorial-solution-lead>strong:first-child{color:#15803d}
-.main p.tutorial-problem-lead{border-left:3px solid #2563eb;padding-left:11px}
-.main p.tutorial-problem-lead>strong:first-child{color:#1d4ed8}
-.toc-mobile{display:none;margin:0 0 16px;border:1px solid #e5e8ee;border-radius:8px;padding:10px 14px;background:#f7fafd;font-size:14px}
-.toc-mobile summary{cursor:pointer;font-weight:700}
-.toc-mobile ul{padding-left:18px;margin:8px 0 2px}.toc-mobile a{color:#2f6db3;text-decoration:none}
-.topbtn{display:block;margin:20px auto;background:#1a1a2e;color:#fff;border-radius:50%;width:42px;height:42px;text-align:center;line-height:42px;text-decoration:none;font-size:18px}
-.offline-note{display:none;background:#fff7e6;border:1px solid #e6c87a;color:#7a5b00;padding:8px 14px;font-size:13.5px}
+.main p.tutorial-solution-lead{background:#F3F6F4;border-left:3.5px solid #237263;padding:8px 13px;border-radius:0 3px 3px 0;margin-top:9px}
+.main p.tutorial-solution-lead>strong:first-child{color:#1D5E51}
+.main p.tutorial-problem-lead{border-left:2.5px solid #1F5A92;padding-left:11px}
+.main p.tutorial-problem-lead>strong:first-child{color:#1F5A92}
+.toc-mobile{display:none;margin:0 0 16px;border:1px solid #DDD7CB;border-radius:6px;padding:10px 14px;background:#FAF8F3;font-size:14px}
+.toc-mobile summary{cursor:pointer;font-weight:700;color:#1C1E21}
+.toc-mobile ul{padding-left:18px;margin:8px 0 2px}.toc-mobile a{color:#1F5A92;text-decoration:none}
+.topbtn{display:block;margin:20px auto;background:#24282E;color:#FAF8F3;border-radius:50%;width:42px;height:42px;text-align:center;line-height:42px;text-decoration:none;font-size:18px}
+.offline-note{display:none;background:#F7EFE4;border:1px solid #D9B78E;color:#6E4219;padding:8px 14px;font-size:13.5px}
 .anchor-alias{display:block;position:relative;top:-60px;visibility:hidden}
 .tutorial-math-tail{display:inline-block;white-space:nowrap;overflow-wrap:normal;vertical-align:baseline;overflow:visible}
 .tutorial-math-tail mjx-assistive-mml{max-width:1px!important;min-width:0!important;white-space:normal}
-.tutorial-exercise-id{white-space:nowrap;overflow-wrap:normal;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:.87em;background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;padding:0 5px;border-radius:4px}
-:is(.tutorial-exercise-heading,.tutorial-exercise-lead) .tutorial-exercise-id{background:#1d4ed8;color:#fff;border-color:#1d4ed8;padding:1px 7px;margin-right:4px;font-size:.84em}
+.tutorial-exercise-id{white-space:nowrap;overflow-wrap:normal;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:.88em;background:#F3EFE6;color:#B84A2E;border:1px solid #DDD5C7;padding:0 5px;border-radius:3px;font-weight:700}
+:is(.tutorial-exercise-heading,.tutorial-exercise-lead) .tutorial-exercise-id{background:#1F5A92;color:#fff;border-color:#1F5A92;padding:1px 7px;margin-right:5px;font-size:.84em}
 .tutorial-table-label{white-space:nowrap;overflow-wrap:normal}
 @media(max-width:900px){.selection-readable-table{min-width:760px}.selection-readable-table th,.selection-readable-table td{min-width:10em}.selection-readable-table th:first-child,.selection-readable-table td:first-child{min-width:6em}}
 @media(max-width:900px){.side{display:none}.main{padding:20px}.toc-mobile{display:block}.topbar{font-size:14px}mjx-container[jax="CHTML"]:not([display="true"]){display:inline-block;vertical-align:middle}.aec-readable-table th,.aec-readable-table td,.wpe-readable-table th,.wpe-readable-table td,.separation-readable-table th,.separation-readable-table td{min-width:8em}.tracking-readable-table th,.tracking-readable-table td{min-width:8em}.industrial-readable-table th,.industrial-readable-table td{min-width:8em}}
@@ -787,7 +789,7 @@ J_1^\star&=\frac{1}{1+11/2}=\frac{2}{13}\approx 0.153846.
 J_1^\star=\frac{8}{69}\approx 0.115942.$$</p>
 <p>请注意一个有趣的现象：噪声相关性增强后，集中式最优 MSE 反而从白噪声时的 $2/13 \approx 0.153846$ 大幅降到了 $8/69 \approx 0.115942$——因为全阵列利用远端通道对消了本地通道 $1$ 里的同源干扰。</p>
 <p>然而，假如节点 $2$ 还死守着刚才白噪声下的“纯目标匹配波束” $z_2 = 2x_3 - \frac{1}{2}x_4$ 不放，会发生什么？算一下 $z_2$ 里的噪声成分与本地噪声 $n_1$ 的互相关 $\mathbb{E}[n_1(2n_3 - n_4/2)]$：恰为 $2\times(1/5) - (1/2)\times(4/5) = 0$，不偏不倚刚好抵消为零。</p>
-<p>结果节点 $1$ 看到的局部 $3 \times 3$ 协方差矩阵跟白噪声时一字不差，局部最优解依然停留在 $[2, 1, 2]^\top / 13$，总均方误差卡死在 $2/13 \approx 0.153846$，白白损失了 $2/13 - 8/69 = 34/897 \approx 0.037904$ 的协同降噪收益。这里的损失绝不是节点 $1$ 局部矩阵算错了，而是集中式远端最优分块 $[11, -24]^\top / 69$ 根本不在旧广播向量 $[2, -1/2]^\top$ 张成的直线上，违背了式(13-11)的子空间无损判据。</p>
+<p>结果节点 $1$ 看到的局部 $3 \times 3$ 协方差矩阵跟白噪声时一字不差，局部最优解依然停留在 $[2, 1, 2]^\top / 13$，总均方误差卡死在 $2/13 \approx 0.153846$，损失了 $2/13 - 8/69 = 34/897 \approx 0.037904$ 的协同降噪收益。这一性能落差源于子空间失配：集中式远端最优分块 $[11, -24]^\top / 69$ 偏离了旧广播向量 $[2, -1/2]^\top$ 张成的一维直线，违背了式(13-11)的子空间无损判据。</p>
 <span id="sec-25" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-88dc8b011b">没有目标的组合为何还能帮助增强</h3>
 <p>被旧广播白白扔掉的那股关键信息到底长什么样？让我们考察远端节点 $2$ 上的正交组合 $p_2 = \frac{1}{2}x_3 + 2x_4$（权重向量为 $[1/2, 2]^\top$）：</p>
 <ul>
@@ -914,7 +916,12 @@ z_u&=\vec f_u^H\vec x_u,\\
 \operatorname{diag}(\lambda_1-1,\ldots,\lambda_S-1)\\
 &\quad\cdot\mathbf V_S^H\mathbf R_{nn}^{1/2}.
 \end{aligned}$$</p>
-<p>有了这个保证半正定且精确秩为 $S$ 的 $\hat{\mathbf R}_{ss}$，后续求任意参考通道 $r_u$ 的 GEVD-MWF 权重就水到渠成了：直接取出参考列 $\hat{\vec r}_{xd_u} = \hat{\mathbf R}_{ss}\vec e_{r_u}$ 代入正规方程，等价地将观测先白化投影到 $\mathbf V_S$、在每个主方向乘上维纳收缩增益 $(\lambda_j - 1)/\lambda_j = 1 - 1/\lambda_j$、最后左乘 $\mathbf R_{nn}^{1/2}$ 映回原麦克风坐标再取第 $r_u$ 行即可（完整推导参见 <a href="https://ftp.esat.kuleuven.be/SISTA/abertran/reports/GEVD_DS_TSP2016.pdf">Serizel、Moonen、Van Dijk 与 Wouters 2014 及 Hassani、Bertrand 与 Moonen 2016 GEVD-DANSE §III 式(9)～(17)</a>）。当然，若人为截断的秩 $S$ 小于真实目标子空间维数，被舍弃特征方向上的目标语音分量也会随之丢失。</p>
+<p>有了这个保证半正定且精确秩为 $S$ 的 $\hat{\mathbf R}_{ss}$，结合式(13-18)的白化特征分解 $\mathbf R_{xx}^{-1}=\mathbf R_{nn}^{-1/2}\bigl(\sum_{j=1}^M\lambda_j^{-1}\vec v_j\vec v_j^H\bigr)\mathbf R_{nn}^{-1/2}$ 及半酉正交关系 $\mathbf V_S^H\vec v_j=\vec e_j$（$j\le S$），多通道信号估计矩阵算子 $\mathbf W_{\mathrm{GEVD}}^H=\hat{\mathbf R}_{ss}\mathbf R_{xx}^{-1}$ 可一步化简为紧凑的五步级联形式：</p>
+<p>$$\mathbf W_{\mathrm{GEVD}}^H
+=\mathbf R_{nn}^{1/2}\mathbf V_S
+\operatorname{diag}\!\left(1-\frac{1}{\lambda_1},\ldots,1-\frac{1}{\lambda_S}\right)
+\mathbf V_S^H\mathbf R_{nn}^{-1/2}.$$</p>
+<p>对照上式从右向左作用在观测向量 $\vec x$ 上的物理链条一目了然：先以 $\mathbf R_{nn}^{-1/2}$ 白化观测，再用 $\mathbf V_S^H$ 投影到 $S$ 维主目标子空间，在每个主方向乘上标量维纳收缩增益 $(\lambda_j - 1)/\lambda_j = 1 - 1/\lambda_j$，随后左乘 $\mathbf V_S$ 张回 $M$ 维白化空间，最后左乘 $\mathbf R_{nn}^{1/2}$ 映回原麦克风物理坐标，取出第 $r_u$ 行（即 $\vec w_u=\mathbf W_{\mathrm{GEVD}}\vec e_{r_u}$）便得到参考通道 $r_u$ 的 GEVD-MWF 权重（完整推导参见 <a href="https://ftp.esat.kuleuven.be/SISTA/abertran/reports/GEVD_DS_TSP2016.pdf">Serizel、Moonen、Van Dijk 与 Wouters 2014 及 Hassani、Bertrand 与 Moonen 2016 GEVD-DANSE §III 式(9)～(17)</a>）。当然，若人为截断的秩 $S$ 小于真实目标子空间维数，被舍弃特征方向上的目标语音分量也会随之丢失。</p>
 <p>这里还要特别提醒区分“估计麦克风上的目标声像 $c_u s$”与“估计未加声道增益的干源 $s$”：哪怕只有单通道 $x = 2s + n$（设 $\phi_s = 1, \sigma_n^2 = 1$），噪声白化因子为 $1$，总功率特征值 $\lambda_1 = 5$。若目标是恢复该麦克风上的真实声像 $d = 2s$，维纳收缩因子 $1 - 1/\lambda_1 = 4/5$ 直接给出最优输出 $\frac{4}{5}x$；但若目标被另行定义为单位干源 $s$，互相关为 $\mathbb{E}[x s^*] = 2$，最优输出则是 $\frac{2}{5}x$——特征值 $\lambda_1 = 5$ 只反映了信噪比，并不会替设计者决定参考目标尺度。</p>
 <span id="sec-40" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-0fdd37155e">一个可手算的小例子</h3>
 <p>我们用一个两通道相关噪声小算例，亲手把 GEVD 白化分解与直接 MWF 求解两条路线对表算通。取传递向量 $\vec a = [1, 2]^\top$、干源功率 $\phi_s = 1$，两通道相关噪声协方差矩阵为：</p>
@@ -936,7 +943,7 @@ z_u&=\vec f_u^H\vec x_u,\\
 =\mathbf I_2+\begin{bmatrix}1\\\sqrt{3}\end{bmatrix}[1,\sqrt{3}]\\
 &=\begin{bmatrix}2 & \sqrt{3}\\\sqrt{3} & 4\end{bmatrix}.
 \end{aligned}$$</p>
-<p>看右下角这个 $2 \times 2$ 白化矩阵：白化目标向量 $[1, \sqrt{3}]^\top$ 的范数平方正好是 $1 + 3 = 4$，故沿 $[1, \sqrt{3}]^\top$ 方向的特征值恰为 $1 + 4 = 5$，沿正交方向 $[-\sqrt{3}, 1]^\top$ 的特征值恰为 $1$。有趣的是，算出最终最优权重 $[0, 2/5]^\top$ 后我们发现第 $1$ 支麦克风的权重居然精确等于 $0$——这不是程序出了错，而是因为第 $1$ 路里的目标幅度是第 $2$ 路的一半（$1 : 2$），恰巧背景噪声从第 $2$ 路串到第 $1$ 路的相关系数也是 $1/2$，第 $2$ 支麦克风已经独自包含了全部充分统计信息，再掺入带独立热噪声的第 $1$ 支麦克风反而有害无益（<a href="#e13-24">E13-24</a> 用三条独立代数路线完整复核了这一性质）。</p>
+<p>看右下角这个 $2 \times 2$ 白化矩阵：白化目标向量 $[1, \sqrt{3}]^\top$ 的范数平方正好是 $1 + 3 = 4$，故沿 $[1, \sqrt{3}]^\top$ 方向的特征值恰为 $1 + 4 = 5$，沿正交方向 $[-\sqrt{3}, 1]^\top$ 的特征值恰为 $1$。值得注意的是，最终最优权重 $[0, 2/5]^\top$ 中第 $1$ 支麦克风的权重精确等于 $0$：原因在于第 $1$ 路的目标幅度恰为第 $2$ 路的一半（$1 : 2$），而背景噪声从第 $2$ 路耦合到第 $1$ 路的相关系数也同为 $1/2$，使得第 $2$ 支麦克风已独自构成目标估计的充分统计量，再引入带独立噪声的第 $1$ 支麦克风反而增加方差（<a href="#e13-24">E13-24</a> 用三条独立代数路线完整复核了这一性质）。</p>
 <span id="sec-41" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-ea55a6c7fc">扩展方法的条件与实现边界</h3>
 <p>围绕基础 DANSE，近年学术界与工业界沿着“低秩子空间鲁棒估计、跨设备晶振异步校正、非全连接任意拓扑”以及“更一般的空间滤波代价”持续推进。下表梳理了四项代表性扩展方法的核心改动与适用前提：</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
@@ -1208,7 +1215,7 @@ P_{\mathrm{ref}}&=\sum_{n\in\mathcal I}D[n]^2,\\
 <p><span id="e15-08" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e13-08"></a></p>
 <span id="sec-66" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-40ecac23db" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-ae1fbf2731" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-86e56e7136">E13-08：广播尺度改变但有效权重不变</h3>
 <p><strong>题目。</strong> 将 <a href="#e13-04">E13-04</a> 的远端广播滤波器乘上非零复常数 $\vec f'_2 = \gamma\vec f_2$（取 $\gamma = 2\mathrm{j}$）。写出新广播信号与新接收系数的变换关系，并说明何时不能盲目做范数归一化。</p>
-<p><strong>解答。</strong> 新广播信号 $z'_2 = (\vec f'_2)^H\vec x_2$ 等于 $\gamma^* z_2 = -2\mathrm{j}z_2$；为保持输出项 $(g'_{12})^* z'_2 = g_{12}^* z_2$ 恒等不变，本地接收系数必须反比例变换为 $g'_{12} = g_{12} / \gamma$（且局部协方差须同步按新压缩坐标重算，绝不能只改发送尺度却沿用旧接收系数）。当远端广播为零向量时严禁除以零范数，极微弱近零广播强行放大也会激增舍入误差。在配套代码中，除核验 $\gamma = 2\mathrm{j}$ 的复相位共轭外，还补充测试了 $10^{-300}, 10^{-10}, 10^{10}, 10^{300}$ 等极端实数尺度下的归一化稳定性。</p>
+<p><strong>解答。</strong> 新广播信号 $z'_2 = (\vec f'_2)^H\vec x_2$ 等于 $\gamma^* z_2 = -2\mathrm{j}z_2$；为保持输出项 $(g'_{12})^* z'_2 = g_{12}^* z_2$ 恒等不变，本地接收系数必须反比例变换为 $g'_{12} = g_{12} / \gamma$（且局部协方差须同步按新压缩坐标重算，绝不能只改发送尺度却沿用旧接收系数）。在精确算术下，对任意非零复标量 $\gamma\in\mathbb{C}\setminus\{0\}$，上述共轭发送缩放与倒数接收补偿严格抵消，重算后的有效全局权重与物理输出保持完全不变；而在有限精度工程实现中，当远端广播为零向量时严禁除以零范数，面对极微弱近零广播时也应设定正能量门限而非强行归一化放大舍入噪声。</p>
 <p><span id="e15-09" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e13-09"></a></p>
 <span id="sec-67" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-15a9194ba1" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-6d504d7edf" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-2a988d60f2">E13-09：真正轮转更新与陈旧状态快照</h3>
 <p><strong>题目。</strong> 按 §13.9 白噪声模型与初值 $\vec f_1^{(0)} = \vec f_2^{(0)} = [1, 0]^\top$ 依次执行节点 $1 \to 2 \to 1$ 三步轮转更新，逐步列出两节点广播、局部权重与实际生效的全局权重，解释为何第 $2$ 步结束瞬间不能宣称全网输出一致改善。</p>

@@ -161,77 +161,77 @@ CSS = """
 span[data-pdf-math-id],mjx-container[jax="SVG"]{font-family:"MASP TeX Metrics";font-weight:normal;font-style:normal;font-synthesis:none}
 /* Match the A4 content width before printing; the print snapshot must not
    receive thousands of late DOM changes from a different screen layout. */
-body{font-family:"STHeiti","Hiragino Sans GB","Microsoft YaHei",sans-serif;font-variant-ligatures:none;font-size:16px;line-height:1.74;color:#1e293b;max-width:180mm;margin:0 auto;padding:0}
+body{font-family:"STHeiti","Hiragino Sans GB","Microsoft YaHei",sans-serif;font-variant-ligatures:none;font-size:16px;line-height:1.74;color:#1F2328;max-width:180mm;margin:0 auto;padding:0}
 p{margin:0 0 1.2em;break-inside:avoid;orphans:2;widows:2}
 ul,ol{margin:.5em 0 1.15em;padding-left:1.55em}
 li{margin:.4em 0}
 li>p{margin:.5em 0}
 li:not(:has(p,ul,ol,pre,table,blockquote)){break-inside:avoid;page-break-inside:avoid;orphans:2;widows:2}
-p>strong:first-child,li>strong:first-child{color:#0f2744}
+p>strong:first-child,li>strong:first-child{color:#14171A}
 svg{break-inside:avoid;page-break-inside:avoid}
 p:has(+ p > mjx-container[display="true"]){break-after:avoid;page-break-after:avoid}
 p:has(> mjx-container[display="true"]){break-before:avoid;page-break-before:avoid}
-img{max-width:100%;height:auto;display:block;margin:16px auto;border:1px solid #dbe3ee;border-radius:6px;padding:3px;background:#fff;box-sizing:border-box}
-table{border-collapse:collapse;margin:16px 0;display:table;width:100%;table-layout:fixed;overflow-x:visible;max-width:100%}
-th,td{border:1px solid #d5dfec;padding:6px 9px;font-size:13.5px;text-align:left;line-height:1.55}
-th{background:#e8eff9;color:#0f2744;border-bottom:1.5px solid #94a3b8}
-tbody tr:nth-child(even) td{background:#f8fafc}
-code{font-family:Menlo,Monaco,Consolas,"STHeiti","Hiragino Sans GB","Microsoft YaHei",monospace;font-variant-ligatures:none;background:#eef2f7;color:#0f294a;border:1px solid #d8e1ec;padding:1px 5px;border-radius:4px;font-size:13px}
+img{max-width:100%;height:auto;display:block;margin:16px auto;border:1px solid #DFDAD0;border-radius:4px;padding:3px;background:#fff;box-sizing:border-box}
+table{border-collapse:collapse;margin:16px 0;display:table;width:100%;table-layout:fixed;overflow-x:visible;max-width:100%;border-top:1.5px solid #2A2E34;border-bottom:1.5px solid #2A2E34}
+th,td{border-top:1px solid #E3DED3;border-bottom:1px solid #E3DED3;border-left:none;border-right:none;padding:6px 9px;font-size:13.5px;text-align:left;line-height:1.55}
+th{background:#F5F2EB;color:#1C1E21;border-bottom:1px solid #8A8275}
+tbody tr:nth-child(even) td{background:#FCFBF9}
+code{font-family:Menlo,Monaco,Consolas,"STHeiti","Hiragino Sans GB","Microsoft YaHei",monospace;font-variant-ligatures:none;background:#F3F0E8;color:#1E3A56;border:1px solid #E0DBD0;padding:1px 5px;border-radius:3px;font-size:13px}
 td,th{word-break:break-word;overflow-wrap:anywhere}
 mjx-container{font-size:100%!important;max-width:100%;break-inside:avoid;page-break-inside:avoid}
 mjx-container[jax="SVG"][display="true"]{display:inline-block!important;width:100%;padding:5px 0;box-sizing:border-box}
 mjx-container[jax="SVG"]:not([display="true"]){display:inline-block;padding-block:2px}
-pre{font-family:Menlo,Monaco,Consolas,"STHeiti","Hiragino Sans GB","Microsoft YaHei",monospace;font-variant-ligatures:none;background:#f4f7fb;border:1px solid #d5dfec;border-left:4px solid #334155;padding:11px 14px;margin:14px 0;border-radius:6px;overflow-x:visible;white-space:pre-wrap;font-size:13px;line-height:1.55}
+pre{font-family:Menlo,Monaco,Consolas,"STHeiti","Hiragino Sans GB","Microsoft YaHei",monospace;font-variant-ligatures:none;background:#F5F3EE;color:#1F2328;border:1px solid #DFDAD0;border-left:3.5px solid #5C564D;padding:11px 14px;margin:14px 0;border-radius:4px;overflow-x:visible;white-space:pre-wrap;font-size:13px;line-height:1.55}
 pre code{background:none;border:none;color:inherit;padding:0}
-blockquote{border-left:4px solid #2563eb;margin:16px 0;padding:9px 14px;background:#f0f6ff;border-radius:0 6px 6px 0;color:#1e293b}
+blockquote{border-left:3.5px solid #B84A2E;margin:16px 0;padding:9px 14px;background:#F7F5F0;border-radius:0 4px 4px 0;color:#2B2E33}
 blockquote p:last-child{margin-bottom:0}
-hr{border:none;border-top:1px solid #cbd5e1;margin:24px 0}
-a{color:#1d4ed8;text-decoration:none}
-h1{font-size:25px;color:#0f2744;background:#edf3fc;border-top:4px solid #1e3a8a;border-left:5px solid #1e3a8a;border-bottom:1px solid #cbd5e1;padding:11px 15px 9px;border-radius:0 6px 6px 0}
-h2{font-size:20px;color:#0f294a;background:#f3f7fc;border-left:4.5px solid #1d4ed8;border-bottom:1px solid #cbd5e1;padding:6px 12px 5px;margin:30px 0 14px;border-radius:0 4px 4px 0;line-height:1.35}
-h3{font-size:17.5px;color:#1e3a8a;border-left:3.5px solid #3b82f6;padding:2px 0 2px 10px;margin:24px 0 11px;line-height:1.4}
-h4{font-size:16px;color:#1e40af;border-left:2.5px solid #93c5fd;padding:1px 0 1px 8px;margin:18px 0 9px;line-height:1.4}
-h3.tutorial-worked-heading{background:#f0fdfa;border:1px solid #99f6e4;border-left:4.5px solid #0d9488;color:#115e59;padding:6px 12px;border-radius:5px;margin:24px 0 12px;font-size:16.8px}
-h3.tutorial-exercise-heading,h4.tutorial-exercise-heading{background:#eff6ff;border:1px solid #bfdbfe;border-left:5px solid #2563eb;color:#1e3a8a;padding:8px 13px;border-radius:6px;margin:28px 0 12px;font-size:16.5px;line-height:1.45}
-p.tutorial-exercise-lead{background:#eff6ff;border:1px solid #bfdbfe;border-left:5px solid #2563eb;padding:10px 14px;border-radius:6px;margin:24px 0 12px}
+hr{border:none;border-top:1px solid #DDD7CB;margin:24px 0}
+a{color:#1F5A92;text-decoration:none}
+h1{font-size:25px;color:#14171A;border-top:2.5px solid #1F5A92;border-bottom:1.5px solid #1C1E21;padding:10px 0 8px}
+h2{font-size:20px;color:#14171A;border-left:3.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;padding:1px 0 6px 10px;margin:30px 0 13px;line-height:1.35}
+h3{font-size:17.2px;color:#1F5A92;margin:24px 0 10px;line-height:1.4}
+h4{font-size:15.8px;color:#2C2F33;border-left:2.5px solid #B84A2E;padding:1px 0 1px 8px;margin:18px 0 8px;line-height:1.4}
+h3.tutorial-worked-heading{background:#FAF8F3;border-top:1.5px solid #237263;border-bottom:1px solid #E2DDD2;border-left:3.5px solid #237263;color:#1A574B;padding:6px 12px;border-radius:2px;margin:24px 0 12px;font-size:16.8px}
+h3.tutorial-exercise-heading,h4.tutorial-exercise-heading{background:#F5F2EB;border-top:1.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;border-left:4px solid #1F5A92;color:#14171A;padding:7px 13px;border-radius:2px;margin:28px 0 12px;font-size:16.5px;line-height:1.45}
+p.tutorial-exercise-lead{background:#F5F2EB;border-top:1.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;border-left:4px solid #1F5A92;padding:9px 14px;border-radius:2px;margin:24px 0 12px}
 ol>li.tutorial-exercise-item{margin:16px 0}
-.tutorial-exercise-card{background:#f8fafc;border:1px solid #d5e0ee;border-left:4px solid #2563eb;border-radius:6px;padding:10px 14px}
+.tutorial-exercise-card{background:#FAF8F3;border:1px solid #E0DBD0;border-left:3.5px solid #1F5A92;border-radius:3px;padding:10px 14px}
 .tutorial-exercise-card>:first-child{margin-top:0}
 .tutorial-exercise-card>:last-child{margin-bottom:0}
-p.tutorial-solution-lead{background:#f0fdf4;border-left:3.5px solid #16a34a;padding:7px 12px;border-radius:0 5px 5px 0;margin-top:8px}
-p.tutorial-solution-lead>strong:first-child{color:#15803d}
-p.tutorial-problem-lead{border-left:3px solid #2563eb;padding-left:10px}
-p.tutorial-problem-lead>strong:first-child{color:#1d4ed8}
-.tutorial-exercise-id{white-space:nowrap;overflow-wrap:normal;font-family:Menlo,Monaco,Consolas,monospace;font-size:.9em;color:#1d4ed8}
-:is(.tutorial-exercise-heading,.tutorial-exercise-lead) .tutorial-exercise-id{color:#1e40af;margin-right:2px}
+p.tutorial-solution-lead{background:#F3F6F4;border-left:3.5px solid #237263;padding:7px 12px;border-radius:0 3px 3px 0;margin-top:8px}
+p.tutorial-solution-lead>strong:first-child{color:#1D5E51}
+p.tutorial-problem-lead{border-left:2.5px solid #1F5A92;padding-left:10px}
+p.tutorial-problem-lead>strong:first-child{color:#1F5A92}
+.tutorial-exercise-id{white-space:nowrap;overflow-wrap:normal;font-family:Menlo,Monaco,Consolas,monospace;font-size:.9em;color:#B84A2E}
+:is(.tutorial-exercise-heading,.tutorial-exercise-lead) .tutorial-exercise-id{color:#B84A2E;margin-right:3px}
 .toc .tutorial-exercise-id{color:inherit;font-size:inherit;font-family:inherit}
-.cover{padding:10px 0 8px;break-after:page;page-break-after:always}
-.cover-banner{background:#0f2744;color:#fff;border-top:6px solid #2563eb;border-radius:10px;padding:34px 30px 28px;text-align:left;margin:0 0 16px}
-.cover-kicker{font-size:12.5px;letter-spacing:.1em;color:#93c5fd;margin:0 0 10px}
-.cover h1{font-size:33px;color:#fff;background:none;border:none;padding:0;margin:0 0 10px;line-height:1.22}
-.cover .sub{font-size:16px;color:#dbeafe;margin:0;line-height:1.6}
-.cover-table{width:100%;border-collapse:collapse;margin:0 0 16px;table-layout:fixed}
-.cover-table th{background:#e8eff9;color:#0f2744;border:1px solid #cbd5e1;border-bottom:2px solid #1d4ed8;padding:9px 13px;font-size:14px;text-align:left}
-.cover-table td{background:#f8fafc;border:1px solid #cbd5e1;padding:12px 14px;vertical-align:top;font-size:13px;color:#334155;line-height:1.6}
-.cover-table td strong{display:block;font-size:14.2px;color:#0f2744;margin-bottom:4px}
-.cover-stats-table{width:100%;border-collapse:collapse;margin:0 0 16px;table-layout:fixed}
-.cover-stats-table th{background:#eff6ff;color:#1e3a8a;border:1px solid #bfdbfe;padding:8px 8px 4px;font-size:15.5px;text-align:center}
-.cover-stats-table td{background:#f8fafc;color:#475569;border:1px solid #bfdbfe;padding:5px 8px 8px;font-size:12px;text-align:center}
-.cover .meta{font-size:12.8px;color:#475569;background:#f8fafc;border:1px solid #cbd5e1;border-left:4px solid #1e3a8a;border-radius:6px;padding:11px 15px;line-height:1.65;text-align:left;margin:0}
+.cover{padding:12px 0 8px;break-after:page;page-break-after:always}
+.cover-banner{background:#F5F1E8;color:#1C1E21;border-top:5px solid #1C1E21;border-bottom:2px solid #B84A2E;padding:34px 28px 26px;text-align:left;margin:0 0 18px}
+.cover-kicker{font-size:12px;letter-spacing:.11em;color:#B84A2E;margin:0 0 10px}
+.cover h1{font-size:33px;color:#14171A;background:none;border:none;padding:0;margin:0 0 10px;line-height:1.22}
+.cover .sub{font-size:16px;color:#45423C;margin:0;line-height:1.62}
+.cover-table{width:100%;border-collapse:collapse;margin:0 0 18px;table-layout:fixed;border-top:1.5px solid #1C1E21;border-bottom:1.5px solid #1C1E21}
+.cover-table th{background:#EFEAE0;color:#1C1E21;border-top:none;border-bottom:1px solid #8A8275;padding:9px 13px;font-size:13.8px;text-align:left}
+.cover-table td{background:#FAF8F4;border-top:1px solid #E0DBD0;border-bottom:none;padding:12px 13px;vertical-align:top;font-size:12.8px;color:#3B3E42;line-height:1.62}
+.cover-table td strong{display:block;font-size:13.4px;color:#1F5A92;margin-bottom:4px}
+.cover-stats-table{width:100%;border-collapse:collapse;margin:0 0 18px;table-layout:fixed;border-top:1.5px solid #1F5A92;border-bottom:1.5px solid #1F5A92}
+.cover-stats-table th{background:#F5F2EB;color:#14171A;border-top:none;border-bottom:1px solid #D5CFC2;padding:8px 6px 4px;font-size:15px;text-align:center}
+.cover-stats-table td{background:#FFFFFF;color:#5A554D;border:none;padding:5px 4px 8px;font-size:11.5px;text-align:center}
+.cover .meta{font-size:12.8px;color:#4A4640;background:#F6F4EF;border-top:1px solid #D5CFC2;border-bottom:1px solid #D5CFC2;border-left:3.5px solid #B84A2E;padding:11px 15px;line-height:1.65;text-align:left;margin:0}
 .chap{page-break-before:always}
 .toc-page>h1{font-size:26px;margin:0 0 14px}
 .toc{columns:2;column-gap:26px;padding-left:18px;margin:0}
-.toc>li{margin:5px 0;break-inside:avoid-column;font-size:13.5px;color:#0f2744}
-.toc>li>a{color:#0f2744}
-.toc .sec{font-size:12px;color:#334155;padding-left:16px;margin:2px 0 4px}
-.toc .subsec{font-size:11px;color:#475569;padding-left:15px;margin:1px 0 3px}
+.toc>li{margin:5px 0;break-inside:avoid-column;font-size:13.5px;color:#14171A}
+.toc>li>a{color:#14171A}
+.toc .sec{font-size:12px;color:#3B3E42;padding-left:16px;margin:2px 0 4px}
+.toc .subsec{font-size:11px;color:#5A554D;padding-left:15px;margin:1px 0 3px}
 .anchor-alias{position:relative;display:inline-block;width:0;height:0;overflow:hidden;pointer-events:none}
 .pdf-anchor-references{position:absolute;top:-10000px;left:-10000px;font-size:1px;line-height:1px;color:transparent;pointer-events:none}
 .pdf-anchor-references a{color:transparent}
 .tutorial-math-tail{display:inline-block;white-space:nowrap;overflow-wrap:normal;vertical-align:baseline;overflow:visible}
 .tutorial-math-tail mjx-assistive-mml{max-width:1px!important;min-width:0!important;white-space:normal}
 .tutorial-table-label{white-space:nowrap;overflow-wrap:normal}
-.book-end{text-align:center;color:#475569;margin:32px 0 8px;padding-top:12px;border-top:1px solid #cbd5e1;font-size:13px}
+.book-end{text-align:center;color:#5A554D;margin:32px 0 8px;padding-top:12px;border-top:1px solid #DDD7CB;font-size:13px}
 .book-ending{break-inside:avoid;page-break-inside:avoid}
 /* MathJax 的 serif 中文回退在部分 macOS 字体中会生成部首码位的 ToUnicode。 */
 mjx-mtext>mjx-utext{font-family:MJXZERO,"STHeiti","Hiragino Sans GB","Microsoft YaHei",sans-serif!important}

@@ -1,10 +1,10 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 9 章 · 声源追踪 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="74c593002f97"><style>
-*{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
-.topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
-.topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
+<meta name="source-digest" content="10a21c80bda5"><style>
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
+.topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941}
+.topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
 h1,h2,h3,h4{scroll-margin-top:60px}
 @media screen{.main a[id]:not([href]){scroll-margin-top:60px}}
 @media screen{.main a[id^="e"],.main .exercise-alias{scroll-margin-top:80px}}
@@ -17,64 +17,66 @@ h1,h2,h3,h4{scroll-margin-top:60px}
 @media screen{.main a[id^="e11-"]{scroll-margin-top:60px}}
 @media screen{.main .separation-topic-anchor{scroll-margin-top:60px}}
 @media screen{.main .source-reproduction-anchor{scroll-margin-top:60px}}
-a:focus-visible,summary:focus-visible{outline:3px solid #e67e22;outline-offset:3px}
-.skip-link{position:absolute;left:10px;top:-60px;z-index:30;background:#fff;color:#1a1a2e;padding:8px 12px;border:2px solid #e67e22}
+a:focus-visible,summary:focus-visible{outline:2.5px solid #B84A2E;outline-offset:3px}
+.skip-link{position:absolute;left:10px;top:-60px;z-index:30;background:#fff;color:#1C1E21;padding:8px 12px;border:2px solid #B84A2E}
 .skip-link:focus{top:8px}
-.wrap{display:flex;max-width:1280px;margin:0 auto}
-.side{width:300px;flex-shrink:0;padding:20px 14px;position:sticky;top:47px;height:calc(100vh - 47px);overflow-y:auto;background:#fff;border-right:1px solid #e5e8ee;font-size:13.5px}
-.side a{color:#2f6db3;text-decoration:none}.side a:hover{text-decoration:underline}
-.side .chap{margin:10px 0 2px;font-weight:700}.side .chap.cur{color:#c0392b}
-.side ul{margin:2px 0 6px;padding-left:16px;color:#666}.side li{margin:2px 0}
-.main{flex:1;min-width:0;padding:28px 36px;background:#fff;overflow-wrap:anywhere}
+.wrap{display:flex;max-width:1280px;margin:0 auto;border-left:1px solid #E3DED3;border-right:1px solid #E3DED3}
+.side{width:300px;flex-shrink:0;padding:20px 15px;position:sticky;top:47px;height:calc(100vh - 47px);overflow-y:auto;background:#FAF8F3;border-right:1px solid #DDD7CB;font-size:13.5px}
+.side a{color:#1F5A92;text-decoration:none}.side a:hover{text-decoration:underline}
+.side .chap{margin:10px 0 2px;font-weight:700;color:#26292E}.side .chap.cur{color:#B84A2E}
+.side ul{margin:2px 0 6px;padding-left:16px;color:#5A554D}.side li{margin:2px 0}
+.main{flex:1;min-width:0;padding:32px 40px;background:#fff;overflow-wrap:anywhere}
+.main a{color:#1F5A92;text-underline-offset:.2em}
 .main p{margin:0 0 1.2em}.main ul,.main ol{margin:.55em 0 1.2em;padding-left:1.55em}.main li{margin:.42em 0}.main li>p{margin:.5em 0}
-.main p>strong:first-child,.main li>strong:first-child{color:#0f2744}
-.main img{max-width:100%;height:auto;display:block;margin:16px auto;border:1px solid #dbe3ee;border-radius:6px;padding:3px;min-height:40px;background:#fff}
-.audio-sample{display:block;width:min(100%,460px);margin:8px 0 18px}.audio-sample:focus-visible{outline:3px solid #e67e22}
+.main p>strong:first-child,.main li>strong:first-child{color:#14171A}
+.main img{max-width:100%;height:auto;display:block;margin:18px auto;border:1px solid #DFDAD0;border-radius:5px;padding:4px;min-height:40px;background:#fff}
+.audio-sample{display:block;width:min(100%,460px);margin:8px 0 18px}.audio-sample:focus-visible{outline:2.5px solid #B84A2E}
 /* 表格列宽不能压掉原生播放按钮；手机上的表格可横向滚动。 */
 td .audio-sample{width:280px;min-width:280px}
 table:has(td .audio-sample) td:last-child{min-width:180px}
-table{border-collapse:collapse;margin:16px 0;max-width:100%}
+table{border-collapse:collapse;margin:18px 0;max-width:100%;border-top:1.5px solid #2A2E34;border-bottom:1.5px solid #2A2E34}
 .table-scroll{max-width:100%;overflow-x:auto}
-.table-scroll:focus-visible{outline:3px solid #e67e22;outline-offset:2px}
-th,td{border:1px solid #d5dfec;padding:7px 11px;font-size:14px;text-align:left;line-height:1.58}
-th{background:#e8eff9;color:#0f2744;border-bottom:1.5px solid #94a3b8}
-tbody tr:nth-child(even) td{background:#f8fafc}
-code{background:#eef2f7;color:#0f294a;border:1px solid #d8e1ec;padding:1px 5px;border-radius:4px;font-size:13.5px}
-pre{background:#122036;color:#e8ecf3;padding:14px 16px;border-radius:8px;overflow-x:auto}
+.table-scroll:focus-visible{outline:2.5px solid #B84A2E;outline-offset:2px}
+th,td{border-top:1px solid #E3DED3;border-bottom:1px solid #E3DED3;border-left:none;border-right:none;padding:8px 11px;font-size:14px;text-align:left;line-height:1.58}
+th{background:#F5F2EB;color:#1C1E21;border-bottom:1px solid #8A8275;font-weight:700}
+tbody tr:nth-child(even) td{background:#FCFBF9}
+code{background:#F3F0E8;color:#1E3A56;border:1px solid #E0DBD0;padding:1px 5px;border-radius:4px;font-size:13.5px}
+pre{background:#F5F3EE;color:#1F2328;border:1px solid #DFDAD0;border-left:3.5px solid #5C564D;padding:14px 16px;border-radius:8px;overflow-x:auto}
 pre code{background:none;border:none;color:inherit;padding:0}
-blockquote{border-left:4px solid #2563eb;margin:16px 0;padding:10px 15px;background:#f0f6ff;border-radius:0 6px 6px 0;color:#1e293b}
+blockquote{border-left:3.5px solid #B84A2E;margin:18px 0;padding:10px 16px;background:#F7F5F0;border-radius:0 4px 4px 0;color:#2B2E33}
 blockquote p:last-child{margin-bottom:0}
+hr{border:none;border-top:1px solid #DDD7CB;margin:26px 0}
 mjx-container[jax="CHTML"]{font-size:110%!important;overflow-x:auto;overflow-y:hidden;max-width:100%;min-width:0!important}
 body mjx-assistive-mml{width:1px!important;max-width:1px!important;min-width:0!important;height:1px!important;overflow:hidden!important}
 pre,.table-scroll,mjx-container[jax="CHTML"]{overflow-wrap:normal}
-.pn{display:flex;justify-content:space-between;margin:34px 0 12px;padding-top:16px;border-top:1px solid #d5dfec;font-weight:650}
-.pn a{color:#1d4ed8;text-decoration:none}.pn .off{color:#aaa}
-.foot{color:#64748b;font-size:13px;margin:20px 0 40px}
-.main h1{font-size:27px;color:#0f2744;background:#edf3fc;border-top:4px solid #1e3a8a;border-left:5px solid #1e3a8a;border-bottom:1px solid #cbd5e1;padding:13px 17px 11px;border-radius:0 6px 6px 0;margin:0 0 22px;line-height:1.3}
-.main h2{font-size:21px;color:#0f294a;background:#f3f7fc;border-left:4.5px solid #1d4ed8;border-bottom:1px solid #cbd5e1;padding:8px 13px 7px;margin:34px 0 15px;border-radius:0 5px 5px 0;line-height:1.35}
-.main h3{font-size:18px;color:#1e3a8a;border-left:3.5px solid #3b82f6;padding:2px 0 2px 11px;margin:26px 0 12px;line-height:1.4}
-.main h4{font-size:16px;color:#1e40af;border-left:2.5px solid #93c5fd;padding:1px 0 1px 9px;margin:20px 0 10px;line-height:1.4}
-.main h3.tutorial-worked-heading{background:#f0fdfa;border:1px solid #99f6e4;border-left:4.5px solid #0d9488;color:#115e59;padding:7px 13px;border-radius:6px;margin:26px 0 13px;font-size:17.2px}
-.main h3.tutorial-exercise-heading,.main h4.tutorial-exercise-heading{background:#eff6ff;border:1px solid #bfdbfe;border-left:5px solid #2563eb;color:#1e3a8a;padding:9px 14px;border-radius:6px;margin:30px 0 13px;font-size:17px;line-height:1.45}
-.main p.tutorial-exercise-lead{background:#eff6ff;border:1px solid #bfdbfe;border-left:5px solid #2563eb;padding:11px 15px;border-radius:6px;margin:26px 0 13px}
+.pn{display:flex;justify-content:space-between;margin:36px 0 12px;padding-top:16px;border-top:1px solid #DDD7CB;font-weight:650}
+.pn a{color:#1F5A92;text-decoration:none}.pn .off{color:#9C9588}
+.foot{color:#6E695F;font-size:13px;margin:20px 0 40px}
+.main h1{font-size:27px;color:#14171A;border-top:2.5px solid #1F5A92;border-bottom:1.5px solid #1C1E21;padding:12px 0 10px;margin:0 0 24px;line-height:1.3}
+.main h2{font-size:21px;color:#14171A;border-left:3.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;padding:1px 0 7px 11px;margin:36px 0 15px;line-height:1.35}
+.main h3{font-size:18px;color:#1F5A92;margin:26px 0 11px;line-height:1.4}
+.main h4{font-size:16px;color:#2C2F33;border-left:2.5px solid #B84A2E;padding:1px 0 1px 9px;margin:20px 0 9px;line-height:1.4}
+.main h3.tutorial-worked-heading{background:#FAF8F3;border-top:1.5px solid #237263;border-bottom:1px solid #E2DDD2;border-left:3.5px solid #237263;color:#1A574B;padding:7px 13px;border-radius:2px;margin:28px 0 13px;font-size:17.2px}
+.main h3.tutorial-exercise-heading,.main h4.tutorial-exercise-heading{background:#F5F2EB;border-top:1.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;border-left:4px solid #1F5A92;color:#14171A;padding:8px 14px;border-radius:2px;margin:30px 0 13px;font-size:17px;line-height:1.45}
+.main p.tutorial-exercise-lead{background:#F5F2EB;border-top:1.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;border-left:4px solid #1F5A92;padding:10px 15px;border-radius:2px;margin:28px 0 13px}
 .main ol>li.tutorial-exercise-item{margin:18px 0}
-.main .tutorial-exercise-card{background:#f8fafc;border:1px solid #d5e0ee;border-left:4px solid #2563eb;border-radius:6px;padding:12px 16px}
+.main .tutorial-exercise-card{background:#FAF8F3;border:1px solid #E0DBD0;border-left:3.5px solid #1F5A92;border-radius:4px;padding:12px 16px}
 .main .tutorial-exercise-card>:first-child{margin-top:0}
 .main .tutorial-exercise-card>:last-child{margin-bottom:0}
-.main p.tutorial-solution-lead{background:#f0fdf4;border-left:3.5px solid #16a34a;padding:8px 13px;border-radius:0 5px 5px 0;margin-top:9px}
-.main p.tutorial-solution-lead>strong:first-child{color:#15803d}
-.main p.tutorial-problem-lead{border-left:3px solid #2563eb;padding-left:11px}
-.main p.tutorial-problem-lead>strong:first-child{color:#1d4ed8}
-.toc-mobile{display:none;margin:0 0 16px;border:1px solid #e5e8ee;border-radius:8px;padding:10px 14px;background:#f7fafd;font-size:14px}
-.toc-mobile summary{cursor:pointer;font-weight:700}
-.toc-mobile ul{padding-left:18px;margin:8px 0 2px}.toc-mobile a{color:#2f6db3;text-decoration:none}
-.topbtn{display:block;margin:20px auto;background:#1a1a2e;color:#fff;border-radius:50%;width:42px;height:42px;text-align:center;line-height:42px;text-decoration:none;font-size:18px}
-.offline-note{display:none;background:#fff7e6;border:1px solid #e6c87a;color:#7a5b00;padding:8px 14px;font-size:13.5px}
+.main p.tutorial-solution-lead{background:#F3F6F4;border-left:3.5px solid #237263;padding:8px 13px;border-radius:0 3px 3px 0;margin-top:9px}
+.main p.tutorial-solution-lead>strong:first-child{color:#1D5E51}
+.main p.tutorial-problem-lead{border-left:2.5px solid #1F5A92;padding-left:11px}
+.main p.tutorial-problem-lead>strong:first-child{color:#1F5A92}
+.toc-mobile{display:none;margin:0 0 16px;border:1px solid #DDD7CB;border-radius:6px;padding:10px 14px;background:#FAF8F3;font-size:14px}
+.toc-mobile summary{cursor:pointer;font-weight:700;color:#1C1E21}
+.toc-mobile ul{padding-left:18px;margin:8px 0 2px}.toc-mobile a{color:#1F5A92;text-decoration:none}
+.topbtn{display:block;margin:20px auto;background:#24282E;color:#FAF8F3;border-radius:50%;width:42px;height:42px;text-align:center;line-height:42px;text-decoration:none;font-size:18px}
+.offline-note{display:none;background:#F7EFE4;border:1px solid #D9B78E;color:#6E4219;padding:8px 14px;font-size:13.5px}
 .anchor-alias{display:block;position:relative;top:-60px;visibility:hidden}
 .tutorial-math-tail{display:inline-block;white-space:nowrap;overflow-wrap:normal;vertical-align:baseline;overflow:visible}
 .tutorial-math-tail mjx-assistive-mml{max-width:1px!important;min-width:0!important;white-space:normal}
-.tutorial-exercise-id{white-space:nowrap;overflow-wrap:normal;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:.87em;background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;padding:0 5px;border-radius:4px}
-:is(.tutorial-exercise-heading,.tutorial-exercise-lead) .tutorial-exercise-id{background:#1d4ed8;color:#fff;border-color:#1d4ed8;padding:1px 7px;margin-right:4px;font-size:.84em}
+.tutorial-exercise-id{white-space:nowrap;overflow-wrap:normal;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:.88em;background:#F3EFE6;color:#B84A2E;border:1px solid #DDD5C7;padding:0 5px;border-radius:3px;font-weight:700}
+:is(.tutorial-exercise-heading,.tutorial-exercise-lead) .tutorial-exercise-id{background:#1F5A92;color:#fff;border-color:#1F5A92;padding:1px 7px;margin-right:5px;font-size:.84em}
 .tutorial-table-label{white-space:nowrap;overflow-wrap:normal}
 @media(max-width:900px){.selection-readable-table{min-width:760px}.selection-readable-table th,.selection-readable-table td{min-width:10em}.selection-readable-table th:first-child,.selection-readable-table td:first-child{min-width:6em}}
 @media(max-width:900px){.side{display:none}.main{padding:20px}.toc-mobile{display:block}.topbar{font-size:14px}mjx-container[jax="CHTML"]:not([display="true"]){display:inline-block;vertical-align:middle}.aec-readable-table th,.aec-readable-table td,.wpe-readable-table th,.wpe-readable-table td,.separation-readable-table th,.separation-readable-table td{min-width:8em}.tracking-readable-table th,.tracking-readable-table td{min-width:8em}.industrial-readable-table th,.industrial-readable-table td{min-width:8em}}
@@ -1083,7 +1085,7 @@ S&=\sum_i w_i\sin\phi_i,\\
 <p><img alt="图22 声源追踪示意" src="../figures/fig22_tracking.png" onerror="this.alt+='（图缺失）'" /></p>
 <p>下面逐一拆解图 22 三个子图的坐标与读图要点：</p>
 <ul>
-<li><strong>子图 (a)（轨迹、野点抑制与缺测外推）</strong>：横轴为时间帧 $t$，纵轴为方位角（度）。灰色散点是定位器逐帧原始输出，可以看到大量散落在全扇区的混响假峰；红色实线（粒子滤波后验均值）之所以没有被远离轨迹的灰点拉跑，正是因为混合似然中的 $0.1$ 均匀杂波底垫为远端野点提供了保底解释，阻止了主流粒子群权重的崩塌，从而紧贴黑色真值正弦线。第 48～57 帧紫色阴影区标出连续 $10$ 帧缺测，此时红线依靠进入缺测前估出的角速度惯性向右上平滑外推，直到第 $58$ 帧新观测恢复后迅速收敛回黑线。底部橙色短竖线标出触发系统重采样的时刻；轨迹附近的紫色叉号则标出预测步有至少 $5\%$ 粒子触碰 $0^\circ$ 或 $120^\circ$ 扇区边界并折回的时刻（用 $5\%$ 分位门限替代“任一粒子越界”，避免单个极端尾部样本造成整排误报警）。</li>
+<li><strong>子图 (a)（轨迹、野点抑制与缺测外推）</strong>：横轴为时间帧 $t$，纵轴为方位角（度）。灰色散点是定位器逐帧原始输出，可以看到大量散落在全扇区的混响假峰；红色虚线（粒子滤波后验均值）之所以没有被远离轨迹的灰点拉跑，正是因为混合似然中的 $0.1$ 均匀杂波底垫为远端野点提供了保底解释，阻止了主流粒子群权重的骤降，从而紧贴黑色真值正弦线。第 48～57 帧紫色阴影区标出连续 $10$ 帧缺测，此时红色虚线依靠进入缺测前估出的角速度惯性向右上平滑外推，直到第 $58$ 帧新观测恢复后迅速收敛回黑线。底部橙色短竖线标出触发系统重采样的时刻；轨迹附近的紫色叉号则标出预测步有至少 $5\%$ 粒子触碰 $0^\circ$ 或 $120^\circ$ 扇区边界并折回的时刻（用 $5\%$ 分位门限替代“任一粒子越界”，避免单个极端尾部样本造成整排误报警）。</li>
 <li><strong>子图 (b)（有效粒子数 $N_{\mathrm{eff}}$ 演化）</strong>：横轴与 (a) 对齐，纵轴为重采样前按式(9-18)计算的 $N_{\mathrm{eff}}$，虚线标出重采样门限 $N/2=100$。第 $0$ 帧盲均匀撒点遇到首帧观测后，绝大多数远离目标的粒子权重骤降，$N_{\mathrm{eff}}$ 瞬间跌破 $100$ 并触发首次重采样，把算力聚拢到目标附近；而在第 48～57 帧缺测阴影期内，由于没有新似然乘入，各粒子保持上一轮重采样后的等权状态，$N_{\mathrm{eff}}$ 平直维持在水平高位——读图时切勿把缺测段的高 $N_{\mathrm{eff}}$ 误读为“追踪器此时很有把握”，它仅仅说明粒子间没有发生新的权重分化，真实空间散布其实正在随过程噪声逐帧变宽。</li>
 <li><strong>子图 (c)（多目标强度函数示意）</strong>：横轴为方位角（$-90^\circ$～$+90^\circ$），纵轴为概率假设密度（PHD）强度，单位为“期望目标数/度”。图中在 $-25^\circ$ 与 $+40^\circ$ 处构造了标准差分别为 $4^\circ$ 与 $5^\circ$ 的两个高斯目标峰并叠加微弱非负杂波底，整条曲线对角度的总积分精确归一为 $2$（代表扇区内期望存在 $2$ 个声源）。这为下一节埋下关键直觉：当房间里同时有多人说话时，与其把所有粒子硬求一个落在两人中间的无意义均值，不如直接在角度轴上递推一条积分等于期望人数的“目标强度曲线”。</li>
 </ul>
@@ -1171,31 +1173,31 @@ L(A)&=p_D^d(1-p_D)^{2-d}
 <p>针对第 3 帧交叉时的身份歧义，不同方法给出了各自的破局思路：</p>
 <ul>
 <li><strong>多假设跟踪（MHT）</strong>：不急于在第 3 帧当场合并，而是把“顺接”和“交换”两棵全局历史分支同时留在假设树里，等第 4、5 帧两人重新分开后，再凭后续观测与速度连续性的累计似然剪掉错误分支（奠基框架见 <a href="https://doi.org/10.1109/TAC.1979.1102177">Reid 1979 MHT 原始论文</a>）。当然，若两人交叉后双双停步或转身折返使运动学完全对称，没有声纹等外观特征辅助，保留再长的历史也无法区分身份。</li>
-<li><strong>标签多伯努利（Labeled Multi-Bernoulli，LMB）与 δ-GLMB</strong>：在随机有限集框架下显式补齐轨迹身份。一个 <strong>LMB 随机有限集</strong>用一组相互独立的带标签伯努利分量参数化多目标后验分布，记为 $\{(r^{(i)},p^{(i)}(x),\ell^{(i)})\}_{i=1}^{M}$：其中 $\ell^{(i)}=(t_b,k)$ 是目标新生时刻 $t_b$ 赋予的唯一不可变标签，随该轨迹跨帧传递；标量 $r^{(i)}\in[0,1]$ 是轨迹 $\ell^{(i)}$ 真实存在的概率（单分量空观测更新手算见练习 <a href="#e09-22">E09-22</a>）；$p^{(i)}(x)$ 是在该目标存在条件下关于状态 $x$（如方位与角速度）的概率密度函数（满足 $\int p^{(i)}(x)\,\mathrm{d}x=1$）。与只维护一条无名总强度曲线的 PHD 不同，LMB 中期望目标数为 $\sum_{i=1}^M r^{(i)}$，工程上提取 $r^{(i)}$ 高于确认门限的分量即可直接输出带持续标签 $\ell^{(i)}$ 的轨迹；δ-GLMB 则在更新步完整保留多关联历史假设的精确加权和，LMB 可视为每次更新后按标签边缘化回单伯努利分量的高效率近似。</li>
-<li><strong>检测前追踪（TBD）与 ACCDOA 输出表示</strong>：TBD 不对 SRP-PHAT 空间谱或神经网络定位谱做硬阈值寻峰，而是直接把整幅角度谱送入贝叶斯递推，让连续多帧微弱但方向一致的语音尾音得以累积浮现。工程接入 TBD 前必须在独立验证集上完成“谱幅/网络打分 $\to$ 观测似然比”的概率校准（含温度缩放、角度网格分辨率与信噪比/混响匹配），因为分类网络的 <code>softmax</code> 只在当帧类别间强行归一为 $1$，无人说话时纯背景噪声同样会分出总和为 $1$ 的分数，绝不能未经校准直接充当似然 $g(z\mid x)$。同理，第 4 章介绍的活动耦合笛卡尔 DOA（Activity-Coupled Cartesian DOA，ACCDOA）把单位圆内向量的方向编码为 DOA、模长编码为发声活动度，它本质上仍是逐帧声事件检测与定位（SELD）输出表示；只有在其后端接上时序滤波、缺测保持与跨帧标签关联，才能构成完整追踪器。</li>
+<li><strong>标签多伯努利（Labeled Multi-Bernoulli，LMB）与 δ-GLMB</strong>：在随机有限集框架下显式补齐轨迹身份。一个 <strong>LMB 随机有限集</strong>用一组相互独立的带标签伯努利分量参数化多目标后验分布，记为 $\{(r^{(i)},p^{(i)}(\vec{x}),\ell^{(i)})\}_{i=1}^{M}$：其中 $\ell^{(i)}=(t_b,k)$ 是目标新生时刻 $t_b$ 赋予的唯一不可变标签，随该轨迹跨帧传递；标量 $r^{(i)}\in[0,1]$ 是轨迹 $\ell^{(i)}$ 真实存在的概率（单分量空观测更新手算见练习 <a href="#e09-22">E09-22</a>）；$p^{(i)}(\vec{x})$ 是在该目标存在条件下关于状态向量 $\vec{x}$（如方位与角速度）的概率密度函数（满足 $\int p^{(i)}(\vec{x})\,\mathrm{d}\vec{x}=1$）。与只维护一条无名总强度曲线的 PHD 不同，LMB 中期望目标数为 $\sum_{i=1}^M r^{(i)}$，工程上提取 $r^{(i)}$ 高于确认门限的分量即可直接输出带持续标签 $\ell^{(i)}$ 的轨迹；δ-GLMB 则在更新步完整保留多关联历史假设的精确加权和，LMB 可视为每次更新后按标签边缘化回单伯努利分量的高效率近似。</li>
+<li><strong>检测前追踪（TBD）与 ACCDOA 输出表示</strong>：TBD 不对 SRP-PHAT 空间谱或神经网络定位谱做硬阈值寻峰，而是直接把整幅角度谱送入贝叶斯递推，让连续多帧微弱但方向一致的语音尾音得以累积浮现。工程接入 TBD 前必须在独立验证集上完成“谱幅/网络打分 $\to$ 观测似然比”的概率校准（含温度缩放、角度网格分辨率与信噪比/混响匹配），因为分类网络的 <code>softmax</code> 只在当帧类别间强行归一为 $1$，无人说话时纯背景噪声同样会分出总和为 $1$ 的分数，绝不能未经校准直接充当似然 $g(\vec{z}\mid\vec{x})$。同理，第 4 章介绍的活动耦合笛卡尔 DOA（Activity-Coupled Cartesian DOA，ACCDOA）把单位圆内向量的方向编码为 DOA、模长编码为发声活动度，它本质上仍是逐帧声事件检测与定位（SELD）输出表示；只有在其后端接上时序滤波、缺测保持与跨帧标签关联，才能构成完整追踪器。</li>
 </ul>
 <p>下面把无标签 RFS 的基石——PHD 强度递推——单独拆开讲透，看看它如何在完全不枚举关联配对的前提下同步更新人数期望与方位分布。</p>
 <h3 id="sec-u-175f2c0587">PHD 强度：人数期望与单帧更新</h3>
-<p>PHD 强度 $D_t(x)$ 并不是“某处存在单个目标”的普通概率密度，因此它的全空间积分不必等于 $1$。它在任意状态子区域 $A$ 上的积分 $\int_A D_t(x)\,\mathrm{d}x$ 等于落入区域 $A$ 内的<strong>期望目标个数</strong>，全空间总积分 $\hat{N}_t=\int D_t(x)\,\mathrm{d}x$ 即给出当前时刻的期望声源总数（若需输出整数人数，还须另定四舍五入或门限规则，目标状态则从局部强度峰值或聚类中心提取）。</p>
+<p>PHD 强度 $D_t(\vec{x})$ 并不是“某处存在单个目标”的普通概率密度，因此它的全空间积分不必等于 $1$。它在任意状态子区域 $A$ 上的积分 $\int_A D_t(\vec{x})\,\mathrm{d}\vec{x}$ 等于落入区域 $A$ 内的<strong>期望目标个数</strong>，全空间总积分 $\hat{N}_t=\int D_t(\vec{x})\,\mathrm{d}\vec{x}$ 即给出当前时刻的期望声源总数（若需输出整数人数，还须另定四舍五入或门限规则，目标状态则从局部强度峰值或聚类中心提取）。</p>
 <p>PHD 避免显式枚举观测—目标关联，但只传播多目标分布的一阶统计矩（强度函数），既不维护目标身份标签，也不刻画具体人数概率分布的宽窄；CPHD 虽然进一步同步递推人数的离散概率分布（基数分布），但依然不含身份标签（练习 <a href="#e09-14">E09-14</a> 构造了两个强度函数一模一样、人数方差却截然不同的反例）。</p>
-<p>下面的递推针对标准独立点目标模型：各声源状态独立演化、被检出事件相互独立，每个存活且被检出的声源每帧至多产生一条观测，虚警杂波服从独立于目标的泊松随机有限集（空间强度函数记为 $\kappa_t(z)$），且暂不考虑目标分裂衍生，仅以新生强度 $\gamma_t(x)$ 描述新开口说话人的自发出现；同时假定预测多目标随机有限集近似服从泊松点过程。在此前提下，先看<strong>预测步</strong>：上一帧强度 $D_{t-1}(\xi)$ 中每个位置 $\xi$ 的目标以存活概率 $p_S(\xi)$ 留存下来，记留存强度为 $s_t(\xi)=p_S(\xi)D_{t-1}(\xi)$，经马尔可夫转移核 $f_t(x\mid\xi)$ 扩散积分后，再叠加本帧新出现的声源出生强度 $\gamma_t(x)$，即得预测强度</p>
+<p>下面的递推针对标准独立点目标模型：各声源状态独立演化、被检出事件相互独立，每个存活且被检出的声源每帧至多产生一条观测，虚警杂波服从独立于目标的泊松随机有限集（空间强度函数记为 $\kappa_t(\vec{z})$），且暂不考虑目标分裂衍生，仅以新生强度 $\gamma_t(\vec{x})$ 描述新开口说话人的自发出现；同时假定预测多目标随机有限集近似服从泊松点过程。在此前提下，先看<strong>预测步</strong>：上一帧强度 $D_{t-1}(\vec{\xi})$ 中每个状态 $\vec{\xi}$ 处的目标以存活概率 $p_S(\vec{\xi})$ 留存下来，记留存强度为 $s_t(\vec{\xi})=p_S(\vec{\xi})D_{t-1}(\vec{\xi})$，经马尔可夫转移核 $f_t(\vec{x}\mid\vec{\xi})$ 扩散积分后，再叠加本帧新出现的声源出生强度 $\gamma_t(\vec{x})$，即得预测强度</p>
 <p>$$\begin{gathered}
-D_{t|t-1}(x)=\gamma_t(x)\\
-{}+\int f_t(x\mid\xi)s_t(\xi)\,\mathrm{d}\xi.
+D_{t|t-1}(\vec{x})=\gamma_t(\vec{x})\\
+{}+\int f_t(\vec{x}\mid\vec{\xi})s_t(\vec{\xi})\,\mathrm{d}\vec{\xi}.
 \end{gathered}\tag{9-22}$$</p>
-<p>再看收到本帧观测集合 $Z_t$ 后的<strong>更新步</strong>。简记预测强度为 $D_t^-(x)=D_{t|t-1}(x)$，并记“预测存在且本帧能被定位器检出”的强度分量为 $u_t(x)=p_D(x)D_t^-(x)$，其中 $p_D(x)\in[0,1]$ 为状态相关的检测概率。标准 PHD 闭式更新方程为</p>
+<p>再看收到本帧观测集合 $Z_t$ 后的<strong>更新步</strong>。简记预测强度为 $D_t^-(\vec{x})=D_{t|t-1}(\vec{x})$，并记“预测存在且本帧能被定位器检出”的强度分量为 $u_t(\vec{x})=p_D(\vec{x})D_t^-(\vec{x})$，其中 $p_D(\vec{x})\in[0,1]$ 为状态相关的检测概率。标准 PHD 闭式更新方程为</p>
 <p>$$\begin{gathered}
-\eta_t(z)=\kappa_t(z)\\
-{}+\int g_t(z\mid\xi)u_t(\xi)\,\mathrm{d}\xi,\\
-D_t(x)=[1-p_D(x)]D_t^-(x)\\
-{}+\sum_{z\in Z_t}\frac{g_t(z\mid x)u_t(x)}{\eta_t(z)}.
+\eta_t(\vec{z})=\kappa_t(\vec{z})\\
+{}+\int g_t(\vec{z}\mid\vec{\xi})u_t(\vec{\xi})\,\mathrm{d}\vec{\xi},\\
+D_t(\vec{x})=[1-p_D(\vec{x})]D_t^-(\vec{x})\\
+{}+\sum_{\vec{z}\in Z_t}\frac{g_t(\vec{z}\mid\vec{x})u_t(\vec{x})}{\eta_t(\vec{z})}.
 \end{gathered}\tag{9-23}$$</p>
 <p>初学者初看式(9-23)容易被积分和求和吓住，其实它的物理账本极其直观，就是<strong>“漏检留存 + 每条观测按贝叶斯责任瓜分”</strong>两笔账相加：</p>
 <ol>
-<li><strong>第一项 $[1-p_D(x)]D_t^-(x)$（漏检留存账）</strong>：即便位置 $x$ 处真有说话人，本帧他可能恰好换气停顿或被噪声掩蔽而未产生观测（漏检概率为 $1-p_D(x)$）。这部分未检出的期望人数不能凭空抹掉，原封不动留存下来；若本帧观测集为空（$Z_t=\varnothing$），后面求和项消失，全空间强度就只剩这一项衰减。</li>
-<li><strong>第二项求和 $\sum_{z\in Z_t}\frac{g_t(z\mid x)u_t(x)}{\eta_t(z)}$（观测按贝叶斯责任瓜分账）</strong>：本帧每收到一条点观测 $z\in Z_t$，在“每个目标至多产生一条观测”的规则下，这条 $z$ <strong>至多代表 $1$ 个真实声源</strong>。谁来认领这 $1$ 份人数呢？全体候选位置 $\xi$ 按各自的可检出似然权重 $g_t(z\mid\xi)u_t(\xi)$ 参与竞标，同时杂波模型也拿出强度 $\kappa_t(z)$ 参与竞标，所有竞标者的总盘子正是第一式的分母 $\eta_t(z)$。位置 $x$ 按自身权重占总盘子的比例领走 $g_t(z\mid x)u_t(x)/\eta_t(z)$ 份强度；记目标竞标总积分为 $I_t(z)=\int g_t(z\mid x)u_t(x)\,\mathrm{d}x$，则全空间领走的目标总人数贡献为 $I_t(z)/[\kappa_t(z)+I_t(z)]\lt 1$，而剩下的 $\kappa_t(z)/\eta_t(z)$ 份额则被杂波自然分流吸收——这就是为什么杂波强度 $\kappa_t(z)$ 设得越高，单条可疑观测能催生出的目标强度就越保守。</li>
+<li><strong>第一项 $[1-p_D(\vec{x})]D_t^-(\vec{x})$（漏检留存账）</strong>：即便状态 $\vec{x}$ 处真有说话人，本帧他可能恰好换气停顿或被噪声掩蔽而未产生观测（漏检概率为 $1-p_D(\vec{x})$）。这部分未检出的期望人数不能凭空抹掉，原封不动留存下来；若本帧观测集为空（$Z_t=\varnothing$），后面求和项消失，全空间强度就只剩这一项衰减。</li>
+<li><strong>第二项求和 $\sum_{\vec{z}\in Z_t}\frac{g_t(\vec{z}\mid\vec{x})u_t(\vec{x})}{\eta_t(\vec{z})}$（观测按贝叶斯责任瓜分账）</strong>：本帧每收到一条点观测 $\vec{z}\in Z_t$，在“每个目标至多产生一条观测”的规则下，这条 $\vec{z}$ <strong>至多代表 $1$ 个真实声源</strong>。谁来认领这 $1$ 份人数呢？全体候选状态 $\vec{\xi}$ 按各自的可检出似然权重 $g_t(\vec{z}\mid\vec{\xi})u_t(\vec{\xi})$ 参与竞标，同时杂波模型也拿出强度 $\kappa_t(\vec{z})$ 参与竞标，所有竞标者的总盘子正是第一式的分母 $\eta_t(\vec{z})$。状态 $\vec{x}$ 按自身权重占总盘子的比例领走 $g_t(\vec{z}\mid\vec{x})u_t(\vec{x})/\eta_t(\vec{z})$ 份强度；记目标竞标总积分为 $I_t(\vec{z})=\int g_t(\vec{z}\mid\vec{x})u_t(\vec{x})\,\mathrm{d}\vec{x}$，则全空间领走的目标总人数贡献为 $I_t(\vec{z})/[\kappa_t(\vec{z})+I_t(\vec{z})]\lt 1$，而剩下的 $\kappa_t(\vec{z})/\eta_t(\vec{z})$ 份额则被杂波自然分流吸收——这就是为什么杂波强度 $\kappa_t(\vec{z})$ 设得越高，单条可疑观测能催生出的目标强度就越保守。</li>
 </ol>
-<p>立刻用两个离散角度网格核对一遍这笔瓜分账。设两个网格上的预测期望目标数质量为 $\vec{D}^-=[0.8,\ 0.6]$（合计期望 $1.4$ 人；注意这里 $\vec{D}^-$ 已是乘过网格宽度的离散质量，若用连续密度做数值积分还须乘以网格步长 $\Delta\theta$）。为突出第二项，先取理想检出率 $p_D=1$（漏检留存项为 $0$），设本帧只收到 $1$ 条观测 $z$，两个网格对该观测的离散似然为 $\vec{g}=[0.9,\ 0.1]$，同测度下的杂波强度为 $\kappa=0.1$。</p>
+<p>立刻用两个离散角度网格核对一遍这笔瓜分账。设两个网格上的预测期望目标数质量为 $\vec{D}^-=[0.8,\ 0.6]^\top$（合计期望 $1.4$ 人；注意这里 $\vec{D}^-$ 已是乘过网格宽度的离散质量，若用连续密度做数值积分还须乘以网格步长 $\Delta\theta$）。为突出第二项，先取理想检出率 $p_D=1$（漏检留存项为 $0$），设本帧只收到 $1$ 条标量角度观测 $z$，两个网格对该观测的离散似然为 $\vec{g}=[0.9,\ 0.1]^\top$，同测度下的杂波强度为 $\kappa=0.1$。</p>
 <p>竞标总盘子为 $\eta=0.1+0.9\times 0.8+0.1\times 0.6=0.88$，三方按未归一化竞标权重瓜分这 $1$ 份观测证据的精确账目如下表所示：</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
 <thead>
@@ -1239,7 +1241,7 @@ D_t(x)=[1-p_D(x)]D_t^-(x)\\
 </ul>
 <h3 id="sec-u-b70bbe3259">两目标交叉、短暂缺测与控制限速</h3>
 <p><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch09/tracking_crossing_dropout_demo.py"><code>tracking_crossing_dropout_demo.py</code></a> 用一组可手算复核的确定性角度序列演示双目标交叉、单源短时停顿与波束转向限速（运行命令：<code>.venv/bin/python -m codes.chapters.ch09.tracking_crossing_dropout_demo</code>，独立手算回归见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/tests/test_codes_tracking_crossing_dropout.py"><code>test_codes_tracking_crossing_dropout.py</code></a>）。为方便心算，时间步长取 $\Delta t=1\ \mathrm{s}$：轨迹 A 初态为 $[20^\circ,+10^\circ/\mathrm{s}]^\top$，轨迹 B 初态为 $[60^\circ,-10^\circ/\mathrm{s}]^\top$，初始协方差均为单位阵 $\mathbf{I}$，每步过程噪声 $\mathbf{Q}=\operatorname{diag}(0.1,0.01)$，标量角度观测方差 $R=1\ \mathrm{deg}^2$。</p>
-<p>关联器采用门限 $15^\circ$ 内的两轨<strong>全局最近邻（Global Nearest Neighbour，GNN）</strong>一对一分配：优先最大化门内成功配对条数，在此前提下最小化圆周角残差平方和；遇到总代价严格相等的并列情形，则按轨迹与输入观测列表的先后次序打破平局（Stone Soup 框架的 <a href="https://github.com/dstl/Stone-Soup/blob/8d1edeb07ef8505ed065cbef435cfb5e517d9bdc/stonesoup/dataassociator/neighbour.py"><code>neighbour.py</code></a> 同样区分了逐轨贪心的 <code>NearestNeighbour</code> 与联合最优分配的 <code>GlobalNearestNeighbour</code>，此处正是后者的两轨最小缩影）。</p>
+<p>关联器采用门限 $15^\circ$ 内的两轨<strong>全局最近邻（Global Nearest Neighbour，GNN）</strong>一对一分配：优先最大化门内成功配对条数，在此前提下最小化圆周角残差平方和；遇到总代价严格相等的并列情形，则按轨迹与输入观测列表的先后次序打破平局。在一般 $M$ 条轨迹与 $N$ 个观测的工程实现中，GNN 将门内马氏距离或负对数似然比填入 $M\times N$ 代价块（门外填 $+\infty$），并在右侧增广 $M\times M$ 的漏检虚拟对角块（对角元填门控阈值 $\gamma_G$，非对角元填 $+\infty$），构成增广二分图指派问题，通过匈牙利（Kuhn–Munkres / Jonker–Volgenant）算法在 $O(\max(M,N)^3)$ 多项式时间内求全局最小总代价匹配（对偶原理与指派算例详见<a href="00_math-foundations.html#sec-0-6-4">第 0 章 §0.6.4</a>）。相比之下，逐轨按编号顺序就近抢占的贪心最近邻（<code>NearestNeighbour</code>，NN）一旦让前序轨迹夺走了本属于邻近轨迹的唯一观测，后序轨迹便被迫漏检或远距错配（Stone Soup 框架的 <a href="https://github.com/dstl/Stone-Soup/blob/8d1edeb07ef8505ed065cbef435cfb5e517d9bdc/stonesoup/dataassociator/neighbour.py"><code>neighbour.py</code></a> 即严格区分了逐轨贪心的 <code>NearestNeighbour</code> 与全局最优指派的 <code>GlobalNearestNeighbour</code>）。</p>
 <p>关键转折发生在第 $2\ \mathrm{s}$：按匀速外推，轨迹 A 与轨迹 B 的先验预测角双双到达 $40^\circ$，而本帧到达观测按列表顺序依次为原本属于 B 的 $39^\circ$ 与原本属于 A 的 $41^\circ$。此时“A 配 $39^\circ$、B 配 $41^\circ$”与“A 配 $41^\circ$、B 配 $39^\circ$”的残差平方和完全并列，同为 $(-1)^2+1^2=2\ \mathrm{deg}^2$；平局规则遂将第一条观测 $39^\circ$ 派给 A、第二条观测 $41^\circ$ 派给 B，当场产生 $2$ 次身份错配。然而如果抹去身份标签只看集合，当帧观测集与真值集同为 $\{39^\circ,41^\circ\}$，按后文式(9-25)算出的未滤波观测集 OSPA 距离却是完美的 $0^\circ$（注意滤波后状态因融合了先验 $40^\circ$ 与各自相反的速度惯性，仍带有非零估计误差）！</p>
 <p>下表逐帧对比了该硬关联追踪器与“理想已知真值标签关联（仅作上限诊断对照，不可用于实际部署）”的角度绝对误差与轨迹 A 方差演化：</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table class="tutorial-budget-table" style="--tutorial-table-width:63em">
@@ -1296,10 +1298,8 @@ D_t(x)=[1-p_D(x)]D_t^-(x)\\
 <p>顺着时间轴读这张表，能一眼看出两条核心规律：第一，看第 $2\ \mathrm{s}$ 行，即使账面方差仍维持在看似很小的 $0.68\ \mathrm{deg}^2$，错配不仅把反方向的观测拉进了更新，还因速度耦合拖偏了后验均值，使滤波角误差从理想关联的 $0.32^\circ$ 放大了五倍多（达 $1.68^\circ$）；第二，看第 $3\ \mathrm{s}$ 至第 $4\ \mathrm{s}$ 行，说话人 A 短暂停顿缺测使轨迹 A 只做预测外推，角度方差从 $0.68\ \mathrm{deg}^2$ 迅速膨胀至 $1.80\ \mathrm{deg}^2$，幸而轨迹 A 仍携带着正向角速度惯性继续朝 $50^\circ$ 外推，才没在交叉口被 B 的 $30^\circ$ 观测吸走，等到第 $4\ \mathrm{s}$ A 在 $60^\circ$ 重新开口时得以顺利找回配对并将方差压回 $0.79\ \mathrm{deg}^2$。</p>
 <p>同一脚本还演示了无观测外推期间<strong>波束转向限速（slew-rate limiting）</strong>的滞后账：设另一条轨迹从初态 $[20^\circ,10^\circ/\mathrm{s}]^\top$、$\mathbf{P}_0=\mathbf{I}$ 起连续两秒缺测，预测角依次推进至 $30^\circ$ 与 $40^\circ$，第一步先验协方差 $\mathbf{P}_1^-$ 按 $\mathbf{F}\mathbf{I}\mathbf{F}^\top+\mathbf{Q}$ 使角度方差涨到 $2.10\ \mathrm{deg}^2$，第 $2\ \mathrm{s}$ 再涨到 $2.10+2\times 1.00+1.01+0.10=5.21\ \mathrm{deg}^2$。若下游波束控制器为防听感突变将转向速率硬限在最高 $5^\circ/\mathrm{s}$，实际波束指向两步只能走到 $25^\circ$ 与 $30^\circ$，相对预测方位产生 $5^\circ$ 与 $10^\circ$ 的确定性机械/算法跟随滞后。因此，转向限速值必须结合帧间隔、说话人正常走动最大角速度与波束主瓣宽度联合整定。</p>
 <h3 id="sec-u-82a35b6f54">上游实现与适用范围</h3>
-<p>阅读和复用开源追踪库时，不能只看类名与论文标题一致就默认内部数学约定完全对齐。例如在固定版本的 FilterPy 与 Stone Soup（仓库地址、提交号与许可证统一由 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/SOURCES.lock.json"><code>SOURCES.lock.json</code></a> 锁定）中，FilterPy 的 <code>kalman/EKF.py</code>、<code>UKF.py</code>、<code>IMM.py</code> 提供了非线性滤波与多模型切换骨架，但其组合接口 <code>predict_update()</code> 与分步调用在雅可比求值时点上存在细微差别，无观测时 IMM 的总体融合权重也需对照式(9-15)核实；Stone Soup 则通过 <code>dataassociator/probability.py::JPDA</code> 及 <code>updater/pointprocess.py::PHDUpdater</code>（配合 <code>GaussianMixtureReducer</code>）实现联合概率关联与 GM-PHD 分量合并剪枝（上游源码逐行核查与受控对照见<a href="research/01_spatial_and_tracking.html#tracking-upstream-audit">空间处理与追踪研究手册</a>）。</p>
+<p>阅读和复用开源追踪库时，不能只看类名与论文标题一致就默认内部数学约定完全对齐。例如在固定版本的 FilterPy 与 Stone Soup（仓库地址、提交号与许可证统一由 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/SOURCES.lock.json"><code>SOURCES.lock.json</code></a> 锁定）中，FilterPy 的 <code>kalman/EKF.py</code>、<code>UKF.py</code>、<code>IMM.py</code> 提供了非线性滤波与多模型切换骨架，但其组合接口 <code>predict_update()</code> 与分步调用在雅可比求值时点上存在细微差别，无观测时 IMM 的总体融合权重也需对照式(9-15)核实；Stone Soup 则通过 <code>dataassociator/probability.py::JPDA</code> 及 <code>updater/pointprocess.py::PHDUpdater</code>（配合 <code>GaussianMixtureReducer</code>）实现联合概率关联与 GM-PHD 分量合并剪枝（实现细节可对照 <a href="https://github.com/dstl/Stone-Soup/blob/8d1edeb07ef8505ed065cbef435cfb5e517d9bdc/docs/tutorials/08_JPDATutorial.py">Stone Soup JPDA 教程源码</a>、<a href="https://stonesoup.readthedocs.io/en/v1.9.1/auto_tutorials/filters/GMPHDTutorial.html">GM-PHD 官方教程</a>及本仓<a href="research/01_spatial_and_tracking.html#tracking-upstream-audit">空间处理与追踪研究手册</a>，调用时注意核查出生分布覆盖域、剪枝后删去的总强度质量以及交叉轨迹软合并边界）。</p>
 <p>把雷达或平面视觉教程代码迁移到麦克风阵列方向追踪时，至少要同步改写三处底层接口：观测残差与新息门控必须接入圆周角环绕算子；空间杂波强度 $\kappa$ 的量纲必须从“每平方米假点数”切换为观测角空间测度（如每弧度或每立体角的预期反射假峰数）；检测概率 $p_D$ 则须同时反映定位器漏检与人类自然说话的音节停顿，不能直接套用雷达的恒定高 $p_D$。</p>
-<p>GM-PHD 的高斯权重和表示期望目标数，不要求归一到 $1$。出生分布没有覆盖某个方向时，新目标可能一直不能形成足够强的分量；剪枝阈值过高则会删掉弱源，因此应记录每帧删去的总强度质量。</p>
-<p>JPDA 也需要明确漏检事件和一对一约束；在两人交叉时，软关联可能混合轨迹，并不自动保持说话人身份（实现细节可对照 <a href="https://github.com/dstl/Stone-Soup/blob/8d1edeb07ef8505ed065cbef435cfb5e517d9bdc/docs/tutorials/08_JPDATutorial.py">Stone Soup JPDA 教程源码</a>与 <a href="https://stonesoup.readthedocs.io/en/v1.9.1/auto_tutorials/filters/GMPHDTutorial.html">GM-PHD 官方教程</a>，核实于 2026-09-22）。</p>
 <p>MHT 已有可阅读的受限参考：Stone Soup 的 <a href="https://github.com/dstl/Stone-Soup/blob/8d1edeb07ef8505ed065cbef435cfb5e517d9bdc/docs/examples/dataassociation/mht_example.py"><code>mht_example.py</code></a> 借助 <code>MFAHypothesiser</code> 维护多帧观测历史，再调用依赖 OR-Tools 整数规划求解器的 <code>MFADataAssociator</code> 完成三帧滑窗多帧分配与 N-scan 剪枝（该示例固定预置三个目标并使用方位—距离观测，尚未接入动态出生与消亡）。</p>
 <p>另一条在声学阵列中颇具代表性的工程折中是 <strong>Rao–Blackwell 化蒙特卡洛数据关联（Rao–Blackwellized Monte Carlo Data Association，RBMCDA）</strong>：它不再拿粒子去盲目撒点猜连续位置与速度，而是让粒子专门承载离散的“观测—轨迹关联历史及出生/消亡假设”，在给定关联历史的条件下，每个目标的连续空间运动则交给闭式卡尔曼滤波器精确递推。开源空间音频框架 SAF（Spatial Audio Framework）的追踪模块即采用这一解析—蒙特卡洛混合架构（分工细节见 <a href="https://eurasip.org/Proceedings/Eusipco/Eusipco2021/pdfs/0000206.pdf">McCormack 等 EUSIPCO 2021 论文 §III</a>及本仓<a href="research/01_spatial_and_tracking.html#tracking-upstream-audit">追踪上游核查记录</a>），这也生动说明“引入粒子滤波”并不意味着要把所有连续状态量都交给蒙特卡洛采样。至于 CPHD 与 LMB/$\delta$-GLMB 的原论文作者参考实现，可在 <a href="https://ba-tuong.vo-au.com/codes.html">Ba-Tuong Vo 研究主页</a>查阅 MATLAB 源码（注：该页面声明仅限学术与研究用途，商用部署需依据已发表公式独立实现并重点回归出生/存活参数标定、假设截断与算力开销）。</p>
 <span id="sec-5" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-9-4">9.4 定位、追踪与波束形成的接口</h2>
@@ -1319,7 +1319,7 @@ D_t(x)=[1-p_D(x)]D_t^-(x)\\
 <p>式(9-24)的物理含义可由联合高斯条件分布一眼看穿：给定 $t$ 帧及以前观测时，$\vec{s}_t$ 与 $\vec{s}_{t+1}=\mathbf{F}_{t+1}\vec{s}_t+\vec{v}_{t+1}$ 的跨帧互协方差正是 $\mathbf{P}_{t|t}\mathbf{F}_{t+1}^\top$，故平滑增益 $\mathbf{C}_t$ 把下一帧获得的状态修正量 $\vec{a}_t$ 按回归系数折算回时刻 $t$；同时由于观测更新使 $\mathbf{P}_{t+1|t+1}\preceq\mathbf{P}_{t+1|t}$，差矩阵 $\mathbf{B}_t$ 半负定，二次型 $\mathbf{C}_t\mathbf{B}_t\mathbf{C}_t^\top$ 进一步削减（或保持）时刻 $t$ 的历史协方差（练习 <a href="#e09-16">E09-16</a> 给出了标量从头推导与数值核对；注意圆周方位角回修同样需对差值做最短角环绕）。</p>
 <p>回到零等待的实时通话前端，波束控制器需要的恰恰是相反方向的 $u>t$ 预测输出。图 23 给出了多通道语音前端模块间的典型连接关系：</p>
 <p><img alt="图23 前端处理参考链路（总图定义见第10章§10.1，此处为引用）" src="../figures/fig23_pipeline.png" onerror="this.alt+='（图缺失）'" /></p>
-<p>读图 23 时重点留意数据面与控制面的解耦设计：定位与追踪运行在多通道 AEC 残差之上（切勿拿已经做过窄波束增强的单路信号再去跑定位，否则会形成“波束指哪、定位就只能看到哪”的自激正反馈死锁），追踪器只向解析波束形成器输出平滑或外推方向，而不直接干预导引源分离（GSS）的时频掩码迭代；反过来，控制面将 VAD、远端参考活动以及双讲检测（DTD）信号同步馈入追踪器。在实际智能音箱、会议终端与带屏设备中，这一控制接口还有两项决定成败的工程门控要点：</p>
+<p>读图 23 时重点留意数据面与控制面的解耦设计：定位与追踪运行在波束形成之前的多通道线性前端输出（图 23b 中的接口 <code>M</code>，即多通道 AEC 消除强回声、并经保持通道间相位的 MIMO-WPE 削弱晚期混响之后的多通道复谱，切勿接在单通道非线性后滤波或窄波束增强输出之后，否则既破坏跨麦空间相位，又会形成“波束指哪、定位就只能看到哪”的自激正反馈死锁），追踪器只向解析波束形成器输出平滑或外推方向，而不直接干预导引源分离（GSS）的时频掩码迭代；反过来，控制面将 VAD、远端参考活动以及双讲检测（DTD）信号同步馈入追踪器。在实际智能音箱、会议终端与带屏设备中，这一控制接口还有两项决定成败的工程门控要点：</p>
 <ul>
 <li><strong>扬声器回声与自发声方位门控</strong>：当设备扬声器正在大音量播报音乐或远端语音时，即便前级第 6 章线性 AEC 已消去主体直达回声，功放与微型扬声器的非线性谐波、腔体结构振动以及早期强反射仍常在<strong>固定机构方位</strong> $\theta_{\mathrm{spk}}$ 附近产生显著残余相关性，使 GCC-PHAT 或 SRP-PHAT 频繁报出高置信伪峰。若不加屏蔽，既有轨迹可能被回声峰劫持，即便靠式(9-10) NIS 门控挡在既有轨迹门外，连续多帧被拒的回声峰若仍流入新生逻辑，照样会在 $\theta_{\mathrm{spk}}$ 处催生出虚假“幽灵轨迹”并抢走波束。工程上需将远端活动标志、双讲检测（DTD）与已知扬声器半宽 $\Delta\theta_{\mathrm{spk}}$ 联合门控：在“远端活跃且无近端双讲”期间，记观测峰与喇叭的最短环绕角距为 $\delta_{\mathrm{spk}}(z)$（定义为 $|\operatorname{wrap}_{180}(z-\theta_{\mathrm{spk}})|$），凡满足 $\delta_{\mathrm{spk}}(z)\le\Delta\theta_{\mathrm{spk}}$ 的观测峰必须在进入<strong>轨迹关联与候选新生之前</strong>先行剔除；而一旦 DTD 判出近端双讲，则立即放开该扇区，避免站在设备正前方的真实说话人被误屏蔽（两步劫持与三帧伪生复算见后文式(9-43)与<a href="#e09-27">练习 E09-27</a>）。</li>
 <li><strong>视听多模态融合的视场角（FOV）边界与异构延迟对齐</strong>：带摄像头的会议终端引入人脸或唇动框辅助声源追踪时，必须解开两处物理失配。第一是<strong>空间视场不对称</strong>：水平环阵覆盖 $360^\circ$ 全向，而普通镜头仅覆盖有限视场角（Field of View，FOV，光轴 $\theta_{\mathrm{cam}}$、半宽 $\Delta\theta_{\mathrm{FOV}}/2$），分段视觉检出率在视场内为 $p_{D,v}^{\mathrm{in}}$、在视场外严格为 $p_{D,v}(\theta)=0$；按后文式(9-33)伯努利空观测更新，当轨迹位于视场盲区（$p_{D,v}=0$）且画面无检测框时，存在概率精确保持 $r^+=r$（“看不见”绝不等于“人不在”），同时近场还需补偿光心与阵心的空间视差。第二是<strong>异构采样率与流水线延迟</strong>：音频定位每 10～20 ms 产出一帧，而视频曝光、ISP 与检测推理常滞后 $\Delta t_{\mathrm{lag}}\in[30,150]\ \mathrm{ms}$；在局部常速度且滞后窗内过程噪声可忽略时，可直接构造逆向回溯观测行向量 $\mathbf{H}_{\mathrm{retro}}$（取 $[1,-\Delta t_{\mathrm{lag}}]$，即 $\mathbf{H}\mathbf{F}(-\Delta t_{\mathrm{lag}})$）将当前状态 $\vec{s}_t$ 无偏映射回图像曝光时刻 $t-\Delta t_{\mathrm{lag}}$ 计算新息，若滞后期内机动噪声显著则按物理时间戳重排历史缓存回放（见<a href="#e09-23">练习 E09-23</a>、式(9-44)与<a href="#e09-28">练习 E09-28</a>）。</li>
@@ -1443,7 +1443,7 @@ e^{\mathrm{j}\pi m(\sin\theta-\sin\theta_b)}\right|.
 <p>此外，状态机和概率更新还必须严格区分三种“本帧没拿到更新观测”的物理成因：<strong>音频块丢包未送达</strong>、<strong>音频块正常处理但未检出峰值</strong>、以及<strong>检出峰值但被关联门控拒绝</strong>。第一种根本未发生传感器观测，只能做时间预测而不乘任何似然；第二种拥有明确的检测机会却得到空集，应当代入 $(1-p_D)$ 更新存在概率或模式权重——例如两模式先验各为 $0.5$、检出率分别为 $0.9$ 与 $0.1$，实测一帧确认无峰后，二者未归一权重变为 $0.5(1-0.9)=0.05$ 与 $0.5(1-0.1)=0.45$，后验立刻转向低检出率模式 $[0.1,\ 0.9]$，而若是丢包未收到帧（且无模式转移）则后验保持 $[0.5,\ 0.5]$ 不变（详见练习 <a href="#e09-22">E09-22</a> 与 <a href="#e09-24">E09-24</a>）。</p>
 <h3 id="sec-u-11f08ac058">OSPA：集合位置与人数的归一化误差</h3>
 <p>多目标追踪每帧输出估计集合 $Y=\{y_1,\ldots,y_n\}$，而真值集合为 $X=\{x_1,\ldots,x_m\}$，当 $m\neq n$ 时普通单目标 RMSE 根本无法计算。多目标跟踪领域普遍采用<strong>最优子模式分配距离（Optimal Subpattern Assignment，OSPA）</strong>将“位置偏了多少”与“人数估错几个”统一折算进同一个具有物理角度/距离量纲的严格度量中（见 Schuhmacher、Vo 与 Vo 2008 原始论文，IEEE TSP 56(8), pp. 3447–3457，<a href="https://doi.org/10.1109/TSP.2008.920469">DOI 10.1109/TSP.2008.920469</a>）。</p>
-<p>设底层单点距离为 $d(x,y)$（完整圆周方位取最短环绕角差 $|\operatorname{wrap}_{180}(\theta_1-\theta_2)|$，图 22 那类不跨接缝的有限扇区则取普通绝对差），给定截断距离 $c>0$（与 $d$ 同单位，设定单个未配对漏检/虚警的封顶惩罚尺度）与阶数 $1\le p\lt \infty$。先定义截断基距离 $d_c(x,y)=\min\{c,d(x,y)\}$ 及 $p$ 次方代价 $a_{ij}=d_c(x_i,y_j)^p$。当 $n\ge m>0$ 时，令 $\pi$ 遍历 $\{1,\ldots,n\}$ 的全部排列，挑出与 $m$ 个真值一对一配对总代价最小的排列 $J_*$，再为多出来的 $(n-m)$ 个未配对估计点每点罚一个 $c^p$ 组成基数代价 $C$，除以较大集合基数 $n$ 后开 $p$ 次方：</p>
+<p>设底层单点距离为 $d(x,y)$（完整圆周方位取最短环绕角差 $|\operatorname{wrap}_{180}(\theta_1-\theta_2)|$，图 22 那类不跨接缝的有限扇区则取普通绝对差），给定截断距离 $c>0$（与 $d$ 同单位，设定单个未配对漏检/虚警的封顶惩罚尺度）与阶数 $1\le p\lt \infty$。先定义截断基距离 $d_c(x,y)=\min\{c,d(x,y)\}$ 及 $p$ 次方代价 $a_{ij}=d_c(x_i,y_j)^p$。当 $n\ge m>0$ 时，令 $\pi$ 遍历 $\{1,\ldots,n\}$ 的全部单射配对，通过匈牙利线性和指派（见<a href="00_math-foundations.html#sec-0-6-4">第 0 章 §0.6.4</a>）挑出与 $m$ 个真值一对一配对总代价最小的匹配和 $J_*$，再为多出来的 $(n-m)$ 个未配对估计点每点罚一个 $c^p$ 组成基数代价 $C$，除以较大集合基数 $n$ 后开 $p$ 次方：</p>
 <p>$$\begin{aligned}
 J_*&=\min_{\pi}\sum_{i=1}^m a_{i,\pi(i)},\\
 C&=c^p(n-m),\\
@@ -1828,7 +1828,7 @@ P_{1|2}&=\frac{2}{3}+(2/5)^2(5/8-5/3)=\frac{1}{2}.
 <p><strong>第 4 步：核对分组 RMSE。</strong> 在 $173$ 个有效帧上原始 GCC-PHAT 为 $2.8226^\circ$、KF 滤波后降至 $1.1505^\circ$；在 $24$ 个缺测帧上纯外推 RMSE 为 $0.3526^\circ$。合并不同子集的总体 RMSE 时，必须先还原各子集的平方误差总和相加、除以合并总帧数后再开根，绝不能把两个不同分母的 RMSE 直接算术平均。</p>
 <p><a id="e09-20"></a></p>
 <h3 id="sec-u-39b4692b75">E09-20：两条相关观测有多少独立信息？</h3>
-<p><strong>题设。</strong> 静止标量状态先验 $x\sim\mathcal{N}(0,1)$，同一时刻（或极短高度重叠窗内）获得两条含相关噪声的观测 $z_i=x+n_i$，实测读数 $\vec{z}=[1,\ 1]^\top$。设零均值高斯噪声向量与 $x$ 独立，噪声协方差矩阵为 $\mathbf{R}=[1,\rho;\ \rho,1]$（取强相关 $\rho=0.9$）。推导精确后验均值与方差，并与忽略相关性（误设 $\rho=0$）导致的过度自信结果对比。</p>
+<p><strong>题设。</strong> 静止标量状态先验 $x\sim\mathcal{N}(0,1)$，同一时刻（或极短高度重叠窗内）获得两条含相关噪声的观测 $z_i=x+w_i$，实测读数 $\vec{z}=[1,\ 1]^\top$。设零均值高斯测量噪声向量 $\vec{w}=[w_1,w_2]^\top$ 与 $x$ 独立，噪声协方差矩阵为 $\mathbf{R}=[1,\rho;\ \rho,1]$（取强相关 $\rho=0.9$）。推导精确后验均值与方差，并与忽略相关性（误设 $\rho=0$）导致的过度自信结果对比。</p>
 <p><strong>第 1 步：区分测量噪声协方差 $\mathbf{R}$ 与新息协方差 $\mathbf{S}$。</strong> 观测矩阵为 $\mathbf{H}=[1,\ 1]^\top\in\mathbb{R}^{2\times 1}$。先验误差方差 $P^-=1$ 同时进入两条观测，故总新息协方差 $\mathbf{S}=\mathbf{H}P^-\mathbf{H}^\top+\mathbf{R}$ 等于 $[2,1+\rho;\ 1+\rho,2]$（非对角元除了噪声互协方差 $\rho$，还叠加了共享状态贡献的 $1$）。对 $|\rho|\lt 1$，$\mathbf{S}$ 正定可逆，代入式(9-4)与式(9-6)化简可得闭式解：</p>
 <p>$$\begin{aligned}
 \mathbf{K}&=\frac{[1,\ 1]}{3+\rho},\\
@@ -1891,7 +1891,12 @@ h(\vec{p}_a(t))&=h(\vec{p}(t)).
 \end{aligned}$$</p>
 <p>行消元易知 $\operatorname{rank}(\mathbf{J}_0)=3$，而沿整体缩放方向 $\vec{u}=[x_0,y_0,v_x,v_y]^\top=[1,\ 2,\ 1,\ 0]^\top$ 逐行右乘恰好得到 $[2-2,\ 2-4+2,\ 2-6+4]^\top=\vec{0}$，证实无论再多采多少帧无噪方位，该尺度维始终躺在观测零空间里。</p>
 <p><img alt="图61 相关观测与仅测方位的尺度信息" src="../figures/fig61_tracking_information.png" onerror="this.alt+='（图缺失）'" /></p>
-<p>结合图 61 的左右两栏可以一图看懂 E09-20 与 E09-21 揭示的两类信息边界：左子图横轴为无量纲相关系数 $\rho\in[0,1)$、纵轴为标量后验方差，真实后验方差（实线）随 $\rho$ 增大从 $1/3$ 单调升至 $1/2$，而忽略相关性的误配滤波器（虚线）一直停在 $1/3$ 造成虚假高置信；右子图横纵轴为平面笛卡尔坐标 $(x,y)$（单位：$\mathrm{m}$），从阵列原点 $(0,0)$ 引出的虚线视线在每个时刻都同时穿过原轨迹与两倍放大轨迹的对应时刻点，直观展示了为什么打破这一尺度盲区必须引入多阵列基线、已知阵列加减速机动或独立距离线索。</p>
+<p>结合图 61 的三幅子图可以完整对读 E09-21 与 E09-20 揭示的两类信息边界：</p>
+<ul>
+<li><strong>左上子图 (a)</strong> 在平面笛卡尔坐标 $(x,y)$（单位：$\mathrm{m}$）下画出原轨迹 $\vec{p}(t)=(1+t,2)$ 与两倍放大轨迹 $2\vec{p}(t)=(2+2t,4)$，从固定阵列原点 $(0,0)$ 引出的视线在 $t=0,1,2\ \mathrm{s}$ 每一时刻都同时穿过两条轨迹的对应位置点，直观呈现 E09-21 的径向尺度歧义；</li>
+<li><strong>右上子图 (b)</strong> 画出两条成比例轨迹随时间演化的纯方位角曲线，两曲线在全时段完全重合，印证单固定阵列仅凭方位角序列无法区分两倍距离与两倍速度；</li>
+<li><strong>下方通栏子图 (c)</strong> 横轴为测量误差相关系数 $\rho\in[0,1)$、纵轴为标量后验方差（E09-20）：真实后验方差 $P^+=(1+\rho)/(3+\rho)$ 随 $\rho$ 增大从 $1/3$ 单调退化上升至极限 $1/2$，而忽略相关性的误配独立假设水平线一直停在 $1/3$，直观暴露高重叠帧加密推送时的虚假高置信风险。</li>
+</ul>
 <p><a id="e09-22"></a></p>
 <h3 id="sec-u-2d50ff5620">E09-22：空观测怎样改变目标存在概率？</h3>
 <p><strong>题设。</strong> 考察“至多存在 $1$ 个目标”的单伯努利（Bernoulli）随机有限集存在模型：更新前目标存在先验概率为 $r=4/5=0.8$。若目标存在，本帧以已知检出率 $p_D$ 产生一条观测、以 $1-p_D$ 漏检；若目标不存在则绝不产生观测（暂不计杂波与出生/消亡转移）。本帧实测收到空集 $Z=\varnothing$，分别求 $p_D=0.9$ 与 $p_D=0.1$ 下的后验存在概率 $r^+$，并与同均值泊松 PHD 空观测更新对照。</p>
@@ -1930,7 +1935,7 @@ r^+&=\Pr(\text{存在}\mid Z=\varnothing)=\frac{r(1-p_D)}{1-rp_D},\\
 <p><strong>第 3 步：厘清四个易混概念。</strong> 若换做期望人数同为 $0.8$ 的泊松 PHD 模型，式(9-23)空观测更新直接给出期望人数 $(1-p_D)\times 0.8$（分别为 $2/25=0.08$ 与 $18/25=0.72$），少了分母 $1-rp_D$ 归一，因为泊松先验允许场内有 $0,1,2,\ldots$ 人，算的是期望人数而非单目标存在概率。工程接口中务必将<strong>当帧发声活动概率（VAD）</strong>、<strong>单轨目标存在概率 $r$</strong>、<strong>全空间 PHD 期望人数</strong>与<strong>轨迹身份标签 <code>track_id</code></strong> 四者严格区分。</p>
 <p><a id="e09-23"></a></p>
 <h3 id="sec-u-99ab6e29dd">E09-23：迟到观测应回放、丢弃还是当作当前观测？</h3>
-<p><strong>题设。</strong> 标量随机游走 $x_t=x_{t-1}+v_t$，观测 $z_t=x_t+n_t$，初态 $x_0\sim\mathcal{N}(0,1)$，过程与测量方差同为 $Q=R=1$（初态及各步噪声相互独立零均值高斯）。真实观测值为 $z_1=2,z_2=-1$，但因异构流水线（如视频帧或远端子阵延迟）使到达顺序颠倒为“先收到 $z_2$，后收到迟到的 $z_1$”。</p>
+<p><strong>题设。</strong> 标量随机游走 $x_t=x_{t-1}+v_t$，观测 $z_t=x_t+w_t$，初态 $x_0\sim\mathcal{N}(0,1)$，过程与测量方差同为 $Q=R=1$（初态及各步噪声 $v_t,w_t$ 相互独立零均值高斯）。真实观测值为 $z_1=2,z_2=-1$，但因异构流水线（如视频帧或远端子阵延迟）使到达顺序颠倒为“先收到 $z_2$，后收到迟到的 $z_1$”。</p>
 <p>目标是在时刻 $2$ 给出 $x_2$ 的估计，定量对比三种处理策略：（1）按原采样时刻历史回放；（2）丢弃迟到观测 $z_1$；（3）直接把迟到的 $z_1$ 当作时刻 $2$ 的新独立观测硬做更新。</p>
 <p><strong>第 1 步：按原发生时刻顺序回放（精确基准）。</strong> 从 $x_0$ 预测到时刻 $1$ 得 $P_1^-=2$、增益 $K_1=2/3$，融入 $z_1=2$ 得 $m_1=4/3,P_1=2/3$；再预测到时刻 $2$ 得 $P_2^-=5/3$、增益 $K_2=5/8$，融入 $z_2=-1$ 得 $m_2=4/3+(5/8)(-1-4/3)=-1/8$、$P_2=5/8$。只要缓存了短窗内的历史状态与观测，迟到帧到达后按物理时间戳重排回放即可无损恢复该最优后验。</p>
 <p><strong>第 2 步：用联合高斯条件分布独立验证。</strong> 展开状态和 $x_1=x_0+v_1,x_2=x_0+v_1+v_2$，易知先验矩为 $\operatorname{Var}(x_1)=2$、$\operatorname{Var}(x_2)=3$、$\operatorname{Cov}(x_1,x_2)=2$。叠加独立测量噪声后，联合观测向量 $\vec{Z}=[z_1,z_2]^\top$ 的协方差矩阵为 $\mathbf{S}_Z=[3,2;\ 2,4]$，$x_2$ 与 $\vec{Z}$ 的 $1\times 2$ 互协方差行向量为 $\mathbf{C}=\operatorname{Cov}(x_2,\vec{Z})=[2,\ 3]$，条件高斯公式直接给出</p>
@@ -1974,7 +1979,7 @@ P_{2\mid Z}&=3-\mathbf{C}\mathbf{S}_Z^{-1}\mathbf{C}^\top.
 <p>这张对比表揭示了音视频异构延迟融合的铁律：来不及做历史回放或跨时刻协方差修正时，宁可按超时规则丢弃迟到的旧帧，也绝不能篡改它的测量时间戳硬塞进当前帧。</p>
 <p><a id="e09-24"></a></p>
 <h3 id="sec-u-9c611d2f41">E09-24：完整模式似然与连续缺测的 IMM</h3>
-<p><strong>题设。</strong> 两个同坐标系标量随机游走模式 $x_t=x_{t-1}+v_t,z_t=x_t+n_t$（步长 $1\ \mathrm{s}$），过程方差分别为低波动 $Q_1=0$ 与高波动 $Q_2=4\ \mathrm{deg}^2$，观测方差同为 $R=1\ \mathrm{deg}^2$。初态均值同为 $0^\circ$、方差同为 $1\ \mathrm{deg}^2$，初始模式概率 $(0.8,\ 0.2)$，行随机转移矩阵 $\mathbf{T}=[0.9,0.1;\ 0.2,0.8]$。时刻 $1$ 测得 $z_1=3^\circ$，时刻 $2,3$ 连续两步缺测，逐步复算模式概率与总体均值、方差。</p>
+<p><strong>题设。</strong> 两个同坐标系标量随机游走模式 $x_t=x_{t-1}+v_t,z_t=x_t+w_t$（步长 $1\ \mathrm{s}$），过程方差分别为低波动 $Q_1=0$ 与高波动 $Q_2=4\ \mathrm{deg}^2$，观测方差同为 $R=1\ \mathrm{deg}^2$。初态均值同为 $0^\circ$、方差同为 $1\ \mathrm{deg}^2$，初始模式概率 $(0.8,\ 0.2)$，行随机转移矩阵 $\mathbf{T}=[0.9,0.1;\ 0.2,0.8]$。时刻 $1$ 测得 $z_1=3^\circ$，时刻 $2,3$ 连续两步缺测，逐步复算模式概率与总体均值、方差。</p>
 <p><strong>第 1 步：交互与预测。</strong> 新模式先验为 $(0.8,\ 0.2)\mathbf{T}=(0.76,\ 0.24)$。因初态两模式均值与方差完全相同，交互后仍各为 $(0^\circ,\ 1\ \mathrm{deg}^2)$；叠加上各自 $Q_j$ 后，预测方差分别为 $1$ 与 $5\ \mathrm{deg}^2$，时刻 $1$ 新息同为 $\nu_1=\nu_2=3^\circ$，新息方差分别为 $S_1=2\ \mathrm{deg}^2$ 与 $S_2=6\ \mathrm{deg}^2$。</p>
 <p><strong>第 2 步：完整高斯密度与对数域归一化。</strong> 模式似然必须包含前置归一化系数 $(2\pi S_j)^{-1/2}$，在对数域（自然对数）用 log-sum-exp 稳健计算后验模式概率：</p>
 <p>$$\begin{aligned}
@@ -2094,7 +2099,12 @@ a_{\max}&=0.20(2f_s)=6400.
 <p>重点复算第 $100$ 帧的退役触发：进入静默前最后一次有效观测在第 $81$ 帧，中心刻度为 $k_{\mathrm{last}}=2\times(81\times 160)+511=26431$（即 $0.82596875\ \mathrm{s}$）。到第 $99$ 帧整窗收齐时 $k_{\mathrm{avail}}=2\times(99\times 160+512)=32704$，观测龄期 $a_{99}=32704-26431=6273\le 6400$，继续保持发布；到第 $100$ 帧整窗收齐时 $k_{\mathrm{avail}}=33024$，观测龄期 $a_{100}=33024-26431=6593\ \mathrm{ticks}$（折合 $0.20603125\ \mathrm{s}>0.20\ \mathrm{s}$），当场触发 <code>ID1</code> 退役；等到第 $106$ 帧重新检出声音时，系统按规分配全新 <code>ID2</code>，并于第 $108$ 帧攒满连续 $3$ 帧再次确认（整段 $197$ 帧在实时可用时钟下累计确认发布 $187$ 帧）。</p>
 <p><strong>第 3 步：对比“状态时间轴”龄期口径。</strong> 倘若离线分析时改用“当前窗中心状态时刻减最近有效测量中心时刻” $k_{\mathrm{state}}-k_{\mathrm{last}}$ 计算龄期，第 $101$ 帧差值为 $32831-26431=6400$（恰踩在门限上保留），要到第 $102$ 帧（$6720\ \mathrm{ticks}$）才退役，比实时因果可用时钟整整晚了两帧（确认发布变为 $189$ 帧），再次印证半窗采集延迟对超时边界的直接影响。</p>
 <p><img alt="图77：实际双麦PCM检测及两个时钟下的单槽候选、确认与退役" src="../figures/fig77_tracking_lifecycle.png" onerror="this.alt+='（图缺失）'" /></p>
-<p>结合图 77 的上下子图（脚本见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch09/examples/tracking_lifecycle_demo.py"><code>tracking_lifecycle_demo.py</code></a>）可以把整套工程逻辑串起来看：上部展示实测 PCM 的逐帧有效检测序列、连续卡尔曼参考轨迹以及 <code>ID1</code>、<code>&lt;退役空窗&gt;</code>、<code>ID2</code> 的确认发布区间，直观说明即使同一声源停顿 $0.26\ \mathrm{s}$ 后在同一条运动线上重新开口，仅靠方位与能量门控的单槽状态机也会将其切分为两段独立局部 ID；下部对比实时整窗可用时钟与窗中心状态时钟下的观测龄期折线及 $0.20\ \mathrm{s}$ 水平退役红线，清晰呈现两条折线跨过门限的 $2$ 帧时间差。工程实现时还需留意：若上游仅按需推送有效帧而非固定每 $10\ \mathrm{ms}$ 提交全帧表，连续命中计数器必须检查相邻帧序号是否连续，防止跳帧把相隔很远的零星杂波拼成三次“连续命中”。</p>
+<p>结合图 77 的上、中、下三幅子图（脚本见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch09/examples/tracking_lifecycle_demo.py"><code>tracking_lifecycle_demo.py</code></a>）可以把整套工程逻辑串起来看：</p>
+<ul>
+<li><strong>上子图 (a)</strong> 展示实测双麦 PCM 经 GCC-PHAT 筛出的有效方位检测散点、灰色阴影标出的 $24$ 帧静默缺测区以及连续卡尔曼参考轨迹；</li>
+<li><strong>中子图 (b)</strong> 以离散阶梯线画出单槽生命周期状态（<code>无轨迹</code> $\to$ <code>候选 ID 1</code> $\to$ <code>确认 ID 1</code> $\to$ <code>无轨迹</code> $\to$ <code>候选 ID 2</code> $\to$ <code>确认 ID 2</code>），直观说明即使同一声源停顿 $0.26\ \mathrm{s}$ 后在同一条运动线上重新开口，仅靠方位与能量门控的单槽状态机也会将其切分为两段独立局部 ID；</li>
+<li><strong>下子图 (c)</strong> 对比实时整窗到达可用时钟与窗中心状态时钟下的观测龄期折线及 $0.20\ \mathrm{s}$ <strong>黑色水平点线过期门限</strong>，清晰呈现两条折线跨过门限触发退役的 $2$ 帧时间差。工程实现时还需留意：若上游仅按需推送有效帧而非固定每 $10\ \mathrm{ms}$ 提交全帧表，连续命中计数器必须检查相邻帧序号是否连续，防止跳帧把相隔很远的零星杂波拼成三次“连续命中”。</li>
+</ul>
 <p><a id="e09-26"></a></p>
 <h3 id="sec-u-ec8ab3e22d">E09-26：三维姿态转换、极点与一次 vMF 更新</h3>
 <p><strong>题设。</strong> 沿用本书三维角度约定：方位角 $\theta$ 以 $+y$ 为 $0^\circ$、朝 $+x$ 为正，俯仰角 $\phi_{\mathrm{el}}$ 从水平面朝 $+z$ 为正（公式三角函数取弧度，数值展示用度）。设阵列相对世界坐标系的已知姿态为绕世界 $+z$ 轴按右手定则正转 $+90^\circ$。</p>

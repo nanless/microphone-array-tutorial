@@ -1,10 +1,10 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 16 章 · 附录 A：符号术语数学 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="74c593002f97"><style>
-*{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
-.topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
-.topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
+<meta name="source-digest" content="10a21c80bda5"><style>
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
+.topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941}
+.topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
 h1,h2,h3,h4{scroll-margin-top:60px}
 @media screen{.main a[id]:not([href]){scroll-margin-top:60px}}
 @media screen{.main a[id^="e"],.main .exercise-alias{scroll-margin-top:80px}}
@@ -17,64 +17,66 @@ h1,h2,h3,h4{scroll-margin-top:60px}
 @media screen{.main a[id^="e11-"]{scroll-margin-top:60px}}
 @media screen{.main .separation-topic-anchor{scroll-margin-top:60px}}
 @media screen{.main .source-reproduction-anchor{scroll-margin-top:60px}}
-a:focus-visible,summary:focus-visible{outline:3px solid #e67e22;outline-offset:3px}
-.skip-link{position:absolute;left:10px;top:-60px;z-index:30;background:#fff;color:#1a1a2e;padding:8px 12px;border:2px solid #e67e22}
+a:focus-visible,summary:focus-visible{outline:2.5px solid #B84A2E;outline-offset:3px}
+.skip-link{position:absolute;left:10px;top:-60px;z-index:30;background:#fff;color:#1C1E21;padding:8px 12px;border:2px solid #B84A2E}
 .skip-link:focus{top:8px}
-.wrap{display:flex;max-width:1280px;margin:0 auto}
-.side{width:300px;flex-shrink:0;padding:20px 14px;position:sticky;top:47px;height:calc(100vh - 47px);overflow-y:auto;background:#fff;border-right:1px solid #e5e8ee;font-size:13.5px}
-.side a{color:#2f6db3;text-decoration:none}.side a:hover{text-decoration:underline}
-.side .chap{margin:10px 0 2px;font-weight:700}.side .chap.cur{color:#c0392b}
-.side ul{margin:2px 0 6px;padding-left:16px;color:#666}.side li{margin:2px 0}
-.main{flex:1;min-width:0;padding:28px 36px;background:#fff;overflow-wrap:anywhere}
+.wrap{display:flex;max-width:1280px;margin:0 auto;border-left:1px solid #E3DED3;border-right:1px solid #E3DED3}
+.side{width:300px;flex-shrink:0;padding:20px 15px;position:sticky;top:47px;height:calc(100vh - 47px);overflow-y:auto;background:#FAF8F3;border-right:1px solid #DDD7CB;font-size:13.5px}
+.side a{color:#1F5A92;text-decoration:none}.side a:hover{text-decoration:underline}
+.side .chap{margin:10px 0 2px;font-weight:700;color:#26292E}.side .chap.cur{color:#B84A2E}
+.side ul{margin:2px 0 6px;padding-left:16px;color:#5A554D}.side li{margin:2px 0}
+.main{flex:1;min-width:0;padding:32px 40px;background:#fff;overflow-wrap:anywhere}
+.main a{color:#1F5A92;text-underline-offset:.2em}
 .main p{margin:0 0 1.2em}.main ul,.main ol{margin:.55em 0 1.2em;padding-left:1.55em}.main li{margin:.42em 0}.main li>p{margin:.5em 0}
-.main p>strong:first-child,.main li>strong:first-child{color:#0f2744}
-.main img{max-width:100%;height:auto;display:block;margin:16px auto;border:1px solid #dbe3ee;border-radius:6px;padding:3px;min-height:40px;background:#fff}
-.audio-sample{display:block;width:min(100%,460px);margin:8px 0 18px}.audio-sample:focus-visible{outline:3px solid #e67e22}
+.main p>strong:first-child,.main li>strong:first-child{color:#14171A}
+.main img{max-width:100%;height:auto;display:block;margin:18px auto;border:1px solid #DFDAD0;border-radius:5px;padding:4px;min-height:40px;background:#fff}
+.audio-sample{display:block;width:min(100%,460px);margin:8px 0 18px}.audio-sample:focus-visible{outline:2.5px solid #B84A2E}
 /* 表格列宽不能压掉原生播放按钮；手机上的表格可横向滚动。 */
 td .audio-sample{width:280px;min-width:280px}
 table:has(td .audio-sample) td:last-child{min-width:180px}
-table{border-collapse:collapse;margin:16px 0;max-width:100%}
+table{border-collapse:collapse;margin:18px 0;max-width:100%;border-top:1.5px solid #2A2E34;border-bottom:1.5px solid #2A2E34}
 .table-scroll{max-width:100%;overflow-x:auto}
-.table-scroll:focus-visible{outline:3px solid #e67e22;outline-offset:2px}
-th,td{border:1px solid #d5dfec;padding:7px 11px;font-size:14px;text-align:left;line-height:1.58}
-th{background:#e8eff9;color:#0f2744;border-bottom:1.5px solid #94a3b8}
-tbody tr:nth-child(even) td{background:#f8fafc}
-code{background:#eef2f7;color:#0f294a;border:1px solid #d8e1ec;padding:1px 5px;border-radius:4px;font-size:13.5px}
-pre{background:#122036;color:#e8ecf3;padding:14px 16px;border-radius:8px;overflow-x:auto}
+.table-scroll:focus-visible{outline:2.5px solid #B84A2E;outline-offset:2px}
+th,td{border-top:1px solid #E3DED3;border-bottom:1px solid #E3DED3;border-left:none;border-right:none;padding:8px 11px;font-size:14px;text-align:left;line-height:1.58}
+th{background:#F5F2EB;color:#1C1E21;border-bottom:1px solid #8A8275;font-weight:700}
+tbody tr:nth-child(even) td{background:#FCFBF9}
+code{background:#F3F0E8;color:#1E3A56;border:1px solid #E0DBD0;padding:1px 5px;border-radius:4px;font-size:13.5px}
+pre{background:#F5F3EE;color:#1F2328;border:1px solid #DFDAD0;border-left:3.5px solid #5C564D;padding:14px 16px;border-radius:8px;overflow-x:auto}
 pre code{background:none;border:none;color:inherit;padding:0}
-blockquote{border-left:4px solid #2563eb;margin:16px 0;padding:10px 15px;background:#f0f6ff;border-radius:0 6px 6px 0;color:#1e293b}
+blockquote{border-left:3.5px solid #B84A2E;margin:18px 0;padding:10px 16px;background:#F7F5F0;border-radius:0 4px 4px 0;color:#2B2E33}
 blockquote p:last-child{margin-bottom:0}
+hr{border:none;border-top:1px solid #DDD7CB;margin:26px 0}
 mjx-container[jax="CHTML"]{font-size:110%!important;overflow-x:auto;overflow-y:hidden;max-width:100%;min-width:0!important}
 body mjx-assistive-mml{width:1px!important;max-width:1px!important;min-width:0!important;height:1px!important;overflow:hidden!important}
 pre,.table-scroll,mjx-container[jax="CHTML"]{overflow-wrap:normal}
-.pn{display:flex;justify-content:space-between;margin:34px 0 12px;padding-top:16px;border-top:1px solid #d5dfec;font-weight:650}
-.pn a{color:#1d4ed8;text-decoration:none}.pn .off{color:#aaa}
-.foot{color:#64748b;font-size:13px;margin:20px 0 40px}
-.main h1{font-size:27px;color:#0f2744;background:#edf3fc;border-top:4px solid #1e3a8a;border-left:5px solid #1e3a8a;border-bottom:1px solid #cbd5e1;padding:13px 17px 11px;border-radius:0 6px 6px 0;margin:0 0 22px;line-height:1.3}
-.main h2{font-size:21px;color:#0f294a;background:#f3f7fc;border-left:4.5px solid #1d4ed8;border-bottom:1px solid #cbd5e1;padding:8px 13px 7px;margin:34px 0 15px;border-radius:0 5px 5px 0;line-height:1.35}
-.main h3{font-size:18px;color:#1e3a8a;border-left:3.5px solid #3b82f6;padding:2px 0 2px 11px;margin:26px 0 12px;line-height:1.4}
-.main h4{font-size:16px;color:#1e40af;border-left:2.5px solid #93c5fd;padding:1px 0 1px 9px;margin:20px 0 10px;line-height:1.4}
-.main h3.tutorial-worked-heading{background:#f0fdfa;border:1px solid #99f6e4;border-left:4.5px solid #0d9488;color:#115e59;padding:7px 13px;border-radius:6px;margin:26px 0 13px;font-size:17.2px}
-.main h3.tutorial-exercise-heading,.main h4.tutorial-exercise-heading{background:#eff6ff;border:1px solid #bfdbfe;border-left:5px solid #2563eb;color:#1e3a8a;padding:9px 14px;border-radius:6px;margin:30px 0 13px;font-size:17px;line-height:1.45}
-.main p.tutorial-exercise-lead{background:#eff6ff;border:1px solid #bfdbfe;border-left:5px solid #2563eb;padding:11px 15px;border-radius:6px;margin:26px 0 13px}
+.pn{display:flex;justify-content:space-between;margin:36px 0 12px;padding-top:16px;border-top:1px solid #DDD7CB;font-weight:650}
+.pn a{color:#1F5A92;text-decoration:none}.pn .off{color:#9C9588}
+.foot{color:#6E695F;font-size:13px;margin:20px 0 40px}
+.main h1{font-size:27px;color:#14171A;border-top:2.5px solid #1F5A92;border-bottom:1.5px solid #1C1E21;padding:12px 0 10px;margin:0 0 24px;line-height:1.3}
+.main h2{font-size:21px;color:#14171A;border-left:3.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;padding:1px 0 7px 11px;margin:36px 0 15px;line-height:1.35}
+.main h3{font-size:18px;color:#1F5A92;margin:26px 0 11px;line-height:1.4}
+.main h4{font-size:16px;color:#2C2F33;border-left:2.5px solid #B84A2E;padding:1px 0 1px 9px;margin:20px 0 9px;line-height:1.4}
+.main h3.tutorial-worked-heading{background:#FAF8F3;border-top:1.5px solid #237263;border-bottom:1px solid #E2DDD2;border-left:3.5px solid #237263;color:#1A574B;padding:7px 13px;border-radius:2px;margin:28px 0 13px;font-size:17.2px}
+.main h3.tutorial-exercise-heading,.main h4.tutorial-exercise-heading{background:#F5F2EB;border-top:1.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;border-left:4px solid #1F5A92;color:#14171A;padding:8px 14px;border-radius:2px;margin:30px 0 13px;font-size:17px;line-height:1.45}
+.main p.tutorial-exercise-lead{background:#F5F2EB;border-top:1.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;border-left:4px solid #1F5A92;padding:10px 15px;border-radius:2px;margin:28px 0 13px}
 .main ol>li.tutorial-exercise-item{margin:18px 0}
-.main .tutorial-exercise-card{background:#f8fafc;border:1px solid #d5e0ee;border-left:4px solid #2563eb;border-radius:6px;padding:12px 16px}
+.main .tutorial-exercise-card{background:#FAF8F3;border:1px solid #E0DBD0;border-left:3.5px solid #1F5A92;border-radius:4px;padding:12px 16px}
 .main .tutorial-exercise-card>:first-child{margin-top:0}
 .main .tutorial-exercise-card>:last-child{margin-bottom:0}
-.main p.tutorial-solution-lead{background:#f0fdf4;border-left:3.5px solid #16a34a;padding:8px 13px;border-radius:0 5px 5px 0;margin-top:9px}
-.main p.tutorial-solution-lead>strong:first-child{color:#15803d}
-.main p.tutorial-problem-lead{border-left:3px solid #2563eb;padding-left:11px}
-.main p.tutorial-problem-lead>strong:first-child{color:#1d4ed8}
-.toc-mobile{display:none;margin:0 0 16px;border:1px solid #e5e8ee;border-radius:8px;padding:10px 14px;background:#f7fafd;font-size:14px}
-.toc-mobile summary{cursor:pointer;font-weight:700}
-.toc-mobile ul{padding-left:18px;margin:8px 0 2px}.toc-mobile a{color:#2f6db3;text-decoration:none}
-.topbtn{display:block;margin:20px auto;background:#1a1a2e;color:#fff;border-radius:50%;width:42px;height:42px;text-align:center;line-height:42px;text-decoration:none;font-size:18px}
-.offline-note{display:none;background:#fff7e6;border:1px solid #e6c87a;color:#7a5b00;padding:8px 14px;font-size:13.5px}
+.main p.tutorial-solution-lead{background:#F3F6F4;border-left:3.5px solid #237263;padding:8px 13px;border-radius:0 3px 3px 0;margin-top:9px}
+.main p.tutorial-solution-lead>strong:first-child{color:#1D5E51}
+.main p.tutorial-problem-lead{border-left:2.5px solid #1F5A92;padding-left:11px}
+.main p.tutorial-problem-lead>strong:first-child{color:#1F5A92}
+.toc-mobile{display:none;margin:0 0 16px;border:1px solid #DDD7CB;border-radius:6px;padding:10px 14px;background:#FAF8F3;font-size:14px}
+.toc-mobile summary{cursor:pointer;font-weight:700;color:#1C1E21}
+.toc-mobile ul{padding-left:18px;margin:8px 0 2px}.toc-mobile a{color:#1F5A92;text-decoration:none}
+.topbtn{display:block;margin:20px auto;background:#24282E;color:#FAF8F3;border-radius:50%;width:42px;height:42px;text-align:center;line-height:42px;text-decoration:none;font-size:18px}
+.offline-note{display:none;background:#F7EFE4;border:1px solid #D9B78E;color:#6E4219;padding:8px 14px;font-size:13.5px}
 .anchor-alias{display:block;position:relative;top:-60px;visibility:hidden}
 .tutorial-math-tail{display:inline-block;white-space:nowrap;overflow-wrap:normal;vertical-align:baseline;overflow:visible}
 .tutorial-math-tail mjx-assistive-mml{max-width:1px!important;min-width:0!important;white-space:normal}
-.tutorial-exercise-id{white-space:nowrap;overflow-wrap:normal;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:.87em;background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;padding:0 5px;border-radius:4px}
-:is(.tutorial-exercise-heading,.tutorial-exercise-lead) .tutorial-exercise-id{background:#1d4ed8;color:#fff;border-color:#1d4ed8;padding:1px 7px;margin-right:4px;font-size:.84em}
+.tutorial-exercise-id{white-space:nowrap;overflow-wrap:normal;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:.88em;background:#F3EFE6;color:#B84A2E;border:1px solid #DDD5C7;padding:0 5px;border-radius:3px;font-weight:700}
+:is(.tutorial-exercise-heading,.tutorial-exercise-lead) .tutorial-exercise-id{background:#1F5A92;color:#fff;border-color:#1F5A92;padding:1px 7px;margin-right:5px;font-size:.84em}
 .tutorial-table-label{white-space:nowrap;overflow-wrap:normal}
 @media(max-width:900px){.selection-readable-table{min-width:760px}.selection-readable-table th,.selection-readable-table td{min-width:10em}.selection-readable-table th:first-child,.selection-readable-table td:first-child{min-width:6em}}
 @media(max-width:900px){.side{display:none}.main{padding:20px}.toc-mobile{display:block}.topbar{font-size:14px}mjx-container[jax="CHTML"]:not([display="true"]){display:inline-block;vertical-align:middle}.aec-readable-table th,.aec-readable-table td,.wpe-readable-table th,.wpe-readable-table td,.separation-readable-table th,.separation-readable-table td{min-width:8em}.tracking-readable-table th,.tracking-readable-table td{min-width:8em}.industrial-readable-table th,.industrial-readable-table td{min-width:8em}}
@@ -424,11 +426,11 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <span id="sec-u-78b6668a18" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-2bfed502b9" class="anchor-alias" aria-hidden="true"></span><span id="sec-1" class="anchor-alias" aria-hidden="true"></span><h1 id="sec-u-1a278edffc">第 16 章 · 附录 A：符号、术语与数学基础</h1>
 <p>本附录与<a href="00_math-foundations.html">第 0 章全书数学基础与信号分析预备</a>互为配套、分工明确：<a href="00_math-foundations.html">第 0 章</a>面向系统学习提供三角与三维旋转几何、傅里叶/STFT、子空间投影与 SVD、瑞利商与张量积、Wirtinger 变分优化、圆对称复高斯与卡尔曼递推及声学特殊函数的完整分步推导和 16 道基础练习（<code>E00-01</code>～<code>E00-16</code>）；本附录则定位为随手翻阅的<strong>全局符号基准、中英术语词典与紧凑公式速查手册</strong>，并在 §16.4 配有 21 道针对维度、共轭符号与量化读回边界的复算练习（<code>E16-01</code>～<code>E16-21</code>），下一篇为附录 B。阅读正文时若遇到陌生的记号或术语，可先查 §16.1～§16.3 快速对齐约定；需要看完整定理证明时再按<a href="00_math-foundations.html#sec-0-8">第 0 章 §0.8</a>跳转。</p>
 <span id="sec-12-1" class="anchor-alias" aria-hidden="true"></span><span id="sec-14-1" class="anchor-alias" aria-hidden="true"></span><span id="sec-2" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-16-1">16.1 符号表</h2>
-<p>本书的排版约定与 §2.3 保持一致：<strong>斜体表示标量，头顶箭头表示列向量，加粗大写表示矩阵</strong>；上标 $^H$ 表示共轭转置（厄米转置），上标 $^\top$ 表示普通转置，顶帽 $\hat{\ }$ 表示估计量。按照语音信号处理文献的惯例，$X(f)$、$X(f_k,\ell)$ 这类带频点自变量的大写斜体字母表示单个频点或单个时频格点上的复数<strong>标量</strong>。</p>
+<p>本书的排版约定与 §2.3 保持一致：<strong>斜体表示标量，头顶箭头表示列向量，加粗大写表示矩阵</strong>；上标 $^H$ 表示共轭转置（厄米转置），上标 $^\top$ 表示普通转置，顶帽 $\hat{\ }$ 表示估计量。按照语音信号处理文献的惯例，$X(f)$、$X(f_k,\ell)$ 或离散时频方括号记号 $X_m[k,\ell]$ 这类带频点自变量的大写斜体字母表示单个频点或单个时频格点上的复数<strong>标量</strong>。</p>
 <p>本书统一采用前向傅里叶核 $e^{-\mathrm{j}2\pi ft}$，其中 $\mathrm{j}=\sqrt{-1}$ 为虚数单位。</p>
 <p>阵列几何参考系约定为：麦 1 位于原点 $x=0$，麦 2 位于 $+x$ 半轴；正横方向（$+y$ 轴）记为 $0^\circ$，正方位角朝麦 2（$+x$ 轴）顺时针旋转度量；方向单位向量 $\vec{u}$ 从阵列参考点指向声源，声波传播方向为 $-\vec{u}$。</p>
 <p>球谐域公式通常改用从 $+x$ 轴逆时针起算的方位角 $\alpha$ 和从 $+z$ 轴向下起算的极角（余纬角）$\vartheta$。将其与本书从 $+y$ 朝 $+x$ 起算的声源方位角 $\theta$、从水平面朝 $+z$ 起算的俯仰角 $\phi_{\mathrm{el}}$ 对接时，必须先做角度换算 $\alpha=\pi/2-\theta$（按 $2\pi$ 周期折叠取值）、$\vartheta=\pi/2-\phi_{\mathrm{el}}$，再代入球谐基函数或开源库接口，详见<a href="05_beamforming.html#sec-5-8">§5.8</a>。同理，国际标准 AmbiX 与一阶全景声（FOA）采用 $+x$ 朝正前方、$+y$ 朝正左方、$+z$ 朝正上方的三维右手系，其水平方位角从 $+x$ 逆时针转向 $+y$、俯仰角从水平面转向 $+z$，与上段平面阵列坐标系（$+y$ 正前、顺时针方位角）之间的对照详见<a href="14_spatial-wearable-arrays.html#sec-14-2">专题Ⅲ §14.2</a>。</p>
-<p><strong>字母复用</strong>（与 §2.3 一致）：由于阵列、自适应滤波、去混响与多目标追踪分属不同研究传统，同一个字母在不同章节可能承担不同角色。例如本表将波数记为 $\kappa=2\pi f/c$，以区别于离散频点索引 $k$，但部分文献与局部推导仍用 $k$ 记波数，第 7 章局部还用 $k$ 记 WPE 的滞后帧号，$D$ 可表示阵列孔径或 PHD 强度函数，$\lambda$ 可表示声波波长、RLS 指数遗忘因子、WPE 时变方差或矩阵特征值，$K$ 可表示声源个数或 WPE 预测阶数；$s$ 可表示源信号或追踪状态。具体含义以所在公式的定义为准。</p>
+<p><strong>字母与算符复用</strong>（与 §2.3 一致）：由于阵列、自适应滤波、去混响与多目标追踪分属不同研究传统，同一个字母或算符在不同章节可能承担不同角色。例如本表将波数记为 $\kappa=2\pi f/c$，以区别于离散频点索引 $k$，但部分文献与局部推导仍用 $k$ 记波数，第 6 章 §6.2.4 另用 $\kappa\in[-1,1]$ 表示 IPNLMS 比例混合系数，第 7 章局部还用 $k$ 记 WPE 的滞后帧号；$D$ 可表示阵列孔径或 PHD 强度函数，$\lambda$ 可表示声波波长、RLS 指数遗忘因子、WPE 时变方差或矩阵特征值，$K$ 可表示声源个数或 WPE 预测阶数，$s$ 可表示源信号或追踪状态。算符 $\odot$ 同样遵循领域双重约定：在子空间与协方差向量化字典（<a href="00_math-foundations.html#sec-0-4-3">§0.4.3</a>、§3.3、§12.7、§16.3.11）中表示按列 Khatri–Rao 积，而在频域滤波、时频掩码、BSM 相位投影与 FiLM 特征调制（§5、§6、§8、<a href="14_spatial-wearable-arrays.html#sec-14-5">§14.5～§14.6</a>、<a href="15_target-extraction-diarization.html#sec-15-1">§15.1</a>）中表示同维或广播 Hadamard 逐元素乘积。具体含义以所在公式的定义为准。</p>
 <p>本表区分 STFT 网格时，默认 $k$ 是频点索引、$\ell$ 是帧索引，$n$ 是离散采样索引，$t$ 是连续时间。各章沿用各自领域的经典记号时会另行声明下标：例如第 5 章的 $\vec{x}(k,n)$ 按（频点，帧）排列；第 8 章的 $X_m(f,k)$ 或 $\vec{x}_{ft}$ 也按（频点，帧）排列，其中用 $t$ 表示离散帧号。跨章对照公式时，应当先对齐每个维度的物理意义，不能仅凭字母相同就默认代表同一条坐标轴。</p>
 <p>实信号的<strong>单边谱</strong>取 $0\leq k\leq\lfloor N/2\rfloor$，对应非负物理频率 $f_k=kf_s/N$（单位：Hz）。若在内存中保存完整的 $N$ 点 DFT，后半段索引对应负频率：偶数 $N$ 下的 $k>N/2$ 或奇数 $N$ 下的 $k>(N-1)/2$ 应换算为 $(k-N)f_s/N$。偶数 $N$ 的奈奎斯特（Nyquist）格点 $k=N/2$ 对实信号满足自共轭，在单边谱中常记作 $+f_s/2$；切勿把完整 DFT 的末尾格点误读成接近 $+f_s$ 的新高频分量。练习 E16-06 给出了八点序列的逐格复算。</p>
 <p>若需要为<strong>完整双边频谱</strong>的每一个离散格点赋予唯一的有符号代表频率，本书采用与 NumPy 的 <code>fftfreq</code> 函数一致的排列规则：</p>
@@ -451,8 +453,8 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 <td>麦克风数量、相邻阵元间距、阵列总孔径</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:8em">$f_s$, $N$, $H$</td>
-<td>采样率（Hz）、DFT/STFT 窗长（点数）与帧移（hop size，相邻两帧起点的采样点数间隔，§2.5）</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">$f_s$, $N$, $N_w$, $H$</td>
+<td>采样率（Hz）、DFT/FFT 点数 $N$、STFT 实分析窗长度 $N_w$（点数，满足 $N\geq N_w$；不作帧内补零时默认 $N=N_w$，见 §2.5 式(2-5)）与帧移 $H$（hop size，相邻两帧起点的采样点数间隔）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">$N_{\mathrm{tar}}$（第 8 章 OverIVA）</td>
@@ -464,7 +466,7 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">$\kappa=2\pi f/c$</td>
-<td>波数，单位为 $\mathrm{rad/m}$，使空间传播相位 $\kappa d$ 无量纲，并避免与频点索引 $k$ 混淆。矩阵二范数条件数 $\kappa_2(\mathbf{A})$ 与球面分布集中度 $\kappa_{\mathrm{vMF}}$ 为各自语境下的独立记号</td>
+<td>波数，单位为 $\mathrm{rad/m}$，使空间传播相位 $\kappa d$ 无量纲，并避免与频点索引 $k$ 混淆。第 6 章 §6.2.4 的 IPNLMS 均匀/比例混合系数 $\kappa\in[-1,1]$、矩阵二范数条件数 $\kappa_2(\mathbf{A})$ 与球面分布集中度 $\kappa_{\mathrm{vMF}}$ 为各自语境下的独立记号</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">$\theta$, $\theta_0$</td>
@@ -503,8 +505,8 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 <td>阵列导向矢量、窄带复数波束权重向量</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:8em">$\hat{\mathbf{R}}$, $\mathbf{R}_{nn}$, $\mathbf{R}_{ss}$</td>
-<td>样本空间协方差矩阵、噪声空间协方差矩阵、目标语音空间协方差矩阵</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">$\mathbf{R}_{xx}$, $\hat{\mathbf{R}}_{xx}$（或简记 $\mathbf{R}$, $\hat{\mathbf{R}}$），$\mathbf{R}_{vv}$, $\mathbf{R}_{nn}$, $\mathbf{R}_{ss}$</td>
+<td>总体与样本观测空间协方差矩阵（无下标歧义时简记为 $\mathbf{R}$, $\hat{\mathbf{R}}$，见 §2.5）、加性噪声（或除目标外的总干扰加噪声）空间协方差矩阵 $\mathbf{R}_{vv}$ / $\mathbf{R}_{nn}$、目标语音空间协方差矩阵 $\mathbf{R}_{ss}$</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">$\mathbf{\Gamma}$</td>
@@ -623,8 +625,12 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 <td>一阶全景声（FOA）在 SN3D 归一化下的零阶全向与三个一阶偶极通道，以及直观序 $[W,X,Y,Z]^\top$ 与标准 ACN 序 $[W,Y,Z,X]^\top$（<a href="14_spatial-wearable-arrays.html#sec-14-2">§14.2</a>）</td>
 </tr>
 <tr>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">$J_n, j_l, y_l, h_l^{(2)}, P_l^m, Y_{l,m}$</td>
+<td>$n$ 阶第一类柱贝塞尔函数 $J_n$，$l$ 阶第一/第二类球贝塞尔函数 $j_l, y_l$ 与第二类球汉克尔函数 $h_l^{(2)}=j_l-\mathrm{j}y_l$（本书 $e^{+\mathrm{j}\omega t}$ 时间因子下的向外散射波），连带勒让德函数 $P_l^m$ 与球谐函数 $Y_{l,m}$（亦记 $Y_n^m$，<a href="00_math-foundations.html#sec-0-7">§0.7</a>、<a href="05_beamforming.html#sec-5-8">§5.8</a>、<a href="14_spatial-wearable-arrays.html#sec-14-2">§14.2</a>）。注意归一化换算 $Y_{l,m}^{\mathrm{N3D}}=\sqrt{2l+1}\,Y_{l,m}^{\mathrm{SN3D}}=\sqrt{4\pi}\,Y_{l,m}^{\mathrm{ortho}}$，故第 14 章球面均值径向模态权重 $b_l(\kappa R)$ 与第 0、5 章标准正交基约定的 $4\pi\mathrm{j}^l j_l(\kappa R)$ 相差常数因子 $4\pi$</td>
+</tr>
+<tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">$b_l(\kappa R)$（专题Ⅲ）</td>
-<td>半径 $R$ 球面阵列的第 $l$ 阶径向模态权重；开球全向阵在 $\kappa R=\pi$ 处出现 $b_0^{\mathrm{open}}(\pi)=0$ 零陷（<a href="14_spatial-wearable-arrays.html#sec-14-2">§14.2</a>）</td>
+<td>半径 $R$ 球面阵列在球面均值（SN3D）口径下的第 $l$ 阶径向模态权重；开球全向阵在 $\kappa R=\pi$ 处出现 $b_0^{\mathrm{open}}(\pi)=0$ 零陷，刚性球由 $h_l^{(2)\prime}(\kappa R)$ 消除正实轴零点（<a href="14_spatial-wearable-arrays.html#sec-14-2">§14.2</a>）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">$\vec{I}_a, \vec{I}_r$，$E, \psi$（专题Ⅲ）</td>
@@ -656,7 +662,7 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">$\otimes$, $\odot$, $\operatorname{vec}(\cdot)$</td>
-<td>Kronecker 积、按列 Khatri–Rao 积与按列优先矩阵拉直算子；满足对角拉直恒等式 $(\mathbf B\odot\mathbf A)\vec q$（§16.3.11、E16-21）</td>
+<td>$\otimes$ 为 Kronecker 积，$\operatorname{vec}(\cdot)$ 为按列优先矩阵拉直算子；算符 $\odot$ 依语境承担双重约定：在子空间与协方差字典（<a href="00_math-foundations.html#sec-0-4-3">§0.4.3</a>、§3.3、§12.7、§16.3.11、E16-21）中表示按列 Khatri–Rao 积（满足对角拉直恒等式 $(\mathbf B\odot\mathbf A)\vec q$），而在频域滤波、时频掩码、BSM 相位投影与 FiLM 调制（§5、§6、§8、<a href="14_spatial-wearable-arrays.html#sec-14-5">§14.5～§14.6</a>、<a href="15_target-extraction-diarization.html#sec-15-1">§15.1</a>）中表示同维或广播 Hadamard 逐元素乘积</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">PHD / RFS</td>
@@ -695,8 +701,8 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 <td>某一帧、某一频点上，$M$ 个麦克风的复数频谱分量按通道顺序排成的 $M$ 维列向量，相当于阵列在该时频格点拍下的一帧空间采样（§2.5）</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:8em">空间协方差矩阵 $\hat{\mathbf{R}}$</td>
-<td>阵列信号处理中常把快拍外积的时间平均 $\frac{1}{L}\sum_\ell \vec{x}_\ell\vec{x}_\ell^H$ 简称为样本空间协方差矩阵。若未先减去样本均值，它严格来说是未中心化样本二阶矩，仅当<strong>当前这批快拍的样本均值恰好为零向量</strong>时才与同分母的中心化样本协方差相等；总体零均值并不能保证有限样本均值为零。它是 Capon、MVDR 与 MUSIC 的核心输入，定义见第 2 章式(2-6)、式(2-7)</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:8em">空间协方差矩阵 $\mathbf{R}_{xx}$, $\hat{\mathbf{R}}_{xx}$（简记 $\mathbf{R}$, $\hat{\mathbf{R}}$）</td>
+<td>阵列信号处理中常把观测总体二阶矩 $\mathbf{R}_{xx}=\mathbb{E}[\vec{x}\vec{x}^H]$ 与快拍外积的时间平均 $\hat{\mathbf{R}}_{xx}=\frac{1}{L}\sum_\ell \vec{x}_\ell\vec{x}_\ell^H$（无歧义时简记为 $\mathbf{R}$, $\hat{\mathbf{R}}$；加性噪声协方差相应记为 $\mathbf{R}_{vv}$ 或 $\mathbf{R}_{nn}$）统称为空间协方差矩阵。若未先减去样本均值，$\hat{\mathbf{R}}_{xx}$ 严格来说是未中心化样本二阶矩，仅当<strong>当前这批快拍的样本均值恰好为零向量</strong>时才与同分母的中心化样本协方差相等；总体零均值并不能保证有限样本均值为零。它是 Capon、MVDR 与 MUSIC 的核心输入，定义见第 2 章式(2-6)、式(2-7)</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">特征分解 / 子空间</td>
@@ -1254,11 +1260,12 @@ a_m&=e^{-\mathrm{j}2\pi f\tau_{m1}}\\
 <p>反之，倘若其中一路传感器接线反相，对齐位置呈现的是负向极值，便不能机械照搬“取最大正值”的寻峰逻辑。</p>
 <p>利用快速傅里叶变换（FFT）加速卷积或互相关时，若不在时域补足零而直接对长度为 $N$ 的两段序列做频域逐点乘积再逆变换，数学上得到的是周期延拓下的<strong>循环卷积</strong>或<strong>循环相关</strong>，尾部能量会从右边界绕回左端污染起始样本（见 E16-01 与 E16-08）。<a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.correlate.html">SciPy 1.18.0 的 <code>scipy.signal.correlate</code> 文档</a>采用与式(16-2)完全相同的复共轭与滞后方向约定（2026-09-28 核实）；调用其他信号处理库时，仍建议先用一对错位单脉冲核实其正负滞后定义，同时留意双精度浮点 FFT 固有的有限机器精度舍入误差。</p>
 <span id="sec-12-3-4" class="anchor-alias" aria-hidden="true"></span><span id="sec-14-3-4" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-16-3-4">16.3.4 期望、方差与协方差矩阵</h3>
-<p>数学期望 $\mathbb{E}[\cdot]$ 表示概率分布下的集总平均，而实际工程手头只有有限长录音的样本算术平均，两者不能直接画等号。实随机变量的方差定义为偏离均值的平方期望；到了复数域，记零均值偏差 $\tilde z = z - \mathbb{E}[z]$，必须取<strong>模平方</strong> $\mathbb{E}[|\tilde z|^2]$（即 $\mathbb{E}[\tilde z\,\tilde z^*]$），才能保证方差（波动功率）是非负实数。同理，两个复变量的协方差也必须对第二项取复共轭。给定同一频点的 $L$ 帧 $M$ 维列快拍 $\vec{x}_1,\ldots,\vec{x}_L$，阵列文献中最常用的未中心化样本空间协方差矩阵定义为</p>
+<p>数学期望 $\mathbb{E}[\cdot]$ 表示概率分布下的集总平均，而实际工程手头只有有限长录音的样本算术平均，两者不能直接画等号。实随机变量的方差定义为偏离均值的平方期望；到了复数域，记零均值偏差 $\tilde z = z - \mathbb{E}[z]$，必须取<strong>模平方</strong> $\mathbb{E}[|\tilde z|^2]$（即 $\mathbb{E}[\tilde z\,\tilde z^*]$），才能保证方差（波动功率）是非负实数。同理，两个复变量的协方差也必须对第二项取复共轭。给定同一频点的 $L$ 帧 $M$ 维列快拍 $\vec{x}_1,\ldots,\vec{x}_L$，阵列文献中最常用的未中心化样本空间协方差矩阵 $\hat{\mathbf{R}}_{xx}$（无下标歧义时简记为 $\hat{\mathbf{R}}$，对应总体矩阵 $\mathbf{R}_{xx}=\mathbb{E}[\vec{x}\vec{x}^H]$ 及加性噪声协方差 $\mathbf{R}_{vv}=\mathbb{E}[\vec{v}\vec{v}^H]$）定义为</p>
 <p>$$\begin{gathered}
-\hat{\mathbf R}=L^{-1}\sum_{\ell=1}^{L}\vec x_\ell\vec x_\ell^H,\\
+\hat{\mathbf R}_{xx}=L^{-1}\sum_{\ell=1}^{L}\vec x_\ell\vec x_\ell^H
+\quad(\text{简记 }\hat{\mathbf R}),\\
 \vec x_\ell\in\mathbb{C}^M,\quad
-\hat{\mathbf R}\in\mathbb{C}^{M\times M}.
+\hat{\mathbf R}_{xx}\in\mathbb{C}^{M\times M}.
 \end{gathered}\tag{16-3}$$</p>
 <p>外积矩阵 $\vec{x}_\ell\vec{x}_\ell^H$ 的第 $(i,j)$ 个元素为 $x_{i,\ell}x_{j,\ell}^*$，天然满足共轭对称性 $\hat{R}_{ji}=\hat{R}_{ij}^*$。对任意测试向量 $\vec{v}\in\mathbb{C}^M$，二次型 $\vec v^H\hat{\mathbf R}\vec v$ 等于 $\frac{1}{L}\sum_{\ell=1}^L|\vec v^H\vec x_\ell|^2\ge 0$，恒为非负实数，因此式(16-3)必然是厄米半正定矩阵；但半正定并不保证正定可逆——例如仅用单帧两麦快拍 $\vec x=[1,\mathrm{j}]^\top$ 构造二阶外积矩阵（首行 $[1,-\mathrm{j}]$、次行 $[\mathrm{j},1]$）时，其特征值为 $2$ 与 $0$，矩阵秩仅为 $1$。</p>
 <p>若在同一批快拍上先算出样本均值 $\bar{\vec{x}}=\frac{1}{L}\sum_{\ell=1}^L\vec{x}_\ell$，记中心化残差 $\tilde{\vec x}_\ell = \vec x_\ell - \bar{\vec x}$，以相同分母 $L$ 对 $\tilde{\vec x}_\ell\tilde{\vec x}_\ell^H$ 求算术平均得中心化样本协方差 $\hat{\mathbf C}_L$，逐项乘开即得 $\hat{\mathbf R}$ 等于 $\hat{\mathbf C}_L + \bar{\vec x}\bar{\vec x}^H$（即第 2 章式(2-7)）。由此可见，两种矩阵在同一批数据上完全相等的充要条件是<strong>本批样本均值</strong> $\bar{\vec{x}}=\vec{0}$；即便底层随机过程的理论均值为零，有限帧样本均值也往往非零（练习 E16-02 与 E16-10 将具体核算二者的数值与秩差异）。</p>

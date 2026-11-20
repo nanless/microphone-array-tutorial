@@ -1,10 +1,10 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 4 章 · 声源定位（DOA 估计） · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="74c593002f97"><style>
-*{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
-.topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
-.topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
+<meta name="source-digest" content="10a21c80bda5"><style>
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
+.topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941}
+.topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
 h1,h2,h3,h4{scroll-margin-top:60px}
 @media screen{.main a[id]:not([href]){scroll-margin-top:60px}}
 @media screen{.main a[id^="e"],.main .exercise-alias{scroll-margin-top:80px}}
@@ -17,64 +17,66 @@ h1,h2,h3,h4{scroll-margin-top:60px}
 @media screen{.main a[id^="e11-"]{scroll-margin-top:60px}}
 @media screen{.main .separation-topic-anchor{scroll-margin-top:60px}}
 @media screen{.main .source-reproduction-anchor{scroll-margin-top:60px}}
-a:focus-visible,summary:focus-visible{outline:3px solid #e67e22;outline-offset:3px}
-.skip-link{position:absolute;left:10px;top:-60px;z-index:30;background:#fff;color:#1a1a2e;padding:8px 12px;border:2px solid #e67e22}
+a:focus-visible,summary:focus-visible{outline:2.5px solid #B84A2E;outline-offset:3px}
+.skip-link{position:absolute;left:10px;top:-60px;z-index:30;background:#fff;color:#1C1E21;padding:8px 12px;border:2px solid #B84A2E}
 .skip-link:focus{top:8px}
-.wrap{display:flex;max-width:1280px;margin:0 auto}
-.side{width:300px;flex-shrink:0;padding:20px 14px;position:sticky;top:47px;height:calc(100vh - 47px);overflow-y:auto;background:#fff;border-right:1px solid #e5e8ee;font-size:13.5px}
-.side a{color:#2f6db3;text-decoration:none}.side a:hover{text-decoration:underline}
-.side .chap{margin:10px 0 2px;font-weight:700}.side .chap.cur{color:#c0392b}
-.side ul{margin:2px 0 6px;padding-left:16px;color:#666}.side li{margin:2px 0}
-.main{flex:1;min-width:0;padding:28px 36px;background:#fff;overflow-wrap:anywhere}
+.wrap{display:flex;max-width:1280px;margin:0 auto;border-left:1px solid #E3DED3;border-right:1px solid #E3DED3}
+.side{width:300px;flex-shrink:0;padding:20px 15px;position:sticky;top:47px;height:calc(100vh - 47px);overflow-y:auto;background:#FAF8F3;border-right:1px solid #DDD7CB;font-size:13.5px}
+.side a{color:#1F5A92;text-decoration:none}.side a:hover{text-decoration:underline}
+.side .chap{margin:10px 0 2px;font-weight:700;color:#26292E}.side .chap.cur{color:#B84A2E}
+.side ul{margin:2px 0 6px;padding-left:16px;color:#5A554D}.side li{margin:2px 0}
+.main{flex:1;min-width:0;padding:32px 40px;background:#fff;overflow-wrap:anywhere}
+.main a{color:#1F5A92;text-underline-offset:.2em}
 .main p{margin:0 0 1.2em}.main ul,.main ol{margin:.55em 0 1.2em;padding-left:1.55em}.main li{margin:.42em 0}.main li>p{margin:.5em 0}
-.main p>strong:first-child,.main li>strong:first-child{color:#0f2744}
-.main img{max-width:100%;height:auto;display:block;margin:16px auto;border:1px solid #dbe3ee;border-radius:6px;padding:3px;min-height:40px;background:#fff}
-.audio-sample{display:block;width:min(100%,460px);margin:8px 0 18px}.audio-sample:focus-visible{outline:3px solid #e67e22}
+.main p>strong:first-child,.main li>strong:first-child{color:#14171A}
+.main img{max-width:100%;height:auto;display:block;margin:18px auto;border:1px solid #DFDAD0;border-radius:5px;padding:4px;min-height:40px;background:#fff}
+.audio-sample{display:block;width:min(100%,460px);margin:8px 0 18px}.audio-sample:focus-visible{outline:2.5px solid #B84A2E}
 /* 表格列宽不能压掉原生播放按钮；手机上的表格可横向滚动。 */
 td .audio-sample{width:280px;min-width:280px}
 table:has(td .audio-sample) td:last-child{min-width:180px}
-table{border-collapse:collapse;margin:16px 0;max-width:100%}
+table{border-collapse:collapse;margin:18px 0;max-width:100%;border-top:1.5px solid #2A2E34;border-bottom:1.5px solid #2A2E34}
 .table-scroll{max-width:100%;overflow-x:auto}
-.table-scroll:focus-visible{outline:3px solid #e67e22;outline-offset:2px}
-th,td{border:1px solid #d5dfec;padding:7px 11px;font-size:14px;text-align:left;line-height:1.58}
-th{background:#e8eff9;color:#0f2744;border-bottom:1.5px solid #94a3b8}
-tbody tr:nth-child(even) td{background:#f8fafc}
-code{background:#eef2f7;color:#0f294a;border:1px solid #d8e1ec;padding:1px 5px;border-radius:4px;font-size:13.5px}
-pre{background:#122036;color:#e8ecf3;padding:14px 16px;border-radius:8px;overflow-x:auto}
+.table-scroll:focus-visible{outline:2.5px solid #B84A2E;outline-offset:2px}
+th,td{border-top:1px solid #E3DED3;border-bottom:1px solid #E3DED3;border-left:none;border-right:none;padding:8px 11px;font-size:14px;text-align:left;line-height:1.58}
+th{background:#F5F2EB;color:#1C1E21;border-bottom:1px solid #8A8275;font-weight:700}
+tbody tr:nth-child(even) td{background:#FCFBF9}
+code{background:#F3F0E8;color:#1E3A56;border:1px solid #E0DBD0;padding:1px 5px;border-radius:4px;font-size:13.5px}
+pre{background:#F5F3EE;color:#1F2328;border:1px solid #DFDAD0;border-left:3.5px solid #5C564D;padding:14px 16px;border-radius:8px;overflow-x:auto}
 pre code{background:none;border:none;color:inherit;padding:0}
-blockquote{border-left:4px solid #2563eb;margin:16px 0;padding:10px 15px;background:#f0f6ff;border-radius:0 6px 6px 0;color:#1e293b}
+blockquote{border-left:3.5px solid #B84A2E;margin:18px 0;padding:10px 16px;background:#F7F5F0;border-radius:0 4px 4px 0;color:#2B2E33}
 blockquote p:last-child{margin-bottom:0}
+hr{border:none;border-top:1px solid #DDD7CB;margin:26px 0}
 mjx-container[jax="CHTML"]{font-size:110%!important;overflow-x:auto;overflow-y:hidden;max-width:100%;min-width:0!important}
 body mjx-assistive-mml{width:1px!important;max-width:1px!important;min-width:0!important;height:1px!important;overflow:hidden!important}
 pre,.table-scroll,mjx-container[jax="CHTML"]{overflow-wrap:normal}
-.pn{display:flex;justify-content:space-between;margin:34px 0 12px;padding-top:16px;border-top:1px solid #d5dfec;font-weight:650}
-.pn a{color:#1d4ed8;text-decoration:none}.pn .off{color:#aaa}
-.foot{color:#64748b;font-size:13px;margin:20px 0 40px}
-.main h1{font-size:27px;color:#0f2744;background:#edf3fc;border-top:4px solid #1e3a8a;border-left:5px solid #1e3a8a;border-bottom:1px solid #cbd5e1;padding:13px 17px 11px;border-radius:0 6px 6px 0;margin:0 0 22px;line-height:1.3}
-.main h2{font-size:21px;color:#0f294a;background:#f3f7fc;border-left:4.5px solid #1d4ed8;border-bottom:1px solid #cbd5e1;padding:8px 13px 7px;margin:34px 0 15px;border-radius:0 5px 5px 0;line-height:1.35}
-.main h3{font-size:18px;color:#1e3a8a;border-left:3.5px solid #3b82f6;padding:2px 0 2px 11px;margin:26px 0 12px;line-height:1.4}
-.main h4{font-size:16px;color:#1e40af;border-left:2.5px solid #93c5fd;padding:1px 0 1px 9px;margin:20px 0 10px;line-height:1.4}
-.main h3.tutorial-worked-heading{background:#f0fdfa;border:1px solid #99f6e4;border-left:4.5px solid #0d9488;color:#115e59;padding:7px 13px;border-radius:6px;margin:26px 0 13px;font-size:17.2px}
-.main h3.tutorial-exercise-heading,.main h4.tutorial-exercise-heading{background:#eff6ff;border:1px solid #bfdbfe;border-left:5px solid #2563eb;color:#1e3a8a;padding:9px 14px;border-radius:6px;margin:30px 0 13px;font-size:17px;line-height:1.45}
-.main p.tutorial-exercise-lead{background:#eff6ff;border:1px solid #bfdbfe;border-left:5px solid #2563eb;padding:11px 15px;border-radius:6px;margin:26px 0 13px}
+.pn{display:flex;justify-content:space-between;margin:36px 0 12px;padding-top:16px;border-top:1px solid #DDD7CB;font-weight:650}
+.pn a{color:#1F5A92;text-decoration:none}.pn .off{color:#9C9588}
+.foot{color:#6E695F;font-size:13px;margin:20px 0 40px}
+.main h1{font-size:27px;color:#14171A;border-top:2.5px solid #1F5A92;border-bottom:1.5px solid #1C1E21;padding:12px 0 10px;margin:0 0 24px;line-height:1.3}
+.main h2{font-size:21px;color:#14171A;border-left:3.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;padding:1px 0 7px 11px;margin:36px 0 15px;line-height:1.35}
+.main h3{font-size:18px;color:#1F5A92;margin:26px 0 11px;line-height:1.4}
+.main h4{font-size:16px;color:#2C2F33;border-left:2.5px solid #B84A2E;padding:1px 0 1px 9px;margin:20px 0 9px;line-height:1.4}
+.main h3.tutorial-worked-heading{background:#FAF8F3;border-top:1.5px solid #237263;border-bottom:1px solid #E2DDD2;border-left:3.5px solid #237263;color:#1A574B;padding:7px 13px;border-radius:2px;margin:28px 0 13px;font-size:17.2px}
+.main h3.tutorial-exercise-heading,.main h4.tutorial-exercise-heading{background:#F5F2EB;border-top:1.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;border-left:4px solid #1F5A92;color:#14171A;padding:8px 14px;border-radius:2px;margin:30px 0 13px;font-size:17px;line-height:1.45}
+.main p.tutorial-exercise-lead{background:#F5F2EB;border-top:1.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;border-left:4px solid #1F5A92;padding:10px 15px;border-radius:2px;margin:28px 0 13px}
 .main ol>li.tutorial-exercise-item{margin:18px 0}
-.main .tutorial-exercise-card{background:#f8fafc;border:1px solid #d5e0ee;border-left:4px solid #2563eb;border-radius:6px;padding:12px 16px}
+.main .tutorial-exercise-card{background:#FAF8F3;border:1px solid #E0DBD0;border-left:3.5px solid #1F5A92;border-radius:4px;padding:12px 16px}
 .main .tutorial-exercise-card>:first-child{margin-top:0}
 .main .tutorial-exercise-card>:last-child{margin-bottom:0}
-.main p.tutorial-solution-lead{background:#f0fdf4;border-left:3.5px solid #16a34a;padding:8px 13px;border-radius:0 5px 5px 0;margin-top:9px}
-.main p.tutorial-solution-lead>strong:first-child{color:#15803d}
-.main p.tutorial-problem-lead{border-left:3px solid #2563eb;padding-left:11px}
-.main p.tutorial-problem-lead>strong:first-child{color:#1d4ed8}
-.toc-mobile{display:none;margin:0 0 16px;border:1px solid #e5e8ee;border-radius:8px;padding:10px 14px;background:#f7fafd;font-size:14px}
-.toc-mobile summary{cursor:pointer;font-weight:700}
-.toc-mobile ul{padding-left:18px;margin:8px 0 2px}.toc-mobile a{color:#2f6db3;text-decoration:none}
-.topbtn{display:block;margin:20px auto;background:#1a1a2e;color:#fff;border-radius:50%;width:42px;height:42px;text-align:center;line-height:42px;text-decoration:none;font-size:18px}
-.offline-note{display:none;background:#fff7e6;border:1px solid #e6c87a;color:#7a5b00;padding:8px 14px;font-size:13.5px}
+.main p.tutorial-solution-lead{background:#F3F6F4;border-left:3.5px solid #237263;padding:8px 13px;border-radius:0 3px 3px 0;margin-top:9px}
+.main p.tutorial-solution-lead>strong:first-child{color:#1D5E51}
+.main p.tutorial-problem-lead{border-left:2.5px solid #1F5A92;padding-left:11px}
+.main p.tutorial-problem-lead>strong:first-child{color:#1F5A92}
+.toc-mobile{display:none;margin:0 0 16px;border:1px solid #DDD7CB;border-radius:6px;padding:10px 14px;background:#FAF8F3;font-size:14px}
+.toc-mobile summary{cursor:pointer;font-weight:700;color:#1C1E21}
+.toc-mobile ul{padding-left:18px;margin:8px 0 2px}.toc-mobile a{color:#1F5A92;text-decoration:none}
+.topbtn{display:block;margin:20px auto;background:#24282E;color:#FAF8F3;border-radius:50%;width:42px;height:42px;text-align:center;line-height:42px;text-decoration:none;font-size:18px}
+.offline-note{display:none;background:#F7EFE4;border:1px solid #D9B78E;color:#6E4219;padding:8px 14px;font-size:13.5px}
 .anchor-alias{display:block;position:relative;top:-60px;visibility:hidden}
 .tutorial-math-tail{display:inline-block;white-space:nowrap;overflow-wrap:normal;vertical-align:baseline;overflow:visible}
 .tutorial-math-tail mjx-assistive-mml{max-width:1px!important;min-width:0!important;white-space:normal}
-.tutorial-exercise-id{white-space:nowrap;overflow-wrap:normal;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:.87em;background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;padding:0 5px;border-radius:4px}
-:is(.tutorial-exercise-heading,.tutorial-exercise-lead) .tutorial-exercise-id{background:#1d4ed8;color:#fff;border-color:#1d4ed8;padding:1px 7px;margin-right:4px;font-size:.84em}
+.tutorial-exercise-id{white-space:nowrap;overflow-wrap:normal;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:.88em;background:#F3EFE6;color:#B84A2E;border:1px solid #DDD5C7;padding:0 5px;border-radius:3px;font-weight:700}
+:is(.tutorial-exercise-heading,.tutorial-exercise-lead) .tutorial-exercise-id{background:#1F5A92;color:#fff;border-color:#1F5A92;padding:1px 7px;margin-right:5px;font-size:.84em}
 .tutorial-table-label{white-space:nowrap;overflow-wrap:normal}
 @media(max-width:900px){.selection-readable-table{min-width:760px}.selection-readable-table th,.selection-readable-table td{min-width:10em}.selection-readable-table th:first-child,.selection-readable-table td:first-child{min-width:6em}}
 @media(max-width:900px){.side{display:none}.main{padding:20px}.toc-mobile{display:block}.topbar{font-size:14px}mjx-container[jax="CHTML"]:not([display="true"]){display:inline-block;vertical-align:middle}.aec-readable-table th,.aec-readable-table td,.wpe-readable-table th,.wpe-readable-table td,.separation-readable-table th,.separation-readable-table td{min-width:8em}.tracking-readable-table th,.tracking-readable-table td{min-width:8em}.industrial-readable-table th,.industrial-readable-table td{min-width:8em}}
@@ -538,7 +540,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <p>把两张子图对照起来看：Capon 纵轴度量的是候选方向滤波后的物理输出功率（单位 dB），而 MUSIC 伪谱峰值只反映“正交吻合程度”，并不代表物理声源功率强弱。同时工程中绝不能单靠数谱峰个数来定声源数——强旁瓣、相干反射或少快拍扰动都可能制造假峰或把双峰融成单峰，源数 $K$ 必须先由专门准则估计。</p>
 <span id="sec-3" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-4-1-1">4.1.1 源数估计：确定信号子空间维数</h3>
 <p>MUSIC 与 ESPRIT 等子空间方法在求方向前，必须先回答“当前观测里共有几个独立信号维度”，即确定源数 $K$。在安静会议室的单人语音段中，如果把 $K$ 估少了，一部分真实信号特征向量会被误划进噪声子空间，破坏真实方向的正交性；如果把 $K$ 估多了，纯噪声特征向量混入信号子空间，又会在空白方位催生虚假谱峰。</p>
-<p>此外，子空间维数还受阵列物理通道数硬约束：MUSIC 要求 $K\lt M$，否则噪声子空间维数 $M-K$ 变成零，根本无法构造正交投影检验；ESPRIT 则要求两个平移子阵各自的阵元数都不小于 $K$，工程上通常还会留出更多阵元余量来抑制有限快拍误差。下面介绍两种最常用的源数估计思路。</p>
+<p>此外，子空间维数还受阵列物理通道数硬约束：MUSIC 要求 $K\lt M$，否则噪声子空间维数 $M-K$ 变成零，根本无法构造正交投影检验；ESPRIT 同样要求 $K\lt M$ 以从全阵协方差中分离出信号子空间，且两个平移不变子阵各自的阵元数 $P$ 须满足 $K\le P\le M-1$（均匀线阵相邻错开 $1$ 元取最大重叠子阵 $P=M-1$ 时，理论源数上限同为 $M-1$；若子阵错开更大步长使 $P\lt M-1$，则可辨识源数上限降为 $P$），工程上通常还会留出更多阵元余量来抑制有限快拍误差。下面介绍两种最常用的源数估计思路。</p>
 <p><strong>方法 1：特征值间隙（eigen-gap）</strong>。固定窄带频点 $f_k$，对 $M\times M$ 样本协方差矩阵 $\hat{\mathbf R}_{xx}(f_k)$ 做厄米特征分解。当 $K$ 个声源互不相关且背景为空间白噪声（方差 $\sigma^2$）时，总体协方差 $\mathbf A\mathbf R_{ss}\mathbf A^H+\sigma^2\mathbf I$ 的前 $K$ 个大特征值同时包含信号贡献与噪声底 $\sigma^2$，而后 $M-K$ 个小特征值在总体期望意义下全都等于 $\sigma^2$（例如后文算例 4-4 的三麦无噪单源给出特征值 $3,0,0$，一眼就能从第一个间隙读出 $K=1$）。</p>
 <p>按照样本特征值降序排列 $\hat\lambda_1\ge\hat\lambda_2\ge\cdots\ge\hat\lambda_M$，遇到有限快拍和加性噪声时，尾部噪声特征值会发生随机散开而不再严格相等。此时虽可检查相邻特征值的差值或比值寻找最大跳变位置，但当信噪比较低或快拍数很少时，信号特征值与噪声底拉不开明显台阶，人工设阈值很容易摇摆。</p>
 <p><strong>方法 2：信息准则（AIC 与 MDL）</strong>。为了免去手工调阈值，赤池信息准则（Akaike Information Criterion，AIC）和最小描述长度（Minimum Description Length，MDL）把源数选择建模为“数据拟合误差 + 模型复杂度惩罚”的最小化问题。核心直觉来自初等代数的<strong>算术—几何平均不等式（AM-GM 不等式）</strong>：对任意一组严格正实数，它们的算术均值 $a_k$ 永远大于或等于几何均值 $g_k$，且<strong>当且仅当这组数彼此完全相等时才有 $a_k=g_k$（即 $\ln(a_k/g_k)=0$）</strong>。对候选源数 $k\in\{0,1,\ldots,M-1\}$，算法把末尾 $M-k$ 个较小特征值暂当作白噪声特征值：若 $k\lt K$，尾部还混着突出的信号特征值，高低悬殊使 $\ln(a_k/g_k)$ 很大，说明“单一噪声方差解释尾部”严重失配；一旦 $k$ 恰好走到真实源数 $K$，尾部只剩平坦噪声特征值，$a_k/g_k$ 迅速贴近 $1$，失配项骤降。</p>
@@ -552,7 +554,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 </blockquote>
 <span id="sec-4" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-4-2">4.2 GCC-PHAT：“对齐两段录音，找最吻合的错位”</h2>
 <h3 id="sec-u-301f6bc399">时延符号与时频两种计算</h3>
-<p>推导时延前，先把几何坐标和正负号钉牢。本章严格沿用第 2 章 §2.1～§2.3 的全书约定：双麦沿 $x$ 轴放置，麦克风 1 位于原点 $x=0$，麦克风 2 位于正向 $x=d>0$；以垂直于连线的正横方向（broadside，$+y$ 轴）为 $0^\circ$，朝麦克风 2（$+x$ 侧）偏转为正角 $\theta>0$。记 $\vec u$ 为从阵列指向声源的单位方向向量，则平面波沿 $-\vec u$ 方向传播，到达第 $i$ 只与第 $j$ 只麦克风的时间差定义为 $\tau_{ij}=t_i-t_j$。</p>
+<p>推导时延前，先把几何坐标和正负号钉牢。本章严格沿用第 2 章 §2.1～§2.3 的全书约定：双麦沿 $x$ 轴放置，麦克风 1 位于原点 $x=0$，麦克风 2 位于正向 $x=d>0$（本章正文推导沿用 $1$ 起点编号 $m=1,\dots,M$，线阵坐标为 $(m-1)d$，与第 3 章及代码练习中的零起点编号 $m'=0,\dots,M-1$ 仅差平移对应 $m'=m-1$）；以垂直于连线的正横方向（broadside，$+y$ 轴）为 $0^\circ$，朝麦克风 2（$+x$ 侧）偏转为正角 $\theta>0$。记 $\vec u$ 为从阵列指向声源的单位方向向量，则平面波沿 $-\vec u$ 方向传播，到达第 $i$ 只与第 $j$ 只麦克风的时间差定义为 $\tau_{ij}=t_i-t_j$。</p>
 <p>在傅里叶前向核 $e^{-\mathrm{j}2\pi ft}$ 下，以麦克风 1 为参考的相对传播时延与窄带导向矢量第 $m$ 分量分别为</p>
 <p>$$\begin{aligned}
 \tau_{m1}&=-\frac{(\vec r_m-\vec r_1)^\top\vec u}{c},\\
@@ -698,7 +700,7 @@ G[k]&=X_1[k]X_2^*[k]\\
 \tag{4-3}$$</p>
 <p>在调用反正弦之前，必须先理解<strong>物理可见域（visible region）</strong>的含义：三维真实空间中，无论平面波从哪个物理方向入射，角度正弦永远满足 $|\sin\theta|\le 1$，这一区间 $|\sin\theta|\le 1$ 就称为阵列的<strong>可见域</strong>。代回时延关系，真实平面波的时差绝对值绝不可能超过端射走完间距 $d$ 所需的时间，即 $|\tau_{12}|\le\tau_{\max}=d/c$（无量纲比值 $|c\tau_{12}/d|\le 1$）。如果全局滞后轴搜到的峰值落在 $|c\hat\tau_{12}/d|>1$ 的“不可见域”，除极微小的浮点插值舍入越界可截断到 $\pm 1$ 外，明显超限说明当前帧由强反射野值或跨源错配主导，此时应标记该帧异常丢弃或预先把搜索窗裁剪在 $|\tau|\le d/c$ 内，绝不能把野值强行贴到 $\pm 90^\circ$ 端射角上（若外部文献把角度定义为相对阵列轴线的夹角，式(4-3)只需把 $\arcsin$ 换为 $\arccos$）。</p>
 <p>即便 $|\hat\tau_{12}|\le\tau_{\max}$，双麦单基线在三维空间中仍有固有的几何模糊：一对麦克风只给出一个标量时差，三维空间中满足该时差的方向构成绕两麦连线旋转的圆锥面（混淆锥），投影到水平面也会留下前后对称镜像。因此必须联合多条不共线基线才能收紧到三维射线，且平面阵列在无半空间先验时仍保留上下镜像（见<a href="03_array-geometry.html#sec-3-1">§3.1 的几何可辨识性</a>）。</p>
-<p>工程落地式(4-3)时，还有两个绕不开的精度瓶颈：</p>
+<p>在工程系统中实现式(4-3)时，还有两个绕不开的精度瓶颈：</p>
 <ol>
 <li>
 <p><strong>整数采样格点太粗，必须做亚采样插值</strong>。在 $f_s=16\ \mathrm{kHz}$ 下，$1$ 个采样周期为 $T_s=62.5\ \mu\mathrm{s}$。对小间距 $d=4\ \mathrm{cm}$，滞后从 $0$ 格跳到 $1$ 格，角度就直接从 $0^\circ$ 跳到 $\arcsin(cT_s/d)\approx 32.4^\circ$，端射附近反正弦斜率更陡，整数格点无法直接用于定位。提高分辨率常用两条路径：一是在整数峰左右取三点做抛物线局部拟合（<code>gcc_phat(..., parabolic_interpolation=True)</code>）；二是在频域对偶数长 $N$ 互谱做 $Q$ 倍补零三角插值，将时延步长细化到 $1/(Qf_s)$。</p>
@@ -713,14 +715,14 @@ G[k]&=X_1[k]X_2^*[k]\\
 <ul>
 <li><strong>图 12(a) 两路信号放大窗口</strong>：横轴截取 $2.0$～$2.45\ \mathrm{ms}$ 片段，纵轴为归一化幅度。设定间距 $d=4\ \mathrm{cm}$、真源方位 $\theta=30^\circ$，理论时差 $\tau_0=d\sin 30^\circ/c$ 为 $0.02/343\approx 58.309\ \mu\mathrm{s}$（折合 $16\ \mathrm{kHz}$ 下约 $0.933$ 个采样点）。图中蓝色圆点线（麦克风 2）波形整体靠左先到，红色方块线（麦克风 1）向右平移约 $58\ \mu\mathrm{s}$ 后到。</li>
 <li><strong>图 12(b) 16 倍细化网格上的 GCC-PHAT 曲线</strong>：横轴为时延 $\tau$（单位 $\mu\mathrm{s}$），竖向灰色点线标出原始 $16\ \mathrm{kHz}$ 整数采样格点（间距 $62.5\ \mu\mathrm{s}$），绿色点划线与浅绿阴影框出可见域物理上限 $\pm d/c\approx\pm 116.6\ \mu\mathrm{s}$。若只在灰点线上挑整数峰，只能选到 $1$ 格（$62.5\ \mu\mathrm{s}\Rightarrow 32.4^\circ$）；经 $16$ 倍频域三角插值后，时延步长细化到 $\Delta\tau=62.5/16=3.90625\ \mu\mathrm{s}$，蓝色平滑曲线的红色三角峰值落在 $15$ 个细网格处，即 $\hat\tau_{12}=15\Delta\tau=58.59375\ \mu\mathrm{s}$（图中简标为 $58.6\ \mu\mathrm{s}$，合 $0.9375$ 个原始采样点），紧贴 $58.3\ \mu\mathrm{s}$ 真值竖线。</li>
-<li><strong>图 12(c) 平面波几何换算</strong>：将该亚采样峰值代入式(4-3)，得到</li>
+<li><strong>图 12(c) 平面波几何示意与亚采样角度反算</strong>：子图 <code>(c)</code> 绘出自正横方向（broadside）起算的真值几何关系 $\theta=\arcsin(c\tau_0/d)=\arcsin(0.5)=30^\circ$（双麦间距 $d=4\ \mathrm{cm}$）；将子图 <code>(b)</code> 测得的亚采样内插峰值 $0.9375$ 个采样点代入式(4-3)，得到</li>
 </ul>
 <p>$$\begin{aligned}
 \tau_{\mathrm{est}}&=58.59375\times 10^{-6}\ \mathrm{s},\\
 \hat\theta&=\arcsin(343\,\tau_{\mathrm{est}}/0.04)
 \approx 30.16^\circ\text{，}
 \end{aligned}$$</p>
-<p>相对 $30^\circ$ 真值仅偏高约 $0.16^\circ$，直观展示了频域插值突破整数采样格点量化的效果。当然，单帧残余误差仍随信号有效带宽、窗长、信噪比与房间反射波动；双麦 GCC 更大的结构性局限在于每帧通常只提取一个主峰，遇到多说话人同时发声或强反射多峰时，不同麦克风对各自挑出的峰值很难正确配对。</p>
+<p>相对图 <code>(c)</code> 标示的 $30^\circ$ 真值仅偏高约 $0.16^\circ$，直观展示了频域插值突破整数采样格点量化的效果。当然，单帧残余误差仍随信号有效带宽、窗长、信噪比与房间反射波动；双麦 GCC 更大的结构性局限在于每帧通常只提取一个主峰，遇到多说话人同时发声或强反射多峰时，不同麦克风对各自挑出的峰值很难正确配对。</p>
 <h3 id="sec-u-5436bc56e2">混响实验：同时说明衰减时间和直达混响比</h3>
 <p>进入真实房间后，墙壁与桌面的多次反射会把一连串延迟衰减副本叠加到直达声上，抬高 GCC-PHAT 的背景起伏，甚至长出高于直达声的伪峰。初学者常以为“混响时间 $T_{60}$ 越长，GCC-PHAT 定位就一定越差”，但如果不说明直达混响比（DRR）有没有跟着变，单报一个 $T_{60}$ 其实无法判断定位趋势。</p>
 <p>为了看清 $T_{60}$（反射尾拖得多长）与 DRR（直达声总能量相对全部反射总能量有多强）各自扮演的角色，图 13 设计了一组两因素拆解实验：采样率取 $16\ \mathrm{kHz}$，固定每路房间冲激响应的直达脉冲能量为 $1$（麦 2 比麦 1 晚 $9$ 点，即真实时差 $\tau_{12}=-9$ 点，约 $-0.5625\ \mathrm{ms}$），再为两通道独立生成长度为 $1.1T_{60}$ 的指数衰减随机反射尾，分别将整条反射尾的总能量精确归一化到目标 $\mathrm{DRR}\in\{+6,\,0,\,-6\}\ \mathrm{dB}$，并遍历 $T_{60}\in\{0.1,\,0.4,\,0.8\}\ \mathrm{s}$ 共 $3\times 3=9$ 组条件。每组条件按确定性种子规则（第 $k=0,\ldots,149$ 次使用种子 $2000+17k$ 生成反射尾与取帧位置，加 $1000$ 生成带限源，完整卷积后截取 $1024$ 点即 $64\ \mathrm{ms}$ 观测帧，不另加传感器白噪声）重复 $150$ 次试验；互谱分母加固定小量 $10^{-12}$ 防止除零，估计峰落在 $-9\pm 1$ 点内判为成功（完整逐次记录见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch04/reports/figure13_gcc_reverb.json"><code>figure13_gcc_reverb.json</code></a>）。九组条件在 $150$ 次试验中的命中次数统计如下：</p>
@@ -757,7 +759,7 @@ G[k]&=X_1[k]X_2^*[k]\\
 <p>看到表格最后一行，很多读者会惊讶：为什么固定 $\mathrm{DRR}=-6\ \mathrm{dB}$ 时，$T_{60}$ 从 $0.1\ \mathrm{s}$ 拉长到 $0.8\ \mathrm{s}$，命中次数反而从 $50/150$（$33.3\%$）上升到了 $68/150$（$45.3\%$）？难道房间越混响反而越好定位吗？</p>
 <p>先从多径互谱 $X_1(f)X_2^*(f)$ 的交叉项机制看清<strong>能量摊薄效应</strong>：上表最后一行人为把整条反射尾的总能量锁死在直达声的约 $4$ 倍（$\mathrm{DRR}=-6\ \mathrm{dB}$）。当 $T_{60}=0.1\ \mathrm{s}$ 时，这 $4$ 倍反射总能量全部拥挤在直达声身后短短 $0.11\ \mathrm{s}$ 区间内，单根早期反射抽头的幅度很大，极易在 PHAT 白化后打出高于直达声的尖锐假峰；反观 $T_{60}=0.8\ \mathrm{s}$ 时，同样这 $4$ 倍总能量被摊薄到 $8$ 倍长的衰减轴上，单个滞后点分到的反射幅度显著变矮，虽然先前时刻的源信号会通过长卷积尾抬高当前 $64\ \mathrm{ms}$ 帧的相关底噪，却没那么容易长出单根鹤立鸡群的篡位假峰。</p>
 <p>再回到真实物理房间区分 <strong>$T_{60}$ 与 $\mathrm{DRR}$ 的物理职责</strong>：$T_{60}$ 刻画的是声源停发后混响声能衰减 $60\ \mathrm{dB}$ 的斜率，主要由房间体积和壁面吸声决定；而 $\mathrm{DRR}$ 取决于声源到阵列的距离相对临界距离 $r_c$ 的远近。同一个 $T_{60}=0.6\ \mathrm{s}$ 的会议室，说话人站在 $0.4\ \mathrm{m}$ 近讲时直达声占绝对主导，GCC-PHAT 稳如磐石；退到 $3.5\ \mathrm{m}$ 远场后直达声按距离平方衰减而混响场近乎均匀，$\mathrm{DRR}$ 跌成负分贝，定位才急剧恶化。上述合成实验采用两通道独立随机尾隔离“尾长与尾总能量”两个因素（未包含低频扩散相干与几何镜像早反射），清晰证明<strong>汇报混响定位指标时绝不能只写 $T_{60}$ 而漏报 $\mathrm{DRR}$ 或声源距离</strong>。</p>
-<p>工程上对抗低 $\mathrm{DRR}$ 混响主要有三道抓手：一是优先抓取音节起始瞬态帧（onset），在壁面反射尚未建立前锁定高 $\mathrm{DRR}$ 直达波前；二是在多帧滑窗上做直方图投票或送入第 9 章卡尔曼门控追踪器滤除反射跳变；三是在每个时频点利用扩散场空间相干先验盲估<strong>相干扩散比（Coherent-to-Diffuse Ratio，CDR）</strong>，在逆变换或空间投票前直接压低混响主导频点的权重（双麦无方向闭式解将在章末 <a href="#e04-27">E04-27</a> 完整推导）。</p>
+<p>工程上对抗低 $\mathrm{DRR}$ 混响主要有三项措施：一是优先抓取音节起始瞬态帧（onset），在壁面反射尚未建立前锁定高 $\mathrm{DRR}$ 直达波前；二是在多帧滑窗上做直方图投票或送入第 9 章卡尔曼门控追踪器滤除反射跳变；三是在每个时频点利用扩散场空间相干先验盲估<strong>相干扩散比（Coherent-to-Diffuse Ratio，CDR）</strong>，在逆变换或空间投票前直接压低混响主导频点的权重（双麦无方向闭式解将在章末 <a href="#e04-27">E04-27</a> 完整推导）。</p>
 <p><img alt="图13 GCC-PHAT 随 T60 与 DRR 的联合作用" src="../figures/fig13_gcc_reverb.png" onerror="this.alt+='（图缺失）'" /></p>
 <p>对照这一物理图景逐一读图 13 的三个子图：</p>
 <ul>
@@ -1216,12 +1218,12 @@ u_k&=\frac{\lambda\arg\hat\psi_k}{2\pi\Delta d},\\
 <span id="sec-4-6-1" class="anchor-alias" aria-hidden="true"></span><span id="sec-11" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-08146bdaaf">宽带聚焦：跨频率合并子空间信息</h3>
 <p>在宽带语音中，同一个物理入射角 $\theta$ 在不同频点 $f_j$ 上对应不同的波长 $\lambda_j=c/f_j$，因而导向矢量 $\vec a(f_j,\theta)$ 随频率不断伸缩旋转。前面专栏提到的 NormMUSIC 是在各频点各自求完伪谱后再作跨频非相干平均，一旦单频遇到相干反射降秩就束手无策。<strong>相干信号子空间方法（Coherent Signal-Subspace Method，CSSM，<a href="https://doi.org/10.1109/TASSP.1985.1164667">Wang 与 Kaveh, <em>IEEE TASSP</em>, 1985</a>）</strong>换了一条“先对齐流形、再跨频平均协方差”的相干合并路线：选定一个参考频率 $f_0$，为每个工作频点 $f_j$ 设计 $M\times M$ <strong>聚焦矩阵</strong> $\mathbf T_j=\mathbf T(f_j)$，把频点 $f_j$ 的导向矢量映射到参考频率流形上，满足 $\mathbf T_j\vec a(f_j,\theta)\approx\vec a(f_0,\theta)$；随后将各频点样本协方差变换为 $\mathbf T_j\hat{\mathbf R}_{xx}(f_j)\mathbf T_j^H$ 并做跨频平均，最后只在参考频率 $f_0$ 上做一次特征分解和 MUSIC 搜索。</p>
 <p><strong>为什么聚焦矩阵优先要求酉矩阵（正交 Procrustes 闭式构造）？</strong> 初学者最容易忽略的一点是：聚焦矩阵在搬移信号导向矢量的同时，也在变换背景噪声！如果频点 $f_j$ 上原本是空间白噪声 $\sigma_j^2\mathbf I_M$，左乘 $\mathbf T_j$、右乘 $\mathbf T_j^H$ 后，噪声协方差就变成了 $\sigma_j^2\mathbf T_j\mathbf T_j^H$。倘若 $\mathbf T_j$ 不是酉矩阵（$\mathbf T_j\mathbf T_j^H\ne\mathbf I_M$），原本各向同性的白噪声就会被拉扯成空间有色噪声，甚至在某个纯噪声方向上放大出超过真实信号的最大特征值，导致普通 MUSIC 产生严重系统性偏置（后文 <a href="#e04-19">E04-19</a> 与图 53 用一个 $2\times 2$ 精确算例展示了这一现象；若确需使用非酉聚焦，必须按聚焦后的总噪声协方差同步白化，参见 <a href="https://www.researchgate.net/publication/3319689_TOPS_new_DOA_estimator_for_wideband_signals">TOPS 原论文 §II-C</a>）。</p>
-<p>要让变换自动保持空间白噪声不变，只需强制聚焦矩阵满足酉约束 $\mathbf T_j\mathbf T_j^H=\mathbf I_M$，这就是 Hung 与 Kaveh 提出的<strong>旋转信号子空间（Rotational Signal-Subspace，RSS）聚焦</strong>。先由 Bartlett 或 SRP-PHAT 粗扫选出一组初始聚焦角 $\{\theta_1,\ldots,\theta_Q\}$，把它们在 $f_j$ 与参考频点 $f_0$ 处的导向矢量排成矩阵 $\mathbf A_j=\mathbf A(f_j)$ 与 $\mathbf A_0=\mathbf A(f_0)\in\mathbb C^{M\times Q}$，在酉矩阵群上最小化流形对齐残差——这在矩阵分析中称为<strong>正交 Procrustes 问题</strong>：</p>
+<p>要让变换自动保持空间白噪声不变，只需强制聚焦矩阵满足酉约束 $\mathbf T_j\mathbf T_j^H=\mathbf I_M$，这就是 <a href="https://doi.org/10.1109/29.1655">Hung 与 Kaveh（<em>IEEE TASSP</em>, 1988）</a>提出的<strong>旋转信号子空间（Rotational Signal-Subspace，RSS）聚焦</strong>。先由 Bartlett 或 SRP-PHAT 粗扫选出一组初始聚焦角 $\{\theta_1,\ldots,\theta_Q\}$，把它们在 $f_j$ 与参考频点 $f_0$ 处的导向矢量排成矩阵 $\mathbf A_j=\mathbf A(f_j)$ 与 $\mathbf A_0=\mathbf A(f_0)\in\mathbb C^{M\times Q}$，在酉矩阵群上最小化流形对齐残差——这在矩阵分析中称为<strong>正交 Procrustes 问题</strong>：</p>
 <p>$$\begin{aligned}
 \min_{\mathbf T_j\mathbf T_j^H=\mathbf I_M}\;
 \|\mathbf A_0-\mathbf T_j\mathbf A_j\|_F^2\text{。}
 \end{aligned}$$</p>
-<p>因为酉变换不改变向量模长，$\|\mathbf T_j\mathbf A_j\|_F^2=\|\mathbf A_j\|_F^2$ 与 $\mathbf T_j$ 无关；记交叉矩阵 $\mathbf M_j=\mathbf A_j\mathbf A_0^H$（尺寸 $M\times M$），最小化上式等价于最大化交叉内积 $\operatorname{tr}(\mathbf T_j\mathbf M_j)$ 的实部。对 $\mathbf M_j$ 做奇异值分解，立刻得到闭式最优酉聚焦矩阵：</p>
+<p>因为酉变换不改变向量模长，$\|\mathbf T_j\mathbf A_j\|_F^2=\|\mathbf A_j\|_F^2$ 与 $\mathbf T_j$ 无关；记交叉矩阵 $\mathbf M_j=\mathbf A_j\mathbf A_0^H$（尺寸 $M\times M$），最小化上式等价于最大化交叉内积 $\operatorname{Re}\,\operatorname{tr}(\mathbf T_j\mathbf M_j)$。对 $\mathbf M_j=\mathbf U\boldsymbol\Sigma\mathbf V^H$ 做奇异值分解（$\sigma_i\ge 0$），令酉矩阵 $\mathbf Z=\mathbf V^H\mathbf T_j\mathbf U$（因 $\mathbf Z\mathbf Z^H=\mathbf I_M$，对角元满足 $|Z_{ii}|\le 1$），由矩阵迹的循环移位律有 $\operatorname{Re}\,\operatorname{tr}(\mathbf T_j\mathbf U\boldsymbol\Sigma\mathbf V^H)=\operatorname{Re}\,\operatorname{tr}(\mathbf Z\boldsymbol\Sigma)=\sum_{i=1}^M\sigma_i\operatorname{Re}(Z_{ii})\le\sum_{i=1}^M\sigma_i$，上界当 $\mathbf Z=\mathbf I_M$ 时达到，从而唯一锁定闭式最优酉聚焦矩阵（切勿将右端转置次序颠倒误写为 $\mathbf U\mathbf V^H$）：</p>
 <p>$$\begin{aligned}
 \mathbf A(f_j)\mathbf A^H(f_0)
 &=\mathbf U\boldsymbol\Sigma\mathbf V^H,\\

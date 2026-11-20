@@ -1,10 +1,10 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 10 章 · 工程实现、评测与产业实践 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="74c593002f97"><style>
-*{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
-.topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
-.topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
+<meta name="source-digest" content="10a21c80bda5"><style>
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
+.topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941}
+.topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
 h1,h2,h3,h4{scroll-margin-top:60px}
 @media screen{.main a[id]:not([href]){scroll-margin-top:60px}}
 @media screen{.main a[id^="e"],.main .exercise-alias{scroll-margin-top:80px}}
@@ -17,64 +17,66 @@ h1,h2,h3,h4{scroll-margin-top:60px}
 @media screen{.main a[id^="e11-"]{scroll-margin-top:60px}}
 @media screen{.main .separation-topic-anchor{scroll-margin-top:60px}}
 @media screen{.main .source-reproduction-anchor{scroll-margin-top:60px}}
-a:focus-visible,summary:focus-visible{outline:3px solid #e67e22;outline-offset:3px}
-.skip-link{position:absolute;left:10px;top:-60px;z-index:30;background:#fff;color:#1a1a2e;padding:8px 12px;border:2px solid #e67e22}
+a:focus-visible,summary:focus-visible{outline:2.5px solid #B84A2E;outline-offset:3px}
+.skip-link{position:absolute;left:10px;top:-60px;z-index:30;background:#fff;color:#1C1E21;padding:8px 12px;border:2px solid #B84A2E}
 .skip-link:focus{top:8px}
-.wrap{display:flex;max-width:1280px;margin:0 auto}
-.side{width:300px;flex-shrink:0;padding:20px 14px;position:sticky;top:47px;height:calc(100vh - 47px);overflow-y:auto;background:#fff;border-right:1px solid #e5e8ee;font-size:13.5px}
-.side a{color:#2f6db3;text-decoration:none}.side a:hover{text-decoration:underline}
-.side .chap{margin:10px 0 2px;font-weight:700}.side .chap.cur{color:#c0392b}
-.side ul{margin:2px 0 6px;padding-left:16px;color:#666}.side li{margin:2px 0}
-.main{flex:1;min-width:0;padding:28px 36px;background:#fff;overflow-wrap:anywhere}
+.wrap{display:flex;max-width:1280px;margin:0 auto;border-left:1px solid #E3DED3;border-right:1px solid #E3DED3}
+.side{width:300px;flex-shrink:0;padding:20px 15px;position:sticky;top:47px;height:calc(100vh - 47px);overflow-y:auto;background:#FAF8F3;border-right:1px solid #DDD7CB;font-size:13.5px}
+.side a{color:#1F5A92;text-decoration:none}.side a:hover{text-decoration:underline}
+.side .chap{margin:10px 0 2px;font-weight:700;color:#26292E}.side .chap.cur{color:#B84A2E}
+.side ul{margin:2px 0 6px;padding-left:16px;color:#5A554D}.side li{margin:2px 0}
+.main{flex:1;min-width:0;padding:32px 40px;background:#fff;overflow-wrap:anywhere}
+.main a{color:#1F5A92;text-underline-offset:.2em}
 .main p{margin:0 0 1.2em}.main ul,.main ol{margin:.55em 0 1.2em;padding-left:1.55em}.main li{margin:.42em 0}.main li>p{margin:.5em 0}
-.main p>strong:first-child,.main li>strong:first-child{color:#0f2744}
-.main img{max-width:100%;height:auto;display:block;margin:16px auto;border:1px solid #dbe3ee;border-radius:6px;padding:3px;min-height:40px;background:#fff}
-.audio-sample{display:block;width:min(100%,460px);margin:8px 0 18px}.audio-sample:focus-visible{outline:3px solid #e67e22}
+.main p>strong:first-child,.main li>strong:first-child{color:#14171A}
+.main img{max-width:100%;height:auto;display:block;margin:18px auto;border:1px solid #DFDAD0;border-radius:5px;padding:4px;min-height:40px;background:#fff}
+.audio-sample{display:block;width:min(100%,460px);margin:8px 0 18px}.audio-sample:focus-visible{outline:2.5px solid #B84A2E}
 /* 表格列宽不能压掉原生播放按钮；手机上的表格可横向滚动。 */
 td .audio-sample{width:280px;min-width:280px}
 table:has(td .audio-sample) td:last-child{min-width:180px}
-table{border-collapse:collapse;margin:16px 0;max-width:100%}
+table{border-collapse:collapse;margin:18px 0;max-width:100%;border-top:1.5px solid #2A2E34;border-bottom:1.5px solid #2A2E34}
 .table-scroll{max-width:100%;overflow-x:auto}
-.table-scroll:focus-visible{outline:3px solid #e67e22;outline-offset:2px}
-th,td{border:1px solid #d5dfec;padding:7px 11px;font-size:14px;text-align:left;line-height:1.58}
-th{background:#e8eff9;color:#0f2744;border-bottom:1.5px solid #94a3b8}
-tbody tr:nth-child(even) td{background:#f8fafc}
-code{background:#eef2f7;color:#0f294a;border:1px solid #d8e1ec;padding:1px 5px;border-radius:4px;font-size:13.5px}
-pre{background:#122036;color:#e8ecf3;padding:14px 16px;border-radius:8px;overflow-x:auto}
+.table-scroll:focus-visible{outline:2.5px solid #B84A2E;outline-offset:2px}
+th,td{border-top:1px solid #E3DED3;border-bottom:1px solid #E3DED3;border-left:none;border-right:none;padding:8px 11px;font-size:14px;text-align:left;line-height:1.58}
+th{background:#F5F2EB;color:#1C1E21;border-bottom:1px solid #8A8275;font-weight:700}
+tbody tr:nth-child(even) td{background:#FCFBF9}
+code{background:#F3F0E8;color:#1E3A56;border:1px solid #E0DBD0;padding:1px 5px;border-radius:4px;font-size:13.5px}
+pre{background:#F5F3EE;color:#1F2328;border:1px solid #DFDAD0;border-left:3.5px solid #5C564D;padding:14px 16px;border-radius:8px;overflow-x:auto}
 pre code{background:none;border:none;color:inherit;padding:0}
-blockquote{border-left:4px solid #2563eb;margin:16px 0;padding:10px 15px;background:#f0f6ff;border-radius:0 6px 6px 0;color:#1e293b}
+blockquote{border-left:3.5px solid #B84A2E;margin:18px 0;padding:10px 16px;background:#F7F5F0;border-radius:0 4px 4px 0;color:#2B2E33}
 blockquote p:last-child{margin-bottom:0}
+hr{border:none;border-top:1px solid #DDD7CB;margin:26px 0}
 mjx-container[jax="CHTML"]{font-size:110%!important;overflow-x:auto;overflow-y:hidden;max-width:100%;min-width:0!important}
 body mjx-assistive-mml{width:1px!important;max-width:1px!important;min-width:0!important;height:1px!important;overflow:hidden!important}
 pre,.table-scroll,mjx-container[jax="CHTML"]{overflow-wrap:normal}
-.pn{display:flex;justify-content:space-between;margin:34px 0 12px;padding-top:16px;border-top:1px solid #d5dfec;font-weight:650}
-.pn a{color:#1d4ed8;text-decoration:none}.pn .off{color:#aaa}
-.foot{color:#64748b;font-size:13px;margin:20px 0 40px}
-.main h1{font-size:27px;color:#0f2744;background:#edf3fc;border-top:4px solid #1e3a8a;border-left:5px solid #1e3a8a;border-bottom:1px solid #cbd5e1;padding:13px 17px 11px;border-radius:0 6px 6px 0;margin:0 0 22px;line-height:1.3}
-.main h2{font-size:21px;color:#0f294a;background:#f3f7fc;border-left:4.5px solid #1d4ed8;border-bottom:1px solid #cbd5e1;padding:8px 13px 7px;margin:34px 0 15px;border-radius:0 5px 5px 0;line-height:1.35}
-.main h3{font-size:18px;color:#1e3a8a;border-left:3.5px solid #3b82f6;padding:2px 0 2px 11px;margin:26px 0 12px;line-height:1.4}
-.main h4{font-size:16px;color:#1e40af;border-left:2.5px solid #93c5fd;padding:1px 0 1px 9px;margin:20px 0 10px;line-height:1.4}
-.main h3.tutorial-worked-heading{background:#f0fdfa;border:1px solid #99f6e4;border-left:4.5px solid #0d9488;color:#115e59;padding:7px 13px;border-radius:6px;margin:26px 0 13px;font-size:17.2px}
-.main h3.tutorial-exercise-heading,.main h4.tutorial-exercise-heading{background:#eff6ff;border:1px solid #bfdbfe;border-left:5px solid #2563eb;color:#1e3a8a;padding:9px 14px;border-radius:6px;margin:30px 0 13px;font-size:17px;line-height:1.45}
-.main p.tutorial-exercise-lead{background:#eff6ff;border:1px solid #bfdbfe;border-left:5px solid #2563eb;padding:11px 15px;border-radius:6px;margin:26px 0 13px}
+.pn{display:flex;justify-content:space-between;margin:36px 0 12px;padding-top:16px;border-top:1px solid #DDD7CB;font-weight:650}
+.pn a{color:#1F5A92;text-decoration:none}.pn .off{color:#9C9588}
+.foot{color:#6E695F;font-size:13px;margin:20px 0 40px}
+.main h1{font-size:27px;color:#14171A;border-top:2.5px solid #1F5A92;border-bottom:1.5px solid #1C1E21;padding:12px 0 10px;margin:0 0 24px;line-height:1.3}
+.main h2{font-size:21px;color:#14171A;border-left:3.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;padding:1px 0 7px 11px;margin:36px 0 15px;line-height:1.35}
+.main h3{font-size:18px;color:#1F5A92;margin:26px 0 11px;line-height:1.4}
+.main h4{font-size:16px;color:#2C2F33;border-left:2.5px solid #B84A2E;padding:1px 0 1px 9px;margin:20px 0 9px;line-height:1.4}
+.main h3.tutorial-worked-heading{background:#FAF8F3;border-top:1.5px solid #237263;border-bottom:1px solid #E2DDD2;border-left:3.5px solid #237263;color:#1A574B;padding:7px 13px;border-radius:2px;margin:28px 0 13px;font-size:17.2px}
+.main h3.tutorial-exercise-heading,.main h4.tutorial-exercise-heading{background:#F5F2EB;border-top:1.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;border-left:4px solid #1F5A92;color:#14171A;padding:8px 14px;border-radius:2px;margin:30px 0 13px;font-size:17px;line-height:1.45}
+.main p.tutorial-exercise-lead{background:#F5F2EB;border-top:1.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;border-left:4px solid #1F5A92;padding:10px 15px;border-radius:2px;margin:28px 0 13px}
 .main ol>li.tutorial-exercise-item{margin:18px 0}
-.main .tutorial-exercise-card{background:#f8fafc;border:1px solid #d5e0ee;border-left:4px solid #2563eb;border-radius:6px;padding:12px 16px}
+.main .tutorial-exercise-card{background:#FAF8F3;border:1px solid #E0DBD0;border-left:3.5px solid #1F5A92;border-radius:4px;padding:12px 16px}
 .main .tutorial-exercise-card>:first-child{margin-top:0}
 .main .tutorial-exercise-card>:last-child{margin-bottom:0}
-.main p.tutorial-solution-lead{background:#f0fdf4;border-left:3.5px solid #16a34a;padding:8px 13px;border-radius:0 5px 5px 0;margin-top:9px}
-.main p.tutorial-solution-lead>strong:first-child{color:#15803d}
-.main p.tutorial-problem-lead{border-left:3px solid #2563eb;padding-left:11px}
-.main p.tutorial-problem-lead>strong:first-child{color:#1d4ed8}
-.toc-mobile{display:none;margin:0 0 16px;border:1px solid #e5e8ee;border-radius:8px;padding:10px 14px;background:#f7fafd;font-size:14px}
-.toc-mobile summary{cursor:pointer;font-weight:700}
-.toc-mobile ul{padding-left:18px;margin:8px 0 2px}.toc-mobile a{color:#2f6db3;text-decoration:none}
-.topbtn{display:block;margin:20px auto;background:#1a1a2e;color:#fff;border-radius:50%;width:42px;height:42px;text-align:center;line-height:42px;text-decoration:none;font-size:18px}
-.offline-note{display:none;background:#fff7e6;border:1px solid #e6c87a;color:#7a5b00;padding:8px 14px;font-size:13.5px}
+.main p.tutorial-solution-lead{background:#F3F6F4;border-left:3.5px solid #237263;padding:8px 13px;border-radius:0 3px 3px 0;margin-top:9px}
+.main p.tutorial-solution-lead>strong:first-child{color:#1D5E51}
+.main p.tutorial-problem-lead{border-left:2.5px solid #1F5A92;padding-left:11px}
+.main p.tutorial-problem-lead>strong:first-child{color:#1F5A92}
+.toc-mobile{display:none;margin:0 0 16px;border:1px solid #DDD7CB;border-radius:6px;padding:10px 14px;background:#FAF8F3;font-size:14px}
+.toc-mobile summary{cursor:pointer;font-weight:700;color:#1C1E21}
+.toc-mobile ul{padding-left:18px;margin:8px 0 2px}.toc-mobile a{color:#1F5A92;text-decoration:none}
+.topbtn{display:block;margin:20px auto;background:#24282E;color:#FAF8F3;border-radius:50%;width:42px;height:42px;text-align:center;line-height:42px;text-decoration:none;font-size:18px}
+.offline-note{display:none;background:#F7EFE4;border:1px solid #D9B78E;color:#6E4219;padding:8px 14px;font-size:13.5px}
 .anchor-alias{display:block;position:relative;top:-60px;visibility:hidden}
 .tutorial-math-tail{display:inline-block;white-space:nowrap;overflow-wrap:normal;vertical-align:baseline;overflow:visible}
 .tutorial-math-tail mjx-assistive-mml{max-width:1px!important;min-width:0!important;white-space:normal}
-.tutorial-exercise-id{white-space:nowrap;overflow-wrap:normal;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:.87em;background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;padding:0 5px;border-radius:4px}
-:is(.tutorial-exercise-heading,.tutorial-exercise-lead) .tutorial-exercise-id{background:#1d4ed8;color:#fff;border-color:#1d4ed8;padding:1px 7px;margin-right:4px;font-size:.84em}
+.tutorial-exercise-id{white-space:nowrap;overflow-wrap:normal;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:.88em;background:#F3EFE6;color:#B84A2E;border:1px solid #DDD5C7;padding:0 5px;border-radius:3px;font-weight:700}
+:is(.tutorial-exercise-heading,.tutorial-exercise-lead) .tutorial-exercise-id{background:#1F5A92;color:#fff;border-color:#1F5A92;padding:1px 7px;margin-right:5px;font-size:.84em}
 .tutorial-table-label{white-space:nowrap;overflow-wrap:normal}
 @media(max-width:900px){.selection-readable-table{min-width:760px}.selection-readable-table th,.selection-readable-table td{min-width:10em}.selection-readable-table th:first-child,.selection-readable-table td:first-child{min-width:6em}}
 @media(max-width:900px){.side{display:none}.main{padding:20px}.toc-mobile{display:block}.topbar{font-size:14px}mjx-container[jax="CHTML"]:not([display="true"]){display:inline-block;vertical-align:middle}.aec-readable-table th,.aec-readable-table td,.wpe-readable-table th,.wpe-readable-table td,.separation-readable-table th,.separation-readable-table td{min-width:8em}.tracking-readable-table th,.tracking-readable-table td{min-width:8em}.industrial-readable-table th,.industrial-readable-table td{min-width:8em}}
@@ -351,7 +353,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="10_engineering-practice.html#sec-u-a134fb8cdf">已知坏麦：同时选择观测、响应与协方差</a></li>
 <li><a href="10_engineering-practice.html#sec-10-11">10.11 本章练习</a></li>
 <li>&nbsp;&nbsp;<a href="10_engineering-practice.html#sec-u-3a2ce1aea0">E10-01：把初始错位与 SRO 分开</a></li>
-<li>&nbsp;&nbsp;<a href="10_engineering-practice.html#sec-u-a4719e76d5">E10-02：VAD 的迟滞与两帧挂起</a></li>
+<li>&nbsp;&nbsp;<a href="10_engineering-practice.html#sec-u-7a1c8bc661">E10-02：VAD 的迟滞与两帧尾音保持</a></li>
 <li>&nbsp;&nbsp;<a href="10_engineering-practice.html#sec-u-79382a9042">E10-03：环形缓冲满了以后留下什么</a></li>
 <li>&nbsp;&nbsp;<a href="10_engineering-practice.html#sec-u-3a1873c082">E10-04：平均处理量够，为什么还会丢帧</a></li>
 <li>&nbsp;&nbsp;<a href="10_engineering-practice.html#sec-u-b86d4c64c5">E10-05：半个量化级怎样取整</a></li>
@@ -433,7 +435,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="10_engineering-practice.html#sec-u-a134fb8cdf">已知坏麦：同时选择观测、响应与协方差</a></li>
 <li><a href="10_engineering-practice.html#sec-10-11">10.11 本章练习</a></li>
 <li>&nbsp;&nbsp;<a href="10_engineering-practice.html#sec-u-3a2ce1aea0">E10-01：把初始错位与 SRO 分开</a></li>
-<li>&nbsp;&nbsp;<a href="10_engineering-practice.html#sec-u-a4719e76d5">E10-02：VAD 的迟滞与两帧挂起</a></li>
+<li>&nbsp;&nbsp;<a href="10_engineering-practice.html#sec-u-7a1c8bc661">E10-02：VAD 的迟滞与两帧尾音保持</a></li>
 <li>&nbsp;&nbsp;<a href="10_engineering-practice.html#sec-u-79382a9042">E10-03：环形缓冲满了以后留下什么</a></li>
 <li>&nbsp;&nbsp;<a href="10_engineering-practice.html#sec-u-3a1873c082">E10-04：平均处理量够，为什么还会丢帧</a></li>
 <li>&nbsp;&nbsp;<a href="10_engineering-practice.html#sec-u-b86d4c64c5">E10-05：半个量化级怎样取整</a></li>
@@ -476,7 +478,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 </blockquote>
 <hr />
 <span id="sec-1" class="anchor-alias" aria-hidden="true"></span><h1 id="sec-u-5a84f59f93">10. 工程实现、评测与产业实践</h1>
-<p>前九章逐一拆解了声源定位、波束形成、回声消除、去混响、语音分离与目标追踪的原理和算法。当这些模块进入真实硬件产品时，工程师首先要面对的往往不是单个公式的推导，而是系统级耦合：各模块按什么因果顺序串联或并联、参考信号与控制状态从哪一级抽头、采样时钟偏差与声卡缓冲如何侵蚀相位和实时期限、定点字长与电池功耗如何分配，以及如何建立一套不被单一指标误导的验收标准。本章围绕这一完整工程闭环展开；章内配套的数学合成音频与教学脚本统一用于核验算法算术、时序语义和失效边界，整机声学与实时性能仍需在目标设备上实测确认。</p>
+<p>前九章逐一拆解了声源定位、波束形成、回声消除、去混响、语音分离与目标追踪的原理和算法。当这些模块进入真实硬件产品时，决定最终体验的关键在于系统级耦合设计：各模块按什么因果顺序串联或并联、参考信号与控制状态从哪一级抽头、采样时钟偏差与声卡缓冲如何侵蚀相位和实时期限、定点字长与电池功耗如何分配，以及如何建立一套不被单一指标误导的验收标准。本章围绕这一完整工程闭环展开；章内配套的数学合成音频与教学脚本统一用于核验算法算术、时序语义和失效边界，整机声学与实时性能仍需在目标设备上实测确认。</p>
 <p>本章常用缩写汇总如下：</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
 <thead>
@@ -638,10 +640,10 @@ L_{\mathrm{e2e}}&=\max_p L_p.
 $$</p>
 <p>其中下标 $\mathrm{look}$、$\mathrm{buf}$、$\mathrm{comp}$、$\mathrm{sched}$、$\mathrm{decode}$ 依次对应上表的前瞻等待、块缓冲等待、模块计算耗时、操作系统或加速器调度等待以及后端解码等待。每一项都隶属于当前考察的因果路径 $p$，不能把非关键旁支的等待混加进来。</p>
 <p><img alt="图25 延迟预算示意" src="../figures/fig25_latency_budget.png" onerror="this.alt+='（图缺失）'" /></p>
-<p>结合图 25 可以直观读出不同业务出口的延迟记账差异。图 25 上半部分展示了一条工作表示例关键路径：采集与凑帧缓冲等待 $32\ \mathrm{ms}$、未来帧前瞻 $16\ \mathrm{ms}$、首字判决确认窗 $25\ \mathrm{ms}$、模块计算耗时 $14\ \mathrm{ms}$ 与线程调度抖动 $6\ \mathrm{ms}$ 首尾相接，合计 $93\ \mathrm{ms}$。图 25 下半部分则提醒工程师严格区分三条评测口径：</p>
+<p>结合图 25 从左向右的堆叠顺序可以直观读出不同业务出口的延迟记账差异：前四段依次为采集与分帧缓冲 $32\ \mathrm{ms}$、未来帧前瞻 $16\ \mathrm{ms}$、模块计算 $14\ \mathrm{ms}$ 与调度抖动 $6\ \mathrm{ms}$，在绿色虚线处汇总为<strong>连续流式音频输出延迟 $68\ \mathrm{ms}$</strong>；其后再叠加上后端首字判决确认窗 $25\ \mathrm{ms}$，到达右侧紫色虚线标出的<strong>首包判决延迟 $93\ \mathrm{ms}$</strong>。图 25 下半部分进一步提醒工程师严格区分三条评测口径：</p>
 <ul>
-<li><strong>连续通话增强音频流</strong>（如会议终端送往编码器的上行 PCM）：只承担实际发生的帧缓冲、算法前瞻、计算与调度延迟，没有识别确认窗；</li>
-<li><strong>关键词唤醒（KWS）或流式 ASR 首字上屏时间</strong>：在前端音频交付之后，还必须叠加上声学模型右上下文与解码器防误报确认窗；</li>
+<li><strong>连续通话增强音频流</strong>（对应绿色虚线 $68\ \mathrm{ms}$，如会议终端送往编码器的上行 PCM）：只承担实际发生的帧缓冲、算法前瞻、计算与调度延迟，没有识别确认窗；</li>
+<li><strong>关键词唤醒（KWS）或流式 ASR 首字上屏时间</strong>（对应紫色虚线 $93\ \mathrm{ms}$）：在前端流式音频交付之后，还必须叠加上声学模型右上下文与解码器防误报确认窗；</li>
 <li><strong>尾音保持（hangover）延迟</strong>：当说话人停声、短时能量跌落时，VAD 为了防止句尾清辅音或弱读音节被截断，会故意继续维持“有话”状态若干帧（如 $200\ \mathrm{ms}$）才发出句末截断事件。这 $200\ \mathrm{ms}$ 只会推迟“整句说完了”的端点事件触发时刻，绝不意味着此前连续送出的每一帧语音波形都被晚播放了 $200\ \mathrm{ms}$。</li>
 </ul>
 <p>在提交正式工程测试报告时，绝不能只报一个笼统的“平均延迟”。稳态运行阶段至少应给出中位数（$\mathrm{p50}$）与长尾分位数（如 $\mathrm{p95}$、$\mathrm{p99}$）、有效测量样本数、测试总时长及分位数插值定义（小样本下最近秩与线性插值的差异见第 11 章练习 E11-04）。</p>
@@ -801,7 +803,12 @@ $$</p>
 <h3 id="sec-u-7f2acead54">时钟漂移的波形与时间轴</h3>
 <p>为了直观展示失同步对多通道合成的破坏，图 40 与主音频清单的 <code>clock_drift</code> 组构造了一组标称 $16\ \mathrm{kHz}$、设备时钟偏快 $100\ \mathrm{ppm}$、总长 $8\ \mathrm{s}$ 的确定性多频合成算例：两台虚拟设备在各自真实的物理采样时刻对同一连续声波函数精确取值（绝不用双声道音量平移假冒时钟漂移）。以 $8\ \mathrm{s}$ 参考标称位置换算，偏快设备的同序号采样发生在 $8/(1+10^{-4})\ \mathrm{s}$，两者时差已累积至约 $0.79992\ \mathrm{ms}$，折合 $12.799$ 个参考采样周期（各 WAV 文件的精确样本数与导出增益见<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/audio/MANIFEST.json">主音频清单</a>）。</p>
 <p><img alt="图40：采样率偏移的时间漂移与未同步求平均" src="../figures/fig40_clock_drift.png" onerror="this.alt+='（图缺失）'" /></p>
-<p>观察图 40 各子图曲线时，先看两设备同序号波形的局部放大对比：开头 $t\approx 0$ 附近两路波峰几乎重合，而随着时间推移到数秒之后，偏快设备的波形相对于参考轴不断向左超前滑移。再看下方的“未对齐直接求平均”包络：由于相位差 $2\pi f\,\Delta t(T)$ 随时间线性增大，直接相加平均后的信号呈现出明显的周期性包络深陷（拍频相消），且高频谐波比低频基波塌陷得更早、更频密——如果在实测排错中看到多麦波束输出音量忽大忽小、高频周期性发闷，首先就应怀疑跨时钟域未同步，而不能把这种相干抵消误认为“环境噪声被抑制了”。图中最后一条“理想同步均值”曲线利用已知时钟真值重采样对齐，代表完美 SRC 补偿所能逼近的理论上限。</p>
+<p>结合图 40 从上到下的三幅子图可以把失同步相消链条对读清楚：</p>
+<ul>
+<li><strong>子图 (a)</strong> 绘制累积样点漂移 $\Delta t(T)\times 16\,\mathrm{kHz}$ 随参考时间 $0\text{～}8\ \mathrm{s}$ 线性增长的斜率直线（至 $8\ \mathrm{s}$ 末累积滑移约 $12.8$ 个采样点）；</li>
+<li><strong>子图 (b)</strong> 对比 $500\ \mathrm{Hz}$ 与 $1500\ \mathrm{Hz}$ 两个单频分量在未对齐等权平均下的解析相干包络 $|\cos(\pi f\Delta t)|$：由于相位差随频率成正比放大，$1500\ \mathrm{Hz}$ 高频分量早在 $t\approx 3.33\ \mathrm{s}$（累积半波长时差）便跌入首个完全反相抵消零陷，而 $500\ \mathrm{Hz}$ 基频尚处于缓慢滚降阶段；</li>
+<li><strong>子图 (c)</strong> 从发布的双音合成 <code>PCM16</code> 文件计算每 $20\ \mathrm{ms}$ 分块的平均输出功率相对于共同时钟基准（绿色水平虚线恒为 $1$）的比值曲线，清晰呈现未同步双麦求和引发的周期性功率塌陷——如果在实测排错中看到多麦波束输出音量忽大忽小、高频周期性发闷，首先就应排查跨时钟域未同步，切勿把这种拍频相消误认为“环境噪声被抑制了”。</li>
+</ul>
 <p>在实录数据中诊断时间轴异常时，要把<strong>固定初始时差</strong>、<strong>恒定 SRO</strong> 与<strong>缓冲区丢样阶跃</strong>三件事拆开看：在“时间—相对延迟”散点图上，初始启动错位表现为纵轴截距 $b$，稳定晶振频偏表现为直线斜率 $\widehat{s}$，而采集驱动偶发丢块后若把后续样本往前紧排，则会在丢块时刻留下一个整数倍帧长或采样周期的垂直阶跃。仅靠录音首尾两帧做一次互相关求差，一旦中间夹杂丢样阶跃就会算出完全错误的速率斜率；稳健做法是按固定时间窗分块提取高置信度互相关峰，先筛查相邻块残差是否存在采样级突跳（核对硬件帧计数与 <code>xrun</code> 日志切出连续无缺口段），再在连续区间内做线性回归。</p>
 <p>随仓函数 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch10/core/engineering.py"><code>estimate_sro_ppm</code></a> 沿用“参考时间减设备时间”的正延迟定义，以参考时间 $T$（单位 $\mathrm{s}$）为横轴拟合直线 $\widehat{d}(T)=b+\widehat{s}T$（截距 $b$ 单位为 $\mathrm{s}$，无量纲斜率 $\widehat{s}$ 单位为 $\mathrm{s/s}$）。对比式(10-3)中 $\Delta t(T)=\frac{\varepsilon}{1+\varepsilon}T$ 的精确系数，只要恒定速率假设成立且 $\widehat{s}\lt 1$，由斜率 $\widehat{s}$ 反解相对频偏 $\widehat{\varepsilon}$ 的精确式与一阶近似式分别为</p>
 <p>$$
@@ -838,7 +845,7 @@ y[k]&=\sum_{p=0}^{P}\eta_k^p\,v_p[q_k]\\
 \end{aligned}
 $$</p>
 <p>这一恒等变形在硬件实现上极具威力：第二式中的 $P+1$ 组子滤波器系数 $c_{p,m}$ <strong>完全与时变分数延迟 $\eta_k$ 无关</strong>，可以预先离线算好固化在只读存储器中，每来一个输入样本只需更新固定系数 FIR 分支 $v_0[q_k],\dots,v_P[q_k]$；外层对每个输出样本 $k$ 按末行嵌套乘法规则仅花 $P$ 次乘加，就能以极低算力实时追踪连续漂移的 SRO，同时保持平坦的语音频带幅频响应与平滑的群延迟。</p>
-<p>工程选型接入成熟开源 SRC 库时，务必先核对<strong>重采样比例的定义方向、未消费余量维护与尾部排空（drain）</strong>三项契约：</p>
+<p>工程选型接入成熟开源 SRC 库时，务必先核对<strong>重采样比例的定义方向、未消费余量维护与尾部排空（drain）</strong>三项接口约定：</p>
 <ul>
 <li>
 <p><strong><code>libsamplerate</code>（<code>src_process</code>）</strong>：比例定义为<strong>“输出采样率 / 输入采样率”</strong>（见 <a href="https://libsndfile.github.io/libsamplerate/api_full.html"><code>libsamplerate</code> 官方完整 API 文档</a>）。当采集设备偏快 $100\ \mathrm{ppm}$ 时，向标准参考时钟对齐的比例应传 $1/1.0001\approx 0.99990001$；每次调用后必须检查结构体返回的实际已消费输入帧数与产出输出帧数，把尚未消费完的尾部输入留到下一块开头。</p>
@@ -1076,7 +1083,7 @@ y_k[n]&=g_kx_k[n].
 \end{aligned}
 \tag{10-10}
 $$</p>
-<p>式(10-10)每一步都有明确的物理分工：第一式算出不超最大放大倍数的理想目标增益 $g_k^\star$（全零静音块直接取 $g_k^\star=g_{\max}$ 跳过除法）；第二式用一阶凸组合平滑增益，当 $g_k^\star\lt g_{k-1}$（输入突然变响，需快速压低增益）时选取较大的<strong>攻击（attack）</strong>系数以迅速收敛，当 $g_k^\star\ge g_{k-1}$（输入变弱，需缓慢回升增益）时选取较小的<strong>释放（release）</strong>系数；第三式通过硬上限 $1/p_k$ 强制兜底，确保即便平滑增益 $\widetilde{g}_k$ 还没来得及降下来，本块内任何一个离散采样点的输出绝对值也绝不超过数字满幅 $1$。同时务必注意它的因果时序代价：由于算出 $p_k$ 必须等整块样本收齐，整块 AGC 天然带有 $1$ 个块长的缓冲等待；若块末突然出现一个大峰值，硬上限 $1/p_k$ 会把同一块开头原本正常的弱语音也一并压低（不同块长与平滑系数换算对比见练习 E10-10 与 E10-27）。</p>
+<p>式(10-10)每一步都有明确的物理分工：第一式算出不超最大放大倍数的理想目标增益 $g_k^\star$（全零静音块直接取 $g_k^\star=g_{\max}$ 跳过除法）；第二式用一阶凸组合平滑增益，当 $g_k^\star\lt g_{k-1}$（输入突然变响，需快速压低增益）时选取较大的<strong>攻击（attack）</strong>系数以迅速收敛，当 $g_k^\star\ge g_{k-1}$（输入变弱，需缓慢回升增益）时选取较小的<strong>释放（release）</strong>系数；第三式通过硬上限 $1/p_k$ 提供硬限幅保护，确保即便平滑增益 $\widetilde{g}_k$ 还没来得及降下来，本块内任何一个离散采样点的输出绝对值也绝不超过数字满幅 $1$。同时务必注意它的因果时序代价：由于算出 $p_k$ 必须等整块样本收齐，整块 AGC 天然带有 $1$ 个块长的缓冲等待；若块末突然出现一个大峰值，硬上限 $1/p_k$ 会把同一块开头原本正常的弱语音也一并压低（不同块长与平滑系数换算对比见练习 E10-10 与 E10-27）。</p>
 <p>为什么成熟工业通信栈（如 WebRTC <code>AGC2</code> 或专业会议终端 DSP）普遍在<strong>对数分贝域（$\mathrm{dB}$ 域）设计分段静态压缩曲线</strong>，而不直接在线性幅度域运行式(10-10)？首先，人耳响度感知近似服从对数律，在跨越 $20\text{～}40\ \mathrm{dB}$ 的远近场动态范围时，分贝域一阶递推 $G_k=(1-\alpha)G_{k-1}+\alpha G_k^\star$（单位均为 $\mathrm{dB}$）等价于线性幅度的几何级数插值，听感过渡均匀自然。</p>
 <p>其次，纯峰值反比法则在说话停顿期会把增益一路推向 $g_{\max}$，将空调和电路底噪大幅抬高，待说话人一开口又瞬间把增益猛压下来，造成背景底噪忽起忽落的<strong>增益喘息（pumping）</strong>效应。为此，工业级对数域 AGC 将输入短时有效值或响度电平 $L_{\mathrm{in}}$（单位 $\mathrm{dBFS}$）划分为四个协同工作区：</p>
 <ol>
@@ -1095,8 +1102,8 @@ $$</p>
 <span id="sec-13" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-10-4">10.4 定点化、算力与功耗预算</h2>
 <span id="sec-14" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-10-4-1">10.4.1 从浮点实现到目标芯片</h3>
 <p>在微控制器（MCU）、蓝牙耳机低功耗音频 DSP 或专用神经网络处理器（NPU）上部署前端算法时，从双精度/单精度浮点原型走向定点或低比特整数量化必须闯过四道硬门槛：<strong>信号动态范围定标、乘累加器防溢出位宽、超越/非线性函数（如平方根、倒数、对数与指数）分段查表逼近，以及跨模块级联的尺度对齐</strong>。</p>
-<p>对于传统阵列信号处理核心（频域能量谱、空间协方差矩阵 $\hat{\mathbf{R}}_{xx}=\sum_t\vec{x}_t\vec{x}_t^H$、MVDR/WPE 线性方程组求解），纯 16 位定点格式（如 <code>Q1.15</code>）面临最严峻的挑战是<strong>二次方运算导致的动态范围塌缩</strong>。不妨算一笔直观的定点精度账：有符号 16 位 PCM 的有效幅值动态范围约为 $90\ \mathrm{dB}$（最小非零幅度量化级为 $2^{-15}\approx -90.3\ \mathrm{dBFS}$）。假设远场轻声说话人在某个高频子带的复谱分量幅度处于完全正常的 $-42\ \mathrm{dBFS}$（线性幅度约 $2^{-7}\approx 0.0078$，对应 <code>Q1.15</code> 整数码字 $256$）；一旦直接计算功率或协方差外积并存回 16 位 <code>Q1.15</code>，平方后的实数幅度变为 $(2^{-7})^2=2^{-14}$，对应的 <code>Q1.15</code> 整数码字骤降为 $256^2/32768=2$，有效尾数精度瞬间坍缩到只剩 $1\ \mathrm{bit}$！</p>
-<p>而凡是低于 $-48.2\ \mathrm{dBFS}$（就近舍入下码字绝对值小于 $\sqrt{16384}=128$、满足 $X^2/2^{15}\lt 0.5$；直接截断下更早在 $-45.2\ \mathrm{dBFS}$、码字 $\le 181$ 处触发）的弱语音或安静频点底噪，平方存回 16 位后会<strong>整片下溢成精确的机器零</strong>，导致协方差矩阵秩亏奇异、对角加载比例失准；反过来，在做 $N=512$ 点定点 FFT 时，蝶形加减每级最多增长 $1\ \mathrm{bit}$（$9$ 级最高增长 $9\ \mathrm{bit}$），若每级无条件右移 $1/2$ 防溢出，弱信号又要平白丢掉 $9\ \mathrm{bit}$（$54\ \mathrm{dB}$）信噪比。</p>
+<p>对于传统阵列信号处理核心（频域能量谱、空间协方差矩阵 $\hat{\mathbf{R}}_{xx}=\sum_t\vec{x}_t\vec{x}_t^H$、MVDR/WPE 线性方程组求解），纯 16 位定点格式（如 <code>Q1.15</code>）面临最严峻的挑战是<strong>二次方运算导致的动态范围塌缩</strong>。不妨算一笔直观的定点精度账：有符号 16 位 PCM 的最小非零码字幅度比为 $2^{-15}\approx -90.3\ \mathrm{dBFS}$（注意与满幅正弦均匀量化信噪比 $\mathrm{SQNR}=6.02\times 16+1.76\approx 98.1\ \mathrm{dB}$ 相区分，后者比较的是满幅正弦平均功率 $1/2$ 与均匀量化噪声方差 $\Delta^2/12$）。假设远场轻声说话人在某个高频子带的复谱分量幅度处于完全正常的 $-42\ \mathrm{dBFS}$（线性幅度约 $2^{-7}\approx 0.0078$，对应 <code>Q1.15</code> 整数码字 $256$）；一旦直接计算功率或协方差外积并存回 16 位 <code>Q1.15</code>，平方后的实数幅度变为 $(2^{-7})^2=2^{-14}$，对应的 <code>Q1.15</code> 整数码字骤降为 $256^2/32768=2$，有效尾数精度瞬间坍缩到只剩 $1\ \mathrm{bit}$！</p>
+<p>而凡是不高于 $-48.2\ \mathrm{dBFS}$（最近偶数舍入 $\operatorname{rne}$ 下码字绝对值 $\le\sqrt{16384}=128$，其中临界点 $|X|=128$ 处 $X^2/2^{15}=0.5$ 向偶数 $0$ 舍入；直接截断下更早在 $-45.2\ \mathrm{dBFS}$、码字 $\le 181$ 处触发）的弱语音或安静频点底噪，平方存回 16 位后会<strong>整片下溢成精确的机器零</strong>，导致协方差矩阵秩亏奇异、对角加载比例失准；反过来，在做 $N=512$ 点定点 FFT 时，蝶形加减每级最多增长 $1\ \mathrm{bit}$（$9$ 级最高增长 $9\ \mathrm{bit}$），若每级无条件右移 $1/2$ 防溢出，弱信号又要平白丢掉 $9\ \mathrm{bit}$（$54\ \mathrm{dB}$）信噪比。</p>
 <p>为了在没有硬件浮点单元（或浮点功耗/吞吐受限）的嵌入式音频 DSP 上兼顾高动态范围与高吞吐，工业界（如 XMOS <code>lib_xcore_math</code>、ADI SHARC 与 Cadence HiFi 语音库）广泛采用<strong>块浮点（Block Floating-Point，BFP）</strong>表示法：让同一个数据块（例如一帧 $N$ 个频点或同一频点的 $M$ 维通道向量）共享<strong>唯一一个整型指数 $e_{\mathrm{blk}}$</strong>，块内各元素保存 16 位或 32 位有符号整型尾数向量 $\vec{m}$，真值表示为 $\vec{x}=\vec{m}\cdot 2^{e_{\mathrm{blk}}}$。每次执行蝶形变换、外积或矩阵加减之前，BFP 内核先扫描整块尾数的冗余符号位数（即安全裕量 <code>headroom</code>，定义为块内最大绝对值距离满幅溢出还能安全左移的位数），扣除当前算子所需的保护位 $s_{\mathrm{guard}}$ 后，将整块尾数统一左移 $s=\mathrm{headroom}-s_{\mathrm{guard}}$ 位以填满最高有效位，同时把共享指数更新为 $e_{\mathrm{blk}}\leftarrow e_{\mathrm{blk}}-s$。</p>
 <p>仍以上述峰值码字为 $256$（$-42\ \mathrm{dBFS}$）的 <code>Q1.15</code> 弱信号块逐位复算：其最大绝对值 $256=2^8$ 距离 $16384=2^{14}$（预留 $1\ \mathrm{bit}$ 保护位）拥有 $s=6\ \mathrm{bit}$ 冗余裕量，BFP 先将整块尾数左移 $6$ 位归一化至 $16384$ 并记录 $e_{\mathrm{blk}}=-6$。此时再做平方运算，尾数变为 $16384^2/32768=8192$，共享指数同步翻倍为 $2e_{\mathrm{blk}}=-12$，对应真值 $8192\times 2^{-15}\times 2^{-12}=2^{-14}$ 分毫不差，有效尾数精度从纯 <code>Q1.15</code> 的 <strong>$1\ \mathrm{bit}$ 跃升至 $13\ \mathrm{bit}$</strong>，而额外存储代价仅仅是每块多存 $1$ 个整型指数！</p>
 <p>当然，数值表示位宽与统计可逆性属于两个层面的问题：即便采用了 BFP 或 32 位宽定点避免了弱信号平方下溢，当观测快拍不足或存在强相干干扰导致空间协方差矩阵接近秩亏时，线性方程组求解仍必须配合按矩阵迹（平均特征值）成比例缩放的对角加载，宽尾数本身绝不能替代统计正则化。</p>
@@ -1769,19 +1776,19 @@ $$</p>
 </li>
 </ol>
 <p>一旦健康监控模块确诊某颗（或某几颗）麦克风失效并上报给控制层，紧接着就是致命的工程后半题：<strong>千万不能图省事直接把故障麦克风通道数据清零（或把原波束权重向量里对应的那一项置零）了事！</strong> 为什么直接置零会闯大祸？因为原 $M$ 通道自适应波束权重 $\vec{w}$ 是利用跨通道相消关系整体求出来的，满足整体无失真约束 $\vec{w}^H\vec{d}=1$；抠掉其中一个乘积项后，剩余健康通道上的旧权重之和完全可能严重偏离 $1$，甚至在极端情况下正负恰好相消变成 $0$，把目标语音彻底抹杀且乘多大后置增益都救不回来！</p>
-<p>正确的做法是把波束形成器的输入观测维度从原 $M$ 通道同步收缩到有序健康通道子集 $\mathcal{I}$（设剩余健康通道数为 $K=|\mathcal{I}|\ge 1$），重新建立约束并重算子阵最优权重。构造无量纲实选择矩阵 $\mathbf{S}\in\mathbb{R}^{K\times M}$：其第 $k$ 行仅在第 $k$ 个健康通道对应的原物理通道列上取 $1$，其余元素全取 $0$。沿用第 5 章窄带频域信号模型 $\vec{x}=\vec{d}S+\vec{n}$ 与线性波束输出 $Y=\vec{w}^H\vec{x}$（其中 $S$ 为目标复谱系数，$\vec{d}\in\mathbb{C}^M$ 为已知目标导向矢量或相对传递函数，注意与大写粗体实选择矩阵 $\mathbf{S}$ 区分；噪声空间协方差矩阵为 $\mathbf{R}=\mathbb{E}[\vec{n}\vec{n}^H]$）。由于 $\mathbf{S}$ 为实矩阵（满足 $\mathbf{S}^H=\mathbf{S}^\top$），观测向量、目标响应向量与噪声协方差矩阵必须按<strong>完全相同的行序</strong>同步抽取（协方差矩阵必须同时抽取对应的行与列以构成合法的 $K\times K$ 厄米主子矩阵，主子矩阵正定性与分块消元求逆见<a href="00_math-foundations.html#sec-0-3">第 0 章 §0.3</a>，子阵选择模型参见 <a href="https://arxiv.org/pdf/1705.08255">Zhang 等 2017 §II.C 式(9)～(11)</a>）：</p>
+<p>正确的做法是把波束形成器的输入观测维度从原 $M$ 通道同步收缩到有序健康通道子集 $\mathcal{I}$（设剩余健康通道数为 $K=|\mathcal{I}|\ge 1$），重新建立约束并重算子阵最优权重。构造无量纲实选择矩阵 $\mathbf{S}\in\mathbb{R}^{K\times M}$：其第 $k$ 行仅在第 $k$ 个健康通道对应的原物理通道列上取 $1$，其余元素全取 $0$。沿用第 5 章窄带频域信号模型 $\vec{x}=\vec{d}S+\vec{n}$ 与线性波束输出 $Y=\vec{w}^H\vec{x}$（其中 $S$ 为目标复谱系数，$\vec{d}\in\mathbb{C}^M$ 为已知目标导向矢量或相对传递函数，注意与大写粗体实选择矩阵 $\mathbf{S}$ 区分；噪声空间协方差矩阵为 $\mathbf{R}_{nn}=\mathbb{E}[\vec{n}\vec{n}^H]$）。由于 $\mathbf{S}$ 为实矩阵（满足 $\mathbf{S}^H=\mathbf{S}^\top$），观测向量、目标响应向量与噪声协方差矩阵必须按<strong>完全相同的行序</strong>同步抽取（协方差矩阵必须同时抽取对应的行与列以构成合法的 $K\times K$ 厄米主子矩阵，主子矩阵正定性与分块消元求逆见<a href="00_math-foundations.html#sec-0-3">第 0 章 §0.3</a>，子阵选择模型参见 <a href="https://arxiv.org/pdf/1705.08255">Zhang 等 2017 §II.C 式(9)～(11)</a>）：</p>
 <p>$$
 \begin{aligned}
 \vec x_{\mathcal I}&=\mathbf S\vec x,\\
 \vec d_{\mathcal I}&=\mathbf S\vec d,\\
-\mathbf R_{\mathcal I}&=\mathbf S\mathbf R\mathbf S^\top.
+\mathbf R_{nn,\mathcal I}&=\mathbf S\mathbf R_{nn}\mathbf S^\top.
 \end{aligned}
 \tag{10-17}
 $$</p>
-<p>当选出的噪声子协方差矩阵 $\mathbf{R}_{\mathcal{I}}$ 正定（或经相对对角加载后正定）且健康子集上的目标响应非全零（$\vec{d}_{\mathcal{I}}\ne\vec{0}$）时，直接调用第 5 章 MVDR 线性方程组在 $K$ 维健康子空间上重新求解新权重 $\vec{w}_{\mathcal{I}}$：</p>
+<p>当选出的噪声子协方差矩阵 $\mathbf{R}_{nn,\mathcal{I}}$ 正定（或经相对对角加载后正定）且健康子集上的目标响应非全零（$\vec{d}_{\mathcal{I}}\ne\vec{0}$）时，直接调用第 5 章 MVDR 线性方程组在 $K$ 维健康子空间上重新求解新权重 $\vec{w}_{\mathcal{I}}$：</p>
 <p>$$
 \begin{aligned}
-\mathbf R_{\mathcal I}\vec q_{\mathcal I}
+\mathbf R_{nn,\mathcal I}\vec q_{\mathcal I}
  &=\vec d_{\mathcal I},\\
 \vec w_{\mathcal I}
  &=\frac{\vec q_{\mathcal I}}{
@@ -1790,7 +1797,7 @@ Y_{\mathcal I}&=\vec w_{\mathcal I}^H\vec x_{\mathcal I}.
 \end{aligned}
 \tag{10-18}
 $$</p>
-<p>由式(10-18)第一行且 $\mathbf{R}_{\mathcal{I}}$ 正定，二次型分母 $\vec{d}_{\mathcal{I}}^H\vec{q}_{\mathcal{I}}>0$ 严格为正实数，新权重自动恢复健康子阵上的单位无失真目标响应 $\vec{w}_{\mathcal{I}}^H\vec{d}_{\mathcal{I}}=1$！章末练习 <a href="#e10-34">E10-34</a> 给出了三通道阵列在通道 0 失效后“沿用旧权重目标响应直接跌成 $0$”与“按式(10-17)、式(10-18)重算子阵完全保住目标”的逐步手算和 16 位 PCM 波形实证。</p>
+<p>由式(10-18)第一行且 $\mathbf{R}_{nn,\mathcal{I}}$ 正定，二次型分母 $\vec{d}_{\mathcal{I}}^H\vec{q}_{\mathcal{I}}>0$ 严格为正实数，新权重自动恢复健康子阵上的单位无失真目标响应 $\vec{w}_{\mathcal{I}}^H\vec{d}_{\mathcal{I}}=1$！章末练习 <a href="#e10-34">E10-34</a> 给出了三通道阵列在通道 0 失效后“沿用旧权重目标响应直接跌成 $0$”与“按式(10-17)、式(10-18)重算子阵完全保住目标”的逐步手算和 16 位 PCM 波形实证。</p>
 <p>在实时多线程软件架构中落地子阵重配时，还须守住两条边界：第一，健康通道索引列表 $\mathcal{I}$、重算后的波束权重 $\vec{w}_{\mathcal{I}}$ 以及多通道 WPE/GSS 缓存维度必须打包为<strong>同一个带版本号的原子配置快照</strong>，由控制线程后台验算完毕后在帧边界一次性切换，严禁出现“前半截观测数组已剔除坏麦、后半截内积还在读旧通道顺序权重”的撕裂态。</p>
 <p>第二，若采用相对传递函数建模且恰巧坏掉了原本充当分母的<strong>参考麦克风</strong>，必须区分“仅按式(10-17)保留原参考定义下的子向量 $\vec{d}_{\mathcal{I}}$（维持输出信号目标尺度不变）”与“改选另一颗健康麦重新做除法归一化（输出目标幅相基准随之切换为新参考麦）”两种不同物理语义；若极端情况下全部阵元均告失效（$K=0$），则应显式报错停流或切入系统预设的安全静音/旁路状态。</p>
 <span id="sec-23" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-10-11">10.11 本章练习</h2>
@@ -1813,8 +1820,8 @@ $$</p>
 <h3 id="sec-u-3a2ce1aea0">E10-01：把初始错位与 SRO 分开</h3>
 <p>在参考时间 $[0,10,20]\ \mathrm{s}$ 测得相对延迟 $[2,3,4]\ \mathrm{ms}$。按 §10.2.1 的一阶线性模型求初始截距、相对频偏 $\mathrm{ppm}$、$600\ \mathrm{s}$ 累积漂移量，以及将设备流重采样对齐到参考时钟所需的“输出采样率 / 输入采样率”比例。</p>
 <p><strong>解答</strong>：相对延迟随参考时间的增长斜率为 $(4-2)\ \mathrm{ms}/20\ \mathrm{s}=10^{-4}\ \mathrm{s/s}$，对应一阶频偏 $100\ \mathrm{ppm}$，纵轴截距为固定的初始错位 $2\ \mathrm{ms}$。运行 $600\ \mathrm{s}$ 累积的纯速率漂移约为 $10^{-4}\times 600=0.06\ \mathrm{s}=60\ \mathrm{ms}$（不含起始 $2\ \mathrm{ms}$ 偏置）；将偏快设备重采样至参考时钟的“输出/输入”速率比为 $1/(1+10^{-4})=1/1.0001\approx 0.99990001$。实录信号中互相关峰带有估计抖动且可能夹杂丢样阶跃，工程上需用多窗口分段回归与残差跳变检验替代简单的两点连线。</p>
-<h3 id="sec-u-a4719e76d5">E10-02：VAD 的迟滞与两帧挂起</h3>
-<p>帧长 $160$ 点、采样率 $16\ \mathrm{kHz}$，启动/继续能量门限分别为 $0.08/0.03$，尾音保持（hangover，旧称挂起）设为 $2$ 帧，初始处于非活动态。连续六帧的均方能量依次为 $[0,0.09,0.04,0,0,0]$。写出六帧的活动标志与尾音保持时长。</p>
+<span id="sec-u-a4719e76d5" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-7a1c8bc661">E10-02：VAD 的迟滞与两帧尾音保持</h3>
+<p>帧长 $160$ 点、采样率 $16\ \mathrm{kHz}$，启动/继续能量门限分别为 $0.08/0.03$，尾音保持（hangover）设为 $2$ 帧，初始处于非活动态。连续六帧的均方能量依次为 $[0,0.09,0.04,0,0,0]$。写出六帧的活动标志与尾音保持时长。</p>
 <p><strong>解答</strong>：六帧活动标志依次为 <code>[False, True, True, True, True, False]</code>。逐帧追踪状态：第 1 帧（索引从 1 计）能量为 $0$ 保持静默，第 2 帧能量 $0.09>0.08$ 跨过启动门限进入活动态并将尾音保持计数装填为 $2$。第 3 帧能量 $0.04$ 虽低于启动门限 $0.08$，但高于继续门限 $0.03$，维持活动并保持计数满额为 $2$；第 4、5 帧能量跌为 $0$，依次消耗两次尾音保持计数维持 <code>True</code>，至第 6 帧计数耗尽关闭为 <code>False</code>。</p>
 <p>单帧时长为 $160/16000=10\ \mathrm{ms}$，故两帧尾音保持对应 $20\ \mathrm{ms}$（词首音头保护还需另配预卷缓存）。</p>
 <h3 id="sec-u-79382a9042">E10-03：环形缓冲满了以后留下什么</h3>
@@ -2240,7 +2247,7 @@ $$</p>
 </table></div>
 <p>（首窗导出前未量化浮点比值依次为 $7.466769$、$0.932932$、$1.111111$；第三列 $1.00\text{～}1.10\ \mathrm{s}$ 弱信号恢复期更清晰暴露出支路 C 因系数未换算而迟迟释放不上去，增益仅爬到 $1.9500$。）</p>
 <p><img alt="图45 整块峰值 AGC 的分块、增益与输出对照" src="../figures/fig45_agc_blocks.png" onerror="this.alt+='（图缺失）'" /></p>
-<p>阅读图 45 时需上下对照两条时间轴的物理含义：图 45(a) 从发布的四个 <code>PCM16</code> 文件读回样本，以 $10\ \mathrm{ms}$ 滑窗中心绘制输入与 A、B、C 三条支路的短时 RMS 包络，在 $0.5\ \mathrm{s}$ 刚过即可看到支路 B（橙色/虚线）先于 $0.525\ \mathrm{s}$ 突增点提前跌落，而在 $0.8\ \mathrm{s}$ 信号转弱后支路 C 回升严重迟缓；图 45(b) 则将阶梯状增益画在每一块收齐并算出控制量的<strong>因果可用时刻</strong>（块右边界），提醒读者离线回画在原样本位置上的平滑输出在实际流式系统中必须付出整块缓冲延迟（完整逐块状态见<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/audio/MANIFEST.json">主音频参数清单</a>与 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch10/chapter10_experiments.py"><code>chapter10_experiments.py</code></a>）。请先调低音量，对比试听四条音频在突增边界与弱音恢复段的包络差异：</p>
+<p>阅读图 45 时需上下对照两条时间轴的物理含义：图 45(a) 从发布的四个 <code>PCM16</code> 文件读回样本，以 $10\ \mathrm{ms}$ 滑窗中心绘制输入与 A、B、C 三条支路的短时 RMS 包络，在 $0.5\ \mathrm{s}$ 刚过即可看到支路 B（绿色虚线）先于 $0.525\ \mathrm{s}$ 突增点提前跌落，而在 $0.8\ \mathrm{s}$ 信号转弱后支路 C 回升严重迟缓；图 45(b) 则将阶梯状增益画在每一块收齐并算出控制量的<strong>因果可用时刻</strong>（块右边界），提醒读者离线回画在原样本位置上的平滑输出在实际流式系统中必须付出整块缓冲延迟（完整逐块状态见<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/audio/MANIFEST.json">主音频参数清单</a>与 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch10/chapter10_experiments.py"><code>chapter10_experiments.py</code></a>）。请先调低音量，对比试听四条音频在突增边界与弱音恢复段的包络差异：</p>
 <ul>
 <li><a href="audio/agc_blocks_input.wav">合成输入</a><audio class="audio-sample" controls preload="none" aria-label="合成输入" src="audio/agc_blocks_input.wav">请使用上方 WAV 链接下载。</audio></li>
 <li><a href="audio/agc_blocks_10ms.wav">10 ms 块、按时间常数换算系数</a><audio class="audio-sample" controls preload="none" aria-label="10 ms 块、按时间常数换算系数" src="audio/agc_blocks_10ms.wav">请使用上方 WAV 链接下载。</audio></li>
@@ -2372,7 +2379,7 @@ $$</p>
 <li><strong>任意释放相位的最坏阻塞上界</strong>：若 B 恰好在 A 释放前无穷小量 $\delta>0\ \mathrm{ms}$ 刚刚启动，剩余不可抢占执行时间为 $15-\delta\ \mathrm{ms}$，叠加上 A 自身的 $2\ \mathrm{ms}$ 服务耗时得响应时间 $17-\delta\ \mathrm{ms}$，故<strong>$17\ \mathrm{ms}$ 是该不可抢占阻塞族的最小上确界</strong>。若改为零开销可抢占调度，A 在 $t=0$ 即可打断 B 在 $[0,2)\ \mathrm{ms}$ 准时完成——这提醒嵌入式音频架构师：把慢速矩阵特征分解或大块日志压缩放进与实时帧同核的不可抢占临界区，哪怕总 CPU 占用不到四成也会引发爆音。</li>
 </ul>
 <p><img alt="图62 软统计更新、有限尾部和不可抢占阻塞的数学对照" src="../figures/fig62_engineering_limits.png" onerror="this.alt+='（图缺失）'" /></p>
-<p>结合图 62 的三幅子图可以把 E10-28～E10-30 的三条工程边界串起来读：图 62(a) 对比了连续高功率输入下固定系数递归（迅速窜升至 $4.904$）与 MCRA 软控制递归（平缓控制在 $3.015$）的轨迹分叉；图 62(b) 画出解析无限尾部直线 $D_\infty[n]$ 与四点截断曲线 $D_4[n]$ 的向下偏折，直观展示为何仿真或实测 RIR 截得太短会系统性压低混响估计；图 62(c) 则画出 B 从 $-1\ \mathrm{ms}$ 持续霸占线程到 $14\ \mathrm{ms}$、将高优先级任务 A 挤出 $10\ \mathrm{ms}$ 红线的甘特图，并与 $17\ \mathrm{ms}$ 理论上界标线对照。</p>
+<p>结合图 62 的三幅子图可以把 E10-28～E10-30 的三条工程边界串起来读：图 62(a) 对比了连续高功率输入下固定系数递归（迅速窜升至 $4.904$）与 MCRA 软控制递归（平缓控制在 $3.015$）的轨迹分叉；图 62(b) 画出解析无限尾部直线 $D_\infty[n]$ 与四点截断曲线 $D_4[n]$ 的向下偏折，直观展示为何仿真或实测 RIR 截得太短会系统性压低混响估计；图 62(c) 则画出低优先级任务 B 从 $-1\ \mathrm{ms}$ 持续占用线程至 $14\ \mathrm{ms}$、将 $0\ \mathrm{ms}$ 到达的高优先级任务 A 推迟至 $16\ \mathrm{ms}$ 完成（超出 $10\ \mathrm{ms}$ 截止期红线，并逼近图中灰色点划线标出的 $\Delta\to 0^+$ 理论最坏响应上界 $15+2=17\ \mathrm{ms}$）的调度时序甘特图。</p>
 <p><a id="e10-31"></a></p>
 <h3 id="sec-u-48ac926809">E10-31：单设备计数与外部计时能辨别哪个时钟</h3>
 <p>假设手头只有一台采集设备的样本计数器与主机外部计时器读数，参考端仅给出纸面标称采样率 $f_0>0$（没有第二台真实同步采样计数，主机计时器本身也未经原子钟校准）。设设备真实采样率为 $f_d=f_0(1+\varepsilon)$，主机计时器读数为 $\widetilde{t}=(1+\eta)t$（$\varepsilon,\eta>-1$，$t=0$ 时双双归零）。推导从该单边记录唯一可辨识的无量纲比率，并说明何时能够解开这种不可辨识性。</p>
@@ -2399,7 +2406,7 @@ $$</p>
 <h3 id="sec-u-883aea6471">E10-32：原推理包装器的填充不能变成新音频时长</h3>
 <p>审查开源语音增强项目 FastEnhancer 固定提交（<code>f85223bd</code>）中的 <a href="https://github.com/aask1357/fastenhancer/blob/f85223bd546b27f39dc0744e0310dcd246f750a4/scripts/test_onnx.py"><code>scripts/test_onnx.py</code> 推理脚本</a>：其帧循环按 <code>range(0, length + window - hop, hop)</code> 步进，打印 RTF 时直接拿最后一次循环的 <code>idx + hop_size</code> 当作音频总样本数，最后又把输出波形裁剪回原输入长度 <code>length</code>。给定输入长度 $1000$ 点、窗长 $512$、帧移 $256$、采样率 $16\ \mathrm{kHz}$，在受控总推理耗时固定为 $10\ \mathrm{ms}$ 的条件下，对比原脚本打印值与按式(10-12)真实源音频时长计算的 RTF。</p>
 <p><strong>解答</strong>：代入循环上界 <code>1000 + 512 - 256 = 1256</code>，<code>range(0, 1256, 256)</code> 依次取起点 <code>[0, 256, 512, 768, 1024]</code> 共执行 $5$ 次推理，末次 <code>idx + hop</code> 等于 $1024+256=1280$ 点，但最终落盘交付的有效增强音频仍被裁回最初的 $1000$ 点（$1000/16000=0.0625\ \mathrm{s}$）。</p>
-<p>原包装器把首尾凑帧补零一并塞进分母，打印出 $0.01/(1280/16000)=0.125$；而按式(10-12)以真实源音频时长为分母，处理这段 $1000$ 点语音总共花费了全部 $5$ 次调用的 $10\ \mathrm{ms}$ 算力，真实 $\mathrm{RTF}=0.01/0.0625=0.16$。原打印值相当于把负载人为压低了 $1-1000/1280=21.875\%$（静态与受控调用核对详见<a href="research/03_industrial_deployment.html#industrial-controlled-contracts">工业接口受控审计说明</a>）。</p>
+<p>原包装器把首尾凑帧补零一并塞进分母，打印出 $0.01/(1280/16000)=0.125$；而按式(10-12)以真实源音频时长为分母，处理这段 $1000$ 点语音总共花费了全部 $5$ 次调用的 $10\ \mathrm{ms}$ 算力，真实 $\mathrm{RTF}=0.01/0.0625=0.16$。原打印值相当于把负载人为压低了 $1-1000/1280=21.875\%$（静态与受控调用核对详见<a href="research/03_industrial_deployment.html#industrial-controlled-contracts">工业接口受控核验说明</a>）。</p>
 <p><a id="e10-33"></a></p>
 <h3 id="sec-u-01852a5d9c">E10-33：噪声统计失配怎样分别留下残余和损伤目标</h3>
 <p>构造一段 $2\ \mathrm{s}$（$32000$ 点）、$16\ \mathrm{kHz}$ 单声道合成观测 $y[n]=s[n]+v[n]$：干净目标 $s[n]$ 由幅度 $0.12$ 的 $500\ \mathrm{Hz}$ 余弦与幅度 $0.08$ 的 $1500\ \mathrm{Hz}$ 余弦叠加而成，前 $6400$ 点（$0.4\ \mathrm{s}$）静音，<code>[6400, 6720)</code> 乘含端点 $\sin^2$ 淡入，末尾 $320$ 点同形淡出；加性噪声 $v[n]$ 由固定种子 <code>20261001</code>（<code>PCG64</code>）生成的独立标准高斯白噪声乘以分段标准差——样本 $19200$（$1.2\ \mathrm{s}$）之前 $\sigma=0.03$，之后突增 $4$ 倍至 $\sigma=0.12$（方差突增 $16$ 倍）。三条谱减支路共用 $512$ 点周期 Hann 窗、$128$ 点帧移、居中 STFT 与式(10-8)的 $\alpha=1,\ \beta=0.04$，仅更换噪声功率估计来源：</p>
@@ -2514,19 +2521,19 @@ $$</p>
 </ul>
 <p><a id="e10-34"></a></p>
 <h3 id="sec-u-fbd4df22d3">E10-34：坏麦置零之后，为什么必须重算波束</h3>
-<p>设三麦克风阵列的已知目标响应向量为 $\vec{d}=[1,1,1]^\top$，归一化噪声空间协方差矩阵为 $\mathbf{R}=\mathbf{B}\mathbf{B}^\top$，其中</p>
+<p>设三麦克风阵列的已知目标响应向量为 $\vec{d}=[1,1,1]^\top$，归一化噪声空间协方差矩阵为 $\mathbf{R}_{nn}=\mathbf{B}\mathbf{B}^\top$，其中</p>
 <p>$$
 \mathbf B=\begin{bmatrix}
 1&0&0\\1&1&0\\0&1&1
 \end{bmatrix},\qquad
-\mathbf R=\begin{bmatrix}
+\mathbf R_{nn}=\begin{bmatrix}
 1&1&0\\1&2&1\\0&1&2
 \end{bmatrix}.
 $$</p>
 <p>通道按 $0,1,2$ 编号，运行中硬件诊断已确认<strong>通道 $0$ 损坏失效</strong>（输入置零）。</p>
 <p>按 §10.10 的式(10-17)与式(10-18)逐步手算对比三种支路的目标响应与输出噪声功率：① 故障前完整三麦 MVDR；② 通道 $0$ 失效后不重算权重、直接沿用原权重的后两项（等价于把旧权重第 $0$ 项置零）；③ 抽取健康子集 $\mathcal{I}=(1,2)$ 重算二麦子阵 MVDR。随后核对随仓 16 位 PCM 波形实测误差。</p>
 <p><strong>解答</strong>：分五步完成代数推演与波形核验（对应代码见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch10/core/channel_selection.py"><code>channel_selection.py</code></a> 与生成脚本 <code>codes.chapters.ch10.examples.generate_channel_audio</code>）。</p>
-<p><strong>第一步：故障前完整三麦 MVDR 手算。</strong> 解线性方程组 $\mathbf{R}\vec{q}=\vec{d}$：</p>
+<p><strong>第一步：故障前完整三麦 MVDR 手算。</strong> 解线性方程组 $\mathbf{R}_{nn}\vec{q}=\vec{d}$：</p>
 <p>$$
 \begin{aligned}
 q_0+q_1&=1,\\
@@ -2534,12 +2541,12 @@ q_0+2q_1+q_2&=1,\\
 q_1+2q_2&=1.
 \end{aligned}
 $$</p>
-<p>第 2 式减第 1 式得 $q_1+q_2=0$，与第 3 式相减立即解出 $q_2=1,\ q_1=-1$，回代第 1 式得 $q_0=2$，即 $\vec{q}=[2,-1,1]^\top$。归一化分母为 $\vec{d}^\top\vec{q}=2-1+1=2$，故健康完整阵列的最优 MVDR 权重为 $\vec{w}=[1,-1/2,1/2]^\top$。验算得 $\mathbf{R}\vec{w}=[1/2,1/2,1/2]^\top$，目标响应 $\vec{w}^\top\vec{d}=1$，输出归一化噪声功率为 $\vec{w}^\top\mathbf{R}\vec{w}=1/2=0.5$。</p>
+<p>第 2 式减第 1 式得 $q_1+q_2=0$，与第 3 式相减立即解出 $q_2=1,\ q_1=-1$，回代第 1 式得 $q_0=2$，即 $\vec{q}=[2,-1,1]^\top$。归一化分母为 $\vec{d}^\top\vec{q}=2-1+1=2$，故健康完整阵列的最优 MVDR 权重为 $\vec{w}=[1,-1/2,1/2]^\top$。验算得 $\mathbf{R}_{nn}\vec{w}=[1/2,1/2,1/2]^\top$，目标响应 $\vec{w}^\top\vec{d}=1$，输出归一化噪声功率为 $\vec{w}^\top\mathbf{R}_{nn}\vec{w}=1/2=0.5$。</p>
 <p><strong>第二步：通道 $0$ 失效后沿用旧权重的灾难性抵消。</strong> 当通道 $0$ 输入变为全零（或直接把旧权重首项置零）时，实际作用在健康通道 $(1,2)$ 上的残缺旧权重变为 $\vec{w}_{\mathrm{old},\mathcal{I}}=[-1/2,1/2]^\top$。它对目标信号 $[1,1]^\top$ 的总响应变成 $-1/2+1/2=0$——<strong>目标语音被一正一负两颗健康麦精确对消得干干净净</strong>！无论后级 AGC 再乘多大的有限增益，零乘任何常数依然是零；而此时残余噪声功率却仍保持为</p>
 <p>$$
 \begin{aligned}
 \vec{w}_{\mathrm{old},\mathcal{I}}^\top
-\mathbf{R}_{\mathcal{I}}\vec{w}_{\mathrm{old},\mathcal{I}}
+\mathbf{R}_{nn,\mathcal{I}}\vec{w}_{\mathrm{old},\mathcal{I}}
 &=[-1/2,\,1/2]\begin{bmatrix}2&1\\1&2\end{bmatrix}
 \begin{bmatrix}-1/2\\1/2\end{bmatrix}\\
 &=\frac12=0.5,
@@ -2550,7 +2557,7 @@ $$</p>
 <p>$$
 \begin{aligned}
 \mathbf S&=\begin{bmatrix}0&1&0\\0&0&1\end{bmatrix},\\
-\mathbf R_{\mathcal I}
+\mathbf R_{nn,\mathcal I}
  &=\begin{bmatrix}2&1\\1&2\end{bmatrix},\\
 \vec d_{\mathcal I}&=[1,1]^\top.
 \end{aligned}
@@ -2586,7 +2593,7 @@ $$</p>
 </tr>
 </tbody>
 </table></div>
-<p><strong>第四步：同模型合成波形与总误差盲区剖析。</strong> 随仓独立音频组（$16\ \mathrm{kHz}$、$32000$ 点，共同导出增益 $1$）取目标信号 $s[n]=0.1\sin(2\pi\times 500n/16000)$，三路等幅正交噪声基 $\vec{u}[n]$ 分别取 $1500$、$2500$、$3500\ \mathrm{Hz}$ 正弦（首尾各 $320$ 点 $\sin^2$ 淡变），构造三麦接收波形 $\vec{x}[n]=\vec{d}s[n]+\mathbf{B}\vec{u}[n]$。在包络恒为 $1$ 的稳定评分窗 <code>[2400, 29600)</code>（共 $27200$ 点，四根谱线分别含精确整周期 $850,2550,4250,5950$ 周，彼此严格正交）内，目标功率 $P_s=0.005$，时间噪声协方差恰为 $0.005\mathbf{R}$。记实际目标增益为 $g=\vec{w}^H\vec{d}$、输出残余噪声波形为 $n_y$，未量化总误差 $e=y-s$ 满足</p>
+<p><strong>第四步：同模型合成波形与总误差盲区剖析。</strong> 随仓独立音频组（$16\ \mathrm{kHz}$、$32000$ 点，共同导出增益 $1$）取目标信号 $s[n]=0.1\sin(2\pi\times 500n/16000)$，三路等幅正交噪声基 $\vec{u}[n]$ 分别取 $1500$、$2500$、$3500\ \mathrm{Hz}$ 正弦（首尾各 $320$ 点 $\sin^2$ 淡变），构造三麦接收波形 $\vec{x}[n]=\vec{d}s[n]+\mathbf{B}\vec{u}[n]$。在包络恒为 $1$ 的稳定评分窗 <code>[2400, 29600)</code>（共 $27200$ 点，四根谱线分别含精确整周期 $850,2550,4250,5950$ 周，彼此严格正交）内，目标功率 $P_s=0.005$，时间噪声协方差恰为 $0.005\mathbf{R}_{nn}$。记实际目标增益为 $g=\vec{w}^H\vec{d}$、输出残余噪声波形为 $n_y$，未量化总误差 $e=y-s$ 满足</p>
 <p>$$
 \begin{aligned}
 e&=(g-1)s+n_y,\\

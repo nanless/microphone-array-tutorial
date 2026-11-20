@@ -1595,7 +1595,7 @@ def site_source_digest():
         paths += sorted(asset_root.glob("*"))
     paths += sorted((ROOT / "figures").glob("fig*.png"))
     paths += [ROOT / "scripts/course_home" / name for name in ("index.html", "home.css", "home.js")]
-    paths += [ROOT / "assets/readme/lab" / name for name in ("single.wav", "left.wav", "right.wav")]
+    paths += [ROOT / "assets/readme/lab" / name for name in ("array-lab.html", "single.wav", "left.wav", "right.wav")]
     paths += [ROOT / "assets/readme/cases/locata" / name for name in
               ("MANIFEST.json", "NOTICE.txt", "before.wav", "after.wav", "mvdr.wav", "focus.wav", "levels.svg")]
     paths += [ROOT / "scripts" / name for name in

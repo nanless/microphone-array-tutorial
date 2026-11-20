@@ -1,10 +1,10 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 7 章 · 去混响（WPE） · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="74c593002f97"><style>
-*{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
-.topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
-.topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
+<meta name="source-digest" content="10a21c80bda5"><style>
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
+.topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941}
+.topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
 h1,h2,h3,h4{scroll-margin-top:60px}
 @media screen{.main a[id]:not([href]){scroll-margin-top:60px}}
 @media screen{.main a[id^="e"],.main .exercise-alias{scroll-margin-top:80px}}
@@ -17,64 +17,66 @@ h1,h2,h3,h4{scroll-margin-top:60px}
 @media screen{.main a[id^="e11-"]{scroll-margin-top:60px}}
 @media screen{.main .separation-topic-anchor{scroll-margin-top:60px}}
 @media screen{.main .source-reproduction-anchor{scroll-margin-top:60px}}
-a:focus-visible,summary:focus-visible{outline:3px solid #e67e22;outline-offset:3px}
-.skip-link{position:absolute;left:10px;top:-60px;z-index:30;background:#fff;color:#1a1a2e;padding:8px 12px;border:2px solid #e67e22}
+a:focus-visible,summary:focus-visible{outline:2.5px solid #B84A2E;outline-offset:3px}
+.skip-link{position:absolute;left:10px;top:-60px;z-index:30;background:#fff;color:#1C1E21;padding:8px 12px;border:2px solid #B84A2E}
 .skip-link:focus{top:8px}
-.wrap{display:flex;max-width:1280px;margin:0 auto}
-.side{width:300px;flex-shrink:0;padding:20px 14px;position:sticky;top:47px;height:calc(100vh - 47px);overflow-y:auto;background:#fff;border-right:1px solid #e5e8ee;font-size:13.5px}
-.side a{color:#2f6db3;text-decoration:none}.side a:hover{text-decoration:underline}
-.side .chap{margin:10px 0 2px;font-weight:700}.side .chap.cur{color:#c0392b}
-.side ul{margin:2px 0 6px;padding-left:16px;color:#666}.side li{margin:2px 0}
-.main{flex:1;min-width:0;padding:28px 36px;background:#fff;overflow-wrap:anywhere}
+.wrap{display:flex;max-width:1280px;margin:0 auto;border-left:1px solid #E3DED3;border-right:1px solid #E3DED3}
+.side{width:300px;flex-shrink:0;padding:20px 15px;position:sticky;top:47px;height:calc(100vh - 47px);overflow-y:auto;background:#FAF8F3;border-right:1px solid #DDD7CB;font-size:13.5px}
+.side a{color:#1F5A92;text-decoration:none}.side a:hover{text-decoration:underline}
+.side .chap{margin:10px 0 2px;font-weight:700;color:#26292E}.side .chap.cur{color:#B84A2E}
+.side ul{margin:2px 0 6px;padding-left:16px;color:#5A554D}.side li{margin:2px 0}
+.main{flex:1;min-width:0;padding:32px 40px;background:#fff;overflow-wrap:anywhere}
+.main a{color:#1F5A92;text-underline-offset:.2em}
 .main p{margin:0 0 1.2em}.main ul,.main ol{margin:.55em 0 1.2em;padding-left:1.55em}.main li{margin:.42em 0}.main li>p{margin:.5em 0}
-.main p>strong:first-child,.main li>strong:first-child{color:#0f2744}
-.main img{max-width:100%;height:auto;display:block;margin:16px auto;border:1px solid #dbe3ee;border-radius:6px;padding:3px;min-height:40px;background:#fff}
-.audio-sample{display:block;width:min(100%,460px);margin:8px 0 18px}.audio-sample:focus-visible{outline:3px solid #e67e22}
+.main p>strong:first-child,.main li>strong:first-child{color:#14171A}
+.main img{max-width:100%;height:auto;display:block;margin:18px auto;border:1px solid #DFDAD0;border-radius:5px;padding:4px;min-height:40px;background:#fff}
+.audio-sample{display:block;width:min(100%,460px);margin:8px 0 18px}.audio-sample:focus-visible{outline:2.5px solid #B84A2E}
 /* 表格列宽不能压掉原生播放按钮；手机上的表格可横向滚动。 */
 td .audio-sample{width:280px;min-width:280px}
 table:has(td .audio-sample) td:last-child{min-width:180px}
-table{border-collapse:collapse;margin:16px 0;max-width:100%}
+table{border-collapse:collapse;margin:18px 0;max-width:100%;border-top:1.5px solid #2A2E34;border-bottom:1.5px solid #2A2E34}
 .table-scroll{max-width:100%;overflow-x:auto}
-.table-scroll:focus-visible{outline:3px solid #e67e22;outline-offset:2px}
-th,td{border:1px solid #d5dfec;padding:7px 11px;font-size:14px;text-align:left;line-height:1.58}
-th{background:#e8eff9;color:#0f2744;border-bottom:1.5px solid #94a3b8}
-tbody tr:nth-child(even) td{background:#f8fafc}
-code{background:#eef2f7;color:#0f294a;border:1px solid #d8e1ec;padding:1px 5px;border-radius:4px;font-size:13.5px}
-pre{background:#122036;color:#e8ecf3;padding:14px 16px;border-radius:8px;overflow-x:auto}
+.table-scroll:focus-visible{outline:2.5px solid #B84A2E;outline-offset:2px}
+th,td{border-top:1px solid #E3DED3;border-bottom:1px solid #E3DED3;border-left:none;border-right:none;padding:8px 11px;font-size:14px;text-align:left;line-height:1.58}
+th{background:#F5F2EB;color:#1C1E21;border-bottom:1px solid #8A8275;font-weight:700}
+tbody tr:nth-child(even) td{background:#FCFBF9}
+code{background:#F3F0E8;color:#1E3A56;border:1px solid #E0DBD0;padding:1px 5px;border-radius:4px;font-size:13.5px}
+pre{background:#F5F3EE;color:#1F2328;border:1px solid #DFDAD0;border-left:3.5px solid #5C564D;padding:14px 16px;border-radius:8px;overflow-x:auto}
 pre code{background:none;border:none;color:inherit;padding:0}
-blockquote{border-left:4px solid #2563eb;margin:16px 0;padding:10px 15px;background:#f0f6ff;border-radius:0 6px 6px 0;color:#1e293b}
+blockquote{border-left:3.5px solid #B84A2E;margin:18px 0;padding:10px 16px;background:#F7F5F0;border-radius:0 4px 4px 0;color:#2B2E33}
 blockquote p:last-child{margin-bottom:0}
+hr{border:none;border-top:1px solid #DDD7CB;margin:26px 0}
 mjx-container[jax="CHTML"]{font-size:110%!important;overflow-x:auto;overflow-y:hidden;max-width:100%;min-width:0!important}
 body mjx-assistive-mml{width:1px!important;max-width:1px!important;min-width:0!important;height:1px!important;overflow:hidden!important}
 pre,.table-scroll,mjx-container[jax="CHTML"]{overflow-wrap:normal}
-.pn{display:flex;justify-content:space-between;margin:34px 0 12px;padding-top:16px;border-top:1px solid #d5dfec;font-weight:650}
-.pn a{color:#1d4ed8;text-decoration:none}.pn .off{color:#aaa}
-.foot{color:#64748b;font-size:13px;margin:20px 0 40px}
-.main h1{font-size:27px;color:#0f2744;background:#edf3fc;border-top:4px solid #1e3a8a;border-left:5px solid #1e3a8a;border-bottom:1px solid #cbd5e1;padding:13px 17px 11px;border-radius:0 6px 6px 0;margin:0 0 22px;line-height:1.3}
-.main h2{font-size:21px;color:#0f294a;background:#f3f7fc;border-left:4.5px solid #1d4ed8;border-bottom:1px solid #cbd5e1;padding:8px 13px 7px;margin:34px 0 15px;border-radius:0 5px 5px 0;line-height:1.35}
-.main h3{font-size:18px;color:#1e3a8a;border-left:3.5px solid #3b82f6;padding:2px 0 2px 11px;margin:26px 0 12px;line-height:1.4}
-.main h4{font-size:16px;color:#1e40af;border-left:2.5px solid #93c5fd;padding:1px 0 1px 9px;margin:20px 0 10px;line-height:1.4}
-.main h3.tutorial-worked-heading{background:#f0fdfa;border:1px solid #99f6e4;border-left:4.5px solid #0d9488;color:#115e59;padding:7px 13px;border-radius:6px;margin:26px 0 13px;font-size:17.2px}
-.main h3.tutorial-exercise-heading,.main h4.tutorial-exercise-heading{background:#eff6ff;border:1px solid #bfdbfe;border-left:5px solid #2563eb;color:#1e3a8a;padding:9px 14px;border-radius:6px;margin:30px 0 13px;font-size:17px;line-height:1.45}
-.main p.tutorial-exercise-lead{background:#eff6ff;border:1px solid #bfdbfe;border-left:5px solid #2563eb;padding:11px 15px;border-radius:6px;margin:26px 0 13px}
+.pn{display:flex;justify-content:space-between;margin:36px 0 12px;padding-top:16px;border-top:1px solid #DDD7CB;font-weight:650}
+.pn a{color:#1F5A92;text-decoration:none}.pn .off{color:#9C9588}
+.foot{color:#6E695F;font-size:13px;margin:20px 0 40px}
+.main h1{font-size:27px;color:#14171A;border-top:2.5px solid #1F5A92;border-bottom:1.5px solid #1C1E21;padding:12px 0 10px;margin:0 0 24px;line-height:1.3}
+.main h2{font-size:21px;color:#14171A;border-left:3.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;padding:1px 0 7px 11px;margin:36px 0 15px;line-height:1.35}
+.main h3{font-size:18px;color:#1F5A92;margin:26px 0 11px;line-height:1.4}
+.main h4{font-size:16px;color:#2C2F33;border-left:2.5px solid #B84A2E;padding:1px 0 1px 9px;margin:20px 0 9px;line-height:1.4}
+.main h3.tutorial-worked-heading{background:#FAF8F3;border-top:1.5px solid #237263;border-bottom:1px solid #E2DDD2;border-left:3.5px solid #237263;color:#1A574B;padding:7px 13px;border-radius:2px;margin:28px 0 13px;font-size:17.2px}
+.main h3.tutorial-exercise-heading,.main h4.tutorial-exercise-heading{background:#F5F2EB;border-top:1.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;border-left:4px solid #1F5A92;color:#14171A;padding:8px 14px;border-radius:2px;margin:30px 0 13px;font-size:17px;line-height:1.45}
+.main p.tutorial-exercise-lead{background:#F5F2EB;border-top:1.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;border-left:4px solid #1F5A92;padding:10px 15px;border-radius:2px;margin:28px 0 13px}
 .main ol>li.tutorial-exercise-item{margin:18px 0}
-.main .tutorial-exercise-card{background:#f8fafc;border:1px solid #d5e0ee;border-left:4px solid #2563eb;border-radius:6px;padding:12px 16px}
+.main .tutorial-exercise-card{background:#FAF8F3;border:1px solid #E0DBD0;border-left:3.5px solid #1F5A92;border-radius:4px;padding:12px 16px}
 .main .tutorial-exercise-card>:first-child{margin-top:0}
 .main .tutorial-exercise-card>:last-child{margin-bottom:0}
-.main p.tutorial-solution-lead{background:#f0fdf4;border-left:3.5px solid #16a34a;padding:8px 13px;border-radius:0 5px 5px 0;margin-top:9px}
-.main p.tutorial-solution-lead>strong:first-child{color:#15803d}
-.main p.tutorial-problem-lead{border-left:3px solid #2563eb;padding-left:11px}
-.main p.tutorial-problem-lead>strong:first-child{color:#1d4ed8}
-.toc-mobile{display:none;margin:0 0 16px;border:1px solid #e5e8ee;border-radius:8px;padding:10px 14px;background:#f7fafd;font-size:14px}
-.toc-mobile summary{cursor:pointer;font-weight:700}
-.toc-mobile ul{padding-left:18px;margin:8px 0 2px}.toc-mobile a{color:#2f6db3;text-decoration:none}
-.topbtn{display:block;margin:20px auto;background:#1a1a2e;color:#fff;border-radius:50%;width:42px;height:42px;text-align:center;line-height:42px;text-decoration:none;font-size:18px}
-.offline-note{display:none;background:#fff7e6;border:1px solid #e6c87a;color:#7a5b00;padding:8px 14px;font-size:13.5px}
+.main p.tutorial-solution-lead{background:#F3F6F4;border-left:3.5px solid #237263;padding:8px 13px;border-radius:0 3px 3px 0;margin-top:9px}
+.main p.tutorial-solution-lead>strong:first-child{color:#1D5E51}
+.main p.tutorial-problem-lead{border-left:2.5px solid #1F5A92;padding-left:11px}
+.main p.tutorial-problem-lead>strong:first-child{color:#1F5A92}
+.toc-mobile{display:none;margin:0 0 16px;border:1px solid #DDD7CB;border-radius:6px;padding:10px 14px;background:#FAF8F3;font-size:14px}
+.toc-mobile summary{cursor:pointer;font-weight:700;color:#1C1E21}
+.toc-mobile ul{padding-left:18px;margin:8px 0 2px}.toc-mobile a{color:#1F5A92;text-decoration:none}
+.topbtn{display:block;margin:20px auto;background:#24282E;color:#FAF8F3;border-radius:50%;width:42px;height:42px;text-align:center;line-height:42px;text-decoration:none;font-size:18px}
+.offline-note{display:none;background:#F7EFE4;border:1px solid #D9B78E;color:#6E4219;padding:8px 14px;font-size:13.5px}
 .anchor-alias{display:block;position:relative;top:-60px;visibility:hidden}
 .tutorial-math-tail{display:inline-block;white-space:nowrap;overflow-wrap:normal;vertical-align:baseline;overflow:visible}
 .tutorial-math-tail mjx-assistive-mml{max-width:1px!important;min-width:0!important;white-space:normal}
-.tutorial-exercise-id{white-space:nowrap;overflow-wrap:normal;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:.87em;background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;padding:0 5px;border-radius:4px}
-:is(.tutorial-exercise-heading,.tutorial-exercise-lead) .tutorial-exercise-id{background:#1d4ed8;color:#fff;border-color:#1d4ed8;padding:1px 7px;margin-right:4px;font-size:.84em}
+.tutorial-exercise-id{white-space:nowrap;overflow-wrap:normal;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:.88em;background:#F3EFE6;color:#B84A2E;border:1px solid #DDD5C7;padding:0 5px;border-radius:3px;font-weight:700}
+:is(.tutorial-exercise-heading,.tutorial-exercise-lead) .tutorial-exercise-id{background:#1F5A92;color:#fff;border-color:#1F5A92;padding:1px 7px;margin-right:5px;font-size:.84em}
 .tutorial-table-label{white-space:nowrap;overflow-wrap:normal}
 @media(max-width:900px){.selection-readable-table{min-width:760px}.selection-readable-table th,.selection-readable-table td{min-width:10em}.selection-readable-table th:first-child,.selection-readable-table td:first-child{min-width:6em}}
 @media(max-width:900px){.side{display:none}.main{padding:20px}.toc-mobile{display:block}.topbar{font-size:14px}mjx-container[jax="CHTML"]:not([display="true"]){display:inline-block;vertical-align:middle}.aec-readable-table th,.aec-readable-table td,.wpe-readable-table th,.wpe-readable-table td,.separation-readable-table th,.separation-readable-table td{min-width:8em}.tracking-readable-table th,.tracking-readable-table td{min-width:8em}.industrial-readable-table th,.industrial-readable-table td{min-width:8em}}
@@ -478,7 +480,8 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <span id="sec-1" class="anchor-alias" aria-hidden="true"></span><h1 id="sec-u-4a68625d05">7. 去混响（WPE）</h1>
 <p>第 6 章讨论了扬声器播放信号耦合回麦克风所形成的声学回声。本章转向另一类由房间声学传播引起的干扰：声波在墙壁、天花板与家具之间反复反射形成的晚期混响拖尾，并重点推导工业界广泛采用的加权预测误差（Weighted Prediction Error，WPE）去混响算法。多说话人混合分离、时频掩码估计以及前端模块的完整串联顺序将在第 8 章展开。</p>
 <span id="sec-2" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-7-1">7.1 问题、模型与直觉算例</h2>
-<p>声学回声消除（Acoustic Echo Cancellation，AEC）能够直接利用已知的扬声器播放参考信号做自适应抵消；而在远场拾音的去混响任务中，系统并不知道说话人嘴边的干净干声，只能依靠麦克风自身的观测信号挖掘跨帧统计规律。加权预测误差法（WPE）的核心思路，是在短时傅里叶变换（Short-Time Fourier Transform，STFT）域用过去的观测帧线性预测当前帧中的晚期混响拖尾，再将其从当前观测中减去。为了避免把说话人本身的语音包络一并当成混响减掉，算法在当前帧与预测历史之间留出一段保护延迟 $\Delta$，从而尽量保全直达声与对语音可懂度有益的早期反射；不过当保护延迟过短、统计样本不足或声学模型失配时，早期语音成分仍可能受到损伤。</p>
+<p>声学回声消除（Acoustic Echo Cancellation，AEC）能够直接利用已知的扬声器播放参考信号做自适应抵消；而在远场拾音的去混响任务中，系统并不知道说话人嘴边的干净干声，只能依靠麦克风自身的观测信号挖掘跨帧统计规律。与<a href="05_beamforming.html">第 5 章</a>的单帧窄带波束形成相比，典型房间混响时间 $T_{60}$（常达数百毫秒）远超单帧 STFT 分析窗长（如 $32\ \mathrm{ms}$），仅靠当前单帧的空间滤波虽能压低偏离目标方向的各向弥散反射，却无法跨帧剥离沿目标方向或近旁反射面迟到的历史语音残影，因而必须引入跨帧时间线性预测，与单帧空间滤波形成“先跨帧去拖尾、再单帧定方向”的前端分工。</p>
+<p>加权预测误差法（WPE）的核心思路，正是在短时傅里叶变换（Short-Time Fourier Transform，STFT）域用过去的观测帧线性预测当前帧中的晚期混响拖尾，再将其从当前观测中减去。为了避免把说话人本身的语音包络一并当成混响减掉，算法在当前帧与预测历史之间留出一段保护延迟 $\Delta$，从而尽量保全直达声与对语音可懂度有益的早期反射；不过当保护延迟过短、统计样本不足或声学模型失配时，早期语音成分仍可能受到损伤。</p>
 <h3 id="sec-u-97c5ae9d34">最小术语与记号</h3>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
 <thead>
@@ -522,10 +525,12 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <p>工程上常见的去混响方法主要沿着三条技术路线演进：第一条是<strong>空间波束形成</strong>（见第 5 章），利用多麦克风空间选择性压低各向同性的弥散晚期混响；第二条是<strong>盲逆滤波或延迟线性预测</strong>，直接针对混响的时间拖尾建模；第三条是<strong>谱增益抑制或深度神经网络（Deep Neural Network，DNN）增强</strong>。本章聚焦第二条路线中的主力方法 WPE——在文献与工程代码中，“WPE”既指加权预测误差这一优化准则，也指围绕该准则构建的迭代或递推去混响算法。</p>
 <h3 id="sec-u-fd7b3468de">三类前置方法及其条件</h3>
 <p>在正式推导 WPE 之前，先看多通道精确逆滤波、倒谱域同态分离和晚期谱方差抑制这三类早期经典方法。弄清它们各自依赖什么物理前提、又在什么地方碰壁，就能明白 WPE 为什么选择“在 STFT 域盲估延迟线性预测器”。</p>
-<p><strong>多通道逆滤波定理（Multiple-input/output INverse Theorem，MINT）</strong>回答了一个基础代数问题：如果房间冲激响应（Room Impulse Response，RIR）完全已知，能不能用有限长滤波器把混响彻底抵消？若只有单支麦克风，传递函数为有限冲激响应（Finite Impulse Response，FIR）多项式 $H_1(z)=\sum_{\tau=0}^{L_h}h_1[\tau]z^{-\tau}$。真实房间的 $H_1(z)$ 往往是非最小相位系统，大量零点落在单位圆外；一旦直接求单通道逆 $1/H_1(z)$，单位圆外的零点就会变成单位圆外的不稳定极点，导致逆滤波器发散。</p>
-<p>MINT 的巧妙之处在于引入多支麦克风，用<strong>多项式线性组合代替多项式除法</strong>。以单声源、两支麦克风（$M=2$）为例，设两条声学路径分别为 $H_1(z)$ 与 $H_2(z)$，我们为两路接收信号分别串接有限长 FIR 滤波器 $U_1(z)$ 与 $U_2(z)$ 并求和，希望合成响应精确等于单位脉冲 $1$（或固定整数延迟 $z^{-d}$）：</p>
-<p>$$H_1(z)U_1(z)+H_2(z)U_2(z)=1.$$</p>
-<p>这正是代数学中著名的<strong>贝祖多项式恒等式（Bézout's identity）</strong>：只要两个多项式 $H_1(z)$ 与 $H_2(z)$ <strong>互素</strong>（即在整个复平面上没有任何公共零点 $z_0$ 使得 $H_1(z_0)=H_2(z_0)=0$），并且逆滤波器阶数足够长，就一定能通过解线性方程组找到精确满足上式的有限长多项式 $U_1(z),U_2(z)$（一般多输入多输出情形对应多项式矩阵的互素满秩条件，见 <a href="https://doi.org/10.1109/29.1509">Miyoshi 与 Kaneda，1988，§III～IV</a>）。从物理上看，单支麦克风在某个频率陷入声学零陷时能量丢失无法挽回，而只要另一支麦克风在同一复频率处没有同时归零，两路互补就能拼出平坦的全通响应。</p>
+<p><strong>多通道逆滤波定理（Multiple-input/output INverse Theorem，MINT）</strong>回答了一个基础代数问题：如果房间冲激响应（Room Impulse Response，RIR）完全已知，能不能用有限长滤波器把混响彻底抵消？为与第 8 章用 $L_h$ 表示滤波器抽头总数的记法区分，本节记声学路径 FIR 多项式的阶数为 $N_h$（对应抽头长度为 $N_h+1$），即第 $m$ 支麦克风的传递函数为 $H_m(z)=\sum_{\tau=0}^{N_h}h_m[\tau]z^{-\tau}$。若只有单支麦克风（$M=1$），真实房间的 $H_1(z)$ 往往是非最小相位系统，大量零点落在单位圆外；一旦直接求单通道逆 $1/H_1(z)$，单位圆外的零点就会变成单位圆外的不稳定极点，导致逆滤波器发散。</p>
+<p>MINT 的巧妙之处在于引入 $M\ge 2$ 支麦克风，用<strong>多项式线性组合代替多项式除法</strong>。为第 $m$ 路接收信号串接阶数为 $N_u$（抽头长度为 $N_u+1$）的因果 FIR 滤波器 $U_m(z)=\sum_{\tau=0}^{N_u}u_m[\tau]z^{-\tau}$ 并求和：物理房间中声波从声源传至阵列存在公共传播延迟（直达抽头之前的首部零值使所有 $H_m(z)$ 在 $z=\infty$ 处具有重零点），因此一般因果精确逆需引入整数建模延迟 $d_0\ge 0$，要求合成响应满足</p>
+<p>$$\sum_{m=1}^M H_m(z)U_m(z)=z^{-d_0}$$</p>
+<p>（若已预先对齐直达声时刻使至少一路 $h_m[0]\ne 0$，可取 $d_0=0$ 令右端为 $1$，如双麦 $H_1(z)U_1(z)+H_2(z)U_2(z)=1$）。将上式两侧同次幂系数对齐，等价于求解时域线性方程组 $\mathcal{H}\vec u=\vec e_{d_0}$，其中广义 Sylvester 卷积矩阵 $\mathcal{H}\in\mathbb{R}^{(N_h+N_u+1)\times M(N_u+1)}$ 共含 $N_h+N_u+1$ 条延迟时刻等式与 $M(N_u+1)$ 个未知滤波系数。要使任意目标向量（含任意合法建模延迟 $d_0$）均精确可解，$\mathcal{H}$ 必须满行秩，首先给出列数不少于行数的阶数必要条件：</p>
+<p>$$M(N_u+1)\ge N_h+N_u+1\iff N_u\ge\left\lceil\frac{N_h-M+1}{M-1}\right\rceil.$$</p>
+<p>例如双麦（$M=2$）取 $N_u=N_h-1$ 时，$\mathcal{H}$ 恰为 $2N_h\times 2N_h$ 方阵（后文练习 <a href="#e07-14">E07-14</a> 与 <a href="#e07-21">E07-21</a> 中一阶路径 $N_h=1$ 搭配零阶常数权重 $N_u=0$ 正是 $2\times 2$ 方阵的最简特例）。在此阶数条件下，由代数学中的<strong>贝祖多项式恒等式（Bézout's identity）</strong>可知：只要各通道多项式 $\{H_m(z)\}_{m=1}^M$ <strong>互素</strong>（即在整个有限复平面上不存在公共零点 $z_0\in\mathbb{C}\setminus\{0\}$ 使所有 $H_m(z_0)=0$，且首抽头不全为零时可取 $d_0=0$），$\mathcal{H}$ 即严格满行秩，必能解出精确满足上式的有限长 FIR 组 $\{U_m(z)\}$（一般多源多麦情形对应多项式矩阵的互素满秩条件，见 <a href="https://doi.org/10.1109/29.1509">Miyoshi 与 Kaneda，1988，§III～IV</a>）。从物理上看，单支麦克风在某个频率陷入声学零陷时能量丢失无法挽回，而只要另一支麦克风在同一复频率处没有同时归零，多路互补就能拼出无混响的纯延迟响应。</p>
 <p>然而 MINT 在实际语音前端极少单独落地：它不仅要求 RIR 预先精确测出且在说话人微动时不发生漂移，而且一旦两条路径存在<strong>近似公共零点</strong>，贝祖方程虽在代数上可解，求出的逆滤波权重 $U_1,U_2$ 幅度却会急剧膨胀，将各麦克风通道的独立底噪放大成百上千倍（本章练习 <a href="#e07-14">E07-14</a> 与 <a href="#e07-20">E07-20</a> 将完整手算这一噪声放大现象）。</p>
 <p><strong>倒谱域加窗（liftering）</strong>试图避开路径测量，借助同态信号处理把声源与房间响应拆开。它先对观测功率谱取自然对数 $\ln|X|^2$（其数值恰好是对数幅度 $\ln|X|$ 对应实倒谱的两倍；遇到零谱值时须先加正数下限保护），再做逆傅里叶变换回到倒谱域。倒谱横轴称为倒频率（quefrency），量纲与时间或采样点相同，而非频率单位 Hz。</p>
 <p>如果长卷积能理想地写成频域乘积 $X=SH$，取对数后就有 $\ln|SH|^2=\ln|S|^2+\ln|H|^2$，声门激励、声道共振与房间反射在倒谱轴上似乎变成了可加分量。可惜在实际语音处理中，短时分析窗并不满足长卷积等价为逐频乘积的前提，基音谐波结构与早期房间反射在倒频率轴上也经常重叠；更重要的是，实倒谱在取模平方时彻底丢掉了相位，单靠倒谱窗平滑幅度谱并不能恢复正确的复数相位（<a href="https://dsp-group.mit.edu/wp-content/uploads/2024/11/nonnlinearfiltering_1968.pdf">Oppenheim、Schafer 与 Stockham，1968，§VI</a> 讨论的精确回声分离依赖复倒谱与相位解缠，对一般混响房间极不稳健，详见练习 <a href="#e07-18">E07-18</a>）。</p>
@@ -657,7 +662,7 @@ G^*(k)X(n-k).
     \end{aligned}$$</p>
 </li>
 </ol>
-<p><strong>最终结果与边界说明</strong>：当前帧观测幅度为 $|X(n)|=\sqrt{0.9^2+0.4^2}=\sqrt{0.97}\approx0.985$，减去预测项后的残差幅度为 $|E(n)|=\sqrt{0.33^2+0.465^2}\approx0.570$（根号内精确值为 $0.325125$），单点谱能量从 $0.97$ 降至约 $0.325$（约下降 $4.74\ \mathrm{dB}$）。这个手算例子帮助我们确认了两件事：一是共轭符号 $G^*(k)$ 会直接翻转虚部交叉项的正负号（写漏共轭会让残差完全算错，见练习 E07-02）；二是“单帧能量下降”本身并不能证明去混响成功——因为本例的 $G$ 是人为指定的，若预测器过拟合了平稳元音，能量同样会大幅下降却造成严重的语音失真，真实系统必须结合多帧统计估计与干净参考指标共同评估。</p>
+<p><strong>最终结果与边界说明</strong>：当前帧观测幅度为 $|X(n)|=\sqrt{0.9^2+0.4^2}=\sqrt{0.97}\approx0.985$，减去预测项后的残差幅度为 $|E(n)|=\sqrt{0.33^2+0.465^2}\approx0.570$（根号内精确值为 $0.325125$），单点谱能量从 $0.97$ 降至约 $0.325$（$10\log_{10}(0.97/0.325125)\approx 4.747\ \mathrm{dB}$，约下降 $4.75\ \mathrm{dB}$）。这个手算例子帮助我们确认了两件事：一是共轭符号 $G^*(k)$ 会直接翻转虚部交叉项的正负号（写漏共轭会让残差完全算错，见练习 E07-02）；二是“单帧能量下降”本身并不能证明去混响成功——因为本例的 $G$ 是人为指定的，若预测器过拟合了平稳元音，能量同样会大幅下降却造成严重的语音失真，真实系统必须结合多帧统计估计与干净参考指标共同评估。</p>
 <h3 id="sec-u-0a05d2772b">算例 7-2：保护期加宽一帧（$\Delta=3$、$K=2$）</h3>
 <p>现在保持预测阶数 $K=2$ 不变，只把保护延迟从 $\Delta=2$ 增大到 $\Delta=3$，观察历史取样窗口如何平移。</p>
 <p><strong>输入与口径</strong>：单通道、单频点，$\Delta=3$，$K=2$。此时求和下标变为 $k=3,4$，即跳过紧邻当前帧的第 $n-1$、$n-2$ 两帧（若 $n=10$，则跳过第 $9,8$ 帧，改取更早的第 $7,6$ 帧）。已知：</p>
@@ -790,7 +795,7 @@ J_\delta(\mathbf G)
 \delta&=\epsilon\|\mathbf A\|_F^2/D.
 \end{aligned}\tag{7-9}$$</p>
 <p>展开分块范数可知下半块贡献 $\delta\|\mathbf G\|_F^2$，且 $\|\mathbf A\|_F^2$ 等于 $\operatorname{tr}(\mathbf A^H\mathbf A)$（即 $\operatorname{tr}(\mathbf R)$），因此式(7-9)与带加载的正规方程式(7-8)在精确算术下完全等价（$\delta=0$ 时省去下方零块即可）。但在有限精度浮点运算中，直接对 $\mathbf A_\delta$ 做正交三角（QR）分解或奇异值分解（Singular Value Decomposition，SVD，见 <a href="https://www.netlib.org/lapack/lug/node27.html">LAPACK 用户指南线性最小二乘章节</a>）能够完全绕开形成 $\mathbf A^H\mathbf A$ 所带来的条件数平方损失。</p>
-<p>本书教学代码同时提供这两条求解路径供对照：默认 <code>solver="normal"</code> 走传统正规方程路径；而 <code>solver="design_lstsq"</code> 直接对式(7-9)的增广设计矩阵调用最小二乘分解，既不显式构造 $\mathbf R$，也不会因为平方后的 $\mathbf R$ 数值秩坍缩而误伤原本满秩的设计矩阵（练习 <a href="#e07-19">E07-19</a> 用一个条件数为 $2\times 10^9$ 的二阶矩阵手算对比了两条路径的天壤之别；读取诊断条件数时也需注意两者分别针对已加载正规矩阵与增广设计矩阵，尺度相差平方关系，不可直接比大小）。</p>
+<p>本书教学代码同时提供这两条求解路径供对照：默认 <code>solver="normal"</code> 走传统正规方程路径；而 <code>solver="design_lstsq"</code> 直接对式(7-9)的增广设计矩阵调用最小二乘分解，既不显式构造 $\mathbf R$，也不会因为平方后的 $\mathbf R$ 数值秩坍缩而误伤原本满秩的设计矩阵（练习 <a href="#e07-19">E07-19</a> 用一个条件数为 $2\times 10^9$ 的二阶矩阵手算对比了两条路径的天壤之别；读取诊断条件数时也需注意两者分别针对已加载正规矩阵与增广设计矩阵，尺度相差平方关系，不可直接比大小）。对读代码时还需留意<strong>张量轴序约定</strong>：正文公式按时频分析习惯记作 $X(n,f)$ 或 $X_m(n,f)$，而仓内代码与 <code>nara_wpe</code> 为便于沿各频点独立并行批处理矩阵分解，多通道 STFT 复谱张量统一排布为 <code>(F, M, T)</code>（单通道为 <code>(F, T)</code>，其中 <code>F</code> 为频点数、<code>M</code> 为通道数、<code>T</code> 为帧数）。</p>
 <h3 id="sec-u-f3b6f4d31d">功率更新、地板与完整一轮</h3>
 <p>完成了“固定功率 $\lambda$ 求滤波器 $\vec g$”之后，再看交替优化的另一半：<strong>固定滤波器系数 $\vec g$，更新每帧早期语音功率 $\lambda(n)$</strong>。此时残差能量 $a_n=|E(n)|^2\ge 0$ 为已知非负常数，式(7-5)对各帧完全解耦，第 $n$ 帧只需独立最小化一维函数 $f(\lambda)=a_n/\lambda+\ln\lambda$（$\lambda>0$）。对 $\lambda$ 求一阶导数：</p>
 <p>$$f'(\lambda)=-\frac{a_n}{\lambda^2}+\frac{1}{\lambda}
@@ -863,7 +868,7 @@ X_m(n)&=E_m(n)+\hat r_m(n).
 \ell_n'(\lambda)&=M/\lambda-A_n/\lambda^2,\\
 \hat\lambda_n&=A_n/M\quad(A_n>0).
 \end{aligned}\tag{7-13}$$</p>
-<p>令导数为零即得共享功率更新公式：对全部 $M$ 个通道的残差模平方求算术平均（当 $A_n=0$ 时同样需由功率地板兜底；原论文关于逐通道独立方差与缩放单位阵模型的对比见 <a href="https://www.audiolabs-erlangen.de/resources/aps-w23/papers/sap_Yoshioka2012.pdf">Yoshioka 与 Nakatani，2012，§V-A、§V-B</a>）。</p>
+<p>令导数为零即得共享功率更新公式：对全部 $M$ 个通道的残差模平方求算术平均（当 $A_n=0$ 时同样需由功率地板提供下限保护；原论文关于逐通道独立方差与缩放单位阵模型的对比见 <a href="https://www.audiolabs-erlangen.de/resources/aps-w23/papers/sap_Yoshioka2012.pdf">Yoshioka 与 Nakatani，2012，§V-A、§V-B</a>）。</p>
 <p>读者可能会进一步追问：紧凑阵列上早期直达声在各麦克风之间明明高度空间相干（协方差绝非单位阵 $\mathbf I_M$），为什么固定 $\lambda_n$ 求解滤波器 $\mathbf G$ 时完全不需要估计早期声的空间协方差结构？让我们把这个关键推导彻底掰开算清！假设第 $n$ 帧残差服从更一般的空间相关模型 $\vec E_n\sim\mathcal{CN}(\vec 0,\lambda_n\mathbf C)$，其中 $\mathbf C\in\mathbb{C}^{M\times M}$ 是跨帧时不变的厄米正定空间形状矩阵。此时协方差行列式为 $\det(\lambda_n\mathbf C)=\lambda_n^M\det\mathbf C$，全段有效帧的负对数似然（略去常数）为：</p>
 <p>$$\begin{aligned}
 \mathcal J(\mathbf G,\lambda)
@@ -1131,7 +1136,7 @@ T_v&=\max(0,T-t_{\min}).
 \end{aligned}\tag{7-21}$$</p>
 <p>对照 <a href="https://arxiv.org/pdf/2301.07649v1">Lohmann 等（2023）作者稿 §2～4 式(4)、(16)～(25)</a> 阅读时注意符号方向：该文记 $\tau_m^{\mathrm{int}}=\tau+\delta_m^{\mathrm{frame}}$，其中 $\delta_m^{\mathrm{frame}}$ 对应这里的反向传播差 $d_{\mathrm{ref}}-d_m$，且该文进一步扩展到了采样点分数延迟与跨子带（crossband）FIR 滤波（同时其预测式直接乘未共轭系数，与本书 $\vec g^H\vec q$ 相差一次复共轭）。</p>
 <h3 id="sec-u-0a3bc03fd4">晚期谱方差的单位：功率衰减不是幅度衰减</h3>
-<p>在阅读去混响文献时，另一处高频踩坑点是混淆<strong>两类完全不同的时变谱方差</strong>，以及在换算混响衰减率时漏掉功率与幅度的平方因子（$2$ 倍分贝系数）：WPE 中的 $\lambda(t,f)$ 估计的是<strong>早期目标语音</strong>的功率；而 §7.1 提到的谱方差抑制法估计的 $\sigma_r^2(u,f)$ 则是<strong>晚期扩散混响</strong>的统计功率。</p>
+<p>在阅读去混响文献时，另一处常见易错点是混淆<strong>两类完全不同的时变谱方差</strong>，以及在换算混响衰减率时漏掉功率与幅度的平方因子（$2$ 倍分贝系数）：WPE 中的 $\lambda(t,f)$ 估计的是<strong>早期目标语音</strong>的功率；而 §7.1 提到的谱方差抑制法估计的 $\sigma_r^2(u,f)$ 则是<strong>晚期扩散混响</strong>的统计功率。</p>
 <p>固定某一满足统计扩散近似的频带 $f$，考察声源停止注入新能量之后的自由衰减阶段。记距衰减起点的连续流逝时间为 $u$（单位：$\mathrm{s}$），该频带的混响时间为 $T_{60}(f)>0$（单位：$\mathrm{s}$，定义为声能衰减 $60\ \mathrm{dB}$ 所需时间）。按照第 5 章与 <code>AGENTS.md</code> 反复强调的分贝铁律，声能下降 $60\ \mathrm{dB}$ 意味着<strong>幅度包络 $A_r$ 缩小到 $10^{-60/20}=10^{-3}$（千分之一）</strong>，而与幅度平方成正比的<strong>功率谱方差 $\sigma_r^2$ 缩小到 $10^{-60/10}=10^{-6}$（百万分之一）</strong>！因此连续时间下的幅度包络比与功率谱方差比分别为：</p>
 <p>$$\begin{aligned}
 \frac{A_r(u,f)}{A_r(0,f)}
@@ -1149,7 +1154,7 @@ T_v&=\max(0,T-t_{\min}).
 <p>在 <a href="https://israelcohen.com/wp-content/uploads/2018/05/SPL_Sep2009.pdf">Habets、Gannot 与 Cohen（2009）§III 式(10)～(12)</a> 的自然指数记法中，幅度阻尼率定为 $\alpha=3\ln(10)/(T_{60}f_s)$，幅度包络按 $e^{-\alpha\ell H_s}$ 衰减，功率谱方差则按平方后的 $e^{-2\alpha\ell H_s}$ 衰减——将 $e^{-2\cdot 3\ln(10)H/T_{60}}=10^{-6H/T_{60}}$ 展开，与式(7-23)分毫不差。练习 <a href="#e07-23">E07-23</a> 将具体代入 $T_{60}=0.6\ \mathrm{s}$、帧移 $8\ \mathrm{ms}$ 检验这一换算，并展示若误把幅度因子 $10^{-3H/T_{60}}$ 当作功率因子代入，经过 $0.6\ \mathrm{s}$ 后功率竟只衰减了 $30\ \mathrm{dB}$ 的典型量纲事故（注：完整的谱方差抑制器还需结合直达混响比与源发声期的能量注入项，关于实测脉冲响应施罗德反向积分曲线的 $T_{20}$ 斜率拟合则见附录 <a href="17_appendix-guide.html#sec-u-69adc71a3e">E17-05</a>）。</p>
 <h3 id="sec-u-884aaada8f">WPD将历史与空间约束放入同一目标</h3>
 <p>既然“MIMO-WPE 去混响 + MVDR/MPDR 波束形成”在工程中如此常用，能不能把“当前帧空间滤波”和“历史帧混响抵消”直接写进<strong>同一个约束优化问题</strong>一次性求解？加权功率最小无失真响应（Weighted Power minimization Distortionless response，WPD；<a href="https://doi.org/10.1109/LSP.2019.2911179">Nakatani 与 Kinoshita，2019</a>）正是这一思想的结晶。</p>
-<p>将当前第 $t$ 帧的 $M$ 通道复谱 $\vec x_t$ 与保护延迟后的多帧多通道历史 $\vec x_{t-\Delta},\dots,\vec x_{t-\Delta-K+1}$ 纵向拼成一根维度为 $(M+MK)\times 1$ 的增广时空列向量 $\bar{\vec x}_t$（将 $\vec x_t$ 与各滞后帧依序叠放）；同时将当前帧的目标相对传递函数（或导向矢量）$\vec v\in\mathbb{C}^{M\times 1}$ 补零扩展为同维度的时空约束向量 $\bar{\vec v}=[\vec v^\top,\vec 0^\top,\dots]^\top$（要求对当前帧目标方向保持单位无失真响应，而对延迟历史不加硬约束）。在给定正语音功率 $\lambda_t>0$ 下，累加时空加权协方差矩阵 $\bar{\mathbf R}$（定义为 $\sum_t\bar{\vec x}_t\bar{\vec x}_t^H/\lambda_t$），WPD 求解如下线性约束二次规划：</p>
+<p>将当前第 $t$ 帧的 $M$ 通道复谱列向量记为 $\vec x_t$（即 §7.3 式(7-12)中的当前频域快拍 $\vec X_t$，本小节改用小写 $\vec x_t$ 以便与第 5 章波束形成的 $\vec w^H\vec x_t$ 记号直接接轨），再将其与保护延迟后的多帧多通道历史 $\vec x_{t-\Delta},\dots,\vec x_{t-\Delta-K+1}$（即式(7-12)中的历史回归向量 $\vec q_t$）纵向拼成一根维度为 $(M+MK)\times 1$ 的增广时空列向量 $\bar{\vec x}_t=[\vec x_t^\top,\vec q_t^\top]^\top$；同时将当前帧的目标相对传递函数（或导向矢量）$\vec v\in\mathbb{C}^{M\times 1}$ 补零扩展为同维度的时空约束向量 $\bar{\vec v}=[\vec v^\top,\vec 0^\top,\dots]^\top$（要求对当前帧目标方向保持单位无失真响应，而对延迟历史不加硬约束）。在给定正语音功率 $\lambda_t>0$ 下，累加时空加权协方差矩阵 $\bar{\mathbf R}$（定义为 $\sum_t\bar{\vec x}_t\bar{\vec x}_t^H/\lambda_t$），WPD 求解如下线性约束二次规划：</p>
 <p>$$\begin{aligned}
 &\min_{\bar{\vec w}}\ \bar{\vec w}^H\bar{\mathbf R}\bar{\vec w},\\
 &\text{s.t.}\quad\bar{\vec w}^H\bar{\vec v}=1.
@@ -1712,7 +1717,12 @@ t_\star&=\frac{\lambda-db}{d^2+2\lambda}.
 \end{aligned}\tag{7-32}$$</p>
 <p>可见只要取正则系数恰好等于噪声源功率比 $\lambda=\sigma^2/P_s$，式(7-31)最小化的正是真实总体均方误差！例如当 $P_s=0.005$、$\sigma^2=5\times 10^{-7}$ 时，最优比例恰为 $\lambda=10^{-4}$：精确逆（$\lambda=0$）虽无残留反射，总 MSE 却高达 $4901\times 5\times 10^{-7}=0.0024505$；而匹配正则设计主动容忍 $r=0.33$ 的残余反射（贡献干净反射误差 $0.33^2\times 0.005=0.0005445$），把噪声项压到 $545\times 5\times 10^{-7}=0.0002725$，总 MSE 降至 $0.0008170$，削减了三分之二的总误差。</p>
 <p><img alt="图59 已知双路径的反射与噪声取舍" src="../figures/fig59_mint_noise_tradeoff.png" onerror="this.alt+='（图缺失）'" /></p>
-<p>阅读图 59 时先看横轴 $|a-b|$（两麦反射系数之差）：从右向左 $|a-b|$ 趋近于 $0$ 表示两条声学路径逼近公共零点。随着 $|a-b|$ 变小，无正则精确逆的噪声方差放大倍数 $\|\vec u\|_2^2$ 按 $|a-b|^{-2}$ 陡峭飙升，而带惩罚的受限正则逆在近似公共零点区主动放弃强行求逆，将总均方误差稳稳压在低位（图中用不同线型与散点区分理论总体曲线与下题 E07-21 的有限长 PCM 实测点）。</p>
+<p>结合图 59 的三个子图可以清晰对读双路径逆滤波的反射—噪声取舍：</p>
+<ul>
+<li><strong>图 59(a)</strong> 在双对数坐标下绘制滤波器范数平方（即传感器底噪方差放大倍数）$\|\vec u\|_2^2$ 随两麦反射系数差 $|a-b|$ 的变化曲线：从右向左 $|a-b|$ 趋近于 $0$（逼近公共零点）时，蓝色实线精确逆（$\lambda=0$）按 $|a-b|^{-2}$ 陡峭飙升，而橙色虚线直达约束正则逆（$\lambda=10^{-4}$）在近似公共零点区及时抑制权重膨胀；图中在 $|a-b|=0.01$ 处标出的圆点 $4901$ 与 $545$ 均为上表对应的<strong>解析理论工作点</strong>（而非有限长 PCM 实测点）；</li>
+<li><strong>图 59(b)</strong> 在半对数坐标下绘制对应的残余反射系数幅度 $|r|=|a u_1+b u_2|$ 随 $|a-b|$ 的变化：精确逆恒为 $0$，正则逆在 $|a-b|=0.01$ 处主动容忍 $|r|=0.33$ 的残留反射以换取底噪压制；</li>
+<li><strong>图 59(c)</strong> 以分组对数柱状图直接对比下题 E07-21 三种典型配置（分离良好精确逆、近似公共零点精确逆、近似公共零点正则逆）下的<strong>理论总体 MSE</strong>（“反射误差 + 噪声”期望）与 $27200$ 点<strong>有限长 PCM16 实测总 MSE</strong>，二者在三个数量级跨度上高度吻合。</li>
+</ul>
 <p><a id="e07-21"></a></p>
 <h3 id="sec-u-f7410ace89">E07-21：精确逆与受限正则逆的六个PCM文件</h3>
 <p><strong>输入与信号生成口径</strong>：将 E07-20 的双麦模型落到可听的 $16\ \mathrm{kHz}$ 确定性合成音频上。干净源信号 $s[n]$ 长 $32000$ 点（$2.0\ \mathrm{s}$），由四个零初相余弦音（$200,500,900,1200\ \mathrm{Hz}$，幅度各为 $0.05$）叠加而成，首尾 $320$ 点（$20\ \mathrm{ms}$）施加平方正弦包络，并在末尾补 $512$ 点（$32\ \mathrm{ms}$）零以完整容纳反射尾音，总长 $32512$ 点（$2.032\ \mathrm{s}$）。两麦反射抽头位于延迟 $512$ 点处（第 $1$ 麦固定 $0.5$，第 $2$ 麦分别取分离良好的 $b=-0.5$ 与近似公共零点的 $b=0.49$），路径之后叠加独立等概取 $\pm\sqrt{5\times 10^{-7}}$ 的拉德马赫（Rademacher）底噪（PCG64 种子 <code>20261001</code>）：</p>
@@ -1910,7 +1920,7 @@ e[j]&=\sin^2(\pi j/127).
 <p>结合图 75 的四个子图可以把分布式传播延迟与晚期功率衰减两条主线一网打尽：</p>
 <ul>
 <li><strong>图 75(a)</strong> 对照 E07-22 的离散帧索引，直观标出近讲辅助麦在统一延迟 $\Delta_m=3$ 下如何把远场参考麦的当前源时刻抓进“历史”；</li>
-<li><strong>图 75(b)</strong> 截取一个 $96\ \mathrm{ms}$ 周期的时域波形，清晰显示统一延迟历史（橙线）与参考目标（蓝线）严丝合缝地叠在一起，而修正延迟历史（绿线）安全退后了 $24\ \mathrm{ms}$；</li>
+<li><strong>图 75(b)</strong> 在共同接收时间轴上截取一个 $96\ \mathrm{ms}$ 周期的时域波形：统一延迟历史（橙线，<code>delay=3</code>）与参考目标（蓝线）逐点重叠；而修正延迟历史（绿线，<code>delay=6</code>）<strong>在源发射内容上回溯更早的样本 $s[t-6]$，等价于在接收时间轴上将同一脉冲向右推迟 $24\ \mathrm{ms}$ 进入回归器</strong>，从而与参考目标的当前脉冲支撑区间彻底错开；</li>
 <li><strong>图 75(c)</strong> 对比同窗 PCM 相对目标误差 $E_{\mathrm{err}}/D_{\mathrm{ref}}$：统一延迟输出看似风平浪静（功率为 $0$），实则酿成了 $100\%$（$\mathrm{NMSE}=1$）的目标抹除误差，修正延迟后误差降为 $0$；</li>
 <li><strong>图 75(d)</strong> 独立绘制 E07-23 在 $T_{60}=0.6\ \mathrm{s}$、$8\ \mathrm{ms}$ 帧移下的自由衰减轨迹，对比正确功率衰减因子 $10^{-0.08j}$（$75$ 帧精准落到 $-60\ \mathrm{dB}$）与误用幅度因子 $10^{-0.04j}$（$75$ 帧仅落到 $-30\ \mathrm{dB}$）的斜率差异（音频重生与只读核验命令为 <code>.venv/bin/python -m codes.chapters.ch07.examples.generate_delay_audio --check</code>，清单详见 <a href="delay_audio/MANIFEST.json"><code>delay_audio/MANIFEST.json</code></a>）。</li>
 </ul>

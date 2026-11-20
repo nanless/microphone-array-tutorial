@@ -1,10 +1,10 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 8 章 · 语音分离 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="74c593002f97"><style>
-*{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
-.topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
-.topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
+<meta name="source-digest" content="10a21c80bda5"><style>
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
+.topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941}
+.topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
 h1,h2,h3,h4{scroll-margin-top:60px}
 @media screen{.main a[id]:not([href]){scroll-margin-top:60px}}
 @media screen{.main a[id^="e"],.main .exercise-alias{scroll-margin-top:80px}}
@@ -17,64 +17,66 @@ h1,h2,h3,h4{scroll-margin-top:60px}
 @media screen{.main a[id^="e11-"]{scroll-margin-top:60px}}
 @media screen{.main .separation-topic-anchor{scroll-margin-top:60px}}
 @media screen{.main .source-reproduction-anchor{scroll-margin-top:60px}}
-a:focus-visible,summary:focus-visible{outline:3px solid #e67e22;outline-offset:3px}
-.skip-link{position:absolute;left:10px;top:-60px;z-index:30;background:#fff;color:#1a1a2e;padding:8px 12px;border:2px solid #e67e22}
+a:focus-visible,summary:focus-visible{outline:2.5px solid #B84A2E;outline-offset:3px}
+.skip-link{position:absolute;left:10px;top:-60px;z-index:30;background:#fff;color:#1C1E21;padding:8px 12px;border:2px solid #B84A2E}
 .skip-link:focus{top:8px}
-.wrap{display:flex;max-width:1280px;margin:0 auto}
-.side{width:300px;flex-shrink:0;padding:20px 14px;position:sticky;top:47px;height:calc(100vh - 47px);overflow-y:auto;background:#fff;border-right:1px solid #e5e8ee;font-size:13.5px}
-.side a{color:#2f6db3;text-decoration:none}.side a:hover{text-decoration:underline}
-.side .chap{margin:10px 0 2px;font-weight:700}.side .chap.cur{color:#c0392b}
-.side ul{margin:2px 0 6px;padding-left:16px;color:#666}.side li{margin:2px 0}
-.main{flex:1;min-width:0;padding:28px 36px;background:#fff;overflow-wrap:anywhere}
+.wrap{display:flex;max-width:1280px;margin:0 auto;border-left:1px solid #E3DED3;border-right:1px solid #E3DED3}
+.side{width:300px;flex-shrink:0;padding:20px 15px;position:sticky;top:47px;height:calc(100vh - 47px);overflow-y:auto;background:#FAF8F3;border-right:1px solid #DDD7CB;font-size:13.5px}
+.side a{color:#1F5A92;text-decoration:none}.side a:hover{text-decoration:underline}
+.side .chap{margin:10px 0 2px;font-weight:700;color:#26292E}.side .chap.cur{color:#B84A2E}
+.side ul{margin:2px 0 6px;padding-left:16px;color:#5A554D}.side li{margin:2px 0}
+.main{flex:1;min-width:0;padding:32px 40px;background:#fff;overflow-wrap:anywhere}
+.main a{color:#1F5A92;text-underline-offset:.2em}
 .main p{margin:0 0 1.2em}.main ul,.main ol{margin:.55em 0 1.2em;padding-left:1.55em}.main li{margin:.42em 0}.main li>p{margin:.5em 0}
-.main p>strong:first-child,.main li>strong:first-child{color:#0f2744}
-.main img{max-width:100%;height:auto;display:block;margin:16px auto;border:1px solid #dbe3ee;border-radius:6px;padding:3px;min-height:40px;background:#fff}
-.audio-sample{display:block;width:min(100%,460px);margin:8px 0 18px}.audio-sample:focus-visible{outline:3px solid #e67e22}
+.main p>strong:first-child,.main li>strong:first-child{color:#14171A}
+.main img{max-width:100%;height:auto;display:block;margin:18px auto;border:1px solid #DFDAD0;border-radius:5px;padding:4px;min-height:40px;background:#fff}
+.audio-sample{display:block;width:min(100%,460px);margin:8px 0 18px}.audio-sample:focus-visible{outline:2.5px solid #B84A2E}
 /* 表格列宽不能压掉原生播放按钮；手机上的表格可横向滚动。 */
 td .audio-sample{width:280px;min-width:280px}
 table:has(td .audio-sample) td:last-child{min-width:180px}
-table{border-collapse:collapse;margin:16px 0;max-width:100%}
+table{border-collapse:collapse;margin:18px 0;max-width:100%;border-top:1.5px solid #2A2E34;border-bottom:1.5px solid #2A2E34}
 .table-scroll{max-width:100%;overflow-x:auto}
-.table-scroll:focus-visible{outline:3px solid #e67e22;outline-offset:2px}
-th,td{border:1px solid #d5dfec;padding:7px 11px;font-size:14px;text-align:left;line-height:1.58}
-th{background:#e8eff9;color:#0f2744;border-bottom:1.5px solid #94a3b8}
-tbody tr:nth-child(even) td{background:#f8fafc}
-code{background:#eef2f7;color:#0f294a;border:1px solid #d8e1ec;padding:1px 5px;border-radius:4px;font-size:13.5px}
-pre{background:#122036;color:#e8ecf3;padding:14px 16px;border-radius:8px;overflow-x:auto}
+.table-scroll:focus-visible{outline:2.5px solid #B84A2E;outline-offset:2px}
+th,td{border-top:1px solid #E3DED3;border-bottom:1px solid #E3DED3;border-left:none;border-right:none;padding:8px 11px;font-size:14px;text-align:left;line-height:1.58}
+th{background:#F5F2EB;color:#1C1E21;border-bottom:1px solid #8A8275;font-weight:700}
+tbody tr:nth-child(even) td{background:#FCFBF9}
+code{background:#F3F0E8;color:#1E3A56;border:1px solid #E0DBD0;padding:1px 5px;border-radius:4px;font-size:13.5px}
+pre{background:#F5F3EE;color:#1F2328;border:1px solid #DFDAD0;border-left:3.5px solid #5C564D;padding:14px 16px;border-radius:8px;overflow-x:auto}
 pre code{background:none;border:none;color:inherit;padding:0}
-blockquote{border-left:4px solid #2563eb;margin:16px 0;padding:10px 15px;background:#f0f6ff;border-radius:0 6px 6px 0;color:#1e293b}
+blockquote{border-left:3.5px solid #B84A2E;margin:18px 0;padding:10px 16px;background:#F7F5F0;border-radius:0 4px 4px 0;color:#2B2E33}
 blockquote p:last-child{margin-bottom:0}
+hr{border:none;border-top:1px solid #DDD7CB;margin:26px 0}
 mjx-container[jax="CHTML"]{font-size:110%!important;overflow-x:auto;overflow-y:hidden;max-width:100%;min-width:0!important}
 body mjx-assistive-mml{width:1px!important;max-width:1px!important;min-width:0!important;height:1px!important;overflow:hidden!important}
 pre,.table-scroll,mjx-container[jax="CHTML"]{overflow-wrap:normal}
-.pn{display:flex;justify-content:space-between;margin:34px 0 12px;padding-top:16px;border-top:1px solid #d5dfec;font-weight:650}
-.pn a{color:#1d4ed8;text-decoration:none}.pn .off{color:#aaa}
-.foot{color:#64748b;font-size:13px;margin:20px 0 40px}
-.main h1{font-size:27px;color:#0f2744;background:#edf3fc;border-top:4px solid #1e3a8a;border-left:5px solid #1e3a8a;border-bottom:1px solid #cbd5e1;padding:13px 17px 11px;border-radius:0 6px 6px 0;margin:0 0 22px;line-height:1.3}
-.main h2{font-size:21px;color:#0f294a;background:#f3f7fc;border-left:4.5px solid #1d4ed8;border-bottom:1px solid #cbd5e1;padding:8px 13px 7px;margin:34px 0 15px;border-radius:0 5px 5px 0;line-height:1.35}
-.main h3{font-size:18px;color:#1e3a8a;border-left:3.5px solid #3b82f6;padding:2px 0 2px 11px;margin:26px 0 12px;line-height:1.4}
-.main h4{font-size:16px;color:#1e40af;border-left:2.5px solid #93c5fd;padding:1px 0 1px 9px;margin:20px 0 10px;line-height:1.4}
-.main h3.tutorial-worked-heading{background:#f0fdfa;border:1px solid #99f6e4;border-left:4.5px solid #0d9488;color:#115e59;padding:7px 13px;border-radius:6px;margin:26px 0 13px;font-size:17.2px}
-.main h3.tutorial-exercise-heading,.main h4.tutorial-exercise-heading{background:#eff6ff;border:1px solid #bfdbfe;border-left:5px solid #2563eb;color:#1e3a8a;padding:9px 14px;border-radius:6px;margin:30px 0 13px;font-size:17px;line-height:1.45}
-.main p.tutorial-exercise-lead{background:#eff6ff;border:1px solid #bfdbfe;border-left:5px solid #2563eb;padding:11px 15px;border-radius:6px;margin:26px 0 13px}
+.pn{display:flex;justify-content:space-between;margin:36px 0 12px;padding-top:16px;border-top:1px solid #DDD7CB;font-weight:650}
+.pn a{color:#1F5A92;text-decoration:none}.pn .off{color:#9C9588}
+.foot{color:#6E695F;font-size:13px;margin:20px 0 40px}
+.main h1{font-size:27px;color:#14171A;border-top:2.5px solid #1F5A92;border-bottom:1.5px solid #1C1E21;padding:12px 0 10px;margin:0 0 24px;line-height:1.3}
+.main h2{font-size:21px;color:#14171A;border-left:3.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;padding:1px 0 7px 11px;margin:36px 0 15px;line-height:1.35}
+.main h3{font-size:18px;color:#1F5A92;margin:26px 0 11px;line-height:1.4}
+.main h4{font-size:16px;color:#2C2F33;border-left:2.5px solid #B84A2E;padding:1px 0 1px 9px;margin:20px 0 9px;line-height:1.4}
+.main h3.tutorial-worked-heading{background:#FAF8F3;border-top:1.5px solid #237263;border-bottom:1px solid #E2DDD2;border-left:3.5px solid #237263;color:#1A574B;padding:7px 13px;border-radius:2px;margin:28px 0 13px;font-size:17.2px}
+.main h3.tutorial-exercise-heading,.main h4.tutorial-exercise-heading{background:#F5F2EB;border-top:1.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;border-left:4px solid #1F5A92;color:#14171A;padding:8px 14px;border-radius:2px;margin:30px 0 13px;font-size:17px;line-height:1.45}
+.main p.tutorial-exercise-lead{background:#F5F2EB;border-top:1.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;border-left:4px solid #1F5A92;padding:10px 15px;border-radius:2px;margin:28px 0 13px}
 .main ol>li.tutorial-exercise-item{margin:18px 0}
-.main .tutorial-exercise-card{background:#f8fafc;border:1px solid #d5e0ee;border-left:4px solid #2563eb;border-radius:6px;padding:12px 16px}
+.main .tutorial-exercise-card{background:#FAF8F3;border:1px solid #E0DBD0;border-left:3.5px solid #1F5A92;border-radius:4px;padding:12px 16px}
 .main .tutorial-exercise-card>:first-child{margin-top:0}
 .main .tutorial-exercise-card>:last-child{margin-bottom:0}
-.main p.tutorial-solution-lead{background:#f0fdf4;border-left:3.5px solid #16a34a;padding:8px 13px;border-radius:0 5px 5px 0;margin-top:9px}
-.main p.tutorial-solution-lead>strong:first-child{color:#15803d}
-.main p.tutorial-problem-lead{border-left:3px solid #2563eb;padding-left:11px}
-.main p.tutorial-problem-lead>strong:first-child{color:#1d4ed8}
-.toc-mobile{display:none;margin:0 0 16px;border:1px solid #e5e8ee;border-radius:8px;padding:10px 14px;background:#f7fafd;font-size:14px}
-.toc-mobile summary{cursor:pointer;font-weight:700}
-.toc-mobile ul{padding-left:18px;margin:8px 0 2px}.toc-mobile a{color:#2f6db3;text-decoration:none}
-.topbtn{display:block;margin:20px auto;background:#1a1a2e;color:#fff;border-radius:50%;width:42px;height:42px;text-align:center;line-height:42px;text-decoration:none;font-size:18px}
-.offline-note{display:none;background:#fff7e6;border:1px solid #e6c87a;color:#7a5b00;padding:8px 14px;font-size:13.5px}
+.main p.tutorial-solution-lead{background:#F3F6F4;border-left:3.5px solid #237263;padding:8px 13px;border-radius:0 3px 3px 0;margin-top:9px}
+.main p.tutorial-solution-lead>strong:first-child{color:#1D5E51}
+.main p.tutorial-problem-lead{border-left:2.5px solid #1F5A92;padding-left:11px}
+.main p.tutorial-problem-lead>strong:first-child{color:#1F5A92}
+.toc-mobile{display:none;margin:0 0 16px;border:1px solid #DDD7CB;border-radius:6px;padding:10px 14px;background:#FAF8F3;font-size:14px}
+.toc-mobile summary{cursor:pointer;font-weight:700;color:#1C1E21}
+.toc-mobile ul{padding-left:18px;margin:8px 0 2px}.toc-mobile a{color:#1F5A92;text-decoration:none}
+.topbtn{display:block;margin:20px auto;background:#24282E;color:#FAF8F3;border-radius:50%;width:42px;height:42px;text-align:center;line-height:42px;text-decoration:none;font-size:18px}
+.offline-note{display:none;background:#F7EFE4;border:1px solid #D9B78E;color:#6E4219;padding:8px 14px;font-size:13.5px}
 .anchor-alias{display:block;position:relative;top:-60px;visibility:hidden}
 .tutorial-math-tail{display:inline-block;white-space:nowrap;overflow-wrap:normal;vertical-align:baseline;overflow:visible}
 .tutorial-math-tail mjx-assistive-mml{max-width:1px!important;min-width:0!important;white-space:normal}
-.tutorial-exercise-id{white-space:nowrap;overflow-wrap:normal;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:.87em;background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;padding:0 5px;border-radius:4px}
-:is(.tutorial-exercise-heading,.tutorial-exercise-lead) .tutorial-exercise-id{background:#1d4ed8;color:#fff;border-color:#1d4ed8;padding:1px 7px;margin-right:4px;font-size:.84em}
+.tutorial-exercise-id{white-space:nowrap;overflow-wrap:normal;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:.88em;background:#F3EFE6;color:#B84A2E;border:1px solid #DDD5C7;padding:0 5px;border-radius:3px;font-weight:700}
+:is(.tutorial-exercise-heading,.tutorial-exercise-lead) .tutorial-exercise-id{background:#1F5A92;color:#fff;border-color:#1F5A92;padding:1px 7px;margin-right:5px;font-size:.84em}
 .tutorial-table-label{white-space:nowrap;overflow-wrap:normal}
 @media(max-width:900px){.selection-readable-table{min-width:760px}.selection-readable-table th,.selection-readable-table td{min-width:10em}.selection-readable-table th:first-child,.selection-readable-table td:first-child{min-width:6em}}
 @media(max-width:900px){.side{display:none}.main{padding:20px}.toc-mobile{display:block}.topbar{font-size:14px}mjx-container[jax="CHTML"]:not([display="true"]){display:inline-block;vertical-align:middle}.aec-readable-table th,.aec-readable-table td,.wpe-readable-table th,.wpe-readable-table td,.separation-readable-table th,.separation-readable-table td{min-width:8em}.tracking-readable-table th,.tracking-readable-table td{min-width:8em}.industrial-readable-table th,.industrial-readable-table td{min-width:8em}}
@@ -552,12 +554,12 @@ h_{mn}[\tau]s_n[t-\tau]+v_m[t].
 <li><strong>欠定混合（$N>M$）</strong>：说话人比麦克风还多（最极端的特例是单麦克风 $M=1$，完全没有跨通道空间相位线索），此时不存在线性方阵逆可以把所有声源完美解混，必须借助多通道非负矩阵分解（Multichannel NMF，MNMF）的满秩空间协方差加低秩谱结构、时频稀疏掩码或深度神经网络学到的语音先验来分离。</li>
 </ul>
 <h3 id="sec-u-79eb374e06">窄带模型与空间统计</h3>
-<p>将式(8-1)的时域卷积转换到 STFT 域后，若分析窗长相对房间冲激响应的主能量跨度足够长，卷积混合在每个频点 $f$ 上可近似解耦为瞬时线性混合：</p>
+<p>将式(8-1)的时域卷积转换到 STFT 域后，若分析窗长相对房间冲激响应的主能量跨度足够长，卷积混合在每个频点 $f$、时间帧 $t$ 上可近似解耦为瞬时线性混合：</p>
 <p>$$\begin{aligned}
-X_m(f,k)&\approx\sum_{n=1}^{N}A_{mn}(f)S_n(f,k)+V_m(f,k).
+X_m(f,t)&\approx\sum_{n=1}^{N}A_{mn}(f)S_n(f,t)+V_m(f,t).
 \end{aligned}\tag{8-2}$$</p>
-<p>写成紧凑的矩阵—列向量形式即为 $\vec X(f,k)=\mathbf A(f)\vec S(f,k)+\vec V(f,k)$，其中观测列向量 $\vec X\in\mathbb{C}^{M\times 1}$，混合矩阵 $\mathbf A\in\mathbb{C}^{M\times N}$ 的第 $(m,n)$ 元 $A_{mn}(f)$ 为 $h_{mn}[\tau]$ 在频点 $f$ 处的复数频响，源列向量 $\vec S\in\mathbb{C}^{N\times 1}$，加性噪声列向量 $\vec V\in\mathbb{C}^{M\times 1}$。</p>
-<p>阅读跨章公式时请留意帧号记号的局部习惯：本章盲分离推导沿用文献惯例以 $k$（部分时间序列更新处亦写作 $t$）表示离散帧索引，对应附录 A 符号表中的 $\ell$；而从第 5 章搬用波束形成公式时，第 5 章 $\vec x(k,n)$ 的第一个参数是频点、第二个参数才是帧号。此外，窄带乘积近似式(8-2)的精度受窗长、帧移与早晚期反射能量比共同制约；当长混响超出单帧窗长时，正好先用第 7 章的 MIMO-WPE 削去跨帧晚期拖尾，帮式(8-2)恢复窄带近似精度。</p>
+<p>写成紧凑的矩阵—列向量形式即为 $\vec X(f,t)=\mathbf A(f)\vec S(f,t)+\vec V(f,t)$，其中观测列向量 $\vec X\in\mathbb{C}^{M\times 1}$，混合矩阵 $\mathbf A\in\mathbb{C}^{M\times N}$ 的第 $(m,n)$ 元 $A_{mn}(f)$ 为 $h_{mn}[\tau]$ 在频点 $f$ 处的复数频响，源列向量 $\vec S\in\mathbb{C}^{N\times 1}$，加性噪声列向量 $\vec V\in\mathbb{C}^{M\times 1}$。</p>
+<p>阅读跨章公式时请留意帧号记号的局部习惯：进入 STFT 域后，本章统一以 $t$ 表示离散时间帧索引（与式(8-1)中的时域采样点索引按上下文区分），对应附录 A 符号表中的 $\ell$；而从第 5 章搬用波束形成公式时，第 5 章 $\vec x(k,n)$ 的第一个参数是频点 $k$、第二个参数才是帧号 $n$。此外，窄带乘积近似式(8-2)的精度受窗长、帧移与早晚期反射能量比共同制约；当长混响超出单帧窗长时，正好先用第 7 章的 MIMO-WPE 削去跨帧晚期拖尾，帮式(8-2)恢复窄带近似精度。</p>
 <p>在自由场无反射、各阵元增益一致的理想远场平面波假设下，间距为 $d$ 的均匀线阵若以第 $1$ 支麦克风为相位参考点，混合矩阵中对应入射角 $\theta$ 的那一列便退化为第 3～5 章熟悉的纯相位导向矢量：</p>
 <p>$$\begin{aligned}
 a_m(f,\theta)&=e^{\mathrm{j}(m-1)\phi},\\
@@ -576,15 +578,15 @@ e^{+\mathrm{j}84^\circ},\ e^{+\mathrm{j}126^\circ}\bigr]^\top,
 <p>当频率继续升至 $8\ \mathrm{kHz}$（波长约 $4.29\ \mathrm{cm}$，$d>\lambda/2$）时，将 $\sin 30^\circ=0.5$ 减去无量纲波长间距比 $\lambda/d=343/(8000\times 0.04)=1.071875$ 得到 $-0.571875$，对应另一物理方向 $\theta'\approx -34.88^\circ$——代回式(8-3)可知相邻麦相位恰好相差整整 $2\pi$，两个截然不同方向的声源在 $8\ \mathrm{kHz}$ 拥有<strong>完全相同的导向矢量</strong>（反之若目标在正前方 $\theta=0^\circ$，$0\pm 1.071875$ 均超出 $[-1,1]$ 实角度范围，该频点尚无实栅瓣）。而在真实房间中，$\mathbf A(f)$ 的每一列还包含早期反射叠加与阵元频响差异，不能硬套式(8-3)的纯自由场公式，这正是盲分离与掩码协方差估计大显身手的原因。</p>
 <p>最小方差无失真响应（MVDR）、广义特征值（GEV）波束形成以及后文的 MNMF，都围绕多通道观测的<strong>空间协方差矩阵（SCM）</strong>展开。在统计窗口内混合矩阵 $\mathbf A$ 恒定、且声源与加性噪声互不相关（$\mathbb{E}[\vec S\vec V^H]=\mathbf 0$）的前提下，省略频点与帧号下标可得：</p>
 <p>$$\begin{aligned}
-\mathbf R&=\mathbb{E}[\vec X\vec X^H],\\
-\mathbf R&\approx\mathbf A\mathbf R_s\mathbf A^H+\mathbf R_v.
+\mathbf R_{xx}&=\mathbb{E}[\vec X\vec X^H],\\
+\mathbf R_{xx}&\approx\mathbf A\mathbf R_{ss}\mathbf A^H+\mathbf R_{vv}.
 \end{aligned}\tag{8-4}$$</p>
-<p>注意式(8-4)中的 $\mathbf R$ 为未中心化的二阶矩（仅在零均值条件下等于严格统计协方差）；若缺少源与噪声正交假设，展开外积还会多出交叉项 $\mathbf A\mathbb{E}[\vec S\vec V^H]$ 与 $\mathbb{E}[\vec V\vec S^H]\mathbf A^H$ 之和，而源间相关性则体现在 $\mathbf R_s=\mathbb{E}[\vec S\vec S^H]$ 的非对角元上。</p>
+<p>注意式(8-4)中的 $\mathbf R_{xx}$ 为未中心化的二阶矩（仅在零均值条件下等于严格统计协方差）；若缺少源与噪声正交假设，展开外积还会多出交叉项 $\mathbf A\mathbb{E}[\vec S\vec V^H]$ 与 $\mathbb{E}[\vec V\vec S^H]\mathbf A^H$ 之和，而源间相关性则体现在 $\mathbf R_{ss}=\mathbb{E}[\vec S\vec S^H]$ 的非对角元上。</p>
 <p>后文 §8.4 的复角中心高斯混合模型（Complex Angular Central Gaussian Mixture Model，cACGMM）走了一条精巧的几何路线：它先把每个非零观测向量除以自身范数投影到复单位球面 $\vec z=\vec X/\|\vec X\|_2$，在剥离语音功率起伏后纯粹按空间方向聚类估出软时频掩码；随后 GSS 再拿这组实数软掩码回到<strong>未归一化的原始多通道外积 $\vec X\vec X^H$</strong> 上加权累加目标与干扰 SCM（掩码加权 SCM 公式见第 5 章 §5.9 的式(5-22)）。</p>
 <p>初学者读到“时频掩码（mask）”时，一定要先看清它究竟乘在什么对象上：</p>
 <ol>
-<li><strong>单通道谱直接掩蔽</strong>：用掩码逐点乘以参考麦克风复谱 $M(f,k)X_r(f,k)$ 后直接做逆 STFT；此时实数掩码只能缩放幅度，复数掩码才能同时修正相位；</li>
-<li><strong>多通道协方差统计加权</strong>：用非负实数掩码 $\gamma(f,k)\ge 0$ 作为快照可信度权重去累加多通道外积 $\sum_k\gamma(f,k)\vec X(f,k)\vec X^H(f,k)$，它本身不直接改动波形相位，而是通过塑造目标/干扰 SCM 来求解线性波束形成权重 $\vec w(f)$；</li>
+<li><strong>单通道谱直接掩蔽</strong>：用掩码逐点乘以参考麦克风复谱 $M(f,t)X_r(f,t)$ 后直接做逆 STFT；此时实数掩码只能缩放幅度，复数掩码才能同时修正相位；</li>
+<li><strong>多通道协方差统计加权</strong>：用非负实数掩码 $\gamma(f,t)\ge 0$ 作为快照可信度权重去累加多通道外积 $\sum_t\gamma(f,t)\vec X(f,t)\vec X^H(f,t)$，它本身不直接改动波形相位，而是通过塑造目标/干扰 SCM 来求解线性波束形成权重 $\vec w(f)$；</li>
 <li><strong>波束后单通道后置掩蔽（post-masking）</strong>：在多通道线性波束输出的单路复谱上再乘一层谱增益压低残余漏音。</li>
 </ol>
 <p>由此可见，波束形成与语音分离绝非水火不容的对立路线——只要为每位说话人各自估计一组掩码并求解对应的波束权重 $\vec w_n(f)$，线性波束形成器就能并行分离出多路说话人语音（GSS 正是如此工作的）。下表先鸟瞰本章三大技术流派的核心建模差异：</p>
@@ -698,15 +700,15 @@ $$</p>
 <h3 id="sec-u-445b5c3c44">ICA 的可辨识条件与解混约定</h3>
 <p>在忽略加性底噪、源数等于麦克风数（$N=M$）且逐频混合方阵 $\mathbf A_f\in\mathbb{C}^{M\times M}$ 可逆的模型下，我们的目标是寻找逐频解混方阵 $\mathbf W_f\in\mathbb{C}^{M\times M}$。按本章统一记号，将第 $n$ 路解混滤波器的复共轭转置 $\vec w_{nf}^H$ 存作 $\mathbf W_f$ 的第 $n$ 行：</p>
 <p>$$\begin{aligned}
-\vec y_f(k)&=\mathbf W_f\vec x_f(k),\\
-y_{nf}(k)&=\vec w_{nf}^H\vec x_f(k).
+\vec y_f(t)&=\mathbf W_f\vec x_f(t),\\
+y_{nf}(t)&=\vec w_{nf}^H\vec x_f(t).
 \end{aligned}\tag{8-6}$$</p>
 <p>独立成分分析（ICA）的核心准则是调整 $\mathbf W_f$ 使各路输出 $y_{1f},\dots,y_{Mf}$ 在统计上相互独立。为什么不能只靠“输出互不相关（二阶协方差对角化）”来完成盲分离？因为零相关仅仅约束了二阶矩，远弱于统计独立：</p>
 <ol>
 <li><strong>静态同分布高斯源的旋转不可辨识性</strong>：设两个真实源 $s_1,s_2$ 是相互独立的标准正态随机变量，其联合概率密度正比于 $\exp[-(s_1^2+s_2^2)/2]$，等密度线在二维平面上是完美的正圆。对 $\vec s$ 乘以任意角度（如 $45^\circ$）的正交旋转矩阵，平方和 $s_1^2+s_2^2$、单位协方差矩阵与联合高斯密度全都纹丝不动——新坐标依然统计独立，仅凭静态分布根本找不回原来的坐标轴！</li>
 <li><strong>预白化只能消去一半自由度</strong>：对零均值、协方差正定的观测向量先做白化（whitening）变换，可将其协方差变成单位阵 $\mathbf I_M$；但对白化后的向量再左乘<strong>任意酉矩阵</strong>，协方差依然是 $\mathbf I_M$！练习 <a href="#e08-24">E08-24</a> 用四个离散非高斯样本点直观证明：白化加 $45^\circ$ 旋转后的两个分量虽然严格零相关，联合分布却明显不独立（若观测协方差本身秩亏，强行加对角加载只能稳定求逆，并不能凭空生出缺失的独立声源通道；白化与酉旋转自由度的完整证明见 <a href="https://www.cs.helsinki.fi/u/ahyvarin/papers/bookfinal_ICA.pdf">Hyvärinen 等 ICA 教材 §7.4～7.5，第 158–163 页</a>）。</li>
 </ol>
-<p>反过来说，“静态平稳高斯源不可分”并不否定语音和高斯包络调制信号的可分性——只要各声源具有<strong>非高斯重尾分布</strong>（如语音的超高斯稀疏性）、<strong>不同的时变方差包络</strong>（如后文 ILRMA 与高斯载波包络实验）或<strong>不同的跨时间自相关结构</strong>，盲分离就能重新获得锁定剩余酉旋转的统计抓手。</p>
+<p>反过来说，“静态平稳高斯源不可分”并不否定语音和高斯包络调制信号的可分性——只要各声源具有<strong>非高斯重尾分布</strong>（如语音的超高斯稀疏性）、<strong>不同的时变方差包络</strong>（如后文 ILRMA 与高斯载波包络实验）或<strong>不同的跨时间自相关结构</strong>，盲分离就能重新获得锁定剩余酉旋转的统计依据。</p>
 <h3 id="sec-u-1aa1905f52">AuxIVA 的目标与迭代投影</h3>
 <p><strong>AuxIVA（辅助函数型独立向量分析，Auxiliary-function IVA，Ono 2011）</strong>将独立成分从单个频点扩展为跨频源向量：它假设不同说话人之间统计独立，同时联合建模同一位说话人在各个频点上的时频分量。传统频域 ICA 在各频点各自为战，极易陷入跨频输出排列不一致的困境，而 AuxIVA 利用同一说话人全频带包络同起同落的相关性压制频点置换，并通过辅助函数导出零学习率调参的闭式更新，使目标函数在理想模型假设下单调下降。</p>
 <p>这里的包络相关并不要求不同频点的复谱本身线性相关。例如取两个频点 $Y_1=Ae^{\mathrm{j}\Phi_1}$ 与 $Y_2=Ae^{\mathrm{j}\Phi_2}$，设相位各自均匀且彼此独立、并与公共幅度 $A$ 独立，则二阶复谱互相关 $\mathbb{E}[Y_1Y_2^*]=0$，但两频点的瞬时功率同为 $A^2$（若 $A$ 等概率取 $1$ 或 $2$，功率便同步在 $1$ 与 $4$ 之间跳变，功率协方差达 $9/4$），只看线性互协方差会彻底漏掉这种共同强弱起伏。</p>
@@ -719,8 +721,11 @@ r_n(t)&=\sqrt{\sum_f|y_{nf}(t)|^2},\\
 J_{\mathrm{IVA}}&=\frac{2}{T}\sum_{n,t}r_n(t)
 -2\sum_f\ln|\det \mathbf W_f|.
 \end{aligned}\tag{8-7}$$</p>
-<p>观察式(8-7)的两项博弈：第一项惩罚输出包络范数之和，促使各频点协同分离出稀疏的独立说话人；倘若没有第二项 $-2\sum_f\ln|\det\mathbf W_f|$ 顶住，优化器只要耍赖把 $\mathbf W_f$ 缩成全零矩阵就能让第一项降到 $0$！正是负对数行列式筑起了一道体积屏障，一旦 $\mathbf W_f$ 趋向奇异或缩零，$-\ln|\det\mathbf W_f|$ 就会奔向 $+\infty$。</p>
-<p>接下来是整个 AuxIVA 最精彩、也最容易被文献一笔带过的灵魂推导——<strong>如何不调任何梯度步长，从带根号与行列式的非凸目标式(8-7)一步导出简洁的线性方程迭代投影（Iterative Projection，IP）式(8-8)？</strong> 我们借助辅助函数上界最小化（Majorization-Minimization，MM）与 Wirtinger 复微分（预备推导见<a href="00_math-foundations.html#sec-0-5">第 0 章 §0.5</a>）分三小步把它彻底拆透：</p>
+<p>观察式(8-7)的两项博弈：第一项惩罚输出包络范数之和，促使各频点协同分离出稀疏的独立说话人；倘若没有第二项 $-2\sum_f\ln|\det\mathbf W_f|$ 顶住，优化器只要把 $\mathbf W_f$ 缩成全零矩阵就能让第一项降到 $0$！正是负对数行列式筑起了一道体积屏障，一旦 $\mathbf W_f$ 趋向奇异或缩零，$-\ln|\det\mathbf W_f|$ 就会奔向 $+\infty$。</p>
+<p>早期独立向量分析（Kim 等，2006）直接沿李群流形作<strong>自然梯度法（natural gradient）</strong>迭代：记多频联合得分函数向量 $\vec\varphi_f(\vec y_t)\in\mathbb{C}^{M\times 1}$ 的第 $n$ 分量为 $y_{nf}(t)/r_n(t)$，将欧氏梯度右乘 $\mathbf W_f^H\mathbf W_f$ 后按步长 $\mu>0$ 更新：</p>
+<p>$$\mathbf W_f\leftarrow\mathbf W_f+\mu\left(\mathbf I_M-\frac{1}{T}\sum_{t=1}^T\vec\varphi_f(\vec y_t)\vec y_{ft}^H\right)\mathbf W_f.$$</p>
+<p>尽管右乘 $\mathbf W_f^H\mathbf W_f$ 赋予了更新式良好的等变性，步长 $\mu$ 依然是一把棘手的双刃剑：语音不同频带动态跨度极大，$\mu$ 稍大便会在高频或弱能量帧引发越界震荡甚至发散，$\mu$ 偏小又需要数百轮缓慢爬坡。相比之下，AuxIVA 为非光滑的宽带二范数构造紧致的二次上界辅助函数，彻底消除了学习率超参数 $\mu$，实现了<strong>免步长单调非增收敛</strong>。</p>
+<p>接下来我们就把整个 AuxIVA 最精彩、也最容易被文献一笔带过的灵魂推导——<strong>如何不调任何梯度步长，从带根号与行列式的非凸目标式(8-7)一步导出简洁的线性方程迭代投影（Iterative Projection，IP）式(8-8)</strong>——借助辅助函数上界最小化（Majorization-Minimization，MM）与 Wirtinger 复微分（预备推导见<a href="00_math-foundations.html#sec-0-5">第 0 章 §0.5</a>）分三小步彻底拆透：</p>
 <ol>
 <li>
 <p><strong>切线上界消去根号，化为加权二次型</strong>：由于平方根函数 $\sqrt{u}$ 在 $u>0$ 上是严格凹函数，其图形永远位于任意正切点 $u_0>0$ 处切线的下方，即对任意 $u\ge 0,u_0>0$ 恒有不等式 $2\sqrt{u}\le\frac{u}{\sqrt{u_0}}+\sqrt{u_0}$（当且仅当 $u=u_0$ 时取等号）。在当前轮旧输出处令 $\sqrt{u_0}=r_n(t)>0$（即旧输出的全带范数），把 $u=\sum_f|\vec w_{nf}^H\vec x_f(t)|^2$ 代入上界并对帧求平均，目标函数关于待更新行 $\vec w_{nf}^H$ 的可变部分就变成了干净的二次型加负对数行列式（不同频点 $f$ 至此在当轮辅助函数里彻底解耦！）：</p>
@@ -849,13 +854,13 @@ J_{\mathrm{FastMNMF}}&=\sum_{f,t,m}\Bigl(
 <p>在实际智能硬件（如 $6$ 麦或 $8$ 麦圆阵）中，最常见的情况反而是麦克风数 $M$ 远多于希望提取的目标说话人数 $N_{\mathrm{tar}}$（$N_{\mathrm{tar}}\lt M$），同时周围还弥漫着空调、风扇与远处嘈杂人声组成的复合背景场。</p>
 <p>很多初学者遇到 $M>N_{\mathrm{tar}}$ 时的第一反应是：“先做主成分分析（PCA）保留能量最大的前 $N_{\mathrm{tar}}$ 个主成分把维度降成方阵，再送进 AuxIVA！”——这在强背景噪声场景下是一枚致命暗雷！因为 <strong>PCA 只认总功率大小，根本分不清谁是人声、谁是强噪声</strong>：倘若风扇或电视背景占了最大特征值，PCA 保留前两维就会把功率较弱的第二位目标说话人连根切进零空间丢掉，后续无论怎样加正则化或迭代都再也救不回来（练习 <a href="#e08-31">E08-31</a> 用功率分别为 $9,4,1$ 的三维算例给出了精确演示）。</p>
 <p><strong>OverIVA（超定独立向量分析，overdetermined IVA；<a href="https://arxiv.org/html/1905.07880v2">Scheibler 与 Ono，2019，§2～3</a>）</strong>给出了优雅得多的解法：它不预先丢弃任何物理通道，而是把 $M\times M$ 可逆解混方阵拆成上下两块——上半块 $\mathbf W_{\mathrm{tar}}$（维度 $N_{\mathrm{tar}}\times M$）提取遵循跨频拉普拉斯超高斯模型的 $N_{\mathrm{tar}}$ 个目标说话人；下半块 $\mathbf U\in\mathbb{C}^{(M-N_{\mathrm{tar}})\times M}$ 容纳服从时不变复高斯分布的 $(M-N_{\mathrm{tar}})$ 维复合背景子空间（无需费力把背景里的每一台风扇各自拆开！）。</p>
-<p>记未中心化的观测二阶矩为 $\mathbf C=\frac{1}{T}\sum_k\vec x_k\vec x_k^H$，OverIVA 要求目标输出与背景子空间满足二阶统计正交约束 $\mathbf W_{\mathrm{tar}}\mathbf C\mathbf U^H=\mathbf 0$，并将背景块参数化为 $\mathbf U=[\mathbf J,\ -\mathbf I_{M-N_{\mathrm{tar}}}]$，从而每更新完一次目标行，就能直接通过线性方程闭式刷新背景块 $\mathbf J$（具体矩阵消元与坐标块可逆条件见练习 <a href="#e08-31">E08-31</a>）。</p>
+<p>记未中心化的观测二阶矩为 $\mathbf C=\frac{1}{T}\sum_t\vec x_t\vec x_t^H$，OverIVA 要求目标输出与背景子空间满足二阶统计正交约束 $\mathbf W_{\mathrm{tar}}\mathbf C\mathbf U^H=\mathbf 0$，并将背景块参数化为 $\mathbf U=[\mathbf J,\ -\mathbf I_{M-N_{\mathrm{tar}}}]$，从而每更新完一次目标行，就能直接通过线性方程闭式刷新背景块 $\mathbf J$（具体矩阵消元与坐标块可逆条件见练习 <a href="#e08-31">E08-31</a>）。</p>
 <h3 id="sec-u-293de11bb6">回投影与尺度恢复</h3>
 <p>所有基于独立性的频域盲分离都带有两项固有的数学不确定性——<strong>排列歧义</strong>与<strong>复尺度歧义</strong>：把解混矩阵 $\mathbf W(f)$ 的两行对调只会交换输出编号，给某一行乘上任意非零复常数 $d_n(f)\ne 0$ 也丝毫不改变各路输出之间的统计独立性！跨频包络耦合虽然压住了排列错乱，但如果每个频点带着杂乱无章的幅度缩放和相位翻转直接做逆 STFT，合成出的语音就会像隔着铁皮桶说话一样严重失真。</p>
-<p>在方阵可逆情形下，标准修复步骤称为<strong>回投影（projection back）</strong>：令估计混合矩阵为 $\hat{\mathbf A}(f)=\mathbf W^{-1}(f)$，选定第 $r$ 支麦克风作为参考通道，用 $\hat{\mathbf A}(f)$ 第 $r$ 行的元素逐路修正解混输出 $Y_n(f,k)$：</p>
-<p>$$\tilde Y_n(f,k)=\hat A_{rn}(f)Y_n(f,k).\tag{8-16}$$</p>
-<p>为什么这一乘就能神奇地消掉任意复尺度？不妨代回理想解混关系验证：设算法收敛到了带任意可逆对角尺度阵 $\mathbf D$ 和排列阵 $\mathbf P$ 的解 $\mathbf W=\mathbf D\mathbf P\mathbf A^{-1}$，求逆即得 $\hat{\mathbf A}=\mathbf A\mathbf P^{-1}\mathbf D^{-1}$！当第 $n$ 路输出带着放大因子 $D_{nn}$ 出来时，$\hat{\mathbf A}$ 对应列的因子恰好带着 $D_{nn}^{-1}$，两者相乘瞬间把未知的 $D_{nn}$ 约得干干净净，精准还原出对应声源在参考麦克风 $r$ 上的真实源图像 $A_{r,\pi(n)}(f)S_{\pi(n)}(f,k)$！</p>
-<p>工程实现回投影时务必注意三点边界：第一，只要 $\mathbf W(f)$ 可逆，哪怕它根本没分开任何声源，由 $[\mathbf W^{-1}\mathbf W\vec X]_r=X_r$ 可知回投影之和恒满足 $\sum_{n=1}^M\tilde Y_n(f,k)=X_r(f,k)$，因此“回投影相加等于参考麦输入”绝不代表分离成功；第二，“矩阵求逆/多路联合最小二乘回投影”与“每路单独对参考麦做一维最小二乘回归”在输出尚存残余相关时结果不同（见练习 <a href="#e08-13">E08-13</a>）；第三，若某声源在所选参考麦位置恰好处于声学零点（$A_{rn}=0$），其真实源图像为零，不能用该参考麦计算分贝失真比（见练习 <a href="#e08-14">E08-14</a>）。</p>
+<p>在方阵可逆情形下，标准修复步骤称为<strong>回投影（projection back）</strong>：令估计混合矩阵为 $\hat{\mathbf A}(f)=\mathbf W^{-1}(f)$，选定第 $r$ 支麦克风作为参考通道，用 $\hat{\mathbf A}(f)$ 第 $r$ 行的元素逐路修正解混输出 $Y_n(f,t)$：</p>
+<p>$$\tilde Y_n(f,t)=\hat A_{rn}(f)Y_n(f,t).\tag{8-16}$$</p>
+<p>为什么这一乘就能神奇地消掉任意复尺度？不妨代回理想解混关系验证：设算法收敛到了带任意可逆对角尺度阵 $\mathbf D$ 和排列阵 $\mathbf P$ 的解 $\mathbf W=\mathbf D\mathbf P\mathbf A^{-1}$，求逆即得 $\hat{\mathbf A}=\mathbf A\mathbf P^{-1}\mathbf D^{-1}$！当第 $n$ 路输出带着放大因子 $D_{nn}$ 出来时，$\hat{\mathbf A}$ 对应列的因子恰好带着 $D_{nn}^{-1}$，两者相乘瞬间把未知的 $D_{nn}$ 约得干干净净，精准还原出对应声源在参考麦克风 $r$ 上的真实源图像 $A_{r,\pi(n)}(f)S_{\pi(n)}(f,t)$！</p>
+<p>工程实现回投影时务必注意三点边界：第一，只要 $\mathbf W(f)$ 可逆，哪怕它根本没分开任何声源，由 $[\mathbf W^{-1}\mathbf W\vec X]_r=X_r$ 可知回投影之和恒满足 $\sum_{n=1}^M\tilde Y_n(f,t)=X_r(f,t)$，因此“回投影相加等于参考麦输入”绝不代表分离成功；第二，“矩阵求逆/多路联合最小二乘回投影”与“每路单独对参考麦做一维最小二乘回归”在输出尚存残余相关时结果不同（见练习 <a href="#e08-13">E08-13</a>）；第三，若某声源在所选参考麦位置恰好处于声学零点（$A_{rn}=0$），其真实源图像为零，不能用该参考麦计算分贝失真比（见练习 <a href="#e08-14">E08-14</a>）。</p>
 <h3 id="sec-u-51f22e4510">跨频排列的两频点手算</h3>
 <p>为了直观感受式(8-7)中的全带二范数 $r_n(t)=\sqrt{\sum_f|y_{nf}(t)|^2}$ 是如何自动对齐不同频点说话人槽位的，我们动手算一个两频点、两帧的极简数字例。</p>
 <p><strong>输入与口径</strong>：设两个频点 $f_1,f_2$ 上各自已经分离出两个槽位，两帧的非负幅度包络在 $f_1$ 的槽位 $1,2$ 上分别为 $[2,\ 0.5]$（第 $1$ 帧强、第 $2$ 帧弱）与 $[0.5,\ 2]$（第 $1$ 帧弱、第 $2$ 帧强）；频点 $f_2$ 上也出现了完全相同的两条包络序列，但未知哪条该配给谁。考察式(8-7)第一项的全带范数之和 $C=\sum_{t=1}^2\sum_{n=1}^2\|\bar{\vec y}_n(t)\|_2$（注意对解混矩阵交换两行只改变行列式正负号，不改变 $|\det\mathbf W_f|$，因此式(8-7)第二项对排列保持中立，全靠第一项拍板！）：</p>
@@ -884,14 +889,14 @@ J_{\mathrm{FastMNMF}}&=\sum_{f,t,m}\Bigl(
 <p><strong>GSS（导引源分离，guided source separation）</strong>在 CHiME-5/6 的真实家庭晚宴多通道语音识别任务中大放异彩（Boeddeker 等，CHiME-5 2018；阅读后续如 CHiME-8 等届次榜单时须核对当届通道与标注规则）。面对多台设备、强生活噪声与频繁打断重叠的真实录音，纯盲分离极易发生频点置换，而端到端分离网络又易受训练—测试域失配影响；GSS 巧妙地把外部说话人活动时间标注与免预训练的空间方向聚类结合起来，组成三步主干链：</p>
 <ol>
 <li>
-<p><strong>cACGMM 空间聚类</strong>：记 MIMO-WPE 去混响输出、尚未做方向归一化的多通道 STFT 为 $\vec Y(f,k)\in\mathbb{C}^{M\times 1}$。先剔除 $\|\vec Y(f,k)\|_2\le\varepsilon_E$ 的极低能量静默点，再将其余保留点除以自身二范数，投影到复单位球面上得到方向向量 $\vec z=\vec Y/\|\vec Y\|_2$（消除帧间总能量波动，仅保留跨麦克风复数幅相比值）。第 $n$ 个混合分量的复角中心高斯（cACG）方向密度定义为</p>
+<p><strong>cACGMM 空间聚类</strong>：记 MIMO-WPE 去混响输出、尚未做方向归一化的多通道 STFT 为 $\vec Y(f,t)\in\mathbb{C}^{M\times 1}$。先剔除 $\|\vec Y(f,t)\|_2\le\varepsilon_E$ 的极低能量静默点，再将其余保留点除以自身二范数，投影到复单位球面上得到方向向量 $\vec z=\vec Y/\|\vec Y\|_2$（消除帧间总能量波动，仅保留跨麦克风复数幅相比值）。第 $n$ 个混合分量的复角中心高斯（cACG）方向密度定义为</p>
 <p>$$\begin{aligned}
     q_n&=\vec z^H\mathbf B_n^{-1}\vec z,\\
     p(\vec z\mid\mathbf B_n)&\propto\frac{q_n^{-M}}{\det\mathbf B_n},\\
     \|\vec z\|_2&=1.
     \end{aligned}\tag{8-17}$$</p>
 <p>其中 $\mathbf B_n\in\mathbb{C}^{M\times M}$ 是厄米正定的形状矩阵。由于将 $\mathbf B_n$ 乘以任意正标量 $c>0$ 时，分母 $\det(c\mathbf B_n)=c^M\det\mathbf B_n$ 与分子 $(q_n/c)^{-M}=c^M q_n^{-M}$ 中的比例因子精确约消，每次参数更新后需人为固定一个代表尺度（例如归一化迹 $\operatorname{tr}(\mathbf B_n)=M$）——这纯粹是为了消除矩阵参数的标量乘数不唯一性，与原始语音声功率毫无关系。</p>
-<p>混合模型的后验概率 $\gamma_n(f,k)$ 用作软时频掩码。这里常说的“免训练”是指形状矩阵与混合权重直接在当前待处理录音片段上通过期望最大化（Expectation-Maximization，EM）迭代拟合，无需预先用带标签语料训练分离网络，但整套系统依然依赖上游提供的说话人起止时间标注。</p>
+<p>混合模型的后验概率 $\gamma_n(f,t)$ 用作软时频掩码。这里常说的“免训练”是指形状矩阵与混合权重直接在当前待处理录音片段上通过期望最大化（Expectation-Maximization，EM）迭代拟合，无需预先用带标签语料训练分离网络，但整套系统依然依赖上游提供的说话人起止时间标注。</p>
 <p><strong>为什么式(8-17)的球面密度会出现陌生的 $-M$ 次幂 $q_n^{-M}$？</strong> 它的几何图像其实极其直观：设想原始多通道复谱向量服从零均值复高斯分布 $\vec y\sim\mathcal{CN}(\vec 0,\mathbf B_n)$，密度正比于 $\exp(-\vec y^H\mathbf B_n^{-1}\vec y)/\det\mathbf B_n$。将其在极坐标下分解为径向总幅度 $r=\|\vec y\|_2\in(0,\infty)$ 与复单位球面上的方向向量 $\vec z=\vec y/r$（满足 $\|\vec z\|_2=1$）：在 $\mathbb{C}^M\cong\mathbb{R}^{2M}$ 的 $2M$ 维实欧氏空间中，球壳体积元随半径按 $r^{2M-1}\,\mathrm{d}r$ 增长，指数二次型则变成 $\exp(-r^2 q_n)$。</p>
 <p>为了彻底摆脱语音包络忽大忽小的干扰，我们沿径向半径 $r$ 从 $0$ 到 $\infty$ <strong>把幅度边缘化积分掉</strong>（同时积掉不影响通道间相位差的全局公用相角），作换元 $u=r^2 q_n$（$\mathrm{d}u=2r q_n\,\mathrm{d}r$）：</p>
 <p>$$\begin{aligned}
@@ -899,10 +904,10 @@ J_{\mathrm{FastMNMF}}&=\sum_{f,t,m}\Bigl(
     &=\frac{1}{2}q_n^{-M}\int_0^\infty u^{M-1}e^{-u}\,\mathrm{d}u\\
     &=\frac{(M-1)!}{2}q_n^{-M}.
     \end{aligned}$$</p>
-<p>伽马积分瞬间把高斯指数函数变成了纯方向二次型的负 $M$ 次幂 $q_n^{-M}$！同时也要认清该离散类别混合模型的物理近似：它假设每个时频点由某单一类别主导（见 <a href="https://eurasip.org/Proceedings/Eusipco/Eusipco2016/papers/1570256519.pdf">Ito 等，2016，§II-A 式(3)</a>），算出的 $\gamma_n(f,k)\in[0,1]$ 是类别归属责任概率，而非叠加源的复数幅度比，真正承担空间相消滤波的是最后一步的线性波束形成器。</p>
+<p>伽马积分瞬间把高斯指数函数变成了纯方向二次型的负 $M$ 次幂 $q_n^{-M}$！同时也要认清该离散类别混合模型的物理近似：它假设每个时频点由某单一类别主导（见 <a href="https://eurasip.org/Proceedings/Eusipco/Eusipco2016/papers/1570256519.pdf">Ito 等，2016，§II-A 式(3)</a>），算出的 $\gamma_n(f,t)\in[0,1]$ 是类别归属责任概率，而非叠加源的复数幅度比，真正承担空间相消滤波的是最后一步的线性波束形成器。</p>
 </li>
 <li>
-<p><strong>导引（Guided）</strong>：若在每个频点独立跑无约束 cACGMM，频点 $f_1$ 的“簇 1”和频点 $f_2$ 的“簇 1”根本不知道彼此是不是同一个人，依然会陷入严重的跨频簇标签置换。GSS 引入<strong>说话人活动时间标注</strong> $a_j(k)\in\{0,1\}$ 来充当全频带统一的锚点：当标注显示第 $k$ 帧说话人乙并未开口（$a_2(k)=0$）时，所有频点上说话人乙对应的簇在该帧一律被强制禁用！只要每位说话人在上下文窗口内有各自的独白或停顿差异，各频点的同名簇就会被自动对齐到同一说话人身上（注意 CHiME-5 原论文使用赛方人工转写时间戳作为理想导引；实际部署若接入自动说话人日志（diarization），漏标与误标会直接传递到掩码中）。此外，系统额外常驻一个始终允许活跃（$a_0(k)\equiv 1$）的背景噪声类，确保全员停顿静音的帧上后验分母依然严格为正；</p>
+<p><strong>导引（Guided）</strong>：若在每个频点独立跑无约束 cACGMM，频点 $f_1$ 的“簇 1”和频点 $f_2$ 的“簇 1”根本不知道彼此是不是同一个人，依然会陷入严重的跨频簇标签置换。GSS 引入<strong>说话人活动时间标注</strong> $a_j(t)\in\{0,1\}$ 来充当全频带统一的锚点：当标注显示第 $t$ 帧说话人乙并未开口（$a_2(t)=0$）时，所有频点上说话人乙对应的簇在该帧一律被强制禁用！只要每位说话人在上下文窗口内有各自的独白或停顿差异，各频点的同名簇就会被自动对齐到同一说话人身上（注意 CHiME-5 原论文使用赛方人工转写时间戳作为理想导引；实际部署若接入自动说话人日志（diarization），漏标与误标会直接传递到掩码中）。此外，系统额外常驻一个始终允许活跃（$a_0(t)\equiv 1$）的背景噪声类，确保全员停顿静音的帧上后验分母依然严格为正；</p>
 </li>
 <li>
 <p><strong>级联</strong>：完整流水线依次执行 <strong>MIMO-WPE 去混响 → 活动导引 cACGMM 估计软掩码 → 掩码加权计算目标/干扰原始功率 SCM → MVDR 波束形成</strong>（见 <a href="https://www.isca-archive.org/chime_2018/boeddecker18_chime.pdf">Boeddeker 等，CHiME-5 2018，§3.3 式(9)～(12)及表 1～2</a>）。</p>
@@ -912,35 +917,37 @@ J_{\mathrm{FastMNMF}}&=\sum_{f,t,m}\Bigl(
 <h3 id="sec-8-4-2">8.4.2 活动约束下的 EM 迭代</h3>
 <p><strong>紧凑实现顺序</strong>。下面列出本书带严格门控与正定保护的教学迭代五步流程，理清数据流转与状态依赖：</p>
 <ol>
-<li><strong>低能量筛除与球面投影</strong>：从 WPE 输出复谱 $\vec Y(f,k)$ 中剔除 $\|\vec Y(f,k)\|_2\le\varepsilon_E$ 的静默点，对其余有效点计算严格单位方向向量 $\vec z=\vec Y/\|\vec Y\|_2$。为 $J$ 位说话人各分配一个空间分量，并追加恒活跃的背景噪声分量 $j=0$（$a_0(k)\equiv 1$）；用单位阵或初始方向外积初始化正定形状矩阵 $\mathbf B_j(f)$。</li>
-<li><strong>E 步（活动门控责任概率）</strong>：在有效时频点上计算门控非负得分 $q_j(f,k)=a_j(k)\pi_j(f)p(\vec z(f,k)\mid\mathbf B_j(f))$，归一化得软掩码后验 $\gamma_j(f,k)=q_j(f,k)/\sum_{\ell=0}^J q_\ell(f,k)$（贝叶斯后验与混合模型期望最大化（EM）框架见<a href="00_math-foundations.html#sec-0-6">第 0 章 §0.6</a>；实际代码在对数域防下溢计算，正权重的恒活跃背景类保证了全员静音帧仍有合法后验 $\gamma_0=1$，若删去背景类则全员静音时分母归零崩溃）。</li>
+<li><strong>低能量筛除与球面投影</strong>：从 WPE 输出复谱 $\vec Y(f,t)$ 中剔除 $\|\vec Y(f,t)\|_2\le\varepsilon_E$ 的静默点，对其余有效点计算严格单位方向向量 $\vec z=\vec Y/\|\vec Y\|_2$。为 $J$ 位说话人各分配一个空间分量，并追加恒活跃的背景噪声分量 $j=0$（$a_0(t)\equiv 1$）；用单位阵或初始方向外积初始化正定形状矩阵 $\mathbf B_j(f)$。</li>
+<li><strong>E 步（活动门控责任概率）</strong>：在有效时频点上计算门控非负得分 $q_j(f,t)=a_j(t)\pi_j(f)p(\vec z(f,t)\mid\mathbf B_j(f))$，归一化得软掩码后验 $\gamma_j(f,t)=q_j(f,t)/\sum_{\ell=0}^J q_\ell(f,t)$（贝叶斯后验与混合模型期望最大化（EM）框架见<a href="00_math-foundations.html#sec-0-6">第 0 章 §0.6</a>；实际代码在对数域防下溢计算，正权重的恒活跃背景类保证了全员静音帧仍有合法后验 $\gamma_0=1$，若删去背景类则全员静音时分母归零崩溃）。</li>
 <li><strong>M 步（形状矩阵不动点更新与迹归一化）</strong>：将每个方向外积 $\vec z\vec z^H$ 除以当轮二次型 $\vec z^H\mathbf B_j^{-1}\vec z$ 后按责任权重 $\gamma_j$ 加权累加，施加向单位阵微弱收缩的正定正则化，再统一缩放使 $\operatorname{tr}(\mathbf B_j)=M$（本书实现中若某分量后验权重总和不足通道数 $M$，则安全重置为单位阵并累加诊断计数）。</li>
 <li><strong>迭代终止与状态记录</strong>：重复 E 步与 M 步至设定轮数上限或变化阈值，显式记录实际轮数与重置次数（引入收缩正则、权重地板和重置保护后，不应再套用理想无约束 EM 的似然单调递增结论）。</li>
-<li><strong>回接原始复谱计算功率 SCM 与波束</strong>：以收敛后的 $\gamma_j(f,k)$ 为权重，回到<strong>同一阶段未做球面归一化的原始复谱外积 $\vec Y\vec Y^H$</strong> 按式(8-22)计算每位目标说话人的 $\mathbf R_{\mathrm{tar}}$ 与非目标干扰协方差 $\mathbf R_{\mathrm{int}}$（汇集其余说话人与背景噪声），最后解算 MVDR 或 GEV 波束权重。</li>
+<li><strong>回接原始复谱计算功率 SCM 与波束</strong>：以收敛后的 $\gamma_j(f,t)$ 为权重，回到<strong>同一阶段未做球面归一化的原始复谱外积 $\vec Y\vec Y^H$</strong> 按式(8-22)计算每位目标说话人的 $\mathbf R_{\mathrm{tar}}$ 与非目标干扰协方差 $\mathbf R_{\mathrm{int}}$（汇集其余说话人与背景噪声），最后解算 MVDR 或 GEV 波束权重。</li>
 </ol>
-<p>将上述第 2、3 步写成精确的数学递推式。设第 $t$ 帧第 $j$ 类的二值活动指示为 $a_{jt}\in\{0,1\}$、全局混合先验为 $\pi_j\ge 0$（$\pi_0>0$），本帧允许活跃集合内的条件归一化先验与 E 步后验分别为：</p>
+<p>将上述第 2、3 步写成精确的数学递推式。设第 $t$ 帧第 $j$ 类的二值活动指示为 $a_{jt}\in\{0,1\}$、全局混合先验向量为 $\vec\pi=[\pi_0,\pi_1,\dots,\pi_J]^\top$（满足 $\pi_j\ge 0,\ \pi_0>0$），本帧允许活跃集合内的条件归一化先验与 E 步后验分别为：</p>
 <p>$$\begin{aligned}
 \pi_{jt}^{\mathrm{act}}
 &=\frac{a_{jt}\pi_j}{\sum_\ell a_{\ell t}\pi_\ell},\\
 \gamma_{jt}&=\frac{a_{jt}\pi_jp_j(\vec z_t)}
 {\sum_\ell a_{\ell t}\pi_\ell p_\ell(\vec z_t)}.
 \end{aligned}\tag{8-18}$$</p>
-<p>第一行的条件归一化分母在代入贝叶斯公式后分子分母上下抵消，直接化简为第二行。混合权重通常按帧均值 $\pi_j\leftarrow\frac{1}{T}\sum_t\gamma_{jt}$（加正下限重归一）更新（见 <a href="https://www.isca-archive.org/chime_2018/boeddecker18_chime.pdf">GSS 原论文 §3.2 式(5)～(8)</a>）。</p>
+<p>第一行的条件归一化分母在代入贝叶斯公式后分子分母上下抵消，直接化简为第二行。混合权重向量 $\vec\pi$ 通常按帧均值 $\pi_j\leftarrow\frac{1}{T}\sum_t\gamma_{jt}$（加正下限重归一）更新（见 <a href="https://www.isca-archive.org/chime_2018/boeddecker18_chime.pdf">GSS 原论文 §3.2 式(5)～(8)</a>）。</p>
 <p>再看第 3 步中形状矩阵 $\mathbf B$ 的更新来源：固定当轮责任权重 $\gamma_t\ge 0$（省略频点与类别下标，设责任权重总和 $\sum_t\gamma_t>0$），式(8-17)对应的加权负对数似然子目标为</p>
 <p>$$\begin{aligned}
 Q(\mathbf B)&=\sum_t\gamma_t\bigl[\ln\det \mathbf B
 +M\ln(\vec z_t^H\mathbf B^{-1}\vec z_t)\bigr].
 \end{aligned}\tag{8-19}$$</p>
-<p>利用以下两条矩阵对数求导恒等式：</p>
+<p>对厄米正定矩阵微扰 $\delta\mathbf B$ 取一阶微分（矩阵迹与逆微分预备详见<a href="00_math-foundations.html#sec-0-5">第 0 章 §0.5</a>，等价于对共轭矩阵 $\mathbf B^*$ 求 Wirtinger 偏导而无需引入转置记号）：由 $\delta\ln\det\mathbf B=\operatorname{tr}(\mathbf B^{-1}\delta\mathbf B)$ 与 $\delta(\mathbf B^{-1})=-\mathbf B^{-1}(\delta\mathbf B)\mathbf B^{-1}$，可得</p>
 <p>$$\begin{aligned}
-\frac{\partial}{\partial\mathbf B}\ln\det\mathbf B
-&=\mathbf B^{-\top},\\
-\frac{\partial}{\partial\mathbf B}
-\ln(\vec z^H\mathbf B^{-1}\vec z)
-&=-\frac{(\mathbf B^{-1}\vec z\vec z^H\mathbf B^{-1})^\top}
-{\vec z^H\mathbf B^{-1}\vec z},
+\delta Q(\mathbf B)
+&=\operatorname{tr}\!\left[\sum_t\gamma_t\left(\mathbf B^{-1}
+-M\frac{\mathbf B^{-1}\vec z_t\vec z_t^H\mathbf B^{-1}}
+{\vec z_t^H\mathbf B^{-1}\vec z_t}\right)\delta\mathbf B\right].
 \end{aligned}$$</p>
-<p>令梯度为零并从左右两边消去 $\mathbf B^{-1}$ 后，等式右端分母里依然留着未知的 $\mathbf B^{-1}$！因此 M 步没有一步到位的闭式平均解，而是用上一轮旧矩阵 $\mathbf B^{(r)}$ 代入右端分母做<strong>不动点迭代</strong>并配以迹归一化（见 <a href="https://www.eurasip.org/Proceedings/Eusipco/Eusipco2016/papers/1570256519.pdf">Ito 等，EUSIPCO 2016，§III-B 式(14)</a>，练习 <a href="#e08-11">E08-11</a> 手算完整一步并检验奇异边界）：</p>
+<p>分两步化简驻点方程 $\delta Q(\mathbf B)=0$：第一步令迹内厄米梯度矩阵为零，得 $\sum_t\gamma_t\bigl(\mathbf B^{-1}-M\frac{\mathbf B^{-1}\vec z_t\vec z_t^H\mathbf B^{-1}}{\vec z_t^H\mathbf B^{-1}\vec z_t}\bigr)=\mathbf 0$；第二步在等式两侧同时左乘 $\mathbf B$、右乘 $\mathbf B$ 消去外层的 $\mathbf B^{-1}$，立即化为</p>
+<p>$$\left(\sum_t\gamma_t\right)\mathbf B
+=M\sum_t\frac{\gamma_t}{\vec z_t^H\mathbf B^{-1}\vec z_t}
+\vec z_t\vec z_t^H.$$</p>
+<p>可以看到，消去外层逆矩阵后，等式右端标量分母里依然留着未知的 $\mathbf B^{-1}$！因此 M 步没有一步到位的闭式平均解，而是用上一轮旧矩阵 $\mathbf B^{(r)}$ 代入右端分母做<strong>不动点迭代</strong>并配以迹归一化（见 <a href="https://www.eurasip.org/Proceedings/Eusipco/Eusipco2016/papers/1570256519.pdf">Ito 等，EUSIPCO 2016，§III-B 式(14)</a>，练习 <a href="#e08-11">E08-11</a> 手算完整一步并检验奇异边界）：</p>
 <p>$$\begin{aligned}
 q_t^{(r)}&=\vec z_t^H(\mathbf B^{(r)})^{-1}\vec z_t,\\
 \widetilde{\mathbf B}^{(r+1)}
@@ -951,14 +958,14 @@ q_t^{(r)}&=\vec z_t^H(\mathbf B^{(r)})^{-1}\vec z_t,\\
 \end{aligned}\tag{8-20}$$</p>
 <p>还要特别澄清一个在文献与代码审查中常被忽略的似然细节：在已知活动门控 $a_{jt}$ 下，按式(8-18)第一行条件归一化先验写出的边缘条件对数似然为</p>
 <p>$$\begin{aligned}
-\ell(\pi,\mathbf B)
+\ell(\vec\pi,\mathbf B)
 &=\sum_t\ln\left(\sum_j a_{jt}\pi_jp_j(\vec z_t)\right)\\
 &\quad-\sum_t\ln\left(\sum_j a_{jt}\pi_j\right).
 \end{aligned}\tag{8-21}$$</p>
-<p>由于式(8-21)多了减号后面那一项同样依赖 $\pi_j$ 的活动归一化对数和，直接套用无门控混合模型的帧均值公式 $\pi_j\leftarrow\frac{1}{T}\sum_t\gamma_{jt}$ <strong>并不保证使式(8-21)的条件对数似然单调上升</strong>！练习 <a href="#e08-18">E08-18</a> 构造了一个干净的三帧反例，更新 $\pi$ 后 $\ell$ 反而从 $\ln 5$ 降到了 $\ln 3.4$（此外，上游官方 GPU-GSS 默认开启 <code>bss_iterations_post=1</code> 在最后一轮撤除活动硬门控并附带非零地板，因此其输出掩码在非活动帧上未必严格等于数学零，详见 <a href="research/02_aec_wpe_separation.html#bss">GSS 活动门控源码说明</a>）。</p>
+<p>由于式(8-21)多了减号后面那一项同样依赖 $\pi_j$ 的活动归一化对数和，直接套用无门控混合模型的帧均值公式 $\pi_j\leftarrow\frac{1}{T}\sum_t\gamma_{jt}$ <strong>并不保证使式(8-21)的条件对数似然单调上升</strong>！练习 <a href="#e08-18">E08-18</a> 构造了一个干净的三帧反例，更新 $\vec\pi$ 后 $\ell$ 反而从 $\ln 5$ 降到了 $\ln 3.4$（此外，上游官方 GPU-GSS 默认开启 <code>bss_iterations_post=1</code> 在最后一轮撤除活动硬门控并附带非零地板，因此其输出掩码在非活动帧上未必严格等于数学零，详见 <a href="research/02_aec_wpe_separation.html#bss">GSS 活动门控源码说明</a>）。</p>
 <h3 id="sec-8-4-3">8.4.3 活动门控手算与错误标注反例</h3>
-<p>先用两帧极简算例把式(8-18)的 E 步门控算熟：按“说话人 1、说话人 2、背景噪声”顺序排列，固定混合权重 $\pi=[0.5,\ 0.3,\ 0.2]$，假设三类在相邻两帧上的相对方向密度均为 $[2,\ 1,\ 1]$。第 1 帧仅说话人 1 开口，活动向量为 $[1,0,1]$，逐项相乘得未归一化分数 $[0.5\times 2,\ 0,\ 0.2\times 1]=[1,\ 0,\ 0.2]$，除以总和 $1.2$ 得软掩码后验 $[5/6,\ 0,\ 1/6]$；第 2 帧两人均停顿，活动向量为 $[0,0,1]$，分数为 $[0,0,0.2]$，归一化后验顺理成章变为 $[0,0,1]$（见练习 <a href="#e08-07">E08-07</a>）。</p>
-<p><strong>自动说话人日志漏标与误标的三帧反例</strong>：保持同样三类顺序，设 $\pi=[0.4,\ 0.4,\ 0.2]$，三帧相对方向密度依次为 $[8,1,1]$、$[1,8,1]$ 与 $[1,1,1]$，真实说话状态依次为“仅说话人 1 独白、仅说话人 2 独白、全员静音”。</p>
+<p>先用两帧极简算例把式(8-18)的 E 步门控算熟：按“说话人 1、说话人 2、背景噪声”顺序排列，固定混合权重向量 $\vec\pi=[0.5,\ 0.3,\ 0.2]^\top$，假设三类在相邻两帧上的相对方向密度均为 $[2,\ 1,\ 1]$。第 1 帧仅说话人 1 开口，活动向量为 $[1,0,1]$，逐项相乘得未归一化分数 $[0.5\times 2,\ 0,\ 0.2\times 1]=[1,\ 0,\ 0.2]$，除以总和 $1.2$ 得软掩码后验 $[5/6,\ 0,\ 1/6]$；第 2 帧两人均停顿，活动向量为 $[0,0,1]$，分数为 $[0,0,0.2]$，归一化后验顺理成章变为 $[0,0,1]$（见练习 <a href="#e08-07">E08-07</a>）。</p>
+<p><strong>自动说话人日志漏标与误标的三帧反例</strong>：保持同样三类顺序，设 $\vec\pi=[0.4,\ 0.4,\ 0.2]^\top$，三帧相对方向密度依次为 $[8,1,1]$、$[1,8,1]$ 与 $[1,1,1]$，真实说话状态依次为“仅说话人 1 独白、仅说话人 2 独白、全员静音”。</p>
 <ul>
 <li><strong>标注完全准确时</strong>：第 1 帧活动为 $[1,0,1]$，说话人 1 得分为 $0.4\times 8=3.2$、背景得分为 $0.2\times 1=0.2$，目标后验高达 $3.2/3.4=16/17\approx0.9412$；第 3 帧活动为 $[0,0,1]$，目标后验精确为 $0$。</li>
 <li><strong>发生漏标（miss）时</strong>：若上游说话人日志模块漏掉了第 1 帧的说话人 1（误标为 $a_1=0$），即便该点空间方向与说话人 1 吻合得再完美（密度高达 $8$），乘法门控也会一票否决将其后验硬砍为 $0$，导致目标协方差丢失关键样本！</li>
@@ -968,20 +975,20 @@ q_t^{(r)}&=\vec z_t^H(\mathbf B^{(r)})^{-1}\vec z_t,\\
 <p>这也解释了为什么原论文强调在截取目标话语段做 EM 聚类时，必须在话语前后各向外扩充数秒至十余秒的<strong>上下文窗口（context window）</strong>：倘若只截取目标说话人从头说到尾的那短短两秒，其活动指示恒为 $1$，与同样恒为 $1$ 的背景噪声类在时间轴上毫无区分度，目标簇与背景簇依然可能发生互换！只有扩宽窗口让每位说话人都露出停顿间隙，时间门控才能真正锁死簇身份。</p>
 <h3 id="sec-8-4-4">8.4.4 协方差、波束权重与适用边界</h3>
 <p>在实际会议处理中，先算清一段上下文窗口的网格吞吐量：以 $16\ \mathrm{kHz}$ 采样、$512$ 点窗、$128$ 点帧移（每秒 $125$ 帧）处理一段 $30\ \mathrm{s}$ 上下文为例，不补零完整帧数为 $\lfloor(480000-512)/128\rfloor+1=3747$ 帧，乘以 $257$ 个单边频点共有 $962\,979$（约 $96.3$ 万）个时频观测点参与多轮 EM 更新。当阵列通道数 $M\ge 2$ 时才具备方向聚类基础；若重叠人数 $N\le M$，后续线性波束拥有充足零陷自由度，即便遇到 $N>M$ 的多人混战，仍可依靠时频稀疏占优与活动门控逐人为目标估计软掩码与波束。</p>
-<p>拿到目标说话人的软掩码 $\gamma_{fk}=\gamma(f,k)$ 后，利用 WPE 输出的未归一化复谱 $\vec Y_{fk}=\vec Y(f,k)$ 估计目标空间协方差矩阵：</p>
+<p>拿到目标说话人的软掩码 $\gamma_{ft}=\gamma(f,t)$ 后，利用 WPE 输出的未归一化复谱 $\vec Y_{ft}=\vec Y(f,t)$ 估计目标空间协方差矩阵：</p>
 <p>$$\begin{gathered}
-\gamma_{fk}=\gamma(f,k),\\
-\vec Y_{fk}=\vec Y(f,k),\\
+\gamma_{ft}=\gamma(f,t),\\
+\vec Y_{ft}=\vec Y(f,t),\\
 \mathbf R_{\mathrm{tar}}(f)
-=\frac{\sum_k\gamma_{fk}\vec Y_{fk}\vec Y_{fk}^H}
-{\sum_k\gamma_{fk}+\varepsilon}.
+=\frac{\sum_t\gamma_{ft}\vec Y_{ft}\vec Y_{ft}^H}
+{\sum_t\gamma_{ft}+\varepsilon}.
 \end{gathered}\tag{8-22}$$</p>
-<p>式(8-22)采用分母加正小量 $\varepsilon>0$ 的防除零写法，而本书教学函数 <code>masked_spatial_covariance()</code> 采用分母下限钳位 $\max(\sum_k\gamma_{fk},\varepsilon)$——正常掩码权重下两者一致，但在掩码权重总和极小时行为略有区别（练习 E08-05 手算对比了这两种写法）。相应地，将该目标之外其余说话人与背景类的后验之和作为非目标掩码，即可按同式算出干扰加噪声协方差 $\mathbf R_{\mathrm{int}}(f)$。</p>
+<p>式(8-22)采用分母加正小量 $\varepsilon>0$ 的防除零写法，而本书教学函数 <code>masked_spatial_covariance()</code> 采用分母下限钳位 $\max(\sum_t\gamma_{ft},\varepsilon)$——正常掩码权重下两者一致，但在掩码权重总和极小时行为略有区别（练习 E08-05 手算对比了这两种写法）。相应地，将该目标之外其余说话人与背景类的后验之和作为非目标掩码，即可按同式算出干扰加噪声协方差 $\mathbf R_{\mathrm{int}}(f)$。</p>
 <p>调试掩码波束形成器时，不能只看总帧数 $T$，还应监控软掩码实际贡献了多少有效统计量。统计学中的基什（Kish）有效样本数公式（对非负且权重总和为正的掩码定义）提供了直观诊断：</p>
 <p>$$\begin{aligned}
 N_{\mathrm{eff}}(f)
-&=\frac{\bigl(\sum_k\gamma(f,k)\bigr)^2}
-{\sum_k\gamma^2(f,k)}.
+&=\frac{\bigl(\sum_t\gamma(f,t)\bigr)^2}
+{\sum_t\gamma^2(f,t)}.
 \end{aligned}\tag{8-23}$$</p>
 <p>当 $900$ 帧权重均匀全为 $1$ 时 $N_{\mathrm{eff}}=900$；若只有 $3$ 帧权重接近 $1$、其余近零，$N_{\mathrm{eff}}$ 立刻跌至约 $3$。同时谨记线性代数硬约束：设严格正权重的非零快照数为 $T_+$，则 $M\times M$ 矩阵 $\mathbf R_{\mathrm{tar}}$ 的秩至多为 $\min(T_+,M)$，即使 $N_{\mathrm{eff}}\ge M$，高度共线的相邻帧仍可能导致矩阵病态，因此求解波束前仍须核查条件数并施加对角加载（原始文献见 <a href="https://doi.org/10.1109/EUSIPCO.2016.7760429">Ito 等，EUSIPCO 2016</a> 与 <a href="https://doi.org/10.1109/ICASSP.2016.7471664">Heymann 等掩码波束论文，ICASSP 2016</a>）。</p>
 <p><strong>从软掩码一路手算到 MVDR 输出的二阶算例</strong>：取两支麦克风在两个时频点上的简化实数谱快照 $\vec Y_1=[1,1]^\top$（同相）与 $\vec Y_2=[1,-1]^\top$（反相），设目标软掩码为 $\gamma=[0.9,\ 0.1]$（权重总和恰为 $1$，取 $\varepsilon=0$），非目标掩码为 $1-\gamma=[0.1,\ 0.9]$。代入式(8-22)立刻算出两张正定协方差矩阵：</p>
@@ -1024,7 +1031,7 @@ N_{\mathrm{eff}}(f)
 </tr>
 </tbody>
 </table></div>
-<p>运行中全员静音帧的背景后验精确为 $1$，各点后验概率和与 $1$ 的最大浮点偏差仅为 $2.22\times 10^{-16}$，形状重置计数为 $0$（导出的 <a href="gss_audio/STATE.npz"><code>STATE.npz</code></a> 分别独立保存了末次 E 步所用旧参数 <code>e_step_shapes</code> 与随后 M 步更新后的 <code>shape_matrices</code>，单元测试见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/tests/test_codes_gss_teaching.py"><code>test_codes_gss_teaching.py</code></a>）。五条独立资产 WAV 采用共同增益 $1$ 导出（试听前请先调低音量，资产摘要与参数见<a href="gss_audio/MANIFEST.json">独立清单</a>，官方大规模会议版参见 <a href="https://github.com/desh2608/gss/tree/10fad18cae85e2e4342c77421abc70c9c5da23ed">GPU-GSS 固定源码</a> 与 <a href="https://www.isca-archive.org/chime_2018/boeddecker18_chime.pdf">GSS 原论文 §3.1～3.3</a>）：</p>
+<p>运行中全员静音帧的背景后验恒为 $1$，各有效时频点的类别后验概率严格归一，且非退化簇在整个迭代过程中保持数值正定而不触发奇异重置（导出的 <a href="gss_audio/STATE.npz"><code>STATE.npz</code></a> 分别保存了末次 E 步与 M 步的形状矩阵参数，验证测试见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/tests/test_codes_gss_teaching.py"><code>test_codes_gss_teaching.py</code></a>）。五条独立资产 WAV 采用共同增益 $1$ 导出（试听前请先调低音量，资产参数见<a href="gss_audio/MANIFEST.json">独立清单</a>，官方大规模会议版参见 <a href="https://github.com/desh2608/gss/tree/10fad18cae85e2e4342c77421abc70c9c5da23ed">GPU-GSS 固定源码</a> 与 <a href="https://www.isca-archive.org/chime_2018/boeddecker18_chime.pdf">GSS 原论文 §3.1～3.3</a>）：</p>
 <ul>
 <li><a href="gss_audio/source_1.wav">第一路源</a><audio class="audio-sample" controls preload="none" aria-label="第一路源" src="gss_audio/source_1.wav">请使用上方 WAV 链接下载。</audio></li>
 <li><a href="gss_audio/source_2.wav">第二路源</a><audio class="audio-sample" controls preload="none" aria-label="第二路源" src="gss_audio/source_2.wav">请使用上方 WAV 链接下载。</audio></li>
@@ -1033,19 +1040,23 @@ N_{\mathrm{eff}}(f)
 <li><a href="gss_audio/enhanced_missed.wav">漏标输出</a><audio class="audio-sample" controls preload="none" aria-label="漏标输出" src="gss_audio/enhanced_missed.wav">请使用上方 WAV 链接下载。</audio></li>
 </ul>
 <p><img alt="图42：活动信息约束方向聚类，原复谱与掩码共同形成SCM，波束输出目标音频" src="../figures/fig42_gss_flow.png" onerror="this.alt+='（图缺失）'" /></p>
-<p>对照图 42 的张量形状流转，可以一眼看清整条 GSS 系统的<strong>双支路分流架构</strong>：左侧去混响后的多通道复谱张量 $\mathbf Y$（形状 <code>(F, M, T)</code>，对应频点、阵元与帧）在分叉口一分为二。<strong>上方控制/聚类支路</strong>沿通道轴做单位球面归一化得到纯方向张量 <code>(F, M, T)</code>，与外部说话人活动矩阵 <code>(J, T)</code> 汇合进入 cACGMM，拟合无功率尺度的形状矩阵 <code>(J+1, F, M, M)</code> 并产出实数软掩码 <code>(J+1, F, T)</code>。</p>
-<p>与此同时，<strong>下方音频/统计支路</strong>完好保留原始 <code>(F, M, T)</code> 复谱的真实幅度与跨麦相位，与上方送下来的目标及非目标软掩码 <code>(F, T)</code> 汇合，加权汇总出带物理功率尺度的目标与干扰协方差张量 <code>(F, M, M)</code>（即 $\mathbf R_{\mathrm{tar}},\mathbf R_{\mathrm{int}}$），最终解出逐频波束权重 <code>(F, M)</code> 输出目标复谱 <code>(F, T)</code>。记住图 42 这条上下分流线，就绝不会犯“拿球面归一化向量 $\vec z$ 算波束协方差”的经典错误。</p>
+<p>对照图 42 的三行网格结构与张量形状标注，可以一眼看清整条 GSS 系统的分流协作机制：</p>
+<ul>
+<li><strong>顶行（输入复谱与外部活动先验）</strong>：左侧输入多通道复谱 $\mathbf X$（形状 <code>(F, M, T)</code>，对应频点、阵元与帧）经可选去混响得到 $\mathbf Y$（<code>(F, M, T)</code>），随后向下分流；右上角输入外部说话人活动矩阵 <code>a</code>（<code>(J, T)</code>，并补入恒活跃背景类）。</li>
+<li><strong>中行（方向单位化与导引 cACG 聚类支路）</strong>：将 $\mathbf Y$ 沿通道轴做单位球面归一化得到纯方向张量 $\mathbf Z$（<code>(F, M, T)</code>），与右上角送入的活动先验门控汇合进入导引 cACG 迭代，拟合无功率尺度的形状矩阵 <code>(J+1, F, M, M)</code> 并产出实数后验软掩码 $\boldsymbol\gamma$（<code>(J+1, F, T)</code>）。</li>
+<li><strong>底行（保留原始功率的协方差统计与波束滤波支路）</strong>：保留未做球面归一化的原始复谱 $\mathbf Y$（<code>(F, M, T)</code>，承载真实幅度与跨麦相位），与中行送下的目标及非目标软掩码 <code>(F, T)</code> 加权汇总出带物理功率尺度的空间协方差张量 <code>(F, M, M)</code>（即 $\mathbf R_{\mathrm{tar}},\mathbf R_{\mathrm{int}}$），解算逐频加载 MVDR 波束权重 <code>(F, M)</code> 并在右下角输出目标复谱 <code>(F, T)</code>。记住这条中行定方向、底行保功率的分流线，就绝不会犯“拿球面归一化向量 $\vec z$ 算波束协方差”的经典错误。</li>
+</ul>
 <span id="sec-8-1-3" class="anchor-alias" aria-hidden="true"></span><span id="sec-5" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-8-5">8.5 分离指标与数据集口径</h2>
 <h3 id="sec-u-d335249b81">SI-SDR 的正交投影</h3>
-<p>在单通道与干声分离评测中，最普及的波形级指标是<strong>尺度不变信号失真比（Scale-Invariant Signal-to-Distortion Ratio，SI-SDR）</strong>。为什么传统信噪比（$\|\hat s-s\|_2^2$）不适合直接评测分离器？因为把清晰分离出的语音音量整体调小一半（$\hat s=0.5s$），人耳听起来毫无失真，传统波形差却会判出巨大的 $-6\ \mathrm{dB}$ 误差！<a href="https://www.merl.com/publications/docs/TR2019-013.pdf">Le Roux 等（ICASSP 2019，§2.3 式(3)～(5)）</a> 因此提出：先将等长实数估计向量 $\hat s$（采用去均值口径时先分别减去各自样本均值）向非零参考向量 $s$ 作<strong>一维欧氏正交投影</strong>，把平行于 $s$ 的分量定为有效目标 $s_{\mathrm{tar}}=\alpha s$，把垂直于 $s$ 的正交残差 $\vec e_{\perp}=\hat s-s_{\mathrm{tar}}$ 定为失真，再计算两者的能量分贝比：</p>
+<p>在单通道与干声分离评测中，最普及的波形级指标是<strong>尺度不变信号失真比（Scale-Invariant Signal-to-Distortion Ratio，SI-SDR）</strong>。为什么传统信噪比（$\|\hat{\vec s}-\vec s\|_2^2$）不适合直接评测分离器？因为把清晰分离出的语音音量整体调小一半（$\hat{\vec s}=0.5\vec s$），人耳听起来毫无失真，传统波形差却会判出巨大的 $-6\ \mathrm{dB}$ 误差！<a href="https://www.merl.com/publications/docs/TR2019-013.pdf">Le Roux 等（ICASSP 2019，§2.3 式(3)～(5)）</a> 因此提出：先将等长实数估计向量 $\hat{\vec s}$（采用去均值口径时先分别减去各自样本均值）向非零参考向量 $\vec s$ 作<strong>一维欧氏正交投影</strong>，把平行于 $\vec s$ 的分量定为有效目标 $\vec s_{\mathrm{tar}}=\alpha\vec s$，把垂直于 $\vec s$ 的正交残差 $\vec e_{\perp}=\hat{\vec s}-\vec s_{\mathrm{tar}}$ 定为失真，再计算两者的能量分贝比：</p>
 <p>$$\begin{aligned}
-\alpha&=\frac{\langle\hat s,s\rangle}{\|s\|_2^2},\qquad
-s_{\mathrm{tar}}=\alpha s,\\
+\alpha&=\frac{\langle\hat{\vec s},\vec s\rangle}{\|\vec s\|_2^2},\qquad
+\vec s_{\mathrm{tar}}=\alpha\vec s,\\
 \mathrm{SI\text{-}SDR}&=10\log_{10}
-\frac{\|s_{\mathrm{tar}}\|_2^2}
-{\|\hat s-s_{\mathrm{tar}}\|_2^2}.
+\frac{\|\vec s_{\mathrm{tar}}\|_2^2}
+{\|\hat{\vec s}-\vec s_{\mathrm{tar}}\|_2^2}.
 \end{aligned}\tag{8-24}$$</p>
-<p>投影系数 $\alpha$ 正是一维最小二乘 $\min_\alpha\|\hat s-\alpha s\|_2^2$ 的闭式解（求导令 $-2s^\top\hat s+2\alpha s^\top s=0$ 即得），它保证了目标分量 $s_{\mathrm{tar}}$ 与失真残差 $\vec e_\perp$ 严格正交（满足勾股分解 $\|\hat s\|_2^2=\|\alpha s\|_2^2+\|\vec e_\perp\|_2^2$），从而防止模型靠把整体增益缩到极小来欺骗分母。<strong>SI-SDR 提升量（SI-SDRi）</strong>定义为分离输出 SI-SDR 减去参考麦克风混合输入 SI-SDR，计算两者时必须锁定完全相同的去均值与数值下限约定。</p>
+<p>投影系数 $\alpha$ 正是一维最小二乘 $\min_\alpha\|\hat{\vec s}-\alpha\vec s\|_2^2$ 的闭式解（求导令 $-2\vec s^\top\hat{\vec s}+2\alpha\vec s^\top\vec s=0$ 即得），它保证了目标分量 $\vec s_{\mathrm{tar}}$ 与失真残差 $\vec e_\perp$ 严格正交（满足勾股分解 $\|\hat{\vec s}\|_2^2=\|\alpha\vec s\|_2^2+\|\vec e_\perp\|_2^2$），从而防止模型靠把整体增益缩到极小来欺骗分母。<strong>SI-SDR 提升量（SI-SDRi）</strong>定义为分离输出 SI-SDR 减去参考麦克风混合输入 SI-SDR，计算两者时必须锁定完全相同的去均值与数值下限约定。</p>
 <p>不过，把 SI-SDR 搬到<strong>多麦克风波束形成与混响房间分离</strong>时，一定要警惕它的重大盲区！式(8-24)的投影系数 $\alpha$ 只是一个<strong>零阶单标量</strong>：只要估计波形相对于参考波形发生了哪怕 $1$～$2$ 个采样点的传播时移（见练习 E08-01），或者经过了线性 MVDR 波束形成器带来的轻微良性频响均衡，人耳与后端语音识别都觉得极其清晰，单标量 SI-SDR 却会把这部分良性线性滤波差全部判为正交失真，打出极低甚至负数的冤枉分！</p>
 <p>为此，多通道与远场语音分离基准（如 SMS-WSJ、URGENT 以及开源评测库 <code>fgnt/ci_sdr</code>）广泛采用<strong>卷积不变信号失真比（Convolutive-Invariant SDR，CI-SDR，<a href="https://doi.org/10.1109/ICASSP39728.2021.9414179">Boeddeker 等，ICASSP 2021</a>）</strong>：把单标量缩放升级为抽头长度为 $L$ 的<strong>短因果 FIR 托普利茨（Toeplitz）卷积子空间正交投影</strong>。记长度 $N$ 参考序列 $\vec s$ 的因果移位列组成 $N\times L$ 托普利茨矩阵 $[\mathbf T_L(\vec s)]_{t,\tau}=s[t-\tau]$，最小二乘最优匹配滤波器与分贝比写为：</p>
 <p>$$\begin{aligned}
@@ -1138,7 +1149,7 @@ C_{ij}&=\frac{|\vec u_i^\top \vec v_j|}
 \hat\pi&=\arg\max_{\pi\in\mathcal S_N}
 \frac{1}{N}\sum_i C_{i,\pi(i)}.
 \end{aligned}\tag{8-25}$$</p>
-<p>注意式(8-25)的两个工程细节：第一，只有当重叠区具备充足语音能量且最优排列得分显著领先次优排列时才采纳匹配，遇到全员静音、两槽输出雷同或新说话人刚刚在非重叠区开口时，应返回“未确定”状态并交由声纹或历史状态兜底；第二，式(8-25)分子取了绝对值 $|\cdot|$ 以兼容块间极性反转（时域编码器或盲分离常出现整块乘 $-1$ 或幅度漂移），因此<strong>选对排列 $\hat\pi$ 后还必须在重叠区单独对齐极性与标量增益</strong>，否则两块反相波形在拼接区一加就会彼此抵消归零！（练习 <a href="#e08-29">E08-29</a> 与 <a href="#e08-32">E08-32</a> 手算并合成音频演示了这一相消陷阱）。</p>
+<p>注意式(8-25)的两个工程细节：第一，只有当重叠区具备充足语音能量且最优排列得分显著领先次优排列时才采纳匹配，遇到全员静音、两槽输出雷同或新说话人刚刚在非重叠区开口时，应返回“未确定”状态并交由声纹或历史状态接管判定；第二，式(8-25)分子取了绝对值 $|\cdot|$ 以兼容块间极性反转（时域编码器或盲分离常出现整块乘 $-1$ 或幅度漂移），因此<strong>选对排列 $\hat\pi$ 后还必须在重叠区单独对齐极性与标量增益</strong>，否则两块反相波形在拼接区一加就会彼此抵消归零！（练习 <a href="#e08-29">E08-29</a> 与 <a href="#e08-32">E08-32</a> 手算并合成音频演示了这一相消陷阱）。</p>
 <p>完成排列重排与极性/增益校准后，记全局采样时间轴上第 $b$ 块第 $n$ 路对齐后的波形为 $y_{bn}[t]$，利用非负窗函数 $w_b[t]\ge 0$ 做归一化重叠相加（Overlap-Add）：</p>
 <p>$$\begin{aligned}
 \hat s_n[t]&=\frac{\sum_b w_b[t]y_{bn}[t]}{\sum_b w_b[t]},\\
@@ -1153,15 +1164,58 @@ C_{ij}&=\frac{|\vec u_i^\top \vec v_j|}
 <p>用一个四词迷你算例立刻看懂两者的分差：设两位说话人 $A,B$ 按时间交替说出四个词 $A:a,\ B:c,\ A:b,\ B:d$，而两条 CSS 输出流在第 2 轮发生了槽位对调，分别转写出 <code>"a d"</code> 与 <code>"c b"</code>。按逐句灵活指派的 <strong>ORC-WER</strong> 打分，四句都能对上，错误率为 $0/4=0\%$；而按整场锁死全局排列的 <strong>cpWER</strong>（参考长串为 <code>A:"a b"</code>、<code>B:"c d"</code>）打分，无论选哪种对应都至少错 $2$ 个词，最佳 cpWER 高达 $2/4=50\%$！</p>
 <h3 id="sec-u-aeeca0b7eb">时频掩码与深度模型</h3>
 <p>为什么给混合语音乘上一张网格权重就能分出不同人的声音？传统谱掩蔽的物理基石是语音信号的时频稀疏性——文献中常称为<strong>时频不交叠假设（W-disjoint orthogonality，WDO）</strong>：虽然两位说话人在时域波形上时刻混在一起，但变换到高分辨率 STFT 时频平面后，不同说话人的基音谐波与共振峰往往错落在不同的时频格子上，绝大多数非静默时频点都由某一位说话人占主导。</p>
-<p>在单通道 STFT 域，最直观的分离方式就是为第 $n$ 个源预测一张时频掩码 $M_n(f,k)$ 并逐点乘在混合复谱 $X(f,k)$ 上：</p>
-<p>$$\hat S_n(f,k)=M_n(f,k)X(f,k).\tag{8-27}$$</p>
-<p>注意单通道逐点掩蔽与多通道宽带波束形成的本质区别：波束形成在每个频点利用多支麦克风之间的复数幅相关系做空间相干滤波，哪怕两个人在同一时频点能量完全重叠，只要空间方向不同就能拉开；而式(8-27)没有空间维度，一旦两人在同一时频点强烈混叠，特别是将 $M_n$ 限制为 $[0,1]$ 闭区间内的有界实数掩码时，它既无法在两源反相抵消时把幅度放大回真实值，也无法旋转被干扰带偏的混合相位（练习 <a href="#e08-22">E08-22</a> 与 <a href="#e08-28">E08-28</a> 定量复算了这两道硬天花板；改用复数理想比值掩码 cIRM 或直接复谱映射可突破该表示限制）。</p>
+<p>在单通道（或指定参考麦克风）STFT 域，最直观的分离方式就是为第 $n$ 个源预测一张时频掩码 $M_n(f,t)$ 并逐点乘在混合复谱 $X(f,t)$ 上：</p>
+<p>$$\hat S_n(f,t)=M_n(f,t)X(f,t).\tag{8-27}$$</p>
+<p>早期监督语音分离文献围绕式(8-27)定义了五类经典的<strong>理想监督训练目标（oracle TF masks）</strong>。设参考通道上第 $n$ 个源的真实复谱为 $S_n$、其余干扰源加噪声复谱之和为 $V_{\bar n}$、混合复谱为 $X_{\mathrm{ref}}=S_n+V_{\bar n}$（省略下标 $(f,t)$，并设 $X_{\mathrm{ref}}\ne 0$），按值域放宽与相位建模精细度递增对比如下：</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
+<thead>
+<tr>
+<th scope="col">掩码名称</th>
+<th scope="col">理想公式定义</th>
+<th scope="col">值域范围</th>
+<th scope="col">复平面几何意义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>IBM</strong>（理想二值掩码）</td>
+<td>$\mathbb{I}\bigl(\lvert S_n\rvert^2 > \tau\lvert V_{\bar n}\rvert^2\bigr)$（常取门限 $\tau=1$ 即 $0\ \mathrm{dB}$）</td>
+<td>$\{0,1\}$</td>
+<td>硬开关判决：目标占优则原样保留混合相量 $X_{\mathrm{ref}}$，否则直接置零</td>
+</tr>
+<tr>
+<td><strong>IRM</strong>（理想比值掩码）</td>
+<td>$\bigl(\lvert S_n\rvert^2\big/(\lvert S_n\rvert^2+\lvert V_{\bar n}\rvert^2)\bigr)^{\beta}$（常取 $\beta=1/2$）</td>
+<td>$[0,1]$</td>
+<td>按不相干能量比沿混合射线 $X_{\mathrm{ref}}$ 做软收缩，完全沿用混合相角 $\angle X_{\mathrm{ref}}$</td>
+</tr>
+<tr>
+<td><strong>IAM / FFT-Mask</strong>（理想幅度掩码）</td>
+<td>$\lvert S_n\rvert / \lvert X_{\mathrm{ref}}\rvert$（训练时常截断上界）</td>
+<td>$[0,\infty)$</td>
+<td>将混合相量直接伸缩到真实目标模长 $\lvert S_n\rvert$，但相角仍锁死在 $\angle X_{\mathrm{ref}}$</td>
+</tr>
+<tr>
+<td><strong>PSM</strong>（相位敏感掩码）</td>
+<td>$\dfrac{\lvert S_n\rvert}{\lvert X_{\mathrm{ref}}\rvert}\cos(\angle S_n-\angle X_{\mathrm{ref}})=\dfrac{\operatorname{Re}(S_n X_{\mathrm{ref}}^*)}{\lvert X_{\mathrm{ref}}\rvert^2}$</td>
+<td>$(-\infty,\infty)$</td>
+<td>将目标相量 $S_n$ <strong>向混合相量 $X_{\mathrm{ref}}$ 所在直线作正交投影</strong>（实乘子最小二乘最优解）</td>
+</tr>
+<tr>
+<td><strong>cRM / cIRM</strong>（复理想比值掩码）</td>
+<td>$\dfrac{S_n}{X_{\mathrm{ref}}}=\dfrac{\operatorname{Re}(S_n X_{\mathrm{ref}}^*)}{\lvert X_{\mathrm{ref}}\rvert^2}+\mathrm{j}\dfrac{\operatorname{Im}(S_n X_{\mathrm{ref}}^*)}{\lvert X_{\mathrm{ref}}\rvert^2}$</td>
+<td>$\mathbb{C}$</td>
+<td>复平面内同时执行幅度伸缩与相角旋转（实部恰为 PSM，虚部补齐正交分量，训练常加双曲正切压缩）</td>
+</tr>
+</tbody>
+</table></div>
+<p>注意单通道逐点掩蔽与多通道宽带波束形成的本质区别：波束形成在每个频点利用多支麦克风之间的复数幅相关系做空间相干滤波，哪怕两个人在同一时频点能量完全重叠，只要空间方向不同就能拉开；而式(8-27)没有空间维度。在所有实数掩码 $m\in\mathbb{R}$ 中，最小化复谱平方误差 $|m X_{\mathrm{ref}}-S_n|^2$ 的唯一闭式解正是上表中的 <strong>PSM</strong>（后文练习 <a href="#e08-22">E08-22</a> 与 <a href="#e08-28">E08-28</a> 中的无上界实最优掩码即为非负域上的 PSM）；一旦再将 $M_n$ 限制为 $[0,1]$ 闭区间内的有界实数掩码，它既无法在两源反相抵消时把幅度放大回真实值，也无法像 <strong>cRM / cIRM</strong> 那样旋转被干扰带偏的混合相位。</p>
 <p>为了彻底摆脱固定长窗 STFT 的高延迟与实掩码相位瓶颈，深度学习语音分离开启了“编码器—掩码分离网—解码器”的可学习潜空间范式：</p>
 <p>$$\begin{aligned}
-z&=E_\theta(x),\\
-\hat s_n&=D_\theta(m_n\odot z).
+\vec z&=E_\theta(\vec x),\\
+\hat{\vec s}_n&=D_\theta(\vec m_n\odot \vec z).
 \end{aligned}\tag{8-28}$$</p>
-<p>其中编码器 $E_\theta$ 用一维短卷积把时域波形映射为高维特征序列 $z$，分离骨干网估计同形状的源专属掩码 $m_n$，转置卷积解码器 $D_\theta$ 直接重构出时域波形 $\hat s_n$（早期的深度聚类则将时频点映射为嵌入向量再做聚类，见 <a href="https://arxiv.org/abs/1508.04306">Hershey 等，2016</a>）。</p>
+<p>其中编码器 $E_\theta$ 用一维短卷积把时域波形向量 $\vec x$ 映射为潜空间特征向量序列 $\vec z$，分离骨干网估计同形状的源专属掩码 $\vec m_n$，转置卷积解码器 $D_\theta$ 直接重构出时域波形向量 $\hat{\vec s}_n$（早期的深度聚类则将时频点映射为嵌入向量再做聚类，见 <a href="https://arxiv.org/abs/1508.04306">Hershey 等，2016</a>）。</p>
 <p>顺着“<strong>如何以可控显存同时抓住局部精细相位与长程说话人上下文，并从干声走向远场多通道混响</strong>”这条技术主线，近年的深度分离架构走过了非常清晰的四代演进：</p>
 <ol>
 <li><strong>第一代：时域超短窗空洞卷积（Conv-TasNet，2019）</strong>：用仅 $2\ \mathrm{ms}$（如 $16\ \mathrm{kHz}$ 下 $32$ 点）的可学习一维卷积替代 $32\ \mathrm{ms}$ STFT，配合多层膨胀（空洞）时序卷积网络（TCN）扩大感受野，首次在无混响干声混合上超越理想实幅度掩码并实现毫秒级理论编码延迟；但超短帧移导致特征序列极长，且缺乏显式频率轴结构，在强混响远场环境下性能回落明显。</li>
@@ -1232,7 +1286,7 @@ z&=E_\theta(x),\\
 </tr>
 </tbody>
 </table></div>
-<p>阅读上表并落地流式神经模型时，先核查两项接口契约：第一，文献中的 SI-SNR 与 SI-SDR 在去均值正交投影定义下原本等价，但不同代码库在均值扣除或极小稳定项上可能存在差异，对比时务必用同一评测脚本重算基线与输出；第二，<strong>“模型数学结构因果”绝不自动等于“推理 API 支持跨音频块无损续算”</strong>！例如在 <a href="https://github.com/Audio-WestlakeU/NBSS/tree/cc42fc8ad2e6642c09b8f4169a85b4766dc22b7e">NBSS 仓库的 Online SpatialNet 固定源码</a>中，整段前向传播虽不偷看未来帧，但顶层 <code>forward()</code> 向底层传入 <code>state=None</code> 而未向外暴露缓存状态张量——若把长音频切成短块逐次调用，每块都会丢失历史状态重新冷启动，上线前必须实跑“整段一次输入”与“切块带状态连续调用”的逐样本等价性回归测试。</p>
+<p>阅读上表并落地流式神经模型时，先核查两项接口约定：第一，文献中的 SI-SNR 与 SI-SDR 在去均值正交投影定义下原本等价，但不同代码库在均值扣除或极小稳定项上可能存在差异，对比时务必用同一评测脚本重算基线与输出；第二，<strong>“模型数学结构因果”绝不自动等于“推理 API 支持跨音频块无损续算”</strong>！例如在 <a href="https://github.com/Audio-WestlakeU/NBSS/tree/cc42fc8ad2e6642c09b8f4169a85b4766dc22b7e">NBSS 仓库的 Online SpatialNet 固定源码</a>中，整段前向传播虽不偷看未来帧，但顶层 <code>forward()</code> 向底层传入 <code>state=None</code> 而未向外暴露缓存状态张量——若把长音频切成短块逐次调用，每块都会丢失历史状态重新冷启动，上线前必须实跑“整段一次输入”与“切块带状态连续调用”的逐样本等价性回归测试。</p>
 <p>紧接着还要算清“窄带逐频 + 跨带交互”流式骨干网的<strong>端侧乘累加（MAC/s）算力账</strong>：设帧移为 $H$ 点（每秒帧率 $R=f_s/H$），骨干堆叠 $B$ 层，每层对 $F$ 个子带各执行 $K_{\mathrm{proj}}$ 次 $D\times D$ 线性投影，则仅线性投影主干的每秒乘累加次数为</p>
 <p>$$\begin{aligned}
 \mathrm{MAC/s}&=R\cdot B\cdot F\cdot K_{\mathrm{proj}}D^2,
@@ -1256,7 +1310,7 @@ P_{\mathcal S}(Y)&=\mathcal S\!\left(\mathcal S^{-1}(Y)\right),\\
 Y&=P_{\mathcal S}(Y).
 \end{aligned}\tag{8-31}$$</p>
 <p>满足第二行不动点条件的复谱才是合法的 STFT 谱。</p>
-<p>最后思考一个精妙的算子顺序问题：<strong>把“混合一致性修正 $Q$”与“STFT 一致性投影 $P_{\mathcal S}$”串在一起时，先做谁、后做谁结果一样吗？</strong> 当各路采用跨时频恒定的等权重（$1/N$）修正时，线性标量可自由穿过线性的 $P_{\mathcal S}$，先后顺序完全等价，但一旦采用随帧或随频点变化的动态权重 $v_n(f,k)$，两个算子就<strong>不再可交换</strong>！</p>
+<p>最后思考一个精妙的算子顺序问题：<strong>把“混合一致性修正 $Q$”与“STFT 一致性投影 $P_{\mathcal S}$”串在一起时，先做谁、后做谁结果一样吗？</strong> 当各路采用跨时频恒定的等权重（$1/N$）修正时，线性标量可自由穿过线性的 $P_{\mathcal S}$，先后顺序完全等价，但一旦采用随帧或随频点变化的动态权重 $v_n(f,t)$，两个算子就<strong>不再可交换</strong>！</p>
 <p>具体而言，先做混合修正 $Q$ 再做 $P_{\mathcal S}$，利用线性性 $P_{\mathcal S}(\sum_n y_n)=P_{\mathcal S}(x)=x$ 可以一步到位同时满足两条一致性；反过来先做 $P_{\mathcal S}$ 再做时变加权修正 $Q$，虽然加和等于混合谱，却会重新撕裂帧间重叠采样的一致性（练习 <a href="#e08-30">E08-30</a> 用 $6$ 点波形逐样本手算出了两者在重叠点上相差 $1/8$ 的全过程）。</p>
 <h3 id="sec-u-817c2e095f">按注册身份提取说话人</h3>
 <p>许多端侧通话与语音助手场景并不需要把房间里所有人的声音全都分出来，而是只想提取“提前录过几秒声纹的那位机主”。<strong>目标说话人提取（Target Speaker Extraction，TSE，如 <a href="https://arxiv.org/abs/1705.10687">SpeakerBeam 系列</a>）</strong>把预训练声纹编码器从注册语音中提取的定长声纹嵌入向量（speaker embedding，或辅以视觉唇动、到达方向角等线索）通过特征拼接、特征线性调制（FiLM）或交叉注意力注入分离骨干网，直接输出单条目标音轨——既省去了 PIT 排列与多路后开销，又从根源上消除了跨块换人问题（与第 6 章 §6.5 个性化回声消除 pAEC 思路相通，端侧声纹特征的加密存储与隐私合规要求同样遵循 §6.13）。工程验收时须重点覆盖短注册语音信道失配、同性别相似音色抗串音泄漏以及目标独白误抑制三项测试。</p>
@@ -1561,19 +1615,19 @@ Y&=P_{\mathcal S}(Y).
 <p>这正是 GSS 两阶段分工的精妙之处：前端 cACGMM 故意抹掉径向功率起伏，从而在语音音量剧烈跳变时稳健聚类空间方向；后端计算 MVDR/GEV 波束权重时则必须回到未归一化的原始复谱 $\vec x_t$ 上汇总 SCM，把真实干扰功率重新纳入零陷深度权衡（同时也能看出，当 $M=1$ 单麦克风时球面方向退化为常数模 $1$，cACGMM 无法做任何空间聚类）。</p>
 <p><a id="e08-17"></a></p>
 <h3 id="sec-u-bef08d7639">E08-17：相同活动与初值能自动分成两个人吗？</h3>
-<p><strong>题设。</strong> 设 $12$ 帧单位方向按 ${\vec e}_1,{\vec e}_2$ 交替出现，两位说话人与背景噪声共三类全程均允许活动（$a_{kt}=1$），三类初始形状矩阵均设为 ${\mathbf I}_2$、初始混合权重均为 $1/3$。执行 $3$ 轮 EM 更新并观察结果。</p>
-<p><strong>解答</strong>：在 E 步中，由于三类的初始形状矩阵与先验权重完全相同、活动门控也全为 $1$，三类对每一帧给出的似然完全相等，归一化后验恒为 $\gamma_{kt}=1/3$，每类在 $12$ 帧上的责任权重总和均为 $12/3=4$。进入 M 步更新形状时，两个正交方向各有 $6$ 帧且 $q_t=1$，带权外积和为 $2{\mathbf I}_2$，乘以前置系数 $M/4=2/4=1/2$ 后恰好又是 ${\mathbf I}_2$；迹归一化、向 ${\mathbf I}_2$ 收缩以及权重总和 $4>2$（不触发重置门限）均不改变该矩阵，混合权重均值也继续停留在 $1/3$。</p>
-<p>于是系统卡在了完全对称的鞍点/不动点上，无论再迭代多少轮，后验掩码始终是毫无区分度的 $1/3$。这直观解释了为什么盲聚类必须借助非对称初始化，而 GSS 正是靠不同说话人在时间轴上错开的独占活动段（$a_{kt}\in\{0,1\}$）天然打破类别对称性并锁定目标身份。</p>
+<p><strong>题设。</strong> 设 $12$ 帧单位方向按 ${\vec e}_1,{\vec e}_2$ 交替出现，两位说话人与背景噪声共三类全程均允许活动（$a_{jt}=1$），三类初始形状矩阵均设为 ${\mathbf I}_2$、初始混合权重均为 $1/3$。执行 $3$ 轮 EM 更新并观察结果。</p>
+<p><strong>解答</strong>：在 E 步中，由于三类的初始形状矩阵与先验权重完全相同、活动门控也全为 $1$，三类对每一帧给出的似然完全相等，归一化后验恒为 $\gamma_{jt}=1/3$，每类在 $12$ 帧上的责任权重总和均为 $12/3=4$。进入 M 步更新形状时，两个正交方向各有 $6$ 帧且 $q_t=1$，带权外积和为 $2{\mathbf I}_2$，乘以前置系数 $M/4=2/4=1/2$ 后恰好又是 ${\mathbf I}_2$；迹归一化、向 ${\mathbf I}_2$ 收缩以及权重总和 $4>2$（不触发重置门限）均不改变该矩阵，混合权重均值也继续停留在 $1/3$。</p>
+<p>于是系统卡在了完全对称的鞍点/不动点上，无论再迭代多少轮，后验掩码始终是毫无区分度的 $1/3$。这直观解释了为什么盲聚类必须借助非对称初始化，而 GSS 正是靠不同说话人在时间轴上错开的独占活动段（$a_{jt}\in\{0,1\}$）天然打破类别对称性并锁定目标身份。</p>
 <p><a id="e08-18"></a></p>
 <h3 id="sec-u-9ef88bc7e8">E08-18：活动门控后的先验均值更新一定提高似然吗？</h3>
-<p><strong>题设。</strong> 只取目标与常驻背景两类，$3$ 帧活动门控依次为 $[1,1]$、$[0,1]$、$[0,1]$，初始全局混合权重为 $\vec\pi^{(0)}=[1/2,1/2]^\top$。固定形状矩阵不更新，设第 $1$ 帧两类相对密度为 $[9,1]$（例如 ${\vec z}_1={\vec e}_1$，目标形状正比于 $\operatorname{diag}(9,1)$，背景形状为 ${\mathbf I}_2$），第 $2,3$ 帧背景密度均为 $1$。检验用全帧后验均值更新全局权重 $\vec\pi^{(1)}=\frac{1}{T}\sum_t\vec\gamma_t$ 后，式(8-21)的活动条件对数似然是否单调上升。</p>
-<p><strong>解答</strong>：计算三帧后验得第 $1$ 帧为 $[9/10,1/10]$，第 $2,3$ 帧因目标静音均为 $[0,1]$。按标准无门控 EM 公式对 $3$ 帧后验直接取算术平均，得到新全局权重 $\vec\pi^{(1)}=[3/10,7/10]^\top$。现将其代入式(8-21)检验活动条件对数似然：第 $2,3$ 帧仅背景类激活，条件先验归一化后恒为 $1$，对数似然贡献恒为 $\ln 1=0$；第 $1$ 帧两类均激活，条件混合密度从旧权重下的 $0.5\times9+0.5\times1=5$ 变成了新权重下的 $0.3\times9+0.7\times1=3.4$，于是总条件对数似然发生倒退：</p>
+<p><strong>题设。</strong> 只取目标与常驻背景两类（$j\in\{1,2\}$），$3$ 帧活动门控 $a_{jt}$ 依次为 $[1,1]$、$[0,1]$、$[0,1]$，初始全局混合权重为 $\vec\pi^{(0)}=[1/2,1/2]^\top$。固定形状矩阵不更新，设第 $1$ 帧两类相对密度为 $[9,1]$（例如 ${\vec z}_1={\vec e}_1$，目标形状正比于 $\operatorname{diag}(9,1)$，背景形状为 ${\mathbf I}_2$），第 $2,3$ 帧背景密度均为 $1$。检验用全帧后验均值更新全局权重 $\vec\pi^{(1)}=\frac{1}{T}\sum_t\vec\gamma_t$ 后，式(8-21)的活动条件对数似然是否单调上升。</p>
+<p><strong>解答</strong>：计算三帧后验 $\gamma_{jt}$ 得第 $1$ 帧为 $[9/10,1/10]$，第 $2,3$ 帧因目标静音均为 $[0,1]$。按标准无门控 EM 公式对 $3$ 帧后验直接取算术平均，得到新全局权重 $\vec\pi^{(1)}=[3/10,7/10]^\top$。现将其代入式(8-21)检验活动条件对数似然：第 $2,3$ 帧仅背景类激活，条件先验 $\pi_{2t}^{\mathrm{act}}=\pi_2/\pi_2=1$ 归一化后恒为 $1$，对数似然贡献恒为 $\ln 1=0$；第 $1$ 帧两类均激活，条件混合密度从旧权重下的 $0.5\times9+0.5\times1=5$ 变成了新权重下的 $0.3\times9+0.7\times1=3.4$，于是总条件对数似然发生倒退：</p>
 <p>$$\begin{aligned}
 \ell_{\mathrm{old}}&=\ln 5\approx1.609438,\\
 \ell_{\mathrm{new}}&=\ln 3.4\approx1.223775,\\
 \ell_{\mathrm{new}}-\ell_{\mathrm{old}}&=\ln 0.68\approx-0.385662\lt 0.
 \end{aligned}$$</p>
-<p>原因一目了然：在式(8-21)的活动条件似然中，第 $2,3$ 帧已经通过门控硬性排除了目标类，它们的条件先验 $\tilde\pi_{2,t}=\pi_2/\pi_2=1$ 根本不依赖 $\vec\pi$，但算术平均公式却把这两帧的 $[0,1]$ 强行掺进来稀释了目标类的全局先验 $\pi_1$。原版 GSS 论文直接沿用了全帧后验均值这一启发式近似步骤，工程上跑得通，但不能误以为它对活动条件似然满足严格单调递增的 EM 保证。</p>
+<p>原因一目了然：在式(8-21)的活动条件似然中，第 $2,3$ 帧已经通过门控硬性排除了目标类，它们的条件先验 $\pi_{2t}^{\mathrm{act}}=\pi_2/\pi_2=1$ 根本不依赖 $\vec\pi$，但算术平均公式却把这两帧的 $[0,1]$ 强行掺进来稀释了目标类的全局先验 $\pi_1$。原版 GSS 论文直接沿用了全帧后验均值这一启发式近似步骤，工程上跑得通，但不能误以为它对活动条件似然满足严格单调递增的 EM 保证。</p>
 <p><a id="e08-19"></a></p>
 <h3 id="sec-u-ff2e1e028e">E08-19：固定解混后，ILRMA 怎样更新一次谱基和激活？</h3>
 <p><strong>题设。</strong> 固定单个源在两频点、两帧上的解混输出功率矩阵 ${\mathbf P}$，取 $K=1$ 个谱基与初始非负因子：</p>
@@ -1604,8 +1658,8 @@ J_2&=4\sqrt{2}+2\ln 2+2\ln 3\approx9.240373.
 \text{乙： }{\mathbf R}_1&=\operatorname{diag}(0.6,0.2),\\
 {\mathbf R}_2&={\mathbf R}_3=\operatorname{diag}(0.2,0.4).
 \end{aligned}$$</p>
-<p><strong>解答</strong>：两组模型的混合总协方差均为 ${\mathbf R}_x=\sum_{n=1}^3{\mathbf R}_n={\mathbf I}_2$。因此在该时频点上，两组模型定义的零均值圆对称复高斯观测分布 $\mathcal{CN}(\vec 0,{\mathbf I}_2)$ 完全恒等——无论采集多少帧观测样本，两组模型的对数似然都一模一样，单点统计上根本不可辨识。</p>
-<p>然而当用多通道维纳滤波 $\hat{\vec c}_n={\mathbf R}_n{\mathbf R}_x^{-1}\vec x$ 重构源图像时，给定观测 $\vec x=[1,2]^\top$，模型甲给出的第 $1$ 源估计是 $[0.5,1]^\top$，模型乙给出的却是 $[0.6,0.4]^\top$（尽管两组模型各自的三源重构之和都精确等于 $\vec x$）。这说明欠定多通道 NMF 之所以能在真实语音上工作，绝不是靠单个时频点硬拆协方差，而是靠跨频点共享低秩谱基以及跨时间帧共享恒定空间矩阵 ${\mathbf G}_{nf}$ 来共同锁定唯一分解。</p>
+<p><strong>解答</strong>：两组模型的混合总协方差均为 ${\mathbf R}_{xx}=\sum_{n=1}^3{\mathbf R}_n={\mathbf I}_2$。因此在该时频点上，两组模型定义的零均值圆对称复高斯观测分布 $\mathcal{CN}(\vec 0,{\mathbf I}_2)$ 完全恒等——无论采集多少帧观测样本，两组模型的对数似然都一模一样，单点统计上根本不可辨识。</p>
+<p>然而当用多通道维纳滤波 $\hat{\vec c}_n={\mathbf R}_n{\mathbf R}_{xx}^{-1}\vec x$ 重构源图像时，给定观测 $\vec x=[1,2]^\top$，模型甲给出的第 $1$ 源估计是 $[0.5,1]^\top$，模型乙给出的却是 $[0.6,0.4]^\top$（尽管两组模型各自的三源重构之和都精确等于 $\vec x$）。这说明欠定多通道 NMF 之所以能在真实语音上工作，绝不是靠单个时频点硬拆协方差，而是靠跨频点共享低秩谱基以及跨时间帧共享恒定空间矩阵 ${\mathbf G}_{nf}$ 来共同锁定唯一分解。</p>
 <p><a id="e08-21"></a></p>
 <h3 id="sec-u-d87dabaf16">E08-21：共同合同对角化后，怎样重构源图像？</h3>
 <p><strong>题设。</strong> 固定单个频点，给定两源功率均为 $1$，两张正定空间矩阵与非酉可逆对角化矩阵分别为</p>
@@ -1656,7 +1710,7 @@ J_2&=4\sqrt{2}+2\ln 2+2\ln 3\approx9.240373.
 <p>$${\mathbf C}=\begin{bmatrix}20/101&1\\1&20/101\end{bmatrix}.$$</p>
 <p>保持原顺序 <code>[0, 1]</code> 的对角平均得分为 $20/101$，交换顺序 <code>[1, 0]</code> 的反对角平均得分为 $1$（领先优势达 $81/101$）。匹配器无需访问任何干净参考，仅凭重叠区相关矩阵就准确选出排列 <code>[1, 0]</code>，把后块第 $1$ 路接到前块第 $0$ 路之后。</p>
 <p><strong>第二步：线性互补交叉淡变拼接。</strong> 在 $6400$ 点重叠区内，后块权重从 $0$ 线性递增至 $1$（含两端点），前块取互补权重 $1-w$，非重叠区直接保留对应块样本。经排列对齐后，前后块同槽位波形在重叠区逐点相等，加权相加严丝合缝地还原出连续的 $[v_1,v_2]$；反之若直接按原槽位硬拼，重叠区内会发生 $0.4\ \mathrm{s}$ 的交叉串人，并在 $1.2\ \mathrm{s}$ 之后彻底互换说话人。</p>
-<p><strong>第三步：浮点与实际 PCM16 文件读回评分。</strong> 全段统一去均值、固定源身份且不拟合额外时延或增益。浮点模型下，未关联硬拼两路 SI-SDR 约为 $-3.3407\ \mathrm{dB}$，重叠关联拼接恢复至 $20.0000\ \mathrm{dB}$（恰由模拟槽位内置的 $0.1$ 倍串音决定），单通道混合基线约为 $0\ \mathrm{dB}$。按共同增益 $1$ 导出 PCM16 WAV 后，代码校验<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/audio/MANIFEST.json">主清单</a>摘要并直接从磁盘读回 $32000$ 点整数样本独立重算：未关联两路实测为 $-3.3408\ \mathrm{dB}$、$-3.3405\ \mathrm{dB}$，已关联两路为 $19.9989\ \mathrm{dB}$、$19.9997\ \mathrm{dB}$（详细生成参数见<a href="research/05_exercises_and_audio.html">练习及音频手册</a>）。试听前请先调低音量（双声道文件的左、右声道分别存放输出槽位 $1$ 和槽位 $2$，并非空间左右耳）：</p>
+<p><strong>第三步：浮点与实际 PCM16 文件读回评分。</strong> 全段统一去均值、固定源身份且不拟合额外时延或增益。浮点模型下，未关联硬拼两路 SI-SDR 约为 $-3.3407\ \mathrm{dB}$，重叠关联拼接恢复至 $20.0000\ \mathrm{dB}$（恰由模拟槽位内置的 $0.1$ 倍串音决定），单通道混合基线约为 $0\ \mathrm{dB}$。按共同增益 $1$ 导出 PCM16 WAV 后，代码校验<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/audio/MANIFEST.json">主清单</a>摘要并直接从磁盘读回 $32000$ 点整数样本独立重算：未关联两路实测为 $-3.3408\ \mathrm{dB}$、$-3.3405\ \mathrm{dB}$，已关联两路为 $19.9989\ \mathrm{dB}$、$19.9997\ \mathrm{dB}$（详细生成参数见<a href="research/05_exercises_and_audio.html">练习及音频手册</a>）。试听前请先调低音量（双声道文件的左、右声道分别存放槽 0（第一路输出）和槽 1（第二路输出），并非空间左右耳）：</p>
 <ul>
 <li><a href="audio/css_overlap_reference.wav">双声道源参考，仅用于评分</a><audio class="audio-sample" controls preload="none" aria-label="双声道源参考，仅用于评分" src="audio/css_overlap_reference.wav">请使用上方 WAV 链接下载。</audio></li>
 <li><a href="audio/css_overlap_mixture.wav">单通道混合</a><audio class="audio-sample" controls preload="none" aria-label="单通道混合" src="audio/css_overlap_mixture.wav">请使用上方 WAV 链接下载。</audio></li>
@@ -1664,7 +1718,7 @@ J_2&=4\sqrt{2}+2\ln 2+2\ln 3\approx9.240373.
 <li><a href="audio/css_overlap_aligned.wav">按实际重叠关联的双声道拼接</a><audio class="audio-sample" controls preload="none" aria-label="按实际重叠关联的双声道拼接" src="audio/css_overlap_aligned.wav">请使用上方 WAV 链接下载。</audio></li>
 </ul>
 <p><img alt="图43：模拟分离槽位在第二块交换，重叠相关用于恢复对应，再检查PCM输出" src="../figures/fig43_css_overlap.png" onerror="this.alt+='（图缺失）'" /></p>
-<p>观察图 43 的三幅子图：图 43(a) 热力图展示了重叠区相关矩阵 ${\mathbf C}$，反对角线上的亮格（$1.00$）清晰压过主对角线（$20/101\approx0.198$），直观指示第 $2$ 块发生了槽位翻转；图 43(b) 与图 43(c) 分别对未关联拼接和重叠关联拼接的第 $1$ 输出槽位 PCM 波形每 $80\ \mathrm{ms}$ 拟合 $250\ \mathrm{Hz}$ 与 $625\ \mathrm{Hz}$ 幅度包络，可以看到图 43(b) 在灰色阴影标出的 $0.8$～$1.2\ \mathrm{s}$ 重叠区内 $250\ \mathrm{Hz}$ 主分量一路跌落而 $625\ \mathrm{Hz}$ 串上来鸠占鹊巢，图 43(c) 则在整个 $2\ \mathrm{s}$ 内稳稳锁住 $250\ \mathrm{Hz}$ 目标源。</p>
+<p>观察图 43 的三幅子图：图 43(a) 热力图展示了重叠区相关矩阵 ${\mathbf C}$，反对角线上的亮格（$1.00$）清晰压过主对角线（$20/101\approx0.198$），直观指示第 $2$ 块发生了槽位翻转；图 43(b) 与图 43(c) 分别对未关联拼接和重叠关联拼接的槽 0（第一路输出）PCM 波形每 $80\ \mathrm{ms}$ 拟合 $250\ \mathrm{Hz}$ 与 $625\ \mathrm{Hz}$ 幅度包络，可以看到图 43(b) 在灰色阴影标出的 $0.8$～$1.2\ \mathrm{s}$ 重叠区内 $250\ \mathrm{Hz}$ 主分量一路跌落而 $625\ \mathrm{Hz}$ 串上来鸠占鹊巢，图 43(c) 则在整个 $2\ \mathrm{s}$ 内稳稳锁住 $250\ \mathrm{Hz}$ 目标源。</p>
 <p><strong>静音与同波形退化保护。</strong> 若重叠区恰逢全员静音（波形全零），相关分母归零；若两槽位输出了完全相同的波形，四格相关全为 $1$，两种排列同分；若前块为 $(s,0)$、后块为 $(0,s)$，只有一对通道具备非零能量证据。仓内教学匹配器通过去均值 RMS 下限（$>10^{-8}$）、配对最小相关门限（$\ge0.5$）和最优排列领先裕度（$>0.05$）拦截上述退化情形，统一返回 <code>status="ambiguous"</code> 而不强行盲猜排列。</p>
 <p><a id="e08-24"></a></p>
 <h3 id="sec-u-24699eb4c1">E08-24：白化后零相关，为什么仍可能不独立？</h3>
@@ -1673,7 +1727,7 @@ J_2&=4\sqrt{2}+2\ln 2+2\ln 3\approx9.240373.
 <p>瞬时混合为 ${\vec x}={\mathbf A}{\vec s}$。先用精确逆矩阵白化，再左乘 $45^\circ$ 正交旋转矩阵，检验旋转后的两个分量虽然零相关却不再统计独立。</p>
 <p><strong>解答</strong>：</p>
 <ol>
-<li><strong>二阶白化</strong>：观测协方差矩阵为 ${\mathbf R}_x={\mathbf A}{\mathbf A}^\top$，具体元素为 $[5/4,1;\ 1,5/4]$（特征值为 $9/4$ 和 $1/4$）。取白化矩阵 ${\mathbf V}={\mathbf A}^{-1}=[4/3,-2/3;\ -2/3,4/3]$，满足 ${\mathbf V}{\mathbf R}_x{\mathbf V}^\top={\mathbf I}_2$ 且 ${\mathbf V}{\vec x}={\vec s}$。</li>
+<li><strong>二阶白化</strong>：观测协方差矩阵为 ${\mathbf R}_{xx}={\mathbf A}{\mathbf A}^\top$，具体元素为 $[5/4,1;\ 1,5/4]$（特征值为 $9/4$ 和 $1/4$）。取白化矩阵 ${\mathbf V}={\mathbf A}^{-1}=[4/3,-2/3;\ -2/3,4/3]$，满足 ${\mathbf V}{\mathbf R}_{xx}{\mathbf V}^\top={\mathbf I}_2$ 且 ${\mathbf V}{\vec x}={\vec s}$。</li>
 <li><strong>正交旋转保持白化</strong>：再左乘 $45^\circ$ 旋转矩阵 ${\mathbf H}=\frac{1}{\sqrt{2}}[1,1;\ -1,1]$，令 ${\vec z}={\mathbf H}{\vec s}$（即 ${\mathbf H}{\mathbf V}{\vec x}$），穷举四个等概率样本点：</li>
 </ol>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
@@ -1712,7 +1766,7 @@ J_2&=4\sqrt{2}+2\ln 2+2\ln 3\approx9.240373.
 </tr>
 </tbody>
 </table></div>
-<p>直接核算可知 $z_1,z_2$ 均值均为 $0$，方差均为 $(2+0+0+2)/4=1$，逐点乘积 $z_1z_2$ 恒为 $0$，因此 ${\mathbf R}_z={\mathbf I}_2$——单看二阶协方差矩阵，旋转前后的 ${\vec s}$ 与 ${\vec z}$ 完全无法区分。</p>
+<p>直接核算可知 $z_1,z_2$ 均值均为 $0$，方差均为 $(2+0+0+2)/4=1$，逐点乘积 $z_1z_2$ 恒为 $0$，因此 ${\mathbf R}_{zz}={\mathbf I}_2$——单看二阶协方差矩阵，旋转前后的 ${\vec s}$ 与 ${\vec z}$ 完全无法区分。</p>
 <ol start="3">
 <li><strong>高阶独立性检验</strong>：从表中读出边缘概率 $P(z_1=0)=2/4=1/2$、$P(z_2=0)=2/4=1/2$。倘若 $z_1$ 与 $z_2$ 统计独立，联合概率应当满足 $P(z_1=0,z_2=0)=1/2\times1/2=1/4$；但四个旋转点落在菱形的四个顶点上，根本不包含原点 $(0,0)$，实际联合概率 $P(z_1=0,z_2=0)=0\ne1/4$！一旦观测到 $z_1=0$，就能百分之百断定 $|z_2|=\sqrt{2}\ne0$。这正是盲源分离不能止步于 PCA 二阶白化、必须引入超高斯非二次对数先验（如 AuxIVA 的包络范数或 ILRMA 的时变方差）来锁定剩余酉旋转角的根本原因。</li>
 </ol>
@@ -1735,7 +1789,7 @@ J_2&=4\sqrt{2}+2\ln 2+2\ln 3\approx9.240373.
 <p>对比 E08-21 与本题可以把联合合同对角化的代数边界看得很透：两张正定矩阵总能先白化第 $1$ 张（化为 ${\mathbf I}_M$），再对白化后的第 $2$ 张作酉特征分解，因而 $2$ 张正定矩阵永远可以精确联合合同对角化；一旦矩阵增至 $3$ 张以上，白化第 $1$ 张后剩余矩阵必须在同一白化坐标系下两两可交换（注意在未白化前不能直接拿原矩阵是否交换下结论，正如 E08-21 中 ${\mathbf G}_1,{\mathbf G}_2$ 不交换却依然能合同对角化），所以 FastMNMF 假设全体声源共用同一个 ${\mathbf Q}_f$ 在多源混响声场中本质上是一种计算换速度的结构近似。</p>
 <p><a id="e08-26"></a></p>
 <h3 id="sec-u-f03cceb048">E08-26：FastMNMF为什么不能省掉Jacobian项？</h3>
-<p><strong>题设。</strong> 沿用 E08-21 的 ${\mathbf Q},{\mathbf G}_1,{\mathbf G}_2,{\vec x}$，设两源功率均为 $1$，在单个内部复频点、单帧上考察变换域观测 ${\vec z}={\mathbf Q}{\vec x}=[1,1]^\top$、对角总方差 ${\vec d}=[4,3]^\top$ 与 $\det {\mathbf Q}=1$。计算式(8-14)完整的圆对称（proper）复高斯负对数似然代价，再检验将 ${\mathbf Q}$ 乘以 $2$、同时将两源对角空间参数除以 $4$ 的逆向补偿（即乘以 $4$ 使 ${\vec d}'=4{\vec d}$）时，为何漏掉 $-2\ln|\det {\mathbf Q}|$ 会导致虚假代价跳变。</p>
+<p><strong>题设。</strong> 沿用 E08-21 的 ${\mathbf Q},{\mathbf G}_1,{\mathbf G}_2,{\vec x}$，其中 ${\mathbf Q}{\mathbf G}_1{\mathbf Q}^H=\operatorname{diag}(\vec g_1)=\operatorname{diag}(1,2)$、${\mathbf Q}{\mathbf G}_2{\mathbf Q}^H=\operatorname{diag}(\vec g_2)=\operatorname{diag}(3,1)$，设两源功率均为 $1$，在单个内部复频点、单帧上考察变换域观测 ${\vec z}={\mathbf Q}{\vec x}=[1,1]^\top$、对角总方差 $\vec d=\vec g_1+\vec g_2=[4,3]^\top$ 与 $\det {\mathbf Q}=1$。计算式(8-15)完整的圆对称（proper）复高斯负对数似然代价；再检验将联合对角化矩阵放大为 $\mathbf Q'=2\mathbf Q$（使 $\mathbf Q'^{-1}=\frac{1}{2}\mathbf Q^{-1}$）、同时将两源对角空间参数乘以 $4$ 做逆向补偿（$\vec g_n'=4\vec g_n$，从而 $\vec d'=4\vec d$）时，重构出的物理空间协方差 $\mathbf R_{xx}'$ 是否严格不变，以及为何漏掉 $-2\ln|\det \mathbf Q|$ 会导致虚假代价跳变。</p>
 <p><strong>解答</strong>：</p>
 <ol>
 <li>
@@ -1743,11 +1797,11 @@ J_2&=4\sqrt{2}+2\ln 2+2\ln 3\approx9.240373.
 <p>$$J=\frac{7}{12}+\ln 12\approx3.068240.$$</p>
 </li>
 <li>
-<p><strong>等价尺度重参数化</strong>：令 ${\mathbf Q}'=2{\mathbf Q}$，则变换域观测变为 ${\vec z}'=2{\vec z}=[2,2]^\top$，同时令对角方差同步放大 $4$ 倍为 ${\vec d}'=4{\vec d}=[16,12]^\top$。还原回原麦克风域的物理总协方差矩阵检查：</p>
+<p><strong>等价尺度重参数化</strong>：令 ${\mathbf Q}'=2{\mathbf Q}$，则变换域观测变为 ${\vec z}'=2{\vec z}=[2,2]^\top$，同时两源对角空间参数 $\vec g_n'=4\vec g_n$ 使对角总方差同步放大 $4$ 倍为 ${\vec d}'=4{\vec d}=[16,12]^\top$。还原回原麦克风域的物理空间协方差矩阵检查：</p>
 <p>$$\begin{aligned}
-    {\mathbf Q}'^{-1}\operatorname{diag}({\vec d}'){\mathbf Q}'^{-H}
-    &={\mathbf Q}^{-1}\operatorname{diag}({\vec d}){\mathbf Q}^{-H}
-    =\begin{bmatrix}7&3\\3&3\end{bmatrix},
+    \mathbf R_{xx}'&={\mathbf Q}'^{-1}\operatorname{diag}({\vec d}'){\mathbf Q}'^{-H}
+    ={\mathbf Q}^{-1}\operatorname{diag}({\vec d}){\mathbf Q}^{-H}\\
+    &=\mathbf R_{xx}=\begin{bmatrix}7&3\\3&3\end{bmatrix},
     \end{aligned}$$</p>
 <p>物理观测分布分毫未变！逐项核对式(8-14)中的三笔账：二次型变为 $4/16+4/12=7/12$（保持不变），对数方差项变为 $\ln 16+\ln 12=\ln 12+2\ln 4$（增加了 $2\ln 4$），而 $2\times2$ 行列式变为 $\det{\mathbf Q}'=2^2\det{\mathbf Q}=4$，使雅可比项 $-2\ln|\det{\mathbf Q}'|=-2\ln 4$ 恰好把多出来的 $2\ln 4$ 分毫不差地抵消，完整目标函数保持 $3.068240$ 不变。</p>
 </li>
@@ -1804,7 +1858,7 @@ J_\star&=\frac{1}{2}\Bigl[
 </table></div>
 <p>在 $1250\ \mathrm{Hz}$ 处，实数最小二乘最优乘数为 $\operatorname{Re}(X^*S)/|X|^2=0.01/0.02=1/2$——即便彻底放开幅度上界，实数乘法也只能沿着 $45^\circ$ 混合射线伸缩，绝无可能转到 $90^\circ$ 的虚轴目标上；唯有复掩码 $(1+\mathrm{j})/2$ 能同时修正幅度与相位。</p>
 <p><strong>第二步：解析时域均方误差分解。</strong> 在整数周期稳定窗内，不同频率以及同频正余弦严格正交，每个频点的复相量误差 $\Delta S=\widehat S-S$ 对时域均方误差（MSE）的贡献恰为 $|\Delta S|^2/2$。目标源均方功率为 $P_s=(0.1^2+0.1^2)/2=0.01$，原混合的误差即干扰源功率 $(0.08^2+0.1^2)/2=0.0082$。有界实掩码在 $500\ \mathrm{Hz}$ 残留 $0.08^2/2=0.0032$、在 $1250\ \mathrm{Hz}$ 残留 $(0.05^2+0.05^2)/2=0.0025$，合计 MSE 为 $0.0057$；放开实数上限消除了 $500\ \mathrm{Hz}$ 幅度亏损，但 $1250\ \mathrm{Hz}$ 的正交相位误差 $0.0025$ 纹丝不动，唯有复掩码对照的解析 MSE 为 $0$。</p>
-<p><strong>第三步：磁盘 PCM16 整数读回核验。</strong> <a href="mask_audio/MANIFEST.json">独立清单</a>记录了 $6$ 条 WAV 及生成源 SHA（计算核见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch08/core/mask_representation.py"><code>mask_representation.py</code></a>，只读校验命令为 <code>.venv/bin/python -m codes.chapters.ch08.examples.mask_representation_demo --check</code>）。PCM16 按满幅 $32768$ 编解码，稳定窗内目标整数能量为 $D=292062085900$，MSE 共同分母为 $27200\times32768^2=29205777612800$（清单另用 $\cos 500,\sin 500,\cos 1250,\sin 1250$ 四列正交基回归核验复相量“余弦系数减 $\mathrm{j}$ 倍正弦系数”）。从磁盘实际读回 WAV 样本算得的误差汇总如下：</p>
+<p><strong>第三步：磁盘 PCM16 整数读回核验。</strong> <a href="mask_audio/MANIFEST.json">独立清单</a>记录了 $6$ 条 WAV 及其完整配置参数（计算核见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch08/core/mask_representation.py"><code>mask_representation.py</code></a>，只读校验命令为 <code>.venv/bin/python -m codes.chapters.ch08.examples.mask_representation_demo --check</code>）。PCM16 按满幅 $32768$ 编解码，稳定窗内目标整数能量为 $D=292062085900$，MSE 共同分母为 $27200\times32768^2=29205777612800$（清单另用 $\cos 500,\sin 500,\cos 1250,\sin 1250$ 四列正交基回归核验复相量“余弦系数减 $\mathrm{j}$ 倍正弦系数”）。从磁盘实际读回 WAV 样本算得的误差汇总如下：</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table class="separation-readable-table">
 <thead>
 <tr>

@@ -273,7 +273,7 @@ $\left[\begin{smallmatrix}1/10&1/5\\1/10&1/5\end{smallmatrix}\right]$。
 
 默认命令只把当前审计写到标准输出；显式 `--report` 才原子保存[当前报告](../../appendix_a/reports/upstream_solver_contracts_current.json)。仓内仅此当前路径可写，旧报告、源码、AGENTS、锁表、状态、历史快照及上游缓存目标在执行原函数前和替换目标前均拒绝；仓外普通目标仍可保存，普通父链、符号链接、词法 `..` 与非普通文件按原合同检查。这是有限的本地写前检查，不宣称消除并发竞态。
 
-本书于2026-10-05实际执行[当前工具](../../appendix_a/examples/audit_upstream_solver_contracts.py)并保存上述当前报告。它复用既有来源核验，分别保存115项锁表/获取状态、完整选集与实际所用的原源码和许可身份；直接依赖、官方origin、固定HEAD、原文件SHA/Git blob及工作树状态在运行前后核对。旧报告绑定的是100项历史锁表及当时工具；旧锁表由已登记的完整字节快照核验，不给旧报告替换成当前摘要。旧报告没有获取状态摘要，也未记录实际读取的pyc身份，不能倒推这两项已经核验。
+本书于2026-10-05实际执行[当前工具](../../appendix_a/examples/audit_upstream_solver_contracts.py)并保存上述当前报告。它复用既有来源核验，分别保存生成该报告时（2026-10-05）的115项锁表/获取状态（最新全仓[`SOURCES.lock.json`](../SOURCES.lock.json)已扩至129项，该115项快照登记于[`source_snapshots/`](../source_snapshots/)）、完整选集与实际所用的原源码和许可身份；直接依赖、官方origin、固定HEAD、原文件SHA/Git blob及工作树状态在运行前后核对。旧报告绑定的是100项历史锁表及当时工具；旧锁表由已登记的完整字节快照核验，不给旧报告替换成当前摘要。旧报告没有获取状态摘要，也未记录实际读取的pyc身份，不能倒推这两项已经核验。
 
 [Python字节码说明](https://docs.python.org/3.13/library/sys.html#sys.dont_write_bytecode)只保证`-B`或`dont_write_bytecode`不写新的pyc，已有有效缓存仍可能被普通源码加载器读取；[缓存失效规则](https://docs.python.org/3.13/reference/import.html#cached-bytecode-invalidation)解释时间戳/长度及哈希缓存的判断。因此当前工具从已核完整`solve.py`字节编译执行整个原模块，并保留正常模块元数据、原导入与函数，不做AST提取或源码补丁，也不读取、删除或改写原pyc。工具及三个实际复用的仓内依赖、NumPy入口和线性代数包装文件前后摘要另记；这些是直接文件身份，不代表整个NumPy包或本机LAPACK二进制依赖闭包。
 
@@ -354,7 +354,7 @@ ArrayDPS固定 `750ac2b7c75458f4ca5bad203dafda528f575e55` 的真实采样入口�
 
 默认只输出JSON；仅显式 `--report` 原子保存[当前独立报告](../../appendix_b/reports/tac_contracts_current.json)。报告状态是 `passed_static_contracts`，保存十项结构定位与方法片段摘要，原运行调用计数为零；仓内只允许此指定当前报告；仓外普通报告仍可显式保存。工具拒绝旧报告、仓内源码、锁表、状态和快照等其他目标，并核对重复JSON字段、非有限数字、词法 `..`、符号链接、非普通目标和上游缓存。写前及替换前的有限核验不保证消除并发竞态。报告不替代分离性能、权重/数据授权或设备验收。
 
-[历史报告](../../appendix_b/reports/tac_contracts.json)保留2026-10-01实际运行时的100项目锁表与原工具身份；旧锁表原字节已登记在[来源快照](../source_snapshots/SOURCES.55ab323ba665633141c4864763095046f9c6161ce2d88ca2aa9332dde7ec23f0.json)。当前报告绑定115项目锁表及其获取状态，完整选集核对与十项静态结构证据分别记录。原历史报告不换摘要、不升级成神经运行；共享核后续变化也不追溯改写先前报告的真实依赖身份。
+[历史报告](../../appendix_b/reports/tac_contracts.json)保留2026-10-01实际运行时的100项目锁表与原工具身份；旧锁表原字节已登记在[来源快照](../source_snapshots/SOURCES.55ab323ba665633141c4864763095046f9c6161ce2d88ca2aa9332dde7ec23f0.json)。当前报告绑定生成该报告时（2026-10-05）的115项目锁表及其获取状态（最新全仓[`SOURCES.lock.json`](../SOURCES.lock.json)已扩至129项），完整选集核对与十项静态结构证据分别记录。原历史报告不换摘要、不升级成神经运行；共享核后续变化也不追溯改写先前报告的真实依赖身份。
 
 附录B的房间仿真、分数延迟和通道聚合数学例仍按各自的输入、脚本、PCM与统计窗口解释。对照时，[E17-12](../../../../chapters/17_appendix-guide.md#e17-12)复算共同尺度不变的DRR与极端数值边界，[E17-13](../../../../chapters/17_appendix-guide.md#e17-13)条件化时间原点与跨度后外推T20，[E17-14](../../../../chapters/17_appendix-guide.md#e17-14)按同源PCM与稳定评分窗比较同DRR的两条短RIR。这些独立练习不能由静态来源报告统一登记成原神经系统已运行。
 

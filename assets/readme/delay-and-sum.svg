@@ -3,27 +3,27 @@
   <desc id="desc">On microphones M1 to M4, source A starts at samples 0, 2, 4 and 6. Adding waits of 6, 4, 2 and 0 samples moves the four arrivals to sample 6.</desc>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-      <path d="m0 0 10 5-10 5z" fill="#a5c1d1"/>
+      <path d="m0 0 10 5-10 5z" fill="#6F695E"/>
     </marker>
   </defs>
-  <rect x="1" y="1" width="798" height="298" rx="22" fill="#122637" stroke="#486576" stroke-width="2"/>
-  <path d="M148 47H704M148 102H704M148 150H704M148 198H704M148 246H704" stroke="#476172" stroke-width="1"/>
-  <path d="M184 47v207m160-207v207m160-207v207m160-207v207" stroke="#67808f" stroke-opacity=".38" stroke-dasharray="4 7"/>
-  <path d="M664 47v207" stroke="#69e5d2" stroke-width="2" stroke-opacity=".64"/>
-  <g fill="#d9eaf2" font-family="system-ui,sans-serif" font-size="26" font-weight="650" text-anchor="middle">
-    <text x="184" y="36">0</text><text x="344" y="36">2</text><text x="504" y="36">4</text><text x="664" y="36">6</text>
-    <text x="91" y="111">M1</text><text x="91" y="159">M2</text><text x="91" y="207">M3</text><text x="91" y="255">M4</text>
+  <rect x="1" y="1" width="798" height="298" rx="14" fill="#FAF8F3" stroke="#D5CFC2" stroke-width="2"/>
+  <path d="M148 52H704M148 104H704M148 152H704M148 200H704M148 248H704" stroke="#E0DBD0" stroke-width="1.2"/>
+  <path d="M184 52v204m160-204v204m160-204v204m160-204v204" stroke="#9B9386" stroke-opacity=".35" stroke-dasharray="4 6"/>
+  <path d="M664 52v204" stroke="#237263" stroke-width="2.4" stroke-dasharray="5 4"/>
+  <g fill="#2C2F33" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="22" font-weight="700" text-anchor="middle">
+    <text x="184" y="38">0</text><text x="344" y="38">2</text><text x="504" y="38">4</text><text x="664" y="38" fill="#237263">6</text>
+    <text x="91" y="112">M1</text><text x="91" y="160">M2</text><text x="91" y="208">M3</text><text x="91" y="256">M4</text>
   </g>
-  <g fill="none" stroke="#a5c1d1" stroke-width="2">
-    <path d="M198 102H646" marker-end="url(#arrow)"/>
-    <path d="M358 150H646" marker-end="url(#arrow)"/>
-    <path d="M518 198H646" marker-end="url(#arrow)"/>
+  <g fill="none" stroke="#6F695E" stroke-width="2">
+    <path d="M198 104H646" marker-end="url(#arrow)"/>
+    <path d="M358 152H646" marker-end="url(#arrow)"/>
+    <path d="M518 200H646" marker-end="url(#arrow)"/>
   </g>
-  <g fill="#122637" stroke="#69e5d2" stroke-width="3">
-    <circle cx="184" cy="102" r="8"/><circle cx="344" cy="150" r="8"/><circle cx="504" cy="198" r="8"/>
+  <g fill="#FAF8F3" stroke="#1F5A92" stroke-width="3">
+    <circle cx="184" cy="104" r="8"/><circle cx="344" cy="152" r="8"/><circle cx="504" cy="200" r="8"/>
   </g>
-  <g fill="#69e5d2">
-    <circle cx="664" cy="102" r="9"/><circle cx="664" cy="150" r="9"/>
-    <circle cx="664" cy="198" r="9"/><circle cx="664" cy="246" r="9"/>
+  <g fill="#237263" stroke="#FFFFFF" stroke-width="2">
+    <circle cx="664" cy="104" r="9.5"/><circle cx="664" cy="152" r="9.5"/>
+    <circle cx="664" cy="200" r="9.5"/><circle cx="664" cy="248" r="9.5"/>
   </g>
 </svg>

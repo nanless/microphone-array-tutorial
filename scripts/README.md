@@ -91,18 +91,33 @@
 ```
 
 
+### 12 个制图脚本与 92 张编号图完整映射表
+
+全书 92 张编号插图由以下 12 个独立脚本生成（统一采用六色学术色盘、`150 dpi`、确定性随机种子及内嵌 `SourceScript` / `SourceScriptDigest` 溯源元数据；其中 35 张图同步写出 `codes/chapters/**/reports/figure*.json` 数值核验报告）：
+
+| 制图脚本 | 负责图号（张数） | 对应章节 | 依赖前置音频资产 | 输出 PNG 与数值报告 |
+|---|---|---|---|---|
+| `make_figures.py` | 图 1～25、33～36、40～72、80（共 63 张） | 导读、第 1～13 章、附录 A/B | 主 109 WAV 及 `stft`、`apa`、`mint`、`mask`、`tracking`、`noise`、`scenario`、`imaging`、`distributed`、`weighted`、`response` 独立清单 | `figures/fig01`～`fig25_*.png`、`fig33`～`fig36_*.png`、`fig40`～`fig72_*.png`、`fig80_imaging_objectives.png`；同步写出图 13、21、22、50、61、62、64～72、80 共 16 份 JSON 报告 |
+| `make_aec_figures.py` | 图 26～32、37～39（共 10 张） | 第 6 章（回声消除） | 无外部 WAV（脚本内固定种子合成） | `figures/fig26`～`fig32_*.png`、`fig37`～`fig39_*.png` |
+| `make_beamforming_figures.py` | 图 73（1 张） | 第 5 章（波束形成） | `ch05/phase_audio/`（3 WAV） | `figures/fig73_phase_reference.png`、`ch05/reports/figure73_phase_reference.json` |
+| `make_reference_figures.py` | 图 74（1 张） | 第 6 章（回声消除） | `ch06/reference_audio/`（6 WAV） | `figures/fig74_reference_timing.png`、`ch06/reports/figure74_reference_timing.json` |
+| `make_delay_figures.py` | 图 75（1 张） | 第 7 章（去混响） | `ch07/delay_audio/`（6 WAV） | `figures/fig75_prediction_delays.png`、`ch07/reports/figure75_prediction_delays.json` |
+| `make_css_figures.py` | 图 76（1 张） | 第 8 章（语音分离） | `ch08/css_audio/`（4 WAV） | `figures/fig76_css_polarity_gain.png`、`ch08/reports/figure76_css_polarity_gain.json` |
+| `make_tracking_figures.py` | 图 77（1 张） | 第 9 章（声源追踪） | `ch09/tracking_audio/`（2 WAV） | `figures/fig77_tracking_lifecycle.png`、`ch09/reports/figure77_tracking_lifecycle.json` |
+| `make_channel_figures.py` | 图 78（1 张） | 第 10 章（工程实践） | `ch10/channel_audio/`（6 WAV） | `figures/fig78_channel_failure.png`、`ch10/reports/figure78_channel_failure.json` |
+| `make_selection_figures.py` | 图 79（1 张） | 第 11 章（方案选型） | 无外部 WAV（调用第 5/11 章解析求解器） | `figures/fig79_selection_evidence.png`、`ch11/reports/figure79_selection_evidence.json` |
+| `make_wearable_figures.py` | 图 81～84（共 4 张） | 第 14 章（空间与可穿戴阵列） | `ch14/wearable_audio/`（6 WAV） | `figures/fig81`～`fig84_*.png`、`ch14/reports/figure81`～`figure84_*.json`（4 份） |
+| `make_tse_figures.py` | 图 85～88（共 4 张） | 第 15 章（目标提取与多通道日志） | `ch15/tse_audio/`（6 WAV） | `figures/fig85`～`fig88_*.png`、`ch15/reports/figure85`～`figure88_*.json`（4 份） |
+| `make_math_figures.py` | 图 89～92（共 4 张） | 第 0 章（数学与信号基础） | 无外部 WAV（调用 `ch00/core/chapter00_math.py`） | `figures/fig89`～`fig92_*.png`、`ch00/reports/figure89`～`figure92_*.json`（4 份） |
+
+### 站点、合订本与辅助核验脚本说明
+
 | 脚本 | 作用 | 输出 |
 |---|---|---|
 | `../codes/chapters/ch00/examples/generate_audio_samples.py` | 生成 27 组、109 个合成音频文件；清单记录参数、所属章节、共同增益和摘要。`--check` 只检查现有生成物 | 各章的 `audio/*.wav` 与 `codes/chapters/ch00/audio/MANIFEST.json` |
 | `../codes/chapters/appendix_b/examples/room_srp_exercise.py` | `--check` 只核固定几何与 Sabine 输入；`--run` 才用 pyroomacoustics 0.10.0 实算六位置 RIR、T60、DRR 和 SRP。写 `--results` 时还须同时指定 `--plot` 与 `--audio-dir`；已有目标会拒绝覆盖 | `codes/chapters/appendix_b/room_audio/` 已收入 18 个合成 WAV、清单、`ROOM_RESULTS.png` 及 `RESULTS.json`；重生成时先输出到另一个新目录核对 |
 | `../codes/chapters/ch08/examples/gss_teaching_demo.py`、`../codes/chapters/ch09/examples/moving_source_audio.py` | 分别生成受控活动导引处理链和连续自由场双麦实验；数学合成，不是设备实测 | `codes/chapters/ch08/gss_audio/` 的 5 个 WAV、状态及清单；`codes/chapters/ch09/moving_audio/` 的 3 个 WAV 与真值清单 |
 | `../codes/chapters/ch02/examples/prepare_real_recordings.py` | 默认及 `--check` 均离线只读；`--prepare` 从固定本地归档重建；`--download` 显式获取约 99 MB 归档并重建 | `codes/chapters/ch02/real_audio/`：4 个 WAV、清单；署名与许可独立保留 |
-| `make_figures.py` | 生成图 1～25 和图 33～36、40～72、80。只用 numpy 和 matplotlib，不依赖 scipy；随机种子固定。图 34～36、40～41、43～45、47、49、58～60、63～70、72 读取已生成的音频，必须先运行音频生成器。图 13 的蒙特卡洛统计耗时最长 | `figures/fig01`～`fig25_*.png`、`fig33_*`～`fig36_*`、`fig40_*`～`fig72_*`、`fig80_imaging_objectives.png`及对应数值报告 |
-| `make_beamforming_figures.py` | 只生成图73；复用既有绘图样式，完整核验三份相位PCM后读取，绑定五真实音频源、清单、实际整数评分与两绘图源 | `figures/fig73_phase_reference.png`、`ch05/reports/figure73_phase_reference.json` |
-| `make_reference_figures.py` | 只生成图74；严格重放第6章六份已知增益/尾声PCM，分开解析与实际整数功率，尾声帧RMS来自真实PCM；绑定八音频源与两绘图源 | `figures/fig74_reference_timing.png`、`ch06/reports/figure74_reference_timing.json` |
-| `make_delay_figures.py` | 只生成图75；源时刻手算、实际PCM历史/整数误差与独立T60功率模型分开，绑定五音频源及两绘图源 | `figures/fig75_prediction_delays.png`、`ch07/reports/figure75_prediction_delays.json` |
-| `make_css_figures.py` | 只生成图76；既定槽位倍率与两窗实际PCM误差分开，绑定六音频源及两绘图源 | `figures/fig76_css_polarity_gain.png`、`ch08/reports/figure76_css_polarity_gain.json` |
-| `make_aec_figures.py` | 10 张回声消除专题图（原 7 张另加两带子带、IPNLMS/RLS/Kalman 状态图及 PBFDAF 流程图）。风格与上一个脚本统一（六色/五级字号/dpi150） | `figures/fig26`～`fig32_*`、`fig37`～`fig39_*` |
 | `build_site.py` | 生成 19 个当前教程页、8 个旧路径兼容页和 6 个研究页（共 33 个 HTML），保留旧版语义及顺序深链；编号图直接引用 `figures/`，独立音频与状态按各自清单核验并复制；站点 MathJax 在线加载 | `site/` 下的网页及独立媒体副本 |
 | `build_pdf.py` | 合订本脚本。19 篇合成带封面和三级目录的 HTML，Chrome 标签化打印 A4 PDF，再以保留结构树的方式写三级书签；第 0～15 章及附录 A/B 的源 h4 进入第三级。常用 flag：`--html-only`、`--pdf-only`、`--no-bookmarks`、`--build-date YYYY-MM-DD` | `dist/combined.html` 与 `dist/microphone-array-tutorial.pdf` |
 | `build_markdown_helpers.py` | 两构建器共享的Markdown数学与代码边界处理；保留代码、原始HTML及转义美元符的语义，数学暂存标识避开原文 | 供构建器导入，无独立产物 |
@@ -111,12 +126,6 @@
 | `../codes/chapters/ch00/io_contracts.py` | 音频生成和上游获取共用的路径、成员、严格JSON、元数据类型和报告写入原语；各调用者保留独立清单、评分与许可逻辑 | 无独立产物；实际参与生成的源摘要进入相应清单 |
 | `pdf_math.js` | 合订本专用：完整MathML生成固定英文说明，逐式核源身份、真实SVG、非空说明；移除临时身份包装后交给共享排版脚本。嵌入合订HTML并纳入PDF源摘要 | 合订HTML与PDF公式语义 |
 | `inline_layout.js` | 站点与合订本共用的成品排版辅助。等待公式与字体完成后，只保护适合当前宽度的行内公式及紧邻短单位/标点、可见普通文字中的稳定题号；短粗体引导在纸版跟随下一段。视窗和字体变化后重新核对宽度。合订预览在打印前即采用 A4 正文几何，打印期间不重排 DOM；单页网站打印前拆除屏幕分组，结束后恢复。保留 TeX、代码、链接、辅助公式树和长式的滚动接口。脚本内容计入两种产物及独立门禁的源摘要 | 由两个构建器嵌入 HTML；无单独生成物 |
-| `make_tracking_figures.py` | 图77：先严格只读核实际PCM，计算单槽生命周期及可用/状态龄期；12真实源与3输入摘要、全部197行/5事件独立验收 | `figures/fig77_tracking_lifecycle.png`及第9章数值报告 |
-| `make_channel_figures.py` | 图78：先只读核六已知坏麦PCM与清单，分开目标响应、总NMSE与128点波形；9真实源及7输入摘要 | `figures/fig78_channel_failure.png`和第10章数值报告 |
-| `make_selection_figures.py` | 图79：同一已知三麦模型的DS/三加载MVDR，实际噪声与另模型DI分开，声学两硬条件及设备证据三态；8真实源 | `figures/fig79_selection_evidence.png`和`ch11/reports/figure79_selection_evidence.json`；无新音频 |
-| `make_wearable_figures.py` | 图81～84：先严格只读核验六份可穿戴PCM与清单，绘制FOA声强与开球模态、BSM-LS/MagLS与参考混合、跨模态抗风噪融合和通透梳状滤波；绑定十真实源 | `figures/fig81`～`fig84_*.png`与`ch14/reports/figure81`～`figure84_*.json` |
-| `make_tse_figures.py` | 图85～88：先严格只读核验六份近场距离气泡PCM与清单，绘制FiLM与双态地板损失、近场距离气泡与WNG塌缩、空谱TS-VAD/GSS门控和视听异步回退；绑定十一真实源 | `figures/fig85`～`fig88_*.png`与`ch15/reports/figure85`～`figure88_*.json` |
-| `make_math_figures.py` | 图89～92：调用 `ch00/core/chapter00_math.py` 绘制复相量旋转与COLA重叠相加、子空间正交投影与SVD/Woodbury、瑞利商极值与GEV/Khatri–Rao以及Wirtinger梯度/复高斯/维纳/Kalman；绑定四真实源 | `figures/fig89`～`fig92_*.png`与`ch00/reports/figure89`～`figure92_*.json` |
 | `quality_check.py` | 发布门禁。用独立基线检查 19 篇教程与 92 张编号图，核对图号、alt、公式编号与引用、小节语义链接、PNG 绘图脚本摘要、网页导航和 PDF 三级书签。确定性问题阻断发布，高风险口语只提醒人工复核 | 通过、失败清单，以及不阻断发布的人工复核与可访问性提示 |
 
 443 道稳定编号的代码题可从各章入口复算，例如：

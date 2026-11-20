@@ -1,10 +1,10 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 3 章 · 阵列几何形态 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="74c593002f97"><style>
-*{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
-.topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
-.topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
+<meta name="source-digest" content="10a21c80bda5"><style>
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
+.topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941}
+.topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
 h1,h2,h3,h4{scroll-margin-top:60px}
 @media screen{.main a[id]:not([href]){scroll-margin-top:60px}}
 @media screen{.main a[id^="e"],.main .exercise-alias{scroll-margin-top:80px}}
@@ -17,64 +17,66 @@ h1,h2,h3,h4{scroll-margin-top:60px}
 @media screen{.main a[id^="e11-"]{scroll-margin-top:60px}}
 @media screen{.main .separation-topic-anchor{scroll-margin-top:60px}}
 @media screen{.main .source-reproduction-anchor{scroll-margin-top:60px}}
-a:focus-visible,summary:focus-visible{outline:3px solid #e67e22;outline-offset:3px}
-.skip-link{position:absolute;left:10px;top:-60px;z-index:30;background:#fff;color:#1a1a2e;padding:8px 12px;border:2px solid #e67e22}
+a:focus-visible,summary:focus-visible{outline:2.5px solid #B84A2E;outline-offset:3px}
+.skip-link{position:absolute;left:10px;top:-60px;z-index:30;background:#fff;color:#1C1E21;padding:8px 12px;border:2px solid #B84A2E}
 .skip-link:focus{top:8px}
-.wrap{display:flex;max-width:1280px;margin:0 auto}
-.side{width:300px;flex-shrink:0;padding:20px 14px;position:sticky;top:47px;height:calc(100vh - 47px);overflow-y:auto;background:#fff;border-right:1px solid #e5e8ee;font-size:13.5px}
-.side a{color:#2f6db3;text-decoration:none}.side a:hover{text-decoration:underline}
-.side .chap{margin:10px 0 2px;font-weight:700}.side .chap.cur{color:#c0392b}
-.side ul{margin:2px 0 6px;padding-left:16px;color:#666}.side li{margin:2px 0}
-.main{flex:1;min-width:0;padding:28px 36px;background:#fff;overflow-wrap:anywhere}
+.wrap{display:flex;max-width:1280px;margin:0 auto;border-left:1px solid #E3DED3;border-right:1px solid #E3DED3}
+.side{width:300px;flex-shrink:0;padding:20px 15px;position:sticky;top:47px;height:calc(100vh - 47px);overflow-y:auto;background:#FAF8F3;border-right:1px solid #DDD7CB;font-size:13.5px}
+.side a{color:#1F5A92;text-decoration:none}.side a:hover{text-decoration:underline}
+.side .chap{margin:10px 0 2px;font-weight:700;color:#26292E}.side .chap.cur{color:#B84A2E}
+.side ul{margin:2px 0 6px;padding-left:16px;color:#5A554D}.side li{margin:2px 0}
+.main{flex:1;min-width:0;padding:32px 40px;background:#fff;overflow-wrap:anywhere}
+.main a{color:#1F5A92;text-underline-offset:.2em}
 .main p{margin:0 0 1.2em}.main ul,.main ol{margin:.55em 0 1.2em;padding-left:1.55em}.main li{margin:.42em 0}.main li>p{margin:.5em 0}
-.main p>strong:first-child,.main li>strong:first-child{color:#0f2744}
-.main img{max-width:100%;height:auto;display:block;margin:16px auto;border:1px solid #dbe3ee;border-radius:6px;padding:3px;min-height:40px;background:#fff}
-.audio-sample{display:block;width:min(100%,460px);margin:8px 0 18px}.audio-sample:focus-visible{outline:3px solid #e67e22}
+.main p>strong:first-child,.main li>strong:first-child{color:#14171A}
+.main img{max-width:100%;height:auto;display:block;margin:18px auto;border:1px solid #DFDAD0;border-radius:5px;padding:4px;min-height:40px;background:#fff}
+.audio-sample{display:block;width:min(100%,460px);margin:8px 0 18px}.audio-sample:focus-visible{outline:2.5px solid #B84A2E}
 /* 表格列宽不能压掉原生播放按钮；手机上的表格可横向滚动。 */
 td .audio-sample{width:280px;min-width:280px}
 table:has(td .audio-sample) td:last-child{min-width:180px}
-table{border-collapse:collapse;margin:16px 0;max-width:100%}
+table{border-collapse:collapse;margin:18px 0;max-width:100%;border-top:1.5px solid #2A2E34;border-bottom:1.5px solid #2A2E34}
 .table-scroll{max-width:100%;overflow-x:auto}
-.table-scroll:focus-visible{outline:3px solid #e67e22;outline-offset:2px}
-th,td{border:1px solid #d5dfec;padding:7px 11px;font-size:14px;text-align:left;line-height:1.58}
-th{background:#e8eff9;color:#0f2744;border-bottom:1.5px solid #94a3b8}
-tbody tr:nth-child(even) td{background:#f8fafc}
-code{background:#eef2f7;color:#0f294a;border:1px solid #d8e1ec;padding:1px 5px;border-radius:4px;font-size:13.5px}
-pre{background:#122036;color:#e8ecf3;padding:14px 16px;border-radius:8px;overflow-x:auto}
+.table-scroll:focus-visible{outline:2.5px solid #B84A2E;outline-offset:2px}
+th,td{border-top:1px solid #E3DED3;border-bottom:1px solid #E3DED3;border-left:none;border-right:none;padding:8px 11px;font-size:14px;text-align:left;line-height:1.58}
+th{background:#F5F2EB;color:#1C1E21;border-bottom:1px solid #8A8275;font-weight:700}
+tbody tr:nth-child(even) td{background:#FCFBF9}
+code{background:#F3F0E8;color:#1E3A56;border:1px solid #E0DBD0;padding:1px 5px;border-radius:4px;font-size:13.5px}
+pre{background:#F5F3EE;color:#1F2328;border:1px solid #DFDAD0;border-left:3.5px solid #5C564D;padding:14px 16px;border-radius:8px;overflow-x:auto}
 pre code{background:none;border:none;color:inherit;padding:0}
-blockquote{border-left:4px solid #2563eb;margin:16px 0;padding:10px 15px;background:#f0f6ff;border-radius:0 6px 6px 0;color:#1e293b}
+blockquote{border-left:3.5px solid #B84A2E;margin:18px 0;padding:10px 16px;background:#F7F5F0;border-radius:0 4px 4px 0;color:#2B2E33}
 blockquote p:last-child{margin-bottom:0}
+hr{border:none;border-top:1px solid #DDD7CB;margin:26px 0}
 mjx-container[jax="CHTML"]{font-size:110%!important;overflow-x:auto;overflow-y:hidden;max-width:100%;min-width:0!important}
 body mjx-assistive-mml{width:1px!important;max-width:1px!important;min-width:0!important;height:1px!important;overflow:hidden!important}
 pre,.table-scroll,mjx-container[jax="CHTML"]{overflow-wrap:normal}
-.pn{display:flex;justify-content:space-between;margin:34px 0 12px;padding-top:16px;border-top:1px solid #d5dfec;font-weight:650}
-.pn a{color:#1d4ed8;text-decoration:none}.pn .off{color:#aaa}
-.foot{color:#64748b;font-size:13px;margin:20px 0 40px}
-.main h1{font-size:27px;color:#0f2744;background:#edf3fc;border-top:4px solid #1e3a8a;border-left:5px solid #1e3a8a;border-bottom:1px solid #cbd5e1;padding:13px 17px 11px;border-radius:0 6px 6px 0;margin:0 0 22px;line-height:1.3}
-.main h2{font-size:21px;color:#0f294a;background:#f3f7fc;border-left:4.5px solid #1d4ed8;border-bottom:1px solid #cbd5e1;padding:8px 13px 7px;margin:34px 0 15px;border-radius:0 5px 5px 0;line-height:1.35}
-.main h3{font-size:18px;color:#1e3a8a;border-left:3.5px solid #3b82f6;padding:2px 0 2px 11px;margin:26px 0 12px;line-height:1.4}
-.main h4{font-size:16px;color:#1e40af;border-left:2.5px solid #93c5fd;padding:1px 0 1px 9px;margin:20px 0 10px;line-height:1.4}
-.main h3.tutorial-worked-heading{background:#f0fdfa;border:1px solid #99f6e4;border-left:4.5px solid #0d9488;color:#115e59;padding:7px 13px;border-radius:6px;margin:26px 0 13px;font-size:17.2px}
-.main h3.tutorial-exercise-heading,.main h4.tutorial-exercise-heading{background:#eff6ff;border:1px solid #bfdbfe;border-left:5px solid #2563eb;color:#1e3a8a;padding:9px 14px;border-radius:6px;margin:30px 0 13px;font-size:17px;line-height:1.45}
-.main p.tutorial-exercise-lead{background:#eff6ff;border:1px solid #bfdbfe;border-left:5px solid #2563eb;padding:11px 15px;border-radius:6px;margin:26px 0 13px}
+.pn{display:flex;justify-content:space-between;margin:36px 0 12px;padding-top:16px;border-top:1px solid #DDD7CB;font-weight:650}
+.pn a{color:#1F5A92;text-decoration:none}.pn .off{color:#9C9588}
+.foot{color:#6E695F;font-size:13px;margin:20px 0 40px}
+.main h1{font-size:27px;color:#14171A;border-top:2.5px solid #1F5A92;border-bottom:1.5px solid #1C1E21;padding:12px 0 10px;margin:0 0 24px;line-height:1.3}
+.main h2{font-size:21px;color:#14171A;border-left:3.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;padding:1px 0 7px 11px;margin:36px 0 15px;line-height:1.35}
+.main h3{font-size:18px;color:#1F5A92;margin:26px 0 11px;line-height:1.4}
+.main h4{font-size:16px;color:#2C2F33;border-left:2.5px solid #B84A2E;padding:1px 0 1px 9px;margin:20px 0 9px;line-height:1.4}
+.main h3.tutorial-worked-heading{background:#FAF8F3;border-top:1.5px solid #237263;border-bottom:1px solid #E2DDD2;border-left:3.5px solid #237263;color:#1A574B;padding:7px 13px;border-radius:2px;margin:28px 0 13px;font-size:17.2px}
+.main h3.tutorial-exercise-heading,.main h4.tutorial-exercise-heading{background:#F5F2EB;border-top:1.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;border-left:4px solid #1F5A92;color:#14171A;padding:8px 14px;border-radius:2px;margin:30px 0 13px;font-size:17px;line-height:1.45}
+.main p.tutorial-exercise-lead{background:#F5F2EB;border-top:1.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;border-left:4px solid #1F5A92;padding:10px 15px;border-radius:2px;margin:28px 0 13px}
 .main ol>li.tutorial-exercise-item{margin:18px 0}
-.main .tutorial-exercise-card{background:#f8fafc;border:1px solid #d5e0ee;border-left:4px solid #2563eb;border-radius:6px;padding:12px 16px}
+.main .tutorial-exercise-card{background:#FAF8F3;border:1px solid #E0DBD0;border-left:3.5px solid #1F5A92;border-radius:4px;padding:12px 16px}
 .main .tutorial-exercise-card>:first-child{margin-top:0}
 .main .tutorial-exercise-card>:last-child{margin-bottom:0}
-.main p.tutorial-solution-lead{background:#f0fdf4;border-left:3.5px solid #16a34a;padding:8px 13px;border-radius:0 5px 5px 0;margin-top:9px}
-.main p.tutorial-solution-lead>strong:first-child{color:#15803d}
-.main p.tutorial-problem-lead{border-left:3px solid #2563eb;padding-left:11px}
-.main p.tutorial-problem-lead>strong:first-child{color:#1d4ed8}
-.toc-mobile{display:none;margin:0 0 16px;border:1px solid #e5e8ee;border-radius:8px;padding:10px 14px;background:#f7fafd;font-size:14px}
-.toc-mobile summary{cursor:pointer;font-weight:700}
-.toc-mobile ul{padding-left:18px;margin:8px 0 2px}.toc-mobile a{color:#2f6db3;text-decoration:none}
-.topbtn{display:block;margin:20px auto;background:#1a1a2e;color:#fff;border-radius:50%;width:42px;height:42px;text-align:center;line-height:42px;text-decoration:none;font-size:18px}
-.offline-note{display:none;background:#fff7e6;border:1px solid #e6c87a;color:#7a5b00;padding:8px 14px;font-size:13.5px}
+.main p.tutorial-solution-lead{background:#F3F6F4;border-left:3.5px solid #237263;padding:8px 13px;border-radius:0 3px 3px 0;margin-top:9px}
+.main p.tutorial-solution-lead>strong:first-child{color:#1D5E51}
+.main p.tutorial-problem-lead{border-left:2.5px solid #1F5A92;padding-left:11px}
+.main p.tutorial-problem-lead>strong:first-child{color:#1F5A92}
+.toc-mobile{display:none;margin:0 0 16px;border:1px solid #DDD7CB;border-radius:6px;padding:10px 14px;background:#FAF8F3;font-size:14px}
+.toc-mobile summary{cursor:pointer;font-weight:700;color:#1C1E21}
+.toc-mobile ul{padding-left:18px;margin:8px 0 2px}.toc-mobile a{color:#1F5A92;text-decoration:none}
+.topbtn{display:block;margin:20px auto;background:#24282E;color:#FAF8F3;border-radius:50%;width:42px;height:42px;text-align:center;line-height:42px;text-decoration:none;font-size:18px}
+.offline-note{display:none;background:#F7EFE4;border:1px solid #D9B78E;color:#6E4219;padding:8px 14px;font-size:13.5px}
 .anchor-alias{display:block;position:relative;top:-60px;visibility:hidden}
 .tutorial-math-tail{display:inline-block;white-space:nowrap;overflow-wrap:normal;vertical-align:baseline;overflow:visible}
 .tutorial-math-tail mjx-assistive-mml{max-width:1px!important;min-width:0!important;white-space:normal}
-.tutorial-exercise-id{white-space:nowrap;overflow-wrap:normal;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:.87em;background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;padding:0 5px;border-radius:4px}
-:is(.tutorial-exercise-heading,.tutorial-exercise-lead) .tutorial-exercise-id{background:#1d4ed8;color:#fff;border-color:#1d4ed8;padding:1px 7px;margin-right:4px;font-size:.84em}
+.tutorial-exercise-id{white-space:nowrap;overflow-wrap:normal;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:.88em;background:#F3EFE6;color:#B84A2E;border:1px solid #DDD5C7;padding:0 5px;border-radius:3px;font-weight:700}
+:is(.tutorial-exercise-heading,.tutorial-exercise-lead) .tutorial-exercise-id{background:#1F5A92;color:#fff;border-color:#1F5A92;padding:1px 7px;margin-right:5px;font-size:.84em}
 .tutorial-table-label{white-space:nowrap;overflow-wrap:normal}
 @media(max-width:900px){.selection-readable-table{min-width:760px}.selection-readable-table th,.selection-readable-table td{min-width:10em}.selection-readable-table th:first-child,.selection-readable-table td:first-child{min-width:6em}}
 @media(max-width:900px){.side{display:none}.main{padding:20px}.toc-mobile{display:block}.topbar{font-size:14px}mjx-container[jax="CHTML"]:not([display="true"]){display:inline-block;vertical-align:middle}.aec-readable-table th,.aec-readable-table td,.wpe-readable-table th,.wpe-readable-table td,.separation-readable-table th,.separation-readable-table td{min-width:8em}.tracking-readable-table th,.tracking-readable-table td{min-width:8em}.industrial-readable-table th,.industrial-readable-table td{min-width:8em}}
@@ -471,7 +473,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <p>为了把上述几何形态统一纳入同一套公式，我们先交代阵元编号与坐标构造。</p>
 <blockquote>
 <p><strong>阵元下标约定（$0,\dots,M-1$ 与 $1,\dots,M$ 的对应）</strong></p>
-<p>第 2 章按自然口语计数把 $M$ 只麦克风标为 $m=1,2,\dots,M$（麦 1 作参考）。从本章开始，阵元坐标（如线阵 $md$、圆阵位置角 $2\pi m/M$、§3.3 的整数稀疏网格 $p_m$）以及配套 Python 数组统一采用<strong>零起点下标 $m=0,1,\dots,M-1$</strong>：这里的参考阵元 $m=0$ 就是第 2 章的“麦 1”，$m=1$ 就是“麦 2”，最末阵元 $m=M-1$ 就是“麦 $M$”。两种记法下，共有 $M$ 只麦克风、$M-1$ 段相邻间隔，均匀线阵首末两麦之间的物理总孔径恒为 $(M-1)d$。</p>
+<p>本章阵元坐标（如均匀线阵 $x_m=md$、圆阵位置角 $2\pi m/M$、§3.3 的整数稀疏网格 $p_m$）以及全书配套 Python 数组采用<strong>零起点下标 $m=0,1,\dots,M-1$</strong>，与第 1～2 章及第 4～5 章部分正文推导采用的 <strong>$1$ 起点下标 $m=1,2,\dots,M$</strong>（线阵坐标 $(m-1)d$）仅相差平移代换 $m'=m-1$：零起点的参考阵元 $m=0$ 即对应 $1$ 起点的“麦 1”，$m=1$ 对应“麦 2”，最末阵元 $m=M-1$ 对应“麦 $M$”。两种记法下，阵列均包含 $M$ 只麦克风与 $M-1$ 段相邻间隔，均匀线阵首末两麦之间的物理总孔径恒为 $(M-1)d$。</p>
 </blockquote>
 <p>在此约定下，沿 $+x$ 轴排列的均匀线阵坐标写作 $\vec r_m=(md,0,0)^\top$（$m=0,\dots,M-1$）。水平面半径为 $r$ 的 $M$ 麦均匀圆阵可写作 $\vec r_m=(r\cos\alpha_m,r\sin\alpha_m,0)^\top$，其中 $\alpha_m=2\pi m/M$ 是阵元自身在极坐标下从 $+x$ 轴逆时针量起的位置角（注意区分阵元安装角 $\alpha_m$ 与本书从 $+y$ 轴顺时针量起的声源方位角 $\theta$）。由余弦定理或半角正弦可知，均匀圆阵相邻两麦的直线弦长为 $2r\sin(\pi/M)$；当 $M$ 为偶数时存在过圆心的对径麦对，最大两点间距恰为直径 $2r$，而当 $M$ 为奇数时最大麦距为 $2r\sin\bigl(\frac{M-1}{2M}\pi\bigr)\lt 2r$。</p>
 <p>接着把三维空间中的声源方向角 $(\theta,\phi_{\mathrm{el}})$ 一步步拆解成单位方向向量 $\vec u=[u_x,u_y,u_z]^\top$ 的三个直角坐标分量（三维球面坐标投影与余弦定理复习见<a href="00_math-foundations.html#sec-0-1">第 0 章 §0.1</a>）：</p>
@@ -657,7 +659,7 @@ G(f)=\frac{|B(f,0)|^2}{2}=\frac{(2\sin p)^2}{2}=2\sin^2 p,\\
 <p>即 $10\ \mathrm{\mu s}$ 时差误差在正横附近引起约 <strong>$4.9^\circ$</strong>（约 $5^\circ$）的角度误差（精确代入 $\arcsin(0.08575)\approx4.92^\circ$，两者几乎重合）。</p>
 </li>
 <li>
-<p><strong>方向二：近端射方向（$\theta=85^\circ$）</strong>：这里绝不能再盲目套一阶微分式（若硬套 $4.91^\circ/\cos 85^\circ\approx56.4^\circ$ 会严重失真），因为 $d=4\ \mathrm{cm}$ 的最大物理时延上限为 $\tau_{\max}=0.04/343\approx116.62\ \mathrm{\mu s}$，而真实角 $\theta=85^\circ$ 对应的真实时延 $\tau_{12}=(0.04/343)\sin 85^\circ$（约 $116.17\ \mathrm{\mu s}$）已经紧贴物理天花板！此时正负两个方向的误差呈现极度不对称的非线性行为：</p>
+<p><strong>方向二：近端射方向（$\theta=85^\circ$）</strong>：这里绝不能再盲目套一阶微分式（若硬套 $4.91^\circ/\cos 85^\circ\approx56.4^\circ$ 会严重失真），因为 $d=4\ \mathrm{cm}$ 的最大物理时延上限为 $\tau_{\max}=0.04/343\approx116.62\ \mathrm{\mu s}$，而真实角 $\theta=85^\circ$ 对应的真实时延 $\tau_{12}=(0.04/343)\sin 85^\circ$（约 $116.17\ \mathrm{\mu s}$）已经紧贴物理时延上限！此时正负两个方向的误差呈现极度不对称的非线性行为：</p>
 </li>
 <li>若测量误差为 $+10\ \mathrm{\mu s}$，观测时延变为 $126.17\ \mathrm{\mu s}>\tau_{\max}$，导致 $c\hat\tau_{12}/d\approx1.082>1$，跳出了反正弦函数 $[-1,1]$ 的实数定义域，根本不存在对应的物理实角度（工程代码中应显式记录越界标志，见章末 E03-02）；</li>
 <li>
@@ -757,7 +759,7 @@ G(f)=\frac{|B(f,0)|^2}{2}=\frac{(2\sin p)^2}{2}=2\sin^2 p,\\
 </tbody>
 </table></div>
 <p>注意 $1\ \mathrm{kHz}$ 下圆环在 $360^\circ$ 全方位扫描，单侧半宽 $110.12^\circ$ 乘 $2$ 得 $220.23^\circ>180^\circ$ 完全合理（不可与仅在 $[-90^\circ,90^\circ]$ 单侧区间定义的线阵混为一谈）。</p>
-<p>那么遇到高于 $5.28\ \mathrm{kHz}$ 的语音高频段该怎么办？工程上常用两条思路：一是定位时利用宽带语音在多个频点联合评分，二是波束增强时结合低频定位角计算高频权重。做多频联合判向时有一个关键代数细节：<strong>说话人在不同频点上的原始发声复幅度本来就各不相同且未知</strong>，因此不能要求候选方向在每个频点预测相同的绝对谱值，而必须先在每个频点用最小二乘消去该频点的公共未知复幅度（推导见章末 E03-17 式(3-19)），只汇总跨通道相对流形的归一化拟合残差。</p>
+<p>那么遇到高于 $5.28\ \mathrm{kHz}$ 的语音高频段该怎么办？工程上常用两条思路：一是定位时利用宽带语音在多个频点联合评分，二是波束增强时结合低频定位角计算高频权重。做多频联合判向时有一个关键代数细节：<strong>说话人在不同频点上的原始发声复幅度本来就各不相同且未知</strong>，因此不能要求候选方向在每个频点预测相同的绝对谱值，而必须先在每个频点将各通道主频相量除以参考通道相量（或在多通道上作最小二乘正交投影，见章末 E03-17 式(3-19)）以消去未知公共源复幅度，只汇总跨通道相对流形的归一化拟合残差。</p>
 <p>E03-17 与图 52 将用 6 麦圆环合成双频音频演示：$8\ \mathrm{kHz}$ 单频完全重合的一对混叠方向，在补入 $4\ \mathrm{kHz}$ 频点后残差立刻拉开为 $0$ 与 $8/9$；同时也给出一个 $2\ \mathrm{kHz}$ 与 $4\ \mathrm{kHz}$ 倍频关系下依然共同混叠的线阵反例，提醒读者宽带消歧取决于实际频点组合而非简单数频点个数。</p>
 <h3 id="sec-3-2-3">3.2.3 算例 3-4：ULA 主瓣宽度计算</h3>
 <p>再拿一条紧凑型 4 麦均匀线阵检验第 2 章窄主瓣近似公式在低频与高频的适用边界。取 $M=4$、相邻间距 $d=3\ \mathrm{cm}=0.03\ \mathrm{m}$、等权 DSB 指向正横 $\theta_0=0^\circ$。首末两只麦克风之间的物理总跨度为 $(M-1)d=3\times3=9\ \mathrm{cm}$；而第 2 章式(2-11)在正横 $\cos 0^\circ=1$ 下的窄主瓣近似（单位 $\mathrm{rad}$）写作：</p>
@@ -1505,8 +1507,8 @@ x_2(t)&=1.01\bigl[F(t-b-\tau)+B(t-b)\bigr]\text{。}
 <p><img alt="图51 近共面布局的无约束线性分量敏感性与镜像时差" src="../figures/fig51_near_planar_sensitivity.png" onerror="this.alt+='（图缺失）'" /></p>
 <p>读图 51 时可将左右两幅子图的几何标尺对照阅读：</p>
 <ul>
-<li><strong>子图 (a) 法向误差放大双曲线</strong>：横轴为第四麦离面高度 $h$（$\mathrm{mm}$），纵轴绘制固定 $+1\ \mathrm{\mu s}$ 第三时差误差引起的无约束法向分量偏差 $|\Delta u_{z,\mathrm{lin}}|=c\Delta\tau_z/h$，直观呈现 $h\to0$ 时反比例双曲线发散并越过单位方向余弦边界的过程。</li>
-<li><strong>子图 (b) 上下镜像物理时差裕量</strong>：横轴同样为离面高度 $h$（$\mathrm{mm}$），纵轴绘制真实方向与平面镜像方向在第三条基线上的物理 TDOA 间隔 $2hu_z/c$（$\mathrm{\mu s}$），随高度降低呈正比例线性萎缩。两幅子图共同提醒工程人员：检查三维阵列几何时，不能只看 $\operatorname{rank}(\mathbf G)=3$，必须同步核查最小方向基线与条件数。</li>
+<li><strong>子图 (a) 双对数坐标下的法向误差线性放大直线</strong>：横轴为对数刻度的第四麦离面高度 $h\in\{0.4,4,40\}\ \mathrm{mm}$，纵轴绘制固定 $1\ \mathrm{\mu s}$ 第三时差扰动引起的无约束法向分量绝对变化 $|\Delta u_{z,\mathrm{lin}}|=c|\Delta\tau_z|/h$；在双对数坐标下曲线呈<strong>斜率 $-1$ 的直线攀升</strong>——随着高度从 $40\ \mathrm{mm}$ 缩减至 $0.4\ \mathrm{mm}$，二范数条件数从 $1$ 升至 $100$，$|\Delta u_{z,\mathrm{lin}}|$ 从 $0.008575$ 放大百倍至 $0.8575$，一旦叠加在真实斜入射 $u_z=\sqrt{0.75}\approx 0.8660$ 上（如 $-1\ \mathrm{\mu s}$ 扰动给出 $\hat u_{z,\mathrm{lin}}=1.7235$），便直接冲破 $|\hat u_z|\le 1$ 的单位方向余弦可行域。</li>
+<li><strong>子图 (b) 上下镜像物理时差裕量</strong>：双对数坐标下绘制真实方向与平面镜像方向在第三条基线上的物理 TDOA 间隔 $2hu_z/c$（$\mathrm{\mu s}$），呈斜率 $+1$ 的直线从 $201.988\ \mathrm{\mu s}$ 缩减百倍至 $2.020\ \mathrm{\mu s}$。两幅子图共同提醒工程人员：检查三维阵列几何时，不能只看 $\operatorname{rank}(\mathbf G)=3$，必须同步核查最小方向基线与条件数。</li>
 </ul>
 <p><a id="e03-17"></a></p>
 <h3 id="sec-u-45ef2e2df1">E03-17：允许每频源幅不同，多频还能分开混叠方向吗？</h3>

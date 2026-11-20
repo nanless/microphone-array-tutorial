@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "exercise_id": "E10-34",
-  "script_sha256": "575d16225132bee1cd229565b34a32591ab73d66335f7b1d1daae90ee7a8f676",
+  "script_sha256": "7832da09bd40d08c34694252a1a1dae7eb968449d31b47879aff10ed5cfae553",
   "source_sha256": {
-    "scripts/make_channel_figures.py": "575d16225132bee1cd229565b34a32591ab73d66335f7b1d1daae90ee7a8f676",
+    "scripts/make_channel_figures.py": "7832da09bd40d08c34694252a1a1dae7eb968449d31b47879aff10ed5cfae553",
     "codes/chapters/ch10/core/channel_audio.py": "111138f767dcfb4fdb2ee02a5dbf33d1b8fd47a01c3406ff52aec065bd7d85e7",
     "codes/chapters/ch10/examples/generate_channel_audio.py": "0b605efd531be4801b6558e963a655cef1ab0419201015d45dacad424c84df85",
     "codes/chapters/ch10/core/channel_selection.py": "86394cf00835bdd30ca33f3d4f57f9894cea8c21de8ea421554d75f835f31c54",

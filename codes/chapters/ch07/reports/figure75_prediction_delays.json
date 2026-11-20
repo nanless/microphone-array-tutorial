@@ -11,8 +11,8 @@
     "codes/chapters/ch07/core/prediction_delays.py": "aa20a0c8c6e6da8ad7b2bbfb9822a4fb4d85bb411c9dda4f56ad9b1596b66bb7",
     "codes/chapters/ch00/core/audio_samples.py": "bf1145e19e2ec99623c0583220192922c24f0ed3d293212309fe4a2f3bfc8385",
     "codes/chapters/ch00/io_contracts.py": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974",
-    "scripts/make_figures.py": "c71b1078fae86e0ee8535cac1037b1764b85ac66809434c7f7792e93000a3988",
-    "scripts/make_delay_figures.py": "24202273659279a0125e2327c7ccaa75ac7de93180ff8ec08b67f5ec545c7c50"
+    "scripts/make_figures.py": "1cd277454eb799b40002f7ec682c5c13de871123ee54646e13f49926117bb5eb",
+    "scripts/make_delay_figures.py": "cb504a74e038fa431e39f34925f74eb8ffca18ddce6d84a077285863e976a2d2"
   },
   "audio_manifest_sha256": "00138cd22a29b1cad9691bcd97cf82320059194c7e1d3444e82d2c4a3aea8e67",
   "wav_sha256": {

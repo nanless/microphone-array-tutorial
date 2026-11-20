@@ -1,9 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" class="course-plot" viewBox="0 0 860 440" role="img" aria-labelledby="course-plot-title course-plot-desc">
+<svg xmlns="http://www.w3.org/2000/svg" class="course-plot" viewBox="0 0 860 444" role="img" aria-labelledby="course-plot-title course-plot-desc">
         <title id="course-plot-title">四麦克风阵列的空间定位、时延对齐与 MVDR 波束零陷原理图</title>
         <desc id="course-plot-desc">左上方展示目标说话人 A（负 35 度）与干扰源 B（正 30 度）的球面波依次到达 M1 至 M4 四支麦克风；左下方对比四路错位接收波形与时延补偿加权后的输出波形；右侧极坐标方向图展示主瓣无失真对准 A 并在 B 方向刻出深空间零陷。</desc>
         <defs>
           <pattern id="course-dots" width="18" height="18" patternUnits="userSpaceOnUse">
-            <circle cx="2" cy="2" r="1" fill="#3b5275" opacity=".42"/>
+            <circle cx="2" cy="2" r="1" fill="#8D8577" opacity=".24"/>
           </pattern>
         </defs>
 <style>
@@ -20,161 +20,161 @@
 @keyframes hit{0%,20%,100%{opacity:0}6%{opacity:1}}
 }
 </style>
-        <rect width="860" height="440" rx="14" fill="#0d1b2e"/>
-        <rect width="860" height="440" rx="14" fill="url(#course-dots)"/>
+        <rect x="1" y="1" width="858" height="442" rx="10" fill="#FAF8F3" stroke="#D5CFC2" stroke-width="1.5"/>
+        <rect x="2" y="2" width="856" height="440" rx="9" fill="url(#course-dots)"/>
 
-        <rect x="16" y="14" width="828" height="32" rx="8" fill="#152844" stroke="#294366"/>
-        <g font-family="system-ui,-apple-system,sans-serif" font-size="12.5" font-weight="700">
-          <text x="30" y="34" fill="#7dd3fc">① 波前传播与麦间时差 Δτ</text>
-          <text x="228" y="34" fill="#64748b">──▶</text>
-          <text x="268" y="34" fill="#a7f3d0">② 时延对齐与空频复加权 wᴴ(f)X(f)</text>
-          <text x="518" y="34" fill="#64748b">──▶</text>
-          <text x="558" y="34" fill="#fde68a">③ 主瓣 0 dB 保真 + 干扰方向深零陷</text>
+        <rect x="16" y="14" width="828" height="32" rx="6" fill="#F1EDE4" stroke="#DDD7CB"/>
+        <g font-family="system-ui,-apple-system,'PingFang SC','Microsoft YaHei',sans-serif" font-size="12.2" font-weight="700">
+          <text x="28" y="34.5" fill="#1F5A92">01 · 波前传播与麦间时差 Δτ</text>
+          <text x="228" y="34.5" fill="#8A8275">──▶</text>
+          <text x="266" y="34.5" fill="#237263">02 · 时延对齐与空频复加权 wᴴ(f)X(f)</text>
+          <text x="524" y="34.5" fill="#8A8275">──▶</text>
+          <text x="562" y="34.5" fill="#B84A2E">03 · 主瓣 0 dB 保真 + 干扰零陷</text>
         </g>
 
-        <rect x="16" y="56" width="496" height="198" rx="10" fill="#12233b" stroke="#284264"/>
-        <text x="30" y="78" fill="#94a3b8" font-family="system-ui,-apple-system,sans-serif" font-size="12" font-weight="700">声场俯视 · 四麦均匀线阵（法线 0°）</text>
-        <path d="M264 72V226" stroke="#475569" stroke-width="1.5" stroke-dasharray="4 5"/>
-        <text x="271" y="82" fill="#94a3b8" font-family="system-ui,-apple-system,sans-serif" font-size="11.5" font-weight="600">0° 法线</text>
+        <rect x="16" y="56" width="496" height="198" rx="8" fill="#FFFFFF" stroke="#DDD7CB"/>
+        <text x="30" y="77" fill="#4A4640" font-family="system-ui,-apple-system,'PingFang SC',sans-serif" font-size="12" font-weight="700">声场俯视 · 四麦均匀线阵（法线 0°）</text>
+        <path d="M264 70V226" stroke="#9C9588" stroke-width="1.3" stroke-dasharray="4 4"/>
+        <text x="272" y="81" fill="#6E695F" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="11" font-weight="600">0° 法线</text>
 
-        <path class="course-ray-a" d="M264 212L118 108" stroke="#38bdf8" stroke-width="2" stroke-dasharray="5 4" opacity=".85"/>
-        <path class="course-ray-b" d="M264 212L388 108" stroke="#fb923c" stroke-width="2" stroke-dasharray="5 4" opacity=".85"/>
+        <path class="course-ray-a" d="M264 212L118 108" stroke="#1F5A92" stroke-width="1.8" stroke-dasharray="5 4" opacity=".82"/>
+        <path class="course-ray-b" d="M264 212L388 108" stroke="#B84A2E" stroke-width="1.8" stroke-dasharray="5 4" opacity=".82"/>
 
-        <g class="course-from-left" fill="none" stroke="#38bdf8" stroke-width="2.4" stroke-linecap="round">
+        <g class="course-from-left" fill="none" stroke="#1F5A92" stroke-width="2.2" stroke-linecap="round">
           <path d="M145 98a34 34 0 0 1 -16 42" opacity=".68"/>
-          <path d="M174 94a68 68 0 0 1 -34 78" opacity=".52"/>
-          <path d="M206 90a106 106 0 0 1 -54 114" opacity=".36"/>
-          <path class="course-wave course-wave-a" d="M160 95a52 52 0 0 1 -26 60"/>
+          <path d="M174 94a68 68 0 0 1 -34 78" opacity=".48"/>
+          <path d="M206 90a106 106 0 0 1 -54 114" opacity=".30"/>
+          <path class="course-wave course-wave-a" d="M160 95a52 52 0 0 1 -26 60" stroke-width="2.6"/>
         </g>
 
-        <g class="course-from-right" fill="none" stroke="#fb923c" stroke-width="2.4" stroke-linecap="round">
+        <g class="course-from-right" fill="none" stroke="#B84A2E" stroke-width="2.2" stroke-linecap="round">
           <path d="M377 140a34 34 0 0 1 -16 -42" opacity=".68"/>
-          <path d="M366 172a68 68 0 0 1 -34 -78" opacity=".52"/>
-          <path d="M354 204a106 106 0 0 1 -54 -114" opacity=".36"/>
-          <path class="course-wave course-wave-b" d="M372 155a52 52 0 0 1 -26 -60"/>
+          <path d="M366 172a68 68 0 0 1 -34 -78" opacity=".48"/>
+          <path d="M354 204a106 106 0 0 1 -54 -114" opacity=".30"/>
+          <path class="course-wave course-wave-b" d="M372 155a52 52 0 0 1 -26 -60" stroke-width="2.6"/>
         </g>
 
-        <rect x="146" y="200" width="236" height="24" rx="12" fill="#091322" stroke="#47668f" stroke-width="1.5"/>
-        <g fill="#162d4c" stroke="#93c5fd" stroke-width="2">
-          <circle cx="174" cy="212" r="7.5"/>
-          <circle cx="234" cy="212" r="7.5"/>
-          <circle cx="294" cy="212" r="7.5"/>
-          <circle cx="354" cy="212" r="7.5"/>
+        <rect x="146" y="200" width="236" height="24" rx="12" fill="#2A2F35" stroke="#555B64" stroke-width="1.2"/>
+        <g fill="#FAF8F3" stroke="#1F5A92" stroke-width="2">
+          <circle cx="174" cy="212" r="7"/>
+          <circle cx="234" cy="212" r="7"/>
+          <circle cx="294" cy="212" r="7"/>
+          <circle cx="354" cy="212" r="7"/>
         </g>
-        <g class="course-hits" fill="#38bdf8">
-          <circle cx="174" cy="212" r="6.5"/>
-          <circle cx="234" cy="212" r="6.5"/>
-          <circle cx="294" cy="212" r="6.5"/>
-          <circle cx="354" cy="212" r="6.5"/>
+        <g class="course-hits" fill="#1F5A92">
+          <circle cx="174" cy="212" r="6"/>
+          <circle cx="234" cy="212" r="6"/>
+          <circle cx="294" cy="212" r="6"/>
+          <circle cx="354" cy="212" r="6"/>
         </g>
-        <g font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-weight="700" font-size="12" text-anchor="middle" fill="#cbd5e1">
+        <g font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-weight="700" font-size="11.5" text-anchor="middle" fill="#3D4249">
           <text x="174" y="242">M1</text>
           <text x="234" y="242">M2</text>
           <text x="294" y="242">M3</text>
           <text x="354" y="242">M4</text>
         </g>
 
-        <g class="course-emitter-a" font-family="system-ui,-apple-system,sans-serif">
-          <circle cx="104" cy="108" r="17" fill="#0284c7" stroke="#bae6fd" stroke-width="2"/>
-          <text x="104" y="113.5" text-anchor="middle" font-size="15" font-weight="800" fill="#ffffff">A</text>
-          <text x="32" y="144" font-size="12" font-weight="700" fill="#7dd3fc">目标语音 −35°</text>
-          <text x="32" y="160" font-size="11" fill="#94a3b8">先到 M1 → 后到 M4</text>
+        <g class="course-emitter-a" font-family="system-ui,-apple-system,'PingFang SC',sans-serif">
+          <circle cx="104" cy="108" r="16.5" fill="#1F5A92" stroke="#FAF8F3" stroke-width="2.5"/>
+          <text x="104" y="113.5" text-anchor="middle" font-size="14.5" font-weight="800" fill="#FFFFFF">A</text>
+          <text x="30" y="144" font-size="12" font-weight="700" fill="#1F5A92">目标语音 −35°</text>
+          <text x="30" y="160" font-size="11" fill="#635E56">先到 M1 → 后到 M4</text>
         </g>
-        <g class="course-emitter-b" font-family="system-ui,-apple-system,sans-serif">
-          <circle cx="402" cy="108" r="17" fill="#c2410c" stroke="#fed7aa" stroke-width="2"/>
-          <text x="402" y="113.5" text-anchor="middle" font-size="15" font-weight="800" fill="#ffffff">B</text>
-          <text x="394" y="144" font-size="12" font-weight="700" fill="#fdba74">旁向干扰 +30°</text>
-          <text x="394" y="160" font-size="11" fill="#94a3b8">先到 M4 → 后到 M1</text>
+        <g class="course-emitter-b" font-family="system-ui,-apple-system,'PingFang SC',sans-serif">
+          <circle cx="402" cy="108" r="16.5" fill="#B84A2E" stroke="#FAF8F3" stroke-width="2.5"/>
+          <text x="402" y="113.5" text-anchor="middle" font-size="14.5" font-weight="800" fill="#FFFFFF">B</text>
+          <text x="394" y="144" font-size="12" font-weight="700" fill="#B84A2E">旁向干扰 +30°</text>
+          <text x="394" y="160" font-size="11" fill="#635E56">先到 M4 → 后到 M1</text>
         </g>
 
-        <rect x="16" y="264" width="496" height="162" rx="10" fill="#12233b" stroke="#284264"/>
-        <text x="30" y="286" fill="#94a3b8" font-family="system-ui,-apple-system,sans-serif" font-size="12" font-weight="700">四路原始采样（存在波达时差）</text>
-        <text x="292" y="286" fill="#94a3b8" font-family="system-ui,-apple-system,sans-serif" font-size="12" font-weight="700">补偿时延并加权合成 y[n]</text>
+        <rect x="16" y="264" width="496" height="166" rx="8" fill="#FFFFFF" stroke="#DDD7CB"/>
+        <text x="30" y="285" fill="#4A4640" font-family="system-ui,-apple-system,'PingFang SC',sans-serif" font-size="12" font-weight="700">四路原始采样（存在波达时差）</text>
+        <text x="292" y="285" fill="#4A4640" font-family="system-ui,-apple-system,'PingFang SC',sans-serif" font-size="12" font-weight="700">补偿时延并加权合成 y[n]</text>
 
-        <g stroke="#294160" stroke-width="1">
+        <g stroke="#E6E1D6" stroke-width="1">
           <path d="M56 308H236M56 334H236M56 360H236M56 386H236"/>
         </g>
-        <g font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="11" fill="#94a3b8">
+        <g font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="11" font-weight="600" fill="#5D5951">
           <text x="30" y="312">M1</text>
           <text x="30" y="338">M2</text>
           <text x="30" y="364">M3</text>
           <text x="30" y="390">M4</text>
         </g>
-        <g class="course-traces-a" fill="none" stroke="#38bdf8" stroke-width="2">
+        <g class="course-traces-a" fill="none" stroke="#1F5A92" stroke-width="1.9" stroke-linejoin="round">
           <path d="M62 308h18l7-11 9 22 9-20 7 9h124"/>
           <path d="M62 334h34l7-11 9 22 9-20 7 9h108"/>
           <path d="M62 360h50l7-11 9 22 9-20 7 9h92"/>
           <path d="M62 386h66l7-11 9 22 9-20 7 9h76"/>
-          <path d="M87 294v102" stroke="#38bdf8" stroke-width="1.2" stroke-dasharray="3 3" opacity=".55"/>
+          <path d="M87 294v102" stroke="#1F5A92" stroke-width="1.1" stroke-dasharray="3 3" opacity=".55"/>
         </g>
-        <g class="course-traces-b" fill="none" stroke="#fb923c" stroke-width="1.8" opacity=".88">
+        <g class="course-traces-b" fill="none" stroke="#B84A2E" stroke-width="1.65" stroke-linejoin="round" opacity=".86">
           <path d="M148 308h28l6-8 7 16 7-16 6 8h34"/>
           <path d="M134 334h28l6-8 7 16 7-16 6 8h48"/>
           <path d="M120 360h28l6-8 7 16 7-16 6 8h62"/>
           <path d="M106 386h28l6-8 7 16 7-16 6 8h76"/>
         </g>
-        <text x="30" y="413" fill="#7dd3fc" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="10.5">到达格 A:[0,2,4,6] · B:[6,4,2,0]</text>
+        <text x="30" y="415" fill="#5D5951" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="10.5">到达格 A:[0,2,4,6] · B:[6,4,2,0]</text>
 
-        <rect x="244" y="330" width="38" height="34" rx="7" fill="#1d3b63" stroke="#60a5fa"/>
-        <text x="263" y="351" text-anchor="middle" fill="#e0f2fe" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="12" font-weight="700">wᴴX</text>
+        <rect x="243" y="330" width="40" height="34" rx="6" fill="#F3EFE6" stroke="#1F5A92" stroke-width="1.3"/>
+        <text x="263" y="351" text-anchor="middle" fill="#1F5A92" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="12" font-weight="700">wᴴX</text>
 
-        <rect x="290" y="296" width="208" height="98" rx="8" fill="#091526" stroke="#2c4c75"/>
-        <path d="M300 345H488" stroke="#243b59" stroke-width="1"/>
+        <rect x="290" y="296" width="208" height="98" rx="6" fill="#FAF8F3" stroke="#D8D2C5"/>
+        <path d="M300 345H488" stroke="#DED9CE" stroke-width="1"/>
         <g class="course-out-a" fill="none">
-          <path d="M302 345h26l9-28 12 56 12-52 10 24h115" stroke="#34d399" stroke-width="2.8" stroke-linejoin="round"/>
-          <path class="course-out-b-residual" d="M412 345h16l4-3 5 6 5-6 4 3h38" stroke="#fb923c" stroke-width="1.6" stroke-dasharray="3 2"/>
+          <path d="M302 345h26l9-28 12 56 12-52 10 24h115" stroke="#237263" stroke-width="2.6" stroke-linejoin="round"/>
+          <path class="course-out-b-residual" d="M412 345h16l4-3 5 6 5-6 4 3h38" stroke="#B84A2E" stroke-width="1.5" stroke-dasharray="3 2"/>
         </g>
         <g class="course-out-b" fill="none">
-          <path d="M302 345h96l8-24 10 48 10-48 8 24h52" stroke="#fb923c" stroke-width="2.8" stroke-linejoin="round"/>
+          <path d="M302 345h96l8-24 10 48 10-48 8 24h52" stroke="#B84A2E" stroke-width="2.6" stroke-linejoin="round"/>
         </g>
-        <text class="course-out-caption-mvdr" x="294" y="413" fill="#6ee7b7" font-family="system-ui,-apple-system,sans-serif" font-size="11" font-weight="700">A 同相保真 (0 dB) · B 相消压低</text>
-        <text class="course-out-caption-right" x="294" y="413" fill="#fdba74" font-family="system-ui,-apple-system,sans-serif" font-size="11" font-weight="700">改对准 +30°：B 同相叠加增强</text>
+        <text class="course-out-caption-mvdr" x="292" y="415" fill="#237263" font-family="system-ui,-apple-system,'PingFang SC',sans-serif" font-size="11" font-weight="700">A 同相保真 (0 dB) · B 相消压低</text>
+        <text class="course-out-caption-right" x="292" y="415" fill="#B84A2E" font-family="system-ui,-apple-system,'PingFang SC',sans-serif" font-size="11" font-weight="700">改对准 +30°：B 同相叠加增强</text>
 
-        <rect x="524" y="56" width="320" height="370" rx="10" fill="#12233b" stroke="#284264"/>
-        <text x="540" y="78" fill="#94a3b8" font-family="system-ui,-apple-system,sans-serif" font-size="12" font-weight="700">空间波束方向图 |B(θ)| (dB)</text>
-        <text x="540" y="96" fill="#64748b" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="11">w_MVDR = R⁻¹a(θ₀) / [aᴴ(θ₀)R⁻¹a(θ₀)]</text>
+        <rect x="524" y="56" width="320" height="374" rx="8" fill="#FFFFFF" stroke="#DDD7CB"/>
+        <text x="540" y="77" fill="#4A4640" font-family="system-ui,-apple-system,'PingFang SC',sans-serif" font-size="12" font-weight="700">空间波束方向图 |B(θ)| (dB)</text>
+        <text x="540" y="95" fill="#6B655B" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="10.8">w_MVDR = R⁻¹a(θ₀) / [aᴴ(θ₀)R⁻¹a(θ₀)]</text>
 
-        <g fill="none" stroke="#294366" stroke-width="1.2">
-          <path d="M546 290a138 138 0 0 1 276 0"/>
-          <path d="M590 290a94 94 0 0 1 188 0" stroke-dasharray="3 4"/>
-          <path d="M636 290a48 48 0 0 1 96 0" stroke-dasharray="2 4"/>
-          <path d="M540 290H828M684 290V144"/>
-          <path d="M684 290L605 177" stroke="#38bdf8" stroke-dasharray="4 4" opacity=".65"/>
-          <path d="M684 290L753 170" stroke="#fb923c" stroke-dasharray="4 4" opacity=".65"/>
+        <g fill="none" stroke="#DAD4C8" stroke-width="1.15">
+          <path d="M546 288a138 138 0 0 1 276 0"/>
+          <path d="M590 288a94 94 0 0 1 188 0" stroke-dasharray="3 4"/>
+          <path d="M636 288a48 48 0 0 1 96 0" stroke-dasharray="2 4"/>
+          <path d="M540 288H828M684 288V142"/>
+          <path d="M684 288L605 175" stroke="#1F5A92" stroke-dasharray="4 4" opacity=".62"/>
+          <path d="M684 288L753 168" stroke="#B84A2E" stroke-dasharray="4 4" opacity=".62"/>
         </g>
-        <g font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="11" fill="#94a3b8" text-anchor="middle">
-          <text x="684" y="136">0°</text>
-          <text x="593" y="168" fill="#7dd3fc">−35° (A)</text>
-          <text x="768" y="163" fill="#fdba74">+30° (B)</text>
-          <text x="548" y="308">−90°</text>
-          <text x="820" y="308">+90°</text>
-          <text x="722" y="203" fill="#64748b" font-size="10">−10 dB</text>
+        <g font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="11" fill="#5E5951" text-anchor="middle">
+          <text x="684" y="135">0°</text>
+          <text x="585" y="158" fill="#1F5A92" font-weight="700">−35° (A)</text>
+          <text x="768" y="161" fill="#B84A2E" font-weight="700">+30° (B)</text>
+          <text x="548" y="305">−90°</text>
+          <text x="820" y="305">+90°</text>
+          <text x="703" y="206" fill="#7D766B" font-size="10">−10 dB</text>
         </g>
 
-        <path class="course-polar-mvdr" d="M592 290 C578 262, 578 214, 605 177 C632 152, 668 188, 682 232 C690 258, 686 284, 686 288 C696 276, 728 242, 742 252 C754 260, 766 276, 760 290 Z" fill="#38bdf8" fill-opacity=".22" stroke="#38bdf8" stroke-width="2.8" stroke-linejoin="round"/>
-        <path class="course-polar-left" d="M572 290 C562 250, 574 202, 605 177 C638 156, 678 190, 696 236 C714 218, 738 214, 748 232 C762 254, 768 274, 758 290 Z" fill="#38bdf8" fill-opacity=".18" stroke="#7dd3fc" stroke-width="2.6" stroke-linejoin="round"/>
-        <path class="course-polar-right" d="M608 290 C602 270, 616 244, 636 236 C654 230, 668 248, 676 240 C696 192, 726 158, 753 170 C782 184, 800 242, 790 290 Z" fill="#fb923c" fill-opacity=".20" stroke="#fb923c" stroke-width="2.6" stroke-linejoin="round"/>
+        <path class="course-polar-mvdr" d="M592 288 C578 260, 578 212, 605 175 C632 150, 668 186, 682 230 C690 256, 686 282, 686 286 C696 274, 728 240, 742 250 C754 258, 766 274, 760 288 Z" fill="#1F5A92" fill-opacity=".14" stroke="#1F5A92" stroke-width="2.6" stroke-linejoin="round"/>
+        <path class="course-polar-left" d="M572 288 C562 248, 574 200, 605 175 C638 154, 678 188, 696 234 C714 216, 738 212, 748 230 C762 252, 768 272, 758 288 Z" fill="#1F5A92" fill-opacity=".11" stroke="#1F5A92" stroke-width="2.4" stroke-linejoin="round"/>
+        <path class="course-polar-right" d="M608 288 C602 268, 616 242, 636 234 C654 228, 668 246, 676 238 C696 190, 726 156, 753 168 C782 182, 800 240, 790 288 Z" fill="#B84A2E" fill-opacity=".13" stroke="#B84A2E" stroke-width="2.4" stroke-linejoin="round"/>
 
         <g class="course-polar-markers-mvdr">
-          <circle cx="605" cy="177" r="5.5" fill="#34d399" stroke="#0d1b2e" stroke-width="2"/>
-          <circle cx="686" cy="288" r="5" fill="#fb923c" stroke="#0d1b2e" stroke-width="2"/>
-          <rect x="540" y="330" width="288" height="78" rx="8" fill="#091526" stroke="#294366"/>
-          <text x="554" y="352" fill="#6ee7b7" font-family="system-ui,-apple-system,sans-serif" font-size="12" font-weight="700">● 无失真约束：wᴴa(−35°) = 1 (0 dB)</text>
-          <text x="554" y="374" fill="#fdba74" font-family="system-ui,-apple-system,sans-serif" font-size="12" font-weight="700">● 自适应零陷：+30° 干扰方向能量陡降</text>
-          <text x="554" y="395" fill="#94a3b8" font-family="system-ui,-apple-system,sans-serif" font-size="11">代价：需核查白噪声增益 WNG 与协方差估计误差</text>
+          <circle cx="605" cy="175" r="5.5" fill="#237263" stroke="#FFFFFF" stroke-width="2"/>
+          <circle cx="686" cy="286" r="5" fill="#B84A2E" stroke="#FFFFFF" stroke-width="2"/>
+          <rect x="540" y="328" width="288" height="84" rx="6" fill="#F6F3EC" stroke="#DDD7CB"/>
+          <text x="554" y="350" fill="#237263" font-family="system-ui,-apple-system,'PingFang SC',sans-serif" font-size="11.8" font-weight="700">● 无失真约束：wᴴa(−35°) = 1 (0 dB)</text>
+          <text x="554" y="372" fill="#B84A2E" font-family="system-ui,-apple-system,'PingFang SC',sans-serif" font-size="11.8" font-weight="700">● 自适应零陷：+30° 干扰方向能量陡降</text>
+          <text x="554" y="394" fill="#5D5951" font-family="system-ui,-apple-system,'PingFang SC',sans-serif" font-size="11">代价：须核查白噪声增益 WNG 与协方差估计误差</text>
         </g>
         <g class="course-polar-markers-left">
-          <circle cx="605" cy="177" r="5.5" fill="#38bdf8" stroke="#0d1b2e" stroke-width="2"/>
-          <rect x="540" y="330" width="288" height="78" rx="8" fill="#091526" stroke="#294366"/>
-          <text x="554" y="352" fill="#7dd3fc" font-family="system-ui,-apple-system,sans-serif" font-size="12" font-weight="700">● 延迟求和（DSB）：四路等权补齐 A 时差</text>
-          <text x="554" y="374" fill="#cbd5e1" font-family="system-ui,-apple-system,sans-serif" font-size="12">白噪声增益最高（WNG = 4 = 6.02 dB）</text>
-          <text x="554" y="395" fill="#94a3b8" font-family="system-ui,-apple-system,sans-serif" font-size="11">局限：主瓣较宽，+30° 旁瓣仍有残余干扰漏入</text>
+          <circle cx="605" cy="175" r="5.5" fill="#1F5A92" stroke="#FFFFFF" stroke-width="2"/>
+          <rect x="540" y="328" width="288" height="84" rx="6" fill="#F6F3EC" stroke="#DDD7CB"/>
+          <text x="554" y="350" fill="#1F5A92" font-family="system-ui,-apple-system,'PingFang SC',sans-serif" font-size="11.8" font-weight="700">● 延迟求和（DSB）：四路等权补齐 A 时差</text>
+          <text x="554" y="372" fill="#2B2E33" font-family="system-ui,-apple-system,'PingFang SC',sans-serif" font-size="11.6">白噪声增益最高（WNG = 4 = 6.02 dB）</text>
+          <text x="554" y="394" fill="#5D5951" font-family="system-ui,-apple-system,'PingFang SC',sans-serif" font-size="11">局限：主瓣较宽，+30° 旁瓣仍有残余干扰漏入</text>
         </g>
         <g class="course-polar-markers-right">
-          <circle cx="753" cy="170" r="5.5" fill="#fb923c" stroke="#0d1b2e" stroke-width="2"/>
-          <rect x="540" y="330" width="288" height="78" rx="8" fill="#091526" stroke="#294366"/>
-          <text x="554" y="352" fill="#fdba74" font-family="system-ui,-apple-system,sans-serif" font-size="12" font-weight="700">● 改向扫描 +30°：到达顺序反转为 M4→M1</text>
-          <text x="554" y="374" fill="#cbd5e1" font-family="system-ui,-apple-system,sans-serif" font-size="12">给最早收到的 M4 补等 6 格，B 同相对齐</text>
-          <text x="554" y="395" fill="#94a3b8" font-family="system-ui,-apple-system,sans-serif" font-size="11">此时 −35° 的声源 A 反而错位抵消</text>
+          <circle cx="753" cy="168" r="5.5" fill="#B84A2E" stroke="#FFFFFF" stroke-width="2"/>
+          <rect x="540" y="328" width="288" height="84" rx="6" fill="#F6F3EC" stroke="#DDD7CB"/>
+          <text x="554" y="350" fill="#B84A2E" font-family="system-ui,-apple-system,'PingFang SC',sans-serif" font-size="11.8" font-weight="700">● 改向扫描 +30°：到达顺序反转为 M4→M1</text>
+          <text x="554" y="372" fill="#2B2E33" font-family="system-ui,-apple-system,'PingFang SC',sans-serif" font-size="11.6">给最早收到的 M4 补等 6 格，B 同相对齐</text>
+          <text x="554" y="394" fill="#5D5951" font-family="system-ui,-apple-system,'PingFang SC',sans-serif" font-size="11">此时 −35° 的声源 A 反而错位抵消</text>
         </g>
       </svg>

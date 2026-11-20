@@ -1,10 +1,10 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 5 章 · 波束形成 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="74c593002f97"><style>
-*{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
-.topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
-.topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
+<meta name="source-digest" content="10a21c80bda5"><style>
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
+.topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941}
+.topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
 h1,h2,h3,h4{scroll-margin-top:60px}
 @media screen{.main a[id]:not([href]){scroll-margin-top:60px}}
 @media screen{.main a[id^="e"],.main .exercise-alias{scroll-margin-top:80px}}
@@ -17,64 +17,66 @@ h1,h2,h3,h4{scroll-margin-top:60px}
 @media screen{.main a[id^="e11-"]{scroll-margin-top:60px}}
 @media screen{.main .separation-topic-anchor{scroll-margin-top:60px}}
 @media screen{.main .source-reproduction-anchor{scroll-margin-top:60px}}
-a:focus-visible,summary:focus-visible{outline:3px solid #e67e22;outline-offset:3px}
-.skip-link{position:absolute;left:10px;top:-60px;z-index:30;background:#fff;color:#1a1a2e;padding:8px 12px;border:2px solid #e67e22}
+a:focus-visible,summary:focus-visible{outline:2.5px solid #B84A2E;outline-offset:3px}
+.skip-link{position:absolute;left:10px;top:-60px;z-index:30;background:#fff;color:#1C1E21;padding:8px 12px;border:2px solid #B84A2E}
 .skip-link:focus{top:8px}
-.wrap{display:flex;max-width:1280px;margin:0 auto}
-.side{width:300px;flex-shrink:0;padding:20px 14px;position:sticky;top:47px;height:calc(100vh - 47px);overflow-y:auto;background:#fff;border-right:1px solid #e5e8ee;font-size:13.5px}
-.side a{color:#2f6db3;text-decoration:none}.side a:hover{text-decoration:underline}
-.side .chap{margin:10px 0 2px;font-weight:700}.side .chap.cur{color:#c0392b}
-.side ul{margin:2px 0 6px;padding-left:16px;color:#666}.side li{margin:2px 0}
-.main{flex:1;min-width:0;padding:28px 36px;background:#fff;overflow-wrap:anywhere}
+.wrap{display:flex;max-width:1280px;margin:0 auto;border-left:1px solid #E3DED3;border-right:1px solid #E3DED3}
+.side{width:300px;flex-shrink:0;padding:20px 15px;position:sticky;top:47px;height:calc(100vh - 47px);overflow-y:auto;background:#FAF8F3;border-right:1px solid #DDD7CB;font-size:13.5px}
+.side a{color:#1F5A92;text-decoration:none}.side a:hover{text-decoration:underline}
+.side .chap{margin:10px 0 2px;font-weight:700;color:#26292E}.side .chap.cur{color:#B84A2E}
+.side ul{margin:2px 0 6px;padding-left:16px;color:#5A554D}.side li{margin:2px 0}
+.main{flex:1;min-width:0;padding:32px 40px;background:#fff;overflow-wrap:anywhere}
+.main a{color:#1F5A92;text-underline-offset:.2em}
 .main p{margin:0 0 1.2em}.main ul,.main ol{margin:.55em 0 1.2em;padding-left:1.55em}.main li{margin:.42em 0}.main li>p{margin:.5em 0}
-.main p>strong:first-child,.main li>strong:first-child{color:#0f2744}
-.main img{max-width:100%;height:auto;display:block;margin:16px auto;border:1px solid #dbe3ee;border-radius:6px;padding:3px;min-height:40px;background:#fff}
-.audio-sample{display:block;width:min(100%,460px);margin:8px 0 18px}.audio-sample:focus-visible{outline:3px solid #e67e22}
+.main p>strong:first-child,.main li>strong:first-child{color:#14171A}
+.main img{max-width:100%;height:auto;display:block;margin:18px auto;border:1px solid #DFDAD0;border-radius:5px;padding:4px;min-height:40px;background:#fff}
+.audio-sample{display:block;width:min(100%,460px);margin:8px 0 18px}.audio-sample:focus-visible{outline:2.5px solid #B84A2E}
 /* 表格列宽不能压掉原生播放按钮；手机上的表格可横向滚动。 */
 td .audio-sample{width:280px;min-width:280px}
 table:has(td .audio-sample) td:last-child{min-width:180px}
-table{border-collapse:collapse;margin:16px 0;max-width:100%}
+table{border-collapse:collapse;margin:18px 0;max-width:100%;border-top:1.5px solid #2A2E34;border-bottom:1.5px solid #2A2E34}
 .table-scroll{max-width:100%;overflow-x:auto}
-.table-scroll:focus-visible{outline:3px solid #e67e22;outline-offset:2px}
-th,td{border:1px solid #d5dfec;padding:7px 11px;font-size:14px;text-align:left;line-height:1.58}
-th{background:#e8eff9;color:#0f2744;border-bottom:1.5px solid #94a3b8}
-tbody tr:nth-child(even) td{background:#f8fafc}
-code{background:#eef2f7;color:#0f294a;border:1px solid #d8e1ec;padding:1px 5px;border-radius:4px;font-size:13.5px}
-pre{background:#122036;color:#e8ecf3;padding:14px 16px;border-radius:8px;overflow-x:auto}
+.table-scroll:focus-visible{outline:2.5px solid #B84A2E;outline-offset:2px}
+th,td{border-top:1px solid #E3DED3;border-bottom:1px solid #E3DED3;border-left:none;border-right:none;padding:8px 11px;font-size:14px;text-align:left;line-height:1.58}
+th{background:#F5F2EB;color:#1C1E21;border-bottom:1px solid #8A8275;font-weight:700}
+tbody tr:nth-child(even) td{background:#FCFBF9}
+code{background:#F3F0E8;color:#1E3A56;border:1px solid #E0DBD0;padding:1px 5px;border-radius:4px;font-size:13.5px}
+pre{background:#F5F3EE;color:#1F2328;border:1px solid #DFDAD0;border-left:3.5px solid #5C564D;padding:14px 16px;border-radius:8px;overflow-x:auto}
 pre code{background:none;border:none;color:inherit;padding:0}
-blockquote{border-left:4px solid #2563eb;margin:16px 0;padding:10px 15px;background:#f0f6ff;border-radius:0 6px 6px 0;color:#1e293b}
+blockquote{border-left:3.5px solid #B84A2E;margin:18px 0;padding:10px 16px;background:#F7F5F0;border-radius:0 4px 4px 0;color:#2B2E33}
 blockquote p:last-child{margin-bottom:0}
+hr{border:none;border-top:1px solid #DDD7CB;margin:26px 0}
 mjx-container[jax="CHTML"]{font-size:110%!important;overflow-x:auto;overflow-y:hidden;max-width:100%;min-width:0!important}
 body mjx-assistive-mml{width:1px!important;max-width:1px!important;min-width:0!important;height:1px!important;overflow:hidden!important}
 pre,.table-scroll,mjx-container[jax="CHTML"]{overflow-wrap:normal}
-.pn{display:flex;justify-content:space-between;margin:34px 0 12px;padding-top:16px;border-top:1px solid #d5dfec;font-weight:650}
-.pn a{color:#1d4ed8;text-decoration:none}.pn .off{color:#aaa}
-.foot{color:#64748b;font-size:13px;margin:20px 0 40px}
-.main h1{font-size:27px;color:#0f2744;background:#edf3fc;border-top:4px solid #1e3a8a;border-left:5px solid #1e3a8a;border-bottom:1px solid #cbd5e1;padding:13px 17px 11px;border-radius:0 6px 6px 0;margin:0 0 22px;line-height:1.3}
-.main h2{font-size:21px;color:#0f294a;background:#f3f7fc;border-left:4.5px solid #1d4ed8;border-bottom:1px solid #cbd5e1;padding:8px 13px 7px;margin:34px 0 15px;border-radius:0 5px 5px 0;line-height:1.35}
-.main h3{font-size:18px;color:#1e3a8a;border-left:3.5px solid #3b82f6;padding:2px 0 2px 11px;margin:26px 0 12px;line-height:1.4}
-.main h4{font-size:16px;color:#1e40af;border-left:2.5px solid #93c5fd;padding:1px 0 1px 9px;margin:20px 0 10px;line-height:1.4}
-.main h3.tutorial-worked-heading{background:#f0fdfa;border:1px solid #99f6e4;border-left:4.5px solid #0d9488;color:#115e59;padding:7px 13px;border-radius:6px;margin:26px 0 13px;font-size:17.2px}
-.main h3.tutorial-exercise-heading,.main h4.tutorial-exercise-heading{background:#eff6ff;border:1px solid #bfdbfe;border-left:5px solid #2563eb;color:#1e3a8a;padding:9px 14px;border-radius:6px;margin:30px 0 13px;font-size:17px;line-height:1.45}
-.main p.tutorial-exercise-lead{background:#eff6ff;border:1px solid #bfdbfe;border-left:5px solid #2563eb;padding:11px 15px;border-radius:6px;margin:26px 0 13px}
+.pn{display:flex;justify-content:space-between;margin:36px 0 12px;padding-top:16px;border-top:1px solid #DDD7CB;font-weight:650}
+.pn a{color:#1F5A92;text-decoration:none}.pn .off{color:#9C9588}
+.foot{color:#6E695F;font-size:13px;margin:20px 0 40px}
+.main h1{font-size:27px;color:#14171A;border-top:2.5px solid #1F5A92;border-bottom:1.5px solid #1C1E21;padding:12px 0 10px;margin:0 0 24px;line-height:1.3}
+.main h2{font-size:21px;color:#14171A;border-left:3.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;padding:1px 0 7px 11px;margin:36px 0 15px;line-height:1.35}
+.main h3{font-size:18px;color:#1F5A92;margin:26px 0 11px;line-height:1.4}
+.main h4{font-size:16px;color:#2C2F33;border-left:2.5px solid #B84A2E;padding:1px 0 1px 9px;margin:20px 0 9px;line-height:1.4}
+.main h3.tutorial-worked-heading{background:#FAF8F3;border-top:1.5px solid #237263;border-bottom:1px solid #E2DDD2;border-left:3.5px solid #237263;color:#1A574B;padding:7px 13px;border-radius:2px;margin:28px 0 13px;font-size:17.2px}
+.main h3.tutorial-exercise-heading,.main h4.tutorial-exercise-heading{background:#F5F2EB;border-top:1.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;border-left:4px solid #1F5A92;color:#14171A;padding:8px 14px;border-radius:2px;margin:30px 0 13px;font-size:17px;line-height:1.45}
+.main p.tutorial-exercise-lead{background:#F5F2EB;border-top:1.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;border-left:4px solid #1F5A92;padding:10px 15px;border-radius:2px;margin:28px 0 13px}
 .main ol>li.tutorial-exercise-item{margin:18px 0}
-.main .tutorial-exercise-card{background:#f8fafc;border:1px solid #d5e0ee;border-left:4px solid #2563eb;border-radius:6px;padding:12px 16px}
+.main .tutorial-exercise-card{background:#FAF8F3;border:1px solid #E0DBD0;border-left:3.5px solid #1F5A92;border-radius:4px;padding:12px 16px}
 .main .tutorial-exercise-card>:first-child{margin-top:0}
 .main .tutorial-exercise-card>:last-child{margin-bottom:0}
-.main p.tutorial-solution-lead{background:#f0fdf4;border-left:3.5px solid #16a34a;padding:8px 13px;border-radius:0 5px 5px 0;margin-top:9px}
-.main p.tutorial-solution-lead>strong:first-child{color:#15803d}
-.main p.tutorial-problem-lead{border-left:3px solid #2563eb;padding-left:11px}
-.main p.tutorial-problem-lead>strong:first-child{color:#1d4ed8}
-.toc-mobile{display:none;margin:0 0 16px;border:1px solid #e5e8ee;border-radius:8px;padding:10px 14px;background:#f7fafd;font-size:14px}
-.toc-mobile summary{cursor:pointer;font-weight:700}
-.toc-mobile ul{padding-left:18px;margin:8px 0 2px}.toc-mobile a{color:#2f6db3;text-decoration:none}
-.topbtn{display:block;margin:20px auto;background:#1a1a2e;color:#fff;border-radius:50%;width:42px;height:42px;text-align:center;line-height:42px;text-decoration:none;font-size:18px}
-.offline-note{display:none;background:#fff7e6;border:1px solid #e6c87a;color:#7a5b00;padding:8px 14px;font-size:13.5px}
+.main p.tutorial-solution-lead{background:#F3F6F4;border-left:3.5px solid #237263;padding:8px 13px;border-radius:0 3px 3px 0;margin-top:9px}
+.main p.tutorial-solution-lead>strong:first-child{color:#1D5E51}
+.main p.tutorial-problem-lead{border-left:2.5px solid #1F5A92;padding-left:11px}
+.main p.tutorial-problem-lead>strong:first-child{color:#1F5A92}
+.toc-mobile{display:none;margin:0 0 16px;border:1px solid #DDD7CB;border-radius:6px;padding:10px 14px;background:#FAF8F3;font-size:14px}
+.toc-mobile summary{cursor:pointer;font-weight:700;color:#1C1E21}
+.toc-mobile ul{padding-left:18px;margin:8px 0 2px}.toc-mobile a{color:#1F5A92;text-decoration:none}
+.topbtn{display:block;margin:20px auto;background:#24282E;color:#FAF8F3;border-radius:50%;width:42px;height:42px;text-align:center;line-height:42px;text-decoration:none;font-size:18px}
+.offline-note{display:none;background:#F7EFE4;border:1px solid #D9B78E;color:#6E4219;padding:8px 14px;font-size:13.5px}
 .anchor-alias{display:block;position:relative;top:-60px;visibility:hidden}
 .tutorial-math-tail{display:inline-block;white-space:nowrap;overflow-wrap:normal;vertical-align:baseline;overflow:visible}
 .tutorial-math-tail mjx-assistive-mml{max-width:1px!important;min-width:0!important;white-space:normal}
-.tutorial-exercise-id{white-space:nowrap;overflow-wrap:normal;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:.87em;background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;padding:0 5px;border-radius:4px}
-:is(.tutorial-exercise-heading,.tutorial-exercise-lead) .tutorial-exercise-id{background:#1d4ed8;color:#fff;border-color:#1d4ed8;padding:1px 7px;margin-right:4px;font-size:.84em}
+.tutorial-exercise-id{white-space:nowrap;overflow-wrap:normal;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:.88em;background:#F3EFE6;color:#B84A2E;border:1px solid #DDD5C7;padding:0 5px;border-radius:3px;font-weight:700}
+:is(.tutorial-exercise-heading,.tutorial-exercise-lead) .tutorial-exercise-id{background:#1F5A92;color:#fff;border-color:#1F5A92;padding:1px 7px;margin-right:5px;font-size:.84em}
 .tutorial-table-label{white-space:nowrap;overflow-wrap:normal}
 @media(max-width:900px){.selection-readable-table{min-width:760px}.selection-readable-table th,.selection-readable-table td{min-width:10em}.selection-readable-table th:first-child,.selection-readable-table td:first-child{min-width:6em}}
 @media(max-width:900px){.side{display:none}.main{padding:20px}.toc-mobile{display:block}.topbar{font-size:14px}mjx-container[jax="CHTML"]:not([display="true"]){display:inline-block;vertical-align:middle}.aec-readable-table th,.aec-readable-table td,.wpe-readable-table th,.wpe-readable-table td,.separation-readable-table th,.separation-readable-table td{min-width:8em}.tracking-readable-table th,.tracking-readable-table td{min-width:8em}.industrial-readable-table th,.industrial-readable-table td{min-width:8em}}
@@ -464,7 +466,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <p>先看一个可观察的声学现象：同一句话到达不同麦克风的时刻略有先后。若把各通道直接相加，高频成分可能因相位错开而相互抵消；若先把这段传播时差补齐再相加，期望方向的目标语音就能同相叠加保留下来，而偏离该方向的干扰与反射因相位未能对齐而被削弱。这就是波束形成最朴素的物理图景。</p>
 <p>在短时傅里叶变换（STFT）频域中，把第 $n$ 帧、第 $k$ 个频点的 $M$ 路麦克风复数谱排成列向量 $\vec x(k,n)\in\mathbb C^{M\times1}$，同样长度的滤波器复权重列向量记为 $\vec w(k,n)\in\mathbb C^{M\times1}$。上标 $H$ 表示厄米共轭转置（先对各元素取复共轭，再转置为行向量；复内积与柯西—施瓦茨不等式见<a href="00_math-foundations.html#sec-0-3">第 0 章 §0.3</a>），波束形成在该时频点的输出是一个标量复数谱值：</p>
 <p>$$y(k,n) = \vec{w}^H(k,n)\,\vec{x}(k,n)\text{。}\tag{5-1}$$</p>
-<p>本章沿用第 2 章的几何与相位符号约定：均匀线阵的麦 1 位于左端原点 $x_1=0$，麦 2 及后续阵元沿 $+x$ 轴等距排列，相邻间距为 $d$；方位角 $\theta$ 从正横 $+y$ 轴向 $+x$ 轴顺时针量起，正角声源位于 $+x$ 一侧，单位方向向量 $\vec u$ 从阵列指向声源。定义到达时刻差 $\tau_{ij}=t_i-t_j$，则正角远场平面波先到达右侧阵元，$\tau_{21}=-d\sin\theta/c$；以麦 1 为相位参考时，第 $m$ 支麦克风（$m=1,\ldots,M$）的自由场导向矢量分量为</p>
+<p>本章沿用第 2 章的几何与相位符号约定：均匀线阵的麦 1 位于左端原点 $x_1=0$，麦 2 及后续阵元沿 $+x$ 轴等距排列，相邻间距为 $d$；方位角 $\theta$ 从正横 $+y$ 轴向 $+x$ 轴顺时针量起，正角声源位于 $+x$ 一侧，单位方向向量 $\vec u$ 从阵列指向声源。定义到达时刻差 $\tau_{ij}=t_i-t_j$，则正角远场平面波先到达右侧阵元，$\tau_{21}=-d\sin\theta/c$；以麦 1 为相位参考时，第 $m$ 支麦克风（$m=1,\ldots,M$，与等比级数求和及代码数组常用的零起点下标 $m'=m-1\in\{0,\ldots,M-1\}$ 仅差平移对应）的自由场导向矢量分量为</p>
 <p>$$a_m(f,\theta)=e^{+\mathrm{j}2\pi f(m-1)d\sin\theta/c}\text{。}\tag{5-2}$$</p>
 <p>后文固定单个时频点推导时省略 $(k,n)$ 或 $f$ 参数；同一式中的权重 $\vec w$、导向矢量 $\vec a$ 与空间协方差矩阵始终对应同一频点。由于式(5-1)固定写成共轭内积 $y=\vec w^H\vec x$，真正乘到第 $m$ 路观测谱 $x_m$ 上的复系数是 $w_m^*$：例如等权延迟求和取 $\vec w=\vec a/M$ 时，$w_m^*=a_m^*/M$ 恰好把 $a_m$ 的传播超前相位抵消掉。本章全部正负号与共轭方向均严格遵循这一约定。</p>
 <p>本章前半部分围绕一类统一的约束优化问题展开：在期望方向 $\theta_0$ 保持单位无失真响应（$\vec{w}^H\vec{a}(\theta_0)=1$）的前提下，最小化某类噪声或干扰的输出功率。延迟求和波束形成器（Delay-and-Sum Beamformer，DSB）、超指向（Superdirective）波束形成、最小方差无失真响应（Minimum Variance Distortionless Response，MVDR）和线性约束最小方差（Linearly Constrained Minimum Variance，LCMV），本质上只是所假定的噪声空间相关模型或线性约束个数不同。多通道维纳滤波（Multichannel Wiener Filter，MWF）改为直接最小化波形谱均方误差，广义特征值（Generalized Eigenvalue，GEV）波束形成则最大化输出信噪比，二者不再强制无失真等式约束，将在后续小节单独推导。</p>
@@ -567,7 +569,7 @@ Q&=\frac{|\vec{w}^H\vec{a}|^2}{\vec{w}^H\mathbf{\Gamma}\vec{w}},\\
 <h3 id="sec-u-fa03b56dd7">阵因子、主瓣与旁瓣</h3>
 <p>把波束固定指向 $\theta_0$ 后，来自任意测试方向 $\theta$ 的平面波通过这组权重会留下多大幅度？按下面四步可以把离散线阵的方向图解析地拆开：</p>
 <ol>
-<li>将波束固定对准 $\theta_0$ 并考察方向 $\theta$ 的入射波：第 $m$ 路先乘补偿因子 $a_m^*(f,\theta_0)$，再乘真实入射因子 $a_m(f,\theta)$。记相邻两麦之间的<strong>残余相位差</strong>为 $\psi=(2\pi d/\lambda)(\sin\theta-\sin\theta_0)$，为方便利用等比级数公式，把麦克风下标从零起记为 $m=0,1,\ldots,M-1$（对应前文第 $m+1$ 支麦），则第 $m$ 路相乘后留下公比因子 $(e^{\mathrm{j}\psi})^m=e^{\mathrm{j}m\psi}$；</li>
+<li>将波束固定对准 $\theta_0$ 并考察方向 $\theta$ 的入射波：第 $m$ 路（$m=1,\ldots,M$）先乘补偿因子 $a_m^*(f,\theta_0)$，再乘真实入射因子 $a_m(f,\theta)$。记相邻两麦之间的<strong>残余相位差</strong>为 $\psi=(2\pi d/\lambda)(\sin\theta-\sin\theta_0)$，为衔接等比级数零起点求和公式，作平移代换 $m'=m-1\in\{0,1,\ldots,M-1\}$（对应式(5-2)第 $m'+1$ 支麦，式(5-5)求和号中将哑指标简记回 $m=0,\ldots,M-1$），则该路相乘后留下公比因子 $(e^{\mathrm{j}\psi})^{m'}$；</li>
 <li>
 <p>先对这 $M$ 项等比复指数直接求和，得到未归一化的阵因子 $B_{\mathrm{raw}}(\psi)$。当 $e^{\mathrm{j}\psi}\ne 1$（即 $\psi\ne 2\pi l$，$l\in\mathbb Z$）时，先套用有限等比数列求和公式 $\sum_{m=0}^{M-1}q^m=\frac{1-q^M}{1-q}$，再从分子提出半角因子 $e^{\mathrm{j}M\psi/2}$、从分母提出 $e^{\mathrm{j}\psi/2}$，利用欧拉差式 $e^{-\mathrm{j}\alpha}-e^{\mathrm{j}\alpha}$ 等于 $-2\mathrm{j}\sin\alpha$ 约去公因子 $-2\mathrm{j}$，便化为阵列几何中心相位乘实数正弦分式：</p>
 <p>$$\begin{aligned}
@@ -614,7 +616,7 @@ Q&=\frac{|\vec{w}^H\vec{a}|^2}{\vec{w}^H\mathbf{\Gamma}\vec{w}},\\
 \mathbf\Gamma^{-1}\vec a\text{。}
 \end{aligned}\tag{5-6}$$</p>
 <p>式(5-6)的闭式解由带线性等式约束的复二次型优化导出，完整四步拉格朗日推导将在 §5.4 展开（只需把那里的 $\mathbf R_{nn}$ 替换为 $\mathbf\Gamma$）。写普通矩阵逆 $\mathbf\Gamma^{-1}$ 要求 $\mathbf\Gamma$ 严格正定：在零频率极限 $f=0$ 或两支阵元空间重合时，所有通道传播相位完全一致，$\mathbf\Gamma=\vec 1\vec 1^\top$ 退化为秩一奇异矩阵，此时即便人工加正则使矩阵可逆，物理声场里也已经没有可提取的方向相位差。</p>
-<p>在低频小间距极限 $d/\lambda\to 0$ 下，超指向究竟能把指向因数推到多高？经典阵列理论（Uzkov 定理）证明：对于三维球面各向同性弥散场中的 $M$ 元均匀线阵，端射方向（$\theta_0=\pm 90^\circ$）的最大可达指向因数趋近于阵元数的平方，即 $Q_{\max}=M^2$（$\mathrm{DI}_{\max}=20\log_{10}M\ \mathrm{dB}$），恰好是同阵元数半波长 DSB 线阵（$Q=M$）的 $M$ 倍！具体到最常见的<strong>双麦端射阵（$M=2$）</strong>，其超指向极限对应一阶超心形（hypercardioid）方向图，理论天花板为 $Q_{\max}=2^2=4$（$\mathrm{DI}_{\max}\approx 6.02\ \mathrm{dB}$，即 $10\log_{10}4$）。</p>
+<p>在低频小间距极限 $d/\lambda\to 0$ 下，超指向究竟能把指向因数推到多高？经典阵列理论（Uzkov 定理）证明：对于三维球面各向同性弥散场中的 $M$ 元均匀线阵，端射方向（$\theta_0=\pm 90^\circ$）的最大可达指向因数趋近于阵元数的平方，即 $Q_{\max}=M^2$（$\mathrm{DI}_{\max}=20\log_{10}M\ \mathrm{dB}$），恰好是同阵元数半波长 DSB 线阵（$Q=M$）的 $M$ 倍！具体到最常见的<strong>双麦端射阵（$M=2$）</strong>，其超指向极限对应一阶超心形（hypercardioid）方向图，理论上界为 $Q_{\max}=2^2=4$（$\mathrm{DI}_{\max}\approx 6.02\ \mathrm{dB}$，即 $10\log_{10}4$）。</p>
 <p>然而，获得这额外 $3\ \mathrm{dB}$ 弥散噪声抑制的代价是相邻通道必须做剧烈的反相相减：随着频率降低或间距缩短，$\mathbf\Gamma$ 的最小特征值按 $(\kappa d)^2$ 甚至更高幂次趋向零，导致权重范数 $\|\vec w_{\mathrm{SD}}\|_2$ 急剧膨胀、$G_{\mathrm{WNG}}$ 跌成深负分贝值，任何微小的麦克风热噪声、灵敏度公差和相位漂移都会被同步放大。因此工程设计从不裸用无约束的式(5-6)，而是加上 $\|\vec w\|_2^2\le\delta$ 的白噪声增益下限约束（或对角加载），在低频用受控差分换取指向性，在高频 $\mathbf\Gamma\approx\mathbf I$ 时自然平滑过渡回 DSB。</p>
 <p>这里还藏着一个非常漂亮的<strong>声学互易对偶关系——声对比度控制（Acoustic Contrast Control，简称 ACC）</strong>。在车载个人声区（Personal Sound Zones）或定向扬声器阵列中，工程师的目标是调整 $M$ 个扬声器的复驱动权重 $\vec q$，使“亮区（听音区）”平均声势能 $\vec q^H\mathbf R_B\vec q$ 与“暗区（安静区）”平均声势能 $\vec q^H\mathbf R_D\vec q$ 的比值最大化（<a href="https://doi.org/10.1121/1.1456926">Choi &amp; Kim, <em>JASA</em>, 2002</a>）：</p>
 <p>$$\begin{aligned}
@@ -717,7 +719,7 @@ w_2^*a_2&\approx 0.5000-2.3559\mathrm{j},\\
 </table></div>
 <p>这张扫描表揭示了紧凑阵列选型最核心的边际递减律：从左往右看，当间距从 $0.5\lambda$ 缩小到 $0.1\lambda$ 时，$\mathrm{DI}$ 从 $3.0\ \mathrm{dB}$ 显著提升至 $5.9\ \mathrm{dB}$；但从 $0.05\lambda$ 继续缩减到 $0.01\lambda$ 时，由于 $Q$ 已被 $M^2=4$（$6.02\ \mathrm{dB}$）封顶，$\mathrm{DI}$ 几乎纹丝不动，而权重模长却按 $\propto\lambda/d$ 线性翻倍、白噪声输出功率按 $\propto(\lambda/d)^2$ 暴涨——间距每减半（或工作频率每降低一个倍频程），一阶端射超指向的 $\mathrm{WNG}_{\mathrm{dB}}$ 就再跌落约 $6\ \mathrm{dB}$！</p>
 <p><img alt="图15 WNG–DI 权衡" src="../figures/fig15_wng_di.png" onerror="this.alt+='（图缺失）'" /></p>
-<p><strong>怎么读图 15</strong>：图 15 把上述单频规律扩展为 $6$ 麦均匀圆阵（半径与相邻弦长均为 $4\ \mathrm{cm}$，坐标 $0.04[\cos(2\pi m/6),\sin(2\pi m/6)]\ \mathrm{m}$，波束朝 $+x$ 即正横角 $90^\circ$，声速 $343\ \mathrm{m/s}$，$100$～$8000\ \mathrm{Hz}$ 共 $200$ 个等距频点）的宽带频率扫描。两幅子图的横轴均采用对数频率刻度，并用蓝色实线（DSB 延迟求和）与红色虚线（加入相对对角加载 $10^{-6}$ 的超指向，评分时仍代入未加载的真实物理弥散矩阵 $\mathbf\Gamma$）对照：</p>
+<p><strong>怎么读图 15</strong>：图 15 把上述单频规律扩展为 $6$ 麦均匀圆阵（半径与相邻弦长均为 $4\ \mathrm{cm}$，坐标 $0.04[\cos(2\pi m/6),\sin(2\pi m/6)]\ \mathrm{m}$，波束朝 $+x$ 方向，对应自 $+y$ 参考轴顺时针量起的水平方位角 $\theta_0=90^\circ$，声速 $343\ \mathrm{m/s}$，$100$～$8000\ \mathrm{Hz}$ 共 $200$ 个等距频点）的宽带频率扫描。两幅子图的横轴均采用对数频率刻度，并用蓝色实线（DSB 延迟求和）与红色虚线（加入相对对角加载 $10^{-6}$ 的超指向，评分时仍代入未加载的真实物理弥散矩阵 $\mathbf\Gamma$）对照：</p>
 <ul>
 <li><strong>先看左子图 <code>(a) 空间白噪声</code></strong>：纵轴为 $\mathrm{WNG}_{\mathrm{dB}}$，灰色水平点划线标出 $0\ \mathrm{dB}$ 单麦基准。蓝色实线在全频带笔直地保持在 $10\log_{10}6\approx 7.78\ \mathrm{dB}$，印证了 DSB 在单位模导向下恒达最大白噪声增益；红色虚线在 $100\ \mathrm{Hz}$ 处深跌至 $-43.72\ \mathrm{dB}$（在 $300$～$400\ \mathrm{Hz}$ 附近因 $10^{-6}$ 相对对角加载与 $\mathbf\Gamma$ 高阶小特征值的量级交替而出现一处凹谷拐点），随后以陡峭斜率一路爬升，在约 $2.2\ \mathrm{kHz}$ 跨过 $0\ \mathrm{dB}$ 基准线（低于此线代表阵列输出底噪反而比单支麦克风更大），并在 $4\ \mathrm{kHz}$ 以上贴近蓝色实线。</li>
 <li><strong>再看右子图 <code>(b) 三维各向同性弥散噪声</code></strong>：纵轴为 $\mathrm{DI}$。蓝色实线在 $100\ \mathrm{Hz}$ 处仅有 $0.02\ \mathrm{dB}$（此时声波长 $3.43\ \mathrm{m}$ 远大于 $8\ \mathrm{cm}$ 阵径，DSB 几乎丧失空间分辨力），直到 $1\ \mathrm{kHz}$ 以上才快速爬升，在约 $4\ \mathrm{kHz}$ 达到峰值约 $8.2\ \mathrm{dB}$ 后因阵元间距逼近波长而出现空间旁瓣回落；反观红色虚线，在 $100\ \mathrm{Hz}$ 就已取得 $8.62\ \mathrm{dB}$ 的指向性指数，并在 $400$～$1500\ \mathrm{Hz}$ 语音频段维持超过 $10.5\ \mathrm{dB}$ 的平坦高指向性平台，高频段随 $\mathbf\Gamma\to\mathbf I$ 与 DSB 自然汇合。两张子图左右对照，便一目了然地呈现出“低频拿白噪声余量换取弥散场指向性”的物理天平。</li>
@@ -732,9 +734,9 @@ w_2^*a_2&\approx 0.5000-2.3559\mathrm{j},\\
 </ol>
 <span id="sec-5" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-5-3-1">5.3.1 差分麦克风：从一阶心形到高阶设计</h3>
 <p>上一节指出了紧凑阵列靠通道相减换取低频指向性的规律。这一小节我们把一阶差分的指数项彻底拆开，看清心形、超心形与偶极子从哪里来，为什么差分器天生是一个 $+6\ \mathrm{dB/oct}$ 高通滤波器，以及为什么低频积分均衡和 MEMS 密封垫圈漏气会成为量产硬件最棘手的两道关卡。</p>
-<p><strong>一阶差分与低频泰勒展开</strong>：考察沿 $x$ 轴放置的端射双麦，间距为 $d$。为便于直接观察前后向抑制，本小节取麦 1 位于前端原点 $x=0$、麦 2 位于后端 $x=d$；把声源方向与前端轴线（$-x$ 方向，对应前文正横方位角 $\theta=-90^\circ$）的夹角记为端射轴向角 $\varphi\in[0,\pi]$，则正前方为 $\varphi=0$（$\theta=-90^\circ$）、正侧方为 $\varphi=90^\circ$（$\theta=0^\circ$）、正后方为 $\varphi=180^\circ$（$\theta=+90^\circ$）。平面波先到达前端麦 1、后到达后端麦 2 的物理传播时延差为 $\tau_p(\theta)=t_2-t_1=(d/c)\cos\varphi$。令麦 1 减去经内部延迟 $\tau$ 和实数增益 $g$ 调整后的麦 2 信号 $y(t)=x_1(t)-g\,x_2(t-\tau)$，其连续时间频率响应（模拟角频率 $\omega=2\pi f$，单位 $\mathrm{rad/s}$）为</p>
+<p><strong>一阶差分与低频泰勒展开</strong>：考察沿 $x$ 轴放置的端射双麦，间距为 $d$。为便于直接观察前后向抑制，本小节取麦 1 位于前端原点 $x=0$、麦 2 位于后端 $x=d$；把声源方向与前端轴线（$-x$ 方向，对应前文水平方位角 $\theta=-90^\circ$）的夹角记为端射轴向角 $\varphi\in[0,\pi]$，则正前方为 $\varphi=0$（$\theta=-90^\circ$）、正侧方为 $\varphi=90^\circ$（$\theta=0^\circ$）、正后方为 $\varphi=180^\circ$（$\theta=+90^\circ$）。平面波先到达前端麦 1、后到达后端麦 2 的物理传播时延差为 $\tau_p(\varphi)=t_2-t_1=(d/c)\cos\varphi$（水平面内满足 $\cos\varphi=-\sin\theta$）。令麦 1 减去经内部延迟 $\tau$ 和实数增益 $g$ 调整后的麦 2 信号 $y(t)=x_1(t)-g\,x_2(t-\tau)$，其以轴向夹角 $\varphi$ 为自变量的连续时间频率响应（模拟角频率 $\omega=2\pi f$，单位 $\mathrm{rad/s}$）为</p>
 <p>$$\begin{aligned}
-H(\omega,\theta)&=1-g\,e^{-\mathrm{j}\omega[\tau+\tau_p(\theta)]}\text{。}
+H(\omega,\varphi)&=1-g\,e^{-\mathrm{j}\omega[\tau+\tau_p(\varphi)]}\text{。}
 \end{aligned}\tag{5-7}$$</p>
 <p>要合成标准的一阶梯度方向图族，取等幅相减 $g=1$，并把内部延迟按端射渡越时间 $T=d/c$ 无量纲化为 $\tau=\alpha T$（$\alpha\ge 0$）。注意到 $\omega T=\omega d/c=\kappa d$，当满足小间距低频条件 $\kappa d\ll 1$ 时，对复指数作一阶泰勒展开 $e^{-z}\approx 1-z$，式(5-7)立刻化简为时空分离的乘积形式：</p>
 <p>$$\begin{aligned}
@@ -949,7 +951,7 @@ L(\vec w,\lambda)&=\vec w^H\mathbf R_{nn}\vec w
 <li><strong>混响中的约束对象</strong>：式(5-2)的自由场导向矢量只刻画无反射直达声，而在真实混响房间中，目标语音经过墙面与桌面的早期强反射一并到达阵列，真实空间传递特性偏离平面波模型；此时应改用相对传递函数（Relative Transfer Function，RTF），即以某支参考麦克风为基准估计各通道对目标直达加早期反射的复传递比向量作为无失真约束列。</li>
 </ol>
 <h3 id="sec-u-5b967e44d5">对角加载、WNG 约束与正则化的关系</h3>
-<p>为什么在采样协方差矩阵对角线上加一个正数 $\varepsilon\mathbf I$，就能精准控制白噪声增益？我们可以用拉格朗日对偶把两者的数学等价条件一步写透（复变 Wirtinger 微积分与约束拉格朗日对偶见<a href="00_math-foundations.html#sec-0-5">第 0 章 §0.5</a>）。在精确无失真约束 $\vec w^H\vec a=1$ 下，要求白噪声增益不低于 $G_{\min}$（即 $G_{\mathrm{WNG}}=1/\|\vec w\|_2^2\ge G_{\min}$）等价于施加二范数球约束 $\|\vec w\|_2^2\le\delta$（其中 $\delta=1/G_{\min}$，且可行性要求 $\delta\ge 1/\|\vec a\|_2^2=1/M$）。为这一个凸二次不等式约束引入非负实拉格朗日乘子 $\varepsilon\ge 0$，增广拉格朗日函数为</p>
+<p>为什么在采样协方差矩阵对角线上加一个正数 $\varepsilon\mathbf I$，就能精准控制白噪声增益？我们可以用拉格朗日对偶把两者的数学等价条件一步写透（复变 Wirtinger 微积分与约束拉格朗日对偶见<a href="00_math-foundations.html#sec-0-5">第 0 章 §0.5</a>）。在精确无失真约束 $\vec w^H\vec a=1$ 下，要求白噪声增益不低于 $G_{\min}$（即 $G_{\mathrm{WNG}}=1/\|\vec w\|_2^2\ge G_{\min}$）等价于施加二范数球约束 $\|\vec w\|_2^2\le\delta$（此处 $\delta=1/G_{\min}$ 表示权重二范数平方预算，可行性要求 $\delta\ge 1/\|\vec a\|_2^2=1/M$；注意勿与第 4 章表示绝对加载量的符号 $\delta$ 混淆）。为这一个凸二次不等式约束引入非负实拉格朗日乘子 $\varepsilon\ge 0$（即带功率量纲的绝对对角加载量，对应第 4 章的 $\delta$），增广拉格朗日函数为</p>
 <p>$$\begin{aligned}
 \mathcal L(\vec w,\lambda,\varepsilon)
 &=\vec w^H(\hat{\mathbf R}_{nn}+\varepsilon\mathbf I)\vec w
@@ -961,7 +963,7 @@ L(\vec w,\lambda)&=\vec w^H\mathbf R_{nn}\vec w
 <li>若未加载（$\varepsilon=0$）求出的 MVDR 权重已经满足 $\|\vec w(0)\|_2^2\le\delta$，则约束未激活，最优乘子 $\varepsilon=0$，无需加载；</li>
 <li>若未加载权重超出了范数预算（$\|\vec w(0)\|_2^2>\delta$），由于 $\|\vec w(\varepsilon)\|_2^2$ 随 $\varepsilon>0$ 单调连续递减并趋向 $1/M$，最优解必然落在球面边界 $\|\vec w(\varepsilon^\star)\|_2^2=\delta$ 上，唯一对应一个正加载量 $\varepsilon^\star>0$（参见 <a href="https://doi.org/10.1109/TASSP.1987.1165054">Cox, Zeskind &amp; Owen, <em>IEEE TASSP</em>, 1987</a>；<a href="https://doi.org/10.1109/TSP.2003.812831">Li, Stoica &amp; Wang, <em>IEEE TSP</em>, 2003</a>）。</li>
 </ul>
-<p>需要注意，绝对加载量 $\varepsilon$ 与协方差元素同量纲（功率量纲）：若输入音频整体放大 $10$ 倍，$\hat{\mathbf R}_{nn}$ 放大 $100$ 倍，固定的绝对常数 $\varepsilon$ 就会失去原有的正则化比例。为实现尺度不变的工程调参，本书代码与对比表统一采用无量纲相对加载系数 $\alpha\ge 0$，按矩阵迹均值（即各通道平均功率）自适应定标：</p>
+<p>需要注意，绝对加载量 $\varepsilon$ 与协方差元素同量纲（功率量纲）：若输入音频整体放大 $10$ 倍，$\hat{\mathbf R}_{nn}$ 放大 $100$ 倍，固定的绝对常数 $\varepsilon$ 就会失去原有的正则化比例。为实现尺度不变的工程调参，本书代码与对比表统一采用无量纲相对对角加载系数 $\alpha\ge 0$（对应第 4 章 Capon 谱中的无量纲相对加载符号 $\eta$，注意与递推协方差中的指数遗忘因子区分），按矩阵迹均值（即各通道平均功率）自适应定标：</p>
 <p>$$\begin{aligned}
 \hat{\mathbf R}_{nn,\mathrm{load}}
 &=\hat{\mathbf R}_{nn}
@@ -1042,7 +1044,7 @@ L(\vec w,\lambda)&=\vec w^H\mathbf R_{nn}\vec w
 <pre><code class="language-bash">.venv/bin/python -m scripts.course_home.prepare_locata /path/to/extracted --check
 </code></pre>
 <span id="sec-7" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-5-4-1">5.4.1 稳健波束形成方法</h3>
-<p>对角加载擅长压制小特征值求逆噪声与限制权重范数，但实际产品落地还会遭遇不同类型的物理模型失配。我们先把常见失配归纳为四类病根，再逐一对症拆解四类经典稳健波束形成算法：</p>
+<p>对角加载擅长压制小特征值求逆噪声与限制权重范数，但在实际工程系统中还会遭遇不同类型的物理模型失配。我们先把常见失配归纳为四类根源，再逐一对症拆解四类经典稳健波束形成算法：</p>
 <ul>
 <li><strong>A 类（导向矢量失配）</strong>：前端 DOA 估计存在几度偏差、麦克风批次灵敏度/相位不一致、壳体衍射或近场球面波效应，使名义导向 $\vec a_0$ 偏离真实传递向量 $\vec a_{\mathrm{true}}$；</li>
 <li><strong>B 类（协方差估计误差）</strong>：在线滑窗快拍数太少或噪声快速跳变，导致采样协方差 $\hat{\mathbf{R}}_{nn}$ 特征向量抖动、小特征值严重偏低；</li>
@@ -1054,7 +1056,7 @@ L(\vec w,\lambda)&=\vec w^H\mathbf R_{nn}\vec w
 <p>其拉格朗日对偶形式同样归结为自适应数据相关的对角加载，但与式(5-10)有两个本质区别：一是加载量由半径 $\epsilon$ 和当前 $\hat{\mathbf R}_{nn}$ 联合决定，二是求出的权重在名义方向上的响应 $\vec w^H\vec a_0=1+\epsilon\|\vec w\|_2>1$（不再等于 $1$！练习 <a href="#e05-19">E05-19</a> 给出了纯白噪下的完整手算证明）。还需注意，该准则只保住幅度下界，球内不同误差向量仍会引起跨频点目标相位偏移。</p>
 <p><strong>方法 2：特征空间投影波束形成（Eigenspace Beamforming）</strong>。当含噪观测协方差 $\hat{\mathbf R}_{xx}$ 已明显分离出少数几个大特征值（对应目标加主导强干扰构成的信号加干扰子空间 $\mathbf U_s$）与一串近似相等的小特征值（噪声子空间 $\mathbf U_n$）时，先把名义导向矢量正交投影到主导子空间 $\tilde{\vec a}=\mathbf U_s\mathbf U_s^H\vec a_0$ 再求解权重，能有效滤除噪声子空间随机扰动并显著减轻小角度导向误差引起的目标自消（<a href="https://doi.org/10.1109/8.202711">Chang &amp; Yeh, <em>IEEE TAP</em>, 1992</a>）。其风险在于子空间维数截断阈值：低信噪比下目标特征值一旦掉进噪声特征值簇被误裁掉，目标信号就会在投影步直接丢失。</p>
 <p><strong>方法 3：空间谱积分协方差重构（Covariance Matrix Reconstruction）</strong>。针对 D 类“估计出的噪声协方差里总混有残余目标”的顽疾，可先在全空间网格计算 Capon 功率谱 $\hat P(\theta)$（即 $q_{xx}^{-1}(\theta)$，$q_{xx}=\vec a^H\hat{\mathbf R}_{xx}^{-1}\vec a$），挖除名义目标邻域 $\Theta_{\mathrm{tar}}$ 后，仅在补集 $\bar\Theta=\bar\Theta_{\mathrm{tar}}$ 上对 $\hat P(\theta)\vec a\vec a^H$ 积分重构 $\hat{\mathbf R}_{nn}$（即在 $\bar\Theta$ 上求 $\int\hat P\vec a\vec a^H\mathrm{d}\theta$）（<a href="https://doi.org/10.1109/TSP.2012.2194289">Gu &amp; Leshem, <em>IEEE TSP</em>, 2012</a>）。这种方法在强目标持续在线时表现突出，但每帧每频点需额外扫描角度网格并积分，且阵列流形校准不准时积分核本身也会引入偏差。</p>
-<p><strong>方法 4：前后向空间平滑（Forward-Backward Spatial Smoothing）</strong>。对于等间距均匀线阵上的 C 类相干干扰问题，可将 $M$ 元线阵切分为 $P=M-L+1$ 个长度为 $L$ 的重叠子阵，对各子阵协方差取平均并叠加上翻转共轭的后向平滑项，人为恢复子阵协方差矩阵的满秩性（<a href="https://doi.org/10.1109/TASSP.1985.1164649">Shan, Wax &amp; Kailath, <em>IEEE TASSP</em>, 1985</a>；<a href="https://doi.org/10.1109/29.17496">Pillai &amp; Kwon, <em>IEEE TASSP</em>, 1989</a>）。代价是有效阵列孔径从 $M$ 缩减为 $L$（主瓣展宽、自由度减少），且求出的 $L$ 维权重必须作用于子阵结构而非直接套回原 $M$ 通道；此外，房间内到达时间极短的早期反射往往有助于提升语音响度与可懂度，优先用 RTF 把早期反射并入目标向量通常比强行做空间平滑去相关更符合语音增强需求。</p>
+<p><strong>方法 4：前后向空间平滑（Forward-Backward Spatial Smoothing）</strong>。对于等间距均匀线阵上的 C 类相干干扰问题，严格沿用<a href="04_doa-estimation.html#sec-4-6">第 4 章 §4.6</a> 的子阵记号，可将 $M$ 元线阵切分为 $L$ 个长度为 $P=M-L+1$ 的连续重叠子阵，对各子阵协方差取平均并叠加上翻转共轭的后向平滑项，恢复子阵协方差矩阵的满秩性（<a href="https://doi.org/10.1109/TASSP.1985.1164649">Shan, Wax &amp; Kailath, <em>IEEE TASSP</em>, 1985</a>；<a href="https://doi.org/10.1109/29.17496">Pillai &amp; Kwon, <em>IEEE TASSP</em>, 1989</a>）。代价是单子阵阵元数从 $M$ 缩减为 $P$（有效物理孔径从 $(M-1)d$ 缩减为 $(P-1)d$，主瓣展宽、空间自由度减少），且求出的 $P$ 维权重必须作用于子阵结构而非直接套回原 $M$ 通道；此外，房间内到达时间极短的早期反射往往有助于提升语音响度与可懂度，优先用 RTF 把早期反射并入目标向量通常比强行做空间平滑去相关更符合语音增强需求。</p>
 <p>实际工程排障时，可对照下表从观测症状快速锁定主因与首选方案：</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table class="tutorial-budget-table" style="--tutorial-table-width:76em">
 <thead>
@@ -1282,7 +1284,7 @@ e&=d-\vec h^H\vec u=(\vec w_q-\mathbf B\vec h)^H\vec x,\\
 \mathbf C^H\vec w&=\mathbf C^H\vec w_q
 -(\mathbf C^H\mathbf B)\vec h=\vec f\text{。}
 \end{aligned}\tag{5-16}$$</p>
-<p>式(5-16)最后一行仅依赖代数正交性 $\mathbf C^H\mathbf B=\mathbf 0$，对<strong>任意有限复向量</strong> $\vec h\in\mathbb C^{M-K_c}$ 恒成立！也就是说，自适应收敛快慢只决定旁瓣干扰与背景噪声能不能压到统计最低点，而目标无失真由硬件/算法结构本身硬性兜底。</p>
+<p>式(5-16)最后一行仅依赖代数正交性 $\mathbf C^H\mathbf B=\mathbf 0$，对<strong>任意有限复向量</strong> $\vec h\in\mathbb C^{M-K_c}$ 恒成立！也就是说，自适应收敛快慢只决定旁瓣干扰与背景噪声能不能压到统计最低点，而目标方向的无失真响应由正交阻塞结构本身在代数上严格保证。</p>
 <p><strong>工程上怎样构造阻塞矩阵 $\mathbf B$？</strong> 教材算例里常随手写出两麦 $[1,-1]^\top$，放到一般 $M$ 麦阵列或多约束下，工业界主要有三种标准构造法：</p>
 <ol>
 <li>
@@ -1338,7 +1340,7 @@ g_\ell&=\mathbf B^H\vec a_{60}=1-e^{+\mathrm{j}2.7207}\\
 <li>下支路参考：$u=\mathbf B^H\vec x=x_1-x_2$，数值约为 $1.9127-0.4086\mathrm{j}$，即纯干扰参考 $g_\ell\cdot i$（不含任何 $s$）。</li>
 </ul>
 <p><strong>第 4 步：求解总体最小均方最优对消系数 $h_{\mathrm{opt}}$</strong></p>
-<p>要从 $d=s+g_u i$ 中精准扣掉 $g_u i$，而手头的参考是 $u=g_\ell i$，直接乘子显然应当配成 $h^*=g_u/g_\ell$。放到随机信号统计框架下：只要干扰功率 $\mathbb{E}[|i|^2]>0$、目标与干扰零均值不相关 $\mathbb{E}[i s^*]=0$ 且忽略阵元本底白噪，最小化总输出均方功率 $\mathbb{E}[|d-h^*u|^2]$ 的维纳–霍夫正规方程给出完全一致的闭式解：</p>
+<p>要从 $d=s+g_u i$ 中精准扣掉 $g_u i$，而手头的参考是 $u=g_\ell i$，由线性相消条件立得直接乘子应取 $h^*=g_u/g_\ell$。放到随机信号统计框架下：只要干扰功率 $\mathbb{E}[|i|^2]>0$、目标与干扰零均值不相关 $\mathbb{E}[i s^*]=0$ 且忽略阵元本底白噪，最小化总输出均方功率 $\mathbb{E}[|d-h^*u|^2]$ 的维纳–霍夫正规方程给出完全一致的闭式解：</p>
 <p>$$\begin{aligned}
 h_{\mathrm{opt}}&=\frac{\mathbb{E}[u d^*]}{\mathbb{E}[|u|^2]},\\
 h_{\mathrm{opt}}^*&=\frac{g_u}{g_\ell}\text{。}
@@ -1478,7 +1480,7 @@ h_n^{(2)}(\kappa r)\right]\\
 <li><strong>刚性球彻底消除了实轴零点</strong>：由于球汉克尔函数导数 $h_n^{(2)\prime}(\kappa r)$ 在整个正实轴 $\kappa r>0$ 上恒不为零，模长 $|b_n^{\mathrm{rigid}}(x)|>0$（等于 $4\pi/[x^2|h_n^{(2)\prime}(x)|]$，$x=\kappa r$） <strong>在所有正频率上处处严格大于零</strong>，不仅消除了腔体奇异频点，球壳表面声压反射还带来了最高约 $+6\ \mathrm{dB}$ 的高频声压倍增收益！不过在低频端（$\kappa r\ll n$），无论开放球还是刚性球，高阶径向响应幅度依然按 $(\kappa r)^n$ 快速衰减，强行恢复高阶模态同样会损失白噪声增益。</li>
 </ul>
 <p>在球谐模态域设计波束有两大天然优势：一是各阶模态正交解耦，二是借助三维旋转 Wigner-$D$ 矩阵即可在不重算径向滤波器的条件下把固定方向图平滑转向三维任意立体角（广泛用于高阶立体声 Higher-Order Ambisonics，简称 HOA，以及模态超指向与模态 MVDR）。同时，二维均匀圆阵也有一套完全平行的对应工具——<strong>相位模式（Phase-Mode / 圆谐波）处理</strong>：利用圆柱贝塞尔函数 $J_n(\kappa r)$ 对水平面圆环声压做方位角傅里叶展开；针对单环开放圆阵中 $J_n(\kappa r)=0$ 引起的零点病态，工程上常采用刚性圆柱障板或同心多环圆阵（Concentric Circular Microphone Array，CCMA）交错避开零点频带（详见 <a href="https://doi.org/10.1109/TASLP.2018.2862826">Huang, Chen &amp; Benesty, <em>IEEE/ACM TASLP</em>, 2018</a>）。</p>
-<p><strong>球谐域波束形成五步落地规程</strong>：</p>
+<p><strong>球谐域波束形成五步实现规程</strong>：</p>
 <ol>
 <li><strong>按最高频率与半径定阶数预算</strong>：给定工作上限频率 $f_{\max}$ 与球半径 $r$，算出无量纲尺度 $\kappa_{\max}r=2\pi f_{\max}r/c$。由于阶数 $n>\kappa r$ 的球贝塞尔函数呈指数衰减，声场有效截断阶数通常取 $N\approx\lceil\kappa r\rceil$。要独立解出从 $0$ 阶到 $N$ 阶的全部球谐系数，总未知模式数为 $\sum_{n=0}^N(2n+1)=(N+1)^2$——例如 $r=4.2\ \mathrm{cm}$ 在 $f=4\ \mathrm{kHz}$ 处 $\kappa r\approx 3.08$，取 $N=3$ 至少需要 $M\ge(3+1)^2=16$ 支麦克风。</li>
 <li><strong>核验球面采样几何的条件数</strong>：满足 $M\ge(N+1)^2$ 只是未知数不多于方程数的必要条件，绝非充分条件（练习 E05-15 将证明：把 $4$ 支麦全摆在赤道圈上，哪怕 $M=4=(1+1)^2$，对垂直 $z$ 偶极模式的采样列也是全零奇异的！）。阵元必须采用近似球面 $t$-设计、正多面体顶点或高斯积分网格均匀铺开，确保球谐采样矩阵满列秩且良态。</li>
@@ -1529,7 +1531,7 @@ h_n^{(2)}(\kappa r)\right]\\
 </li>
 </ol>
 <p><strong>两麦小例子</strong>：设某频点由掩码估得对角噪声协方差 $\hat{\mathbf R}_{nn}=\operatorname{diag}(2,1)$（第 1 麦噪声是第 2 麦的 $2$ 倍），估计目标 RTF 为 $\hat{\vec a}=[1,1]^\top$。代入式(5-9)得分子 $\hat{\mathbf R}_{nn}^{-1}\hat{\vec a}=[0.5,1]^\top$，分母为 $0.5+1=1.5$，故 $\vec w_{\mathrm{MVDR}}=[1/3,\ 2/3]^\top$——算法自动给低噪声的第 2 麦分配了双倍权重，既满足 $\vec w_{\mathrm{MVDR}}^H\hat{\vec a}=1/3+2/3=1$，记 $\vec w=\vec w_{\mathrm{MVDR}}$，又把输出噪声功率 $\vec w^H\hat{\mathbf R}_{nn}\vec w$ 压到了 $2/9+4/9=2/3$（低于等权 DSB 的 $3/4$ 与任一单麦）。反之，若目标掩码混入强干扰导致 $\hat{\vec a}$ 估偏，这套权重就只会去保护那个错误的 $\hat{\vec a}$。</p>
-<p><strong>掩码尺度不变性与空掩码回退算例</strong>：取四帧双麦复谱 $\vec x_1=\vec x_2=[1,1]^\top$（纯目标帧）与 $\vec x_3=\vec x_4=[1,-1]^\top$（正交纯干扰帧），目标掩码 $[1,1,0,0]$、干扰掩码 $[0,0,1,1]$。带 $10^{-6}$ 默认相对对角加载的双麦基线求得 $\vec w=[0.5,0.5]^\top$，四帧输出为 $[1,1,0,0]$，干扰被完全消除。若把目标掩码中的两个 $1$ 极端缩小为 $10^{-300}$，峰值归一化接口给出完全相同的权重与输出；但若目标掩码变为全零 $[0,0,0,0]$，算法触发无证据安全回退，直通第 1 支参考麦克风输出 $[1,1,1,1]$，避免用纯数值底噪拼出荒谬的滤波器。</p>
+<p><strong>掩码尺度不变性与空掩码回退算例</strong>：取四帧双麦复谱 $\vec x_1=\vec x_2=[1,1]^\top$（纯目标帧）与 $\vec x_3=\vec x_4=[1,-1]^\top$（正交纯干扰帧），目标掩码 $[1,1,0,0]$、干扰掩码 $[0,0,1,1]$。带 $10^{-6}$ 默认相对对角加载的双麦基线求得 $\vec w=[0.5,0.5]^\top$，四帧输出为 $[1,1,0,0]$，干扰被完全消除。若由于前端未归一化使目标掩码整体按比例缩小为 $10^{-3}[1,1,0,0]$，公共正比例因子在归一化协方差与 MVDR 分子分母中严格约消，输出权重与波形保持不变（工程实现中在加权累加前先将非零掩码除以帧间峰值 $\max_n m_{v,n}$ 预归一化，可防止低置信度长句外积累加发生浮点下溢）；但若目标掩码变为全零 $[0,0,0,0]$，算法触发无证据安全回退，直通第 1 支参考麦克风输出 $[1,1,1,1]$，避免用纯数值底噪拼出失控滤波器。</p>
 <blockquote>
 <p><strong>接收端 GEV 与发射端多点声对比度控制（ACC）的正则化对偶</strong>：回看 §5.3 介绍的扬声器个人声区，当亮区与暗区分别由多点空间传递矩阵积分构成满秩协方差 $\mathbf R_B$ 与 $\mathbf R_D$ 时，最大化亮暗区声能比的 Choi–Kim 方程 $\mathbf R_B\vec q=\lambda_{\max}\mathbf R_D\vec q$ 在代数上与式(5-23)的接收端最大信噪比 GEV 波束形成<strong>完全同构</strong>（$\mathbf R_B\leftrightarrow\hat{\mathbf R}_{ss}$，$\mathbf R_D\leftrightarrow\hat{\mathbf R}_{nn}$）！更妙的是正则化也严格互易：发射端为防止低频扬声器驱动功率越界而施加阵列驱动能量约束 $\|\vec q\|_2^2\le E_{\max}$，记加载阵 $\mathbf M=\mathbf R_D+\varepsilon\mathbf I$，拉格朗日乘子恰好把方程修正为 $\mathbf R_B\vec q=\lambda_{\max}\mathbf M\vec q$——这与接收端 GEV/MVDR 通过对角加载 $\hat{\mathbf R}_{nn}+\varepsilon\mathbf I$ 守住白噪声增益下界 $G_{\mathrm{WNG}}$ 遵循同一条物理能量守恒边界。</p>
 </blockquote>
@@ -1555,7 +1557,7 @@ h_n^{(2)}(\kappa r)\right]\\
 <p>§5.7 的噪声估计也需要同样的接口甄别：MCRA 用滑窗局部最小值调节递归平滑，IMCRA 引入两阶段粗筛与最小值跟踪，OM-LSA 则在对数谱幅度域按语音存在概率做几何增益组合，三者不能笼统混称为“维纳滤波”。</p>
 <p>Cohen 的<a href="https://israelcohen.com/software/">个人学术软件页</a>介绍了 MATLAB 版 OM-LSA/IMCRA 参考程序；工程上若阅读开源实时通信库（如 WebRTC 音频处理模块中的分位数噪声估计与语音概率控制源码），则需注意其采用的是面向低复杂度定点通话的分位数跟踪近似，并非 IMCRA/OM-LSA 论文公式的逐项复刻。</p>
 <span id="sec-17" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-5-10">5.10 波束形成算法总对比</h2>
-<p>走完固定几何波束、解析自适应优化、后置滤波、球谐模态与深度掩码混合框架后，我们把全章十种代表性方法放在同一张全景对照表里，从“优化什么、依赖什么输入、什么条件下保真目标、最怕什么失配、算力花在哪里”六个维度横向拉通：</p>
+<p>走完固定几何波束、解析自适应优化、后置滤波、球谐模态与深度掩码混合框架后，我们把全章十种代表性方法放在同一张全景对照表里，从“优化什么、依赖什么输入、什么条件下保真目标、最怕什么失配、算力花在哪里”六个维度作系统横向对比：</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table class="tutorial-budget-table" style="--tutorial-table-width:85em">
 <thead>
 <tr>
@@ -1652,7 +1654,7 @@ h_n^{(2)}(\kappa r)\right]\\
 </table></div>
 <p><strong>怎么把这张全景大表读成工程选型路线图</strong>：你可以按从上到下<strong>三个演进台阶</strong>来把握全部十行的内在逻辑：</p>
 <ul>
-<li><strong>第一台阶（前 3 行：纯几何固定设计——DSB、超指向、DMA）</strong>：完全不需要在线估计环境协方差矩阵，上电即用、零收敛延迟。其中 DSB 死守白噪声增益天花板 $G_{\mathrm{WNG}}=M$，适合中高频大孔径阵列或保底通道；超指向与 DMA 则专门针对物理尺寸受限的小间距硬件（如耳机、眼镜、小型音箱），在低频拿 $\mathrm{WNG}_{\mathrm{dB}}$ 余量换取高达 $M^2$ 量级的理论指向因数，成败全看麦克风配对精度、密封垫圈气密性与分频带对角加载。</li>
+<li><strong>第一台阶（前 3 行：纯几何固定设计——DSB、超指向、DMA）</strong>：完全不需要在线估计环境协方差矩阵，上电即用、零收敛延迟。其中 DSB 达到白噪声增益理论上界 $G_{\mathrm{WNG}}=M$，适合中高频大孔径阵列或稳健基准通道；超指向与 DMA 则专门针对物理尺寸受限的小间距硬件（如耳机、眼镜、小型音箱），在低频拿 $\mathrm{WNG}_{\mathrm{dB}}$ 余量换取高达 $M^2$ 量级的理论指向因数，成败取决于麦克风配对精度、密封垫圈气密性与分频带对角加载。</li>
 <li><strong>第二台阶（第 4～8 行：二阶统计驱动的解析自适应——MVDR、LCMV、GSC、MWF、SDW-MWF）</strong>：开始利用在线估计的 $\mathbf R_{nn}$ 与 $\mathbf R_{ss}$ 自动追着未知方位的强干扰打零陷。在这一族内部，再按“<strong>硬保真还是软折中、批求逆还是流递推</strong>”二分：MVDR/LCMV 施加硬等式约束保护期望方向，GSC 把硬约束转化成“静态主支路 + 阻塞零空间 NLMS 逐帧递推”以省去每帧矩阵求逆；而 MWF/SDW-MWF 放弃硬无失真约束，直接以参考麦目标声像为基准最小化加权均方误差，在秩一目标下等效于自动给 MVDR 串上了单通道维纳后置滤波。这一整族算法的先决条件都在第 3 列与第 5 列：<strong>统计矩阵准不准、有没有混入目标导致自消</strong>。</li>
 <li><strong>第三台阶（最后 2 行：深度学习赋能——掩码 + MVDR/GEV 与端到端神经滤波）</strong>：正是为了解决第二台阶在非平稳噪声和重叠语音下“估不准 $\mathbf R_{nn}$ 和 $\mathbf R_{ss}$”的痛点，第 9 行由神经网络预测时频掩码，把最擅长的非线性时频分类交给 DNN，同时把无失真响应、WNG 正则化和任意阵列几何兼容性留给解析线性代数层——这也是当前工业界高可靠远场识别与会议系统的黄金组合；第 10 行进一步把滤波本身也交给网络，上限潜力高，但必须额外为跨设备几何泛化、语音相位保真与端侧算力买单。</li>
 </ul>
@@ -2079,9 +2081,9 @@ A-C&=\frac{1}{M(M-1)}\sum_{1\le i\lt j\le M}
 </table></div>
 <p><strong>第三步：对比 E05-05 看透矩阵优化的“盲目性”。</strong> 仔细看上式与 E05-05 的公式——字母代数一模一样！矩阵求逆本身根本不知道 $\vec b$ 究竟是竞争说话人还是偏了几度的主人语音：信噪比越高（$\eta=100$），失配的真实目标反而被压得越狠（幅度暴跌超过 $43\ \mathrm{dB}$），白噪声还翻了一倍！真实混响房间里传递函数总有误差且快拍有限，因此工程上绝不能指望“导向精确匹配所以用 $\mathbf R_{xx}$ 代替 $\mathbf R_{nn}$ 也没事”。</p>
 <h3 id="sec-u-95f1104fa5">E05-14：GEV、MVDR 与 MWF 的尺度怎样影响失真？</h3>
-<p><strong>题设</strong>：设双通道噪声协方差 $\mathbf R_{nn}=\operatorname{diag}(2,1)$，单点源目标导向 $\vec a=[1,1]^\top$、功率 $\phi_s=3$，故秩一目标协方差为 $\mathbf R_{ss}=3\vec a\vec a^\top$，以第 $1$ 麦目标为失真评分参考。将式(5-23)的 GEV 特征向量按“第 $2$ 分量固定为 $1$”定标记为 $\vec v$，横向对比 $\vec v$、$2\vec v$、MVDR 与普通 MWF（$\mu=1$）的输出 SNR、目标失真功率与总均方误差。</p>
+<p><strong>题设</strong>：设双通道噪声协方差 $\mathbf R_{nn}=\operatorname{diag}(2,1)$，单点源目标导向 $\vec a=[1,1]^\top$、功率 $\phi_s=3$，故秩一目标协方差为 $\mathbf R_{ss}=3\vec a\vec a^H$，以第 $1$ 麦目标为失真评分参考。将式(5-23)的 GEV 特征向量按“第 $2$ 分量固定为 $1$”定标记为 $\vec v$，横向对比 $\vec v$、$2\vec v$、MVDR 与普通 MWF（$\mu=1$）的输出 SNR、目标失真功率与总均方误差。</p>
 <p><strong>第一步：解广义特征方程。</strong> 验证 $\vec v=[1/2,\ 1]^\top$：$\mathbf R_{ss}\vec v=[4.5,\ 4.5]^\top$，$\mathbf R_{nn}\vec v=[1,\ 1]^\top$，故 $\mathbf R_{ss}\vec v=4.5\mathbf R_{nn}\vec v$，最大广义特征值（即线性最大输出 SNR）为 $\lambda_{\max}=4.5$。</p>
-<p><strong>第二步：求 MVDR 与秩一 MWF。</strong> 算得 $q=\vec a^\top\mathbf R_{nn}^{-1}\vec a=0.5+1=3/2$（注意 $\phi_s q=3\times 1.5=4.5=\lambda_{\max}$！），故 $\vec w_{\mathrm{MVDR}}=[1/3,\ 2/3]^\top$；再由式(5-14)乘上标量 Wiener 因子 $G_1=\phi_s q/(1+\phi_s q)=4.5/5.5=9/11$，得 $\vec w_{\mathrm{MWF}}=[3/11,\ 6/11]^\top$。</p>
+<p><strong>第二步：求 MVDR 与秩一 MWF。</strong> 算得 $q=\vec a^H\mathbf R_{nn}^{-1}\vec a=0.5+1=3/2$（注意 $\phi_s q=3\times 1.5=4.5=\lambda_{\max}$！），故 $\vec w_{\mathrm{MVDR}}=[1/3,\ 2/3]^\top$；再由式(5-14)乘上标量 Wiener 因子 $G_1=\phi_s q/(1+\phi_s q)=4.5/5.5=9/11$，得 $\vec w_{\mathrm{MWF}}=[3/11,\ 6/11]^\top$。</p>
 <p><strong>第三步：逐项拆解波形均方误差账本。</strong> 记目标响应为 $g=\vec w^H\vec a$，则相对第 $1$ 麦目标的波形失真功率为 $J_s=3|g-1|^2$，输出噪声功率为 $J_n=\vec w^H\mathbf R_{nn}\vec w$，不相关假设下总 MSE 为 $J_s+J_n$：</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
 <thead>
@@ -2766,7 +2768,7 @@ python -m codes.chapters.ch05.examples.binaural_beamforming_demo --check
 </code></pre>
 <p><a id="e05-28"></a></p>
 <h3 id="sec-u-1d0280552b">E05-28：一阶差分阵怎样合成频不变零陷并受限于低频均衡？</h3>
-<p><strong>题设</strong>：紧凑端射双麦间距取 $d=1\ \mathrm{cm}$（$0.01\ \mathrm{m}$），声速 $c=343\ \mathrm{m/s}$，单程端射渡越时间 $\tau_0=d/c\approx 29.1545\ \mu\mathrm{s}$。以麦 1 为前向端射原点（轴向夹角 $\varphi=0^\circ$ 指向麦 1 前方，$\varphi=180^\circ$ 指向麦 2 后方），两麦平面波导向矢量 $\vec a(f,\varphi)$ 为 $[1,\,e^{-\mathrm{j}\kappa d\cos\varphi}]^\top$（$\kappa=2\pi f/c$）。考察一阶差分结构 $y=\vec w^H\vec x$，先取未均衡差分支路 $\vec w_{\mathrm{raw}}(f)$ 为 $[1,\,-e^{+\mathrm{j}\kappa d\alpha}]^\top$（内部延迟 $\tau_1=\alpha\tau_0$），再除以轴向复响应共轭 $B_{\mathrm{raw}}^*(f,0^\circ)$ 得到前向精确单位无失真权重 $\vec w_{\mathrm{DMA}}(f)$（参见 Elko &amp; Pong, <em>ICASSP</em>, 1997）。推导一阶四类经典方向图的零陷角与球面弥散指向因数 $Q$，手算标准心形（$\alpha=1$）在 $200\ \mathrm{Hz}$ 与 $100\ \mathrm{Hz}$ 两个倍频程的白噪声增益，并量化麦 2 存在 $+5^\circ$ 密封垫圈漏气相移时后向零陷的崩塌程度。</p>
+<p><strong>题设</strong>：紧凑端射双麦间距取 $d=1\ \mathrm{cm}$（$0.01\ \mathrm{m}$），声速 $c=343\ \mathrm{m/s}$，单程端射渡越时间 $\tau_0=d/c\approx 29.1545\ \mu\mathrm{s}$。以麦 1 为前向端射原点（轴向夹角 $\varphi=0^\circ$ 指向麦 1 前方，$\varphi=180^\circ$ 指向麦 2 后方），两麦平面波导向矢量 $\vec a(f,\varphi)$ 为 $[1,\,e^{-\mathrm{j}\kappa d\cos\varphi}]^\top$（$\kappa=2\pi f/c$）。考察一阶差分结构 $y=\vec w^H\vec x$，先取未均衡差分支路 $\vec w_{\mathrm{raw}}(f)$ 为 $[1,\,-e^{+\mathrm{j}\kappa d\alpha}]^\top$（内部延迟 $\tau_1=\alpha\tau_0$），再除以轴向复响应共轭 $B_{\mathrm{raw}}^*(f,0^\circ)$ 得到前向精确单位无失真权重 $\vec w_{\mathrm{DMA}}(f)$（参见 Elko &amp; Pong, <em>ICASSP</em>, 1997）。推导一阶四类经典方向图的零陷角与球面弥散指向因数 $Q$，手算标准心形（$\alpha=1$）在 $200\ \mathrm{Hz}$ 与 $100\ \mathrm{Hz}$ 两个倍频程的白噪声增益，并量化麦 2 存在 $+5^\circ$ 密封垫圈漏气相移时后向零陷的退化程度。</p>
 <p><strong>第一步：精确无失真均衡权重与低频频不变方向图族</strong>。将 $\vec w_{\mathrm{raw}}$ 代入任意轴向角 $\varphi$ 的复响应并在 $\kappa d\ll 1$ 下作一阶泰勒展开：</p>
 <p>$$\begin{aligned}
 B_{\mathrm{raw}}(f,\varphi)

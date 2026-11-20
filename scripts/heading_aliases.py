@@ -137,6 +137,7 @@ HISTORICAL_SECTION_IDS = {
     },
     "10_engineering-practice.md": {
         "sec-u-38edc89a29": "sec-u-f9e36547b8",  # 有状态重采样旧标题
+        "sec-u-a4719e76d5": "sec-u-7a1c8bc661",  # E10-02：两帧挂起 -> 两帧尾音保持
     },
     "11_selection-guide.md": {
         "sec-u-65c140a10b": "sec-u-1cf1ad108e",  # E11-01旧题4标题

@@ -72,7 +72,7 @@ $$\cos\gamma = \vec u_1^\top\vec u_2
 1. **右手笛卡尔坐标系 $(x, y, z)$**：所有球面参数化的共同三维欧氏基底，阵元位置 $\vec r_m$ 与声源位置 $\vec p = r\vec u$ 均在此基底下求内积与范数。
 2. **本书平面阵列参考系（第 2～13 章默认）**：阵元沿 $x$ 轴排列，$+y$ 轴为正前方正横（broadside，$\theta_{\mathrm{book}} = 0^\circ$），水平方位角 $\theta_{\mathrm{book}}$ 从 $+y$ 轴向 $+x$ 轴**顺时针**旋转为正，俯仰角 $\phi_{\mathrm{el}} \in [-90^\circ, +90^\circ]$ 从水平面朝 $+z$ 轴向上度量。
 3. **同基底球谐函数极角系（[第 5 章 §5.8](05_beamforming.md#sec-5-8) 与 §0.7）**：与第 1、2 项共用同一笛卡尔轴 $(x, y, z)$，采用从 $+x$ 轴向 $+y$ 轴**逆时针**起算的水平方位角 $\alpha \in (-\pi, \pi]$，以及从天顶 $+z$ 轴向下起算的极角（余纬角，colatitude）$\vartheta \in [0, \pi]$。
-4. **听者局部全景声 AmbiX 与 AES69（`SOFA`）系（[第 1 章 SOFA 坐标对照](01_problem-definition.md#sec-u-fc1c3d209e) 与[第 14 章 §14.2](14_spatial-wearable-arrays.md#sec-14-2)）**：听者正前方定义为 $+x_{\mathrm{A}}$、正左方为 $+y_{\mathrm{A}}$、正上方为 $+z_{\mathrm{A}}$，水平方位角从正前向正左**逆时针**度量为正，俯仰角从水平面向上为正。若以同一听者正前方对齐本书 $+y$ 正横轴，则 $\phi_{\mathrm{SOFA}} = -\theta_{\mathrm{book}}$；若在共享笛卡尔轴 $(x, y, z)$ 下直接比较逆时针角 $(\alpha, \phi_{\mathrm{el}}, r)$ 与本书角度 $(\theta_{\mathrm{book}}, \phi_{\mathrm{el}}, r)$，则满足严格换算：
+4. **听者局部全景声 AmbiX 与 AES69（`SOFA`）系（[第 1 章 SOFA 坐标对照](01_problem-definition.md#sec-u-fc1c3d209e) 与[第 14 章 §14.2](14_spatial-wearable-arrays.md#sec-14-2)）**：听者正前方定义为 $+x_{\mathrm{A}}$、正左方为 $+y_{\mathrm{A}}$、正上方为 $+z_{\mathrm{A}}$，水平方位角从正前向正左**逆时针**度量为正，俯仰角从水平面向上为正（特别注意：AES69 / SOFA 标准以 $\phi_{\mathrm{SOFA}}$ 表示**水平方位角**、以 $\delta_{\mathrm{SOFA}}$ 表示俯仰角，切勿将 $\phi_{\mathrm{SOFA}}$ 与本书表示俯仰角的符号 $\phi_{\mathrm{el}}$ 混淆）。若以同一听者正前方对齐本书 $+y$ 正横轴，则 $\phi_{\mathrm{SOFA}} = -\theta_{\mathrm{book}}$；若在共享笛卡尔轴 $(x, y, z)$ 下直接比较逆时针角 $(\alpha, \phi_{\mathrm{el}}, r)$ 与本书角度 $(\theta_{\mathrm{book}}, \phi_{\mathrm{el}}, r)$，则满足严格换算：
 
 $$\begin{aligned}
 \alpha &= 90^\circ - \theta_{\mathrm{book}}\pmod{360^\circ}\text{（折叠至 }(-180^\circ, 180^\circ]\text{），}\qquad
@@ -191,7 +191,7 @@ N_{\mathrm{pad}} &\ge L_x + L_h - 1\\
 
 #### 0.2.4 短时傅里叶变换（STFT）频谱泄漏与 COLA / WOLA 完美重建条件
 
-语音与环境声是非平稳过程，工程前端采用窗长为 $N$、帧移（hop size）为 $H$ 的滑动分析窗 $w_a[n]$ 将长信号切分为重叠短帧，计算每帧频谱 $X(k, \ell) = \sum_{r=0}^{N-1} x[\ell H + r]w_a[r]e^{-\mathrm{j}2\pi kr/N}$。若后续未改动频谱直接经逆变换乘以合成窗 $w_s[r]$ 并按帧移 $H$ 累加回时域，第 $n$ 个采样点上的总输出为 $\hat x[n] = \sum_{\ell} x[n]\,w_a[n - \ell H]w_s[n - \ell H]$。因此，在已被完整帧覆盖的稳定内部区间上，时域波形无失真重建（$\hat x[n] = x[n]$）的充要条件是**加权恒定重叠相加（COLA / WOLA）条件**：
+语音与环境声是非平稳过程，工程前端采用窗长为 $N$、帧移（hop size）为 $H$ 的滑动分析窗 $w_a[n]$ 将长信号切分为重叠短帧，计算每帧频谱 $X(\ell, k) = \sum_{r=0}^{N-1} x[\ell H + r]w_a[r]e^{-\mathrm{j}2\pi kr/N}$（本书正文统一将**时间帧指标 $\ell$ 写在前、频点指标 $k$ 写在后**；自第 2 章起在无歧义处亦将帧指标与频点指标对应简记为 $(t, f)$，写作第 $m$ 路短时谱 $X_m(t, f)$，而工程代码二维数组常按 $F\times T$ 即“行频列时”存储，调用接口时须核对轴序）。若后续未改动频谱直接经逆变换乘以合成窗 $w_s[r]$ 并按帧移 $H$ 累加回时域，第 $n$ 个采样点上的总输出为 $\hat x[n] = \sum_{\ell} x[n]\,w_a[n - \ell H]w_s[n - \ell H]$。因此，在已被完整帧覆盖的稳定内部区间上，时域波形无失真重建（$\hat x[n] = x[n]$）的充要条件是**加权恒定重叠相加（COLA / WOLA）条件**：
 
 $$g[n] \triangleq \sum_{\ell \in \mathbb{Z}} w_a[n - \ell H]\,w_s[n - \ell H] = 1\qquad(\forall\,n \in \mathbb{Z})\text{。}\tag{0-12}$$
 
@@ -320,6 +320,8 @@ $$\bigl(\sigma_n^2\mathbf I_M + \sigma_i^2\vec u\vec u^H\bigr)^{-1}
 
 将式(0-20)右乘干扰导向矢量 $\vec u$，立刻算出 $\mathbf R^{-1}\vec u = \frac{1}{\sigma_n^2}\bigl(1 - \frac{\mathrm{INR}}{1+\mathrm{INR}}\bigr)\vec u$，即等于 $\frac{1}{\sigma_n^2(1+\mathrm{INR})}\vec u$（其中阵列级干扰噪声比 $\mathrm{INR} = \frac{\sigma_i^2\|\vec u\|_2^2}{\sigma_n^2}$）：无需任何数值近似，我们就从代数上证明了协方差求逆会自动朝着强干扰方向压出深度为 $(1+\mathrm{INR})^{-1}$ 的自适应零陷！
 
+工程实现中还需警惕 Woodbury 秩一更新在**长时在线递推下的数值失效边界**：当 RLS 或在线自适应波束在有限字长浮点运算下连续执行数千次秩一减法递推逆相关矩阵 $\mathbf P$ 时，舍入误差会逐步累积并破坏 $\mathbf P$ 的厄米对称性与正定性，一旦最小特征值漂移为负数就会触发更新发散。因此工业级在线实现每步须施加厄米对称化投影 $\mathbf P \leftarrow \frac{1}{2}(\mathbf P + \mathbf P^H)$ 与对角下界保护，或改用条件数开方的 Cholesky / QR 平方根递推结构。
+
 与之同源的另一件分块矩阵利器是 **Schur 补（Schur complement）**。对分块矩阵 $\mathbf M = [[\mathbf A_{11}, \mathbf A_{12}], [\mathbf A_{21}, \mathbf A_{22}]]$（其中 $\mathbf A_{11}$ 可逆），用分块高斯消元消去左下块得到上三角分解，立得 $\mathbf A_{11}$ 在 $\mathbf M$ 中的 Schur 补 $\mathbf S = \mathbf A_{22} - \mathbf A_{21}\mathbf A_{11}^{-1}\mathbf A_{12}$ 及行列式乘法公式：
 
 $$\begin{aligned}
@@ -440,7 +442,7 @@ $$\begin{aligned}
 
 - **子图 (a) 厄米矩阵标准瑞利商轨迹**：对 $\mathbf R_{nn} = \begin{bmatrix}2 & 1\\ 1 & 2\end{bmatrix}$，实单位向量 $\vec w(\psi) = [\cos\psi, \sin\psi]^\top$ 的瑞利商 $2 + \sin(2\psi)$ 严格被夹在最小特征值 $\lambda_{\min} = 1.0$（$\psi = -45^\circ$）与最大特征值 $\lambda_{\max} = 3.0$（$\psi = +45^\circ$）两条水平渐近线之间。
 - **子图 (b) 广义瑞利商极值与未白化匹配滤波差距**：在 `E00-09` 相关噪声下，未白化匹配滤波（蓝色圆点 $\phi = 90^\circ$）仅获 $\mathrm{SINR} = 1.00$，而 GEV 闭式解达到全局上界 $\lambda_{\max} = 4/3 \approx 1.333$（红色虚线）。
-- **子图 (c) 白化合同变换**：原坐标下沿 $+45^\circ$ 压缩的相关噪声等值椭圆 $\vec z^\top\mathbf R_{nn}\vec z = 1$（橙色实线）经 Cholesky 白化后映射为蓝色虚线单位圆，消除噪声各向异性偏置。
+- **子图 (c) 白化合同变换（二维实对称截面示意）**：以实平面截面 $\vec z \in \mathbb{R}^2$ 直观展示原坐标下沿 $+45^\circ$ 压缩的相关噪声等值椭圆 $\vec z^\top\mathbf R_{nn}\vec z = 1$（橙色实线）经 Cholesky 白化后映射为蓝色虚线各向同性单位圆 $\tilde{\vec z}^\top\tilde{\vec z} = 1$ 的过程，消除噪声方向偏心。
 - **子图 (d) Khatri–Rao 差分协同阵虚拟孔径对比**：同样仅用 $3$ 支麦克风，稀疏阵 $\{0, 1, 3\}d$（蓝色柱）无空洞铺满 $-3d$～$+3d$ 共 $7$ 个滞后，而等距线阵 $\{0, 1, 2\}d$（橙色柱）把冗余浪费在 $\pm 1d$ 重复项上，仅覆盖 $5$ 个滞后。
 
 ---
@@ -644,7 +646,7 @@ I_{\mathrm{eff}}(\tau) &= I_{\tau\tau} - \frac{I_{\tau\varphi}^2}{I_{\varphi\var
 = \frac{1}{4\pi^2 f^2 L\,\mathrm{SNR}}\text{。}
 \end{aligned}\tag{0-37}$$
 
-式(0-37)物理图像极其透彻：不知道源初相时，必须拿麦 1 与麦 2 两个含噪相位相减，噪声方差翻倍使信息折半；同时均方根时延误差下界与**频率 $f$、$\sqrt{L}$ 及 $\sqrt{\mathrm{SNR}}$ 成反比**——这正是高频宽带信号比低频窄带信号定位精细得多的根本原因（在 `E00-13` 中，$f = 1\ \mathrm{kHz}$、$\mathrm{SNR} = 10$、$L = 25$ 时未知相位时延标准差下界约为 $10.07\ \mu\mathrm{s}$）。
+式(0-37)物理图像极其透彻：不知道源初相时，必须拿麦 1 与麦 2 两个含噪相位相减，噪声方差翻倍使信息折半；同时均方根时延误差下界与**频率 $f$、$\sqrt{L}$ 及 $\sqrt{\mathrm{SNR}}$ 成反比**——这正是高频宽带信号比低频窄带信号定位精细得多的根本原因（在 `E00-13` 中，$f = 1\ \mathrm{kHz}$、$\mathrm{SNR} = 10$、$L = 25$ 时未知相位时延标准差下界约为 $10.07\ \mu\mathrm{s}$）。进一步将双麦几何关系 $\tau = (d\sin\theta)/c$（一阶导数 $\mathrm{d}\tau/\mathrm{d}\theta = (d\cos\theta)/c$）代入式(0-37)，会发现它与[第 2 章 §2.6.6](02_basics-signal-model.md#sec-2-6-6) 假定复源幅 $A e^{\mathrm{j}\varphi}$ 整体未知的 $M$ 麦方位角下界式(2-14)在 $M = 2$ 时**精确等价**！其几何根源在于：观测均值 $\vec\mu(A, \varphi, \tau)$ 对实幅度 $A$ 的偏导 $\partial_A\vec\mu = e^{\mathrm{j}\varphi}[1,\ e^{-\mathrm{j}\omega\tau}]^\top$ 与对时延的偏导 $\partial_\tau\vec\mu = A e^{\mathrm{j}\varphi}[0,\ -\mathrm{j}\omega e^{-\mathrm{j}\omega\tau}]^\top$（及相位偏导 $\partial_\varphi\vec\mu = \mathrm{j}A\partial_A\vec\mu$）在 Slepian–Bangs 复内积实部度量下严格正交，满足 $\operatorname{Re}\bigl\{(\partial_A\vec\mu)^H(\partial_\tau\vec\mu)\bigr\} = \operatorname{Re}\{-\mathrm{j}\omega A\} = 0$（径向伸缩与切向相位旋转相互垂直），故实幅度 $A$ 未知丝毫不折损时延与角度的 Fisher 信息。
 
 #### 0.6.3 维纳—霍夫正交原理与卡尔曼预测—新息—Joseph 协方差递推
 
@@ -693,7 +695,7 @@ $$\min_{\pi \in \mathcal S_K}\sum_{i=1}^K C_{i,\pi(i)}
 
 读图 92 时，可将四幅子图与 §0.5～§0.6 的优化及统计结论逐一印证：
 
-- **子图 (a) Wirtinger 共轭梯度投影收敛轨迹**：从等权延迟求和初值出发，沿负共轭梯度 $-\mu\mathbf R\vec w$ 迭代并向无失真超平面正交投影（Frost 算法），两种步长均单调收敛至红色点线标出的 MVDR 闭式功率下界 $7/19 \approx 0.368$，低于紫色点划线的双约束 LCMV 硬零陷功率 $3/8 = 0.375$。
+- **子图 (a) Wirtinger 共轭梯度投影收敛轨迹**：从等权延迟求和初值出发，沿负共轭梯度 $-\mu\mathbf R\vec w$ 迭代并向无失真超平面正交投影（Frost 算法），前 10 步内两种步长均已快速收敛至红色点线标出的 MVDR 闭式功率下界 $7/19 \approx 0.368$（低于紫色点划线的双约束 LCMV 硬零陷功率 $3/8 = 0.375$）：由于正交补子空间上投影算子 $\mathbf P_\perp\mathbf R\mathbf P_\perp$ 的最大特征值为 $\lambda_{\max} = 19/3$，收敛步长上界为 $2/\lambda_{\max} = 6/19 \approx 0.3158$，而秩一单干扰投影结构下的最优单步步长恰为 $1/\lambda_{\max} = 3/19 \approx 0.1579$（故绿色虚线 $\mu = 0.16$ 首步即贴合闭式最优解）。
 - **子图 (b) 圆对称与非圆对称复高斯分布对比**：圆对称 Proper 样本（$|C_{zz}| = 0$，蓝色圆点与实线圆）在复平面各向同性旋转不变；非圆对称样本（$|C_{zz}| \approx 0.721$，红色三角与虚线椭圆）沿主轴明显拉长倾斜。
 - **子图 (c) 实白噪声 $8$ 点酉 DFT 的实频点非圆对称性**：虽然所有 $8$ 个频点方差（蓝色柱）均恒等于 $1.0$，但直流 $k = 0$ 与奈奎斯特 $k = 4$ 处的伪协方差模（橙色柱）等于 $1.0$，直观呈现了实信号 DFT 端点频点的实高斯退化现象。
 - **子图 (d) 卡尔曼预测—新息—Joseph 协方差递推**：尽管每帧单点观测噪声方差高达 $R = 3.0$（蓝色水平点线），且运动过程噪声使先验预测方差（橙色虚线）爬升至约 $6.0$，融合新息后的 Joseph 后验位置方差（绿色实线）首步即从 $5.000$ 压低至 $1.875$，并迅速稳定在约 $2.0$ 的低误差稳态。
@@ -704,7 +706,7 @@ $$\min_{\pi \in \mathcal S_K}\sum_{i=1}^K C_{i,\pi(i)}
 
 #### 0.7.1 归一化 $\operatorname{sinc}$ 函数与三维球面扩散噪声场互谱推导
 
-在分析混响房间背景噪声时（[第 5 章 §5.1](05_beamforming.md#sec-5-1) 与[第 14 章 §14.8](14_spatial-wearable-arrays.md#sec-14-8)），经典的三维各向同性弥散声场（3D spherically isotropic diffuse field）将环境声建模为从单位球面 $S^2$ 所有立体角 $\Omega = (\vartheta, \alpha)$ 独立、等功率密度均匀入射的无穷多列平面波叠加。为什么相距 $d = \|\vec r_i - \vec r_j\|_2$ 的两支全向麦克风在波数 $\kappa = 2\pi f/c$ 处的空间相干系数恰好是一个 $\operatorname{sinc}$ 函数？
+在分析混响房间背景噪声时（[第 5 章 §5.1](05_beamforming.md#sec-5-1) 与[第 14 章 §14.8](14_spatial-wearable-arrays.md#sec-14-8)），经典的三维各向同性弥散声场（3D spherically isotropic diffuse field）将环境声建模为从单位球面 $S^2$ 所有立体角 $\Omega = (\vartheta, \alpha)$ 独立、等功率密度均匀入射的无穷多列平面波叠加。为什么相距 $d = \|\vec r_i - \vec r_j\|_2$ 的两支全向麦克风在波数 $\kappa = 2\pi f/c$（单位 $\mathrm{rad/m}$；部分声学文献与本书第 2、3 章无需离散频点下标 $k$ 的连续波段落亦简记为 $k = 2\pi f/c$，二者完全等价，本书统一用 $\kappa$ 避开 DFT 频点序号 $k$）处的空间相干系数恰好是一个 $\operatorname{sinc}$ 函数？
 
 利用 §0.1.4 的旋转不变性，不妨旋转坐标系令两麦连线指向 $+z$ 轴（即 $\vec r_i - \vec r_j = [0, 0, d]^\top$），此时入射极角为 $\vartheta \in [0, \pi]$ 的平面波在两麦间的空间相位差仅依赖余纬角：$\vec u(\vartheta, \alpha)^\top(\vec r_i - \vec r_j) = d\cos\vartheta$。在单位球面积分微元 $\mathrm{d}\Omega = \sin\vartheta\,\mathrm{d}\vartheta\,\mathrm{d}\alpha$（总立体角 $\iint_{S^2}\mathrm{d}\Omega = 4\pi$）上对复指数求均匀球面平均，作变量代换 $x = \cos\vartheta$（$\mathrm{d}x = -\sin\vartheta\,\mathrm{d}\vartheta$）：
 
@@ -730,10 +732,10 @@ J_n(x) &= \sum_{m=0}^{\infty}\frac{(-1)^m}{m!(n+m)!}\left(\frac{x}{2}\right)^{2m
 J_{n-1}(x) + J_{n+1}(x) &= \frac{2n}{x}J_n(x)\text{，}
 \end{aligned}\tag{0-43}$$
 
-负整数阶满足 $J_{-n}(x) = (-1)^n J_n(x)$。注意 $J_0(x)$ 的首个零点位于 $x \approx 2.4048$，而三维 $\sin(x)/x$ 的首个零点位于 $x = \pi \approx 3.1416$——切不可把三维球面扩散场 $\operatorname{sinc}(2fd/c)$ 与二维水平扩散场 $J_0(2\pi fd/c)$ 混用！进一步将圆周平面波核按傅里叶级数展开，即得圆阵模态波束设计的 **Jacobi–Anger 平面波展开恒等式**：
+负整数阶满足 $J_{-n}(x) = (-1)^n J_n(x)$。注意 $J_0(x)$ 的首个零点位于 $x \approx 2.4048$，而三维 $\sin(x)/x$ 的首个零点位于 $x = \pi \approx 3.1416$——切不可把三维球面扩散场 $\operatorname{sinc}(2fd/c)$ 与二维水平扩散场 $J_0(2\pi fd/c)$ 混用！进一步将阵元极角 $\alpha$ 与平面波入射方位角 $\alpha_s$ 构成的圆周平面波核按傅里叶级数展开，即得圆阵模态波束设计的 **Jacobi–Anger 平面波展开恒等式**：
 
-$$e^{\mathrm{j}\kappa r\cos(\phi - \phi_s)}
-= \sum_{m=-\infty}^{\infty}\mathrm{j}^m\,J_m(\kappa r)\,e^{\mathrm{j}m(\phi - \phi_s)}\text{。}\tag{0-44}$$
+$$e^{\mathrm{j}\kappa r\cos(\alpha - \alpha_s)}
+= \sum_{m=-\infty}^{\infty}\mathrm{j}^m\,J_m(\kappa r)\,e^{\mathrm{j}m(\alpha - \alpha_s)}\text{。}\tag{0-44}$$
 
 当波数半径积 $\kappa r$ 有限时，$|J_m(\kappa r)|$ 在阶数 $|m| > \lceil e\kappa r / 2\rceil$ 后呈超指数衰减（如 `E00-16` 中 $\kappa r = 1.8$ 截断至 $|m| \le 18$ 时截断误差仅为 $2.62 \times 10^{-16}$），使无限维连续声场得以由有限阶圆谐模态精确表征。
 
@@ -801,7 +803,7 @@ Y_n^m(\vartheta, \alpha)
 | [第 2 章 §2.2](02_basics-signal-model.md#sec-2-2)、[§2.5](02_basics-signal-model.md#sec-2-5) | 近远场分界、平面波导向矢量、STFT 与样本协方差 | §0.1.2 式(0-3) 菲涅耳展开；§0.2.1 式(0-7) 时延负相移；§0.2.4 式(0-12) COLA | 把迟到信号在正频处的相移写反为正号；分析与合成双乘完整汉宁窗在 $50\%$ 重叠产生波纹 |
 | [第 3 章 §3.2](03_array-geometry.md#sec-3-2)、[§3.3](03_array-geometry.md#sec-3-3) | 阵列孔径分辨率、空间混叠、稀疏协同阵与基线校准 | §0.1.3 式(0-5) 坐标换算；§0.3.4 SVD 条件数；§0.4.3 式(0-26) Khatri–Rao 积 | 将二维/三维角度零点混代；把 $\operatorname{vec}(\mathbf A\mathbf X\mathbf B)$ 中的 $\mathbf B^\top$ 误写为 $\mathbf B^H$ |
 | [第 4 章 §4.2](04_doa-estimation.md#sec-4-2)、[§4.6](04_doa-estimation.md#sec-4-6) | GCC-PHAT、SRP-PHAT、MUSIC 子空间正交谱与 ESPRIT | §0.2.1 线性相位斜率；§0.3.2 式(0-15) 正交补投影；§0.6.2 式(0-37) 时延 CRLB | 相干强反射破坏源协方差满秩使 MUSIC 漏峰；快拍数 $L < M$ 时样本子空间退化 |
-| [第 5 章 §5.4](05_beamforming.md#sec-5-4)、[§5.8](05_beamforming.md#sec-5-8) | DSB、超指向对角加载、MVDR、LCMV、GSC、MWF 与球谐波束 | §0.3.1 式(0-14) 柯西不等式；§0.5.2 式(0-31) 复拉格朗日闭式解；§0.7 式(0-42)、式(0-47) | LCMV 多方向复相位约束右端漏取共轭；超小孔径低频求逆无加载导致白噪声增益坍塌 |
+| [第 5 章 §5.4](05_beamforming.md#sec-5-4)、[§5.8](05_beamforming.md#sec-5-8) | DSB、超指向对角加载、MVDR、LCMV、GSC、MWF 与球谐波束 | §0.3.1 式(0-14) 柯西不等式；§0.5.2 式(0-31) 复拉格朗日闭式解；§0.7 式(0-42)、式(0-47) | LCMV 多方向复相位约束右端漏取共轭；超小孔径低频求逆无加载导致白噪声增益急剧恶化 |
 | [第 6 章 §6.1](06_aec.md#sec-6-1)、[§6.2](06_aec.md#sec-6-2) | LMS/NLMS、频域分块自适应滤波（FDAF）、仿射投影、RLS 与卡尔曼 AEC | §0.2.3 式(0-11) 补零消除循环混叠；§0.3.5 式(0-19) Woodbury 递推；§0.5.1 式(0-28) | 频域块滤波未清零环绕梯度导致循环混叠；双讲段未冻结更新使近端人声污染回声滤波器 |
 | [第 7 章 §7.2](07_wpe-dereverberation.md#sec-7-2)、[§7.4](07_wpe-dereverberation.md#sec-7-4) | 离线/在线多通道加权预测误差（WPE）去混响与时变方差估计 | §0.3.5 Woodbury 在线逆递推；§0.4.3 Kronecker 结构；§0.5.3 MM 交替下降；§0.6.1 式(0-35) | 静音帧功率 $\lambda_{ft}\to 0$ 未设下限保护引发除零爆炸；忽略 DC/Nyquist 实频点系数差异 |
 | [第 8 章 §8.3](08_speech-separation.md#sec-8-3)、[§8.6](08_speech-separation.md#sec-8-6) | AuxIVA、ILRMA、GSS 空间混合模型与置换不变训练（PIT） | §0.5.1 Wirtinger 对数行列式梯度；§0.5.3 式(0-33) MM 二次上界；§0.6.4 式(0-41) 匈牙利指派 | 分离通道频点间排列不一致造成频谱拼错；跨块拼接贪心匹配在静音段引发说话人跳变 |
@@ -1150,7 +1152,7 @@ $$\begin{aligned}
 
 #### E00-16：柱/球贝塞尔函数递推、奇次 Legendre 多项式区间正交解耦与球谐函数加法定理检验
 
-**题目。** （1）计算 $x = 2.0$ 处的柱贝塞尔函数 $J_0(2), J_1(2), J_2(2)$ 验证三项递推式(0-43)，并检验 $\kappa r = 1.8, \phi = 0.65\ \mathrm{rad}$ 处截断阶数 $|m| \le 18$ 的 Jacobi–Anger 展开精度；（2）在开球首个零陷频率 $\kappa R = \pi$ 处核验球贝塞尔朗斯基恒等式，对比开球与刚性球零阶径向模态幅值 $\lvert b_0(\pi)\rvert$；（3）用 $5$ 点高斯—勒让德求积检验 $0$～$3$ 阶 Legendre 多项式在 $[-1, 1]$ 上的正交矩阵，并检验 $0$～$3$ 阶复球谐函数加法定理式(0-47)。
+**题目。** （1）计算 $x = 2.0$ 处的柱贝塞尔函数 $J_0(2), J_1(2), J_2(2)$ 验证三项递推式(0-43)，并检验 $\kappa r = 1.8,\ \alpha - \alpha_s = 0.65\ \mathrm{rad}$ 处截断阶数 $|m| \le 18$ 的 Jacobi–Anger 展开精度；（2）在开球首个零陷频率 $\kappa R = \pi$ 处核验球贝塞尔朗斯基恒等式，对比开球与刚性球零阶径向模态幅值 $\lvert b_0(\pi)\rvert$；（3）用 $5$ 点高斯—勒让德求积检验 $0$～$3$ 阶 Legendre 多项式在 $[-1, 1]$ 上的正交矩阵，并检验 $0$～$3$ 阶复球谐函数加法定理式(0-47)。
 
 **解答。** 逐一核对三类声学特殊函数恒等式：
 

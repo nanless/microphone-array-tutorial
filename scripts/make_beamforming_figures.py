@@ -41,7 +41,8 @@ def main():
     report_path.parent.mkdir(parents=True, exist_ok=True)
     report_path.write_text(json.dumps(report, ensure_ascii=False, indent=2, allow_nan=False)+'\n', encoding='utf-8')
     names, labels, colors = ('reference', 'flip', 'quadrature'), ('参考', '高频反号', '高频正交'), (C_BLUE, C_RED, C_GREEN)
-    fig, axes = plt.subplots(2, 2, figsize=(9.5, 7.0), constrained_layout=True)
+    fig, axes = plt.subplots(2, 2, figsize=(9.5, 7.7), constrained_layout=True)
+    fig.get_layout_engine().set(w_pad=0.06, h_pad=0.09, wspace=0.04, hspace=0.06)
     fs, start, count = 16000, 2400, 64
     time = np.arange(count)/fs*1000
     for name, label, color in zip(names, labels, colors):

@@ -5,45 +5,52 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>四支麦，听哪边？ / Which side should four mics listen to?</title>
 <style>
-  :root { color-scheme: dark; --bg:#091422; --panel:#112338; --panel-deep:#0b1829; --ink:#ecf5fc; --muted:#9fb6ca; --a:#38bdf8; --b:#fb923c; --ok:#34d399; --line:#294666; }
+  :root {
+    color-scheme: light;
+    --bg:#F6F4EF; --panel:#FFFFFF; --panel-soft:#FAF8F3; --stone:#EFEAE0;
+    --ink:#1C1E21; --muted:#5A554D;
+    --a:#1F5A92; --b:#B84A2E; --ok:#237263;
+    --line:#DDD7CB; --line-strong:#C5BEB0;
+  }
   * { box-sizing:border-box; }
-  body { margin:0; color:var(--ink); background:var(--bg); font:16px/1.62 system-ui,-apple-system,sans-serif; }
-  main { max-width:56rem; margin:auto; padding:clamp(1rem,3.5vw,2.4rem); }
-  .top-nav { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:.6rem 1rem; padding-bottom:.9rem; margin-bottom:1.1rem; border-bottom:1px solid var(--line); font-size:.9rem; }
-  .top-nav div { display:flex; flex-wrap:wrap; gap:.4rem 1.1rem; }
-  .top-nav a { color:var(--a); text-decoration:none; font-weight:600; }
+  body { margin:0; color:var(--ink); background:var(--bg); font:16px/1.66 system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif; }
+  main { max-width:58rem; margin:auto; padding:clamp(1.1rem,3.5vw,2.5rem); }
+  .top-nav { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:.6rem 1rem; padding-bottom:.9rem; margin-bottom:1.25rem; border-bottom:1px solid var(--line); font-size:.91rem; }
+  .top-nav div { display:flex; flex-wrap:wrap; gap:.4rem 1.25rem; }
+  .top-nav a { color:var(--a); text-decoration:none; font-weight:620; text-underline-offset:.22em; }
   .top-nav a:hover { text-decoration:underline; }
-  header { margin-bottom:1.25rem; }
-  .kicker { color:var(--a); font-weight:750; font-size:.84rem; letter-spacing:.08em; text-transform:uppercase; margin:0; }
-  h1 { font-size:clamp(1.9rem,5vw,2.85rem); line-height:1.12; letter-spacing:-.03em; margin:.4rem 0 .6rem; }
-  h2 { font-size:1.14rem; margin:0 0 .55rem; color:#f8fafc; }
+  header { margin-bottom:1.35rem; }
+  .kicker { color:var(--b); font-weight:750; font-size:.82rem; letter-spacing:.09em; text-transform:uppercase; margin:0; }
+  h1 { font-size:clamp(1.95rem,4.8vw,2.8rem); line-height:1.12; letter-spacing:-.035em; margin:.38rem 0 .6rem; color:#14171A; }
+  h2 { font-size:1.12rem; margin:0 0 .55rem; color:#181B1F; letter-spacing:-.01em; }
   p { margin:.6rem 0; }
   .sub, small { color:var(--muted); }
-  .grid-two { display:grid; grid-template-columns:1.08fr .92fr; gap:1rem; margin-bottom:1rem; }
-  section { background:var(--panel); border:1px solid var(--line); border-radius:.95rem; padding:1.15rem 1.2rem; margin:0 0 1rem; box-shadow:0 10px 28px #0000002b; }
+  .grid-two { display:grid; grid-template-columns:1.08fr .92fr; gap:1.05rem; margin-bottom:1.05rem; }
+  section { background:var(--panel); border:1px solid var(--line); border-top:2.5px solid #262A30; border-radius:.5rem; padding:1.15rem 1.25rem; margin:0 0 1.05rem; box-shadow:0 6px 20px rgba(28,30,33,.04); }
   .grid-two > section { margin:0; }
   .actions { display:flex; gap:.5rem; flex-wrap:wrap; margin:.75rem 0; }
-  button { min-height:42px; border-radius:.55rem; padding:.42rem .85rem; border:1px solid var(--line); background:var(--panel-deep); color:var(--ink); font:inherit; font-size:.93rem; font-weight:600; cursor:pointer; }
-  button:hover { border-color:var(--a); }
-  button[aria-pressed="true"] { background:var(--a); color:#061826; border-color:var(--a); font-weight:750; }
-  :focus-visible { outline:3px solid var(--b); outline-offset:3px; }
+  button { min-height:40px; border-radius:.38rem; padding:.42rem .9rem; border:1px solid var(--line-strong); background:var(--panel-soft); color:var(--ink); font:inherit; font-size:.92rem; font-weight:600; cursor:pointer; transition:all .14s ease; }
+  button:hover { border-color:var(--a); color:var(--a); }
+  button[aria-pressed="true"] { background:var(--a); color:#FFFFFF; border-color:var(--a); font-weight:700; }
+  :focus-visible { outline:2.5px solid var(--b); outline-offset:3px; }
   audio { width:100%; display:block; margin:.75rem 0; }
-  label { display:inline-flex; min-height:42px; align-items:center; gap:.55rem; cursor:pointer; padding:.25rem .7rem; border-radius:.5rem; background:var(--panel-deep); border:1px solid #243d59; margin-top:.2rem; }
-  input { width:1.15rem; height:1.15rem; accent-color:var(--b); flex:none; }
-  .readout { display:grid; grid-template-columns:minmax(6.6rem,auto) minmax(2rem,1fr) 4.4rem; gap:.6rem; align-items:center; margin:.7rem 0; }
-  .a { color:var(--a); } .b { color:var(--b); }
-  .meter { height:.68rem; background:#07111d; border:1px solid #1e344d; border-radius:999px; overflow:hidden; }
+  label { display:inline-flex; min-height:42px; align-items:center; gap:.58rem; cursor:pointer; padding:.3rem .78rem; border-radius:.38rem; background:var(--stone); border:1px solid #D5CEC0; margin-top:.2rem; font-size:.93rem; color:#26292E; }
+  input { width:1.12rem; height:1.12rem; accent-color:var(--b); flex:none; }
+  .readout { display:grid; grid-template-columns:minmax(6.8rem,auto) minmax(2rem,1fr) 4.4rem; gap:.65rem; align-items:center; margin:.75rem 0; }
+  .a { color:var(--a); font-weight:650; } .b { color:var(--b); font-weight:650; }
+  .meter { height:.66rem; background:#ECE8DE; border:1px solid #D5CFC2; border-radius:999px; overflow:hidden; }
   .meter span { display:block; height:100%; border-radius:999px; background:currentColor; transition:width .2s ease-out; }
-  output { font-variant-numeric:tabular-nums; text-align:right; font-weight:750; }
-  .note-box { padding:.65rem .85rem; border-radius:.55rem; background:var(--panel-deep); border-left:3.5px solid var(--ok); font-size:.93rem; margin-top:.8rem; }
-  .viz-wrap { margin:.75rem 0 .9rem; background:var(--panel-deep); border:1px solid #223b57; border-radius:.7rem; padding:.7rem .8rem; }
+  output { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-variant-numeric:tabular-nums; text-align:right; font-weight:750; font-size:.93rem; }
+  .note-box { padding:.68rem .9rem; border-radius:.38rem; background:#F4F6F4; border:1px solid #D8E0DC; border-left:3.5px solid var(--ok); color:#22262A; font-size:.92rem; margin-top:.85rem; }
+  .viz-wrap { margin:.75rem 0 .95rem; background:var(--panel-soft); border:1px solid var(--line); border-radius:.45rem; padding:.75rem .85rem; }
   .viz-wrap svg { display:block; width:100%; height:auto; }
-  .mic-grid { width:100%; border-collapse:collapse; text-align:center; font-variant-numeric:tabular-nums; font-size:.94rem; }
-  .mic-grid th,.mic-grid td { padding:.45rem .25rem; border-bottom:1px solid #233c57; }
-  .mic-grid th[scope=row] { text-align:left; font-weight:600; }
-  .mic-grid th[scope=col] { width:14%; color:var(--muted); font-size:.86rem; }
-  details { margin-top:.9rem; border-top:1px solid #233c57; padding-top:.75rem; }
-  summary { cursor:pointer; font-weight:700; color:#cbd5e1; }
+  .mic-grid { width:100%; border-collapse:collapse; text-align:center; font-variant-numeric:tabular-nums; font-size:.93rem; border-top:1.5px solid #2A2E34; border-bottom:1.5px solid #2A2E34; }
+  .mic-grid th,.mic-grid td { padding:.48rem .3rem; border-bottom:1px solid #E4DFD4; }
+  .mic-grid thead th { background:#F5F2EB; border-bottom:1px solid #8A8275; color:#26292E; font-weight:700; }
+  .mic-grid th[scope=row] { text-align:left; font-weight:620; padding-left:.45rem; }
+  .mic-grid th[scope=col] { width:14%; font-size:.86rem; }
+  details { margin-top:.95rem; border-top:1px solid var(--line); padding-top:.75rem; }
+  summary { cursor:pointer; font-weight:700; color:#26292E; }
   @media (max-width:760px) { .grid-two { grid-template-columns:1fr; } }
 </style>
 </head>
@@ -86,11 +93,11 @@
   </div>
   <section aria-labelledby="timing-title">
     <h2 id="timing-title" data-label="timing">03 / 时延对齐几何：哪支麦补等了多久？</h2>
-    <p class="sub" data-label="samples">横轴刻度为采样点（16 kHz 下每格 = 62.5 微秒）。蓝圆为 A 到达各麦的时刻，橙圆为 B 到达各麦的时刻；加粗竖线表示补完等待延迟后的对齐位置。</p>
+    <p class="sub" data-label="samples">横轴刻度为采样点（16 kHz 下每格 = 62.5 微秒）。蓝圆为 A 到达各麦的时刻，赤陶圆为 B 到达各麦的时刻；青绿虚线标出补完等待延迟后的第 6 格对齐位置。</p>
     <div class="viz-wrap">
       <svg id="timing-svg" viewBox="0 0 620 156" role="img" aria-labelledby="timing-title">
-        <g id="timing-grid" stroke="#1f3650" stroke-width="1"></g>
-        <g id="timing-labels" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="11" fill="#9fb6ca"></g>
+        <g id="timing-grid" stroke="#DFDAD0" stroke-width="1"></g>
+        <g id="timing-labels" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="11" fill="#5A554D"></g>
         <g id="timing-dots"></g>
       </svg>
     </div>
@@ -191,7 +198,7 @@ const zh = {
   power:"相对单支麦 M1 的输出能量百分比（0%～100%）。理想无失真对准应保持 100%。",
   sourceA:"A · 左边长音", sourceB:"B · 右边短音",
   timing:"03 / 时延对齐几何：哪支麦补等了多久？",
-  samples:"横轴刻度为采样点（16 kHz 下每格 = 62.5 微秒）。蓝圆为 A 到达各麦的时刻，橙圆为 B 到达各麦的时刻；加粗竖线表示补完等待延迟后的对齐位置。",
+  samples:"横轴刻度为采样点（16 kHz 下每格 = 62.5 微秒）。蓝圆为 A 到达各麦的时刻，赤陶圆为 B 到达各麦的时刻；青绿虚线标出补完等待延迟后的第 6 格对齐位置。",
   timingCol:"时间（采样点）", arriveA:"A 原始到达时刻", arriveB:"B 原始到达时刻", wait:"当前人为补等延迟",
   landA:"补等后 A 落点", landB:"补等后 B 落点",
   model:"实验物理假设与精确复算说明",
@@ -215,7 +222,7 @@ const en = {
   power:"Retained output energy of each component relative to single mic M1 (0% to 100%). Distortionless alignment preserves 100%.",
   sourceA:"A · Left tone", sourceB:"B · Right taps",
   timing:"03 / Delay-and-Sum Geometry: How long does each mic wait?",
-  samples:"Horizontal ticks are samples at 16 kHz (62.5 μs per sample). Blue circles mark A; orange circles mark B. In steered modes, aligned copies stack vertically at sample 6.",
+  samples:"Horizontal ticks are samples at 16 kHz (62.5 μs per sample). Blue circles mark A; terracotta circles mark B. In steered modes, aligned copies stack vertically at sample 6.",
   timingCol:"Time (samples)", arriveA:"A raw arrival", arriveB:"B raw arrival", wait:"Added wait delay",
   landA:"A after wait", landB:"B after wait",
   model:"Physical assumptions & exact calculation",
@@ -247,23 +254,23 @@ function drawTimingDiagram(wait) {
   let labelHTML = "";
   for (let s = 0; s <= 12; s += 2) {
     const x = xOf(s).toFixed(1);
-    gridHTML += `<line x1="${x}" y1="14" x2="${x}" y2="124" stroke="${s === 6 && wait ? '#34d399' : '#1f3650'}" stroke-width="${s === 6 && wait ? '2' : '1'}" stroke-dasharray="${s === 6 && wait ? '4 3' : 'none'}"/>`;
+    gridHTML += `<line x1="${x}" y1="14" x2="${x}" y2="124" stroke="${s === 6 && wait ? '#237263' : '#DFDAD0'}" stroke-width="${s === 6 && wait ? '2' : '1'}" stroke-dasharray="${s === 6 && wait ? '4 3' : 'none'}"/>`;
     labelHTML += `<text x="${x}" y="144" text-anchor="middle">${s}</text>`;
   }
   for (let m = 0; m < 4; m++) {
     const y = yOf(m);
     const active = !wait ? m === 0 : true;
-    gridHTML += `<line x1="${x0}" y1="${y}" x2="${x0 + xSpan}" y2="${y}" stroke="${active ? '#2c4c70' : '#182b42'}" stroke-width="1.4"/>`;
-    labelHTML += `<text x="20" y="${y + 4}" fill="${active ? '#e2e8f0' : '#64748b'}" font-weight="700">M${m + 1}</text>`;
+    gridHTML += `<line x1="${x0}" y1="${y}" x2="${x0 + xSpan}" y2="${y}" stroke="${active ? '#C5BEB0' : '#E5E0D6'}" stroke-width="1.4"/>`;
+    labelHTML += `<text x="20" y="${y + 4}" fill="${active ? '#1C1E21' : '#8E887D'}" font-weight="700">M${m + 1}</text>`;
   }
   let dotsHTML = "";
   for (let m = 0; m < 4; m++) {
     const y = yOf(m);
-    const op = !wait && m > 0 ? "0.25" : "1";
+    const op = !wait && m > 0 ? "0.24" : "1";
     const la = baseArrivalsA[m] + (wait ? wait[m] : 0);
     const lb = baseArrivalsB[m] + (wait ? wait[m] : 0);
-    dotsHTML += `<circle cx="${xOf(la).toFixed(1)}" cy="${y - 4}" r="5.5" fill="#38bdf8" opacity="${op}"/>`;
-    dotsHTML += `<circle cx="${xOf(lb).toFixed(1)}" cy="${y + 4}" r="5.5" fill="#fb923c" opacity="${op}"/>`;
+    dotsHTML += `<circle cx="${xOf(la).toFixed(1)}" cy="${y - 4}" r="5.5" fill="#1F5A92" stroke="#FFFFFF" stroke-width="1.2" opacity="${op}"/>`;
+    dotsHTML += `<circle cx="${xOf(lb).toFixed(1)}" cy="${y + 4}" r="5.5" fill="#B84A2E" stroke="#FFFFFF" stroke-width="1.2" opacity="${op}"/>`;
   }
   grid.innerHTML = gridHTML;
   labels.innerHTML = labelHTML;

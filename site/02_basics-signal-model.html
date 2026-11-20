@@ -1,10 +1,10 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 2 章 · 声音到达阵列时发生了什么 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="74c593002f97"><style>
-*{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1a1a2e;background:#fafbfc}
-.topbar{position:sticky;top:0;z-index:10;background:#1a1a2e;color:#fff;padding:10px 20px;font-size:15px}
-.topbar a{color:#9ec5f0;text-decoration:none}.topbar a:hover{text-decoration:underline}
+<meta name="source-digest" content="10a21c80bda5"><style>
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
+.topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941}
+.topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
 h1,h2,h3,h4{scroll-margin-top:60px}
 @media screen{.main a[id]:not([href]){scroll-margin-top:60px}}
 @media screen{.main a[id^="e"],.main .exercise-alias{scroll-margin-top:80px}}
@@ -17,64 +17,66 @@ h1,h2,h3,h4{scroll-margin-top:60px}
 @media screen{.main a[id^="e11-"]{scroll-margin-top:60px}}
 @media screen{.main .separation-topic-anchor{scroll-margin-top:60px}}
 @media screen{.main .source-reproduction-anchor{scroll-margin-top:60px}}
-a:focus-visible,summary:focus-visible{outline:3px solid #e67e22;outline-offset:3px}
-.skip-link{position:absolute;left:10px;top:-60px;z-index:30;background:#fff;color:#1a1a2e;padding:8px 12px;border:2px solid #e67e22}
+a:focus-visible,summary:focus-visible{outline:2.5px solid #B84A2E;outline-offset:3px}
+.skip-link{position:absolute;left:10px;top:-60px;z-index:30;background:#fff;color:#1C1E21;padding:8px 12px;border:2px solid #B84A2E}
 .skip-link:focus{top:8px}
-.wrap{display:flex;max-width:1280px;margin:0 auto}
-.side{width:300px;flex-shrink:0;padding:20px 14px;position:sticky;top:47px;height:calc(100vh - 47px);overflow-y:auto;background:#fff;border-right:1px solid #e5e8ee;font-size:13.5px}
-.side a{color:#2f6db3;text-decoration:none}.side a:hover{text-decoration:underline}
-.side .chap{margin:10px 0 2px;font-weight:700}.side .chap.cur{color:#c0392b}
-.side ul{margin:2px 0 6px;padding-left:16px;color:#666}.side li{margin:2px 0}
-.main{flex:1;min-width:0;padding:28px 36px;background:#fff;overflow-wrap:anywhere}
+.wrap{display:flex;max-width:1280px;margin:0 auto;border-left:1px solid #E3DED3;border-right:1px solid #E3DED3}
+.side{width:300px;flex-shrink:0;padding:20px 15px;position:sticky;top:47px;height:calc(100vh - 47px);overflow-y:auto;background:#FAF8F3;border-right:1px solid #DDD7CB;font-size:13.5px}
+.side a{color:#1F5A92;text-decoration:none}.side a:hover{text-decoration:underline}
+.side .chap{margin:10px 0 2px;font-weight:700;color:#26292E}.side .chap.cur{color:#B84A2E}
+.side ul{margin:2px 0 6px;padding-left:16px;color:#5A554D}.side li{margin:2px 0}
+.main{flex:1;min-width:0;padding:32px 40px;background:#fff;overflow-wrap:anywhere}
+.main a{color:#1F5A92;text-underline-offset:.2em}
 .main p{margin:0 0 1.2em}.main ul,.main ol{margin:.55em 0 1.2em;padding-left:1.55em}.main li{margin:.42em 0}.main li>p{margin:.5em 0}
-.main p>strong:first-child,.main li>strong:first-child{color:#0f2744}
-.main img{max-width:100%;height:auto;display:block;margin:16px auto;border:1px solid #dbe3ee;border-radius:6px;padding:3px;min-height:40px;background:#fff}
-.audio-sample{display:block;width:min(100%,460px);margin:8px 0 18px}.audio-sample:focus-visible{outline:3px solid #e67e22}
+.main p>strong:first-child,.main li>strong:first-child{color:#14171A}
+.main img{max-width:100%;height:auto;display:block;margin:18px auto;border:1px solid #DFDAD0;border-radius:5px;padding:4px;min-height:40px;background:#fff}
+.audio-sample{display:block;width:min(100%,460px);margin:8px 0 18px}.audio-sample:focus-visible{outline:2.5px solid #B84A2E}
 /* 表格列宽不能压掉原生播放按钮；手机上的表格可横向滚动。 */
 td .audio-sample{width:280px;min-width:280px}
 table:has(td .audio-sample) td:last-child{min-width:180px}
-table{border-collapse:collapse;margin:16px 0;max-width:100%}
+table{border-collapse:collapse;margin:18px 0;max-width:100%;border-top:1.5px solid #2A2E34;border-bottom:1.5px solid #2A2E34}
 .table-scroll{max-width:100%;overflow-x:auto}
-.table-scroll:focus-visible{outline:3px solid #e67e22;outline-offset:2px}
-th,td{border:1px solid #d5dfec;padding:7px 11px;font-size:14px;text-align:left;line-height:1.58}
-th{background:#e8eff9;color:#0f2744;border-bottom:1.5px solid #94a3b8}
-tbody tr:nth-child(even) td{background:#f8fafc}
-code{background:#eef2f7;color:#0f294a;border:1px solid #d8e1ec;padding:1px 5px;border-radius:4px;font-size:13.5px}
-pre{background:#122036;color:#e8ecf3;padding:14px 16px;border-radius:8px;overflow-x:auto}
+.table-scroll:focus-visible{outline:2.5px solid #B84A2E;outline-offset:2px}
+th,td{border-top:1px solid #E3DED3;border-bottom:1px solid #E3DED3;border-left:none;border-right:none;padding:8px 11px;font-size:14px;text-align:left;line-height:1.58}
+th{background:#F5F2EB;color:#1C1E21;border-bottom:1px solid #8A8275;font-weight:700}
+tbody tr:nth-child(even) td{background:#FCFBF9}
+code{background:#F3F0E8;color:#1E3A56;border:1px solid #E0DBD0;padding:1px 5px;border-radius:4px;font-size:13.5px}
+pre{background:#F5F3EE;color:#1F2328;border:1px solid #DFDAD0;border-left:3.5px solid #5C564D;padding:14px 16px;border-radius:8px;overflow-x:auto}
 pre code{background:none;border:none;color:inherit;padding:0}
-blockquote{border-left:4px solid #2563eb;margin:16px 0;padding:10px 15px;background:#f0f6ff;border-radius:0 6px 6px 0;color:#1e293b}
+blockquote{border-left:3.5px solid #B84A2E;margin:18px 0;padding:10px 16px;background:#F7F5F0;border-radius:0 4px 4px 0;color:#2B2E33}
 blockquote p:last-child{margin-bottom:0}
+hr{border:none;border-top:1px solid #DDD7CB;margin:26px 0}
 mjx-container[jax="CHTML"]{font-size:110%!important;overflow-x:auto;overflow-y:hidden;max-width:100%;min-width:0!important}
 body mjx-assistive-mml{width:1px!important;max-width:1px!important;min-width:0!important;height:1px!important;overflow:hidden!important}
 pre,.table-scroll,mjx-container[jax="CHTML"]{overflow-wrap:normal}
-.pn{display:flex;justify-content:space-between;margin:34px 0 12px;padding-top:16px;border-top:1px solid #d5dfec;font-weight:650}
-.pn a{color:#1d4ed8;text-decoration:none}.pn .off{color:#aaa}
-.foot{color:#64748b;font-size:13px;margin:20px 0 40px}
-.main h1{font-size:27px;color:#0f2744;background:#edf3fc;border-top:4px solid #1e3a8a;border-left:5px solid #1e3a8a;border-bottom:1px solid #cbd5e1;padding:13px 17px 11px;border-radius:0 6px 6px 0;margin:0 0 22px;line-height:1.3}
-.main h2{font-size:21px;color:#0f294a;background:#f3f7fc;border-left:4.5px solid #1d4ed8;border-bottom:1px solid #cbd5e1;padding:8px 13px 7px;margin:34px 0 15px;border-radius:0 5px 5px 0;line-height:1.35}
-.main h3{font-size:18px;color:#1e3a8a;border-left:3.5px solid #3b82f6;padding:2px 0 2px 11px;margin:26px 0 12px;line-height:1.4}
-.main h4{font-size:16px;color:#1e40af;border-left:2.5px solid #93c5fd;padding:1px 0 1px 9px;margin:20px 0 10px;line-height:1.4}
-.main h3.tutorial-worked-heading{background:#f0fdfa;border:1px solid #99f6e4;border-left:4.5px solid #0d9488;color:#115e59;padding:7px 13px;border-radius:6px;margin:26px 0 13px;font-size:17.2px}
-.main h3.tutorial-exercise-heading,.main h4.tutorial-exercise-heading{background:#eff6ff;border:1px solid #bfdbfe;border-left:5px solid #2563eb;color:#1e3a8a;padding:9px 14px;border-radius:6px;margin:30px 0 13px;font-size:17px;line-height:1.45}
-.main p.tutorial-exercise-lead{background:#eff6ff;border:1px solid #bfdbfe;border-left:5px solid #2563eb;padding:11px 15px;border-radius:6px;margin:26px 0 13px}
+.pn{display:flex;justify-content:space-between;margin:36px 0 12px;padding-top:16px;border-top:1px solid #DDD7CB;font-weight:650}
+.pn a{color:#1F5A92;text-decoration:none}.pn .off{color:#9C9588}
+.foot{color:#6E695F;font-size:13px;margin:20px 0 40px}
+.main h1{font-size:27px;color:#14171A;border-top:2.5px solid #1F5A92;border-bottom:1.5px solid #1C1E21;padding:12px 0 10px;margin:0 0 24px;line-height:1.3}
+.main h2{font-size:21px;color:#14171A;border-left:3.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;padding:1px 0 7px 11px;margin:36px 0 15px;line-height:1.35}
+.main h3{font-size:18px;color:#1F5A92;margin:26px 0 11px;line-height:1.4}
+.main h4{font-size:16px;color:#2C2F33;border-left:2.5px solid #B84A2E;padding:1px 0 1px 9px;margin:20px 0 9px;line-height:1.4}
+.main h3.tutorial-worked-heading{background:#FAF8F3;border-top:1.5px solid #237263;border-bottom:1px solid #E2DDD2;border-left:3.5px solid #237263;color:#1A574B;padding:7px 13px;border-radius:2px;margin:28px 0 13px;font-size:17.2px}
+.main h3.tutorial-exercise-heading,.main h4.tutorial-exercise-heading{background:#F5F2EB;border-top:1.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;border-left:4px solid #1F5A92;color:#14171A;padding:8px 14px;border-radius:2px;margin:30px 0 13px;font-size:17px;line-height:1.45}
+.main p.tutorial-exercise-lead{background:#F5F2EB;border-top:1.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;border-left:4px solid #1F5A92;padding:10px 15px;border-radius:2px;margin:28px 0 13px}
 .main ol>li.tutorial-exercise-item{margin:18px 0}
-.main .tutorial-exercise-card{background:#f8fafc;border:1px solid #d5e0ee;border-left:4px solid #2563eb;border-radius:6px;padding:12px 16px}
+.main .tutorial-exercise-card{background:#FAF8F3;border:1px solid #E0DBD0;border-left:3.5px solid #1F5A92;border-radius:4px;padding:12px 16px}
 .main .tutorial-exercise-card>:first-child{margin-top:0}
 .main .tutorial-exercise-card>:last-child{margin-bottom:0}
-.main p.tutorial-solution-lead{background:#f0fdf4;border-left:3.5px solid #16a34a;padding:8px 13px;border-radius:0 5px 5px 0;margin-top:9px}
-.main p.tutorial-solution-lead>strong:first-child{color:#15803d}
-.main p.tutorial-problem-lead{border-left:3px solid #2563eb;padding-left:11px}
-.main p.tutorial-problem-lead>strong:first-child{color:#1d4ed8}
-.toc-mobile{display:none;margin:0 0 16px;border:1px solid #e5e8ee;border-radius:8px;padding:10px 14px;background:#f7fafd;font-size:14px}
-.toc-mobile summary{cursor:pointer;font-weight:700}
-.toc-mobile ul{padding-left:18px;margin:8px 0 2px}.toc-mobile a{color:#2f6db3;text-decoration:none}
-.topbtn{display:block;margin:20px auto;background:#1a1a2e;color:#fff;border-radius:50%;width:42px;height:42px;text-align:center;line-height:42px;text-decoration:none;font-size:18px}
-.offline-note{display:none;background:#fff7e6;border:1px solid #e6c87a;color:#7a5b00;padding:8px 14px;font-size:13.5px}
+.main p.tutorial-solution-lead{background:#F3F6F4;border-left:3.5px solid #237263;padding:8px 13px;border-radius:0 3px 3px 0;margin-top:9px}
+.main p.tutorial-solution-lead>strong:first-child{color:#1D5E51}
+.main p.tutorial-problem-lead{border-left:2.5px solid #1F5A92;padding-left:11px}
+.main p.tutorial-problem-lead>strong:first-child{color:#1F5A92}
+.toc-mobile{display:none;margin:0 0 16px;border:1px solid #DDD7CB;border-radius:6px;padding:10px 14px;background:#FAF8F3;font-size:14px}
+.toc-mobile summary{cursor:pointer;font-weight:700;color:#1C1E21}
+.toc-mobile ul{padding-left:18px;margin:8px 0 2px}.toc-mobile a{color:#1F5A92;text-decoration:none}
+.topbtn{display:block;margin:20px auto;background:#24282E;color:#FAF8F3;border-radius:50%;width:42px;height:42px;text-align:center;line-height:42px;text-decoration:none;font-size:18px}
+.offline-note{display:none;background:#F7EFE4;border:1px solid #D9B78E;color:#6E4219;padding:8px 14px;font-size:13.5px}
 .anchor-alias{display:block;position:relative;top:-60px;visibility:hidden}
 .tutorial-math-tail{display:inline-block;white-space:nowrap;overflow-wrap:normal;vertical-align:baseline;overflow:visible}
 .tutorial-math-tail mjx-assistive-mml{max-width:1px!important;min-width:0!important;white-space:normal}
-.tutorial-exercise-id{white-space:nowrap;overflow-wrap:normal;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:.87em;background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;padding:0 5px;border-radius:4px}
-:is(.tutorial-exercise-heading,.tutorial-exercise-lead) .tutorial-exercise-id{background:#1d4ed8;color:#fff;border-color:#1d4ed8;padding:1px 7px;margin-right:4px;font-size:.84em}
+.tutorial-exercise-id{white-space:nowrap;overflow-wrap:normal;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:.88em;background:#F3EFE6;color:#B84A2E;border:1px solid #DDD5C7;padding:0 5px;border-radius:3px;font-weight:700}
+:is(.tutorial-exercise-heading,.tutorial-exercise-lead) .tutorial-exercise-id{background:#1F5A92;color:#fff;border-color:#1F5A92;padding:1px 7px;margin-right:5px;font-size:.84em}
 .tutorial-table-label{white-space:nowrap;overflow-wrap:normal}
 @media(max-width:900px){.selection-readable-table{min-width:760px}.selection-readable-table th,.selection-readable-table td{min-width:10em}.selection-readable-table th:first-child,.selection-readable-table td:first-child{min-width:6em}}
 @media(max-width:900px){.side{display:none}.main{padding:20px}.toc-mobile{display:block}.topbar{font-size:14px}mjx-container[jax="CHTML"]:not([display="true"]){display:inline-block;vertical-align:middle}.aec-readable-table th,.aec-readable-table td,.wpe-readable-table th,.wpe-readable-table td,.separation-readable-table th,.separation-readable-table td{min-width:8em}.tracking-readable-table th,.tracking-readable-table td{min-width:8em}.industrial-readable-table th,.industrial-readable-table td{min-width:8em}}
@@ -517,7 +519,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <p>为什么示例容限常选 $\lambda/16$（$22.5^\circ$）？不妨算一下两路等幅信号同相相加时的损失：若其中一路偏了 $\pi/8$ 弧度，归一化相干和的幅度为 $|1+e^{\mathrm{j}\pi/8}|/2=\cos(\pi/16)\approx0.9808$，折合分贝仅下降约 $0.17\ \mathrm{dB}$，对常规延迟求和主瓣几乎没有影响。这一 $\lambda/16$ 口径最早广泛用于孔径天线与波场测量（参见 <a href="https://www.etsi.org/deliver/etsi_etr/200_299/2730101/01_60/etr_2730101e01p.pdf">ETSI ETR 273-1-1 条款 7.2.3.1，第 76 页</a> 的同构几何推导）。如果算法需要在干扰方向形成很深的相消零陷，允许的相位误差更苛刻，所需过渡距离就会比 $2D^2/\lambda$ 更大。</p>
 <p>如果不做泰勒近似，直接对 $\sqrt{r^2+a^2}\le r+\lambda/16$（其中 $r\ge 0$）两边平方并移项，精确解为 $r \ge \max\!\left(0,\; \frac{8a^2}{\lambda} - \frac{\lambda}{32}\right)$（当半孔径极小、满足 $a\le\lambda/16$ 时，哪怕 $r\to 0$ 路程差也不超过 $\lambda/16$，故物理距离下界与 $0$ 取最大）。但要注意，$r_F$ 只检查了正横法线方向的相位弯曲，并没有检查 $r\gg D$ 是否成立，也没有检查 $1/r_m$ 带来的阵元间幅度差。举两个具体尺寸对比即可看清：</p>
 <ul>
-<li>对孔径 $D=7\ \mathrm{cm}$ 的小型圆阵，在 $1\ \mathrm{kHz}$（$\lambda=0.343\ \mathrm{m}$）下套公式算出 $r_F=2\times0.07^2/0.343\approx2.86\ \mathrm{cm}$。显然声源贴到 $3\ \mathrm{cm}$ 处根本不满足 $r\gg D$，近端麦与远端麦的距离相差数倍，幅度衰减差异极大，绝不能因为 $r>2.86\ \mathrm{cm}$ 就把贴嘴近讲当成远场平面波。</li>
+<li>对孔径 $D=7\ \mathrm{cm}$ 的小型圆阵，在 $1\ \mathrm{kHz}$（$\lambda=0.343\ \mathrm{m}$）下套公式算出 $r_F=2\times0.07^2/0.343\approx2.86\ \mathrm{cm}$。但声源贴到 $3\ \mathrm{cm}$ 处根本不满足 $r\gg D$，近端麦与远端麦的距离相差数倍，幅度衰减差异极大，绝不能因为 $r>2.86\ \mathrm{cm}$ 就把贴嘴近讲当成远场平面波。</li>
 <li>反过来，对孔径 $D=1.26\ \mathrm{m}$ 的大型会议线阵，在 $1\ \mathrm{kHz}$ 下 $r_F=2\times1.26^2/0.343\approx9.26\ \mathrm{m}$；在几米宽的普通会议室里，说话人其实始终处于该线阵的近场球面波区，直接套用平面波导向矢量就会产生明显的相位曲率失配。</li>
 </ul>
 <p>因此，夫琅禾费距离不是声场发生突变的物理分界线；采用远场平面波模型前，应按最高工作频率同时核对相位曲率尺度、距离孔径比 $r/D$ 以及各阵元的幅度比（章末 E02-09 将对相位误差与幅度比逐项列数比较）。</p>
@@ -579,7 +581,9 @@ e^{-\mathrm{j}2\pi f(u'+\tau)}\,\mathrm{d}u'\\
 \int_{-\infty}^{\infty} s(u')e^{-\mathrm{j}2\pi fu'}\,\mathrm{d}u'\\
 &=e^{-\mathrm{j}2\pi f\tau}S(f)\text{。}
 \end{aligned}$$</p>
-<p>可以看到，$e^{-\mathrm{j}2\pi f\tau}$ 与积分变量 $u'$ 无关，直接提到积分号外；当某路麦克风比参考麦晚到（$\tau>0$）时，指数相位 $-2\pi f\tau$ 为负；当它比参考麦早到（$\tau\lt 0$）时，负负得正，指数相位 $-2\pi f\tau$ 自然为正。</p>
+<p>可以看到，$e^{-\mathrm{j}2\pi f\tau}$ 与积分变量 $u'$ 无关，直接提到积分号外；当某路麦克风比参考麦晚到（$\tau>0$）时，指数相位 $-2\pi f\tau$ 为负；当它比参考麦早到（$\tau\lt 0$）时，负负得正，指数相位 $-2\pi f\tau$ 自然为正。不妨再拿单频实余弦波 $s(t)=\cos(2\pi ft)$ 直接验算一次：延迟 $\tau$ 后的波形为</p>
+<p>$$s(t-\tau)=\cos\bigl(2\pi f(t-\tau)\bigr)=\cos(2\pi ft - 2\pi f\tau)=\operatorname{Re}\!\bigl\{e^{-\mathrm{j}2\pi f\tau}e^{+\mathrm{j}2\pi ft}\bigr\}\text{，}$$</p>
+<p>直观印证了在本书标准信号处理约定（前向核 $e^{-\mathrm{j}2\pi ft}$、逆变换合成核 $e^{+\mathrm{j}2\pi ft}$）下，“晚到 $\tau>0$ 必然对应负指数相位滞后 $e^{-\mathrm{j}2\pi f\tau}$”。查阅采用 $e^{-\mathrm{j}\omega t}$ 简谐时间因子（逆核取负号）的物理声学专著时，须留意其延迟因子与导向矢量指数上的正负号与本书整体反转。</p>
 <p>从几何上看，由欧拉公式 $e^{\mathrm{j}\phi}=\cos\phi+\mathrm{j}\sin\phi$ 可知，$e^{-\mathrm{j}2\pi f\tau}$ 的模长恒为 $\sqrt{\cos^2(2\pi f\tau)+\sin^2(2\pi f\tau)}=1$，它是<strong>复平面单位圆上一支长度为 1 的旋转箭头</strong>：在正频率 $f>0$ 下，正延迟 $\tau>0$ 让频谱相量顺时针转过 $2\pi f\tau$ 弧度，负延迟 $\tau\lt 0$（提前到达）则让相量逆时针转过 $2\pi f|\tau|$ 弧度。我们可以用整周期延迟做一个极简自检：当延迟恰好等于一个周期 $\tau=1/f$ 时，相位转角为 $-2\pi f(1/f)=-2\pi$，箭头绕单位圆顺时针转满整整一圈回到起点，对应正弦波向右平移一个周期后与自身完全重合。</p>
 <p><img alt="图4 时延为什么变成复数相位" src="../figures/fig04_delay_phase.png" onerror="this.alt+='（图缺失）'" /></p>
 <p>图 4 用 $d=4\ \mathrm{cm}$ 双麦在端射方向的最大时差幅值 $\tau=d/c=0.04/343\approx0.1166\ \mathrm{ms}$，把时域平移、复平面旋转与跨频相位斜率三件事串在一起：</p>
@@ -1217,19 +1221,20 @@ r_m&=r-\vec u^\top\vec q_m
 </table></div>
 <p>可以看到，未归一化状态 $\mathbf S_t$ 在启动初期的缓慢爬升纯粹源于零矩阵初始化带来的权重总和不足（$b_t\lt 1$），并非真实输入信号功率在变大。除以递推累计权重 $b_t$ 即可在每一步恢复无偏尺度 $\mathbf Q$（当然，尺度校正不会增加独立空间方向，本题始终输入同一个 $\vec x$，归一化后仍是秩一矩阵 $\mathbf Q$）。一旦系统引入跳帧、VAD 暂停或非均匀掩码，就应同步递推 $b_t=\alpha b_{t-1}+(1-\alpha)q_t$，而不能继续套闭式公式 $1-2^{-t}$。</p>
 <h3 id="sec-u-e81def45ae">E02-06：掩码很小，是否意味着没有数据？</h3>
-<p>沿用 E02-04 的三帧 $[1,0]^\top$、$[0,1]^\top$、$[1,1]^\top$，令掩码为 $a[1,0,1]$，分别取 $a=10^{-200},1,10^{200}$。计算归一化二阶矩，并说明为什么全零掩码必须另行处理。</p>
-<p><strong>参考答案</strong>：对任意严格正的尺度因子 $a>0$，加权外积和与权重总和分别为</p>
+<p>沿用 E02-04 的三帧 $[1,0]^\top$、$[0,1]^\top$、$[1,1]^\top$，考察未归一化软掩码或前端增益缩放下的加权协方差尺度不变性：令时频帧权重为 $q_t=c\,[1,0,1]$，分别取正缩放系数 $c\in\{10^{-4},1,10^4\}$ 计算归一化加权二阶矩与对应的无失真 MVDR 权重，并说明为什么全零掩码必须另行处理。</p>
+<p><strong>参考答案</strong>：对任意严格正的尺度因子 $c>0$，加权外积和与权重总和分别为</p>
 <p>$$\begin{aligned}
 \sum_t q_t\vec x_t\vec x_t^H
-&=a\begin{bmatrix}2&1\\1&1\end{bmatrix},\qquad
-\sum_t q_t=2a\text{，}
+&=c\begin{bmatrix}2&1\\1&1\end{bmatrix},\qquad
+\sum_t q_t=2c\text{，}
 \end{aligned}$$</p>
-<p>两者相除后 $a$ 精确约去，三种尺度给出完全相同的二阶矩：</p>
+<p>两者相除后公共比例 $c$ 严格约消，三种尺度给出分毫不差的加权协方差矩阵：</p>
 <p>$$\begin{aligned}
-\hat{\mathbf R}&=\frac{1}{2a}\,a\begin{bmatrix}2&1\\1&1\end{bmatrix}
-=\begin{bmatrix}1&1/2\\1/2&1/2\end{bmatrix}\text{。}
+\hat{\mathbf R}&=\frac{1}{2c}\,c\begin{bmatrix}2&1\\1&1\end{bmatrix}
+=\begin{bmatrix}1&1/2\\1/2&1/2\end{bmatrix}\text{，}
 \end{aligned}$$</p>
-<p>这道题揭示了一个常见的数值实现陷阱：如果程序写死“当 $\sum_t q_t\lt 10^{-12}$ 时判为无语音”，就会把 $a=10^{-200}$（例如未取指数归整的对数似然转换权重）误判为无有效数据；如果直接计算 $\sum_t q_t^2$ 算有效帧数，在 IEEE 754 双精度浮点下 $(10^{-200})^2$ 会下溢为 $0$，$(10^{200})^2$ 则会溢出为 <code>inf</code>。稳健的做法是先检查 $\max_t q_t>0$，若全零则明确拒绝计算；一旦存在正权重，先把整条掩码除以 $q_{\max}=\max_t q_t$ 归一化为 $[1,0,1]$ 再做加权累加，双精度下三组输入与手算真值的逐元素绝对误差均小于 $10^{-14}$。</p>
+<p>进而使下游基于 $\vec w_{\mathrm{MVDR}}=\hat{\mathbf R}^{-1}\vec a/(\vec a^H\hat{\mathbf R}^{-1}\vec a)$ 求解的自适应波束权重也严格保持不变（事实上即使在分母省去权重总和 $2c$，常数因子 $c$ 也会在 MVDR 分子与分母的 $\hat{\mathbf R}^{-1}$ 中自动约去）。</p>
+<p>这道题区分了“软掩码公共比例较小”与“完全无观测数据”两件事：若程序武断写死绝对门限（如“当 $\sum_t q_t\lt 10^{-3}$ 时判为无语音”），就会把未归一化的低幅软掩码（如 $c=10^{-4}$）误判为空帧；而当掩码全为零（$q_t\equiv 0$）时没有任何有效快拍，代码必须显式拒绝求解并回退上一有效状态，不能在分母硬加微小数伪造全零矩阵。工程上由对数似然转换软掩码跨越较大动态范围时，先在对数域减去最大值（<code>log-sum-exp</code> 技巧）并在加权累加前除以帧间峰值 $q_{\max}=\max_t q_t$，即可彻底避免指数与平方累加的数值上溢或下溢。</p>
 <h3 id="sec-u-9a0f5dcad3">E02-07：同一个遗忘因子，为什么换帧移后响应变慢？</h3>
 <p>每次实际更新采用 $\mathbf S_t=\alpha\mathbf S_{t-1}+(1-\alpha)\mathbf Q_t$，$\mathbf Q_t$ 是当前快拍外积。固定 $\alpha=0.98$，比较更新间隔 $\Delta t_{\mathrm{upd}}=8\ \mathrm{ms}$ 和 $16\ \mathrm{ms}$ 时，旧状态的贡献衰减到初始值 $1/e$ 所需的时间。若希望两者都具有 $0.4\ \mathrm{s}$ 时间常数，应各取多大的 $\alpha$？</p>
 <p><strong>参考答案</strong>：先把离散更新步数换算成物理秒数。注意 $\Delta t_{\mathrm{upd}}$ 是相邻两次协方差递推之间的物理时间间隔（仅在每帧都更新时才有 $\Delta t_{\mathrm{upd}}=H/f_s$）。经过 $k$ 次更新后，初始状态的残留权重为 $\alpha^k$。在时间 $t=k\,\Delta t_{\mathrm{upd}}$ 处令离散衰减与连续指数包络 $\alpha^{t/\Delta t_{\mathrm{upd}}}=e^{-t/T}$ 对齐，两边取自然对数消去 $t$，即得时间常数换算式 $T=-\Delta t_{\mathrm{upd}}/\ln\alpha$，反解遗忘因子则为 $\alpha=e^{-\Delta t_{\mathrm{upd}}/T}$：</p>
@@ -1647,10 +1652,11 @@ w_b[q]-v_b[q]&=\sum_{p=0}^{Q-1}h[p]\,u[b+q-p]\,
 \end{aligned}\tag{2-20}$$</p>
 <p>症结就在 $g[q]-g[q-p]\ne0$（窗外 $g$ 取零）：延迟了 $p$ 点的反射原本来自较早的源样本 $u[b+q-p]$，先卷积再加窗乘的是当前位置窗值 $g[q]$，而先加窗再滤波乘的却是旧位置窗值 $g[q-p]$！例如 $b=0,q=2$ 时，$w_0[2]=g[2](u[2]+\frac12 u[0])=1\times3.5=3.5$，而 $v_0[2]=g[2]u[2]+\frac12 g[0]u[0]=3+0=3$——源首点 $u[0]=1$ 早已被 $g[0]=0$ 抹掉，后续怎么给 FFT 补零也救不回来（工程上若要在频域精确实现长 FIR 线性卷积，需采用保留完整 $N_w+Q-1$ 非零卷积尾的重叠相加法或分区块频域自适应滤波，第 6 章 <a href="06_aec.html#sec-6-2-1">§6.2.1</a> 将详细展开）。</p>
 <p><img alt="图50 有限窗乘法与完整卷积的三种结果" src="../figures/fig50_stft_convolution.png" onerror="this.alt+='（图缺失）'" /></p>
-<p>读图 50 时可沿着横轴离散采样时刻 $n=0,1,2,3,4,5$ 与纵轴无量纲波形幅度对照四条轨迹的物理含义：</p>
+<p>读图 50 时可沿着横轴输出样本位置 $n=0,1,2,3,4,5$（六点共用同一时间原点）与纵轴无量纲样本幅度，自上而下逐幅核对三组结果（未滤波 STFT/iSTFT 恒等往返已在数值核与上文第 2 步验证精确还原补零源序列 $[1,2,3,4,0,0]$）：</p>
 <ul>
-<li><strong>未滤波往返与完整线性卷积基准</strong>：未滤波 STFT/iSTFT 往返精确贴合补零源序列 $[1,2,3,4,0,0]$，验证了窗平方和分母满足 NOLA 完美重构；而完整时域线性卷积真值 $[1,2,3.5,5,1.5,2]$ 在 $n=2,3$ 处叠加了早期反射并在 $n=4,5$ 处保留了声源停止后的两点反射拖尾。</li>
-<li><strong>四点循环乘法与八点补零截尾合成对比</strong>：四点帧内循环乘法 $[1,3,3,4.5,0,1]$ 在 $n=1$ 处因帧尾反射折叠回帧头而异常鼓起至 $3$；把帧内 FFT 补零拉长到八点并截取前四点合成后得到 $[1,2,3,4.5,0,1]$，虽然彻底消除了 $n=1$ 处的循环回绕尖峰，但在 $n=2,3,4,5$ 处仍与完整线性卷积相差 $[0.5,0.5,1.5,1.0]$。这直观印证了帧内补零只能消除单帧循环回绕，无法找回因式(2-20)截窗与截掉帧尾溢出点而丢失的跨帧因果拖尾。</li>
+<li><strong>子图 <code>(a)</code> 完整时域线性卷积基准</strong>：蓝色圆点针状图给出保留六点与反射尾部的真实线性卷积 $[1,2,3.5,5,1.5,2]$，其中 $n=2,3$ 处叠加了早期反射，$n=4,5$ 处完整保留声源停止后的两点拖尾。</li>
+<li><strong>子图 <code>(b)</code> 逐帧 4 点 FFT 乘积 + WOLA</strong>：蓝色空心圆虚线为完整线性卷积参考，红色实心方块针状图为逐帧 4 点循环乘法加权重叠相加输出 $[1,3,3,4.5,0,1]$，在 $n=1$ 处因单帧尾部圆折叠回帧头而异常鼓起至 $3$。</li>
+<li><strong>子图 <code>(c)</code> 每帧补零至 8 点、截回原 4 点支撑长 + WOLA</strong>：紫色实心方块针状图输出 $[1,2,3,4.5,0,1]$；帧内补零至 8 点消除了 $n=1$ 处的单帧圆折叠（恢复真值 $2$），但因截回 4 点合成窗支撑并受制于式(2-20)截窗与滤波不可交换，在 $n=2,3,4,5$ 处仍与完整线性卷积相差 $[-0.5,-0.5,-1.5,-1.0]$。</li>
 </ul>
 <p>配套合成音频把同一现象放到 $16\ \mathrm{kHz}$ 可听尺度上验证：2 秒单声道源内含四段四频和弦短音（频率 $440,997,1733,2819\ \mathrm{Hz}$，各分量幅度 $0.06$），滤波器取直达抽头 $1$ 加延迟 $320$ 点（$20\ \mathrm{ms}$）、幅度 $0.5$ 的单次反射，STFT 采用 $512$ 点周期 Hann 窗、$128$ 点帧移、<code>center=True</code>，三份文件统一保留含完整反射尾的 $N=32320$ 点（$2.02\ \mathrm{s}$）、共同导出增益 $1$：</p>
 <ul>
@@ -2269,7 +2275,7 @@ c_k|Y_\ell[k]-Z_\ell[k]|^2\text{。}
 </table></div>
 </li>
 <li>
-<p><strong>工程启示与 Type-II 对称滤波器边界</strong>：在语音高频核心区 $4\ \mathrm{kHz}$ 处，两点线性插值已让相消零陷崩塌到仅剩 <strong>$-10.67\ \mathrm{dB}$</strong>，而仅用 $8$ 抽头因果汉明加窗 sinc（并将整数参考通道同步推迟 $M_h-1=3$ 个采样点以严格对齐群延迟）就把零陷重新压深到了 <strong>$-48.66\ \mathrm{dB}$</strong>（改善近 $38\ \mathrm{dB}$；若扩至 $16$ 抽头，连 $6\ \mathrm{kHz}$ 零陷也深达 $-45.14\ \mathrm{dB}$）。同时注意表格最后一行 $8\ \mathrm{kHz}$（$\Omega_{\mathrm{d}}=\pi$）：任何偶数长度且满足 $h[n]=h[L-1-n]$ 的对称（Type-II）线性相位 FIR 在半采样 $\eta=0.5$ 时，交替求和 $\sum_{n=0}^{L-1}(-1)^n h[n]$ 成对相消恒等于 $0$！因此高保真宽带时域波束器除了选用足够阶数的加窗 sinc 或拉格朗日（Lagrange）分数时延滤波器外，还总是留出略低于 $f_s/2$ 的抗混叠过渡防护带。</p>
+<p><strong>工程启示与 Type-II 对称滤波器边界</strong>：在语音高频核心区 $4\ \mathrm{kHz}$ 处，两点线性插值已使相消零陷退化到仅剩 <strong>$-10.67\ \mathrm{dB}$</strong>，而仅用 $8$ 抽头因果汉明加窗 sinc（并将整数参考通道同步推迟 $M_h-1=3$ 个采样点以严格对齐群延迟）就把零陷重新压深到了 <strong>$-48.66\ \mathrm{dB}$</strong>（改善近 $38\ \mathrm{dB}$；若扩至 $16$ 抽头，连 $6\ \mathrm{kHz}$ 零陷也深达 $-45.14\ \mathrm{dB}$）。同时注意表格最后一行 $8\ \mathrm{kHz}$（$\Omega_{\mathrm{d}}=\pi$）：任何偶数长度且满足 $h[n]=h[L-1-n]$ 的对称（Type-II）线性相位 FIR 在半采样 $\eta=0.5$ 时，交替求和 $\sum_{n=0}^{L-1}(-1)^n h[n]$ 成对相消恒等于 $0$！因此高保真宽带时域波束器除了选用足够阶数的加窗 sinc 或拉格朗日（Lagrange）分数时延滤波器外，还总是留出略低于 $f_s/2$ 的抗混叠过渡防护带。</p>
 </li>
 </ol>
 <hr />

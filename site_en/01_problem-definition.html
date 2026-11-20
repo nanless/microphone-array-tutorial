@@ -1,0 +1,1622 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Chapter 1 · Problem Formulation & Binaural Cues · Microphone Array Signal Processing</title>
+<meta name="source-digest" content="55952d1c18a8"><style>
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
+.topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
+.topbar .lang-switch{color:#FAF8F3;background:#2C333B;border:1px solid #4A525D;padding:2px 10px;border-radius:999px;font-size:13px;font-weight:650;white-space:nowrap}.topbar .lang-switch:hover{background:#1F5A92;border-color:#689CD0;text-decoration:none}
+h1,h2,h3,h4{scroll-margin-top:60px}
+@media screen{.main a[id]:not([href]){scroll-margin-top:60px}}
+@media screen{.main a[id^="e"],.main .exercise-alias{scroll-margin-top:80px}}
+@media screen{.main .exercise-alias{top:0}}
+@media screen{.main a[id="e05-20"]{scroll-margin-top:60px}}
+@media screen{.main a[id="e17-11"],.main a[id="e17-12"],.main a[id="e17-13"],.main a[id="e17-14"],.main a[id="e17-15"]{scroll-margin-top:140px}}
+@media screen{.main .exercise-alias[id="e13-11"],.main .exercise-alias[id="e13-12"],.main .exercise-alias[id="e13-13"],.main .exercise-alias[id="e13-14"],.main .exercise-alias[id="e13-15"],.main .exercise-alias[id="e15-11"]:has(~ a[id="e17-11"]),.main .exercise-alias[id="e15-12"]:has(~ a[id="e17-12"]),.main .exercise-alias[id="e15-13"]:has(~ a[id="e17-13"]),.main .exercise-alias[id="e15-14"]:has(~ a[id="e17-14"]),.main .exercise-alias[id="e15-15"]:has(~ a[id="e17-15"]){scroll-margin-top:140px}}
+@media screen{.main a[id^="e06-"]{scroll-margin-top:60px}}
+@media screen{.main a[id^="e07-"],.main a[id^="e08-"]{scroll-margin-top:60px}}
+@media screen{.main a[id^="e11-"]{scroll-margin-top:60px}}
+@media screen{.main .separation-topic-anchor{scroll-margin-top:60px}}
+@media screen{.main .source-reproduction-anchor{scroll-margin-top:60px}}
+a:focus-visible,summary:focus-visible{outline:2.5px solid #B84A2E;outline-offset:3px}
+.skip-link{position:absolute;left:10px;top:-60px;z-index:30;background:#fff;color:#1C1E21;padding:8px 12px;border:2px solid #B84A2E}
+.skip-link:focus{top:8px}
+.wrap{display:flex;max-width:1280px;margin:0 auto;border-left:1px solid #E3DED3;border-right:1px solid #E3DED3}
+.side{width:300px;flex-shrink:0;padding:20px 15px;position:sticky;top:47px;height:calc(100vh - 47px);overflow-y:auto;background:#FAF8F3;border-right:1px solid #DDD7CB;font-size:13.5px}
+.side a{color:#1F5A92;text-decoration:none}.side a:hover{text-decoration:underline}
+.side .chap{margin:10px 0 2px;font-weight:700;color:#26292E}.side .chap.cur{color:#B84A2E}
+.side ul{margin:2px 0 6px;padding-left:16px;color:#5A554D}.side li{margin:2px 0}
+.main{flex:1;min-width:0;padding:32px 40px;background:#fff;overflow-wrap:anywhere}
+.main a{color:#1F5A92;text-underline-offset:.2em}
+.main p{margin:0 0 1.2em}.main ul,.main ol{margin:.55em 0 1.2em;padding-left:1.55em}.main li{margin:.42em 0}.main li>p{margin:.5em 0}
+.main p>strong:first-child,.main li>strong:first-child{color:#14171A}
+.main img{max-width:100%;height:auto;display:block;margin:18px auto;border:1px solid #DFDAD0;border-radius:5px;padding:4px;min-height:40px;background:#fff}
+.audio-sample{display:block;width:min(100%,460px);margin:8px 0 18px}.audio-sample:focus-visible{outline:2.5px solid #B84A2E}
+/* 表格列宽不能压掉原生播放按钮；手机上的表格可横向滚动。 */
+td .audio-sample{width:280px;min-width:280px}
+table:has(td .audio-sample) td:last-child{min-width:180px}
+table{border-collapse:collapse;margin:18px 0;max-width:100%;border-top:1.5px solid #2A2E34;border-bottom:1.5px solid #2A2E34}
+.table-scroll{max-width:100%;overflow-x:auto}
+.table-scroll:focus-visible{outline:2.5px solid #B84A2E;outline-offset:2px}
+th,td{border-top:1px solid #E3DED3;border-bottom:1px solid #E3DED3;border-left:none;border-right:none;padding:8px 11px;font-size:14px;text-align:left;line-height:1.58}
+th{background:#F5F2EB;color:#1C1E21;border-bottom:1px solid #8A8275;font-weight:700}
+tbody tr:nth-child(even) td{background:#FCFBF9}
+code{background:#F3F0E8;color:#1E3A56;border:1px solid #E0DBD0;padding:1px 5px;border-radius:4px;font-size:13.5px}
+pre{background:#F5F3EE;color:#1F2328;border:1px solid #DFDAD0;border-left:3.5px solid #5C564D;padding:14px 16px;border-radius:8px;overflow-x:auto}
+pre code{background:none;border:none;color:inherit;padding:0}
+blockquote{border-left:3.5px solid #B84A2E;margin:18px 0;padding:10px 16px;background:#F7F5F0;border-radius:0 4px 4px 0;color:#2B2E33}
+blockquote p:last-child{margin-bottom:0}
+hr{border:none;border-top:1px solid #DDD7CB;margin:26px 0}
+mjx-container[jax="CHTML"]{font-size:110%!important;overflow-x:auto;overflow-y:hidden;max-width:100%;min-width:0!important}
+body mjx-assistive-mml{width:1px!important;max-width:1px!important;min-width:0!important;height:1px!important;overflow:hidden!important}
+pre,.table-scroll,mjx-container[jax="CHTML"]{overflow-wrap:normal}
+.pn{display:flex;justify-content:space-between;margin:36px 0 12px;padding-top:16px;border-top:1px solid #DDD7CB;font-weight:650}
+.pn a{color:#1F5A92;text-decoration:none}.pn .off{color:#9C9588}
+.foot{color:#6E695F;font-size:13px;margin:20px 0 40px}
+.main h1{font-size:27px;color:#14171A;border-top:2.5px solid #1F5A92;border-bottom:1.5px solid #1C1E21;padding:12px 0 10px;margin:0 0 24px;line-height:1.3}
+.main h2{font-size:21px;color:#14171A;border-left:3.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;padding:1px 0 7px 11px;margin:36px 0 15px;line-height:1.35}
+.main h3{font-size:18px;color:#1F5A92;margin:26px 0 11px;line-height:1.4}
+.main h4{font-size:16px;color:#2C2F33;border-left:2.5px solid #B84A2E;padding:1px 0 1px 9px;margin:20px 0 9px;line-height:1.4}
+.main h3.tutorial-worked-heading{background:#FAF8F3;border-top:1.5px solid #237263;border-bottom:1px solid #E2DDD2;border-left:3.5px solid #237263;color:#1A574B;padding:7px 13px;border-radius:2px;margin:28px 0 13px;font-size:17.2px}
+.main h3.tutorial-exercise-heading,.main h4.tutorial-exercise-heading{background:#F5F2EB;border-top:1.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;border-left:4px solid #1F5A92;color:#14171A;padding:8px 14px;border-radius:2px;margin:30px 0 13px;font-size:17px;line-height:1.45}
+.main p.tutorial-exercise-lead{background:#F5F2EB;border-top:1.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;border-left:4px solid #1F5A92;padding:10px 15px;border-radius:2px;margin:28px 0 13px}
+.main ol>li.tutorial-exercise-item{margin:18px 0}
+.main .tutorial-exercise-card{background:#FAF8F3;border:1px solid #E0DBD0;border-left:3.5px solid #1F5A92;border-radius:4px;padding:12px 16px}
+.main .tutorial-exercise-card>:first-child{margin-top:0}
+.main .tutorial-exercise-card>:last-child{margin-bottom:0}
+.main p.tutorial-solution-lead{background:#F3F6F4;border-left:3.5px solid #237263;padding:8px 13px;border-radius:0 3px 3px 0;margin-top:9px}
+.main p.tutorial-solution-lead>strong:first-child{color:#1D5E51}
+.main p.tutorial-problem-lead{border-left:2.5px solid #1F5A92;padding-left:11px}
+.main p.tutorial-problem-lead>strong:first-child{color:#1F5A92}
+.toc-mobile{display:none;margin:0 0 16px;border:1px solid #DDD7CB;border-radius:6px;padding:10px 14px;background:#FAF8F3;font-size:14px}
+.toc-mobile summary{cursor:pointer;font-weight:700;color:#1C1E21}
+.toc-mobile ul{padding-left:18px;margin:8px 0 2px}.toc-mobile a{color:#1F5A92;text-decoration:none}
+.topbtn{display:block;margin:20px auto;background:#24282E;color:#FAF8F3;border-radius:50%;width:42px;height:42px;text-align:center;line-height:42px;text-decoration:none;font-size:18px}
+.offline-note{display:none;background:#F7EFE4;border:1px solid #D9B78E;color:#6E4219;padding:8px 14px;font-size:13.5px}
+.anchor-alias{display:block;position:relative;top:-60px;visibility:hidden}
+.tutorial-math-tail{display:inline-block;white-space:nowrap;overflow-wrap:normal;vertical-align:baseline;overflow:visible}
+.tutorial-math-tail mjx-assistive-mml{max-width:1px!important;min-width:0!important;white-space:normal}
+.tutorial-exercise-id{white-space:nowrap;overflow-wrap:normal;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:.88em;background:#F3EFE6;color:#B84A2E;border:1px solid #DDD5C7;padding:0 5px;border-radius:3px;font-weight:700}
+:is(.tutorial-exercise-heading,.tutorial-exercise-lead) .tutorial-exercise-id{background:#1F5A92;color:#fff;border-color:#1F5A92;padding:1px 7px;margin-right:5px;font-size:.84em}
+.tutorial-table-label{white-space:nowrap;overflow-wrap:normal}
+@media(max-width:900px){.selection-readable-table{min-width:760px}.selection-readable-table th,.selection-readable-table td{min-width:10em}.selection-readable-table th:first-child,.selection-readable-table td:first-child{min-width:6em}}
+@media(max-width:900px){.side{display:none}.main{padding:20px}.toc-mobile{display:block}.topbar{font-size:14px}mjx-container[jax="CHTML"]:not([display="true"]){display:inline-block;vertical-align:middle}.aec-readable-table th,.aec-readable-table td,.wpe-readable-table th,.wpe-readable-table td,.separation-readable-table th,.separation-readable-table td{min-width:8em}.tracking-readable-table th,.tracking-readable-table td{min-width:8em}.industrial-readable-table th,.industrial-readable-table td{min-width:8em}}
+@media(max-width:900px){.noise-readable-table th:first-child,.noise-readable-table td:first-child{min-width:6em}}
+@media screen and (max-width:900px){.source-contract-readable-table th,.source-contract-readable-table td{min-width:10em}}
+@media screen and (max-width:900px){.tutorial-budget-table{min-width:var(--tutorial-table-width)}.tutorial-budget-table .tutorial-short-column{min-width:var(--tutorial-column-width);overflow-wrap:normal}}
+@media print{.topbar,.side,.pn,.topbtn,.toc-mobile{display:none}.main{padding:0}.table-scroll{overflow:visible}table{display:table}a{color:#000;text-decoration:none}pre{white-space:pre-wrap;background:#fff;color:#000;border:1px solid #ccc}}
+</style>
+<script>
+/* Shared publication layout. TeX, code, links and attributes remain intact. */
+(function () {
+  "use strict";
+  const mathClass = "tutorial-math-tail";
+  const idClass = "tutorial-exercise-id";
+  const ignored = "pre,code,a,script,style,textarea,mjx-container";
+  const suffix = /^(\s*(?:(?:m\/s[²³]?|rad\/s|rad\/m|deg\/s|μs|µs|ns|ms|s|dBFS|dB|kHz|MHz|Hz|ppm|rad|cm|mm|m|V|deg|°|%|％)(?:[²³])?(?=$|[\s，。；、：！？）,.!?;:)\]\u4e00-\u9fff])\s*[，。；、：！？）,.;:!?\]]*|[，。；、：！？）,.;:!?\]]+))/;
+  let ready = false;
+  let scheduled = false;
+  let printing = false;
+
+  function roots() {
+    const candidates = Array.from(document.querySelectorAll(".main,.chap"));
+    return candidates.filter(root => !candidates.some(other => other !== root && other.contains(root)));
+  }
+
+  function unwrapMath(root) {
+    for (const wrapper of root.querySelectorAll("." + mathClass)) {
+      const children = Array.from(wrapper.childNodes);
+      wrapper.replaceWith(...children);
+      // Merge only our adjacent ordinary text, never normalize a MathJax subtree.
+      for (const node of children) {
+        if (node.nodeType !== Node.TEXT_NODE) continue;
+        while (node.nextSibling && node.nextSibling.nodeType === Node.TEXT_NODE) {
+          node.data += node.nextSibling.data;
+          node.nextSibling.remove();
+        }
+      }
+    }
+  }
+
+  function protectExerciseIds(root) {
+    let count = 0;
+    {
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+      const nodes = [];
+      let node;
+      while ((node = walker.nextNode())) {
+        if (!node.parentElement.closest(ignored + ",." + idClass)) nodes.push(node);
+      }
+      for (const text of nodes) {
+        // A filename/path or a longer identifier is not a stable exercise ID.
+        const pattern = /(^|[^\p{L}\p{N}\p{M}_/\\.-])(E\d{2}-\d{2})(?![\p{L}\p{N}\p{M}_/\\-]|\.[\p{L}\p{N}\p{M}])/gu;
+        const matches = Array.from(text.data.matchAll(pattern));
+        for (const match of matches.reverse()) {
+          const start = match.index + match[1].length;
+          text.splitText(start + match[2].length);
+          const middle = text.splitText(start);
+          const span = document.createElement("span");
+          span.className = idClass;
+          middle.before(span);
+          span.append(middle);
+          count++;
+        }
+      }
+    }
+    return count;
+  }
+
+  function markShortLeads(root) {
+    let count = 0;
+    for (const paragraph of root.querySelectorAll("p")) {
+      if (paragraph.closest("pre,code,a,script,style,textarea")) continue;
+      const significant = Array.from(paragraph.childNodes).filter(node =>
+        node.nodeType !== Node.TEXT_NODE || node.data.trim());
+      const next = paragraph.nextElementSibling;
+      const isEmptyAnchor = node =>
+        node.nodeType === Node.ELEMENT_NODE &&
+        node.tagName === "A" && node.id &&
+        !node.hasAttribute("href") &&
+        Array.from(node.childNodes).every(child =>
+          child.nodeType === Node.TEXT_NODE && !child.data.trim());
+      const isAnchorAlias = node =>
+        node.nodeType === Node.ELEMENT_NODE &&
+        node.tagName === "SPAN" && node.id &&
+        node.classList.contains("anchor-alias") &&
+        Array.from(node.childNodes).every(child =>
+          child.nodeType === Node.TEXT_NODE && !child.data.trim());
+      const anchorOnly = significant.length >= 1 &&
+        significant.some(isEmptyAnchor) &&
+        significant.every(node => isEmptyAnchor(node) || isAnchorAlias(node));
+      paragraph.classList.toggle("tutorial-anchor-only", !!anchorOnly);
+      const short = significant.length === 1 &&
+        significant[0].nodeType === Node.ELEMENT_NODE &&
+        significant[0].tagName === "STRONG" &&
+        paragraph.textContent.trim().length <= 60 &&
+        next && /^(P|UL|OL|BLOCKQUOTE)$/.test(next.tagName) &&
+        next.textContent.trim().length > 0;
+      paragraph.classList.toggle("tutorial-short-lead", !!short);
+      if (short) count++;
+
+      const firstSig = significant[0];
+      const firstStrong = firstSig && firstSig.nodeType === Node.ELEMENT_NODE &&
+        firstSig.tagName === "STRONG" ? firstSig : null;
+      const strongText = firstStrong ? firstStrong.textContent.trim() : "";
+      const isExLead = !!(firstStrong && firstStrong.querySelector("." + idClass) &&
+        /^E\d{2}-\d{2}\b/.test(strongText));
+      const isSolutionLead = !isExLead &&
+        /^(参考答案|解答|答案|解(?=[：:。.\s]|$))/.test(strongText);
+      const isProblemLead = !isExLead && !isSolutionLead &&
+        /^(题目|问题|思考题)/.test(strongText);
+      paragraph.classList.toggle("tutorial-exercise-lead", isExLead);
+      paragraph.classList.toggle("tutorial-solution-lead", isSolutionLead);
+      paragraph.classList.toggle("tutorial-problem-lead", isProblemLead);
+    }
+    for (const heading of root.querySelectorAll("h3,h4")) {
+      const hasExId = !!heading.querySelector("." + idClass);
+      const text = heading.textContent.trim();
+      const isWorked = !hasExId && heading.tagName === "H3" &&
+        (/^(算例\s*\d|例\s*\d)/.test(text) || /完整手算/.test(text));
+      heading.classList.toggle("tutorial-exercise-heading", hasExId);
+      heading.classList.toggle("tutorial-worked-heading", isWorked);
+    }
+    for (const item of root.querySelectorAll("ol > li")) {
+      const existingCard = item.querySelector(":scope > .tutorial-exercise-card");
+      const scopeRoot = existingCard || item;
+      const hasSolution = !!scopeRoot.querySelector(":scope > p.tutorial-solution-lead");
+      const startsQuestion = /^思考题[：:]/.test(scopeRoot.textContent.trim());
+      if ((hasSolution || startsQuestion) && !existingCard) {
+        const card = document.createElement("article");
+        card.className = "tutorial-exercise-card";
+        card.append(...Array.from(item.childNodes));
+        item.append(card);
+      }
+      item.classList.toggle("tutorial-exercise-item", hasSolution || startsQuestion);
+    }
+    return count;
+  }
+
+  function apply() {
+    const content = roots();
+    for (const root of content) unwrapMath(root);
+    const plans = [];
+    const hosts = new Map();
+    let skippedWide = 0;
+    let idCount = 0;
+    let leadCount = 0;
+    for (const root of content) {
+      idCount += protectExerciseIds(root);
+      leadCount += markShortLeads(root);
+      // Read every width before any math wrapper is inserted, to avoid repeated
+      // synchronous layout across thousands of formulas in the combined book.
+      for (const math of root.querySelectorAll('mjx-container:not([display="true"])')) {
+        if (math.closest("pre,code,a,script,style,textarea")) continue;
+        const text = math.nextSibling;
+        if (!text || text.nodeType !== Node.TEXT_NODE) continue;
+        const match = text.data.match(suffix);
+        if (!match || match[0].length > 16) continue;
+        const host = math.closest("p,li,td,th,h1,h2,h3,h4");
+        if (!host) continue;
+        if (!hosts.has(host)) {
+          const style = getComputedStyle(host);
+          hosts.set(host, host.clientWidth - parseFloat(style.paddingLeft || 0) -
+            parseFloat(style.paddingRight || 0));
+        }
+        const range = document.createRange();
+        range.setStart(text, 0);
+        range.setEnd(text, match[0].length);
+        const style = getComputedStyle(math);
+        const width = math.getBoundingClientRect().width + range.getBoundingClientRect().width +
+          parseFloat(style.marginLeft || 0) + parseFloat(style.marginRight || 0);
+        if (width > hosts.get(host) - 8) {
+          skippedWide++;
+          continue;
+        }
+        plans.push({math, text, length: match[0].length});
+      }
+    }
+    for (const {math, text, length} of plans) {
+      const wrapper = document.createElement("span");
+      wrapper.className = mathClass;
+      math.before(wrapper);
+      wrapper.append(math);
+      text.splitText(length);
+      wrapper.append(text);
+    }
+    ready = true;
+    const result = {grouped: plans.length, skippedWide, newExerciseIds: idCount, shortLeads: leadCount};
+    window.ArrayTutorialLayout.lastRun = result;
+    return result;
+  }
+
+  function schedule() {
+    if (!ready || scheduled || printing) return;
+    scheduled = true;
+    requestAnimationFrame(() => {
+      scheduled = false;
+      if (printing) return;
+      apply();
+    });
+  }
+
+  window.ArrayTutorialLayout = {apply, lastRun: null};
+  window.addEventListener("resize", schedule);
+  // Chrome fires beforeprint while screen styles still apply. Remove screen
+  // groups before they can enlarge the print layout. The combined book is
+  // measured at its fixed A4 geometry during pageReady instead. Do not mutate
+  // thousands of nodes after the browser has begun its print snapshot: this
+  // can truncate the final pages even when a small fixture prints correctly.
+  // A synthetic beforeprint event is not a print test.
+  window.addEventListener("beforeprint", () => {
+    printing = true;
+    if (ready && document.documentElement.dataset.tutorialPrintLayout !== "a4") {
+      for (const root of roots()) unwrapMath(root);
+    }
+  });
+  window.addEventListener("afterprint", () => {
+    printing = false;
+    if (document.documentElement.dataset.tutorialPrintLayout !== "a4") schedule();
+  });
+  if (document.fonts) document.fonts.addEventListener("loadingdone", schedule);
+})();
+
+window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$']]}, startup: {pageReady: () => MathJax.startup.defaultPageReady().then(() => document.fonts.ready).then(() => ArrayTutorialLayout.apply())}};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"
+ onerror="document.getElementById('offnote').style.display='block';document.getElementById('offnote').textContent='MathJax script failed to load: displaying raw TeX source.';"></script>
+</head><body id="top"><a class="skip-link" href="#main-content">Skip to main content</a>
+<header class="topbar"><span><a href="index.html">🏠 Home</a> &nbsp;/&nbsp; Chapter 1 · Problem Formulation & Binaural Cues</span><a class="lang-switch" href="https://nanless.github.io/microphone-array-tutorial/site/01_problem-definition.html" data-lang-peer="../site/01_problem-definition.html" lang="zh-CN" hreflang="zh-CN">中文</a></header>
+<div class="wrap"><nav class="side" aria-label="Course contents"><div class="chap"><a href="index.html">🏠 Course Overview (Home)</a></div>
+<div class="chap"><a href="00_math-foundations.html">Chapter 0 · Mathematical & Signal Analysis Foundations</a></div>
+<div class="chap cur" aria-current="page">Chapter 1 · Problem Formulation & Binaural Cues</div>
+<ul>
+<li><a href="01_problem-definition.html#sec-u-b6e1d46e8a">1. Starting from an Everyday Scenario: Problem Definition</a></li>
+<li><a href="01_problem-definition.html#sec-u-b27e5a3a55">Task Definitions and Ideal Array Gains</a></li>
+<li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-5ba092024c">The Distant-Speech Problem in a Living Room</a></li>
+<li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-45f5e7b117">Three Spatial Processing Tasks</a></li>
+<li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-969d1cccbd">Distinguishing Loudness, Power, and Signal-to-Noise Ratio First</a></li>
+<li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-3d1d8e26fa">Datasheet dBA SNR Ratings and the Low-Frequency Self-Noise Trap</a></li>
+<li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-cb7573fea3">Three Classes of Array Gain and White Noise Gain</a></li>
+<li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-c539d88541">From Summation to Averaging: How Four Microphones Deliver 6 dB</a></li>
+<li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-95eccf1b16">Matrix Coloring and Positive-Semidefinite Boundaries for Spatially Correlated Noise</a></li>
+<li><a href="01_problem-definition.html#sec-u-46fb446991">Three Binaural Localization Cues in Human Hearing</a></li>
+<li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-5a726adb0f">Interaural Time Difference: Getting the Geometric Model Right</a></li>
+<li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-8582a93a9f">Level Differences, Fine Structure, and Envelopes Must Be Evaluated Separately</a></li>
+<li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-5a56289d6b">Direction-Dependent Spectra and Head-Related Transfer Functions</a></li>
+<li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-123c5c416e">Three-Dimensional HRTF Coordinate Conventions: SOFA Elevation vs. Colatitude</a></li>
+<li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-e298c595fb">Mapping Binaural Cues onto Machine Microphone Arrays</a></li>
+<li><a href="01_problem-definition.html#sec-u-e19f270bd5">Chapter Exercises</a></li>
+<li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-a9bd8902f8">E01-01: Four Microphones Do Not Automatically Yield 6 dB</a></li>
+<li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-3549682306">E01-02: Is a Quieter Sound Necessarily Cleaner?</a></li>
+<li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-a473c02eff">E01-03: How Much Weight Should a Noisier Microphone Receive?</a></li>
+<li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-e69f031d84">E01-04: Why Cross-Terms Cannot Be Dropped in Short Windows</a></li>
+<li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-36a9604f4f">E01-05: Why a One-Sample Misalignment Hurts High Frequencies Much More</a></li>
+<li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-1f25bd5c32">E01-06: With a Head vs. Without a Head—How Much Does ITD Change?</a></li>
+<li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-1cff66bd0a">E01-07: How Much About SNR Can Total Mixture Power Actually Tell Us?</a></li>
+<li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-5a48d70925">E01-08: Half the Amplitude on the Left—What Is the ILD?</a></li>
+<li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-ec7260361a">E01-09: Preserving the Target Unchanged—Why Does Self-Noise Still Blow Up?</a></li>
+<li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-5b247422f2">E01-10: When Source Timbre Changes, How Does Binaural ILD Change?</a></li>
+<li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-b2b5ca28f9">E01-11: Eigendecomposition Noise Coloring for Arbitrary Spatial Coherence Matrices</a></li>
+<li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-bd60d0cab3">E01-12: Silicon MEMS dBA SNR Trap and SOFA Spherical Coordinate Verification</a></li>
+</ul>
+<div class="chap"><a href="02_basics-signal-model.html">Chapter 2 · Acoustic Propagation & Array Signal Model</a></div>
+<div class="chap"><a href="03_array-geometry.html">Chapter 3 · Microphone Array Geometry</a></div>
+<div class="chap"><a href="04_doa-estimation.html">Chapter 4 · Sound Source Localization (DOA)</a></div>
+<div class="chap"><a href="05_beamforming.html">Chapter 5 · Beamforming</a></div>
+<div class="chap"><a href="06_aec.html">Chapter 6 · Acoustic Echo Cancellation (AEC)</a></div>
+<div class="chap"><a href="07_wpe-dereverberation.html">Chapter 7 · Dereverberation (WPE)</a></div>
+<div class="chap"><a href="08_speech-separation.html">Chapter 8 · Multichannel Speech Separation</a></div>
+<div class="chap"><a href="09_source-tracking.html">Chapter 9 · Sound Source Tracking</a></div>
+<div class="chap"><a href="10_engineering-practice.html">Chapter 10 · Real-Time Systems, Evaluation & Deployment</a></div>
+<div class="chap"><a href="11_selection-guide.html">Chapter 11 · System Synthesis & Selection Guide</a></div>
+<div class="chap"><a href="12_acoustic-imaging.html">Chapter 12 · Acoustic Imaging & Noise Diagnostics</a></div>
+<div class="chap"><a href="13_distributed-enhancement.html">Chapter 13 · Distributed Wireless Microphone Arrays</a></div>
+<div class="chap"><a href="14_spatial-wearable-arrays.html">Chapter 14 · Spatial Sound Fields & Wearable Arrays</a></div>
+<div class="chap"><a href="15_target-extraction-diarization.html">Chapter 15 · Conditioned Target Extraction & Diarization</a></div>
+<div class="chap"><a href="16_appendix-symbols-math.html">Chapter 16 · Appendix A: Symbols, Glossary & Math Lookup</a></div>
+<div class="chap"><a href="17_appendix-guide.html">Chapter 17 · Appendix B: Literature Map, Triage & Exercises</a></div>
+<div class="chap"><a href="research/index.html">Upstream Source Manuals</a></div></nav>
+<main class="main" id="main-content" tabindex="-1"><div class="offline-note" id="offnote">Offline mode: displaying raw TeX formulas; prose and audio remain unaffected.</div>
+<details class="toc-mobile"><summary>On this page</summary><nav aria-label="On this page"><ul>
+<li><a href="01_problem-definition.html#sec-u-b6e1d46e8a">1. Starting from an Everyday Scenario: Problem Definition</a></li>
+<li><a href="01_problem-definition.html#sec-u-b27e5a3a55">Task Definitions and Ideal Array Gains</a></li>
+<li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-5ba092024c">The Distant-Speech Problem in a Living Room</a></li>
+<li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-45f5e7b117">Three Spatial Processing Tasks</a></li>
+<li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-969d1cccbd">Distinguishing Loudness, Power, and Signal-to-Noise Ratio First</a></li>
+<li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-3d1d8e26fa">Datasheet dBA SNR Ratings and the Low-Frequency Self-Noise Trap</a></li>
+<li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-cb7573fea3">Three Classes of Array Gain and White Noise Gain</a></li>
+<li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-c539d88541">From Summation to Averaging: How Four Microphones Deliver 6 dB</a></li>
+<li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-95eccf1b16">Matrix Coloring and Positive-Semidefinite Boundaries for Spatially Correlated Noise</a></li>
+<li><a href="01_problem-definition.html#sec-u-46fb446991">Three Binaural Localization Cues in Human Hearing</a></li>
+<li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-5a726adb0f">Interaural Time Difference: Getting the Geometric Model Right</a></li>
+<li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-8582a93a9f">Level Differences, Fine Structure, and Envelopes Must Be Evaluated Separately</a></li>
+<li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-5a56289d6b">Direction-Dependent Spectra and Head-Related Transfer Functions</a></li>
+<li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-123c5c416e">Three-Dimensional HRTF Coordinate Conventions: SOFA Elevation vs. Colatitude</a></li>
+<li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-e298c595fb">Mapping Binaural Cues onto Machine Microphone Arrays</a></li>
+<li><a href="01_problem-definition.html#sec-u-e19f270bd5">Chapter Exercises</a></li>
+<li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-a9bd8902f8">E01-01: Four Microphones Do Not Automatically Yield 6 dB</a></li>
+<li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-3549682306">E01-02: Is a Quieter Sound Necessarily Cleaner?</a></li>
+<li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-a473c02eff">E01-03: How Much Weight Should a Noisier Microphone Receive?</a></li>
+<li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-e69f031d84">E01-04: Why Cross-Terms Cannot Be Dropped in Short Windows</a></li>
+<li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-36a9604f4f">E01-05: Why a One-Sample Misalignment Hurts High Frequencies Much More</a></li>
+<li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-1f25bd5c32">E01-06: With a Head vs. Without a Head—How Much Does ITD Change?</a></li>
+<li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-1cff66bd0a">E01-07: How Much About SNR Can Total Mixture Power Actually Tell Us?</a></li>
+<li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-5a48d70925">E01-08: Half the Amplitude on the Left—What Is the ILD?</a></li>
+<li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-ec7260361a">E01-09: Preserving the Target Unchanged—Why Does Self-Noise Still Blow Up?</a></li>
+<li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-5b247422f2">E01-10: When Source Timbre Changes, How Does Binaural ILD Change?</a></li>
+<li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-b2b5ca28f9">E01-11: Eigendecomposition Noise Coloring for Arbitrary Spatial Coherence Matrices</a></li>
+<li>&nbsp;&nbsp;<a href="01_problem-definition.html#sec-u-bd60d0cab3">E01-12: Silicon MEMS dBA SNR Trap and SOFA Spherical Coordinate Verification</a></li>
+</ul></nav></details>
+<blockquote>
+<p>This is Chapter 1 of the main text; the book comprises 16 main and special-topic chapters (Chapters 0–15, where Chapter 0 covers mathematical foundations and Chapters 12–15 are four extended special topics), accompanied by Appendices A and B. This chapter can be read self-contained; navigation links appear below.</p>
+<p>Overview: <a href="index.html">🏠 Course Overview</a> | Previous: <a href="00_math-foundations.html">Chapter 0 · Mathematical & Signal Analysis Foundations</a> | Next: <a href="02_basics-signal-model.html">Chapter 2 · Acoustic Propagation & Array Signal Model</a></p>
+</blockquote>
+<hr />
+<span id="sec-1" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-5cd90bfd4e" class="anchor-alias" aria-hidden="true"></span><h1 id="sec-u-b6e1d46e8a">1. Starting from an Everyday Scenario: Problem Definition</h1>
+<p>Starting from far-field voice interaction in a living room, this chapter first clarifies what signals enter and what outputs leave sound source localization, beamforming, and source tracking, then works step by step by hand to answer two central questions: <em>Why does summing and averaging waveforms recorded across multiple microphones suppress random noise floors? And if time delays are misaligned or noises are correlated across sensors, why can averaging fail to reduce noise—or even damage target speech and amplify sensor self-noise?</em> Next, using human binaural hearing as a physical reference, we dissect the spatial information carried by interaural time differences, interaural level differences, and direction-dependent spectral cues, examining how far machine microphone arrays can borrow from human audition and where they obey fundamentally different physical laws.</p>
+<p>After completing this chapter, you will be able to derive the ideal four-microphone averaging gain under spatially white noise along with its exact validity assumptions; distinguish overall loudness scaling, uncentered mean-square power, centered variance, and component-wise Signal-to-Noise Ratio (SNR); calculate the low-frequency $1/f$ self-noise penalty hidden behind A-weighted ($\mathrm{dB(A)}$) MEMS microphone datasheet ratings as well as matrix coloring for spatially correlated noise; and contrast geometric propagation formulas against human psychoacoustic discrimination thresholds.</p>
+<span id="sec-u-81896116fa" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-5e074a7e92" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-b27e5a3a55">Task Definitions and Ideal Array Gains</h2>
+<span id="sec-u-05ec932a34" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-c36b7ac16e" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-5ba092024c">The Distant-Speech Problem in a Living Room</h3>
+<p>Imagine sitting on your living-room sofa and asking a smart speaker 3 meters away, <em>"What's the weather like today?"</em> During a close-talking phone call, your lips sit just a few centimeters from the handset microphone, so direct speech dwarfs ambient noise; once you step back to 3 meters, however, direct speech attenuates substantially en route, and to hear your utterance clearly the speaker must contend simultaneously with five physically distinct classes of degradation:</p>
+<ol>
+<li><strong>Ambient background noise</strong>: Air-conditioner airflow, street traffic outside the window, or refrigerator hum entering the microphones continuously from all directions.</li>
+<li><strong>Room reverberation</strong>: Each syllable you utter bounces repeatedly off walls, floors, tabletops, and ceilings before arriving at the microphones in staggered waves; late reflections drag out long decaying tails that smear across subsequent syllables and blur consonant articulation.</li>
+<li><strong>Off-axis competing talkers</strong>: Family members conversing nearby or a news anchor speaking on the television. Because these interferers share the exact harmonic and formant structure of natural speech, merely "detecting whether human voice is present" cannot tell who actually addressed the device.</li>
+<li><strong>Microphone self-noise</strong>: Thermal Brownian agitation of the sensor diaphragm plus electronic noise generated inside the preamplifier ASIC itself. Even inside a perfectly soundproof anechoic chamber, self-noise persists; worse, if a downstream spatial algorithm applies large opposing positive and negative weights to cancel external interference, it will dramatically amplify this internal noise floor.</li>
+<li><strong>Loudspeaker acoustic echo</strong>: Whenever the smart speaker is playing music, sound radiated by its own loudspeaker couples directly through the enclosure and reflects off room surfaces back into its microphones—often 10 to 30 dB louder than a talker 3 meters away. Unlike an external television, however, the device has internal access to the exact digital audio stream being sent to its loudspeaker as a known reference signal.</li>
+</ol>
+<p>Confronted with this tangled acoustic field, a single microphone records only scalar sound-pressure fluctuations at one point in space, collapsing waves arriving from every direction irreversibly into a single one-dimensional waveform. Humans converse effortlessly at noisy cocktail parties largely because our left and right ears are separated in space. Inspired by this, machines deploy <strong>an array of synchronously sampled microphones</strong> observing the sound field simultaneously across distinct spatial positions: propagation arrival times, amplitude attenuation, and scattering frequency responses from a given source vary systematically with direction (whether a spherical wavefront at 3 meters can be approximated as a flat plane wave must be judged jointly from array aperture and acoustic wavelength—we derive the quantitative boundary in §2.2).</p>
+<p>We emphasize <strong>synchronous sampling</strong> upfront because spatial time-delay cues are minuscule: sound in air travels at roughly $343\ \mathrm{m/s}$, covering about $2.14\ \mathrm{cm}$ in just $62.5\ \mu\mathrm{s}$ (precisely 1 sample period at a $16\ \mathrm{kHz}$ sampling rate). Only when all microphones share a common hardware sampling clock—so identical sample indices correspond to the exact same physical instant—do inter-channel sample offsets faithfully reflect acoustic path differences; uncalibrated clock skew or buffer slips inject artificial delays that corrupt directional estimates and can destructively cancel high-frequency target speech upon summation (Exercise E01-05 calculates by hand how a mere 1-sample misalignment penalizes high frequencies far more severely than low frequencies).</p>
+<span id="sec-u-2fa0be7e3b" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-45f5e7b117">Three Spatial Processing Tasks</h3>
+<p>Given synchronized multichannel recordings, three interconnected yet distinct tasks revolve around <em>spatial direction</em>:</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable data table"><table>
+<thead>
+<tr>
+<th scope="col">Task</th>
+<th scope="col">Intuitive Analogy</th>
+<th scope="col">Core Question Answered</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Sound Source Localization</strong></td>
+<td>Closing your eyes and judging where someone is calling from</td>
+<td>At what directional angle (or spatial coordinate) relative to the array is the source located?</td>
+</tr>
+<tr>
+<td><strong>Beamforming</strong></td>
+<td>Focusing auditory attention toward the target talker</td>
+<td>How should multichannel signals be combined to preserve target-direction sound while suppressing off-axis interference?</td>
+</tr>
+<tr>
+<td><strong>Source Tracking</strong></td>
+<td>Turning your head smoothly to follow someone walking across the room</td>
+<td>How is the target moving over time, and does our bearing estimate remain reliable across brief speech pauses or occlusions?</td>
+</tr>
+</tbody>
+</table></div>
+<p>Tracing a synchronized four-channel recording through the table above highlights the clean division of inputs, outputs, and evaluation criteria across these three modules:</p>
+<ul>
+<li><strong>Sound source localization</strong> ingests synchronized multichannel audio, analyzes inter-channel time delays, phase differences, or spatial spectra, and outputs one or more candidate bearing angles (plus range in near-field or distributed geometries). Localization algorithms typically attach a spatial-spectrum peak height or cross-correlation score to rank candidates; note carefully that this raw score measures phase-alignment coherence—it is <em>not</em> a calibrated probability that a physical source exists at that angle.</li>
+<li><strong>Beamforming</strong> ingests multichannel audio, applies appropriate delay compensation and real/complex linear weights steered toward a designated target direction (either supplied dynamically by localization/tracking or fixed ahead of time toward broadside), and outputs an audio stream in which the target direction stands out while off-axis noise is attenuated.</li>
+<li><strong>Source tracking</strong> ingests frame-by-frame directional observations from the localizer and recursively updates bearing and angular-velocity states through a dynamical motion model; when a talker pauses briefly between words (causing missing observations) or room reflections trigger single-frame angular outliers, the tracker smooths trajectories, coasts short-term predictions, and resolves <em>which historical track owns each new observation</em> when multiple talkers cross paths.</li>
+</ul>
+<p>In practical pipelines, localization and tracking routinely feed real-time steering angles into an adaptive beamformer, yet their acceptance metrics must never be conflated: localization is judged by angular error, beamforming by target fidelity and noise suppression, and tracking additionally by missed-track rates and identity switches—a louder beamformer output never proves that the localizer found a more accurate angle.</p>
+<p>Purely directional spatial filtering also obeys hard physical limits. If a target talker and a blaring television sit along the exact same line of sight from the array, both waves traverse virtually identical inter-microphone delays and cannot be separated by far-field directional beamforming alone; moreover, because every physical array has finite size, its spatial acceptance zone behaves like a flashlight beam with nonzero angular width (the mainlobe beamwidth detailed in §2.6) rather than an infinitely thin geometric ray, allowing nearby interferers close to the target bearing to leak partially into the output.</p>
+<p>Removing the device's own loudspeaker echo, stripping late room reverberation tails from the target talker, and unmixing co-directional or closely spaced overlapping talkers require, respectively, playback-referenced <strong>Acoustic Echo Cancellation (AEC)</strong>, cross-frame linear prediction dereverberation, and speech separation—developed systematically across Chapters 6–8.</p>
+<span id="sec-u-8057829d0f" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-969d1cccbd">Distinguishing Loudness, Power, and Signal-to-Noise Ratio First</h3>
+<p>Before claiming that an array "reduced noise by $X$ dB," we must get the exact accounting right among waveform amplitude, mean-square power, variance, and SNR. Throughout this book, discrete time-domain average power is measured uniformly via the sequence <strong>mean square</strong>: for a real sequence $u[0], u[1], \ldots, u[N-1]$ of length $N$, square each sample, sum, and divide by $N$:</p>
+<p>$$
+P_u = \frac{1}{N}\sum_{n=0}^{N-1}u[n]^2. \tag{1-1}
+$$</p>
+<p>In Eq. (1-1), $n$ denotes the zero-based sample index ($0$ to $N-1$) and $N$ the window length in samples. When $u[n]$ represents dimensionless digital full-scale amplitude normalized to $[-1, 1]$ after analog-to-digital conversion, $P_u$ is likewise dimensionless digital mean-square power; converting it into physical mean-square sound pressure ($\mathrm{Pa}^2$) or acoustic power ($\mathrm{W}$) requires transducer sensitivity and acoustic calibration constants.</p>
+<p>Observant readers may ask: why doesn't Eq. (1-1) subtract the sample mean first? Denoting the sample mean over these $N$ samples by $\bar u = \frac{1}{N}\sum_{n=0}^{N-1} u[n]$ and computing the mean-subtracted <strong>centered sample variance</strong> $V_N$ with the same denominator $N$, expanding the square reveals their exact identity:</p>
+<p>$$
+\begin{aligned}
+V_N &= \frac{1}{N}\sum_{n=0}^{N-1}\bigl(u[n]-\bar u\bigr)^2 \\
+&= \frac{1}{N}\sum_{n=0}^{N-1}
+\bigl(u[n]^2 - 2\bar u\,u[n] + \bar u^2\bigr) \\
+&= \frac{1}{N}\sum_{n=0}^{N-1}u[n]^2
+- 2\bar u\left(\frac{1}{N}\sum_{n=0}^{N-1}u[n]\right) + \bar u^2 \\
+&= P_u - 2\bar u^2 + \bar u^2 = P_u - \bar u^2.
+\end{aligned}
+$$</p>
+<p>The identity $P_u = V_N + \bar u^2$ carries two immediate engineering lessons. First, real electret or silicon MEMS microphones and ADC front ends routinely exhibit a small <strong>DC offset</strong>, causing even a recording made in dead silence to hover slightly above or below zero at $\bar u \neq 0$; evaluating Eq. (1-1) without mean subtraction or a DC-blocking high-pass filter lets inaudible DC energy $\bar u^2$ artificially inflate measured noise-floor power.</p>
+<p>Second, even when a theoretical stochastic noise process has exact zero population mean ($\mathbb{E}[u[n]]=0$, where population mean square equals population variance), any finite $N$-sample realization will almost never have sample mean $\bar u$ equal to exact zero (Exercise E01-04).</p>
+<p>In controlled simulations where clean target speech $s[n]$ and additive noise $v[n]$ are stored separately, evaluating Eq. (1-1) over the shared window $[0, N-1]$ yields target power $P_s$ and noise power $P_v$. This defines power-based <strong>Signal-to-Noise Ratio (SNR)</strong> and post-processing SNR gain $G$ (decibel scaling and power/amplitude conversions are reviewed in <a href="00_math-foundations.html#sec-0-2">Chapter 0 §0.2</a>):</p>
+<p>$$
+\begin{aligned}
+\mathrm{SNR} &= \frac{P_s}{P_v}, &
+\mathrm{SNR}_{\mathrm{dB}} &= 10\log_{10}\frac{P_s}{P_v}, \\
+G_{\mathrm{dB}} &= 10\log_{10}G, &
+G &= \frac{\mathrm{SNR}_{\mathrm{out}}}
+{\mathrm{SNR}_{\mathrm{in}}}.
+\end{aligned} \tag{1-2}
+$$</p>
+<p>Always check positivity of numerators and denominators before applying Eq. (1-2): $\mathrm{SNR}_{\mathrm{in}}$, $\mathrm{SNR}_{\mathrm{out}}$, and gain $G$ are finite positive numbers only when $P_{s,\mathrm{in}}$, $P_{v,\mathrm{in}}$, and $P_{v,\mathrm{out}}$ are all strictly positive. Three degenerate boundary cases require explicit handling:</p>
+<ul>
+<li><strong>Pure-silence input segments ($P_{s,\mathrm{in}}=0$)</strong>: Input SNR vanishes and cannot sit in the denominator of $G$—which is why Chapter 10 speech evaluations segment active speech from silence first.</li>
+<li><strong>Complete anti-phase target cancellation ($P_{s,\mathrm{out}}=0$ with $P_{v,\mathrm{out}}>0$)</strong>: Target speech present at the input is wiped out by anti-phase channel cancellation while noise survives, giving linear $\mathrm{SNR}_{\mathrm{out}}=0$ ($-\infty\ \mathrm{dB}$ in the limit).</li>
+<li><strong>Noiseless alignment checks ($P_v=0$)</strong>: Zero denominator leaves SNR undefined; measure target amplitude or mean-square power retention ratios directly instead of dividing by zero (Exercise E01-05).</li>
+</ul>
+<p>In field recordings, we observe only the superimposed mixture $x[n]=s[n]+v[n]$, whose total power $P_x$ alone cannot uniquely separate $P_s$ from $P_v$ (expanding the square also introduces a target–noise cross-term, dissected in Exercise E01-07).</p>
+<p>Build quick intuition with a minimal numerical check: suppose a single microphone has $P_s=1$ and $P_v=1$, giving linear $\mathrm{SNR}=1/1=1$ ($10\log_{10}1=0\ \mathrm{dB}$). A processor that preserves $P_s=1$ while cutting noise power to $0.25$ raises linear $\mathrm{SNR}$ to $4$ ($10\log_{10}4\approx 6.02\ \mathrm{dB}$); conversely, merely turning the volume knob down by half—multiplying both target and noise amplitudes by $0.5$—quarters both powers to $0.25$ and $0.25$: the audio sounds quieter, yet $\mathrm{SNR}=0.25/0.25=1$ ($0\ \mathrm{dB}$) has not improved by a fraction of a decibel.</p>
+<span id="sec-u-2743a51746" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-3d1d8e26fa">Datasheet dBA SNR Ratings and the Low-Frequency Self-Noise Trap</h3>
+<p>When selecting hardware transducers, watch out for how commercial microphone datasheets report SNR. Opening a silicon MEMS microphone datasheet typically reveals a headline figure such as <code>SNR = 65 dB(A)</code>: its numerator fixes a $1\ \mathrm{kHz}$, $94\ \mathrm{dB\ SPL}$ ($1\ \mathrm{Pa}$ RMS) sinusoidal reference power, whereas its denominator multiplies the sensor's anechoic self-noise power spectral density by the international standard IEC 61672-1 <strong>A-weighting</strong> power curve before integrating across the audio band ($20\ \mathrm{Hz}$–$20\ \mathrm{kHz}$).</p>
+<p>Designed to mimic quiet-listening human equal-loudness contours referenced to $0\ \mathrm{dB}$ at $1\ \mathrm{kHz}$, A-weighting heavily attenuates low frequencies. Inspecting key IEC 61672-1 weights below shows that at $100\ \mathrm{Hz}$ only $\approx 0.0122$ of noise power is counted (filtering out nearly $98.8\%$), and at $50\ \mathrm{Hz}$ barely $0.00094$ survives—neatly hiding the steep low-frequency <strong>$1/f$ flicker noise</strong> generated by MEMS ASIC transistors and diaphragm acoustic vent resistance:</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable data table"><table>
+<thead>
+<tr>
+<th scope="col">Frequency $f$</th>
+<th scope="col">Relative A-Weighting $A(f)$</th>
+<th scope="col">Linear Power Weight $g_{\mathrm{A}}^2(f)$</th>
+<th scope="col">Share of Noise Power Counted</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$50\ \mathrm{Hz}$</td>
+<td>$-30.27\ \mathrm{dB}$</td>
+<td>$0.000939$</td>
+<td>$\approx 0.094\%$</td>
+</tr>
+<tr>
+<td>$100\ \mathrm{Hz}$</td>
+<td>$-19.14\ \mathrm{dB}$</td>
+<td>$0.012182$</td>
+<td>$\approx 1.22\%$</td>
+</tr>
+<tr>
+<td>$200\ \mathrm{Hz}$</td>
+<td>$-10.85\ \mathrm{dB}$</td>
+<td>$0.082298$</td>
+<td>$\approx 8.23\%$</td>
+</tr>
+<tr>
+<td>$500\ \mathrm{Hz}$</td>
+<td>$-3.25\ \mathrm{dB}$</td>
+<td>$0.473405$</td>
+<td>$\approx 47.3\%$</td>
+</tr>
+<tr>
+<td>$1000\ \mathrm{Hz}$</td>
+<td>$0.00\ \mathrm{dB}$</td>
+<td>$1.000000$</td>
+<td>$100\%$ (reference)</td>
+</tr>
+<tr>
+<td>$2500\ \mathrm{Hz}$</td>
+<td>$+1.27\ \mathrm{dB}$</td>
+<td>$1.339883$</td>
+<td>$\approx 134\%$</td>
+</tr>
+</tbody>
+</table></div>
+<p>For single-microphone direct human listening, A-weighting roughly tracks perceived hiss; once MEMS sensors are mounted into a compact array for first-order differential or superdirective beamforming (§5.3), however, the picture flips completely upside down. When inter-sensor spacing $d$ is much smaller than a wavelength, subtracting adjacent microphones cancels rear interference but also rolls off low-frequency target speech sinusoidally at $-6.02\ \mathrm{dB}$ per octave; restoring flat target speech requires an equalization filter boosting low-frequency power proportional to $1/f^2$ ($+6.02\ \mathrm{dB}$/octave), which—multiplied onto the sensor's native $1/f$ flicker noise—blows up low-frequency output self-noise as $1/f^3$ ($+9.03\ \mathrm{dB}$/octave)! Budgeting low-frequency noise on compact arrays therefore demands unweighted self-noise PSD curves rather than a single $\mathrm{dB(A)}$ headline number (Exercise E01-12 calculates a concrete reversal where a MEMS mic boasting a $\approx 1.59\ \mathrm{dB}$ better $\mathrm{dB(A)}$ rating across $50\ \mathrm{Hz}$–$8\ \mathrm{kHz}$ degrades speech-band output noise by $\approx 5\ \mathrm{dB}$ on a $1\ \mathrm{cm}$ differential pair).</p>
+<span id="sec-u-783265321c" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-cb7573fea3">Three Classes of Array Gain and White Noise Gain</h3>
+<p>How many decibels of noise an array removes depends critically on the spatial structure of the noise field. Engineering practice uses three distinct yardsticks matched to three canonical spatial noise models:</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable data table"><table>
+<thead>
+<tr>
+<th scope="col">Spatial Assumption on Input Noise / Interference</th>
+<th scope="col">Core Metric</th>
+<th scope="col">What This Metric Tells Us</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Zero-mean, equal-power, mutually uncorrelated noise across channels</td>
+<td><strong>White Noise Gain (WNG)</strong></td>
+<td>Array SNR improvement over one mic under ideal independent self-noise; widely used to monitor sensor self-noise amplification</td>
+</tr>
+<tr>
+<td>Equal-strength plane waves arriving isotropically from all directions</td>
+<td><strong>Directivity Index (DI)</strong></td>
+<td>Target-direction gain over background noise averaged over the full sphere (or horizontal circle), expressed in dB</td>
+</tr>
+<tr>
+<td>Strong point-source interferer arriving from a specific bearing</td>
+<td><strong>Interferer Response / Null Depth</strong></td>
+<td>Attenuation in dB at that specific interferer bearing; characterizes only that angle, not quietness elsewhere</td>
+</tr>
+</tbody>
+</table></div>
+<p>The single most common point of confusion in this table is the word "white" inside WNG. In single-channel DSP, "temporally white noise" means flat power spectral density across all frequencies; <strong>White Noise Gain (WNG)</strong>, by contrast, refers to <strong>spatially white</strong> noise—meaning that at a given frequency (or after target alignment), noise across distinct microphones is mutually uncorrelated (zero cross-channel expectation) with equal variance on every channel.</p>
+<p>Spatial whiteness is a <em>cross-channel</em> statistical property completely distinct from single-channel spectral flatness: if you generate spectrally flat white noise and copy that identical waveform into four channels, the four noises are $100\%$ spatially coherent and averaging reduces zero noise; conversely, independent low-frequency $1/f$ circuit noises across four matched sensors are spectrally colored yet satisfy the spatially white assumption bin by bin.</p>
+<p>Indoors, late reverberation after many wall bounces is often approximated as an isotropic diffuse field, making DI a useful proxy for diffuse-reverb suppression; as Chapter 5 (§5.3–§5.4) demonstrates, pushing low-frequency DI high on a compact aperture forces aggressive inter-channel subtraction that drives $\mathrm{WNG}_{\mathrm{dB}}$ negative (amplifying sensor self-noise), while deep directional nulls must always be evaluated alongside target distortion and pointing-error sensitivity.</p>
+<span id="sec-u-d2f01ae3f8" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-c539d88541">From Summation to Averaging: How Four Microphones Deliver 6 dB</h3>
+<p>Let us derive the foundational array-gain benchmark by hand. Suppose a far-field target impinges on $M$ matched microphones whose arrival-time differences have already been compensated exactly. The $m$-th aligned channel ($m=1,\ldots,M$) reads</p>
+<p>$$
+x_m[n] = s[n] + v_m[n],
+$$</p>
+<p>sharing identical aligned target waveform $s[n]$ of power $P_s=\mathbb{E}[s[n]^2]>0$ (even in the near field, compensating both propagation delays and spherical $1/r$ attenuation into common $s[n]$ obeys the exact same algebra). Assume additive noises $v_m[n]$ have zero mean ($\mathbb{E}[v_m[n]]=0$), equal variance ($\mathbb{E}[v_m[n]^2]=P_v>0$), and zero cross-channel correlation ($\mathbb{E}[v_m[n]v_\ell[n]]=0$ for $m\ne \ell$; expectation properties are reviewed in <a href="00_math-foundations.html#sec-0-6">Chapter 0 §0.6</a>), giving single-mic input $\mathrm{SNR}_{\mathrm{in}}=P_s/P_v$.</p>
+<p><strong>Step 1: Direct summation across $M$ channels.</strong> Denote raw sum $z[n]$ and equal-weight average $y[n]$ by:</p>
+<p>$$
+\begin{aligned}
+z[n] &= \sum_{m=1}^{M}x_m[n] = M s[n] + \sum_{m=1}^{M}v_m[n], \\
+y[n] &= \frac{z[n]}{M} = s[n] + \frac{1}{M}\sum_{m=1}^{M}v_m[n].
+\end{aligned} \tag{1-3}
+$$</p>
+<p>Evaluate target and noise powers inside raw sum $z[n]$ separately:</p>
+<ul>
+<li><strong>Coherent target addition</strong>: Summing $M$ identical copies of $s[n]$ produces $M s[n]$, scaling amplitude by $M$ and squared power to $\mathbb{E}\bigl[(M s[n])^2\bigr]=M^2 P_s$.</li>
+<li><strong>Incoherent noise power addition</strong>: Expanding $\bigl(\sum_{m=1}^{M}v_m[n]\bigr)^2$ yields $M$ diagonal squares $v_m[n]^2$ plus $M(M-1)$ off-diagonal cross-products $v_m[n]v_\ell[n]$ ($m\ne\ell$)—e.g., $(v_1+v_2)^2 = v_1^2 + v_2^2 + 2v_1 v_2$ for $M=2$. Taking population expectation term by term gives:</li>
+</ul>
+<p>$$
+\begin{aligned}
+\mathbb{E}\!\left[\left(\sum_{m=1}^{M}v_m[n]\right)^2\right]
+&= \sum_{m=1}^{M}\mathbb{E}\bigl[v_m[n]^2\bigr] \\
+&\quad + \sum_{m=1}^{M}\sum_{\substack{\ell=1\\\ell\ne m}}^{M}
+\mathbb{E}\bigl[v_m[n]v_\ell[n]\bigr] \\
+&= M P_v + 0 = M P_v.
+\end{aligned}
+$$</p>
+<p>Because cross-channel noises are uncorrelated, all $M(M-1)$ cross-terms vanish in expectation, leaving only $M$ diagonal terms: summed noise power grows only to $M P_v$ while target power grows to $M^2 P_s$!</p>
+<p><strong>Step 2: Dividing by $M$ for equal-weight averaging.</strong> Scaling $z[n]$ by $1/M$ into $y[n]$ divides both target and noise powers by $M^2$: output target power returns to single-mic scale $M^2 P_s / M^2 = P_s$, while output noise power shrinks to $M P_v / M^2 = P_v / M$. Substituting into Eq. (1-2) immediately yields output SNR and array gain:</p>
+<p>$$
+\begin{aligned}
+\mathrm{SNR}_{\mathrm{out}} &= \frac{P_s}{P_v/M} \\
+&= M\,\mathrm{SNR}_{\mathrm{in}}, \quad
+G_{\mathrm{dB}} = 10\log_{10}M.
+\end{aligned} \tag{1-4}
+$$</p>
+<p>Note that Eq. (1-4) expresses the ratio of population second moments ($\mathbb{E}[\cdot]$); computing per-clip finite-window SNRs across short clips and averaging afterward estimates a different statistic due to random finite-sample cross-terms and nonlinearity of ratios/logarithms. For $M=4$ microphones with $P_s=1$ and $P_v=1$, comparing single mic, raw 4-mic sum, and 4-mic average side by side makes every column transparent:</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable data table"><table>
+<thead>
+<tr>
+<th scope="col">Processing Mode</th>
+<th scope="col">Output Target Power</th>
+<th scope="col">Output Noise Power</th>
+<th scope="col">Linear Output SNR</th>
+<th scope="col">SNR Gain vs. 1 Mic</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Single-microphone baseline</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0.00 dB</td>
+</tr>
+<tr>
+<td>Aligned 4-mic raw sum $z[n]$</td>
+<td>16</td>
+<td>4</td>
+<td>4</td>
+<td>6.02 dB</td>
+</tr>
+<tr>
+<td>Aligned 4-mic equal average $y[n]$</td>
+<td>1</td>
+<td>0.25</td>
+<td>4</td>
+<td>6.02 dB</td>
+</tr>
+</tbody>
+</table></div>
+<p>Notice in the bottom two rows that raw summation and equal averaging achieve <strong>the exact same output SNR</strong> ($4$, or $10\log_{10}4 \approx 6.02\ \mathrm{dB}$). Engineering pipelines prefer equal-weight averaging ($1/M$) because it preserves nominal target speech level—allowing fair A/B comparisons against a single mic and preventing fixed-point overflow clipping when summing many channels. Under spatially white noise, $8$ microphones yield $10\log_{10}8 \approx 9.03\ \mathrm{dB}$—<strong>every doubling of microphone count adds a fixed $10\log_{10}2 \approx 3.01\ \mathrm{dB}$ of ideal White Noise Gain</strong>.</p>
+<p>Better still, elementary completing-the-square proves that among <em>all</em> distortionless linear weightings, equal averaging $w_m = 1/M$ already attains the theoretical ceiling on WNG. Applying real weights $w_1,\ldots,w_M$ to form $y[n] = \sum_{m=1}^{M}w_m x_m[n]$ yields target $\bigl(\sum_{m=1}^{M}w_m\bigr)s[n]$ and noise $\sum_{m=1}^{M}w_m v_m[n]$. Preserving target speech unscaled requires $\sum_{m=1}^{M}w_m = 1$, under which unit-variance spatially white noise ($P_v=1$) produces output noise power $\sum_{m=1}^{M}w_m^2$. Expanding squared deviations from $1/M$ without skipping a step gives:</p>
+<p>$$
+\begin{aligned}
+0 &\le \sum_{m=1}^{M}\left(w_m-\frac{1}{M}\right)^2 \\
+&= \sum_{m=1}^{M}
+\left(w_m^2 - \frac{2}{M}w_m + \frac{1}{M^2}\right) \\
+&= \sum_{m=1}^{M}w_m^2 - \frac{2}{M}\sum_{m=1}^{M}w_m
++ M\cdot\frac{1}{M^2} \\
+&= \sum_{m=1}^{M}w_m^2 - \frac{2}{M}\cdot 1 + \frac{1}{M}
+= \sum_{m=1}^{M}w_m^2 - \frac{1}{M}.
+\end{aligned}
+$$</p>
+<p>Rearranging proves $\sum_{m=1}^{M}w_m^2 \ge \frac{1}{M}$, with equality if and only if $w_m = \frac{1}{M}$ for every $m$ (Chapters 2 and 5 extend this identical ceiling to complex frequency-domain weights via Cauchy–Schwarz). Under equal-amplitude aligned targets and equal-variance spatially white noise, no linear beamformer can ever exceed linear WNG $M$, and plain delay-and-sum hits that ceiling exactly.</p>
+<p>Conversely, even when $\sum_{m=1}^{M}w_m = 1$ preserves target speech, choosing large opposing positive and negative weights to cancel directional interference (e.g., $w_1=2, w_2=-1$ in Exercise E01-09) drives $\sum_{m=1}^{M}w_m^2 \gg 1$, making output self-noise substantially louder than a single microphone. Readers interested in how far-field arrays serve ASR engines may consult Kumatani, McDonough, and Raj, <a href="https://doi.org/10.1109/MSP.2012.2205285">"Microphone Array Processing for Distant Speech Recognition: From Close-Talking Microphones to Far-Field Sensors" (<em>IEEE Signal Processing Magazine</em>, 29(6), 127–140, 2012)</a> (<a href="https://course.ece.cmu.edu/~ece792/handouts/KumataniEtAl12.pdf">public CMU course copy</a>).</p>
+<span id="sec-u-70eac6767c" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-95eccf1b16">Matrix Coloring and Positive-Semidefinite Boundaries for Spatially Correlated Noise</h3>
+<p>When sensor noises are correlated across microphones—like HVAC airflow or diffuse room reverberation rather than independent thermal noise—how do we synthesize multichannel test noise obeying realistic spatial statistics? At frequency $f$ with unit per-mic variance, pairwise complex correlation coefficients across $M$ sensors form an $M \times M$ <strong>spatial coherence matrix</strong> $\mathbf{\Gamma}(f)$ obeying conjugate symmetry $\mathbf{\Gamma}^H = \mathbf{\Gamma}$ (Hermitian symmetry and eigendecomposition are derived in <a href="00_math-foundations.html#sec-0-3">Chapter 0 §0.3</a> and <a href="16_appendix-symbols-math.html#sec-16-3">Appendix A §16.3</a>). Mixing zero-mean spatially white $\vec z$ ($\mathbb{E}[\vec z\vec z^H] = \mathbf{I}_M$) through linear coloring matrix $\mathbf{C}$ as $\vec v = \mathbf{C}\vec z$ achieves $\mathbb{E}[\vec v\vec v^H] = \mathbf{C}\mathbf{C}^H = \mathbf{\Gamma}(f)$ via matrix square-root factorization (for classic spherical and cylindrical isotropic noise generation, see <a href="https://doi.org/10.1121/1.2987429">Habets et al., <em>JASA</em>, 124(5), 2911–2917, 2008</a>).</p>
+<p>Not every symmetric matrix qualifies as a physical spatial coherence matrix. For any complex weight vector $\vec w \in \mathbb{C}^M$, mean output power of $\vec w^H\vec v$ can never be negative; pairing non-negative power with unitary eigendecomposition $\mathbf\Gamma = \mathbf U\mathbf\Lambda\mathbf U^H$ gives:</p>
+<p>$$
+\begin{aligned}
+\mathbb{E}\bigl[|\vec w^H\vec v|^2\bigr]
+&= \vec w^H\mathbb{E}[\vec v\vec v^H]\vec w
+= \vec w^H\mathbf{\Gamma}\vec w \ge 0, \\
+\mathbf\Gamma^{1/2} &= \mathbf U\mathbf\Lambda^{1/2}\mathbf U^H.
+\end{aligned}
+$$</p>
+<p>Physical power non-negativity holds if and only if every real eigenvalue of $\mathbf{\Gamma}(f)$ satisfies $\lambda_m \ge 0$—i.e., $\mathbf{\Gamma}(f)$ is <strong>positive semidefinite (PSD)</strong>. Standard numerical routines often call lower-triangular Cholesky factorization ($\mathbf{\Gamma} = \mathbf{L}\mathbf{L}^H$), which requires <em>strict</em> positive definiteness ($\lambda_m > 0$); at DC in a diffuse field (where all sensors move identically in phase, $\mathbf{\Gamma}(0)=\vec{1}\vec{1}^\top$, rank $1$) or at the negative-correlation singular boundary $\rho = -1/(M-1)$ in Exercise E01-01, zero eigenvalues cause naive Cholesky pivots to vanish or go tiny-negative in float64 and fail, whereas the Hermitian eigendecomposition square root $\mathbf{\Gamma}^{1/2}$ above remains uniquely well-defined across every rank-deficient PSD boundary (Exercise E01-11 works out rational 2-mic and singular 4-mic cases by hand).</p>
+<span id="sec-1-1" class="anchor-alias" aria-hidden="true"></span><span id="sec-2" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-1d5f9c4fa9" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-46fb446991">Three Binaural Localization Cues in Human Hearing</h2>
+<p>Before deriving arbitrary microphone array geometries, inspecting nature's evolved two-channel receiver—human left and right ears—builds invaluable physical intuition. Acoustically, our two ears act like sensors mounted on opposite sides of a rigid spherical baffle (the head) behind asymmetric directional waveguides (the pinnae), backed by active head motion, prior memory, and brainstem neural circuits. Figure 1 separates Interaural Time Difference, Interaural Level Difference, and directional spectral cues visually (on narrow screens, click <a href="../figures_en/fig01_binaural.png">open Figure 1 full resolution</a> to zoom in):</p>
+<p><img alt="Figure 1 Localization cues in human binaural hearing" src="../figures_en/fig01_binaural.png" onerror="this.alt+=' (figure missing)'" /></p>
+<p>Read Figure 1 sequentially along <code>(a) → (b) → (c)</code> from geometric acoustics to perceptual boundaries:</p>
+<ul>
+<li><strong>Panel <code>(a)</code> Top-down geometry and sign convention</strong>: Viewing the head from above with blue dots marking left and right ears, the upward black arrow defines straight-ahead $0^\circ$, with clockwise rightward bearings positive (purple arc marks a source at $\theta=+30^\circ$ front-right, red outward arrow points toward the source, and parallel slanted blue arrows depict incoming far-field wavefronts). Because the source sits on the right, wavefronts strike the ipsilateral right ear first while the contralateral left ear sits inside the head's acoustic shadow—forcing sound both to travel an extra creeping path around the head to reach the left ear (creating positive Interaural Time Difference $\mathrm{ITD}=t_L-t_R>0$) and to lose high-frequency energy to head shadowing (creating Interaural Level Difference $\mathrm{ILD}$).</li>
+<li><strong>Panel <code>(b)</code> Theoretical ITD curves under two geometric models</strong>: Plotting arrival delay $t_L - t_R$ ($\mu\mathrm{s}$) against azimuth $\theta \in [-90^\circ, +90^\circ]$ at effective head radius $a=8.75\ \mathrm{cm}$ and $c=343\ \mathrm{m/s}$, comparing the solid blue curve (rigid-sphere creeping-ray approximation) against the dashed orange curve (unobstructed free-field point pair spaced at $17.5\ \mathrm{cm}$ with the head removed) reveals three features: first, near $\theta=0^\circ$ both curves overlap almost linearly at roughly $9\ \mu\mathrm{s}$ per $1^\circ$ shift (red annotation); second, toward lateral angles the free-field sine curve flattens out to $\approx 510\ \mu\mathrm{s}$ at $+90^\circ$, whereas the rigid-sphere curve—unable to tunnel straight through the skull—climbs to $\approx 656\ \mu\mathrm{s}$; third, odd symmetry makes left-hemisphere sources ($\theta\lt 0^\circ$) arrive at the left ear first with negative ITD.</li>
+<li><strong>Panel <code>(c)</code> Operating regimes across three binaural cues</strong>: Stacked blue, red, and green bars compare pure-tone fine-structure ITD, ILD, and modulated high-frequency envelope ITD. This panel dispels the oversimplified textbook myth that "low frequencies use only ITD and high frequencies use only ILD": although neural phase locking to cycle-by-cycle pure-tone carrier phase fades out near $\approx 1.4\ \mathrm{kHz}$ in controlled headphone tasks, slowly modulated high-frequency sounds still convey clear envelope ITDs, just as near-field or baffled low frequencies can exhibit nonzero ILDs.</li>
+</ul>
+<span id="sec-u-8b017cf10d" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-5a726adb0f">Interaural Time Difference: Getting the Geometric Model Right</h3>
+<p><strong>Interaural Time Difference (ITD)</strong> measures the arrival-time lag of a wavefront between the two ears. Following Figure 1(a) with $0^\circ$ straight ahead and clockwise bearings positive, denoting arrival instants at the left and right ears by $t_L$ and $t_R$ defines $\tau = t_L - t_R$: a right-side source ($\theta>0^\circ$) reaches the right ear earlier ($t_L > t_R$, so $\tau > 0$), while a symmetric left-side source gives $\tau \lt  0$.</p>
+<p>Why does head diffraction produce extra path length $a\sin\theta + a\theta$? Trace the classic <strong>Woodworth high-frequency rigid-sphere ray model</strong> step by step. Model the head as a rigid sphere of radius $a$ centered at origin $O$ with right ear $R$ at $(a, 0)$ and left ear $L$ at $(-a, 0)$. For a far-field plane wave arriving from front-right bearing $0 \le \theta \le \pi/2$ (unit source vector $(\sin\theta, \cos\theta)$, wavefront perpendicular to it):</p>
+<ol>
+<li><strong>Ipsilateral straight-line lead $a\sin\theta$</strong>: Right ear $R$ sits on the illuminated hemisphere facing the source. Relative to the parallel reference wavefront passing through sphere center $O$, $R$ projects a distance $a\sin\theta$ closer to the source—so after striking $R$, the wavefront travels an additional straight distance $a\sin\theta$ before reaching the center reference plane.</li>
+<li><strong>Contralateral creeping arc $a\theta$ from the tangent point</strong>: On the opposite side toward left ear $L$, one grazing ray touches the sphere tangentially at point $T$. Because radius $OT$ is perpendicular to the incident ray, <strong>tangent point $T$ lies on the exact same center reference wavefront passing through $O$</strong>! Moreover, the central angle subtended between $OT$ and left-ear radius $OL$ equals $\theta$ (in radians). Unable to penetrate the rigid skull past $T$, the wave creeps along the spherical arc of length $a\theta$ into the shadow zone to reach $L$.</li>
+</ol>
+<p>Adding straight segment $a\sin\theta$ (from $R$ to the $O$–$T$ wavefront) to spherical arc $a\theta$ (from $T$ to $L$) gives total path difference $\Delta d = a(\theta + \sin\theta)$; dividing by sound speed $c$ (and extending to $-\pi/2 \le \theta \le \pi/2$ by odd symmetry) yields Woodworth's formula:</p>
+<p>$$
+\tau_{\mathrm{sphere}}(\theta)
+= \frac{a}{c}\bigl(\theta+\sin\theta\bigr). \tag{1-5}
+$$</p>
+<p>Watch units carefully when evaluating Eq. (1-5) by hand: with $a$ in meters ($\mathrm{m}$) and $c$ in $\mathrm{m/s}$, the standalone angle $\theta$ inside the parentheses <strong>must be in radians ($\mathrm{rad}$)</strong> so $a\theta$ represents arc length in meters and the quotient has units of seconds ($\mathrm{s}$).</p>
+<p>Substituting typical adult head radius $a = 8.75\ \mathrm{cm} = 0.0875\ \mathrm{m}$ and $c = 343\ \mathrm{m/s}$ reproduces both key landmarks on Figure 1(b):</p>
+<ul>
+<li>
+<p><strong>Lateral extremum ($\theta = 90^\circ = \pi/2\ \mathrm{rad}$)</strong>: Here $\sin(\pi/2)=1$ (one radius $a$ straight to the center plane) plus a quarter-circle creeping arc $\frac{\pi}{2}a$ around the head to the shadowed ear gives</p>
+<p>$$
+    \begin{aligned}
+    \tau_{\mathrm{sphere}}(90^\circ)
+    &= \frac{0.0875}{343}\left(\frac{\pi}{2}+1\right) \\
+    &\approx 0.000655815\ \mathrm{s} \approx 656\ \mu\mathrm{s}.
+    \end{aligned}
+    $$</p>
+</li>
+<li>
+<p><strong>One-degree shift off midline ($\theta = 1^\circ$)</strong>: Converting $\theta = \pi/180 \approx 0.0174533\ \mathrm{rad}$ with $\sin 1^\circ \approx 0.0174524$ gives $\tau_{\mathrm{sphere}}(1^\circ) \approx 8.9045\ \mu\mathrm{s}$ (annotated as $\approx 9\ \mu\mathrm{s}$ in Figure 1(b)). Note that $9\ \mu\mathrm{s}$ is the <em>physical acoustic delay increment</em> per degree near midline; whether human listeners can actually discriminate $9\ \mu\mathrm{s}$ must be measured empirically via psychoacoustic experiments rather than asserted from geometry alone.</p>
+</li>
+</ul>
+<p>By contrast, removing the head to leave two unobstructed free-field point microphones separated by $d = 2a = 17.5\ \mathrm{cm}$ replaces creeping arc $a\theta$ with a second straight projection $a\sin\theta$, yielding the free-field two-point delay formula:</p>
+<p>$$
+\tau_{\mathrm{free}}(\theta) = \frac{2a}{c}\sin\theta. \tag{1-6}
+$$</p>
+<p>At $2a = 0.175\ \mathrm{m}$ and $\theta = 90^\circ$, the unobstructed maximum delay is only $0.175 / 343 \approx 510\ \mu\mathrm{s}$—roughly $146\ \mu\mathrm{s}$ shorter than around a spherical head! Near straight-ahead ($\theta \to 0$), first-order Taylor approximation $\sin\theta \approx \theta$ collapses both Eqs. (1-5) and (1-6) to $\frac{2a}{c}\theta$, explaining geometrically why the blue and orange curves hug each other near $0^\circ$ and diverge progressively toward $\pm 90^\circ$.</p>
+<p>Keep in mind that Woodworth's formula is an asymptotic high-frequency ray approximation valid when wavelength is small relative to head size; low-frequency wave diffraction and actual ear-canal offsets away from exact antipodes are analyzed in detail by <a href="https://doi.org/10.1121/1.4861243">Aaronson and Hartmann (<em>JASA</em>, 135(2), 817–823, 2014)</a>.</p>
+<span id="sec-u-5221e22cae" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-8582a93a9f">Level Differences, Fine Structure, and Envelopes Must Be Evaluated Separately</h3>
+<p>Beyond arrival timing, sound pressure level also differs across the ears. <strong>Interaural Level Difference (ILD)</strong> measures the level difference between right and left ears. At mid-to-high frequencies where wavelength is shorter than head diameter, the head casts an acoustic shadow over the far ear, dropping contralateral level substantially below ipsilateral level; at low frequencies where wavelength far exceeds head diameter, waves diffract effortlessly around the skull and ILD shrinks toward zero. Far-field binaural ILD thus arises primarily from frequency-dependent head scattering and shadowing rather than negligible free-field $1/r$ spreading across $17.5\ \mathrm{cm}$.</p>
+<p>Throughout this book we define ILD as <strong>right-ear level minus left-ear level</strong>: louder right ear gives $\mathrm{ILD} > 0$, louder left ear gives $\mathrm{ILD} \lt  0$. Under this convention, a right-hemisphere source produces both positive ITD and positive ILD (when reading external papers, check whether left-minus-right is used instead; Exercise E01-08 verifies amplitude ratios, power ratios, and channel-gain offsets on ILD).</p>
+<p>As early as 1907, Lord Rayleigh proposed in <a href="https://doi.org/10.1080/14786440709463595">"On our perception of sound direction"</a> that human localization relies primarily on interaural phase/time cues at low frequencies and interaural intensity cues at high frequencies—celebrated ever since as <strong>Duplex Theory</strong>. Modern psychoacoustics shows, however, that these cues do not flip like a hard mechanical switch at one cutoff frequency. Interpreting experimental data accurately requires separating two temporal scales: <strong>fine structure</strong> refers to rapid millisecond/sub-millisecond cycle-by-cycle carrier oscillations, whereas <strong>envelope</strong> refers to slower amplitude modulations riding atop the carrier—a $4\ \mathrm{kHz}$ tone has a tiny carrier period yet can carry a slow envelope fluctuating tens of times per second. The table below pairs accurate experimental findings from Figure 1(c) against overgeneralizations to avoid:</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable data table"><table>
+<thead>
+<tr>
+<th scope="col">Experimental Stimulus</th>
+<th scope="col">Experimentally Supported Conclusion</th>
+<th scope="col">Overgeneralization to Avoid</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Headphone pure-tone fine-structure ITD</td>
+<td>Under controlled discrimination tasks, human sensitivity to cycle-by-cycle pure-tone phase ITD tops out near $\approx 1.4\ \mathrm{kHz}$</td>
+<td>Assuming <em>every</em> temporal cue in <em>every</em> sound vanishes abruptly above $1.4\ \mathrm{kHz}$</td>
+</tr>
+<tr>
+<td>Directional Interaural Level Difference (ILD)</td>
+<td>Head shadowing produces large mid/high-frequency ILDs, and near-field sources also create substantial low-frequency ILDs</td>
+<td>Assuming zero physical level difference can ever exist below some fixed frequency</td>
+</tr>
+<tr>
+<td>High-frequency sounds with slow amplitude envelopes</td>
+<td>Even on multi-kilohertz carriers, interaural envelope timing shifts evoke clear lateralization</td>
+<td>Inferring from envelope ITD sensitivity that auditory nerve fibers phase-lock to multi-kHz pure-tone carriers</td>
+</tr>
+</tbody>
+</table></div>
+<p>Where does the oft-cited "$\approx 1.4\ \mathrm{kHz}$" figure come from? Inspect the experimental protocol in <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3663869/">Brughera, Dunai, and Hartmann (<em>JASA</em>, 2013, §II.A–B, pp. 2840–2843)</a> (<a href="https://riunet.upv.es/server/api/core/bitstreams/f65b9337-1b1e-4013-9020-8338ac77ad6b/content">author institutional repository PDF</a>): listeners wore headphones presenting equal-level $70\ \mathrm{dB\ SPL}$, $500\ \mathrm{ms}$ pure tones (shaped with $100\ \mathrm{ms}$ onset/offset ramps to eliminate transient click cues) in a <strong>two-interval forced-choice (2IFC)</strong> task—playing a first tone at $+\Delta\mathrm{ITD}/2$ (say $+10\ \mu\mathrm{s}$ right) followed by a second tone at $-\Delta\mathrm{ITD}/2$ ($-10\ \mu\mathrm{s}$ left, total jump $\Delta\mathrm{ITD}=20\ \mu\mathrm{s}$) and asking whether the second tone shifted left or right.</p>
+<p>Thresholds were tracked via a <strong>3-down, 1-up adaptive staircase</strong>: three consecutive correct answers shrank $\Delta\mathrm{ITD}$ by one step, whereas a single mistake widened $\Delta\mathrm{ITD}$ by one step. Why does a 3-down, 1-up staircase converge to the $\approx 79.4\%$ correct point? Denoting single-trial probability of a correct response at equilibrium by $p$, three independent correct answers occur with probability $p^3$; upward and downward steps balance when $p^3 = 0.5$, yielding $p = 0.5^{1/3} \approx 0.7937$ ($\approx 79.4\%$).</p>
+<p>Across listeners, individual cutoffs varied noticeably: the two most sensitive listeners still achieved finite thresholds at $1400\ \mathrm{Hz}$, whereas at $1450\ \mathrm{Hz}$ the staircase diverged for every subject regardless of phase shift—establishing the precise empirical meaning of fine-structure ITD sensitivity "up to $\approx 1.4\ \mathrm{kHz}$."</p>
+<p>For high-frequency envelopes, <a href="https://doi.org/10.1121/1.1570431">Bernstein and Trahiotis (<em>JASA</em>, 2003)</a> crafted <strong>$4\ \mathrm{kHz}$ transposed stimuli</strong> by half-wave rectifying and low-pass filtering low-frequency waveforms (mimicking cochlear inner-hair-cell transduction envelopes) and modulating that slow envelope onto a $4\ \mathrm{kHz}$ carrier—confirming acute lateralization sensitivity to microsecond envelope ITDs even though the $4\ \mathrm{kHz}$ carrier fine structure lies far beyond neural phase locking.</p>
+<p>Contrasting human neural phase locking against <strong>machine microphone arrays</strong> immediately clarifies a vital distinction: electronic ADCs sample $2\ \mathrm{kHz}$ or $8\ \mathrm{kHz}$ sinusoids without a trace of "neural fatigue"; what trips up machine arrays at high frequencies is periodic $2\pi$ phase wrapping—<strong>spatial aliasing</strong> (analyzed thoroughly in Chapters 2 and 3). Define single-frequency <strong>Interaural Phase Difference (IPD)</strong> as right-channel phase minus left-channel phase. Under a pure delay $\tau = t_L - t_R$ with nonzero magnitudes, right-minus-left phase equals $2\pi f\tau$ ($\mathrm{rad}$), which wraps indistinguishably every full cycle $2\pi$ ($360^\circ$).</p>
+<p>Work out the numbers on a continuous $f = 2\ \mathrm{kHz}$ pure tone, whose period is $T = 1/2000 = 0.0005\ \mathrm{s} = 500\ \mu\mathrm{s}$:</p>
+<ul>
+<li>Compare $\tau_1 = +100\ \mu\mathrm{s}$ and $\tau_2 = +600\ \mu\mathrm{s}$: separated by one full $500\ \mu\mathrm{s}$ period, they yield identical wrapped phases $360^\circ \times 2000 \times 0.0001 = 72^\circ$ and $432^\circ \equiv 72^\circ\ (\bmod\ 360^\circ)$ at $2\ \mathrm{kHz}$. On a $17.5\ \mathrm{cm}$ free-field pair, however, physical delays cannot exceed $\pm 510\ \mu\mathrm{s}$ (Eq. (1-6)), ruling $+600\ \mu\mathrm{s}$ out geometrically.</li>
+<li>Now inspect a genuinely ambiguous pair: <strong>$\tau_1 = +450\ \mu\mathrm{s}$ (far front-right) vs. $\tau_2 = -50\ \mu\mathrm{s}$ (slight front-left)</strong>. Both delays lie squarely inside the physically valid $[-510, +510]\ \mu\mathrm{s}$ interval while differing by exactly $500\ \mu\mathrm{s}$! At $2\ \mathrm{kHz}$, $+450\ \mu\mathrm{s}$ gives $+324^\circ$ and $-50\ \mu\mathrm{s}$ gives $-36^\circ$, which coincide modulo $360^\circ$ ($324^\circ - 360^\circ = -36^\circ$)—making left vs. right impossible to tell from $2\ \mathrm{kHz}$ alone. Fortunately, natural speech spans a wide bandwidth: if that same talker simultaneously radiates energy at $1\ \mathrm{kHz}$, the shared physical delay maps $+450\ \mu\mathrm{s}$ to $+162^\circ$ and $-50\ \mu\mathrm{s}$ to $-18^\circ$ at $1\ \mathrm{kHz}$, breaking the tie instantly!</li>
+</ul>
+<p>Machine arrays resolve high-frequency phase aliasing via three levers: tighter inter-sensor spacing to shrink physically admissible delays, wideband phase-slope fusion across frequencies, or non-uniform sensor spacings (see §2.6 and §3.2, and listen to <a href="04_doa-estimation.html#sec-u-56493f2d40">E04-18 Pure-Tone vs. Multi-Frequency TDOA</a> alongside <a href="research/05_exercises_and_audio.html#sec-u-50bb14a451">Audio Experiment Manual Section 26</a> after Chapter 4). Also remember that once enclosure scattering or transducer responses add frequency-dependent phase shifts, inter-channel phase ceases to equal pure $2\pi f\tau$ and cannot simply be divided by $2\pi f$ to read off geometric delay (Exercise E01-10 and <a href="02_basics-signal-model.html#sec-2-3">§2.3</a>).</p>
+<span id="sec-u-dff9e8c5a2" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-5a56289d6b">Direction-Dependent Spectra and Head-Related Transfer Functions</h3>
+<p>If localization relied solely on left–right ITD and ILD, whenever a source moved overhead from straight ahead to straight behind—or up and down within the median sagittal plane—left and right ears would remain symmetric with near-zero ITD and ILD; how, then, do humans tell front from back and up from down? The answer lies in the intricate ridges and cavities of the outer ear (pinna) plus head-and-torso reflections and diffraction: waves arriving from distinct elevations and front/back angles undergo micro-multipath interference just outside the ear canal, reinforcing certain frequency bands into <strong>spectral peaks</strong> while canceling others into <strong>spectral notches</strong>—stamping a directional "spectral fingerprint" onto incoming broadband sound.</p>
+<p>Acoustics captures this complete spatial filtering process via the <strong>Head-Related Transfer Function (HRTF)</strong>: defined as the complex frequency response from a point source at a specified spatial coordinate to the left (or right) ear-canal entrance, divided by the free-field frequency response at the head-center reference point with the listener absent. Because a binaural HRTF pair records exact magnitude and phase across all frequencies, ITD, ILD, and pinna spectral notches are not three disconnected signals—they are phase, broadband-energy, and fine-spectral slices of one unified binaural transfer function pair.</p>
+<p>Inferring direction from monaural or binaural spectral shape faces an inherent identifiability hurdle: the spectrum received at the ear equals <strong>unknown source spectrum multiplied by directional transfer function</strong>. If energy is weak around $6\ \mathrm{kHz}$, did a pinna notch carve it out, or did the sound source simply radiate little energy at $6\ \mathrm{kHz}$? A single pure tone probes only one spectral line and reveals zero spectral contour; only broadband sources let the auditory system inspect cross-frequency spectral profiles or form interaural complex ratios across active bins to cancel unknown shared source spectra (Exercise E01-10 demonstrates on a two-tap FIR pair how bin-wise ratios cancel source spectra exactly whereas broadband ILD shifts dramatically with source timbre). In natural hearing, the brain fuses ITD, ILD, broadband HRTF notches, and dynamic head-turn cues to resolve front–back and elevation ambiguities (reviewed comprehensively by <a href="https://doi.org/10.1146/annurev.ps.42.020191.001031">Middlebrooks and Green, <em>Annual Review of Psychology</em>, 1991</a>).</p>
+<span id="sec-u-fc1c3d209e" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-123c5c416e">Three-Dimensional HRTF Coordinate Conventions: SOFA Elevation vs. Colatitude</h3>
+<p>When loading public measured HRTF datasets or spherical array calibration files in code, mismatched 3D angular conventions are a notorious bug magnet. Audio Engineering Society standard <strong>AES69 (Spatially Oriented Format for Acoustics, <code>SOFA</code>)</strong> specifies a listener-local right-handed Cartesian frame with $+x_{\mathrm{SOFA}}$ straight ahead, $+y_{\mathrm{SOFA}}$ due left, and $+z_{\mathrm{SOFA}}$ straight up; spherical coordinates $(\phi_{\mathrm{SOFA}}, \delta_{\mathrm{SOFA}}, r)$ measure horizontal azimuth $\phi_{\mathrm{SOFA}}$ <strong>counterclockwise</strong> from front $+x_{\mathrm{SOFA}}$ toward left $+y_{\mathrm{SOFA}}$ (opposite in sign to our clockwise azimuth $\theta$ in Figure 1(a), obeying $\phi_{\mathrm{SOFA}} \equiv -\theta \pmod{360^\circ}$), and <strong>elevation</strong> $\delta_{\mathrm{SOFA}} \in [-90^\circ, +90^\circ]$ upward from the horizontal plane toward $+z_{\mathrm{SOFA}}$.</p>
+<p>Meanwhile, spherical-harmonic array formulations (<a href="00_math-foundations.html#sec-0-1">Chapter 0 §0.1</a>, <a href="00_math-foundations.html#sec-0-7">§0.7</a>, <a href="05_beamforming.html#sec-5-8">§5.8</a>, <a href="14_spatial-wearable-arrays.html#sec-14-2">§14.2</a>, and <a href="16_appendix-symbols-math.html#sec-16-1">Appendix A §16.1</a>) parameterize polar angle downward from the $+z$ zenith as <strong>colatitude</strong> $\vartheta = 90^\circ - \delta_{\mathrm{SOFA}} \in [0^\circ, 180^\circ]$—note carefully that the horizontal equator sits at $\vartheta = 90^\circ$, <em>not</em> $0^\circ$! The table below cross-checks six unit-distance ($r=1\ \mathrm{m}$) directions across all four representations for unit-testing data loaders (hand derivations and bug diagnostics appear in Exercise E01-12; <code>libmysofa</code> spherical interpolation details appear in <a href="research/01_spatial_and_tracking.html">Source Research Manual 1</a>):</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable data table"><table>
+<thead>
+<tr>
+<th scope="col">Physical Direction</th>
+<th scope="col">Book Azimuth $\theta$</th>
+<th scope="col">SOFA Spherical $(\phi_{\mathrm{SOFA}}, \delta_{\mathrm{SOFA}})$</th>
+<th scope="col">SH Colatitude $\vartheta$</th>
+<th scope="col">SOFA Cartesian $(x, y, z)\ [\mathrm{m}]$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Horizontal straight ahead</td>
+<td>$0^\circ$</td>
+<td>$0^\circ,\ 0^\circ$</td>
+<td>$90^\circ$</td>
+<td>$(1, 0, 0)$</td>
+</tr>
+<tr>
+<td>Horizontal due right</td>
+<td>$+90^\circ$</td>
+<td>$-90^\circ$ (or $270^\circ$), $0^\circ$</td>
+<td>$90^\circ$</td>
+<td>$(0, -1, 0)$</td>
+</tr>
+<tr>
+<td>Horizontal due left</td>
+<td>$-90^\circ$</td>
+<td>$+90^\circ,\ 0^\circ$</td>
+<td>$90^\circ$</td>
+<td>$(0, 1, 0)$</td>
+</tr>
+<tr>
+<td>Horizontal straight behind</td>
+<td>$\pm 180^\circ$</td>
+<td>$180^\circ,\ 0^\circ$</td>
+<td>$90^\circ$</td>
+<td>$(-1, 0, 0)$</td>
+</tr>
+<tr>
+<td>Overhead zenith</td>
+<td>arbitrary (polar singularity)</td>
+<td>$0^\circ,\ +90^\circ$</td>
+<td>$0^\circ$</td>
+<td>$(0, 0, 1)$</td>
+</tr>
+<tr>
+<td>$30^\circ$ front-right, $+30^\circ$ elevation</td>
+<td>$+30^\circ$</td>
+<td>$-30^\circ$ (or $330^\circ$), $+30^\circ$</td>
+<td>$60^\circ$</td>
+<td>$(0.75, -0.4330, 0.5)$</td>
+</tr>
+</tbody>
+</table></div>
+<span id="sec-u-e0e1bf4258" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-e298c595fb">Mapping Binaural Cues onto Machine Microphone Arrays</h3>
+<p>Indoors, wall reflections arrive just a few to a few dozen milliseconds after direct sound from completely different angles—yet in everyday conversation we still perceive speech as coming straight from the talker's mouth. Psychoacoustics terms this the <strong>precedence effect</strong>: when two similar sounds arrive in rapid succession within a short fusion window, perceived direction is dominated by the earliest-arriving direct wavefront (seminal experiments in <a href="https://doi.org/10.2307/1418275">Wallach, Newman, and Rosenzweig, 1949</a>; modern review of time windows and breakdown boundaries in <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4310855/">Brown, Stecker, and Tollin, 2015</a>). Precedence does not mean early reflections are erased—they enrich perceived loudness and spaciousness, whereas excessive late reverberation still degrades speech intelligibility.</p>
+<p>Mapping five pillars of human binaural hearing onto engineered microphone arrays sketches the roadmap for the rest of this book:</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable data table"><table>
+<thead>
+<tr>
+<th scope="col">Binaural Phenomenon or Observable</th>
+<th scope="col">Machine Microphone Array Counterpart</th>
+<th scope="col">Chapters</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Interaural Time Difference (ITD)</td>
+<td>Pairwise Time Difference of Arrival (TDOA) estimation coupled with array geometry</td>
+<td>§4.2</td>
+</tr>
+<tr>
+<td>Head and pinna diffraction/shadowing</td>
+<td>Cylindrical speaker enclosures, display bezels, and tabletops reshaping directional amplitude/phase</td>
+<td>§3.2</td>
+</tr>
+<tr>
+<td>Head-Related Transfer Function (HRTF)</td>
+<td>Calibrating or modeling directional complex response vectors (steering vectors) and full manifolds</td>
+<td>§3.4, §10.2</td>
+</tr>
+<tr>
+<td>Precedence effect on early reflections</td>
+<td>Separating beneficial direct + early reflections from late tails via WPE guard delay $\Delta$</td>
+<td>§2.4, §7.1</td>
+</tr>
+<tr>
+<td>Cocktail party effect in noisy rooms</td>
+<td>Combining adaptive spatial beamforming with time-frequency separation and target tracking</td>
+<td>Ch. 5, §8.1, Ch. 15</td>
+</tr>
+</tbody>
+</table></div>
+<p>Comparing both columns reveals a clean principle: <strong>physical array geometry and enclosure acoustics dictate what spatial differences are observable at the sensors</strong>, while <strong>signal-processing and machine-learning algorithms dictate how cleanly those observables are distilled into enhanced target output</strong>.</p>
+<p>Before writing equations, engineers must also ask <em>who will listen to the output—a machine recognizer or human ears?</em> ASR front ends typically collapse multichannel audio into a single monaural stream; hearing aids, AR/VR headsets, and smart glasses, however, must deliver left and right ear signals—feeding the identical monaural beamformer output into both earbuds forces their non-zero spectral ratio identically to $1$ ($\mathrm{ILD}=0\ \mathrm{dB}$, $\mathrm{IPD}=0$), collapsing the entire acoustic world unnaturally inside the center of the wearer's skull.</p>
+<p>Cue-preserving binaural beamforming is developed in <a href="05_beamforming.html#sec-5-5">Chapter 5 §5.5</a>, while irregular-array Binaural Signal Matching (BSM), air/in-ear cross-modal own-voice fusion, and sub-millisecond Hear-Through comb-filtering limits for glasses and TWS earbuds are derived in <a href="14_spatial-wearable-arrays.html#sec-14-5">Chapter 14</a>. Next, in Chapter 2, starting from basic propagation delays, we cast these physical phenomena into a rigorous mathematical array signal model.</p>
+<span id="sec-3" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-f7a201edb9" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-e19f270bd5">Chapter Exercises</h2>
+<p>Exercises E01-01–E01-03 run via cross-chapter script <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/exercises_spatial.py"><code>exercises_spatial.py</code></a>, and Exercises E01-04–E01-12 run via chapter script <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch01/chapter01_experiments.py"><code>chapter01_experiments.py</code></a>. Neither script requires internet access; run both directly from the repository root:</p>
+<pre><code class="language-bash">.venv/bin/python -m codes.chapters.ch00.cross_chapter.exercises_spatial
+.venv/bin/python -m codes.chapters.ch01.chapter01_experiments
+</code></pre>
+<p>The first command is the shared spatial verification runner across Chapters 1–5 (printing 28 exercises in total, including 200-trial Monte Carlo statistics across 7 settings for Chapter 4 Minimum Description Length (MDL) source-enumeration); while studying Chapter 1, simply inspect E01-01–E01-03 at the top of the printout. The second command runs E01-04–E01-12 specifically. Every worked example and companion WAV in this chapter is generated deterministically in IEEE-754 float64 (tables rounded to displayed significant digits), letting you verify every step by hand and compare exact float64 values against 16-bit PCM quantization readback.</p>
+<span id="sec-u-13bdf48a99" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-a9bd8902f8">E01-01: Four Microphones Do Not Automatically Yield 6 dB</h3>
+<p>Target speech is already equal-amplitude aligned across four channels, while four zero-mean noises each have unit variance $\mathbb{E}[v_m^2]=1$ and uniform pairwise correlation $\rho$ across distinct channels ($\mathbb{E}[v_m v_\ell]=\rho$ for $m\ne\ell$). Under four-channel equal averaging, compute output noise power and SNR gain over a single microphone at $\rho=0$, $0.5$, and $1$, explaining why identical noise across all four channels cannot be reduced by averaging.</p>
+<p><strong>Reference Solution.</strong> Equal averaging produces output noise $v_{\mathrm{out}}=(v_1+v_2+v_3+v_4)/4$. Expanding the squared four-term sum inside the numerator yields $4$ diagonal squares $v_m^2$ plus $\binom{4}{2}=6$ distinct pairs each appearing twice ($v_m v_\ell$ and $v_\ell v_m$) for $12$ cross-product terms in total. Taking expectation with unit diagonals and pairwise correlation $\rho$ gives:</p>
+<p>$$
+\begin{aligned}
+P_{v,\mathrm{out}}
+&= \mathbb{E}\!\Bigl[
+\bigl((v_1+v_2+v_3+v_4)/4\bigr)^2\Bigr] \\
+&= \frac{4\times 1 + 12\rho}{16}
+= \frac{1+3\rho}{4}.
+\end{aligned} \tag{1-7}
+$$</p>
+<p>Because aligned target power stays fixed at $P_s$, SNR improvement over one microphone equals $G = 1/P_{v,\mathrm{out}}$ ($10\log_{10}G$ in dB):</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable data table"><table>
+<thead>
+<tr>
+<th scope="col">Noise Correlation $\rho$</th>
+<th scope="col">Output Noise Power $P_{v,\mathrm{out}}$</th>
+<th scope="col">SNR Gain vs. 1 Mic</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$0$</td>
+<td>$0.250$</td>
+<td>$6.02\ \mathrm{dB}$</td>
+</tr>
+<tr>
+<td>$0.5$</td>
+<td>$0.625$</td>
+<td>$2.04\ \mathrm{dB}$</td>
+</tr>
+<tr>
+<td>$1$</td>
+<td>$1.000$</td>
+<td>$0.00\ \mathrm{dB}$</td>
+</tr>
+</tbody>
+</table></div>
+<p>Inspect the bottom row: at $\rho=1$, all four microphones record the exact same zero-mean unit-power noise waveform ($v_1=v_2=v_3=v_4$); summing four identical copies and dividing by $4$ returns that identical noise waveform untouched. Multi-microphone averaging suppresses noise only insofar as distinct channels fluctuate independently and cancel partially upon addition—piling on more sensors never automatically suppresses strongly coherent interference.</p>
+<p><strong>Further Reflection: Can $\rho$ take arbitrary negative values?</strong> Looking at Eq. (1-7) algebraically suggests smaller $\rho$ always lowers noise, yet physically <strong>the mean-square power of any real linear combination can never be negative</strong>, locking $\rho$ into a strict admissible interval:</p>
+<ol>
+<li>Mean-square power of the raw sum $(v_1+v_2+v_3+v_4)$ equals $4(1+3\rho)\ge 0$, dividing by $4$ to force $\rho \ge -1/3$. Plugging $\rho=-0.4$ blindly into Eq. (1-7) produces impossible negative power $P_{v,\mathrm{out}}=-0.05$—proving no four-channel random process can ever have uniform pairwise correlation $-0.4$.</li>
+<li>
+<p>Mean-square power of any pairwise difference $(v_1-v_2)$ expands to:</p>
+<p>$$
+    \begin{aligned}
+    \mathbb{E}\bigl[(v_1-v_2)^2\bigr]
+    &= \mathbb{E}[v_1^2] - 2\mathbb{E}[v_1 v_2] + \mathbb{E}[v_2^2] \\
+    &= 1 - 2\rho + 1 = 2(1-\rho) \ge 0,
+    \end{aligned}
+    $$</p>
+<p>dividing by $2$ to force $\rho \le 1$.</p>
+</li>
+<li>
+<p>Conversely, for arbitrary real weights $w_1,w_2,w_3,w_4$, expanding $\mathbb{E}\bigl[(\sum_{m=1}^4 w_m v_m)^2\bigr]$ rearranges to</p>
+<p>$$
+    \mathbb{E}\!\left[\left(\sum_{m=1}^{4}w_m v_m\right)^2\right]
+    = (1-\rho)\sum_{m=1}^{4}w_m^2
+    + \rho\left(\sum_{m=1}^{4}w_m\right)^2.
+    $$</p>
+<p>Paired with $4\sum_{m=1}^{4}w_m^2 \ge \bigl(\sum_{m=1}^4 w_m\bigr)^2$ proven earlier, every $-1/3 \le \rho \le 1$ guarantees non-negative power across all weights (generalized in Chapter 2 §2.5 and <a href="16_appendix-symbols-math.html#sec-16-3">Appendix A §16.3</a> as positive semidefiniteness of the spatial covariance matrix).</p>
+</li>
+</ol>
+<p>For example, legal $\rho=-0.2$ gives $P_{v,\mathrm{out}}=0.1$ ($10\ \mathrm{dB}$ SNR gain)—not violating the $6.02\ \mathrm{dB}$ 4-mic WNG ceiling because negatively correlated noise is no longer spatially white; at singular boundary $\rho=-1/3$, ideal four-channel noise sums identically to zero, though any tiny independent sensor self-noise or gain mismatch immediately breaks perfect cancellation in hardware. Moreover, diffuse room correlation varies strongly with frequency and spacing (§2.6) rather than holding constant across broadband speech.</p>
+<span id="sec-u-f277de1aa7" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-3549682306">E01-02: Is a Quieter Sound Necessarily Cleaner?</h3>
+<p>Multiply length-4 sequence $[0,1,0,-1]$ uniformly by scale factor $0.5$, computing the mean-square power ratio and level change (dB). If both target speech and noise inside a noisy recording are multiplied by $0.5$, does SNR improve?</p>
+<p><strong>Reference Solution.</strong> Applying Eq. (1-1), squared entries $[0,1,0,1]$ give original mean square $(0+1+0+1)/4 = 0.5$; scaling by $0.5$ yields $[0, 0.5, 0, -0.5]$ with squared sum $0.25 + 0.25 = 0.5$ and mean square $0.5 / 4 = 0.125$.</p>
+<p>The power ratio is $0.125 / 0.5 = 0.25$, corresponding to digital level change $10\log_{10}0.25 = 20\log_{10}0.5 \approx -6.02\ \mathrm{dB}$ (digital mean-square drop, <em>not</em> calibrated acoustic $\mathrm{dB\ SPL}$). Scaling both target and noise by $0.5$ multiplies numerator $P_s$ and denominator $P_v$ alike by $0.25$, canceling out identically and leaving SNR unchanged. Consequently, A/B listening comparisons across algorithms must share a common export gain—peak-normalizing each clip individually to full scale masks real target attenuation or noise boost.</p>
+<span id="sec-u-814afa6804" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-a473c02eff">E01-03: How Much Weight Should a Noisier Microphone Receive?</h3>
+<p>Two channels carry equal-amplitude aligned target speech plus zero-mean mutually uncorrelated noises of powers $P_{v_1}=1$ and $P_{v_2}=4$. Forming linear combination $y = w_1 x_1 + w_2 x_2$ subject to distortionless constraint $w_1 + w_2 = 1$, evaluate output noise power under equal averaging ($w_1=w_2=0.5$) first, then find the optimal weights minimizing output noise power.</p>
+<p><strong>Reference Solution.</strong> Constraint $w_1 + w_2 = 1$ keeps target output equal to $(w_1+w_2)s = s$. Because zero-mean noises are uncorrelated, cross-terms vanish and output noise power equals $w_1^2 P_{v_1} + w_2^2 P_{v_2}$:</p>
+<ul>
+<li>Under <strong>equal averaging</strong> ($w_1=w_2=0.5$), output noise power is $0.5^2\times 1 + 0.5^2\times 4 = 0.25 + 1.00 = 1.25$—worse than throwing microphone 2 away and listening to clean microphone 1 alone (noise power $1$)!</li>
+<li>Substituting $w_2 = 1 - w_1$ and completing the square locates the global optimum:</li>
+</ul>
+<p>$$
+\begin{aligned}
+P_{v,\mathrm{out}} &= w_1^2 \cdot 1 + (1-w_1)^2 \cdot 4 \\
+&= 5w_1^2 - 8w_1 + 4 \\
+&= 5(w_1 - 0.8)^2 + 0.8.
+\end{aligned}
+$$</p>
+<p>Since $5(w_1 - 0.8)^2 \ge 0$, output noise attains its global minimum $0.8$ uniquely at $w_1 = 0.8$, $w_2 = 1 - 0.8 = 0.2$ (check: $0.8^2\times 1 + 0.2^2\times 4 = 0.64 + 0.16 = 0.8$).</p>
+<p>This calculation delivers a fundamental engineering insight: <strong>a noisier microphone is NOT useless</strong>—weighting sensors inversely proportional to their noise variances ($1:1/4 = 4:1$, giving $0.2$ weight to mic 2) beats even the cleanest single microphone alone ($0.8 \lt  1.0$)! When reporting dB gains, always state the baseline explicitly: optimal weighting beats equal averaging by $10\log_{10}(1.25/0.8)\approx 1.94\ \mathrm{dB}$, and beats single mic 1 by $10\log_{10}(1/0.8)\approx 0.97\ \mathrm{dB}$. Minimum Variance Distortionless Response (MVDR) beamforming in Chapter 5 generalizes this exact principle—"lock unit target gain, minimize output variance according to noise covariance"—to complex frequency-domain weights and arbitrary spatially correlated noise.</p>
+<span id="sec-u-c36045fcae" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-e69f031d84">E01-04: Why Cross-Terms Cannot Be Dropped in Short Windows</h3>
+<p>Given deterministic length-4 sequences $v_1=[1,1,-1,-1]$ and $v_2=[1,-1,1,-1]$, evaluate uncentered Eq. (1-1) channel mean squares $P_1, P_2$, sample product mean $C_{12}$, and equal-average output mean square over all 4 samples first, then over just the leading 3 samples.</p>
+<p><strong>Reference Solution.</strong> For any window length $N$, squaring and averaging $\bigl(v_1[n]+v_2[n]\bigr)/2$ yields the exact algebraic identity without statistical approximations:</p>
+<p>$$
+\begin{aligned}
+P_{\mathrm{avg}} &= \frac{P_1+P_2+2C_{12}}{4}, \\
+C_{12} &= \frac{1}{N}\sum_{n=0}^{N-1}v_1[n]v_2[n].
+\end{aligned} \tag{1-8}
+$$</p>
+<p>Here $C_{12}$ is the uncentered sample cross-moment (over the 3-sample prefix, $\bar v_1 = \bar v_2 = 1/3 \ne 0$, so $C_{12}$ differs from centered sample covariance). Plugging both windows in side by side:</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable data table"><table>
+<thead>
+<tr>
+<th scope="col">Window Slice</th>
+<th scope="col">Samplewise $v_1[n]v_2[n]$</th>
+<th scope="col">$P_1, P_2$</th>
+<th scope="col">Cross-Term $C_{12}$</th>
+<th scope="col">Equal-Average Sequence</th>
+<th scope="col">Average Output MS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>All 4 samples ($N=4$)</td>
+<td>$[1,-1,-1,1]$</td>
+<td>$1, 1$</td>
+<td>$0$</td>
+<td>$[1,0,0,-1]$</td>
+<td>$2/4=0.5$</td>
+</tr>
+<tr>
+<td>First 3 samples ($N=3$)</td>
+<td>$[1,-1,-1]$</td>
+<td>$1, 1$</td>
+<td>$-1/3$</td>
+<td>$[1,0,0]$</td>
+<td>$1/3$</td>
+</tr>
+</tbody>
+</table></div>
+<p>Checking Eq. (1-8): over $N=4$, $\bigl(1+1+2\times 0\bigr)/4 = 0.5$ ($10\log_{10}(1/0.5)\approx 3.01\ \mathrm{dB}$ below mic 1); over $N=3$, the uncanceled negative product gives $\bigl(1+1+2\times(-1/3)\bigr)/4 = 1/3$ ($10\log_{10}3 \approx 4.77\ \mathrm{dB}$ below mic 1). On finite windows, one can never drop $2C_{12}$ by appealing to asymptotic zero correlation—shifting window bounds alters finite-sample cross-terms noticeably (conversely, observing $C_{12}=0$ over 4 samples indicates empirical orthogonality, <em>not</em> stochastic independence).</p>
+<span id="sec-u-7c4b67ce5c" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-36a9604f4f">E01-05: Why a One-Sample Misalignment Hurts High Frequencies Much More</h3>
+<p>At sampling rate $f_s = 16000\ \mathrm{Hz}$, two noiseless equal-amplitude sinusoidal target channels carry $s[n]$ and $1$-sample-delayed $s[n-1]$ (residual misalignment $1/f_s = 62.5\ \mu\mathrm{s}$). Averaging both channels directly without delay compensation, compute target amplitude and mean-square power retention at $f = 1\ \mathrm{kHz}$ vs. $f = 4\ \mathrm{kHz}$.</p>
+<p><strong>Reference Solution.</strong> Denote discrete angular frequency by $\Omega_{\mathrm{d}} = 2\pi f / f_s$ ($\mathrm{rad}/\text{sample}$) and set $s[n] = \cos(\Omega_{\mathrm{d}} n)$. Applying the sum-to-product cosine identity with $\alpha = \Omega_{\mathrm{d}} n$ and $\beta = \Omega_{\mathrm{d}}(n-1)$—half-difference $\frac{\alpha-\beta}{2} = \frac{\pi f}{f_s}$ and half-sum $\frac{\alpha+\beta}{2} = \Omega_{\mathrm{d}}(n - 0.5)$—reduces the unaligned average to:</p>
+<p>$$
+\begin{aligned}
+y[n] &= \frac{1}{2}\Bigl[\cos(\Omega_{\mathrm{d}} n)
++ \cos\bigl(\Omega_{\mathrm{d}}(n-1)\bigr)\Bigr] \\
+&= \cos\!\left(\frac{\pi f}{f_s}\right)
+\cos\!\left(\Omega_{\mathrm{d}}\left(n-\frac{1}{2}\right)\right).
+\end{aligned} \tag{1-9}
+$$</p>
+<p>The second cosine factor shifts the output waveform by half a sample relative to channel 1; the leading factor $\cos(\pi f/f_s)$ governs target amplitude retention (positive at both $1\ \mathrm{kHz}$ and $4\ \mathrm{kHz}$), squaring to $\cos^2(\pi f/f_s)$ for mean-square power retention:</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable data table"><table>
+<thead>
+<tr>
+<th scope="col">Target Frequency $f$</th>
+<th scope="col">Half-Angle $\pi f/f_s$</th>
+<th scope="col">Amplitude Retention</th>
+<th scope="col">Power Retention</th>
+<th scope="col">Target Level Loss</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$1\ \mathrm{kHz}$</td>
+<td>$\pi/16$</td>
+<td>$0.980785$</td>
+<td>$0.961940$</td>
+<td>$-0.17\ \mathrm{dB}$</td>
+</tr>
+<tr>
+<td>$4\ \mathrm{kHz}$</td>
+<td>$\pi/4$</td>
+<td>$0.707107$</td>
+<td>$0.500000$</td>
+<td>$-3.01\ \mathrm{dB}$</td>
+</tr>
+</tbody>
+</table></div>
+<p>The exact same $62.5\ \mu\mathrm{s}$ (1-sample) misalignment spans barely one-sixteenth of a cycle at $1\ \mathrm{kHz}$—losing just $0.17\ \mathrm{dB}$—yet spans a full quarter-cycle ($90^\circ$ quadrature) at $4\ \mathrm{kHz}$, slashing target power in half ($-3.01\ \mathrm{dB}$), and reaches complete anti-phase cancellation at the $8\ \mathrm{kHz}$ Nyquist frequency ($\pi f/f_s = \pi/2$)! Fixing this in a causal real-time pipeline cannot "peek into the future to advance lagging channel 2"; instead, we buffer leading channel 1 by 1 sample into $s[n-1]$, restoring full amplitude at the modest cost of 1 sample of shared bulk delay.</p>
+<p><strong>Listening &amp; PCM Readback Check.</strong> The in-repo <code>alignment_error</code> audio group synthesizes a $2\ \mathrm{s}$ superposition of $1\ \mathrm{kHz}$ and $4\ \mathrm{kHz}$ tones (each tone peak amplitude $0.18$, $20\ \mathrm{ms}$ linear onset/offset ramps, shared export gain $1$; parameters and SHA-256 digests recorded in the <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/audio/MANIFEST.json">Main Audio Manifest</a>, generated by <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/core/audio_samples.py"><code>alignment_error_case()</code></a>):</p>
+<ul>
+<li>Two-channel misaligned input: <a href="../site/audio/alignment_array.wav"><code>alignment_array.wav</code></a><audio class="audio-sample" controls preload="none" aria-label="alignment_array.wav" src="../site/audio/alignment_array.wav">Use the WAV link above to download.</audio></li>
+<li>Uncompensated direct average (visibly muffled $4\ \mathrm{kHz}$ high tone): <a href="../site/audio/alignment_unaligned.wav"><code>alignment_unaligned.wav</code></a><audio class="audio-sample" controls preload="none" aria-label="alignment_unaligned.wav" src="../site/audio/alignment_unaligned.wav">Use the WAV link above to download.</audio></li>
+<li>Delay-aligned average after 1-sample buffer on leading mic: <a href="../site/audio/alignment_aligned.wav"><code>alignment_aligned.wav</code></a><audio class="audio-sample" controls preload="none" aria-label="alignment_aligned.wav" src="../site/audio/alignment_aligned.wav">Use the WAV link above to download.</audio></li>
+<li>Clean reference sharing the 1-sample bulk delay: <a href="../site/audio/alignment_reference.wav"><code>alignment_reference.wav</code></a><audio class="audio-sample" controls preload="none" aria-label="alignment_reference.wav" src="../site/audio/alignment_reference.wav">Use the WAV link above to download.</audio></li>
+</ul>
+<p>Switching between the second and third clips makes the $3\ \mathrm{dB}$ loss on the crisp $4\ \mathrm{kHz}$ tone immediately audible. Reading back the exported 16-bit PCM files over the integer-period steady-state window $[1600, 30400)$ ($0.1$–$1.9\ \mathrm{s}$, skipping ramps) via least-squares sinusoidal fitting confirms exact agreement (the aligned and reference WAVs match sample for sample with amplitude ratio $1$):</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable data table"><table>
+<thead>
+<tr>
+<th scope="col">Frequency</th>
+<th scope="col">PCM Reference Sine Peak</th>
+<th scope="col">PCM Unaligned Sine Peak</th>
+<th scope="col">PCM Amplitude Ratio</th>
+<th scope="col">PCM Level Change</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$1\ \mathrm{kHz}$</td>
+<td>$0.180004$</td>
+<td>$0.176546$</td>
+<td>$0.980788$</td>
+<td>$-0.16849\ \mathrm{dB}$</td>
+</tr>
+<tr>
+<td>$4\ \mathrm{kHz}$</td>
+<td>$0.180000$</td>
+<td>$0.127279$</td>
+<td>$0.707107$</td>
+<td>$-3.01030\ \mathrm{dB}$</td>
+</tr>
+</tbody>
+</table></div>
+<p>Sixteen-bit integer rounding perturbs only the fifth and sixth decimal places, matching our hand calculation from Eq. (1-9) to precision.</p>
+<span id="sec-u-759110492b" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-1f25bd5c32">E01-06: With a Head vs. Without a Head—How Much Does ITD Change?</h3>
+<p>Using spherical-head Eq. (1-5) and unobstructed free-field two-point Eq. (1-6) with $a=0.0875\ \mathrm{m}$ ($2a=0.175\ \mathrm{m}$) and $c=343\ \mathrm{m/s}$, evaluate theoretical ITDs at $0^\circ$, $1^\circ$, $30^\circ$, and $90^\circ$, state the sign rule for negative left-side bearings, and express the $90^\circ$ spherical-head maximum delay in sample periods at $16\ \mathrm{kHz}$.</p>
+<p><strong>Reference Solution.</strong> Convert degrees to radians via $\pi/180$ first: at $\theta=30^\circ=\pi/6\ \mathrm{rad}$ with $\sin 30^\circ=0.5$, the spherical-head formula gives $(0.0875/343)(\pi/6 + 0.5) \approx 261.122\ \mu\mathrm{s}$, whereas the free-field pair gives $(0.175/343)\times 0.5 \approx 255.102\ \mu\mathrm{s}$. Across all four bearings:</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable data table"><table>
+<thead>
+<tr>
+<th scope="col">Source Azimuth $\theta$</th>
+<th scope="col">Rigid Spherical Head ITD (Eq. (1-5))</th>
+<th scope="col">Free-Field Two-Point ITD (Eq. (1-6))</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$0^\circ$</td>
+<td>$0.000\ \mu\mathrm{s}$</td>
+<td>$0.000\ \mu\mathrm{s}$</td>
+</tr>
+<tr>
+<td>$1^\circ$</td>
+<td>$8.905\ \mu\mathrm{s}$</td>
+<td>$8.904\ \mu\mathrm{s}$</td>
+</tr>
+<tr>
+<td>$30^\circ$</td>
+<td>$261.122\ \mu\mathrm{s}$</td>
+<td>$255.102\ \mu\mathrm{s}$</td>
+</tr>
+<tr>
+<td>$90^\circ$</td>
+<td>$655.815\ \mu\mathrm{s}$</td>
+<td>$510.204\ \mu\mathrm{s}$</td>
+</tr>
+</tbody>
+</table></div>
+<p>Because both $\theta$ and $\sin\theta$ are odd functions, moving to $-\theta$ on the left preserves magnitude and flips ITD negative. At $f_s = 16\ \mathrm{kHz}$, $655.815\ \mu\mathrm{s}$ at $90^\circ$ equals $0.000655815 \times 16000 \approx 10.493$ sample periods—a non-integer value underscoring that physical propagation delays vary continuously across space; restricting compensation to integer sample shifts leaves up to a $0.5$-sample residual alignment error (motivating fractional-delay filters and cross-correlation interpolation in Chapters 2 and 4).</p>
+<p>Meanwhile, the $\approx 146\ \mu\mathrm{s}$ discrepancy at $90^\circ$ reminds us that flush-mounting microphones on a baffled smart-speaker enclosure vs. suspending them in free air requires matching the physical array manifold accordingly.</p>
+<span id="sec-u-18de151f2c" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-1cff66bd0a">E01-07: How Much About SNR Can Total Mixture Power Actually Tell Us?</h3>
+<p>Fix length-4 target $s=[1,-1,1,-1]$ and superpose three known interferers: $v=[1,1,-1,-1]$, $v=s$, and $v=-s$. For each case, evaluate $P_s$, $P_v$, sample product mean $C_{sv}$, and mixture mean-square power $P_x$ of $x=s+v$: when all three share component $\mathrm{SNR} = 0\ \mathrm{dB}$, must total mixture power $P_x$ be the same?</p>
+<p>Conversely, given <em>only</em> observed mixture $x=[2,0,-2,0]$, Proposal A claims $s=x/2, v=x/2$ while Proposal B claims $s=3x/4, v=x/4$: do both decompositions reconstruct the exact same $x$, and do they report the same SNR?</p>
+<p><strong>Step 1: Expand squared mixture power completely.</strong> Applying Eq. (1-1) across $N$ real samples yields the exact mixture-power identity:</p>
+<p>$$
+\begin{aligned}
+P_x &= \frac{1}{N}\sum_{n=0}^{N-1}\bigl(s[n]+v[n]\bigr)^2
+= P_s + P_v + 2C_{sv}, \\
+C_{sv} &= \frac{1}{N}\sum_{n=0}^{N-1}s[n]v[n].
+\end{aligned} \tag{1-10}
+$$</p>
+<p>Here $C_{sv}$ is the uncentered target–interference cross-moment within a single channel (distinct from inter-channel noise cross-moment $C_{12}$ in E01-04). Total mixture power equals $P_s + P_v$ if and only if $C_{sv}=0$.</p>
+<p><strong>Step 2: Identical component SNR, wildly different mixture power.</strong> Across all three cases, $s^2$ and $v^2$ equal $[1,1,1,1]$, giving $P_s = P_v = 1$ and true component $\mathrm{SNR} = 1/1 = 1$ ($0\ \mathrm{dB}$)—yet $C_{sv}$ varies from $+1$ to $-1$:</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable data table"><table>
+<thead>
+<tr>
+<th scope="col">Interferer $v$</th>
+<th scope="col">Samplewise $s[n]v[n]$</th>
+<th scope="col">Cross-Term $C_{sv}$</th>
+<th scope="col">Mixture $x=s+v$</th>
+<th scope="col">Mixture MS $P_x$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$[1,1,-1,-1]$</td>
+<td>$[1,-1,-1,1]$</td>
+<td>$0$</td>
+<td>$[2,0,0,-2]$</td>
+<td>$1+1+0=2$</td>
+</tr>
+<tr>
+<td>$v=s$ (in-phase)</td>
+<td>$[1,1,1,1]$</td>
+<td>$1$</td>
+<td>$[2,-2,2,-2]$</td>
+<td>$1+1+2=4$</td>
+</tr>
+<tr>
+<td>$v=-s$ (anti-phase)</td>
+<td>$[-1,-1,-1,-1]$</td>
+<td>$-1$</td>
+<td>$[0,0,0,0]$</td>
+<td>$1+1-2=0$</td>
+</tr>
+</tbody>
+</table></div>
+<p>Inspect the final row: anti-phase interference wipes out the mixture into dead silence ($P_x=0$)—not because noise was cleanly removed, but because target and interferer annihilated each other!</p>
+<p><strong>Step 3: From one observed mixture alone, component decomposition is non-unique.</strong> Given $x=[2,0,-2,0]$ ($P_x = (4+0+4+0)/4 = 2$):</p>
+<ul>
+<li>Proposal A ($s=v=[1,0,-1,0]$) has $P_s = P_v = 0.5$, $C_{sv} = 0.5$, checking $0.5 + 0.5 + 2\times 0.5 = 2$, with $\mathrm{SNR} = 0.5/0.5 = 1$ ($0\ \mathrm{dB}$);</li>
+<li>Proposal B ($s=[1.5,0,-1.5,0]$, $v=[0.5,0,-0.5,0]$) sums sample-for-sample to the exact same $[2,0,-2,0]$ with $P_s = 4.5/4 = 1.125$, $P_v = 0.5/4 = 0.125$, $C_{sv} = 1.5/4 = 0.375$, and $P_x = 1.125 + 0.125 + 2\times 0.375 = 2$—yet reports linear $\mathrm{SNR} = 1.125/0.125 = 9$ ($10\log_{10}9 \approx 9.54\ \mathrm{dB}$)!</li>
+</ul>
+<p>This establishes a bedrock rule of speech-enhancement evaluation: <strong>total mixture energy before and after processing can NEVER uniquely determine true SNR gain</strong>—simulation benchmarks must evaluate separately stored clean/noise components passed through linear weights (Chapter 10 §10.5), while live field tests without clean references must pair speech/silence segmented estimates cautiously with multi-dimensional listening tests.</p>
+<span id="sec-u-d10085615c" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-5a48d70925">E01-08: Half the Amplitude on the Left—What Is the ILD?</h3>
+<p>Under our right-minus-left convention over a shared window and calibration scale, suppose right RMS amplitude is $A_R = 0.4$ and left RMS amplitude is $A_L = 0.2$. Compute ILD via both amplitude and power ratios; re-evaluate ILD after scaling both channels by $0.5$ vs. scaling only the right channel by $0.5$; finally, verify on five synthetic stereo WAVs whether earlier right-ear arrival and louder right-ear level must occur together.</p>
+<p><strong>Step 1: Connecting RMS amplitude ratio and mean-square power ratio.</strong> With mean-square powers $P_L, P_R$ and RMS amplitudes $A_L = \sqrt{P_L}$, $A_R = \sqrt{P_R}$ referenced to common $A_0 > 0$ ($A_L, A_R > 0$), subtracting $L_L = 20\log_{10}(A_L/A_0)$ from $L_R = 20\log_{10}(A_R/A_0)$ cancels $A_0$ identically:</p>
+<p>$$
+\mathrm{ILD} = L_R - L_L
+= 20\log_{10}\frac{A_R}{A_L}
+= 10\log_{10}\frac{P_R}{P_L}. \tag{1-11}
+$$</p>
+<p>Physically meaningful ILD requires matched microphone sensitivities across left and right channels.</p>
+<p><strong>Step 2: Verifying $20\log_{10}$ vs. $10\log_{10}$ consistency.</strong> Amplitude ratio $A_R/A_L = 0.4/0.2 = 2$ gives $\mathrm{ILD} = 20\log_{10}2 \approx +6.02\ \mathrm{dB}$; squaring to powers $P_R = 0.16$ and $P_L = 0.04$ gives power ratio $0.16/0.04 = 4$ and $10\log_{10}4 \approx +6.02\ \mathrm{dB}$ identically (avoid the classic slip of plugging amplitude ratio $2$ into $10\log_{10}2 \approx 3.01\ \mathrm{dB}$!).</p>
+<p><strong>Step 3: Common scaling vs. unilateral gain mismatch.</strong> Scaling both channels by $0.5$ turns RMS into $0.2$ and $0.1$ (ratio $2$, $\mathrm{ILD} = +6.02\ \mathrm{dB}$ unchanged); scaling only the right channel by $0.5$ equalizes both RMS values to $0.2$ and zeroes $\mathrm{ILD}$ ($0\ \mathrm{dB}$). In general, independent analog preamp gains or unlinked per-channel Automatic Gain Control (AGC) factors $g_L, g_R$ inject spurious bias $20\log_{10}(g_R/g_L)$—which is why binaural hearing aids and microphone arrays strictly forbid unlinked per-channel AGCs.</p>
+<p><strong>Step 4: Independent manipulation of ITD and ILD with PCM readback.</strong> We synthesize a $2\ \mathrm{s}$ ($f_s = 16000\ \mathrm{Hz}$) four-tone source $s[n]$ ($500, 800, 1300, 2400\ \mathrm{Hz}$, peak $0.08$ per tone, $20\ \mathrm{ms}$ linear ramps, zero-padded outside) and generate five stereo PCM16 WAVs via pure integer delay plus gain:</p>
+<p>$$
+\begin{aligned}
+x_L[n] &= g_L s[n-d_L], &
+x_R[n] &= g_R s[n-d_R], \\
+\tau &= \frac{d_L-d_R}{f_s}, &
+f_s &= 16000\ \mathrm{Hz}.
+\end{aligned} \tag{1-12}
+$$</p>
+<p>Fixing $d_R = 0$ and setting $d_L \in \{0, 8\}$ samples ($8/16000 = +500\ \mu\mathrm{s}$), each stereo WAV retains $32008$ frames to preserve the $8$-sample tail under shared export gain $1$ (listen at low volume over L/R-verified headphones):</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable data table"><table>
+<thead>
+<tr>
+<th scope="col">Stereo Audio Sample (Left Ch. 0, Right Ch. 1)</th>
+<th scope="col">Left Delay $d_L$</th>
+<th scope="col">Gains $g_L, g_R$</th>
+<th scope="col">Analytical ITD</th>
+<th scope="col">Analytical ILD</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="../site/binaural_audio/reference.wav">Reference: diotic in-phase, equal level</a><audio class="audio-sample" controls preload="none" aria-label="Reference: diotic in-phase, equal level" src="../site/binaural_audio/reference.wav">Use the WAV link above to download.</audio></td>
+<td>$0$</td>
+<td>$1, 1$</td>
+<td>$0\ \mu\mathrm{s}$</td>
+<td>$0.00\ \mathrm{dB}$</td>
+</tr>
+<tr>
+<td><a href="../site/binaural_audio/itd_only.wav">Pure ITD shift</a><audio class="audio-sample" controls preload="none" aria-label="Pure ITD shift" src="../site/binaural_audio/itd_only.wav">Use the WAV link above to download.</audio></td>
+<td>$8$</td>
+<td>$1, 1$</td>
+<td>$+500\ \mu\mathrm{s}$</td>
+<td>$0.00\ \mathrm{dB}$</td>
+</tr>
+<tr>
+<td><a href="../site/binaural_audio/ild_only.wav">Pure ILD shift</a><audio class="audio-sample" controls preload="none" aria-label="Pure ILD shift" src="../site/binaural_audio/ild_only.wav">Use the WAV link above to download.</audio></td>
+<td>$0$</td>
+<td>$0.5, 1$</td>
+<td>$0\ \mu\mathrm{s}$</td>
+<td>$+6.02\ \mathrm{dB}$</td>
+</tr>
+<tr>
+<td><a href="../site/binaural_audio/consistent.wav">Congruent cues (both right)</a><audio class="audio-sample" controls preload="none" aria-label="Congruent cues (both right)" src="../site/binaural_audio/consistent.wav">Use the WAV link above to download.</audio></td>
+<td>$8$</td>
+<td>$0.5, 1$</td>
+<td>$+500\ \mu\mathrm{s}$</td>
+<td>$+6.02\ \mathrm{dB}$</td>
+</tr>
+<tr>
+<td><a href="../site/binaural_audio/conflicting.wav">Conflicting cues (time right, level left)</a><audio class="audio-sample" controls preload="none" aria-label="Conflicting cues (time right, level left)" src="../site/binaural_audio/conflicting.wav">Use the WAV link above to download.</audio></td>
+<td>$8$</td>
+<td>$1, 0.5$</td>
+<td>$+500\ \mu\mathrm{s}$</td>
+<td>$-6.02\ \mathrm{dB}$</td>
+</tr>
+</tbody>
+</table></div>
+<p>In <code>consistent.wav</code>, the right ear leads by $+500\ \mu\mathrm{s}$ <em>and</em> is $+6.02\ \mathrm{dB}$ louder; in <code>conflicting.wav</code>, the right ear still leads by $+500\ \mu\mathrm{s}$ while the left ear is $6.02\ \mathrm{dB}$ louder—making time–intensity trading palpably audible over headphones.</p>
+<p>In numerical verification, unshifted channels score over integer-period steady window $[1600, 30400)$ ($28800$ samples) and $8$-sample-delayed channels over $[1608, 30408)$: orthogonal sinusoids give exact analytical mean square $4\times(0.08^2/2)=0.0128$ ($\mathrm{RMS}\approx 0.113137$) at gain $1$ and $0.0032$ ($\mathrm{RMS}\approx 0.056569$) at gain $0.5$.</p>
+<p>ITD is estimated on the unshifted stereo timeline by peak-picking normalized cross-correlation over integer lags $[-16, +16]$. Reading back the 16-bit PCM WAVs (measured MS $\approx 0.01280018$ at gain $1$ and $\approx 0.00319997$ at gain $0.5$; metadata and implementation in <a href="../site/binaural_audio/MANIFEST.json">MANIFEST.json</a>, <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch01/examples/generate_binaural_cues.py"><code>generate_binaural_cues.py</code></a>, and <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch01/core/binaural_cues.py"><code>binaural_cues.py</code></a>) yields:</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable data table"><table>
+<thead>
+<tr>
+<th scope="col">Sample</th>
+<th scope="col">PCM Est. ITD (samples)</th>
+<th scope="col">PCM Est. ITD</th>
+<th scope="col">PCM Measured ILD (R − L)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Reference</td>
+<td>$0$</td>
+<td>$0\ \mu\mathrm{s}$</td>
+<td>$0.0000\ \mathrm{dB}$</td>
+</tr>
+<tr>
+<td>Pure ITD shift</td>
+<td>$8$</td>
+<td>$+500\ \mu\mathrm{s}$</td>
+<td>$0.0000\ \mathrm{dB}$</td>
+</tr>
+<tr>
+<td>Pure ILD shift</td>
+<td>$0$</td>
+<td>$0\ \mu\mathrm{s}$</td>
+<td>$+6.0207\ \mathrm{dB}$</td>
+</tr>
+<tr>
+<td>Congruent cues</td>
+<td>$8$</td>
+<td>$+500\ \mu\mathrm{s}$</td>
+<td>$+6.0207\ \mathrm{dB}$</td>
+</tr>
+<tr>
+<td>Conflicting cues</td>
+<td>$8$</td>
+<td>$+500\ \mu\mathrm{s}$</td>
+<td>$-6.0207\ \mathrm{dB}$</td>
+</tr>
+</tbody>
+</table></div>
+<span id="sec-u-5a8c86a7c7" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-ec7260361a">E01-09: Preserving the Target Unchanged—Why Does Self-Noise Still Blow Up?</h3>
+<p>Given aligned two-microphone inputs $x_1 = s + v_1$ and $x_2 = s + v_2$ ($P_s > 0$) with zero-mean uncorrelated unit-power self-noises ($\mathbb{E}[v_1 v_2]=0$, $\mathbb{E}[v_1^2]=\mathbb{E}[v_2^2]=1$), evaluate target gain, output noise power, linear WNG, and $\mathrm{WNG}_{\mathrm{dB}}$ for $(w_1, w_2) = (0.5, 0.5)$ vs. $(w_1, w_2) = (2, -1)$, explaining why a negative weight fails to subtract independent noise power.</p>
+<p><strong>Step 1: Check distortionless target preservation.</strong> Output $y = (w_1+w_2)s + w_1 v_1 + w_2 v_2$ satisfies $0.5 + 0.5 = 1$ and $2 + (-1) = 1$, preserving target $s$ at output power $P_s$ in both cases.</p>
+<p><strong>Step 2: Expand squared output noise power.</strong> Because $\mathbb{E}[v_1 v_2]=0$, cross-term $2w_1 w_2 \mathbb{E}[v_1 v_2]$ vanishes, leaving the sum of squared weights:</p>
+<p>$$
+\begin{aligned}
+P_{v,\mathrm{out}} &= \mathbb{E}\bigl[(w_1 v_1 + w_2 v_2)^2\bigr]
+= w_1^2 + w_2^2, \\
+\mathrm{WNG} &= \frac{P_s/1}{P_s/(w_1^2+w_2^2)}
+= \frac{1}{w_1^2+w_2^2}, \\
+\mathrm{WNG}_{\mathrm{dB}} &= 10\log_{10}\mathrm{WNG}.
+\end{aligned} \tag{1-13}
+$$</p>
+<p>Evaluating Eq. (1-13) across both weight pairs:</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable data table"><table>
+<thead>
+<tr>
+<th scope="col">Weight Pair $(w_1, w_2)$</th>
+<th scope="col">Target Gain $w_1+w_2$</th>
+<th scope="col">Output Noise Power $w_1^2+w_2^2$</th>
+<th scope="col">Linear WNG</th>
+<th scope="col">$\mathrm{WNG}_{\mathrm{dB}}$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$(0.5, 0.5)$</td>
+<td>$0.5+0.5=1$</td>
+<td>$0.5^2+0.5^2=0.5$</td>
+<td>$1/0.5=2$</td>
+<td>$+3.01\ \mathrm{dB}$</td>
+</tr>
+<tr>
+<td>$(2, -1)$</td>
+<td>$2-1=1$</td>
+<td>$2^2+(-1)^2=5$</td>
+<td>$1/5=0.2$</td>
+<td>$-6.99\ \mathrm{dB}$</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Step 3: Why a minus sign cancels coherent signals yet adds independent noise.</strong> Under $(2, -1)$, identical target waveforms across both mics satisfy $2s - 1s = s$; independent thermal noises $v_1$ and $v_2$, however, fluctuate completely independently—inverting $v_2$ into $-v_2$ never makes it mirror $v_1$, so $(-1)^2 = +1$ adds directly onto $2^2 = +4$ to quintuple output self-noise!</p>
+<p>Negative $\mathrm{WNG}_{\mathrm{dB}} \approx -6.99\ \mathrm{dB}$ indicates nearly $7\ \mathrm{dB}$ of SNR <em>degradation</em> relative to one microphone (not negative power)—the central physical price paid by compact differential and superdirective beamformers in Chapter 5 whenever large opposing weights subtract spatial interference.</p>
+<span id="sec-u-dcdd7fffd2" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-5b247422f2">E01-10: When Source Timbre Changes, How Does Binaural ILD Change?</h3>
+<p>Whereas E01-08 used frequency-flat gains and delays, fix a pair of two-tap Finite Impulse Response (FIR) filters $h_L=[1, 0.5]$ and $h_R=[1, -0.5]$ (zero-based indices) and excite them successively with two distinct source spectra to test which of <strong>per-bin ILD/IPD</strong> vs. <strong>broadband total ILD</strong> stays invariant and which shifts with source timbre.</p>
+<p><strong>Step 1: Minimal Euler-phasor setup for two-tap frequency responses.</strong> Using unit impulse $\delta[n]$, the difference equations read $y_L[n] = s[n] + 0.5s[n-1]$ and $y_R[n] = s[n] - 0.5s[n-1]$ (zero outside source support).</p>
+<p>Translating a 1-sample delay to the frequency domain invokes <strong>Euler's formula</strong> (reviewed in <a href="00_math-foundations.html#sec-0-2">Chapter 0 §0.2</a> and <a href="16_appendix-symbols-math.html#sec-16-3">Appendix A §16.3</a>): with $\mathrm{j}^2 = -1$, $e^{\mathrm{j}\phi} = \cos\phi + \mathrm{j}\sin\phi$ and $e^{-\mathrm{j}\phi} = \cos\phi - \mathrm{j}\sin\phi$ have unit modulus and sum to $e^{\mathrm{j}\phi} + e^{-\mathrm{j}\phi} = 2\cos\phi$.</p>
+<p>At discrete angular frequency $\Omega_{\mathrm{d}} = 2\pi f / f_s$ ($\mathrm{rad}/\text{sample}$) under forward Fourier kernel $e^{-\mathrm{j}\Omega_{\mathrm{d}} n}$, delaying $s[n-1]$ multiplies source spectrum $S(f)$ by $e^{-\mathrm{j}\Omega_{\mathrm{d}}}$, yielding output spectra $Y_L(f), Y_R(f)$ and squared magnitude responses:</p>
+<p>$$
+\begin{aligned}
+H_L(f) &= 1 + 0.5e^{-\mathrm{j}\Omega_{\mathrm{d}}}, &
+H_R(f) &= 1 - 0.5e^{-\mathrm{j}\Omega_{\mathrm{d}}}, \\
+Y_L(f) &= S(f)H_L(f), &
+Y_R(f) &= S(f)H_R(f), \\
+|H_L(f)|^2 &= 1.25 + \cos\Omega_{\mathrm{d}}, &
+|H_R(f)|^2 &= 1.25 - \cos\Omega_{\mathrm{d}}.
+\end{aligned} \tag{1-14}
+$$</p>
+<p>Verify the bottom row by multiplying $H_L(f)$ with its complex conjugate:</p>
+<p>$$
+\begin{aligned}
+|H_L(f)|^2
+&= \bigl(1+0.5e^{-\mathrm{j}\Omega_{\mathrm{d}}}\bigr)
+\bigl(1+0.5e^{\mathrm{j}\Omega_{\mathrm{d}}}\bigr) \\
+&= 1 + 0.25 + 0.5\bigl(e^{-\mathrm{j}\Omega_{\mathrm{d}}}
++ e^{\mathrm{j}\Omega_{\mathrm{d}}}\bigr) \\
+&= 1.25 + \cos\Omega_{\mathrm{d}},
+\end{aligned}
+$$</p>
+<p>while replacing $+0.5$ by $-0.5$ flips $H_R(f)$ to $1.25 - \cos\Omega_{\mathrm{d}}$ (strictly positive everywhere between $0.25$ and $2.25$).</p>
+<p><strong>Step 2: Canceling unknown source spectrum at active bins.</strong> Wherever $S(f)\ne 0$ and $H_L(f), H_R(f)\ne 0$, binaural complex ratio $B_{RL}(f) = Y_R(f)/Y_L(f)$ cancels unknown $S(f)$ cleanly:</p>
+<p>$$
+\begin{aligned}
+B_{RL}(f) &= \frac{Y_R(f)}{Y_L(f)} = \frac{H_R(f)}{H_L(f)}, \\
+\mathrm{ILD}(f) &= 20\log_{10}|B_{RL}(f)|, \quad
+\mathrm{IPD}(f) = \arg B_{RL}(f).
+\end{aligned} \tag{1-15}
+$$</p>
+<p>Here $\mathrm{ILD}(f)$ is per-bin right-minus-left level difference ($\mathrm{dB}$) and $\mathrm{IPD}(f) \in [-\pi, \pi)$ is principal-value right-minus-left phase difference ($\mathrm{rad}$; note $Y_R/Y_L$ and cross-spectrum $Y_R Y_L^*$ differ only by positive real $|Y_L|^2$, sharing identical principal argument). Rationalizing $B_{RL}(f)$ by multiplying numerator and denominator by $(1 + 0.5e^{\mathrm{j}\Omega_{\mathrm{d}}})$ gives:</p>
+<p>$$
+\begin{aligned}
+B_{RL}(f)
+&= \frac{\bigl(1-0.5e^{-\mathrm{j}\Omega_{\mathrm{d}}}\bigr)
+\bigl(1+0.5e^{\mathrm{j}\Omega_{\mathrm{d}}}\bigr)}
+{|1+0.5e^{-\mathrm{j}\Omega_{\mathrm{d}}}|^2} \\
+&= \frac{1 - 0.25 + 0.5\bigl(e^{\mathrm{j}\Omega_{\mathrm{d}}}
+- e^{-\mathrm{j}\Omega_{\mathrm{d}}}\bigr)}
+{1.25 + \cos\Omega_{\mathrm{d}}} \\
+&= \frac{0.75 + \mathrm{j}\sin\Omega_{\mathrm{d}}}
+{1.25 + \cos\Omega_{\mathrm{d}}}.
+\end{aligned}
+$$</p>
+<p>Because $1.25 + \cos\Omega_{\mathrm{d}} > 0$ and real part $0.75 > 0$ (general quadrants require two-argument <code>atan2</code>), $\mathrm{IPD}(f)$ closes to $\arctan(\sin\Omega_{\mathrm{d}} / 0.75)$!</p>
+<p>At $f_s = 16000\ \mathrm{Hz}$, inspect complementary bins $f_1 = 1\ \mathrm{kHz}$ ($\Omega_{\mathrm{d}}=\pi/8$) and $f_2 = 7\ \mathrm{kHz}$ ($\Omega_{\mathrm{d}}=7\pi/8$): opposite cosines ($\cos(\pi/8)\approx +0.923880$, $\cos(7\pi/8)\approx -0.923880$) swap left/right power gains and negate per-bin ILD, whereas identical sines ($\sin(\pi/8) = \sin(7\pi/8) \approx 0.382683$) yield the exact same IPD $\arctan(0.382683/0.75) \approx +27.032701^\circ$:</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable data table"><table>
+<thead>
+<tr>
+<th scope="col">Frequency $f$</th>
+<th scope="col">Left Power Gain $\lvert H_L(f)\rvert^2$</th>
+<th scope="col">Right Power Gain $\lvert H_R(f)\rvert^2$</th>
+<th scope="col">Analytical Bin ILD</th>
+<th scope="col">Analytical Bin IPD (R − L)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$1\ \mathrm{kHz}$</td>
+<td>$2.173880$</td>
+<td>$0.326120$</td>
+<td>$-8.238574\ \mathrm{dB}$</td>
+<td>$+27.032701^\circ$</td>
+</tr>
+<tr>
+<td>$7\ \mathrm{kHz}$</td>
+<td>$0.326120$</td>
+<td>$2.173880$</td>
+<td>$+8.238574\ \mathrm{dB}$</td>
+<td>$+27.032701^\circ$</td>
+</tr>
+</tbody>
+</table></div>
+<p>Because this two-tap pair is dispersive rather than a pure delay, $\mathrm{IPD}(f)$ does not obey $2\pi f\tau$ and cannot be divided by $2\pi f$ to read off a single geometric delay.</p>
+<p><strong>Step 3: Broadband total ILD remains weighted by source spectrum.</strong> Although $S(f)$ cancels at each individual bin in Eq. (1-15), summing squared broadband waveforms in the time domain weights each frequency by the source's own spectral power! Construct two $2\ \mathrm{s}$ ($32000$-sample, $20\ \mathrm{ms}$ ramps) dual-tone ($1\ \mathrm{kHz} + 7\ \mathrm{kHz}$) sources:</p>
+<ul>
+<li><strong>Equal-amplitude source <code>flat</code></strong>: peak amplitudes $(0.1, 0.1)$, steady-state per-tone MS $0.1^2/2 = 0.005$;</li>
+<li><strong>Low-heavy source <code>tilted</code></strong>: peak amplitudes $(0.12, 0.04)$, steady-state per-tone MS $0.12^2/2 = 0.0072$ and $0.04^2/2 = 0.0008$.</li>
+</ul>
+<p>Full linear convolution with $h_L, h_R$ retains the 1-sample tail ($32001$ stereo frames, shared export gain $1$). Over steady window $[1600, 30400)$ ($28800$ samples—whose 1-sample lag also lies inside steady state, spanning exact integer $1800$ and $12600$ cycles at $1\ \mathrm{kHz}$ and $7\ \mathrm{kHz}$ with zero cross-tone product), Parseval additivity gives $P_L = P_{s,1}|H_L(f_1)|^2 + P_{s,2}|H_L(f_2)|^2$ (and similarly for $P_R$):</p>
+<ul>
+<li>Under <strong><code>flat</code></strong>, $P_L = 0.005\times(2.173880 + 0.326120) = 0.0125 = P_R$, giving broadband ILD $10\log_{10}(P_R/P_L) = 0\ \mathrm{dB}$;</li>
+<li>Under <strong><code>tilted</code></strong>, with identical filters $h_L, h_R$ untouched, concentrating source power at $1\ \mathrm{kHz}$ (where left gain dominates) makes total output strongly left-dominant:</li>
+</ul>
+<p>$$
+\begin{aligned}
+P_L &= 0.0072\times 2.1738795 + 0.0008\times 0.3261205 \\
+&\approx 0.015912829, \\
+P_R &= 0.0072\times 0.3261205 + 0.0008\times 2.1738795 \\
+&\approx 0.004087171,
+\end{aligned}
+$$</p>
+<p>jumping broadband ILD to $10\log_{10}(P_R / P_L) \approx -5.903246\ \mathrm{dB}$! <strong>Changing source timbre leaves per-bin transfer ratio $H_R(f)/H_L(f)$ completely invariant while shifting broadband total ILD by nearly $6\ \mathrm{dB}$</strong> (and shows why arithmetic averaging of per-bin dB values never equals broadband ILD).</p>
+<p><strong>Step 4: Listen to the four companion WAVs and verify PCM readback.</strong> Listen to both mono sources and stereo outputs (Left Ch. 0, Right Ch. 1; comparing clips 2 and 4 over headphones makes the leftward image shift under identical filters unmistakable):</p>
+<ul>
+<li>Flat-spectrum mono source: <a href="../site/spectral_audio/flat_source.wav"><code>flat_source.wav</code></a><audio class="audio-sample" controls preload="none" aria-label="flat_source.wav" src="../site/spectral_audio/flat_source.wav">Use the WAV link above to download.</audio></li>
+<li>Flat-spectrum stereo output (broadband ILD $\approx 0\ \mathrm{dB}$): <a href="../site/spectral_audio/flat_stereo.wav"><code>flat_stereo.wav</code></a><audio class="audio-sample" controls preload="none" aria-label="flat_stereo.wav" src="../site/spectral_audio/flat_stereo.wav">Use the WAV link above to download.</audio></li>
+<li>Tilted-spectrum mono source: <a href="../site/spectral_audio/tilted_source.wav"><code>tilted_source.wav</code></a><audio class="audio-sample" controls preload="none" aria-label="tilted_source.wav" src="../site/spectral_audio/tilted_source.wav">Use the WAV link above to download.</audio></li>
+<li>Tilted-spectrum stereo output (broadband ILD $\approx -5.90\ \mathrm{dB}$): <a href="../site/spectral_audio/tilted_stereo.wav"><code>tilted_stereo.wav</code></a><audio class="audio-sample" controls preload="none" aria-label="tilted_stereo.wav" src="../site/spectral_audio/tilted_stereo.wav">Use the WAV link above to download.</audio></li>
+</ul>
+<p>Script E01-10 decodes signed 16-bit integers over $[1600, 30400)$ (dividing by $32768$, so integer sum of squares $E$ divided by exact denominator $D = 28800 \times 32768^2 = 30923764531200$ yields digital MS $P = E/D$):</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable data table"><table>
+<thead>
+<tr>
+<th scope="col">Input Source</th>
+<th scope="col">Left PCM Integer $E_L$</th>
+<th scope="col">Right PCM Integer $E_R$</th>
+<th scope="col">Left PCM MS</th>
+<th scope="col">Right PCM MS</th>
+<th scope="col">Broadband PCM ILD</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>flat</code></td>
+<td><code>386556004800</code></td>
+<td><code>386556004800</code></td>
+<td>$0.012500289$</td>
+<td>$0.012500289$</td>
+<td>$0.000000\ \mathrm{dB}$</td>
+</tr>
+<tr>
+<td><code>tilted</code></td>
+<td><code>492118106400</code></td>
+<td><code>126383569200</code></td>
+<td>$0.015913913$</td>
+<td>$0.004086940$</td>
+<td>$-5.903787\ \mathrm{dB}$</td>
+</tr>
+</tbody>
+</table></div>
+<p>Projecting orthogonally onto $\sum_n y[n]e^{-\mathrm{j}\Omega_{\mathrm{d}} n}\cdot(2/N_w)$ over $N_w = 28800$ samples extracts complex $1\ \mathrm{kHz}$ and $7\ \mathrm{kHz}$ amplitudes after PCM quantization (<a href="../site/spectral_audio/MANIFEST.json">MANIFEST.json</a> and <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch01/core/spectral_cues.py"><code>spectral_cues.py</code></a>):</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable data table"><table>
+<thead>
+<tr>
+<th scope="col">Input Source</th>
+<th scope="col">Test Bin</th>
+<th scope="col">PCM Per-Bin ILD</th>
+<th scope="col">PCM Per-Bin IPD (R − L)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>flat</code></td>
+<td>$1\ \mathrm{kHz}$</td>
+<td>$-8.237377\ \mathrm{dB}$</td>
+<td>$+27.027252^\circ$</td>
+</tr>
+<tr>
+<td><code>flat</code></td>
+<td>$7\ \mathrm{kHz}$</td>
+<td>$+8.237377\ \mathrm{dB}$</td>
+<td>$+27.027252^\circ$</td>
+</tr>
+<tr>
+<td><code>tilted</code></td>
+<td>$1\ \mathrm{kHz}$</td>
+<td>$-8.239027\ \mathrm{dB}$</td>
+<td>$+27.023913^\circ$</td>
+</tr>
+<tr>
+<td><code>tilted</code></td>
+<td>$7\ \mathrm{kHz}$</td>
+<td>$+8.237087\ \mathrm{dB}$</td>
+<td>$+27.026835^\circ$</td>
+</tr>
+</tbody>
+</table></div>
+<p>Even as broadband ILD swings from $0\ \mathrm{dB}$ to $-5.90\ \mathrm{dB}$, per-bin ILD and IPD stay locked to analytical $\mp 8.2386\ \mathrm{dB}$ and $+27.03^\circ$ (with tiny last-digit jitter from independent 16-bit rounding). Verify read-only integrity from the repository root via:</p>
+<pre><code class="language-bash">.venv/bin/python -m codes.chapters.ch01.examples.generate_spectral_cues --check
+</code></pre>
+<p><strong>Physical Boundaries and Zero Counterexamples.</strong> Canceling source spectra via Eq. (1-15) breaks down at two zero loci:</p>
+<ul>
+<li><strong>Source spectral nulls ($S(f)=0$)</strong>: Where the source radiates zero energy, both channels vanish into undefined $0/0$—practical estimators gate ratios on bins significantly above the noise floor.</li>
+<li><strong>Channel transfer zeros ($H_L(f)=0$ or $H_R(f)=0$)</strong>: Changing taps to $h_L=[1, 1]$ and $h_R=[1, -1]$ zeroes $H_L$ at Nyquist $f=f_s/2$ ($\Omega_{\mathrm{d}} = \pi$, $|H_R|=2$, $\mathrm{ILD}\to +\infty$) and zeroes $H_R$ at DC $f=0$ ($\Omega_{\mathrm{d}} = 0$, $|H_L|=2$, $\mathrm{ILD}\to -\infty$), erasing phase references at zeroed bins.</li>
+</ul>
+<p>Finally, mapping measured $B_{RL}(f)$ back to physical bearing angles still requires a calibrated direction-to-response array manifold (§3.4).</p>
+<p><a id="e01-11"></a></p>
+<span id="sec-u-5b1beca222" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-b2b5ca28f9">E01-11: Eigendecomposition Noise Coloring for Arbitrary Spatial Coherence Matrices</h3>
+<p>At frequency $f$, given zero-mean spatially white $\vec z \in \mathbb{C}^M$ ($\mathbb{E}[\vec z\vec z^H]=\mathbf{I}_M$), synthesize multichannel sensor noise $\vec v = \mathbf{C}\vec z$ matching a specified Hermitian PSD spatial coherence matrix $\mathbf{\Gamma} \in \mathbb{C}^{M\times M}$ (<code>hermitian_psd_sqrt_coloring</code> in <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch01/core/spatial_coherence_and_dba.py"><code>spatial_coherence_and_dba.py</code></a>):</p>
+<ol>
+<li>For $2\times 2$ real coherence $\mathbf{\Gamma}_2$ with unit diagonal and off-diagonal $\rho = 24/25 = 0.96$, hand-calculate Hermitian square root $\mathbf{\Gamma}_2^{1/2}$ and lower Cholesky factor $\mathbf{L}_2$; left-multiply both onto the $2\times 4$ orthogonal sequence matrix $\mathbf{Z}$ from E01-04 to verify distinct samplewise waveforms sharing the exact same finite-sample second-moment matrix; then replace the off-diagonal with purely imaginary $\gamma_{12} = +0.96\mathrm{j}$ ($\gamma_{21} = -0.96\mathrm{j}$) to verify why conjugate transpose $^H$ is essential for diagonal power conservation.</li>
+<li>For equicorrelated four-mic $\mathbf{\Gamma}_4(\rho) = (1-\rho)\mathbf{I}_4 + \rho\vec{1}\vec{1}^\top$ (from E01-01), find all 4 eigenvalues, show column by column at singular boundary $\rho = -1/3$ why lower-triangular Cholesky hits a zero 4th pivot radicand whereas eigendecomposition $\mathbf{\Gamma}_4(-1/3)^{1/2}$ yields an exact closed form, and explain why $\rho = -0.4$ must be rejected as unphysical.</li>
+</ol>
+<p><strong>Step 1: General Hermitian PSD square-root coloring formula.</strong> Unitary eigendecomposition $\mathbf\Gamma = \mathbf U\mathbf\Lambda\mathbf U^H$ ($\mathbf U^H\mathbf U=\mathbf I_M$, $\lambda_m \ge 0$) defines the unique Hermitian PSD square root $\mathbf\Gamma^{1/2}$ via non-negative scalar roots $\sqrt{\lambda_m} \ge 0$:</p>
+<p>$$
+\begin{aligned}
+\mathbf\Gamma &= \mathbf U\mathbf\Lambda\mathbf U^H, &
+\mathbf\Gamma^{1/2} &= \mathbf U\mathbf\Lambda^{1/2}\mathbf U^H, \\
+\vec v &= \mathbf\Gamma^{1/2}\vec z, &
+\mathbb{E}[\vec v\vec v^H]
+&= \mathbf\Gamma^{1/2}\mathbf I_M(\mathbf\Gamma^{1/2})^H
+= \mathbf\Gamma.
+\end{aligned} \tag{1-16}
+$$</p>
+<p><strong>Step 2: Rational two-microphone example and conjugate-transpose check.</strong> For $\mathbf{\Gamma}_2$ ($\rho = 24/25 = 0.96$), orthonormal eigenvectors $\vec u_- = \frac{1}{\sqrt{2}}[1, -1]^\top$ (differential mode) and $\vec u_+ = \frac{1}{\sqrt{2}}[1, 1]^\top$ (common mode) have exact rational square eigenvalues:</p>
+<p>$$
+\begin{aligned}
+\lambda_- &= 1 - \frac{24}{25} = \frac{1}{25} = 0.04, &
+\sqrt{\lambda_-} &= \frac{1}{5} = 0.2, \\
+\lambda_+ &= 1 + \frac{24}{25} = \frac{49}{25} = 1.96, &
+\sqrt{\lambda_+} &= \frac{7}{5} = 1.4.
+\end{aligned}
+$$</p>
+<p>Summing $0.2\vec u_-\vec u_-^\top + 1.4\vec u_+\vec u_+^\top$ gives $\mathbf{\Gamma}_2^{1/2}$ with diagonal $(1.4+0.2)/2 = 0.8$ and off-diagonal $(1.4-0.2)/2 = 0.6$, while $L_{11}=1, L_{21}=0.96, L_{22}=\sqrt{1-0.96^2}=\sqrt{49/625}=0.28$ gives lower Cholesky factor $\mathbf{L}_2$:</p>
+<p>$$
+\mathbf{\Gamma}_2^{1/2} = \begin{bmatrix}
+0.80 & 0.60 \\
+0.60 & 0.80
+\end{bmatrix}, \qquad
+\mathbf{L}_2 = \begin{bmatrix}
+1.00 & 0.00 \\
+0.96 & 0.28
+\end{bmatrix}.
+$$</p>
+<p>Acting on four-point orthogonal matrix $\mathbf{Z}$ with rows $[1, 1, -1, -1]$ and $[1, -1, 1, -1]$ ($\frac{1}{4}\mathbf{Z}\mathbf{Z}^\top = \mathbf{I}_2$), $\mathbf{\Gamma}_2^{1/2}\mathbf{Z}$ yields symmetric rows $[1.4, 0.2, -0.2, -1.4]$ and $[1.4, -0.2, 0.2, -1.4]$, whereas $\mathbf{L}_2\mathbf{Z}$ leaves row 1 untouched and mixes row 2 into $[1.24, 0.68, -0.68, -1.24]$. Despite distinct sample waveforms, both satisfy $\frac{1}{4}\mathbf{V}\mathbf{V}^\top = \mathbf{\Gamma}_2$ identically (diagonals $1.00$, off-diagonals $0.96$)!</p>
+<p>Switching to quadrature imaginary coherence $\gamma_{12} = +0.96\mathrm{j}$ ($\gamma_{21} = -0.96\mathrm{j}$) preserves eigenvalues $0.04, 1.96$ and yields Hermitian square root:</p>
+<p>$$
+\mathbf{C}_{\mathbb{C}}
+= \mathbf\Gamma_{2,\mathbb{C}}^{1/2}
+= \begin{bmatrix}
+0.8 & 0.6\mathrm{j} \\
+-0.6\mathrm{j} & 0.8
+\end{bmatrix}.
+$$</p>
+<p>Evaluating $\mathbf{C}_{\mathbb{C}}\mathbf{C}_{\mathbb{C}}^H$ gives diagonal $0.8^2 + |0.6\mathrm{j}|^2 = 0.64 + 0.36 = 1.00$; mistakenly coding plain transpose <code>.T</code> instead of <code>.conj().T</code> turns $(0.6\mathrm{j})^2 = -0.36$ and corrupts single-mic diagonal power in $\mathbf{C}_{\mathbb{C}}\mathbf{C}_{\mathbb{C}}^\top$ to $0.64 - 0.36 = 0.28$!</p>
+<p><strong>Step 3: Four-mic singular boundary $\rho = -1/3$ and unphysical rejection guard.</strong> Defining common-mode projector $\mathbf P_{\parallel} = (1/4)\vec 1\vec 1^\top$ and zero-sum orthogonal complement $\mathbf P_{\perp} = \mathbf I_4 - \mathbf P_{\parallel}$ decomposes $\mathbf{\Gamma}_4(\rho)$ directly into:</p>
+<p>$$
+\mathbf{\Gamma}_4(\rho)
+= (1+3\rho)\mathbf{P}_{\parallel}
++ (1-\rho)\mathbf{P}_{\perp},
+$$</p>
+<p>exposing simple eigenvalue $\lambda_{\parallel} = 1 + 3\rho$ and triple eigenvalue $\lambda_{\perp} = 1 - \rho$. At $\rho = -1/3$, $\lambda_{\parallel} = 0$ and $\lambda_{\perp} = 4/3$ (rank $3$):</p>
+<ul>
+<li><strong>Columnwise Cholesky breakdown</strong>: Pivots 1–3 equal $L_{11}=1$, $L_{22}=\frac{2\sqrt{2}}{3} \approx 0.942809$, and $L_{33}=\frac{\sqrt{6}}{3} \approx 0.816497$; on row 4, $L_{41}=-1/3$, $L_{42}=-\frac{\sqrt{2}}{3}$, and $L_{43}=-\frac{\sqrt{6}}{3}$ have squared sum $\frac{1}{9}+\frac{2}{9}+\frac{6}{9}=1$, driving the 4th pivot radicand to $1 - 1 = 0$ (physically, $v_4 = -(v_1+v_2+v_3)$ has zero conditional variance given mics 1–3), where strict-PD <code>np.linalg.cholesky</code> raises <code>LinAlgError</code> under float64 rounding.</li>
+<li><strong>Closed-form eigendecomposition square root</strong>: Equation (1-16) gives $\frac{2}{\sqrt{3}}\,\mathbf{P}_{\perp}$ with diagonals $\frac{\sqrt{3}}{2} \approx 0.866025$ and off-diagonals $-\frac{\sqrt{3}}{6} \approx -0.288675$; since $\vec{1}^\top\mathbf{P}_{\perp} = \vec{0}^\top$, any colored vector sums across all four channels identically to zero.</li>
+<li><strong>Unphysical input rejection</strong>: Passing $\rho = -0.4 \lt  -1/3$ yields $\lambda_{\parallel} = 1 + 3(-0.4) = -0.2 \lt  0$. Production code clamps only tiny numerical noise inside $[-10^{-10}\lambda_{\max}, 10^{-10}\lambda_{\max}]$ to zero while explicitly raising <code>LinAlgError</code> whenever a genuinely negative eigenvalue exceeds tolerance. Note also that Eq. (1-16) colors complex spectra at a known single-bin coherence matrix—distinct from blind covariance estimation or broadband RIR synthesis.</li>
+</ul>
+<p><a id="e01-12"></a></p>
+<span id="sec-u-f135af23e1" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-bd60d0cab3">E01-12: Silicon MEMS dBA SNR Trap and SOFA Spherical Coordinate Verification</h3>
+<p>Hardware kickoffs routinely pair sensor datasheet screening with 3D calibration coordinate checks (<code>iec61672_a_weighting</code>, <code>differential_1f_noise_budget</code>, and <code>sofa_spherical_to_cartesian_and_colatitude</code> in <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch01/core/spatial_coherence_and_dba.py"><code>spatial_coherence_and_dba.py</code></a>):</p>
+<ol>
+<li><strong>MEMS low-frequency self-noise reversal</strong>: Suppose <code>Mic A</code> has flat unweighted self-noise PSD $S_A(f) = S_0$, whereas <code>Mic B</code> halves high-frequency thermal noise but exhibits $1/f$ flicker noise with corner $f_{\mathrm{c}} = 1000\ \mathrm{Hz}$, $S_B(f) = 0.5\,S_0(1 + 1000/f)$. Evaluate unweighted noise ratio at $100\ \mathrm{Hz}$ and A-weighted total noise ratio over $[50, 8000]\ \mathrm{Hz}$ ($10\ \mathrm{Hz}$ grid, $796$ bins); then mount two identical sensors into a $d = 1\ \mathrm{cm}$ endfire first-order differential array ($c = 343\ \mathrm{m/s}$), derive equalized output self-noise PSD, and compare <code>Mic B</code> vs. <code>Mic A</code> speech-band ($[100, 4000]\ \mathrm{Hz}$) noise penalty under continuous asymptotic integration vs. exact $10\ \mathrm{Hz}$ discrete summation.</li>
+<li><strong>AES69 (SOFA) spherical coordinate check</strong>: Convert book coordinates "azimuth $\theta = +30^\circ$ front-right, elevation $+30^\circ$, range $r = 1\ \mathrm{m}$" into SOFA spherical $(\phi_{\mathrm{SOFA}}, \delta_{\mathrm{SOFA}}, r)$, spherical-harmonic colatitude $\vartheta$, and both right-handed Cartesian triples, quantifying the geometric errors caused by passing elevation $\delta_{\mathrm{SOFA}}=0^\circ$ or $\delta_{\mathrm{SOFA}}=-30^\circ$ directly into spherical harmonics in place of colatitude $\vartheta$.</li>
+</ol>
+<p><strong>Step 1: IEC 61672-1 A-weighting and endfire differential equalization.</strong> IEC 61672-1 specifies A-weighting via four pole frequencies $f_1 = 20.598997\ \mathrm{Hz}$, $f_2 = 107.65265\ \mathrm{Hz}$, $f_3 = 737.86223\ \mathrm{Hz}$, and $f_4 = 12194.217\ \mathrm{Hz}$, normalized to $0\ \mathrm{dB}$ at $1000\ \mathrm{Hz}$ ($R_{\mathrm{A}}(1000) \approx 0.794360$, offset $-20\log_{10}R_{\mathrm{A}}(1000) \approx +2.000\ \mathrm{dB}$).</p>
+<p>For an endfire two-mic rear-null differential pair spaced at $d$ (§5.3), axial forward waves incur inter-mic phase lag $\phi_{\mathrm{d}} = 2\pi f d / c$ ($180^\circ$ rear waves incur $-\phi_{\mathrm{d}}$): delaying mic 2 by $e^{-\mathrm{j}\phi_{\mathrm{d}}}$ and subtracting from mic 1 nulls rear interference identically while giving forward complex gain $g_{\mathrm{tar}} = 1 - e^{-\mathrm{j}2\phi_{\mathrm{d}}}$ with $|g_{\mathrm{tar}}|^2 = 4\sin^2\phi_{\mathrm{d}}$.</p>
+<p>Subtracting two uncorrelated sensor self-noises doubles raw noise PSD to $2 S_{vv}(f)$; dividing by $g_{\mathrm{tar}}$ for unit forward target response divides noise PSD by $4\sin^2\phi_{\mathrm{d}}$, canceling $2$:</p>
+<p>$$
+\begin{aligned}
+R_{\mathrm{A}}(f)
+&= \frac{f_4^2 f^4}{(f^2+f_1^2)
+\sqrt{(f^2+f_2^2)(f^2+f_3^2)}(f^2+f_4^2)}, \\
+A(f) &= 20\log_{10}R_{\mathrm{A}}(f)
+- 20\log_{10}R_{\mathrm{A}}(1000), \\
+S_{vv,\mathrm{out}}(f)
+&= \frac{S_{vv}(f)}{2\sin^2(2\pi f d/c)}.
+\end{aligned} \tag{1-17}
+$$</p>
+<p>Denominator $2\sin^2(2\pi f d/c)$ in Eq. (1-17) is precisely the narrowband linear $\mathrm{WNG}(f)$ of the endfire dipole/cardioid pair (at spatial-aliasing frequencies $f = k c/(2d)$ where $\sin(2\pi f d/c)=0$, forward target and rear null coincide and equalization diverges).</p>
+<p><strong>Step 2: Auditing the datasheet <code>dB(A)</code> win vs. differential speech-band loss.</strong> Substituting $S_A(f)=S_0$ and $S_B(f)=0.5 S_0(1+1000/f)$:</p>
+<ul>
+<li><strong>Unweighted $100\ \mathrm{Hz}$ noise &amp; differential boost</strong>: At $100\ \mathrm{Hz}$, $S_B(100)/S_A(100) = 0.5\times(1+10) = 5.5$ (<code>Mic B</code> is $+7.4036\ \mathrm{dB}$ noisier); meanwhile, at $d = 0.01\ \mathrm{m}$, $100\ \mathrm{Hz}$ linear WNG is just $2\sin^2(2\pi/343) \approx 0.00067105$ ($-31.7325\ \mathrm{dB}$, amplifying self-noise power $1490.2\times$), climbing by $20\ \mathrm{dB}$ over one decade to $0.066365$ ($-11.7806\ \mathrm{dB}$) at $1000\ \mathrm{Hz}$.</li>
+<li><strong>The $[50, 8000]\ \mathrm{Hz}$ A-weighted datasheet illusion</strong>: Across the $796$-bin $10\ \mathrm{Hz}$ grid, because <code>Mic B</code> approaches $0.5 S_0$ across heavily weighted $1\text{--}8\ \mathrm{kHz}$ while A-weighting suppresses its low-frequency $1/f$ rise, A-weighted noise power of <code>Mic B</code> is $0.692639\times$ <code>Mic A</code>—giving <code>Mic B</code> a <strong>$+1.5949\ \mathrm{dB}$ higher datasheet <code>SNR (dBA)</code></strong> (e.g., <code>66.6 dB(A)</code> vs. <code>65.0 dB(A)</code>)!</li>
+<li><strong>Differential output noise across $[100, 4000]\ \mathrm{Hz}$ speech band</strong>: For $2\pi f d/c \ll 1$, $\sin(2\pi f d/c) \approx 2\pi f d/c$ cancels common geometry factors in the ratio, yielding exact rational asymptotic integrals:</li>
+</ul>
+<p>$$
+\begin{aligned}
+I_A &= \int_{100}^{4000} f^{-2}\,\mathrm{d}f
+= \frac{1}{100} - \frac{1}{4000} = \frac{39}{4000}, \\
+I_B &= 0.5\int_{100}^{4000}
+\bigl(f^{-2} + 1000 f^{-3}\bigr)\,\mathrm{d}f \\
+&= 0.5\left[\frac{39}{4000}
++ 500\left(\frac{1}{10^4} - \frac{1}{1.6\times 10^7}\right)\right]
+= \frac{1911}{64000}, \\
+\frac{I_B}{I_A} &= \frac{1911/64000}{39/4000}
+= \frac{1911}{624} = \frac{49}{16} = 3.0625.
+\end{aligned}
+$$</p>
+<p>Continuous asymptotic noise penalty is $10\log_{10}(49/16) = 20\log_{10}(7/4) \approx +4.8608\ \mathrm{dB}$; summing exact $\sin^2$ Eq. (1-17) across all $391$ discrete $10\ \mathrm{Hz}$ bins in $[100, 4000]\ \mathrm{Hz}$ (where steeper $f^{-3}$ weights the left endpoint $100\ \mathrm{Hz}$ slightly above the continuous integral) yields power ratio $3.179328$ (<strong>$+5.0234\ \mathrm{dB}$ worse</strong>). Winning on the datasheet by $\approx 1.6\ \mathrm{dB(A)}$ ends up losing by $\approx 5.0\ \mathrm{dB}$ on a $1\ \mathrm{cm}$ differential array—a $6.6\ \mathrm{dB}$ swing!</p>
+<p><strong>Step 3: AES69 (SOFA) spherical conversion and colatitude bug diagnostics.</strong> Under right-handed AES69 ($+x_{\mathrm{SOFA}}$ front, $+y_{\mathrm{SOFA}}$ left, $+z_{\mathrm{SOFA}}$ up) and colatitude $\vartheta \in [0^\circ, 180^\circ]$:</p>
+<p>$$
+\begin{aligned}
+x_{\mathrm{SOFA}}
+&= r\cos\delta_{\mathrm{SOFA}}\cos\phi_{\mathrm{SOFA}}, \\
+y_{\mathrm{SOFA}}
+&= r\cos\delta_{\mathrm{SOFA}}\sin\phi_{\mathrm{SOFA}}, \\
+z_{\mathrm{SOFA}} &= r\sin\delta_{\mathrm{SOFA}}, \quad
+\vartheta = 90^\circ - \delta_{\mathrm{SOFA}}.
+\end{aligned} \tag{1-18}
+$$</p>
+<p>For book front-right $\theta = +30^\circ$, elevation $+30^\circ$, and $r = 1\ \mathrm{m}$: counterclockwise SOFA azimuth is $\phi_{\mathrm{SOFA}} = -30^\circ$ ($330^\circ$ in $[0^\circ, 360^\circ)$), $\delta_{\mathrm{SOFA}} = +30^\circ$, and colatitude is $\vartheta = 90^\circ - 30^\circ = 60^\circ$. With $\cos 30^\circ = \sqrt{3}/2$ and $\sin 30^\circ = 1/2$:</p>
+<ul>
+<li><strong>SOFA Cartesian</strong>: exact $(3/4, -\sqrt{3}/4, 1/2)\ \mathrm{m} \approx (0.75, -0.433013, 0.5)\ \mathrm{m}$ (front-right has $y_{\mathrm{SOFA}} \lt  0$);</li>
+<li><strong>Book Cartesian</strong> ($+x_{\mathrm{book}}$ right, $+y_{\mathrm{book}}$ front, $+z_{\mathrm{book}}$ up): orthogonal axis permutation $x_{\mathrm{book}} = -y_{\mathrm{SOFA}}$, $y_{\mathrm{book}} = x_{\mathrm{SOFA}}$, $z_{\mathrm{book}} = z_{\mathrm{SOFA}}$ gives $(\sqrt{3}/4, 3/4, 1/2)\ \mathrm{m} \approx (0.433013, 0.75, 0.5)\ \mathrm{m}$.</li>
+</ul>
+<p>Omitting $\vartheta = 90^\circ - \delta_{\mathrm{SOFA}}$ and passing elevation $\delta_{\mathrm{SOFA}}$ directly into spherical harmonics $Y_n^m(\vartheta, \phi)$ triggers two severe geometric bugs:</p>
+<ul>
+<li><strong>Horizontal-plane collapse</strong>: Horizontal sources ($\delta_{\mathrm{SOFA}}=0^\circ$) set $\sin\vartheta = \sin 0^\circ = 0$, collapsing the entire $360^\circ$ horizontal ring onto the overhead zenith pole $(0,0,1)$;</li>
+<li><strong>Lower-hemisphere reflection plus $180^\circ$ azimuth flip</strong>: Lower-hemisphere $\delta_{\mathrm{SOFA}}=-30^\circ$ (true colatitude $120^\circ$) flips vertical $\cos(-30^\circ)=+\sqrt{3}/2 > 0$ into the upper hemisphere while negative $\sin(-30^\circ)=-0.5 \lt  0$ simultaneously inverts horizontal azimuth by $180^\circ$! All synthetic audio clips across this chapter and beyond are cataloged in <a href="research/05_exercises_and_audio.html">Chapter Coding Exercises &amp; Audio Experiments</a>—we encourage listening alongside the hand-worked tables above.</li>
+</ul>
+<hr />
+<blockquote>
+<p>📄 Page Info: 1 figure | <a href="index.html">Back to Overview</a></p>
+</blockquote><div class="pn"><span><a href="00_math-foundations.html">← Previous Chapter</a></span><span><a href="02_basics-signal-model.html">Next Chapter →</a></span></div>
+<footer class="foot">Microphone Array Signal Processing Tutorial · English static edition built by scripts/build_site_en.py</footer>
+</main></div><a class="topbtn" href="#top" title="Back to top" aria-label="Back to top">↑</a>
+<script>if(!navigator.onLine)document.getElementById('offnote').style.display='block';for(const a of document.querySelectorAll('a[data-lang-peer]'))if(location.protocol==='file:'||location.hostname==='localhost'||location.hostname==='127.0.0.1')a.href=a.dataset.langPeer;</script>
+</body></html>

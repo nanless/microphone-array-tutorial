@@ -1,4 +1,9 @@
 (() => {
+  for (const peer of document.querySelectorAll("a[data-lang-peer]")) {
+    if (location.protocol === "file:" || location.hostname === "localhost" || location.hostname === "127.0.0.1") {
+      peer.href = peer.dataset.langPeer;
+    }
+  }
   const scene = document.querySelector(".course-demo");
   const switches = scene.querySelector(".course-switch");
   const arrival = scene.querySelector(".course-arrival");

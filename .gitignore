@@ -5,10 +5,12 @@ __pycache__/
 *.log
 /tmp/
 .site-build-*
+.site-en-build-*
 .report-*
 .publish-backup-*
-# 合订 HTML 是中间产物（重跑 build_pdf.py 即再生），不入库；PDF 是发布件，入库
+# 合订 HTML 是中间产物（重跑 build_pdf.py / build_pdf_en.py 即再生），不入库；PDF 是发布件，入库
 dist/combined.html
+dist/combined_en.html
 # 第三方源码只按需获取到本地，不纳入本仓库
 codes/chapters/ch00/upstream/_downloads/
 codes/vendor/

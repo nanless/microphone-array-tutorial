@@ -315,7 +315,7 @@ byId("language").addEventListener("click", () => {
   document.title = labels.title;
   paint({audioChanged:false});
 });
-paint();
+if (new URLSearchParams(location.search).get("lang") === "en") { byId("language").click(); paint(); } else { paint(); }
 </script>
 </body>
 </html>

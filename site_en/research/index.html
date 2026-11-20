@@ -1,0 +1,464 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Upstream Source Manuals · Microphone Array Signal Processing</title>
+<meta name="source-digest" content="55952d1c18a8"><style>
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
+.topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
+.topbar .lang-switch{color:#FAF8F3;background:#2C333B;border:1px solid #4A525D;padding:2px 10px;border-radius:999px;font-size:13px;font-weight:650;white-space:nowrap}.topbar .lang-switch:hover{background:#1F5A92;border-color:#689CD0;text-decoration:none}
+h1,h2,h3,h4{scroll-margin-top:60px}
+@media screen{.main a[id]:not([href]){scroll-margin-top:60px}}
+@media screen{.main a[id^="e"],.main .exercise-alias{scroll-margin-top:80px}}
+@media screen{.main .exercise-alias{top:0}}
+@media screen{.main a[id="e05-20"]{scroll-margin-top:60px}}
+@media screen{.main a[id="e17-11"],.main a[id="e17-12"],.main a[id="e17-13"],.main a[id="e17-14"],.main a[id="e17-15"]{scroll-margin-top:140px}}
+@media screen{.main .exercise-alias[id="e13-11"],.main .exercise-alias[id="e13-12"],.main .exercise-alias[id="e13-13"],.main .exercise-alias[id="e13-14"],.main .exercise-alias[id="e13-15"],.main .exercise-alias[id="e15-11"]:has(~ a[id="e17-11"]),.main .exercise-alias[id="e15-12"]:has(~ a[id="e17-12"]),.main .exercise-alias[id="e15-13"]:has(~ a[id="e17-13"]),.main .exercise-alias[id="e15-14"]:has(~ a[id="e17-14"]),.main .exercise-alias[id="e15-15"]:has(~ a[id="e17-15"]){scroll-margin-top:140px}}
+@media screen{.main a[id^="e06-"]{scroll-margin-top:60px}}
+@media screen{.main a[id^="e07-"],.main a[id^="e08-"]{scroll-margin-top:60px}}
+@media screen{.main a[id^="e11-"]{scroll-margin-top:60px}}
+@media screen{.main .separation-topic-anchor{scroll-margin-top:60px}}
+@media screen{.main .source-reproduction-anchor{scroll-margin-top:60px}}
+a:focus-visible,summary:focus-visible{outline:2.5px solid #B84A2E;outline-offset:3px}
+.skip-link{position:absolute;left:10px;top:-60px;z-index:30;background:#fff;color:#1C1E21;padding:8px 12px;border:2px solid #B84A2E}
+.skip-link:focus{top:8px}
+.wrap{display:flex;max-width:1280px;margin:0 auto;border-left:1px solid #E3DED3;border-right:1px solid #E3DED3}
+.side{width:300px;flex-shrink:0;padding:20px 15px;position:sticky;top:47px;height:calc(100vh - 47px);overflow-y:auto;background:#FAF8F3;border-right:1px solid #DDD7CB;font-size:13.5px}
+.side a{color:#1F5A92;text-decoration:none}.side a:hover{text-decoration:underline}
+.side .chap{margin:10px 0 2px;font-weight:700;color:#26292E}.side .chap.cur{color:#B84A2E}
+.side ul{margin:2px 0 6px;padding-left:16px;color:#5A554D}.side li{margin:2px 0}
+.main{flex:1;min-width:0;padding:32px 40px;background:#fff;overflow-wrap:anywhere}
+.main a{color:#1F5A92;text-underline-offset:.2em}
+.main p{margin:0 0 1.2em}.main ul,.main ol{margin:.55em 0 1.2em;padding-left:1.55em}.main li{margin:.42em 0}.main li>p{margin:.5em 0}
+.main p>strong:first-child,.main li>strong:first-child{color:#14171A}
+.main img{max-width:100%;height:auto;display:block;margin:18px auto;border:1px solid #DFDAD0;border-radius:5px;padding:4px;min-height:40px;background:#fff}
+.audio-sample{display:block;width:min(100%,460px);margin:8px 0 18px}.audio-sample:focus-visible{outline:2.5px solid #B84A2E}
+/* 表格列宽不能压掉原生播放按钮；手机上的表格可横向滚动。 */
+td .audio-sample{width:280px;min-width:280px}
+table:has(td .audio-sample) td:last-child{min-width:180px}
+table{border-collapse:collapse;margin:18px 0;max-width:100%;border-top:1.5px solid #2A2E34;border-bottom:1.5px solid #2A2E34}
+.table-scroll{max-width:100%;overflow-x:auto}
+.table-scroll:focus-visible{outline:2.5px solid #B84A2E;outline-offset:2px}
+th,td{border-top:1px solid #E3DED3;border-bottom:1px solid #E3DED3;border-left:none;border-right:none;padding:8px 11px;font-size:14px;text-align:left;line-height:1.58}
+th{background:#F5F2EB;color:#1C1E21;border-bottom:1px solid #8A8275;font-weight:700}
+tbody tr:nth-child(even) td{background:#FCFBF9}
+code{background:#F3F0E8;color:#1E3A56;border:1px solid #E0DBD0;padding:1px 5px;border-radius:4px;font-size:13.5px}
+pre{background:#F5F3EE;color:#1F2328;border:1px solid #DFDAD0;border-left:3.5px solid #5C564D;padding:14px 16px;border-radius:8px;overflow-x:auto}
+pre code{background:none;border:none;color:inherit;padding:0}
+blockquote{border-left:3.5px solid #B84A2E;margin:18px 0;padding:10px 16px;background:#F7F5F0;border-radius:0 4px 4px 0;color:#2B2E33}
+blockquote p:last-child{margin-bottom:0}
+hr{border:none;border-top:1px solid #DDD7CB;margin:26px 0}
+mjx-container[jax="CHTML"]{font-size:110%!important;overflow-x:auto;overflow-y:hidden;max-width:100%;min-width:0!important}
+body mjx-assistive-mml{width:1px!important;max-width:1px!important;min-width:0!important;height:1px!important;overflow:hidden!important}
+pre,.table-scroll,mjx-container[jax="CHTML"]{overflow-wrap:normal}
+.pn{display:flex;justify-content:space-between;margin:36px 0 12px;padding-top:16px;border-top:1px solid #DDD7CB;font-weight:650}
+.pn a{color:#1F5A92;text-decoration:none}.pn .off{color:#9C9588}
+.foot{color:#6E695F;font-size:13px;margin:20px 0 40px}
+.main h1{font-size:27px;color:#14171A;border-top:2.5px solid #1F5A92;border-bottom:1.5px solid #1C1E21;padding:12px 0 10px;margin:0 0 24px;line-height:1.3}
+.main h2{font-size:21px;color:#14171A;border-left:3.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;padding:1px 0 7px 11px;margin:36px 0 15px;line-height:1.35}
+.main h3{font-size:18px;color:#1F5A92;margin:26px 0 11px;line-height:1.4}
+.main h4{font-size:16px;color:#2C2F33;border-left:2.5px solid #B84A2E;padding:1px 0 1px 9px;margin:20px 0 9px;line-height:1.4}
+.main h3.tutorial-worked-heading{background:#FAF8F3;border-top:1.5px solid #237263;border-bottom:1px solid #E2DDD2;border-left:3.5px solid #237263;color:#1A574B;padding:7px 13px;border-radius:2px;margin:28px 0 13px;font-size:17.2px}
+.main h3.tutorial-exercise-heading,.main h4.tutorial-exercise-heading{background:#F5F2EB;border-top:1.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;border-left:4px solid #1F5A92;color:#14171A;padding:8px 14px;border-radius:2px;margin:30px 0 13px;font-size:17px;line-height:1.45}
+.main p.tutorial-exercise-lead{background:#F5F2EB;border-top:1.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;border-left:4px solid #1F5A92;padding:10px 15px;border-radius:2px;margin:28px 0 13px}
+.main ol>li.tutorial-exercise-item{margin:18px 0}
+.main .tutorial-exercise-card{background:#FAF8F3;border:1px solid #E0DBD0;border-left:3.5px solid #1F5A92;border-radius:4px;padding:12px 16px}
+.main .tutorial-exercise-card>:first-child{margin-top:0}
+.main .tutorial-exercise-card>:last-child{margin-bottom:0}
+.main p.tutorial-solution-lead{background:#F3F6F4;border-left:3.5px solid #237263;padding:8px 13px;border-radius:0 3px 3px 0;margin-top:9px}
+.main p.tutorial-solution-lead>strong:first-child{color:#1D5E51}
+.main p.tutorial-problem-lead{border-left:2.5px solid #1F5A92;padding-left:11px}
+.main p.tutorial-problem-lead>strong:first-child{color:#1F5A92}
+.toc-mobile{display:none;margin:0 0 16px;border:1px solid #DDD7CB;border-radius:6px;padding:10px 14px;background:#FAF8F3;font-size:14px}
+.toc-mobile summary{cursor:pointer;font-weight:700;color:#1C1E21}
+.toc-mobile ul{padding-left:18px;margin:8px 0 2px}.toc-mobile a{color:#1F5A92;text-decoration:none}
+.topbtn{display:block;margin:20px auto;background:#24282E;color:#FAF8F3;border-radius:50%;width:42px;height:42px;text-align:center;line-height:42px;text-decoration:none;font-size:18px}
+.offline-note{display:none;background:#F7EFE4;border:1px solid #D9B78E;color:#6E4219;padding:8px 14px;font-size:13.5px}
+.anchor-alias{display:block;position:relative;top:-60px;visibility:hidden}
+.tutorial-math-tail{display:inline-block;white-space:nowrap;overflow-wrap:normal;vertical-align:baseline;overflow:visible}
+.tutorial-math-tail mjx-assistive-mml{max-width:1px!important;min-width:0!important;white-space:normal}
+.tutorial-exercise-id{white-space:nowrap;overflow-wrap:normal;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:.88em;background:#F3EFE6;color:#B84A2E;border:1px solid #DDD5C7;padding:0 5px;border-radius:3px;font-weight:700}
+:is(.tutorial-exercise-heading,.tutorial-exercise-lead) .tutorial-exercise-id{background:#1F5A92;color:#fff;border-color:#1F5A92;padding:1px 7px;margin-right:5px;font-size:.84em}
+.tutorial-table-label{white-space:nowrap;overflow-wrap:normal}
+@media(max-width:900px){.selection-readable-table{min-width:760px}.selection-readable-table th,.selection-readable-table td{min-width:10em}.selection-readable-table th:first-child,.selection-readable-table td:first-child{min-width:6em}}
+@media(max-width:900px){.side{display:none}.main{padding:20px}.toc-mobile{display:block}.topbar{font-size:14px}mjx-container[jax="CHTML"]:not([display="true"]){display:inline-block;vertical-align:middle}.aec-readable-table th,.aec-readable-table td,.wpe-readable-table th,.wpe-readable-table td,.separation-readable-table th,.separation-readable-table td{min-width:8em}.tracking-readable-table th,.tracking-readable-table td{min-width:8em}.industrial-readable-table th,.industrial-readable-table td{min-width:8em}}
+@media(max-width:900px){.noise-readable-table th:first-child,.noise-readable-table td:first-child{min-width:6em}}
+@media screen and (max-width:900px){.source-contract-readable-table th,.source-contract-readable-table td{min-width:10em}}
+@media screen and (max-width:900px){.tutorial-budget-table{min-width:var(--tutorial-table-width)}.tutorial-budget-table .tutorial-short-column{min-width:var(--tutorial-column-width);overflow-wrap:normal}}
+@media print{.topbar,.side,.pn,.topbtn,.toc-mobile{display:none}.main{padding:0}.table-scroll{overflow:visible}table{display:table}a{color:#000;text-decoration:none}pre{white-space:pre-wrap;background:#fff;color:#000;border:1px solid #ccc}}
+</style>
+<script>
+/* Shared publication layout. TeX, code, links and attributes remain intact. */
+(function () {
+  "use strict";
+  const mathClass = "tutorial-math-tail";
+  const idClass = "tutorial-exercise-id";
+  const ignored = "pre,code,a,script,style,textarea,mjx-container";
+  const suffix = /^(\s*(?:(?:m\/s[²³]?|rad\/s|rad\/m|deg\/s|μs|µs|ns|ms|s|dBFS|dB|kHz|MHz|Hz|ppm|rad|cm|mm|m|V|deg|°|%|％)(?:[²³])?(?=$|[\s，。；、：！？）,.!?;:)\]\u4e00-\u9fff])\s*[，。；、：！？）,.;:!?\]]*|[，。；、：！？）,.;:!?\]]+))/;
+  let ready = false;
+  let scheduled = false;
+  let printing = false;
+
+  function roots() {
+    const candidates = Array.from(document.querySelectorAll(".main,.chap"));
+    return candidates.filter(root => !candidates.some(other => other !== root && other.contains(root)));
+  }
+
+  function unwrapMath(root) {
+    for (const wrapper of root.querySelectorAll("." + mathClass)) {
+      const children = Array.from(wrapper.childNodes);
+      wrapper.replaceWith(...children);
+      // Merge only our adjacent ordinary text, never normalize a MathJax subtree.
+      for (const node of children) {
+        if (node.nodeType !== Node.TEXT_NODE) continue;
+        while (node.nextSibling && node.nextSibling.nodeType === Node.TEXT_NODE) {
+          node.data += node.nextSibling.data;
+          node.nextSibling.remove();
+        }
+      }
+    }
+  }
+
+  function protectExerciseIds(root) {
+    let count = 0;
+    {
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+      const nodes = [];
+      let node;
+      while ((node = walker.nextNode())) {
+        if (!node.parentElement.closest(ignored + ",." + idClass)) nodes.push(node);
+      }
+      for (const text of nodes) {
+        // A filename/path or a longer identifier is not a stable exercise ID.
+        const pattern = /(^|[^\p{L}\p{N}\p{M}_/\\.-])(E\d{2}-\d{2})(?![\p{L}\p{N}\p{M}_/\\-]|\.[\p{L}\p{N}\p{M}])/gu;
+        const matches = Array.from(text.data.matchAll(pattern));
+        for (const match of matches.reverse()) {
+          const start = match.index + match[1].length;
+          text.splitText(start + match[2].length);
+          const middle = text.splitText(start);
+          const span = document.createElement("span");
+          span.className = idClass;
+          middle.before(span);
+          span.append(middle);
+          count++;
+        }
+      }
+    }
+    return count;
+  }
+
+  function markShortLeads(root) {
+    let count = 0;
+    for (const paragraph of root.querySelectorAll("p")) {
+      if (paragraph.closest("pre,code,a,script,style,textarea")) continue;
+      const significant = Array.from(paragraph.childNodes).filter(node =>
+        node.nodeType !== Node.TEXT_NODE || node.data.trim());
+      const next = paragraph.nextElementSibling;
+      const isEmptyAnchor = node =>
+        node.nodeType === Node.ELEMENT_NODE &&
+        node.tagName === "A" && node.id &&
+        !node.hasAttribute("href") &&
+        Array.from(node.childNodes).every(child =>
+          child.nodeType === Node.TEXT_NODE && !child.data.trim());
+      const isAnchorAlias = node =>
+        node.nodeType === Node.ELEMENT_NODE &&
+        node.tagName === "SPAN" && node.id &&
+        node.classList.contains("anchor-alias") &&
+        Array.from(node.childNodes).every(child =>
+          child.nodeType === Node.TEXT_NODE && !child.data.trim());
+      const anchorOnly = significant.length >= 1 &&
+        significant.some(isEmptyAnchor) &&
+        significant.every(node => isEmptyAnchor(node) || isAnchorAlias(node));
+      paragraph.classList.toggle("tutorial-anchor-only", !!anchorOnly);
+      const short = significant.length === 1 &&
+        significant[0].nodeType === Node.ELEMENT_NODE &&
+        significant[0].tagName === "STRONG" &&
+        paragraph.textContent.trim().length <= 60 &&
+        next && /^(P|UL|OL|BLOCKQUOTE)$/.test(next.tagName) &&
+        next.textContent.trim().length > 0;
+      paragraph.classList.toggle("tutorial-short-lead", !!short);
+      if (short) count++;
+
+      const firstSig = significant[0];
+      const firstStrong = firstSig && firstSig.nodeType === Node.ELEMENT_NODE &&
+        firstSig.tagName === "STRONG" ? firstSig : null;
+      const strongText = firstStrong ? firstStrong.textContent.trim() : "";
+      const isExLead = !!(firstStrong && firstStrong.querySelector("." + idClass) &&
+        /^E\d{2}-\d{2}\b/.test(strongText));
+      const isSolutionLead = !isExLead &&
+        /^(参考答案|解答|答案|解(?=[：:。.\s]|$))/.test(strongText);
+      const isProblemLead = !isExLead && !isSolutionLead &&
+        /^(题目|问题|思考题)/.test(strongText);
+      paragraph.classList.toggle("tutorial-exercise-lead", isExLead);
+      paragraph.classList.toggle("tutorial-solution-lead", isSolutionLead);
+      paragraph.classList.toggle("tutorial-problem-lead", isProblemLead);
+    }
+    for (const heading of root.querySelectorAll("h3,h4")) {
+      const hasExId = !!heading.querySelector("." + idClass);
+      const text = heading.textContent.trim();
+      const isWorked = !hasExId && heading.tagName === "H3" &&
+        (/^(算例\s*\d|例\s*\d)/.test(text) || /完整手算/.test(text));
+      heading.classList.toggle("tutorial-exercise-heading", hasExId);
+      heading.classList.toggle("tutorial-worked-heading", isWorked);
+    }
+    for (const item of root.querySelectorAll("ol > li")) {
+      const existingCard = item.querySelector(":scope > .tutorial-exercise-card");
+      const scopeRoot = existingCard || item;
+      const hasSolution = !!scopeRoot.querySelector(":scope > p.tutorial-solution-lead");
+      const startsQuestion = /^思考题[：:]/.test(scopeRoot.textContent.trim());
+      if ((hasSolution || startsQuestion) && !existingCard) {
+        const card = document.createElement("article");
+        card.className = "tutorial-exercise-card";
+        card.append(...Array.from(item.childNodes));
+        item.append(card);
+      }
+      item.classList.toggle("tutorial-exercise-item", hasSolution || startsQuestion);
+    }
+    return count;
+  }
+
+  function apply() {
+    const content = roots();
+    for (const root of content) unwrapMath(root);
+    const plans = [];
+    const hosts = new Map();
+    let skippedWide = 0;
+    let idCount = 0;
+    let leadCount = 0;
+    for (const root of content) {
+      idCount += protectExerciseIds(root);
+      leadCount += markShortLeads(root);
+      // Read every width before any math wrapper is inserted, to avoid repeated
+      // synchronous layout across thousands of formulas in the combined book.
+      for (const math of root.querySelectorAll('mjx-container:not([display="true"])')) {
+        if (math.closest("pre,code,a,script,style,textarea")) continue;
+        const text = math.nextSibling;
+        if (!text || text.nodeType !== Node.TEXT_NODE) continue;
+        const match = text.data.match(suffix);
+        if (!match || match[0].length > 16) continue;
+        const host = math.closest("p,li,td,th,h1,h2,h3,h4");
+        if (!host) continue;
+        if (!hosts.has(host)) {
+          const style = getComputedStyle(host);
+          hosts.set(host, host.clientWidth - parseFloat(style.paddingLeft || 0) -
+            parseFloat(style.paddingRight || 0));
+        }
+        const range = document.createRange();
+        range.setStart(text, 0);
+        range.setEnd(text, match[0].length);
+        const style = getComputedStyle(math);
+        const width = math.getBoundingClientRect().width + range.getBoundingClientRect().width +
+          parseFloat(style.marginLeft || 0) + parseFloat(style.marginRight || 0);
+        if (width > hosts.get(host) - 8) {
+          skippedWide++;
+          continue;
+        }
+        plans.push({math, text, length: match[0].length});
+      }
+    }
+    for (const {math, text, length} of plans) {
+      const wrapper = document.createElement("span");
+      wrapper.className = mathClass;
+      math.before(wrapper);
+      wrapper.append(math);
+      text.splitText(length);
+      wrapper.append(text);
+    }
+    ready = true;
+    const result = {grouped: plans.length, skippedWide, newExerciseIds: idCount, shortLeads: leadCount};
+    window.ArrayTutorialLayout.lastRun = result;
+    return result;
+  }
+
+  function schedule() {
+    if (!ready || scheduled || printing) return;
+    scheduled = true;
+    requestAnimationFrame(() => {
+      scheduled = false;
+      if (printing) return;
+      apply();
+    });
+  }
+
+  window.ArrayTutorialLayout = {apply, lastRun: null};
+  window.addEventListener("resize", schedule);
+  // Chrome fires beforeprint while screen styles still apply. Remove screen
+  // groups before they can enlarge the print layout. The combined book is
+  // measured at its fixed A4 geometry during pageReady instead. Do not mutate
+  // thousands of nodes after the browser has begun its print snapshot: this
+  // can truncate the final pages even when a small fixture prints correctly.
+  // A synthetic beforeprint event is not a print test.
+  window.addEventListener("beforeprint", () => {
+    printing = true;
+    if (ready && document.documentElement.dataset.tutorialPrintLayout !== "a4") {
+      for (const root of roots()) unwrapMath(root);
+    }
+  });
+  window.addEventListener("afterprint", () => {
+    printing = false;
+    if (document.documentElement.dataset.tutorialPrintLayout !== "a4") schedule();
+  });
+  if (document.fonts) document.fonts.addEventListener("loadingdone", schedule);
+})();
+
+window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$']]}, startup: {pageReady: () => MathJax.startup.defaultPageReady().then(() => document.fonts.ready).then(() => ArrayTutorialLayout.apply())}};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"
+ onerror="document.getElementById('offnote').style.display='block';document.getElementById('offnote').textContent='MathJax script failed to load: displaying raw TeX source.';"></script>
+</head><body id="top"><a class="skip-link" href="#main-content">Skip to main content</a>
+<header class="topbar"><span><a href="../index.html">🏠 Home</a> &nbsp;/&nbsp; Upstream Source Manuals</span><a class="lang-switch" href="https://nanless.github.io/microphone-array-tutorial/site/research/index.html" data-lang-peer="../../site/research/index.html" lang="zh-CN" hreflang="zh-CN">中文</a></header>
+<div class="wrap"><nav class="side" aria-label="Course contents"><div class="chap"><a href="../index.html">🏠 Course Overview (Home)</a></div>
+<div class="chap cur" aria-current="page">Upstream Source Manuals</div>
+<ul>
+<li><a href="index.html#sec-u-9f0d386e31">Starting from a Concrete Problem</a></li>
+<li><a href="index.html#sec-u-24b24c525d">Common Order for Reading Upstream Source Code</a></li>
+<li><a href="index.html#sec-u-a418a8d13e">Mapping Between Documentation, Commands, and Results</a></li>
+</ul>
+<div class="chap"><a href="01_spatial_and_tracking.html">Spatial Processing & Tracking Audits</a></div>
+<div class="chap"><a href="02_aec_wpe_separation.html">AEC, WPE & Separation Audits</a></div>
+<div class="chap"><a href="03_industrial_deployment.html">Industrial Audio Deployment Manual</a></div>
+<div class="chap"><a href="04_source_reproduction.html">Upstream Acquisition & Reproduction</a></div>
+<div class="chap"><a href="05_exercises_and_audio.html">Chapter Code Exercises & Audio Suites</a></div>
+<div class="chap"><a href="../00_math-foundations.html">Chapter 0 · Mathematical & Signal Analysis Foundations</a></div>
+<div class="chap"><a href="../01_problem-definition.html">Chapter 1 · Problem Formulation & Binaural Cues</a></div>
+<div class="chap"><a href="../02_basics-signal-model.html">Chapter 2 · Acoustic Propagation & Array Signal Model</a></div>
+<div class="chap"><a href="../03_array-geometry.html">Chapter 3 · Microphone Array Geometry</a></div>
+<div class="chap"><a href="../04_doa-estimation.html">Chapter 4 · Sound Source Localization (DOA)</a></div>
+<div class="chap"><a href="../05_beamforming.html">Chapter 5 · Beamforming</a></div>
+<div class="chap"><a href="../06_aec.html">Chapter 6 · Acoustic Echo Cancellation (AEC)</a></div>
+<div class="chap"><a href="../07_wpe-dereverberation.html">Chapter 7 · Dereverberation (WPE)</a></div>
+<div class="chap"><a href="../08_speech-separation.html">Chapter 8 · Multichannel Speech Separation</a></div>
+<div class="chap"><a href="../09_source-tracking.html">Chapter 9 · Sound Source Tracking</a></div>
+<div class="chap"><a href="../10_engineering-practice.html">Chapter 10 · Real-Time Systems, Evaluation & Deployment</a></div>
+<div class="chap"><a href="../11_selection-guide.html">Chapter 11 · System Synthesis & Selection Guide</a></div>
+<div class="chap"><a href="../12_acoustic-imaging.html">Chapter 12 · Acoustic Imaging & Noise Diagnostics</a></div>
+<div class="chap"><a href="../13_distributed-enhancement.html">Chapter 13 · Distributed Wireless Microphone Arrays</a></div>
+<div class="chap"><a href="../14_spatial-wearable-arrays.html">Chapter 14 · Spatial Sound Fields & Wearable Arrays</a></div>
+<div class="chap"><a href="../15_target-extraction-diarization.html">Chapter 15 · Conditioned Target Extraction & Diarization</a></div>
+<div class="chap"><a href="../16_appendix-symbols-math.html">Chapter 16 · Appendix A: Symbols, Glossary & Math Lookup</a></div>
+<div class="chap"><a href="../17_appendix-guide.html">Chapter 17 · Appendix B: Literature Map, Triage & Exercises</a></div></nav>
+<main class="main" id="main-content" tabindex="-1"><div class="offline-note" id="offnote">Offline mode: displaying raw TeX formulas; prose and audio remain unaffected.</div>
+<details class="toc-mobile"><summary>On this page</summary><nav aria-label="On this page"><ul>
+<li><a href="index.html#sec-u-9f0d386e31">Starting from a Concrete Problem</a></li>
+<li><a href="index.html#sec-u-24b24c525d">Common Order for Reading Upstream Source Code</a></li>
+<li><a href="index.html#sec-u-a418a8d13e">Mapping Between Documentation, Commands, and Results</a></li>
+</ul></nav></details>
+<span id="sec-1" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-ec01d12fa1" class="anchor-alias" aria-hidden="true"></span><span id="算法实现工业部署与源码研究手册" class="anchor-alias" aria-hidden="true"></span><span id="algorithm-implementation-industrial-deployment-and-source-code-research-manual" class="anchor-alias" aria-hidden="true"></span><h1 id="sec-u-519a7f1eee">Algorithm Implementation, Industrial Deployment, and Source Code Research Manual</h1>
+<p><strong><a href="../index.html">← Back to Book Overview</a></strong> · <strong><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/README_EN.md">Chapter-by-Chapter Teaching Code Index</a></strong> · <strong><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/COVERAGE_EN.md">Algorithm Coverage Matrix</a></strong> · <strong><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/SOURCES.lock.json">129-Item Upstream Version Lockfile</a></strong></p>
+<p>This manual picks up immediately after the mathematical derivations in the main chapters and systematically dissects the engineering interface questions that inevitably arise when moving "from blackboard equations to real open-source libraries and embedded firmware": which tensor dimension corresponds to sensors versus frequency bins, how cross-frame states are initialized and frozen, where echo and voice-activity control signals enter the pipeline, which file contains the upstream source entry point, and how to construct minimal controlled experiments to verify implementation correctness.</p>
+<p>All material is compiled from original papers, maintainer documentation, and official repositories; verification dates for individual entries are recorded in each thematic guide. See <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/SOURCES.lock.json">SOURCES.lock.json</a> for the pinned version manifest and <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/COVERAGE_EN.md">COVERAGE_EN.md</a> for the per-algorithm coverage matrix. Algorithms sharing the same name across different projects may adopt different normalizations, spectral axis orders, and output reference channels; one must never compare output arrays from two functions directly without first checking their conventions.</p>
+<p>This manual comprises this landing page together with the 5 thematic guides listed below, forming 6 research web pages in total; combined with the 19 current tutorial pages (the overview page plus 18 content pages spanning Chapters 0–15 and the 2 appendices), the site contains 25 current content pages. The site additionally retains 8 legacy-route compatibility pages on the same topics, generating 33 HTML files in total. Compatibility pages do not count as new chapters or independent research content.</p>
+<p>The lockfile registers 129 Git upstream projects, of which 112 have local fetching enabled with existing local workspaces. As of 2026-11-17, 89 items pass offline verification under the full sparse-selection policy (<code>source_verified</code>), while 22 previously fetched workspaces still follow an older exclusion rule and are reported as selection mismatches (<code>source_selection_mismatch</code>) and retained as-is; the real recording files in AEC Challenge contain local modifications and remain recorded as a verification failure (1 item). Another 17 items retain source-index metadata only (<code>index_only</code>). A selection mismatch neither means that source code was not fetched nor indicates an algorithm execution failure. As a compiled dependency of MeetEval, <code>kaldialign</code> has only had its source fetched and has neither been built nor executed. The four-file selection from the TAC authors has been fetched into an independent git-ignored directory; its README-declared non-commercial license, static structural audit, and unexecuted original network boundary are documented in <a href="04_source_reproduction.html#tac-contracts">Appendix B Source Contracts</a>.</p>
+<p>The Spatial &amp; Tracking guide begins with binaural cues, SAF HRIR/HRTF conventions, and <code>libmysofa</code> data interfaces, then examines SBL, RobustSBL, online subband GSC, SMP-PHAT, and multi-frame association; the AEC, WPE &amp; Separation guide examines online WPE interface comparisons, DNN adaptive control, and long-recording separation; the Industrial Deployment guide examines resampling, loudness, STOI/ESTOI, ViSQOL, frame-wise file I/O, block floating-point arithmetic, and STK fractional-delay state management. The AEC, WPE &amp; Separation guide additionally audits the time-frequency architecture, tensor shapes, and configuration boundaries of the pinned TF-Locoformer source code.</p>
+<p>This inventory still includes unexecuted and principle-only entries; exact conditions and method-level outcomes are governed by the individual thematic guides.</p>
+<p>Executed interface experiments across three industrial libraries and synthetic-input SBL experiments are accompanied by original driver scripts and <a href="04_source_reproduction.html">execution records</a>.
+The reports distinguish nominal checks, state-reset counterexamples, and runs reaching iteration limits; the actual compiled execution of SMP-PHAT separately documents a numerical failure caused by negative-lag index conversion.
+These small-scale interface comparisons do not constitute full-dataset paper reproductions or product-level device acceptance.</p>
+<p>The AEC, WPE &amp; Separation guide also documents a synchronous AEC experiment running pinned SpeexDSP on a real playback-loopback/microphone recording pair alongside zero-reference and misaligned-reference controls; this is recorded strictly as an observation of that interface on that specific clip, without extrapolating to ground-truth ERLE, double-talk protection, or hardware acceptance.</p>
+<p>Readers can also recompute the Chapter 5 same-input analytical beamformer comparisons, Chapter 6 synthetic ground-truth AEC interface comparisons, Chapter 7 online WPE temporal boundaries, Chapter 8 pinned AuxIVA blind estimation and GSS activity mislabeling experiments, and the Appendix B six-position room simulation.</p>
+<p>The room exercise is accompanied by <a href="../../site/room_audio/MANIFEST.json">18 white-noise synthetic WAV files and one result figure</a>, managed separately from the 109 samples in the main manifest. Every item specifies fixed inputs, runnable entry points, and failure or interpretation boundaries; analytical and synthetic figures never stand in as performance numbers for natural speech, physical hardware, or complete meeting separation pipelines.</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable data table"><table>
+<thead>
+<tr>
+<th scope="col">Reading Material</th>
+<th scope="col">Corresponding Chapters</th>
+<th scope="col">Core Questions Addressed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="01_spatial_and_tracking.html">Spatial Processing and Source Tracking</a></td>
+<td>Chapters 1–5, 9, 12, 14</td>
+<td>Broadband localization, robust beamforming, spherical and wearable spatial arrays, industrial acoustic imaging, data association, and multi-target state estimation</td>
+</tr>
+<tr>
+<td><a href="02_aec_wpe_separation.html">Echo Cancellation, Dereverberation, and Speech Separation</a></td>
+<td>Chapters 6–8, 15</td>
+<td>Adaptive step-size control, online states, blind separation and target speaker extraction, multi-channel diarization, neural architectures, and inference dependencies</td>
+</tr>
+<tr>
+<td><a href="03_industrial_deployment.html">Industrial Deployment and Evaluation</a></td>
+<td>Chapters 10–11, 13, Appendix B</td>
+<td>Device audio callbacks, clock drift and resampling, embedded fixed-point processing, inference runtimes, and objective scoring</td>
+</tr>
+<tr>
+<td><a href="04_source_reproduction.html">Reproducing Upstream Code After Fetching</a></td>
+<td>Whole Book</td>
+<td>Commit verification, input adaptation, minimal controlled experiments, independent numerical checks, and result logging</td>
+</tr>
+<tr>
+<td><a href="05_exercises_and_audio.html">Exercises and Audio Experiments</a></td>
+<td>Chapters 0–11, Extended Topics I–IV, Appendices A/B</td>
+<td>Recomputation, licensing, and boundaries for 443 code exercises, 109 main synthetic WAVs, 30 standalone synthetic sets (170 WAVs), and 4 real-recording excerpts/derivatives; see the <a href="../index.html#audio-assets">Overview Complete Audio Table</a> for per-set entry points</td>
+</tr>
+</tbody>
+</table></div>
+<p>"Experiments" in this research manual fall into two strictly separated categories. Executed experiments explicitly record inputs, environments, and measured outputs; suggested reader experiments state concrete steps and pass/fail criteria without pre-filling performance numbers. Having upstream source code locally does not imply that installation, training, inference, or product acceptance has been completed on this machine.</p>
+<span id="sec-2" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-32dc3845c0" class="anchor-alias" aria-hidden="true"></span><span id="从一个问题开始阅读" class="anchor-alias" aria-hidden="true"></span><span id="starting-from-a-concrete-problem" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-9f0d386e31">Starting from a Concrete Problem</h2>
+<ul>
+<li>Localization peak points in the opposite direction: check the sign convention of time delay, array sensor coordinates, FFT phase sign, and steering-vector conjugation before debating algorithmic resolution.</li>
+<li>Works offline but fails on hardware: check audio clock drift, reference tap point, block size, cross-frame history state, and input gain first; these conditions simultaneously affect multiple downstream modules.</li>
+<li>High separation score but degraded ASR: verify output permutation, reference channel selection, scale normalization, time alignment, and scoring regions before diagnosing speech distortion.</li>
+<li>Linear solver returns finite arrays that violate constraints or disagree with hand calculations: read <a href="04_source_reproduction.html#appendix-solver-contracts">Appendix A Solver Contracts</a> first, checking data types, numerical rank, residuals, and physical objectives separately.</li>
+<li>Considering replacing a module with a new paper method: align the paper's input assumptions, training supervision, causality, and output target before deciding whether to replace an existing block.</li>
+<li>Looking to reproduce neural research directions in Appendix B: pick one output target from <a href="04_source_reproduction.html#appendix-b-reproduction">Eight Task Categories and Version Boundaries</a>, then verify source commits, checkpoints, datasets, and timing scopes; static structural evidence for TAC does not substitute for running the original network.</li>
+<li>Wanting to recompute a worked answer first or audition a time delay or clipping artifact: select a stable exercise ID or audio group from <a href="05_exercises_and_audio.html">Exercises and Audio Experiments</a> and inspect waveforms and parameters alongside Figure 34. Synthetic examples are neither natural speech nor substitutes for formal listening tests.</li>
+</ul>
+<span id="sec-3" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-517ca81f96" class="anchor-alias" aria-hidden="true"></span><span id="阅读源码的共同顺序" class="anchor-alias" aria-hidden="true"></span><span id="common-order-for-reading-upstream-source-code" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-24b24c525d">Common Order for Reading Upstream Source Code</h2>
+<ol>
+<li>Read the entry-point function and configuration schema; record input/output shapes, physical units, sampling rate, reference channel, and state lifetime.</li>
+<li>Locate the four execution paths: state initialization, nominal update, missing-observation/silence freeze, and state reset.</li>
+<li>Map the code operations back to the textbook objective function or recursion; optimizers, diagonal loading, power floors, and projections are integral parts of the implementation.</li>
+<li>Read maintainer unit tests, distinguishing shape smoke tests, numerical accuracy tests, audio perceptual tests, and hardware-in-the-loop tests.</li>
+<li>Run a side-by-side check on a small-scale textbook input or independent analytical example. Running without crashing and producing numerically trustworthy outputs are two distinct conclusions.</li>
+</ol>
+<p>When interpreting results, distinguish the following four evidence tiers according to the question the evidence actually answers:</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable data table"><table>
+<thead>
+<tr>
+<th scope="col">Evidence Tier</th>
+<th scope="col">Supported Conclusion</th>
+<th scope="col">Existing Records or Verification Entry Points</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Teaching Baseline</td>
+<td>Formulas and numerical values are reproducible under specified models, inputs, and boundaries</td>
+<td><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/COVERAGE_EN.md">Coverage Matrix</a>, <a href="05_exercises_and_audio.html">Exercises and Audio Experiments</a></td>
+</tr>
+<tr>
+<td>Source Verification</td>
+<td>Pinned commits, local files, and selected sparse-checkout scopes match the lockfile</td>
+<td><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/SOURCE_STATUS.json">Git Source Status</a>, <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/ARCHIVE_SOURCE_STATUS.json">Archive Source Status</a></td>
+</tr>
+<tr>
+<td>Method Execution</td>
+<td>Interface behavior or numerical outputs under a specified environment, input, and configuration</td>
+<td><a href="04_source_reproduction.html">Actual Execution Records and Unexecuted Scopes</a></td>
+</tr>
+<tr>
+<td>Device Acceptance</td>
+<td>Real-time deadlines, resource budgets, acoustic performance, and fault recovery on target hardware meet specifications</td>
+<td><a href="03_industrial_deployment.html">Device Inspection Steps and Measurement Boundaries</a>; governed strictly by explicitly logged hardware measurements</td>
+</tr>
+</tbody>
+</table></div>
+<p>Local upstream source status is generated by the fetch tooling; see <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/upstream/README_EN.md">Upstream Source Fetching Guide</a>.
+Licenses and dependencies belong to each respective upstream project; this manual never merges source files from disparate projects into a single relicensed software package.</p>
+<p>Chapter 4 additionally provides the <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch04/reports/doatools_esprit_reference.json">pinned <code>doatools</code> ESPRIT interface comparison</a> and <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch04/reports/figure13_gcc_reverb.json">per-trial statistics for Figure 13</a>. Bias under the upstream default weighting, unweighted execution, and the independent reference implementation are recorded separately; see Section 14 of the Spatial &amp; Tracking guide for complete numbers, applicability scopes, and source entry points.</p>
+<p>Chapter 12 (Extended Topic I) provides the <a href="../12_acoustic-imaging.html">Acoustic Imaging chapter</a>, <a href="01_spatial_and_tracking.html#imaging-contract-audit">layer-by-layer source contracts</a>, and <a href="05_exercises_and_audio.html#sec-47-1">20 exercises plus five-WAV experiments</a>. Outputs represent reference sound-pressure contributions and integrated region quantities; upstream algorithms, teaching examples, and industrial operating conditions are verified separately.</p>
+<p>Extended Topic II (Distributed Arrays) cross-links <a href="../13_distributed-enhancement.html">node objectives and compression conditions</a>, <a href="03_industrial_deployment.html#distributed-network-deployment">original papers and industrial audio networks</a>, <a href="04_source_reproduction.html#distributed-reproduction">pinned source contracts</a>, and <a href="05_exercises_and_audio.html#distributed-exercises-audio">27 exercises plus 17 WAVs</a>. Original statistical algorithms, known-ground-truth synthetic audio, source fetching, and full-device execution are documented separately.</p>
+<p>Extended Topic III (Spatial and Wearable Arrays) provides the <a href="../14_spatial-wearable-arrays.html">spherical harmonic capture, binaural matching, and cross-modal fusion chapter</a> alongside <a href="05_exercises_and_audio.html#wearable-exercises-audio">18 exercises and six-WAV experiments</a>. Extended Topic IV (Target Speaker Extraction and Multi-Channel Diarization) provides the <a href="../15_target-extraction-diarization.html">clue conditioning, near-field distance-bubble, and TS-VAD/GSS chapter</a> alongside <a href="05_exercises_and_audio.html#tse-exercises-audio">18 exercises and six-WAV experiments</a>.</p>
+<p>The <a href="04_source_reproduction.html#overview-source-entrypoints">WASN synchronization and LibriCSS public evaluation sources</a> recommended in the Book Overview have now had bounded sparse selections fetched at pinned commits. Source identity verification, static inspection of original interfaces, and unexecuted dependency/scoring/hardware boundaries are preserved separately; source file counts never stand in for industrial acceptance.</p>
+<span id="sec-4" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-c039b2bc79" class="anchor-alias" aria-hidden="true"></span><span id="文档命令与结果的对应关系" class="anchor-alias" aria-hidden="true"></span><span id="mapping-between-documentation-commands-and-results" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-a418a8d13e">Mapping Between Documentation, Commands, and Results</h2>
+<ul>
+<li>Learning entry points and chapter numbering: <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/README_EN.md">Repository Home</a>, <a href="../index.html">Book Overview</a>, and <a href="../00_math-foundations.html">Chapter 0 Mathematical Foundations</a>. Chapters 0–15 form the main text (with Chapters 12–15 serving as Extended Topics I–IV), and Chapters 16–17 are Appendices A and B.</li>
+<li>443 stable code exercises and 30 standalone synthetic audio sets (32 manifests in total, including the main 109-WAV manifest and 1 real-recording set): see the <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/README_EN.md#audio-inventory">Teaching Code Directory</a> and the Exercises &amp; Audio guide in this manual; exercise counts, WAV counts, and algorithm counts are tallied separately.</li>
+<li>From source assets to HTML/PDF builds: see the <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/scripts/README_EN.md#audio-regeneration">Build &amp; Publishing Guide</a>, which verifies authentic generator sources and manifests before publishing site copies.</li>
+<li>Fetching pinned upstream sources: see the <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/upstream/README_EN.md">Upstream Fetching Guide</a>; fetching neither installs nor executes upstream code. Current sparse-selection status and bounded original-method execution results are recorded separately.</li>
+</ul>
+<p>Reports cited across these guides serve as evidence for their respective pinned versions and fixed inputs; they do not automatically imply that an entire upstream system is runnable in the current environment. Before re-running any audit, first verify the actual identities of the reporting script, upstream source files, and runtime dependencies; write new outputs only to designated current-report paths or ordinary paths outside the repository, and never overwrite digests or retroactively mark historical reports as passing. Where formal human listening tests or assistive-technology evaluations lack actual logged records, they remain explicitly marked as unexecuted.</p>
+<footer class="foot">Microphone Array Signal Processing Tutorial · English static edition built by scripts/build_site_en.py</footer>
+</main></div><a class="topbtn" href="#top" title="Back to top" aria-label="Back to top">↑</a>
+<script>if(!navigator.onLine)document.getElementById('offnote').style.display='block';for(const a of document.querySelectorAll('a[data-lang-peer]'))if(location.protocol==='file:'||location.hostname==='localhost'||location.hostname==='127.0.0.1')a.href=a.dataset.langPeer;</script>
+</body></html>

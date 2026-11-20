@@ -1,10 +1,11 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>从入门到工业实践 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="10a21c80bda5"><style>
+<meta name="source-digest" content="98dd40371525"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
-.topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941}
+.topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
+.topbar .lang-switch{color:#FAF8F3;background:#2C333B;border:1px solid #4A525D;padding:2px 10px;border-radius:999px;font-size:13px;font-weight:650;white-space:nowrap}.topbar .lang-switch:hover{background:#1F5A92;border-color:#689CD0;text-decoration:none}
 h1,h2,h3,h4{scroll-margin-top:60px}
 @media screen{.main a[id]:not([href]){scroll-margin-top:60px}}
 @media screen{.main a[id^="e"],.main .exercise-alias{scroll-margin-top:80px}}
@@ -322,6 +323,8 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 .course-header a { text-decoration:none; color:#2C2F33; font-size:15px; font-weight:560; }
 .course-header a:hover { color:var(--blue); text-decoration:underline; }
 .course-header .course-brand { display:inline-flex; align-items:center; gap:9px; font-size:17.5px; font-weight:800; letter-spacing:-.02em; color:var(--ink); }
+.course-header .course-lang { padding:3px 10px; border:1px solid var(--line-strong); border-radius:999px; background:var(--card); color:var(--blue); font-size:13.5px; font-weight:700; }
+.course-header .course-lang:hover { border-color:var(--blue); background:#EEF3F8; text-decoration:none; }
 .course-mark { display:grid; place-items:center; width:30px; height:30px; border-radius:6px; background:var(--graphite); color:#F6F4EF; font-size:20px; line-height:1; }
 
 .course-hero { display:grid; grid-template-columns:minmax(0,.88fr) minmax(0,1.12fr); align-items:center; gap:clamp(28px,4.5vw,56px); padding-block:clamp(38px,5.5vw,74px) clamp(38px,5vw,68px); }
@@ -559,6 +562,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
       <a href="#main-content">全书导读</a>
       <a href="../dist/microphone-array-tutorial.pdf">合订本 PDF</a>
       <a href="https://github.com/nanless/microphone-array-tutorial">GitHub</a>
+      <a class="course-lang" href="https://nanless.github.io/microphone-array-tutorial/site_en/index.html" data-lang-peer="../site_en/index.html" lang="en" hreflang="en">English</a>
     </nav>
   </header>
 </div>
@@ -2491,8 +2495,13 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <p>需要进一步动手演练四篇扩展专题的读者，声学成像的 20 道配套代码题与合成快拍音频实验见<a href="12_acoustic-imaging.html">扩展专题Ⅰ</a>及<a href="research/05_exercises_and_audio.html#sec-47-1">实验手册第 47 节</a>；分布式麦克风协同增强的 27 道配套代码题与多节点音频实验见<a href="13_distributed-enhancement.html">扩展专题Ⅱ</a>及<a href="research/05_exercises_and_audio.html#sec-48-1">实验手册第 48 节</a>。空间声场与可穿戴阵列的 18 道配套代码题及跨模态/通透合成音频实验（<code>wearable_audio</code>）见<a href="14_spatial-wearable-arrays.html#sec-14-11">扩展专题Ⅲ §14.11</a>；条件目标说话人提取与多通道会议说话人日志的 18 道配套代码题及近场距离气泡合成音频实验（<code>tse_audio</code>）见<a href="15_target-extraction-diarization.html#sec-15-8">扩展专题Ⅳ §15.8～§15.10</a>。</p>
 <footer class="foot">麦克风阵列信号处理教程 · 静态站由 scripts/build_site.py 生成</footer>
 </div></div></main><a class="topbtn" href="#top" title="回顶部" aria-label="回到页面顶部">↑</a>
-<script>if(!navigator.onLine)document.getElementById('offnote').style.display='block';</script>
+<script>if(!navigator.onLine)document.getElementById('offnote').style.display='block';for(const a of document.querySelectorAll('a[data-lang-peer]'))if(location.protocol==='file:'||location.hostname==='localhost'||location.hostname==='127.0.0.1')a.href=a.dataset.langPeer;</script>
 <script>(() => {
+  for (const peer of document.querySelectorAll("a[data-lang-peer]")) {
+    if (location.protocol === "file:" || location.hostname === "localhost" || location.hostname === "127.0.0.1") {
+      peer.href = peer.dataset.langPeer;
+    }
+  }
   const scene = document.querySelector(".course-demo");
   const switches = scene.querySelector(".course-switch");
   const arrival = scene.querySelector(".course-arrival");

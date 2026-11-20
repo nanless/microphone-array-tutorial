@@ -1,0 +1,1207 @@
+<!DOCTYPE html><html lang="en"><head>
+<link rel="canonical" href="15_target-extraction-diarization.html"><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Chapter 15 · Conditioned Target Extraction & Diarization · Microphone Array Signal Processing</title>
+<meta name="source-digest" content="55952d1c18a8"><style>
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
+.topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
+.topbar .lang-switch{color:#FAF8F3;background:#2C333B;border:1px solid #4A525D;padding:2px 10px;border-radius:999px;font-size:13px;font-weight:650;white-space:nowrap}.topbar .lang-switch:hover{background:#1F5A92;border-color:#689CD0;text-decoration:none}
+h1,h2,h3,h4{scroll-margin-top:60px}
+@media screen{.main a[id]:not([href]){scroll-margin-top:60px}}
+@media screen{.main a[id^="e"],.main .exercise-alias{scroll-margin-top:80px}}
+@media screen{.main .exercise-alias{top:0}}
+@media screen{.main a[id="e05-20"]{scroll-margin-top:60px}}
+@media screen{.main a[id="e17-11"],.main a[id="e17-12"],.main a[id="e17-13"],.main a[id="e17-14"],.main a[id="e17-15"]{scroll-margin-top:140px}}
+@media screen{.main .exercise-alias[id="e13-11"],.main .exercise-alias[id="e13-12"],.main .exercise-alias[id="e13-13"],.main .exercise-alias[id="e13-14"],.main .exercise-alias[id="e13-15"],.main .exercise-alias[id="e15-11"]:has(~ a[id="e17-11"]),.main .exercise-alias[id="e15-12"]:has(~ a[id="e17-12"]),.main .exercise-alias[id="e15-13"]:has(~ a[id="e17-13"]),.main .exercise-alias[id="e15-14"]:has(~ a[id="e17-14"]),.main .exercise-alias[id="e15-15"]:has(~ a[id="e17-15"]){scroll-margin-top:140px}}
+@media screen{.main a[id^="e06-"]{scroll-margin-top:60px}}
+@media screen{.main a[id^="e07-"],.main a[id^="e08-"]{scroll-margin-top:60px}}
+@media screen{.main a[id^="e11-"]{scroll-margin-top:60px}}
+@media screen{.main .separation-topic-anchor{scroll-margin-top:60px}}
+@media screen{.main .source-reproduction-anchor{scroll-margin-top:60px}}
+a:focus-visible,summary:focus-visible{outline:2.5px solid #B84A2E;outline-offset:3px}
+.skip-link{position:absolute;left:10px;top:-60px;z-index:30;background:#fff;color:#1C1E21;padding:8px 12px;border:2px solid #B84A2E}
+.skip-link:focus{top:8px}
+.wrap{display:flex;max-width:1280px;margin:0 auto;border-left:1px solid #E3DED3;border-right:1px solid #E3DED3}
+.side{width:300px;flex-shrink:0;padding:20px 15px;position:sticky;top:47px;height:calc(100vh - 47px);overflow-y:auto;background:#FAF8F3;border-right:1px solid #DDD7CB;font-size:13.5px}
+.side a{color:#1F5A92;text-decoration:none}.side a:hover{text-decoration:underline}
+.side .chap{margin:10px 0 2px;font-weight:700;color:#26292E}.side .chap.cur{color:#B84A2E}
+.side ul{margin:2px 0 6px;padding-left:16px;color:#5A554D}.side li{margin:2px 0}
+.main{flex:1;min-width:0;padding:32px 40px;background:#fff;overflow-wrap:anywhere}
+.main a{color:#1F5A92;text-underline-offset:.2em}
+.main p{margin:0 0 1.2em}.main ul,.main ol{margin:.55em 0 1.2em;padding-left:1.55em}.main li{margin:.42em 0}.main li>p{margin:.5em 0}
+.main p>strong:first-child,.main li>strong:first-child{color:#14171A}
+.main img{max-width:100%;height:auto;display:block;margin:18px auto;border:1px solid #DFDAD0;border-radius:5px;padding:4px;min-height:40px;background:#fff}
+.audio-sample{display:block;width:min(100%,460px);margin:8px 0 18px}.audio-sample:focus-visible{outline:2.5px solid #B84A2E}
+/* 表格列宽不能压掉原生播放按钮；手机上的表格可横向滚动。 */
+td .audio-sample{width:280px;min-width:280px}
+table:has(td .audio-sample) td:last-child{min-width:180px}
+table{border-collapse:collapse;margin:18px 0;max-width:100%;border-top:1.5px solid #2A2E34;border-bottom:1.5px solid #2A2E34}
+.table-scroll{max-width:100%;overflow-x:auto}
+.table-scroll:focus-visible{outline:2.5px solid #B84A2E;outline-offset:2px}
+th,td{border-top:1px solid #E3DED3;border-bottom:1px solid #E3DED3;border-left:none;border-right:none;padding:8px 11px;font-size:14px;text-align:left;line-height:1.58}
+th{background:#F5F2EB;color:#1C1E21;border-bottom:1px solid #8A8275;font-weight:700}
+tbody tr:nth-child(even) td{background:#FCFBF9}
+code{background:#F3F0E8;color:#1E3A56;border:1px solid #E0DBD0;padding:1px 5px;border-radius:4px;font-size:13.5px}
+pre{background:#F5F3EE;color:#1F2328;border:1px solid #DFDAD0;border-left:3.5px solid #5C564D;padding:14px 16px;border-radius:8px;overflow-x:auto}
+pre code{background:none;border:none;color:inherit;padding:0}
+blockquote{border-left:3.5px solid #B84A2E;margin:18px 0;padding:10px 16px;background:#F7F5F0;border-radius:0 4px 4px 0;color:#2B2E33}
+blockquote p:last-child{margin-bottom:0}
+hr{border:none;border-top:1px solid #DDD7CB;margin:26px 0}
+mjx-container[jax="CHTML"]{font-size:110%!important;overflow-x:auto;overflow-y:hidden;max-width:100%;min-width:0!important}
+body mjx-assistive-mml{width:1px!important;max-width:1px!important;min-width:0!important;height:1px!important;overflow:hidden!important}
+pre,.table-scroll,mjx-container[jax="CHTML"]{overflow-wrap:normal}
+.pn{display:flex;justify-content:space-between;margin:36px 0 12px;padding-top:16px;border-top:1px solid #DDD7CB;font-weight:650}
+.pn a{color:#1F5A92;text-decoration:none}.pn .off{color:#9C9588}
+.foot{color:#6E695F;font-size:13px;margin:20px 0 40px}
+.main h1{font-size:27px;color:#14171A;border-top:2.5px solid #1F5A92;border-bottom:1.5px solid #1C1E21;padding:12px 0 10px;margin:0 0 24px;line-height:1.3}
+.main h2{font-size:21px;color:#14171A;border-left:3.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;padding:1px 0 7px 11px;margin:36px 0 15px;line-height:1.35}
+.main h3{font-size:18px;color:#1F5A92;margin:26px 0 11px;line-height:1.4}
+.main h4{font-size:16px;color:#2C2F33;border-left:2.5px solid #B84A2E;padding:1px 0 1px 9px;margin:20px 0 9px;line-height:1.4}
+.main h3.tutorial-worked-heading{background:#FAF8F3;border-top:1.5px solid #237263;border-bottom:1px solid #E2DDD2;border-left:3.5px solid #237263;color:#1A574B;padding:7px 13px;border-radius:2px;margin:28px 0 13px;font-size:17.2px}
+.main h3.tutorial-exercise-heading,.main h4.tutorial-exercise-heading{background:#F5F2EB;border-top:1.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;border-left:4px solid #1F5A92;color:#14171A;padding:8px 14px;border-radius:2px;margin:30px 0 13px;font-size:17px;line-height:1.45}
+.main p.tutorial-exercise-lead{background:#F5F2EB;border-top:1.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;border-left:4px solid #1F5A92;padding:10px 15px;border-radius:2px;margin:28px 0 13px}
+.main ol>li.tutorial-exercise-item{margin:18px 0}
+.main .tutorial-exercise-card{background:#FAF8F3;border:1px solid #E0DBD0;border-left:3.5px solid #1F5A92;border-radius:4px;padding:12px 16px}
+.main .tutorial-exercise-card>:first-child{margin-top:0}
+.main .tutorial-exercise-card>:last-child{margin-bottom:0}
+.main p.tutorial-solution-lead{background:#F3F6F4;border-left:3.5px solid #237263;padding:8px 13px;border-radius:0 3px 3px 0;margin-top:9px}
+.main p.tutorial-solution-lead>strong:first-child{color:#1D5E51}
+.main p.tutorial-problem-lead{border-left:2.5px solid #1F5A92;padding-left:11px}
+.main p.tutorial-problem-lead>strong:first-child{color:#1F5A92}
+.toc-mobile{display:none;margin:0 0 16px;border:1px solid #DDD7CB;border-radius:6px;padding:10px 14px;background:#FAF8F3;font-size:14px}
+.toc-mobile summary{cursor:pointer;font-weight:700;color:#1C1E21}
+.toc-mobile ul{padding-left:18px;margin:8px 0 2px}.toc-mobile a{color:#1F5A92;text-decoration:none}
+.topbtn{display:block;margin:20px auto;background:#24282E;color:#FAF8F3;border-radius:50%;width:42px;height:42px;text-align:center;line-height:42px;text-decoration:none;font-size:18px}
+.offline-note{display:none;background:#F7EFE4;border:1px solid #D9B78E;color:#6E4219;padding:8px 14px;font-size:13.5px}
+.anchor-alias{display:block;position:relative;top:-60px;visibility:hidden}
+.tutorial-math-tail{display:inline-block;white-space:nowrap;overflow-wrap:normal;vertical-align:baseline;overflow:visible}
+.tutorial-math-tail mjx-assistive-mml{max-width:1px!important;min-width:0!important;white-space:normal}
+.tutorial-exercise-id{white-space:nowrap;overflow-wrap:normal;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:.88em;background:#F3EFE6;color:#B84A2E;border:1px solid #DDD5C7;padding:0 5px;border-radius:3px;font-weight:700}
+:is(.tutorial-exercise-heading,.tutorial-exercise-lead) .tutorial-exercise-id{background:#1F5A92;color:#fff;border-color:#1F5A92;padding:1px 7px;margin-right:5px;font-size:.84em}
+.tutorial-table-label{white-space:nowrap;overflow-wrap:normal}
+@media(max-width:900px){.selection-readable-table{min-width:760px}.selection-readable-table th,.selection-readable-table td{min-width:10em}.selection-readable-table th:first-child,.selection-readable-table td:first-child{min-width:6em}}
+@media(max-width:900px){.side{display:none}.main{padding:20px}.toc-mobile{display:block}.topbar{font-size:14px}mjx-container[jax="CHTML"]:not([display="true"]){display:inline-block;vertical-align:middle}.aec-readable-table th,.aec-readable-table td,.wpe-readable-table th,.wpe-readable-table td,.separation-readable-table th,.separation-readable-table td{min-width:8em}.tracking-readable-table th,.tracking-readable-table td{min-width:8em}.industrial-readable-table th,.industrial-readable-table td{min-width:8em}}
+@media(max-width:900px){.noise-readable-table th:first-child,.noise-readable-table td:first-child{min-width:6em}}
+@media screen and (max-width:900px){.source-contract-readable-table th,.source-contract-readable-table td{min-width:10em}}
+@media screen and (max-width:900px){.tutorial-budget-table{min-width:var(--tutorial-table-width)}.tutorial-budget-table .tutorial-short-column{min-width:var(--tutorial-column-width);overflow-wrap:normal}}
+@media print{.topbar,.side,.pn,.topbtn,.toc-mobile{display:none}.main{padding:0}.table-scroll{overflow:visible}table{display:table}a{color:#000;text-decoration:none}pre{white-space:pre-wrap;background:#fff;color:#000;border:1px solid #ccc}}
+</style>
+<script>
+/* Shared publication layout. TeX, code, links and attributes remain intact. */
+(function () {
+  "use strict";
+  const mathClass = "tutorial-math-tail";
+  const idClass = "tutorial-exercise-id";
+  const ignored = "pre,code,a,script,style,textarea,mjx-container";
+  const suffix = /^(\s*(?:(?:m\/s[²³]?|rad\/s|rad\/m|deg\/s|μs|µs|ns|ms|s|dBFS|dB|kHz|MHz|Hz|ppm|rad|cm|mm|m|V|deg|°|%|％)(?:[²³])?(?=$|[\s，。；、：！？）,.!?;:)\]\u4e00-\u9fff])\s*[，。；、：！？）,.;:!?\]]*|[，。；、：！？）,.;:!?\]]+))/;
+  let ready = false;
+  let scheduled = false;
+  let printing = false;
+
+  function roots() {
+    const candidates = Array.from(document.querySelectorAll(".main,.chap"));
+    return candidates.filter(root => !candidates.some(other => other !== root && other.contains(root)));
+  }
+
+  function unwrapMath(root) {
+    for (const wrapper of root.querySelectorAll("." + mathClass)) {
+      const children = Array.from(wrapper.childNodes);
+      wrapper.replaceWith(...children);
+      // Merge only our adjacent ordinary text, never normalize a MathJax subtree.
+      for (const node of children) {
+        if (node.nodeType !== Node.TEXT_NODE) continue;
+        while (node.nextSibling && node.nextSibling.nodeType === Node.TEXT_NODE) {
+          node.data += node.nextSibling.data;
+          node.nextSibling.remove();
+        }
+      }
+    }
+  }
+
+  function protectExerciseIds(root) {
+    let count = 0;
+    {
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+      const nodes = [];
+      let node;
+      while ((node = walker.nextNode())) {
+        if (!node.parentElement.closest(ignored + ",." + idClass)) nodes.push(node);
+      }
+      for (const text of nodes) {
+        // A filename/path or a longer identifier is not a stable exercise ID.
+        const pattern = /(^|[^\p{L}\p{N}\p{M}_/\\.-])(E\d{2}-\d{2})(?![\p{L}\p{N}\p{M}_/\\-]|\.[\p{L}\p{N}\p{M}])/gu;
+        const matches = Array.from(text.data.matchAll(pattern));
+        for (const match of matches.reverse()) {
+          const start = match.index + match[1].length;
+          text.splitText(start + match[2].length);
+          const middle = text.splitText(start);
+          const span = document.createElement("span");
+          span.className = idClass;
+          middle.before(span);
+          span.append(middle);
+          count++;
+        }
+      }
+    }
+    return count;
+  }
+
+  function markShortLeads(root) {
+    let count = 0;
+    for (const paragraph of root.querySelectorAll("p")) {
+      if (paragraph.closest("pre,code,a,script,style,textarea")) continue;
+      const significant = Array.from(paragraph.childNodes).filter(node =>
+        node.nodeType !== Node.TEXT_NODE || node.data.trim());
+      const next = paragraph.nextElementSibling;
+      const isEmptyAnchor = node =>
+        node.nodeType === Node.ELEMENT_NODE &&
+        node.tagName === "A" && node.id &&
+        !node.hasAttribute("href") &&
+        Array.from(node.childNodes).every(child =>
+          child.nodeType === Node.TEXT_NODE && !child.data.trim());
+      const isAnchorAlias = node =>
+        node.nodeType === Node.ELEMENT_NODE &&
+        node.tagName === "SPAN" && node.id &&
+        node.classList.contains("anchor-alias") &&
+        Array.from(node.childNodes).every(child =>
+          child.nodeType === Node.TEXT_NODE && !child.data.trim());
+      const anchorOnly = significant.length >= 1 &&
+        significant.some(isEmptyAnchor) &&
+        significant.every(node => isEmptyAnchor(node) || isAnchorAlias(node));
+      paragraph.classList.toggle("tutorial-anchor-only", !!anchorOnly);
+      const short = significant.length === 1 &&
+        significant[0].nodeType === Node.ELEMENT_NODE &&
+        significant[0].tagName === "STRONG" &&
+        paragraph.textContent.trim().length <= 60 &&
+        next && /^(P|UL|OL|BLOCKQUOTE)$/.test(next.tagName) &&
+        next.textContent.trim().length > 0;
+      paragraph.classList.toggle("tutorial-short-lead", !!short);
+      if (short) count++;
+
+      const firstSig = significant[0];
+      const firstStrong = firstSig && firstSig.nodeType === Node.ELEMENT_NODE &&
+        firstSig.tagName === "STRONG" ? firstSig : null;
+      const strongText = firstStrong ? firstStrong.textContent.trim() : "";
+      const isExLead = !!(firstStrong && firstStrong.querySelector("." + idClass) &&
+        /^E\d{2}-\d{2}\b/.test(strongText));
+      const isSolutionLead = !isExLead &&
+        /^(参考答案|解答|答案|解(?=[：:。.\s]|$))/.test(strongText);
+      const isProblemLead = !isExLead && !isSolutionLead &&
+        /^(题目|问题|思考题)/.test(strongText);
+      paragraph.classList.toggle("tutorial-exercise-lead", isExLead);
+      paragraph.classList.toggle("tutorial-solution-lead", isSolutionLead);
+      paragraph.classList.toggle("tutorial-problem-lead", isProblemLead);
+    }
+    for (const heading of root.querySelectorAll("h3,h4")) {
+      const hasExId = !!heading.querySelector("." + idClass);
+      const text = heading.textContent.trim();
+      const isWorked = !hasExId && heading.tagName === "H3" &&
+        (/^(算例\s*\d|例\s*\d)/.test(text) || /完整手算/.test(text));
+      heading.classList.toggle("tutorial-exercise-heading", hasExId);
+      heading.classList.toggle("tutorial-worked-heading", isWorked);
+    }
+    for (const item of root.querySelectorAll("ol > li")) {
+      const existingCard = item.querySelector(":scope > .tutorial-exercise-card");
+      const scopeRoot = existingCard || item;
+      const hasSolution = !!scopeRoot.querySelector(":scope > p.tutorial-solution-lead");
+      const startsQuestion = /^思考题[：:]/.test(scopeRoot.textContent.trim());
+      if ((hasSolution || startsQuestion) && !existingCard) {
+        const card = document.createElement("article");
+        card.className = "tutorial-exercise-card";
+        card.append(...Array.from(item.childNodes));
+        item.append(card);
+      }
+      item.classList.toggle("tutorial-exercise-item", hasSolution || startsQuestion);
+    }
+    return count;
+  }
+
+  function apply() {
+    const content = roots();
+    for (const root of content) unwrapMath(root);
+    const plans = [];
+    const hosts = new Map();
+    let skippedWide = 0;
+    let idCount = 0;
+    let leadCount = 0;
+    for (const root of content) {
+      idCount += protectExerciseIds(root);
+      leadCount += markShortLeads(root);
+      // Read every width before any math wrapper is inserted, to avoid repeated
+      // synchronous layout across thousands of formulas in the combined book.
+      for (const math of root.querySelectorAll('mjx-container:not([display="true"])')) {
+        if (math.closest("pre,code,a,script,style,textarea")) continue;
+        const text = math.nextSibling;
+        if (!text || text.nodeType !== Node.TEXT_NODE) continue;
+        const match = text.data.match(suffix);
+        if (!match || match[0].length > 16) continue;
+        const host = math.closest("p,li,td,th,h1,h2,h3,h4");
+        if (!host) continue;
+        if (!hosts.has(host)) {
+          const style = getComputedStyle(host);
+          hosts.set(host, host.clientWidth - parseFloat(style.paddingLeft || 0) -
+            parseFloat(style.paddingRight || 0));
+        }
+        const range = document.createRange();
+        range.setStart(text, 0);
+        range.setEnd(text, match[0].length);
+        const style = getComputedStyle(math);
+        const width = math.getBoundingClientRect().width + range.getBoundingClientRect().width +
+          parseFloat(style.marginLeft || 0) + parseFloat(style.marginRight || 0);
+        if (width > hosts.get(host) - 8) {
+          skippedWide++;
+          continue;
+        }
+        plans.push({math, text, length: match[0].length});
+      }
+    }
+    for (const {math, text, length} of plans) {
+      const wrapper = document.createElement("span");
+      wrapper.className = mathClass;
+      math.before(wrapper);
+      wrapper.append(math);
+      text.splitText(length);
+      wrapper.append(text);
+    }
+    ready = true;
+    const result = {grouped: plans.length, skippedWide, newExerciseIds: idCount, shortLeads: leadCount};
+    window.ArrayTutorialLayout.lastRun = result;
+    return result;
+  }
+
+  function schedule() {
+    if (!ready || scheduled || printing) return;
+    scheduled = true;
+    requestAnimationFrame(() => {
+      scheduled = false;
+      if (printing) return;
+      apply();
+    });
+  }
+
+  window.ArrayTutorialLayout = {apply, lastRun: null};
+  window.addEventListener("resize", schedule);
+  // Chrome fires beforeprint while screen styles still apply. Remove screen
+  // groups before they can enlarge the print layout. The combined book is
+  // measured at its fixed A4 geometry during pageReady instead. Do not mutate
+  // thousands of nodes after the browser has begun its print snapshot: this
+  // can truncate the final pages even when a small fixture prints correctly.
+  // A synthetic beforeprint event is not a print test.
+  window.addEventListener("beforeprint", () => {
+    printing = true;
+    if (ready && document.documentElement.dataset.tutorialPrintLayout !== "a4") {
+      for (const root of roots()) unwrapMath(root);
+    }
+  });
+  window.addEventListener("afterprint", () => {
+    printing = false;
+    if (document.documentElement.dataset.tutorialPrintLayout !== "a4") schedule();
+  });
+  if (document.fonts) document.fonts.addEventListener("loadingdone", schedule);
+})();
+
+window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$']]}, startup: {pageReady: () => MathJax.startup.defaultPageReady().then(() => document.fonts.ready).then(() => ArrayTutorialLayout.apply())}};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"
+ onerror="document.getElementById('offnote').style.display='block';document.getElementById('offnote').textContent='MathJax script failed to load: displaying raw TeX source.';"></script>
+</head><body id="top"><a class="skip-link" href="#main-content">Skip to main content</a>
+<header class="topbar"><span><a href="index.html">🏠 Home</a> &nbsp;/&nbsp; Chapter 15 · Conditioned Target Extraction & Diarization</span><a class="lang-switch" href="https://nanless.github.io/microphone-array-tutorial/site/15_target-extraction-diarization.html" data-lang-peer="../site/15_target-extraction-diarization.html" lang="zh-CN" hreflang="zh-CN">中文</a></header>
+<div class="wrap"><nav class="side" aria-label="Course contents"><div class="chap"><a href="index.html">🏠 Course Overview (Home)</a></div>
+<div class="chap"><a href="00_math-foundations.html">Chapter 0 · Mathematical & Signal Analysis Foundations</a></div>
+<div class="chap"><a href="01_problem-definition.html">Chapter 1 · Problem Formulation & Binaural Cues</a></div>
+<div class="chap"><a href="02_basics-signal-model.html">Chapter 2 · Acoustic Propagation & Array Signal Model</a></div>
+<div class="chap"><a href="03_array-geometry.html">Chapter 3 · Microphone Array Geometry</a></div>
+<div class="chap"><a href="04_doa-estimation.html">Chapter 4 · Sound Source Localization (DOA)</a></div>
+<div class="chap"><a href="05_beamforming.html">Chapter 5 · Beamforming</a></div>
+<div class="chap"><a href="06_aec.html">Chapter 6 · Acoustic Echo Cancellation (AEC)</a></div>
+<div class="chap"><a href="07_wpe-dereverberation.html">Chapter 7 · Dereverberation (WPE)</a></div>
+<div class="chap"><a href="08_speech-separation.html">Chapter 8 · Multichannel Speech Separation</a></div>
+<div class="chap"><a href="09_source-tracking.html">Chapter 9 · Sound Source Tracking</a></div>
+<div class="chap"><a href="10_engineering-practice.html">Chapter 10 · Real-Time Systems, Evaluation & Deployment</a></div>
+<div class="chap"><a href="11_selection-guide.html">Chapter 11 · System Synthesis & Selection Guide</a></div>
+<div class="chap"><a href="12_acoustic-imaging.html">Chapter 12 · Acoustic Imaging & Noise Diagnostics</a></div>
+<div class="chap"><a href="13_distributed-enhancement.html">Chapter 13 · Distributed Wireless Microphone Arrays</a></div>
+<div class="chap"><a href="14_spatial-wearable-arrays.html">Chapter 14 · Spatial Sound Fields & Wearable Arrays</a></div>
+<div class="chap cur" aria-current="page">Chapter 15 · Conditioned Target Extraction & Diarization</div>
+<ul>
+<li><a href="15_target-extraction-diarization.html#sec-u-3e72cd5bb2">Chapter 15: Conditional Target Extraction, Multi-Channel Diarization, and Far-Field Multimodal Front-Ends</a></li>
+<li><a href="15_target-extraction-diarization.html#sec-15-1">15.1 From Blind Separation to Clue-Driven Extraction: What Do We Actually Know About the Target?</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-580302c818">Slot Ambiguity in Blind Separation and the Paradigm Shift to Conditional Extraction</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-3a977772a6">Physical Modalities of Five Target Clues and Summary of Abbreviations</a></li>
+<li><a href="15_target-extraction-diarization.html#sec-15-2">15.2 Conditional Feature Modulation and Singular Losses When the Target Is Absent</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-aacbff7f1f">Injecting Clue Vectors into the Feature Backbone: FiLM Affine Modulation and Cross-Attention</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-95c6e78a05">Why Standard SI-SDR Suffers a 0/0 Singularity When the Target Is Silent</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-8b42a49427">Dual-State Energy-Floor Loss and Single-Speaker Over-Splitting Bypass Protection</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-2c76d5fe22">Worked Example 15-1: Hand Calculation of FiLM Modulation, Silent-Segment Singularity, and Dual-State Loss</a></li>
+<li><a href="15_target-extraction-diarization.html#sec-15-3">15.3 When Far-Field Angles Fail: Near-Field Spherical Waves and Acoustic Distance Bubbles</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-3079b734fe">Spherical-Wave Steering Vectors and the Fresnel Near-Field Range Criterion</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-f62c53a4d4">Co-Directional Far-Field Nulling: Closed-Form Second-Order Spatial Difference Solution for a Three-Mic Distance Bubble</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-24fc4c8b3d">Aperture Shrinkage and White Noise Gain Collapse: Physical Red Lines for Miniature Wearable Arrays</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-2f6b58e5b8">Worked Example 15-2: Distance-Bubble Calculation Comparing a 10 cm Desktop ULA Against a 2 cm Miniature ULA</a></li>
+<li><a href="15_target-extraction-diarization.html#sec-15-4">15.4 Speaker Diarization Metrics and the Overlap Blind Spot of Hard Single-Label Clustering</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-3a830a196e">Three-Component Decomposition of Diarization Error Rate (DER) and Optimal Permutation Matching</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-ebe301a53d">Proof of the Lower Error Bound for Hard Single-Label Clustering on Overlapped Speech Frames</a></li>
+<li><a href="15_target-extraction-diarization.html#sec-15-5">15.5 Multi-Channel Target-Speaker Voice Activity Detection (TS-VAD) and the GSS Closed Loop</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-f5d58419bb">Log-Odds Bayesian Fusion of Spatial Phase Difference and Voiceprint Similarity</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-0c9a7f841f">From TS-VAD Soft Posteriors to Guided Source Separation (GSS) and MVDR Covariance Gating</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-3c4db66544">Worked Example 15-3: Six-Frame Overlapping Meeting—DER Lower Bound, Over-100% Counterexample, and Spatial–Spectral TS-VAD Recovery</a></li>
+<li><a href="15_target-extraction-diarization.html#sec-15-6">15.6 Far-Field Audio–Visual Multimodal Front-Ends: Heterogeneous Frame Rates, Pipeline Lag, and Lip Occlusion</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-22e977091d">Physical Timeline Mapping Between Audio STFT Frames and Video Exposure Frames</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-a977b615a8">Word-Initial Plosive and Fricative Clipping Induced by Positive Camera Lag</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-3e875cd03a">Visual Confidence Gating and Smooth Audio-Only Fallback Under Lip Occlusion</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-6792ad18fb">Worked Example 15-4: Heterogeneous Frame Alignment, +120 ms Lag Onset Clipping, and Occlusion Gating Check</a></li>
+<li><a href="15_target-extraction-diarization.html#sec-15-7">15.7 Multi-Party Meeting Transcription Architecture Selection: Cascaded Modular Pipelines vs. End-to-End Joint Modeling</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-809d8a859d">Cascaded Pipelines (Diarization → GSS → ASR) vs. Joint Architectures (SOT / DiCoW)</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-8c82b54f72">Enrolled Voiceprint Drift, Twin Timbre Collisions, and Cold-Start Engineering Countermeasures</a></li>
+<li><a href="15_target-extraction-diarization.html#sec-15-8">15.8 Synthetic Distance-Bubble Audio Experiments and Three-Tier Objective Scoring</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-0e3688397c">Six 16 kHz Mathematically Synthesized Waveforms and Orthogonal Second-Moment Window Design</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-ed233d37be">Three-Tier Verification Across Analytical, Float64, and PCM16 Integer Layers</a></li>
+<li><a href="15_target-extraction-diarization.html#sec-15-9">15.9 Engineering Troubleshooting Checklist and Selection Decision Tree</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-862fb6941f">Common Field Failure Symptoms, Physical Root Causes, and Diagnostic Steps</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-d335ee9067">Far-Field Target Extraction and Multi-Speaker Front-End Selection Checklist</a></li>
+<li><a href="15_target-extraction-diarization.html#sec-15-10">15.10 Chapter Exercises (E15-01–E15-18)</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-0127782875">E15-01: FiLM Conditional Feature Affine Modulation and Identity Degeneration Check</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-a8f15f623c">E15-02: Standard SI-SDR Singularity on Target-Silent Segments and Dual-State Floor Loss Calculation</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-36f71630e4">E15-03: Single-Speaker Zero-Overlap Bypass Threshold and Unvoiced Fricative Over-Splitting Recovery</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-3246405f21">E15-04: Fresnel Near-Field Boundary and Second-Order Taylor Spherical-Wave Curvature Approximation Error</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-94fb9f169b">E15-05: Closed-Form Weights, WNG, and Co-Directional Far-Field Suppression of a Three-Mic Broadside Distance Bubble</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-0c0a12ffba">E15-06: Distance-Bubble Mismatch Analysis Between Phase-Only and Spherical-Spreading Attenuation Steering Models</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-644a482a64">E15-07: Tikhonov Regularization Trade-Offs for an Ill-Conditioned Small-Aperture Distance Bubble</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-31ad5e9b13">E15-08: DER Decomposition and Label-Permutation Invariance Check on a Six-Frame Overlapping Meeting</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-d4a7b35e32">E15-09: Minimum DER Lower Bound of Hard Single-Label Clustering on Multi-Speaker Overlapped Speech</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-cbbd7bba80">E15-10: Constructive Example of Combined False Alarms and Misses Producing a Legitimate DER Above 100%</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-ea4ba43f5d">E15-11: TS-VAD Log-Odds Bayesian Fusion of Spatial Phase Difference and Voiceprint Similarity</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-da59d0d3d2">E15-12: Constructing GSS Target-Exclusive Masks from TS-VAD Soft Posteriors to Drive MVDR Beamforming</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-261548372a">E15-13: Heterogeneous Alignment Pattern Between 16 kHz STFT Audio Frames and 25 fps Video Exposure Midpoints</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-32abd3b091">E15-14: Quantitative Onset-Consonant Energy Clipping Under Positive Camera Pipeline Lag</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-eea0d8c86d">E15-15: Smooth Visual-Confidence-Gated Audio–Visual Mask Fallback Under Lip Occlusion</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-6903e87b2d">E15-16: Two-Tap Causal Real FIR Implementation of a Broadside Distance Bubble and Three-Tier Error Verification</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-0826d59766">E15-17: EEND-EDA Attractor Existence Gating and Fixed-Slot Error Lower Bounds</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-acbb7b1d3c">E15-18: Enrollment Crosstalk Contamination and Target-Exclusive Gating in Conditional Target Extraction</a></li>
+</ul>
+<div class="chap"><a href="16_appendix-symbols-math.html">Chapter 16 · Appendix A: Symbols, Glossary & Math Lookup</a></div>
+<div class="chap"><a href="17_appendix-guide.html">Chapter 17 · Appendix B: Literature Map, Triage & Exercises</a></div>
+<div class="chap"><a href="research/index.html">Upstream Source Manuals</a></div></nav>
+<main class="main" id="main-content" tabindex="-1"><div class="offline-note" id="offnote">Offline mode: displaying raw TeX formulas; prose and audio remain unaffected.</div>
+<details class="toc-mobile"><summary>On this page</summary><nav aria-label="On this page"><ul>
+<li><a href="15_target-extraction-diarization.html#sec-u-3e72cd5bb2">Chapter 15: Conditional Target Extraction, Multi-Channel Diarization, and Far-Field Multimodal Front-Ends</a></li>
+<li><a href="15_target-extraction-diarization.html#sec-15-1">15.1 From Blind Separation to Clue-Driven Extraction: What Do We Actually Know About the Target?</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-580302c818">Slot Ambiguity in Blind Separation and the Paradigm Shift to Conditional Extraction</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-3a977772a6">Physical Modalities of Five Target Clues and Summary of Abbreviations</a></li>
+<li><a href="15_target-extraction-diarization.html#sec-15-2">15.2 Conditional Feature Modulation and Singular Losses When the Target Is Absent</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-aacbff7f1f">Injecting Clue Vectors into the Feature Backbone: FiLM Affine Modulation and Cross-Attention</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-95c6e78a05">Why Standard SI-SDR Suffers a 0/0 Singularity When the Target Is Silent</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-8b42a49427">Dual-State Energy-Floor Loss and Single-Speaker Over-Splitting Bypass Protection</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-2c76d5fe22">Worked Example 15-1: Hand Calculation of FiLM Modulation, Silent-Segment Singularity, and Dual-State Loss</a></li>
+<li><a href="15_target-extraction-diarization.html#sec-15-3">15.3 When Far-Field Angles Fail: Near-Field Spherical Waves and Acoustic Distance Bubbles</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-3079b734fe">Spherical-Wave Steering Vectors and the Fresnel Near-Field Range Criterion</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-f62c53a4d4">Co-Directional Far-Field Nulling: Closed-Form Second-Order Spatial Difference Solution for a Three-Mic Distance Bubble</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-24fc4c8b3d">Aperture Shrinkage and White Noise Gain Collapse: Physical Red Lines for Miniature Wearable Arrays</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-2f6b58e5b8">Worked Example 15-2: Distance-Bubble Calculation Comparing a 10 cm Desktop ULA Against a 2 cm Miniature ULA</a></li>
+<li><a href="15_target-extraction-diarization.html#sec-15-4">15.4 Speaker Diarization Metrics and the Overlap Blind Spot of Hard Single-Label Clustering</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-3a830a196e">Three-Component Decomposition of Diarization Error Rate (DER) and Optimal Permutation Matching</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-ebe301a53d">Proof of the Lower Error Bound for Hard Single-Label Clustering on Overlapped Speech Frames</a></li>
+<li><a href="15_target-extraction-diarization.html#sec-15-5">15.5 Multi-Channel Target-Speaker Voice Activity Detection (TS-VAD) and the GSS Closed Loop</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-f5d58419bb">Log-Odds Bayesian Fusion of Spatial Phase Difference and Voiceprint Similarity</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-0c9a7f841f">From TS-VAD Soft Posteriors to Guided Source Separation (GSS) and MVDR Covariance Gating</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-3c4db66544">Worked Example 15-3: Six-Frame Overlapping Meeting—DER Lower Bound, Over-100% Counterexample, and Spatial–Spectral TS-VAD Recovery</a></li>
+<li><a href="15_target-extraction-diarization.html#sec-15-6">15.6 Far-Field Audio–Visual Multimodal Front-Ends: Heterogeneous Frame Rates, Pipeline Lag, and Lip Occlusion</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-22e977091d">Physical Timeline Mapping Between Audio STFT Frames and Video Exposure Frames</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-a977b615a8">Word-Initial Plosive and Fricative Clipping Induced by Positive Camera Lag</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-3e875cd03a">Visual Confidence Gating and Smooth Audio-Only Fallback Under Lip Occlusion</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-6792ad18fb">Worked Example 15-4: Heterogeneous Frame Alignment, +120 ms Lag Onset Clipping, and Occlusion Gating Check</a></li>
+<li><a href="15_target-extraction-diarization.html#sec-15-7">15.7 Multi-Party Meeting Transcription Architecture Selection: Cascaded Modular Pipelines vs. End-to-End Joint Modeling</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-809d8a859d">Cascaded Pipelines (Diarization → GSS → ASR) vs. Joint Architectures (SOT / DiCoW)</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-8c82b54f72">Enrolled Voiceprint Drift, Twin Timbre Collisions, and Cold-Start Engineering Countermeasures</a></li>
+<li><a href="15_target-extraction-diarization.html#sec-15-8">15.8 Synthetic Distance-Bubble Audio Experiments and Three-Tier Objective Scoring</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-0e3688397c">Six 16 kHz Mathematically Synthesized Waveforms and Orthogonal Second-Moment Window Design</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-ed233d37be">Three-Tier Verification Across Analytical, Float64, and PCM16 Integer Layers</a></li>
+<li><a href="15_target-extraction-diarization.html#sec-15-9">15.9 Engineering Troubleshooting Checklist and Selection Decision Tree</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-862fb6941f">Common Field Failure Symptoms, Physical Root Causes, and Diagnostic Steps</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-d335ee9067">Far-Field Target Extraction and Multi-Speaker Front-End Selection Checklist</a></li>
+<li><a href="15_target-extraction-diarization.html#sec-15-10">15.10 Chapter Exercises (E15-01–E15-18)</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-0127782875">E15-01: FiLM Conditional Feature Affine Modulation and Identity Degeneration Check</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-a8f15f623c">E15-02: Standard SI-SDR Singularity on Target-Silent Segments and Dual-State Floor Loss Calculation</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-36f71630e4">E15-03: Single-Speaker Zero-Overlap Bypass Threshold and Unvoiced Fricative Over-Splitting Recovery</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-3246405f21">E15-04: Fresnel Near-Field Boundary and Second-Order Taylor Spherical-Wave Curvature Approximation Error</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-94fb9f169b">E15-05: Closed-Form Weights, WNG, and Co-Directional Far-Field Suppression of a Three-Mic Broadside Distance Bubble</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-0c0a12ffba">E15-06: Distance-Bubble Mismatch Analysis Between Phase-Only and Spherical-Spreading Attenuation Steering Models</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-644a482a64">E15-07: Tikhonov Regularization Trade-Offs for an Ill-Conditioned Small-Aperture Distance Bubble</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-31ad5e9b13">E15-08: DER Decomposition and Label-Permutation Invariance Check on a Six-Frame Overlapping Meeting</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-d4a7b35e32">E15-09: Minimum DER Lower Bound of Hard Single-Label Clustering on Multi-Speaker Overlapped Speech</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-cbbd7bba80">E15-10: Constructive Example of Combined False Alarms and Misses Producing a Legitimate DER Above 100%</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-ea4ba43f5d">E15-11: TS-VAD Log-Odds Bayesian Fusion of Spatial Phase Difference and Voiceprint Similarity</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-da59d0d3d2">E15-12: Constructing GSS Target-Exclusive Masks from TS-VAD Soft Posteriors to Drive MVDR Beamforming</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-261548372a">E15-13: Heterogeneous Alignment Pattern Between 16 kHz STFT Audio Frames and 25 fps Video Exposure Midpoints</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-32abd3b091">E15-14: Quantitative Onset-Consonant Energy Clipping Under Positive Camera Pipeline Lag</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-eea0d8c86d">E15-15: Smooth Visual-Confidence-Gated Audio–Visual Mask Fallback Under Lip Occlusion</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-6903e87b2d">E15-16: Two-Tap Causal Real FIR Implementation of a Broadside Distance Bubble and Three-Tier Error Verification</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-0826d59766">E15-17: EEND-EDA Attractor Existence Gating and Fixed-Slot Error Lower Bounds</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-acbb7b1d3c">E15-18: Enrollment Crosstalk Contamination and Target-Exclusive Gating in Conditional Target Extraction</a></li>
+</ul></nav></details>
+<blockquote>
+<p>⚠️ This chapter is Chapter 15 of the main text (Extended Topic IV; the main text comprises 16 chapters, Chapters 0–15, of which Chapters 12–15 are four extended special topics, followed by Appendices A and B). Picking up from <a href="14_spatial-wearable-arrays.html">Chapter 14: Spatial Sound Field Capture, Parametric Coding, and Wearable Arrays</a>, it examines how an acoustic capture front-end combines speaker embeddings, near-field distance, speaker diarization, and visual lip-motion cues to perform target speaker extraction and multi-speaker activity detection when multiple talkers, co-directional far-end interferers, or overlapping conversations coexist in the sound field. Derivations of the Fresnel spherical-wave approximation, constrained Lagrange multipliers, and optimal Hungarian assignment can be reviewed in <a href="00_math-foundations.html#sec-0-1">Chapter 0 §0.1</a>, <a href="00_math-foundations.html#sec-0-5">§0.5</a>, and <a href="00_math-foundations.html#sec-0-6">§0.6</a>; global notation and terminology quick references are provided in <a href="16_appendix-symbols-math.html#sec-16-1">Chapter 16 Appendix A §16.1</a>.</p>
+<p>Overview: <a href="index.html">🏠 Course Overview</a> | Previous: <a href="14_spatial-wearable-arrays.html">Chapter 14 · Spatial Sound Fields & Wearable Arrays</a> | Next: <a href="16_appendix-symbols-math.html">Chapter 16 · Appendix A: Symbols, Glossary & Math Lookup</a></p>
+</blockquote>
+<hr />
+<span id="sec-1" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-a6b1dc83f6" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-75f51bf541" class="anchor-alias" aria-hidden="true"></span><h1 id="sec-u-3e72cd5bb2">Chapter 15: Conditional Target Extraction, Multi-Channel Diarization, and Far-Field Multimodal Front-Ends</h1>
+<span id="sec-2" class="anchor-alias" aria-hidden="true"></span><span id="sec-17-1" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-15-1">15.1 From Blind Separation to Clue-Driven Extraction: What Do We Actually Know About the Target?</h2>
+<span id="sec-3" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-52a7cf595d" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-580302c818">Slot Ambiguity in Blind Separation and the Paradigm Shift to Conditional Extraction</h3>
+<p>Recalling <a href="08_speech-separation.html#sec-8-1">Chapter 8 §8.1</a>, Blind Source Separation (BSS) and Permutation Invariant Training (PIT) attempt to decompose a mixed recording into $K$ mutually independent single-speaker speech streams without specifying in advance "who the target is." Yet when deployed on real smart glasses, automotive cabins, open-plan office desks, or multi-party conferencing endpoints, unconditional blind separation immediately confronts three structural limitations:</p>
+<ol>
+<li><strong>Output slots lack a global identity anchor</strong>: A two-second block-processing separator might place Speaker A into Slot 1 and Speaker B into Slot 2 in the current block, only to flip their order in the next block; even if the acoustic mixtures are cleanly separated, the system still does not know which stream belongs to the user who woke the device.</li>
+<li><strong>The true number of active talkers $K$ varies dynamically and is unknown</strong>: A meeting room may feature a single talker speaking uninterruptedly for five minutes, followed abruptly by three participants talking over one another. A network with a fixed output cardinality ($K=2$ or $K=3$) tends to erroneously split unvoiced consonants into idle slots during single-speaker segments, while inevitably dropping excess talkers whenever four people speak simultaneously.</li>
+<li><strong>Non-target speech wastes compute and bandwidth</strong>: A smartwatch or directional hearing aid only needs to extract the voice of the conversation partner facing the wearer; reconstructing five separate streams of diners chatting at neighboring restaurant tables in the background is pure wasted overhead.</li>
+</ol>
+<p><strong>Target Speaker Extraction (TSE; also referred to in the literature as Target Speech Extraction)</strong> reformulates the problem from "separating everyone" to "given a prior clue $\mathcal C$ characterizing the target, directly extracting from the multi-channel mixture observation only the single target speech stream matching $\mathcal C$." Whenever the target is actively speaking during the current interval, the system outputs an undistorted target waveform; whenever the target remains silent while only bystanders are speaking, the system should output a quiet zero signal.</p>
+<span id="sec-4" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-fa145bc099" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-3a977772a6">Physical Modalities of Five Target Clues and Summary of Abbreviations</h3>
+<p>In engineering design, the "prior clue $\mathcal C$" is by no means restricted to a pre-recorded enrollment utterance. Any physical observable or modality capable of distinguishing the target talker from surrounding interferers can be encoded into a conditioning vector to drive the extractor. The table below contrasts the five most widely used target clue modalities in far-field and wearable devices together with their failure boundaries:</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable data table"><table>
+<thead>
+<tr>
+<th scope="col">Clue Modality</th>
+<th scope="col">Physical Observable</th>
+<th scope="col">Typical Application Scenarios</th>
+<th scope="col">Core Failure Conditions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Enrolled Voiceprint Clue</strong></td>
+<td>Speaker embedding vector extracted from 3–10 s of enrollment speech</td>
+<td>Personal mobile speakerphone, personalized voice assistant</td>
+<td>Twins or similar vocal timbres, voice change due to a cold, whispered speech</td>
+</tr>
+<tr>
+<td><strong>Spatial Angular Cone Clue</strong></td>
+<td>Target azimuth and elevation interval $(\theta_0 \pm \Delta\theta)$</td>
+<td>Smart TV forward pickup, automotive driver/passenger zone separation</td>
+<td>Interferer standing directly behind the target along the exact same line of sight</td>
+</tr>
+<tr>
+<td><strong>Near-Field Distance Bubble Clue</strong></td>
+<td>Radial range $r \le r_{\mathrm{bubble}}$ bounded by spherical wavefront curvature</td>
+<td>Open-plan desk microphone, binaural smart glasses</td>
+<td>Array aperture too small ($r \gg 2D^2/\lambda$) or low-frequency bands</td>
+</tr>
+<tr>
+<td><strong>Visual Lip-Motion Clue</strong></td>
+<td>Lip opening/closing and viseme temporal features inside a detected face bounding box</td>
+<td>Video conferencing terminal, smart display with camera</td>
+<td>Cup occluding the mouth, profile head turn, camera pipeline latency</td>
+</tr>
+<tr>
+<td><strong>Semantic / Concept Prompt Clue</strong></td>
+<td>Text label or acoustic event class embedding</td>
+<td>On-demand auditory scene pickup, assistive listening devices</td>
+<td>Multiple talkers belonging to the same broad category (e.g., two adult males)</td>
+</tr>
+</tbody>
+</table></div>
+<p>The selection principle emerging from this comparison is unmistakable: no single modality can cover every interference geometry across all physical environments. Voiceprints are immune to co-directional occlusion yet vulnerable to similar vocal timbres and brief backchannel words; spatial angles require no prior enrollment for strangers yet cannot separate near and far talkers along the same ray; near-field distance bubbles suppress co-directional far-end crosstalk yet are bounded by physical aperture and acoustic wavelength; visual lip motion is impervious to severe room reverberation yet degrades when a user lifts a cup in front of the mouth or turns their head away.</p>
+<p>Modern far-field and wearable capture front-ends therefore universally adopt <strong>multimodal clue synergy with confidence-gated fallback</strong>, allowing complementary modalities to hand over smoothly across degraded operating regimes.</p>
+<p>The technical abbreviations used intensively throughout this chapter are summarized below for direct reference during subsequent derivations:</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable data table"><table>
+<thead>
+<tr>
+<th scope="col">Abbreviation</th>
+<th scope="col">Full Term</th>
+<th scope="col">Role in This Chapter</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TSE</td>
+<td>Target Speaker Extraction (also Target Speech Extraction)</td>
+<td>Conditional extraction task recovering solely the target speech from a mixture given a target clue $\mathcal C$</td>
+</tr>
+<tr>
+<td>FiLM</td>
+<td>Feature-wise Linear Modulation</td>
+<td>Channel-wise affine modulation of backbone network features using clue-generated scaling and bias vectors</td>
+</tr>
+<tr>
+<td>SI-SDR</td>
+<td>Scale-Invariant Signal-to-Distortion Ratio</td>
+<td>Energy ratio metric after orthogonal projection of the estimated waveform onto the ground-truth target direction, removing overall gain sensitivity</td>
+</tr>
+<tr>
+<td>DER</td>
+<td>Diarization Error Rate</td>
+<td>Ratio of summed missed speech, false alarm, and speaker confusion durations to total reference speaker duration</td>
+</tr>
+<tr>
+<td>TS-VAD</td>
+<td>Target-Speaker Voice Activity Detection</td>
+<td>Conditioning on candidate speaker representations to output independent frame-level activity posteriors for each speaker in parallel</td>
+</tr>
+<tr>
+<td>GSS</td>
+<td>Guided Source Separation</td>
+<td>Using speaker activity timestamps to constrain spatial mixture models and mask estimation, driving beamforming extraction</td>
+</tr>
+<tr>
+<td>EEND</td>
+<td>End-to-End Neural Diarization</td>
+<td>Formulating multi-speaker diarization directly as multi-label frame classification trained with permutation-invariant loss</td>
+</tr>
+<tr>
+<td>SOT</td>
+<td>Serialized Output Training</td>
+<td>Concatenating overlapping multi-speaker transcripts ordered by speech onset via special speaker-change tokens for single-decoder output</td>
+</tr>
+<tr>
+<td>DiCoW</td>
+<td>Diarization-Conditioned Whisper</td>
+<td>Conditional transcription architecture injecting frame-level speaker activity masks directly into pretrained foundation encoder layers</td>
+</tr>
+</tbody>
+</table></div>
+<span id="sec-5" class="anchor-alias" aria-hidden="true"></span><span id="sec-17-2" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-15-2">15.2 Conditional Feature Modulation and Singular Losses When the Target Is Absent</h2>
+<span id="sec-6" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-be111e8337" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-aacbff7f1f">Injecting Clue Vectors into the Feature Backbone: FiLM Affine Modulation and Cross-Attention</h3>
+<p>Suppose a backbone extraction network produces at its $\ell$-th layer a real-valued intermediate feature map $\mathbf H \in \mathbb{R}^{C \times T}$ with $C$ channels and $T$ frames (if $\mathbf H \in \mathbb{R}^{C \times F \times T}$ is a 2D time–frequency convolutional feature tensor, modulation likewise acts along axis 0, the feature-channel dimension), while a clue encoder maps enrollment audio, directional angle encodings, or lip-motion sequences into a fixed-dimensional conditioning embedding vector $\vec e = g_{\mathrm{clue}}(\mathcal C)$ (belonging to $\mathbb{R}^D$). How can a single shared set of backbone weights switch its filtering behavior dynamically as $\vec e$ varies?</p>
+<p><strong>Feature-wise Linear Modulation (FiLM)</strong>, introduced by Perez et al. in 2018 (<a href="https://arxiv.org/abs/1709.07871">AAAI 2018 paper</a>), is widely deployed in target speaker extraction networks such as VoiceFilter (<a href="https://arxiv.org/abs/1810.04826">Wang et al., Interspeech 2019</a>) and SpeakerBeam (<a href="https://doi.org/10.1109/JSTSP.2019.2922820">Žmolíková et al., IEEE JSTSP 2019</a>). FiLM employs two lightweight linear layers to project the conditioning vector $\vec e$ into a $C$-dimensional channel scaling vector $\vec\gamma \in \mathbb{R}^C$ and a channel bias vector $\vec\beta \in \mathbb{R}^C$:</p>
+<p>$$\begin{aligned}
+\vec\gamma&=\mathbf W_\gamma\vec e+\vec b_\gamma,\\
+\vec\beta&=\mathbf W_\beta\vec e+\vec b_\beta.
+\end{aligned}\tag{15-1}$$</p>
+<p>Here $\mathbf W_\gamma \in \mathbb{R}^{C \times D}$ and $\mathbf W_\beta \in \mathbb{R}^{C \times D}$ are projection matrices, while $\vec b_\gamma, \vec b_\beta \in \mathbb{R}^C$ are bias vectors. A channel-wise affine transformation is then applied to the $c$-th channel ($c = 1, \ldots, C$) at the $t$-th frame of the feature map $\mathbf H$, yielding the modulated feature map $\mathbf Z \in \mathbb{R}^{C \times T}$:</p>
+<p>$$\begin{gathered}
+Z_{c,t}=\gamma_c H_{c,t}+\beta_c,\\
+\mathbf Z=\vec\gamma\odot\mathbf H+\vec\beta.
+\end{gathered}\tag{15-2}$$</p>
+<p>Here the operator $\odot$ denotes broadcasting the column vector $\vec\gamma$ across the temporal frame dimension followed by element-wise multiplication. The physical and geometric division of labor in Eq. (15-2) is highly transparent:</p>
+<ol>
+<li><strong>Selective amplification and gated shut-off ($\gamma_c$)</strong>: Whenever a feature channel $c$ responds specifically to the target talker's fundamental-frequency harmonic cluster or target-direction phase difference, $\gamma_c > 1$ amplifies that channel's response; whenever the channel responds to interferer traits, $\gamma_c \approx 0$ shuts off transmission directly, or even inverts polarity via $\gamma_c \lt  0$ prior to a subsequent rectified linear unit $\operatorname{ReLU}(Z_{c,t}) = \max(0, Z_{c,t})$.</li>
+<li><strong>Activation threshold shifting ($\beta_c$)</strong>: A negative bias $\beta_c \lt  0$ raises the threshold required to enter the next nonlinear activation function, suppressing weak residual interference; if initialized at $\vec\gamma = \vec 1_C$ and $\vec\beta = \vec 0_C$, Eq. (15-2) degenerates exactly to the identity mapping $\mathbf Z = \mathbf H$, guaranteeing that the conditioning layer does not disrupt a pretrained acoustic backbone at the onset of training.</li>
+</ol>
+<p>When the target clue itself is a rapidly time-varying sequence—for instance, a $T_{\mathrm{v}}$-frame lip-motion feature matrix $\mathbf E_{\mathrm{lip}}$ of shape $D \times T_{\mathrm{v}}$, rather than a single static voiceprint vector $\vec e$—time-invariant global vectors $\vec\gamma, \vec\beta$ cannot express frame-by-frame mouth opening and closing. In that case, engineering implementations switch to <strong>cross-modal Cross-Attention</strong> modulation: audio features generate the query matrix $\mathbf Q = \mathbf W_Q\mathbf H$ (shape $d_k \times T$), while the clue sequence generates the key matrix $\mathbf K = \mathbf W_K\mathbf E_{\mathrm{lip}}$ (shape $d_k \times T_{\mathrm{v}}$) and value matrix $\mathbf V = \mathbf W_V\mathbf E_{\mathrm{lip}}$ (shape $C \times T_{\mathrm{v}}$), aligning and fusing them via scaled dot-product attention weights:</p>
+<p>$$\mathbf Z_{\mathrm{attn}}=\mathbf H
++\mathbf V\,\operatorname{softmax}\!\left(
+\frac{\mathbf K^\top\mathbf Q}{\sqrt{d_k}}\right).\tag{15-3}$$</p>
+<p>Here $\operatorname{softmax}(\cdot)$ normalizes along the key-frame dimension (column-wise), enabling each audio frame $t$ to automatically aggregate the visual viseme features most closely aligned with it in time. Its computational complexity is $\mathcal O(T T_{\mathrm{v}} d_k)$, substantially higher than the $\mathcal O(C T)$ element-wise cost of FiLM modulation in Eq. (15-2). Consequently, static voiceprints or fixed directional cones predominantly adopt lightweight FiLM, whereas frame-synchronous lip motion or dynamic tracking trajectories favor cross-attention or frame-wise time-varying FiLM.</p>
+<span id="sec-7" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-b26d6b0c7c" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-95c6e78a05">Why Standard SI-SDR Suffers a 0/0 Singularity When the Target Is Silent</h3>
+<p>Target speaker extraction differs fundamentally from blind separation in a training-objective subtlety that is all too easily overlooked: within $2\ \mathrm{s}$–$4\ \mathrm{s}$ training chunks sliced out of long conversational recordings, <strong>the target speaker may remain completely silent throughout the entire chunk</strong> (so the ground-truth reference waveform is identically the zero vector $\vec s_{\mathrm{ref}} = \vec 0 \in \mathbb{R}^N$), while background interfering talkers are actively speaking (mixture input $\vec x \ne \vec 0$). If we directly borrow the negative Scale-Invariant Signal-to-Distortion Ratio (SI-SDR, <a href="https://arxiv.org/abs/1811.02508">Le Roux et al., ICASSP 2019</a>) standardly used in single-speaker enhancement or blind separation as our training loss, what algebraic degeneration occurs? Let us write out the orthogonal projection decomposition of standard SI-SDR without skipping a single step:</p>
+<p>$$\begin{aligned}
+\alpha&=\frac{\hat{\vec s}^\top\vec s_{\mathrm{ref}}}
+{\|\vec s_{\mathrm{ref}}\|_2^2},\\
+\vec s_{\mathrm{proj}}&=\alpha\vec s_{\mathrm{ref}},\\
+\vec e_{\mathrm{noise}}&=\hat{\vec s}-\vec s_{\mathrm{proj}},
+\end{aligned}\tag{15-4}$$</p>
+<p>$$\mathrm{SI\text{-}SDR}(\hat{\vec s},\vec s_{\mathrm{ref}})
+=10\log_{10}\!\left(
+\frac{\|\vec s_{\mathrm{proj}}\|_2^2}
+{\|\vec e_{\mathrm{noise}}\|_2^2}
+\right).\tag{15-5}$$</p>
+<p>Here $\hat{\vec s}, \vec s_{\mathrm{ref}} \in \mathbb{R}^N$ denote the extractor output waveform and the clean target reference waveform, respectively, with real vector inner product written $\hat{\vec s}^\top\vec s_{\mathrm{ref}}$. Substituting the target-silent condition $\vec s_{\mathrm{ref}} = \vec 0$ into Eqs. (15-4) and (15-5) immediately exposes a dual structural failure:</p>
+<ol>
+<li><strong>Zero projection denominator ($0/0$ algebraic singularity)</strong>: In Eq. (15-4), $\|\vec s_{\mathrm{ref}}\|_2^2 = 0$ and $\hat{\vec s}^\top\vec 0 = 0$, turning the projection scalar $\alpha$ into an undefined $0/0$ (in floating-point arithmetic, directly generating <code>NaN</code> and corrupting gradients across the entire mini-batch).</li>
+<li><strong>Direct conflict between scale invariance and silence fidelity</strong>: Even if a tiny constant $\varepsilon > 0$ is artificially added to the denominator so that $\vec s_{\mathrm{proj}} = \vec 0$, the numerator of Eq. (15-5) remains identically zero, yielding $\log_{10}(0 / \|\hat{\vec s}\|_2^2) = -\infty$; if $\varepsilon$ is further added to both numerator and denominator inside the logarithm, the penalty depth becomes an artifact of the dimensionless numerical patch $\varepsilon$. Even more importantly, while overall waveform rescaling is tolerable when the target is present (scale invariance), <strong>leaking interfering speech through when the target is silent is completely unacceptable</strong>—errors during target-absent intervals must inherently be anchored against the mixture input energy scale as a relative energy suppression metric.</li>
+</ol>
+<span id="sec-8" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-c76ceca126" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-8b42a49427">Dual-State Energy-Floor Loss and Single-Speaker Over-Splitting Bypass Protection</h3>
+<p>To reconcile "waveform fidelity during target-active segments" with "interference suppression during target-silent segments" under a unified training criterion, conditional extractors employ a <strong>Dual-State TSE Loss</strong> switched by a reference-energy threshold $\varepsilon_s \ge 0$ (see <a href="https://doi.org/10.1109/ICASSP40776.2020.9054683">Delcroix et al., ICASSP 2020</a> on silence constraints for inactive talkers). Let $\varepsilon_s$ be the active reference energy threshold, and let $\tau_{\mathrm{floor}} > 0$ be the silent-state relative mixture energy floor factor (typically $10^{-3}$, corresponding to a silence noise-floor target $-30\ \mathrm{dB}$ below the mixture power). Denoting the mixture energy floor by $E_{\mathrm{floor}}=\tau_{\mathrm{floor}}\|\vec x\|_2^2$, the dual-state loss $\mathcal L_{\mathrm{dual}}$ is defined as:</p>
+<p>$$\mathcal L_{\mathrm{dual}}=
+\begin{cases}
+-\mathrm{SI\text{-}SDR}(\hat{\vec s},\vec s_{\mathrm{ref}}),
+& \|\vec s_{\mathrm{ref}}\|_2^2>\varepsilon_s,\\
+10\log_{10}\!\left(1+\dfrac{\|\hat{\vec s}\|_2^2}
+{E_{\mathrm{floor}}}\right),
+& \|\vec s_{\mathrm{ref}}\|_2^2\le\varepsilon_s.
+\end{cases}\tag{15-6}$$</p>
+<p>Substituting $E_{\mathrm{floor}}=\tau_{\mathrm{floor}}\|\vec x\|_2^2$ back into the silent branch ($\|\vec s_{\mathrm{ref}}\|_2^2 \le \varepsilon_s$ with $\|\vec x\|_2^2 > 0$), the target-absent penalty function reads explicitly:</p>
+<p>$$\mathcal L_{\mathrm{absent}}(\hat{\vec s},\vec x)
+=10\log_{10}\!\left(
+1+\frac{\|\hat{\vec s}\|_2^2}{\tau_{\mathrm{floor}}\|\vec x\|_2^2}
+\right)\ge 0.\tag{15-7}$$</p>
+<p>Let us inspect the boundary behavior and gradient properties of Eq. (15-7) term by term:</p>
+<ul>
+<li><strong>Smooth global minimum at ideal silence</strong>: When the extractor accurately outputs the zero waveform $\hat{\vec s} = \vec 0$, $\mathcal L_{\mathrm{absent}} = 0\ \mathrm{dB}$ (i.e., $10\log_{10} 1$), attaining its exact global lower bound; moreover, the gradient with respect to $\hat{\vec s}$ at zero equals $\vec 0$ for smooth convergence, avoiding the unbounded gradient blow-up near zero caused by an unfloored $\log_{10}(\|\hat{\vec s}\|_2^2)$ that triggers weight oscillation.</li>
+<li><strong>Mixture-scale adaptivity</strong>: Using $E_{\mathrm{floor}}=\tau_{\mathrm{floor}}\|\vec x\|_2^2$ rather than a fixed absolute constant in the denominator means that whether the overall digital recording level is raised by $10\ \mathrm{dB}$ or lowered by $10\ \mathrm{dB}$, as long as the extractor achieves the same relative interference energy suppression ratio $\|\hat{\vec s}\|_2^2 / \|\vec x\|_2^2$, it incurs the exact same dB penalty. Once residual leakage substantially exceeds the mixture floor ($\|\hat{\vec s}\|_2^2 \gg E_{\mathrm{floor}}$), the penalty rises linearly by $10\ \mathrm{dB}$ per tenfold increase in residual power.</li>
+</ul>
+<p>When deploying two-slot or multi-slot front-ends, a frequent engineering pathology dual to "target silence" is <strong>unvoiced consonant Over-Splitting during single-speaker speech</strong>. When only a single talker is actually speaking in the room, a two-output separator often places the voiced vowel core into the primary slot $\vec y_1$ while misclassifying high-frequency unvoiced fricatives (such as <code>/s/</code>, <code>/f/</code>, <code>/ɕ/</code>) or word-final aspiration as a "second speaker" and routing them into the secondary slot $\vec y_2$, leaving the primary slot sounding muffled and missing syllables. To prevent this, a <strong>zero-overlap energy-ratio bypass decision</strong> is placed in post-processing: we compute the secondary-to-primary slot energy ratio $R_{21,\mathrm{dB}}$ and compare it against a threshold $\eta_{\mathrm{dB}}$ (commonly set between $-18\ \mathrm{dB}$ and $-15\ \mathrm{dB}$):</p>
+<p>$$\begin{gathered}
+R_{21,\mathrm{dB}}=10\log_{10}\!\left(
+\frac{\|\vec y_2\|_2^2}{\|\vec y_1\|_2^2}\right),\\
+\vec y_{\mathrm{out}}=\begin{cases}
+\vec y_1+\vec y_2, & R_{21,\mathrm{dB}}\lt \eta_{\mathrm{dB}},\\
+\vec y_1, & R_{21,\mathrm{dB}}\ge\eta_{\mathrm{dB}}.
+\end{cases}
+\end{gathered}\tag{15-8}$$</p>
+<p>Whenever $R_{21,\mathrm{dB}} \lt  \eta_{\mathrm{dB}}$, the system judges that the secondary slot does not represent an independent concurrent second talker and directly sums $\vec y_1 + \vec y_2$ back together (or, at the system-architecture level, bypasses the two-speaker separator in favor of single-stream denoising/beamforming output), losslessly recovering the mis-split high-frequency unvoiced consonant energy.</p>
+<span id="sec-9" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-89a0bfca89" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-5f567be7d9" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-2c76d5fe22">Worked Example 15-1: Hand Calculation of FiLM Modulation, Silent-Segment Singularity, and Dual-State Loss</h3>
+<p>Using tiny arrays amenable to mental arithmetic, let us walk through Eqs. (15-2) and (15-5)–(15-8) end to end (corresponding to the code functions <code>film_conditioning</code>, <code>tse_dual_state_loss</code>, and <code>zero_overlap_bypass_decision</code>).</p>
+<p><strong>1. Input setup and FiLM channel modulation check.</strong> Let a two-channel, three-frame feature map $\mathbf H$ have Row 1 equal to $[1.0, -0.5, 2.0]$ and Row 2 equal to $[0.5, 1.5, -1.0]$, with voiceprint-generated modulation parameters $\vec\gamma = [2.0, 0.5]^\top$ and $\vec\beta = [-0.5, 0.25]^\top$. Evaluating Eq. (15-2) row by row: multiplying Row 1 by $2.0$ and subtracting $0.5$ yields $[1.5, -1.5, 3.5]$; multiplying Row 2 by $0.5$ and adding $0.25$ yields $[0.5, 1.0, -0.25]$, assembling the modulated feature matrix $\mathbf Z$.</p>
+<p><strong>2. Dual-state loss comparison between target-active and target-silent segments.</strong> Take four-sample orthogonal basis vectors: clean target $\vec s_{\mathrm{ref}} = [1, 1, -1, -1]^\top$ (energy $\|\vec s_{\mathrm{ref}}\|_2^2 = 4$) and orthogonal interferer $\vec v = [1, -1, 1, -1]^\top$ (satisfying $\vec s_{\mathrm{ref}}^\top\vec v = 0$, $\|\vec v\|_2^2 = 4$), with floor coefficient $\tau_{\mathrm{floor}} = 10^{-3}$ and threshold $\varepsilon_s = 10^{-8}$:</p>
+<ul>
+<li><strong>Case A (Target present)</strong>: Let the mixture be $\vec x = \vec s_{\mathrm{ref}} + \vec v = [2, 0, 0, -2]^\top$ ($\|\vec x\|_2^2 = 8$), and suppose the extractor outputs the target attenuated by half alongside weak residual interference $\hat{\vec s} = 0.5\vec s_{\mathrm{ref}} + 0.05\vec v = [0.55, 0.45, -0.45, -0.55]^\top$. Since $\|\vec s_{\mathrm{ref}}\|_2^2 = 4 > 10^{-8}$, the active branch is selected: inner product $\hat{\vec s}^\top\vec s_{\mathrm{ref}} = 2.0$, projection scalar $\alpha = 2.0 / 4 = 0.5$, target projection $\vec s_{\mathrm{proj}} = 0.5\vec s_{\mathrm{ref}}$ (energy $1.0$), and residual distortion $\vec e_{\mathrm{noise}} = 0.05\vec v$ (energy $0.01$). Substituting into Eq. (15-5) gives $10\log_{10}(1.0 / 0.01) = +20.0\ \mathrm{dB}$, so $\mathcal L_{\mathrm{dual}} = -20.0\ \mathrm{dB}$. Even though the output amplitude is halved, scale-invariant projection accurately awards a $20\ \mathrm{dB}$ separation score.</li>
+<li>
+<p><strong>Case B (Target silent)</strong>: Set $\vec s_{\mathrm{ref}} = [0, 0, 0, 0]^\top$, with the mixture containing only interference $\vec x = \vec v$ ($\|\vec x\|_2^2 = 4$). Standard SI-SDR hits the $0/0$ singularity in Eq. (15-4), whereas the dual-state loss enters the silent branch Eq. (15-7) with mixture energy floor $E_{\mathrm{floor}} = 0.004$ (computed from $\tau_{\mathrm{floor}}\|\vec x\|_2^2$). Comparing three levels of residual output energy:</p>
+<ul>
+<li>If the extractor accurately outputs silence $\hat{\vec s} = \vec 0$, then $\|\hat{\vec s}\|_2^2 = 0$ and $\mathcal L_{\mathrm{dual}} = 0.0\ \mathrm{dB}$;</li>
+<li>If the extractor leaks interference of energy $\|\hat{\vec s}\|_2^2 = 0.396$ (i.e., $\hat{\vec s} = \sqrt{0.099}\,\vec v$, roughly one-tenth of the mixture energy), the logarithm argument is $1 + 0.396 / 0.004 = 100$, yielding $\mathcal L_{\mathrm{dual}} = +20.0\ \mathrm{dB}$;</li>
+<li>If the extractor fails completely and passes the mixture straight through, $\hat{\vec s} = \vec x$ ($\|\hat{\vec s}\|_2^2 = 4$), the penalty climbs to $10\log_{10}(1001) \approx +30.00\ \mathrm{dB}$.</li>
+</ul>
+</li>
+</ul>
+<p><strong>3. Takeaway and validity boundary.</strong> This example demonstrates how the dual-state loss eliminates division-by-zero singularities on silent segments while penalizing interference pass-through in consistent decibel units. Note, however, its failure boundary: if a faint whispered target in real recordings is mislabeled as a zero reference (or if crosstalk from an adjacent talker bleeds into the close-talk reference channel such that $\|\vec s_{\mathrm{ref}}\|_2^2 > \varepsilon_s$), the dual-state switch flips into the wrong branch. Training-data preparation pipelines must therefore clean reference labels via cross-channel close-talk gating.</p>
+<p><img alt="Figure 85: Feature modulation, silent-state loss, and single-speaker bypass protection in conditional target speaker extraction" src="../figures_en/fig85_tse_conditioning_modes.png" onerror="this.alt+=' (figure missing)'" /></p>
+<p>Figure 85 illustrates the quantitative behavior of four core mechanisms in conditional target speaker extraction (generated by <code>scripts/make_tse_figures.py</code>):</p>
+<ul>
+<li><strong>Subplot (a) Features before and after FiLM channel affine modulation</strong>: Horizontal axis shows feature frame index $t \in \{0, 1, 2\}$; vertical axis shows feature activation (dimensionless). The solid red line with squares (modulated Channel 1) doubles the dynamic range and shifts it downward by $0.5$ relative to the dashed blue line with circles (raw Channel 1), whereas the dash-dotted purple line with diamonds (modulated Channel 2) compresses the dynamic range by half and shifts it upward by $0.25$ relative to the dotted green line with triangles (raw Channel 2), showing how a conditioning vector reshapes inter-channel contrast.</li>
+<li><strong>Subplot (b) Dual-state energy-floor penalty during target silence</strong>: Horizontal axis shows the residual-leakage-to-mixture energy ratio $10\log_{10}(\|\hat{\vec s}\|_2^2 / \|\vec x\|_2^2)$ (dB); vertical axis shows the target-absent loss $\mathcal L_{\mathrm{absent}}$ (dB). The solid red, dashed blue, and dash-dotted green curves correspond to $\tau_{\mathrm{floor}} = 10^{-4}, 10^{-3}, 10^{-2}$: in the ultra-low leakage regime all curves converge smoothly to the $0\ \mathrm{dB}$ horizontal asymptote, and once leakage crosses each respective floor threshold they enforce a strict linear penalty of slope $1\ \mathrm{dB/dB}$.</li>
+<li><strong>Subplot (c) Amplitude scale invariance during target-active segments</strong>: Horizontal axis shows the output amplitude scaling factor $\alpha \in [0.2, 2.2]$ (dimensionless); vertical axis shows loss or relative error (dB). The solid blue line ($-\mathrm{SI\text{-}SDR}$) stays flat at $-20.0\ \mathrm{dB}$ across the entire interval, whereas the dashed orange curve (sample-wise waveform relative MSE) degrades sharply above $0\ \mathrm{dB}$ whenever $\alpha$ deviates from $1.0$, explaining why uncalibrated-gain extraction networks require orthogonal projection to decouple amplitude.</li>
+<li><strong>Subplot (d) Zero-overlap bypass threshold and fricative preservation</strong>: Horizontal axis shows the secondary-to-primary slot energy ratio $R_{21,\mathrm{dB}}$ (dB); vertical axis shows secondary-slot activation state ($0$ for merged bypass, $1$ for independent separation). The vertical dashed red line marks the $-18\ \mathrm{dB}$ threshold; the single-speaker unvoiced fricative leakage point ($-20\ \mathrm{dB}$, green circle) falls to the left of the threshold and triggers merge recovery, whereas the genuine two-speaker overlap point ($-6.02\ \mathrm{dB}$, blue square) falls to the right and maintains dual-stream separation.</li>
+</ul>
+<span id="sec-10" class="anchor-alias" aria-hidden="true"></span><span id="sec-17-3" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-15-3">15.3 When Far-Field Angles Fail: Near-Field Spherical Waves and Acoustic Distance Bubbles</h2>
+<span id="sec-11" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-cf90d8feb2" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-3079b734fe">Spherical-Wave Steering Vectors and the Fresnel Near-Field Range Criterion</h3>
+<p>Imagine an open-plan office workstation or a noisy café where a user wearing smart glasses or facing a desktop array speaks at a distance of only $r_1 = 0.40\ \mathrm{m}$ from the array center, while directly behind the user along the exact same line of sight at $r_2 = 4.00\ \mathrm{m}$, a colleague is talking loudly on the phone. Here the target and the interferer share the exact same azimuth angle (both at broadside $\theta = 0^\circ$). Recalling <a href="05_beamforming.html#sec-5-1">Chapter 5 §5.1</a>, any beamformer built upon the <strong>far-field plane-wave assumption</strong> distinguishes only the arrival angle $\theta$: because both sources sit at $0^\circ$, their plane-wave steering vectors coincide identically, and no choice of conventional angular beamformer weights can preserve the nearby talker while selectively suppressing the distant co-directional interferer.</p>
+<p>The physical key to breaking this degeneracy lies in <strong>Wavefront Curvature</strong>: sound arriving from $0.40\ \mathrm{m}$ hits the array as a noticeably curved spherical wave, whereas the wavefront arriving from $4.00\ \mathrm{m}$ has flattened almost into a plane wave. Exploiting spherical wavefront curvature to enclose a spatial zone in front of the array that admits sound only within $r \le r_{\mathrm{bubble}}$ while rejecting more distant sound from the exact same direction is known as an <strong>Acoustic Distance Bubble</strong> (for representative recent work on wearable and desktop near-field pickup, see <a href="https://doi.org/10.1145/3498361.3538933">Chatterjee et al., ClearBuds, MobiSys 2022</a> and <a href="https://doi.org/10.1038/s41928-024-01276-z">Chen et al., Sound Bubbles, Nature Electronics 2024</a>).</p>
+<p>Let us establish strict planar Cartesian coordinates to compute the curvature phase explicitly. Consider an $M$-element Uniform Linear Array (ULA) arranged symmetrically along the $x$-axis, with the $m$-th microphone at $(x_m, 0)$, the array center at the origin $(0, 0)$, and total physical aperture $D = \max_m x_m - \min_m x_m$. Measuring the azimuth angle $\theta \in [-\pi/2, \pi/2]$ from the broadside $+y$ normal toward the $+x$-axis, a point source at range $r$ and azimuth $\theta$ has coordinates $(r\sin\theta, r\cos\theta)$, and its exact Euclidean propagation distance $r_m(r, \theta)$ to the $m$-th microphone is:</p>
+<p>$$\begin{aligned}
+r_m(r,\theta)&=\sqrt{(r\sin\theta-x_m)^2+(r\cos\theta)^2}\\
+&=\sqrt{r^2+x_m^2-2rx_m\sin\theta}.
+\end{aligned}\tag{15-9}$$</p>
+<p>To clarify its relationship with the far-field plane-wave formula, factor $r$ out of the square root and apply the second-order Taylor expansion $\sqrt{1 + u} = 1 + \frac{1}{2}u - \frac{1}{8}u^2$ under $r \gg |x_m|$ (omitting $\mathcal O(u^3)$, where $u = -\frac{2x_m\sin\theta}{r} + \frac{x_m^2}{r^2}$), collecting terms step by step through order $r^{-1}$:</p>
+<p>$$\begin{aligned}
+r_m(r,\theta)-r
+&=r\Biggl[1+\frac{1}{2}\!\left(
+-\frac{2x_m\sin\theta}{r}+\frac{x_m^2}{r^2}\right)\\
+&\quad-\frac{1}{8}\!\left(-\frac{2x_m\sin\theta}{r}\right)^2
++\mathcal O\!\left(\frac{|x_m|^3}{r^3}\right)\Biggr]-r\\
+&=-x_m\sin\theta+\frac{x_m^2\cos^2\theta}{2r}
++\mathcal O\!\left(\frac{|x_m|^3}{r^2}\right).
+\end{aligned}\tag{15-10}$$</p>
+<p>Compare the two leading terms on the right-hand side of Eq. (15-10) carefully: the first term $-x_m\sin\theta$ is completely independent of range $r$ and is precisely the directional linear path difference of a far-field plane wave; when the source lies at broadside $\theta = 0^\circ$, this first term vanishes identically. <strong>By contrast, the second term $+\frac{x_m^2\cos^2\theta}{2r}$ attains its maximum value $\frac{x_m^2}{2r}$ right at $\theta = 0^\circ$</strong>—proportional to the squared sensor coordinate $x_m^2$ and inversely proportional to range $r$, this is the <strong>quadratic spherical-wave curvature path difference</strong> that empowers an array to discriminate sources at different distances along the exact same direction.</p>
+<p>Following the unified forward Fourier kernel $e^{-\mathrm{j}2\pi f t}$ used throughout this book, let $\kappa = 2\pi f / c = 2\pi / \lambda$ be the wavenumber ($\lambda = c / f$ is the acoustic wavelength). Taking the array-origin range $r$ as both phase and amplitude reference, engineering modeling must explicitly distinguish between two spherical-wave steering vector definitions—the <strong>phase-only curvature steering vector</strong> $\vec a_{\mathrm{ph}}(r, \theta)$ and the <strong>steering vector with relative spherical-spreading attenuation</strong> $\vec a_{\mathrm{att}}(r, \theta)$:</p>
+<p>$$\begin{aligned}
+\bigl[\vec a_{\mathrm{ph}}(r,\theta)\bigr]_m
+&=\exp\bigl(-\mathrm{j}\kappa\,[r_m(r,\theta)-r]\bigr),\\
+\bigl[\vec a_{\mathrm{att}}(r,\theta)\bigr]_m
+&=\frac{r}{r_m(r,\theta)}\,
+\exp\bigl(-\mathrm{j}\kappa\,[r_m(r,\theta)-r]\bigr).
+\end{aligned}\tag{15-11}$$</p>
+<p>Up to what distance can an array still resolve spherical wavefront curvature, and beyond what range does a spherical wave degenerate into an indistinguishable plane wave? Acoustics and antenna theory set the dividing line where the quadratic curvature phase difference at the outer edges of the array ($|x_m| = D/2$) in the broadside direction equals $\pi/8$ (corresponding to a path difference $\Delta r = \lambda / 16$): setting $\frac{(D/2)^2}{2 r_F} = \frac{\lambda}{16}$ solves for the <strong>Fresnel / Fraunhofer near-field boundary distance</strong> $r_F$:</p>
+<p>$$r_F=\frac{2D^2}{\lambda}=\frac{2D^2 f}{c}.\tag{15-12}$$</p>
+<p>Equation (15-12) reveals the tight coupling between hardware form factor and operating frequency: the resolvable near-field radius scales with the <strong>square of the total array aperture $D$</strong> and linearly with frequency $f$. Shrinking the aperture to one-fifth of its original width collapses the effective near-field radius $r_F$ to <strong>one twenty-fifth</strong>.</p>
+<span id="sec-12" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-a3bf70b816" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-f62c53a4d4">Co-Directional Far-Field Nulling: Closed-Form Second-Order Spatial Difference Solution for a Three-Mic Distance Bubble</h3>
+<p>On a symmetric three-microphone ULA at broadside $\theta = 0^\circ$ (sensor coordinates $x_{-1} = -d, x_0 = 0, x_{+1} = +d$, total aperture $D = 2d$), let us now derive the closed-form Linearly Constrained Minimum Variance (LCMV) beamformer that passes a near-field target at $(r_1, 0^\circ)$ without distortion while placing an exact null on a co-directional far-field plane wave.</p>
+<p>To isolate the core role of wavefront phase curvature, we first adopt the phase-only model of Eq. (15-11) (the quantitative impact of the $r / r_m$ amplitude correction is analyzed in <a href="#e15-06">E15-06</a>). At broadside $\theta = 0^\circ$, the center element lies at distance $r_0 = r$ and both outer symmetric elements lie at $\sqrt{r^2 + d^2}$, giving an extra propagation path difference and phase lag relative to the center microphone of:</p>
+<p>$$\begin{aligned}
+\Delta r(r)&=\sqrt{r^2+d^2}-r,\\
+\phi(r)&=-\kappa\,\Delta r(r)
+=-\frac{2\pi}{\lambda}\!\left(\sqrt{r^2+d^2}-r\right)\lt 0.
+\end{aligned}\tag{15-13}$$</p>
+<p>Denoting the unit-modulus complex phasor by $u_1 = e^{\mathrm{j}\phi_1}$ (where $\phi_1 = \phi(r_1)$), the near-field target steering vector is $\vec a_1 = [u_1, 1, u_1]^\top$, whereas the steering vector of a co-directional plane wave at infinity ($\Delta r \to 0$ and $\phi \to 0$ as $r \to \infty$) is the all-ones column vector $\vec a_\infty = [1, 1, 1]^\top$. Under spatially white sensor noise ($\mathbf R_{nn} = \mathbf I_3$), the dual-constraint optimization problem minimizing sensor self-noise power amplification $\|\vec w\|_2^2$ reads:</p>
+<p>$$\begin{gathered}
+\min_{\vec w\in\mathbb{C}^3}\;\|\vec w\|_2^2\\
+\text{s.t.}\quad\vec w^H\vec a_1=1,\quad\vec w^H\vec a_\infty=0.
+\end{gathered}\tag{15-14}$$</p>
+<p>Writing the $3 \times 2$ constraint matrix $\mathbf C = [\vec a_1, \vec a_\infty]$ and desired response vector $\vec g = [1, 0]^\top$, the minimum-norm solution to $\mathbf C^H\vec w = \vec g$ is $\vec w = \mathbf C(\mathbf C^H\mathbf C)^{-1}\vec g$. Rather than inverting the matrix brute-force, left–right array symmetry yields the closed-form solution for $\vec w = [w_{-1}, w_0, w_{+1}]^\top$ in three elementary algebraic steps:</p>
+<ol>
+<li>By symmetry ($\vec w$ lies in $\operatorname{span}\{\vec a_1, \vec a_\infty\}$), the two outer weights must be equal: write $w_{-1} = w_{+1} = w_{\mathrm{out}}$.</li>
+<li>Substituting into the second far-field null constraint $\vec w^H [1, 1, 1]^\top = 0$ gives $2w_{\mathrm{out}}^* + w_0^* = 0$; taking complex conjugates of both sides immediately yields $w_0 = -2w_{\mathrm{out}}$. In other words, <strong>the spatial profile of the weight vector is necessarily proportional to the second-order central spatial difference stencil $[1, -2, 1]^\top$</strong>: any plane wave arrives with flat phase across the array axis ($1 - 2 + 1 = 0$) and produces identically zero output; only a curved spherical wave can pass through this second-order curvature high-pass filter.</li>
+<li>Substituting into the first distortionless near-field constraint $\vec w^H [u_1, 1, u_1]^\top = 1$ gives $w_{\mathrm{out}}^*(2u_1 - 2) = 1$, solving to $w_{\mathrm{out}}^* = \frac{1}{2(u_1 - 1)}$. Taking complex conjugates (noting $u_1^* = e^{-\mathrm{j}\phi_1}$) yields the optimal closed-form weight vector:</li>
+</ol>
+<p>$$\vec w_{\mathrm{bubble}}
+=\frac{1}{2\bigl(e^{-\mathrm{j}\phi_1}-1\bigr)}
+\begin{bmatrix}1\\-2\\1\end{bmatrix}.\tag{15-15}$$</p>
+<p>Applying Eq. (15-15) to a spherical wave at arbitrary broadside distance $r$, $\vec a(r, 0^\circ) = [e^{\mathrm{j}\phi(r)}, 1, e^{\mathrm{j}\phi(r)}]^\top$, and invoking Euler's half-angle identity $|e^{\mathrm{j}\phi} - 1|^2 = 4\sin^2(\phi / 2)$ (simplified from $2 - 2\cos\phi$), we obtain in a single step both the <strong>radial range power response</strong> $|B(r, 0^\circ)|^2$ and the <strong>White Noise Gain (WNG)</strong>:</p>
+<p>$$\begin{aligned}
+|B(r,0^\circ)|^2&=|\vec w_{\mathrm{bubble}}^H\vec a(r,0^\circ)|^2\\
+&=\left|\frac{e^{\mathrm{j}\phi(r)}-1}
+{e^{\mathrm{j}\phi_1}-1}\right|^2
+=\frac{\sin^2\!\bigl(\phi(r)/2\bigr)}{\sin^2(\phi_1/2)},
+\end{aligned}\tag{15-16}$$</p>
+<p>$$\begin{aligned}
+\|\vec w_{\mathrm{bubble}}\|_2^2
+&=\frac{1^2+(-2)^2+1^2}{4\,|e^{-\mathrm{j}\phi_1}-1|^2}
+=\frac{3}{8\sin^2(\phi_1/2)},\\
+\mathrm{WNG}&=\frac{1}{\|\vec w_{\mathrm{bubble}}\|_2^2}
+=\frac{8}{3}\sin^2\!\left(\frac{\phi_1}{2}\right).
+\end{aligned}\tag{15-17}$$</p>
+<p>Equations (15-16) and (15-17) cleanly characterize both the radial selectivity and the noise penalty of a distance bubble: when interferer range $r_2 \gg d$ and target range $r_1 \gg d$, $\phi(r) \approx -\pi d^2 / (\lambda r)$ scales inversely with $r$; in the small-angle regime $\sin(\phi/2) \approx \phi/2$, so the far-end interferer power response rolls off as $|B(r_2, 0^\circ)|^2 \approx (r_1 / r_2)^2$—<strong>a co-directional interferer ten times farther away than the target ($r_2 = 10 r_1$) is naturally attenuated in power by roughly $(1/10)^2 = 1/100$, or about $20\ \mathrm{dB}$</strong>.</p>
+<span id="sec-13" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-4b408b843f" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-24fc4c8b3d">Aperture Shrinkage and White Noise Gain Collapse: Physical Red Lines for Miniature Wearable Arrays</h3>
+<p>Now examine the flip side of Eq. (15-17): an ordinary three-microphone far-field delay-and-sum beamformer $\vec w_{\mathrm{DSB}} = [1/3, 1/3, 1/3]^\top$ achieves a white noise gain of $\mathrm{WNG}_{\mathrm{DSB}} = 3$ ($+4.77\ \mathrm{dB}$, suppressing microphone self-noise); by contrast, because the distance bubble must execute second-order spatial subtraction $[1, -2, 1]^\top$ to cancel co-directional plane waves, whenever inter-element spacing $d$ is too small or frequency $f$ is too low so that $|\phi_1| \ll 1$, $\mathrm{WNG} \approx \frac{2}{3}\phi_1^2 \propto \frac{d^4 f^2}{r_1^2 c^2}$—<strong>plummeting with the fourth power of inter-element spacing</strong>. If Eq. (15-14) is solved without regularization in this regime, the vanishing denominator $e^{-\mathrm{j}\phi_1} - 1 \to 0$ amplifies each microphone's thermal noise power by tens or thousands of times; if instead we solve a damped Gram system with regularization parameter $\delta > 0$,</p>
+<p>$$\vec w_{\mathrm{reg}}
+=\mathbf C\bigl(\mathbf C^H\mathbf C+\delta\mathbf I_2\bigr)^{-1}
+\vec g,\tag{15-18}$$</p>
+<p>the weight-norm explosion is curbed, yet because $\vec a_1$ and $\vec a_\infty$ are nearly collinear, regularization inevitably sacrifices both near-field target gain ($|B(r_1, 0^\circ)|^2 \lt  1$) and far-field null depth simultaneously.</p>
+<span id="sec-14" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-3f3f377afd" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-180e9089b7" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-2f6b58e5b8">Worked Example 15-2: Distance-Bubble Calculation Comparing a 10 cm Desktop ULA Against a 2 cm Miniature ULA</h3>
+<p>Let the speed of sound be $c = 343\ \mathrm{m/s}$ and operating frequency be $f = 3430\ \mathrm{Hz}$ (so the wavelength is exactly $\lambda = c / f = 0.10\ \mathrm{m}$), with a broadside near-field target at $r_1 = 0.40\ \mathrm{m}$ and a co-directional far-end interferer at $r_2 = 4.00\ \mathrm{m}$. Let us compute side by side a desktop-scale inter-element spacing $d = 0.10\ \mathrm{m}$ (total aperture $D = 0.20\ \mathrm{m}$) versus a single earbud-stem miniature spacing $d = 0.02\ \mathrm{m}$ (total aperture $D = 0.04\ \mathrm{m}$) (corresponding to <code>broadside_distance_bubble_weights</code>):</p>
+<ol>
+<li>
+<p><strong>Desktop ULA ($d = 0.10\ \mathrm{m}$, $D = 0.20\ \mathrm{m}$)</strong>:</p>
+<ul>
+<li>Fresnel boundary from Eq. (15-12): $r_F = 2 \times 0.20^2 / 0.10 = 0.80\ \mathrm{m} > r_1 = 0.40\ \mathrm{m}$, placing the target squarely inside the Fresnel near-field zone.</li>
+<li>Near-field target path difference and curvature phase from Eq. (15-13): $\Delta r_1 = (\sqrt{0.17} - 0.40)\ \mathrm{m} \approx 12.311\ \mathrm{mm}$, giving phase lag $\phi_1 \approx -44.32^\circ$ (from $-360^\circ \times 0.12311$, or $-0.7735\ \mathrm{rad}$).</li>
+<li>White noise gain from Eq. (15-17): $\sin(\phi_1/2) \approx -0.37718$ (half-angle $-22.159^\circ$), yielding $\mathrm{WNG} = \frac{8}{3}\sin^2(\phi_1/2) \approx 0.3794$, or $10\log_{10}(0.37937) \approx -4.21\ \mathrm{dB}$—paying only a mild $\sim 4.2\ \mathrm{dB}$ self-noise penalty well within the SNR headroom of quality digital MEMS microphones.</li>
+<li>Co-directional interferer suppression at $r_2 = 4.00\ \mathrm{m}$ from Eq. (15-16): $\Delta r_2 = (\sqrt{16.01} - 4.00)\ \mathrm{m} \approx 1.2498\ \mathrm{mm}$, $\phi_2 \approx -4.499^\circ$, $\sin^2(\phi_2 / 2) \approx 0.001541$, giving power ratio $|B(r_2, 0^\circ)|^2 \approx 0.01083$ (from $0.001541 / 0.14226$)—achieving <strong>$19.65\ \mathrm{dB}$ of purely physical spatial suppression</strong> against a $4\ \mathrm{m}$ interferer at the <strong>exact same horizontal azimuth</strong>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Miniature ULA ($d = 0.02\ \mathrm{m}$, $D = 0.04\ \mathrm{m}$)</strong>:</p>
+<ul>
+<li>The Fresnel boundary shrinks 25-fold to $r_F = 2 \times 0.04^2 / 0.10 = 0.032\ \mathrm{m}$ (just $3.2\ \mathrm{cm}$, far below $r_1 = 0.40\ \mathrm{m}$); to this miniature array, a talker at $0.40\ \mathrm{m}$ is already in the far field.</li>
+<li>Near-field path difference shrinks to $\Delta r_1 = (\sqrt{0.1604} - 0.40)\ \mathrm{m} \approx 0.500\ \mathrm{mm}$, leaving a tiny curvature phase of $\phi_1 \approx -1.80^\circ$.</li>
+<li>Equation (15-17) gives $\mathrm{WNG} = \frac{8}{3}\sin^2(-0.8994^\circ) \approx 6.571 \times 10^{-4}$, i.e., <strong>$\mathrm{WNG} = -31.82\ \mathrm{dB}$</strong> (weight norm $\|\vec w\|_2 \approx 39.01$, amplifying sensor thermal noise power by $1522\times$).</li>
+</ul>
+</li>
+</ol>
+<p><strong>Takeaway and engineering selection guidance</strong>: A single earbud stem with a $2\ \mathrm{cm}$ aperture cannot form a usable distance bubble at $0.4\ \mathrm{m}$–$1.0\ \mathrm{m}$ via linear spherical-wave curvature alone. For wearable hardware to unlock genuine near-field bubble capability, it must exploit a <strong>binaural cross-head wirelessly synchronized array</strong> (incorporating the inter-ear span $D \approx 0.16\ \mathrm{m}$–$0.18\ \mathrm{m}$ or full eyeglass frame width into the aperture) while automatically falling back to neural masking or interaural coherence filtering at low frequencies ($f \lt  800\ \mathrm{Hz}$).</p>
+<p><img alt="Figure 86: Radial suppression and small-aperture noise-floor boundary of near-field spherical-wave distance bubbles" src="../figures_en/fig86_nearfield_distance_bubble.png" onerror="this.alt+=' (figure missing)'" /></p>
+<p>Figure 86 presents the analytical radial response curves alongside measured waveforms and errors from the synthetic PCM16 audio assets of this chapter:</p>
+<ul>
+<li><strong>Subplot (a) Broadside radial power response ($3430\ \mathrm{Hz}$)</strong>: Horizontal axis shows source radial range $r \in [0.15, 5.0]\ \mathrm{m}$; vertical axis shows power gain (dB). The dashed red line (conventional far-field DSB) stays nearly flat ($0\ \mathrm{dB}$) across all ranges with zero suppression of the $4.0\ \mathrm{m}$ co-directional interferer; the solid blue curve ($d = 10\ \mathrm{cm}$ distance bubble) crosses $0\ \mathrm{dB}$ precisely at the dotted green target line $r_1 = 0.40\ \mathrm{m}$ and rolls off monotonically with range to $-19.65\ \mathrm{dB}$ at the dotted purple interferer line $r_2 = 4.00\ \mathrm{m}$; the dash-dotted orange curve ($d = 2\ \mathrm{cm}$ regularized bubble, $\delta = 5\times 10^{-4}$) loses both near-field gain and far-field roll-off slope due to insufficient aperture.</li>
+<li><strong>Subplot (b) Inter-element spacing vs. WNG collapse</strong>: Horizontal axis shows adjacent sensor spacing $d$ (cm); vertical axis shows unregularized white noise gain $\mathrm{WNG}$ (dB). The solid blue curve with circles illustrates the steep $d^4$ roll-off, with vertical dashed green and dash-dotted red lines marking $d = 10\ \mathrm{cm}$ ($-4.21\ \mathrm{dB}$ viable operating zone) and $d = 2\ \mathrm{cm}$ ($-31.82\ \mathrm{dB}$ noise-amplification forbidden zone).</li>
+<li><strong>Subplot (c) Actual PCM waveform comparison (from sample $1600$)</strong>: Horizontal axis shows relative time from the steady-window start ($0$–$3.0\ \mathrm{ms}$, $48$ samples); vertical axis shows decoded PCM16 amplitude (dimensionless). The dashed red trace (far-field DSB) suffers severe beat modulation from the $2500\ \mathrm{Hz}$ co-directional interferer, whereas the dash-dotted blue trace ($10\ \mathrm{cm}$ distance bubble) overlays sample-for-sample onto the solid green trace ($3200\ \mathrm{Hz}$ near-field target reference).</li>
+<li><strong>Subplot (d) Steady-window actual PCM16 normalized error ratio</strong>: Horizontal axis lists the three beamforming schemes (common export gain $1.0$); vertical axis shows the steady-window integer error energy ratio $E_{\mathrm{PCM}} / P_{\mathrm{ref}}$ (dimensionless). Far-field DSB incurs an error ratio of $1.2226$, the $10\ \mathrm{cm}$ distance bubble drops sharply to $0.0246$, and the $2\ \mathrm{cm}$ small-aperture regularized bubble (audio fixture $\delta = 2\times 10^{-4}$) rises to $2.2760$ due to target attenuation plus self-noise amplification.</li>
+</ul>
+<span id="sec-15" class="anchor-alias" aria-hidden="true"></span><span id="sec-17-4" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-15-4">15.4 Speaker Diarization Metrics and the Overlap Blind Spot of Hard Single-Label Clustering</h2>
+<span id="sec-16" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-77e8cbf1cd" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-3a830a196e">Three-Component Decomposition of Diarization Error Rate (DER) and Optimal Permutation Matching</h3>
+<p>When the acoustic capture scenario expands from "a known single target" to "a meeting room with an unknown number of participants in free-flowing discussion," the front-end must first answer <strong>"Who Spoke When"</strong>—namely <strong>Speaker Diarization</strong>. Suppose a meeting recording is partitioned uniformly into $T$ evaluation frames (each of duration $\Delta T$ seconds, for a physical recording duration $T_{\mathrm{rec}} = T\Delta T$), with $K_{\mathrm{ref}}$ ground-truth speakers present and $K_{\mathrm{hyp}}$ system-predicted speaker tracks. Setting $K = \max(K_{\mathrm{ref}}, K_{\mathrm{hyp}})$ (zero-padding the smaller side with all-zero inactive tracks), denote the binary reference activity matrix by $\mathbf R \in \{0, 1\}^{K \times T}$ and the system hypothesis activity matrix by $\mathbf H \in \{0, 1\}^{K \times T}$, where $r_{k,t} = 1$ indicates that ground-truth speaker $k$ is active at frame $t$.</p>
+<p>Because cluster indices emitted by a diarization system (e.g., "Speaker A," "Speaker B") carry no intrinsic ordering, international evaluation standards (<a href="https://www.nist.gov/itl/iad/mig/rich-transcription-evaluation">Fiscus et al., NIST RT-06 Evaluation Plan</a>) first search over all bijective permutations $\pi \in \mathcal S_K$ to find an optimal one-to-one mapping $\pi^\star$ maximizing total matched speech duration, and then tally three mutually exclusive physical error counts per frame:</p>
+<ol>
+<li>
+<p><strong>Total reference speaker time denominator $T_{\mathrm{ref}}$</strong>: Sum the individual active durations of all ground-truth talkers (<strong>note carefully</strong>: $1\ \mathrm{s}$ of two-speaker simultaneous overlap contributes $2\ \mathrm{s}$ to reference speaker time, so $T_{\mathrm{ref}}$ can legitimately exceed physical recording duration $T_{\mathrm{rec}}$ when overlap is present):</p>
+<p>$$\begin{aligned}
+    N_{\mathrm{ref}}(t)&=\sum_{k=1}^{K}r_{k,t},\\
+    T_{\mathrm{ref}}&=\Delta T\sum_{t=0}^{T-1}N_{\mathrm{ref}}(t).
+    \end{aligned}\tag{15-19}$$</p>
+</li>
+<li>
+<p><strong>Frame-level Miss, False Alarm (FA), and Speaker Confusion counts</strong>: Fixing a permutation $\pi$, let the total predicted active speaker count at frame $t$ be $N_{\mathrm{hyp}}(t) = \sum_{k=1}^K h_{\pi(k),t}$ and the count of active speakers whose identities are correctly matched be $N_{\mathrm{cor}}^{(\pi)}(t) = \sum_{k=1}^K r_{k,t} h_{\pi(k),t}$. The three speaker-count errors at frame $t$ are defined as:</p>
+<p>$$\begin{aligned}
+    E_{\mathrm{miss}}(t)&=\max\bigl(0,\;
+    N_{\mathrm{ref}}(t)-N_{\mathrm{hyp}}(t)\bigr),\\
+    E_{\mathrm{FA}}(t)&=\max\bigl(0,\;
+    N_{\mathrm{hyp}}(t)-N_{\mathrm{ref}}(t)\bigr),\\
+    E_{\mathrm{conf}}^{(\pi)}(t)&=\min\bigl(
+    N_{\mathrm{ref}}(t),N_{\mathrm{hyp}}(t)\bigr)
+    -N_{\mathrm{cor}}^{(\pi)}(t).
+    \end{aligned}\tag{15-20}$$</p>
+</li>
+</ol>
+<p>Summing the three equations in Eq. (15-20) provides a crucial algebraic check: whether $N_{\mathrm{ref}}(t) \ge N_{\mathrm{hyp}}(t)$ or $N_{\mathrm{hyp}}(t) > N_{\mathrm{ref}}(t)$, the identity $\max(0, a - b) + \max(0, b - a) + \min(a, b) \equiv \max(a, b)$ holds identically! Hence the sum of the three error terms at frame $t$ always equals $\max(N_{\mathrm{ref}}, N_{\mathrm{hyp}}) - N_{\mathrm{cor}}^{(\pi)}(t)$. Because the first two terms $E_{\mathrm{miss}}(t)$ and $E_{\mathrm{FA}}(t)$ do not depend on the permutation $\pi$ at all, minimizing total error is equivalent to solving a <strong>maximum-weight bipartite matching problem</strong> on the $K \times K$ integer co-occurrence matrix $M_{k,j} = \sum_{t=0}^{T-1} r_{k,t} h_{j,t}$ (solvable exactly in $\mathcal O(K^3)$ time via the integer Hungarian algorithm to obtain $\pi^\star$):</p>
+<p>$$\begin{aligned}
+\pi^\star&=\arg\max_{\pi\in\mathcal S_K}
+\sum_{k=1}^{K}\sum_{t=0}^{T-1}r_{k,t}\,h_{\pi(k),t},\\
+\mathrm{DER}&=\frac{\sum_{t=0}^{T-1}\bigl[
+E_{\mathrm{miss}}(t)+E_{\mathrm{FA}}(t)
++E_{\mathrm{conf}}^{(\pi^\star)}(t)\bigr]}
+{\sum_{t=0}^{T-1}N_{\mathrm{ref}}(t)}.
+\end{aligned}\tag{15-21}$$</p>
+<p>Here we must dispel a widespread metric misconception among newcomers: <strong>$\mathrm{DER}$ can legitimately exceed $100\%$ (i.e., $\mathrm{DER} > 1.0$), and evaluation scripts must NEVER clamp $\mathrm{DER}$ via $\min(1.0, \cdot)$!</strong> The reason lies directly in the second term $E_{\mathrm{FA}}(t)$ of Eq. (15-20): on a recording with substantial silence or brief single-speaker speech, if noise false-triggers the front-end into spawning multiple spurious speaker tracks, cumulative false-alarm plus confusion duration will exceed total reference speaker time $T_{\mathrm{ref}}$, yielding a genuine error rate strictly greater than $100\%$.</p>
+<span id="sec-17" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-a63554ae0a" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-ebe301a53d">Proof of the Lower Error Bound for Hard Single-Label Clustering on Overlapped Speech Frames</h3>
+<p>Early cascaded meeting pipelines universally followed the sequence "Voice Activity Detection (VAD) segmentation $\to$ extract one speaker embedding (x-vector / d-vector) per segment $\to$ spectral or agglomerative clustering assigning <strong>at most one</strong> speaker label per frame." Why does this pipeline consistently hit a performance ceiling in natural multi-party discussions (where overlapped speech routinely accounts for $15\%$–$30\%$ of active time)?</p>
+<p>Two lines of inequalities establish a strict lower bound: any hard single-label clusterer can activate at most one predicted track at frame $t$, enforcing the hard constraint $N_{\mathrm{hyp}}(t) \le 1$. Consequently, on every overlap frame where $m_t = N_{\mathrm{ref}}(t) \ge 2$ talkers speak simultaneously, the first line of Eq. (15-20) forces $E_{\mathrm{miss}}(t) \ge m_t - 1$ (since $N_{\mathrm{hyp}}(t) \le 1$)! Even if this system possessed an <strong>oracle VAD</strong> (zero false alarms on silence, $E_{\mathrm{FA}}(t) = 0$) and achieved <strong>$100\%$ perfect speaker classification</strong> on every single-speaker frame ($E_{\mathrm{conf}}(t) = 0$), its theoretical minimum $\mathrm{DER}$ across the recording remains locked above the strictly positive bound:</p>
+<p>$$\mathrm{DER}_{\mathrm{single}}
+\ge\mathrm{DER}_{\min}^{\mathrm{single}}
+=\frac{\sum_{t=0}^{T-1}\max\!\bigl(0,\;N_{\mathrm{ref}}(t)-1\bigr)}
+{\sum_{t=0}^{T-1}N_{\mathrm{ref}}(t)}.\tag{15-22}$$</p>
+<p>Equation (15-22) delivers a sobering architectural lesson: as long as the modeling assumption of "at most one label per frame" is retained, scaling up the segment-level voiceprint encoder or tuning the clustering affinity matrix cannot shave even a fraction of a percent off the overlap miss floor $\max(0, m_t - 1)$. Overcoming overlapped conversation requires upgrading diarization from "mutually exclusive single-label partitioning" to a multi-label detection architecture in which every candidate talker possesses an independent binary switch—precisely the core motivation behind End-to-End Neural Diarization (EEND, <a href="https://arxiv.org/abs/1909.06247">Fujita et al., Interspeech 2019</a>) and Target-Speaker Voice Activity Detection (TS-VAD, <a href="https://arxiv.org/abs/2005.07272">Medennikov et al., Interspeech 2020</a>).</p>
+<p>Going one step further, even after upgrading the output layer to independent binary switches, if the number of output tracks remains fixed at a constant $K_{\mathrm{fixed}} = 2$ (fixed two-slot PIT), whenever a third speaker joins the meeting, at least one ground-truth speaker's entire set of active frames cannot be assigned an independent track under optimal bipartite matching, creating another hard miss floor proportional to the unallocated talkers' speaking duration. The End-to-End Encoder–Decoder Attractor network (EEND-EDA, Horiguchi et al., <em>IEEE/ACM TASLP</em> 2022) eliminates this fixed-slot truncation bound when speaker count is unknown by sequentially decoding candidate speaker attractors and halting expansion automatically via an existence-probability threshold (attractor stopping rules and two-slot bound calculations are verified in <a href="#e15-17">E15-17</a>).</p>
+<span id="sec-18" class="anchor-alias" aria-hidden="true"></span><span id="sec-17-5" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-15-5">15.5 Multi-Channel Target-Speaker Voice Activity Detection (TS-VAD) and the GSS Closed Loop</h2>
+<span id="sec-19" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-021bf8ae7d" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-f5d58419bb">Log-Odds Bayesian Fusion of Spatial Phase Difference and Voiceprint Similarity</h3>
+<p>In multi-microphone meeting rooms (such as the CHiME-6 / CHiME-7 kitchen and living-room multi-party conversation scenarios), relying solely on single-channel voiceprints for TS-VAD still falters on strongly overlapped two-speaker frames: once two voices superimpose, the frame-level embedding vector extracted from the mixed spectrum lands midway between the two talkers' voiceprint centroids, causing both cosine similarities to sag to around $0.45$. At this juncture, the microphone array's <strong>spatial Inter-channel Phase Difference (IPD)</strong> supplies an orthogonal second dimension of evidence complementing vocal timbre—even when two people speak within the exact same time frame, they expose distinct direction-of-arrival phases across different frequency bins of the time–frequency plane!</p>
+<p>Let us formulate a transparent, reproducible Log-Odds Bayesian fusion model demonstrating how multi-channel TS-VAD independently emits a binary activity posterior probability $\gamma_{k,t} = P(z_{k,t} = 1 \mid \mathcal O_t) \in (0, 1)$ for each candidate speaker $k$ at time block $t$ (<strong>crucial note</strong>: the posteriors $\gamma_{k,t}$ across speakers $k$ parameterize independent Bernoulli distributions and are <strong>never constrained to sum to unity</strong> $\sum_{k=1}^K \gamma_{k,t} = 1$; a two-speaker overlap frame can therefore legitimately output $\gamma_{1,t} = 0.90$ and $\gamma_{2,t} = 0.88$ simultaneously!).</p>
+<p>Let $\pi_k \in (0, 1)$ be speaker $k$'s prior speaking probability, $c_{k,t}^{\mathrm{sp}} = \cos(\Delta\psi_t - \Delta\phi_k) \in [-1, 1]$ be the spatial phase-alignment cosine metric observed at frame $t$ (where $\Delta\psi_t$ is the measured inter-microphone phase difference at frame $t$ and $\Delta\phi_k$ is speaker $k$'s prior directional phase difference), and $c_{k,t}^{\mathrm{emb}} \in [-1, 1]$ be the frame-level speaker-embedding cosine similarity. Under conditionally independent exponential-family likelihoods, the spatial log-likelihood ratio and voiceprint log-likelihood ratio add directly in the log-odds domain ($\kappa_{\mathrm{sp}}, \kappa_{\mathrm{emb}} \ge 0$ denote discriminative sharpnesses and $\tau_{\mathrm{sp}}, \tau_{\mathrm{emb}}$ denote equal-likelihood neutral thresholds):</p>
+<p>$$\begin{aligned}
+\eta_{k,t}&=\ln\!\left(\frac{\pi_k}{1-\pi_k}\right)
++\kappa_{\mathrm{sp}}\bigl(
+c_{k,t}^{\mathrm{sp}}-\tau_{\mathrm{sp}}\bigr)\\
+&\quad+\kappa_{\mathrm{emb}}\bigl(
+c_{k,t}^{\mathrm{emb}}-\tau_{\mathrm{emb}}\bigr),
+\end{aligned}\tag{15-23}$$</p>
+<p>$$\gamma_{k,t}=\sigma(\eta_{k,t})
+=\frac{1}{1+\exp(-\eta_{k,t})}.\tag{15-24}$$</p>
+<p>In numerical implementation (see <code>tsvad_spatial_spectral_posterior</code>), rewriting the $\eta_{k,t} \lt  0$ branch in the algebraically equivalent form $\frac{\exp(\eta_{k,t})}{1 + \exp(\eta_{k,t})}$ strictly prevents double-precision floating-point overflow of $\exp(-\eta_{k,t})$ at large negative log-odds.</p>
+<span id="sec-20" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-270f5eb9e1" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-0c9a7f841f">From TS-VAD Soft Posteriors to Guided Source Separation (GSS) and MVDR Covariance Gating</h3>
+<p>Once frame-level multi-speaker activity posteriors $\gamma_{k,t}$ are in hand, how do they drive the microphone array to separate the overlapping voices? <strong>Guided Source Separation (GSS)</strong>, proposed by Boeddeker et al. during the CHiME-5 challenge (<a href="https://www.isca-archive.org/chime_2018/boeddecker18_chime.pdf">CHiME-5 Workshop 2018 paper</a>; its spherical mixture model is covered in <a href="08_speech-separation.html#sec-8-4">Chapter 8 §8.4</a>), bridges the statistical interface from "speaker diarization" to "spatial beamforming."</p>
+<p>A critical engineering detail that must be made crystal clear here is <strong>Target-Exclusive Gating of the target spatial covariance matrix</strong>. Suppose we wish to extract talker $k$ using a reference-channel MVDR beamformer, which requires estimating from the multi-channel narrowband observation sequence $\vec x_t \in \mathbb{C}^M$ ($t = 0, \ldots, T-1$) both the target speech spatial covariance matrix $\hat{\mathbf R}_{ss}^{(k)}$ and the interference-plus-noise spatial covariance matrix $\hat{\mathbf R}_{vv}^{(k)}$. If we naively use the raw posterior $\gamma_{k,t}$ directly as the frame weight when accumulating $\hat{\mathbf R}_{ss}^{(k)}$, then on simultaneous two-speaker overlap frames ($\gamma_{1,t} \approx 0.9, \gamma_{2,t} \approx 0.9$), strong energy from the interfering speaker will bleed into $\hat{\mathbf R}_{ss}^{(k)}$ with high weight, severely skewing the mainlobe or inducing target self-cancellation.</p>
+<p>The principled remedy leverages the posteriors of all present talkers, defining the product probability that "target speaker $k$ speaks exclusively while every other talker is silent" as the target-covariance accumulation weight $m_{k,t}^{\mathrm{tar}}$, and the probability that "target speaker $k$ is silent" as the interference-plus-noise accumulation weight $m_{k,t}^{\mathrm{int}}$:</p>
+<p>$$\begin{aligned}
+m_{k,t}^{\mathrm{tar}}&=\gamma_{k,t}
+\prod_{j\ne k}\bigl(1-\gamma_{j,t}\bigr),\\
+m_{k,t}^{\mathrm{int}}&=1-\gamma_{k,t},
+\end{aligned}\tag{15-25}$$</p>
+<p>$$\begin{aligned}
+\hat{\mathbf R}_{ss}^{(k)}
+&=\frac{\sum_{t=0}^{T-1}m_{k,t}^{\mathrm{tar}}\,\vec x_t\vec x_t^H}
+{\sum_{t=0}^{T-1}m_{k,t}^{\mathrm{tar}}},\\
+\hat{\mathbf R}_{vv,0}^{(k)}
+&=\frac{\sum_{t=0}^{T-1}m_{k,t}^{\mathrm{int}}\,\vec x_t\vec x_t^H}
+{\sum_{t=0}^{T-1}m_{k,t}^{\mathrm{int}}},\\
+\hat{\mathbf R}_{vv}^{(k)}
+&=\hat{\mathbf R}_{vv,0}^{(k)}
++\frac{\delta\,\operatorname{tr}(\hat{\mathbf R}_{vv,0}^{(k)})}{M}
+\mathbf I_M.
+\end{aligned}\tag{15-26}$$</p>
+<p>Here $\hat{\mathbf R}_{vv,0}^{(k)}$ denotes the raw interference covariance prior to diagonal loading (note that subscript $vv$ collectively denotes the sum of all overlapping interfering talkers other than target $k$ plus ambient background noise, corresponding to the interference-plus-noise covariance notation $\hat{\mathbf R}_{nn}^{(k)}$ in <a href="05_beamforming.html#sec-5-9">Chapter 5 §5.9</a> and <a href="08_speech-separation.html#sec-8-4">Chapter 8 §8.4</a>), and $\delta \ge 0$ is the relative trace-loading factor. Provided the current conversational context window contains several single-speaker solo frames (so that $\sum_t m_{k,t}^{\mathrm{tar}} > 0$ and $\sum_t m_{k,t}^{\mathrm{int}} > 0$), Eq. (15-26) estimates uncorrupted target and interference spatial statistics from those solo regions and then solves for the Souden reference-channel distortionless MVDR weights derived in <a href="05_beamforming.html#e05-20">Chapter 5 E05-20</a> (selecting microphone $r$ via unit coordinate column vector $\vec e_r$):</p>
+<p>$$\begin{aligned}
+\vec w_k&=\frac{\bigl(\hat{\mathbf R}_{vv}^{(k)}\bigr)^{-1}
+\hat{\mathbf R}_{ss}^{(k)}\vec e_r}
+{\operatorname{tr}\bigl[\bigl(\hat{\mathbf R}_{vv}^{(k)}\bigr)^{-1}
+\hat{\mathbf R}_{ss}^{(k)}\bigr]},\\
+\hat s_{k,r}[t]&=\vec w_k^H\vec x_t,
+\end{aligned}\tag{15-27}$$</p>
+<p>applying this fixed spatial weight vector $\vec w_k$ <strong>back across all time frames—including the double-talk overlap intervals</strong>—to steer spatial nulls onto the interfering talkers right through the overlap!</p>
+<span id="sec-21" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-19d7aff4d7" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-dfc94cae66" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-3c4db66544">Worked Example 15-3: Six-Frame Overlapping Meeting—DER Lower Bound, Over-100% Counterexample, and Spatial–Spectral TS-VAD Recovery</h3>
+<p>Consider a six-frame ($T = 6$) two-speaker meeting excerpt with frame step $\Delta T = 0.5\ \mathrm{s}$ (total physical recording duration $3.0\ \mathrm{s}$; corresponding to <code>compute_der_components</code>, <code>single_label_overlap_der_bound</code>, and <code>tsvad_spatial_spectral_posterior</code>):</p>
+<ul>
+<li><strong>Ground-truth activity schedule</strong>: Frames $0, 1$ ($0.0$–$1.0\ \mathrm{s}$) have Speaker 1 solo; Frames $2, 3$ ($1.0$–$2.0\ \mathrm{s}$) have Speaker 1 and Speaker 2 overlapping simultaneously; Frame $4$ ($2.0$–$2.5\ \mathrm{s}$) has Speaker 2 solo; Frame $5$ ($2.5$–$3.0\ \mathrm{s}$) is complete silence. Written as a $2 \times 6$ binary reference matrix $\mathbf R$, Row 1 is $[1, 1, 1, 1, 0, 0]$ and Row 2 is $[0, 0, 1, 1, 1, 0]$.</li>
+</ul>
+<ol>
+<li><strong>Reference speaker duration denominator</strong>: Speaker 1 is active for $4 \times 0.5 = 2.0\ \mathrm{s}$ and Speaker 2 for $3 \times 0.5 = 1.5\ \mathrm{s}$, so the Eq. (15-19) reference denominator is $T_{\mathrm{ref}} = 2.0 + 1.5 = 3.5\ \mathrm{s}$ (exceeding the $3.0\ \mathrm{s}$ physical recording duration by $0.5\ \mathrm{s}$ due to $1.0\ \mathrm{s}$ of two-speaker overlap).</li>
+<li><strong>Hard single-label clustering lower-bound check</strong>: Overlap occurs at frames $t = 2, 3$ ($N_{\mathrm{ref}}(t) = 2$ each). By Eq. (15-22), any hard single-label system misses at least $(2 - 1) + (2 - 1) = 2$ speaker-frames ($1.0\ \mathrm{s}$), locking its theoretical minimum error rate at $\mathrm{DER}_{\min}^{\mathrm{single}} = 1.0 / 3.5 = 2/7 \approx 28.57\%$. If the clusterer additionally misassigns Speaker 2 into Cluster 1 at Frame $4$ and triggers one false alarm on silence at Frame $5$ (hypothesis matrix $\mathbf H$ with Row 1 $[1, 1, 1, 0, 1, 0]$ and Row 2 $[0, 0, 0, 1, 0, 1]$), under optimal permutation $\pi^\star = (0, 1)$ missed speech remains $1.0\ \mathrm{s}$, joined by $0.5\ \mathrm{s}$ of false alarm at Frame $5$ and $0.5\ \mathrm{s}$ of speaker confusion at Frame $4$, raising total DER to $\mathrm{DER} = 2.0 / 3.5 = 4/7 \approx 57.14\%$.</li>
+<li><strong>Constructive verification of a legitimate $\mathrm{DER} > 100\%$</strong>: Suppose high background noise causes the front-end to split out three over-triggered hypothesis tracks $\mathbf H_{\mathrm{over}}$ with rows $[0, 0, 0, 0, 1, 1]$, $[0, 0, 1, 0, 1, 1]$, and $[1, 1, 0, 0, 1, 1]$. Zero-padding $\mathbf R$ to $3 \times 6$ yields optimal matching of Ref 1 to Track 3 (hitting Frames $0, 1$) and Ref 2 to Track 2 (hitting Frames $2, 4$), for $4$ total matched speaker-frames. Frame-by-frame accounting gives $3$ missed frames across Frames $2, 3$ ($1.5\ \mathrm{s}$), $2$ false-alarm frames from the two extra tracks at Frame $4$ plus $3$ false-alarm frames from all three tracks on silence at Frame $5$ ($5$ FA frames $= 2.5\ \mathrm{s}$ total), and $0\ \mathrm{s}$ confusion. Total error duration reaches $1.5 + 2.5 = 4.0\ \mathrm{s} > 3.5\ \mathrm{s}$, producing a genuine $\mathrm{DER} = 4.0 / 3.5 = 8/7 \approx 114.29\%$ (strictly exceeding $100\%$)!</li>
+<li><strong>Spatial–spectral TS-VAD recovery on overlap frames</strong>: Take prior $\pi_k = 0.5$ (prior log-odds $\ln 1 = 0$), spatial parameters $\kappa_{\mathrm{sp}} = 3.0, \tau_{\mathrm{sp}} = 0.25$, and voiceprint parameters $\kappa_{\mathrm{emb}} = 4.0, \tau_{\mathrm{emb}} = 0.45$. At double-talk Frame $2$, Speaker 1's voiceprint similarity drops to $c_{1,2}^{\mathrm{emb}} = 0.48$ due to spectral superposition: using voiceprint alone ($\kappa_{\mathrm{sp}} = 0$), log-odds is only $4.0 \times (0.48 - 0.45) = 0.12$, leaving posterior $\sigma(0.12) \approx 0.530$ hovering precariously near the decision boundary; fusing spatial phase alignment $c_{1,2}^{\mathrm{sp}} = 0.82$ boosts log-odds to $3.0 \times (0.82 - 0.25) + 0.12 = 1.83$ and drives the posterior up to $\gamma_{1,2} = \sigma(1.83) \approx 0.862$ (similarly for Speaker 2 at the same frame, $c_{2,2}^{\mathrm{emb}} = 0.46$ and $c_{2,2}^{\mathrm{sp}} = 0.78$ give $\eta_{2,2} = 1.63$ and $\gamma_{2,2} \approx 0.836$), reducing six-frame DER after $0.5$ thresholding to $0.00\%$. Simultaneously, Eq. (15-25) automatically suppresses that overlap frame's target-exclusive weight to $m_{1,2}^{\mathrm{tar}} \approx 0.141$ ($0.862 \times 0.164$) while preserving high-purity weight $m_{1,0}^{\mathrm{tar}} \approx 0.950$ ($0.979 \times 0.971$) on solo Frame $t = 0$, protecting the MVDR target covariance from overlap contamination.</li>
+</ol>
+<p><img alt="Figure 87: DER decomposition, spatial-spectral TS-VAD, and GSS masks in a multi-speaker overlapping meeting" src="../figures_en/fig87_diarization_tsvad_gss.png" onerror="this.alt+=' (figure missing)'" /></p>
+<p>Figure 87 traces the complete data chain for this six-frame overlapping meeting from diarization error diagnosis to beamformer gating:</p>
+<ul>
+<li><strong>Subplot (a) Ground-truth activity in the six-frame overlapping meeting</strong>: Horizontal axis shows meeting time ($0.0$–$3.0\ \mathrm{s}$, $0.5\ \mathrm{s}$ per frame); vertical axis shows binary speech activity ($0/1$). Blue and orange bars mark the active intervals of Speakers 1 and 2, with pale-red shading highlighting the $1.0$–$2.0\ \mathrm{s}$ double-talk region (where every single-label clusterer inevitably misses $1.0\ \mathrm{s}$).</li>
+<li><strong>Subplot (b) Three-component DER breakdown across four hypothesis outputs</strong>: Horizontal axis lists four diarization hypotheses; vertical axis shows error duration as a percentage ($\%$) of total reference speaker time ($3.5\ \mathrm{s}$). Stacked bars decompose Missed Speech (blue), False Alarm (red), and Speaker Confusion (orange), comparing the single-label theoretical bound ($28.6\%$), two-cluster hypothesis with confusion ($57.1\%$), legitimate $>100\%$ over-triggered case crossing the dashed black $100\%$ line ($114.3\%$), and spatial–spectral TS-VAD ($0.0\%$).</li>
+<li><strong>Subplot (c) TS-VAD posterior recovery on overlap frames</strong>: Horizontal axis shows frame index $t \in \{0, \ldots, 5\}$; vertical axis shows activity posterior $\gamma_{k,t}$ (dimensionless). Dashed red curves show voiceprint-only posteriors sagging toward the dashed gray $0.5$ threshold on Frames $2, 3$; incorporating two-mic IPD keeps both Speaker 1 (solid blue) and Speaker 2 (dash-dotted green) above $0.83$ right through the overlap.</li>
+<li><strong>Subplot (d) GSS covariance gating weights</strong>: Horizontal axis shows frame index $t \in \{0, \ldots, 5\}$; vertical axis shows covariance accumulation frame weight (dimensionless). Comparing dotted purple (non-exclusive raw $\gamma_{1,t}$) against solid blue (target-exclusive product mask $m_{1,t}^{\mathrm{tar}}$) shows overlap Frames $t = 2, 3$ strongly attenuated so clean solo Frames $t = 0, 1$ dominate target covariance estimation, while dashed red $m_{1,t}^{\mathrm{int}}$ cleanly spans Speaker 2's solo Frame $t = 4$ and silence Frame $t = 5$.</li>
+</ul>
+<span id="sec-22" class="anchor-alias" aria-hidden="true"></span><span id="sec-17-6" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-15-6">15.6 Far-Field Audio–Visual Multimodal Front-Ends: Heterogeneous Frame Rates, Pipeline Lag, and Lip Occlusion</h2>
+<span id="sec-23" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-b3e45357d1" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-22e977091d">Physical Timeline Mapping Between Audio STFT Frames and Video Exposure Frames</h3>
+<p>When smart displays, automotive cabin perception suites, or video conferencing terminals include a camera, visual Lip Motion furnishes an auxiliary clue for target speaker extraction that is completely immune to room reverberation and acoustic crosstalk (for representative architectures, see <a href="https://arxiv.org/abs/1804.03619">Ephrat et al., Looking to Listen, SIGGRAPH 2018</a> and <a href="https://arxiv.org/abs/1804.04121">Afouras et al., The Conversation, Interspeech 2018</a>). When deploying on physical hardware, however, engineers must first align <strong>heterogeneous sampling rates and asynchronous hardware pipeline latencies</strong>:</p>
+<ol>
+<li><strong>Non-integer frame-rate ratios</strong>: Far-field speech STFTs typically operate at $f_s = 16\ \mathrm{kHz}$ with hop size $H = 256$ samples (time step $H_{\mathrm{a}} = 16\ \mathrm{ms}$, or $62.5$ frames per second), whereas conferencing cameras commonly run at $f_{\mathrm{v}} = 25\ \mathrm{fps}$ (exposure period $T_{\mathrm{v}} = 40\ \mathrm{ms}$) or $30\ \mathrm{fps}$ ($T_{\mathrm{v}} \approx 33.33\ \mathrm{ms}$). Taking $16\ \mathrm{ms}$ and $40\ \mathrm{ms}$ as an example, the period ratio is $T_{\mathrm{v}} / H_{\mathrm{a}} = 40 / 16 = 2.5$—every $2$ video frames ($80\ \mathrm{ms}$) correspond to exactly $5$ audio STFT frames, producing a non-uniform rational cadence of alternating <code>[2 frames, 3 frames, 2 frames, 3 frames, ...]</code> reuse.</li>
+<li><strong>Image Signal Processor (ISP) and transport lag</strong>: Microphone acoustic samples traverse an I2S/TDM bus into the DSP within a few milliseconds, whereas CMOS image sensor full-frame exposure readout, ISP denoising and wide-dynamic-range tone mapping, USB/MIPI transport, and face detection/cropping routinely arrive at the host <strong>$\Delta t_{\mathrm{av}} = +60\ \mathrm{ms}$ to $+150\ \mathrm{ms}$</strong> later than sound emitted at the exact same physical instant.</li>
+</ol>
+<p>Let us write out both timeline relations explicitly (corresponding to <code>map_video_to_audio_frames</code>). Let the $\ell$-th audio STFT hop interval $[\ell H_{\mathrm{a}}, (\ell+1)H_{\mathrm{a}})$ have center physical timestamp $t_{\mathrm{a}}[\ell] = (\ell + 0.5)H_{\mathrm{a}}$; let the $m$-th video frame span physical exposure interval $[m T_{\mathrm{v}}, (m+1)T_{\mathrm{v}})$ with true lip-exposure midpoint $t_{\mathrm{v}}[m] = (m + 0.5)T_{\mathrm{v}}$. Due to camera pipeline lag $\Delta t_{\mathrm{av}} \ge 0$, its host arrival timestamp becomes $t_{\mathrm{v}}[m] + \Delta t_{\mathrm{av}}$. If a streaming pipeline matches host arrival timestamps directly against audio time $t_{\mathrm{a}}[\ell]$ without calibrated delay compensation, the physical lip instant it actually reads shifts backward to $t_{\mathrm{a}}[\ell] - \Delta t_{\mathrm{av}}$, mapping to video exposure frame index $m[\ell]$:</p>
+<p>$$\begin{gathered}
+t_{\mathrm{a}}[\ell]=\bigl(\ell+0.5\bigr)H_{\mathrm{a}},\\
+m[\ell]=\max\!\left(0,\;
+\left\lfloor\frac{t_{\mathrm{a}}[\ell]-\Delta t_{\mathrm{av}}}
+{T_{\mathrm{v}}}\right\rfloor\right).
+\end{gathered}\tag{15-28}$$</p>
+<span id="sec-24" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-91b77e41ec" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-a977b615a8">Word-Initial Plosive and Fricative Clipping Induced by Positive Camera Lag</h3>
+<p>Never underestimate the $-\Delta t_{\mathrm{av}}$ temporal misalignment in Eq. (15-28). During sustained vowels, the mouth stays open so a lag of a few frames is relatively benign; <strong>at word-initial plosives or unvoiced fricatives immediately following a pause</strong> (such as the $80$–$130\ \mathrm{ms}$ consonant onset of English <code>"stop"</code> or <code>"six"</code>, or Mandarin <code>"si"</code>, <code>"shi"</code>, <code>"kai"</code>), an uncompensated positive lag $\Delta t_{\mathrm{av}} > 0$ directly clips off word-initial consonants (colloquially known as "syllable swallowing").</p>
+<p>Trace the physical causal chain: suppose a speaker parts their lips after a pause at physical instant $t_{\mathrm{onset}} = \ell_0 H_{\mathrm{a}}$ to utter a word-initial consonant lasting $L_{\mathrm{cons}}$ audio frames (duration $T_{\mathrm{cons}} = L_{\mathrm{cons}} H_{\mathrm{a}}$), prior to which their lips were closed. Throughout $\ell \in [\ell_0, \ell_0 + L_{\mathrm{cons}})$, the audio channel already captures crisp high-frequency consonant energy; yet because the camera pipeline lags by $\Delta t_{\mathrm{av}}$, the visual frame reaching the fusion network at that moment still has its lip-exposure midpoint $(m[\ell] + 0.5)T_{\mathrm{v}}$ parked prior to $t_{\mathrm{onset}}$ in a <strong>closed-mouth silent state</strong>. Observing closed lips, an audio–visual masking network heavily reliant on visual mouth-opening gating emits a near-zero suppression mask and chops off the word-initial consonant. Denoting the fraction of word-initial consonant frames whose associated exposure midpoint precedes speech onset $t_{\mathrm{onset}}$ as the clipping ratio $R_{\mathrm{clip}}$:</p>
+<p>$$R_{\mathrm{clip}}=\frac{1}{L_{\mathrm{cons}}}
+\sum_{\ell=\ell_0}^{\ell_0+L_{\mathrm{cons}}-1}
+\mathbf{1}\!\Bigl\{\bigl(m[\ell]+0.5\bigr)T_{\mathrm{v}}
+\lt t_{\mathrm{onset}}\Bigr\}.\tag{15-29}$$</p>
+<p>Here $\mathbf{1}\{\cdot\}$ is the indicator function equal to $1$ when the condition holds and $0$ otherwise. Engineering practice eliminates this clipping via two main remedies: first, calibrating the exact $\Delta t_{\mathrm{av}}$ at the hardware driver layer using a synchronized flash-and-clap test signal and inserting an equal-length circular delay buffer on the audio path (at the cost of increasing end-to-end conversational latency by $\Delta t_{\mathrm{av}}$); second, in ultra-low-latency devices (such as hearing aids requiring $\lt  15\ \mathrm{ms}$) that cannot wait for slow camera frames, prohibiting the visual branch from hard-gating high-frequency subbands during utterance-onset transients and restricting visual features to slowly steering the spatial beamformer's tracking prior.</p>
+<span id="sec-25" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-68ea4aa72c" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-3e875cd03a">Visual Confidence Gating and Smooth Audio-Only Fallback Under Lip Occlusion</h3>
+<p>Another frequent degradation mode for audio–visual multimodal front-ends in real meeting rooms is <strong>visual degradation and occlusion</strong>: a talker lifts a coffee mug blocking the lower face, looks down at a laptop, turns around to write on a whiteboard, or suffers severe backlighting that causes lip landmarks to drop out. If a fusion network trained exclusively on clean studio video over-trusts its visual branch, the moment a cup hides lip motion the audio–visual mask $M_{\mathrm{av}}[k, \ell] \in [0, 1]$ at frequency bin $k$ and frame $\ell$ plunges toward $0$, cutting off ongoing speech.</p>
+<p>A resilient system architecture must emit in parallel at the tail of the facial-landmark detector or visual encoder a frame-level <strong>visual visibility confidence</strong> $\alpha_\ell \in [0, 1]$ ($\alpha_\ell \to 1$ for a sharp frontal face, dropping to intermediate values on steep profile turns, and rapidly approaching $0$ upon lip occlusion or frame drop), using convex-combination gating to interpolate smoothly between an audio-only extraction mask $M_{\mathrm{audio}}[k, \ell]$ (driven solely by voiceprint or spatial beamforming) and the joint audio–visual mask $M_{\mathrm{av}}[k, \ell]$ (see <code>av_confidence_gated_mask</code>):</p>
+<p>$$\begin{aligned}
+M_{\mathrm{fused}}[k,\ell]
+&=\bigl(1-\alpha_\ell\bigr)M_{\mathrm{audio}}[k,\ell]\\
+&\quad+\alpha_\ell\,M_{\mathrm{av}}[k,\ell].
+\end{aligned}\tag{15-30}$$</p>
+<p>Because $0 \le \alpha_\ell \le 1$ and both base masks lie in $[0, 1]$, the fused mask remains strictly within $[0, 1]$: when lips are clearly visible, the system reaps the full reverberation-immune gain of audio–visual fusion; the instant a hand or cup occludes the mouth ($\alpha_\ell \to 0$), the system falls back seamlessly to the audio-only voiceprint and spatial-beamformer mask without speech dropouts.</p>
+<span id="sec-26" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-87507db679" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-c419fd5563" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-6792ad18fb">Worked Example 15-4: Heterogeneous Frame Alignment, +120 ms Lag Onset Clipping, and Occlusion Gating Check</h3>
+<p>Fix audio sampling rate $f_s = 16\ \mathrm{kHz}$ with hop $H_{\mathrm{a}} = 16\ \mathrm{ms}$ ($256$ samples), and video frame rate $f_{\mathrm{v}} = 25\ \mathrm{fps}$ (period $T_{\mathrm{v}} = 40\ \mathrm{ms}$):</p>
+<ol>
+<li><strong>Alternating <code>[2, 3]</code> alignment under zero lag ($\Delta t_{\mathrm{av}} = 0\ \mathrm{ms}$)</strong>: The center timestamps of the first $5$ audio frames ($\ell = 0, 1, 2, 3, 4$) are $8, 24, 40, 56, 72\ \mathrm{ms}$. Dividing by $T_{\mathrm{v}} = 40\ \mathrm{ms}$ and taking the floor: $\ell = 0, 1$ fall in $[0, 40)\ \mathrm{ms}$ and map to video frame $m = 0$ ($2$ frames); $\ell = 2, 3, 4$ fall in $[40, 80)\ \mathrm{ms}$ and map to video frame $m = 1$ ($3$ frames); subsequently $\ell = 5, 6$ ($88, 104\ \mathrm{ms}$) map to $m = 2$ ($2$ frames) and $\ell = 7, 8, 9$ ($120, 136, 152\ \mathrm{ms}$) map to $m = 3$ ($3$ frames), strictly exhibiting the $2.5\times$ reuse pattern of alternating <code>[2, 3]</code> every $80\ \mathrm{ms}$ cycle.</li>
+<li><strong>Quantitative onset-consonant clipping under $+120\ \mathrm{ms}$ camera lag</strong>: Suppose the talker parts their lips at $\ell_0 = 10$ ($t_{\mathrm{onset}} = 10 \times 16 = 160\ \mathrm{ms}$) to utter a word-initial unvoiced fricative <code>/s/</code> lasting $L_{\mathrm{cons}} = 8$ frames ($128\ \mathrm{ms}$, spanning $\ell = 10, \ldots, 17$ with midpoints $168\ \mathrm{ms}$–$280\ \mathrm{ms}$). With uncompensated camera lag $\Delta t_{\mathrm{av}} = +120\ \mathrm{ms}$, checking $\ell = 10, \ldots, 16$ via Eq. (15-28) shows queried lip timestamps $t_{\mathrm{a}}[\ell] - 120\ \mathrm{ms}$ spanning $48\ \mathrm{ms}$–$144\ \mathrm{ms}$, mapping to video frame indices $m \in \{1, 1, 2, 2, 2, 3, 3\}$ whose true lip-exposure midpoints reach at most $3.5 \times 40 = 140\ \mathrm{ms}$ ($\lt  160\ \mathrm{ms}$—every single one is a pre-onset closed-mouth frame!). Only at the final frame $\ell = 17$ ($t_{\mathrm{a}}[17] = 280\ \mathrm{ms}$, queried timestamp $160\ \mathrm{ms}$) does the mapping advance to post-onset video frame $m = 4$ (exposure midpoint $180\ \mathrm{ms}$). Consequently, <strong>$7$ out of $8$ word-initial consonant frames ($112\ \mathrm{ms}$, or $7/8 = 87.5\%$)</strong> are erroneously clipped by lagging closed-mouth visual frames.</li>
+<li><strong>Three-stage occlusion confidence gating check</strong>: During active target speech (ideal mask $1.0$), suppose the audio-only branch steadily outputs $M_{\mathrm{audio}} = 0.82$. Evaluating clear frontal face ($\alpha = 0.90, M_{\mathrm{av}} = 0.96$), profile head turn ($\alpha = 0.40, M_{\mathrm{av}} = 0.65$), and full cup occlusion ($\alpha = 0.05, M_{\mathrm{av}} = 0.05$) via Eq. (15-30) yields fused masks of $0.10 \times 0.82 + 0.90 \times 0.96 = 0.946$, $0.60 \times 0.82 + 0.40 \times 0.65 = 0.752$, and $0.95 \times 0.82 + 0.05 \times 0.05 = 0.7815$. At the instant the cup blocks the mouth, the ungated audio–visual mask collapses from $0.96$ to $0.05$ (amplitude loss $0.95$), whereas confidence gating sustains $0.7815$ (error just $0.2185$).</li>
+</ol>
+<p><img alt="Figure 88: Heterogeneous frame rates, camera-lag clipping, and occlusion confidence fallback in far-field audio-visual front-ends" src="../figures_en/fig88_av_asynchrony_occlusion.png" onerror="this.alt+=' (figure missing)'" /></p>
+<p>Figure 88 places audio–visual synchronization, lag-induced onset clipping, and multi-speaker architectural lookahead windows on a unified comparative canvas:</p>
+<ul>
+<li><strong>Subplot (a) Mapping between $16\ \mathrm{ms}$ audio frames and $25\ \mathrm{fps}$ video exposures</strong>: Horizontal axis shows audio STFT frame index $\ell \in \{0, \ldots, 14\}$; vertical axis shows mapped video exposure frame index $m$. The solid blue staircase traces the zero-lag <code>[2, 3, 2, 3]</code> alternating step pattern; the dashed red staircase shows how a $+120\ \mathrm{ms}$ lag pins the first $10$ audio frames ($\ell = 0, \ldots, 9$, combining $7$ negative-time clamped frames plus $\ell = 7, 8, 9$ first-exposure frames) at $m = 0$ and trails by $3$ full video frames thereafter.</li>
+<li><strong>Subplot (b) Word-initial consonant loss caused by positive visual lag</strong>: Horizontal axis shows video-to-audio lag $\Delta t_{\mathrm{av}} \in [0, 160]\ \mathrm{ms}$; vertical axis shows the percentage ($\%$) of a $128\ \mathrm{ms}$ word-initial consonant clipped by closed-mouth frames. Once lag exceeds $8\ \mathrm{ms}$ (reaching $12.5\%$ at the $10\ \mathrm{ms}$ grid point), clipping climbs in steps to $87.5\%$ at the dashed blue $+120\ \mathrm{ms}$ marker, and reaches $100\%$ complete consonant loss strictly above $120\ \mathrm{ms}$ ($\ge 125\ \mathrm{ms}$ on the grid).</li>
+<li><strong>Subplot (c) Smooth confidence-gated fallback under lip occlusion</strong>: Horizontal axis shows block index $\ell \in \{0, \ldots, 11\}$; vertical axis shows mask gain or confidence (dimensionless). Orange shading ($\ell = 6$–$9$) simulates a hand-over-mouth occlusion event: the dashed red curve (ungated $M_{\mathrm{av}}$) plunges to $0.04$, whereas the solid blue curve (gated $M_{\mathrm{fused}}$) tracks the downward adjustment of dotted purple confidence $\alpha_\ell$ to fall back smoothly into the $0.74$–$0.78$ band (maintaining $\approx 0.781$ on full-occlusion frames $\ell = 7, 8$).</li>
+<li><strong>Subplot (d) Typical algorithmic lookahead windows across three far-field multi-speaker front-end families</strong>: Horizontal axis shows typical minimum context lookahead window (s); vertical axis contrasts streaming conditional TSE ($\sim 0.032\ \mathrm{s}$), chunked joint recognition SOT/DiCoW ($\sim 1.2\ \mathrm{s}$), and offline global diarization plus GSS cascaded pipelines ($\sim 4.5\ \mathrm{s}$ long-context window).</li>
+</ul>
+<span id="sec-27" class="anchor-alias" aria-hidden="true"></span><span id="sec-17-7" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-15-7">15.7 Multi-Party Meeting Transcription Architecture Selection: Cascaded Modular Pipelines vs. End-to-End Joint Modeling</h2>
+<span id="sec-28" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-ee44f8cb5d" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-809d8a859d">Cascaded Pipelines (Diarization → GSS → ASR) vs. Joint Architectures (SOT / DiCoW)</h3>
+<p>When an engineering team is tasked with building a far-field multi-party meeting transcription system capable of handling overlapping cross-talk, architecture reviews invariably center on choosing between two technical paradigms: on one side stands the battle-tested <strong>modular cascaded pipeline</strong> from the CHiME-6 / CHiME-7 / CHiME-8 far-field multi-channel benchmarks (multi-channel TS-VAD diarization $\to$ WPE dereverberation + GSS spatial-mask beamforming $\to$ single-speaker large ASR model); on the other side stand rapidly advancing <strong>end-to-end or conditioned foundation-model joint architectures</strong>, epitomized by Serialized Output Training (SOT, <a href="https://arxiv.org/abs/2003.12687">Kanda et al., Interspeech 2020</a>) and Diarization-Conditioned Whisper (DiCoW, <a href="https://arxiv.org/abs/2501.00114">Polok et al., CSL 2026 / arXiv preprint</a>).</p>
+<p>Let us examine the internal mechanisms of both joint paradigms first: SOT outputs no separated audio waveforms at all, instead inserting a special speaker-change token <code>&lt;sc&gt;</code> inside a single attention decoder's token stream to transcribe overlapping utterances one speaker after another in First-In, First-Out onset order; DiCoW retains the frame-level activity matrix emitted by an external multi-label diarization module, encoding it into four-state conditioning masks (silence / target solo / target overlap / non-target) injected directly into every pretrained Whisper encoder layer (Frame-Level Diarization-Dependent Transformations, FDDT), thereby bypassing waveform separation/reconstruction to decode text directly per target speaker. The table below contrasts all three paradigms across six core engineering dimensions:</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable data table"><table>
+<thead>
+<tr>
+<th scope="col">Evaluation Dimension</th>
+<th scope="col">Cascaded Pipeline (TS-VAD → GSS → ASR)</th>
+<th scope="col">Serialized Joint Recognition (SOT)</th>
+<th scope="col">Diarization-Conditioned Foundation Model (DiCoW)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Outputs listenable isolated audio?</strong></td>
+<td><strong>Yes</strong> (produces clean single-speaker beamformed waveforms per segment for human playback and audit)</td>
+<td><strong>No</strong> (outputs only a <code>&lt;sc&gt;</code>-delimited multi-speaker token stream)</td>
+<td><strong>No</strong> (decodes target-speaker text directly from conditioned encoder representations)</td>
+</tr>
+<tr>
+<td><strong>Physical multi-mic phase exploitation</strong></td>
+<td><strong>Extremely high</strong> (explicit complex spatial covariance inversion and linear distortionless MVDR nulling)</td>
+<td>Depends on front-end multi-channel encoder layers; lacks explicit linear nulling guarantees</td>
+<td>Relies on external diarization quality; encoder suppresses non-target speech in feature space</td>
+</tr>
+<tr>
+<td><strong>End-to-end system lookahead latency</strong></td>
+<td>High (global clustering and GSS statistics typically require several seconds of context buffering)</td>
+<td>Moderate (supports $1$–$2\ \mathrm{s}$ streaming chunked token buffering)</td>
+<td>Moderate to high (bounded by front-end diarization window and Whisper chunk length)</td>
+</tr>
+<tr>
+<td><strong>Per-module debugging and upgradeability</strong></td>
+<td><strong>Excellent</strong> (auditing GSS waveforms immediately isolates diarization misses from ASR word errors)</td>
+<td>Difficult (separation and language decoding are entangled inside a single black-box decoder)</td>
+<td>Moderate (diarization frame masks are inspectable and tunable; recognition reuses pretrained backbone)</td>
+</tr>
+<tr>
+<td><strong>Scalability to simultaneous overlap count</strong></td>
+<td>Scales linearly with diarization track count (each talker beamformed independently over their active window)</td>
+<td>Beyond $3$ heavily overlapping talkers, doubled <code>&lt;sc&gt;</code> sequence length suffers word deletions</td>
+<td>Executes one conditioned forward pass per detected active talker</td>
+</tr>
+<tr>
+<td><strong>Few-shot domain hotword adaptation</strong></td>
+<td>Swap back-end ASR language model or hotword list directly without retraining the front-end</td>
+<td>Requires synthesizing multi-speaker overlapped mixtures for fine-tuning to avoid forgetting <code>&lt;sc&gt;</code></td>
+<td>Freeze nearly all Whisper weights and fine-tune only lightweight conditioning injection layers</td>
+</tr>
+</tbody>
+</table></div>
+<p>The engineering decision rule is straightforward: whenever product requirements mandate <strong>archiving isolated, human-listenable recordings per participant</strong> (such as courtroom records, clinical consultation QA, or remote video-conferencing audio routing) or when geometrically calibrated 4–8-microphone tabletop/ceiling arrays are available, <strong><code>TS-VAD + WPE + GSS + single-speaker ASR</code></strong> remains the gold-standard baseline with the strongest physical interpretability and heavy-overlap robustness; conversely, on single-microphone or dual-mic mobile recordings where separated audio export is unnecessary and compact on-device deployment is prioritized, <code>SOT</code> or <code>DiCoW</code> circumvents nonlinear single-channel waveform separation artifacts (musical/neural artifacts) and eliminates acoustic mismatch between a front-end separator and back-end ASR.</p>
+<p>To evaluate end-to-end meeting transcription quality fairly across all three heterogeneous paradigms on a common ruler, far-field multi-speaker benchmarks (such as CHiME-6/7/8) standardize on <strong>Concatenated Minimum-Permutation Word Error Rate (<code>cpWER</code>)</strong>. For each ground-truth speaker $k$ and each system-predicted speaker track $j$ across an entire session, all utterances attributed to that speaker are concatenated chronologically into full word sequences $\mathcal{W}_k^{\mathrm{ref}}$ and $\mathcal{W}_j^{\mathrm{hyp}}$ (if predicted and reference speaker counts differ, the smaller set is padded with empty word sequences $\varnothing$ to match cardinality), and the global edit distance is minimized over all bijective permutations $\pi \in \mathcal{P}$ (solved exactly in polynomial time via the Hungarian algorithm of <a href="00_math-foundations.html#sec-0-6-4">Chapter 0 §0.6.4</a>):</p>
+<p>$$\mathrm{cpWER}
+=\min_{\pi\in\mathcal{P}}
+\frac{\sum_k \mathrm{EditDist}\bigl(\mathcal{W}_k^{\mathrm{ref}},
+\mathcal{W}_{\pi(k)}^{\mathrm{hyp}}\bigr)}
+{\sum_k |\mathcal{W}_k^{\mathrm{ref}}|}.$$</p>
+<p>Pay close attention to the <strong>double-penalty mechanism</strong> triggered by speaker-attribution swaps under <code>cpWER</code>: even if back-end ASR transcribes an $M_w$-word utterance verbatim without a single lexical mistake, if front-end diarization or continuous stream stitching (<a href="08_speech-separation.html#sec-8-6">Chapter 8 §8.6</a>) assigns that utterance to the wrong participant, it inflicts $M_w$ <strong>Deletions</strong> on the true speaker's reference track while simultaneously inflicting $M_w$ <strong>Insertions</strong> on the misattributed output track—a single speaker-attribution swap immediately incurs a $2M_w$ double word-error penalty! Streaming evaluations further enforce <strong>Time-Constrained Minimum-Permutation WER (<code>tcpWER</code>)</strong>, which permits pairing a reference word with a hypothesis word during edit-distance alignment only when their timestamps fall within a tolerance collar (e.g., $\pm 5\ \mathrm{s}$), preventing offline systems from masking timestamp drift across distant conversational turns (for selection specifications and official scoring-toolkit verification, see <a href="08_speech-separation.html#sec-8-5">Chapter 8 §8.5</a>, <a href="11_selection-guide.html#sec-11-5-2">Chapter 11 §11.5.2</a>, and <a href="17_appendix-guide.html#sec-17-7">Appendix B §17.7</a>).</p>
+<span id="sec-29" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-7fa80ffb90" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-8c82b54f72">Enrolled Voiceprint Drift, Twin Timbre Collisions, and Cold-Start Engineering Countermeasures</h3>
+<p>When deploying Target Speaker Extraction (TSE) in commercial products, never mistake high scores on clean studio enrollment sets for unconditional field reliability. Pure voiceprint clues exhibit four classic degradation boundaries in real-world operation, each requiring dedicated engineering safeguards:</p>
+<ol>
+<li><strong>Lombard effect and physiological voiceprint drift</strong>: A user who records a $5\ \mathrm{s}$ enrollment utterance softly in a quiet bedroom will instinctively raise vocal effort, elevate fundamental frequency, and tilt spectral formant slopes upon entering a $75\ \mathrm{dB(A)}$ subway station or highway cabin (the Lombard effect); nasal congestion from a cold or morning hoarseness similarly drops enrollment cosine similarity by $0.15$–$0.25$. Production systems should apply slow exponential moving-average template adaptation exclusively during high-confidence single-speaker wake segments (high SNR plus stable spatial DOA), strictly freezing updates during double-talk overlap lest bystander voiceprints contaminate the owner's template.</li>
+<li><strong>Same-gender close relatives or similar vocal timbres</strong>: When an interferer happens to be a same-gender family member with closely matched timbre, relying solely on a global d-vector easily pulls the interferer's sentences in during target pauses (target confusion switching). The extractor must bind a <strong>spatial directional anchor</strong> or <strong>wake-word transient location lock</strong>, locking onto the angular/range zone $(\hat\theta_0, \hat r_0)$ established during the wake phrase and enforcing joint spatial-plus-voiceprint gating.</li>
+<li><strong>Short backchannel cold-start</strong>: When the target utters brief monosyllabic acknowledgments under $300\ \mathrm{ms}$ (such as <code>"yes"</code>, <code>"right"</code>, <code>"hmm"</code>), short-time spectra carry insufficient discriminative timbre; the system must rely on prior tracking state (see track-hold mechanisms in <a href="09_source-tracking.html#sec-9-3">Chapter 9 §9.3</a>) to hold spatial beam steering rather than dropping short words on single-frame voiceprint confidence dips.</li>
+<li><strong>Enrollment crosstalk contamination and target-exclusive gated pooling</strong>: During hands-free enrollment, trailing pauses after the user finishes reading the prompt sentence frequently pick up high-SNR interjections from an adjacent colleague; if frames are pooled solely via an energy VAD threshold, the interferer's embedding blends linearly into the enrolled template and opens dual extraction passbands for both talkers simultaneously. Enrollment pooling should reuse the multi-speaker target-exclusive mask of Eq. (15-25) to reject bystander crosstalk frames prior to L2 normalization (closed-form cosine-drift analysis and gated recovery calculations are verified in <a href="#e15-18">E15-18</a>).</li>
+</ol>
+<span id="sec-30" class="anchor-alias" aria-hidden="true"></span><span id="sec-17-8" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-15-8">15.8 Synthetic Distance-Bubble Audio Experiments and Three-Tier Objective Scoring</h2>
+<span id="sec-31" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-38ee633dc9" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-0e3688397c">Six 16 kHz Mathematically Synthesized Waveforms and Orthogonal Second-Moment Window Design</h3>
+<p>To carry the near-field spherical-wave distance bubble of §15.3 from single-frequency complex algebra all the way to real time-domain waveforms that readers can audition by ear and verify sample by sample, this chapter constructs 6 deterministic mathematically synthesized PCM16 WAV files at $f_s = 16\ \mathrm{kHz}$, duration $2.0\ \mathrm{s}$ ($32000$ samples), and common export gain strictly fixed at $1.0$ inside <code>codes/chapters/ch15/tse_audio/</code> (generation core in <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch15/core/tse_audio.py"><code>codes/chapters/ch15/core/tse_audio.py</code></a>).</p>
+<p>A key time-domain implementation question arises immediately: the broadside distance-bubble weight vector $\vec w_{\mathrm{bubble}} \in \mathbb{C}^3$ derived in Eq. (15-15) is <strong>complex-valued</strong>. How can we convert it into a causal real-valued time-domain filter operating directly on real sample streams $x_m[n]$—without full-block FFT circular-convolution boundary artifacts—while simultaneously achieving zero phase distortion at the target frequency $f_{\mathrm{tar}} = 3200\ \mathrm{Hz}$ and maintaining an exact broadband null on co-directional plane waves across all frequencies?</p>
+<p>The answer is to construct a <strong>2-Tap Causal Real FIR filter</strong> per channel (see <code>broadside_two_tap_real_fir</code>; the code in this section and Eq. (15-32) adopt zero-based channel indices $m \in \{0, 1, 2\}$ corresponding to the left, center, and right elements $\{-1, 0, +1\}$ of the symmetric ULA in §15.3). For any digital angular frequency $\Omega_{\mathrm{tar}} = 2\pi f_{\mathrm{tar}} / f_s$ strictly inside $(0, \pi)$ (at $f_{\mathrm{tar}} = 3200\ \mathrm{Hz}$ and $f_s = 16000\ \mathrm{Hz}$, $\Omega_{\mathrm{tar}} = 2\pi / 5 = 72^\circ$ with $\sin\Omega_{\mathrm{tar}} > 0$), the two-tap real filter $h_m[0] + h_m[1]z^{-1}$ on channel $m$ has complex frequency response real part $h_m[0] + h_m[1]\cos\Omega_{\mathrm{tar}}$ and imaginary part $-h_m[1]\sin\Omega_{\mathrm{tar}}$ at $\Omega_{\mathrm{tar}}$. Equating this response exactly to the conjugate weight $w_m^* = \operatorname{Re} w_m - \mathrm{j}\operatorname{Im} w_m$ required by the inner-product beamformer $y = \vec w^H\vec x$ uniquely determines the two real tap coefficients:</p>
+<p>$$\begin{aligned}
+h_m[1]&=\frac{\operatorname{Im}(w_m)}
+{\sin\Omega_{\mathrm{tar}}},\\
+h_m[0]&=\operatorname{Re}(w_m)
+-h_m[1]\cos\Omega_{\mathrm{tar}},
+\end{aligned}\tag{15-31}$$</p>
+<p>$$y[n]=\sum_{m=0}^{M-1}\bigl(
+h_m[0]\,x_m[n]+h_m[1]\,x_m[n-1]\bigr).\tag{15-32}$$</p>
+<p>Equations (15-31)–(15-32) enjoy two crucial exact properties simultaneously: first, at the target frequency $f_{\mathrm{tar}} = 3200\ \mathrm{Hz}$, both magnitude and phase match the narrowband complex beamformer $\vec w^H\vec x$ <strong>identically</strong>, so the steady-state output waveform requires zero post-hoc gain fitting or delay alignment before subtracting the clean array-center target reference <code>tse_near_target_ref.wav</code> sample by sample to compute MSE; second, because the broadside bubble weights satisfy $\sum_{m=0}^2 w_m = 0$ (i.e., $w_{-1} + w_0 + w_{+1} = 0$ in §15.3), linearity of Eq. (15-31) guarantees both $\sum_{m=0}^2 h_m[0] = 0$ and $\sum_{m=0}^2 h_m[1] = 0$—meaning that <strong>for any far-field plane wave arriving from broadside at any frequency whatsoever (including our far-end interferer operating at a distinct frequency $f_{\mathrm{int}} = 2500\ \mathrm{Hz}$), both taps cancel identically across the entire spectrum</strong>.</p>
+<p>The acoustic parameters of the fixture are configured as follows: the near-field target sits at $(r_1 = 0.40\ \mathrm{m}, 0^\circ)$ at $3200\ \mathrm{Hz}$ with peak amplitude $0.16$ (steady-state mean-square power $P_{\mathrm{tar}} = 0.0128$); the co-directional far-end interferer sits at $(r_2 = 4.00\ \mathrm{m}, 0^\circ)$ using exact $4.00\ \mathrm{m}$ spherical-wave propagation (rather than an idealized plane wave at infinity) at $2500\ \mathrm{Hz}$ with the same peak amplitude $0.16$ ($0\ \mathrm{dB}$ input SIR); the three microphones additionally carry independent sinusoidal self-noise floors of peak amplitude $0.012$ (power $7.2 \times 10^{-5}$, $+22.5\ \mathrm{dB}$ input SNR) at distinct frequencies $1100 / 1300 / 1700\ \mathrm{Hz}$. Guarded by $800$-sample raised-cosine tapers at both ends, the central steady evaluation window is $\mathcal I = [1600, 30400)$ ($28800$ samples $= 1.8\ \mathrm{s}$): all five frequencies complete exact integer cycle counts ($5760, 4500, 1980, 2340, 3060$ cycles) over $1.8\ \mathrm{s}$, making their discrete time-domain inner products strictly orthogonal.</p>
+<span id="sec-32" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-7d99b8e90d" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-ed233d37be">Three-Tier Verification Across Analytical, Float64, and PCM16 Integer Layers</h3>
+<p>Consistent with the audio verification contract across this entire monograph, the generator separates scoring into an analytical expectation tier, a double-precision floating-point tier, and a 16-bit integer tier re-read from disk WAV files (decoded against full scale $32768$, using the integer sum of squares $P_{\mathrm{ref}}$ of the near-field target reference over the exact same steady window $\mathcal I$ as the common denominator). Run the commands below from the repository root to generate or read-only verify all assets:</p>
+<pre><code class="language-bash">.venv/bin/python -m codes.chapters.ch15.examples.generate_tse_audio
+.venv/bin/python -m codes.chapters.ch15.examples.generate_tse_audio --check
+</code></pre>
+<p>Channel layouts and steady-window objective metrics for the six synthetic audio files are summarized below (please lower playback volume before listening; full parameters and exact integer accumulators are recorded in <a href="../site/tse_audio/MANIFEST.json"><code>MANIFEST.json</code></a>):</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable data table"><table>
+<thead>
+<tr>
+<th scope="col">Audio Sample (Listen &amp; Download)</th>
+<th scope="col">Channels, Signal Composition, and Steady-Window Metrics</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="../site/tse_audio/tse_near_target_ref.wav">Near-field target reference</a><audio class="audio-sample" controls preload="none" aria-label="Near-field target reference" src="../site/tse_audio/tse_near_target_ref.wav">Use the WAV link above to download.</audio></td>
+<td>Mono; clean $3200\ \mathrm{Hz}$ target at $r_1 = 0.40\ \mathrm{m}$, steady mean-square power $0.0128$, unified evaluation reference</td>
+</tr>
+<tr>
+<td><a href="../site/tse_audio/tse_far_interferer_ref.wav">Co-directional far interferer reference</a><audio class="audio-sample" controls preload="none" aria-label="Co-directional far interferer reference" src="../site/tse_audio/tse_far_interferer_ref.wav">Use the WAV link above to download.</audio></td>
+<td>Mono; equal-amplitude $2500\ \mathrm{Hz}$ co-directional interferer at $r_2 = 4.00\ \mathrm{m}$, steady mean-square power $0.0128$</td>
+</tr>
+<tr>
+<td><a href="../site/tse_audio/tse_array_3ch.wav">3-mic near-field mixture observation</a><audio class="audio-sample" controls preload="none" aria-label="3-mic near-field mixture observation" src="../site/tse_audio/tse_array_3ch.wav">Use the WAV link above to download.</audio></td>
+<td>3-channel; raw pickup on the $d = 10\ \mathrm{cm}$ ULA (including self-noise), per-channel steady mean-square power $0.025672$</td>
+</tr>
+<tr>
+<td><a href="../site/tse_audio/tse_farfield_dsb.wav">Conventional far-field delay-and-sum</a><audio class="audio-sample" controls preload="none" aria-label="Conventional far-field delay-and-sum" src="../site/tse_audio/tse_farfield_dsb.wav">Use the WAV link above to download.</audio></td>
+<td>Mono; equal weights $[1/3, 1/3, 1/3]$, analytical/float64 NMSE $1.2227$, PCM16 integer NMSE $1.2226$ ($+0.87\ \mathrm{dB}$); co-directional interferer passes through virtually unattenuated</td>
+</tr>
+<tr>
+<td><a href="../site/tse_audio/tse_bubble_d10cm.wav">10 cm aperture distance bubble</a><audio class="audio-sample" controls preload="none" aria-label="10 cm aperture distance bubble" src="../site/tse_audio/tse_bubble_d10cm.wav">Use the WAV link above to download.</audio></td>
+<td>Mono; unregularized 2-tap real FIR output, analytical/float64 and PCM16 integer NMSE all drop to <strong>$0.0246$ ($-16.10\ \mathrm{dB}$)</strong>, suppressing the co-directional $4\ \mathrm{m}$ interferer by $21.72\ \mathrm{dB}$</td>
+</tr>
+<tr>
+<td><a href="../site/tse_audio/tse_bubble_d2cm_illcond.wav">2 cm small-aperture regularized bubble</a><audio class="audio-sample" controls preload="none" aria-label="2 cm small-aperture regularized bubble" src="../site/tse_audio/tse_bubble_d2cm_illcond.wav">Use the WAV link above to download.</audio></td>
+<td>Mono; $d = 2\ \mathrm{cm}$ with damping $\delta = 2\times 10^{-4}$, analytical/float64 NMSE $2.2762$, PCM16 integer NMSE <strong>$2.2760$ ($+3.57\ \mathrm{dB}$)</strong>; target attenuated while sensor self-noise is severely amplified</td>
+</tr>
+</tbody>
+</table></div>
+<p>We recommend a three-step comparative listening sequence: first, play <code>tse_near_target_ref.wav</code> (the higher $3200\ \mathrm{Hz}$ pure tone) followed by <code>tse_far_interferer_ref.wav</code> (the lower $2500\ \mathrm{Hz}$ pure tone) to lock onto their distinct pitches (note that playing the 3-channel file <code>tse_array_3ch.wav</code> directly in a web browser may automatically downmix channels; inspect individual channels in an audio editor or Python); second, toggle between <code>tse_farfield_dsb.wav</code> and <code>tse_bubble_d10cm.wav</code> to hear how conventional far-field DSB leaves both high and low tones interwoven at equal loudness whereas the $10\ \mathrm{cm}$ distance bubble wipes out the $2500\ \mathrm{Hz}$ lower tone, leaving only the clean $3200\ \mathrm{Hz}$ target; third, play <code>tse_bubble_d2cm_illcond.wav</code> to hear firsthand the physical price of shrinking the aperture below the Fresnel boundary—the $1100 / 1300 / 1700\ \mathrm{Hz}$ three-tone sensor self-noise chord overwhelms the attenuated target.</p>
+<span id="sec-33" class="anchor-alias" aria-hidden="true"></span><span id="sec-17-9" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-15-9">15.9 Engineering Troubleshooting Checklist and Selection Decision Tree</h2>
+<span id="sec-34" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-5acf2d16a5" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-862fb6941f">Common Field Failure Symptoms, Physical Root Causes, and Diagnostic Steps</h3>
+<p>When transitioning conditional extraction, multi-speaker diarization, and audio–visual front-ends into shipping hardware, use the six-row diagnostic table below to pinpoint root causes rapidly whenever metrics or perceptual quality degrade:</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable data table"><table>
+<thead>
+<tr>
+<th scope="col">Field Failure Symptom</th>
+<th scope="col">High-Probability Physical or Algorithmic Root Cause</th>
+<th scope="col">Quantitative Check and Engineering Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Bystander speech fragments or breathing frequently pop through while the target is silent</td>
+<td>Training corpus contains only target-always-active clips, or scale-invariant SI-SDR alone imposes zero amplitude penalty on silent chunks</td>
+<td>Audit target-silent slice ratio in training data (aim for $15\%$–$25\%$); enable the Eq. (15-6) dual-state floor loss and verify $\tau_{\mathrm{floor}}$</td>
+</tr>
+<tr>
+<td>During solo speech in a quiet room, <code>/s/</code>, <code>/sh/</code>, <code>/f/</code> unvoiced fricatives sound muffled or hollow</td>
+<td>Two-slot separation network suffers single-speaker over-splitting, routing aperiodic high-frequency fricatives into the secondary slot</td>
+<td>Inspect dual-slot energy-ratio histogram; deploy the Eq. (15-8) zero-overlap bypass threshold (e.g., $-18\ \mathrm{dB}$) to merge weak secondary slots back</td>
+</tr>
+<tr>
+<td>Enabling near-field distance bubble quiets distant talkers but triggers loud background hiss</td>
+<td>Array aperture too small at operating frequency ($r_1 \gg 2D^2/\lambda$); second-order spatial differencing causes $\mathrm{WNG}$ to collapse as $d^4$</td>
+<td>Plot full-band $\mathrm{WNG}(f)$ via Eq. (15-17); apply frequency-dependent regularization $\delta(f)$ or revert to first-order beamforming in low bands where $r_F(f) \lt  r_1$</td>
+</tr>
+<tr>
+<td>Meeting VAD is accurate, yet $\mathrm{DER}$ plateaus stubbornly around $25\%$ during group discussion</td>
+<td>Diarization back-end still uses single-label-per-frame spectral clustering, trapped above the Eq. (15-22) theoretical overlap miss bound</td>
+<td>Measure ground-truth overlap duration divided by $T_{\mathrm{ref}}$; upgrade to EEND or multi-channel spatial–spectral TS-VAD multi-label outputs</td>
+</tr>
+<tr>
+<td>Audio–visual front-end rejects noise well, except the first consonant after every pause gets swallowed</td>
+<td>Camera ISP and USB transport introduce $+80$ to $+150\ \mathrm{ms}$ positive lag, feeding stale closed-mouth frames at speech onset</td>
+<td>Record a flash-and-clap sync test clip to measure $\Delta t_{\mathrm{av}}$; insert a matched FIFO delay buffer on the audio path prior to multimodal fusion</td>
+</tr>
+<tr>
+<td>Clear full sentences from one specific adjacent colleague leak through during target pauses</td>
+<td>Colleague's interjection bled into the tail of enrollment audio; energy-only VAD pooling created a dual-passband enrollment vector</td>
+<td>Inspect per-frame speaker posteriors across the enrollment buffer; apply <a href="#e15-18">E15-18</a> target-exclusive probability gating to reject crosstalk frames or prompt re-enrollment</td>
+</tr>
+</tbody>
+</table></div>
+<span id="sec-35" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-892777d628" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-d335ee9067">Far-Field Target Extraction and Multi-Speaker Front-End Selection Checklist</h3>
+<p>Before locking down a system software/hardware stack at project kickoff, work sequentially through four engineering selection questions:</p>
+<ol>
+<li><strong>Is the interaction goal "lock onto one person" or "transcribe everyone"?</strong> Personal speakerphone calls, directional hearing assistance, and post-wake-word command recognition should deploy lightweight conditional Target Speaker Extraction (TSE) directly, avoiding global diarization clustering latency; meeting minutes, courtroom logging, and multi-party interviews require multi-label diarization.</li>
+<li><strong>Does the available physical aperture $D$ cover the target range $r_1$?</strong> Substitute $D$ into Eq. (15-12) at $1\ \mathrm{kHz}$ and $3\ \mathrm{kHz}$ to check $r_F = 2D^2/\lambda$: linear spherical-wave distance bubbles serve as a primary workhorse only when hardware provides a desktop bar array, wide laptop bezel array, or cross-head binaural synchronized span ($D \ge 16\ \mathrm{cm}$) with the user inside $0.8\ \mathrm{m}$; single-earbud micro-apertures should rely on bone-conduction vibration sensors or voiceprint-conditioned neural networks to separate the wearer from bystanders.</li>
+<li><strong>Are cross-modal clocking and occlusion fallbacks guaranteed?</strong> Before adding visual lip motion, confirm whether the product latency budget tolerates waiting for the camera pipeline, and mandate the Eq. (15-30) visual-visibility confidence fallback path so darkness, backlighting, or hand occlusion never drops performance below the audio-only array baseline.</li>
+<li><strong>Does the downstream consumer expect "listenable waveforms" or "text only"?</strong> Whenever human audio review is required or a frozen commercial black-box ASR API sits downstream, favor the linear spatial beamforming pipeline <code>TS-VAD + GSS</code> for zero nonlinear artifacts; when compute is tight and only final text transcripts are needed, evaluate chunked <code>SOT</code> or <code>DiCoW</code> conditioned transcription.</li>
+</ol>
+<span id="sec-36" class="anchor-alias" aria-hidden="true"></span><span id="sec-17-10" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-15-10">15.10 Chapter Exercises (E15-01–E15-18)</h2>
+<p>The 18 exercises below span conditional feature modulation, dual-state losses, near-field distance bubbles, overlapped diarization bounds, spatial–spectral TS-VAD/GSS, audio–visual synchronization and fallback, variable-speaker attractors, and crosstalk-resilient enrollment. Run all exercises or verify an individual problem (e.g., <code>--exercise E15-01</code>) via:</p>
+<pre><code class="language-bash">.venv/bin/python -m codes.chapters.ch15.chapter15_exercises
+.venv/bin/python -m codes.chapters.ch15.chapter15_exercises --exercise E15-01
+</code></pre>
+<p><span id="e17-01" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e15-01"></a></p>
+<span id="sec-37" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-dcccc65379" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-7260e8bb52" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-0127782875">E15-01: FiLM Conditional Feature Affine Modulation and Identity Degeneration Check</h3>
+<p><strong>Problem</strong>: Given a two-channel, three-frame feature matrix $\mathbf H$ with Row 1 equal to $[1.0, -0.5, 2.0]$ and Row 2 equal to $[0.5, 1.5, -1.0]$: (1) find the modulated output $\mathbf Z$ under voiceprint parameters $\vec\gamma = [2.0, 0.5]^\top$ and $\vec\beta = [-0.5, 0.25]^\top$; (2) write down the parameter values producing $\mathbf Z = \mathbf H$ (identity pass-through) and $\mathbf Z = \mathbf 0$ (complete shut-off), and explain why conditioning layers are commonly initialized at $\vec\gamma = \vec 1$, $\vec\beta = \vec 0$ at the start of training.</p>
+<p><strong>Solution</strong>: (1) Applying channel-wise affine modulation via Eq. (15-2): Row 1 computes $2.0 \times [1.0, -0.5, 2.0] - 0.5 = [1.5, -1.5, 3.5]$, and Row 2 computes $0.5 \times [0.5, 1.5, -1.0] + 0.25 = [0.5, 1.0, -0.25]$, forming the $2 \times 3$ matrix $\mathbf Z$.</p>
+<p>(2) Setting $\vec\gamma = [1, 1]^\top$ and $\vec\beta = [0, 0]^\top$ reproduces $\mathbf Z = \mathbf H$ identically, whereas $\vec\gamma = [0, 0]^\top$ and $\vec\beta = [0, 0]^\top$ shuts off $\mathbf Z = \mathbf 0$ completely. Initializing the conditioning layer at $(\vec 1, \vec 0)$ preserves gradient flow through a pretrained acoustic backbone untouched at training step 0, allowing clue-driven supervision to gradually differentiate per-channel scaling thereafter.</p>
+<p><span id="e17-02" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e15-02"></a></p>
+<span id="sec-38" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-9096f27904" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-477f784bc2" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-a8f15f623c">E15-02: Standard SI-SDR Singularity on Target-Silent Segments and Dual-State Floor Loss Calculation</h3>
+<p><strong>Problem</strong>: Let orthogonal 4D vectors be $\vec s_{\mathrm{ref}} = [1, 1, -1, -1]^\top$ and interferer $\vec v = [1, -1, 1, -1]^\top$. (1) When the target is active with mixture $\vec x = \vec s_{\mathrm{ref}} + \vec v$ and extracted output $\hat{\vec s} = 0.5\vec s_{\mathrm{ref}} + 0.05\vec v$, evaluate the dual-state loss Eq. (15-6); (2) when the target is silent ($\vec s_{\mathrm{ref}} = \vec 0$, mixture $\vec x = \vec v$, $\tau_{\mathrm{floor}} = 10^{-3}$), identify the exact step where standard SI-SDR fails, and evaluate the dual-state loss for $\hat{\vec s} = \vec 0$, $\hat{\vec s} = \sqrt{0.099}\,\vec v$, and $\hat{\vec s} = \vec v$.</p>
+<p><strong>Solution</strong>: (1) With the target active, $\|\vec s_{\mathrm{ref}}\|_2^2 = 4 > 10^{-8}$; orthogonality gives $\hat{\vec s}^\top\vec s_{\mathrm{ref}} = 2.0$, $\alpha = 0.5$, $\|\vec s_{\mathrm{proj}}\|_2^2 = 1.0$, and residual distortion energy $\|\vec e_{\mathrm{noise}}\|_2^2 = 0.01$, so $\mathrm{SI\text{-}SDR} = 10\log_{10}(100) = 20.0\ \mathrm{dB}$ and the dual-state loss is $-20.0\ \mathrm{dB}$.</p>
+<p>(2) When $\vec s_{\mathrm{ref}} = \vec 0$, the standard projection coefficient $\hat{\vec s}^\top\vec 0 / \|\vec 0\|_2^2$ suffers a $0/0$ division-by-zero singularity. Entering the silent branch Eq. (15-7) gives mixture energy $\|\vec x\|_2^2 = 4$ and floor energy $E_{\mathrm{floor}} = 0.004$; the three candidate outputs have energies $0$, $0.396$, and $4.0$, which upon substitution into $10\log_{10}(1 + \|\hat{\vec s}\|_2^2 / 0.004)$ yield $0.0\ \mathrm{dB}$, $10\log_{10}(100) = +20.0\ \mathrm{dB}$, and $10\log_{10}(1001) \approx +30.004\ \mathrm{dB}$, respectively.</p>
+<p><span id="e17-03" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e15-03"></a></p>
+<span id="sec-39" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-ec772424a6" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-972638914c" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-36f71630e4">E15-03: Single-Speaker Zero-Overlap Bypass Threshold and Unvoiced Fricative Over-Splitting Recovery</h3>
+<p><strong>Problem</strong>: A two-slot front-end produces primary-slot output $\vec y_1 = [1.0, 0.0, -1.0, 0.0]^\top$ with bypass threshold $\eta_{\mathrm{dB}} = -18.0\ \mathrm{dB}$. For (a) single-speaker unvoiced fricative leakage $\vec y_2^{(a)} = [0.0, 0.1, 0.0, -0.1]^\top$ and (b) genuine two-speaker overlap $\vec y_2^{(b)} = [0.0, 0.5, 0.0, -0.5]^\top$, compute the energy ratio $R_{21,\mathrm{dB}}$, bypass decision, and final output energy.</p>
+<p><strong>Solution</strong>: Primary-slot energy is $\|\vec y_1\|_2^2 = 2.0$. In Case (a), secondary energy is $0.02$, so $R_{21,\mathrm{dB}} = 10\log_{10}(0.02 / 2.0) = -20.0\ \mathrm{dB} \lt  -18.0\ \mathrm{dB}$, triggering bypass merge $\vec y_{\mathrm{out}} = \vec y_1 + \vec y_2^{(a)} = [1.0, 0.1, -1.0, -0.1]^\top$ and restoring total output energy to $2.02$.</p>
+<p>In Case (b), secondary energy is $0.5$, giving $R_{21,\mathrm{dB}} = 10\log_{10}(0.25) \approx -6.02\ \mathrm{dB} \ge -18.0\ \mathrm{dB}$; dual-stream separation is retained and $\vec y_{\mathrm{out}} = \vec y_1$ (energy $2.0$).</p>
+<p><span id="e17-04" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e15-04"></a></p>
+<span id="sec-40" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-cae1713593" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-dba20ea272" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-3246405f21">E15-04: Fresnel Near-Field Boundary and Second-Order Taylor Spherical-Wave Curvature Approximation Error</h3>
+<p><strong>Problem</strong>: At $c = 343\ \mathrm{m/s}$ and $f = 3430\ \mathrm{Hz}$ with a broadside source at $r_1 = 0.40\ \mathrm{m}$, compute for three-mic ULA spacings $d = 0.10\ \mathrm{m}$ ($D = 0.20\ \mathrm{m}$) and $d = 0.02\ \mathrm{m}$ ($D = 0.04\ \mathrm{m}$) the Fresnel boundary distance $r_F$, exact outer-element path difference $\Delta r_1 = \sqrt{r_1^2 + d^2} - r_1$, and millimeter discrepancy against the second-order curvature approximation $d^2 / (2r_1)$ of Eq. (15-10).</p>
+<p><strong>Solution</strong>: Wavelength is $\lambda = 343 / 3430 = 0.10\ \mathrm{m}$. At $d = 0.10\ \mathrm{m}$, $r_F = 2 \times 0.20^2 / 0.10 = 0.80\ \mathrm{m} > 0.40\ \mathrm{m}$; the exact path difference is $(\sqrt{0.17} - 0.40)\ \mathrm{m} \approx 12.3106\ \mathrm{mm}$ versus the second-order approximation $(0.01 / 0.80)\ \mathrm{m} = 12.5000\ \mathrm{mm}$, leaving a higher-order remainder of $\approx 0.189\ \mathrm{mm}$ ($0.68^\circ$ phase difference, confirming why production code uses the exact square root Eq. (15-9)).</p>
+<p>At $d = 0.02\ \mathrm{m}$, $r_F = 2 \times 0.04^2 / 0.10 = 0.032\ \mathrm{m} \ll 0.40\ \mathrm{m}$; the exact path difference is $(\sqrt{0.1604} - 0.40)\ \mathrm{m} \approx 0.4997\ \mathrm{mm}$ versus the second-order approximation $0.5000\ \mathrm{mm}$.</p>
+<p><span id="e17-05" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e15-05"></a></p>
+<span id="sec-41" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-22bad309c0" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-3219c8f9e8" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-94fb9f169b">E15-05: Closed-Form Weights, WNG, and Co-Directional Far-Field Suppression of a Three-Mic Broadside Distance Bubble</h3>
+<p><strong>Problem</strong>: Continuing with the parameters of <a href="#e15-04">E15-04</a> ($f = 3430\ \mathrm{Hz}$, $r_1 = 0.40\ \mathrm{m}$), use Eqs. (15-15)–(15-17) to compute by hand the outer-element phase lag $\phi_1$, white noise gain $\mathrm{WNG}$ (dB), and power suppression ratio against a co-directional interferer at $r_2 = 4.00\ \mathrm{m}$ for both $d = 0.10\ \mathrm{m}$ and $d = 0.02\ \mathrm{m}$.</p>
+<p><strong>Solution</strong>: For $d = 0.10\ \mathrm{m}$, $\phi_1 \approx -44.32^\circ$ ($-360^\circ \times 0.12311$), giving $\mathrm{WNG} = \frac{8}{3}\sin^2(-22.159^\circ) \approx 0.37937$ ($-4.21\ \mathrm{dB}$) via Eq. (15-17); at $r_2 = 4.00\ \mathrm{m}$, $\phi_2 \approx -4.499^\circ$, and Eq. (15-16) gives power ratio $\sin^2(-2.250^\circ)/\sin^2(-22.159^\circ) \approx 0.01083$, or $19.65\ \mathrm{dB}$ suppression.</p>
+<p>For $d = 0.02\ \mathrm{m}$, $\phi_1 \approx -1.799^\circ$ and $\mathrm{WNG} = \frac{8}{3}\sin^2(-0.899^\circ) \approx 6.571 \times 10^{-4}$ ($-31.82\ \mathrm{dB}$, a $27.61\ \mathrm{dB}$ collapse); although ideal noise-free suppression at $4\ \mathrm{m}$ is $19.99\ \mathrm{dB}$, amplifying sensor thermal noise over a thousandfold renders it unusable in practice.</p>
+<p><span id="e17-06" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e15-06"></a></p>
+<span id="sec-42" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-9bac32c23b" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-f8d6da3847" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-0c0a12ffba">E15-06: Distance-Bubble Mismatch Analysis Between Phase-Only and Spherical-Spreading Attenuation Steering Models</h3>
+<p><strong>Problem</strong>: At $d = 0.10\ \mathrm{m}$, $r_1 = 0.40\ \mathrm{m}$, and $f = 3430\ \mathrm{Hz}$, a physical free-field spherical wave experiences at the outer sensors not only phase lag but also the Eq. (15-11) amplitude spreading factor $\rho = r_1 / \sqrt{r_1^2 + d^2}$. (1) Compute $\rho$; (2) if the beamformer applies the phase-only weights of Eq. (15-15) to receive a physical near-field wave carrying attenuation $\rho$, by how many dB does target power gain deviate from $0\ \mathrm{dB}$, and is the plane-wave null at infinity affected?</p>
+<p><strong>Solution</strong>: (1) The outer-to-center amplitude ratio is $\rho = 4 / \sqrt{17} \approx 0.97014$ (just $0.26\ \mathrm{dB}$ below the center element).</p>
+<p>(2) Applying the phase-only weights of Eq. (15-15) to the true attenuated target steering vector $[\rho u_1, 1, \rho u_1]^\top$ ($u_1 = e^{\mathrm{j}\phi_1}$) produces complex response $(\rho u_1 - 1) / (u_1 - 1)$, whose squared magnitude is $0.9717$ (deviating by only $-0.125\ \mathrm{dB}$). Because the phase-only weights still satisfy $w_{-1} + w_0 + w_{+1} = 0$, the null against a plane wave $[1, 1, 1]^\top$ at infinity remains identically $0$; re-solving Eq. (15-14) directly with the attenuated model yields matched $\mathrm{WNG} = -4.33\ \mathrm{dB}$ and $4\ \mathrm{m}$ suppression of $19.53\ \mathrm{dB}$.</p>
+<p><span id="e17-07" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e15-07"></a></p>
+<span id="sec-43" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-706d73c86d" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-c101fdacd3" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-644a482a64">E15-07: Tikhonov Regularization Trade-Offs for an Ill-Conditioned Small-Aperture Distance Bubble</h3>
+<p><strong>Problem</strong>: For the ill-conditioned distance bubble at $d = 0.02\ \mathrm{m}$, $r_1 = 0.40\ \mathrm{m}$, and $f = 3430\ \mathrm{Hz}$, evaluate Eq. (15-18) across regularization parameters $\delta \in \{0, 10^{-4}, 5\times 10^{-4}, 2\times 10^{-3}\}$, tracking weight norm $\|\vec w\|_2$, near-field target power gain $|B(r_1)|^2$, and $4.0\ \mathrm{m}$ interferer residual power $|B(r_2)|^2$, and summarize the governing physical trade-off.</p>
+<p><strong>Solution</strong>: At $\delta = 0$, $\|\vec w\|_2 \approx 39.01$, $|B(r_1)|^2 = 1.000$, and $|B(r_2)|^2 \approx 0.0100$; increasing $\delta$ through $10^{-4}, 5\times 10^{-4}, 2\times 10^{-3}$ pulls the weight norm rapidly down to $29.91, 15.47, 5.51$, but near-field target power gain drops concurrently to $0.780, 0.488, 0.325$ while $4.0\ \mathrm{m}$ residual interferer power climbs from $0.010$ to $0.037, 0.117, 0.197$.</p>
+<p>When the angle between the two constraint column vectors is barely $\sim 1.8^\circ$, linear regularization can only trade off "self-noise amplification" against "target attenuation plus interferer leakage," unable to bypass the lack of physical spatial degrees of freedom in a miniature aperture.</p>
+<p><span id="e17-08" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e15-08"></a></p>
+<span id="sec-44" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-cbf18e17ff" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-cba35fb5e1" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-31ad5e9b13">E15-08: DER Decomposition and Label-Permutation Invariance Check on a Six-Frame Overlapping Meeting</h3>
+<p><strong>Problem</strong>: For the six-frame reference matrix $\mathbf R$ of Worked Example 15-3 (rows $[1, 1, 1, 1, 0, 0]$ and $[0, 0, 1, 1, 1, 0]$, $\Delta T = 0.5\ \mathrm{s}$) and two-cluster hypothesis $\mathbf H$ (rows $[1, 1, 1, 0, 1, 0]$ and $[0, 0, 0, 1, 0, 1]$), compute by hand the $2 \times 2$ co-occurrence matrix $\mathbf M = \mathbf R\mathbf H^\top$, optimal permutation, miss duration, false-alarm duration, speaker-confusion duration, and total $\mathrm{DER}$; then swap the two rows of $\mathbf H$ and verify complete invariance.</p>
+<p><strong>Solution</strong>: Matrix multiplication yields co-occurrence matrix $\mathbf M$ with Row 1 $[3, 1]$ and Row 2 $[1, 1]$: identity permutation $\pi = (0, 1)$ matches $3 + 1 = 4$ frames whereas swap permutation $\pi = (1, 0)$ matches $1 + 1 = 2$ frames, selecting $\pi^\star = (0, 1)$.</p>
+<p>Checking frames $t = 0\ldots 5$: Frames $2, 3$ each miss $1$ speaker ($2$ frames $= 1.0\ \mathrm{s}$), Frame $5$ incurs $1$ false alarm on silence ($0.5\ \mathrm{s}$), and Frame $4$ predicts Cluster 1 when Speaker 2 is active ($1$ confusion frame $= 0.5\ \mathrm{s}$). With denominator $T_{\mathrm{ref}} = 7 \times 0.5 = 3.5\ \mathrm{s}$, $\mathrm{DER} = 2.0 / 3.5 = 4/7 \approx 57.14\%$; swapping the two rows of $\mathbf H$ flips $\pi^\star$ automatically to $(1, 0)$ while leaving all four output metrics identical.</p>
+<p><span id="e17-09" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e15-09"></a></p>
+<span id="sec-45" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-d9c9a35c2c" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-babc01c78f" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-d4a7b35e32">E15-09: Minimum DER Lower Bound of Hard Single-Label Clustering on Multi-Speaker Overlapped Speech</h3>
+<p><strong>Problem</strong>: If a $10\ \mathrm{s}$ meeting recording consists of $5\ \mathrm{s}$ of single-speaker speech, $3\ \mathrm{s}$ of simultaneous two-speaker overlap, and $2\ \mathrm{s}$ of simultaneous three-speaker overlap, calculate total reference speaker duration $T_{\mathrm{ref}}$ and the theoretical minimum $\mathrm{DER}_{\min}^{\mathrm{single}}$ achievable by any hard single-label clustering system, and verify the bound on the six-frame meeting example of §15.5 in code.</p>
+<p><strong>Solution</strong>: Total reference speaker duration is $T_{\mathrm{ref}} = 5 + 6 + 6 = 17\ \mathrm{s}$. Because a hard single-label system outputs at most $1$ label at every instant, it must miss at least $3 \times (2 - 1) = 3\ \mathrm{s}$ across the $3\ \mathrm{s}$ double-talk interval and $2 \times (3 - 1) = 4\ \mathrm{s}$ across the $2\ \mathrm{s}$ triple-talk interval, totaling at least $7\ \mathrm{s}$ of missed speech and locking $\mathrm{DER}_{\min}^{\mathrm{single}} = 7 / 17 \approx 41.18\%$.</p>
+<p>On the six-frame example of §15.5, code verification confirms $2$ overlap frames, minimum miss $1.0\ \mathrm{s}$, and lower bound $2/7 \approx 28.57\%$, matching an oracle single-label assignment.</p>
+<p><span id="e17-10" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e15-10"></a></p>
+<span id="sec-46" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-82195cd377" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-98c35aede6" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-cbbd7bba80">E15-10: Constructive Example of Combined False Alarms and Misses Producing a Legitimate DER Above 100%</h3>
+<p><strong>Problem</strong>: Against the six-frame reference matrix $\mathbf R$ of <a href="#e15-08">E15-08</a> ($T_{\mathrm{ref}} = 3.5\ \mathrm{s}$), consider a three-track hypothesis matrix $\mathbf H$ with rows $[0, 0, 0, 0, 1, 1]$, $[0, 0, 1, 0, 1, 1]$, and $[1, 1, 0, 0, 1, 1]$. Hand-calculate the zero-padded $3 \times 3$ optimal permutation, the three error durations in seconds, and exact $\mathrm{DER}$, explaining why evaluation scripts must never clamp $\mathrm{DER}$ at $100\%$.</p>
+<p><strong>Solution</strong>: Zero-padding $\mathbf R$ with a third all-zero row produces the $3 \times 3$ co-occurrence matrix $\mathbf M$ (Row 1 $[0, 1, 2]$, Row 2 $[1, 2, 0]$, Row 3 $[0, 0, 0]$), whose optimal permutation $\pi^\star = (2, 1, 0)$ matches $2 + 2 + 0 = 4$ frames. Comparing $N_{\mathrm{ref}}(t) = [1, 1, 2, 2, 1, 0]$ against $N_{\mathrm{hyp}}(t) = [1, 1, 1, 0, 3, 3]$ frame by frame yields $3$ missed frames across Frames $2, 3$ ($1.5\ \mathrm{s}$), $5$ false-alarm frames across Frames $4, 5$ ($2.5\ \mathrm{s}$), and $0\ \mathrm{s}$ confusion since $\min(N_{\mathrm{ref}}, N_{\mathrm{hyp}})$ equals matched counts everywhere.</p>
+<p>Total error duration is $4.0\ \mathrm{s}$, so $\mathrm{DER} = 4.0 / 3.5 = 8/7 \approx 114.29\%$. Clamping at $100\%$ would mask the real error difference between hallucinating one spurious all-silence false-alarm track versus hallucinating two or three.</p>
+<p><span id="e17-11" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e15-11"></a></p>
+<span id="sec-47" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-aec08aabb1" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-f030237235" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-ea4ba43f5d">E15-11: TS-VAD Log-Odds Bayesian Fusion of Spatial Phase Difference and Voiceprint Similarity</h3>
+<p><strong>Problem</strong>: Let prior $\pi_k = 0.5$ and fusion parameters $\kappa_{\mathrm{sp}} = 3.0, \tau_{\mathrm{sp}} = 0.25, \kappa_{\mathrm{emb}} = 4.0, \tau_{\mathrm{emb}} = 0.45$. On double-talk Frame $3$, measured spatial and voiceprint cosines are $(0.80, 0.47)$ for Speaker 1 and $(0.81, 0.49)$ for Speaker 2. Hand-compute the posteriors under voiceprint-only ($\kappa_{\mathrm{sp}} = 0$) versus joint spatial–spectral fusion, and explain why the two talkers' posteriors can sum to more than $1$.</p>
+<p><strong>Solution</strong>: The prior log-odds term is $\ln(0.5 / 0.5) = 0$. Using voiceprint alone: $\eta_1 = 4.0 \times (0.47 - 0.45) = 0.08$ ($\gamma_1 \approx 0.520$) and $\eta_2 = 4.0 \times (0.49 - 0.45) = 0.16$ ($\gamma_2 \approx 0.540$), both hovering near random guessing.</p>
+<p>Incorporating spatial phase alignment gives $\eta_1 = 3.0 \times 0.55 + 0.08 = 1.73 \Rightarrow \gamma_1 = (1 + e^{-1.73})^{-1} \approx 0.849$, and $\eta_2 = 3.0 \times 0.56 + 0.16 = 1.84 \Rightarrow \gamma_2 = (1 + e^{-1.84})^{-1} \approx 0.863$. Because TS-VAD models each speaker's activity as an independent Bernoulli random variable rather than a mutually exclusive softmax class, $\gamma_1 + \gamma_2 \approx 1.712 > 1$ faithfully reflects both talkers speaking simultaneously.</p>
+<p><span id="e17-12" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e15-12"></a></p>
+<span id="sec-48" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-6e4fb90e86" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-76e2b3cbad" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-da59d0d3d2">E15-12: Constructing GSS Target-Exclusive Masks from TS-VAD Soft Posteriors to Drive MVDR Beamforming</h3>
+<p><strong>Problem</strong>: Using the overlap-frame posteriors $(\gamma_1, \gamma_2) = (0.849, 0.863)$ obtained in <a href="#e15-11">E15-11</a>, contrast the physical behavior of estimating target covariance directly with raw $\gamma_1$ versus the Eq. (15-25) target-exclusive mask $m_1^{\mathrm{tar}} = \gamma_1(1 - \gamma_2)$, and check the resulting interferer-direction residual gain difference in the companion two-mic MVDR simulation.</p>
+<p><strong>Solution</strong>: On that double-talk frame, raw $\gamma_1 = 0.849$ blends concurrent Speaker 2 energy into $\hat{\mathbf R}_{ss}^{(1)}$ with weight $0.849$, tricking Souden MVDR into protecting the interferer's spatial direction inside the target subspace; Eq. (15-25) suppresses the overlap weight to $m_1^{\mathrm{tar}} = 0.849 \times 0.137 \approx 0.116$, sharply curtailing overlap contamination.</p>
+<p>In the companion 60-subframe two-microphone narrowband simulation, GSS-MVDR with target-exclusive masking suppresses power gain toward Speaker 2 down to $\approx -30.5\ \mathrm{dB}$ compared with $\approx -19.2\ \mathrm{dB}$ under naive non-exclusive masking—an extra $\sim 11.3\ \mathrm{dB}$ of spatial interference rejection.</p>
+<p><span id="e17-13" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e15-13"></a></p>
+<span id="sec-49" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-acba13f751" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-5427085a40" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-261548372a">E15-13: Heterogeneous Alignment Pattern Between 16 kHz STFT Audio Frames and 25 fps Video Exposure Midpoints</h3>
+<p><strong>Problem</strong>: Given audio hop $H_{\mathrm{a}} = 16\ \mathrm{ms}$, video frame rate $f_{\mathrm{v}} = 25\ \mathrm{fps}$ ($T_{\mathrm{v}} = 40\ \mathrm{ms}$), and zero pipeline lag ($\Delta t_{\mathrm{av}} = 0$), write out the mapped video frame sequence for the first $15$ audio frames ($\ell = 0, \ldots, 14$, covering $0$–$240\ \mathrm{ms}$) via Eq. (15-28), and count how many audio frames map to each video frame $m = 0, \ldots, 5$.</p>
+<p><strong>Solution</strong>: Audio midpoints lie at $(16\ell + 8)\ \mathrm{ms}$; dividing by $40\ \mathrm{ms}$ and taking the floor yields the 15-frame video index sequence $[0, 0, 1, 1, 1, 2, 2, 3, 3, 3, 4, 4, 5, 5, 5]$. Counting audio frames assigned to $m = 0, \ldots, 5$ gives $[2, 3, 2, 3, 2, 3]$, whose arithmetic mean is exactly $2.5$ audio frames per video frame.</p>
+<p><span id="e17-14" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e15-14"></a></p>
+<span id="sec-50" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-a7e7674a48" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-fcb2ba8992" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-32abd3b091">E15-14: Quantitative Onset-Consonant Energy Clipping Under Positive Camera Pipeline Lag</h3>
+<p><strong>Problem</strong>: Under the frame rates of <a href="#e15-13">E15-13</a>, a talker begins uttering an $L_{\mathrm{cons}} = 8$-frame ($128\ \mathrm{ms}$) word-initial unvoiced fricative at frame $\ell_0 = 10$ ($t_{\mathrm{onset}} = 160\ \mathrm{ms}$). Using Eqs. (15-28)–(15-29), hand-calculate the number of clipped audio frames and percentage loss for camera lags $\Delta t_{\mathrm{av}} \in \{0, 40, 80, 120\}\ \mathrm{ms}$.</p>
+<p><strong>Solution</strong>: The word-initial consonant spans $\ell = 10, \ldots, 17$ with midpoints $168, 184, 200, 216, 232, 248, 264, 280\ \mathrm{ms}$. Pre-onset closed-mouth video frames are $m \le 3$ (exposure midpoints $\le 140\ \mathrm{ms}$), meaning every frame whose queried time $t_{\mathrm{a}}[\ell] - \Delta t_{\mathrm{av}} \lt  160\ \mathrm{ms}$ gets clipped.</p>
+<p>Evaluating each lag setting: $\Delta t_{\mathrm{av}} = 0\ \mathrm{ms}$ clips $0$ frames ($0\%$); $\Delta t_{\mathrm{av}} = 40\ \mathrm{ms}$ clips $\ell = 10, 11$ ($2$ frames, $25.0\%$); $\Delta t_{\mathrm{av}} = 80\ \mathrm{ms}$ clips $\ell = 10\ldots 14$ ($5$ frames, $62.5\%$); and $\Delta t_{\mathrm{av}} = 120\ \mathrm{ms}$ clips $\ell = 10\ldots 16$ ($7$ frames, $87.5\%$, losing $112\ \mathrm{ms}$).</p>
+<p><span id="e17-15" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e15-15"></a></p>
+<span id="sec-51" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-64df9ed6df" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-617b8246f6" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-eea0d8c86d">E15-15: Smooth Visual-Confidence-Gated Audio–Visual Mask Fallback Under Lip Occlusion</h3>
+<p><strong>Problem</strong>: During continuous target speech (ideal mask $1.0$), the audio-only branch outputs a steady $M_{\mathrm{audio}} = 0.82$; across three stages ("clear frontal face, profile head turn, hand occluding mouth"), the joint audio–visual branch outputs $M_{\mathrm{av}} = [0.96, 0.65, 0.05]$ while the facial-landmark module emits visual confidence $\alpha = [0.90, 0.40, 0.05]$. Compute the three-stage fused masks via Eq. (15-30) and compare absolute mask errors during hand occlusion with versus without confidence gating.</p>
+<p><strong>Solution</strong>: Convex combination via Eq. (15-30) yields $0.10 \times 0.82 + 0.90 \times 0.96 = 0.946$ (frontal), $0.60 \times 0.82 + 0.40 \times 0.65 = 0.752$ (head turn), and $0.95 \times 0.82 + 0.05 \times 0.05 = 0.7815$ (hand occlusion).</p>
+<p>During hand occlusion, the ungated audio–visual mask incurs an absolute error against ground truth $1.0$ of $|1.0 - 0.05| = 0.95$, whereas confidence-gated fallback slashes the absolute error to $|1.0 - 0.7815| = 0.2185$.</p>
+<p><span id="e17-16" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e15-16"></a></p>
+<span id="sec-52" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-b8250b64be" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-22086f7ea6" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-6903e87b2d">E15-16: Two-Tap Causal Real FIR Implementation of a Broadside Distance Bubble and Three-Tier Error Verification</h3>
+<p><strong>Problem</strong>: For the synthetic audio parameters of §15.8 ($f_s = 16\ \mathrm{kHz}$, $f_{\mathrm{tar}} = 3200\ \mathrm{Hz}$, $f_{\mathrm{int}} = 2500\ \mathrm{Hz}$, $r_1 = 0.40\ \mathrm{m}$, $r_2 = 4.00\ \mathrm{m}$, zero-based channel index $m \in \{0, 1, 2\}$): (1) prove that the three-channel two-tap real coefficients constructed by Eq. (15-31) satisfy $\sum_{m=0}^2 h_m[0] = 0$ and $\sum_{m=0}^2 h_m[1] = 0$; (2) inspect the steady-window normalized MSEs of far-field DSB, the $10\ \mathrm{cm}$ distance bubble, and the $2\ \mathrm{cm}$ small-aperture bubble across the analytical, float64, and PCM16 integer tiers and explain how the three tiers relate.</p>
+<p><strong>Solution</strong>: (1) The broadside plane-wave null constraint $\vec w^H [1, 1, 1]^\top = 0$ implies $\sum_{m=0}^2 w_m = 0$ (matching $w_{-1} + w_0 + w_{+1} = 0$ in §15.3), meaning $\sum_{m=0}^2 \operatorname{Re}(w_m) = 0$ and $\sum_{m=0}^2 \operatorname{Im}(w_m) = 0$. Summing the first equation of Eq. (15-31) over $m$ gives $\sum_{m=0}^2 h_m[1] = 0$, and summing the second equation then gives $\sum_{m=0}^2 h_m[0] = 0$; hence any broadside plane wave $x_0[n] = x_1[n] = x_2[n] = p[n]$ of arbitrary frequency fed into Eq. (15-32) yields $y[n] \equiv 0$ identically.</p>
+<p>(2) Steady-window NMSEs agree closely across all three tiers: far-field DSB scores $1.2227$ (analytical/float64) and $1.2226$ (PCM16 integer) due to unattenuated co-directional interference; the $10\ \mathrm{cm}$ distance bubble drops to $0.0246$ across all three tiers (eliminating over $97.5\%$ of interferer energy); the $2\ \mathrm{cm}$ regularized small-aperture bubble rises to $2.2762$ (analytical/float64) and $2.2760$ (PCM16 integer) due to target attenuation plus amplified self-noise, with the tiny $1\text{–}2 \times 10^{-4}$ discrepancy between float64 and PCM16 arising from 16-bit fixed-point quantization rounding.</p>
+<p><span id="e17-17" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e15-17"></a></p>
+<span id="sec-53" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-d8c17a15e2" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-c7cc19996d" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-0826d59766">E15-17: EEND-EDA Attractor Existence Gating and Fixed-Slot Error Lower Bounds</h3>
+<p><strong>Problem</strong>: Given a $D = 3$-dimensional frame feature matrix $\mathbf E \in \mathbb{R}^{3 \times T}$, a sequential attractor module decodes candidate speaker vectors $\vec a_s \in \mathbb{R}^3$ ($s = 1, 2, \ldots$) and evaluates existence probabilities $p_s$ via linear existence head $\vec w_{\mathrm{exist}} = [1, 1, 1]^\top$, bias $b = -1.0$, and threshold $\tau_{\mathrm{exist}} = 0.5$, retaining the $\hat S$ attractors preceding the first drop below $0.5$ to form $\mathbf A = [\vec a_1, \ldots, \vec a_{\hat S}]$ and emit multi-label activity posteriors:</p>
+<p>$$\begin{aligned}
+p_s&=\sigma\bigl(\vec w_{\mathrm{exist}}^\top\vec a_s+b\bigr),\\
+\hat{\mathbf Y}
+&=\sigma\bigl(\mathbf A^\top\mathbf E\bigr)
+\in(0,1)^{\hat S\times T}.
+\end{aligned}\tag{15-33}$$</p>
+<p>Compute: (1) in a two-speaker scene emitting candidate attractors $\vec a_1 = [2, 0, 0]^\top$, $\vec a_2 = [0, 2, 0]^\top$, $\vec a_3 = [0.1, 0.1, 0]^\top$, verify $p_1, p_2, p_3$ and stopping count $\hat S$; (2) when the meeting transitions to a three-speaker scene ($T = 4$ frames at $0.5\ \mathrm{s}$ each) with ground-truth matrix $\mathbf R_{\mathrm{3spk}}$ having rows $[1, 1, 1, 0]$, $[0, 1, 1, 0]$, $[0, 0, 1, 1]$, frame embedding matrix $\mathbf E$ having rows $[2, 2, 2, -2]$, $[-2, 2, 2, -2]$, $[-2, -2, 2, 2]$, and candidate attractors $\vec a_1 = [2, 0, 0]^\top$, $\vec a_2 = [0, 2, 0]^\top$, $\vec a_3 = [0, 0, 2]^\top$, $\vec a_4 = [0.1, 0.1, 0.1]^\top$, compare the $\mathrm{DER}$ of EEND-EDA against the theoretical minimum $\mathrm{DER}$ lower bound of any fixed two-slot ($K_{\mathrm{fixed}} = 2$) PIT model.</p>
+<p><strong>Solution</strong>: (1) In the two-speaker scene, existence log-odds for the three candidates are $2 - 1 = +1.0$, $2 - 1 = +1.0$, and $0.2 - 1 = -0.8$, yielding $p_1 = p_2 = \sigma(1.0) \approx 0.731059 \ge 0.5$ while the third candidate drops to $p_3 = \sigma(-0.8) \approx 0.310026 \lt  0.5$, halting the decoder accurately at $\hat S = 2$.</p>
+<p>(2) In the three-speaker scene, total reference speaker-frames equal $3 + 2 + 2 = 7$ ($T_{\mathrm{ref}} = 3.5\ \mathrm{s}$, with triple overlap at Frame $2$). EEND-EDA yields $p_{1,2,3} \approx 0.731059 \ge 0.5$ on the first three orthogonal attractors and log-odds $0.3 - 1.0 = -0.7$ ($p_4 = \sigma(-0.7) \approx 0.331812 \lt  0.5$) on the fourth, halting automatically at $\hat S = 3$; the inner-product matrix $\mathbf A^\top\mathbf E$ equals $+4$ at every active cell ($\sigma(4) \approx 0.982014$) and $-4$ at every inactive cell ($\sigma(-4) \approx 0.017986$), matching $\mathbf R_{\mathrm{3spk}}$ identically after $0.5$ binarization for $\mathrm{DER}_{\mathrm{EDA}} = 0 / 7 = 0.00\%$. Conversely, any fixed two-slot ($K_{\mathrm{fixed}} = 2$) model can match at most two active talkers under one-to-one assignment, inevitably missing at least the least-active talker ($2$ frames $= 1.0\ \mathrm{s}$) and locking its minimum error rate at $2 / 7 \approx 28.57\%$ even with oracle two-slot masks (see <code>eend_enrollment_robustness.py</code>).</p>
+<p><span id="e17-18" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e15-18"></a></p>
+<span id="sec-54" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-71d2429e6f" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-6fb2bbba75" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-acbb7b1d3c">E15-18: Enrollment Crosstalk Contamination and Target-Exclusive Gating in Conditional Target Extraction</h3>
+<p><strong>Problem</strong>: Let unit-norm clean voiceprint embeddings of a target talker and an interfering talker satisfy $\|\vec e_1\|_2 = 1$, $\|\vec e_2\|_2 = 1$ with inner-product cosine $\rho_{12} = \vec e_1^\top\vec e_2 \in (-1, 1)$. If bystander crosstalk blends a linear proportion $\alpha > 0$ of the interferer's embedding into the enrollment clip, L2 normalization produces the contaminated template:</p>
+<p>$$\begin{aligned}
+\vec e_{\mathrm{cont}}
+&=\frac{\vec e_1+\alpha\vec e_2}
+{\|\vec e_1+\alpha\vec e_2\|_2},\\
+\vec e_{\mathrm{cont}}^\top\vec e_1
+&=\frac{1+\alpha\rho_{12}}
+{\sqrt{1+2\alpha\rho_{12}+\alpha^2}}.
+\end{aligned}\tag{15-34}$$</p>
+<p>Compute: (1) at $\alpha = 0.5$ ($-6.02\ \mathrm{dB}$ crosstalk bleed), for both orthogonal voiceprints ($\rho_{12} = 0$) and similar same-gender voiceprints ($\rho_{12} = 0.3$), hand-calculate target cosine retention $\vec e_{\mathrm{cont}}^\top\vec e_1$, interferer false-match cosine $\vec e_{\mathrm{cont}}^\top\vec e_2$, and the inflation factor of orthogonal interferer gate opening under cosine gate $g_k = \sigma(8(\vec e^\top\vec e_k - 0.40))$; (2) given a $6$-frame enrollment buffer where the first $4$ frames are target solo ($\vec e_1 = [1, 0, 0]^\top$, $\mathrm{SNR}_t = 20\ \mathrm{dB}$, posteriors $\gamma_{1,t} = 0.95, \gamma_{2,t} = 0.04$) and the final $2$ frames are interferer interjections during a target pause ($\vec e_2 = [0, 1, 0]^\top$, $\mathrm{SNR}_t = 15\ \mathrm{dB}$, $\gamma_{1,t} = 0.05, \gamma_{2,t} = 0.92$), compare template accuracy under energy-only VAD pooling ($\mathrm{SNR}_t \ge 10\ \mathrm{dB}$) versus adding Eq. (15-25) target-exclusive gating ($m_{1,t}^{\mathrm{tar}} \ge 0.60$).</p>
+<p><strong>Solution</strong>: (1) Writing the unnormalized norm $Z = \sqrt{1 + 2\alpha\rho_{12} + \alpha^2}$, taking the inner product of $\vec e_{\mathrm{cont}}$ with $\vec e_2$ similarly yields interferer cosine $(\rho_{12} + \alpha) / Z$. At $\alpha = 0.5$ and $\rho_{12} = 0$, $Z = \sqrt{5}/2$, target cosine drops from $1.0$ to $2/\sqrt{5} \approx 0.894427$ ($26.57^\circ$ angular drift), and interferer cosine jumps from $0$ to $1/\sqrt{5} \approx 0.447214$; substituting into the gate function shows clean-template interferer gating is just $\sigma(-3.2) \approx 0.039166$, whereas the contaminated template inflates interferer gating to $\sigma(8(1/\sqrt{5} - 0.40)) \approx 0.593320$—a $\sim 15.15\times$ leakage blow-up! When same-gender voiceprints carry baseline correlation $\rho_{12} = 0.3$, $Z = \sqrt{1.55}$, target cosine stays at $1.15 / \sqrt{1.55} \approx 0.923702$ while interferer cosine surges to $0.80 / \sqrt{1.55} \approx 0.642575$, readily passing bystander speech during target silence.</p>
+<p>(2) Across the $6$-frame enrollment buffer, all $6$ frames satisfy $\mathrm{SNR}_t \ge 10\ \mathrm{dB}$, so energy-only VAD pooling retains all $6$ frames and normalizes $\frac{1}{6}(4\vec e_1 + 2\vec e_2)$ to $[2/\sqrt{5}, 1/\sqrt{5}, 0]^\top$ (reproducing the $\alpha = 0.5$ crosstalk contamination). Adding the Eq. (15-25) target-exclusive probability $m_{1,t}^{\mathrm{tar}} = \gamma_{1,t}(1 - \gamma_{2,t})$ gives $0.95 \times 0.96 = 0.912 \ge 0.60$ on the first $4$ frames and $0.05 \times 0.08 = 0.004 \lt  0.60$ on the final $2$ crosstalk frames, rejecting them automatically so pooled normalization recovers the exact uncorrupted target template $\hat{\vec e} = [1, 0, 0]^\top$ (target cosine $1.000000$, interferer cosine $0.000000$; see <code>gated_enrollment_pooling</code>).</p>
+<hr />
+<blockquote>
+<p>📄 Page Info: 4 figures | <a href="index.html">Back to Overview</a></p>
+</blockquote><div class="pn"><span><a href="14_spatial-wearable-arrays.html">← Previous Chapter</a></span><span><a href="16_appendix-symbols-math.html">Next Chapter →</a></span></div>
+<footer class="foot">Microphone Array Signal Processing Tutorial · English static edition built by scripts/build_site_en.py</footer>
+</main></div><a class="topbtn" href="#top" title="Back to top" aria-label="Back to top">↑</a>
+<script>if(!navigator.onLine)document.getElementById('offnote').style.display='block';for(const a of document.querySelectorAll('a[data-lang-peer]'))if(location.protocol==='file:'||location.hostname==='localhost'||location.hostname==='127.0.0.1')a.href=a.dataset.langPeer;</script>
+</body></html>

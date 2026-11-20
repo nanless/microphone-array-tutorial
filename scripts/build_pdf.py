@@ -1293,6 +1293,137 @@ def recompress_pdf_images_losslessly(writer):
     return updated_count, saved_bytes
 
 
+def deduplicate_pdf_vector_glyphs(writer):
+    """Losslessly factor repeated MathJax vector glyph subpaths into shared /Form XObjects
+    and fold Chrome's duplicate fill+stroke subpaths (`h f /Gxx gs <same> h S`) into `B`.
+    """
+    import collections
+    import zlib
+    from pypdf.generic import (ArrayObject, DictionaryObject, EncodedStreamObject,
+                               FloatObject, IndirectObject, NameObject, NumberObject, StreamObject)
+
+    coord_num_re = re.compile(rb"[+-]?\d+(?:\.\d+)?")
+    move_re = re.compile(rb"^(?:[+-]?\d+(?:\.\d+)?[ \t]+){2}m\r?$")
+    seg_re = re.compile(rb"^(?:[+-]?\d+(?:\.\d+)?[ \t]+){2,6}(?:l|c|v|y|re)\r?$")
+    gs_re = re.compile(rb"^/G\d+[ \t]+gs\r?$")
+
+    def _parse_page_tokens(raw):
+        lines = [ln.rstrip(b"\r") for ln in raw.splitlines()]
+        n = len(lines)
+        tokens = []
+        i = 0
+        while i < n:
+            line = lines[i]
+            if move_re.match(line):
+                j = i + 1
+                while j < n and (seg_re.match(lines[j]) or move_re.match(lines[j]) or lines[j] == b"h"):
+                    j += 1
+                if j < n and lines[j] in (b"f", b"f*", b"S", b"B", b"B*") and j > i + 1 and lines[j - 1] == b"h":
+                    geom = b"\n".join(lines[i:j])
+                    paint = lines[j]
+                    if paint == b"f" and j + 2 < n and gs_re.match(lines[j + 1]):
+                        gs_line = lines[j + 1]
+                        span_len = j - i
+                        k_end = j + 2 + span_len
+                        if k_end < n and lines[k_end] == b"S" and b"\n".join(lines[j + 2:k_end]) == geom:
+                            tokens.append(("RAW", gs_line))
+                            tokens.append(("PATH", geom, b"B"))
+                            i = k_end + 1
+                            continue
+                    tokens.append(("PATH", geom, paint))
+                    i = j + 1
+                    continue
+            tokens.append(("RAW", line))
+            i += 1
+        return tokens
+
+    def _bbox(geom):
+        nums = [float(x) for x in coord_num_re.findall(geom)]
+        xs, ys = nums[0::2], nums[1::2]
+        pad = 25.0
+        return [min(xs) - pad, min(ys) - pad, max(xs) + pad, max(ys) + pad]
+
+    page_tokens = {}
+    counts = collections.Counter()
+    for pno, page in enumerate(writer.pages):
+        ref = page.raw_get("/Contents")
+        if not hasattr(ref, "idnum"):
+            continue
+        obj = writer._objects[ref.idnum - 1]
+        if not isinstance(obj, StreamObject) or obj.get("/DecodeParms") is not None:
+            continue
+        toks = _parse_page_tokens(obj.get_data())
+        page_tokens[pno] = (ref.idnum, toks)
+        for kind, *rest in toks:
+            if kind == "PATH" and len(rest[0]) >= 60:
+                counts[(rest[0], rest[1])] += 1
+
+    eligible = {k for k, c in counts.items() if c >= 3 and len(k[0]) * c >= 400}
+    if not eligible:
+        return 0
+
+    form_refs = {}
+    form_names = {}
+    for idx, (geom, paint) in enumerate(sorted(eligible, key=lambda k: -counts[k]), 1):
+        fname = f"/FmM{idx}"
+        bbox = _bbox(geom)
+        comp = zlib.compress(geom + b"\n" + paint + b"\n", 9)
+        fobj = EncodedStreamObject()
+        fobj._data = comp
+        fobj[NameObject("/Type")] = NameObject("/XObject")
+        fobj[NameObject("/Subtype")] = NameObject("/Form")
+        fobj[NameObject("/FormType")] = NumberObject(1)
+        fobj[NameObject("/BBox")] = ArrayObject([FloatObject(round(v, 2)) for v in bbox])
+        fobj[NameObject("/Resources")] = DictionaryObject()
+        fobj[NameObject("/Filter")] = NameObject("/FlateDecode")
+        fobj[NameObject("/Length")] = NumberObject(len(comp))
+        form_refs[(geom, paint)] = writer._add_object(fobj)
+        form_names[(geom, paint)] = fname
+
+    for pno, (cid, toks) in page_tokens.items():
+        page = writer.pages[pno]
+        used_on_page = {}
+        out_lines = []
+        for kind, *rest in toks:
+            if kind == "RAW":
+                out_lines.append(rest[0])
+            else:
+                key = (rest[0], rest[1])
+                if key in form_refs:
+                    fname = form_names[key]
+                    used_on_page[fname] = form_refs[key]
+                    out_lines.append(f"{fname} Do".encode("ascii"))
+                else:
+                    out_lines.append(rest[0])
+                    out_lines.append(rest[1])
+        comp = zlib.compress(b"\n".join(out_lines) + b"\n", 9)
+        old_obj = writer._objects[cid - 1]
+        enc = EncodedStreamObject()
+        for k, v in old_obj.items():
+            if k not in ("/Length", "/Filter", "/DecodeParms"):
+                enc[NameObject(k)] = v
+        enc._data = comp
+        enc[NameObject("/Filter")] = NameObject("/FlateDecode")
+        enc[NameObject("/Length")] = NumberObject(len(comp))
+        enc.indirect_reference = old_obj.indirect_reference or IndirectObject(cid, 0, writer)
+        writer._objects[cid - 1] = enc
+
+        if used_on_page:
+            res = page.get("/Resources")
+            res_obj = res.get_object() if hasattr(res, "get_object") else res
+            if res_obj is None:
+                res_obj = DictionaryObject()
+                page[NameObject("/Resources")] = res_obj
+            xobj = res_obj.get("/XObject")
+            xobj_dict = xobj.get_object() if hasattr(xobj, "get_object") else xobj
+            if xobj_dict is None:
+                xobj_dict = DictionaryObject()
+                res_obj[NameObject("/XObject")] = xobj_dict
+            for fname, fref in used_on_page.items():
+                xobj_dict[NameObject(fname)] = fref
+    return len(eligible)
+
+
 def compact_pdf_page_paths(writer):
     """Trim redundant sub-micrometer float decimals on standalone Bezier/line path operators."""
     import zlib
@@ -1347,6 +1478,7 @@ def write_pdf_with_object_streams(writer, out_stream, *, chunk_size=200):
 
     writer._resolve_links()
     recompress_pdf_images_losslessly(writer)
+    deduplicate_pdf_vector_glyphs(writer)
     compact_pdf_page_paths(writer)
 
     protected_ids = set()

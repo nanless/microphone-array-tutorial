@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300" role="img" aria-labelledby="title desc">
+  <title id="title">Make the four copies of source A arrive together</title>
+  <desc id="desc">On microphones M1 to M4, source A starts at samples 0, 2, 4 and 6. Adding waits of 6, 4, 2 and 0 samples moves the four arrivals to sample 6.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="m0 0 10 5-10 5z" fill="#6F695E"/>
+    </marker>
+  </defs>
+  <rect x="1" y="1" width="798" height="298" rx="14" fill="#FAF8F3" stroke="#D5CFC2" stroke-width="2"/>
+  <path d="M148 52H704M148 104H704M148 152H704M148 200H704M148 248H704" stroke="#E0DBD0" stroke-width="1.2"/>
+  <path d="M184 52v204m160-204v204m160-204v204m160-204v204" stroke="#9B9386" stroke-opacity=".35" stroke-dasharray="4 6"/>
+  <path d="M664 52v204" stroke="#237263" stroke-width="2.4" stroke-dasharray="5 4"/>
+  <g fill="#2C2F33" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="22" font-weight="700" text-anchor="middle">
+    <text x="184" y="38">0</text><text x="344" y="38">2</text><text x="504" y="38">4</text><text x="664" y="38" fill="#237263">6</text>
+    <text x="91" y="112">M1</text><text x="91" y="160">M2</text><text x="91" y="208">M3</text><text x="91" y="256">M4</text>
+  </g>
+  <g fill="none" stroke="#6F695E" stroke-width="2">
+    <path d="M198 104H646" marker-end="url(#arrow)"/>
+    <path d="M358 152H646" marker-end="url(#arrow)"/>
+    <path d="M518 200H646" marker-end="url(#arrow)"/>
+  </g>
+  <g fill="#FAF8F3" stroke="#1F5A92" stroke-width="3">
+    <circle cx="184" cy="104" r="8"/><circle cx="344" cy="152" r="8"/><circle cx="504" cy="200" r="8"/>
+  </g>
+  <g fill="#237263" stroke="#FFFFFF" stroke-width="2">
+    <circle cx="664" cy="104" r="9.5"/><circle cx="664" cy="152" r="9.5"/>
+    <circle cx="664" cy="200" r="9.5"/><circle cx="664" cy="248" r="9.5"/>
+  </g>
+</svg>

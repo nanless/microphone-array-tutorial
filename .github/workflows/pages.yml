@@ -6,8 +6,11 @@ on:
     paths:
       - '.github/workflows/pages.yml'
       - 'site/**'
+      - 'site_en/**'
       - 'figures/**'
+      - 'figures_en/**'
       - 'dist/microphone-array-tutorial.pdf'
+      - 'dist/microphone-array-tutorial-en.pdf'
       - 'assets/readme/lab/**'
       - 'assets/readme/cases/**'
   workflow_dispatch:
@@ -33,27 +36,30 @@ jobs:
         run: |
           node assets/readme/lab/export-lab.mjs --check
           python3 scripts/course_home/export_portable.py --check
+          python3 scripts/course_home_en/export_portable.py --check
           python3 - <<'PY'
           import pathlib, sys
-          pdf = pathlib.Path("dist/microphone-array-tutorial.pdf")
-          if not pdf.is_file() or pdf.stat().st_size == 0 or pdf.stat().st_size >= 100 * 1024 * 1024:
-              sys.exit(f"Invalid PDF size: {pdf.stat().st_size if pdf.exists() else 'missing'}")
-          html_pages = sorted(pathlib.Path("site").rglob("*.html"))
-          if len(html_pages) < 33:
-              sys.exit(f"Expected at least 33 HTML pages in site/, got {len(html_pages)}")
-          if not (pathlib.Path("site/index.html")).is_file():
-              sys.exit("Missing site/index.html")
-          print(f"Verified {len(html_pages)} HTML pages and PDF ({pdf.stat().st_size} bytes)")
+          for pdf_name in ("dist/microphone-array-tutorial.pdf", "dist/microphone-array-tutorial-en.pdf"):
+              pdf = pathlib.Path(pdf_name)
+              if not pdf.is_file() or pdf.stat().st_size == 0 or pdf.stat().st_size >= 50 * 1024 * 1024:
+                  sys.exit(f"Invalid or oversized PDF (>=50 MiB): {pdf_name} -> {pdf.stat().st_size if pdf.exists() else 'missing'}")
+          for site_dir in ("site", "site_en"):
+              html_pages = sorted(pathlib.Path(site_dir).rglob("*.html"))
+              if len(html_pages) < 33:
+                  sys.exit(f"Expected at least 33 HTML pages in {site_dir}/, got {len(html_pages)}")
+              if not (pathlib.Path(site_dir) / "index.html").is_file():
+                  sys.exit(f"Missing {site_dir}/index.html")
+              print(f"Verified {len(html_pages)} HTML pages in {site_dir}/")
           PY
       - uses: actions/configure-pages@v6
-      - name: Stage the course and its media
+      - name: Stage Chinese and English course editions and media
         shell: bash
         run: |
-          mkdir -p _pages/assets/readme/lab _pages/dist
-          cp -R site figures _pages/
+          mkdir -p _pages/assets/readme/lab _pages/dist _pages/en
+          cp -R site site_en figures figures_en _pages/
           cp assets/readme/lab/{array-lab.html,single.wav,left.wav,right.wav} _pages/assets/readme/lab/
           cp -R assets/readme/cases _pages/assets/readme/
-          cp dist/microphone-array-tutorial.pdf _pages/dist/
+          cp dist/microphone-array-tutorial.pdf dist/microphone-array-tutorial-en.pdf _pages/dist/
           cat > _pages/index.html <<'HTML'
           <!doctype html>
           <html lang="zh-CN">
@@ -61,7 +67,17 @@ jobs:
           <meta name="viewport" content="width=device-width,initial-scale=1">
           <meta http-equiv="refresh" content="0; url=./site/">
           <title>麦克风阵列信号处理 · 从入门到工业实践</title>
-          <a href="./site/">进入课程</a>
+          <a href="./site/">进入中文课程站</a> · <a href="./site_en/" lang="en">Enter English Course</a>
+          </html>
+          HTML
+          cat > _pages/en/index.html <<'HTML'
+          <!doctype html>
+          <html lang="en">
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width,initial-scale=1">
+          <meta http-equiv="refresh" content="0; url=../site_en/">
+          <title>Microphone Array Signal Processing · English Edition</title>
+          <a href="../site_en/">Enter English Course Website</a>
           </html>
           HTML
       - uses: actions/upload-pages-artifact@v4

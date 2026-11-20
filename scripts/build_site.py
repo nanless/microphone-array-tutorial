@@ -380,8 +380,9 @@ NARROW_TABLE_POLICIES = {
 
 CSS = """
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
-.topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941}
+.topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
+.topbar .lang-switch{color:#FAF8F3;background:#2C333B;border:1px solid #4A525D;padding:2px 10px;border-radius:999px;font-size:13px;font-weight:650;white-space:nowrap}.topbar .lang-switch:hover{background:#1F5A92;border-color:#689CD0;text-decoration:none}
 h1,h2,h3,h4{scroll-margin-top:60px}
 @media screen{.main a[id]:not([href]){scroll-margin-top:60px}}
 @media screen{.main a[id^="e"],.main .exercise-alias{scroll-margin-top:80px}}
@@ -474,14 +475,14 @@ window.MathJax = {{tex: {{inlineMath: [['$', '$'], ['\\\\(', '\\\\)']], displayM
 <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"
  onerror="document.getElementById('offnote').style.display='block';document.getElementById('offnote').textContent='公式渲染脚本加载失败：当前显示的是公式源码。';"></script>
 </head><body id="top"><a class="skip-link" href="#main-content">跳到正文</a>
-<header class="topbar"><a href="{home_href}">🏠 首页</a> &nbsp;/&nbsp; {crumb}</header>
+<header class="topbar"><span><a href="{home_href}">🏠 首页</a> &nbsp;/&nbsp; {crumb}</span><a class="lang-switch" href="{en_url}" data-lang-peer="{en_peer}" lang="en" hreflang="en">English</a></header>
 <div class="wrap"><nav class="side" aria-label="全书目录">{sidebar}</nav>
 <main class="main" id="main-content" tabindex="-1"><div class="offline-note" id="offnote">当前离线：公式显示为源码，正文讲解不受影响。</div>
 <details class="toc-mobile"><summary>本页目录</summary><nav aria-label="本页目录">{toc}</nav></details>
 {body}{pn}
 <footer class="foot">麦克风阵列信号处理教程 · 静态站由 scripts/build_site.py 生成</footer>
 </main></div><a class="topbtn" href="#top" title="回顶部" aria-label="回到页面顶部">↑</a>
-<script>if(!navigator.onLine)document.getElementById('offnote').style.display='block';</script>
+<script>if(!navigator.onLine)document.getElementById('offnote').style.display='block';for(const a of document.querySelectorAll('a[data-lang-peer]'))if(location.protocol==='file:'||location.hostname==='localhost'||location.hostname==='127.0.0.1')a.href=a.dataset.langPeer;</script>
 </body></html>
 """
 
@@ -1949,7 +1950,7 @@ def with_course_landing(page):
     return (page.replace('</head>', '<style>' + css + '</style></head>', 1)
             .replace('<body id="top">', '<body id="top" class="course-page">', 1)
             .replace('href="#main-content">跳到正文', 'href="#course-title">跳到课程正文', 1)
-            .replace('<header class="topbar"><a href="index.html">🏠 首页</a> &nbsp;/&nbsp; 导读与导航</header>\n', '', 1)
+            .replace('<header class="topbar"><span><a href="index.html">🏠 首页</a> &nbsp;/&nbsp; 导读与导航</span><a class="lang-switch" href="https://nanless.github.io/microphone-array-tutorial/site_en/index.html" data-lang-peer="../site_en/index.html" lang="en" hreflang="en">English</a></header>\n', '', 1)
             .replace('<div class="wrap">', template_main + '<div class="wrap">', 1)
             .replace('<main class="main" id="main-content" tabindex="-1">', '<div class="main" id="main-content" tabindex="-1">', 1)
             .replace('</main></div><a class="topbtn"', '</div></div></main><a class="topbtn"', 1)
@@ -1970,9 +1971,12 @@ def main():
         assert home_n == len(home_heads), f"首页锚点 {home_n} vs 标题 {len(home_heads)}"
         toc, _ = sub_list("index.html", home_heads)
         home_html = re.sub(r"<h1(\b[^>]*>.*?)</h1>", r"<h2\1</h2>", home_html, count=1, flags=re.S)
+        pages_en_base = "https://nanless.github.io/microphone-array-tutorial/site_en/"
         home_page = PAGE.format(
             title="从入门到工业实践", css=CSS, crumb="导读与导航",
             home_href="index.html",
+            en_url=pages_en_base + "index.html",
+            en_peer="../site_en/index.html",
             source_digest=build_digest,
             inline_layout_script=inline_layout_script,
             sidebar=sidebar_with_anchors(None, home_heads), toc=toc,
@@ -1994,6 +1998,8 @@ def main():
             (temp_out / html_name).write_text(PAGE.format(
                 title=label, css=CSS, crumb=label,
                 home_href="index.html",
+                en_url=pages_en_base + html_name,
+                en_peer="../site_en/" + html_name,
                 source_digest=build_digest,
                 inline_layout_script=inline_layout_script,
                 sidebar=sidebar_with_anchors(fname, heads), toc=toc,
@@ -2015,6 +2021,8 @@ def main():
             html_name = "index.html" if fname == "README.md" else fname.replace(".md", ".html")
             (temp_out / "research" / html_name).write_text(PAGE.format(
                 title=label, css=CSS, crumb=label, home_href="../index.html",
+                en_url=pages_en_base + "research/" + html_name,
+                en_peer="../../site_en/research/" + html_name,
                 source_digest=build_digest, sidebar=research_sidebar(fname, heads),
                 inline_layout_script=inline_layout_script,
                 toc=sub_list(html_name, heads)[0], body=body, pn=""), encoding="utf-8")

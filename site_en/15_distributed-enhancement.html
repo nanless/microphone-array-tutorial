@@ -1,0 +1,1400 @@
+<!DOCTYPE html><html lang="en"><head>
+<link rel="canonical" href="13_distributed-enhancement.html"><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Chapter 13 · Distributed Wireless Microphone Arrays · Microphone Array Signal Processing</title>
+<meta name="source-digest" content="55952d1c18a8"><style>
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
+.topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
+.topbar .lang-switch{color:#FAF8F3;background:#2C333B;border:1px solid #4A525D;padding:2px 10px;border-radius:999px;font-size:13px;font-weight:650;white-space:nowrap}.topbar .lang-switch:hover{background:#1F5A92;border-color:#689CD0;text-decoration:none}
+h1,h2,h3,h4{scroll-margin-top:60px}
+@media screen{.main a[id]:not([href]){scroll-margin-top:60px}}
+@media screen{.main a[id^="e"],.main .exercise-alias{scroll-margin-top:80px}}
+@media screen{.main .exercise-alias{top:0}}
+@media screen{.main a[id="e05-20"]{scroll-margin-top:60px}}
+@media screen{.main a[id="e17-11"],.main a[id="e17-12"],.main a[id="e17-13"],.main a[id="e17-14"],.main a[id="e17-15"]{scroll-margin-top:140px}}
+@media screen{.main .exercise-alias[id="e13-11"],.main .exercise-alias[id="e13-12"],.main .exercise-alias[id="e13-13"],.main .exercise-alias[id="e13-14"],.main .exercise-alias[id="e13-15"],.main .exercise-alias[id="e15-11"]:has(~ a[id="e17-11"]),.main .exercise-alias[id="e15-12"]:has(~ a[id="e17-12"]),.main .exercise-alias[id="e15-13"]:has(~ a[id="e17-13"]),.main .exercise-alias[id="e15-14"]:has(~ a[id="e17-14"]),.main .exercise-alias[id="e15-15"]:has(~ a[id="e17-15"]){scroll-margin-top:140px}}
+@media screen{.main a[id^="e06-"]{scroll-margin-top:60px}}
+@media screen{.main a[id^="e07-"],.main a[id^="e08-"]{scroll-margin-top:60px}}
+@media screen{.main a[id^="e11-"]{scroll-margin-top:60px}}
+@media screen{.main .separation-topic-anchor{scroll-margin-top:60px}}
+@media screen{.main .source-reproduction-anchor{scroll-margin-top:60px}}
+a:focus-visible,summary:focus-visible{outline:2.5px solid #B84A2E;outline-offset:3px}
+.skip-link{position:absolute;left:10px;top:-60px;z-index:30;background:#fff;color:#1C1E21;padding:8px 12px;border:2px solid #B84A2E}
+.skip-link:focus{top:8px}
+.wrap{display:flex;max-width:1280px;margin:0 auto;border-left:1px solid #E3DED3;border-right:1px solid #E3DED3}
+.side{width:300px;flex-shrink:0;padding:20px 15px;position:sticky;top:47px;height:calc(100vh - 47px);overflow-y:auto;background:#FAF8F3;border-right:1px solid #DDD7CB;font-size:13.5px}
+.side a{color:#1F5A92;text-decoration:none}.side a:hover{text-decoration:underline}
+.side .chap{margin:10px 0 2px;font-weight:700;color:#26292E}.side .chap.cur{color:#B84A2E}
+.side ul{margin:2px 0 6px;padding-left:16px;color:#5A554D}.side li{margin:2px 0}
+.main{flex:1;min-width:0;padding:32px 40px;background:#fff;overflow-wrap:anywhere}
+.main a{color:#1F5A92;text-underline-offset:.2em}
+.main p{margin:0 0 1.2em}.main ul,.main ol{margin:.55em 0 1.2em;padding-left:1.55em}.main li{margin:.42em 0}.main li>p{margin:.5em 0}
+.main p>strong:first-child,.main li>strong:first-child{color:#14171A}
+.main img{max-width:100%;height:auto;display:block;margin:18px auto;border:1px solid #DFDAD0;border-radius:5px;padding:4px;min-height:40px;background:#fff}
+.audio-sample{display:block;width:min(100%,460px);margin:8px 0 18px}.audio-sample:focus-visible{outline:2.5px solid #B84A2E}
+/* 表格列宽不能压掉原生播放按钮；手机上的表格可横向滚动。 */
+td .audio-sample{width:280px;min-width:280px}
+table:has(td .audio-sample) td:last-child{min-width:180px}
+table{border-collapse:collapse;margin:18px 0;max-width:100%;border-top:1.5px solid #2A2E34;border-bottom:1.5px solid #2A2E34}
+.table-scroll{max-width:100%;overflow-x:auto}
+.table-scroll:focus-visible{outline:2.5px solid #B84A2E;outline-offset:2px}
+th,td{border-top:1px solid #E3DED3;border-bottom:1px solid #E3DED3;border-left:none;border-right:none;padding:8px 11px;font-size:14px;text-align:left;line-height:1.58}
+th{background:#F5F2EB;color:#1C1E21;border-bottom:1px solid #8A8275;font-weight:700}
+tbody tr:nth-child(even) td{background:#FCFBF9}
+code{background:#F3F0E8;color:#1E3A56;border:1px solid #E0DBD0;padding:1px 5px;border-radius:4px;font-size:13.5px}
+pre{background:#F5F3EE;color:#1F2328;border:1px solid #DFDAD0;border-left:3.5px solid #5C564D;padding:14px 16px;border-radius:8px;overflow-x:auto}
+pre code{background:none;border:none;color:inherit;padding:0}
+blockquote{border-left:3.5px solid #B84A2E;margin:18px 0;padding:10px 16px;background:#F7F5F0;border-radius:0 4px 4px 0;color:#2B2E33}
+blockquote p:last-child{margin-bottom:0}
+hr{border:none;border-top:1px solid #DDD7CB;margin:26px 0}
+mjx-container[jax="CHTML"]{font-size:110%!important;overflow-x:auto;overflow-y:hidden;max-width:100%;min-width:0!important}
+body mjx-assistive-mml{width:1px!important;max-width:1px!important;min-width:0!important;height:1px!important;overflow:hidden!important}
+pre,.table-scroll,mjx-container[jax="CHTML"]{overflow-wrap:normal}
+.pn{display:flex;justify-content:space-between;margin:36px 0 12px;padding-top:16px;border-top:1px solid #DDD7CB;font-weight:650}
+.pn a{color:#1F5A92;text-decoration:none}.pn .off{color:#9C9588}
+.foot{color:#6E695F;font-size:13px;margin:20px 0 40px}
+.main h1{font-size:27px;color:#14171A;border-top:2.5px solid #1F5A92;border-bottom:1.5px solid #1C1E21;padding:12px 0 10px;margin:0 0 24px;line-height:1.3}
+.main h2{font-size:21px;color:#14171A;border-left:3.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;padding:1px 0 7px 11px;margin:36px 0 15px;line-height:1.35}
+.main h3{font-size:18px;color:#1F5A92;margin:26px 0 11px;line-height:1.4}
+.main h4{font-size:16px;color:#2C2F33;border-left:2.5px solid #B84A2E;padding:1px 0 1px 9px;margin:20px 0 9px;line-height:1.4}
+.main h3.tutorial-worked-heading{background:#FAF8F3;border-top:1.5px solid #237263;border-bottom:1px solid #E2DDD2;border-left:3.5px solid #237263;color:#1A574B;padding:7px 13px;border-radius:2px;margin:28px 0 13px;font-size:17.2px}
+.main h3.tutorial-exercise-heading,.main h4.tutorial-exercise-heading{background:#F5F2EB;border-top:1.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;border-left:4px solid #1F5A92;color:#14171A;padding:8px 14px;border-radius:2px;margin:30px 0 13px;font-size:17px;line-height:1.45}
+.main p.tutorial-exercise-lead{background:#F5F2EB;border-top:1.5px solid #1F5A92;border-bottom:1px solid #DDD7CB;border-left:4px solid #1F5A92;padding:10px 15px;border-radius:2px;margin:28px 0 13px}
+.main ol>li.tutorial-exercise-item{margin:18px 0}
+.main .tutorial-exercise-card{background:#FAF8F3;border:1px solid #E0DBD0;border-left:3.5px solid #1F5A92;border-radius:4px;padding:12px 16px}
+.main .tutorial-exercise-card>:first-child{margin-top:0}
+.main .tutorial-exercise-card>:last-child{margin-bottom:0}
+.main p.tutorial-solution-lead{background:#F3F6F4;border-left:3.5px solid #237263;padding:8px 13px;border-radius:0 3px 3px 0;margin-top:9px}
+.main p.tutorial-solution-lead>strong:first-child{color:#1D5E51}
+.main p.tutorial-problem-lead{border-left:2.5px solid #1F5A92;padding-left:11px}
+.main p.tutorial-problem-lead>strong:first-child{color:#1F5A92}
+.toc-mobile{display:none;margin:0 0 16px;border:1px solid #DDD7CB;border-radius:6px;padding:10px 14px;background:#FAF8F3;font-size:14px}
+.toc-mobile summary{cursor:pointer;font-weight:700;color:#1C1E21}
+.toc-mobile ul{padding-left:18px;margin:8px 0 2px}.toc-mobile a{color:#1F5A92;text-decoration:none}
+.topbtn{display:block;margin:20px auto;background:#24282E;color:#FAF8F3;border-radius:50%;width:42px;height:42px;text-align:center;line-height:42px;text-decoration:none;font-size:18px}
+.offline-note{display:none;background:#F7EFE4;border:1px solid #D9B78E;color:#6E4219;padding:8px 14px;font-size:13.5px}
+.anchor-alias{display:block;position:relative;top:-60px;visibility:hidden}
+.tutorial-math-tail{display:inline-block;white-space:nowrap;overflow-wrap:normal;vertical-align:baseline;overflow:visible}
+.tutorial-math-tail mjx-assistive-mml{max-width:1px!important;min-width:0!important;white-space:normal}
+.tutorial-exercise-id{white-space:nowrap;overflow-wrap:normal;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:.88em;background:#F3EFE6;color:#B84A2E;border:1px solid #DDD5C7;padding:0 5px;border-radius:3px;font-weight:700}
+:is(.tutorial-exercise-heading,.tutorial-exercise-lead) .tutorial-exercise-id{background:#1F5A92;color:#fff;border-color:#1F5A92;padding:1px 7px;margin-right:5px;font-size:.84em}
+.tutorial-table-label{white-space:nowrap;overflow-wrap:normal}
+@media(max-width:900px){.selection-readable-table{min-width:760px}.selection-readable-table th,.selection-readable-table td{min-width:10em}.selection-readable-table th:first-child,.selection-readable-table td:first-child{min-width:6em}}
+@media(max-width:900px){.side{display:none}.main{padding:20px}.toc-mobile{display:block}.topbar{font-size:14px}mjx-container[jax="CHTML"]:not([display="true"]){display:inline-block;vertical-align:middle}.aec-readable-table th,.aec-readable-table td,.wpe-readable-table th,.wpe-readable-table td,.separation-readable-table th,.separation-readable-table td{min-width:8em}.tracking-readable-table th,.tracking-readable-table td{min-width:8em}.industrial-readable-table th,.industrial-readable-table td{min-width:8em}}
+@media(max-width:900px){.noise-readable-table th:first-child,.noise-readable-table td:first-child{min-width:6em}}
+@media screen and (max-width:900px){.source-contract-readable-table th,.source-contract-readable-table td{min-width:10em}}
+@media screen and (max-width:900px){.tutorial-budget-table{min-width:var(--tutorial-table-width)}.tutorial-budget-table .tutorial-short-column{min-width:var(--tutorial-column-width);overflow-wrap:normal}}
+@media print{.topbar,.side,.pn,.topbtn,.toc-mobile{display:none}.main{padding:0}.table-scroll{overflow:visible}table{display:table}a{color:#000;text-decoration:none}pre{white-space:pre-wrap;background:#fff;color:#000;border:1px solid #ccc}}
+</style>
+<script>
+/* Shared publication layout. TeX, code, links and attributes remain intact. */
+(function () {
+  "use strict";
+  const mathClass = "tutorial-math-tail";
+  const idClass = "tutorial-exercise-id";
+  const ignored = "pre,code,a,script,style,textarea,mjx-container";
+  const suffix = /^(\s*(?:(?:m\/s[²³]?|rad\/s|rad\/m|deg\/s|μs|µs|ns|ms|s|dBFS|dB|kHz|MHz|Hz|ppm|rad|cm|mm|m|V|deg|°|%|％)(?:[²³])?(?=$|[\s，。；、：！？）,.!?;:)\]\u4e00-\u9fff])\s*[，。；、：！？）,.;:!?\]]*|[，。；、：！？）,.;:!?\]]+))/;
+  let ready = false;
+  let scheduled = false;
+  let printing = false;
+
+  function roots() {
+    const candidates = Array.from(document.querySelectorAll(".main,.chap"));
+    return candidates.filter(root => !candidates.some(other => other !== root && other.contains(root)));
+  }
+
+  function unwrapMath(root) {
+    for (const wrapper of root.querySelectorAll("." + mathClass)) {
+      const children = Array.from(wrapper.childNodes);
+      wrapper.replaceWith(...children);
+      // Merge only our adjacent ordinary text, never normalize a MathJax subtree.
+      for (const node of children) {
+        if (node.nodeType !== Node.TEXT_NODE) continue;
+        while (node.nextSibling && node.nextSibling.nodeType === Node.TEXT_NODE) {
+          node.data += node.nextSibling.data;
+          node.nextSibling.remove();
+        }
+      }
+    }
+  }
+
+  function protectExerciseIds(root) {
+    let count = 0;
+    {
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+      const nodes = [];
+      let node;
+      while ((node = walker.nextNode())) {
+        if (!node.parentElement.closest(ignored + ",." + idClass)) nodes.push(node);
+      }
+      for (const text of nodes) {
+        // A filename/path or a longer identifier is not a stable exercise ID.
+        const pattern = /(^|[^\p{L}\p{N}\p{M}_/\\.-])(E\d{2}-\d{2})(?![\p{L}\p{N}\p{M}_/\\-]|\.[\p{L}\p{N}\p{M}])/gu;
+        const matches = Array.from(text.data.matchAll(pattern));
+        for (const match of matches.reverse()) {
+          const start = match.index + match[1].length;
+          text.splitText(start + match[2].length);
+          const middle = text.splitText(start);
+          const span = document.createElement("span");
+          span.className = idClass;
+          middle.before(span);
+          span.append(middle);
+          count++;
+        }
+      }
+    }
+    return count;
+  }
+
+  function markShortLeads(root) {
+    let count = 0;
+    for (const paragraph of root.querySelectorAll("p")) {
+      if (paragraph.closest("pre,code,a,script,style,textarea")) continue;
+      const significant = Array.from(paragraph.childNodes).filter(node =>
+        node.nodeType !== Node.TEXT_NODE || node.data.trim());
+      const next = paragraph.nextElementSibling;
+      const isEmptyAnchor = node =>
+        node.nodeType === Node.ELEMENT_NODE &&
+        node.tagName === "A" && node.id &&
+        !node.hasAttribute("href") &&
+        Array.from(node.childNodes).every(child =>
+          child.nodeType === Node.TEXT_NODE && !child.data.trim());
+      const isAnchorAlias = node =>
+        node.nodeType === Node.ELEMENT_NODE &&
+        node.tagName === "SPAN" && node.id &&
+        node.classList.contains("anchor-alias") &&
+        Array.from(node.childNodes).every(child =>
+          child.nodeType === Node.TEXT_NODE && !child.data.trim());
+      const anchorOnly = significant.length >= 1 &&
+        significant.some(isEmptyAnchor) &&
+        significant.every(node => isEmptyAnchor(node) || isAnchorAlias(node));
+      paragraph.classList.toggle("tutorial-anchor-only", !!anchorOnly);
+      const short = significant.length === 1 &&
+        significant[0].nodeType === Node.ELEMENT_NODE &&
+        significant[0].tagName === "STRONG" &&
+        paragraph.textContent.trim().length <= 60 &&
+        next && /^(P|UL|OL|BLOCKQUOTE)$/.test(next.tagName) &&
+        next.textContent.trim().length > 0;
+      paragraph.classList.toggle("tutorial-short-lead", !!short);
+      if (short) count++;
+
+      const firstSig = significant[0];
+      const firstStrong = firstSig && firstSig.nodeType === Node.ELEMENT_NODE &&
+        firstSig.tagName === "STRONG" ? firstSig : null;
+      const strongText = firstStrong ? firstStrong.textContent.trim() : "";
+      const isExLead = !!(firstStrong && firstStrong.querySelector("." + idClass) &&
+        /^E\d{2}-\d{2}\b/.test(strongText));
+      const isSolutionLead = !isExLead &&
+        /^(参考答案|解答|答案|解(?=[：:。.\s]|$))/.test(strongText);
+      const isProblemLead = !isExLead && !isSolutionLead &&
+        /^(题目|问题|思考题)/.test(strongText);
+      paragraph.classList.toggle("tutorial-exercise-lead", isExLead);
+      paragraph.classList.toggle("tutorial-solution-lead", isSolutionLead);
+      paragraph.classList.toggle("tutorial-problem-lead", isProblemLead);
+    }
+    for (const heading of root.querySelectorAll("h3,h4")) {
+      const hasExId = !!heading.querySelector("." + idClass);
+      const text = heading.textContent.trim();
+      const isWorked = !hasExId && heading.tagName === "H3" &&
+        (/^(算例\s*\d|例\s*\d)/.test(text) || /完整手算/.test(text));
+      heading.classList.toggle("tutorial-exercise-heading", hasExId);
+      heading.classList.toggle("tutorial-worked-heading", isWorked);
+    }
+    for (const item of root.querySelectorAll("ol > li")) {
+      const existingCard = item.querySelector(":scope > .tutorial-exercise-card");
+      const scopeRoot = existingCard || item;
+      const hasSolution = !!scopeRoot.querySelector(":scope > p.tutorial-solution-lead");
+      const startsQuestion = /^思考题[：:]/.test(scopeRoot.textContent.trim());
+      if ((hasSolution || startsQuestion) && !existingCard) {
+        const card = document.createElement("article");
+        card.className = "tutorial-exercise-card";
+        card.append(...Array.from(item.childNodes));
+        item.append(card);
+      }
+      item.classList.toggle("tutorial-exercise-item", hasSolution || startsQuestion);
+    }
+    return count;
+  }
+
+  function apply() {
+    const content = roots();
+    for (const root of content) unwrapMath(root);
+    const plans = [];
+    const hosts = new Map();
+    let skippedWide = 0;
+    let idCount = 0;
+    let leadCount = 0;
+    for (const root of content) {
+      idCount += protectExerciseIds(root);
+      leadCount += markShortLeads(root);
+      // Read every width before any math wrapper is inserted, to avoid repeated
+      // synchronous layout across thousands of formulas in the combined book.
+      for (const math of root.querySelectorAll('mjx-container:not([display="true"])')) {
+        if (math.closest("pre,code,a,script,style,textarea")) continue;
+        const text = math.nextSibling;
+        if (!text || text.nodeType !== Node.TEXT_NODE) continue;
+        const match = text.data.match(suffix);
+        if (!match || match[0].length > 16) continue;
+        const host = math.closest("p,li,td,th,h1,h2,h3,h4");
+        if (!host) continue;
+        if (!hosts.has(host)) {
+          const style = getComputedStyle(host);
+          hosts.set(host, host.clientWidth - parseFloat(style.paddingLeft || 0) -
+            parseFloat(style.paddingRight || 0));
+        }
+        const range = document.createRange();
+        range.setStart(text, 0);
+        range.setEnd(text, match[0].length);
+        const style = getComputedStyle(math);
+        const width = math.getBoundingClientRect().width + range.getBoundingClientRect().width +
+          parseFloat(style.marginLeft || 0) + parseFloat(style.marginRight || 0);
+        if (width > hosts.get(host) - 8) {
+          skippedWide++;
+          continue;
+        }
+        plans.push({math, text, length: match[0].length});
+      }
+    }
+    for (const {math, text, length} of plans) {
+      const wrapper = document.createElement("span");
+      wrapper.className = mathClass;
+      math.before(wrapper);
+      wrapper.append(math);
+      text.splitText(length);
+      wrapper.append(text);
+    }
+    ready = true;
+    const result = {grouped: plans.length, skippedWide, newExerciseIds: idCount, shortLeads: leadCount};
+    window.ArrayTutorialLayout.lastRun = result;
+    return result;
+  }
+
+  function schedule() {
+    if (!ready || scheduled || printing) return;
+    scheduled = true;
+    requestAnimationFrame(() => {
+      scheduled = false;
+      if (printing) return;
+      apply();
+    });
+  }
+
+  window.ArrayTutorialLayout = {apply, lastRun: null};
+  window.addEventListener("resize", schedule);
+  // Chrome fires beforeprint while screen styles still apply. Remove screen
+  // groups before they can enlarge the print layout. The combined book is
+  // measured at its fixed A4 geometry during pageReady instead. Do not mutate
+  // thousands of nodes after the browser has begun its print snapshot: this
+  // can truncate the final pages even when a small fixture prints correctly.
+  // A synthetic beforeprint event is not a print test.
+  window.addEventListener("beforeprint", () => {
+    printing = true;
+    if (ready && document.documentElement.dataset.tutorialPrintLayout !== "a4") {
+      for (const root of roots()) unwrapMath(root);
+    }
+  });
+  window.addEventListener("afterprint", () => {
+    printing = false;
+    if (document.documentElement.dataset.tutorialPrintLayout !== "a4") schedule();
+  });
+  if (document.fonts) document.fonts.addEventListener("loadingdone", schedule);
+})();
+
+window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$']]}, startup: {pageReady: () => MathJax.startup.defaultPageReady().then(() => document.fonts.ready).then(() => ArrayTutorialLayout.apply())}};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"
+ onerror="document.getElementById('offnote').style.display='block';document.getElementById('offnote').textContent='MathJax script failed to load: displaying raw TeX source.';"></script>
+</head><body id="top"><a class="skip-link" href="#main-content">Skip to main content</a>
+<header class="topbar"><span><a href="index.html">🏠 Home</a> &nbsp;/&nbsp; Chapter 13 · Distributed Wireless Microphone Arrays</span><a class="lang-switch" href="https://nanless.github.io/microphone-array-tutorial/site/13_distributed-enhancement.html" data-lang-peer="../site/13_distributed-enhancement.html" lang="zh-CN" hreflang="zh-CN">中文</a></header>
+<div class="wrap"><nav class="side" aria-label="Course contents"><div class="chap"><a href="index.html">🏠 Course Overview (Home)</a></div>
+<div class="chap"><a href="00_math-foundations.html">Chapter 0 · Mathematical & Signal Analysis Foundations</a></div>
+<div class="chap"><a href="01_problem-definition.html">Chapter 1 · Problem Formulation & Binaural Cues</a></div>
+<div class="chap"><a href="02_basics-signal-model.html">Chapter 2 · Acoustic Propagation & Array Signal Model</a></div>
+<div class="chap"><a href="03_array-geometry.html">Chapter 3 · Microphone Array Geometry</a></div>
+<div class="chap"><a href="04_doa-estimation.html">Chapter 4 · Sound Source Localization (DOA)</a></div>
+<div class="chap"><a href="05_beamforming.html">Chapter 5 · Beamforming</a></div>
+<div class="chap"><a href="06_aec.html">Chapter 6 · Acoustic Echo Cancellation (AEC)</a></div>
+<div class="chap"><a href="07_wpe-dereverberation.html">Chapter 7 · Dereverberation (WPE)</a></div>
+<div class="chap"><a href="08_speech-separation.html">Chapter 8 · Multichannel Speech Separation</a></div>
+<div class="chap"><a href="09_source-tracking.html">Chapter 9 · Sound Source Tracking</a></div>
+<div class="chap"><a href="10_engineering-practice.html">Chapter 10 · Real-Time Systems, Evaluation & Deployment</a></div>
+<div class="chap"><a href="11_selection-guide.html">Chapter 11 · System Synthesis & Selection Guide</a></div>
+<div class="chap"><a href="12_acoustic-imaging.html">Chapter 12 · Acoustic Imaging & Noise Diagnostics</a></div>
+<div class="chap cur" aria-current="page">Chapter 13 · Distributed Wireless Microphone Arrays</div>
+<ul>
+<li><a href="13_distributed-enhancement.html#sec-u-85a673abdc">Chapter 13: Distributed Microphone Collaborative Enhancement</a></li>
+<li><a href="13_distributed-enhancement.html#sec-13-1">13.1 Why Multiple Nodes Exchange Sound</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-90709411f3">Define the Collaborative Output Objective First</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-3788d6a7b6">Terminology and Prerequisites for This Chapter</a></li>
+<li><a href="13_distributed-enhancement.html#sec-13-2">13.2 Writing Local Observations and Node-Specific References Separately</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-d788a59e39">Partitioning the Global Observation Vector by Node</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-0ee8fb3be5">Power Units and Zero-Mean Orthogonality Conditions</a></li>
+<li><a href="13_distributed-enhancement.html#sec-13-3">13.3 What Centralized MWF Actually Minimizes</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-e7c4ad50a3">Write the Complete Cost Function for Arbitrary Weights First</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-1c27a6f391">Target References Cannot Be Read Straight Off Noisy Recordings</a></li>
+<li><a href="13_distributed-enhancement.html#sec-13-4">13.4 Reference Scale and Conjugation in the Rank-One Model</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-06bf18fe6c">One Shared Source, Distinct Node-Specific Targets</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-0c12c0e742">Why Averaging Unnormalized MSE Across Nodes Distorts Rankings</a></li>
+<li><a href="13_distributed-enhancement.html#sec-13-5">13.5 Compressed Covariance and Effective Global Weights</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-046f36f540">Broadcast Streams Are Linear Combinations of Local Sensors</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-aee0967662">Local Filter Coefficients Versus Effective Global Weights</a></li>
+<li><a href="13_distributed-enhancement.html#sec-13-6">13.6 Proving Task-Specific Losslessness of Fixed Compression</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-ed6ce9ad17">Squared Error Yields a Directly Verifiable Subspace Criterion</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-a19a1aed1f">Qualify "Lossless" by the Exact Estimation Task</a></li>
+<li><a href="13_distributed-enhancement.html#sec-13-7">13.7 Spatially White Noise Benchmark: Combining Two Remote Microphones into One Stream</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-7de7445d38">Centralized Array Versus Local-Only Processing</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-cad58a5eb2">Term-by-Term Verification of the Compressed Local System</a></li>
+<li><a href="13_distributed-enhancement.html#sec-13-8">13.8 Correlated-Noise Counterexample: Useful Observations Outside the Target Direction</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-629a2558cc">Change Only the Noise Covariance, and the Old Broadcast Fails</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-291ee67b05">Why a Zero-Target Remote Combination Aids Speech Enhancement</a></li>
+<li><a href="13_distributed-enhancement.html#sec-13-9">13.9 Sequential DANSE: Updating Local Estimation and Outbound Broadcast Together</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-0a497f497b">Single-Stream Broadcast State and One Sequential Update</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-3caf917af6">Exact Hand Calculation of Three Round-Robin Updates</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-805f05fab9">Stale Receiving Weights Temporarily Inflate Error</a></li>
+<li><a href="13_distributed-enhancement.html#sec-13-10">13.10 Convergence Guarantees Across Sequential, Simultaneous, Relaxed, and Asynchronous Updates</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-a4b8963cb6">Sequential Convergence Under Exact Stationary Statistics</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-59ada50761">Simultaneous Updates Change Peer Inputs Underneath Each Solve</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-5ef04cce8e">Provably Convergent Relaxed DANSE Adds a Basis-Alignment Subproblem</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-98936dc1e1">Asynchronous Parameter Updates Still Require Synchronous Sample Clocks</a></li>
+<li><a href="13_distributed-enhancement.html#sec-13-11">13.11 Multiple Targets and Network Topologies: Broadcast Dimension Governs Retained Directions</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-2af1be99cb">Two Targets Cannot Be Verified Through a Single Weight Vector</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-f0a5664717">Full Meshes, Trees, and In-Network Sums Are Distinct Implementations</a></li>
+<li><a href="13_distributed-enhancement.html#sec-13-12">13.12 GEVD and Recent Extensions: Which Step Each Method Modifies</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-f3a3f13c44">Noise Whitening Turns the Noise Metric into a Euclidean Metric</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-eebb68cb7e">A Two-Channel Hand-Calculable GEVD Example</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-6eb50e1f71">Preconditions and Engineering Boundaries of Recent Extensions</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-feca4ecf5f">The Unified DASF Framework: When Compressed Subspaces Are Lossless for Constrained Beamformers</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-ce92d53417">TI-dMWF: Finite-Pass Discovery and Estimation Require a Structured Source Model</a></li>
+<li><a href="13_distributed-enhancement.html#sec-13-13">13.13 Finite WOLA: Covariance Update, Broadcast Update, and Waveform Activation Span Three Distinct Instants</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-e371ad9438">From Single-Bin Models to Bounded Time-Domain Waveforms</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-9d4cfd2ba6">Transform Old Statistics into New Coordinates Whenever Broadcast Versions Switch</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-967701cb62">Engineering Implementation Details in Author Reference MATLAB Code</a></li>
+<li><a href="13_distributed-enhancement.html#sec-13-14">13.14 Budgeting Communication Bitrate, Matrix Memory, and Solver Compute</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-9b785d2ad9">Declare the Transmitted Signal Representation First</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-6820a7782d">Smaller Per-Node Matrices Do Not Imply Smaller Network-Wide Memory</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-f17b2a9539">Global Residuals Must Audit Currently Active Effective Weights</a></li>
+<li><a href="13_distributed-enhancement.html#sec-13-15">13.15 Audio, Sampling Rate Offset, and Packet Loss: Honest Scoring on Finite Recordings</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-623a0e4b02">Audible Control WAVs from a Known-Statistics Mixture Model</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-96d55da66d">Three Scoring Tiers Answer Three Distinct Questions</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-4a1895565f">SRO Compensation Alters Observation Statistics Rather Than Labels Alone</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-6dca7a76e5">Quantization Error Bounds for PCM16 Remote Transport</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-b8b4c7f65b">Reproducible Entry Points and Audio Groups</a></li>
+<li><a href="13_distributed-enhancement.html#sec-13-16">13.16 Twenty-Seven Exercises: From Compression Directions to End-to-End System Verification</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-a3943562a4">E13-01: Node Partitioning and Node-Specific Target Scaling</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-54d80850e2">E13-02: Complete Decomposition of Centralized White-Noise MWF</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-53dc0db8b9">E13-03: Cost of Local-Only Processing</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-d9ea91fd73">E13-04: Recovering the 4-Mic Optimum from One Scalar Broadcast</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-47380e14ce">E13-05: Why the Old Broadcast Becomes Lossy Under Correlated Noise</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-7465496b69">E13-06: Noise-Adapted Scalar Broadcast</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-df3363dc59">E13-07: Complex Reference Conjugation Cannot Be Omitted</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-e0d800a01e">E13-08: Broadcast Rescaling Invariance of Effective Global Weights</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-c723855e07">E13-09: True Round-Robin Updates and Stale Receiving Snapshots</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-8044eb0094">E13-10: Finite Update Budgets Require Reporting Live Directions and Global Residuals</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-a2c1c11dee">E13-11: Simultaneous Versus Fixed Half-Step Relaxed Updates</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-99f682e1a9">E13-12: Rank-Deficient Broadcast Under Two Simultaneous Targets</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-4fc8d4635c">E13-13: Zero Broadcast and Safe Local Fallback</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-3509d6d9d7">E13-14: Indefinite Matrices, Ill-Conditioning, and Diagonal Loading</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-ff89e3d5af">E13-15: Payload Bitrates Across PCM16, Float32, Complex64 Spectra, and Cast Modes</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-909478c343">E13-16: Per-Node RAM, Network-Wide RAM, and Cumulative Matrix Solves</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-cfa88edb25">E13-17: Known SRO and Linear-Interpolation SRC Control</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-2937573082">E13-18: Matching Denominators Across Packet-Drop Gap Strategies</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-5bb4d7bee2">E13-19: Exact PCM16 Remote Transport Error Bounds</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-f556931e53">E13-20: Reconciling Analytical, Float, and Integer PCM Tiers</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-7899462658">E13-21: Divergence Counterexample Under Unrelaxed Jacobi Coupling</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-5ff26f9949">E13-22: Auditing the Three Step-Size Conditions of $rS$-DANSE$^+$</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-e856a0ada1">E13-23: Directed Message Trace for Tree Same-Sample In-Network Summation</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-16dee032e3">E13-24: Cross-Checking GEVD Whitening Against Direct MWF</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-f4ac4e7bd2">E13-25: Transforming Statistics into Consistent Coordinates After a Broadcast Version Switch</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-61499247af">E13-26: AES67/PTPv2 Sub-Microsecond Sync Budget Versus Software SRO-DANSE</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-4a21c0c812">E13-27: Unified DASF Subspaces: When Distributed MWF, MVDR, GEVD, and LCMV Align Versus Diverge</a></li>
+</ul>
+<div class="chap"><a href="14_spatial-wearable-arrays.html">Chapter 14 · Spatial Sound Fields & Wearable Arrays</a></div>
+<div class="chap"><a href="15_target-extraction-diarization.html">Chapter 15 · Conditioned Target Extraction & Diarization</a></div>
+<div class="chap"><a href="16_appendix-symbols-math.html">Chapter 16 · Appendix A: Symbols, Glossary & Math Lookup</a></div>
+<div class="chap"><a href="17_appendix-guide.html">Chapter 17 · Appendix B: Literature Map, Triage & Exercises</a></div>
+<div class="chap"><a href="research/index.html">Upstream Source Manuals</a></div></nav>
+<main class="main" id="main-content" tabindex="-1"><div class="offline-note" id="offnote">Offline mode: displaying raw TeX formulas; prose and audio remain unaffected.</div>
+<details class="toc-mobile"><summary>On this page</summary><nav aria-label="On this page"><ul>
+<li><a href="13_distributed-enhancement.html#sec-u-85a673abdc">Chapter 13: Distributed Microphone Collaborative Enhancement</a></li>
+<li><a href="13_distributed-enhancement.html#sec-13-1">13.1 Why Multiple Nodes Exchange Sound</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-90709411f3">Define the Collaborative Output Objective First</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-3788d6a7b6">Terminology and Prerequisites for This Chapter</a></li>
+<li><a href="13_distributed-enhancement.html#sec-13-2">13.2 Writing Local Observations and Node-Specific References Separately</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-d788a59e39">Partitioning the Global Observation Vector by Node</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-0ee8fb3be5">Power Units and Zero-Mean Orthogonality Conditions</a></li>
+<li><a href="13_distributed-enhancement.html#sec-13-3">13.3 What Centralized MWF Actually Minimizes</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-e7c4ad50a3">Write the Complete Cost Function for Arbitrary Weights First</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-1c27a6f391">Target References Cannot Be Read Straight Off Noisy Recordings</a></li>
+<li><a href="13_distributed-enhancement.html#sec-13-4">13.4 Reference Scale and Conjugation in the Rank-One Model</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-06bf18fe6c">One Shared Source, Distinct Node-Specific Targets</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-0c12c0e742">Why Averaging Unnormalized MSE Across Nodes Distorts Rankings</a></li>
+<li><a href="13_distributed-enhancement.html#sec-13-5">13.5 Compressed Covariance and Effective Global Weights</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-046f36f540">Broadcast Streams Are Linear Combinations of Local Sensors</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-aee0967662">Local Filter Coefficients Versus Effective Global Weights</a></li>
+<li><a href="13_distributed-enhancement.html#sec-13-6">13.6 Proving Task-Specific Losslessness of Fixed Compression</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-ed6ce9ad17">Squared Error Yields a Directly Verifiable Subspace Criterion</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-a19a1aed1f">Qualify "Lossless" by the Exact Estimation Task</a></li>
+<li><a href="13_distributed-enhancement.html#sec-13-7">13.7 Spatially White Noise Benchmark: Combining Two Remote Microphones into One Stream</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-7de7445d38">Centralized Array Versus Local-Only Processing</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-cad58a5eb2">Term-by-Term Verification of the Compressed Local System</a></li>
+<li><a href="13_distributed-enhancement.html#sec-13-8">13.8 Correlated-Noise Counterexample: Useful Observations Outside the Target Direction</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-629a2558cc">Change Only the Noise Covariance, and the Old Broadcast Fails</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-291ee67b05">Why a Zero-Target Remote Combination Aids Speech Enhancement</a></li>
+<li><a href="13_distributed-enhancement.html#sec-13-9">13.9 Sequential DANSE: Updating Local Estimation and Outbound Broadcast Together</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-0a497f497b">Single-Stream Broadcast State and One Sequential Update</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-3caf917af6">Exact Hand Calculation of Three Round-Robin Updates</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-805f05fab9">Stale Receiving Weights Temporarily Inflate Error</a></li>
+<li><a href="13_distributed-enhancement.html#sec-13-10">13.10 Convergence Guarantees Across Sequential, Simultaneous, Relaxed, and Asynchronous Updates</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-a4b8963cb6">Sequential Convergence Under Exact Stationary Statistics</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-59ada50761">Simultaneous Updates Change Peer Inputs Underneath Each Solve</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-5ef04cce8e">Provably Convergent Relaxed DANSE Adds a Basis-Alignment Subproblem</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-98936dc1e1">Asynchronous Parameter Updates Still Require Synchronous Sample Clocks</a></li>
+<li><a href="13_distributed-enhancement.html#sec-13-11">13.11 Multiple Targets and Network Topologies: Broadcast Dimension Governs Retained Directions</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-2af1be99cb">Two Targets Cannot Be Verified Through a Single Weight Vector</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-f0a5664717">Full Meshes, Trees, and In-Network Sums Are Distinct Implementations</a></li>
+<li><a href="13_distributed-enhancement.html#sec-13-12">13.12 GEVD and Recent Extensions: Which Step Each Method Modifies</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-f3a3f13c44">Noise Whitening Turns the Noise Metric into a Euclidean Metric</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-eebb68cb7e">A Two-Channel Hand-Calculable GEVD Example</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-6eb50e1f71">Preconditions and Engineering Boundaries of Recent Extensions</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-feca4ecf5f">The Unified DASF Framework: When Compressed Subspaces Are Lossless for Constrained Beamformers</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-ce92d53417">TI-dMWF: Finite-Pass Discovery and Estimation Require a Structured Source Model</a></li>
+<li><a href="13_distributed-enhancement.html#sec-13-13">13.13 Finite WOLA: Covariance Update, Broadcast Update, and Waveform Activation Span Three Distinct Instants</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-e371ad9438">From Single-Bin Models to Bounded Time-Domain Waveforms</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-9d4cfd2ba6">Transform Old Statistics into New Coordinates Whenever Broadcast Versions Switch</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-967701cb62">Engineering Implementation Details in Author Reference MATLAB Code</a></li>
+<li><a href="13_distributed-enhancement.html#sec-13-14">13.14 Budgeting Communication Bitrate, Matrix Memory, and Solver Compute</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-9b785d2ad9">Declare the Transmitted Signal Representation First</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-6820a7782d">Smaller Per-Node Matrices Do Not Imply Smaller Network-Wide Memory</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-f17b2a9539">Global Residuals Must Audit Currently Active Effective Weights</a></li>
+<li><a href="13_distributed-enhancement.html#sec-13-15">13.15 Audio, Sampling Rate Offset, and Packet Loss: Honest Scoring on Finite Recordings</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-623a0e4b02">Audible Control WAVs from a Known-Statistics Mixture Model</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-96d55da66d">Three Scoring Tiers Answer Three Distinct Questions</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-4a1895565f">SRO Compensation Alters Observation Statistics Rather Than Labels Alone</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-6dca7a76e5">Quantization Error Bounds for PCM16 Remote Transport</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-b8b4c7f65b">Reproducible Entry Points and Audio Groups</a></li>
+<li><a href="13_distributed-enhancement.html#sec-13-16">13.16 Twenty-Seven Exercises: From Compression Directions to End-to-End System Verification</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-a3943562a4">E13-01: Node Partitioning and Node-Specific Target Scaling</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-54d80850e2">E13-02: Complete Decomposition of Centralized White-Noise MWF</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-53dc0db8b9">E13-03: Cost of Local-Only Processing</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-d9ea91fd73">E13-04: Recovering the 4-Mic Optimum from One Scalar Broadcast</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-47380e14ce">E13-05: Why the Old Broadcast Becomes Lossy Under Correlated Noise</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-7465496b69">E13-06: Noise-Adapted Scalar Broadcast</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-df3363dc59">E13-07: Complex Reference Conjugation Cannot Be Omitted</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-e0d800a01e">E13-08: Broadcast Rescaling Invariance of Effective Global Weights</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-c723855e07">E13-09: True Round-Robin Updates and Stale Receiving Snapshots</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-8044eb0094">E13-10: Finite Update Budgets Require Reporting Live Directions and Global Residuals</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-a2c1c11dee">E13-11: Simultaneous Versus Fixed Half-Step Relaxed Updates</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-99f682e1a9">E13-12: Rank-Deficient Broadcast Under Two Simultaneous Targets</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-4fc8d4635c">E13-13: Zero Broadcast and Safe Local Fallback</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-3509d6d9d7">E13-14: Indefinite Matrices, Ill-Conditioning, and Diagonal Loading</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-ff89e3d5af">E13-15: Payload Bitrates Across PCM16, Float32, Complex64 Spectra, and Cast Modes</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-909478c343">E13-16: Per-Node RAM, Network-Wide RAM, and Cumulative Matrix Solves</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-cfa88edb25">E13-17: Known SRO and Linear-Interpolation SRC Control</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-2937573082">E13-18: Matching Denominators Across Packet-Drop Gap Strategies</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-5bb4d7bee2">E13-19: Exact PCM16 Remote Transport Error Bounds</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-f556931e53">E13-20: Reconciling Analytical, Float, and Integer PCM Tiers</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-7899462658">E13-21: Divergence Counterexample Under Unrelaxed Jacobi Coupling</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-5ff26f9949">E13-22: Auditing the Three Step-Size Conditions of $rS$-DANSE$^+$</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-e856a0ada1">E13-23: Directed Message Trace for Tree Same-Sample In-Network Summation</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-16dee032e3">E13-24: Cross-Checking GEVD Whitening Against Direct MWF</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-f4ac4e7bd2">E13-25: Transforming Statistics into Consistent Coordinates After a Broadcast Version Switch</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-61499247af">E13-26: AES67/PTPv2 Sub-Microsecond Sync Budget Versus Software SRO-DANSE</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-4a21c0c812">E13-27: Unified DASF Subspaces: When Distributed MWF, MVDR, GEVD, and LCMV Align Versus Diverge</a></li>
+</ul></nav></details>
+<blockquote>
+<p>⚠️ This chapter is Chapter 13 of the main text (Extended Topic II; the main text comprises 16 chapters in total, Chapters 0–15, where Chapters 12–15 are four extended special topics accompanied by Appendices A and B), immediately following Chapter 12 on acoustic imaging, introducing how multiple pickup nodes collaborate to enhance sound under constrained communication bandwidth. Block Schur complements and Generalized Eigenvalue Decomposition derivations can be reviewed in <a href="00_math-foundations.html#sec-0-3">Chapter 0, §0.3</a> and <a href="00_math-foundations.html#sec-0-4">§0.4</a>, and global notation references appear in <a href="16_appendix-symbols-math.html">Chapter 16, Appendix A</a>.</p>
+<p>Overview Home: <a href="index.html">🏠 Course Overview</a> ｜ Previous: <a href="12_acoustic-imaging.html">Chapter 12 · Acoustic Imaging & Noise Diagnostics</a> ｜ Next: <a href="14_spatial-wearable-arrays.html">Chapter 14 · Spatial Sound Fields & Wearable Arrays</a></p>
+</blockquote>
+<hr />
+<span id="sec-1" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-0d79586b40" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-232577b03e" class="anchor-alias" aria-hidden="true"></span><h1 id="sec-u-85a673abdc">Chapter 13: Distributed Microphone Collaborative Enhancement</h1>
+<span id="sec-2" class="anchor-alias" aria-hidden="true"></span><span id="sec-15-1" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-13-1">13.1 Why Multiple Nodes Exchange Sound</h2>
+<span id="sec-3" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-bb6beac295" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-90709411f3">Define the Collaborative Output Objective First</h3>
+<p>Imagine a long conference table holding two smart pickup devices, each equipped with two microphones: Device 1 sits right next to the main presenter, whereas Device 2 sits beside an HVAC diffuser or projector cooling fan. From a signal-processing standpoint, a remote device's audio offers two distinct forms of collaborative value—it might sit closer to the target talker than the local device, supplying a high-SNR speech observation; or it might sit right next to an interferer, supplying the clean noise reference the local device desperately needs to cancel correlated interference. Crudely "switching on only the loudest device" throws away the spatial noise-cancellation aperture of every other device; conversely, running ASR independently on each device and merging transcripts at the text level abandons waveform-level phase coherence across devices altogether.</p>
+<p>This chapter focuses on <strong>waveform-level distributed collaborative enhancement</strong>: each node in a Wireless Acoustic Sensor Network (WASN) retains all of its own local multi-channel observations while receiving a small number of linearly compressed broadcast streams from peer nodes, fusing both locally to synthesize its own enhanced waveform. Crucially, distinct nodes typically seek to recover the target acoustic image as heard <em>at their own physical location</em> (for instance, left and right binaural hearing-aid nodes must preserve their respective head-related binaural cues), so optimal output waveforms need not be sample-wise identical across nodes. Formulating this rigorously requires unifying three questions inside one mathematical model: "which observation dimensions did communication compression discard?", "which reference acoustic image does each node target?", and "when do node clocks and broadcast filters change?"</p>
+<p><a href="10_engineering-practice.html#sec-10-7">Chapter 10, §10.7</a> surveyed time-axis alignment, amplitude–phase consistency, and multi-stream fusion from a system-architecture perspective. Here we dive into the algorithmic core to answer four progressive questions step by step: without transmitting all raw microphone channels, under what exact condition can nodes still attain the optimal linear estimate of a centralized full array? How do nodes alternately update broadcast filters without knowing global statistics? How do multiple sources and non-fully-connected network topologies bound broadcast dimensionality? And when transitioning to finite windowed frames, 16-bit quantization, crystal Sampling Rate Offset (SRO), and wireless packet loss, how do we transform statistical coordinates and score errors honestly?</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable data table"><table>
+<thead>
+<tr>
+<th scope="col">Collaboration Tier</th>
+<th scope="col">Primary Inter-Node Exchange</th>
+<th scope="col">Output Form and Fundamental Limits</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Centralized full-channel enhancement</td>
+<td>All raw multi-channel waveforms, or equivalent global cross-spectral statistics</td>
+<td>Solved at a single fusion center; demands high backhaul bandwidth and strict sample-level synchronization</td>
+</tr>
+<tr>
+<td>Best-channel / device selection</td>
+<td>Speech quality scores plus the selected node's audio stream</td>
+<td>Outputs audio from one winning device; forfeits spatial interference cancellation across unselected nodes</td>
+</tr>
+<tr>
+<td>Waveform-level distributed enhancement</td>
+<td>A few locally compressed waveforms / short-time complex spectra plus control state</td>
+<td>Each node solves independently for its own node-specific target image; requires compression-subspace and sample-sync conditions</td>
+</tr>
+<tr>
+<td>Post-ASR transcript fusion</td>
+<td>Word-token lattices, confidence scores, and speaker timestamps</td>
+<td>Outputs merged text transcripts only; produces no cross-device noise-suppressed audible waveform</td>
+</tr>
+</tbody>
+</table></div>
+<span id="sec-4" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-11d086e33e" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-3788d6a7b6">Terminology and Prerequisites for This Chapter</h3>
+<p>Core abbreviations and their roles in this chapter are summarized below for quick reference:</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable data table"><table>
+<thead>
+<tr>
+<th scope="col">Abbreviation</th>
+<th scope="col">Full Term</th>
+<th scope="col">Role in This Chapter</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>WASN</td>
+<td>Wireless Acoustic Sensor Network</td>
+<td>Collaborative network of pickup nodes, each carrying local microphones, compute, and wireless links</td>
+</tr>
+<tr>
+<td>LMMSE</td>
+<td>Linear Minimum Mean-Squared Error</td>
+<td>Statistical criterion minimizing mean-square estimation error of a target acoustic image over linear combinations of available observations</td>
+</tr>
+<tr>
+<td>MWF</td>
+<td>Multichannel Wiener Filter</td>
+<td>Estimates the target acoustic image at a designated reference channel under the LMMSE criterion from second-order mixture statistics</td>
+</tr>
+<tr>
+<td>DANSE</td>
+<td>Distributed Adaptive Node-specific Signal Estimation</td>
+<td>Classical distributed algorithm updating local estimation weights and outbound broadcast compression filters sequentially or simultaneously</td>
+</tr>
+<tr>
+<td>TI</td>
+<td>Topology Independent</td>
+<td>Extensions relaxing full-mesh broadcast assumptions via multi-hop in-network aggregation over trees or general connected graphs</td>
+</tr>
+<tr>
+<td>GEVD</td>
+<td>Generalized Eigenvalue Decomposition</td>
+<td>Extracts low-rank target speech subspaces under a noise-whitened metric to suppress finite-snapshot covariance errors</td>
+</tr>
+<tr>
+<td>WOLA</td>
+<td>Weighted Overlap-Add</td>
+<td>Time–frequency framework windowing time streams into frequency bins for filtering before inverse transform, synthesis windowing, and overlap-add</td>
+</tr>
+<tr>
+<td>SRO</td>
+<td>Sampling Rate Offset</td>
+<td>Relative sampling-clock frequency skew between independent crystal oscillators across nodes (typically in parts per million, $\mathrm{ppm}$)</td>
+</tr>
+</tbody>
+</table></div>
+<p>Before reading ahead, review <a href="05_beamforming.html#sec-5-5-1">Chapter 5, §5.5.1 on Multichannel Wiener Filtering (MWF)</a>, alongside complex inner products, Hermitian positive-definite matrices, and generalized eigenvalues in <a href="00_math-foundations.html#sec-0-3">Chapter 0, §§0.3–0.4</a> and <a href="16_appendix-symbols-math.html#sec-16-3">Appendix A, §16.3</a>. To build rock-solid geometric intuition for "why compressing down to a single broadcast channel can incur zero performance loss," Sections 13.2–13.11 start at a single frequency bin under ideal synchronous sampling and exact population second-order statistics; Sections 13.12–13.15 then introduce subspace estimation, WOLA frame-boundary timing, bandwidth/memory budgets, and SRO / packet-drop compensation.</p>
+<span id="sec-5" class="anchor-alias" aria-hidden="true"></span><span id="sec-15-2" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-13-2">13.2 Writing Local Observations and Node-Specific References Separately</h2>
+<span id="sec-6" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-52d90c84e3" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-d788a59e39">Partitioning the Global Observation Vector by Node</h3>
+<p>Consider a network of $U$ collaborative pickup nodes where node $u$ carries $M_u$ local microphones ($u = 1, \ldots, U$), giving $M = \sum_{u=1}^U M_u$ microphones network-wide. Fixing frequency bin $k$, stack node $u$'s local frequency-domain observations at frame $\ell$ into column vector $\vec x_u[k, \ell] \in \mathbb{C}^{M_u \times 1}$. Stacking all $U$ nodes vertically from a god's-eye view forms the $M$-dimensional global observation vector $\vec x \in \mathbb{C}^{M \times 1}$. Starting with a single latent scalar target source $s$ (omitting fixed $[k, \ell]$ indices below):</p>
+<p>$$\begin{gathered}
+\vec x=[\vec x_1^\top,\ldots,\vec x_U^\top]^\top,\\
+\vec x=\vec a s+\vec n,\qquad d_u=c_u s.
+\end{gathered}\tag{13-1}$$</p>
+<p>Here $s \in \mathbb{C}$ is the dry source phasor at this bin, $\vec a \in \mathbb{C}^{M \times 1}$ is the acoustic transfer vector from the source to all $M$ microphones, and $\vec n \in \mathbb{C}^{M \times 1}$ is the global additive noise vector.</p>
+<p>Pay special attention to $d_u = c_u s$ on the right: it defines <strong>the node-specific target reference signal that node $u$ wishes to recover</strong>, where scalar $c_u \in \mathbb{C}$ is node $u$'s chosen reference acoustic transfer entry. Practically, node $u$ typically designates one of its own local microphones (global index $r_u$) as its reference sensor so $c_u = a_{r_u}$—preserving the exact amplitude and phase (acoustic image) of target speech arriving at microphone $r_u$ while stripping away additive noise $n_{r_u}$.</p>
+<p>Throughout this chapter we use forward Fourier kernel $e^{-\mathrm{j}2\pi f t}$ and conjugate inner-product filter output $y = \vec w^H\vec x$. Index conventions: frequency bin $k$, frame $\ell$, time sample $n$, node indices $u, v$, iteration index $i$, multi-source latent target subspace dimension $S$, outbound compressed broadcast dimension $Q$ per node, and acoustic wavenumber $\kappa = 2\pi f / c$.</p>
+<p>Transfer vector $\vec a$ in Eq. (13-1) may represent either free-field direct propagation or room early-reflection transfer functions; finite frame lengths and causal hop delays upon returning to the time domain are examined in §13.13.</p>
+<span id="sec-7" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-0c4a79c42a" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-0ee8fb3be5">Power Units and Zero-Mean Orthogonality Conditions</h3>
+<p>Assuming zero-mean random variables $s$ and $\vec n$ with finite second moments and source–noise orthogonality $\mathbb{E}[s\vec n^H] = \vec 0^H$, dry source power $\phi_s$, global noise covariance $\mathbf R_{nn}$, and global observation covariance $\mathbf R_{xx}$ are:</p>
+<p>$$\begin{aligned}
+\phi_s&=\mathbb{E}[|s|^2],\qquad
+\mathbf R_{nn}=\mathbb{E}[\vec n\vec n^H],\\
+\mathbf R_{xx}&=\mathbb{E}[\vec x\vec x^H]
+=\phi_s\vec a\vec a^H+\mathbf R_{nn}.
+\end{aligned}\tag{13-2}$$</p>
+<p>Here $\phi_s \ge 0$ is real, and $\mathbf R_{nn}, \mathbf R_{xx} \in \mathbb{C}^{M \times M}$ are Hermitian positive semidefinite. Uncalibrated digital inputs carry dimensionless squared digital units, acquiring physical $\mathrm{Pa}^2$ units only when all channels are pressure-calibrated (with $\vec a$ and $\vec w$ dimensionless). Switching FFT normalization conventions requires scaling $\mathbf R_{xx}$, cross-correlation vectors, and reference power $\phi_{d_u}$ identically.</p>
+<p>Note a statistical subtlety: finite-$L$ sample outer-product averages $\frac{1}{L}\sum_{\ell=1}^L \vec x_\ell\vec x_\ell^H$ are uncentered sample second moments, differing slightly from centered sample covariances whenever finite sample means are nonzero (<a href="16_appendix-symbols-math.html#sec-u-e77b562c1e">Appendix A, E16-02</a>). Sections 13.3–13.11 analyze exact population second moments, while §13.15 specifies exact integer-period steady-window averaging on deterministic synthetic waveforms.</p>
+<span id="sec-8" class="anchor-alias" aria-hidden="true"></span><span id="sec-15-3" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-13-3">13.3 What Centralized MWF Actually Minimizes</h2>
+<span id="sec-9" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-abd016302e" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-e7c4ad50a3">Write the Complete Cost Function for Arbitrary Weights First</h3>
+<p>Before introducing communication compression, we establish the centralized gold standard: if bandwidth were unlimited so node $u$ could linearly filter all $M$ microphones network-wide via $\hat d_u = \vec w^H\vec x$, which weight vector $\vec w$ is optimal? Multichannel Wiener Filtering (MWF) minimizes Mean-Squared Error (MSE) between node reference $d_u$ and estimate $\hat d_u$. Writing reference power $\phi_{d_u} = \mathbb{E}[|d_u|^2]$ and $M \times 1$ cross-correlation vector $\vec r_{xd_u} = \mathbb{E}[\vec x d_u^*]$, expanding MSE cost $J_u(\vec w)$ for <strong>any arbitrary</strong> weight vector $\vec w \in \mathbb{C}^{M \times 1}$ gives:</p>
+<p>$$\begin{aligned}
+J_u(\vec w)&=\mathbb{E}\big[|d_u-\vec w^H\vec x|^2\big]\\
+&=\mathbb{E}\big[(d_u-\vec w^H\vec x)(d_u^*-\vec x^H\vec w)\big]\\
+&=\phi_{d_u}-\vec w^H\vec r_{xd_u}-\vec r_{xd_u}^H\vec w
++\vec w^H\mathbf R_{xx}\vec w\\
+&=\phi_{d_u}-2\operatorname{Re}(\vec w^H\vec r_{xd_u})
++\vec w^H\mathbf R_{xx}\vec w.
+\end{aligned}\tag{13-3}$$</p>
+<p>Conjugate scalars $\vec w^H\vec r_{xd_u}$ and $\vec r_{xd_u}^H\vec w$ sum to $2\operatorname{Re}(\vec w^H\vec r_{xd_u})$. Keep the universality of Eq. (13-3) front and center: <strong>whether $\vec w$ is the global optimum, a mid-iteration unconverged estimate, or a stale effective weight transiently mismatched after a remote broadcast update, plugging the actually applied global weight into Eq. (13-3) always yields exact true MSE.</strong></p>
+<p>When $\mathbf R_{xx} \succ 0$ is strictly positive definite, setting the Wirtinger gradient with respect to $\vec w^*$ (<a href="16_appendix-symbols-math.html#sec-16-3">Appendix A, §16.3</a>), $\mathbf R_{xx}\vec w - \vec r_{xd_u}$, to zero yields the unique centralized Wiener–Hopf normal equations, optimal weight $\vec w_u^\star$, and centralized MMSE floor $J_u^\star$:</p>
+<p>$$\begin{aligned}
+\mathbf R_{xx}\vec w_u^\star&=\vec r_{xd_u},\qquad
+\vec w_u^\star=\mathbf R_{xx}^{-1}\vec r_{xd_u},\\
+J_u^\star&=\phi_{d_u}
+-\vec r_{xd_u}^H\mathbf R_{xx}^{-1}\vec r_{xd_u}.
+\end{aligned}\tag{13-4}$$</p>
+<p>Numerical implementations solve $\mathbf R_{xx}\vec w_u^\star = \vec r_{xd_u}$ via Hermitian positive-definite Cholesky solvers rather than forming $\mathbf R_{xx}^{-1}$ explicitly. Crucially, the simplified expression $J_u^\star = \phi_{d_u} - \vec r_{xd_u}^H\vec w_u^\star$ in the bottom line of Eq. (13-4) cancels quadratic terms via $\mathbf R_{xx}\vec w_u^\star = \vec r_{xd_u}$ and therefore <strong>holds exclusively at exact Wiener–Hopf solutions</strong>—any suboptimal or stale weight must be evaluated via all three terms of Eq. (13-3) (<a href="https://homes.esat.kuleuven.be/~abertran/reports/09-65.pdf">Bertrand &amp; Moonen 2010, Part I §II-A Eqs. (1), (2)</a>).</p>
+<span id="sec-10" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-d3d14e7a97" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-1c27a6f391">Target References Cannot Be Read Straight Off Noisy Recordings</h3>
+<p>Newcomers to MWF often ask: "Since microphone $r_u$ is our reference channel, why not plug raw recording $x_{r_u}$ in for $d_u$ when forming $\mathbb{E}[\vec x x_{r_u}^*]$?" <strong>Never!</strong> Because $x_{r_u} = c_u s + n_{r_u}$ contains channel $r_u$'s own noise $n_{r_u}$, substituting $x_{r_u}$ for $d_u$ turns the normal equations into $\mathbf R_{xx}\vec w = \mathbf R_{xx}\vec e_{r_u}$, collapsing trivially to unit coordinate vector $\vec w = \vec e_{r_u}$—passing the noisy reference channel through untouched with zero noise reduction!</p>
+<p>In real deployments where clean $d_u$ is unobservable, Voice Activity Detection (VAD) or time–frequency masks estimate $\hat{\mathbf R}_{nn}$ during noise-only frames and $\hat{\mathbf R}_{xx}$ during active speech, forming target covariance $\hat{\mathbf R}_{ss} = \hat{\mathbf R}_{xx} - \hat{\mathbf R}_{nn}$ (or the robust low-rank GEVD estimate of §13.12) and extracting column $r_u$ as $\vec r_{xd_u} = \hat{\mathbf R}_{ss}\vec e_{r_u}$. Note also that Eq. (13-3) corresponds to unweighted MWF (speech-distortion-weighted SDW-MWF of <a href="05_beamforming.html">Chapter 5</a> at trade-off parameter $\mu = 1$); if nodes choose <em>different</em> noise-weighting factors $\mu_u$, their centralized optimal weights cease to be collinear under multi-source noise and single-channel broadcast theorems require modification.</p>
+<span id="sec-11" class="anchor-alias" aria-hidden="true"></span><span id="sec-15-4" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-13-4">13.4 Reference Scale and Conjugation in the Rank-One Model</h2>
+<span id="sec-12" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-16913f1e5b" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-06bf18fe6c">One Shared Source, Distinct Node-Specific Targets</h3>
+<p>Under single-point-source rank-one model Eq. (13-1), centralized optimal weights Eq. (13-4) admit an illuminating closed form. Substituting $d_u = c_u s$ with $\mathbb{E}[s\vec n^H] = \vec 0^H$ gives:</p>
+<p>$$\begin{aligned}
+\vec r_{xd_u}&=\mathbb{E}[(\vec a s+\vec n)c_u^* s^*]
+=\phi_s c_u^*\vec a,\\
+\phi_{d_u}&=\mathbb{E}[|c_u s|^2]=|c_u|^2\phi_s.
+\end{aligned}\tag{13-5}$$</p>
+<p>Assuming $\phi_s > 0$, $\vec a \ne \vec 0$, and $\mathbf R_{nn} \succ 0$, define key dimensionless scalar $q = \vec a^H\mathbf R_{nn}^{-1}\vec a > 0$ (physically, $\phi_s q$ is the <strong>global maximum output SNR</strong> after full-array matched filtering). Without memorizing Sherman–Morrison, left-multiplying $\mathbf R_{nn}^{-1}\vec a$ by $\mathbf R_{xx}$ directly yields:</p>
+<p>$$\begin{aligned}
+\mathbf R_{xx}(\mathbf R_{nn}^{-1}\vec a)
+&=(\mathbf R_{nn}+\phi_s\vec a\vec a^H)\mathbf R_{nn}^{-1}\vec a\\
+&=\vec a+\phi_s\vec a(\vec a^H\mathbf R_{nn}^{-1}\vec a)
+=(1+\phi_s q)\vec a.
+\end{aligned}$$</p>
+<p>Left-multiplying by $\mathbf R_{xx}^{-1}$ and dividing by $(1 + \phi_s q)$ gives $\mathbf R_{xx}^{-1}\vec a = \mathbf R_{nn}^{-1}\vec a / (1 + \phi_s q)$. Combining with Eqs. (13-4)–(13-5) produces node $u$'s centralized rank-one weight, MMSE, and Normalized MSE (NMSE):</p>
+<p>$$\begin{aligned}
+\vec w_u^\star&=\frac{\phi_s c_u^*}{1+\phi_s q}
+\mathbf R_{nn}^{-1}\vec a,\\
+J_u^\star&=\phi_{d_u}-\frac{\phi_s^2|c_u|^2 q}{1+\phi_s q}
+=\frac{|c_u|^2\phi_s}{1+\phi_s q},\\
+\operatorname{NMSE}_u^\star&=\frac{J_u^\star}{\phi_{d_u}}
+=\frac{1}{1+\phi_s q}.
+\end{aligned}\tag{13-6}$$</p>
+<p>Pause to appreciate the physical factorization in Line 1 of Eq. (13-6). Multiplying numerator and denominator by $q = \vec a^H\mathbf R_{nn}^{-1}\vec a$ and writing centralized MVDR beamformer $\vec w_{\mathrm{MVDR}} = (\mathbf R_{nn}^{-1}\vec a)/q$ factors $\vec w_u^\star$ into <strong>three cascaded physical operators</strong>:</p>
+<p>$$\begin{aligned}
+\vec w_{\mathrm{MVDR}}
+&=\frac{1}{q}\mathbf R_{nn}^{-1}\vec a,\\
+\vec w_u^\star&=\vec w_{\mathrm{MVDR}}\cdot c_u^*
+\cdot\frac{\phi_s q}{1+\phi_s q}.
+\end{aligned}$$</p>
+<p>Writing scalar Wiener gain $g_{\mathrm{W}} = \frac{\phi_s q}{1 + \phi_s q}$, conjugate inner-product output $\hat d_u = (\vec w_u^\star)^H\vec x = g_{\mathrm{W}} c_u(\vec w_{\mathrm{MVDR}}^H\vec x)$ executes three transparent steps:</p>
+<ol>
+<li><strong>Step 1 (Network-wide common MVDR spatial filter)</strong>: Regardless of node $u$, extract dry source $s$ distortionlessly via the exact same global Minimum Variance Distortionless Response beamformer $\vec w_{\mathrm{MVDR}}$ while minimizing spatial output noise (output power $\phi_s + 1/q$, achieving output SNR $\rho = \mathrm{SNR}_{\mathrm{out}} = \phi_s q$);</li>
+<li><strong>Step 2 (Node-specific acoustic image projection)</strong>: Multiply by node $u$'s reference transfer factor $c_u$ (appearing conjugated as $c_u^*$ inside $\vec w_u^\star$ so $\vec w^H\vec x$ restores $c_u$), projecting dry $s$ onto node $u$'s true acoustic image $c_u s$;</li>
+<li><strong>Step 3 (Single-channel real Wiener shrinkage)</strong>: Multiply by scalar Wiener gain $g_{\mathrm{W}} = \frac{\rho}{1 + \rho} \in (0, 1)$, trading a slight target amplitude shrinkage for steeper residual noise reduction to land squarely at $\operatorname{NMSE}_u^\star = 1 / (1 + \rho)$.</li>
+</ol>
+<p>This three-factor structure immediately reveals the deepest secret of distributed collaborative enhancement: <strong>because centralized optimal weights $\vec w_u^\star$ across every node $u = 1, \ldots, U$ are merely distinct complex scalar multiples of the <em>exact same</em> global vector $\mathbf R_{nn}^{-1}\vec a$, each node only ever needs to contribute a <em>one-dimensional</em> spatial projection to the rest of the network!</strong> (Note that $\operatorname{NMSE}_u^\star$ requires $\phi_{d_u} > 0$, i.e., $\phi_s > 0$ and $c_u \ne 0$.)</p>
+<span id="sec-13" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-dd70b69ef3" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-0c12c0e742">Why Averaging Unnormalized MSE Across Nodes Distorts Rankings</h3>
+<p>Equation (13-6) exposes a classic distributed evaluation trap. Suppose Node 1 sits farther from the talker with $d_1 = s$, while Node 2 sits closer where acoustic pressure is twice as strong: $d_2 = 2s$. By Eq. (13-6), Node 2's optimal weight is $2\times$ Node 1's, and its unnormalized MSE $J_2^\star = 4 J_1^\star$ is <strong>$4\times$ larger</strong>!</p>
+<p>Yet Node 2's enhancement is <em>not</em> worse—its target reference power $\phi_{d_2} = 4\phi_{d_1}$ is also $4\times$ larger, making normalized $\operatorname{NMSE}_1^\star = \operatorname{NMSE}_2^\star = \frac{1}{1 + \phi_s q}$ identical. Averaging raw unnormalized MSEs across nodes penalizes whichever node sits closest to the talker!</p>
+<p>Always check conjugation of complex $c_u$ in code as well: for $c_u = 1 + \mathrm{j}$, $\vec w_u^\star$ carries $c_u^* = 1 - \mathrm{j}$ so $(\vec w_u^\star)^H\vec x$ conjugates it back to $1 + \mathrm{j}$; omitting conjugation flips output phase by $90^\circ$ (see <a href="#e13-07">E13-07</a> and <a href="05_beamforming.html#e05-20">Chapter 5, E05-20</a>).</p>
+<span id="sec-14" class="anchor-alias" aria-hidden="true"></span><span id="sec-15-5" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-13-5">13.5 Compressed Covariance and Effective Global Weights</h2>
+<span id="sec-15" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-1fa7d3692b" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-046f36f540">Broadcast Streams Are Linear Combinations of Local Sensors</h3>
+<p>Now impose communication bandwidth limits: node $v$ owns $M_v$ microphones, but its wireless link permits transmitting only $Q$ compressed streams ($Q \ll M_v$, and $Q = 1$ for a single source). Fixing local linear compression matrices $\mathbf F_v \in \mathbb{C}^{M_v \times Q}$ first, each node $v$ broadcasts $Q \times 1$ compressed vector $\vec z_v = \mathbf F_v^H\vec x_v$.</p>
+<p>At receiving node $u$, available inputs stack all $M_u$ uncompressed local channels $\vec x_u$ atop the $(U - 1)Q$ compressed streams $\vec z_{-u}$ received from peers $v \ne u$ (ordered by ascending node index). Stacking these forms $L_u = M_u + (U - 1)Q$-dimensional local observation $\tilde{\vec x}_u$, written compactly as a block-sparse linear projection $\mathbf T_u \in \mathbb{C}^{M \times L_u}$ applied to global $\vec x \in \mathbb{C}^{M \times 1}$:</p>
+<p>$$\begin{gathered}
+\tilde{\vec x}_u=[\vec x_u^\top,\vec z_{-u}^\top]^\top,\qquad
+L_u=M_u+(U-1)Q,\\
+\tilde{\vec x}_u=\mathbf T_u^H\vec x,\qquad
+\mathbf T_u\in\mathbb{C}^{M\times L_u}.
+\end{gathered}\tag{13-7}$$</p>
+<p>Matrix $\mathbf T_u$ places identity $\mathbf I_{M_u}$ in node $u$'s row block across its first $M_u$ columns (uncompressed local pass-through), places each remote node $v$'s broadcast matrix $\mathbf F_v$ in row block $v$ across the trailing $(U - 1)Q$ columns, and zeroes all other blocks. Note that $\mathbf T_u^H\vec x$ projects $M$ global channels down to $L_u$ locally accessible channels—it never reconstructs individual remote microphone waveforms.</p>
+<p>Holding broadcast matrices fixed at one frequency bin and statistical window, substituting $\tilde{\vec x}_u = \mathbf T_u^H\vec x$ yields local covariance $\tilde{\mathbf R}_u \in \mathbb{C}^{L_u \times L_u}$, local cross-correlation $\tilde{\vec r}_u \in \mathbb{C}^{L_u \times 1}$, and $L_u$-dimensional local Wiener–Hopf equations:</p>
+<p>$$\begin{aligned}
+\tilde{\mathbf R}_u&=\mathbb{E}[\tilde{\vec x}_u\tilde{\vec x}_u^H]
+=\mathbf T_u^H\mathbf R_{xx}\mathbf T_u,\\
+\tilde{\vec r}_u&=\mathbb{E}[\tilde{\vec x}_u d_u^*]
+=\mathbf T_u^H\vec r_{xd_u},\\
+\tilde{\mathbf R}_u\vec h_u^\star&=\tilde{\vec r}_u.
+\end{aligned}\tag{13-8}$$</p>
+<p>When is $\tilde{\mathbf R}_u \succ 0$ guaranteed nonsingular? Given $\mathbf R_{xx} \succ 0$, for any nonzero $\vec b \in \mathbb{C}^{L_u}$ with lifted vector $\vec v = \mathbf T_u\vec b$, $\vec b^H\tilde{\mathbf R}_u\vec b = \vec v^H\mathbf R_{xx}\vec v > 0 \iff \mathbf T_u\vec b \ne \vec 0$—i.e., <strong>$\mathbf T_u$ must have full column rank</strong>. Zero broadcasts ($\mathbf F_v = \mathbf 0$), linearly dependent broadcast columns, or setting $Q > M_v$ make $\mathbf T_u$ rank-deficient and $\tilde{\mathbf R}_u$ singular (safe fallback handling in <a href="#e13-13">E13-13</a>).</p>
+<span id="sec-16" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-296c10ba07" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-aee0967662">Local Filter Coefficients Versus Effective Global Weights</h3>
+<p>Once node $u$ solves for $L_u$-dimensional local weight $\vec h_u$, its output is $\hat d_u = \vec h_u^H\tilde{\vec x}_u$. Comparing directly against centralized $M$-dimensional $\vec w_u^\star$ substitutes $\tilde{\vec x}_u = \mathbf T_u^H\vec x$:</p>
+<p>$$\begin{aligned}
+\hat d_u&=\vec h_u^H(\mathbf T_u^H\vec x)
+=(\mathbf T_u\vec h_u)^H\vec x,\\
+\vec w_{u,\mathrm{eff}}&=\mathbf T_u\vec h_u,
+\qquad\vec w_{u,\mathrm{eff}}\in\mathbb{C}^{M\times 1}.
+\end{aligned}\tag{13-9}$$</p>
+<p>We call $\vec w_{u,\mathrm{eff}} = \mathbf T_u\vec h_u$ node $u$'s <strong>effective global weight</strong> across all $M$ raw microphones. Watch out for the #1 conjugation bug here: if remote node $v$ sends scalar $z_v = \vec f_v^H\vec x_v$ and local node $u$ applies scalar receiving weight $g_{uv}$, that branch contributes $g_{uv}^* z_v = g_{uv}^*(\vec f_v^H\vec x_v) = (\vec f_v g_{uv})^H\vec x_v$—so the effective weight on remote microphones $\vec x_v$ is the <strong>unconjugated product</strong> $\vec f_v g_{uv}$, never $\vec f_v g_{uv}^*$!</p>
+<p>Similarly, normalizing compressed columns internally for numerical conditioning ($\mathbf T'_u = \mathbf T_u\mathbf D$) rescales local coefficients to $\vec h'_u = \mathbf D^{-1}\vec h_u$ while leaving effective global weight $\mathbf T'_u\vec h'_u = \mathbf T_u\vec h_u$ and physical output completely invariant (see <a href="#e13-08">E13-08</a>).</p>
+<span id="sec-17" class="anchor-alias" aria-hidden="true"></span><span id="sec-15-6" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-13-6">13.6 Proving Task-Specific Losslessness of Fixed Compression</h2>
+<span id="sec-18" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-85716ef645" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-ed6ce9ad17">Squared Error Yields a Directly Verifiable Subspace Criterion</h3>
+<p>By how much does MSE increase when compressing $M$ channels down to $L_u \lt  M$—and when is the increase <strong>identically zero</strong>? Orthogonal decomposition answers this in four lines.</p>
+<p>Writing weight discrepancy $\vec e = \mathbf T_u\vec h - \vec w_u^\star$ and plugging $\vec w = \vec w_u^\star + \vec e$ into true cost Eq. (13-3), centralized optimality $\mathbf R_{xx}\vec w_u^\star = \vec r_{xd_u}$ cancels all linear cross-terms:</p>
+<p>$$\begin{aligned}
+J_u(\vec w_u^\star+\vec e)-J_u(\vec w_u^\star)
+&=2\operatorname{Re}\big(\vec e^H\mathbf R_{xx}\vec w_u^\star\big)
+-2\operatorname{Re}\big(\vec e^H\vec r_{xd_u}\big)\\
+&\quad+\vec e^H\mathbf R_{xx}\vec e\\
+&=\vec e^H\mathbf R_{xx}\vec e\ge 0.
+\end{aligned}\tag{13-10}$$</p>
+<p>Under $\mathbf R_{xx} \succ 0$, excess MSE $\vec e^H\mathbf R_{xx}\vec e$ vanishes if and only if $\vec e = \vec 0$—i.e., there exists $\vec h \in \mathbb{C}^{L_u \times 1}$ satisfying $\mathbf T_u\vec h = \vec w_u^\star$:</p>
+<p>$$\vec w_u^\star\in\operatorname{range}(\mathbf T_u).
+\tag{13-11}$$</p>
+<p>Geometrically, Eq. (13-11) is crystal clear: broadcast compression restricts node $u$ to the $L_u$-dimensional <strong>feasible subspace</strong> $\operatorname{range}(\mathbf T_u) \subset \mathbb{C}^M$. Whenever remote block $v$ of $\vec w_u^\star$ lies inside $\operatorname{range}(\mathbf F_v)$ for every $v \ne u$, LMMSE incurs zero compression loss; whenever $\vec w_u^\star \notin \operatorname{range}(\mathbf T_u)$, even an exact nonsingular local solve pays positive excess MSE $\vec e^H\mathbf R_{xx}\vec e > 0$. Estimating multiple targets $\mathbf W^\star$ losslessly requires every column of $\mathbf W^\star$ to lie inside $\operatorname{range}(\mathbf T_u)$, dictating minimum broadcast dimension $Q$.</p>
+<span id="sec-19" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-459047cd8c" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-a19a1aed1f">Qualify "Lossless" by the Exact Estimation Task</h3>
+<p>Whenever papers write "lossless compression," qualify its scope explicitly: Eq. (13-11) certifies <strong>zero LMMSE degradation for designated target $d_u$ under fixed second-order statistics</strong>. It does <em>not</em> reconstruct individual remote raw channels from a scalar broadcast, nor remain lossless if another non-collinear talker starts speaking or noise covariance shifts, nor preserve arbitrary higher-order non-Gaussian statistics for nonlinear neural enhancers (under joint Gaussianity LMMSE coincides with general MMSE). We therefore write "lossless for the specified LMMSE task" throughout.</p>
+<span id="sec-20" class="anchor-alias" aria-hidden="true"></span><span id="sec-15-7" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-13-7">13.7 Spatially White Noise Benchmark: Combining Two Remote Microphones into One Stream</h2>
+<span id="sec-21" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-5600ae9460" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-7de7445d38">Centralized Array Versus Local-Only Processing</h3>
+<p>Let us work through a four-microphone rational-number benchmark carried across the rest of the chapter. Here "spatially white noise" means $\mathbf R_{nn} = \mathbf I_4$ at the analyzed frequency bin (mutually uncorrelated unit-variance channel noises, without restricting temporal spectra across frames).</p>
+<p><strong>Inputs</strong>: $U = 2$ nodes with $2$ microphones each (Node 1 owns Channels $1, 2$; Node 2 owns Channels $3, 4$; $M = 4$):</p>
+<p>$$\vec a=\big[1,\;\tfrac{1}{2},\;2,\;-\tfrac{1}{2}\big]^\top,\qquad
+\phi_s=1,\qquad
+\mathbf R_{nn}=\mathbf I_4,\qquad
+d_1=s\;\;(c_1=1).$$</p>
+<p><strong>Centralized vs. local-only benchmarks</strong>: Global SNR factor is $q = \vec a^\top\mathbf I_4^{-1}\vec a = 1 + 1/4 + 4 + 1/4 = 11/2$ ($1 + \phi_s q = 13/2$). Equation (13-6) gives Node 1's <strong>centralized 4-mic optimum</strong>:</p>
+<p>$$\begin{aligned}
+\vec w_1^\star&=\frac{2}{13}[1,\;0.5,\;2,\;-0.5]^\top\\
+&=\frac{1}{13}[2,\;1,\;4,\;-1]^\top,\\
+J_1^\star&=\frac{1}{1+11/2}=\frac{2}{13}\approx 0.153846.
+\end{aligned}$$</p>
+<p>Decomposing $2/13$ physically: target amplitude response $(\vec w_1^\star)^\top\vec a = (2 + 1/2 + 8 + 1/2)/13 = 11/13$ incurs <strong>target distortion power</strong> $(11/13 - 1)^2 = 4/169$, while white noise through $\vec w_1^\star$ leaves <strong>residual noise power</strong> $\|\vec w_1^\star\|_2^2 = (4 + 1 + 16 + 1)/169 = 22/169$, summing to $\frac{4 + 22}{169} = \frac{26}{169} = \frac{2}{13}$—illustrating how MWF intentionally shrinks target gain to $11/13$ to slash noise far deeper than distortionless MVDR.</p>
+<p>Using Node 1's local channels $[1, 1/2]^\top$ alone drops SNR to $q_{\mathrm{local}} = 1 + 1/4 = 5/4$ with local weight $[4, 2]^\top / 9$ and MSE $J_{\mathrm{local}} = 4/9 \approx 0.444444$—nearly $3\times$ worse than centralized $2/13 \approx 0.153846$ because remote Channel 3 enjoys high target amplitude $2$.</p>
+<span id="sec-22" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-ff435a667b" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-cad58a5eb2">Term-by-Term Verification of the Compressed Local System</h3>
+<p>Now let Node 2 transmit just <strong>one</strong> scalar combination $z_2 = 2x_3 - \frac{1}{2}x_4$ ($\vec f_2 = [2, -1/2]^\top$) instead of $x_3, x_4$. Does Node 1's 3D input $\tilde{\vec x}_1 = [x_1, x_2, z_2]^\top$ recover 4-mic centralized performance?</p>
+<p>The $4 \times 3$ projection matrix $\mathbf T_1$ in Eq. (13-7) is:</p>
+<p>$$\mathbf T_1=
+\begin{bmatrix}
+1 & 0 & 0\\
+0 & 1 & 0\\
+0 & 0 & 2\\
+0 & 0 & -\tfrac{1}{2}
+\end{bmatrix}.$$</p>
+<p>In 3D compressed space, $\tilde{\vec r}_1 = \mathbf T_1^\top\vec a = [1, 1/2, 17/4]^\top$ (since $2\times 2 + (-1/2)^2 = 17/4$) and compressed noise covariance $\tilde{\mathbf R}_{nn,1} = \mathbf T_1^\top\mathbf I_4\mathbf T_1 = \operatorname{diag}(1, 1, 17/4)$ (note Channel 3's noise variance is $17/4$, not $1$!), giving $3 \times 3$ local covariance $\tilde{\mathbf R}_1$:</p>
+<p>$$\begin{aligned}
+\tilde{\mathbf R}_1
+&=\tilde{\vec r}_1\tilde{\vec r}_1^\top
++\operatorname{diag}\!\big(1,\;1,\;\tfrac{17}{4}\big)\\
+&=\begin{bmatrix}
+2 & \tfrac{1}{2} & \tfrac{17}{4}\\
+\tfrac{1}{2} & \tfrac{5}{4} & \tfrac{17}{8}\\
+\tfrac{17}{4} & \tfrac{17}{8} & \tfrac{357}{16}
+\end{bmatrix}.
+\end{aligned}$$</p>
+<p>Solving $\tilde{\mathbf R}_1\vec h_1^\star = [1, 1/2, 17/4]^\top$ gives $\vec h_1^\star = \frac{1}{13}[2, 1, 2]^\top$ (Row 1 check: $\frac{4 + 1/2 + 17/2}{13} = 1$). Lifting back via Eq. (13-9) yields:</p>
+<p>$$\begin{aligned}
+\vec w_{1,\mathrm{eff}}&=\mathbf T_1\vec h_1^\star
+=\frac{1}{13}[2,\;1,\;2\times 2,\;-1]^\top\\
+&=\frac{1}{13}[2,\;1,\;4,\;-1]^\top=\vec w_1^\star!
+\end{aligned}$$</p>
+<p>Exact 4-mic centralized weights and MSE $2/13$ are recovered! Equation (13-11) explains why: remote block $[4, -1]^\top / 13 = \frac{2}{13}[2, -1/2]^\top$ is collinear with $\vec f_2 = [2, -1/2]^\top$—and remains collinear for Node 2's own target $d_2 = 2s$ (unnormalized MSE $8/13$, NMSE $2/13$).</p>
+<span id="sec-23" class="anchor-alias" aria-hidden="true"></span><span id="sec-15-8" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-13-8">13.8 Correlated-Noise Counterexample: Useful Observations Outside the Target Direction</h2>
+<span id="sec-24" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-eb290022db" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-629a2558cc">Change Only the Noise Covariance, and the Old Broadcast Fails</h3>
+<p>After seeing §13.7, it is tempting to conclude: "Remote nodes just beamform toward the talker locally ($\vec f_2 = \vec a_2 = [2, -1/2]^\top$) and broadcast that!" Let us hold talker position, power, and node layout completely fixed while introducing <strong>cross-node noise correlation</strong> between remote sensors and local Mic 1 (e.g., HVAC duct noise or table vibration coupling across devices):</p>
+<p>$$\mathbf R_{nn}=
+\begin{bmatrix}
+1 & 0 & \tfrac{1}{5} & \tfrac{4}{5}\\
+0 & 1 & 0 & 0\\
+\tfrac{1}{5} & 0 & 1 & 0\\
+\tfrac{4}{5} & 0 & 0 & 1
+\end{bmatrix}.$$</p>
+<p>Eigenvalues of $\mathbf R_{nn}$ are $1, 1, 1 \pm \sqrt{17}/5$ with $\lambda_{\min} = 1 - \sqrt{17}/5 \approx 0.175379 > 0$ (strictly positive definite). Solving $\mathbf R_{nn}\vec u = \vec a$ gives $\mathbf R_{nn}^{-1}\vec a = [25, 4, 11, -24]^\top / 8$ and $q = (25 + 2 + 22 + 12)/8 = 61/8$ ($1 + q = 69/8$), yielding the <strong>centralized correlated-noise optimum</strong>:</p>
+<p>$$\vec w_1^\star=\frac{1}{69}[25,\;4,\;11,\;-24]^\top,\qquad
+J_1^\star=\frac{8}{69}\approx 0.115942.$$</p>
+<p>Notice that cross-node noise correlation <em>lowers</em> centralized MSE from $2/13 \approx 0.153846$ down to $8/69 \approx 0.115942$ because the full array exploits remote sensors to cancel correlated noise inside local Mic 1!</p>
+<p>What happens if Node 2 stubbornly keeps sending white-noise target-matched broadcast $z_2 = 2x_3 - \frac{1}{2}x_4$? Cross-correlating $z_2$'s noise against $n_1$ gives $\mathbb{E}[n_1(2n_3 - n_4/2)] = 2\times(1/5) - (1/2)\times(4/5) = 0$—exact cancellation!</p>
+<p>Consequently, Node 1 sees the <em>exact same</em> $3 \times 3$ local covariance as under white noise, stays stuck at $[2, 1, 2]^\top / 13$ with MSE $2/13 \approx 0.153846$, and forfeits $2/13 - 8/69 = 34/897 \approx 0.037904$ of collaborative noise cancellation because remote block $[11, -24]^\top / 69$ no longer lies along $[2, -1/2]^\top$, violating Eq. (13-11).</p>
+<span id="sec-25" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-88dc8b011b" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-291ee67b05">Why a Zero-Target Remote Combination Aids Speech Enhancement</h3>
+<p>What information did the old broadcast throw away? Inspect orthogonal remote combination $p_2 = \frac{1}{2}x_3 + 2x_4$ ($[1/2, 2]^\top$):</p>
+<ul>
+<li>Target response is $\frac{1}{2} \times 2 + 2 \times (-\frac{1}{2}) = 0$—<strong>target speech cancels to exact zero; listening to $p_2$ on headphones reveals pure hum/noise without a syllable of speech!</strong></li>
+<li>Yet its cross-correlation with local noise $n_1$ is $(1/2)\times(1/5) + 2\times(4/5) = 17/10 = 1.7$—<strong>strongly correlated with the interference corrupting Node 1!</strong></li>
+</ul>
+<p>Physically, speech-free combination $p_2$ acts as a <strong>distributed Generalized Sidelobe Canceller (GSC) blocking-matrix noise reference</strong> (<a href="05_beamforming.html">Chapter 5</a>): Node 2 nulls the talker locally to extract a clean interference probe for Node 1 to subtract from $x_1$. Decomposing optimal remote block $[11, -24]^\top$ onto target-matched $[2, -1/2]^\top$ and blocking-reference $[1/2, 2]^\top$ shows both branches working together:</p>
+<p>$$\begin{bmatrix}11\\-24\end{bmatrix}
+=8\begin{bmatrix}2\\-\tfrac{1}{2}\end{bmatrix}
+-10\begin{bmatrix}\tfrac{1}{2}\\2\end{bmatrix}.$$</p>
+<p>Transmitting only the first term severs the distributed GSC noise-cancellation path—so during field debugging, never dismiss a remote node as useless just because its broadcast stream sounds noisy!</p>
+<p>Better still, Node 2 still needs only <strong>one</strong> broadcast channel: transmitting adapted combination $z'_2 = 11x_3 - 24x_4$ lets Node 1 solve $\vec h_1^\star = [25, 4, 1]^\top / 69$, recovering $[25, 4, 11, -24]^\top / 69$ and MSE $8/69$ with zero loss (<a href="#e13-06">E13-06</a>). The sole remaining question—how Node 2 discovers $[11, -24]^\top$ automatically without knowing cross-node correlations upfront—brings us to DANSE.</p>
+<span id="sec-26" class="anchor-alias" aria-hidden="true"></span><span id="sec-15-9" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-13-9">13.9 Sequential DANSE: Updating Local Estimation and Outbound Broadcast Together</h2>
+<span id="sec-27" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-783f86d92f" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-0a497f497b">Single-Stream Broadcast State and One Sequential Update</h3>
+<p>How can nodes seeing only local sensors plus compressed peer broadcasts iteratively align onto the globally optimal subspace? Bertrand and Moonen's Sequential DANSE provides an elegant round-robin solution.</p>
+<p>For a single target and scalar broadcast ($Q = 1$), partition node $u$'s $L_u = M_u + (U - 1)$-dimensional local weight into local sensor block $\vec f_u \in \mathbb{C}^{M_u \times 1}$ and peer-broadcast receiving block $\vec g_u \in \mathbb{C}^{(U-1) \times 1}$. Distinguish node $u$'s outbound broadcast $z_u$ strictly from its local enhanced output $\hat d_u$:</p>
+<p>$$\begin{aligned}
+z_u&=\vec f_u^H\vec x_u,\\
+\hat d_u&=\vec f_u^H\vec x_u+\vec g_u^H\vec z_{-u}.
+\end{aligned}\tag{13-12}$$</p>
+<p>Two natural questions arise at Eq. (13-12): <strong>First, why does reusing node $u$'s local filter block $\vec f_u$ as its outbound broadcast help every other node? Second, why not broadcast the cleaner full output $\hat d_u$ instead?</strong></p>
+<p>Section 13.4's rank-one structure answers both immediately: centralized optimal weights across all nodes share the same global vector $\mathbf R_{nn}^{-1}\vec a$ up to scalar factors. When active node $u$ solves local Eq. (13-8) $\hat d_u = \vec f_u^H\vec x_u + \vec g_u^H\vec z_{-u}$ given fixed $\vec z_{-u}$, local block $\vec f_u^H\vec x_u$ extracts <strong>the best linear combination of node $u$'s own raw microphones $\vec x_u$ under the current global approximation</strong>, whereas peer nodes already receive $\vec z$ from everyone else directly and lack <em>only</em> node $u$'s local slice! Broadcasting pure $z_u = \vec f_u^H\vec x_u$ hands neighbors the exact uncontaminated local update they need.</p>
+<p>Broadcasting full $\hat d_u$ (containing $\vec g_u^H\vec z_{-u}$) would recirculate peer broadcasts in closed feedback loops across the network, destroying DANSE's loop-free subspace projection structure (<a href="https://homes.esat.kuleuven.be/~abertran/reports/09-65.pdf">Bertrand &amp; Moonen 2010, Part I §III-A Eqs. (6)–(14)</a>).</p>
+<p>Round-robin execution activates one token-holding node $u$ per step ($1 \to 2 \to \cdots \to U \to 1 \to \cdots$): holding peer broadcasts fixed, node $u$ solves Eq. (13-8) for $[\vec f_u^\top, \vec g_u^\top]^\top$, updates its outbound broadcast to $\vec f_u$ and local output to $[\vec f_u^\top, \vec g_u^\top]^\top$, and passes the token. Distinguish offline population analysis (where $\mathbf T_u^H\mathbf R_{xx}\mathbf T_u$ updates immediately) from online streaming hardware (where past transmitted samples cannot be recalled, requiring fresh frame accumulation or coordinate transformation as in §13.13).</p>
+<span id="sec-28" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-dcf48b0643" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-3caf917af6">Exact Hand Calculation of Three Round-Robin Updates</h3>
+<p>On §13.7's 4-mic white-noise setup ($\vec a = [1, 1/2, 2, -1/2]^\top, \phi_s = 1, \mathbf R_{nn} = \mathbf I_4$) with $d_1 = s$ and $d_2 = 2s$, let us trace three $3 \times 3$ updates ($1 \to 2 \to 1$) to watch them reach exact 4-mic centralized optimality:</p>
+<p><strong>Initialization</strong>: Each node broadcasts its first local mic: $\vec f_1^{(0)} = \vec f_2^{(0)} = [1, 0]^\top$ ($z_1 = x_1, z_2 = x_3$).</p>
+<ol>
+<li><strong>Update 1 (Node 1 active)</strong>: Input $[x_1, x_2, x_3]^\top$ has target vector $[1, 1/2, 2]^\top$ and unit white noise, giving $q = 1 + 1/4 + 4 = 21/4$ ($1 + q = 25/4$). Equation (13-6) yields $[\vec f_1^\top, g_1]^\top = \frac{4}{25}[1, 1/2, 2]^\top = [4, 2, 8]^\top / 25$. Node 1 sets $\vec f_1^{(1)} = [4, 2]^\top / 25$, achieving effective weight $[4, 2, 8, 0]^\top / 25$ and dropping MSE from local $4/9 \approx 0.4444$ to $4/25 = 0.16$.</li>
+<li><strong>Update 2 (Node 2 active)</strong>: Input $[x_3, x_4, z_1]^\top$ ($z_1 = \frac{4x_1 + 2x_2}{25}$) targets $d_2 = 2s$. Because $z_1$ already bundles Mics 1 and 2 in optimal $2:1$ ratio, solving Node 2's $3 \times 3$ system yields $[\vec f_2^\top, g_2]^\top = [8, -2, 25]^\top / 13$, lifting to local $[8, -2]^\top / 13$ and remote $\frac{25}{13}[4, 2]^\top / 25 = [4, 2]^\top / 13$, i.e., $[4, 2, 8, -2]^\top / 13$—<strong>at Step 2, Node 2 already attains exact 4-mic centralized optimality</strong> (MSE $8/13$, NMSE $2/13$)! Node 2 updates $\vec f_2^{(2)} = [8, -2]^\top / 13$.</li>
+<li><strong>Update 3 (Node 1 active)</strong>: Receiving $z_2 = \frac{8x_3 - 2x_4}{13}$, Node 1 solves $[2/13, 1/13, 1/2]^\top$, lifting remote $\frac{1}{2}[8, -2]^\top / 13 = [4, -1]^\top / 13$ to reach $[2, 1, 4, -1]^\top / 13$—<strong>Node 1 also locks onto exact 4-mic centralized optimality with MSE $2/13 \approx 0.153846$!</strong></li>
+</ol>
+<span id="sec-29" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-462f257cca" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-805f05fab9">Stale Receiving Weights Temporarily Inflate Error</h3>
+<p>Hidden inside those three steps is a subtle real-time phenomenon often missed by naive simulation scripts: <strong>during the interval right after Step 2 switches Node 2's broadcast to $\vec f_2^{(2)} = [8, -2]^\top / 13$ <em>before</em> Step 3 re-solves Node 1, what happens to Node 1's live audio output?</strong></p>
+<p>During that gap, Node 1 still applies old scalar $g_1^{(1)} = 8/25$ (calibrated for $z_2 = x_3$) to the newly scaled stream $z_2 = \frac{8x_3 - 2x_4}{13}$, forming transient effective global weight:</p>
+<p>$$\begin{aligned}
+\vec w_{1,\mathrm{stale}}
+&=\big[\tfrac{4}{25},\;\tfrac{2}{25},\;
+\tfrac{8}{25}\cdot\tfrac{8}{13},\;
+-\tfrac{8}{25}\cdot\tfrac{2}{13}\big]^\top\\
+&=\frac{1}{325}[52,\;26,\;64,\;-16]^\top.
+\end{aligned}$$</p>
+<p>Plugging into universal Eq. (13-3): target gain drops to $\frac{52 + 13 + 128 + 8}{325} = \frac{201}{325}$ (distortion $(1 - 201/325)^2 = \frac{15376}{105625}$) plus residual noise $\frac{7732}{105625}$, rebounding live MSE to $\frac{23108}{105625} \approx 0.218774 > 0.16$ until Step 3 readjusts $g_1$ from $8/25$ to $1/2$!</p>
+<p>Monotonic descent in DANSE proofs applies to a <strong>shared surrogate global objective</strong> at consistent states—never assume "every non-updating node's live audio improves monotonically whenever a peer changes its broadcast." Honest evaluation must recombine each node's cached receiving weights against the <em>currently active</em> remote broadcast at every instant.</p>
+<p><img alt="Figure 70: Distortion-plus-noise MSE decomposition across centralized, local-only, and compressed broadcast directions" src="../figures_en/fig70_distributed_compression.png" onerror="this.alt+=' (figure missing)'" /></p>
+<p>Figure 70 compares six fixed weight configurations across §13.7 white noise and §13.8 cross-node correlated noise (stacked orange = analytical target distortion, hatched blue = analytical residual noise, white diamonds = 16-bit PCM WAV integer error ratios over $28800$ steady samples):</p>
+<ul>
+<li><strong>Panel (a) Spatially white noise</strong>: Local 2-mic processing suffers high target distortion ($16/81 \approx 0.1975$) and noise ($20/81 \approx 0.2469$) for NMSE $4/9 \approx 0.44444$ (PCM $0.444451$); 4-mic centralized processing drops NMSE to $2/13 \approx 0.15385$ ($4/169$ distortion + $22/169$ noise), matched identically by scalar broadcast $2x_3 - \frac{1}{2}x_4$ per Eq. (13-11).</li>
+<li><strong>Panel (b) Cross-node correlated noise</strong>: Centralized processing exploits inter-node correlation to reach $8/69 \approx 0.11594$; keeping the stale white-noise broadcast forfeits the blocking reference and stalls at $2/13 \approx 0.15385$ (PCM $0.153858$), whereas adapted scalar broadcast $11x_3 - 24x_4$ restores $8/69$ losslessly, with white PCM diamonds matching analytical bar tops throughout.</li>
+</ul>
+<span id="sec-30" class="anchor-alias" aria-hidden="true"></span><span id="sec-15-10" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-13-10">13.10 Convergence Guarantees Across Sequential, Simultaneous, Relaxed, and Asynchronous Updates</h2>
+<span id="sec-31" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-18078c5ddf" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-a4b8963cb6">Sequential Convergence Under Exact Stationary Statistics</h3>
+<p>While §13.7 converged in three steps, cross-node noise coupling in §13.8 requires alternating iterations. Bertrand and Moonen proved that whenever $\mathbf R_{xx} \succ 0$ (requiring full-rank <em>noisy observation</em> covariance rather than full-rank signal covariance), all node targets are full-rank linear transforms of a shared $S$-dimensional latent source vector, broadcast dimension satisfies $Q = S$, and nodes update round-robin under exact stationary second-order statistics, every node's output converges to its centralized LMMSE optimum (<a href="https://homes.esat.kuleuven.be/~abertran/reports/09-65.pdf">Bertrand &amp; Moonen 2010, Part I §III-B Theorem III.1 &amp; §IV-B Theorem IV.1</a>).</p>
+<p>Thus cross-node correlated noise never blocks Sequential DANSE—it automatically folds §13.8's GSC blocking reference into the scalar broadcast—whereas fixed non-adaptive beams enjoy no such guarantee.</p>
+<span id="sec-32" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-dafaec3692" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-59ada50761">Simultaneous Updates Change Peer Inputs Underneath Each Solve</h3>
+<p>Can all $U$ nodes solve local normal equations in parallel from iteration $i$'s broadcasts and switch to new broadcasts simultaneously (<strong>Simultaneous DANSE</strong>)?</p>
+<p>Beware the coupling hazard: Node 1 optimizes assuming Node 2 keeps sending $\vec f_2^i$ while Node 2 simultaneously optimizes assuming Node 1 keeps sending $\vec f_1^i$; the moment both switch broadcasts together, the peer signals assumed by both solves vanish simultaneously—just like two pedestrians stepping toward the same side of a hallway at once! Block-wise local optimality does <em>not</em> guarantee descent of a simultaneous step (Exercise <a href="#e13-21">E13-21</a> constructs a $3 \times 3$ SPD Jacobi divergence counterexample).</p>
+<p>To damp simultaneous oscillations, practical implementations often apply convex relaxation with step size $0 \lt  \alpha_i \le 1$:</p>
+<p>$$\begin{aligned}
+\vec f_u^{i+1}
+&=(1-\alpha_i)\vec f_u^i+\alpha_i\vec f_{u,\mathrm{new}}.
+\end{aligned}\tag{13-13}$$</p>
+<p>Interfaces using Eq. (13-13) must specify whether receiving weights $\vec g_u$ are relaxed in lockstep and which weights form live outputs. While $\alpha_i = 1$ and $\alpha_i = 0.5$ both converge numerically on our well-conditioned 4-mic benchmark, "constant step size $\lt  1$" alone does not guarantee global convergence across arbitrary ill-conditioned matrices.</p>
+<span id="sec-33" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-0595fda27a" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-5ef04cce8e">Provably Convergent Relaxed DANSE Adds a Basis-Alignment Subproblem</h3>
+<p>Why is naive convex mixing Eq. (13-13) insufficient for general theoretical proofs at $Q \ge 1$? Consider basis gauge freedom: right-multiplying $\mathbf F_u^i$ by any invertible $Q \times Q$ rotation/scaling matrix (or flipping sign $-1$) leaves its $Q$-dimensional broadcast subspace unchanged! If $\mathcal F_u(\{\mathbf F_v^i\})$ happens to carry an opposite sign or rotated basis relative to $\mathbf F_u^i$, naive averaging in Eq. (13-13) can cancel valid subspace directions destructively!</p>
+<p>Bertrand and Moonen resolved this in <strong>$rS$-DANSE$^+$</strong> (<a href="https://homes.esat.kuleuven.be/~abertran/reports/09-178.pdf">Part II §IV-B Eqs. (22)–(28) &amp; Theorem IV.1</a>): before convex mixing, solve a small auxiliary problem in broadcast space alone to find $Q \times Q$ basis-alignment block $\mathbf G_{uu}^{i+1}$, rotating $\mathbf F_u^i\mathbf G_{uu}^{i+1}$ into phase with the current target coordinate system prior to step-size $\alpha_i$ blending:</p>
+<p>$$\begin{aligned}
+\mathbf F_u^{i+1}
+&=(1-\alpha_i)\mathbf F_u^i\mathbf G_{uu}^{i+1}
++\alpha_i\mathcal F_u(\{\mathbf F_v^i\}).
+\end{aligned}\tag{13-14}$$</p>
+<p>With basis alignment, $\mathbf R_{xx} \succ 0$, full-rank shared-subspace targets ($Q = S$), exact statistics, and deterministic diminishing step sizes $\{\alpha_i\}$ satisfying:</p>
+<p>$$\begin{gathered}
+\alpha_i\in(0,1],\\
+\lim_{i\to\infty}\alpha_i=0,\\
+\sum_{i=0}^{\infty}\alpha_i=\infty,
+\end{gathered}\tag{13-15}$$</p>
+<p>both simultaneous and asynchronous updates are guaranteed to converge globally!</p>
+<p>In Eq. (13-15), $\alpha_i \to 0$ quells late-stage simultaneous coupling perturbations, while $\sum_{i=0}^\infty \alpha_i = \infty$ supplies infinite total travel distance so iterates never stall short of the optimum from distant initializations (deterministic exact-statistics analysis requires no $\sum_i \alpha_i^2 \lt  \infty$ condition).</p>
+<p>Harmonic steps $\alpha_i = 1/(i + 1)$ satisfy all three conditions; constant $0.5$ violates $\alpha_i \to 0$; geometric $2^{-i-1}$ sums to $1 \lt  \infty$ and stalls (<a href="#e13-22">E13-22</a>). (Notation map to the original papers: their $J, K, Q$ denote nodes, broadcast streams, and sources—matching our $U, Q, S$, so their $K = Q$ is our $Q = S$.)</p>
+<span id="sec-34" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-bd727c439b" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-98936dc1e1">Asynchronous Parameter Updates Still Require Synchronous Sample Clocks</h3>
+<p>"Asynchronous DANSE" in the literature refers strictly to <strong>asynchronous filter-parameter update instants</strong>—allowing nodes to wake up and update weights at irregular intervals without a central token coordinator (provided every node updates infinitely often; Part II §IV-D fn. 8). Never misread "asynchronous weight updates" as "unsynchronized ADC sampling clocks"! Under crystal SRO, inter-node phases at bin $k$ rotate continuously every second, invalidating stationary spatial covariance Eq. (13-2) itself.</p>
+<span id="sec-35" class="anchor-alias" aria-hidden="true"></span><span id="sec-15-11" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-13-11">13.11 Multiple Targets and Network Topologies: Broadcast Dimension Governs Retained Directions</h2>
+<span id="sec-36" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-d141bfeb3b" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-2af1be99cb">Two Targets Cannot Be Verified Through a Single Weight Vector</h3>
+<p>With $S$ simultaneous target sources (or an $S$-dimensional diffuse target subspace), $\vec x = \mathbf A\vec s + \vec n$ ($\mathbf A \in \mathbb{C}^{M \times S}, \vec s \in \mathbb{C}^{S \times 1}$). When node $u$ estimates $Q$-dimensional target $\vec d_u = \mathbf B_u\vec s$ ($\mathbf B_u \in \mathbb{C}^{Q \times S}$) via $\mathbf W_u^\star \in \mathbb{C}^{M \times Q}$, lossless compression across <em>all</em> $Q$ outputs generalizes Eq. (13-11) to column-space inclusion:</p>
+<p>$$\begin{aligned}
+\mathbf R_{xx}\mathbf W_u^\star&=\mathbf R_{xd_u},\\
+\operatorname{range}(\mathbf W_u^\star)
+&\subseteq\operatorname{range}(\mathbf T_u),
+\end{aligned}\tag{13-16}$$</p>
+<p>where $\mathbf R_{xd_u} = \mathbb{E}[\vec x\vec d_u^H] \in \mathbb{C}^{M \times Q}$. Always inspect per-target MSEs individually alongside total trace MSE so a lossless Channel 1 never hides a degraded Channel 2.</p>
+<p>An orthogonal 4-mic, 2-source example makes "why two independent sources require $Q = 2$ broadcasts" immediate. For uncorrelated unit-variance $s_1, s_2$ under $\mathbf R_{nn} = \mathbf I_4$ (Node 1: Mics $1, 2$; Node 2: Mics $3, 4$):</p>
+<p>$$\mathbf A=\begin{bmatrix}
+1 & 0\\
+0 & 1\\
+1 & 1\\
+1 & -1
+\end{bmatrix}.
+\tag{13-17}$$</p>
+<p>Columns 1 and 2 of $\mathbf A$ are orthogonal ($0 + 0 + 1 - 1 = 0$) with squared norm $3$ each, decoupling centralized 4-mic estimates of $s_1$ and $s_2$ at MMSE $\frac{1}{1 + 3} = \frac{1}{4} = 0.25$ each.</p>
+<p>Locally at Node 1 ($x_1 = s_1 + n_1, x_2 = s_2 + n_2$), local MSE is $\frac{1}{1 + 1} = \frac{1}{2} = 0.50$ per source. If Node 2 broadcasts only scalar sum $z_2 = x_3 + x_4 = 2s_1 + (n_3 + n_4)$, $s_2$ cancels out completely: Node 1's MSE on $s_1$ drops to centralized $1/4$, while $s_2$ stalls at local $1/2$! Expanding to $Q = 2$ streams ($x_3 + x_4$ and $x_3 - x_4 = 2s_2 + (n_3 - n_4)$) spans $\operatorname{range}(\mathbf W_1^\star)$ in Eq. (13-16) and restores $1/4$ on both sources simultaneously (<a href="#e13-12">E13-12</a>).</p>
+<span id="sec-37" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-14a12325b7" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-f0a5664717">Full Meshes, Trees, and In-Network Sums Are Distinct Implementations</h3>
+<p>Classical DANSE assumes a <strong>fully connected</strong> graph where every node hears all $U - 1$ peers directly ($L_u = M_u + (U - 1)Q$). In large halls, cabin buses, or multi-hop IoT networks where nodes communicate only with immediate neighbors (chains, stars, trees, or general connected graphs), full-mesh inputs are unavailable.</p>
+<p>Over cycle-free <strong>tree topologies</strong>, the core communication primitive is <strong>multi-hop same-sample in-network summation</strong>: each node forms $Q$-dimensional $\vec z_u$; leaves aggregate partial sums upward to a chosen root (up-cast) to form $\vec z_{\mathrm{sum}} = \sum_{v=1}^U \vec z_v$, which disseminates back down the tree (down-cast); subtracting own $\vec z_u$ gives every node $u$ the sum of all peers $\vec z_{-u,\mathrm{sum}} = \vec z_{\mathrm{sum}} - \vec z_u$. On chain $1 \leftrightarrow 2 \leftrightarrow 3$ rooted at Node 2, Nodes 1 and 3 send to 2 and receive $\vec z_{\mathrm{sum}}$ back in $2(U - 1) = 4$ directed messages (provided every summed packet carries identical sample timestamps!).</p>
+<p>Crucially, <strong>in-network summation alone does not yet constitute Topology-Independent DANSE (TI-DANSE)</strong>: whereas full-mesh DANSE assigns each peer $v$ an independent receiving block, in-network summation welds all peers together into a single $Q$-dimensional sum $\vec z_{-u,\mathrm{sum}}$, shrinking local input dimension to $M_u + Q$!</p>
+<p>To make peer broadcasts directly summable without per-peer receiving matrices, Bertrand and Moonen introduced transmitter-side inverse coordinate normalization ($\mathbf P_u = \mathbf W_{uu}\mathbf G_u^{-1}$ in <a href="https://homes.esat.kuleuven.be/~abertran/reports/15-87.pdf">TI-DANSE §§III–IV Theorems 1–2</a>). Exercise <a href="#e13-23">E13-23</a> audits tree routing, message counts, and link-drop impacts; real networks must pair spanning-tree repair with statistical reset handling.</p>
+<span id="sec-38" class="anchor-alias" aria-hidden="true"></span><span id="sec-15-12" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-13-12">13.12 GEVD and Recent Extensions: Which Step Each Method Modifies</h2>
+<span id="sec-39" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-a7484a25be" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-f3a3f13c44">Noise Whitening Turns the Noise Metric into a Euclidean Metric</h3>
+<p>In §13.3, solving $\mathbf R_{xx}\vec w_u = \vec r_{xd_u}$ hinged on estimating $\mathbf R_{ss}$ cleanly from noisy observations ($\vec r_{xd_u} = \mathbf R_{ss}\vec e_{r_u}$). Naive subtraction $\hat{\mathbf R}_{xx} - \hat{\mathbf R}_{nn}$ suffers finite-snapshot negative eigenvalues and inflates a low-rank $S$-dimensional target into a full-rank noisy matrix. <strong>Generalized Eigenvalue Decomposition (GEVD)</strong> resolves both by mapping observations into a <strong>noise-whitened coordinate frame</strong> first.</p>
+<p>Given $\mathbf R_{nn} \succ 0$ with Hermitian square root $\mathbf R_{nn}^{1/2}$ and inverse $\mathbf R_{nn}^{-1/2}$, left-multiplying observations by $\mathbf R_{nn}^{-1/2}$ maps noise covariance to $\mathbf I$, turning whitened total covariance $\mathbf C$ into a standard Hermitian matrix whose eigendecomposition solves the generalized eigenvalue problem:</p>
+<p>$$\begin{aligned}
+\mathbf W_n&=\mathbf R_{nn}^{-1/2},\qquad
+\mathbf C=\mathbf W_n\mathbf R_{xx}\mathbf W_n,\\
+\mathbf C\vec v_j&=\lambda_j\vec v_j,\qquad
+\vec v_i^H\vec v_j=\delta_{ij},\\
+\vec q_j&=\mathbf W_n\vec v_j,\\
+\mathbf R_{xx}\vec q_j&=\lambda_j\mathbf R_{nn}\vec q_j.
+\end{aligned}\tag{13-18}$$</p>
+<p>Why whiten via $\mathbf W_n = \mathbf R_{nn}^{-1/2}$ instead of running standard PCA on $\mathbf R_{xx}$? Under strong directional interference, standard top eigenvectors of $\mathbf R_{xx}$ point straight at loud interferers; inside whitened $\mathbf C = \mathbf I + \mathbf W_n\mathbf R_{ss}\mathbf W_n$, background noise power equals $1$ isotropically along <em>every</em> direction! Consequently, under $\mathbf R_{ss} \succeq 0$, generalized eigenvalues obey $\lambda_1 \ge \lambda_2 \ge \cdots \ge \lambda_M \ge 1$: directions with $\lambda_j > 1$ carry target speech at SNR $\lambda_j - 1$, whereas $\lambda_j = 1$ represents pure noise (clamping finite-sample $\hat\lambda_j \lt  1$ to $1$ eliminates negative target powers completely).</p>
+<p>Stacking the top $S$ eigenvectors ($\lambda_j > 1$) into semi-unitary $\mathbf V_S = [\vec v_1, \ldots, \vec v_S] \in \mathbb{C}^{M \times S}$, whitened target power along mode $j$ is $\lambda_j - 1$, giving whitened rank-$S$ covariance $\mathbf V_S\operatorname{diag}(\lambda_1 - 1, \ldots, \lambda_S - 1)\mathbf V_S^H$. De-whitening on both sides via $\mathbf R_{nn}^{1/2}$ yields the guaranteed-PSD <strong>rank-$S$ target covariance estimate</strong>:</p>
+<p>$$\begin{aligned}
+\hat{\mathbf R}_{ss}
+&=\mathbf R_{nn}^{1/2}\mathbf V_S
+\operatorname{diag}(\lambda_1-1,\ldots,\lambda_S-1)\\
+&\quad\cdot\mathbf V_S^H\mathbf R_{nn}^{1/2}.
+\end{aligned}$$</p>
+<p>Combining $\hat{\mathbf R}_{ss}$ with $\mathbf R_{xx}^{-1}=\mathbf R_{nn}^{-1/2}\bigl(\sum_{j=1}^M\lambda_j^{-1}\vec v_j\vec v_j^H\bigr)\mathbf R_{nn}^{-1/2}$ and $\mathbf V_S^H\vec v_j=\vec e_j$ ($j\le S$) collapses multichannel estimator $\mathbf W_{\mathrm{GEVD}}^H=\hat{\mathbf R}_{ss}\mathbf R_{xx}^{-1}$ into a five-stage cascade:</p>
+<p>$$\mathbf W_{\mathrm{GEVD}}^H
+=\mathbf R_{nn}^{1/2}\mathbf V_S
+\operatorname{diag}\!\left(1-\frac{1}{\lambda_1},\ldots,1-\frac{1}{\lambda_S}\right)
+\mathbf V_S^H\mathbf R_{nn}^{-1/2}.$$</p>
+<p>Reading right-to-left on $\vec x$: whiten via $\mathbf R_{nn}^{-1/2}$ $\rightarrow$ project onto $S$ target modes via $\mathbf V_S^H$ $\rightarrow$ apply scalar Wiener gains $(\lambda_j - 1)/\lambda_j = 1 - 1/\lambda_j$ $\rightarrow$ lift via $\mathbf V_S$ $\rightarrow$ de-whiten back to physical microphone coordinates via $\mathbf R_{nn}^{1/2}$, reading row $r_u$ ($\vec w_u=\mathbf W_{\mathrm{GEVD}}\vec e_{r_u}$) for reference sensor $r_u$ (<a href="https://ftp.esat.kuleuven.be/SISTA/abertran/reports/GEVD_DS_TSP2016.pdf">Serizel et al. 2014; Hassani, Bertrand &amp; Moonen 2016 GEVD-DANSE §III Eqs. (9)–(17)</a>). Choosing $S$ below true target rank discards target modes beyond $S$.</p>
+<p>Distinguish "estimating sensor acoustic image $c_u s$" from "estimating unscaled dry source $s$": even on scalar $x = 2s + n$ ($\phi_s = 1, \sigma_n^2 = 1, \lambda_1 = 5$), recovering sensor image $d = 2s$ applies $1 - 1/\lambda_1 = 4/5$ directly to give $\frac{4}{5}x$, whereas targeting dry $s$ ($\mathbb{E}[x s^*] = 2$) gives $\frac{2}{5}x$—eigenvalue $\lambda_1 = 5$ measures SNR without choosing reference scale.</p>
+<span id="sec-40" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-0fdd37155e" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-eebb68cb7e">A Two-Channel Hand-Calculable GEVD Example</h3>
+<p>Let us cross-check GEVD whitening against direct MWF on $\vec a = [1, 2]^\top$, $\phi_s = 1$, and correlated two-channel noise:</p>
+<p>$$\mathbf R_{nn}=\begin{bmatrix}1 & 1/2\\1/2 & 1\end{bmatrix}.
+\tag{13-19}$$</p>
+<p>Route 1 (direct Eq. (13-6)): $\mathbf R_{nn}^{-1}$ (diagonals $4/3$, off-diagonals $-2/3$) times $\vec a = [1, 2]^\top$ gives $\mathbf R_{nn}^{-1}\vec a = [0, 2]^\top$ and $q = 4$, so generalized eigenvalues are $\lambda_1 = 1 + q = 5$ and $\lambda_2 = 1$; dry-source MWF weight is $\frac{1}{5}[0, 2]^\top = [0, 2/5]^\top$ with MMSE $1/5 = 0.2$.</p>
+<p>Route 2 (<strong>Cholesky triangular whitening</strong>, standard in numerical code): factor $\mathbf R_{nn} = \mathbf L\mathbf L^H$ and whiten via $\mathbf L^{-1}$ to form $\tilde{\mathbf C} = \mathbf L^{-1}\mathbf R_{xx}\mathbf L^{-H}$ (crucially, because lower-triangular $\mathbf L$ is not Hermitian, the right factor <em>must</em> be conjugate-transpose inverse $\mathbf L^{-H} = (\mathbf L^H)^{-1}$, never $\mathbf L^{-1}$!):</p>
+<p>$$\begin{aligned}
+\mathbf L&=\begin{bmatrix}
+1 & 0\\
+1/2 & \sqrt{3}/2
+\end{bmatrix},\\
+\mathbf L^{-1}&=\begin{bmatrix}
+1 & 0\\
+-1/\sqrt{3} & 2/\sqrt{3}
+\end{bmatrix},\\
+\mathbf L^{-1}\vec a&=[1,\;\sqrt{3}]^\top,\\
+\tilde{\mathbf C}&=\mathbf L^{-1}\mathbf R_{xx}\mathbf L^{-H}
+=\mathbf I_2+\begin{bmatrix}1\\\sqrt{3}\end{bmatrix}[1,\sqrt{3}]\\
+&=\begin{bmatrix}2 & \sqrt{3}\\\sqrt{3} & 4\end{bmatrix}.
+\end{aligned}$$</p>
+<p>Whitened target $[1, \sqrt{3}]^\top$ has squared norm $1 + 3 = 4$, immediately giving eigenvalue $1 + 4 = 5$ along $[1, \sqrt{3}]^\top$ and $1$ along orthogonal $[-\sqrt{3}, 1]^\top$. Notice why Mic 1 receives exact weight $0$ in $[0, 2/5]^\top$: Mic 1's target amplitude is half of Mic 2's ($1 : 2$) while noise coupling from Mic 2 into Mic 1 is <em>also</em> $1/2$, making Mic 2 a sufficient statistic for $s$ so adding Mic 1 would only inject extra independent noise (<a href="#e13-24">E13-24</a>).</p>
+<span id="sec-41" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-ea55a6c7fc" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-6eb50e1f71">Preconditions and Engineering Boundaries of Recent Extensions</h3>
+<p>Recent advances extend DANSE across low-rank subspace estimation, SRO compensation, general topologies, and constrained spatial filtering:</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable data table"><table>
+<thead>
+<tr>
+<th scope="col">Extension</th>
+<th scope="col">Algorithmic Link Modified</th>
+<th scope="col">Preconditions and Practical Boundaries</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GEVD-DANSE</td>
+<td>Performs local GEVD low-rank $\hat{\tilde{\mathbf R}}_{ss}$ reconstruction inside compressed space before weight updates</td>
+<td>Sequential proof assumes exact statistics and true rank $S$; under-estimating rank alters the target objective</td>
+</tr>
+<tr>
+<td>SRO-aware DANSE</td>
+<td>Tracks inter-frame cross-spectral phase rotation to apply per-bin linear phase shifts and integer hop slips online</td>
+<td>Assumes static geometry and quasi-constant SRO over estimation windows; packet drops and clock steps require gating</td>
+</tr>
+<tr>
+<td>TI-GEVD-DANSE</td>
+<td>Embeds local GEVD inside tree in-network summation with shared cross-node coordinate normalization</td>
+<td>Normalization must transform filters and covariances consistently; low-rank truncation differs from full-rank proofs</td>
+</tr>
+<tr>
+<td>TI-DANSE$^+$</td>
+<td>Retains per-branch subtree partial sums at the root for higher-dimensional fusion before down-casting</td>
+<td>Root dimension grows with node degree; topology/root switches require batch-isolated covariance tracking</td>
+</tr>
+</tbody>
+</table></div>
+<p>Note the boundary between theoretical proofs and empirical observations: GEVD-DANSE proves sequential round-robin convergence rigorously while demonstrating simultaneous updates empirically (<a href="https://ftp.esat.kuleuven.be/SISTA/abertran/reports/GEVD_DS_TSP2016.pdf">Hassani et al. 2016, §§IV-B/C/F &amp; V-A</a>); SRO-aware DANSE decomposes estimated clock skew into frequency-proportional linear phase slopes plus integer frame-shift slips rather than a frequency-flat constant phase (<a href="https://arxiv.org/html/2211.02489v2">Chinaev, Thiergart &amp; Habets, §§IV-A–C Eqs. (11)–(20)</a>).</p>
+<p>On general trees, TI-GEVD-DANSE stabilizes shared-sum scaling (<a href="https://ftp.esat.kuleuven.be/sista/pdidier/eusipco2024/eusipco24_pdidier_submission_v1.pdf">Didier et al. 2024, §§III–IV</a>), while TI-DANSE$^+$ accelerates convergence via multi-branch root fusion and analyzes batch-isolated covariance estimation across broadcast updates (<a href="https://arxiv.org/html/2506.20001v1">2025 conference paper §§III–IV</a>; <a href="https://arxiv.org/html/2506.02797v2">2026 extended preprint §§III-C, III-G</a>). Unifying all of these, Musluoglu and Bertrand's <strong>Distributed Adaptive Signal Fusion (DASF)</strong> framework (<em>IEEE TSP</em> 2022, Parts I &amp; II) casts DANSE, distributed MVDR/LCMV, distributed GEVD, and distributed Canonical Correlation Analysis (CCA) as alternating compressed-subspace optimization over communication graphs.</p>
+<span id="sec-42" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-a1013a1f18" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-feca4ecf5f">The Unified DASF Framework: When Compressed Subspaces Are Lossless for Constrained Beamformers</h3>
+<p>Extending beyond unconstrained MSE $J_u(\vec w)$ to MVDR, max-SNR GEVD, and multi-null LCMV beamformers, <strong>DASF</strong> shows that whenever objectives and linear constraints depend on data solely through $\vec w^H\vec x$ second-order statistics, node $u$ receiving $R$ streams per peer ($L_u = M_u + (U - 1)R$, projection $\mathbf T_u \in \mathbb{C}^{M \times L_u}$) solves an isomorphic compressed problem:</p>
+<p>$$\begin{aligned}
+\tilde{\mathbf R}_{xx,u}&=\mathbf T_u^H\mathbf R_{xx}\mathbf T_u,\\
+\tilde{\mathbf R}_{nn,u}&=\mathbf T_u^H\mathbf R_{nn}\mathbf T_u,\\
+\tilde{\mathbf C}_u&=\mathbf T_u^H\mathbf C,\\
+\min_{\vec h_u}\;&\vec h_u^H\tilde{\mathbf R}_{nn,u}\vec h_u,\\
+\text{s.t.}\;&\tilde{\mathbf C}_u^H\vec h_u=\vec f.
+\end{aligned}$$</p>
+<p>Under rank-one single-source $\mathbf R_{ss} = \phi_s\vec a\vec a^H$, centralized MWF, single-constraint MVDR ($\vec a^H\vec w = 1$), and principal GEVD (maximizing $\vec w^H\mathbf R_{xx}\vec w / \vec w^H\mathbf R_{nn}\vec w$) are all collinear with $\mathbf R_{nn}^{-1}\vec a$—so in §13.8's correlated-noise benchmark, Node 2's single adapted broadcast $z_2 = 11x_3 - 24x_4$ makes local MWF, local MVDR, and local principal GEVD at Node 1 <strong>all simultaneously lossless</strong>!</p>
+<p>Once interference nulls form $P$ linear constraints $\mathbf C^H\vec w = \vec f$ ($\mathbf C \in \mathbb{C}^{M \times P}$ full column rank), with $\mathbf M = \mathbf C^H\mathbf R_{nn}^{-1}\mathbf C$ and $\vec\mu = \mathbf M^{-1}\vec f$, centralized $\vec w_{\mathrm{LCMV}}^\star = \mathbf R_{nn}^{-1}\mathbf C\vec\mu$ swings its remote block away from $\mathbf R_{nn}^{-1}\vec a$; keeping the old MVDR broadcast satisfies constraints locally at inflated output noise until DASF updates realign the compressor.</p>
+<p>Constrained DASF obeys a strict <strong>local residual degrees-of-freedom rule</strong>: local dimension $L_u$ must strictly exceed constraint count $P$ ($L_u > P$). If $L_u = P$, square constraint system $\tilde{\mathbf C}_u^H\vec h_u = \vec f$ locks $\vec h_u$ uniquely with $L_u - P = 0$ degrees of freedom left to reduce noise, freezing alternating updates at Step 1 until $R$ is increased so $L_u > P$ (full three-stage hand verification in <a href="#e13-27">E13-27</a>).</p>
+<span id="sec-43" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-0edc390d98" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-ce92d53417">TI-dMWF: Finite-Pass Discovery and Estimation Require a Structured Source Model</h3>
+<p>Can centralized MWF be computed in <strong>finite non-iterative tree passes</strong>? <strong>TI-dMWF</strong> (<a href="https://arxiv.org/html/2607.05561v1">2026 preprint §§2–3, Theorem 1 &amp; Remark 1</a>) achieves two-pass exactness under a structured <strong>global / strictly-local source dichotomy</strong>: every latent speech or noise source must either be observed by <em>all</em> nodes network-wide (global) or by <em>one single</em> node exclusively (strictly local), with mutually uncorrelated sources, full-column-rank global mixing, and root sensor count at least equal to total global source dimension (counting global interferers alongside target talkers).</p>
+<p>Under these assumptions, a down-cast reference discovery pass followed by an up-cast local LMMSE compression pass synthesizes the exact centralized MWF at the root without iterative subspace alternation—though sample covariance accumulation and multi-hop latency remain, and partially shared local cross-node interferers heard by two or three neighbors violate the dichotomy.</p>
+<span id="sec-44" class="anchor-alias" aria-hidden="true"></span><span id="sec-15-13" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-13-13">13.13 Finite WOLA: Covariance Update, Broadcast Update, and Waveform Activation Span Three Distinct Instants</h2>
+<span id="sec-45" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-a69f72f365" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-e371ad9438">From Single-Bin Models to Bounded Time-Domain Waveforms</h3>
+<p>Sections 13.2–13.12 suppressed bin index $k$ and frame index $\ell$ to spotlight spatial subspaces. Real continuous audio streams run inside a Weighted Overlap-Add (WOLA) framework: each node windows local frames, computes $N$-point FFTs, applies broadcast compression and receiving fusion per bin, and synthesizes continuous audio via inverse FFT, synthesis windowing, and hop-$H$ overlap-add. Finite frames introduce window COLA normalization, causal hop latency, cross-frame weight smoothing, and boundary transients—so single-bin algebraic losslessness never implies zero sample-wise error at frame boundaries.</p>
+<p>Even more importantly, in online recursive-covariance streaming systems, "acquiring microphone samples," "triggering covariance/weight updates," and "having new broadcasts actually arrive at peer inputs" occur at <strong>three distinct timeline instants</strong> that must never be collapsed into a single iteration index:</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable data table"><table>
+<thead>
+<tr>
+<th scope="col">Frame Timeline Stage</th>
+<th scope="col">Remote Broadcast Channel State</th>
+<th scope="col">Local Covariance Accumulation &amp; Solve</th>
+<th scope="col">Outbound Broadcast &amp; Audio Synthesis</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Instant 1: Sample acquisition &amp; buffering</strong> ($\ell \lt  \ell_{\mathrm{upd}}$)</td>
+<td>Continues receiving peer streams generated by old filters $\mathbf F_v^{\mathrm{old}}$</td>
+<td>Recursively accumulates $\hat{\tilde{\mathbf R}}_u^{\mathrm{old}}$ in the consistent old broadcast basis</td>
+<td>Transmits via $\mathbf F_u^{\mathrm{old}}$ and synthesizes audio via old receiving weights</td>
+</tr>
+<tr>
+<td><strong>Instant 2: Parameter solve trigger</strong> ($\ell = \ell_{\mathrm{upd}}$)</td>
+<td>Arriving frame packets were still generated by pre-update broadcast filters</td>
+<td>Solves local normal equations from accumulated statistics to obtain $\mathbf F_u^{\mathrm{new}}$ and new receiving blocks</td>
+<td>New weights computed (or fed to smoother); cannot retroactively alter already-transmitted frames</td>
+</tr>
+<tr>
+<td><strong>Instant 3: Network-wide activation</strong> ($\ell \ge \ell_{\mathrm{eff}}$)</td>
+<td>After TX buffering and link transport, new weights alter the remote stream basis seen by peers</td>
+<td>Peer old statistics now mismatch new input coordinates; require coordinate transform or fresh batching</td>
+<td>New broadcast serves the network; peers not yet re-solved experience transient receiving mismatch</td>
+</tr>
+</tbody>
+</table></div>
+<p>Whereas offline population simulations recompute $\mathbf T_u^H\mathbf R_{xx}\mathbf T_u$ instantaneously, streaming WOLA engines must manage all three timeline stages alongside VAD active-frame sufficiency and transport buffering.</p>
+<span id="sec-46" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-c344423309" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-9d4cfd2ba6">Transform Old Statistics into New Coordinates Whenever Broadcast Versions Switch</h3>
+<p>Inspecting "Instant 3" reveals a pervasive online bug: even if talkers and background noise remain completely stationary, a remote node doubling its broadcast gain quadruples that stream's variance and doubles its cross-spectra with local mics! Both old and new covariances are valid SPD matrices in their respective coordinates, yet blending them directly via an exponential forgetting factor feeds the solver a "mixed-coordinate chimera"—producing finite weights without a single warning while degrading physical output quality!</p>
+<p>Whenever old and new inputs are related by a <strong>known invertible linear transformation</strong> (such as scalar gain rescaling or full-rank basis rotation), sandwiching old covariances and cross-correlations through that transformation aligns them cleanly into new coordinates prior to recursive blending (Exercise <a href="#e13-25">E13-25</a> works out all four matrices and exact MSE deltas by hand).</p>
+<p>Coordinate transformation cannot resurrect directions previously annihilated by projection, however: whenever DANSE rotates a low-dimensional broadcast into a genuinely <em>new</em> sensor subspace orthogonal to the old broadcast, low-dimensional old statistics carry zero information along that new direction—requiring either fresh active/noise frame accumulation under the new broadcast or recomputation from a ring buffer of raw local frames (<a href="https://arxiv.org/html/2506.02797v2#S3.SS7.SSS1">TI-DANSE$^+$ extended preprint §III-G1</a>).</p>
+<p>Intermittent wireless packet drops can trigger a second subtle covariance bug—<strong>"every channel pair is PSD individually, yet the assembled matrix predicts negative power!"</strong> Suppose staggered packet drops across three channels yield pairwise sample correlations $r_{12} = 0.9$, $r_{13} = 0.9$, and $r_{23} = -0.9$ estimated over non-identical frame subsets. Every $2 \times 2$ submatrix has eigenvalues $0.1$ and $1.9 > 0$.</p>
+<p>Assembling all three into one $3 \times 3$ unit-diagonal matrix $\mathbf R$ and multiplying test vector $\vec v = [-1, 1, 1]^\top$ gives $\mathbf R\vec v = -0.8\vec v$—an unphysical negative eigenvalue $-0.8$ that crashes Cholesky factorization immediately (see the classic pairwise-complete covariance note in <a href="https://stat.ethz.ch/R-manual/R-devel/library/stats/html/cor.html">R's <code>cor</code> documentation</a>)! Online covariance estimators must accumulate outer products exclusively over <strong>complete frames where all channels are simultaneously valid under the same broadcast version</strong>, logging valid snapshot counts explicitly.</p>
+<span id="sec-47" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-d261d70382" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-89268d58ca" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-967701cb62">Engineering Implementation Details in Author Reference MATLAB Code</h3>
+<p>Auditing open-source distributed audio codebases (such as the DANSE authors' MATLAB scripts and Python's <code>paderwasn</code>) reveals crucial smoothing and framing details beyond paper block diagrams (full source-level contract audits appear in the <a href="research/03_industrial_deployment.html">Industrial Deployment Manual</a>):</p>
+<ol>
+<li><strong>Dual-filter smoothing and two-frame activation lag</strong>: Reference code separates outbound filter $\mathbf W_{\mathrm{ext}}$ from local output filter $\mathbf W_{\mathrm{int}}$. Round-robin tokens gate updates to <code>Wext_target</code>, while <code>Wext</code> smooths exponentially toward <code>Wext_target</code> every frame and <code>Wint</code> updates every frame. Ordering creates a two-frame lag—tracing scalar state from $1$ with target switched to $3$ at Frame $0$ and smoothing factor $1/2$: because TX filtering precedes state update, Frame $0$ transmits $1$, Frame $1$ <em>still</em> transmits $1$ (smoothing to $(1 + 3)/2 = 2$ at end of Frame $1$), and only Frame $2$ transmits $2$!</li>
+<li><strong>Standard eigendecomposition vs. whitened GEVD</strong>: Some legacy scripts run standard <code>eig</code> on $\hat{\mathbf R}_{xx} - \hat{\mathbf R}_{nn}$, picking algebraic <code>max(real(D))</code> before <code>abs</code>. Algebraic max differs from magnitude max—on negative eigenvalues $-4$ and $-1$, algebraic max selects $-1$ (<code>abs</code> $= 1$) rather than $4$! Prefer positive-definite whitened GEVD Eq. (13-18) with explicit $\max(\lambda_j, 1)$ clamping.</li>
+<li><strong>WOLA window overlap-squared sum, tail truncation, and diagonal loading</strong>: Applying symmetric $\sqrt{\text{Hann}}$ windows at analysis and synthesis without dividing by overlap-squared sum leaves ripple—for $8$-point symmetric Hann $h[n] = \big(1 - \cos(2\pi n / 7)\big)/2$ ($n = 0, \ldots, 7$) at hop $H = 4$, steady overlap sums cycle through $h[0] + h[4] \approx 0.950484$ and $h[1] + h[5] \approx 0.799516 \ne 1$ (periodic $\sqrt{\text{Hann}}$ sums identically to $1$ at $H = N/2$). Check loop bounds too (an off-by-one upper bound on $24$ samples with $N=8, H=4$ processes starts $0, 4, 8, 12$ while dropping valid final frame $16$), and include diagonal loading against duplicate-channel singularity (<a href="https://homes.esat.kuleuven.be/~abertran/reports/IWAENC10.pdf">Bertrand et al. IWAENC 2010 §§II-C, III</a>).</li>
+<li><strong>Aligned signal and VAD gating slices in SRO estimators</strong>: In Dynamic Weighted Average Coherence Drift (DWACD)-style clock estimators, verify that the delayed correlation slice and VAD activity-count slice span the exact same sample range: slicing $8192$ samples for correlation while counting VAD activity over $16384$ samples lets $8192$ trailing speech samples pass a $6144$-sample gate while feeding $8192$ leading silence samples into cross-correlation!</li>
+</ol>
+<span id="sec-48" class="anchor-alias" aria-hidden="true"></span><span id="sec-15-14" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-13-14">13.14 Budgeting Communication Bitrate, Matrix Memory, and Solver Compute</h2>
+<span id="sec-49" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-3888e3de9b" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-9b785d2ad9">Declare the Transmitted Signal Representation First</h3>
+<p>Never claim vaguely that "compressing to one channel saves bandwidth" without writing out exact payload bitrates. At $f_s = 16\,\mathrm{kHz}$, 16-bit integer PCM (PCM16) mono carries net payload $16000 \times 16 = 256000\,\mathrm{bit/s}$ ($32\,\mathrm{kB/s}$; $64000$ bytes over $2\,\mathrm{s}$), whereas <code>float32</code> doubles to $512000\,\mathrm{bit/s}$ ($64\,\mathrm{kB/s}$)—before RTP/UDP/IP headers, checksums, encryption, and wireless retransmissions.</p>
+<p>What if a node transmits WOLA <strong>one-sided complex spectra</strong> instead of reconstructing a time-domain broadcast stream? An $N$-point real FFT has $\lfloor N/2 \rfloor + 1$ non-negative bins (including DC $k=0$ and even-$N$ Nyquist $k=N/2$). At hop $H$ ($f_s / H$ frames/s), $Q$ streams, and <code>complex64</code> ($32$-bit real + $32$-bit imag $= 64$ bits/bin), net spectral bitrate is:</p>
+<p>$$\begin{aligned}
+B_{\mathrm{spec}}
+&=\frac{f_s}{H}(\lfloor N/2\rfloor+1)Q\times 64
+\quad\text{bit/s}.
+\end{aligned}\tag{13-20}$$</p>
+<p>At standard $50\%$ overlap ($f_s = 16000\,\mathrm{Hz}, N = 512, H = 256, Q = 1$): $62.5$ frames/s $\times 257$ bins $\times 64$ bits $= 1028000\,\mathrm{bit/s}$—<strong>more than $4\times$ higher than time-domain PCM16 ($256000\,\mathrm{bit/s}$)</strong> due to $2\times$ overlap oversampling and $64$-bit unquantized complex floats! Unless paired with subband quantization or active-bin pruning, practical nodes typically synthesize a time-domain broadcast stream via inverse WOLA before encoding (<a href="#e13-15">E13-15</a>).</p>
+<p>Link-layer primitives multiply air-time as well: true physical-layer broadcast over a shared medium sends $U$ packets/frame across $U$ nodes; point-to-point unicast over a full mesh sends $U(U - 1)$ packets/frame; and up-cast + down-cast over a tree sends $2(U - 1)$ directed link messages plus multi-hop latency.</p>
+<span id="sec-50" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-d1363d3ac6" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-6820a7782d">Smaller Per-Node Matrices Do Not Imply Smaller Network-Wide Memory</h3>
+<p>Now check RAM and solver FLOPs. In full-mesh DANSE at $Q = 1$, node $u$ tracks $L_u = M_u + U - 1$ channels. One <code>complex128</code> ($16$ bytes/entry) dense covariance matrix per bin occupies $16 L_u^2$ bytes—doubled for $(\hat{\tilde{\mathbf R}}_{xx}, \hat{\tilde{\mathbf R}}_{nn})$ and multiplied by $F$ bins.</p>
+<p>For $U = 4, M_u = 2$ ($M = 8$): a centralized $8 \times 8$ matrix takes $64 \times 16 = 1024$ bytes/bin; each distributed node ($L_u = 2 + 3 = 5$) takes only $25 \times 16 = 400$ bytes/bin (slashing single-device RAM and $O(L_u^3)$ Cholesky cost), whereas total memory across all $4$ devices sums to $4 \times 400 = 1600$ bytes/bin due to replicated broadcast statistics.</p>
+<p>When comparing convergence speed across schedules, never plot raw "outer iteration events" alone: one sequential event executes $1$ local matrix solve, whereas one simultaneous event executes $U$ local solves—always align horizontal axes by <strong>cumulative node linear-system solves</strong> (<a href="#e13-16">E13-16</a> and Fig. 71).</p>
+<span id="sec-51" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-1cbaf1e53e" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-f17b2a9539">Global Residuals Must Audit Currently Active Effective Weights</h3>
+<p>Checking an active node's <em>local</em> compressed residual $\tilde{\mathbf R}_u\vec h_u - \tilde{\vec r}_u$ right after solving always reads zero—even under a completely wrong remote broadcast (§13.8)! Proper offline convergence diagnostics plug node $u$'s live effective global weight $\vec w_{u,\mathrm{eff}} = \mathbf T_u\vec h_u$ back into the centralized normal equations to form <strong>global relative residual</strong> $\epsilon_u$:</p>
+<p>$$\begin{aligned}
+\vec\rho_u&=\mathbf R_{xx}\vec w_{u,\mathrm{eff}}-\vec r_{xd_u},\\
+\epsilon_u&=\frac{\|\vec\rho_u\|_2}{\|\vec r_{xd_u}\|_2}.
+\end{aligned}\tag{13-21}$$</p>
+<p>For $\vec r_{xd_u} \ne \vec 0$, $\epsilon_u$ is scale-invariant (computed with max-entry scaling against underflow, switching to covariance-normalized absolute residual if $\vec r_{xd_u} = \vec 0$). Always recombine non-updating peers' cached receiving weights with the <strong>newest live broadcasts</strong> when evaluating Eq. (13-21) so transient cross-node mismatches are captured faithfully.</p>
+<p><img alt="Figure 71: Cumulative node matrix-solve budget and live update trajectories" src="../figures_en/fig71_distributed_updates.png" onerror="this.alt+=' (figure missing)'" /></p>
+<p>Figure 71 tracks Sequential, Simultaneous ($\alpha = 1$), and half-step Relaxed ($\alpha = 0.5$) DANSE on §13.8's 4-mic correlated-noise benchmark ($d_1 = s, d_2 = 2s$, initialized at $[1, 1/2]^\top$ and $[2, -1/2]^\top$) against <strong>cumulative node matrix solves</strong> (including the $2$ initial local solves):</p>
+<ul>
+<li><strong>Panel (a) Worst-node live NMSE</strong>: Notice the prominent spike on solid blue (Sequential) at Solves 3–4 ($\approx 0.43787$)—that is §13.9's stale-receiving-weight mismatch right after one node updates its broadcast before its peer re-solves! Immediately afterward it plunges onto centralized floor $8/69 \approx 0.11594$ (black dotted) within $16$ total solves, compared to $28$ solves for Simultaneous (red dashed) and $78$ solves for $\alpha = 0.5$ Relaxed (green dash-dot).</li>
+<li><strong>Panel (b) Log global relative normal-equation residual</strong>: Tracks $\max_u \epsilon_u$ down to $10^{-8}$ (black dotted), serving as an offline oracle diagnostic (online devices monitor step/output deltas without access to global $\mathbf R_{xx}$).</li>
+</ul>
+<span id="sec-52" class="anchor-alias" aria-hidden="true"></span><span id="sec-15-15" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-13-15">13.15 Audio, Sampling Rate Offset, and Packet Loss: Honest Scoring on Finite Recordings</h2>
+<span id="sec-53" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-b345641c53" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-a6af0cfe91" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-623a0e4b02">Audible Control WAVs from a Known-Statistics Mixture Model</h3>
+<p>To turn matrix algebra into audible, sample-verifiable waveforms, <code>codes/chapters/ch13/distributed_audio/</code> archives $17$ synthetic $16\,\mathrm{kHz}$, $32000$-sample ($2\,\mathrm{s}$) WAVs at common export gain $1$. Target speech sums $700\,\mathrm{Hz}$ and $1300\,\mathrm{Hz}$ cosines (peak amplitudes $0.1$ and $0.06$, steady-window mean-square power $P = (0.1^2 + 0.06^2)/2 = 0.0068$); four mutually orthogonal noise bases use disjoint $1900 / 2300 / 2900 / 3500\,\mathrm{Hz}$ sinusoids mixed instantaneously.</p>
+<p>Scaling everything by $P = 0.0068$ leaves all optimal weights and dimensionless NMSEs identical to our unit-power hand calculations while scaling unnormalized MSEs by $P$ (e.g., white centralized MSE $\frac{2}{13}P$). Scoring slices steady interior window $[1600, 30400)$ ($28800$ samples $= 1.8\,\mathrm{s}$), spanning exact integer cycles of all six frequencies so target and noise bases are strictly orthogonal in wideband zero-lag time-domain inner products—reproducing §§13.7–13.8's exact channel second-moment matrices over finite recordings (in wideband zero-lag sense across distinct carrier frequencies rather than narrowband single-bin white noise).</p>
+<span id="sec-54" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-35c5b6cc4d" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-96d55da66d">Three Scoring Tiers Answer Three Distinct Questions</h3>
+<p>Regression checks separate three tiers strictly: <strong>Analytical</strong> evaluates exact fractions via Eq. (13-3); <strong>Float</strong> decomposes pre-export <code>float64</code> target distortion, residual noise, and finite-window cross-terms; and <strong>PCM read-back</strong> reloads quantized 16-bit integer WAVs from disk (scaled strictly by $32768$, never $32767$) to accumulate exact 64-bit integer squared sums over $\mathcal I = [1600, 30400)$:</p>
+<p>$$\begin{aligned}
+E_{\mathrm{PCM}}&=\sum_{n\in\mathcal I}(Y[n]-D[n])^2,\\
+P_{\mathrm{ref}}&=\sum_{n\in\mathcal I}D[n]^2,\\
+\mathrm{NMSE}_{\mathrm{PCM}}&=E_{\mathrm{PCM}}/P_{\mathrm{ref}}.
+\end{aligned}\tag{13-22}$$</p>
+<p>Tier 3 is indispensable because both $D[n]$ and $Y[n]$ undergo independent 16-bit rounding, and post-hoc gain/delay fitting is strictly prohibited.</p>
+<span id="sec-55" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-320ff7d3af" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-87bec6abd7" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-4a1895565f">SRO Compensation Alters Observation Statistics Rather Than Labels Alone</h3>
+<p>Hardware clocking comes first in cross-device pickup (<a href="10_engineering-practice.html#sec-10-2">Chapter 10, §10.2</a>). Over wired LANs in boardrooms or broadcast studios, <strong>AES67 / IEEE 1588 PTPv2</strong> interfaces phase-lock every node's local ADC clock to a single Grandmaster, eliminating SRO physically: at $48\,\mathrm{kHz}$, $\pm 1\,\mu\mathrm{s}$ worst-case opposing skew induces a static $1.728^\circ$ phase offset at $2.4\,\mathrm{kHz}$ ($\lt  0.001\,\mathrm{dB}$ coherent-sum loss).</p>
+<p>Across ad-hoc consumer wireless networks (phones, tablets, earbuds, smart speakers) with independent quartz crystals drifting by $20$–$100\,\mathrm{ppm}$, $100\,\mathrm{ppm}$ rotates $2.4\,\mathrm{kHz}$ inter-node phase at $86.4^\circ/\mathrm{s}$—hitting a complete $180^\circ$ cancellation null in just $2.083\,\mathrm{s}$ and forcing software SRO tracking, Asynchronous Sample Rate Conversion (SRC), and packet-drop recovery (<a href="#e13-26">E13-26</a>).</p>
+<p>Our clock control runs remote Node 2 $+100\,\mathrm{ppm}$ fast ($f_d = 16000 \times 1.0001 = 16001.6\,\mathrm{Hz}$, zero initial offset). At final local index $n = 31999$, the fast remote clock has elapsed $3.20$ fewer reference sample periods; conversely, reconstructing local instant $n = 31999$ via SRC queries remote <strong>device array coordinate</strong></p>
+<p>$$m = n \times 1.0001 = 31999 \times 1.0001 = 32002.1999,$$</p>
+<p>interpolating between remote indices $32002$ and $32003$—requiring at least $32004$ remote samples (and corresponding lookahead buffering in real-time streams).</p>
+<p>Running this clock experiment reveals an instructive surprise: uncompensated $+100\,\mathrm{ppm}$ degrades steady-window NMSE from $2/13 \approx 0.153846$ to $0.350880$; applying known-rate linear-interpolation SRC (producing bit-identical results across full-buffer and stateful $257$-sample streaming chunks) drops fused NMSE to <strong>$0.135724$—below the synchronous Wiener floor $2/13 \approx 0.153846$!</strong> Did linear interpolation beat optimal Wiener theory? Of course not!</p>
+<p><strong>Two-point linear interpolation acts as a first-order low-pass filter, attenuating remote $2900\,\mathrm{Hz}$ and $3500\,\mathrm{Hz}$ high-frequency noise carriers substantially while barely touching the $700 / 1300\,\mathrm{Hz}$ target</strong>—altering input noise covariance $\mathbf R_{nn}$ so the two numbers reflect different input statistical models!</p>
+<p>For wireless packet-drop gaps, deterministic recovery policies ("zero-fill remote stream under fixed weights," "repeat previous frame," or "explicitly switch to local 2-mic MWF weights") must be scored on matched denominators.</p>
+<p>Excising $800$ contiguous remote samples over $[16000, 16800)$ ($5 \times 10\,\mathrm{ms}$ packets of $160$ samples), we report <em>both</em> full $28800$-sample steady-window NMSE and $800$-sample in-gap NMSE: inside the $800$-sample gap, naive zero-fill under unchanged weights spikes to $461/676 \approx 0.68195$ (PCM $0.681955$), whereas explicit fallback to local 2-mic MWF holds $4/9 \approx 0.44444$ (PCM $0.444451$); looking only at full-window averages ($0.168516$ vs. $0.161918$) dilutes a $50\,\mathrm{ms}$ dropout across $1.8\,\mathrm{s}$ of clean audio!</p>
+<p>Streaming systems must also separate <strong>late packet arrivals</strong> from offline backfill: at $16\,\mathrm{kHz}$ ($160$ samples $= 10\,\mathrm{ms}$), if the packet starting at sample $16000$ ($1000\,\mathrm{ms}$) arrives at $1020\,\mathrm{ms}$ after wireless retransmission while local DMA playback committed at hard deadline $1018\,\mathrm{ms}$, that late packet already missed real-time playout! Standard RTP/RTCP (<a href="https://www.rfc-editor.org/rfc/rfc3550">RFC 3550 §§5.1, 6.4.1</a>) logs sender media timestamps, RTP sequence numbers, local NIC arrival times, and playout deadlines separately.</p>
+<p><img alt="Figure 72: Finite-recording clock compensation and packet-drop recovery controls" src="../figures_en/fig72_distributed_transport.png" onerror="this.alt+=' (figure missing)'" /></p>
+<p>Figure 72 summarizes SRO compensation and $5$-packet ($800$-sample) dropout recovery across our $16\,\mathrm{kHz}$ WAVs (<a href="#e13-17">E13-17</a> &amp; <a href="#e13-18">E13-18</a>):</p>
+<ul>
+<li><strong>Panel (a) SRO and linear SRC</strong>: Synchronous compressed NMSE is $0.153852$; uncompensated $+100\,\mathrm{ppm}$ inflates target distortion (orange) to $0.350885$; known-rate linear SRC restores target alignment while low-passing high-frequency noise (hatched blue) to $0.135726$ under the modified noise covariance.</li>
+<li><strong>Panel (b) Finite-window cross-term diagnostic</strong>: Exact zero under synchronous integer-period windows, versus $\approx -2.3 \times 10^{-5}$ signed cross-power (green) under $+100\,\mathrm{ppm}$ drift where carrier cycles lose exact orthogonality.</li>
+<li><strong>Panel (c) Full-window vs. in-gap scoring across $800$ dropped samples</strong>: Full-window blue bars ($0.168521$ vs. $0.161924$) look deceptively close, whereas in-gap orange bars expose zero-fill's $0.681955$ collapse versus local-MWF fallback's $0.444451$.</li>
+</ul>
+<span id="sec-56" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-f78297cb89" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-6dca7a76e5">Quantization Error Bounds for PCM16 Remote Transport</h3>
+<p>Quantizing floating-point streams to 16-bit PCM ($\Delta = 1/32768$) over wireless links obeys exact deterministic bounds across two architectures.</p>
+<p>Architecture 1 (quantize raw remote mics individually with $|e_m[n]| \le \Delta / 2$, then weight by $\vec w_r$ locally): triangle inequality gives peak and window mean-square bounds:</p>
+<p>$$\begin{aligned}
+|e_{\mathrm{link}}[n]|&\le\frac{\Delta}{2}\sum_{m}|w_{r,m}|,\\
+\frac{1}{|\mathcal I|}\sum_{n\in\mathcal I}|e_{\mathrm{link}}[n]|^2
+&\le\left(\frac{\Delta}{2}\sum_{m}|w_{r,m}|\right)^2.
+\end{aligned}\tag{13-23}$$</p>
+<p>For §13.7's $\vec w_r = [4, -1]^\top / 13$, per-mic quantization bounds peak link error by $(\Delta / 2)(5/13) = 5\Delta / 26$.</p>
+<p>Architecture 2 (distributed scalar broadcast): Node 2 forms $z_2 = 2x_3 - \frac{1}{2}x_4$ in <code>float64</code> first, quantizes $z_2$ once ($\le \Delta / 2$), and Node 1 multiplies by $g_{12} = 2/13$—tightening peak float-fusion link error to $(2/13)(\Delta / 2) = \Delta / 13 \approx 2.347506 \times 10^{-6}$; actual read-back of <code>remote_scalar_white.wav</code> measures $2.347005 \times 10^{-6}$, strictly inside the bound (<a href="#e13-19">E13-19</a>, prior to final output WAV quantization).</p>
+<span id="sec-57" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-da5ae5d202" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-b8b4c7f65b">Reproducible Entry Points and Audio Groups</h3>
+<p>Core solvers live in <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch13/core/distributed.py"><code>codes/chapters/ch13/core/distributed.py</code></a>, AES67/PTPv2 and DASF solvers in <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch13/core/dasf_and_ptp.py"><code>codes/chapters/ch13/core/dasf_and_ptp.py</code></a>, and synthetic audio/transport controls in <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch13/core/distributed_audio.py"><code>codes/chapters/ch13/core/distributed_audio.py</code></a>. Note one transpose convention: prose writes $\tilde{\vec x} = \mathbf T^H\vec x$ with tall $\mathbf T$, whereas function parameter <code>projection</code> accepts wide row-mapping $\mathbf B = \mathbf T^H$ directly (so complex broadcast $\vec f^H\vec x$ enters <code>projection</code> as conjugated row $\vec f^H$, never $\vec f^\top$).</p>
+<p>Internally, <code>compressed_weights</code> and <code>raw_compressed_weights</code> return normalized-basis and raw-broadcast local weights respectively, while iteration logs separate <code>outputs_at_last_solve</code> from live recombined <code>cached_outputs</code>—reproducing Fig. 71(a)'s transient spikes directly.</p>
+<p>Generate or strictly verify all $17$ WAVs and <code>MANIFEST.json</code> from the repository root via:</p>
+<pre><code class="language-bash">.venv/bin/python -m codes.chapters.ch13.examples.generate_distributed_audio
+.venv/bin/python -m codes.chapters.ch13.examples.generate_distributed_audio --check
+</code></pre>
+<p><code>chapter13_exercises.run_experiments()</code> returns <code>E13-01</code>–<code>E13-27</code>. In Fig. 71 ($\max_u \epsilon_u \lt  10^{-8}$), Sequential, Simultaneous, and $\alpha=0.5$ Relaxed take $14, 26, 76$ update events ($16, 28, 78$ total matrix solves including $2$ initial local solves). The $17$ WAVs form eight comparison groups:</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable data table"><table>
+<thead>
+<tr>
+<th scope="col">Audio Group</th>
+<th scope="col">WAV Files</th>
+<th scope="col">Listening &amp; Numerical Verification Focus</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clean node references</td>
+<td><a href="../site/distributed_audio/reference_node1.wav">Node 1</a><audio class="audio-sample" controls preload="none" aria-label="Node 1" src="../site/distributed_audio/reference_node1.wav">Use the WAV link above to download.</audio><br><a href="../site/distributed_audio/reference_node2.wav">Node 2</a><audio class="audio-sample" controls preload="none" aria-label="Node 2" src="../site/distributed_audio/reference_node2.wav">Use the WAV link above to download.</audio></td>
+<td>Reference scale difference ($s$ vs. $2s$) across nodes</td>
+</tr>
+<tr>
+<td>4-Ch array mixtures</td>
+<td><a href="../site/distributed_audio/array_white.wav">White noise</a><audio class="audio-sample" controls preload="none" aria-label="White noise" src="../site/distributed_audio/array_white.wav">Use the WAV link above to download.</audio><br><a href="../site/distributed_audio/array_correlated.wav">Correlated noise</a><audio class="audio-sample" controls preload="none" aria-label="Correlated noise" src="../site/distributed_audio/array_correlated.wav">Use the WAV link above to download.</audio></td>
+<td>Channels $x_1..x_4$ under spatially white vs. cross-node correlated noise</td>
+</tr>
+<tr>
+<td>White-noise collaboration</td>
+<td><a href="../site/distributed_audio/local_node1.wav">Local only</a><audio class="audio-sample" controls preload="none" aria-label="Local only" src="../site/distributed_audio/local_node1.wav">Use the WAV link above to download.</audio><br><a href="../site/distributed_audio/central_white.wav">Centralized</a><audio class="audio-sample" controls preload="none" aria-label="Centralized" src="../site/distributed_audio/central_white.wav">Use the WAV link above to download.</audio><br><a href="../site/distributed_audio/compressed_white.wav">Lossless compressed</a><audio class="audio-sample" controls preload="none" aria-label="Lossless compressed" src="../site/distributed_audio/compressed_white.wav">Use the WAV link above to download.</audio></td>
+<td>Audible noise drop upon adding remote broadcast, confirming lossless scalar compression</td>
+</tr>
+<tr>
+<td>Correlated-noise broadcast directions</td>
+<td><a href="../site/distributed_audio/central_correlated.wav">Centralized</a><audio class="audio-sample" controls preload="none" aria-label="Centralized" src="../site/distributed_audio/central_correlated.wav">Use the WAV link above to download.</audio><br><a href="../site/distributed_audio/compressed_correlated.wav">Adapted compressed</a><audio class="audio-sample" controls preload="none" aria-label="Adapted compressed" src="../site/distributed_audio/compressed_correlated.wav">Use the WAV link above to download.</audio><br><a href="../site/distributed_audio/stale_correlated.wav">Stale direction</a><audio class="audio-sample" controls preload="none" aria-label="Stale direction" src="../site/distributed_audio/stale_correlated.wav">Use the WAV link above to download.</audio></td>
+<td>Residual interference under stale broadcast vs. full cancellation under adapted broadcast</td>
+</tr>
+<tr>
+<td>Node 2 target output</td>
+<td><a href="../site/distributed_audio/central_node2_correlated.wav">Centralized Node 2</a><audio class="audio-sample" controls preload="none" aria-label="Centralized Node 2" src="../site/distributed_audio/central_node2_correlated.wav">Use the WAV link above to download.</audio></td>
+<td>Confirms Node 2 scores against <code>reference_node2.wav</code> denominator</td>
+</tr>
+<tr>
+<td>PCM16 broadcast link</td>
+<td><a href="../site/distributed_audio/remote_scalar_white.wav">Remote scalar</a><audio class="audio-sample" controls preload="none" aria-label="Remote scalar" src="../site/distributed_audio/remote_scalar_white.wav">Use the WAV link above to download.</audio><br><a href="../site/distributed_audio/transport_pcm16_white.wav">PCM16-link fused</a><audio class="audio-sample" controls preload="none" aria-label="PCM16-link fused" src="../site/distributed_audio/transport_pcm16_white.wav">Use the WAV link above to download.</audio></td>
+<td>Tiny $\le \Delta/13$ error from 16-bit link quantization</td>
+</tr>
+<tr>
+<td>Crystal SRO &amp; SRC</td>
+<td><a href="../site/distributed_audio/clock_misaligned_white.wav">Misaligned</a><audio class="audio-sample" controls preload="none" aria-label="Misaligned" src="../site/distributed_audio/clock_misaligned_white.wav">Use the WAV link above to download.</audio><br><a href="../site/distributed_audio/clock_linear_corrected_white.wav">Linear SRC corrected</a><audio class="audio-sample" controls preload="none" aria-label="Linear SRC corrected" src="../site/distributed_audio/clock_linear_corrected_white.wav">Use the WAV link above to download.</audio></td>
+<td>Audible $+100\,\mathrm{ppm}$ phase comb distortion and SRC restoration</td>
+</tr>
+<tr>
+<td>Contiguous packet-drop recovery</td>
+<td><a href="../site/distributed_audio/packet_zerofill_white.wav">Zero-fill</a><audio class="audio-sample" controls preload="none" aria-label="Zero-fill" src="../site/distributed_audio/packet_zerofill_white.wav">Use the WAV link above to download.</audio><br><a href="../site/distributed_audio/packet_local_fallback_white.wav">Local fallback</a><audio class="audio-sample" controls preload="none" aria-label="Local fallback" src="../site/distributed_audio/packet_local_fallback_white.wav">Use the WAV link above to download.</audio></td>
+<td>$50\,\mathrm{ms}$ dropout at $1.00$–$1.05\,\mathrm{s}$: amplitude dip vs. smooth local-MWF fallback</td>
+</tr>
+</tbody>
+</table></div>
+<p>Exact disk integer ratios $E_{\mathrm{PCM}} / P_{\mathrm{ref}}$: white centralized $= 32352145920 / 210281178240$, correlated centralized $= 24381142920 / 210281178240$, correlated stale $= 32353470360 / 210281178240$, with Node 2 reference denominator $841117066920$ (independently rounded rather than exact $4\times$ Node 1's denominator); full records appear in <a href="../site/distributed_audio/MANIFEST.json"><code>MANIFEST.json</code></a>, the <a href="research/03_industrial_deployment.html">Industrial Deployment Manual</a>, and the <a href="research/05_exercises_and_audio.html">Exercises &amp; Audio Manual</a>.</p>
+<span id="sec-58" class="anchor-alias" aria-hidden="true"></span><span id="sec-15-16" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-13-16">13.16 Twenty-Seven Exercises: From Compression Directions to End-to-End System Verification</h2>
+<p>Exercises 1–12 cover compressed subspaces and sequential/simultaneous updates, 13–24 cover rank deficiency, bitrate/RAM accounting, SRO/dropout transport, and step-size rules, and 25–27 derive broadcast-switch coordinate transforms, AES67/PTPv2 sub-microsecond budgets, and unified DASF constrained subspaces. Unless noted otherwise, $d = s$ and $\phi_s = 1$, verifying every effective global weight via Eq. (13-3).</p>
+<p><span id="e15-01" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e13-01"></a></p>
+<span id="sec-59" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-ae60fe614c" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-2fb9fa91dc" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-c8f4d1ccc4" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-a3943562a4">E13-01: Node Partitioning and Node-Specific Target Scaling</h3>
+<p><strong>Problem.</strong> Two 2-mic nodes have $\vec a = [1, 1/2, 2, -1/2]^\top$. Write local/global observation vectors and dimensions; for $d_1 = s$ vs. $d_2 = 2s$, compare $\vec r_{xd_u}$ and explain whether unnormalized MSEs can be compared directly.</p>
+<p><strong>Solution.</strong> Local $\vec x_1 = [x_1, x_2]^\top$ and $\vec x_2 = [x_3, x_4]^\top$ are $2 \times 1$; stacked $\vec x$ is $4 \times 1$ with $4 \times 4$ $\mathbf R_{xx}$. Cross-correlations are $\vec r_{xd_1} = \vec a$ ($\phi_{d_1} = 1$) and $\vec r_{xd_2} = 2\vec a$ ($\phi_{d_2} = 4$).</p>
+<p>Node 2's optimal weight is $2\times$ Node 1's and its unnormalized MSE is $4\times$ Node 1's, yet normalized NMSEs are identical—always normalize by $\phi_{d_u}$ before cross-node comparison.</p>
+<p><span id="e15-02" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e13-02"></a></p>
+<span id="sec-60" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-d2277f09c0" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-a558204011" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-b01a879a4a" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-54d80850e2">E13-02: Complete Decomposition of Centralized White-Noise MWF</h3>
+<p><strong>Problem.</strong> Under $\mathbf R_{nn} = \mathbf I_4$, hand-calculate Node 1's centralized optimal weight, target amplitude response, target distortion power, residual noise power, and total MSE.</p>
+<p><strong>Solution.</strong> $q = 1 + 1/4 + 4 + 1/4 = 11/2$ gives $\vec w_1^\star = [2, 1, 4, -1]^\top / 13$ via Eq. (13-6). Target gain $(\vec w_1^\star)^\top\vec a = 11/13$ gives distortion $(11/13 - 1)^2 = 4/169$ plus residual white noise $\|\vec w_1^\star\|_2^2 = 22/169$, summing to $26/169 = 2/13$.</p>
+<p><span id="e15-03" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e13-03"></a></p>
+<span id="sec-61" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-990fd59df5" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-6159884015" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-db8a2119c9" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-53dc0db8b9">E13-03: Cost of Local-Only Processing</h3>
+<p><strong>Problem.</strong> Compute Node 1's optimal weight and MSE using local $x_1, x_2$ alone and compare against <a href="#e13-02">E13-02</a>.</p>
+<p><strong>Solution.</strong> $q_{\mathrm{local}} = 1 + 1/4 = 5/4$ gives $\vec w_{\mathrm{local}} = [4, 2]^\top / 9$ ($[4, 2, 0, 0]^\top / 9$ globally), target gain $5/9$, distortion $16/81$, noise $20/81$, and total MSE $4/9 \approx 0.4444 \gg 2/13 \approx 0.1538$.</p>
+<p><span id="e15-04" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e13-04"></a></p>
+<span id="sec-62" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-9493aad880" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-d99ad75e5b" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-ada0f6befb" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-d9ea91fd73">E13-04: Recovering the 4-Mic Optimum from One Scalar Broadcast</h3>
+<p><strong>Problem.</strong> Node 2 broadcasts $z_2 = 2x_3 - x_4 / 2$ so Node 1 observes $[x_1, x_2, z_2]^\top$. Write $\mathbf T_1$, compressed noise covariance, $\tilde{\vec r}_1$, $\vec h_1^\star$, and $\vec w_{1,\mathrm{eff}}$.</p>
+<p><strong>Solution.</strong> Rows of $4 \times 3$ $\mathbf T_1$ are $[1, 0, 0], [0, 1, 0], [0, 0, 2], [0, 0, -1/2]$. Compressed noise $\mathbf T_1^\top\mathbf I_4\mathbf T_1 = \operatorname{diag}(1, 1, 17/4)$ ($17/4 \ne 1$!) and $\tilde{\vec r}_1 = [1, 1/2, 17/4]^\top$ give $\vec h_1^\star = [2, 1, 2]^\top / 13$ and $\mathbf T_1\vec h_1^\star = [2, 1, 4, -1]^\top / 13$, recovering <a href="#e13-02">E13-02</a>'s MSE $2/13$ losslessly.</p>
+<p><span id="e15-05" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e13-05"></a></p>
+<span id="sec-63" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-a123bcf090" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-0f67d6decb" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-275e8f69e6" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-47380e14ce">E13-05: Why the Old Broadcast Becomes Lossy Under Correlated Noise</h3>
+<p><strong>Problem.</strong> Add cross-node $R_{nn,13} = R_{nn,31} = 1/5$ and $R_{nn,14} = R_{nn,41} = 4/5$ to <a href="#e13-02">E13-02</a> while keeping $z_2 = 2x_3 - x_4 / 2$. Verify SPD, compare centralized vs. compressed MSE, and identify the missing direction.</p>
+<p><strong>Solution.</strong> Eigenvalues $1, 1, 1 \pm \sqrt{17}/5 > 0$ confirm SPD. $\mathbf R_{nn}^{-1}\vec a = [25, 4, 11, -24]^\top / 8$ ($q = 61/8$) gives centralized $[25, 4, 11, -24]^\top / 69$ and MSE $8/69$. Because $2(1/5) - (1/2)(4/5) = 0$, $z_2$ cancels cross-node correlation completely, stalling compressed MSE at $2/13$ (excess loss $34/897$) by dropping zero-target GSC blocking reference $x_3 / 2 + 2x_4$ (correlation $17/10$ with $n_1$).</p>
+<p><span id="e15-06" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e13-06"></a></p>
+<span id="sec-64" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-b7dac779da" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-f2c5e4265b" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-0f09bd925b" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-7465496b69">E13-06: Noise-Adapted Scalar Broadcast</h3>
+<p><strong>Problem.</strong> Switch remote broadcast in <a href="#e13-05">E13-05</a> to $z'_2 = 11x_3 - 24x_4$; find Node 1's local optimum and verify losslessness.</p>
+<p><strong>Solution.</strong> Input $[x_1, x_2, z'_2]^\top$ has $\tilde{\vec r}_1 = [1, 1/2, 34]^\top$ and local covariance:</p>
+<p>$$\tilde{\mathbf R}_1=
+\begin{bmatrix}
+2 & 1/2 & 17\\
+1/2 & 5/4 & 17\\
+17 & 17 & 1853
+\end{bmatrix}.\tag{13-24}$$</p>
+<p>Solving gives $\vec h_1^\star = [25, 4, 1]^\top / 69$, lifting to $[25, 4, 11, -24]^\top / 69$ and MSE $8/69$ via $[11, -24]^\top = 8[2, -1/2]^\top - 10[1/2, 2]^\top$. (Code passes scaled $[11, -24]^\top / 69$, rescaling raw local weight to $[25/69, 4/69, 1]^\top$ with identical lifted $\vec w_{1,\mathrm{eff}}$.)</p>
+<p><span id="e15-07" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e13-07"></a></p>
+<span id="sec-65" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-9bcc32b7fe" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-ad5858492f" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-66bc517dc7" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-df3363dc59">E13-07: Complex Reference Conjugation Cannot Be Omitted</h3>
+<p><strong>Problem.</strong> Under 4-mic white noise, set $d = (1 + \mathrm{j})s$: compute $\vec r_{xd}$, $\vec w^\star$, MSE, and NMSE.</p>
+<p><strong>Solution.</strong> By Eq. (13-5), $\vec r_{xd} = \mathbb{E}[\vec x d^*] = (1 - \mathrm{j})\vec a$ gives $\vec w^\star = (1 - \mathrm{j})[2, 1, 4, -1]^\top / 13$, so $(\vec w^\star)^H\vec x$ conjugates $(1 - \mathrm{j})^*$ back to $(1 + \mathrm{j})$. With $|1 + \mathrm{j}|^2 = 2$, MSE doubles to $4/13$ while NMSE stays $2/13$ (omitting conjugation rotates output phase by $90^\circ$; code also checks $\vec a = [1, \mathrm{j}/2, 2, -1/2]^\top$ with Mic 2 reference $d = (\mathrm{j}/2)s$, giving MSE $1/26$ and NMSE $2/13$).</p>
+<p><span id="e15-08" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e13-08"></a></p>
+<span id="sec-66" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-40ecac23db" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-ae1fbf2731" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-86e56e7136" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-e0d800a01e">E13-08: Broadcast Rescaling Invariance of Effective Global Weights</h3>
+<p><strong>Problem.</strong> Scale <a href="#e13-04">E13-04</a>'s broadcast filter by $\vec f'_2 = \gamma\vec f_2$ ($\gamma = 2\mathrm{j}$): relate $z'_2$ and $g'_{12}$, and state when norm normalization must be gated.</p>
+<p><strong>Solution.</strong> $z'_2 = (\vec f'_2)^H\vec x_2 = \gamma^* z_2 = -2\mathrm{j}z_2$, so $(g'_{12})^* z'_2 = g_{12}^* z_2 \iff g'_{12} = g_{12} / \gamma$ (recomputing $\tilde{\mathbf R}_1$ consistently). For any $\gamma \in \mathbb{C}\setminus\{0\}$, $\vec w_{1,\mathrm{eff}}$ is invariant; in finite precision, gate zero/near-zero broadcasts with a positive energy floor rather than dividing by zero norm.</p>
+<p><span id="e15-09" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e13-09"></a></p>
+<span id="sec-67" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-15a9194ba1" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-6d504d7edf" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-2a988d60f2" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-c723855e07">E13-09: True Round-Robin Updates and Stale Receiving Snapshots</h3>
+<p><strong>Problem.</strong> Trace $1 \to 2 \to 1$ from $\vec f_1^{(0)} = \vec f_2^{(0)} = [1, 0]^\top$ in §13.9, explaining why Step 2 transiently degrades Node 1's live output.</p>
+<p><strong>Solution.</strong> Local solves yield $[4, 2, 8]^\top / 25$, $[8, -2, 25]^\top / 13$ (input order $[x_3, x_4, z_1]^\top$), and $[2/13, 1/13, 1/2]^\top$. Right after Step 2 switches Node 2 to $[8, -2]^\top / 13$, Node 1 still holds $g_1 = 8/25$, forming $[52, 26, 64, -16]^\top / 325$ with MSE $23108 / 105625 \approx 0.2188 > 0.16$ until Step 3 re-solves Node 1 (code logs 6 sequential steps on <a href="#e13-05">E13-05</a> as well).</p>
+<p><span id="e15-10" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e13-10"></a></p>
+<span id="sec-68" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-ecaa4b04e4" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-17942b7cf5" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-76c29b9e9a" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-8044eb0094">E13-10: Finite Update Budgets Require Reporting Live Directions and Global Residuals</h3>
+<p><strong>Problem.</strong> After 1, 2, or 3 sequential updates, why is checking the active node's local normal-equation residual insufficient?</p>
+<p><strong>Solution.</strong> An active node's local residual vanishes identically inside its current compressed subspace, hiding both subspace truncation loss and peers' stale-coefficient mismatch. Recombine every node's cached receiving weights with live broadcasts (<code>cached_outputs</code> vs. <code>outputs_at_last_solve</code>) and evaluate both Eq. (13-3) MSE and Eq. (13-21) global residual $\epsilon_u$ (reaching $\lt  10^{-8}$ after $14$ updates / $16$ solves on <a href="#e13-05">E13-05</a>).</p>
+<p><span id="e15-11" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e13-11"></a></p>
+<span id="sec-69" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-5159378837" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-cbe6d25b1f" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-8f41df6077" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-a2c1c11dee">E13-11: Simultaneous Versus Fixed Half-Step Relaxed Updates</h3>
+<p><strong>Problem.</strong> Compare $\alpha = 1$ Simultaneous and $\alpha = 1/2$ simplified Relaxed updates on <a href="#e13-05">E13-05</a>, noting whether $rS$-DANSE$^+$ proofs apply directly.</p>
+<p><strong>Solution.</strong> Reaching $\max_u \epsilon_u \lt  10^{-8}$ takes $26$ rounds ($28$ solves) at $\alpha = 1$ and $76$ rounds ($78$ solves) at $\alpha = 1/2$, both converging to NMSE $8/69$. Constant $\alpha = 1/2$ violates $\alpha_i \to 0$ in Eq. (13-15) and omits basis alignment $\mathbf G_{uu}^{i+1}$ in Eq. (13-14), so convergence here reflects benign conditioning rather than $rS$-DANSE$^+$'s general guarantee.</p>
+<p><span id="e15-12" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e13-12"></a></p>
+<span id="sec-70" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-481fa3de3e" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-d9e3267345" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-1ba11b3526" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-99f682e1a9">E13-12: Rank-Deficient Broadcast Under Two Simultaneous Targets</h3>
+<p><strong>Problem.</strong> On two-source Eq. (13-17) where Node 2 broadcasts scalar $x_3 + x_4$, find centralized vs. compressed MSEs on $s_1, s_2$ and the minimal lossless fix.</p>
+<p><strong>Solution.</strong> Centralized MMSE is $1/4$ on each source. Scalar $x_3 + x_4 = 2s_1 + n_3 + n_4$ cancels $s_2$, giving $1/4$ on $s_1$ but degrading $s_2$ to local $1/2$. Adding difference stream $x_3 - x_4$ ($Q = 2$) satisfies column-space inclusion Eq. (13-16) and restores $1/4$ on both.</p>
+<p><span id="e15-13" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e13-13"></a></p>
+<span id="sec-71" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-43c36175b8" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-eeff13f4d6" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-55891f9c74" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-4fc8d4635c">E13-13: Zero Broadcast and Safe Local Fallback</h3>
+<p><strong>Problem.</strong> When $\vec f_2 = \vec 0$ due to mute gating or fault, what happens to $\tilde{\mathbf R}_1$ and how should solvers fall back?</p>
+<p><strong>Solution.</strong> Zero $\vec f_2$ creates a zero column in $\mathbf T_1$ and zero row/column in $\tilde{\mathbf R}_1$ (singular!). Detect zero-energy broadcast columns, prune them, and fall back cleanly to local 2-mic MWF (MSE $4/9$)—muting a link discards remote signal and noise alike rather than achieving "zero noise."</p>
+<p><span id="e15-14" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e13-14"></a></p>
+<span id="sec-72" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-478a33071c" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-2bdfab7371" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-f54078f6df" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-3509d6d9d7">E13-14: Indefinite Matrices, Ill-Conditioning, and Diagonal Loading</h3>
+<p><strong>Problem.</strong> Contrast $\begin{bmatrix}1 & 2 \\ 2 & 1\end{bmatrix}$ against $\operatorname{diag}(1, 10^{-12})$, and state what adding $\delta\mathbf I$ ($\delta > 0$) changes mathematically.</p>
+<p><strong>Solution.</strong> $\begin{bmatrix}1 & 2 \\ 2 & 1\end{bmatrix}$ has eigenvalues $3$ and $-1 \lt  0$ (indefinite—reject as an upstream bug!), whereas $\operatorname{diag}(1, 10^{-12}) \succ 0$ is physically valid with condition number $10^{12}$. Solving $(\mathbf R_{xx} + \delta\mathbf I)\vec w = \vec r_{xd_u}$ minimizes regularized objective $J_u(\vec w) + \delta\|\vec w\|_2^2$ (synthetic $\delta$ white noise); always score loaded weights back on <strong>unloaded</strong> Eq. (13-3).</p>
+<p><span id="e15-15" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e13-15"></a></p>
+<span id="sec-73" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-4bad0eb87f" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-403370e969" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-7cead60afd" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-ff89e3d5af">E13-15: Payload Bitrates Across PCM16, Float32, Complex64 Spectra, and Cast Modes</h3>
+<p><strong>Problem.</strong> Compute $16\,\mathrm{kHz}$ mono payload bitrates for PCM16, <code>float32</code>, and <code>complex64</code> one-sided spectra ($N = 512, H = 256$), plus packet counts per cycle across 4 nodes under broadcast vs. unicast.</p>
+<p><strong>Solution.</strong> Net payloads are $256000$, $512000$, and $1028000\,\mathrm{bit/s}$ (<code>complex64</code> is $64$ bits total). Four-node broadcast sends $4$ packets/cycle vs. $4 \times 3 = 12$ under unicast. (Code's <code>resource_control</code> uses $H = 128$, doubling spectral rate to $2056000\,\mathrm{bit/s}$/node; odd $N = 511$ at $H = 256$ has $256$ bins for $1024000\,\mathrm{bit/s}$ with complex highest bin $\frac{255}{511}f_s \lt  f_s/2$.)</p>
+<p><span id="e15-16" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e13-16"></a></p>
+<span id="sec-74" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-d6bfdb5b5e" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-cd640dc247" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-9f6977a658" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-909478c343">E13-16: Per-Node RAM, Network-Wide RAM, and Cumulative Matrix Solves</h3>
+<p><strong>Problem.</strong> For $U = 4, M_u = 2, Q = 1$ storing one <code>complex128</code> ($16$-byte) matrix/bin, compare per-node and 4-node bytes against centralized $8 \times 8$.</p>
+<p><strong>Solution.</strong> $L_u = 2 + 3 = 5$ takes $5^2 \times 16 = 400$ bytes/node ($1600$ bytes across 4 nodes) versus centralized $8^2 \times 16 = 1024$ bytes—lowering per-device RAM while replicating broadcast stats network-wide. Count actual node linear solves ($U$ per simultaneous step vs. $1$ per sequential step).</p>
+<p><span id="e15-17" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e13-17"></a></p>
+<span id="sec-75" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-270f9db859" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-067a79a0ca" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-2ab25b15a4" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-cfa88edb25">E13-17: Known SRO and Linear-Interpolation SRC Control</h3>
+<p><strong>Problem.</strong> Explain interpolation direction for $+100\,\mathrm{ppm}$ remote clock ($f_d = 16001.6\,\mathrm{Hz}$) and why SRC steady-window NMSE ($0.135724$) drops below synchronous $2/13$.</p>
+<p><strong>Solution.</strong> Local sample $n / 16000\,\mathrm{s}$ queries remote index $m = 1.0001 n$ (needing $32004$ remote samples for $32000$ outputs, identical across batch and stateful $257$-sample chunks). NMSE drops from $0.350880$ to $0.135724 \lt  2/13$ because two-point linear interpolation low-passes $2900 / 3500\,\mathrm{Hz}$ remote noise carriers, altering $\mathbf R_{nn}$.</p>
+<p><span id="e15-18" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e13-18"></a></p>
+<span id="sec-76" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-4e97b65795" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-1251e3d462" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-03e1ca65d2" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-2937573082">E13-18: Matching Denominators Across Packet-Drop Gap Strategies</h3>
+<p><strong>Problem.</strong> Over an $800$-sample remote dropout, hand-calculate in-gap and $28800$-sample full-window NMSEs for zero-fill vs. local-MWF fallback.</p>
+<p><strong>Solution.</strong> Inside the $800$-sample gap:</p>
+<ol>
+<li><strong>Zero-fill under fixed weights</strong> ($[2, 1, 0, 0]^\top / 13$): target gain $5/26$ gives distortion $(1 - 5/26)^2 = 441/676$ + noise $5/169 = 20/676 = 461/676 \approx 0.68195$ (PCM $0.681955$).</li>
+<li><strong>Local 2-mic MWF fallback</strong> ($[4, 2, 0, 0]^\top / 9$): MSE $4/9 \approx 0.44444$ (PCM $0.444451$).</li>
+</ol>
+<p>With gap fraction $\eta = 800 / 28800 = 1 / 36$, full-window $(1 - \eta)(2/13) + \eta J_{\mathrm{gap}}$ gives $0.168516$ vs. $0.161918$—reporting both windows prevents long steady segments from masking acute dropout artifacts.</p>
+<p><span id="e15-19" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e13-19"></a></p>
+<span id="sec-77" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-0c9a031714" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-907902a486" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-87f37a1d30" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-5bb4d7bee2">E13-19: Exact PCM16 Remote Transport Error Bounds</h3>
+<p><strong>Problem.</strong> Compare peak link-quantization bounds ($\Delta = 1/32768$) for quantized scalar broadcast $z_2 = 2x_3 - x_4 / 2$ ($\times 2/13$) versus quantizing $x_3, x_4$ separately.</p>
+<p><strong>Solution.</strong> Scalar broadcast quantization adds at most $(2/13)(\Delta / 2) = \Delta / 13 \approx 2.347506 \times 10^{-6}$ (measured $2.347005 \times 10^{-6}$); separate remote-mic quantization loosens Eq. (13-23) to $(5/13)(\Delta / 2) = 5\Delta / 26$.</p>
+<p><span id="e15-20" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e13-20"></a></p>
+<span id="sec-78" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-5bc0cc2c13" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-ad154b1e6b" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-0dcd9a42fe" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-f556931e53">E13-20: Reconciling Analytical, Float, and Integer PCM Tiers</h3>
+<p><strong>Problem.</strong> Explain why analytical fractions, pre-export <code>float64</code> components, and WAV integer ratios $E_{\mathrm{PCM}} / P_{\mathrm{ref}}$ agree to high precision without bit-for-bit identity.</p>
+<p><strong>Solution.</strong> Analytical evaluates exact covariances; <code>float64</code> matches to $\sim 10^{-15}$ over exact integer-cycle window $28800$; and disk PCM incorporates two independent 16-bit integer roundings on $D[n]$ and $Y[n]$.</p>
+<p><span id="e15-21" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e13-21"></a></p>
+<span id="sec-79" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-9e15aaffec" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-32f96cea50" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-2b170d53fc" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-7899462658">E13-21: Divergence Counterexample Under Unrelaxed Jacobi Coupling</h3>
+<p><strong>Problem.</strong> On $3 \times 3$ SPD $\mathbf R = 0.1\mathbf I_3 + 0.9\,\vec 1\vec 1^\top$ with $\vec r = [1, 1, 1]^\top$, compare $\vec w^{i+1} = \vec w^i + \alpha(\vec r - \mathbf R\vec w^i)$ from $\vec 0$ at $\alpha = 1$ vs. $\alpha = 1/2$.</p>
+<p><strong>Solution.</strong> Eigenvalues $2.8, 0.1, 0.1 > 0$ give $\vec w^\star = \frac{5}{14}[1, 1, 1]^\top$, converging iff $|1 - \alpha\lambda| \lt  1 \iff 0 \lt  \alpha \lt  2 / 2.8 = 5/7$. At unrelaxed Jacobi $\alpha = 1$, mode $2.8$ multiplies error by $1 - 2.8 = -1.8$, oscillating wildly ($1, -0.8, 2.44, -3.392, \ldots$); at $\alpha = 1/2 \lt  5/7$, factor $-0.4$ converges smoothly ($0.5, 0.3, 0.38, 0.348 \to 5/14$).</p>
+<p><span id="e15-22" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e13-22"></a></p>
+<span id="sec-80" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-4db262b2cd" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-35fc515c3d" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-0469bde73b" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-5ff26f9949">E13-22: Auditing the Three Step-Size Conditions of $rS$-DANSE$^+$</h3>
+<p><strong>Problem.</strong> Test $1/(i + 1)$, $1/2$, $2^{-i-1}$, and $1/(i + 1)^2$ against Eq. (13-15), and note whether Eq. (13-15) suffices without $\mathbf G_{uu}^{i+1}$.</p>
+<p><strong>Solution.</strong> Checking $\alpha_i \in (0, 1]$, $\alpha_i \to 0$, and $\sum \alpha_i = \infty$:</p>
+<ol>
+<li><strong>Harmonic $1/(i + 1)$</strong>: <strong>passes all three</strong> (dyadic blocks $[2^j, 2^{j+1}-1]$ each sum $\ge 1/2 \implies \infty$);</li>
+<li><strong>Constant $1/2$</strong>: fails $\alpha_i \to 0$;</li>
+<li><strong>Geometric $2^{-i-1}$</strong>: sums to $1 \lt  \infty$, stalling from distant starts;</li>
+<li><strong>Inverse-square $1/(i + 1)^2$</strong>: converges to $\pi^2 / 6 \lt  \infty$, failing infinite travel.</li>
+</ol>
+<p>Equation (13-15) must also pair with basis-alignment $\mathbf G_{uu}^{i+1}$ in Eq. (13-14), $\mathbf R_{xx} \succ 0$, and $Q = S$.</p>
+<p><span id="e15-23" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e13-23"></a></p>
+<span id="sec-81" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-0b8e41071b" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-1d70029682" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-c7f8fcc136" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-e856a0ada1">E13-23: Directed Message Trace for Tree Same-Sample In-Network Summation</h3>
+<p><strong>Problem.</strong> On chain $1 \leftrightarrow 2 \leftrightarrow 3$ rooted at Node $1$ with $z_1 = 1, z_2 = 2, z_3 = 3$, list all directed messages and peer sums.</p>
+<p><strong>Solution.</strong> $2(U - 1) = 4$ directed messages:</p>
+<ul>
+<li><strong>Up-cast to root</strong>: $3 \to 2$ sends $3$; $2 \to 1$ sends partial sum $2 + 3 = 5$; Root $1$ forms $z_{\mathrm{sum}} = 1 + 5 = 6$.</li>
+<li><strong>Down-cast from root</strong>: $1 \to 2$ sends $6$; $2 \to 3$ forwards $6$.</li>
+</ul>
+<p>Subtracting own $z_u$ gives Nodes $1, 2, 3$ exact peer sums $5, 4, 3$; link drops or stale-frame mixing break linear synchronous consistency.</p>
+<p><span id="e15-24" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e13-24"></a></p>
+<span id="sec-82" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-7e45f79bb0" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-e427641230" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-f7034ff89c" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-16dee032e3">E13-24: Cross-Checking GEVD Whitening Against Direct MWF</h3>
+<p><strong>Problem.</strong> On Eq. (13-19) ($\mathbf R_{nn}$ diagonals $1$, off-diagonals $1/2$) and $\vec a = [1, 2]^\top$, verify whitened eigenvalues, GEVD rank-1 weight, and MSE.</p>
+<p><strong>Solution.</strong> $\mathbf R_{nn}^{-1}\vec a = [0, 2]^\top$ ($q = 4$) gives $\|\mathbf R_{nn}^{-1/2}\vec a\|_2^2 = 4$, so whitened $\mathbf C$ has $\lambda_1 = 5$ and pure-noise $\lambda_2 = 1$. Discarding $\lambda_2 = 1$ is exact ($S = 1$), yielding $\vec w^\star = [0, 2/5]^\top$ (distortion $(4/5 - 1)^2 = 1/25$ + noise $4/25 = 1/5$), with symmetric square root $\mathbf G_n = \mathbf R_{nn}^{1/2}$ satisfying:</p>
+<p>$$\begin{aligned}
+\hat{\mathbf R}_{ss}
+&=(\lambda_1-1)\mathbf G_n\vec v_1\vec v_1^H\mathbf G_n
+=\vec a\vec a^\top.
+\end{aligned}$$</p>
+<p><span id="e15-25" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e13-25"></a></p>
+<span id="sec-83" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-632be6e3e5" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-2c78c71398" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-13a2e4109a" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-f4ac4e7bd2">E13-25: Transforming Statistics into Consistent Coordinates After a Broadcast Version Switch</h3>
+<p><strong>Problem.</strong> Two single-mic nodes observe $x_1 = s + n_1, x_2 = s + n_2$ ($d = s$; zero-mean uncorrelated unit-variance $s, n_1, n_2$). Old input at Node 1 is $\vec y = [x_1, x_2]^\top$; after Node 2 doubles broadcast gain, new input becomes $\vec y' = [x_1, 2x_2]^\top$.</p>
+<p>Hand-calculate: (1) old and new covariances, cross-correlations, and optimal weights; (2) mixed weight and true physical MSE on $[x_1, 2x_2]^\top$ when averaging old and new statistics $50/50$ without transformation; (3) lossless reuse via invertible transform $\mathbf C$ versus non-invertible subspace rotation.</p>
+<p><strong>Step 1: Invertible coordinate transformation rules.</strong> For $\vec y' = \mathbf C\vec y$ with $d' = d$, $\vec p = \mathbb{E}[\vec y d^*]$, and $\mathbf C^{-H} = (\mathbf C^H)^{-1}$:</p>
+<p>$$\begin{aligned}
+\vec y'&=\mathbf C\vec y,\qquad d'=d,\\
+\mathbf R'&=\mathbf C\mathbf R\mathbf C^H,\\
+\vec p'&=\mathbf C\vec p,\\
+\vec h'&=\mathbf C^{-H}\vec h,
+\end{aligned}\tag{13-25}$$</p>
+<p>preserving $(\vec h')^H\vec y' = \vec h^H\vec y$ identically (here $\mathbf C = \operatorname{diag}(1, 2)$).</p>
+<p><strong>Step 2: Exact benchmarks in old and new coordinates.</strong></p>
+<p>$$\begin{aligned}
+\mathbf R_0&=\begin{bmatrix}2 & 1\\1 & 2\end{bmatrix},\qquad
+\vec p_0=[1,\;1]^\top,\\
+\mathbf R_1&=\mathbf C\mathbf R_0\mathbf C^H
+=\begin{bmatrix}2 & 2\\2 & 8\end{bmatrix},\\
+\vec p_1&=\mathbf C\vec p_0=[1,\;2]^\top.
+\end{aligned}\tag{13-26}$$</p>
+<p>Old optimum is $\vec h_{\mathrm{old}}^\star = [1/3, 1/3]^\top$; new optimum solves $2h'_1 + 2h'_2 = 1, 2h'_1 + 8h'_2 = 2 \Rightarrow \vec h_{\mathrm{new}}^\star = [1/3, 1/6]^\top$, mapping on $[x_1, 2x_2]^\top$ back to identical physical weight $[1/3, 1/3]^\top$!</p>
+<p><strong>Step 3: Unconverted $50/50$ statistical mixing.</strong> Averaging $\mathbf R_0, \mathbf R_1$ and $\vec p_0, \vec p_1$ directly:</p>
+<p>$$\begin{aligned}
+\mathbf R_{\mathrm{mix}}&=\frac{\mathbf R_0+\mathbf R_1}{2}
+=\begin{bmatrix}2 & 3/2\\3/2 & 5\end{bmatrix},\\
+\vec p_{\mathrm{mix}}&=\frac{\vec p_0+\vec p_1}{2}
+=[1,\;3/2]^\top,\\
+2u+\tfrac{3}{2}v&=1,\qquad
+\tfrac{3}{2}u+5v=\tfrac{3}{2}.
+\end{aligned}\tag{13-27}$$</p>
+<p>Eliminating $u$ gives $(31/8)v = 3/4 \Rightarrow v = 6/31, u = 11/31$. Although $\mathbf R_{\mathrm{mix}} \succ 0$ ($\det = 31/4 > 0$) triggers zero solver warnings, applying $[11/31, 6/31]^\top$ to $[x_1, 2x_2]^\top$ yields skewed physical weight $[11/31, 12/31]^\top$!</p>
+<p><strong>Step 4: Exact physical MSE penalty.</strong> On $[x_1, x_2]^\top$ ($H = w_1 + w_2$):</p>
+<p>$$\begin{aligned}
+J_{\mathrm{correct}}&=\left(\frac{2}{3}-1\right)^2+\frac{2}{9}
+=\frac{1}{9}+\frac{2}{9}=\frac{1}{3},\\
+H_{\mathrm{mix}}&=\frac{11+12}{31}=\frac{23}{31},\\
+J_{\mathrm{mix}}&=(H_{\mathrm{mix}}-1)^2+\frac{11^2+12^2}{31^2}\\
+&=\frac{64+265}{961}=\frac{329}{961},\\
+\Delta J&=J_{\mathrm{mix}}-J_{\mathrm{correct}}
+=\frac{329}{961}-\frac{1}{3}=\frac{26}{2883}>0.
+\end{aligned}\tag{13-28}$$</p>
+<p>Unconverted mixing inflates MSE by $\Delta J = \frac{26}{2883} \approx 0.00902$.</p>
+<p><strong>Step 5: Proper coordinate transform vs. irreversible subspace switches.</strong> Transforming $\mathbf C\mathbf R_0\mathbf C^H = \mathbf R_1$ and $\mathbf C\vec p_0 = \vec p_1$ via Eq. (13-25) before averaging preserves $J_{\mathrm{correct}} = 1/3$. Conversely, switching from $\vec y = [x_1, x_2]^\top$ to $\vec y' = [x_1, x_3]^\top$ maps $[0, 0, 1]^\top$ from $\vec y = \vec 0$ to $\vec y' = [0, 1]^\top \ne \vec 0$, which <em>no</em> $2 \times 2$ matrix $\mathbf C$ can achieve—requiring fresh frame accumulation whenever DANSE rotates into unseen subspaces. Verify via:</p>
+<pre><code class="language-bash">.venv/bin/python -m codes.chapters.ch13.chapter13_exercises --exercise E13-25
+</code></pre>
+<p><a id="e13-26"></a></p>
+<span id="sec-84" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-60abc8d82d" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-1979c49802" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-61499247af">E13-26: AES67/PTPv2 Sub-Microsecond Sync Budget Versus Software SRO-DANSE</h3>
+<p><strong>Problem.</strong> On a $f_s = 48\,\mathrm{kHz}$ two-node system at $f = 2.4\,\mathrm{kHz}$: (1) under wired AES67 / IEEE 1588 PTPv2 ($|\tau_u| \le \tau_{\mathrm{PTP}} = 1\,\mu\mathrm{s}$), compute $T_s$, worst-case sample/phase skew, power attenuation of $\hat s = \frac{1}{2}(1 + e^{-\mathrm{j}\phi_{\max}})s$, and static waveform MSE relative to Node 1; (2) under wireless $\varepsilon = 100\,\mathrm{ppm}$ SRO, compute sample slip rate, $1$-sample slip period, $2.4\,\mathrm{kHz}$ phase rotation rate, first $180^\circ$ null time $t_{\mathrm{null}}$, and per-hop fractional shift / phase step at $N = 1024, H = 512$.</p>
+<p><strong>Step 1: AES67 / PTPv2 static hardware-locked budget.</strong> $T_s = 1 / 48000\,\mathrm{s} = 125 / 6\,\mu\mathrm{s} \approx 20.833333\,\mu\mathrm{s}$. Single-node $\tau_{\mathrm{PTP}} = 1\,\mu\mathrm{s} = 0.048\,T_s$ shifts $2400\,\mathrm{Hz}$ by $0.864^\circ$ ($0.0048\pi\,\mathrm{rad}$).</p>
+<p>Worst-case opposing skew $|\Delta\tau_{12}| = 2\,\mu\mathrm{s} = 0.096\,T_s$ ($\phi_{\max} = \Delta\phi_{12,\max}$, $H = (1 + e^{-\mathrm{j}\phi_{\max}})/2$) gives:</p>
+<p>$$\begin{aligned}
+\phi_{\max}&=4\pi f\tau_{\mathrm{PTP}}
+=0.0096\pi\,\mathrm{rad}\approx 1.728^\circ,\\
+|H|^2&=\cos^2(\phi_{\max}/2)\approx 0.99977262,\\
+|H-1|^2&=\sin^2(\phi_{\max}/2)\approx 2.2738\times 10^{-4}.
+\end{aligned}\tag{13-29}$$</p>
+<p>Power loss $-10\log_{10}|H|^2 \approx 0.000988\,\mathrm{dB}$ ($\lt  0.001\,\mathrm{dB}$) and static waveform MSE $|H - 1|^2$ ($-36.43\,\mathrm{dB}$) stay <strong>permanently bounded</strong> ($\varepsilon = 0$).</p>
+<p><strong>Step 2: Free-running $100\,\mathrm{ppm}$ drift and first null instant.</strong> At $\varepsilon = 10^{-4}$, slip rate $f_s\varepsilon = 4.8\ \text{samples/s}$ crosses $1$ full sample every $t_{\mathrm{slip}} = 5 / 24\,\mathrm{s} \approx 0.208333\,\mathrm{s}$.</p>
+<p>At $2400\,\mathrm{Hz}$, phase rotates at $360^\circ f\varepsilon = 86.4^\circ/\mathrm{s}$ ($0.48\pi\,\mathrm{rad/s}$), hitting its first $180^\circ$ cancellation null ($\cos(\pi/2) = 0$) and WOLA ($N=1024, H=512$) hop steps at:</p>
+<p>$$\begin{aligned}
+t_{\mathrm{null}}&=\frac{1}{2f\varepsilon}
+=\frac{25}{12}\,\mathrm{s}\approx 2.083333\,\mathrm{s},\\
+\Delta m_{\mathrm{hop}}&=H\varepsilon=0.0512,\\
+\Delta\phi_{\mathrm{hop}}&=360^\circ f(H/f_s)\varepsilon\\
+&=0.9216^\circ.
+\end{aligned}\tag{13-30}$$</p>
+<p>Uncompensated $100\,\mathrm{ppm}$ wipes out $2.4\,\mathrm{kHz}$ speech completely at $2.08\,\mathrm{s}$, whereas SRO-DANSE must apply $0.9216^\circ$/hop linear phase slopes plus integer hop slips every $1 / 0.0512 \approx 19.53$ frames (verify via <code>.venv/bin/python -m codes.chapters.ch13.chapter13_exercises --exercise E13-26</code>).</p>
+<p><a id="e13-27"></a></p>
+<span id="sec-85" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-1f2fb8b5ba" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-8f5d54d722" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-4a21c0c812">E13-27: Unified DASF Subspaces: When Distributed MWF, MVDR, GEVD, and LCMV Align Versus Diverge</h3>
+<p><strong>Problem.</strong> On §13.8 / <a href="#e13-05">E13-05</a>'s 4-mic correlated-noise model ($\vec a = [1, 1/2, 2, -1/2]^\top, \phi_s = 1$, $\mathbf R_{nn}^{-1}\vec a = [25, 4, 11, -24]^\top / 8, q = 61/8$):</p>
+<p>(1) Prove centralized MWF, MVDR ($\vec a^\top\vec w = 1$), and unit-noise-norm principal GEVD are collinear and simultaneously lossless under $z_2 = 11x_3 - 24x_4$; (2) add null $\vec b = [0, 1, 1, 0]^\top$ ($\mathbf C = [\vec a, \vec b], \vec f = [1, 0]^\top, P = 2$), hand-calculating centralized $\vec w_{\mathrm{LCMV}}^\star$, $P_{n,\mathrm{LCMV}}^\star$, stale-broadcast $P_{n,\mathrm{stale}}$, and sequential DASF-LCMV convergence; (3) add $\vec c_3 = [0, 0, 0, 1]^\top$ ($P = 3$), explaining $R = 1$ ($L_u = 3$) DOF lockup vs. $R = 2$ ($L_u = 4$) unlocking.</p>
+<p><strong>Stage 1: Shared 1D broadcast across three rank-one criteria.</strong> Writing $\vec v_0 = [25, 4, 11, -24]^\top = 8\mathbf R_{nn}^{-1}\vec a$: $\vec w_{\mathrm{MWF}}^\star = \vec v_0 / 69$ (MSE $8/69$), $\vec w_{\mathrm{MVDR}}^\star = \vec v_0 / 61$ ($P_n = 8/61 \approx 0.131148$), and $\vec w_{\mathrm{GEVD}}^\star = \vec v_0 / (2\sqrt{122})$ ($\lambda_{\max} = 69/8 = 8.625$). Under $z_2 = 11x_3 - 24x_4$ ($\tilde{\vec a}_1 = [1, 1/2, 34]^\top$), local MWF $[25, 4, 1]^\top / 69$, local MVDR $[25, 4, 1]^\top / 61$, and local GEVD all lift via $\mathbf T_1$ with exact zero error!</p>
+<p><strong>Stage 2: Two-constraint LCMV subspace shift and stale-broadcast penalty.</strong> Solving $\mathbf R_{nn}\vec u_b = \vec b$ gives $\mathbf R_{nn}^{-1}\vec b = [-5, 8, 9, 4]^\top / 8$, Gram matrix $\mathbf M = \mathbf C^\top\mathbf R_{nn}^{-1}\mathbf C$ ($M_{11} = 61/8, M_{12} = 15/8, M_{22} = 17/8, \det(8\mathbf M) = 812 = 4\times 203$), and $\vec\mu = \mathbf M^{-1}\vec f = \frac{2}{203}[17, -15]^\top$:</p>
+<p>$$\begin{aligned}
+\vec w_{\mathrm{LCMV}}^\star
+&=\frac{1}{203}[125,\;-13,\;13,\;-117]^\top,\\
+P_{n,\mathrm{LCMV}}^\star
+&=\frac{34}{203}\approx 0.167488.
+\end{aligned}\tag{13-31}$$</p>
+<p>Checking $\vec a^\top\vec w_{\mathrm{LCMV}}^\star = 1$ and $\vec b^\top\vec w_{\mathrm{LCMV}}^\star = 0$ shows remote block $\frac{13}{203}[1, -9]^\top \nparallel [11, -24]^\top$.</p>
+<p>Under stale $z_2 = 11x_3 - 24x_4$, $\tilde{\mathbf C}_1$ has columns $[1, 1/2, 34]^\top$ and $[0, 1, 11]^\top$ with $\tilde{\mathbf R}_{nn,1}$ entries $R_{11}=R_{22}=1, R_{13}=-17, R_{33}=697$. Eliminating $h_2 = -11h_3$ and $h_1 = 1 - \frac{57}{2}h_3$ reduces $\vec h^\top\tilde{\mathbf R}_{nn,1}\vec h$ to $1 - 91h_3 + \frac{10397}{4}h_3^2$, minimized at $h_3^\star = 182 / 10397$ ($\vec h_{\mathrm{stale}} = [5210, -2002, 182]^\top / 10397$):</p>
+<p>$$\begin{aligned}
+P_{n,\mathrm{stale}}
+&=1-\frac{91^2}{10397}
+=\frac{2116}{10397}\approx 0.203520,\\
+P_{n,\mathrm{stale}}-P_{n,\mathrm{LCMV}}^\star
+&=\frac{76050}{2110591}>0.
+\end{aligned}\tag{13-32}$$</p>
+<p>Because $L_u = 3 > P = 2$ retains $1$ noise-reduction DOF, sequential DASF-LCMV descends monotonically back to $34/203$ and Eq. (13-31).</p>
+<p><strong>Stage 3: $P = 3 = L_u$ DOF lockup vs. $R = 2$ unlocking.</strong> Adding $\vec c_3 = [0, 0, 0, 1]^\top$ ($\vec f_3 = [1, 0, 0]^\top, P = 3$) gives centralized $[34, -26, 26, 0]^\top / 73$ ($P_n^\star = 196/365 \approx 0.536986$). At $R = 1$ ($L_u = 3 = P$, $L_u - P = 0$ DOFs!), from $\vec f_1^{(0)} = [1, 0]^\top, \vec f_2^{(0)} = [11, -24]^\top$, $3 \times 3$ $\tilde{\mathbf C}_1^\top\vec h_1 = [1, 0, 0]^\top$ welds $\vec h_1 = [1, 0, 0]^\top$ and global $[1, 0, 0, 0]^\top$ permanently at noise $1.0 > 196/365$; expanding to $R = 2$ ($L_u = 4 > 3$) unlocks $196/365$ on Pass 1 (verify via <code>.venv/bin/python -m codes.chapters.ch13.chapter13_exercises --exercise E13-27</code>).</p>
+<hr />
+<blockquote>
+<p>📄 Page Info: 3 Figures ｜ <a href="index.html">Back to Overview</a></p>
+</blockquote><div class="pn"><span><a href="12_acoustic-imaging.html">← Previous Chapter</a></span><span><a href="14_spatial-wearable-arrays.html">Next Chapter →</a></span></div>
+<footer class="foot">Microphone Array Signal Processing Tutorial · English static edition built by scripts/build_site_en.py</footer>
+</main></div><a class="topbtn" href="#top" title="Back to top" aria-label="Back to top">↑</a>
+<script>if(!navigator.onLine)document.getElementById('offnote').style.display='block';for(const a of document.querySelectorAll('a[data-lang-peer]'))if(location.protocol==='file:'||location.hostname==='localhost'||location.hostname==='127.0.0.1')a.href=a.dataset.langPeer;</script>
+</body></html>

@@ -36,6 +36,8 @@ def portable(template, css, script):
             path = PAGES + "site/" + path
         elif re.fullmatch(r"\d{2}_[a-z-]+\.html", path):
             path = BLOB + "chapters/" + path.removesuffix(".html") + ".md"
+        elif path.startswith(PAGES + "site_en/") or path.startswith(PAGES + "site/"):
+            pass
         elif path != REPOSITORY and path not in CASE_SOURCES and not path.startswith("#"):
             raise ValueError(f"Unmapped portable link: {path}")
         return f'href="{escape(path, quote=True)}"'

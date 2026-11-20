@@ -1,0 +1,180 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="course-plot" viewBox="0 0 860 444" role="img" aria-labelledby="course-plot-title course-plot-desc">
+        <title id="course-plot-title">Spatial Localization, Time-Delay Alignment, and MVDR Null Steering on a 4-Microphone Array</title>
+        <desc id="course-plot-desc">Top-left shows spherical wavefronts from target speaker A (-35 degrees) and interferer B (+30 degrees) arriving across microphones M1 to M4; bottom-left compares the misaligned raw traces against the delay-compensated weighted output y[n]; right shows the polar beampattern preserving 0 dB toward A while steering a deep spatial null toward B.</desc>
+        <defs>
+          <pattern id="course-dots" width="18" height="18" patternUnits="userSpaceOnUse">
+            <circle cx="2" cy="2" r="1" fill="#8D8577" opacity=".24"/>
+          </pattern>
+        </defs>
+<style>
+.course-out-b,.course-out-caption-right,.course-polar-left,.course-polar-right,.course-polar-markers-left,.course-polar-markers-right,.course-wave,.course-hits circle{display:none}
+
+@media (prefers-reduced-motion:no-preference) {
+.course-wave-a{display:block;opacity:0;transform-origin:104px 108px;animation:spread 2.8s linear 3}
+.course-hits circle{display:block;opacity:0;animation:hit 2.8s ease-out 3}
+.course-hits circle:nth-child(1){animation-delay:.40s}
+.course-hits circle:nth-child(2){animation-delay:.76s}
+.course-hits circle:nth-child(3){animation-delay:1.12s}
+.course-hits circle:nth-child(4){animation-delay:1.48s}
+@keyframes spread{0%{opacity:0;transform:scale(.35)}14%{opacity:.92}70%{opacity:.58}84%,100%{opacity:0;transform:scale(2.45)}}
+@keyframes hit{0%,20%,100%{opacity:0}6%{opacity:1}}
+}
+</style>
+        <rect x="1" y="1" width="858" height="442" rx="10" fill="#FAF8F3" stroke="#D5CFC2" stroke-width="1.5"/>
+        <rect x="2" y="2" width="856" height="440" rx="9" fill="url(#course-dots)"/>
+
+        <rect x="16" y="14" width="828" height="32" rx="6" fill="#F1EDE4" stroke="#DDD7CB"/>
+        <g font-family="'Helvetica Neue',Arial,system-ui,-apple-system,sans-serif" font-size="11.8" font-weight="700">
+          <text x="28" y="34.5" fill="#1F5A92">01 · Wavefront &amp; TDOA Δτ</text>
+          <text x="212" y="34.5" fill="#8A8275">──▶</text>
+          <text x="254" y="34.5" fill="#237263">02 · Alignment &amp; Filtering wᴴ(f)X(f)</text>
+          <text x="512" y="34.5" fill="#8A8275">──▶</text>
+          <text x="554" y="34.5" fill="#B84A2E">03 · 0 dB Mainlobe + Spatial Null</text>
+        </g>
+
+        <rect x="16" y="56" width="496" height="198" rx="8" fill="#FFFFFF" stroke="#DDD7CB"/>
+        <text x="30" y="77" fill="#4A4640" font-family="'Helvetica Neue',Arial,system-ui,-apple-system,sans-serif" font-size="12" font-weight="700">Top View · 4-Mic Uniform Linear Array</text>
+        <path d="M264 70V226" stroke="#9C9588" stroke-width="1.3" stroke-dasharray="4 4"/>
+        <text x="272" y="81" fill="#6E695F" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="11" font-weight="600">0° Broadside</text>
+
+        <path class="course-ray-a" d="M264 212L118 108" stroke="#1F5A92" stroke-width="1.8" stroke-dasharray="5 4" opacity=".82"/>
+        <path class="course-ray-b" d="M264 212L388 108" stroke="#B84A2E" stroke-width="1.8" stroke-dasharray="5 4" opacity=".82"/>
+
+        <g class="course-from-left" fill="none" stroke="#1F5A92" stroke-width="2.2" stroke-linecap="round">
+          <path d="M145 98a34 34 0 0 1 -16 42" opacity=".68"/>
+          <path d="M174 94a68 68 0 0 1 -34 78" opacity=".48"/>
+          <path d="M206 90a106 106 0 0 1 -54 114" opacity=".30"/>
+          <path class="course-wave course-wave-a" d="M160 95a52 52 0 0 1 -26 60" stroke-width="2.6"/>
+        </g>
+
+        <g class="course-from-right" fill="none" stroke="#B84A2E" stroke-width="2.2" stroke-linecap="round">
+          <path d="M377 140a34 34 0 0 1 -16 -42" opacity=".68"/>
+          <path d="M366 172a68 68 0 0 1 -34 -78" opacity=".48"/>
+          <path d="M354 204a106 106 0 0 1 -54 -114" opacity=".30"/>
+          <path class="course-wave course-wave-b" d="M372 155a52 52 0 0 1 -26 -60" stroke-width="2.6"/>
+        </g>
+
+        <rect x="146" y="200" width="236" height="24" rx="12" fill="#2A2F35" stroke="#555B64" stroke-width="1.2"/>
+        <g fill="#FAF8F3" stroke="#1F5A92" stroke-width="2">
+          <circle cx="174" cy="212" r="7"/>
+          <circle cx="234" cy="212" r="7"/>
+          <circle cx="294" cy="212" r="7"/>
+          <circle cx="354" cy="212" r="7"/>
+        </g>
+        <g class="course-hits" fill="#1F5A92">
+          <circle cx="174" cy="212" r="6"/>
+          <circle cx="234" cy="212" r="6"/>
+          <circle cx="294" cy="212" r="6"/>
+          <circle cx="354" cy="212" r="6"/>
+        </g>
+        <g font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-weight="700" font-size="11.5" text-anchor="middle" fill="#3D4249">
+          <text x="174" y="242">M1</text>
+          <text x="234" y="242">M2</text>
+          <text x="294" y="242">M3</text>
+          <text x="354" y="242">M4</text>
+        </g>
+
+        <g class="course-emitter-a" font-family="'Helvetica Neue',Arial,system-ui,-apple-system,sans-serif">
+          <circle cx="104" cy="108" r="16.5" fill="#1F5A92" stroke="#FAF8F3" stroke-width="2.5"/>
+          <text x="104" y="113.5" text-anchor="middle" font-size="14.5" font-weight="800" fill="#FFFFFF">A</text>
+          <text x="28" y="144" font-size="11.5" font-weight="700" fill="#1F5A92">Target −35°</text>
+          <text x="28" y="160" font-size="10.8" fill="#635E56">M1 first → M4</text>
+        </g>
+        <g class="course-emitter-b" font-family="'Helvetica Neue',Arial,system-ui,-apple-system,sans-serif">
+          <circle cx="402" cy="108" r="16.5" fill="#B84A2E" stroke="#FAF8F3" stroke-width="2.5"/>
+          <text x="402" y="113.5" text-anchor="middle" font-size="14.5" font-weight="800" fill="#FFFFFF">B</text>
+          <text x="394" y="144" font-size="11.5" font-weight="700" fill="#B84A2E">Interferer +30°</text>
+          <text x="394" y="160" font-size="10.8" fill="#635E56">M4 first → M1</text>
+        </g>
+
+        <rect x="16" y="264" width="496" height="166" rx="8" fill="#FFFFFF" stroke="#DDD7CB"/>
+        <text x="30" y="285" fill="#4A4640" font-family="'Helvetica Neue',Arial,system-ui,-apple-system,sans-serif" font-size="12" font-weight="700">Raw 4-Ch Traces (with TDOA)</text>
+        <text x="292" y="285" fill="#4A4640" font-family="'Helvetica Neue',Arial,system-ui,-apple-system,sans-serif" font-size="12" font-weight="700">Aligned &amp; Weighted y[n]</text>
+
+        <g stroke="#E6E1D6" stroke-width="1">
+          <path d="M56 308H236M56 334H236M56 360H236M56 386H236"/>
+        </g>
+        <g font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="11" font-weight="600" fill="#5D5951">
+          <text x="30" y="312">M1</text>
+          <text x="30" y="338">M2</text>
+          <text x="30" y="364">M3</text>
+          <text x="30" y="390">M4</text>
+        </g>
+        <g class="course-traces-a" fill="none" stroke="#1F5A92" stroke-width="1.9" stroke-linejoin="round">
+          <path d="M62 308h18l7-11 9 22 9-20 7 9h124"/>
+          <path d="M62 334h34l7-11 9 22 9-20 7 9h108"/>
+          <path d="M62 360h50l7-11 9 22 9-20 7 9h92"/>
+          <path d="M62 386h66l7-11 9 22 9-20 7 9h76"/>
+          <path d="M87 294v102" stroke="#1F5A92" stroke-width="1.1" stroke-dasharray="3 3" opacity=".55"/>
+        </g>
+        <g class="course-traces-b" fill="none" stroke="#B84A2E" stroke-width="1.65" stroke-linejoin="round" opacity=".86">
+          <path d="M148 308h28l6-8 7 16 7-16 6 8h34"/>
+          <path d="M134 334h28l6-8 7 16 7-16 6 8h48"/>
+          <path d="M120 360h28l6-8 7 16 7-16 6 8h62"/>
+          <path d="M106 386h28l6-8 7 16 7-16 6 8h76"/>
+        </g>
+        <text x="30" y="415" fill="#5D5951" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="10.5">Lags A:[0,2,4,6] · B:[6,4,2,0]</text>
+
+        <rect x="243" y="330" width="40" height="34" rx="6" fill="#F3EFE6" stroke="#1F5A92" stroke-width="1.3"/>
+        <text x="263" y="351" text-anchor="middle" fill="#1F5A92" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="12" font-weight="700">wᴴX</text>
+
+        <rect x="290" y="296" width="208" height="98" rx="6" fill="#FAF8F3" stroke="#D8D2C5"/>
+        <path d="M300 345H488" stroke="#DED9CE" stroke-width="1"/>
+        <g class="course-out-a" fill="none">
+          <path d="M302 345h26l9-28 12 56 12-52 10 24h115" stroke="#237263" stroke-width="2.6" stroke-linejoin="round"/>
+          <path class="course-out-b-residual" d="M412 345h16l4-3 5 6 5-6 4 3h38" stroke="#B84A2E" stroke-width="1.5" stroke-dasharray="3 2"/>
+        </g>
+        <g class="course-out-b" fill="none">
+          <path d="M302 345h96l8-24 10 48 10-48 8 24h52" stroke="#B84A2E" stroke-width="2.6" stroke-linejoin="round"/>
+        </g>
+        <text class="course-out-caption-mvdr" x="292" y="415" fill="#237263" font-family="'Helvetica Neue',Arial,system-ui,-apple-system,sans-serif" font-size="10.8" font-weight="700">A Preserved (0 dB) · B Cancelled</text>
+        <text class="course-out-caption-right" x="292" y="415" fill="#B84A2E" font-family="'Helvetica Neue',Arial,system-ui,-apple-system,sans-serif" font-size="10.8" font-weight="700">Steered +30°: B Coherently Summed</text>
+
+        <rect x="524" y="56" width="320" height="374" rx="8" fill="#FFFFFF" stroke="#DDD7CB"/>
+        <text x="540" y="77" fill="#4A4640" font-family="'Helvetica Neue',Arial,system-ui,-apple-system,sans-serif" font-size="12" font-weight="700">Spatial Beampattern |B(θ)| (dB)</text>
+        <text x="540" y="95" fill="#6B655B" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="10.8">w_MVDR = R⁻¹a(θ₀) / [aᴴ(θ₀)R⁻¹a(θ₀)]</text>
+
+        <g fill="none" stroke="#DAD4C8" stroke-width="1.15">
+          <path d="M546 288a138 138 0 0 1 276 0"/>
+          <path d="M590 288a94 94 0 0 1 188 0" stroke-dasharray="3 4"/>
+          <path d="M636 288a48 48 0 0 1 96 0" stroke-dasharray="2 4"/>
+          <path d="M540 288H828M684 288V142"/>
+          <path d="M684 288L605 175" stroke="#1F5A92" stroke-dasharray="4 4" opacity=".62"/>
+          <path d="M684 288L753 168" stroke="#B84A2E" stroke-dasharray="4 4" opacity=".62"/>
+        </g>
+        <g font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="11" fill="#5E5951" text-anchor="middle">
+          <text x="684" y="135">0°</text>
+          <text x="585" y="158" fill="#1F5A92" font-weight="700">−35° (A)</text>
+          <text x="768" y="161" fill="#B84A2E" font-weight="700">+30° (B)</text>
+          <text x="548" y="305">−90°</text>
+          <text x="820" y="305">+90°</text>
+          <text x="703" y="206" fill="#7D766B" font-size="10">−10 dB</text>
+        </g>
+
+        <path class="course-polar-mvdr" d="M592 288 C578 260, 578 212, 605 175 C632 150, 668 186, 682 230 C690 256, 686 282, 686 286 C696 274, 728 240, 742 250 C754 258, 766 274, 760 288 Z" fill="#1F5A92" fill-opacity=".14" stroke="#1F5A92" stroke-width="2.6" stroke-linejoin="round"/>
+        <path class="course-polar-left" d="M572 288 C562 248, 574 200, 605 175 C638 154, 678 188, 696 234 C714 216, 738 212, 748 230 C762 252, 768 272, 758 288 Z" fill="#1F5A92" fill-opacity=".11" stroke="#1F5A92" stroke-width="2.4" stroke-linejoin="round"/>
+        <path class="course-polar-right" d="M608 288 C602 268, 616 242, 636 234 C654 228, 668 246, 676 238 C696 190, 726 156, 753 168 C782 182, 800 240, 790 288 Z" fill="#B84A2E" fill-opacity=".13" stroke="#B84A2E" stroke-width="2.4" stroke-linejoin="round"/>
+
+        <g class="course-polar-markers-mvdr">
+          <circle cx="605" cy="175" r="5.5" fill="#237263" stroke="#FFFFFF" stroke-width="2"/>
+          <circle cx="686" cy="286" r="5" fill="#B84A2E" stroke="#FFFFFF" stroke-width="2"/>
+          <rect x="540" y="328" width="288" height="84" rx="6" fill="#F6F3EC" stroke="#DDD7CB"/>
+          <text x="554" y="350" fill="#237263" font-family="'Helvetica Neue',Arial,system-ui,-apple-system,sans-serif" font-size="11.2" font-weight="700">● Distortionless: wᴴa(−35°) = 1 (0 dB)</text>
+          <text x="554" y="372" fill="#B84A2E" font-family="'Helvetica Neue',Arial,system-ui,-apple-system,sans-serif" font-size="11.2" font-weight="700">● Adaptive Null: Deep notch at +30°</text>
+          <text x="554" y="394" fill="#5D5951" font-family="'Helvetica Neue',Arial,system-ui,-apple-system,sans-serif" font-size="10.5">Trade-off: Monitor WNG &amp; R̂ mismatch</text>
+        </g>
+        <g class="course-polar-markers-left">
+          <circle cx="605" cy="175" r="5.5" fill="#1F5A92" stroke="#FFFFFF" stroke-width="2"/>
+          <rect x="540" y="328" width="288" height="84" rx="6" fill="#F6F3EC" stroke="#DDD7CB"/>
+          <text x="554" y="350" fill="#1F5A92" font-family="'Helvetica Neue',Arial,system-ui,-apple-system,sans-serif" font-size="11.2" font-weight="700">● Delay-and-Sum: Equal weights on A</text>
+          <text x="554" y="372" fill="#2B2E33" font-family="'Helvetica Neue',Arial,system-ui,-apple-system,sans-serif" font-size="11">Max white-noise gain (WNG = 6.02 dB)</text>
+          <text x="554" y="394" fill="#5D5951" font-family="'Helvetica Neue',Arial,system-ui,-apple-system,sans-serif" font-size="10.5">Limit: Wide mainlobe leaks +30° sidelobe</text>
+        </g>
+        <g class="course-polar-markers-right">
+          <circle cx="753" cy="168" r="5.5" fill="#B84A2E" stroke="#FFFFFF" stroke-width="2"/>
+          <rect x="540" y="328" width="288" height="84" rx="6" fill="#F6F3EC" stroke="#DDD7CB"/>
+          <text x="554" y="350" fill="#B84A2E" font-family="'Helvetica Neue',Arial,system-ui,-apple-system,sans-serif" font-size="11.2" font-weight="700">● Steer to +30°: Arrival flips M4→M1</text>
+          <text x="554" y="372" fill="#2B2E33" font-family="'Helvetica Neue',Arial,system-ui,-apple-system,sans-serif" font-size="11">Delay M4 by 6 samples to align B</text>
+          <text x="554" y="394" fill="#5D5951" font-family="'Helvetica Neue',Arial,system-ui,-apple-system,sans-serif" font-size="10.5">Source A (−35°) now cancels out of phase</text>
+        </g>
+      </svg>

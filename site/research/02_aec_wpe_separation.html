@@ -1,10 +1,11 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>AEC、WPE 与分离源码研究 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="10a21c80bda5"><style>
+<meta name="source-digest" content="98dd40371525"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
-.topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941}
+.topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
+.topbar .lang-switch{color:#FAF8F3;background:#2C333B;border:1px solid #4A525D;padding:2px 10px;border-radius:999px;font-size:13px;font-weight:650;white-space:nowrap}.topbar .lang-switch:hover{background:#1F5A92;border-color:#689CD0;text-decoration:none}
 h1,h2,h3,h4{scroll-margin-top:60px}
 @media screen{.main a[id]:not([href]){scroll-margin-top:60px}}
 @media screen{.main a[id^="e"],.main .exercise-alias{scroll-margin-top:80px}}
@@ -304,7 +305,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"
  onerror="document.getElementById('offnote').style.display='block';document.getElementById('offnote').textContent='公式渲染脚本加载失败：当前显示的是公式源码。';"></script>
 </head><body id="top"><a class="skip-link" href="#main-content">跳到正文</a>
-<header class="topbar"><a href="../index.html">🏠 首页</a> &nbsp;/&nbsp; AEC、WPE 与分离源码研究</header>
+<header class="topbar"><span><a href="../index.html">🏠 首页</a> &nbsp;/&nbsp; AEC、WPE 与分离源码研究</span><a class="lang-switch" href="https://nanless.github.io/microphone-array-tutorial/site_en/research/02_aec_wpe_separation.html" data-lang-peer="../../site_en/research/02_aec_wpe_separation.html" lang="en" hreflang="en">English</a></header>
 <div class="wrap"><nav class="side" aria-label="全书目录"><div class="chap"><a href="../index.html">🏠 导读与导航（首页）</a></div>
 <div class="chap"><a href="index.html">源码研究导读</a></div>
 <div class="chap"><a href="01_spatial_and_tracking.html">空间处理与追踪源码研究</a></div>
@@ -1852,5 +1853,5 @@ $$</p>
 <p>建议按“解析小例 → 合成回归 → 固定公开录音 → 目标设备长时录音”逐步增加复杂度。合成例负责证明实现符合所写模型，公开录音用于比较可复现行为，设备录音用于覆盖参考抽头、时钟、驱动、非线性和操作场景。三类证据不能互相替代。</p>
 <footer class="foot">麦克风阵列信号处理教程 · 静态站由 scripts/build_site.py 生成</footer>
 </main></div><a class="topbtn" href="#top" title="回顶部" aria-label="回到页面顶部">↑</a>
-<script>if(!navigator.onLine)document.getElementById('offnote').style.display='block';</script>
+<script>if(!navigator.onLine)document.getElementById('offnote').style.display='block';for(const a of document.querySelectorAll('a[data-lang-peer]'))if(location.protocol==='file:'||location.hostname==='localhost'||location.hostname==='127.0.0.1')a.href=a.dataset.langPeer;</script>
 </body></html>

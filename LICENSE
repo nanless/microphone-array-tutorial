@@ -1,0 +1,70 @@
+Dual License Notice — Microphone Array Signal Processing Tutorial
+=================================================================
+
+Original materials in this repository are made available under a dual-license
+model according to content type:
+
+1. Original Software, Numerical Cores, Scripts, and Tests
+   - Scope: Original Python, JavaScript, CSS, HTML templates, and CI scripts
+     under `codes/`, `scripts/`, `tests/`, `.github/`, and `assets/readme/lab/`
+     (excluding third-party files and datasets listed in Section 3 below).
+   - License: MIT License (full text below).
+
+2. Original Textbook Prose, Research Manuals, and Pedagogical Figures
+   - Scope: Original Chinese and English chapters (`chapters/`, `chapters_en/`),
+     upstream research & engineering manuals (`codes/chapters/ch00/research/`,
+     `codes/chapters/ch00/research_en/`), generated pedagogical figures and
+     diagrams (`figures/`, `figures_en/`, `assets/readme/*.svg`), compiled HTML
+     course editions (`site/`, `site_en/`), compiled A4 monograph PDFs
+     (`dist/*.pdf`), and repository documentation (`README*.md`, `AGENTS*.md`,
+     `COVERAGE*.md`).
+   - License: Creative Commons Attribution-NonCommercial-ShareAlike 4.0
+     International (CC BY-NC-SA 4.0). See `LICENSE-DOCS` for the full legal
+     code and summary, or visit:
+     https://creativecommons.org/licenses/by-nc-sa/4.0/
+
+3. Third-Party Code, Fonts, and Public Acoustic Datasets (Not Relicensed)
+   Third-party components and public acoustic recordings included or referenced
+   in this repository retain their respective original licenses and terms:
+   - `codes/chapters/ch07/examples/compare_online_wpe_reference.py`
+     (`NumpyOnlineWPE011`, adapted from `nara_wpe` 0.0.11, Communications
+     Engineering Group, Paderborn University): MIT License — see
+     `codes/chapters/ch07/licenses/nara_wpe_MIT.txt`.
+   - `scripts/vendor/mathjax-3.2.2/` (MathJax 3.2.2 and Speech Rule Engine
+     4.0.6): Apache License 2.0 — see `scripts/vendor/mathjax-3.2.2/LICENSE`
+     and `scripts/vendor/mathjax-3.2.2/SRE-LICENSE`.
+   - `codes/chapters/ch02/real_audio/` (10 s synchronized 16-channel excerpt
+     and derived averages from DEMAND v1.0 NRIVER, Zenodo 1227121):
+     CC BY-SA 3.0 — see `codes/chapters/ch02/real_audio/LICENSE.txt` and
+     `codes/chapters/ch02/real_audio/ATTRIBUTION.txt`.
+   - `assets/readme/cases/locata/` (short room-recording excerpts and metadata
+     from the IEEE-AASP LOCATA Challenge corpus): CC BY 4.0 — see
+     `assets/readme/cases/locata/NOTICE.txt`.
+   - Ignored local upstream source checkouts under
+     `codes/chapters/ch00/upstream/_downloads/` are never redistributed by this
+     repository and remain governed solely by each upstream project's license
+     documented in `codes/chapters/ch00/THIRD_PARTY.md`.
+
+-------------------------------------------------------------------------------
+
+MIT License (for Original Software, Numerical Cores, Scripts, and Tests)
+
+Copyright (c) 2026 nanless and Microphone Array Signal Processing Tutorial Contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated source code files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

@@ -2,7 +2,7 @@
 
 一套面向初学者、算法研究者与音频系统工程师的中文开源系统教程。从球面几何、复相量时频、子空间代数与统计估计预备出发，完整推演**声源定位、波束形成、回声消除、盲去混响、语音分离与多目标追踪**六大核心算法，再落地到真实硬件的时钟同步、延迟预算、选型验收，以及**声学成像、分布式无线阵列、全景声可穿戴阵列与条件目标提取**四篇前沿专题。
 
-**[在线进入交互式课程站 →](https://nanless.github.io/microphone-array-tutorial/)** · **[▶ 零安装 4 麦波束实验室](https://nanless.github.io/microphone-array-tutorial/assets/readme/lab/array-lab.html)** · **[🔊 15 麦真实房间试听](https://nanless.github.io/microphone-array-tutorial/site/#course-cases)** · **[全书合订本 PDF](dist/microphone-array-tutorial.pdf)** · [第 0 章数学基础](chapters/00_math-foundations.md) · [全书导读目录](chapters/00_overview.md) · [English](README_EN.md)
+**[在线进入交互式课程站 →](https://nanless.github.io/microphone-array-tutorial/)** · **[▶ 零安装 4 麦波束实验室](https://nanless.github.io/microphone-array-tutorial/assets/readme/lab/array-lab.html)** · **[🔊 15 麦真实房间试听](https://nanless.github.io/microphone-array-tutorial/site/#course-cases)** · **[全书合订本 PDF](dist/microphone-array-tutorial.pdf)** · [第 0 章数学基础](chapters/00_math-foundations.md) · [全书导读目录](chapters/00_overview.md) · **[English Edition (Web / PDF / Docs)](README_EN.md)**
 
 **16 章正文 · 2 篇附录 · 443 道可运行练习 · 92 张编号图** · **283 段配套 WAV 音频** · **129 个开源项目源码对照**
 
@@ -87,5 +87,6 @@ python3 -m venv .venv
 - **上游开源实现与工业部署研究手册（6 篇）**：[`codes/chapters/ch00/research/README.md`](codes/chapters/ch00/research/README.md)
 - **92 张插图、静态课程站与标签化 A4 合订本 PDF 构建说明**：[`scripts/README.md`](scripts/README.md)
 - **第三方代码、公开数据集署名与许可边界**：[`codes/chapters/ch00/THIRD_PARTY.md`](codes/chapters/ch00/THIRD_PARTY.md)
+- **完整英文版（19 章正文、6 篇研究手册、92 张英文插图、英文课程站与英文合订本 PDF）**：[`README_EN.md`](README_EN.md) · [`chapters_en/`](chapters_en/00_overview.md) · [`dist/microphone-array-tutorial-en.pdf`](dist/microphone-array-tutorial-en.pdf)
 
-仓库根目录未设通用开源许可证；随仓引用的第三方源码说明与公开声学数据集均保留各自原始许可条款。
+本仓库原创软件代码与脚本采用 [MIT 许可证](LICENSE)，原创教材正文、研究手册与教学插图采用 [CC BY-NC-SA 4.0 许可证](LICENSE-DOCS)；随仓引用的第三方源码片段与公开声学数据集均严格保留各自原始许可条款。

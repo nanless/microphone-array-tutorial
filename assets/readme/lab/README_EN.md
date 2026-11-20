@@ -1,5 +1,7 @@
 # Interactive Lab: Which Side Should Four Mics Listen To?
 
+[简体中文](README.md) · [English Course Website](https://nanless.github.io/microphone-array-tutorial/site_en/)
+
 Four equally spaced microphones (`M1` to `M4`) sit in a row. Source **A** on the left plays sustained tones (`1000 / 3000 Hz`); source **B** on the right plays paired short taps (`3000 / 5000 Hz`). Turn your volume down first, then compare these three shared-gain mono WAV clips:
 
 1. **[▶ Single mic M1](single.wav?raw=true)**: both rhythms remain at 100% reference power.
@@ -8,7 +10,7 @@ Four equally spaced microphones (`M1` to `M4`) sit in a row. Source **A** on the
 
 ### Open the Zero-Install Browser Lab (1-Click Online or Offline)
 
-- **[Launch Live Browser Lab (EN / 中文) →](https://nanless.github.io/microphone-array-tutorial/assets/readme/lab/array-lab.html)** — switch to **English** in the top-right corner, toggle steering directions, and watch the sample-alignment diagram update live.
+- **[Launch Live Browser Lab (EN / 中文) →](https://nanless.github.io/microphone-array-tutorial/assets/readme/lab/array-lab.html?lang=en)** — boots directly in **English**, lets you toggle steering directions, and updates the sample-alignment diagram live.
 - **Offline mode**: open [`array-lab.html`](array-lab.html), click **Download raw file**, and open the single HTML file in any browser (no server or microphone permission needed).
 
 Try steering left to A, then check **“Switch B on the right to a 250 Hz low tone”**: neither speaker moved and the delays did not change—why did B become loud again?
@@ -19,9 +21,9 @@ Try steering left to A, then check **“Switch B on the right to a 250 Hz low to
 
 At `16 kHz` (`62.5 μs` per sample), the same wavefront peak from A reaches `M1, M2, M3, M4` at samples `0, 2, 4, 6`. Delaying `M1` by 6 samples, `M2` by 4, and `M3` by 2 stacks all four copies of A cleanly at sample `6`:
 
-![The arrivals at M1, M2 and M3 shift to sample 6, where M4 already was.](../delay-and-sum.svg)
+![The arrivals at M1, M2 and M3 shift to sample 6, where M4 already was.](../delay-and-sum-en.svg)
 
-Averaging the four aligned channels preserves 100% of A while spreading opposite-side B across samples `[12, 8, 4, 0]`, where high-frequency peaks and troughs cancel. At `250 Hz`, however, one period spans `64` samples—a 12-sample spread covers less than one-fifth of a cycle, leaving **82.1% of B's single-mic power** intact. Overcoming this low-frequency aperture limit motivates superdirective and MVDR beamforming in [Chapter 5: Beamforming](../../../chapters/05_beamforming.md).
+Averaging the four aligned channels preserves 100% of A while spreading opposite-side B across samples `[12, 8, 4, 0]`, where high-frequency peaks and troughs cancel. At `250 Hz`, however, one period spans `64` samples—a 12-sample spread covers less than one-fifth of a cycle, leaving **82.1% of B's single-mic power** intact. Overcoming this low-frequency aperture limit motivates superdirective and MVDR beamforming in [Chapter 5: Beamforming](../../../chapters_en/05_beamforming.md).
 
 ---
 
@@ -33,4 +35,4 @@ Both the browser player and the pre-rendered WAV files execute the exact `<scrip
 node assets/readme/lab/export-lab.mjs --check
 ```
 
-to verify all published lab assets byte for byte. Continue to [Chapter 5: Beamforming](../../../chapters/05_beamforming.md) or [return to the English README](../../../README_EN.md).
+to verify all published lab assets byte for byte. Continue to [Chapter 5: Beamforming](../../../chapters_en/05_beamforming.md) or [return to the English README](../../../README_EN.md).

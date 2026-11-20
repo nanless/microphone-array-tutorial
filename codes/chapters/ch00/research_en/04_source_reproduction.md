@@ -1,5 +1,7 @@
 # Reproducing Upstream Code After Fetching
 
+🌐 [简体中文](../research/04_source_reproduction.md) ｜ **English**
+
 ## 1. Define the Reproduction Target First
 
 Every reproduction effort must fix at least four elements: an algorithm, an implementation revision, an input configuration, and a well-posed evaluation question. Taking MVDR as an example, "reproducing beamforming" is too vague; instead, specify: "given a two-channel target steering vector and noise covariance matrix, verify that the computed weights satisfy the unit-gain distortionless target constraint and check that the output noise power matches the closed-form solution." Neural mask estimation, audio file I/O, and speech recognition backends can be wired in during subsequent experimental layers.

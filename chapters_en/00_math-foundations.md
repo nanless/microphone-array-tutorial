@@ -1,3 +1,5 @@
+🌐 [简体中文](../chapters/00_math-foundations.md) ｜ **English**
+
 > This is Chapter 0 (of 16 main and special-topic chapters—Chapters 0–15, where Chapters 12–15 are four extended special topics, accompanied by Appendices A and B), systematically deriving and connecting all core mathematical tools, geometric intuition, hand-worked anchor examples, and engineering failure boundaries used throughout Chapters 1–15 and Appendices A–B; readers already familiar with parts of the background may also look up individual derivations on demand via the master index in §0.8.
 >
 > Overview: [00_overview.md](00_overview.md) | Next: [01_problem-definition.md](01_problem-definition.md)

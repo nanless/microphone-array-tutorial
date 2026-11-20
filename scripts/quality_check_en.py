@@ -269,9 +269,17 @@ def check_pdfs(errors: list[str]) -> None:
             errors.append(f"dist/{pdf_name} final page missing marker {end_marker!r}")
 
 
+def check_language_bars(errors: list[str]) -> None:
+    """Every Chinese/English Markdown pair must carry a current GitHub-visible switch line."""
+    from scripts import language_bars
+
+    errors.extend(language_bars.sync(check=True))
+
+
 def main() -> None:
     errors: list[str] = []
     check_licenses(errors)
+    check_language_bars(errors)
     check_paired_corpus(CHAPTERS_ZH, CHAPTERS_EN, "chapters_en", errors)
     check_paired_corpus(RESEARCH_ZH, RESEARCH_EN, "research_en", errors)
     check_en_repo_docs(errors)

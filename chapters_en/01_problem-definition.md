@@ -1,3 +1,5 @@
+🌐 [简体中文](../chapters/01_problem-definition.md) ｜ **English**
+
 > This is Chapter 1 of the main text; the book comprises 16 main and special-topic chapters (Chapters 0–15, where Chapter 0 covers mathematical foundations and Chapters 12–15 are four extended special topics), accompanied by Appendices A and B. This chapter can be read self-contained; navigation links appear below.
 >
 > Overview: [00_overview.md](00_overview.md) | Previous: [00_math-foundations.md](00_math-foundations.md) | Next: [02_basics-signal-model.md](02_basics-signal-model.md)

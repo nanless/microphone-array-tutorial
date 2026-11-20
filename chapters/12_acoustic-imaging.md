@@ -1,3 +1,5 @@
+🌐 **简体中文** ｜ [English](../chapters_en/12_acoustic-imaging.md)
+
 > ⚠️ 本篇是本书正文第 12 章（扩展专题Ⅰ；正文共 16 章，即第 0～15 章，其中第 12～15 章为四篇扩展专题，另有附录 A、B），接在第 11 章选型指南之后。分步数学推导可回查[第 0 章](00_math-foundations.md)（非负最小二乘 KKT 条件见[§0.5](00_math-foundations.md#sec-0-5)），全局符号与术语速查见[第 16 章附录 A](16_appendix-symbols-math.md)。
 >
 > 首页导读：[00_overview.md](00_overview.md) ｜ 上一篇：[11_selection-guide.md](11_selection-guide.md) ｜ 下一篇：[13_distributed-enhancement.md](13_distributed-enhancement.md)

@@ -1,3 +1,5 @@
+🌐 **简体中文** ｜ [English](../chapters_en/13_distributed-enhancement.md)
+
 > ⚠️ 本篇是本书正文第 13 章（扩展专题Ⅱ；正文共 16 章，即第 0～15 章，其中第 12～15 章为四篇扩展专题，另有附录 A、B），接在第 12 章声学成像之后，介绍多个拾音节点怎样在有限通信下协作增强声音。分块 Schur 补与广义特征值推导可回查[第 0 章 §0.3](00_math-foundations.md#sec-0-3)、[§0.4](00_math-foundations.md#sec-0-4)，全局符号速查见[第 16 章附录 A](16_appendix-symbols-math.md)。
 >
 > 首页导读：[00_overview.md](00_overview.md) ｜ 上一篇：[12_acoustic-imaging.md](12_acoustic-imaging.md) ｜ 下一篇：[14_spatial-wearable-arrays.md](14_spatial-wearable-arrays.md)

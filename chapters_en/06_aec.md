@@ -1,3 +1,5 @@
+🌐 [简体中文](../chapters/06_aec.md) ｜ **English**
+
 > This chapter is Chapter 6 of the main text; the main text and frontier monographs comprise 16 chapters in total (Chapters 0–15, where Chapter 0 covers mathematical foundations and Chapters 12–15 are four frontier extension chapters), accompanied by Appendices A and B. This chapter can be read independently; use the navigation bar below for adjacent chapters.
 >
 > Overview Home: [00_overview.md](00_overview.md) | Previous: [05_beamforming.md](05_beamforming.md) | Next: [07_wpe-dereverberation.md](07_wpe-dereverberation.md)

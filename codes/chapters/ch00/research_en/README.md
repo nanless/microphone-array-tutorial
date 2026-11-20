@@ -1,5 +1,7 @@
 # Algorithm Implementation, Industrial Deployment, and Source Code Research Manual
 
+🌐 [简体中文](../research/README.md) ｜ **English**
+
 **[← Back to Book Overview](../../../../chapters_en/00_overview.md)** · **[Chapter-by-Chapter Teaching Code Index](../../README_EN.md)** · **[Algorithm Coverage Matrix](../COVERAGE_EN.md)** · **[129-Item Upstream Version Lockfile](../SOURCES.lock.json)**
 
 This manual picks up immediately after the mathematical derivations in the main chapters and systematically dissects the engineering interface questions that inevitably arise when moving "from blackboard equations to real open-source libraries and embedded firmware": which tensor dimension corresponds to sensors versus frequency bins, how cross-frame states are initialized and frozen, where echo and voice-activity control signals enter the pipeline, which file contains the upstream source entry point, and how to construct minimal controlled experiments to verify implementation correctness.

@@ -1,5 +1,7 @@
 # Interactive Lab: Which Side Should Four Mics Listen To?
 
+🌐 [简体中文](README.md) ｜ **English**
+
 [简体中文](README.md) · [English Course Website](https://nanless.github.io/microphone-array-tutorial/site_en/)
 
 Four equally spaced microphones (`M1` to `M4`) sit in a row. Source **A** on the left plays sustained tones (`1000 / 3000 Hz`); source **B** on the right plays paired short taps (`3000 / 5000 Hz`). Turn your volume down first, then compare these three shared-gain mono WAV clips:

@@ -1,5 +1,7 @@
 # 教学代码与 283 段音频实验总索引（按章检索）
 
+🌐 **简体中文** ｜ [English](README_EN.md)
+
 **[← 返回项目主页](../../README.md)** · **[全书导读目录](../../chapters/00_overview.md)** · **[算法覆盖表 COVERAGE.md](ch00/COVERAGE.md)** · **[6 篇源码研究手册](ch00/research/README.md)** · **[跳到完整音频清单 ↓](#audio-inventory)**
 
 本目录汇总全书 **443 道稳定编号练习**与 **283 段发布级 WAV 音频**的唯一真实实现。每章下的 `core/` 存放无黑箱封装的纯 NumPy 算法数值核，`examples/` 存放受控音频生成器与上游开源库合同探针；同一算法核只在首次讲授的章节实现一次，后续章节直接导入复用（例如第 4 章 Capon 与第 5 章 MVDR/LCMV 共用的协方差校验与相对对角加载统一归档于 [`ch04/core/covariance.py`](ch04/core/covariance.py)）。共享目录 `ch00/` 承载第 0 章数学基础核与十六道练习、跨章综合基线、主音频总清单、全书索引及上游获取工具。

@@ -1,5 +1,7 @@
 # On-Demand Acquisition of Third-Party Reference Implementations
 
+🌐 [简体中文](README.md) ｜ **English**
+
 **[简体中文](README.md)**
 
 `fetch_upstreams.py` reads `SOURCES.lock.json` in the parent directory (`codes/chapters/ch00/`), downloads only entries marked eligible for automated acquisition, and checks out each working tree at its pinned commit hash. By default, repositories are placed under `_downloads/` in this directory, which is ignored by Git.

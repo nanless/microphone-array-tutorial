@@ -1,5 +1,7 @@
 # 按需获取第三方参考实现
 
+🌐 **简体中文** ｜ [English](README_EN.md)
+
 `fetch_upstreams.py` 读取上一级的 `SOURCES.lock.json`，只下载清单中允许获取的项目，并把工作树检出到
 固定提交。默认目标是本目录下的 `_downloads/`，该目录已被 Git 忽略。
 

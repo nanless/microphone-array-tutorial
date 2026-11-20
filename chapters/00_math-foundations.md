@@ -1,3 +1,5 @@
+🌐 **简体中文** ｜ [English](../chapters_en/00_math-foundations.md)
+
 > 本篇是第 0 章（正文与扩展专题共 16 章，即第 0～15 章，其中第 12～15 章为四篇扩展专题，另有附录 A、B），系统推导并串讲全书第 1～15 章与附录 A、B 用到的全部核心数学工具、几何直觉、手算算例与工程失效边界；熟悉相关基础的读者亦可按 §0.8 检索表按需查阅。
 >
 > 导读首页：[00_overview.md](00_overview.md) ｜ 下一篇：[01_problem-definition.md](01_problem-definition.md)

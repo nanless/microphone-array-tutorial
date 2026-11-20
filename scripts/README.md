@@ -1,5 +1,7 @@
 # Scripts：插图生成、课程站点与合订本 PDF 构建工具链
 
+🌐 **简体中文** ｜ [English](README_EN.md)
+
 **[← 返回项目主页](../README.md)** · **[全书导读目录](../chapters/00_overview.md)** · **[教学代码与音频索引](../codes/chapters/README.md)** · **[合订本 PDF](../dist/microphone-array-tutorial.pdf)**
 
 本目录集中存放全书 **92 张编号插图绘图器**、**交互式课程站点构建器（`build_site.py`）**、**A4 标签化无障碍合订本构建器（`build_pdf.py`）** 以及 **全仓自动化门禁（`quality_check.py`）**。算法与工程教学代码位于 `codes/`；两类脚本均须在**仓库根目录**下使用主虚拟环境执行。

@@ -1,5 +1,7 @@
 # Algorithm–Source–Verification Coverage Matrix
 
+🌐 [简体中文](COVERAGE.md) ｜ **English**
+
 **[简体中文](COVERAGE.md)**
 
 Chapter-by-chapter audit baseline: 2026-09-28 (pedagogical baselines, chapter mappings, exercises, and directly referenced upstream sources across Chapters 1–11 and Appendices A/B were audited chapter by chapter; subsequently expanded to synchronize the Chapter 0 shared mathematical foundation kernels and Chapters 12–15 Frontier Topics I–IV, incorporating the Chapter 14–15 wearable/TSE baselines and 13 pure-text external source selections into the tables below, while preserving the exact historical acquisition, dependency, and execution records of earlier upstream entries). This matrix covers every method defined, derived, or evaluated for system selection in the main textbook prose, plus research extensions whose inclusion rationale is documented across the upstream research manuals. Each row pins a specific computational step, algorithm variant, or industrial mechanism; a pedagogical baseline and an external reference for the exact same calculation share one row rather than inflating counts as two separate statuses.

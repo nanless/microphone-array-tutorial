@@ -1,5 +1,7 @@
 # 第三方实现与工业生态索引
 
+🌐 **简体中文** ｜ [English](THIRD_PARTY_EN.md)
+
 此索引包含 129 个 Git 上游项目；已在 `codes/chapters/ch00/upstream/_downloads/` 取得 112 个独立源码工作区。2026-11-11 新增 openMHA v4.18.1 的双耳波束形成选集；2026-11-17 新增 spharpy、sofar、spaudiopy、anf-generator、rir-generator、sc-wind-noise-generator、ci-sdr、py-motmetrics、oboe、p808、dasf-toolbox、wesep 与 gtcrn 共 13 项固定纯文本源码选集。原有索引核实于 2026-09-22，新增 RLS/Kalman AEC 来源核实于 2026-09-23。其中 pyaec、PFDKF 与 Subband_Kalman_AEC 于 2026-09-24 按固定提交取得指定源码和许可文件，DiCoW v1 演示与 TS-ASR-Whisper v1 训练源码于 2026-09-28 按固定提交取得。2026-09-30 新增原作者湿空气声速模型，2026-10-01取得SAID及NeMo WPE固定源码，2026-10-02取得TAC四文件，2026-10-04另取得作者WOLA-DANSE、paderwasn与TI-DANSE+ batch三个限定源码选集，并取得WASN的11个与LibriCSS的27个源码/说明/许可文件。
 
 当前离线核验逐条比较完整源码包含规则及32条扩展名排除规则：89项通过（含 openMHA 及 2026-11-17 新增 13 项）、22项旧工作区仅有20条排除规则而记为 `source_selection_mismatch`、17项仅登记来源。AEC Challenge 的5个真实录音有本地变动，保留为1项失败。旧工作区不自动补规则或覆盖内容。pystoi 是软件作者维护的 Python 实现，不称为原论文作者的官方 Python 程序。获取状态与完整提交见 [SOURCE_STATUS.json](SOURCE_STATUS.json) 和 [SOURCES.lock.json](SOURCES.lock.json)。状态报告由获取工具离线生成；不能用源码获取结果证明新增项目已运行。

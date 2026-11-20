@@ -1,3 +1,5 @@
+🌐 **简体中文** ｜ [English](../chapters_en/14_spatial-wearable-arrays.md)
+
 > ⚠️ 本篇是本书正文第 14 章（扩展专题Ⅲ；正文共 16 章，即第 0～15 章，其中第 12～15 章为四篇扩展专题，另有附录 A、B），接在第 13 章分布式麦克风协同增强之后，系统介绍三维空间声场采集、参数化空间编码与可穿戴麦克风阵列处理。三维旋转群 $\mathrm{SO}(3)$、Wirtinger 复梯度与球面调和函数推导见[第 0 章 §0.1](00_math-foundations.md#sec-0-1)、[§0.5](00_math-foundations.md#sec-0-5)与[§0.7](00_math-foundations.md#sec-0-7)，全局符号速查见[第 16 章附录 A](16_appendix-symbols-math.md)。
 >
 > 首页导读：[00_overview.md](00_overview.md) ｜ 上一篇：[13_distributed-enhancement.md](13_distributed-enhancement.md) ｜ 下一篇：[15_target-extraction-diarization.md](15_target-extraction-diarization.md)

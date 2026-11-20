@@ -1,5 +1,7 @@
 # AEC、去混响与语音分离：算法、工业实现与源码研究
 
+🌐 **简体中文** ｜ [English](../research_en/02_aec_wpe_separation.md)
+
 AEC 播放增益、历史回声、当前来源合同与 LMPAN/DiffVQE 原文复核日期：2026-10-04；SGMSE+/StoRM实际采样分派与零峰值边界复核日期：2026-10-02；BSS/GSS/CSS 固定源码合同、ArrayDPS 取点与参数层、神经方法身份复核日期：2026-10-01；WPE 原始资料、NARA 多通道历史排列与 NeMo 固定源码复核日期：2026-10-01；AEC 的 APA 原函数、APM 通道边界与神经方法分类复核日期：2026-10-01；AEC 原论文、接口诊断与近年候选原核实日期：2026-09-28；原核实日期：2026-09-22；AEC 工业接口与配对数据说明复核日期：2026-09-23；BSS/GSS 源码入口与实验复核日期：2026-09-24；WPE 与 cACGMM 源码入口于 2026-09-29 扩充并离线重核；推导练习及 Stream.FM、TF-Locoformer 静态审查日期：2026-09-26；第 15 章条件目标提取纯文本选集核实日期：2026-11-17。对应正文 [第 6 章](../../../../chapters/06_aec.md)、[第 7 章](../../../../chapters/07_wpe-dereverberation.md)、[第 8 章](../../../../chapters/08_speech-separation.md) 与 [第 15 章](../../../../chapters/15_target-extraction-diarization.md)。本篇按处理对象分开说明算法、源码位置和复现实验；正式版本和许可边界由 [SOURCES.lock.json](../SOURCES.lock.json) 固定。
 
 “外部实现”表示可以找到承担该算法计算的代码，不表示本书已经训练、编译或测完该系统。本篇实际运行的结果单独列出，包括[教学基线测试](../../../../tests/test_codes_aec_wpe_sep_track.py)与 W01 的独立实现对照；未附执行结果的外部实验均为复现设计。外部代码、权重和数据分别遵守各自条款。

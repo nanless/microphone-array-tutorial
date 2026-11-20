@@ -1,3 +1,5 @@
+🌐 [简体中文](../chapters/11_selection-guide.md) ｜ **English**
+
 > This chapter is Chapter 11 of the main text; the main text and extended special topics comprise 16 chapters in total (Chapters 0–15, where Chapter 0 covers mathematical foundations and Chapters 12–15 are four extended special topics), accompanied by Appendices A and B. This chapter can be read standalone; see the navigation bar below for the preceding and following chapters.
 >
 > Overview Home: [00_overview.md](00_overview.md) ｜ Previous: [10_engineering-practice.md](10_engineering-practice.md) ｜ Next: [12_acoustic-imaging.md](12_acoustic-imaging.md)

@@ -1,5 +1,7 @@
 # MathJax 3.2.2 and SRE 4.0.6: Offline Formula Assets for the Combined PDF
 
+🌐 [简体中文](README.md) ｜ **English**
+
 **[简体中文](README.md)**
 
 This directory supplies offline math-rendering assets for `scripts/build_pdf.py` when printing the combined monograph PDF. Formulas are rendered into SVG glyph paths by MathJax 3.2.2 and annotated with complete MathML structural descriptions using the English rule set of Speech Rule Engine (SRE) 4.0.6. The static course website continues to load its online formula assets through its own site builder. Versions here are pinned strictly for deterministic build reproduction; we do not claim that they are the latest upstream releases.

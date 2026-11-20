@@ -1,5 +1,7 @@
 # Third-Party Implementations and Industrial Ecosystem Index
 
+🌐 [简体中文](THIRD_PARTY.md) ｜ **English**
+
 **[简体中文](THIRD_PARTY.md)**
 
 This index catalogs **129 Git upstream repositories**, of which **112** have isolated local source checkouts under `codes/chapters/ch00/upstream/_downloads/`. On 2026-11-11, the binaural beamforming selection of `openMHA v4.18.1` was added; on 2026-11-17, 13 pinned pure-text source selections were added (`spharpy`, `sofar`, `spaudiopy`, `anf-generator`, `rir-generator`, `sc-wind-noise-generator`, `ci-sdr`, `py-motmetrics`, `oboe`, `p808`, `dasf-toolbox`, `wesep`, and `gtcrn`). Earlier core entries were verified on 2026-09-22, and RLS/Kalman AEC entries were verified on 2026-09-23 (`pyaec`, `PFDKF`, and `Subband_Kalman_AEC` fetched at pinned commits on 2026-09-24; `DiCoW v1` demo and `TS-ASR-Whisper v1` training sources fetched on 2026-09-28; humid-air speed-of-sound model added on 2026-09-30; `SAID` and `NeMo WPE` fetched on 2026-10-01; four `TAC` files fetched on 2026-10-02; and bounded selections of author `WOLA-DANSE`, `paderwasn`, `TI-DANSE+ batch`, 11 `CN-UPB/WASN` files, and 27 `LibriCSS` files fetched on 2026-10-04).

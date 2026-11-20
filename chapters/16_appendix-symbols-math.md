@@ -1,3 +1,5 @@
+🌐 **简体中文** ｜ [English](../chapters_en/16_appendix-symbols-math.md)
+
 > ⚠️ 本篇是第 16 章，即附录 A（正文共 16 章，即第 0～15 章，其中第 12～15 章为四篇扩展专题，另有附录 A、B），可独立查阅，前后篇见下方导航。
 >
 > 首页导读：[`00_overview.md`](00_overview.md) ｜ 上一篇：[15_target-extraction-diarization.md](15_target-extraction-diarization.md) ｜ 下一篇：[17_appendix-guide.md](17_appendix-guide.md)

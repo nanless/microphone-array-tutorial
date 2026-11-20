@@ -1,5 +1,7 @@
 # Master Index of Pedagogical Code and 283 Audio Experiments (By Chapter)
 
+🌐 [简体中文](README.md) ｜ **English**
+
 **[← Back to Project Home](../../README_EN.md)** · **[Full Curriculum Overview](../../chapters_en/00_overview.md)** · **[Algorithm Coverage Matrix (`COVERAGE_EN.md`)](ch00/COVERAGE_EN.md)** · **[6 Upstream Research Manuals](ch00/research_en/README.md)** · **[Jump to Complete Audio Inventory ↓](#audio-inventory)** · **[Jump to R01 Real-Array Recording Guide ↓](#real-audio-r01)** · **[简体中文](README.md)**
 
 This directory houses the single source of truth for all **443 stably numbered exercises** and **283 publication-grade WAV audio assets** across the textbook. Under each chapter directory, `core/` contains pure, black-box-free NumPy numerical kernels, while `examples/` contains controlled audio generators and upstream open-source contract probes. Every shared numerical kernel is implemented exactly once in the chapter where it is first derived and imported directly by later chapters (for example, spatial covariance validation and relative diagonal loading shared by Chapter 4 Capon and Chapter 5 MVDR/LCMV reside solely in [`ch04/core/covariance.py`](ch04/core/covariance.py)). The shared directory `ch00/` hosts the Chapter 0 mathematical foundation kernels and 16 exercises, cross-chapter baseline suites, the main 109-clip audio manifest, repository-wide source lockfiles, and upstream acquisition tools.

@@ -1,5 +1,7 @@
 # Microphone Array Signal Processing Tutorial · Overview & Navigation
 
+🌐 [简体中文](../chapters/00_overview.md) ｜ **English**
+
 Welcome to the master navigation page for the entire book. This tutorial comprises **19 main-text documents**—this overview page, **16 core and frontier chapters** (Chapters 0–15, including Chapter 0 on book-wide mathematical foundations and four extended special topics in Chapters 12–15), and **2 quick-reference and troubleshooting appendices**—accompanied by **443 runnable pure-NumPy exercises**, **283 companion audio clips**, **92 script-reproducible figures** (plus 1 supplementary room-simulation figure in Appendix B), and **6 [Source Research Manuals](../codes/chapters/ch00/research_en/README.md)** (which focus on third-party upstream implementations and reproduction boundaries, and are not counted among the main tutorial chapters).
 
 **Quick-Start Entry Points**:

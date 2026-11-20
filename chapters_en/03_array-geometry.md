@@ -1,3 +1,5 @@
+🌐 [简体中文](../chapters/03_array-geometry.md) ｜ **English**
+
 > This chapter is Chapter 3 of the main text. The main text and extended special topics comprise 16 chapters in total (Chapters 0–15, where Chapter 0 covers mathematical foundations and Chapters 12–15 are four extended special topics), accompanied by Appendices A and B. This chapter can be read independently; use the navigation bar below for the preceding and following chapters.
 >
 > Overview Home: [00_overview.md](00_overview.md) | Previous: [02_basics-signal-model.md](02_basics-signal-model.md) | Next: [04_doa-estimation.md](04_doa-estimation.md)

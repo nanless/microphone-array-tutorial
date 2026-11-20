@@ -1,3 +1,5 @@
+🌐 [简体中文](../chapters/05_beamforming.md) ｜ **English**
+
 > This chapter is Chapter 5 of the main text. The main text and extended special topics comprise 16 chapters in total (Chapters 0–15, where Chapter 0 covers mathematical foundations and Chapters 12–15 are four extended special topics), accompanied by Appendices A and B. This chapter can be read independently; use the navigation bar below for the preceding and following chapters.
 >
 > Overview Home: [00_overview.md](00_overview.md) | Previous: [04_doa-estimation.md](04_doa-estimation.md) | Next: [06_aec.md](06_aec.md)

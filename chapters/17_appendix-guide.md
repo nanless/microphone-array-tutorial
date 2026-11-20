@@ -1,3 +1,5 @@
+🌐 **简体中文** ｜ [English](../chapters_en/17_appendix-guide.md)
+
 > ⚠️ 本篇是第 17 章，即附录 B（正文共 16 章，即第 0～15 章，其中第 12～15 章为四篇扩展专题，另有附录 A、B），可独立查阅，前后篇见下方导航。
 >
 > 首页导读：[`00_overview.md`](00_overview.md) ｜ 上一篇：[16_appendix-symbols-math.md](16_appendix-symbols-math.md) ｜ 下一篇：（无）

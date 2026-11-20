@@ -1,5 +1,7 @@
 # Microphone Array Signal Processing · From Fundamentals to Industrial Practice
 
+🌐 [简体中文](README.md) ｜ **English**
+
 A complete, open bilingual (English & Chinese) technical monograph and runnable engineering laboratory for beginners, researchers, and audio systems engineers. Starting from spherical geometry, complex phasors, subspace linear algebra, Wirtinger calculus, and Bayesian estimation, the book derives **DOA localization, beamforming, acoustic echo cancellation (AEC), WPE dereverberation, speech separation, and multi-target source tracking** without skipping intermediate steps—then bridges directly into real-time hardware synchronization, latency/compute budgeting, system selection, and four frontier chapters on **acoustic imaging, distributed wireless arrays, spatial/wearable arrays, and conditioned target extraction with multichannel diarization**.
 
 **[Open English Interactive Course →](https://nanless.github.io/microphone-array-tutorial/site_en/)** · **[▶ 1-Click 4-Mic Browser Lab](https://nanless.github.io/microphone-array-tutorial/assets/readme/lab/array-lab.html?lang=en)** · **[🔊 15-Mic Real Room Demo](https://nanless.github.io/microphone-array-tutorial/site_en/#course-cases)** · **[English Monograph PDF](dist/microphone-array-tutorial-en.pdf)** · [Math Foundations (Ch 0)](chapters_en/00_math-foundations.md) · [Full Contents](chapters_en/00_overview.md) · [简体中文](README.md)

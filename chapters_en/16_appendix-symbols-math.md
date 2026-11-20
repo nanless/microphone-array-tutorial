@@ -1,3 +1,5 @@
+🌐 [简体中文](../chapters/16_appendix-symbols-math.md) ｜ **English**
+
 > ⚠️ This chapter is Chapter 16, i.e., Appendix A (the main text comprises 16 chapters, Chapters 0–15, of which Chapters 12–15 are four extended special topics, followed by Appendices A and B). It may be consulted independently; see the navigation links below for adjacent chapters.
 >
 > Overview: [`00_overview.md`](00_overview.md) | Previous: [15_target-extraction-diarization.md](15_target-extraction-diarization.md) | Next: [17_appendix-guide.md](17_appendix-guide.md)

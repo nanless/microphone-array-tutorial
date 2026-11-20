@@ -1,5 +1,7 @@
 # Scripts: Figure Generation, Course Website, and Combined Monograph PDF Build Toolchain
 
+🌐 [简体中文](README.md) ｜ **English**
+
 **[← Back to Project Home](../README_EN.md)** · **[Full Curriculum Overview](../chapters_en/00_overview.md)** · **[Pedagogical Code & Audio Index](../codes/chapters/README_EN.md)** · **[Combined Monograph PDF](../dist/microphone-array-tutorial.pdf)** · **[简体中文](README.md)**
 
 This directory contains all **92 numbered pedagogical figure generators**, the **interactive static course website builder (`build_site.py`)**, the **tagged accessible A4 monograph PDF builder (`build_pdf.py`)**, and the **automated repository-wide release gate (`quality_check.py`)**. Algorithmic and engineering Python cores live under `codes/`; both groups of scripts must be executed from the **repository root** using the primary `.venv` virtual environment.

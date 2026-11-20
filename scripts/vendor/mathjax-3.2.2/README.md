@@ -1,5 +1,7 @@
 # MathJax 3.2.2 与 SRE 4.0.6：合订 PDF 的离线公式资源
 
+🌐 **简体中文** ｜ [English](README_EN.md)
+
 本目录供 `scripts/build_pdf.py` 打印合订本使用。当前公式由MathJax3.2.2生成SVG字形，并用Speech Rule Engine（SRE）4.0.6的英文规则描述完整MathML结构。网页站点仍由自身构建器加载在线公式资源。这里固定版本用于复现，不声称它们是最新版本。
 
 ## 官方来源与许可

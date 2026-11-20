@@ -1,3 +1,5 @@
+🌐 [简体中文](../chapters/14_spatial-wearable-arrays.md) ｜ **English**
+
 > ⚠️ This chapter is Chapter 14 of the main text (Extended Topic III; the main text comprises 16 chapters in total, Chapters 0–15, where Chapters 12–15 are four extended special topics accompanied by Appendices A and B), immediately following Chapter 13 on distributed collaborative enhancement, systematically introducing three-dimensional spatial sound-field capture, parametric spatial audio coding, and wearable microphone array processing. Three-dimensional rotation group $\mathrm{SO}(3)$, Wirtinger complex gradients, and spherical harmonic derivations appear in [Chapter 0, §0.1](00_math-foundations.md#sec-0-1), [§0.5](00_math-foundations.md#sec-0-5), and [§0.7](00_math-foundations.md#sec-0-7), with global notation references in [Chapter 16, Appendix A](16_appendix-symbols-math.md).
 >
 > Overview Home: [00_overview.md](00_overview.md) ｜ Previous: [13_distributed-enhancement.md](13_distributed-enhancement.md) ｜ Next: [15_target-extraction-diarization.md](15_target-extraction-diarization.md)

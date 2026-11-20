@@ -1,3 +1,5 @@
+🌐 [简体中文](../chapters/13_distributed-enhancement.md) ｜ **English**
+
 > ⚠️ This chapter is Chapter 13 of the main text (Extended Topic II; the main text comprises 16 chapters in total, Chapters 0–15, where Chapters 12–15 are four extended special topics accompanied by Appendices A and B), immediately following Chapter 12 on acoustic imaging, introducing how multiple pickup nodes collaborate to enhance sound under constrained communication bandwidth. Block Schur complements and Generalized Eigenvalue Decomposition derivations can be reviewed in [Chapter 0, §0.3](00_math-foundations.md#sec-0-3) and [§0.4](00_math-foundations.md#sec-0-4), and global notation references appear in [Chapter 16, Appendix A](16_appendix-symbols-math.md).
 >
 > Overview Home: [00_overview.md](00_overview.md) ｜ Previous: [12_acoustic-imaging.md](12_acoustic-imaging.md) ｜ Next: [14_spatial-wearable-arrays.md](14_spatial-wearable-arrays.md)

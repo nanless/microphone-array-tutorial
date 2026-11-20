@@ -1,5 +1,7 @@
 # AGENTS.md — 本仓库的长期协作规范
 
+🌐 **简体中文** ｜ [English](AGENTS_EN.md)
+
 > 每次修改本仓库前先通读本文件。本文件既规定内容质量，也规定调查、修改、验证和交付方式。
 > 规则发生冲突时，按第 2.1 节的优先级处理，不要机械执行低优先级条款。
 
@@ -31,6 +33,7 @@
 | 教学代码源文件 | `codes/chapters/{ch00,ch01～ch15,appendix_a,appendix_b}/` 中的 `core/`、`examples/` 与单章入口 | 共享数值核按首讲章节唯一归档，第 0 章数学核与练习及跨章练习在 `ch00/` | 修改唯一真实实现；同步测试、覆盖表和对应章节；旧 `codes.array_tutorial`、`codes.examples` 路径已退出仓内接口 |
 | 第0章数学基础与图 | `codes/chapters/ch00/core/chapter00_math.py`、`codes/chapters/ch00/chapter00_exercises.py`；`scripts/make_math_figures.py` → 图89～92及`ch00/reports/figure89～92*.json` | E00-01～16十六道数学基础题与四张编号图 | 四真实源绑定，随机仿真固定seed；涵盖球面几何、SO(3)、相量/COLA、子空间/SVD/Woodbury、瑞利商/GEV/Khatri–Rao、Wirtinger/NNLS/MM、复高斯/CRLB/维纳/Kalman、匈牙利指派及Bessel/Legendre/球谐函数；不生成新WAV |
 | 共享文件IO源文件 | `codes/chapters/ch00/io_contracts.py` | 普通父链与成员、严格JSON、元数据类型及报告写入的公共原语 | 生成器和获取工具复用原语；各资产的schema、评分和来源边界由调用者负责。参与生成时须绑定真实SHA；有限写前检查不宣称消除并发竞态或保证崩溃持久性 |
+| 中英切换行 | `scripts/language_bars.py` → 68 份中英配对 Markdown（`chapters/`↔`chapters_en/`、`research/`↔`research_en/`、根及子目录 `*.md`↔`*_EN.md`）首部以 `🌐` 开头的单行 | GitHub 无法在 Markdown 内运行脚本，故每份文档顶部放一行指向对应语言版本的链接；该行仅供仓库浏览，由 `build_markdown_helpers.shield_math` 在生成网站与 PDF 前剔除（站点与 PDF 另有语言切换） | 新增或改名配对文档后运行 `python scripts/language_bars.py` 同步；`quality_check_en.py` 以 `--check` 同源只读核验；不要手写该行 |
 | 主音频布局 | `codes/chapters/ch00/audio/MANIFEST.json`、各章 `audio/*.wav`；`scripts/code_layout.py` 固定组→章节映射 | 27 组、109 个数学合成 WAV，单一总清单、分章存放 | 改生成源后按新布局重生；清单绑定20个真实源，记录每条所属章、生成源 SHA 与 WAV SHA；禁止手改单个 WAV |
 | 已知噪声加权源与生成物 | `codes/chapters/appendix_a/core/weighted_audio.py`、`codes/chapters/appendix_a/examples/generate_weighted_audio.py` → `codes/chapters/appendix_a/weighted_audio/` | 5个16kHz、32000点单/双声道数学合成WAV，独立清单 | 同一700Hz目标与3500/4000Hz干扰，已知固定权重和均1；28800点稳窗解析/浮点分量/实际PCM整数分开，四真实源/增益1；不是盲估噪声、真实阵列或随机独立性证据；只接受六普通成员；首次写目录前独立核固定参数、波形、分量、权重与量化；`--check`严格只读完整回放 |
 | 同DRR频谱源与生成物 | `codes/chapters/appendix_b/core/response_audio.py`、`codes/chapters/appendix_b/examples/generate_response_audio.py` → `codes/chapters/appendix_b/response_audio/` | 5个16kHz、32002点单声道数学合成WAV，独立清单 | 同一2000/4000Hz源、两反射短FIR同能量；增益1、完整两点尾；28800点稳窗解析/浮点分量/实际PCM整数分开；四真实源/六普通成员；首次写前独立核固定类型参数、完整因果波形、解析/浮点/实际PCM指标；不是实房间、盲估计或主观听测，`--check`严格只读回放 |

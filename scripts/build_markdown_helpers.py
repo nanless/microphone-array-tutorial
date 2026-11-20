@@ -178,8 +178,20 @@ def restore_code(text, repo):
     return repo.substitute(text)
 
 
+_LANGUAGE_BAR = re.compile(r"^🌐 [^\n]*\n?(?:[ \t]*\n)?", re.M)
+
+
+def _strip_language_bar(text):
+    """Drop the GitHub-only 中文 / English switch line; sites and the PDF have their own pills."""
+    match = _LANGUAGE_BAR.search(text)
+    if match is None or match.start() > 600:
+        return text
+    return text[:match.start()] + text[match.end():]
+
+
 def shield_math(text):
     """Stash math before table parsing; retain original text for literal code."""
+    text = _strip_language_bar(text)
     source = text
     text, code_repo = protect_code(text)
     repo = _Stash(source, "MATH")

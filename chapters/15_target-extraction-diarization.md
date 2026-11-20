@@ -1,3 +1,5 @@
+🌐 **简体中文** ｜ [English](../chapters_en/15_target-extraction-diarization.md)
+
 > ⚠️ 本篇是本书正文第 15 章（扩展专题Ⅳ；正文共 16 章，即第 0～15 章，其中第 12～15 章为四篇扩展专题，另有附录 A、B），接在[第 14 章空间声场采集、参数化编码与可穿戴阵列](14_spatial-wearable-arrays.md)之后，讨论当声场中存在多位说话人、同向远端干扰或重叠对话时，拾音前端如何结合声纹、近场距离、说话人日志与视觉唇动线索完成目标说话人提取与多说话人活动检测。菲涅耳球面波近似、约束拉格朗日与匈牙利最优指派推导可回查[第 0 章 §0.1](00_math-foundations.md#sec-0-1)、[§0.5](00_math-foundations.md#sec-0-5)与[§0.6](00_math-foundations.md#sec-0-6)，全局符号与术语速查见[第 16 章附录 A §16.1](16_appendix-symbols-math.md#sec-16-1)。
 >
 > 首页导读：[00_overview.md](00_overview.md) ｜ 上一篇：[14_spatial-wearable-arrays.md](14_spatial-wearable-arrays.md) ｜ 下一篇：[16_appendix-symbols-math.md](16_appendix-symbols-math.md)

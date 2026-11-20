@@ -1,3 +1,5 @@
+🌐 **简体中文** ｜ [English](../chapters_en/06_aec.md)
+
 > 本篇是本书正文第 6 章；正文与扩展专题共 16 章（第 0～15 章，其中第 0 章为数学基础，第 12～15 章为四篇扩展专题），另有附录 A、B。本篇可独立阅读，前后篇见下方导航。
 >
 > 导读首页：[00_overview.md](00_overview.md) ｜ 上一篇：[05_beamforming.md](05_beamforming.md) ｜ 下一篇：[07_wpe-dereverberation.md](07_wpe-dereverberation.md)

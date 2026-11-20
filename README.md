@@ -1,5 +1,7 @@
 # 麦克风阵列信号处理 · 从入门到工业实践
 
+🌐 **简体中文** ｜ [English](README_EN.md)
+
 一套面向初学者、算法研究者与音频系统工程师的中文开源系统教程。从球面几何、复相量时频、子空间代数与统计估计预备出发，完整推演**声源定位、波束形成、回声消除、盲去混响、语音分离与多目标追踪**六大核心算法，再落地到真实硬件的时钟同步、延迟预算、选型验收，以及**声学成像、分布式无线阵列、全景声可穿戴阵列与条件目标提取**四篇前沿专题。
 
 **[在线进入交互式课程站 →](https://nanless.github.io/microphone-array-tutorial/)** · **[▶ 零安装 4 麦波束实验室](https://nanless.github.io/microphone-array-tutorial/assets/readme/lab/array-lab.html)** · **[🔊 15 麦真实房间试听](https://nanless.github.io/microphone-array-tutorial/site/#course-cases)** · **[全书合订本 PDF](dist/microphone-array-tutorial.pdf)** · [第 0 章数学基础](chapters/00_math-foundations.md) · [全书导读目录](chapters/00_overview.md) · **[English Edition (Web / PDF / Docs)](README_EN.md)**

@@ -24,7 +24,7 @@ jobs:
           node-version: '20'
       - uses: actions/setup-python@v6
         with:
-          python-version: '3.12'
+          python-version: '3.13'
           cache: 'pip'
       - name: Install locked Python dependencies
         run: pip install -r requirements.txt
@@ -33,11 +33,5 @@ jobs:
           node assets/readme/lab/export-lab.mjs --check
           python scripts/course_home/export_portable.py --check
           python scripts/course_home_en/export_portable.py --check
-      - name: Build intermediate combined HTML and run Chinese & English quality gates
-        run: |
-          python scripts/build_pdf.py --html-only
-          python scripts/build_pdf_en.py --html-only
-          python scripts/quality_check.py
-          python scripts/quality_check_en.py
-      - name: Run full unit test suite
-        run: python -m unittest discover -s tests -p 'test_*.py'
+      - name: Run Chinese & English quality gates, SHA-256 manifest checks, and unit tests
+        run: python scripts/run_portable_ci.py

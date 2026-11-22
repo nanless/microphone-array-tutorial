@@ -6096,11 +6096,24 @@
             "path": "scripts/pdf_math.js",
             "lines": 118,
             "sha256": "56afe1e391dfdeec9b3c04960cafe960d49defc2c800c7fb5bb85db18afc3a69"
+          },
+          {
+            "path": "scripts/build_site_en.py",
+            "lines": 572,
+            "sha256": "cc7e219ea574817399c47578e1f1f6222873d44d8bf3455fce3f4616f1c406eb"
+          },
+          {
+            "path": "scripts/build_pdf.py",
+            "lines": 2242,
+            "sha256": "c201d2dcdd9f51cd84e9903b003ddcbe8db0e6063f882d47931098cec14d82e5"
+          },
+          {
+            "path": "scripts/build_pdf_en.py",
+            "lines": 886,
+            "sha256": "8cf8087d3a07a31d6607e7a6b098179574a53689457eebdcfa8815362d9a75b3"
           }
         ],
         "partial_source_reads": [
-          "scripts/build_pdf.py",
-          "scripts/build_pdf_en.py",
           "scripts/quality_check.py",
           "tests/test_build_audio.py",
           "tests/test_build_pdf_semantics.py",
@@ -6115,6 +6128,30 @@
             "translation_sources_read_by_en_digests": false,
             "disk_changes": false,
             "independent_review": "尚未由另一代理复核"
+          },
+          {
+            "id": "B007",
+            "path": "scripts/build_pdf.py::deduplicate_pdf_vector_glyphs",
+            "status": "synthetic_controls_confirmed_current_book_trigger_not_demonstrated",
+            "negative_controls": {
+              "rectangle_changed_pixels": 57385,
+              "alpha_changed_pixels": 92416
+            },
+            "current_scan": "ZH359/EN360个FmM均无re；页级GS非描边alpha均1。未在当前产物定位到两类触发器，不据此作全书像素等价结论"
+          },
+          {
+            "id": "B008",
+            "path": "scripts/build_pdf_en.py::main --pdf-only",
+            "status": "confirmed_with_read_only_mocked_printer",
+            "evidence": "陈旧combined_en.html会进入打印分支；相同控制在中文脚本被SourceDigest拒绝",
+            "disk_scope": "仅仓外临时HTML，打印器被哨兵替换，正式产物未写"
+          },
+          {
+            "id": "B009",
+            "path": "scripts/build_pdf_en.py::_mark_orphan_layout_span_spaces",
+            "status": "confirmed_synthetic_visible_font_control",
+            "evidence": "Span块内未重复Tf时未核当前字体，已由独立字体轮廓证明可见的CID0003仍被改Artifact；原后两图均有1887个深色像素，绘制一致但语义排除不实",
+            "current_book_trigger": "未在当前书内定位，需另核真实调用与字体状态"
           }
         ],
         "baseline_tests": {
@@ -6147,7 +6184,35 @@
             "site__06_aec__390.png",
             "site_en__00_math-foundations__1280.png"
           ],
-          "zero_size_note": "初查数学章两种视口均为隐藏导航/目录副本；其余场景待全量分类"
+          "zero_size_note": "全部受影响场景复核完成，291个节点均属隐藏导航或折叠目录副本；未发现不明原因零尺寸正文公式",
+          "zero_size_full_classification": {
+            "status": "complete",
+            "affected_cases": 63,
+            "zero_size_containers": 291,
+            "unexplained": 0,
+            "hidden_navigation": 194,
+            "hidden_closed_details": 97,
+            "report_path": "/private/tmp/masp-multiround-20261123/browser-zero-audit/report.json",
+            "sha256": "be32fa8bc0f43e8d5e1a99a25b82e3751220b21665c4280a67ae9910c5a179a5"
+          }
+        },
+        "partial_source_read_intervals": {
+          "codes/chapters/ch00/core/chapter00_math.py": [
+            [
+              1,
+              205
+            ],
+            [
+              1180,
+              1338
+            ]
+          ],
+          "codes/chapters/ch09/core/echo_av_fusion.py": [
+            [
+              40,
+              95
+            ]
+          ]
         }
       }
     },
@@ -7631,6 +7696,719 @@
             "boundary": "当前交接字节身份，不宣称无并发变化"
           }
         ]
+      }
+    },
+    {
+      "packet_id": "root-r2-publication-covariance",
+      "received_date": "2026-11-23",
+      "status": "complete_for_reported_checks",
+      "data": {
+        "covariance_cross_review": {
+          "schema": 1,
+          "round": "R2-root",
+          "purpose": "Independent cross-chapter real-state covariance input controls; no repository writes",
+          "findings": [
+            "R222",
+            "R111",
+            "R205"
+          ],
+          "source_reads": {
+            "codes/chapters/ch00/core/chapter00_math.py": [
+              [
+                1,
+                205
+              ],
+              [
+                1180,
+                1338
+              ]
+            ],
+            "codes/chapters/ch09/core/echo_av_fusion.py": [
+              [
+                40,
+                95
+              ]
+            ]
+          },
+          "current_sources": {
+            "codes/chapters/ch00/core/chapter00_math.py": "10ef5c9247bda1a9e28d81cbe4208b032a93c552bf2f113a86f08ba02c43aa11",
+            "codes/chapters/ch09/core/echo_av_fusion.py": "2bdd65be5864ebf848701a2b505d6bed2fc809a7a84af76e532f44f62d1b24da"
+          },
+          "complex_covariance_controls": [
+            {
+              "field": "q_cov",
+              "input_real": [
+                [
+                  1.0,
+                  0.0
+                ],
+                [
+                  -0.0,
+                  1.0
+                ]
+              ],
+              "input_imag": [
+                [
+                  0.0,
+                  0.4
+                ],
+                [
+                  -0.4,
+                  0.0
+                ]
+              ],
+              "input_min_eigenvalue": 0.6,
+              "accepted": true,
+              "predicted_cov": [
+                [
+                  2.0,
+                  0.0
+                ],
+                [
+                  0.0,
+                  2.0
+                ]
+              ],
+              "posterior_cov_joseph": [
+                [
+                  0.6666666666666667,
+                  0.0
+                ],
+                [
+                  0.0,
+                  0.6666666666666667
+                ]
+              ],
+              "same_output_as_discarded_imaginary_input": true
+            },
+            {
+              "field": "r_cov",
+              "input_real": [
+                [
+                  1.0,
+                  0.0
+                ],
+                [
+                  -0.0,
+                  1.0
+                ]
+              ],
+              "input_imag": [
+                [
+                  0.0,
+                  0.4
+                ],
+                [
+                  -0.4,
+                  0.0
+                ]
+              ],
+              "input_min_eigenvalue": 0.6,
+              "accepted": true,
+              "predicted_cov": [
+                [
+                  2.0,
+                  0.0
+                ],
+                [
+                  0.0,
+                  2.0
+                ]
+              ],
+              "posterior_cov_joseph": [
+                [
+                  0.6666666666666667,
+                  0.0
+                ],
+                [
+                  0.0,
+                  0.6666666666666667
+                ]
+              ],
+              "same_output_as_discarded_imaginary_input": true
+            },
+            {
+              "field": "p_prev",
+              "input_real": [
+                [
+                  1.0,
+                  0.0
+                ],
+                [
+                  -0.0,
+                  1.0
+                ]
+              ],
+              "input_imag": [
+                [
+                  0.0,
+                  0.4
+                ],
+                [
+                  -0.4,
+                  0.0
+                ]
+              ],
+              "input_min_eigenvalue": 0.6,
+              "accepted": true,
+              "predicted_cov": [
+                [
+                  2.0,
+                  0.0
+                ],
+                [
+                  0.0,
+                  2.0
+                ]
+              ],
+              "posterior_cov_joseph": [
+                [
+                  0.6666666666666667,
+                  0.0
+                ],
+                [
+                  0.0,
+                  0.6666666666666667
+                ]
+              ],
+              "same_output_as_discarded_imaginary_input": true
+            }
+          ],
+          "scale_controls": [
+            {
+              "scale": 1e-16,
+              "input": [
+                [
+                  -1e-16,
+                  0.0
+                ],
+                [
+                  0.0,
+                  1e-16
+                ]
+              ],
+              "ch09_checked_psd_2x2": {
+                "accepted": true,
+                "result_real": [
+                  [
+                    0.0,
+                    0.0
+                  ],
+                  [
+                    0.0,
+                    1e-16
+                  ]
+                ]
+              },
+              "ch00_check_hermitian": {
+                "accepted": false,
+                "error": "P must be positive semidefinite (min eig -1.000e-16)"
+              }
+            },
+            {
+              "scale": 1.0,
+              "input": [
+                [
+                  -1.0,
+                  0.0
+                ],
+                [
+                  0.0,
+                  1.0
+                ]
+              ],
+              "ch09_checked_psd_2x2": {
+                "accepted": false,
+                "error": "covariance must be positive semidefinite"
+              },
+              "ch00_check_hermitian": {
+                "accepted": false,
+                "error": "P must be positive semidefinite (min eig -1.000e+00)"
+              }
+            },
+            {
+              "scale": 1e+16,
+              "input": [
+                [
+                  -1e+16,
+                  0.0
+                ],
+                [
+                  0.0,
+                  1e+16
+                ]
+              ],
+              "ch09_checked_psd_2x2": {
+                "accepted": false,
+                "error": "covariance must be positive semidefinite"
+              },
+              "ch00_check_hermitian": {
+                "accepted": false,
+                "error": "P must be positive semidefinite (min eig -1.000e+16)"
+              }
+            }
+          ],
+          "joseph_semidefinite_control": {
+            "P": [
+              [
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0
+              ]
+            ],
+            "H": [
+              [
+                1.0,
+                0.0
+              ]
+            ],
+            "K": [
+              [
+                0.5
+              ],
+              [
+                0.0
+              ]
+            ],
+            "R": [
+              [
+                1
+              ]
+            ],
+            "posterior": [
+              [
+                0.5,
+                0.0
+              ],
+              [
+                0.0,
+                0.0
+              ]
+            ],
+            "eigenvalues": [
+              0.0,
+              0.5
+            ]
+          },
+          "interpretation": "Real-state API silently discards imaginary cross covariance in Q/R/P; chapter09 tolerance accepts and clips a scale-relative 100% negative eigenvalue only at tiny scale; chapter00 relative tolerance rejects all three versions. Joseph control yields PSD but not PD. Default real-input examples are not invalidated."
+        },
+        "pdf_visual_baseline": {
+          "plan": [
+            {
+              "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/dist/microphone-array-tutorial.pdf",
+              "sha256": "3e870150e8f829d55f1c29a244623cd49104f4eadc59ff107599ec49676a9fa6",
+              "page_count": 1390,
+              "metadata": {
+                "/Title": "麦克风阵列信号处理教程",
+                "/Creator": "scripts/build_pdf.py",
+                "/Producer": "Skia/PDF m157",
+                "/CreationDate": "D:20261122174532+00'00'",
+                "/ModDate": "D:20261122174532+00'00'",
+                "/Subject": "从入门到工业实践",
+                "/SourceDigest": "ab84e8dcc77a"
+              },
+              "top_level_bookmarks": [
+                {
+                  "title": "导读与导航",
+                  "page_1based": 16
+                },
+                {
+                  "title": "第 0 章 · 全书数学基础与信号分析预备",
+                  "page_1based": 51
+                },
+                {
+                  "title": "第 1 章 · 问题定义与双耳启示",
+                  "page_1based": 150
+                },
+                {
+                  "title": "第 2 章 · 声音到达阵列时发生了什么",
+                  "page_1based": 189
+                },
+                {
+                  "title": "第 3 章 · 阵列几何形态",
+                  "page_1based": 272
+                },
+                {
+                  "title": "第 4 章 · 声源定位（DOA 估计）",
+                  "page_1based": 338
+                },
+                {
+                  "title": "第 5 章 · 波束形成",
+                  "page_1based": 409
+                },
+                {
+                  "title": "第 6 章 · 声学回声消除（AEC）",
+                  "page_1based": 464
+                },
+                {
+                  "title": "第 7 章 · 去混响（WPE）",
+                  "page_1based": 594
+                },
+                {
+                  "title": "第 8 章 · 语音分离",
+                  "page_1based": 672
+                },
+                {
+                  "title": "第 9 章 · 声源追踪",
+                  "page_1based": 762
+                },
+                {
+                  "title": "第 10 章 · 工程实现、评测与产业实践",
+                  "page_1based": 849
+                },
+                {
+                  "title": "第 11 章 · 总结与选型指南",
+                  "page_1based": 942
+                },
+                {
+                  "title": "第 12 章 · 声学成像与噪声源诊断",
+                  "page_1based": 1008
+                },
+                {
+                  "title": "第 13 章 · 分布式麦克风协同增强",
+                  "page_1based": 1085
+                },
+                {
+                  "title": "第 14 章 · 空间声场与可穿戴阵列",
+                  "page_1based": 1157
+                },
+                {
+                  "title": "第 15 章 · 条件目标提取与多通道日志",
+                  "page_1based": 1221
+                },
+                {
+                  "title": "第 16 章 · 附录 A：符号术语数学",
+                  "page_1based": 1277
+                },
+                {
+                  "title": "第 17 章 · 附录 B：路径地图与练习",
+                  "page_1based": 1324
+                }
+              ],
+              "sample_pages": [
+                1,
+                2,
+                16,
+                51,
+                150,
+                189,
+                272,
+                338,
+                409,
+                464,
+                594,
+                672,
+                762,
+                849,
+                942,
+                1008,
+                1085,
+                1157,
+                1221,
+                1277,
+                1324
+              ]
+            },
+            {
+              "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/dist/microphone-array-tutorial-en.pdf",
+              "sha256": "f0cd855de16839eea2d3db0dfcbbc55b49203bf75d0236a862293597bfd186c3",
+              "page_count": 1613,
+              "metadata": {
+                "/Title": "Microphone Array Signal Processing",
+                "/Creator": "scripts/build_pdf_en.py",
+                "/Producer": "Skia/PDF m157",
+                "/CreationDate": "D:20261122180910+00'00'",
+                "/ModDate": "D:20261122180910+00'00'",
+                "/Subject": "From Fundamentals to Industrial Practice",
+                "/SourceDigest": "9eb5928f1ced"
+              },
+              "top_level_bookmarks": [
+                {
+                  "title": "Course Overview & Reading Guide",
+                  "page_1based": 22
+                },
+                {
+                  "title": "Chapter 0 · Mathematical & Signal Analysis Foundations",
+                  "page_1based": 70
+                },
+                {
+                  "title": "Chapter 1 · Problem Formulation & Binaural Cues",
+                  "page_1based": 184
+                },
+                {
+                  "title": "Chapter 2 · Acoustic Propagation & Array Signal Model",
+                  "page_1based": 229
+                },
+                {
+                  "title": "Chapter 3 · Microphone Array Geometry",
+                  "page_1based": 319
+                },
+                {
+                  "title": "Chapter 4 · Sound Source Localization (DOA)",
+                  "page_1based": 402
+                },
+                {
+                  "title": "Chapter 5 · Beamforming",
+                  "page_1based": 489
+                },
+                {
+                  "title": "Chapter 6 · Acoustic Echo Cancellation (AEC)",
+                  "page_1based": 555
+                },
+                {
+                  "title": "Chapter 7 · Dereverberation (WPE)",
+                  "page_1based": 713
+                },
+                {
+                  "title": "Chapter 8 · Multichannel Speech Separation",
+                  "page_1based": 795
+                },
+                {
+                  "title": "Chapter 9 · Sound Source Tracking",
+                  "page_1based": 904
+                },
+                {
+                  "title": "Chapter 10 · Real-Time Systems, Evaluation & Deployment",
+                  "page_1based": 1006
+                },
+                {
+                  "title": "Chapter 11 · System Synthesis & Selection Guide",
+                  "page_1based": 1107
+                },
+                {
+                  "title": "Chapter 12 · Acoustic Imaging & Noise Diagnostics",
+                  "page_1based": 1191
+                },
+                {
+                  "title": "Chapter 13 · Distributed Wireless Microphone Arrays",
+                  "page_1based": 1271
+                },
+                {
+                  "title": "Chapter 14 · Spatial Sound Fields & Wearable Arrays",
+                  "page_1based": 1346
+                },
+                {
+                  "title": "Chapter 15 · Conditioned Target Extraction & Diarization",
+                  "page_1based": 1410
+                },
+                {
+                  "title": "Chapter 16 · Appendix A: Symbols, Glossary & Math Lookup",
+                  "page_1based": 1480
+                },
+                {
+                  "title": "Chapter 17 · Appendix B: Literature Map, Triage & Exercises",
+                  "page_1based": 1537
+                }
+              ],
+              "sample_pages": [
+                1,
+                2,
+                22,
+                70,
+                184,
+                229,
+                319,
+                402,
+                489,
+                555,
+                713,
+                795,
+                904,
+                1006,
+                1107,
+                1191,
+                1271,
+                1346,
+                1410,
+                1480,
+                1537
+              ]
+            }
+          ],
+          "render_report_sha256": "61514ebe12c748ae1995541562cde7bb8fe7aa3d5734d73d4737aff801ae7b0c",
+          "rendered_pages": 42,
+          "render_resolution_dpi": 110,
+          "actually_visually_opened_pages": [
+            "zh-p0001.png",
+            "en-p0001.png",
+            "zh-p0051.png",
+            "en-p0070.png",
+            "zh-p0002.png",
+            "en-p0002.png",
+            "zh-p0464.png",
+            "en-p0555.png"
+          ],
+          "visual_findings": "已看封面、首个目录页、数学与AEC章首页的边界/文字/表格，未发现内容裁切；英文目录长章名的项目符号位置有排版候选，未据此判信息丢失",
+          "unread_rendered_pages": 34,
+          "scope": "有限基线，不是3003页逐页验收"
+        },
+        "pdf_optimizer_negative_controls": {
+          "schema": 1,
+          "round": "R2-root",
+          "source": "scripts/build_pdf.py::deduplicate_pdf_vector_glyphs",
+          "source_sha256": "c201d2dcdd9f51cd84e9903b003ddcbe8db0e6063f882d47931098cec14d82e5",
+          "purpose": "Synthetic negative controls; does not by itself identify a currently damaged textbook glyph",
+          "rows": [
+            {
+              "case": "rectangle",
+              "original_geometry": "100.000000 100.000000 m\n100.000000 100.000000 l\n100.000000 100.000000 200.000000 200.000000 re\nh",
+              "repetitions": 5,
+              "deduplicated_shapes": 1,
+              "form_bboxes": {
+                "/FmM1": [
+                  75,
+                  75,
+                  225,
+                  225
+                ]
+              },
+              "changed_pixel_count": 57385,
+              "maximum_channel_difference": 255,
+              "before_image": "/private/tmp/masp-multiround-20261123/pdf-optimizer-probe/rectangle-before.png",
+              "after_image": "/private/tmp/masp-multiround-20261123/pdf-optimizer-probe/rectangle-after.png",
+              "before_sha256": "d14249026ebb50ec94deeca6ccb300f9cdea2aa33202ba5331cb750937646986",
+              "after_sha256": "25f0c744a00d3bcc5f9fc3fb86b046dd4d2a40e98866062a80632b1f9f98906f"
+            },
+            {
+              "case": "alpha",
+              "original_geometry": "100.000000 100.000000 m\n300.000000 100.000000 l\n300.000000 300.000000 l\n100.000000 300.000000 l\nh",
+              "repetitions": 5,
+              "deduplicated_shapes": 1,
+              "form_bboxes": {
+                "/FmM1": [
+                  75,
+                  75,
+                  325,
+                  325
+                ]
+              },
+              "changed_pixel_count": 92416,
+              "maximum_channel_difference": 149,
+              "before_image": "/private/tmp/masp-multiround-20261123/pdf-optimizer-probe/alpha-before.png",
+              "after_image": "/private/tmp/masp-multiround-20261123/pdf-optimizer-probe/alpha-after.png",
+              "before_sha256": "c000b1ae3fad697cf4d96e5262a099d2c4d3158d6a5595549dc5252efc618d79",
+              "after_sha256": "7e2d5681c2608c1a3ffa675dacd5a1411a9b1bb8608ce19abe0e7b719707b265"
+            }
+          ]
+        },
+        "current_pdf_bounded_form_scan": {
+          "scope": "Only current FmM forms and page-level ExtGState dictionaries; does not reconstruct raw pre-optimization paint or prove complete pixel equality",
+          "results": [
+            {
+              "pdf": "dist/microphone-array-tutorial.pdf",
+              "sha256": "3e870150e8f829d55f1c29a244623cd49104f4eadc59ff107599ec49676a9fa6",
+              "optimizer_forms": 359,
+              "forms_with_rectangle": 0,
+              "rectangle_outside_bbox": [],
+              "paint_counts": {
+                "B": 359
+              },
+              "distinct_page_extgstates": [
+                {
+                  "/BM": "/Normal",
+                  "/ca": "1"
+                },
+                {
+                  "/BM": "/Normal",
+                  "/CA": "1",
+                  "/LC": "0",
+                  "/LJ": "0",
+                  "/LW": "1",
+                  "/ML": "4",
+                  "/SA": "True",
+                  "/ca": "1"
+                },
+                {
+                  "/BM": "/Normal",
+                  "/CA": "1",
+                  "/LC": "0",
+                  "/LJ": "0",
+                  "/LW": "3",
+                  "/ML": "4",
+                  "/SA": "True",
+                  "/ca": "1"
+                }
+              ]
+            },
+            {
+              "pdf": "dist/microphone-array-tutorial-en.pdf",
+              "sha256": "f0cd855de16839eea2d3db0dfcbbc55b49203bf75d0236a862293597bfd186c3",
+              "optimizer_forms": 360,
+              "forms_with_rectangle": 0,
+              "rectangle_outside_bbox": [],
+              "paint_counts": {
+                "B": 360
+              },
+              "distinct_page_extgstates": [
+                {
+                  "/BM": "/Normal",
+                  "/ca": "1"
+                },
+                {
+                  "/BM": "/Normal",
+                  "/CA": "1",
+                  "/LC": "0",
+                  "/LJ": "0",
+                  "/LW": "1",
+                  "/ML": "4",
+                  "/SA": "True",
+                  "/ca": "1"
+                },
+                {
+                  "/BM": "/Normal",
+                  "/CA": "1",
+                  "/LC": "0",
+                  "/LJ": "0",
+                  "/LW": "3",
+                  "/ML": "4",
+                  "/SA": "True",
+                  "/ca": "1"
+                }
+              ]
+            }
+          ]
+        },
+        "official_source_access": {
+          "url": "https://opensource.adobe.com/dc-acrobat-sdk-docs/standards/pdfstandards/pdf/PDF32000_2008.pdf",
+          "actual_read": "搜索摘要中8.10的Form/BBox条目；工具打开及find均超时，未称规范全文已读",
+          "independent_basis": "实际pypdf原/压缩PDF分别由Poppler渲染，PIL逐像素差与4张实际目视互相核对"
+        },
+        "english_pdf_boundary_controls": {
+          "schema": 1,
+          "source_sha256": "8cf8087d3a07a31d6607e7a6b098179574a53689457eebdcfa8815362d9a75b3",
+          "pdf_only_stale_html_controls": [
+            {
+              "language": "zh",
+              "embedded_digest": "000000000000",
+              "rejected_before_print": true,
+              "result": "--pdf-only 拒绝使用陈旧 combined.html：内嵌摘要 000000000000，当前源文件 ab84e8dcc77a。请先运行完整构建或 --html-only。"
+            },
+            {
+              "language": "en",
+              "embedded_digest": "000000000000",
+              "rejected_before_print": false,
+              "result": "Reached print using stale combined HTML"
+            }
+          ],
+          "orphan_layout_visible_glyph_control": {
+            "content": "BT /F1 48 Tf 1 0 0 1 40 100 Tm\n/Span << /ActualText ( ) >> BDC\n0 0 Td\n(\\000\\003) Tj\nEMC\nET\n",
+            "font_has_visible_glyph3": true,
+            "contourless_font_verifier": false,
+            "wrapped_blocks": 1,
+            "artifact_text_bytes": [
+              "0003"
+            ],
+            "pixel_differences": 0,
+            "dark_pixel_count": 1887,
+            "before_image": "/private/tmp/masp-multiround-20261123/pdf-en-boundaries/visible-font-before.png",
+            "after_image": "/private/tmp/masp-multiround-20261123/pdf-en-boundaries/visible-font-after.png"
+          },
+          "scope": "Synthetic supported-path controls, no formal PDF/HTML/source changes; no claim that current book has visible content hidden by this branch"
+        },
+        "english_pdf_boundary_controls_sha256": "db35c2f5217ad8e37f1ada235f9b828f903a80d47530b78a033572b93f389b7f"
       }
     }
   ]

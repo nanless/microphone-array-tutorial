@@ -86,7 +86,45 @@
 | B001 | 中英导读末段，起点行578 | 文档一致性/P3 | 分布式、可穿戴、条件提取仍为20/15/14题，实际ID为21/16/15 | 同步重复题数并核所有相关说明 | 主审 | 已发现 | 已比对源段与稳定ID，未修改 |
 | B002 | scripts/README.md，起点行362/400/415 | 文档一致性/P3 | 第9/13/14/15章仍为22/20/15/14题，当前23/21/16/15 | 核中英共有说明并同步 | 主审 | 已发现 | 已读当前源段，未修改 |
 | B003 | 主音频生成源行69及清单rights | 许可说明/P2 | 仍称仓库许可未指定；根LICENSE已有按内容类型的双许可 | 先明确合成资产适用说明，再改生成源及受影响产物 | 主审 | 已发现 | 说明不一致已确认，未作新授权解释 |
-| B004 | build_site_en.py及build_pdf_en.py的source_digest_en | 构建依赖/P2 | 英文源摘要未完整纳入实际使用的中文标题、编号映射等依赖 | 独立审读全部直接依赖，再制定统一摘要与负控方案 | 主审 | 已发现 | 静态路径清单已核，尚未构造变更负控 |
+| B004 | build_site_en.py及build_pdf_en.py的source_digest_en | 构建依赖/P2 | 英文源摘要未完整纳入实际使用的中文标题、编号映射等依赖 | 独立审读全部直接依赖，再制定统一摘要与负控方案 | 主审 | 已发现 | 内存替换源字节的负控已确认遗漏；英文站修改heading_aliases的阳性对照会改变摘要，编号JSON与中文配对章不会；英文PDF同样漏掉共享身份代码、build_site和vendor等 |
+| B005 | quality_check_en.py::check_pdfs | 发布门禁/P2 | 读取PDF后没有核SourceDigest与英文独立大纲期望 | 纳入当前英文源身份和对应大纲/目标校验，增加陈旧产物负控 | 主审 | 已发现 | 内存将两份reader的SourceDigest改为全零，现有check_pdfs仍返回空错误列表；未改PDF磁盘字节 |
+
+### R1正在提交的技术发现
+
+这些结论尚未经过R2不同审阅者的独立复核。严重度为当前建议，修改方案待研究与全书审查汇总后确定。
+
+| ID | 文件与位置（起点行号） | 类别/严重度 | R1证据 | 修改方向 | 负责人 | 状态 | 验证结果 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| R101 | 中英第3章607～623 | 来源与统计/P1 | Tashev2004原文描述主导说话人、DOA和能量插值，不是所写扩散背景功率比；固定遗忘因子的EWMA具有非零稳态方差，比例开方也不保持无偏 | 找到与实际模型相符的原依据，重写统计结论及手算 | content_map | 已发现 | 原文§2～4与独立统计例，待R2复核 |
+| R102 | 中英第5章FIB段约187 | 引用/P2 | Ward–Kennedy–Williamson1995原文为JASA97(2),1023～1034，正文误记IEEE TSP | 核所有重复引用后纠正期刊身份 | content_map | 已发现 | 作者全文首页已读，待R2 |
+| R103 | 中英第5章约164 | 单位/P2 | 线性功率比7+4√3约13.928，11.44dB来自10log10，而非两者直接相等 | 补完整比值到dB的运算 | content_map | 已发现 | 解析代数已复算，待R2 |
+| R104 | 中英第5章约252 | 优化边界/P1 | δ=1/||a||²端点一般只有最小范数匹配权重，不能断言存在有限正加载根；书中二维例的范数平方为1/2+50/(11+ε)² | 区分严格可行内点、端点及约束不活跃情形 | content_map | 已发现 | 有限ε无根的解析反例，待R2 |
+| R105 | 中英第0章式0-17后约427 | 重建条件/P1 | 双Hann50%重叠可逐点窗平方和归一；并非必须提高至75%才可无失真，且第2章已有NOLA解释 | 并列说明50%逐点归一与75%常数归一 | content_map | 已发现 | N32/H16独立重建稳窗误差4.44e-16，待R2 |
+| R106 | 中英第15章约59/96 | 模型归因/P1 | VoiceFilter原文用d-vector拼接；TD-SpeakerBeam与SpEx+不能一起归为共享多尺度编码器 | 保留FiLM教学公式，分别说明各论文真实条件注入和编码结构 | publication_ci | 已发现 | VoiceFilter§2.2、TD-SpeakerBeam§2.1、SpEx+§2.1已读，待R2 |
+| R107 | 中英第8章约286 | 软件接口/P2 | 固定PRA0.10.0的auxiva只有IP路径与np.linalg.solve，无ISS切换参数；ssspy有相关选项 | 分别指明两个固定实现的接口 | numerics_evidence | 已发现 | 固定原源本地及网络已核，待R2 |
+| R108 | 中英第8章式8-26/E08-25及separation_metrics_streaming.py | 指标定义/P1 | 本地N×L截尾投影被称标准CI-SDR；固定fgnt原源保留N+L−1全尾并给est补零。s=[1,0,-1,0],est=[1,-1,1,-1],L4时全尾投影能量4/3、残差8/3，约−3.0103dB，本地截尾却约+120dB | 核原目标，选择修正式核或明确另命名截尾对照；同步题答、覆盖、研究与测试 | numerics_evidence | 已发现 | 原源码与独立NumPy已核，未运行Torch原包；待R2独立复算 |
+| R109 | 中英第6章约887 | 协方差/P1 | 数据依赖的门控增益不能无条件套固定增益Joseph真实误差协方差；四点独立反例真实5/8，逐次Joseph平均9/8 | 说明增益与当前误差独立等条件，分开PSD保持和实际MSE | numerics_evidence | 已发现 | 精确分数反例已算，待R2 |
+| R110 | 中英第9章MHT例约745 | 算例/P1 | 给定恒速与第4帧观测下，两历史分支均可得到约±1残差，现有输入不足淘汰所称20°跳变分支 | 独立重建两分支状态、速度及关联，修输入或结论 | numerics_evidence | 已发现 | 当前参数逻辑核对，待R2完整状态复算 |
+| R111 | ch09/core/echo_av_fusion.py约60 | 数值尺度/P1 | PSD容差32eps×max(1,λmax)接受diag(−1e−16,1e−16)并裁掉负方差；同矩阵放大1e16则拒绝 | 按相对尺度核合法性，同时检查对称容差与安全平均 | numerics_evidence | 已发现 | 本地接口内存执行可复现，待R2 |
+| R112 | 中英第10章约663 | 标准口径/P2 | BS.1770-5 Annex2的4倍例以48kHz为前提，96kHz对应2倍；正文泛写至少4倍 | 按采样率、滤波与精度解释，保留明确48kHz例 | publication_ci | 已发现 | 官方2023版Annex2印刷p18已读，待R2 |
+| R113 | 第10章pdm_and_eval.py约219/264及E10-28 | 指标与验收/P1 | helper仅按单/双讲附加衰减输出overall_type，没有TELR输入；正文却据此判完整Type1，全旁路可有零衰减却不满足回声要求 | 将局部分档与完整联合判定分开，明确旧阈值版次 | publication_ci | 已发现 | 代码及正文输入核对，当前P.340版次需进一步定位 |
+| R114 | 第11章认证段及第14章风噪/硬件/LE Audio多处 | 工程数字/P2 | 多个精确衰减、延迟或认证范围缺设备、版本和可定位出处 | 逐项补原始依据或改为明示算例，保留能核实的事实 | publication_ci | 已发现 | 当前为证据不足组，逐条清单待R1最终报告 |
+| R115 | 第15章式15-26与core/diarization_tsvad.py约273～372 | 模型/实现一致性/P2 | 正文新增全静音Rnn及单讲SCM减噪投影；helper仍直接使用含噪单讲SCM。E15-10背景很低可解释为高SNR近似，一般接口未明确 | 核实际实现身份，明确近似或增加正确减噪分支，并区分现有算例 | publication_ci | 已发现 | 静态源码与题例参数已读，待R2 |
+| R116 | 第15章约391 | 概率假设/P2 | 多标签Bernoulli边缘后验不自动给出条件独立，乘积排他概率依赖额外假设 | 在推导引入乘积时明确模型条件 | publication_ci | 已发现 | 原TS-VAD与当前推导待R2对照 |
+| R117 | 第10章约191～195 | 计量/P1 | ENOB由SINAD定义，6.02ENOB+1.76不普遍等于纯噪声动态范围；A计权EIN与未固定计权/带宽量也不能直接比较 | 区分量化示例、噪声和失真，按相同带宽与计权重做算例 | publication_ci | 已发现 | ADI原始ENOB文档已读，待R2 |
+| R118 | 第12章约830 | 单位/P1 | 空气吸收α以dB/m定义却用于exp(−αr)声压因子 | 统一为Np/m或使用10^(−α_dB r/20)并核相邻量纲 | publication_ci | 已发现 | 当前公式单位可直接复算，待R2 |
+| R119 | 第10章约213 | 规范身份/P2 | MIPI官方SoundWire当前v1.3；书中v2.0吞吐扩展混入DisCo配置规范版本 | 核标准名称、实际物理层能力与版本，改准确引用 | publication_ci | 已发现 | MIPI规格页与current-specifications、DisCo页已核，待R2 |
+| R120 | 第10章约215 | USB接口/P2 | 异步UAC2并非一概依赖显式反馈：采集IN与回放OUT的速率适应不同，OUT还可用同钟IN隐式反馈 | 按方向解释异步时钟和反馈，不将回放结构套给阵列采集 | publication_ci | 已发现 | Apple TN3190原文相关端点段已核，待R2 |
+| R121 | 第13章约809 | 分数延迟端点/P1 | Nyquist实系数乘分数相位再取实部产生cos(πΔ)幅度，Δ=.25约−3.01dB、Δ=.5为零；小帧内漂移不消除这个边界 | 明确严格带限与端点处理，区分帧近似和理想补偿 | publication_ci | 已发现 | 独立端点算例已算，待R2 |
+| R122 | 第12章约675/816及图62阵形 | 几何适用条件/P2 | 填充圆盘的1.22/7.1系数被推广到任意圆形阵，图62实际为八麦圆环，轴向可辨识性不同 | 区分圆盘/圆环、指标定义和近轴近似，独立推导后裁决 | publication_ci | 已发现 | 原始标度与当前阵形待R2独立反驳 |
+| R123 | 中英第5章约267及首页实录重复说明 | 指标取点/P2 | 单讲窗总带内功率变化被说成目标损失和混响/噪声分量归因，但没有干净分量参考 | 保留测量数字，准确命名实际总功率及可支持结论，核所有重复文字 | content_map | 已发现 | NOTICE与表格已对照，生成评分实现待R2复核 |
+| R124 | 第15章约381 | 原模型归因/P1 | DiariZen原文使用AHC及cannot-link、WavLM多层加权，正文写剪枝WavLM与VBx | 分开原作者结构与可选替代方案 | publication_ci | 已发现 | 原文§II-A/B已读，待R2 |
+| R125 | 第10章SCOREQ表约881 | 指标协议/P2 | NMR使用不匹配干净参考，正文有参考模式可能让读者误认为对齐全参考 | 写清参考是另一段干净语音及其用途 | publication_ci | 已发现 | 原文§3已读，待R2 |
+| R126 | 第15章SOT表约567 | 延迟/出处/P2 | 原2020 SOT为完整AED/FIFO序列，当前表给1～2秒流式延迟而未绑定后继流式模型 | 核原模型与后继版本，删除无来源固定延迟或绑定明确配置 | publication_ci | 已发现 | 当前属来源缺口，待R2 |
+| R127 | 附录B方向九约190 | 系统能力归因/P1 | Qwen2-Audio原报告及官方模型卡为Audio-Text-to-Text，正文与Moshi一并称双流全双工Speech-to-Speech | 分开音频理解、语音生成和双工对话能力，核精确版本 | numerics_evidence | 已发现 | 原技术报告及官方示例已读，待R2 |
+| R128 | 附录B方向九相邻段 | 信息与工程假设/P2 | SRO/整数错位与削波被并称不可逆损毁，与第13章已知参数重采样/移位补偿模型冲突；对词元化器及线性AEC的普遍断言缺后端实验 | 区分可补偿坐标失配、不可逆非线性损失及需实测的后端敏感性 | numerics_evidence | 已发现 | 当前为证据强度疑点，未做LLM后端实验，待R2 |
+| R129 | 第0章§0.5.4开头 | 迭代收敛/P1 | MM目标单调不增不自动给出迭代点或驻点收敛；作者预印本1010.1763v3§5专门区分 | 将目标单调与额外收敛条件分开说明，核EM及后续应用 | content_map | 已发现 | 原文已读，待R2 |
+| R130 | 第6章约1012 | 非线性结构归因/P2 | 2013样条论文为Wiener LN，Hammerstein NL需区分2014原论文，当前一句共用2013出处 | 分开结构顺序、来源和本书样条例的范围 | numerics_evidence | 已发现 | 作者书目J12/J17已核，数学样条公式尚未判错，待R2 |
 
 ## 研究依据登记
 
@@ -95,6 +133,30 @@
 | ID | 原始依据 | 本轮阅读定位 | 用途与采用范围 |
 | --- | --- | --- | --- |
 | S001 | [W3C WCAG2.2 Reflow说明](https://www.w3.org/WAI/WCAG22/Understanding/reflow) | SC1.4.10、二维内容例外、表格单元格说明 | 区分页面重排、局部表格滚动与信息丢失，后续用于移动端排版审查 |
+| S002 | [MathJax3.2辅助功能选项](https://docs.mathjax.org/en/v3.2/options/accessibility.html) | semantic-enrich、assistive-mml及SRE选项 | 固定版本的语义、可视输出和辅助树分别核对，不以新版默认行为解释本书旧资源 |
+| S003 | [MathJax3.2 SVG说明](https://docs.mathjax.org/en/v3.2/output/svg.html) | SVG路径、可变宽表格及公式号随容器变化 | 用于检查公式容器宽度与打印布局，不按普通字体文字提取判断所有公式 |
+| S004 | [pypdf6.19.0 PdfWriter](https://pypdf.readthedocs.io/en/6.19.0/modules/PdfWriter.html) | clone_document_from_reader、add_outline_item、命名目标API | 按已锁版本核整文档克隆、书签与目标，避免套用stable当前新版接口 |
+| S005 | [Python-Markdown围栏扩展](https://python-markdown.github.io/extensions/fenced_code_blocks/) | 根层围栏及嵌套限制 | 核数学暂存与代码边界时沿用真实解析器，不能假设GFM或SuperFences语法 |
+| S006 | [veraPDF验证说明](https://docs.verapdf.org/validation/) | PDF/UA仅自动核机器可验证规则 | 分开自动结构和人工语义检查 |
+| S007 | [PDF Association Tagged PDF Best Practice1.0.1](https://pdfa.org/download-area/publications/Tagged-PDF-Best-Practice-Guide.pdf) | §4.3.2 Formula及ActualText建议 | 后续核Formula/Alt及ActualText放置；建议与强制要求分别判断，尚未据此判本书失败 |
+| S008 | [Tashev2004作者全文](https://www.microsoft.com/en-us/research/wp-content/uploads/2004/06/2004-ivantash-icme.pdf) | §2～4，主导说话人与能量拟合 | 与扩散背景自功率比模型分开，不把DOA辅助框架冒作该估计器 |
+| S009 | [Akbar等扩散测量校准](https://arxiv.org/html/2008.03513v1) | 受控扩散测量及幅度校准 | 不将其受控实验推广为自然背景在线法的实验证据 |
+| S010 | [Vanwynsberghe等扩散复增益校准](https://arxiv.org/html/2210.01490v1) | 利用非对角互谱的复增益信息 | “仅幅度”限定到本节自功率估计器 |
+| S011 | [Ward等1995作者全文](https://users.cecs.anu.edu.au/~rod/papers/1995/KennedyJ1995b.pdf) | 首页出版身份、Theorem1 | FIB连续孔径缩放原理，JASA期刊身份 |
+| S012 | [SciPy iSTFT](https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.istft.html) | Notes中逐点平方窗分母与NOLA条件 | 支持50%双Hann逐点归一这一合法方案；不迁移仓内唯一STFT实现 |
+| S013 | [VoiceFilter原论文](https://arxiv.org/pdf/1810.04826) | §2.2，d-vector拼接 | 与FiLM仿射条件调制区分 |
+| S014 | [TD-SpeakerBeam作者全文](https://www.fit.vut.cz/research/group/speech/public/publi/2020/delcroix_icassp2020_09054683.pdf) | §2.1，编码与乘性适配 | 不泛称共享多尺度编码器 |
+| S015 | [SpEx+原文](https://arxiv.org/html/2005.04686) | §2.1，共享多尺度编码 | 与TD-SpeakerBeam分别说明 |
+| S016 | [固定PRA auxiva原源](https://raw.githubusercontent.com/LCAV/pyroomacoustics/0dd39f2614b7fc44b2cc63dbe7d60f4641068890/pyroomacoustics/bss/auxiva.py) | 函数签名与IP求解路径 | 不称该固定接口提供ISS切换 |
+| S017 | [ITU-R BS.1770-5官方全文](https://www.itu.int/dms_pubrec/itu-r/rec/bs/R-REC-BS.1770-5-202311-I!!PDF-E.pdf) | Annex2印刷p18 | 核真峰值插值倍率与原采样率条件 |
+| S018 | [ADI ENOB原始解释](https://www.analog.com/en/resources/technical-articles/how-to-calculate-enob-for-adc-dynamic-performance-measurement.html) | ENOB与SINAD定义 | 不把总噪声加失真比一概用作纯噪声底 |
+| S019 | [MIPI SoundWire](https://www.mipi.org/specifications/soundwire)、[DisCo for SoundWire](https://www.mipi.org/specifications/mipi-disco-soundwire) | 各自版本与规范职责 | 分开总线标准和设备配置描述规范 |
+| S020 | [Apple TN3190](https://developer.apple.com/documentation/technotes/tn3190-usb-audio-device-design-considerations.md) | Asynchronous data endpoints | 分开IN采集、OUT回放、显式与隐式反馈 |
+| S021 | [DiariZen原文](https://arxiv.org/html/2409.09408) | §II-A/B | 核AHC、cannot-link及WavLM层加权，不写成VBx/剪枝 |
+| S022 | [SCOREQ原文](https://arxiv.org/html/2410.06675) | §3 SCOREQ Training | 明确不匹配干净参考NMR |
+| S023 | [Qwen2-Audio原报告](https://arxiv.org/abs/2407.10759)、[官方模型卡](https://huggingface.co/Qwen/Qwen2-Audio-7B-Instruct) | 输入输出及voice chat示例 | 音频输入理解与音频生成分开 |
+| S024 | [Moshi原报告](https://arxiv.org/abs/2410.00037v2) | 双流音频词元与因果对话结构 | 仅支持该模型给定结构和延迟范围 |
+| S025 | [Févotte–Idier作者预印本](https://arxiv.org/pdf/1010.1763v3) | §5，单调与收敛的区别 | 用于核MM目标、迭代状态及归一化 |
 
 ## 提交与验证记录
 
@@ -104,6 +166,10 @@
 | --- | --- | --- |
 | 起点 | git status、当前提交与远端检查 | main工作区干净，origin指向既有项目仓库 |
 | 范围清点 | Git跟踪文件、Markdown解析、覆盖表状态行解析 | 19篇、388条方法、360题与上述文件数量吻合；不是内容验收 |
+| 首次提交 | `4f02c4e`，`git push origin main` | 已成功推送，仅内部范围与台账 |
+| B004内存负控 | 用mock修改一个实际依赖的read_bytes返回值，再重新计算英文摘要 | 英文站编号JSON/中文配对章及英文PDF多项共享依赖均不影响摘要；阳性对照会改变摘要；未改磁盘源 |
+| 便携SHA函数范围 | 内存修改主WAV、主生成器、独立WAV | 补充函数未读取前两项而能发现独立WAV修改；完整入口另由check_audio覆盖主109文件与20源，不能据此称完整CI漏核主音频 |
+| B005内存负控 | 用实际PDF创建reader后仅将SourceDigest改为全零，执行check_pdfs | 两个reader均已修改，函数返回空错误列表；当前实物未改 |
 
 ## 当前未完成项
 

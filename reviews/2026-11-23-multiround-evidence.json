@@ -6322,6 +6322,15 @@
     ],
     "publication-r2c-doa-beamforming-appendixa/R2C-C33": [
       "R207"
+    ],
+    "root-r2d-industrial-manual/ROOT-DF-EN-LATENCY": [
+      "R327"
+    ],
+    "root-r2d-industrial-manual/ROOT-VISQOL-EN-TIMING": [
+      "R328"
+    ],
+    "root-r2d-industrial-manual/ROOT-SPEEX-PHYSICAL-CAUSALITY": [
+      "R329"
     ]
   },
   "review_rounds": [
@@ -38186,6 +38195,473 @@
           "not_claimed": "没有统计风格检测评分、作者身份判断或整站/整PDF字号验收。"
         }
       }
+    },
+    {
+      "packet_id": "root-r2d-industrial-manual",
+      "received_date": "2026-11-23",
+      "status": "complete_for_assigned_manual_pair_with_declared_primary_scope",
+      "handoff_sha256": "4d77a842ffc85f87ecd47624f1b711d3baa85c94593fbcf8ada5b07957a9e156",
+      "data": {
+        "schema": 1,
+        "round": "R2-D",
+        "reviewer": "root",
+        "status": "complete_for_assigned_manual_pair_with_declared_primary_scope",
+        "coverage": [
+          {
+            "path": "codes/chapters/ch00/research/03_industrial_deployment.md",
+            "sha256_at_read": "85a80c810d8cf3cc931d0f0ab8ab9672e2984b054b9c14875a47d3934aa86d45",
+            "line_count": 842,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                842
+              ]
+            ],
+            "status": "complete_source_read"
+          },
+          {
+            "path": "codes/chapters/ch00/research_en/03_industrial_deployment.md",
+            "sha256_at_read": "a43f73e933376975c4988f90a40915fbda1803aa451701e4c0c484d7c75cf274",
+            "line_count": 687,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                687
+              ]
+            ],
+            "status": "complete_source_read"
+          },
+          {
+            "path": "codes/chapters/ch00/upstream/_downloads/speexdsp/include/speex/speex_echo.h",
+            "sha256_at_read": "ab18db97564a241c9e06d723351c2155bf04a23ac30e0c27a3d86dcc04de3426",
+            "actually_read_contiguous_ranges": [
+              [
+                68,
+                135
+              ]
+            ],
+            "status": "partial_original_header_read; not run or whole upstream identity audit"
+          }
+        ],
+        "truncation_repairs": [
+          {
+            "path": "codes/chapters/ch00/research_en/03_industrial_deployment.md",
+            "initial": "1–160 output elided middle",
+            "repair": "57–66 and63–104 actually reread;1–56 and105–160 visible. Later161–245,246–330,331–415,416–505,506–595,596–687 all read."
+          }
+        ],
+        "findings": [
+          {
+            "id": "ROOT-DF-EN-LATENCY",
+            "severity": "P3",
+            "status": "confirmed translation wording error",
+            "locations": [
+              "codes/chapters/ch00/research_en/03_industrial_deployment.md:143"
+            ],
+            "claim": "offline file slicing eliminates zero latency in live streaming",
+            "evidence": "This is not the Chinese155 statement: 离线补偿不等于消除流式等待. Same English paragraph correctly gives20ms minimum framing delay.",
+            "proposal": "State offline alignment does not remove live-stream waiting; retain pinned20ms explanation."
+          },
+          {
+            "id": "ROOT-VISQOL-EN-TIMING",
+            "severity": "P2",
+            "status": "confirmed unsupported universal inference; not native metric counterexample",
+            "locations": [
+              "codes/chapters/ch00/research_en/03_industrial_deployment.md:445"
+            ],
+            "claim": "cannot detect constant latency shifts or subtle chunk-boundary slips",
+            "evidence": "Author v1 III-C describes cross-correlation realignment and recomputed spectrograms. This explains altered timing sensitivity but does not prove all slips undetectable; damaged patch content can still alter NSIM. Chinese562 limits claim to score not substituting for timing/continuity measurement.",
+            "source_url": "https://arxiv.org/html/2004.09584v1",
+            "source_location": "III-A–C, actual extracted lines102–115",
+            "proposal": "Match Chinese: internal alignment means the quality score cannot replace direct latency or continuity measurement; remove universal cannot-detect assertion."
+          },
+          {
+            "id": "ROOT-SPEEX-PHYSICAL-CAUSALITY",
+            "severity": "P2",
+            "status": "confirmed source-meaning drift; no physical device run",
+            "locations": [
+              "codes/chapters/ch00/research/03_industrial_deployment.md:99",
+              "codes/chapters/ch00/research_en/03_industrial_deployment.md:99"
+            ],
+            "claim": "corresponding far-end frame must reach AEC strictly before acoustic echo arrives at physical microphone",
+            "evidence": "Official manual Echo Cancellation140 and Troubleshooting167 require reference availability before canceller processes corresponding echo, not before physical arrival. Its own example writes soundcard, reads captured frame, then calls synchronous cancellation with both frames. Header68–135 exposes synchronous arrays and optional two-frame internal playback buffer, not physical wall-clock deadline. Replaying already recorded aligned arrays remains possible.",
+            "source_url": "https://www.speex.org/docs/manual/speex-manual/node7.html",
+            "source_location": "Echo Cancellation/ Troubleshooting, actual lines127–170",
+            "proposal": "Require reference/frame history available when processing mic frame and adequate causal filter coverage; keep physical ADC/DAC time mapping separate."
+          }
+        ],
+        "coverage_rows": [
+          {
+            "baseline_id": "M188",
+            "line": 241,
+            "status": "原理索引",
+            "raw_row": "| §7.1；增强研究 W07 | 晚期混响谱方差估计与抑制 | 原理索引 | Habets 等 2009 原文模型与边界 | 统计衰减与混合时间假设；不把 SpeexDSP 的配置开关误作已实现的谱方差抑制器 |",
+            "table_row_read": true,
+            "manual_source_read": false,
+            "original_reference_read": false,
+            "original_implementation_read": false,
+            "original_algorithm_execution": false,
+            "local_probe_read": false,
+            "limits": "Manual reading and primary-paper reading do not imply external implementation or hardware run."
+          },
+          {
+            "baseline_id": "M279",
+            "line": 347,
+            "status": "外部参考实现",
+            "raw_row": "| §10.2.1 | SpeexDSP 连续 SRC | 外部参考实现 | `speexdsp`：`libspeexdsp/resample.c` | 质量档、通道一致性 |",
+            "table_row_read": true,
+            "manual_source_read": true,
+            "original_reference_read": false,
+            "original_implementation_read": false,
+            "original_algorithm_execution": false,
+            "local_probe_read": false,
+            "limits": "Manual reading and primary-paper reading do not imply external implementation or hardware run."
+          },
+          {
+            "baseline_id": "M285",
+            "line": 353,
+            "status": "外部参考实现",
+            "raw_row": "| §10.3.1 | RNNoise | 外部参考实现 | `rnnoise`：`src/denoise.c` | DSP/神经状态、训练域和模型 |",
+            "table_row_read": true,
+            "manual_source_read": true,
+            "original_reference_read": false,
+            "original_implementation_read": false,
+            "original_algorithm_execution": false,
+            "local_probe_read": false,
+            "limits": "Manual reading and primary-paper reading do not imply external implementation or hardware run."
+          },
+          {
+            "baseline_id": "M286",
+            "line": 354,
+            "status": "外部参考实现",
+            "raw_row": "| §10.3.1；工业 I09 | DeepFilterNet 深度滤波 | 外部参考实现 | `deepfilternet`：`DeepFilterNet/df/`、`libDF/src/` | 48 kHz、阶数、前瞻与延迟 |",
+            "table_row_read": true,
+            "manual_source_read": true,
+            "original_reference_read": false,
+            "original_implementation_read": false,
+            "original_algorithm_execution": false,
+            "local_probe_read": false,
+            "limits": "Manual reading and primary-paper reading do not imply external implementation or hardware run."
+          },
+          {
+            "baseline_id": "M287",
+            "line": 355,
+            "status": "外部参考实现",
+            "raw_row": "| 研究扩展：工业 I09 | DeepFilterNet LADSPA | 外部参考实现 | `deepfilternet`：`ladspa/` | 无前瞻仍有 STFT/宿主延迟 |",
+            "table_row_read": true,
+            "manual_source_read": true,
+            "original_reference_read": false,
+            "original_implementation_read": false,
+            "original_algorithm_execution": false,
+            "local_probe_read": false,
+            "limits": "Manual reading and primary-paper reading do not imply external implementation or hardware run."
+          },
+          {
+            "baseline_id": "M313",
+            "line": 381,
+            "status": "本仓库可运行基线",
+            "raw_row": "| 专题Ⅱ §13.12、E13-17 | 已知统计的秩一GEVD-MWF白化控制 | 本仓库可运行基线 | `codes/chapters/ch13/core/distributed.py::gevd_control` | 两维白化与λ−1目标重构，不是完整分布式GEVD-DANSE |",
+            "table_row_read": true,
+            "manual_source_read": true,
+            "original_reference_read": false,
+            "original_implementation_read": false,
+            "original_algorithm_execution": false,
+            "local_probe_read": false,
+            "limits": "Manual reading and primary-paper reading do not imply external implementation or hardware run."
+          },
+          {
+            "baseline_id": "M314",
+            "line": 382,
+            "status": "外部参考实现",
+            "raw_row": "| 专题Ⅱ §13.13；工业 §8 | 作者WOLA-DANSE脚本 | 外部参考实现 | `danse-wola`：`WOLA_DANSE1.m` | 固定作者三条件文件头；静态与独立控制，不运行原MATLAB/WOLA声学整链 |",
+            "table_row_read": true,
+            "manual_source_read": true,
+            "original_reference_read": false,
+            "original_implementation_read": false,
+            "original_algorithm_execution": false,
+            "local_probe_read": false,
+            "limits": "Manual reading and primary-paper reading do not imply external implementation or hardware run."
+          },
+          {
+            "baseline_id": "M317",
+            "line": 385,
+            "status": "外部参考实现",
+            "raw_row": "| 专题Ⅱ §13.12；工业 §8 | TI-DANSE+ 2025批量协方差实验 | 外部参考实现 | `tidanseplus-batch`：`main.py`、`package/asc.py`、`package/online.py` | 同提交MIT/GPL声明冲突，源码仅本地忽略目录研究；原实验/依赖未执行 |",
+            "table_row_read": true,
+            "manual_source_read": true,
+            "original_reference_read": false,
+            "original_implementation_read": false,
+            "original_algorithm_execution": false,
+            "local_probe_read": false,
+            "limits": "Manual reading and primary-paper reading do not imply external implementation or hardware run."
+          },
+          {
+            "baseline_id": "M318",
+            "line": 386,
+            "status": "原理索引",
+            "raw_row": "| 专题Ⅱ §13.11；工业 §8 | TI-DANSE 2017拓扑无关融合 | 原理索引 | Szurley、Bertrand、Moonen原论文§III/IV；本地E13-16仅树消息控制 | 精确同样本求和、目标维数和G可逆；四消息加法不替代完整算法 |",
+            "table_row_read": true,
+            "manual_source_read": true,
+            "original_reference_read": false,
+            "original_implementation_read": false,
+            "original_algorithm_execution": false,
+            "local_probe_read": false,
+            "limits": "Manual reading and primary-paper reading do not imply external implementation or hardware run."
+          },
+          {
+            "baseline_id": "M319",
+            "line": 387,
+            "status": "原理索引",
+            "raw_row": "| 专题Ⅱ §13.12；工业 §8 | 分布式GEVD-DANSE 2016 | 原理索引 | 原论文§IV-B/F及附录B；`danse-python`仅来源身份索引 | 正定SCM、特征间隙与固定秩；没有主项目许可，不取原网络实现 |",
+            "table_row_read": true,
+            "manual_source_read": true,
+            "original_reference_read": false,
+            "original_implementation_read": false,
+            "original_algorithm_execution": false,
+            "local_probe_read": false,
+            "limits": "Manual reading and primary-paper reading do not imply external implementation or hardware run."
+          },
+          {
+            "baseline_id": "M320",
+            "line": 388,
+            "status": "原理索引",
+            "raw_row": "| 专题Ⅱ §13.12；工业 §8 | SRO-GEVD-DANSE 2023 | 原理索引 | 作者arXiv:2211.02489v2、算法1/2 | 常量时钟偏差与相干漂移/WOLA条件；已知真值线性SRC不是原估计器 |",
+            "table_row_read": true,
+            "manual_source_read": true,
+            "original_reference_read": false,
+            "original_implementation_read": false,
+            "original_algorithm_execution": false,
+            "local_probe_read": false,
+            "limits": "Manual reading and primary-paper reading do not imply external implementation or hardware run."
+          },
+          {
+            "baseline_id": "M321",
+            "line": 389,
+            "status": "原理索引",
+            "raw_row": "| 专题Ⅱ §13.12；工业 §8 | TI-GEVD-DANSE 2024共同规范化 | 原理索引 | EUSIPCO 2024作者稿§III/IV | 协方差与滤波器共享同一坐标变换；未运行完整网络GEVD，不能独立归一每向量冒充 |",
+            "table_row_read": true,
+            "manual_source_read": true,
+            "original_reference_read": false,
+            "original_implementation_read": false,
+            "original_algorithm_execution": false,
+            "local_probe_read": false,
+            "limits": "Manual reading and primary-paper reading do not imply external implementation or hardware run."
+          },
+          {
+            "baseline_id": "M322",
+            "line": 390,
+            "status": "原理索引",
+            "raw_row": "| 专题Ⅱ §13.12；工业 §8 | TI-DANSE+ 2026扩展 | 原理索引 | 作者arXiv:2506.02797v2、定理1/2与§III-G/IV-D | 目标秩、统计重构和实验条件分别核；2025批量源码不自动复现该版 |",
+            "table_row_read": true,
+            "manual_source_read": true,
+            "original_reference_read": false,
+            "original_implementation_read": false,
+            "original_algorithm_execution": false,
+            "local_probe_read": false,
+            "limits": "Manual reading and primary-paper reading do not imply external implementation or hardware run."
+          },
+          {
+            "baseline_id": "M364",
+            "line": 444,
+            "status": "外部参考实现",
+            "raw_row": "| 第10章；工业 I22 | libsoxr 连续/变比 SRC | 外部参考实现 | `libsoxr`：`src/soxr.h`、`examples/5-variable-rate.c` | 输入/输出比、显式质量、消费量与尾部排空 |",
+            "table_row_read": true,
+            "manual_source_read": true,
+            "original_reference_read": false,
+            "original_implementation_read": false,
+            "original_algorithm_execution": false,
+            "local_probe_read": "industrial_interfaces.c full",
+            "limits": "Manual reading and primary-paper reading do not imply external implementation or hardware run."
+          },
+          {
+            "baseline_id": "M365",
+            "line": 445,
+            "status": "外部参考实现",
+            "raw_row": "| 第10章；工业 I23 | EBU 响度与真峰值测量 | 外部参考实现 | `libebur128`：`ebur128/ebur128.c` | 通道角色、门控、静音非有限值；不等于声压 |",
+            "table_row_read": true,
+            "manual_source_read": true,
+            "original_reference_read": false,
+            "original_implementation_read": false,
+            "original_algorithm_execution": false,
+            "local_probe_read": "industrial_interfaces.c full",
+            "limits": "Manual reading and primary-paper reading do not imply external implementation or hardware run."
+          },
+          {
+            "baseline_id": "M368",
+            "line": 448,
+            "status": "外部参考实现",
+            "raw_row": "| §10.5；工业 I25 | ViSQOL | 外部参考实现 | `visqol`：`src/visqol_api.cc` | MOS-LQO；16/48 kHz 模式、模型/依赖未取、下混不评空间保真 |",
+            "table_row_read": true,
+            "manual_source_read": true,
+            "original_reference_read": "ViSQOLv3 selected sections II-C/III-A–C",
+            "original_implementation_read": false,
+            "original_algorithm_execution": false,
+            "local_probe_read": false,
+            "limits": "Manual reading and primary-paper reading do not imply external implementation or hardware run."
+          },
+          {
+            "baseline_id": "M372",
+            "line": 452,
+            "status": "外部参考实现",
+            "raw_row": "| 研究扩展：工业 I28 | FastEnhancer 流式单通道降噪 | 外部参考实现 | `fastenhancer`：`models/fastenhancer/default/model.py`、`scripts/test_onnx.py` | MIT源码；未取ONNX权重、未运行；不是AEC/WPE/多麦分离 |",
+            "table_row_read": true,
+            "manual_source_read": true,
+            "original_reference_read": false,
+            "original_implementation_read": false,
+            "original_algorithm_execution": false,
+            "local_probe_read": false,
+            "limits": "Manual reading and primary-paper reading do not imply external implementation or hardware run."
+          },
+          {
+            "baseline_id": "M373",
+            "line": 453,
+            "status": "外部参考实现",
+            "raw_row": "| 研究扩展：工业 I31 | FastEnhancer-Medium 独立 C11/int8 流式运行时 | 外部参考实现 | `faster-enhancer-c`：`include/`、`src/`；[接口研究](research/03_industrial_deployment.md#faster-enhancer-runtime) | 与原 Python 项目不同作者及配置；MIT 源码与 NOTICE 已核，权重/测试音频未取，未编译推理或测硬件 |",
+            "table_row_read": true,
+            "manual_source_read": true,
+            "original_reference_read": "faster-enhancer.c v1 complete main body §§1–4; final bibliography partial",
+            "original_implementation_read": false,
+            "original_algorithm_execution": false,
+            "local_probe_read": false,
+            "limits": "Manual reading and primary-paper reading do not imply external implementation or hardware run."
+          },
+          {
+            "baseline_id": "M375",
+            "line": 455,
+            "status": "外部参考实现",
+            "raw_row": "| 附录B E17-02；工业 I29 | STK DelayL 固定分数延迟与连续状态 | 外部参考实现 | `stk`：`include/DelayL.h`、`src/DelayL.cpp`；`codes/chapters/ch10/examples/run_stk_delay_probe.py` | 已运行标量接口、零/.5/1采样与分块状态；未测设备或变时延 |",
+            "table_row_read": true,
+            "manual_source_read": true,
+            "original_reference_read": false,
+            "original_implementation_read": false,
+            "original_algorithm_execution": false,
+            "local_probe_read": "stk_delay_probe.cpp full",
+            "limits": "Manual reading and primary-paper reading do not imply external implementation or hardware run."
+          }
+        ],
+        "prior_findings_challenged": [
+          {
+            "id": "R243",
+            "result": "confirmed direct Chinese I21 still names E11-24 for current E11-17 time kernel; preserve historical fixed-report counts114 and76 as dated facts."
+          },
+          {
+            "id": "R134",
+            "result": "manual I36 already correctly distinguishes reference/media clocks and hardware Dante; synchronize overly broad chapter wording without replacing this valid qualified treatment."
+          },
+          {
+            "id": "R279",
+            "result": "root independently solved exact SPD6sensor control and remaining4channel MWF; actual MSE.25 vs.2 supports limited old-compressed-space optimum",
+            "data": {
+              "name": "independent root R279 dropout control",
+              "Rn_eigenvalues": [
+                0.2928932188134525,
+                0.9999999999999999,
+                1.0,
+                1.0,
+                1.0,
+                1.7071067811865475
+              ],
+              "old_central_w": [
+                4.4408920985006264e-17,
+                0.12499999999999997,
+                -1.3877787807814457e-17,
+                0.125,
+                0.25,
+                0.12499999999999997
+              ],
+              "Rxx_w_max_error": 1.1102230246251565e-16,
+              "remaining_T": [
+                [
+                  1.0,
+                  0.0,
+                  0.0
+                ],
+                [
+                  0.0,
+                  1.0,
+                  0.0
+                ],
+                [
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                [
+                  0.0,
+                  0.0,
+                  0.125
+                ]
+              ],
+              "reduced_h": [
+                0.25,
+                0.25,
+                2.0
+              ],
+              "reduced_effective_w": [
+                0.25,
+                0.25,
+                0.0,
+                0.25
+              ],
+              "reduced_mse": 0.25,
+              "remaining_raw_w": [
+                0.20000000000000004,
+                0.2,
+                0.2,
+                0.19999999999999996
+              ],
+              "remaining_raw_mse": 0.19999999999999998,
+              "not_executed": "No DANSE network/WOLA/broadcast adaptation or formal media generation."
+            }
+          }
+        ],
+        "sources": [
+          {
+            "url": "https://www.speex.org/docs/manual/speex-manual/node7.html",
+            "date": "2026-11-23",
+            "actual_read": "Echo Cancellation127–162 and Troubleshooting163–170; resampler context through198; codec remainder not fully read",
+            "used_for": "reference timing meaning; not all implementation or acoustic convergence"
+          },
+          {
+            "url": "https://arxiv.org/html/2004.09584v1",
+            "date": "2026-11-23",
+            "actual_read": "main introduction and selected II/III text; II-C and III-A–C full; II-B80–89 not all read, later sections text132–145 read",
+            "used_for": "internal time alignment and scope; metric never built/run"
+          },
+          {
+            "url": "https://arxiv.org/html/2607.25350v1",
+            "date": "2026-11-23",
+            "actual_read": "complete main body33–141 incl§2model/quantization and§3protocol/pacing; bibliography142–159partial,160–180not read",
+            "used_for": "current v1 configuration/protocol cross-check; no model execution or transplanted performance rankings"
+          },
+          {
+            "url": "https://homes.esat.kuleuven.be/~abertran/reports/09-178.pdf",
+            "date": "2026-11-23",
+            "actual_read": "selected IV-B/C/D extraction397–553, TheoremIV.1page5297 actually rendered110dpi and viewed; AppendixA700–707premise only, proof remainder not read",
+            "pdf_sha256": "b2132ee7f594e41ac20c50a8152fa1511c88a9ad64fc309e258c5cfee4359c70",
+            "render_viewed": "/private/tmp/masp-multiround-20261123/root-industrial-primary/page-5297.png",
+            "used_for": "theorem26–28 and extraG update verified visually; no full theorem proof reproduced"
+          }
+        ],
+        "not_adopted": [
+          {
+            "candidate": "DANSE theorem also requires sum squared steps finite, manual omits it",
+            "decision": "rejected after actual original PDF page view",
+            "evidence": "Original26–28 specify positive bounded steps, limit0, and divergent sum of steps only. Do not import unrelated stochastic approximation squared-sum condition."
+          },
+          {
+            "candidate": "all recorded native measurements and old counts should be updated to today",
+            "decision": "rejected",
+            "evidence": "Historical versions/inputs remain explicitly dated; accurate legacy byte identities are not errors."
+          }
+        ],
+        "not_verified": [
+          "No full original DANSE proof or GEVD-DANSE2016 proof read by root in this packet.",
+          "No original estimator, model, C library compilation or device/hardware execution in this manual batch.",
+          "No new publication render or human listening.",
+          "URLs are primary sources actually opened; local manual full read is distinct from reading every linked original."
+        ]
+      }
     }
   ],
   "coverage_row_reviews": {
@@ -48145,6 +48621,257 @@
         "M388"
       ],
       "meaning": "row read, chapter prose, local source, original paper/source and execution are separate layers; no count called all algorithms verified."
+    },
+    "root-r2d-industrial-manual": {
+      "reviewed_entries": [
+        {
+          "baseline_id": "M188",
+          "line": 241,
+          "status": "原理索引",
+          "raw_row": "| §7.1；增强研究 W07 | 晚期混响谱方差估计与抑制 | 原理索引 | Habets 等 2009 原文模型与边界 | 统计衰减与混合时间假设；不把 SpeexDSP 的配置开关误作已实现的谱方差抑制器 |",
+          "table_row_read": true,
+          "manual_source_read": false,
+          "original_reference_read": false,
+          "original_implementation_read": false,
+          "original_algorithm_execution": false,
+          "local_probe_read": false,
+          "limits": "Manual reading and primary-paper reading do not imply external implementation or hardware run."
+        },
+        {
+          "baseline_id": "M279",
+          "line": 347,
+          "status": "外部参考实现",
+          "raw_row": "| §10.2.1 | SpeexDSP 连续 SRC | 外部参考实现 | `speexdsp`：`libspeexdsp/resample.c` | 质量档、通道一致性 |",
+          "table_row_read": true,
+          "manual_source_read": true,
+          "original_reference_read": false,
+          "original_implementation_read": false,
+          "original_algorithm_execution": false,
+          "local_probe_read": false,
+          "limits": "Manual reading and primary-paper reading do not imply external implementation or hardware run."
+        },
+        {
+          "baseline_id": "M285",
+          "line": 353,
+          "status": "外部参考实现",
+          "raw_row": "| §10.3.1 | RNNoise | 外部参考实现 | `rnnoise`：`src/denoise.c` | DSP/神经状态、训练域和模型 |",
+          "table_row_read": true,
+          "manual_source_read": true,
+          "original_reference_read": false,
+          "original_implementation_read": false,
+          "original_algorithm_execution": false,
+          "local_probe_read": false,
+          "limits": "Manual reading and primary-paper reading do not imply external implementation or hardware run."
+        },
+        {
+          "baseline_id": "M286",
+          "line": 354,
+          "status": "外部参考实现",
+          "raw_row": "| §10.3.1；工业 I09 | DeepFilterNet 深度滤波 | 外部参考实现 | `deepfilternet`：`DeepFilterNet/df/`、`libDF/src/` | 48 kHz、阶数、前瞻与延迟 |",
+          "table_row_read": true,
+          "manual_source_read": true,
+          "original_reference_read": false,
+          "original_implementation_read": false,
+          "original_algorithm_execution": false,
+          "local_probe_read": false,
+          "limits": "Manual reading and primary-paper reading do not imply external implementation or hardware run."
+        },
+        {
+          "baseline_id": "M287",
+          "line": 355,
+          "status": "外部参考实现",
+          "raw_row": "| 研究扩展：工业 I09 | DeepFilterNet LADSPA | 外部参考实现 | `deepfilternet`：`ladspa/` | 无前瞻仍有 STFT/宿主延迟 |",
+          "table_row_read": true,
+          "manual_source_read": true,
+          "original_reference_read": false,
+          "original_implementation_read": false,
+          "original_algorithm_execution": false,
+          "local_probe_read": false,
+          "limits": "Manual reading and primary-paper reading do not imply external implementation or hardware run."
+        },
+        {
+          "baseline_id": "M313",
+          "line": 381,
+          "status": "本仓库可运行基线",
+          "raw_row": "| 专题Ⅱ §13.12、E13-17 | 已知统计的秩一GEVD-MWF白化控制 | 本仓库可运行基线 | `codes/chapters/ch13/core/distributed.py::gevd_control` | 两维白化与λ−1目标重构，不是完整分布式GEVD-DANSE |",
+          "table_row_read": true,
+          "manual_source_read": true,
+          "original_reference_read": false,
+          "original_implementation_read": false,
+          "original_algorithm_execution": false,
+          "local_probe_read": false,
+          "limits": "Manual reading and primary-paper reading do not imply external implementation or hardware run."
+        },
+        {
+          "baseline_id": "M314",
+          "line": 382,
+          "status": "外部参考实现",
+          "raw_row": "| 专题Ⅱ §13.13；工业 §8 | 作者WOLA-DANSE脚本 | 外部参考实现 | `danse-wola`：`WOLA_DANSE1.m` | 固定作者三条件文件头；静态与独立控制，不运行原MATLAB/WOLA声学整链 |",
+          "table_row_read": true,
+          "manual_source_read": true,
+          "original_reference_read": false,
+          "original_implementation_read": false,
+          "original_algorithm_execution": false,
+          "local_probe_read": false,
+          "limits": "Manual reading and primary-paper reading do not imply external implementation or hardware run."
+        },
+        {
+          "baseline_id": "M317",
+          "line": 385,
+          "status": "外部参考实现",
+          "raw_row": "| 专题Ⅱ §13.12；工业 §8 | TI-DANSE+ 2025批量协方差实验 | 外部参考实现 | `tidanseplus-batch`：`main.py`、`package/asc.py`、`package/online.py` | 同提交MIT/GPL声明冲突，源码仅本地忽略目录研究；原实验/依赖未执行 |",
+          "table_row_read": true,
+          "manual_source_read": true,
+          "original_reference_read": false,
+          "original_implementation_read": false,
+          "original_algorithm_execution": false,
+          "local_probe_read": false,
+          "limits": "Manual reading and primary-paper reading do not imply external implementation or hardware run."
+        },
+        {
+          "baseline_id": "M318",
+          "line": 386,
+          "status": "原理索引",
+          "raw_row": "| 专题Ⅱ §13.11；工业 §8 | TI-DANSE 2017拓扑无关融合 | 原理索引 | Szurley、Bertrand、Moonen原论文§III/IV；本地E13-16仅树消息控制 | 精确同样本求和、目标维数和G可逆；四消息加法不替代完整算法 |",
+          "table_row_read": true,
+          "manual_source_read": true,
+          "original_reference_read": false,
+          "original_implementation_read": false,
+          "original_algorithm_execution": false,
+          "local_probe_read": false,
+          "limits": "Manual reading and primary-paper reading do not imply external implementation or hardware run."
+        },
+        {
+          "baseline_id": "M319",
+          "line": 387,
+          "status": "原理索引",
+          "raw_row": "| 专题Ⅱ §13.12；工业 §8 | 分布式GEVD-DANSE 2016 | 原理索引 | 原论文§IV-B/F及附录B；`danse-python`仅来源身份索引 | 正定SCM、特征间隙与固定秩；没有主项目许可，不取原网络实现 |",
+          "table_row_read": true,
+          "manual_source_read": true,
+          "original_reference_read": false,
+          "original_implementation_read": false,
+          "original_algorithm_execution": false,
+          "local_probe_read": false,
+          "limits": "Manual reading and primary-paper reading do not imply external implementation or hardware run."
+        },
+        {
+          "baseline_id": "M320",
+          "line": 388,
+          "status": "原理索引",
+          "raw_row": "| 专题Ⅱ §13.12；工业 §8 | SRO-GEVD-DANSE 2023 | 原理索引 | 作者arXiv:2211.02489v2、算法1/2 | 常量时钟偏差与相干漂移/WOLA条件；已知真值线性SRC不是原估计器 |",
+          "table_row_read": true,
+          "manual_source_read": true,
+          "original_reference_read": false,
+          "original_implementation_read": false,
+          "original_algorithm_execution": false,
+          "local_probe_read": false,
+          "limits": "Manual reading and primary-paper reading do not imply external implementation or hardware run."
+        },
+        {
+          "baseline_id": "M321",
+          "line": 389,
+          "status": "原理索引",
+          "raw_row": "| 专题Ⅱ §13.12；工业 §8 | TI-GEVD-DANSE 2024共同规范化 | 原理索引 | EUSIPCO 2024作者稿§III/IV | 协方差与滤波器共享同一坐标变换；未运行完整网络GEVD，不能独立归一每向量冒充 |",
+          "table_row_read": true,
+          "manual_source_read": true,
+          "original_reference_read": false,
+          "original_implementation_read": false,
+          "original_algorithm_execution": false,
+          "local_probe_read": false,
+          "limits": "Manual reading and primary-paper reading do not imply external implementation or hardware run."
+        },
+        {
+          "baseline_id": "M322",
+          "line": 390,
+          "status": "原理索引",
+          "raw_row": "| 专题Ⅱ §13.12；工业 §8 | TI-DANSE+ 2026扩展 | 原理索引 | 作者arXiv:2506.02797v2、定理1/2与§III-G/IV-D | 目标秩、统计重构和实验条件分别核；2025批量源码不自动复现该版 |",
+          "table_row_read": true,
+          "manual_source_read": true,
+          "original_reference_read": false,
+          "original_implementation_read": false,
+          "original_algorithm_execution": false,
+          "local_probe_read": false,
+          "limits": "Manual reading and primary-paper reading do not imply external implementation or hardware run."
+        },
+        {
+          "baseline_id": "M364",
+          "line": 444,
+          "status": "外部参考实现",
+          "raw_row": "| 第10章；工业 I22 | libsoxr 连续/变比 SRC | 外部参考实现 | `libsoxr`：`src/soxr.h`、`examples/5-variable-rate.c` | 输入/输出比、显式质量、消费量与尾部排空 |",
+          "table_row_read": true,
+          "manual_source_read": true,
+          "original_reference_read": false,
+          "original_implementation_read": false,
+          "original_algorithm_execution": false,
+          "local_probe_read": "industrial_interfaces.c full",
+          "limits": "Manual reading and primary-paper reading do not imply external implementation or hardware run."
+        },
+        {
+          "baseline_id": "M365",
+          "line": 445,
+          "status": "外部参考实现",
+          "raw_row": "| 第10章；工业 I23 | EBU 响度与真峰值测量 | 外部参考实现 | `libebur128`：`ebur128/ebur128.c` | 通道角色、门控、静音非有限值；不等于声压 |",
+          "table_row_read": true,
+          "manual_source_read": true,
+          "original_reference_read": false,
+          "original_implementation_read": false,
+          "original_algorithm_execution": false,
+          "local_probe_read": "industrial_interfaces.c full",
+          "limits": "Manual reading and primary-paper reading do not imply external implementation or hardware run."
+        },
+        {
+          "baseline_id": "M368",
+          "line": 448,
+          "status": "外部参考实现",
+          "raw_row": "| §10.5；工业 I25 | ViSQOL | 外部参考实现 | `visqol`：`src/visqol_api.cc` | MOS-LQO；16/48 kHz 模式、模型/依赖未取、下混不评空间保真 |",
+          "table_row_read": true,
+          "manual_source_read": true,
+          "original_reference_read": "ViSQOLv3 selected sections II-C/III-A–C",
+          "original_implementation_read": false,
+          "original_algorithm_execution": false,
+          "local_probe_read": false,
+          "limits": "Manual reading and primary-paper reading do not imply external implementation or hardware run."
+        },
+        {
+          "baseline_id": "M372",
+          "line": 452,
+          "status": "外部参考实现",
+          "raw_row": "| 研究扩展：工业 I28 | FastEnhancer 流式单通道降噪 | 外部参考实现 | `fastenhancer`：`models/fastenhancer/default/model.py`、`scripts/test_onnx.py` | MIT源码；未取ONNX权重、未运行；不是AEC/WPE/多麦分离 |",
+          "table_row_read": true,
+          "manual_source_read": true,
+          "original_reference_read": false,
+          "original_implementation_read": false,
+          "original_algorithm_execution": false,
+          "local_probe_read": false,
+          "limits": "Manual reading and primary-paper reading do not imply external implementation or hardware run."
+        },
+        {
+          "baseline_id": "M373",
+          "line": 453,
+          "status": "外部参考实现",
+          "raw_row": "| 研究扩展：工业 I31 | FastEnhancer-Medium 独立 C11/int8 流式运行时 | 外部参考实现 | `faster-enhancer-c`：`include/`、`src/`；[接口研究](research/03_industrial_deployment.md#faster-enhancer-runtime) | 与原 Python 项目不同作者及配置；MIT 源码与 NOTICE 已核，权重/测试音频未取，未编译推理或测硬件 |",
+          "table_row_read": true,
+          "manual_source_read": true,
+          "original_reference_read": "faster-enhancer.c v1 complete main body §§1–4; final bibliography partial",
+          "original_implementation_read": false,
+          "original_algorithm_execution": false,
+          "local_probe_read": false,
+          "limits": "Manual reading and primary-paper reading do not imply external implementation or hardware run."
+        },
+        {
+          "baseline_id": "M375",
+          "line": 455,
+          "status": "外部参考实现",
+          "raw_row": "| 附录B E17-02；工业 I29 | STK DelayL 固定分数延迟与连续状态 | 外部参考实现 | `stk`：`include/DelayL.h`、`src/DelayL.cpp`；`codes/chapters/ch10/examples/run_stk_delay_probe.py` | 已运行标量接口、零/.5/1采样与分块状态；未测设备或变时延 |",
+          "table_row_read": true,
+          "manual_source_read": true,
+          "original_reference_read": false,
+          "original_implementation_read": false,
+          "original_algorithm_execution": false,
+          "local_probe_read": "stk_delay_probe.cpp full",
+          "limits": "Manual reading and primary-paper reading do not imply external implementation or hardware run."
+        }
+      ]
     }
   },
   "finite_file_read_coverage": {
@@ -48188,12 +48915,12 @@
       "research_en": {
         "file_count": 6,
         "status_counts": {
-          "partial_source_read": 4,
-          "not_recorded_as_read": 1,
-          "full_source_read": 1
+          "partial_source_read": 3,
+          "full_source_read": 2,
+          "not_recorded_as_read": 1
         },
         "total_lines": 5510,
-        "unread_lines": 4552
+        "unread_lines": 4189
       },
       "publication_sources": {
         "file_count": 41,
@@ -50323,6 +51050,14 @@
               805
             ],
             "sha_binding": "explicit read/handoff SHA"
+          },
+          {
+            "packet": "root-r2d-industrial-manual",
+            "interval": [
+              1,
+              842
+            ],
+            "sha_binding": "explicit read/handoff SHA"
           }
         ]
       },
@@ -50453,27 +51188,14 @@
       "codes/chapters/ch00/research_en/03_industrial_deployment.md": {
         "current_sha256": "a43f73e933376975c4988f90a40915fbda1803aa451701e4c0c484d7c75cf274",
         "total_lines": 687,
-        "status": "partial_source_read",
+        "status": "full_source_read",
         "merged_read_intervals": [
           [
             1,
-            280
-          ],
-          [
-            607,
-            650
-          ]
-        ],
-        "unread_intervals": [
-          [
-            281,
-            606
-          ],
-          [
-            651,
             687
           ]
         ],
+        "unread_intervals": [],
         "evidence": [
           {
             "packet": "numerics-r2a-engineering-selection",
@@ -50488,6 +51210,14 @@
             "interval": [
               607,
               650
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          },
+          {
+            "packet": "root-r2d-industrial-manual",
+            "interval": [
+              1,
+              687
             ],
             "sha_binding": "explicit read/handoff SHA"
           }

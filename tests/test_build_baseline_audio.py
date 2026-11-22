@@ -1,4 +1,4 @@
-"""Publication boundaries for independent E03-18 known-direction baseline/time assets."""
+"""Publication boundaries for independent E03-16 known-direction baseline/time assets."""
 import json
 from pathlib import Path
 import shutil

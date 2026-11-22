@@ -1,4 +1,4 @@
-"""E03-17: two frequencies, one source and two six-channel plane-wave models.
+"""E03-15: two frequencies, one source and two six-channel plane-wave models.
 
 This original mathematical fixture is not speech, a room recording, a DOA
 estimator or a sampled fractional-delay filter. Continuous source evaluation
@@ -28,7 +28,7 @@ def geometry_parameters() -> dict:
     azimuths = np.arctan2(directions[:, 0], directions[:, 1])
     angles = np.arange(6)*np.pi/3
     positions = radius*np.column_stack((np.cos(angles), np.sin(angles)))
-    return {"exercise_id": "E03-17", "sample_rate_hz": SAMPLE_RATE,
+    return {"exercise_id": "E03-15", "sample_rate_hz": SAMPLE_RATE,
             "samples_per_channel": SAMPLES, "duration_s": SAMPLES/SAMPLE_RATE,
             "sound_speed_m_s": speed, "positions_m": positions.tolist(),
             "channel_order": list(range(6)), "reference_channel_zero_based": 0,

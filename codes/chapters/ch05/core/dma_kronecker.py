@@ -1,4 +1,4 @@
-"""E05-28 & E05-29: first-order differential microphone arrays (DMA) and Kronecker beamforming.
+"""E05-16 & E05-17: first-order differential microphone arrays (DMA) and Kronecker beamforming.
 
 Pure-NumPy deterministic implementations reusing Chapter 5 MVDR/LCMV building blocks.
 Follows inner-product output y = w^H x and forward Fourier kernel exp(-j * 2*pi*f*t).
@@ -90,7 +90,7 @@ def first_order_dma_example(
     c: float = SPEED_OF_SOUND,
     gasket_phase_mismatch_deg: float = 5.0,
 ) -> dict[str, object]:
-    """E05-28: classical first-order DMA patterns, +6 dB/oct equalization WNG drop, and 5-deg gasket leak."""
+    """E05-16: classical first-order DMA patterns, +6 dB/oct equalization WNG drop, and 5-deg gasket leak."""
     spacing = finite_real_scalar(d_m, "d_m")
     sound_speed = finite_real_scalar(c, "c")
     mismatch_deg = finite_real_scalar(gasket_phase_mismatch_deg, "gasket_phase_mismatch_deg")
@@ -176,7 +176,7 @@ def first_order_dma_example(
 
 
 def kronecker_beamforming_example() -> dict[str, object]:
-    """E05-29: separable Kronecker MVDR exactness vs non-separable point-interferer LCMV null coupling."""
+    """E05-17: separable Kronecker MVDR exactness vs non-separable point-interferer LCMV null coupling."""
     r_x = np.array([[2.0 + 0.0j, -1.0j], [1.0j, 2.0 + 0.0j]], dtype=np.complex128)
     r_y = np.array([[1.0 + 0.0j, 0.0j], [0.0j, 3.0 + 0.0j]], dtype=np.complex128)
     a_x0 = np.ones(2, dtype=np.complex128)

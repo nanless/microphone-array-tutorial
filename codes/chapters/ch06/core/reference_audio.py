@@ -1,4 +1,4 @@
-"""E06-42: known playback gain, causal reference location and pure echo tail.
+"""E06-28: known playback gain, causal reference location and pure echo tail.
 
 The true FIR initializes frozen NLMS states. This is an oracle prediction
 control, not adaptive training, unknown-path estimation or device audio.
@@ -23,7 +23,7 @@ LIMITS = ('Original deterministic two-tone mathematical control, not speech, roo
 
 
 def parameters() -> dict:
-    return {'exercise_id': 'E06-42', 'sample_rate_hz': 16000, 'source_samples': 32000,
+    return {'exercise_id': 'E06-28', 'sample_rate_hz': 16000, 'source_samples': 32000,
             'samples_per_channel': 33600, 'convolution_tail_samples': 1600,
             'frequencies_hz': [500.0, 730.0], 'source_amplitudes': [0.08, 0.06],
             'source_model': '0.08*cos(500Hz)+0.06*sin(730Hz); absolute clock, period 1600',

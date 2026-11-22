@@ -1,4 +1,4 @@
-"""Independent source-index, rational regression and dB controls for E07-22/23."""
+"""Independent source-index, rational regression and dB controls for E07-18/19."""
 import json
 import math
 import unittest

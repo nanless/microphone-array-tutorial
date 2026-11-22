@@ -625,11 +625,11 @@ $$\begin{aligned}
 
 pulling the unweighted prior mean $31.10^\circ$ smoothly to $30.65^\circ$. Always extract point estimates **before** resampling using exact weights $w_i$: resampling injects discrete random duplication noise, and once resampled, all surviving particles reset to uniform weight $1/N$—never multiply stale pre-resampling weights onto resampled particles.
 
-**Step 5: Systematic Resampling via an "equispaced comb."** Although $N_{\mathrm{eff}}\approx 9.08>N/2=5$ would skip resampling in normal operation, let us execute one systematic resampling pass to trace index selection explicitly. Partition $[0,1]$ into $N$ contiguous intervals $(C_{i-1},C_i]$ of widths $w_i$ via cumulative sums $C_i=\sum_{j=1}^i w_j$ ($C_0=0$), then lay down a rigid comb of tooth spacing $1/N$: draw **a single** uniform offset $u_0\sim\mathcal{U}[0,1/N)$, form $N$ equispaced query points
+**Step 5: Systematic Resampling via an "equispaced comb."** Although $N_{\mathrm{eff}}\approx 9.08>N/2=5$ would skip resampling in normal operation, let us execute one systematic resampling pass to trace index selection explicitly. Partition $[0,1)$ into $N$ contiguous half-open intervals $[C_{i-1},C_i)$ of widths $w_i$ via cumulative sums $C_i=\sum_{j=1}^i w_j$ ($C_0=0$), then lay down a rigid comb of tooth spacing $1/N$: draw **a single** uniform offset $u_0\sim\mathcal{U}[0,1/N)$, form $N$ equispaced query points
 
 $$u_k=u_0+\frac{k-1}{N},\qquad k=1,2,\ldots,N,$$
 
-pick the smallest index $i$ satisfying $C_{i-1}<u_k\le C_i$ as ancestor $k$, and reset all new weights to $1/N$. Cumulative sums $C_i$ are:
+pick the unique index $i$ satisfying $C_{i-1}\le u_k<C_i$ (equivalently, the smallest index with $C_i>u_k$, matching `searchsorted(..., side="right")` and automatically skipping zero-weight empty intervals) as ancestor $k$, and reset all new weights to $1/N$. Cumulative sums $C_i$ are:
 
 | Particle Index $i$ | 1 | 2 | 3 | 4 | 5 |
 |---|---|---|---|---|---|
@@ -637,7 +637,7 @@ pick the smallest index $i$ satisfying $C_{i-1}<u_k\le C_i$ as ancestor $k$, and
 | **Particle Index $i$** | **6** | **7** | **8** | **9** | **10** |
 | Cumulative Sum $C_i$ | 0.6392 | 0.7643 | 0.8821 | 0.9747 | 1.0000 |
 
-Drawing $u_0=0.0637\in[0,0.1)$ places the $10$ comb teeth at $0.0637,0.1637,0.2637,\ldots,0.9637$: tooth 1 ($0.0637>C_1=0.0621$) lands in bin 2 ($27^\circ$); teeth 3 and 4 ($0.2637,0.3637$) both land inside bin 4 $(0.2614,0.3865]$ (duplicating particle 4's $30^\circ$ twice, plus tooth 5 hitting particle 5's $30^\circ$ for three $30^\circ$ copies); teeth 7 and 8 ($0.6637,0.7637$) both land inside bin 7 $(0.6392,0.7643]$ (duplicating $32^\circ$ twice); while narrow bin 1 ($25^\circ$, width $0.0621$) and bin 10 ($40^\circ$, width $0.0253$) receive zero teeth and are eliminated. The resampled equal-weight ensemble is:
+Drawing $u_0=0.0637\in[0,0.1)$ places the $10$ comb teeth at $0.0637,0.1637,0.2637,\ldots,0.9637$: tooth 1 ($0.0637>C_1=0.0621$) lands in bin 2 ($27^\circ$); teeth 3 and 4 ($0.2637,0.3637$) both land inside bin 4 $[0.2614,0.3865)$ (duplicating particle 4's $30^\circ$ twice, plus tooth 5 hitting particle 5's $30^\circ$ for three $30^\circ$ copies); teeth 7 and 8 ($0.6637,0.7637$) both land inside bin 7 $[0.6392,0.7643)$ (duplicating $32^\circ$ twice); while narrow bin 1 ($25^\circ$, width $0.0621$) and bin 10 ($40^\circ$, width $0.0253$) receive zero teeth and are eliminated. The resampled equal-weight ensemble is:
 
 $$\begin{aligned}
 (x'_1,\ldots,x'_5)&=(27,28,30,30,30),\\
@@ -816,7 +816,7 @@ w_t^{(j)}(\vec{z})&=\frac{p_D w_{t|t-1}^{(j)}q_t^{(j)}(\vec{z})}
 {\kappa_t(\vec{z})+p_D\sum_{l=1}^{J_{t|t-1}}w_{t|t-1}^{(l)}q_t^{(l)}(\vec{z})},
 \end{aligned}$$
 
-with $\mathbf{S}_t^{(j)}=\mathbf{H}\mathbf{P}_{t|t-1}^{(j)}\mathbf{H}^\top+\mathbf{R}$. Because the component count grows exponentially per frame as $J_t=J_{t|t-1}(1+|Z_t|)$, practical GM-PHD filters perform **pruning and merging** at the end of every step: discarding weak components below threshold $T_{\mathrm{thresh}}$, moment-matching clusters $\mathcal{L}$ within Mahalanobis distance $(\vec{m}_t^{(i)}-\vec{m}_t^{(j)})^\top(\mathbf{P}_t^{(i)})^{-1}(\vec{m}_t^{(i)}-\vec{m}_t^{(j)})\le U$ into a single Gaussian, and capping total components at $J_{\max}$:
+with $\mathbf{S}_t^{(j)}=\mathbf{H}\mathbf{P}_{t|t-1}^{(j)}\mathbf{H}^\top+\mathbf{R}$. Because the component count grows exponentially per frame as $J_t=J_{t|t-1}(1+|Z_t|)$, practical GM-PHD filters perform **pruning and merging** at the end of every step: discarding weak components below threshold $T_{\mathrm{thresh}}$ to leave surviving index set $\mathcal{I}$, then iteratively picking the highest-weight cluster anchor $j=\arg\max_{i\in\mathcal{I}} w_t^{(i)}$, moment-matching its nearby cluster $\mathcal{L}=\{i\in\mathcal{I}:(\vec{m}_t^{(i)}-\vec{m}_t^{(j)})^\top(\mathbf{P}_t^{(i)})^{-1}(\vec{m}_t^{(i)}-\vec{m}_t^{(j)})\le U\}$ into a single Gaussian and removing $\mathcal{L}$ from $\mathcal{I}$, before capping total components at $J_{\max}$:
 
 $$\begin{aligned}
 \tilde{w}&=\sum_{i\in\mathcal{L}}w_t^{(i)},\qquad
@@ -914,15 +914,15 @@ Returning to zero-wait real-time calling front ends, beam controllers require th
 - **Audio-visual multimodal fusion: extrinsic parallax calibration, Active Speaker Detection (ASD), and heterogeneous latency retrodiction**: Conference bars fusing camera face/lip boxes with acoustic tracking (for an early sequential Monte Carlo audio-visual formulation, see Vermaak, Gangnet, Blake & Pérez, 2001, *Proc. IEEE ICCV*, pp. 741–746) must jointly resolve three physical and temporal mismatches:
   1. **Camera–array extrinsic calibration and near-field parallax**: Let the rigid rotation from array frame to camera frame be $\mathbf{R}_{\mathrm{cm}}\in\mathrm{SO}(3)$ and translation baseline be $\vec{t}_{\mathrm{cm}}=\vec{p}_{\mathrm{mic}}-\vec{p}_{\mathrm{cam}}$. For a source at array range $r$ and unit direction $\vec{u}_{\mathrm{A}}$, its 3-D camera-frame position is $\vec{p}_{\mathrm{C}}=\mathbf{R}_{\mathrm{cm}}(r\vec{u}_{\mathrm{A}}+\vec{t}_{\mathrm{cm}})$. Camera and array bearings coincide closely only in the far field ($r\gg\|\vec{t}_{\mathrm{cm}}\|$); near-field parallax is bounded by $\approx \|\vec{t}_{\mathrm{cm}}\|/r\ \mathrm{rad}$—for instance, a $15\ \mathrm{cm}$ camera-to-mic baseline creates up to $\arctan(0.15)\approx 8.53^\circ$ parallax for a speaker at $1\ \mathrm{m}$, exceeding typical DOA association gates and demanding extrinsic calibration plus depth-aware parallax compensation prior to deployment.
   2. **Lip-motion Active Speaker Detection (ASD) and occlusion takeover**: A plain face bounding box proves only that "someone is in frame," never "who is talking"; silent listeners often face the camera directly, so feeding all face boxes into acoustic association pulls the beam toward quiet attendees. Practical pipelines score cross-modal correlation between lip motion and audio envelope to estimate visual speech activity $p_{\mathrm{lip}}$, weighting it jointly with acoustic DOA likelihood. When a speaker turns away, becomes occluded, or walks outside the camera's horizontal Field of View (FOV, optical axis $\theta_{\mathrm{cam}}$, half-width $\Delta\theta_{\mathrm{FOV}}/2$), piecewise visual detectability drops strictly to $p_{D,v}(\theta)=0$ outside FOV: substituting into Bernoulli empty-measurement Eq. (9-32) gives $r^+=r$ ("out of camera sight" never means "left the room"), allowing acoustic DOA to hold the track seamlessly until visual re-acquisition.
-  3. **Out-of-Sequence Measurements (OOSM) and heterogeneous latency retrodiction**: Acoustic DOA runs every 10–20 ms, whereas camera exposure, ISP, and neural detection lag by $\Delta t_{\mathrm{lag}}\in[30,150]\ \mathrm{ms}$. When a short buffer of historical states and measurements is maintained, replaying in physical capture-timestamp order equals joint Gaussian conditioning (for joint measurement vector $\vec{Z}$ with covariance $\mathbf{S}_Z$ and state–measurement cross-covariance $\mathbf{C}$):
+  3. **Out-of-Sequence Measurements (OOSM) and heterogeneous latency retrodiction**: Acoustic DOA runs every 10–20 ms, whereas camera exposure, ISP, and neural detection lag by $\Delta t_{\mathrm{lag}}\in[30,150]\ \mathrm{ms}$. When a short buffer of historical states and measurements is maintained, replaying in physical capture-timestamp order equals joint Gaussian conditioning (for prior state mean $m_t^{\mathrm{prior}}$ and variance $P_t^{\mathrm{prior}}$, joint measurement vector $\vec{Z}$ with prior expectation $\bar{\vec{Z}}=\mathbb{E}[\vec{Z}]$ and covariance $\mathbf{S}_Z$, and state–measurement cross-covariance $\mathbf{C}$):
 
       $$\begin{aligned}
       \mathbf{K}_Z&=\mathbf{C}\mathbf{S}_Z^{-1},\qquad
-      m_{t\mid Z}=\mathbf{K}_Z\vec{Z},\\
+      m_{t\mid Z}=m_t^{\mathrm{prior}}+\mathbf{K}_Z\bigl(\vec{Z}-\bar{\vec{Z}}\bigr),\\
       P_{t\mid Z}&=P_t^{\mathrm{prior}}-\mathbf{C}\mathbf{S}_Z^{-1}\mathbf{C}^\top.
       \end{aligned}\tag{9-38}$$
 
-      Under local constant velocity with negligible process noise across a brief lag window, a lighter alternative forms the one-step retrodictive observation matrix $\mathbf{H}_{\mathrm{retro}}$ mapping current state $\hat{\vec{s}}_t^a$ unbiasedly back to image exposure instant $t_1=t-\Delta t_{\mathrm{lag}}$ without replaying the entire buffer:
+      Under a zero-mean prior ($m_t^{\mathrm{prior}}=0,\ \bar{\vec{Z}}=\vec{0}$, as in Exercise [E09-15](#e09-15)), Eq. (9-38) reduces to $m_{t\mid Z}=\mathbf{K}_Z\vec{Z}$. Under local constant velocity with negligible process noise across a brief lag window, a lighter alternative forms the one-step retrodictive observation matrix $\mathbf{H}_{\mathrm{retro}}$ mapping current state $\hat{\vec{s}}_t^a$ unbiasedly back to image exposure instant $t_1=t-\Delta t_{\mathrm{lag}}$ without replaying the entire buffer:
 
       $$\begin{aligned}
       \mathbf{H}_{\mathrm{retro}}
@@ -953,7 +953,7 @@ For asynchronous threads or inter-process message buses connecting trackers to b
 | `track_id` & Lifecycle State | Birth, tentative, confirmed, retired/deleted rules and ID reuse policy | Local `track_id` never equates to permanent speaker identity |
 | `last_update` / Validity Horizon | Timestamp of most recent real measurement update and max coasting budget | Hold, widen beam, or revert to search mode upon timeout |
 
-Keeping `measurement_time`, `state_time`, `publish_time`, and `apply_time` distinct is paramount: if a speaker walks at $30^\circ/\mathrm{s}$ and beam weights take effect $80\ \mathrm{ms}$ after capture, steering to the unextrapolated angle lags behind by $30\times 0.080=2.4^\circ$. Downstream consumers must extrapolate forward **strictly across remaining gap $(t_{\mathrm{apply}}-t_{\mathrm{state}})$** (inflating covariance via $\mathbf{F}\mathbf{P}\mathbf{F}^\top+\mathbf{Q}$); if the tracker already pre-extrapolated to `apply_time` and stamped `state_time = apply_time`, the consumer must *never* extrapolate a second time from `measurement_time` (see Exercise E09-08).
+Keeping `measurement_time`, `state_time`, `publish_time`, and `apply_time` distinct is paramount: if a speaker walks at $30^\circ/\mathrm{s}$ and beam weights take effect $80\ \mathrm{ms}$ after capture, steering to the unextrapolated angle lags behind by $30\times 0.080=2.4^\circ$. Downstream consumers must extrapolate forward **strictly across remaining gap $(t_{\mathrm{apply}}-t_{\mathrm{state}})$** (inflating covariance via $\mathbf{F}\mathbf{P}\mathbf{F}^\top+\mathbf{Q}$); if the tracker already pre-extrapolated to `apply_time` and stamped `state_time = apply_time`, the consumer must *never* extrapolate a second time from `measurement_time` (see Exercise [E09-08](#e09-08)).
 
 **How much target speech attenuation does a $40\ \mathrm{ms}$ timestamp mix-up cause?** Let us compute exact numbers on Chapter 5's $8$-microphone uniform linear array: set half-wavelength spacing $d=\lambda/2$ at $f=3\ \mathrm{kHz}$, with a near-field speaker at $30^\circ$ at $t_{\mathrm{state}}$ sweeping rapidly past at $250^\circ/\mathrm{s}$; after $40\ \mathrm{ms}$ compute/scheduling the message publishes at $t_{\mathrm{pub}}$, taking effect after buffering at $t_{\mathrm{apply}}=t_{\mathrm{state}}+80\ \mathrm{ms}$. At $t_{\mathrm{apply}}$, true source azimuth reaches $\theta=30^\circ+250\times 0.080=50^\circ$; if the consumer mistakes $t_{\mathrm{pub}}$ for `state_time` and extrapolates across only $40\ \mathrm{ms}$, the beam points at $\theta_b=40^\circ$. Evaluating the normalized $8$-mic delay-and-sum array factor magnitude:
 
@@ -971,7 +971,7 @@ $$\begin{aligned}
 \approx 0.443\frac{\lambda}{L\cos\theta_0}.
 \end{aligned}$$
 
-In the example above ($L=4\lambda,\ \theta_0=50^\circ$), the half-beamwidth is $\approx 9.9^\circ$ (exact array-factor half-width $\approx 10.2^\circ$), explaining directly why the $10^\circ$ lag from $40\ \mathrm{ms}$ unextrapolated latency drops target gain to $-3.75\ \mathrm{dB}$. Larger apertures and higher frequencies suffer even steeper high-frequency attenuation under timestamp errors.
+In the example above ($L=4\lambda,\ \theta_0=50^\circ$), the linear approximation gives a half-beamwidth of $\approx 9.9^\circ$; owing to the nonlinear $\sin\theta$ broadside/endfire asymmetry, the exact $-3\ \mathrm{dB}$ array-factor half-width at $\theta_0=50^\circ$ is only $9.11^\circ$ toward broadside versus $11.35^\circ$ toward endfire (averaging $10.2^\circ$; equivalently, the lagging $\theta_b=40^\circ$ beam's upper $-3\ \mathrm{dB}$ edge sits at $48.96^\circ$), cleanly explaining why the $10^\circ$ lag from $40\ \mathrm{ms}$ unextrapolated latency already exceeds the half-power edge and drops target gain to $-3.75\ \mathrm{dB}$. Larger apertures and higher frequencies suffer even steeper high-frequency attenuation under timestamp errors.
 
 #### From Active Measurements to Track Birth, Confirmation, and Deletion
 
@@ -1152,7 +1152,7 @@ $$\begin{aligned}
 &=\sqrt{\frac{1}{|\mathcal{I}|}\sum_{k\in\mathcal{I}}e_k^2}.
 \end{aligned}\tag{9-47}$$
 
-| Frame Subset | Denominator $|\mathcal{I}|$ | Disk PCM16 Result |
+| Frame Subset | Denominator $\lvert\mathcal{I}\rvert$ | Disk PCM16 Result |
 |---|---:|---:|
 | Active observation frames, raw GCC-PHAT | 173 | RMSE $2.8226^\circ$ |
 | Same 173 active frames, Kalman filtered | 173 | RMSE $1.1505^\circ$ |

@@ -76,7 +76,7 @@ _FIXED_LIMITS = (
 
 def _fixed_parameters() -> dict:
     return {
-        "exercise_ids": ["E14-12", "E14-13", "E14-14", "E14-16"],
+        "exercise_ids": ["E14-10", "E14-11", "E14-13"],
         "sample_rate_hz": 16000,
         "samples_per_channel": 32000,
         "duration_s": 2.0,

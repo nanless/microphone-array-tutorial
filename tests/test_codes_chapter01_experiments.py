@@ -296,6 +296,11 @@ class Chapter01ExperimentsTest(unittest.TestCase):
         self.assertEqual(sofa_pt['azimuth_sofa_wrapped_360_deg'], 330.0)
         np.testing.assert_allclose(sofa_pt['cartesian_sofa_m'], [3 / 4, -math.sqrt(3) / 4, 1 / 2], atol=1e-14, rtol=0)
         np.testing.assert_allclose(sofa_pt['cartesian_book_m'], [math.sqrt(3) / 4, 3 / 4, 1 / 2], atol=1e-14, rtol=0)
+        for az_180 in (-180.0, 180.0, 540.0):
+            self.assertEqual(
+                sofa_spherical_to_cartesian_and_colatitude(az_180, 0.0, 1.0)['book_azimuth_deg'],
+                180.0,
+            )
 
         # Descending frequency grid invariance and direct script bootstrap check.
         asc_grid = np.array([100.0, 500.0, 1000.0, 4000.0], dtype=np.float64)

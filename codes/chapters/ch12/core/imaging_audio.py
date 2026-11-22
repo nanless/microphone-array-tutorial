@@ -47,7 +47,7 @@ def scoring_intervals():
 
 
 def parameters():
-    return {'exercise_ids': ['E12-04', 'E12-05', 'E12-10'], 'sample_rate_hz': SAMPLE_RATE,
+    return {'exercise_ids': ['E12-03', 'E12-04', 'E12-08'], 'sample_rate_hz': SAMPLE_RATE,
             'frequency_hz': FREQUENCY, 'samples_per_channel': SAMPLES,
             'body_samples': BLOCKS*BLOCK_SAMPLES, 'complete_tail_samples': DELAY_SAMPLES,
             'block_samples': BLOCK_SAMPLES, 'blocks': BLOCKS, 'fade_samples_each_end_of_block': FADE_SAMPLES,

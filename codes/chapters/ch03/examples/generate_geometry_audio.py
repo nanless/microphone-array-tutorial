@@ -1,4 +1,4 @@
-"""Generate or strictly read-check the three independent E03-17 WAV assets.
+"""Generate or strictly read-check the three independent E03-15 WAV assets.
 
 Run from the repository root with ``python -m
 codes.chapters.ch03.examples.generate_geometry_audio [--check]``.

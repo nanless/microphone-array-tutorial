@@ -2,15 +2,15 @@
   "schema_version": 1,
   "scope": "known-statistics finite teaching controls; not blind DANSE or industrial performance",
   "source_sha256": {
-    "scripts/make_figures.py": "e4aa12c851ee0907b2c3c87cc802bed2940a1c6f63525b0a7405960547beaf87",
-    "codes/chapters/ch13/core/distributed.py": "3856695f759e02954ef86428cbb15ef885b7a2aaa70b59bd156baad0f493f077",
+    "scripts/make_figures.py": "4bc6a6ce675292c51d538c0f7d3c6f9c8fe3a2de2d0d7945f48cb4baaa801e49",
+    "codes/chapters/ch13/core/distributed.py": "0faf633fdba911a58b8ddc3a7fab9124336f8946ccfece5bd48ee1aea855cc2f",
     "codes/chapters/ch13/core/distributed_audio.py": "4e11d73e7465a2df516ad5ee26155ffdca548201dec7824a1943f53c3fd253fa",
     "codes/chapters/ch13/examples/generate_distributed_audio.py": "64de7ed99e266e0076688506ba9b0f01f561d0831604efea726aae3dbf13f0d3",
     "codes/chapters/ch02/core/conventions.py": "4e80a27490f05ddd5f4826361420c0c8d0b331464d1e5629c5def492da47b1d7",
     "codes/chapters/ch04/core/covariance.py": "d704be037100ee53caf6e2130fbabbe14ce6eeff9e3d11dde389fd368d271249",
     "codes/chapters/ch10/sro_closed_loop_demo.py": "a572e60eaac16cdb20c378b955e2bea4590b6531d788ad72d27cce9ad9ac400a",
     "codes/chapters/ch10/core/engineering.py": "22f5fcbbfdaedc399b5de1eb4c718c4f0c692dcb5dd1bdf49c7ef4569e43ae1b",
-    "codes/chapters/ch00/core/audio_samples.py": "bf1145e19e2ec99623c0583220192922c24f0ed3d293212309fe4a2f3bfc8385",
+    "codes/chapters/ch00/core/audio_samples.py": "1a7aad90d08fb8c27511aa463a6cc6dd6d4d2d230b27ed82549531f1f18edaba",
     "codes/chapters/ch00/io_contracts.py": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974"
   },
   "results": {
@@ -208,5 +208,5 @@
     },
     "comparison_scope": "same inputs within each panel; two noise covariance models differ"
   },
-  "audio_manifest_sha256": "30a93e7a6045dac22f16bb811603870aa47144b74a7941d7f7a01665bdd426ca"
+  "audio_manifest_sha256": "45737aa145b1c6029ce9b6a001c4e9a893df81ee4ce8dce706036e1195c248ab"
 }

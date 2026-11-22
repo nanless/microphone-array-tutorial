@@ -1,4 +1,4 @@
-"""Generate six E06-39 WAVs, or read/check them without changing any file.
+"""Generate six E06-25 WAVs, or read/check them without changing any file.
 
 Run python -m codes.chapters.ch06.examples.generate_apa_audio [--check].
 Only the generation mode writes assets. --check reads all actual PCM, checks
@@ -39,7 +39,7 @@ SOURCE_PATHS = (
 
 
 # Literal fixed values and exact types; checked before simulation and encoding.
-REQUIRED_PARAMETERS = {'exercise_id': 'E06-39',
+REQUIRED_PARAMETERS = {'exercise_id': 'E06-25',
  'sample_rate_hz': 16000,
  'source_samples': 32000,
  'samples_per_channel': 32013,

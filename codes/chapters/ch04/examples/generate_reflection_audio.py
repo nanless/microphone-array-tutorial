@@ -1,4 +1,4 @@
-"""Generate or strictly read-check four E04-24 coherent direct/reflection mathematical WAVs.
+"""Generate or strictly read-check four E04-20 coherent direct/reflection mathematical WAVs.
 
 --check reconstructs all signals, current source hashes and numerical scores
 in memory, and never repairs assets. Finite preflight checks do not eliminate
@@ -39,7 +39,7 @@ MEMBERS = set(FILE_NAMES.values()) | {'MANIFEST.json'}
 # Fixed asset contract, checked independently of the descriptive function.
 # A source edit must deliberately update both the signal and this contract;
 # accepting a self-consistent but false declaration would corrupt provenance.
-REQUIRED_PARAMETERS = {'exercise_id': 'E04-24',
+REQUIRED_PARAMETERS = {'exercise_id': 'E04-20',
  'sample_rate_hz': 16000,
  'source_samples': 32000,
  'samples_per_channel': 32012,
@@ -128,7 +128,7 @@ def prepare_assets() -> tuple[dict[str, bytes], dict]:
                          'float_measurements': floating, 'pcm_measurements': actual,
                          'pcm_integer_measurements': _integer_measurements(payload)}
     manifest = {
-        'schema_version': 1, 'exercise_id': 'E04-24', 'sample_rate_hz': SAMPLE_RATE,
+        'schema_version': 1, 'exercise_id': 'E04-20', 'sample_rate_hz': SAMPLE_RATE,
         'samples_per_channel': SAMPLES, 'common_export_gain': 1.0,
         'origin': 'original deterministic coherent direct/reflection mathematical synthesis',
         'source_sha256': {path: _sha(validate_parent_chain(ROOT/path).read_bytes()) for path in SOURCE_PATHS},

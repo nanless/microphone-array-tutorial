@@ -1,4 +1,4 @@
-"""E02-21 & E02-22: 3D vs 2D diffuse-field coherence and fractional-delay FIR interpolation.
+"""E02-19 & E02-20: 3D vs 2D diffuse-field coherence and fractional-delay FIR interpolation.
 
 Pure-NumPy deterministic implementations without SciPy or import-time side effects.
 """
@@ -106,7 +106,7 @@ def isotropic_diffuse_coherence_pair(
 
 def _two_mic_endfire_metrics(kappa_d: float, rho_3d: float, rho_2d: float) -> dict[str, float]:
     """Exact 2-mic endfire superdirective metrics designed for 3D diffuse vs evaluated in 2D."""
-    # Steering vector for two-mic endfire: a = [1, exp(+j*kappa_d)]^T (consistent with E02-21).
+    # Steering vector for two-mic endfire: a = [1, exp(+j*kappa_d)]^T (consistent with E02-19).
     a_vec = np.array([1.0 + 0.0j, np.exp(1j * kappa_d)], dtype=np.complex128)
     gamma_3d_mat = np.array([[1.0, rho_3d], [rho_3d, 1.0]], dtype=np.float64)
     gamma_2d_mat = np.array([[1.0, rho_2d], [rho_2d, 1.0]], dtype=np.float64)
@@ -143,7 +143,7 @@ def diffuse_field_mismatch_example(
     spacing_m: float = 0.04,
     sound_speed: float = SPEED_OF_SOUND,
 ) -> dict[str, object]:
-    """E02-21: exact zero crossings (4287.5 Hz vs ~3282.0 Hz) and 2-D cabin superdirective leakage."""
+    """E02-19: exact zero crossings (4287.5 Hz vs ~3282.0 Hz) and 2-D cabin superdirective leakage."""
     d_m = finite_real_scalar(spacing_m, "spacing_m")
     c_m_s = finite_real_scalar(sound_speed, "sound_speed")
     if d_m <= 0.0 or c_m_s <= 0.0:
@@ -180,6 +180,9 @@ def diffuse_field_mismatch_example(
         "first_zero_2d_relative_drop": (f_zero_3d - f_zero_2d) / f_zero_3d,
         "gamma_2d_at_3d_first_zero": gamma_2d_at_3d_zero,
         "gamma_3d_at_2d_first_zero": gamma_3d_at_2d_zero,
+        # Legacy key name retained for compatibility; physically this is the 3D-optimal
+        # first-order hypercardioid (DI-maximizing pattern, null at arccos(-1/3) ~= 109.47 deg,
+        # parameterized here via (alpha + cos theta) / (1 + alpha) with alpha = 1/3).
         "low_freq_limit_3d_supercardioid_in_2d": {
             "alpha_3d_optimal": alpha_3d_opt,
             "p_out_3d_predicted": p_asymp_3d,
@@ -236,7 +239,7 @@ def windowed_sinc_fractional_delay(
 def fractional_delay_notch_example(
     sample_rate_hz: float = 16000.0,
 ) -> dict[str, object]:
-    """E02-22: 4-point linear half-sample calculation, mixed-channel DSB/null loss, and 8/16-tap FIR."""
+    """E02-20: 4-point linear half-sample calculation, mixed-channel DSB/null loss, and 8/16-tap FIR."""
     fs = finite_real_scalar(sample_rate_hz, "sample_rate_hz")
     if fs <= 0.0:
         raise ValueError("sample_rate_hz must be strictly positive")

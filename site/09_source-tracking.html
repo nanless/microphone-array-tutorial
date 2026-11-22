@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 9 章 · 声源追踪 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="e2a840976a4c"><style>
+<meta name="source-digest" content="f6d48efe6ade"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -1126,9 +1126,9 @@ N_{\mathrm{eff}}
 &\approx 30.65^\circ.
 \end{aligned}$$</p>
 <p>作为对比，未加权先验粒子均值为 $31.10^\circ$，融合 $31^\circ$ 观测后收拢至 $30.65^\circ$。注意状态点估计应当在<strong>重采样之前</strong>用精确权重 $w_i$ 计算：重采样本身只是随机复制与淘汰样本，不仅会引入额外的离散抽样波动，而且重采样完成后所有新粒子的权重都已强制归为等权 $1/N$，绝不能把旧权重再乘到重采样后的粒子上。</p>
-<p><strong>第 5 步：用“等距梳子”公式走通系统重采样（Systematic Resampling）。</strong> 本例 $N_{\mathrm{eff}}\approx 9.08>N/2=5$，正常运行时无需触发重采样；为看清索引抽取的每一步，这里人为执行一次系统重采样。其核心思想是把 $[0,1]$ 区间按各粒子的归一化权重切成 $N$ 段首尾相接的区间 $(C_{i-1},C_i]$，其中累积分布和 $C_i=\sum_{j=1}^i w_j$（令 $C_0=0$），再用一把齿距固定为 $1/N$ 的“等距梳子”一次性落点抽样：先从均匀分布 $\mathcal{U}[0,1/N)$ 中只抽取<strong>一个</strong>随机起点 $u_0$，生成 $N$ 个等距查询刻度</p>
+<p><strong>第 5 步：用“等距梳子”公式走通系统重采样（Systematic Resampling）。</strong> 本例 $N_{\mathrm{eff}}\approx 9.08>N/2=5$，正常运行时无需触发重采样；为看清索引抽取的每一步，这里人为执行一次系统重采样。其核心思想是把 $[0,1)$ 区间按各粒子的归一化权重切成 $N$ 段首尾相接的半开区间 $[C_{i-1},C_i)$，其中累积分布和 $C_i=\sum_{j=1}^i w_j$（令 $C_0=0$），再用一把齿距固定为 $1/N$ 的“等距梳子”一次性落点抽样：先从均匀分布 $\mathcal{U}[0,1/N)$ 中只抽取<strong>一个</strong>随机起点 $u_0$，生成 $N$ 个等距查询刻度</p>
 <p>$$u_k=u_0+\frac{k-1}{N},\qquad k=1,2,\ldots,N,$$</p>
-<p>对每个刻度 $u_k$，查找满足 $C_{i-1}\lt u_k\le C_i$ 的最小粒子序号 $i$ 作为第 $k$ 个新粒子的祖先，最后将新粒子权重全部重置为 $1/N$。本例累积和 $C_i$ 如下：</p>
+<p>对每个刻度 $u_k$，查找满足 $C_{i-1}\le u_k\lt C_i$ 的唯一粒子序号 $i$（等价于满足 $C_i>u_k$ 的最小序号，与代码中 <code>searchsorted(..., side="right")</code> 一致且自动跳过零权重空区间）作为第 $k$ 个新粒子的祖先，最后将新粒子权重全部重置为 $1/N$。本例累积和 $C_i$ 如下：</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
 <thead>
 <tr>
@@ -1167,7 +1167,7 @@ N_{\mathrm{eff}}
 </tr>
 </tbody>
 </table></div>
-<p>设从 $[0,0.1)$ 中抽得起点 $u_0=0.0637$，则 $10$ 根梳齿依次落在 $0.0637,0.1637,0.2637,\ldots,0.9637$：第 1 齿 $0.0637>C_1=0.0621$ 跨入第 2 段（抽中 $27^\circ$）；第 3、4 齿 $0.2637$ 与 $0.3637$ 同时落在第 4 段 $(0.2614,0.3865]$ 内（使第 4 号粒子 $30^\circ$ 被复制两份，加上第 5 齿抽中第 5 号粒子 $30^\circ$，共有三个 $30^\circ$）；第 7、8 齿 $0.6637$ 与 $0.7637$ 同时落在第 7 段 $(0.6392,0.7643]$ 内（使 $32^\circ$ 被复制两份）；而首段宽度仅 $0.0621$ 的 $25^\circ$ 粒子与末段宽度仅 $0.0253$ 的 $40^\circ$ 粒子均无梳齿落入而被自然淘汰。最终选出的等权新粒子群为</p>
+<p>设从 $[0,0.1)$ 中抽得起点 $u_0=0.0637$，则 $10$ 根梳齿依次落在 $0.0637,0.1637,0.2637,\ldots,0.9637$：第 1 齿 $0.0637>C_1=0.0621$ 跨入第 2 段（抽中 $27^\circ$）；第 3、4 齿 $0.2637$ 与 $0.3637$ 同时落在第 4 段 $[0.2614,0.3865)$ 内（使第 4 号粒子 $30^\circ$ 被复制两份，加上第 5 齿抽中第 5 号粒子 $30^\circ$，共有三个 $30^\circ$）；第 7、8 齿 $0.6637$ 与 $0.7637$ 同时落在第 7 段 $[0.6392,0.7643)$ 内（使 $32^\circ$ 被复制两份）；而首段宽度仅 $0.0621$ 的 $25^\circ$ 粒子与末段宽度仅 $0.0253$ 的 $40^\circ$ 粒子均无梳齿落入而被自然淘汰。最终选出的等权新粒子群为</p>
 <p>$$\begin{aligned}
 (x'_1,\ldots,x'_5)&=(27,28,30,30,30),\\
 (x'_6,\ldots,x'_{10})&=(31,32,32,33,35).
@@ -1363,7 +1363,7 @@ q_t^{(j)}(\vec{z})&=\mathcal{N}\!\bigl(\vec{z};\mathbf{H}\vec{m}_{t|t-1}^{(j)},\
 w_t^{(j)}(\vec{z})&=\frac{p_D w_{t|t-1}^{(j)}q_t^{(j)}(\vec{z})}
 {\kappa_t(\vec{z})+p_D\sum_{l=1}^{J_{t|t-1}}w_{t|t-1}^{(l)}q_t^{(l)}(\vec{z})},
 \end{aligned}$$</p>
-<p>其中 $\mathbf{S}_t^{(j)}=\mathbf{H}\mathbf{P}_{t|t-1}^{(j)}\mathbf{H}^\top+\mathbf{R}$。可见单帧更新后高斯分量总数会按 $J_t=J_{t|t-1}(1+|Z_t|)$ 随时间呈指数级增长；实用 GM-PHD 必须在每帧末尾执行<strong>剪枝与合并（pruning &amp; merging）</strong>：先删去权重低于截断门限 $T_{\mathrm{thresh}}$ 的微弱分量，再对马氏距离 $(\vec{m}_t^{(i)}-\vec{m}_t^{(j)})^\top(\mathbf{P}_t^{(i)})^{-1}(\vec{m}_t^{(i)}-\vec{m}_t^{(j)})\le U$ 的临近分量集合 $\mathcal{L}$ 按二阶矩匹配合并为单个高斯分量（并限制最大保留分量数 $J_{\max}$）：</p>
+<p>其中 $\mathbf{S}_t^{(j)}=\mathbf{H}\mathbf{P}_{t|t-1}^{(j)}\mathbf{H}^\top+\mathbf{R}$。可见单帧更新后高斯分量总数会按 $J_t=J_{t|t-1}(1+|Z_t|)$ 随时间呈指数级增长；实用 GM-PHD 必须在每帧末尾执行<strong>剪枝与合并（pruning &amp; merging）</strong>：先删去权重低于截断门限 $T_{\mathrm{thresh}}$ 的微弱分量并记剩余索引集为 $\mathcal{I}$，再迭代选取当前最大权重分量为聚类锚点 $j=\arg\max_{i\in\mathcal{I}} w_t^{(i)}$，将临近分量集合 $\mathcal{L}=\{i\in\mathcal{I}:(\vec{m}_t^{(i)}-\vec{m}_t^{(j)})^\top(\mathbf{P}_t^{(i)})^{-1}(\vec{m}_t^{(i)}-\vec{m}_t^{(j)})\le U\}$ 按二阶矩匹配合并为单个高斯分量并从 $\mathcal{I}$ 中移除（最后截断至最大保留分量数 $J_{\max}$）：</p>
 <p>$$\begin{aligned}
 \tilde{w}&=\sum_{i\in\mathcal{L}}w_t^{(i)},\qquad
 \tilde{\vec{m}}=\frac{1}{\tilde{w}}\sum_{i\in\mathcal{L}}w_t^{(i)}\vec{m}_t^{(i)},\\
@@ -1484,13 +1484,13 @@ w_t^{(j)}(\vec{z})&=\frac{p_D w_{t|t-1}^{(j)}q_t^{(j)}(\vec{z})}
 <p><strong>视听多模态融合：外参视差标定、活跃说话人检测（ASD）与异构延迟回溯</strong>：带摄像头的会议终端引入人脸或唇动框辅助声源追踪时（早期序贯蒙特卡洛视听融合框架见 Vermaak、Gangnet、Blake 与 Pérez 2001，<em>Proc. IEEE ICCV</em> pp. 741–746），必须协同解开三处物理与时序失配：
   1. <strong>相机—阵列外参标定与近场视差</strong>：设摄像头光心与麦克风阵列中心之间的刚体旋转矩阵为 $\mathbf{R}_{\mathrm{cm}}\in\mathrm{SO}(3)$、平移基线向量为 $\vec{t}_{\mathrm{cm}}=\vec{p}_{\mathrm{mic}}-\vec{p}_{\mathrm{cam}}$。对阵列系距离 $r$、方向 $\vec{u}_{\mathrm{A}}$ 的声源，其在相机系下的三维坐标为 $\vec{p}_{\mathrm{C}}=\mathbf{R}_{\mathrm{cm}}(r\vec{u}_{\mathrm{A}}+\vec{t}_{\mathrm{cm}})$。仅有当目标远大于基线（$r\gg\|\vec{t}_{\mathrm{cm}}\|$）时，相机与阵列的纯方位角才近似重合；近场视差角上界约为 $\|\vec{t}_{\mathrm{cm}}\|/r\ \mathrm{rad}$——例如音视频基线相距 $15\ \mathrm{cm}$ 时，距离 $1\ \mathrm{m}$ 处说话人的视差可达 $\arctan(0.15)\approx 8.53^\circ$，已超过常规 DOA 关联门限，部署前必须完成外参标定并在近场按深度估计补偿视差。
   2. <strong>唇动活跃说话人检测（Active Speaker Detection，ASD）与遮挡接管</strong>：普通人脸检测框只能证明“视野内有人”，无法分辨“谁正在说话”；会议室中沉默倾听者常正对镜头，若直接把所有人脸框送入声学关联，会把波束拉向闭嘴的人。工程上需结合唇部运动与语音包络的跨模态相关性输出视觉活跃概率 $p_{\mathrm{lip}}$，再与声学 DOA 似然联合加权。当说话人转身背对镜头、被遮挡或走出镜头水平视场角（FOV，光轴 $\theta_{\mathrm{cam}}$、半宽 $\Delta\theta_{\mathrm{FOV}}/2$）时，分段视觉检出率在视场外严格为 $p_{D,v}(\theta)=0$：代入式(9-32)伯努利空观测更新即得 $r^+=r$（“看不见”绝不等于“人不在”），此时由声学 DOA 无缝接管轨迹直至视觉重新捕获。
-  3. <strong>乱序迟到观测（OOSM）与异构延迟回溯</strong>：音频定位每 10～20 ms 产出一帧，而视频曝光、ISP 与视觉检测推理常滞后 $\Delta t_{\mathrm{lag}}\in[30,150]\ \mathrm{ms}$。若缓存了短窗历史状态与观测，按原始物理时间戳重排回放可等价于联合高斯条件更新（设历史与当前联合观测向量 $\vec{Z}$ 协方差为 $\mathbf{S}_Z$、当前状态与 $\vec{Z}$ 的互协方差为 $\mathbf{C}$）：</p>
+  3. <strong>乱序迟到观测（OOSM）与异构延迟回溯</strong>：音频定位每 10～20 ms 产出一帧，而视频曝光、ISP 与视觉检测推理常滞后 $\Delta t_{\mathrm{lag}}\in[30,150]\ \mathrm{ms}$。若缓存了短窗历史状态与观测，按原始物理时间戳重排回放可等价于联合高斯条件更新（设当前状态先验均值为 $m_t^{\mathrm{prior}}$、先验方差为 $P_t^{\mathrm{prior}}$，历史与当前联合观测向量 $\vec{Z}$ 的先验期望为 $\bar{\vec{Z}}=\mathbb{E}[\vec{Z}]$、协方差为 $\mathbf{S}_Z$，当前状态与 $\vec{Z}$ 的互协方差为 $\mathbf{C}$）：</p>
 <p>$$\begin{aligned}
       \mathbf{K}_Z&=\mathbf{C}\mathbf{S}_Z^{-1},\qquad
-      m_{t\mid Z}=\mathbf{K}_Z\vec{Z},\\
+      m_{t\mid Z}=m_t^{\mathrm{prior}}+\mathbf{K}_Z\bigl(\vec{Z}-\bar{\vec{Z}}\bigr),\\
       P_{t\mid Z}&=P_t^{\mathrm{prior}}-\mathbf{C}\mathbf{S}_Z^{-1}\mathbf{C}^\top.
       \end{aligned}\tag{9-38}$$</p>
-<p>在局部常速度且滞后短窗内过程噪声可忽略时，更轻量的做法是直接构造逆向回溯观测矩阵 $\mathbf{H}_{\mathrm{retro}}$，将当前状态 $\hat{\vec{s}}_t^a$ 无偏映射回图像曝光时刻 $t_1=t-\Delta t_{\mathrm{lag}}$ 计算新息，而不必整窗重放：</p>
+<p>当先验均值为零（$m_t^{\mathrm{prior}}=0,\ \bar{\vec{Z}}=\vec{0}$，如练习 <a href="#e09-15">E09-15</a>）时，式(9-38)退化为 $m_{t\mid Z}=\mathbf{K}_Z\vec{Z}$。在局部常速度且滞后短窗内过程噪声可忽略时，更轻量的做法是直接构造逆向回溯观测矩阵 $\mathbf{H}_{\mathrm{retro}}$，将当前状态 $\hat{\vec{s}}_t^a$ 无偏映射回图像曝光时刻 $t_1=t-\Delta t_{\mathrm{lag}}$ 计算新息，而不必整窗重放：</p>
 <p>$$\begin{aligned}
       \mathbf{H}_{\mathrm{retro}}
       &=\mathbf{H}\mathbf{F}(-\Delta t_{\mathrm{lag}})
@@ -1570,7 +1570,7 @@ w_t^{(j)}(\vec{z})&=\frac{p_D w_{t|t-1}^{(j)}q_t^{(j)}(\vec{z})}
 </tr>
 </tbody>
 </table></div>
-<p>看清上表中 <code>measurement_time</code>、<code>state_time</code>、<code>publish_time</code> 与 <code>apply_time</code> 的分工至关重要：若说话人正以 $30^\circ/\mathrm{s}$ 走动，波束权重真正作用到音频帧的时刻比观测采样时刻晚了 $80\ \mathrm{ms}$，不加外推直接拿旧角度导向就会凭空落后 $30\times 0.080=2.4^\circ$。消费方拿到消息后，只应从 <code>state_time</code> 向前外推 $(t_{\mathrm{apply}}-t_{\mathrm{state}})$ 这一截剩余时间（并按 $\mathbf{F}\mathbf{P}\mathbf{F}^\top+\mathbf{Q}$ 同步放大协方差）；若上游追踪器发布前已经帮下游把状态预测到了 <code>apply_time</code> 并将 <code>state_time</code> 标为该时刻，消费方就绝不能再从 <code>measurement_time</code> 重复外推一遍（见练习 E09-08）。</p>
+<p>看清上表中 <code>measurement_time</code>、<code>state_time</code>、<code>publish_time</code> 与 <code>apply_time</code> 的分工至关重要：若说话人正以 $30^\circ/\mathrm{s}$ 走动，波束权重真正作用到音频帧的时刻比观测采样时刻晚了 $80\ \mathrm{ms}$，不加外推直接拿旧角度导向就会凭空落后 $30\times 0.080=2.4^\circ$。消费方拿到消息后，只应从 <code>state_time</code> 向前外推 $(t_{\mathrm{apply}}-t_{\mathrm{state}})$ 这一截剩余时间（并按 $\mathbf{F}\mathbf{P}\mathbf{F}^\top+\mathbf{Q}$ 同步放大协方差）；若上游追踪器发布前已经帮下游把状态预测到了 <code>apply_time</code> 并将 <code>state_time</code> 标为该时刻，消费方就绝不能再从 <code>measurement_time</code> 重复外推一遍（见练习 <a href="#e09-08">E09-08</a>）。</p>
 <p><strong>时间戳基准错认 $40\ \mathrm{ms}$ 会造成多大目标语音衰减？</strong> 我们用第 5 章的八麦均匀线阵作一次定量核算：设工作频点 $f=3\ \mathrm{kHz}$ 处阵元间距恰为半波长 $d=\lambda/2$，已知真实状态所属时刻 $t_{\mathrm{state}}$ 声源位于 $30^\circ$、正以近距离快速掠过的角速度 $250^\circ/\mathrm{s}$ 移动；消息经 $40\ \mathrm{ms}$ 计算调度后在 $t_{\mathrm{pub}}$ 发出，又经缓冲在 $80\ \mathrm{ms}$ 后的 $t_{\mathrm{apply}}$ 作用于波束输出。在匀速运动下，$t_{\mathrm{apply}}$ 时刻声源已走到真实的 $\theta=30^\circ+250\times 0.080=50^\circ$；若消费方误把消息发出的 $t_{\mathrm{pub}}$ 当作状态所属时刻，只外推了后半截 $40\ \mathrm{ms}$，波束就只会指到 $\theta_b=40^\circ$。代入八麦等权延迟求和波束的归一化阵列因子幅度公式：</p>
 <p>$$\begin{aligned}
 B(\theta,\theta_b)
@@ -1583,7 +1583,7 @@ e^{\mathrm{j}\pi m(\sin\theta-\sin\theta_b)}\right|.
 &\ll\frac{\theta_{\mathrm{HPBW}}}{2}
 \approx 0.443\frac{\lambda}{L\cos\theta_0}.
 \end{aligned}$$</p>
-<p>代入上例（$L=4\lambda,\ \theta_0=50^\circ$）得半波束宽约 $9.9^\circ$（精确阵因子半宽约 $10.2^\circ$），恰好解释了为何 $40\ \mathrm{ms}$ 漏外推造成的 $10^\circ$ 指向滞后立即将目标增益压低至 $-3.75\ \mathrm{dB}$。孔径越大、频率越高，时间戳错位导致的高频语音衰减就越严重。</p>
+<p>代入上例（$L=4\lambda,\ \theta_0=50^\circ$）得线性近似半波束宽约 $9.9^\circ$；由于 $\sin\theta$ 映射造成法向/端射不对称，精确阵因子在 $\theta_0=50^\circ$ 处的 $-3\ \mathrm{dB}$ 半宽朝法向（broadside）仅 $9.11^\circ$、朝端射（endfire）为 $11.35^\circ$（平均 $10.2^\circ$；等价地，滞后指向 $\theta_b=40^\circ$ 波束的上侧 $-3\ \mathrm{dB}$ 边缘位于 $48.96^\circ$），恰好解释了为何 $40\ \mathrm{ms}$ 漏外推造成的 $10^\circ$ 指向滞后已越过半功率边缘，将目标增益压低至 $-3.75\ \mathrm{dB}$。孔径越大、频率越高，时间戳错位导致的高频语音衰减就越严重。</p>
 <h3 id="sec-u-7498cbdd42">从活动观测到轨迹出生、确认与删除</h3>
 <p>单帧冒出的一个定位峰只是一条瞬时测量，可能是人开口，也可能是关门声或桌面反射。实用追踪器通过<strong>轨迹生命周期状态机</strong>过滤瞬态杂波：未关联的新峰先建为<strong>候选轨迹（tentative track）</strong>，在滑窗或连续帧内攒够规定次数的有效关联后才晋升为<strong>已确认轨迹（confirmed track）</strong>对外发布；已确认轨迹遇短暂停顿时依靠预测维持输出，一旦<strong>观测滞后时长</strong>（工程上常称<strong>观测龄期</strong>，即当前判定时刻距最近一次真实有效观测所属时刻已过去了多久）超出允许保持上限，就将该轨迹<strong>退役删除（retired/deleted）</strong>。此后即使同一方位再次有人开口，系统也会分配全新的 <code>track_id</code>——单凭几何方位恢复并不能证明还是刚才同一个人。</p>
 <p>初学者调试轨迹状态机时，最容易把“状态外推步长”与“观测滞后时长（观测龄期）”搅混。下表用一组具体时刻（设帧长 $512$ 点、采样率 $16\ \mathrm{kHz}$，即半窗长约 $16\ \mathrm{ms}$；最近一次有效观测发生在 $1.000\ \mathrm{s}$，此后说话人停顿无新观测）把整条<strong>状态时间轴</strong>与硬件时钟刻度一次性排清：</p>

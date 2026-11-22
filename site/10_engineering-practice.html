@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 10 章 · 工程实现、评测与产业实践 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="e2a840976a4c"><style>
+<meta name="source-digest" content="f6d48efe6ade"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -682,7 +682,7 @@ $$</p>
 </tr>
 </tbody>
 </table></div>
-<p>左列声学间隔比右列纯驱动正向估计多出约 $92\ \mathrm{ms}$，恰好对应第二次外放经扬声器到麦克风再进采集缓冲的整程声学往返路径；而当软件缓冲从 $60\ \mathrm{ms}$ 切到 $100\ \mathrm{ms}$ 时，两列增量差分别为 $40.00\text{～}40.02\ \mathrm{ms}$ 与精确的 $40.00\ \mathrm{ms}$（四条流共 $15\,314$ 次回调零 <code>xrun</code>），干净印证了逐样本时间戳配对记账的准确性（单回调与变长回调配对算术见练习 <a href="#e10-17">E10-17</a>）。</p>
+<p>左列声学间隔比右列纯驱动正向估计多出约 $92\ \mathrm{ms}$，恰好对应第二次外放经扬声器到麦克风再进采集缓冲的整程声学往返路径；而当软件缓冲从 $60\ \mathrm{ms}$ 切到 $100\ \mathrm{ms}$ 时，左列增量差为 $40.00\text{～}40.02\ \mathrm{ms}$，右列则稳定在 $40.00\ \mathrm{ms}$（偏差不足 $1\ \mu\mathrm{s}$；四条流共 $15\,314$ 次回调零 <code>xrun</code>），干净印证了逐样本时间戳配对记账的准确性（单回调与变长回调配对算术见练习 <a href="#e10-17">E10-17</a>）。</p>
 <p>在移动端（尤其是 Android 智能终端、平板与车机）接入多麦克风阵列算法时，还有一个极易让算法团队耗费数周排查的底层采集陷阱：<strong>操作系统硬件抽象层（HAL）默认开启的暗中预处理</strong>。若 Android 应用选用通话预设 <code>MediaRecorder.AudioSource.VOICE_COMMUNICATION</code>（或厂商挂接了系统语音前处理的默认麦克风通路），音频 HAL 会自动启用内置的单麦/双麦 AGC、噪声抑制、高通滤波甚至平台 AEC；这些对应用层不透明的非线性增益与相位扭曲会彻底破坏阵元间原始到达相位差与线性回声路径，导致自研 MVDR 波束零陷失效、AEC 残差暴增。另一方面，尽管按 Android 兼容性定义文档（CDD）要求，<code>VOICE_RECOGNITION</code> 预设应当默认关闭 AGC 与噪声抑制（因而在不支持直通源的旧机型上常被用作次优回退源），它仍可能保留厂商面向单麦语音识别的频响均衡或预加重，并不等同于严格无修饰的原始多通道信号。因此，在 Android 平台使用 C++ Oboe 或原生 AAudio 框架采集原始阵列信号时，工程上务必按以下三步锁死通路：</p>
 <ol>
 <li>先查询系统属性 <code>AudioManager.PROPERTY_SUPPORT_AUDIO_SOURCE_UNPROCESSED</code>，确认设备固件真正实现了直通源；</li>
@@ -1445,7 +1445,7 @@ $$</p>
 <li><strong>第一级常驻超低功耗域（Always-On Island）</strong>：主 AP 与其余三颗麦克风深度休眠断电，仅保留一颗切入低功耗监听模式的麦克风与微瓦级协处理器（Always-On DSP/MCU），运行极轻量的单麦能量/频带 VAD 加几十千字节的小型第一级关键词唤醒（Stage-1 KWS），同时在片上紧耦合静态内存（SRAM）中滚动维护一段 $500\text{～}800\ \mathrm{ms}$ 的环形预卷缓存，整域常驻功耗仅 $P_{\mathrm{aon}}=1.5\ \mathrm{mW}$；</li>
 <li><strong>第二级按需全阵列核验与交互域</strong>：只有当第一级检测到疑似唤醒词时，才通过硬件中断在数毫秒内唤醒主 AP 并给全阵列上电，一方面把 SRAM 预卷缓存里的单麦历史波形快速推送给高精度第二级唤醒模型（Stage-2 KWS）做防误报复核，另一方面无缝接管后续多麦波束形成与流式 ASR。</li>
 </ol>
-<p>按占空比代入算账：若全天真实唤醒加环境噪声触发的第一级候选复核总共让主域活跃了 $d=2\%$ 的时间（每天累计约 $28.8\ \mathrm{min}$），整机全天平均前端功耗立即降为</p>
+<p>按占空比代入算账：若全天真实唤醒加环境噪声触发的第一级候选复核总共让主域活跃了 $d=2\%$ 的时间（每天累计约 $28.8\ \mathrm{min}$，此处 $P_{\mathrm{active}}$ 按叠加在常驻低功耗域之上的增量活跃功耗计），整机全天平均前端功耗立即降为</p>
 <p>$$
 \begin{aligned}
 P_{\mathrm{avg}}&=P_{\mathrm{aon}}+d\cdot P_{\mathrm{active}}\\
@@ -1795,7 +1795,7 @@ $$</p>
 <tbody>
 <tr>
 <td><a href="https://webrtc.googlesource.com/src/+/0467d2b91cc20b9b001c2bbb73d43ea6b2491f3e/modules/audio_processing/aec3/">WebRTC AEC3 参考实现</a></td>
-<td>实时 AEC 的延迟估计、线性消除和残余回声抑制分工，详见 §6.8</td>
+<td>实时 AEC 的延迟估计、线性消除和残余回声抑制分工，详见 §6.7.2</td>
 <td>不能把内部常数当成本产品阈值，也不覆盖阵列定位和 WPE</td>
 </tr>
 <tr>
@@ -2049,7 +2049,7 @@ $$</p>
       {\widehat S_{mm}(f)\,\widehat S_{kk}(f)}
     \tag{10-27}
     $$</p>
-<p>都必然逼近于 $1$——在三维各向同性扩散声场中，相距 $d$ 的两支全向麦克风理论幅度平方相干函数为 $\gamma_{mk}^2(f)=\operatorname{sinc}^2(2fd/c)$（例如 $f=300\ \mathrm{Hz},\ d=5\ \mathrm{cm},\ c=343\ \mathrm{m/s}$ 时 $\gamma_{mk}^2\approx 0.975$）。反之，对于独立互不相关的故障通道，基于 $K_{\mathrm{snap}}$ 个独立平稳频域快拍估计的样本相干系数服从零假设分布 $\hat{\gamma}^2\sim\mathrm{Beta}(1,K_{\mathrm{snap}}-1)$（Goodman 1957；Carter 1987），其虚警尾概率具有闭式表达 $\Pr(\hat{\gamma}^2>\tau)=(1-\tau)^{K_{\mathrm{snap}}-1}$（如 $K_{\mathrm{snap}}=20,\ \tau=0.3$ 时虚警概率约 $1.1\times 10^{-3}$），可为故障检测门限提供显式统计约束。倘若在语音活动段，唯独通道 $m$ 与周围<strong>所有</strong>其他通道在低频段的相干系数均趋近于 $0$，即便该通道能量看似正常，也可确证它输出的是互不相关的电子热噪声、错位时钟乱码或重度非线性失真。</p>
+<p>都必然逼近于 $1$——在三维各向同性扩散声场中，相距 $d$ 的两支全向麦克风理论幅度平方相干函数为 $\gamma_{mk}^2(f)=\operatorname{sinc}^2(2fd/c)$（例如 $f=300\ \mathrm{Hz},\ d=5\ \mathrm{cm},\ c=343\ \mathrm{m/s}$ 时 $\gamma_{mk}^2\approx 0.975$）。反之，对于独立互不相关的故障通道（零相干假设 $H_0:\gamma^2=0$），基于 $K_{\mathrm{snap}}\ge 2$ 个独立无重叠平稳频域快拍估计的样本相干系数服从 $\hat{\gamma}^2\sim\mathrm{Beta}(1,K_{\mathrm{snap}}-1)$（Goodman 1957；Carter 1987），其上尾概率具有闭式表达 $\Pr(\hat{\gamma}^2>\tau\mid H_0)=(1-\tau)^{K_{\mathrm{snap}}-1}$：这一数值是<strong>相干检测的虚警概率</strong>，等价于在以 $\hat{\gamma}^2\le\tau$ 报障的故障检测器中，互不相关故障通道偶然越过门限 $\tau$ 而逃逸的<strong>故障漏检（假阴性）概率</strong>（如 $K_{\mathrm{snap}}=20,\ \tau=0.3$ 时约为 $1.1\times 10^{-3}$）；而要定量约束健康通道被误报为故障的虚警概率，则需基于健康基线相干度 $\gamma^2>0$ 下的非中心 MSC 分布核算。倘若在语音活动段，唯独通道 $m$ 与周围<strong>所有</strong>其他通道在低频段的相干系数均趋近于 $0$，即便该通道能量看似正常，也可确证它输出的是互不相关的电子热噪声、错位时钟乱码或重度非线性失真。</p>
 </li>
 <li>
 <p><strong>本机外放自检回声一致性判据（带扬声器设备的主动内建自测试）</strong>：智能音箱、会议机与车机在开机提示音或日常外放期间天然拥有已知的数字播放参考信号，通过对比各麦克风与播放参考的归一化互相关峰值及 AEC 滤波器主抽头能量相对出厂黄金基线的偏移，无需外部声源即可在数秒内识别出灵敏度衰落或声孔封堵的异常阵元。</p>

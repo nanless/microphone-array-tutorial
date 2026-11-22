@@ -159,7 +159,7 @@ EXPECTED_SECTION_COUNTS = {
     "10_engineering-practice.md": 11,
     "11_selection-guide.md": 7,
     "12_acoustic-imaging.md": 14,
-    "13_distributed-enhancement.md": 16,
+    "13_distributed-enhancement.md": 17,
     "14_spatial-wearable-arrays.md": 12,
     "15_target-extraction-diarization.md": 11,
     "16_appendix-symbols-math.md": 4,
@@ -227,9 +227,9 @@ EXPECTED_LEGACY_ROUTES = {
     "16_spatial-wearable-arrays.html": "14_spatial-wearable-arrays.html",
     "17_target-extraction-diarization.html": "15_target-extraction-diarization.html",
 }
-EXPECTED_SECTION_COUNT = 172
+EXPECTED_SECTION_COUNT = 173
 EXPECTED_SUBSECTION_COUNT = 827
-EXPECTED_OUTLINE_ITEM_COUNT = 1018
+EXPECTED_OUTLINE_ITEM_COUNT = 1019
 EXPECTED_FIGURE_NUMBERS = set(range(1, 88))
 EXPECTED_EXERCISE_COUNT = 352
 EXPECTED_EXERCISE_COUNTS = {
@@ -2437,7 +2437,7 @@ def check_derivative_audio(errors):
 
 
 def check_apa_audio(errors):
-    """Independent PCM integer scoring and visible controls for E06-39."""
+    """Independent PCM integer scoring and visible controls for E06-25."""
     import math
     import struct
     source, published = APA_AUDIO_ROOT, SITE / "apa_audio"
@@ -4053,15 +4053,15 @@ def check_distributed_figures(errors):
 
 
 def _verify_distributed_statistics_control(result):
-    """Independent E13-25 rational baseline, scored in the current physical input."""
+    """Independent E13-18 rational baseline, scored in the current physical input."""
     import numpy as np
     def close(actual, expected, label):
         a, b = np.asarray(actual), np.asarray(expected)
         if (a.dtype.kind not in 'iufc' or a.shape != b.shape
                 or not np.all(np.isfinite(a)) or not np.allclose(a, b, rtol=0, atol=1e-12)):
-            raise ValueError('E13-25 independent baseline differs: '+label)
-    if result['exercise_id'] != 'E13-25':
-        raise ValueError('E13-25 identity differs')
+            raise ValueError('E13-18 independent baseline differs: '+label)
+    if result['exercise_id'] != 'E13-18':
+        raise ValueError('E13-18 identity differs')
     close(result['coordinate_map'], [[1, 0], [0, 2]], 'broadcast coordinates')
     close(result['physical_target_covariance'], [[1, 1], [1, 1]], 'physical target')
     close(result['physical_noise_covariance'], [[1, 0], [0, 1]], 'physical noise')
@@ -4079,7 +4079,7 @@ def _verify_distributed_statistics_control(result):
         'converted_mixture': ([1/3, 1/6], [1/3, 1/3], 1/9, 2/9, 1/3),
     }
     if set(result['cases']) != set(expected):
-        raise ValueError('E13-25 physical cases differ')
+        raise ValueError('E13-18 physical cases differ')
     for name, (h, w, distortion, noise, total) in expected.items():
         case = result['cases'][name]
         close(case['receiver_weights'], h, name+' receiver')
@@ -4089,7 +4089,7 @@ def _verify_distributed_statistics_control(result):
                              'normalized_mse': total, 'target_noise_cross_term': 0.}.items():
             close(case['physical_components'][field], value, name+'/'+field)
     if result['scope'] != 'exact two-channel ensemble statistics; equal mixture of versions, not finite-data online estimation':
-        raise ValueError('E13-25 ensemble/estimation scope differs')
+        raise ValueError('E13-18 ensemble/estimation scope differs')
 
 
 def check_distributed_numerical_controls(errors):
@@ -4195,7 +4195,7 @@ def _check_channel_pcm(directory, manifest):
     import numpy as np
     validate_asset_directory(directory, CHANNEL_AUDIO_WAVS | {'MANIFEST.json'}, check=True)
     if (type(manifest['schema_version']) is not int or manifest['schema_version'] != 1
-            or manifest['exercise_id'] != 'E10-34'
+            or manifest['exercise_id'] != 'E10-26'
             or type(manifest['sample_rate_hz']) is not int or manifest['sample_rate_hz'] != 16000
             or type(manifest['samples_per_channel']) is not int or manifest['samples_per_channel'] != 32000
             or type(manifest['common_export_gain']) is not float or manifest['common_export_gain'] != 1.0

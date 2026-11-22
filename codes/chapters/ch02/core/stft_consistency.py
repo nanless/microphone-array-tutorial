@@ -1,4 +1,4 @@
-"""E02-20: endpoint-valid real spectra can violate shared-sample consistency.
+"""E02-18: endpoint-valid real spectra can violate shared-sample consistency.
 
 Only the existing chapter-2 analysis/synthesis implementation is used. This is
 one prescribed complex-spectrum projection, not iterative magnitude recovery,

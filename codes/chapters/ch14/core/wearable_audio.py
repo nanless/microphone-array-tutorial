@@ -87,7 +87,7 @@ def parameters() -> dict:
     low_sol = cross_modal_mvdr_mmse(2.0, np.diag([4.0, 0.04]), phi_s=1.0)
     high_sol = cross_modal_mvdr_mmse(0.1, np.diag([0.05, 0.04]), phi_s=1.0)
     return {
-        "exercise_ids": ["E14-12", "E14-13", "E14-14", "E14-16"],
+        "exercise_ids": ["E14-10", "E14-11", "E14-13"],
         "sample_rate_hz": SAMPLE_RATE,
         "samples_per_channel": SAMPLES,
         "duration_s": 2.0,

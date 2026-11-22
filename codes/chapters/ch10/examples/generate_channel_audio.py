@@ -30,7 +30,7 @@ SOURCE_PATHS = ('codes/chapters/ch10/core/channel_audio.py',
     'codes/chapters/ch02/core/conventions.py', 'codes/chapters/ch00/core/audio_samples.py',
     'codes/chapters/ch00/io_contracts.py')
 MEMBERS = tuple(FILE_NAMES.values())+('MANIFEST.json',)
-REQUIRED_PARAMETERS = {'exercise_id': 'E10-34', 'sample_rate_hz': 16000, 'samples_per_channel': 32000,
+REQUIRED_PARAMETERS = {'exercise_id': 'E10-26', 'sample_rate_hz': 16000, 'samples_per_channel': 32000,
     'target_frequency_hz': 500.0, 'noise_basis_frequencies_hz': [1500.0, 2500.0, 3500.0],
     'amplitude_each': 0.1, 'phase': 'sine, phase zero at the common absolute sample origin',
     'fade_samples_each_end': 320,
@@ -195,7 +195,7 @@ def prepare_assets():
         samples[name] = {'file': FILE_NAMES[name], 'float_measurements': measure_signal(signal, experiment['signals']['reference']),
             'pcm_measurements': measure_signal(decoded, ref),
             'pcm_integer_measurements': integer_measurements(blob, reference_blob, channels)}
-    manifest = {'schema_version': 1, 'exercise_id': 'E10-34', 'sample_rate_hz': 16000,
+    manifest = {'schema_version': 1, 'exercise_id': 'E10-26', 'sample_rate_hz': 16000,
         'samples_per_channel': 32000, 'common_export_gain': 1.0,
         'origin': 'mathematical known-channel-removal fixed-real-weight control', 'parameters': p,
         'analytic': analytic, 'files': files, 'samples': samples,

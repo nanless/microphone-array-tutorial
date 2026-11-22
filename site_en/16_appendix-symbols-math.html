@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Chapter 16 · Appendix A: Symbols, Glossary & Math Lookup · Microphone Array Signal Processing</title>
-<meta name="source-digest" content="349f9b579bab"><style>
+<meta name="source-digest" content="08a908611fde"><style>
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -407,7 +407,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <p>This monograph adopts the forward Fourier kernel $e^{-\mathrm{j}2\pi ft}$ uniformly, where $\mathrm{j}=\sqrt{-1}$ is the imaginary unit.</p>
 <p>The planar array geometric reference frame is defined as follows: Microphone 1 sits at the origin $x=0$, and Microphone 2 lies along the $+x$ semi-axis; the broadside direction ($+y$-axis) is labeled $0^\circ$, with positive azimuth measured clockwise toward Microphone 2 ($+x$-axis); the unit direction vector $\vec{u}$ points from the array reference origin toward the sound source, so the acoustic wave propagation vector is $-\vec{u}$.</p>
 <p>Spherical-harmonic-domain formulas conventionally switch to azimuth $\alpha$ measured counterclockwise from the $+x$-axis and polar angle (colatitude) $\vartheta$ measured downward from the $+z$-axis. Before interfacing with our source azimuth $\theta$ (measured clockwise from $+y$ toward $+x$) and elevation $\phi_{\mathrm{el}}$ (measured upward from the horizontal plane toward $+z$), apply the coordinate conversion $\alpha=\pi/2-\theta$ (wrapped modulo $2\pi$) and $\vartheta=\pi/2-\phi_{\mathrm{el}}$ prior to evaluating spherical harmonic basis functions or calling third-party library APIs; see <a href="05_beamforming.html#sec-5-8">§5.8</a>. Likewise, international standard AmbiX and First-Order Ambisonics (FOA) adopt a 3D right-handed coordinate frame with $+x$ pointing due front, $+y$ due left, and $+z$ due up, measuring horizontal azimuth counterclockwise from $+x$ toward $+y$ and elevation upward toward $+z$; for a complete conversion table against the planar array frame above ($+y$ front, clockwise azimuth), see <a href="14_spatial-wearable-arrays.html#sec-14-2">Extended Topic III §14.2</a>.</p>
-<p><strong>Symbol and operator overloading</strong> (consistent with §2.3): Because array processing, adaptive filtering, dereverberation, and multi-target tracking grew out of distinct research communities, a single letter or operator may serve different roles across chapters. For example, this table writes wavenumber as $\kappa=2\pi f/c$ to distinguish it from discrete frequency-bin index $k$, whereas portions of the literature and local derivations still write $k$ for wavenumber, Chapter 6 §6.2 uses $\kappa\in[-1,1]$ for the IPNLMS proportionate mixing factor, and Chapter 7 locally uses $k$ for the WPE lag frame index; $D$ may denote array aperture or the PHD intensity function; $\lambda$ may denote acoustic wavelength, RLS exponential forgetting factor, WPE time-varying speech variance, or matrix eigenvalue; $K$ may denote source count or WPE prediction order; $s$ may denote a source waveform or tracking state; and $\varepsilon$ denotes absolute diagonal loading in Chapter 5 versus relative Sampling Rate Offset (SRO) in Chapters 10 and 13. The operator $\odot$ similarly follows dual domain conventions: in subspace and vectorized covariance dictionaries (<a href="00_math-foundations.html#sec-0-4-3">§0.4.3</a>, §3.3, §12.7, §16.3.2) it denotes the column-wise Khatri–Rao product, whereas in frequency-domain filtering, time–frequency masking, BSM phase projection, and FiLM feature modulation (§5, §6, §8, <a href="14_spatial-wearable-arrays.html#sec-14-5">§14.5–§14.6</a>, <a href="15_target-extraction-diarization.html#sec-15-1">§15.1</a>) it denotes the same-shape or broadcast Hadamard element-wise product. Always follow the explicit definition at the equation in question.</p>
+<p><strong>Symbol and operator overloading</strong> (consistent with §2.3): Because array processing, adaptive filtering, dereverberation, and multi-target tracking grew out of distinct research communities, a single letter or operator may serve different roles across chapters. For example, this table writes wavenumber as $\kappa=2\pi f/c$ to distinguish it from discrete frequency-bin index $k$, whereas portions of the literature and local derivations still write $k$ for wavenumber, Chapter 6 §6.2 uses $\kappa\in[-1,1]$ for the IPNLMS proportionate mixing factor, and Chapter 7 locally uses $k$ for the WPE lag frame index; $D$ may denote array aperture or the PHD intensity function; $\lambda$ may denote acoustic wavelength, RLS exponential forgetting factor, WPE time-varying speech variance, or matrix eigenvalue; $K$ may denote source count or WPE prediction order; $s$ may denote a source waveform or tracking state; and $\varepsilon$ denotes absolute diagonal loading in Chapter 5 versus relative Sampling Rate Offset (SRO) in Chapters 10 and 13. The operator $\odot$ similarly follows dual domain conventions: in subspace and vectorized covariance dictionaries (<a href="00_math-foundations.html#sec-0-4-3">§0.4.3</a>, §3.3, §12.7, §16.3.2) it denotes the column-wise Khatri–Rao product, whereas in frequency-domain filtering, time–frequency masking, BSM phase projection, and FiLM feature modulation (§5, §6, §8, <a href="14_spatial-wearable-arrays.html#sec-14-5">§14.5–§14.6</a>, <a href="15_target-extraction-diarization.html#sec-15-2">§15.2</a>) it denotes the same-shape or broadcast Hadamard element-wise product. Always follow the explicit definition at the equation in question.</p>
 <p>When indexing an STFT grid in this table, by default $k$ is the frequency-bin index, $\ell$ is the frame index, $n$ is the discrete time-sample index, and $t$ is continuous time. Individual chapters preserving classic sub-field notation declare their index ordering locally; when cross-referencing equations across chapters, align the physical meaning of each axis using the mapping below rather than assuming identical letters represent the same coordinate:</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable data table"><table>
 <thead>
@@ -424,8 +424,8 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <td>Monograph default (§0, §2, §16; Ch. 5 locally writes $\vec{x}(k,n)$)</td>
 </tr>
 <tr>
-<td>$X_m(f,k)$, $\vec{x}_{ft}$</td>
-<td>(bin $f$, frame $k$ or $t$)</td>
+<td>$X_m(f,t)$, $\vec x_f(t)$, $\vec{x}_{ft}$</td>
+<td>(bin $f$, frame $t$)</td>
 <td>Ch. 8 separation &amp; mask beamforming (frequency first, frame second)</td>
 </tr>
 <tr>
@@ -649,7 +649,7 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 </tr>
 <tr>
 <td>$\mathbf{A}$, $\mathbf{P}$, $\vec{q}$, $\vec{b}$ (Extended Topic I)</td>
-<td>Acoustic imaging propagation dictionary, Point Spread Function (PSF) matrix, candidate source mean-square strength vector on the focal surface, and delay-and-sum dirty map vector; satisfies $P_{ij}=|\vec{w}_i^H\vec{a}_j|^2$ (rows index scan grid points, columns index true source grid points)—do not confuse with Kalman error covariance $\mathbf{P}$ in Chapter 9 (§12.4)</td>
+<td>Acoustic imaging propagation dictionary, Point Spread Function (PSF) matrix, candidate source mean-square strength vector on the focal surface, and delay-and-sum dirty map vector; satisfies $P_{ij}=\lvert\vec{w}_i^H\vec{a}_j\rvert^2$ (rows index scan grid points, columns index true source grid points)—do not confuse with Kalman error covariance $\mathbf{P}$ in Chapter 9 (§12.4)</td>
 </tr>
 <tr>
 <td>CSM, $\mathbf{R}$, $p_{\mathrm{ref}}$ (Extended Topic I)</td>
@@ -697,7 +697,7 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 </tr>
 <tr>
 <td>$\otimes$, $\odot$, $\operatorname{vec}(\cdot)$</td>
-<td>$\otimes$ denotes Kronecker product and $\operatorname{vec}(\cdot)$ denotes column-major matrix vectorization; $\odot$ carries context-dependent dual conventions: column-wise Khatri–Rao product in subspace and covariance dictionaries (<a href="00_math-foundations.html#sec-0-4-3">§0.4.3</a>, §3.3, §12.7, §16.3.2; obeying $(\mathbf B\odot\mathbf A)\vec q$), versus same-shape or broadcast Hadamard element-wise product in frequency-domain filtering, time–frequency masking, BSM phase projection, and FiLM modulation (§5, §6, §8, <a href="14_spatial-wearable-arrays.html#sec-14-5">§14.5–§14.6</a>, <a href="15_target-extraction-diarization.html#sec-15-1">§15.1</a>)</td>
+<td>$\otimes$ denotes Kronecker product and $\operatorname{vec}(\cdot)$ denotes column-major matrix vectorization; $\odot$ carries context-dependent dual conventions: column-wise Khatri–Rao product in subspace and covariance dictionaries (<a href="00_math-foundations.html#sec-0-4-3">§0.4.3</a>, §3.3, §12.7, §16.3.2; obeying $(\mathbf B\odot\mathbf A)\vec q$), versus same-shape or broadcast Hadamard element-wise product in frequency-domain filtering, time–frequency masking, BSM phase projection, and FiLM modulation (§5, §6, §8, <a href="14_spatial-wearable-arrays.html#sec-14-5">§14.5–§14.6</a>, <a href="15_target-extraction-diarization.html#sec-15-2">§15.2</a>)</td>
 </tr>
 <tr>
 <td>PHD / RFS</td>
@@ -781,7 +781,7 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 </tr>
 <tr>
 <td>GCC-PHAT Spectral Phase Weighting</td>
-<td>At every non-zero cross-spectrum bin, divides the cross-power spectrum $G_{12}(f)$ by its magnitude $|G_{12}(f)|$ so all frequency bins carry unit magnitude and retain phase difference alone (zero-magnitude bins require denominator regularization or skipping). Equalizes the <strong>frequency-domain magnitude spectral envelope</strong> of a single channel pair—it does NOT spatially whiten multi-channel correlated noise (§4.2; see <a href="https://doi.org/10.1109/TASSP.1976.1162830">Knapp &amp; Carter, 1976</a>)</td>
+<td>At every non-zero cross-spectrum bin, divides the cross-power spectrum $G_{12}(f)$ by its magnitude $\lvert G_{12}(f)\rvert$ so all frequency bins carry unit magnitude and retain phase difference alone (zero-magnitude bins require denominator regularization or skipping). Equalizes the <strong>frequency-domain magnitude spectral envelope</strong> of a single channel pair—it does NOT spatially whiten multi-channel correlated noise (§4.2; see <a href="https://doi.org/10.1109/TASSP.1976.1162830">Knapp &amp; Carter, 1976</a>)</td>
 </tr>
 <tr>
 <td>Spatial Noise Whitening</td>
@@ -1049,7 +1049,7 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 </tr>
 <tr>
 <td>Point Spread Function (PSF)</td>
-<td>Spatial power response matrix $P_{ij}=|\vec{w}_i^H\vec{a}_j|^2$ produced across all scan grid points $i$ by an isolated unit-strength point source at grid point $j$ under fixed scanning weights, governing mainlobe broadening and sidelobe leakage in a conventional dirty map (<a href="12_acoustic-imaging.html#sec-12-4">§12.4</a>)</td>
+<td>Spatial power response matrix $P_{ij}=\lvert\vec{w}_i^H\vec{a}_j\rvert^2$ produced across all scan grid points $i$ by an isolated unit-strength point source at grid point $j$ under fixed scanning weights, governing mainlobe broadening and sidelobe leakage in a conventional dirty map (<a href="12_acoustic-imaging.html#sec-12-4">§12.4</a>)</td>
 </tr>
 <tr>
 <td>DAMAS (Deconvolution Approach for the Mapping of Acoustic Sources)</td>
@@ -1308,7 +1308,7 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 <thead>
 <tr>
 <th scope="col">Decibel Level</th>
-<th scope="col" style="text-align: right;">Linear Amplitude Ratio $\|A_2\|/\|A_1\|$</th>
+<th scope="col" style="text-align: right;">Linear Amplitude Ratio $\lvert A_2\rvert/\lvert A_1\rvert$</th>
 <th scope="col" style="text-align: right;">Linear Power Ratio $P_2/P_1$</th>
 <th scope="col">Canonical Engineering Interpretation</th>
 </tr>
@@ -1396,7 +1396,7 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 <tr>
 <td>Column-major $\operatorname{vec}$ / Kronecker / Khatri–Rao</td>
 <td>$(\mathbf B_1\otimes\mathbf A_1)(\mathbf B_2\otimes\mathbf A_2)=(\mathbf B_1\mathbf B_2)\otimes(\mathbf A_1\mathbf A_2)$; $\operatorname{vec}(\mathbf A\mathbf X\mathbf B^\top)=(\mathbf B\otimes\mathbf A)\operatorname{vec}(\mathbf X)$; $\operatorname{vec}(\mathbf A\operatorname{diag}(\vec q)\mathbf A^H)=(\mathbf A^*\odot\mathbf A)\vec q$</td>
-<td>Unifies difference coarrays (§3.3), separable planar arrays (§5.8), and CMF imaging (§12.7); keep left-factor conjugation $\mathbf A^*$ (<a href="00_math-foundations.html#sec-0-4-3">§0.4.3</a>)</td>
+<td>Unifies difference coarrays (§3.3), separable planar arrays (§5.5), and CMF imaging (§12.7); keep left-factor conjugation $\mathbf A^*$ (<a href="00_math-foundations.html#sec-0-4-3">§0.4.3</a>)</td>
 </tr>
 </tbody>
 </table></div>

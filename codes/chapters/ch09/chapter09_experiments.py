@@ -266,7 +266,7 @@ def run_experiments(*, audio_directory=TRACKING_OUTPUT):
     # E09-16 (old E09-19): Published dual-mic PCM tracking_audio timing & denominators.
     result['E09-16'] = actual_tracking_audio(audio_directory)
 
-    # E09-17 (merged old E09-20 + E09-21): Fig61 information boundaries (correlated obs + bearing scale nullspace).
+    # E09-17 (merged old E09-20 + E09-21): Fig 56 information boundaries (correlated obs + bearing scale nullspace).
     observation_map = np.ones((2, 1))
     correlated_noise = np.array([[1., .9], [.9, 1.]])
     corr_innovation_cov = observation_map@observation_map.T+correlated_noise

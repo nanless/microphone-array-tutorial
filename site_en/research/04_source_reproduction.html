@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Upstream Acquisition & Reproduction · Microphone Array Signal Processing</title>
-<meta name="source-digest" content="349f9b579bab"><style>
+<meta name="source-digest" content="08a908611fde"><style>
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -349,7 +349,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li><a href="04_source_reproduction.html#sec-u-b56c5cbc23">13. Acoustic Imaging Upstream Implementations: Pinned Author Code and Current Reports</a></li>
 <li>&nbsp;&nbsp;<a href="04_source_reproduction.html#sec-13-1">13.1 The 21 Plain-Text Upstream Files Actually Fetched</a></li>
 <li>&nbsp;&nbsp;<a href="04_source_reproduction.html#sec-13-2">13.2 Full-Lockfile Verification and Historical Provenance</a></li>
-<li>&nbsp;&nbsp;<a href="04_source_reproduction.html#sec-13-3">13.3 Bounded Original Methods Executed in This Audit</a></li>
+<li>&nbsp;&nbsp;<a href="04_source_reproduction.html#sec-13-3">13.3 Bounded Original Upstream Methods Executed</a></li>
 </ul>
 <div class="chap"><a href="05_exercises_and_audio.html">Chapter Code Exercises & Audio Suites</a></div>
 <div class="chap"><a href="../00_math-foundations.html">Chapter 0 · Mathematical & Signal Analysis Foundations</a></div>
@@ -408,7 +408,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li><a href="04_source_reproduction.html#sec-u-b56c5cbc23">13. Acoustic Imaging Upstream Implementations: Pinned Author Code and Current Reports</a></li>
 <li>&nbsp;&nbsp;<a href="04_source_reproduction.html#sec-13-1">13.1 The 21 Plain-Text Upstream Files Actually Fetched</a></li>
 <li>&nbsp;&nbsp;<a href="04_source_reproduction.html#sec-13-2">13.2 Full-Lockfile Verification and Historical Provenance</a></li>
-<li>&nbsp;&nbsp;<a href="04_source_reproduction.html#sec-13-3">13.3 Bounded Original Methods Executed in This Audit</a></li>
+<li>&nbsp;&nbsp;<a href="04_source_reproduction.html#sec-13-3">13.3 Bounded Original Upstream Methods Executed</a></li>
 </ul></nav></details>
 <span id="sec-1" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-515383f30b" class="anchor-alias" aria-hidden="true"></span><span id="取得源码后怎样复现" class="anchor-alias" aria-hidden="true"></span><span id="reproducing-upstream-code-after-fetching" class="anchor-alias" aria-hidden="true"></span><h1 id="sec-u-461e6c3a88">Reproducing Upstream Code After Fetching</h1>
 <span id="sec-2" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-630cc32c87" class="anchor-alias" aria-hidden="true"></span><span id="1-先确定复现对象" class="anchor-alias" aria-hidden="true"></span><span id="1-define-the-reproduction-target-first" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-4b553369b8">1. Define the Reproduction Target First</h2>
@@ -1201,7 +1201,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 .venv/bin/python -B codes/chapters/ch00/upstream/fetch_upstreams.py --verify --report codes/chapters/ch00/SOURCE_STATUS.json
 </code></pre>
 <p>Exit code <code>1</code> on full-table <code>--verify</code> reflects the preserved legacy selection mismatches and AEC worktree modification; fetching verifies source blobs without installing packages or running solvers.</p>
-<span id="sec-38" class="anchor-alias" aria-hidden="true"></span><span id="133-本轮实际执行的限定原方法" class="anchor-alias" aria-hidden="true"></span><span id="133-bounded-original-methods-executed-in-this-audit" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-13-3">13.3 Bounded Original Methods Executed in This Audit</h3>
+<span id="sec-38" class="anchor-alias" aria-hidden="true"></span><span id="133-本轮实际执行的限定原方法" class="anchor-alias" aria-hidden="true"></span><span id="133-bounded-original-upstream-methods-executed" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-13-3">13.3 Bounded Original Upstream Methods Executed</h3>
 <p>The <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch12/reports/upstream_imaging_contracts_current.json">current Acoular imaging contracts report</a> logs 21 deterministic numerical controls (13 exact matches plus 8 documented objective/endpoint convention differences), 1 unexecuted <code>sklearn</code>-dependent CMF estimator, and a cross-stage bridge feeding one valid Hermitian CSM sequentially through original <code>BeamformerBase</code>, PSF construction, and DAMAS Gauss-Seidel—without running full Traits/Numba JIT/HDF5 pipelines, wind-tunnel datasets, or <code>scikit-learn</code> solvers, and while keeping the <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch12/reports/upstream_imaging_contracts.json">historical Acoular report</a> byte-identical.</p>
 <p>Meanwhile, the <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch12/reports/damas_author_contracts_current.json">current author DAMAS contracts report</a> executes the complete unmodified <code>damas.py</code> module from verified raw bytes inside a fresh isolated subprocess—recording 8 exact numerical agreements alongside the expected <code>NameError</code> on an all-zero CSM, and noting explicitly that upstream <code>unique=True</code> on a duplicate-column dictionary does not imply global identifiability. Pre- and post-run SHA-256 digests and versions of direct NumPy, SciPy, and <code>matplotlib</code> entry files are logged without claiming full shared-library binary closure, and zero MATLAB, MEX, demo scripts, or wind-tunnel <code>.mat</code> files were run.</p>
 <pre><code class="language-bash">.venv/bin/python -B -m codes.chapters.ch12.examples.audit_upstream_imaging_contracts --report codes/chapters/ch12/reports/upstream_imaging_contracts_current.json

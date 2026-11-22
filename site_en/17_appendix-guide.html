@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Chapter 17 · Appendix B: Literature Map, Triage & Exercises · Microphone Array Signal Processing</title>
-<meta name="source-digest" content="349f9b579bab"><style>
+<meta name="source-digest" content="08a908611fde"><style>
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -710,7 +710,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <tr>
 <td><code>libmysofa</code></td>
 <td>BSD-3-Clause</td>
-<td>Lightweight C reader &amp; interpolator for AES69 SOFA HRTFs (§1.1, <a href="14_spatial-wearable-arrays.html">Topic III</a>)</td>
+<td>Lightweight C reader &amp; interpolator for AES69 SOFA HRTFs (§1.2.3, <a href="14_spatial-wearable-arrays.html">Topic III</a>)</td>
 <td><code>v1.3.5</code>; interpolation contract audited in repo</td>
 </tr>
 <tr>
@@ -915,7 +915,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <td>Speech Separation (GSS / CSS / IVA)</td>
 <td>Clean intra-chunk separation, but speaker swaps, polarity flips, or level jumps at chunk seams</td>
 <td>In Continuous Speech Separation (CSS), verify inter-chunk permutation alignment, overlap polarity sign, and gain scaling sequentially (correct permutation alone does not fix sign or gain; Fig. 71); check inter-frequency alignment in AuxIVA and target leakage in mask beamforming</td>
-<td>§8.3–§8.5</td>
+<td>§8.3–§8.6</td>
 </tr>
 <tr>
 <td>Multi-Source Tracking</td>
@@ -927,13 +927,13 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <td>Acoustic Imaging (DAS / DAMAS / CMF)</td>
 <td>Fat mainlobes, dense sidelobe ghosts, or deconvolved source sum mismatching SPL</td>
 <td>Plot array Point Spread Function (PSF) over the active band/grid first; check whether coherent reflections violate uncorrelated-source CSM premises; check whether diagonal removal breaks PSD structure, and distinguish peak vs. integrated zone power (Figs. 62–64, 75)</td>
-<td>§12.1–§12.4</td>
+<td>§12.3–§12.10</td>
 </tr>
 <tr>
 <td>Distributed Array Enhancement</td>
 <td>Multi-node fusion SNR worse than single-node local beam, or progressive comb filtering</td>
 <td>Check inter-node SRO and block-start offsets destroying cross-device coherence first; check whether packet-drop gap windows inject zeros or stale statistics into covariances; in DANSE, verify cached receive weights reassemble immediately upon broadcast updates (Figs. 65–67)</td>
-<td>§13.2–§13.4</td>
+<td>§13.5–§13.15</td>
 </tr>
 <tr>
 <td>Spatial Capture &amp; Wearable Arrays (FOA / BSM / Cross-Modal / Hear-Through)</td>
@@ -1001,7 +1001,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <td>§2.6</td>
 </tr>
 <tr>
-<td>HPBW, DI, WNG: $\mathrm{HPBW}\approx\dfrac{0.886\lambda}{Md\cos\theta_0}$; $\mathrm{DI}=10\log_{10}\dfrac{\|B(\Omega_0)\|^2}{\frac{1}{4\pi}\int_{4\pi}\|B(\Omega)\|^2\mathrm{d}\Omega}$; $\mathrm{WNG}=\dfrac{\|\vec w^H\vec a(\theta_0)\|^2}{\|\vec w\|_2^2}$</td>
+<td>HPBW, DI, WNG: $\mathrm{HPBW}\approx\dfrac{0.886\lambda}{Md\cos\theta_0}$; $\mathrm{DI}=10\log_{10}\dfrac{\lvert B(\Omega_0)\rvert^2}{\frac{1}{4\pi}\int_{4\pi}\lvert B(\Omega)\rvert^2\mathrm{d}\Omega}$; $\mathrm{WNG}=\dfrac{\lvert\vec w^H\vec a(\theta_0)\rvert^2}{\|\vec w\|_2^2}$</td>
 <td>Half-power beamwidth (narrow-beam ULA approximation away from endfire), full-sphere spatially averaged directivity index, and white noise gain, Eqs. (2-11)–(2-13)</td>
 <td>§2.6</td>
 </tr>
@@ -1022,7 +1022,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 </tr>
 <tr>
 <td>$R(\tau)$: $\int\Phi G_{12}e^{\mathrm{j}2\pi f\tau}\mathrm{d}f$</td>
-<td>Generalized Cross-Correlation (GCC) delay function ($G_{12}=X_1 X_2^*$); $\Phi=1/|G_{12}|$ gives PHAT weighting</td>
+<td>Generalized Cross-Correlation (GCC) delay function ($G_{12}=X_1 X_2^*$); $\Phi=1/\lvert G_{12}\rvert$ gives PHAT weighting</td>
 <td>§4.2</td>
 </tr>
 <tr>
@@ -1046,7 +1046,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <td>§5.2</td>
 </tr>
 <tr>
-<td>$|B(\theta)|=|\sin(M\psi/2)/[M\sin(\psi/2)]|$</td>
+<td>$\lvert B(\theta)\rvert=\lvert\sin(M\psi/2)/[M\sin(\psi/2)]\rvert$</td>
 <td>Normalized equal-weight ULA array factor, residual spatial phase $\psi=2\pi d(\sin\theta-\sin\theta_0)/\lambda$</td>
 <td>§5.2</td>
 </tr>
@@ -1082,7 +1082,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 </tr>
 <tr>
 <td>$\mathrm{ERLE}=10\log_{10}(E_y/E_e)$</td>
-<td>Echo Return Loss Enhancement over far-end single-talk window $\mathcal W$; $E_y=\sum_{n\in\mathcal W}|y[n]|^2$ is true pure echo energy and $E_e=\sum_{n\in\mathcal W}|e_{\mathrm{echo}}[n]|^2$ is residual echo energy, Eq. (6-35)</td>
+<td>Echo Return Loss Enhancement over far-end single-talk window $\mathcal W$; $E_y=\sum_{n\in\mathcal W}\lvert y[n]\rvert^2$ is true pure echo energy and $E_e=\sum_{n\in\mathcal W}\lvert e_{\mathrm{echo}}[n]\rvert^2$ is residual echo energy, Eq. (6-35)</td>
 <td><a href="06_aec.html#sec-6-8">§6.8</a></td>
 </tr>
 <tr>
@@ -1092,12 +1092,12 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 </tr>
 <tr>
 <td>$\mathcal L_{\mathrm{PIT}}=\min_{\pi\in\mathcal S_N}\sum_{n=1}^N \mathcal L(\hat s_n,s_{\pi(n)})$</td>
-<td>Permutation Invariant Training (PIT) loss (Eq. (8-5), enumerating $N!$ permutations $\pi\in\mathcal S_N$); mask statistical beamforming accumulates $\hat{\mathbf R}_\nu$ via weighted averages of $\vec x\vec x^H$ with frame weights $\gamma_\nu$</td>
+<td>Permutation Invariant Training (PIT) loss (Eq. (8-5), enumerating $N!$ permutations $\pi\in\mathcal S_N$); mask statistical beamforming estimates $\mathbf R_{\mathrm{tar}}(f),\mathbf R_{\mathrm{int}}(f)$ via soft-mask-weighted averages of $\vec Y_{ft}\vec Y_{ft}^H$ using $\gamma_{ft}$ (Eq. (8-23))</td>
 <td>§8.1, §8.4</td>
 </tr>
 <tr>
 <td>$\hat{\vec s}_t^-=\mathbf F\hat{\vec s}_{t-1},\ \mathbf P_t^-=\mathbf F\mathbf P_{t-1}\mathbf F^\top+\mathbf Q$; $\mathbf K_t=\mathbf P_t^-\mathbf H^\top(\mathbf H\mathbf P_t^-\mathbf H^\top+\mathbf R)^{-1}$; $\hat{\vec s}_t=\hat{\vec s}_t^-+\mathbf K_t\vec\nu_t,\ \mathbf P_t=(\mathbf I-\mathbf K_t\mathbf H)\mathbf P_t^-$</td>
-<td>Five-step Kalman Filter (KF) recursion (Eqs. (9-2)–(9-6)); circular azimuth innovations $\vec\nu_t$ require angle wrapping first, and finite precision favors symmetric PSD-preserving Joseph updates</td>
+<td>Five-step Kalman Filter (KF) recursion (Eqs. (9-3)–(9-7)); circular azimuth innovations $\vec\nu_t$ require angle wrapping first, and finite precision favors symmetric PSD-preserving Joseph updates</td>
 <td>§9.2</td>
 </tr>
 <tr>
@@ -1112,13 +1112,13 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 </tr>
 <tr>
 <td>$\mathrm{SI\text{-}SDR}=10\log_{10}\dfrac{\|\alpha\vec s\|_2^2}{\|\vec e_\perp\|_2^2}$; $e_{\mathrm{mix}}=\sum_j\omega_j e_j,\ R=\max_{\vec\omega\in\mathcal W}\sum_j\omega_j e_j,\ S=\max_j e_j$</td>
-<td>Scale-Invariant SDR ($\alpha=\langle\hat{\vec s},\vec s\rangle/\|\vec s\|_2^2$, $\vec e_\perp=\hat{\vec s}-\alpha\vec s$, Eq. (15-5)) and multi-scenario selection weighted mean $e_{\mathrm{mix}}$, interval-composition worst-case risk $R$ (denoted $J_L(q), R_L$ for two scenarios), and per-scenario worst-case risk $S$ ($S_L$, Eqs. (11-8)–(11-9))</td>
+<td>Scale-Invariant SDR ($\alpha=\langle\hat{\vec s},\vec s\rangle/\|\vec s\|_2^2$, $\vec e_\perp=\hat{\vec s}-\alpha\vec s$, Eq. (8-25); zero-target conditioning in Eq. (15-5)) and multi-scenario selection weighted mean $e_{\mathrm{mix}}$, interval-composition worst-case risk $R$ (denoted $J_L(q), R_L$ for two scenarios), and per-scenario worst-case risk $S$ ($S_L$, Eqs. (11-8)–(11-9))</td>
 <td>§8.5, §10.5, §11.5</td>
 </tr>
 <tr>
-<td>$b_i=\vec{w}_i^H\hat{\mathbf{R}}\vec{w}_i$, $\vec{b}=\mathbf{P}\vec{q}+\vec{b}_n$ ($\vec{q}\ge\vec{0}$)</td>
-<td>CSM delay-and-sum dirty map and uncorrelated-source PSF forward model underlying DAMAS / CMF deconvolution (spatial power maps are not enhanced audio waveforms)</td>
-<td>§12.3–§12.5</td>
+<td>$b_i=\vec{w}_i^H\hat{\mathbf{R}}\vec{w}_i$, $\vec{b}=\mathbf{P}\vec{q}+\vec{b}_n$ ($\vec{q}\ge\vec{0}$); CMF: $\min_{\vec q\ge 0}\|\hat{\mathbf R}-\mathbf A\operatorname{diag}(\vec q)\mathbf A^H\|_F^2$</td>
+<td>CSM delay-and-sum dirty map and uncorrelated-source PSF forward model (foundation of DAMAS / NNLS deconvolution, §12.3–§12.5) and CMF direct CSM objective (Eq. (12-18), §12.7; spatial power maps are not enhanced audio waveforms)</td>
+<td>§12.3–§12.5, §12.7</td>
 </tr>
 <tr>
 <td>Single-channel ($Q=1$): $z_u=\vec f_u^H\vec x_u,\ \hat d_u=\vec f_u^H\vec x_u+\vec g_u^H\vec z_{-u}$; general $Q$-dim: $\vec z_u=\mathbf F_u^H\vec x_u,\ \tilde{\vec x}_u=\mathbf T_u^H\vec x$</td>
@@ -1642,7 +1642,7 @@ $$</p>
 <p>Parse <a href="../site/room_audio/MANIFEST.json"><code>MANIFEST.json</code></a> and the three published $16$ kHz PCM16 WAVs for <code>"Fixed Near Left"</code> (mono $16000$-sample dry source, 4-channel $38497$-frame full room output, 4-channel $38497$-frame direct-only output) read-only without re-running synthesis, answering: (1) why do the three files exhibit different peak amplitudes despite sharing one export gain? (2) can the source-to-microphone cross-correlation peak lag be multiplied directly by sound speed to recover room distance?</p>
 <p><strong>Reference solution</strong>:</p>
 <p><strong>Question 1: Why do the three files have different peaks despite sharing one export gain?</strong> Pre-quantization <code>float64</code> peak amplitudes are $\approx 4.11995$ (dry source), $5.15997$ (full room), and $4.05164$ (direct-only); to fit all 18 room WAVs inside $[-1,1)$ without clipping, the exporter multiplies all 18 files by a single shared scalar $g\approx0.151697$, scaling those peaks to $\approx 0.624984$, $0.782752$, and $0.614621$ (up to $1/32768$ PCM16 rounding). Distinct file peaks confirm that <strong>true room multipath superposition and $1/r$ attenuation ratios are preserved</strong> rather than erased by per-file normalization (though instantaneous peak ratios never substitute for integrated squared-energy DRR).</p>
-<p><strong>Question 2: Can the source-to-microphone cross-correlation peak lag be multiplied directly by sound speed to recover room range?</strong> From manifest coordinates, Euclidean distance from <code>"Fixed Near Left"</code> to Mic 1 is $\approx 1.011811$ m, or $1.011811\times16000/343\approx47.198$ acoustic propagation samples; yet cross-correlating the published dry PCM against the 4-channel direct-only PCM peaks at lags $+87, +89, +85, +86$ samples—Mic 1's $87$ samples exceed pure acoustic flight by <strong>$40$ samples</strong>. The extra offset comes from <code>pyroomacoustics</code>'s default $81$-tap symmetric windowed fractional-delay filter, whose causal group delay adds $(81-1)/2=40$ samples to every channel (canceling out in pairwise TDOAs across microphones, whereas multiplying raw lag $87$ by $c/f_s$ yields an erroneous $1.86$ m range; <code>E17-06</code> in <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/appendix_b/appendix_b_experiments.py"><code>appendix_b_experiments.py</code></a>).</p>
+<p><strong>Question 2: Can the source-to-microphone cross-correlation peak lag be multiplied directly by sound speed to recover room range?</strong> From manifest coordinates, Euclidean distance from <code>"Fixed Near Left"</code> to Mic 1 is $\approx 1.011811$ m, or $1.011811\times16000/343\approx47.198$ acoustic propagation samples; yet cross-correlating the published dry PCM against the 4-channel direct-only PCM peaks at lags $+87, +89, +85, +86$ samples—Mic 1's $87$ samples exceed pure acoustic flight by <strong>$40$ samples</strong>. The extra offset comes from <code>pyroomacoustics</code>'s default $81$-tap symmetric windowed fractional-delay filter, whose causal group delay adds $(81-1)/2=40$ samples to every channel (canceling out in pairwise TDOAs across microphones, whereas multiplying raw lag $87$ by $c/f_s$ yields an erroneous $1.865$ m range; <code>E17-06</code> in <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/appendix_b/appendix_b_experiments.py"><code>appendix_b_experiments.py</code></a>).</p>
 <p><a id="e17-07"></a></p>
 <span id="sec-u-84c390b4b7" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-7325fcb112" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-8ddb3293a1" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-471e180f3e" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-b696a4cafc">E17-07: Does Seeing Public Source Code Mean Reproducing a Paper?</h3>
 <p>In technical surveys or experimental reports, given three verification evidence packages A, B, and C of increasing depth (table below), define the strongest permissible claim each package supports and explain why earlier stages cannot be skipped.</p>
@@ -2074,8 +2074,8 @@ P_{\mathrm{dist}}^{(s)}
 <tbody>
 <tr>
 <td>Figs. 1–34</td>
-<td>Main audio manifest (<code>generate_audio_samples.py</code>, read on demand by Figs. 28–33) + deterministic models; plotted by <code>make_figures.py</code> &amp; <code>make_aec_figures.py</code> (Figs. 25–27, 32–34)</td>
-<td>Acoustic propagation, spatial-spectrum DOA, classical/adaptive beamforming, AEC double-talk &amp; NLP, WPE, separation, and particle-filter baselines (Fig. 34 is a system state-transition diagram)</td>
+<td>Main audio manifest (<code>generate_audio_samples.py</code>, read by Figs. 29–31) + deterministic models; plotted by <code>make_figures.py</code> &amp; <code>make_aec_figures.py</code> (Figs. 25–27, 32–34)</td>
+<td>Acoustic propagation, spatial-spectrum DOA, classical/adaptive beamforming, AEC double-talk &amp; NLP, WPE, separation, and particle-filter baselines (Fig. 34 is the PBFDAF overlap-save and gradient-constraint flow diagram)</td>
 </tr>
 <tr>
 <td>Figs. 35–44</td>

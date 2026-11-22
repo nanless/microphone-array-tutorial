@@ -1,4 +1,4 @@
-"""Generate or strictly read-check the four independent E04-22 WAV assets.
+"""Generate or strictly read-check the four independent E04-18 WAV assets.
 
 Run from the repository root with ``python -m
 codes.chapters.ch04.examples.generate_focus_audio [--check]``.
@@ -40,7 +40,7 @@ SOURCE_PATHS = (
 
 MEMBERS = set(FILE_NAMES.values()) | {"MANIFEST.json"}
 # Fixed truth independent of parameters(); exact recursive types reject bool-as-number.
-REQUIRED_PARAMETERS = {'exercise_id': 'E04-22',
+REQUIRED_PARAMETERS = {'exercise_id': 'E04-18',
  'sample_rate_hz': 16000,
  'source_samples': 32000,
  'samples_per_channel': 32024,

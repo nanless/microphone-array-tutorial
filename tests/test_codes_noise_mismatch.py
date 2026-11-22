@@ -1,4 +1,4 @@
-"""Independent PCM, window-power and filesystem checks for E10-33."""
+"""Independent PCM, window-power and filesystem checks for E10-25."""
 import copy
 import hashlib
 import io

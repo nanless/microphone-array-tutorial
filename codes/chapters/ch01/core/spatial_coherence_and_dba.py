@@ -1,4 +1,4 @@
-"""E01-11 & E01-12: spatial noise coloring, IEC 61672-1 A-weighting, and SOFA coordinates.
+"""Ch01/Ch02/Ch03 helper kernels (E01-01 / Ch02 §2.5.2, E01-11, Ch03 §3.1): spatial noise coloring, IEC 61672-1 A-weighting, and SOFA coordinates.
 
 Pure-NumPy deterministic kernels for Chapter 1 without Chapter 2+ imports or SciPy.
 No files, directories, experiments, or network operations run at import time.
@@ -324,7 +324,7 @@ def sofa_spherical_to_cartesian_and_colatitude(
     colatitude_deg = 90.0 - el_sofa
     # Book convention: azimuth clockwise from +y (front) toward +x (right), wrapped to (-180, 180].
     book_az_deg = ((-az_sofa + 180.0) % 360.0) - 180.0
-    if book_az_deg == -180.0 and -az_sofa > 0.0:
+    if book_az_deg == -180.0:
         book_az_deg = 180.0
     x_book = -y_sofa
     y_book = x_sofa
@@ -344,7 +344,7 @@ def sofa_spherical_to_cartesian_and_colatitude(
 
 
 def spatial_coherence_coloring_and_boundary() -> dict[str, object]:
-    """E01-11: EVD vs Cholesky two-mic coloring, complex conjugate check, and 4-mic singular boundary."""
+    """E01-01 / Ch02 §2.5.2: EVD vs Cholesky two-mic coloring, complex conjugate check, and 4-mic singular boundary."""
     rho_two = 24.0 / 25.0
     gamma_2 = equicorrelated_coherence(2, rho_two)
     evd_2 = hermitian_psd_sqrt_coloring(gamma_2)
@@ -431,7 +431,7 @@ def spatial_coherence_coloring_and_boundary() -> dict[str, object]:
 
 
 def sensor_dba_trap_and_sofa_coordinates() -> dict[str, object]:
-    """E01-12: IEC 61672-1 A-weighting vs 1/f differential noise budget and AES69 SOFA coordinates."""
+    """E01-11 & Ch03 §3.1: IEC 61672-1 A-weighting vs 1/f differential noise budget and AES69 SOFA coordinates."""
     spot_freqs = np.array([50.0, 100.0, 200.0, 500.0, 1000.0, 2500.0], dtype=np.float64)
     spot_aw = iec61672_a_weighting(spot_freqs)
     spot_rows = [

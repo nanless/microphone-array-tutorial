@@ -219,9 +219,9 @@ Under Eq. (12-2), scanning deeper ($z \uparrow$) therefore increases $\|\vec a_i
 
 Sarradj systematically compared four classical steering-vector formulations in 3D source mapping (see [Sarradj 2012, §§2.1–2.5 Eqs. (7)–(13) & Table 1](https://doi.org/10.1155/2012/292695) and Acoular's `steer_type` names); their exact expressions and near-field/far-field properties are summarized below:
 
-| Formulation & Acoular Name | Exact Steering-Weight Expression | Noiseless Single-Source 3D Peak | Source-Strength Reading at True Location | Far-Field Equal-Amplitude Limit ($|a_{mi}|=1$) |
+| Formulation & Acoular Name | Exact Steering-Weight Expression | Noiseless Single-Source 3D Peak | Source-Strength Reading at True Location | Far-Field Equal-Amplitude Limit ($\lvert a_{mi}\rvert=1$) |
 |---|---|---|---|---|
-| Formulation I (`classic`) | $w_{mi}^{\mathrm{I}} = \dfrac{1}{M}\dfrac{a_{mi}}{|a_{mi}|} = \dfrac{1}{M}e^{-\mathrm{j}\kappa\Delta r_{mi}}$ | **Unbiased** (equal-weight, lower SNR than IV) | Biased (equals $\frac{q_j}{M^2}(\sum_m \frac{r_{0j}}{r_{mj}})^2$) | $\vec a_i / M$ |
+| Formulation I (`classic`) | $w_{mi}^{\mathrm{I}} = \dfrac{1}{M}\dfrac{a_{mi}}{\lvert a_{mi}\rvert} = \dfrac{1}{M}e^{-\mathrm{j}\kappa\Delta r_{mi}}$ | **Unbiased** (equal-weight, lower SNR than IV) | Biased (equals $\frac{q_j}{M^2}(\sum_m \frac{r_{0j}}{r_{mj}})^2$) | $\vec a_i / M$ |
 | Formulation II (`inverse`) | $w_{mi}^{\mathrm{II}} = \dfrac{1}{M}\dfrac{1}{a_{mi}^*} = \dfrac{1}{M}\dfrac{r_{mi}}{r_{0i}}e^{-\mathrm{j}\kappa\Delta r_{mi}}$ | Biased | Unbiased ($\vec w_i^H\vec a_i=1$) | $\vec a_i / M$ |
 | Formulation III (`true level`, Eq. (12-8)) | $\vec w_i^{\mathrm{III}} = \dfrac{\vec a_i}{\|\vec a_i\|_2^2}$ | Biased | Unbiased (and WNG-optimal) | $\vec a_i / M$ |
 | Formulation IV (`true location`) | $\vec w_i^{\mathrm{IV}} = \dfrac{\vec a_i}{\sqrt{M}\|\vec a_i\|_2}$ | **Unbiased** ($1/r$-matched, higher SNR than I) | Biased (equals $\frac{\|\vec a_j\|_2^2}{M}q_j$) | $\vec a_i / M$ |
@@ -453,7 +453,7 @@ $$\vec h=\frac{\mathbf R\vec w_1}{17/16}=\begin{pmatrix}
 1-\mathrm{j}\sqrt{3}/17
 \end{pmatrix}.$$
 
-**Result and boundary interpretation**: Forming $\mathbf G = \frac{17}{16}\vec h\vec h^H$ (diagonal entries $\frac{17}{16}(1 + 3/289) = 19/17$, upper-right entry $\frac{17}{16}(1 + \mathrm{j}\sqrt{3}/17)^2 = \frac{143}{136} + \mathrm{j}\frac{\sqrt{3}}{8}$) and subtracting at $\phi = 1$ leaves residual CSM
+**Result and boundary interpretation**: Forming $\mathbf G = \frac{17}{16}\vec h\vec h^H$ (diagonal entries $\frac{17}{16}(1 + 3/289) = 73/68$, upper-right entry $\frac{17}{16}(1 + \mathrm{j}\sqrt{3}/17)^2 = \frac{143}{136} + \mathrm{j}\frac{\sqrt{3}}{8}$) and subtracting at $\phi = 1$ leaves residual CSM
 
 $$\begin{aligned}
 \mathbf D_{\mathrm{next}}&=\mathbf R-\mathbf G\\
@@ -687,7 +687,7 @@ When a dead channel occurs in the field, remove that channel consistently from r
 Figure 63 contrasts sweep conventions, source coherence mismatch, and CLEAN-SC stripping across four panels (matching [E12-02](#e12-02), [E12-04](#e12-04), and [E12-09](#e12-09)):
 
 - **Panel (a) DAMAS sweep direction and convergence**: Log max source-power error versus outer iteration count on the two-node benchmark. In the special $J = 2$ two-node case, the forward sweep ends by updating $q_2$, so the reverse sweep's first step immediately re-updates the same boundary coordinate $q_2$ (idempotently leaving it unchanged) before updating $q_1$, and the next forward sweep's first step likewise re-updates $q_1$ (again unchanged); consequently, the orange bidirectional curve and blue forward-only curve descend **strictly in parallel** on a log scale with the *exact same* contraction factor per outer iteration ($1/16$), with the orange curve holding a constant half-sweep ($4\times$ error) lead solely from its extra effective $q_1$ update in Iteration 1. Only when grid count $J \ge 3$ does symmetric bidirectional iteration perform $2J - 2$ effective updates per pass versus $J$ for forward-only, approaching twice the per-pass contraction rate as $J$ grows (while doubling multiply-adds—so speed benchmarks must always align on effective updates).
-- **Panel (b) Inversion bias across inter-source coherence**: Holding marginal powers at $1.0$ (blue dashed) and $0.25$ (red dashed) while sweeping real coherence $\gamma \in [-1, 1]$; incoherent inversion (solid curves) crosses truth exclusively at $\gamma = 0$, overestimating for $\gamma > 0$ and underestimating for $\gamma < 0$.
+- **Panel (b) Inversion bias across inter-source coherence**: Holding marginal powers at $1.0$ (blue dotted) and $0.25$ (red dotted) while sweeping real coherence $\gamma \in [-1, 1]$; incoherent inversion (solid curves) crosses truth exclusively at $\gamma = 0$, overestimating for $\gamma > 0$ and underestimating for $\gamma < 0$.
 - **Panel (c) Wrong coherent solution at zero scan residual**: At $\gamma = 1$, incoherent solution $[1.20, 0.45]$ (red) misses marginal truth $[1.00, 0.25]$ (green); scan residual is $0$, whereas full-CSM relative Frobenius residual hits $0.3873$, flagging coherence violation immediately.
 - **Panel (d) Full-CSM single-source CLEAN-SC stripping**: True source $2$ (green dotted) at loop gain $\phi = 0.6$; residual peak $2 \times 0.4^\ell$ (orange dashed) decays monotonically while accumulated clean power $2(1 - 0.4^\ell)$ (solid blue) converges to $2$ by Pass 20. The four panels have distinct physical vertical scales and verify individual mechanisms rather than ranking algorithms head-to-head.
 

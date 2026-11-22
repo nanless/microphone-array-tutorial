@@ -259,7 +259,7 @@ def uca_phase_mode_example(
         "bessel_singularity_reason": singularity_reason,
         "limits": (
             "Open-array 3-mode UCA-ESPRIT requires M > 2*kappa*r + 2 to suppress circular aliasing "
-            "and fails at open-sphere Bessel zeros where rigid spherical baffles remain non-singular."
+            "and fails at open-circle cylindrical Bessel zeros J_n(kr)=0 where rigid cylindrical baffles remain non-singular."
         ),
     }
 

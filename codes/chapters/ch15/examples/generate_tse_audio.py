@@ -72,7 +72,7 @@ _FIXED_LIMITS = (
 def _fixed_parameters() -> dict:
     """Independent publication contract for Chapter 15 synthetic audio."""
     return {
-        "exercise_ids": ["E15-05", "E15-07", "E15-16"],
+        "exercise_ids": ["E15-03", "E15-05", "E15-12"],
         "sample_rate_hz": 16000,
         "samples_per_channel": 32000,
         "fade_samples_each_end": 800,

@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>From Fundamentals to Industrial Practice · Microphone Array Signal Processing</title>
-<meta name="source-digest" content="349f9b579bab"><style>
+<meta name="source-digest" content="08a908611fde"><style>
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -1414,7 +1414,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <span id="sec-u-2d4b4b193b" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-ed573e6015" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-9c215dd3a8"><a href="13_distributed-enhancement.html">13 · Special Topic II: Distributed Microphone Collaborative Enhancement</a></h3>
 <p>This special topic (Chapter 13, 3 figures) addresses scenarios where multiple smart devices, multi-pod conference microphones, or wireless acoustic sensor networks collaborate over bandwidth-constrained links to enhance a shared target source; we recommend reading it after Chapters 2, 5, and 10.</p>
 <p>Each node hosts a local microphone subarray, but link bandwidth and battery constraints prohibit uploading all raw multichannel waveforms to a central fusion center; instead, nodes broadcast low-dimensional linearly compressed signals to neighbors or a sink. Taking centralized Multichannel Wiener Filtering (MWF) as the optimality benchmark, this chapter derives the algebraic conditions under which cross-node linear compression attains exact centralized optimality (revealing that even when target speech cancels out inside a remote node's broadcast signal, its correlated interference observation still helps the local node cancel noise), and analyzes convergence of Distributed Adaptive Node-Specific Signal Estimation (DANSE and topology-independent TI-DANSE) under sequential, simultaneous, and relaxed finite-step updates.</p>
-<p>Addressing real wireless links, the chapter further examines transport quantization noise, covariance coordinate transforms across broadcast-compressor version switches, inter-node Sampling Rate Offset (e.g., $100\ \mathrm{ppm}$ clock skew) phase compensation, and zero-filling vs. local-subarray fallback under packet loss (full wireless reproduction instructions appear in <a href="13_distributed-enhancement.html#sec-13-13">§13.13</a>).</p>
+<p>Addressing real wireless links, the chapter further examines transport quantization noise, covariance coordinate transforms across broadcast-compressor version switches, inter-node Sampling Rate Offset (e.g., $100\ \mathrm{ppm}$ clock skew) phase compensation, and zero-filling vs. local-subarray fallback under packet loss (full wireless reproduction instructions appear in <a href="13_distributed-enhancement.html#sec-13-15">§13.15</a>).</p>
 <span id="sec-u-6dcf2e71ad" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-3e47e38b8d" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-36344cfb5e"><a href="14_spatial-wearable-arrays.html">14 · Special Topic III: Spatial Sound Field Capture, Parametric Coding, and Wearable Arrays</a></h3>
 <p>This special topic (Chapter 14, 4 figures) targets Ambisonic spatial recording, extended-reality (XR) headsets, smart glasses, True Wireless Stereo (TWS) earbuds, and digital hearing aids; we recommend reading it after Chapters 1, 2, and 5. Unlike tabletop arrays delivering monaural speech to an ASR engine, spatial capture and wearable devices must preserve three-dimensional directional cues and natural auditory envelopment under miniature apertures and head/body scattering.</p>
 <p>Starting from First-Order Ambisonics (FOA) ACN/SN3D conventions, tetrahedral radial equalization, and head-tracked 3D sound-field counter-rotation, the chapter derives Directional Audio Coding (DirAC) active intensity and diffuseness analysis; develops Binaural Signal Matching on irregular wearable arrays (complex BSM-LS vs. high-frequency Magnitude Least Squares MagLS) alongside analytical reference-microphone mixing to prevent interaural background-noise head-center collapse; and dissects the Corcos turbulent wind-noise coherence model, air-conduction plus occluded in-ear microphone cross-modal MVDR own-voice fusion, and sub-millisecond comb-filtering latency limits in Hear-Through transparency mode (companion exercises <code>E14-01</code>–<code>E14-15</code> and <code>wearable_audio</code> appear in <a href="14_spatial-wearable-arrays.html#sec-14-11">§14.11</a>).</p>
@@ -1488,7 +1488,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 </li>
 <li>
 <p>Read Chapter 10 thoroughly, decomposing end-to-end latency along the critical path, distinguishing inter-device synchronization from Sampling Rate Offset (SRO), and standardizing objective metrics, MACs, and whole-device power accounting; then cross-check the troubleshooting table in <a href="17_appendix-guide.html#sec-17-4">§17.4</a> and complete Problems 7, 8, 9, 11, 14, and 15 in <a href="17_appendix-guide.html#sec-17-6">§17.6</a>.</p>
-<p>If your project involves acoustic cameras or quantitative noise-source diagnostics, add <a href="12_acoustic-imaging.html">Special Topic I</a> for microphone calibration and physical acoustic units; if it involves narrowband multi-device collaborative pickup, add <a href="13_distributed-enhancement.html">Special Topic II</a> for signal compression, iterative updates, and wireless clock compensation; if it involves smart glasses, TWS earbuds, or hearing aids, add <a href="14_spatial-wearable-arrays.html">Special Topic III</a> for binaural matching, wind-robust cross-modal fusion, and hear-through latency budgets.</p>
+<p>If your project involves acoustic cameras or quantitative noise-source diagnostics, add <a href="12_acoustic-imaging.html">Special Topic I</a> for microphone calibration and physical acoustic units; if it involves narrowband multi-device collaborative pickup, add <a href="13_distributed-enhancement.html">Special Topic II</a> for signal compression, iterative updates, and wireless clock compensation; if it involves smart glasses, TWS earbuds, or hearing aids, add <a href="14_spatial-wearable-arrays.html">Special Topic III</a> for binaural matching, wind-robust cross-modal fusion, and hear-through latency budgets; if it involves personalized target speaker extraction, near-field distance bubbles, or overlapping-meeting diarization front ends, add <a href="15_target-extraction-diarization.html">Special Topic IV</a> for conditional modulation, silent-target/single-speaker bypass, spatio-spectral exclusive gating, and audio-visual lag alignment.</p>
 </li>
 <li>
 <p>Suggested milestone deliverables: produce three concrete budget tables—latency, clock synchronization, and channel calibration—for your target hardware platform; benchmarking against mature industrial baselines such as WebRTC AEC3, measure far-end single-talk ERLE, double-talk stability, near-end speech fidelity, real-time CPU load, and subjective listening quality on actual prototype hardware.</p>
@@ -2110,28 +2110,28 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <tr>
 <td>Fig. 84</td>
 <td>fig84_complex_phasor_fourier</td>
-<td>Ch. 0</td>
+<td>00</td>
 <td>Phasors &amp; STFT COLA</td>
 <td>Complex phasor rotation, delay-induced linear phase slope, zero-padded linear convolution equivalence, and COLA overlap-add perfect reconstruction</td>
 </tr>
 <tr>
 <td>Fig. 85</td>
 <td>fig85_subspace_projection_svd</td>
-<td>Ch. 0</td>
+<td>00</td>
 <td>Subspaces &amp; SVD</td>
 <td>Column-space orthogonal projection geometry, singular-value spectra, Tikhonov diagonal loading, and Sherman–Morrison–Woodbury rank-one updates</td>
 </tr>
 <tr>
 <td>Fig. 86</td>
 <td>fig86_hermitian_rayleigh_gev</td>
-<td>Ch. 0</td>
+<td>00</td>
 <td>Rayleigh &amp; Khatri–Rao</td>
 <td>Hermitian Rayleigh quotient extremal trajectories, GEV whitening joint diagonalization, and Khatri–Rao virtual coarray expansion</td>
 </tr>
 <tr>
 <td>Fig. 87</td>
 <td>fig87_wirtinger_probability_bayesian</td>
-<td>Ch. 0</td>
+<td>00</td>
 <td>Optimization &amp; Bayes</td>
 <td>Wirtinger projected gradient descent, complex Gaussian circularity &amp; real-bin non-circularity, and Joseph-form Kalman recursion</td>
 </tr>

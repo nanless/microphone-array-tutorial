@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>AEC, WPE & Separation Sources · Microphone Array Signal Processing</title>
-<meta name="source-digest" content="349f9b579bab"><style>
+<meta name="source-digest" content="08a908611fde"><style>
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -1088,8 +1088,8 @@ $$</p>
 <tbody>
 <tr>
 <td>Mask-to-power formula</td>
-<td>Squares $(m \cdot |X|)^2$ (<code>m</code> clamped to $[10^{-10}, 1]$) before averaging across channels</td>
-<td>Squares the mask ($m^2 |X|^2$), unlike ESPnet's linear $m |X|^2$</td>
+<td>Squares $(m \cdot \lvert X\rvert)^2$ (<code>m</code> clamped to $[10^{-10}, 1]$) before averaging across channels</td>
+<td>Squares the mask ($m^2 \lvert X\rvert^2$), unlike ESPnet's linear $m \lvert X\rvert^2$</td>
 </tr>
 <tr>
 <td>Multi-iteration target</td>

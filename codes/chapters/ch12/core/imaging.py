@@ -430,7 +430,7 @@ def two_cell_experiment():
 
 
 def damas_csm_objective_experiment():
-    """E12-17: full CSM Gram objective versus scan-domain squared residual.
+    """E12-15: full CSM Gram objective versus scan-domain squared residual.
 
     Only matched conventional weights and unchanged full rank-one templates
     are used. Both minimizers are model fits, not actual source recovery.
@@ -478,7 +478,7 @@ def damas_csm_objective_experiment():
 
 
 def distinct_column_ambiguity_experiment():
-    """E12-18: distinct columns, yet a feasible collective null direction."""
+    """E12-16: distinct columns, yet a feasible collective null direction."""
     a = np.array([[1., 1., 1., 1.], [1., 1j, -1., -1j]], complex)
     w = conventional_weights(a)
     design = np.column_stack([hermitian_real_vector(np.outer(column, column.conj()))

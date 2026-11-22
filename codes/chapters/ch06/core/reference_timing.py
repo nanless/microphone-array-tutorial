@@ -12,7 +12,7 @@ from codes.chapters.ch06.core.double_talk import LABELS, ncc_activity_states
 
 
 def reference_gain_order() -> dict:
-    """E06-40: compare gain before convolution with gain after prediction.
+    """E06-26: compare gain before convolution with gain after prediction.
 
     Five samples include the complete one-sample echo tail. The physical source
     is zero in that last sample, while the current gain explicitly remains 2.
@@ -46,7 +46,7 @@ def reference_gain_order() -> dict:
 
 
 def echo_tail_activity() -> dict:
-    """E06-41: a silent current reference frame can coexist with pure echo.
+    """E06-27: a silent current reference frame can coexist with pure echo.
 
     All twelve samples are valid, including the four-sample path tail and one
     further silent frame. The old reference history is retained by the FIR.

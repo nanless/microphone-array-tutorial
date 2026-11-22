@@ -1,4 +1,4 @@
-"""Generate or strictly read-check three E05-23 known-component phase WAVs.
+"""Generate or strictly read-check three E05-15 known-component phase WAVs.
 
 Finite preflight checks do not eliminate races or guarantee crash durability.
 --check reads actual PCM and reconstructs the fixture only in memory.
@@ -36,7 +36,7 @@ MEMBERS = set(FILE_NAMES.values()) | {'MANIFEST.json'}
 
 
 # Fixed values and exact types, independent of the descriptive function at runtime.
-REQUIRED_PARAMETERS = {'exercise_id': 'E05-23',
+REQUIRED_PARAMETERS = {'exercise_id': 'E05-15',
  'sample_rate_hz': 16000,
  'samples_per_channel': 32000,
  'frequencies_hz': [500.0, 1500.0],
@@ -134,7 +134,7 @@ def prepare_assets() -> tuple[dict[str, bytes], dict]:
                          'float_measurements': measure_signal(signal, signals['reference']),
                          'pcm_measurements': measure_signal(decoded[name], decoded['reference']),
                          'pcm_integer_measurements': _integer_measurements(payloads[filename], payloads[FILE_NAMES['reference']])}
-    manifest = {'schema_version': 1, 'exercise_id': 'E05-23',
+    manifest = {'schema_version': 1, 'exercise_id': 'E05-15',
                 'sample_rate_hz': SAMPLE_RATE, 'samples_per_channel': SAMPLES, 'common_export_gain': 1.0,
                 'origin': 'original deterministic known two-tone phase resynthesis',
                 'source_sha256': {p: _sha(validate_parent_chain(ROOT/p).read_bytes()) for p in SOURCE_PATHS},

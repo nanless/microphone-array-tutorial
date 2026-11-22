@@ -1,4 +1,4 @@
-"""E03-19 & E03-20: rigid-sphere baffle scattering bias and MEMS acoustic gasket pole mismatch.
+"""E03-17 & E03-18: rigid-sphere baffle scattering bias and MEMS acoustic gasket pole mismatch.
 
 Pure-NumPy deterministic implementations without SciPy or import-time side effects.
 Follows the repository forward Fourier kernel exp(-j * 2*pi*f*t) and book azimuth convention.
@@ -166,7 +166,7 @@ def rigid_baffle_aperture_example(
     radius_m: float = 0.05,
     sound_speed: float = SPEED_OF_SOUND,
 ) -> dict[str, object]:
-    """E03-19: Rayleigh 1.5x expansion vs Woodworth diffraction and free-field arcsin DOA bias/overflow."""
+    """E03-17: Rayleigh 1.5x expansion vs Woodworth diffraction and free-field arcsin DOA bias/overflow."""
     a_m = finite_real_scalar(radius_m, "radius_m")
     c_m_s = finite_real_scalar(sound_speed, "sound_speed")
     if a_m <= 0.0 or c_m_s <= 0.0:
@@ -268,7 +268,7 @@ def mems_gasket_leakage_example(
     spacing_m: float = 0.02,
     sound_speed: float = SPEED_OF_SOUND,
 ) -> dict[str, object]:
-    """E03-20: 1 kHz QA invisibility vs 100 Hz 24.62-deg phase mismatch (11.73x propagation) & DMA inversion."""
+    """E03-18: 1 kHz QA invisibility vs 100 Hz 24.62-deg phase mismatch (11.73x propagation) & DMA inversion."""
     fc1 = finite_real_scalar(sealed_cutoff_hz, "sealed_cutoff_hz")
     fc2 = finite_real_scalar(leaky_cutoff_hz, "leaky_cutoff_hz")
     d_m = finite_real_scalar(spacing_m, "spacing_m")

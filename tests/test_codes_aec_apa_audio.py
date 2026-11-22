@@ -1,4 +1,4 @@
-"""Actual PCM and causal-state contracts of the E06-39 audio fixture.
+"""Actual PCM and causal-state contracts of the E06-25 audio fixture.
 
 One real experiment/prepare call is shared by the class. Expected PCM sums
 come from standard-library wave/struct, not the production decoder/scorer.

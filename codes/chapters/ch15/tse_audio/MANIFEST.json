@@ -6,17 +6,17 @@
   "common_export_gain": 1.0,
   "source_sha256": {
     "codes/chapters/ch15/core/distance_bubble.py": "9e26329091896ecd396125ce04eeb4f6dcb3deb2478c087e08ccc26aa1cb7bd4",
-    "codes/chapters/ch15/core/tse_audio.py": "be0c52fca85cee0b12ef2b761fbb0a8f1b84af7be4531ae0cfb2babc030fee2f",
-    "codes/chapters/ch15/examples/generate_tse_audio.py": "94daeab0073e8b261282572946802d44ef212423134abe6eb0e5da779986e195",
+    "codes/chapters/ch15/core/tse_audio.py": "6c0e62ff58067ce5bc1556207945ebe6c3a909317749e97079d947a469fef3f9",
+    "codes/chapters/ch15/examples/generate_tse_audio.py": "0c3f0e3f446338626e8176bd4fd29f9e3c0d72665cfe2258f2ef826aa5de71bf",
     "codes/chapters/ch02/core/conventions.py": "4e80a27490f05ddd5f4826361420c0c8d0b331464d1e5629c5def492da47b1d7",
-    "codes/chapters/ch00/core/audio_samples.py": "bf1145e19e2ec99623c0583220192922c24f0ed3d293212309fe4a2f3bfc8385",
+    "codes/chapters/ch00/core/audio_samples.py": "1a7aad90d08fb8c27511aa463a6cc6dd6d4d2d230b27ed82549531f1f18edaba",
     "codes/chapters/ch00/io_contracts.py": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974"
   },
   "parameters": {
     "exercise_ids": [
+      "E15-03",
       "E15-05",
-      "E15-07",
-      "E15-16"
+      "E15-12"
     ],
     "sample_rate_hz": 16000,
     "samples_per_channel": 32000,

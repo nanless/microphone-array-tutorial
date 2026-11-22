@@ -5,7 +5,9 @@ from pathlib import Path
 import unittest
 import numpy as np
 
-from codes.chapters.ch09.core.tracking import ConstantVelocityKalman, CircularParticleFilter, _checked_covariance, wrap_angle
+from codes.chapters.ch09.core.tracking import (
+    ConstantVelocityKalman, CircularParticleFilter, _checked_covariance, systematic_resample, wrap_angle,
+)
 from codes.chapters.ch09.core.moving_source import retarded_emission_times, synthetic_source, free_field_array
 from codes.chapters.ch00.core.audio_samples import pcm16_bytes
 from codes.chapters.ch00.cross_chapter.enhancement_structure_exercises import imm_mix
@@ -111,6 +113,44 @@ class TrackingBoundaries(unittest.TestCase):
         pf.predict(20., .1, .5, rng)
         np.testing.assert_array_equal(pf.particles, expected)
         self.assertEqual(rng.bit_generator.state, independent.bit_generator.state)
+
+    def test_systematic_resample_upper_boundary_and_trailing_zero_weights(self):
+        class FixedRNG:
+            def __init__(self, u: float):
+                self._u = u
+            def random(self) -> float:
+                return self._u
+
+        u_max = float(np.nextafter(1.0, 0.0))
+        # (u_max + n - 1) / n rounds to 1.0 in float64 for n >= 2 (e.g., n = 3, 7, 10).
+        for n in (1, 2, 3, 7, 10, 100):
+            weights = np.ones(n, dtype=float)
+            indices = systematic_resample(weights, FixedRNG(u_max))
+            self.assertEqual(indices.shape, (n,))
+            self.assertTrue(np.all((indices >= 0) & (indices < n)))
+            if n >= 2:
+                pf = CircularParticleFilter(np.linspace(-90.0, 90.0, n))
+                prior = np.zeros(n, dtype=float)
+                prior[0], prior[1] = 0.8, 0.2
+                pf.set_prior_weights(prior)
+                self.assertTrue(pf.resample_if_needed(FixedRNG(u_max), threshold=n))
+                self.assertEqual(pf.particles.shape, (n,))
+                self.assertTrue(set(pf.last_resample_ancestor_indices.tolist()).issubset({0, 1}))
+
+        # Trailing zero weights must never be chosen, even when cumsum(positive) < 1.0 in float64.
+        trailing_cases = (
+            np.array([1.0, 0.0, 0.0]),
+            np.array([0.0, 1.0, 0.0]),
+            np.array([1.0] * 9 + [0.0, 0.0]),  # sum(1/9 * 9) = 0.9999999999999999 < 1.0
+            np.array([0.1, 0.2, 0.3, 0.4, 0.0, 0.0]),
+            np.array([0.0, 0.25, 0.0, 0.75, 0.0]),
+        )
+        for weights in trailing_cases:
+            positive_indices = set(np.flatnonzero(weights > 0.0).tolist())
+            for u in (0.0, 0.5, u_max):
+                indices = systematic_resample(weights, FixedRNG(u))
+                self.assertEqual(indices.shape, weights.shape)
+                self.assertTrue(set(indices.tolist()).issubset(positive_indices))
 
     def test_imm_legal_singular_covariance_and_real_contract(self):
         for scale in (1e-200, 1., 1e200):

@@ -29,7 +29,7 @@ SOURCE_PATHS = ('codes/chapters/ch08/core/css_audio.py',
                 'codes/chapters/ch00/io_contracts.py')
 MEMBERS = set(FILE_NAMES.values()) | {'MANIFEST.json'}
 # Exact fixed contract independent of the runtime parameters declaration.
-REQUIRED_PARAMETERS = {'exercise_id': 'E08-32', 'sample_rate_hz': 16000, 'samples_per_channel': 32000,
+REQUIRED_PARAMETERS = {'exercise_id': 'E08-24', 'sample_rate_hz': 16000, 'samples_per_channel': 32000,
  'frequencies_hz': [500.0, 1500.0], 'amplitudes': [0.1, 0.1],
  'channel_order': ['fixed_source_slot_1', 'fixed_source_slot_2'],
  'phase': 'sine at the common absolute sample clock, phase zero',
@@ -146,7 +146,7 @@ def prepare_assets():
     overlap_pcm = {}
     for key in ('previous', 'current'):
         _, overlap_pcm[key] = read_pcm16(pcm16_bytes(overlap[key], 16000))
-    manifest = {'schema_version': 1, 'exercise_id': 'E08-32', 'sample_rate_hz': 16000,
+    manifest = {'schema_version': 1, 'exercise_id': 'E08-24', 'sample_rate_hz': 16000,
                 'samples_per_channel': 32000, 'common_export_gain': 1.0,
                 'origin': 'original fixed-slot same-clock polarity/gain stitching control',
                 'source_sha256': {path: _sha(validate_parent_chain(ROOT/path).read_bytes()) for path in SOURCE_PATHS},

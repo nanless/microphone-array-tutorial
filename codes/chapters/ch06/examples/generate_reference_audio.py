@@ -1,4 +1,4 @@
-"""Generate or strictly read-check six E06-42 known-reference-location WAVs.
+"""Generate or strictly read-check six E06-28 known-reference-location WAVs.
 
 Finite preflight checks do not eliminate races or guarantee crash durability.
 --check reads actual PCM and reconstructs the fixture only in memory.
@@ -39,7 +39,7 @@ MEMBERS = set(FILE_NAMES.values()) | {'MANIFEST.json'}
 
 
 # Fixed values and exact types, independent of the descriptive function at runtime.
-REQUIRED_PARAMETERS = {'exercise_id': 'E06-42',
+REQUIRED_PARAMETERS = {'exercise_id': 'E06-28',
  'sample_rate_hz': 16000,
  'source_samples': 32000,
  'samples_per_channel': 33600,
@@ -138,7 +138,7 @@ def prepare_assets() -> tuple[dict[str, bytes], dict]:
                          'float_measurements': measure_signal(signal),
                          'pcm_measurements': measure_signal(decoded[name]),
                          'pcm_integer_measurements': _integer_measurements(payloads[filename])}
-    manifest = {'schema_version': 1, 'exercise_id': 'E06-42',
+    manifest = {'schema_version': 1, 'exercise_id': 'E06-28',
                 'sample_rate_hz': SAMPLE_RATE, 'samples_per_channel': SAMPLES, 'common_export_gain': 1.0,
                 'origin': 'original deterministic known playback gain and causal FIR reference control',
                 'source_sha256': {p: _sha(validate_parent_chain(ROOT/p).read_bytes()) for p in SOURCE_PATHS},

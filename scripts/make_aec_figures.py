@@ -678,8 +678,8 @@ def fig_pbfdaf_flow():
     arrow(prediction_ax, (7.69, 3.72), (7.69, 3.31), color=C_PURPLE)
     prediction_ax.add_patch(Circle((11.2, 0.98), 0.30,
                                    fc="white", ec=C_MAIN, lw=1.35))
-    prediction_ax.text(11.2, 0.98, "−", ha="center", va="center",
-                       fontsize=FS_LABEL + 4, color=C_MAIN)
+    prediction_ax.text(11.2, 0.98, "Σ", ha="center", va="center",
+                       fontsize=FS_LABEL + 2, color=C_MAIN)
     prediction_ax.text(12.05, 0.98, r"$e_m=d_m-\hat y_m$",
                        va="center", fontsize=FS_SMALL, color=C_MAIN)
     arrow(prediction_ax, (11.8, 2.35), (11.35, 1.25), color=C_GREEN)
@@ -726,7 +726,7 @@ def fig_pbfdaf_flow():
     # R_m 只保留功率；更新还需要带相位的复参考共轭。
     update_ax.plot([1.16, 1.16, 6.06], [2.7, 2.10, 2.10], color=C_BLUE, lw=1.5)
     arrow(update_ax, (6.06, 2.10), (6.06, 2.7))
-    update_ax.text(3.4, 1.65, r"复参考共轭 $X_{m-p}^*$",
+    update_ax.text(3.4, 1.78, r"复参考共轭 $X_{m-p}^*$",
                    ha="center", fontsize=FS_SMALL, color=C_BLUE)
     box(update_ax, 7.12, 1.20, 1.95, 0.67,
         "旧权重 $W_p(m)$", "#F1EEF5")

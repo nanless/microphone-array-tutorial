@@ -1,4 +1,4 @@
-"""Independent tone algebra, real FFT/PCM and safe asset checks for E08-28."""
+"""Independent tone algebra, real FFT/PCM and safe asset checks for E08-21."""
 import hashlib
 import io
 import json

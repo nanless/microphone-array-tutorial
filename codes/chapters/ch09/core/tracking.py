@@ -221,9 +221,11 @@ def systematic_resample(weights: np.ndarray, rng: np.random.Generator) -> np.nda
         raise ValueError("weights must have a positive sum")
     scaled = weights / scale
     normalized = scaled / np.sum(scaled)
+    last_positive = int(np.flatnonzero(normalized > 0.0)[-1])
     cumulative = np.cumsum(normalized)
-    cumulative[-1] = 1.0
+    cumulative[last_positive:] = 1.0
     positions = (rng.random() + np.arange(weights.size)) / weights.size
+    positions = np.minimum(positions, np.nextafter(1.0, 0.0))
     return np.searchsorted(cumulative, positions, side="right")
 
 

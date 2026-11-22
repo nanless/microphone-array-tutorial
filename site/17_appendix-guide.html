@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 17 章 · 附录 B：路径地图与练习 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="e2a840976a4c"><style>
+<meta name="source-digest" content="f6d48efe6ade"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -710,7 +710,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <tr>
 <td><code>libmysofa</code></td>
 <td>BSD-3-Clause</td>
-<td>AES69 SOFA HRTF 轻量化 C 读取与方向插值库（§1.1、<a href="14_spatial-wearable-arrays.html">专题Ⅲ</a>）</td>
+<td>AES69 SOFA HRTF 轻量化 C 读取与方向插值库（§1.2.3、<a href="14_spatial-wearable-arrays.html">专题Ⅲ</a>）</td>
 <td><code>v1.3.5</code>；本仓已核验插值契约</td>
 </tr>
 <tr>
@@ -915,7 +915,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <td>语音分离（GSS / CSS / IVA）</td>
 <td>单块内分离尚可，但跨块拼接处说话人串槽、极性反转或音量跳变</td>
 <td>在连续语音分离（CSS）中先后核对块间排列对齐、重叠窗相位极性与幅度尺度（排列正确不自动保证极性或增益一致，见图 71）；在 AuxIVA 中核查频点间排列对齐；在掩码波束中检查掩码目标泄漏是否污染干扰协方差</td>
-<td>§8.3～§8.5</td>
+<td>§8.3～§8.6</td>
 </tr>
 <tr>
 <td>多声源追踪</td>
@@ -927,13 +927,13 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <td>声学成像（DAS / DAMAS / CMF）</td>
 <td>常规空间谱主瓣宽大、旁瓣伪峰密集，或反卷积源强和与目标声压级不符</td>
 <td>先绘制当前频带与网格下的阵列点扩散函数（PSF）排查空间分辨率极限；检查强相干反射是否破坏互谱矩阵（CSM）的不相关源假设；核查 CSM 对角线自噪声剥离是否破坏半正定性，并区分逐格峰值与区域积分口径（见图 62～64、图 75）</td>
-<td>§12.1～§12.4</td>
+<td>§12.3～§12.10</td>
 </tr>
 <tr>
 <td>分布式阵列协同增强</td>
 <td>多节点融合信噪比反低于单节点本地波束，或随时间推移出现梳状滤波失真</td>
 <td>首要排查跨节点采样率偏移（SRO）与块起始时差是否破坏跨设备互谱相干性；其次检查无线丢包缺口窗是否把零填充或陈旧统计量混入协方差更新；在 DANSE 迭代中确认广播压缩系数更新后接收端是否同步重组了缓存权重（见图 65～67）</td>
-<td>§13.2～§13.4</td>
+<td>§13.5～§13.15</td>
 </tr>
 <tr>
 <td>空间采集与可穿戴阵列（FOA / BSM / 跨模态 / 通透）</td>
@@ -1001,7 +1001,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <td>§2.6</td>
 </tr>
 <tr>
-<td>$\mathrm{HPBW}\approx\dfrac{0.886\lambda}{Md\cos\theta_0}$；$\mathrm{DI}=10\log_{10}\dfrac{\|B(\Omega_0)\|^2}{\frac{1}{4\pi}\int_{4\pi}\|B(\Omega)\|^2\mathrm{d}\Omega}$；$\mathrm{WNG}=\dfrac{\|\vec w^H\vec a(\theta_0)\|^2}{\|\vec w\|_2^2}$</td>
+<td>$\mathrm{HPBW}\approx\dfrac{0.886\lambda}{Md\cos\theta_0}$；$\mathrm{DI}=10\log_{10}\dfrac{\lvert B(\Omega_0)\rvert^2}{\frac{1}{4\pi}\int_{4\pi}\lvert B(\Omega)\rvert^2\mathrm{d}\Omega}$；$\mathrm{WNG}=\dfrac{\lvert\vec w^H\vec a(\theta_0)\rvert^2}{\|\vec w\|_2^2}$</td>
 <td>主瓣半功率全宽（ULA 窄主瓣远离端射近似）、全空间球面平均指向性指数与白噪声增益，见式(2-11)～式(2-13)</td>
 <td>§2.6</td>
 </tr>
@@ -1022,7 +1022,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 </tr>
 <tr>
 <td>$R(\tau)$：$\int\Phi G_{12}e^{\mathrm{j}2\pi f\tau}\mathrm{d}f$</td>
-<td>广义互相关（GCC）时延谱（互谱 $G_{12}=X_1 X_2^*$），$\Phi=1/|G_{12}|$ 时对应 PHAT 加权</td>
+<td>广义互相关（GCC）时延谱（互谱 $G_{12}=X_1 X_2^*$），$\Phi=1/\lvert G_{12}\rvert$ 时对应 PHAT 加权</td>
 <td>§4.2</td>
 </tr>
 <tr>
@@ -1046,7 +1046,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <td>§5.2</td>
 </tr>
 <tr>
-<td>$|B(\theta)|=|\sin(M\psi/2)/[M\sin(\psi/2)]|$</td>
+<td>$\lvert B(\theta)\rvert=\lvert\sin(M\psi/2)/[M\sin(\psi/2)]\rvert$</td>
 <td>等权 ULA 归一化阵因子，空间相位差 $\psi=2\pi d(\sin\theta-\sin\theta_0)/\lambda$</td>
 <td>§5.2</td>
 </tr>
@@ -1082,7 +1082,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 </tr>
 <tr>
 <td>$\mathrm{ERLE}=10\log_{10}(E_y/E_e)$</td>
-<td>远端单讲有效窗口 $\mathcal W$ 内的回声返回损失增强；$E_y=\sum_{n\in\mathcal W}|y[n]|^2$ 为真实纯回声能量，$E_e=\sum_{n\in\mathcal W}|e_{\mathrm{echo}}[n]|^2$ 为残余回声能量，见式(6-35)</td>
+<td>远端单讲有效窗口 $\mathcal W$ 内的回声返回损失增强；$E_y=\sum_{n\in\mathcal W}\lvert y[n]\rvert^2$ 为真实纯回声能量，$E_e=\sum_{n\in\mathcal W}\lvert e_{\mathrm{echo}}[n]\rvert^2$ 为残余回声能量，见式(6-35)</td>
 <td><a href="06_aec.html#sec-6-8">§6.8</a></td>
 </tr>
 <tr>
@@ -1092,12 +1092,12 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 </tr>
 <tr>
 <td>$\mathcal L_{\mathrm{PIT}}=\min_{\pi\in\mathcal S_N}\sum_{n=1}^N \mathcal L(\hat s_n,s_{\pi(n)})$</td>
-<td>置换不变训练（PIT）损失（式(8-5)，遍历 $N!$ 种排列 $\pi\in\mathcal S_N$）；掩码统计波束按帧权 $\gamma_\nu$ 对 $\vec x\vec x^H$ 加权平均估计协方差 $\hat{\mathbf R}_\nu$</td>
+<td>置换不变训练（PIT）损失（式(8-5)，遍历 $N!$ 种排列 $\pi\in\mathcal S_N$）；掩码统计波束按软掩码 $\gamma_{ft}$ 对 $\vec Y_{ft}\vec Y_{ft}^H$ 加权平均估计 $\mathbf R_{\mathrm{tar}}(f),\mathbf R_{\mathrm{int}}(f)$（见式(8-23)）</td>
 <td>§8.1、§8.4</td>
 </tr>
 <tr>
 <td>$\hat{\vec s}_t^-=\mathbf F\hat{\vec s}_{t-1},\ \mathbf P_t^-=\mathbf F\mathbf P_{t-1}\mathbf F^\top+\mathbf Q$；$\mathbf K_t=\mathbf P_t^-\mathbf H^\top(\mathbf H\mathbf P_t^-\mathbf H^\top+\mathbf R)^{-1}$；$\hat{\vec s}_t=\hat{\vec s}_t^-+\mathbf K_t\vec\nu_t,\ \mathbf P_t=(\mathbf I-\mathbf K_t\mathbf H)\mathbf P_t^-$</td>
-<td>卡尔曼滤波（KF）五步递推（式(9-2)～式(9-6)）；圆周方位角新息 $\vec\nu_t$ 须先角度折叠，有限精度下宜采用 Joseph 对称保正定更新</td>
+<td>卡尔曼滤波（KF）五步递推（式(9-3)～式(9-7)）；圆周方位角新息 $\vec\nu_t$ 须先角度折叠，有限精度下宜采用 Joseph 对称保正定更新</td>
 <td>§9.2</td>
 </tr>
 <tr>
@@ -1112,13 +1112,13 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 </tr>
 <tr>
 <td>$\mathrm{SI\text{-}SDR}=10\log_{10}\dfrac{\|\alpha\vec s\|_2^2}{\|\vec e_\perp\|_2^2}$；$e_{\mathrm{mix}}=\sum_j\omega_j e_j,\ R=\max_{\vec\omega\in\mathcal W}\sum_j\omega_j e_j,\ S=\max_j e_j$</td>
-<td>尺度不变信号失真比（$\alpha=\langle\hat{\vec s},\vec s\rangle/\|\vec s\|_2^2$、$\vec e_\perp=\hat{\vec s}-\alpha\vec s$，式(15-5)）与多场景选型的分层加权均值 $e_{\mathrm{mix}}$、区间组成最坏风险 $R$（二场景记 $J_L(q), R_L$）及逐场景最坏风险 $S$（$S_L$，式(11-8)～式(11-9)）</td>
+<td>尺度不变信号失真比（$\alpha=\langle\hat{\vec s},\vec s\rangle/\|\vec s\|_2^2$、$\vec e_\perp=\hat{\vec s}-\alpha\vec s$，见式(8-25)；零目标条件化见式(15-5)）与多场景选型的分层加权均值 $e_{\mathrm{mix}}$、区间组成最坏风险 $R$（二场景记 $J_L(q), R_L$）及逐场景最坏风险 $S$（$S_L$，式(11-8)～式(11-9)）</td>
 <td>§8.5、§10.5、§11.5</td>
 </tr>
 <tr>
-<td>$b_i=\vec{w}_i^H\hat{\mathbf{R}}\vec{w}_i$，$\vec{b}=\mathbf{P}\vec{q}+\vec{b}_n$（$\vec{q}\ge\vec{0}$）</td>
-<td>互谱矩阵（CSM）扫描功率图与不相关源点扩散正向模型（DAMAS / CMF 反卷积基础；空间功率分布图不等于增强音频波形）</td>
-<td>§12.3～§12.5</td>
+<td>$b_i=\vec{w}_i^H\hat{\mathbf{R}}\vec{w}_i$，$\vec{b}=\mathbf{P}\vec{q}+\vec{b}_n$（$\vec{q}\ge\vec{0}$）；CMF：$\min_{\vec q\ge 0}\|\hat{\mathbf R}-\mathbf A\operatorname{diag}(\vec q)\mathbf A^H\|_F^2$</td>
+<td>互谱矩阵（CSM）扫描功率图与不相关源点扩散正向模型（DAMAS / NNLS 反卷积基础，§12.3～§12.5）及 CMF 直接 CSM 拟合目标（式(12-18)，§12.7；空间功率分布图不等于增强音频波形）</td>
+<td>§12.3～§12.5、§12.7</td>
 </tr>
 <tr>
 <td>单路（$Q=1$）：$z_u=\vec f_u^H\vec x_u,\ \hat d_u=\vec f_u^H\vec x_u+\vec g_u^H\vec z_{-u}$；一般 $Q$ 维：$\vec z_u=\mathbf F_u^H\vec x_u,\ \tilde{\vec x}_u=\mathbf T_u^H\vec x$</td>
@@ -1642,7 +1642,7 @@ $$</p>
 <p>只读解析<a href="room_audio/MANIFEST.json">房间音频清单</a>中“固定近左”源位已发布的三份 16 kHz PCM16 文件（单声道 16000 帧激励源、四声道 38497 帧完整房间响应、四声道 38497 帧纯直达响应），不重跑仿真，分别回答：（1）为何共用同一导出增益，三份文件的峰值仍各不相同？（2）源—麦互相关峰的滞后点数能否直接乘声速换算房间距离？</p>
 <p><strong>参考答案</strong>：</p>
 <p><strong>第一问：为何共用同一导出增益，三份文件的峰值仍各不相同？</strong> 清单记录了量化前的双精度最大绝对幅度：干声源、完整房间输出与纯直达输出依次约为 $4.11995$、$5.15997$ 与 $4.05164$；为了防止 18 份房间音频中最大幅度溢出 $[-1,1)$，导出器对全部 18 份文件统一乘上同一个全局缩放常数 $g\approx0.151697$，缩放后三者量化前峰值依次变为约 $0.624984$、$0.782752$ 与 $0.614621$（经 PCM16 整数舍入再读回后有 $1/32768$ 量级的微小量化截断）。可见三份文件峰值不同恰恰是因为<strong>保留了真实的房间多径叠加与距离衰减比例</strong>（而非逐文件归一化），同时时域瞬时峰值之比也不能用来替代平方和积分定义的 RIR 能量比（DRR）。</p>
-<p><strong>第二问：源—麦互相关峰的滞后点数能直接乘声速换算房间距离吗？</strong> 根据清单几何坐标，“固定近左”声源到第 1 号麦克风的欧氏距离约为 $1.011811$ m，纯声学自由传播时延折合采样点数为 $1.011811\times16000/343\approx47.198$ 点；然而将已发布的干声源 PCM 与纯直达四麦 PCM 做互相关，四通道主峰滞后却依次落在 $+87,+89,+85,+86$ 点——第 1 麦的 $87$ 点比纯声学传播多出了约 $40$ 点。原因在于 <code>pyroomacoustics</code> 默认采用长度 $81$ 抽头的对称窗函数分数延迟滤波器模拟亚采样到达时刻，该因果滤波器自身引入了 $(81-1)/2=40$ 点的固定群延迟（四麦在相对时延差计算中该公共群延迟会相互抵消，但若拿单路绝对滞后 $87$ 点直接乘 $c/f_s$ 反推源距就会算出错误的 $1.86$ m；详见<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/appendix_b/appendix_b_experiments.py">逐步实验</a>中的 <code>E17-06</code>）。</p>
+<p><strong>第二问：源—麦互相关峰的滞后点数能直接乘声速换算房间距离吗？</strong> 根据清单几何坐标，“固定近左”声源到第 1 号麦克风的欧氏距离约为 $1.011811$ m，纯声学自由传播时延折合采样点数为 $1.011811\times16000/343\approx47.198$ 点；然而将已发布的干声源 PCM 与纯直达四麦 PCM 做互相关，四通道主峰滞后却依次落在 $+87,+89,+85,+86$ 点——第 1 麦的 $87$ 点比纯声学传播多出了约 $40$ 点。原因在于 <code>pyroomacoustics</code> 默认采用长度 $81$ 抽头的对称窗函数分数延迟滤波器模拟亚采样到达时刻，该因果滤波器自身引入了 $(81-1)/2=40$ 点的固定群延迟（四麦在相对时延差计算中该公共群延迟会相互抵消，但若拿单路绝对滞后 $87$ 点直接乘 $c/f_s$ 反推源距就会算出错误的 $1.865$ m；详见<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/appendix_b/appendix_b_experiments.py">逐步实验</a>中的 <code>E17-06</code>）。</p>
 <p><a id="e17-07"></a></p>
 <span id="sec-u-84c390b4b7" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-7325fcb112" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-8ddb3293a1" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-471e180f3e">E17-07：看见开源代码就算复现论文了吗？</h3>
 <p>在撰写技术调研或实验报告时，给定三档不同深度的核查证据包 A、B、C（见下表），请界定各自允许写出的最高结论口径，并说明为何不能跳过前置阶段。</p>
@@ -2074,8 +2074,8 @@ P_{\mathrm{dist}}^{(s)}
 <tbody>
 <tr>
 <td>图 1～34</td>
-<td>主音频清单（<code>generate_audio_samples.py</code>，图 28～33 按需读取）与确定性模型；由 <code>make_figures.py</code> 及 <code>make_aec_figures.py</code>（图 25～27、32～34）生成</td>
-<td>覆盖声学传播、空间谱定位、经典/自适应波束、AEC 双讲与非线性抑制、WPE、语音分离及粒子滤波原理基线（其中图 34 为系统状态转移框图）</td>
+<td>主音频清单（<code>generate_audio_samples.py</code>，图 29～31 读取）与确定性模型；由 <code>make_figures.py</code> 及 <code>make_aec_figures.py</code>（图 25～27、32～34）生成</td>
+<td>覆盖声学传播、空间谱定位、经典/自适应波束、AEC 双讲与非线性抑制、WPE、语音分离及粒子滤波原理基线（其中图 34 为 PBFDAF 重叠保存与梯度约束流程图）</td>
 </tr>
 <tr>
 <td>图 35～44</td>

@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 7 章 · 去混响（WPE） · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="e2a840976a4c"><style>
+<meta name="source-digest" content="f6d48efe6ade"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -994,7 +994,7 @@ L_{\mathrm{NMSE}}&=10\log_{10}\mathrm{NMSE}.
 <p>其中 $\alpha\in(0,1)$ 为指数遗忘因子，$\delta\ge 0$ 为同量纲对角加载量。将式(7-18)从起点展开可见，距当前越久远的历史外积被乘上越多次 $\alpha$，呈指数衰减遗忘（初始先验矩阵 $\mathbf R_0$ 也按 $\alpha^t$ 同步衰减，显式批量等价式见练习 <a href="#e07-11">E07-11</a>）。为了避免“用当前帧刚拟合出的系数反过来消去当前帧自身”的数据泄漏，因果在线流程严格遵循<strong>先用上一帧旧系数生成先验预测残差输出，再吸收当前帧更新统计量供下一帧使用</strong>：</p>
 <p>$$E_t^{\mathrm{prior}}=X_t-\vec g_{t-1}^H\vec q_t.
 \tag{7-19}$$</p>
-<p>在实时嵌入式或低延迟服务端实现中，若每帧都对 $D\times D$（例如 $80\times 80$）的 $\mathbf R_t$ 重新做一次 $O(D^3)$ 线性求解，算力开销往往难以承受。注意到式(7-18)的第一行中，$\mathbf R_t$ 只是在缩放后的旧矩阵 $\alpha\mathbf R_{t-1}$ 上叠加了一个<strong>秩一外积</strong> $\vec q_t\vec q_t^H/\lambda_t$。这正好契合自适应滤波中的递推最小二乘（Recursive Least Squares，RLS）结构：为避免与预测阶数 $K$ 或互相关矩阵 $\mathbf P$ 符号混淆，本章统一记逆相关矩阵为 $\mathbf\Psi_t=\mathbf R_t^{-1}$（与<a href="06_aec.html#sec-6-2-5">第 6 章 §6.2.5</a> RLS 的逆协方差矩阵同构），对式(7-18)套用<strong>谢尔曼—莫里森—伍德伯里（Sherman–Morrison–Woodbury）矩阵求逆引理</strong>（见<a href="00_math-foundations.html#sec-0-3-5">第 0 章 §0.3.5</a> 与<a href="16_appendix-symbols-math.html">附录 A</a>），就能绕开显式求逆，把每帧复杂度从 $O(D^3)$ 降到 $O(D^2)$：</p>
+<p>在实时嵌入式或低延迟服务端实现中，若每帧都对 $D\times D$（例如 $80\times 80$）的 $\mathbf R_t$ 重新做一次 $O(D^3)$ 线性求解，算力开销往往难以承受。注意到式(7-18)的第一行中，$\mathbf R_t$ 只是在缩放后的旧矩阵 $\alpha\mathbf R_{t-1}$ 上叠加了一个<strong>秩一外积</strong> $\vec q_t\vec q_t^H/\lambda_t$。这正好契合自适应滤波中的递推最小二乘（Recursive Least Squares，RLS）结构：为避免与预测阶数 $K$ 或互相关矩阵 $\mathbf P$ 符号混淆，本章统一记逆相关矩阵为 $\mathbf\Psi_t=\mathbf R_t^{-1}$（与<a href="06_aec.html#sec-6-2-6">第 6 章 §6.2.6</a> RLS 的逆协方差矩阵同构），对式(7-18)套用<strong>谢尔曼—莫里森—伍德伯里（Sherman–Morrison–Woodbury）矩阵求逆引理</strong>（见<a href="00_math-foundations.html#sec-0-3-5">第 0 章 §0.3.5</a> 与<a href="16_appendix-symbols-math.html">附录 A</a>），就能绕开显式求逆，把每帧复杂度从 $O(D^3)$ 降到 $O(D^2)$：</p>
 <p>$$\begin{aligned}
 \vec k_t&=\frac{\mathbf\Psi_{t-1}\vec q_t}
   {\alpha\lambda_t+\vec q_t^H\mathbf\Psi_{t-1}\vec q_t},\\
@@ -1160,7 +1160,7 @@ G_{\mathrm{Wiener}}(t,f)&=\max\!\left\{
 <p>例如取 $\mathbf A=2\mathbf I_2$、$\mathbf C=\mathbf I_2$、两行分别为 $[1/2,0]$ 与 $[-1/2,0]$ 的反对称互相关矩阵 $\mathbf B$ 以及同相导向 $\vec v=[1,1]^\top$：舒尔补 $\mathbf A-\mathbf B\mathbf C^{-1}\mathbf B^H$ 正定，求得同相波束 $\vec w=[1/2,1/2]^\top$，此时两麦上的反相历史干扰在空间求和那一步就已经互相抵消（$\mathbf B^H\vec w=\vec 0$），因而无需动用任何历史抽头（$\vec h=\vec 0$）。反之，式(7-29)的无失真约束只锁住了当前帧导向，若保护延迟太短使历史块仍含可预测的目标谐波，最小功率求解的 $\vec h$ 同样会减掉一部分目标信号（见练习 <a href="#e07-13">E07-13</a> 与 <a href="#e07-19">E07-19</a>）。</p>
 <p>更进一步的代数性质来自 <a href="https://doi.org/10.1109/ICASSP40776.2020.9054393">Boeddeker 等（ICASSP 2020）</a>（概率解释另见 <a href="https://doi.org/10.23919/EUSIPCO.2019.8902753">Nakatani 与 Kinoshita，EUSIPCO 2019</a>）：<strong>在共享同一组固定正帧权重 $1/\lambda_t$、同一有效帧集合且不加失配正则化的前提下，单步联合求解式(7-30)严格等价于“先跑一次 MIMO-WPE，再在 WPE 残差上跑一次同权加权 MPDR”。</strong> 练习 <a href="#e07-07">E07-07</a> 与 <a href="#e07-12">E07-12</a> 将利用舒尔补配方法手算证明这一等价分解，并揭示两级各自独立添加对角加载时为何会产生微妙偏差。</p>
 <p>不过，一旦进入<strong>多轮交替迭代</strong>，联合 WPD 便会与简单级联“MIMO-WPE → 加权 MPDR”拉开本质差距：标准级联在 WPE 迭代阶段只能用多通道残差平均功率 $\hat\lambda_t^{\mathrm{WPE}}=\frac{1}{M}\|\vec E_t\|_2^2$ 更新帧权重，其中依然混杂着尚未被空间波束剔除的定向干扰人与环境底噪；而多轮迭代 WPD 直接用联合波束形成后的<strong>单路纯净目标输出</strong>更新下一轮功率 $\hat\lambda_t^{\mathrm{WPD}}=\max\{|y_t|^2,\lambda_{\min}\}$（$y_t=\bar{\vec w}_{\mathrm{WPD}}^H\bar{\vec x}_t$），空间零陷已将干扰人压低，使下一轮 WPD 的帧权重估计远比多通道均值准确。</p>
-<p>除批处理/递推 WPD 外，在需要在线追踪时变声学路径与动态干扰的场景下，<a href="https://doi.org/10.1109/TASLP.2020.2966869">Dietzen、Doclo、Moonen 与 van Waterschoot（<em>IEEE/ACM TASLP</em>，2020）</a> 还提出了<strong>集成旁瓣抵消与线性预测卡尔曼滤波（Integrated Sidelobe Cancellation and Linear Prediction Kalman Filter，ISCLP-KF）</strong>：它把广义旁瓣抵消器（GSC，见<a href="05_beamforming.html#sec-5-5">第 5 章 §5.5</a>）的自适应空间干扰抵消与多通道线性预测（MCLP）去混响装入同一增广状态空间卡尔曼滤波器中联合递推，面向多麦去混响、定向人声干扰抑制与降噪的一体化在线求解（注意该方法属于“空间旁瓣抵消 + 线性预测去混响”联合框架，与声学回声消除 AEC 无关）。</p>
+<p>除批处理/递推 WPD 外，在需要在线追踪时变声学路径与动态干扰的场景下，<a href="https://doi.org/10.1109/TASLP.2020.2966869">Dietzen、Doclo、Moonen 与 van Waterschoot（<em>IEEE/ACM TASLP</em>，2020）</a> 还提出了<strong>集成旁瓣抵消与线性预测卡尔曼滤波（Integrated Sidelobe Cancellation and Linear Prediction Kalman Filter，ISCLP-KF）</strong>：它把广义旁瓣抵消器（GSC，见<a href="05_beamforming.html#sec-5-6">第 5 章 §5.6</a>）的自适应空间干扰抵消与多通道线性预测（MCLP）去混响装入同一增广状态空间卡尔曼滤波器中联合递推，面向多麦去混响、定向人声干扰抑制与降噪的一体化在线求解（注意该方法属于“空间旁瓣抵消 + 线性预测去混响”联合框架，与声学回声消除 AEC 无关）。</p>
 <h2 id="sec-7-7">7.7 可执行教学基线与复现实验</h2>
 <h3 id="sec-u-e6c77eb174">教学实现与诊断取点</h3>
 <p>本仓库 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch07/core/dereverberation.py"><code>codes/chapters/ch07/core/dereverberation.py</code></a> 提供了仅依赖 NumPy 的离线单/多通道 WPE 教学核心 <code>offline_wpe()</code>。函数接收单通道 <code>(频点, 帧)</code> 或多通道 <code>(频点, 通道, 帧)</code> 复数 STFT 张量并返回同形状去混响复谱，完整实现了保护延迟 $\Delta$、按滞后帧优先的多通道历史堆叠、球形共享功率更新、相对对角加载与复共轭预测。求解前逐频点按最大幅度做无损缩放并在输出时还原尺度；遇到 <code>taps=0</code>、迭代轮数为零、帧数不足以构成完整历史或全零静音频点时直接安全旁路。</p>
@@ -1778,7 +1778,7 @@ u_1+u_2&=1.
 <td style="text-align: right;">$0.0024505$</td>
 <td style="text-align: right;">$0.0024653$</td>
 <td style="text-align: right;">$0.0024653$</td>
-<td style="text-align: right;">$0.493081$</td>
+<td style="text-align: right;">$0.493080$</td>
 </tr>
 <tr>
 <td>$b=0.49$，正则逆 $\lambda=10^{-4}$</td>
@@ -1909,7 +1909,7 @@ e[j]&=\sin^2(\pi j/127).
 <li><a href="delay_audio/delay_common_residual.wav">统一延迟的一参数拟合残差</a><audio class="audio-sample" controls preload="none" aria-label="统一延迟的一参数拟合残差" src="delay_audio/delay_common_residual.wav">请使用上方 WAV 链接下载。</audio></li>
 <li><a href="delay_audio/delay_aligned_residual.wav">修正延迟的一参数拟合残差</a><audio class="audio-sample" controls preload="none" aria-label="修正延迟的一参数拟合残差" src="delay_audio/delay_aligned_residual.wav">请使用上方 WAV 链接下载。</audio></li>
 </ul>
-<p>固定稳态窗口 $[1536,30720)$（含 $19$ 个完整周期、共 $29184$ 点）按式(7-39)拟合单标量 $g$：单脉冲浮点能量约为 $0.238123$，$38$ 个脉冲总能量约为 $9.048674$（参考均方功率约 $3.1004\times 10^{-4}$）。统一延迟下 $q_{\mathrm c}$ 与 $x_{\mathrm{ref}}$ 逐点重合，得 $g=1$、残差归零；修正延迟下脉冲支撑区间完全错开，得 $r=0,g=0$、残差完整保留参考目标。重读磁盘 PCM16 样本的结果如下（完整数值记录见 <a href="delay_audio/MANIFEST.json"><code>delay_audio/MANIFEST.json</code></a>）：</p>
+<p>固定稳态窗口 $[1536,30720)$（含 $19$ 个完整周期、共 $29184$ 点）按式(7-39)拟合单标量 $g$：单脉冲浮点能量约为 $0.238123$，$38$ 个脉冲总能量约为 $9.048674$（对应 PCM16 参考均方功率约 $3.1004\times 10^{-4}$，浮点为 $3.1006\times 10^{-4}$）。统一延迟下 $q_{\mathrm c}$ 与 $x_{\mathrm{ref}}$ 逐点重合，得 $g=1$、残差归零；修正延迟下脉冲支撑区间完全错开，得 $r=0,g=0$、残差完整保留参考目标。重读磁盘 PCM16 样本的结果如下（完整数值记录见 <a href="delay_audio/MANIFEST.json"><code>delay_audio/MANIFEST.json</code></a>）：</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
 <thead>
 <tr>

@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 14 章 · 空间声场与可穿戴阵列 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="e2a840976a4c"><style>
+<meta name="source-digest" content="f6d48efe6ade"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -1104,7 +1104,7 @@ m=0,1,2,\ldots
 <p><img alt="图79：TWS 通透模式（Hear-Through）处理延迟与耳道漏声梳状滤波效应" src="../figures/fig79_hear_through_comb.png" onerror="this.alt+='（图缺失）'" /></p>
 <p>图 79 从频域传递增益、延迟标度律到 16 位 PCM 实测波形逐项印证了通透模式的梳状滤波机理：</p>
 <ul>
-<li><strong>子图 (a) 通透模式漏声叠加功率增益频响</strong>：横轴为线性频率（$0$～$4500\ \mathrm{Hz}$），纵轴为两路等幅叠加功率增益 $10\log_{10}|H_{\mathrm{total}}(f)|^2$（单位：$\mathrm{dB}$，深谷绘图下限截断于 $-30\ \mathrm{dB}$）。红色实线（$\tau = 2.0\ \mathrm{ms}$）在深灰竖点线标出的 $250\ \mathrm{Hz}$ 及 $750, 1250, \ldots, 4250\ \mathrm{Hz}$ 处周期性跌入相消深谷，而在 $500, 1000, \ldots, 4000\ \mathrm{Hz}$ 处同相叠加抬升至 $+6.02\ \mathrm{dB}$；蓝色虚线（超低延迟 $\tau = 0.1\ \mathrm{ms}$）则在 $0$～$3.5\ \mathrm{kHz}$ 核心语音频带保持平坦，将首个陷波推远至 $5000\ \mathrm{Hz}$。</li>
+<li><strong>子图 (a) 通透模式漏声叠加功率增益频响</strong>：横轴为线性频率（$0$～$4500\ \mathrm{Hz}$），纵轴为两路等幅叠加功率增益 $10\log_{10}|H_{\mathrm{total}}(f)|^2$（单位：$\mathrm{dB}$，深谷绘图下限截断于 $-30\ \mathrm{dB}$）。红色实线（$\tau = 2.0\ \mathrm{ms}$）在深灰竖点线标出的 $250\ \mathrm{Hz}$ 及 $750, 1250, \ldots, 4250\ \mathrm{Hz}$ 处周期性跌入相消深谷，而在 $500, 1000, \ldots, 4000\ \mathrm{Hz}$ 处同相叠加抬升至 $+6.02\ \mathrm{dB}$；蓝色虚线（超低延迟 $\tau = 0.1\ \mathrm{ms}$）则在核心语音频带内避开了相消梳状陷波（在 $0$～$2.5\ \mathrm{kHz}$ 内相对直流电平保持在 $3\ \mathrm{dB}$ 以内，随后平缓滚降，直至将首个陷波推远至 $5000\ \mathrm{Hz}$）。</li>
 <li><strong>子图 (b) 处理延迟 $\tau$ 与首个相消陷波位置</strong>：横轴为端到端处理延迟 $\tau$（单位：$\mathrm{ms}$，对数刻度 $0.05$～$8.0\ \mathrm{ms}$），纵轴为首个相消陷波频率 $f_0$（单位：$\mathrm{Hz}$，对数刻度 $50$～$15000\ \mathrm{Hz}$）。紫色斜率为 $-1$ 的直线绘出反比律 $f_0 = 1/(2\tau)$，黑圆点标出 $(0.1\ \mathrm{ms}, 5000\ \mathrm{Hz})$ 与 $(2.0\ \mathrm{ms}, 250\ \mathrm{Hz})$ 两组设计点，绿色水平虚线标出把首陷波推过 $4\ \mathrm{kHz}$ 语音主频带所需的临界延迟上限 $\tau \le 0.125\ \mathrm{ms}$。</li>
 <li><strong>子图 (c) 实际 PCM 波形片段</strong>：横轴为自第 $1632$ 个采样点（即稳窗起点 $1600$ 再右移 $32$ 点延迟进入完全稳态处）算起的相对时间（$0$～$8\ \mathrm{ms}$，共 $128$ 点，恰含 $250\ \mathrm{Hz}$ 的两个完整周期），纵轴为 PCM 解码数字幅度。蓝色实线（<code>wearable_clean_ref.wav</code>）呈现 $4\ \mathrm{ms}$ 周期的 $250\ \mathrm{Hz}$ 慢波承载 $4\ \mathrm{kHz}$ 快波；红色虚线（<code>wearable_hearthrough_comb.wav</code>）经 $32$ 点延迟叠加后，$250\ \mathrm{Hz}$ 慢波包络完全抵消拉平，仅剩峰值翻倍至 $0.20$ 的 $4\ \mathrm{kHz}$ 等幅振荡。</li>
 <li><strong>子图 (d) 稳窗实际 PCM 双频投影峰值幅度</strong>：横轴为 $250\ \mathrm{Hz}$ 与 $4000\ \mathrm{Hz}$ 两个目标频点，纵轴为 $28800$ 点稳窗离散傅里叶正弦投影测得的峰值幅度。蓝色柱显示干净参考在两频点均为 $0.1000$；红色柱显示 $2\ \mathrm{ms}$ 延迟叠加后 $250\ \mathrm{Hz}$ 峰值跌至 $0.0000$，而 $4000\ \mathrm{Hz}$ 峰值精确翻倍至 $0.2000$。</li>

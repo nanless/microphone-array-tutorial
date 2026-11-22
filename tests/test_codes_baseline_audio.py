@@ -1,4 +1,4 @@
-"""Independent continuous-source/phasor checks and hostile IO for E03-18."""
+"""Independent continuous-source/phasor checks and hostile IO for E03-16."""
 import copy
 import hashlib
 import io

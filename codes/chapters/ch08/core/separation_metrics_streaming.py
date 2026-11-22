@@ -1,7 +1,7 @@
 """Pure-NumPy teaching kernels for convolutive CI-SDR and streaming separation gates.
 
-Covers Chapter 08 exercises E08-33 (causal L-tap Toeplitz CI-SDR vs scalar
-SI-SDR and the L = N over-forgiving boundary) and E08-34 (narrowband-crossband
+Covers Chapter 08 exercises E08-25 (causal L-tap Toeplitz CI-SDR vs scalar
+SI-SDR and the L = N over-forgiving boundary) and E08-26 (narrowband-crossband
 vs Mel-subband streaming MAC/s accounting and the -18 dB single-speaker
 zero-overlap fricative-splitting bypass gate). No SciPy imports; float64.
 """
@@ -232,7 +232,7 @@ def single_speaker_bypass_gate(
 
 
 def ci_sdr_vs_si_sdr_experiment() -> dict:
-    """E08-33: Exact 4-sample hand-calculable comparison of SI-SDR (L=1) vs CI-SDR (L=2, L=4)."""
+    """E08-25: Exact 4-sample hand-calculable comparison of SI-SDR (L=1) vs CI-SDR (L=2, L=4)."""
     s_ref = np.array([1.0, 0.0, -1.0, 0.0], dtype=np.float64)
     s_delay1 = np.array([0.0, 1.0, 0.0, -1.0], dtype=np.float64)
     w_orth = 0.1 * np.array([1.0, -1.0, 1.0, -1.0], dtype=np.float64)
@@ -287,7 +287,7 @@ def ci_sdr_vs_si_sdr_experiment() -> dict:
 
 
 def streaming_mac_and_bypass_experiment() -> dict:
-    """E08-34: Narrowband-crossband MAC/s budget & -18 dB single-speaker fricative bypass gate."""
+    """E08-26: Narrowband-crossband MAC/s budget & -18 dB single-speaker fricative bypass gate."""
     fullband_budget = streaming_subband_mac_budget(
         sample_rate_hz=16000,
         hop_samples=128,

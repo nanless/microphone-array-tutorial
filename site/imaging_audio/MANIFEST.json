@@ -5,18 +5,18 @@
   "samples_per_channel": 48004,
   "common_export_gain": 1.0,
   "source_sha256": {
-    "codes/chapters/ch12/core/imaging.py": "105df5af000ea24052549954b62eb7ae1814b3bc7f48386c3bb9630a796ecf5c",
-    "codes/chapters/ch12/core/imaging_audio.py": "d7e8a880e9fb0e374f7a4d5ae2e29ce7266e6da56de27bce9f4ab7b73ef37946",
-    "codes/chapters/ch12/examples/generate_imaging_audio.py": "c079f208ae8cbc21ff31c5a999032096a47b679606610228804a58dc9e0de3d0",
+    "codes/chapters/ch12/core/imaging.py": "3d5090527300d6ac601f212c485824ccb670ff584132c57590ebea68fdae857d",
+    "codes/chapters/ch12/core/imaging_audio.py": "88340729d1a174bc79444163d16ce95da751ae4e3f94b7468863b3cad0b55b2a",
+    "codes/chapters/ch12/examples/generate_imaging_audio.py": "861a1ce565502ce8dd4f58144968b250c8540408d52a6934d30f0d819e2334ad",
     "codes/chapters/ch02/core/conventions.py": "4e80a27490f05ddd5f4826361420c0c8d0b331464d1e5629c5def492da47b1d7",
-    "codes/chapters/ch00/core/audio_samples.py": "bf1145e19e2ec99623c0583220192922c24f0ed3d293212309fe4a2f3bfc8385",
+    "codes/chapters/ch00/core/audio_samples.py": "1a7aad90d08fb8c27511aa463a6cc6dd6d4d2d230b27ed82549531f1f18edaba",
     "codes/chapters/ch00/io_contracts.py": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974"
   },
   "parameters": {
     "exercise_ids": [
+      "E12-03",
       "E12-04",
-      "E12-05",
-      "E12-10"
+      "E12-08"
     ],
     "sample_rate_hz": 24000,
     "frequency_hz": 2000,

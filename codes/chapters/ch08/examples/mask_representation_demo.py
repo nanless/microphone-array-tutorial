@@ -1,4 +1,4 @@
-"""Generate six E08-28 known-mask WAVs, or strictly read-check without repair."""
+"""Generate six E08-21 known-mask WAVs, or strictly read-check without repair."""
 from __future__ import annotations
 
 if __name__ == '__main__' and not __package__:
@@ -35,7 +35,7 @@ SOURCE_PATHS = (
 
 
 # Reviewed fixed model values/types; not obtained from the runtime report.
-REQUIRED_PARAMETERS = {'exercise_id': 'E08-28',
+REQUIRED_PARAMETERS = {'exercise_id': 'E08-21',
  'sample_rate_hz': 16000,
  'samples_per_channel': 32000,
  'frequencies_hz': [500, 1250],

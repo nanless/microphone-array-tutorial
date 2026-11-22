@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 5 章 · 波束形成 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="e2a840976a4c"><style>
+<meta name="source-digest" content="f6d48efe6ade"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -727,7 +727,7 @@ Q(\alpha)&=\frac{(\alpha+1)^2}{\alpha^2+1/3}\text{。}
 <p><img alt="图16 波束图对比" src="../figures/fig16_beampattern.png" onerror="this.alt+='（图缺失）'" /></p>
 <p><strong>怎么读图 16</strong>：上半平面极坐标并排展示线性幅度 <code>(a)</code> 与分贝幅度 <code>(b)</code>（$-40\ \mathrm{dB}$ 截断）。在同孔径 $8$ 麦半波距下，DSB（蓝实线）对称且首旁瓣 $-12.8\ \mathrm{dB}$，而 MVDR（红虚线，$\mathbf R_{nn}=\mathbf I+10\vec a_{20^\circ}\vec a_{20^\circ}^H$）在 $+20^\circ$ 干扰处将响应压低至 $-50.74\ \mathrm{dB}$，代价是无干扰左半区旁瓣略抬 $1$～$3\ \mathrm{dB}$；绿色点线为更紧凑 $8$ 麦阵（$d=0.2\lambda$）的超指向波束图，因物理孔径仅前者的 $2/5$ 而主瓣更宽，不可脱离孔径尺寸直接排优劣。</p>
 <h3 id="sec-u-827fd77bcc">对角加载、WNG 约束与 LOCATA 实录对照</h3>
-<p>在无失真约束 $\vec w^H\vec a=1$ 下施加白噪声增益下限 $G_{\mathrm{WNG}}\ge G_{\min}$（即 $\|\vec w\|_2^2\le\delta=1/G_{\min}$，要求 $\delta\ge 1/M$），引入非负拉格朗日乘子 $\varepsilon\ge 0$ 写增广拉格朗日函数 $\mathcal L=\vec w^H(\hat{\mathbf R}_{nn}+\varepsilon\mathbf I)\vec w-\varepsilon\delta+\lambda(1-\vec w^H\vec a)+\lambda^*(1-\vec a^H\vec w)$，立即表明 <strong>WNG 范数约束的对偶解等价于对角加载 MVDR</strong>（<a href="https://doi.org/10.1109/TASSP.1987.1165054">Cox, Zeskind &amp; Owen, <em>IEEE TASSP</em>, 1987</a>）。由 KKT 互补松弛条件 $\varepsilon(\|\vec w\|_2^2-\delta)=0$：若未加载已满足 $\|\vec w(0)\|_2^2\le\delta$ 则 $\varepsilon^\star=0$；否则记 $\hat{\mathbf R}_{nn}=\sum_{m=1}^M\lambda_m\vec u_m\vec u_m^H$、$\alpha_m=|\vec u_m^H\vec a|^2$ 与 $S_k(\varepsilon)=\sum_{m=1}^M\alpha_m(\lambda_m+\varepsilon)^{-k}$，则 $\|\vec w(\varepsilon)\|_2^2=S_2/S_1^2$，求导得 $\frac{\mathrm{d}}{\mathrm{d}\varepsilon}(S_2/S_1^2)=2(S_2^2-S_1S_3)/S_1^3\le 0$（由柯西—施瓦茨不等式，只要 $\vec a$ 在至少两个不同特征值上非零即严格单调递减），随 $\varepsilon\to\infty$ 平滑降至 $1/M\le\delta$，故存在唯一正加载量 $\varepsilon^\star>0$ 使解恰好落在边界 $\|\vec w(\varepsilon^\star)\|_2^2=\delta$ 上（闭式反推算例见 <a href="#e05-04">E05-04</a>）。</p>
+<p>在无失真约束 $\vec w^H\vec a=1$ 下施加白噪声增益下限 $G_{\mathrm{WNG}}\ge G_{\min}$（即 $\|\vec w\|_2^2\le\delta=1/G_{\min}$；对单位模导向 $\|\vec a\|_2^2=M$ 要求 $\delta\ge 1/M$，一般导向为 $\delta\ge 1/\|\vec a\|_2^2$），引入非负拉格朗日乘子 $\varepsilon\ge 0$ 写增广拉格朗日函数 $\mathcal L=\vec w^H(\hat{\mathbf R}_{nn}+\varepsilon\mathbf I)\vec w-\varepsilon\delta+\lambda(1-\vec w^H\vec a)+\lambda^*(1-\vec a^H\vec w)$，立即表明 <strong>WNG 范数约束的对偶解等价于对角加载 MVDR</strong>（<a href="https://doi.org/10.1109/TASSP.1987.1165054">Cox, Zeskind &amp; Owen, <em>IEEE TASSP</em>, 1987</a>）。由 KKT 互补松弛条件 $\varepsilon(\|\vec w\|_2^2-\delta)=0$：若未加载已满足 $\|\vec w(0)\|_2^2\le\delta$ 则 $\varepsilon^\star=0$；否则记 $\hat{\mathbf R}_{nn}=\sum_{m=1}^M\lambda_m\vec u_m\vec u_m^H$、$\alpha_m=|\vec u_m^H\vec a|^2$ 与 $S_k(\varepsilon)=\sum_{m=1}^M\alpha_m(\lambda_m+\varepsilon)^{-k}$，则 $\|\vec w(\varepsilon)\|_2^2=S_2/S_1^2$，求导得 $\frac{\mathrm{d}}{\mathrm{d}\varepsilon}(S_2/S_1^2)=2(S_2^2-S_1S_3)/S_1^3\le 0$（由柯西—施瓦茨不等式，只要 $\vec a$ 在至少两个不同特征值上非零即严格单调递减），随 $\varepsilon\to\infty$ 平滑降至 $1/\|\vec a\|_2^2$（单位模导向下即 $1/M\le\delta$），故存在唯一正加载量 $\varepsilon^\star>0$ 使解恰好落在边界 $\|\vec w(\varepsilon^\star)\|_2^2=\delta$ 上（闭式反推算例见 <a href="#e05-04">E05-04</a>）。</p>
 <p>为保证尺度不变性，本书采用无量纲相对对角加载系数 $\alpha_{\mathrm{dl}}\ge 0$（对应第 4 章 Capon 谱中的无量纲加载符号 $\eta$，避免与 DMA 延迟比 $\alpha$ 及遗忘因子混淆）：</p>
 <p>$$\hat{\mathbf R}_{nn,\mathrm{load}}=\hat{\mathbf R}_{nn}+\alpha_{\mathrm{dl}}\,\frac{\operatorname{tr}(\hat{\mathbf R}_{nn})}{M}\mathbf I\text{。}\tag{5-10}$$</p>
 <p>$\alpha_{\mathrm{dl}}$ 是连接纯数据驱动 MVDR（$\alpha_{\mathrm{dl}}\to 0$）与纯几何 DSB（$\alpha_{\mathrm{dl}}\to\infty$）的连续旋钮：增大 $\alpha_{\mathrm{dl}}$ 降低条件数、抬升 $\mathrm{WNG}_{\mathrm{dB}}$，但使干扰零陷变浅；评测时必须将求出的权重代回<strong>未加载真实物理协方差</strong>评分。</p>
@@ -863,7 +863,7 @@ G_\mu=\frac{\phi_s q}{\mu+\phi_s q},\\
 =(\mathbf P-\mu_{\mathrm{step}}\mathbf P\mathbf R_{xx}\mathbf P)\vec v_e[l],\\
 0&\lt \mu_{\mathrm{step}}\lt \frac{2}{\lambda_{\max}(\mathbf P\mathbf R_{xx}\mathbf P)}\text{。}
 \end{aligned}$$</p>
-<p>零空间内每个正特征模态 $\lambda_k(\mathbf P\mathbf R_{xx}\mathbf P)$ 按 $(1-\mu_{\mathrm{step}}\lambda_k)^l$ 衰减，因此保证全部模态收敛（$|1-\mu_{\mathrm{step}}\lambda_k|\lt 1$）的充要条件正是上式给出的步长上界。</p>
+<p>在 $\mathbf R_{xx}\succ\mathbf 0$ 的前提下，约束零空间内的全部特征模态均满足 $\lambda_k(\mathbf P\mathbf R_{xx}\mathbf P)>0$，并按 $(1-\mu_{\mathrm{step}}\lambda_k)^l$ 衰减，因此保证全部零空间模态均值收敛（$|1-\mu_{\mathrm{step}}\lambda_k|\lt 1$）的充要条件正是上式给出的步长上界。</p>
 <p>单步实/复约束手算核验见 <a href="#e05-06">E05-06</a>。下表对照 Frost 投影与下一节广义旁瓣对消器（GSC）：</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
 <thead>
@@ -979,7 +979,7 @@ E_1(\nu)=\int_\nu^\infty\frac{e^{-t}}{t}\,\mathrm{d}t,\\
 \exp\!\left[-|Y|^2\left(\frac{1}{\hat\lambda_d}-\frac{1}{\hat\lambda_d+\phi_s}\right)\right]\\
 &=(1+\xi)\exp\!\left(-\gamma\frac{\xi}{1+\xi}\right)\text{。}
 \end{aligned}$$</p>
-<p>再由贝叶斯公式得后验存在概率 $p_s=P(H_1\mid Y)$，最小化全概率对数幅度均方误差 $\mathbb{E}[(\ln|S|-\ln|\hat S|)^2\mid Y]$ 给出后验条件期望 $\ln|\hat S|=p_s\mathbb{E}[\ln|S|\mid Y,H_1]+(1-p_s)\mathbb{E}[\ln|S|\mid Y,H_0]=p_s\ln(G_{H_1}|Y|)+(1-p_s)\ln(G_{\min}|Y|)$，整理为 $\ln G=p_s\ln G_{H_1}+(1-p_s)\ln G_{\min}$ 并取指数，即得 <strong>OM-LSA 几何组合增益</strong>（Cohen &amp; Berdugo, 2001）：</p>
+<p>再由贝叶斯公式得后验存在概率 $p_s=P(H_1\mid Y)$。最小化全概率对数幅度均方误差 $\mathbb{E}[(\ln|S|-\ln|\hat S|)^2\mid Y]$ 形式上对应后验条件期望 $p_s\mathbb{E}[\ln|S|\mid Y,H_1]+(1-p_s)\mathbb{E}[\ln|S|\mid Y,H_0]$；但由于 $H_0$ 下 $S=0$ 使无约束 $\ln|S|$ 发散至 $-\infty$，OM-LSA 在 $H_0$ 下施加约束地板增益 $G_{H_0}=G_{\min}$，以 $\ln(G_{\min}|Y|)$ 替代 $H_0$ 条件项，从而得到 $\ln|\hat S|=p_s\ln(G_{H_1}|Y|)+(1-p_s)\ln(G_{\min}|Y|)$，整理为 $\ln G=p_s\ln G_{H_1}+(1-p_s)\ln G_{\min}$ 并取指数，即得 <strong>OM-LSA 几何组合增益</strong>（Cohen &amp; Berdugo, 2001）：</p>
 <p>$$\begin{aligned}
 \ell&=(1+\xi)\exp\!\left(-\frac{\gamma\xi}{1+\xi}\right),\qquad
 p_s=\left[1+\frac{q_0}{1-q_0}\ell\right]^{-1},\\

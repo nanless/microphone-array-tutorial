@@ -77,7 +77,7 @@ def framewise_filter(signal: np.ndarray, impulse_response: np.ndarray, *,
 
 
 def finite_window_example() -> dict:
-    """E02-16: all six output samples and both distinct approximation errors."""
+    """E02-14: all six output samples and both distinct approximation errors."""
     source = np.array([1., 2., 3., 4.])
     h = np.array([1., 0., .5])
     padded = np.pad(source, (0, h.size-1))

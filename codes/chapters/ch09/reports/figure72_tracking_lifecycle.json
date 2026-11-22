@@ -5,15 +5,15 @@
   "source_sha256": {
     "scripts/make_tracking_figures.py": "78558075fb723e39c4cd024def6d1483d967832f9c7b7b04a91d0cdc3c268192",
     "codes/chapters/ch09/core/lifecycle.py": "a310bf9e3681ce207fcb007ffc113b79ff1f64a255c6546b57c5253c10967baa",
-    "codes/chapters/ch09/examples/tracking_lifecycle_demo.py": "7cdbb9debbeef63320b5a726a4c4485f9e159aaa3635da7b3126271406764026",
+    "codes/chapters/ch09/examples/tracking_lifecycle_demo.py": "bef3b160d6bb652a1f15199100bae52e0bcf42ff59fffbab09fe195a244d6e6a",
     "codes/chapters/ch09/examples/chapter09_tracking_audio.py": "bb128dbb499063a87849d1b8d2db86cc39dae966c69a792d1734b2dc21433aa3",
-    "codes/chapters/ch09/core/tracking_audio.py": "a868fc2a5ee11ae6b081b72b6f6ea6d9178958582f463f51edc7c08c9b11ea08",
+    "codes/chapters/ch09/core/tracking_audio.py": "2572fefa9e8e92a3cc3b8acdcbf58b0f4c65ba5916e4ce30958de4eaa6dcac58",
     "codes/chapters/ch09/core/moving_source.py": "4ccc164ebc8daa82394591f28f4ce83d31ff3929e8e2e237736cae59168a177a",
-    "codes/chapters/ch09/core/tracking.py": "7df5c5aca6f7c4b3783c2b2382ed00fafd54a81b773963a29c322f8281a35dbd",
+    "codes/chapters/ch09/core/tracking.py": "7fd1a623ed775fce96d137f2da4afc727128710fd16dc13628cb861345c05c13",
     "codes/chapters/ch04/core/doa.py": "33582d40ec9030537709d79bf13f4a904d2246f388e628aada7f66e8fb6dec04",
     "codes/chapters/ch04/core/covariance.py": "d704be037100ee53caf6e2130fbabbe14ce6eeff9e3d11dde389fd368d271249",
     "codes/chapters/ch02/core/conventions.py": "4e80a27490f05ddd5f4826361420c0c8d0b331464d1e5629c5def492da47b1d7",
-    "codes/chapters/ch00/core/audio_samples.py": "bf1145e19e2ec99623c0583220192922c24f0ed3d293212309fe4a2f3bfc8385",
+    "codes/chapters/ch00/core/audio_samples.py": "1a7aad90d08fb8c27511aa463a6cc6dd6d4d2d230b27ed82549531f1f18edaba",
     "codes/chapters/ch00/io_contracts.py": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974"
   },
   "environment": {
@@ -24,16 +24,16 @@
   "input_sha256": {
     "source.wav": "a0720d594ebcd089305c83dcad5da694a8c82134592b02de4eabf0fd464b8d5e",
     "array_noisy.wav": "5b53f0f4e44df1ef62f86a540bd423a375ba15c7215f60bcada3e8e53a2fcf12",
-    "MANIFEST.json": "2357e99b565441b86913548f8c600368e3ff1ee5ce0ea771607e78e6c5be8037"
+    "MANIFEST.json": "e74afd4755e4affe8f9fa729c14d5030679ed08836397b85bbbfebaa8ad6da32"
   },
   "analysis_scores": {
     "frame_count": 197,
     "valid_observation_count": 173,
     "missing_observation_count": 24,
     "initialized_missing_count": 24,
-    "raw_valid_rmse_deg": 2.822619623361547,
-    "filtered_valid_rmse_deg": 1.1505400012634297,
-    "filtered_missing_rmse_deg": 0.35257119225093636
+    "raw_valid_rmse_deg": 2.822619623361542,
+    "filtered_valid_rmse_deg": 1.1505400012634315,
+    "filtered_missing_rmse_deg": 0.3525711922509324
   },
   "parameters": {
     "sample_rate_hz": 16000,

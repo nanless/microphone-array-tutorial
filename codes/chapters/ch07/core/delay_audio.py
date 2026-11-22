@@ -28,7 +28,7 @@ LIMITS = ('Original deterministic 500 Hz pulse control, not speech, STFT-WPE, a 
 
 
 def parameters() -> dict:
-    return {'exercise_id': 'E07-24', 'sample_rate_hz': 16000, 'hop_samples': 128,
+    return {'exercise_id': 'E07-19', 'sample_rate_hz': 16000, 'hop_samples': 128,
             'source_samples': 32256, 'samples_per_channel': 33024,
             'source_period_samples': 1536, 'source_period_frames': 12, 'source_periods': 21,
             'pulse_start_frames_in_period': [0, 4], 'pulse_samples': 128,

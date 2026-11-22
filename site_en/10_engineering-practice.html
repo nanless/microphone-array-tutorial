@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Chapter 10 · Real-Time Systems, Evaluation & Deployment · Microphone Array Signal Processing</title>
-<meta name="source-digest" content="349f9b579bab"><style>
+<meta name="source-digest" content="08a908611fde"><style>
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -682,7 +682,7 @@ $$</p>
 </tr>
 </tbody>
 </table></div>
-<p>The acoustic spacing on the left exceeds the pure forward driver estimate on the right by $\approx 92\ \mathrm{ms}$—corresponding cleanly to the second acoustic trip from speaker through air to mic and into the capture buffer—while switching the software buffer from $60\ \mathrm{ms}$ to $100\ \mathrm{ms}$ shifts the two columns by $40.00\text{--}40.02\ \mathrm{ms}$ and an exact $40.00\ \mathrm{ms}$ respectively ($15{,}314$ total callbacks across four streams with zero <code>xrun</code>s), confirming exact sample-by-sample timestamp pairing (single- and variable-length callback arithmetic is worked out in Exercise <a href="#e10-17">E10-17</a>).</p>
+<p>The acoustic spacing on the left exceeds the pure forward driver estimate on the right by $\approx 92\ \mathrm{ms}$—corresponding cleanly to the second acoustic trip from speaker through air to mic and into the capture buffer—while switching the software buffer from $60\ \mathrm{ms}$ to $100\ \mathrm{ms}$ shifts the left column by $40.00\text{--}40.02\ \mathrm{ms}$ and keeps the right column tightly centered at $40.00\ \mathrm{ms}$ (within $\pm 1\ \mu\mathrm{s}$; $15{,}314$ total callbacks across four streams with zero <code>xrun</code>s), confirming accurate sample-by-sample timestamp pairing (single- and variable-length callback arithmetic is worked out in Exercise <a href="#e10-17">E10-17</a>).</p>
 <p>On mobile platforms (especially Android phones, tablets, and automotive head units), a common low-level pitfall frequently costs algorithm teams weeks of debugging: <strong>hidden preprocessing enabled silently inside the OS Hardware Abstraction Layer (HAL)</strong>. Opening capture on Android with the telephony preset <code>MediaRecorder.AudioSource.VOICE_COMMUNICATION</code> (or a default microphone path with vendor voice preprocessing attached) causes the audio HAL to automatically enable built-in single-/dual-mic AGC, noise suppression, high-pass filters, or even platform AEC; these opaque nonlinear gains and phase distortions destroy raw inter-microphone phase differences and linear echo paths, collapsing custom MVDR nulls and spiking AEC residuals. Meanwhile, although the Android Compatibility Definition Document (CDD) requires <code>VOICE_RECOGNITION</code> to disable AGC and noise suppression by default (making it a common fallback on legacy devices lacking unprocessed capture), vendors may still retain mono-ASR equalization or pre-emphasis on that route, so it is <em>not</em> equivalent to strictly unmodified raw multichannel audio. When capturing raw arrays via C++ Oboe or native AAudio on Android, lock down a clean path in three mandatory steps:</p>
 <ol>
 <li>Query <code>AudioManager.PROPERTY_SUPPORT_AUDIO_SOURCE_UNPROCESSED</code> first to verify true firmware unprocessed support;</li>
@@ -1445,7 +1445,7 @@ $$</p>
 <li><strong>Stage-1 Always-On Ultra-Low-Power Island</strong>: Powers down the main AP and three mics, keeping a single low-power mic plus a microwatt Always-On DSP/MCU running lightweight VAD + tiny tens-of-KB Stage-1 KWS alongside a $500\text{--}800\ \mathrm{ms}$ circular pre-roll buffer in on-chip SRAM at just $P_{\mathrm{aon}}=1.5\ \mathrm{mW}$;</li>
 <li><strong>Stage-2 On-Demand Full-Array Verification &amp; Interaction Domain</strong>: Only when Stage 1 spots a candidate wake phrase does a hardware interrupt wake the main AP and power all mics within milliseconds—burst-flushing the SRAM pre-roll buffer into high-precision Stage-2 KWS to reject false alarms while seamlessly handing off subsequent audio to multi-mic beamforming and streaming ASR.</li>
 </ol>
-<p>At a $d=2\%$ daily AP wake duty cycle ($\approx 28.8\ \mathrm{min/day}$ combining real commands and noisy Stage-1 candidates), average front-end power drops to:</p>
+<p>At a $d=2\%$ daily AP wake duty cycle ($\approx 28.8\ \mathrm{min/day}$ combining real commands and noisy Stage-1 candidates, treating $P_{\mathrm{active}}$ as the incremental active power drawn on top of the always-on island), average front-end power drops to:</p>
 <p>$$
 \begin{aligned}
 P_{\mathrm{avg}}&=P_{\mathrm{aon}}+d\cdot P_{\mathrm{active}}\\
@@ -1793,7 +1793,7 @@ $$</p>
 <tbody>
 <tr>
 <td><a href="https://webrtc.googlesource.com/src/+/0467d2b91cc20b9b001c2bbb73d43ea6b2491f3e/modules/audio_processing/aec3/">WebRTC AEC3</a></td>
-<td>Real-time delay estimation, linear adaptive filtering, and RES split (see §6.8)</td>
+<td>Real-time delay estimation, linear adaptive filtering, and RES split (see §6.7.2)</td>
 <td>Internal constants are not universal product thresholds; covers neither DOA nor WPE</td>
 </tr>
 <tr>
@@ -2047,7 +2047,7 @@ $$</p>
       {\widehat S_{mm}(f)\,\widehat S_{kk}(f)}
     \tag{10-27}
     $$</p>
-<p>must inevitably approach $1$—in a 3-D isotropic diffuse sound field, two omnidirectional microphones separated by $d$ have theoretical MSC $\gamma_{mk}^2(f)=\operatorname{sinc}^2(2fd/c)$ (for example, $\gamma_{mk}^2\approx 0.975$ at $f=300\ \mathrm{Hz},\ d=5\ \mathrm{cm},\ c=343\ \mathrm{m/s}$). Conversely, for an independent uncorrelated faulty channel, the sample MSC estimated over $K_{\mathrm{snap}}$ independent stationary spectral snapshots follows the null distribution $\hat{\gamma}^2\sim\mathrm{Beta}(1,K_{\mathrm{snap}}-1)$ (Goodman 1957; Carter 1987), with closed-form false-alarm tail probability $\Pr(\hat{\gamma}^2>\tau)=(1-\tau)^{K_{\mathrm{snap}}-1}$ (e.g., $\approx 1.1\times 10^{-3}$ at $K_{\mathrm{snap}}=20,\ \tau=0.3$), providing an explicit statistical basis for choosing fault-detection thresholds. If channel $m$ alone has $\gamma_{mk}^2(f)\approx 0$ against <strong>every</strong> neighbor during active speech despite normal RMS, it is emitting uncorrelated thermal noise, desynchronized bit-slip errors, or severe nonlinear distortion.</p>
+<p>must inevitably approach $1$—in a 3-D isotropic diffuse sound field, two omnidirectional microphones separated by $d$ have theoretical MSC $\gamma_{mk}^2(f)=\operatorname{sinc}^2(2fd/c)$ (for example, $\gamma_{mk}^2\approx 0.975$ at $f=300\ \mathrm{Hz},\ d=5\ \mathrm{cm},\ c=343\ \mathrm{m/s}$). Conversely, for an independent uncorrelated faulty channel (null hypothesis $H_0:\gamma^2=0$), the sample MSC estimated over $K_{\mathrm{snap}}\ge 2$ independent non-overlapping stationary spectral snapshots follows $\hat{\gamma}^2\sim\mathrm{Beta}(1,K_{\mathrm{snap}}-1)$ (Goodman 1957; Carter 1987), with closed-form upper-tail probability $\Pr(\hat{\gamma}^2>\tau\mid H_0)=(1-\tau)^{K_{\mathrm{snap}}-1}$. This quantity is the <strong>coherence-detection false-alarm probability</strong>—equivalently, for a fault detector flagging $\hat{\gamma}^2\le\tau$, the <strong>fault missed-detection (false-negative) probability</strong> that an uncorrelated faulty channel exceeds $\tau$ by chance and escapes detection ($\approx 1.1\times 10^{-3}$ at $K_{\mathrm{snap}}=20,\ \tau=0.3$); bounding false alarms on healthy channels instead requires the noncentral MSC distribution evaluated at the healthy baseline $\gamma^2>0$. If channel $m$ alone has $\gamma_{mk}^2(f)\approx 0$ against <strong>every</strong> neighbor during active speech despite normal RMS, it is emitting uncorrelated thermal noise, desynchronized bit-slip errors, or severe nonlinear distortion.</p>
 </li>
 <li>
 <p><strong>Built-in loudspeaker playback self-test (active BIST on speaker-equipped devices)</strong>: Smart speakers, conference bars, and car head units compare per-mic normalized cross-correlation peaks and AEC main-tap energies during boot chimes or normal playback against factory golden baselines, isolating degraded or blocked ports in seconds without external gear.</p>

@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 2 章 · 声音到达阵列时发生了什么 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="e2a840976a4c"><style>
+<meta name="source-digest" content="f6d48efe6ade"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -1905,7 +1905,7 @@ U_g=\frac1N\sum_{q=0}^{N-1}g^2[q],\\
     \varphi(t)=2\pi f_1 L_s\left(e^{t/L_s}-1\right),\\
     u[n]&=A_s\,a[n]\sin\varphi(n/f_s)\text{。}
     \end{aligned}\tag{2-25}$$</p>
-<p>其中匹配逆滤波器在时域反褶的基础上乘以指数包络 $e^{-t/L_s}$（每倍频程幅度减半，即 $-6\ \mathrm{dB/oct}$ 加权以白化粉红扫频谱），使第 $k$ 阶谐波失真严格分离到线性主脉冲左侧 $\Delta t_k=L_s\ln k$ 处。实验在 $f_s=16\ \mathrm{kHz}$ 下生成 $2\ \mathrm{s}$（$32000$ 点）从 $f_1=100\ \mathrm{Hz}$ 扫到 $f_2=6000\ \mathrm{Hz}$ 的测试信号（幅度 $A_s=0.2$，首尾 $10\ \mathrm{ms}$ 渐变），送入两抽头路径 $h[0]=0.8, h[160]=0.25$（完整响应含 $160$ 点反射尾共 $32160$ 点），配套四份合成 WAV 音频（<a href="sweep_audio/sweep_source.wav">扫频激励</a><audio class="audio-sample" controls preload="none" aria-label="扫频激励" src="sweep_audio/sweep_source.wav">请使用上方 WAV 链接下载。</audio>、<a href="sweep_audio/sweep_complete.wav">完整响应</a><audio class="audio-sample" controls preload="none" aria-label="完整响应" src="sweep_audio/sweep_complete.wav">请使用上方 WAV 链接下载。</audio>、<a href="sweep_audio/sweep_noisy.wav">加噪响应</a><audio class="audio-sample" controls preload="none" aria-label="加噪响应" src="sweep_audio/sweep_noisy.wav">请使用上方 WAV 链接下载。</audio>与<a href="sweep_audio/sweep_cut.wav">截尾响应</a><audio class="audio-sample" controls preload="none" aria-label="截尾响应" src="sweep_audio/sweep_cut.wav">请使用上方 WAV 链接下载。</audio>，参数与校验见<a href="sweep_audio/MANIFEST.json">扫频音频独立清单</a>）。在 $N_{\mathrm{FFT}}=65536$ 点全区间上定义相对误差能量 $\varepsilon_h$：</p>
+<p>其中匹配逆滤波器在时域反褶的基础上乘以指数包络 $e^{-t/L_s}$（每倍频程幅度减半，即 $-6\ \mathrm{dB/oct}$ 加权以白化粉红扫频谱），使第 $k$ 阶谐波失真严格分离到线性主脉冲左侧 $\Delta t_k=L_s\ln k$ 处。下面的配套音频实验并不实现 Farina 的时域反褶谐波分离滤波器，而是对纯线性两抽头 FIR 路径直接施加式(2-23)的逐频循环 Tikhonov 正则求逆，以单独隔离尾部截断、后加噪声与 16 位 PCM 量化三类误差。实验在 $f_s=16\ \mathrm{kHz}$ 下生成 $2\ \mathrm{s}$（$32000$ 点）从 $f_1=100\ \mathrm{Hz}$ 扫到 $f_2=6000\ \mathrm{Hz}$ 的测试信号（幅度 $A_s=0.2$，首尾 $10\ \mathrm{ms}$ 渐变），送入两抽头路径 $h[0]=0.8, h[160]=0.25$（完整响应含 $160$ 点反射尾共 $32160$ 点），配套四份合成 WAV 音频（<a href="sweep_audio/sweep_source.wav">扫频激励</a><audio class="audio-sample" controls preload="none" aria-label="扫频激励" src="sweep_audio/sweep_source.wav">请使用上方 WAV 链接下载。</audio>、<a href="sweep_audio/sweep_complete.wav">完整响应</a><audio class="audio-sample" controls preload="none" aria-label="完整响应" src="sweep_audio/sweep_complete.wav">请使用上方 WAV 链接下载。</audio>、<a href="sweep_audio/sweep_noisy.wav">加噪响应</a><audio class="audio-sample" controls preload="none" aria-label="加噪响应" src="sweep_audio/sweep_noisy.wav">请使用上方 WAV 链接下载。</audio>与<a href="sweep_audio/sweep_cut.wav">截尾响应</a><audio class="audio-sample" controls preload="none" aria-label="截尾响应" src="sweep_audio/sweep_cut.wav">请使用上方 WAV 链接下载。</audio>，参数与校验见<a href="sweep_audio/MANIFEST.json">扫频音频独立清单</a>）。在 $N_{\mathrm{FFT}}=65536$ 点全区间上定义相对误差能量 $\varepsilon_h$：</p>
 <p>$$\begin{aligned}
     \varepsilon_h&=\frac{\sum_{n=0}^{N_{\mathrm{FFT}}-1}|\widehat h[n]-h[n]|^2}
     {\sum_{n=0}^{N_{\mathrm{FFT}}-1}|h[n]|^2}\text{。}
@@ -1948,7 +1948,7 @@ U_g=\frac1N\sum_{q=0}^{N-1}g^2[q],\\
 <td style="text-align: right;">$0$ ／ $10^{-6}$</td>
 <td style="text-align: right;">$290$ ／ $0.264$</td>
 <td style="text-align: right;">$301$ ／ $0.264$</td>
-<td>提前停录破坏线性卷积尾，无正则放大数百倍</td>
+<td>提前停录破坏线性卷积尾，无正则放大数百倍（约 $300$ 倍）</td>
 </tr>
 </tbody>
 </table></div>

@@ -219,9 +219,9 @@ $$\frac{\mathrm{d}}{\mathrm{d}z}\|\vec a_i\|_2^2
 
 Sarradj 在三维声源映射研究中系统对比了四类经典导向权重约定（参见 [Sarradj 2012，§2.1～2.5 式(7)～(13) 与表 1](https://doi.org/10.1155/2012/292695) 及 Acoular 的 `steer_type` 命名），其精确公式与近场/远场特性如下表所示：
 
-| 约定与 Acoular 名称 | 导向权重精确表达式 | 无噪单源 3D 峰位 | 真源位源强读数 | 远场等幅退化（$|a_{mi}|=1$） |
+| 约定与 Acoular 名称 | 导向权重精确表达式 | 无噪单源 3D 峰位 | 真源位源强读数 | 远场等幅退化（$\lvert a_{mi}\rvert=1$） |
 |---|---|---|---|---|
-| Formulation I（`classic`） | $w_{mi}^{\mathrm{I}} = \dfrac{1}{M}\dfrac{a_{mi}}{|a_{mi}|} = \dfrac{1}{M}e^{-\mathrm{j}\kappa\Delta r_{mi}}$ | **无偏**（等幅加权，SNR 次优于 IV） | 有偏（等于 $\frac{q_j}{M^2}(\sum_m \frac{r_{0j}}{r_{mj}})^2$） | $\vec a_i / M$ |
+| Formulation I（`classic`） | $w_{mi}^{\mathrm{I}} = \dfrac{1}{M}\dfrac{a_{mi}}{\lvert a_{mi}\rvert} = \dfrac{1}{M}e^{-\mathrm{j}\kappa\Delta r_{mi}}$ | **无偏**（等幅加权，SNR 次优于 IV） | 有偏（等于 $\frac{q_j}{M^2}(\sum_m \frac{r_{0j}}{r_{mj}})^2$） | $\vec a_i / M$ |
 | Formulation II（`inverse`） | $w_{mi}^{\mathrm{II}} = \dfrac{1}{M}\dfrac{1}{a_{mi}^*} = \dfrac{1}{M}\dfrac{r_{mi}}{r_{0i}}e^{-\mathrm{j}\kappa\Delta r_{mi}}$ | 有偏 | 无偏（$\vec w_i^H\vec a_i=1$） | $\vec a_i / M$ |
 | Formulation III（`true level`，式(12-8)） | $\vec w_i^{\mathrm{III}} = \dfrac{\vec a_i}{\|\vec a_i\|_2^2}$ | 有偏 | 无偏（且 WNG 最优） | $\vec a_i / M$ |
 | Formulation IV（`true location`） | $\vec w_i^{\mathrm{IV}} = \dfrac{\vec a_i}{\sqrt{M}\|\vec a_i\|_2}$ | **无偏**（$1/r$ 匹配，SNR 优于 I） | 有偏（等于 $\frac{\|\vec a_j\|_2^2}{M}q_j$） | $\vec a_i / M$ |
@@ -453,7 +453,7 @@ $$\vec h=\frac{\mathbf R\vec w_1}{17/16}=\begin{pmatrix}
 1-\mathrm{j}\sqrt{3}/17
 \end{pmatrix}.$$
 
-**最终结果与边界解读**：计算 $\mathbf G = \frac{17}{16}\vec h\vec h^H$（其对角元为 $\frac{17}{16}(1 + 3/289) = 19/17$，右上元由 $\frac{17}{16}(1 + \mathrm{j}\sqrt{3}/17)^2$ 化简得 $\frac{143}{136} + \mathrm{j}\frac{\sqrt{3}}{8}$），取 $\phi = 1$ 从 $\mathbf R$ 中整块扣除后，剩余残差矩阵为
+**最终结果与边界解读**：计算 $\mathbf G = \frac{17}{16}\vec h\vec h^H$（其对角元为 $\frac{17}{16}(1 + 3/289) = 73/68$，右上元由 $\frac{17}{16}(1 + \mathrm{j}\sqrt{3}/17)^2$ 化简得 $\frac{143}{136} + \mathrm{j}\frac{\sqrt{3}}{8}$），取 $\phi = 1$ 从 $\mathbf R$ 中整块扣除后，剩余残差矩阵为
 
 $$\begin{aligned}
 \mathbf D_{\mathrm{next}}&=\mathbf R-\mathbf G\\
@@ -687,7 +687,7 @@ b_i=\vec w_i^H\mathbf R_{\mathrm{coh}}\vec w_i,\qquad
 图 63 通过四个子图对照，展示了迭代遍历定义、源间相干失配与 CLEAN-SC 能量剥离的核心特征（对应 [E12-02](#e12-02)、[E12-04](#e12-04) 与 [E12-09](#e12-09)）：
 
 - **子图 (a) DAMAS 遍历方向与收敛轨迹**：横轴为外层轮数，对数纵轴为两格算例的最大源量误差。在 $J = 2$ 两格特例下，前向遍历结束于更新 $q_2$，反向遍历首步立刻重复更新同一边界分量 $q_2$（幂等不变）后再更新 $q_1$，下一轮前向首步又会重复更新 $q_1$（同样幂等不变）；因此橙色双向曲线与蓝色单向曲线在对数图上呈**严格平行下降**（每轮衰减因子完全相同，均为 $1/16$），橙线仅因第 $1$ 轮多执行了一次有效 $q_1$ 更新而恒定领先半次遍历（误差始终为蓝线的 $1/4$）。只有当网格数 $J \ge 3$ 时，双向对称迭代每轮执行 $2J - 2$ 次有效更新、单向执行 $J$ 次，随着 $J$ 增大每轮衰减速率才趋近单向的两倍（且乘加工作量同步翻倍，评估速度须对齐有效更新次数）。
-- **子图 (b) 源间互相干系数对反演的拉偏**：固定两源真实边际功率 $1.0$（蓝水平虚线）和 $0.25$（红水平虚线），将实相干系数 $\gamma$ 从 $-1$ 扫到 $+1$；仅在 $\gamma = 0$ 时非相干逆解（实线）穿过真值，正相干导致高估，负相干导致低估。
+- **子图 (b) 源间互相干系数对反演的拉偏**：固定两源真实边际功率 $1.0$（蓝水平点线）和 $0.25$（红水平点线），将实相干系数 $\gamma$ 从 $-1$ 扫到 $+1$；仅在 $\gamma = 0$ 时非相干逆解（实线）穿过真值，正相干导致高估，负相干导致低估。
 - **子图 (c) 零扫描残差下的相干错解**：在 $\gamma = 1$ 完全相干算例中，非相干逆解 $[1.20, 0.45]$（红柱）偏离真实边际功率 $[1.00, 0.25]$（绿柱）；尽管扫描残差为零，完整 CSM 相对残差高达 $0.3873$，直接暴露了非相干假设失效。
 - **子图 (d) 完整 CSM 单源 CLEAN-SC 剥离过程**：单源真值为 $2$（绿点线），循环增益 $\phi = 0.6$；随轮数推进，剩余峰值扫描量 $2 \times 0.4^\ell$（橙虚线）单调衰减趋零，干净图累计功率 $2(1 - 0.4^\ell)$（蓝实线）在 $20$ 轮逼近真值 $2$。四个子图纵轴量纲各异，用于核验各自机理而非横向排名。
 

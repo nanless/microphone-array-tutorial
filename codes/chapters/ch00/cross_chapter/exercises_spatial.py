@@ -154,7 +154,7 @@ def spatial_alias() -> dict:
 
 
 def mwf_rank_condition() -> dict:
-    """E05-01: exact linear MWF versus the rank-one trace identity."""
+    """Helper (see E05-11 / §5.5.1): exact linear MWF versus the rank-one trace identity."""
     rows = []
     for diagonal in ([2.0, 1.0], [2.0, 0.0]):
         target = np.diag(diagonal)
@@ -167,7 +167,7 @@ def mwf_rank_condition() -> dict:
 
 
 def mvdr_loading_tradeoff() -> dict:
-    """E05-02: target response, WNG and a fixed interferer under relative loading."""
+    """Helper (see Worked Example 5-2 / E05-04): target response, WNG and a fixed interferer under relative loading."""
     target = np.ones(2, dtype=complex)
     interferer = np.array([1.0, 1.0j])
     noise = 10 * np.outer(interferer, interferer.conj()) + np.eye(2)
@@ -294,7 +294,7 @@ def mdl_candidate_scores() -> dict:
 
 
 def beam_output_noise() -> dict:
-    """E05-03: separate input noise estimate from DSB residual-noise PSD."""
+    """Helper (see Worked Example 5-4): separate input noise estimate from DSB residual-noise PSD."""
     weight = np.ones(3) / 3
     noise_covariance = .7 * np.eye(3) + .3 * np.ones((3, 3))
     noise_output = float(weight @ noise_covariance @ weight)
@@ -309,7 +309,7 @@ def beam_output_noise() -> dict:
 
 
 def complex_constraint_response() -> dict:
-    """E05-04: C.H w=f implies the actual response vector is conj(f)."""
+    """E05-01: C.H w=f implies the actual response vector is conj(f)."""
     constraints = np.eye(2, dtype=complex)
     desired = np.array([1., 1.j])
     wrong = lcmv_weights(np.eye(2), constraints, desired)
@@ -390,7 +390,7 @@ def complex_gain_calibration() -> dict:
 
 
 def mvdr_finite_noise_null() -> dict:
-    """E05-05: finite INR leaves residual response at the interferer."""
+    """E05-02: finite INR leaves residual response at the interferer."""
     target = np.ones(2, dtype=complex)
     interferer = np.array([1., 1j])
     rows = []

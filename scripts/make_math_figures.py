@@ -525,7 +525,7 @@ def _build_fig91(sources: dict[str, str]) -> None:
     )
     ax.plot(
         unit_circle[0], unit_circle[1], color=C_BLUE, linestyle="--", linewidth=2.0,
-        label=r"白化权重空间单位圆 $\|\mathbf{L}^\top\vec{w}\|_2=1$",
+        label=r"白化权重空间单位圆 $\|\tilde{\vec{w}}\|_2=1$（$\tilde{\vec{w}}=\mathbf{L}^\top\vec{w}$）",
     )
     # Show the actual principal semi-axes of R_nn = [[2,1],[1,2]] (lambda_max=3 at +45°, lambda_min=1 at -45°)
     e_plus = np.array([1.0, 1.0], dtype=np.float64) / math.sqrt(2.0)

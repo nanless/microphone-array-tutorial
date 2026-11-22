@@ -1389,7 +1389,7 @@ Here $q_{\mathrm{d}} = q_{\mathrm{r}} = 1$, reducing immediately to $20\log_{10}
 
 **Step 1: Evaluate per-frequency reflection gain.** With $\omega = 2\pi f / f_s$, $H_{\mathrm{r}}^{(A)}(e^{\mathrm{j}\omega}) = \tfrac{1}{2}e^{-\mathrm{j}\omega} + \tfrac{1}{2}e^{-\mathrm{j} 2\omega}$ and $H_{\mathrm{r}}^{(B)}(e^{\mathrm{j}\omega}) = \tfrac{1}{2}e^{-\mathrm{j}\omega} - \tfrac{1}{2}e^{-\mathrm{j} 2\omega}$ have squared magnitudes $\cos^2(\omega/2)$ and $\sin^2(\omega/2)$. Evaluating at `2000 Hz` ($\omega = \pi/4$) and `4000 Hz` ($\omega = \pi/2$):
 
-| Reflection Path | `2000 Hz` $|H_{\mathrm{r}}|^2$ | `4000 Hz` $|H_{\mathrm{r}}|^2$ | Steady-State Reflection Power |
+| Reflection Path | `2000 Hz` $\lvert H_{\mathrm{r}}\rvert^2$ | `4000 Hz` $\lvert H_{\mathrm{r}}\rvert^2$ | Steady-State Reflection Power |
 |---|---|---|---|
 | Path A (`+1/2, +1/2`) | $(2 + \sqrt{2})/4$ | $1/2$ | $0.005(1 + \sqrt{2}/4) \approx 0.006767766953$ |
 | Path B (`+1/2, −1/2`) | $(2 - \sqrt{2})/4$ | $1/2$ | $0.005(1 - \sqrt{2}/4) \approx 0.003232233047$ |
@@ -1628,7 +1628,7 @@ At `16 kHz` (`32,000` dry samples, `20 ms` linear fade ramps, full causal linear
 
 With $H_L(e^{\mathrm{j}\omega}) = 1 + 0.5 e^{-\mathrm{j}\omega}$ and $H_R(e^{\mathrm{j}\omega}) = 1 - 0.5 e^{-\mathrm{j}\omega}$, the narrowband complex ratio $Y_R / Y_L = H_R / H_L$ cancels any non-zero source spectrum ($\mathrm{ILD}(f) = 20\log_{10}|H_R / H_L|$, principal-value $\mathrm{IPD}(f) \in [-\pi, \pi)$):
 
-| Frequency | Left Power Gain $|H_L|^2$ | Right Power Gain $|H_R|^2$ | Analytic Narrowband ILD | Analytic Narrowband IPD |
+| Frequency | Left Power Gain $\lvert H_L\rvert^2$ | Right Power Gain $\lvert H_R\rvert^2$ | Analytic Narrowband ILD | Analytic Narrowband IPD |
 |---|---:|---:|---:|---:|
 | `1 kHz` | `2.173879533` | `0.326120467` | `−8.238574 dB` | `+27.032701°` |
 | `7 kHz` | `0.326120467` | `2.173879533` | `+8.238574 dB` | `+27.032701°` |

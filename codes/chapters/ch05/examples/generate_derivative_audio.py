@@ -1,4 +1,4 @@
-"""Generate or strictly read-check four independent E05-22 WAVs.
+"""Generate or strictly read-check four independent E05-14 WAVs.
 
 Run python -m codes.chapters.ch05.examples.generate_derivative_audio [--check].
 The check reads actual PCM, re-scores it and never writes or repairs assets.
@@ -39,7 +39,7 @@ SOURCE_PATHS = (
 
 
 # Fixed values and exact types, independent of the descriptive function at runtime.
-REQUIRED_PARAMETERS = {'exercise_id': 'E05-22',
+REQUIRED_PARAMETERS = {'exercise_id': 'E05-14',
  'sample_rate_hz': 16000,
  'samples_per_channel': 32002,
  'source_active_interval_s': [0.0, 2.0],

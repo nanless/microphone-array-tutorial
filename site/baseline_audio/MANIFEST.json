@@ -1,16 +1,16 @@
 {
   "schema_version": 1,
-  "exercise_id": "E03-18",
+  "exercise_id": "E03-16",
   "sample_rate_hz": 16000,
   "samples_per_channel": 32000,
   "common_export_gain": 1.0,
   "origin": "original deterministic mathematical known-direction synthesis",
   "source_sha256": {
-    "codes/chapters/ch03/core/baseline_audio.py": "3857a638fd394d627b4a81bd0107ca386762ba54504f7ecb49f44bde17e157e4",
-    "codes/chapters/ch03/examples/generate_baseline_audio.py": "e4fe1250df69d8fe20be0edce883b646fc5a4632be2da75abeda54636c0604ad",
+    "codes/chapters/ch03/core/baseline_audio.py": "e8464e5c36597f06641268569c729fc9cb892e6121680cd6374d394a55fe145c",
+    "codes/chapters/ch03/examples/generate_baseline_audio.py": "c4d53fed81c569eef9a2acd9796de1c2aa5f454e366190358190fca072b98d68",
     "codes/chapters/ch03/core/baseline_calibration.py": "ad8272d2c81b54492f2cdda3bee2cce726eaffcc9050433761900be995aff2e9",
     "codes/chapters/ch02/core/conventions.py": "4e80a27490f05ddd5f4826361420c0c8d0b331464d1e5629c5def492da47b1d7",
-    "codes/chapters/ch00/core/audio_samples.py": "bf1145e19e2ec99623c0583220192922c24f0ed3d293212309fe4a2f3bfc8385",
+    "codes/chapters/ch00/core/audio_samples.py": "1a7aad90d08fb8c27511aa463a6cc6dd6d4d2d230b27ed82549531f1f18edaba",
     "codes/chapters/ch00/io_contracts.py": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974"
   },
   "environment": {
@@ -20,7 +20,7 @@
     "machine": "arm64"
   },
   "parameters": {
-    "exercise_id": "E03-18",
+    "exercise_id": "E03-16",
     "sample_rate_hz": 16000,
     "samples_per_channel": 32000,
     "duration_s": 2.0,

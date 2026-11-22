@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 13 章 · 分布式麦克风协同增强 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="e2a840976a4c"><style>
+<meta name="source-digest" content="f6d48efe6ade"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -401,6 +401,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-c4927d5b7e">E13-18：广播版本切换后，怎样把统计换到同一坐标</a></li>
 <li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-77723688f3">E13-19：AES67/PTPv2亚微秒硬件同步预算与软件SRO-DANSE对照</a></li>
 <li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-45389cc58a">E13-20：DASF统一子空间：分布式MWF、MVDR、GEVD与LCMV何时同方向、何时分道扬镳</a></li>
+<li><a href="13_distributed-enhancement.html#sec-13-17">13.17 原始资料与继续阅读</a></li>
 </ul>
 <div class="chap"><a href="14_spatial-wearable-arrays.html">第 14 章 · 空间声场与可穿戴阵列</a></div>
 <div class="chap"><a href="15_target-extraction-diarization.html">第 15 章 · 条件目标提取与多通道日志</a></div>
@@ -488,6 +489,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-c4927d5b7e">E13-18：广播版本切换后，怎样把统计换到同一坐标</a></li>
 <li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-77723688f3">E13-19：AES67/PTPv2亚微秒硬件同步预算与软件SRO-DANSE对照</a></li>
 <li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-45389cc58a">E13-20：DASF统一子空间：分布式MWF、MVDR、GEVD与LCMV何时同方向、何时分道扬镳</a></li>
+<li><a href="13_distributed-enhancement.html#sec-13-17">13.17 原始资料与继续阅读</a></li>
 </ul></nav></details>
 <blockquote>
 <p>⚠️ 本篇是本书正文第 13 章（扩展专题Ⅱ；正文共 16 章，即第 0～15 章，其中第 12～15 章为四篇扩展专题，另有附录 A、B），接在第 12 章声学成像之后，介绍多个拾音节点怎样在有限通信下协作增强声音。分块 Schur 补与广义特征值推导可回查<a href="00_math-foundations.html#sec-0-3">第 0 章 §0.3</a>、<a href="00_math-foundations.html#sec-0-4">§0.4</a>，全局符号速查见<a href="16_appendix-symbols-math.html">第 16 章附录 A</a>。</p>
@@ -628,7 +630,7 @@ J_u^\star&=\phi_{d_u}
 <p>数值编程时应调用厄米正定线性方程组求解器（如 Cholesky 分解求解）直接解 $\mathbf R_{xx}\vec w_u^\star = \vec r_{xd_u}$，避免显式计算逆矩阵 $\mathbf R_{xx}^{-1}$。还要特别注意：式(13-4)最后一行的化简公式 $J_u^\star = \phi_{d_u} - \vec r_{xd_u}^H\vec w_u^\star$ 利用了 $\mathbf R_{xx}\vec w_u^\star = \vec r_{xd_u}$ 消项，因此<strong>仅对精确满足正规方程的最优权重成立</strong>；评估任何非最优或陈旧权重时，必须直接代回式(13-3)计算完整三项（集中式与节点特定维纳滤波的原始问题定义参见 <a href="https://homes.esat.kuleuven.be/~abertran/reports/09-65.pdf">Bertrand 与 Moonen 2010，Part I §II-A 式(1)、(2)</a>）。</p>
 <span id="sec-10" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-d3d14e7a97">参考目标不能从混合录音直接读出</h3>
 <p>刚接触 MWF 的读者常问：“既然参考选的是第 $r_u$ 支麦克风，那直接拿第 $r_u$ 路录音 $x_{r_u}$ 当作 $d_u$ 去算互相关 $\mathbb{E}[\vec x x_{r_u}^*]$ 行不行？”千万不行。因为实际麦克风录到的 $x_{r_u} = c_u s + n_{r_u}$ 里混有该通道自身的噪声 $n_{r_u}$——如果拿混合信号 $x_{r_u}$ 冒充 $d_u$，正规方程 $\mathbf R_{xx}\vec w = \mathbf R_{xx}\vec e_{r_u}$ 的解就会退化成荒唐的平凡选择向量 $\vec w = \vec e_{r_u}$（原封不动输出带噪参考麦信号，误差为零，一丝噪声都没滤掉）。</p>
-<p>在真实工程系统中，干净目标 $d_u$ 无法直接测量，必须借助语音活动检测（VAD）或时频掩码先分离估计噪声协方差 $\hat{\mathbf R}_{nn}$ 与总协方差 $\hat{\mathbf R}_{xx}$，由源噪不相关关系作差估计目标协方差 $\hat{\mathbf R}_{ss}$（等于 $\hat{\mathbf R}_{xx}$ 减 $\hat{\mathbf R}_{nn}$，或采用后文 §13.12 更稳健的 GEVD 低秩重构），再取出它的第 $r_u$ 列 $\vec r_{xd_u} = \hat{\mathbf R}_{ss}\vec e_{r_u}$ 送入正规方程。此外，本章式(13-3)对应失真与噪声等权重的标准 MWF（即<a href="05_beamforming.html">第 5 章</a>语音失真加权 SDW-MWF 中贸易因子 $\mu = 1$ 的情形）；若不同节点各自设定不同的噪声惩罚因子 $\mu_u$，两节点的最优权重将不再共享同一个一维子空间，不能直接照搬后续单路广播的收敛定理。</p>
+<p>在真实工程系统中，干净目标 $d_u$ 无法直接测量，必须借助语音活动检测（VAD）或时频掩码先分离估计噪声协方差 $\hat{\mathbf R}_{nn}$ 与总协方差 $\hat{\mathbf R}_{xx}$，由源噪不相关关系作差估计目标协方差 $\hat{\mathbf R}_{ss}$（等于 $\hat{\mathbf R}_{xx}$ 减 $\hat{\mathbf R}_{nn}$，或采用后文 §13.12 更稳健的 GEVD 低秩重构），再取出它的第 $r_u$ 列 $\vec r_{xd_u} = \hat{\mathbf R}_{ss}\vec e_{r_u}$ 送入正规方程。此外，本章式(13-3)对应失真与噪声等权重的标准 MWF（即<a href="05_beamforming.html">第 5 章</a>语音失真加权 SDW-MWF 中权衡因子 $\mu = 1$ 的情形）；在秩一单目标源（$\mathbf R_{ss} = \phi_s\vec a\vec a^H$）下，即使不同节点各自设定不同的噪声惩罚因子 $\mu_u > 0$，各节点的集中式最优权重仍沿着同一条一维方向 $\mathbf R_{nn}^{-1}\vec a$ 共线（仅改变标量维纳增益），但当目标为多源或高秩模型（$\operatorname{rank}(\mathbf R_{ss}) \ge 2$ 且广播维数 $Q \lt  S$）时，节点各自不同的 $\mu_u$ 会破坏共享子空间的共线性，使基于共同目标函数的标准收敛定理不再直接适用。</p>
 <span id="sec-11" class="anchor-alias" aria-hidden="true"></span><span id="sec-15-4" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-13-4">13.4 秩一模型中的参考尺度与共轭</h2>
 <span id="sec-12" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-16913f1e5b">一个公共源，各节点仍有不同目标</h3>
 <p>当空间中只有一个点声源（式(13-1)的秩一目标模型）时，式(13-4)的集中式最优权重能拆成极其直观的闭式结构。先把 $d_u = c_u s$ 代入互相关向量与参考功率定义，利用 $\mathbb{E}[s\vec n^H] = \vec 0^H$ 得：</p>
@@ -1434,6 +1436,21 @@ P_{n,\mathrm{stale}}-P_{n,\mathrm{LCMV}}^\star
 \end{aligned}\tag{13-32}$$</p>
 <p>死守旧广播虽然勉强保住了零陷，输出噪声功率却从集中式下界 $34/203 \approx 0.167488$ 恶化到了 $2116/10397 \approx 0.203520$。反之，由于每个节点的局部维数 $L_u = 3 > P = 2$（保有 $L_u - P = 1$ 个降噪自由度），启动顺序轮转 DASF-LCMV 后，两节点交替把各自最新的二维本地分块更新为对外广播方向，全网输出噪声功率每步单调不增，单调渐近收敛回集中式最优值 $34/203$ 与式(13-31)权重。</p>
 <p><strong>第三阶段：$P = 3 = L_u$ 自由度耗尽锁死与双路广播解锁。</strong> 再添入第三列约束 $\vec c_3 = [0, 0, 0, 1]^\top$（要求第 $4$ 麦权重为零，$\vec f_3 = [1, 0, 0]^\top$，总约束数 $P = 3$）：四麦集中式三约束 LCMV 最优解为 $[34, -26, 26, 0]^\top / 73$，最小输出噪声功率为 $196/365 \approx 0.536986$。然而若仍限制每节点只发单路广播（$R = 1$），局部观测维数 $L_u = 2 + 1 = 3$ 恰好等于约束数 $P = 3$，剩余优化自由度 $L_u - P = 0$。从初值 $\vec f_1^{(0)} = [1, 0]^\top$、$\vec f_2^{(0)} = [11, -24]^\top$ 出发，节点 $1$ 的 $3 \times 3$ 满秩约束方程 $\tilde{\mathbf C}_1^\top\vec h_1 = [1, 0, 0]^\top$ 直接把局部解唯一焊死在 $\vec h_1 = [1, 0, 0]^\top$，节点 $2$ 同样被焊死在有效全局权重 $[1, 0, 0, 0]^\top$，无论轮转多少轮噪声功率都死锁在 $1.0 > 196/365$；一旦将广播扩充至 $R = 2$（恢复 $L_u = 4 > P = 3$），首轮即解锁恢复集中式最优噪声功率 $196/365$（可在仓库根目录下运行 <code>.venv/bin/python -m codes.chapters.ch13.chapter13_exercises --exercise E13-20</code> 复核全部三阶段结果）。</p>
+<span id="sec-80" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-13-17">13.17 原始资料与继续阅读</h2>
+<p>以下文献与技术规范支撑本章的分布式压缩子空间理论、拓扑无关扩展、采样率偏差校正与流式实现边界：</p>
+<ul>
+<li>Bertrand, A. 与 Moonen, M.，<em>Distributed Adaptive Node-Specific Signal Estimation in Fully Connected Sensor Networks — Part I: Sequential Node Updating</em>（<em>IEEE Transactions on Signal Processing</em> 58(10), 5277–5291, 2010；<a href="https://homes.esat.kuleuven.be/~abertran/reports/09-65.pdf">技术报告 09-65</a>）及 <em>Part II: Simultaneous and Asynchronous Node Updating</em>（<em>IEEE Transactions on Signal Processing</em> 58(10), 5292–5306, 2010；<a href="https://homes.esat.kuleuven.be/~abertran/reports/09-178.pdf">技术报告 09-178</a>）：建立全连接网络中顺序 DANSE、带基底对齐的松弛同时/异步 $rS$-DANSE$^+$ 及精确二阶统计收敛定理。</li>
+<li>Bertrand, A. 等，IWAENC 2010（<a href="https://homes.esat.kuleuven.be/~abertran/reports/IWAENC10.pdf">作者全文</a>）：§II-C 与 §III 讨论频域 SDW-MWF 接入加权重叠相加（WOLA）框架时的 $\sqrt{\text{Hann}}$ 窗重叠、指数协方差递推与在线实现细节。</li>
+<li>Szurley, J.、Bertrand, A. 与 Moonen, M.，<em>Topology-Independent Distributed Adaptive Node-Specific Signal Estimation in Wireless Sensor Networks</em>，<em>IEEE Transactions on Signal and Information Processing over Networks</em> 3(1), 130–144, 2017（<a href="https://homes.esat.kuleuven.be/~abertran/reports/15-87.pdf">技术报告 15-87</a>）：提出基于树形逐跳求和与发送端逆变换规范化 $\mathbf P_u = \mathbf F_u\mathbf G_u^{-1}$ 的 TI-DANSE 算法及收敛证明。</li>
+<li>Serizel, R.、Moonen, M.、Van Dijk, B. 与 Wouters, J. (2014) 及 Hassani, A.、Bertrand, A. 与 Moonen, M.，<em>GEVD-Based Low-Rank Approximation for Distributed Adaptive Node-Specific Signal Estimation in Wireless Sensor Networks</em>，2016（<a href="https://ftp.esat.kuleuven.be/SISTA/abertran/reports/GEVD_DS_TSP2016.pdf">作者稿</a>）：系统推导噪声白化 GEVD 低秩目标协方差重构与顺序 GEVD-DANSE 收敛分析。</li>
+<li>Didier, P.、van Waterschoot, T.、Doclo, S. 与 Moonen, M.，<em>Sampling Rate Offset Estimation and Compensation for Distributed Adaptive Node-Specific Signal Estimation in Wireless Acoustic Sensor Networks</em>，<em>IEEE Open Journal of Signal Processing</em> 4, 71–79, 2023（<a href="https://arxiv.org/html/2211.02489v2">arXiv:2211.02489v2</a>）：将跨帧相干漂移 SRO 估计、逐频点线性相位补偿与整数帧移滑移融入在线 DANSE。</li>
+<li>Didier, P. 等，TI-GEVD-DANSE（EUSIPCO 2024，<a href="https://ftp.esat.kuleuven.be/sista/pdidier/eusipco2024/eusipco24_pdidier_submission_v1.pdf">作者稿</a>）与 TI-DANSE$^+$（<a href="https://arxiv.org/html/2506.20001v1">2025 会议论文</a>；<a href="https://arxiv.org/html/2506.02797v2">2026 扩展稿</a>）：分别讨论树形 GEVD 的共享坐标规范化，以及根节点保留子树部分和、跨广播版本统计隔离与收敛加速。</li>
+<li>TI-dMWF（<a href="https://arxiv.org/html/2607.05561v1">2026 预印本</a>）：在全局源与严格局部源二分且互不相关的结构假设下，给出两趟树上传递的非迭代分布式 MWF 求解路线。</li>
+<li>Musluoglu, C. 与 Bertrand, A. (<em>Part I</em>) 及 Musluoglu, C.、Hovine, C. 与 Bertrand, A. (<em>Part II</em>)，<em>A Unified Algorithmic Framework for Distributed Adaptive Signal Fusion</em>，<em>IEEE Transactions on Signal Processing</em> 71, 1863–1878 &amp; 1879–1894, 2023；以及 Markovich-Golan, S.、Gannot, S. 与 Cohen, I.，<em>IEEE Transactions on Audio, Speech, and Language Processing</em> 21(2), 343–356, 2013（EUSIPCO 2012）：前者建立统一分布式 MWF、MVDR、GEVD 与约束 LCMV 的 DASF 子空间投影框架，后者提出全连接 WASN 中的分布式多约束 GSC/LCMV 架构。</li>
+<li>Cattivelli, F. S. 与 Sayed, A. H.，<em>IEEE Transactions on Signal Processing</em> 58(3), 1035–1048, 2010；以及 Sayed, A. H.，<em>Adaptation, Learning, and Optimization over Networks</em>，<em>Foundations and Trends in Machine Learning</em> 7(4–5), 311–801, 2014（<a href="https://doi.org/10.1561/2200000051">DOI: 10.1561/2200000051</a>）：系统阐述扩散最小均方（Diffusion LMS）等参数融合范式，与本章的信号广播协同范式形成对照。</li>
+<li>盲 SRO 估计与多设备异步会议基准：Gburrek, T.、Schmalenstroeer, J. 与 Haeb-Umbach, R.，ICASSP 2022（WACD/DWACD）；Chinaev, A.、Thüne, P. 与 Enzner, G.，<em>IEEE/ACM TASLP</em> 29, 1881–1896, 2021（DXCP-PhaT）；以及 CHiME-5/6/7/8（Barker 等 2018；Watanabe 等 2020；Cornell 等 2023/2024）与 NOTSOFAR-1（Vinnikov 等，Interspeech 2024）远场多设备评测基准。</li>
+<li>流媒体同步协议、缺失协方差与本仓工程手册：RTP/RTCP 规范（<a href="https://www.rfc-editor.org/rfc/rfc3550">RFC 3550 §5.1 与 §6.4.1</a>）；关于逐对缺失样本协方差非半正定性的经典说明（<a href="https://stat.ethz.ch/R-manual/R-devel/library/stats/html/cor.html">R 语言 <code>cor</code> 文档</a>）；以及本仓<a href="research/03_industrial_deployment.html">工业实现手册</a>与<a href="research/05_exercises_and_audio.html">练习、音频和复现实验手册</a>。</li>
+</ul>
 <hr />
 <blockquote>
 <p>📄 本篇信息：配图 3 张 ｜ <a href="index.html">回首页</a></p>

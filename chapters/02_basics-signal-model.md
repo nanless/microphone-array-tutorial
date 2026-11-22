@@ -1353,7 +1353,7 @@ E02-13 和 E02-14 已知脉冲响应 $h$ 求输出 $x$；本题反过来模拟�
     u[n]&=A_s\,a[n]\sin\varphi(n/f_s)\text{。}
     \end{aligned}\tag{2-25}$$
 
-    其中匹配逆滤波器在时域反褶的基础上乘以指数包络 $e^{-t/L_s}$（每倍频程幅度减半，即 $-6\ \mathrm{dB/oct}$ 加权以白化粉红扫频谱），使第 $k$ 阶谐波失真严格分离到线性主脉冲左侧 $\Delta t_k=L_s\ln k$ 处。实验在 $f_s=16\ \mathrm{kHz}$ 下生成 $2\ \mathrm{s}$（$32000$ 点）从 $f_1=100\ \mathrm{Hz}$ 扫到 $f_2=6000\ \mathrm{Hz}$ 的测试信号（幅度 $A_s=0.2$，首尾 $10\ \mathrm{ms}$ 渐变），送入两抽头路径 $h[0]=0.8, h[160]=0.25$（完整响应含 $160$ 点反射尾共 $32160$ 点），配套四份合成 WAV 音频（[扫频激励](../codes/chapters/ch02/sweep_audio/sweep_source.wav)、[完整响应](../codes/chapters/ch02/sweep_audio/sweep_complete.wav)、[加噪响应](../codes/chapters/ch02/sweep_audio/sweep_noisy.wav)与[截尾响应](../codes/chapters/ch02/sweep_audio/sweep_cut.wav)，参数与校验见[扫频音频独立清单](../codes/chapters/ch02/sweep_audio/MANIFEST.json)）。在 $N_{\mathrm{FFT}}=65536$ 点全区间上定义相对误差能量 $\varepsilon_h$：
+    其中匹配逆滤波器在时域反褶的基础上乘以指数包络 $e^{-t/L_s}$（每倍频程幅度减半，即 $-6\ \mathrm{dB/oct}$ 加权以白化粉红扫频谱），使第 $k$ 阶谐波失真严格分离到线性主脉冲左侧 $\Delta t_k=L_s\ln k$ 处。下面的配套音频实验并不实现 Farina 的时域反褶谐波分离滤波器，而是对纯线性两抽头 FIR 路径直接施加式(2-23)的逐频循环 Tikhonov 正则求逆，以单独隔离尾部截断、后加噪声与 16 位 PCM 量化三类误差。实验在 $f_s=16\ \mathrm{kHz}$ 下生成 $2\ \mathrm{s}$（$32000$ 点）从 $f_1=100\ \mathrm{Hz}$ 扫到 $f_2=6000\ \mathrm{Hz}$ 的测试信号（幅度 $A_s=0.2$，首尾 $10\ \mathrm{ms}$ 渐变），送入两抽头路径 $h[0]=0.8, h[160]=0.25$（完整响应含 $160$ 点反射尾共 $32160$ 点），配套四份合成 WAV 音频（[扫频激励](../codes/chapters/ch02/sweep_audio/sweep_source.wav)、[完整响应](../codes/chapters/ch02/sweep_audio/sweep_complete.wav)、[加噪响应](../codes/chapters/ch02/sweep_audio/sweep_noisy.wav)与[截尾响应](../codes/chapters/ch02/sweep_audio/sweep_cut.wav)，参数与校验见[扫频音频独立清单](../codes/chapters/ch02/sweep_audio/MANIFEST.json)）。在 $N_{\mathrm{FFT}}=65536$ 点全区间上定义相对误差能量 $\varepsilon_h$：
 
     $$\begin{aligned}
     \varepsilon_h&=\frac{\sum_{n=0}^{N_{\mathrm{FFT}}-1}|\widehat h[n]-h[n]|^2}
@@ -1367,7 +1367,7 @@ E02-13 和 E02-14 已知脉冲响应 $h$ 求输出 $x$；本题反过来模拟�
     | 完整尾部、无后加噪声 | $0$ | $1.37\times10^{-23}$ | $0.423$ | 阻带（$6\text{～}8\ \mathrm{kHz}$）微弱谱分母放大 16 位量化误差 |
     | 完整尾部、无后加噪声 | $10^{-8}$ | $0.131$ | $0.133$ | 微小正则即可抑制阻带除零放大 |
     | 完整尾部、后加噪声（$\sigma=0.003$） | $0$ ／ $10^{-4}$ | $1.07\times10^5$ ／ $0.249$ | $6.60\times10^4$ ／ $0.249$ | 无正则彻底淹没于噪声；$\rho=10^{-4}$ 压稳误差但引入带限收缩 |
-    | 截断 $160$ 点尾部 | $0$ ／ $10^{-6}$ | $290$ ／ $0.264$ | $301$ ／ $0.264$ | 提前停录破坏线性卷积尾，无正则放大数百倍 |
+    | 截断 $160$ 点尾部 | $0$ ／ $10^{-6}$ | $290$ ／ $0.264$ | $301$ ／ $0.264$ | 提前停录破坏线性卷积尾，无正则放大数百倍（约 $300$ 倍） |
 
     由此可见，实测 RIR 既要留够长于 $T_{60}$ 的尾音录制时长，也必须加入与测量噪声水平匹配的带内正则化，并将评价频带限定在扬声器真实有效激励的频段之内。
 

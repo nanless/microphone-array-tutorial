@@ -180,7 +180,7 @@ class ImagingAlgebraTests(unittest.TestCase):
         self.assertEqual(region_power([1.,.25],[False,False]),0.)
 
     def test_functional_beamforming_single_source_and_2x2_sqrt(self):
-        # E12-19: Single-source peak invariance and P_21^nu = (1/4)^nu sidelobe scaling.
+        # E12-17: Single-source peak invariance and P_21^nu = (1/4)^nu sidelobe scaling.
         r1 = np.outer(self.a[:, 0], self.a[:, 0].conj())
         for nu, expected_sidelobe in [(1, 1/4), (2, 1/16), (4, 1/256)]:
             np.testing.assert_allclose(
@@ -199,7 +199,7 @@ class ImagingAlgebraTests(unittest.TestCase):
                 atol=3e-15,
             )
 
-        # E12-20: Exact 2x2 Cayley-Hamilton square root and closed-form FB(nu=2) values.
+        # E12-18: Exact 2x2 Cayley-Hamilton square root and closed-form FB(nu=2) values.
         r_two = source_power_csm(self.a, [1., .25])
         sqrt3 = math.sqrt(3.)
         denom = math.sqrt((5. + 2.*sqrt3) / 2.)
@@ -218,11 +218,11 @@ class ImagingAlgebraTests(unittest.TestCase):
 
         # Off-grid weak source in 3-mic array scales as q_2 * eta^nu = 0.25 * 0.8^nu.
         controls = functional_beamforming_controls()
-        offgrid = {c['nu']: c['scan_map'] for c in controls['E12-20']['offgrid_weak_source_3mic']['nu_cases']}
+        offgrid = {c['nu']: c['scan_map'] for c in controls['E12-18']['offgrid_weak_source_3mic']['nu_cases']}
         np.testing.assert_allclose(offgrid[1], [1., .20], atol=2e-15)
         np.testing.assert_allclose(offgrid[2], [1., .16], atol=2e-15)
         np.testing.assert_allclose(offgrid[8], [1., .25 * (.8**8)], atol=2e-15)
-        self.assertAlmostEqual(float(controls['E12-20']['coherent_dipole_fb_nu_2'][1]), 0., places=15)
+        self.assertAlmostEqual(float(controls['E12-18']['coherent_dipole_fb_nu_2'][1]), 0., places=15)
 
     def test_invalid_inputs_and_floating_range(self):
         removed = source_power_csm(self.a, [1., .25])

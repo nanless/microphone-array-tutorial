@@ -1,4 +1,4 @@
-"""Independent E10-34 answers and channel-order/constraint boundaries."""
+"""Independent E10-26 answers and channel-order/constraint boundaries."""
 import unittest
 from unittest.mock import patch
 import numpy as np

@@ -1,4 +1,4 @@
-"""E05-23: known two-tone resynthesis illustrates frequency-dependent phase.
+"""E05-15: known two-tone resynthesis illustrates frequency-dependent phase.
 
 This fixture applies declared complex frequency weights to known components.
 It runs no eigensolver, STFT, BAN, noise estimator or speech enhancement chain.
@@ -27,7 +27,7 @@ LIMITS = ('Original known-component mathematical resynthesis, not speech, room o
 
 
 def parameters() -> dict:
-    return {'exercise_id': 'E05-23', 'sample_rate_hz': SAMPLE_RATE,
+    return {'exercise_id': 'E05-15', 'sample_rate_hz': SAMPLE_RATE,
             'samples_per_channel': SAMPLES, 'frequencies_hz': list(FREQUENCIES),
             'source_amplitude_per_frequency': AMPLITUDE, 'source_duration_s': 2.0,
             'fade_samples': 320, 'fade': 'squared sine, endpoints included, common envelope',

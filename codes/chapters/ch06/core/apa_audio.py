@@ -1,4 +1,4 @@
-"""E06-39: one colored-reference fixture, not a speech/room/device benchmark.
+"""E06-25: one colored-reference fixture, not a speech/room/device benchmark.
 
 Training uses floating-point observations. Exported int16 is read back only
 for output measurements; PCM is not fed into the adaptive filters. Every
@@ -33,7 +33,7 @@ LIMITS = ('Original one-seed mathematical colored-noise fixture, not speech, '
 def parameters() -> dict:
     path = np.zeros(16)
     path[[0, 3, 7, 13]] = [.6, -.2, .1, .05]
-    return {'exercise_id': 'E06-39', 'sample_rate_hz': SAMPLE_RATE,
+    return {'exercise_id': 'E06-25', 'sample_rate_hz': SAMPLE_RATE,
             'source_samples': SOURCE_SAMPLES, 'samples_per_channel': SAMPLES,
             'convolution_tail_samples': 13, 'seed': SEED,
             'random_bit_generator': 'PCG64', 'ar_coefficient': .98,

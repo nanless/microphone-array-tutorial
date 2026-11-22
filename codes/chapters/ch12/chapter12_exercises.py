@@ -187,8 +187,8 @@ def run_experiments():
                    'scan_nnls': finite_nnls(p, inconsistent_b),
                    'unconstrained_inverse_q': np.linalg.solve(p, inconsistent_b)},
         'E12-16': distinct_column_ambiguity_experiment(),
-        'E12-17': fb_controls['E12-19'],
-        'E12-18': fb_controls['E12-20'],
+        'E12-17': fb_controls['E12-17'],
+        'E12-18': fb_controls['E12-18'],
     }
     if set(exercises) != set(EXERCISE_IDS):
         raise AssertionError('exercise ID set differs')

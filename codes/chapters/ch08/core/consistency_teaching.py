@@ -1,4 +1,4 @@
-"""E08-30: two fixed constraint operations, using the book's unique STFT.
+"""E08-22: two fixed constraint operations, using the book's unique STFT.
 
 The rectangular four-point, hop-two model is a finite algebraic example, not
 a trained separator or a general iterative consistency solver.
@@ -47,7 +47,7 @@ def rectangular_consistency(spectra):
     """Analysis-after-synthesis for two real four-point frames, hop two.
 
     Array shape is (sources,3,2); the real rFFT endpoints must be real. This
-    deliberately fixes n_fft/window/hop/length/centering to E08-30's model.
+    deliberately fixes n_fft/window/hop/length/centering to E08-22's model.
     """
     y = _spectra(spectra, "spectra")
     if y.ndim != 3 or y.shape[1:] != (3, 2) or y.shape[0] < 1:

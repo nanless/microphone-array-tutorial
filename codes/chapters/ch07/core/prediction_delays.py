@@ -1,4 +1,4 @@
-"""Known source-clock controls for E07-22/23, not a blind WPE implementation.
+"""Known source-clock controls for E07-18/19, not a blind WPE implementation.
 
 Integer delays use the caller's declared time unit: frames for the short toy,
 samples for the published waveform. The real one-parameter fit has prescribed

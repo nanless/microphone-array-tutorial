@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Chapter 14 · Spatial Sound Fields & Wearable Arrays · Microphone Array Signal Processing</title>
-<meta name="source-digest" content="349f9b579bab"><style>
+<meta name="source-digest" content="08a908611fde"><style>
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -1103,7 +1103,7 @@ m=0,1,2,\ldots
 <p><img alt="Figure 79: TWS Hear-Through processing delay and passive-leakage comb-filtering artifacts" src="../figures_en/fig79_hear_through_comb.png" onerror="this.alt+=' (figure missing)'" /></p>
 <p>Figure 79 verifies Hear-Through comb filtering across frequency response, latency scaling, and 16-bit PCM waveforms:</p>
 <ul>
-<li><strong>Panel (a) Equal-gain leakage-plus-playback power response</strong>: Solid red ($\tau = 2.0\ \mathrm{ms}$, clamped at $-30\ \mathrm{dB}$ for display) plunges into deep notches at $250, 750, \ldots, 4250\ \mathrm{Hz}$ while peaking at $+6.02\ \mathrm{dB}$ at $500, 1000, \ldots, 4000\ \mathrm{Hz}$; dashed blue ($\tau = 0.1\ \mathrm{ms}$) stays flat across $0$–$3.5\ \mathrm{kHz}$, pushing $f_0$ out to $5000\ \mathrm{Hz}$.</li>
+<li><strong>Panel (a) Equal-gain leakage-plus-playback power response</strong>: Solid red ($\tau = 2.0\ \mathrm{ms}$, clamped at $-30\ \mathrm{dB}$ for display) plunges into deep notches at $250, 750, \ldots, 4250\ \mathrm{Hz}$ while peaking at $+6.02\ \mathrm{dB}$ at $500, 1000, \ldots, 4000\ \mathrm{Hz}$; dashed blue ($\tau = 0.1\ \mathrm{ms}$) avoids destructive comb notches across the speech band (staying within $3\ \mathrm{dB}$ of its DC level up to $2.5\ \mathrm{kHz}$ and gently rolling off toward its first notch at $5000\ \mathrm{Hz}$).</li>
 <li><strong>Panel (b) Log-log scaling of first notch $f_0 = 1/(2\tau)$</strong>: Marks $(0.1\ \mathrm{ms}, 5000\ \mathrm{Hz})$, $(2.0\ \mathrm{ms}, 250\ \mathrm{Hz})$, and the $\tau \le 0.125\ \mathrm{ms}$ threshold clearing $4\ \mathrm{kHz}$.</li>
 <li><strong>Panel (c) PCM waveform slice</strong> ($0$–$8\ \mathrm{ms}$ from sample $1632$, past the $32$-sample causal delay): Solid blue <code>wearable_clean_ref.wav</code> carries $4\ \mathrm{kHz}$ ripples atop a $4\ \mathrm{ms}$-period $250\ \mathrm{Hz}$ carrier; dashed red <code>wearable_hearthrough_comb.wav</code> wipes out the $250\ \mathrm{Hz}$ carrier completely while doubling $4\ \mathrm{kHz}$ peak amplitude to $0.20$.</li>
 <li><strong>Panel (d) Steady-window DFT tone projections</strong>: Clean reference reads $0.1000$ at both $250\ \mathrm{Hz}$ and $4000\ \mathrm{Hz}$; $2\ \mathrm{ms}$ comb output reads $0.0000$ at $250\ \mathrm{Hz}$ and $0.2000$ at $4000\ \mathrm{Hz}$.</li>

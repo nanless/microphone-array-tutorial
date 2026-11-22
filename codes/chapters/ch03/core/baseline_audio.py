@@ -1,4 +1,4 @@
-"""E03-18 known-direction two-microphone baseline and fixed-offset fixture.
+"""E03-16 known-direction two-microphone baseline and fixed-offset fixture.
 
 Continuous evaluation of one finite 500 Hz mathematical tone supplies delays.
 Known frequency, known directions and the prior |tau| < 1 ms are required.
@@ -37,7 +37,7 @@ LIMITS = ('Known-direction, synchronized mathematical far-field tone observation
 
 
 def baseline_parameters() -> dict:
-    return {'exercise_id': 'E03-18', 'sample_rate_hz': SAMPLE_RATE,
+    return {'exercise_id': 'E03-16', 'sample_rate_hz': SAMPLE_RATE,
             'samples_per_channel': SAMPLES, 'duration_s': SAMPLES / SAMPLE_RATE,
             'frequency_hz': FREQUENCY, 'source_amplitude': AMPLITUDE,
             'source_active_interval_s': [.1, 1.9], 'linear_fade_duration_s': .02,

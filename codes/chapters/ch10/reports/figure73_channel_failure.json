@@ -4,13 +4,13 @@
   "script_sha256": "4ab293a8184ed223a6ffcf0ba64e9edd9c6fdfa3bc488502b5c68a90f1672e2a",
   "source_sha256": {
     "scripts/make_channel_figures.py": "4ab293a8184ed223a6ffcf0ba64e9edd9c6fdfa3bc488502b5c68a90f1672e2a",
-    "codes/chapters/ch10/core/channel_audio.py": "111138f767dcfb4fdb2ee02a5dbf33d1b8fd47a01c3406ff52aec065bd7d85e7",
-    "codes/chapters/ch10/examples/generate_channel_audio.py": "0b605efd531be4801b6558e963a655cef1ab0419201015d45dacad424c84df85",
-    "codes/chapters/ch10/core/channel_selection.py": "86394cf00835bdd30ca33f3d4f57f9894cea8c21de8ea421554d75f835f31c54",
+    "codes/chapters/ch10/core/channel_audio.py": "0fdbae1e4e8373d828f846558d83f20c1a93836a98e9a00da2c1bf3333227c06",
+    "codes/chapters/ch10/examples/generate_channel_audio.py": "e8aa0d43edb4efbf62ed275ead2a07b582645d2c27b31cd00bab2b1a0216118e",
+    "codes/chapters/ch10/core/channel_selection.py": "811b6469a97aefe44cf9ef8892deff8506d159a21be2a0dc43da178593b7882a",
     "codes/chapters/ch05/core/beamforming.py": "481f79a66fcc4c1f232704ee3a516b596d28ebc89d9045c494b71f6206b77216",
     "codes/chapters/ch04/core/covariance.py": "d704be037100ee53caf6e2130fbabbe14ce6eeff9e3d11dde389fd368d271249",
     "codes/chapters/ch02/core/conventions.py": "4e80a27490f05ddd5f4826361420c0c8d0b331464d1e5629c5def492da47b1d7",
-    "codes/chapters/ch00/core/audio_samples.py": "bf1145e19e2ec99623c0583220192922c24f0ed3d293212309fe4a2f3bfc8385",
+    "codes/chapters/ch00/core/audio_samples.py": "1a7aad90d08fb8c27511aa463a6cc6dd6d4d2d230b27ed82549531f1f18edaba",
     "codes/chapters/ch00/io_contracts.py": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974"
   },
   "input_sha256": {
@@ -20,10 +20,10 @@
     "channel_healthy_output.wav": "1a95e19a4a455ae4dfe4f990d0c697e9f5e2453fb657eb6228ff3b33aaa843b0",
     "channel_stale_output.wav": "99689f241f4d4f81cf2c19355cb2da7a10fa64cd317ba305d1ed4ad5acd9f6f9",
     "channel_recomputed_output.wav": "35285ba307f92e4928efc4d1225a87f65b3afec8f2ab389ab1d52392870f9d27",
-    "MANIFEST.json": "162baeee997406c26c6db5d597e82640f0d7eb041d202e3c326094ed5e4bbd1f"
+    "MANIFEST.json": "7f03b3f6f779940140a5b55bcf66ce35d97a3ad5c7ece2894bbb874da6e08531"
   },
   "parameters": {
-    "exercise_id": "E10-34",
+    "exercise_id": "E10-26",
     "sample_rate_hz": 16000,
     "samples_per_channel": 32000,
     "target_frequency_hz": 500.0,

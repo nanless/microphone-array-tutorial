@@ -68,9 +68,17 @@ class SpatialModelExercisesTest(unittest.TestCase):
             np.testing.assert_allclose(row["weights"]["imag"], [t, -t])
             self.assertAlmostEqual(row["wng_linear"], 1/(0.5 + 2*t*t))
             self.assertAlmostEqual(row["interference_power_gain"], 2*(0.5-t)**2)
-        self.assertLess(report["cases"][1]["wng_linear"], 1.6)
-        self.assertAlmostEqual(report["cases"][2]["wng_linear"], 1.6)
-        self.assertAlmostEqual(report["cases"][2]["original_covariance_output_power"], 1.875)
+        np.testing.assert_allclose(
+            [row["absolute_load"] for row in report["cases"]],
+            [0.0, 9.0, 11.0, 20.0],
+        )
+        self.assertLess(report["cases"][0]["wng_linear"], 1.6)
+        self.assertAlmostEqual(report["cases"][1]["wng_linear"], 1.6)
+        self.assertAlmostEqual(report["cases"][1]["original_covariance_output_power"], 1.875)
+        self.assertAlmostEqual(report["cases"][2]["relative_load"], 1.0)
+        self.assertAlmostEqual(report["cases"][2]["wng_linear"], 242 / 146)
+        self.assertAlmostEqual(report["cases"][2]["original_covariance_output_power"], 23 / 11)
+        self.assertGreater(report["cases"][3]["wng_linear"], report["cases"][2]["wng_linear"])
 
     def test_singular_counterexample_feasibility_and_zero_cost(self):
         report = singular_mvdr_counterexample()

@@ -2244,8 +2244,8 @@ def fig_binaural():
                 arrowprops=dict(arrowstyle="->", color=C_MAIN, lw=1.0))
     ax.add_patch(Arc((0, 0), 3.4, 3.4, theta1=90.0 - bearing_deg,
                      theta2=90.0, color=C_PURPLE, lw=1.6))
-    ax.text(0.38, 1.76, r"$\theta=+30^\circ$", fontsize=FS_SMALL, ha="center", zorder=8,
-            color=C_PURPLE, bbox=dict(fc="white", ec="none", alpha=0.95, pad=1.2))
+    ax.text(0.44, 1.80, r"$\theta=+30^\circ$", fontsize=FS_SMALL, ha="center", zorder=10,
+            color=C_PURPLE, bbox=dict(fc="white", ec="none", alpha=1.0, pad=1.6))
     ax.text(1.92, 1.38, "向右为正", fontsize=FS_SMALL, ha="left",
             bbox=dict(fc="white", ec="none", alpha=0.92, pad=1.0))
     ax.text(-1.85, -3.05, r"$\mathrm{ITD}=t_L-t_R$：右耳先到时为正", fontsize=FS_SMALL)
@@ -2557,9 +2557,9 @@ def fig_beampattern_anatomy():
                 arrowprops=dict(arrowstyle="->", color="gray"))
     first_left_null = np.rad2deg(np.arcsin(np.sin(np.deg2rad(30)) - 2 / M))
     ax.annotate("零点（相消干涉处）", xy=(first_left_null, -40), xytext=(5, -53.2),
-                fontsize=FS_SMALL, ha="center", va="bottom",
-                bbox=dict(boxstyle="round,pad=0.2", fc="white", ec="none", alpha=0.94),
-                arrowprops=dict(arrowstyle="->", color="k"))
+                fontsize=FS_SMALL, ha="center", va="bottom", zorder=10,
+                bbox=dict(boxstyle="round,pad=0.25", fc="white", ec="none", alpha=1.0),
+                arrowprops=dict(arrowstyle="->", color="k", zorder=10))
     ax.set_xlabel("方向 (°)"); ax.set_ylabel("增益 (dB)")
     ax.set_title("(a) 波束图解剖：8 麦线阵、间距 λ/2、指向 30°", fontsize=11)
     ax.grid(ls=":", alpha=0.4)
@@ -2642,8 +2642,8 @@ def fig_dsin_geometry():
     ax.annotate("麦1", xy=mic1, xytext=(-0.55, -0.55), fontsize=FS_LABEL, ha="right")
     ax.annotate("麦2", xy=mic2, xytext=(4.3, 0.3), fontsize=FS_LABEL, ha="left")
     ax.annotate("", xy=(4, -0.45), xytext=(0, -0.45), arrowprops=dict(arrowstyle="<->", color="k", lw=1.2))
-    ax.text(2.45, -1.06, "d = 4 cm", ha="center", fontsize=FS_LABEL,
-            bbox=dict(fc="white", ec="none", alpha=0.92, pad=1.0))
+    ax.text(2.00, -0.15, "d = 4 cm", ha="center", va="bottom", fontsize=FS_LABEL,
+            bbox=dict(fc="white", ec="none", alpha=0.95, pad=0.8))
     # 直角三角形：麦1—垂足P 虚线，麦2—P 红色实线 = 路程差
     ax.plot([mic1[0], P[0]], [mic1[1], P[1]], color="gray", ls="--", lw=1.3, zorder=4)
     ax.plot([mic2[0], P[0]], [mic2[1], P[1]], color=C_RED, lw=2.4, zorder=5)
@@ -2772,10 +2772,9 @@ def fig_aec_pipeline():
     for x,label,color in [(8.8,"$x_a$",C_BLUE),(10.,"d",C_RED),(11.2,"e",C_GREEN)]:
         ax.text(x,4.15,label,ha="center",fontsize=FS_SMALL,color=color)
         arrow(ax,(x,3.95),(x,3.25),color)
-    arrow(ax,(8.3,2.75),(7.6,2.75),C_ORANGE,"--")
     ax.text(7.1,3.5,"更新控制",ha="center",fontsize=FS_SMALL,color=C_ORANGE)
     # 控制信号从对齐框外绕到 AEC，避免被误画成控制时差估计器。
-    ax.plot([7.6,7.6,6.25,6.25],[2.75,1.65,1.65,4.35],color=C_ORANGE,lw=1.5,ls="--")
+    ax.plot([8.3,7.6,7.6,6.25,6.25],[2.75,2.75,1.65,1.65,4.35],color=C_ORANGE,lw=1.5,ls="--")
     arrow(ax,(6.25,4.35),(5.5,4.8),C_ORANGE,"--")
     # DNN 可使用原参考或对齐参考，由具体模型决定。
     ax.plot([1.35,1.35,8.],[2.25,1.42,1.42],color=C_BLUE,lw=1.2,ls=":")
@@ -2869,7 +2868,8 @@ def fig_latency_budget():
         ax.barh(0, duration_ms, left=left, height=0.48, color=color,
                 edgecolor="k", lw=1.0)
         ax.text(left + duration_ms / 2, 0, f"{name}\n{duration_ms} ms",
-                ha="center", va="center", fontsize=FS_SMALL,
+                ha="center", va="center",
+                fontsize=FS_SMALL - 1.5 if duration_ms <= 6 else FS_SMALL,
                 color="white" if color in (C_RED, C_PURPLE, "#9b4d3b") else C_MAIN)
         left += duration_ms
     continuous_audio_ms = sum(item[1] for item in critical_path[:-1])
@@ -4292,15 +4292,15 @@ def fig_derivative_constraints():
     power_ax.grid(axis="y", ls=":", alpha=.3)
     power_ax.set_axisbelow(True)
     fig.suptitle("图50  导数约束：复响应平坦与输出噪声的取舍", fontsize=FS_SUP)
-    fig.text(.5, .032, "三麦中心坐标 [-0.04, 0, 0.04] m，c = 343 m/s；每音幅度 0.08，φ = 0.1 / 0.3 rad。\n"
+    fig.text(.5, .026, "三麦中心坐标 [-0.04, 0, 0.04] m，c = 343 m/s；每音幅度 0.08，φ = 0.1 / 0.3 rad。\n"
              r"观测端独立白噪 $\sigma=0.02\times[1,\sqrt{2},2]^\top$；下图展示噪声期望功率与目标失真功率的解析分解。",
-             ha="center", fontsize=FS_SMALL)
+             ha="center", fontsize=FS_SMALL, linespacing=1.45)
     fig.tight_layout(rect=(0, .13, 1, .93))
     save(fig, "fig50_derivative_constraints.png")
 
 
 def fig_omlsa_probability():
-    """Bayes posterior and given-conditional-gain combination only, E05-12."""
+    """Bayes posterior and given-conditional-gain combination only, §5.7.2."""
     gamma = np.linspace(0, 10, 501)
     xi, present_gain, absent_gain = 3., .8, .1
     fig, axes = plt.subplots(1, 2, figsize=(9.4, 4.7))
@@ -5057,7 +5057,7 @@ def fig_imaging_model_checks():
         ax.grid(ls=':', alpha=.3)
         ax.set_axisbelow(True)
     fig.suptitle('图63  收敛、模型残差与物理正确性分别核对\n'
-                 '两格对照及单源 CLEAN-SC 闭式算例；闭式模型与局部算子对照', fontsize=FS_SUP)
+                 '两格对照及单源 CLEAN-SC 算例；闭式模型与局部算子对照', fontsize=FS_SUP)
     fig.tight_layout(rect=(0, 0, 1, .94), h_pad=2., w_pad=2.)
     save(fig, 'fig63_imaging_model_checks.png')
 

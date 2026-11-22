@@ -24,7 +24,7 @@ LIMITS = ('Original known two-slot sinusoid stitching control, not speech, a bli
 
 
 def parameters():
-    return {'exercise_id': 'E08-32', 'sample_rate_hz': 16000, 'samples_per_channel': 32000,
+    return {'exercise_id': 'E08-24', 'sample_rate_hz': 16000, 'samples_per_channel': 32000,
             'frequencies_hz': [500.0, 1500.0], 'amplitudes': [0.1, 0.1],
             'channel_order': ['fixed_source_slot_1', 'fixed_source_slot_2'],
             'phase': 'sine at the common absolute sample clock, phase zero',

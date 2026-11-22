@@ -1,4 +1,4 @@
-"""Publication boundaries for independent E04-24 coherent-reflection assets."""
+"""Publication boundaries for independent E04-20 coherent-reflection assets."""
 import json
 from pathlib import Path
 import shutil

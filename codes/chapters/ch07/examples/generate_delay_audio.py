@@ -30,7 +30,7 @@ SOURCE_PATHS = (
 MEMBERS = set(FILE_NAMES.values()) | {'MANIFEST.json'}
 
 # Reviewed exact values/types, independent of the runtime declaration function.
-REQUIRED_PARAMETERS = {'exercise_id': 'E07-24',
+REQUIRED_PARAMETERS = {'exercise_id': 'E07-19',
  'sample_rate_hz': 16000,
  'hop_samples': 128,
  'source_samples': 32256,
@@ -145,7 +145,7 @@ def prepare_assets():
                          'float_measurements': measure_signal(signal, signals['reference']),
                          'pcm_measurements': measure_signal(decoded[name], decoded['reference']),
                          'pcm_integer_measurements': _integer_measurements(blobs[filename], blobs[FILE_NAMES['reference']])}
-    manifest = {'schema_version': 1, 'exercise_id': 'E07-24', 'sample_rate_hz': 16000,
+    manifest = {'schema_version': 1, 'exercise_id': 'E07-19', 'sample_rate_hz': 16000,
                 'samples_per_channel': 33024, 'common_export_gain': 1.0,
                 'origin': 'original deterministic known propagation and history-delay control',
                 'source_sha256': {path: _sha(validate_parent_chain(ROOT/path).read_bytes()) for path in SOURCE_PATHS},

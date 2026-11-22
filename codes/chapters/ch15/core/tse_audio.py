@@ -74,7 +74,7 @@ LIMITS = (
 def parameters() -> dict:
     """Return exact JSON-serializable metadata describing the 6-file synthetic scene."""
     return {
-        "exercise_ids": ["E15-05", "E15-07", "E15-16"],
+        "exercise_ids": ["E15-03", "E15-05", "E15-12"],
         "sample_rate_hz": SAMPLE_RATE,
         "samples_per_channel": SAMPLES,
         "fade_samples_each_end": FADE_SAMPLES,

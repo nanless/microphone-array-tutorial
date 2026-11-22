@@ -1,15 +1,15 @@
 {
   "schema_version": 1,
-  "exercise_id": "E04-24",
+  "exercise_id": "E04-20",
   "sample_rate_hz": 16000,
   "samples_per_channel": 32012,
   "common_export_gain": 1.0,
   "origin": "original deterministic coherent direct/reflection mathematical synthesis",
   "source_sha256": {
-    "codes/chapters/ch04/core/reflection_audio.py": "55bf651f1cdc0d83763871e9729210c89e92c1861a99d4da54ea616b50cf78fb",
-    "codes/chapters/ch04/examples/generate_reflection_audio.py": "31a78db1a48fd2102ef1695ae096578885f5c54956f2ad87ab7abc079e0f39fb",
+    "codes/chapters/ch04/core/reflection_audio.py": "7097ae2d62f428f55e42eb1e89bf4187da6cd64b9be9ea274cb71cdebeb44b44",
+    "codes/chapters/ch04/examples/generate_reflection_audio.py": "29ed9b2604a0700d6c6686b9918ba9a73b505d4c8b765fb98f0e8eb99574a5a4",
     "codes/chapters/ch02/core/conventions.py": "4e80a27490f05ddd5f4826361420c0c8d0b331464d1e5629c5def492da47b1d7",
-    "codes/chapters/ch00/core/audio_samples.py": "bf1145e19e2ec99623c0583220192922c24f0ed3d293212309fe4a2f3bfc8385",
+    "codes/chapters/ch00/core/audio_samples.py": "1a7aad90d08fb8c27511aa463a6cc6dd6d4d2d230b27ed82549531f1f18edaba",
     "codes/chapters/ch00/io_contracts.py": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974"
   },
   "environment": {
@@ -19,7 +19,7 @@
     "machine": "arm64"
   },
   "parameters": {
-    "exercise_id": "E04-24",
+    "exercise_id": "E04-20",
     "sample_rate_hz": 16000,
     "source_samples": 32000,
     "samples_per_channel": 32012,

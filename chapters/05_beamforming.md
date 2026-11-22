@@ -235,7 +235,7 @@ $$\vec w_{\mathrm{MVDR}}=\frac{1}{22}\begin{bmatrix}11+10\mathrm{j}\\11-10\mathr
 
 #### 对角加载、WNG 约束与 LOCATA 实录对照
 
-在无失真约束 $\vec w^H\vec a=1$ 下施加白噪声增益下限 $G_{\mathrm{WNG}}\ge G_{\min}$（即 $\|\vec w\|_2^2\le\delta=1/G_{\min}$，要求 $\delta\ge 1/M$），引入非负拉格朗日乘子 $\varepsilon\ge 0$ 写增广拉格朗日函数 $\mathcal L=\vec w^H(\hat{\mathbf R}_{nn}+\varepsilon\mathbf I)\vec w-\varepsilon\delta+\lambda(1-\vec w^H\vec a)+\lambda^*(1-\vec a^H\vec w)$，立即表明 **WNG 范数约束的对偶解等价于对角加载 MVDR**（[Cox, Zeskind & Owen, *IEEE TASSP*, 1987](https://doi.org/10.1109/TASSP.1987.1165054)）。由 KKT 互补松弛条件 $\varepsilon(\|\vec w\|_2^2-\delta)=0$：若未加载已满足 $\|\vec w(0)\|_2^2\le\delta$ 则 $\varepsilon^\star=0$；否则记 $\hat{\mathbf R}_{nn}=\sum_{m=1}^M\lambda_m\vec u_m\vec u_m^H$、$\alpha_m=|\vec u_m^H\vec a|^2$ 与 $S_k(\varepsilon)=\sum_{m=1}^M\alpha_m(\lambda_m+\varepsilon)^{-k}$，则 $\|\vec w(\varepsilon)\|_2^2=S_2/S_1^2$，求导得 $\frac{\mathrm{d}}{\mathrm{d}\varepsilon}(S_2/S_1^2)=2(S_2^2-S_1S_3)/S_1^3\le 0$（由柯西—施瓦茨不等式，只要 $\vec a$ 在至少两个不同特征值上非零即严格单调递减），随 $\varepsilon\to\infty$ 平滑降至 $1/M\le\delta$，故存在唯一正加载量 $\varepsilon^\star>0$ 使解恰好落在边界 $\|\vec w(\varepsilon^\star)\|_2^2=\delta$ 上（闭式反推算例见 [E05-04](#e05-04)）。
+在无失真约束 $\vec w^H\vec a=1$ 下施加白噪声增益下限 $G_{\mathrm{WNG}}\ge G_{\min}$（即 $\|\vec w\|_2^2\le\delta=1/G_{\min}$；对单位模导向 $\|\vec a\|_2^2=M$ 要求 $\delta\ge 1/M$，一般导向为 $\delta\ge 1/\|\vec a\|_2^2$），引入非负拉格朗日乘子 $\varepsilon\ge 0$ 写增广拉格朗日函数 $\mathcal L=\vec w^H(\hat{\mathbf R}_{nn}+\varepsilon\mathbf I)\vec w-\varepsilon\delta+\lambda(1-\vec w^H\vec a)+\lambda^*(1-\vec a^H\vec w)$，立即表明 **WNG 范数约束的对偶解等价于对角加载 MVDR**（[Cox, Zeskind & Owen, *IEEE TASSP*, 1987](https://doi.org/10.1109/TASSP.1987.1165054)）。由 KKT 互补松弛条件 $\varepsilon(\|\vec w\|_2^2-\delta)=0$：若未加载已满足 $\|\vec w(0)\|_2^2\le\delta$ 则 $\varepsilon^\star=0$；否则记 $\hat{\mathbf R}_{nn}=\sum_{m=1}^M\lambda_m\vec u_m\vec u_m^H$、$\alpha_m=|\vec u_m^H\vec a|^2$ 与 $S_k(\varepsilon)=\sum_{m=1}^M\alpha_m(\lambda_m+\varepsilon)^{-k}$，则 $\|\vec w(\varepsilon)\|_2^2=S_2/S_1^2$，求导得 $\frac{\mathrm{d}}{\mathrm{d}\varepsilon}(S_2/S_1^2)=2(S_2^2-S_1S_3)/S_1^3\le 0$（由柯西—施瓦茨不等式，只要 $\vec a$ 在至少两个不同特征值上非零即严格单调递减），随 $\varepsilon\to\infty$ 平滑降至 $1/\|\vec a\|_2^2$（单位模导向下即 $1/M\le\delta$），故存在唯一正加载量 $\varepsilon^\star>0$ 使解恰好落在边界 $\|\vec w(\varepsilon^\star)\|_2^2=\delta$ 上（闭式反推算例见 [E05-04](#e05-04)）。
 
 为保证尺度不变性，本书采用无量纲相对对角加载系数 $\alpha_{\mathrm{dl}}\ge 0$（对应第 4 章 Capon 谱中的无量纲加载符号 $\eta$，避免与 DMA 延迟比 $\alpha$ 及遗忘因子混淆）：
 
@@ -352,7 +352,7 @@ $$\begin{aligned}
 0&<\mu_{\mathrm{step}}<\frac{2}{\lambda_{\max}(\mathbf P\mathbf R_{xx}\mathbf P)}\text{。}
 \end{aligned}$$
 
-零空间内每个正特征模态 $\lambda_k(\mathbf P\mathbf R_{xx}\mathbf P)$ 按 $(1-\mu_{\mathrm{step}}\lambda_k)^l$ 衰减，因此保证全部模态收敛（$|1-\mu_{\mathrm{step}}\lambda_k|<1$）的充要条件正是上式给出的步长上界。
+在 $\mathbf R_{xx}\succ\mathbf 0$ 的前提下，约束零空间内的全部特征模态均满足 $\lambda_k(\mathbf P\mathbf R_{xx}\mathbf P)>0$，并按 $(1-\mu_{\mathrm{step}}\lambda_k)^l$ 衰减，因此保证全部零空间模态均值收敛（$|1-\mu_{\mathrm{step}}\lambda_k|<1$）的充要条件正是上式给出的步长上界。
 
 单步实/复约束手算核验见 [E05-06](#e05-06)。下表对照 Frost 投影与下一节广义旁瓣对消器（GSC）：
 
@@ -474,7 +474,7 @@ $$\begin{aligned}
 &=(1+\xi)\exp\!\left(-\gamma\frac{\xi}{1+\xi}\right)\text{。}
 \end{aligned}$$
 
-再由贝叶斯公式得后验存在概率 $p_s=P(H_1\mid Y)$，最小化全概率对数幅度均方误差 $\mathbb{E}[(\ln|S|-\ln|\hat S|)^2\mid Y]$ 给出后验条件期望 $\ln|\hat S|=p_s\mathbb{E}[\ln|S|\mid Y,H_1]+(1-p_s)\mathbb{E}[\ln|S|\mid Y,H_0]=p_s\ln(G_{H_1}|Y|)+(1-p_s)\ln(G_{\min}|Y|)$，整理为 $\ln G=p_s\ln G_{H_1}+(1-p_s)\ln G_{\min}$ 并取指数，即得 **OM-LSA 几何组合增益**（Cohen & Berdugo, 2001）：
+再由贝叶斯公式得后验存在概率 $p_s=P(H_1\mid Y)$。最小化全概率对数幅度均方误差 $\mathbb{E}[(\ln|S|-\ln|\hat S|)^2\mid Y]$ 形式上对应后验条件期望 $p_s\mathbb{E}[\ln|S|\mid Y,H_1]+(1-p_s)\mathbb{E}[\ln|S|\mid Y,H_0]$；但由于 $H_0$ 下 $S=0$ 使无约束 $\ln|S|$ 发散至 $-\infty$，OM-LSA 在 $H_0$ 下施加约束地板增益 $G_{H_0}=G_{\min}$，以 $\ln(G_{\min}|Y|)$ 替代 $H_0$ 条件项，从而得到 $\ln|\hat S|=p_s\ln(G_{H_1}|Y|)+(1-p_s)\ln(G_{\min}|Y|)$，整理为 $\ln G=p_s\ln G_{H_1}+(1-p_s)\ln G_{\min}$ 并取指数，即得 **OM-LSA 几何组合增益**（Cohen & Berdugo, 2001）：
 
 $$\begin{aligned}
 \ell&=(1+\xi)\exp\!\left(-\frac{\gamma\xi}{1+\xi}\right),\qquad

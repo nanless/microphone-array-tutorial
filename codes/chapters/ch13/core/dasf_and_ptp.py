@@ -397,7 +397,7 @@ def dasf_lcmv_updates(
 
 
 def dasf_unification_control() -> dict[str, object]:
-    """E13-27: MWF/MVDR/GEVD 1D equivalence, 2-constraint DASF-LCMV & P=3 lock-up."""
+    """E13-20: MWF/MVDR/GEVD 1D equivalence, 2-constraint DASF-LCMV & P=3 lock-up."""
     # Exact Ch 13 §13.8 2-node 4-mic correlated-noise benchmark:
     a_vec = np.array([1.0, 0.5, 2.0, -0.5], dtype=np.float64)
     r_ss = np.outer(a_vec, a_vec)  # phi_s = 1

@@ -42,7 +42,7 @@ _FIXED_LIMITS = ('Known 2kHz tones, deterministic balanced phase code and exactl
 
 def _fixed_parameters():
     """Publication fixture, independent of the model's metadata callbacks."""
-    return {'exercise_ids': ['E12-04', 'E12-05', 'E12-10'], 'sample_rate_hz': 24000,
+    return {'exercise_ids': ['E12-03', 'E12-04', 'E12-08'], 'sample_rate_hz': 24000,
             'frequency_hz': 2000, 'samples_per_channel': 48004,
             'body_samples': 48000, 'complete_tail_samples': 4,
             'block_samples': 2400, 'blocks': 20, 'fade_samples_each_end_of_block': 240,

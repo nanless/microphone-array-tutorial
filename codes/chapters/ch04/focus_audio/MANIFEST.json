@@ -5,11 +5,11 @@
   "common_export_gain": 1.0,
   "origin": "original deterministic known-component focusing synthesis",
   "source_sha256": {
-    "codes/chapters/ch04/core/focus_audio.py": "0ddc83110540bc96ee5e1a5e57242948e600f2c2c4c965b059f1797dc6414c83",
-    "codes/chapters/ch04/examples/generate_focus_audio.py": "3d2c13b0edefd5465ffe0b4ba2098009304ee2ad4a00cdcba96922712f5ebae6",
+    "codes/chapters/ch04/core/focus_audio.py": "6947ca55e16dd3714978235463af3dcff745ae426c954da41f58f52307dc44ad",
+    "codes/chapters/ch04/examples/generate_focus_audio.py": "705281318bcd70b0a48ae844fe414fc593d4e17391bcf396d09fb0872fcd6b27",
     "codes/chapters/ch03/core/geometry.py": "5a680848301358415f74647199a4c57b65086f0b2580f91706c912ad208d7bdb",
     "codes/chapters/ch02/core/conventions.py": "4e80a27490f05ddd5f4826361420c0c8d0b331464d1e5629c5def492da47b1d7",
-    "codes/chapters/ch00/core/audio_samples.py": "bf1145e19e2ec99623c0583220192922c24f0ed3d293212309fe4a2f3bfc8385",
+    "codes/chapters/ch00/core/audio_samples.py": "1a7aad90d08fb8c27511aa463a6cc6dd6d4d2d230b27ed82549531f1f18edaba",
     "codes/chapters/ch00/io_contracts.py": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974"
   },
   "environment": {
@@ -24,7 +24,7 @@
   "pcm_quantization_step": 3.0517578125e-05,
   "pcm_half_step_error_bound": 1.52587890625e-05,
   "parameters": {
-    "exercise_id": "E04-22",
+    "exercise_id": "E04-18",
     "sample_rate_hz": 16000,
     "source_samples": 32000,
     "samples_per_channel": 32024,

@@ -1,7 +1,7 @@
 """Pure-NumPy teaching kernels for Hammerstein bases and stereo/loop AEC controls.
 
-Covers Chapter 06 exercises E06-43 (odd power vs orthogonal Legendre Hammerstein
-conditioning and coordinate decoupling on U(-1, 1)) and E06-44 (LTI vs
+Covers Chapter 06 exercises E06-29 (odd power vs orthogonal Legendre Hammerstein
+conditioning and coordinate decoupling on U(-1, 1)) and E06-30 (LTI vs
 time-varying first-order all-pass stereo decorrelation, physical ANC/ITU-T
 P.1150 ICC delay deadlines vs digital AEC buffering, and foreground/shadow
 dual-filter switching). No SciPy or external dependencies; all computations are
@@ -102,7 +102,7 @@ def power_to_legendre_weights(power_coefficients: np.ndarray) -> np.ndarray:
 
 
 def hammerstein_orthogonal_basis() -> dict:
-    """E06-43: Conditioning and coordinate decoupling of odd power vs Legendre bases on U(-1, 1)."""
+    """E06-29: Conditioning and coordinate decoupling of odd power vs Legendre bases on U(-1, 1)."""
     orders = np.array([1, 3, 5], dtype=np.int64)
     raw_power_gram = 1.0 / (orders[:, None] + orders[None, :] + 1.0)
     raw_eigvals = np.linalg.eigvalsh(raw_power_gram)
@@ -252,7 +252,7 @@ def dual_filter_switch_decision(
     reset_ratio: float = 2.0,
     coherence_threshold: float = 0.8,
 ) -> dict:
-    """Evaluate foreground/shadow AEC switching rule (Eq. 6-40)."""
+    """Evaluate foreground/shadow AEC switching rule (Eq. 6-43)."""
     e_fg = _finite_real_scalar(foreground_error_energy, "foreground_error_energy")
     e_sh = _finite_real_scalar(shadow_error_energy, "shadow_error_energy")
     coh = _finite_real_scalar(coherence, "coherence")
@@ -282,7 +282,7 @@ def dual_filter_switch_decision(
 
 
 def stereo_decorrelation_and_loop_deadlines() -> dict:
-    """E06-44: LTI vs TV-APF stereo identifiability, ANC/ICC deadlines, and dual-filter switching."""
+    """E06-30: LTI vs TV-APF stereo identifiability, ANC/ICC deadlines, and dual-filter switching."""
     source = np.array([1.0, 0.0, 0.0, 1.0, 0.0], dtype=np.float64)
     snapshot_indices = [0, 1, 3, 4]
     true_stereo_path = np.array([0.8, 0.2, 0.4, 0.1], dtype=np.float64)

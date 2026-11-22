@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 15 章 · 条件目标提取与多通道日志 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="e2a840976a4c"><style>
+<meta name="source-digest" content="f6d48efe6ade"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -908,7 +908,7 @@ m_t^{\mathrm{sil}}&=\prod_{j=1}^{K}\bigl(1-\gamma_{j,t}\bigr),
 <ul>
 <li><strong>子图 (a) 六帧重叠会议真值活动</strong>：横轴为会议时间（$0.0$～$3.0\ \mathrm{s}$，每帧 $0.5\ \mathrm{s}$），纵轴为二值说话活动标志（$0/1$）。蓝色与橙色柱分别标示两位说话人的发声区间，淡红色背景高亮标出 $1.0$～$2.0\ \mathrm{s}$ 的双讲重叠区（任何单标签聚类在此必漏 $1.0\ \mathrm{s}$）。</li>
 <li><strong>子图 (b) 四种输出假设的 DER 三分量分解</strong>：横轴为四种日志输出假设，纵轴为误差时长占参考总时长（$3.5\ \mathrm{s}$）的百分比（$\%$）。堆叠柱拆分漏检（蓝）、虚警（红）与说话人混淆（橙）对总 $\mathrm{DER}$ 的贡献，依次对比单标签理论下界（$28.6\%$）、含混淆双簇（$57.1\%$）、越过黑色虚线基准的合法超百过触发案例（$114.3\%$）与空谱联合 TS-VAD（$0.0\%$）。</li>
-<li><strong>子图 (c) 重叠帧上 TS-VAD 后验概率恢复</strong>：横轴为帧索引 $t \in \{0, \ldots, 5\}$，纵轴为活动后验概率 $\gamma_{k,t}$（无量纲）。红色虚线显示仅用声纹时说话人 1 在帧 $2, 3$ 的后验跌落至 $0.5$ 灰色虚线附近；引入双麦空间相位差后，蓝色实线（说话人 1）与绿色点划线（说话人 2）在重叠区双双维持在 $0.83$ 以上。</li>
+<li><strong>子图 (c) 重叠帧上 TS-VAD 后验概率恢复</strong>：横轴为帧索引 $t \in \{0, \ldots, 5\}$，纵轴为活动后验概率 $\gamma_{k,t}$（无量纲）。红色虚线显示仅用声纹时说话人 1 在帧 $2, 3$ 的后验跌落至 $0.5$ 灰色点线附近；引入双麦空间相位差后，蓝色实线（说话人 1）与绿色点划线（说话人 2）在重叠区双双维持在 $0.83$ 以上。</li>
 <li><strong>子图 (d) GSS 协方差门控权重</strong>：横轴为帧索引 $t \in \{0, \ldots, 5\}$，纵轴为协方差累加帧权重（无量纲）。对比紫色点线（未排他的原始 $\gamma_{1,t}$）与蓝色实线（排他乘积掩码 $m_{1,t}^{\mathrm{tar}}$），可见重叠帧 $t = 2, 3$ 的权重被显著压低，仅让纯净单讲帧 $t = 0, 1$ 主导目标协方差估计，而红色虚线 $m_{1,t}^{\mathrm{int}}$ 则准确覆盖说话人 2 独白帧 $t = 4$ 与纯背景噪声帧 $t = 5$。</li>
 </ul>
 <span id="sec-23" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-5427085a40" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-617b8246f6" class="anchor-alias" aria-hidden="true"></span><span id="sec-17-6" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-acba13f751" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-64df9ed6df" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-15-6">15.6 远场视听多模态前端：帧率异构、管线滞后与唇部遮挡</h2>

@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>AEC、WPE 与分离源码研究 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="e2a840976a4c"><style>
+<meta name="source-digest" content="f6d48efe6ade"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -1185,7 +1185,7 @@ $$</p>
 <tbody>
 <tr>
 <td>功率与掩码</td>
-<td>第一轮 $\lambda=(m|X|)^2$，然后跨通道平均；掩码默认幅度范围 $10^{-10}$～1</td>
+<td>第一轮 $\lambda=(m\lvert X\rvert)^2$，然后跨通道平均；掩码默认幅度范围 $10^{-10}$～1</td>
 <td>与 ESPnet 的观测功率乘掩码不同；不能共享未经换算的同一个 mask</td>
 </tr>
 <tr>

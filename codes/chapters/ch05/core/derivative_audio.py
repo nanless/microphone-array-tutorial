@@ -1,4 +1,4 @@
-"""E05-22: fixed three-microphone derivative constraints under real propagation.
+"""E05-14: fixed three-microphone derivative constraints under real propagation.
 
 An original free-field two-tone fixture with observation-side white noise.
 No speech, room, online covariance estimator, fractional-delay FIR or device
@@ -51,7 +51,7 @@ def parameters() -> dict:
                          'white_noise_mean_square': noise,
                          'total_reference_mean_square': float(distortion+noise),
                          'weight_norm_squared': float(np.vdot(w, w).real)}
-    return {'exercise_id': 'E05-22', 'sample_rate_hz': SAMPLE_RATE,
+    return {'exercise_id': 'E05-14', 'sample_rate_hz': SAMPLE_RATE,
             'samples_per_channel': SAMPLES, 'source_active_interval_s': [0., SOURCE_SECONDS],
             'sound_speed_m_s': 343., 'positions_m': positions.tolist(), 'channel_order': [0, 1, 2],
             'azimuth_deg': float(np.rad2deg(theta)), 'phase_centre': 'middle microphone/array centre',

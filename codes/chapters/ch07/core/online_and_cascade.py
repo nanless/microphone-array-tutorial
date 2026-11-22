@@ -1,8 +1,8 @@
 """Pure-NumPy teaching kernels for online RLS-WPE silence gating and AEC+WPE cascades.
 
-Covers Chapter 07 exercises E07-25 (online RLS-WPE inverse-correlation exponential
+Covers Chapter 07 exercises E07-20 (online RLS-WPE inverse-correlation exponential
 inflation over 1000 silence frames, two-frame onset pop, and convex diagonal
-pullback gating) and E07-26 (Linear AEC -> WPE exact identifiability vs
+pullback gating) and E07-21 (Linear AEC -> WPE exact identifiability vs
 pre-WPE NLP non-commutativity counterexample vs WPE -> AEC reversal, plus
 frequency-dependent prediction tap budget K(f)). No SciPy imports; float64/complex128.
 """
@@ -154,7 +154,7 @@ def rls_wpe_single_bin_step(
 
 
 def rls_wpe_silence_pullback() -> dict:
-    """E07-25: 1000-frame silence inflation & first-syllable pop vs convex diagonal pullback."""
+    """E07-20: 1000-frame silence inflation & first-syllable pop vs convex diagonal pullback."""
     dim = 2
     alpha = 0.99
     silence_frames = 1000
@@ -184,7 +184,7 @@ def rls_wpe_silence_pullback() -> dict:
     unguarded_pop_power = float(u_step2["prior_output"] ** 2)
     unguarded_pop_db = float(10.0 * math.log10(unguarded_pop_power))
 
-    # 2. Anisotropic 2-step exact rational hand check of Eq. (7-36).
+    # 2. Anisotropic 2-step exact rational hand check of Eq. (7-21).
     p_aniso_0 = np.diag([4.0, 2.0])
     p_aniso_1 = convex_diagonal_pullback_step(p_aniso_0, beta=0.25, delta=0.5)
     p_aniso_2 = convex_diagonal_pullback_step(p_aniso_1, beta=0.25, delta=0.5)
@@ -261,7 +261,7 @@ def frequency_dependent_wpe_budget(
     *,
     complex_bytes: int = 16,
 ) -> dict:
-    """Compute exact correlation memory and O(D^3) Cholesky proxy for subband K(f) (Eq. 7-38)."""
+    """Compute exact correlation memory and O(D^3) Cholesky proxy for subband K(f) (Eq. 7-42)."""
     m_ch = _integer(channels, "channels", minimum=1)
     c_bytes = _integer(complex_bytes, "complex_bytes", minimum=1)
     if (
@@ -336,7 +336,7 @@ def _fit_two_tap_tail_wpe(signal: np.ndarray, *, delay: int = 2, tail_indices: t
 
 
 def cascaded_aec_wpe_ordering() -> dict:
-    """E07-26: Linear AEC -> WPE vs pre-WPE NLP mask vs WPE -> AEC, plus K(f) budget."""
+    """E07-21: Linear AEC -> WPE vs pre-WPE NLP mask vs WPE -> AEC, plus K(f) budget."""
     clean_early = np.array([1.0, 1.0, 0.0, 0.0, 0.0, 0.0], dtype=np.float64)
     true_g = np.array([0.5, 0.25], dtype=np.float64)
     z_rev = np.zeros(6, dtype=np.float64)

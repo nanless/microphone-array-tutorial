@@ -1,4 +1,4 @@
-"""Known channel selection for E10-34; reuse the Chapter 5 MVDR solver.
+"""Known channel selection for E10-26; reuse the Chapter 5 MVDR solver.
 
 Channel indices retain their supplied order and their original physical
 identity. Steering is selected, never divided by a new reference entry.
@@ -99,7 +99,7 @@ def select_mvdr_channels(covariance, steering, indices, *,
 
 
 def teaching_channel_selection() -> dict:
-    """Return the exact E10-34 given-statistics control, without any audio IO."""
+    """Return the exact E10-26 given-statistics control, without any audio IO."""
     factor = np.array([[1., 0., 0.], [1., 1., 0.], [0., 1., 1.]])
     covariance = factor @ factor.T
     steering = np.ones(3)

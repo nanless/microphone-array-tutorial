@@ -212,7 +212,7 @@ J_{\mathrm{IVA}}&=\frac{2}{T}\sum_{n,t}r_n(t)
 
 早期独立向量分析（Kim 等，2006）直接沿李群流形作**自然梯度法（natural gradient）**迭代：记多频联合得分函数向量 $\vec\varphi_f(\vec y_t)\in\mathbb{C}^{M\times 1}$ 的第 $n$ 分量为 $y_{nf}(t)/r_n(t)$，将欧氏梯度右乘 $\mathbf W_f^H\mathbf W_f$ 后按步长 $\mu>0$ 更新：
 
-$$\mathbf W_f\leftarrow\mathbf W_f+\mu\left(\mathbf I_M-\frac{1}{T}\sum_{t=1}^T\vec\varphi_f(\vec y_t)\vec y_{ft}^H\right)\mathbf W_f.$$
+$$\mathbf W_f\leftarrow\mathbf W_f+\mu\left(\mathbf I_M-\frac{1}{T}\sum_{t=1}^T\vec\varphi_f(\vec y_t)\vec y_f(t)^H\right)\mathbf W_f.$$
 
 尽管右乘 $\mathbf W_f^H\mathbf W_f$ 赋予了更新式良好的等变性，步长 $\mu$ 依然是一把棘手的双刃剑：语音不同频带动态跨度极大，$\mu$ 稍大便会在高频或弱能量帧引发越界震荡甚至发散，$\mu$ 偏小又需要数百轮缓慢爬坡。相比之下，AuxIVA 为非光滑的宽带二范数构造紧致的二次上界辅助函数，彻底消除了学习率超参数 $\mu$，实现了**免步长单调非增收敛**。
 
@@ -555,7 +555,7 @@ Q^+(\mathbf B\mid\mathbf B^{(r)})
   +\mathrm{const}.
 \end{aligned}$$
 
-令上式关于 $\mathbf B^{-1}$ 的梯度为零，其在正定锥 $\mathbf B\succ\mathbf 0$ 上的唯一闭式极小点恰为式(8-21)的 $\widetilde{\mathbf B}^{(r+1)}$（随后的迹归一化不改变 $Q$ 值），由 MM 原理严格保证每步满足 $Q(\mathbf B^{(r+1)})\le Q(\mathbf B^{(r)})$。
+当 $\sum_t\gamma_t>0$ 且加权散布矩阵 $\widetilde{\mathbf B}^{(r+1)}\succ\mathbf 0$（即带正权重的方向向量 $\vec z_t$ 张满 $\mathbb{C}^M$）时，因 $-\ln\det(\mathbf B^{-1})$ 在正定锥上严格凸，令上式关于 $\mathbf B^{-1}$ 的梯度为零即得 $\mathbf B\succ\mathbf 0$ 上的唯一闭式极小点 $\widetilde{\mathbf B}^{(r+1)}$（若秩亏则须靠对角加载或收缩正则防止趋向奇异边界；随后的迹归一化不改变 $Q$ 值），由 MM 原理严格保证每步满足 $Q(\mathbf B^{(r+1)})\le Q(\mathbf B^{(r)})$。
 
 还要特别澄清一个在文献与代码审查中常被忽略的似然细节：在已知活动门控 $a_{jt}$ 下，按式(8-19)第一行条件归一化先验写出的边缘条件对数似然为
 
@@ -618,7 +618,7 @@ $$\begin{aligned}
 =\begin{bmatrix}1&-0.8\\-0.8&1\end{bmatrix}.
 \end{aligned}$$
 
-$\mathbf R_{\mathrm{tar}}$ 的非对角元 $+0.8$ 清晰反映了目标同相占优，其最大特征值 $1.8$ 对应的主特征向量（按第 $1$ 麦归一）给出估计相对传递函数 $\vec v=[1,1]^\top$；而 $\vec v$ 恰好又是干扰矩阵 $\mathbf R_{\mathrm{int}}$ 对应最小特征值 $0.2$ 的特征向量，故 $\mathbf R_{\mathrm{int}}^{-1}\vec v=5\vec v$，归一化分母为 $\vec v^H(5\vec v)=10$，一步算出 MVDR 权重 $\vec w=[0.5,\ 0.5]^\top$——它对目标同相快照输出 $1$，对反相干扰快照精确输出 $0$（目标输出功率 $0.9$、残留干扰功率 $0.1$）。对比广义特征值（GEV）波束形成：矩阵束 $(\mathbf R_{\mathrm{tar}},\mathbf R_{\mathrm{int}})$ 在同相与反相方向上的广义特征值分别为 $1.8/0.2=9$ 与 $0.2/1.8=1/9$，主广义特征向量同样落在 $[1,1]^\top$ 方向，但特征向量本身长度任意（不加 BAN 或参考麦归一化时会把同相快照放大 $2$ 倍，且在一般非对称多麦声场中 GEV 与 MVDR 方向并不恒同）。
+$\mathbf R_{\mathrm{tar}}$ 的非对角元 $+0.8$ 清晰反映了目标同相占优，其最大特征值 $1.8$ 对应的主特征向量（按第 $1$ 麦归一）给出估计相对传递函数 $\vec v=[1,1]^\top$；而 $\vec v$ 恰好又是干扰矩阵 $\mathbf R_{\mathrm{int}}$ 对应最小特征值 $0.2$ 的特征向量，故 $\mathbf R_{\mathrm{int}}^{-1}\vec v=5\vec v$，归一化分母为 $\vec v^H(5\vec v)=10$，一步算出 MVDR 权重 $\vec w=[0.5,\ 0.5]^\top$——它对目标同相快照 $\vec Y_1$ 输出 $1$、对反相干扰快照 $\vec Y_2$ 精确输出 $0$，按软掩码加权协方差计得的输出功率分别为 $\vec w^H\mathbf R_{\mathrm{tar}}\vec w=0.9$ 与 $\vec w^H\mathbf R_{\mathrm{int}}\vec w=0.1$（其中的 $0.1$ 并非来自已被置零的 $\vec Y_2$，而是源于 $\vec Y_1$ 上 $0.1$ 的非目标软掩码权重，两者之比恰好为 $0.9/0.1=9$）。对比广义特征值（GEV）波束形成：矩阵束 $(\mathbf R_{\mathrm{tar}},\mathbf R_{\mathrm{int}})$ 在同相与反相方向上的广义特征值分别为 $1.8/0.2=9$ 与 $0.2/1.8=1/9$，主广义特征向量同样落在 $[1,1]^\top$ 方向；然而广义特征向量本身尺度任意（不加 BAN 或参考麦归一化时会把同相快照放大 $2$ 倍，且在一般非对称多麦声场中 GEV 与 MVDR 方向并不恒同）。
 
 同时也要清楚“主特征向量提取 RTF”的失效边界：只有当 $\mathbf R_{\mathrm{tar}}$ 接近秩一目标外积 $\phi\vec a\vec a^H$ 时主特征向量才对准真实 $\vec a$。若掩码混入强各向异性干扰，例如真实 $\vec a=[1,1]^\top$ 而污染后的目标矩阵变成 $\vec a\vec a^H+\operatorname{diag}(0,3)$，主特征向量就会偏斜至 $[1,\ (3+\sqrt{13})/2]^\top\approx[1,\ 3.3028]^\top$，在空间白噪声协方差 $\mathbf R_{\mathrm{int}}=\mathbf I_2$ 下导致 MVDR 对真实目标的**幅度增益** $|\vec w^H\vec a|$ 跌至约 $0.3613$（**功率增益** $|\vec w^H\vec a|^2\approx 0.1306$，即 $-8.84\ \mathrm{dB}$）。
 
@@ -745,7 +745,7 @@ $$\begin{aligned}
 \sum_b w_b[t]&>0.
 \end{aligned}\tag{8-28}$$
 
-当相邻块在重叠区采用互补线性斜坡窗（如前块从 $1$ 线性降到 $0$、后块从 $0$ 线性升到 $1$）时，分母恒等于 $1$（见练习 [E08-16](#e08-16)）。同时务必算清流式交付的真实等待账本：以两块分别覆盖 $[0,1.2)\ \mathrm{s}$ 与 $[0.8,2.0)\ \mathrm{s}$（重叠区仅 $0.4\ \mathrm{s}$）且需收齐整块才能分离为例，虽然前段独享区 $[0,0.8)\ \mathrm{s}$ 在 $1.2\ \mathrm{s}$ 即可交付，但处于重叠区 $[0.8,1.2)\ \mathrm{s}$ 的样本必须等到**第二块在 $2.0\ \mathrm{s}$ 全部收齐**、跑完推理并算完跨块排列加权后才能最终输出，实际输入等待高达 $0.8\text{～}1.2\ \mathrm{s}$（样本时间戳与交付时刻核查详见[第 10 章 E10-17](10_engineering-practice.md#sec-u-864ef35c3f)）。
+当相邻块在重叠区采用互补线性斜坡窗（如前块从 $1$ 线性降到 $0$、后块从 $0$ 线性升到 $1$）时，分母恒等于 $1$（见练习 [E08-16](#e08-16)）。同时务必算清流式交付的真实等待账本：以两块分别覆盖 $[0,1.2)\ \mathrm{s}$ 与 $[0.8,2.0)\ \mathrm{s}$（重叠区仅 $0.4\ \mathrm{s}$）且需收齐整块才能分离为例，虽然前段独享区 $[0,0.8)\ \mathrm{s}$ 在 $1.2\ \mathrm{s}$ 即可交付，但处于重叠区 $[0.8,1.2)\ \mathrm{s}$ 的样本必须等到**第二块在 $2.0\ \mathrm{s}$ 全部收齐**、跑完推理并算完跨块排列加权后才能最终输出，实际输入等待高达 $0.8\text{～}1.2\ \mathrm{s}$（样本时间戳与交付时刻核查详见[第 10 章 E10-17](10_engineering-practice.md#e10-17)）。
 
 评测长会议 CSS + 多流语音识别时，词错率（WER）的说话人归属规则同样必须交代清楚（标准定义见 [MeetEval 论文 §3.2 式(3)与 §3.4 式(5)](https://www.isca-archive.org/chime_2023/neumann23_chime.pdf)，系统级验收规范与双倍惩罚机理另见[第 11 章 §11.2](11_selection-guide.md#sec-11-2) 及[第 15 章 §15.5](15_target-extraction-diarization.md#sec-15-5)）：
 

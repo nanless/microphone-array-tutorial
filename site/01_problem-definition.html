@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 1 章 · 问题定义与双耳启示 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="e2a840976a4c"><style>
+<meta name="source-digest" content="f6d48efe6ade"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -665,7 +665,7 @@ $$</p>
 <p><img alt="图1 人类双耳听觉的定位线索" src="../figures/fig01_binaural.png" onerror="this.alt+='（图缺失）'" /></p>
 <p>读图 1 时，可以顺着 <code>(a) → (b) → (c)</code> 从几何模型逐步过渡到听觉感知边界：</p>
 <ul>
-<li><strong>子图 <code>(a)</code> 俯视几何与正负号约定</strong>：画面中央为俯视的头部截面，两侧蓝点代表左耳与右耳；竖直向上的黑色箭头定义正前方为 $0^\circ$，顺时针向右偏转为正方位角（紫色圆弧标出示例声源位于右前方 $\theta=+30^\circ$，红色外向箭头指向声源，平行的蓝色斜箭头表示迎面传来的远场平面波）。由于声源偏右，波前先触达迎风侧的右耳，而远侧的左耳落在头部的“声影区”内——声波既要多走一段绕头路程才能到达左耳（形成双耳时间差 $\mathrm{ITD}=t_L-t_R>0$），其高频能量还会被头部遮挡削弱（形成双耳声级差 $\mathrm{ILD}$）。</li>
+<li><strong>子图 <code>(a)</code> 俯视几何与正负号约定</strong>：画面中央为俯视的头部截面，两侧蓝点代表左耳与右耳；竖直黑色虚线定义正前方为 $0^\circ$，顺时针向右偏转为正方位角（紫色圆弧标出示例声源位于右前方 $\theta=+30^\circ$，红色外向箭头指向声源，平行的蓝色斜箭头表示迎面传来的远场平面波）。由于声源偏右，波前先触达迎风侧的右耳，而远侧的左耳落在头部的“声影区”内——声波既要多走一段绕头路程才能到达左耳（形成双耳时间差 $\mathrm{ITD}=t_L-t_R>0$），其高频能量还会被头部遮挡削弱（形成双耳声级差 $\mathrm{ILD}$）。</li>
 <li><strong>子图 <code>(b)</code> 两种几何模型下的 ITD 理论曲线</strong>：横轴为声源方位角 $\theta$（单位：$^\circ$，范围 $-90^\circ$～$+90^\circ$），纵轴为左耳减右耳到达时差（单位：$\mu\mathrm{s}$），统一取等效头半径 $a=8.75\ \mathrm{cm}$、声速 $c=343\ \mathrm{m/s}$。对比蓝色实线（刚性球头射线绕行近似）与橙色虚线（拿掉头部、仅在空气中保留间距 $17.5\ \mathrm{cm}$ 的无遮挡双点）可以读出三点特征：第一，在正前方 $\theta=0^\circ$ 附近两条曲线几乎重合且呈近似直线，偏离 $1^\circ$ 产生约 $9\ \mu\mathrm{s}$ 的物理时差（红箭标注）；第二，随着角度往侧面增大，无遮挡双点的橙色虚线按正弦规律趋缓，在正右方 $+90^\circ$ 停在约 $510\ \mu\mathrm{s}$，而蓝色实线因为声波无法穿颅直行、必须贴着球面弧线绕行，时差继续拉大到约 $656\ \mu\mathrm{s}$；第三，整幅曲线关于原点奇对称，左侧声源（$\theta\lt 0^\circ$）先到左耳，时差取负值。</li>
 <li><strong>子图 <code>(c)</code> 三种听觉线索的作用条件对照</strong>：自上而下用蓝、红、绿三栏并列展示纯音细结构 ITD、双耳声级差（ILD）和调制高频包络 ITD。它专门用来破除“低频只看时间差、高频只看声级差”的机械二分印象：虽然人耳对纯音逐周期相位的锁相上限在特定实验下约为 $1.4\ \mathrm{kHz}$，但高频声音一旦带有慢变化的强弱包络，听觉依然能从包络起伏中读取时间差；同理，低频在近场或散射条件下也可能产生声级差。</li>
 </ul>
@@ -1155,7 +1155,7 @@ $$</p>
 \begin{aligned}
 P_{v,\mathrm{out}} &= \mathbb{E}\bigl[(w_1 v_1 + w_2 v_2)^2\bigr]
 = w_1^2 + w_2^2, \\
-\mathrm{WNG} &= \frac{P_s/1}{P_s/(w_1^2+w_2^2)}
+\mathrm{WNG} &= \frac{P_s/(w_1^2+w_2^2)}{P_s/1}
 = \frac{1}{w_1^2+w_2^2}, \\
 \mathrm{WNG}_{\mathrm{dB}} &= 10\log_{10}\mathrm{WNG}.
 \end{aligned} \tag{1-13}
@@ -1311,7 +1311,7 @@ $$</p>
 <p>式(1-16)分母 $2\sin^2(2\pi f d/c)$ 正是该双麦端射一阶差分器的单频线性白噪声增益 $\mathrm{WNG}(f)$（注意在空间混叠频点 $f = k c/(2d)$ 处 $\sin(2\pi f d/c)=0$，目标与后方零陷重合，逆均衡奇异发散）。</p>
 <p><strong>第二步：核算标称 $\mathrm{dB(A)}$ 胜出而差分实战恶化的反转账本。</strong> 代入 $S_A(f)=S_0$ 与 $S_B(f)=0.5 S_0(1+1000/f)$ 逐项复算：</p>
 <ul>
-<li><strong>$100\ \mathrm{Hz}$ 单频未计权底噪与差分放大</strong>：在 $100\ \mathrm{Hz}$ 处，$S_B(100)/S_A(100) = 0.5\times(1+10) = 5.5$，乙款底噪比甲款高出 $+7.40\ \mathrm{dB}$；同时 $d = 0.01\ \mathrm{m}$ 差分阵在 $100\ \mathrm{Hz}$ 处的线性白噪声增益为 $2\sin^2(2\pi/343) \approx 0.000671$（即 $-31.73\ \mathrm{dB}$，自噪声功率被放大约 $1490$ 倍），而在 $1000\ \mathrm{Hz}$ 处升至 $0.06637$（$-11.78\ \mathrm{dB}$），跨越 1 个十倍频程（频率提升 10 倍，约 3.32 个倍频程）正好相差约 $20\ \mathrm{dB}$。</li>
+<li><strong>$100\ \mathrm{Hz}$ 单频未计权底噪与差分放大</strong>：在 $100\ \mathrm{Hz}$ 处，$S_B(100)/S_A(100) = 0.5\times(1+10) = 5.5$，乙款底噪比甲款高出 $+7.40\ \mathrm{dB}$；同时 $d = 0.01\ \mathrm{m}$ 差分阵在 $100\ \mathrm{Hz}$ 处的线性白噪声增益为 $2\sin^2(2\pi/343) \approx 0.000671$（即 $-31.73\ \mathrm{dB}$，自噪声功率被放大约 $1490$ 倍），而在 $1000\ \mathrm{Hz}$ 处升至 $0.06636$（$-11.78\ \mathrm{dB}$），跨越 1 个十倍频程（频率提升 10 倍，约 3.32 个倍频程）相差约 $20\ \mathrm{dB}$（$19.95\ \mathrm{dB}$）。</li>
 <li><strong>宽带语音网格与全音频带下的 A 计权标称假象</strong>：在 $16\ \mathrm{kHz}$ 语音系统关注的 $[50, 8000]\ \mathrm{Hz}$ 网格（步长 $10\ \mathrm{Hz}$、$796$ 点）上，因 $1\text{～}8\ \mathrm{kHz}$ 高权重频段内乙款谱密度趋近 $0.5 S_0$，而低频 $1/f$ 峰值被 A 计权大幅压掉，乙款的 A 计权总底噪功率仅为甲款的 $0.6926$ 倍——按总计权功率比折算，乙款标称 <code>SNR (dBA)</code> 反而比甲款<strong>高出 $+1.59\ \mathrm{dB}$</strong>（若按标准 $[20, 20000]\ \mathrm{Hz}$ 全音频带积分，乙款高频段更宽、A 计权底噪比为 $0.6434$，标称优势进一步扩大到 <strong>$+1.91\ \mathrm{dB}$</strong>，例如甲款标 <code>65.0 dB(A)</code> 时，乙款可标约 <code>66.9 dB(A)</code>）。</li>
 <li><strong>$[100, 4000]\ \mathrm{Hz}$ 语音频带差分输出总底噪</strong>：当 $2\pi f d/c \ll 1$ 时，$\sin(2\pi f d/c) \approx 2\pi f d/c$，公共几何系数在比值中约去，甲、乙两款的连续渐近积分均可手算出精确有理数：</li>
 </ul>

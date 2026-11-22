@@ -1,4 +1,4 @@
-"""Generate six independent E07-21 WAVs, or read-check them without repair."""
+"""Generate six independent E07-17 WAVs, or read-check them without repair."""
 from __future__ import annotations
 
 if __name__ == '__main__' and not __package__:
@@ -36,7 +36,7 @@ SOURCE_PATHS = (
 
 
 # Reviewed fixed fixture values and types, independent of runtime metadata.
-REQUIRED_PARAMETERS = {'exercise_id': 'E07-21',
+REQUIRED_PARAMETERS = {'exercise_id': 'E07-17',
  'sample_rate_hz': 16000,
  'samples_per_channel': 32512,
  'source_samples': 32000,

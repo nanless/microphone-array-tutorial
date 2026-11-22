@@ -25,7 +25,7 @@ LIMITS = ('Known-bin full-record offline representation, not an estimated mask, 
 
 
 def parameters() -> dict:
-    return {'exercise_id': 'E08-28', 'sample_rate_hz': SAMPLE_RATE,
+    return {'exercise_id': 'E08-21', 'sample_rate_hz': SAMPLE_RATE,
             'samples_per_channel': SAMPLES, 'frequencies_hz': list(FREQUENCIES),
             'positive_rfft_bins': [1000, 2500],
             'source': 'target=.1*cos(500Hz)-.1*sin(1250Hz); other=-.08*cos(500Hz)+.1*cos(1250Hz)',

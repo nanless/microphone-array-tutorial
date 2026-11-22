@@ -1,4 +1,4 @@
-"""Independent scalar solutions and rank counterexamples for E03-18."""
+"""Independent scalar solutions and rank counterexamples for E03-16."""
 
 import math
 import unittest

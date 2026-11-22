@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 16 章 · 附录 A：符号术语数学 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="e2a840976a4c"><style>
+<meta name="source-digest" content="f6d48efe6ade"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -407,7 +407,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <p>本书统一采用前向傅里叶核 $e^{-\mathrm{j}2\pi ft}$，其中 $\mathrm{j}=\sqrt{-1}$ 为虚数单位。</p>
 <p>阵列几何参考系约定为：麦 1 位于原点 $x=0$，麦 2 位于 $+x$ 半轴；正横方向（$+y$ 轴）记为 $0^\circ$，正方位角朝麦 2（$+x$ 轴）顺时针旋转度量；方向单位向量 $\vec{u}$ 从阵列参考点指向声源，声波传播方向为 $-\vec{u}$。</p>
 <p>球谐域公式通常改用从 $+x$ 轴逆时针起算的方位角 $\alpha$ 和从 $+z$ 轴向下起算的极角（余纬角）$\vartheta$。将其与本书从 $+y$ 朝 $+x$ 起算的声源方位角 $\theta$、从水平面朝 $+z$ 起算的俯仰角 $\phi_{\mathrm{el}}$ 对接时，必须先做角度换算 $\alpha=\pi/2-\theta$（按 $2\pi$ 周期折叠取值）、$\vartheta=\pi/2-\phi_{\mathrm{el}}$，再代入球谐基函数或开源库接口，详见<a href="05_beamforming.html#sec-5-8">§5.8</a>。同理，国际标准 AmbiX 与一阶全景声（FOA）采用 $+x$ 朝正前方、$+y$ 朝正左方、$+z$ 朝正上方的三维右手系，其水平方位角从 $+x$ 逆时针转向 $+y$、俯仰角从水平面转向 $+z$，与上段平面阵列坐标系（$+y$ 正前、顺时针方位角）之间的对照详见<a href="14_spatial-wearable-arrays.html#sec-14-2">专题Ⅲ §14.2</a>。</p>
-<p><strong>字母与算符复用</strong>（与 §2.3 一致）：由于阵列、自适应滤波、去混响与多目标追踪分属不同研究传统，同一个字母或算符在不同章节可能承担不同角色。例如本表将波数记为 $\kappa=2\pi f/c$，以区别于离散频点索引 $k$，但部分文献与局部推导仍用 $k$ 记波数，第 6 章 §6.2 另用 $\kappa\in[-1,1]$ 表示 IPNLMS 比例混合系数，第 7 章局部还用 $k$ 记 WPE 的滞后帧号；$D$ 可表示阵列孔径或 PHD 强度函数，$\lambda$ 可表示声波波长、RLS 指数遗忘因子、WPE 时变方差或矩阵特征值，$K$ 可表示声源个数或 WPE 预测阶数，$s$ 可表示源信号或追踪状态，$\varepsilon$ 在第 5 章表示绝对对角加载而在第 10、13 章表示相对采样率偏移（SRO）。算符 $\odot$ 同样遵循领域双重约定：在子空间与协方差向量化字典（<a href="00_math-foundations.html#sec-0-4-3">§0.4.3</a>、§3.3、§12.7、§16.3.2）中表示按列 Khatri–Rao 积，而在频域滤波、时频掩码、BSM 相位投影与 FiLM 特征调制（§5、§6、§8、<a href="14_spatial-wearable-arrays.html#sec-14-5">§14.5～§14.6</a>、<a href="15_target-extraction-diarization.html#sec-15-1">§15.1</a>）中表示同维或广播 Hadamard 逐元素乘积。具体含义以所在公式的定义为准。</p>
+<p><strong>字母与算符复用</strong>（与 §2.3 一致）：由于阵列、自适应滤波、去混响与多目标追踪分属不同研究传统，同一个字母或算符在不同章节可能承担不同角色。例如本表将波数记为 $\kappa=2\pi f/c$，以区别于离散频点索引 $k$，但部分文献与局部推导仍用 $k$ 记波数，第 6 章 §6.2 另用 $\kappa\in[-1,1]$ 表示 IPNLMS 比例混合系数，第 7 章局部还用 $k$ 记 WPE 的滞后帧号；$D$ 可表示阵列孔径或 PHD 强度函数，$\lambda$ 可表示声波波长、RLS 指数遗忘因子、WPE 时变方差或矩阵特征值，$K$ 可表示声源个数或 WPE 预测阶数，$s$ 可表示源信号或追踪状态，$\varepsilon$ 在第 5 章表示绝对对角加载而在第 10、13 章表示相对采样率偏移（SRO）。算符 $\odot$ 同样遵循领域双重约定：在子空间与协方差向量化字典（<a href="00_math-foundations.html#sec-0-4-3">§0.4.3</a>、§3.3、§12.7、§16.3.2）中表示按列 Khatri–Rao 积，而在频域滤波、时频掩码、BSM 相位投影与 FiLM 特征调制（§5、§6、§8、<a href="14_spatial-wearable-arrays.html#sec-14-5">§14.5～§14.6</a>、<a href="15_target-extraction-diarization.html#sec-15-2">§15.2</a>）中表示同维或广播 Hadamard 逐元素乘积。具体含义以所在公式的定义为准。</p>
 <p>本表区分 STFT 网格时，默认 $k$ 是频点索引、$\ell$ 是帧索引，$n$ 是离散采样索引，$t$ 是连续时间。各章沿用各自领域的经典记号时会另行声明下标；跨章对照公式时，应当先按下表对齐每条坐标轴的物理意义，不能仅凭字母相同就默认代表同一维度：</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
 <thead>
@@ -424,8 +424,8 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <td>全书主记号（§0、§2、§16；第 5 章局部记 $\vec{x}(k,n)$）</td>
 </tr>
 <tr>
-<td>$X_m(f,k)$、$\vec{x}_{ft}$</td>
-<td>（频点 $f$，帧 $k$ 或 $t$）</td>
+<td>$X_m(f,t)$、$\vec x_f(t)$、$\vec{x}_{ft}$</td>
+<td>（频点 $f$，帧 $t$）</td>
 <td>第 8 章盲源分离与掩码波束（频点在前、帧在后）</td>
 </tr>
 <tr>
@@ -649,7 +649,7 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">$\mathbf{A}$, $\mathbf{P}$, $\vec{q}$, $\vec{b}$（专题Ⅰ）</td>
-<td>声学成像传播字典、点扩散函数（PSF）矩阵、参考面处的候选源均方强度向量、波束扫描脏图向量；满足 $P_{ij}=|\vec{w}_i^H\vec{a}_j|^2$（行对应扫描格点、列对应真实源格点），注意与第 9 章卡尔曼误差协方差 $\mathbf{P}$ 区分（§12.4）</td>
+<td>声学成像传播字典、点扩散函数（PSF）矩阵、参考面处的候选源均方强度向量、波束扫描脏图向量；满足 $P_{ij}=\lvert\vec{w}_i^H\vec{a}_j\rvert^2$（行对应扫描格点、列对应真实源格点），注意与第 9 章卡尔曼误差协方差 $\mathbf{P}$ 区分（§12.4）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">CSM、$\mathbf{R}$、$p_{\mathrm{ref}}$（专题Ⅰ）</td>
@@ -697,7 +697,7 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">$\otimes$, $\odot$, $\operatorname{vec}(\cdot)$</td>
-<td>$\otimes$ 为 Kronecker 积，$\operatorname{vec}(\cdot)$ 为按列优先矩阵拉直算子；算符 $\odot$ 依语境承担双重约定：在子空间与协方差字典（<a href="00_math-foundations.html#sec-0-4-3">§0.4.3</a>、§3.3、§12.7、§16.3.2）中表示按列 Khatri–Rao 积（满足对角拉直恒等式 $(\mathbf B\odot\mathbf A)\vec q$），而在频域滤波、时频掩码、BSM 相位投影与 FiLM 调制（§5、§6、§8、<a href="14_spatial-wearable-arrays.html#sec-14-5">§14.5～§14.6</a>、<a href="15_target-extraction-diarization.html#sec-15-1">§15.1</a>）中表示同维或广播 Hadamard 逐元素乘积</td>
+<td>$\otimes$ 为 Kronecker 积，$\operatorname{vec}(\cdot)$ 为按列优先矩阵拉直算子；算符 $\odot$ 依语境承担双重约定：在子空间与协方差字典（<a href="00_math-foundations.html#sec-0-4-3">§0.4.3</a>、§3.3、§12.7、§16.3.2）中表示按列 Khatri–Rao 积（满足对角拉直恒等式 $(\mathbf B\odot\mathbf A)\vec q$），而在频域滤波、时频掩码、BSM 相位投影与 FiLM 调制（§5、§6、§8、<a href="14_spatial-wearable-arrays.html#sec-14-5">§14.5～§14.6</a>、<a href="15_target-extraction-diarization.html#sec-15-2">§15.2</a>）中表示同维或广播 Hadamard 逐元素乘积</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">PHD / RFS</td>
@@ -781,7 +781,7 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">GCC-PHAT 频谱相位加权</td>
-<td>在每个非零互谱频点将互功率谱 $G_{12}(f)$ 除以其模值 $|G_{12}(f)|$，使各频点幅值归一为 $1$、仅保留相位差信息，零模值频点需加正则分母或跳过。该操作均衡的是单对通道的<strong>频域幅度谱形状</strong>，并不能将多通道间的空间相关噪声白化（§4.2；参见<a href="https://doi.org/10.1109/TASSP.1976.1162830">Knapp 与 Carter（1976）广义互相关论文</a>）</td>
+<td>在每个非零互谱频点将互功率谱 $G_{12}(f)$ 除以其模值 $\lvert G_{12}(f)\rvert$，使各频点幅值归一为 $1$、仅保留相位差信息，零模值频点需加正则分母或跳过。该操作均衡的是单对通道的<strong>频域幅度谱形状</strong>，并不能将多通道间的空间相关噪声白化（§4.2；参见<a href="https://doi.org/10.1109/TASSP.1976.1162830">Knapp 与 Carter（1976）广义互相关论文</a>）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">空间噪声白化（spatial noise whitening）</td>
@@ -1049,7 +1049,7 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">PSF（点扩散函数）</td>
-<td>Point Spread Function，单位强度的孤立点源经过固定扫描波束后在全部候选格点上形成的空间功率响应矩阵 $P_{ij}=|\vec{w}_i^H\vec{a}_j|^2$，决定了常规波束脏图的主瓣展宽与旁瓣串扰结构（<a href="12_acoustic-imaging.html#sec-12-4">§12.4</a>）</td>
+<td>Point Spread Function，单位强度的孤立点源经过固定扫描波束后在全部候选格点上形成的空间功率响应矩阵 $P_{ij}=\lvert\vec{w}_i^H\vec{a}_j\rvert^2$，决定了常规波束脏图的主瓣展宽与旁瓣串扰结构（<a href="12_acoustic-imaging.html#sec-12-4">§12.4</a>）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">DAMAS（声源映射反卷积方法）</td>
@@ -1308,7 +1308,7 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 <thead>
 <tr>
 <th scope="col">分贝刻度</th>
-<th scope="col" style="text-align: right;">线性幅度比 $\|A_2\|/\|A_1\|$</th>
+<th scope="col" style="text-align: right;">线性幅度比 $\lvert A_2\rvert/\lvert A_1\rvert$</th>
 <th scope="col" style="text-align: right;">线性功率比 $P_2/P_1$</th>
 <th scope="col">工程典型语义</th>
 </tr>
@@ -1396,7 +1396,7 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 <tr>
 <td>列优先 $\operatorname{vec}$ / Kronecker / Khatri–Rao</td>
 <td>$(\mathbf B_1\otimes\mathbf A_1)(\mathbf B_2\otimes\mathbf A_2)=(\mathbf B_1\mathbf B_2)\otimes(\mathbf A_1\mathbf A_2)$；$\operatorname{vec}(\mathbf A\mathbf X\mathbf B^\top)=(\mathbf B\otimes\mathbf A)\operatorname{vec}(\mathbf X)$；$\operatorname{vec}(\mathbf A\operatorname{diag}(\vec q)\mathbf A^H)=(\mathbf A^*\odot\mathbf A)\vec q$</td>
-<td>统一差分共阵（§3.3）、可分离平面阵（§5.8）与 CMF 成像（§12.7）；左因子须取共轭 $\mathbf A^*$（<a href="00_math-foundations.html#sec-0-4-3">§0.4.3</a>）</td>
+<td>统一差分共阵（§3.3）、可分离平面阵（§5.5）与 CMF 成像（§12.7）；左因子须取共轭 $\mathbf A^*$（<a href="00_math-foundations.html#sec-0-4-3">§0.4.3</a>）</td>
 </tr>
 </tbody>
 </table></div>

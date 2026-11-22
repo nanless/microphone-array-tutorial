@@ -1914,7 +1914,12 @@ def wilson_score_interval(
 
 
 def real_spherical_harmonic_foa(colatitude_rad: float, azimuth_rad: float) -> dict:
-    """Real first-order spherical harmonics (ACN 0..3: W, Y, Z, X) in SN3D, N3D, and orthonormal conventions."""
+    """Real first-order spherical harmonics (ACN 0..3: W, Y, Z, X) in SN3D, N3D, and orthonormal conventions.
+
+    Angles ``(colatitude_rad, azimuth_rad)`` are in the listener-local AmbiX/SOFA
+    frame (``+x`` front, ``+y`` left, ``+z`` up), with colatitude measured from ``+z``
+    and azimuth measured counterclockwise from ``+x`` toward ``+y``.
+    """
     vt = _check_real_scalar(colatitude_rad, "colatitude_rad", min_value=0.0, max_value=math.pi)
     az = _check_real_scalar(azimuth_rad, "azimuth_rad")
     nx = math.sin(vt) * math.cos(az)

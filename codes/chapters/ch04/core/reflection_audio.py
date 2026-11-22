@@ -1,4 +1,4 @@
-"""E04-24 known coherent direct/reflection mathematical tone fixture.
+"""E04-20 known coherent direct/reflection mathematical tone fixture.
 
 The single-frequency phasor outer product follows from known deterministic
 components. It does not establish random independence or identify direct sound.
@@ -31,7 +31,7 @@ LIMITS = ('Original deterministic mathematical 4-kHz tone, not speech, a real ro
 
 
 def parameters() -> dict:
-    return {'exercise_id': 'E04-24', 'sample_rate_hz': SAMPLE_RATE,
+    return {'exercise_id': 'E04-20', 'sample_rate_hz': SAMPLE_RATE,
             'source_samples': SOURCE_SAMPLES, 'samples_per_channel': SAMPLES,
             'frequency_hz': FREQUENCY, 'source_amplitude': AMPLITUDE,
             'sound_speed_m_s': 343.0, 'microphone_spacing_m': .042875,

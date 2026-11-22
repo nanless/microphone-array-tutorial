@@ -173,7 +173,7 @@ def functional_beamforming_map(
 
 
 def functional_beamforming_controls() -> dict[str, dict[str, object]]:
-    """Return deterministic E12-19 and E12-20 teaching controls."""
+    """Return deterministic E12-17 and E12-18 teaching controls."""
     # Shared two-cell benchmark from Chapter 12:
     # a_1 = [1, 1]^T, a_2 = [1, exp(-j 2 pi / 3)]^T, P_11 = P_22 = 1, P_12 = P_21 = 1/4.
     a_two = np.array(
@@ -182,7 +182,7 @@ def functional_beamforming_controls() -> dict[str, dict[str, object]]:
     )
     psf_21 = 0.25
 
-    # --- E12-19: Single-source peak invariance & exponential sidelobe suppression ---
+    # --- E12-17: Single-source peak invariance & exponential sidelobe suppression ---
     q_single = 1.0
     r_single = q_single * np.outer(a_two[:, 0], a_two[:, 0].conj())
     single_cases = []
@@ -236,7 +236,7 @@ def functional_beamforming_controls() -> dict[str, dict[str, object]]:
     if not diag_removal_rejected:
         raise AssertionError("expected diagonal-removed indefinite CSM to be rejected")
 
-    e12_19 = {
+    e12_17 = {
         "A_real_imag": a_two,
         "single_source_q": [1.0, 0.0],
         "single_source_R_real_imag": r_single,
@@ -252,7 +252,7 @@ def functional_beamforming_controls() -> dict[str, dict[str, object]]:
         ),
     }
 
-    # --- E12-20: 2x2 closed-form sqrt, power non-conservation & off-grid weak source ---
+    # --- E12-18: 2x2 closed-form sqrt, power non-conservation & off-grid weak source ---
     q_two = np.array([1.0, 0.25], dtype=np.float64)
     r_two = a_two @ np.diag(q_two) @ a_two.conj().T
     sqrt_closed = closed_form_2x2_sqrt(r_two)
@@ -312,7 +312,7 @@ def functional_beamforming_controls() -> dict[str, dict[str, object]]:
     r_coherent = np.outer(x_coherent, x_coherent.conj())
     coherent_fb2 = functional_beamforming_map(r_coherent, a_two, nu=2.0)
 
-    e12_20 = {
+    e12_18 = {
         "q_true": q_two,
         "R_real_imag": r_two,
         "trace": float(np.trace(r_two).real),
@@ -352,4 +352,4 @@ def functional_beamforming_controls() -> dict[str, dict[str, object]]:
         ),
     }
 
-    return {"E12-19": e12_19, "E12-20": e12_20}
+    return {"E12-17": e12_17, "E12-18": e12_18}

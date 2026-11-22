@@ -158,9 +158,9 @@ $$\begin{aligned}
 
 #### 0.1.3 三维正交旋转群 $\mathrm{SO}(3)$ 复合、非交换性与主动/被动逆映射
 
-在运动阵列追踪（[第 9 章 §9.4](09_source-tracking.md#sec-9-4)）与可穿戴头部追踪渲染（[第 14 章 §14.3](14_spatial-wearable-arrays.md#sec-14-3)）中，我们需要用 $3\times 3$ 实矩阵描述三维刚体旋转。在 §0.3 展开完整矩阵代数之前，这里先给出本节自包含的四条 $3\times 3$ 矩阵基本规则：
+在运动阵列追踪（[第 9 章 §9.4](09_source-tracking.md#sec-9-4)）与可穿戴头部追踪渲染（[第 14 章 §14.3](14_spatial-wearable-arrays.md#sec-14-3)）中，我们需要用 $3\times 3$ 实矩阵描述三维刚体旋转。在 §0.3 展开完整矩阵代数之前，这里先给出本节自包含的 $3\times 3$ 矩阵基本规则：
 
-> **本节 $3\times 3$ 矩阵速览**：若矩阵 $\mathbf R = [\vec r_1, \vec r_2, \vec r_3]$ 由三列向量拼成，它左乘向量 $\vec v = [v_1, v_2, v_3]^\top$ 的结果是三列的线性组合 $\mathbf R\vec v = v_1\vec r_1 + v_2\vec r_2 + v_3\vec r_3$——换言之，**矩阵 $\mathbf R$ 的第 $j$ 列正是第 $j$ 个坐标轴基向量 $\vec e_j$ 旋转后的像**。转置 $\mathbf R^\top$ 将行与列互换，故乘积 $\mathbf R^\top\mathbf R$ 的第 $(i, j)$ 个元素是列内积 $\vec r_i^\top\vec r_j$；三阶行列式 $\det\mathbf R$ 衡量变换对单位立方体有向体积的缩放倍数（$+1$ 保持右手定则，$-1$ 含镜面翻转）；矩阵的 **Frobenius 范数**定义为全部元素平方和开根号 $\|\mathbf A\|_F = \sqrt{\sum_{i,j} A_{ij}^2}$。
+> **本节 $3\times 3$ 矩阵速览**：若矩阵 $\mathbf R = [\vec r_1, \vec r_2, \vec r_3]$ 由三列向量拼成，它左乘向量 $\vec v = [v_1, v_2, v_3]^\top$ 的结果是三列的线性组合 $\mathbf R\vec v = v_1\vec r_1 + v_2\vec r_2 + v_3\vec r_3$——换言之，**矩阵 $\mathbf R$ 的第 $j$ 列正是第 $j$ 个坐标轴基向量 $\vec e_j$ 旋转后的像**。两矩阵复合相乘按行乘列定义，$(\mathbf A\mathbf B)_{ij} = \sum_{k=1}^3 A_{ik}B_{kj}$（等价于先后施用两次线性变换：$(\mathbf A\mathbf B)\vec v = \mathbf A(\mathbf B\vec v)$）。转置 $\mathbf R^\top$ 将行与列互换，并满足乘积反序转置律 $(\mathbf A\vec v)^\top = \vec v^\top\mathbf A^\top$，故乘积 $\mathbf R^\top\mathbf R$ 的第 $(i, j)$ 个元素是列内积 $\vec r_i^\top\vec r_j$；三阶行列式 $\det\mathbf R$ 衡量变换对单位立方体有向体积的缩放倍数（$+1$ 保持右手定则，$-1$ 含镜面翻转）；矩阵的 **Frobenius 范数**定义为全部元素平方和开根号 $\|\mathbf A\|_F = \sqrt{\sum_{i,j} A_{ij}^2}$。
 
 刚体旋转必须同时满足正交性 $\mathbf R^\top\mathbf R = \mathbf I_3$（三列两两垂直且长度为 $1$）与右手定向 $\det\mathbf R = +1$，全体此类矩阵构成三维特殊正交群 $\mathrm{SO}(3)$。利用“第 $j$ 列即基向量 $\vec e_j$ 的像”这一性质，我们可以按右手定则一步不跳地写出绕三个坐标轴旋转的基元矩阵，并清楚看到**为什么绕 $y$ 轴旋转 $\mathbf R_y(\beta)$ 中 $\sin\beta$ 的正负号与 $\mathbf R_z, \mathbf R_x$ 相反**：
 
@@ -232,7 +232,7 @@ Y(f) &= \int_{-\infty}^{\infty} x(t - \tau_0)\,e^{-\mathrm{j}2\pi f t}\,\mathrm{
 = e^{-\mathrm{j}2\pi f\tau_0}\,X(f)\text{。}
 \end{aligned}\tag{0-9}$$
 
-式(0-9)确立了阵列信号处理的相位正负号准则：**迟到 $\tau_0 > 0$ 的信号在正频率 $f > 0$ 处产生负相位滞后 $\phi(f) = -2\pi f\tau_0$**。将式(0-5)远场一阶程差 $\Delta r_{m,1} = -\vec r_m^\top\vec u$（沿 $x$ 轴均匀线阵取 $x_m = md$ 时到达时延 $\tau_m = -x_m\sin\theta/c$）代入式(0-9)，立得全书统一的远场平面波导向矢量分量 $a_m(\theta) = e^{-\mathrm{j}2\pi f\tau_m} = e^{+\mathrm{j}\kappa\vec r_m^\top\vec u} = e^{+\mathrm{j}\kappa x_m\sin\theta}$（波数 $\kappa = 2\pi f/c$，与[第 2 章 §2.3](02_basics-signal-model.md#sec-2-3)、[第 4 章 §4.6](04_doa-estimation.md#sec-4-6)及[第 5 章 §5.1](05_beamforming.md#sec-5-1)完全一致；此时等权延迟求和输出 $\vec w^H\vec a(\theta) = \frac{1}{M}\sum_{m=0}^{M-1}e^{-\mathrm{j}m\kappa d(\sin\theta_0-\sin\theta)} = \frac{1}{M}A_M(\psi)$ 恰好回到式(0-8)）。对一般线性相位响应 $\phi(f)$，注意区分**相延迟（phase delay）** $\tau_p(f) = -\frac{\phi(f)}{2\pi f}$（单频载波等相位面延迟）与**群延迟（group delay）** $\tau_g(f) = -\frac{1}{2\pi}\frac{\mathrm{d}\phi(f)}{\mathrm{d}f}$（信号包络延迟）：对纯时延系统，解缠绕相位是过原点的直线，两者相等且恒等于 $\tau_0$（见[第 2 章 §2.3](02_basics-signal-model.md#sec-2-3) 与[第 4 章 §4.2](04_doa-estimation.md#sec-4-2) GCC-PHAT）。同时，因为实值信号满足 $x^*(t) = x(t)$，对其傅里叶积分两边取共轭得：
+式(0-9)确立了阵列信号处理的相位正负号准则：**迟到 $\tau_0 > 0$ 的信号在正频率 $f > 0$ 处产生负相位滞后 $\phi(f) = -2\pi f\tau_0$**。将式(0-5)远场一阶程差 $\Delta r_{m,1} = -\vec r_m^\top\vec u$（沿 $x$ 轴均匀线阵取 $x_m = md$ 时到达时延 $\tau_m = -x_m\sin\theta/c$）代入式(0-9)，立得全书统一的远场平面波导向矢量分量 $a_m(\theta) = e^{-\mathrm{j}2\pi f\tau_m} = e^{+\mathrm{j}\kappa\vec r_m^\top\vec u} = e^{+\mathrm{j}\kappa x_m\sin\theta}$（波数 $\kappa = 2\pi f/c$，与[第 2 章 §2.3](02_basics-signal-model.md#sec-2-3)、[第 4 章 §4.6](04_doa-estimation.md#sec-4-6)及[第 5 章 §5.1](05_beamforming.md#sec-5-1)完全一致；此时取等权补偿系数 $w_m = \frac{1}{M}e^{+\mathrm{j}\kappa x_m\sin\theta_0}$，延迟求和输出 $\sum_{m=0}^{M-1} w_m^* a_m(\theta) = \frac{1}{M}\sum_{m=0}^{M-1}e^{-\mathrm{j}m\kappa d(\sin\theta_0-\sin\theta)} = \frac{1}{M}A_M(\psi)$ 恰好回到式(0-8)，§0.3.1 将把该共轭内积简记为 $\vec w^H\vec a(\theta)$）。对一般线性相位响应 $\phi(f)$，注意区分**相延迟（phase delay）** $\tau_p(f) = -\frac{\phi(f)}{2\pi f}$（单频载波等相位面延迟）与**群延迟（group delay）** $\tau_g(f) = -\frac{1}{2\pi}\frac{\mathrm{d}\phi(f)}{\mathrm{d}f}$（信号包络延迟）：对纯时延系统，解缠绕相位是过原点的直线，两者相等且恒等于 $\tau_0$（见[第 2 章 §2.3](02_basics-signal-model.md#sec-2-3) 与[第 4 章 §4.2](04_doa-estimation.md#sec-4-2) GCC-PHAT）。同时，因为实值信号满足 $x^*(t) = x(t)$，对其傅里叶积分两边取共轭得：
 
 $$X^*(f) = \left(\int_{-\infty}^{\infty} x(t)\,e^{-\mathrm{j}2\pi f t}\,\mathrm{d}t\right)^*
 = \int_{-\infty}^{\infty} x(t)\,e^{+\mathrm{j}2\pi f t}\,\mathrm{d}t
@@ -261,7 +261,7 @@ $$\Delta L_{\mathrm{dB}} = 10\log_{10}\!\left(\frac{P_2}{P_1}\right)
 
 用式(0-10)结合表内规则，可以立刻算清多麦白噪声阵列的增益账本：设 $M$ 支麦克风的目标信号已精确对齐且幅值均为 $1$，同相求和后目标幅值变为 $M$ 倍、功率变为 $M^2$ 倍，目标增益为 $20\log_{10}M = 10\log_{10}(M^2)$；而 $M$ 路互不相关、方差同为 $\sigma^2$ 的独立白噪声相加时，展开平方期望交叉项全部为零（详见 §0.6.1 线性组合方差公式），总噪声方差按**功率线性相加**变为 $M\sigma^2$，噪声功率增益仅 $10\log_{10}M$，两者相减即得白噪声信噪比增益 $10\log_{10}M$（例如 $M = 2$ 为 $+3.01\ \mathrm{dB}$，$M = 8$ 为 $+9.03\ \mathrm{dB}$；`E00-03` 核算 $M = 4$ 情形）。
 
-评测多段语音的信噪比或回声返回损失增强（ERLE，见[第 6 章 §6.7](06_aec.md#sec-6-7)）时，还要当心对数凹性引发的**统计顺序陷阱**：因为 $f(x) = \log_{10}x$ 的二阶导数 $f''(x) = -\frac{1}{x^2\ln 10} < 0$ 严格为负，它是**严格凹函数**，满足詹森（Jensen）不等式 $\frac{1}{B}\sum_{b=1}^B f(r_b) \le f\!\left(\frac{1}{B}\sum_{b=1}^B r_b\right)$。于是对正功率比 $\{r_b\}_{b=1}^B$，先逐帧取 $\mathrm{dB}$ 再平均得到的是**几何均值的分贝** $10\log_{10}\bigl(\prod_b r_b\bigr)^{1/B}$，恒小于等于先汇总平均功率再取分贝的**算术均值分贝** $10\log_{10}\bigl(\frac{1}{B}\sum_b r_b\bigr)$。例如两帧功率比分别为 $4$（$+6.02\ \mathrm{dB}$）与 $16$（$+12.04\ \mathrm{dB}$），逐帧 $\mathrm{dB}$ 均值为 $+9.03\ \mathrm{dB}$（几何均值 $\sqrt{64} = 8$），而总能量分贝为 $10\log_{10}(10) = +10.00\ \mathrm{dB}$，差距随动态范围拉大而迅速扩大（`E00-03` 给出 $1$ 与 $99$ 差逾 $7\ \mathrm{dB}$ 的极端算例）。
+评测多段语音的信噪比或回声返回损失增强（ERLE，见[第 6 章 §6.8](06_aec.md#sec-6-8)）时，还要当心对数凹性引发的**统计顺序陷阱**：因为 $f(x) = \log_{10}x$ 的二阶导数 $f''(x) = -\frac{1}{x^2\ln 10} < 0$ 严格为负，它是**严格凹函数**，满足詹森（Jensen）不等式 $\frac{1}{B}\sum_{b=1}^B f(r_b) \le f\!\left(\frac{1}{B}\sum_{b=1}^B r_b\right)$。于是对正功率比 $\{r_b\}_{b=1}^B$，先逐帧取 $\mathrm{dB}$ 再平均得到的是**几何均值的分贝** $10\log_{10}\bigl(\prod_b r_b\bigr)^{1/B}$，恒小于等于先对功率比求算术平均再取分贝的**算术均值分贝** $10\log_{10}\bigl(\frac{1}{B}\sum_b r_b\bigr)$（在各帧分母能量相等时，它恰好等于先汇总总能量再取分贝）。例如在各帧分母能量相等时，两帧功率比分别为 $4$（$+6.02\ \mathrm{dB}$）与 $16$（$+12.04\ \mathrm{dB}$），逐帧 $\mathrm{dB}$ 均值为 $+9.03\ \mathrm{dB}$（几何均值 $\sqrt{64} = 8$），而总能量分贝为 $10\log_{10}(10) = +10.00\ \mathrm{dB}$，差距随动态范围拉大而迅速扩大（`E00-03` 给出 $1$ 与 $99$ 差逾 $7\ \mathrm{dB}$ 的极端算例）。
 
 > **工程卡片：定点均匀量化噪声与 $\mathrm{SQNR} = 6.02B + 1.76\ \mathrm{dB}$**（[第 10 章 §10.4](10_engineering-practice.md#sec-10-4)）
 > 用 $B$ bit 有符号均匀量化器覆盖满量程 $[-A, +A]$，量化步长为 $\Delta = \frac{2A}{2^B}$。当信号幅度远大于 $\Delta$ 且高动态变化时，舍入误差 $e$ 可近似建模为 $[-\Delta/2, +\Delta/2]$ 上的均匀分布，其均方误差（量化噪声功率）由定积分立得 $\sigma_e^2 = \frac{1}{\Delta}\int_{-\Delta/2}^{\Delta/2} e^2\,\mathrm{d}e = \frac{\Delta^2}{12}$。满幅正弦波 $A\cos(\omega t)$ 的信号平均功率为 $P_s = \frac{A^2}{2}$，代入比值取 $10\log_{10}$ 得经典量化信噪比公式：
@@ -403,7 +403,7 @@ $$\begin{aligned}
 
 #### 0.2.5 离散 LTI 系统、Z 变换、极零点、互素条件与分数时延
 
-在回声消除（[第 6 章](06_aec.md)）、多通道逆滤波去混响（[第 7 章 §7.5](07_wpe-dereverberation.md#sec-7-5) MINT）以及 Root-MUSIC（[第 4 章 §4.6](04_doa-estimation.md#sec-4-6)）中，离散线性时不变（LTI）系统频繁在复 $z$ 平面分析。给定因果脉冲响应 $h[n]$，其**单边 Z 变换**（传递函数）定义为 $H(z) = \sum_{n=0}^{\infty} h[n]\,z^{-n}$：令 $z = e^{\mathrm{j}\omega}$（复平面单位圆，归一化数字角频率 $\omega = 2\pi f / f_s$），$H(e^{\mathrm{j}\omega})$ 立刻退化为离散时间傅里叶变换（DTFT），而时域卷积 $y = x * h$ 在 Z 域化为多项式/有理函数乘法 $Y(z) = H(z)X(z)$。
+在回声消除（[第 6 章](06_aec.md)）、多通道逆滤波去混响（[第 7 章 §7.1](07_wpe-dereverberation.md#sec-7-1) MINT）以及 Root-MUSIC（[第 4 章 §4.6](04_doa-estimation.md#sec-4-6)）中，离散线性时不变（LTI）系统频繁在复 $z$ 平面分析。给定因果脉冲响应 $h[n]$，其**单边 Z 变换**（传递函数）定义为 $H(z) = \sum_{n=0}^{\infty} h[n]\,z^{-n}$：令 $z = e^{\mathrm{j}\omega}$（复平面单位圆，归一化数字角频率 $\omega = 2\pi f / f_s$），$H(e^{\mathrm{j}\omega})$ 立刻退化为离散时间傅里叶变换（DTFT），而时域卷积 $y = x * h$ 在 Z 域化为多项式/有理函数乘法 $Y(z) = H(z)X(z)$。
 
 - **FIR 与 IIR 及极零点稳定性**：有限长脉冲响应（**FIR**，$L$ 抽头）是关于 $z^{-1}$ 的多项式 $H(z) = \sum_{k=0}^{L-1} h[k]z^{-k}$，仅有有限个**零点**（使 $H(z) = 0$ 的根）和位于原点的平凡极点，故**无条件 BIBO 稳定**（对称 FIR 满足 $h[L-1-k] = h[k]$，提取中点相移得 $H(e^{\mathrm{j}\omega}) = e^{-\mathrm{j}\omega(L-1)/2}A(\omega)$ 且 $A(\omega)$ 为实函数，故具有严格常数群延迟 $\tau_g = \frac{L-1}{2}$ 采样点）。无限长脉冲响应（**IIR**）是有理函数 $H(z) = B(z)/A(z)$，分母根 $p_k$ 称为**极点**：按部分分式展开后每个单极点贡献因果响应模态 $p_k^n u[n]$，故因果 IIR 绝对可和（BIBO 稳定）的充要条件是**全部极点严格落在单位圆内部**（$|p_k| < 1$）。若房间传递函数 $H(z)$ 含有落在单位圆外（$|z_0| > 1$）的**非最小相位零点**，其单通道直接逆 $1/H(z)$ 就会在单位圆外产生不稳定极点而发散——这正是第 7 章不能简单对单麦房间响应直接求逆的代数根源。
 - **多通道 Bézout 互素恒等式（MINT 理论基石）**：单通道无法稳定求逆非最小相位房间响应，但若用 $M \ge 2$ 支麦克风采集同一声源，得到多项式传递函数 $H_1(z), \ldots, H_M(z)$，代数中的 **Bézout 恒等式**指出：只要这 $M$ 个多项式**没有公共零点（互素，coprime）**，就必定存在有限长 FIR 逆滤波器组 $G_1(z), \ldots, G_M(z)$ 精确满足：
@@ -415,7 +415,7 @@ H(z) &= \sum_{n=0}^{\infty} h[n]\,z^{-n}\text{，}\qquad
 \sum_{m=1}^{M} H_m(z)\,G_m(z) &= 1\text{。}
 \end{aligned}\tag{0-18}$$
 
-在时域矩阵形式下，式(0-18)的 Bézout 精确逆等价于由各通道卷积块拼成的 **Sylvester 块矩阵**满行秩（$M = 2$ 时在末抽头不全零条件下充要，对 $M \ge 3$ 则是满足列数下界后的一般性条件，详见[第 7 章 §7.5](07_wpe-dereverberation.md#sec-7-5)）。此外，在均匀线阵 Root-MUSIC 中，按式(0-5)与式(0-9)的全书正向相位约定，噪声音子空间多项式的根若对应真实远场平面波，恰好落在复 $z$ 平面单位圆上 $z_k = e^{+\mathrm{j}\kappa d\sin\theta_k}$（$|z_k| = 1$，见[第 4 章 §4.6](04_doa-estimation.md#sec-4-6)），通过找最贴近单位圆的 $K$ 个根即可免网格搜索求角。
+在时域矩阵形式下，式(0-18)的 Bézout 精确逆等价于由各通道卷积块拼成的 **Sylvester 块矩阵**满行秩（即矩阵各行线性无关，§0.3.1 将给出严格秩定义；$M = 2$ 时在末抽头不全零条件下充要，对 $M \ge 3$ 则是满足列数下界后的一般性条件，详见[第 7 章 §7.1](07_wpe-dereverberation.md#sec-7-1)及练习 `E07-16`～`E07-17`）。此外，在均匀线阵 Root-MUSIC 中，按式(0-5)与式(0-9)的全书正向相位约定，噪声子空间多项式的根若对应真实远场平面波，恰好落在复 $z$ 平面单位圆上 $z_k = e^{+\mathrm{j}\kappa d\sin\theta_k}$（$|z_k| = 1$，见[第 4 章 §4.6](04_doa-estimation.md#sec-4-6)），通过找最贴近单位圆的 $K$ 个根即可免网格搜索求角。
 
 - **分数时延（fractional delay）与插值幅频滚降**：阵列波束对齐或异步采样率漂移补偿（SRO，[第 10 章 §10.2](10_engineering-practice.md#sec-10-2)、[第 13 章](13_distributed-enhancement.md)）常需要移动非整数个采样点 $\tau = n_0 + \alpha$（$\alpha \in (0, 1)$）。对理想延迟传递函数 $e^{-\mathrm{j}\omega\tau}$ 在 $[-\pi, \pi]$ 做逆 DTFT，得无限长非因果 **Shannon–Whittaker $\operatorname{sinc}$ 核**；若为了低算力改用最简单的**两点线性插值** $y[n] = (1-\alpha)x[n] + \alpha x[n-1]$，代入 $z = e^{\mathrm{j}\omega}$ 展开模平方 $\lvert(1-\alpha)+\alpha e^{-\mathrm{j}\omega}\rvert^2 = (1-\alpha)^2 + \alpha^2 + 2\alpha(1-\alpha)\cos\omega = 1 - 2\alpha(1-\alpha)(1-\cos\omega)$，再套用式(0-1)半角公式 $1-\cos\omega = 2\sin^2(\omega/2)$，立得其精确幅频响应：
 
@@ -450,7 +450,7 @@ $$\begin{aligned}
 \|\mathbf A\|_F = \sqrt{\operatorname{tr}(\mathbf A^H\mathbf A)}\text{。}
 \end{aligned}\tag{0-20}$$
 
-在复空间 $\mathbb{C}^M$ 中，内积必须对其中一个向量取复共轭，否则 $\vec x^\top\vec x = \sum x_m^2$ 可能为负数或虚数（如 $[1, \mathrm{j}]^\top[1, \mathrm{j}] = 1 - 1 = 0$，非零向量会算出零长度）。本书统一将波束形成器线性输出定义为共轭内积 $y = \vec w^H\vec x = \sum_{m=1}^M w_m^* x_m$。对任意 $\vec u, \vec v \in \mathbb{C}^M$，**柯西—施瓦茨（Cauchy–Schwarz）不等式**断言：
+在复空间 $\mathbb{C}^M$ 中，内积必须对其中一个向量取复共轭，否则 $\vec x^\top\vec x = \sum x_m^2$ 可能为负数或虚数（如对 $\vec x = [1, \mathrm{j}]^\top$，$\vec x^\top\vec x = [1, \mathrm{j}][1, \mathrm{j}]^\top = 1 - 1 = 0$，非零向量会算出零长度）。本书统一将波束形成器线性输出定义为共轭内积 $y = \vec w^H\vec x = \sum_{m=1}^M w_m^* x_m$。对任意 $\vec u, \vec v \in \mathbb{C}^M$，**柯西—施瓦茨（Cauchy–Schwarz）不等式**断言：
 
 $$\lvert\vec u^H \vec v\rvert^2 \le (\vec u^H \vec u)(\vec v^H \vec v) = \|\vec u\|_2^2\,\|\vec v\|_2^2\text{，}\tag{0-21}$$
 
@@ -477,7 +477,7 @@ $$\begin{aligned}
 | 行共轭空间 $\mathcal R(\mathbf A^H)$ | $\{\mathbf A^H\vec y : \vec y \in \mathbb{C}^M\}$ | $\mathbb{C}^K$，维数 $r$ | 可由阵列观测唯一辨识的源幅度组合空间 |
 | 零空间 $\mathcal N(\mathbf A)$ | $\{\vec z \in \mathbb{C}^K : \mathbf A\vec z = \vec 0\}$ | $\mathbb{C}^K$，维数 $K - r$ | 阵列因空间混叠或重列而完全失明的源模糊子空间 |
 
-当 $\mathbf A$ 列满秩（$r = K$）时，对任意非零 $\vec z \in \mathbb{C}^K$ 都有 $\mathbf A\vec z \neq \vec 0$，于是 $\vec z^H(\mathbf A^H\mathbf A)\vec z = \|\mathbf A\vec z\|_2^2 > 0$，这用两行证明了 Gram 矩阵 $\mathbf A^H\mathbf A \in \mathbb{C}^{K\times K}$ 必然严格正定可逆。给定任意观测 $\vec b \in \mathbb{C}^M$，寻找列空间中距 $\vec b$ 最近的逼近 $\vec b_\parallel = \mathbf A\hat{\vec z}$，几何上要求残差 $\vec b_\perp = \vec b - \mathbf A\hat{\vec z}$ 与 $\mathbf A$ 的每一列正交，即 $\mathbf A^H(\vec b - \mathbf A\hat{\vec z}) = \vec 0$（复正规方程）。解出 $\hat{\vec z} = (\mathbf A^H\mathbf A)^{-1}\mathbf A^H\vec b$ 再左乘 $\mathbf A$，立得列空间正交投影算子、左零空间正交补投影算子，以及当 $K = 1$（实信号向单一参考波形 $\vec s \neq \vec 0$ 投影）时支撑语音分离评测的 **SI-SDR（尺度不变信失真比）一维投影公式**（[第 8 章 §8.5](08_speech-separation.md#sec-8-5)、[第 15 章 §15.3](15_target-extraction-diarization.md#sec-15-3)）：
+当 $\mathbf A$ 列满秩（$r = K$）时，对任意非零 $\vec z \in \mathbb{C}^K$ 都有 $\mathbf A\vec z \neq \vec 0$，于是 $\vec z^H(\mathbf A^H\mathbf A)\vec z = \|\mathbf A\vec z\|_2^2 > 0$，这用两行证明了 Gram 矩阵 $\mathbf A^H\mathbf A \in \mathbb{C}^{K\times K}$ 必然严格正定可逆。给定任意观测 $\vec b \in \mathbb{C}^M$，寻找列空间中距 $\vec b$ 最近的逼近 $\vec b_\parallel = \mathbf A\hat{\vec z}$，几何上要求残差 $\vec b_\perp = \vec b - \mathbf A\hat{\vec z}$ 与 $\mathbf A$ 的每一列正交，即 $\mathbf A^H(\vec b - \mathbf A\hat{\vec z}) = \vec 0$（复正规方程）。解出 $\hat{\vec z} = (\mathbf A^H\mathbf A)^{-1}\mathbf A^H\vec b$ 再左乘 $\mathbf A$，立得列空间正交投影算子、左零空间正交补投影算子，以及当 $K = 1$（实信号向单一参考波形 $\vec s \neq \vec 0$ 投影）时支撑语音分离评测的 **SI-SDR（尺度不变信失真比）一维投影公式**（[第 8 章 §8.5](08_speech-separation.md#sec-8-5)、[第 15 章 §15.2](15_target-extraction-diarization.md#sec-15-2)）：
 
 $$\begin{aligned}
 \mathbf P_{\mathcal R(\mathbf A)} &= \mathbf A(\mathbf A^H\mathbf A)^{-1}\mathbf A^H\text{，}\qquad
@@ -546,7 +546,7 @@ $$J_\varepsilon(\vec x) = \|\boldsymbol{\Sigma}\tilde{\vec x} - \tilde{\vec y}\|
 = \sum_{i=1}^r \Bigl(\lvert\sigma_i\tilde x_i - \tilde y_i\rvert^2 + \varepsilon\lvert\tilde x_i\rvert^2\Bigr)
 + \sum_{i>r}^M \lvert\tilde y_i\rvert^2 + \varepsilon\sum_{i>r}^N \lvert\tilde x_i\rvert^2\text{。}$$
 
-对每一模态标量项直接复数配方：$\lvert\sigma_i\tilde x_i - \tilde y_i\rvert^2 + \varepsilon\lvert\tilde x_i\rvert^2 = (\sigma_i^2 + \varepsilon)\bigl\lvert\tilde x_i - \frac{\sigma_i}{\sigma_i^2+\varepsilon}\tilde y_i\bigr\rvert^2 + \frac{\varepsilon}{\sigma_i^2+\varepsilon}\lvert\tilde y_i\rvert^2$，立得唯一极小点 $\tilde x_i = \frac{\sigma_i}{\sigma_i^2 + \varepsilon}\tilde y_i$（$i > r$ 时 $\tilde x_i = 0$），再左乘 $\mathbf V$ 回原坐标并对照正规方程 $\mathbf V(\boldsymbol{\Sigma}^2 + \varepsilon\mathbf I)^{-1}\boldsymbol{\Sigma}\mathbf U^H\vec y = (\mathbf G^H\mathbf G + \varepsilon\mathbf I)^{-1}\mathbf G^H\vec y$，便完整推导出 **Tikhonov 软收缩**与**截断 SVD（TSVD）硬门限**（相对门限 $\rho \ge 0$）两条正则化闭式解：
+对每一模态标量项直接复数配方：$\lvert\sigma_i\tilde x_i - \tilde y_i\rvert^2 + \varepsilon\lvert\tilde x_i\rvert^2 = (\sigma_i^2 + \varepsilon)\bigl\lvert\tilde x_i - \frac{\sigma_i}{\sigma_i^2+\varepsilon}\tilde y_i\bigr\rvert^2 + \frac{\varepsilon}{\sigma_i^2+\varepsilon}\lvert\tilde y_i\rvert^2$，立得唯一极小点 $\tilde x_i = \frac{\sigma_i}{\sigma_i^2 + \varepsilon}\tilde y_i$（$i > r$ 时 $\tilde x_i = 0$），再左乘 $\mathbf V$ 回原坐标并对照正规方程 $\mathbf V(\boldsymbol{\Sigma}^\top\boldsymbol{\Sigma} + \varepsilon\mathbf I_N)^{-1}\boldsymbol{\Sigma}^\top\mathbf U^H\vec y = (\mathbf G^H\mathbf G + \varepsilon\mathbf I_N)^{-1}\mathbf G^H\vec y$，便完整推导出 **Tikhonov 软收缩**与**截断 SVD（TSVD）硬门限**（相对门限 $\rho \ge 0$）两条正则化闭式解：
 
 $$\begin{aligned}
 \hat{\vec x}_\varepsilon &= (\mathbf G^H\mathbf G + \varepsilon\mathbf I_N)^{-1}\mathbf G^H\vec y
@@ -632,7 +632,7 @@ z_1^{K-1} & z_2^{K-1} & \cdots & z_K^{K-1}
 
 - **子图 (a) 列空间正交投影与左零空间分解**：按 `E00-06` 精确长度构造的二维保长正交截面（$\|\vec b\|_2^2 = 2.000$），观测向量 $\vec b$ 被唯一正交拆分为落在列空间 $\mathcal R(\mathbf A)$ 内的最优逼近 $\vec b_\parallel = \mathbf P_{\mathcal R(\mathbf A)}\vec b$（绿色箭头，$\|\vec b_\parallel\|_2^2 = 1.333$）与落在左零空间 $\mathcal N(\mathbf A^H)$ 内的垂直残差 $\vec b_\perp$（红色箭头，$\|\vec b_\perp\|_2^2 = 0.667$），坐标轴读数与勾股和完全吻合。
 - **子图 (b) Tikhonov 谱收缩因子**：横轴为对数奇异值 $\sigma$，纵轴为保留权重 $\sigma^2/(\sigma^2+\varepsilon)$。当 $\varepsilon = 0.1$（橙色点划线）时，$\sigma_1 = 10$ 处权重保持 $0.999$，而病态模态 $\sigma_2 = 0.01$ 处权重被压低至约 $10^{-3}$，精准阻断小奇异值除零放大。
-- **子图 (c) 病态逆偏差—方差折中曲线**：随着加载量 $\varepsilon$ 从 $10^{-6}$ 增至 $10^2$，弱模态噪声放大项（红色虚线）单调下降，正则化收缩偏差项（蓝色点划线）缓慢上升，合成总误差（黑色实线）在 $\varepsilon^\star \approx 0.3168$（区间 $\varepsilon \in [0.2, 0.4]$ 内）形成清晰谷底。
+- **子图 (c) 病态逆偏差—方差折中曲线**：随着加载量 $\varepsilon$ 从 $10^{-6}$ 增至 $10^2$，弱模态噪声放大项（红色虚线）单调下降，正则化收缩偏差项（蓝色点划线）缓慢上升，合成总误差（黑色实线）在 $\varepsilon^\star \approx 0.3169$（区间 $\varepsilon \in [0.2, 0.4]$ 内）形成清晰谷底。
 - **子图 (d) Woodbury 秩一更新干扰抑制深度（$\sigma_n^2 = 1$）**：蓝色解析曲线 $-20\log_{10}(1+\mathrm{INR})$ 与直接矩阵求逆采样点（红色圆点）逐点重合，绿色菱形标出 `E00-08` 算例在 $\mathrm{INR} = 6$（$7.78\ \mathrm{dB}$）时相对白噪声基准逆 $\mathbf R_0^{-1}\vec u$ 产生的 $1/7$（$-16.90\ \mathrm{dB}$）压制。
 
 ---
@@ -733,7 +733,7 @@ $$\begin{aligned}
 \operatorname{vec}(\mathbf R_{xx}) &= (\mathbf A^* \odot \mathbf A)\vec p + \sigma_v^2\operatorname{vec}(\mathbf I_M)\text{。}
 \end{aligned}\tag{0-34}$$
 
-观察式(0-34)中虚拟流形列 $\vec a_k^*\otimes\vec a_k$ 的元素 $e^{-\mathrm{j}\kappa x_n\sin\theta_k}e^{+\mathrm{j}\kappa x_m\sin\theta_k} = e^{+\mathrm{j}\kappa(x_m - x_n)\sin\theta_k}$：它完全等价于摆放在位置差 $x_m - x_n$ 处的虚拟阵元。结合 §0.3.6 Vandermonde 满秩判据与 Sidiropoulos–Bro Kruskal 秩下界 $k_{\mathbf A^*\odot\mathbf A} \ge \min(k_{\mathbf A^*} + k_{\mathbf A} - 1, K)$，仅用 $3$ 支物理传感器按 $\{0, 1, 3\}d$ 稀疏布阵，就能生成覆盖 $\{-3, -2, -1, 0, +1, +2, +3\}d$ 共 $7$ 个连续虚拟阵元（比 $3$ 元等距线阵的 $5$ 个多出 $2$ 个自由度），从而突破 $M - 1$ 源数限制。
+观察式(0-34)中虚拟流形列 $\vec a_k^*\otimes\vec a_k$ 的元素 $e^{-\mathrm{j}\kappa x_n\sin\theta_k}e^{+\mathrm{j}\kappa x_m\sin\theta_k} = e^{+\mathrm{j}\kappa(x_m - x_n)\sin\theta_k}$：它完全等价于摆放在位置差 $x_m - x_n$ 处的虚拟阵元。矩阵 $\mathbf A$ 的 **Kruskal 秩** $k_{\mathbf A}$ 定义为使任意 $k$ 列均线性无关的最大整数 $k$，恒有 $k_{\mathbf A} \le \operatorname{rank}(\mathbf A)$，满列秩矩阵或无重复节点的 Vandermonde 阵满足等号。结合 §0.3.6 Vandermonde 满秩判据与 Sidiropoulos–Bro Kruskal 秩下界 $k_{\mathbf A^*\odot\mathbf A} \ge \min(k_{\mathbf A^*} + k_{\mathbf A} - 1, K)$，仅用 $3$ 支物理传感器按 $\{0, 1, 3\}d$ 稀疏布阵，就能生成覆盖 $\{-3, -2, -1, 0, +1, +2, +3\}d$ 共 $7$ 个连续虚拟阵元（比 $3$ 元等距线阵的 $5$ 个多出 $2$ 个自由度），从而突破 $M - 1$ 源数限制。
 
 ![图86 厄米瑞利商极值轨迹、广义特征值联合对角化与 Khatri–Rao 虚拟孔径展开](../figures/fig86_hermitian_rayleigh_gev.png)
 
@@ -785,7 +785,7 @@ $$\begin{aligned}
 
 - **Jacobi 行列式微分与矩阵逆微分**：对任意可逆阵 $\mathbf X$，由拉普拉斯按行展开 $\det\mathbf X = \sum_j X_{ij} C_{ij}$（$C_{ij}$ 为代数余子式，且 $(\mathbf X^{-1})_{ji} = C_{ij}/\det\mathbf X$）得 $\frac{\partial\det\mathbf X}{\partial X_{ij}} = (\det\mathbf X)(\mathbf X^{-1})_{ji}$，汇总成迹即 **Jacobi 公式** $\mathrm{d}(\ln\det\mathbf X) = \operatorname{tr}(\mathbf X^{-1}\mathrm{d}\mathbf X)$；再对恒等式 $\mathbf R\mathbf R^{-1} = \mathbf I$ 两边取微分 $(\mathrm{d}\mathbf R)\mathbf R^{-1} + \mathbf R\,\mathrm{d}(\mathbf R^{-1}) = \mathbf 0$，立得 $\mathrm{d}(\mathbf R^{-1}) = -\mathbf R^{-1}(\mathrm{d}\mathbf R)\mathbf R^{-1}$。
 - **一般可逆阵对数行列式梯度**：为避免多值复对数分枝问题，直接对正实值函数 $\ln\lvert\det\mathbf W\rvert^2 = \ln\bigl((\det\mathbf W)(\det\mathbf W^*)\bigr)$ 把 $\mathbf W$ 视作常量仅对 $\mathbf W^*$ 微分：$\mathrm{d}_{\mathbf W^*}\ln\lvert\det\mathbf W\rvert^2 = \frac{\mathrm{d}_{\mathbf W^*}\det\mathbf W^*}{\det\mathbf W^*} = \operatorname{tr}\!\bigl((\mathbf W^*)^{-1}\mathrm{d}\mathbf W^*\bigr) = \operatorname{tr}\!\bigl((\mathbf W^{-H})^\top\mathrm{d}\mathbf W^*\bigr)$，对照逐元素偏导即得 $\frac{\partial\ln\lvert\det\mathbf W\rvert^2}{\partial\mathbf W^*} = \mathbf W^{-H}$，两边同乘 $\frac{1}{2}$ 得 $\frac{\partial\ln\lvert\det\mathbf W\rvert}{\partial\mathbf W^*} = \frac{1}{2}\mathbf W^{-H}$。
-- **协方差最大似然梯度**：对复高斯负对数似然 $\mathcal L(\mathbf R) = \ln\det\mathbf R + \operatorname{tr}(\mathbf R^{-1}\hat{\mathbf R})$（§0.6.1），取一阶微分并利用迹循环律：$\mathrm{d}\mathcal L = \operatorname{tr}\!\bigl(\mathbf R^{-1}\mathrm{d}\mathbf R - \mathbf R^{-1}(\mathrm{d}\mathbf R)\mathbf R^{-1}\hat{\mathbf R}\bigr) = \operatorname{tr}\!\bigl((\mathbf R^{-1} - \mathbf R^{-1}\hat{\mathbf R}\mathbf R^{-1})\mathrm{d}\mathbf R\bigr) = 0$，当且仅当 $\mathbf R^{-1} = \mathbf R^{-1}\hat{\mathbf R}\mathbf R^{-1} \Longleftrightarrow \hat{\mathbf R}_{\mathrm{MLE}} = \hat{\mathbf R}$。
+- **协方差最大似然梯度**：对复高斯负对数似然目标 $\mathcal L(\mathbf R) = \ln\det\mathbf R + \operatorname{tr}(\mathbf R^{-1}\hat{\mathbf R})$（该概率似然函数与样本协方差 $\hat{\mathbf R}$ 将在 §0.6.1 严格推导，此处先作为纯矩阵标量函数求微商），取一阶微分并利用迹循环律：$\mathrm{d}\mathcal L = \operatorname{tr}\!\bigl(\mathbf R^{-1}\mathrm{d}\mathbf R - \mathbf R^{-1}(\mathrm{d}\mathbf R)\mathbf R^{-1}\hat{\mathbf R}\bigr) = \operatorname{tr}\!\bigl((\mathbf R^{-1} - \mathbf R^{-1}\hat{\mathbf R}\mathbf R^{-1})\mathrm{d}\mathbf R\bigr) = 0$，当且仅当 $\mathbf R^{-1} = \mathbf R^{-1}\hat{\mathbf R}\mathbf R^{-1} \Longleftrightarrow \hat{\mathbf R}_{\mathrm{MLE}} = \hat{\mathbf R}$。
 
 $$\begin{aligned}
 \frac{\partial\operatorname{tr}(\mathbf A\mathbf W^H)}{\partial\mathbf W^*} &= \mathbf A\text{，}\qquad
@@ -855,14 +855,15 @@ P_{\min}^{\mathrm{MVDR}} = \frac{1}{\vec a^H\mathbf R^{-1}\vec a}\text{。}
 
 #### 0.5.3 凸优化、NNLS 的 KKT 条件、Frost 投影梯度与交替投影
 
-在声学成像功率非负约束（[第 12 章 §12.5](12_acoustic-imaging.md#sec-12-5)）、稳健波束形成（[第 5 章 §5.4](05_beamforming.md#sec-5-4)）、多指标选型（[第 11 章 §11.4](11_selection-guide.md#sec-11-4)）与双耳幅度匹配 MagLS（[第 14 章 §14.6](14_spatial-wearable-arrays.md#sec-14-6)）中，我们需要四类现代优化基石：
+在声学成像功率非负约束（[第 12 章 §12.5](12_acoustic-imaging.md#sec-12-5)）、稳健波束形成（[第 5 章 §5.4](05_beamforming.md#sec-5-4)）、多指标选型（[第 11 章 §11.5](11_selection-guide.md#sec-11-5)）与双耳幅度匹配 MagLS（[第 14 章 §14.6](14_spatial-wearable-arrays.md#sec-14-6)）中，我们需要四类现代优化基石：
 
-**1. 凸集、凸函数、詹森不等式与 SOCP / Pareto 几何**：若集合 $\mathcal C$ 内任意两点连线仍落在 $\mathcal C$ 内，称其为**凸集**；若函数满足 $f(\theta\vec x + (1-\theta)\vec y) \le \theta f(\vec x) + (1-\theta)f(\vec y)$（$\theta \in [0, 1]$，光滑情形等价于海森阵半正定 $\nabla^2 f \succeq \mathbf 0$），称其为**凸函数**（反号则称凹函数），递归推广即得**詹森不等式** $f(\mathbb{E}[X]) \le \mathbb{E}[f(X)]$。凸优化最核心的性质是**任何局部极小点必为全局极小点**。全书常遇到两类凸几何衍生概念：一是**二阶锥规划（SOCP）**，把范数鲁棒约束 $\|\mathbf A\vec w + \vec b\|_2 \le \vec c^\top\vec w + d$（如最坏导向失配下最小化功率的稳健 MVDR，第 5 章）转化为多项式时间全局可解的凸锥问题；二是多目标选型中的 **Pareto 最优前沿**（不存在同时在所有指标上更优的方案），而线性加权和 $\min_i (w u_i + (1-w)v_i)$ 几何上只扫描候选集**左下凸包**的支撑切线，可能漏掉凹进区域的 Pareto 解（第 11 章 §11.4）。
+**1. 凸集、凸函数、詹森不等式与 SOCP / Pareto 几何**：若集合 $\mathcal C$ 内任意两点连线仍落在 $\mathcal C$ 内，称其为**凸集**；若函数满足 $f(\theta\vec x + (1-\theta)\vec y) \le \theta f(\vec x) + (1-\theta)f(\vec y)$（$\theta \in [0, 1]$，光滑情形等价于海森阵半正定 $\nabla^2 f \succeq \mathbf 0$），称其为**凸函数**（反号则称凹函数）；对任意非负归一化权重 $p_i \ge 0,\ \sum_i p_i = 1$ 递归推广即得有限凸组合形式的**詹森不等式** $f\!\bigl(\sum_i p_i x_i\bigr) \le \sum_i p_i f(x_i)$，将权重取作概率分布即化为期望形式 $f(\mathbb{E}[X]) \le \mathbb{E}[f(X)]$（概率与期望将在 §0.6.1 正式定义）。凸优化最核心的性质是**任何局部极小点必为全局极小点**。全书常遇到两类凸几何衍生概念：一是**二阶锥规划（SOCP）**，把范数鲁棒约束 $\|\mathbf A\vec w + \vec b\|_2 \le \vec c^\top\vec w + d$（如最坏导向失配下最小化功率的稳健 MVDR，第 5 章）转化为多项式时间全局可解的凸锥问题；二是多目标选型中的 **Pareto 最优前沿**（不存在同时在所有指标上更优的方案），而线性加权和 $\min_i (w u_i + (1-w)v_i)$ 几何上只扫描候选集**左下凸包**的支撑切线，可能漏掉凹进区域的 Pareto 解（第 11 章 §11.5）。
 
 **2. 非负最小二乘（NNLS）的 KKT 充要条件**：对凸问题 $\min_{\vec q \ge \vec 0} \frac{1}{2}\|\mathbf P\vec q - \vec b\|_2^2$，拉格朗日函数 $\mathcal L(\vec q, \vec\mu) = \frac{1}{2}\|\mathbf P\vec q - \vec b\|_2^2 - \vec\mu^\top\vec q$（乘子 $\vec\mu \ge \vec 0$）驻点给出 $\vec\mu^\star = \vec g(\vec q^\star) = \mathbf P^\top(\mathbf P\vec q^\star - \vec b)$，点 $\vec q^\star$ 全局最优当且仅当满足 **KKT 条件**：
 
 $$\begin{aligned}
-f\bigl(\mathbb{E}[X]\bigr) &\le \mathbb{E}\bigl[f(X)\bigr]\qquad\text{（凸函数詹森不等式），}\\
+f\!\left(\sum_i p_i x_i\right) &\le \sum_i p_i f(x_i)\qquad\Bigl(p_i \ge 0,\ \sum_i p_i = 1\Bigr)\text{，}\\
+f\bigl(\mathbb{E}[X]\bigr) &\le \mathbb{E}\bigl[f(X)\bigr]\qquad\text{（概率期望形式），}\\
 \vec q^\star &\ge \vec 0\text{，}\qquad
 \vec g(\vec q^\star) = \mathbf P^\top(\mathbf P\vec q^\star - \vec b) \ge \vec 0\text{，}\\
 q_i^\star\,g_i(\vec q^\star) &= 0\qquad(\forall\,i\text{，互补松弛条件})\text{。}
@@ -912,7 +913,7 @@ Q\bigl(\vec x \mid \vec x^{(t)}\bigr)
 w_i^{(t)} = \frac{1}{\sqrt{\lvert x_i^{(t)}\rvert^2 + \delta^2}}\text{。}
 \end{aligned}\tag{0-44}$$
 
-**期望最大化（EM）算法、KL / Itakura–Saito 散度与 NMF 乘性更新**（[第 8 章 §8.3–§8.4](08_speech-separation.md#sec-8-3)）：最大化含隐变量 $z$（如时频格点所属说话人标签）的边缘对数似然 $\ln p(\vec x; \theta) = \ln\sum_z p(\vec x, z; \theta)$ 时，对任意辅助概率分布 $q(z)$（$\sum_z q(z) = 1$），因 $\ln$ 严格凹，由式(0-41)詹森不等式直接推出**证据下界（ELBO）**：
+**期望最大化（EM）算法、KL / Itakura–Saito 散度与 NMF 乘性更新**（[第 8 章 §8.3–§8.4](08_speech-separation.md#sec-8-3)）：最大化含隐变量 $z$（如时频格点所属说话人标签）的边缘对数似然 $\ln p(\vec x; \theta) = \ln\sum_z p(\vec x, z; \theta)$ 时（概率密度与最大似然估计准则将在 §0.6.1 正式展开，此处仅用到非负归一化权重 $q(z) \ge 0,\ \sum_z q(z) = 1$ 的凸组合性质），因 $\ln$ 严格凹，由式(0-41)詹森不等式直接推出**证据下界（ELBO）**：
 
 $$\ln p(\vec x; \theta) = \ln\sum_z q(z)\frac{p(\vec x, z; \theta)}{q(z)}
 \ge \sum_z q(z)\ln\frac{p(\vec x, z; \theta)}{q(z)}
@@ -1285,7 +1286,7 @@ $$\begin{aligned}
 | [第 12 章 §12.5](12_acoustic-imaging.md#sec-12-5)、[§12.7](12_acoustic-imaging.md#sec-12-7) | 波束脏图、点扩散函数（PSF）、DAMAS、NNLS 与 CSM 拟合 | §0.4.3 式(0-33)～式(0-34) 向量化；§0.5.3 式(0-41) NNLS 的 KKT 互补松弛条件 | 把无约束最小二乘负解直接截断置零冒充 NNLS 最优解；未校准灵敏度直接标称 $\mathrm{dB\ SPL}$ |
 | [第 13 章 §13.3](13_distributed-enhancement.md#sec-13-3)、[§13.12](13_distributed-enhancement.md#sec-13-12) | 集中式与分布式多通道维纳滤波（DANSE）及 GEV 压缩传输 | §0.3.2 子空间无损压缩条件；§0.4.2 式(0-31)～式(0-32) 联合对角化；§0.6.3 式(0-53) 维纳滤波 | 异构节点异步采样率偏移破坏跨节点互协方差相干性；广播信号维数小于目标子空间秩导致有损 |
 | [第 14 章 §14.2](14_spatial-wearable-arrays.md#sec-14-2)、[§14.6](14_spatial-wearable-arrays.md#sec-14-6) | FOA/HOA、ACN/SN3D/N3D、DirAC、双耳匹配 BSM-MagLS 与头部追踪 | §0.1.1/§0.1.3 SOFA 与头部逆旋转；§0.3.1 式(0-21)；§0.5.3 式(0-43) MagLS 交替投影；§0.7.3～§0.7.4 式(0-63)～式(0-64) | 头部追踪漏写旋转转置 $\mathbf R^\top$；开球阵在 $\kappa R = \pi$ 零陷处强行逆均衡放大底噪 |
-| [第 15 章 §15.3](15_target-extraction-diarization.md#sec-15-3)、[§15.4](15_target-extraction-diarization.md#sec-15-4) | 条件目标提取、近场距离气泡、对数几率融合与多通道日志（DER） | §0.1.2 式(0-5) 近场曲率；§0.3.2 式(0-22) SI-SDR 零目标奇异性；§0.6.1 式(0-47) 对数几率/Sigmoid；§0.6.4 式(0-57) | 目标沉默段套用标准 SI-SDR 引发 $\vec 0/\lVert\vec 0\rVert_2$ 除零无定义；误以为合法 $\mathrm{DER}$ 不能超过 $100\%$ |
+| [第 15 章 §15.2](15_target-extraction-diarization.md#sec-15-2)、[§15.3](15_target-extraction-diarization.md#sec-15-3)、[§15.4](15_target-extraction-diarization.md#sec-15-4) | 条件目标提取、近场距离气泡、对数几率融合与多通道日志（DER） | §0.1.2 式(0-5) 近场曲率；§0.3.2 式(0-22) SI-SDR 零目标奇异性；§0.6.1 式(0-47) 对数几率/Sigmoid；§0.6.4 式(0-57) | 目标沉默段套用标准 SI-SDR 引发 $\vec 0/\lVert\vec 0\rVert_2$ 除零无定义；误以为合法 $\mathrm{DER}$ 不能超过 $100\%$ |
 | [附录 A §16.1](16_appendix-symbols-math.md#sec-16-1)、[§16.3](16_appendix-symbols-math.md#sec-16-3) | 全书符号总表、有符号 DFT 频轴、WLS/GLS 与对角加载尺度不变性 | §0.2.3 式(0-12) `fftfreq`；§0.3.4 式(0-24)～式(0-25) 伪逆/TSVD/岭正则；§0.6.3 式(0-52) 高斯—马尔可夫加权 | 把完整 DFT 高半区索引 $k > N/2$ 误读为高于奈奎斯特的正频率；协方差缩放后未同步缩放绝对加载量 |
 | [附录 B §17.4](17_appendix-guide.md#sec-17-4)、[§17.5](17_appendix-guide.md#sec-17-5) | 学习路线、常见工程排障诊断卡、核心公式速查与房间仿真复现 | §0.1～§0.7 全部核心守恒量与判据（条件数、能量守恒、正交残差、厄米半正定与相位斜率） | 只凭最终听感或单一总分排查故障，跳过逐级物理守恒量与子空间正交性中间断言 |
 

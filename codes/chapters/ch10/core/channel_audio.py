@@ -26,7 +26,7 @@ LIMITS = ('Known failed-channel, fixed-real-weight time-domain covariance contro
 
 
 def parameters():
-    return {'exercise_id': 'E10-34', 'sample_rate_hz': 16000, 'samples_per_channel': 32000,
+    return {'exercise_id': 'E10-26', 'sample_rate_hz': 16000, 'samples_per_channel': 32000,
             'target_frequency_hz': 500.0, 'noise_basis_frequencies_hz': [1500.0, 2500.0, 3500.0],
             'amplitude_each': 0.1, 'phase': 'sine, phase zero at the common absolute sample origin',
             'fade_samples_each_end': 320,

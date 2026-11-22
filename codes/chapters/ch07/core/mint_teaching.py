@@ -105,7 +105,7 @@ def parameters() -> dict:
         design['population_clean_error_mean_square'] = .005*design['reflection_response']**2
         design['population_total_reference_mse'] = (design['population_noise_mean_square']
                                                    + design['population_clean_error_mean_square'])
-    return {'exercise_id': 'E07-21', 'sample_rate_hz': SAMPLE_RATE,
+    return {'exercise_id': 'E07-17', 'sample_rate_hz': SAMPLE_RATE,
             'samples_per_channel': SAMPLES, 'source_samples': SOURCE_SAMPLES,
             'source_frequencies_hz': list(FREQUENCIES), 'amplitude_per_frequency': AMPLITUDE,
             'source_phase': 'cosines on absolute sample clock, initial phase zero',

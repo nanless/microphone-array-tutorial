@@ -373,7 +373,7 @@ In `nara_wpe/wpe.py`, `OnlineWPE.step_block()` expects pre-stacked history windo
 
 | Contract Dimension | Pinned NeMo `WPEFilter` / `MaskBasedDereverbWPE` Behavior | Cross-Framework Porting Consequence |
 |---|---|---|
-| Mask-to-power formula | Squares $(m \cdot |X|)^2$ (`m` clamped to $[10^{-10}, 1]$) before averaging across channels | Squares the mask ($m^2 |X|^2$), unlike ESPnet's linear $m |X|^2$ |
+| Mask-to-power formula | Squares $(m \cdot \lvert X\rvert)^2$ (`m` clamped to $[10^{-10}, 1]$) before averaging across channels | Squares the mask ($m^2 \lvert X\rvert^2$), unlike ESPnet's linear $m \lvert X\rvert^2$ |
 | Multi-iteration target | Calls `self.filter(input=output, power=power)`—re-filtering the *previous residual* | Diverges from standard WPE (which re-estimates power from residual while always predicting *original* mixture $X$) |
 | Startup & length masking | Left-pads zeros (`full` startup) and zeros weights past `input_length` *before* covariance sum | Differs from both NARA `"valid"` and ESPnet post-solve zeroing |
 | Power & matrix loading | Inverse weight `1 / (mean_power + eps)` (`eps=1e-8`); matrix adds `diag_reg * trace(Q) + eps` (`diag_reg=1e-6`) | `trace(Q)` is NOT divided by `C * K` matrix dimension |

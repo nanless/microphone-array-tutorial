@@ -35,7 +35,7 @@ def run_demo(audio_directory=OUTPUT):
     analysis = analyze_array(read_pcm16(array_blob), export_gain=manifest['common_export_gain'])
     lifecycle = teaching_lifecycle(analysis['frames'])
     comparison = teaching_lifecycle(analysis['frames'], age_clock='state')
-    result = {'schema_version': 1, 'exercise_id': 'E09-25',
+    result = {'schema_version': 1, 'exercise_id': 'E09-19',
         'source_sha256': {path: hashlib.sha256(validate_parent_chain(ROOT/path).read_bytes()).hexdigest()
                           for path in SOURCE_PATHS},
         'input_sha256': {name: hashlib.sha256((directory/name).read_bytes()).hexdigest()

@@ -5,11 +5,11 @@
   "common_export_gain": 1.0,
   "origin": "original deterministic mathematical plane-wave synthesis",
   "source_sha256": {
-    "codes/chapters/ch03/core/geometry_audio.py": "f1054daa26da08c387e3e82d7211c511a9ea729d4e339c60e0f8c7bc385e155f",
-    "codes/chapters/ch03/examples/generate_geometry_audio.py": "b8b3ff3c1a6a25ffa0c522b7163eddd21e47b519529aa92dd881a12cb9b48337",
+    "codes/chapters/ch03/core/geometry_audio.py": "efcf88c3e3c5a9134c5fe4fcb39580e23c3d4af6bdffff4eec03612c7cd4f255",
+    "codes/chapters/ch03/examples/generate_geometry_audio.py": "446146e57821a365bfd09fcf04565df6422df7012defcf42990a3a8f965b4559",
     "codes/chapters/ch03/core/geometry.py": "5a680848301358415f74647199a4c57b65086f0b2580f91706c912ad208d7bdb",
     "codes/chapters/ch02/core/conventions.py": "4e80a27490f05ddd5f4826361420c0c8d0b331464d1e5629c5def492da47b1d7",
-    "codes/chapters/ch00/core/audio_samples.py": "bf1145e19e2ec99623c0583220192922c24f0ed3d293212309fe4a2f3bfc8385",
+    "codes/chapters/ch00/core/audio_samples.py": "1a7aad90d08fb8c27511aa463a6cc6dd6d4d2d230b27ed82549531f1f18edaba",
     "codes/chapters/ch00/io_contracts.py": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974"
   },
   "environment": {
@@ -20,7 +20,7 @@
   },
   "pcm": "signed little-endian PCM16, round-to-nearest-even, no dither or per-file gain",
   "parameters": {
-    "exercise_id": "E03-17",
+    "exercise_id": "E03-15",
     "sample_rate_hz": 32000,
     "samples_per_channel": 64000,
     "duration_s": 2.0,

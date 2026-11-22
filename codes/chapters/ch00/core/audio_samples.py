@@ -333,7 +333,7 @@ def room_decay_case() -> dict:
 
 
 def dma_calibration_case() -> dict:
-    """E03-14: ideal time shifts isolate a 1% gain error in a rear null.
+    """E03-12: ideal time shifts isolate a 1% gain error in a rear null.
 
     Source envelopes and sinusoids are evaluated at their continuous delayed
     times. This is not an implementation of a sampled fractional-delay filter.
@@ -364,7 +364,7 @@ def dma_calibration_case() -> dict:
         'dma_calibration_mismatch': mismatch,
         'dma_calibration_corrected': corrected,
     }, 'parameters': {
-        'exercise_id': 'E03-14', 'sample_rate_hz': fs, 'duration_s': 2.,
+        'exercise_id': 'E03-12', 'sample_rate_hz': fs, 'duration_s': 2.,
         'samples_per_channel': time.size,
         'spacing_m': spacing, 'sound_speed_m_s': speed,
         'channel_order': ['front microphone 1', 'rear microphone 2 with gain 1.01'],
@@ -442,7 +442,7 @@ def doa_ambiguity_case() -> dict:
 
 
 def gsc_gate_case() -> dict:
-    """E05-16: explicit instantaneous mixtures and an oracle update gate.
+    """E05-10: explicit instantaneous mixtures and an oracle update gate.
 
     The only mismatch is target channel gain 0.96. This is not propagation,
     room simulation, speech, estimated VAD, or an industrial GSC benchmark.
@@ -908,7 +908,7 @@ def math_block_case() -> dict:
     return {
         'signals': signals, 'export_gain_override': 1.,
         'parameters': {
-            'exercise_id': 'E16-08', 'sample_rate_hz': SAMPLE_RATE,
+            'exercise_id': 'E16-07', 'sample_rate_hz': SAMPLE_RATE,
             'duration_s': count / SAMPLE_RATE, 'samples': count,
             'channels': 1, 'seed': None, 'pulse_amplitude': .3,
             'pulse_positions_samples': pulses.tolist(),

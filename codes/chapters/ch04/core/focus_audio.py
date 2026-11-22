@@ -1,4 +1,4 @@
-"""E04-22 known-component, known-angle unitary focusing fixture.
+"""E04-18 known-component, known-angle unitary focusing fixture.
 
 Two coherent sources, no noise or room. Tagged 1/3-kHz components are
 reordered using a known permutation; this is not blind STFT separation.
@@ -29,7 +29,7 @@ LIMITS = ("Original mathematical coherent two-source free-field fixture, not spe
 
 def parameters() -> dict:
     positions = np.column_stack((.1715*np.arange(4), np.zeros(4)))
-    return {"exercise_id": "E04-22", "sample_rate_hz": SAMPLE_RATE,
+    return {"exercise_id": "E04-18", "sample_rate_hz": SAMPLE_RATE,
             "source_samples": SOURCE_SAMPLES, "samples_per_channel": SAMPLES,
             "sound_speed_m_s": 343., "positions_m": positions.tolist(),
             "source_angles_deg": [-30., 30.], "source_2_delay_samples": 4,

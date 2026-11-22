@@ -410,7 +410,7 @@ It is neither a distributed covariance estimator nor a theorem guarantee.
 
 
 def broadcast_statistics_control():
-    """E13-25: mix two versions of one invertible broadcast coordinate.
+    """E13-18: mix two versions of one invertible broadcast coordinate.
 
     x1=s+n1, x2=s+n2, with mutually uncorrelated unit-power components.
     The new observation is C@x, C=diag(1,2). Costs always use the ORIGINAL
@@ -442,7 +442,7 @@ def broadcast_statistics_control():
         w = projection.conj().T@h
         cases[name] = {'receiver_weights': h, 'effective_weights': w,
                        'physical_components': mse_components(rs, rn, w)}
-    return {'exercise_id': 'E13-25', 'coordinate_map': c,
+    return {'exercise_id': 'E13-18', 'coordinate_map': c,
             'physical_target_covariance': rs, 'physical_noise_covariance': rn,
             'old_statistics': old, 'current_statistics': new,
             'unconverted_mixture_statistics': mixed,

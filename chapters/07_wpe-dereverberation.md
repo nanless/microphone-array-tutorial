@@ -595,7 +595,7 @@ $$\begin{aligned}
 $$E_t^{\mathrm{prior}}=X_t-\vec g_{t-1}^H\vec q_t.
 \tag{7-19}$$
 
-在实时嵌入式或低延迟服务端实现中，若每帧都对 $D\times D$（例如 $80\times 80$）的 $\mathbf R_t$ 重新做一次 $O(D^3)$ 线性求解，算力开销往往难以承受。注意到式(7-18)的第一行中，$\mathbf R_t$ 只是在缩放后的旧矩阵 $\alpha\mathbf R_{t-1}$ 上叠加了一个**秩一外积** $\vec q_t\vec q_t^H/\lambda_t$。这正好契合自适应滤波中的递推最小二乘（Recursive Least Squares，RLS）结构：为避免与预测阶数 $K$ 或互相关矩阵 $\mathbf P$ 符号混淆，本章统一记逆相关矩阵为 $\mathbf\Psi_t=\mathbf R_t^{-1}$（与[第 6 章 §6.2.5](06_aec.md#sec-6-2-5) RLS 的逆协方差矩阵同构），对式(7-18)套用**谢尔曼—莫里森—伍德伯里（Sherman–Morrison–Woodbury）矩阵求逆引理**（见[第 0 章 §0.3.5](00_math-foundations.md#sec-0-3-5) 与[附录 A](16_appendix-symbols-math.md)），就能绕开显式求逆，把每帧复杂度从 $O(D^3)$ 降到 $O(D^2)$：
+在实时嵌入式或低延迟服务端实现中，若每帧都对 $D\times D$（例如 $80\times 80$）的 $\mathbf R_t$ 重新做一次 $O(D^3)$ 线性求解，算力开销往往难以承受。注意到式(7-18)的第一行中，$\mathbf R_t$ 只是在缩放后的旧矩阵 $\alpha\mathbf R_{t-1}$ 上叠加了一个**秩一外积** $\vec q_t\vec q_t^H/\lambda_t$。这正好契合自适应滤波中的递推最小二乘（Recursive Least Squares，RLS）结构：为避免与预测阶数 $K$ 或互相关矩阵 $\mathbf P$ 符号混淆，本章统一记逆相关矩阵为 $\mathbf\Psi_t=\mathbf R_t^{-1}$（与[第 6 章 §6.2.6](06_aec.md#sec-6-2-6) RLS 的逆协方差矩阵同构），对式(7-18)套用**谢尔曼—莫里森—伍德伯里（Sherman–Morrison–Woodbury）矩阵求逆引理**（见[第 0 章 §0.3.5](00_math-foundations.md#sec-0-3-5) 与[附录 A](16_appendix-symbols-math.md)），就能绕开显式求逆，把每帧复杂度从 $O(D^3)$ 降到 $O(D^2)$：
 
 $$\begin{aligned}
 \vec k_t&=\frac{\mathbf\Psi_{t-1}\vec q_t}
@@ -804,7 +804,7 @@ $$\bar{\vec w}_{\mathrm{WPD}}=[1/3,\ 2/3,\ 0,\ 0]^\top,$$
 
 不过，一旦进入**多轮交替迭代**，联合 WPD 便会与简单级联“MIMO-WPE → 加权 MPDR”拉开本质差距：标准级联在 WPE 迭代阶段只能用多通道残差平均功率 $\hat\lambda_t^{\mathrm{WPE}}=\frac{1}{M}\|\vec E_t\|_2^2$ 更新帧权重，其中依然混杂着尚未被空间波束剔除的定向干扰人与环境底噪；而多轮迭代 WPD 直接用联合波束形成后的**单路纯净目标输出**更新下一轮功率 $\hat\lambda_t^{\mathrm{WPD}}=\max\{|y_t|^2,\lambda_{\min}\}$（$y_t=\bar{\vec w}_{\mathrm{WPD}}^H\bar{\vec x}_t$），空间零陷已将干扰人压低，使下一轮 WPD 的帧权重估计远比多通道均值准确。
 
-除批处理/递推 WPD 外，在需要在线追踪时变声学路径与动态干扰的场景下，[Dietzen、Doclo、Moonen 与 van Waterschoot（*IEEE/ACM TASLP*，2020）](https://doi.org/10.1109/TASLP.2020.2966869) 还提出了**集成旁瓣抵消与线性预测卡尔曼滤波（Integrated Sidelobe Cancellation and Linear Prediction Kalman Filter，ISCLP-KF）**：它把广义旁瓣抵消器（GSC，见[第 5 章 §5.5](05_beamforming.md#sec-5-5)）的自适应空间干扰抵消与多通道线性预测（MCLP）去混响装入同一增广状态空间卡尔曼滤波器中联合递推，面向多麦去混响、定向人声干扰抑制与降噪的一体化在线求解（注意该方法属于“空间旁瓣抵消 + 线性预测去混响”联合框架，与声学回声消除 AEC 无关）。
+除批处理/递推 WPD 外，在需要在线追踪时变声学路径与动态干扰的场景下，[Dietzen、Doclo、Moonen 与 van Waterschoot（*IEEE/ACM TASLP*，2020）](https://doi.org/10.1109/TASLP.2020.2966869) 还提出了**集成旁瓣抵消与线性预测卡尔曼滤波（Integrated Sidelobe Cancellation and Linear Prediction Kalman Filter，ISCLP-KF）**：它把广义旁瓣抵消器（GSC，见[第 5 章 §5.6](05_beamforming.md#sec-5-6)）的自适应空间干扰抵消与多通道线性预测（MCLP）去混响装入同一增广状态空间卡尔曼滤波器中联合递推，面向多麦去混响、定向人声干扰抑制与降噪的一体化在线求解（注意该方法属于“空间旁瓣抵消 + 线性预测去混响”联合框架，与声学回声消除 AEC 无关）。
 
 ### 7.7 可执行教学基线与复现实验
 
@@ -1339,7 +1339,7 @@ u_1+u_2&=1.
 | 已知路径滤波配置 | 总体理论 MSE | 有限样本浮点 MSE | 实际读回 PCM MSE | 相对平方误差（NMSE） |
 |---|---:|---:|---:|---:|
 | $b=-0.5$，精确逆 $(0.5,0.5)$ | $2.5000\times10^{-7}$ | $2.4849\times10^{-7}$ | $2.4732\times10^{-7}$ | $0.000049$ |
-| $b=0.49$，精确逆 $(-49,50)$ | $0.0024505$ | $0.0024653$ | $0.0024653$ | $0.493081$ |
+| $b=0.49$，精确逆 $(-49,50)$ | $0.0024505$ | $0.0024653$ | $0.0024653$ | $0.493080$ |
 | $b=0.49$，正则逆 $\lambda=10^{-4}$ | $0.0008170$ | $0.0008199$ | $0.0008199$ | $0.163986$ |
 
 试听对照可直接听出差异：在反射系数仅差 $0.01$ 时，`mint_near_exact.wav` 虽然消除了回声，但被放大 $4901$ 倍的沙沙底噪几乎淹没了乐音；而 `mint_near_regularized.wav` 保留了轻微回声，底噪却明显回落。表中有限样本浮点 MSE（$0.0008199$）与总体理论值（$0.0008170$）的细微差别，源于 $27200$ 个有限采样内随机噪声与信号之间的样本交叉均值并不严格等于总体期望的零（复现与校验脚本：`.venv/bin/python -m codes.chapters.ch07.examples.mint_teaching_demo --check`，实现见 [`mint_teaching.py`](../codes/chapters/ch07/core/mint_teaching.py)）。
@@ -1412,7 +1412,7 @@ e[j]&=\sin^2(\pi j/127).
 - [统一延迟的一参数拟合残差](../codes/chapters/ch07/delay_audio/delay_common_residual.wav)
 - [修正延迟的一参数拟合残差](../codes/chapters/ch07/delay_audio/delay_aligned_residual.wav)
 
-固定稳态窗口 $[1536,30720)$（含 $19$ 个完整周期、共 $29184$ 点）按式(7-39)拟合单标量 $g$：单脉冲浮点能量约为 $0.238123$，$38$ 个脉冲总能量约为 $9.048674$（参考均方功率约 $3.1004\times 10^{-4}$）。统一延迟下 $q_{\mathrm c}$ 与 $x_{\mathrm{ref}}$ 逐点重合，得 $g=1$、残差归零；修正延迟下脉冲支撑区间完全错开，得 $r=0,g=0$、残差完整保留参考目标。重读磁盘 PCM16 样本的结果如下（完整数值记录见 [`delay_audio/MANIFEST.json`](../codes/chapters/ch07/delay_audio/MANIFEST.json)）：
+固定稳态窗口 $[1536,30720)$（含 $19$ 个完整周期、共 $29184$ 点）按式(7-39)拟合单标量 $g$：单脉冲浮点能量约为 $0.238123$，$38$ 个脉冲总能量约为 $9.048674$（对应 PCM16 参考均方功率约 $3.1004\times 10^{-4}$，浮点为 $3.1006\times 10^{-4}$）。统一延迟下 $q_{\mathrm c}$ 与 $x_{\mathrm{ref}}$ 逐点重合，得 $g=1$、残差归零；修正延迟下脉冲支撑区间完全错开，得 $r=0,g=0$、残差完整保留参考目标。重读磁盘 PCM16 样本的结果如下（完整数值记录见 [`delay_audio/MANIFEST.json`](../codes/chapters/ch07/delay_audio/MANIFEST.json)）：
 
 | 实际 PCM 残差文件 | 拟合系数 $g$ | 实际 PCM 输出均方功率 | 实际 PCM 相对平方误差（NMSE） |
 |---|---:|---:|---:|

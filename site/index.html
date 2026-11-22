@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>从入门到工业实践 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="e2a840976a4c"><style>
+<meta name="source-digest" content="f6d48efe6ade"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -1414,7 +1414,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <span id="sec-u-2d4b4b193b" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-ed573e6015"><a href="13_distributed-enhancement.html">13 · 扩展专题Ⅱ：分布式麦克风协同增强</a></h3>
 <p>本专题（第 13 章，配图 3 张）面向多台智能终端、多机位会议拾音器或无线传感器网络在受限通信带宽下协同增强同一目标声源的场景，建议在读完第 2、5、10 章后选读。</p>
 <p>各节点拥有本地麦克风子阵，但受链路带宽与功耗限制，无法把全部原始多通道波形集中上传，只能向邻居或汇聚节点广播低维线性压缩信号。本专题以集中式多通道维纳滤波（MWF）为性能参照，推导跨节点线性压缩达到集中式最优解的代数条件（揭示即便远端压缩信号中目标分量恰好相消，其携带的相关干扰观测仍可帮助本地节点抵消噪声），继而剖析分布式自适应节点特定信号估计（Distributed Adaptive Node-specific Signal Estimation，DANSE 及其拓扑无关形式 TI-DANSE）在顺序更新、同步更新与有限步松弛迭代下的收敛行为。</p>
-<p>围绕真实无线链路，本专题进一步讨论传输量化误差、压缩系数版本切换后的统计量坐标变换、节点间采样率偏移（如 $100\ \mathrm{ppm}$ 频偏）补偿以及网络丢包时的补零与本地回退策略（完整无线实验复现指引见<a href="13_distributed-enhancement.html#sec-13-13">专题 §13.13</a>）。</p>
+<p>围绕真实无线链路，本专题进一步讨论传输量化误差、压缩系数版本切换后的统计量坐标变换、节点间采样率偏移（如 $100\ \mathrm{ppm}$ 频偏）补偿以及网络丢包时的补零与本地回退策略（完整无线实验复现指引见<a href="13_distributed-enhancement.html#sec-13-15">专题 §13.15</a>）。</p>
 <span id="sec-u-6dcf2e71ad" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-3e47e38b8d"><a href="14_spatial-wearable-arrays.html">14 · 扩展专题Ⅲ：空间声场采集、参数化编码与可穿戴阵列</a></h3>
 <p>本专题（第 14 章，配图 4 张）面向全景声录制、扩展现实头显、智能眼镜、真无线耳机与数字助听器，建议在读完第 1、2、5 章后选读。与交付单路增强波形的桌面阵列不同，全景声采集与可穿戴设备需要在受限孔径和头部散射条件下保留三维方位线索与自然听觉包围感。</p>
 <p>全章从一阶全景声（FOA）ACN/SN3D 约定、正四面体编码均衡与头部追踪三维声场逆旋转出发，推导方向性音频编码（DirAC）的有功声强与扩散度参数化分析；随后展开非规则阵列双耳信号匹配（BSM-LS 与高频幅度最小二乘 MagLS）及用参考麦克风混合抑制背景噪声头中坍缩的解析折中，并剖析 Corcos 湍流风噪模型、气导与耳道闭塞内麦跨模态 MVDR 自语音融合，以及耳机通透模式（Hear-Through）的百微秒梳状滤波延迟边界（配套练习 <code>E14-01</code>～<code>E14-15</code> 与 <code>wearable_audio</code> 见<a href="14_spatial-wearable-arrays.html#sec-14-11">专题 §14.11</a>）。</p>
@@ -1488,7 +1488,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 </li>
 <li>
 <p>精读第 10 章，沿关键路径逐项拆解端到端延迟，区分跨设备时钟同步与采样率偏移（SRO），统一客观评测、算力与整机功耗口径；随后对照 <a href="17_appendix-guide.html#sec-17-4">§17.4</a> 排错表，完成 <a href="17_appendix-guide.html#sec-17-6">§17.6</a> 的第 7、8、9、11、14、15 题。</p>
-<p>若项目涉及声学相机或异响源强定量诊断，加读<a href="12_acoustic-imaging.html">专题Ⅰ</a>核对传声器校准与声学量纲；若涉及多设备窄带协同拾音，加读<a href="13_distributed-enhancement.html">专题Ⅱ</a>核对信号压缩、迭代更新与网络时钟补偿；若涉及智能眼镜、真无线耳机或助听器，加读<a href="14_spatial-wearable-arrays.html">专题Ⅲ</a>核对双耳匹配、抗风跨模态融合与通透延迟预算。</p>
+<p>若项目涉及声学相机或异响源强定量诊断，加读<a href="12_acoustic-imaging.html">专题Ⅰ</a>核对传声器校准与声学量纲；若涉及多设备窄带协同拾音，加读<a href="13_distributed-enhancement.html">专题Ⅱ</a>核对信号压缩、迭代更新与网络时钟补偿；若涉及智能眼镜、真无线耳机或助听器，加读<a href="14_spatial-wearable-arrays.html">专题Ⅲ</a>核对双耳匹配、抗风跨模态融合与通透延迟预算；若涉及个人目标说话人提取、近场距离气泡或多人重叠会议日志前端，加读<a href="15_target-extraction-diarization.html">专题Ⅳ</a>核对条件注入、目标沉默旁路、空谱排他门控与视听滞后对齐。</p>
 </li>
 <li>
 <p>阶段产出建议：结合目标硬件平台输出延迟预算、时钟同步预算与通道标定预算三张表；以 WebRTC AEC3 等成熟工业方案为参照，在目标样机上分别实测远端单讲回声衰减、双讲稳定性、近端语音保真度、实时算力占用与主观听感。</p>
@@ -2110,28 +2110,28 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:5em">图84</td>
 <td>fig84_complex_phasor_fourier</td>
-<td>第0章</td>
+<td>00</td>
 <td class="tutorial-short-column" style="--tutorial-column-width:6em">几何与时频对比</td>
 <td>复数相量旋转、时延线性相位斜率、补零线性卷积与 COLA 重叠相加重建</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:5em">图85</td>
 <td>fig85_subspace_projection_svd</td>
-<td>第0章</td>
+<td>00</td>
 <td class="tutorial-short-column" style="--tutorial-column-width:6em">子空间与数值曲线</td>
 <td>列空间正交投影分解、奇异值谱、Tikhonov 对角加载与 Woodbury 秩一更新</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:5em">图86</td>
 <td>fig86_hermitian_rayleigh_gev</td>
-<td>第0章</td>
+<td>00</td>
 <td class="tutorial-short-column" style="--tutorial-column-width:6em">极值轨迹与孔径图解</td>
 <td>厄米瑞利商极值轨迹、广义特征值联合对角化与 Khatri–Rao 虚拟孔径展开</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:5em">图87</td>
 <td>fig87_wirtinger_probability_bayesian</td>
-<td>第0章</td>
+<td>00</td>
 <td class="tutorial-short-column" style="--tutorial-column-width:6em">优化与统计递推</td>
 <td>Wirtinger 投影梯度下降、复高斯圆对称与实频点非圆性、卡尔曼 Joseph 协方差递推</td>
 </tr>

@@ -20,14 +20,14 @@
 
 球谐域公式通常改用从 $+x$ 轴逆时针起算的方位角 $\alpha$ 和从 $+z$ 轴向下起算的极角（余纬角）$\vartheta$。将其与本书从 $+y$ 朝 $+x$ 起算的声源方位角 $\theta$、从水平面朝 $+z$ 起算的俯仰角 $\phi_{\mathrm{el}}$ 对接时，必须先做角度换算 $\alpha=\pi/2-\theta$（按 $2\pi$ 周期折叠取值）、$\vartheta=\pi/2-\phi_{\mathrm{el}}$，再代入球谐基函数或开源库接口，详见[§5.8](05_beamforming.md#sec-5-8)。同理，国际标准 AmbiX 与一阶全景声（FOA）采用 $+x$ 朝正前方、$+y$ 朝正左方、$+z$ 朝正上方的三维右手系，其水平方位角从 $+x$ 逆时针转向 $+y$、俯仰角从水平面转向 $+z$，与上段平面阵列坐标系（$+y$ 正前、顺时针方位角）之间的对照详见[专题Ⅲ §14.2](14_spatial-wearable-arrays.md#sec-14-2)。
 
-**字母与算符复用**（与 §2.3 一致）：由于阵列、自适应滤波、去混响与多目标追踪分属不同研究传统，同一个字母或算符在不同章节可能承担不同角色。例如本表将波数记为 $\kappa=2\pi f/c$，以区别于离散频点索引 $k$，但部分文献与局部推导仍用 $k$ 记波数，第 6 章 §6.2 另用 $\kappa\in[-1,1]$ 表示 IPNLMS 比例混合系数，第 7 章局部还用 $k$ 记 WPE 的滞后帧号；$D$ 可表示阵列孔径或 PHD 强度函数，$\lambda$ 可表示声波波长、RLS 指数遗忘因子、WPE 时变方差或矩阵特征值，$K$ 可表示声源个数或 WPE 预测阶数，$s$ 可表示源信号或追踪状态，$\varepsilon$ 在第 5 章表示绝对对角加载而在第 10、13 章表示相对采样率偏移（SRO）。算符 $\odot$ 同样遵循领域双重约定：在子空间与协方差向量化字典（[§0.4.3](00_math-foundations.md#sec-0-4-3)、§3.3、§12.7、§16.3.2）中表示按列 Khatri–Rao 积，而在频域滤波、时频掩码、BSM 相位投影与 FiLM 特征调制（§5、§6、§8、[§14.5～§14.6](14_spatial-wearable-arrays.md#sec-14-5)、[§15.1](15_target-extraction-diarization.md#sec-15-1)）中表示同维或广播 Hadamard 逐元素乘积。具体含义以所在公式的定义为准。
+**字母与算符复用**（与 §2.3 一致）：由于阵列、自适应滤波、去混响与多目标追踪分属不同研究传统，同一个字母或算符在不同章节可能承担不同角色。例如本表将波数记为 $\kappa=2\pi f/c$，以区别于离散频点索引 $k$，但部分文献与局部推导仍用 $k$ 记波数，第 6 章 §6.2 另用 $\kappa\in[-1,1]$ 表示 IPNLMS 比例混合系数，第 7 章局部还用 $k$ 记 WPE 的滞后帧号；$D$ 可表示阵列孔径或 PHD 强度函数，$\lambda$ 可表示声波波长、RLS 指数遗忘因子、WPE 时变方差或矩阵特征值，$K$ 可表示声源个数或 WPE 预测阶数，$s$ 可表示源信号或追踪状态，$\varepsilon$ 在第 5 章表示绝对对角加载而在第 10、13 章表示相对采样率偏移（SRO）。算符 $\odot$ 同样遵循领域双重约定：在子空间与协方差向量化字典（[§0.4.3](00_math-foundations.md#sec-0-4-3)、§3.3、§12.7、§16.3.2）中表示按列 Khatri–Rao 积，而在频域滤波、时频掩码、BSM 相位投影与 FiLM 特征调制（§5、§6、§8、[§14.5～§14.6](14_spatial-wearable-arrays.md#sec-14-5)、[§15.2](15_target-extraction-diarization.md#sec-15-2)）中表示同维或广播 Hadamard 逐元素乘积。具体含义以所在公式的定义为准。
 
 本表区分 STFT 网格时，默认 $k$ 是频点索引、$\ell$ 是帧索引，$n$ 是离散采样索引，$t$ 是连续时间。各章沿用各自领域的经典记号时会另行声明下标；跨章对照公式时，应当先按下表对齐每条坐标轴的物理意义，不能仅凭字母相同就默认代表同一维度：
 
 | STFT 记号 | 坐标轴顺序 | 适用范围 |
 |---|---|---|
 | $X_m[k,\ell]$、$X(f_k,\ell)$ | （频点 $k$，帧 $\ell$） | 全书主记号（§0、§2、§16；第 5 章局部记 $\vec{x}(k,n)$） |
-| $X_m(f,k)$、$\vec{x}_{ft}$ | （频点 $f$，帧 $k$ 或 $t$） | 第 8 章盲源分离与掩码波束（频点在前、帧在后） |
+| $X_m(f,t)$、$\vec x_f(t)$、$\vec{x}_{ft}$ | （频点 $f$，帧 $t$） | 第 8 章盲源分离与掩码波束（频点在前、帧在后） |
 | $X(n,f)$ | （帧 $n$，离散频点 $f$） | 第 7 章 WPE 与附录 B 速查（帧在前、频点在后） |
 
 实信号的**单边谱**取 $0\leq k\leq\lfloor N/2\rfloor$，对应非负物理频率 $f_k=kf_s/N$（单位：Hz）。若在内存中保存完整的 $N$ 点 DFT，后半段索引对应负频率：偶数 $N$ 下的 $k>N/2$ 或奇数 $N$ 下的 $k>(N-1)/2$ 应换算为 $(k-N)f_s/N$。偶数 $N$ 的奈奎斯特（Nyquist）格点 $k=N/2$ 对实信号满足自共轭，在单边谱中常记作 $+f_s/2$；切勿把完整 DFT 的末尾格点误读成接近 $+f_s$ 的新高频分量。练习 [E16-06](#e16-06) 给出了八点序列的逐格复算。
@@ -93,7 +93,7 @@ kf_s/N,&0\leq k<\lceil N/2\rceil,\\
 | $\mathrm{cpWER}, \mathrm{tcpWER}, \mathrm{ORC\text{-}WER}, \mathrm{sa\text{-}WER}$ | 多说话人会议转写的四类词错误率评测口径：拼接最小排列词错率（cpWER）、时间约束最小排列词错率（tcpWER）、最优参考组合词错率（ORC-WER）与说话人归属词错率（sa-WER；§10.5、§11.2、§15.7） |
 | $\varepsilon, f_d$（SRO 时钟偏移） | 异步设备的相对采样率偏移 $\varepsilon=(f_d-f_s)/f_s$（常以百万分之一 ppm 计，设备实际采样率 $f_d=f_s(1+\varepsilon)$，引发累积时延漂移 $\Delta t(T)\approx\varepsilon T$；第 10 章 §10.2 与第 13 章 §13.15 沿用同一记号，注意与第 5 章对角加载 $\varepsilon$ 按语境区分） |
 | $L_{\mathrm{e2e}}, L_p$（第 10 章延迟） | 有向数据依赖图的关键路径端到端延迟 $L_{\mathrm{e2e}}=\max_p L_p$，单条路径 $L_p$ 为前瞻、缓冲、计算、调度与解码五项延迟之和（§10.1 式(10-2)） |
-| $\mathbf{A}$, $\mathbf{P}$, $\vec{q}$, $\vec{b}$（专题Ⅰ） | 声学成像传播字典、点扩散函数（PSF）矩阵、参考面处的候选源均方强度向量、波束扫描脏图向量；满足 $P_{ij}=|\vec{w}_i^H\vec{a}_j|^2$（行对应扫描格点、列对应真实源格点），注意与第 9 章卡尔曼误差协方差 $\mathbf{P}$ 区分（§12.4） |
+| $\mathbf{A}$, $\mathbf{P}$, $\vec{q}$, $\vec{b}$（专题Ⅰ） | 声学成像传播字典、点扩散函数（PSF）矩阵、参考面处的候选源均方强度向量、波束扫描脏图向量；满足 $P_{ij}=\lvert\vec{w}_i^H\vec{a}_j\rvert^2$（行对应扫描格点、列对应真实源格点），注意与第 9 章卡尔曼误差协方差 $\mathbf{P}$ 区分（§12.4） |
 | CSM、$\mathbf{R}$、$p_{\mathrm{ref}}$（专题Ⅰ） | 互谱矩阵（Cross-Spectral Matrix）与空气声学参考有效声压 $p_{\mathrm{ref}}=20\ \mu\mathrm{Pa}$；未归一化 FFT 外积、每 Hz 功率谱密度与单频均方幅度的量纲标度不同，数字幅值未经声压灵敏度校准前不得直接标为 $\mathrm{Pa}^2$ 或 dB SPL（§12.3） |
 | $W, X, Y, Z$，$\vec{b}_{\mathrm{WXYZ}}$，$\vec{b}_{\mathrm{ACN}}$（专题Ⅲ） | 一阶全景声（FOA）在 SN3D 归一化下的零阶全向与三个一阶偶极通道，以及直观序 $[W,X,Y,Z]^\top$ 与标准 ACN 序 $[W,Y,Z,X]^\top$（[§14.2](14_spatial-wearable-arrays.md#sec-14-2)） |
 | $J_n, j_l, y_l, h_l^{(2)}, P_l^m, Y_{l,m}$ | $n$ 阶第一类柱贝塞尔函数 $J_n$，$l$ 阶第一/第二类球贝塞尔函数 $j_l, y_l$ 与第二类球汉克尔函数 $h_l^{(2)}=j_l-\mathrm{j}y_l$（本书 $e^{+\mathrm{j}\omega t}$ 时间因子下的向外散射波），连带勒让德函数 $P_l^m$ 与球谐函数 $Y_{l,m}$（亦记 $Y_n^m$，[§0.7](00_math-foundations.md#sec-0-7)、[§5.8](05_beamforming.md#sec-5-8)、[§14.2](14_spatial-wearable-arrays.md#sec-14-2)）。注意归一化换算 $Y_{l,m}^{\mathrm{N3D}}=\sqrt{2l+1}\,Y_{l,m}^{\mathrm{SN3D}}=\sqrt{4\pi}\,Y_{l,m}^{\mathrm{ortho}}$，故第 14 章球面均值径向模态权重 $b_l(\kappa R)$ 与第 0、5 章标准正交基约定的 $4\pi\mathrm{j}^l j_l(\kappa R)$ 相差常数因子 $4\pi$ |
@@ -105,7 +105,7 @@ kf_s/N,&0\leq k<\lceil N/2\rceil,\\
 | $r_F=2D^2/\lambda$，$\phi(r), \phi_1$，$\vec{w}_{\mathrm{bubble}}$（专题Ⅳ） | 菲涅耳近场曲率边界、正横距离 $r$ 处两侧阵元相对中心麦的球面波曲率相位滞后 $\phi(r)=-\frac{2\pi}{\lambda}(\sqrt{r^2+d^2}-r)$（目标距离 $r_1$ 处记 $\phi_1=\phi(r_1)$），以及三麦正侧向声学距离气泡二阶空间差分权重（[§15.3](15_target-extraction-diarization.md#sec-15-3)） |
 | $\mathrm{DER}$，$E_{\mathrm{miss}}$，$E_{\mathrm{FA}}$，$E_{\mathrm{conf}}$（专题Ⅳ） | 说话人日志误差率及逐帧漏检、虚警、说话人混淆人数误差；虚警较高时合法 $\mathrm{DER}$ 可大于 $100\%$（[§15.4](15_target-extraction-diarization.md#sec-15-4)） |
 | $\gamma_{k,t}$，$m_{k,t}^{\mathrm{tar}}$，$m_{k,t}^{\mathrm{int}}$；$\Delta t_{\mathrm{av}}, \alpha_\ell$（专题Ⅳ） | TS-VAD 独立伯努利活动后验与 GSS 目标排他掩码/干扰掩码（[§15.5](15_target-extraction-diarization.md#sec-15-5)）；视听管线正滞后与逐帧视觉可见度置信度门控权重（[§15.6](15_target-extraction-diarization.md#sec-15-6)） |
-| $\otimes$, $\odot$, $\operatorname{vec}(\cdot)$ | $\otimes$ 为 Kronecker 积，$\operatorname{vec}(\cdot)$ 为按列优先矩阵拉直算子；算符 $\odot$ 依语境承担双重约定：在子空间与协方差字典（[§0.4.3](00_math-foundations.md#sec-0-4-3)、§3.3、§12.7、§16.3.2）中表示按列 Khatri–Rao 积（满足对角拉直恒等式 $(\mathbf B\odot\mathbf A)\vec q$），而在频域滤波、时频掩码、BSM 相位投影与 FiLM 调制（§5、§6、§8、[§14.5～§14.6](14_spatial-wearable-arrays.md#sec-14-5)、[§15.1](15_target-extraction-diarization.md#sec-15-1)）中表示同维或广播 Hadamard 逐元素乘积 |
+| $\otimes$, $\odot$, $\operatorname{vec}(\cdot)$ | $\otimes$ 为 Kronecker 积，$\operatorname{vec}(\cdot)$ 为按列优先矩阵拉直算子；算符 $\odot$ 依语境承担双重约定：在子空间与协方差字典（[§0.4.3](00_math-foundations.md#sec-0-4-3)、§3.3、§12.7、§16.3.2）中表示按列 Khatri–Rao 积（满足对角拉直恒等式 $(\mathbf B\odot\mathbf A)\vec q$），而在频域滤波、时频掩码、BSM 相位投影与 FiLM 调制（§5、§6、§8、[§14.5～§14.6](14_spatial-wearable-arrays.md#sec-14-5)、[§15.2](15_target-extraction-diarization.md#sec-15-2)）中表示同维或广播 Hadamard 逐元素乘积 |
 | PHD / RFS | 概率假设密度（Probability Hypothesis Density，PHD）与随机有限集（Random Finite Set，RFS） |
 
 表中残余相位 $\psi$ 的“残余”二字是相对于波束指向角 $\theta_0$ 而言的：当平面波从方位 $\theta$ 入射时，等间距线阵先按目标方向 $\theta_0$ 施加补偿时延，补偿后相邻两麦之间剩余的相位差即为
@@ -148,7 +148,7 @@ $$\begin{gathered}
 | 抽头（tap） | 有限长冲激响应（FIR）滤波器的单个乘加系数。“128 抽头滤波器”代表共有 128 个脉冲响应系数，对应 $z^{-1}$ 多项式的最高阶数为 127 阶，查阅文献与代码接口时应留意“长度”与“阶数”相差 1 的惯例（§6.1） |
 | 优先效应（precedence effect） | 当直达声与短延迟早期反射声从不同方向先后到达双耳且声学特征相近时，人类听觉系统对声源方位的感知主要由先到达的直达声主导；这并不意味着反射声的能量或音色影响被完全忽略。[第 1 章](01_problem-definition.md)双耳线索与机器阵列对照小节给出了现象定义与 Wallach 等（1949）的实验出处，§2.4 讨论了房间脉冲响应建模 |
 | 拉格朗日乘子法 | 求解等式约束极值问题的经典解析方法：通过引入拉格朗日乘子将线性约束并入目标函数，构造实值拉格朗日函数并对复权重共轭求驻点，即可导出 MVDR 与 LCMV 的闭式解（[§0.5.2](00_math-foundations.md#sec-0-5-2)、§5.4、§16.3.2） |
-| GCC-PHAT 频谱相位加权 | 在每个非零互谱频点将互功率谱 $G_{12}(f)$ 除以其模值 $|G_{12}(f)|$，使各频点幅值归一为 $1$、仅保留相位差信息，零模值频点需加正则分母或跳过。该操作均衡的是单对通道的**频域幅度谱形状**，并不能将多通道间的空间相关噪声白化（§4.2；参见[Knapp 与 Carter（1976）广义互相关论文](https://doi.org/10.1109/TASSP.1976.1162830)） |
+| GCC-PHAT 频谱相位加权 | 在每个非零互谱频点将互功率谱 $G_{12}(f)$ 除以其模值 $\lvert G_{12}(f)\rvert$，使各频点幅值归一为 $1$、仅保留相位差信息，零模值频点需加正则分母或跳过。该操作均衡的是单对通道的**频域幅度谱形状**，并不能将多通道间的空间相关噪声白化（§4.2；参见[Knapp 与 Carter（1976）广义互相关论文](https://doi.org/10.1109/TASSP.1976.1162830)） |
 | 空间噪声白化（spatial noise whitening） | 在固定频点已知厄米正定噪声协方差 $\mathbf{R}_{nn}$ 时，左乘白化矩阵 $\mathbf{W}$ 使变换后噪声协方差满足 $\mathbf{W}\mathbf{R}_{nn}\mathbf{W}^H=\mathbf{I}$；与此同时，目标导向矢量也必须同步变换为 $\mathbf{W}\vec{a}$。它消除的是通道间的噪声相关性与功率差异，切勿与 GCC-PHAT 的逐频点标量归一化混为一谈（[E16-04](#e16-04)） |
 | sinc 函数 | 本书统一采用归一化定义 $\operatorname{sinc}(x)=\sin(\pi x)/(\pi x)$。三维球面各向同性弥散场的两麦空间相干系数服从该形式；二维水平面各向同性场则对应零阶贝塞尔函数 $J_0(2\pi fd/c)$（§5.1）。部分数学文献将未归一化的 $\sin x/x$ 记作 $\operatorname{sinc}(x)$，代入公式前需先核对因子 $\pi$ |
 | SNR（信噪比） | 目标信号功率与噪声功率的比值，常取 $10\log_{10}$ 换算为 dB；阵列处理后的输出 SNR 减去参考通道输入 SNR 即为阵列 SNR 增益。在回声消除（AEC）中常另用信回比（SER）衡量近端语音与远端回声的功率比，汇报时须写明参考取点与统计时段（§5.1、§6.1） |
@@ -224,7 +224,7 @@ $$\begin{gathered}
 | 术语 | 解释 |
 |---|---|
 | CSM（互谱矩阵） | Cross-Spectral Matrix，即声学成像中在固定频带对多通道复频谱快拍求外积平均得到的厄米矩阵 $\hat{\mathbf{R}}$；工程中常剥离主对角线（DR）以压制非相关风噪与自噪声，但对角剥离可能破坏矩阵半正定性（[§12.3](12_acoustic-imaging.md#sec-12-3)） |
-| PSF（点扩散函数） | Point Spread Function，单位强度的孤立点源经过固定扫描波束后在全部候选格点上形成的空间功率响应矩阵 $P_{ij}=|\vec{w}_i^H\vec{a}_j|^2$，决定了常规波束脏图的主瓣展宽与旁瓣串扰结构（[§12.4](12_acoustic-imaging.md#sec-12-4)） |
+| PSF（点扩散函数） | Point Spread Function，单位强度的孤立点源经过固定扫描波束后在全部候选格点上形成的空间功率响应矩阵 $P_{ij}=\lvert\vec{w}_i^H\vec{a}_j\rvert^2$，决定了常规波束脏图的主瓣展宽与旁瓣串扰结构（[§12.4](12_acoustic-imaging.md#sec-12-4)） |
 | DAMAS（声源映射反卷积方法） | Deconvolution Approach for the Mapping of Acoustic Sources，通过非负高斯—赛德尔迭代求解线性非负系统 $\mathbf{P}\vec{q}\approx\vec{b}$（$\vec{q}\ge\vec{0}$），从脏图 $\vec{b}$ 中剥离 PSF 旁瓣以估计不相关源均方强度分布（[§12.5](12_acoustic-imaging.md#sec-12-5)） |
 | CLEAN-SC（基于空间源相干性的洁净反卷积） | 从当前脏图主峰出发，直接利用实测 CSM 与主峰波束的**实测空间相干结构**迭代剥离主峰及其相干旁瓣，比依赖理想自由场 PSF 的方法更能容忍一定程度的流形误差，但仍受限于空间分辨率与相干双源抵消（[§12.6](12_acoustic-imaging.md#sec-12-6)） |
 | CMF（协方差矩阵拟合） | Covariance Matrix Fitting，跳过脏图投影，直接以最小化 $\|\hat{\mathbf{R}}-\mathbf{A}\operatorname{diag}(\vec{q})\mathbf{A}^H\|_F^2$（借助 Khatri–Rao 字典写为 $\|\operatorname{vec}(\hat{\mathbf{R}})-(\mathbf{A}^*\odot\mathbf{A})\vec{q}\|_2^2$，$\vec{q}\ge\vec{0}$）反演声源功率（[§12.7](12_acoustic-imaging.md#sec-12-7)） |
@@ -309,7 +309,7 @@ $$\begin{gathered}
 
 本书统一采用前向傅里叶核 $e^{-\mathrm{j}2\pi ft}$：时域延迟 $x(t-\tau)$ 对应频域相移 $e^{-\mathrm{j}2\pi f\tau}$，远场平面波导向分量为 $a_m=e^{-\mathrm{j}2\pi f\tau_{m1}}=e^{+\mathrm{j}2\pi f(\vec r_m-\vec r_1)^\top\vec u/c}$（完整推导见[§0.2.1](00_math-foundations.md#sec-0-2-1)、§2.3）。同一负载阻抗下，功率/能量比用 $10\log_{10}(P_2/P_1)$，声压/电压/波形幅度比用 $20\log_{10}(|A_2|/|A_1|)$（[§0.2.2](00_math-foundations.md#sec-0-2-2)）：
 
-| 分贝刻度 | 线性幅度比 $\|A_2\|/\|A_1\|$ | 线性功率比 $P_2/P_1$ | 工程典型语义 |
+| 分贝刻度 | 线性幅度比 $\lvert A_2\rvert/\lvert A_1\rvert$ | 线性功率比 $P_2/P_1$ | 工程典型语义 |
 |---|---:|---:|---|
 | $+6.02\ \mathrm{dB}$ | $\times 2$ | $\times 4$ | 理想 4 麦 DSB 白噪声增益上限（$10\log_{10}4$） |
 | $+3.01\ \mathrm{dB}$ | $\times\sqrt{2}\approx 1.414$ | $\times 2$ | 阵元数翻倍（独立白噪）的理想功率信噪比增量 |
@@ -330,7 +330,7 @@ $$\begin{gathered}
 | 正交投影与 OLS / GLS | $\mathbf P_{\mathcal R(\mathbf A)}=\mathbf A(\mathbf A^H\mathbf A)^{-1}\mathbf A^H$；$\hat{\vec x}_{\mathrm{WLS}}=(\mathbf A^H\mathbf C^{-1}\mathbf A)^{-1}\mathbf A^H\mathbf C^{-1}\vec b$ | $\mathbf A$ 满列秩、噪声协方差 $\mathbf C=\mathbf L\mathbf L^H\succ\mathbf 0$；Cholesky 白化 $\mathbf W=\mathbf L^{-1}$ 须同步左乘 $\mathbf A$ 与 $\vec b$（[§0.3.2](00_math-foundations.md#sec-0-3-2)、[§0.6.3](00_math-foundations.md#sec-0-6-3)、[E16-15](#e16-15)） |
 | MVDR / LCMV 闭式解 | $\vec w_{\mathrm{MVDR}}=\frac{\mathbf R^{-1}\vec a}{\vec a^H\mathbf R^{-1}\vec a}$；$\vec w_{\mathrm{LCMV}}=\mathbf R^{-1}\mathbf C(\mathbf C^H\mathbf R^{-1}\mathbf C)^{-1}\vec f$ | $\mathbf R\succ\mathbf 0$、$\mathbf C$ 满列秩；线性约束 $\mathbf C^H\vec w=\vec f$ 中指定响应 $g_k=\vec w^H\vec c_k$ 须取共轭 $f_k=g_k^*$（[§0.5.2](00_math-foundations.md#sec-0-5-2)、§5.4～§5.5） |
 | Woodbury / Sherman–Morrison | $(\mathbf M+\mathbf U\mathbf C\mathbf V)^{-1}=\mathbf M^{-1}-\mathbf M^{-1}\mathbf U(\mathbf C^{-1}+\mathbf V\mathbf M^{-1}\mathbf U)^{-1}\mathbf V\mathbf M^{-1}$；秩一 $(\mathbf M+\vec u\vec v^H)^{-1}=\mathbf M^{-1}-\frac{\mathbf M^{-1}\vec u\vec v^H\mathbf M^{-1}}{1+\vec v^H\mathbf M^{-1}\vec u}$ | 将在线遗忘协方差递推求逆由 $O(M^3)$ 降至 $O(M^2)$；长期有限字长递推须定期对称化 $\frac{1}{2}(\mathbf P+\mathbf P^H)$（[§0.3.5](00_math-foundations.md#sec-0-3-5)） |
-| 列优先 $\operatorname{vec}$ / Kronecker / Khatri–Rao | $(\mathbf B_1\otimes\mathbf A_1)(\mathbf B_2\otimes\mathbf A_2)=(\mathbf B_1\mathbf B_2)\otimes(\mathbf A_1\mathbf A_2)$；$\operatorname{vec}(\mathbf A\mathbf X\mathbf B^\top)=(\mathbf B\otimes\mathbf A)\operatorname{vec}(\mathbf X)$；$\operatorname{vec}(\mathbf A\operatorname{diag}(\vec q)\mathbf A^H)=(\mathbf A^*\odot\mathbf A)\vec q$ | 统一差分共阵（§3.3）、可分离平面阵（§5.8）与 CMF 成像（§12.7）；左因子须取共轭 $\mathbf A^*$（[§0.4.3](00_math-foundations.md#sec-0-4-3)） |
+| 列优先 $\operatorname{vec}$ / Kronecker / Khatri–Rao | $(\mathbf B_1\otimes\mathbf A_1)(\mathbf B_2\otimes\mathbf A_2)=(\mathbf B_1\mathbf B_2)\otimes(\mathbf A_1\mathbf A_2)$；$\operatorname{vec}(\mathbf A\mathbf X\mathbf B^\top)=(\mathbf B\otimes\mathbf A)\operatorname{vec}(\mathbf X)$；$\operatorname{vec}(\mathbf A\operatorname{diag}(\vec q)\mathbf A^H)=(\mathbf A^*\odot\mathbf A)\vec q$ | 统一差分共阵（§3.3）、可分离平面阵（§5.5）与 CMF 成像（§12.7）；左因子须取共轭 $\mathbf A^*$（[§0.4.3](00_math-foundations.md#sec-0-4-3)） |
 
 此外，本书对有限长补零复数序列的离散互相关统一采用第二路取共轭的定义（与 `scipy.signal.correlate` 约定一致，满足反对称关系 $R_{21}[q]=R_{12}^*[-q]$，第 1 路晚到 $q>0$ 点则正滞后出峰，见 [E16-12](#e16-12)）：
 

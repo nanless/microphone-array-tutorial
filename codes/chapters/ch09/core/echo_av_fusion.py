@@ -1,7 +1,7 @@
 """Pure-NumPy teaching kernels for self-loudspeaker echo gating and AV OOSM/MOT.
 
-Covers Chapter 09 exercises E09-27 (reference-activity-conditioned loudspeaker
-sector gating before association and track birth) and E09-28 (audio-visual
+Covers Chapter 09 exercises E09-21 (reference-activity-conditioned loudspeaker
+sector gating before association and track birth) and E09-22 (audio-visual
 out-of-sequence measurement retrodiction H_retro = [1, -lag_s], camera FOV-aware
 Bernoulli existence conservation, and CLEAR MOT MOTA/IDSW vs label-free OSPA).
 No SciPy imports; deterministic float64.
@@ -421,7 +421,7 @@ def _cv_kalman_update(state_pred: np.ndarray, cov_pred: np.ndarray, z_deg: float
 
 
 def echo_clutter_gating_experiment() -> dict:
-    """E09-27: Self-loudspeaker residual echo clutter hijack vs reference-activity sector gate."""
+    """E09-21: Self-loudspeaker residual echo clutter hijack vs reference-activity sector gate."""
     s0 = np.array([20.0, 0.0], dtype=np.float64)
     p0 = np.diag([4.0, 1.0])
     q_mat = np.diag([1.0, 0.0])
@@ -515,7 +515,7 @@ def echo_clutter_gating_experiment() -> dict:
 
 
 def av_oosm_and_mot_experiment() -> dict:
-    """E09-28: Audio-visual OOSM retrodiction, FOV existence conservation, and MOTA vs OSPA."""
+    """E09-22: Audio-visual OOSM retrodiction, FOV existence conservation, and MOTA vs OSPA."""
     state_t4 = np.array([13.0, 100.0], dtype=np.float64)
     cov_t4 = np.array([[9.0, 20.0], [20.0, 100.0]], dtype=np.float64)
     lag_s = 0.03

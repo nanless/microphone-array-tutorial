@@ -1,4 +1,4 @@
-"""Generate or strictly read-check six E03-18 known-direction mathematical WAVs.
+"""Generate or strictly read-check six E03-16 known-direction mathematical WAVs.
 
 --check reconstructs all signals, current source hashes and numerical scores
 in memory, and never repairs assets. Finite preflight checks do not eliminate
@@ -41,7 +41,7 @@ MEMBERS = set(FILE_NAMES.values()) | {'MANIFEST.json'}
 # A source edit must deliberately update both the signal and this contract;
 # accepting a self-consistent but false declaration would corrupt provenance.
 REQUIRED_PARAMETERS = {
-    'exercise_id': 'E03-18', 'sample_rate_hz': 16000,
+    'exercise_id': 'E03-16', 'sample_rate_hz': 16000,
     'samples_per_channel': 32000, 'duration_s': 2.0,
     'frequency_hz': 500.0, 'source_amplitude': .2,
     'source_active_interval_s': [.1, 1.9], 'linear_fade_duration_s': .02,
@@ -127,7 +127,7 @@ def prepare_assets() -> tuple[dict[str, bytes], dict]:
         for domain, result in zip(domains, (analytic, floating, actual)):
             domains[domain][name] = result
     manifest = {
-        'schema_version': 1, 'exercise_id': 'E03-18', 'sample_rate_hz': SAMPLE_RATE,
+        'schema_version': 1, 'exercise_id': 'E03-16', 'sample_rate_hz': SAMPLE_RATE,
         'samples_per_channel': SAMPLES, 'common_export_gain': 1.0,
         'origin': 'original deterministic mathematical known-direction synthesis',
         'source_sha256': {path: _sha(validate_parent_chain(ROOT/path).read_bytes()) for path in SOURCE_PATHS},

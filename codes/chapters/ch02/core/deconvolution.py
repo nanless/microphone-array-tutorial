@@ -1,4 +1,4 @@
-"""Known-excitation digital FIR identification for E02-19.
+"""Known-excitation digital FIR identification for E02-17.
 
 Real mono vectors use the book's unnormalized forward rFFT. The inverse solves
 an unconstrained n_fft-point *circular* parameter problem. It does not impose a

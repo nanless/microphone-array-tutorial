@@ -96,7 +96,7 @@ def _physical_point_transfer(
 
 
 def multizone_cabin_selection_case() -> dict[str, object]:
-    """Return the E11-28 smart-cockpit bus sync and 2-zone isolation selection case."""
+    """Return the E11-21 smart-cockpit bus sync and 2-zone isolation selection case."""
     frequency_hz = 1000.0
     sound_speed = SPEED_OF_SOUND
     nominal_mouth_m = 0.20
@@ -403,7 +403,7 @@ def icc_comb_and_howling_metrics(
 
 
 def icc_and_certification_selection_case() -> dict[str, object]:
-    """Return the E11-29 ITU-T P.1150 ICC and Teams/3QUEST certification control."""
+    """Return the E11-22 ITU-T P.1150 ICC and Teams/3QUEST certification control."""
     path_a = icc_comb_and_howling_metrics(12.0)
     path_b = icc_comb_and_howling_metrics(26.0)
 

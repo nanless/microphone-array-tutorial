@@ -1,4 +1,4 @@
-"""E08-31: PCA loss and a supplied OverIVA background constraint.
+"""E08-23: PCA loss and a supplied OverIVA background constraint.
 
 There is no iterative OverIVA fit. The target row is supplied, and statistical
 orthogonality does not assert independent sources or target identification.

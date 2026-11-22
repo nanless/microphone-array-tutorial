@@ -131,7 +131,7 @@ def loading_from_wng() -> dict:
     desired_wng = 1.6
     load = max(0.0, np.sqrt(50 / (1 / desired_wng - 0.5)) - 11)
     rows = []
-    for absolute_load in (0.0, 8.0, float(load), 20.0):
+    for absolute_load in (0.0, float(load), 11.0, 20.0):
         relative_load = absolute_load / 11
         weights = mvdr_weights(covariance, target, relative_diagonal_loading=relative_load)
         norm_squared = float(np.vdot(weights, weights).real)

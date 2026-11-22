@@ -558,7 +558,7 @@ Re-auditing [`include/fe.h` lines 45–67](https://github.com/kdrkdrkdr/faster-e
 
 Corresponding to Chapter 10 audits `SRC10-01..03`, the [historical 2026-09-28 JSON report](../../ch10/reports/industrial_upstream_interfaces.json) binds the [historical `bde483` script bytes](https://github.com/nanless/microphone-array-tutorial/blob/bde483bcc429a553aeaf8830ca3687ab46831db0/codes/chapters/ch10/examples/audit_industrial_upstream_interfaces.py), while the 2026-10-05 current re-verification appears in [§9](#industrial-current-interface-contracts). Verifying full commits, clean worktrees, and file/license SHA-256 digests before and after execution with strict `NaN`/`Infinity`-free JSON:
 
-| Target Project | Action Executed in This Audit | Unexecuted Scope |
+| Target Project | Verified Action Scope | Unexecuted Scope |
 |---|---|---|
 | `pystoi` | 12 calls to unmodified Python `pystoi.stoi`, logging exceptions, warnings, and return values | Author MATLAB/Octave parity, internal resampling, natural speech corpora |
 | `DeepFilterNet` | Static inspection of pinned Rust `ladspa/src/lib.rs` + standalone Python queue/counter trace | `cargo` Rust compilation, neural checkpoints, PipeWire/LADSPA host execution |

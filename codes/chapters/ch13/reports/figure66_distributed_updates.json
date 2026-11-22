@@ -2,8 +2,8 @@
   "schema_version": 1,
   "scope": "known-statistics finite teaching controls; not blind DANSE or industrial performance",
   "source_sha256": {
-    "scripts/make_figures.py": "e4aa12c851ee0907b2c3c87cc802bed2940a1c6f63525b0a7405960547beaf87",
-    "codes/chapters/ch13/core/distributed.py": "3856695f759e02954ef86428cbb15ef885b7a2aaa70b59bd156baad0f493f077",
+    "scripts/make_figures.py": "4bc6a6ce675292c51d538c0f7d3c6f9c8fe3a2de2d0d7945f48cb4baaa801e49",
+    "codes/chapters/ch13/core/distributed.py": "0faf633fdba911a58b8ddc3a7fab9124336f8946ccfece5bd48ee1aea855cc2f",
     "codes/chapters/ch02/core/conventions.py": "4e80a27490f05ddd5f4826361420c0c8d0b331464d1e5629c5def492da47b1d7",
     "codes/chapters/ch04/core/covariance.py": "d704be037100ee53caf6e2130fbabbe14ce6eeff9e3d11dde389fd368d271249",
     "codes/chapters/ch00/io_contracts.py": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974"

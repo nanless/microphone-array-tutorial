@@ -588,7 +588,7 @@ Pre-expansion raw bytes of the [114-item lockfile](../source_snapshots/SOURCES.a
 Exit code `1` on full-table `--verify` reflects the preserved legacy selection mismatches and AEC worktree modification; fetching verifies source blobs without installing packages or running solvers.
 
 
-### 13.3 Bounded Original Methods Executed in This Audit
+### 13.3 Bounded Original Upstream Methods Executed
 
 The [current Acoular imaging contracts report](../../ch12/reports/upstream_imaging_contracts_current.json) logs 21 deterministic numerical controls (13 exact matches plus 8 documented objective/endpoint convention differences), 1 unexecuted `sklearn`-dependent CMF estimator, and a cross-stage bridge feeding one valid Hermitian CSM sequentially through original `BeamformerBase`, PSF construction, and DAMAS Gauss-Seidel—without running full Traits/Numba JIT/HDF5 pipelines, wind-tunnel datasets, or `scikit-learn` solvers, and while keeping the [historical Acoular report](../../ch12/reports/upstream_imaging_contracts.json) byte-identical.
 

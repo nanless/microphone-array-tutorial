@@ -552,3 +552,32 @@ R105增加英文复现379的窗名称同步：原控制相加Hann两半，数字
 B004～B009获独立支持并保留反驳：英文PNG签名加1100零字节、无法解码却通过现门禁，B006须补实际解码；PDF新正宽矩形、透明度切换、100点描边分别有32123/76452/52786像素差，但负宽矩形和普通多边形控制没有像素变化，不泛称所有复用都损坏。英文陈旧/无摘要HTML均进入打印哨兵；可见继承字体、缺资源、错误ToUnicode和零advance例均误转Artifact，显式可见字体正控则保留。当前整书触发与辅助技术行为尚未完整实测。首页英文“无失真保真”扩写归并R123，正确实际功率数字保留；“主109音频完全漏检”的疑问经消费者核对撤回。
 
 本次合并后16份README全部登记全文，41份发布源33全文/2局部/6未登记，剩5297行已交发布代理专批；两语研究手册各4全文/2局部，剩空间与练习音频篇正在补齐。269份测试210全文、59未登记，未将测试运行成功改称源码已读。第14/15章仍待最终交接，逐文件区间归一与当前SHA无异常。
+
+## R2-C可穿戴阵列与条件提取、R2-D空间辅助最终合并
+
+第14/15章中英四篇正文已全文审读，42文件实际区间与SHA再次核对；16张PNG实际打开，31道题入口运行，12个WAV完成只读重放。28项原依据按实际选段登记，16项M行保留本地核、原段和未执行层级，不能据此称原模型训练、真实设备或论文评分已复现。
+
+| ID | 问题 | 改动与验收方向 |
+| --- | --- | --- |
+| R341 | R2C-IC-MONOTONICITY：R2C-IC-MONOTONICITY | restrict monotonic relaxation to stated positive-real symmetric example; general signed/complex noise coherence can dip below final IC then rise. Existing gamma=.2 example and figure77(d) remain correct. |
+| R342 | R2C-SOFA-LOCAL-GLOBAL：R2C-SOFA-LOCAL-GLOBAL | check local +y for ear side, or transform local points into global before projection; separate optional symmetry/radius heuristics from standard compliance. E14-15 default orientation example is correct. |
+| R343 | 视听曝光关联被当作在线可用帧，存在未计入的前视：当前公式floor((ta-offset)/Tv)选最近曝光中心，却声称直接根据到达时刻流式取帧。按自己声明arrival=(m+.5)Tv+offset，不少selected frame尚未到达；prestartmax0还提前借用了未来frame0。会改变E15-11和图83的在线丢辅音计数。 | 明确离线最近中心关联与在线last-arrived策略；流式输出须有available timestamp/valid bit或缓冲延迟。按既定中心到达模型m=floor((ta-offset)/Tv-.5)，不夹成尚未到达的0；实际整帧曝光还须按完成时间计时。相应重算题例/图/报告/直接测试。 |
+| R344 | 单讲含噪SCM与干扰加噪SCM的GEVD不等价于减背景噪声：Rsolo=Rs+Rnn，但Rvv=Ri+Rnn，基线噪声不同。即使a,b均单位模且精确统计，principalGEV再用Rvv回着色得到[1,.80179-.59761j]，不是目标[1,1]。前段正交强干扰特例不能支撑一般等价。 | 若使用单讲Rsolo则与同背景Rnn做GEVD再提取目标RTF；或用含同Rvv的Rx与Rvv做标准rankoneGEVD。Rvv仍用于最终MVDR。分开正交白噪特例与一般输入。 |
+| R345 | 固定槽位的总DER身份下界不能一概称漏检下界：三个非重叠说话人复用两个槽时可Miss=0/FA=0/Confusion=1。固定全局1对1身份匹配确实令总DER>=最短未匹配时长/总时长，但未匹配身份活动可成为Confusion而非全是Miss。 | 将379及COVERAGE的硬性漏检改为总DER/身份错误下界。E15-13的2/7与oracle两个Miss帧正确可保留，明确是一个达到下界的oracle构造，勿声称任何达到下界的输出都漏完整第三人。 |
+| R346 | 非零视觉权重不能保证性能不低于纯音频：凸组合只保证掩码落[0,1]且alpha=0时精确退回纯音频。已给例audio=.82,AV=.05,alpha=.05→.7815，对理想1误差更大；E15-15 partialposterior .68997<.88080，只是仍超过.5。 | 把绝对性能保证改成‘alpha趋0时退回基线；本例避免判决翻转’；如果产品要保证不劣于基线，必须定义可测的触发准则/评价并验证，不能由凸性直接推出。 |
+| R347 | 软排他门控降低污染但不确保零污染：该帧目标排他权重.1411827仍非零，重叠观测及其干扰外积继续进入SCM；完全正确的因子化概率也不把软权重变成oracle0/1。 | 将‘确保…不受重叠污染’改为‘降低重叠污染，让单讲帧主导’；E15-10已经使用‘显著抑制’的表述可保留；勿借此重复新增独立性防御段。 |
+| R348 | MuSE被归入交叉注意力Transformer/自监督唇动不符所引原文：原MuSE为Conv3D+预训练唇读ResNet18/V-TCN、上采样、迭代A-TCN与自注册嵌入；不是跨注意力Transformer。预训练唇读也不能无依据称自监督。 | 拆开MuSE的迭代音视频自注册方案与AV-SepFormer的交叉注意力。保留条件线索的教学公式。 |
+| R349 | 两章生成器缺少解析字段的独立写前核对：独立固定波形、float与PCM均校验，但analytic_expectations直接从同一生成report拷入。内存把解析MSE/NMSE改99，两prepare_assets均不拒绝。完整同源回放不独立否定生成源自身解析公式漂移。 | 增加不调用同一解析实现的固定解析期望校验，涵盖目标失真/干扰/传感器噪声分量及总误差，先校验再mkdir。加只改解析字段的负控。现有图和WAV正确，不必把此项写成已发布坏值。 |
+| R350 | SAD采样矩阵归一化未定义导致与SN3D上下文冲突：D=Y/L只有在适当球面均值正交N3D基下得到YᵀD=I。按本章SN3DY=[1,u]四面体，实际diag(1,1/3,1/3,1/3)；MMD有阶因子3，与E14-14增益推导一致。标准正交积分归一还会有4π。 | 就在定义Y时写明归一化/配对信号规范；若沿用SN3D给出阶权因子。不要把上游spaudiopy带能量定标的SAD数值机械等同本书MMD。t>=2N+1用于能量矢量条件，谐波乘积正交t>=2N应分清。 |
+| R351 | 图80正文把绘图网格最小值写成连续函数唯一最小值：连续函数1.01alpha²−2alpha+1最小点100/101而非1；最小NMSE1/101约−20.0432dB。当前.05采样网格确实在alpha1取得−20dB。 | 一句区分连续最优缩放与当前绘图网格最小点，不需改正确的采样曲线或SI-SDR值。 |
+| R352 | DiCoW轻量冻结微调建议没有所引原方案支持：中文用‘可’并未声称原文一定冻结，但表格未引变体支持该选型建议；原文§5.3最终fullfine-tuning allparameters，只有前置preheat冻结。 | 给出原三阶段方案，或另引经过验证的参数高效适配变体。不要把未安装的仓内原训练入口当实际训练证据。 |
+| R353 | D-R2D-LOUDNESS-REPORT-GUARD：Current runnable CLI accepts arbitrary --report after native execution then mkdir/write_text, unlike current interpolation/model/coarray tools. Actual main with native run replaced by minimal report and write calls intercepted attempted to write SOURCES.lock.json. Existing test binds historical libmysofa_loudness.json to current tool SHA, so simply editing tool and updating old report would falsify historical identity. | Preserve old report raw bytes/actual tool identity. Add safe new current interface/report path and reject repository source/history/upstream/link targets before original run and before write. Keep original nonzero/zero numerical behavior and explicit nonfinite classification. |
+| R354 | D-R2D-HEXAGON-DIAMETER：ZH uses 7.5 cm 环径 (diameter), EN translates to 7.5 cm radius circular array but retains 5.28 kHz. For regular hexagon nearest-neighbor distance equals circumradius; critical f=c/(sqrt(3)*d). c=343, diameter=.075 gives d=.0375 and f=5280.83046 Hz; radius=.075 gives2640.41523 Hz. | EN radius改diameter，保留现有约5.28kHz和严格临界不等号；不把此翻译错误泛化为Tucker原定理错误。 |
+| R355 | D-R2D-PSEUDOINVERSE-NULLSPACE：EN appends caveat 'when ker(R) intersection {a}^perp is nontrivial'. In its own R=diag(0,1),a=[1,1] example that intersection is {0}, yet pseudoinverse point [0,1] has power1 and feasible nullspace point [1,0] has power0. The relevant condition is nonzero projection of a into kerR, not nonzero nullspace intersection with a-perp. | EN delete incorrect intersection condition or replace by explicit a-nullspace projection distinction, preserving counterexample and correct CN. Do not claim every pseudoinverse solution invalid. |
+| R356 | D-R2D-MANUAL-EXERCISE-SYNC：CN1010 calls same-elevation baseline degeneracy E03-18, now E03-16(ch03:1075); current E03-18 is low-frequency MEMS sensitivity/phase(ch03:1219). CN1484/1505/1524 calls CTF cross-relation E04-25, now E04-21(ch04:1167); no E04-25 current body heading. CN1485 calls coherence/rank test E04-24, now E04-20(ch04:1151); current E04-24 is sparse off-grid/SELD. CN1592 calls per-channel mask control E05-24, now E05-12(ch05:838). CN1405 says20 worked imaging exercises while current E12-01..18 and EN1032 correctly18. | Use stable current exercise catalog/topic mapping to fix only stale references/count, verify actual rendered target anchors, and keep correct EN20/21/12/18 mappings. No algorithm or generated-media changes needed for this sync itself. |
+
+R116“缺少独立性假设”指控正式撤回：第15章389、391已明确教学模型的独立Bernoulli及条件独立假设，乘积式在该设定下成立，不追加防御段。R115保留helper通用说明与实际含噪SCM的差别，撤回对E15-10已声明高信噪比近似的数值错误指控。连续球面b0零点与四面体离散平均不是同一对象，后者非零不反驳前者信息损失。
+
+空间辅助包全文新增7源、20唯一直接测试、7初始化文件；空间研究01两语以同SHA最终包真实区间并集补齐1704/1236行。95项限定数学/报告/内存渲染测试通过，未执行原C或原AST方法。R260增加普通无量纲x=12的70位Decimal独立对照：默认J0误差1.2429e−13，超出现有全finite<1e−14承诺；20项预算误差1.71525e−7。不能只靠限制极端输入消除该问题。R140仍是秩条件候选，退化反例不推翻英文已排除退化的原容量条件。
+
+主审另外全文读7份共享IO/来源测试，共1465行。它们分别验证有限路径与JSON合同、来源获取前拒绝不安全报告、完整历史记录和所有归档成员，未发现可把获取成功称算法复现的理由。实际阅读与既有2731项基线运行分开登记，本批没有机械重跑。

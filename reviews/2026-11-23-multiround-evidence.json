@@ -6220,6 +6220,9 @@
     ],
     "content-r2b-separation-tracking-appendixb/C-R2B-DIAGNOSTIC-THRESHOLD-CAUSALITY": [
       "R293"
+    ],
+    "root-r2d-readmes-native/ROOT-REAL-AUDIO-SCOPE": [
+      "R294"
     ]
   },
   "review_rounds": [
@@ -33574,6 +33577,292 @@
           }
         ]
       }
+    },
+    {
+      "packet_id": "root-r2d-readmes-native",
+      "received_date": "2026-11-23",
+      "status": "complete_for_explicit_source_list",
+      "handoff_sha256": "5529b22d41878a19ab981d90efd21e0ad393f56a2608ed802d83ed97c9690fb3",
+      "data": {
+        "schema": 1,
+        "round": "R2-D",
+        "reviewer": "root",
+        "status": "complete_for_explicit_source_list",
+        "coverage": [
+          {
+            "path": "codes/chapters/README.md",
+            "sha256_at_read": "eceec81313584ab0ac43e7f70520b99ae67c8eaca36a35ce5a073b256f7e2b4a",
+            "line_count": 213,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                213
+              ]
+            ],
+            "status": "full-source-read",
+            "execution": "only archived timestamp verifier separately executed; no capture, native compilation or upstream run inferred"
+          },
+          {
+            "path": "codes/chapters/README_EN.md",
+            "sha256_at_read": "3765c80c76f81ef980c94a54b68ef47f6d5c771df308d1bb58d12831f1e531e3",
+            "line_count": 313,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                313
+              ]
+            ],
+            "status": "full-source-read",
+            "execution": "only archived timestamp verifier separately executed; no capture, native compilation or upstream run inferred"
+          },
+          {
+            "path": "codes/chapters/ch00/research/README.md",
+            "sha256_at_read": "d4a0478ad621463083e61861d7dbbd08fb6d96c9c22ffd3fb2cedf2e5b59341b",
+            "line_count": 88,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                88
+              ]
+            ],
+            "status": "full-source-read",
+            "execution": "only archived timestamp verifier separately executed; no capture, native compilation or upstream run inferred"
+          },
+          {
+            "path": "codes/chapters/ch00/research_en/README.md",
+            "sha256_at_read": "6b902578ef00088c026ec14167059afb01007f8f3be49deb0e3cf8341db53bad",
+            "line_count": 87,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                87
+              ]
+            ],
+            "status": "full-source-read",
+            "execution": "only archived timestamp verifier separately executed; no capture, native compilation or upstream run inferred"
+          },
+          {
+            "path": "codes/chapters/ch00/upstream/README.md",
+            "sha256_at_read": "321d5aa3d83acc84e04ddad80d3f930475ca9a77767fabc2091437ae7f3befd1",
+            "line_count": 145,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                145
+              ]
+            ],
+            "status": "full-source-read",
+            "execution": "only archived timestamp verifier separately executed; no capture, native compilation or upstream run inferred"
+          },
+          {
+            "path": "codes/chapters/ch00/upstream/README_EN.md",
+            "sha256_at_read": "471411241bebfc9fb6ca516d2d277e12863ef0995b3a7b8d6267e22a5b73d42c",
+            "line_count": 112,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                112
+              ]
+            ],
+            "status": "full-source-read",
+            "execution": "only archived timestamp verifier separately executed; no capture, native compilation or upstream run inferred"
+          },
+          {
+            "path": "codes/chapters/ch02/real_audio/README.md",
+            "sha256_at_read": "1e89135828d296053ac6f0ae4186d09071bfbab3c2d7593fcd38228d0a48127a",
+            "line_count": 151,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                151
+              ]
+            ],
+            "status": "full-source-read",
+            "execution": "only archived timestamp verifier separately executed; no capture, native compilation or upstream run inferred"
+          },
+          {
+            "path": "codes/chapters/ch10/examples/macbook_audio_latency/README.md",
+            "sha256_at_read": "32bf16ddb7ca3c482b3c08bfd6810c9f16e74279c6e80f5278779956ee26e08f",
+            "line_count": 48,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                48
+              ]
+            ],
+            "status": "full-source-read",
+            "execution": "only archived timestamp verifier separately executed; no capture, native compilation or upstream run inferred"
+          },
+          {
+            "path": "codes/chapters/ch10/examples/macbook_audio_latency/bench.c",
+            "sha256_at_read": "cb7f4ed7f12ca1d060f6435a415721789cf4a815bef7590e9c79014b5c9f6a7e",
+            "line_count": 113,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                113
+              ]
+            ],
+            "status": "full-source-read",
+            "execution": "only archived timestamp verifier separately executed; no capture, native compilation or upstream run inferred"
+          },
+          {
+            "path": "codes/chapters/ch10/examples/stk_delay_probe.cpp",
+            "sha256_at_read": "00cf0d68ed5c99feb156d016de587d80ca9ff033aa523943ae1be27e827ea7c0",
+            "line_count": 42,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                42
+              ]
+            ],
+            "status": "full-source-read",
+            "execution": "only archived timestamp verifier separately executed; no capture, native compilation or upstream run inferred"
+          },
+          {
+            "path": "codes/chapters/ch10/examples/industrial_interfaces.c",
+            "sha256_at_read": "0c71ef70e0ed2f7e59c6613e72b35dc13f3d963ca02a4b16da90c0e3a479bff8",
+            "line_count": 409,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                409
+              ]
+            ],
+            "status": "full-source-read",
+            "execution": "only archived timestamp verifier separately executed; no capture, native compilation or upstream run inferred"
+          },
+          {
+            "path": "codes/chapters/ch04/examples/reproduce_smpphat_harness.c",
+            "sha256_at_read": "4d5eed9509c5a69771c69b3c1ff006c00f37ecf739acdb2ac6bb26e03e463d0c",
+            "line_count": 251,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                251
+              ]
+            ],
+            "status": "full-source-read",
+            "execution": "only archived timestamp verifier separately executed; no capture, native compilation or upstream run inferred"
+          },
+          {
+            "path": "codes/chapters/ch10/examples/macbook_audio_latency/analyze.py",
+            "sha256_at_read": "f53aea1ec756fbea91bc21d21959f40aac4035ab7d7eff0f8fa5d5de81fa2dc8",
+            "line_count": 143,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                143
+              ]
+            ],
+            "status": "full-source-read",
+            "execution": "only archived timestamp verifier separately executed; no capture, native compilation or upstream run inferred"
+          },
+          {
+            "path": "codes/chapters/ch10/examples/macbook_audio_latency/verify_timestamps.py",
+            "sha256_at_read": "4ef262ad1c15d50f123eced4e26ce10341a4ffd1275623be624c3bb57792e703",
+            "line_count": 80,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                80
+              ]
+            ],
+            "status": "full-source-read",
+            "execution": "only archived timestamp verifier separately executed; no capture, native compilation or upstream run inferred"
+          },
+          {
+            "path": "assets/readme/cases/locata/NOTICE.txt",
+            "sha256_at_read": "083f2f51d8204adb308af5ed94d985a18656a9e8780c1a17ab57a1167285c3f3",
+            "line_count": 64,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                64
+              ]
+            ],
+            "status": "full-source-read",
+            "execution": "only archived timestamp verifier separately executed; no capture, native compilation or upstream run inferred"
+          }
+        ],
+        "truncation_repairs": [
+          {
+            "path": "codes/chapters/README.md",
+            "initial": "combined 526-line read truncated",
+            "repair": "reread complete 1–85,86–160,161–213 in bounded outputs"
+          },
+          {
+            "path": "codes/chapters/README_EN.md",
+            "initial": "combined read truncated; later 91–190 has one elided paragraph",
+            "repair": "bounded 1–90,91–190,191–255,256–313 plus exact145–155 to restore omitted license paragraph"
+          },
+          {
+            "path": "codes/chapters/ch00/research_en/README.md",
+            "initial": "two README outputs elided early English lines",
+            "repair": "1–24 reread explicitly; remainder was visible"
+          }
+        ],
+        "findings": [
+          {
+            "id": "ROOT-REAL-AUDIO-SCOPE",
+            "status": "confirmed-P3-scope-clarification",
+            "locations": [
+              "codes/chapters/ch02/real_audio/README.md:119"
+            ],
+            "claim": "本书发布的真实音频仅本目录4个WAV",
+            "evidence": "assets/readme/cases/locata/NOTICE.txt identifies four additional distributed recording excerpts/derivatives. codes README Chinese full inventory correctly keeps homepage separate, and EN translated real-audio guide explicitly limits this claim to codes/chapters/.",
+            "proposal": "Limit to textbook chapter audio directory; link separate homepage LOCATA case rather than changing the 283 textbook count."
+          }
+        ],
+        "prior_findings_challenged": [
+          {
+            "id": "R234",
+            "result": "archive numerical consistency independently confirmed; acoustic absolute calibration still not demonstrated",
+            "execution": "PYTHONDONTWRITEBYTECODE=1 .venv/bin/python verify_timestamps.py",
+            "exit_code": 0,
+            "stdout": "base128 stored106.31250ms; base480115.72917ms; 60ms-buffer timestamp73.583084ms;100ms113.582958ms; archived acoustic differences40.00000–40.02083ms. 32 timestamp pairs verified; correlation peaks archived, not recomputed from missing raw waveforms."
+          },
+          {
+            "id": "R123",
+            "result": "LOCATA NOTICE accurately states combined output and no isolated clean-reference quality score. Preserve these accurate conditions when correcting Chapter5/homepage causal language."
+          },
+          {
+            "id": "R281/R291",
+            "result": "codes README single-authoritative-kernel policy supports resolving duplicate solvers; do not rewrite policy to normalize implementation drift."
+          },
+          {
+            "id": "R293",
+            "result": "codes README and chapter table also name generic full-cascade fault attribution; synchronize these consumers after diagnostic contract is corrected."
+          }
+        ],
+        "executed_checks": [
+          {
+            "command": "shasum -a 256 -c sha256.txt",
+            "cwd": "codes/chapters/ch10/examples/macbook_audio_latency",
+            "exit_code": 0,
+            "matched_members": 14,
+            "meaning": "archived bytes match their fixed checksum register; no historical source or result rewritten"
+          },
+          {
+            "command": "PYTHONDONTWRITEBYTECODE=1 /absolute/repo/.venv/bin/python verify_timestamps.py",
+            "exit_code": 0,
+            "scope": "stored callback timestamps and archived peak-index arithmetic only"
+          }
+        ],
+        "correct_controls": [
+          "Main/standalone/DEMAND 109+170+4=283 remains consistent; homepage four LOCATA WAVs separate.",
+          "Old openMHA verification76-pass observation is explicitly historical and must not be overwritten to89.",
+          "Research README six pages includes its index; 19tutorial+6research+8compatibility=33HTML is consistent.",
+          "MacBook README explicitly asks to run from its own directory; generic upstream all-README-root sentence needs this exception when clarifying commands, but does not invalidate the archived commands.",
+          "Cross-term aggregate can cancel even if individual entries nonzero; current wording may refer to total contribution, so no new mathematical defect assigned solely on that phrase."
+        ],
+        "not_verified": [
+          "Native C/C++ static review is not compilation, actual library execution, hardware capture or acoustic recalibration.",
+          "No new human listening performed.",
+          "External dataset license claims in these README files were compared locally; no fresh legal or upstream-license verification claimed.",
+          "Full five paired thematic research manuals still require completion of remaining intervals."
+        ]
+      }
     }
   ],
   "coverage_row_reviews": {
@@ -41891,20 +42180,21 @@
         "file_count": 6,
         "status_counts": {
           "partial_source_read": 3,
-          "full_source_read": 1,
-          "not_recorded_as_read": 2
+          "full_source_read": 2,
+          "not_recorded_as_read": 1
         },
         "total_lines": 7279,
-        "unread_lines": 5536
+        "unread_lines": 5448
       },
       "research_en": {
         "file_count": 6,
         "status_counts": {
           "partial_source_read": 4,
-          "not_recorded_as_read": 2
+          "not_recorded_as_read": 1,
+          "full_source_read": 1
         },
         "total_lines": 5510,
-        "unread_lines": 4639
+        "unread_lines": 4552
       },
       "publication_sources": {
         "file_count": 41,
@@ -41919,11 +42209,11 @@
       "project_readmes": {
         "file_count": 16,
         "status_counts": {
-          "not_recorded_as_read": 15,
-          "full_source_read": 1
+          "not_recorded_as_read": 8,
+          "full_source_read": 8
         },
         "total_lines": 2324,
-        "unread_lines": 2276
+        "unread_lines": 1167
       },
       "tutorial_zh": {
         "file_count": 19,
@@ -42874,28 +43164,46 @@
       "codes/chapters/README.md": {
         "current_sha256": "eceec81313584ab0ac43e7f70520b99ae67c8eaca36a35ce5a073b256f7e2b4a",
         "total_lines": 213,
-        "status": "not_recorded_as_read",
-        "merged_read_intervals": [],
-        "unread_intervals": [
+        "status": "full_source_read",
+        "merged_read_intervals": [
           [
             1,
             213
           ]
         ],
-        "evidence": []
+        "unread_intervals": [],
+        "evidence": [
+          {
+            "packet": "root-r2d-readmes-native",
+            "interval": [
+              1,
+              213
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          }
+        ]
       },
       "codes/chapters/README_EN.md": {
         "current_sha256": "3765c80c76f81ef980c94a54b68ef47f6d5c771df308d1bb58d12831f1e531e3",
         "total_lines": 313,
-        "status": "not_recorded_as_read",
-        "merged_read_intervals": [],
-        "unread_intervals": [
+        "status": "full_source_read",
+        "merged_read_intervals": [
           [
             1,
             313
           ]
         ],
-        "evidence": []
+        "unread_intervals": [],
+        "evidence": [
+          {
+            "packet": "root-r2d-readmes-native",
+            "interval": [
+              1,
+              313
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          }
+        ]
       },
       "codes/chapters/__init__.py": {
         "current_sha256": "c386b120d90a942f8c6477127f71779da8146993797670bbd5e364a0c7087c3d",
@@ -43947,15 +44255,24 @@
       "codes/chapters/ch00/research/README.md": {
         "current_sha256": "d4a0478ad621463083e61861d7dbbd08fb6d96c9c22ffd3fb2cedf2e5b59341b",
         "total_lines": 88,
-        "status": "not_recorded_as_read",
-        "merged_read_intervals": [],
-        "unread_intervals": [
+        "status": "full_source_read",
+        "merged_read_intervals": [
           [
             1,
             88
           ]
         ],
-        "evidence": []
+        "unread_intervals": [],
+        "evidence": [
+          {
+            "packet": "root-r2d-readmes-native",
+            "interval": [
+              1,
+              88
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          }
+        ]
       },
       "codes/chapters/ch00/research_en/01_spatial_and_tracking.md": {
         "current_sha256": "dd46299e49f9759561685a1c892e8b198a38b8b0f2c361259f37d8def36b192b",
@@ -44105,41 +44422,68 @@
       "codes/chapters/ch00/research_en/README.md": {
         "current_sha256": "6b902578ef00088c026ec14167059afb01007f8f3be49deb0e3cf8341db53bad",
         "total_lines": 87,
-        "status": "not_recorded_as_read",
-        "merged_read_intervals": [],
-        "unread_intervals": [
+        "status": "full_source_read",
+        "merged_read_intervals": [
           [
             1,
             87
           ]
         ],
-        "evidence": []
+        "unread_intervals": [],
+        "evidence": [
+          {
+            "packet": "root-r2d-readmes-native",
+            "interval": [
+              1,
+              87
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          }
+        ]
       },
       "codes/chapters/ch00/upstream/README.md": {
         "current_sha256": "321d5aa3d83acc84e04ddad80d3f930475ca9a77767fabc2091437ae7f3befd1",
         "total_lines": 145,
-        "status": "not_recorded_as_read",
-        "merged_read_intervals": [],
-        "unread_intervals": [
+        "status": "full_source_read",
+        "merged_read_intervals": [
           [
             1,
             145
           ]
         ],
-        "evidence": []
+        "unread_intervals": [],
+        "evidence": [
+          {
+            "packet": "root-r2d-readmes-native",
+            "interval": [
+              1,
+              145
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          }
+        ]
       },
       "codes/chapters/ch00/upstream/README_EN.md": {
         "current_sha256": "471411241bebfc9fb6ca516d2d277e12863ef0995b3a7b8d6267e22a5b73d42c",
         "total_lines": 112,
-        "status": "not_recorded_as_read",
-        "merged_read_intervals": [],
-        "unread_intervals": [
+        "status": "full_source_read",
+        "merged_read_intervals": [
           [
             1,
             112
           ]
         ],
-        "evidence": []
+        "unread_intervals": [],
+        "evidence": [
+          {
+            "packet": "root-r2d-readmes-native",
+            "interval": [
+              1,
+              112
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          }
+        ]
       },
       "codes/chapters/ch00/upstream/fetch_archives.py": {
         "current_sha256": "1775beb57f90ee74ec3192f4330c5591f9111a9b9bdf8664755250f098c55fad",
@@ -44630,15 +44974,24 @@
       "codes/chapters/ch02/real_audio/README.md": {
         "current_sha256": "1e89135828d296053ac6f0ae4186d09071bfbab3c2d7593fcd38228d0a48127a",
         "total_lines": 151,
-        "status": "not_recorded_as_read",
-        "merged_read_intervals": [],
-        "unread_intervals": [
+        "status": "full_source_read",
+        "merged_read_intervals": [
           [
             1,
             151
           ]
         ],
-        "evidence": []
+        "unread_intervals": [],
+        "evidence": [
+          {
+            "packet": "root-r2d-readmes-native",
+            "interval": [
+              1,
+              151
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          }
+        ]
       },
       "codes/chapters/ch03/__init__.py": {
         "current_sha256": "1aec08d42a4f107e6a02d837dc7a39abc63da3d15bb1457cdd425ebfa5f20543",
@@ -47591,6 +47944,14 @@
               48
             ],
             "sha_binding": "explicit read/handoff SHA"
+          },
+          {
+            "packet": "root-r2d-readmes-native",
+            "interval": [
+              1,
+              48
+            ],
+            "sha_binding": "explicit read/handoff SHA"
           }
         ]
       },
@@ -47613,6 +47974,14 @@
               143
             ],
             "sha_binding": "explicit read/handoff SHA"
+          },
+          {
+            "packet": "root-r2d-readmes-native",
+            "interval": [
+              1,
+              143
+            ],
+            "sha_binding": "explicit read/handoff SHA"
           }
         ]
       },
@@ -47630,6 +47999,14 @@
         "evidence": [
           {
             "packet": "numerics-r2a-engineering-selection",
+            "interval": [
+              1,
+              80
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          },
+          {
+            "packet": "root-r2d-readmes-native",
             "interval": [
               1,
               80
@@ -54333,5 +54710,59 @@
         "evidence": []
       }
     }
+  },
+  "supplemental_source_scope": {
+    "schema": 1,
+    "reason": "Initial chapter_python and publication_sources inventories omitted four original native probes and lab HTML/JS source. Discovered by full tracked-file extension search; preserve frozen baseline and add these explicit sources.",
+    "frozen_scope_sha256": "4c37291fecfdce53d6abb1190048d91ab6d131a58dc947710007591b14e5fa89",
+    "files": [
+      {
+        "path": "codes/chapters/ch10/examples/macbook_audio_latency/bench.c",
+        "sha256": "cb7f4ed7f12ca1d060f6435a415721789cf4a815bef7590e9c79014b5c9f6a7e",
+        "lines": 113,
+        "owner": "root",
+        "status": "full_source_read"
+      },
+      {
+        "path": "codes/chapters/ch10/examples/stk_delay_probe.cpp",
+        "sha256": "00cf0d68ed5c99feb156d016de587d80ca9ff033aa523943ae1be27e827ea7c0",
+        "lines": 42,
+        "owner": "root",
+        "status": "full_source_read"
+      },
+      {
+        "path": "codes/chapters/ch10/examples/industrial_interfaces.c",
+        "sha256": "0c71ef70e0ed2f7e59c6613e72b35dc13f3d963ca02a4b16da90c0e3a479bff8",
+        "lines": 409,
+        "owner": "root",
+        "status": "full_source_read"
+      },
+      {
+        "path": "codes/chapters/ch04/examples/reproduce_smpphat_harness.c",
+        "sha256": "4d5eed9509c5a69771c69b3c1ff006c00f37ecf739acdb2ac6bb26e03e463d0c",
+        "lines": 251,
+        "owner": "root",
+        "status": "full_source_read"
+      },
+      {
+        "path": "assets/readme/lab/array-lab.html",
+        "sha256": "4533a2e98ceec5f14d9ff4a49f49c1f176766036dcdd2985e07dbc4e9ce7e464",
+        "lines": 326,
+        "owner": "publication_ci",
+        "status": "assigned_for_actual_read"
+      },
+      {
+        "path": "assets/readme/lab/export-lab.mjs",
+        "sha256": "55cb29254d0e169f82502bffdd57e679eb35ac52bf9a38b8ae8ec51551994df1",
+        "lines": 29,
+        "owner": "publication_ci",
+        "status": "assigned_for_actual_read"
+      }
+    ],
+    "generated_not_source": [
+      "assets/readme/course-intro.html",
+      "assets/readme/course-intro-en.html"
+    ],
+    "not_implied": "Does not infer third-party vendor code full read or generated output visual acceptance."
   }
 }

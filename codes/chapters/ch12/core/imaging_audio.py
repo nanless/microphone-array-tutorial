@@ -7,7 +7,7 @@ is a power map, inverse waveform, or blind source estimate.
 from __future__ import annotations
 
 import numpy as np
-from codes.chapters.ch02.core.conventions import finite_real_array, validate_waveforms
+from codes.chapters.ch02.core.conventions import validate_waveforms
 from codes.chapters.ch12.core.imaging import (
     csm_from_amplitudes, scan_power, source_power_csm, csm_residual,
     two_cell_experiment,

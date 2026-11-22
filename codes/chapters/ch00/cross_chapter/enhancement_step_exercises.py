@@ -82,12 +82,6 @@ def run_exercises() -> dict:
     rescaled_basis[:, 0] *= 2
     rescaled_activation[0] /= 2
 
-    snapshots = np.array([[1., 1.], [1., -1.]])  # columns are snapshots
-    target = (snapshots * np.array([.9, .1])) @ snapshots.T
-    interference = (snapshots * np.array([.1, .9])) @ snapshots.T
-    steering = np.ones(2)
-    inverse_action = np.linalg.solve(interference, steering)
-    beam = inverse_action / (steering @ inverse_action)
     return {
         'E06-11': {'cross_sum': float(x @ s), 'batch_path': float(x @ d / (x @ x)),
                    'prior_residuals': residual, 'online_paths': path,

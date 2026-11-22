@@ -29,7 +29,7 @@
 
 | 类型 | 路径 | 作用 | 修改规则 |
 |---|---|---|---|
-| 教程源文件 | `chapters/*.md` | 导读、16 章正文（第 0～15 章，含四篇扩展专题）和 2 篇附录 | 直接修改；改后检查跨章引用 |
+| 教程源文件 | `chapters/*.md`、`chapters_en/*.md` | 中英双语导读、16 章正文（第 0～15 章，含四篇扩展专题）和 2 篇附录 | 直接修改；改后检查跨章引用与中英标题/公式号一致 |
 | 教学代码源文件 | `codes/chapters/{ch00,ch01～ch15,appendix_a,appendix_b}/` 中的 `core/`、`examples/` 与单章入口 | 共享数值核按首讲章节唯一归档，第 0 章数学核与练习及跨章练习在 `ch00/` | 修改唯一真实实现；同步测试、覆盖表和对应章节；旧 `codes.array_tutorial`、`codes.examples` 路径已退出仓内接口 |
 | 第0章数学基础与图 | `codes/chapters/ch00/core/chapter00_math.py`、`codes/chapters/ch00/chapter00_exercises.py`；`scripts/make_math_figures.py` → 图84～87及`ch00/reports/figure84～87*.json` | E00-01～16十六道数学基础题与四张编号图 | 四真实源绑定，随机仿真固定seed；涵盖球面几何、SO(3)、相量/COLA、子空间/SVD/Woodbury、瑞利商/GEV/Khatri–Rao、Wirtinger/NNLS/MM、复高斯/CRLB/维纳/Kalman、匈牙利指派及Bessel/Legendre/球谐函数；不生成新WAV |
 | 共享文件IO源文件 | `codes/chapters/ch00/io_contracts.py` | 普通父链与成员、严格JSON、元数据类型及报告写入的公共原语 | 生成器和获取工具复用原语；各资产的schema、评分和来源边界由调用者负责。参与生成时须绑定真实SHA；有限写前检查不宣称消除并发竞态或保证崩溃持久性 |
@@ -84,9 +84,9 @@
 | 历史来源快照与核验源 | `codes/chapters/ch00/source_snapshots/`、`codes/chapters/ch00/core/source_history.py` | 原报告实际整表摘要对应的固定锁表与获取状态 | 只保存可追溯的原始字节，不给旧报告换摘要；明确登记快照身份，严格核完整SHA、JSON及报告使用项目的完整记录。当前状态仍绑定当前锁表，原失败和未运行状态不升级 |
 | 图45数值报告 | `scripts/make_figures.py::fig_stft_convolution` → `codes/chapters/ch02/reports/figure45_stft_convolution.json` | 六点完整卷积、四点帧内乘法与八点去圆折叠控制，保留合成分母 | 随图真实重生；八点控制仅取原四点窗支持，不能称完整滤波器组算法 |
 | 图13统计生成物 | `scripts/make_figures.py` → `codes/chapters/ch04/reports/figure13_gcc_reverb.json` | 9 条件各 150 次的逐次事件、峰对比度和计数 | 与图片同次计算生成；保留共享随机性、失败和区间口径，不手改结果 |
-| 源码研究文档 | `codes/chapters/ch00/research/*.md` | 逐算法源码入口、实现差异、工业配置与复现实验 | 与正文和覆盖表互链；区分建议实验和已执行结果 |
-| 项目说明源文件 | `README.md`、`README_EN.md`、`scripts/README.md`、`codes/chapters/README.md`、`codes/chapters/ch00/{research,upstream}/README.md`、`codes/chapters/ch02/real_audio/README.md`、`scripts/vendor/mathjax-3.2.2/README.md` | 八份本书维护的源README：入口、英文、构建、代码、研究、获取、数据与公式资源 | 按真实内容修改；中英文共有信息同步，派生站点README由构建更新，上游忽略缓存原README保留身份 |
-| 课程首页与 GitHub 入口 | `scripts/course_home/{index.html,home.css,home.js,export_portable.py}` → `site/index.html` 的课程部分及 `assets/readme/course-{intro.html,cover.svg,cover-still.svg}` | 同源的课程页、单文件导出版和 GitHub 动图；原导读及所有锚点仍在 `site/index.html` | 模板、样式、交互及首页 LOCATA 发布文件计入站点源摘要。单文件与两张封面图由导出器生成，`--check` 只读校验；单文件内的动图可离线查看，实录试听和章节链接需联网。首页动图不计入 87 张教材编号图 |
+| 源码研究文档 | `codes/chapters/ch00/research/*.md`、`codes/chapters/ch00/research_en/*.md` | 中英双语逐算法源码入口、实现差异、工业配置与复现实验 | 与正文和覆盖表互链；区分建议实验和已执行结果 |
+| 项目说明源文件 | `README*.md`、`scripts/README*.md`、`codes/chapters/README*.md`、`codes/chapters/ch00/{research,research_en}/README.md`、`codes/chapters/ch00/upstream/README*.md`、`codes/chapters/ch02/real_audio/README.md`、`codes/chapters/ch10/examples/macbook_audio_latency/README.md`、`assets/readme/lab/README*.md`、`scripts/vendor/mathjax-3.2.2/README*.md` | 十六份本书维护的源README：中英入口、构建、代码、研究、获取、真实录音、实测延迟、互动实验与公式资源 | 按真实内容修改；中英文共有信息同步，派生站点 `site/real_audio/README.md` 由构建更新，上游忽略缓存原README保留身份 |
+| 课程首页与 GitHub 入口 | `scripts/course_home/{index.html,home.css,home.js,export_portable.py}`、`scripts/course_home_en/{index.html,home.css,home.js,export_portable.py}` → `site/index.html`、`site_en/index.html` 的课程部分及 `assets/readme/course-{intro.html,intro-en.html,cover.svg,cover-still.svg}` | 同源的中英课程页、单文件导出版和 GitHub 动图；原导读及所有锚点仍在 `site/index.html` 与 `site_en/index.html` | 模板、样式、交互及首页 LOCATA 发布文件计入站点源摘要。单文件与封面图由导出器生成，`--check` 只读校验；单文件内的动图可离线查看，实录试听和章节链接需联网。首页动图不计入 87 张教材编号图 |
 | 首页 LOCATA 实录 | `scripts/course_home/prepare_locata.py` → `assets/readme/cases/locata/{before.wav,after.wav,mvdr.wav,focus.wav,levels.svg,MANIFEST.json}`；另有 `NOTICE.txt` | 固定开发集任务 2 第 1 次 DICIT 录音的双单讲方向扫描、对齐相加、加载 MVDR 与 B 旁路后滤波 | 六个上游成员及使用的数值核绑定 SHA；四路共同导出增益；校准和评分窗分开，保存实际 PCM 的整段能量与限定频带积分。活动标签和实测位置的用途见清单及说明，`--check` 只读复算 |
 | GitHub 首页互动实验 | `assets/readme/lab/{README.md,README_EN.md,array-lab.html,export-lab.mjs}` → 同目录三个 WAV 和首页静态替代图 | 双语、离线、不需麦克风权限的四路合成试听，区分单麦和两种补时差方式 | HTML 内只有一份合成与数值核；改源后用导出脚本重生，`--check` 逐字节只读重放；全段浮点分量功率与混合 PCM 分开，不计入教材音频目录和出版物 |
 | 图 20 数值报告 | `scripts/make_figures.py::fig_wpe` → `codes/chapters/ch07/reports/figure20_wpe.json` | 同一信号的参数、帧选择、能量分母与谱域误差 | 随图重生；不将谱图显示频带当成指标统计频带 |
@@ -98,13 +98,13 @@
 | 当前上游追踪合同 | `codes/chapters/ch09/examples/audit_upstream_tracking_contracts.py`、`codes/chapters/ch09/examples/audit_tracking_upstream_interfaces.py` → `codes/chapters/ch09/reports/upstream_tracking_contracts_current.json`、`codes/chapters/ch09/reports/tracking_upstream_interfaces_current.json` | 固定源、原C调用、控制流提取与原Python方法的独立执行记录 | 由实际工具生成，保存执行范围和未执行条件；完整稀疏选集状态与所用原文件身份分栏，选集不匹配不得改成通过；限定执行仍须独立核官方origin、固定提交、全部所用源码/许可摘要与洁净状态。不改写历史报告或把替身控制流当完整算法运行 |
 | 已知坏麦源与图 | `codes/chapters/ch10/core/channel_selection.py`、`core/channel_audio.py`、`examples/generate_channel_audio.py`；`scripts/make_channel_figures.py` → 六WAV、独立清单和图73报告 | 已知第0路失效，观测、响应与协方差双轴同选；复用第5章唯一MVDR | 8真实音频源、9真实绘图源；16kHz/32000点/共同增益1，27200点窗解析/浮点/PCM整数分开；严格7普通成员、完整只读重放，不是盲检测、随机噪声或工业性能 |
 | 当前第10章原接口报告 | 四个工业/采样/延迟入口 → `industrial_contracts_current.json`、`industrial_upstream_interfaces_current.json`、`industrial_interfaces_current.json`、`stk_delay_current.json` | 固定原源码限定调用与当前完整选集状态分栏 | 默认stdout，显式报告路径写前核普通父链/成员且拒绝旧历史路径；原origin/提交/blob/许可、编译依赖和调用前后身份实核。四旧报告不改写；不称运行模型或ARM性能 |
-| 绘图源文件 | `scripts/make_figures.py`、`scripts/make_aec_figures.py`、`scripts/make_css_figures.py`、`scripts/make_beamforming_figures.py`、`scripts/make_reference_figures.py`、`scripts/make_delay_figures.py`、`scripts/make_tracking_figures.py`、`scripts/make_channel_figures.py`、`scripts/make_selection_figures.py`、`scripts/make_wearable_figures.py`、`scripts/make_tse_figures.py`、`scripts/make_math_figures.py` | 生成全部插图 | 图有问题时修改对应真实入口，不手工修 PNG |
-| 构建源文件 | `scripts/build_site.py`、`scripts/build_pdf.py`、`scripts/build_markdown_helpers.py`、`scripts/inline_layout.js`、`scripts/pdf_math.js`、`scripts/heading_aliases.py`、`scripts/legacy_sequential_anchors.json`、`scripts/chapter_identity.py`、`scripts/chapter_numbering.json` | 生成站点、合订 HTML 和 PDF，共用Markdown数学/代码边界处理及有限行内排版保护，并保护已发布深链的原语义 | 页面结构或渲染有问题时修改这里；标题改号后逐项校验历史语义锚；共享脚本变化须进入两种产物的源摘要 |
+| 绘图源文件 | `scripts/make_figures.py`、`scripts/make_aec_figures.py`、`scripts/make_css_figures.py`、`scripts/make_beamforming_figures.py`、`scripts/make_reference_figures.py`、`scripts/make_delay_figures.py`、`scripts/make_tracking_figures.py`、`scripts/make_channel_figures.py`、`scripts/make_selection_figures.py`、`scripts/make_wearable_figures.py`、`scripts/make_tse_figures.py`、`scripts/make_math_figures.py`、`scripts/make_figures_en.py` | 生成全部中英插图 | 图有问题时修改对应真实入口，不手工修 PNG |
+| 构建与门禁源文件 | `scripts/build_site.py`、`scripts/build_site_en.py`、`scripts/build_pdf.py`、`scripts/build_pdf_en.py`、`scripts/quality_check.py`、`scripts/quality_check_en.py`、`scripts/run_portable_ci.py`、`scripts/build_markdown_helpers.py`、`scripts/inline_layout.js`、`scripts/pdf_math.js`、`scripts/heading_aliases.py`、`scripts/legacy_sequential_anchors.json`、`scripts/chapter_identity.py`、`scripts/chapter_numbering.json` | 生成中英站点、合订 HTML 和 PDF，并执行双语发布门禁与跨平台 CI；共用Markdown数学/代码边界处理及有限行内排版保护，并保护已发布深链的原语义 | 页面结构或渲染有问题时修改这里；标题改号后逐项校验历史语义锚；共享脚本变化须进入两种产物的源摘要 |
 | PDF 公式第三方资源 | `scripts/vendor/mathjax-3.2.2/` | 固定MathJax3.2.2 SVG、SRE4.0.6英文规则与许可；保留历史CHTML字体 | 保留上游许可及来源摘要；更新版本时同步更新构建核验与渲染抽查，不手改压缩脚本或字体 |
-| 插图生成物 | `figures/fig*.png` | 正文插图 | 由绘图脚本生成，不直接编辑 |
-| 站点生成物 | `site/*.html`、`site/research/*.html`、`site/real_audio/`、`site/room_audio/`、`site/gss_audio/`、`site/moving_audio/`、`site/tracking_audio/`、`site/noise_audio/`、`site/channel_audio/`、`site/scenario_audio/`、`site/weighted_audio/`、`site/response_audio/`、`site/binaural_audio/`、`site/spectral_audio/`、`site/stft_audio/`、`site/sweep_audio/`、`site/geometry_audio/`、`site/baseline_audio/`、`site/focus_audio/`、`site/reflection_audio/`、`site/derivative_audio/`、`site/phase_audio/`、`site/binaural_beamforming_audio/`、`site/apa_audio/`、`site/reference_audio/`、`site/delay_audio/`、`site/css_audio/`、`site/mint_audio/`、`site/mask_audio/`、`site/imaging_audio/`、`site/distributed_audio/`、`site/wearable_audio/`、`site/tse_audio/` | 19 个当前教程页（首页加 18 篇）、8 个旧路径兼容页面、6 篇研究手册页面（共 33 个 HTML）与真实录音、独立合成实验的媒体副本 | 由 `build_site.py` 生成，不直接编辑 |
+| 插图生成物 | `figures/fig*.png`、`figures_en/fig*.png` | 中英正文插图（各 87 张） | 由绘图脚本与 `make_figures_en.py` 生成，不直接编辑 |
+| 站点生成物 | `site/*.html`、`site/research/*.html`、`site_en/*.html`、`site_en/research/*.html`、`site/real_audio/`、`site/room_audio/`、`site/gss_audio/`、`site/moving_audio/`、`site/tracking_audio/`、`site/noise_audio/`、`site/channel_audio/`、`site/scenario_audio/`、`site/weighted_audio/`、`site/response_audio/`、`site/binaural_audio/`、`site/spectral_audio/`、`site/stft_audio/`、`site/sweep_audio/`、`site/geometry_audio/`、`site/baseline_audio/`、`site/focus_audio/`、`site/reflection_audio/`、`site/derivative_audio/`、`site/phase_audio/`、`site/binaural_beamforming_audio/`、`site/apa_audio/`、`site/reference_audio/`、`site/delay_audio/`、`site/css_audio/`、`site/mint_audio/`、`site/mask_audio/`、`site/imaging_audio/`、`site/distributed_audio/`、`site/wearable_audio/`、`site/tse_audio/` | 中英各 19 个当前教程页（首页加 18 篇）、8 个旧路径兼容页面、6 篇研究手册页面（各 33 个 HTML）与真实录音、独立合成实验的媒体副本 | 由 `build_site.py` 与 `build_site_en.py` 生成，不直接编辑 |
 | 本次验收证据 | `reviews/2026-10-05-*.json`、`reviews/2026-10-05-human-listening-register.csv` | 发布音频技术检查、未执行真人计划/登记、可选测试与公式/浏览器验收的日期快照 | 实际结果与未执行条件分开；这些是注明日期的证据，不自动宣称未来修改后的资产已验收 |
-| 合订生成物 | `dist/combined.html`、`dist/microphone-array-tutorial.pdf` | 合订 HTML 和 PDF | 由 `build_pdf.py` 生成，不直接编辑 |
+| 合订生成物 | `dist/combined.html`、`dist/microphone-array-tutorial.pdf`、`dist/combined_en.html`、`dist/microphone-array-tutorial-en.pdf` | 中英合订 HTML 和 A4 标签化 PDF | 由 `build_pdf.py` 与 `build_pdf_en.py` 生成，不直接编辑 |
 
 `chapters/` 当前包含 19 篇 Markdown（导读、第 0～15 章共 16 章正文和 2 篇附录），研究手册另有 6 篇网页源文件，项目当前有 87 张编号图和附录 B 房间题的一张补充结果图。文件数量、图号、章节名称或构建入口发生变化时，要同步
 更新本节、README、导读中的文件地图和构建说明。
@@ -166,6 +166,11 @@
 .venv/bin/python -m codes.chapters.ch10.examples.generate_channel_audio --check  # 六独立WAV只读核验
 .venv/bin/python scripts/build_site.py        # chapters/ → site/*.html
 .venv/bin/python scripts/build_pdf.py         # chapters/ → 合订 HTML 和 PDF
+.venv/bin/python scripts/make_figures_en.py   # 87 张英文插图 figures_en/
+.venv/bin/python scripts/build_site_en.py     # chapters_en/ → site_en/*.html
+.venv/bin/python scripts/build_pdf_en.py      # chapters_en/ → 英文合订 HTML 和 PDF
+.venv/bin/python scripts/quality_check.py     # 中文与核心发布门禁
+.venv/bin/python scripts/quality_check_en.py  # 英文版、顶栏与双许可发布门禁
 .venv/bin/python -m unittest discover -s tests -p 'test_codes*.py' -v  # 教学代码回归
 ```
 

@@ -152,6 +152,33 @@ class TrackingBoundaries(unittest.TestCase):
                 self.assertEqual(indices.shape, weights.shape)
                 self.assertTrue(set(indices.tolist()).issubset(positive_indices))
 
+    def test_unnormalized_mutated_weights_normalize_log_weights_and_ess(self):
+        pf = CircularParticleFilter([0.0, 30.0, 60.0])
+        pf.weights = np.array([2.0, 6.0, 0.0])
+        expected_probs = np.array([0.25, 0.75, 0.0])
+        np.testing.assert_allclose(pf.log_weights[:2], np.log(expected_probs[:2]), atol=1e-15)
+        self.assertTrue(np.isneginf(pf.log_weights[2]))
+        self.assertAlmostEqual(float(np.sum(np.exp(pf.log_weights))), 1.0, places=15)
+        self.assertAlmostEqual(pf.effective_sample_size, 1.0 / (0.25**2 + 0.75**2), places=15)
+
+        # In-place mutation scaling weights by a constant leaves normalized log_weights and ESS invariant.
+        pf.weights[:] = [10.0, 30.0, 0.0]
+        np.testing.assert_allclose(pf.log_weights[:2], np.log(expected_probs[:2]), atol=1e-15)
+        self.assertAlmostEqual(pf.effective_sample_size, 1.6, places=15)
+
+        # Huge finite unnormalized weights avoid overflow in sum.
+        pf.weights = np.array([1e308, 1e308, 0.0])
+        np.testing.assert_allclose(pf.log_weights[:2], [-np.log(2.0), -np.log(2.0)], atol=1e-15)
+        self.assertAlmostEqual(pf.effective_sample_size, 2.0, places=15)
+
+        # Zero-sum and negative mutated weights are rejected by both log_weights and effective_sample_size.
+        for bad in (np.array([0.0, 0.0, 0.0]), np.array([-1.0, 2.0, 0.0]), np.array([np.nan, 1.0, 0.0])):
+            pf.weights = bad
+            with self.assertRaises(ValueError):
+                _ = pf.log_weights
+            with self.assertRaises(ValueError):
+                _ = pf.effective_sample_size
+
     def test_imm_legal_singular_covariance_and_real_contract(self):
         for scale in (1e-200, 1., 1e200):
             out = imm_mix([1.], [[1.]], [[0., 0., 0.]], [np.ones((3, 3))*scale])

@@ -88,7 +88,7 @@ def hermitian_fractional_power(
     scale = float(np.max(np.abs(herm)))
     if scale == 0.0:
         return np.zeros_like(herm, dtype=np.complex128)
-    herm_unit = herm / scale
+    herm_unit = herm.real / scale + 1j * (herm.imag / scale)
     eigenvalues, eigenvectors = np.linalg.eigh(herm_unit)
     eig_max = max(float(np.max(np.abs(eigenvalues))), 1e-300)
     if float(np.min(eigenvalues)) < -tol * eig_max:
@@ -114,7 +114,7 @@ def closed_form_2x2_sqrt(csm: object, *, tol: float = 1e-12) -> np.ndarray:
     scale = float(np.max(np.abs(herm)))
     if scale == 0.0:
         return np.zeros((2, 2), dtype=np.complex128)
-    herm_unit = herm / scale
+    herm_unit = herm.real / scale + 1j * (herm.imag / scale)
     trace_val = float(herm_unit[0, 0].real + herm_unit[1, 1].real)
     if trace_val <= 0.0:
         return np.zeros((2, 2), dtype=np.complex128)

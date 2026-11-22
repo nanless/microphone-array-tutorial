@@ -780,7 +780,7 @@ def add_bookmarks_en(pdf_path: Path, outline, aliases=None):
         destination = build_pdf.heading_destination(reader, heading_id)
         target = destination.dest_array
         return writer.add_outline_item(
-            title,
+            build_pdf.bookmark_plain_text(title),
             reader.get_destination_page_number(destination),
             parent=parent,
             fit=Fit(str(target[1]), tuple(target[2:])),

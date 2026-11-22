@@ -142,7 +142,7 @@ E10-17 的变长回调时序在 [跨章工程边界入口](ch00/cross_chapter/en
 
 上游获取工具放在[源码工具目录](ch00/upstream/README.md)。下载源码留在 Git 忽略的独立工作区，不随本书推送；已有工作区及修改必须保留。
 
-HARKTOOL5 与 Vo RFS 的归档摘要和选择范围单独记录，不混入 129 个 Git 项目数。本仓库根目录目前没有明确的 `LICENSE` 或 `COPYING`，源码可见不等于已经获得复制、修改或再分发许可；第三方项目的许可证也不自动覆盖本书、模型或数据。
+HARKTOOL5 与 Vo RFS 的归档摘要和选择范围单独记录，不混入 129 个 Git 项目数。**双重许可说明**：本仓库原创软件、数值核、脚本与测试采用 **MIT 许可证**（[`../../LICENSE`](../../LICENSE)），原创教材正文、研究手册与教学插图采用 **CC BY-NC-SA 4.0 许可证**（[`../../LICENSE-DOCS`](../../LICENSE-DOCS)）。第三方代码片段（`NumpyOnlineWPE011`、本地固定 MathJax/SRE）、公开声学数据集（DEMAND NRIVER 采用 CC BY-SA 3.0，LOCATA 摘录采用 Open Data Commons Attribution 1.0，即 ODC-By 1.0）及 `_downloads/` 下的本地上游工作区均**不重新许可**，严格保留各自原始许可证与条款。
 
 
 第二章的`E02-14～16`分别检查有限窗卷积、源噪声二阶交叉项与窗的幅度/功率归一化。

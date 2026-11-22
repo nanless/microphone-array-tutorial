@@ -64,9 +64,9 @@ $$\begin{aligned}
 | 右手笛卡尔系 $(x,y,z)$ | 全书欧氏内积共同基底 | 阵元坐标 $\vec r_m$、声源 $\vec p = r\vec u$ | — | — |
 | 本书平面阵参考系 $(\theta_{\mathrm{book}}, \phi_{\mathrm{el}}, r)$ | 第 2～13 章默认 | 线阵沿 $x$ 轴，$+y$ 为正前正横，$+z$ 向上 | $\theta_{\mathrm{book}}$ 从 $+y$ 向 $+x$ **顺时针**为正 | $\phi_{\mathrm{el}} \in [-90^\circ, +90^\circ]$ 从水平面向上 |
 | 同基底球谐极角系 $(\alpha, \vartheta, r)$ | 第 5 章 §5.8 与 §0.7 | 与上相同 $(x,y,z)$ | $\alpha \in (-\pi, \pi]$ 从 $+x$ 向 $+y$ **逆时针**为正 | 余纬角 $\vartheta \in [0, \pi]$ 从天顶 $+z$ 向下 |
-| 听者局部 AmbiX / AES69 (`SOFA`) 系 | [第 3 章 §3.1.1 三维坐标系对照](03_array-geometry.md#sec-3-1-1)与[第 14 章 §14.2](14_spatial-wearable-arrays.md#sec-14-2) | 听者正前 $+x_{\mathrm{A}}$、正左 $+y_{\mathrm{A}}$、正上 $+z_{\mathrm{A}}$ | 水平方位从 $+x_{\mathrm{A}}$ 向 $+y_{\mathrm{A}}$ **逆时针**为正 | 俯仰角从水平面向上为正 |
+| 听者局部 AmbiX / AES69 (`SOFA`) 系 | [第 3 章 §3.1.1 三维坐标系对照](03_array-geometry.md#sec-3-1-1)与[第 14 章 §14.2](14_spatial-wearable-arrays.md#sec-14-2) | 听者正前 $+x_{\mathrm{AmbiX}}$、正左 $+y_{\mathrm{AmbiX}}$、正上 $+z_{\mathrm{AmbiX}}$ | 水平方位从 $+x_{\mathrm{AmbiX}}$ 向 $+y_{\mathrm{AmbiX}}$ **逆时针**为正 | 俯仰角从水平面向上为正 |
 
-> **AES69 / SOFA 符号辨析**：AES69（`SOFA`）国际标准的正式字段名为 `(azimuth, elevation, radius)`，默认听者朝向 `ListenerView = [1, 0, 0]`（$+x_{\mathrm{A}}$ 正前）、头顶朝向 `ListenerUp = [0, 0, 1]`（$+z_{\mathrm{A}}$ 正上）、左手为 $+y_{\mathrm{A}}$。本书为避免与本书俯仰角 $\phi_{\mathrm{el}}$ 撞符，将 AES69 / SOFA 的 `(azimuth, elevation)` 分别记作 $(\phi_{\mathrm{SOFA}}, \delta_{\mathrm{SOFA}})$。当同一听者正前方对齐本书 $+y$ 正横轴时，右手系旋转 $90^\circ$ 给出笛卡尔轴桥 $(x_{\mathrm{A}}, y_{\mathrm{A}}, z_{\mathrm{A}}) = (y, -x, z)$。
+> **AES69 / SOFA 符号辨析**：AES69（`SOFA`）国际标准的正式字段名为 `(azimuth, elevation, radius)`，默认听者朝向 `ListenerView = [1, 0, 0]`（$+x_{\mathrm{AmbiX}}$ 正前）、头顶朝向 `ListenerUp = [0, 0, 1]`（$+z_{\mathrm{AmbiX}}$ 正上）、左手为 $+y_{\mathrm{AmbiX}}$。本书为避免与本书俯仰角 $\phi_{\mathrm{el}}$ 撞符，将 AES69 / SOFA 的 `(azimuth, elevation)` 分别记作 $(\phi_{\mathrm{SOFA}}, \delta_{\mathrm{SOFA}})$，并用下标 $\mathrm{AmbiX}$ 标识该听者局部系（以区别于第 9 章匹配 $\mathbf R_{\mathrm{WA}}$ 的阵列局部系 $\vec u_{\mathrm{A}}$）。当同一听者正前方对齐本书 $+y$ 正横轴时，右手系旋转 $90^\circ$ 给出笛卡尔轴桥 $(x_{\mathrm{AmbiX}}, y_{\mathrm{AmbiX}}, z_{\mathrm{AmbiX}}) = (y, -x, z)$。
 
 由此，给定本书球面参数 $(\theta_{\mathrm{book}}, \phi_{\mathrm{el}}, r)$，四套坐标系的精确指源单位向量 $\vec u$ 与坐标换算式完全闭合：
 
@@ -86,16 +86,16 @@ $$\begin{aligned}
 \cos\vartheta
 \end{bmatrix}\text{，}\qquad
 \vec p = r\vec u = \begin{bmatrix}x\\ y\\ z\end{bmatrix}\text{，}\\
-\vec u_{\mathrm{A}} &= \begin{bmatrix}
+\vec u_{\mathrm{AmbiX}} &= \begin{bmatrix}
 \cos\delta_{\mathrm{SOFA}}\cos\phi_{\mathrm{SOFA}}\\
 \cos\delta_{\mathrm{SOFA}}\sin\phi_{\mathrm{SOFA}}\\
 \sin\delta_{\mathrm{SOFA}}
 \end{bmatrix}
 = \begin{bmatrix}u_y\\ -u_x\\ u_z\end{bmatrix}\text{，}\qquad
-\vec p_{\mathrm{A}} = r\vec u_{\mathrm{A}} = \begin{bmatrix}y\\ -x\\ z\end{bmatrix}\text{。}
+\vec p_{\mathrm{AmbiX}} = r\vec u_{\mathrm{AmbiX}} = \begin{bmatrix}y\\ -x\\ z\end{bmatrix}\text{。}
 \end{aligned}\tag{0-2}$$
 
-**从笛卡尔反解角度为何必须用双参数 $\operatorname{atan2}$？** 普通单参数反正切 $\arctan(x/y)$ 只能输出 $(-\pi/2, \pi/2)$ 内的主值，既会在分母 $y = 0$ 时除零，又无法区分 $(+1, +1)$（第一象限）与 $(-1, -1)$（第三象限）——商都是 $+1$，会丢失整整半个圆周。双参数四象限函数 $\operatorname{atan2}(\text{对边}, \text{邻边})$ 同时检查分子与分母的符号，完整映射到 $(-\pi, \pi]$。由 $\vec p = [x, y, z]^\top \neq \vec 0$ 反解时：先求 $r = \sqrt{x^2+y^2+z^2}$ 与 $\phi_{\mathrm{el}} = \arcsin(z/r)$，再取本书方位角 $\theta_{\mathrm{book}} = \operatorname{atan2}(x, y)$（注意以 $x$ 为首参数、$y$ 为次参数），而逆时针角 $\alpha = \operatorname{atan2}(y, x)$、SOFA 方位角 $\phi_{\mathrm{SOFA}} = \operatorname{atan2}(y_{\mathrm{A}}, x_{\mathrm{A}}) = \operatorname{atan2}(-x, y)$；仅当声源位于正天顶或正地底（$|z| = r$，水平投影为零）时方位角无唯一定义。
+**从笛卡尔反解角度为何必须用双参数 $\operatorname{atan2}$？** 普通单参数反正切 $\arctan(x/y)$ 只能输出 $(-\pi/2, \pi/2)$ 内的主值，既会在分母 $y = 0$ 时除零，又无法区分 $(+1, +1)$（第一象限）与 $(-1, -1)$（第三象限）——商都是 $+1$，会丢失整整半个圆周。双参数四象限函数 $\operatorname{atan2}(\text{对边}, \text{邻边})$ 同时检查分子与分母的符号，完整映射到 $(-\pi, \pi]$。由 $\vec p = [x, y, z]^\top \neq \vec 0$ 反解时：先求 $r = \sqrt{x^2+y^2+z^2}$ 与 $\phi_{\mathrm{el}} = \arcsin(z/r)$，再取本书方位角 $\theta_{\mathrm{book}} = \operatorname{atan2}(x, y)$（注意以 $x$ 为首参数、$y$ 为次参数），而逆时针角 $\alpha = \operatorname{atan2}(y, x)$、SOFA 方位角 $\phi_{\mathrm{SOFA}} = \operatorname{atan2}(y_{\mathrm{AmbiX}}, x_{\mathrm{AmbiX}}) = \operatorname{atan2}(-x, y)$；仅当声源位于正天顶或正地底（$\lvert z\rvert = r$，水平投影为零）时方位角无唯一定义。
 
 #### 0.1.2 球面余弦定理、泰勒展开与近场菲涅耳判据
 
@@ -137,7 +137,16 @@ $$\begin{aligned}
 + O\!\left(\frac{\rho_m^3}{r^2}\right)\text{。}
 \end{aligned}\tag{0-5}$$
 
-在沿 $x$ 轴的一维线阵上，$\vec r_m = [x_m, 0, 0]^\top$，水平面声源（$\phi_{\mathrm{el}} = 0^\circ$）有 $\vec r_m^\top\vec u = x_m\sin\theta$，故二阶曲率项分子化为 $x_m^2(1 - \sin^2\theta) = x_m^2\cos^2\theta$。式(0-5)立刻揭示了[第 2 章 §2.2](02_basics-signal-model.md#sec-2-2) 远场夫琅禾费（Fraunhofer）距离 $r_{\mathrm{F}} = 2D^2/\lambda$ 的来历：设阵列总孔径为 $D$，边缘阵元偏距 $|x_m| \le D/2$，在正横方向（$\cos\theta = 1$）二阶曲率程差达到最大 $\Delta r_{\mathrm{curv},\max} = \frac{(D/2)^2}{2r} = \frac{D^2}{8r}$。由于单频声波每传播一个波长 $\lambda = c/f$ 跨越 $2\pi\ \mathrm{rad}$ 相位周期，工程上规定孔径边缘曲率相位误差 $\frac{2\pi}{\lambda}\Delta r_{\mathrm{curv},\max} \le \frac{\pi}{8}\ \mathrm{rad}$（$22.5^\circ$），解此不等式消去 $\pi/8$ 即得 $r \ge \frac{2D^2}{\lambda}$。需要严谨说明的是：在 $\pi/8$ 边缘相位容限下，**均匀连续孔径**的同相叠加损耗约 $0.06\ \mathrm{dB}$（大阵元密集线阵 $M \ge 8$ 亦低于 $0.1\ \mathrm{dB}$），而对于仅含 $M = 3$ 或 $4$ 支阵元、边缘阵元权重占比更高的稀疏小线阵，同样边界上的叠加损耗约 $0.13$～$0.15\ \mathrm{dB}$。
+在沿 $x$ 轴的一维线阵上，$\vec r_m = [x_m, 0, 0]^\top$，水平面声源（$\phi_{\mathrm{el}} = 0^\circ$）有 $\vec r_m^\top\vec u = x_m\sin\theta$，故二阶曲率项分子化为 $x_m^2(1 - \sin^2\theta) = x_m^2\cos^2\theta$。式(0-5)立刻揭示了[第 2 章 §2.2](02_basics-signal-model.md#sec-2-2) 远场夫琅禾费（Fraunhofer）距离 $r_{\mathrm{F}} = 2D^2/\lambda$ 的来历：设阵列总孔径为 $D$，边缘阵元偏距 $\lvert x_m\rvert \le D/2$，在正横方向（$\cos\theta = 1$）二阶曲率程差达到最大 $\Delta r_{\mathrm{curv},\max} = \frac{(D/2)^2}{2r} = \frac{D^2}{8r}$。由于单频声波每传播一个波长 $\lambda = c/f$ 跨越 $2\pi\ \mathrm{rad}$ 相位周期，工程上规定孔径边缘曲率相位误差 $\frac{2\pi}{\lambda}\Delta r_{\mathrm{curv},\max} \le \frac{\pi}{8}\ \mathrm{rad}$（$22.5^\circ$），解此不等式消去 $\pi/8$ 即得 $r \ge \frac{2D^2}{\lambda}$。
+
+在该边界 $r = r_{\mathrm{F}} = 2D^2/\lambda$ 的正横方向上，长度为 $D$ 的**均匀连续孔径**沿 $x \in [-D/2, D/2]$ 的二次曲率相位分布为 $\Delta\phi(x) = \frac{2\pi}{\lambda}\frac{x^2}{2r_{\mathrm{F}}} = \frac{\pi}{2}(x/D)^2$（两端恰为 $\pi/8$）。作代换 $u = x/D \in [-1/2, 1/2]$，由实余弦/正弦菲涅耳积分（等价于 §0.2.1 的复相量形式）算得正横同相叠加归一化模长为
+
+$$\left\lvert\frac{1}{D}\int_{-D/2}^{D/2} e^{-\mathrm{j}\frac{\pi}{2}(x/D)^2}\,\mathrm{d}x\right\rvert
+= \sqrt{\left(\int_{-1/2}^{1/2}\cos\!\left(\frac{\pi}{2}u^2\right)\mathrm{d}u\right)^2
++ \left(\int_{-1/2}^{1/2}\sin\!\left(\frac{\pi}{2}u^2\right)\mathrm{d}u\right)^2}
+\approx 0.9932\text{，}$$
+
+对应正横增益损耗 $20\log_{10}(0.99316) \approx -0.0596\ \mathrm{dB} \approx -0.06\ \mathrm{dB}$（大阵元密集线阵 $M \ge 8$ 亦低于 $0.1\ \mathrm{dB}$）；而对于仅含 $M = 3$ 或 $4$ 支阵元、边缘阵元权重占比更高的稀疏小线阵，同样边界上的叠加损耗约 $0.13$～$0.15\ \mathrm{dB}$。
 
 **锚点手算 0-1（四系坐标桥、球面夹角与近场菲涅耳程差复算；`E00-01` 采用独立新参数）。**
 
@@ -147,11 +156,11 @@ $$\begin{aligned}
     \vec u &= \begin{bmatrix}\frac{\sqrt{3}}{2}\cdot\frac{\sqrt{3}}{2}\\ \frac{\sqrt{3}}{2}\cdot\frac{1}{2}\\ \frac{1}{2}\end{bmatrix}
     = \begin{bmatrix}0.750000\\ 0.433013\\ 0.500000\end{bmatrix}\text{，}\qquad
     \vec p = 2\vec u = \begin{bmatrix}1.500000\\ 0.866025\\ 1.000000\end{bmatrix}\ \mathrm{m}\text{，}\\
-    \vec p_{\mathrm{A}} &= \begin{bmatrix}y\\ -x\\ z\end{bmatrix}
+    \vec p_{\mathrm{AmbiX}} &= \begin{bmatrix}y\\ -x\\ z\end{bmatrix}
     = \begin{bmatrix}0.866025\\ -1.500000\\ 1.000000\end{bmatrix}\ \mathrm{m}\text{。}
     \end{aligned}$$
 
-    核对 SOFA 球面反算：$2[\cos 30^\circ\cos(-60^\circ),\ \cos 30^\circ\sin(-60^\circ),\ \sin 30^\circ]^\top = [\frac{\sqrt{3}}{2}, -\frac{3}{2}, 1]^\top = \vec p_{\mathrm{A}}$，严格一致。再取第二方向 $(\theta_2, \phi_{\mathrm{el},2}) = (0^\circ, 30^\circ)$，代入式(0-3)得 $\cos\gamma = \sin^2 30^\circ + \cos^2 30^\circ\cos 60^\circ = \frac{1}{4} + \frac{3}{4}\cdot\frac{1}{2} = \frac{5}{8} = 0.625$，故空间张角 $\gamma = \arccos(0.625) \approx 51.32^\circ$。
+    核对 SOFA 球面反算：$2[\cos 30^\circ\cos(-60^\circ),\ \cos 30^\circ\sin(-60^\circ),\ \sin 30^\circ]^\top = [\frac{\sqrt{3}}{2}, -\frac{3}{2}, 1]^\top = \vec p_{\mathrm{AmbiX}}$，严格一致。再取第二方向 $(\theta_2, \phi_{\mathrm{el},2}) = (0^\circ, 30^\circ)$，代入式(0-3)得 $\cos\gamma = \sin^2 30^\circ + \cos^2 30^\circ\cos 60^\circ = \frac{1}{4} + \frac{3}{4}\cdot\frac{1}{2} = \frac{5}{8} = 0.625$，故空间张角 $\gamma = \arccos(0.625) \approx 51.32^\circ$。
 - **（2）近场菲涅耳程差复算**：设 $c = 343\ \mathrm{m/s}$、$f = 1715\ \mathrm{Hz}$（波长 $\lambda = 0.20\ \mathrm{m}$）、线阵孔径 $D = 0.40\ \mathrm{m}$，夫琅禾费远场边界为 $r_{\mathrm{F}} = 2(0.40)^2 / 0.20 = 1.60\ \mathrm{m}$。考察位于近场正横方向 $r = 1.00\ \mathrm{m} < r_{\mathrm{F}}$、$\theta = 0^\circ$ 的声源到右侧边缘阵元 $x_m = +0.20\ \mathrm{m}$ 的程差：由式(0-4)算得精确距离 $r_m = \sqrt{1.00^2 + 0.20^2} = \sqrt{1.04} \approx 1.019804\ \mathrm{m}$，精确程差 $\Delta r_{\mathrm{exact}} = +19.804\ \mathrm{mm}$。一阶平面波近似给出 $\Delta r_1 = 0\ \mathrm{mm}$，程差误差达 $19.804\ \mathrm{mm}$（相位误差 $35.65^\circ$，已显著超出 $22.5^\circ$ 容限）；加入式(0-5)二阶曲率项后 $\Delta r_2 = 0 + \frac{0.20^2\times 1^2}{2\times 1.00} = +20.000\ \mathrm{mm}$，残余程差误差骤降至 $0.196\ \mathrm{mm}$（相位误差仅 $0.35^\circ$，精度提升逾 $100$ 倍）。
 
 **这个例子说明了什么？** 在近场区，一阶平面波模型会丢失关键的球面曲率相位（这也是第 15 章近场距离气泡用来区分远近说话人的物理特征），而二阶菲涅耳近似已能在 $r \sim 0.6\,r_{\mathrm{F}}$ 处把相位误差压到 $1^\circ$ 以内。**结论在哪些条件下不成立？** 当声源贴近阵列到 $|x_m|/r \to 1$ 时，泰勒高阶余项 $O(\rho_m^3/r^2)$ 不可忽略，必须直接按式(0-4)精确开平方计算。
@@ -211,17 +220,17 @@ z_1 z_2 &= (|z_1|e^{\mathrm{j}\phi_1})(|z_2|e^{\mathrm{j}\phi_2}) = |z_1||z_2|\,
 \frac{z_1}{z_2} = \frac{|z_1|}{|z_2|}\,e^{\mathrm{j}(\phi_1-\phi_2)}\text{。}
 \end{aligned}\tag{0-7}$$
 
-式(0-7)把复数乘法化为“模长相乘、相位相加”。现在立即用它解决 §0.1.1 留下的多阵元叠加问题——推导全书第 2、3、5 章最常出现的 **$M$ 元均匀线阵方向图因子（Dirichlet 核）**。先证明有限等比数列求和公式：对公比 $q \neq 1$，记 $S = \sum_{m=0}^{M-1} q^m = 1 + q + \cdots + q^{M-1}$，两边乘以 $q$ 得 $qS = q + q^2 + \cdots + q^M$，两式相减中间项全部消去，得 $(1-q)S = 1 - q^M \Rightarrow S = \frac{1-q^M}{1-q}$。令 $q = e^{-\mathrm{j}\psi}$，其中 $\psi = \kappa d(\sin\theta_0 - \sin\theta) = \frac{2\pi d}{\lambda}(\sin\theta_0 - \sin\theta)$ 为等权延迟求和指向 $\theta_0$ 时相邻两麦补偿后的残余相位差（详见下文式(0-9)及[附录 A §16.1](16_appendix-symbols-math.md#sec-16-1)；若按[第 2 章 §2.6](02_basics-signal-model.md#sec-2-6) 与[第 5 章式(5-5)](05_beamforming.md#sec-5-2) 反号记为 $\psi' = \kappa d(\sin\theta - \sin\theta_0)$，则仅对前置相移因子取共轭而幅度核完全不变），对分子分母各提取一半相移因子并套用式(0-7)的 $\sin$ 表达：
+式(0-7)把复数乘法化为“模长相乘、相位相加”。现在立即用它解决 §0.1.1 留下的多阵元叠加问题——推导全书第 2、3、5 章最常出现的 **$M$ 元均匀线阵方向图因子（Dirichlet 核）**。先证明有限等比数列求和公式：对公比 $q \neq 1$，记 $S = \sum_{m=0}^{M-1} q^m = 1 + q + \cdots + q^{M-1}$，两边乘以 $q$ 得 $qS = q + q^2 + \cdots + q^M$，两式相减中间项全部消去，得 $(1-q)S = 1 - q^M \Rightarrow S = \frac{1-q^M}{1-q}$。对任意实相位增量 $u \in \mathbb{R}$，令 $q = e^{-\mathrm{j}u}$，对分子分母各提取一半相移因子并套用式(0-7)的 $\sin$ 表达：
 
 $$\begin{aligned}
-A_M(\psi) &= \sum_{m=0}^{M-1} e^{-\mathrm{j}m\psi}
-= \frac{1 - e^{-\mathrm{j}M\psi}}{1 - e^{-\mathrm{j}\psi}}
-= \frac{e^{-\mathrm{j}\frac{M\psi}{2}}\bigl(e^{+\mathrm{j}\frac{M\psi}{2}} - e^{-\mathrm{j}\frac{M\psi}{2}}\bigr)}
-{e^{-\mathrm{j}\frac{\psi}{2}}\bigl(e^{+\mathrm{j}\frac{\psi}{2}} - e^{-\mathrm{j}\frac{\psi}{2}}\bigr)}\\
-&= e^{-\mathrm{j}\frac{M-1}{2}\psi}\,\frac{\sin(M\psi/2)}{\sin(\psi/2)}\qquad(\psi \neq 2k\pi)\text{。}
+A_M(u) &= \sum_{m=0}^{M-1} e^{-\mathrm{j}m u}
+= \frac{1 - e^{-\mathrm{j}M u}}{1 - e^{-\mathrm{j}u}}
+= \frac{e^{-\mathrm{j}\frac{M u}{2}}\bigl(e^{+\mathrm{j}\frac{M u}{2}} - e^{-\mathrm{j}\frac{M u}{2}}\bigr)}
+{e^{-\mathrm{j}\frac{u}{2}}\bigl(e^{+\mathrm{j}\frac{u}{2}} - e^{-\mathrm{j}\frac{u}{2}}\bigr)}\\
+&= e^{-\mathrm{j}\frac{M-1}{2}u}\,\frac{\sin(M u/2)}{\sin(u/2)}\qquad(u \neq 2k\pi)\text{。}
 \end{aligned}\tag{0-8}$$
 
-式(0-8)把物理规律完全透明化：当 $\psi = 0$ 时极限值为 $M$（主瓣峰值），当 $M\psi/2 = \pm\pi$ 即 $\psi = \pm 2\pi/M$ 时到达首个零点（阵元越多主瓣越窄）；更重要的是，一旦 $|\psi| = 2\pi$，分子分母再次同时归零，极限模值重新回升至 $M$——这就是与主瓣等高的**空间栅瓣（grating lobe）**。因为 $|\sin\theta_0 - \sin\theta| \le 2$（当波束指向一侧端射 $\theta_0 = +90^\circ$ 而干扰来自另一侧端射 $\theta = -90^\circ$ 时恰好取等号），要求在任意指向角与入射角下严格不出现栅瓣必须满足 $\frac{2\pi d}{\lambda}\cdot 2 < 2\pi$，一步就导出了经典的半波长防混叠准则 **$d < \lambda/2$**（在边界 $d = \lambda/2$ 指向 $+90^\circ$ 时，$-90^\circ$ 处恰好进入栅瓣；不含端射扫描时工程上常宽写作 $d \le \lambda/2$，见[第 2 章 §2.6](02_basics-signal-model.md#sec-2-6) 与[第 3 章 §3.2](03_array-geometry.md#sec-3-2)）。
+全书统一将等权延迟求和指向 $\theta_0$ 时相邻两麦补偿后的残余空间相位差记为 $\psi = \kappa d(\sin\theta - \sin\theta_0) = \frac{2\pi d}{\lambda}(\sin\theta - \sin\theta_0)$（与下文式(0-9)、[第 2 章 §2.6.1](02_basics-signal-model.md#sec-2-6-1)、[第 5 章式(5-5)](05_beamforming.md#sec-5-2) 及[附录 A §16.1](16_appendix-symbols-math.md#sec-16-1)完全一致）。将 $u = -\psi = \kappa d(\sin\theta_0 - \sin\theta)$ 代入式(0-8)，指数中的两个负号恰好抵消，得到均匀线阵复方向图 $\frac{1}{M}A_M(-\psi) = \frac{1}{M}\sum_{m=0}^{M-1} e^{+\mathrm{j}m\psi} = e^{+\mathrm{j}\frac{M-1}{2}\psi}\frac{\sin(M\psi/2)}{M\sin(\psi/2)}$（含前置线性相位因子在内的完整复值均与第 2 章、第 5 章严格相同）。式(0-8)把物理规律完全透明化：当 $\psi = 0$ 时未归一极限值为 $M$（主瓣峰值），当 $M\psi/2 = \pm\pi$ 即 $\psi = \pm 2\pi/M$ 时到达首个零点（对应瑞利角分辨尺度约 $\lambda/(Md) \sim \lambda/D$，阵元越多主瓣越窄）；更重要的是，一旦 $\lvert\psi\rvert = 2\pi$，分子分母再次同时归零，极限模值重新回升至 $M$——这就是与主瓣等高的**空间栅瓣（grating lobe）**。因为 $\lvert\sin\theta - \sin\theta_0\rvert \le 2$（当入射角与波束指向分别位于相反端射 $\pm 90^\circ$ 时恰好取等号），要求在任意指向角与入射角下严格不出现栅瓣必须满足 $\frac{2\pi d}{\lambda}\cdot 2 < 2\pi$，一步就导出了经典的半波长防混叠准则 **$d < \lambda/2$**（在边界 $d = \lambda/2$ 指向 $+90^\circ$ 时，$-90^\circ$ 处恰好进入栅瓣；不含端射扫描时工程上常宽写作 $d \le \lambda/2$，见[第 2 章 §2.6](02_basics-signal-model.md#sec-2-6) 与[第 3 章 §3.2](03_array-geometry.md#sec-3-2)）。
 
 将式(0-7)推广到连续时间信号分析，本书全书统一采用**前向傅里叶核 $e^{-\mathrm{j}2\pi f t}$**（逆变换合成核为 $e^{+\mathrm{j}2\pi f t}$）。若连续信号 $x(t)$ 经传播延迟 $\tau_0 > 0$ 变为 $y(t) = x(t - \tau_0)$，作变量代换 $u = t - \tau_0$（$\mathrm{d}t = \mathrm{d}u$）：
 
@@ -232,7 +241,7 @@ Y(f) &= \int_{-\infty}^{\infty} x(t - \tau_0)\,e^{-\mathrm{j}2\pi f t}\,\mathrm{
 = e^{-\mathrm{j}2\pi f\tau_0}\,X(f)\text{。}
 \end{aligned}\tag{0-9}$$
 
-式(0-9)确立了阵列信号处理的相位正负号准则：**迟到 $\tau_0 > 0$ 的信号在正频率 $f > 0$ 处产生负相位滞后 $\phi(f) = -2\pi f\tau_0$**。将式(0-5)远场一阶程差 $\Delta r_{m,1} = -\vec r_m^\top\vec u$（沿 $x$ 轴均匀线阵取 $x_m = md$ 时到达时延 $\tau_m = -x_m\sin\theta/c$）代入式(0-9)，立得全书统一的远场平面波导向矢量分量 $a_m(\theta) = e^{-\mathrm{j}2\pi f\tau_m} = e^{+\mathrm{j}\kappa\vec r_m^\top\vec u} = e^{+\mathrm{j}\kappa x_m\sin\theta}$（波数 $\kappa = 2\pi f/c$，与[第 2 章 §2.3](02_basics-signal-model.md#sec-2-3)、[第 4 章 §4.6](04_doa-estimation.md#sec-4-6)及[第 5 章 §5.1](05_beamforming.md#sec-5-1)完全一致；此时取等权补偿系数 $w_m = \frac{1}{M}e^{+\mathrm{j}\kappa x_m\sin\theta_0}$，延迟求和输出 $\sum_{m=0}^{M-1} w_m^* a_m(\theta) = \frac{1}{M}\sum_{m=0}^{M-1}e^{-\mathrm{j}m\kappa d(\sin\theta_0-\sin\theta)} = \frac{1}{M}A_M(\psi)$ 恰好回到式(0-8)，§0.3.1 将把该共轭内积简记为 $\vec w^H\vec a(\theta)$）。对一般线性相位响应 $\phi(f)$，注意区分**相延迟（phase delay）** $\tau_p(f) = -\frac{\phi(f)}{2\pi f}$（单频载波等相位面延迟）与**群延迟（group delay）** $\tau_g(f) = -\frac{1}{2\pi}\frac{\mathrm{d}\phi(f)}{\mathrm{d}f}$（信号包络延迟）：对纯时延系统，解缠绕相位是过原点的直线，两者相等且恒等于 $\tau_0$（见[第 2 章 §2.3](02_basics-signal-model.md#sec-2-3) 与[第 4 章 §4.2](04_doa-estimation.md#sec-4-2) GCC-PHAT）。同时，因为实值信号满足 $x^*(t) = x(t)$，对其傅里叶积分两边取共轭得：
+式(0-9)确立了阵列信号处理的相位正负号准则：**迟到 $\tau_0 > 0$ 的信号在正频率 $f > 0$ 处产生负相位滞后 $\phi(f) = -2\pi f\tau_0$**。将式(0-5)远场一阶程差 $\Delta r_{m,1} = -\vec r_m^\top\vec u$（沿 $x$ 轴均匀线阵取 $x_m = md$ 时到达时延 $\tau_m = -x_m\sin\theta/c$）代入式(0-9)，立得全书统一的远场平面波导向矢量分量 $a_m(\theta) = e^{-\mathrm{j}2\pi f\tau_m} = e^{+\mathrm{j}\kappa\vec r_m^\top\vec u} = e^{+\mathrm{j}\kappa x_m\sin\theta}$（波数 $\kappa = 2\pi f/c$，与[第 2 章 §2.3](02_basics-signal-model.md#sec-2-3)、[第 4 章 §4.6](04_doa-estimation.md#sec-4-6)及[第 5 章 §5.1](05_beamforming.md#sec-5-1)完全一致；此时取等权补偿系数 $w_m = \frac{1}{M}e^{+\mathrm{j}\kappa x_m\sin\theta_0}$，延迟求和输出 $\sum_{m=0}^{M-1} w_m^* a_m(\theta) = \frac{1}{M}\sum_{m=0}^{M-1}e^{+\mathrm{j}m\kappa d(\sin\theta-\sin\theta_0)} = \frac{1}{M}\sum_{m=0}^{M-1}e^{+\mathrm{j}m\psi} = \frac{1}{M}A_M(-\psi)$ 恰好与式(0-8)及第 2 章、第 5 章的复方向图严格一致，§0.3.1 将把该共轭内积简记为 $\vec w^H\vec a(\theta)$）。对一般线性相位响应 $\phi(f)$，注意区分**相延迟（phase delay）** $\tau_p(f) = -\frac{\phi(f)}{2\pi f}$（单频载波等相位面延迟）与**群延迟（group delay）** $\tau_g(f) = -\frac{1}{2\pi}\frac{\mathrm{d}\phi(f)}{\mathrm{d}f}$（信号包络延迟）：对纯时延系统，解缠绕相位是过原点的直线，两者相等且恒等于 $\tau_0$（见[第 2 章 §2.3](02_basics-signal-model.md#sec-2-3) 与[第 4 章 §4.2](04_doa-estimation.md#sec-4-2) GCC-PHAT）。同时，因为实值信号满足 $x^*(t) = x(t)$，对其傅里叶积分两边取共轭得：
 
 $$X^*(f) = \left(\int_{-\infty}^{\infty} x(t)\,e^{-\mathrm{j}2\pi f t}\,\mathrm{d}t\right)^*
 = \int_{-\infty}^{\infty} x(t)\,e^{+\mathrm{j}2\pi f t}\,\mathrm{d}t
@@ -556,6 +565,15 @@ $$\begin{aligned}
 
 对比可见：TSVD 在 $\sigma_i = \rho\sigma_1$ 处发生全留与全砍的硬跳变；Tikhonov 则用平滑因子 $\frac{\sigma_i^2}{\sigma_i^2+\varepsilon}$ 让强模态（$\sigma_i^2 \gg \varepsilon$）近乎无偏通过、把病态模态（$\sigma_i^2 \ll \varepsilon$）的有效逆增益从 $1/\sigma_i$ 压低为 $\sigma_i/\varepsilon$。工程上对空间协方差矩阵还须区分**绝对加载** $\mathbf R + \varepsilon\mathbf I$（与功率同量纲，输入整体放大 $10$ 倍时会失调）与**无量纲相对加载** $\mathbf R + \alpha\frac{\operatorname{tr}(\mathbf R)}{M}\mathbf I$（尺度不变，但在静音 $\operatorname{tr}(\mathbf R)=0$ 时需设底噪下限；见 `E00-07` 与[附录 A §16.3](16_appendix-symbols-math.md#sec-16-3)）。
 
+**最佳秩 $K$ 逼近（Eckart–Young–Mirsky 定理）**：对式(0-24)的奇异值分解 $\mathbf G = \sum_{i=1}^r \sigma_i\vec u_i\vec v_i^H \in \mathbb{C}^{M\times N}$（$\sigma_1 \ge \cdots \ge \sigma_r > 0$）与任意目标秩 $1 \le K < r$，截取前 $K$ 项得到 $\mathbf G_K = \sum_{i=1}^K \sigma_i\vec u_i\vec v_i^H$。在所有满足 $\operatorname{rank}(\mathbf B) \le K$ 的矩阵 $\mathbf B \in \mathbb{C}^{M\times N}$ 中，$\mathbf G_K$ 同时在 Frobenius 范数与谱范数（二范数）下取得全局最小逼近误差：
+
+$$\min_{\operatorname{rank}(\mathbf B)\le K}\|\mathbf G - \mathbf B\|_F^2
+= \|\mathbf G - \mathbf G_K\|_F^2 = \sum_{i=K+1}^r \sigma_i^2\text{，}\qquad
+\min_{\operatorname{rank}(\mathbf B)\le K}\|\mathbf G - \mathbf B\|_2
+= \|\mathbf G - \mathbf G_K\|_2 = \sigma_{K+1}\text{。}$$
+
+对谱范数下界，维数论证一步即明：任意 $\operatorname{rank}(\mathbf B) \le K$ 的零空间 $\mathcal N(\mathbf B)$ 维数至少为 $N - K$，必然与 $(K+1)$ 维子空间 $\operatorname{span}\{\vec v_1, \ldots, \vec v_{K+1}\}$ 交出非零单位向量 $\vec z$，从而 $\|(\mathbf G - \mathbf B)\vec z\|_2 = \|\mathbf G\vec z\|_2 \ge \sigma_{K+1}$，且 $\mathbf B = \mathbf G_K$ 恰好取等号（Frobenius 范数下界亦在 $\mathbf B = \mathbf G_K$ 处取等；当 $\sigma_K > \sigma_{K+1}$ 时最优逼近唯一）。该定理是[第 4 章 §4.6](04_doa-estimation.md#sec-4-6) 总体最小二乘 ESPRIT（TLS-ESPRIT，将含噪子阵拼接矩阵 $[\mathbf E_{s1}, \mathbf E_{s2}]$ 投影至最佳秩 $K$ 子空间）与低秩子空间降噪的理论基础。
+
 #### 0.3.5 Sherman–Morrison–Woodbury 引理与分块矩阵 Schur 补求逆
 
 在递推最小二乘（RLS，[第 6 章 §6.2.6](06_aec.md#sec-6-2-6)）、在线 WPE（[第 7 章 §7.4](07_wpe-dereverberation.md#sec-7-4)）与单干扰解析 MVDR 中，协方差矩阵常呈“易求逆基底 $\mathbf A \in \mathbb{C}^{M\times M}$ 加低秩修正 $\mathbf U\mathbf C\mathbf V$”（$\mathbf U \in \mathbb{C}^{M\times K}, \mathbf C \in \mathbb{C}^{K\times K}, \mathbf V \in \mathbb{C}^{K\times M}, K \ll M$）。当 $\mathbf A$、$\mathbf C$ 与容量矩阵 $\mathbf C^{-1} + \mathbf V\mathbf A^{-1}\mathbf U$ 均可逆时，**Sherman–Morrison–Woodbury 矩阵求逆引理**将 $O(M^3)$ 求逆降为 $O(K^3)$：
@@ -704,7 +722,7 @@ $$\begin{aligned}
 3. **Hadamard 积（逐元素积）$\mathbf A \circ \mathbf B$**：同维矩阵对应位置元素直接相乘 $(A\circ B)_{ij} = A_{ij}B_{ij}$。因 $\mathbf A \circ \mathbf B$ 恰好是 Kronecker 积 $\mathbf A \otimes \mathbf B$ 抽取相同行列索引 $(i, i)$ 构成的主子矩阵，而两半正定阵的直积特征值 $\lambda_i\mu_j \ge 0$ 仍半正定，故其主子矩阵必然半正定——这用两句话就证完了 **Schur 乘积定理**。
 4. **按列 Khatri–Rao 积 $\mathbf B \odot \mathbf A \in \mathbb{C}^{PM\times K}$**：对同列数矩阵 $\mathbf B = [\vec b_1, \ldots, \vec b_K]$ 与 $\mathbf A = [\vec a_1, \ldots, \vec a_K]$，定义为对应列的 Kronecker 积横向拼接 $\mathbf B \odot \mathbf A = [\vec b_1\otimes\vec a_1,\ \ldots,\ \vec b_K\otimes\vec a_K]$。
 
-> **跨章算符 $\odot$ 双重约定警示（与[附录 A §16.1](16_appendix-symbols-math.md#sec-16-1) 同步）**：本章、第 3 章、第 12 章与附录 A 在协方差向量化语境中用 $\circ$ 记 Hadamard 积、用 $\odot$ 记按列 Khatri–Rao 积；而在第 5、6、8、14、15 章的时频掩码、BSM 相位投影与 FiLM 调制语境中，遵从信号处理与深度学习领域惯例，将 $\odot$ 复用于 Hadamard 逐元素乘积。读者务必以所在章的定义为准。
+> **跨章算符 $\odot$ 双重约定说明（与[附录 A §16.1](16_appendix-symbols-math.md#sec-16-1) 同步）**：在支撑[第 3 章 §3.3](03_array-geometry.md#sec-3-3)与[第 12 章 §12.7](12_acoustic-imaging.md#sec-12-7)的协方差向量化推导中（显式写作于本节 §0.4.3 以及[附录 A §16.1/§16.2/§16.3.2](16_appendix-symbols-math.md#sec-16-1)），本书用 $\circ$ 记 Hadamard 积、用 $\odot$ 记按列 Khatri–Rao 积；而其余各章（如第 5、6、8、14、15 章的时频掩码、BSM 相位投影与 FiLM 调制）遵从信号处理与深度学习领域惯例，将 $\odot$ 用作逐元素 Hadamard 乘积。跨章查阅时请以所在节的定义为准。
 
 **微型 $2\times 2$ 数值直觉对比**：设 $\mathbf P = \begin{bmatrix}1 & 2\\ 0 & 3\end{bmatrix}$、$\mathbf Q = \begin{bmatrix}4 & 5\\ 6 & 7\end{bmatrix}$，三种乘积的输出尺寸与数值截然不同：
 
@@ -855,7 +873,7 @@ P_{\min}^{\mathrm{MVDR}} = \frac{1}{\vec a^H\mathbf R^{-1}\vec a}\text{。}
 
 #### 0.5.3 凸优化、NNLS 的 KKT 条件、Frost 投影梯度与交替投影
 
-在声学成像功率非负约束（[第 12 章 §12.5](12_acoustic-imaging.md#sec-12-5)）、稳健波束形成（[第 5 章 §5.4](05_beamforming.md#sec-5-4)）、多指标选型（[第 11 章 §11.5](11_selection-guide.md#sec-11-5)）与双耳幅度匹配 MagLS（[第 14 章 §14.6](14_spatial-wearable-arrays.md#sec-14-6)）中，我们需要四类现代优化基石：
+在声学成像功率非负约束（[第 12 章 §12.5](12_acoustic-imaging.md#sec-12-5)）、稳健波束形成（[第 5 章 §5.4](05_beamforming.md#sec-5-4)）、多指标选型（[第 11 章 §11.5](11_selection-guide.md#sec-11-5)）、双耳幅度匹配 MagLS（[第 14 章 §14.6](14_spatial-wearable-arrays.md#sec-14-6)）与稀疏波达方向重构（[第 4 章 §4.7](04_doa-estimation.md#sec-4-7)）中，我们需要五类现代优化基石：
 
 **1. 凸集、凸函数、詹森不等式与 SOCP / Pareto 几何**：若集合 $\mathcal C$ 内任意两点连线仍落在 $\mathcal C$ 内，称其为**凸集**；若函数满足 $f(\theta\vec x + (1-\theta)\vec y) \le \theta f(\vec x) + (1-\theta)f(\vec y)$（$\theta \in [0, 1]$，光滑情形等价于海森阵半正定 $\nabla^2 f \succeq \mathbf 0$），称其为**凸函数**（反号则称凹函数）；对任意非负归一化权重 $p_i \ge 0,\ \sum_i p_i = 1$ 递归推广即得有限凸组合形式的**詹森不等式** $f\!\bigl(\sum_i p_i x_i\bigr) \le \sum_i p_i f(x_i)$，将权重取作概率分布即化为期望形式 $f(\mathbb{E}[X]) \le \mathbb{E}[f(X)]$（概率与期望将在 §0.6.1 正式定义）。凸优化最核心的性质是**任何局部极小点必为全局极小点**。全书常遇到两类凸几何衍生概念：一是**二阶锥规划（SOCP）**，把范数鲁棒约束 $\|\mathbf A\vec w + \vec b\|_2 \le \vec c^\top\vec w + d$（如最坏导向失配下最小化功率的稳健 MVDR，第 5 章）转化为多项式时间全局可解的凸锥问题；二是多目标选型中的 **Pareto 最优前沿**（不存在同时在所有指标上更优的方案），而线性加权和 $\min_i (w u_i + (1-w)v_i)$ 几何上只扫描候选集**左下凸包**的支撑切线，可能漏掉凹进区域的 Pareto 解（第 11 章 §11.5）。
 
@@ -870,6 +888,12 @@ q_i^\star\,g_i(\vec q^\star) &= 0\qquad(\forall\,i\text{，互补松弛条件})\
 \end{aligned}\tag{0-41}$$
 
 *一行充分性证明与几何直觉*：由二次目标 $f(\vec q) = \frac{1}{2}\|\mathbf P\vec q - \vec b\|_2^2$ 的凸性，对任意可行 $\vec q \ge \vec 0$ 皆有 $f(\vec q) \ge f(\vec q^\star) + \vec g(\vec q^\star)^\top(\vec q - \vec q^\star) = f(\vec q^\star) + \vec g(\vec q^\star)^\top\vec q \ge f(\vec q^\star)$（等号用到互补松弛 $\vec g(\vec q^\star)^\top\vec q^\star = 0$，末步用到 $\vec g(\vec q^\star) \ge \vec 0$ 与 $\vec q \ge \vec 0$）。式(0-41)的几何含义同样朴素：对卡在边界 $q_i^\star = 0$ 的分量，只要朝正方向迈一步代价升高（偏导 $g_i \ge 0$），停在零点就合法；但对所有严格为正的内部活动分量（$q_j^\star > 0$），梯度必须严格归零（$g_j = 0$），绝不能把无约束最小二乘解的负分量粗暴截断置零了事（见 `E00-12` 的数值反例）。
+
+**投影 Gauss–Seidel（逐坐标下降）求解 NNLS 与 DAMAS**（[第 12 章 §12.5](12_acoustic-imaging.md#sec-12-5)）：对大规模非负线性系统 $\mathbf A\vec q \approx \vec b$（其中 $A_{jj} > 0$），每次固定其余分量，将第 $j$ 行移项求解后向非负半轴 $[0, \infty)$ 投影截断，并立刻把已更新的前序分量投入后续计算，即得循环**投影 Gauss–Seidel** 迭代：
+
+$$q_j^{(k+1)} = \max\!\left(0,\ \frac{1}{A_{jj}}\!\left(b_j - \sum_{i < j} A_{ji}q_i^{(k+1)} - \sum_{i > j} A_{ji}q_i^{(k)}\right)\right)\text{。}$$
+
+当 $\mathbf A$ 取非负点扩散函数（PSF）矩阵时，上式直接给出声学成像 DAMAS 的前向单向遍历更新（[第 12 章 §12.5 式(12-12)](12_acoustic-imaging.md#sec-12-5)）；而若将其作用于非负最小二乘 $\min_{\vec q \ge \vec 0}\frac{1}{2}\|\mathbf P\vec q - \vec b\|_2^2$ 的正规方程系统（令 $\mathbf A = \mathbf P^\top\mathbf P$、右端换为 $\mathbf P^\top\vec b$），则上式等价于严格的逐坐标最小化，每步单调降低目标值且任意不动点均精确满足式(0-41)的 KKT 条件。
 
 **3. Frost 投影 Wirtinger 梯度下降与步长收敛界**（[第 5 章 §5.5](05_beamforming.md#sec-5-5) 与图 87a）：在线自适应 LCMV 不必每帧求矩阵逆，而是先沿负共轭梯度走一步 $\vec w^{(t)} - \mu\mathbf R\vec w^{(t)}$，再向线性约束仿射超平面 $\{\vec w : \mathbf C^H\vec w = \vec f\}$ 做正交投影。令静态最小范数特解 $\vec w_{\mathrm{q}} = \mathbf C(\mathbf C^H\mathbf C)^{-1}\vec f$、约束正交补投影阵 $\mathbf P_\perp = \mathbf I_M - \mathbf C(\mathbf C^H\mathbf C)^{-1}\mathbf C^H$（满足 $\mathbf C^H\mathbf P_\perp = \mathbf 0$ 且 $\mathbf P_\perp\vec w_{\mathrm{q}} = \vec 0$），单步 **Frost 投影梯度更新**及其误差收缩方程为：
 
@@ -894,6 +918,15 @@ d_k^{(t)} &= m_k\,\frac{(\mathbf A\vec c^{(t)})_k}{\lvert(\mathbf A\vec c^{(t)})
 \end{aligned}\tag{0-43}$$
 
 由于 $\mathcal C_2$ 是非凸圆环面，式(0-43)虽不保证全球唯一最优，但严格单调降低高频幅度误差，显著优于强行拟合剧烈卷绕相位的传统复最小二乘。
+
+**5. $\ell_1$ 近端算子与软阈值收缩（Soft-Thresholding）**（[第 4 章 §4.7](04_doa-estimation.md#sec-4-7)）：面对含非光滑 $\ell_1$ 稀疏惩罚的复数 LASSO 或 L1-SVD 目标 $\min_{\vec x}\frac{1}{2}\|\mathbf A\vec x - \vec y\|_2^2 + \lambda\|\vec x\|_1$，近端梯度法（如 ISTA/FISTA）先沿数据项做一步梯度下降，再对各分量独立施加 $\ell_1$ **近端算子（proximal operator）** $\operatorname{prox}_{\tau\lvert\cdot\rvert}(z) = \arg\min_x\bigl(\frac{1}{2}\lvert x - z\rvert^2 + \tau\lvert x\rvert\bigr)$（$\tau > 0$）。对实标量 $z \in \mathbb{R}$，由次微分最优性 $0 \in (x - z) + \tau\,\partial\lvert x\rvert$（$x = 0$ 处次微分为 $[-1, 1]$）直接给出精确闭式；对复标量 $z = \lvert z\rvert e^{\mathrm{j}\phi} \in \mathbb{C}$，设 $x = r e^{\mathrm{j}\alpha}$（$r \ge 0$），$\lvert x - z\rvert^2 = r^2 + \lvert z\rvert^2 - 2r\lvert z\rvert\cos(\alpha - \phi)$ 在相位对齐 $\alpha = \phi$ 时最小，进而化为对模长 $r \ge 0$ 最小化 $\frac{1}{2}(r - \lvert z\rvert)^2 + \tau r$ 得 $r^\star = \max(\lvert z\rvert - \tau, 0)$。合写实数与复数**软阈值收缩算子**为：
+
+$$\operatorname{prox}_{\tau\lvert\cdot\rvert}(z) = \begin{cases}
+\operatorname{sign}(z)\max(\lvert z\rvert - \tau,\ 0)\text{，} & z \in \mathbb{R}\text{，}\\
+\dfrac{z}{\lvert z\rvert}\max(\lvert z\rvert - \tau,\ 0)\text{，} & z \in \mathbb{C}\text{（当 }\lvert z\rvert \le \tau\text{ 时取 }0\text{）。}
+\end{cases}$$
+
+对向量 $\vec z$ 逐分量施用上述软阈值即得 $\operatorname{prox}_{\tau\|\cdot\|_1}(\vec z)$：凡幅值不超过门限 $\tau$ 的弱分量被直接压为精确零值，大分量仅向原点平滑收缩 $\tau$ 而不引入硬截断跳变，从而与 §0.5.4 式(0-44)的平滑重加权 IRLS 形成互补。
 
 #### 0.5.4 主化—最小化（MM）、EM 算法、KL/IS 散度与 Gauss–Newton
 
@@ -1251,14 +1284,14 @@ $$\begin{aligned}
 
 结果只依赖两方向夹角余弦、与坐标系旋转无关，这正是球谐域能用实标量阶次权重合成任意指向轴对称波束（如[第 14 章 §14.11](14_spatial-wearable-arrays.md#sec-14-11) `max-rE` 解码）的根本定理。
 
-**实球谐函数与 Ambisonics 工业标准（ACN 通道序 / SN3D / N3D，[第 14 章 §14.2](14_spatial-wearable-arrays.md#sec-14-2)）**：音频编码工程把 $Y_n^{\pm m}$ 实虚重组为实值球谐基，并按 $\mathrm{ACN} = n^2 + n + m$ 编号（Nachbar 等 2011；Zotter & Frank 2019）。工程对接时须牢记三项约定差异：① **AmbiX 标准明确省略式(0-64)中的 Condon–Shortley 相位 $(-1)^m$**，因此一阶偶极子 $(Y, Z, X)$ 均为正号（若从含 $(-1)^m$ 的 `scipy.special.sph_harm` 转换，对奇数 $m$ 须补偿负号）；② AmbiX 通道 $(W, Y, Z, X)$ 定义在式(0-2)的**听者局部系** $\vec u_{\mathrm{A}} = [n_{x,\mathrm{A}}, n_{y,\mathrm{A}}, n_{z,\mathrm{A}}]^\top = [\cos\delta_{\mathrm{SOFA}}\cos\phi_{\mathrm{SOFA}},\ \cos\delta_{\mathrm{SOFA}}\sin\phi_{\mathrm{SOFA}},\ \sin\delta_{\mathrm{SOFA}}]^\top$（$+x_{\mathrm{A}}$ 正前、$+y_{\mathrm{A}}$ 正左、$+z_{\mathrm{A}}$ 正上），而非本书平面阵默认系 $\vec u$（需经 $(n_{x,\mathrm{A}}, n_{y,\mathrm{A}}, n_{z,\mathrm{A}}) = (u_y, -u_x, u_z)$ 转换）；③ **SN3D 归一化**仅对一阶 FOA（$n \le 1$）恰好峰值等于 $1$，对高阶 HOA（$n \ge 2$）仅保证球面峰值 $\le 1$（例如 $n = 2, m = \pm 1, \pm 2$ 处峰值为 $\sqrt{3}/2 \approx 0.866$）。一阶 FOA 三套归一化约定对照如下：
+**实球谐函数与 Ambisonics 工业标准（ACN 通道序 / SN3D / N3D，[第 14 章 §14.2](14_spatial-wearable-arrays.md#sec-14-2)）**：音频编码工程把 $Y_n^{\pm m}$ 实虚重组为实值球谐基，并按 $\mathrm{ACN} = n^2 + n + m$ 编号（Nachbar 等 2011；Zotter & Frank 2019）。工程对接时须牢记三项约定差异：① **AmbiX 标准明确省略式(0-64)中的 Condon–Shortley 相位 $(-1)^m$**，因此一阶偶极子 $(Y, Z, X)$ 均为正号（若从含 $(-1)^m$ 的 `scipy.special.sph_harm` 转换，对奇数 $m$ 须补偿负号）；② AmbiX 通道 $(W, Y, Z, X)$ 定义在式(0-2)的**听者局部系** $\vec u_{\mathrm{AmbiX}} = [n_{x,\mathrm{AmbiX}}, n_{y,\mathrm{AmbiX}}, n_{z,\mathrm{AmbiX}}]^\top = [\cos\delta_{\mathrm{SOFA}}\cos\phi_{\mathrm{SOFA}},\ \cos\delta_{\mathrm{SOFA}}\sin\phi_{\mathrm{SOFA}},\ \sin\delta_{\mathrm{SOFA}}]^\top$（$+x_{\mathrm{AmbiX}}$ 正前、$+y_{\mathrm{AmbiX}}$ 正左、$+z_{\mathrm{AmbiX}}$ 正上），而非本书平面阵默认系 $\vec u$（需经 $(n_{x,\mathrm{AmbiX}}, n_{y,\mathrm{AmbiX}}, n_{z,\mathrm{AmbiX}}) = (u_y, -u_x, u_z)$ 转换）；③ **SN3D 归一化**仅对一阶 FOA（$n \le 1$）恰好峰值等于 $1$，对高阶 HOA（$n \ge 2$）仅保证球面峰值 $\le 1$（例如 $n = 2, m = \pm 1, \pm 2$ 处峰值为 $\sqrt{3}/2 \approx 0.866$）。一阶 FOA 三套归一化约定对照如下：
 
 | ACN 编号 | $(n, m)$ 与通道名 | SN3D（AmbiX；FOA 峰值 $= 1$，高阶 $\le 1$） | N3D（球面均方为 $1$，$\sqrt{2n+1}\cdot\text{SN3D}$） | 球面标准正交基（$\frac{1}{\sqrt{4\pi}}\cdot\text{N3D}$） |
 |---|---|---|---|---|
 | 0 | $(0, 0)$ 全向 $W$ | $1$ | $1$ | $1/\sqrt{4\pi}$ |
-| 1 | $(1, -1)$ 偶极 $Y$ | $n_{y,\mathrm{A}}$ | $\sqrt{3}\,n_{y,\mathrm{A}}$ | $\sqrt{3/(4\pi)}\,n_{y,\mathrm{A}}$ |
-| 2 | $(1, 0)$ 偶极 $Z$ | $n_{z,\mathrm{A}}$ | $\sqrt{3}\,n_{z,\mathrm{A}}$ | $\sqrt{3/(4\pi)}\,n_{z,\mathrm{A}}$ |
-| 3 | $(1, +1)$ 偶极 $X$ | $n_{x,\mathrm{A}}$ | $\sqrt{3}\,n_{x,\mathrm{A}}$ | $\sqrt{3/(4\pi)}\,n_{x,\mathrm{A}}$ |
+| 1 | $(1, -1)$ 偶极 $Y$ | $n_{y,\mathrm{AmbiX}}$ | $\sqrt{3}\,n_{y,\mathrm{AmbiX}}$ | $\sqrt{3/(4\pi)}\,n_{y,\mathrm{AmbiX}}$ |
+| 2 | $(1, 0)$ 偶极 $Z$ | $n_{z,\mathrm{AmbiX}}$ | $\sqrt{3}\,n_{z,\mathrm{AmbiX}}$ | $\sqrt{3/(4\pi)}\,n_{z,\mathrm{AmbiX}}$ |
+| 3 | $(1, +1)$ 偶极 $X$ | $n_{x,\mathrm{AmbiX}}$ | $\sqrt{3}\,n_{x,\mathrm{AmbiX}}$ | $\sqrt{3/(4\pi)}\,n_{x,\mathrm{AmbiX}}$ |
 
 **高斯—勒让德（Gauss–Legendre）数值求积**：在 $[-1, 1]$ 上精确计算多项式积分 $\int_{-1}^1 f(x)\,\mathrm{d}x \approx \sum_{q=1}^Q w_q f(x_q)$ 时，取 $Q$ 阶 Legendre 多项式 $P_Q(x)$ 的 $Q$ 个实根作为求积节点 $x_q$ 并配以插值型正权重 $w_q$，其代数精度高达 **$2Q - 1$ 次**（远超等距梯形法）。*两行证明*：任取次数不超过 $2Q - 1$ 的多项式 $f(x)$，用 $P_Q(x)$ 做带余除法得 $f(x) = q(x)P_Q(x) + r(x)$（$\deg q, \deg r \le Q - 1$）；由 Legendre 正交性知 $\int_{-1}^1 q(x)P_Q(x)\,\mathrm{d}x = 0$，又在每个节点上 $P_Q(x_q) = 0$，故精确积分与求积和同时退化为 $r(x)$，而 $Q$ 点插值型求积对所有次数不超过 $Q - 1$ 的多项式 $r$ 精确成立。因此 `E00-16` 仅用 $Q = 5$ 个节点就能无截断误差地精确积分所有 $9$ 次以内多项式（完整覆盖 $0$～$3$ 阶 Legendre 多项式两两乘积最高 $6$ 次的积分）。
 
@@ -1275,16 +1308,16 @@ $$\begin{aligned}
 | [第 1 章](01_problem-definition.md)（[双耳定位线索](01_problem-definition.md#sec-1-2)） | 多麦同相叠加降噪、扩散噪声着色、双耳时间差与声级差 | §0.2.2 式(0-10) 分贝换算；§0.3.3 式(0-23) $\mathbf R^{1/2}$ 着色；§0.6.1 线性组合方差与样本协方差 | 混用幅值 $20\log_{10}$ 与不相关噪声功率 $10\log_{10}$；未去直流偏置直接算底噪功率 |
 | [第 2 章 §2.2](02_basics-signal-model.md#sec-2-2)、[§2.5](02_basics-signal-model.md#sec-2-5) | 近远场分界、平面波 Dirichlet 核、STFT 与分数时延 | §0.1.2 式(0-5) 菲涅耳展开；§0.2.1 式(0-8)～式(0-9)；§0.2.4 式(0-16) COLA；§0.2.5 式(0-19) | 把迟到信号在正频处的相移写反为正号；分析与合成双乘完整汉宁窗在 $50\%$ 重叠产生波纹 |
 | [第 3 章 §3.2](03_array-geometry.md#sec-3-2)、[§3.3](03_array-geometry.md#sec-3-3) | 阵列孔径分辨率、空间混叠、稀疏协同阵与基线校准 | §0.1.1 式(0-2) 坐标桥；§0.2.1 式(0-8) 栅瓣；§0.3.4 SVD / §0.3.6 Vandermonde；§0.4.3 式(0-34) | 将二维/三维角度零点混代；把 $\operatorname{vec}(\mathbf A\mathbf X\mathbf B)$ 中的 $\mathbf B^\top$ 误写为 $\mathbf B^H$ |
-| [第 4 章 §4.2](04_doa-estimation.md#sec-4-2)、[§4.6](04_doa-estimation.md#sec-4-6) | GCC-PHAT、SRP-PHAT、Chan/LM 定位、MUSIC/ESPRIT 与 MDL 源数估计 | §0.2.3 式(0-15) 互相关；§0.3.2 式(0-22) 正交补投影；§0.5.4 式(0-46) LM；§0.6.2 式(0-51) CRLB/MDL | 相干强反射破坏源协方差满秩使 MUSIC 漏峰；快拍数 $L < M$ 时样本子空间退化 |
-| [第 5 章 §5.4](05_beamforming.md#sec-5-4)、[§5.8](05_beamforming.md#sec-5-8) | DSB、超指向加载、MVDR、LCMV、Frost/GSC、MWF 与球谐波束 | §0.3.1 式(0-21)；§0.4.2 式(0-32) GEV；§0.5.2 式(0-40) LCMV；§0.5.3 式(0-42) Frost/SOCP；§0.7 式(0-59)、式(0-64) | LCMV 复相位约束右端漏取共轭；超小孔径低频求逆无加载导致白噪声增益急剧恶化 |
+| [第 4 章 §4.2](04_doa-estimation.md#sec-4-2)、[§4.6](04_doa-estimation.md#sec-4-6)、[§4.7](04_doa-estimation.md#sec-4-7) | GCC-PHAT、SRP-PHAT、Chan/LM 定位、Capon、MUSIC/Root-MUSIC/ESPRIT、稀疏 DOA 与 MDL | §0.2.3 式(0-15) 互相关；§0.2.5 Z 平面单位圆（Root-MUSIC）；§0.3.2 式(0-22) 正交补投影；§0.3.4 Eckart–Young–Mirsky；§0.5.2 Capon 拉格朗日；§0.5.3 $\ell_1$ 软阈值；§0.5.4 式(0-46) LM；§0.6.2 式(0-51) CRLB/MDL；§0.7.2 柱贝塞尔 $J_n$ 模态截断 | 相干强反射破坏源协方差满秩使 MUSIC 漏峰；快拍数 $L < M$ 时样本子空间退化 |
+| [第 5 章 §5.4](05_beamforming.md#sec-5-4)、[§5.8](05_beamforming.md#sec-5-8) | DSB、超指向加载、MVDR、LCMV、Frost/GSC、MWF 与球谐波束 | §0.3.1 式(0-21)；§0.4.2 式(0-32) GEV；§0.5.2 式(0-40) LCMV；§0.5.3（第 1 条 SOCP、式(0-42) Frost 投影梯度）；§0.7 式(0-59)、式(0-63) 刚性球朗斯基模态权重、式(0-64) | LCMV 复相位约束右端漏取共轭；超小孔径低频求逆无加载导致白噪声增益急剧恶化 |
 | [第 6 章 §6.1](06_aec.md#sec-6-1)、[§6.2](06_aec.md#sec-6-2) | LMS/NLMS、FDAF、仿射投影、RLS 与卡尔曼回声消除 | §0.2.3 式(0-14) 补零卷积；§0.2.5 Z 变换；§0.3.5 式(0-26) Woodbury；§0.3.6 循环阵；§0.5.1 式(0-36)；§0.6.3 式(0-54) | 频域块滤波未清零环绕梯度导致循环混叠；双讲段未冻结更新使近端人声污染回声滤波器 |
-| [第 7 章 §7.2](07_wpe-dereverberation.md#sec-7-2)、[§7.4](07_wpe-dereverberation.md#sec-7-4) | 离线/在线多通道 WPE 去混响与多通道 MINT 逆滤波 | §0.2.5 式(0-18) Bézout 互素；§0.3.5 Woodbury；§0.4.3 Kronecker；§0.5.4 MM；§0.6.1 式(0-49)；§0.6.3 式(0-52) | 静音帧功率 $\lambda_{ft}\to 0$ 未设下限保护引发除零爆炸；忽略 DC/Nyquist 实频点系数差异 |
+| [第 7 章 §7.1](07_wpe-dereverberation.md#sec-7-1)、[§7.2](07_wpe-dereverberation.md#sec-7-2)、[§7.3](07_wpe-dereverberation.md#sec-7-3)、[§7.4](07_wpe-dereverberation.md#sec-7-4) | 离线/在线多通道 WPE 去混响与多通道 MINT 逆滤波 | §0.2.5 式(0-18) Bézout 互素；§0.3.5 Woodbury；§0.4.3 Kronecker；§0.5.4 MM；§0.6.1 式(0-49)；§0.6.3 式(0-52) | 静音帧功率 $\lambda_{ft}\to 0$ 未设下限保护引发除零爆炸；忽略 DC/Nyquist 实频点系数差异 |
 | [第 8 章 §8.3](08_speech-separation.md#sec-8-3)、[§8.6](08_speech-separation.md#sec-8-6) | AuxIVA、ILRMA、cACGMM/GSS 空间混合模型、PIT 与 SI-SDR | §0.3.2 式(0-22) SI-SDR；§0.5.1 式(0-38) 矩阵 Wirtinger 对数行列式梯度；§0.5.4 式(0-44)～式(0-45) MM/EM/IS-NMF；§0.6.1 cACG；§0.6.4 式(0-57) | 分离通道频点间排列不一致造成频谱拼错；跨块拼接贪心匹配在静音段引发说话人跳变 |
 | [第 9 章 §9.2](09_source-tracking.md#sec-9-2)、[§9.3](09_source-tracking.md#sec-9-3) | 卡尔曼/EKF/UKF/IMM、粒子滤波、vMF、PHD 与多目标 GNN 关联 | §0.1.3 式(0-6) $\mathrm{SO}(3)$；§0.6.3 式(0-54) Joseph；§0.6.4 式(0-55)～式(0-57)；§0.6.5 式(0-58) 马氏 $\chi^2$ 门控 | 用非对称简写 $(\mathbf I - \tilde{\mathbf K}\mathbf H)\mathbf P$ 在量化误差下丧失正定性；圆周角跨越 $\pm 180^\circ$ 未折叠最短角差 |
 | [第 10 章 §10.2](10_engineering-practice.md#sec-10-2)、[§10.4](10_engineering-practice.md#sec-10-4) | 采样率偏差（SRO）、定点量化动态范围与实时因子（RTF）预算 | §0.2.2 式(0-10)～式(0-11) 分贝与 SQNR；§0.2.4 帧移缓冲；§0.2.5 分数时延；§0.3.4 条件数与数值精度 | 误拿窗长 $N/f_s$ 代替帧移 $H/f_s$ 作实时因子分母；多块评测混淆先取 $\mathrm{dB}$ 平均与先汇总结算 |
-| [第 11 章 §11.3](11_selection-guide.md#sec-11-3)、[§11.5](11_selection-guide.md#sec-11-5) | 几何与算法联合选型、Pareto 前沿与统计置信验收判据 | §0.1.2 孔径波长尺度律；§0.3.4 偏差—方差折中；§0.5.3 Pareto 凸包；§0.6.5 式(0-58) Wilson 置信区间与 Bonferroni | 场景权重变化产生的总体均值波动误判为算法升级；对零失误小样本错用 Wald 区间得出零风险上界 |
-| [第 12 章 §12.5](12_acoustic-imaging.md#sec-12-5)、[§12.7](12_acoustic-imaging.md#sec-12-7) | 波束脏图、点扩散函数（PSF）、DAMAS、NNLS 与 CSM 拟合 | §0.4.3 式(0-33)～式(0-34) 向量化；§0.5.3 式(0-41) NNLS 的 KKT 互补松弛条件 | 把无约束最小二乘负解直接截断置零冒充 NNLS 最优解；未校准灵敏度直接标称 $\mathrm{dB\ SPL}$ |
-| [第 13 章 §13.3](13_distributed-enhancement.md#sec-13-3)、[§13.12](13_distributed-enhancement.md#sec-13-12) | 集中式与分布式多通道维纳滤波（DANSE）及 GEV 压缩传输 | §0.3.2 子空间无损压缩条件；§0.4.2 式(0-31)～式(0-32) 联合对角化；§0.6.3 式(0-53) 维纳滤波 | 异构节点异步采样率偏移破坏跨节点互协方差相干性；广播信号维数小于目标子空间秩导致有损 |
+| [第 11 章 §11.3](11_selection-guide.md#sec-11-3)、[§11.5](11_selection-guide.md#sec-11-5) | 几何与算法联合选型、Pareto 前沿与统计置信验收判据 | §0.1.2 近场距离 $r_{\mathrm{F}} = 2D^2/\lambda$；§0.2.1 式(0-8) 角分辨尺度 $\lambda/D$；§0.3.4 Tikhonov 正则化与条件数折中；§0.5.3 Pareto 凸包；§0.6.5 式(0-58) Wilson 置信区间与 Bonferroni | 场景权重变化产生的总体均值波动误判为算法升级；对零失误小样本错用 Wald 区间得出零风险上界 |
+| [第 12 章 §12.5](12_acoustic-imaging.md#sec-12-5)、[§12.7](12_acoustic-imaging.md#sec-12-7) | 波束脏图、点扩散函数（PSF）、DAMAS、NNLS 与 CSM 拟合 | §0.4.3 式(0-33)～式(0-34) 向量化；§0.5.3 式(0-41) NNLS 的 KKT 互补松弛与投影 Gauss–Seidel（DAMAS） | 把无约束最小二乘负解直接截断置零冒充 NNLS 最优解；未校准灵敏度直接标称 $\mathrm{dB\ SPL}$ |
+| [第 13 章 §13.3](13_distributed-enhancement.md#sec-13-3)、[§13.12](13_distributed-enhancement.md#sec-13-12) | 集中式与分布式多通道维纳滤波（DANSE）及 GEV 压缩传输 | §0.3.2 正交投影与子空间分解（无损压缩定理本身推于[第 13 章 §13.6](13_distributed-enhancement.md#sec-13-6)）；§0.4.2 式(0-31)～式(0-32) 联合对角化；§0.6.3 式(0-53) 维纳滤波 | 异构节点异步采样率偏移破坏跨节点互协方差相干性；广播信号维数小于目标子空间秩导致有损 |
 | [第 14 章 §14.2](14_spatial-wearable-arrays.md#sec-14-2)、[§14.6](14_spatial-wearable-arrays.md#sec-14-6) | FOA/HOA、ACN/SN3D/N3D、DirAC、双耳匹配 BSM-MagLS 与头部追踪 | §0.1.1/§0.1.3 SOFA 与头部逆旋转；§0.3.1 式(0-21)；§0.5.3 式(0-43) MagLS 交替投影；§0.7.3～§0.7.4 式(0-63)～式(0-64) | 头部追踪漏写旋转转置 $\mathbf R^\top$；开球阵在 $\kappa R = \pi$ 零陷处强行逆均衡放大底噪 |
 | [第 15 章 §15.2](15_target-extraction-diarization.md#sec-15-2)、[§15.3](15_target-extraction-diarization.md#sec-15-3)、[§15.4](15_target-extraction-diarization.md#sec-15-4) | 条件目标提取、近场距离气泡、对数几率融合与多通道日志（DER） | §0.1.2 式(0-5) 近场曲率；§0.3.2 式(0-22) SI-SDR 零目标奇异性；§0.6.1 式(0-47) 对数几率/Sigmoid；§0.6.4 式(0-57) | 目标沉默段套用标准 SI-SDR 引发 $\vec 0/\lVert\vec 0\rVert_2$ 除零无定义；误以为合法 $\mathrm{DER}$ 不能超过 $100\%$ |
 | [附录 A §16.1](16_appendix-symbols-math.md#sec-16-1)、[§16.3](16_appendix-symbols-math.md#sec-16-3) | 全书符号总表、有符号 DFT 频轴、WLS/GLS 与对角加载尺度不变性 | §0.2.3 式(0-12) `fftfreq`；§0.3.4 式(0-24)～式(0-25) 伪逆/TSVD/岭正则；§0.6.3 式(0-52) 高斯—马尔可夫加权 | 把完整 DFT 高半区索引 $k > N/2$ 误读为高于奈奎斯特的正频率；协方差缩放后未同步缩放绝对加载量 |
@@ -1300,7 +1333,7 @@ $$\begin{aligned}
 - Horn, R. A. 与 Johnson, C. R.，*Matrix Analysis*（第 2 版），Cambridge University Press，2012；Golub, G. H. 与 Van Loan, C. F.，*Matrix Computations*（第 4 版），Johns Hopkins University Press，2013；以及 Sidiropoulos, N. D. 与 Bro, R.，*On the Uniqueness of Multilinear Decomposition of N-Way Arrays*，*Journal of Chemometrics* 14(3)，2000，第 229～239 页：系统论述 §0.3～§0.4 的四个基本子空间、QR/SVD 扰动界、Sherman–Morrison–Woodbury 引理、Schur 补、Toeplitz/循环/Vandermonde 阵、瑞利商变分原理与 Kronecker/Khatri–Rao 积及 Kruskal 秩唯一性界。
 - Oppenheim, A. V. 与 Schafer, R. W.，*Discrete-Time Signal Processing*（第 3 版），Pearson，2009；Griffin, D. W. 与 Lim, J. S.，*Signal Estimation from Modified Short-Time Fourier Transform*，*IEEE TASSP* 32(2)，1984，第 236～243 页；以及 Smith, J. O.，*Spectral Audio Signal Processing*，W3K Publishing（CCRMA），2011：系统建立 §0.2 的采样定理、DFT/STFT 频谱泄漏、COLA/WOLA 重建、相位迭代重建、Z 变换极零点及分数时延滤波器理论。
 - Schreier, P. J. 与 Scharf, L. L.，*Statistical Signal Processing of Complex-Valued Data: The Theory of Improper and Noncircular Signals*，Cambridge University Press，2010：严格建立 §0.6.1 复随机向量的协方差与伪协方差二阶刻画、恰当（Proper）与圆对称复高斯分布及实频点退化性质。
-- Kay, S. M.，*Fundamentals of Statistical Signal Processing: Estimation Theory*（Vol. 1），Prentice Hall，1993；Stoica, P. 与 Nehorai, A.，*MUSIC, Maximum Likelihood, and Cramér–Rao Bound*，*IEEE TASSP* 37(5)，1989，第 720～741 页（及 *Performance Study of Conditional and Unconditional Direction-of-Arrival Estimation*，*IEEE TSP* 38(12)，1990，第 2140～2150 页）；Wax, M. 与 Kailath, T.，*Detection of Signals by Information Theoretic Criteria*，*IEEE TASSP* 33(2)，1985，第 387～392 页；Bucy, R. S. 与 Joseph, P. D.，*Filtering for Stochastic Processes with Applications to Guidance*，Interscience，1968；以及 Wilson, E. B.，*Probable Inference, the Law of Succession, and Statistical Inference*，*Journal of the American Statistical Association* 22(158)，1927，第 209～212 页：分别给出 §0.6.2～§0.6.5 一般复高斯 Slepian–Bangs FIM、CRLB、AIC/MDL 源数估计、高斯—马尔可夫 WLS、维纳正交原理、Joseph 协方差递推及 Wilson 得分置信区间。
+- Kay, S. M.，*Fundamentals of Statistical Signal Processing: Estimation Theory*（Vol. 1），Prentice Hall，1993；Stoica, P. 与 Nehorai, A.，*MUSIC, Maximum Likelihood, and Cramér–Rao Bound*，*IEEE TASSP* 37(5)，1989，第 720～741 页（及 *Performance Study of Conditional and Unconditional Direction-of-Arrival Estimation*，*IEEE TASSP* 38(10)，1990，第 1783～1795 页）；Wax, M. 与 Kailath, T.，*Detection of Signals by Information Theoretic Criteria*，*IEEE TASSP* 33(2)，1985，第 387～392 页；Bucy, R. S. 与 Joseph, P. D.，*Filtering for Stochastic Processes with Applications to Guidance*，Interscience，1968；以及 Wilson, E. B.，*Probable Inference, the Law of Succession, and Statistical Inference*，*Journal of the American Statistical Association* 22(158)，1927，第 209～212 页：分别给出 §0.6.2～§0.6.5 一般复高斯 Slepian–Bangs FIM、CRLB、AIC/MDL 源数估计、高斯—马尔可夫 WLS、维纳正交原理、Joseph 协方差递推及 Wilson 得分置信区间。
 - Kuhn, H. W.，*The Hungarian Method for the Assignment Problem*，*Naval Research Logistics Quarterly* 2(1–2)，1955，第 83～97 页；Hunter, D. R. 与 Lange, K.，*A Tutorial on MM Algorithms*，*The American Statistician* 58(1)，2004，第 30～37 页；以及 Févotte, C. 与 Idier, J.，*Algorithms for Nonnegative Matrix Factorization with the $\beta$-Divergence*，*Neural Computation* 23(9)，2011，第 2421～2456 页：分别建立 §0.6.4 二分图原对偶匈牙利指派算法、§0.5.4 主化—最小化单调收敛理论与 IS-NMF 带开方乘性更新证明。
 - Williams, E. G.，*Fourier Acoustics: Sound Radiation and Nearfield Acoustical Holography*，Academic Press，1999；Rafaely, B.，*Fundamentals of Spherical Array Processing*，Springer，2015；Nachbar, C., Zotter, F., Deleflie, E. 与 Sontacchi, A.，*AmbiX — A Suggested Ambisonics Format*，*Ambisonics Symposium*，2011；以及 Zotter, F. 与 Frank, M.，*Ambisonics: A Practical 3D Audio Theory for Recording, Studio Production, Sound Reinforcement, and Virtual Reality*，Springer，2019：系统推导 §0.7 柱/球贝塞尔函数、Jacobi–Anger 平面波展开、刚性球朗斯基恒等式、实/复球谐函数加法定理及 AmbiX ACN/SN3D 标准。
 
@@ -1319,7 +1352,7 @@ $$\begin{aligned}
 
 #### E00-01：球面/AES69 坐标变换、空间方向余弦与二阶菲涅耳球面波程差近似
 
-**题目。** （1）给定本书平面阵坐标系方向 $\theta_{\mathrm{book}} = 30^\circ$、俯仰角 $\phi_{\mathrm{el}} = 45^\circ$、距离 $r = 1.5\ \mathrm{m}$，求对应的球谐逆时针方位角 $\alpha$、余纬角 $\vartheta$、AES69/SOFA 球面坐标 $(\phi_{\mathrm{SOFA}}, \delta_{\mathrm{SOFA}})$、本书三维笛卡尔坐标 $\vec p$ 与 AmbiX/SOFA 局部笛卡尔坐标 $\vec p_{\mathrm{A}}$，并用球面余弦定理求其与第二方向 $(\theta_2, \phi_{\mathrm{el},2}) = (-60^\circ, 0^\circ)$ 的空间张角 $\gamma$；（2）在声速 $c = 343\ \mathrm{m/s}$、频率 $f = 3430\ \mathrm{Hz}$、线阵孔径 $D = 0.20\ \mathrm{m}$ 下，计算夫琅禾费远场边界 $r_{\mathrm{F}}$，并对比近场声源 $r = 0.50\ \mathrm{m}$、偏角 $\theta = 30^\circ$ 到右侧阵元 $x_m = +0.10\ \mathrm{m}$ 的精确程差、一阶平面波近似误差与二阶菲涅耳近似相位误差。
+**题目。** （1）给定本书平面阵坐标系方向 $\theta_{\mathrm{book}} = 30^\circ$、俯仰角 $\phi_{\mathrm{el}} = 45^\circ$、距离 $r = 1.5\ \mathrm{m}$，求对应的球谐逆时针方位角 $\alpha$、余纬角 $\vartheta$、AES69/SOFA 球面坐标 $(\phi_{\mathrm{SOFA}}, \delta_{\mathrm{SOFA}})$、本书三维笛卡尔坐标 $\vec p$ 与 AmbiX/SOFA 局部笛卡尔坐标 $\vec p_{\mathrm{AmbiX}}$，并用球面余弦定理求其与第二方向 $(\theta_2, \phi_{\mathrm{el},2}) = (-60^\circ, 0^\circ)$ 的空间张角 $\gamma$；（2）在声速 $c = 343\ \mathrm{m/s}$、频率 $f = 3430\ \mathrm{Hz}$、线阵孔径 $D = 0.20\ \mathrm{m}$ 下，计算夫琅禾费远场边界 $r_{\mathrm{F}}$，并对比近场声源 $r = 0.50\ \mathrm{m}$、偏角 $\theta = 30^\circ$ 到右侧阵元 $x_m = +0.10\ \mathrm{m}$ 的精确程差、一阶平面波近似误差与二阶菲涅耳近似相位误差。
 
 **参考答案。** 按式(0-2)～式(0-5)分两步复算：
 
@@ -1330,13 +1363,13 @@ $$\begin{aligned}
     = \begin{bmatrix}\frac{\sqrt{2}}{4}\\ \frac{\sqrt{6}}{4}\\ \frac{\sqrt{2}}{2}\end{bmatrix}
     \approx \begin{bmatrix}0.353553\\ 0.612372\\ 0.707107\end{bmatrix}\text{，}\qquad
     \vec p = 1.5\vec u \approx \begin{bmatrix}0.530330\\ 0.918559\\ 1.060660\end{bmatrix}\ \mathrm{m}\text{，}\\
-    \vec u_{\mathrm{A}} &= \begin{bmatrix}u_y\\ -u_x\\ u_z\end{bmatrix}
+    \vec u_{\mathrm{AmbiX}} &= \begin{bmatrix}u_y\\ -u_x\\ u_z\end{bmatrix}
     = \begin{bmatrix}\frac{\sqrt{6}}{4}\\ -\frac{\sqrt{2}}{4}\\ \frac{\sqrt{2}}{2}\end{bmatrix}
     \approx \begin{bmatrix}0.612372\\ -0.353553\\ 0.707107\end{bmatrix}\text{，}\qquad
-    \vec p_{\mathrm{A}} = 1.5\vec u_{\mathrm{A}} \approx \begin{bmatrix}0.918559\\ -0.530330\\ 1.060660\end{bmatrix}\ \mathrm{m}\text{。}
+    \vec p_{\mathrm{AmbiX}} = 1.5\vec u_{\mathrm{AmbiX}} \approx \begin{bmatrix}0.918559\\ -0.530330\\ 1.060660\end{bmatrix}\ \mathrm{m}\text{。}
     \end{aligned}$$
 
-    核对 SOFA 球面反推：$[\cos 45^\circ\cos(-30^\circ),\ \cos 45^\circ\sin(-30^\circ),\ \sin 45^\circ]^\top = [\frac{\sqrt{6}}{4}, -\frac{\sqrt{2}}{4}, \frac{\sqrt{2}}{2}]^\top = \vec u_{\mathrm{A}}$（偏差精确为 $0.0$）。对第二方向 $(-60^\circ, 0^\circ)$，有 $\vec u_2 = [\cos 0^\circ\sin(-60^\circ),\ \cos 0^\circ\cos(-60^\circ),\ 0]^\top = [-\frac{\sqrt{3}}{2}, \frac{1}{2}, 0]^\top$，且 $\theta_1 - \theta_2 = 90^\circ$，点积与式(0-3)球面余弦定理均给出 $\cos\gamma = 0 + \frac{\sqrt{2}}{2}\cdot 1\cdot\cos 90^\circ = 0$，即两方向严格正交（$\gamma = 90.0^\circ$）。
+    核对 SOFA 球面反推：$[\cos 45^\circ\cos(-30^\circ),\ \cos 45^\circ\sin(-30^\circ),\ \sin 45^\circ]^\top = [\frac{\sqrt{6}}{4}, -\frac{\sqrt{2}}{4}, \frac{\sqrt{2}}{2}]^\top = \vec u_{\mathrm{AmbiX}}$（偏差精确为 $0.0$）。对第二方向 $(-60^\circ, 0^\circ)$，有 $\vec u_2 = [\cos 0^\circ\sin(-60^\circ),\ \cos 0^\circ\cos(-60^\circ),\ 0]^\top = [-\frac{\sqrt{3}}{2}, \frac{1}{2}, 0]^\top$，且 $\theta_1 - \theta_2 = 90^\circ$，点积与式(0-3)球面余弦定理均给出 $\cos\gamma = 0 + \frac{\sqrt{2}}{2}\cdot 1\cdot\cos 90^\circ = 0$，即两方向严格正交（$\gamma = 90.0^\circ$）。
 
 - **（2）近场菲涅耳程差精度对比**：波长 $\lambda = 343 / 3430 = 0.10\ \mathrm{m}$，夫琅禾费边界 $r_{\mathrm{F}} = 2(0.20)^2 / 0.10 = 0.80\ \mathrm{m} > r = 0.50\ \mathrm{m}$，处于近场区。由式(0-4)算得精确距离 $r_m = \sqrt{0.50^2 - 2(0.50)(0.10)(0.5) + 0.10^2} = \sqrt{0.21} \approx 0.458258\ \mathrm{m}$，精确程差 $\Delta r_{\mathrm{exact}} = \sqrt{0.21} - 0.50 \approx -0.041742\ \mathrm{m}$。一阶平面波近似 $\Delta r_1 = -0.10\sin 30^\circ = -0.050000\ \mathrm{m}$，误差达 $8.258\ \mathrm{mm}$（相位误差 $360^\circ\times 0.008258/0.10 \approx 29.73^\circ$）；代入 $\cos^2 30^\circ = 3/4 = 0.75$ 得式(0-5)二阶菲涅耳近似 $\Delta r_2 = -0.05 + \frac{0.01\times 0.75}{2\times 0.50} = -0.042500\ \mathrm{m}$，误差骤降至 $0.758\ \mathrm{mm}$（相位误差仅 $2.73^\circ$，精度提升 $10.9$ 倍）。
 

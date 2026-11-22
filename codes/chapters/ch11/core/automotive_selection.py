@@ -123,7 +123,7 @@ def multizone_cabin_selection_case() -> dict[str, object]:
     h_d_ceil, a_d_ceil, r_d_ceil = _physical_point_transfer(
         mics_ceiling, s_driver, frequency_hz, nominal_mouth_m, sound_speed
     )
-    h_p_ceil, a_p_ceil, r_p_ceil = _physical_point_transfer(
+    h_p_ceil, _, r_p_ceil = _physical_point_transfer(
         mics_ceiling, s_passenger, frequency_hz, nominal_mouth_m, sound_speed
     )
     w_ceil = dsb_weights(a_d_ceil)

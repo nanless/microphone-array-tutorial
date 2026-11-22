@@ -31,9 +31,9 @@
 
 | 正文或研究范围 | 算法/机制 | 覆盖状态 | 教学入口或主清单 ID：官方源码入口 | 关键边界 |
 |---|---|---|---|---|
-| §1.1；空间研究“第 1 章”专题 | 低通 HRIR 互相关时差估计 | 外部参考实现 | `spatial-audio-framework`：`framework/modules/saf_hrir/saf_hrir.c::estimateITDs` | 固定版 750 Hz 低通、整采样峰及限幅；非 Woodworth 真值或听觉阈值 |
-| §1.1；空间研究“第 1 章”专题 | HRIR 到 HRTF 与方向插值 | 外部参考实现 | `spatial-audio-framework`：同文件 `HRIRs2HRTFs`、`interpHRTFs` | 已有响应的表示与插值，不从未知录音自动求方向；数据许可另核 |
-| §1.1；空间研究“第 1 章”专题 | SOFA响应读取与方向插值接口 | 外部参考实现 | `libmysofa`：`src/hrtf/easy.c`、`src/hrtf/mysofa.h` | 固定v1.3.5源码已取得；原归一化两例保留零能量退化；`audit_libmysofa_interpolation.py`五人工控制确认原公共延迟保持失败，逐方向控制另列；未运行SOFA解析/自动查询/单位转换/重采样/渲染，非定位算法 |
+| §1.2；空间研究“第 1 章”专题 | 低通 HRIR 互相关时差估计 | 外部参考实现 | `spatial-audio-framework`：`framework/modules/saf_hrir/saf_hrir.c::estimateITDs` | 固定版 750 Hz 低通、整采样峰及限幅；非 Woodworth 真值或听觉阈值 |
+| §1.2；空间研究“第 1 章”专题 | HRIR 到 HRTF 与方向插值 | 外部参考实现 | `spatial-audio-framework`：同文件 `HRIRs2HRTFs`、`interpHRTFs` | 已有响应的表示与插值，不从未知录音自动求方向；数据许可另核 |
+| §1.2；空间研究“第 1 章”专题 | SOFA响应读取与方向插值接口 | 外部参考实现 | `libmysofa`：`src/hrtf/easy.c`、`src/hrtf/mysofa.h` | 固定v1.3.5源码已取得；原归一化两例保留零能量退化；`audit_libmysofa_interpolation.py`五人工控制确认原公共延迟保持失败，逐方向控制另列；未运行SOFA解析/自动查询/单位转换/重采样/渲染，非定位算法 |
 | §2.2、§2.3 | 远场相对时延 | 本仓库可运行基线 | `codes/chapters/ch03/core/geometry.py::plane_wave_delays` | 坐标、角度零点、时延正号 |
 | §2.3 | 平面波导向矢量 | 本仓库可运行基线 | `codes/chapters/ch03/core/geometry.py::plane_wave_steering` | 傅里叶符号、公共相位 |
 | §2.2、§2.7 | 球面波导向与距离衰减 | 本仓库可运行基线 | `codes/chapters/ch03/core/geometry.py::near_field_steering` | 参考麦归一、零距离、远场退化 |
@@ -41,7 +41,7 @@
 | 研究扩展：空间 §2 | 射线追踪房间模拟 | 外部参考实现 | `pyroomacoustics`：`pyroomacoustics/libroom_src/` | 不自动包含衍射、结构传声 |
 | §2.4；空间研究 §2.4 | 指数扫频生成 | 外部参考实现 | `pyfar`：`pyfar/signals/deterministic.py::exponential_sweep_time` | v0.8.1 源码已取得；信号生成不等于已测房间响应 |
 | §2.4；E02-17；空间研究 §2.4 | 已知激励的逐频正则反卷积 | 本仓库可运行基线 | `codes/chapters/ch02/core/deconvolution.py::regularized_inverse`、`score_impulse_response`、`build_sweep_cases`；外部对照`pyfar`：`pyfar/dsp/dsp.py::deconvolve`、`regularized_spectrum_inversion`；[当前原方法合同](../ch02/reports/upstream_model_contracts.json) | 教学核使用全频常数epsilon及循环参数空间，不附加短非零区间截断约束；固定pyfar原体仅人工Signal/FFT适配调用，默认仍正则。浮点/实际PCM、完整IR与真值161点非零区间分别评分，不含设备测量或原整包 |
-| §2.2；空间研究 §1.3 | 通道标量幅度校准 | 外部参考实现 | `acoular`：`acoular/calib.py::Calib` | 使用给定校准因子；不是自动估计或频率相关复相位校准 |
+| §2.1.2 / §3.4；空间研究 §1.3 | 通道标量幅度校准 | 外部参考实现 | `acoular`：`acoular/calib.py::Calib` | 使用给定校准因子；不是自动估计或频率相关复相位校准 |
 | §2.1；空间研究 §1.2 | 湿空气声速与环境参数不确定度模型 | 外部参考实现 | `speed-of-sound-in-air`：`source labview files/SoS_AIR_2025.vi`；[原作者正式论文](https://doi.org/10.1063/5.0294663) | 固定43VI、GPLv3；需LabVIEW，未读框图/未运行，不替换正文343m/s约值 |
 | §2.5 | STFT 分析 | 本仓库可运行基线 | `codes/chapters/ch02/core/spectral.py::stft` | 窗、帧移、补零与轴序 |
 | §2.5；E02-18 | 加权重叠相加 iSTFT | 本仓库可运行基线 | `codes/chapters/ch02/core/spectral.py::istft`；`codes/chapters/ch02/core/stft_consistency.py::consistency_example` | 窗乘积包络、输出长度；实谱端点与跨帧一致性分开，完整DFT距离保留配对权重；幂等不自动等于任意度量的正交投影 |
@@ -137,7 +137,7 @@
 | §5.5 | LCMV 闭式权重 | 本仓库可运行基线 | `codes/chapters/ch05/core/beamforming.py::lcmv_weights`；`codes/chapters/ch05/beamformer_common_input_demo.py` | 约束独立性、残差 |
 | §5.5、E05-18～20 | 双耳 MVDR／双耳 LCMV | 本仓库可运行基线 | `ch05/examples/binaural_beamforming_demo.py`、四份同增益双声道 PCM16 | 已知三麦分量；定向复比、背景相干与残余功率分开；非盲估计、宽带系统或真人听测 |
 | §5.5、空间研究的双耳输出 | openMHA 左右预计算滤波 | 外部参考实现 | `openmha` 的固定示例配置、`acSteer` 与 `steerbf` | AGPL-3.0 选集取得及静态核验；未运行插件，不声称实时 BLCMV 求解 |
-| §5.5 后的 Frost 专题 | Frost 投影自适应 | 原理索引 | 正文时域投影更新；E05-06实际计算一步 | 由 LCMV 约束出发；一步约束核对不是完整在线Frost实现 |
+| §5.5.2 | Frost 投影自适应 | 原理索引 | 正文时域投影更新；E05-06实际计算一步 | 由 LCMV 约束出发；一步约束核对不是完整在线Frost实现 |
 | §5.6 | GSC 阻塞矩阵 | 本仓库可运行基线 | `codes/chapters/ch05/core/beamforming.py::blocking_matrix` | 不含持续自适应抵消支路 |
 | §5.6；E05-10 | 单参考复数 GSC NLMS 状态更新 | 本仓库可运行基线 | `codes/chapters/ch05/core/gsc.py::ScalarGSCNLMS`；`codes/chapters/ch05/chapter05_experiments.py` | 给定固定/阻塞输出，跨块、冻结和复位；不含方向估计、自动SPP或多抽头滤波器组 |
 | §5.6；空间 §21 | 完整在线自适应 GSC | 外部参考实现 | `btk20`：`btk20_src/lib/pybeamformer.py` | 子带 LMS/RLS；毫米坐标、旧依赖、泄漏与冻结；非时域 Frost |
@@ -147,7 +147,7 @@
 | §5.7.1 | MCRA | 原理索引 | 正文与空间研究的作者软件入口 | 未获得可核版本/许可包 |
 | §5.7.1 | IMCRA | 原理索引 | 正文与空间研究的作者软件入口 | 不把普通最小值跟踪称 IMCRA |
 | §5.7.2 | OM-LSA | 原理索引 | 正文及作者方法说明 | 不以 Wiener 或其他 MMSE 增益代替 |
-| §5.5 后的 MWF 专题；§5.7.2 | 全秩 SDW-MWF | 外部参考实现 | `espnet`：`espnet2/enh/layers/beamformer.py::get_sdw_mwf_vector` | 独立均方误差问题；失真权重与参考通道，非 LCMV 子类 |
+| §5.5.1；§5.7.2 | 全秩 SDW-MWF | 外部参考实现 | `espnet`：`espnet2/enh/layers/beamformer.py::get_sdw_mwf_vector` | 独立均方误差问题；失真权重与参考通道，非 LCMV 子类 |
 | 研究扩展：空间后滤 | 秩一迹化简 WMWF | 外部参考实现 | `pb_bss`：`pb_bss/extraction/beamformer.py::get_wmwf_vector` | 秩一迹化简；12原函数审计已实调，全秩反例不等于一般MWF |
 | §5.9 | GEV 波束权重 | 外部参考实现 | `pb_bss`：同文件 `get_gev_vector` | 广义特征向量尺度和相位不确定；E05-15三PCM仅已知分量控制，不另计算法或称运行GEV整链 |
 | §5.9；E05-15；空间研究§60 | 相邻频率特征向量相位连续化 | 外部参考实现 | `pb_bss`：`pb_bss/extraction/beamformer.py::phase_correction`；[当前原函数合同](../ch05/reports/upstream_beamformers_current.json) | 2D F×C原调用符合相邻频累乘；3D B×F×C原axis0沿batch造成符号控制差异；平滑不自动恢复目标绝对相位，无完整整链 |
@@ -240,16 +240,16 @@
 | §7.1；增强研究 W07 | 实倒谱域加窗（liftering） | 原理索引 | Oppenheim/Schafer/Stockham 1968；正文对数功率谱约定（实倒谱的两倍） | 需要对数零点处理；实倒谱丢失相位，非无条件可逆去混响器；未锁定通用作者实现 |
 | §7.1；增强研究 W07 | 晚期混响谱方差估计与抑制 | 原理索引 | Habets 等 2009 原文模型与边界 | 统计衰减与混合时间假设；不把 SpeexDSP 的配置开关误作已实现的谱方差抑制器 |
 | 增强研究两阶段去混响 | 输出端PSD训练WPE与单通道维纳后滤 | 原理索引 | 2sderev作者2023论文及官方补充；研究 `#two-stage-dereverb` | 有限滤长残余；HA前40ms/CI16ms目标不同，训练代码未公开、源码许可未核，不取得代码/模型 |
-| §7.10；增强研究 W09 | MetaAF 学习 WPE 滤波器更新 | 外部参考实现 | `metaaf`：`zoo/wpe/wpe.py`、`zoo/wpe/wpe_eval.py`；核心优化器在 `metaaf/` | 固定源码选集已取得，zoo 采用独立非商业许可；未训练、未载入模型、未复现质量指标 |
-| §7.10；增强研究 W09 | VACE-WPE 虚拟通道估计与任务特定前端 | 外部参考实现 | `tso_vace_wpe`：`vace_wpe.py`、`torch_custom/wpe_th_utils.py`、`torch_custom/neural_wpe.py` | MIT 固定源码与直接依赖选集；未取模型和语料，未训练/推理或核验 ASV 性能 |
+| §7.9；增强研究 W09 | MetaAF 学习 WPE 滤波器更新 | 外部参考实现 | `metaaf`：`zoo/wpe/wpe.py`、`zoo/wpe/wpe_eval.py`；核心优化器在 `metaaf/` | 固定源码选集已取得，zoo 采用独立非商业许可；未训练、未载入模型、未复现质量指标 |
+| §7.9；增强研究 W09 | VACE-WPE 虚拟通道估计与任务特定前端 | 外部参考实现 | `tso_vace_wpe`：`vace_wpe.py`、`torch_custom/wpe_th_utils.py`、`torch_custom/neural_wpe.py` | MIT 固定源码与直接依赖选集；未取模型和语料，未训练/推理或核验 ASV 性能 |
 | §7.6；E07-18～19 | 已知到达下的源时刻与单历史回归控制 | 本仓库可运行基线 | `codes/chapters/ch07/core/prediction_delays.py`、`core/delay_audio.py`及六PCM生成/核验；图70 | 已知整数到达、一个实数回归、共同接收时轴；不估计时差，不是完整STFT/跨频WPE；T60题仅自由功率衰减换算 |
 | 增强研究W10；`#rir-encoder-candidate` | RIR对比嵌入辅助编码器 | 外部参考实现 | `rir-encoder`：`network.py`、`data_module.py`、`loss_fn.py`、`train.py`、`embedding_extraction.py` | 作者MIT固定八文本已取得，顶层训练有写入；未装依赖/取权重/运行，非论文完整FiLM-SGMSE恢复管线 |
 | 增强研究W10；`#usdnet-plus-candidate` | USDnet++混合与SPD重构弱监督 | 原理索引 | Pang等Interspeech2026，DOI10.21437/Interspeech.2026-2044，原§3～4式3～15 | WPE/WPD结果仍非干净真值；FCP可含未来与全句求解，二模型另计；未核可许可作者整链实现/权重/运行 |
 | §7.2 | 离线单/多通道 WPE | 本仓库可运行基线 | `codes/chapters/ch07/core/dereverberation.py::offline_wpe`；外部对照 `nara_wpe`；`btk20`：`btk20_src/dereverberation/dereverberation.cc`、`.h` | 保护延迟、有效历史、相对加载；BTK20 的通道功率与加载不同，见研究 W08；数值对照见 W01/W11；BTK20 仅静态核对，未构建整链 |
 | §7.4 | 逐帧在线 WPE | 外部参考实现 | `nara_wpe`：`nara_wpe/wpe.py::OnlineWPE` | 三接口 delay 索引不同；独立对照 `codes/chapters/ch07/examples/compare_online_wpe_reference.py`；未来扰动和跨块状态见 `codes/chapters/ch07/wpe_temporal_contract.py`；长静音状态溢出及恢复见 `codes/chapters/ch07/examples/wpe_silence_boundary.py` |
 | §7.4；研究扩展：增强 W03 | 块在线/递推 WPE | 外部参考实现 | `nara_wpe`：`nara_wpe/tf_wpe.py` | TF 固定版权重 0.7 乘当前块；块内估计后处理本块，非逐帧因果；静态核对见 W03 |
-| §7.10；增强研究NeMo接口 | NeMo幅度掩码多轮WPE | 外部参考实现 | `nemo_wpe`：`masking.py::MaskBasedDereverbWPE`、`multichannel.py::WPEFilter`（精确路径见锁表） | 固定v2.4.0仅AST静态核验；迭代输入、长度屏蔽与trace加载不同，未执行Torch |
-| §7.10 | DNN-WPE | 外部参考实现 | `espnet`：`espnet2/enh/layers/dnn_wpe.py`、`wpe.py`、`mask_estimator.py` | 配置值须追到实际求解器；固定版部分成员未传入，填充帧统计亦需核对；静态结果见 W04/W11 |
+| §7.9；增强研究NeMo接口 | NeMo幅度掩码多轮WPE | 外部参考实现 | `nemo_wpe`：`masking.py::MaskBasedDereverbWPE`、`multichannel.py::WPEFilter`（精确路径见锁表） | 固定v2.4.0仅AST静态核验；迭代输入、长度屏蔽与trace加载不同，未执行Torch |
+| §7.4、§7.6、§7.9 | DNN-WPE | 外部参考实现 | `espnet`：`espnet2/enh/layers/dnn_wpe.py`、`wpe.py`、`mask_estimator.py` | 配置值须追到实际求解器；固定版部分成员未传入，填充帧统计亦需核对；静态结果见 W04/W11 |
 | §7.6 | WPD | 外部参考实现 | `espnet`：`espnet2/enh/layers/beamformer.py` WPD 分支及同目录的 `beamformer_th.py`、`dnn_beamformer.py` | 当前约束、延迟历史与功率；源码入口核对不代表整链运行 |
 | 研究扩展：增强 W06 | AR-FastMNMF | 原理索引 | `fastmnmf_author`：`src/` 受限来源索引 | 学术研究限制，未纳入通用源码集合 |
 | §8.5 | SI-SDR | 本仓库可运行基线 | `codes/chapters/ch08/core/separation.py::si_sdr` | 零均值、零能量、参考目标 |
@@ -323,15 +323,13 @@
 | §9.3；空间研究 §56 | LMB | 外部参考实现 | 归档锁表 `vo-rfs-tracking-updated`：`lmb/gms/run_filter.m` | 62文件选集已核；线性高斯目标研究模型，学术/研究用途受限；未执行MATLAB/MEX，非声学整链 |
 | §9.3；空间研究 §56 | δ-GLMB | 外部参考实现 | 归档锁表 `vo-rfs-tracking-updated`：`glmb/gms/run_filter.m` | 62文件选集已核；线性高斯目标研究模型，学术/研究用途受限；未执行MATLAB/MEX，非声学整链 |
 | §9.3 | 检测前追踪 TBD | 原理索引 | 正文弱证据模型 | 硬阈值峰不能替代原输入 |
-| §9.3 | OSPA | 外部参考实现 | `stonesoup`：`stonesoup/metricgenerator/ospametric.py` | 截断、阶数、单位；不直接评价身份 |
+| §9.4 | OSPA | 外部参考实现 | `stonesoup`：`stonesoup/metricgenerator/ospametric.py` | 截断、阶数、单位；不直接评价身份 |
 | §9.4 | 轨迹到波束预测/限速 | 原理索引 | 正文控制接口；[缺测与限速缩例](../ch09/tracking_crossing_dropout_demo.py) | 观测龄期、失效与最大角速度；缩例未接真实设备 |
-
 | §9.2；空间研究 §31 | 固定增益 α-β / α-β-γ | 外部参考实现 | `filterpy`：`filterpy/gh/gh_filter.py` | 固定增益与采样间隔共同定义动态；不是自动估计协方差的Kalman |
 | §9.1；空间研究 §31 | 滑动平均、中值与众数基线 | 原理索引 | 正文比较三种统计量 | 平均线性，中值/众数非线性；众数依赖离散化，圆周边界另处理 |
 | §9.2；空间研究 §32 | APF 辅助粒子滤波 | 原理索引 | Pitt–Shephard观测引导祖先选择与重要性校正 | 改进提议分布不自动提供异常值鲁棒性；不可把SIR改名为APF |
-| §9.3；空间研究 §36 | GOSPA | 外部参考实现 | `stonesoup`：`stonesoup/metricgenerator/ospametric.py::GOSPAMetric` | p≥1，α=2分解定位/漏检/虚警；单帧位置指标不证明身份连续 |
+| §9.4；空间研究 §36 | GOSPA | 外部参考实现 | `stonesoup`：`stonesoup/metricgenerator/ospametric.py::GOSPAMetric` | p≥1，α=2分解定位/漏检/虚警；单帧位置指标不证明身份连续 |
 | 研究扩展：空间 §55.2 | RBMCDA 条件解析多目标追踪 | 外部参考实现 | `spatial-audio-framework`：`framework/modules/saf_tracker/saf_tracker.c`、`saf_tracker_internal.c` | 关联粒子与条件Kalman分开；GPL-2.0-or-later模块；原step提取运行使用计数替身，未执行关联/PF/KF整链 |
-
 | 研究扩展：空间 §57 | 滑窗排列不变训练 sPIT（2023） | 原理索引 | [EUSIPCO作者原文](https://eurasip.org/Proceedings/Eusipco/Eusipco2023/pdfs/0000251.pdf)，§2～3式(1)～(4) | 训练时跨历史窗统一排列，固定槽位容量；未核作者训练代码及明确许可、未执行网络，不是部署时用真值关联 |
 
 ## 连续音频、噪声控制与部署
@@ -366,16 +364,16 @@
 | §10.4.1 | PTQ 校准量化流程 | 原理索引 | 正文部署路线 | 内核存在不代表模型校准完成 |
 | §10.4.1 | QAT 量化感知训练 | 原理索引 | 正文训练路线 | 不把量化推理内核当完整训练器 |
 | §10.4.1；工业 I16 | CMSIS-NN 量化内核 | 外部参考实现 | `cmsis-nn`：`Include/arm_nnfunctions.h` | 零点、尺度、scratch、指令集 |
-| §10.9；工业 I17 | TFLM tensor arena | 外部参考实现 | `tflite-micro`：`tensorflow/lite/micro/recording_micro_interpreter.h` | 模型大小不同于 arena/栈/缓存 |
-| §10.9；工业 I17 | TFLM micro_speech 前端 | 外部参考实现 | `tflite-micro`：`tensorflow/lite/micro/examples/micro_speech/` | 关键词例子不是阵列系统 |
-| §10.9；工业 I18 | ONNX Runtime 流式执行 | 外部参考实现 | `onnxruntime`：`include/onnxruntime/core/session/onnxruntime_c_api.h` | 算子集、EP、线程池与循环状态 |
-| §10.9.1；工业 I10 | XMOS AEC/ADEC | 外部参考实现 | `lib-voice`：`lib_voice/src/aec/`、`lib_voice/api/adec/` | fwk_voice 已迁移；商用硬件限制 |
-| §10.9.1；工业 I11 | XMOS IC | 外部参考实现 | `lib-voice`：`lib_voice/src/ic/` | 240 点步长/512 点分析、泄漏 |
-| §10.9.1；工业 I11 | XMOS VNR | 外部参考实现 | `lib-voice`：`lib_voice/src/vnr/` | 比值控制不是无误活动判决 |
-| §10.9.1；工业 I12 | XMOS NS | 外部参考实现 | `lib-voice`：`lib_voice/src/ns/` | 元数据和词尾保留 |
-| §10.9.1；工业 I12 | XMOS AGC | 外部参考实现 | `lib-voice`：`lib_voice/src/agc/` | 活动/回声状态与增益共同测试 |
-| §10.9.1；工业 I13 | SOF 固定 FIR 波束 | 外部参考实现 | `sof`：`src/audio/tdfb/tdfb_generic.c` | 滤波组/方向，不是 SCM 自适应 MVDR |
-| §10.9.1；工业 I14 | SOF 固件 SRC | 外部参考实现 | `sof`：`src/audio/src/` | 固定比转换不等于异步补偿 |
+| §10.8；工业 I17 | TFLM tensor arena | 外部参考实现 | `tflite-micro`：`tensorflow/lite/micro/recording_micro_interpreter.h` | 模型大小不同于 arena/栈/缓存 |
+| §10.8；工业 I17 | TFLM micro_speech 前端 | 外部参考实现 | `tflite-micro`：`tensorflow/lite/micro/examples/micro_speech/` | 关键词例子不是阵列系统 |
+| §10.8；工业 I18 | ONNX Runtime 流式执行 | 外部参考实现 | `onnxruntime`：`include/onnxruntime/core/session/onnxruntime_c_api.h` | 算子集、EP、线程池与循环状态 |
+| §10.8.1；工业 I10 | XMOS AEC/ADEC | 外部参考实现 | `lib-voice`：`lib_voice/src/aec/`、`lib_voice/api/adec/` | fwk_voice 已迁移；商用硬件限制 |
+| §10.8.1；工业 I11 | XMOS IC | 外部参考实现 | `lib-voice`：`lib_voice/src/ic/` | 240 点步长/512 点分析、泄漏 |
+| §10.8.1；工业 I11 | XMOS VNR | 外部参考实现 | `lib-voice`：`lib_voice/src/vnr/` | 比值控制不是无误活动判决 |
+| §10.8.1；工业 I12 | XMOS NS | 外部参考实现 | `lib-voice`：`lib_voice/src/ns/` | 元数据和词尾保留 |
+| §10.8.1；工业 I12 | XMOS AGC | 外部参考实现 | `lib-voice`：`lib_voice/src/agc/` | 活动/回声状态与增益共同测试 |
+| §10.8.1；工业 I13 | SOF 固定 FIR 波束 | 外部参考实现 | `sof`：`src/audio/tdfb/tdfb_generic.c` | 滤波组/方向，不是 SCM 自适应 MVDR |
+| §10.8.1；工业 I14 | SOF 固件 SRC | 外部参考实现 | `sof`：`src/audio/src/` | 固定比转换不等于异步补偿 |
 | §10.7 | 分布式阵列同步/融合 | 原理索引 | 正文分布式模型 | SRO 拟合不是完整网络系统 |
 | 导读复现；§10.2.1/10.7 | WASN DXCP-PhaT同步源码接口 | 外部参考实现 | `wasn-platform`：`DXCPPhaT_demo/system/DXCP_PhaT/dxcp_phat.py`、`sync_sed/system/resample.py`；[固定源集](research/04_source_reproduction.md#overview-source-entrypoints) | 限定源/许可已取得；DXCP算法、MARVELO、完整同步及设备未运行 |
 | 专题Ⅱ §13.5～8、§13.13、E13-01～02/18 | 指定LMMSE任务的固定线性压缩 | 本仓库可运行基线 | `codes/chapters/ch13/core/distributed.py::compressed_mwf` | 已知总体协方差、归一接收坐标；E13-18仅比较可逆广播坐标下共同重映射与错误累计，复用MWF，不增加算法行；不称一般非线性充分统计或有限码率无损 |
@@ -456,13 +454,13 @@
 | 研究扩展：增强 N15 | TF-Locoformer 复谱语音分离 | 外部参考实现 | `tf-locoformer`：`standalone/tflocoformer_separator.py`、`espnet2/enh/separator/tflocoformer_separator.py` | 固定作者源码；静态接口疑点单列；无权重推理或完整训练复现 |
 | 附录B E17-02；工业 I29 | STK DelayL 固定分数延迟与连续状态 | 外部参考实现 | `stk`：`include/DelayL.h`、`src/DelayL.cpp`；`codes/chapters/ch10/examples/run_stk_delay_probe.py` | 已运行标量接口、零/.5/1采样与分块状态；未测设备或变时延 |
 | §3.2、专题Ⅲ §14.2～14.4 | 球谐变换、球阵模态权重与旋转算子 | 外部参考实现 | `spharpy`：`spharpy/spherical.py`、`spharpy/beamforming/beamforming.py`、`spharpy/transforms/rotations.py` | MIT固定纯文本选集已取得；未安装或运行整包 |
-| §1.1、专题Ⅲ §14.6 | AES69 SOFA 空间坐标约定与元数据读写规则 | 外部参考实现 | `sofar`：`sofar/sofa.py`、`sofar/io.py`、`sofar/utils.py` | MIT固定纯文本选集已取得；不含二进制SOFA数据集，未安装执行 |
+| §1.2、专题Ⅲ §14.6 | AES69 SOFA 空间坐标约定与元数据读写规则 | 外部参考实现 | `sofar`：`sofar/sofa.py`、`sofar/io.py`、`sofar/utils.py` | MIT固定纯文本选集已取得；不含二进制SOFA数据集，未安装执行 |
 | 专题Ⅲ §14.2～14.7 | Ambisonics AllRAD/EPAD 解码、MagLS 双耳渲染与 DirAC 分析 | 外部参考实现 | `spaudiopy`：`spaudiopy/sph.py`、`spaudiopy/decoder.py`、`spaudiopy/parsa.py` | MIT固定纯文本选集已取得；不含HRIR资产，未安装执行 |
 | §1.2、§2.4 | 逐频相干矩阵与 EVD/Cholesky 任意空间噪声场着色合成 | 外部参考实现 | `anf-generator`：`anf_generator/CoherenceMatrix.py`、`anf_generator/MixingMatrix.py` | MIT固定纯文本选集已取得；未取测试音频，未安装执行 |
 | §2.4、§3.1 | 镜像声源房间冲激响应分数延迟插值与指向性核心 | 外部参考实现 | `rir-generator`：`src/rir_generator/_cffi/rir_generator_core.cpp`、`rir_generator_core.h` | MIT固定纯文本选集已取得；未编译CFFI扩展或执行 |
 | 专题Ⅲ §14.8 | 单通道及可穿戴麦克风参数化湍流风噪合成 | 外部参考实现 | `sc-wind-noise-generator`：`sc_wind_noise_generator.py` | MIT固定纯文本选集已取得；未取音频资产，未执行脚本 |
 | §8.1、§10.5 | 卷积传递函数不变信号失真比（CI-SDR）有限长 FIR 投影评分 | 外部参考实现 | `ci-sdr`：`ci_sdr/np/wiener_filter.py`、`ci_sdr/pt/sdr.py`、`ci_sdr/pt/toeplitz.py` | MIT固定纯文本选集已取得；未安装或执行PyTorch/SciPy算子 |
-| §9.5 | CLEAR MOT 多目标追踪指标（MOTA/MOTP/IDSW）计算 | 外部参考实现 | `py-motmetrics`：`motmetrics/mot.py`、`motmetrics/metrics.py`、`motmetrics/distances.py` | MIT固定纯文本选集已取得；未取基准数据，未安装执行 |
+| §9.4 | CLEAR MOT 多目标追踪指标（MOTA/MOTP/IDSW）计算 | 外部参考实现 | `py-motmetrics`：`motmetrics/mot.py`、`motmetrics/metrics.py`、`motmetrics/distances.py` | MIT固定纯文本选集已取得；未取基准数据，未安装执行 |
 | §10.2、§10.4 | Android C++ 低延迟全双工回调流与多通道输入参考 | 外部参考实现 | `oboe`：`apps/OboeTester/app/src/main/cpp/FullDuplexEcho.cpp`、`MultiChannelRecording.h` | Apache-2.0固定纯文本选集已取得；未执行NDK构建或实机测试 |
 | §10.5、§11.2 | ITU-T P.808 众包主观听测金标/陷阱题过滤与方差分析聚合 | 外部参考实现 | `p808`：`src/result_parser.py`、`src/anova.py`、`src/create_gold_clips.py` | MIT固定纯文本选集已取得；不含语音样本或云平台执行 |
 | 专题Ⅱ §13.9～13.12 | 分布式自适应信号融合（DASF）MMSE/LCMV/GEVD/QCQP 求解器 | 外部参考实现 | `dasf-toolbox`：`dasftoolbox/dasf.py`、`dasftoolbox/optimization_problems/lcmv_problem.py`、`mmse_problem.py`、`gevd_problem.py` | BSD-3-Clause固定纯文本选集已取得；未取仿真数据或安装执行 |

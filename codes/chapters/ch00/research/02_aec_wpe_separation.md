@@ -35,7 +35,7 @@ NLMS 以参考回归向量的能量归一化更新幅度，便于在不同播放
 
 ### A02　FDAF、频域多抽头 NLMS、MDF/PBFDAF 与重叠保存
 
-单块频域滤波把长卷积转成 FFT 乘法；MDF/PBFDAF 把长路径分成多个短分区，在保持较短输入块的同时覆盖长尾。固定一个频点，若“频域多抽头 NLMS”的 $P$ 个抽头正是当前和过去 $P-1$ 个参考块，且采用[正文式(6-5)](../../../../chapters/06_aec.md#sec-6-2)的同一误差谱和归一化分母，那么它与该式的 PBFDAF 更新逐分量相同，不另列为一种算法。名称本身不保证论文与产品使用相同步长。[Páez Borrallo 与 García Otero 的 1992 年论文](https://doi.org/10.1016/0165-1684(92)90077-A)保留作历史来源；本轮未取得可逐式核对的全文，不据其摘要推断具体谱控制规则。下文约束结构采用已读的 Shynk 原文。
+单块频域滤波把长卷积转成 FFT 乘法；MDF/PBFDAF 把长路径分成多个短分区，在保持较短输入块的同时覆盖长尾。固定一个频点，若“频域多抽头 NLMS”的 $P$ 个抽头正是当前和过去 $P-1$ 个参考块，且采用[正文式(6-5)](../../../../chapters/06_aec.md#sec-6-2)的同一误差谱和归一化分母，那么它与该式的 PBFDAF 更新逐分量相同，不另列为一种算法。名称本身不保证论文与产品使用相同步长。[Páez Borrallo 与 García Otero 的 1992 年论文](https://doi.org/10.1016/0165-1684(92)90077-A)保留作历史来源；当前核验未取得可逐式核对的全文，不据其摘要推断具体谱控制规则。下文约束结构采用已读的 Shynk 原文。
 
 “频域多抽头 NLMS”不是可脱离实现细节使用的唯一算法名。先记录抽头索引：逐样本时域 NLMS 的 $L$ 个抽头是样本时延；分区重叠保存结构在**固定频点**有 $P$ 个参考块历史，联合表示 $L$ 点 FIR；普通窗函数 STFT 的同频跨帧滤波器又以分析帧为抽头。只有第二种在块长、历史、有效误差、功率、步长、投影与冻结调度均一致时，才逐块对应本书的 PBFDAF 教学变体。第三种即使分析/合成完美重建，也可能漏掉样本级路径诱发的跨频带项；[Avargel 与 Cohen 2007，§II 式(7)～(11)](https://webee.technion.ac.il/Sites/People/IsraelCohen/Publications/TASL_May2007.pdf)是原始推导。正文用两点 DFT 一拍延迟给出可复算反例。
 
@@ -133,7 +133,7 @@ WebRTC 的 [`modules/audio_processing/aec3/`](https://webrtc.googlesource.com/sr
 
 `set_stream_delay_ms()` 报告的是播放帧进入 APM 到硬件实际播放、以及麦克风采样到采集帧进入 APM 的缓冲时间之和，不是房间传播时间或滤波器尾长。固定版 [`audio_processing_impl.cc`](https://webrtc.googlesource.com/src/+/0467d2b91cc20b9b001c2bbb73d43ea6b2491f3e/modules/audio_processing/audio_processing_impl.cc) 的 `set_stream_delay_ms()` 把负值截到 0 ms、超过 500 ms 的值截到 500 ms，并返回 `kBadStreamParameterWarning`。接入层应保存输入参数、返回码、`stream_delay_ms()` 读回值与两路硬件时间戳；无线或外接播放的延迟若超出该范围，不能只按传入值解释后续对齐结果。500 ms 是这个提交的接口行为，不是声学路径或其他 AEC 的通用限值。
 
-**播放音量通知不是样本补偿。** 固定接口的 `CreatePlayoutVolumeChange()` 接收未归一化整数通知；[`audio_processing_impl.cc`](https://webrtc.googlesource.com/src/+/0467d2b91cc20b9b001c2bbb73d43ea6b2491f3e/modules/audio_processing/audio_processing_impl.cc#816)入队后在捕获侧比较音量，形成 `gain_change`。它不把参考样本乘上一个已知时变增益。[`subtractor.cc`](https://webrtc.googlesource.com/src/+/0467d2b91cc20b9b001c2bbb73d43ea6b2491f3e/modules/audio_processing/aec3/subtractor.cc#138)把变化传给 refined 更新增益；其[原 gain 分支](https://webrtc.googlesource.com/src/+/0467d2b91cc20b9b001c2bbb73d43ea6b2491f3e/modules/audio_processing/aec3/refined_filter_update_gain.cc#52)仍为 TODO 空操作，未重标定路径系数。[`aec_state.cc`](https://webrtc.googlesource.com/src/+/0467d2b91cc20b9b001c2bbb73d43ea6b2491f3e/modules/audio_processing/aec3/aec_state.cc#157)另重置 ERLE 状态。静态分支核查不等于本轮生产 C++ 执行，也不能证明自动音量补偿；应用仍须确定音量处理位于参考抽取之前还是之后，并保留增益变化的样本时刻与历史。
+**播放音量通知不是样本补偿。** 固定接口的 `CreatePlayoutVolumeChange()` 接收未归一化整数通知；[`audio_processing_impl.cc`](https://webrtc.googlesource.com/src/+/0467d2b91cc20b9b001c2bbb73d43ea6b2491f3e/modules/audio_processing/audio_processing_impl.cc#816)入队后在捕获侧比较音量，形成 `gain_change`。它不把参考样本乘上一个已知时变增益。[`subtractor.cc`](https://webrtc.googlesource.com/src/+/0467d2b91cc20b9b001c2bbb73d43ea6b2491f3e/modules/audio_processing/aec3/subtractor.cc#138)把变化传给 refined 更新增益；其[原 gain 分支](https://webrtc.googlesource.com/src/+/0467d2b91cc20b9b001c2bbb73d43ea6b2491f3e/modules/audio_processing/aec3/refined_filter_update_gain.cc#52)仍为 TODO 空操作，未重标定路径系数。[`aec_state.cc`](https://webrtc.googlesource.com/src/+/0467d2b91cc20b9b001c2bbb73d43ea6b2491f3e/modules/audio_processing/aec3/aec_state.cc#157)另重置 ERLE 状态。静态分支核查不等于生产 C++ 执行，也不能证明自动音量补偿；应用仍须确定音量处理位于参考抽取之前还是之后，并保留增益变化的样本时刻与历史。
 
 线性段并非只能从内部调试转储取得。固定版公开的 `Config::EchoCanceller::export_linear_aec_output` 默认 `false`；需要线性取点时须在配置 AEC 时设为 `true`。处理采集帧后调用 `GetLinearAecOutput()` 并检查布尔返回值，可取得最近约 10 ms、16 kHz 的线性 AEC 输出。本书已运行的单通道配置得到单声道；不能把这一事实扩大成所有配置的接口保证。固定头文件虽写多通道采集时返回单声道，实际 `num_proc_channels()` 还检查 `pipeline.multi_channel_capture` 与构建支持；线性缓冲按该通道数分配，`GetLinearAecOutput()` 逐通道复制。多通道接入须核对处理通道数与传入 `ArrayView` 长度；本次仅静态核查这条分支，未运行多通道声学实验。它与公开 `ProcessStream()` 的最终输出可能采用不同采样率及取点，必须按对应采样区间对齐后比较。若所用构建或接入层没有成功导出，记录“线性取点未取得”及配置、返回值，而不是用最终输出冒名顶替。入口见[固定版公开头文件的配置与接口](https://webrtc.googlesource.com/src/+/0467d2b91cc20b9b001c2bbb73d43ea6b2491f3e/api/audio/audio_processing.h)和[`audio_processing_impl.cc` 的缓冲分配与返回实现](https://webrtc.googlesource.com/src/+/0467d2b91cc20b9b001c2bbb73d43ea6b2491f3e/modules/audio_processing/audio_processing_impl.cc)。
 
@@ -317,7 +317,7 @@ PATH=/path/to/depot_tools:$PATH DEPOT_TOOLS_UPDATE=0 \
 | AEC3 导出线性段 | 64 | 60.58 | 0.964 | 0.241 |
 | AEC3 最终输出 | 128 | 30.63 | 0.193 | 0.763 |
 
-$g_\Delta$ 和 $E_\Delta$ 按第 6 章式(6-33)的已知近端注入增量定义；回声功率比的分母是**总输出功率**，不能称为干净回声分量 ERLE。未按独立脉冲测出的固定延迟对齐时，AEC3 线性段的 $g_\Delta=0.199$；这主要说明样本索引比较必须记录输出延迟。各行的输出阶段和控制条件不同，表格只检查接口与指标口径，不给三系统排名。注入前后分开运行也使增量包含内部状态差异，不能把它全解释为近端保留率。
+$g_\Delta$ 和 $E_\Delta$ 按第 6 章式(6-36)的已知近端注入增量定义；回声功率比的分母是**总输出功率**，不能称为干净回声分量 ERLE。未按独立脉冲测出的固定延迟对齐时，AEC3 线性段的 $g_\Delta=0.199$；这主要说明样本索引比较必须记录输出延迟。各行的输出阶段和控制条件不同，表格只检查接口与指标口径，不给三系统排名。注入前后分开运行也使增量包含内部状态差异，不能把它全解释为近端保留率。
 
 **本机设备链路的只读核查（2026-09-23）。** macOS `system_profiler SPAudioDataType -detailLevel full` 仅列出 MacBook Air 内置麦克风（1 路输入、48 kHz）和内置扬声器（2 路输出、48 kHz）；FFmpeg 的 AVFoundation 设备枚举仅显示内置麦克风，没有播放回环采集端点。CoreAudio 只读查询还给出两个设备 ID 71、76，均报告 `main` 时钟域和 `bltn` 内置传输类型。这些只说明系统报告它们属于同一域，不是两个独立设备的采样时钟漂移实测。
 
@@ -327,9 +327,9 @@ $g_\Delta$ 和 $E_\Delta$ 按第 6 章式(6-33)的已知近端注入增量定义
 
 比例归一化更新改变抽头间的学习分配；子带滤波改变输入相关性与每带更新问题；Volterra、Hammerstein、Wiener 或级联模型改变可表示的输入—回声关系。它们解决的困难不同，不能看见“频域”或“非线性”标签就视作同一种加速方案。出处与模型讨论见 [§6.2](../../../../chapters/06_aec.md#sec-6-2)和[§6.3](../../../../chapters/06_aec.md#sec-6-3)。
 
-本书新增[实数 IPNLMS 状态](../../ch06/core/aec_ipnlms.py)：每次由旧权重构造抽头份额，按式(6-11)计算先验误差和同时更新；$\kappa=-1$ 与 NLMS 逐步对齐还须把 NLMS 正则项设为 $L\delta$。零初值、$\kappa=1$ 时所有比例份额均为零，这个失败边界有[独立测试](../../../../tests/test_codes_aec_ipnlms_subband.py)。[两带 Haar 代码](../../ch06/core/aec_subband.py)现在分三层：已知时域路径的精确交叉带矩阵、只读同带历史的对角 NLMS、未知路径的两带全交叉 NLMS。最后一项按正文式(6-10)同时预测两输出带、逐行归一化更新、逆 Haar 合成；它是**这个两带教学模型内**的完整四路路径，而非工业通用子带 AEC 或 Lee–Gan NSAF。[交叉带演示](../../ch06/aec_crossband_demo.py)给出两块手算与冻结留出集；[独立测试](../../../../tests/test_codes_aec_crossband.py)以多个长度的时域卷积作真值，另核对冻结、切块、复位和非法输入。[原 IPNLMS/已知路径锚点](../../ch06/aec_ipnlms_subband_demo.py)和[章节 E06-11～20](../../ch06/aec_advanced_exercises.py)仍可单独复算。
+本书新增[实数 IPNLMS 状态](../../ch06/core/aec_ipnlms.py)：每次由旧权重构造抽头份额，按式(6-11)计算先验误差和同时更新；$\kappa=-1$ 与 NLMS 逐步对齐还须把 NLMS 正则项设为 $L\delta$。零初值、$\kappa=1$ 时所有比例份额均为零，这个失败边界有[独立测试](../../../../tests/test_codes_aec_ipnlms_subband.py)。[两带 Haar 代码](../../ch06/core/aec_subband.py)现在分三层：已知时域路径的精确交叉带矩阵、只读同带历史的对角 NLMS、未知路径的两带全交叉 NLMS。最后一项按正文式(6-10)同时预测两输出带、逐行归一化更新、逆 Haar 合成；它是**这个两带教学模型内**的完整四路路径，而非工业通用子带 AEC 或 Lee–Gan NSAF。[交叉带演示](../../ch06/aec_crossband_demo.py)给出两块手算与冻结留出集；[独立测试](../../../../tests/test_codes_aec_crossband.py)以多个长度的时域卷积作真值，另核对冻结、切块、复位和非法输入。[原 IPNLMS/已知路径锚点](../../ch06/aec_ipnlms_subband_demo.py)和[章节 E06-08～10](../../ch06/aec_advanced_exercises.py)仍可单独复算。
 
-固定在本仓库的 pyroomacoustics v0.10.0 源码还含 [`adaptive/subband_lms.py`](https://github.com/LCAV/pyroomacoustics/blob/0dd39f2614b7fc44b2cc63dbe7d60f4641068890/pyroomacoustics/adaptive/subband_lms.py)；该文件是**另一种实现入口**，锁定源码中可读；未在本轮运行，不能把其演示中由子带模型合成的目标信号当作任意时域房间卷积的独立验证。一般临界抽样子带建模需检查交叉项，[Gilloire–Vetterli 1992 原论文](https://doi.org/10.1109/78.149989)是依据；[Lee–Gan 2004 NSAF 原论文](https://doi.org/10.1109/LSP.2004.833445)的子带误差更新全带抽头，结构与本书两带逐输出带 FIR 状态不同。图32和[四个子带结构音频](05_exercises_and_audio.md#16-两带-haar-的交叉项音频)仍是已知路径的代数模型，**不是新自适应器的训练结果**；[另七个 WAV](05_exercises_and_audio.md#15-同源短路径-aec-的线性残差)对比时域 NLMS、IPNLMS、RLS 和矩阵 Kalman，不含子带自适应输出。新交叉带自适应留出试验目前只有可复算数字，没有新增 WAV；不得把前述 WAV 冒充其输出。
+固定在本仓库的 pyroomacoustics v0.10.0 源码还含 [`adaptive/subband_lms.py`](https://github.com/LCAV/pyroomacoustics/blob/0dd39f2614b7fc44b2cc63dbe7d60f4641068890/pyroomacoustics/adaptive/subband_lms.py)；该文件是**另一种实现入口**，锁定源码中可读；未在当前复核中运行，不能把其演示中由子带模型合成的目标信号当作任意时域房间卷积的独立验证。一般临界抽样子带建模需检查交叉项，[Gilloire–Vetterli 1992 原论文](https://doi.org/10.1109/78.149989)是依据；[Lee–Gan 2004 NSAF 原论文](https://doi.org/10.1109/LSP.2004.833445)的子带误差更新全带抽头，结构与本书两带逐输出带 FIR 状态不同。图32和[四个子带结构音频](05_exercises_and_audio.md#16-两带-haar-的交叉项音频)仍是已知路径的代数模型，**不是新自适应器的训练结果**；[另七个 WAV](05_exercises_and_audio.md#15-同源短路径-aec-的线性残差)对比时域 NLMS、IPNLMS、RLS 和矩阵 Kalman，不含子带自适应输出。新交叉带自适应留出试验目前只有可复算数字，没有新增 WAV；不得把前述 WAV 冒充其输出。
 
 2026-09-23 的[本机真实设备链路探测记录](../../ch06/reviews/AEC_DEVICE_PROBE_2026-09-23.md)仅确认 MacBook Air 内置单麦可采集；低音量播放—拾音相关探测尚不足以确认声学回路，没有外接阵列或可供 AEC 验收的同步成对音轨。不要把这份探测与上述合成留出结果合并成“实机 AEC 性能”。
 
@@ -347,7 +347,7 @@ $g_\Delta$ 和 $E_\Delta$ 按第 6 章式(6-33)的已知近端注入增量定义
 
 代码为 MIT；托管模型与示例音频应另查其分发说明。固定 `process_file()` 要求 16 kHz、单通道，通过文件名把 `mic.wav` 替换成 `lpb.wav` 找参考，并把两路截至较短长度。512 点块、128 点帧移；首尾各补 384 点，输出再裁至原共同长度。第一阶段预测幅度掩码并沿用麦克风相位，第二阶段采用学习的时域表示；两模型循环状态在一次文件处理开始时清零、在文件内部逐块延续。外部反复调用该文件函数不等于连续设备流式状态。
 
-最小实验应固定模型大小与共同样本区间，分别检查参考错位、缺失、短参考及路径突变。本轮仅执行 A18 的原函数 AST／假解释器夹具，未加载 TensorFlow 或 TFLite 权重。该夹具确认文件末端只检查正向最大值的输出幅度保护不对称；它不是神经模型在真实输入上的失败记录。
+最小实验应固定模型大小与共同样本区间，分别检查参考错位、缺失、短参考及路径突变。当前复核仅执行 A18 的原函数 AST／假解释器夹具，未加载 TensorFlow 或 TFLite 权重。该夹具确认文件末端只检查正向最大值的输出幅度保护不对称；它不是神经模型在真实输入上的失败记录。
 
 ### A11　NKF-AEC：学习卡尔曼增益的线性 AEC
 
@@ -378,7 +378,7 @@ $g_\Delta$ 和 $E_\Delta$ 按第 6 章式(6-33)的已知近端注入增量定义
 
 核心 `metaaf/` 使用 University of Illinois/NCSA 许可；[`zoo/LICENSE`](https://github.com/adobe-research/MetaAF/blob/56c4665bdc51c2e0595a7c0cd9b1266408adceff/zoo/LICENSE) §1.1 允许非商业研究目的的复制、修改和附带原许可的再分发，§1.3 包括教学、测试和学术研究。它不是商业授权，也不能概括成“没有许可所以不能取得”。本书已在忽略缓存取得同一提交的 `zoo/aec/`、目录许可、配置与公共指标源码，未下载模型或数据。
 
-AEC 入口是 `zoo/aec/aec.py` 的任务滤波器，再看 `optimizer_kf.py` 的基线、`aec_baselines.py` 与 `aec_eval.py` 的调用。直接导入的本库依赖包括已有 `metaaf/` 以及新选入的 `zoo/__config__.py`、`zoo/metrics.py`；目录列表和摘要由锁表与获取状态报告核对。`speex_aec_eval.py` 还依赖另行安装的 SpeexDSP Python 接口。取得这些源文件不等于安装 JAX、Haiku、Torch 或该接口，本轮未执行训练和推理。
+AEC 入口是 `zoo/aec/aec.py` 的任务滤波器，再看 `optimizer_kf.py` 的基线、`aec_baselines.py` 与 `aec_eval.py` 的调用。直接导入的本库依赖包括已有 `metaaf/` 以及新选入的 `zoo/__config__.py`、`zoo/metrics.py`；目录列表和摘要由锁表与获取状态报告核对。`speex_aec_eval.py` 还依赖另行安装的 SpeexDSP Python 接口。取得这些源文件不等于安装 JAX、Haiku、Torch 或该接口，当前复核未执行训练和推理。
 
 复现需要匹配运行时与任务数据，分别记录训练时展开长度、推理时状态和输入参考对齐。失败实验更换路径速度、频谱及幅度尺度，检查学习更新规则的训练域依赖；学到的更新器也要与同一滤波结构的 NLMS/Kalman/RLS 基线比较，不能把结构和数据同时改变后的结果全归因于元学习。
 
@@ -406,11 +406,11 @@ AEC 入口是 `zoo/aec/aec.py` 的任务滤波器，再看 `optimizer_kf.py` 的
 
 这些数字依赖原实验：16 kHz、100 h 数据随机分为 80/10/10 h；滤波器 150 ms，步长每 8 ms 推断一次，16 ms STFT、8 ms 帧移和过去 96 ms 上下文；回声路径在 4.5～5.5 s 均匀抽取时刻跳变，ESR 为 −10～10 dB，ENR 为 0～40 dB。它们不是硬件延迟、语音识别成功率或任意双讲场景的准确率。本书没有执行该训练与测试配方。
 
-**非线性结构和一个受限实测。** [Stenger、Rabenstein 1999，§2～3.1](https://www.eurasip.org/Proceedings/Ext/NSIP99/Nsip99/papers/146.pdf)区分记忆无关削波近似与 Volterra 路径，并以对称二阶核的上三角参数化减少重复项。完整二阶核与低秩／因子化级联不是同一模型。已取得的 [pyaec `volterra.py`](https://github.com/ewan-xu/pyaec/blob/5b9c02c57075d790b7df8652884618189d49bbc4/nonlinear_adaptive_filters/volterra.py) 是 Apache-2.0 的独立演示；`svf()` 使用两组权重的因子化二阶级联，先更新第一组，再用它更新第二组。它的循环也只处理 `min(len(x),len(d))-M` 点。本轮只静态阅读这个函数，没有把它当作已运行的任意 Volterra 核基线。
+**非线性结构和一个受限实测。** [Stenger、Rabenstein 1999，§2～3.1](https://www.eurasip.org/Proceedings/Ext/NSIP99/Nsip99/papers/146.pdf)区分记忆无关削波近似与 Volterra 路径，并以对称二阶核的上三角参数化减少重复项。完整二阶核与低秩／因子化级联不是同一模型。已取得的 [pyaec `volterra.py`](https://github.com/ewan-xu/pyaec/blob/5b9c02c57075d790b7df8652884618189d49bbc4/nonlinear_adaptive_filters/volterra.py) 是 Apache-2.0 的独立演示；`svf()` 使用两组权重的因子化二阶级联，先更新第一组，再用它更新第二组。它的循环也只处理 `min(len(x),len(d))-M` 点。当前复核只静态阅读这个函数，没有把它当作已运行的任意 Volterra 核基线。
 
 [Nollett、Jones 1997，§6](https://www.iwaenc.org/proceedings/1997/nsip97/pdf/author/ns970521.pdf)确有实验全文支持 8.4 dB 差额：廉价 PC 有源扬声器、高音量合成元音，改变基频和幅度；作者测得功放硬削波占主要影响。30 抽头前滤波、200 抽头后滤波的 LNL 系统与 230 抽头 NLMS 的收敛 ERLE 分别为 19.5、11.1 dB。这是该小型实验，不是现代设备或全部扬声器的普遍增益；原节未给可还原的采样率与重复次数。§5 的白高斯噪声、10 次模型实验及 15+43／58 抽头配置属于另一组实验，不能借来补齐 §6。
 
-[Shah 等 2015 电压／电流参考论文](https://doi.org/10.1109/TASLP.2015.2425955)保留作为把扬声器电气测量加入参考的路线。[作者机构条目](https://scholarsmine.mst.edu/ele_comeng_facwork/6620/)标记为 Citation；本轮只取得摘要，未核到其“最高 6 dB”的全文配置与表格，故不采用该性能数值。
+[Shah 等 2015 电压／电流参考论文](https://doi.org/10.1109/TASLP.2015.2425955)保留作为把扬声器电气测量加入参考的路线。[作者机构条目](https://scholarsmine.mst.edu/ele_comeng_facwork/6620/)标记为 Citation；当前核查只取得摘要，未核到其“最高 6 dB”的全文配置与表格，故不采用该性能数值。
 
 ### A17　工业源码：默认参数属于哪一层
 
@@ -420,7 +420,7 @@ AEC 入口是 `zoo/aec/aec.py` 的任务滤波器，再看 `optimizer_kf.py` 的
 
 **SOF 的接入层不是算法核心。** SOF 的 `src/audio/google/` 是 BSD-3-Clause 接口和缓冲源码，精确提交见锁表。`Kconfig` 默认 48 kHz、最多 2 路采集和 2 路参考、200 KB 工作内存、44 ms 回声路径延迟参数、线性 headroom 4；这些是接入配置，不是滤波器长度或测得延迟。`google_rtc_audio_processing_mock.c` 的处理把麦克风与参考相加，只适合核查缓冲连通性，不能生成 AEC 性能。`CMakeLists.txt` 的非 mock 分支另链接 `third_party/lib` 下的 `google_rtc_audio_processing` 库。本地取得 wrapper 和 mock 不等于取得、构建或运行该外部库，亦不能由库名断言与本书 AEC3 固定版本完全相同。入口、许可与其他 SOF 模块见[工业研究手册](03_industrial_deployment.md)。
 
-**XMOS 的实际定点算子。** 已取得的 [lib_voice](https://github.com/xmos/lib_voice/tree/c9f1a9bf95cd88c7950adf4bf631c217f900ad25) 含 AEC 算子与 API；`lib_voice/api/aec/aec_defines.h` 指定 240 点帧推进、512 点处理窗口、257 个实 FFT 频点，主／影子滤波器默认 10／5 个分区，每分区 16 个未使用抽头。这些不是 WebRTC 64 点块。README 的版本为 1.1.0，工具链 XTC 15.3.1、Python 3.11；所需 `lib_xcore_math` 3.0.0 已单独锁定取得。代码采用 XMOS 专用许可，硬件使用条件与 BSD 接入层不同。本轮没有 XCORE 目标执行、定点误差测量、板卡音频或实时资源测试；源码中的参数只能说明该实现如何配置。
+**XMOS 的实际定点算子。** 已取得的 [lib_voice](https://github.com/xmos/lib_voice/tree/c9f1a9bf95cd88c7950adf4bf631c217f900ad25) 含 AEC 算子与 API；`lib_voice/api/aec/aec_defines.h` 指定 240 点帧推进、512 点处理窗口、257 个实 FFT 频点，主／影子滤波器默认 10／5 个分区，每分区 16 个未使用抽头。这些不是 WebRTC 64 点块。README 的版本为 1.1.0，工具链 XTC 15.3.1、Python 3.11；所需 `lib_xcore_math` 3.0.0 已单独锁定取得。代码采用 XMOS 专用许可，硬件使用条件与 BSD 接入层不同。当前复核没有 XCORE 目标执行、定点误差测量、板卡音频或实时资源测试；源码中的参数只能说明该实现如何配置。
 
 ### A18　固定上游接口的实际诊断与失败记录
 
@@ -454,11 +454,11 @@ AEC 入口是 `zoo/aec/aec.py` 的任务滤波器，再看 `optimizer_kf.py` 的
 
 **2024 年神经 Kalman 比较。** [Seidel 等综述的作者版](https://arxiv.org/html/2501.16367v1)的表 I 与 §III 区分学习增益、状态更新／转移、参考非线性和联合输出等位置，还区分 OLS 与 OLA 结构。采用为 A11～A14 的分类阅读，不另加一个“通用神经 Kalman”算法条目；论文作者的再实现不自动等于每篇被比较工作的官方实现。正式刊载为 [IEEE Signal Processing Magazine 41(6), 24–38，2024 年 11 月](https://doi.org/10.1109/MSP.2024.3449557)；2025-01-22 是作者版上传日期。
 
-**Align-ULCNet。** [EUSIPCO 2025 正式论文，406–410 页，§II](https://eusipco2025.org/wp-content/uploads/pdfs/0000406.pdf)先用 Kalman 线性 AEC，再对残差与播放参考作双编码和软对齐，针对线性未收敛、残余回声以及带宽变化处理；输出掩码作用于 Kalman 残差。相对单流残余抑制改变的是参考交互与特征组织，不是把整条线性路径删除。论文可用于设计“对齐失败／带宽缺失”的消融，但本轮未确认许可明确、含对应权重的作者完整 AEC 实现；同名通用 ULCNet 降噪仓库不能替代。保留研究候选，不新设正文算法目录。
+**Align-ULCNet。** [EUSIPCO 2025 正式论文，406–410 页，§II](https://eusipco2025.org/wp-content/uploads/pdfs/0000406.pdf)先用 Kalman 线性 AEC，再对残差与播放参考作双编码和软对齐，针对线性未收敛、残余回声以及带宽变化处理；输出掩码作用于 Kalman 残差。相对单流残余抑制改变的是参考交互与特征组织，不是把整条线性路径删除。论文可用于设计“对齐失败／带宽缺失”的消融，但当前核查未确认许可明确、含对应权重的作者完整 AEC 实现；同名通用 ULCNet 降噪仓库不能替代。保留研究候选，不新设正文算法目录。
 
 **E2E-AEC。** [2026-01 预印本](https://arxiv.org/html/2601.16774v1)作者标注为 ICASSP 2026 接收稿；2026-10-01 实际读取的 [ICASSP 2026 官方单篇程序](https://www.cmsworkshops.com/ICASSP2026/view_paper.php?PaperNum=5855&bare=1)确认同题同作者的 AASP-L9.2 报告，时间为 2026-05-07 16:50～17:10。此处算法阅读仍指向 v1，不据会议程序猜测正式 DOI 或页码。§2 的 20 ms STFT、10 ms 帧移和单向 GRU，以逐阶段训练区分回声去除与后续噪声／混响处理。虽然推理不要求显式传统延迟估计器，训练对齐监督仍使用 GCC-PHAT 伪标签；可选输出语音门控依赖活动标签，漏判近端会误抑制。相对传统线性加神经后滤链改变的是联合网络和训练目标。缺完整官方训练配置、权重与匹配数据，保留选型与失败实验线索，不登记本地已运行。
 
-**MSA-EchoLite。** [2026-08-04 预印本，§II](https://arxiv.org/html/2608.03650v1)使用 PBFDAF 线性回声估计和麦克风作为特征，以 Bark 压缩频带及回声感知频率／时间模块减少后级建模开销。它仍依赖前端参考和线性段状态，不能用网络参数少证明整链延迟或鲁棒性。本轮未确认正式发表状态或完整官方可运行资产；正文已有同类前后级分工，暂不增加学习负担，只保留研究候选。
+**MSA-EchoLite。** [2026-08-04 预印本，§II](https://arxiv.org/html/2608.03650v1)使用 PBFDAF 线性回声估计和麦克风作为特征，以 Bark 压缩频带及回声感知频率／时间模块减少后级建模开销。它仍依赖前端参考和线性段状态，不能用网络参数少证明整链延迟或鲁棒性。当前核查未确认正式发表状态或完整官方可运行资产；正文已有同类前后级分工，暂不增加学习负担，只保留研究候选。
 
 **固定设备的立体声路径先验。** [Wang 等，Interspeech 2025，773–777 页，DOI 10.21437/Interspeech.2025-1572](https://www.isca-archive.org/interspeech_2025/wang25o_interspeech.html)的[原文 §2～4](https://www.isca-archive.org/interspeech_2025/wang25o_interspeech.pdf)于 2026-10-01 实际读取。它针对相关立体声参考下收敛与重收敛困难，利用设备可单独校准的各扬声器路径；相对 VD-MCSSFDAF 改变式(17)的先验路径初始化及式(19)的过程噪声控制。依赖固定设备几何、可信预校准和原状态空间近似，先验错误时也可能引导到错误路径。
 
@@ -472,11 +472,11 @@ AEC 入口是 `zoo/aec/aec.py` 的任务滤波器，再看 `optimizer_kf.py` 的
 
 **DiffVQE：单次扩散求解仍可能非因果。** [正式条目](https://www.isca-archive.org/interspeech_2026/lugo26_interspeech.html)为 4971–4976 页、DOI `10.21437/Interspeech.2026-2337`；技术阅读使用[作者版 v2，2026-06-17，§2～4](https://arxiv.org/pdf/2605.08189v2)。先由麦克风/参考条件网络得到判别式估计，再经加噪与一次 score 修正生成输出；扩散时间不是音频帧时钟。512 点窗、128 点帧移、双向 GRU 和离线 GCC-PHAT 使“单次求解”不能推出因果部署。论文同时检查感知质量与语音内容保持；其中 DeepVQE 是相同自建数据上的重训练基线，不是跨论文榜单。可研究非因果上下文、内容失真和参考错位，不能用 CPU RTF 代替声学端到端延迟。
 
-[作者官方 demo](https://ifnspaml.github.io/DiffVQE-Demo/)及其[源码仓库](https://github.com/ifnspaml/DiffVQE-Demo)仅有展示页与样例，未核定算法实现、权重或可再分发许可。本轮未取得这些音频或运行网络，只补充已有 DeepVQE 的研究比较，不把展示材料称为可复现实装。两项正式 PDF 入口本轮未成功读取；方法证据明确来自上述作者版全文，不以搜索摘要替代原文。
+[作者官方 demo](https://ifnspaml.github.io/DiffVQE-Demo/)及其[源码仓库](https://github.com/ifnspaml/DiffVQE-Demo)仅有展示页与样例，未核定算法实现、权重或可再分发许可。当前复核未取得这些音频或运行网络，只补充已有 DeepVQE 的研究比较，不把展示材料称为可复现实装。两项正式 PDF 入口未能直接读取；方法证据明确来自上述作者版全文，不以搜索摘要替代原文。
 
 **评测工具与标准。** [EC Evaluation Toolbox](https://github.com/ifnspaml/EC-Evaluation-Toolbox/tree/aec8873325ed8e4d93eadc53e5c0af84be4db4fd)固定提交提供动态 RIR 与评测入口线索，但根目录未找到明确许可，已读文件头也未给复制授权；模型代码另有未取得的 `speechlightning` 依赖。只建来源索引，不取得源码或执行安装命令；README 的路线图不作为已完成能力。它不是新增的一种 AEC 算法。
 
-[ITU-T P.862 官方页](https://www.itu.int/rec/T-REC-P.862/en)标记 2024-01-05 删除；[P.863 官方页](https://www.itu.int/rec/T-REC-P.863/en)列出的 2018 正文及 2020 修订仍为有效，具体参考实现／附件版本另查。标准公开条目不等于已取得评分软件许可。重查 [AEC Challenge 官方仓库](https://github.com/microsoft/AEC-Challenge)所见比赛说明仍为 2023 年第四届，不能以仓库继续维护推断存在 2026 年新赛道或新榜单。已有五个本地修改音频保留原状态，不通过重新抓取覆盖它们。评测器版本、有效区、异常返回与真人主观评分分别核验；本轮不新增跨条件排行榜。
+[ITU-T P.862 官方页](https://www.itu.int/rec/T-REC-P.862/en)标记 2024-01-05 删除；[P.863 官方页](https://www.itu.int/rec/T-REC-P.863/en)列出的 2018 正文及 2020 修订仍为有效，具体参考实现／附件版本另查。标准公开条目不等于已取得评分软件许可。重查 [AEC Challenge 官方仓库](https://github.com/microsoft/AEC-Challenge)所见比赛说明仍为 2023 年第四届，不能以仓库继续维护推断存在 2026 年新赛道或新榜单。已有五个本地修改音频保留原状态，不通过重新抓取覆盖它们。评测器版本、有效区、异常返回与真人主观评分分别核验；本仓库不新增跨条件排行榜。
 
 <a id="wpe"></a>
 
@@ -587,11 +587,11 @@ WPD 把当前帧与历史帧一起放入无失真滤波问题。它的约束只�
 
 读码时先查 `wpd` 分支怎样构造延迟堆叠，再查功率倒数、参考通道和解线性方程。最小实验用正文块对角协方差验证历史权重为零，再加入当前—历史互相关；失败实验使功率权重接近零或增大历史阶数至统计量不足。WPD 与串联 WPE→MVDR 的计算和假设有关联，但不能把两个独立增益相加当作联合结果。
 
-E07-05 已把第二种情形写成四维可执行手算：当前—历史相关使权重为 `[0.4, 0.6, -0.2, 0]`，无失真约束为 1。给定协方差上的目标值为 0.6，强制历史权重为零时为 2/3。这里比较的是同一矩阵下两个约束集合的最小值，不是音频去混响或识别收益；逐行求解见 [第 7 章练习](../../../../chapters/07_wpe-dereverberation.md#sec-7-9)。
+E07-05 已把第二种情形写成四维可执行手算：当前—历史相关使权重为 `[0.4, 0.6, -0.2, 0]`，无失真约束为 1。给定协方差上的目标值为 0.6，强制历史权重为零时为 2/3。这里比较的是同一矩阵下两个约束集合的最小值，不是音频去混响或识别收益；逐行求解见 [第 7 章练习](../../../../chapters/07_wpe-dereverberation.md#e07-05)。
 
 [E07-07](../../../../chapters/07_wpe-dereverberation.md#e07-07)把同一矩阵进一步分块并完成平方：历史预测 $G=C^{-1}B^H$、残差加权统计量 $S=A-BC^{-1}B^H$，再求加权 MPDR；四维解与两步输出逐项相同。这个等价要求同一功率、有效帧和约束，正则化也必须对应同一目标。[Boeddeker 等，ICASSP 2020，§4 和附录](https://arxiv.org/pdf/1910.13707)在 WPD 提出后推导其无损分解为 WPE 与加权 MPDR；[原创复算脚本](../cross_chapter/enhancement_structure_exercises.py)另检查复数交叉项，正文另分析加载边界。不能把它改写成任意 WPE→MVDR 都等于 WPD。
 
-固定 ESPnet 的 `wpd` 分支走 `get_WPD_filter_with_rtf()`，`wpd_souden` 走 `get_WPD_filter_v2()`，二者不是同一导向估计过程。`get_covariances()` 把当前块和延迟历史按抽头优先堆成 `(btaps+1)*通道`，统计从 `bdelay+btaps-1` 起；`perform_WPD_filtering()` 再按相同排列应用。默认 `use_torchaudio_api=False` 选择 `beamformer.py`，另一路 `beamformer_th.py` 不应只凭函数同名就跳过核查。与 DNN-WPE 的未消费开关不同，WPD 分支确实传入加载参数，但加载落在估计 RTF 用的噪声矩阵还是扩展统计矩阵，要逐函数确认。本轮没有执行任一 PyTorch WPD 分支。
+固定 ESPnet 的 `wpd` 分支走 `get_WPD_filter_with_rtf()`，`wpd_souden` 走 `get_WPD_filter_v2()`，二者不是同一导向估计过程。`get_covariances()` 把当前块和延迟历史按抽头优先堆成 `(btaps+1)*通道`，统计从 `bdelay+btaps-1` 起；`perform_WPD_filtering()` 再按相同排列应用。默认 `use_torchaudio_api=False` 选择 `beamformer.py`，另一路 `beamformer_th.py` 不应只凭函数同名就跳过核查。与 DNN-WPE 的未消费开关不同，WPD 分支确实传入加载参数，但加载落在估计 RTF 用的噪声矩阵还是扩展统计矩阵，要逐函数确认。当前复核没有执行任一 PyTorch WPD 分支。
 
 ### W06　AR-FastMNMF 与联合去混响/分离
 
@@ -621,7 +621,7 @@ AR-FastMNMF 把自回归混响模型和多源空间/谱模型联合估计，避�
 
 **BTK 固定 C++ 源。** [`dereverberation.cc`](https://github.com/kkumatani/distant_speech_recognition/blob/feff19ec8bcb770f6530fe280dc3ccafc2f5984a/btk20_src/dereverberation/dereverberation.cc)中的 `SingleChannelWPEDereverberationFeature` 和 `MultiChannelWPEDereverberation` 已在缓存。上下界 `lowerN/upperN` 均包含，抽头数为 `upperN-lowerN+1`；历史按通道分组。统计从 `lowerN` 起步，较远历史不足时填零，不等于 NARA 的完整历史 `valid`。
 
-多输出版本分别估计各输出残差功率，并未共用一个通道平均方差。幅度至少取 `1e-3`，对应功率下限 `1e-6`；`loadDb` 用 `10^(loadDb/10)` 乘最大对角元素，多通道另有绝对 `diagonal_bias`。GSL Cholesky 求解之前已读取整段、迭代估计滤波器，随后重置特征流应用；类名中的 FeatureStream 不能证明逐帧在线估计。本轮只读源码，未编译 Python2/SWIG/GSL 环境。
+多输出版本分别估计各输出残差功率，并未共用一个通道平均方差。幅度至少取 `1e-3`，对应功率下限 `1e-6`；`loadDb` 用 `10^(loadDb/10)` 乘最大对角元素，多通道另有绝对 `diagonal_bias`。GSL Cholesky 求解之前已读取整段、迭代估计滤波器，随后重置特征流应用；类名中的 FeatureStream 不能证明逐帧在线估计。当前复核只读源码，未编译 Python2/SWIG/GSL 环境。
 
 **GPU-GSS 中的 WPE 范围。** [`gss/core/enhancer.py`](https://github.com/desh2608/gss/blob/10fad18cae85e2e4342c77421abc70c9c5da23ed/gss/core/enhancer.py)默认上下文 15 s、WPE 抽头 10、延迟 2、迭代 3、功率平滑 0，STFT 为 1024/256 点；这些是该构造器默认值，recipe 可覆盖。数据从 `(通道,帧,频率)` 转入 WPE 所需的 `(频率,通道,帧)`，去混响结果再生成活动引导掩码并进入波束器。`bf_drop_context` 只在波束统计掩码处去上下文；WPE 已使用上下文，最后还要裁波形边缘。
 
@@ -709,9 +709,9 @@ VACE 的 `wpe_th_utils.py` 原生复数分支逐频取时间最大功率的 `1e-
 
 辅助 `get_power()` 对 `arange(1,13).reshape(2,1,6)` 取 `psd_context=1`，输出两行均为 `[25,34,45,58,73,90]`，对应跨频率平均而非时间平均；`psd_context=(0,2)` 则实际抛出 `ValueError`。离线主函数使用的是另一条 `get_power_inverse()` 路径，不能把辅助函数问题扩大成所有 WPE 都失败。
 
-ESPnet 的未消费开关、丢弃掩码返回及固定逆矩阵调用由 AST 检查；TensorFlow、BTK、GPU-GSS 是静态源码阅读，均未执行对应框架或原生算子。MetaAF 原函数 AST 提取加真实 NARA 状态类的调用已经执行：STFT 桩提供 `arange(1,73)` 排成一通道、八帧、九频点的复谱，逆变换桩只捕获复谱并返回占位零数组；捕获结果与直接单帧调用差为 0。占位返回不是去混响音频。主环境缺 SciPy，既有房间环境缺 click，因此本轮没有运行真实 STFT/iSTFT 或整个 MetaAF 包。长静音溢出由独立[状态边界实验](../../ch07/examples/wpe_silence_boundary.py)报告，不在此重复实现。
+ESPnet 的未消费开关、丢弃掩码返回及固定逆矩阵调用由 AST 检查；TensorFlow、BTK、GPU-GSS 是静态源码阅读，均未执行对应框架或原生算子。MetaAF 原函数 AST 提取加真实 NARA 状态类的调用已经执行：STFT 桩提供 `arange(1,73)` 排成一通道、八帧、九频点的复谱，逆变换桩只捕获复谱并返回占位零数组；捕获结果与直接单帧调用差为 0。占位返回不是去混响音频。主环境缺 SciPy，既有房间环境缺 click，因此当前复核没有运行真实 STFT/iSTFT 或整个 MetaAF 包。长静音溢出由独立[状态边界实验](../../ch07/examples/wpe_silence_boundary.py)报告，不在此重复实现。
 
-**原始证据与检索记录。** 已实际打开并读到相关算法/实验节：Yoshioka 2012 §V～VI，Kinoshita 2017 §3/5，Drude 2018 §4～7，Caroselli 2017 §3，Google Home 2017 §2～3，Nakatani/Kinoshita 2019 §II～IV，Boeddeker 2020 §4/附录，Habets 2009 §II～V，1968 同态滤波原文的 Echo Removal，以及本节列出的分布式候选。Nakatani 2010 的正式身份由 NTT 参考页与 DOI 核对，本轮未取得其完整原文，不以搜索摘要支持新增数字。
+**原始证据与检索记录。** 已实际打开并读到相关算法/实验节：Yoshioka 2012 §V～VI，Kinoshita 2017 §3/5，Drude 2018 §4～7，Caroselli 2017 §3，Google Home 2017 §2～3，Nakatani/Kinoshita 2019 §II～IV，Boeddeker 2020 §4/附录，Habets 2009 §II～V，1968 同态滤波原文的 Echo Removal，以及本节列出的分布式候选。Nakatani 2010 的正式身份由 NTT 参考页与 DOI 核对，当前核查未取得其完整原文，不以搜索摘要支持新增数字。
 
 检索词包括 `variance-normalized delayed linear prediction Nakatani 2010 pdf`、`NARA WPE Drude 2018`、`Habets late reverberant spectral variance 2009`、`homomorphic echo removal Oppenheim Schafer Stockham 1968`、`weighted prediction error 2024 2025 github`、`Lohmann microphone subset reference selection WPE` 和 `Task-specific Optimization Virtual Channel WPE`。搜索只用于找到原始文献、作者仓库和官方许可；未检到匹配实现不等于断言领域中不存在。此次没有搜集另一批同类库来制造“全部方法已覆盖”的印象。
 
@@ -767,7 +767,7 @@ PRA 公共函数返回的是最终应用系数的共轭；以单输出 `[1,j]`�
 
 `auxiva_pca.py`原实现先对总二阶矩特征分解，再取最后几个特征向量做降维，随后调用方阵版本，最后使用原参考麦作回投影。代码中的`kwargs.pop('proj_back')`没有默认值；阅读该入口时应核调用者是否传了此键。作者README一处声称返回形状与输入相同，但减少目标数时实际第三轴为目标数，原函数docstring的返回定义更准确。本书保留原代码与说明，不修补上游，也不将静态观察称为完整原包执行。
 
-获取目录是`codes/chapters/ch00/upstream/_downloads/overiva-author/`，受Git忽略管理，可用锁表对应获取工具重新取得。不获取作者的语音数据、`get_data.py`或仿真入口，不自动触发README描述的数据下载。本轮取得四文件不等于运行论文仿真、测量语音分离质量或工业加速比。[piva固定源码](https://github.com/fakufaku/piva/tree/7fa273e9aa597aba57067aef2e7b6c999dadef26)另提供OverIVA与FIVE路线，但GPL-3.0许可及编译核心依赖与上述MIT作者Python版本分别记录。FIVE面向单目标提取，不等于恢复全部源。
+获取目录是`codes/chapters/ch00/upstream/_downloads/overiva-author/`，受Git忽略管理，可用锁表对应获取工具重新取得。不获取作者的语音数据、`get_data.py`或仿真入口，不自动触发README描述的数据下载。取得这四份文件不等于运行论文仿真、测量语音分离质量或工业加速比。[piva固定源码](https://github.com/fakufaku/piva/tree/7fa273e9aa597aba57067aef2e7b6c999dadef26)另提供OverIVA与FIVE路线，但GPL-3.0许可及编译核心依赖与上述MIT作者Python版本分别记录。FIVE面向单目标提取，不等于恢复全部源。
 
 进一步的建议实验保持两个目标，从两麦增加到四麦，分别比较背景建模、选两麦和按总能量PCA；另将第三个强非高斯源归为背景，检查模型失配。要固定目标图像、共同参考、回投影、排列评分和算力口径后再比较。此建议尚未执行，不能作为本书成绩。
 
@@ -932,7 +932,7 @@ PYTHONDONTWRITEBYTECODE=1 /private/tmp/masp-ch04-pra-venv/bin/python -B \
 
 ## 5. 神经分离、目标提取与连续输出
 
-**2026-10-04当前源码核查另存。** 本轮实际重跑[接口核查报告](../../ch08/reports/separation_upstream_interfaces_current.json)、[分离原方法报告](../../ch08/reports/upstream_separation_contracts_current.json)、[Stream.FM源码核查](../../ch08/reports/streamfm_source_audit_current.json)与[TF-Locoformer源码核查](../../ch08/reports/tflocoformer_source_audit_current.json)。四份历史JSON原字节保留，历史测试绑定`7b80fab1d1012f104cdf441423218bf0898ce918`真实原工具；不替换其原时间、环境或源摘要。
+**2026-10-04当前源码核查另存。** 当前复核实际重跑[接口核查报告](../../ch08/reports/separation_upstream_interfaces_current.json)、[分离原方法报告](../../ch08/reports/upstream_separation_contracts_current.json)、[Stream.FM源码核查](../../ch08/reports/streamfm_source_audit_current.json)与[TF-Locoformer源码核查](../../ch08/reports/tflocoformer_source_audit_current.json)。四份历史JSON原字节保留，历史测试绑定`7b80fab1d1012f104cdf441423218bf0898ce918`真实原工具；不替换其原时间、环境或源摘要。
 
 当前工具在计算前检查普通报告目标，运行前后核官方origin、独立Git根、固定HEAD、全部所用原blob及许可、实际依赖SHA与洁净状态；完整获取选集状态另列，不能因用到的文件正确而把旧失配改为通过。PRA与ssspy Python原源直接读取并编译，绕过已存在的字节码缓存，原缓存前后保持原字节；已预加载且未受原源加载器绑定的模块拒绝使用。限定方法、NumPy后端提取、静态神经源码和完整模型运行各自声明，原初始化异常、ILRMA返回差异与TRINICON尾部边界保留。
 
@@ -1154,7 +1154,7 @@ MIT 代码、托管 checkpoint、LibriTTS、SMS-WSJ及其依赖的 WSJ 录音分
 - 任务定义先于性能：README 提醒 WHAMR 原 ESPnet 配方是单目标增强且不去混响，论文需要两源分离并去混响；Libri2Mix 需选择无噪声、`train-360`、8 kHz、`min` 条件。未应用对应数据准备修改时，不能把脚本运行结果当作同一论文任务。语料、训练参考、测试划分与混合生成摘要分别保留。
 - 最后才用明确目标参考计算 SI-SDR/SI-SDRi，并把前处理、iSTFT、输出长度、排列与增益放进记录。未来扰动应检查非因果前缀变化；分窗后要重新测 CSS 排列及长流身份。速度报告包含完整编解码、所有块和状态/数据搬移，不将“没有 RNN”或“可并行”写成已达到实时。
 
-本次完成范围是源码取得、方法阅读、配置对照和静态检查。当前教程环境未安装 PyTorch，依赖构建、模型构造、前向/反向、权重推理、训练、音频质量与运行速度均未执行。仓库另含 TF-Locoformer-NoPE 与 BS-Locoformer，前者已核对 `pos_enc=nope` 的分支与 WHAMR 配置，后者只登记为不同的频带拆分入口；本节没有把未逐段审查的 BS-Locoformer 说成同样完成了方法级验收。
+当前核验范围是源码取得、方法阅读、配置对照和静态检查。当前教程环境未安装 PyTorch，依赖构建、模型构造、前向/反向、权重推理、训练、音频质量与运行速度均未执行。仓库另含 TF-Locoformer-NoPE 与 BS-Locoformer，前者已核对 `pos_enc=nope` 的分支与 WHAMR 配置，后者只登记为不同的频带拆分入口；本节没有把未逐段审查的 BS-Locoformer 说成同样完成了方法级验收。
 
 ### N16　候选筛选与来源核查边界
 

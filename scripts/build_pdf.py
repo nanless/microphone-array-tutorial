@@ -36,6 +36,7 @@
 import argparse
 import datetime
 import hashlib
+import html as html_lib
 import json
 import os
 import re
@@ -172,15 +173,18 @@ svg{break-inside:avoid;page-break-inside:avoid}
 p:has(+ p > mjx-container[display="true"]){break-after:avoid;page-break-after:avoid}
 p:has(> mjx-container[display="true"]){break-before:avoid;page-break-before:avoid}
 img{max-width:100%;height:auto;display:block;margin:16px auto;border:1px solid #DFDAD0;border-radius:4px;padding:3px;background:#fff;box-sizing:border-box}
-table{border-collapse:collapse;margin:16px 0;display:table;width:100%;table-layout:fixed;overflow-x:visible;max-width:100%;border-top:1.5px solid #2A2E34;border-bottom:1.5px solid #2A2E34}
+table{border-collapse:collapse;margin:16px 0;display:table;width:100%;table-layout:auto;overflow-x:visible;max-width:100%;border-top:1.5px solid #2A2E34;border-bottom:1.5px solid #2A2E34}
 th,td{border-top:1px solid #E3DED3;border-bottom:1px solid #E3DED3;border-left:none;border-right:none;padding:6px 9px;font-size:13.5px;text-align:left;line-height:1.55}
 th{background:#F5F2EB;color:#1C1E21;border-bottom:1px solid #8A8275}
 tbody tr:nth-child(even) td{background:#FCFBF9}
 code{font-family:Menlo,Monaco,Consolas,"STHeiti","Hiragino Sans GB","Microsoft YaHei",monospace;font-variant-ligatures:none;background:#F3F0E8;color:#1E3A56;border:1px solid #E0DBD0;padding:1px 5px;border-radius:3px;font-size:13px}
-td,th{word-break:break-word;overflow-wrap:anywhere}
+td,th{word-break:normal;overflow-wrap:break-word;hyphens:auto}
+td code,th code,td a,th a{overflow-wrap:anywhere;word-break:break-word}
 mjx-container{font-size:100%!important;max-width:100%;break-inside:avoid;page-break-inside:avoid}
 mjx-container[jax="SVG"][display="true"]{display:inline-block!important;width:100%;padding:5px 0;box-sizing:border-box}
 mjx-container[jax="SVG"]:not([display="true"]){display:inline-block;padding-block:2px}
+td mjx-container[jax="SVG"],th mjx-container[jax="SVG"]{max-width:100%;overflow:visible}
+td mjx-container[jax="SVG"] svg,th mjx-container[jax="SVG"] svg{max-width:100%;height:auto}
 pre{font-family:Menlo,Monaco,Consolas,"STHeiti","Hiragino Sans GB","Microsoft YaHei",monospace;font-variant-ligatures:none;background:#F5F3EE;color:#1F2328;border:1px solid #DFDAD0;border-left:3.5px solid #5C564D;padding:11px 14px;margin:14px 0;border-radius:4px;overflow-x:visible;white-space:pre-wrap;font-size:13px;line-height:1.55}
 pre code{background:none;border:none;color:inherit;padding:0}
 blockquote{border-left:3.5px solid #B84A2E;margin:16px 0;padding:9px 14px;background:#F7F5F0;border-radius:0 4px 4px 0;color:#2B2E33}
@@ -221,10 +225,14 @@ p.tutorial-problem-lead>strong:first-child{color:#1F5A92}
 .chap{page-break-before:always}
 .toc-page>h1{font-size:26px;margin:0 0 14px}
 .toc{columns:2;column-gap:26px;padding-left:18px;margin:0}
-.toc>li{margin:5px 0;break-inside:avoid-column;font-size:13.5px;color:#14171A}
-.toc>li>a{color:#14171A}
+.toc>li{margin:5px 0;break-inside:auto;font-size:13.5px;color:#14171A}
+.toc>li>a{display:inline-block;color:#14171A;break-after:avoid-column;break-after:avoid}
 .toc .sec{font-size:12px;color:#3B3E42;padding-left:16px;margin:2px 0 4px}
+.toc .sec>li{break-inside:avoid-column}
+.toc .sec>li:has(.subsec){break-inside:auto}
+.toc .sec>li>a{display:inline-block;break-after:avoid-column;break-after:avoid}
 .toc .subsec{font-size:11px;color:#5A554D;padding-left:15px;margin:1px 0 3px}
+.toc .subsec>li{break-inside:avoid-column}
 .anchor-alias{position:relative;display:inline-block;width:0;height:0;overflow:hidden;pointer-events:none}
 .pdf-anchor-references{position:absolute;top:-10000px;left:-10000px;font-size:1px;line-height:1px;color:transparent;pointer-events:none}
 .pdf-anchor-references a{color:transparent}
@@ -241,14 +249,17 @@ body mjx-assistive-mml{width:1px!important;max-width:1px!important;min-width:0!i
 @media print{
 body{max-width:none;margin:0;padding:0}
 .chap{page-break-before:always}
-table{display:table;width:100%;table-layout:fixed}
+table{display:table;width:100%;table-layout:auto;max-width:100%}
 thead{display:table-header-group}
 tr{break-inside:avoid}
-td,th{word-break:break-word;overflow-wrap:anywhere}
+td,th{word-break:normal;overflow-wrap:break-word;hyphens:auto}
+td code,th code,td a,th a{overflow-wrap:anywhere;word-break:break-word}
 /* MathJax 的行内长式与展示式均需留在 A4 正文宽度内。 */
 mjx-container{font-size:100%!important;max-width:100%;break-inside:avoid;page-break-inside:avoid}
 mjx-container[jax="SVG"][display="true"]{display:inline-block!important;width:100%;padding:5px 0;box-sizing:border-box}
 mjx-container[jax="SVG"]:not([display="true"]){display:inline-block;padding-block:2px}
+td mjx-container[jax="SVG"],th mjx-container[jax="SVG"]{max-width:100%;overflow:visible}
+td mjx-container[jax="SVG"] svg,th mjx-container[jax="SVG"] svg{max-width:100%;height:auto}
 h1,h2,h3,h4{break-after:avoid;break-inside:avoid;page-break-inside:avoid}
 p.tutorial-exercise-lead{break-after:avoid;page-break-after:avoid}
 .pdf-imaging-hand-example{break-inside:avoid;page-break-inside:avoid}
@@ -307,8 +318,264 @@ img{max-height:225mm;object-fit:contain}
 
 
 def plain_text(html):
-    """去标签取纯文本（书签标题用）。"""
+    """去标签取纯文本（目录与结构文本用，保留行内公式供 MathJax 渲染）。"""
     t = re.sub(r"<[^>]+>", "", html)
+    return re.sub(r"\s+", " ", t).strip()
+
+
+_BOOKMARK_SUPERSCRIPT = str.maketrans("0123456789+-=()ni", "⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻⁼⁽⁾ⁿⁱ")
+_BOOKMARK_SUBSCRIPT = str.maketrans("0123456789+-", "₀₁₂₃₄₅₆₇₈₉₊₋")
+_BOOKMARK_STYLE_CMDS = (
+    "mathrm", "mathbf", "mathcal", "mathbb", "mathsf", "mathit", "mathtt",
+    "mathfrak", "boldsymbol", "bm", "text", "textrm", "textbf", "textit",
+    "operatorname*", "operatorname",
+)
+_BOOKMARK_OPERATORS = {
+    "log", "ln", "exp", "sin", "cos", "tan", "max", "min", "arg", "det",
+    "dim", "ker", "lim", "sup", "inf", "Pr", "deg", "gcd", "hom", "mod",
+    "sec", "csc", "cot", "sinh", "cosh", "tanh", "arcsin", "arccos", "arctan",
+}
+_BOOKMARK_GREEK_AND_SYMBOLS = {
+    "alpha": "α", "beta": "β", "gamma": "γ", "delta": "δ",
+    "epsilon": "ε", "varepsilon": "ε", "zeta": "ζ", "eta": "η",
+    "theta": "θ", "vartheta": "θ", "iota": "ι", "kappa": "κ",
+    "lambda": "λ", "mu": "μ", "nu": "ν", "xi": "ξ",
+    "pi": "π", "varpi": "π", "rho": "ρ", "varrho": "ρ",
+    "sigma": "σ", "varsigma": "σ", "tau": "τ", "upsilon": "υ",
+    "phi": "φ", "varphi": "φ", "chi": "χ", "psi": "ψ", "omega": "ω",
+    "Gamma": "Γ", "Delta": "Δ", "Theta": "Θ", "Lambda": "Λ",
+    "Xi": "Ξ", "Pi": "Π", "Sigma": "Σ", "Upsilon": "Υ",
+    "Phi": "Φ", "Psi": "Ψ", "Omega": "Ω",
+    "ell": "ℓ", "infty": "∞", "partial": "∂", "nabla": "∇",
+    "hbar": "ℏ", "Re": "Re", "Im": "Im", "emptyset": "∅", "varnothing": "∅",
+    "forall": "∀", "exists": "∃", "angle": "∠", "degree": "°",
+    "sum": "∑", "prod": "∏", "int": "∫",
+}
+_BOOKMARK_RELATIONS = {
+    "times": "×", "cdot": "·", "pm": "±", "mp": "∓", "div": "÷",
+    "otimes": "⊗", "odot": "⊙", "oplus": "⊕",
+    "in": "∈", "notin": "∉", "subset": "⊂", "subseteq": "⊆",
+    "supset": "⊃", "supseteq": "⊇", "cup": "∪", "cap": "∩",
+    "le": "≤", "leq": "≤", "ge": "≥", "geq": "≥",
+    "ne": "≠", "neq": "≠", "approx": "≈", "equiv": "≡",
+    "sim": "∼", "simeq": "≃", "cong": "≅", "propto": "∝",
+    "perp": "⊥", "parallel": "‖", "prec": "≺", "succ": "≻",
+    "preceq": "≼", "succeq": "≽",
+    "to": "→", "rightarrow": "→", "leftarrow": "←", "leftrightarrow": "↔",
+    "Rightarrow": "⇒", "Leftarrow": "⇐", "Leftrightarrow": "⇔", "iff": "⇔",
+    "mapsto": "↦", "dots": "…", "ldots": "…", "cdots": "⋯",
+    "ast": "*", "star": "★", "dagger": "†", "circ": "∘",
+}
+_BOOKMARK_DELIMS = {
+    "lvert": "|", "rvert": "|", "vert": "|", "mid": "|",
+    "lVert": "‖", "rVert": "‖", "Vert": "‖",
+    "langle": "⟨", "rangle": "⟩",
+    "lceil": "⌈", "rceil": "⌉", "lfloor": "⌊", "rfloor": "⌋",
+}
+
+
+def _read_braced_group(text: str, pos: int):
+    if pos >= len(text) or text[pos] != "{":
+        return None
+    depth = 0
+    for idx in range(pos, len(text)):
+        if text[idx] == "{":
+            depth += 1
+        elif text[idx] == "}":
+            depth -= 1
+            if depth == 0:
+                return text[pos + 1:idx], idx + 1
+    return None
+
+
+def _replace_tex_command_arg(text: str, cmd: str, transform) -> str:
+    token = "\\" + cmd
+    out = []
+    i = 0
+    n = len(text)
+    while i < n:
+        idx = text.find(token, i)
+        if idx < 0:
+            out.append(text[i:])
+            break
+        end_cmd = idx + len(token)
+        if not cmd.endswith("*") and end_cmd < n and text[end_cmd].isalpha():
+            out.append(text[i:end_cmd])
+            i = end_cmd
+            continue
+        out.append(text[i:idx])
+        j = end_cmd
+        while j < n and text[j] == " ":
+            j += 1
+        braced = _read_braced_group(text, j)
+        if braced is not None:
+            inner, next_pos = braced
+            out.append(transform(inner))
+            i = next_pos
+        elif j < n and (text[j].isalnum() or text[j] in "+-"):
+            out.append(transform(text[j]))
+            i = j + 1
+        else:
+            out.append(token)
+            i = end_cmd
+    return "".join(out)
+
+
+def _replace_tex_fractions(text: str) -> str:
+    for cmd in ("dfrac", "tfrac", "frac"):
+        token = "\\" + cmd
+        out = []
+        i = 0
+        n = len(text)
+        while i < n:
+            idx = text.find(token, i)
+            if idx < 0:
+                out.append(text[i:])
+                break
+            end_cmd = idx + len(token)
+            if end_cmd < n and text[end_cmd].isalpha():
+                out.append(text[i:end_cmd])
+                i = end_cmd
+                continue
+            j = end_cmd
+            while j < n and text[j] == " ":
+                j += 1
+            num = _read_braced_group(text, j)
+            if num is None:
+                out.append(text[i:end_cmd])
+                i = end_cmd
+                continue
+            k = num[1]
+            while k < n and text[k] == " ":
+                k += 1
+            den = _read_braced_group(text, k)
+            if den is None:
+                out.append(text[i:end_cmd])
+                i = end_cmd
+                continue
+            out.append(text[i:idx])
+            a, b = num[0].strip(), den[0].strip()
+            a_fmt = f"({a})" if any(ch in a for ch in "+- ") else a
+            b_fmt = f"({b})" if any(ch in b for ch in "+- ") else b
+            out.append(f"{a_fmt}/{b_fmt}")
+            i = den[1]
+        text = "".join(out)
+    return text
+
+
+def _tex_math_to_plain(expr: str) -> str:
+    s = expr.strip()
+    s = re.sub(
+        r"\\(?:left|right|bigl|bigr|Bigl|Bigr|biggl|biggr|big|Big|bigg|Bigg)(?![A-Za-z])",
+        "", s,
+    )
+    s = re.sub(r"\\(?:quad|qquad)(?![A-Za-z])", " ", s)
+    s = re.sub(r"\\[,;: ]", " ", s)
+    s = s.replace("\\!", "")
+    s = s.replace("\\{", "\ue001").replace("\\}", "\ue002")
+    s = re.sub(r"\\([%&#_])", r"\1", s)
+    for _ in range(4):
+        prev = s
+        for cmd in _BOOKMARK_STYLE_CMDS:
+            s = _replace_tex_command_arg(s, cmd, lambda inner: inner)
+        if s == prev:
+            break
+    s = _replace_tex_fractions(s)
+    s = _replace_tex_command_arg(
+        s, "sqrt",
+        lambda inner: (f"√{inner.strip()}"
+                       if re.fullmatch(r"[A-Za-z0-9]+", inner.strip())
+                       else f"√({inner.strip()})"),
+    )
+    for cmd, comb in (("widehat", "\u0302"), ("hat", "\u0302"),
+                      ("widetilde", "\u0303"), ("tilde", "\u0303"),
+                      ("overline", "\u0304"), ("bar", "\u0304")):
+        s = _replace_tex_command_arg(
+            s, cmd, lambda inner, c=comb: (inner[0] + c + inner[1:]) if inner else "")
+    s = _replace_tex_command_arg(s, "vec", lambda inner: inner)
+    s = re.sub(r"\^\s*\{\s*\\circ\s*\}|\^\s*\\circ(?![A-Za-z])", "°", s)
+    s = re.sub(r"\^\s*\{\s*\\top\s*\}|\^\s*\\top(?![A-Za-z])", "ᵀ", s)
+
+    def _op_repl(match):
+        name = match.group(1)
+        before = s[match.start() - 1] if match.start() > 0 else ""
+        after = s[match.end()] if match.end() < len(s) else ""
+        pre = " " if before and before.isalnum() else ""
+        post = " " if after and after.isalnum() else ""
+        return pre + name + post
+
+    s = re.sub(
+        r"\\(" + "|".join(sorted(_BOOKMARK_OPERATORS, key=len, reverse=True)) + r")(?![A-Za-z])",
+        _op_repl, s,
+    )
+    s = re.sub(
+        r"\\(" + "|".join(sorted(_BOOKMARK_RELATIONS, key=len, reverse=True)) + r")(?![A-Za-z])",
+        lambda m: _BOOKMARK_RELATIONS[m.group(1)], s,
+    )
+    s = re.sub(
+        r"\\(" + "|".join(sorted(_BOOKMARK_DELIMS, key=len, reverse=True)) + r")(?![A-Za-z])",
+        lambda m: _BOOKMARK_DELIMS[m.group(1)], s,
+    )
+    s = re.sub(
+        r"\\(" + "|".join(sorted(_BOOKMARK_GREEK_AND_SYMBOLS, key=len, reverse=True))
+        + r")(?![A-Za-z])([ \t]+(?=[A-Za-z0-9(]))?",
+        lambda m: _BOOKMARK_GREEK_AND_SYMBOLS[m.group(1)], s,
+    )
+
+    out = []
+    i = 0
+    n = len(s)
+    while i < n:
+        ch = s[i]
+        if ch in ("^", "_") and i + 1 < n:
+            j = i + 1
+            while j < n and s[j] == " ":
+                j += 1
+            braced = _read_braced_group(s, j)
+            if braced is not None:
+                arg, next_pos = braced
+                arg = arg.strip()
+            elif j < n:
+                arg, next_pos = s[j], j + 1
+            else:
+                out.append(ch)
+                i += 1
+                continue
+            if ch == "^":
+                if arg and all(c in "0123456789+-=()ni" for c in arg):
+                    out.append(arg.translate(_BOOKMARK_SUPERSCRIPT))
+                else:
+                    out.append("^" + arg)
+            else:
+                if arg and all(c in "0123456789+-" for c in arg):
+                    out.append(arg.translate(_BOOKMARK_SUBSCRIPT))
+                else:
+                    out.append("_" + arg)
+            i = next_pos
+        else:
+            out.append(ch)
+            i += 1
+    s = "".join(out)
+    s = s.replace("{", "").replace("}", "")
+    s = s.replace("\ue001", "{").replace("\ue002", "}")
+    s = re.sub(r"\\([A-Za-z]+)", r"\1", s)
+    s = s.replace("\\", "")
+    return re.sub(r"\s+", " ", s).strip()
+
+
+def bookmark_plain_text(html_or_text: str) -> str:
+    """将含 HTML 或行内 LaTeX 的标题转为纯净 Unicode 文本，专供 PDF /Outlines 书签使用。"""
+    t = re.sub(r"<[^>]+>", "", html_or_text)
+    t = html_lib.unescape(t)
+    t = re.sub(
+        r"\$\$(.+?)\$\$|\$([^$]+?)\$",
+        lambda m: _tex_math_to_plain(m.group(1) if m.group(1) is not None else m.group(2)),
+        t,
+        flags=re.S,
+    )
+    if "\\" in t:
+        t = _tex_math_to_plain(t)
+    t = t.replace("$", "")
     return re.sub(r"\s+", " ", t).strip()
 
 
@@ -1616,7 +1883,7 @@ def add_bookmarks(pdf_path, outline, aliases=None):
         destination = heading_destination(reader, heading_id)
         target = destination.dest_array
         return writer.add_outline_item(
-            title, reader.get_destination_page_number(destination),
+            bookmark_plain_text(title), reader.get_destination_page_number(destination),
             parent=parent, fit=Fit(str(target[1]), tuple(target[2:])))
 
     for label, cid, secs in outline:

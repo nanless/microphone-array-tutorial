@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 7 章 · 去混响（WPE） · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="f6d48efe6ade"><style>
+<meta name="source-digest" content="a0289902c00e"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -469,7 +469,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 </blockquote>
 <hr />
 <span id="sec-1" class="anchor-alias" aria-hidden="true"></span><h1 id="sec-u-4a68625d05">7. 去混响（WPE）</h1>
-<p>第 6 章讨论了扬声器播放信号耦合回麦克风所形成的声学回声。本章转向另一类由房间声学传播引起的干扰：声波在墙壁、天花板与家具之间反复反射形成的晚期混响拖尾，并重点推导工业界广泛采用的加权预测误差（Weighted Prediction Error，WPE）去混响算法。多说话人混合分离、时频掩码估计以及前端模块的完整串联顺序将在第 8 章展开。</p>
+<p>第 6 章讨论了扬声器播放信号耦合回麦克风所形成的声学回声。本章转向另一类由房间声学传播引起的干扰：声波在墙壁、天花板与家具之间反复反射形成的晚期混响拖尾，并重点推导工业界广泛采用的加权预测误差（Weighted Prediction Error，WPE）去混响算法；其中 <a href="#sec-7-6">§7.6</a> 进一步推导了“线性 AEC → WPE → 波束形成 → 残余非线性抑制（RES/NLP）”的前端级联顺序，而多说话人混合分离、时频掩码估计与多路流集成则在<a href="08_speech-separation.html">第 8 章</a>展开。</p>
 <span id="sec-2" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-7-1">7.1 问题、模型与直觉算例</h2>
 <p>声学回声消除（Acoustic Echo Cancellation，AEC）能够直接利用已知的扬声器播放参考信号做自适应抵消；而在远场拾音的去混响任务中，系统并不知道说话人嘴边的干净干声，只能依靠麦克风自身的观测信号挖掘跨帧统计规律。与<a href="05_beamforming.html">第 5 章</a>的单帧窄带波束形成相比，典型房间混响时间 $T_{60}$（常达数百毫秒）远超单帧 STFT 分析窗长（如 $32\ \mathrm{ms}$），仅靠当前单帧的空间滤波虽能压低偏离目标方向的各向弥散反射，却无法跨帧剥离沿目标方向或近旁反射面迟到的历史语音残影，因而必须引入跨帧时间线性预测，与单帧空间滤波形成“先跨帧去拖尾、再单帧定方向”的前端分工。</p>
 <p>加权预测误差法（WPE）的核心思路，正是在短时傅里叶变换（Short-Time Fourier Transform，STFT）域用过去的观测帧线性预测当前帧中的晚期混响拖尾，再将其从当前观测中减去。为了避免把说话人本身的语音包络一并当成混响减掉，算法在当前帧与预测历史之间留出一段保护延迟 $\Delta$，从而尽量保全直达声与对语音可懂度有益的早期反射；不过当保护延迟过短、统计样本不足或声学模型失配时，早期语音成分仍可能受到损伤。</p>

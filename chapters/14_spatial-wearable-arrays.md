@@ -50,7 +50,7 @@
 
 #### 球面角、一阶实球谐基与 SN3D / ACN 通道约定
 
-在三维空间声场采集中，首先要厘清坐标轴方向与二维平面阵列正横（broadside）零点的换算关系。按照国际通用的三维全景声右手笛卡尔坐标系（AmbiX / ISO 约定），令原点位于阵列几何中心，$+x$ 轴指向佩戴者正前方，$+y$ 轴指向正左方，$+z$ 轴垂直向上。设远场声源相对原点的水平方位角为 $\theta \in (-\pi, \pi]$（在水平面内从正前方 $+x$ 轴向正左方 $+y$ 轴逆时针旋转为正；对照[第 3 章 §3.1](03_array-geometry.md#sec-3-1) 及[附录 A §16.1](16_appendix-symbols-math.md#sec-16-1) 以 $+y$ 为正横 $0^\circ$、顺时针度量的平面阵列方位角 $\theta_{\mathrm{book}}$，AmbiX 方位角 $\theta$ 满足换算关系 $\theta = 90^\circ - \theta_{\mathrm{book}}$），俯仰角简记为 $\phi \equiv \phi_{\mathrm{el}} \in [-\pi/2, \pi/2]$（向上偏向 $+z$ 轴为正），则从阵列中心**指向声源**的单位波达方向向量 $\vec n_{\mathrm{src}}$ 为：
+在三维空间声场采集中，首先要厘清坐标轴方向与二维平面阵列正横（broadside）零点的换算关系。按照国际通用的三维全景声右手笛卡尔坐标系（AmbiX / ISO / AES69 `SOFA` 听者局部约定），令原点位于阵列几何中心，$+x$ 轴指向佩戴者正前方，$+y$ 轴指向正左方，$+z$ 轴垂直向上。将听者正前方与[第 3 章 §3.1](03_array-geometry.md#sec-3-1) 及[附录 A §16.1](16_appendix-symbols-math.md#sec-16-1) 平面阵默认正横 $+y_{\mathrm{book}}$ 轴物理对齐时，两套右手笛卡尔基底的换算桥为 $[x_{\mathrm{AmbiX}}, y_{\mathrm{AmbiX}}, z_{\mathrm{AmbiX}}]^\top = [y_{\mathrm{book}}, -x_{\mathrm{book}}, z_{\mathrm{book}}]^\top$。设远场声源相对原点的水平方位角为 $\theta \in (-\pi, \pi]$（在水平面内从正前方 $+x$ 轴向正左方 $+y$ 轴逆时针旋转为正），与从 $+y_{\mathrm{book}}$ 顺时针度量的平面阵列方位角 $\theta_{\mathrm{book}}$ 满足精确反号关系 $\theta \equiv -\theta_{\mathrm{book}} \pmod{360^\circ}$（折叠至 $(-180^\circ, 180^\circ]$；注意这一“物理正前对齐正前”的听者局部坐标系，与[第 0 章 §0.1.1 式(0-2)](00_math-foundations.md#sec-0-1-1) 及[第 5 章 §5.8](05_beamforming.md#sec-5-8) 中不旋转笛卡尔基底的同基底数学球谐方位角 $\alpha = (90^\circ - \theta_{\mathrm{book}})\bmod 360^\circ$ 相差 $90^\circ$），俯仰角简记为 $\phi \equiv \phi_{\mathrm{el}} \in [-\pi/2, \pi/2]$（向上偏向 $+z$ 轴为正），则从阵列中心**指向声源**的单位波达方向向量 $\vec n_{\mathrm{src}}$ 为：
 
 $$\vec n_{\mathrm{src}}(\theta,\phi)
 =\begin{bmatrix}n_x\\n_y\\n_z\end{bmatrix}
@@ -232,7 +232,7 @@ $$\vec b_{\mathrm{head}}
 
 只靠四路一阶球谐信号直接做线性波束解码（如虚拟心形扬声器馈送），空间主瓣非常宽，在多扬声器或双耳重放时会造成声像展宽与高频音色染色。Pulkki（2007）提出的**定向音频编码（Directional Audio Coding，DirAC）**开辟了另一条参数化路径：人耳在同一时刻、同一临界频带内通常只能分辨一个主导波达方向外加一层环绕扩散感；因此可以在短时傅里叶变换（Short-Time Fourier Transform，STFT）的每个时频格点 $(k, \ell)$ 上，直接由原点声压相量 $p \in \mathbb{C}$ 与三维质点振速相量 $\vec u = [u_x, u_y, u_z]^\top \in \mathbb{C}^3$ 算出能量输运方向及无方向混响占比。
 
-在动笔写声强公式前，必须先把前向傅里叶核 $e^{-\mathrm{j}\omega t}$ 下**波传播方向与声源波达方向的符号**彻底理顺。在线性无黏流体中，牛顿第二定律给出时域欧拉动量方程 $\rho_0 \partial_t \vec u = -\nabla p$，其中 $\rho_0$ 为媒质静态密度。对时间求导在复相量域（逆变换核 $e^{+\mathrm{j}\omega t}$）对应乘以 $+\mathrm{j}\omega$，故频域动量方程为 $+\mathrm{j}\omega\rho_0\vec u = -\nabla p$。
+在动笔写声强公式前，必须先把前向傅里叶核 $e^{-\mathrm{j}\omega t}$ 下**波传播方向与声源波达方向的符号**彻底理顺（记号说明：在 §14.4 全节中，$\vec u$ 专指声学质点振速相量，单位 $\mathrm{m/s}$，而声源、胶囊与扬声器的无量纲单位方向向量分别记作 $\vec n_{\mathrm{src}}, \vec u_q, \vec u_\ell$）。在线性无黏流体中，牛顿第二定律给出时域欧拉动量方程 $\rho_0 \partial_t \vec u = -\nabla p$，其中 $\rho_0$ 为媒质静态密度。对时间求导在复相量域（逆变换核 $e^{+\mathrm{j}\omega t}$）对应乘以 $+\mathrm{j}\omega$，故频域动量方程为 $+\mathrm{j}\omega\rho_0\vec u = -\nabla p$。
 
 考察一列从声源方向 $\vec n_{\mathrm{src}}$ 入射的平面波：它的波前朝着 $\vec d_{\mathrm{prop}} = -\vec n_{\mathrm{src}}$ 传播，按照本书[第 3 章 §3.1 导向矢量相位约定](03_array-geometry.md#sec-3-1)，靠近声源的位置提前到达（相位超前），令空间相位 $\varphi$ 为 $\kappa\vec n_{\mathrm{src}}^\top\vec r$，声压分布即为 $p(\vec r) = p_0 e^{\mathrm{j}\varphi}$。对其求空间梯度得 $\nabla p = +\mathrm{j}\kappa \vec n_{\mathrm{src}} p$，代入 $+\mathrm{j}\omega\rho_0\vec u = -\nabla p$ 并利用 $\kappa / \omega = 1/c$，立得物理质点振速与 FOA 偶极分量的精确对应关系：
 
@@ -335,7 +335,18 @@ $$\psi
 - **子图 (c) 直达扩散声能比（Direct-to-Diffuse Ratio，DDR）映射**：横轴为稳态平面波与各向同性扩散场声能密度比的分贝值 $\mathrm{DDR}$（定义为 $10\log_{10}(E_{\mathrm{dir}}/E_{\mathrm{diff}})$，单位：$\mathrm{dB}$，范围 $-15$～$+20\ \mathrm{dB}$；注意区别于[第 2 章 §2.4.3](02_basics-signal-model.md#sec-2-4-3) 按房间冲激响应早晚时段积分定义的直达混响比 $\mathrm{DRR}$），纵轴为统计扩散度 $\psi$。绿色实线绘出闭式关系 $\psi = 1/(1 + \mathrm{DDR}_{\mathrm{lin}})$，深灰竖向点线标出 $\mathrm{DDR} = 0\ \mathrm{dB}$ 时 $\psi = 0.5$ 的对称分界点。
 - **子图 (d) 开球四面体阵列径向模态幅度**：横轴为无量纲波数孔径积 $\kappa R \in [0.05, 4.5]$，纵轴为开球径向模态幅度增益 $|b_l(\kappa R)|$。蓝色实线零阶全向权重 $|b_0(\kappa R)|$ 从直流 $1.0$ 随频率回落，在红色竖向点线 $\kappa R = \pi$ 处跌入零点；橙色虚线一阶偶极权重 $|b_1(\kappa R)|$ 在 $\kappa R \to 0$ 处趋于零（导致低频逆均衡放大底噪），在 $\kappa R \approx 2.08$ 附近升至约 $0.436$ 的主峰，随后在图右端 $\kappa R \approx 4.493$（满足 $\tan(\kappa R) = \kappa R$）处跌入首个偶极零点，共同框定了紧凑球阵的有效工作频段。
 
-在多扬声器阵列或虚拟扬声器双耳重放中，参数化 DirAC 常与线性全景声解码配合使用（系统三维理论与工程实现详见 Zotter 与 Frank 2019 年专著）。设第 $\ell$ 支扬声器位于单位方向 $\vec u_\ell$ 且实馈送增益为 $d_\ell$，低频段（约 $700\ \mathrm{Hz}$ 以下）保持一阶偶极模态权重 $g_1 = 1$ 的基础（Basic）解码，以还原精确的 **Gerzon 速度矢量** $\vec r_V = \frac{\sum_\ell d_\ell \vec u_\ell}{\sum_\ell d_\ell}$（刻画低频双耳相位差定位）；中高频段则切换为最大化 Gerzon 能量矢量 $\vec r_E$ 模长的 $\max\text{-}r_E$ 阶次加权（二维正多边形环阵取 $1/\sqrt{2}$，三维正八面体球面阵取 $1/\sqrt{3}$）或消除反相负旁瓣的同相（in-phase）加权，从而收窄高频声像展宽并抑制对侧扬声器反相串扰（二维切比雪夫根与三维勒让德根的严格区分见 [E14-14](#e14-14)）。面对家庭影院 5.1/7.1.4 或缺少下半球扬声器的非均匀物理布局，直接求球谐模式匹配逆阵容易病态失真；Zotter 与 Frank（2012）提出的**全向全景声解码（All-Round Ambisonic Decoding，AllRAD）**采用两步解耦设计：先将 FOA/HOA 球谐信号按 $\max\text{-}r_E$ 权重解码到一组覆盖全空间的虚拟均匀球面 $t$-design 扬声器节点上，再通过基于矢量基的幅度平移（VBAP）将每个虚拟节点投影分配给物理布局中最近的三角扬声器组（底部空洞可置虚拟吸声点避免能量倒灌），由此在任意不规则扬声器排布上稳定维持方向能量守恒。
+在多扬声器阵列或虚拟扬声器双耳重放中，参数化 DirAC 常与线性全景声解码配合使用（系统三维理论与工程实现详见 Zotter 与 Frank 2019 年专著）。设 $L$ 支扬声器位于单位方向 $\{\vec u_\ell\}_{\ell=1}^L$、实馈送增益向量为 $\vec d = [d_1, \ldots, d_L]^\top$，在 $N$ 阶**高阶全景声（HOA）**下扬声器球谐采样矩阵记为 $\mathbf Y_L \in \mathbb{R}^{L \times (N+1)^2}$。工程中面向不同扬声器排布形成了四类代表性线性解码矩阵 $\mathbf D \in \mathbb{R}^{L \times (N+1)^2}$：
+
+- **采样解码器（SAD，Sampling Ambisonic Decoder）**：直接取 $\mathbf D_{\mathrm{SAD}} = \frac{1}{L}\mathbf Y_L$（或带求积面积权），仅在满足 $t \ge 2N + 1$ 的均匀球面 $t$-design 布局上精确；用于非均匀布局时会引起明显的方向响度起伏与声像拉偏。
+- **模式匹配解码器（MMD，Mode-Matching Decoder）**：在 $L \ge (N+1)^2$ 且 $\mathbf Y_L$ 列满秩时取伪逆 $\mathbf D_{\mathrm{MMD}} = \mathbf Y_L(\mathbf Y_L^\top\mathbf Y_L)^{-1}$（满足 $\mathbf Y_L^\top\mathbf D_{\mathrm{MMD}} = \mathbf I_{(N+1)^2}$），在数学上精确还原至 $N$ 阶的球谐系数；但面对 5.1/7.1.4 家庭影院或缺少下半球扬声器的非均匀排布时，$\mathbf Y_L$ 条件数急剧恶化，导致相邻扬声器产生巨大的反相增益与严重底噪/能量失衡。
+- **能量保持解码器（EPAD，Energy-Preserving Ambisonic Decoder，Zotter、Pomberger 与 Noisternig 2012）**：对 $\mathbf Y_L = \mathbf U\boldsymbol\Sigma\mathbf V^\top$ 做奇异值极分解并令 $\mathbf D_{\mathrm{EPAD}} \propto \mathbf U\mathbf V^\top$，强制列正交（$\mathbf D_{\mathrm{EPAD}}^\top\mathbf D_{\mathrm{EPAD}} \propto \mathbf I$），从而在不反转微小奇异值的前提下保证轻中度非规则布局上总辐射能量与声源方向无关。
+- **全向全景声解码器（AllRAD，All-Round Ambisonic Decoding，Zotter 与 Frank 2012）**：采用两步解耦 $\mathbf D_{\mathrm{AllRAD}} = \mathbf G_{\mathrm{VBAP}}\,\mathbf D_{\mathrm{virt}}$——先将 FOA/HOA 球谐信号解码到覆盖全空间的虚拟均匀球面 $t$-design 扬声器节点上，再通过基于矢量基的幅度平移（VBAP）将每个虚拟节点投影分配给物理布局中最近的三角扬声器组（底部空洞可置虚拟吸声点避免能量倒灌），由此在任意不规则物理布局上兼顾方向平滑性与能量稳定。
+
+**双频段速度/能量交越与 $N$ 阶 $\max\text{-}r_E$ 模态加权**：在约 $700\ \mathrm{Hz}$ 以下的低频段，人耳主要依靠双耳相位差定位，解码器采用全 $1$ 阶次权重（基础 Basic 解码）以精确还原 **Gerzon 速度矢量** $\vec r_V = \frac{\sum_\ell d_\ell \vec u_\ell}{\sum_\ell d_\ell}$；在约 $700\ \mathrm{Hz}$ 以上的中高频段，经相位匹配分频网络平滑切换为最大化 **Gerzon 能量矢量** $\vec r_E = \frac{\sum_\ell d_\ell^2 \vec u_\ell}{\sum_\ell d_\ell^2}$ 模长的 $\max\text{-}r_E$ 模态权重（或消除负旁瓣的同相 in-phase 权重），以收窄声像展宽并压制对侧扬声器反相串扰。对三维 $N$ 阶 HOA，Zotter 与 Frank（2012）给出精确的勒让德多项式 $P_n(\cdot)$ 闭式近似阶次权重：
+
+$$a_n \approx P_n\!\left(\cos\frac{137.9^\circ}{N+1.51}\right),\qquad n=0,1,\ldots,N,$$
+
+代入 $N = 1$ 得 $a_1 \approx \cos 54.94^\circ \approx 0.5744$，与 [E14-14](#e14-14) 严格导出的三维正八面体勒让德根 $1/\sqrt{3} \approx 0.5774$ 高度吻合（二维正多边形环阵的一阶切比雪夫精确根为 $1/\sqrt{2}$，二者不可混用；高阶切换时还需乘以扩散场能量补偿因子维持双频段响度衔接）。将这一频带分裂思想延伸至双耳耳机重放时，便自然导出与 §14.6 **BSM-MagLS** 互补的 **HOA-MagLS**（Schörkhuber 等，2018）：HOA-MagLS 直接在**球谐域**对已编码的 $(N+1)^2$ 路 HOA 信号设计双耳解码器，在空间阶次截止频点 $f_c \approx \frac{N c}{2\pi r_{\mathrm{head}}}$ 以下保持复数最小二乘以锁准低频 ITD，以上则释放球谐域 HRTF 目标相位、仅匹配方向幅度包络，既消除了低阶球谐截断引起的高频滚降与音色染色，又完整保留了式(14-9)分块对角 Wigner-D 矩阵头部追踪的高效性；相比之下，§14.6 的 **BSM-MagLS** 跳过易病态的中间球谐编码步骤，直接在**非规则机身传声器观测域**拟合双耳 HRTF，更适合受头部强散射影响的智能眼镜与 AR 头显，代价是头部转动时需直接在传感器域重算或旋转目标 HRTF 方向网格。
 
 ### 14.5 可穿戴非规则小孔径阵列与双耳信号匹配（BSM）
 
@@ -444,7 +455,7 @@ $$\begin{aligned}
 
 #### 锚点手算 14-2：双麦三方向 BSM-LS 正横零陷与 MagLS 一步恢复
 
-我们用一个横置在镜框前方的 $M = 2$ 支麦克风、$Q = 3$ 个方向（本一维双麦算例沿用[第 3 章 §3.1](03_array-geometry.md#sec-3-1) 线阵正横起算角约定：左侧端射 $+90^\circ$、正前方正横 $0^\circ$、右侧端射 $-90^\circ$）的精确手算例子，定量对比 BSM-LS 在相位冲突方向造成的 $-\infty\ \mathrm{dB}$ 幅度零陷，以及 BSM-MagLS 如何通过一次交替投影恢复平坦幅度响应（对应函数 `bsm_ls_weights` 与 `bsm_magls_weights`）。取等权 $\mathbf W_\Omega = \mathbf I_3$、无正则 $\lambda = 0$，设阵列传递矩阵 $\mathbf H$ 与目标耳复响应向量 $\vec p_e$（三方向真实幅度全为 $1$，仅正横 $0^\circ$ 方向因耳位偏移带有相位翻转 $-1$）为：
+我们用一个横置在镜框前方的 $M = 2$ 支麦克风、$Q = 3$ 个方向（本一维双麦算例沿用 §14.2 的 SOFA / AmbiX 听者局部方位角约定：左侧端射 $+90^\circ$、正前方正横 $0^\circ$、右侧端射 $-90^\circ$，与[第 3 章 §3.1](03_array-geometry.md#sec-3-1) 顺时针度量的 $\theta$ 符号相反）的精确手算例子，定量对比 BSM-LS 在相位冲突方向造成的 $-\infty\ \mathrm{dB}$ 幅度零陷，以及 BSM-MagLS 如何通过一次交替投影恢复平坦幅度响应（对应函数 `bsm_ls_weights` 与 `bsm_magls_weights`）。取等权 $\mathbf W_\Omega = \mathbf I_3$、无正则 $\lambda = 0$，设阵列传递矩阵 $\mathbf H$ 与目标耳复响应向量 $\vec p_e$（三方向真实幅度全为 $1$，仅正横 $0^\circ$ 方向因耳位偏移带有相位翻转 $-1$）为：
 
 $$\mathbf H
 =\begin{bmatrix}
@@ -775,6 +786,10 @@ m=0,1,2,\ldots
 
 1. **本地超低延迟时域协处理器通路（服务主动降噪 Active Noise Cancellation，ANC 与通透模式）**：不走分帧 FFT，而是以 $96$～$384\ \mathrm{kHz}$ 高采样率配合低阶 $\Sigma$-$\Delta$ 调制转换器逐样本流式运行（单样本周期仅 $2.6$～$10.4\ \mu\mathrm{s}$），采用少量级联二阶 IIR 双二阶节（Biquad）或 $16$～$32$ 抽头短时域 FIR 完成耳道补偿，将模拟麦克风到扬声器的总群延迟严格控制在 $30$～$80\ \mu\mathrm{s}$ 以内。
 2. **分帧频域 DSP / NPU 通路（服务上行通话降噪、跨模态融合与空间渲染）**：对端通话听不到佩戴者本人的被动耳道漏声，容许 $10$～$20\ \mathrm{ms}$ 算法缓冲，因此可运行 $16\ \mathrm{kHz}$ 采样率、$N = 256$ 点窗（$16\ \mathrm{ms}$）、$H = 128$ 点帧移（稳定调用周期 $H/f_s = 8\ \mathrm{ms}$）的加权重叠相加（Weighted Overlap-Add，WOLA）时频链路，在 $129$ 个非负频点上执行波束形成与式(14-25)的跨模态融合。受限于耳机几十毫安时的微型纽扣电池，内存与功耗仍须精打细算：以 $M = 3$ 通道（双外麦 + 单内麦）为例，$129$ 个频点维护单精度复数 `complex64`（每复数 $8$ 字节）协方差矩阵仅需 $129 \times 9 \times 8 = 9288$ 字节，全部常驻片上紧耦合 SRAM 即可避免高功耗的外部访存（见 [E14-12](#e14-12)）。
+
+**可穿戴 ANC 与语音上行的共存耦合**：在支持混合主动降噪（Hybrid ANC）的真无线耳机中，外置前馈（Feedforward，FF）麦克风与耳道内向反馈（Feedback，FB）麦克风通常同时服务于百微秒级 ANC 环路与上行通话 DSP，由此引入两项必须显式解耦的闭环交互：其一是**次级路径 $S(z)$ 耳道回声预抵消**——通话期间，耳机受话器会同时向封闭耳道内播放远端语音与 ANC 反相降噪声波，经受话器到耳道反馈麦的声学**次级路径 $S(z)$** 直接强耦合入 FB 麦克风（声压级往往比佩戴者骨导自语音高出 $+10$～$+25\ \mathrm{dB}$）；因此必须在 FB 信号进入 §14.9 跨模态 MVDR/MMSE 融合之前，先以已知受话器驱动信号与在线辨识的 $\hat S(z)$ 执行耳道内线性回声抵消，否则远端来话与 ANC 反相信号会直接污染上行流并破坏 $H_{\mathrm{occ}}(f)$ 估计。其二是**自语音发声期间的 `FxLMS` 自适应门控**——自适应反馈/混合 ANC 普遍采用滤波参考最小均方（Filtered-x LMS，`FxLMS`）依据 $\hat S(z)$ 更新降噪滤波器以压低耳道残差；一旦佩戴者开口说话，强骨导自语音进入 FB 误差麦会被 `FxLMS` 误当成待抵消噪声，若不加约束将引发自适应发散或试图反相抵消/扭曲佩戴者自己的声音，因此实用系统须由融合 FF/FB 能量比与相干度的自语音活动检测器（OVAD）实时冻结或收窄 `FxLMS` 步长，并平稳切换至主动闭塞效应消除（OEC）策略。
+
+**蓝牙经典 HFP 与低功耗音频 BLE LE Audio 上行链路权衡**：整机前端能力还直接受制于无线空口协议的带宽与拓扑上限。传统的经典蓝牙免提协议 **HFP（`SCO` / `eSCO` 链路）**长期锁定为**单声道上行**——从早期 $8\ \mathrm{kHz}$ 窄带 `CVSD`（$64\ \mathrm{kbps}$）、主流 $16\ \mathrm{kHz}$ 宽带 `mSBC`（典型帧长 $7.5\ \mathrm{ms}$）到 HFP 1.9 引入的 $32\ \mathrm{kHz}$ 超宽带 `SWB`（基于 `LC3-SWB`），耳机端无论配备多少麦克风，都必须在片上将多麦波束与 §14.9 跨模态融合坍缩为单路单声道发送（且开启麦克风时下行音频往往同步回落至语音模式），无法向主机直传双耳立体声信号。新一代 **BLE LE Audio** 采用更高编码效率的 **`LC3` 编解码器**（支持 $8$～$48\ \mathrm{kHz}$、$7.5\ \mathrm{ms}$ 或 $10\ \mathrm{ms}$ 帧长，在 $32$～$64\ \mathrm{kbps}$/声道即可兼顾清晰度与低编码失真），并通过**连接等时流（`CIS`，一对一单播）**为左右双耳建立时间同步的独立双向信道（辅以面向公共助听广播的一对多**广播等时流 `BIS` / `Auracast`**）。这一架构在约 $20$～$40\ \mathrm{ms}$ 的端到端无线延迟预算内首次使**真双耳立体声上行**（支撑空间通话、XR 沉浸录音与主机侧双耳协同波束形成）以及宽带下行与超宽带上行并发成为工程现实，但其跨耳相位精度仍须配合射频丢包隐藏（PLC）与亚微秒级跨耳时钟同步机制共同保障（回查[第 10 章 §10.2](10_engineering-practice.md#sec-10-2) 与[第 13 章](13_distributed-enhancement.md)）。
 
 ### 14.11 可复算代码入口、合成音频对照与练习（E14-01～E14-15）
 

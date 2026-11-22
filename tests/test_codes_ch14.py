@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 import tempfile
 import unittest
+import warnings
 
 import numpy as np
 
@@ -159,11 +160,28 @@ class TestSpatialParametric(unittest.TestCase):
         self.assertFalse(zero_res["valid_direction"])
         self.assertEqual(zero_res["diffuseness"], 1.0)
 
-        # Scale invariance of diffuseness down to tiny underflow-prone amplitudes 1e-150:
+        # Scale invariance of diffuseness down to tiny underflow-prone amplitudes 1e-150 and subnormal 1e-315:
         tiny = active_intensity_and_diffuseness(
             (1.0 + 1.0j) * 1e-150, np.array([1.0, 1.0j, 0.0]) * 1e-150
         )
         self.assertAlmostEqual(tiny["diffuseness"], 1.0 - 1.0 / np.sqrt(2.0), places=14)
+        with warnings.catch_warnings(record=True) as caught_sub:
+            warnings.simplefilter("always")
+            sub_unit = active_intensity_and_diffuseness(
+                1e-315 + 0.0j, np.array([1e-315 + 0.0j, 0.0, 0.0]), rho0=1.0, c=1.0
+            )
+            sub_air = active_intensity_and_diffuseness(
+                1e-315 + 0.0j, np.array([1e-315 + 0.0j, 0.0, 0.0]), rho0=1.2, c=343.0
+            )
+        self.assertEqual(caught_sub, [])
+        self.assertTrue(sub_unit["valid_direction"] and sub_air["valid_direction"])
+        self.assertAlmostEqual(sub_unit["diffuseness"], 0.0, places=14)
+        np.testing.assert_allclose(sub_unit["doa_unit"], [-1.0, 0.0, 0.0], atol=1e-15)
+        self.assertTrue(np.isfinite(sub_air["diffuseness"]))
+        with self.assertRaises(ValueError):
+            active_intensity_and_diffuseness(
+                1e200 + 0.0j, np.array([1e200 + 0.0j, 0.0, 0.0]), rho0=1e-100, c=1e-100
+            )
 
         # Open-sphere Bessel null at kr = pi: b0(pi) = 0, b1(pi) = j / pi.
         b0, b1 = open_sphere_foa_radial_weights(np.array([0.0, np.pi]))
@@ -301,10 +319,17 @@ class TestWearableFusion(unittest.TestCase):
         # Naive 10x inverse equalization amplifies 0.04 sensor floor 100x to 4.0 (+20 dB)
         self.assertAlmostEqual(high["equalized_inear_noise_variance"], 4.0, places=13)
 
-        # Scale invariance at 1e200 when R_nn and phi_s scale together, and overflow rejection
+        # Scale invariance at 1e200 when R_nn and phi_s scale together, log-domain tiny-gain SINR, and rejections
         scaled = cross_modal_mvdr_mmse(2.0, 1e200 * np.diag([4.0, 0.04]), phi_s=1e200)
         np.testing.assert_allclose(scaled["w_mvdr"], [1.0 / 401.0, 200.0 / 401.0], atol=1e-15)
         self.assertAlmostEqual(scaled["output_sinr_linear"], 100.25, places=12)
+        with warnings.catch_warnings(record=True) as caught_sinr:
+            warnings.simplefilter("always")
+            tiny_in = cross_modal_mvdr_mmse(1e-200, np.eye(2), phi_s=1.0)
+            tiny_air = cross_modal_mvdr_mmse(np.array([1e-200, 1.0]), np.eye(2), phi_s=1.0)
+        self.assertEqual(caught_sinr, [])
+        self.assertAlmostEqual(tiny_in["inear_only_sinr_db"], -4000.0, places=12)
+        self.assertAlmostEqual(tiny_air["air_only_sinr_db"], -4000.0, places=12)
         with self.assertRaises(ValueError):
             cross_modal_mvdr_mmse(2.0, 1e-200 * np.eye(2), phi_s=1e200)
         with self.assertRaises(ValueError):
@@ -514,6 +539,14 @@ class TestWearableAudioAndExercises(unittest.TestCase):
             raised_cosine_envelope(n_samples=100, fade_samples=60)
         with self.assertRaises(ValueError):
             measure_signal(np.zeros((1, SAMPLES)), "wearable_clean_ref", reference=np.zeros((1, SAMPLES)), pcm=1)  # type: ignore[arg-type]
+        # All-zero or sub-LSB quantized-to-zero reference must raise ValueError instead of ZeroDivisionError
+        for bad_ref, use_pcm in (
+            (np.zeros((1, SAMPLES)), False),
+            (np.zeros((1, SAMPLES)), True),
+            (np.full((1, SAMPLES), 1e-8), True),
+        ):
+            with self.assertRaises(ValueError):
+                measure_signal(np.zeros((1, SAMPLES)), "wearable_clean_ref", reference=bad_ref, pcm=use_pcm)
 
         payload = run_experiments()
         self.assertEqual(tuple(payload["exercises"].keys()), EXERCISE_IDS)

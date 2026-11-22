@@ -54,7 +54,7 @@ def bessel_jn(n: int, x: float | np.ndarray, max_terms: int = 28) -> np.ndarray:
         for k in range(1, terms_limit + 1):
             term = -term * quarter_x2 / float(k * (order + k))
             acc = acc + term
-            if float(np.max(np.abs(term))) <= 1e-17 * max(1.0, float(np.max(np.abs(acc)))):
+            if np.all(np.abs(term) <= 1e-17 * np.abs(acc)):
                 break
         out[mask_series] = acc
 
@@ -122,7 +122,8 @@ def uca_phase_mode_esprit(
     if peak == 0.0:
         raise np.linalg.LinAlgError("zero phase-mode covariance has no signal subspace")
 
-    evals, evecs = np.linalg.eigh(r_mode / peak)
+    r_scaled = (r_mode.real / peak) + 1j * (r_mode.imag / peak)
+    evals, evecs = np.linalg.eigh(r_scaled)
     k_src = int(n_sources)
     tol = 100.0 * np.finfo(float).eps * 3.0 * max(1.0, float(np.max(np.abs(evals))))
     if evals[-k_src] <= tol or evals[-k_src] - evals[-k_src - 1] <= tol:

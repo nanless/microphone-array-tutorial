@@ -116,7 +116,6 @@ And subsequent cross-chapter model/boundary modules append cleanly to each chapt
 | `E07-07`, `E08-09`, `E09-09` | Joint WPD rank-1 factorization into WPE + MVDR; cACG angular central Gaussian fixed-point shape update; 2-mode IMM interaction mixing & between-mode variance spread | [Enhancement structures](../cross_chapter/enhancement_structure_exercises.py) |
 | `E10-16`–`17`, `E11-09` | Exact tie boundary when completion equals next callback arrival; variable-callback ADC-to-DAC sample timestamp pairing & unknown dropout gaps; exact two-sided paired sign test | [Engineering boundaries](../cross_chapter/engineering_boundary_exercises.py) |
 | `E17-02` | Per-frequency $\cos(\pi f/f_s)$ attenuation of 2-tap linear half-sample delay & readback PCM verification | [Interpolation exercise](../../appendix_b/interpolation_exercise.py) |
-| `E17-03`–`13` | 6-position synthetic room analysis, short-vector analytical bounds, PCM windowing, evidence-tier cards, shared TAC pooling, dB floor guards, source-weighted equal-DRR outputs, truncated-tail EDC & 6-stage cascade attribution | [Appendix B runner](../../appendix_b/appendix_b_experiments.py) |
 
 Full problem statements, substitutions, intermediate quantities, final answers, and scope boundaries appear in the corresponding chapters (adding exercises never inflates the 388-row algorithm coverage count or substitutes deterministic math checks for perceptual speech evaluation).
 
@@ -153,7 +152,7 @@ Compare the single microphone, unaligned average, and aligned average sequential
 
 [Delay-aligned 2-channel average](../../ch01/audio/spatial_aligned.wav)
 
-Maps to `E01-01`, `E02-03`, and `E04-01`; see Section 9 below for what happens when the two independent noise streams are replaced by a shared common noise source.
+Maps to `E01-01`, `E01-05`, and `E04-01`; see Section 9 below for what happens when the two independent noise streams are replaced by a shared common noise source.
 
 ## 4. Linear AEC and Oracle Double-Talk Freeze
 
@@ -697,7 +696,7 @@ Generated into `codes/chapters/ch09/tracking_audio/` by [`chapter09_tracking_aud
 
 ### 31.1 Continuous Multi-Sine Source, Emission Time vs. Receive Time
 
-32 equal-amplitude sines (`300, 400, ..., 3400 Hz`, amplitude $1/\sqrt{32}$, `PCG64` seed `9001` phases + channel-major $\sigma = 0.01$ Gaussian sensor noise) carry an emission-clock silence gap (`0.80–0.82 s` fade-out, `0.82–1.08 s` zero emission, `1.08–1.10 s` fade-in) while moving at constant velocity $(0.8, 0)\,\mathrm{m/s}$ from $(-0.8, 1.5)\,\mathrm{m}$ past two mics at $(\pm 0.05, 0)\,\mathrm{m}$ ($c = 343\,\mathrm{m/s}$, exact retarded-time Eq. (9-27) + $1/r$ attenuation, shared export gain `0.7 / max_peak`).
+32 equal-amplitude sines (`300, 400, ..., 3400 Hz`, amplitude $1/\sqrt{32}$, `PCG64` seed `9001` phases + channel-major $\sigma = 0.01$ Gaussian sensor noise) carry an emission-clock silence gap (`0.80–0.82 s` fade-out, `0.82–1.08 s` zero emission, `1.08–1.10 s` fade-in) while moving at constant velocity $(0.8, 0)\,\mathrm{m/s}$ from $(-0.8, 1.5)\,\mathrm{m}$ past two mics at $(\pm 0.05, 0)\,\mathrm{m}$ ($c = 343\,\mathrm{m/s}$, exact retarded-time Eq. (9-44) + $1/r$ attenuation, shared export gain `0.7 / max_peak`).
 
 ### 31.2 Frame Center `state_time` vs. Frame-End Availability Time
 
@@ -984,7 +983,7 @@ Implemented in [`focus_audio.py`](../../ch04/core/focus_audio.py) and [`generate
 
 ## 39. Chapter 5: Derivative Mainlobe Constraints, Norm-Ball Robustness, Souden Reference Mic, and OM-LSA Gain
 
-Connecting Chapter 5 [`E05-11`](../../../../chapters_en/05_beamforming.md#e05-11), [`E05-13`](../../../../chapters_en/05_beamforming.md#e05-13), and [`E05-14`](../../../../chapters_en/05_beamforming.md#e05-14) (alongside Chapter 5 §5.8's speech-presence posterior and geometric gain control; [`chapter05_experiments.py`](../../ch05/chapter05_experiments.py)) and the [pinned `pb_bss` beamformer audit](01_spatial_and_tracking.md#beamformer-upstream-audit):
+Connecting Chapter 5 [`E05-11`](../../../../chapters_en/05_beamforming.md#e05-11), [`E05-13`](../../../../chapters_en/05_beamforming.md#e05-13), and [`E05-14`](../../../../chapters_en/05_beamforming.md#e05-14) (alongside Chapter 5 §5.7.2's speech-presence posterior and geometric gain control; [`chapter05_experiments.py`](../../ch05/chapter05_experiments.py)) and the [pinned `pb_bss` beamformer audit](01_spatial_and_tracking.md#beamformer-upstream-audit):
 
 ### 39.1 E05-14 (Part 1): First-Order Phase-Flat Derivative Constraint vs. Noise Amplification
 
@@ -1007,7 +1006,7 @@ Given rank-1 target $\mathbf{R}_{ss} = 3\vec{b}\vec{b}^H$ with $\vec{b} = [2, 1+
 
 ### 39.4 Speech Post-Filtering: Speech-Absence Prior ($q$), Speech-Presence Posterior ($p_s$), and OM-LSA Geometric Gain
 
-Under circular complex Gaussian hypotheses $H_0: \sigma_n^2 = 1$ vs. $H_1: \sigma_x^2 = 4$ ($\xi = 3, \gamma = 4$, likelihoods $\propto e^{-4}$ vs. $e^{-1}/4$), combining conditional speech-present gain $G_{H_1} = 0.8$ and floor $G_{\min} = 0.1$ geometrically via $G = G_{H_1}^{p_s} G_{\min}^{1 - p_s}$ (Cohen & Berdugo 2001 §2 Eqs. (6)–(16), Figure 51, [Chapter 5 §5.8](../../../../chapters_en/05_beamforming.md#sec-5-8)):
+Under circular complex Gaussian hypotheses $H_0: \sigma_n^2 = 1$ vs. $H_1: \sigma_x^2 = 4$ ($\xi = 3, \gamma = 4$, likelihoods $\propto e^{-4}$ vs. $e^{-1}/4$), combining conditional speech-present gain $G_{H_1} = 0.8$ and floor $G_{\min} = 0.1$ geometrically via $G = G_{H_1}^{p_s} G_{\min}^{1 - p_s}$ (Cohen & Berdugo 2001 §2 Eqs. (6)–(16), Figure 51, [Chapter 5 §5.7.2](../../../../chapters_en/05_beamforming.md#sec-5-7-2)):
 
 | Speech-Absence Prior $q$ | Speech-Presence Posterior $p_s$ | Geometric OM-LSA Gain $G$ |
 |---|---:|---:|
@@ -1058,7 +1057,7 @@ Exercises `E06-21`–`E06-24` run via [`aec_affine_projection_demo.py`](../../ch
 | [`E06-24`](../../../../chapters_en/06_aec.md#e06-24) | True stereo path `[1, 2]` vs. wrong prior `[2, 1]` both achieve `0` training error on collinear stereo input, yet holdout `[1, -1]` gives `0` vs. `-2` | Warm-starting from an acoustic prior selects one hyperplane solution without curing stereo collinearity |
 | [`E06-25`](../../../../chapters_en/06_aec.md#e06-25) | Colored AR(1) reference trained on `[0, 24000)` & frozen on `[24000, 32000)` across $K=1, 2, 4$ | Higher $K$ accelerates noise-free decorrelation while amplifying observation noise at fixed $(\mu, \delta)$ |
 
-Note also that upon resuming from a double-talk freeze, leaving a contaminated past observation (such as $d = 10$) unflushed inside the $P$-step APA projection buffer still corrupts subsequent updates unless the projection window is explicitly flushed while preserving the reference FIR history and filter weights (see Chapter 6 §6.2.1).
+Note also that upon resuming from a double-talk freeze, leaving a contaminated past observation (such as $d = 10$) unflushed inside the $P$-step APA projection buffer still corrupts subsequent updates unless the projection window is explicitly flushed while preserving the reference FIR history and filter weights (see Chapter 6 §6.2.5).
 
 ### Two Conditions on the Exact Same Colored Reference
 
@@ -1854,7 +1853,7 @@ Lower volume before listening:
 
 ### 55.4 Why Per-Channel Pre-Masking Requires Re-Checking the Spatial Model
 
-In `E05-12`, multiplying true steering $\vec{a} = [1, 1]^\top$ by unequal root-mask $[1, 1/2]$ yields $\tilde{\vec{a}} = [1, 1/2]^\top$ (outer product $\begin{bmatrix}1 & 1/2\\ 1/2 & 1/4\end{bmatrix}$): MVDR weights $[0.8, 0.4]^\top$ normalized on $\tilde{\vec{a}}$ give unit response `1.0` on the *pre-filtered* signal, yet response **`1.2`** if applied directly to the *unmasked* microphone input. Furthermore, alternating per-channel masks $[1, 1/4]$ and $[1/4, 1]$ across two frames yields pre-filtered vectors $[1, 1/2]^\top$ and $[1/2, 1]^\top$, inflating the 2-frame sample covariance $\begin{bmatrix}5/8 & 1/2\\ 1/2 & 5/8\end{bmatrix}$ (eigenvalues `9/8, 1/8`, $\det = 9/64$) from true rank `1` to **effective rank `2`**—and dividing by frame count $T$ differs from dividing by scalar mask sum $\sum_t m_t$ in Eq. (5-22) (see [Spatial & Tracking Study §Per-Channel Mask Evidence](01_spatial_and_tracking.md#per-channel-mask-evidence)).
+In `E05-12`, multiplying true steering $\vec{a} = [1, 1]^\top$ by unequal root-mask $[1, 1/2]$ yields $\tilde{\vec{a}} = [1, 1/2]^\top$ (outer product $\begin{bmatrix}1 & 1/2\\ 1/2 & 1/4\end{bmatrix}$): MVDR weights $[0.8, 0.4]^\top$ normalized on $\tilde{\vec{a}}$ give unit response `1.0` on the *pre-filtered* signal, yet response **`1.2`** if applied directly to the *unmasked* microphone input. Furthermore, alternating per-channel masks $[1, 1/4]$ and $[1/4, 1]$ across two frames yields pre-filtered vectors $[1, 1/2]^\top$ and $[1/2, 1]^\top$, inflating the 2-frame sample covariance $\begin{bmatrix}5/8 & 1/2\\ 1/2 & 5/8\end{bmatrix}$ (eigenvalues `9/8, 1/8`, $\det = 9/64$) from true rank `1` to **effective rank `2`**—and dividing by frame count $T$ differs from dividing by scalar mask sum $\sum_t m_t$ in Eq. (5-25) (see [Spatial & Tracking Study §Per-Channel Mask Evidence](01_spatial_and_tracking.md#per-channel-mask-evidence)).
 
 ## 56. Chapter 6: Playback Volume Tap Point and Historical Echo Tails
 

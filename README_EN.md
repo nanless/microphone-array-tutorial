@@ -4,7 +4,7 @@
 
 A complete, open bilingual (English & Chinese) technical monograph and runnable engineering laboratory for beginners, researchers, and audio systems engineers. Starting from spherical geometry, complex phasors, subspace linear algebra, Wirtinger calculus, and Bayesian estimation, the book derives **DOA localization, beamforming, acoustic echo cancellation (AEC), WPE dereverberation, speech separation, and multi-target source tracking** without skipping intermediate steps—then bridges directly into real-time hardware synchronization, latency/compute budgeting, system selection, and four frontier chapters on **acoustic imaging, distributed wireless arrays, spatial/wearable arrays, and conditioned target extraction with multichannel diarization**.
 
-**[Open English Interactive Course →](https://nanless.github.io/microphone-array-tutorial/site_en/)** · **[▶ 1-Click 4-Mic Browser Lab](https://nanless.github.io/microphone-array-tutorial/assets/readme/lab/array-lab.html?lang=en)** · **[🔊 15-Mic Real Room Demo](https://nanless.github.io/microphone-array-tutorial/site_en/#course-cases)** · **[English Monograph PDF](dist/microphone-array-tutorial-en.pdf)** · [Math Foundations (Ch 0)](chapters_en/00_math-foundations.md) · [Full Contents](chapters_en/00_overview.md) · [简体中文](README.md)
+**[Open English Interactive Course →](https://nanless.github.io/microphone-array-tutorial/site_en/)** · **[▶ 1-Click 4-Mic Browser Lab](https://nanless.github.io/microphone-array-tutorial/assets/readme/lab/array-lab.html?lang=en)** · **[🔊 15-Mic Real Room Demo](https://nanless.github.io/microphone-array-tutorial/site_en/#course-cases)** · **[English Monograph PDF](dist/microphone-array-tutorial-en.pdf)** · [Math Foundations (Ch 0)](chapters_en/00_math-foundations.md) · [Full Contents](chapters_en/00_overview.md)
 
 **16 chapters · 2 appendices · 352 runnable exercises · 87 numbered figures** · **283 companion WAV files** · **129 upstream open-source references**
 
@@ -57,8 +57,8 @@ A single microphone collapses target speech, competing talkers, room reflections
 | **Reference Appendices** | Ch 16–17 | Master notation table, terminology glossary, compact formula lookup, literature & challenge roadmap, end-to-end troubleshooting trees & capstone exercises | [Ch 16 Appendix A](chapters_en/16_appendix-symbols-math.md) · [Ch 17 Appendix B](chapters_en/17_appendix-guide.md) |
 
 - **Beginners**: Follow `Ch 0 (or look up sections via §0.8) → Ch 1–3 → Ch 4–5`, running the pure NumPy end-of-chapter exercises as you go.
-- **Algorithm & ML Researchers**: Start from [Ch 0 §0.8 Math Lookup](chapters_en/00_math-foundations.md#sec-0-8) and Chapter 2 notation, then jump directly to Chapters 4–9, Chapters 12–15, and [Appendix B Challenge Roadmap](chapters_en/17_appendix-guide.md#sec-17-2).
-- **Embedded & Audio Systems Engineers**: Jump straight to [Chapter 10 Engineering](chapters_en/10_engineering-practice.md), [Chapter 11 Selection Guide](chapters_en/11_selection-guide.md), [Appendix B Troubleshooting Tree](chapters_en/17_appendix-guide.md#sec-17-4), and the [Industrial Deployment Manual](codes/chapters/ch00/research_en/03_industrial_deployment.md).
+- **Algorithm & ML Researchers**: Start from [Ch 0 §0.8 Math Lookup](chapters_en/00_math-foundations.md#08-book-wide-on-demand-mathematical-lookup-index) and Chapter 2 notation, then jump directly to Chapters 4–9, Chapters 12–15, and [Appendix B Challenge Roadmap](chapters_en/17_appendix-guide.md#172-field-map-textbooks-conferences-journals-and-challenges).
+- **Embedded & Audio Systems Engineers**: Jump straight to [Chapter 10 Engineering](chapters_en/10_engineering-practice.md), [Chapter 11 Selection Guide](chapters_en/11_selection-guide.md), [Appendix B Troubleshooting Tree](chapters_en/17_appendix-guide.md#174-common-pitfalls-and-debugging-guide), and the [Industrial Deployment Manual](codes/chapters/ch00/research_en/03_industrial_deployment.md).
 
 ---
 

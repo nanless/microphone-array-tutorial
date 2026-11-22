@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 9 章 · 声源追踪 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="f6d48efe6ade"><style>
+<meta name="source-digest" content="a0289902c00e"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -1577,13 +1577,13 @@ B(\theta,\theta_b)
 &=\frac{1}{8}\left|\sum_{m=0}^{7}
 e^{\mathrm{j}\pi m(\sin\theta-\sin\theta_b)}\right|.
 \end{aligned}$$</p>
-<p>将真实方向 $\theta=50^\circ$ 与三种波束指向 $\theta_b\in\{30^\circ,\ 40^\circ,\ 50^\circ\}$ 代入，按 $20\log_{10}(\cdot)$ 换算出的 $3\ \mathrm{kHz}$ 目标方向增益依次为 <strong>$-24.20\ \mathrm{dB}$</strong>（完全不外推，已落入旁瓣零陷附近）、<strong>$-3.75\ \mathrm{dB}$</strong>（错从发布时刻起算漏掉一半外推，跌出 $-3\ \mathrm{dB}$ 半功率主瓣）与 <strong>$0\ \mathrm{dB}$</strong>（按 <code>state_time</code> 准确外推）。更一般地，对于有效孔径 $L=Md$、指向角 $\theta_0$ 的均匀线阵，其半功率波束宽度（HPBW，单位弧度）约为 $\theta_{\mathrm{HPBW}}\approx 0.886\,\lambda/(L\cos\theta_0)$；为避免控制总滞后 $\Delta t_{\mathrm{ctrl}}$ 将移动声源（最大角速度 $\omega_{\max}$）拖出半功率主瓣，须满足指向滞后容限准则：</p>
+<p>将真实方向 $\theta=50^\circ$ 与三种波束指向 $\theta_b\in\{30^\circ,\ 40^\circ,\ 50^\circ\}$ 代入，按 $20\log_{10}(\cdot)$ 换算出的 $3\ \mathrm{kHz}$ 目标方向增益依次为 <strong>$-24.20\ \mathrm{dB}$</strong>（完全不外推，已落入旁瓣零陷附近）、<strong>$-3.75\ \mathrm{dB}$</strong>（错从发布时刻起算漏掉一半外推，跌出 $-3\ \mathrm{dB}$ 半功率主瓣）与 <strong>$0\ \mathrm{dB}$</strong>（按 <code>state_time</code> 准确外推）。更一般地，对于有效孔径 $Md$（$M$ 支阵元、间距 $d$）、指向角 $\theta_0$ 的均匀线阵，其半功率波束宽度（HPBW，单位弧度）约为 $\theta_{\mathrm{HPBW}}\approx 0.886\,\lambda/(Md\cos\theta_0)$；为避免控制总滞后 $\Delta t_{\mathrm{ctrl}}$ 将移动声源（最大角速度 $\omega_{\max}$）拖出半功率主瓣，须满足指向滞后容限准则：</p>
 <p>$$\begin{aligned}
 \omega_{\max}\Delta t_{\mathrm{ctrl}}
 &\ll\frac{\theta_{\mathrm{HPBW}}}{2}
-\approx 0.443\frac{\lambda}{L\cos\theta_0}.
+\approx 0.443\frac{\lambda}{Md\cos\theta_0}.
 \end{aligned}$$</p>
-<p>代入上例（$L=4\lambda,\ \theta_0=50^\circ$）得线性近似半波束宽约 $9.9^\circ$；由于 $\sin\theta$ 映射造成法向/端射不对称，精确阵因子在 $\theta_0=50^\circ$ 处的 $-3\ \mathrm{dB}$ 半宽朝法向（broadside）仅 $9.11^\circ$、朝端射（endfire）为 $11.35^\circ$（平均 $10.2^\circ$；等价地，滞后指向 $\theta_b=40^\circ$ 波束的上侧 $-3\ \mathrm{dB}$ 边缘位于 $48.96^\circ$），恰好解释了为何 $40\ \mathrm{ms}$ 漏外推造成的 $10^\circ$ 指向滞后已越过半功率边缘，将目标增益压低至 $-3.75\ \mathrm{dB}$。孔径越大、频率越高，时间戳错位导致的高频语音衰减就越严重。</p>
+<p>代入上例（$Md=4\lambda,\ \theta_0=50^\circ$）得线性近似半波束宽约 $9.9^\circ$；由于 $\sin\theta$ 映射造成法向/端射不对称，精确阵因子在 $\theta_0=50^\circ$ 处的 $-3\ \mathrm{dB}$ 半宽朝法向（broadside）仅 $9.11^\circ$、朝端射（endfire）为 $11.35^\circ$（平均 $10.2^\circ$；等价地，滞后指向 $\theta_b=40^\circ$ 波束的上侧 $-3\ \mathrm{dB}$ 边缘位于 $48.96^\circ$），恰好解释了为何 $40\ \mathrm{ms}$ 漏外推造成的 $10^\circ$ 指向滞后已越过半功率边缘，将目标增益压低至 $-3.75\ \mathrm{dB}$。孔径越大、频率越高，时间戳错位导致的高频语音衰减就越严重。</p>
 <h3 id="sec-u-7498cbdd42">从活动观测到轨迹出生、确认与删除</h3>
 <p>单帧冒出的一个定位峰只是一条瞬时测量，可能是人开口，也可能是关门声或桌面反射。实用追踪器通过<strong>轨迹生命周期状态机</strong>过滤瞬态杂波：未关联的新峰先建为<strong>候选轨迹（tentative track）</strong>，在滑窗或连续帧内攒够规定次数的有效关联后才晋升为<strong>已确认轨迹（confirmed track）</strong>对外发布；已确认轨迹遇短暂停顿时依靠预测维持输出，一旦<strong>观测滞后时长</strong>（工程上常称<strong>观测龄期</strong>，即当前判定时刻距最近一次真实有效观测所属时刻已过去了多久）超出允许保持上限，就将该轨迹<strong>退役删除（retired/deleted）</strong>。此后即使同一方位再次有人开口，系统也会分配全新的 <code>track_id</code>——单凭几何方位恢复并不能证明还是刚才同一个人。</p>
 <p>初学者调试轨迹状态机时，最容易把“状态外推步长”与“观测滞后时长（观测龄期）”搅混。下表用一组具体时刻（设帧长 $512$ 点、采样率 $16\ \mathrm{kHz}$，即半窗长约 $16\ \mathrm{ms}$；最近一次有效观测发生在 $1.000\ \mathrm{s}$，此后说话人停顿无新观测）把整条<strong>状态时间轴</strong>与硬件时钟刻度一次性排清：</p>

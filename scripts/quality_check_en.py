@@ -264,6 +264,21 @@ def check_pdfs(errors: list[str]) -> None:
             errors.append(f"dist/{pdf_name} page count suspiciously low: {len(reader.pages)}")
         build_pdf.validate_pdf_structure_tags(reader)
         build_pdf.validate_pdf_links(pdf_path)
+        def _walk_outline(items):
+            for it in items:
+                if isinstance(it, list):
+                    yield from _walk_outline(it)
+                else:
+                    yield it
+        dirty_bookmarks = [
+            it.title for it in _walk_outline(reader.outline)
+            if "$" in it.title or "\\" in it.title
+        ]
+        if dirty_bookmarks:
+            errors.append(
+                f"dist/{pdf_name} contains {len(dirty_bookmarks)} unsanitized TeX bookmarks "
+                f"(e.g. {dirty_bookmarks[0]!r})"
+            )
         last_txt = reader.pages[-1].extract_text() or ""
         if end_marker not in last_txt:
             errors.append(f"dist/{pdf_name} final page missing marker {end_marker!r}")

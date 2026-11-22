@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 2 章 · 声音到达阵列时发生了什么 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="f6d48efe6ade"><style>
+<meta name="source-digest" content="a0289902c00e"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -1020,7 +1020,7 @@ B(f,\Omega)&=\vec w^H\vec a(f,\Omega)\text{。}
 <p>$$\begin{aligned}
 \mathrm{HPBW}&\approx\frac{0.886\,\lambda}{Md\cos\theta_0}\text{。}
 \end{aligned}\tag{2-11}$$</p>
-<p>式(2-11)里的常数 $0.886$ 与分母 $Md$ 从何而来？把阵元位置取为 $md$（$m=0,1,\dots,M-1$），记波数 $\kappa=2\pi/\lambda$，等权指向 $\theta_0$ 时权重为 $w_m=\frac1M e^{+\mathrm{j}\kappa md\sin\theta_0}$；对来自 $\theta$ 方向的平面波，相邻阵元补偿后的残余相位差记为 $\psi=\kappa d(\sin\theta-\sin\theta_0)$。代入式(2-10)并套用<a href="00_math-foundations.html#sec-0-2-1">第 0 章 §0.2.1 式(0-8)</a>的有限等比求和（注意第 0 章式(0-8)按 $e^{-\mathrm{j}m\psi}$ 求和，此处匹配导向矢量 $a_m=e^{+\mathrm{j}\kappa x_m\sin\theta}$ 与 $B=\vec w^H\vec a$ 按共轭形式 $e^{+\mathrm{j}m\psi}$ 求和，两者幅度完全相同，仅线性相位前因子反号），在 $\psi\notin 2\pi\mathbb{Z}$ 时立得：</p>
+<p>式(2-11)里的常数 $0.886$ 与分母 $Md$ 从何而来？把阵元位置取为 $md$（$m=0,1,\dots,M-1$），记波数 $\kappa=2\pi/\lambda$，等权指向 $\theta_0$ 时权重为 $w_m=\frac1M e^{+\mathrm{j}\kappa md\sin\theta_0}$；对来自 $\theta$ 方向的平面波，相邻阵元补偿后的残余相位差记为 $\psi=\kappa d(\sin\theta-\sin\theta_0)$。代入式(2-10)并将 $u=-\psi=\kappa d(\sin\theta_0-\sin\theta)$ 代入<a href="00_math-foundations.html#sec-0-2-1">第 0 章 §0.2.1 式(0-8)</a>的一般等比求和 $A_M(u)=\sum_{m=0}^{M-1}e^{-\mathrm{j}mu}$（两个负号恰好抵消，给出与第 0 章及<a href="05_beamforming.html#sec-5-2">第 5 章式(5-5)</a>严格一致的复阵因子 $\frac{1}{M}A_M(-\psi)$），在 $\psi\notin 2\pi\mathbb{Z}$ 时立得：</p>
 <p>$$\begin{aligned}
 B(\psi)&=\frac{1}{M}\sum_{m=0}^{M-1}e^{\mathrm{j}m\psi}
 =e^{\mathrm{j}(M-1)\psi/2}\,
@@ -1040,7 +1040,7 @@ B(\psi)&=\frac{1}{M}\sum_{m=0}^{M-1}e^{\mathrm{j}m\psi}
 <li><strong>低频宽主瓣时切勿直接套用近似式</strong>：式(2-11)依赖窄主瓣小角展开。例如物理跨度 $7\ \mathrm{cm}$ 的小阵列在 $1\ \mathrm{kHz}$（$\lambda=0.343\ \mathrm{m}$）下，$0.886\lambda/0.07\approx4.34\ \mathrm{rad}\approx249^\circ$，已超出线阵 $[-90^\circ,90^\circ]$ 的整个可视角域。遇到低频小孔径或大转向角时，必须回到精确阵因子检查两侧是否真的存在 $-3.01\ \mathrm{dB}$ 交点（详见第 3 章算例 3-4）；若希望厘米级小阵列在低频依然具备指向性，则需要改用第 5 章 §5.3 的差分或超指向加权。</li>
 </ul>
 <h3 id="sec-2-6-2">2.6.2 旁瓣电平：其他方向漏进多少</h3>
-<p><strong>旁瓣电平（Side Lobe Level，SLL）</strong>定义为可见角度范围内最高旁瓣峰值相对于主瓣峰值的分贝比值。对于等权延迟求和的均匀线阵，当阵元数 $M$ 足够大且第一旁瓣落在可见角域内时，主瓣与近旁瓣附近的狄利克雷核趋近于连续矩形孔径的 $\sin x/x$（sinc 函数）；对 $|\sin x/x|$ 求导令 $\tan x=x$，第一旁瓣极值落在 $x\approx4.4934$，幅度比约为 $|\sin(4.4934)/4.4934|\approx0.2172$，换算成分贝即为教科书熟知的渐近值 $20\log_{10}0.2172\approx-13.26\ \mathrm{dB}$（功率比约为 $10^{-13.26/10}\approx0.047$）。</p>
+<p><strong>旁瓣电平（Side Lobe Level，SLL）</strong>定义为可见角度范围内最高旁瓣峰值相对于主瓣峰值的分贝比值。对于等权延迟求和的均匀线阵，当阵元数 $M$ 足够大且第一旁瓣落在可见角域内时，主瓣与近旁瓣附近的狄利克雷核趋近于连续矩形孔径的 $\sin x/x$（即归一化 $\operatorname{sinc}(x/\pi)$）；对 $\lvert\sin x/x\rvert$ 求导令 $\tan x=x$，第一旁瓣极值落在 $x\approx4.4934$，幅度比约为 $\lvert\sin(4.4934)/4.4934\rvert\approx0.2172$，换算成分贝即为教科书熟知的渐近值 $20\log_{10}0.2172\approx-13.26\ \mathrm{dB}$（功率比约为 $10^{-13.26/10}\approx0.047$）。</p>
 <p>从傅里叶对偶直觉看，各阵元取相等权重相当于在空间孔径上截了一扇生硬的矩形窗，频谱或角谱上必然伴随 sinc 振铃；若改用中间大、两端小的锥削窗（如汉明窗或切比雪夫窗）给阵元加权，就能把旁瓣显著压低，代价是主瓣宽度展宽。如果希望主瓣不盲目变宽、只在强干扰来向上精准压低响应，则可采用 §5.4 的自适应 MVDR 波束形成在干扰方向自动置零。</p>
 <p>在阵元数很少的紧凑阵列上，实际 SLL 不能盲目照搬 $-13.26\ \mathrm{dB}$ 的大阵列极限。例如图 7(a) 的 8 麦半波线阵指向 $30^\circ$ 时，可见最高旁瓣约为 $-12.8\ \mathrm{dB}$；若换成 4 麦半波线阵指向正横 $\theta_0=0^\circ$，令 $u=\sin\theta$，精确狄利克雷核幅度 $\bigl|\frac{\sin(2\pi u)}{4\sin(\pi u/2)}\bigr|$ 由二倍角公式化简为 $|\cos(\pi u/2)\cos(\pi u)|$，在第一旁瓣区间 $1/2\lt |u|\lt 1$ 内令 $z=\cos(\pi|u|/2)$，函数 $z(2z^2-1)$ 的极值落在 $z=1/\sqrt{6}$ 处，最大旁瓣幅度为 $2/(3\sqrt{6})\approx0.2722$，即精确 SLL 为 $20\log_{10}[2/(3\sqrt{6})]\approx-11.30\ \mathrm{dB}$；再退到 2 麦半波线阵指向正横时，可见角域内主瓣一路单调降到端射零点，根本不存在旁瓣。</p>
 <h3 id="sec-2-6-3">2.6.3 指向性指数：弥散场中的目标方向优势</h3>
@@ -1103,7 +1103,7 @@ G_\theta&=M(M^2-1)\eta^2(\theta),\\
 <ul>
 <li>相位梯度因子 $\eta(\theta)$ 对 $\kappa d\sin\theta$ 求导得到 $\eta(\theta)=\frac{2\pi d}{\lambda}\cos\theta$，它是相邻两麦相位差随入射角 $\theta$ 变化的一阶灵敏度；当声源转向端射（$\theta\to\pm90^\circ$，$\cos\theta\to0$）时，角度微变几乎不再引起时延与相位变化，$\eta(\theta)\to0$，导致 $\mathrm{CRLB}(\theta)\to\infty$，印证了线阵在端射方向测角精度的严重退化。</li>
 <li>$M(M^2-1)$ 来自离散阵元序号绕阵列几何中心的二阶中心矩恒等式 $\sum_{m=0}^{M-1}(m-\frac{M-1}{2})^2=\frac{M(M^2-1)}{12}$（无论阵元从 $0$ 还是从 $1$ 编号，去中心后平方和完全相同）。这里要特别区分两种“增加麦克风数量”的情形：若<strong>固定阵元间距 $d$</strong> 往外扩充阵元（物理孔径同步变大），$M(M^2-1)d^2$ 按 $M^3d^2$ 增长，方差下界按 $1/M^3$ 迅速下降；若<strong>固定总物理孔径 $D=(M-1)d$</strong> 在内部加密阵元，代入 $d=D/(M-1)$ 后 $M(M^2-1)d^2=\frac{M(M+1)}{M-1}D^2$ 只按 $MD^2$ 线性增长，切不可在固定外壳尺寸下误报 $M^3$ 精度收益。</li>
-<li><strong>确定性模型与随机源模型的低信噪比差异</strong>：式(2-14)对应确定性（条件）未知源模型（Stoica 与 Nehorai，1989）。若改将源信号建模为零均值圆对称复高斯随机过程（非条件／随机源模型，见 Stoica 与 Nehorai，<em>IEEE TASSP</em>，38(12)，2140–2150，1990；Van Trees，<em>Optimum Array Processing</em>，2002，§8.4），单源均匀线阵的精确 CRLB 会在式(2-14)基础上额外乘上因子 $\bigl(1 + \frac{1}{M\cdot\mathrm{SNR}}\bigr)$：在阵列输出高信噪比区（$M\cdot\mathrm{SNR}\gg 1$）两者几乎重合，而在极低信噪比区（$M\cdot\mathrm{SNR}\ll 1$）随机源方差下界会转为按 $1/\mathrm{SNR}^2$ 快速恶化。</li>
+<li><strong>确定性模型与随机源模型的低信噪比差异</strong>：式(2-14)对应确定性（条件）未知源模型（Stoica 与 Nehorai，1989）。若改将源信号建模为零均值圆对称复高斯随机过程（非条件／随机源模型，见 Stoica 与 Nehorai，<em>IEEE TASSP</em>，38(10)，1783–1795，1990；Van Trees，<em>Optimum Array Processing</em>，2002，§8.4），单源均匀线阵的精确 CRLB 会在式(2-14)基础上额外乘上因子 $\bigl(1 + \frac{1}{M\cdot\mathrm{SNR}}\bigr)$：在阵列输出高信噪比区（$M\cdot\mathrm{SNR}\gg 1$）两者几乎重合，而在极低信噪比区（$M\cdot\mathrm{SNR}\ll 1$）随机源方差下界会转为按 $1/\mathrm{SNR}^2$ 快速恶化。</li>
 <li><strong>局部曲率与全局空间混叠的区别</strong>：CRLB 只计算真实角度附近对数似然函数的局部二阶曲率（费希尔信息），无法检查全局是否存在空间混叠。例如 4 麦线阵取 $d=\lambda$ 时，$\theta=+30^\circ$ 与 $\theta=-30^\circ$ 的导向矢量完全相同，都是 $[1,-1,1,-1]^\top$；代入 $L_{\mathrm{snap}}=100$、$\mathrm{SNR}=10$ 到式(2-14)依然会算出一个看似很小的局部标准差下界 $\approx0.105^\circ$，但任何算法在 $[-90^\circ,90^\circ]$ 内都无法区分 $-30^\circ$ 与 $+30^\circ$。因此引用 CRLB 前，必须先确认搜索角域内导向流形单值可辨识。</li>
 </ul>
 <h3 id="sec-2-6-7">2.6.7 算例 2-1：复算 CRLB 的五个因子与观测预算对比</h3>
@@ -1251,7 +1251,7 @@ r_m&=r-\vec u^\top\vec q_m
 <p><strong>参考答案</strong>：第一组掩码保留首、末两帧，外积相加再除以权重和 $2$；第二组只保留首帧，分别得到</p>
 <p>$$\mathbf R_A=\begin{bmatrix}1&1/2\\1/2&1/2\end{bmatrix},\qquad
 \mathbf R_B=\begin{bmatrix}1&0\\0&0\end{bmatrix}\text{。}$$</p>
-<p>$\mathbf R_A$ 的行列式为 $1/4$、秩为 $2$（满秩可逆）；$\mathbf R_B$ 的行列式为 $0$、秩为 $1$（奇异不可逆）。将第一组权重整体乘 $2$ 变为 $[2,0,2]$，分子与分母同乘 $2$ 抵消，$\mathbf R_A$ 保持不变。</p>
+<p>$\mathbf R_A$ 的行列式为 $1/4$、秩为 $2$（满秩可逆）；$\mathbf R_B$ 的行列式为 $0$、秩为 $1$（奇异不可逆）。将第一组权重整体乘 $2$ 变为 $[2,0,2]$，分子与分母同乘 $2$ 抵消，$\mathbf R_A$ 保持不变（跨越极大数量级时的浮点下溢与缩放保护详见 <a href="#e02-06">E02-06</a>）。</p>
 <p>可用有效权重集中度指标 $L_w=(\sum_t q_t)^2/\sum_t q_t^2$ 辅助观察掩码覆盖的帧数规模：两组分别为 $L_w=2$ 与 $L_w=1$。不过 $L_w$ 大并不保证矩阵满秩——哪怕 $100$ 帧掩码全为 $1$，只要这 $100$ 帧快拍向量彼此共线，加权协方差依然是秩一奇异矩阵；而当掩码全为零时没有任何有效观测，代码应明确拒绝输出而非在分母硬加微小数伪造结果。</p>
 <p><a id="e02-05"></a></p>
 <h3 id="sec-u-8a6156878d">E02-05：递归协方差启动时为何偏小？</h3>
@@ -1290,9 +1290,9 @@ r_m&=r-\vec u^\top\vec q_m
 <p>可以看到，未归一化状态 $\mathbf S_t$ 在启动初期的缓慢爬升纯粹源于零矩阵初始化带来的权重总和不足（$b_t\lt 1$），并非真实输入信号功率在变大。除以递推累计权重 $b_t$ 即可在每一步恢复无偏尺度 $\mathbf Q$（当然，尺度校正不会增加独立空间方向，本题始终输入同一个 $\vec x$，归一化后仍是秩一矩阵 $\mathbf Q$）。一旦系统引入跳帧、VAD 暂停或非均匀掩码，就应同步递推 $b_t=\alpha b_{t-1}+(1-\alpha)q_t$，而不能继续套闭式公式 $1-2^{-t}$。</p>
 <p><a id="e02-06"></a></p>
 <h3 id="sec-u-e81def45ae">E02-06：掩码很小，是否意味着没有数据？</h3>
-<p>沿用 E02-04 的三帧 $[1,0]^\top$、$[0,1]^\top$、$[1,1]^\top$，把 E02-04 的正比例缩放推广到跨多数量级的未归一化软掩码：令时频帧权重为 $q_t=c\,[1,0,1]$，分别取 $c\in\{10^{-4},1,10^4\}$ 验证归一化加权二阶矩与无失真 MVDR 权重的不变性，并说明为什么全零掩码必须另行处理。</p>
-<p><strong>参考答案</strong>：对任意严格正的尺度因子 $c>0$，加权外积和 $c\begin{bmatrix}2&1\\1&1\end{bmatrix}$ 与权重总和 $2c$ 相除后公共比例 $c$ 严格约消，三种尺度均回到与 E02-04 完全相同的 $\hat{\mathbf R}=\begin{bmatrix}1&1/2\\1/2&1/2\end{bmatrix}$，进而使下游无失真权重 $\vec w_{\mathrm{MVDR}}=\hat{\mathbf R}^{-1}\vec a/(\vec a^H\hat{\mathbf R}^{-1}\vec a)$ 也严格不变（即便省略分母 $2c$，$c$ 亦会在 MVDR 分子与分母中约去）。</p>
-<p>这道题区分了“软掩码公共比例较小”与“完全无观测数据”两件事：若程序武断写死绝对门限（如“当 $\sum_t q_t\lt 10^{-3}$ 时判为无语音”），就会把未归一化的低幅软掩码（如 $c=10^{-4}$）误判为空帧；而当掩码全为零（$q_t\equiv 0$）时没有任何有效快拍，代码必须显式拒绝求解并回退上一有效状态，不能在分母直接加上微小数伪造全零矩阵。工程上由对数似然转换软掩码跨越较大动态范围时，先在对数域减去最大值（<code>log-sum-exp</code> 技巧）并在加权累加前除以帧间峰值 $q_{\max}=\max_t q_t$，即可避免指数与平方累加的数值上溢或下溢。</p>
+<p>沿用 <a href="#e02-04">E02-04</a> 的三帧 $[1,0]^\top$、$[0,1]^\top$、$[1,1]^\top$，把 <a href="#e02-04">E02-04</a> 的正比例缩放推广到跨多数量级的未归一化软掩码：令时频帧权重为 $q_t=c\,[1,0,1]$，分别取 $c\in\{10^{-4},1,10^4\}$ 验证归一化加权二阶矩与无失真 MVDR 权重的不变性，并进一步分析在极端双精度尺度（如配套脚本 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/exercises_spatial.py"><code>exercises_spatial.py</code></a> 检验的 $c\in\{10^{-200},1,10^{200}\}$）下直接累加为何会失效，以及全零掩码为何必须另行处理。</p>
+<p><strong>参考答案</strong>：对任意严格正的尺度因子 $c>0$，加权外积和 $c\begin{bmatrix}2&1\\1&1\end{bmatrix}$ 与权重总和 $2c$ 相除后公共比例 $c$ 在代数上严格约消，在常规尺度 $c\in\{10^{-4},1,10^4\}$ 下均直接回到与 <a href="#e02-04">E02-04</a> 完全相同的 $\hat{\mathbf R}=\begin{bmatrix}1&1/2\\1/2&1/2\end{bmatrix}$，进而使下游无失真权重 $\vec w_{\mathrm{MVDR}}=\hat{\mathbf R}^{-1}\vec a/(\vec a^H\hat{\mathbf R}^{-1}\vec a)$ 也严格不变（即便省略分母 $2c$，$c$ 亦会在 MVDR 分子与分母中约去）。</p>
+<p>然而，代数尺度不变性在 IEEE 754 <code>float64</code> 极端指数边界处会被浮点下溢与上溢打破：当 $c\le 10^{-200}$ 时，直接对权重求平方（例如计算 <a href="#e02-04">E02-04</a> 的有效权重集中度 $L_w=(\sum_t q_t)^2/\sum_t q_t^2$）会使 $c^2=10^{-400}$ 低于 <code>float64</code> 最小正次正规数（约 $5\times 10^{-324}$）而直接下溢为 <code>0.0</code>，产生 <code>0/0</code> 的 <code>NaN</code>；反之当 $c\ge 10^{200}$ 时，$c^2=10^{400}$ 会上溢为 <code>inf</code>。若程序再武断写死绝对门限（如“当 $\sum_t q_t\lt 10^{-3}$ 时判为无语音”），还会把未归一化的低幅有效软掩码（如 $c=10^{-4}$ 或 $10^{-200}$）误判为空帧；而真正的全零掩码（$q_t\equiv 0$）不含任何有效快拍，代码必须显式拒绝求解并回退上一有效状态，不能在分母直接加上微小数伪造全零矩阵。工程上由对数似然转换软掩码时，应先在对数域减去最大值执行 <code>log-sum-exp</code> 归一化，并在加权累加前先将各帧权重除以峰值 $q_{\max}=\max_t q_t$（正如 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch03/core/covariance.py"><code>spatial_covariance</code></a> 与 <code>exercises_spatial.py</code> 在 $c\in\{10^{-200},1,10^{200}\}$ 上所验证的，先按 $q_{\max}$ 缩放即可零误差还原 $\hat{\mathbf R}$ 并严格拒绝对全零掩码求值）。</p>
 <p><a id="e02-07"></a></p>
 <h3 id="sec-u-9a0f5dcad3">E02-07：同一个遗忘因子，为什么换帧移后响应变慢？</h3>
 <p>每次实际更新采用 $\mathbf S_t=\alpha\mathbf S_{t-1}+(1-\alpha)\mathbf Q_t$，$\mathbf Q_t$ 是当前快拍外积。固定 $\alpha=0.98$，比较更新间隔 $\Delta t_{\mathrm{upd}}=8\ \mathrm{ms}$ 和 $16\ \mathrm{ms}$ 时，旧状态的贡献衰减到初始值 $1/e$ 所需的时间常数 $\tau_{\mathrm{ema}}$。若希望两者都具有 $\tau_{\mathrm{ema}}=0.4\ \mathrm{s}$ 时间常数，应各取多大的 $\alpha$？</p>

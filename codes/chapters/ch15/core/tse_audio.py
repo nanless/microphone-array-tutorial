@@ -219,6 +219,8 @@ def measure_signal(
         diff = win[0] - ref_win
         mse = float(np.mean(diff * diff))
         ref_pow = float(np.mean(ref_win * ref_win))
+        if ref_pow <= 0.0:
+            raise ValueError("positive reference energy required in scoring window")
         result["reference_mse"] = mse
         result["reference_nmse"] = float(mse / ref_pow)
 
@@ -239,6 +241,8 @@ def measure_signal(
             err_ints = ints[0] - ref_ints
             e_err = int(sum(int(v) * int(v) for v in err_ints))
             p_ref = int(sum(int(v) * int(v) for v in ref_ints))
+            if p_ref <= 0:
+                raise ValueError("positive quantized reference energy required in scoring window")
             pcm_int["integer_reference_error_E"] = e_err
             pcm_int["integer_reference_power_P"] = p_ref
             pcm_int["integer_reference_nmse"] = float(e_err / p_ref)

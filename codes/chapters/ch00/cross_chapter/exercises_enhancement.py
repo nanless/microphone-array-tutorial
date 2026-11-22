@@ -17,8 +17,7 @@ import numpy as np
 
 from codes.chapters.ch06.core.aec import erle_db, nlms
 from codes.chapters.ch07.core.dereverberation import offline_wpe
-from codes.chapters.ch08.core.separation import (guided_activity_posterior,
-                                             masked_spatial_covariance, pit_permutation, si_sdr)
+from codes.chapters.ch08.core.separation import (masked_spatial_covariance, pit_permutation, si_sdr)
 from codes.chapters.ch09.core.tracking import ConstantVelocityKalman, systematic_resample, wrap_angle
 
 

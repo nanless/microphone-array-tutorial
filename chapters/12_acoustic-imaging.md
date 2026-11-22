@@ -125,7 +125,7 @@ $$\begin{aligned}
 &=\frac{1}{L}\sum_{\ell=1}^{L}|\vec v^H\vec x_\ell|^2\ge 0.
 \end{aligned}$$
 
-因为每一项都是复数内积的模平方，所以只要保留完整的对角与非对角元素，$\hat{\mathbf R}$ 必然是 Hermitian 半正定矩阵（$\hat{\mathbf R} \succeq 0$）。注意这一性质纯粹由外积平方和结构保证，并不要求这 $L$ 个快拍的样本均值恰好为零；严格来说，式(12-3)定义的是未中心化的二阶矩矩阵，中心化样本协方差还需额外减去均值外积 $\bar{\vec x}\bar{\vec x}^H$（详见[附录 A E16-02](16_appendix-symbols-math.md#sec-u-e77b562c1e)）。
+因为每一项都是复数内积的模平方，所以只要保留完整的对角与非对角元素，$\hat{\mathbf R}$ 必然是 Hermitian 半正定矩阵（$\hat{\mathbf R} \succeq 0$）。注意这一性质纯粹由外积平方和结构保证，并不要求这 $L$ 个快拍的样本均值恰好为零；严格来说，式(12-3)定义的是未中心化的二阶矩矩阵，中心化样本协方差还需额外减去均值外积 $\bar{\vec x}\bar{\vec x}^H$（详见[附录 A E16-02](16_appendix-symbols-math.md#e16-02)）。
 
 #### 峰值复幅度与均方复系数
 
@@ -221,8 +221,8 @@ Sarradj 在三维声源映射研究中系统对比了四类经典导向权重约
 
 | 约定与 Acoular 名称 | 导向权重精确表达式 | 无噪单源 3D 峰位 | 真源位源强读数 | 远场等幅退化（$\lvert a_{mi}\rvert=1$） |
 |---|---|---|---|---|
-| Formulation I（`classic`） | $w_{mi}^{\mathrm{I}} = \dfrac{1}{M}\dfrac{a_{mi}}{\lvert a_{mi}\rvert} = \dfrac{1}{M}e^{-\mathrm{j}\kappa\Delta r_{mi}}$ | **无偏**（等幅加权，SNR 次优于 IV） | 有偏（等于 $\frac{q_j}{M^2}(\sum_m \frac{r_{0j}}{r_{mj}})^2$） | $\vec a_i / M$ |
-| Formulation II（`inverse`） | $w_{mi}^{\mathrm{II}} = \dfrac{1}{M}\dfrac{1}{a_{mi}^*} = \dfrac{1}{M}\dfrac{r_{mi}}{r_{0i}}e^{-\mathrm{j}\kappa\Delta r_{mi}}$ | 有偏 | 无偏（$\vec w_i^H\vec a_i=1$） | $\vec a_i / M$ |
+| Formulation I（`classic`） | $w_{mi}^{\mathrm{I}} = \dfrac{1}{M}\dfrac{a_{mi}}{\lvert a_{mi}\rvert}$<br>$= \dfrac{1}{M}e^{-\mathrm{j}\kappa\Delta r_{mi}}$ | **无偏**（等幅加权，SNR 次优于 IV） | 有偏（等于 $\frac{q_j}{M^2}(\sum_m \frac{r_{0j}}{r_{mj}})^2$） | $\vec a_i / M$ |
+| Formulation II（`inverse`） | $w_{mi}^{\mathrm{II}} = \dfrac{1}{M}\dfrac{1}{a_{mi}^*}$<br>$= \dfrac{1}{M}\dfrac{r_{mi}}{r_{0i}}e^{-\mathrm{j}\kappa\Delta r_{mi}}$ | 有偏 | 无偏（$\vec w_i^H\vec a_i=1$） | $\vec a_i / M$ |
 | Formulation III（`true level`，式(12-8)） | $\vec w_i^{\mathrm{III}} = \dfrac{\vec a_i}{\|\vec a_i\|_2^2}$ | 有偏 | 无偏（且 WNG 最优） | $\vec a_i / M$ |
 | Formulation IV（`true location`） | $\vec w_i^{\mathrm{IV}} = \dfrac{\vec a_i}{\sqrt{M}\|\vec a_i\|_2}$ | **无偏**（$1/r$ 匹配，SNR 优于 I） | 有偏（等于 $\frac{\|\vec a_j\|_2^2}{M}q_j$） | $\vec a_i / M$ |
 
@@ -556,7 +556,7 @@ $$\begin{aligned}
 \text{s.t.}\;&d_j\ge 0,\;\sigma^2\ge 0,\;\sum_{j=1}^J d_j\le\Lambda.
 \end{aligned}\tag{12-21}$$
 
-式(12-21)中的预算上限 $\Lambda \ge 0$ 直接控制允许分配给所有候选网格的总能量（等价于非负条件下的 $\ell_1$ 正则化），其数值必须与单位范数列 $\tilde{\vec a}_j = \vec a_j / \|\vec a_j\|_2$ 下 $\vec d$ 的量纲配套；若想换回参考位置声压均方量，还须按每列原有的范数平方逐格做尺度折算（原论文中的自适应预算选取策略详见 [Yardibi 等 2008](https://doi.org/10.1121%2F1.2896754)）。切勿将不含噪声列与预算约束的基础式(12-18)与式(12-21)混同。
+式(12-21)中的预算上限 $\Lambda \ge 0$ 直接控制允许分配给所有候选网格的总能量（等价于非负条件下的 $\ell_1$ 正则化），其数值必须与单位范数列 $\tilde{\vec a}_j = \vec a_j / \|\vec a_j\|_2$ 下 $\vec d$ 的量纲配套；若想换回参考位置声压均方量，还须按每列原有的范数平方逐格做尺度折算（原论文中的自适应预算选取策略详见 [Yardibi 等 2008](https://doi.org/10.1121/1.2896754)）。切勿将不含噪声列与预算约束的基础式(12-18)与式(12-21)混同。
 
 在本章 [E12-14](#e12-14) 的手算算例中，我们专门剥离出“单源模板 + 未知空间白噪声 $\sigma^2\mathbf I$”这一最小组合，演示噪声列如何进入实向量化字典，并用单麦克风退化反例直观说明何时源功率与白噪声方差会彻底丧失可辨识性。
 
@@ -671,6 +671,12 @@ b_i=\vec w_i^H\mathbf R_{\mathrm{coh}}\vec w_i,\qquad
 真实声源落在两个格点之间时，反演常把能量分摊给邻近格点；若扫描网格未覆盖视野外的强声源，模型为了强行解释传入阵列的相位结构，往往会在网格边界堆起一排伪源（离网格分摊与视野边界设计详见 [Brooks 与 Humphreys 2004 原论文第 10～13 页](https://ntrs.nasa.gov/api/citations/20080015889/downloads/20080015889.pdf)）。
 
 二维扫描网格假定所有声源位于同一已知深度平面。真实源偏离该平面时，距离、幅度比和相位差同时失配，导致图像偏移或散焦。即便改用三维体网格，单侧平面阵对纵向深度的分辨力依然远弱于横向角度。
+
+**三维体成像的轴向景深标度律**：对孔径为 $D$ 的单侧圆形平面阵，在法向距离 $z$、波长 $\lambda = c/f$ 处，横向瑞利分辨极限随距离线性增长（见 §12.11 式(12-32) 的 $\Delta x \approx 1.22\,\lambda z/D$），而依赖波前二次曲率（程差 $\propto D^2/(8z)$）的轴向半功率景深（Depth of Field，$-3\,\mathrm{dB}$ 轴向主瓣宽度）却按距径比 $(z/D)$ 的**平方**急剧展宽：
+
+$$\Delta x \approx 1.22\,\frac{\lambda z}{D},\qquad \Delta z \approx 7.1\,\lambda\left(\frac{z}{D}\right)^2.$$
+
+二者之比 $\Delta z / \Delta x \approx 5.8\,(z/D)$ 随工作距离线性放大。以图 62 的几何为例（$D = 0.4\,\mathrm{m},\ f = 4\,\mathrm{kHz},\ \lambda \approx 8.58\,\mathrm{cm}$）：在 $z = 0.6\,\mathrm{m}$（$z/D = 1.5$）处，横向分辨极限为 $\Delta x \approx 15.7\,\mathrm{cm}$，轴向景深却已宽达 $\Delta z \approx 1.37\,\mathrm{m}$（超过阵列到声源的物理距离本身）；若工作距拉远至 $z = 1.2\,\mathrm{m}$（$z/D = 3$），$\Delta x$ 仅翻倍至 $31.4\,\mathrm{cm}$，$\Delta z$ 却暴增四倍至 $5.48\,\mathrm{m}$。这从波动衍射层面直接解释了为什么单侧平面声学相机只能把声源大致拉成沿视线伸展的“雪茄状”光束，若要对复杂三维机舱或设备内部做高精度深度定位，必须改用大张角多视角立体双阵或三维包络阵列，将纵向深度转化为另一视角的横向角分辨。
 
 不妨用**圆环阵轴向深度反例**把纵向简并算清楚：沿用半径 $0.2\,\mathrm{m}$ 的 $8$ 麦圆环阵（$z = 0$），以圆心为公共参考点，比较轴上两个深度 $z = 0.6\,\mathrm{m}$ 与 $z = 0.2\,\mathrm{m}$。轴上声源到圆周各麦等距，式(12-2)给出 $8$ 路完全同幅同相的响应，单通道模平方分别为 $0.6^2 / (0.6^2 + 0.2^2) = 0.9$ 与 $0.2^2 / (0.2^2 + 0.2^2) = 0.5$。
 
@@ -819,7 +825,9 @@ $$\Delta x \approx 1.22\,\frac{\lambda z}{D} = 1.22\,\frac{c\,z}{f D}.
 $$\tilde{\vec u}_{\mathrm{px}} \propto \mathbf K_{\mathrm{cam}}\,[\mathbf R_{\mathrm{cam}} \mid \vec t_{\mathrm{cam}}]\,\tilde{\vec p}_j,
 \tag{12-33}$$
 
-式中 $\mathbf K_{\mathrm{cam}} \in \mathbb{R}^{3\times 3}$ 为相机内参矩阵（焦距与主点），$[\mathbf R_{\mathrm{cam}} \mid \vec t_{\mathrm{cam}}] \in \mathbb{R}^{3\times 4}$ 为声学阵列坐标系到光学相机坐标系的外参刚体变换（当扫描网格严格位于同一平面时，式(12-33)退化为二维平面单应性矩阵）。现场最隐蔽的定位误差来自**光心—阵心偏置与扫描深度误差引发的视差错位**：设阵列中心在 $(0, 0, 0)$、光学镜头偏置在 $(b_{\mathrm{cam}}, 0, 0)$，真实轴上发声部件位于 $(0, 0, z)$ 而操作员把扫描平面误设为 $\zeta = \hat z$。由相似三角形可知，相机观测真实源的视线为 $x(\zeta) = b_{\mathrm{cam}}(1 - \zeta/z)$，与假设扫描平面 $\zeta = \hat z$ 相交于 $x(\hat z) = b_{\mathrm{cam}}(1 - \hat z/z)$（相对阵列沿 $x=0$ 重建在 $(0, 0, \hat z)$ 的声源偏移 $b_{\mathrm{cam}}|\hat z/z - 1|$）；反之将声学重建点 $(0, 0, \hat z)$ 沿相机视线投影回真实源面 $\zeta = z$，其在部件表面上的横向视差偏移为 $\Delta x_{\mathrm{par}} \approx b_{\mathrm{cam}}|1 - z/\hat z|$。例如镜头偏置 $b_{\mathrm{cam}} = 0.15\,\mathrm{m}$、部件真实深度 $z = 1.0\,\mathrm{m}$ 而扫描深度误填为 $\hat z = 1.2\,\mathrm{m}$ 时，斑点就会偏离真实故障件 $2.5\,\mathrm{cm}$（扫描面上错位 $3.0\,\mathrm{cm}$），容易将轴承异响误判到相邻螺栓上。工程排查务必优先采用阵列中心同轴镜头、配合激光测距实时锁定深度，或直接导入三维 CAD / LiDAR 点云表面作为扫描网格。
+式中 $\mathbf K_{\mathrm{cam}} \in \mathbb{R}^{3\times 3}$ 为相机内参矩阵（焦距与主点），$[\mathbf R_{\mathrm{cam}} \mid \vec t_{\mathrm{cam}}] \in \mathbb{R}^{3\times 4}$ 为声学阵列坐标系到光学相机坐标系的外参刚体变换（当扫描网格严格位于同一平面时，式(12-33)退化为二维平面单应性矩阵）。现场最隐蔽的定位误差来自**光心—阵心偏置与扫描深度误差引发的视差错位**：设阵列中心在 $(0, 0, 0)$、光学镜头偏置在 $(b_{\mathrm{cam}}, 0, 0)$，真实轴上发声部件位于 $(0, 0, z)$ 而操作员把扫描平面误设为 $\zeta = \hat z$。由相似三角形可知，相机观测真实源的视线为 $x(\zeta) = b_{\mathrm{cam}}(1 - \zeta/z)$，与假设扫描平面 $\zeta = \hat z$ 相交于 $x(\hat z) = b_{\mathrm{cam}}(1 - \hat z/z)$（相对阵列沿 $x=0$ 重建在 $(0, 0, \hat z)$ 的声源偏移 $b_{\mathrm{cam}}\lvert\hat z/z - 1\rvert$）；反之将声学重建点 $(0, 0, \hat z)$ 沿相机视线投影回真实源面 $\zeta = z$，其在部件表面上的横向视差偏移为 $\Delta x_{\mathrm{par}} \approx b_{\mathrm{cam}}\lvert 1 - z/\hat z\rvert$。例如镜头偏置 $b_{\mathrm{cam}} = 0.15\,\mathrm{m}$、部件真实深度 $z = 1.0\,\mathrm{m}$ 而扫描深度误填为 $\hat z = 1.2\,\mathrm{m}$ 时，斑点就会偏离真实故障件 $2.5\,\mathrm{cm}$（扫描面上错位 $3.0\,\mathrm{cm}$），容易将轴承异响误判到相邻螺栓上。工程排查务必优先采用阵列中心同轴镜头、配合激光测距实时锁定深度，或直接导入三维 CAD / LiDAR 点云表面作为扫描网格。
+
+**超声工业检漏与局部放电声学相机（20～100 kHz）**：在压缩空气管道微漏、真空密封失效与高压开关柜局部放电（Partial Discharge）巡检中，待测故障在可听声段常被车间强机械背景噪声彻底掩蔽，却在 $20\text{～}100\,\mathrm{kHz}$ 超声频段产生显著的湍流喷射声或电晕脉冲。手持式工业超声声学相机依托宽带超声 MEMS 麦克风（典型采样率 $192\text{～}256\,\mathrm{kHz}$），在紧凑手持孔径 $D \approx 15\text{～}20\,\mathrm{cm}$ 下借助极短波长大幅提升空间分辨力：以 $f = 40\,\mathrm{kHz}$（$c = 343\,\mathrm{m/s}$，波长 $\lambda \approx 8.6\,\mathrm{mm}$）与 $D = 0.18\,\mathrm{m}$ 为例，按式(12-32)在近距检漏（$z = 0.15\,\mathrm{m}$）即可达到亚厘米级瑞利分辨（$\Delta x \approx 8.7\,\mathrm{mm}$），在 $z = 1.0\,\mathrm{m}$ 处也能保持 $\Delta x \approx 5.8\,\mathrm{cm}$（而同孔径在 $4\,\mathrm{kHz}$ 可听声段宽达 $58\,\mathrm{cm}$）。超声成像须同步处理两项高频特有的物理边界：其一，**大气声吸收衰减 $\alpha_{\mathrm{air}}(f)$**——空气黏滞与热传导引起的经典吸收随 $f^2$ 急剧攀升（叠加 $\mathrm{O}_2/\mathrm{N}_2$ 分子弛豫，常温常湿下 $40\text{～}100\,\mathrm{kHz}$ 衰减可达约 $1\text{～}3\,\mathrm{dB/m}$ 以上，参见 ISO 9613-1），因此数米外定量换算泄漏率或声源级时须在式(12-2)的 $1/r_{mj}$ 球面扩散项之外补乘指数吸收项 $e^{-\alpha_{\mathrm{air}}(f) r_{mj}}$；其二，**亚厘米波长下的空间混叠抑制**——由于 $40\text{～}100\,\mathrm{kHz}$ 半波长仅 $1.7\text{～}4.3\,\mathrm{mm}$、已小于物理 MEMS 封装尺寸，规则网格必然激发与主瓣等高的周期栅瓣，故手持超声相机普遍采用 $64\text{～}128$ 阵元的非规则多臂对数螺旋或黄金角螺旋拓扑打散周期栅瓣，并配合宽带多频点合成平均（真实源峰随频率固定、混叠旁瓣随频率游移）进一步压低伪像。
 
 #### 高级成像方法改变哪一步
 
@@ -838,8 +846,11 @@ $$\tilde{\vec u}_{\mathrm{px}} \propto \mathbf K_{\mathrm{cam}}\,[\mathbf R_{\ma
 | 近场声全息（NAH） | 从近距全息测量面逆传播重建源面声压、法向振速与有功声强 | 属近场声场重构问题，需亚波长密集采样与倏逝波噪声正则化，不同于远距点源反卷积 |
 | 函数波束形成（FB） | 按式(12-34)对完整半正定 CSM 的特征值取 $1/\nu$ 次幂后再扫描并还原 $\nu$ 次幂 | 无需迭代反卷积即可按指数 $\nu$ 压低单源旁瓣；破坏多源线性叠加与积分功率守恒，离网格弱源易被低估 |
 | **球面谐波全景成像（SH-CBF / 模态反卷积）** | 将刚性球阵观测投影至球谐（SH）模态域，经径向散射函数 $b_n(\kappa r)$ 均衡后执行 $4\pi$ 全向扫描或球面平移不变反卷积 | 适用于汽车座舱异响（BSR）排查与飞机客舱 $4\pi$ 全景声学相机；最高可用阶数受空间混叠边界 $N\approx \kappa r$ 与低频高阶径向逆白噪声放大制约（见[第 5 章 §5.8](05_beamforming.md#sec-5-8) 与[第 14 章 §14.2](14_spatial-wearable-arrays.md#sec-14-2)） |
+| **无网格连续域成像（ANM / 连续字典优化）** | 取消固定离散网格，在连续位置流形上借半定规划（原子范数最小化，ANM）或连续位置梯度精修直接联合求解源坐标与源强 | 从根源消除 §12.9 离网格能量分摊与基失配（Xenaki 与 Gerstoft 2015；Chardon 2021）；标准 Toeplitz 形式面向均匀/共阵平移结构且 SDP 受阵元数制约，三维近场球面波多需借助连续非凸精修 |
+| **稀疏贝叶斯学习（SBL）** | 为各候选格点赋予独立先验方差超参数 $\gamma_j$，通过边缘似然最大化（Type-II ML / EM 迭代）自适应联合估计稀疏源功率与噪声方差 $\sigma^2$ | 相对式(12-21)固定 $\ell_1$ 预算的 CMF 显著减轻正则参数手工调优负担，在低信噪比与多快拍条件下具较强伪峰压制力（Gerstoft 等 2016）；大规模网格上的反复矩阵求逆使实时性弱于 CLEAN-SC |
+| **神经声学成像（Neural Acoustic Imaging）** | 用卷积网络、U-Net 或展开反卷积架构直接学习从常规扫描图或复数 CSM 到高分辨源分布的端到端非线性映射 | 单次前向推理即可实现毫秒级实时高分辨出图（Ma 与 Liu 2019；Castellini 等 2021）；高度依赖特定阵列几何、频带与传播条件内的训练分布，跨构型泛化弱且不自动保证区域积分功率守恒 |
 
-面对具体工程难题时，应按实际出现的物理失配对症选型（常规波束、Sarradj 四类导向约定、DAMAS/DAMAS2/FFT-NNLS、CLEAN-SC、HR-CLEAN-SC、CMF 与函数波束形成在标准阵列基准 B1–B12 上的系统横向综述见 [Merino-Martínez 等 2019](https://doi.org/10.1007/s13272-019-00383-4)）：若存在强相干反射或同轴激励交叉项（如 [E12-04](#e12-04) 所示），需引入显式建模源间互谱的 DAMAS-C 或 CMF-C（参见 [Yardibi 等 2008](https://doi.org/10.1121%2F1.2896754)），不可将式(12-18)的非负标量模型直接当作相关源求解器。
+面对具体工程难题时，应按实际出现的物理失配对症选型（常规波束、Sarradj 四类导向约定、DAMAS/DAMAS2/FFT-NNLS、CLEAN-SC、HR-CLEAN-SC、CMF 与函数波束形成在标准阵列基准 B1–B12 上的系统横向综述见 [Merino-Martínez 等 2019](https://doi.org/10.1007/s13272-019-00383-4)）：若存在强相干反射或同轴激励交叉项（如 [E12-04](#e12-04) 所示），需引入显式建模源间互谱的 DAMAS-C 或 CMF-C（参见 [Yardibi 等 2008](https://doi.org/10.1121/1.2896754)），不可将式(12-18)的非负标量模型直接当作相关源求解器。
 
 HR-CLEAN-SC 先确定候选源区域，再在主瓣内寻找对目标源仍有足够响应、但受邻源 PSF 泄漏污染较小的源标记点（source marker）提取相干向量 $\vec h$，随后扫描该纯净成分来更新源位置（参见 [Sijtsma 与 Snellen 2016，§2.5](https://www.bebec.eu/fileadmin/bebec/downloads/bebec-2016/papers/BeBeC-2016-S1.pdf)）；若标记点选在目标源自身响应过弱处，提取同样会失稳。
 
@@ -1333,7 +1344,7 @@ b_{\mathrm{FB},i}(2)&=\frac{(4b_i+\sqrt{3})^2}{4(5+2\sqrt{3})}.
 - Brooks, T. F. 与 Humphreys, W. M.，*A Deconvolution Approach for the Mapping of Acoustic Sources (DAMAS) Determined from Phased Microphone Arrays*，AIAA 2004-2954：式(18)～(24)给出标准与去对角 DAMAS 迭代，第 10～13 页讨论离网格分摊、扫描边界与镜面反射影响（[NASA 会议版 PDF，共 18 页](https://ntrs.nasa.gov/api/citations/20080015889/downloads/20080015889.pdf)；后续期刊版刊于 *Journal of Sound and Vibration* 294, 2006，[DOI](https://doi.org/10.1016/j.jsv.2005.12.046)）。
 - Chardon, G.、Picheral, J. 与 Ollivier, F.，*Theoretical analysis of the DAMAS algorithm and efficient implementation of the Covariance Matrix Fitting method for large-scale problems*，*Journal of Sound and Vibration* 508, 116208，2021：§3.1～3.5 定理 1～3 与式(15)～(18)证明完整/去对角 CSM 非负 Frobenius 拟合与 DAMAS 固定点的等价条件，并区分扫描域 NNLS 目标（[DOI](https://doi.org/10.1016/j.jsv.2021.116208)；[作者公开预印本](https://gilleschardon.fr/papers/damascmf.pdf)）。
 - Sijtsma, P.，*CLEAN Based on Spatial Source Coherence*，NLR-TP-2007-345，2007：式(24)～(30)与 §4.3～4.6 推导基于空间相干结构的 CLEAN-SC 剥离及删对角内层迭代（[NLR 技术报告全文](https://reports.nlr.nl/server/api/core/bitstreams/813b0521-b37c-4aff-be61-7a8bceaa06d4/content)）。
-- Yardibi, T. 等，*Sparsity constrained deconvolution approaches for acoustic source mapping*，*J. Acoust. Soc. Am.* 123(5)，2008：建立带对角噪声与稀疏预算约束的 CMF 及相关源 CMF-C 模型（[DOI](https://doi.org/10.1121%2F1.2896754)）。
+- Yardibi, T. 等，*Sparsity constrained deconvolution approaches for acoustic source mapping*，*J. Acoust. Soc. Am.* 123(5)，2008：建立带对角噪声与稀疏预算约束的 CMF 及相关源 CMF-C 模型（[DOI](https://doi.org/10.1121/1.2896754)）。
 - Sarradj, E.，*Three-Dimensional Acoustic Source Mapping with Different Beamforming Steering Vector Formulations*，*Advances in Acoustics and Vibration*，2012：§2～§3 对比四类导向权重归一化在二维固定平面与三维深度扫描中的峰位与幅值特性（[DOI](https://doi.org/10.1155/2012/292695)）。
 - Sarradj, E.，*A fast signal subspace approach for the determination of absolute levels from phased microphone array measurements*，*Journal of Sound and Vibration* 329(9), 1553–1569，2010：提出基于互谱特征分解的正交波束形成（OBF）以快速定位并恢复绝对声源级。
 - Amiet, R. K.，*Refraction of sound by a shear layer*，*Journal of Sound and Vibration* 58(4), 467–482，1978：建立开口喷流风洞薄涡片剪切层的声波折射角度、传播时间与幅值修正模型。

@@ -448,10 +448,11 @@ def gsc_equivalence_and_boundary() -> dict:
 
 
 def postfilter_noise_models() -> dict:
-    """E05-07: Zelinski pairwise-difference non-negativity and McCowan coherence-corrected ill-conditioning."""
+    """E05-07: Zelinski non-negativity, McCowan ill-conditioning, and OM-LSA posterior gain combination."""
     return {
         'zelinski_pair_difference': zelinski_pair_difference(),
         'mccowan_coherent_noise': coherent_noise_pair(),
+        'om_lsa_probability_combination': om_lsa_probability_combination(),
     }
 
 

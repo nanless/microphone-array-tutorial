@@ -38,8 +38,8 @@ model according to content type:
      CC BY-SA 3.0 — see `codes/chapters/ch02/real_audio/LICENSE.txt` and
      `codes/chapters/ch02/real_audio/ATTRIBUTION.txt`.
    - `assets/readme/cases/locata/` (short room-recording excerpts and metadata
-     from the IEEE-AASP LOCATA Challenge corpus): CC BY 4.0 — see
-     `assets/readme/cases/locata/NOTICE.txt`.
+     from the IEEE-AASP LOCATA Challenge corpus): Open Data Commons Attribution 1.0
+     (ODC-By 1.0) — see `assets/readme/cases/locata/NOTICE.txt`.
    - Ignored local upstream source checkouts under
      `codes/chapters/ch00/upstream/_downloads/` are never redistributed by this
      repository and remain governed solely by each upstream project's license

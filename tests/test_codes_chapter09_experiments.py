@@ -357,11 +357,40 @@ class Chapter09ExperimentsTests(unittest.TestCase):
 
         for bad_call in (
             lambda: oosm_cv_retrodiction_update(np.array([0.0, 0.0]), np.eye(2), 0.0, 1.0, -0.01),
+            lambda: oosm_cv_retrodiction_update(
+                np.array([0.0, 0.0]), np.array([[1.0, 2.0], [2.0, 1.0]]), 0.0, 1.0, 0.1
+            ),
             lambda: fov_bernoulli_missed_detection_update(1.0, 0.0, in_fov_detection_prob=1.0),
             lambda: clear_mot_angular_summary([{}], [{}]),
         ):
             with self.assertRaises(ValueError):
                 bad_call()
+
+    def test_oosm_retrodiction_accepts_rank1_psd_with_roundoff(self):
+        # Construct rank-1 PSD covariances whose floating-point eigvalsh can dip slightly below zero.
+        for vec in (
+            np.array([1.0, 3.0]),
+            np.array([1.0, 1.0 / 3.0]),
+            np.array([3.0, 7.0]),
+            np.array([1e3, 3e3]),
+        ):
+            cov = np.outer(vec, vec)
+            res = oosm_cv_retrodiction_update(np.array([10.0, 20.0]), cov, 12.0, 1.5, 0.1)
+            for branch in ('retrodiction', 'naive_current_time'):
+                post = res[branch]['posterior_covariance']
+                np.testing.assert_allclose(post, post.T, atol=1e-15, rtol=0)
+                eigvals = np.linalg.eigvalsh(post)
+                self.assertGreaterEqual(eigvals[0], -1e-14 * max(1.0, float(eigvals[-1])))
+
+        # Explicit tiny negative roundoff within tolerance is projected cleanly; genuine indefiniteness fails.
+        eps = np.finfo(float).eps
+        slightly_neg = np.array([[1.0, 1.0], [1.0, 1.0 - 4.0 * eps]])
+        res = oosm_cv_retrodiction_update(np.array([0.0, 0.0]), slightly_neg, 1.0, 1.0, 0.1)
+        self.assertGreaterEqual(np.linalg.eigvalsh(res['retrodiction']['posterior_covariance'])[0], -1e-14)
+        with self.assertRaises(ValueError):
+            oosm_cv_retrodiction_update(
+                np.array([0.0, 0.0]), np.array([[1.0, 1.0], [1.0, 1.0 - 1e-8]]), 1.0, 1.0, 0.1
+            )
 
 
 if __name__ == '__main__':

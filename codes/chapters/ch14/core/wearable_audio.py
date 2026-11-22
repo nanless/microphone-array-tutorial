@@ -285,6 +285,8 @@ def measure_signal(
     diff_ch0 = win[0] - ref_win
     mse_ch0 = float(np.mean(diff_ch0**2))
     ref_power = float(np.mean(ref_win**2))
+    if ref_power <= 0.0:
+        raise ValueError("positive reference energy required in scoring window")
 
     result = {
         "scoring_samples_per_channel": SCORING_SAMPLES,
@@ -315,6 +317,8 @@ def measure_signal(
         err_int = win_int[0] - ref_win_int
         err_sq_sum = int(np.sum(err_int * err_int))
         ref_sq_sum = int(np.sum(ref_win_int * ref_win_int))
+        if ref_sq_sum <= 0:
+            raise ValueError("positive quantized reference energy required in scoring window")
         result["pcm_integer_metrics"] = {
             "pcm_decode_divisor": 32768,
             "integer_power_sample_denominator": SCORING_SAMPLES,

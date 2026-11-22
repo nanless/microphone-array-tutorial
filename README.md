@@ -57,8 +57,8 @@
 | **速查与排错附录** | 第 16～17 章 | 全局统一符号表、中英术语词典、紧凑公式速查；研究生文献与挑战赛地图、全链路故障排查树与跨章综合实验 | [16 附录 A：符号与公式](chapters/16_appendix-symbols-math.md) · [17 附录 B：排错与练习](chapters/17_appendix-guide.md) |
 
 - **零基础入门读者**：建议按 `第 0 章（或按 §0.8 检索）→ 第 1～3 章 → 第 4～5 章` 顺序阅读，边读边跑每章末尾的纯 NumPy 练习。
-- **算法与科研读者**：可从[第 0 章 §0.8 数学检索表](chapters/00_math-foundations.md#sec-0-8)与第 2 章统一记号切入，直奔第 4～9 章、第 12～15 章及[附录 B 文献挑战赛地图](chapters/17_appendix-guide.md#sec-17-2)。
-- **音频硬件与嵌入式工程师**：可直接阅读[第 10 章工程实践](chapters/10_engineering-practice.md)、[第 11 章选型指南](chapters/11_selection-guide.md)、[附录 B 故障排查表](chapters/17_appendix-guide.md#sec-17-4)与[工业部署源码手册](codes/chapters/ch00/research/03_industrial_deployment.md)。
+- **算法与科研读者**：可从[第 0 章 §0.8 数学检索表](chapters/00_math-foundations.md#08-全书各章数学工具按需检索总表)与第 2 章统一记号切入，直奔第 4～9 章、第 12～15 章及[附录 B 文献挑战赛地图](chapters/17_appendix-guide.md#172-领域地图教材会议期刊与挑战赛)。
+- **音频硬件与嵌入式工程师**：可直接阅读[第 10 章工程实践](chapters/10_engineering-practice.md)、[第 11 章选型指南](chapters/11_selection-guide.md)、[附录 B 故障排查表](chapters/17_appendix-guide.md#174-常见问题与调试指南)与[工业部署源码手册](codes/chapters/ch00/research/03_industrial_deployment.md)。
 
 ---
 
@@ -89,6 +89,6 @@ python3 -m venv .venv
 - **上游开源实现与工业部署研究手册（6 篇）**：[`codes/chapters/ch00/research/README.md`](codes/chapters/ch00/research/README.md)
 - **87 张插图、静态课程站与标签化 A4 合订本 PDF 构建说明**：[`scripts/README.md`](scripts/README.md)
 - **第三方代码、公开数据集署名与许可边界**：[`codes/chapters/ch00/THIRD_PARTY.md`](codes/chapters/ch00/THIRD_PARTY.md)
-- **完整英文版（19 章正文、6 篇研究手册、87 张英文插图、英文课程站与英文合订本 PDF）**：[`README_EN.md`](README_EN.md) · [`chapters_en/`](chapters_en/00_overview.md) · [`dist/microphone-array-tutorial-en.pdf`](dist/microphone-array-tutorial-en.pdf)
+- **完整英文版（19 篇正文文档：导读 + 16 章正文 + 2 篇附录、6 篇研究手册、87 张英文插图、英文课程站与英文合订本 PDF）**：[`README_EN.md`](README_EN.md) · [`chapters_en/`](chapters_en/00_overview.md) · [`dist/microphone-array-tutorial-en.pdf`](dist/microphone-array-tutorial-en.pdf)
 
 本仓库原创软件代码与脚本采用 [MIT 许可证](LICENSE)，原创教材正文、研究手册与教学插图采用 [CC BY-NC-SA 4.0 许可证](LICENSE-DOCS)；随仓引用的第三方源码片段与公开声学数据集均严格保留各自原始许可条款。

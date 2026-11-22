@@ -122,7 +122,7 @@ Speex 文件头说明其 AUMDF 通过连续学习率提高双讲鲁棒性，没�
 
 若当前软存在概率是 $p_t$、无语音时平滑系数为 $\alpha_d\text{，}$噪声递推使用 $\widetilde\alpha_t=\alpha_d+(1-\alpha_d)p_t$。例如本书给定 $\alpha_d=0.8$、旧噪声功率2、当前观测功率10：$p_t=0$时更新为3.6，$p_t=0.9$时仅更新为2.16。数值均按同一频点、同一功率单位计算；它们只复算给定概率下的一步递推，尚未构成带最小值搜索和概率估计的完整MCRA。其受控连续例见[E10-21](../../../../chapters/10_engineering-practice.md#e10-21)，更完整的机制及IMCRA两轮区别见[空间研究§50、51](01_spatial_and_tracking.md#sec-u-2973a53a28)。
 
-工业代码并不都使用同一软概率。本锁版 SpeexDSP 的 `preproc_update_prob` 在 $0.4S>S_{\min}$ 时设置逐频点硬标记；`preproc_noise_update` 在无标记**或当前功率低于旧噪声**时才更新。I32 的原函数小例说明它仍能跟踪下降的功率，但不能据此称作原MCRA/IMCRA全链。Cohen 的[作者软件页](https://webee.technion.ac.il/Sites/People/IsraelCohen/Info/Software.html)提供OM-LSA/IMCRA下载入口；本轮点击未取得可核软件包，也未发现明确再分发许可，因此只引用原文和网页，不将作者MATLAB代码或权重随仓分发。
+工业代码并不都使用同一软概率。本锁版 SpeexDSP 的 `preproc_update_prob` 在 $0.4S>S_{\min}$ 时设置逐频点硬标记；`preproc_noise_update` 在无标记**或当前功率低于旧噪声**时才更新。I32 的原函数小例说明它仍能跟踪下降的功率，但不能据此称作原MCRA/IMCRA全链。Cohen 的[作者软件页](https://webee.technion.ac.il/Sites/People/IsraelCohen/Info/Software.html)提供OM-LSA/IMCRA下载入口；当前核查未取得可核软件包，也未发现明确再分发许可，因此只引用原文和网页，不将作者MATLAB代码或权重随仓分发。
 
 ### I06：WebRTC 传统 VAD
 
@@ -194,7 +194,7 @@ L461～479 的减延迟分支存在可定位的轴混淆：`o_q` 是按通道排
 
 建议注入播放延迟阶跃、扬声器路径变化、静音参考和双讲。记录重对齐请求、滤波重置、残余回声和近端损伤。官方 [`LICENSE.rst`](https://github.com/xmos/lib_voice/blob/c9f1a9bf95cd88c7950adf4bf631c217f900ad25/LICENSE.rst)为 XMOS Public Licence v1；商用使用限定 XMOS 设备，并有特殊用途条款。它可以作为可获取的供应商源码研究，但不能标成不受硬件限制的 MIT/BSD 方案。
 
-**参考静音后的保持仅适用于 ALT 分支。** 固定 [`stage1.h`](https://github.com/xmos/lib_voice/blob/c9f1a9bf95cd88c7950adf4bf631c217f900ad25/lib_voice/api/stage1/stage1.h)默认 `ALT_ARCH_MODE=0`；[`stage1.c`](https://github.com/xmos/lib_voice/blob/c9f1a9bf95cd88c7950adf4bf631c217f900ad25/lib_voice/src/stage1/stage1.c#L49)的 ALT 控制先经延迟缓存处理，再判断参考活动，门限为 $16000\times3/240=200$ 帧。原流程先检查 `count > limit` 再递增：从 AEC 启用且计数归零开始，连续前 201 个无参考活动帧保持 AEC 并向后级强制参考活动，第 202 帧才旁路。因此“3 s”是配置预算，不能把实际严格比较改写成恰好 200 帧停用，也不能推成默认所有模式的策略。这是 AEC/IC 路由保持，不是回声尾声真值或近端单讲识别；本轮没有 XCORE 执行。当前 XMOS 文档版本与此固定提交分开，未成功读取的 XVF3510 4.2 PDF 不作为逐式证据。
+**参考静音后的保持仅适用于 ALT 分支。** 固定 [`stage1.h`](https://github.com/xmos/lib_voice/blob/c9f1a9bf95cd88c7950adf4bf631c217f900ad25/lib_voice/api/stage1/stage1.h)默认 `ALT_ARCH_MODE=0`；[`stage1.c`](https://github.com/xmos/lib_voice/blob/c9f1a9bf95cd88c7950adf4bf631c217f900ad25/lib_voice/src/stage1/stage1.c#L49)的 ALT 控制先经延迟缓存处理，再判断参考活动，门限为 $16000\times3/240=200$ 帧。原流程先检查 `count > limit` 再递增：从 AEC 启用且计数归零开始，连续前 201 个无参考活动帧保持 AEC 并向后级强制参考活动，第 202 帧才旁路。因此“3 s”是配置预算，不能把实际严格比较改写成恰好 200 帧停用，也不能推成默认所有模式的策略。这是 AEC/IC 路由保持，不是回声尾声真值或近端单讲识别；当前复核没有 XCORE 执行。当前 XMOS 文档版本与此固定提交分开，未成功读取的 XVF3510 4.2 PDF 不作为逐式证据。
 
 ### I11：XMOS IC 与 VNR 的控制关系
 
@@ -705,11 +705,11 @@ CMake要求3.20和C11，库链接平台数学库；MSVC路径明确拒绝，目�
 
 [诊断脚本](../../ch10/examples/audit_industrial_upstream_interfaces.py)的旧[JSON报告](../../ch10/reports/industrial_upstream_interfaces.json)对应本章来源审查 SRC10-01～03；它绑定的是[bde483历史工具字节](https://github.com/nanless/microphone-array-tutorial/blob/bde483bcc429a553aeaf8830ca3687ab46831db0/codes/chapters/ch10/examples/audit_industrial_upstream_interfaces.py)，不是改后工具的产物。当前工具的实际复验与新报告见[§9](#industrial-current-interface-contracts)。脚本先验证独立上游工作树的完整提交、干净状态、被用源码与许可摘要，再执行；结束再次检查，禁止自动获取依赖和改写上游。报告还绑定脚本摘要及输入配置摘要，JSON不写入非标准 NaN 或 Infinity。
 
-| 对象 | 本轮实际动作 | 未执行 |
+| 对象 | 当前实际核查动作 | 未执行 |
 |---|---|---|
 | pystoi | 原 Python 包12次调用，保留异常、警告和返回值 | MATLAB/Octave、重采样路径、自然语音数据 |
 | DeepFilterNet | 固定 Rust 文件静态核查；独立 Python 队列算例 | Rust构建、网络、LADSPA/PipeWire宿主 |
-| 其他工业库 | 本轮文档/源码复核；既有C探针另有报告 | 不据旧报告声称本轮重跑或设备验收 |
+| 其他工业库 | 当前文档/源码复核；既有C探针另有报告 | 不据旧报告声称当前重跑或设备验收 |
 
 复跑需要 NumPy/SciPy 和已取得的固定源码，不联网安装。采用本机已有隔离环境的示例命令：
 
@@ -721,7 +721,7 @@ PYTHONDONTWRITEBYTECODE=1 /private/tmp/masp-appb-pra-venv/bin/python \
 
 该临时环境路径只描述本次记录；其他机器须指定自身已有环境。上面的复跑命令显式保存当前报告，不覆盖2026-09-28的原记录。普通[离线测试](../../../../tests/test_codes_industrial_upstream_interfaces.py)只读取报告与本书脚本，无需上游缓存、SciPy或网络。期望值来自独立相关性恒等式、首次只读调用保留值和按通道/按时间样本的计数区别；测试通过不表示已认证这些库的全部输入和硬件。
 
-本轮检索按“PortAudio callback flags / framesPerBuffer”“ALSA PCM errors / timestamps”“ITU P.835 / P.566 2026”“BS.1770-5 / EBU R128”“STOI ESTOI original paper”“ViSQOL v3”“FastEnhancer ICASSP2026 / faster-enhancer.c”定位官方资料，并实际打开原文或固定代码。STOI作者站PDF本轮访问失败，因此不把代码实跑说成已读并复现作者全文；已有Python接口结论依上面固定源码及原调用报告。P.835与P.566的生效状态、预发布/待发布状态分开核查，不用搜索摘要替代标准条款。
+文献检索按“PortAudio callback flags / framesPerBuffer”“ALSA PCM errors / timestamps”“ITU P.835 / P.566 2026”“BS.1770-5 / EBU R128”“STOI ESTOI original paper”“ViSQOL v3”“FastEnhancer ICASSP2026 / faster-enhancer.c”定位官方资料，并实际打开原文或固定代码。STOI作者站PDF访问失败，因此不把代码实跑说成已读并复现作者全文；已有Python接口结论依上面固定源码及原调用报告。P.835与P.566的生效状态、预发布/待发布状态分开核查，不用搜索摘要替代标准条款。
 
 <a id="industrial-controlled-contracts"></a>
 

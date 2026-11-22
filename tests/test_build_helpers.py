@@ -153,6 +153,7 @@ class PdfHeadingDestinationTest(unittest.TestCase):
             reader = PdfReader(pdf_path)
             chapter, children = reader.outline
             first, second, grandchildren = children
+            self.assertEqual(grandchildren[0].title, "Δ math")
             destinations = [chapter, first, second, grandchildren[0]]
             for bookmark, (page, left, top, zoom) in zip(destinations, [
                 (1, 30, 760, 1.1), (1, 31, 640, 1.2),
@@ -1272,6 +1273,74 @@ class BuildHelpersTest(unittest.TestCase):
     def test_ascii_range_rule_ignores_version_near_miss(self):
         self.assertIsNotNone(quality_check.NUMERIC_ASCII_RANGE.search("2~3 周"))
         self.assertIsNone(quality_check.NUMERIC_ASCII_RANGE.search("v1.2~1.3"))
+
+
+class BookmarkPlainTextAndPdfCssTest(unittest.TestCase):
+    def test_bookmark_plain_text_converts_latex_and_html_cleanly(self):
+        cases = [
+            (r"$\mathrm{SO}(3)$", "SO(3)"),
+            (r"$\operatorname{vec}$", "vec"),
+            (r"$\mathbf P_{\mathcal R(\mathbf A)}$", "P_R(A)"),
+            (r"$\hat{\mathbf{R}}_{xx}$", "R\u0302_xx"),
+            (r"$\kappa R = \pi$", "κR = π"),
+            (r"$\psi \in [0, 1]$", "ψ ∈ [0, 1]"),
+            (r"$\beta$", "β"),
+            (r"$\ell_2$", "ℓ₂"),
+            (r"$\sqrt{2}$", "√2"),
+            (r"$\mathrm{Pa}^2$", "Pa²"),
+            (r"$2 \times 2$", "2 × 2"),
+            (r"$rS$-DANSE$^+$", "rS-DANSE⁺"),
+            (r"$\max\text{-}r_E$", "max-r_E"),
+            (r"$\chi^2$", "χ²"),
+            (r"$\Delta=3$", "Δ=3"),
+            (r"$5^\circ$", "5°"),
+            (r"$10\log_{10}$ &amp; $20\log_{10}$", "10 log₁₀ & 20 log₁₀"),
+            (r"<code>vec</code> $\operatorname{vec}(\mathbf A\mathbf X\mathbf B)$", "vec vec(AXB)"),
+            (r"$\frac{a+b}{c}$ and $\sqrt{x+y}$", "(a+b)/c and √(x+y)"),
+        ]
+        for raw, expected in cases:
+            with self.subTest(raw=raw):
+                actual = build_pdf.bookmark_plain_text(raw)
+                self.assertEqual(actual, expected)
+                self.assertNotIn("$", actual)
+                self.assertNotIn("\\", actual)
+
+    def test_all_2038_zh_and_en_headings_sanitize_without_tex_tokens(self):
+        build_pdf_en = load("build_pdf_en", ROOT / "scripts" / "build_pdf_en.py")
+        _, zh_outline = build_pdf.build_html(build_date="2026-10-05")
+        _, en_outline = build_pdf_en.build_html_en(build_date="2026-10-05")
+        for edition, outline in (("zh", zh_outline), ("en", en_outline)):
+            titles = []
+            for label, _cid, secs in outline:
+                titles.append(label)
+                for title, _sid, subsecs in secs:
+                    titles.append(title)
+                    titles.extend(sub for sub, _subid in subsecs)
+            self.assertEqual(len(titles), 1019, msg=f"{edition} outline count")
+            for raw in titles:
+                cleaned = build_pdf.bookmark_plain_text(raw)
+                self.assertNotIn("$", cleaned, msg=f"{edition}: {raw!r} -> {cleaned!r}")
+                self.assertNotIn("\\", cleaned, msg=f"{edition}: {raw!r} -> {cleaned!r}")
+                self.assertTrue(cleaned.strip(), msg=f"{edition}: empty bookmark from {raw!r}")
+
+    def test_pdf_css_constrains_table_svg_and_avoids_toc_orphans(self):
+        screen, printed = build_pdf.CSS.split("@media print", 1)
+        for label, part in (("screen", screen), ("print", printed)):
+            with self.subTest(section=label):
+                self.assertIn(
+                    'td mjx-container[jax="SVG"],th mjx-container[jax="SVG"]{max-width:100%;overflow:visible}',
+                    part,
+                )
+                self.assertIn(
+                    'td mjx-container[jax="SVG"] svg,th mjx-container[jax="SVG"] svg{max-width:100%;height:auto}',
+                    part,
+                )
+                self.assertIn("td,th{word-break:normal;overflow-wrap:break-word;hyphens:auto}", part)
+                self.assertIn("table-layout:auto", part)
+        self.assertIn(".toc>li{margin:5px 0;break-inside:auto;", screen)
+        self.assertIn(".toc>li>a{display:inline-block;color:#14171A;break-after:avoid-column;break-after:avoid}", screen)
+        self.assertIn(".toc .sec>li{break-inside:avoid-column}", screen)
+        self.assertIn(".toc .subsec>li{break-inside:avoid-column}", screen)
 
 
 if __name__ == "__main__":

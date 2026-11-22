@@ -1616,15 +1616,17 @@ def norm(text: str):
     return re.sub(r"[\s·：:，,。；;、“”‘’「」『』（）()—–\-]", "", text)
 
 
-def bookmark_title_matches_page(title: str, page_text: str) -> bool:
+def bookmark_title_matches_page(title: str, page_text: str,
+                                source_title: str | None = None) -> bool:
     """接受 PDF 提取保留标题文字、但丢失 MathJax 公式的情况。"""
     page_key = norm(page_text)
     title_key = norm(title)
     if title_key and title_key in page_key:
         return True
-    if "$" not in title:
+    raw = source_title if source_title is not None else title
+    if "$" not in raw:
         return False
-    mathless = norm(re.sub(r"\$[^$]*\$", "", title))
+    mathless = norm(re.sub(r"\$[^$]*\$", "", raw))
     return len(mathless) >= 8 and mathless in page_key
 
 
@@ -1805,40 +1807,51 @@ def check_pdf(errors: list[str], notices: list[str]):
     radicals = re.findall(r"[\u2e80-\u2eff\u2f00-\u2fdf]", text)
     if radicals:
         fail(errors, f"PDF 文本层含部首类错误码位：{len(radicals)} 个")
-    expected = expected_outline()
-    expected_ids = expected_outline_heading_ids()
-    actual = pdf_outline_tree(reader.outline)
-    if [item[0].title for item in actual] != [label for label, _ in expected]:
-        fail(errors, "PDF 顶级书签标题或顺序与源 Markdown 不一致")
-    else:
-        for (parent, children), (label, expected_children), heading_ids in zip(
-                actual, expected, expected_ids):
-            if [child.title for child, _subchildren in children] != [
-                    title for title, _subtitles in expected_children]:
-                fail(errors, f"PDF 节书签标题或顺序不一致：{label}")
-                continue
-            destinations = [parent]
-            for (child, subchildren), (_title, expected_subtitles) in zip(
-                    children, expected_children):
-                actual_subtitles = [subchild.title for subchild, _ in subchildren]
-                if actual_subtitles != expected_subtitles:
-                    fail(errors, f"PDF 子节书签标题或顺序不一致：{label} / {child.title}")
-                destinations.append(child)
-                destinations.extend(subchild for subchild, _ in subchildren)
-            if len(destinations) != len(heading_ids):
-                fail(errors, f"PDF 书签与源标题目标数量不一致：{label}")
-            for destination, heading_id in zip(destinations, heading_ids):
-                errors.extend(bookmark_destination_issues(reader, destination, heading_id))
-                page_no = reader.get_destination_page_number(destination)
-                page_text = extracted[page_no] if 0 <= page_no < len(extracted) else ""
-                if not bookmark_title_matches_page(destination.title, page_text):
-                    fail(errors, f"PDF 书签落页未出现标题：{destination.title} -> p{page_no + 1}")
     import importlib.util
     module_path = ROOT / "scripts" / "build_pdf.py"
     spec = importlib.util.spec_from_file_location("quality_math_detector", module_path)
     module = importlib.util.module_from_spec(spec)
     assert spec.loader is not None
     spec.loader.exec_module(module)
+    expected = expected_outline()
+    expected_ids = expected_outline_heading_ids()
+    actual = pdf_outline_tree(reader.outline)
+    if [item[0].title for item in actual] != [
+            module.bookmark_plain_text(label) for label, _ in expected]:
+        fail(errors, "PDF 顶级书签标题或顺序与源 Markdown 不一致")
+    else:
+        for (parent, children), (label, expected_children), heading_ids in zip(
+                actual, expected, expected_ids):
+            if [child.title for child, _subchildren in children] != [
+                    module.bookmark_plain_text(title)
+                    for title, _subtitles in expected_children]:
+                fail(errors, f"PDF 节书签标题或顺序不一致：{label}")
+                continue
+            destinations = [parent]
+            raw_titles = [label]
+            for (child, subchildren), (raw_sec_title, expected_subtitles) in zip(
+                    children, expected_children):
+                actual_subtitles = [subchild.title for subchild, _ in subchildren]
+                expected_clean_subtitles = [
+                    module.bookmark_plain_text(sub) for sub in expected_subtitles]
+                if actual_subtitles != expected_clean_subtitles:
+                    fail(errors, f"PDF 子节书签标题或顺序不一致：{label} / {child.title}")
+                destinations.append(child)
+                raw_titles.append(raw_sec_title)
+                destinations.extend(subchild for subchild, _ in subchildren)
+                raw_titles.extend(expected_subtitles)
+            if len(destinations) != len(heading_ids):
+                fail(errors, f"PDF 书签与源标题目标数量不一致：{label}")
+            for destination, heading_id, raw_title in zip(
+                    destinations, heading_ids, raw_titles):
+                if "$" in destination.title or "\\" in destination.title:
+                    fail(errors, f"PDF 书签含未净化 LaTeX 源码：{destination.title}")
+                errors.extend(bookmark_destination_issues(reader, destination, heading_id))
+                page_no = reader.get_destination_page_number(destination)
+                page_text = extracted[page_no] if 0 <= page_no < len(extracted) else ""
+                if not bookmark_title_matches_page(
+                        destination.title, page_text, source_title=raw_title):
+                    fail(errors, f"PDF 书签落页未出现标题：{destination.title} -> p{page_no + 1}")
     if module.contains_unrendered_math(text):
         fail(errors, "PDF 疑似含未渲染的公式源码")
     if (DIST / "combined.html").exists():

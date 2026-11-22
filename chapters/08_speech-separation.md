@@ -144,7 +144,7 @@ $$
 - 如果每一帧独立挑最小排列，虽然单帧局部误差最小，但在两人交叠的清辅音、呼吸停顿或能量接近的过渡帧上，两套排列损失非常接近，开关 $\pi^\star$ 极易在相邻帧之间来回跳变，导致同一个输出声道上一秒还是男声、下一秒突然跳成女声；
 - **uPIT** 强制整句话（数秒长）的所有帧共享**同一个**排列 $\pi^\star$，逼迫网络内部利用长程音色、基频与空间连续性自己把同一个人的声音自始至终锁在同一个输出槽位里。不过即便用了 uPIT，当滑窗切分长会议录音遇到“某块只有一人说话（另一槽位应输出静音）”或跨滑窗拼接时，静音段与相邻块之间依然会发生**槽位翻转（slot flipping）**，这正是 §8.6 连续语音分离（CSS）必须专门设计跨块对齐与单人旁路保护的原因。
 
-从算法复杂度看，只有当式(8-5)严格写成 $N\times N$ 成对代价可加和的形式时，才可在源数较多时用复杂度 $O(N^3)$ 的匈牙利线性指派算法替代 $O(N!)$ 暴力全排列枚举（参见 [Yu 等（ICASSP 2017）PIT 原始论文](https://doi.org/10.1109/ICASSP.2017.7952154)与 [Kolbæk 等（*IEEE/ACM TASLP*，2017）uPIT 期刊论文](https://doi.org/10.1109/TASLP.2017.2648230)；本书教学函数 `pit_permutation()` 为方便读者透明核对每种排列，直接枚举全排列并将源数上限明确限制在 $N\le 8$）。
+从算法复杂度看，只有当式(8-5)严格写成 $N\times N$ 成对代价可加和的形式时，才可在源数较多时用复杂度 $O(N^3)$ 的匈牙利线性指派算法替代 $O(N!)$ 暴力全排列枚举（参见 [Yu 等（ICASSP 2017）PIT 原始论文](https://doi.org/10.1109/ICASSP.2017.7952154)与 [Kolbæk 等（*IEEE/ACM TASLP*，2017）uPIT 期刊论文](https://doi.org/10.1109/TASLP.2017.2726762)；本书教学函数 `pit_permutation()` 为方便读者透明核对每种排列，直接枚举全排列并将源数上限明确限制在 $N\le 8$）。
 
 ### 8.2 处理模块的顺序
 
@@ -452,7 +452,7 @@ $$\tilde Y_n(f,t)=\hat A_{rn}(f)Y_n(f,t).\tag{8-17}$$
 
 - **AuxIVA**（$2$ 源 $2$ 麦）：只需在 $129$ 个频点各维护一张 $2\times 2$ 复数解混方阵，总待估参数仅 $129\times 2\times 2=516$ 个复数，且 IP 更新零学习率调参（参考论文 [Ono，WASPAA 2011，pp. 189–192](https://doi.org/10.1109/ASPAA.2011.6082320) 及公开库 [piva](https://github.com/fakufaku/piva)）；
 - **ILRMA**（$2$ 源 $2$ 麦，每源设 $K=2$ 个谱基）：除上述 $516$ 个复解混参数外，每个声源新增 $129\times 2$ 的实数谱基矩阵 $\mathbf B_n$ 与 $2\times 372$ 的时间激活矩阵 $\mathbf H_n$，在空间 IP 与 NMF 乘性更新间交替迭代（见 [Kitamura 等，IEEE/ACM TASLP 2016，pp. 1626–1641](https://doi.org/10.1109/TASLP.2016.2577880)）；
-- **MNMF**（$3$ 源 $2$ 麦欠定混合）：每个频点、每个源维护一张 $2\times 2$ 厄米空间形状矩阵，共 $129\times 3=387$ 张矩阵外加三套 NMF 因子；不作共同对角化加速时，单轮遍历需在全部 $F\times T$ 个时频网格上分解 $M\times M$ 总协方差，主运算阶数高达 $O(FTM^3)$，空间矩阵与源功率存储分别为 $O(FNM^2)$ 与 $O(FNT)$（见 [Sawada 等，IEEE TASL 2013，pp. 971–982](https://doi.org/10.1109/TASL.2013.2239990)）；
+- **MNMF**（$3$ 源 $2$ 麦欠定混合）：每个频点、每个源维护一张 $2\times 2$ 厄米空间形状矩阵，共 $129\times 3=387$ 张矩阵外加三套 NMF 因子；不作共同对角化加速时，单轮遍历需在全部 $F\times T$ 个时频网格上分解 $M\times M$ 总协方差，主运算阶数高达 $O(FTM^3)$，空间矩阵与源功率存储分别为 $O(FNM^2)$ 与 $O(FNT)$（见 [Sawada 等，*IEEE TASLP*，2013，pp. 971–982](https://doi.org/10.1109/TASL.2013.2239990)）；
 - **TRINICON**（时域长滤波器）：在 $8\ \mathrm{kHz}$ 下，$1024$ 点与 $2048$ 点时域解混滤波器分别覆盖 $128\ \mathrm{ms}$ 与 $256\ \mathrm{ms}$ 的房间冲激响应记忆（端到端延迟另由分块与缓冲长度决定；通用高阶框架见 [Buchner 等，ICASSP 2004](https://www.buchner-net.com/publications.html)，而本书索引的 `pyroomacoustics` 实现依据 [Aichner 等，2006，§2～3 与表 1](https://www.buchner-net.com/lnt2006_19.pdf)，属于仅利用二阶非白性与非平稳性的精简特例）。
 
 ### 8.4 GSS：活动导引、空间聚类与波束形成
@@ -668,7 +668,7 @@ $$\begin{aligned}
 
 不过，把 SI-SDR 搬到**多麦克风波束形成与混响房间分离**时，一定要警惕它的重大盲区。式(8-25)的投影系数 $\alpha$ 只是一个**零阶单标量**：只要估计波形相对于参考波形发生了哪怕 $1$～$2$ 个采样点的传播时移（见练习 [E08-01](#e08-01)），或者经过了线性 MVDR 波束形成器带来的轻微良性频响均衡，人耳与后端语音识别都觉得极其清晰，单标量 SI-SDR 却会把这部分良性线性滤波差全部判为正交失真，打出极低甚至负数的分值。
 
-为此，多通道与远场语音分离基准（如 SMS-WSJ、URGENT 以及开源评测库 `fgnt/ci_sdr`）广泛采用**卷积不变信号失真比（Convolutive-Invariant SDR，CI-SDR，[Boeddeker 等，ICASSP 2021](https://doi.org/10.1109/ICASSP39728.2021.9414179)）**：把单标量缩放升级为抽头长度为 $L$ 的**短因果 FIR 托普利茨（Toeplitz）卷积子空间正交投影**。记长度 $N$ 参考序列 $\vec s$ 的因果移位列组成 $N\times L$ 托普利茨矩阵 $[\mathbf T_L(\vec s)]_{t,\tau}=s[t-\tau]$，最小二乘最优匹配滤波器与分贝比写为：
+为此，多通道与远场语音分离基准（如 SMS-WSJ、URGENT 以及开源评测库 `fgnt/ci_sdr`）广泛采用**卷积不变信号失真比（Convolutive-Invariant SDR，CI-SDR，[Boeddeker 等，ICASSP 2021](https://doi.org/10.1109/ICASSP39728.2021.9414661)）**：把单标量缩放升级为抽头长度为 $L$ 的**短因果 FIR 托普利茨（Toeplitz）卷积子空间正交投影**。记长度 $N$ 参考序列 $\vec s$ 的因果移位列组成 $N\times L$ 托普利茨矩阵 $[\mathbf T_L(\vec s)]_{t,\tau}=s[t-\tau]$，最小二乘最优匹配滤波器与分贝比写为：
 
 $$\begin{aligned}
 \hat{\vec h}_\star&=\arg\min_{\vec h\in\mathbb{R}^L}
@@ -747,7 +747,7 @@ $$\begin{aligned}
 
 当相邻块在重叠区采用互补线性斜坡窗（如前块从 $1$ 线性降到 $0$、后块从 $0$ 线性升到 $1$）时，分母恒等于 $1$（见练习 [E08-16](#e08-16)）。同时务必算清流式交付的真实等待账本：以两块分别覆盖 $[0,1.2)\ \mathrm{s}$ 与 $[0.8,2.0)\ \mathrm{s}$（重叠区仅 $0.4\ \mathrm{s}$）且需收齐整块才能分离为例，虽然前段独享区 $[0,0.8)\ \mathrm{s}$ 在 $1.2\ \mathrm{s}$ 即可交付，但处于重叠区 $[0.8,1.2)\ \mathrm{s}$ 的样本必须等到**第二块在 $2.0\ \mathrm{s}$ 全部收齐**、跑完推理并算完跨块排列加权后才能最终输出，实际输入等待高达 $0.8\text{～}1.2\ \mathrm{s}$（样本时间戳与交付时刻核查详见[第 10 章 E10-17](10_engineering-practice.md#e10-17)）。
 
-评测长会议 CSS + 多流语音识别时，词错率（WER）的说话人归属规则同样必须交代清楚（标准定义见 [MeetEval 论文 §3.2 式(3)与 §3.4 式(5)](https://www.isca-archive.org/chime_2023/neumann23_chime.pdf)，系统级验收规范与双倍惩罚机理另见[第 11 章 §11.2](11_selection-guide.md#sec-11-2) 及[第 15 章 §15.5](15_target-extraction-diarization.md#sec-15-5)）：
+评测长会议 CSS + 多流语音识别时，词错率（WER）的说话人归属规则同样必须交代清楚（标准定义见 [MeetEval 论文 §3.2 式(3)与 §3.4 式(5)](https://www.isca-archive.org/chime_2023/neumann23_chime.pdf)，`cpWER` / `ORC-WER` / `sa-WER` 统一数学定义与四词手算验收另见[第 11 章 §11.2](11_selection-guide.md#sec-11-2) 式(11-1)，系统级架构选型与双倍惩罚机理另见[第 15 章 §15.7](15_target-extraction-diarization.md#sec-15-7)）：
 
 - **拼接最小排列词错率（cpWER）**：先把每位参考说话人在整场会议中的所有话语按时间顺序拼成一条长文本，再在整场输出流与参考说话人之间只选**唯一一套全局排列**计算编辑距离——一旦某人在中途换到了另一条输出流，后半场全部算错，严苛考核整场身份保持；
 - **最优参考组合词错率（ORC-WER）**：允许把参考话语按句为单位灵活指派给任意一条输出流（同一句不拆开），只要每一句在某一条 CSS 输出流里被完整清晰地识别出来即判正确，专门考核前端分离器（不含全局声纹聚类）的分流质量（另有依赖声纹标签的说话人归属词错率 sa-WER）。
@@ -769,8 +769,8 @@ $$\hat S_n(f,t)=M_n(f,t)X(f,t).\tag{8-29}$$
 | **IBM**（理想二值掩码） | $\mathbb{I}\bigl(\lvert S_n\rvert^2 > \tau\lvert V_{\bar n}\rvert^2\bigr)$（常取门限 $\tau=1$ 即 $0\ \mathrm{dB}$） | $\{0,1\}$ | 硬开关判决：目标占优则原样保留混合相量 $X_{\mathrm{ref}}$，否则直接置零 |
 | **IRM**（理想比值掩码） | $\bigl(\lvert S_n\rvert^2\big/(\lvert S_n\rvert^2+\lvert V_{\bar n}\rvert^2)\bigr)^{\beta}$（常取 $\beta=1/2$） | $[0,1]$ | 按不相干能量比沿混合射线 $X_{\mathrm{ref}}$ 做软收缩，完全沿用混合相角 $\angle X_{\mathrm{ref}}$ |
 | **IAM / FFT-Mask**（理想幅度掩码） | $\lvert S_n\rvert / \lvert X_{\mathrm{ref}}\rvert$（训练时常截断上界） | $[0,\infty)$ | 将混合相量直接伸缩到真实目标模长 $\lvert S_n\rvert$，但相角仍锁死在 $\angle X_{\mathrm{ref}}$ |
-| **PSM**（相位敏感掩码） | $\dfrac{\lvert S_n\rvert}{\lvert X_{\mathrm{ref}}\rvert}\cos(\angle S_n-\angle X_{\mathrm{ref}})=\dfrac{\operatorname{Re}(S_n X_{\mathrm{ref}}^*)}{\lvert X_{\mathrm{ref}}\rvert^2}$ | $(-\infty,\infty)$ | 将目标相量 $S_n$ **向混合相量 $X_{\mathrm{ref}}$ 所在直线作正交投影**（实乘子最小二乘最优解） |
-| **cRM / cIRM**（复理想比值掩码） | $\dfrac{S_n}{X_{\mathrm{ref}}}=\dfrac{\operatorname{Re}(S_n X_{\mathrm{ref}}^*)}{\lvert X_{\mathrm{ref}}\rvert^2}+\mathrm{j}\dfrac{\operatorname{Im}(S_n X_{\mathrm{ref}}^*)}{\lvert X_{\mathrm{ref}}\rvert^2}$ | $\mathbb{C}$ | 复平面内同时执行幅度伸缩与相角旋转（实部恰为 PSM，虚部补齐正交分量，训练常加双曲正切压缩） |
+| **PSM**（相位敏感掩码） | $\dfrac{\lvert S_n\rvert}{\lvert X_{\mathrm{ref}}\rvert}\cos(\angle S_n-\angle X_{\mathrm{ref}})$<br>$=\dfrac{\operatorname{Re}(S_n X_{\mathrm{ref}}^*)}{\lvert X_{\mathrm{ref}}\rvert^2}$ | $(-\infty,\infty)$ | 将目标相量 $S_n$ **向混合相量 $X_{\mathrm{ref}}$ 所在直线作正交投影**（实乘子最小二乘最优解） |
+| **cRM / cIRM**（复理想比值掩码） | $\dfrac{S_n}{X_{\mathrm{ref}}}=\dfrac{\operatorname{Re}(S_n X_{\mathrm{ref}}^*)}{\lvert X_{\mathrm{ref}}\rvert^2}$<br>$+\mathrm{j}\dfrac{\operatorname{Im}(S_n X_{\mathrm{ref}}^*)}{\lvert X_{\mathrm{ref}}\rvert^2}$ | $\mathbb{C}$ | 复平面内同时执行幅度伸缩与相角旋转（实部恰为 PSM，虚部补齐正交分量，训练常加双曲正切压缩） |
 
 注意单通道逐点掩蔽与多通道宽带波束形成的本质区别：波束形成在每个频点利用多支麦克风之间的复数幅相关系做空间相干滤波，哪怕两个人在同一时频点能量完全重叠，只要空间方向不同就能拉开；而式(8-29)没有空间维度（代表文献见 Wang 等，*IEEE/ACM TASLP*，2014 对 IRM 的系统评测；Erdogan 等，ICASSP 2015 对 PSM 的提出；Williamson、Wang 与 Wang，*IEEE/ACM TASLP*，2016 对 cIRM 的定义）。对所有实数掩码 $m\in\mathbb{R}$，将复谱平方误差展开并求导：$\frac{\mathrm d}{\mathrm d m}\bigl(m^2|X_{\mathrm{ref}}|^2-2m\operatorname{Re}(S_n X_{\mathrm{ref}}^*)+|S_n|^2\bigr)=0\implies m^\star=\operatorname{Re}(S_n X_{\mathrm{ref}}^*)/|X_{\mathrm{ref}}|^2$，证明上表中的 **PSM** 正是唯一实数最小均方误差乘子（后文练习 [E08-21](#e08-21) 中的无界实掩码即为非负域上的 PSM）；一旦再将 $M_n$ 限制为 $[0,1]$ 闭区间内的有界实数掩码，它既无法在两源反相抵消时把幅度放大回真实值，也无法像 **cRM / cIRM** 那样旋转被干扰带偏的混合相位。
 

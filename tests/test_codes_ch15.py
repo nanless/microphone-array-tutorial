@@ -417,6 +417,14 @@ class DefensiveContractsTests(unittest.TestCase):
             diarization_tsvad.tsvad_spatial_spectral_posterior(1.2, 0.5)
         with self.assertRaises(ValueError):
             tse_audio.measure_signal(np.zeros((1, 32000)), "near_target_ref", pcm="yes")  # type: ignore[arg-type]
+        # All-zero or sub-LSB quantized-to-zero reference must raise ValueError instead of ZeroDivisionError
+        for bad_ref, use_pcm in (
+            (np.zeros(32000), False),
+            (np.zeros(32000), True),
+            (np.full(32000, 1e-8), True),
+        ):
+            with self.assertRaises(ValueError):
+                tse_audio.measure_signal(np.zeros((1, 32000)), "bubble_d10cm", reference=bad_ref, pcm=use_pcm)
 
 
 class TSEAudioAndExercisesTests(unittest.TestCase):

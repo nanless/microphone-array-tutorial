@@ -20,7 +20,7 @@
 
 球谐域公式通常改用从 $+x$ 轴逆时针起算的方位角 $\alpha$ 和从 $+z$ 轴向下起算的极角（余纬角）$\vartheta$。将其与本书从 $+y$ 朝 $+x$ 起算的声源方位角 $\theta$、从水平面朝 $+z$ 起算的俯仰角 $\phi_{\mathrm{el}}$ 对接时，必须先做角度换算 $\alpha=\pi/2-\theta$（按 $2\pi$ 周期折叠取值）、$\vartheta=\pi/2-\phi_{\mathrm{el}}$，再代入球谐基函数或开源库接口，详见[§5.8](05_beamforming.md#sec-5-8)。同理，国际标准 AmbiX 与一阶全景声（FOA）采用 $+x$ 朝正前方、$+y$ 朝正左方、$+z$ 朝正上方的三维右手系，其水平方位角从 $+x$ 逆时针转向 $+y$、俯仰角从水平面转向 $+z$，与上段平面阵列坐标系（$+y$ 正前、顺时针方位角）之间的对照详见[专题Ⅲ §14.2](14_spatial-wearable-arrays.md#sec-14-2)。
 
-**字母与算符复用**（与 §2.3 一致）：由于阵列、自适应滤波、去混响与多目标追踪分属不同研究传统，同一个字母或算符在不同章节可能承担不同角色。例如本表将波数记为 $\kappa=2\pi f/c$，以区别于离散频点索引 $k$，但部分文献与局部推导仍用 $k$ 记波数，第 6 章 §6.2 另用 $\kappa\in[-1,1]$ 表示 IPNLMS 比例混合系数，第 7 章局部还用 $k$ 记 WPE 的滞后帧号；$D$ 可表示阵列孔径或 PHD 强度函数，$\lambda$ 可表示声波波长、RLS 指数遗忘因子、WPE 时变方差或矩阵特征值，$K$ 可表示声源个数或 WPE 预测阶数，$s$ 可表示源信号或追踪状态，$\varepsilon$ 在第 5 章表示绝对对角加载而在第 10、13 章表示相对采样率偏移（SRO）。算符 $\odot$ 同样遵循领域双重约定：在子空间与协方差向量化字典（[§0.4.3](00_math-foundations.md#sec-0-4-3)、§3.3、§12.7、§16.3.2）中表示按列 Khatri–Rao 积，而在频域滤波、时频掩码、BSM 相位投影与 FiLM 特征调制（§5、§6、§8、[§14.5～§14.6](14_spatial-wearable-arrays.md#sec-14-5)、[§15.2](15_target-extraction-diarization.md#sec-15-2)）中表示同维或广播 Hadamard 逐元素乘积。具体含义以所在公式的定义为准。
+**字母与算符复用**（与 §2.3 一致）：由于阵列、自适应滤波、去混响与多目标追踪分属不同研究传统，同一个字母或算符在不同章节可能承担不同角色。例如本表将波数记为 $\kappa=2\pi f/c$，以区别于离散频点索引 $k$，但部分文献与局部推导仍用 $k$ 记波数，第 6 章 §6.2 另用 $\kappa\in[-1,1]$ 表示 IPNLMS 比例混合系数，第 7 章局部还用 $k$ 记 WPE 的滞后帧号；$D$ 可表示阵列孔径或 PHD 强度函数，$\lambda$ 可表示声波波长、RLS 指数遗忘因子、WPE 时变方差或矩阵特征值，$K$ 可表示声源个数或 WPE 预测阶数，$s$ 可表示源信号或追踪状态，$\varepsilon$ 在第 5 章表示绝对对角加载而在第 10、13 章表示相对采样率偏移（SRO）。算符 $\odot$ 同样遵循领域双重约定：在支撑 §3.3 与 §12.7 的协方差向量化表述（显式写作于[§0.4.3](00_math-foundations.md#sec-0-4-3)与附录 A §16.2/§16.3.2）中表示按列 Khatri–Rao 积，而在频域滤波、时频掩码、BSM 相位投影与 FiLM 特征调制（§5、§6、§8、[§14.5～§14.6](14_spatial-wearable-arrays.md#sec-14-5)、[§15.2](15_target-extraction-diarization.md#sec-15-2)）中表示同维或广播 Hadamard 逐元素乘积。具体含义以所在公式的定义为准。
 
 本表区分 STFT 网格时，默认 $k$ 是频点索引、$\ell$ 是帧索引，$n$ 是离散采样索引，$t$ 是连续时间。各章沿用各自领域的经典记号时会另行声明下标；跨章对照公式时，应当先按下表对齐每条坐标轴的物理意义，不能仅凭字母相同就默认代表同一维度：
 
@@ -81,7 +81,7 @@ kf_s/N,&0\leq k<\lceil N/2\rceil,\\
 | $\mu_{\mathrm{NLMS}}$ | 归一化最小均方（Normalized Least Mean Squares，NLMS）步长（§6.1）；第 6 章导出理想无噪单步误差收缩条件 $0<\mu<2$，工程取值还受分母正则项、近端噪声和时变路径制约 |
 | $\mu_{\mathrm{SDW}}$ | 语音失真加权多通道维纳滤波（Speech-Distortion-Weighted Multichannel Wiener Filter，SDW-MWF）的失真—降噪折中系数（[第 5 章 §5.5.1 MWF 专题](05_beamforming.md#sec-5-5-1)）；与 NLMS 步长不是同一物理量 |
 | $\varepsilon_{\mathrm{NLMS}}$ | NLMS 更新分母中的正定保护常数，与输入信号能量同量纲，防止静音帧除零并抑制极低能量段的权重跳变（§6.1） |
-| $\varepsilon$, $\alpha$, $\delta$, $\eta$（对角加载与稳健界） | 第 5 章将绝对对角加载写为 $\mathbf{R}+\varepsilon\mathbf{I}$（文献与本附录局部亦记 $\delta$），参数与 $\mathbf{R}$ 同量纲；相对对角加载写为 $\mathbf R + \alpha\bar{\sigma}^2\mathbf I$（其中 $\bar{\sigma}^2=\operatorname{tr}(\mathbf R)/M$）（文献与 [E16-09](#e16-09) 亦记 $\eta$），参数无量纲；范数有界导向误差球半径记为 $\|\vec{\Delta}\|_2\leq\delta$（§5.4） |
+| $\varepsilon$, $\alpha_{\mathrm{dl}}$, $\delta$, $\epsilon$, $\eta$（对角加载与稳健界） | 第 5 章将绝对对角加载写为 $\mathbf{R}+\varepsilon\mathbf{I}$（文献与本附录局部亦记 $\delta$），参数与 $\mathbf{R}$ 同量纲；式(5-10) 将相对对角加载写为 $\mathbf{R}+\alpha_{\mathrm{dl}}\bar{\sigma}^2\mathbf{I}$（其中 $\bar{\sigma}^2=\operatorname{tr}(\mathbf{R})/M$，文献、第 4 章与 [E16-09](#e16-09) 亦记 $\eta$，以区别于 §5.3.1 的 DMA 延迟比 $\alpha$），参数无量纲；第 5 章 §5.4 将白噪声增益权重模方上限写为 $\|\vec{w}\|_2^2\le\delta=1/G_{\min}$；§5.4.1 及式(5-31) 将范数有界导向误差球半径写为 $\|\vec{e}\|_2\le\epsilon$ |
 | $\tau_{ij}$，TDOA | $\tau_{ij}=t_i-t_j$，到达时间差（Time Difference of Arrival，TDOA）；远场平面波下相对麦 1 的时差为 $\tau_{m1}=-(\vec{r}_m-\vec{r}_1)^\top\vec{u}/c$ |
 | $T_{60}$，DRR，$d_c$，$C_{50}$ | 混响时间、直达混响比（Direct-to-Reverberant Ratio，DRR；常取 dB 读数）、临界距离与语音清晰度指数 $C_{50}$（前 $50\ \mathrm{ms}$ 直达与早期反射能量相对 $50\ \mathrm{ms}$ 后晚期混响能量的分贝比） |
 | WNG，DI，HPBW，SLL | 白噪声增益（White Noise Gain，WNG）、指向性指数（Directivity Index，DI）、半功率波束宽度（Half-Power Beamwidth，HPBW）、旁瓣电平（Side-Lobe Level，SLL） |
@@ -98,14 +98,14 @@ kf_s/N,&0\leq k<\lceil N/2\rceil,\\
 | $W, X, Y, Z$，$\vec{b}_{\mathrm{WXYZ}}$，$\vec{b}_{\mathrm{ACN}}$（专题Ⅲ） | 一阶全景声（FOA）在 SN3D 归一化下的零阶全向与三个一阶偶极通道，以及直观序 $[W,X,Y,Z]^\top$ 与标准 ACN 序 $[W,Y,Z,X]^\top$（[§14.2](14_spatial-wearable-arrays.md#sec-14-2)） |
 | $J_n, j_l, y_l, h_l^{(2)}, P_l^m, Y_{l,m}$ | $n$ 阶第一类柱贝塞尔函数 $J_n$，$l$ 阶第一/第二类球贝塞尔函数 $j_l, y_l$ 与第二类球汉克尔函数 $h_l^{(2)}=j_l-\mathrm{j}y_l$（本书 $e^{+\mathrm{j}\omega t}$ 时间因子下的向外散射波），连带勒让德函数 $P_l^m$ 与球谐函数 $Y_{l,m}$（亦记 $Y_n^m$，[§0.7](00_math-foundations.md#sec-0-7)、[§5.8](05_beamforming.md#sec-5-8)、[§14.2](14_spatial-wearable-arrays.md#sec-14-2)）。注意归一化换算 $Y_{l,m}^{\mathrm{N3D}}=\sqrt{2l+1}\,Y_{l,m}^{\mathrm{SN3D}}=\sqrt{4\pi}\,Y_{l,m}^{\mathrm{ortho}}$，故第 14 章球面均值径向模态权重 $b_l(\kappa R)$ 与第 0、5 章标准正交基约定的 $4\pi\mathrm{j}^l j_l(\kappa R)$ 相差常数因子 $4\pi$ |
 | $b_l(\kappa R)$（专题Ⅲ） | 半径 $R$ 球面阵列在球面均值（SN3D）口径下的第 $l$ 阶径向模态权重；开球全向阵在 $\kappa R=\pi$ 处出现 $b_0^{\mathrm{open}}(\pi)=0$ 零陷，刚性球由 $h_l^{(2)\prime}(\kappa R)$ 消除正实轴零点（[§14.2](14_spatial-wearable-arrays.md#sec-14-2)） |
-| $\vec{I}_a, \vec{I}_r$，$E, \psi$（专题Ⅲ） | 时间平均有功声强、无功声强、总声能密度与声场扩散度 $\psi=1-\|\bar{\vec{I}}_a\|_2/(c\bar{E})$（其中 $\bar{\vec{I}}_a=\mathbb{E}[\vec{I}_a]$、$\bar{E}=\mathbb{E}[E]$，取值 $\psi\in[0,1]$，[§14.4](14_spatial-wearable-arrays.md#sec-14-4)） |
+| $\vec{n}_{\mathrm{src}}, \vec{u}$；$\vec{I}_a, \vec{I}_r$，$E, \psi$（专题Ⅲ） | 声源入射方向单位向量 $\vec{n}_{\mathrm{src}}$、三维声学质点振速相量 $\vec{u}$（注意与平面阵列指源单位向量 $\vec{u}(\theta)$ 区分），以及时间平均有功声强、无功声强、总声能密度与声场扩散度 $\psi=1-\|\bar{\vec{I}}_a\|_2/(c\bar{E})$（其中 $\bar{\vec{I}}_a=\mathbb{E}[\vec{I}_a]$、$\bar{E}=\mathbb{E}[E]$，取值 $\psi\in[0,1]$，[§14.4](14_spatial-wearable-arrays.md#sec-14-4)） |
 | $\mathbf{H}, \vec{p}_e, \vec{\phi}$；$\mathrm{IC}, \beta$（专题Ⅲ） | 可穿戴阵列 $Q$ 方向流形矩阵、目标耳 HRTF 向量与 MagLS 辅助自由相位向量（由 $\mathbf{H}^H\vec{w}_e$ 拟合共轭目标 $\vec{p}_e^*$，[§14.5](14_spatial-wearable-arrays.md#sec-14-5)～[§14.6](14_spatial-wearable-arrays.md#sec-14-6)）；双耳相干度与参考麦混合系数 $\beta\in[0,1]$（[§14.7](14_spatial-wearable-arrays.md#sec-14-7)） |
 | $U_c, \gamma_{\mathrm{wind}}(f)$；$H_{\mathrm{occ}}(f)$；$\tau_{\mathrm{proc}}$（专题Ⅲ） | Corcos 湍流风噪对流速度与空间相干度（[§14.8](14_spatial-wearable-arrays.md#sec-14-8)）；耳道闭塞内麦/骨导相对外麦的跨模态自语音传递函数（[§14.9](14_spatial-wearable-arrays.md#sec-14-9)）；主动通透模式端到端处理延迟（[§14.10](14_spatial-wearable-arrays.md#sec-14-10)） |
 | $\mathcal{C}, \vec{e}, \vec{\gamma}, \vec{\beta}$；$\mathcal{L}_{\mathrm{dual}}$，$\tau_{\mathrm{floor}}$（专题Ⅳ） | 目标先验线索、条件嵌入向量与 FiLM 通道缩放/偏置向量；兼顾发声段负 SI-SDR 与沉默段相对混合能量地板系数的双态损失（[§15.2](15_target-extraction-diarization.md#sec-15-2)） |
-| $r_F=2D^2/\lambda$，$\phi(r), \phi_1$，$\vec{w}_{\mathrm{bubble}}$（专题Ⅳ） | 菲涅耳近场曲率边界、正横距离 $r$ 处两侧阵元相对中心麦的球面波曲率相位滞后 $\phi(r)=-\frac{2\pi}{\lambda}(\sqrt{r^2+d^2}-r)$（目标距离 $r_1$ 处记 $\phi_1=\phi(r_1)$），以及三麦正侧向声学距离气泡二阶空间差分权重（[§15.3](15_target-extraction-diarization.md#sec-15-3)） |
+| $r_F=2D^2/\lambda$，$\phi(r), \phi_1$，$\vec{w}_{\mathrm{bubble}}$（专题Ⅳ） | 夫琅禾费远场边界（菲涅耳二次相位曲率判据）$r_F=2D^2/\lambda$、正横距离 $r$ 处两侧阵元相对中心麦的球面波曲率相位滞后 $\phi(r)=-\frac{2\pi}{\lambda}(\sqrt{r^2+d^2}-r)$（目标距离 $r_1$ 处记 $\phi_1=\phi(r_1)$），以及三麦正侧向声学距离气泡二阶空间差分权重（[§15.3](15_target-extraction-diarization.md#sec-15-3)） |
 | $\mathrm{DER}$，$E_{\mathrm{miss}}$，$E_{\mathrm{FA}}$，$E_{\mathrm{conf}}$（专题Ⅳ） | 说话人日志误差率及逐帧漏检、虚警、说话人混淆人数误差；虚警较高时合法 $\mathrm{DER}$ 可大于 $100\%$（[§15.4](15_target-extraction-diarization.md#sec-15-4)） |
 | $\gamma_{k,t}$，$m_{k,t}^{\mathrm{tar}}$，$m_{k,t}^{\mathrm{int}}$；$\Delta t_{\mathrm{av}}, \alpha_\ell$（专题Ⅳ） | TS-VAD 独立伯努利活动后验与 GSS 目标排他掩码/干扰掩码（[§15.5](15_target-extraction-diarization.md#sec-15-5)）；视听管线正滞后与逐帧视觉可见度置信度门控权重（[§15.6](15_target-extraction-diarization.md#sec-15-6)） |
-| $\otimes$, $\odot$, $\operatorname{vec}(\cdot)$ | $\otimes$ 为 Kronecker 积，$\operatorname{vec}(\cdot)$ 为按列优先矩阵拉直算子；算符 $\odot$ 依语境承担双重约定：在子空间与协方差字典（[§0.4.3](00_math-foundations.md#sec-0-4-3)、§3.3、§12.7、§16.3.2）中表示按列 Khatri–Rao 积（满足对角拉直恒等式 $(\mathbf B\odot\mathbf A)\vec q$），而在频域滤波、时频掩码、BSM 相位投影与 FiLM 调制（§5、§6、§8、[§14.5～§14.6](14_spatial-wearable-arrays.md#sec-14-5)、[§15.2](15_target-extraction-diarization.md#sec-15-2)）中表示同维或广播 Hadamard 逐元素乘积 |
+| $\otimes$, $\odot$, $\operatorname{vec}(\cdot)$ | $\otimes$ 为 Kronecker 积，$\operatorname{vec}(\cdot)$ 为按列优先矩阵拉直算子；算符 $\odot$ 依语境承担双重约定：在支撑 §3.3 与 §12.7 的协方差向量化表述（显式写作于[§0.4.3](00_math-foundations.md#sec-0-4-3)与附录 A §16.2/§16.3.2）中表示按列 Khatri–Rao 积（满足对角拉直恒等式 $(\mathbf B\odot\mathbf A)\vec q$），而在频域滤波、时频掩码、BSM 相位投影与 FiLM 调制（§5、§6、§8、[§14.5～§14.6](14_spatial-wearable-arrays.md#sec-14-5)、[§15.2](15_target-extraction-diarization.md#sec-15-2)）中表示同维或广播 Hadamard 逐元素乘积 |
 | PHD / RFS | 概率假设密度（Probability Hypothesis Density，PHD）与随机有限集（Random Finite Set，RFS） |
 
 表中残余相位 $\psi$ 的“残余”二字是相对于波束指向角 $\theta_0$ 而言的：当平面波从方位 $\theta$ 入射时，等间距线阵先按目标方向 $\theta_0$ 施加补偿时延，补偿后相邻两麦之间剩余的相位差即为
@@ -208,7 +208,7 @@ $$\begin{gathered}
 | MVDR（最小方差无失真响应） | 在目标方向线性无失真约束 $\vec{w}^H\vec{a}=1$ 下最小化输出噪声（或干扰加噪声）方差的自适应波束形成器；混响环境中常将自由场导向矢量替换为目标早期相对传递函数（§5.4） |
 | MWF（多通道维纳滤波） | 以最小化波束输出与选定参考通道目标语音声像之间的均方误差为准则，允许在微量语音失真与大幅噪声抑制之间折中；SDW-MWF 引入失真加权参数调节该平衡，秩一化简与极限性质见下文独立小节及[第 5 章 §5.5.1 MWF 专题](05_beamforming.md#sec-5-5-1) |
 | 相对传递函数（RTF） | 各麦克风通道的目标声学传递函数除以参考麦克风通道传递函数所得的复数比值；取决于估计窗口长度，RTF 可涵盖直达声与部分早期反射，比理想自由场平面波导向更贴合真实房间声像（§5.4） |
-| 对角加载（diagonal loading） | 在样本协方差矩阵求逆前向主对角线加上正数项，以压低条件数、增强对导向失配与有限快拍误差的稳健性。第 5 章将绝对加载记为 $\mathbf{R}+\varepsilon\mathbf{I}$（文献与本附录算例亦记 $\delta$），相对加载记为 $\mathbf R + \alpha\bar{\sigma}^2\mathbf I$（其中 $\bar{\sigma}^2=\operatorname{tr}(\mathbf R)/M$）（亦记 $\eta$）；前者与协方差同量纲，后者无量纲且随输入功率整体缩放保持条件数不变（§5.4、§16.3.3） |
+| 对角加载（diagonal loading） | 在样本协方差矩阵求逆前向主对角线加上正数项，以压低条件数、增强对导向失配与有限快拍误差的稳健性。第 5 章将绝对加载记为 $\mathbf{R}+\varepsilon\mathbf{I}$（文献与本附录算例亦记 $\delta$），式(5-10) 将相对加载记为 $\mathbf{R}+\alpha_{\mathrm{dl}}\bar{\sigma}^2\mathbf{I}$（其中 $\bar{\sigma}^2=\operatorname{tr}(\mathbf{R})/M$，第 4 章与本附录算例亦记 $\eta$）；前者与协方差同量纲，后者无量纲且随输入功率整体缩放保持条件数不变（§5.4、§16.3.3） |
 | 相干源（coherent sources） | 在同一频点上，多个声源信号互为确定性复常数倍（如直达声与强镜面反射），导致源协方差矩阵发生秩亏损，直接破坏标准 MUSIC 对信号子空间维数的满秩前提；满足均匀线阵几何与阵元数条件时可通过空间平滑恢复秩（§4.6） |
 | 空间平滑（spatial smoothing） | 第 4 章将均匀线阵划分为若干重叠子阵并对子阵二阶协方差求平均，以牺牲有效孔径换取相干源去相关（矩阵元素量纲为观测幅度平方）；第 3 章差分协同阵空间平滑则对虚拟滞后信号再构造外积矩阵（元素量纲为观测幅度四次方），两者的输入统计量与物理假设不可混用（[§4.6](04_doa-estimation.md#sec-4-6)、[§3.3](03_array-geometry.md#sec-3-3)） |
 | 差分协同阵（difference coarray） | 由物理阵元坐标两两作差生成的全部有符号空间滞后集合。在声源互不相关、准平稳且各通道增益一致的假设下，可利用二阶互相关向量重排构造更高维的虚拟均匀线阵协方差，但不能把正负对称滞后跨度误算为物理孔径翻倍（§3.3） |
@@ -217,7 +217,7 @@ $$\begin{gathered}
 | WDO（W-不重叠正交性） | 假设多个语音源在短时傅里叶时频平面上的高能量支撑集几乎互不重叠，使得每个时频格点近似由单一声源主导；该条件严格强于统计不相关或内积正交（例如向量 $[1,1]$ 与 $[1,-1]$ 内积为零，但两个坐标均同时非零，不满足支撑集分离）。强混响拖尾与多人密集叠讲会削弱这一近似（§8.6；参见[Yılmaz 与 Rickard（2004）原始论文](https://doi.org/10.1109/TSP.2004.828896)） |
 | FOA / Ambisonics 与 DirAC | 一阶全景声（First-Order Ambisonics）用零阶全向声压 $W$ 与三个一阶正交偶极分量 $X,Y,Z$ 表征三维局部声场；定向音频编码（DirAC）进一步由有功声强与总声能密度估计瞬时波达方向和扩散度 $\psi$，见[专题Ⅲ §14.2](14_spatial-wearable-arrays.md#sec-14-2)、[§14.4](14_spatial-wearable-arrays.md#sec-14-4) |
 | BSM / MagLS 与双耳相干度（IC） | 双耳信号匹配（BSM）用非规则可穿戴阵列线性逼近目标耳 HRTF，高频切换幅度最小二乘（MagLS）释放绝对相位以消除幅度凹坑；双耳相干度（IC）衡量左右耳背景场互相关模长，可通过参考麦混合抑制头中缩像，见[专题Ⅲ §14.5～§14.7](14_spatial-wearable-arrays.md#sec-14-5) |
-| 声学距离气泡（Acoustic Distance Bubble） | 在菲涅耳近场半径 $r_F=2D^2/\lambda$ 内利用球面波前曲率差异，对远场同向平面波施加零陷而保留近处目标的二阶空间差分滤波器；微孔径低频段需严防白噪声增益按 $d^4$ 陡降，见[专题Ⅳ §15.3](15_target-extraction-diarization.md#sec-15-3) |
+| 声学距离气泡（Acoustic Distance Bubble） | 在夫琅禾费远场边界（菲涅耳二次相位曲率判据）$r_F=2D^2/\lambda$ 内利用球面波前曲率差异，对远场同向平面波施加零陷而保留近处目标的二阶空间差分滤波器；微孔径低频段需严防白噪声增益按 $d^4$ 陡降，见[专题Ⅳ §15.3](15_target-extraction-diarization.md#sec-15-3) |
 
 #### 声学成像与空间分析
 
@@ -264,7 +264,7 @@ $$\begin{gathered}
 | FIR 滤波器 | 有限长冲激响应滤波器，当前时刻输出等于最近若干采样时刻输入的有限加权和，其脉冲响应在有限个抽头之后恒为零（§5.1、§6.1） |
 | 重采样（粒子滤波） | 当有效粒子数 $N_{\mathrm{eff}}$ 过低、少数粒子垄断权重时，按归一化权重分布有放回地随机抽取新粒子集并将权重重置为 $1/N_p$；高权重粒子被多次复制的概率更大，但这是随机抽样而非硬阈值截断（[§9.2.4 算例 9-2](09_source-tracking.md#sec-9-2-4)） |
 | PHD（概率假设密度）滤波 | 在随机有限集（RFS）框架下直接递推多目标点过程的一阶矩强度函数 $D(\vec{x})$。强度函数在任意空间区域上的积分等于该区域内期望存在的目标个数；工程上常从强度峰值或高斯混合分量提取目标航迹，但局部峰的数量本身并不恒等于真实人数（§9.3） |
-| OSPA（最优子模式分配距离） | 统一衡量多目标定位偏差与目标基数（漏检或虚警人数）错误的综合度量指标（§10.5） |
+| OSPA（最优子模式分配距离） | 统一衡量多目标定位偏差与目标基数（漏检或虚警人数）错误的综合度量指标（§9.4、§10.5） |
 
 #### 系统与硬件
 
@@ -325,12 +325,12 @@ $$\begin{gathered}
 | 类别 | 核心恒等式 / 闭式解 | 前提与完整推导入口 |
 |---|---|---|
 | 复内积与样本二阶矩 | $\|\vec x\|_2^2=\vec x^H\vec x$；$\hat{\mathbf R}_{xx}=\frac{1}{L}\sum_{\ell=1}^L\vec x_\ell\vec x_\ell^H=\hat{\mathbf C}_L+\bar{\vec x}\bar{\vec x}^H$ | 复向量模方必取共轭；$\hat{\mathbf R}_{xx}=\hat{\mathbf C}_L$ 当且仅当本批样本均值 $\bar{\vec x}=\vec 0$（[§0.3.1](00_math-foundations.md#sec-0-3-1)、[§0.6.1](00_math-foundations.md#sec-0-6-1)） |
-| 圆对称复高斯例外 | 伪协方差 $\mathbb{E}[\vec z\vec z^\top]=\mathbf 0$ 时方为圆对称（proper） | 实信号 DFT 的直流（$k=0$）与偶数长 Nyquist（$k=N/2$）恒实，伪协方差非零（[§0.6.1](00_math-foundations.md#sec-0-6-1)、§7.1） |
+| 圆对称复高斯例外 | 伪协方差 $\mathbb{E}[\vec z\vec z^\top]=\mathbf 0$ 时方为圆对称（proper） | 实信号 DFT 的直流（$k=0$）与偶数长 Nyquist（$k=N/2$）恒实，伪协方差非零（[§0.6.1](00_math-foundations.md#sec-0-6-1)、§7.2） |
 | Wirtinger 三大法则 | $\frac{\partial(\vec w^H\vec a)}{\partial\vec w^*}=\vec a$，$\frac{\partial(\vec a^H\vec w)}{\partial\vec w^*}=\vec 0$，$\frac{\partial(\vec w^H\mathbf R\vec w)}{\partial\vec w^*}=\mathbf R\vec w$ | $\mathbf R=\mathbf R^H$；实值约束乘子项写为 $2\operatorname{Re}\{\lambda^*(\vec w^H\vec a-1)\}$，求共轭偏导后因子 $2$ 自然消去（[§0.5.1](00_math-foundations.md#sec-0-5-1)） |
 | 正交投影与 OLS / GLS | $\mathbf P_{\mathcal R(\mathbf A)}=\mathbf A(\mathbf A^H\mathbf A)^{-1}\mathbf A^H$；$\hat{\vec x}_{\mathrm{WLS}}=(\mathbf A^H\mathbf C^{-1}\mathbf A)^{-1}\mathbf A^H\mathbf C^{-1}\vec b$ | $\mathbf A$ 满列秩、噪声协方差 $\mathbf C=\mathbf L\mathbf L^H\succ\mathbf 0$；Cholesky 白化 $\mathbf W=\mathbf L^{-1}$ 须同步左乘 $\mathbf A$ 与 $\vec b$（[§0.3.2](00_math-foundations.md#sec-0-3-2)、[§0.6.3](00_math-foundations.md#sec-0-6-3)、[E16-15](#e16-15)） |
 | MVDR / LCMV 闭式解 | $\vec w_{\mathrm{MVDR}}=\frac{\mathbf R^{-1}\vec a}{\vec a^H\mathbf R^{-1}\vec a}$；$\vec w_{\mathrm{LCMV}}=\mathbf R^{-1}\mathbf C(\mathbf C^H\mathbf R^{-1}\mathbf C)^{-1}\vec f$ | $\mathbf R\succ\mathbf 0$、$\mathbf C$ 满列秩；线性约束 $\mathbf C^H\vec w=\vec f$ 中指定响应 $g_k=\vec w^H\vec c_k$ 须取共轭 $f_k=g_k^*$（[§0.5.2](00_math-foundations.md#sec-0-5-2)、§5.4～§5.5） |
-| Woodbury / Sherman–Morrison | $(\mathbf M+\mathbf U\mathbf C\mathbf V)^{-1}=\mathbf M^{-1}-\mathbf M^{-1}\mathbf U(\mathbf C^{-1}+\mathbf V\mathbf M^{-1}\mathbf U)^{-1}\mathbf V\mathbf M^{-1}$；秩一 $(\mathbf M+\vec u\vec v^H)^{-1}=\mathbf M^{-1}-\frac{\mathbf M^{-1}\vec u\vec v^H\mathbf M^{-1}}{1+\vec v^H\mathbf M^{-1}\vec u}$ | 将在线遗忘协方差递推求逆由 $O(M^3)$ 降至 $O(M^2)$；长期有限字长递推须定期对称化 $\frac{1}{2}(\mathbf P+\mathbf P^H)$（[§0.3.5](00_math-foundations.md#sec-0-3-5)） |
-| 列优先 $\operatorname{vec}$ / Kronecker / Khatri–Rao | $(\mathbf B_1\otimes\mathbf A_1)(\mathbf B_2\otimes\mathbf A_2)=(\mathbf B_1\mathbf B_2)\otimes(\mathbf A_1\mathbf A_2)$；$\operatorname{vec}(\mathbf A\mathbf X\mathbf B^\top)=(\mathbf B\otimes\mathbf A)\operatorname{vec}(\mathbf X)$；$\operatorname{vec}(\mathbf A\operatorname{diag}(\vec q)\mathbf A^H)=(\mathbf A^*\odot\mathbf A)\vec q$ | 统一差分共阵（§3.3）、可分离平面阵（§5.5）与 CMF 成像（§12.7）；左因子须取共轭 $\mathbf A^*$（[§0.4.3](00_math-foundations.md#sec-0-4-3)） |
+| Woodbury / Sherman–Morrison | $(\mathbf M+\mathbf U\mathbf C\mathbf V)^{-1}=\mathbf M^{-1}-\mathbf M^{-1}\mathbf U$<br>$\cdot(\mathbf C^{-1}+\mathbf V\mathbf M^{-1}\mathbf U)^{-1}\mathbf V\mathbf M^{-1}$；<br>秩一 $(\mathbf M+\vec u\vec v^H)^{-1}=\mathbf M^{-1}-\frac{\mathbf M^{-1}\vec u\vec v^H\mathbf M^{-1}}{1+\vec v^H\mathbf M^{-1}\vec u}$ | 将在线遗忘协方差递推求逆由 $O(M^3)$ 降至 $O(M^2)$；长期有限字长递推须定期对称化 $\frac{1}{2}(\mathbf P+\mathbf P^H)$（[§0.3.5](00_math-foundations.md#sec-0-3-5)） |
+| 列优先 $\operatorname{vec}$ / Kronecker / Khatri–Rao | $(\mathbf B_1\otimes\mathbf A_1)(\mathbf B_2\otimes\mathbf A_2)$<br>$=(\mathbf B_1\mathbf B_2)\otimes(\mathbf A_1\mathbf A_2)$；<br>$\operatorname{vec}(\mathbf A\mathbf X\mathbf B^\top)=(\mathbf B\otimes\mathbf A)\operatorname{vec}(\mathbf X)$；<br>$\operatorname{vec}(\mathbf A\operatorname{diag}(\vec q)\mathbf A^H)=(\mathbf A^*\odot\mathbf A)\vec q$ | 统一差分共阵（§3.3）、可分离平面阵（§5.5）与 CMF 成像（§12.7）；左因子须取共轭 $\mathbf A^*$（[§0.4.3](00_math-foundations.md#sec-0-4-3)） |
 
 此外，本书对有限长补零复数序列的离散互相关统一采用第二路取共轭的定义（与 `scipy.signal.correlate` 约定一致，满足反对称关系 $R_{21}[q]=R_{12}^*[-q]$，第 1 路晚到 $q>0$ 点则正滞后出峰，见 [E16-12](#e16-12)）：
 
@@ -352,7 +352,7 @@ $$\begin{aligned}
 | 算子 / 策略 | 参数量纲 | 弱方向处理机理 | 典型失效边界与练习入口 |
 |---|---|---|---|
 | 绝对对角加载 $\mathbf R+\varepsilon\mathbf I$（亦记 $\delta$） | 与 $\mathbf R$ 同量纲 | 全部特征值平移 $+\varepsilon$ | 输入信号整体缩放时相对正则强度改变（[E16-09](#e16-09)） |
-| 迹相对加载 $\mathbf R+\alpha\bar\sigma^2\mathbf I$（亦记 $\eta$） | 无量纲（$\bar\sigma^2=\operatorname{tr}\mathbf R/M$） | 加载量随通道平均功率同比缩放 | 缩放保持权重与 $\kappa_2$ 不变；但全零静音帧 $\operatorname{tr}\mathbf R=0$ 时失效，须配正底限（[E16-09](#e16-09)） |
+| 迹相对加载 $\mathbf{R}+\alpha_{\mathrm{dl}}\bar{\sigma}^2\mathbf{I}$（亦记 $\eta$） | 无量纲（$\bar{\sigma}^2=\operatorname{tr}\mathbf{R}/M$） | 加载量随通道平均功率同比缩放 | 缩放保持权重与 $\kappa_2$ 不变；但全零静音帧 $\operatorname{tr}\mathbf{R}=0$ 时失效，须配正底限（[E16-09](#e16-09)） |
 | 截断 SVD（TSVD / `lstsq(rcond=ρ)`） | 相对阈值 $\rho$ 无量纲 | $\sigma_i\le\rho\sigma_{\max}$ 硬置零，滤波因子发生阶跃跳变 | 切勿把无量纲 `rcond` 当作加性岭参数 $\delta$（[E16-11](#e16-11)） |
 | 岭正则（Ridge / 零阶 Tikhonov） | $\delta$ 与 $\mathbf A^H\mathbf A$ 同量纲 | 平滑软收缩因子 $\sigma_i^2/(\sigma_i^2+\delta)$ | 弱方向连续压低而非截断清零，残差满足 $\mathbf A^H\hat{\vec r}_\delta=-\delta\hat{\vec x}_\delta$（[E16-11](#e16-11)） |
 | Moore–Penrose 伪逆 $\mathbf R^+$ 代逆 | 依赖秩截断门限 | 直接抹除 $\mathbf R$ 的零空间方向 | 奇异 $\mathbf R$ 下若目标导向在零空间有非零投影，伪逆解与 $\delta\to 0^+$ 真 MVDR 极限相悖（[E16-05](#e16-05)） |
@@ -568,7 +568,7 @@ $$\begin{aligned}
 
 #### E16-09：绝对与相对对角加载在整体缩放后有何不同？
 
-设两麦阵列（$M=2$）在某频点的空间协方差为 $\mathbf{R}=\operatorname{diag}(4,1)$，目标导向矢量为 $\vec{a}=[1,1]^\top$。分别采用绝对加载参数 $\delta=1$（即第 5 章记号 $\varepsilon=1$）与相对加载参数 $\eta=0.4$（即第 5 章记号 $\alpha=0.4$），按第 5 章式(5-9)求 MVDR 权重与加载后矩阵的二范数条件数；随后将输入信号整体放大使协方差变为 $10\mathbf{R}=\operatorname{diag}(40,10)$，保持参数 $\delta=1$、$\eta=0.4$ 不变，重新核算并对比。
+设两麦阵列（$M=2$）在某频点的空间协方差为 $\mathbf{R}=\operatorname{diag}(4,1)$，目标导向矢量为 $\vec{a}=[1,1]^\top$。分别采用绝对加载参数 $\delta=1$（即第 5 章记号 $\varepsilon=1$）与相对加载参数 $\eta=0.4$（即第 5 章记号 $\alpha_{\mathrm{dl}}=0.4$），按第 5 章式(5-9)求 MVDR 权重与加载后矩阵的二范数条件数；随后将输入信号整体放大使协方差变为 $10\mathbf{R}=\operatorname{diag}(40,10)$，保持参数 $\delta=1$、$\eta=0.4$ 不变，重新核算并对比。
 
 **参考答案**：
 
@@ -639,7 +639,7 @@ $$\begin{gathered}
 
 #### E16-14：已知对角噪声协方差怎样改变最小二乘与双通道音频输出？
 
-（1）**单快拍解析对角加权模型**：在线性观测 $\vec{b}=\mathbf{A}x_*+\vec{n}$ 中，设单列设计矩阵 $\mathbf{A}=[1,1]^\top$、零均值噪声已知对角协方差 $\mathbf{C}=\operatorname{diag}(1,4)$。先在单次读数 $\vec{b}=[0,2]^\top$ 上对比普通最小二乘（OLS）与加权最小二乘（WLS/GLS）估计值及残差正交度量，再用配方证明权重 $(4/5,1/5)$ 在全体无偏线性估计中达到最小总体方差。
+（1）**单快拍解析对角加权模型**（承接[第 1 章 E01-03](01_problem-definition.md#e01-03) 的双麦标量反方差加权，将其推广到矩阵 GLS 正交性与五段 WAV 的 PCM16 实算验证）：在线性观测 $\vec{b}=\mathbf{A}x_*+\vec{n}$ 中，设单列设计矩阵 $\mathbf{A}=[1,1]^\top$、零均值噪声已知对角协方差 $\mathbf{C}=\operatorname{diag}(1,4)$。先在单次读数 $\vec{b}=[0,2]^\top$ 上对比普通最小二乘（OLS）与加权最小二乘（WLS/GLS）估计值及残差正交度量，再用配方证明权重 $(4/5,1/5)$ 在全体无偏线性估计中达到最小总体方差。
 
 （2）**双通道合成音频实算验证**：构造共享同一目标源的双通道观测 $x_1[n]=s[n]+n_1[n]$、$x_2[n]=s[n]+n_2[n]$（采样率 $f_s=16000\ \mathrm{Hz}$，总长 $32000$ 点即 $2.0\ \mathrm{s}$，两端斜坡包络 $e[n]=\min(1,n/640,(31999-n)/640)$）：
 

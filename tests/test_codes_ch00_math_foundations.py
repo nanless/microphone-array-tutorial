@@ -1,6 +1,7 @@
 """Independent hand-derived unit tests and strict input-validation negative controls for Chapter 0."""
 from __future__ import annotations
 
+import decimal
 import itertools
 import json
 import math
@@ -379,6 +380,64 @@ class Chapter00MathKernelTests(unittest.TestCase):
                 np.array([[-1.0]]),
                 np.array([[1.0, 0.0]]),
             )
+
+    def test_regression_small_magnitude_bessel_length1_dft_and_underdetermined_tikhonov(self):
+        # 1. Elementwise relative convergence for small-magnitude Bessel series: J_35(6.0) & j_10(0.1)
+        with decimal.localcontext() as ctx:
+            ctx.prec = 60
+            half_x = decimal.Decimal("3")
+            ref_j35 = float(
+                sum(
+                    ((-1) ** k) * (half_x ** (2 * k + 35))
+                    / decimal.Decimal(math.factorial(k) * math.factorial(35 + k))
+                    for k in range(60)
+                )
+            )
+            dx = decimal.Decimal("0.1")
+            ref_sj10 = float(
+                sum(
+                    ((-1) ** k) * (dx ** (2 * k + 10))
+                    / decimal.Decimal(
+                        (2 ** k)
+                        * math.factorial(k)
+                        * (math.factorial(20 + 2 * k + 1) // ((2 ** (10 + k)) * math.factorial(10 + k)))
+                    )
+                    for k in range(40)
+                )
+            )
+
+        got_j35 = cm.cylindrical_bessel_j(35, 6.0)
+        self.assertLess(abs(got_j35 - ref_j35) / abs(ref_j35), 1e-14)
+        got_j35_arr = cm.cylindrical_bessel_j(35, np.array([0.0, 6.0]))
+        self.assertEqual(float(got_j35_arr[0]), 0.0)
+        self.assertLess(abs(float(got_j35_arr[1]) - ref_j35) / abs(ref_j35), 1e-14)
+        got_j0_zero = cm.cylindrical_bessel_j(0, np.array([0.0, 6.0]))
+        self.assertAlmostEqual(float(got_j0_zero[0]), 1.0, places=15)
+
+        got_sj10, _ = cm.spherical_bessel_jy(10, 0.1)
+        self.assertLess(abs(got_sj10 - ref_sj10) / abs(ref_sj10), 1e-14)
+        # Mixed small/large array exercises the second small_mask power-series branch
+        got_sj10_mix, _ = cm.spherical_bessel_jy(10, np.array([0.1, 15.0]))
+        self.assertLess(abs(float(got_sj10_mix[0]) - ref_sj10) / abs(ref_sj10), 1e-14)
+        self.assertAlmostEqual(float(got_sj10_mix[1]), cm.spherical_bessel_jy(10, 15.0)[0], places=15)
+
+        # 2. Length-1 DFT Parseval & zero-padded convolution guard (empty interior k_int)
+        res_len1 = cm.dft_parseval_and_zero_padded_conv_example(x=[3.0], h=[2.0], n_pad=1)
+        self.assertAlmostEqual(res_len1["time_energy"], 9.0, places=15)
+        self.assertAlmostEqual(res_len1["parseval_freq_energy"], 9.0, places=15)
+        self.assertEqual(res_len1["conjugate_symmetry_error"], 0.0)
+        np.testing.assert_allclose(res_len1["linear_convolution"], [6.0], rtol=0.0, atol=1e-15)
+        self.assertLess(res_len1["zero_padded_max_abs_error"], 1e-15)
+
+        res_len1_h2 = cm.dft_parseval_and_zero_padded_conv_example(x=[3.0], h=[2.0, -1.0], n_pad=2)
+        self.assertEqual(res_len1_h2["conjugate_symmetry_error"], 0.0)
+        np.testing.assert_allclose(res_len1_h2["linear_convolution"], [6.0, -3.0], rtol=0.0, atol=1e-15)
+
+        # 3. Underdetermined tikhonov_svd_solve with tiny eps=1e-20 where normal equations are singular
+        res_ud = cm.tikhonov_svd_solve(np.array([[1.0, 2.0]]), np.array([1.0]), loading_eps=1e-20)
+        np.testing.assert_allclose(res_ud["solution"], [0.2 + 0.0j, 0.4 + 0.0j], rtol=0.0, atol=1e-14)
+        self.assertTrue(math.isinf(res_ud["condition_number_2"]))
+        self.assertTrue(math.isnan(res_ud["normal_eq_consistency_error"]))
 
 
 class Chapter00ExercisesCLITests(unittest.TestCase):

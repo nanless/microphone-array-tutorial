@@ -382,7 +382,7 @@ ArrayDPS固定 `750ac2b7c75458f4ca5bad203dafda528f575e55` 的真实采样入口�
 
 接口报告实际调用 pyaec 的 RLS/Kalman/FDKF/PFDKF 与 echocatzh 初始块：末尾截断、`np.complex` 原失败、默认后滤改变误差仍保留。DTLN 原 `process_file()` AST 只在内存音频和假解释器上执行，没有 TensorFlow、权重或生产音频写入。APA 完整加载原单文件，四个确定数组与独立有理手算对照，保留实数缓冲丢复部的警告。工具退出零表示合同记录生成成功，不表示每个原算法执行成功，更不是声学性能或实时性验收。[原方法与逐例边界](02_aec_wpe_separation.md#aec)
 
-[旧接口报告](../../ch06/reports/aec_upstream_interfaces.json)与[旧 APA 报告](../../ch06/reports/upstream_apa.json)原字节和修改时间保全；对应历史测试绑定真实提交 `621d727a63475e3ee8ad2a29d518889c42e92571` 的旧工具 blob。不能给旧报告换当前工具 SHA 或将当时有限身份核验追记为今天的新合同。新工具默认标准输出，只允许显式写各自当前报告或仓外普通报告，历史、源码、锁表、缓存和符号链接目标在执行前拒绝；严格 JSON 与有限写前检查的边界见[来源合同测试](../../../../tests/test_codes_ch06_source_contracts.py)。
+[旧接口报告](../../ch06/reports/aec_upstream_interfaces.json)与[旧 APA 报告](../../ch06/reports/upstream_apa.json)原字节和修改时间保全；对应历史测试绑定真实提交 `621d727a63475e3ee8ad2a29d518889c42e92571` 的旧工具 blob。不能给旧报告换当前工具 SHA 或将当时有限身份核验追记为当前的新合同。新工具默认标准输出，只允许显式写各自当前报告或仓外普通报告，历史、源码、锁表、缓存和符号链接目标在执行前拒绝；严格 JSON 与有限写前检查的边界见[来源合同测试](../../../../tests/test_codes_ch06_source_contracts.py)。
 
 ```bash
 .venv/bin/python -m codes.chapters.ch06.examples.audit_aec_upstream_interfaces --report codes/chapters/ch06/reports/aec_upstream_interfaces_current.json
@@ -391,7 +391,7 @@ ArrayDPS固定 `750ac2b7c75458f4ca5bad203dafda528f575e55` 的真实采样入口�
 
 **生产二进制与落盘边界。** [Speex 配对入口](../../ch06/examples/aec_real_pair_experiment.py)默认只打印报告，`--output-wav` 仅接受仓外新普通文件，写前保护输入与二进制。[AEC3 配对入口](../../ch06/examples/aec3_offline_compare.py)的 `--output-dir` 只接受仓外新空普通目录，执行前检查全部九个产出成员，拒绝缓存与来源路径。[同输入真值入口](../../ch06/examples/aec_same_input_truth.py)在仓外临时目录处理，逐个生产者调用前保护输入/输出；显式 build manifest 严格拒绝重复键和非有限数，核实际二进制 SHA，但声明的构建配置不是独立构建证明。这些有限检查不消除并发竞态。
 
-本轮实际执行的是两个原方法审计和 38 项来源/写入合同测试，没有重跑 Speex/AEC3 生产声学链或设备实验。前文 2026-09-23/24 的配对和合成数字仍是历史运行；不能把今天的路径保护测试称为这些性能实验重新通过。增益通知、XMOS ALT 保持与 2026 两候选的固定原源/缺资产边界见[增强 A06/A17/A19](02_aec_wpe_separation.md#aec)及[工业 I10](03_industrial_deployment.md#i10xmos-libvoice-的-aec-与延迟控制)。
+当前复核实际执行的是两个原方法审计和 38 项来源/写入合同测试，没有重跑 Speex/AEC3 生产声学链或设备实验。前文 2026-09-23/24 的配对和合成数字仍是历史运行；不能把当前的路径保护测试称为这些性能实验重新通过。增益通知、XMOS ALT 保持与 2026 两候选的固定原源/缺资产边界见[增强 A06/A17/A19](02_aec_wpe_separation.md#aec)及[工业 I10](03_industrial_deployment.md#i10xmos-libvoice-的-aec-与延迟控制)。
 
 <a id="distributed-reproduction"></a>
 
@@ -431,7 +431,7 @@ ArrayDPS固定 `750ac2b7c75458f4ca5bad203dafda528f575e55` 的真实采样入口�
 
 ### 原MATLAB源码核查与五项独立对照
 
-报告保存14项原MATLAB源码行级核查记录，包括帧首VAD、内部/外部滤波器分工、广播版本生效次序、顺序token的作用、普通EVD、直接逆矩阵、窗函数和循环终点；配置与论文实验分开记录，详见[工业I34](03_industrial_deployment.md#distributed-network-deployment)。本轮没有探测或执行MATLAB/Octave运行时，也未安装运行时、运行原WOLA链、GEVD-DANSE、真实网络或数据集。原历史报告中的父任务探测措辞不能当作本次探测结果。
+报告保存14项原MATLAB源码行级核查记录，包括帧首VAD、内部/外部滤波器分工、广播版本生效次序、顺序token的作用、普通EVD、直接逆矩阵、窗函数和循环终点；配置与论文实验分开记录，详见[工业I34](03_industrial_deployment.md#distributed-network-deployment)。当前复核没有探测或执行MATLAB/Octave运行时，也未安装运行时、运行原WOLA链、GEVD-DANSE、真实网络或数据集。原历史报告中的父任务探测措辞不能当作当前运行环境的探测结果。
 
 另有五项**数值对照算例或控制流复写**，不称原MATLAB运行结果：
 
@@ -471,7 +471,7 @@ ArrayDPS固定 `750ac2b7c75458f4ca5bad203dafda528f575e55` 的真实采样入口�
 |---|---|
 | [100项来源锁表](../source_snapshots/SOURCES.55ab323ba665633141c4864763095046f9c6161ce2d88ca2aa9332dde7ec23f0.json) | 第1～9章十份固定原实现报告所记录的锁表摘要；其中第4章DOA和SAID分为两份 |
 | [当时的获取状态](../source_snapshots/SOURCE_STATUS.e3b3176d835837441224e4906b7c2befadcdc4fe2ce6163245b7d9a9ad0d9229.json) | 第9章追踪报告记录的状态摘要；该状态中的`lock_sha256`精确指向上一行 |
-| [105项来源锁表](../source_snapshots/SOURCES.e3478006c7dbc6cec442bf6bccc4df9eca946d7d353b661e947596dd8b87608a.json) | 原第15章（现第13章）分布式原函数报告运行时的完整锁表；其中所用`danse-wola`和`paderwasn`记录与当前完全一致 |
+| [105项来源锁表](../source_snapshots/SOURCES.e3478006c7dbc6cec442bf6bccc4df9eca946d7d353b661e947596dd8b87608a.json) | 第13章分布式原函数历史报告运行时的完整锁表；其中所用`danse-wola`和`paderwasn`记录与当前完全一致 |
 | [105项获取状态](../source_snapshots/SOURCE_STATUS.b113b63c97767d19b76ceb44677303961ff310ce8d96f4e9e777944b44916d3c.json) | 扩充前67项通过及原22项选集不匹配、AEC失败等完整记录；绑定上一行105项锁表，不把后来取得的源码追记为当时成功 |
 | [115项来源锁表](../source_snapshots/SOURCES.ea8ce3cf679d70d06305f4942dbf9afeee94b69bd0ad7a5b9b09470c327a598f.json)与[115项获取状态](../source_snapshots/SOURCE_STATUS.be926fccb75979e2f2ac428ac6c65c76a46d672771e21a01d589908d776fcac0.json) | 纳入`damas-author`后的16份当前合同报告绑定快照；保留75项通过与原选集/AEC边界 |
 | [116项来源锁表](../source_snapshots/SOURCES.60ebc7b692d28b5d5406e3cb137d2dcc43b154ea2c4e3d3ac739cf7fda18abeb.json)与[116项获取状态](../source_snapshots/SOURCE_STATUS.b57d21d42651084303252c66fee49ea8d0ccfcc4108e2e89c5c79b99f8ef8690.json) | 纳入`openmha`后、新增十三项纯文本选集前的第4/9/12章四份当前合同报告绑定快照 |
@@ -555,14 +555,14 @@ e3b3176d835837441224e4906b7c2befadcdc4fe2ce6163245b7d9a9ad0d9229
 
 六个第4章原源工具现在统一使用[当前合同核](../../ch04/core/upstream_contracts.py)：sanitized Git、官方origin、固定HEAD、全部声明使用的原blob与许可SHA、跟踪/未忽略成员的前后洁净及忽略成员前后清单，真实完整选集与所用源码身份分栏。默认stdout不写报告；两个audit显式写入仅允许新[DOA当前报告](../../ch04/reports/upstream_doa_contracts.json)、[SAID当前报告](../../ch04/reports/said_compression_contracts.json)或仓外普通路径。四个旧reproduce入口的output/workdir只能仓外，历史报告/源码/上游及链接父链执行前拒绝。有限路径检查不保证消除并发竞态。
 
-本轮使用既有`/private/tmp/masp-appb-pra-venv`真实运行PRA 0.10.0完整TOPS及限定原helper；原峰49°与独立30°分别保留，root-MUSIC原dtype错误与局部门面分开，SAID只执行四个压缩格式助手。ESPRIT与SBL另实际输出到仓外，不给旧报告改成新运行。SMP的FFTW条件不足，本轮没有重建原C；旧失败/临时适配历史与独立DFT测试仍分别说明。DP-RTF MATLAB、完整DPD、FRIDA、学习网络、核心二进制和硬件未执行；详细条件及许可见[空间研究58/59](01_spatial_and_tracking.md#sec-u-1ca23edba5)。
+当前复核使用既有`/private/tmp/masp-appb-pra-venv`真实运行PRA 0.10.0完整TOPS及限定原helper；原峰49°与独立30°分别保留，root-MUSIC原dtype错误与局部门面分开，SAID只执行四个压缩格式助手。ESPRIT与SBL另实际输出到仓外，不给旧报告改成新运行。SMP的FFTW条件不足，当前复核没有重建原C；旧失败/临时适配历史与独立DFT测试仍分别说明。DP-RTF MATLAB、完整DPD、FRIDA、学习网络、核心二进制和硬件未执行；详细条件及许可见[空间研究58/59](01_spatial_and_tracking.md#sec-u-1ca23edba5)。
 
 
 <a id="beamforming-current-contracts"></a>
 
 ## 11. 第5章当前原方法合同与相位控制
 
-2026-10-04实际运行三项限定合同；所有结果由真实工具生成，没有改上游、旧三报告或原获取状态。重新调用可使用具备报告所列PRA/NumPy/SciPy版本的隔离环境；下面临时路径只描述本机本轮环境，不是永久安装位置。
+2026-10-04实际运行三项限定合同；所有结果由真实工具生成，没有改上游、旧三报告或原获取状态。重新调用可使用具备报告所列PRA/NumPy/SciPy版本的隔离环境；下面临时路径只描述本机复核环境，不是永久安装位置。
 
 ```bash
 /private/tmp/masp-appb-pra-venv/bin/python -m codes.chapters.ch05.examples.audit_upstream_beamformers --report codes/chapters/ch05/reports/upstream_beamformers_current.json
@@ -611,7 +611,7 @@ e3b3176d835837441224e4906b7c2befadcdc4fe2ce6163245b7d9a9ad0d9229
 
 扩充前的[112项原锁字节](../source_snapshots/SOURCES.d679c9d005768ea5f5d51b3e1f5dc33a99f317e859eee252250d343ca2ddb63a.json)和[原获取状态字节](../source_snapshots/SOURCE_STATUS.e6108565144184bdafbd9c6813cf510fb2c9ee6448ae003411bed5cacc78d8da.json)按完整SHA登记，旧执行报告不换成新锁表身份。当前第4～8章14个直接消费者实际重新执行后绑定新锁表，原故障/未运行边界保留；不能只改JSON字符串。
 
-第9章两个工具默认stdout；接口工具显式`--output`写[当前接口报告](../../ch09/reports/tracking_upstream_interfaces_current.json)，原方法合同工具显式`--report`写[当前原方法合同](../../ch09/reports/upstream_tracking_contracts_current.json)，路径均须通过安全检查，不覆盖两旧历史报告。ODAS限定原C、SAF控制流替身、FilterPy原包/原方法和StoneSoup三个原AST方法各记执行范围；完整稀疏选集不匹配不抹去。FilterPy本轮预检63个跟踪源文件，33个实际导入模块分别记录；EKF组合接口`None`的原TypeError及部分K/S更新保留，不能改写成原包缺测路径成功。
+第9章两个工具默认stdout；接口工具显式`--output`写[当前接口报告](../../ch09/reports/tracking_upstream_interfaces_current.json)，原方法合同工具显式`--report`写[当前原方法合同](../../ch09/reports/upstream_tracking_contracts_current.json)，路径均须通过安全检查，不覆盖两旧历史报告。ODAS限定原C、SAF控制流替身、FilterPy原包/原方法和StoneSoup三个原AST方法各记执行范围；完整稀疏选集不匹配不抹去。FilterPy当前预检63个跟踪源文件，33个实际导入模块分别记录；EKF组合接口`None`的原TypeError及部分K/S更新保留，不能改写成原包缺测路径成功。
 
 2026-10-05第10章四组原接口复验保存为current报告，旧四报告与其历史工具身份保持原样；当前编译依赖、原失败及未执行范围见[工业研究§9](03_industrial_deployment.md#industrial-current-interface-contracts)。上文复跑命令写显式current路径；仓内其他报告目标由写前守卫拒绝，普通仓外路径可另存试验。
 
@@ -625,14 +625,14 @@ e3b3176d835837441224e4906b7c2befadcdc4fe2ce6163245b7d9a9ad0d9229
 
 2026-10-05从[作者官方仓库](https://github.com/gilleschardon/DAMAS/tree/61987952e2237e6b088a169ee891dd96576f2565)取得提交`61987952e2237e6b088a169ee891dd96576f2565`。21个选定文本共74510字节，含完整GPLv3、README、Python/MATLAB方法与两个C语言MEX源文件；不含三个MAT数据或预编译MEX文件。许可SHA-256为`3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986`。原代码放在`codes/chapters/ch00/upstream/_downloads/damas-author/`的独立受管理工作树，保留GPL条款和源通知，不复制进本书教学数值核。
 
-[固定原README](https://github.com/gilleschardon/DAMAS/blob/61987952e2237e6b088a169ee891dd96576f2565/README.md)明确说明本仓库不再维护，并指向作者后续项目acosolo。这是继续研究的入口；本轮没有因此取得或运行后继项目，也没有把固定原代码称为最新维护版本。
+[固定原README](https://github.com/gilleschardon/DAMAS/blob/61987952e2237e6b088a169ee891dd96576f2565/README.md)明确说明本仓库不再维护，并指向作者后续项目acosolo。这是继续研究的入口；当前范围没有因此取得或运行后继项目，也没有把固定原代码称为最新维护版本。
 
 | 原文件与入口 | 在算法中做什么 | 复现时必须分清什么 |
 |---|---|---|
 | `damas.py::proddamastranspose`、`proddamas`、`proddamasdr` | 不构造完整格点方阵，先形成传感器矩阵再计算各格二次型；DR分支去掉传感器矩阵对角 | 输入是原传播矩阵，原未归一化Gram与本书单位匹配PSF通过行尺度对应；DR不是把旧PSF原封不动重用 |
 | `cmf_nnls.m`、`cmf_nnls_dr.m`及Python同名控制 | 非负源量拟合完整CSM或去对角观测 | 观测、模板、噪声字典和预算都必须一致；原CMF-NNLS不等于Yardibi含所有约束的原CMF-C |
 | `damas_nnls.m`、`damas_nnls_dr.m`及Python对应控制 | 最小化扫描图残差 | 正规方程出现Gram的平方；不能因同有NNLS名字就与CSM拟合合并 |
-| `damas.c`、`damas_rand.c` | C语言MEX的顺序/随机坐标更新源码 | 得到C源不代表已编译MEX、启动MATLAB或复现论文实验；本轮均未执行 |
+| `damas.c`、`damas_rand.c` | C语言MEX的顺序/随机坐标更新源码 | 得到C源不代表已编译MEX、启动MATLAB或复现论文实验；当前均未执行 |
 | `figures/FIGS_2D_EXP.m`、`FIGS_3D_EXP.m`、`FIGS_2D_SIM.m` | 作者实验/仿真作图流程 | 原数据与运行依赖另核；README声明仿真含非确定性，不把一次输出当普遍性能 |
 
 [原Python文件](https://github.com/gilleschardon/DAMAS/blob/61987952e2237e6b088a169ee891dd96576f2565/damas.py)的`lawson_hanson`还有具体边界：循环未进入时`Gram`没有赋值，异常处理写作`except e`；末尾唯一性判断只看当前支持的Gram。正定支持不足以证明整个非负字典只有一个解，四不同列反例见[E12-16](../../../../chapters/12_acoustic-imaging.md#e12-16)。这些静态原语句必须保留，不能先修上游再把改后成功写成原结果。
@@ -651,7 +651,7 @@ e3b3176d835837441224e4906b7c2befadcdc4fe2ce6163245b7d9a9ad0d9229
 整表退出1对应上面保留的旧失败与选集不匹配。该命令检查来源获取，既不安装依赖，也不执行原算法。
 
 
-### 13.3 本轮实际执行的限定原方法
+### 13.3 实际执行的限定原方法
 
 [Acoular当前报告](../../ch12/reports/upstream_imaging_contracts_current.json)保存21个原数值控制（13匹配、8个观察到的目标差异）、1个未执行CMF估计器，另列同一合法CSM经原Base/PSF/DAMAS形成的桥接控制。完整原Traits/JIT/HDF5、工业数据链和sklearn估计器均未运行。[历史原报告](../../ch12/reports/upstream_imaging_contracts.json)字节不改；当前工具拒绝写入旧报告路径。
 
@@ -662,4 +662,4 @@ e3b3176d835837441224e4906b7c2befadcdc4fe2ce6163245b7d9a9ad0d9229
 python -B -m codes.chapters.ch12.examples.audit_damas_author_contracts --report codes/chapters/ch12/reports/damas_author_contracts_current.json
 ```
 
-第二条命令需要具有NumPy、SciPy及matplotlib的既有独立环境。默认输出到终端，只有显式当前普通报告路径才写入；本轮在既有隔离环境真实执行，未安装依赖。缺依赖或进程超时会保留未完成记录，不降为替代函数成功，也不修补上游再宣称原代码通过。两工具均核官方origin、固定HEAD、原blob/许可、当前锁与获取状态、执行前后实际依赖和源码成员边界。
+第二条命令需要具有NumPy、SciPy及matplotlib的既有独立环境。默认输出到终端，只有显式当前普通报告路径才写入；当前复核在既有隔离环境真实执行，未安装依赖。缺依赖或进程超时会保留未完成记录，不降为替代函数成功，也不修补上游再宣称原代码通过。两工具均核官方origin、固定HEAD、原blob/许可、当前锁与获取状态、执行前后实际依赖和源码成员边界。

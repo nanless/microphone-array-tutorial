@@ -6,7 +6,7 @@
   "common_export_gain": 1.0,
   "source_sha256": {
     "codes/chapters/ch12/core/imaging.py": "3d5090527300d6ac601f212c485824ccb670ff584132c57590ebea68fdae857d",
-    "codes/chapters/ch12/core/imaging_audio.py": "88340729d1a174bc79444163d16ce95da751ae4e3f94b7468863b3cad0b55b2a",
+    "codes/chapters/ch12/core/imaging_audio.py": "3c6e3a90ddc62e62d1a5df946bacc0d95626d51b44b4da4c1de96bca20c2e444",
     "codes/chapters/ch12/examples/generate_imaging_audio.py": "861a1ce565502ce8dd4f58144968b250c8540408d52a6934d30f0d819e2334ad",
     "codes/chapters/ch02/core/conventions.py": "4e80a27490f05ddd5f4826361420c0c8d0b331464d1e5629c5def492da47b1d7",
     "codes/chapters/ch00/core/audio_samples.py": "1a7aad90d08fb8c27511aa463a6cc6dd6d4d2d230b27ed82549531f1f18edaba",

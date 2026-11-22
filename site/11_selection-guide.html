@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 11 章 · 总结与选型指南 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="f6d48efe6ade"><style>
+<meta name="source-digest" content="a0289902c00e"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -605,7 +605,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
   \mathcal{D}\!\left(R_s,\, \hat{H}_s\right).
 \end{aligned}\tag{11-1}
 $$</p>
-<p>式(11-1)清晰揭示了三者的约束递进关系：当 $S=K=1$ 且实名标签正确时，三式完全退化为普通单人 WER；在多人场景下，ORC-WER 的可行重排空间最大（共有 $K^U$ 种逐话段指派），cpWER 将重排收紧到整场唯一的 $M!$ 种全局槽位置换，而 sa-WER 将重排自由度彻底收紧到 $1$ 种固定实名映射，因此对同一组转写内容恒有 $\text{ORC-WER} \le \text{cpWER} \le \text{sa-WER}$（当实名标签由槽位全局一一绑定产生时）。</p>
+<p>式(11-1)清晰揭示了三者的约束递进关系：当 $S=K=1$ 且实名标签正确时，三式完全退化为普通单人 WER；在多人场景下，ORC-WER 的可行重排空间最大（共有 $K^U$ 种逐话段指派），cpWER 将重排收紧到整场唯一的 $M!$ 种全局槽位置换，而 sa-WER 将重排自由度彻底收紧到 $1$ 种固定实名映射，因此对同一组转写内容恒有 $\text{ORC-WER} \le \text{cpWER} \le \text{sa-WER}$（当实名标签由槽位全局一一绑定产生时；连续语音分离流式拼接下的 <code>cpWER</code> / <code>ORC-WER</code> 对比另见<a href="08_speech-separation.html#sec-8-6">第 8 章 §8.6</a>，级联与端到端会议架构下的 <code>cpWER</code> 双倍惩罚机理及 <code>tcpWER</code> 另见<a href="15_target-extraction-diarization.html#sec-15-7">第 15 章 §15.7</a>）。</p>
 <h3 id="sec-u-991366ae59">四词手算：两条流在第二段交换</h3>
 <p>我们用一个极简的四词算例把式(11-1)的三行公式一次算透。设“春天、夏天、秋天、冬天”各为一个独立词元；在第 1、第 2 两个时间段内，甲、乙两人同时开口，前端 CSS 分离器与 ASR 把四个词全部识别正确，但在第 2 段发生了跨块槽位交换，把两人的话放进了相反的输出流：</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
@@ -761,7 +761,7 @@ $$</p>
 <td>2～4 麦气导+内麦/骨导 VPU（低功耗 PDM/I²S）</td>
 <td>耳道闭塞效应、防尘网/防水透气膜高频相移、强风湍流</td>
 <td>超低功耗蓝牙 SoC+DSP；单耳 $5\text{～}15\ \mathrm{mW}$、眼镜 $20\text{～}60\ \mathrm{mW}$，无主动散热</td>
-<td>主动通透防梳状 $\lt 0.5\text{～}1\ \mathrm{ms}$；语音上行 $\lt 30\text{～}60\ \mathrm{ms}$</td>
+<td>单位增益主动通透无梳状理想 $\le 100\ \mu\mathrm{s}$（商用折中 $\lt 0.5\text{～}1\ \mathrm{ms}$）；语音上行 $\lt 30\text{～}60\ \mathrm{ms}$</td>
 <td>蓝牙 HFP/LE Audio、整机温升与比吸收率（SAR）</td>
 </tr>
 <tr>
@@ -786,7 +786,7 @@ $$</p>
 <ul>
 <li><strong>结构声腔与防水透气膜的幅相畸变</strong>：麦克风壳体开孔与其后背声道形成微小型亥姆霍兹谐振腔（Helmholtz resonator），若开孔长度与截面积匹配不当，会在 $3\text{～}8\ \mathrm{kHz}$ 内引入数分贝谐振峰；而在户外音箱、智能眼镜与工业 IoT 节点上贴装 IP67/IP68 防水透气膜（ePTFE）后，膜片张力个体离散度会带来高频插入损耗与数度至十余度的通道间相位漂移——凡采用超指向或紧零陷自适应波束的产品，必须在装配整机外壳与防水膜后重新实测阵列流形与 WNG。</li>
 <li><strong>工业 IoT $\mu\mathrm{W}$ 级常开唤醒与 KWS 运行点权衡</strong>：受制于纽扣电池或数年的免维护续航，工业边缘语音/声学监测节点普遍采用“双级唤醒架构”——主处理器与神经声学模型长期深度休眠，仅保留 $10\text{～}200\ \mu\mathrm{W}$ 级常开模拟包络检测或极轻量数字 VAD 监听异常声能；一旦越阈，再在数毫秒内拉起主 MCU/NPU 执行完整关键词检测（KWS）或故障诊断。在选定唤醒阈值 $\tau$ 时，必须同时考核正事件的无量纲漏检率 $r_{\mathrm{miss}} = N_{\mathrm{miss}}/N_+$ 与连续负样本暴露时长 $T_-$ 上的每小时误触发率 $\nu_{\mathrm{FA}} = N_{\mathrm{FA}}/T_-$（且零误触发的持续测试时长须按泊松置信界核算，见 <a href="#e11-15">E11-15</a>），防止高频误唤醒耗尽主核功耗预算。</li>
-<li><strong>医疗与 OTC 助听设备的法规与听觉安全底线</strong>：助听器绝非“缩小版耳机”。医用与非处方（OTC）助听产品除须满足助听设备专用医电安全标准 <strong>IEC 60601-2-66</strong> 外，在电声指标上还受 <strong>FDA 21 CFR 800.30</strong> 与 <strong>ANSI/CTA-2051</strong> 的法定硬限约束：最大输出声压级 <strong>OSPL90（$90\ \mathrm{dB\ SPL}$ 输入下的输出上限）$\le 111\ \mathrm{dB\ SPL}$</strong>（启用输入受控压缩时 $\le 117\ \mathrm{dB\ SPL}$），法规级处理延迟上限 <strong>$\le 15\ \mathrm{ms}$</strong>，自生噪声 <strong>$\le 32\ \mathrm{dBA}$</strong>，总谐波失真加噪声（THD+N，21 CFR 800.30(d)(3)）<strong>$\le 5\%$</strong>，并须在输出端实施硬件/固件压缩限幅以防止突发脉冲或啸叫击伤残余听力；同时，开放式或通气耳塞佩戴下，外界直达声与助听扩声在耳膜处叠加会产生强烈的梳状滤波金属音，迫使全链路直通延迟进一步严控在 $5\text{～}10\ \mathrm{ms}$ 以内（详见<a href="14_spatial-wearable-arrays.html#sec-14-10">扩展专题Ⅲ §14.10</a>），任何长窗 STFT 或大前瞻神经降噪模型都会在合规审查首轮即被淘汰。</li>
+<li><strong>医疗与 OTC 助听设备的法规与听觉安全底线</strong>：助听器绝非“缩小版耳机”。医用与非处方（OTC）助听产品除须满足助听设备专用医电安全标准 <strong>IEC 60601-2-66</strong> 外，在电声指标上还受 <strong>FDA 21 CFR 800.30</strong> 与 <strong>ANSI/CTA-2051</strong> 的法定硬限约束：最大输出声压级 <strong>OSPL90（$90\ \mathrm{dB\ SPL}$ 输入下的输出上限）$\le 111\ \mathrm{dB\ SPL}$</strong>（启用输入受控压缩时 $\le 117\ \mathrm{dB\ SPL}$），法规级处理延迟上限 <strong>$\le 15\ \mathrm{ms}$</strong>，自生噪声 <strong>$\le 32\ \mathrm{dBA}$</strong>，总谐波失真加噪声（THD+N，21 CFR 800.30(e)(1)）<strong>$\le 5\%$</strong>，并须在输出端实施硬件/固件压缩限幅以防止突发脉冲或啸叫击伤残余听力；同时，在开放式或通气耳塞佩戴下，还须按增益工况严格区分两类防梳状滤波延迟上限——对于<strong>带正插入增益的开放式助听器</strong>（约 $1\ \mathrm{kHz}$ 以上扩声增益主导耳道漏声），心理声学梳状染色烦恼度上限迫使全链路直通延迟进一步严控在 <strong>$\lt 5\text{～}10\ \mathrm{ms}$</strong> 以内（常控 $\lt 5\ \mathrm{ms}$），而对于<strong>单位增益的 TWS 主动通透耳机</strong>，无梳状理想上限须压低至 <strong>$\le 100\ \mu\mathrm{s}$</strong>（商用折中 $\lt 0.5\text{～}1\ \mathrm{ms}$，详见<a href="14_spatial-wearable-arrays.html#sec-14-10">扩展专题Ⅲ §14.10</a> 式(14-27)），任何长窗 STFT 或大前瞻神经降噪模型都会在合规与听感审查首轮即被淘汰。</li>
 </ul>
 <h3 id="sec-u-8198d86843">场景条件变化与智能座舱硬边界</h3>
 <p>掌握了六类形态的硬件边界后，下表以四类典型声学工况为例，展示如何顺着现场约束的变化一步步推导出系统链路，而非背诵僵化的标准配方：</p>
@@ -817,7 +817,7 @@ $$</p>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:6em">耳机或助听设备</td>
 <td>若监听路径对延迟和电池很敏感</td>
-<td>监听与通话上行可采用不同链路。固定双麦波束和轻量 NS 是候选基线，不是必选答案；法规、反馈路径、佩戴变化和听觉安全优先。非规则镜框双耳信号匹配（BSM/MagLS）、双耳相干度保持、抗风噪跨模态自语音融合及主动通透模式百微秒级防梳状滤波约束详见<a href="14_spatial-wearable-arrays.html#sec-14-5">扩展专题Ⅲ §14.5～§14.10</a>。</td>
+<td>监听与通话上行可采用不同链路。固定双麦波束和轻量 NS 是候选基线，不是必选答案；法规、反馈路径、佩戴变化和听觉安全优先。非规则镜框双耳信号匹配（BSM/MagLS）、双耳相干度保持、抗风噪跨模态自语音融合，以及单位增益主动通透模式的防梳状滤波延迟约束（无梳状理想 $\le 100\ \mu\mathrm{s}$、商用折中 $\lt 0.5\text{～}1\ \mathrm{ms}$，显著严于正插入增益开放式助听器的 $\lt 5\text{～}10\ \mathrm{ms}$ 上限）详见<a href="14_spatial-wearable-arrays.html#sec-14-5">扩展专题Ⅲ §14.5～§14.10</a>。</td>
 </tr>
 </tbody>
 </table></div>
@@ -1016,7 +1016,7 @@ $$</p>
       \frac{\hat{p} + z^2/(2n) + s_z}{1 + z^2/n}.
     \end{aligned}\tag{11-5}
     $$</p>
-<p>我们先做两个边界检验：当 $k = 0$（$\hat{p} = 0$）时，式(11-5)分子化简为 $z^2/(2n) + z^2/(2n) = z^2/n$，给出严格为正的合理上界 $z^2/(n + z^2)$（例如 $n = 200$、双侧 $z = 1.96$ 时为 $3.8416 / 203.8416 \approx 1.88\%$，与第 4 章 E04-08 的 $[0, 1.9\%]$ 吻合）；当 $k = n$（$\hat{p} = 1$）时，上界精确收敛到 $1$。再算一个工程锚点：设某候选跑了 $n = 100$ 次独立压力会话，出现 $k = 1$ 次超时（经验违约率 $\hat{p} = 1\%$ 恰好压在 $p_0 = 1\%$ 门槛上），取单侧 $95\%$ 分位数 $z = 1.6449$（$z^2 \approx 2.7055$）代入式(11-5)，得 $z^2/(2n) \approx 0.01353$、半宽 $s_z \approx 0.02123$，分子合计约 $0.04476$，除以分母 $1.02706$ 得 $p_{\mathrm{U,Wilson}} \approx 4.36\%$。作为保守精确对照，<strong>Clopper–Pearson 单侧精确二项上界</strong> $p_{\mathrm{U,CP}}$ 由下式解出（当 $k = 0$ 时退化为式(11-4)）：</p>
+<p>我们先做两个边界检验：当 $k = 0$（$\hat{p} = 0$）时，式(11-5)分子化简为 $z^2/(2n) + z^2/(2n) = z^2/n$，给出严格为正的合理上界 $z^2/(n + z^2)$（例如 $n = 200$、双侧 $z = 1.96$ 时为 $3.8416 / 203.8416 \approx 1.88\%$，与第 4 章 §4.8.1（及 E04-06 / E04-08）的 $[0, 1.9\%]$ 吻合）；当 $k = n$（$\hat{p} = 1$）时，上界精确收敛到 $1$。再算一个工程锚点：设某候选跑了 $n = 100$ 次独立压力会话，出现 $k = 1$ 次超时（经验违约率 $\hat{p} = 1\%$ 恰好压在 $p_0 = 1\%$ 门槛上），取单侧 $95\%$ 分位数 $z = 1.6449$（$z^2 \approx 2.7055$）代入式(11-5)，得 $z^2/(2n) \approx 0.01353$、半宽 $s_z \approx 0.02123$，分子合计约 $0.04476$，除以分母 $1.02706$ 得 $p_{\mathrm{U,Wilson}} \approx 4.36\%$。作为保守精确对照，<strong>Clopper–Pearson 单侧精确二项上界</strong> $p_{\mathrm{U,CP}}$ 由下式解出（当 $k = 0$ 时退化为式(11-4)）：</p>
 <p>$$
     \begin{aligned}
     \sum_{i=0}^{k}\binom{n}{i}p_{\mathrm{U,CP}}^i(1 - p_{\mathrm{U,CP}})^{n-i}

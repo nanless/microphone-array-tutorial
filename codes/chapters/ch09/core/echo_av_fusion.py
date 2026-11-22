@@ -61,9 +61,13 @@ def _checked_psd_2x2(matrix, name: str = "covariance") -> np.ndarray:
     if not np.allclose(arr, arr.T, rtol=1e-12, atol=1e-15):
         raise ValueError(f"{name} must be symmetric")
     sym = 0.5 * (arr + arr.T)
-    eigvals = np.linalg.eigvalsh(sym)
-    if eigvals[0] < 0.0:
+    eigvals, vecs = np.linalg.eigh(sym)
+    tol = 32.0 * np.finfo(float).eps * max(1.0, float(eigvals[-1]))
+    if eigvals[0] < -tol:
         raise ValueError(f"{name} must be positive semidefinite")
+    if eigvals[0] < 0.0:
+        clipped = vecs @ np.diag(np.maximum(eigvals, 0.0)) @ vecs.T
+        sym = 0.5 * (clipped + clipped.T)
     return sym
 
 
@@ -128,6 +132,8 @@ def oosm_cv_retrodiction_update(
         raise ValueError("lag_s must be non-negative")
 
     eye2 = np.eye(2, dtype=np.float64)
+    p_eigvals, p_vecs = np.linalg.eigh(p_mat)
+    p_sqrt = p_vecs * np.sqrt(np.maximum(p_eigvals, 0.0))
 
     def _joseph_scalar_update(h_row: np.ndarray) -> dict:
         pred_z = float(_wrap_angle_deg(float(h_row @ s_vec)))
@@ -140,7 +146,8 @@ def oosm_cv_retrodiction_update(
         post_state = s_vec + gain * innovation
         post_state[0] = float(_wrap_angle_deg(post_state[0]))
         a_mat = eye2 - np.outer(gain, h_row)
-        post_cov = a_mat @ p_mat @ a_mat.T + r_var * np.outer(gain, gain)
+        ab = a_mat @ p_sqrt
+        post_cov = ab @ ab.T + r_var * np.outer(gain, gain)
         post_cov = _checked_psd_2x2(0.5 * (post_cov + post_cov.T), "posterior_covariance")
         return {
             "observation_matrix": h_row,

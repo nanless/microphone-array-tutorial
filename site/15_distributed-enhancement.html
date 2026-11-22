@@ -2,7 +2,7 @@
 <link rel="canonical" href="13_distributed-enhancement.html"><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 13 章 · 分布式麦克风协同增强 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="f6d48efe6ade"><style>
+<meta name="source-digest" content="a0289902c00e"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -608,7 +608,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 =\phi_s\vec a\vec a^H+\mathbf R_{nn}.
 \end{aligned}\tag{13-2}$$</p>
 <p>这里 $\phi_s \ge 0$ 为实标量，$\mathbf R_{nn}$ 与 $\mathbf R_{xx}$ 均为 $M \times M$ Hermitian 半正定矩阵。若输入为未标定数字音频，上述二阶矩采用无量纲数字幅度平方单位；仅当全部通道已完成物理声压标定时才具有 $\mathrm{Pa}^2$ 量纲（此时我们将传递向量 $\vec a$ 与滤波权重 $\vec w$ 均约定为无量纲比值）。切换不同 FFT 归一化比例时，$\mathbf R_{xx}$、互相关向量与参考功率 $\phi_{d_u}$ 必须按同一尺度同步缩放。</p>
-<p>顺便提醒一点统计细节：用有限 $L$ 帧样本算出的外积平均 $\frac{1}{L}\sum_{\ell=1}^L \vec x_\ell\vec x_\ell^H$ 是未中心化的样本二阶矩；即便总体均值为零，有限样本算术平均也未必精确为零，因此它与减去样本均值后的中心化样本协方差并不完全相等（见<a href="16_appendix-symbols-math.html#sec-u-e77b562c1e">附录 A E16-02</a>）。本章前半部分的理论推导直接代入精确总体二阶矩，而 §13.15 的确定性合成音频实验则会严格交待有限稳定窗内的整数周期平均口径。</p>
+<p>顺便提醒一点统计细节：用有限 $L$ 帧样本算出的外积平均 $\frac{1}{L}\sum_{\ell=1}^L \vec x_\ell\vec x_\ell^H$ 是未中心化的样本二阶矩；即便总体均值为零，有限样本算术平均也未必精确为零，因此它与减去样本均值后的中心化样本协方差并不完全相等（见<a href="16_appendix-symbols-math.html#e16-02">附录 A E16-02</a>）。本章前半部分的理论推导直接代入精确总体二阶矩，而 §13.15 的确定性合成音频实验则会严格交待有限稳定窗内的整数周期平均口径。</p>
 <span id="sec-8" class="anchor-alias" aria-hidden="true"></span><span id="sec-15-3" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-13-3">13.3 集中式MWF究竟最小化什么</h2>
 <span id="sec-9" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-abd016302e">对任意权重先写完整代价</h3>
 <p>在讨论分布式压缩之前，我们必须先立好标杆：假如没有通信带宽限制，节点 $u$ 能把全网所有 $M$ 支麦克风的信号 $\vec x$ 全拿过来做线性滤波 $\hat d_u = \vec w^H\vec x$，怎样的权重才算最好？多通道维纳滤波（MWF）以节点参考目标 $d_u$ 与滤波输出 $\hat d_u$ 之间的均方误差（Mean-Squared Error，MSE）作为标尺。记参考目标功率为 $\phi_{d_u} = \mathbb{E}[|d_u|^2]$，观测向量与参考目标的 $M \times 1$ 互相关列向量为 $\vec r_{xd_u} = \mathbb{E}[\vec x d_u^*]$，对<strong>任意给定的</strong>滤波权重 $\vec w \in \mathbb{C}^{M \times 1}$ 展开均方误差代价函数 $J_u(\vec w)$：</p>

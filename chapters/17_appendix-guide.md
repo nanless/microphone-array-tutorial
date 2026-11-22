@@ -49,7 +49,7 @@
 | Vincent, Virtanen & Gannot (eds.), *Audio Source Separation and Speech Enhancement*（Wiley，2018） | 现代音源分离与多通道语音增强方法的系统合集 |
 | Rafaely, *Fundamentals of Spherical Array Processing*（Springer，第一版 2015，DOI 10.1007/978-3-662-45664-4；第二版在线 2018、版权 2019，DOI 10.1007/978-3-319-99561-8） | 系统讲授球面阵列与球谐域波束形成，可配合 §5.8 与[扩展专题Ⅲ §14.2](14_spatial-wearable-arrays.md#sec-14-2) 延伸阅读 |
 | Zotter & Frank, *Ambisonics: A Practical 3D Audio Theory for Recording, Studio Production, Sound Reinforcement, and Virtual Reality*（Springer，2019，开放获取，DOI 10.1007/978-3-030-17207-7） | 全面覆盖 ACN/SN3D 球谐编码、$\max\text{-}r_E$ 能量矢量扬声器解码、三维旋转与双耳渲染，可配合[扩展专题Ⅲ](14_spatial-wearable-arrays.md)延伸阅读 |
-| 核心综述：Park et al., *A Review of Speaker Diarization: Recent Advances with Deep Learning*（*Computer Speech & Language* 72:101317，2022，DOI 10.1016/j.csl.2021.101317）；Zmolikova et al., *Neural Target Speech Extraction: An Overview*（*IEEE Signal Processing Magazine* 40(3):8–29，2023，DOI 10.1109/MSP.2023.3240008） | 说话人日志（聚类、EEND、TS-VAD 与 DER 评测）及神经目标说话人提取（声纹、空间与视听线索条件化）的两篇权威期刊综述，可配合[第 8 章 §8.6](08_speech-separation.md#sec-8-6) 与[扩展专题Ⅳ](15_target-extraction-diarization.md)阅读 |
+| 核心综述：Park et al., *A Review of Speaker Diarization: Recent Advances with Deep Learning*（*Computer Speech & Language* 72:101317，2022，DOI 10.1016/j.csl.2021.101317）；Žmolíková et al., *Neural Target Speech Extraction: An Overview*（*IEEE Signal Processing Magazine* 40(3):8–29，2023，DOI 10.1109/MSP.2023.3240008） | 说话人日志（聚类、EEND、TS-VAD 与 DER 评测）及神经目标说话人提取（声纹、空间与视听线索条件化）的两篇权威期刊综述，可配合[第 8 章 §8.6](08_speech-separation.md#sec-8-6) 与[扩展专题Ⅳ](15_target-extraction-diarization.md)阅读 |
 
 **代表性公开数据集与基准**（实验选用前须独立核对各数据子集的最新授权协议与官方评分脚本）：
 
@@ -188,6 +188,13 @@ ArrayDPS（Xu et al., ICML 2025，[PMLR 267 正式论文](https://proceedings.ml
 
 其二，原文 §4.2 区分了五次独立采样得分的均值/标准差（Mean，并非把五条输出波形求平均）、借真值挑最高分的上界诊断（Max），以及仅凭混合信号重构似然挑选样本的无监督准则（ML），引用表格数据时需严格区分（参数层级与接口契约核查见 [ArrayDPS 实现研究](../codes/chapters/ch00/research/02_aec_wpe_separation.md)）。
 
+**研究方向九：全双工语音大模型（Audio-LLM / Speech-to-Speech）与空间听觉大模型（Spatial-LLM）时代的前端定位**
+
+以 Moshi、GPT-4o Realtime、Gemini Live 与 Qwen2-Audio 为代表的全双工端到端语音对话模型（Audio-LLM / Speech-to-Speech），以及 BAT、Spatial-AST 等面向双耳与空间声场理解的空间听觉大模型（Spatial-LLM），正在跳过传统的“语音识别 $\to$ 文本大模型 $\to$ 语音合成”级联链路，直接将连续音频特征或离散声学词元（audio tokens）接入多模态骨干，在同一网络内完成语义理解、实时话轮切换（turn-taking）与空间方位推理。这一范式迁移并未让麦克风阵列前端退出历史舞台，而是把前端的职责清晰划分为“物理上不可替代的硬需求”与“面向词元化后端的新目标函数”两类：
+
+- **物理上仍不可约简的前端职责**：首先，**因果低延迟语音打断线性回声消除**（§6.1～§6.7）无法由生成式大模型凭空替代——若模型不接入设备端精确的数字播放参考信号与对齐的声学回声路径，强外放回声就无法在不损毁近端打断音节的前提下被凭空剔除；其次，全双工连续对话中的**近场距离气泡话轮门控与同向远场干扰抑制**（[§15.3～§15.4](15_target-extraction-diarization.md#sec-15-3)）仍需依靠球面波前曲率差异、空间滤波与多通道语音活动判别来区分近处主讲人与背景人声或电视播音；再次，**硬件采样时钟同步、增益标定与幅相一致性**（§10.2）是所有上游信息的物理前提，一旦存在未补偿的采样率偏移（SRO）、通道错位或模数削波，跨通道相位信息在进入空间听觉大模型之前便已不可逆损毁。
+- **前端优化目标与接口形态的转向**：面向全双工语音大模型的神经离散编解码词元化器（如 Mimi、EnCodec、DAC 等残差向量量化编解码器）对激进的单通道非线性语音增强伪影高度敏感——过深谱减、生硬时频掩码或神经音乐噪声会在声学词元空间引入分布外扰动，反过来拉低下游语义理解与语音生成质量（与第 10 章 §10.3.1 的观测回加与线性波束优先原则一脉相承）。因此，面向 Audio-LLM 与 Spatial-LLM 的多通道前端正从“借助重度非线性后滤波片面追高侵入式 PESQ 标量分”，转向**保持线性声学保真度**（优先由稳健线性 AEC、WPE 去混响与无失真线性波束形成提供低失真音频流，或保守混合原始观测），同时向大模型输出**结构化空间与日志辅助通道**（如实时 DOA 轨迹、活跃说话人起止时间戳与声纹身份线索），让物理前端与语义大模型在各自最擅长的层面上协同工作。
+
 #### 专题：神经网络前端的泛化失配与四类对策
 
 在实验室固定阵列和仿真房间里调优的神经网络前端，一旦迁移到陌生的阵列构型、真实混响环境或新下游任务，性能往往显著滑坡——这一现象统称为**泛化失配**。下面将失配根源拆解为三个维度，并结合前文提到的“阵列无关系统”与“几何无关前端”梳理四类工程对策。
@@ -278,8 +285,8 @@ VarArray（Takuya Yoshioka 等，[ICASSP 2022](https://doi.org/10.1109/ICASSP439
 | $\hat{\mathbf{R}}_{xx} = \frac{1}{L}\sum_{\ell=1}^L \vec{x}_\ell\vec{x}_\ell^H$ | 未中心化的样本空间二阶矩（阵列处理文献常统称样本空间协方差矩阵） | §2.5 |
 | $d < \lambda/2$ | 均匀线阵（ULA）在整个闭可视角域 $[-90^\circ,+90^\circ]$ 内消除端点周期歧义的充分条件；$d=\lambda/2$ 时两端射方向 $\pm 90^\circ$ 相位完全重合，受限扫描角域可另行分析 | §2.6 |
 | $\mathrm{HPBW}\approx\dfrac{0.886\lambda}{Md\cos\theta_0}$；$\mathrm{DI}=10\log_{10}\dfrac{\lvert B(\Omega_0)\rvert^2}{\frac{1}{4\pi}\int_{4\pi}\lvert B(\Omega)\rvert^2\mathrm{d}\Omega}$；$\mathrm{WNG}=\dfrac{\lvert\vec w^H\vec a(\theta_0)\rvert^2}{\|\vec w\|_2^2}$ | 主瓣半功率全宽（ULA 窄主瓣远离端射近似）、全空间球面平均指向性指数与白噪声增益，见式(2-11)～式(2-13) | §2.6 |
-| $\mathrm{CRLB}(\theta)=\dfrac{6}{L_{\mathrm{snap}}\,\mathrm{SNR}\,M(M^2-1)\eta^2(\theta)}$，$\eta(\theta)=\dfrac{2\pi d}{\lambda}\cos\theta$ | 单源窄带远场、确定性未知源、圆对称复高斯白噪声下 ULA 方位角无偏估计的局部方差下界（$L_{\mathrm{snap}}$ 为独立快拍数，算例见式(2-14)，不检查全局空间混叠） | §2.6 |
-| $R_{ij}=\sum_{k=1}^K P_k e^{\mathrm{j}\kappa(\vec r_i-\vec r_j)^\top\vec u_k}+\sigma_v^2\delta_{ij}$；$\hat r[\ell]=\dfrac{1}{N_\ell}\sum_{p_i-p_j=\ell}\hat R_{ij}$ | 稀疏阵差分协同阵（有符号滞后 $\ell=p_i-p_j$，重数 $N_\ell$）二阶统计虚拟孔径扩展（空间平滑见式(3-16)）；须满足不相关源、准平稳及通道幅相一致 | §3.3 |
+| $\mathrm{CRLB}(\theta)=\dfrac{6}{L_{\mathrm{snap}}\,\mathrm{SNR}\,M(M^2-1)\eta^2(\theta)}$，<br>$\eta(\theta)=\dfrac{2\pi d}{\lambda}\cos\theta$ | 单源窄带远场、确定性未知源、圆对称复高斯白噪声下 ULA 方位角无偏估计的局部方差下界（$L_{\mathrm{snap}}$ 为独立快拍数，算例见式(2-14)，不检查全局空间混叠） | §2.6 |
+| $R_{ij}=\sum_{k=1}^K P_k e^{\mathrm{j}\kappa(\vec r_i-\vec r_j)^\top\vec u_k}+\sigma_v^2\delta_{ij}$；$\hat r[\ell]=\dfrac{1}{N_\ell}\sum_{p_i-p_j=\ell}\hat R_{ij}$ | 稀疏阵差分协同阵（有符号滞后 $\ell=p_i-p_j$，重数 $N_\ell$）二阶统计虚拟孔径扩展（空间平滑见式(3-16)）；须满足不相关源、准平稳及通道幅相一致 | §3.3、E03-07 |
 | $\hat\theta = \arcsin(c\hat\tau_{12}/d)$ | 双麦远场时延差到前半平面方位角主值的映射；本书约定 $\tau_{12}=t_1-t_2$ 并由 $X_1X_2^*$ 的互相关峰估计，消除前后镜像歧义需额外基线 | §2.1、§4.2 |
 | $R(\tau)$：$\int\Phi G_{12}e^{\mathrm{j}2\pi f\tau}\mathrm{d}f$ | 广义互相关（GCC）时延谱（互谱 $G_{12}=X_1 X_2^*$），$\Phi=1/\lvert G_{12}\rvert$ 时对应 PHAT 加权 | §4.2 |
 | $\hat{\vec p}=\arg\max_{\vec r}\sum R^{\mathrm{PHAT}}$ | 可控响应功率（SRP-PHAT）多麦对空间网格投票定位 | §4.3 |
@@ -298,12 +305,12 @@ VarArray（Takuya Yoshioka 等，[ICASSP 2022](https://doi.org/10.1109/ICASSP439
 | $\mathcal L_{\mathrm{PIT}}=\min_{\pi\in\mathcal S_N}\sum_{n=1}^N \mathcal L(\hat s_n,s_{\pi(n)})$ | 置换不变训练（PIT）损失（式(8-5)，遍历 $N!$ 种排列 $\pi\in\mathcal S_N$）；掩码统计波束按软掩码 $\gamma_{ft}$ 对 $\vec Y_{ft}\vec Y_{ft}^H$ 加权平均估计 $\mathbf R_{\mathrm{tar}}(f),\mathbf R_{\mathrm{int}}(f)$（见式(8-23)） | §8.1、§8.4 |
 | $\hat{\vec s}_t^-=\mathbf F\hat{\vec s}_{t-1},\ \mathbf P_t^-=\mathbf F\mathbf P_{t-1}\mathbf F^\top+\mathbf Q$；$\mathbf K_t=\mathbf P_t^-\mathbf H^\top(\mathbf H\mathbf P_t^-\mathbf H^\top+\mathbf R)^{-1}$；$\hat{\vec s}_t=\hat{\vec s}_t^-+\mathbf K_t\vec\nu_t,\ \mathbf P_t=(\mathbf I-\mathbf K_t\mathbf H)\mathbf P_t^-$ | 卡尔曼滤波（KF）五步递推（式(9-3)～式(9-7)）；圆周方位角新息 $\vec\nu_t$ 须先角度折叠，有限精度下宜采用 Joseph 对称保正定更新 | §9.2 |
 | PHD 强度递推，见式(9-34)、式(9-35) | 概率假设密度（PHD）多目标强度函数的预测与贝叶斯更新；完整积分式在表后展开 | §9.3 |
-| $\varepsilon=\dfrac{f_d-f_s}{f_s},\ \Delta t(T)\approx\varepsilon T$；$L_{\mathrm{e2e}}=\max_p(L_{p,\mathrm{look}}+L_{p,\mathrm{buf}}+L_{p,\mathrm{comp}}+L_{p,\mathrm{sched}}+L_{p,\mathrm{decode}})$ | 异步设备相对采样率偏移（设备采样率 $f_d=f_s(1+\varepsilon)$，引发累积时延漂移与相位旋转 $2\pi f\varepsilon T$，式(10-5)）与有向流式依赖图五项关键路径端到端延迟（式(10-2)） | §10.1、§10.2 |
-| $\mathrm{SI\text{-}SDR}=10\log_{10}\dfrac{\|\alpha\vec s\|_2^2}{\|\vec e_\perp\|_2^2}$；$e_{\mathrm{mix}}=\sum_j\omega_j e_j,\ R=\max_{\vec\omega\in\mathcal W}\sum_j\omega_j e_j,\ S=\max_j e_j$ | 尺度不变信号失真比（$\alpha=\langle\hat{\vec s},\vec s\rangle/\|\vec s\|_2^2$、$\vec e_\perp=\hat{\vec s}-\alpha\vec s$，见式(8-25)；零目标条件化见式(15-5)）与多场景选型的分层加权均值 $e_{\mathrm{mix}}$、区间组成最坏风险 $R$（二场景记 $J_L(q), R_L$）及逐场景最坏风险 $S$（$S_L$，式(11-8)～式(11-9)） | §8.5、§10.5、§11.5 |
+| $\varepsilon=\dfrac{f_d-f_s}{f_s},\ \Delta t(T)\approx\varepsilon T$；<br>$L_{\mathrm{e2e}}=\max_p(L_{p,\mathrm{look}}+L_{p,\mathrm{buf}}$<br>$+L_{p,\mathrm{comp}}+L_{p,\mathrm{sched}}+L_{p,\mathrm{decode}})$ | 异步设备相对采样率偏移（设备采样率 $f_d=f_s(1+\varepsilon)$，引发累积时延漂移与相位旋转 $2\pi f\varepsilon T$，式(10-5)）与有向流式依赖图五项关键路径端到端延迟（式(10-2)） | §10.1、§10.2 |
+| $\mathrm{SI\text{-}SDR}=10\log_{10}\dfrac{\|\alpha\vec s\|_2^2}{\|\vec e_\perp\|_2^2}$；<br>$e_{\mathrm{mix}}=\sum_j\omega_j e_j,\ S=\max_j e_j$；<br>$R=\max_{\vec\omega\in\mathcal W}\sum_j\omega_j e_j$ | 尺度不变信号失真比（$\alpha=\langle\hat{\vec s},\vec s\rangle/\|\vec s\|_2^2$、$\vec e_\perp=\hat{\vec s}-\alpha\vec s$，见式(8-25)；零目标条件化见式(15-6)）与多场景选型的分层加权均值 $e_{\mathrm{mix}}$、区间组成最坏风险 $R$（二场景记 $J_L(q), R_L$）及逐场景最坏风险 $S$（$S_L$，式(11-8)～式(11-9)） | §8.5、§10.5、§11.5 |
 | $b_i=\vec{w}_i^H\hat{\mathbf{R}}\vec{w}_i$，$\vec{b}=\mathbf{P}\vec{q}+\vec{b}_n$（$\vec{q}\ge\vec{0}$）；CMF：$\min_{\vec q\ge 0}\|\hat{\mathbf R}-\mathbf A\operatorname{diag}(\vec q)\mathbf A^H\|_F^2$ | 互谱矩阵（CSM）扫描功率图与不相关源点扩散正向模型（DAMAS / NNLS 反卷积基础，§12.3～§12.5）及 CMF 直接 CSM 拟合目标（式(12-18)，§12.7；空间功率分布图不等于增强音频波形） | §12.3～§12.5、§12.7 |
 | 单路（$Q=1$）：$z_u=\vec f_u^H\vec x_u,\ \hat d_u=\vec f_u^H\vec x_u+\vec g_u^H\vec z_{-u}$；一般 $Q$ 维：$\vec z_u=\mathbf F_u^H\vec x_u,\ \tilde{\vec x}_u=\mathbf T_u^H\vec x$ | 分布式节点 DANSE 局部压缩广播与接收融合（式(13-7)、式(13-12)）；逼近集中式维纳解须满足同步采样、无丢包缺口及连通拓扑假设 | §13.5、§13.9 |
 | $\psi=1-\dfrac{\|\bar{\vec I}_a\|_2}{c\bar E}$，$\psi\in[0,1]$ | FOA 时间平均有功声强 $\bar{\vec I}_a=\mathbb{E}[\vec I_a]$ 与平均声能密度 $\bar E=\mathbb{E}[E]$ 定义的 DirAC 扩散度；多同频反向源干涉时会出现 $\psi\to 1$ 幻象扩散边界 | [§14.4](14_spatial-wearable-arrays.md#sec-14-4) |
-| $\vec w_e^{(t+1)}=\mathbf A^{-1}\mathbf H\mathbf W_\Omega(\vec m_e\odot e^{-\mathrm{j}\vec\phi^{(t)}}),\ \phi_q^{(t+1)}=\angle(\vec w_e^{(t+1)H}\vec h(\Omega_q))$；$f_m=\dfrac{2m+1}{2\tau_{\mathrm{proc}}}$（$m=0,1,\ldots$） | BSM-MagLS 高频交替投影释放绝对相位消除幅度零陷（低频仍须保 ITD，式(14-18)）；主动通透模式同极性叠加（$g_{\mathrm{leak}}g_{\mathrm{ht}}>0$）产生的周期梳状陷波频率（式(14-27)） | [§14.6](14_spatial-wearable-arrays.md#sec-14-6)、[§14.10](14_spatial-wearable-arrays.md#sec-14-10) |
+| $\vec w_e^{(t+1)}=\mathbf A^{-1}\mathbf H\mathbf W_\Omega(\vec m_e\odot e^{-\mathrm{j}\vec\phi^{(t)}})$，<br>$\phi_q^{(t+1)}=\angle(\vec w_e^{(t+1)H}\vec h(\Omega_q))$；<br>$f_m=\dfrac{2m+1}{2\tau_{\mathrm{proc}}}$（$m=0,1,\ldots$） | BSM-MagLS 高频交替投影释放绝对相位消除幅度零陷（低频仍须保 ITD，式(14-18)）；主动通透模式同极性叠加（$g_{\mathrm{leak}}g_{\mathrm{ht}}>0$）产生的周期梳状陷波频率（式(14-27)） | [§14.6](14_spatial-wearable-arrays.md#sec-14-6)、[§14.10](14_spatial-wearable-arrays.md#sec-14-10) |
 | $\mathcal L_{\mathrm{dual}}=-\mathrm{SI\text{-}SDR}(\hat{\vec s},\vec s_{\mathrm{ref}})$（发声）或 $10\log_{10}\!\bigl(1+\|\hat{\vec s}\|_2^2/E_{\mathrm{floor}}\bigr)$（沉默）；$\mathrm{WNG}=\dfrac{8}{3}\sin^2(\phi_1/2)$ | 双态损失解决目标沉默段 $\vec s_{\mathrm{ref}}=\vec 0$ 时 SI-SDR 的 $0/0$ 奇异（式(15-6)）；三麦正侧向近场距离气泡白噪声增益（式(15-17)，$\phi_1=-\frac{2\pi}{\lambda}(\sqrt{r_1^2+d^2}-r_1)$ 为目标距离 $r_1$ 处球面波二阶曲率相位滞后，微孔径下 $\mathrm{WNG}\propto d^4$ 陡降） | [§15.2](15_target-extraction-diarization.md#sec-15-2)、[§15.3](15_target-extraction-diarization.md#sec-15-3) |
 | $\mathrm{DER}=\dfrac{\sum_t(E_{\mathrm{miss}}+E_{\mathrm{FA}}+E_{\mathrm{conf}}^{(\pi^\star)})}{\sum_t N_{\mathrm{ref}}(t)}$；$m_{k,t}^{\mathrm{tar}}=\gamma_{k,t}\prod_{j\ne k}(1-\gamma_{j,t})$ | 说话人日志误差率（虚警高时合法 $>100\%$，单标签聚类受重叠漏检下界制约，式(15-21)～式(15-22)）与 GSS 排他目标掩码（式(15-25)，防止双讲重叠帧污染目标协方差） | [§15.4](15_target-extraction-diarization.md#sec-15-4)、[§15.5](15_target-extraction-diarization.md#sec-15-5) |
 
@@ -412,19 +419,19 @@ D_t(\vec{x})=[1-p_D(\vec{x})]\,D_t^-(\vec{x})
 
 **第 5 章（波束形成）**
 
-7. 手算（导向失配与对角加载实战）：设两麦阵列在某频点的真实目标导向矢量为 $\vec a_{\mathrm{true}}=[1,1]^\top$，目标功率 $\phi_s=10$，空间白噪声协方差 $\mathbf R_{nn}=\mathbf I_2$（单麦输入信噪比 $+10\ \mathrm{dB}$），故含目标的总观测空间协方差为 $\mathbf R_{xx}=10\vec a_{\mathrm{true}}\vec a_{\mathrm{true}}^H+\mathbf I_2=\begin{bmatrix}11&10\\10&11\end{bmatrix}$。实际部署时因测角或通道相位标定误差，波束器使用的假定导向矢量为 $\vec a_{\mathrm{est}}=[1,\mathrm{j}]^\top$（存在 $90^\circ$ 相位失配）。使用总观测协方差做无失真最小功率（MPDR）波束形成 $\vec w_\varepsilon=\mathbf R_\varepsilon^{-1}\vec a_{\mathrm{est}}/(\vec a_{\mathrm{est}}^H\mathbf R_\varepsilon^{-1}\vec a_{\mathrm{est}})$（其中 $\mathbf R_\varepsilon=\mathbf R_{xx}+\varepsilon\mathbf I_2$），试分别手算未加载（$\varepsilon=0$）与施加对角加载（$\varepsilon=10$）时的波束权重 $\vec w_\varepsilon$、真实目标功率响应 $|\vec w_\varepsilon^H\vec a_{\mathrm{true}}|^2$、权重平方范数 $\|\vec w_\varepsilon\|_2^2$ 与输出信噪比，定量说明对角加载如何缓解目标自相消。
+7. 手算（导向失配与对角加载实战）：承接[第 5 章 E05-08](05_beamforming.md#e05-08) 未加载 MPDR 目标自消算例并考察对角加载的补救效果。设两麦阵列在某频点的真实目标导向矢量为 $\vec a_{\mathrm{true}}=[1,1]^\top$，目标功率 $\phi_s=10$，空间白噪声协方差 $\mathbf R_{nn}=\mathbf I_2$（单麦输入信噪比 $+10\ \mathrm{dB}$），故含目标的总观测空间协方差为 $\mathbf R_{xx}=10\vec a_{\mathrm{true}}\vec a_{\mathrm{true}}^H+\mathbf I_2=\begin{bmatrix}11&10\\10&11\end{bmatrix}$。实际部署时因测角或通道相位标定误差，波束器使用的假定导向矢量为 $\vec a_{\mathrm{est}}=[1,\mathrm{j}]^\top$（存在 $90^\circ$ 相位失配）。使用总观测协方差做无失真最小功率（MPDR）波束形成 $\vec w_\varepsilon=\mathbf R_\varepsilon^{-1}\vec a_{\mathrm{est}}/(\vec a_{\mathrm{est}}^H\mathbf R_\varepsilon^{-1}\vec a_{\mathrm{est}})$（其中 $\mathbf R_\varepsilon=\mathbf R_{xx}+\varepsilon\mathbf I_2$），试分别手算未加载（$\varepsilon=0$）与施加对角加载（$\varepsilon=10$）时的波束权重 $\vec w_\varepsilon$、真实目标功率响应 $\lvert\vec w_\varepsilon^H\vec a_{\mathrm{true}}\rvert^2$、权重平方范数 $\|\vec w_\varepsilon\|_2^2$ 与输出信噪比，定量说明对角加载如何缓解目标自相消。
 
     **参考答案**：记加载后主对角元 $a=11+\varepsilon$，则 $\mathbf R_\varepsilon=\begin{bmatrix}a&10\\10&a\end{bmatrix}$。二阶伴随矩阵右乘假定导向矢量得 $\operatorname{adj}(\mathbf R_\varepsilon)\vec a_{\mathrm{est}}=[a-10\mathrm{j},\ -10+a\mathrm{j}]^\top$，代入归一化分母（行列式因子在分子分母间约去）：$\vec a_{\mathrm{est}}^H\operatorname{adj}(\mathbf R_\varepsilon)\vec a_{\mathrm{est}}=(a-10\mathrm{j})+(-\mathrm{j})(-10+a\mathrm{j})=2a$，于是精确权重、真实目标响应与输出信噪比化为闭式有理函数：
 
     $$\begin{aligned}
     \vec w_\varepsilon&=\frac{1}{2a}\begin{bmatrix}a-10\mathrm{j}\\-10+a\mathrm{j}\end{bmatrix},\qquad
     \vec w_\varepsilon^H\vec a_{\mathrm{true}}=\frac{a-10}{2a}(1-\mathrm{j}),\\
-    \mathrm{SNR}_{\mathrm{out}}&=\frac{10|\vec w_\varepsilon^H\vec a_{\mathrm{true}}|^2}{\|\vec w_\varepsilon\|_2^2}
+    \mathrm{SNR}_{\mathrm{out}}&=\frac{10\lvert\vec w_\varepsilon^H\vec a_{\mathrm{true}}\rvert^2}{\|\vec w_\varepsilon\|_2^2}
     =\frac{10(a-10)^2}{a^2+100}.
     \end{aligned}$$
 
-    - **未加载（$\varepsilon=0,\ a=11$）**：$\vec w_0=\frac{1}{22}[11-10\mathrm{j},\ -10+11\mathrm{j}]^\top$，真实目标功率增益骤降至 $|\vec w_0^H\vec a_{\mathrm{true}}|^2=\frac{1}{242}\approx -23.84\ \mathrm{dB}$（强输入目标被当作干扰压入零陷），权重范数平方 $\|\vec w_0\|_2^2=\frac{221}{242}\approx 0.913$，输出信噪比从单麦 $+10\ \mathrm{dB}$ 骤降至 $\frac{10}{221}\approx -13.44\ \mathrm{dB}$。
-    - **对角加载（$\varepsilon=10,\ a=21$）**：$\vec w_{10}=\frac{1}{42}[21-10\mathrm{j},\ -10+21\mathrm{j}]^\top$，真实目标功率增益回升 $+15.21\ \mathrm{dB}$ 至 $\frac{121}{882}\approx -8.63\ \mathrm{dB}$，权重范数平方压低至 $\frac{541}{882}\approx 0.613$，输出信噪比回升 $+16.94\ \mathrm{dB}$ 至 $\frac{1210}{541}\approx +3.50\ \mathrm{dB}$（当 $\varepsilon\to\infty$ 时权重平滑退化为失配 DSB $\vec a_{\mathrm{est}}/2$，输出信噪比趋近 $+10\ \mathrm{dB}$）。可见高信噪比下若直接用含目标的 $\mathbf R_{xx}$ 求逆而不加对角加载，轻微导向失配便会引发严重的目标自相消（详见 §5.4）。
+    - **未加载（$\varepsilon=0,\ a=11$）**：$\vec w_0=\frac{1}{22}[11-10\mathrm{j},\ -10+11\mathrm{j}]^\top$，真实目标功率增益骤降至 $\lvert\vec w_0^H\vec a_{\mathrm{true}}\rvert^2=\frac{1}{242}\approx -23.84\ \mathrm{dB}$（强输入目标被当作干扰压入零陷），权重范数平方 $\|\vec w_0\|_2^2=\frac{221}{242}\approx 0.913$，输出信噪比从单麦 $+10\ \mathrm{dB}$ 骤降至 $\frac{10}{221}\approx -13.44\ \mathrm{dB}$。
+    - **对角加载（$\varepsilon=10,\ a=21$）**：$\vec w_{10}=\frac{1}{42}[21-10\mathrm{j},\ -10+21\mathrm{j}]^\top$，真实目标功率增益回升 $+15.21\ \mathrm{dB}$ 至 $\frac{121}{882}\approx -8.63\ \mathrm{dB}$，权重范数平方压低至 $\frac{541}{882}\approx 0.613$，输出信噪比回升 $+16.94\ \mathrm{dB}$ 至 $\frac{1210}{541}\approx +3.50\ \mathrm{dB}$（当 $\varepsilon\to\infty$ 时权重平滑退化为失配 DSB $\vec a_{\mathrm{est}}/2$，输出信噪比趋近 $+10\ \mathrm{dB}$）。可见高信噪比下若直接用含目标的 $\mathbf R_{xx}$ 求逆而不加对角加载，轻微导向失配便会引发严重的目标自相消（详见 §5.4 与 [E05-08](05_beamforming.md#e05-08)）。
 
 8. 图 15 对应的 `fig_wng_di()` 目前展示了六麦均匀圆阵在**对角加载后**的白噪声增益（WNG）与指向性指数（DI）曲线，未画出未加载原始解与空间相干矩阵条件数。请在个人副本中保持六麦圆阵拓扑，将外接圆半径（等于相邻阵元弦长）从 4 cm 分别改为 2 cm 和 8 cm，在同一频率网格上补算球面各向同性弥散噪声相干矩阵 $\mathbf{\Gamma}$ 的二范数条件数，并在矩阵数值可逆的频点补画未加载超指向解（更新副本底注与图注中的半径数值，同时记录对角加载量、矩阵奇异频点及对应频率处的 WNG 与 DI；遇到未加载矩阵奇异时直接如实记录不可逆，不要用伪逆结果冒充原解）。
 
@@ -434,16 +441,18 @@ D_t(\vec{x})=[1-p_D(\vec{x})]\,D_t^-(\vec{x})
 
 **第 6 章（AEC）**
 
-9. 手算（AEC，承接第 6 章算例 6-1）：设真实三抽头回声路径为 $\vec{h}=[0.8,\ 0.3,\ 0.1]^\top$，远端参考信号为单位脉冲（$x[0]=1$，其余时刻 $n\ne 0$ 均为 $0$）；采用三抽头 NLMS 自适应滤波器，初值 $\hat{\vec{w}}[0]=\vec{0}$，步长 $\mu=0.5$。为方便纸面演算，当回归向量能量 $\|\vec{x}[n]\|^2>0$ 时取正则项 $\varepsilon=0$，而遇到零能量帧时按 §6.1 的保护规则跳过权重更新。假设无近端语音与传感器底噪（远端单讲情形 $s[n]=0, v[n]=0$，故麦克风拾音 $d[n]$ 等于纯回声 $y[n]$），试手算 $n=0,1,2,3$ 四个时刻的拾音信号 $d[n]=y[n]$、先验误差 $e[n]$ 与更新后权重 $\hat{\vec{w}}[n+1]$，并从几何上解释为何 3 步更新后权重恰好停留在 $0.5\vec{h}$。
+9. 手算（PBFDAF 两分区重叠保存：受约束与无约束循环梯度混叠对比，对应第 6 章 §6.2.1～§6.2.2 与图 34）：设分区块长 $B=2$（即 §6.2.1 的 $N=2$）、FFT 点数 $N_{\mathrm{FFT}}=2B=4$、分区数 $P=2$（总覆盖抽头 $L=PB=4$）。真实四抽头回声路径为 $h=[1,0,0,0]$（两个分区分别为 $h_0=[1,0]$ 与 $h_1=[0,0]$），远端单讲参考序列为 $x=[1,1,0,0]$（两块新输入为 $b_0=[1,1]$、$b_1=[0,0]$，负时刻历史 $b_{-1}=[0,0]$），故麦克风纯回声为 $d_0=[1,1]$、$d_1=[0,0]$。两分区权重初值均为零，采用 §6.2.2 式(6-7) 的未归一化块梯度频域更新 $\Delta W_{p,m}=\mu E_m\odot X_{m-p}^*$（固定步长 $\mu=0.5$，$E_m=\operatorname{FFT}_4([0,0,e_m])$）。试逐块手算第 $m=0,1$ 两块下**受约束 PBFDAF**（每块经 $\operatorname{IFFT}_4$ 将后 $B=2$ 个非法抽头 $r=2,3$ 置零再变回频域）与**无约束 PBFDAF**（跳过时域清零投影）的时域权重、重叠保存预测输出 $\hat y_1$ 与块误差能量 $\|e_1\|_2^2$，定量揭示循环梯度混叠如何破坏下一块的线性卷积。
 
-    **参考答案**：单位脉冲与 $\vec{h}$ 卷积直接展开为冲激响应本身，故单讲条件下 $n=0$～$3$ 时刻的麦克风拾音（纯回声）序列为 $d=y=[0.8,\ 0.3,\ 0.1,\ 0]$。逐时刻递推如下：
+    **参考答案**：
 
-    - $n=0$：$\vec{x}[0]=[1,0,0]^\top$，滤波输出 $\hat{y}[0]=0$，误差 $e[0]=0.8$，范数平方 $\|\vec{x}[0]\|^2=1$，更新得 $\hat{\vec{w}}[1]=[0.4,\ 0,\ 0]^\top$；
-    - $n=1$：$\vec{x}[1]=[0,1,0]^\top$，滤波输出 $\hat{y}[1]=0$，误差 $e[1]=0.3$，范数平方 $\|\vec{x}[1]\|^2=1$，更新得 $\hat{\vec{w}}[2]=[0.4,\ 0.15,\ 0]^\top$；
-    - $n=2$：$\vec{x}[2]=[0,0,1]^\top$，滤波输出 $\hat{y}[2]=0$，误差 $e[2]=0.1$，范数平方 $\|\vec{x}[2]\|^2=1$，更新得 $\hat{\vec{w}}[3]=[0.4,\ 0.15,\ 0.05]^\top$；
-    - $n=3$：脉冲完全滑出抽头窗口，$\vec{x}[3]=\vec{0}$，触发零能量保护跳过更新，权重保持 $\hat{\vec{w}}[4]=[0.4,\ 0.15,\ 0.05]^\top=0.5\vec{h}$。
+    - **第 $m=0$ 块（暴露循环梯度向非法后半段泄漏）**：重叠输入窗 $u_0=[0,0,1,1]$，四点正变换得 $X_0=[2,\ -1+\mathrm{j},\ 0,\ -1-\mathrm{j}]$（上一块历史谱 $X_{-1}=\vec 0$）。初始预测 $\hat y_0=[0,0]$，先验误差 $e_0=[1,1]$，前半块补零得 $E_0=\operatorname{FFT}_4([0,0,1,1])=[2,\ -1+\mathrm{j},\ 0,\ -1-\mathrm{j}]$。代入更新式得第 $p=0$ 分区候选增量 $\Delta W_{0,0}=0.5\,E_0\odot X_0^*=0.5[4,2,0,2]=[2,1,0,1]$，作四点逆变换得候选时域抽头 $\tilde w_{0,1}=\operatorname{IFFT}_4([2,1,0,1])=[1,\ 0.5,\ 0,\ 0.5]$（第 $p=1$ 分区因 $X_{-1}=\vec 0$ 保持 $[0,0,0,0]$）。可见循环相关把非零混叠权重 **$0.5$** 漏进了后 $B=2$ 个非法抽头位置 $r=3$：
+        - **受约束 PBFDAF** 将 $r=2,3$ 置零，得合法抽头 $w_{0,1}^{\mathrm{con}}=[1,\ 0.5,\ 0,\ 0]$、$w_{1,1}^{\mathrm{con}}=[0,0,0,0]$；
+        - **无约束 PBFDAF** 保留全部四点，权重变为 $w_{0,1}^{\mathrm{unc}}=[1,\ 0.5,\ 0,\ 0.5]$、$w_{1,1}^{\mathrm{unc}}=[0,0,0,0]$。
+    - **第 $m=1$ 块（非法抽头立即污染重叠保存有效半块）**：重叠窗 $u_1=[1,1,0,0]$，正变换 $X_1=[2,\ 1-\mathrm{j},\ 0,\ 1+\mathrm{j}]$，真值 $d_1=[0,0]$（两版此时 $W_{1,1}=\vec 0$）：
+        - **受约束 PBFDAF**：四点循环卷积 $q_1^{\mathrm{con}}=\operatorname{IFFT}_4(W_{0,1}^{\mathrm{con}}\odot X_1)=[1,\ 1.5,\ 0.5,\ 0]$，丢弃前两点后得 $\hat y_1^{\mathrm{con}}=[0.5,\ 0]$，与 $[1,0.5,0,0]$ 对 $x=[1,1,0,0]$ 在 $n=2,3$ 处的**精确线性卷积**严丝合缝，误差 $e_1^{\mathrm{con}}=[-0.5,\ 0]$（$\|e_1^{\mathrm{con}}\|_2^2=0.25$）。用 $E_1^{\mathrm{con}}=\operatorname{FFT}_4([0,0,-0.5,0])=[-0.5,0.5,-0.5,0.5]$ 更新两分区并投影清零后，得 $w_{0,2}^{\mathrm{con}}=[1,\ 0.25,\ 0,\ 0]$（由 $\tilde w_{0,2}^{\mathrm{con}}=[1,\ 0.25,\ -0.25,\ 0]$ 截得）与 $w_{1,2}^{\mathrm{con}}=[-0.25,\ 0,\ 0,\ 0]$（由 $\tilde w_{1,2}^{\mathrm{con}}=[-0.25,\ 0,\ 0,\ -0.25]$ 截得），两分区的循环泄漏均被彻底剥离。
+        - **无约束 PBFDAF**：非法抽头 $w_{0,1}^{\mathrm{unc}}[3]=0.5$ 把 $u_1[0]=1$ 循环卷回至末尾 $r=3$，使 $q_1^{\mathrm{unc}}=[1.5,\ 1.5,\ 0.5,\ 0.5]$，即便丢弃前两点，有效输出仍变为 $\hat y_1^{\mathrm{unc}}=[0.5,\ 0.5]$——在 $x[2]=x[3]=0$ 的 $n=3$ 时刻凭空制造出 $0.5$ 的循环折回伪回声，使块误差能量翻倍至 $\|e_1^{\mathrm{unc}}\|_2^2=(-0.5)^2+(-0.5)^2=0.50$；随后无约束更新进一步把非零非法能量扩散到两分区（$w_{0,2}^{\mathrm{unc}}=[1,\ 0.25,\ -0.5,\ 0.25]$，$w_{1,2}^{\mathrm{unc}}=[-0.5,\ -0.25,\ 0,\ -0.25]$）。
 
-    几何原因在于：单个单位脉冲滑过三抽头窗口时，依次张成了三维标准正交基 $[1,0,0]^\top$、$[0,1,0]^\top$ 与 $[0,0,1]^\top$，但每个坐标轴方向上仅有唯一一次非零激励；由于步长取 $\mu=0.5$，每个方向上只消去了一半的投影残差便再无后续能量输入，最终精准停在 $0.5\vec{h}$。若要继续逼近真实路径 $\vec{h}$，必须依赖持续非零且在全子空间持续激励的远端信号（如宽带噪声或连续语音）。
+    由此可见，PBFDAF 频域逐点相乘的更新公式在时域对应循环互相关；只有坚持在预测端丢弃前 $B$ 点、在更新端将后 $B$ 点非法抽头清零（图 34 两处裁剪缺一不可），才能严格保持线性卷积等价性与稳定收敛。
 
 10. 论述题：为什么大多数带动态声源追踪的多麦前端都把多通道独立 AEC 放在自适应波束形成之前（AEC-first），而不是波束形成之后（BF-first）？工程上是否存在例外场景？
 
@@ -577,7 +586,7 @@ $$\begin{aligned}
 
 <a id="e17-01"></a>
 
-**E17-01：试听峰值归一化会掩盖什么物理量？** 设有两段四点手算序列 $a=[0,0.4,-0.4,0]$ 与 $b=[0,0.2,-0.2,0]$（仅作算术核验，并非可听语音片段）。试求两者的相对电平差，并对比“共同乘固定增益 $2$”与“各自除以自身绝对峰值”两种导出方式的结果差异。
+**E17-01：试听峰值归一化会掩盖什么物理量？**（与[第 1 章 E01-02](01_problem-definition.md#e01-02) 互为呼应：`E01-02` 说明同步等比缩放不改变信噪比，本题则从 WAV 导出视角核验逐文件峰值归一化如何抹除物理衰减。）设有两段四点手算序列 $a=[0,0.4,-0.4,0]$ 与 $b=[0,0.2,-0.2,0]$（仅作算术核验，并非可听语音片段）。试求两者的相对电平差，并对比“共同乘固定增益 $2$”与“各自除以自身绝对峰值”两种导出方式的结果差异。
 
 **参考答案**：序列 $b$ 的幅度恰为 $a$ 的一半，故 $b$ 的电平比 $a$ 低 $20\log_{10}2\approx6.0206$ dB。若对两条序列共同乘固定常数 $2$，输出峰值分别为 $0.8$ 与 $0.4$，原有的 $6.0206$ dB 物理衰减关系毫发无损；反之，若将两条序列各自除以自身峰值做独立归一化，两者将变成一模一样的 $[0,1,-1,0]$，差值恒为零——真实的幅度衰减被人为抹平了。
 
@@ -595,7 +604,7 @@ $$\begin{aligned}
 
 <a id="e17-02"></a>
 
-**E17-02：连续两次半采样线性插值能否代替一次整采样纯延迟？** 在采样率 $f_s=16$ kHz 下，输入信号由幅度同为 $0.18$ 的 $500$ Hz 低频正弦与 $6000$ Hz 高频正弦叠加而成。试用两点线性插值滤波器分别实现“一次半采样延迟”与“级联两次半采样延迟”，推导并计算两个频率分量的输出幅度比与分贝衰减，进而说明级联两次半采样线性插值能否等价于理想的整一采样纯延迟（本题聚焦固定分数延迟滤波器的频响特性，不涉及跨设备晶振速率估计）。
+**E17-02：连续两次半采样线性插值能否代替一次整采样纯延迟？**（与[第 2 章 E02-20](02_basics-signal-model.md#e02-20) 互为补充：`E02-20` 剖析单次半采样插值对波束增益与阻塞零陷的破坏，本题进一步做级联两次半采样延迟的频响推导与 WAV 读回核验。）在采样率 $f_s=16$ kHz 下，输入信号由幅度同为 $0.18$ 的 $500$ Hz 低频正弦与 $6000$ Hz 高频正弦叠加而成。试用两点线性插值滤波器分别实现“一次半采样延迟”与“级联两次半采样延迟”，推导并计算两个频率分量的输出幅度比与分贝衰减，进而说明级联两次半采样线性插值能否等价于理想的整一采样纯延迟（本题聚焦固定分数延迟滤波器的频响特性，不涉及跨设备晶振速率估计）。
 
 **参考答案**：
 
@@ -845,7 +854,7 @@ E_{y_{\mathrm r}}&=\frac{1}{2\pi}\int_{-\pi}^{\pi}
 
 （1）**基础斜率定义与大时间戳条件化**：设无噪 Schroeder 倒向曲线在 $t=[0.05,\ 0.15,\ 0.25]\ \mathrm{s}$ 处穿过 $[-5,\ -15,\ -25]\ \mathrm{dB}$，求 $T_{20}$ 与外推 $T_{60}$；若硬件采集时间戳带有极大基准偏移 $t=[10^{16},\ 10^{16}+2,\ 10^{16}+4]\ \mathrm{s}$，如何通过无量纲坐标条件化避免病态正规方程？
 
-（2）**有限截断尾长的系统性偏短**：考虑采样率 $f_s=16000\ \mathrm{Hz}$、无限长名义混响时间 $T_\infty=0.6\ \mathrm{s}$ 的无噪单指数衰减冲激响应。保持前缀采样点完全不变，分别截取保存 $N=3200$ 点（$0.2\ \mathrm{s}$）、$N=9600$ 点（$0.6\ \mathrm{s}$）与 $N=32000$ 点（$2.0\ \mathrm{s}$），推导有限截断对倒向能量曲线及 $[-5,-25]\ \mathrm{dB}$ 外推 $T_{60}$ 的定量影响，并分析加性底噪带来的反向偏置。
+（2）**有限截断尾长的系统性偏短**（承接[第 10 章 E10-22](10_engineering-practice.md#e10-22) 的四点 Schroeder 截断玩具算例，将其推广至 $16\ \mathrm{kHz}$、$0.6\ \mathrm{s}$ 的真实尺度 RIR）：考虑采样率 $f_s=16000\ \mathrm{Hz}$、无限长名义混响时间 $T_\infty=0.6\ \mathrm{s}$ 的无噪单指数衰减冲激响应。保持前缀采样点完全不变，分别截取保存 $N=3200$ 点（$0.2\ \mathrm{s}$）、$N=9600$ 点（$0.6\ \mathrm{s}$）与 $N=32000$ 点（$2.0\ \mathrm{s}$），推导有限截断对倒向能量曲线及 $[-5,-25]\ \mathrm{dB}$ 外推 $T_{60}$ 的定量影响，并分析加性底噪带来的反向偏置。
 
 **参考答案**：
 

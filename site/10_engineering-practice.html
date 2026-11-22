@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 10 章 · 工程实现、评测与产业实践 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="f6d48efe6ade"><style>
+<meta name="source-digest" content="a0289902c00e"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -593,16 +593,19 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 </tr>
 </tbody>
 </table></div>
-<p>在为各模块切分预算前，先明确系统级延迟上限。按照国际电信联盟 <strong>ITU-T G.114（05/2003）</strong>对单向端到端通话延迟的分级：口到耳单向总延迟低于 $150\ \mathrm{ms}$ 时交互基本透明；$150\text{～}400\ \mathrm{ms}$ 之间虽仍可通信，但双讲抢话与交互迟滞感明显上升；超过 $400\ \mathrm{ms}$ 则超出常规网络规划的可接受范围。扣除语音编解码分帧、网络单程传输与抖动缓冲、以及远端播放缓冲之后，留给本机音频前端（AFE）的稳态预算通常只有 <strong>$20\text{～}50\ \mathrm{ms}$</strong>；而对于助听器与通透模式（hear-through）耳机，直达耳道泄漏声与骨传导声会与处理后输出在耳膜处叠加产生梳状滤波，全链路延迟上限则被进一步压低至 <strong>$5\text{～}10\ \mathrm{ms}$</strong> 以内。同时，硬件采集与播放端的 $\Sigma\Delta$ 模数/数模转换器（ADC/DAC）内部数字抽取与插值滤波器本身也会引入约 $15\text{～}40$ 个采样点的线性相位群延迟（$16\text{～}48\ \mathrm{kHz}$ 下约 $0.3\text{～}2.5\ \mathrm{ms}$；部分低延迟最小相位模式可压至 $4\text{～}8$ 个采样点），核算全机硬件环回延迟时需一并计入。</p>
-<p>工程中最容易算错的一笔账，是把<strong>因果加权重叠相加（Weighted Overlap-Add，WOLA / STFT）的分析窗长直接等同于稳态算法延迟</strong>（STFT 重叠相加重构条件与分贝标度基础见<a href="00_math-foundations.html#sec-0-2">第 0 章 §0.2</a>）。不妨把采样率 $f_s=16\ \mathrm{kHz}$、分析窗长 $N=512$ 点（$32\ \mathrm{ms}$）、帧移 $H=128$ 点（$8\ \mathrm{ms}$）的因果流式频域波束形成拆开细算：</p>
+<p>在为各模块切分预算前，先明确系统级延迟上限。按照国际电信联盟 <strong>ITU-T G.114（05/2003）</strong>对单向端到端通话延迟的分级：口到耳单向总延迟低于 $150\ \mathrm{ms}$ 时交互基本透明；$150\text{～}400\ \mathrm{ms}$ 之间虽仍可通信，但双讲抢话与交互迟滞感明显上升；超过 $400\ \mathrm{ms}$ 则超出常规网络规划的可接受范围。扣除语音编解码分帧、网络单程传输与抖动缓冲、以及远端播放缓冲之后，留给本机音频前端（AFE）的稳态预算通常只有 <strong>$20\text{～}50\ \mathrm{ms}$</strong>。在耳戴式本地监听场景中，必须将两类不同增益物理工况的梳状滤波上限严格区分开：对于<strong>带正插入增益的开放式/通气式助听器</strong>，约 $1\ \mathrm{kHz}$ 以上扩声增益已显著压过耳道漏声，直达漏声、骨传导与处理输出叠加的心理声学烦恼度上限通常控制在 <strong>$\lt 5\text{～}10\ \mathrm{ms}$</strong>（法定 OTC 处理上限 $\le 15\ \mathrm{ms}$）；而对于<strong>单位增益的 TWS 主动通透（hear-through）耳机</strong>，耳道被动漏声与电声重放幅度相当，为避免语音频带内出现深度梳状陷波，按<a href="14_spatial-wearable-arrays.html#sec-14-10">第 14 章 §14.10</a> 式(14-27)的无染色理想上限须压低至 <strong>$\le 100\ \mu\mathrm{s}$</strong>，商用工程折中也需严控在 <strong>$\lt 0.5\text{～}1\ \mathrm{ms}$</strong> 以内。同时，硬件采集与播放端的 $\Sigma\Delta$ 模数/数模转换器（ADC/DAC）内部数字抽取与插值滤波器本身也会引入约 $15\text{～}40$ 个采样点的线性相位群延迟（$16\text{～}48\ \mathrm{kHz}$ 下约 $0.3\text{～}2.5\ \mathrm{ms}$；部分低延迟最小相位模式可压至 $4\text{～}8$ 个采样点），核算全机硬件环回延迟时需一并计入。</p>
+<p>工程中最容易算错的一笔账，是不分窗型与重构方式、笼统断言<strong>短时傅里叶变换（STFT / WOLA）的稳态算法延迟究竟等于窗长 $N$ 还是帧移 $H$</strong>（STFT 重叠相加重构条件与分贝标度基础见<a href="00_math-foundations.html#sec-0-2-4">第 0 章 §0.2.4</a> 式(0-17)）。不妨把采样率 $f_s=16\ \mathrm{kHz}$、分析窗长 $N=512$ 点（$32\ \mathrm{ms}$）、帧移 $H=128$ 点（$8\ \mathrm{ms}$）、零额外未来帧前瞻（$K_{\mathrm{look}}=0$）的因果流式频域波束形成按重构体制拆开细算：</p>
 <ol>
 <li>
-<p><strong>因果滑窗的结构延迟只取决于帧移与前瞻，而非历史窗长</strong>：在稳态运行中，分析窗左半侧的 $N-H=384$ 个样本（$24\ \mathrm{ms}$）早已躺在历史环形缓冲区里。只要算法不偷看当前帧右边界之后的未来帧（零前瞻），每当新攒够 $H=128$ 个样本（$T_{\mathrm{hop}}=H/f_s=8\ \mathrm{ms}$），就能拼出完整的 $512$ 点因果窗完成一次 FFT、频域滤波、IFFT，并由重叠相加输出这批最新完成的 $128$ 个时域样本。</p>
-<p>因此，纯因果 WOLA 框架本身的帧步进结构等待是 $T_{\mathrm{hop}}=8\ \mathrm{ms}$，而不是 $32\ \mathrm{ms}$；只有当分析采用以当前点为中心的对称非因果窗，或神经网络掩码显式要求向右多看 $K_{\mathrm{look}}$ 个未来帧时，才会额外引入 $K_{\mathrm{look}}H/f_s$ 的算法前瞻等待。</p>
+<p><strong>标准对称 WOLA（如 $\sqrt{\mathrm{Hann}}$ 或双 Hann COLA 重构）的稳态结构延迟等于整窗长 $N$</strong>：在<a href="00_math-foundations.html#sec-0-2-4">第 0 章 §0.2.4</a> 式(0-17)的对称 WOLA 框架中，分析窗与合成窗均跨越完整的 $N$ 点并在两端平滑衰减至零。虽然每新到 $H=128$ 个样本（$T_{\mathrm{hop}}=8\ \mathrm{ms}$）即可连同历史环形缓冲区中已有的 $N-H=384$ 个旧样本拼出当前 $512$ 点窗并完成一次 FFT/滤波/IFFT，但这批新样本此刻正落在当前帧右端的衰减边沿，必须再继续等待后续全部 $N/H-1=3$ 帧（额外 $N-H=384$ 点即 $24\ \mathrm{ms}$）依次滑过并完成加权重叠相加，才能按 COLA 条件精确还原输出。因此，标准对称 WOLA 的稳态算法结构延迟为</p>
+<p>$$T_{\mathrm{WOLA}}=\frac{H+(N-H)}{f_s}=\frac{N}{f_s}=32\ \mathrm{ms},$$</p>
+<p>而非单帧移 $8\ \mathrm{ms}$；在此体制下，若保持帧移 $H=8\ \mathrm{ms}$ 不变而将窗长 $N$ 从 $32\ \mathrm{ms}$ 砍半至 $16\ \mathrm{ms}$，稳态延迟会直接减少 $16\ \mathrm{ms}$（相应以频率分辨率变粗与混响覆盖变短为代价）。若频域掩码或神经网络还需额外向右偷看 $K_{\mathrm{look}}$ 个未来帧，则会在此基础上再叠加 $K_{\mathrm{look}}H/f_s$ 的算法前瞻等待。</p>
 </li>
 <li>
-<p><strong>声卡 DMA 块周期与算法帧移的公倍数拼接缓冲</strong>：若底层音频驱动按 $B_{\mathrm{io}}=160$ 点（$10\ \mathrm{ms}$）的中断周期搬运样本，而频域前端按 $H=128$ 点（$8\ \mathrm{ms}$）步进，两者块长不整除，中间环形缓冲就会出现周期性余量等待（见练习 E10-08 的逐回调余量推演）；反之，若将驱动 DMA 周期设为 $128$ 点（$8\ \mathrm{ms}$）与帧移严格对齐，每次回调到达即可触发一次频域帧处理，省去跨块凑帧等待。</p>
-<p>这也解释了为什么把因果 STFT 的分析窗长从 $32\ \mathrm{ms}$ 砍到 $16\ \mathrm{ms}$ 并保持帧移 $8\ \mathrm{ms}$ 不变时，除了冷启动首帧填窗稍快一点外，稳态流式音频的端到端延迟一毫秒都不会减少——盲目缩短窗长反而会白白牺牲低频频率分辨率与混响覆盖能力。同理，在线先预测后更新的 WPE、递归协方差平滑、卡尔曼追踪状态与因果 AGC 的平滑记忆全都只读取过去帧，属于历史状态，绝不能当成未来前瞻加进延迟账本。</p>
+<p><strong>仅分析特征提取、重叠保留（OLS）与非对称低延迟合成窗才可将结构延迟压低至 $M_s$ 直至单帧移 $H$</strong>：若后端只消费频域特征而不做对称重叠相加波形重构（如 DOA、VAD、KWS 仅分析链路），或采用时域线性卷积的<strong>重叠保留法（Overlap-Save，OLS）</strong>直接从每次 $N$ 点逆变换末尾截取最新未混叠的 $H$ 个样本输出，抑或采用<strong>非对称低延迟窗对</strong>（例如 Mauler 与 Martin 的非对称开方汉宁窗对，保留长达 $N$ 的历史分析尾而将合成窗收缩到最右侧短区间 $M_s\ll N$），此时左侧 $N-M_s$ 个样本真正只占用历史缓冲，稳态结构延迟随合成窗长降至 $M_s$（纯分析或 OLS 下低至单帧移 $T_{\mathrm{hop}}=H/f_s=8\ \mathrm{ms}$）。<strong>唯有在这种固定 $M_s$ 的非对称窗、OLS 或仅分析体制下</strong>，单独把历史<em>分析</em>尾长 $N$ 从 $32\ \mathrm{ms}$ 缩到 $16\ \mathrm{ms}$ 才一毫秒也不会减少稳态延迟，只会白白牺牲低频分辨率。</p>
+</li>
+<li>
+<p><strong>声卡 DMA 块周期与算法帧移的公倍数拼接缓冲，以及历史状态不计前瞻</strong>：若底层音频驱动按 $B_{\mathrm{io}}=160$ 点（$10\ \mathrm{ms}$）的中断周期搬运样本，而频域前端按 $H=128$ 点（$8\ \mathrm{ms}$）步进，两者块长不整除，中间环形缓冲就会出现周期性余量等待（见练习 <a href="#e10-08">E10-08</a> 的逐回调余量推演）；将驱动 DMA 周期设为 $128$ 点（$8\ \mathrm{ms}$）与帧移严格对齐，每次回调到达即可触发一次频域帧处理，省去跨块凑帧等待。同时，在线先预测后更新的 WPE、递归协方差平滑、卡尔曼追踪状态与因果 AGC 的平滑记忆全都只读取过去帧，属于历史状态，绝不能当成未来前瞻加进延迟账本。</p>
 </li>
 </ol>
 <p>理清单个模块的缓冲与前瞻后，再沿多模块 DAG 核算完成时刻。设模块 $v$ 的全部上游输入就绪时刻为 $r_v$、计算完成时刻为 $c_v$、自身执行耗时为 $s_v$（单位均为 $\mathrm{s}$），$\mathcal{P}(v)$ 表示模块 $v$ 的直接前驱节点集合。在算力充足、各就绪分支可立即并发且无锁抢占的理想调度下，递推关系为</p>
@@ -626,7 +629,7 @@ L_{\mathrm{e2e}}&=\max_p L_p.
 $$</p>
 <p>其中下标 $\mathrm{look}$、$\mathrm{buf}$、$\mathrm{comp}$、$\mathrm{sched}$、$\mathrm{decode}$ 依次对应上表的前瞻等待、块缓冲等待、模块计算耗时、操作系统或加速器调度等待以及后端解码等待。每一项都隶属于当前考察的因果路径 $p$，不能把非关键旁支的等待混加进来。</p>
 <p><img alt="图24 延迟预算示意" src="../figures/fig24_latency_budget.png" onerror="this.alt+='（图缺失）'" /></p>
-<p>结合图 24 从左向右的堆叠顺序可以直观读出不同业务出口的延迟记账差异：图中以一个采用 $32\ \mathrm{ms}$ 多周期采集与块拼接缓冲的示例链路说明（不同于前文单帧移 $8\ \mathrm{ms}$ 的零前瞻因果 WOLA 构型），前四段依次为采集与分帧缓冲 $32\ \mathrm{ms}$、未来帧前瞻 $16\ \mathrm{ms}$、模块计算 $14\ \mathrm{ms}$ 与调度抖动 $6\ \mathrm{ms}$，在绿色虚线处汇总为<strong>连续流式音频输出延迟 $68\ \mathrm{ms}$</strong>；其后再叠加上后端首个判决确认窗 $25\ \mathrm{ms}$，到达右侧黑色斜箭头标出的<strong>首个判决延迟 $93\ \mathrm{ms}$</strong>。图 24 下半部分进一步提醒工程师严格区分三条评测口径：</p>
+<p>结合图 24 从左向右的堆叠顺序可以直观读出不同业务出口的延迟记账差异：图中以一个采集与分帧重构等待合计 $32\ \mathrm{ms}$ 的示例链路说明（例如对应前文标准对称 WOLA $N=32\ \mathrm{ms}$ 重构等待，或多周期采集与块拼接缓冲构型），前四段依次为采集与分帧缓冲 $32\ \mathrm{ms}$、未来帧前瞻 $16\ \mathrm{ms}$、模块计算 $14\ \mathrm{ms}$ 与调度抖动 $6\ \mathrm{ms}$，在绿色虚线处汇总为<strong>连续流式音频输出延迟 $68\ \mathrm{ms}$</strong>；其后再叠加上后端首个判决确认窗 $25\ \mathrm{ms}$，到达右侧黑色斜箭头标出的<strong>首个判决延迟 $93\ \mathrm{ms}$</strong>。图 24 下半部分进一步提醒工程师严格区分三条评测口径：</p>
 <ul>
 <li><strong>连续通话增强音频流</strong>（对应绿色虚线 $68\ \mathrm{ms}$，如会议终端送往编码器的上行 PCM）：只承担实际发生的帧缓冲、算法前瞻、计算与调度延迟，没有识别确认窗；</li>
 <li><strong>关键词唤醒（KWS）或流式 ASR 首字上屏时间</strong>（对应右侧黑色斜箭头标出的 $93\ \mathrm{ms}$）：在前端流式音频交付之后，还必须叠加上声学模型右上下文与解码器防误报确认窗；</li>
@@ -709,11 +712,11 @@ $$</p>
 <td class="tutorial-short-column" style="--tutorial-column-width:14em">映射、削波、丢帧、相对时延</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:10em">AEC</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:10em">线性 AEC</td>
 <td class="tutorial-short-column" style="--tutorial-column-width:12em">本机播放可能进入麦克风</td>
 <td class="tutorial-short-column" style="--tutorial-column-width:14em">麦克风；播放处理之后、数模转换器/功放之前的播放参考；远端活动/双讲状态</td>
-<td class="tutorial-short-column" style="--tutorial-column-width:14em">回声减弱的麦克风信号、残余回声与适配状态</td>
-<td class="tutorial-short-column" style="--tutorial-column-width:14em">参考是否覆盖混音、均衡和音量变化；参考—麦克风整体延迟、削波、双讲稳定性</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:14em">仅经线性回声抵消后的多通道残差信号（送入后续 MIMO-WPE 与波束形成），以及残余回声功率谱 / 相干度旁路元数据与适配状态</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:14em">参考是否覆盖混音、均衡和音量变化；参考—麦克风整体延迟、削波、双讲稳定性；严禁在波束形成之前插入非线性 RES/NLP（详见<a href="06_aec.html#sec-6-5">第 6 章 §6.5</a> 与<a href="07_wpe-dereverberation.html#sec-7-6">第 7 章 §7.6</a>）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:10em">WPE</td>
@@ -758,11 +761,11 @@ $$</p>
 <td class="tutorial-short-column" style="--tutorial-column-width:14em">左右上下文、首帧延迟、跨块排列、身份泄漏、域外泛化；它是解析波束的替代路径</td>
 </tr>
 <tr>
-<td class="tutorial-short-column" style="--tutorial-column-width:10em">NS/AGC</td>
-<td class="tutorial-short-column" style="--tutorial-column-width:12em">残余噪声或电平范围影响后端</td>
-<td class="tutorial-short-column" style="--tutorial-column-width:14em">增强信号</td>
-<td class="tutorial-short-column" style="--tutorial-column-width:14em">抑噪、稳电平信号</td>
-<td class="tutorial-short-column" style="--tutorial-column-width:14em">语音损伤、增益喘息（pumping）、削波</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:10em">RES/NLP 与 NS/AGC</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:12em">残余回声、残余噪声或电平范围影响后端</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:14em">波束形成或分离后的单路增强信号，及前端线性 AEC 透传的残余回声功率谱 / 相干度旁路信息</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:14em">经非线性残余回声抑制（RES/NLP）、抑噪与稳电平处理后的输出信号</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:14em">语音损伤、双讲剪切、增益喘息（pumping）、削波；须置于空间滤波之后执行以保持阵元间线性相位</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:10em">KWS/ASR</td>
@@ -773,17 +776,20 @@ $$</p>
 </tr>
 </tbody>
 </table></div>
-<p>阅读上表第 5～7 行时，要注意区分 GSS 空间增强的三个严格递进的中间对象：说话人活动标注先约束<strong>时频软掩码</strong>估计，软掩码再对同一阶段未做幅度归一化的多通道复谱做加权外积得到<strong>目标/干扰 SCM</strong>，最后解析波束形成器才由 SCM 求解<strong>空间滤波权重</strong>输出单声道目标音轨。即便改用神经网络直接预测掩码或直接回归 SCM，工程接口文档中也必须明确写出实际传递的是掩码、协方差矩阵还是增强后波形，避免模块联调时张冠李戴。</p>
+<p>阅读上表时，除把 GSS 空间增强的三个严格递进的中间对象（说话人活动标注约束<strong>时频软掩码</strong>、软掩码对未归一化多通道复谱加权外积得到<strong>目标/干扰 SCM</strong>、解析波束由 SCM 求解<strong>空间滤波权重</strong>）严格区分外，还须守住<strong>线性 AEC 与非线性残余回声抑制（RES/NLP）的拓扑切分</strong>：前端 <code>AEC</code> 仅对各通道执行线性自适应滤波，把线性残差送往 <code>MIMO-WPE → 波束形成</code> 主干，同时通过旁路侧信道透传残余回声功率谱与相干度估计；而非线性 <code>RES/NLP</code> 则延迟至空间滤波完成之后、与 <code>NS/AGC</code> 并肩执行（物理与代数推导见<a href="06_aec.html#sec-6-5">第 6 章 §6.5</a> 与<a href="07_wpe-dereverberation.html#sec-7-6">第 7 章 §7.6</a>），从而避免逐通道非线性增益提前破坏阵元间幅相结构。即便改用神经网络直接预测掩码或直接回归 SCM，工程接口文档中也必须明确写出实际传递的是掩码、协方差矩阵还是增强后波形，避免模块联调时张冠李戴。</p>
 <span id="sec-5" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-10-2">10.2 拾音、同步与增益</h2>
 <p>硬件拾音链决定了后续一切阵列信号处理的物理上限。微机电系统（MEMS）麦克风选型至少需要联合核查五项电声指标：等效输入噪声（Equivalent Input Noise，EIN，或 $94\ \mathrm{dB\ SPL}$ 下的信噪比）、声学过载点（Acoustic Overload Point，AOP）、灵敏度公差、频响平坦度（含低频滚降角频率与高频亥姆霍兹腔谐振峰）以及批次间幅相一致性。器件手册上的裸麦典型值绝不能代替整机声学实测——壳体导音孔直径与长度、防尘防水网阻尼、泡棉密封漏气以及电源纹波耦合都会显著改变阵元到达幅度与相位。</p>
 <p>声学过载点（AOP）定义为在规定激励频率与供电条件下，麦克风输出总谐波失真（THD）达到指定门限时的入射声压级。横向对比不同型号的 AOP 时，必须对齐失真门限与频率口径：例如 <a href="https://product.tdk.com/en/search/sw_piezo/mic/mems-mic/info?part_no=MMICT4078-00-908">TDK MMICT4078-00-908 官方产品规格</a>同时给出 $10\%\ \mathrm{THD}$ 下的 $135\ \mathrm{dB\ SPL}$ 与 $1\ \mathrm{kHz}$、$1\%\ \mathrm{THD}$ 下的 $130\ \mathrm{dB\ SPL}$；<a href="https://www.analog.com/en/resources/app-notes/an-1328.html">Analog Devices 应用笔记《AN-1328》</a>则标明 ADMP411 在 $131\ \mathrm{dB\ SPL}$ 达到 $10\%\ \mathrm{THD}$。一旦近距离拍手或大音量外放突破振膜与前置放大器的线性区，谐波失真在进入数字域之前就已经产生；后续采用 24 位整型或 32 位浮点样本格式只能保留数字 DSP 中间运算的动态余量，既不能抬高麦克风物理 AOP，也无法修复模拟削波。</p>
+<p><strong>端到端模数（A/D）增益分配与动态范围预算。</strong> 硬件选型必须把麦克风本底噪声（EIN）、模拟前置增益（PGA）、ADC 有效位数（ENOB）与近场打断过载点（AOP）放到同一把声压标尺上核算。商用高信噪比 MEMS 麦克风的等效输入噪声通常为 $\mathrm{EIN}\approx 26\text{～}30\ \mathrm{dB(A)\ SPL}$（对应 $94\ \mathrm{dB\ SPL}$ 下 $64\text{～}68\ \mathrm{dB}$ SNR），而近场拍手或大音量外放打断（barge-in）要求 $\mathrm{AOP}\approx 120\text{～}130\ \mathrm{dB\ SPL}$ 不削波，声学动态跨度达 $90\text{～}104\ \mathrm{dB}$。另一方面，模数转换器受量化与电路热噪声限制的动态范围由有效位数 $\mathrm{ENOB}$ 决定：</p>
+<p>$$D_{\mathrm{ADC}}\approx 6.02\,\mathrm{ENOB}+1.76\ \mathrm{dB}.$$</p>
+<p>以一颗常见 16 位音频编解码器（实测 $\mathrm{ENOB}\approx 14.5\ \mathrm{bit}$）为例，其有效动态范围仅 $D_{\mathrm{ADC}}\approx 89.1\ \mathrm{dB}$，窄于“$28\ \mathrm{dB(A)}$ EIN 至 $128\ \mathrm{dB\ SPL}$ AOP”的 $100\ \mathrm{dB}$ 声学跨度：若按防削波把数字满幅 $0\ \mathrm{dBFS}$ 对齐到 $128\ \mathrm{dB\ SPL}$，ADC 本底噪声就会抬升至 $128-89.1=38.9\ \mathrm{dB\ SPL}$，比裸麦 EIN 高出近 $11\ \mathrm{dB}$ 而白白损失远场灵敏度；反之，若将 PGA 增益调高 $15\ \mathrm{dB}$ 让麦本底主导系统噪声，数字满幅将提前跌至 $113\ \mathrm{dB\ SPL}$，大音量外放立即削波。为在不频繁切换模拟 PGA 档位（切换增益会扰动线性 AEC，见 §10.2.2）的前提下同时兼顾远场弱音与近场打断余量，阵列前端通常选用 $\mathrm{ENOB}\ge 17\text{～}18\ \mathrm{bit}$（$D_{\mathrm{ADC}}\approx 104\text{～}110\ \mathrm{dB}$）的 24 位 $\Sigma\Delta$ ADC，并将 $0\ \mathrm{dBFS}$ 稳妥锚定在裸麦 AOP 附近，使 ADC 量化底噪低于麦克风 EIN 至少 $6\text{～}10\ \mathrm{dB}$。</p>
 <p><strong>声腔结构、防水透气膜与机电隔振。</strong> 裸麦一旦装配进整机外壳，开孔通道与硅胶套前腔就会构成一个微型亥姆霍兹共鸣器（Helmholtz resonator）。设声速为 $c$、导音孔截面积为 $S=\pi d^2/4$、有效声学通道长度为 $L_{\mathrm{eff}}$（含端口末端修正）、麦振膜前方的死腔容积为 $V$，其一阶谐振频率为</p>
 <p>$$
 f_H=\frac{c}{2\pi}\sqrt{\frac{S}{V L_{\mathrm{eff}}}}.
 \tag{10-3}
 $$</p>
-<p>取 $c=343\ \mathrm{m/s}$ 对比两组典型结构尺寸：短而粗的导音孔配紧凑前腔（$d=1.0\ \mathrm{mm},\ L_{\mathrm{eff}}=1.8\ \mathrm{mm},\ V=1.5\ \mathrm{mm}^3$）给出 $f_H\approx 29.4\ \mathrm{kHz}$，谐振峰安全落在人耳与语音频带之外；反之，若结构堆叠被迫拉长窄孔并留出较大死腔（$d=0.8\ \mathrm{mm},\ L_{\mathrm{eff}}=5.0\ \mathrm{mm},\ V=10\ \mathrm{mm}^3$），谐振频率降至 $f_H\approx 5.47\ \mathrm{kHz}$，在语音清辅音核心频段内引入十余分贝的剧烈峰谷与相位反转。此外，消费类户外/穿戴设备常在拾音孔加贴膨体聚四氟乙烯（ePTFE）防水透气膜，必须挑选低声阻且批次背胶厚度一致的料号，防止高频滚降与跨通道相移漂移；而在自带大功率扬声器的智能音箱与会议机中，麦克风阵列还需通过软性电路板（FPC）、硅胶减震套或 PORON 泡棉垫与主壳体做机械隔振，并与扬声器后腔严格物理密封隔离——否则经塑料/金属外壳直接传导的非线性固体结构振动会以远高于空气声速的路径传入振膜，严重破坏线性 AEC。</p>
-<p><strong>多麦克风数字音频总线选型。</strong> 在数字麦克风与主控芯片互连层面，工程中主要在脉冲密度调制（Pulse-Density Modulation，PDM）、芯片间音频总线（Inter-IC Sound，I²S）、时分复用总线（Time-Division Multiplexing，TDM）与车载专用汽车音频总线（Automotive Audio Bus，A²B）之间权衡：</p>
+<p>取 $c=343\ \mathrm{m/s}$ 对比两组典型结构尺寸：短而粗的导音孔配紧凑前腔（$d=1.0\ \mathrm{mm},\ L_{\mathrm{eff}}=1.8\ \mathrm{mm},\ V=1.5\ \mathrm{mm}^3$）给出 $f_H\approx 29.4\ \mathrm{kHz}$，谐振峰安全落在人耳与语音频带之外；反之，若结构堆叠被迫拉长窄孔并留出较大死腔（$d=0.8\ \mathrm{mm},\ L_{\mathrm{eff}}=5.0\ \mathrm{mm},\ V=10\ \mathrm{mm}^3$），谐振频率降至 $f_H\approx 5.47\ \mathrm{kHz}$，在语音清辅音核心频段内引入十余分贝的剧烈峰谷与相位反转。此外，消费类户外/穿戴设备常在拾音孔加贴膨体聚四氟乙烯（ePTFE）防水透气膜：在亚波长集总参数声学电路模型中，透气膜连同背腔气垫可等效为串联声阻 $R_a$、声质量 $M_a$ 与声顺 $C_a$（比声阻抗单位为 $\mathrm{Pa\cdot s/m}$，即 $\mathrm{MKS\ Rayl}$；常见防尘防水网膜按防护等级跨越数十至数百 $\mathrm{MKS\ Rayl}$），构成阻尼网络 $Z_a(\omega)=R_a+\mathrm{j}\omega M_a+1/(\mathrm{j}\omega C_a)$——过高的 $R_a$ 或偏厚背胶会显著拉低高频灵敏度，而批次间膜片张力与胶圈厚度的微小离散会直接转化为 $3\text{～}4\ \mathrm{kHz}$ 以上数度至十余度的跨通道相移失配，削弱超指向与深零陷波束的鲁棒性。而在自带大功率扬声器的智能音箱与会议机中，麦克风阵列还需通过软性电路板（FPC）、硅胶减震套或 PORON 泡棉垫与主壳体做机械隔振，并与扬声器后腔严格物理密封隔离：塑料、铝合金壳体或 PCB 基板中的固体弹性波传播速度高达 $c_{\mathrm{solid}}\approx 2000\text{～}5000\ \mathrm{m/s}$（约为空气声速 $343\ \mathrm{m/s}$ 的 $6\text{～}15$ 倍），固体传导的机械振动会<strong>早于空气直达声</strong>抵达麦克风，在 AEC 辨识出的冲激响应主峰前方留下超前“前驱伪影（precursor）”及壳体非线性共振；同时，MEMS 振膜天然存在非零<strong>机械加速度（$g$）灵敏度</strong>（典型量级 $-100\text{～}-125\ \mathrm{dBV/g}$，等效约 $65\text{～}90\ \mathrm{dB\ SPL/g}$），即便完全堵住导音孔，壳体振动仍会直接耦合出不可忽视的电学回声分量。</p>
+<p><strong>多麦克风数字音频总线选型。</strong> 在数字麦克风与主控芯片互连层面，工程中主要在脉冲密度调制（Pulse-Density Modulation，PDM）、芯片间音频总线（Inter-IC Sound，I²S）、时分复用总线（Time-Division Multiplexing，TDM）、MIPI SoundWire、车载专用汽车音频总线（Automotive Audio Bus，A²B）以及外置通用串行总线音频类（USB Audio Class 2.0，UAC2）之间权衡：</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
 <thead>
 <tr>
@@ -817,11 +823,25 @@ $$</p>
 <td>$48\ \mathrm{kHz}$ TDM8（$32\ \mathrm{bit}$ 槽宽）位时钟达 $12.288\ \mathrm{MHz}$，须防高频串扰与反射</td>
 </tr>
 <tr>
+<td><strong>MIPI SoundWire (v1.2 / v2.0)</strong></td>
+<td>$2$ 线多节点共享总线（<code>CLOCK</code> + <code>DATA</code>）</td>
+<td>单总线最多 $11$ 个从设备，混合承载 TDM/PCM/PDM 音频流与带内控制寄存器</td>
+<td>板内/短排线（$\lt 30\ \mathrm{cm}$）</td>
+<td>共享总线时钟（v1.2 最高 $12.288\ \mathrm{MHz}$ 双沿 DDR 约 $24.576\ \mathrm{Mbps}$；v2.0 进一步扩展吞吐与动态带宽分配），省去独立 I²C 控制线；需支持协议的智能麦/编解码器</td>
+</tr>
+<tr>
 <td><strong>A²B</strong></td>
 <td>$2$ 线非屏蔽双绞线（单根 UTP 菊花链）</td>
 <td>最多 $32$ 路 $24\ \mathrm{bit}$ 上下行 PCM + I²C 控制</td>
 <td>长距（节点间 $15\ \mathrm{m}$，全链 $40\ \mathrm{m}$）</td>
 <td>全链硬件同步时钟、确定性延迟 $\lt 50\ \mu\mathrm{s}$ 且支持总线幻象供电；需专用收发器芯片</td>
+</tr>
+<tr>
+<td><strong>USB UAC2</strong></td>
+<td>$2$ 线差分数据 + 电源（USB 2.0 高速 $480\ \mathrm{Mbps}$）</td>
+<td>多通道 $24/32\ \mathrm{bit}$ PCM（常见 $4\text{～}16+$ 路），即插即用</td>
+<td>机外线缆（无源线长 $\le 5\ \mathrm{m}$）</td>
+<td>等时传输分同步、自适应与异步三类时钟模式；设备主导的异步端点靠显式速率反馈管道调节主机包长，否则易引入相对主机晶振的 SRO 与微帧抖动</td>
 </tr>
 </tbody>
 </table></div>
@@ -1034,6 +1054,9 @@ $$</p>
 <li><strong>经典混合低算力基线（RNNoise）</strong>：在纯统计降噪与重型全频带神经增强之间，<strong>RNNoise</strong>（<a href="https://doi.org/10.1109/MMSP.2018.8547084">Valin 2018, <em>IEEE MMSP</em></a>）展示了极具代表性的混合工程范式——它在 $48\ \mathrm{kHz}$ 下仅用 $22$ 个等效听觉 Bark 子带特征搭配轻量级门控循环单元（GRU）预测子带增益，并结合基音梳状滤波抑制谐波间底噪，只需极小参数量与单核极低 CPU 占用即可实时运行，常被用作嵌入式通信链路的低成本神经对照基线。</li>
 <li><strong>连续背景噪声跟踪</strong>：现代噪声谱估计早已不再依赖“只在 VAD 判无话时硬切换更新”，最小值追踪、软语音存在概率与神经掩码都能在连续说话期间平滑跟踪背景噪声变化。</li>
 </ul>
+<p><strong>判别式神经降噪的“ASR 伪影悖论”与观测加回（Observation Adding，OA）。</strong> 面向人耳听感优化的单通道判别式神经降噪模型在接入自动语音识别（ASR）时，常出现一种看似反直觉的退化现象：尽管 PESQ、SI-SDR 或 DNSMOS 分数显著提升，下游 ASR 的词错误率（WER）在干净或中高信噪比（如 $\ge 5\text{～}10\ \mathrm{dB}$）条件下反而比直接输入未降噪带噪语音更差（Iwamoto 等，<em>Interspeech</em> 2022）。根本原因在于，现代多条件训练的 ASR 声学模型已对自然背景噪声具备较强鲁棒性，却从未见过非线性时频掩码制造的分布外<strong>处理伪影（processing artifacts）</strong>（如频谱空洞、弱清辅音过削与非线性相位粗糙度）。在不重新训练降噪网络与识别模型的前提下，最简洁有效的零重训缓解手段是<strong>观测加回（Observation Adding，OA）</strong>——将少量原始带噪观测 $y$ 按固定比例 $\alpha\in[0,1]$ 线性混回降噪输出 $\hat s_{\mathrm{SE}}$：</p>
+<p>$$\hat s_{\mathrm{OA}}[n]=(1-\alpha)\,\hat s_{\mathrm{SE}}[n]+\alpha\,y[n].$$</p>
+<p>实践上取 $\alpha\approx 0.1\text{～}0.3$ 即可用 ASR 熟悉的自然分布残余噪声填补生硬的非线性频谱空洞，显著拉回受损的识别率。进一步在同时服务“人类通话监听”与“机器语音识别”的量产终端中，架构上常在空间波束形成之后分叉为<strong>双分支路由</strong>：人耳通信上行支路可启用更激进的神经单通道降噪以压低稳态底噪，而送往 ASR / KWS 的机器支路则保持更保守的线性波束输出或 OA 混合输出，避免两类目标互相掣肘。</p>
 <span id="sec-10" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-10-3-2">10.3.2 功率谱减：一个频点怎样算到输出</h3>
 <p>为了把频域降噪的增益作用机制、相位保留规则和固有失真算得一清二楚，先看最经典的功率谱减基线。设单通道加性带噪观测为 $y[n]=s[n]+v[n]$，背景噪声 $v[n]$ 短时平稳且已知录音开头的帧集合 $\mathcal{N}$ 为<strong>纯噪声帧</strong>。采用 $512$ 点周期 Hann 窗、$128$ 点帧移做 STFT，记频点 $f$、帧 $t$ 的复谱系数为 $Y_{f,t}$。在纯噪声帧集合 $\mathcal{N}$ 上按同一加窗与 FFT 归一化口径对 $|Y_{f,\tau}|^2$ 求平均，即可得到该频点的噪声功率谱估计 $D_f$。</p>
 <p>为什么从单帧带噪功率 $|Y|^2$ 里直接减去准确的平均噪声功率 $D_f$，依然无法逐点还原干净语音功率 $|S|^2$？省去频点与帧下标，将复数和 $Y=S+V$ 的模平方展开：</p>
@@ -1628,14 +1651,14 @@ $$</p>
 <p><strong>ITU-T P.862（PESQ）的正式退役与 P.863（POLQA）的衔接</strong>：ITU-T 已于 2024 年 1 月 5 日正式撤销 <a href="https://www.itu.int/rec/T-REC-P.862/en">P.862（PESQ）</a>，并指定现行建议书 <a href="https://www.itu.int/rec/T-REC-P.863/en">P.863（POLQA）</a> 作为全参考客观语音质量评估标准。工程与学术写作中，PESQ 仅限于按历史相同采样率与预处理条件复现旧文献基线，新的产品标准合规报告应采用 POLQA 并写明具体版本与宽带/超宽带模式。</p>
 </li>
 </ol>
-<p>在日常算法迭代中，开源无参考神经评分器与全参考客观指标显著加快了自动化回归，代表工具包括微软公开的 <a href="https://github.com/microsoft/DNS-Challenge/tree/591184a9fcb2cbdec02520fed81a32bbbf9d73ff/DNSMOS"><code>DNSMOS</code> 本地推理代码</a>（Reddy、Gopal 与 Cutler 2021/2022，<em>IEEE ICASSP</em>，区分常规降噪与个性化模型）、<a href="https://github.com/microsoft/AEC-Challenge/tree/6c633d0a9d2a143a0e364899b91b06f127315b18/AECMOS"><code>AECMOS</code> 本地评估工具</a>、预测总体质量与噪度/色染等四维分量的无参考模型 <code>NISQA</code>（Mittag 等 2021，<em>Interspeech</em>），以及计算短时客观可懂度的 <a href="https://github.com/mpariente/pystoi/blob/74872b000753a7a42ff51aa0868af8c82c7f9053/pystoi/stoi.py"><code>pystoi</code> 实现</a>（支持 STOI 与 ESTOI）。而在企业会议室免提硬件商用准入（如 Microsoft Teams Rooms 与 Zoom Rooms 硬件认证）中，还须将加权终端耦合损耗（<code>TCLw</code>）、<strong>ETSI TS 103 224</strong> 多扬声器背景声场复现与 <strong>ETSI TS 103 106（<code>3QUEST</code>）</strong> 含噪三维语音质量联合纳入硬门槛（详见<a href="11_selection-guide.html#sec-11-5-1">第 11 章 §11.5.1</a>）。</p>
+<p>在日常算法迭代中，开源无参考神经评分器与全参考客观指标显著加快了自动化回归，代表工具包括微软公开的 <a href="https://github.com/microsoft/DNS-Challenge/tree/591184a9fcb2cbdec02520fed81a32bbbf9d73ff/DNSMOS"><code>DNSMOS</code> 本地推理代码</a>（Reddy、Gopal 与 Cutler 2021/2022，<em>IEEE ICASSP</em>，区分常规降噪与个性化模型）、<a href="https://github.com/microsoft/AEC-Challenge/tree/6c633d0a9d2a143a0e364899b91b06f127315b18/AECMOS"><code>AECMOS</code> 本地评估工具</a>、预测总体质量与噪度/色染等四维分量的无参考模型 <code>NISQA</code>（Mittag 等 2021，<em>Interspeech</em>），以及计算短时客观可懂度的 <a href="https://github.com/mpariente/pystoi/blob/74872b000753a7a42ff51aa0868af8c82c7f9053/pystoi/stoi.py"><code>pystoi</code> 实现</a>（支持 STOI 与 ESTOI）。近年社区进一步涌现出三类针对自监督泛化与精细失真归因的无参考神经评分器：基于自监督语音表征预测听感平均分的 <strong><code>UTMOS</code></strong>（Saeki 等 2022，<em>Interspeech</em>）、引入三元组度量学习以兼顾跨语料单调排序与参考/无参考双模式的 <strong><code>SCOREQ</code></strong>（Ragano 等 2024，<em>NeurIPS</em>），以及对齐 <strong>ITU-T P.804</strong> 多维主观量表、在 $48\ \mathrm{kHz}$ 全频带同时输出音色染色（<code>COL</code>）、断续（<code>DISC</code>）、响度（<code>LOUD</code>）、噪声（<code>NOISE</code>）、混响（<code>REVERB</code>）、信号失真（<code>SIG</code>）与总分（<code>OVRL</code>）七维诊断结果的 <strong><code>SIGMOS</code></strong>（Ristea 等 2024，<em>IEEE ICASSP</em>）。而在企业会议室免提硬件商用准入（如 Microsoft Teams Rooms 与 Zoom Rooms 硬件认证）中，还须将加权终端耦合损耗（<code>TCLw</code>）、<strong>ETSI TS 103 224</strong> 多扬声器背景声场复现与 <strong>ETSI TS 103 106（<code>3QUEST</code>）</strong> 含噪三维语音质量联合纳入硬门槛（详见<a href="11_selection-guide.html#sec-11-5-1">第 11 章 §11.5.1</a>）。</p>
 <p>调用开源自动化打分脚本时，还必须先拦截两类常见的脚本级静默边界陷阱，绝不能以为“函数没抛异常返回了浮点数”就代表得分有效：</p>
 <ul>
 <li><strong>AECMOS 的竞赛分段裁剪假设</strong>：官方脚本针对 2021/2022 竞赛测试集硬编码跳过了开头自适应收敛段，并对远端单讲、近端单讲和双讲采用特定切片区间；换用自采语料时必须按真实场景时序重新标定有效评分区间，并将异常静音或崩溃样本记入失败台账而非悄悄剔除。</li>
 <li><strong>pystoi 的短静音哨兵值与全零异常</strong>：<code>pystoi</code> 先做基于能量的静音剥离，当剩余不足 $30$ 个 STFT 帧时仅发警告并返回哨兵值 <code>1e-5</code>；遇到 $10\ \mathrm{kHz}$、$256$ 点全零输入会直接抛出 <code>AxisError</code>，遇到 $1\ \mathrm{s}$ 全零输入时普通 STOI 甚至无警告返回 <code>0</code>（ESTOI 则因内部微小随机抖动返回正负随机数），故调用前必须独立核验有效语音帧数与有限能量。</li>
 </ul>
 <h3 id="sec-u-274faa96b4">客观评分的有效输入与取点</h3>
-<p>另一款常用的开源全参考感知质量工具 ViSQOL（Virtual Speech Quality Objective Listener，见 <a href="https://github.com/google/visqol/blob/38d0b0163e441047d4429bf07ad09e5b9031d02c/README.md"><code>ViSQOL</code> 官方说明与指南</a> 及 <a href="https://arxiv.org/pdf/2004.09584">ViSQOL v3 论文 §II.C、§III.C</a>）通过计算参考信号与退化信号在神经时频块（neurogram）上的结构相似度，映射输出客观听音质量预测分（MOS-LQO），内部严格区分 $48\ \mathrm{kHz}$ 音频模式与 $16\ \mathrm{kHz}$ 语音模式。下表汇总了四类主流客观评估器在整机阵列验收中的盲区与必配交叉核验项：</p>
+<p>另一款常用的开源全参考感知质量工具 ViSQOL（Virtual Speech Quality Objective Listener，见 <a href="https://github.com/google/visqol/blob/38d0b0163e441047d4429bf07ad09e5b9031d02c/README.md"><code>ViSQOL</code> 官方说明与指南</a> 及 <a href="https://arxiv.org/pdf/2004.09584">ViSQOL v3 论文 §II.C、§III.C</a>）通过计算参考信号与退化信号在神经时频块（neurogram）上的结构相似度，映射输出客观听音质量预测分（MOS-LQO），内部严格区分 $48\ \mathrm{kHz}$ 音频模式与 $16\ \mathrm{kHz}$ 语音模式。下表汇总了主流侵入式与非侵入式客观评估器在整机阵列验收中的盲区与必配交叉核验项：</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
 <thead>
 <tr>
@@ -1669,6 +1692,24 @@ $$</p>
 <td>非侵入式无参考网络，报四维失真</td>
 <td>宽带通信增强</td>
 <td>易受域外编解码与远场混响偏移影响，不能替代 P.808 听测</td>
+</tr>
+<tr>
+<td>UTMOS</td>
+<td>非侵入式无参考，自监督语音表征 MOS 预测</td>
+<td>$16\ \mathrm{kHz}$ 通用语音</td>
+<td>偏重自然度与合成听感，不衡量词内容保真度，须配 ASR 核验</td>
+</tr>
+<tr>
+<td>SCOREQ（NeurIPS 2024）</td>
+<td>支持无参考与有参考双模式，三元组度量学习</td>
+<td>$16\ \mathrm{kHz}$ 跨域语音</td>
+<td>跨域排序鲁棒性较强，但无参考模式仍难替代真实回声/双讲与 P.808 听测</td>
+</tr>
+<tr>
+<td>SIGMOS（ITU-T P.804）</td>
+<td>非侵入式无参考网络，报七维诊断分</td>
+<td>$48\ \mathrm{kHz}$ 全频带</td>
+<td>利于区分染色、断续与混响退化，但仍受训练域偏移与幻觉盲区制约</td>
 </tr>
 </tbody>
 </table></div>
@@ -1750,7 +1791,7 @@ $$</p>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:10em">耳机/助听设备</td>
-<td class="tutorial-short-column" style="--tutorial-column-width:17em">上下行路径、佩戴泄漏、低延迟和电池约束</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:17em">上下行路径、佩戴泄漏、低延迟（通透 $\le 0.1\text{～}1\ \mathrm{ms}$／助听 $\lt 5\text{～}10\ \mathrm{ms}$）和电池约束</td>
 <td class="tutorial-short-column" style="--tutorial-column-width:17em">固定/自适应双麦波束、NS、反馈抑制</td>
 <td class="tutorial-short-column" style="--tutorial-column-width:12em">不同佩戴、风噪、自己说话、最坏增益</td>
 </tr>
@@ -2267,7 +2308,7 @@ $$</p>
 <p><strong>参考答案</strong>：纯噪声功率估计 $D=|2|^2=4$；后续两帧带噪功率依次为 $9$ 与 $1$，直接扣噪得 $5$ 与 $-3$，乘 $\beta=0.04$ 的谱地板下限依次为 $0.36$ 与 $0.04$，取较大者后输出功率依次为 $5$ 与 $0.04$，输出幅度依次为 $\sqrt{5}\approx 2.2361$ 与 $0.2$（脚本同时输出合成信号纯噪声前奏段三组波形的均方根值供核对）。若改取 $\beta=0$，第二帧负差值被直接截断为 $0$；当输入观测复系数本身为 $0$ 时，因复数辐角无定义，无论地板参数如何均直接输出 $0$。与确定性代数截断的谱减不同，MMSE-STSA 在复高斯统计先验下对先验/后验信噪比求条件数学期望（含修正贝塞尔函数增益曲线），以最小化短时谱幅度的均方误差。</p>
 <p><a id="e10-14"></a></p>
 <h3 id="sec-u-aa980b9ed6">E10-14：平均算得过来，六帧为何仍错过期限？</h3>
-<p>沿用 §10.4.3 六帧串行队列配置（周期 $10\ \mathrm{ms}$、耗时 $[4,4,25,4,4,4]\ \mathrm{ms}$、含执行帧总容量 $3$ 及该节内存与功率参数），用式(10-20)、(10-21)、(10-23)、(10-24)汇总逐帧调度时刻、RTF、截止期违约、内存峰值与续航；若将总容量缩减为 $2$ 帧且满时丢新帧，哪些指标必须重算？</p>
+<p>本题承接 <a href="#e10-04">E10-04</a> 揭示的“平均算力充足但突发尖峰引发截止期违约与满队丢帧”机理，进一步聚焦并发 SRAM 峰值、平均功耗与电池续航的联动敏感性核算：沿用 §10.4.3 六帧串行队列配置（周期 $10\ \mathrm{ms}$、耗时 $[4,4,25,4,4,4]\ \mathrm{ms}$、含执行帧总容量 $3$ 及该节内存与功率参数），用式(10-20)、(10-21)、(10-23)、(10-24)汇总逐帧调度时刻、RTF、截止期违约、内存峰值与续航；若将总容量缩减为 $2$ 帧且满时丢新帧，哪些指标必须重算？</p>
 <p><strong>参考答案</strong>：按式(10-23)递推得开始时刻 $[0,10,20,45,49,53]\ \mathrm{ms}$、完工时刻 $[4,14,45,49,53,57]\ \mathrm{ms}$；汇总得平均 $\mathrm{RTF}=45/60=0.75$，最大响应 $25\ \mathrm{ms}$，第 2、3、4 共 $3$ 帧超期，$t=40\ \mathrm{ms}$ 在途高水位 $3$ 帧，并发峰值内存 $667.5\ \mathrm{KiB}$，周期续航约 $6.23\ \mathrm{h}$。若容量缩至 $2$ 帧，$t=40\ \mathrm{ms}$ 到达的第 4 帧会因队满被丢弃，第 5 帧排队等待、实际执行总工作量、忙碌占空比及丢帧计数均会改变，须重跑完整队列递推。</p>
 <p><a id="e10-15"></a></p>
 <h3 id="sec-u-8870e0c29d">E10-15：预卷、触发帧和结束保持怎样拼成一个片段？</h3>
@@ -2646,8 +2687,8 @@ $$</p>
 <span id="sec-10-12" class="anchor-alias" aria-hidden="true"></span><span id="sec-23" class="anchor-alias" aria-hidden="true"></span><span id="sec-24" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-10-11">10.11 本章小结</h2>
 <ol>
 <li><strong>参考拓扑、DMA 缓存与采集直通</strong>：图 22 刻画的是模块间的线性度与统计依赖而非僵化模板；启用线性 AEC 时其播放参考须取自混音/EQ/音量之后、DAC 之前；嵌入式 DMA 乒乓双缓冲必须落实写回缓存 <code>Invalidate</code>/<code>Clean</code> 或非缓存 SRAM 映射；Android 多麦采集须显式锁定 <code>InputPreset::Unprocessed</code>（区分 <code>VOICE_COMMUNICATION</code> 自动挂接前处理与 <code>VOICE_RECOGNITION</code> 默认关闭 AGC/NS 的 CDD 约定）。</li>
-<li><strong>声学结构、音频总线、PDM 位宽与产线标定</strong>：导音孔与前腔须按亥姆霍兹公式把谐振推到语音频带之外并做好防水膜与扬声器机电隔振；多麦互连须按通道数与布线距离在 PDM/I²S/TDM/A²B 间权衡；PDM CIC 抽取须严格区分无符号 $\{0,1\}$（$17/25\ \mathrm{bit}$）与双极性补码 $\{-1,+1\}$（$18/26\ \mathrm{bit}$）累加位宽及半周期边沿偏斜；异步跨晶振系统须分离初始截距、丢样缺口与真实斜率并用 Farrow/多相滤波器保持跨块分数相位，量产则以 $5\text{～}30\ \mathrm{s}$ EOL 声学盒加黄金样机闭环把关。</li>
-<li><strong>关键路径延迟、定点量化与两级唤醒功耗</strong>：因果 STFT/WOLA 稳态结构延迟取决于帧移与前瞻而非窗长；传统频域协方差可借块浮点（BFP）化解 16 位平方下溢，深度网络则需结合逐通道量化、QAT 与首尾相敏层 <code>W8A16</code> 混合精度保真；电池终端靠常驻监听与按需唤醒主域将待机功耗压低数十倍，同时须严控不可抢占长任务引起的截止期违约。</li>
+<li><strong>声学结构、音频总线、PDM 位宽与产线标定</strong>：导音孔与前腔须按亥姆霍兹公式把谐振推到语音频带之外，并联合核算 EIN–ADC–AOP 动态范围、低声阻 ePTFE 防水膜与扬声器固体传导机电隔振；多麦互连须按通道数与布线距离在 PDM/I²S/TDM/SoundWire/A²B/USB UAC2 间权衡；PDM CIC 抽取须严格区分无符号 $\{0,1\}$（$17/25\ \mathrm{bit}$）与双极性补码 $\{-1,+1\}$（$18/26\ \mathrm{bit}$）累加位宽及半周期边沿偏斜；异步跨晶振系统须分离初始截距、丢样缺口与真实斜率并用 Farrow/多相滤波器保持跨块分数相位，量产则以 $5\text{～}30\ \mathrm{s}$ EOL 声学盒加黄金样机闭环把关。</li>
+<li><strong>关键路径延迟、定点量化与两级唤醒功耗</strong>：标准对称 WOLA（如 $\sqrt{\mathrm{Hann}}$ COLA）的稳态结构延迟等于整窗长 $N=H+(N-H)$，唯有采用仅分析、重叠保留（OLS）或短合成窗非对称窗口（$M_s\ll N$）时，延迟才可降至 $M_s$ 直至单帧移 $H$（另加额外未来帧前瞻）；传统频域协方差可借块浮点（BFP）化解 16 位平方下溢，深度网络则需结合逐通道量化、QAT 与首尾相敏层 <code>W8A16</code> 混合精度保真；电池终端靠常驻监听与按需唤醒主域将待机功耗压低数十倍，同时须严控不可抢占长任务引起的截止期违约。</li>
 <li><strong>多状态门控、混合降噪与分贝域 AGC</strong>：前端控制须联合近端活动、远端参考历史能量与双讲状态，噪声谱更新采用 MCRA 软控制防止目标污染与阶跃滞后，工业 AGC 则在分贝域结合噪声门限、软拐点压缩与前瞻限幅抑制增益喘息。</li>
 <li><strong>标准验收矩阵与坏麦在线自愈</strong>：产品验收须联动 ITU-T P.340 双讲分级、P.501 确定性 PN 复合源信号、P.58/P.57 标准工装、P.835/P.808 真人三维听测（已生效的 P.566 仅作辅助回归）与任务识别率；现场故障麦须联合能量离群、削波/直流、低频跨通道相干性与外放自检盲诊断，并同步收缩观测、导向矢量与协方差矩阵重算健康子阵波束。</li>
 </ol>

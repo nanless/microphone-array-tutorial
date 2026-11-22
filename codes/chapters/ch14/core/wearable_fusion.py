@@ -125,8 +125,9 @@ def cross_modal_mvdr_mmse(
     air_var = float(np.real(r_mat[0, 0]))
     c0_abs = float(np.abs(c_vec[0]))
     if c0_abs > 0.0:
-        air_ratio = (phi_val / air_var) * (c0_abs**2)
-        air_sinr_db = float(10.0 * np.log10(air_ratio))
+        air_sinr_db = float(
+            10.0 * (np.log10(phi_val) - np.log10(air_var)) + 20.0 * np.log10(c0_abs)
+        )
     else:
         air_sinr_db = -np.inf
 
@@ -134,8 +135,9 @@ def cross_modal_mvdr_mmse(
     c_in_abs = float(np.abs(c_vec[-1]))
     if c_in_abs > 0.0:
         equalized_in_noise_var = (in_var / c_in_abs) / c_in_abs
-        in_ratio = (phi_val / in_var) * (c_in_abs**2)
-        in_sinr_db = float(10.0 * np.log10(in_ratio))
+        in_sinr_db = float(
+            10.0 * (np.log10(phi_val) - np.log10(in_var)) + 20.0 * np.log10(c_in_abs)
+        )
     else:
         equalized_in_noise_var = np.inf
         in_sinr_db = -np.inf

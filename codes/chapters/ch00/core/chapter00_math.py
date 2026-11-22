@@ -456,7 +456,11 @@ def dft_parseval_and_zero_padded_conv_example(
 
     # Conjugate symmetry X[N-k] == conj(X[k]) for k = 1..N-1
     k_int = np.arange(1, lx)
-    conj_sym_err = float(np.max(np.abs(x_dft[lx - k_int] - np.conj(x_dft[k_int]))))
+    conj_sym_err = (
+        float(np.max(np.abs(x_dft[lx - k_int] - np.conj(x_dft[k_int]))))
+        if k_int.size > 0
+        else 0.0
+    )
 
     y_linear = np.convolve(x_arr, h_arr, mode="full")
     n_circ = max(lx, lh)
@@ -661,7 +665,11 @@ def tikhonov_svd_solve(
     x_svd = vh.conj().T @ (filt * (u.conj().T @ y))
     n = g.shape[1]
     normal_mat = g.conj().T @ g + eps * np.eye(n, dtype=np.complex128)
-    x_normal = np.linalg.solve(normal_mat, g.conj().T @ y)
+    try:
+        x_normal = np.linalg.solve(normal_mat, g.conj().T @ y)
+        consistency_err = float(np.linalg.norm(x_svd - x_normal))
+    except np.linalg.LinAlgError:
+        consistency_err = float("nan")
     cond_2 = (
         float(s[0] / s[-1])
         if (g.shape[0] >= g.shape[1] and float(s[-1]) > 0.0)
@@ -672,7 +680,7 @@ def tikhonov_svd_solve(
         "condition_number_2": cond_2,
         "filter_factors": filt,
         "solution": x_svd,
-        "normal_eq_consistency_error": float(np.linalg.norm(x_svd - x_normal)),
+        "normal_eq_consistency_error": consistency_err,
     }
 
 
@@ -1075,7 +1083,7 @@ def mm_smoothed_l1_solve(
     delta = _check_real_scalar(smooth_delta, "smooth_delta", min_value=0.0, strict_min=True)
     iters = _check_int(n_iters, "n_iters", min_value=1)
 
-    m, n = a.shape
+    _, n = a.shape
     gram = a.conj().T @ a
     ah_y = a.conj().T @ y
     x = np.zeros(n, dtype=np.complex128)
@@ -1509,7 +1517,7 @@ def cylindrical_bessel_j(order: int, x) -> np.ndarray | float:
             denom = float(math.factorial(k) * math.factorial(m_abs + k))
             term = ((-1.0) ** k / denom) * (half_x ** (2 * k + m_abs))
             total += term
-            if float(np.max(np.abs(term))) <= 1e-17 * max(1.0, float(np.max(np.abs(total)))):
+            if np.all(np.abs(term) <= 1e-17 * np.abs(total)):
                 break
     else:
         # Periodic integral J_m(x) = (1/pi) \int_0^pi cos(m alpha - x sin alpha) d alpha
@@ -1557,7 +1565,7 @@ def spherical_bessel_jy(order: int, x) -> tuple[np.ndarray | float, np.ndarray |
                 denom = float((2 ** k) * math.factorial(k) * double_fact)
                 term = ((-1.0) ** k / denom) * (arr ** (2 * k + n))
                 j_out += term
-                if float(np.max(np.abs(term))) <= 1e-17 * max(1.0, float(np.max(np.abs(j_out)))):
+                if np.all(np.abs(term) <= 1e-17 * np.abs(j_out)):
                     break
         else:
             if np.any(small_mask):
@@ -1570,7 +1578,7 @@ def spherical_bessel_jy(order: int, x) -> tuple[np.ndarray | float, np.ndarray |
                     denom = float((2 ** k) * math.factorial(k) * double_fact)
                     term = ((-1.0) ** k / denom) * (arr_s ** (2 * k + n))
                     tot_s += term
-                    if float(np.max(np.abs(term))) <= 1e-17 * max(1.0, float(np.max(np.abs(tot_s)))):
+                    if np.all(np.abs(term) <= 1e-17 * np.abs(tot_s)):
                         break
                 j_out[small_mask] = tot_s
             large_mask = ~small_mask

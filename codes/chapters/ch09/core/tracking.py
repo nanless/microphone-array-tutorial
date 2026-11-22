@@ -363,7 +363,11 @@ class CircularParticleFilter:
             weights = finite_real_array(self.weights, "weights")
             if weights.shape != self.particles.shape or np.any(weights < 0) or not np.any(weights > 0):
                 raise ValueError("invalid explicit particle prior")
-            return np.log(weights, where=weights > 0, out=np.full_like(weights, -np.inf))
+            logs = np.log(weights, where=weights > 0, out=np.full_like(weights, -np.inf))
+            maximum = float(np.max(logs))
+            with np.errstate(under="ignore"):
+                unnormalized = np.exp(logs - maximum)
+            return (logs - maximum) - math.log(float(np.sum(unnormalized)))
         return self._log_weights.copy()
 
     @property
@@ -375,7 +379,15 @@ class CircularParticleFilter:
 
     @property
     def effective_sample_size(self) -> float:
-        return float(1.0 / np.sum(self.weights**2))
+        weights = finite_real_array(self.weights, "weights")
+        if weights.shape != self.particles.shape or np.any(weights < 0) or not np.any(weights > 0):
+            raise ValueError("weights must have the particle shape and positive mass")
+        scale = float(np.max(weights))
+        with np.errstate(under="ignore"):
+            scaled = weights / scale
+            w = scaled / float(np.sum(scaled))
+            denom = float(np.sum(w**2))
+        return float(1.0 / denom)
 
     def estimate(self) -> float:
         radians = np.deg2rad(self.particles)

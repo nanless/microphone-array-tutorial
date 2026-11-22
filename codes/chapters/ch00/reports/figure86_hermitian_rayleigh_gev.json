@@ -5,7 +5,7 @@
     "E00-10"
   ],
   "source_sha256": {
-    "codes/chapters/ch00/core/chapter00_math.py": "839d6c610bb53af18b2778e46b580380d300dcb28a925a5e7de273ed09ab2ccc",
+    "codes/chapters/ch00/core/chapter00_math.py": "10ef5c9247bda1a9e28d81cbe4208b032a93c552bf2f113a86f08ba02c43aa11",
     "codes/chapters/ch00/io_contracts.py": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974",
     "scripts/make_figures.py": "4bc6a6ce675292c51d538c0f7d3c6f9c8fe3a2de2d0d7945f48cb4baaa801e49",
     "scripts/make_math_figures.py": "7da5037abffa5bdeb596a1f78b079d118d95564a3c858aaf5852cc23f5c60d35"

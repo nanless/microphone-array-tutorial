@@ -8,7 +8,7 @@
     "codes/chapters/ch15/core/distance_bubble.py": "9e26329091896ecd396125ce04eeb4f6dcb3deb2478c087e08ccc26aa1cb7bd4",
     "codes/chapters/ch15/core/diarization_tsvad.py": "f3e67dfae6814436fc079fd4f9851ae8bfd522a63467085ddf82e559480a4a8f",
     "codes/chapters/ch15/core/av_alignment.py": "97d5b3f013ea6505ef9bb5b48b13476241a3f289bedd9889bdf153a744d3d5bf",
-    "codes/chapters/ch15/core/tse_audio.py": "6c0e62ff58067ce5bc1556207945ebe6c3a909317749e97079d947a469fef3f9",
+    "codes/chapters/ch15/core/tse_audio.py": "4d9f63ab530c7f6d9ea18b43c6cf783cf85dac03c24a2ea861cb28ebd553f9fe",
     "codes/chapters/ch15/examples/generate_tse_audio.py": "0c3f0e3f446338626e8176bd4fd29f9e3c0d72665cfe2258f2ef826aa5de71bf",
     "codes/chapters/ch02/core/conventions.py": "4e80a27490f05ddd5f4826361420c0c8d0b331464d1e5629c5def492da47b1d7",
     "codes/chapters/ch00/core/audio_samples.py": "1a7aad90d08fb8c27511aa463a6cc6dd6d4d2d230b27ed82549531f1f18edaba",
@@ -16,7 +16,7 @@
     "scripts/make_figures.py": "4bc6a6ce675292c51d538c0f7d3c6f9c8fe3a2de2d0d7945f48cb4baaa801e49",
     "scripts/make_tse_figures.py": "d91a2503a86a6ef1f6ad11a4194dadc2d776c8d10e41d52bd5c25aabc9b25326"
   },
-  "audio_manifest_sha256": "7e919736dbbad9fe3e9ce5051b587360b814681994123e87a9e84ca4f5d44046",
+  "audio_manifest_sha256": "9eac449b73fefe1bf0ec68e34f742beb40c7e33d16c7646d3d1e9801ccd3bd66",
   "sync_video_indices": [
     0,
     0,

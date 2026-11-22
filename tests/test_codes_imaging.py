@@ -9,6 +9,7 @@ from pathlib import Path
 import tempfile
 import unittest
 from unittest.mock import patch
+import warnings
 import numpy as np
 
 from codes.chapters.ch02.core.spectral import stft, periodic_hann
@@ -223,6 +224,17 @@ class ImagingAlgebraTests(unittest.TestCase):
         np.testing.assert_allclose(offgrid[2], [1., .16], atol=2e-15)
         np.testing.assert_allclose(offgrid[8], [1., .25 * (.8**8)], atol=2e-15)
         self.assertAlmostEqual(float(controls['E12-18']['coherent_dipole_fb_nu_2'][1]), 0., places=15)
+
+        # Subnormal HPSD CSM scaling must stay finite and warning-free via componentwise real/imag division.
+        r_sub = 1e-315 * np.array([[1.0, 0.25 + 0.25j], [0.25 - 0.25j, 1.0]], dtype=np.complex128)
+        with warnings.catch_warnings(record=True) as caught:
+            warnings.simplefilter("always")
+            sqrt_sub_eigh = hermitian_fractional_power(r_sub, 0.5)
+            sqrt_sub_closed = closed_form_2x2_sqrt(r_sub)
+        self.assertEqual(caught, [])
+        self.assertTrue(np.all(np.isfinite(sqrt_sub_eigh)) and np.all(np.isfinite(sqrt_sub_closed)))
+        np.testing.assert_allclose(sqrt_sub_eigh, sqrt_sub_closed, rtol=1e-12, atol=0.0)
+        np.testing.assert_allclose(sqrt_sub_closed @ sqrt_sub_closed, r_sub, rtol=1e-7, atol=1e-323)
 
     def test_invalid_inputs_and_floating_range(self):
         removed = source_power_csm(self.a, [1., .25])

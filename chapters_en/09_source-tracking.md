@@ -963,15 +963,15 @@ B(\theta,\theta_b)
 e^{\mathrm{j}\pi m(\sin\theta-\sin\theta_b)}\right|.
 \end{aligned}$$
 
-At true $\theta=50^\circ$ across beam directions $\theta_b\in\{30^\circ,\ 40^\circ,\ 50^\circ\}$, $20\log_{10}B(\theta,\theta_b)$ at $3\ \mathrm{kHz}$ yields **$-24.20\ \mathrm{dB}$** (zero extrapolation, dropping near a sidelobe null), **$-3.75\ \mathrm{dB}$** (extrapolated wrongly from `publish_time`, falling outside the $-3\ \mathrm{dB}$ half-power mainlobe), and **$0\ \mathrm{dB}$** (exact extrapolation from `state_time`). More generally, for a uniform linear array of effective aperture $L=Md$ steered to $\theta_0$, the half-power beamwidth (HPBW, in radians) is $\theta_{\mathrm{HPBW}}\approx 0.886\,\lambda/(L\cos\theta_0)$; to prevent total control latency $\Delta t_{\mathrm{ctrl}}$ from pushing a source moving at peak angular speed $\omega_{\max}$ outside the $-3\ \mathrm{dB}$ mainlobe, steering lag must obey
+At true $\theta=50^\circ$ across beam directions $\theta_b\in\{30^\circ,\ 40^\circ,\ 50^\circ\}$, $20\log_{10}B(\theta,\theta_b)$ at $3\ \mathrm{kHz}$ yields **$-24.20\ \mathrm{dB}$** (zero extrapolation, dropping near a sidelobe null), **$-3.75\ \mathrm{dB}$** (extrapolated wrongly from `publish_time`, falling outside the $-3\ \mathrm{dB}$ half-power mainlobe), and **$0\ \mathrm{dB}$** (exact extrapolation from `state_time`). More generally, for a uniform linear array of effective aperture $Md$ ($M$ elements at spacing $d$) steered to $\theta_0$, the half-power beamwidth (HPBW, in radians) is $\theta_{\mathrm{HPBW}}\approx 0.886\,\lambda/(Md\cos\theta_0)$; to prevent total control latency $\Delta t_{\mathrm{ctrl}}$ from pushing a source moving at peak angular speed $\omega_{\max}$ outside the $-3\ \mathrm{dB}$ mainlobe, steering lag must obey
 
 $$\begin{aligned}
 \omega_{\max}\Delta t_{\mathrm{ctrl}}
 &\ll\frac{\theta_{\mathrm{HPBW}}}{2}
-\approx 0.443\frac{\lambda}{L\cos\theta_0}.
+\approx 0.443\frac{\lambda}{Md\cos\theta_0}.
 \end{aligned}$$
 
-In the example above ($L=4\lambda,\ \theta_0=50^\circ$), the linear approximation gives a half-beamwidth of $\approx 9.9^\circ$; owing to the nonlinear $\sin\theta$ broadside/endfire asymmetry, the exact $-3\ \mathrm{dB}$ array-factor half-width at $\theta_0=50^\circ$ is only $9.11^\circ$ toward broadside versus $11.35^\circ$ toward endfire (averaging $10.2^\circ$; equivalently, the lagging $\theta_b=40^\circ$ beam's upper $-3\ \mathrm{dB}$ edge sits at $48.96^\circ$), cleanly explaining why the $10^\circ$ lag from $40\ \mathrm{ms}$ unextrapolated latency already exceeds the half-power edge and drops target gain to $-3.75\ \mathrm{dB}$. Larger apertures and higher frequencies suffer even steeper high-frequency attenuation under timestamp errors.
+In the example above ($Md=4\lambda,\ \theta_0=50^\circ$), the linear approximation gives a half-beamwidth of $\approx 9.9^\circ$; owing to the nonlinear $\sin\theta$ broadside/endfire asymmetry, the exact $-3\ \mathrm{dB}$ array-factor half-width at $\theta_0=50^\circ$ is only $9.11^\circ$ toward broadside versus $11.35^\circ$ toward endfire (averaging $10.2^\circ$; equivalently, the lagging $\theta_b=40^\circ$ beam's upper $-3\ \mathrm{dB}$ edge sits at $48.96^\circ$), cleanly explaining why the $10^\circ$ lag from $40\ \mathrm{ms}$ unextrapolated latency already exceeds the half-power edge and drops target gain to $-3.75\ \mathrm{dB}$. Larger apertures and higher frequencies suffer even steeper high-frequency attenuation under timestamp errors.
 
 #### From Active Measurements to Track Birth, Confirmation, and Deletion
 
@@ -1295,7 +1295,7 @@ $$\begin{aligned}
 &\approx\begin{bmatrix}4.2179&1.7264\\1.7264&9.16\end{bmatrix}.
 \end{aligned}$$
 
-If upstream pre-predicts to $1.08\ \mathrm{s}$, it must stamp `state_time = 1.08` to prevent double extrapolation; if consumption slips to $1.20\ \mathrm{s}$ ($>0.10\ \mathrm{s}$ horizon), reject and trigger fallback search (run `.venv/bin/python -m codes.chapters.ch00.cross_chapter.tracking_time_exercises` in [`tracking_time_exercises.py`](../codes/chapters/ch00/cross_chapter/tracking_time_exercises.py), tested in [`test_codes_time_state_exercises.py`](../tests/test_codes_time_state_exercises.py); compare [Stone Soup OOSM Kalman example](https://stonesoup.readthedocs.io/en/v1.9.1/auto_examples/oosm/KalmanFilterOOSMExample.html)).
+If upstream pre-predicts to $1.08\ \mathrm{s}$, it must stamp `state_time = 1.08` to prevent double extrapolation; if consumption slips to $1.20\ \mathrm{s}$ ($>0.10\ \mathrm{s}$ horizon), reject and trigger fallback search (Recomputation entrypoint for E09-07 and E09-08: `.venv/bin/python -m codes.chapters.ch00.cross_chapter.tracking_time_exercises`; source in [`tracking_time_exercises.py`](../codes/chapters/ch00/cross_chapter/tracking_time_exercises.py), tests in [`test_codes_time_state_exercises.py`](../tests/test_codes_time_state_exercises.py); compare [Stone Soup OOSM Kalman example](https://stonesoup.readthedocs.io/en/v1.9.1/auto_examples/oosm/KalmanFilterOOSMExample.html)).
 
 <a id="e09-09"></a>
 

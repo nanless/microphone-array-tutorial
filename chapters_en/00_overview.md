@@ -555,7 +555,7 @@ Use the master index in [Chapter 0 §0.8](00_math-foundations.md#sec-0-8) to jum
 
 **How should I start running experiments?**
 
-Run the Chapter 0 exercises, the three cross-chapter baseline scripts, and the unit-test suite in Section 8 first to confirm that your local setup matches the book's sign and scaling conventions; afterward, re-plot the book's figures or build indoor image-source simulations with pinned `pyroomacoustics`. Advanced project ideas and public dataset portals are detailed in Appendix B §17.1 and §17.6.
+Run the Chapter 0 exercises, the three cross-chapter baseline scripts, and the unit-test suite in Section 8 first to confirm that your local setup matches the book's sign and scaling conventions; afterward, re-plot the book's figures or build indoor image-source simulations with pinned `pyroomacoustics`. Advanced project ideas and public dataset portals are detailed in Appendix B §17.1, §17.2, and §17.6.
 
 **Can raw numerical scores from different experiments be compared directly?**
 

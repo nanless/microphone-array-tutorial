@@ -186,6 +186,20 @@ Q(\alpha)&=\frac{(\alpha+1)^2}{\alpha^2+1/3}\text{。}
 3. **MEMS 密封垫圈漏气相位失配**：$d=1$～$2\ \mathrm{cm}$ 在 $200\ \mathrm{Hz}$ 时的真实声程相位差 $\kappa d$ 仅 $2^\circ$～$4^\circ$，垫圈微漏气造成的一阶高通相移（$3^\circ$～$15^\circ$）比真实声程差还大，足以显著破坏后向零陷（[E05-16](#e05-16) 量化了 $5^\circ$ 漏气使后向响应反超前向 $+1.52\ \mathrm{dB}$ 的失效现象）。
 4. **单频手算核验与高阶权衡**：取 $d=2\ \mathrm{cm}$、$c=343\ \mathrm{m/s}$、心形 $\alpha=1$（$T\approx 58.31\ \mu\mathrm{s}$），$500\ \mathrm{Hz}$ 处名义前向幅度 $|H_f|=2\sin(\kappa d)\approx 0.3643$，均衡后 $\mathrm{WNG}_{\mathrm{dB}}=10\log_{10}(|H_f|^2/2)\approx -11.78\ \mathrm{dB}$，$1\%$ 增益失配使后向零陷相对名义前向响应抬至 $-31.23\ \mathrm{dB}$；至 $\kappa d=\pi$（约 $8.58\ \mathrm{kHz}$）前向出现梳状相消决定高频上限。级联 $N$ 阶差分（如二阶超心形 $Q_{\max}=9\leftrightarrow 9.54\ \mathrm{dB}$）使未均衡低频前向幅度降为 $\mathcal O((\kappa d)^N)$，均衡为 $1$ 后白噪声输出功率随之按 $(\lambda/d)^{2N}$（$+6N\ \mathrm{dB/oct}$）急剧放大（系统矩阵与白噪声正则化设计见 [Elko, 2004](https://doi.org/10.1007/1-4020-7769-6_2) 与 [Benesty & Chen, Springer, 2013](https://doi.org/10.1007/978-3-642-33753-6)），故实用紧凑阵列普遍采用分频设计：极低频退回一阶或 DSB，中频启用高阶差分，高频切回常规波束。
 
+**宽带频率不变波束形成（FIB）的综合方法**：无论 DSB 还是高阶分频设计，固定物理孔径 $D$ 的均匀线阵都面临宽带波束宽度随频率收缩的问题——正横半功率波束宽度 $\theta_{\mathrm{HPBW}}(f)\approx 0.886\,\lambda/(D\cos\theta_0)\propto c/(fD)$ 随频率 $f$ 成反比变窄。尽管正对轴向 $\theta_0$ 的直达目标响应恒为 $1$，任何落在主瓣边缘或旁瓣区的偏轴声源与混响在低频段仍落入宽主瓣而几乎无衰减，到高频段却因主瓣收窄被大幅压低，等效于对偏轴信号施加了一级随角度变化的**低通声染色滤波器**。工程上消除偏轴声染色、综合**宽带频率不变波束形成器（Frequency-Invariant Beamforming，FIB）**主要有两条经典路径：
+
+1. **连续孔径缩放与孔径加权（Ward–Kennedy–Williamson 原理，*IEEE TSP*, 1995）**：要令自由场方向图在宽带内与频率无关，须保持各频点的有效电孔径乘积 $f\cdot D_{\mathrm{eff}}(f)=f_0 D_0$ 为常数。对沿 $x$ 轴分布的连续线孔径，取参考频率 $f_0$ 下的原型窗函数 $g(u)$（支撑于 $\lvert u\rvert\le D_0/2$）并按频率伸缩空间加权 $w(x,f)$，作换元 $u=(f/f_0)x$（满足 $\mathrm{d}u=(f/f_0)\,\mathrm{d}x$）即可证明预对齐宽带方向图严格与 $f$ 无关：
+
+    $$w(x,f)=\frac{f}{f_0}\,g\!\left(\frac{f}{f_0}x\right),\qquad B(\theta,f)=\int w^*(x,f)\,e^{+\mathrm{j}\frac{2\pi f}{c}x\sin\theta}\,\mathrm{d}x=\int g^*(u)\,e^{+\mathrm{j}\frac{2\pi f_0}{c}u\sin\theta}\,\mathrm{d}u\text{。}$$
+
+    离散到有限物理麦克风上时，该原理直接导出两类常用实现：其一是**时域 FIR 滤波求和**（将 $w(x_m,f)$ 在阵元坐标 $x_m$ 处采样为各通道独立 FIR 滤波器——外侧阵元自动呈现较窄低通截止以在高频退出工作，内侧阵元保持宽带，等效孔径随频率连续收缩）；其二是按倍频程划分并共享中心阵元的**谐波嵌套子阵**（参见[第 3 章 §3.3.3](03_array-geometry.md#sec-3-3-3)）。
+
+2. **带白噪声增益下限的凸二阶锥规划（SOCP）宽带方向图匹配**：面向任意离散或不规则阵元几何，可在每个离散频点 $f_k$ 与角度网格 $\Theta$ 上直接极小化复方向图相对目标频不变原型 $B_{\mathrm{des}}(\theta)$ 的最大误差，并显式加入无失真与白噪声增益下限 $G_{\min}$ 约束：
+
+    $$\min_{\vec w(f_k)}\;\max_{\theta\in\Theta}\;\lvert\vec w^H(f_k)\vec a(\theta,f_k)-B_{\mathrm{des}}(\theta)\rvert\qquad\text{s.t.}\;\vec w^H(f_k)\vec a(\theta_0,f_k)=1,\quad \lVert\vec w(f_k)\rVert_2^2\le\frac{1}{G_{\min}}\text{。}$$
+
+    引入上镜图辅助变量 $t$ 后，逐角点误差 $\lvert\vec w^H(f_k)\vec a(\theta,f_k)-B_{\mathrm{des}}(\theta)\rvert\le t$ 与权重范数上界 $\lVert\vec w(f_k)\rVert_2\le 1/\sqrt{G_{\min}}$ 均化为标准二阶锥约束，可在多项式时间内求得全局最优解（凸锥优化基础见[第 0 章 §0.5.3](00_math-foundations.md#sec-0-5-3)，同类稳健 SOCP 波束见下文 §5.4.1）。该公式也清晰揭示了宽带频率不变设计的**低频物理孔径极限**：由于有效孔径不可能超过阵列的真实物理尺寸 $D$，当低频段电尺寸跌至 $D/\lambda\lesssim 0.5$ 以下时，物理孔径无法自然支撑窄主瓣 $B_{\mathrm{des}}(\theta)$；若强行逼近窄波束，求解器会退化为本节所述的超指向大数相减并令 WNG 急剧坍塌。因此在 $D/\lambda\lesssim 0.5$ 以下，任何可行 FIB 都必须在“放宽全频或低频主瓣宽度”与“让渡 WNG 余量”之间显式折中。
+
 ### 5.4 最小方差无失真响应（MVDR 与 MPDR）
 
 最小方差无失真响应（MVDR / Capon 波束形成器）直接代入实测或估计的 $M\times M$ 噪声加干扰空间协方差矩阵 $\mathbf R_{nn}=\mathbb{E}[\vec n\vec n^H]$，在期望目标导向 $\vec a(\theta_0)$ 保持单位复响应的前提下最小化输出噪声功率：
@@ -427,7 +441,7 @@ $$\begin{aligned}
 
     只要 $\mathbf\Phi$ 由同一组非负权重快拍平均生成，$A-C$ 天然非负（见 [E05-07](#e05-07)）；但前端未对齐或灵敏度失配会把目标误判成噪声。
 
-- **McCowan 弥散场相干修正法（[McCowan & Bourlard, *IEEE TSA*, 2003](https://doi.org/10.1109/TSA.2003.818212)）**：低中频弥散噪声在相邻阵元间呈正相关，Zelinski 会低估噪声。McCowan 引入理论弥散相干系数 $\Gamma_{ij}$ 联立方程剥离相关噪声；但极低频 $\Gamma_{ij}\to 1$ 时分母 $1-\Gamma_{ij}\to 0$ 丧失可辨识性，须设分母保护（闭式解与病态放大见 [E05-07](#e05-07)）。
+- **McCowan 弥散场相干修正法（[McCowan & Bourlard, *IEEE TSAP*, 2003](https://doi.org/10.1109/TSA.2003.818212)）**：低中频弥散噪声在相邻阵元间呈正相关，Zelinski 会低估噪声。McCowan 引入理论弥散相干系数 $\Gamma_{ij}$ 联立方程剥离相关噪声；但极低频 $\Gamma_{ij}\to 1$ 时分母 $1-\Gamma_{ij}\to 0$ 丧失可辨识性，须设分母保护（闭式解与病态放大见 [E05-07](#e05-07)）。
 - **对数谱幅度（LSA）与优化修正 LSA（OM-LSA）**：人耳响度感知近似对数律，[Ephraim 与 Malah（*IEEE TASSP*, 1985）](https://doi.org/10.1109/TASSP.1985.1164550)最小化对数谱幅度均方误差导出 LSA 增益；[Cohen 与 Berdugo（*Signal Processing*, 2001）](https://israelcohen.com/wp-content/uploads/2018/05/sp_Nov2001.pdf)进一步引入逐时频点语音存在不确定性提出 OM-LSA，大幅减轻音乐噪声（多麦扩展见 [Habets & Cohen, *IWAENC*, 2006](https://webee.technion.ac.il/Sites/People/IsraelCohen/Publications/IWAENC2006_Habets.pdf)）。
 
 #### 5.7.1 逐时频点语音存在概率（SPP）与 MCRA
@@ -585,7 +599,7 @@ $$\begin{aligned}
 
 **最小手算与掩码尺度边界**：① 设 $\hat{\mathbf R}_{nn}=\operatorname{diag}(2,1)$、$\hat{\vec a}=[1,1]^\top$，式(5-9)得 $\vec w_{\mathrm{MVDR}}=[1/3,2/3]^\top$，自动给低噪第 $2$ 麦双倍权重，输出噪声压至 $2/3$（低于 DSB 的 $3/4$）；② 四帧正交双麦 $[1,1]^\top,[1,1]^\top,[1,-1]^\top,[1,-1]^\top$ 上，非零目标掩码整体缩放 $10^{-3}$ 倍不改变权重（工程可在累加前除以帧间峰值防下溢），而全零掩码必须触发安全回退直通参考麦。此外，接收端 GEV 与 §5.3 发射端多点声对比度控制（ACC）在矩阵代数与对角加载能量约束上完全同构（$\mathbf R_B\leftrightarrow\hat{\mathbf R}_{ss},\ \mathbf R_D\leftrightarrow\hat{\mathbf R}_{nn}$）。
 
-**端到端全神经空间滤波谱系**：除“掩码 + 解析波束”混合范式（[Heymann 等, *ICASSP*, 2016](https://doi.org/10.1109/ICASSP.2016.7471664)；[Erdogan 等, *Interspeech*, 2016](https://doi.org/10.21437/Interspeech.2016-552)）及其与后端 ASR 的可微端到端联合训练（[Heymann 等, *Beamnet*, *ICASSP*, 2017](https://doi.org/10.1109/ICASSP.2017.7953173)；[Boeddeker 等, *ICASSP*, 2017](https://doi.org/10.1109/ICASSP.2017.7952140)）外，近年全神经空间滤波架构沿四条主线演进：① 时域神经滤波求和网络 **FaSNet（[Luo 等, *ASRU*, 2019](https://doi.org/10.1109/ASRU46091.2019.9003849)）**与时频因果直接预测复波束权重的 **EaBNet（[Li 等, *ICASSP*, 2022](https://doi.org/10.1109/ICASSP43922.2022.9746432)）**（统一时/频全神经分离框架见 [Gu 等, *IEEE/ACM TASLP*, 2023](https://doi.org/10.1109/TASLP.2022.3229261)）；② 频时联合非线性空间滤波 **FT-JNF（[Tesch 与 Gerkmann, *IEEE/ACM TASLP*, 2023](https://doi.org/10.1109/TASLP.2022.3221046)）**用沿频率轴与时间轴交替扫描的双路径循环层突破线性空间滤波在非高斯/高度混响干扰下的自由度限制；③ 全带—子带复谱映射骨干 **TF-GridNet（[Wang 等, *IEEE/ACM TASLP*, 2023](https://doi.org/10.1109/TASLP.2023.3304482)）**常与多帧维纳或 MVDR 结合（多说话人端到端神经分离详见第 8 章）；④ 全神经窄带—跨带空间建模 **SpatialNet（[Quan 与 Li, *IEEE/ACM TASLP*, 2024](https://doi.org/10.1109/TASLP.2024.3372692)）**在各窄带独立建模通道间空间线索、再由跨带层整合全频语义，近年与 McNet 等架构已进一步向基于 Retention 或状态空间层（Mamba）的因果流式变体演进以适配端侧实时延迟与算力预算。全神经架构摆脱了二阶平稳与秩一假设，但不再具备硬性无失真与 WNG 解析边界，跨阵列几何泛化、前瞻延迟与端侧 NPU 预算须纳入上线红线。
+**端到端全神经空间滤波谱系**：除“掩码 + 解析波束”混合范式（[Heymann 等, *ICASSP*, 2016](https://doi.org/10.1109/ICASSP.2016.7471664)；[Erdogan 等, *Interspeech*, 2016](https://doi.org/10.21437/Interspeech.2016-552)）及其与后端 ASR 的可微端到端联合训练（[Heymann 等, *Beamnet*, *ICASSP*, 2017](https://doi.org/10.1109/ICASSP.2017.7953173)；[Boeddeker 等, *ICASSP*, 2017](https://doi.org/10.1109/ICASSP.2017.7952140)）外，近年全神经空间滤波架构沿四条主线演进：① 时域神经滤波求和网络 **FaSNet（[Luo 等, *ASRU*, 2019](https://doi.org/10.1109/ASRU46091.2019.9003849)）**与时频因果直接预测复波束权重的 **EaBNet（[Li 等, *ICASSP*, 2022](https://doi.org/10.1109/ICASSP43922.2022.9746432)）**（统一时/频全神经分离框架见 [Gu 等, *IEEE/ACM TASLP*, 2023](https://doi.org/10.1109/TASLP.2022.3229261)）；② 频时联合非线性空间滤波 **FT-JNF（[Tesch 与 Gerkmann, *IEEE/ACM TASLP*, 2023](https://doi.org/10.1109/TASLP.2022.3221046)）**用沿频率轴与时间轴交替扫描的双路径循环层突破线性空间滤波在非高斯/高度混响干扰下的自由度限制；③ 全带—子带复谱映射骨干 **TF-GridNet（[Wang 等, *IEEE/ACM TASLP*, 2023](https://doi.org/10.1109/TASLP.2023.3304482)）**常与多帧维纳或 MVDR 结合（多说话人端到端神经分离详见第 8 章）；④ 全神经窄带—跨带空间建模 **SpatialNet（[Quan 与 Li, *IEEE/ACM TASLP*, 2024](https://doi.org/10.1109/TASLP.2024.3357036)）**在各窄带独立建模通道间空间线索、再由跨带层整合全频语义，近年与 McNet 等架构已进一步向基于 Retention 或状态空间层（Mamba）的因果流式变体演进以适配端侧实时延迟与算力预算。全神经架构摆脱了二阶平稳与秩一假设，但不再具备硬性无失真与 WNG 解析边界，跨阵列几何泛化、前瞻延迟与端侧 NPU 预算须纳入上线红线。
 
 #### 从逐频信噪比到复数波形参考（含图 68）
 
@@ -743,15 +757,26 @@ G_{\mathrm{WNG}}(\varepsilon)=\frac{1}{1/2+50/(11+\varepsilon)^2}\text{。}\tag{
 
 <a id="e05-07"></a>
 
-#### E05-07：Zelinski 非负恒等式与 McCowan 相干修正的病态边界
+#### E05-07：Zelinski 非负恒等式、McCowan 相干边界与 OM-LSA 概率增益组合
 
-分两问剖析 §5.7 多通道后置滤波噪声估计的代数性质与数值边界：
+分三问剖析 §5.7 多通道后置滤波噪声估计与概率增益组合的代数性质与数值边界：
 1. **Zelinski 非负性与失配偏差**：给定三麦三快拍 $\mathbf X=\begin{bmatrix}1&\mathrm{j}&2\\2\mathrm{j}&1&0\\-1&2&\mathrm{j}\end{bmatrix}$、$\mathbf\Phi=\frac{1}{3}\mathbf X\mathbf X^H$，求式(5-19)的 $\hat\phi_{n,\mathrm{in}}=A-C$，证明其恒等于成对通道差分均方的平均值（故必然非负），再构造无噪双麦失配反例 $[1,0.8]^\top$ 与 $[1,+\mathrm{j}]^\top$ 检验其有偏性。
 2. **McCowan 相干修正与 $\rho\to 1$ 放大**：双麦对齐模型满足 $A=\phi_s+\phi_n,\ C=\phi_s+\rho\phi_n$（已知弥散相干 $\rho$）。反解 $(\phi_n,\phi_s)$，在 $\phi_s=3,\phi_n=1,\rho=0.3$ 上计算准确等权输出端 Wiener 增益，并比较互谱产生 $+0.01$ 扰动时 $\rho=0.3$ 与 $\rho=0.99$ 的噪声估计误差。
+3. **OM-LSA 贝叶斯后验与几何／算术增益对比**：沿用 §5.7.2 式(5-23)与图 51 设定，取线性先验信噪比 $\xi=3$、后验信噪比 $\gamma=4$、给定条件增益 $G_{H_1}=0.8$ 与地板 $G_{\min}=0.1$，对四组先验无语音概率 $q_0\in\{0.5,\,0.2,\,0,\,1\}$ 分别计算语音存在后验 $p_s$、OM-LSA 几何组合增益 $G_{\mathrm{geo}}=G_{H_1}^{p_s}G_{\min}^{1-p_s}$ 与同权重算术混合 $G_{\mathrm{arith}}=p_s G_{H_1}+(1-p_s)G_{\min}$，并结合 AM–GM 不等式说明退化端点与内部区间的差异。
 
 **参考答案**：
-1. 自谱均值 $A=(2+5/3+2)/3=17/9$，互谱实部均值 $C=(0-1/3+2/3)/3=1/9$，得 $\hat\phi_{n,\mathrm{in}}=16/9$。对全部 $M(M-1)/2$ 对求和恒有 $A-C=\frac{1}{M(M-1)}\sum_{i<j}\hat{\mathbb{E}}[|x_i-x_j|^2]\ge 0$（本题三对差分均方为 $11/3,14/3,7/3$，除以 $6$ 恰为 $16/9$），保证同权平滑下绝不变负；但无噪失配 $[1,0.8]^\top$ 与未对齐 $[1,+\mathrm{j}]^\top$ 分别产生虚假噪声估计 $0.02$ 与 $1$。
+1. 自谱均值 $A=(2+5/3+2)/3=17/9$，互谱实部均值 $C=(0-1/3+2/3)/3=1/9$，得 $\hat\phi_{n,\mathrm{in}}=16/9$。对全部 $M(M-1)/2$ 对求和恒有 $A-C=\frac{1}{M(M-1)}\sum_{i<j}\hat{\mathbb{E}}[\lvert x_i-x_j\rvert^2]\ge 0$（本题三对差分均方为 $11/3,14/3,7/3$，除以 $6$ 恰为 $16/9$），保证同权平滑下绝不变负；但无噪失配 $[1,0.8]^\top$ 与未对齐 $[1,+\mathrm{j}]^\top$ 分别产生虚假噪声估计 $0.02$ 与 $1$。
 2. 联立消元得 $\phi_n=\frac{A-C}{1-\rho}$、$\phi_s=\frac{C-\rho A}{1-\rho}$。代入 $\rho=0.3$（$A=4,C=3.3$）精准还原 $\phi_n=1,\phi_s=3$，等权输出噪声 $(1+0.3)/2=0.65$，输出 Wiener 增益 $3/3.65=60/73\approx 0.8219$。互谱扰动 $+0.01$ 造成 $\Delta\hat\phi_n=-0.01/(1-\rho)$：$\rho=0.3$ 时仅 $-0.0143$，而 $\rho=0.99$ 时放大 $100$ 倍达 $-1.0$（噪声估计直接归零）；$\rho=1$ 时方程退化不可辨识。
+3. 组合变量 $\nu=\gamma\xi/(1+\xi)=3$，似然比 $\ell=(1+\xi)e^{-\nu}=4e^{-3}\approx 0.199148$。代回式(5-23)得四组结果（由 `chapter05_experiments.py` 的 `om_lsa_probability_combination()` 独立复算；此处直接给定 $G_{H_1}=0.8$ 以隔离概率与增益组合，不含完整 LSA 积分或 MCRA 状态递推）：
+
+| 先验无语音概率 $q_0$ | 语音存在后验 $p_s$ | OM-LSA 几何增益 $G_{\mathrm{geo}}$ | 同权重算术混合 $G_{\mathrm{arith}}$ |
+|---:|---:|---:|---:|
+| $0.5$ | $0.833925$ | $0.566382$ | $0.683748$ |
+| $0.2$ | $0.952574$ | $0.724870$ | $0.766802$ |
+| $0$ | $1.000000$ | $0.800000$ | $0.800000$ |
+| $1$ | $0.000000$ | $0.100000$ | $0.100000$ |
+
+由加权 AM–GM 不等式，在内部区间 $0<p_s<1$（如 $q_0=0.5,0.2$）恒有严格不等式 $G_{\mathrm{geo}}<G_{\mathrm{arith}}$，使过渡区增益更柔和地向地板 $G_{\min}$ 收拢以抑制音乐噪声；仅在退化先验端点 $q_0=0$（$p_s=1$）与 $q_0=1$（$p_s=0$）处两者相等，分别锁死为 $G_{H_1}=0.8$ 与 $G_{\min}=0.1$。
 
 <a id="e05-08"></a>
 

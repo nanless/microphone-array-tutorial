@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>工业音频实现研究 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="f6d48efe6ade"><style>
+<meta name="source-digest" content="a0289902c00e"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -574,7 +574,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <span id="sec-9" class="anchor-alias" aria-hidden="true"></span><span id="从固定噪声功率到受控的在线更新" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-150ad75236">从固定噪声功率到受控的在线更新</h3>
 <p>噪声变大后，继续用开头的固定 $D_f$ 会留下更多残留；把所有带语音帧直接纳入噪声平均，又会将语音当噪声减掉。MCRA（Minima Controlled Recursive Averaging，最小值控制递归平均）改变的是<strong>噪声功率估计的更新速度</strong>。Cohen 与 Berdugo 的<a href="https://israelcohen.com/wp-content/uploads/2018/05/SPL_Jan2002.pdf">2002年作者原稿</a>第13页、§II～III式(3)～(14)依次给出语音存在/不存在时的更新、存在概率平均、局部平滑、双最小值跟踪和判决；2026-10-01已阅读原页。它不是只给最终谱减增益乘一个二值开关。</p>
 <p>若当前软存在概率是 $p_t$、无语音时平滑系数为 $\alpha_d\text{，}$噪声递推使用 $\widetilde\alpha_t=\alpha_d+(1-\alpha_d)p_t$。例如本书给定 $\alpha_d=0.8$、旧噪声功率2、当前观测功率10：$p_t=0$时更新为3.6，$p_t=0.9$时仅更新为2.16。数值均按同一频点、同一功率单位计算；它们只复算给定概率下的一步递推，尚未构成带最小值搜索和概率估计的完整MCRA。其受控连续例见<a href="../10_engineering-practice.html#e10-21">E10-21</a>，更完整的机制及IMCRA两轮区别见<a href="01_spatial_and_tracking.html#sec-u-2973a53a28">空间研究§50、51</a>。</p>
-<p>工业代码并不都使用同一软概率。本锁版 SpeexDSP 的 <code>preproc_update_prob</code> 在 $0.4S>S_{\min}$ 时设置逐频点硬标记；<code>preproc_noise_update</code> 在无标记<strong>或当前功率低于旧噪声</strong>时才更新。I32 的原函数小例说明它仍能跟踪下降的功率，但不能据此称作原MCRA/IMCRA全链。Cohen 的<a href="https://webee.technion.ac.il/Sites/People/IsraelCohen/Info/Software.html">作者软件页</a>提供OM-LSA/IMCRA下载入口；本轮点击未取得可核软件包，也未发现明确再分发许可，因此只引用原文和网页，不将作者MATLAB代码或权重随仓分发。</p>
+<p>工业代码并不都使用同一软概率。本锁版 SpeexDSP 的 <code>preproc_update_prob</code> 在 $0.4S>S_{\min}$ 时设置逐频点硬标记；<code>preproc_noise_update</code> 在无标记<strong>或当前功率低于旧噪声</strong>时才更新。I32 的原函数小例说明它仍能跟踪下降的功率，但不能据此称作原MCRA/IMCRA全链。Cohen 的<a href="https://webee.technion.ac.il/Sites/People/IsraelCohen/Info/Software.html">作者软件页</a>提供OM-LSA/IMCRA下载入口；当前核查未取得可核软件包，也未发现明确再分发许可，因此只引用原文和网页，不将作者MATLAB代码或权重随仓分发。</p>
 <span id="sec-10" class="anchor-alias" aria-hidden="true"></span><span id="i06webrtc-传统-vad" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-b73874ddcd">I06：WebRTC 传统 VAD</h3>
 <p>入口为 <a href="https://webrtc.googlesource.com/src/+/0467d2b91cc20b9b001c2bbb73d43ea6b2491f3e/common_audio/vad/include/webrtc_vad.h"><code>common_audio/vad/include/webrtc_vad.h</code></a>，核心判断位于同目录的 <code>webrtc_vad.c</code> 和 <code>vad_core.c</code>。它与 APM 中的其他语音概率估计器不同；移植时必须写明具体接口，不能统称“WebRTC VAD”。WebRTC 源码使用 BSD-3-Clause，并保留相关第三方声明。</p>
 <p>接口接受受支持采样率下的有符号 16 位单声道 PCM，帧长必须通过 <code>WebRtcVad_ValidRateAndFrameLength</code> 检查；常用合法帧为 10、20、30 ms。16 kHz 下分别是 160、320、480 个样本。模式控制检测的积极程度，不是以 dB 表示的能量门限。</p>
@@ -633,7 +633,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <p><code>xmos/fwk_voice</code> 已在官方 README 中声明迁移到 <code>xmos/lib_voice</code>。后者 README 版本为 1.1.0，列出 XTC Tools 15.3.1、Python 3.11 和 <code>lib_xcore_math</code> 等前提。源码入口为 <code>lib_voice/api/aec/</code>、<code>lib_voice/src/aec/</code> 与 <code>adec/</code>；ADEC 是围绕 AEC 的延迟估计与控制部分。<a href="https://github.com/xmos/lib_voice">官方库</a></p>
 <p>配置应明确麦克风和播放参考通道数、帧移、主/影子滤波分区、内存池、线程调度和参考延迟。先确认参考完整，再测延迟估计器如何触发调整及 AEC 重置；不能只把其滤波器换成教学 NLMS 后继续沿用所有控制常数。</p>
 <p>建议注入播放延迟阶跃、扬声器路径变化、静音参考和双讲。记录重对齐请求、滤波重置、残余回声和近端损伤。官方 <a href="https://github.com/xmos/lib_voice/blob/c9f1a9bf95cd88c7950adf4bf631c217f900ad25/LICENSE.rst"><code>LICENSE.rst</code></a>为 XMOS Public Licence v1；商用使用限定 XMOS 设备，并有特殊用途条款。它可以作为可获取的供应商源码研究，但不能标成不受硬件限制的 MIT/BSD 方案。</p>
-<p><strong>参考静音后的保持仅适用于 ALT 分支。</strong> 固定 <a href="https://github.com/xmos/lib_voice/blob/c9f1a9bf95cd88c7950adf4bf631c217f900ad25/lib_voice/api/stage1/stage1.h"><code>stage1.h</code></a>默认 <code>ALT_ARCH_MODE=0</code>；<a href="https://github.com/xmos/lib_voice/blob/c9f1a9bf95cd88c7950adf4bf631c217f900ad25/lib_voice/src/stage1/stage1.c#L49"><code>stage1.c</code></a>的 ALT 控制先经延迟缓存处理，再判断参考活动，门限为 $16000\times3/240=200$ 帧。原流程先检查 <code>count &gt; limit</code> 再递增：从 AEC 启用且计数归零开始，连续前 201 个无参考活动帧保持 AEC 并向后级强制参考活动，第 202 帧才旁路。因此“3 s”是配置预算，不能把实际严格比较改写成恰好 200 帧停用，也不能推成默认所有模式的策略。这是 AEC/IC 路由保持，不是回声尾声真值或近端单讲识别；本轮没有 XCORE 执行。当前 XMOS 文档版本与此固定提交分开，未成功读取的 XVF3510 4.2 PDF 不作为逐式证据。</p>
+<p><strong>参考静音后的保持仅适用于 ALT 分支。</strong> 固定 <a href="https://github.com/xmos/lib_voice/blob/c9f1a9bf95cd88c7950adf4bf631c217f900ad25/lib_voice/api/stage1/stage1.h"><code>stage1.h</code></a>默认 <code>ALT_ARCH_MODE=0</code>；<a href="https://github.com/xmos/lib_voice/blob/c9f1a9bf95cd88c7950adf4bf631c217f900ad25/lib_voice/src/stage1/stage1.c#L49"><code>stage1.c</code></a>的 ALT 控制先经延迟缓存处理，再判断参考活动，门限为 $16000\times3/240=200$ 帧。原流程先检查 <code>count &gt; limit</code> 再递增：从 AEC 启用且计数归零开始，连续前 201 个无参考活动帧保持 AEC 并向后级强制参考活动，第 202 帧才旁路。因此“3 s”是配置预算，不能把实际严格比较改写成恰好 200 帧停用，也不能推成默认所有模式的策略。这是 AEC/IC 路由保持，不是回声尾声真值或近端单讲识别；当前复核没有 XCORE 执行。当前 XMOS 文档版本与此固定提交分开，未成功读取的 XVF3510 4.2 PDF 不作为逐式证据。</p>
 <span id="sec-18" class="anchor-alias" aria-hidden="true"></span><span id="i11xmos-ic-与-vnr-的控制关系" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-254bec95cc">I11：XMOS IC 与 VNR 的控制关系</h3>
 <p><code>lib_voice/api/ic/</code>、<code>src/ic/</code> 和 <code>api/vnr/</code>、<code>src/vnr/</code> 分别给出干扰消除及语音噪声比估计接口。VNR（Voice-to-Noise Ratio）提供控制信息；它不等于一个无条件可靠的“是否有人说话”比特。源码沿用 I10 的版本和许可。<a href="https://github.com/xmos/lib_voice/tree/c9f1a9bf95cd88c7950adf4bf631c217f900ad25/lib_voice/src">模块目录</a></p>
 <p>应记录主麦与参考麦含义、适配模式、滤波覆盖、状态初始化、VNR 模型及其阈值使用位置。目标语音泄漏到参考通道时，自适应消除可能损害目标，测试需改变目标角度、距离、干扰方向和通道增益。</p>
@@ -1135,7 +1135,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <thead>
 <tr>
 <th scope="col">对象</th>
-<th scope="col">本轮实际动作</th>
+<th scope="col">当前实际核查动作</th>
 <th scope="col">未执行</th>
 </tr>
 </thead>
@@ -1152,8 +1152,8 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 </tr>
 <tr>
 <td>其他工业库</td>
-<td>本轮文档/源码复核；既有C探针另有报告</td>
-<td>不据旧报告声称本轮重跑或设备验收</td>
+<td>当前文档/源码复核；既有C探针另有报告</td>
+<td>不据旧报告声称当前重跑或设备验收</td>
 </tr>
 </tbody>
 </table></div>
@@ -1163,7 +1163,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
   --report codes/chapters/ch10/reports/industrial_upstream_interfaces_current.json
 </code></pre>
 <p>该临时环境路径只描述本次记录；其他机器须指定自身已有环境。上面的复跑命令显式保存当前报告，不覆盖2026-09-28的原记录。普通<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/tests/test_codes_industrial_upstream_interfaces.py">离线测试</a>只读取报告与本书脚本，无需上游缓存、SciPy或网络。期望值来自独立相关性恒等式、首次只读调用保留值和按通道/按时间样本的计数区别；测试通过不表示已认证这些库的全部输入和硬件。</p>
-<p>本轮检索按“PortAudio callback flags / framesPerBuffer”“ALSA PCM errors / timestamps”“ITU P.835 / P.566 2026”“BS.1770-5 / EBU R128”“STOI ESTOI original paper”“ViSQOL v3”“FastEnhancer ICASSP2026 / faster-enhancer.c”定位官方资料，并实际打开原文或固定代码。STOI作者站PDF本轮访问失败，因此不把代码实跑说成已读并复现作者全文；已有Python接口结论依上面固定源码及原调用报告。P.835与P.566的生效状态、预发布/待发布状态分开核查，不用搜索摘要替代标准条款。</p>
+<p>文献检索按“PortAudio callback flags / framesPerBuffer”“ALSA PCM errors / timestamps”“ITU P.835 / P.566 2026”“BS.1770-5 / EBU R128”“STOI ESTOI original paper”“ViSQOL v3”“FastEnhancer ICASSP2026 / faster-enhancer.c”定位官方资料，并实际打开原文或固定代码。STOI作者站PDF访问失败，因此不把代码实跑说成已读并复现作者全文；已有Python接口结论依上面固定源码及原调用报告。P.835与P.566的生效状态、预发布/待发布状态分开核查，不用搜索摘要替代标准条款。</p>
 <p><a id="industrial-controlled-contracts"></a></p>
 <span id="sec-58" class="anchor-alias" aria-hidden="true"></span><span id="2026-10-01五项固定源码合同的受限执行" class="anchor-alias" aria-hidden="true"></span><h4 id="sec-u-8ce6511f97">2026-10-01：五项固定源码合同的受限执行</h4>
 <p>2026-10-01的<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch10/reports/industrial_contracts.json">历史合同报告</a>绑定<a href="https://github.com/nanless/microphone-array-tutorial/blob/bde483bcc429a553aeaf8830ca3687ab46831db0/codes/chapters/ch10/examples/audit_industrial_contracts.py">bde483保存的原工具字节</a>，不是改后工具的产物；2026-10-05的当前工具与实际复验见<a href="#industrial-current-interface-contracts">§9</a>。历史运行不修改上述2026-09-28报告，先核官方地址、完整HEAD、工作树清洁状态、各源码与许可证的SHA及Git blob，再在临时目录编译或提取原函数，结束重复核对。报告绑定当时工具和完整锁表摘要，严格JSON不写NaN/Infinity。获取工具的 <code>not_run</code> 仍表示获取过程没有执行上游，不改成整包运行成功。</p>

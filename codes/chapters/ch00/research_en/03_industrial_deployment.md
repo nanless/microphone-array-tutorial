@@ -132,7 +132,7 @@ Deployments must log fixed digital gain, adaptive digital gain settings, whether
 
 ### I08: Silero VAD Chunk Sizes and Recurrent State
 
-`snakers4/silero-vad` (`MIT` code license; verify pinned ONNX/JIT model assets separately) separates low-level `OnnxWrapper`, streaming `VADIterator`, and offline `get_speech_timestamps` inside [`src/silero_vad/utils_vad.py`](https://github.com/snakers4/silero_vad/blob/60b7ffa243625ebdc1070275a29f18c8786a/src/silero_vad/utils_vad.py).
+`snakers4/silero-vad` (`MIT` code license; verify pinned ONNX/JIT model assets separately) separates low-level `OnnxWrapper`, streaming `VADIterator`, and offline `get_speech_timestamps` inside [`src/silero_vad/utils_vad.py`](https://github.com/snakers4/silero-vad/blob/60b7ffa243625ebdc1070275a29f18c87843786a/src/silero_vad/utils_vad.py).
 
 At the pinned revision, `OnnxWrapper` enforces exact `32` ms chunks—`512` samples at `16` kHz or `256` samples at `8` kHz—while carrying internal LSTM state and a context tail across consecutive chunks: never reset state per chunk within a stream, never share one wrapper instance across concurrent streams without state multiplexing, and document onset/offset hysteresis thresholds, minimum speech/silence durations, and pre-/post-roll padding separately from raw frame probabilities. Note also that upstream's convenience integer-multiple decimation shortcut (`sr // 16000` strided slicing) lacks an anti-aliasing low-pass filter, so hardware `48` kHz streams should pass through proper bandlimited SRC first, buffering `10` ms (`160`-sample) driver callbacks into `512`-sample model chunks with explicit timestamp bookkeeping.
 
@@ -446,7 +446,7 @@ Furthermore, the [ViSQOL v3 QoMEX 2020 paper](https://arxiv.org/pdf/2004.09584) 
 
 ### I26: `libsndfile` Frame Counts, Amplitude Normalization, and Short Reads
 
-Arrays entering DSP routines depend directly on audio file decoding contracts. We study `libsndfile/libsndfile` (`include/sndfile.h`, `src/sndfile.c`, `src/pcm.c`) strictly as an I/O protocol baseline rather than an array algorithm: the [official API](https://libsndfile.github.com/libsndfile/api.html) separates scalar item-counted (`sf_read_*`), time-frame-counted (`sf_readf_*`), and raw byte interfaces.
+Arrays entering DSP routines depend directly on audio file decoding contracts. We study `libsndfile/libsndfile` (`include/sndfile.h`, `src/sndfile.c`, `src/pcm.c`) strictly as an I/O protocol baseline rather than an array algorithm: the [official API](https://libsndfile.github.io/libsndfile/api.html) separates scalar item-counted (`sf_read_*`), time-frame-counted (`sf_readf_*`), and raw byte interfaces.
 
 Reading `160` stereo frames via `sf_readf_float(..., 160)` requires a `320`-float buffer, corresponding to `sf_read_float(..., 320)`. At EOF, returned counts may fall strictly below the requested count while trailing buffer slots remain untouched or zeroed—slice strictly to the returned count so padded tail slots never corrupt running covariance statistics.
 

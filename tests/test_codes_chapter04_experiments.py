@@ -3,6 +3,7 @@ import cmath
 import json
 import math
 import unittest
+import warnings
 import numpy as np
 from codes.chapters.ch04 import chapter04_experiments as ex
 from codes.chapters.ch04.core.doa import esprit_ula, gcc_phat
@@ -148,6 +149,13 @@ class Chapter04ExperimentsTests(unittest.TestCase):
             self.assertAlmostEqual(lhs, rhs, places=13)
         self.assertLess(abs(float(bessel_jn(0, FIRST_BESSEL_J0_ROOT))), 1e-14)
         self.assertLess(abs(float(bessel_jn(1, FIRST_BESSEL_J1_ROOT))), 1e-14)
+        # High-order small-magnitude series convergence (regression for premature 1e-17*max(1, acc) break):
+        j45_ref = 3.946558989987071e-22
+        j45_val = float(bessel_jn(45, 12.0))
+        self.assertLess(abs(j45_val - j45_ref) / j45_ref, 1e-12)
+        j45_arr = bessel_jn(45, np.array([0.0, 12.0]))
+        self.assertEqual(float(j45_arr[0]), 0.0)
+        self.assertLess(abs(float(j45_arr[1]) - j45_ref) / j45_ref, 1e-12)
         for bad_n in (True, 1.5, '0'):
             with self.assertRaises(ValueError):
                 bessel_jn(bad_n, 1.0)
@@ -181,6 +189,13 @@ class Chapter04ExperimentsTests(unittest.TestCase):
             vec = uca_steering_vector(8, 1.0, target_az)
             est, _ = uca_phase_mode_esprit(np.outer(vec, vec.conj()) + 1e-4 * np.eye(8), 1.0, n_sources=1)
             self.assertAlmostEqual(float(est[0]), target_az, delta=1e-3)
+        # Subnormal covariance scaling (1e-315) must avoid complex division overflow/NaN:
+        with warnings.catch_warnings():
+            warnings.simplefilter('error', RuntimeWarning)
+            vec30 = uca_steering_vector(8, 1.0, 30.0)
+            cov_sub = 1e-315 * (np.outer(vec30, vec30.conj()) + 1e-3 * np.eye(8))
+            est_sub, _ = uca_phase_mode_esprit(cov_sub, 1.0, n_sources=1)
+            self.assertAlmostEqual(float(est_sub[0]), 30.0, delta=1e-3)
         with self.assertRaises(np.linalg.LinAlgError):
             uca_phase_mode_esprit(np.eye(8), 1.0, n_sources=1)
 

@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>章节代码练习与音频实验 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="f6d48efe6ade"><style>
+<meta name="source-digest" content="a0289902c00e"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -978,11 +978,6 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <td>线性分数延迟的逐频幅度误差与PCM验证</td>
 <td><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/appendix_b/interpolation_exercise.py">插值练习</a></td>
 </tr>
-<tr>
-<td>E17-03～13</td>
-<td>六位置合成房间、短向量解析边界、PCM分窗、假设证据卡、共享聚合、尺度保护、源谱加权、有限尾部EDC与全链路级联排障归因</td>
-<td><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/appendix_b/appendix_b_experiments.py">附录 B 逐步实验</a></td>
-</tr>
 </tbody>
 </table></div>
 <p>各题的题干、代入、中间量、答案与解释边界写在对应章节。它们不增加算法种类统计，也不把确定性数值实验当作语音质量评测。</p>
@@ -1006,7 +1001,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <p><a href="../audio/spatial_mic1.wav">单麦输入</a><audio class="audio-sample" controls preload="none" aria-label="单麦输入" src="../audio/spatial_mic1.wav">请使用上方 WAV 链接下载。</audio></p>
 <p><a href="../audio/spatial_unaligned.wav">未对齐平均</a><audio class="audio-sample" controls preload="none" aria-label="未对齐平均" src="../audio/spatial_unaligned.wav">请使用上方 WAV 链接下载。</audio></p>
 <p><a href="../audio/spatial_aligned.wav">对齐后平均</a><audio class="audio-sample" controls preload="none" aria-label="对齐后平均" src="../audio/spatial_aligned.wav">请使用上方 WAV 链接下载。</audio></p>
-<p>对应 E01-01、E02-03、E04-01；进一步把两个独立噪声改成同一噪声，检查“麦数翻倍”的白噪声增益前提。</p>
+<p>对应 E01-01、E01-05、E04-01；进一步把两个独立噪声改成同一噪声，检查“麦数翻倍”的白噪声增益前提。</p>
 <span id="sec-5" class="anchor-alias" aria-hidden="true"></span><span id="4-aec-与已知双讲冻结" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-0f3ea05cf9">4. AEC 与已知双讲冻结</h2>
 <p>播放参考由固定噪声及合成谐波构成；回声路径只有第 0、12、24 个采样非零，系数为 0.7、−0.3、0.15。NLMS 长度 32，步长 0.4，从零权重开始。1.2～1.8 s 加入近端合成音，冻结版在这一已知区间停止更新，但继续输出残差。</p>
 <p>比较两种残差时，分别看 0.6～1.1 s 的远端单讲和 1.2～1.8 s 的双讲。ERLE 只在前一区间计算，双讲段应另看近端损伤。不能把“残差更安静”直接当作近端语音保留更好；这里的冻结掩码来自合成真值，不能证明真实双讲检测有效。</p>
@@ -1835,7 +1830,7 @@ $$</p>
 <span id="sec-45" class="anchor-alias" aria-hidden="true"></span><span id="311-连续源发射时刻与接收时刻" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-31-1">31.1 连续源、发射时刻与接收时刻</h3>
 <p>源由 32 个正弦相加，频率依次为 300、400、……、3400 Hz，每个分量幅度为 $1/\sqrt{32}\text{。}$相位由种子 9001 的 PCG64 随机流在 $[-\pi,\pi)$ 抽取；同一随机流接着按声道优先的顺序产生两路各 32000 点高斯噪声。噪声在共同导出增益之前的标准差为 0.01，各通道独立。</p>
 <p>包络定义在<strong>源的发射时轴</strong>：首末各 20 ms 线性淡入、淡出；0.80～0.82 s 淡出至零，0.82～1.08 s 保持零，1.08～1.10 s 恢复。只有源停止发声，传感器噪声仍在。接收端窗口既有传播延迟，又可能跨过包络边界，不能把发射时轴的静音区间直接当成定位器的缺测区间。</p>
-<p>两麦坐标为 $(-0.05,0)$ m 与 $(0.05,0)$ m，源从 $(-0.8,1.5)$ m 以 $(0.8,0)$ m/s 匀速运动，声速为 343 m/s。每个接收样本先解第9章式(9-27)的迟滞发射时刻，再求连续源波形并乘指定的 $1/r$ 压力增益。该模型不包含房间反射、麦克风方向性或完整运动单极子的辐射幅度修正，不是设备录音。</p>
+<p>两麦坐标为 $(-0.05,0)$ m 与 $(0.05,0)$ m，源从 $(-0.8,1.5)$ m 以 $(0.8,0)$ m/s 匀速运动，声速为 343 m/s。每个接收样本先解第9章式(9-44)的迟滞发射时刻，再求连续源波形并乘指定的 $1/r$ 压力增益。该模型不包含房间反射、麦克风方向性或完整运动单极子的辐射幅度修正，不是设备录音。</p>
 <p>源参考与双麦观测共用一个导出增益，取两个文件未量化峰值最大者的倒数再乘 0.7。实际增益保存在清单的 <code>common_export_gain</code> 中；不逐文件归一化。导出为小端交织 PCM16，按乘 32768 后四舍五入量化，读回时除以 32768。</p>
 <span id="sec-46" class="anchor-alias" aria-hidden="true"></span><span id="312-定位器看到什么状态属于哪个时刻" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-31-2">31.2 定位器看到什么，状态属于哪个时刻</h3>
 <p>每帧长 512 点、步长 160 点，共 197 帧。起始采样编号为 $n_0$ 时，观测与滤波状态的时间标记为 $(n_0+255.5)/16000$ s，即离散采样窗的中心；最早可用时刻为 $(n_0+512)/16000$ s，即半开区间的整个块已到齐。两者相差 16.03125 ms，不包含额外计算、调度或消息传输延迟。</p>
@@ -2501,7 +2496,7 @@ PSD还须写采样率、Hz分母、单边折叠和去均值策略。
 </code></pre>
 <p><code>--check</code>读取现存文件，核对集合、当前源SHA、真实PCM参数及评分，再重算确定性合成字节；它不重写文件、修清单或用重新编码代替实际读回。源码取得、原方法实验与完整网络运行分别记录；外部实现的限定对照见<a href="01_spatial_and_tracking.html">空间研究</a>，不把E04-19的解析多项式当成完整root-MUSIC求解器。</p>
 <span id="sec-77" class="anchor-alias" aria-hidden="true"></span><span id="39-导数约束范数球复参考与概率增益" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-f4b9d9df1e">39. 导数约束、范数球、复参考与概率增益</h2>
-<p>本节连接第5章<a href="../05_beamforming.html#e05-11">E05-11</a>、<a href="../05_beamforming.html#e05-13">E05-13</a>与<a href="../05_beamforming.html#e05-14">E05-14</a>（另含第 5 章 §5.8 的语音存在概率与几何组合对照），先核对小规模代数，再读实际PCM。三道习题均由<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch05/chapter05_experiments.py">章节入口</a>从输入重新计算；原方法对照另见<a href="01_spatial_and_tracking.html#beamformer-upstream-audit">固定pb_bss审计</a>。原函数返回有限值不代表约束可行，源码取得也不代表整包或完整网络已经成功运行。</p>
+<p>本节连接第5章<a href="../05_beamforming.html#e05-11">E05-11</a>、<a href="../05_beamforming.html#e05-13">E05-13</a>与<a href="../05_beamforming.html#e05-14">E05-14</a>（另含第 5 章 §5.7.2 的语音存在概率与几何组合对照），先核对小规模代数，再读实际PCM。三道习题均由<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch05/chapter05_experiments.py">章节入口</a>从输入重新计算；原方法对照另见<a href="01_spatial_and_tracking.html#beamformer-upstream-audit">固定pb_bss审计</a>。原函数返回有限值不代表约束可行，源码取得也不代表整包或完整网络已经成功运行。</p>
 <span id="sec-78" class="anchor-alias" aria-hidden="true"></span><span id="391-e05-14一复响应的一阶平坦与噪声代价" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-39-1">39.1 E05-14（一）：复响应的一阶平坦与噪声代价</h3>
 <p>三麦关于相位中心对称，噪声协方差为diag(1,2,4)，导向为[e⁻ʲᵠ,1,eʲᵠ]。φ是相邻阵元的无量纲相位步长，以rad表示；它不是直接的DOA角。名义φ=0处导向为[1,1,1]，导数列为[−j,0,j]。</p>
 <p>单位名义响应和零复响应导数共同要求w₁=w₃=t、w₂=1−2t。把它们代入噪声功率，得到5t²+2(1−2t)²；求导为26t−8，因此t=4/13，权重为[4,5,4]/13。输出噪声为10/13，名义线性WNG为169/57。</p>
@@ -2536,7 +2531,7 @@ PSD还须写采样率、Hz分母、单边折叠和去均值策略。
 <p>全秩目标diag(2,1)、噪声I时，迹列为[2/3,0]，第一通道目标失真为2/9。相同输入的一般MWF恰好也是[2/3,0]，但秩一MWF迹化简为[1/2,0]；这一个巧合不证明任意全秩模型都等价，更不是全秩无失真保证。逐步复算见<a href="../05_beamforming.html#e05-11">正文E05-11</a>，固定原函数的正常、退化、异常和模型外结果均保留在<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch05/reports/upstream_beamformers.json">真实审计报告</a>。</p>
 <span id="sec-81" class="anchor-alias" aria-hidden="true"></span><span id="394-语音后滤波先验后验与几何组合不是同一个量" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-39-4">39.4 语音后滤波：先验、后验与几何组合不是同一个量</h3>
 <p>在同一时频点，H₀表示无语音、H₁表示语音存在。给定零均值圆对称复高斯模型，归一化噪声方差1、存在时总方差4；ξ=3、γ=4时，两个似然分别与exp(−4)和exp(−1)/4成正比。先验无语音概率q需与似然一起进入Bayes，不能直接当成后验存在概率pₛ。</p>
-<p>本例给定存在时幅度增益0.8、缺席下限0.1，按对数增益加权后取指数，得到几何组合。完整后验推导、组合公式及图51见<a href="../05_beamforming.html#sec-5-8">第 5 章 §5.8</a>。</p>
+<p>本例给定存在时幅度增益0.8、缺席下限0.1，按对数增益加权后取指数，得到几何组合。完整后验推导、组合公式及图51见<a href="../05_beamforming.html#sec-5-7-2">第 5 章 §5.7.2</a>。</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
 <thead>
 <tr>
@@ -2628,7 +2623,7 @@ PSD还须写采样率、Hz分母、单边折叠和去均值策略。
 </code></pre>
 <p><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch05/core/derivative_audio.py">唯一波形与评分实现</a>与<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch05/examples/generate_derivative_audio.py">生成器</a>分工明确：<code>--check</code>读取实际文件、重新评分并核对字节和源摘要，不重生来掩盖失效。网站复制检查核集合、来源、WAV格式、摘要与可用播放器，数值评分由这个只读检查和<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/tests/test_codes_ch05_derivative_audio.py">独立回归</a>承担。四样本不计入主109清单，也不称工业性能或正式听测。</p>
 <span id="sec-83" class="anchor-alias" aria-hidden="true"></span><span id="40-仿射投影的观测窗口冻结与有色参考" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-25e4b13d5f">40. 仿射投影的观测窗口、冻结与有色参考</h2>
-<p>第六章保留此前20题，并增加E06-21～25。前四题由<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/aec_affine_projection_demo.py">APA完整缩例</a>复算，最后一题由<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/examples/generate_apa_audio.py">独立音频入口</a>实际生成或用<code>--check</code>只读重算。唯一<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/core/aec_affine_projection.py">状态核</a>先输出当前先验回声与残差，再用同一旧权重重算窗口中各观测的误差；不是把此前各时刻已输出的残差拼接起来。</p>
+<p>第 6 章的 E06-21～E06-25 对应仿射投影（APA）的几何与音频对照练习：前四题由<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/aec_affine_projection_demo.py">APA完整缩例</a>复算，最后一题由<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/examples/generate_apa_audio.py">独立音频入口</a>实际生成或用<code>--check</code>只读重算。唯一<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/core/aec_affine_projection.py">状态核</a>先输出当前先验回声与残差，再用同一旧权重重算窗口中各观测的误差；不是把此前各时刻已输出的残差拼接起来。</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
 <thead>
 <tr>
@@ -2665,7 +2660,7 @@ PSD还须写采样率、Hz分母、单边折叠和去均值策略。
 </tr>
 </tbody>
 </table></div>
-<p>另需注意，在双讲冻结恢复时，若保留未清理的旧投影观测窗（例如含近端污染的 $d=10$），恢复更新仍会复用该观测导致权重偏移；显式清投影观测窗时保留参考 FIR 历史与权重，细节见第 6 章 §6.2.1 的冻结窗口讨论。</p>
+<p>另需注意，在双讲冻结恢复时，若保留未清理的旧投影观测窗（例如含近端污染的 $d=10$），恢复更新仍会复用该观测导致权重偏移；显式清投影观测窗时保留参考 FIR 历史与权重，细节见第 6 章 §6.2.5 的冻结窗口讨论。</p>
 <span id="sec-84" class="anchor-alias" aria-hidden="true"></span><span id="同输入的两个条件" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-17bea56a5d">同输入的两个条件</h3>
 <p>采样率16kHz，源长32000点，AR参考$x[n]=0.98x[n-1]+\eta[n]$，$x[-1]=0$、$\sigma_\eta=0.015$。16抽头实路径仅0/3/7/13处为0.6/−0.2/0.1/0.05。PCG64 seed20261001先抽32000激励，再抽32013个独立观测噪声，噪声标准差0.003；无噪对照使用完全相同的参考和路径。μ=0.2、δ=0.001，K=1/2/4，初始权重及参考历史为零，启动投影窗只含已经收到的真实观测。</p>
 <p>训练使用浮点输入[0,24000)，每次先预测再更新；[24000,32000)冻结权重并继续推进历史，用共同8000点评分。保留13个非零因果卷积尾点，共32013点，但尾不计入训练或留出分母。没有事后时移、增益拟合或逐文件归一。图52展示精确几何，图53读取这一独立实验的浮点轨迹和实际PCM结果。</p>
@@ -4305,7 +4300,7 @@ e^{-\mathrm j2\pi 2000n/24000},\\
 <span id="sec-148" class="anchor-alias" aria-hidden="true"></span><span id="554-通道掩码为什么要重新检查空间模型" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-55-4">55.4 通道掩码为什么要重新检查空间模型</h3>
 <p>E05-12固定原目标向量 $\vec a=[1,1]^\top$。各通道乘平方根掩码 $[1,1/2]$ 后，向量变为 $[1,1/2]^\top$，其外积为 $[[1,1/2],[1/2,1/4]]$。若噪声协方差设为单位阵，从这个处理后的RTF算得权重 $[0.8,0.4]^\top$；应用于处理后目标时响应为1，应用于原目标时却为1.2。必须说明协方差和最终权重应用在预滤波前还是预滤波后，不能只凭单位归一说原声像不失真。</p>
 <p>若两帧掩码轮换为 $[1,1/4]$ 和 $[1/4,1]$，处理后两向量为 $[1,1/2]^\top$ 与 $[1/2,1]^\top$。除以帧数2的外积均值为 $[[5/8,1/2],[1/2,5/8]]$，特征值是9/8和1/8，行列式9/64，有效秩2。原两帧同为 $[1,1]^\top$，外积均值秩1；逐通道、逐帧变化可以改变这个结构，而不是在原矩阵外乘一个公共数。</p>
-<p>对应共同标量掩码0.625时，除以帧数得到0.625乘全1矩阵；按正文式(5-22)除以掩码和则得到全1矩阵。这是两个不同分母。上面逐通道控制采用每帧预滤波后除以帧数，并不使用式(5-22)的掩码和归一；其半正定性也不保证保留原始RTF或秩。2026年的滑窗方法原文与完整算法未运行边界见<a href="01_spatial_and_tracking.html#per-channel-mask-evidence">空间研究补充</a>。</p>
+<p>对应共同标量掩码0.625时，除以帧数得到0.625乘全1矩阵；按正文式(5-25)除以掩码和则得到全1矩阵。这是两个不同分母。上面逐通道控制采用每帧预滤波后除以帧数，并不使用式(5-25)的掩码和归一；其半正定性也不保证保留原始RTF或秩。2026年的滑窗方法原文与完整算法未运行边界见<a href="01_spatial_and_tracking.html#per-channel-mask-evidence">空间研究补充</a>。</p>
 <span id="sec-149" class="anchor-alias" aria-hidden="true"></span><span id="56-第6章播放增益的位置与历史回声" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-88a7535bcf">56. 第6章：播放增益的位置与历史回声</h2>
 <p>本节对应正文<a href="../06_aec.html#e06-26">E06-26</a>、<a href="../06_aec.html#e06-27">E06-27</a>和<a href="../06_aec.html#e06-28">E06-28</a>。先用五点与十二点手算弄清运算顺序，再核对六份独立PCM。路径和增益均为给定真值，没有训练、时延估计、增益拟合、近端声或噪声；它们解释接口条件，不提供产品排名。</p>
 <span id="sec-150" class="anchor-alias" aria-hidden="true"></span><span id="561-五个样本当前增益不能搬到卷积之后" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-56-1">56.1 五个样本：当前增益不能搬到卷积之后</h3>

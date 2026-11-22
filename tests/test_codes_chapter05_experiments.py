@@ -181,6 +181,9 @@ class ChapterFiveExamplesTest(unittest.TestCase):
             self.assertLess(row['geometric_gain'], row['arithmetic_mix_for_comparison'])
         self.assertEqual(report['cases'][2]['posterior_presence_probability'], 1)
         self.assertEqual(report['cases'][3]['posterior_presence_probability'], 0)
+        e05_07 = ex.run_exercises()['E05-07']
+        self.assertIn('om_lsa_probability_combination', e05_07)
+        self.assertEqual(e05_07['om_lsa_probability_combination'], report)
 
     def test_common_input_comparison_has_independent_rank_one_inverse(self):
         phase = 2*math.pi*2000*.04/343

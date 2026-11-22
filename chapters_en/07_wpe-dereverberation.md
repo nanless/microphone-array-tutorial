@@ -8,7 +8,7 @@
 
 ## 7. Dereverberation (WPE)
 
-Chapter 6 examined acoustic echo produced when loudspeaker playback couples back into a device's microphones. This chapter turns to a second major class of distortion induced by room acoustics: the late reverberation tail formed as sound waves bounce repeatedly off walls, ceilings, and furniture, focusing on deriving the Weighted Prediction Error (WPE) dereverberation algorithm widely deployed across industry. Multi-speaker separation, time–frequency mask estimation, and complete front-end cascade ordering are developed in Chapter 8.
+Chapter 6 examined acoustic echo produced when loudspeaker playback couples back into a device's microphones. This chapter turns to a second major class of distortion induced by room acoustics: the late reverberation tail formed as sound waves bounce repeatedly off walls, ceilings, and furniture, focusing on deriving the Weighted Prediction Error (WPE) dereverberation algorithm widely deployed across industry; [§7.6](#sec-7-6) further derives the front-end cascade ordering (Linear AEC $\to$ WPE $\to$ Beamforming $\to$ RES/NLP), while [Chapter 8](08_speech-separation.md) extends to multi-speaker separation, time–frequency mask estimation, and multi-stream integration.
 
 ### 7.1 Problem Formulation, Model, and Intuition Examples
 

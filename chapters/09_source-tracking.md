@@ -963,15 +963,15 @@ B(\theta,\theta_b)
 e^{\mathrm{j}\pi m(\sin\theta-\sin\theta_b)}\right|.
 \end{aligned}$$
 
-将真实方向 $\theta=50^\circ$ 与三种波束指向 $\theta_b\in\{30^\circ,\ 40^\circ,\ 50^\circ\}$ 代入，按 $20\log_{10}(\cdot)$ 换算出的 $3\ \mathrm{kHz}$ 目标方向增益依次为 **$-24.20\ \mathrm{dB}$**（完全不外推，已落入旁瓣零陷附近）、**$-3.75\ \mathrm{dB}$**（错从发布时刻起算漏掉一半外推，跌出 $-3\ \mathrm{dB}$ 半功率主瓣）与 **$0\ \mathrm{dB}$**（按 `state_time` 准确外推）。更一般地，对于有效孔径 $L=Md$、指向角 $\theta_0$ 的均匀线阵，其半功率波束宽度（HPBW，单位弧度）约为 $\theta_{\mathrm{HPBW}}\approx 0.886\,\lambda/(L\cos\theta_0)$；为避免控制总滞后 $\Delta t_{\mathrm{ctrl}}$ 将移动声源（最大角速度 $\omega_{\max}$）拖出半功率主瓣，须满足指向滞后容限准则：
+将真实方向 $\theta=50^\circ$ 与三种波束指向 $\theta_b\in\{30^\circ,\ 40^\circ,\ 50^\circ\}$ 代入，按 $20\log_{10}(\cdot)$ 换算出的 $3\ \mathrm{kHz}$ 目标方向增益依次为 **$-24.20\ \mathrm{dB}$**（完全不外推，已落入旁瓣零陷附近）、**$-3.75\ \mathrm{dB}$**（错从发布时刻起算漏掉一半外推，跌出 $-3\ \mathrm{dB}$ 半功率主瓣）与 **$0\ \mathrm{dB}$**（按 `state_time` 准确外推）。更一般地，对于有效孔径 $Md$（$M$ 支阵元、间距 $d$）、指向角 $\theta_0$ 的均匀线阵，其半功率波束宽度（HPBW，单位弧度）约为 $\theta_{\mathrm{HPBW}}\approx 0.886\,\lambda/(Md\cos\theta_0)$；为避免控制总滞后 $\Delta t_{\mathrm{ctrl}}$ 将移动声源（最大角速度 $\omega_{\max}$）拖出半功率主瓣，须满足指向滞后容限准则：
 
 $$\begin{aligned}
 \omega_{\max}\Delta t_{\mathrm{ctrl}}
 &\ll\frac{\theta_{\mathrm{HPBW}}}{2}
-\approx 0.443\frac{\lambda}{L\cos\theta_0}.
+\approx 0.443\frac{\lambda}{Md\cos\theta_0}.
 \end{aligned}$$
 
-代入上例（$L=4\lambda,\ \theta_0=50^\circ$）得线性近似半波束宽约 $9.9^\circ$；由于 $\sin\theta$ 映射造成法向/端射不对称，精确阵因子在 $\theta_0=50^\circ$ 处的 $-3\ \mathrm{dB}$ 半宽朝法向（broadside）仅 $9.11^\circ$、朝端射（endfire）为 $11.35^\circ$（平均 $10.2^\circ$；等价地，滞后指向 $\theta_b=40^\circ$ 波束的上侧 $-3\ \mathrm{dB}$ 边缘位于 $48.96^\circ$），恰好解释了为何 $40\ \mathrm{ms}$ 漏外推造成的 $10^\circ$ 指向滞后已越过半功率边缘，将目标增益压低至 $-3.75\ \mathrm{dB}$。孔径越大、频率越高，时间戳错位导致的高频语音衰减就越严重。
+代入上例（$Md=4\lambda,\ \theta_0=50^\circ$）得线性近似半波束宽约 $9.9^\circ$；由于 $\sin\theta$ 映射造成法向/端射不对称，精确阵因子在 $\theta_0=50^\circ$ 处的 $-3\ \mathrm{dB}$ 半宽朝法向（broadside）仅 $9.11^\circ$、朝端射（endfire）为 $11.35^\circ$（平均 $10.2^\circ$；等价地，滞后指向 $\theta_b=40^\circ$ 波束的上侧 $-3\ \mathrm{dB}$ 边缘位于 $48.96^\circ$），恰好解释了为何 $40\ \mathrm{ms}$ 漏外推造成的 $10^\circ$ 指向滞后已越过半功率边缘，将目标增益压低至 $-3.75\ \mathrm{dB}$。孔径越大、频率越高，时间戳错位导致的高频语音衰减就越严重。
 
 #### 从活动观测到轨迹出生、确认与删除
 

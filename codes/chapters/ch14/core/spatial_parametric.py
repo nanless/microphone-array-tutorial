@@ -334,6 +334,8 @@ def active_intensity_and_diffuseness(
     if not np.isfinite(z0) or z0 <= 0.0:
         raise ValueError("acoustic impedance rho0 * c must be finite and positive")
     scale = max(scale_p, scale_u * z0)
+    if not np.isfinite(scale):
+        raise ValueError("acoustic intensity scaling overflowed float64")
 
     if scale == 0.0:
         zeros3 = np.zeros(3, dtype=np.float64)
@@ -347,8 +349,14 @@ def active_intensity_and_diffuseness(
             "valid_direction": False,
         }
 
-    p_norm = p_snap / scale
-    u_norm = u_snap * (z0 / scale)
+    p_norm = p_snap.real / scale + 1j * (p_snap.imag / scale)
+    u_scale = scale / z0
+    if np.isfinite(u_scale) and u_scale > 0.0:
+        u_norm = u_snap.real / u_scale + 1j * (u_snap.imag / u_scale)
+    elif u_scale == 0.0:
+        u_norm = np.zeros_like(u_snap, dtype=np.complex128)
+    else:
+        u_norm = (u_snap.real * z0) / scale + 1j * ((u_snap.imag * z0) / scale)
 
     cross_norm = np.conj(p_norm)[np.newaxis, :] * u_norm
     ia_norm = 0.5 * np.mean(cross_norm.real, axis=1)
@@ -370,7 +378,7 @@ def active_intensity_and_diffuseness(
             active_i = ia_norm * factor_i
             reactive_i = ir_norm * factor_i
             energy_e = e_tot_norm * factor_e
-        except FloatingPointError as exc:
+        except (FloatingPointError, OverflowError) as exc:
             raise ValueError("intensity or energy density overflowed float64") from exc
     if not (np.all(np.isfinite(active_i)) and np.all(np.isfinite(reactive_i)) and np.isfinite(energy_e)):
         raise ValueError("intensity or energy density overflowed float64")

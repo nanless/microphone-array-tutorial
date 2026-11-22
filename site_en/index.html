@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>From Fundamentals to Industrial Practice · Microphone Array Signal Processing</title>
-<meta name="source-digest" content="08a908611fde"><style>
+<meta name="source-digest" content="7b2bf0186a72"><style>
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -2441,7 +2441,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <p><strong>What if an equation derivation feels opaque?</strong></p>
 <p>Use the master index in <a href="00_math-foundations.html#sec-0-8">Chapter 0 §0.8</a> to jump to the underlying mathematical derivation, and cross-check symbol definitions in Chapter 2 and Appendix A; when a derivation feels abstract, build geometric intuition from its companion figure first—e.g., Figures 85–86 for Chapter 0 subspaces and Rayleigh quotients, Figures 11–12 for Chapter 4 localization, Figures 15–16 for Chapter 5 beamforming trade-offs, Figures 23 and 20 for Chapter 7 WPE prediction windows, and Figures 37–38 for Chapter 8 GSS dataflow and cross-chunk stitching—then work through the small-scale numerical anchor example in the text by hand line by line.</p>
 <p><strong>How should I start running experiments?</strong></p>
-<p>Run the Chapter 0 exercises, the three cross-chapter baseline scripts, and the unit-test suite in Section 8 first to confirm that your local setup matches the book's sign and scaling conventions; afterward, re-plot the book's figures or build indoor image-source simulations with pinned <code>pyroomacoustics</code>. Advanced project ideas and public dataset portals are detailed in Appendix B §17.1 and §17.6.</p>
+<p>Run the Chapter 0 exercises, the three cross-chapter baseline scripts, and the unit-test suite in Section 8 first to confirm that your local setup matches the book's sign and scaling conventions; afterward, re-plot the book's figures or build indoor image-source simulations with pinned <code>pyroomacoustics</code>. Advanced project ideas and public dataset portals are detailed in Appendix B §17.1, §17.2, and §17.6.</p>
 <p><strong>Can raw numerical scores from different experiments be compared directly?</strong></p>
 <p>Whenever array aperture, microphone count, room $T_{60}$, input SNR, evaluation dataset, or metric variant (e.g., absolute gain vs. relative reduction, total mixture energy ratio vs. component-wise SNR) differs, raw numbers cannot be ranked across studies directly. Always interpret parameter trends within fixed experimental setups first, and align the exact test split, array input, preprocessing, and scoring script whenever benchmarking algorithms head-to-head.</p>
 <hr />

@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>源码获取与独立复现记录 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="f6d48efe6ade"><style>
+<meta name="source-digest" content="a0289902c00e"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -349,7 +349,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li><a href="04_source_reproduction.html#sec-u-efb7c03a67">13. 成像原实现：固定作者代码与当前报告</a></li>
 <li>&nbsp;&nbsp;<a href="04_source_reproduction.html#sec-13-1">13.1 实际取得的21个原文本</a></li>
 <li>&nbsp;&nbsp;<a href="04_source_reproduction.html#sec-13-2">13.2 整表核验与历史身份</a></li>
-<li>&nbsp;&nbsp;<a href="04_source_reproduction.html#sec-13-3">13.3 本轮实际执行的限定原方法</a></li>
+<li>&nbsp;&nbsp;<a href="04_source_reproduction.html#sec-13-3">13.3 实际执行的限定原方法</a></li>
 </ul>
 <div class="chap"><a href="05_exercises_and_audio.html">章节代码练习与音频实验</a></div>
 <div class="chap"><a href="../00_math-foundations.html">第 0 章 · 全书数学基础与信号分析预备</a></div>
@@ -408,7 +408,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li><a href="04_source_reproduction.html#sec-u-efb7c03a67">13. 成像原实现：固定作者代码与当前报告</a></li>
 <li>&nbsp;&nbsp;<a href="04_source_reproduction.html#sec-13-1">13.1 实际取得的21个原文本</a></li>
 <li>&nbsp;&nbsp;<a href="04_source_reproduction.html#sec-13-2">13.2 整表核验与历史身份</a></li>
-<li>&nbsp;&nbsp;<a href="04_source_reproduction.html#sec-13-3">13.3 本轮实际执行的限定原方法</a></li>
+<li>&nbsp;&nbsp;<a href="04_source_reproduction.html#sec-13-3">13.3 实际执行的限定原方法</a></li>
 </ul></nav></details>
 <span id="sec-1" class="anchor-alias" aria-hidden="true"></span><span id="取得源码后怎样复现" class="anchor-alias" aria-hidden="true"></span><h1 id="sec-u-515383f30b">取得源码后怎样复现</h1>
 <span id="sec-2" class="anchor-alias" aria-hidden="true"></span><span id="1-先确定复现对象" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-630cc32c87">1. 先确定复现对象</h2>
@@ -955,12 +955,12 @@ $\left[\begin{smallmatrix}1/10&1/5\\1/10&1/5\end{smallmatrix}\right]$。</p>
 <span id="sec-20" class="anchor-alias" aria-hidden="true"></span><span id="第6章外部-aec-接口诊断" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-6d973a34e1">第6章外部 AEC 接口诊断</h3>
 <p><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/examples/audit_aec_upstream_interfaces.py">接口诊断</a>与<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/examples/audit_upstream_apa.py">原 APA 审计</a>不下载依赖、不修补上游。2026-10-04 实际重跑得到<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/reports/aec_upstream_interfaces_current.json">接口当前报告</a>和<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/reports/upstream_apa_current.json">APA 当前报告</a>，环境为 Python 3.13.12、NumPy 2.5.3。两者核对官方 origin、独立工作树根、固定 HEAD、所用源码及许可 SHA/Git blob、前后洁净状态，记录实际依赖摘要；完整稀疏选集状态与所用文件身份分别列出，不把获取报告的 <code>execution=not_run</code> 升级成完整算法运行。</p>
 <p>接口报告实际调用 pyaec 的 RLS/Kalman/FDKF/PFDKF 与 echocatzh 初始块：末尾截断、<code>np.complex</code> 原失败、默认后滤改变误差仍保留。DTLN 原 <code>process_file()</code> AST 只在内存音频和假解释器上执行，没有 TensorFlow、权重或生产音频写入。APA 完整加载原单文件，四个确定数组与独立有理手算对照，保留实数缓冲丢复部的警告。工具退出零表示合同记录生成成功，不表示每个原算法执行成功，更不是声学性能或实时性验收。<a href="02_aec_wpe_separation.html#aec">原方法与逐例边界</a></p>
-<p><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/reports/aec_upstream_interfaces.json">旧接口报告</a>与<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/reports/upstream_apa.json">旧 APA 报告</a>原字节和修改时间保全；对应历史测试绑定真实提交 <code>621d727a63475e3ee8ad2a29d518889c42e92571</code> 的旧工具 blob。不能给旧报告换当前工具 SHA 或将当时有限身份核验追记为今天的新合同。新工具默认标准输出，只允许显式写各自当前报告或仓外普通报告，历史、源码、锁表、缓存和符号链接目标在执行前拒绝；严格 JSON 与有限写前检查的边界见<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/tests/test_codes_ch06_source_contracts.py">来源合同测试</a>。</p>
+<p><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/reports/aec_upstream_interfaces.json">旧接口报告</a>与<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/reports/upstream_apa.json">旧 APA 报告</a>原字节和修改时间保全；对应历史测试绑定真实提交 <code>621d727a63475e3ee8ad2a29d518889c42e92571</code> 的旧工具 blob。不能给旧报告换当前工具 SHA 或将当时有限身份核验追记为当前的新合同。新工具默认标准输出，只允许显式写各自当前报告或仓外普通报告，历史、源码、锁表、缓存和符号链接目标在执行前拒绝；严格 JSON 与有限写前检查的边界见<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/tests/test_codes_ch06_source_contracts.py">来源合同测试</a>。</p>
 <pre><code class="language-bash">.venv/bin/python -m codes.chapters.ch06.examples.audit_aec_upstream_interfaces --report codes/chapters/ch06/reports/aec_upstream_interfaces_current.json
 .venv/bin/python -m codes.chapters.ch06.examples.audit_upstream_apa --report codes/chapters/ch06/reports/upstream_apa_current.json
 </code></pre>
 <p><strong>生产二进制与落盘边界。</strong> <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/examples/aec_real_pair_experiment.py">Speex 配对入口</a>默认只打印报告，<code>--output-wav</code> 仅接受仓外新普通文件，写前保护输入与二进制。<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/examples/aec3_offline_compare.py">AEC3 配对入口</a>的 <code>--output-dir</code> 只接受仓外新空普通目录，执行前检查全部九个产出成员，拒绝缓存与来源路径。<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/examples/aec_same_input_truth.py">同输入真值入口</a>在仓外临时目录处理，逐个生产者调用前保护输入/输出；显式 build manifest 严格拒绝重复键和非有限数，核实际二进制 SHA，但声明的构建配置不是独立构建证明。这些有限检查不消除并发竞态。</p>
-<p>本轮实际执行的是两个原方法审计和 38 项来源/写入合同测试，没有重跑 Speex/AEC3 生产声学链或设备实验。前文 2026-09-23/24 的配对和合成数字仍是历史运行；不能把今天的路径保护测试称为这些性能实验重新通过。增益通知、XMOS ALT 保持与 2026 两候选的固定原源/缺资产边界见<a href="02_aec_wpe_separation.html#aec">增强 A06/A17/A19</a>及<a href="03_industrial_deployment.html#i10xmos-libvoice-的-aec-与延迟控制">工业 I10</a>。</p>
+<p>当前复核实际执行的是两个原方法审计和 38 项来源/写入合同测试，没有重跑 Speex/AEC3 生产声学链或设备实验。前文 2026-09-23/24 的配对和合成数字仍是历史运行；不能把当前的路径保护测试称为这些性能实验重新通过。增益通知、XMOS ALT 保持与 2026 两候选的固定原源/缺资产边界见<a href="02_aec_wpe_separation.html#aec">增强 A06/A17/A19</a>及<a href="03_industrial_deployment.html#i10xmos-libvoice-的-aec-与延迟控制">工业 I10</a>。</p>
 <p><a id="distributed-reproduction" class="source-reproduction-anchor"></a></p>
 <span id="sec-21" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-3b6143dc0a" class="anchor-alias" aria-hidden="true"></span><span id="8-固定分布式源码静态合同原函数与完整算法" class="anchor-alias" aria-hidden="true"></span><span id="8-固定分布式源码源码核查原函数与完整算法" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-0f9fac89c1">8. 固定分布式源码：源码核查、原函数与完整算法</h2>
 <p>2026-10-04的<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch13/reports/upstream_distributed_contracts.json">历史报告</a>保留原工具、输入和105项来源索引的身份。2026-10-05修订的<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch13/examples/audit_upstream_distributed_contracts.py">审计入口</a>只允许另写<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch13/reports/upstream_distributed_contracts_current.json">当前报告</a>，默认仅打印结果。两次均固定下表的两套独立上游工作树。</p>
@@ -1035,7 +1035,7 @@ $\left[\begin{smallmatrix}1/10&1/5\\1/10&1/5\end{smallmatrix}\right]$。</p>
 <p>固定<code>DynamicWACD</code>还有一个须与论文活动条件分开的静态边界：<a href="https://github.com/fgnt/paderwasn/blob/cd7054fcf72da637e4a5e11f035e8979691faf70/paderwasn/synchronization/sro_estimation.py#L343-L349">原349行</a>的延迟麦克风活动段从<code>start_delayed+shift</code>开始，却以<code>start+shift+seg_len</code>结束。默认<code>seg_len=temp_dist=8192</code>且<code>shift=0</code>时，这段长16384点，另三段各长8192点。</p>
 <p>独立数组门控控制将麦克风延迟8192点设为无活动、当前8192点设为活动，参考两段都有活动。原索引取得8192个活动点，按延迟单段取得0点，活动阈值为$0.75\times8192=6144$，四段分别采用严格大于阈值的比较，于是两种门控判断分别为真、假。此处只核切片与门控，不运行原DWACD估计器、不修改上游，也不给时钟或语音性能分数。<a href="https://ris.uni-paderborn.de/download/33807/48990/gburrek_icassp22.pdf">DWACD原论文§II～III</a>说明四个片段的活动条件；论文条件与固定源码的窗口边界分别保存。</p>
 <span id="sec-23" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-ce14b272d7" class="anchor-alias" aria-hidden="true"></span><span id="原matlab静态合同与五项独立控制" class="anchor-alias" aria-hidden="true"></span><span id="原matlab源码核查与五项独立对照" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-282fb01ca8">原MATLAB源码核查与五项独立对照</h3>
-<p>报告保存14项原MATLAB源码行级核查记录，包括帧首VAD、内部/外部滤波器分工、广播版本生效次序、顺序token的作用、普通EVD、直接逆矩阵、窗函数和循环终点；配置与论文实验分开记录，详见<a href="03_industrial_deployment.html#distributed-network-deployment">工业I34</a>。本轮没有探测或执行MATLAB/Octave运行时，也未安装运行时、运行原WOLA链、GEVD-DANSE、真实网络或数据集。原历史报告中的父任务探测措辞不能当作本次探测结果。</p>
+<p>报告保存14项原MATLAB源码行级核查记录，包括帧首VAD、内部/外部滤波器分工、广播版本生效次序、顺序token的作用、普通EVD、直接逆矩阵、窗函数和循环终点；配置与论文实验分开记录，详见<a href="03_industrial_deployment.html#distributed-network-deployment">工业I34</a>。当前复核没有探测或执行MATLAB/Octave运行时，也未安装运行时、运行原WOLA链、GEVD-DANSE、真实网络或数据集。原历史报告中的父任务探测措辞不能当作当前运行环境的探测结果。</p>
 <p>另有五项<strong>数值对照算例或控制流复写</strong>，不称原MATLAB运行结果：</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
 <thead>
@@ -1104,7 +1104,7 @@ $\left[\begin{smallmatrix}1/10&1/5\\1/10&1/5\end{smallmatrix}\right]$。</p>
 </tr>
 <tr>
 <td><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/source_snapshots/SOURCES.e3478006c7dbc6cec442bf6bccc4df9eca946d7d353b661e947596dd8b87608a.json">105项来源锁表</a></td>
-<td>原第15章（现第13章）分布式原函数报告运行时的完整锁表；其中所用<code>danse-wola</code>和<code>paderwasn</code>记录与当前完全一致</td>
+<td>第13章分布式原函数历史报告运行时的完整锁表；其中所用<code>danse-wola</code>和<code>paderwasn</code>记录与当前完全一致</td>
 </tr>
 <tr>
 <td><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/source_snapshots/SOURCE_STATUS.b113b63c97767d19b76ceb44677303961ff310ce8d96f4e9e777944b44916d3c.json">105项获取状态</a></td>
@@ -1160,10 +1160,10 @@ $\left[\begin{smallmatrix}1/10&1/5\\1/10&1/5\end{smallmatrix}\right]$。</p>
 <p>第4章新增DP-RTF与ESP-SR两个固定来源仅索引，当前109项由真实获取工具离线核验：69项通过、22项完整选集不匹配、17项index_only、1项既有AEC缓存失败，工具退出1。原107项完整状态逐项不变。新增前保存锁表SHA <code>5dbf0c55fac57d82915ce01c20d7a96505147aaaed550558ce5e6c1c24da1fd0</code>和状态SHA <code>230269d62683e0726efb2c87a1661f8179ada3ee041b7b7df266190e471e2652</code>的原字节并登记，旧历史方法报告不换工具或整锁摘要。</p>
 <p>本机另在<code>codes/chapters/ch00/upstream/_downloads/.research-only/</code>导出DP-RTF四个原文件（4863字节）及ESP-SR七个所读入口（33830字节），逐文件对照固定Git blob及锁表SHA，原许可/版权声明保留。两个选集各带<code>RESEARCH_ACQUISITION.json</code>，明确是固定对象的文件导出，不是洁净Git工作树，不含二进制、权重、音频或数据集，未运行算法。该忽略缓存不进入提交推送，也不升级受管理109项的获取状态或92个独立工作区数量；静态研究、取得完整实现和获得再分发许可分别判断。</p>
 <p>六个第4章原源工具现在统一使用<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch04/core/upstream_contracts.py">当前合同核</a>：sanitized Git、官方origin、固定HEAD、全部声明使用的原blob与许可SHA、跟踪/未忽略成员的前后洁净及忽略成员前后清单，真实完整选集与所用源码身份分栏。默认stdout不写报告；两个audit显式写入仅允许新<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch04/reports/upstream_doa_contracts.json">DOA当前报告</a>、<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch04/reports/said_compression_contracts.json">SAID当前报告</a>或仓外普通路径。四个旧reproduce入口的output/workdir只能仓外，历史报告/源码/上游及链接父链执行前拒绝。有限路径检查不保证消除并发竞态。</p>
-<p>本轮使用既有<code>/private/tmp/masp-appb-pra-venv</code>真实运行PRA 0.10.0完整TOPS及限定原helper；原峰49°与独立30°分别保留，root-MUSIC原dtype错误与局部门面分开，SAID只执行四个压缩格式助手。ESPRIT与SBL另实际输出到仓外，不给旧报告改成新运行。SMP的FFTW条件不足，本轮没有重建原C；旧失败/临时适配历史与独立DFT测试仍分别说明。DP-RTF MATLAB、完整DPD、FRIDA、学习网络、核心二进制和硬件未执行；详细条件及许可见<a href="01_spatial_and_tracking.html#sec-u-1ca23edba5">空间研究58/59</a>。</p>
+<p>当前复核使用既有<code>/private/tmp/masp-appb-pra-venv</code>真实运行PRA 0.10.0完整TOPS及限定原helper；原峰49°与独立30°分别保留，root-MUSIC原dtype错误与局部门面分开，SAID只执行四个压缩格式助手。ESPRIT与SBL另实际输出到仓外，不给旧报告改成新运行。SMP的FFTW条件不足，当前复核没有重建原C；旧失败/临时适配历史与独立DFT测试仍分别说明。DP-RTF MATLAB、完整DPD、FRIDA、学习网络、核心二进制和硬件未执行；详细条件及许可见<a href="01_spatial_and_tracking.html#sec-u-1ca23edba5">空间研究58/59</a>。</p>
 <p><a id="beamforming-current-contracts"></a></p>
 <span id="sec-31" class="anchor-alias" aria-hidden="true"></span><span id="11-第5章当前原方法合同与相位控制" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-a91662f52c">11. 第5章当前原方法合同与相位控制</h2>
-<p>2026-10-04实际运行三项限定合同；所有结果由真实工具生成，没有改上游、旧三报告或原获取状态。重新调用可使用具备报告所列PRA/NumPy/SciPy版本的隔离环境；下面临时路径只描述本机本轮环境，不是永久安装位置。</p>
+<p>2026-10-04实际运行三项限定合同；所有结果由真实工具生成，没有改上游、旧三报告或原获取状态。重新调用可使用具备报告所列PRA/NumPy/SciPy版本的隔离环境；下面临时路径只描述本机复核环境，不是永久安装位置。</p>
 <pre><code class="language-bash">/private/tmp/masp-appb-pra-venv/bin/python -m codes.chapters.ch05.examples.audit_upstream_beamformers --report codes/chapters/ch05/reports/upstream_beamformers_current.json
 /private/tmp/masp-appb-pra-venv/bin/python -m codes.chapters.ch05.examples.audit_beamformer_reference --report codes/chapters/ch05/reports/beamformer_reference_current.json
 /private/tmp/masp-appb-pra-venv/bin/python -m codes.chapters.ch05.examples.audit_sof_tdfb_design --report codes/chapters/ch05/reports/sof_tdfb_design_current.json
@@ -1210,14 +1210,14 @@ $\left[\begin{smallmatrix}1/10&1/5\\1/10&1/5\end{smallmatrix}\right]$。</p>
 <span id="sec-34" class="anchor-alias" aria-hidden="true"></span><span id="第9章114项来源身份与当前追踪报告" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-06e511c9b9">第9章：114项来源身份与当前追踪报告</h2>
 <p>2026-10-05按逐文件许可取得LOCATA I/O与eval的15/16个文本选集；不是完整MATLAB运行环境，未取得数据或执行官方评分。范围、原语句静态疑点与许可分别见<a href="01_spatial_and_tracking.html#tracking-model-lifecycle-sphere">空间研究§61.4</a>及<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/THIRD_PARTY.md">第三方记录</a>。完整锁表114项实际离线核验为74通过、22原选集不匹配、17索引和1原AEC缓存失败，工具退出1；97个项目有独立受管理工作区，原112项状态逐项保留。</p>
 <p>扩充前的<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/source_snapshots/SOURCES.d679c9d005768ea5f5d51b3e1f5dc33a99f317e859eee252250d343ca2ddb63a.json">112项原锁字节</a>和<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/source_snapshots/SOURCE_STATUS.e6108565144184bdafbd9c6813cf510fb2c9ee6448ae003411bed5cacc78d8da.json">原获取状态字节</a>按完整SHA登记，旧执行报告不换成新锁表身份。当前第4～8章14个直接消费者实际重新执行后绑定新锁表，原故障/未运行边界保留；不能只改JSON字符串。</p>
-<p>第9章两个工具默认stdout；接口工具显式<code>--output</code>写<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch09/reports/tracking_upstream_interfaces_current.json">当前接口报告</a>，原方法合同工具显式<code>--report</code>写<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch09/reports/upstream_tracking_contracts_current.json">当前原方法合同</a>，路径均须通过安全检查，不覆盖两旧历史报告。ODAS限定原C、SAF控制流替身、FilterPy原包/原方法和StoneSoup三个原AST方法各记执行范围；完整稀疏选集不匹配不抹去。FilterPy本轮预检63个跟踪源文件，33个实际导入模块分别记录；EKF组合接口<code>None</code>的原TypeError及部分K/S更新保留，不能改写成原包缺测路径成功。</p>
+<p>第9章两个工具默认stdout；接口工具显式<code>--output</code>写<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch09/reports/tracking_upstream_interfaces_current.json">当前接口报告</a>，原方法合同工具显式<code>--report</code>写<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch09/reports/upstream_tracking_contracts_current.json">当前原方法合同</a>，路径均须通过安全检查，不覆盖两旧历史报告。ODAS限定原C、SAF控制流替身、FilterPy原包/原方法和StoneSoup三个原AST方法各记执行范围；完整稀疏选集不匹配不抹去。FilterPy当前预检63个跟踪源文件，33个实际导入模块分别记录；EKF组合接口<code>None</code>的原TypeError及部分K/S更新保留，不能改写成原包缺测路径成功。</p>
 <p>2026-10-05第10章四组原接口复验保存为current报告，旧四报告与其历史工具身份保持原样；当前编译依赖、原失败及未执行范围见<a href="03_industrial_deployment.html#industrial-current-interface-contracts">工业研究§9</a>。上文复跑命令写显式current路径；仓内其他报告目标由写前守卫拒绝，普通仓外路径可另存试验。</p>
 <p><a id="imaging-author-source"></a></p>
 <span id="sec-35" class="anchor-alias" aria-hidden="true"></span><span id="13-成像原实现固定作者代码与当前报告" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-efb7c03a67">13. 成像原实现：固定作者代码与当前报告</h2>
 <p>专题Ⅰ的<a href="../12_acoustic-imaging.html#e12-15">E12-15</a>比较同一互谱矩阵的两种目标。作者<a href="https://gilleschardon.fr/papers/damascmf.pdf">Chardon、Picheral、Ollivier论文§3.1～3.3</a>把DAMAS固定点与完整矩阵Frobenius拟合联系起来；扫描图的最小二乘仍是另一目标。论文参考文献[17]给出<a href="https://doi.org/10.5281/zenodo.4609267">作者代码归档DOI</a>，本书实际取得的是下面的固定Git文本选集，不把Git提交与归档版本混称同一身份。</p>
 <span id="sec-36" class="anchor-alias" aria-hidden="true"></span><span id="131-实际取得的21个原文本" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-13-1">13.1 实际取得的21个原文本</h3>
 <p>2026-10-05从<a href="https://github.com/gilleschardon/DAMAS/tree/61987952e2237e6b088a169ee891dd96576f2565">作者官方仓库</a>取得提交<code>61987952e2237e6b088a169ee891dd96576f2565</code>。21个选定文本共74510字节，含完整GPLv3、README、Python/MATLAB方法与两个C语言MEX源文件；不含三个MAT数据或预编译MEX文件。许可SHA-256为<code>3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986</code>。原代码放在<code>codes/chapters/ch00/upstream/_downloads/damas-author/</code>的独立受管理工作树，保留GPL条款和源通知，不复制进本书教学数值核。</p>
-<p><a href="https://github.com/gilleschardon/DAMAS/blob/61987952e2237e6b088a169ee891dd96576f2565/README.md">固定原README</a>明确说明本仓库不再维护，并指向作者后续项目acosolo。这是继续研究的入口；本轮没有因此取得或运行后继项目，也没有把固定原代码称为最新维护版本。</p>
+<p><a href="https://github.com/gilleschardon/DAMAS/blob/61987952e2237e6b088a169ee891dd96576f2565/README.md">固定原README</a>明确说明本仓库不再维护，并指向作者后续项目acosolo。这是继续研究的入口；当前范围没有因此取得或运行后继项目，也没有把固定原代码称为最新维护版本。</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table class="source-contract-readable-table">
 <thead>
 <tr>
@@ -1245,7 +1245,7 @@ $\left[\begin{smallmatrix}1/10&1/5\\1/10&1/5\end{smallmatrix}\right]$。</p>
 <tr>
 <td><code>damas.c</code>、<code>damas_rand.c</code></td>
 <td>C语言MEX的顺序/随机坐标更新源码</td>
-<td>得到C源不代表已编译MEX、启动MATLAB或复现论文实验；本轮均未执行</td>
+<td>得到C源不代表已编译MEX、启动MATLAB或复现论文实验；当前均未执行</td>
 </tr>
 <tr>
 <td><code>figures/FIGS_2D_EXP.m</code>、<code>FIGS_3D_EXP.m</code>、<code>FIGS_2D_SIM.m</code></td>
@@ -1262,13 +1262,13 @@ $\left[\begin{smallmatrix}1/10&1/5\\1/10&1/5\end{smallmatrix}\right]$。</p>
 .venv/bin/python -B codes/chapters/ch00/upstream/fetch_upstreams.py --verify --report codes/chapters/ch00/SOURCE_STATUS.json
 </code></pre>
 <p>整表退出1对应上面保留的旧失败与选集不匹配。该命令检查来源获取，既不安装依赖，也不执行原算法。</p>
-<span id="sec-38" class="anchor-alias" aria-hidden="true"></span><span id="133-本轮实际执行的限定原方法" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-13-3">13.3 本轮实际执行的限定原方法</h3>
+<span id="sec-38" class="anchor-alias" aria-hidden="true"></span><span id="133-实际执行的限定原方法" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-13-3">13.3 实际执行的限定原方法</h3>
 <p><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch12/reports/upstream_imaging_contracts_current.json">Acoular当前报告</a>保存21个原数值控制（13匹配、8个观察到的目标差异）、1个未执行CMF估计器，另列同一合法CSM经原Base/PSF/DAMAS形成的桥接控制。完整原Traits/JIT/HDF5、工业数据链和sklearn估计器均未运行。<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch12/reports/upstream_imaging_contracts.json">历史原报告</a>字节不改；当前工具拒绝写入旧报告路径。</p>
 <p><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch12/reports/damas_author_contracts_current.json">作者当前报告</a>由完整原Python模块的真实字节和imports在新的隔离进程执行。9个控制保留8项独立数值匹配与零CSM的原<code>NameError</code>，原重复列<code>unique=True</code>不当成全局可辨识证明。原Python模块没有修改；NumPy/SciPy/matplotlib直接入口的版本与前后SHA单独记录，未声称覆盖整库二进制闭包。MATLAB、MEX、原演示及作者论文数据/实验均未运行。</p>
 <pre><code class="language-bash">.venv/bin/python -B -m codes.chapters.ch12.examples.audit_upstream_imaging_contracts --report codes/chapters/ch12/reports/upstream_imaging_contracts_current.json
 python -B -m codes.chapters.ch12.examples.audit_damas_author_contracts --report codes/chapters/ch12/reports/damas_author_contracts_current.json
 </code></pre>
-<p>第二条命令需要具有NumPy、SciPy及matplotlib的既有独立环境。默认输出到终端，只有显式当前普通报告路径才写入；本轮在既有隔离环境真实执行，未安装依赖。缺依赖或进程超时会保留未完成记录，不降为替代函数成功，也不修补上游再宣称原代码通过。两工具均核官方origin、固定HEAD、原blob/许可、当前锁与获取状态、执行前后实际依赖和源码成员边界。</p>
+<p>第二条命令需要具有NumPy、SciPy及matplotlib的既有独立环境。默认输出到终端，只有显式当前普通报告路径才写入；当前复核在既有隔离环境真实执行，未安装依赖。缺依赖或进程超时会保留未完成记录，不降为替代函数成功，也不修补上游再宣称原代码通过。两工具均核官方origin、固定HEAD、原blob/许可、当前锁与获取状态、执行前后实际依赖和源码成员边界。</p>
 <footer class="foot">麦克风阵列信号处理教程 · 静态站由 scripts/build_site.py 生成</footer>
 </main></div><a class="topbtn" href="#top" title="回顶部" aria-label="回到页面顶部">↑</a>
 <script>if(!navigator.onLine)document.getElementById('offnote').style.display='block';for(const a of document.querySelectorAll('a[data-lang-peer]'))if(location.protocol==='file:'||location.hostname==='localhost'||location.hostname==='127.0.0.1')a.href=a.dataset.langPeer;</script>

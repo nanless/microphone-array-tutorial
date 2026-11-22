@@ -5,8 +5,8 @@
   "samples_per_channel": 32000,
   "common_export_gain": 1.0,
   "source_sha256": {
-    "codes/chapters/ch14/core/wearable_fusion.py": "5deae74694ec39faece6a4cd8464c81b9f8e50f9716e8553ca0f88516aef1e63",
-    "codes/chapters/ch14/core/wearable_audio.py": "c2715cbc3bf298b68959458213f9e55f63442ae289cc54293d0349ab332cd863",
+    "codes/chapters/ch14/core/wearable_fusion.py": "706ee403f428d609b6bba4541af2bec43d3db74a8460d9159f1b40a8b0664028",
+    "codes/chapters/ch14/core/wearable_audio.py": "2787140eec74640f1cb8f70fc63e064c9da14b024fbecff887f469354fce84d1",
     "codes/chapters/ch14/examples/generate_wearable_audio.py": "0121d04fa6935fb6db437672e41cfb4362e4d8d84cbb42c8221bf9c87f02f36b",
     "codes/chapters/ch02/core/conventions.py": "4e80a27490f05ddd5f4826361420c0c8d0b331464d1e5629c5def492da47b1d7",
     "codes/chapters/ch00/core/audio_samples.py": "1a7aad90d08fb8c27511aa463a6cc6dd6d4d2d230b27ed82549531f1f18edaba",

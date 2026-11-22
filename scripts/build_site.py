@@ -908,7 +908,7 @@ def stage_focus_audio(source, destination):
 
 
 def stage_derivative_audio(source, destination):
-    """Validate and copy E05-22 assets; numerical scores are checked by the generator."""
+    """Validate and copy E05-14 derivative-constraint assets; numerical scores are checked by the generator."""
     _preflight_asset_stage(source, destination, set(DERIVATIVE_AUDIO_WAVS) | {"MANIFEST.json"})
     import wave
     expected = set(DERIVATIVE_AUDIO_WAVS) | {"MANIFEST.json"}

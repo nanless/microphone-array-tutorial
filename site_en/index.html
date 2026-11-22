@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>From Fundamentals to Industrial Practice · Microphone Array Signal Processing</title>
-<meta name="source-digest" content="c099ffefbb37"><style>
+<meta name="source-digest" content="349f9b579bab"><style>
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -554,13 +554,13 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
   <header class="course-header course-width">
     <a class="course-brand" href="#course-home"><span class="course-mark" aria-hidden="true">∿</span> Microphone Array Signal Processing</a>
     <nav aria-label="Course navigation">
-      <a href="#course-tasks">Six Core Tasks</a>
-      <a href="#course-cases">Real-Room Audio</a>
+      <a href="#course-tasks">Core Tasks</a>
+      <a href="#course-cases">Real-Room Demo</a>
       <a href="../assets/readme/lab/array-lab.html?lang=en">4-Mic Lab</a>
-      <a href="#course-path">Reading Routes</a>
+      <a href="#course-path">Routes</a>
       <a href="#course-engineering">Deployment</a>
-      <a href="#main-content">Full Overview</a>
-      <a href="../dist/microphone-array-tutorial-en.pdf">Monograph PDF</a>
+      <a href="#main-content">Overview</a>
+      <a href="../dist/microphone-array-tutorial-en.pdf">PDF</a>
       <a href="https://github.com/nanless/microphone-array-tutorial">GitHub</a>
       <a class="course-lang" href="https://nanless.github.io/microphone-array-tutorial/site/index.html" data-lang-peer="../site/index.html" lang="zh-CN" hreflang="zh-CN">中文</a>
     </nav>
@@ -586,7 +586,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
         <div><strong>283 WAV Clips</strong><span>Real room &amp; controlled benchmarks</span></div>
         <div><strong>87 Figures</strong><span>Script-traced &amp; numerically verified</span></div>
       </div>
-      <p class="course-note">16 chapters · 2 appendices · 352 runnable exercises · 87 numbered figures · 129 audited open-source references</p>
+      <p class="course-note">16 chapters · 2 appendices · 352 runnable exercises · 87 numbered figures · 129 cataloged open-source references</p>
     </div>
 
     <figure class="course-demo" data-source="mvdr">
@@ -615,7 +615,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
         </g>
 
         <rect x="16" y="56" width="496" height="198" rx="8" fill="#FFFFFF" stroke="#DDD7CB"/>
-        <text x="30" y="77" fill="#4A4640" font-family="system-ui,-apple-system,'Segoe UI',sans-serif" font-size="12" font-weight="700">Top View · 4-Mic Uniform Linear Array (Broadside 0°)</text>
+        <text x="30" y="77" fill="#4A4640" font-family="system-ui,-apple-system,'Segoe UI',sans-serif" font-size="12" font-weight="700">Top View · 4-Mic Linear Array</text>
         <path d="M264 70V226" stroke="#9C9588" stroke-width="1.3" stroke-dasharray="4 4"/>
         <text x="272" y="81" fill="#6E695F" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="10.8" font-weight="600">0° Normal</text>
 
@@ -902,7 +902,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
             <path class="case-side-ray" d="M313 42 245 246"/>
             <path class="case-target-ray" d="M245 246 360 78m-3 16 3-16-15 7"/>
             <circle class="case-side-dot" cx="313" cy="42" r="11"/>
-            <text class="case-side-label" x="200" y="49">Interferer B</text>
+            <text class="case-side-label" x="294" y="49" text-anchor="end">Interferer B</text>
             <circle class="case-target-dot" cx="360" cy="78" r="12"/>
             <text class="case-target-label" x="378" y="86">Target A</text>
             <rect class="case-callout" x="312" y="142" width="154" height="37" rx="6"/>
@@ -979,7 +979,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
       <li>
         <span>Stage II · Chapters 4–9</span>
         <h3>Six Core Microphone Array Algorithms</h3>
-        <p>Derive closed-form objectives and test failure modes on controlled WAV fixtures: coherent reflection rank loss, steering mismatch target cancellation, AEC double-talk divergence, WPE guard-delay erosion, and CSS permutation flips.</p>
+        <p>Derive closed-form objectives and test failure modes on controlled WAV benchmarks: coherent reflection rank loss, steering mismatch target cancellation, AEC double-talk divergence, WPE guard-delay erosion, and CSS permutation flips.</p>
         <div><a href="04_doa-estimation.html">04 DOA Localization</a><a href="05_beamforming.html">05 Beamforming</a><a href="06_aec.html">06 Echo Cancellation</a><a href="07_wpe-dereverberation.html">07 WPE Dereverb</a><a href="08_speech-separation.html">08 Speech Separation</a><a href="09_source-tracking.html">09 Source Tracking</a></div>
       </li>
       <li>
@@ -1018,8 +1018,8 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
         </article>
         <article>
           <h3>02 · Budget Latency, MACs &amp; Fixed-Point Headroom</h3>
-          <p>Decompose algorithmic lookahead, callback queuing, and worst-case execution time (WCET); audit MACs/s, SRAM peak footprint, mW battery draw, and 16-bit PCM quantization floors.</p>
-          <div><a href="10_engineering-practice.html#sec-10-4">Fixed-Point, MACs &amp; Power →</a><a href="10_engineering-practice.html#sec-10-3">Calibration &amp; Dead-Mic Fallback →</a></div>
+          <p>Decompose algorithmic lookahead, callback queuing, and worst-case execution time (WCET); budget MACs/s, SRAM peak footprint, mW battery draw, and 16-bit PCM quantization floors.</p>
+          <div><a href="10_engineering-practice.html#sec-10-4">Fixed-Point, MACs &amp; Power →</a><a href="10_engineering-practice.html#sec-10-9">Calibration &amp; Dead-Mic Fallback →</a></div>
         </article>
         <article>
           <h3>03 · Write Testable Acceptance &amp; Triage Contracts</h3>
@@ -1028,7 +1028,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
         </article>
       </div>
       <div class="course-bridge">
-        <a href="research/03_industrial_deployment.html">Industrial Source Manual · PortAudio / PipeWire / WebRTC AEC3 / SpeexDSP Audits →</a>
+        <a href="research/03_industrial_deployment.html">Industrial Source Manual · PortAudio / PipeWire / WebRTC AEC3 / SpeexDSP Analysis →</a>
         <a class="course-bridge-down" href="#main-content">↓ Scroll Down: Full Curriculum Overview, 19 Chapter Abstracts &amp; 87-Figure Master Index</a>
       </div>
     </div>

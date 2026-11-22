@@ -66,8 +66,8 @@ CHAPTERS_EN = [
 
 RESEARCH_EN_PAGES = [
     ("README.md", "Upstream Source Manuals"),
-    ("01_spatial_and_tracking.md", "Spatial Processing & Tracking Audits"),
-    ("02_aec_wpe_separation.md", "AEC, WPE & Separation Audits"),
+    ("01_spatial_and_tracking.md", "Spatial Processing & Tracking Sources"),
+    ("02_aec_wpe_separation.md", "AEC, WPE & Separation Sources"),
     ("03_industrial_deployment.md", "Industrial Audio Deployment Manual"),
     ("04_source_reproduction.md", "Upstream Acquisition & Reproduction"),
     ("05_exercises_and_audio.md", "Chapter Code Exercises & Audio Suites"),

@@ -312,6 +312,11 @@ byId("language").addEventListener("click", () => {
   language.setAttribute("aria-label", isEnglish ? "切换到简体中文" : "Switch to English");
   const labels = isEnglish ? en : zh;
   document.querySelectorAll("[data-label]").forEach(node => node.textContent = labels[node.dataset.label]);
+  const siteRoot = isEnglish ? "../../../site_en/" : "../../../site/";
+  const backLink = document.querySelector('[data-label="backCourse"]');
+  const ch5Link = document.querySelector('[data-label="readCh5"]');
+  if (backLink) backLink.setAttribute("href", siteRoot + "index.html");
+  if (ch5Link) ch5Link.setAttribute("href", siteRoot + "05_beamforming.html");
   document.title = labels.title;
   paint({audioChanged:false});
 });

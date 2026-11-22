@@ -6337,6 +6337,54 @@
     ],
     "content-r2c-separation-tracking-auxiliary/C-R2C-FILTERPY-EXECUTED-SOURCE": [
       "R331"
+    ],
+    "root-r2d-reproduction-manual/ROOT-ERLE-TAIL-SILENCE": [
+      "R332"
+    ],
+    "root-r2d-reproduction-manual/ROOT-LSTSQ-EN-RESIDUAL-CONDITION": [
+      "R333"
+    ],
+    "root-r2d-reproduction-manual/ROOT-P999-WORST-CASE": [
+      "R334"
+    ],
+    "publication-r2d-home-ci/R2D-D01": [
+      "B004"
+    ],
+    "publication-r2d-home-ci/R2D-D02": [
+      "B005"
+    ],
+    "publication-r2d-home-ci/R2D-D03": [
+      "B006"
+    ],
+    "publication-r2d-home-ci/R2D-D04": [
+      "B007"
+    ],
+    "publication-r2d-home-ci/R2D-D05": [
+      "B008"
+    ],
+    "publication-r2d-home-ci/R2D-D06": [
+      "B009"
+    ],
+    "publication-r2d-home-ci/R2D-D07": [
+      "R335"
+    ],
+    "publication-r2d-home-ci/R2D-D08": [
+      "R336"
+    ],
+    "publication-r2d-home-ci/R2D-D09": [
+      "R337"
+    ],
+    "publication-r2d-home-ci/R2D-D10": [
+      "R338"
+    ],
+    "publication-r2d-home-ci/R2D-D11": [
+      "R123"
+    ],
+    "publication-r2d-home-ci/R2D-D12": [
+      "R339"
+    ],
+    "publication-r2d-home-ci/R2D-D13": [
+      "R340"
     ]
   },
   "review_rounds": [
@@ -44979,6 +45027,2538 @@
           "direct_test_execution": "5 TAC structure tests only, no skipped tests; no generic full test success claim"
         }
       }
+    },
+    {
+      "packet_id": "root-r2d-reproduction-manual",
+      "received_date": "2026-11-23",
+      "status": "complete_for_reproduction_manual_team_gap_closure",
+      "handoff_sha256": "36e6ffeb20c74d95757653f2d99a5079e63e21b77d85d5e4c1174f143abd8a99",
+      "data": {
+        "schema": 1,
+        "round": "R2-D",
+        "reviewer": "root",
+        "status": "complete_for_reproduction_manual_team_gap_closure",
+        "coverage": [
+          {
+            "path": "codes/chapters/ch00/research/04_source_reproduction.md",
+            "sha256_at_read": "a4b21f432fc053df633844ae31609783b2a3f041a55f3b58a516668469fc432d",
+            "line_count": 665,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                140
+              ],
+              [
+                248,
+                294
+              ],
+              [
+                363,
+                463
+              ],
+              [
+                501,
+                598
+              ],
+              [
+                651,
+                665
+              ]
+            ],
+            "status": "partial root read; manual remaining team gaps closed, not root full-file read"
+          },
+          {
+            "path": "codes/chapters/ch00/research_en/04_source_reproduction.md",
+            "sha256_at_read": "4a9131181b90c917353f8dba4d93ef750a062c505c9e94a57e93e98118a8a62b",
+            "line_count": 602,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                65
+              ],
+              [
+                191,
+                235
+              ],
+              [
+                304,
+                402
+              ],
+              [
+                440,
+                536
+              ],
+              [
+                597,
+                602
+              ]
+            ],
+            "status": "partial root read; manual remaining team gaps closed, not root full-file read"
+          },
+          {
+            "path": "codes/chapters/ch13/examples/audit_upstream_distributed_contracts.py",
+            "sha256_at_read": "3072a70dbb4b4ff14acba6f03721d5d79d26274da9e4ebb293ffa10b749a5e27",
+            "line_count": 503,
+            "actually_read_contiguous_ranges": [
+              [
+                295,
+                313
+              ]
+            ],
+            "status": "partial root read; manual remaining team gaps closed, not root full-file read"
+          },
+          {
+            "path": "codes/chapters/ch06/core/aec.py",
+            "sha256_at_read": "6f534c06a0e3a0376b9052a70eda7da776ad25eaf1eeae960be094d4d9037e37",
+            "line_count": 264,
+            "actually_read_contiguous_ranges": [
+              [
+                227,
+                264
+              ]
+            ],
+            "status": "partial root read; manual remaining team gaps closed, not root full-file read"
+          }
+        ],
+        "truncation_repairs": [
+          {
+            "path": "codes/chapters/ch00/research_en/04_source_reproduction.md",
+            "initial": "combined output191–235/304–402 clipped central section",
+            "repair": "191–235 and304–335 re-read explicitly;336–402 visible completely in prior output;440–536 and597–602 independently read"
+          }
+        ],
+        "findings": [
+          {
+            "id": "ROOT-ERLE-TAIL-SILENCE",
+            "severity": "P2",
+            "status": "confirmed explicit causal FIR counterexample; present numerical helper correct",
+            "locations": [
+              "codes/chapters/ch00/research/04_source_reproduction.md:78",
+              "codes/chapters/ch00/research_en/04_source_reproduction.md:62"
+            ],
+            "claim": "No ERLE can be computed over a wholly silent current reference window",
+            "evidence": "x=[1,0,0], h=[0,1], score1:3 has current reference[0,0] but pure echo[1,0]; residual[.5,0] yields energy1/.25 and6.020599913dB. Existing erle_db returns6.020599913279598 (with its small floor). Chapter6 E06-27/28 and1111 explicitly explain pure tail after reference stops.",
+            "calculation": {
+              "reference": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "path": [
+                0,
+                1
+              ],
+              "echo_full": [
+                0.0,
+                1.0,
+                0.0,
+                0.0
+              ],
+              "residual_full": [
+                0.0,
+                0.5,
+                0.0,
+                0.0
+              ],
+              "score_interval": [
+                1,
+                3
+              ],
+              "reference_window": [
+                0.0,
+                0.0
+              ],
+              "echo_energy": 1.0,
+              "residual_energy": 0.25,
+              "erle_db": 6.020599913279624,
+              "scope": "known pure echo/residual energy; no near speech/noise; independent in-memory FIR, not actual AEC or device"
+            },
+            "proposal": "Require identifiable echo energy and valid near/noise separation over scoring window; current reference silence alone is insufficient. Link existing echo-tail explanation; keep true zero-energy undefined rule."
+          },
+          {
+            "id": "ROOT-LSTSQ-EN-RESIDUAL-CONDITION",
+            "severity": "P2",
+            "status": "confirmed actual NumPy call plus official Returns contract",
+            "locations": [
+              "codes/chapters/ch00/research_en/04_source_reproduction.md:208"
+            ],
+            "claim": "residuals empty when rank<=M or M<=N",
+            "input": {
+              "A": [
+                [
+                  1
+                ],
+                [
+                  1
+                ]
+              ],
+              "b": [
+                1,
+                2
+              ],
+              "M": 2,
+              "N": 1
+            },
+            "actual": {
+              "rank": 1,
+              "residuals": [
+                0.4999999999999999
+              ]
+            },
+            "source_url": "https://numpy.org/doc/2.5/reference/generated/numpy.linalg.lstsq.html",
+            "source_location": "Returns residuals, actual page lines130–138; empty if rank<N or M<=N",
+            "proposal": "Correct condition to rank<N or M<=N. Square examples and existing helper outputs remain unchanged."
+          },
+          {
+            "id": "ROOT-P999-WORST-CASE",
+            "severity": "P3",
+            "status": "confirmed quantile/max distinction",
+            "locations": [
+              "codes/chapters/ch00/research_en/04_source_reproduction.md:306"
+            ],
+            "claim": "worst-case P99.9 frame latency",
+            "input": "10000 observed durations:9999 zeros and one100",
+            "actual": {
+              "P99_9": 0,
+              "observed_max": 100
+            },
+            "proposal": "List P99.9 and observed maximum separately; neither observed quantile nor observed max alone proves a WCET bound."
+          }
+        ],
+        "prior_findings_challenged": [
+          {
+            "id": "R105",
+            "status": "additional English window-label recurrence",
+            "locations": [
+              "codes/chapters/ch00/research_en/04_source_reproduction.md:379"
+            ],
+            "evidence": "Code actually sums raw Hann halves. Independent np.hanning512 sum gives[.9969260975,.9999905508], whereas squared raw Hann gives[.4969497201,.9999811016]. Current numbers correct for analysis/synthesis sqrt-Hann product; remove ambiguous squared raw-Hann label."
+          },
+          {
+            "id": "R283",
+            "status": "DAMAS causal explanation already in English manual575 from numerics final packet; remains same source bytes, do not alter historical NameError report."
+          },
+          {
+            "id": "R320",
+            "status": "do not copy rank-definition error from original library prose",
+            "evidence": "NumPy2.5 descriptive overview also incorrectly contrasts number of linearly independent rows/columns; row rank equals column rank. Correct textbook definition uses equation/unknown counts; specific Returns condition independently verified."
+          }
+        ],
+        "sources": [
+          {
+            "url": "https://numpy.org/doc/2.5/reference/generated/numpy.linalg.lstsq.html",
+            "date": "2026-11-23",
+            "actual_read": "Parameters and Returns106–143, overview103–105; not source implementation or full library",
+            "used_for": "residual shape condition plus independent actual NumPy2.5.3 call"
+          }
+        ],
+        "not_verified": [
+          "No upstream production re-execution, installed original dependency closure, device, network, new asset generation or external project license re-verification.",
+          "Full manual team closure is same-SHA union of final read records; root newly read713manual lines and selected existing numerical consumers, not all1267 by root."
+        ]
+      }
+    },
+    {
+      "packet_id": "publication-r2d-home-ci",
+      "received_date": "2026-11-23",
+      "status": "complete_for_assigned_scope_with_explicit_remaining",
+      "handoff_sha256": "93dc5816bff21c10d825ab876865f4dd04b9c6da797d59570ea3aa442c6111f0",
+      "data": {
+        "schema": 1,
+        "round": "R2-D",
+        "agent": "publication_ci",
+        "date": "2026-11-23",
+        "status": "final",
+        "actual_permissions": {
+          "sandbox": "danger-full-access",
+          "approval_policy": "never",
+          "network": "enabled; no network used in R2-D",
+          "sandbox_permissions_argument_used": false
+        },
+        "repository_writes": false,
+        "scope": {
+          "assigned_source_files": 26,
+          "assigned_source_lines": 5757,
+          "assigned_sources_full_read": true,
+          "supplemental_scope": [
+            "assets/readme/lab/array-lab.html",
+            "assets/readme/lab/export-lab.mjs"
+          ],
+          "frozen_scope_overwritten": false,
+          "generated_course_intro_hand_edited": false,
+          "direct_consumers": "Only listed partial source intervals read for B004–B009 and direct README/CI consumers; no claim full build_pdf/build_site/quality/translator source review this D round",
+          "excluded_by_parent": [
+            "Other code/research/upstream README and research manuals",
+            "Other chapter review batches",
+            "Native C/C++ probes delegated to root"
+          ]
+        },
+        "start_head": null,
+        "head_at_packet_creation": "8141bfaafb8140fe3eb8de038445a8912d2e9aed",
+        "coverage": {
+          "assigned_files": [
+            {
+              "path": ".github/workflows/pages.yml",
+              "lines": 98,
+              "sha256": "45cc0de31d84466c696855765ef77527fbca8681f8d3b5ad5a09f3f5ee5d7512",
+              "read_intervals": [
+                [
+                  1,
+                  98
+                ]
+              ],
+              "unread_intervals": [],
+              "read_status": "full",
+              "role": "assigned source full independent review",
+              "sha256_at_completion": "45cc0de31d84466c696855765ef77527fbca8681f8d3b5ad5a09f3f5ee5d7512",
+              "unchanged_since_inventory": true
+            },
+            {
+              "path": ".github/workflows/ci.yml",
+              "lines": 39,
+              "sha256": "f56d6ddc0ee065549301b061d025d2bbee43db8eaa7d924730e273ebac7e8b03",
+              "read_intervals": [
+                [
+                  1,
+                  39
+                ]
+              ],
+              "unread_intervals": [],
+              "read_status": "full",
+              "role": "assigned source full independent review",
+              "sha256_at_completion": "f56d6ddc0ee065549301b061d025d2bbee43db8eaa7d924730e273ebac7e8b03",
+              "unchanged_since_inventory": true
+            },
+            {
+              "path": "scripts/run_portable_ci.py",
+              "lines": 291,
+              "sha256": "edba721747bdff7f7181b238171f0e758950e6742096930647d485d1dedb021f",
+              "read_intervals": [
+                [
+                  1,
+                  291
+                ]
+              ],
+              "unread_intervals": [],
+              "read_status": "full",
+              "role": "assigned source full independent review",
+              "sha256_at_completion": "edba721747bdff7f7181b238171f0e758950e6742096930647d485d1dedb021f",
+              "unchanged_since_inventory": true
+            },
+            {
+              "path": "scripts/chapter_identity.py",
+              "lines": 131,
+              "sha256": "703b522cf2797d19a75533b980352f5fcc81173e533c56fc7eed5cb0c8a20f2d",
+              "read_intervals": [
+                [
+                  1,
+                  131
+                ]
+              ],
+              "unread_intervals": [],
+              "read_status": "full",
+              "role": "assigned source full independent review",
+              "sha256_at_completion": "703b522cf2797d19a75533b980352f5fcc81173e533c56fc7eed5cb0c8a20f2d",
+              "unchanged_since_inventory": true
+            },
+            {
+              "path": "scripts/chapter_numbering.json",
+              "lines": 988,
+              "sha256": "1a9ac8a38e521a48803577e328f848607a2e5f27e51fc851dadd6d29d00a02c5",
+              "read_intervals": [
+                [
+                  1,
+                  988
+                ]
+              ],
+              "unread_intervals": [],
+              "read_status": "full",
+              "role": "assigned source full independent review",
+              "sha256_at_completion": "1a9ac8a38e521a48803577e328f848607a2e5f27e51fc851dadd6d29d00a02c5",
+              "unchanged_since_inventory": true
+            },
+            {
+              "path": "scripts/heading_aliases.py",
+              "lines": 351,
+              "sha256": "6f492ae1e7e84518b9b49210d51b5f9aa725475d5203be59131b374bcab9ca55",
+              "read_intervals": [
+                [
+                  1,
+                  351
+                ]
+              ],
+              "unread_intervals": [],
+              "read_status": "full",
+              "role": "assigned source full independent review",
+              "sha256_at_completion": "6f492ae1e7e84518b9b49210d51b5f9aa725475d5203be59131b374bcab9ca55",
+              "unchanged_since_inventory": true
+            },
+            {
+              "path": "scripts/legacy_sequential_anchors.json",
+              "lines": 349,
+              "sha256": "a9b73e0a211c04b1763ac75c83df518fa91111b01fd2617d38d9f621900b3dda",
+              "read_intervals": [
+                [
+                  1,
+                  349
+                ]
+              ],
+              "unread_intervals": [],
+              "read_status": "full",
+              "role": "assigned source full independent review",
+              "sha256_at_completion": "a9b73e0a211c04b1763ac75c83df518fa91111b01fd2617d38d9f621900b3dda",
+              "unchanged_since_inventory": true
+            },
+            {
+              "path": "scripts/language_bars.py",
+              "lines": 115,
+              "sha256": "d285a9d8cb68ae274a31fb9d1657226f9acc079832586f7d3556f986e41976ed",
+              "read_intervals": [
+                [
+                  1,
+                  115
+                ]
+              ],
+              "unread_intervals": [],
+              "read_status": "full",
+              "role": "assigned source full independent review",
+              "sha256_at_completion": "d285a9d8cb68ae274a31fb9d1657226f9acc079832586f7d3556f986e41976ed",
+              "unchanged_since_inventory": true
+            },
+            {
+              "path": "scripts/course_home/index.html",
+              "lines": 481,
+              "sha256": "cd469d8f71d192ff54b357a1a3fbc43d3300f3028156831b959fd5307fe0665a",
+              "read_intervals": [
+                [
+                  1,
+                  481
+                ]
+              ],
+              "unread_intervals": [],
+              "read_status": "full",
+              "role": "assigned source full independent review",
+              "sha256_at_completion": "cd469d8f71d192ff54b357a1a3fbc43d3300f3028156831b959fd5307fe0665a",
+              "unchanged_since_inventory": true
+            },
+            {
+              "path": "scripts/course_home/home.css",
+              "lines": 245,
+              "sha256": "f9b96a0e31cc8837046d9a747648d092e171d249ff99970cf1f8b42b7460aad4",
+              "read_intervals": [
+                [
+                  1,
+                  245
+                ]
+              ],
+              "unread_intervals": [],
+              "read_status": "full",
+              "role": "assigned source full independent review",
+              "sha256_at_completion": "f9b96a0e31cc8837046d9a747648d092e171d249ff99970cf1f8b42b7460aad4",
+              "unchanged_since_inventory": true
+            },
+            {
+              "path": "scripts/course_home/home.js",
+              "lines": 109,
+              "sha256": "e432ec909e4f2144c941a253582045aaefd799a28ab7f049e1a20bc100b4843e",
+              "read_intervals": [
+                [
+                  1,
+                  109
+                ]
+              ],
+              "unread_intervals": [],
+              "read_status": "full",
+              "role": "assigned source full independent review",
+              "sha256_at_completion": "e432ec909e4f2144c941a253582045aaefd799a28ab7f049e1a20bc100b4843e",
+              "unchanged_since_inventory": true
+            },
+            {
+              "path": "scripts/course_home/export_portable.py",
+              "lines": 114,
+              "sha256": "5f8544725ab3c97ea0406dfb50371b6e3e1a5e87e0b2e89bdaf6d40f4eefdc93",
+              "read_intervals": [
+                [
+                  1,
+                  114
+                ]
+              ],
+              "unread_intervals": [],
+              "read_status": "full",
+              "role": "assigned source full independent review",
+              "sha256_at_completion": "5f8544725ab3c97ea0406dfb50371b6e3e1a5e87e0b2e89bdaf6d40f4eefdc93",
+              "unchanged_since_inventory": true
+            },
+            {
+              "path": "scripts/course_home_en/index.html",
+              "lines": 481,
+              "sha256": "f604f01f50284a1abe36f093b036cad62727a1407a190988bb01061db957c7a5",
+              "read_intervals": [
+                [
+                  1,
+                  481
+                ]
+              ],
+              "unread_intervals": [],
+              "read_status": "full",
+              "role": "assigned source full independent review",
+              "sha256_at_completion": "f604f01f50284a1abe36f093b036cad62727a1407a190988bb01061db957c7a5",
+              "unchanged_since_inventory": true
+            },
+            {
+              "path": "scripts/course_home_en/home.css",
+              "lines": 245,
+              "sha256": "f9b96a0e31cc8837046d9a747648d092e171d249ff99970cf1f8b42b7460aad4",
+              "read_intervals": [
+                [
+                  1,
+                  245
+                ]
+              ],
+              "unread_intervals": [],
+              "read_status": "full",
+              "role": "assigned source full independent review",
+              "sha256_at_completion": "f9b96a0e31cc8837046d9a747648d092e171d249ff99970cf1f8b42b7460aad4",
+              "unchanged_since_inventory": true
+            },
+            {
+              "path": "scripts/course_home_en/home.js",
+              "lines": 111,
+              "sha256": "c674c2d2552895aeace2e8ec5b7de7b732bacb4d94e5cbbc9f7713b89398996e",
+              "read_intervals": [
+                [
+                  1,
+                  111
+                ]
+              ],
+              "unread_intervals": [],
+              "read_status": "full",
+              "role": "assigned source full independent review",
+              "sha256_at_completion": "c674c2d2552895aeace2e8ec5b7de7b732bacb4d94e5cbbc9f7713b89398996e",
+              "unchanged_since_inventory": true
+            },
+            {
+              "path": "scripts/course_home_en/export_portable.py",
+              "lines": 87,
+              "sha256": "4398b52debacda8ffd6b5ea2cdcfa62fe4ee9a8caf730e277f85fab4fa6d5e66",
+              "read_intervals": [
+                [
+                  1,
+                  87
+                ]
+              ],
+              "unread_intervals": [],
+              "read_status": "full",
+              "role": "assigned source full independent review",
+              "sha256_at_completion": "4398b52debacda8ffd6b5ea2cdcfa62fe4ee9a8caf730e277f85fab4fa6d5e66",
+              "unchanged_since_inventory": true
+            },
+            {
+              "path": "README.md",
+              "lines": 94,
+              "sha256": "1de3d9d4ed35dfae22a4e8f24b92d3cb6124f8d52ea24c7b3b968a5e470f8c95",
+              "read_intervals": [
+                [
+                  1,
+                  94
+                ]
+              ],
+              "unread_intervals": [],
+              "read_status": "full",
+              "role": "assigned source full independent review",
+              "sha256_at_completion": "1de3d9d4ed35dfae22a4e8f24b92d3cb6124f8d52ea24c7b3b968a5e470f8c95",
+              "unchanged_since_inventory": true
+            },
+            {
+              "path": "README_EN.md",
+              "lines": 93,
+              "sha256": "6f201ece13955dcd3df1e6ee0cf2a2c89fbfafe47b980bd993164694da33aa72",
+              "read_intervals": [
+                [
+                  1,
+                  93
+                ]
+              ],
+              "unread_intervals": [],
+              "read_status": "full",
+              "role": "assigned source full independent review",
+              "sha256_at_completion": "6f201ece13955dcd3df1e6ee0cf2a2c89fbfafe47b980bd993164694da33aa72",
+              "unchanged_since_inventory": true
+            },
+            {
+              "path": "scripts/README.md",
+              "lines": 466,
+              "sha256": "217f659ddde819da38a9ba12922a14f6bdbc7cd24c19f5078c98e16be111437a",
+              "read_intervals": [
+                [
+                  1,
+                  466
+                ]
+              ],
+              "unread_intervals": [],
+              "read_status": "full",
+              "role": "assigned source full independent review",
+              "sha256_at_completion": "217f659ddde819da38a9ba12922a14f6bdbc7cd24c19f5078c98e16be111437a",
+              "unchanged_since_inventory": true
+            },
+            {
+              "path": "scripts/README_EN.md",
+              "lines": 354,
+              "sha256": "6490a5db08e1c6a4b9798023650560d362034263d58d73d491b37d0c1e08c6b3",
+              "read_intervals": [
+                [
+                  1,
+                  354
+                ]
+              ],
+              "unread_intervals": [],
+              "read_status": "full",
+              "role": "assigned source full independent review",
+              "sha256_at_completion": "6490a5db08e1c6a4b9798023650560d362034263d58d73d491b37d0c1e08c6b3",
+              "unchanged_since_inventory": true
+            },
+            {
+              "path": "assets/readme/lab/README.md",
+              "lines": 38,
+              "sha256": "e29d4b9b651d053332dc6ee27c9781671d95d400b88352a1aed2d0355ca63147",
+              "read_intervals": [
+                [
+                  1,
+                  38
+                ]
+              ],
+              "unread_intervals": [],
+              "read_status": "full",
+              "role": "assigned source full independent review",
+              "sha256_at_completion": "e29d4b9b651d053332dc6ee27c9781671d95d400b88352a1aed2d0355ca63147",
+              "unchanged_since_inventory": true
+            },
+            {
+              "path": "assets/readme/lab/README_EN.md",
+              "lines": 40,
+              "sha256": "1017ee022b8ea6bf50cb83f810546b7cddb5010001bb7a503aef9dcd0665d996",
+              "read_intervals": [
+                [
+                  1,
+                  40
+                ]
+              ],
+              "unread_intervals": [],
+              "read_status": "full",
+              "role": "assigned source full independent review",
+              "sha256_at_completion": "1017ee022b8ea6bf50cb83f810546b7cddb5010001bb7a503aef9dcd0665d996",
+              "unchanged_since_inventory": true
+            },
+            {
+              "path": "scripts/vendor/mathjax-3.2.2/README.md",
+              "lines": 40,
+              "sha256": "7e9723d78a3c073a2a481347a5e17ac6e5d9ab3cea2630a98c245287ad78a90c",
+              "read_intervals": [
+                [
+                  1,
+                  40
+                ]
+              ],
+              "unread_intervals": [],
+              "read_status": "full",
+              "role": "assigned source full independent review",
+              "sha256_at_completion": "7e9723d78a3c073a2a481347a5e17ac6e5d9ab3cea2630a98c245287ad78a90c",
+              "unchanged_since_inventory": true
+            },
+            {
+              "path": "scripts/vendor/mathjax-3.2.2/README_EN.md",
+              "lines": 42,
+              "sha256": "80690261b1293c8067cbfc1e125d183fbc0ff3df79b9b16ed9227af3113b04a7",
+              "read_intervals": [
+                [
+                  1,
+                  42
+                ]
+              ],
+              "unread_intervals": [],
+              "read_status": "full",
+              "role": "assigned source full independent review",
+              "sha256_at_completion": "80690261b1293c8067cbfc1e125d183fbc0ff3df79b9b16ed9227af3113b04a7",
+              "unchanged_since_inventory": true
+            },
+            {
+              "path": "assets/readme/lab/array-lab.html",
+              "lines": 326,
+              "sha256": "4533a2e98ceec5f14d9ff4a49f49c1f176766036dcdd2985e07dbc4e9ce7e464",
+              "read_intervals": [
+                [
+                  1,
+                  326
+                ]
+              ],
+              "unread_intervals": [],
+              "read_status": "full",
+              "role": "assigned source full independent review",
+              "sha256_at_completion": "4533a2e98ceec5f14d9ff4a49f49c1f176766036dcdd2985e07dbc4e9ce7e464",
+              "unchanged_since_inventory": true
+            },
+            {
+              "path": "assets/readme/lab/export-lab.mjs",
+              "lines": 29,
+              "sha256": "55cb29254d0e169f82502bffdd57e679eb35ac52bf9a38b8ae8ec51551994df1",
+              "read_intervals": [
+                [
+                  1,
+                  29
+                ]
+              ],
+              "unread_intervals": [],
+              "read_status": "full",
+              "role": "assigned source full independent review",
+              "sha256_at_completion": "55cb29254d0e169f82502bffdd57e679eb35ac52bf9a38b8ae8ec51551994df1",
+              "unchanged_since_inventory": true
+            }
+          ],
+          "extra_full_or_partial_files": [
+            {
+              "path": "tests/test_chapter_numbering.py",
+              "sha256": "f4864b92f278d6b314b644d847e62fb75b207907bdfc16f11e0e8003d7847fd9",
+              "lines": 110,
+              "read_intervals": [
+                [
+                  1,
+                  110
+                ]
+              ],
+              "unread_intervals": [],
+              "read_status": "full",
+              "role": "direct test source fully read"
+            },
+            {
+              "path": "tests/test_heading_alias_compatibility.py",
+              "sha256": "7d44c4469a13196395dbf244aeb076e112785c67898b8267ca29fc0ce61e0a6e",
+              "lines": 304,
+              "read_intervals": [
+                [
+                  1,
+                  304
+                ]
+              ],
+              "unread_intervals": [],
+              "read_status": "full",
+              "role": "direct test source fully read"
+            },
+            {
+              "path": "tests/test_build_pdf_semantics.py",
+              "sha256": "c6f89dfc680dc4b180d3308359bb7c91e7eeae09fbb333bf09c9edea7b6a6249",
+              "lines": 175,
+              "read_intervals": [
+                [
+                  1,
+                  175
+                ]
+              ],
+              "unread_intervals": [],
+              "read_status": "full",
+              "role": "direct test source fully read"
+            },
+            {
+              "path": "tests/test_pdf_layout_spaces.py",
+              "sha256": "42633a69f4e3d4cda307ba393d74c218593b9907ac1406d4cb798e3662c37510",
+              "lines": 384,
+              "read_intervals": [
+                [
+                  1,
+                  384
+                ]
+              ],
+              "unread_intervals": [],
+              "read_status": "full",
+              "role": "direct test source fully read"
+            },
+            {
+              "path": "tests/test_course_locata.py",
+              "sha256": "a197be64c6b2bcafda1f7c835e2d211d5483fd7dc8fc756cfeb38bafc2266f57",
+              "lines": 79,
+              "read_intervals": [
+                [
+                  1,
+                  79
+                ]
+              ],
+              "unread_intervals": [],
+              "read_status": "full",
+              "role": "direct test source fully read"
+            },
+            {
+              "path": "tests/test_round3_publication.py",
+              "sha256": "6f329071398826c9a9634795b26e7c25fb38b24e410390584862dc712a620fd8",
+              "lines": 49,
+              "read_intervals": [
+                [
+                  1,
+                  49
+                ]
+              ],
+              "unread_intervals": [],
+              "read_status": "full",
+              "role": "direct test source fully read"
+            },
+            {
+              "path": "tests/test_codes_chapter01_experiments.py",
+              "sha256": "83d4e0f217a2441cafa989d2b1b8b2559482ded06bd7a9761b84d81fc10f887a",
+              "lines": 333,
+              "read_intervals": [
+                [
+                  1,
+                  333
+                ]
+              ],
+              "unread_intervals": [],
+              "read_status": "full",
+              "role": "direct test source fully read"
+            },
+            {
+              "path": "tests/test_codes_room_declarations.py",
+              "sha256": "2a00920fc7109aca39150ff9a3d71ec09d9908971988e13a2a2fb311d06e3fa9",
+              "lines": 79,
+              "read_intervals": [
+                [
+                  1,
+                  79
+                ]
+              ],
+              "unread_intervals": [],
+              "read_status": "full",
+              "role": "direct test source fully read"
+            },
+            {
+              "path": "scripts/build_site_en.py",
+              "sha256": "cc7e219ea574817399c47578e1f1f6222873d44d8bf3455fce3f4616f1c406eb",
+              "lines": 572,
+              "read_intervals": [
+                [
+                  1,
+                  175
+                ]
+              ],
+              "unread_intervals": [
+                [
+                  176,
+                  572
+                ]
+              ],
+              "read_status": "partial",
+              "role": "direct consumer or challenge function; unread intervals explicitly retained"
+            },
+            {
+              "path": "scripts/build_pdf_en.py",
+              "sha256": "8cf8087d3a07a31d6607e7a6b098179574a53689457eebdcfa8815362d9a75b3",
+              "lines": 886,
+              "read_intervals": [
+                [
+                  1,
+                  140
+                ],
+                [
+                  224,
+                  315
+                ],
+                [
+                  380,
+                  570
+                ],
+                [
+                  662,
+                  790
+                ],
+                [
+                  810,
+                  886
+                ]
+              ],
+              "unread_intervals": [
+                [
+                  141,
+                  223
+                ],
+                [
+                  316,
+                  379
+                ],
+                [
+                  571,
+                  661
+                ],
+                [
+                  791,
+                  809
+                ]
+              ],
+              "read_status": "partial",
+              "role": "direct consumer or challenge function; unread intervals explicitly retained"
+            },
+            {
+              "path": "scripts/build_pdf.py",
+              "sha256": "c201d2dcdd9f51cd84e9903b003ddcbe8db0e6063f882d47931098cec14d82e5",
+              "lines": 2242,
+              "read_intervals": [
+                [
+                  606,
+                  685
+                ],
+                [
+                  1566,
+                  1770
+                ],
+                [
+                  2179,
+                  2242
+                ]
+              ],
+              "unread_intervals": [
+                [
+                  1,
+                  605
+                ],
+                [
+                  686,
+                  1565
+                ],
+                [
+                  1771,
+                  2178
+                ]
+              ],
+              "read_status": "partial",
+              "role": "direct consumer or challenge function; unread intervals explicitly retained"
+            },
+            {
+              "path": "scripts/build_site.py",
+              "sha256": "41cc67f4cc693a3fbe5ec00b3e330bd4670f643764d3b691ac7bb161dbb9b53c",
+              "lines": 2245,
+              "read_intervals": [
+                [
+                  1288,
+                  1335
+                ]
+              ],
+              "unread_intervals": [
+                [
+                  1,
+                  1287
+                ],
+                [
+                  1336,
+                  2245
+                ]
+              ],
+              "read_status": "partial",
+              "role": "direct consumer or challenge function; unread intervals explicitly retained"
+            },
+            {
+              "path": "scripts/quality_check_en.py",
+              "sha256": "d582c14212f72fabbf2dac11d7d570e6c7938636aa9594c829085c2f0fa77c11",
+              "lines": 313,
+              "read_intervals": [
+                [
+                  35,
+                  60
+                ],
+                [
+                  145,
+                  313
+                ]
+              ],
+              "unread_intervals": [
+                [
+                  1,
+                  34
+                ],
+                [
+                  61,
+                  144
+                ]
+              ],
+              "read_status": "partial",
+              "role": "direct consumer or challenge function; unread intervals explicitly retained"
+            },
+            {
+              "path": "scripts/quality_check.py",
+              "sha256": "c39e75e82193a83bbf319a83c7c3663b26bacd7fba264ea6ffc86f1733dbb691",
+              "lines": 5283,
+              "read_intervals": [
+                [
+                  805,
+                  975
+                ],
+                [
+                  1980,
+                  2135
+                ],
+                [
+                  2760,
+                  2830
+                ],
+                [
+                  4710,
+                  4826
+                ],
+                [
+                  5180,
+                  5220
+                ]
+              ],
+              "unread_intervals": [
+                [
+                  1,
+                  804
+                ],
+                [
+                  976,
+                  1979
+                ],
+                [
+                  2136,
+                  2759
+                ],
+                [
+                  2831,
+                  4709
+                ],
+                [
+                  4827,
+                  5179
+                ],
+                [
+                  5221,
+                  5283
+                ]
+              ],
+              "read_status": "partial",
+              "role": "direct consumer or challenge function; unread intervals explicitly retained"
+            },
+            {
+              "path": "scripts/make_figures_en.py",
+              "sha256": "e5544a219a3627ab55aa850a86cc80632c69183db76bd182283d1484b70e4234",
+              "lines": 516,
+              "read_intervals": [
+                [
+                  1,
+                  95
+                ],
+                [
+                  390,
+                  516
+                ]
+              ],
+              "unread_intervals": [
+                [
+                  96,
+                  389
+                ]
+              ],
+              "read_status": "partial",
+              "role": "direct consumer or challenge function; unread intervals explicitly retained"
+            },
+            {
+              "path": "tests/test_codes_chapter02_experiments.py",
+              "sha256": "2d033a9c45bbcf98aad75892cd83effaf9ca6ffe5f2383765a2653ef284d6596",
+              "lines": 362,
+              "read_intervals": [
+                [
+                  1,
+                  100
+                ]
+              ],
+              "unread_intervals": [
+                [
+                  101,
+                  362
+                ]
+              ],
+              "read_status": "partial",
+              "role": "direct consumer or challenge function; unread intervals explicitly retained"
+            },
+            {
+              "path": "chapters/07_wpe-dereverberation.md",
+              "sha256": "f50392fa3df7736e0eacb0773b6748ab007c7ce1a382e5897c94d0e8b307774a",
+              "lines": 1548,
+              "read_intervals": [
+                [
+                  35,
+                  100
+                ]
+              ],
+              "unread_intervals": [
+                [
+                  1,
+                  34
+                ],
+                [
+                  101,
+                  1548
+                ]
+              ],
+              "read_status": "partial",
+              "role": "direct consumer or challenge function; unread intervals explicitly retained"
+            },
+            {
+              "path": "codes/chapters/ch05/core/beamforming.py",
+              "sha256": "481f79a66fcc4c1f232704ee3a516b596d28ebc89d9045c494b71f6206b77216",
+              "lines": 285,
+              "read_intervals": [
+                [
+                  1,
+                  152
+                ]
+              ],
+              "unread_intervals": [
+                [
+                  153,
+                  285
+                ]
+              ],
+              "read_status": "partial",
+              "role": "direct consumer or challenge function; unread intervals explicitly retained"
+            },
+            {
+              "path": "requirements.txt",
+              "sha256": "37cf61f0e67d09bbc93262063ddaa4b62d6d1b38fca78873775281dcc96a2b7a",
+              "lines": 6,
+              "read_intervals": [
+                [
+                  1,
+                  6
+                ]
+              ],
+              "unread_intervals": [],
+              "read_status": "full",
+              "role": "direct consumer or challenge function; unread intervals explicitly retained"
+            }
+          ],
+          "instructions": "AGENTS.md1–972 fully reread; project and writing SKILL plus publication/beginner/diagrams/auditing refs fully reread; PDF SKILL fully read. Tool truncation of long combined early output and test_chapter01 output was explicitly recovered with bounded rereads."
+        },
+        "findings": [
+          {
+            "id": "R2D-D01",
+            "status": "confirmed-by-independent-memory-controls",
+            "severity": "P2",
+            "prior_id": "B004",
+            "location": "scripts/build_site_en.py:129–170; scripts/build_pdf_en.py:75–93,117–138,224–264,422–455",
+            "claim": "英文摘要漏掉其真实消费者使用的部分源。",
+            "challenge": "每构建器10项read_bytes扰动及实际读取记录。站点编号JSON/顺序锚JSON/中文配对数学章不读且摘要不变，heading_aliases/chapter_identity/build_site/home.js正控改变。PDF编号/锚/身份代码/中文配对章/build_site/MathJax本地资源均未纳入；英文翻译器和表也不读。当前两份PDF元数据仍与其现行摘要函数结果相符；这只能证明现有不完整合同下相符。站点在线MathJax并不消费本地vendor，因此不把站点缺vendor单独列为错误。",
+            "suggestion": "列明确直接依赖闭包，共享中英身份/锚/标题依赖及实际英文翻译身份；按真实消费者定义摘要，增加每类依赖变更负控。",
+            "evidence_artifacts": [
+              "r2d-digest-figure-controls.json"
+            ],
+            "repository_modified": false
+          },
+          {
+            "id": "R2D-D02",
+            "status": "confirmed-by-actual-readers-with-memory-substitution",
+            "severity": "P2",
+            "prior_id": "B005",
+            "location": "scripts/quality_check_en.py:249–284",
+            "claim": "英文PDF门禁不核源摘要，也没有独立英文大纲与目标基线。",
+            "challenge": "用真实两PDF创建reader，原SourceDigest分别ab84e8dcc77a/9eb5928f1ced，仅内存改fedcba987654，并令reader.outline返回空。1390/1613页真实结构与链接验证仍运行，check_pdfs errors=[]；没有改磁盘PDF。outline_top_items38含嵌套列表，不能误称38个章级书签。",
+            "suggestion": "比较当前英文输入身份、明确独立英文大纲/目标/视图期望；用错摘要、缺大纲、错页内目标、合法未变输入分别回归。",
+            "evidence_artifacts": [
+              "r2d-pdf-metadata-controls.json"
+            ],
+            "repository_modified": false
+          },
+          {
+            "id": "R2D-D03",
+            "status": "confirmed-and-expanded-by-independent-memory-controls",
+            "severity": "P2",
+            "prior_id": "B006",
+            "location": "scripts/quality_check_en.py:158–184; scripts/quality_check.py:817–829,852–948; scripts/make_figures_en.py:400–464",
+            "claim": "PNG图身份与英文翻译来源绑定不充分；英文门禁甚至没有解码PNG。",
+            "challenge": "英文fig01内存替换为合法fig03，errors=[]；替换为8字节PNG签名+1100零字节也errors=[]，坏签名正控报Invalid PNG。中文fig03解码对象替入fig01也errors=[]，因二者同制图源而元数据通过。实际首图中英只见SourceScript/SourceScriptDigest，无翻译器/表身份。",
+            "suggestion": "先实际完整解码，再绑定图名/号、绘图源、英文翻译器/表及必要数值/音频输入；重新生成而非手工改PNG。保留同源错图、坏签名、合法签名但无效结构、陈旧翻译负控。",
+            "evidence_artifacts": [
+              "r2d-digest-figure-controls.json"
+            ],
+            "repository_modified": false
+          },
+          {
+            "id": "R2D-D04",
+            "status": "confirmed-and-bounded-by-independent-rendered-controls",
+            "severity": "P2",
+            "prior_id": "B007",
+            "location": "scripts/build_pdf.py:1566–1694; especially1594–1601,1610–1614",
+            "claim": "声明无损的路径复用并不对其接受的所有几何/绘图状态无损。",
+            "challenge": "新正宽矩形80 90 180 150 re真实范围到260/240，却BBox[55,65,205,175]，100dpi差32123像素。ca从1变0.25跨gs合并差76452像素。新增100点粗描边受固定25 padding裁切，差52786像素。前后6张相关图及矩形2张均已实看。反驳控制：负宽re虽BBox过大，但本输入0像素差；普通多边形0像素差。当前整书是否触发新增粗描边条件未扫描，未宣称当前书已损坏。",
+            "suggestion": "按路径操作正确求几何边界，考虑真实线宽/连接/端帽/变换；不能证明状态一致时保留原分步fill与stroke，不跨gs直接合并。加入独立范围/透明度/粗线和成功对照。",
+            "evidence_artifacts": [
+              "r2d-pdf-independent/report.json",
+              "r2d-pdf-independent/extent-controls.json"
+            ],
+            "repository_modified": false
+          },
+          {
+            "id": "R2D-D05",
+            "status": "confirmed-by-current-stale-missing-html-controls",
+            "severity": "P2",
+            "prior_id": "B008",
+            "location": "scripts/build_pdf_en.py:833–882; compare scripts/build_pdf.py:2207–2220; scripts/build_pdf_en.py:764–772",
+            "claim": "英文--pdf-only复用陈旧或缺摘要HTML仍进入打印路径。",
+            "challenge": "以实际完整combined*.html复制到仓外，分别保持current、替摘要0123456789ab、删除摘要标识。真实preflight与outline解析保留，打印器换抛异常哨兵。中文仅current到printer；英文三组全到printer。没有调用Chrome。add_bookmarks_en之后会把当前source_digest_en写入元数据，故存在陈旧HTML被标成当前源身份的路径风险。",
+            "suggestion": "复用前核嵌入摘要与当前依赖，并对照独立当前内容/目录期望；不得给未验证的旧HTML写当前SourceDigest。",
+            "evidence_artifacts": [
+              "r2d-pdf-independent/report.json"
+            ],
+            "repository_modified": false
+          },
+          {
+            "id": "R2D-D06",
+            "status": "confirmed-and-expanded-by-real-font-controls",
+            "severity": "P2",
+            "prior_id": "B009",
+            "location": "scripts/build_pdf_en.py:458–476,479–566; especially526–537; scripts/vendor/mathjax-3.2.2/README*.md",
+            "claim": "英文孤立Span空格标记存在缺省放行和过宽字体回退。",
+            "challenge": "可见矩形CID3、Tf继承于块外时严格和英文字体证明均False，仍改1块Artifact；875深像素前后不变、2图已实看。显式可见字体是合法反驳：0块改写。新增显式缺字体资源、ToUnicode把CID3映为A、零advance，均仍改Artifact；后两者严格font proof False、英文fallback True。合法显式空格正控改1块。缺字体一例记录的proof是仍持有但已从资源表删除的font对象证明，并非当前页可解析到该字体，不能误解为unknown已证明。",
+            "suggestion": "默认拒绝猜测；跟踪BT/Tf和q/Q真实字体状态，资源缺失直接保留语义；复用严格Identity/唯一U+0020/轮廓/推进完整证明，不以仅零轮廓回退。当前书是否经过错误分支仍未独立扫描。",
+            "evidence_artifacts": [
+              "r2d-pdf-independent/report.json"
+            ],
+            "repository_modified": false
+          },
+          {
+            "id": "R2D-D07",
+            "status": "confirmed-by-original-javascript-prefix-execution",
+            "severity": "P2",
+            "prior_id": null,
+            "location": "scripts/course_home/home.js:2–5; scripts/course_home_en/home.js:2–5; both index.html:13; both export_portable.py::portable",
+            "claim": "便携单文件首页的语言按钮在file或localhost被改成失效本地路径。",
+            "challenge": "Node VM实际执行原脚本语言链接前缀，用真实模板data-lang-peer。从assets/readme/course-intro[ -en].html解析为assets/site_en/index.html或assets/site/index.html，两文件不存在；localhost解析同样错误目录。站点本地site/index.html/ site_en/index.html原位置对照目标均存在。两便携导出--check仍退出0。",
+            "suggestion": "便携导出明确保留在线语言URL，或同时重写data-lang-peer到适合导出位置的目标；站点本地互跳保持。增加两种语言和file/localhost部署上下文的链接测试。",
+            "evidence_artifacts": [
+              "r2d-portable-language-links.json"
+            ],
+            "repository_modified": false
+          },
+          {
+            "id": "R2D-D08",
+            "status": "confirmed-classification-mismatch",
+            "severity": "P2",
+            "prior_id": null,
+            "location": "README.md:27; README_EN.md:27; chapters/07_wpe-dereverberation.md:35–79; frozen M185–M186",
+            "claim": "README把MINT放进带保护间隔的延迟线性预测WPE代表方法列表。",
+            "challenge": "本书第7章本身将MINT定义为已知RIR的多项式逆滤波，与盲STFT延迟预测WPE明确对照；冻结表M185/186也是已知路径/有限教学例。不是说MINT一定需要干净源波形，而是不能把它分类为带Delta的WPE算法。原Miyoshi论文本D批未重新读，局限明列。",
+            "suggestion": "WPE行保留离线/在线WPE；MINT改为已知路径逆滤波对照，正面写所需路径信息。",
+            "evidence_artifacts": [],
+            "repository_modified": false
+          },
+          {
+            "id": "R2D-D09",
+            "status": "confirmed-unsupported-runtime-promise",
+            "severity": "P3",
+            "prior_id": null,
+            "location": "README.md:65–80; README_EN.md:65–78",
+            "claim": "标题承诺3分钟安装与复算。",
+            "challenge": "没有主机、网络下载、安装缓存或运行统计条件，实际段落包含clone/venv/pip与三组运行。未在新环境计时，不能据本机已有依赖运行推断3分钟。AGENTS10.1不允许无测量/模型的学习时长承诺；此处安装操作时长也缺条件。",
+            "suggestion": "去掉固定分钟数，写本地安装与首次复算，并明确依赖准备/运行输出。",
+            "evidence_artifacts": [],
+            "repository_modified": false
+          },
+          {
+            "id": "R2D-D10",
+            "status": "confirmed-against-current-registered-source-scope",
+            "severity": "P2",
+            "prior_id": null,
+            "location": "README.md:9,38; README_EN.md:9; scripts/course_home/index.html:34; English same; codes/chapters/ch00/SOURCES.lock.json named entries",
+            "claim": "129项目被统称开源源码对照，掩盖仅索引/未建立许可项目。",
+            "challenge": "本次读取当前锁表projects数量129，并实际读dcase2025-stereo-seld、alias-free-arrays、danse-python、dprtf-ssl四完整记录：其license未建立或NOASSERTION且fetch_enabled=False/index_only。这里只能证明当前项目登记的边界，不是联网复查这些仓库今天许可状态。",
+            "suggestion": "入口称129个上游源码与来源索引项目；取得、静态审读、实际方法执行及许可分别链接登记。不得因README措辞去扩大上游授权。",
+            "evidence_artifacts": [],
+            "repository_modified": false
+          },
+          {
+            "id": "R2D-D11",
+            "status": "confirmed-translation-evidence-strength-expansion",
+            "severity": "P2",
+            "prior_id": "R123",
+            "location": "scripts/course_home_en/index.html:378,397; Chinese same378,397; README*.md:44",
+            "claim": "英文试听说明verify distortionless speech fidelity及target loss超出总功率与主观试听能证明范围。",
+            "challenge": "英文378比中文“核查目标语音保真度”再强化为distortionless；实际当前LOCATA测试仅已知模型响应和单讲窗总带内功率。R2-C已独立读取实际4 PCM并复算；本D批运行CourseLocataTests再次核源/WAVSHA及整数/频带指标通过，不重复宣称有干净目标参考或真人听测。12.9/1.5测量数字应保留，命名改实际单讲总带内功率。",
+            "suggestion": "合并R123重复处，改写为比较A单讲波形与总带内能量变化；清晰自然由读者试听，不能从能量比推出无失真。",
+            "evidence_artifacts": [],
+            "repository_modified": false
+          },
+          {
+            "id": "R2D-D12",
+            "status": "confirmed-documentation-and-selection-scope-gap",
+            "severity": "P2",
+            "prior_id": null,
+            "location": "scripts/run_portable_ci.py:4–11,31–116,238–271; scripts/README*.md runner row",
+            "claim": "CI自包含测试范围的文字比实际过滤规则窄，排除原因不完整。",
+            "challenge": "实际按源码规则静态重放269模块：128纳入、141排除；并未运行这128模块。除_downloads/host外，非arm64Darwin还排所有文件名含experiments与四显式模块。test_codes_chapter01_experiments无downloads/host关键词，也单因文件名experiments排除；room_declarations因check_assets字样排。正文字符串匹配可使新增测试因注释/标识被静默跳过。打印统一归类host-manifest/_downloads未列arm64原因。",
+            "suggestion": "维护明确模块能力/平台需求与排除理由清单；先如实修正说明与输出，再独立确认哪些方法可跨平台，不立即强开全部141模块。",
+            "evidence_artifacts": [
+              "r2d-portable-filter-inventory.json"
+            ],
+            "repository_modified": false
+          },
+          {
+            "id": "R2D-D13",
+            "status": "confirmed-static-release-gating-gap-not-observed-bad-deploy",
+            "severity": "P2",
+            "prior_id": null,
+            "location": ".github/workflows/pages.yml:3–16,26–53,87–98; .github/workflows/ci.yml:3–39",
+            "claim": "Pages发布工作流不等待完整CI结果，构建阶段仅有限资产检查。",
+            "challenge": "两个workflow独立响应main push。Pages deploy仅needs本workflow build；build仅便携/lab回放、PDF存在非零小于50MiB、HTML>=33与首页存在，未调用全量质量/绑定/独立大纲门禁。因而源码级静态路径允许CI尚未通过或失败时开始发布。未访问实际GitHub运行、分支保护或部署结果，不声称已有坏发布。",
+            "suggestion": "用共享可复用验证job作为同一发布依赖，或以成功CI的确定head SHA触发部署；保留轻量staging检查，但不要把大小/页数当发布验收。",
+            "evidence_artifacts": [],
+            "repository_modified": false
+          }
+        ],
+        "independent_calculations": [
+          {
+            "name": "Lab independently reconstructed tones and direct convolution",
+            "artifact": "/private/tmp/masp-multiround-20261123/r2d-home-independent-math.json",
+            "result": {
+              "A_opposite": 1.4102618575535766e-06,
+              "B_opposite": 1.9558499134257148e-05,
+              "bass_opposite": 0.8210379228590715,
+              "tone250_steady_analytic": 0.8210669490340059
+            },
+            "interpretation": "Finite envelopes givebass0.8210379228590715, slightly different from steady infinite-tone0.8210669490340059; both round82.1%. Preserve exact measured finite waveform rather than falsely demand exact analytic equality."
+          },
+          {
+            "name": "MVDR bounded normal/degenerate controls",
+            "artifact": "/private/tmp/masp-multiround-20261123/r2d-home-mvdr-controls.json",
+            "result": [
+              {
+                "f_hz": 0,
+                "DSB_target_power": 1.0,
+                "DSB_B_power": 1.0,
+                "MVDR_target_power": 1.0,
+                "MVDR_B_power": 1.0,
+                "MVDR_zero_constraint": false,
+                "independent": "[(0.20000000000000004+0j), (0.2+0j), (0.2+0j), (0.19999999999999996+0j)]",
+                "independent_sherman_morrison_B_power": 1.0
+              },
+              {
+                "f_hz": 250,
+                "DSB_target_power": 1.0,
+                "DSB_B_power": 0.8210669490340056,
+                "MVDR_target_power": 1.0,
+                "MVDR_B_power": 0.2789199409878491,
+                "MVDR_zero_constraint": false,
+                "independent": "[(0.3972660507874151+0.4027339492125847j), (0.31106319917750874+0.08231764704830126j), (0.21290636326946255-0.24126207612778025j), (0.10656765522023492-0.5555702330196022j)]",
+                "independent_sherman_morrison_B_power": 0.27891994098784895
+              },
+              {
+                "f_hz": 1000,
+                "DSB_target_power": 1.0,
+                "DSB_B_power": 0.0,
+                "MVDR_target_power": 1.0,
+                "MVDR_B_power": 0.0,
+                "MVDR_zero_constraint": false,
+                "independent": "[(1.0000000000000002-1.0146536357569526e-17j), (0.7071067811865476-0.7071067811865475j), (9.349309996231698e-17-1j), (-0.7071067811865475-0.7071067811865477j)]",
+                "independent_sherman_morrison_B_power": 0.0
+              }
+            ],
+            "independent_formula": "For4 unit-modulus elements and R=I+bbH, c=|aHb|²; residual B power=c/(20−c)² via Sherman–Morrison, matches called core within1.7e−16. AtDC manifolds identical, B passes1; at250Hz B0.27891994; at1000Hz orthogonal B0."
+          },
+          {
+            "name": "PDF/digest/figure counterexamples",
+            "artifacts": [
+              "/private/tmp/masp-multiround-20261123/r2d-digest-figure-controls.json",
+              "/private/tmp/masp-multiround-20261123/r2d-pdf-metadata-controls.json",
+              "/private/tmp/masp-multiround-20261123/r2d-pdf-independent/report.json",
+              "/private/tmp/masp-multiround-20261123/r2d-pdf-independent/extent-controls.json"
+            ]
+          }
+        ],
+        "executed_checks": [
+          {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -B -m unittest tests.test_chapter_numbering tests.test_heading_alias_compatibility tests.test_build_pdf_semantics tests.test_pdf_layout_spaces tests.test_course_locata -v",
+            "exit_code": 0,
+            "tests": 45,
+            "passed": 45,
+            "skipped": 0,
+            "seconds": 141.762,
+            "log": "/private/tmp/masp-multiround-20261123/r2d-focused-tests.log",
+            "scope": "一次限定回归；部分测试在内存构造HTML字符串和临时PDF，并未重写正式HTML/PDF"
+          },
+          {
+            "command": "scripts/language_bars.py --check",
+            "exit_code": 0,
+            "documents": 68
+          },
+          {
+            "command": "scripts/course_home/export_portable.py --check",
+            "exit_code": 0,
+            "scope": "中文便携HTML及动/静SVG逐字节回放"
+          },
+          {
+            "command": "scripts/course_home_en/export_portable.py --check",
+            "exit_code": 0,
+            "scope": "英文便携HTML逐字节回放；该入口不生成英文封面SVG"
+          },
+          {
+            "command": "node assets/readme/lab/export-lab.mjs --check",
+            "exit_code": 0,
+            "result": {
+              "single_percent": [
+                100,
+                100
+              ],
+              "left_percent": [
+                100,
+                0.0019558499134257157
+              ],
+              "right_percent": [
+                0.00014102618575535857,
+                100
+              ],
+              "left_bass_percent": [
+                100,
+                82.10379228590686
+              ]
+            }
+          },
+          {
+            "command": "run_portable_ci.verify_manifest_and_report_sha256 + verify_layout_and_bilingual_exercise_catalog; build_pdf.check_mathjax_assets",
+            "exit_code": 0,
+            "errors": [],
+            "manifest_count": 32,
+            "figure_json_count": 35,
+            "entrypoints": 41,
+            "bilingual_exercises": 360,
+            "scope": "仅读取函数；未执行会重写HTML的完整run_portable_ci.main"
+          },
+          {
+            "command": "README MathJax本地8项完整SHA与实际WAV库存",
+            "exit_code": 0,
+            "result": {
+              "output": "Verified cryptographic SHA-256 bindings across 32 audio manifests and 35 figure reports\nVerified chapter-only code layout (41 entry points) and 360-exercise ZH/EN catalog parity\n",
+              "errors": [],
+              "textbook_wav_count": 283,
+              "home_locata_wavs": 4,
+              "lab_wavs": 3,
+              "vendor_table_checks": [
+                {
+                  "path": "tex-svg.js",
+                  "expected": "d4295dc33744836935c1399feece5159577b34c5c8ffb9f1c6324cd82e03a882",
+                  "actual": "d4295dc33744836935c1399feece5159577b34c5c8ffb9f1c6324cd82e03a882",
+                  "matches": true
+                },
+                {
+                  "path": "input/tex/extensions/boldsymbol.js",
+                  "expected": "d6771fee0772db2657796c8d0e20e1878bb3237f6d3ed1e828e1834a4ff743ca",
+                  "actual": "d6771fee0772db2657796c8d0e20e1878bb3237f6d3ed1e828e1834a4ff743ca",
+                  "matches": true
+                },
+                {
+                  "path": "a11y/sre.js",
+                  "expected": "a41dc487037b75d6dae75677e36fe2f03d1d2684f232d96f0422a11b35051660",
+                  "actual": "a41dc487037b75d6dae75677e36fe2f03d1d2684f232d96f0422a11b35051660",
+                  "matches": true
+                },
+                {
+                  "path": "sre/mathmaps/base.json",
+                  "expected": "83311887b069476a6a4d0c6afe7f8e55075c85b44b029588739c0d835fc912b8",
+                  "actual": "83311887b069476a6a4d0c6afe7f8e55075c85b44b029588739c0d835fc912b8",
+                  "matches": true
+                },
+                {
+                  "path": "sre/mathmaps/en.json",
+                  "expected": "19d9b309dc0d25d2bde2d3130bd3772b6d7c3f8316ebbd85306bef55ac89b2a7",
+                  "actual": "19d9b309dc0d25d2bde2d3130bd3772b6d7c3f8316ebbd85306bef55ac89b2a7",
+                  "matches": true
+                },
+                {
+                  "path": "LICENSE",
+                  "expected": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+                  "actual": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+                  "matches": true
+                },
+                {
+                  "path": "SRE-LICENSE",
+                  "expected": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594",
+                  "actual": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594",
+                  "matches": true
+                },
+                {
+                  "path": "output/chtml/fonts/woff-v2/MathJax_Math-Regular.woff",
+                  "expected": "c01d3321e89b403c4b811aa153c4e618eda3421f92d8a072a02c8d190782a191",
+                  "actual": "c01d3321e89b403c4b811aa153c4e618eda3421f92d8a072a02c8d190782a191",
+                  "matches": true
+                }
+              ],
+              "wav_inventory": {
+                "codes/chapters/ch10/noise_audio": 6,
+                "codes/chapters/ch10/audio": 17,
+                "codes/chapters/ch10/channel_audio": 6,
+                "codes/chapters/ch11/scenario_audio": 8,
+                "codes/chapters/ch11/audio": 4,
+                "codes/chapters/appendix_a/weighted_audio": 5,
+                "codes/chapters/appendix_a/audio": 8,
+                "codes/chapters/ch05/derivative_audio": 4,
+                "codes/chapters/ch05/phase_audio": 3,
+                "codes/chapters/ch05/binaural_beamforming_audio": 4,
+                "codes/chapters/ch05/audio": 8,
+                "codes/chapters/ch02/stft_audio": 3,
+                "codes/chapters/ch02/audio": 8,
+                "codes/chapters/ch02/sweep_audio": 4,
+                "codes/chapters/ch02/real_audio": 4,
+                "codes/chapters/ch03/audio": 8,
+                "codes/chapters/ch03/geometry_audio": 3,
+                "codes/chapters/ch03/baseline_audio": 6,
+                "codes/chapters/ch04/reflection_audio": 4,
+                "codes/chapters/ch04/focus_audio": 4,
+                "codes/chapters/ch04/audio": 6,
+                "codes/chapters/ch13/distributed_audio": 17,
+                "codes/chapters/ch14/wearable_audio": 6,
+                "codes/chapters/ch15/tse_audio": 6,
+                "codes/chapters/ch12/imaging_audio": 5,
+                "codes/chapters/appendix_b/response_audio": 5,
+                "codes/chapters/appendix_b/room_audio": 18,
+                "codes/chapters/ch01/spectral_audio": 4,
+                "codes/chapters/ch01/audio": 5,
+                "codes/chapters/ch01/binaural_audio": 5,
+                "codes/chapters/ch06/reference_audio": 6,
+                "codes/chapters/ch06/audio": 24,
+                "codes/chapters/ch06/apa_audio": 6,
+                "codes/chapters/ch08/gss_audio": 5,
+                "codes/chapters/ch08/mask_audio": 6,
+                "codes/chapters/ch08/audio": 9,
+                "codes/chapters/ch08/css_audio": 4,
+                "codes/chapters/ch09/moving_audio": 3,
+                "codes/chapters/ch09/audio": 1,
+                "codes/chapters/ch09/tracking_audio": 2,
+                "codes/chapters/ch07/audio": 11,
+                "codes/chapters/ch07/delay_audio": 6,
+                "codes/chapters/ch07/mint_audio": 6
+              }
+            }
+          },
+          {
+            "command": "一次误用系统python导入run_portable_ci做过滤清点",
+            "exit_code": 1,
+            "result": "系统Python无markdown，导入失败；没有据此判断项目失败。改用现有.venv -B后静态过滤清单生成成功。"
+          },
+          {
+            "command": "Node VM原home.js语言链接前缀+六部署URL对照",
+            "exit_code": 0,
+            "result": [
+              {
+                "lang": "zh",
+                "base": "file:///Users/francis7999/code/github_repos/microphone-array-signal-processing/assets/readme/course-intro.html",
+                "actual_peer": "file:///Users/francis7999/code/github_repos/microphone-array-signal-processing/assets/site_en/index.html",
+                "existing_file": false
+              },
+              {
+                "lang": "zh",
+                "base": "http://localhost:8000/assets/readme/course-intro.html",
+                "actual_peer": "http://localhost:8000/assets/site_en/index.html",
+                "existing_file": null
+              },
+              {
+                "lang": "zh",
+                "base": "file:///Users/francis7999/code/github_repos/microphone-array-signal-processing/site/index.html",
+                "actual_peer": "file:///Users/francis7999/code/github_repos/microphone-array-signal-processing/site_en/index.html",
+                "existing_file": true
+              },
+              {
+                "lang": "en",
+                "base": "file:///Users/francis7999/code/github_repos/microphone-array-signal-processing/assets/readme/course-intro-en.html",
+                "actual_peer": "file:///Users/francis7999/code/github_repos/microphone-array-signal-processing/assets/site/index.html",
+                "existing_file": false
+              },
+              {
+                "lang": "en",
+                "base": "http://localhost:8000/assets/readme/course-intro-en.html",
+                "actual_peer": "http://localhost:8000/assets/site/index.html",
+                "existing_file": null
+              },
+              {
+                "lang": "en",
+                "base": "file:///Users/francis7999/code/github_repos/microphone-array-signal-processing/site_en/index.html",
+                "actual_peer": "file:///Users/francis7999/code/github_repos/microphone-array-signal-processing/site/index.html",
+                "existing_file": true
+              }
+            ]
+          }
+        ],
+        "figure_pixel_reviews": [
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r2d-pdf-independent/alpha_transition-before.png",
+            "sha256": "07d2510a18d0c50a81c13d20e019b558536ac08c6afffa563cf5ae1213f46285",
+            "actual_viewed": true,
+            "scope": "原生100dpi合成控制页PNG，非教材成品页"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r2d-pdf-independent/alpha_transition-after.png",
+            "sha256": "0d7d5d1b4df26259852f9ca109daaf5f564d1b62d10c025df4202218efbcfe43",
+            "actual_viewed": true,
+            "scope": "原生100dpi合成控制页PNG，非教材成品页"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r2d-pdf-independent/thick_stroke-before.png",
+            "sha256": "477a5a65a1b28bfa6bd09c3c34fbdf70016cef46e969399788c2463d215f282f",
+            "actual_viewed": true,
+            "scope": "原生100dpi合成控制页PNG，非教材成品页"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r2d-pdf-independent/thick_stroke-after.png",
+            "sha256": "f88826cabb674867d52e1bf20ff68db384a4a4cda4afe9007bbde6c0324fc2df",
+            "actual_viewed": true,
+            "scope": "原生100dpi合成控制页PNG，非教材成品页"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r2d-pdf-independent/visible_inherited-before.png",
+            "sha256": "4a4657bfdb50f1bb9709bfbdc8cdabfa53349b85c0f929059b3379580b1840c2",
+            "actual_viewed": true,
+            "scope": "原生100dpi合成控制页PNG，非教材成品页"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r2d-pdf-independent/visible_inherited-after.png",
+            "sha256": "4a4657bfdb50f1bb9709bfbdc8cdabfa53349b85c0f929059b3379580b1840c2",
+            "actual_viewed": true,
+            "scope": "原生100dpi合成控制页PNG，非教材成品页"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r2d-pdf-independent/rectangle_positive_extent-before.png",
+            "sha256": "eacf2edc31e4d5122a040535f8e7993c178acf56db16cd6010717fb42d213388",
+            "actual_viewed": true,
+            "scope": "原生100dpi合成控制页PNG，非教材成品页"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r2d-pdf-independent/rectangle_positive_extent-after.png",
+            "sha256": "5340b65446f437caf453c3f1a85390502e63bd385779ea92f35d0f8b15f89f9c",
+            "actual_viewed": true,
+            "scope": "原生100dpi合成控制页PNG，非教材成品页"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r2d-pdf-independent/course-cover-still.svg.png",
+            "sha256": "a2579d2b58a545adcd51ed91595ec9ed02b8cb35af1e1bbe538482b33c9afe94",
+            "actual_viewed": true,
+            "scope": "macOS QuickLook将实际已发布SVG渲染到1200px画布；已实看两语言图像内容，非网页全页或A4嵌入字号验收"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r2d-pdf-independent/course-cover-still-en.svg.png",
+            "sha256": "41b4c903ce7c3da3ec2775a903cb7ccadfbeec1b59350d39cdc1ec20ccab7703",
+            "actual_viewed": true,
+            "scope": "macOS QuickLook将实际已发布SVG渲染到1200px画布；已实看两语言图像内容，非网页全页或A4嵌入字号验收"
+          }
+        ],
+        "source_reads": {
+          "external_web_originals_read_this_round": [],
+          "network_queries": [],
+          "raw_local_primary_sources": "Actual build/quality/helper source intervals and raw TrueType/PDF generated controls; current lock named records and vendor hashes read. Previous rounds original papers not relabelled as new reads.",
+          "upstream_license_today_reverified": false,
+          "lock_file_records_read": [
+            "dcase2025-stereo-seld",
+            "alias-free-arrays",
+            "danse-python",
+            "dprtf-ssl",
+            "infineon-ae-config",
+            "locata-eval"
+          ],
+          "vendor_official_tarballs_downloaded_or_rehashed_this_round": false,
+          "vendor_actual_local_table_hashes_verified": 8
+        },
+        "prior_findings_challenged": [
+          "B004",
+          "B005",
+          "B006",
+          "B007",
+          "B008",
+          "B009",
+          "R123"
+        ],
+        "not_adopted_candidates": [
+          {
+            "id": "R2D-K01",
+            "candidate": "把负宽re反例也算成当前输入可见裁切",
+            "decision": "rejected_for_this_input",
+            "reason": "BBox过大但没有裁切，实际100dpi0差；保留该成功反驳。"
+          },
+          {
+            "id": "R2D-K02",
+            "candidate": "所有PDF矢量复用均损坏",
+            "decision": "rejected",
+            "reason": "普通polygon5次复用0差；只确认不满足无损声明的具体受支持输入。"
+          },
+          {
+            "id": "R2D-K03",
+            "candidate": "任何显式可见字体都被英文标Artifact",
+            "decision": "rejected",
+            "reason": "块内显式F1可见轮廓正控没有转换；错误集中于继承/缺资源/宽松fallback。"
+          },
+          {
+            "id": "R2D-K04",
+            "candidate": "主109 WAV因portable SHA helper没读其generator_inputs/分章files而在整个CI漏验",
+            "decision": "rejected_as_full_ci_claim",
+            "reason": "helper单独确实跳过该schema字段，但run_portable_quality_gates先调用quality_check.check_audio；实际读其4710–4824，独立检查20源及109WAV/SHA/副本。不能把helper局部缺失说成整个CI不核主音频。"
+          },
+          {
+            "id": "R2D-K05",
+            "candidate": "所有141排除模块都应立即在Linux开启",
+            "decision": "not_adopted",
+            "reason": "本D批只静态重放过滤与代表性测试审读，未在Linux执行或逐方法核宿主浮点要求；建议先如实记理由并分方法研究。"
+          },
+          {
+            "id": "R2D-K06",
+            "candidate": "首页MVDR/DSB手绘图的精确方向、零陷与采样延迟完全由模型重算得到",
+            "decision": "unsupported_claim_needs_design_decision",
+            "reason": "实际模板写手工Bezier路径，未给d/fs/频率/R；两边等幅相反的2采样相邻时差在远场ULA中要求|sinθA|=|sinθB|，与−35°/+30°数值不一致（比1.14715）。但它是原理示意，未将此直接判成已有数值实验错误；应明确示意或绑定参数后重算。MVDR R=I+bbH、250Hz的4路控制目标1、B功率0.27891994，证明MVDR一般不自动精确置零；1000Hz原模型确实B为0，须保留原特例。实看SVG并不支持整页排版合格。"
+          },
+          {
+            "id": "B010",
+            "candidate": "英文图37箭头缺失",
+            "decision": "previously_withdrawn_not_reopened",
+            "reason": "沿用主审原像素/裁片/alpha核对撤回；本D批未新读图37像素，不据整图缩放重提缺线。"
+          }
+        ],
+        "pending": [],
+        "frozen_coverage_row_assessment": {
+          "rows_actually_read": [
+            {
+              "baseline_id": "M002",
+              "line": 35,
+              "status": "外部参考实现",
+              "raw_row": "| §1.2；空间研究“第 1 章”专题 | HRIR 到 HRTF 与方向插值 | 外部参考实现 | `spatial-audio-framework`：同文件 `HRIRs2HRTFs`、`interpHRTFs` | 已有响应的表示与插值，不从未知录音自动求方向；数据许可另核 |",
+              "evidence_level": "row_read_only",
+              "original_source_read": false,
+              "original_paper_read": false,
+              "upstream_executed": false,
+              "local_execution": false,
+              "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+            },
+            {
+              "baseline_id": "M003",
+              "line": 36,
+              "status": "外部参考实现",
+              "raw_row": "| §1.2；空间研究“第 1 章”专题 | SOFA响应读取与方向插值接口 | 外部参考实现 | `libmysofa`：`src/hrtf/easy.c`、`src/hrtf/mysofa.h` | 固定v1.3.5源码已取得；原归一化两例保留零能量退化；`audit_libmysofa_interpolation.py`五人工控制确认原公共延迟保持失败，逐方向控制另列；未运行SOFA解析/自动查询/单位转换/重采样/渲染，非定位算法 |",
+              "evidence_level": "row_read_only",
+              "original_source_read": false,
+              "original_paper_read": false,
+              "upstream_executed": false,
+              "local_execution": false,
+              "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+            },
+            {
+              "baseline_id": "M048",
+              "line": 86,
+              "status": "原理索引",
+              "raw_row": "| §4.6；E04-21；空间研究§58 | CTF交叉关系与DP-RTF特征估计 | 原理索引 | `dprtf-ssl`：`DP_RTF.m`、`MCMT.m`、`stft.m`，固定作者四文件只索引 | NOASSERTION；E04-21仅精确人工帧代数，不包含真实窗内直达近似、PSD噪声差分、HRIR匹配或作者MATLAB执行 |",
+              "evidence_level": "row_read_only",
+              "original_source_read": false,
+              "original_paper_read": false,
+              "upstream_executed": false,
+              "local_execution": false,
+              "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+            },
+            {
+              "baseline_id": "M081",
+              "line": 119,
+              "status": "原理索引",
+              "raw_row": "| 研究扩展：空间 SELD | DCASE 2025 双声道 SELD 基线 | 原理索引 | `dcase2025-stereo-seld`：`model.py`、`loss.py` 来源索引 | 许可未建立；立体声任务不等于耳廓/HRTF 双耳录音或任意阵列 |",
+              "evidence_level": "row_read_only",
+              "original_source_read": false,
+              "original_paper_read": false,
+              "upstream_executed": false,
+              "local_execution": false,
+              "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+            },
+            {
+              "baseline_id": "M084",
+              "line": 127,
+              "status": "本仓库可运行基线",
+              "raw_row": "| §5.2 | DSB 权重 | 本仓库可运行基线 | `codes/chapters/ch05/core/beamforming.py::dsb_weights`；`codes/chapters/ch05/beamformer_common_input_demo.py` | 不含设备分数延时 FIR；同输入对照只在单频解析模型 |",
+              "evidence_level": "row_plus_partial_unique_core_and_limited_execution",
+              "original_source_read": false,
+              "original_paper_read": false,
+              "upstream_executed": false,
+              "local_execution": true,
+              "note": "唯一beamforming.py本D批1–152实际读；用4路0/250/1000Hz已知导向执行dsb_weights/mvdr_weights并独立Sherman–Morrison核有限例。未据此宣称重审整条覆盖行/同输入demo或跨平台性能。"
+            },
+            {
+              "baseline_id": "M089",
+              "line": 132,
+              "status": "本仓库可运行基线",
+              "raw_row": "| §5.4 | MVDR 与相对对角加载 | 本仓库可运行基线 | `codes/chapters/ch05/core/beamforming.py::mvdr_weights`；共用加载核 `codes/chapters/ch04/core/covariance.py::_load_covariance`；`codes/chapters/ch05/beamformer_common_input_demo.py` | 加载按平均特征值缩放 |",
+              "evidence_level": "row_plus_partial_unique_core_and_limited_execution",
+              "original_source_read": false,
+              "original_paper_read": false,
+              "upstream_executed": false,
+              "local_execution": true,
+              "note": "唯一beamforming.py本D批1–152实际读；用4路0/250/1000Hz已知导向执行dsb_weights/mvdr_weights并独立Sherman–Morrison核有限例。未据此宣称重审整条覆盖行/同输入demo或跨平台性能。"
+            },
+            {
+              "baseline_id": "M095",
+              "line": 138,
+              "status": "本仓库可运行基线",
+              "raw_row": "| §5.5、E05-18～20 | 双耳 MVDR／双耳 LCMV | 本仓库可运行基线 | `ch05/examples/binaural_beamforming_demo.py`、四份同增益双声道 PCM16 | 已知三麦分量；定向复比、背景相干与残余功率分开；非盲估计、宽带系统或真人听测 |",
+              "evidence_level": "row_read_only",
+              "original_source_read": false,
+              "original_paper_read": false,
+              "upstream_executed": false,
+              "local_execution": false,
+              "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+            },
+            {
+              "baseline_id": "M113",
+              "line": 156,
+              "status": "外部参考实现",
+              "raw_row": "| §5.9；空间 §48 | 秩一目标 SCM 的 PCA-RTF 方向 | 外部参考实现 | `pb_bss`：`pb_bss/extraction/beamformer.py::get_pca_vector` | 特征向量还需选参考/尺度；全秩目标不能直接认作唯一RTF |",
+              "evidence_level": "row_read_only",
+              "original_source_read": false,
+              "original_paper_read": false,
+              "upstream_executed": false,
+              "local_execution": false,
+              "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+            },
+            {
+              "baseline_id": "M114",
+              "line": 157,
+              "status": "外部参考实现",
+              "raw_row": "| §5.9；空间 §48 | Souden 参考通道 MVDR | 外部参考实现 | `pb_bss`：同文件 `get_mvdr_vector_souden` | 秩一复参考因子/全秩边界见E05-11；[原方法审计](research/01_spatial_and_tracking.md#beamformer-upstream-audit)已实调；MERL失败另记 |",
+              "evidence_level": "row_read_only",
+              "original_source_read": false,
+              "original_paper_read": false,
+              "upstream_executed": false,
+              "local_execution": false,
+              "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+            },
+            {
+              "baseline_id": "M115",
+              "line": 158,
+              "status": "外部参考实现",
+              "raw_row": "| §5.9 | RTF 幂迭代估计 | 外部参考实现 | `espnet`：`espnet2/enh/layers/beamformer.py::get_rtf` | 函数本身不完成参考通道归一 |",
+              "evidence_level": "row_read_only",
+              "original_source_read": false,
+              "original_paper_read": false,
+              "upstream_executed": false,
+              "local_execution": false,
+              "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+            },
+            {
+              "baseline_id": "M119",
+              "line": 162,
+              "status": "本仓库可运行基线",
+              "raw_row": "| §5.9、§8.4 | 两通道掩码 MVDR | 本仓库可运行基线 | `codes/chapters/ch08/core/separation.py::mask_mvdr_2x2` | 限定 2×2；非零掩码公共缩放不应改变结果；不是完整神经系统 |",
+              "evidence_level": "row_read_only",
+              "original_source_read": false,
+              "original_paper_read": false,
+              "upstream_executed": false,
+              "local_execution": false,
+              "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+            },
+            {
+              "baseline_id": "M126",
+              "line": 169,
+              "status": "外部参考实现",
+              "raw_row": "| §5.8 | 球谐 MVDR | 外部参考实现 | `spherical-array-processing`：`sphMVDR.m` | 径向滤波后噪声统计更新；getSH直接依赖已锁定 |",
+              "evidence_level": "row_read_only",
+              "original_source_read": false,
+              "original_paper_read": false,
+              "upstream_executed": false,
+              "local_execution": false,
+              "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+            },
+            {
+              "baseline_id": "M131",
+              "line": 174,
+              "status": "外部参考实现",
+              "raw_row": "| 研究扩展：空间 §23 | Acoustic Rake | 外部参考实现 | `pyroomacoustics`：`pyroomacoustics/beamforming.py::rake_mvdr_filters` | 需要反射模型，不是通用去混响器 |",
+              "evidence_level": "row_read_only",
+              "original_source_read": false,
+              "original_paper_read": false,
+              "upstream_executed": false,
+              "local_execution": false,
+              "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+            },
+            {
+              "baseline_id": "M185",
+              "line": 238,
+              "status": "原理索引",
+              "raw_row": "| §7.1；增强研究 W07 | 多通道逆定理（MINT）精确逆滤波 | 原理索引 | Miyoshi/Kaneda 1988 原文 §III–IV；`codes/chapters/ch07/chapter07_experiments.py` E07-16/17 为本书受限两路径解析与PCM例 | 已知单源响应、互素等前提；小例不等于一般未知房间的 MINT 求解器 |",
+              "evidence_level": "row_plus_chapter_definition_excerpt",
+              "original_source_read": false,
+              "original_paper_read": false,
+              "upstream_executed": false,
+              "local_execution": false,
+              "note": "另实际读ch07:35–100作README分类对照；未重新读1988原论文或一般MINT实现。"
+            },
+            {
+              "baseline_id": "M186",
+              "line": 239,
+              "status": "本仓库可运行基线",
+              "raw_row": "| §7.1；E07-16/17 | 已知两稀疏FIR路径的直达约束正则逆 | 本仓库可运行基线 | `codes/chapters/ch07/core/mint_teaching.py`；六PCM与独立评分 | 指定512点反射、等方差独立后路径噪声、固定真值路径；不等于通用MINT辨识器或盲WPE |",
+              "evidence_level": "row_read_only",
+              "original_source_read": false,
+              "original_paper_read": false,
+              "upstream_executed": false,
+              "local_execution": false,
+              "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+            },
+            {
+              "baseline_id": "M189",
+              "line": 242,
+              "status": "原理索引",
+              "raw_row": "| 增强研究两阶段去混响 | 输出端PSD训练WPE与单通道维纳后滤 | 原理索引 | 2sderev作者2023论文及官方补充；研究 `#two-stage-dereverb` | 有限滤长残余；HA前40ms/CI16ms目标不同，训练代码未公开、源码许可未核，不取得代码/模型 |",
+              "evidence_level": "row_read_only",
+              "original_source_read": false,
+              "original_paper_read": false,
+              "upstream_executed": false,
+              "local_execution": false,
+              "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+            },
+            {
+              "baseline_id": "M190",
+              "line": 243,
+              "status": "外部参考实现",
+              "raw_row": "| §7.9；增强研究 W09 | MetaAF 学习 WPE 滤波器更新 | 外部参考实现 | `metaaf`：`zoo/wpe/wpe.py`、`zoo/wpe/wpe_eval.py`；核心优化器在 `metaaf/` | 固定源码选集已取得，zoo 采用独立非商业许可；未训练、未载入模型、未复现质量指标 |",
+              "evidence_level": "row_read_only",
+              "original_source_read": false,
+              "original_paper_read": false,
+              "upstream_executed": false,
+              "local_execution": false,
+              "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+            },
+            {
+              "baseline_id": "M191",
+              "line": 244,
+              "status": "外部参考实现",
+              "raw_row": "| §7.9；增强研究 W09 | VACE-WPE 虚拟通道估计与任务特定前端 | 外部参考实现 | `tso_vace_wpe`：`vace_wpe.py`、`torch_custom/wpe_th_utils.py`、`torch_custom/neural_wpe.py` | MIT 固定源码与直接依赖选集；未取模型和语料，未训练/推理或核验 ASV 性能 |",
+              "evidence_level": "row_read_only",
+              "original_source_read": false,
+              "original_paper_read": false,
+              "upstream_executed": false,
+              "local_execution": false,
+              "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+            },
+            {
+              "baseline_id": "M192",
+              "line": 245,
+              "status": "本仓库可运行基线",
+              "raw_row": "| §7.6；E07-18～19 | 已知到达下的源时刻与单历史回归控制 | 本仓库可运行基线 | `codes/chapters/ch07/core/prediction_delays.py`、`core/delay_audio.py`及六PCM生成/核验；图70 | 已知整数到达、一个实数回归、共同接收时轴；不估计时差，不是完整STFT/跨频WPE；T60题仅自由功率衰减换算 |",
+              "evidence_level": "row_read_only",
+              "original_source_read": false,
+              "original_paper_read": false,
+              "upstream_executed": false,
+              "local_execution": false,
+              "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+            },
+            {
+              "baseline_id": "M194",
+              "line": 247,
+              "status": "原理索引",
+              "raw_row": "| 增强研究W10；`#usdnet-plus-candidate` | USDnet++混合与SPD重构弱监督 | 原理索引 | Pang等Interspeech2026，DOI10.21437/Interspeech.2026-2044，原§3～4式3～15 | WPE/WPD结果仍非干净真值；FCP可含未来与全句求解，二模型另计；未核可许可作者整链实现/权重/运行 |",
+              "evidence_level": "row_read_only",
+              "original_source_read": false,
+              "original_paper_read": false,
+              "upstream_executed": false,
+              "local_execution": false,
+              "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+            },
+            {
+              "baseline_id": "M195",
+              "line": 248,
+              "status": "本仓库可运行基线",
+              "raw_row": "| §7.2 | 离线单/多通道 WPE | 本仓库可运行基线 | `codes/chapters/ch07/core/dereverberation.py::offline_wpe`；外部对照 `nara_wpe`；`btk20`：`btk20_src/dereverberation/dereverberation.cc`、`.h` | 保护延迟、有效历史、相对加载；BTK20 的通道功率与加载不同，见研究 W08；数值对照见 W01/W11；BTK20 仅静态核对，未构建整链 |",
+              "evidence_level": "row_read_only",
+              "original_source_read": false,
+              "original_paper_read": false,
+              "upstream_executed": false,
+              "local_execution": false,
+              "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+            },
+            {
+              "baseline_id": "M196",
+              "line": 249,
+              "status": "外部参考实现",
+              "raw_row": "| §7.4 | 逐帧在线 WPE | 外部参考实现 | `nara_wpe`：`nara_wpe/wpe.py::OnlineWPE` | 三接口 delay 索引不同；独立对照 `codes/chapters/ch07/examples/compare_online_wpe_reference.py`；未来扰动和跨块状态见 `codes/chapters/ch07/wpe_temporal_contract.py`；长静音状态溢出及恢复见 `codes/chapters/ch07/examples/wpe_silence_boundary.py` |",
+              "evidence_level": "row_read_only",
+              "original_source_read": false,
+              "original_paper_read": false,
+              "upstream_executed": false,
+              "local_execution": false,
+              "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+            },
+            {
+              "baseline_id": "M197",
+              "line": 250,
+              "status": "外部参考实现",
+              "raw_row": "| §7.4；研究扩展：增强 W03 | 块在线/递推 WPE | 外部参考实现 | `nara_wpe`：`nara_wpe/tf_wpe.py` | TF 固定版权重 0.7 乘当前块；块内估计后处理本块，非逐帧因果；静态核对见 W03 |",
+              "evidence_level": "row_read_only",
+              "original_source_read": false,
+              "original_paper_read": false,
+              "upstream_executed": false,
+              "local_execution": false,
+              "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+            },
+            {
+              "baseline_id": "M198",
+              "line": 251,
+              "status": "外部参考实现",
+              "raw_row": "| §7.9；增强研究NeMo接口 | NeMo幅度掩码多轮WPE | 外部参考实现 | `nemo_wpe`：`masking.py::MaskBasedDereverbWPE`、`multichannel.py::WPEFilter`（精确路径见锁表） | 固定v2.4.0仅AST静态核验；迭代输入、长度屏蔽与trace加载不同，未执行Torch |",
+              "evidence_level": "row_read_only",
+              "original_source_read": false,
+              "original_paper_read": false,
+              "upstream_executed": false,
+              "local_execution": false,
+              "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+            },
+            {
+              "baseline_id": "M199",
+              "line": 252,
+              "status": "外部参考实现",
+              "raw_row": "| §7.4、§7.6、§7.9 | DNN-WPE | 外部参考实现 | `espnet`：`espnet2/enh/layers/dnn_wpe.py`、`wpe.py`、`mask_estimator.py` | 配置值须追到实际求解器；固定版部分成员未传入，填充帧统计亦需核对；静态结果见 W04/W11 |",
+              "evidence_level": "row_read_only",
+              "original_source_read": false,
+              "original_paper_read": false,
+              "upstream_executed": false,
+              "local_execution": false,
+              "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+            },
+            {
+              "baseline_id": "M220",
+              "line": 273,
+              "status": "外部参考实现",
+              "raw_row": "| §8.4 | GSS 活动约束分离 | 外部参考实现 | `gss`：`gss/core/enhancer.py` 为官方整链；本书 `codes/chapters/ch08/examples/gss_teaching_demo.py` 已运行 cACGMM→SCM→MVDR 受控子链 | 本书无混响输入中 WPE 旁路；官方 CuPy/Lhotse、RTTM 与 CHiME 语料未运行，不能外推为完整官方复现 |",
+              "evidence_level": "row_read_only",
+              "original_source_read": false,
+              "original_paper_read": false,
+              "upstream_executed": false,
+              "local_execution": false,
+              "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+            },
+            {
+              "baseline_id": "M221",
+              "line": 274,
+              "status": "外部参考实现",
+              "raw_row": "| 研究扩展：增强 B09 | NeMo活动约束GSS掩码接口 | 外部参考实现 | `nemo_wpe`：`nemo/collections/audio/modules/masking.py::MaskEstimatorGSS` | 固定v2.4.0静态检查；未自动添加背景，返回掩码，不称已执行Torch整链 |",
+              "evidence_level": "row_read_only",
+              "original_source_read": false,
+              "original_paper_read": false,
+              "upstream_executed": false,
+              "local_execution": false,
+              "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+            },
+            {
+              "baseline_id": "M223",
+              "line": 276,
+              "status": "外部参考实现",
+              "raw_row": "| 研究扩展：增强 B10 | CuPy WPE 子实现 | 外部参考实现 | `wpe_gpu`：`wpe/` | GSS 子集，不覆盖全部在线接口 |",
+              "evidence_level": "row_read_only",
+              "original_source_read": false,
+              "original_paper_read": false,
+              "upstream_executed": false,
+              "local_execution": false,
+              "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+            },
+            {
+              "baseline_id": "M307",
+              "line": 375,
+              "status": "外部参考实现",
+              "raw_row": "| §10.8.1；工业 I13 | SOF 固定 FIR 波束 | 外部参考实现 | `sof`：`src/audio/tdfb/tdfb_generic.c` | 滤波组/方向，不是 SCM 自适应 MVDR |",
+              "evidence_level": "row_read_only",
+              "original_source_read": false,
+              "original_paper_read": false,
+              "upstream_executed": false,
+              "local_execution": false,
+              "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+            },
+            {
+              "baseline_id": "M324",
+              "line": 392,
+              "status": "本仓库可运行基线",
+              "raw_row": "| §10.9 | 遥测记录校验 | 本仓库可运行基线 | `codes/chapters/ch10/core/engineering.py::validate_telemetry`、`codes/chapters/ch10/engineering/telemetry_schema.json` | 类型/范围的无状态检查；累计RTF与可选逐帧服务RTF分开；生产者声明统计窗/计时范围/时钟域，校验器不证明跨记录关系 |",
+              "evidence_level": "row_read_only",
+              "original_source_read": false,
+              "original_paper_read": false,
+              "upstream_executed": false,
+              "local_execution": false,
+              "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+            },
+            {
+              "baseline_id": "M325",
+              "line": 393,
+              "status": "本仓库可运行基线",
+              "raw_row": "| §10.9；E10-26 | 已知失效选集与约束重建 | 本仓库可运行基线 | `codes/chapters/ch10/core/channel_selection.py::select_channel_observations`、`select_mvdr_channels`；六份独立PCM与图73 | 已知删除列表同时选择观测、响应与协方差双轴；复用第5章MVDR，不计作新波束算法；无盲检测/自动加载/任意频率性能 |",
+              "evidence_level": "row_read_only",
+              "original_source_read": false,
+              "original_paper_read": false,
+              "upstream_executed": false,
+              "local_execution": false,
+              "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+            },
+            {
+              "baseline_id": "M327",
+              "line": 395,
+              "status": "本仓库可运行基线",
+              "raw_row": "| 专题Ⅲ §14.5～14.7、§14.11、E14-06～08 | 双耳信号匹配（BSM-LS / BSM-MagLS）与 BMVDR 参考混合 | 本仓库可运行基线 | `codes/chapters/ch14/core/binaural_matching.py::bsm_ls_weights`、`bsm_magls_weights`、`binaural_coherence_with_mixing` | 交替相位投影保证目标函数单调不增；参考混合在IC保持与SNR增益间显式折中 |",
+              "evidence_level": "row_read_only",
+              "original_source_read": false,
+              "original_paper_read": false,
+              "upstream_executed": false,
+              "local_execution": false,
+              "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+            },
+            {
+              "baseline_id": "M328",
+              "line": 396,
+              "status": "本仓库可运行基线",
+              "raw_row": "| 专题Ⅲ §14.8～14.11、E14-09～13 | Corcos 风噪相干、气导/耳内闭塞跨模态 MVDR 融合与通透梳状滤波 | 本仓库可运行基线 | `codes/chapters/ch14/core/wearable_fusion.py::corcos_wind_coherence`、`cross_modal_mvdr_mmse`、`hear_through_response`；六份独立PCM与图78～79 | 确定性双音与正交风噪/底噪对照，非实测耳道传递函数或风洞录音 |",
+              "evidence_level": "row_read_only",
+              "original_source_read": false,
+              "original_paper_read": false,
+              "upstream_executed": false,
+              "local_execution": false,
+              "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+            },
+            {
+              "baseline_id": "M331",
+              "line": 399,
+              "status": "本仓库可运行基线",
+              "raw_row": "| 专题Ⅳ §15.4～15.5、§15.10、E15-06～10 | 重叠会议 DER 三分量分解、单标签下界与空谱联合 TS-VAD + GSS 门控 | 本仓库可运行基线 | `codes/chapters/ch15/core/diarization_tsvad.py::compute_der_components`、`single_label_overlap_der_bound`、`tsvad_spatial_spectral_posterior`、`gss_soft_gated_mvdr` | 帧级排列最优匹配与排他目标掩码构造，非大规模预训练声纹模型推理 |",
+              "evidence_level": "row_read_only",
+              "original_source_read": false,
+              "original_paper_read": false,
+              "upstream_executed": false,
+              "local_execution": false,
+              "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+            },
+            {
+              "baseline_id": "M343",
+              "line": 411,
+              "status": "本仓库可运行基线",
+              "raw_row": "| §7.4、§7.6、§7.8～7.9、E07-20～21 | 在线 RLS-WPE 长静音逆协方差凸对角回拉门控与 AEC+WPE 线性级联次序可辨识性及分频带阶数预算 | 本仓库可运行基线 | `codes/chapters/ch07/core/online_and_cascade.py::convex_diagonal_pullback_step`、`rls_wpe_single_bin_step`、`rls_wpe_silence_pullback`、`frequency_dependent_wpe_budget`、`cascaded_aec_wpe_ordering` | 抑制遗忘因子在长静音期的逆矩阵指数膨胀与重入爆音；揭示线性 AEC 后接非线性 NLP 再进 WPE 的失配 |",
+              "evidence_level": "row_read_only",
+              "original_source_read": false,
+              "original_paper_read": false,
+              "upstream_executed": false,
+              "local_execution": false,
+              "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+            },
+            {
+              "baseline_id": "M345",
+              "line": 413,
+              "status": "本仓库可运行基线",
+              "raw_row": "| §5.3、§5.5、§5.11、E05-16～17 | 一阶差分麦克风阵列（DMA）频不变零陷与低频均衡代价及平面阵 Kronecker 可分离波束分解 | 本仓库可运行基线 | `codes/chapters/ch05/core/dma_kronecker.py::first_order_dma_weights`、`first_order_dma_example`、`kronecker_mvdr_weights`、`lcmv_weights`、`kronecker_beamforming_example` | 小孔径一阶差分受 6 dB/oct 自噪声放大制约；Kronecker 双线性分解在非可分离旁向干扰下偏离联合最优解 |",
+              "evidence_level": "row_read_only",
+              "original_source_read": false,
+              "original_paper_read": false,
+              "upstream_executed": false,
+              "local_execution": false,
+              "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+            },
+            {
+              "baseline_id": "M372",
+              "line": 452,
+              "status": "外部参考实现",
+              "raw_row": "| 研究扩展：工业 I28 | FastEnhancer 流式单通道降噪 | 外部参考实现 | `fastenhancer`：`models/fastenhancer/default/model.py`、`scripts/test_onnx.py` | MIT源码；未取ONNX权重、未运行；不是AEC/WPE/多麦分离 |",
+              "evidence_level": "row_read_only",
+              "original_source_read": false,
+              "original_paper_read": false,
+              "upstream_executed": false,
+              "local_execution": false,
+              "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+            }
+          ],
+          "row_count": 37,
+          "untouched_baseline_ids": [
+            "M001",
+            "M004",
+            "M005",
+            "M006",
+            "M007",
+            "M008",
+            "M009",
+            "M010",
+            "M011",
+            "M012",
+            "M013",
+            "M014",
+            "M015",
+            "M016",
+            "M017",
+            "M018",
+            "M019",
+            "M020",
+            "M021",
+            "M022",
+            "M023",
+            "M024",
+            "M025",
+            "M026",
+            "M027",
+            "M028",
+            "M029",
+            "M030",
+            "M031",
+            "M032",
+            "M033",
+            "M034",
+            "M035",
+            "M036",
+            "M037",
+            "M038",
+            "M039",
+            "M040",
+            "M041",
+            "M042",
+            "M043",
+            "M044",
+            "M045",
+            "M046",
+            "M047",
+            "M049",
+            "M050",
+            "M051",
+            "M052",
+            "M053",
+            "M054",
+            "M055",
+            "M056",
+            "M057",
+            "M058",
+            "M059",
+            "M060",
+            "M061",
+            "M062",
+            "M063",
+            "M064",
+            "M065",
+            "M066",
+            "M067",
+            "M068",
+            "M069",
+            "M070",
+            "M071",
+            "M072",
+            "M073",
+            "M074",
+            "M075",
+            "M076",
+            "M077",
+            "M078",
+            "M079",
+            "M080",
+            "M082",
+            "M083",
+            "M085",
+            "M086",
+            "M087",
+            "M088",
+            "M090",
+            "M091",
+            "M092",
+            "M093",
+            "M094",
+            "M096",
+            "M097",
+            "M098",
+            "M099",
+            "M100",
+            "M101",
+            "M102",
+            "M103",
+            "M104",
+            "M105",
+            "M106",
+            "M107",
+            "M108",
+            "M109",
+            "M110",
+            "M111",
+            "M112",
+            "M116",
+            "M117",
+            "M118",
+            "M120",
+            "M121",
+            "M122",
+            "M123",
+            "M124",
+            "M125",
+            "M127",
+            "M128",
+            "M129",
+            "M130",
+            "M132",
+            "M133",
+            "M134",
+            "M135",
+            "M136",
+            "M137",
+            "M138",
+            "M139",
+            "M140",
+            "M141",
+            "M142",
+            "M143",
+            "M144",
+            "M145",
+            "M146",
+            "M147",
+            "M148",
+            "M149",
+            "M150",
+            "M151",
+            "M152",
+            "M153",
+            "M154",
+            "M155",
+            "M156",
+            "M157",
+            "M158",
+            "M159",
+            "M160",
+            "M161",
+            "M162",
+            "M163",
+            "M164",
+            "M165",
+            "M166",
+            "M167",
+            "M168",
+            "M169",
+            "M170",
+            "M171",
+            "M172",
+            "M173",
+            "M174",
+            "M175",
+            "M176",
+            "M177",
+            "M178",
+            "M179",
+            "M180",
+            "M181",
+            "M182",
+            "M183",
+            "M184",
+            "M187",
+            "M188",
+            "M193",
+            "M200",
+            "M201",
+            "M202",
+            "M203",
+            "M204",
+            "M205",
+            "M206",
+            "M207",
+            "M208",
+            "M209",
+            "M210",
+            "M211",
+            "M212",
+            "M213",
+            "M214",
+            "M215",
+            "M216",
+            "M217",
+            "M218",
+            "M219",
+            "M222",
+            "M224",
+            "M225",
+            "M226",
+            "M227",
+            "M228",
+            "M229",
+            "M230",
+            "M231",
+            "M232",
+            "M233",
+            "M234",
+            "M235",
+            "M236",
+            "M237",
+            "M238",
+            "M239",
+            "M240",
+            "M241",
+            "M242",
+            "M243",
+            "M244",
+            "M245",
+            "M246",
+            "M247",
+            "M248",
+            "M249",
+            "M250",
+            "M251",
+            "M252",
+            "M253",
+            "M254",
+            "M255",
+            "M256",
+            "M257",
+            "M258",
+            "M259",
+            "M260",
+            "M261",
+            "M262",
+            "M263",
+            "M264",
+            "M265",
+            "M266",
+            "M267",
+            "M268",
+            "M269",
+            "M270",
+            "M271",
+            "M272",
+            "M273",
+            "M274",
+            "M275",
+            "M276",
+            "M277",
+            "M278",
+            "M279",
+            "M280",
+            "M281",
+            "M282",
+            "M283",
+            "M284",
+            "M285",
+            "M286",
+            "M287",
+            "M288",
+            "M289",
+            "M290",
+            "M291",
+            "M292",
+            "M293",
+            "M294",
+            "M295",
+            "M296",
+            "M297",
+            "M298",
+            "M299",
+            "M300",
+            "M301",
+            "M302",
+            "M303",
+            "M304",
+            "M305",
+            "M306",
+            "M308",
+            "M309",
+            "M310",
+            "M311",
+            "M312",
+            "M313",
+            "M314",
+            "M315",
+            "M316",
+            "M317",
+            "M318",
+            "M319",
+            "M320",
+            "M321",
+            "M322",
+            "M323",
+            "M326",
+            "M329",
+            "M330",
+            "M332",
+            "M333",
+            "M334",
+            "M335",
+            "M336",
+            "M337",
+            "M338",
+            "M339",
+            "M340",
+            "M341",
+            "M342",
+            "M344",
+            "M346",
+            "M347",
+            "M348",
+            "M349",
+            "M350",
+            "M351",
+            "M352",
+            "M353",
+            "M354",
+            "M355",
+            "M356",
+            "M357",
+            "M358",
+            "M359",
+            "M360",
+            "M361",
+            "M362",
+            "M363",
+            "M364",
+            "M365",
+            "M366",
+            "M367",
+            "M368",
+            "M369",
+            "M370",
+            "M371",
+            "M373",
+            "M374",
+            "M375",
+            "M376",
+            "M377",
+            "M378",
+            "M379",
+            "M380",
+            "M381",
+            "M382",
+            "M383",
+            "M384",
+            "M385",
+            "M386",
+            "M387",
+            "M388"
+          ],
+          "scope_note": "This D packet counts only evidence actually touched in D; A/B/C coverage remains in those immutable packets and unified evidence. No publication filename mapped to a method without actual source evidence."
+        },
+        "remaining_unverified": [
+          "No full run_portable_ci.py execution because it mutates formal combinedHTML; only two read-only functions and focused tests ran.",
+          "No full fresh site/PDF/figure build; no formal HTML/PDF/WAV/PNG/source edits.",
+          "No GitHub Actions/branch-protection/Pages remote execution or live URL playback inspected.",
+          "No browser webpage layout/keyboard/screen-reader/manual listening audit; Node VM only actual language-link prefix, not a fullDOM UI test.",
+          "No actual raw LOCATA upstream archive or six-member replay in D; current shipped4PCM and sources tested, previous C raw measurements remain dated separately.",
+          "No full3003-page visual review. Synthetic PDF render tests prove accepted-input defects, not damage in current textbook. Root prior currentbook re/alpha scan not independently rerun here; new thick-stroke and orphan-font currentbook trigger scan remains open.",
+          "Negative-width re and simple polygon before/after4PNGs rendered and pixel-compared but not directly viewed; remaining10PNGs listed were actually opened.",
+          "Unlisted intervals of direct helper scripts and unassigned source files remain unread in this D packet.",
+          "No original npm archive/license website freshness verification; local pinned byte/hash agreement only.",
+          "No Linux/Windows/macOS clean runner installed or executed; static portability module inventory is not platform validation."
+        ],
+        "scope_completion_summary": {
+          "assigned_26_full_sources": "complete",
+          "B004_B009_independent_challenge": "complete within accepted-input controls; currentbook impact remains explicitly unverified",
+          "focused_test_result": "45/45 pass0skip",
+          "source_sha_verification": true,
+          "all_project_or_all_publication_review_claimed": false
+        },
+        "reviewed_source_identity": {
+          "scope_sha256": "4c37291fecfdce53d6abb1190048d91ab6d131a58dc947710007591b14e5fa89",
+          "B_counterexample_source_hashes": {
+            "scripts/build_pdf.py": "c201d2dcdd9f51cd84e9903b003ddcbe8db0e6063f882d47931098cec14d82e5",
+            "scripts/build_pdf_en.py": "8cf8087d3a07a31d6607e7a6b098179574a53689457eebdcfa8815362d9a75b3",
+            "scripts/build_site_en.py": "cc7e219ea574817399c47578e1f1f6222873d44d8bf3455fce3f4616f1c406eb",
+            "scripts/quality_check.py": "c39e75e82193a83bbf319a83c7c3663b26bacd7fba264ea6ffc86f1733dbb691",
+            "scripts/quality_check_en.py": "d582c14212f72fabbf2dac11d7d570e6c7938636aa9594c829085c2f0fa77c11",
+            "scripts/make_figures_en.py": "e5544a219a3627ab55aa850a86cc80632c69183db76bd182283d1484b70e4234"
+          }
+        },
+        "unified_evidence_read_scope": {
+          "ledger": "Relevant B004–B009/R123 and new root review sections searched/read; no claim entire growing ledger or merged JSON fully reread in D.",
+          "evidence": "Read top-level schema and relevant previous packet/probe byte records; frozen publication_sources and actual method rows explicitly read."
+        },
+        "style_review": {
+          "actual_scope": "All eight assignedREADME and both home templates/JS prose fully read.",
+          "findings": [
+            "Overstrong3minute/zero-gap/full-production/clean-echo wording should be tied to actual guarantees rather than globalwordreplacement.",
+            "MINT taxonomy, licensing/project-acquisition scope and Englishdistortionless claims are factual/evidence-strength issues first.",
+            "HomepageChinese锁死/直通量产/数学底座 andEnglishZero-Gap/Exact/Production bridge are promotional expressions; ordinaryteaching labels are not automatic defects. Correct by explaining actual model, prerequisites and completion criteria."
+          ],
+          "no_mechanical_replacement": true
+        }
+      }
     }
   ],
   "coverage_row_reviews": {
@@ -55280,6 +57860,809 @@
         }
       ],
       "rule": "Six rows receive exact evidence tiers, not chapter-based blanket verification."
+    },
+    "publication-r2d-home-ci": {
+      "rows_actually_read": [
+        {
+          "baseline_id": "M002",
+          "line": 35,
+          "status": "外部参考实现",
+          "raw_row": "| §1.2；空间研究“第 1 章”专题 | HRIR 到 HRTF 与方向插值 | 外部参考实现 | `spatial-audio-framework`：同文件 `HRIRs2HRTFs`、`interpHRTFs` | 已有响应的表示与插值，不从未知录音自动求方向；数据许可另核 |",
+          "evidence_level": "row_read_only",
+          "original_source_read": false,
+          "original_paper_read": false,
+          "upstream_executed": false,
+          "local_execution": false,
+          "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+        },
+        {
+          "baseline_id": "M003",
+          "line": 36,
+          "status": "外部参考实现",
+          "raw_row": "| §1.2；空间研究“第 1 章”专题 | SOFA响应读取与方向插值接口 | 外部参考实现 | `libmysofa`：`src/hrtf/easy.c`、`src/hrtf/mysofa.h` | 固定v1.3.5源码已取得；原归一化两例保留零能量退化；`audit_libmysofa_interpolation.py`五人工控制确认原公共延迟保持失败，逐方向控制另列；未运行SOFA解析/自动查询/单位转换/重采样/渲染，非定位算法 |",
+          "evidence_level": "row_read_only",
+          "original_source_read": false,
+          "original_paper_read": false,
+          "upstream_executed": false,
+          "local_execution": false,
+          "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+        },
+        {
+          "baseline_id": "M048",
+          "line": 86,
+          "status": "原理索引",
+          "raw_row": "| §4.6；E04-21；空间研究§58 | CTF交叉关系与DP-RTF特征估计 | 原理索引 | `dprtf-ssl`：`DP_RTF.m`、`MCMT.m`、`stft.m`，固定作者四文件只索引 | NOASSERTION；E04-21仅精确人工帧代数，不包含真实窗内直达近似、PSD噪声差分、HRIR匹配或作者MATLAB执行 |",
+          "evidence_level": "row_read_only",
+          "original_source_read": false,
+          "original_paper_read": false,
+          "upstream_executed": false,
+          "local_execution": false,
+          "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+        },
+        {
+          "baseline_id": "M081",
+          "line": 119,
+          "status": "原理索引",
+          "raw_row": "| 研究扩展：空间 SELD | DCASE 2025 双声道 SELD 基线 | 原理索引 | `dcase2025-stereo-seld`：`model.py`、`loss.py` 来源索引 | 许可未建立；立体声任务不等于耳廓/HRTF 双耳录音或任意阵列 |",
+          "evidence_level": "row_read_only",
+          "original_source_read": false,
+          "original_paper_read": false,
+          "upstream_executed": false,
+          "local_execution": false,
+          "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+        },
+        {
+          "baseline_id": "M084",
+          "line": 127,
+          "status": "本仓库可运行基线",
+          "raw_row": "| §5.2 | DSB 权重 | 本仓库可运行基线 | `codes/chapters/ch05/core/beamforming.py::dsb_weights`；`codes/chapters/ch05/beamformer_common_input_demo.py` | 不含设备分数延时 FIR；同输入对照只在单频解析模型 |",
+          "evidence_level": "row_plus_partial_unique_core_and_limited_execution",
+          "original_source_read": false,
+          "original_paper_read": false,
+          "upstream_executed": false,
+          "local_execution": true,
+          "note": "唯一beamforming.py本D批1–152实际读；用4路0/250/1000Hz已知导向执行dsb_weights/mvdr_weights并独立Sherman–Morrison核有限例。未据此宣称重审整条覆盖行/同输入demo或跨平台性能。"
+        },
+        {
+          "baseline_id": "M089",
+          "line": 132,
+          "status": "本仓库可运行基线",
+          "raw_row": "| §5.4 | MVDR 与相对对角加载 | 本仓库可运行基线 | `codes/chapters/ch05/core/beamforming.py::mvdr_weights`；共用加载核 `codes/chapters/ch04/core/covariance.py::_load_covariance`；`codes/chapters/ch05/beamformer_common_input_demo.py` | 加载按平均特征值缩放 |",
+          "evidence_level": "row_plus_partial_unique_core_and_limited_execution",
+          "original_source_read": false,
+          "original_paper_read": false,
+          "upstream_executed": false,
+          "local_execution": true,
+          "note": "唯一beamforming.py本D批1–152实际读；用4路0/250/1000Hz已知导向执行dsb_weights/mvdr_weights并独立Sherman–Morrison核有限例。未据此宣称重审整条覆盖行/同输入demo或跨平台性能。"
+        },
+        {
+          "baseline_id": "M095",
+          "line": 138,
+          "status": "本仓库可运行基线",
+          "raw_row": "| §5.5、E05-18～20 | 双耳 MVDR／双耳 LCMV | 本仓库可运行基线 | `ch05/examples/binaural_beamforming_demo.py`、四份同增益双声道 PCM16 | 已知三麦分量；定向复比、背景相干与残余功率分开；非盲估计、宽带系统或真人听测 |",
+          "evidence_level": "row_read_only",
+          "original_source_read": false,
+          "original_paper_read": false,
+          "upstream_executed": false,
+          "local_execution": false,
+          "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+        },
+        {
+          "baseline_id": "M113",
+          "line": 156,
+          "status": "外部参考实现",
+          "raw_row": "| §5.9；空间 §48 | 秩一目标 SCM 的 PCA-RTF 方向 | 外部参考实现 | `pb_bss`：`pb_bss/extraction/beamformer.py::get_pca_vector` | 特征向量还需选参考/尺度；全秩目标不能直接认作唯一RTF |",
+          "evidence_level": "row_read_only",
+          "original_source_read": false,
+          "original_paper_read": false,
+          "upstream_executed": false,
+          "local_execution": false,
+          "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+        },
+        {
+          "baseline_id": "M114",
+          "line": 157,
+          "status": "外部参考实现",
+          "raw_row": "| §5.9；空间 §48 | Souden 参考通道 MVDR | 外部参考实现 | `pb_bss`：同文件 `get_mvdr_vector_souden` | 秩一复参考因子/全秩边界见E05-11；[原方法审计](research/01_spatial_and_tracking.md#beamformer-upstream-audit)已实调；MERL失败另记 |",
+          "evidence_level": "row_read_only",
+          "original_source_read": false,
+          "original_paper_read": false,
+          "upstream_executed": false,
+          "local_execution": false,
+          "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+        },
+        {
+          "baseline_id": "M115",
+          "line": 158,
+          "status": "外部参考实现",
+          "raw_row": "| §5.9 | RTF 幂迭代估计 | 外部参考实现 | `espnet`：`espnet2/enh/layers/beamformer.py::get_rtf` | 函数本身不完成参考通道归一 |",
+          "evidence_level": "row_read_only",
+          "original_source_read": false,
+          "original_paper_read": false,
+          "upstream_executed": false,
+          "local_execution": false,
+          "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+        },
+        {
+          "baseline_id": "M119",
+          "line": 162,
+          "status": "本仓库可运行基线",
+          "raw_row": "| §5.9、§8.4 | 两通道掩码 MVDR | 本仓库可运行基线 | `codes/chapters/ch08/core/separation.py::mask_mvdr_2x2` | 限定 2×2；非零掩码公共缩放不应改变结果；不是完整神经系统 |",
+          "evidence_level": "row_read_only",
+          "original_source_read": false,
+          "original_paper_read": false,
+          "upstream_executed": false,
+          "local_execution": false,
+          "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+        },
+        {
+          "baseline_id": "M126",
+          "line": 169,
+          "status": "外部参考实现",
+          "raw_row": "| §5.8 | 球谐 MVDR | 外部参考实现 | `spherical-array-processing`：`sphMVDR.m` | 径向滤波后噪声统计更新；getSH直接依赖已锁定 |",
+          "evidence_level": "row_read_only",
+          "original_source_read": false,
+          "original_paper_read": false,
+          "upstream_executed": false,
+          "local_execution": false,
+          "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+        },
+        {
+          "baseline_id": "M131",
+          "line": 174,
+          "status": "外部参考实现",
+          "raw_row": "| 研究扩展：空间 §23 | Acoustic Rake | 外部参考实现 | `pyroomacoustics`：`pyroomacoustics/beamforming.py::rake_mvdr_filters` | 需要反射模型，不是通用去混响器 |",
+          "evidence_level": "row_read_only",
+          "original_source_read": false,
+          "original_paper_read": false,
+          "upstream_executed": false,
+          "local_execution": false,
+          "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+        },
+        {
+          "baseline_id": "M185",
+          "line": 238,
+          "status": "原理索引",
+          "raw_row": "| §7.1；增强研究 W07 | 多通道逆定理（MINT）精确逆滤波 | 原理索引 | Miyoshi/Kaneda 1988 原文 §III–IV；`codes/chapters/ch07/chapter07_experiments.py` E07-16/17 为本书受限两路径解析与PCM例 | 已知单源响应、互素等前提；小例不等于一般未知房间的 MINT 求解器 |",
+          "evidence_level": "row_plus_chapter_definition_excerpt",
+          "original_source_read": false,
+          "original_paper_read": false,
+          "upstream_executed": false,
+          "local_execution": false,
+          "note": "另实际读ch07:35–100作README分类对照；未重新读1988原论文或一般MINT实现。"
+        },
+        {
+          "baseline_id": "M186",
+          "line": 239,
+          "status": "本仓库可运行基线",
+          "raw_row": "| §7.1；E07-16/17 | 已知两稀疏FIR路径的直达约束正则逆 | 本仓库可运行基线 | `codes/chapters/ch07/core/mint_teaching.py`；六PCM与独立评分 | 指定512点反射、等方差独立后路径噪声、固定真值路径；不等于通用MINT辨识器或盲WPE |",
+          "evidence_level": "row_read_only",
+          "original_source_read": false,
+          "original_paper_read": false,
+          "upstream_executed": false,
+          "local_execution": false,
+          "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+        },
+        {
+          "baseline_id": "M189",
+          "line": 242,
+          "status": "原理索引",
+          "raw_row": "| 增强研究两阶段去混响 | 输出端PSD训练WPE与单通道维纳后滤 | 原理索引 | 2sderev作者2023论文及官方补充；研究 `#two-stage-dereverb` | 有限滤长残余；HA前40ms/CI16ms目标不同，训练代码未公开、源码许可未核，不取得代码/模型 |",
+          "evidence_level": "row_read_only",
+          "original_source_read": false,
+          "original_paper_read": false,
+          "upstream_executed": false,
+          "local_execution": false,
+          "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+        },
+        {
+          "baseline_id": "M190",
+          "line": 243,
+          "status": "外部参考实现",
+          "raw_row": "| §7.9；增强研究 W09 | MetaAF 学习 WPE 滤波器更新 | 外部参考实现 | `metaaf`：`zoo/wpe/wpe.py`、`zoo/wpe/wpe_eval.py`；核心优化器在 `metaaf/` | 固定源码选集已取得，zoo 采用独立非商业许可；未训练、未载入模型、未复现质量指标 |",
+          "evidence_level": "row_read_only",
+          "original_source_read": false,
+          "original_paper_read": false,
+          "upstream_executed": false,
+          "local_execution": false,
+          "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+        },
+        {
+          "baseline_id": "M191",
+          "line": 244,
+          "status": "外部参考实现",
+          "raw_row": "| §7.9；增强研究 W09 | VACE-WPE 虚拟通道估计与任务特定前端 | 外部参考实现 | `tso_vace_wpe`：`vace_wpe.py`、`torch_custom/wpe_th_utils.py`、`torch_custom/neural_wpe.py` | MIT 固定源码与直接依赖选集；未取模型和语料，未训练/推理或核验 ASV 性能 |",
+          "evidence_level": "row_read_only",
+          "original_source_read": false,
+          "original_paper_read": false,
+          "upstream_executed": false,
+          "local_execution": false,
+          "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+        },
+        {
+          "baseline_id": "M192",
+          "line": 245,
+          "status": "本仓库可运行基线",
+          "raw_row": "| §7.6；E07-18～19 | 已知到达下的源时刻与单历史回归控制 | 本仓库可运行基线 | `codes/chapters/ch07/core/prediction_delays.py`、`core/delay_audio.py`及六PCM生成/核验；图70 | 已知整数到达、一个实数回归、共同接收时轴；不估计时差，不是完整STFT/跨频WPE；T60题仅自由功率衰减换算 |",
+          "evidence_level": "row_read_only",
+          "original_source_read": false,
+          "original_paper_read": false,
+          "upstream_executed": false,
+          "local_execution": false,
+          "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+        },
+        {
+          "baseline_id": "M194",
+          "line": 247,
+          "status": "原理索引",
+          "raw_row": "| 增强研究W10；`#usdnet-plus-candidate` | USDnet++混合与SPD重构弱监督 | 原理索引 | Pang等Interspeech2026，DOI10.21437/Interspeech.2026-2044，原§3～4式3～15 | WPE/WPD结果仍非干净真值；FCP可含未来与全句求解，二模型另计；未核可许可作者整链实现/权重/运行 |",
+          "evidence_level": "row_read_only",
+          "original_source_read": false,
+          "original_paper_read": false,
+          "upstream_executed": false,
+          "local_execution": false,
+          "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+        },
+        {
+          "baseline_id": "M195",
+          "line": 248,
+          "status": "本仓库可运行基线",
+          "raw_row": "| §7.2 | 离线单/多通道 WPE | 本仓库可运行基线 | `codes/chapters/ch07/core/dereverberation.py::offline_wpe`；外部对照 `nara_wpe`；`btk20`：`btk20_src/dereverberation/dereverberation.cc`、`.h` | 保护延迟、有效历史、相对加载；BTK20 的通道功率与加载不同，见研究 W08；数值对照见 W01/W11；BTK20 仅静态核对，未构建整链 |",
+          "evidence_level": "row_read_only",
+          "original_source_read": false,
+          "original_paper_read": false,
+          "upstream_executed": false,
+          "local_execution": false,
+          "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+        },
+        {
+          "baseline_id": "M196",
+          "line": 249,
+          "status": "外部参考实现",
+          "raw_row": "| §7.4 | 逐帧在线 WPE | 外部参考实现 | `nara_wpe`：`nara_wpe/wpe.py::OnlineWPE` | 三接口 delay 索引不同；独立对照 `codes/chapters/ch07/examples/compare_online_wpe_reference.py`；未来扰动和跨块状态见 `codes/chapters/ch07/wpe_temporal_contract.py`；长静音状态溢出及恢复见 `codes/chapters/ch07/examples/wpe_silence_boundary.py` |",
+          "evidence_level": "row_read_only",
+          "original_source_read": false,
+          "original_paper_read": false,
+          "upstream_executed": false,
+          "local_execution": false,
+          "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+        },
+        {
+          "baseline_id": "M197",
+          "line": 250,
+          "status": "外部参考实现",
+          "raw_row": "| §7.4；研究扩展：增强 W03 | 块在线/递推 WPE | 外部参考实现 | `nara_wpe`：`nara_wpe/tf_wpe.py` | TF 固定版权重 0.7 乘当前块；块内估计后处理本块，非逐帧因果；静态核对见 W03 |",
+          "evidence_level": "row_read_only",
+          "original_source_read": false,
+          "original_paper_read": false,
+          "upstream_executed": false,
+          "local_execution": false,
+          "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+        },
+        {
+          "baseline_id": "M198",
+          "line": 251,
+          "status": "外部参考实现",
+          "raw_row": "| §7.9；增强研究NeMo接口 | NeMo幅度掩码多轮WPE | 外部参考实现 | `nemo_wpe`：`masking.py::MaskBasedDereverbWPE`、`multichannel.py::WPEFilter`（精确路径见锁表） | 固定v2.4.0仅AST静态核验；迭代输入、长度屏蔽与trace加载不同，未执行Torch |",
+          "evidence_level": "row_read_only",
+          "original_source_read": false,
+          "original_paper_read": false,
+          "upstream_executed": false,
+          "local_execution": false,
+          "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+        },
+        {
+          "baseline_id": "M199",
+          "line": 252,
+          "status": "外部参考实现",
+          "raw_row": "| §7.4、§7.6、§7.9 | DNN-WPE | 外部参考实现 | `espnet`：`espnet2/enh/layers/dnn_wpe.py`、`wpe.py`、`mask_estimator.py` | 配置值须追到实际求解器；固定版部分成员未传入，填充帧统计亦需核对；静态结果见 W04/W11 |",
+          "evidence_level": "row_read_only",
+          "original_source_read": false,
+          "original_paper_read": false,
+          "upstream_executed": false,
+          "local_execution": false,
+          "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+        },
+        {
+          "baseline_id": "M220",
+          "line": 273,
+          "status": "外部参考实现",
+          "raw_row": "| §8.4 | GSS 活动约束分离 | 外部参考实现 | `gss`：`gss/core/enhancer.py` 为官方整链；本书 `codes/chapters/ch08/examples/gss_teaching_demo.py` 已运行 cACGMM→SCM→MVDR 受控子链 | 本书无混响输入中 WPE 旁路；官方 CuPy/Lhotse、RTTM 与 CHiME 语料未运行，不能外推为完整官方复现 |",
+          "evidence_level": "row_read_only",
+          "original_source_read": false,
+          "original_paper_read": false,
+          "upstream_executed": false,
+          "local_execution": false,
+          "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+        },
+        {
+          "baseline_id": "M221",
+          "line": 274,
+          "status": "外部参考实现",
+          "raw_row": "| 研究扩展：增强 B09 | NeMo活动约束GSS掩码接口 | 外部参考实现 | `nemo_wpe`：`nemo/collections/audio/modules/masking.py::MaskEstimatorGSS` | 固定v2.4.0静态检查；未自动添加背景，返回掩码，不称已执行Torch整链 |",
+          "evidence_level": "row_read_only",
+          "original_source_read": false,
+          "original_paper_read": false,
+          "upstream_executed": false,
+          "local_execution": false,
+          "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+        },
+        {
+          "baseline_id": "M223",
+          "line": 276,
+          "status": "外部参考实现",
+          "raw_row": "| 研究扩展：增强 B10 | CuPy WPE 子实现 | 外部参考实现 | `wpe_gpu`：`wpe/` | GSS 子集，不覆盖全部在线接口 |",
+          "evidence_level": "row_read_only",
+          "original_source_read": false,
+          "original_paper_read": false,
+          "upstream_executed": false,
+          "local_execution": false,
+          "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+        },
+        {
+          "baseline_id": "M307",
+          "line": 375,
+          "status": "外部参考实现",
+          "raw_row": "| §10.8.1；工业 I13 | SOF 固定 FIR 波束 | 外部参考实现 | `sof`：`src/audio/tdfb/tdfb_generic.c` | 滤波组/方向，不是 SCM 自适应 MVDR |",
+          "evidence_level": "row_read_only",
+          "original_source_read": false,
+          "original_paper_read": false,
+          "upstream_executed": false,
+          "local_execution": false,
+          "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+        },
+        {
+          "baseline_id": "M324",
+          "line": 392,
+          "status": "本仓库可运行基线",
+          "raw_row": "| §10.9 | 遥测记录校验 | 本仓库可运行基线 | `codes/chapters/ch10/core/engineering.py::validate_telemetry`、`codes/chapters/ch10/engineering/telemetry_schema.json` | 类型/范围的无状态检查；累计RTF与可选逐帧服务RTF分开；生产者声明统计窗/计时范围/时钟域，校验器不证明跨记录关系 |",
+          "evidence_level": "row_read_only",
+          "original_source_read": false,
+          "original_paper_read": false,
+          "upstream_executed": false,
+          "local_execution": false,
+          "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+        },
+        {
+          "baseline_id": "M325",
+          "line": 393,
+          "status": "本仓库可运行基线",
+          "raw_row": "| §10.9；E10-26 | 已知失效选集与约束重建 | 本仓库可运行基线 | `codes/chapters/ch10/core/channel_selection.py::select_channel_observations`、`select_mvdr_channels`；六份独立PCM与图73 | 已知删除列表同时选择观测、响应与协方差双轴；复用第5章MVDR，不计作新波束算法；无盲检测/自动加载/任意频率性能 |",
+          "evidence_level": "row_read_only",
+          "original_source_read": false,
+          "original_paper_read": false,
+          "upstream_executed": false,
+          "local_execution": false,
+          "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+        },
+        {
+          "baseline_id": "M327",
+          "line": 395,
+          "status": "本仓库可运行基线",
+          "raw_row": "| 专题Ⅲ §14.5～14.7、§14.11、E14-06～08 | 双耳信号匹配（BSM-LS / BSM-MagLS）与 BMVDR 参考混合 | 本仓库可运行基线 | `codes/chapters/ch14/core/binaural_matching.py::bsm_ls_weights`、`bsm_magls_weights`、`binaural_coherence_with_mixing` | 交替相位投影保证目标函数单调不增；参考混合在IC保持与SNR增益间显式折中 |",
+          "evidence_level": "row_read_only",
+          "original_source_read": false,
+          "original_paper_read": false,
+          "upstream_executed": false,
+          "local_execution": false,
+          "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+        },
+        {
+          "baseline_id": "M328",
+          "line": 396,
+          "status": "本仓库可运行基线",
+          "raw_row": "| 专题Ⅲ §14.8～14.11、E14-09～13 | Corcos 风噪相干、气导/耳内闭塞跨模态 MVDR 融合与通透梳状滤波 | 本仓库可运行基线 | `codes/chapters/ch14/core/wearable_fusion.py::corcos_wind_coherence`、`cross_modal_mvdr_mmse`、`hear_through_response`；六份独立PCM与图78～79 | 确定性双音与正交风噪/底噪对照，非实测耳道传递函数或风洞录音 |",
+          "evidence_level": "row_read_only",
+          "original_source_read": false,
+          "original_paper_read": false,
+          "upstream_executed": false,
+          "local_execution": false,
+          "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+        },
+        {
+          "baseline_id": "M331",
+          "line": 399,
+          "status": "本仓库可运行基线",
+          "raw_row": "| 专题Ⅳ §15.4～15.5、§15.10、E15-06～10 | 重叠会议 DER 三分量分解、单标签下界与空谱联合 TS-VAD + GSS 门控 | 本仓库可运行基线 | `codes/chapters/ch15/core/diarization_tsvad.py::compute_der_components`、`single_label_overlap_der_bound`、`tsvad_spatial_spectral_posterior`、`gss_soft_gated_mvdr` | 帧级排列最优匹配与排他目标掩码构造，非大规模预训练声纹模型推理 |",
+          "evidence_level": "row_read_only",
+          "original_source_read": false,
+          "original_paper_read": false,
+          "upstream_executed": false,
+          "local_execution": false,
+          "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+        },
+        {
+          "baseline_id": "M343",
+          "line": 411,
+          "status": "本仓库可运行基线",
+          "raw_row": "| §7.4、§7.6、§7.8～7.9、E07-20～21 | 在线 RLS-WPE 长静音逆协方差凸对角回拉门控与 AEC+WPE 线性级联次序可辨识性及分频带阶数预算 | 本仓库可运行基线 | `codes/chapters/ch07/core/online_and_cascade.py::convex_diagonal_pullback_step`、`rls_wpe_single_bin_step`、`rls_wpe_silence_pullback`、`frequency_dependent_wpe_budget`、`cascaded_aec_wpe_ordering` | 抑制遗忘因子在长静音期的逆矩阵指数膨胀与重入爆音；揭示线性 AEC 后接非线性 NLP 再进 WPE 的失配 |",
+          "evidence_level": "row_read_only",
+          "original_source_read": false,
+          "original_paper_read": false,
+          "upstream_executed": false,
+          "local_execution": false,
+          "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+        },
+        {
+          "baseline_id": "M345",
+          "line": 413,
+          "status": "本仓库可运行基线",
+          "raw_row": "| §5.3、§5.5、§5.11、E05-16～17 | 一阶差分麦克风阵列（DMA）频不变零陷与低频均衡代价及平面阵 Kronecker 可分离波束分解 | 本仓库可运行基线 | `codes/chapters/ch05/core/dma_kronecker.py::first_order_dma_weights`、`first_order_dma_example`、`kronecker_mvdr_weights`、`lcmv_weights`、`kronecker_beamforming_example` | 小孔径一阶差分受 6 dB/oct 自噪声放大制约；Kronecker 双线性分解在非可分离旁向干扰下偏离联合最优解 |",
+          "evidence_level": "row_read_only",
+          "original_source_read": false,
+          "original_paper_read": false,
+          "upstream_executed": false,
+          "local_execution": false,
+          "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+        },
+        {
+          "baseline_id": "M372",
+          "line": 452,
+          "status": "外部参考实现",
+          "raw_row": "| 研究扩展：工业 I28 | FastEnhancer 流式单通道降噪 | 外部参考实现 | `fastenhancer`：`models/fastenhancer/default/model.py`、`scripts/test_onnx.py` | MIT源码；未取ONNX权重、未运行；不是AEC/WPE/多麦分离 |",
+          "evidence_level": "row_read_only",
+          "original_source_read": false,
+          "original_paper_read": false,
+          "upstream_executed": false,
+          "local_execution": false,
+          "note": "本D批实际读了冻结原行；不因首页提及或章属而记原方法已核。"
+        }
+      ],
+      "row_count": 37,
+      "untouched_baseline_ids": [
+        "M001",
+        "M004",
+        "M005",
+        "M006",
+        "M007",
+        "M008",
+        "M009",
+        "M010",
+        "M011",
+        "M012",
+        "M013",
+        "M014",
+        "M015",
+        "M016",
+        "M017",
+        "M018",
+        "M019",
+        "M020",
+        "M021",
+        "M022",
+        "M023",
+        "M024",
+        "M025",
+        "M026",
+        "M027",
+        "M028",
+        "M029",
+        "M030",
+        "M031",
+        "M032",
+        "M033",
+        "M034",
+        "M035",
+        "M036",
+        "M037",
+        "M038",
+        "M039",
+        "M040",
+        "M041",
+        "M042",
+        "M043",
+        "M044",
+        "M045",
+        "M046",
+        "M047",
+        "M049",
+        "M050",
+        "M051",
+        "M052",
+        "M053",
+        "M054",
+        "M055",
+        "M056",
+        "M057",
+        "M058",
+        "M059",
+        "M060",
+        "M061",
+        "M062",
+        "M063",
+        "M064",
+        "M065",
+        "M066",
+        "M067",
+        "M068",
+        "M069",
+        "M070",
+        "M071",
+        "M072",
+        "M073",
+        "M074",
+        "M075",
+        "M076",
+        "M077",
+        "M078",
+        "M079",
+        "M080",
+        "M082",
+        "M083",
+        "M085",
+        "M086",
+        "M087",
+        "M088",
+        "M090",
+        "M091",
+        "M092",
+        "M093",
+        "M094",
+        "M096",
+        "M097",
+        "M098",
+        "M099",
+        "M100",
+        "M101",
+        "M102",
+        "M103",
+        "M104",
+        "M105",
+        "M106",
+        "M107",
+        "M108",
+        "M109",
+        "M110",
+        "M111",
+        "M112",
+        "M116",
+        "M117",
+        "M118",
+        "M120",
+        "M121",
+        "M122",
+        "M123",
+        "M124",
+        "M125",
+        "M127",
+        "M128",
+        "M129",
+        "M130",
+        "M132",
+        "M133",
+        "M134",
+        "M135",
+        "M136",
+        "M137",
+        "M138",
+        "M139",
+        "M140",
+        "M141",
+        "M142",
+        "M143",
+        "M144",
+        "M145",
+        "M146",
+        "M147",
+        "M148",
+        "M149",
+        "M150",
+        "M151",
+        "M152",
+        "M153",
+        "M154",
+        "M155",
+        "M156",
+        "M157",
+        "M158",
+        "M159",
+        "M160",
+        "M161",
+        "M162",
+        "M163",
+        "M164",
+        "M165",
+        "M166",
+        "M167",
+        "M168",
+        "M169",
+        "M170",
+        "M171",
+        "M172",
+        "M173",
+        "M174",
+        "M175",
+        "M176",
+        "M177",
+        "M178",
+        "M179",
+        "M180",
+        "M181",
+        "M182",
+        "M183",
+        "M184",
+        "M187",
+        "M188",
+        "M193",
+        "M200",
+        "M201",
+        "M202",
+        "M203",
+        "M204",
+        "M205",
+        "M206",
+        "M207",
+        "M208",
+        "M209",
+        "M210",
+        "M211",
+        "M212",
+        "M213",
+        "M214",
+        "M215",
+        "M216",
+        "M217",
+        "M218",
+        "M219",
+        "M222",
+        "M224",
+        "M225",
+        "M226",
+        "M227",
+        "M228",
+        "M229",
+        "M230",
+        "M231",
+        "M232",
+        "M233",
+        "M234",
+        "M235",
+        "M236",
+        "M237",
+        "M238",
+        "M239",
+        "M240",
+        "M241",
+        "M242",
+        "M243",
+        "M244",
+        "M245",
+        "M246",
+        "M247",
+        "M248",
+        "M249",
+        "M250",
+        "M251",
+        "M252",
+        "M253",
+        "M254",
+        "M255",
+        "M256",
+        "M257",
+        "M258",
+        "M259",
+        "M260",
+        "M261",
+        "M262",
+        "M263",
+        "M264",
+        "M265",
+        "M266",
+        "M267",
+        "M268",
+        "M269",
+        "M270",
+        "M271",
+        "M272",
+        "M273",
+        "M274",
+        "M275",
+        "M276",
+        "M277",
+        "M278",
+        "M279",
+        "M280",
+        "M281",
+        "M282",
+        "M283",
+        "M284",
+        "M285",
+        "M286",
+        "M287",
+        "M288",
+        "M289",
+        "M290",
+        "M291",
+        "M292",
+        "M293",
+        "M294",
+        "M295",
+        "M296",
+        "M297",
+        "M298",
+        "M299",
+        "M300",
+        "M301",
+        "M302",
+        "M303",
+        "M304",
+        "M305",
+        "M306",
+        "M308",
+        "M309",
+        "M310",
+        "M311",
+        "M312",
+        "M313",
+        "M314",
+        "M315",
+        "M316",
+        "M317",
+        "M318",
+        "M319",
+        "M320",
+        "M321",
+        "M322",
+        "M323",
+        "M326",
+        "M329",
+        "M330",
+        "M332",
+        "M333",
+        "M334",
+        "M335",
+        "M336",
+        "M337",
+        "M338",
+        "M339",
+        "M340",
+        "M341",
+        "M342",
+        "M344",
+        "M346",
+        "M347",
+        "M348",
+        "M349",
+        "M350",
+        "M351",
+        "M352",
+        "M353",
+        "M354",
+        "M355",
+        "M356",
+        "M357",
+        "M358",
+        "M359",
+        "M360",
+        "M361",
+        "M362",
+        "M363",
+        "M364",
+        "M365",
+        "M366",
+        "M367",
+        "M368",
+        "M369",
+        "M370",
+        "M371",
+        "M373",
+        "M374",
+        "M375",
+        "M376",
+        "M377",
+        "M378",
+        "M379",
+        "M380",
+        "M381",
+        "M382",
+        "M383",
+        "M384",
+        "M385",
+        "M386",
+        "M387",
+        "M388"
+      ],
+      "scope_note": "This D packet counts only evidence actually touched in D; A/B/C coverage remains in those immutable packets and unified evidence. No publication filename mapped to a method without actual source evidence."
     }
   },
   "finite_file_read_coverage": {
@@ -55302,49 +58685,47 @@
       "tests": {
         "file_count": 269,
         "status_counts": {
-          "not_recorded_as_read": 62,
-          "full_source_read": 206,
-          "partial_source_read": 1
+          "not_recorded_as_read": 59,
+          "full_source_read": 210
         },
         "total_lines": 45779,
-        "unread_lines": 13290
+        "unread_lines": 12772
       },
       "research_zh": {
         "file_count": 6,
         "status_counts": {
-          "partial_source_read": 3,
-          "full_source_read": 3
+          "partial_source_read": 2,
+          "full_source_read": 4
         },
         "total_lines": 7279,
-        "unread_lines": 3793
+        "unread_lines": 3450
       },
       "research_en": {
         "file_count": 6,
         "status_counts": {
-          "partial_source_read": 3,
-          "full_source_read": 3
+          "partial_source_read": 2,
+          "full_source_read": 4
         },
         "total_lines": 5510,
-        "unread_lines": 3081
+        "unread_lines": 2769
       },
       "publication_sources": {
         "file_count": 41,
         "status_counts": {
-          "not_recorded_as_read": 22,
-          "full_source_read": 17,
+          "full_source_read": 33,
+          "not_recorded_as_read": 6,
           "partial_source_read": 2
         },
         "total_lines": 28074,
-        "unread_lines": 9532
+        "unread_lines": 5297
       },
       "project_readmes": {
         "file_count": 16,
         "status_counts": {
-          "not_recorded_as_read": 8,
-          "full_source_read": 8
+          "full_source_read": 16
         },
         "total_lines": 2324,
-        "unread_lines": 1167
+        "unread_lines": 0
       },
       "tutorial_zh": {
         "file_count": 19,
@@ -55369,80 +58750,134 @@
       ".github/workflows/ci.yml": {
         "current_sha256": "f56d6ddc0ee065549301b061d025d2bbee43db8eaa7d924730e273ebac7e8b03",
         "total_lines": 39,
-        "status": "not_recorded_as_read",
-        "merged_read_intervals": [],
-        "unread_intervals": [
+        "status": "full_source_read",
+        "merged_read_intervals": [
           [
             1,
             39
           ]
         ],
-        "evidence": []
+        "unread_intervals": [],
+        "evidence": [
+          {
+            "packet": "publication-r2d-home-ci",
+            "interval": [
+              1,
+              39
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          }
+        ]
       },
       ".github/workflows/pages.yml": {
         "current_sha256": "45cc0de31d84466c696855765ef77527fbca8681f8d3b5ad5a09f3f5ee5d7512",
         "total_lines": 98,
-        "status": "not_recorded_as_read",
-        "merged_read_intervals": [],
-        "unread_intervals": [
+        "status": "full_source_read",
+        "merged_read_intervals": [
           [
             1,
             98
           ]
         ],
-        "evidence": []
+        "unread_intervals": [],
+        "evidence": [
+          {
+            "packet": "publication-r2d-home-ci",
+            "interval": [
+              1,
+              98
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          }
+        ]
       },
       "README.md": {
         "current_sha256": "1de3d9d4ed35dfae22a4e8f24b92d3cb6124f8d52ea24c7b3b968a5e470f8c95",
         "total_lines": 94,
-        "status": "not_recorded_as_read",
-        "merged_read_intervals": [],
-        "unread_intervals": [
+        "status": "full_source_read",
+        "merged_read_intervals": [
           [
             1,
             94
           ]
         ],
-        "evidence": []
+        "unread_intervals": [],
+        "evidence": [
+          {
+            "packet": "publication-r2d-home-ci",
+            "interval": [
+              1,
+              94
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          }
+        ]
       },
       "README_EN.md": {
         "current_sha256": "6f201ece13955dcd3df1e6ee0cf2a2c89fbfafe47b980bd993164694da33aa72",
         "total_lines": 93,
-        "status": "not_recorded_as_read",
-        "merged_read_intervals": [],
-        "unread_intervals": [
+        "status": "full_source_read",
+        "merged_read_intervals": [
           [
             1,
             93
           ]
         ],
-        "evidence": []
+        "unread_intervals": [],
+        "evidence": [
+          {
+            "packet": "publication-r2d-home-ci",
+            "interval": [
+              1,
+              93
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          }
+        ]
       },
       "assets/readme/lab/README.md": {
         "current_sha256": "e29d4b9b651d053332dc6ee27c9781671d95d400b88352a1aed2d0355ca63147",
         "total_lines": 38,
-        "status": "not_recorded_as_read",
-        "merged_read_intervals": [],
-        "unread_intervals": [
+        "status": "full_source_read",
+        "merged_read_intervals": [
           [
             1,
             38
           ]
         ],
-        "evidence": []
+        "unread_intervals": [],
+        "evidence": [
+          {
+            "packet": "publication-r2d-home-ci",
+            "interval": [
+              1,
+              38
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          }
+        ]
       },
       "assets/readme/lab/README_EN.md": {
         "current_sha256": "1017ee022b8ea6bf50cb83f810546b7cddb5010001bb7a503aef9dcd0665d996",
         "total_lines": 40,
-        "status": "not_recorded_as_read",
-        "merged_read_intervals": [],
-        "unread_intervals": [
+        "status": "full_source_read",
+        "merged_read_intervals": [
           [
             1,
             40
           ]
         ],
-        "evidence": []
+        "unread_intervals": [],
+        "evidence": [
+          {
+            "packet": "publication-r2d-home-ci",
+            "interval": [
+              1,
+              40
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          }
+        ]
       },
       "chapters/00_math-foundations.md": {
         "current_sha256": "f65ed468c0409167d6dc1ca4a2998cb5eb679544f4fad69f3aeb214521fd8879",
@@ -55661,6 +59096,14 @@
             "interval": [
               1,
               1548
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          },
+          {
+            "packet": "publication-r2d-home-ci",
+            "interval": [
+              35,
+              100
             ],
             "sha_binding": "explicit read/handoff SHA"
           }
@@ -57788,47 +61231,14 @@
       "codes/chapters/ch00/research/04_source_reproduction.md": {
         "current_sha256": "a4b21f432fc053df633844ae31609783b2a3f041a55f3b58a516668469fc432d",
         "total_lines": 665,
-        "status": "partial_source_read",
+        "status": "full_source_read",
         "merged_read_intervals": [
           [
-            83,
-            247
-          ],
-          [
-            295,
-            362
-          ],
-          [
-            464,
-            500
-          ],
-          [
-            599,
-            650
-          ]
-        ],
-        "unread_intervals": [
-          [
             1,
-            82
-          ],
-          [
-            248,
-            294
-          ],
-          [
-            363,
-            463
-          ],
-          [
-            501,
-            598
-          ],
-          [
-            651,
             665
           ]
         ],
+        "unread_intervals": [],
         "evidence": [
           {
             "packet": "numerics-r2b-imaging-distributed",
@@ -57963,6 +61373,46 @@
             "interval": [
               599,
               619
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          },
+          {
+            "packet": "root-r2d-reproduction-manual",
+            "interval": [
+              1,
+              140
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          },
+          {
+            "packet": "root-r2d-reproduction-manual",
+            "interval": [
+              248,
+              294
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          },
+          {
+            "packet": "root-r2d-reproduction-manual",
+            "interval": [
+              363,
+              463
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          },
+          {
+            "packet": "root-r2d-reproduction-manual",
+            "interval": [
+              501,
+              598
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          },
+          {
+            "packet": "root-r2d-reproduction-manual",
+            "interval": [
+              651,
+              665
             ],
             "sha_binding": "explicit read/handoff SHA"
           }
@@ -58667,47 +62117,14 @@
       "codes/chapters/ch00/research_en/04_source_reproduction.md": {
         "current_sha256": "4a9131181b90c917353f8dba4d93ef750a062c505c9e94a57e93e98118a8a62b",
         "total_lines": 602,
-        "status": "partial_source_read",
+        "status": "full_source_read",
         "merged_read_intervals": [
           [
-            66,
-            190
-          ],
-          [
-            236,
-            303
-          ],
-          [
-            403,
-            439
-          ],
-          [
-            537,
-            596
-          ]
-        ],
-        "unread_intervals": [
-          [
             1,
-            65
-          ],
-          [
-            191,
-            235
-          ],
-          [
-            304,
-            402
-          ],
-          [
-            440,
-            536
-          ],
-          [
-            597,
             602
           ]
         ],
+        "unread_intervals": [],
         "evidence": [
           {
             "packet": "numerics-r2b-imaging-distributed",
@@ -58842,6 +62259,46 @@
             "interval": [
               537,
               556
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          },
+          {
+            "packet": "root-r2d-reproduction-manual",
+            "interval": [
+              1,
+              65
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          },
+          {
+            "packet": "root-r2d-reproduction-manual",
+            "interval": [
+              191,
+              235
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          },
+          {
+            "packet": "root-r2d-reproduction-manual",
+            "interval": [
+              304,
+              402
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          },
+          {
+            "packet": "root-r2d-reproduction-manual",
+            "interval": [
+              440,
+              536
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          },
+          {
+            "packet": "root-r2d-reproduction-manual",
+            "interval": [
+              597,
+              602
             ],
             "sha_binding": "explicit read/handoff SHA"
           }
@@ -60720,6 +64177,14 @@
               285
             ],
             "sha_binding": "explicit read/handoff SHA"
+          },
+          {
+            "packet": "publication-r2d-home-ci",
+            "interval": [
+              1,
+              152
+            ],
+            "sha_binding": "explicit read/handoff SHA"
           }
         ]
       },
@@ -61333,6 +64798,14 @@
             "packet": "content-r2a-aec-wpe",
             "interval": [
               1,
+              264
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          },
+          {
+            "packet": "root-r2d-reproduction-manual",
+            "interval": [
+              227,
               264
             ],
             "sha_binding": "explicit read/handoff SHA"
@@ -64204,6 +67677,14 @@
               503
             ],
             "sha_binding": "explicit read/handoff SHA"
+          },
+          {
+            "packet": "root-r2d-reproduction-manual",
+            "interval": [
+              295,
+              313
+            ],
+            "sha_binding": "explicit read/handoff SHA"
           }
         ]
       },
@@ -64559,28 +68040,46 @@
       "scripts/README.md": {
         "current_sha256": "217f659ddde819da38a9ba12922a14f6bdbc7cd24c19f5078c98e16be111437a",
         "total_lines": 466,
-        "status": "not_recorded_as_read",
-        "merged_read_intervals": [],
-        "unread_intervals": [
+        "status": "full_source_read",
+        "merged_read_intervals": [
           [
             1,
             466
           ]
         ],
-        "evidence": []
+        "unread_intervals": [],
+        "evidence": [
+          {
+            "packet": "publication-r2d-home-ci",
+            "interval": [
+              1,
+              466
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          }
+        ]
       },
       "scripts/README_EN.md": {
         "current_sha256": "6490a5db08e1c6a4b9798023650560d362034263d58d73d491b37d0c1e08c6b3",
         "total_lines": 354,
-        "status": "not_recorded_as_read",
-        "merged_read_intervals": [],
-        "unread_intervals": [
+        "status": "full_source_read",
+        "merged_read_intervals": [
           [
             1,
             354
           ]
         ],
-        "evidence": []
+        "unread_intervals": [],
+        "evidence": [
+          {
+            "packet": "publication-r2d-home-ci",
+            "interval": [
+              1,
+              354
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          }
+        ]
       },
       "scripts/build_markdown_helpers.py": {
         "current_sha256": "5917eb4c46d752cd4b429ac6825d7f11247e065b7fca50789a2c2ac00a4bcfc0",
@@ -64617,6 +68116,30 @@
         "unread_intervals": [],
         "evidence": [
           {
+            "packet": "publication-r2d-home-ci",
+            "interval": [
+              606,
+              685
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          },
+          {
+            "packet": "publication-r2d-home-ci",
+            "interval": [
+              1566,
+              1770
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          },
+          {
+            "packet": "publication-r2d-home-ci",
+            "interval": [
+              2179,
+              2242
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          },
+          {
             "packet": "root-publication",
             "interval": [
               1,
@@ -64638,6 +68161,46 @@
         ],
         "unread_intervals": [],
         "evidence": [
+          {
+            "packet": "publication-r2d-home-ci",
+            "interval": [
+              1,
+              140
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          },
+          {
+            "packet": "publication-r2d-home-ci",
+            "interval": [
+              224,
+              315
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          },
+          {
+            "packet": "publication-r2d-home-ci",
+            "interval": [
+              380,
+              570
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          },
+          {
+            "packet": "publication-r2d-home-ci",
+            "interval": [
+              662,
+              790
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          },
+          {
+            "packet": "publication-r2d-home-ci",
+            "interval": [
+              810,
+              886
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          },
           {
             "packet": "root-publication",
             "interval": [
@@ -64661,6 +68224,14 @@
         "unread_intervals": [],
         "evidence": [
           {
+            "packet": "publication-r2d-home-ci",
+            "interval": [
+              1288,
+              1335
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          },
+          {
             "packet": "root-publication",
             "interval": [
               1,
@@ -64683,6 +68254,14 @@
         "unread_intervals": [],
         "evidence": [
           {
+            "packet": "publication-r2d-home-ci",
+            "interval": [
+              1,
+              175
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          },
+          {
             "packet": "root-publication",
             "interval": [
               1,
@@ -64695,28 +68274,46 @@
       "scripts/chapter_identity.py": {
         "current_sha256": "703b522cf2797d19a75533b980352f5fcc81173e533c56fc7eed5cb0c8a20f2d",
         "total_lines": 131,
-        "status": "not_recorded_as_read",
-        "merged_read_intervals": [],
-        "unread_intervals": [
+        "status": "full_source_read",
+        "merged_read_intervals": [
           [
             1,
             131
           ]
         ],
-        "evidence": []
+        "unread_intervals": [],
+        "evidence": [
+          {
+            "packet": "publication-r2d-home-ci",
+            "interval": [
+              1,
+              131
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          }
+        ]
       },
       "scripts/chapter_numbering.json": {
         "current_sha256": "1a9ac8a38e521a48803577e328f848607a2e5f27e51fc851dadd6d29d00a02c5",
         "total_lines": 988,
-        "status": "not_recorded_as_read",
-        "merged_read_intervals": [],
-        "unread_intervals": [
+        "status": "full_source_read",
+        "merged_read_intervals": [
           [
             1,
             988
           ]
         ],
-        "evidence": []
+        "unread_intervals": [],
+        "evidence": [
+          {
+            "packet": "publication-r2d-home-ci",
+            "interval": [
+              1,
+              988
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          }
+        ]
       },
       "scripts/code_layout.py": {
         "current_sha256": "c61d4395fbe2c6c775af02c8240c5db7038030443ca4c7cdde38453e2b12b599",
@@ -64734,54 +68331,90 @@
       "scripts/course_home/export_portable.py": {
         "current_sha256": "5f8544725ab3c97ea0406dfb50371b6e3e1a5e87e0b2e89bdaf6d40f4eefdc93",
         "total_lines": 114,
-        "status": "not_recorded_as_read",
-        "merged_read_intervals": [],
-        "unread_intervals": [
+        "status": "full_source_read",
+        "merged_read_intervals": [
           [
             1,
             114
           ]
         ],
-        "evidence": []
+        "unread_intervals": [],
+        "evidence": [
+          {
+            "packet": "publication-r2d-home-ci",
+            "interval": [
+              1,
+              114
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          }
+        ]
       },
       "scripts/course_home/home.css": {
         "current_sha256": "f9b96a0e31cc8837046d9a747648d092e171d249ff99970cf1f8b42b7460aad4",
         "total_lines": 245,
-        "status": "not_recorded_as_read",
-        "merged_read_intervals": [],
-        "unread_intervals": [
+        "status": "full_source_read",
+        "merged_read_intervals": [
           [
             1,
             245
           ]
         ],
-        "evidence": []
+        "unread_intervals": [],
+        "evidence": [
+          {
+            "packet": "publication-r2d-home-ci",
+            "interval": [
+              1,
+              245
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          }
+        ]
       },
       "scripts/course_home/home.js": {
         "current_sha256": "e432ec909e4f2144c941a253582045aaefd799a28ab7f049e1a20bc100b4843e",
         "total_lines": 109,
-        "status": "not_recorded_as_read",
-        "merged_read_intervals": [],
-        "unread_intervals": [
+        "status": "full_source_read",
+        "merged_read_intervals": [
           [
             1,
             109
           ]
         ],
-        "evidence": []
+        "unread_intervals": [],
+        "evidence": [
+          {
+            "packet": "publication-r2d-home-ci",
+            "interval": [
+              1,
+              109
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          }
+        ]
       },
       "scripts/course_home/index.html": {
         "current_sha256": "cd469d8f71d192ff54b357a1a3fbc43d3300f3028156831b959fd5307fe0665a",
         "total_lines": 481,
-        "status": "not_recorded_as_read",
-        "merged_read_intervals": [],
-        "unread_intervals": [
+        "status": "full_source_read",
+        "merged_read_intervals": [
           [
             1,
             481
           ]
         ],
-        "evidence": []
+        "unread_intervals": [],
+        "evidence": [
+          {
+            "packet": "publication-r2d-home-ci",
+            "interval": [
+              1,
+              481
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          }
+        ]
       },
       "scripts/course_home/prepare_locata.py": {
         "current_sha256": "46c89d6d1e583225f7d8e03aaf5f51f9ad92d9e350c32f72b72697d0edad5b98",
@@ -64808,54 +68441,90 @@
       "scripts/course_home_en/export_portable.py": {
         "current_sha256": "4398b52debacda8ffd6b5ea2cdcfa62fe4ee9a8caf730e277f85fab4fa6d5e66",
         "total_lines": 87,
-        "status": "not_recorded_as_read",
-        "merged_read_intervals": [],
-        "unread_intervals": [
+        "status": "full_source_read",
+        "merged_read_intervals": [
           [
             1,
             87
           ]
         ],
-        "evidence": []
+        "unread_intervals": [],
+        "evidence": [
+          {
+            "packet": "publication-r2d-home-ci",
+            "interval": [
+              1,
+              87
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          }
+        ]
       },
       "scripts/course_home_en/home.css": {
         "current_sha256": "f9b96a0e31cc8837046d9a747648d092e171d249ff99970cf1f8b42b7460aad4",
         "total_lines": 245,
-        "status": "not_recorded_as_read",
-        "merged_read_intervals": [],
-        "unread_intervals": [
+        "status": "full_source_read",
+        "merged_read_intervals": [
           [
             1,
             245
           ]
         ],
-        "evidence": []
+        "unread_intervals": [],
+        "evidence": [
+          {
+            "packet": "publication-r2d-home-ci",
+            "interval": [
+              1,
+              245
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          }
+        ]
       },
       "scripts/course_home_en/home.js": {
         "current_sha256": "c674c2d2552895aeace2e8ec5b7de7b732bacb4d94e5cbbc9f7713b89398996e",
         "total_lines": 111,
-        "status": "not_recorded_as_read",
-        "merged_read_intervals": [],
-        "unread_intervals": [
+        "status": "full_source_read",
+        "merged_read_intervals": [
           [
             1,
             111
           ]
         ],
-        "evidence": []
+        "unread_intervals": [],
+        "evidence": [
+          {
+            "packet": "publication-r2d-home-ci",
+            "interval": [
+              1,
+              111
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          }
+        ]
       },
       "scripts/course_home_en/index.html": {
         "current_sha256": "f604f01f50284a1abe36f093b036cad62727a1407a190988bb01061db957c7a5",
         "total_lines": 481,
-        "status": "not_recorded_as_read",
-        "merged_read_intervals": [],
-        "unread_intervals": [
+        "status": "full_source_read",
+        "merged_read_intervals": [
           [
             1,
             481
           ]
         ],
-        "evidence": []
+        "unread_intervals": [],
+        "evidence": [
+          {
+            "packet": "publication-r2d-home-ci",
+            "interval": [
+              1,
+              481
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          }
+        ]
       },
       "scripts/figure_en_translations.json": {
         "current_sha256": "e74bd8184c1c8d331a720e038ef644c59caf426d22e8ed3b4ac13a2e673c3324",
@@ -64873,15 +68542,24 @@
       "scripts/heading_aliases.py": {
         "current_sha256": "6f492ae1e7e84518b9b49210d51b5f9aa725475d5203be59131b374bcab9ca55",
         "total_lines": 351,
-        "status": "not_recorded_as_read",
-        "merged_read_intervals": [],
-        "unread_intervals": [
+        "status": "full_source_read",
+        "merged_read_intervals": [
           [
             1,
             351
           ]
         ],
-        "evidence": []
+        "unread_intervals": [],
+        "evidence": [
+          {
+            "packet": "publication-r2d-home-ci",
+            "interval": [
+              1,
+              351
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          }
+        ]
       },
       "scripts/inline_layout.js": {
         "current_sha256": "ff961cea640ce01952d2008eee0c0617a87e8c43452dba2121f97967b84d6ebd",
@@ -64908,28 +68586,46 @@
       "scripts/language_bars.py": {
         "current_sha256": "d285a9d8cb68ae274a31fb9d1657226f9acc079832586f7d3556f986e41976ed",
         "total_lines": 115,
-        "status": "not_recorded_as_read",
-        "merged_read_intervals": [],
-        "unread_intervals": [
+        "status": "full_source_read",
+        "merged_read_intervals": [
           [
             1,
             115
           ]
         ],
-        "evidence": []
+        "unread_intervals": [],
+        "evidence": [
+          {
+            "packet": "publication-r2d-home-ci",
+            "interval": [
+              1,
+              115
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          }
+        ]
       },
       "scripts/legacy_sequential_anchors.json": {
         "current_sha256": "a9b73e0a211c04b1763ac75c83df518fa91111b01fd2617d38d9f621900b3dda",
         "total_lines": 349,
-        "status": "not_recorded_as_read",
-        "merged_read_intervals": [],
-        "unread_intervals": [
+        "status": "full_source_read",
+        "merged_read_intervals": [
           [
             1,
             349
           ]
         ],
-        "evidence": []
+        "unread_intervals": [],
+        "evidence": [
+          {
+            "packet": "publication-r2d-home-ci",
+            "interval": [
+              1,
+              349
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          }
+        ]
       },
       "scripts/make_aec_figures.py": {
         "current_sha256": "8fb42d44f88a8cb8a7856c0bf5a95901180f75f9fe2cf0a35fa6eab1f50c1494",
@@ -65453,6 +69149,22 @@
             "sha_binding": "explicit read/handoff SHA"
           },
           {
+            "packet": "publication-r2d-home-ci",
+            "interval": [
+              1,
+              95
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          },
+          {
+            "packet": "publication-r2d-home-ci",
+            "interval": [
+              390,
+              516
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          },
+          {
             "packet": "root-publication",
             "interval": [
               1,
@@ -65602,6 +69314,46 @@
         "unread_intervals": [],
         "evidence": [
           {
+            "packet": "publication-r2d-home-ci",
+            "interval": [
+              805,
+              975
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          },
+          {
+            "packet": "publication-r2d-home-ci",
+            "interval": [
+              1980,
+              2135
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          },
+          {
+            "packet": "publication-r2d-home-ci",
+            "interval": [
+              2760,
+              2830
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          },
+          {
+            "packet": "publication-r2d-home-ci",
+            "interval": [
+              4710,
+              4826
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          },
+          {
+            "packet": "publication-r2d-home-ci",
+            "interval": [
+              5180,
+              5220
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          },
+          {
             "packet": "root-publication",
             "interval": [
               1,
@@ -65624,6 +69376,22 @@
         "unread_intervals": [],
         "evidence": [
           {
+            "packet": "publication-r2d-home-ci",
+            "interval": [
+              35,
+              60
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          },
+          {
+            "packet": "publication-r2d-home-ci",
+            "interval": [
+              145,
+              313
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          },
+          {
             "packet": "root-publication",
             "interval": [
               1,
@@ -65636,41 +69404,68 @@
       "scripts/run_portable_ci.py": {
         "current_sha256": "edba721747bdff7f7181b238171f0e758950e6742096930647d485d1dedb021f",
         "total_lines": 291,
-        "status": "not_recorded_as_read",
-        "merged_read_intervals": [],
-        "unread_intervals": [
+        "status": "full_source_read",
+        "merged_read_intervals": [
           [
             1,
             291
           ]
         ],
-        "evidence": []
+        "unread_intervals": [],
+        "evidence": [
+          {
+            "packet": "publication-r2d-home-ci",
+            "interval": [
+              1,
+              291
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          }
+        ]
       },
       "scripts/vendor/mathjax-3.2.2/README.md": {
         "current_sha256": "7e9723d78a3c073a2a481347a5e17ac6e5d9ab3cea2630a98c245287ad78a90c",
         "total_lines": 40,
-        "status": "not_recorded_as_read",
-        "merged_read_intervals": [],
-        "unread_intervals": [
+        "status": "full_source_read",
+        "merged_read_intervals": [
           [
             1,
             40
           ]
         ],
-        "evidence": []
+        "unread_intervals": [],
+        "evidence": [
+          {
+            "packet": "publication-r2d-home-ci",
+            "interval": [
+              1,
+              40
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          }
+        ]
       },
       "scripts/vendor/mathjax-3.2.2/README_EN.md": {
         "current_sha256": "80690261b1293c8067cbfc1e125d183fbc0ff3df79b9b16ed9227af3113b04a7",
         "total_lines": 42,
-        "status": "not_recorded_as_read",
-        "merged_read_intervals": [],
-        "unread_intervals": [
+        "status": "full_source_read",
+        "merged_read_intervals": [
           [
             1,
             42
           ]
         ],
-        "evidence": []
+        "unread_intervals": [],
+        "evidence": [
+          {
+            "packet": "publication-r2d-home-ci",
+            "interval": [
+              1,
+              42
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          }
+        ]
       },
       "tests/test_aec_figures.py": {
         "current_sha256": "b7b2858619e82687f0a8098deb915bf006a704c060f2b511dc037c401e396cc4",
@@ -65880,15 +69675,24 @@
       "tests/test_build_pdf_semantics.py": {
         "current_sha256": "c6f89dfc680dc4b180d3308359bb7c91e7eeae09fbb333bf09c9edea7b6a6249",
         "total_lines": 175,
-        "status": "not_recorded_as_read",
-        "merged_read_intervals": [],
-        "unread_intervals": [
+        "status": "full_source_read",
+        "merged_read_intervals": [
           [
             1,
             175
           ]
         ],
-        "evidence": []
+        "unread_intervals": [],
+        "evidence": [
+          {
+            "packet": "publication-r2d-home-ci",
+            "interval": [
+              1,
+              175
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          }
+        ]
       },
       "tests/test_build_real_audio.py": {
         "current_sha256": "50cacc81125e76b0d59fea33da93cc831576c725c13edf78365e3498bd3e4908",
@@ -66058,15 +69862,24 @@
       "tests/test_chapter_numbering.py": {
         "current_sha256": "f4864b92f278d6b314b644d847e62fb75b207907bdfc16f11e0e8003d7847fd9",
         "total_lines": 110,
-        "status": "not_recorded_as_read",
-        "merged_read_intervals": [],
-        "unread_intervals": [
+        "status": "full_source_read",
+        "merged_read_intervals": [
           [
             1,
             110
           ]
         ],
-        "evidence": []
+        "unread_intervals": [],
+        "evidence": [
+          {
+            "packet": "publication-r2d-home-ci",
+            "interval": [
+              1,
+              110
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          }
+        ]
       },
       "tests/test_codes_aec_advanced_exercises.py": {
         "current_sha256": "4cb829d232d79739f71b5e5dc762d5a177b6dd50ddefa75647f9ec46669b8329",
@@ -68087,6 +71900,14 @@
               333
             ],
             "sha_binding": "explicit read/handoff SHA"
+          },
+          {
+            "packet": "publication-r2d-home-ci",
+            "interval": [
+              1,
+              333
+            ],
+            "sha_binding": "explicit read/handoff SHA"
           }
         ]
       },
@@ -68107,6 +71928,14 @@
             "interval": [
               1,
               362
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          },
+          {
+            "packet": "publication-r2d-home-ci",
+            "interval": [
+              1,
+              100
             ],
             "sha_binding": "explicit read/handoff SHA"
           }
@@ -69667,6 +73496,14 @@
               79
             ],
             "sha_binding": "explicit read/handoff SHA"
+          },
+          {
+            "packet": "publication-r2d-home-ci",
+            "interval": [
+              1,
+              79
+            ],
+            "sha_binding": "explicit read/handoff SHA"
           }
         ]
       },
@@ -70717,15 +74554,24 @@
       "tests/test_course_locata.py": {
         "current_sha256": "a197be64c6b2bcafda1f7c835e2d211d5483fd7dc8fc756cfeb38bafc2266f57",
         "total_lines": 79,
-        "status": "not_recorded_as_read",
-        "merged_read_intervals": [],
-        "unread_intervals": [
+        "status": "full_source_read",
+        "merged_read_intervals": [
           [
             1,
             79
           ]
         ],
-        "evidence": []
+        "unread_intervals": [],
+        "evidence": [
+          {
+            "packet": "publication-r2d-home-ci",
+            "interval": [
+              1,
+              79
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          }
+        ]
       },
       "tests/test_figure_algorithms.py": {
         "current_sha256": "1bdf4b4f39829d9a34da4f87cb70fffb39d551e76aaa8f58af2a2741794a9a29",
@@ -70815,6 +74661,14 @@
               304
             ],
             "sha_binding": "explicit read/handoff SHA"
+          },
+          {
+            "packet": "publication-r2d-home-ci",
+            "interval": [
+              1,
+              304
+            ],
+            "sha_binding": "explicit read/handoff SHA"
           }
         ]
       },
@@ -70869,20 +74723,23 @@
       "tests/test_pdf_layout_spaces.py": {
         "current_sha256": "42633a69f4e3d4cda307ba393d74c218593b9907ac1406d4cb798e3662c37510",
         "total_lines": 384,
-        "status": "partial_source_read",
+        "status": "full_source_read",
         "merged_read_intervals": [
           [
             1,
-            230
-          ]
-        ],
-        "unread_intervals": [
-          [
-            231,
             384
           ]
         ],
+        "unread_intervals": [],
         "evidence": [
+          {
+            "packet": "publication-r2d-home-ci",
+            "interval": [
+              1,
+              384
+            ],
+            "sha_binding": "explicit read/handoff SHA"
+          },
           {
             "packet": "root-publication-partial",
             "interval": [
@@ -71402,6 +75259,14 @@
               49
             ],
             "sha_binding": "explicit read/handoff SHA"
+          },
+          {
+            "packet": "publication-r2d-home-ci",
+            "interval": [
+              1,
+              49
+            ],
+            "sha_binding": "explicit read/handoff SHA"
           }
         ]
       }
@@ -71445,14 +75310,16 @@
         "sha256": "4533a2e98ceec5f14d9ff4a49f49c1f176766036dcdd2985e07dbc4e9ce7e464",
         "lines": 326,
         "owner": "publication_ci",
-        "status": "assigned_for_actual_read"
+        "status": "full_source_read",
+        "evidence_packet": "publication-r2d-home-ci"
       },
       {
         "path": "assets/readme/lab/export-lab.mjs",
         "sha256": "55cb29254d0e169f82502bffdd57e679eb35ac52bf9a38b8ae8ec51551994df1",
         "lines": 29,
         "owner": "publication_ci",
-        "status": "assigned_for_actual_read"
+        "status": "full_source_read",
+        "evidence_packet": "publication-r2d-home-ci"
       }
     ],
     "generated_not_source": [

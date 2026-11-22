@@ -6019,6 +6019,42 @@
     ],
     "publication-r2a-foundations/R2A-P08": [
       "R231"
+    ],
+    "numerics-r2a-engineering-selection/R2A-DMA-DTCM": [
+      "R232"
+    ],
+    "numerics-r2a-engineering-selection/R2A-CIC-DC-bilingual": [
+      "R233"
+    ],
+    "numerics-r2a-engineering-selection/R2A-loopback-absolute": [
+      "R234"
+    ],
+    "numerics-r2a-engineering-selection/R2A-P808-debias": [
+      "R235"
+    ],
+    "numerics-r2a-engineering-selection/R2A-CIC-M-outputrate": [
+      "R236"
+    ],
+    "numerics-r2a-engineering-selection/R2A-spherical-minimum": [
+      "R237"
+    ],
+    "numerics-r2a-engineering-selection/R2A-WILSON-COVERAGE": [
+      "R238"
+    ],
+    "numerics-r2a-engineering-selection/R2A-CIC-WIDTH-NONPOWER": [
+      "R239"
+    ],
+    "numerics-r2a-engineering-selection/R2A-A2B-FIXED-PHASE": [
+      "R240"
+    ],
+    "numerics-r2a-engineering-selection/R2A-ICC-EAR-GAIN": [
+      "R241"
+    ],
+    "numerics-r2a-engineering-selection/R2A-FDA-OTC-SCOPE": [
+      "R242"
+    ],
+    "numerics-r2a-engineering-selection/R2A-STALE-E11-REFERENCE": [
+      "R243"
     ]
   },
   "review_rounds": [
@@ -6051,7 +6087,7 @@
           "english_pairs": true,
           "scope": "完整源行、相关核/入口/测试及引用图，独立质疑前轮工程/评分/认证结论",
           "repository_write": false,
-          "progress": "进行中：第10章中英全文、第11章中文全文及英文前450行；代码/测试/图逐项推进，尚未收到最终包"
+          "progress": "最终包完成：第10/11章中英全文、两章10非空核心/章入口/直接例程与相关测试源码；81文件实际区间、24PNG、50题已读；无回归或原系统/硬件运行"
         },
         {
           "agent": "content_map",
@@ -6152,6 +6188,19 @@
             "status": "confirmed_synthetic_visible_font_control",
             "evidence": "Span块内未重复Tf时未核当前字体，已由独立字体轮廓证明可见的CID0003仍被改Artifact；原后两图均有1887个深色像素，绘制一致但语义排除不实",
             "current_book_trigger": "未在当前书内定位，需另核真实调用与字体状态"
+          },
+          {
+            "id": "B006",
+            "extension": "Chinese figure-identity gate also accepts valid swapped image from same generator",
+            "probe": {
+              "finding": "B006",
+              "target": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/figures/fig01_binaural.png",
+              "replacement": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/figures/fig02_dsin_geometry.png",
+              "mechanism": "mock PIL.Image.open only, no file bytes altered",
+              "check": "quality_check.check_figures",
+              "errors": [],
+              "source_sha256": "c39e75e82193a83bbf319a83c7c3663b26bacd7fba264ea6ffc86f1733dbb691"
+            }
           }
         ],
         "baseline_tests": {
@@ -6212,7 +6261,41 @@
               40,
               95
             ]
+          ],
+          "scripts/quality_check.py": [
+            [
+              1,
+              3573
+            ]
+          ],
+          "tests/test_pdf_layout_spaces.py": [
+            [
+              1,
+              230
+            ]
           ]
+        },
+        "publication_baseline_checks": {
+          "en": {
+            "language": "en",
+            "command": [
+              "/Users/francis7999/code/github_repos/microphone-array-signal-processing/.venv/bin/python",
+              "scripts/quality_check_en.py"
+            ],
+            "head_at_start": "c1e5c06d69a54697f820f58e9aa64b037fad4a38",
+            "started": "2026-11-22T20:03:41.293123+00:00",
+            "finished": "2026-11-22T20:04:23.645051+00:00",
+            "elapsed_s": 42.355,
+            "returncode": 0,
+            "log_path": "/private/tmp/masp-multiround-20261123/r2-quality-en.log",
+            "source_mutation": "none requested; output checks only",
+            "log_sha256": "d813c45b68fb6da4090333dbf7eeeb04f084a710382ab528d5a101291a57b5a6"
+          },
+          "zh": {
+            "status": "running",
+            "session_id": 83157,
+            "log": "/private/tmp/masp-multiround-20261123/r2-quality-zh.log"
+          }
         }
       }
     },
@@ -6229,6 +6312,16 @@
           "english_pairs": true,
           "repository_write": false,
           "scope": "连续全文、相关核/入口/测试、引用图像素、跨章消费者；独立质疑前轮统计校准/窗/分数时延/秩条件"
+        },
+        {
+          "agent": "numerics_evidence",
+          "documents": [
+            "chapters/12_acoustic-imaging.md",
+            "chapters/13_distributed-enhancement.md"
+          ],
+          "english_pairs": true,
+          "repository_write": false,
+          "scope": "全文、唯一core/入口/直接测试、中英PNG像素；空气吸收、圆盘/圆环、Nyquist/SRO、WACD、PTP与ADC时钟等独立反驳"
         }
       ]
     }
@@ -8239,10 +8332,14 @@
             "zh-p0002.png",
             "en-p0002.png",
             "zh-p0464.png",
-            "en-p0555.png"
+            "en-p0555.png",
+            "zh-p0942.png",
+            "en-p1107.png",
+            "zh-p1008.png",
+            "en-p1191.png"
           ],
           "visual_findings": "已看封面、首个目录页、数学与AEC章首页的边界/文字/表格，未发现内容裁切；英文目录长章名的项目符号位置有排版候选，未据此判信息丢失",
-          "unread_rendered_pages": 34,
+          "unread_rendered_pages": 30,
           "scope": "有限基线，不是3003页逐页验收"
         },
         "pdf_optimizer_negative_controls": {
@@ -8270,7 +8367,8 @@
               "before_image": "/private/tmp/masp-multiround-20261123/pdf-optimizer-probe/rectangle-before.png",
               "after_image": "/private/tmp/masp-multiround-20261123/pdf-optimizer-probe/rectangle-after.png",
               "before_sha256": "d14249026ebb50ec94deeca6ccb300f9cdea2aa33202ba5331cb750937646986",
-              "after_sha256": "25f0c744a00d3bcc5f9fc3fb86b046dd4d2a40e98866062a80632b1f9f98906f"
+              "after_sha256": "25f0c744a00d3bcc5f9fc3fb86b046dd4d2a40e98866062a80632b1f9f98906f",
+              "full_content": "q\n1 0 0 rg\n100.000000 100.000000 m\n100.000000 100.000000 l\n100.000000 100.000000 200.000000 200.000000 re\nh\nf\n100.000000 100.000000 m\n100.000000 100.000000 l\n100.000000 100.000000 200.000000 200.000000 re\nh\nf\n100.000000 100.000000 m\n100.000000 100.000000 l\n100.000000 100.000000 200.000000 200.000000 re\nh\nf\n100.000000 100.000000 m\n100.000000 100.000000 l\n100.000000 100.000000 200.000000 200.000000 re\nh\nf\n100.000000 100.000000 m\n100.000000 100.000000 l\n100.000000 100.000000 200.000000 200.000000 re\nh\nf\nQ\n"
             },
             {
               "case": "alpha",
@@ -8290,7 +8388,16 @@
               "before_image": "/private/tmp/masp-multiround-20261123/pdf-optimizer-probe/alpha-before.png",
               "after_image": "/private/tmp/masp-multiround-20261123/pdf-optimizer-probe/alpha-after.png",
               "before_sha256": "c000b1ae3fad697cf4d96e5262a099d2c4d3158d6a5595549dc5252efc618d79",
-              "after_sha256": "7e2d5681c2608c1a3ffa675dacd5a1411a9b1bb8608ce19abe0e7b719707b265"
+              "after_sha256": "7e2d5681c2608c1a3ffa675dacd5a1411a9b1bb8608ce19abe0e7b719707b265",
+              "extgstate": {
+                "G0": {
+                  "ca": 1
+                },
+                "G1": {
+                  "ca": 0.1
+                }
+              },
+              "full_content": "q\n1 0 0 rg\n0 0 0 RG\n/G0 gs\n100.000000 100.000000 m\n300.000000 100.000000 l\n300.000000 300.000000 l\n100.000000 300.000000 l\nh\nf\n/G1 gs\n100.000000 100.000000 m\n300.000000 100.000000 l\n300.000000 300.000000 l\n100.000000 300.000000 l\nh\nS\nQ\nq\n1 0 0 rg\n0 0 0 RG\n/G0 gs\n100.000000 100.000000 m\n300.000000 100.000000 l\n300.000000 300.000000 l\n100.000000 300.000000 l\nh\nf\n/G1 gs\n100.000000 100.000000 m\n300.000000 100.000000 l\n300.000000 300.000000 l\n100.000000 300.000000 l\nh\nS\nQ\nq\n1 0 0 rg\n0 0 0 RG\n/G0 gs\n100.000000 100.000000 m\n300.000000 100.000000 l\n300.000000 300.000000 l\n100.000000 300.000000 l\nh\nf\n/G1 gs\n100.000000 100.000000 m\n300.000000 100.000000 l\n300.000000 300.000000 l\n100.000000 300.000000 l\nh\nS\nQ\nq\n1 0 0 rg\n0 0 0 RG\n/G0 gs\n100.000000 100.000000 m\n300.000000 100.000000 l\n300.000000 300.000000 l\n100.000000 300.000000 l\nh\nf\n/G1 gs\n100.000000 100.000000 m\n300.000000 100.000000 l\n300.000000 300.000000 l\n100.000000 300.000000 l\nh\nS\nQ\nq\n1 0 0 rg\n0 0 0 RG\n/G0 gs\n100.000000 100.000000 m\n300.000000 100.000000 l\n300.000000 300.000000 l\n100.000000 300.000000 l\nh\nf\n/G1 gs\n100.000000 100.000000 m\n300.000000 100.000000 l\n300.000000 300.000000 l\n100.000000 300.000000 l\nh\nS\nQ\n"
             }
           ]
         },
@@ -8408,8 +8515,3211 @@
           },
           "scope": "Synthetic supported-path controls, no formal PDF/HTML/source changes; no claim that current book has visible content hidden by this branch"
         },
-        "english_pdf_boundary_controls_sha256": "db35c2f5217ad8e37f1ada235f9b828f903a80d47530b78a033572b93f389b7f"
+        "english_pdf_boundary_controls_sha256": "db35c2f5217ad8e37f1ada235f9b828f903a80d47530b78a033572b93f389b7f",
+        "chinese_figure_swap_control": {
+          "finding": "B006",
+          "target": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/figures/fig01_binaural.png",
+          "replacement": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/figures/fig02_dsin_geometry.png",
+          "mechanism": "mock PIL.Image.open only, no file bytes altered",
+          "check": "quality_check.check_figures",
+          "errors": [],
+          "source_sha256": "c39e75e82193a83bbf319a83c7c3663b26bacd7fba264ea6ffc86f1733dbb691"
+        }
+      }
+    },
+    {
+      "packet_id": "numerics-r2a-engineering-selection",
+      "received_date": "2026-11-23",
+      "status": "complete_for_assigned_scope_with_explicit_remaining",
+      "handoff_sha256": "c72eac0218ee953fa59b5333cd2ccb0cd44533f86b4d45692daafbc060cacb9a",
+      "data": {
+        "schema": "masp.r2a.engineering-selection-review.v1",
+        "scope": {
+          "agent": "numerics_evidence",
+          "stage": "R2-A",
+          "date": "2026-11-23",
+          "sandbox": "danger-full-access",
+          "approval": "never",
+          "repository": "/Users/francis7999/code/github_repos/microphone-array-signal-processing",
+          "mutations": "Only this external temporary JSON; no repository edits, original-system runs, dependency installs or generated deliverables.",
+          "repo_mutations": "none by this agent; only this external temporary JSON updated; parent owns unified ledger",
+          "permissions_actual": {
+            "sandbox_mode": "danger-full-access",
+            "approval_policy": "never",
+            "network": "enabled; primary-source retrieval used",
+            "phase_constraint": "read-only repository, no installs or original-system reruns"
+          }
+        },
+        "status": "R2-A_FINAL_HANDOFF: bilingual_ch10_ch11_bodies_complete; all_10_nonempty_chapter_cores_and_direct_chapter_entries_read; selected_crosschapter_closure_read; 24_original_PNG_viewed; original_source_sections_and_7_independent_small_calculations_below; no_regression_or_hardware_runs",
+        "reading_coverage": [
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters/10_engineering-practice.md",
+            "sha256_at_read": "a5be86aeff11571261eec713b5514cef3e568c48b5de00b83dbe6a81c11dde3b",
+            "line_count_at_read": 1515,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                1515
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters_en/10_engineering-practice.md",
+            "sha256_at_read": "f546d4ac52a5841272f0027d47d6a764829de8e69263ad077f32b5ae7d013378",
+            "line_count_at_read": 1514,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                1514
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch10/core/engineering.py",
+            "sha256_at_read": "22f5fcbbfdaedc399b5de1eb4c718c4f0c692dcb5dd1bdf49c7ef4569e43ae1b",
+            "line_count_at_read": 535,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                535
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch10/core/pdm_and_eval.py",
+            "sha256_at_read": "03a09a69d4f6dc448b5eff9091c2f34f901c71bc706b947031bf1fc5afc68c2d",
+            "line_count_at_read": 404,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                404
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch10/core/noise_suppression.py",
+            "sha256_at_read": "fbef0765d532c7dfbd17f53e3cdd4799fb4457982344a0f0298b2137f9fd9de3",
+            "line_count_at_read": 134,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                134
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch10/core/noise_mismatch.py",
+            "sha256_at_read": "d04f564ddad4490a8b8cc3040e670f48a03dca78b2b04e68c27dc078cfb56d40",
+            "line_count_at_read": 176,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                176
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch10/core/channel_selection.py",
+            "sha256_at_read": "811b6469a97aefe44cf9ef8892deff8506d159a21be2a0dc43da178593b7882a",
+            "line_count_at_read": 130,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                130
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch10/core/channel_audio.py",
+            "sha256_at_read": "0fdbae1e4e8373d828f846558d83f20c1a93836a98e9a00da2c1bf3333227c06",
+            "line_count_at_read": 111,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                111
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch10/chapter10_experiments.py",
+            "sha256_at_read": "493ef775bc48432300ea97827e2fa45a3c123246e6fa8e5af732b24fade99bce",
+            "line_count_at_read": 324,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                324
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch10/sro_closed_loop_demo.py",
+            "sha256_at_read": "a572e60eaac16cdb20c378b955e2bea4590b6531d788ad72d27cce9ad9ac400a",
+            "line_count_at_read": 231,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                231
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/cross_chapter/exercises_engineering.py",
+            "sha256_at_read": "6f5160ae59d071de411ba9460977e906e33cd46ade426e0dbe77c25a1eea0fa1",
+            "line_count_at_read": 276,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                276
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/cross_chapter/engineering_boundary_exercises.py",
+            "sha256_at_read": "8343f4968e57185c409ceb53938a836430aec8decdf71b7b88f4c548747166c6",
+            "line_count_at_read": 206,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                206
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/tests/test_codes_engineering.py",
+            "sha256_at_read": "91b42a3e95ecc06aa722b25806435530d0988df1e1af61d632bb6ba67a36e0de",
+            "line_count_at_read": 182,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                182
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/tests/test_codes_engineering_boundaries.py",
+            "sha256_at_read": "62aedbfc78f493aa52312e786f0f57e09c4701e1d60efc1e90c6d36a65cdbe30",
+            "line_count_at_read": 160,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                160
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/tests/test_codes_engineering_ch10_boundaries.py",
+            "sha256_at_read": "75e23201257cb048edb6f8da8f73d24961e6fdeca709d8bd09c041897485acb8",
+            "line_count_at_read": 97,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                97
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/tests/test_codes_engineering_numerical_extremes.py",
+            "sha256_at_read": "dd84eb30246b5d3d9ffd8ab23fb3c27c58a59b8040387e2020d0571633a188bf",
+            "line_count_at_read": 122,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                122
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/tests/test_codes_engineering_round2.py",
+            "sha256_at_read": "e9871017089604a98509994878bf921bd8191e99410b2678ae458c24f4fb7a07",
+            "line_count_at_read": 172,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                172
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/tests/test_codes_spectral_subtraction.py",
+            "sha256_at_read": "9975c4dcaa61e3dbc1cc47efba27d5e52230c39a6d64a7b23211667aaea12263",
+            "line_count_at_read": 87,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                87
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/tests/test_codes_chapter10_experiments.py",
+            "sha256_at_read": "17a5b04573fcf42a4051f7ad725777a914ebd96a3a84c0683f35b8f4f6da90c4",
+            "line_count_at_read": 376,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                376
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/tests/test_codes_ch10_channel_audio.py",
+            "sha256_at_read": "5982a03548d71980dbbba9d3957fc830834637c609f37af2fdd8dc5bb323c3ac",
+            "line_count_at_read": 206,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                206
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/tests/test_codes_ch10_telemetry_contract.py",
+            "sha256_at_read": "38b7eb408e2e120ee3657a9c61b06cac37c3caac2e57fd9fb47628a46081a11c",
+            "line_count_at_read": 60,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                60
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch10/examples/macbook_audio_latency/README.md",
+            "sha256_at_read": "32bf16ddb7ca3c482b3c08bfd6810c9f16e74279c6e80f5278779956ee26e08f",
+            "line_count_at_read": 48,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                48
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch10/examples/macbook_audio_latency/analyze.py",
+            "sha256_at_read": "f53aea1ec756fbea91bc21d21959f40aac4035ab7d7eff0f8fa5d5de81fa2dc8",
+            "line_count_at_read": 143,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                143
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch10/examples/macbook_audio_latency/verify_timestamps.py",
+            "sha256_at_read": "4ef262ad1c15d50f123eced4e26ce10341a4ffd1275623be624c3bb57792e703",
+            "line_count_at_read": 80,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                80
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch10/examples/macbook_audio_latency/bench.c",
+            "sha256_at_read": "cb7f4ed7f12ca1d060f6435a415721789cf4a815bef7590e9c79014b5c9f6a7e",
+            "line_count_at_read": 113,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                113
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/reviews/2026-11-23-multiround-review.md",
+            "sha256_at_read": "7aa64bc37955b8485ee473585e98a5edde9173fe622c834137921ba02e5a6a43",
+            "line_count_at_read": 220,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                220
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters/11_selection-guide.md",
+            "sha256_at_read": "f1d6e56d4df437cf13663765974e5252d9adb1d489330a58424d706a6647ea84",
+            "line_count_at_read": 1153,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                1153
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters_en/11_selection-guide.md",
+            "sha256_at_read": "e1c43b0853b66fcb58afc9a165a34022ac4929bce68f668637f0739db9bd3697",
+            "line_count_at_read": 1153,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                1153
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch11/core/selection.py",
+            "sha256_at_read": "987e61d30e9300941d55816629447110b92d28efa342dfbde895b2912df8e2cf",
+            "line_count_at_read": 293,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                293
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch11/core/selection_audio.py",
+            "sha256_at_read": "963555975ad159d104bcb8044c4243b46d87ab858acdf5634248206c28075eac",
+            "line_count_at_read": 173,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                173
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch11/core/selection_physics.py",
+            "sha256_at_read": "70a2d908422e0b8861ca3ab6759334a488c40d5eb76073ad43a4105355f81eac",
+            "line_count_at_read": 69,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                69
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch11/core/automotive_selection.py",
+            "sha256_at_read": "7e7940ed0b71a99082a587f55729a7fb507744149fa17638da08d62033638835",
+            "line_count_at_read": 483,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                483
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch11/chapter11_experiments.py",
+            "sha256_at_read": "826598ef4efd92074a8757e26b81b92cbed8e7aaef314e2d5de772309bac2685",
+            "line_count_at_read": 230,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                230
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch11/examples/generate_selection_audio.py",
+            "sha256_at_read": "d6539554d237b83e8c0f89206c937ca0deef3dd584ecddf57978bebb1014b8ec",
+            "line_count_at_read": 299,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                299
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch11/examples/audit_meeting_kernel_contracts.py",
+            "sha256_at_read": "71bd94ee728154930b43f8c96918718163908d3d6e9672181bbfcef66e98e959",
+            "line_count_at_read": 196,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                196
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch11/examples/audit_meeting_scoring_interfaces.py",
+            "sha256_at_read": "2a2e83f9eb275fc64c7d2f6feb9c73c8ec313e2026c3fdc5b01fa17472374713",
+            "line_count_at_read": 372,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                372
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/tests/test_codes_ch11_selection_boundaries.py",
+            "sha256_at_read": "e2554486992e28ef47f1739df5474451a8a4a6cca3176c39ffa6f97acb9d72d4",
+            "line_count_at_read": 59,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                59
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/tests/test_codes_selection_evidence.py",
+            "sha256_at_read": "e42399537a6e3efa8111104a36862497d4e9f166e541388fc41c10a86e2dcf6a",
+            "line_count_at_read": 140,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                140
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/tests/test_codes_selection_audio.py",
+            "sha256_at_read": "d2191488aa5c5e2a0488ca8757a75d39798c1fb5a03b177ecf959d63904fe8ea",
+            "line_count_at_read": 205,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                205
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/tests/test_codes_ch11_selection_fixture_guard.py",
+            "sha256_at_read": "967526cb54b021362dfa5fe9f7abd2745cdc1c2a212615528b0dbb1530406c49",
+            "line_count_at_read": 140,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                140
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/tests/test_codes_chapter11_experiments.py",
+            "sha256_at_read": "fb64ae9901b2b5bb5372adea5c259646315b47f03d3eeb3a2de05755fd77cde3",
+            "line_count_at_read": 371,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                371
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/tests/test_codes_ch10_source_guards.py",
+            "sha256_at_read": "701d966b8c8a98147109bf1f66df292935d8e4417954f874459f8e49ab50d533",
+            "line_count_at_read": 142,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                142
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch10/spectral_subtraction_demo.py",
+            "sha256_at_read": "54556fa840584227a9bb34d5fc0bd600e353b47fb0bf56841a5cb011d68867bf",
+            "line_count_at_read": 50,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                50
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/cross_chapter/tracking_time_exercises.py",
+            "sha256_at_read": "40dacdb70249c3c2f242f778af7aacdbfeb95fe6ea43579d69b8c04aaf5c258d",
+            "line_count_at_read": 138,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                138
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch10/engineering/telemetry_schema.json",
+            "sha256_at_read": "df848580969a128823bf917c29744060831edb5974301796aedf92a894152670",
+            "line_count_at_read": 99,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                99
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/scripts/make_selection_figures.py",
+            "sha256_at_read": "3bcf5940c839fd54bc1322d0ed4849558ff37f049c998ba4999f684f13639cc8",
+            "line_count_at_read": 207,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                207
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/scripts/make_channel_figures.py",
+            "sha256_at_read": "4ab293a8184ed223a6ffcf0ba64e9edd9c6fdfa3bc488502b5c68a90f1672e2a",
+            "line_count_at_read": 165,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                165
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch10/examples/audit_industrial_contracts.py",
+            "sha256_at_read": "0861060e35dd7170dd84e147866bdeba628b75251f087ac8479fc95ec8466da1",
+            "line_count_at_read": 491,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                491
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch10/examples/audit_industrial_upstream_interfaces.py",
+            "sha256_at_read": "ed54cd842d81027e811c53e2a4b23236397cb94831817a3c5c1a5fc92bfff784",
+            "line_count_at_read": 234,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                234
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch10/examples/ch10_engineering_baselines.py",
+            "sha256_at_read": "64bf745b151716a9ec4360b35d4d85bd20aed9086f7831cc2dc360d135ae4117",
+            "line_count_at_read": 63,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                63
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch10/examples/generate_noise_mismatch.py",
+            "sha256_at_read": "f97abf810ed50b7c0ba02a774ac72d0e590939a6a63b0b4fc8c43a06e31be009",
+            "line_count_at_read": 326,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                326
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch10/examples/generate_channel_audio.py",
+            "sha256_at_read": "e8aa0d43edb4efbf62ed275ead2a07b582645d2c27b31cd00bab2b1a0216118e",
+            "line_count_at_read": 250,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                250
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch10/examples/run_industrial_interfaces.py",
+            "sha256_at_read": "6501c7bdb2e5cd529dd9436cbc99ffd31ec1398fced8d0dc98c62a8524c3111c",
+            "line_count_at_read": 420,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                420
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch10/examples/run_libsamplerate_sro.py",
+            "sha256_at_read": "690dac526172ea86bfac69f8f538418b0ccc6b74afeaeba795cca639bcc52444",
+            "line_count_at_read": 334,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                334
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch10/examples/run_stk_delay_probe.py",
+            "sha256_at_read": "649912f62b3c20a2ad31df0f515875e016760d5c16923f060839eaf5a2d136a3",
+            "line_count_at_read": 112,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                112
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch10/examples/industrial_interfaces.c",
+            "sha256_at_read": "0c71ef70e0ed2f7e59c6613e72b35dc13f3d963ca02a4b16da90c0e3a479bff8",
+            "line_count_at_read": 409,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                409
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch10/examples/stk_delay_probe.cpp",
+            "sha256_at_read": "00cf0d68ed5c99feb156d016de587d80ca9ff033aa523943ae1be27e827ea7c0",
+            "line_count_at_read": 42,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                42
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/tests/test_codes_exercises_engineering.py",
+            "sha256_at_read": "6d30692b954a1a9ae5882473fe8251560269a3a25a192fef6c3f1c4813d720ad",
+            "line_count_at_read": 133,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                133
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/tests/test_codes_channel_selection.py",
+            "sha256_at_read": "6daad720be191f85252b26645734785da0dff4daea8b7a42eb239b4364e45613",
+            "line_count_at_read": 107,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                107
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/tests/test_codes_industrial_contracts.py",
+            "sha256_at_read": "7bf20b3200baf7a8dec88734d80ce0475cf99d0f81abf6d972a8ebd7ab8ab1fa",
+            "line_count_at_read": 167,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                167
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/tests/test_codes_industrial_interfaces.py",
+            "sha256_at_read": "82b80f2bf90baa14a9e47293c2d2b7d58a0f2a4a1fd7f37a1a8db0e5afe405e8",
+            "line_count_at_read": 229,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                229
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/tests/test_codes_industrial_upstream_interfaces.py",
+            "sha256_at_read": "38d5c76119ee2c8c1243d936ea11599f9a4fdc8788d9c6cf487f4f2995457c67",
+            "line_count_at_read": 84,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                84
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/tests/test_codes_libsamplerate_sro.py",
+            "sha256_at_read": "083f81ae66f0e875f9a0fd73144ae690ce659e60d51a6ccfc2fa0e767ca6108c",
+            "line_count_at_read": 115,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                115
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/tests/test_codes_sro_closed_loop.py",
+            "sha256_at_read": "34659864337a6a3bba1c249b46b521be54ef2790a479b777bd52969d2fc2817a",
+            "line_count_at_read": 83,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                83
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/tests/test_codes_noise_mismatch.py",
+            "sha256_at_read": "9532206fc4adcb7fa6cafce7701af6d4d7e97b5f7b7da49a7a1172e9171b9b93",
+            "line_count_at_read": 223,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                223
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/tests/test_codes_meeting_scoring_interfaces.py",
+            "sha256_at_read": "de878bd10b0f4b7e872d6e9637bd555bb53606e855d21334dd0e4c0da9e7ab40",
+            "line_count_at_read": 126,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                126
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/tests/test_codes_meeting_kernel_contracts.py",
+            "sha256_at_read": "94b39d6438e979ce5ff891247bf8ef169300a78f74d64c3212c7adc4e87a2bdb",
+            "line_count_at_read": 188,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                188
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/tests/test_codes_ch11_selection_figures.py",
+            "sha256_at_read": "b0734ed214c511227dafce2f4d7407bab511db20ecf62ca1f16651cf87083d6e",
+            "line_count_at_read": 151,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                151
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/tests/test_quality_ch11_selection_evidence.py",
+            "sha256_at_read": "4d22e73e7aefb31af83eb39c41075c5e5595b04f89b8c94a101c6521c67fbe16",
+            "line_count_at_read": 80,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                80
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/tests/test_codes_ch11_source_guards.py",
+            "sha256_at_read": "86e83e0b4feaac0edf572070075bd81c6c8f7b61d2aafbd68785895c28fb5854",
+            "line_count_at_read": 131,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                131
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/tests/test_quality_selection_audio.py",
+            "sha256_at_read": "332ccdc76e380e34d3b79b94df5fc0abf13af93d58b93163ae54367444618e6f",
+            "line_count_at_read": 157,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                157
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/tests/test_quality_engineering_limits.py",
+            "sha256_at_read": "8b9a844de08eef5f9a47f601dac89de34bc760629c23686bb841614f47370150",
+            "line_count_at_read": 80,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                80
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/tests/test_quality_ch10_channel_publication.py",
+            "sha256_at_read": "b00b85d0a25ee6f9689b4ed3685b20df6f43d807891381e3ced94d904ba6b972",
+            "line_count_at_read": 106,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                106
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/tests/test_quality_ch10_channel_figure.py",
+            "sha256_at_read": "96d79def2437e56d04760d778dbf1ce738f891fe0fde46ba2277b0cd1eb16fba",
+            "line_count_at_read": 97,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                97
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/tests/test_paragraph_engineering_round2.py",
+            "sha256_at_read": "ff92b4a7e8549e8941417eca372ca7861a47540bcdc4eb8a30367f87b396eafa",
+            "line_count_at_read": 40,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                40
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/scripts/make_figures.py",
+            "sha256_at_read": "4bc6a6ce675292c51d538c0f7d3c6f9c8fe3a2de2d0d7945f48cb4baaa801e49",
+            "line_count_at_read": 5422,
+            "actually_read_contiguous_ranges": [
+              [
+                1251,
+                1395
+              ],
+              [
+                2857,
+                2955
+              ],
+              [
+                3193,
+                3280
+              ],
+              [
+                3462,
+                3815
+              ],
+              [
+                4627,
+                4788
+              ]
+            ],
+            "unread_ranges": [
+              [
+                1,
+                1250
+              ],
+              [
+                1396,
+                2856
+              ],
+              [
+                2956,
+                3192
+              ],
+              [
+                3281,
+                3461
+              ],
+              [
+                3816,
+                4626
+              ],
+              [
+                4789,
+                5422
+              ]
+            ],
+            "status": "selected_complete_figure_functions_and_some_adjacent_lines_read; other_functions_unread"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/core/audio_samples.py",
+            "sha256_at_read": "1a7aad90d08fb8c27511aa463a6cc6dd6d4d2d230b27ed82549531f1f18edaba",
+            "line_count_at_read": 1291,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                221
+              ],
+              [
+                733,
+                880
+              ]
+            ],
+            "unread_ranges": [
+              [
+                222,
+                732
+              ],
+              [
+                881,
+                1291
+              ]
+            ],
+            "status": "selected_PCM_primitives_and_ch10_ch11_fixture_functions_read; other_cases_unread"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/COVERAGE.md",
+            "sha256_at_read": "f5421e00d4c0ca3a0174fd12b02d5e99eb31eff0fbc860f5bd36f7ae20fc6859",
+            "line_count_at_read": 563,
+            "actually_read_contiguous_ranges": [
+              [
+                335,
+                434
+              ]
+            ],
+            "unread_ranges": [
+              [
+                1,
+                334
+              ],
+              [
+                435,
+                563
+              ]
+            ],
+            "status": "selected_source_table_lines_read; table_rows_are_not_upstream_verification"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/research/03_industrial_deployment.md",
+            "sha256_at_read": "85a80c810d8cf3cc931d0f0ab8ab9672e2984b054b9c14875a47d3934aa86d45",
+            "line_count_at_read": 842,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                842
+              ]
+            ],
+            "unread_ranges": [],
+            "status": "source_lines_read_not_executed"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/research_en/03_industrial_deployment.md",
+            "sha256_at_read": "a43f73e933376975c4988f90a40915fbda1803aa451701e4c0c484d7c75cf274",
+            "line_count_at_read": 687,
+            "actually_read_contiguous_ranges": [
+              [
+                1,
+                280
+              ]
+            ],
+            "unread_ranges": [
+              [
+                281,
+                687
+              ]
+            ],
+            "status": "partial_full_paragraph_read; lines281_687_unread_this_batch"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/THIRD_PARTY.md",
+            "sha256_at_read": "d2d51bddb2007aacef60577fb23de9ccc66e15d0c6634a2ba4303625df4eff04",
+            "line_count_at_read": 310,
+            "actually_read_contiguous_ranges": [
+              [
+                119,
+                211
+              ]
+            ],
+            "unread_ranges": [
+              [
+                1,
+                118
+              ],
+              [
+                212,
+                310
+              ]
+            ],
+            "status": "selected_original_source_identity_notes_read; other_lines_unread_this_batch"
+          }
+        ],
+        "evidence_packet_reading": {
+          "unified_ledger": "1-209 read",
+          "unified_evidence_json": "schema and relevant chapter10/11 records read; chapter10 eleven topic records fully reread after initial truncated combined output; not claiming all52 topic prose fully read",
+          "R1B": "own handoff retained, not substituted for R2 independent review"
+        },
+        "images_read": [
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/figures/fig22_pipeline.png",
+            "status": "actual original PNG opened and visually read; not website/PDF size acceptance"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/figures/fig24_latency_budget.png",
+            "status": "actual original PNG opened and visually read; not website/PDF size acceptance"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/figures/fig35_clock_drift.png",
+            "status": "actual original PNG opened and visually read; not website/PDF size acceptance"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/figures/fig40_agc_blocks.png",
+            "status": "actual original PNG opened and visually read; not website/PDF size acceptance"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/figures/fig57_engineering_limits.png",
+            "status": "actual original PNG opened and visually read; not website/PDF size acceptance"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/figures/fig58_noise_mismatch.png",
+            "status": "actual original PNG opened and visually read; not website/PDF size acceptance"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/figures/fig73_channel_failure.png",
+            "status": "actual original PNG opened and visually read; not website/PDF size acceptance"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/figures/fig36_interpolation_error.png",
+            "status": "actual original PNG opened and visually read; not website/PDF size acceptance"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/figures_en/fig22_pipeline.png",
+            "status": "actual original PNG opened and visually read; not website/PDF size acceptance"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/figures_en/fig24_latency_budget.png",
+            "status": "actual original PNG opened and visually read; not website/PDF size acceptance"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/figures_en/fig35_clock_drift.png",
+            "status": "actual original PNG opened and visually read; not website/PDF size acceptance"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/figures_en/fig40_agc_blocks.png",
+            "status": "actual original PNG opened and visually read; not website/PDF size acceptance"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/figures_en/fig57_engineering_limits.png",
+            "status": "actual original PNG opened and visually read; not website/PDF size acceptance"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/figures_en/fig58_noise_mismatch.png",
+            "status": "actual original PNG opened and visually read; not website/PDF size acceptance"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/figures_en/fig73_channel_failure.png",
+            "status": "actual original PNG opened and visually read; not website/PDF size acceptance"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/figures_en/fig36_interpolation_error.png",
+            "status": "actual original PNG opened and visually read; not website/PDF size acceptance"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/figures/fig41_selection_pareto.png",
+            "sha256": "eee013ece4d62e764e3548f60b4a379a3af7dd106c8ca4cd31c62ebb71272400",
+            "status": "actual original PNG opened and visually read; not website/PDF size acceptance"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/figures/fig42_selection_audio_tradeoff.png",
+            "sha256": "e8da0fde39dae125f4f6aae5274253ed5d2c080d3ffeb3111a371cd48ad27a61",
+            "status": "actual original PNG opened and visually read; not website/PDF size acceptance"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/figures/fig59_selection_scenarios.png",
+            "sha256": "940fbc5441c17713c6809844728f9c00a58c32b3d175e4a4b17606d662cd2c3e",
+            "status": "actual original PNG opened and visually read; not website/PDF size acceptance"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/figures/fig74_selection_evidence.png",
+            "sha256": "6add5f72b51a98cfcd62effbe471ffe53ccd5a5cd738433fba769fb03f4e216f",
+            "status": "actual original PNG opened and visually read; not website/PDF size acceptance"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/figures_en/fig41_selection_pareto.png",
+            "sha256": "7b4611519b2329ebddf058f4da0676b493742c047ca979cfcb2e6921e3add9c8",
+            "status": "actual original PNG opened and visually read; not website/PDF size acceptance"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/figures_en/fig42_selection_audio_tradeoff.png",
+            "sha256": "08ea5e26628c2b82bd7fc250eb5c9f6233c54e6002810ecf719b91603a61b963",
+            "status": "actual original PNG opened and visually read; not website/PDF size acceptance"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/figures_en/fig59_selection_scenarios.png",
+            "sha256": "fb98bd835d714145df2e22056a6edc8a662ee6deef31c0401633e69b6b9faf5c",
+            "status": "actual original PNG opened and visually read; not website/PDF size acceptance"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/figures_en/fig74_selection_evidence.png",
+            "sha256": "9c95e712799f81af1e5b29e24b7641b2af073c327b884ed8f9b0a7b20f492f94",
+            "status": "actual original PNG opened and visually read; not website/PDF size acceptance"
+          }
+        ],
+        "sources": [
+          {
+            "title": "BS.1770-5 Annex2",
+            "url": "https://www.itu.int/dms_pubrec/itu-r/rec/bs/R-REC-BS.1770-5-202311-I!!PDF-E.pdf",
+            "actual_read": "PDF20 / printed18 in-memory full page",
+            "sha256": "eefb926f72f72a96b96f251067bfee0650a0f29a26f60661d354162038b041ad",
+            "finding": "48kHz discussion;4x to192k;96k input2x sufficient. No universal minimum4x.",
+            "retrieved": "2026-11-23",
+            "queries_or_direct_open": [
+              "https://www.itu.int/dms_pubrec/itu-r/rec/bs/R-REC-BS.1770-5-202311-I!!PDF-E.pdf"
+            ]
+          },
+          {
+            "title": "XMOS XMath2.1.2 programming guide",
+            "url": "https://www.xmos.com/documentation/XM-014926-PC/pdf/xcore_math_programming_guide.pdf",
+            "actual_read": "PDF9-10 / printed6-7 sections3.1 and3.2",
+            "sha256": "feedce097f568785ef12e4a6f4142b48e489a48920ce31fbfa158e4eaa8c293b",
+            "finding": "Integer mantissa times2^exp; headroom counts redundant sign bits, not sign bit itself.",
+            "retrieved": "2026-11-23",
+            "queries_or_direct_open": [
+              "https://www.xmos.com/documentation/XM-014926-PC/pdf/xcore_math_programming_guide.pdf"
+            ]
+          },
+          {
+            "title": "ITU-T P34005/2000",
+            "url": "https://www.itu.int/rec/dologin_pub.asp?lang=e&id=T-REC-P.340-200005-S!!PDF-E&type=items",
+            "actual_read": "PDF9-11 scope/definitions;PDF27 printed19 section8.1Table4 and8.2;PDF37 printed29 TableA.1",
+            "sha256": "f9c90933a8b03afb4f902f8ac1b79af34a5ba2774b286ec5c98f1e9b12091e93",
+            "finding": "Attenuation thresholds confirmed;TELR37/33/27/21 separate required evidence; chapterTable1a/1b not correct for this edition.2026 current edition page only, not fulltext.",
+            "retrieved": "2026-11-23",
+            "queries_or_direct_open": [
+              "https://www.itu.int/rec/dologin_pub.asp?lang=e&id=T-REC-P.340-200005-S!!PDF-E&type=items"
+            ]
+          },
+          {
+            "title": "ITU-T P80806/2021",
+            "url": "https://www.itu.int/rec/dologin_pub.asp?lang=e&id=T-REC-P.808-202106-I!!PDF-E&type=items",
+            "actual_read": "PDF14-16 printed8-10 sections6.3.5-6.4.3",
+            "sha256": "da0e7e96462da9c4434f428a6b5a58603d840a4c34d4b0ebb27254afd7370918",
+            "finding": "Gold/trap reliable screening supported; also listener/device/environment/abnormal-pattern controls and report demographics, screening criteria/counts. Not just two-question filter.",
+            "retrieved": "2026-11-23",
+            "queries_or_direct_open": [
+              "https://www.itu.int/rec/dologin_pub.asp?lang=e&id=T-REC-P.808-202106-I!!PDF-E&type=items"
+            ]
+          },
+          {
+            "title": "ADI ENOB primary article",
+            "url": "https://www.analog.com/en/resources/technical-articles/how-to-calculate-enob-for-adc-dynamic-performance-measurement.html",
+            "actual_read": "web lines16-132,definitions and example tables",
+            "finding": "ENOB=(SINAD-1.76)/6.02; SINAD includes noise+distortion. Article has its own THD sign inconsistency, so independently use physical power definition.",
+            "retrieved": "2026-11-23",
+            "queries_or_direct_open": [
+              "https://www.analog.com/en/resources/technical-articles/how-to-calculate-enob-for-adc-dynamic-performance-measurement.html"
+            ]
+          },
+          {
+            "title": "Apple TN3190",
+            "url": "https://developer.apple.com/documentation/technotes/tn3190-usb-audio-device-design-considerations.md",
+            "actual_read": "web lines79-118 endpoint synchronization section",
+            "finding": "AsyncIN host follows received rate; asyncOUT explicit or same-clockIN implicit feedback. Feedbackdoesnot itself discipline physicalADCclocktohost.",
+            "retrieved": "2026-11-23",
+            "queries_or_direct_open": [
+              "https://developer.apple.com/documentation/technotes/tn3190-usb-audio-device-design-considerations.md"
+            ]
+          },
+          {
+            "title": "MIPI SoundWire official page",
+            "url": "https://www.mipi.org/specifications/soundwire",
+            "actual_read": "web lines550-600 actual specification content",
+            "finding": "Currentv1.3September2025 includesDisCo information. NoSoundWirev2.0throughputversion supported.",
+            "retrieved": "2026-11-23",
+            "queries_or_direct_open": [
+              "https://www.mipi.org/specifications/soundwire"
+            ]
+          },
+          {
+            "title": "ST AN4891Rev7 / official technical staff explanation",
+            "url": "https://www.st.com/resource/en/application_note/dm00306681.pdf",
+            "actual_read": "PDFretrievaltimedout;direct original indexed excerpts2.3.2/2.3.3 and officialstaff original explanation read; not complete manual",
+            "related_url": "https://community.st.com/stm32-mcus-60/the-most-probable-reason-to-have-an-issue-with-dma-or-bdma-transfers-on-stm32h7-142147",
+            "finding": "OnH72/73/74/75 onlyCPUandMDMAaccessTCM;DMA1/2cannot. AddDMA-master-specificreachabilitybeforeDTCMsuggestion.",
+            "retrieved": "2026-11-23",
+            "queries_or_direct_open": [
+              "https://www.st.com/resource/en/application_note/dm00306681.pdf"
+            ]
+          },
+          {
+            "id": "P1150_ORIGINAL_2020",
+            "url": "https://www.itu.int/rec/dologin_pub.asp?id=T-REC-P.1150-202001-I!!SOFT-ZST-E&lang=e&type=items",
+            "retrieved": "2026-11-23",
+            "archive_sha256": "f595ba1e6493dcb1a457106f17c7d6b3e4b7230e606e577e06672a1d0a9bc34a",
+            "member": "ITU-T Rec. P.1150.pdf",
+            "pdf_sha256": "53768a973c85cb92c9af43212a768e08353982d751df7c458f02c6572d8dce6a",
+            "pdf_pages": 46,
+            "actually_read_pages": [
+              9,
+              17,
+              18,
+              19,
+              20,
+              29,
+              30,
+              31,
+              32
+            ],
+            "locations": "PDF19 printed13 §9.2.2.1, PDF18 §9.1, PDF29–32 AnnexB/C/D",
+            "findings": "原文确认全部音区对强化第一波前差严格<15ms。稳定测试另看停话后的残余能量高于底噪6dB的持续时间，不是要求反馈增益裕度6dB。AnnexC相关法的峰值/分位数及窗长、AnnexB直达声定义不能省略。",
+            "queries_or_direct_open": [
+              "https://www.itu.int/rec/dologin_pub.asp?id=T-REC-P.1150-202001-I!!SOFT-ZST-E&lang=e&type=items"
+            ]
+          },
+          {
+            "id": "ADI_AD2437_TRM",
+            "title": "AD2437 Technical Reference Rev0.2 July2023",
+            "url": "https://www.analog.com/media/en/technical-documentation/user-guides/ad2437-trm.pdf",
+            "sha256": "518f5df4e62dfcccfcd3e8ac70ce665f69416d3a93ed4e873275cb3f4ab99c08",
+            "total_pages": 498,
+            "actually_read_pages": [
+              77,
+              113,
+              114
+            ],
+            "locations": "printed4-31 node clock/data delay; printed5-34/5-35 PDM and high-pass filters",
+            "findings": "A2B同采样率PLL锁相，但不同节点时钟有固定相位差和非零传输延迟；PDM左右半周期复用数据有效沿，独立HPF可启停。数据有效沿不是自动证明两颗模拟调制器的声学采样瞬间相差半周期。",
+            "retrieved": "2026-11-23",
+            "queries_or_direct_open": [
+              "https://www.analog.com/media/en/technical-documentation/user-guides/ad2437-trm.pdf"
+            ]
+          },
+          {
+            "id": "FDA_CFR_2025_80030",
+            "title": "21 CFR800.30 official2025 annual CFR",
+            "url": "https://www.govinfo.gov/content/pkg/CFR-2025-title21-vol8/pdf/CFR-2025-title21-vol8-sec800-30.pdf",
+            "actual_read": "scope(a),definitions(b) web54–115; output(d),performance(e),tests(f) web354–456/PDF9–10; not entire11page file",
+            "findings": "111/117dB SPL、15ms、32dBA、THD+N5%可核，但本节仅OTC气导助听器；是带明确测试条件的项目，不普遍适用全部医疗/处方助听器。2026 eCFR全文访问未成，不能宣称最新2026法规已全核。",
+            "retrieved": "2026-11-23",
+            "queries_or_direct_open": [
+              "https://www.govinfo.gov/content/pkg/CFR-2025-title21-vol8/pdf/CFR-2025-title21-vol8-sec800-30.pdf"
+            ]
+          },
+          {
+            "id": "SCOREQ_NeurIPS2024",
+            "title": "SCOREQ original NeurIPS2024 paper",
+            "url": "https://proceedings.neurips.cc/paper_files/paper/2024/file/bece7e02455a628b770e49fcfa791147-Paper-Conference.pdf",
+            "actual_read": "web89–507; §3方法全文、相关工作及§4/§5.1–5.2相关段；not all28pages",
+            "findings": "NR模式冻结encoder并训练MOS head；NMR以与待评分样本不成对的clean speech embedding距离衡量，不要求同内容时间对齐干净参考。实验固定50条LibriSpeech test-clean参考复用。正文有参考模式应明确non-matching reference，不能按全参考协议理解。",
+            "retrieved": "2026-11-23",
+            "queries_or_direct_open": [
+              "https://proceedings.neurips.cc/paper_files/paper/2024/file/bece7e02455a628b770e49fcfa791147-Paper-Conference.pdf"
+            ]
+          },
+          {
+            "id": "WILSON_COVERAGE_PRIMARY",
+            "title": "Brown,Cai,DasGupta2002",
+            "url": "https://projecteuclid.org/journals/annals-of-statistics/volume-30/issue-1/Confidence-Intervals-for-a-binomial-proportion-and-asymptotic-expansions/10.1214/aos/1015362189.pdf",
+            "actual_read": "primary abstract/search paragraph only; PDF iframe failed; not full paper",
+            "findings": "摘要说明Wilson覆盖围绕名义值波动；本包有限样本反例由独立二项枚举直接证明，不以摘要替代全文。",
+            "retrieved": "2026-11-23",
+            "queries_or_direct_open": [
+              "https://projecteuclid.org/journals/annals-of-statistics/volume-30/issue-1/Confidence-Intervals-for-a-binomial-proportion-and-asymptotic-expansions/10.1214/aos/1015362189.pdf"
+            ]
+          },
+          {
+            "id": "MEETEVAL_2023_PRIMARY",
+            "title": "MeetEval CHiME2023 original",
+            "url": "https://www.isca-archive.org/chime_2023/neumann23_chime.pdf",
+            "actual_read": "web0–473 §§1–4.2.2及部分fig4; remaining474–622 references/unread",
+            "findings": "cpWER全会话全局排列，ORC整段指派且保内部顺序，MIMO保持各输入说话人顺序；tcpWER严格区间重叠、参考字符比例与假设词中点不同，LibriCSS实验5s collar不是通用常数。",
+            "retrieved": "2026-11-23",
+            "queries_or_direct_open": [
+              "https://www.isca-archive.org/chime_2023/neumann23_chime.pdf"
+            ]
+          },
+          {
+            "id": "KANDA_2020_PRIMARY",
+            "title": "Kanda etal Interspeech2020",
+            "url": "https://www.isca-archive.org/interspeech_2020/kanda20_interspeech.pdf",
+            "actual_read": "§3.1 web124–131及§4.1.2 web252–262和相关引言段；not all5pages",
+            "findings": "检索摘要中best permutation对应忽略标签的WER，不可移花接木为SA-WER原定义；撤回“书中固定身份saWER必错”的候选。",
+            "retrieved": "2026-11-23",
+            "queries_or_direct_open": [
+              "https://www.isca-archive.org/interspeech_2020/kanda20_interspeech.pdf"
+            ]
+          },
+          {
+            "id": "ADI_PDM_CAPTURE_TIMING",
+            "title": "Analog and Digital MEMS Microphone Design Considerations",
+            "url": "https://www.analog.com/media/en/technical-documentation/technical-articles/Analog-and-Digital-MEMS-Microphone-Design-Considerations-MS-2472.pdf",
+            "actual_read": "relevant original timing paragraph only",
+            "findings": "at worst半周期capture偏差，并非所有双PDM产品必然声学采样偏差。原文3MHz半周期16µs明显单位错，正确约0.167µs，不采用原文此数字。",
+            "retrieved": "2026-11-23",
+            "queries_or_direct_open": [
+              "https://www.analog.com/media/en/technical-documentation/technical-articles/Analog-and-Digital-MEMS-Microphone-Design-Considerations-MS-2472.pdf"
+            ]
+          },
+          {
+            "id": "TEAMS_V5_PRIMARY",
+            "title": "Microsoft Teams Audio Test Specification V5",
+            "url": "https://download.microsoft.com/download/1/2/5/125f0389-d733-4951-9117-d36589f3c86c/V5%20Release.zip",
+            "landing_url": "https://learn.microsoft.com/en-us/microsoftteams/devices/certification-specifications",
+            "zip_bytes": 18947958,
+            "zip_sha256": "5a6863cdb2dc96478e2f4efeebef7d49923c1ecd4c2e37b6031da07ec19cd7df",
+            "member": "v5 specs/Microsoft_Teams_AudioSpecification_5_0.pdf",
+            "pdf_sha256": "4c01efbf6439d0a8d63079a5ba4bb02067b3280b0b9a3d9eb30496f28de82fcf",
+            "pdf_pages": 160,
+            "actually_read_full_pages": [
+              109,
+              110,
+              114,
+              115,
+              130,
+              133,
+              134,
+              152
+            ],
+            "also_read_status": "keyword-discovery output selected pages was truncated; no claim of reading full160pages or all discovered pages. PDF108 relevant shared speakerphone table visible, cover/program general specs not fully read.",
+            "locations": "PDF109/printed108 §5.5.3; PDF114/printed113 §5.6.2; PDF130/printed129 §6.21; PDF133/printed132 §6.21procedure/6.22",
+            "findings": "公开V5原文可取得。共享扬声器Standard/Premium的TCL要求>50/>56，3QUEST S≥3.5/3.8、N≥2.9/3.2；设备直连发送wired<105/<95ms、wireless<115/<105ms。计算S/N/G不等于三者统一≥3.8。书中TCLw55/46和DSP40ms未由此表支持。认证还依设备类别/版本/全套测试，不能凭此例三态表判整机认证。",
+            "remaining": "未读V4/更早版本；不能断言书中每个数字从未在任何旧版出现。HEAD数据表原URL403，搜索摘录不计全文。",
+            "retrieved": "2026-11-23",
+            "queries_or_direct_open": [
+              "https://download.microsoft.com/download/1/2/5/125f0389-d733-4951-9117-d36589f3c86c/V5%20Release.zip"
+            ]
+          }
+        ],
+        "known_finding_adjudications": [
+          {
+            "id": "R112",
+            "status": "confirmed_with_original_page",
+            "boundary": "4x remains valid stated48k example; remove universalminimum."
+          },
+          {
+            "id": "R113",
+            "status": "confirmed_input_contract_failure; original2000thresholdsconfirmed; current2026fulltextnotread",
+            "boundary": "FullbypasszeroattenuationdoesnotproveTELR. Keep partial classification as partial."
+          },
+          {
+            "id": "R117",
+            "status": "confirmed_definition_and_independent_two_noise_models_saved",
+            "boundary": "Underexplicitnegligibledistortionandmatchedbandwidth/weighting,noiseapproximationcouldhold; currentunconditionalstatementdoesnot."
+          },
+          {
+            "id": "R119",
+            "status": "confirmed_publicversionidentity",
+            "boundary": "MemberfullnormativeSoundWiretextnotread; do not invent new throughput."
+          },
+          {
+            "id": "R120",
+            "status": "confirmed_byofficialendpointsection",
+            "boundary": "SeparatecaptureIN,playbackOUT,physicalSRO,andtransportpacketvariation."
+          },
+          {
+            "id": "R131",
+            "status": "confirmed_twoexponentconventions; alsoguardheadroomambiguity",
+            "boundary": "Exactfinal2^-14correct; sourceusesintegermantissa,butexampleinitialexpimplicitly0instead-15."
+          },
+          {
+            "id": "R114",
+            "status": "confirmed_scope_version_and_tap_mismatch_against_obtained_public_V5",
+            "boundary": "反驳规范全不可达说法；V5音频原表已取。不能据此猜旧版绝不存在这些阈值。可将E11-22改为明确给定的企业内部教学规格，或按所选版本/设备类别重做认证例。"
+          },
+          {
+            "id": "R125",
+            "status": "confirmed_protocol_ambiguity_after_original_method_read",
+            "boundary": "正文未明确声称matching reference，故是应补NMR定义的歧义，不夸成已数值算错或把SCOREQ误称传统全参考。"
+          }
+        ],
+        "new_findings": [
+          {
+            "id": "R2A-DMA-DTCM",
+            "status": "strongcandidate_sourceconditionconfirmed",
+            "location": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters/10_engineering-practice.md:138",
+            "claim": "CachebypassaloneisnotsufficientforDMAplacement;DTCMmustbeaddressablebytheactualDMA master.",
+            "example": "STM32H743DMA1/2cannotaccessDTCM0x20000000;MDMAcan.",
+            "suggestion": "StatechipandDMA-masterreachability,thenchooseaccessibleSRAMwithMPU/cachemaintenanceorverifiedTCM."
+          },
+          {
+            "id": "R2A-CIC-DC-bilingual",
+            "status": "confirmed_algebra_and_bilingualtext",
+            "location": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters/10_engineering-practice.md:244",
+            "claim": "Chinese says halfband compensationFIR also removesDC; English separately says DC-blockingfilters.",
+            "calculation": "Anormalizedlowpass/compensationFIRhasH(1)=1,soaconstantinputpersists;DCrejectionrequiresH(1)=0oroffsetsubtraction.",
+            "suggestion": "Distinguishlowpass/compensationfromindependentDCblockor{0,1}codingoffsetcorrection."
+          },
+          {
+            "id": "R2A-loopback-absolute",
+            "status": "confirmed_identifiabilitygap",
+            "location": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters/10_engineering-practice.md:160",
+            "local_counterevidence": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch10/examples/macbook_audio_latency/README.md:23",
+            "claim": "40msincrementagreementcannotcalibrateabsolutedrivertimestampsoruniquelyassign92msresidualtophysicalreturnpath.",
+            "calculation": "ForA_DAC-ADC estimatesD+bwithconstantunknownbiasb,delta(D+b)=deltaD. Acoustictotalminusreporteddriverisphysicalremainder-minus-b. Same+40msincrementsforanyb.",
+            "suggestion": "Preservemeasurementsandlogidentities;name92msdifferencebetweenmeasurementprotocols,notindependentlymeasuredphysicalcomponent;restrictaccuracyclaimtoincrementconsistency."
+          },
+          {
+            "id": "R2A-P808-debias",
+            "status": "terminologycandidate_noarithmeticerror",
+            "location": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters/10_engineering-practice.md:1495",
+            "claim": "69/16isthescreenedmean;subtractingrawmean11/16doesnotproveunbiasedpopulationMOS.",
+            "suggestion": "Use筛查后均分及变化;distinguishprotocolqualitycontrolfromstatisticalbiasproof."
+          },
+          {
+            "id": "R2A-CIC-M-outputrate",
+            "status": "confirmed_current_helper_execution_and_independent_transfer",
+            "location": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch10/core/pdm_and_eval.py:92",
+            "claim": "Codeoutputratefpdm/RbutvalidationNyquistfpdm/(2RM);Misdifferentialdelay,notadditionaldecimation.",
+            "example": "fpdm3.072MHz,R16,M2givesoutput192kHzandNyquist96kHz,buthelperrejects60kHzbecause48kHzlimit. If deliberate first-lobe restriction, rename and explain; do not call actual Nyquist.",
+            "suggestion": "ClarifyallowedfrequencydomainversusfirstCICzero;testM>1.",
+            "calculation_ref": "R2A-CIC-M2"
+          },
+          {
+            "id": "R2A-spherical-minimum",
+            "status": "confirmed_independent_exact_full_rank_counterexample",
+            "location": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters/10_engineering-practice.md:959",
+            "claim": "Mstrictlygreaterthan(N+1)^2isnotnecessaryforbandlimitedfieldcoefficientrecovery.",
+            "example": "N1fourregular-tetrahedronpointsM4producefullrankrealbasis[1,x,y,z];equalitycanrecover4coefficientswithappropriatequadrature.",
+            "suggestion": "DistinguishnecessaryM>=countandwell-conditioned sampling/oversampling;fixcrosschapterconsumersafterindependentadjudication.",
+            "calculation_ref": "R2A-TETRAHEDRON"
+          },
+          {
+            "id": "R2A-WILSON-COVERAGE",
+            "status": "independent counterexample confirmed; original coverage paper identified, full paper not read",
+            "locations": [
+              "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters/11_selection-guide.md:348",
+              "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters/11_selection-guide.md:432",
+              "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters/11_selection-guide.md:470",
+              "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters_en/11_selection-guide.md:348"
+            ],
+            "problem": "Wilson expression is defined for all k but its nominal 95% coverage is approximate, so Eq11-5 plus Bonferroni cannot establish at-least95% finite-sample joint coverage. n1 p.75 counterexample gives75%.",
+            "calculation_ref": "R2A-WILSON-N1",
+            "proposal": "Explicitly label Wilson as approximate and reserve finite-sample coverage certification/Bonferroni guarantee for exact CP. E11-11 exact CP arithmetic remains valid.",
+            "source_url": "https://projecteuclid.org/journals/annals-of-statistics/volume-30/issue-1/Confidence-Intervals-for-a-binomial-proportion-and-asymptotic-expansions/10.1214/aos/1015362189.pdf",
+            "source_status": "primary abstract/search paragraph read; full paper not fetched; claim established independently by exact binomial enumeration"
+          },
+          {
+            "id": "R2A-CIC-WIDTH-NONPOWER",
+            "status": "confirmed_exact_range_counterexample; main_power_of_two_example_correct",
+            "locations": [
+              "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch10/core/pdm_and_eval.py:65",
+              "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch10/core/pdm_and_eval.py:104"
+            ],
+            "problem": "通用Hogenauer输入位宽上界被称为受限{0,1}/{−1,+1}输入的精确最小值。RM非2幂时可能多1位。",
+            "calculation_ref": "R2A-CIC-WIDTH-R3",
+            "proposal": "保留通用安全上界名称，或给受限字母表精确最小位宽 floor(log2 G)+1 unsigned / floor(log2 G)+2 signed；G为正整数。R16/64原答案不变。"
+          },
+          {
+            "id": "R2A-A2B-FIXED-PHASE",
+            "status": "confirmed_primary_TRM; no_arithmetic_error_in_zero_SRO_drift_case",
+            "locations": [
+              "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters/11_selection-guide.md:211",
+              "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters/11_selection-guide.md:1088"
+            ],
+            "problem": "零相对SRO不等于零传输时延/节点相位偏差；E11-21零时延措辞跳过固定时差补偿。",
+            "source_ref": "ADI_AD2437_TRM",
+            "proposal": "明确同速率、固定节点/线缆/缓冲时差已标定对齐，数值题仍按共同样本计算，不因固定延迟而凭空添加ASRC。"
+          },
+          {
+            "id": "R2A-ICC-EAR-GAIN",
+            "status": "confirmed_independent_physical_countermodel; helper_declared_domain_can_remain",
+            "locations": [
+              "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters/11_selection-guide.md:215",
+              "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch11/core/automotive_selection.py:347"
+            ],
+            "problem": "反馈环路稳定性不推出人耳处强化/直达幅比g<1。",
+            "calculation_ref": "R2A-ICC-STABILITY-INDEPENDENT",
+            "proposal": "把0<g<1写为此双径教学例的给定选择；稳定性另由反馈传函/裕度检查。无需为教学接口扩大g域。"
+          },
+          {
+            "id": "R2A-FDA-OTC-SCOPE",
+            "status": "confirmed_2025_official_CFR_scope; 2026_current_text_unread",
+            "locations": [
+              "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters/11_selection-guide.md:190"
+            ],
+            "problem": "将800.30的OTC气导助听器限值写成全部医疗与OTC助听产品的共同法定硬限。",
+            "source_ref": "FDA_CFR_2025_80030",
+            "proposal": "限定美国OTC气导助听器及适用人群，按具体测试条件列指标；IEC/ANSI各自适用及法律效力另核，不能因列同段就宣称均法定强制。"
+          },
+          {
+            "id": "R2A-STALE-E11-REFERENCE",
+            "status": "confirmed_local_doc_crossreference_only",
+            "locations": [
+              "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/research/03_industrial_deployment.md:348"
+            ],
+            "problem": "本书只有22题，此处E11-24应指E11-17时间核。",
+            "proposal": "同步修中文说明及链接；非数值算法错误。"
+          }
+        ],
+        "independent_calculations": [
+          {
+            "id": "R2A-WILSON-N1",
+            "performed": "independent Python standard-library closed form, no repo mutation",
+            "inputs": {
+              "n": 1,
+              "confidence": 0.95,
+              "true_p": 0.75,
+              "z": 1.6448536269514715
+            },
+            "results": {
+              "k0_upper": 0.7301340512159457,
+              "k1_upper": 1,
+              "probability_k0": 0.25,
+              "actual_coverage": 0.75
+            },
+            "reason": "At p=.75 only K=1 produces an upper bound covering p; P(K=1)=.75."
+          },
+          {
+            "id": "R2A-ENOB-NOISE",
+            "performed": "independent standard-library power arithmetic",
+            "inputs": {
+              "ENOB": 14.5,
+              "fullscale_equivalent_SPL": 128,
+              "matching_weighting_and_bandwidth_assumed": true
+            },
+            "results": {
+              "SINAD_dB": 89.05,
+              "noise_plus_distortion_power": 1.244514611771387e-09,
+              "model_A": {
+                "SNR_dB": 90,
+                "noise_power": 1e-09,
+                "distortion_power": 2.445146117713869e-10,
+                "input_noise_SPL": 38
+              },
+              "model_B": {
+                "SNR_dB": 110,
+                "noise_power": 1e-11,
+                "distortion_power": 1.234514611771387e-09,
+                "input_noise_SPL": 18
+              }
+            },
+            "reason": "Equal ENOB/SINAD allows distinct SNR because distortion fills the remaining nonnegative error power."
+          },
+          {
+            "id": "R2A-TETRAHEDRON",
+            "performed": "independent NumPy 4x4 matrix calculation",
+            "vertices_exact": "(1,1,1),(1,-1,-1),(-1,1,-1),(-1,-1,1), each divided by sqrt(3)",
+            "basis": "A=[1,x,y,z]",
+            "gram_exact": "diag(4,4/3,4/3,4/3)",
+            "determinant_exact": "-16/(3*sqrt(3))",
+            "determinant_numeric": -3.079201435678005,
+            "conditions": "order N=1 bandlimited angular field and nonzero radial modal responses; no claim removing high-order aliasing"
+          },
+          {
+            "id": "R2A-CIC-M2",
+            "performed": "actual current helper call, caught ValueError; independent transfer calculation",
+            "inputs": {
+              "pdm_clock_hz": 3072000,
+              "R": 16,
+              "N": 4,
+              "M": 2,
+              "frequency_hz": 60000
+            },
+            "results": {
+              "helper": "ValueError eval_freq_hz must lie strictly inside (0, pdm_clock_hz / (2 * decimation * diff_delay))",
+              "output_sample_rate": 192000,
+              "output_nyquist": 96000,
+              "direct_gain": 0.04913964634567097
+            },
+            "reason": "Comb differential delay M changes transfer length, not rate-reduction factor R."
+          },
+          {
+            "id": "R2A-CIC-WIDTH-R3",
+            "performed": "actual helper plus explicit support enumeration",
+            "inputs": {
+              "R": 3,
+              "N": 1,
+              "M": 1,
+              "dc_gain": 3
+            },
+            "results": {
+              "helper_unipolar_bits": 3,
+              "helper_bipolar_bits": 4,
+              "actual_unipolar_range": [
+                0,
+                3
+              ],
+              "actual_unsigned_bits": 2,
+              "actual_bipolar_range": [
+                -3,
+                3
+              ],
+              "actual_signed_bits": 3
+            },
+            "reason": "Hogenauer general input-word bound remains conservative; helper description exact restricted-alphabet width is not minimal for non-power-of-two gain. Existing power-of-two exercise unaffected."
+          },
+          {
+            "id": "R2A-E11-21-SPATIAL",
+            "performed": "independent NumPy complex propagation and direct 2x2 constrained solve; no project beamforming helper called",
+            "inputs": {
+              "frequency_hz": 1000,
+              "sound_speed_m_s": 343,
+              "source_driver": [
+                -0.35,
+                0
+              ],
+              "source_passenger": [
+                0.35,
+                0
+              ],
+              "headrest_mics": [
+                [
+                  -0.35,
+                  -0.2
+                ],
+                [
+                  -0.35,
+                  -0.24
+                ]
+              ],
+              "passenger_reference_mic": [
+                0.35,
+                -0.2
+              ],
+              "transfer": "h=(0.2/r)*exp(-j*2*pi*f*r/c); steering h/h0",
+              "passenger_second_mic_perturbation": 1.05,
+              "frozen_crosszone_coefficient": "g=0.95*(w_DSB^H h_passenger)/h_passenger_ref",
+              "DSB": "w=a_driver/(a_driver^H a_driver)",
+              "LCMV": "solve C^H*w=[1,0], C=[a_driver,a_passenger]"
+            },
+            "results": {
+              "DSB_weight_norm_squared": 0.5901639344262293,
+              "DSB_LCR_dB": 10.888201703315941,
+              "LCMV_weight_norm_squared": 8.416997060853245,
+              "LCMV_LCR_with_5pct_dB": 31.07300407191098,
+              "frozen_crosszone_g_abs": 0.2712148843932684,
+              "driver_output_power": 0.8617132611214362,
+              "passenger_output_power": 0.00020376042525333508,
+              "LCR_dB": 36.262429381232316,
+              "generalized_WNG_dB": 1.1337692450996602,
+              "driver_loss_dB": 0.64637223536325
+            },
+            "adjudication": "题内单频已知传播模型数字成立。固定oracle系数与功率比触发冻结控制器的实际实现不是同一验证；未跑声学/硬件/盲检测。"
+          },
+          {
+            "id": "R2A-ICC-STABILITY-INDEPENDENT",
+            "performed": "independent scalar stable delayed feedback and two physical observation paths",
+            "inputs": {
+              "electronic_gain_G": 4,
+              "loudspeaker_to_microphone_feedback_beta": 0.1,
+              "mouth_to_mic_A": 0.5,
+              "speaker_to_ear_C": 1,
+              "mouth_to_ear_D": 1,
+              "feedback": "L(z)=G*beta*z^-1=0.4*z^-1"
+            },
+            "results": {
+              "feedback_loop_gain": 0.4,
+              "closed_loop_impulse_abs_sum": 1.6666666666666667,
+              "first_forward_path_ear_ratio": "A*G*C/D=2",
+              "complete_closed_loop_reinforced_to_direct_transfer": "2/(1-0.4*z^-1)",
+              "complete_closed_loop_ratio_magnitude_range": [
+                1.4285714285714286,
+                3.3333333333333335
+              ],
+              "at_zero_loop_phase_ratio": 3.3333333333333335
+            },
+            "adjudication": "稳定反馈闭环已包含；2是首个前向扩声分量比，不能误标为完整闭环g。完整强化/直达幅比在全频范围至少10/7>1，故仍严格反驳稳定性必推g<1。此反例只针对逻辑蕴含，不以无限反馈多径替代题中给定双径模型。"
+          }
+        ],
+        "remaining": [
+          "完整研究手册的专门后续批：英文03第281–687行未读；其余研究手册非因本批读过两章就算全文已核。",
+          "各上游完整传递依赖/硬件/神经权重与正式认证本批未运行；原native系统报告只核语义边界。",
+          "跨章STFT/MVDR/几何唯一依赖仅本包列出的selected ranges，不能称整个源码闭包全读。",
+          "原PNG中英24张已实际打开；网站/PDF最终字号、裁切、交互由主审专门批检查，本包不拿原PNG像素判断成品可读性。",
+          "本批未执行回归测试、没有重放全部WAV、没有试听或受试者评测；父代理另行baseline结果必须单独归因。",
+          "M001–M388未列实际核验条目不关闭；table_read_only列表仅表示读表，不能计原依据/执行覆盖。"
+        ],
+        "baseline_id_review": {
+          "scope_file": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/reviews/2026-11-23-multiround-scope.json",
+          "scope_file_sha256": "4c37291fecfdce53d6abb1190048d91ab6d131a58dc947710007591b14e5fa89",
+          "rule": "只登记本批实际核到的条目。章节归属、读过COVERAGE行、读本书驱动均不等于核过原实现/完整论文。",
+          "reviewed_entries": [
+            {
+              "baseline_id": "M271",
+              "coverage_line": 339,
+              "baseline_raw_row": "| §10.1.2 | 环形缓冲与预卷 | 本仓库可运行基线 | `codes/chapters/ch10/core/engineering.py::RingBuffer` | Python 教学容器不是无锁硬实时队列 |",
+              "current_evidence": "chapter10/core/engineering.py RingBuffer; chapter10 tests",
+              "finding_or_boundary": "读核心、接口及边界测试，Python容器不冒充无锁硬实时队列",
+              "table_read": true,
+              "book_source_and_tests_read": true,
+              "original_source_or_paper_standard_read": false,
+              "original_read_level": "not_verified_as_original_fulltext_this_batch",
+              "executed_current_book_helper": false,
+              "independent_in_memory_calculation": false,
+              "original_system_or_hardware_execution": false
+            },
+            {
+              "baseline_id": "M272",
+              "coverage_line": 340,
+              "baseline_raw_row": "| §10.1.1 | 截止期限/队列模拟 | 本仓库可运行基线 | `codes/chapters/ch10/core/engineering.py::simulate_deadline_queue` | 等待、计算与排队分别计量 |",
+              "current_evidence": "chapter10/core/engineering.py simulate_deadline_queue; E10 deadline examples; fig57 source",
+              "finding_or_boundary": "读排队/期限时刻与不可抢占例，服务耗时和响应耗时已分开",
+              "table_read": true,
+              "book_source_and_tests_read": true,
+              "original_source_or_paper_standard_read": false,
+              "original_read_level": "not_verified_as_original_fulltext_this_batch",
+              "executed_current_book_helper": false,
+              "independent_in_memory_calculation": false,
+              "original_system_or_hardware_execution": false
+            },
+            {
+              "baseline_id": "M276",
+              "coverage_line": 344,
+              "baseline_raw_row": "| §10.2.1 | SRO 线性拟合 | 本仓库可运行基线 | `codes/chapters/ch10/core/engineering.py::estimate_sro_ppm`；`codes/chapters/ch10/sro_closed_loop_demo.py` | 初始时差与斜率分开；示例用精确合成时间戳估计 |",
+              "current_evidence": "engineering.py estimate_sro_ppm; sro_closed_loop_demo.py; cross_chapter exercises",
+              "finding_or_boundary": "读精确与一阶斜率、常数截距/缺样隔离；不是盲音频SRO",
+              "table_read": true,
+              "book_source_and_tests_read": true,
+              "original_source_or_paper_standard_read": false,
+              "original_read_level": "not_verified_as_original_fulltext_this_batch",
+              "executed_current_book_helper": false,
+              "independent_in_memory_calculation": false,
+              "original_system_or_hardware_execution": false
+            },
+            {
+              "baseline_id": "M277",
+              "coverage_line": 345,
+              "baseline_raw_row": "| §10.2.1 | 线性插值 SRO 补偿 | 本仓库可运行基线 | `codes/chapters/ch10/core/engineering.py::resample_sro_to_reference`；`codes/chapters/ch10/sro_closed_loop_demo.py` | 示例含跨块状态和单点丢样标记；不含抗混叠与真实异步控制 |",
+              "current_evidence": "engineering.py resample_sro_to_reference; sro_closed_loop_demo.py; direct tests",
+              "finding_or_boundary": "读连续相位/缺口掩码；2抽头线性内插不是抗混叠ASRC产品",
+              "table_read": true,
+              "book_source_and_tests_read": true,
+              "original_source_or_paper_standard_read": false,
+              "original_read_level": "not_verified_as_original_fulltext_this_batch",
+              "executed_current_book_helper": false,
+              "independent_in_memory_calculation": false,
+              "original_system_or_hardware_execution": false
+            },
+            {
+              "baseline_id": "M278",
+              "coverage_line": 346,
+              "baseline_raw_row": "| §10.2.1 | libsamplerate 连续 SRC | 外部参考实现 | `libsamplerate`：`src/samplerate.c` | 速率比、消耗量与状态 |",
+              "current_evidence": "run_libsamplerate_sro.py full; test_codes_libsamplerate_sro.py full; research I04",
+              "finding_or_boundary": "当前仅读本书原接口驱动和测试、报告语义；没有重跑C库，也未以它代原src/samplerate.c逐行审读",
+              "table_read": true,
+              "book_source_and_tests_read": true,
+              "original_source_or_paper_standard_read": false,
+              "original_read_level": "not_verified_as_original_fulltext_this_batch",
+              "executed_current_book_helper": false,
+              "independent_in_memory_calculation": false,
+              "original_system_or_hardware_execution": false
+            },
+            {
+              "baseline_id": "M280",
+              "coverage_line": 348,
+              "baseline_raw_row": "| §10.3.2 | 功率谱减 | 本仓库可运行基线 | `codes/chapters/ch10/core/noise_suppression.py::power_spectral_subtraction`；[E10-13 与音频演示](../ch10/spectral_subtraction_demo.py) | 固定噪声专用前奏、单通道 STFT；无在线噪声跟踪与语音概率，音乐噪声仍可能出现 |",
+              "current_evidence": "noise_suppression.py full; spectral_subtraction_demo.py; fixture and tests",
+              "finding_or_boundary": "固定已知前奏功率谱估计，非在线MCRA；只读测试并核公式",
+              "table_read": true,
+              "book_source_and_tests_read": true,
+              "original_source_or_paper_standard_read": false,
+              "original_read_level": "not_verified_as_original_fulltext_this_batch",
+              "executed_current_book_helper": false,
+              "independent_in_memory_calculation": false,
+              "original_system_or_hardware_execution": false
+            },
+            {
+              "baseline_id": "M288",
+              "coverage_line": 356,
+              "baseline_raw_row": "| §10.3.4 | 能量迟滞/挂起 VAD | 本仓库可运行基线 | `codes/chapters/ch10/core/engineering.py::HysteresisVAD` | 能量门限，不是神经概率 |",
+              "current_evidence": "engineering.py HysteresisVAD; chapter10 experiments/tests",
+              "finding_or_boundary": "能量迟滞与挂起状态完整读；不是概率VAD",
+              "table_read": true,
+              "book_source_and_tests_read": true,
+              "original_source_or_paper_standard_read": false,
+              "original_read_level": "not_verified_as_original_fulltext_this_batch",
+              "executed_current_book_helper": false,
+              "independent_in_memory_calculation": false,
+              "original_system_or_hardware_execution": false
+            },
+            {
+              "baseline_id": "M289",
+              "coverage_line": 357,
+              "baseline_raw_row": "| §10.3.4 | 峰值保护 AGC | 本仓库可运行基线 | `codes/chapters/ch10/core/engineering.py::PeakProtectAGC` | 不代表完整响度/限幅器 |",
+              "current_evidence": "engineering.py PeakProtectAGC; audio_samples.py733–794; chapter10tests; fig40 both PNG",
+              "finding_or_boundary": "整块先读峰再施增益，有块末可用时刻；alpha改变保持时间常数不保证分块不变",
+              "table_read": true,
+              "book_source_and_tests_read": true,
+              "original_source_or_paper_standard_read": false,
+              "original_read_level": "not_verified_as_original_fulltext_this_batch",
+              "executed_current_book_helper": false,
+              "independent_in_memory_calculation": false,
+              "original_system_or_hardware_execution": false
+            },
+            {
+              "baseline_id": "M293",
+              "coverage_line": 361,
+              "baseline_raw_row": "| §10.4.1 | Q1.15 量化 | 本仓库可运行基线 | `codes/chapters/ch10/core/engineering.py::q15_quantize` | 最近偶数舍入与饱和 |",
+              "current_evidence": "engineering.py q15_quantize; related direct tests",
+              "finding_or_boundary": "读最近偶数舍入、饱和/有限类型边界；未执行目标DSP",
+              "table_read": true,
+              "book_source_and_tests_read": true,
+              "original_source_or_paper_standard_read": false,
+              "original_read_level": "not_verified_as_original_fulltext_this_batch",
+              "executed_current_book_helper": false,
+              "independent_in_memory_calculation": false,
+              "original_system_or_hardware_execution": false
+            },
+            {
+              "baseline_id": "M294",
+              "coverage_line": 362,
+              "baseline_raw_row": "| §10.4.1 | Q15 宽累加点积 | 本仓库可运行基线 | `codes/chapters/ch10/core/engineering.py::q15_dot` | 不默认与截位 DSP 逐位相同 |",
+              "current_evidence": "engineering.py q15_dot; related direct tests",
+              "finding_or_boundary": "读宽累加、最近偶数与符号/溢出边界；不默认对齐CMSIS截位",
+              "table_read": true,
+              "book_source_and_tests_read": true,
+              "original_source_or_paper_standard_read": false,
+              "original_read_level": "not_verified_as_original_fulltext_this_batch",
+              "executed_current_book_helper": false,
+              "independent_in_memory_calculation": false,
+              "original_system_or_hardware_execution": false
+            },
+            {
+              "baseline_id": "M295",
+              "coverage_line": 363,
+              "baseline_raw_row": "| §10.4.1；工业 I15 | CMSIS-DSP Q15 FIR | 外部参考实现 | `cmsis_dsp`：`Source/FilteringFunctions/arm_fir_q15.c` | 系数、状态、内核变体与周期 |",
+              "current_evidence": "industrial_interfaces.c full; audit native contracts/tests; researchI15",
+              "finding_or_boundary": "读本书原CMSIS调用夹具和逐位期望；本批未逐行读全部原arm_fir_q15.c及其各架构分支，未编译运行",
+              "table_read": true,
+              "book_source_and_tests_read": true,
+              "original_source_or_paper_standard_read": false,
+              "original_read_level": "not_verified_as_original_fulltext_this_batch",
+              "executed_current_book_helper": false,
+              "independent_in_memory_calculation": false,
+              "original_system_or_hardware_execution": false
+            },
+            {
+              "baseline_id": "M324",
+              "coverage_line": 392,
+              "baseline_raw_row": "| §10.9 | 遥测记录校验 | 本仓库可运行基线 | `codes/chapters/ch10/core/engineering.py::validate_telemetry`、`codes/chapters/ch10/engineering/telemetry_schema.json` | 类型/范围的无状态检查；累计RTF与可选逐帧服务RTF分开；生产者声明统计窗/计时范围/时钟域，校验器不证明跨记录关系 |",
+              "current_evidence": "engineering.py validate_telemetry; telemetry_schema.json1–99; telemetrytests",
+              "finding_or_boundary": "字段类型/范围与累计RTF口径已核；无状态validator不证明跨记录时序/计时真实性",
+              "table_read": true,
+              "book_source_and_tests_read": true,
+              "original_source_or_paper_standard_read": false,
+              "original_read_level": "not_verified_as_original_fulltext_this_batch",
+              "executed_current_book_helper": false,
+              "independent_in_memory_calculation": false,
+              "original_system_or_hardware_execution": false
+            },
+            {
+              "baseline_id": "M325",
+              "coverage_line": 393,
+              "baseline_raw_row": "| §10.9；E10-26 | 已知失效选集与约束重建 | 本仓库可运行基线 | `codes/chapters/ch10/core/channel_selection.py::select_channel_observations`、`select_mvdr_channels`；六份独立PCM与图73 | 已知删除列表同时选择观测、响应与协方差双轴；复用第5章MVDR，不计作新波束算法；无盲检测/自动加载/任意频率性能 |",
+              "current_evidence": "channel_selection.py/channel_audio.py; generate_channel_audio.py; fig73 generator/PNG/negative tests",
+              "finding_or_boundary": "观测/导向/协方差双轴选取与重建已读，已知失效列表非盲检测；此批不重放资产",
+              "table_read": true,
+              "book_source_and_tests_read": true,
+              "original_source_or_paper_standard_read": false,
+              "original_read_level": "not_verified_as_original_fulltext_this_batch",
+              "executed_current_book_helper": false,
+              "independent_in_memory_calculation": false,
+              "original_system_or_hardware_execution": false
+            },
+            {
+              "baseline_id": "M339",
+              "coverage_line": 407,
+              "baseline_raw_row": "| §11.4～11.6、E11-21～22 | 车载多音区 A²B/蓝牙时钟漂移与头枕双讲保护选型及座舱扩声（ICC）啸叫裕度与 3QUEST 认证判据 | 本仓库可运行基线 | `codes/chapters/ch11/core/automotive_selection.py::bus_clock_drift_metrics`、`multizone_cabin_selection_case`、`icc_comb_and_howling_metrics`、`icc_and_certification_selection_case` | 区分同步总线与异步蓝牙参考并联合检验本区双讲冻结；按 Barkhausen 稳定裕度与区间三态规则判定准入 |",
+              "current_evidence": "automotive_selection.py full; ch11 entry/direct tests; AD2437TRM/P1150/TeamsV5 selected original pages",
+              "finding_or_boundary": "独立2x2空间解与稳定反馈反例；原源证据确认零SRO不同固定时差、P1150<15ms；认证表版本/测点需改",
+              "table_read": true,
+              "book_source_and_tests_read": true,
+              "original_source_or_paper_standard_read": true,
+              "original_read_level": "selected_original_sections_only",
+              "executed_current_book_helper": false,
+              "independent_in_memory_calculation": true,
+              "original_system_or_hardware_execution": false
+            },
+            {
+              "baseline_id": "M340",
+              "coverage_line": 408,
+              "baseline_raw_row": "| §10.2、§10.5、§10.10、E10-27～28 | 数字 PDM 麦克风 CIC 抽取位宽/通带滚降/双麦边沿偏斜与 ITU-T P.340 双工分级及 P.808 众包听测筛查 | 本仓库可运行基线 | `codes/chapters/ch10/core/pdm_and_eval.py::cic_decimation_metrics`、`pdm_cic_teaching_case`、`p340_and_p808_evaluation`、`p340_p808_teaching_case` | 核算半时钟沿采样偏斜引起的窄带相位误差；按双讲衰减分级并过滤众包陷阱题无效样本 |",
+              "current_evidence": "pdm_and_eval.py full; ch10 entry/direct tests; P340/P808/AD2437 selected original pages",
+              "finding_or_boundary": "实际调用当前helper两小边界，并独立算CIC响应/位宽；P340原阈值及TELR未输入的问题成立；P808筛查不是无偏证明",
+              "table_read": true,
+              "book_source_and_tests_read": true,
+              "original_source_or_paper_standard_read": true,
+              "original_read_level": "selected_original_sections_only",
+              "executed_current_book_helper": true,
+              "independent_in_memory_calculation": true,
+              "original_system_or_hardware_execution": false
+            },
+            {
+              "baseline_id": "M352",
+              "coverage_line": 425,
+              "baseline_raw_row": "| §11.2 | cpWER | 外部参考实现 | `meeteval`：`meeteval/wer/wer/cp.py` | 全局说话人分组后的会话级排列；CSS复用的原始槽位不能直接当永久说话人流 |",
+              "current_evidence": "selection.py small_slot_word_errors; audit_meeting_scoring_interfaces.py; direct tests; MeetEval original§3",
+              "finding_or_boundary": "cp全局排列/空流补足；原生产cp缺Cython状态保留。只运行历史报告不代表本批重跑",
+              "table_read": true,
+              "book_source_and_tests_read": true,
+              "original_source_or_paper_standard_read": true,
+              "original_read_level": "selected_original_sections_only",
+              "executed_current_book_helper": false,
+              "independent_in_memory_calculation": false,
+              "original_system_or_hardware_execution": false
+            },
+            {
+              "baseline_id": "M353",
+              "coverage_line": 426,
+              "baseline_raw_row": "| §11.2 | ORC-WER | 外部参考实现 | `meeteval`：`meeteval/wer/wer/orc.py` | 参考片段到流映射，偏向内容完整性；不保证身份连续 |",
+              "current_evidence": "selection.py small_slot_word_errors; direct tests; MeetEval original§3",
+              "finding_or_boundary": "整段参考片段到槽位，不能拆词降低错误；暴力有限教学域不是可扩展评分器",
+              "table_read": true,
+              "book_source_and_tests_read": true,
+              "original_source_or_paper_standard_read": true,
+              "original_read_level": "selected_original_sections_only",
+              "executed_current_book_helper": false,
+              "independent_in_memory_calculation": false,
+              "original_system_or_hardware_execution": false
+            },
+            {
+              "baseline_id": "M354",
+              "coverage_line": 427,
+              "baseline_raw_row": "| §11.2 | MIMO-WER | 外部参考实现 | `meeteval`：`meeteval/wer/wer/mimo.py` | 流顺序、允许映射 |",
+              "current_evidence": "chapter11 bilingual text; audit_meeting_kernel_contracts.py; C++ fixture tests; MeetEval original§3",
+              "finding_or_boundary": "读原MIMO核驱动与原论文顺序条件；未重编译原头文件，本批未全文逐行读原C++核",
+              "table_read": true,
+              "book_source_and_tests_read": true,
+              "original_source_or_paper_standard_read": true,
+              "original_read_level": "selected_original_sections_only",
+              "executed_current_book_helper": false,
+              "independent_in_memory_calculation": false,
+              "original_system_or_hardware_execution": false
+            },
+            {
+              "baseline_id": "M355",
+              "coverage_line": 428,
+              "baseline_raw_row": "| §11.2 | DI-cpWER | 外部参考实现 | `meeteval`：`meeteval/wer/wer/di_cp.py` | 锁定入口使用贪心匹配；与理论最优定义、简化文档示例及 sa-WER 均须区分 |",
+              "current_evidence": "chapter11 bilingual text; audit_meeting_scoring_interfaces.py; original selected paper/method notes",
+              "finding_or_boundary": "贪心DI-cp与理论最优、上游docNameError分开；未重跑原扩展或阅读全文2025 followup",
+              "table_read": true,
+              "book_source_and_tests_read": true,
+              "original_source_or_paper_standard_read": false,
+              "original_read_level": "not_verified_as_original_fulltext_this_batch",
+              "executed_current_book_helper": false,
+              "independent_in_memory_calculation": false,
+              "original_system_or_hardware_execution": false
+            },
+            {
+              "baseline_id": "M356",
+              "coverage_line": 429,
+              "baseline_raw_row": "| §11.2；E11-17；附录 B §17.7；工业 I21 | tcpWER | 外部参考实现 | `meeteval`：`meeteval/wer/wer/time_constrained.py` | 时间约束、容差和词时间戳 |",
+              "current_evidence": "selection.py tiny_time_constrained_edit_distance; meeting kernel audits/tests; MeetEval original§4",
+              "finding_or_boundary": "正时长教学合同与原strict overlap零时长点边界分开；读13原核控制记录但本批未执行",
+              "table_read": true,
+              "book_source_and_tests_read": true,
+              "original_source_or_paper_standard_read": true,
+              "original_read_level": "selected_original_sections_only",
+              "executed_current_book_helper": false,
+              "independent_in_memory_calculation": false,
+              "original_system_or_hardware_execution": false
+            },
+            {
+              "baseline_id": "M357",
+              "coverage_line": 430,
+              "baseline_raw_row": "| 附录 B §17.7；工业 I21 | CHiME-8 文本规范化/评分 | 外部参考实现 | `chime-utils`：`chime_utils/scoring/meeteval.py`、`chime_utils/text_norm/`、`tests/test_normalizer.py` | 固定源码的缺文件分支和规范化幂等检查另有受控诊断；届次、划分、缺失场景与数据许可 |",
+              "current_evidence": "audit_meeting_scoring_interfaces.py full; direct tests; researchI21ZH全文/EN249–280",
+              "finding_or_boundary": "读AST假调用、缺文件误复用与一遍normalizer控制；不是官方整链/ASR执行，本批不称原源码全读",
+              "table_read": true,
+              "book_source_and_tests_read": true,
+              "original_source_or_paper_standard_read": false,
+              "original_read_level": "not_verified_as_original_fulltext_this_batch",
+              "executed_current_book_helper": false,
+              "independent_in_memory_calculation": false,
+              "original_system_or_hardware_execution": false
+            },
+            {
+              "baseline_id": "M359",
+              "coverage_line": 432,
+              "baseline_raw_row": "| §11.2 | sa-WER 说话人归属口径 | 原理索引 | 正文指标区别 | 不声称锁定 MeetEval 覆盖全部定义 |",
+              "current_evidence": "chapter11 bilingual metric definitions; Kanda2020§4.1.2 original",
+              "finding_or_boundary": "撤回由检索摘要误归因best permutation的候选；书中固定identity saWER口径自洽",
+              "table_read": true,
+              "book_source_and_tests_read": true,
+              "original_source_or_paper_standard_read": true,
+              "original_read_level": "selected_original_sections_only",
+              "executed_current_book_helper": false,
+              "independent_in_memory_calculation": false,
+              "original_system_or_hardware_execution": false
+            }
+          ],
+          "table_read_only_baseline_ids": [
+            "M273",
+            "M274",
+            "M275",
+            "M279",
+            "M281",
+            "M282",
+            "M283",
+            "M284",
+            "M285",
+            "M286",
+            "M287",
+            "M290",
+            "M291",
+            "M292",
+            "M296",
+            "M297",
+            "M298",
+            "M299",
+            "M300",
+            "M301",
+            "M302",
+            "M303",
+            "M304",
+            "M305",
+            "M306",
+            "M307",
+            "M308",
+            "M309",
+            "M310",
+            "M311",
+            "M312",
+            "M313",
+            "M314",
+            "M315",
+            "M316",
+            "M317",
+            "M318",
+            "M319",
+            "M320",
+            "M321",
+            "M322",
+            "M323",
+            "M326",
+            "M327",
+            "M328",
+            "M329",
+            "M330",
+            "M331",
+            "M332",
+            "M333",
+            "M334",
+            "M335",
+            "M336",
+            "M337",
+            "M338",
+            "M341",
+            "M342",
+            "M343",
+            "M344",
+            "M345",
+            "M346",
+            "M347",
+            "M348",
+            "M349",
+            "M350",
+            "M351",
+            "M358",
+            "M360"
+          ],
+          "outside_this_batch": "M001–M388中未列到者不因本批章节已读而推定已核；原R1状态另由主审合并。"
+        },
+        "topic_matrix": [
+          {
+            "chapter": 10,
+            "family": "采集拓扑、回调、DMA/缓存、端到端测点",
+            "body_lines": [
+              35,
+              184
+            ],
+            "read": "bilingual full; engineering/native harness/macbook logs source full",
+            "original_basis": "ST官方人员原解释；原AN4891全文不可达；PortAudio本批以书内驱动和说明为主",
+            "conclusion": "DTCM可达性和92ms绝对归因有问题；45/55ms对应样本例及RTF分母结构自洽",
+            "remaining": "硬件绝对时钟标定、目标芯片DMA/MPU寄存器、真实回调WCET未测"
+          },
+          {
+            "chapter": 10,
+            "family": "EIN/ENOB/AOP、PDM/I2S/TDM/SoundWire/A2B/USB",
+            "body_lines": [
+              185,
+              249
+            ],
+            "read": "bilingual full; pdm_and_eval full",
+            "original_basis": "ADI ENOB、AD2437TRM、AppleTN3190、MIPI官方版本页",
+            "conclusion": "ENOB不能唯一给底噪；CIC低通不去DC；USB方向/feedback需分开；CIC两个受限接口边界；SoundWire版本R119",
+            "remaining": "MIPI会员规范全文、任意PDM型号模拟采样时刻、原Hogenauer整篇未核"
+          },
+          {
+            "chapter": 10,
+            "family": "SRO/STO/丢样、Farrow/线性插值、时钟可辨识",
+            "body_lines": [
+              250,
+              367
+            ],
+            "read": "bilingual full; engineering & sro loop & SRC harness/test full; clock/interpolation figure kernels selected",
+            "original_basis": "Apple关于USB异步端点；本书精确数学反例/原协议驱动",
+            "conclusion": "精确ε/(1+ε)、截距、丢样与主机时钟偏差分离自洽；原toy不是抗混叠盲ASRC",
+            "remaining": "真实多晶振设备与无噪时间戳以外的闭环未测；原SRC全部分支未读"
+          },
+          {
+            "chapter": 10,
+            "family": "播放增益/AEC参考、校准和结构失配",
+            "body_lines": [
+              368,
+              400
+            ],
+            "read": "bilingual full; source-note I03/I05",
+            "original_basis": "本批原WebRTC深层AEC控制未逐行重核；R1另包",
+            "conclusion": "功放/后端非线性未含数字参考，不能用单一拓扑取代实测；本批未发现新数值反例",
+            "remaining": "目标模拟链路、反馈电参考、校准噪声未测"
+          },
+          {
+            "chapter": 10,
+            "family": "单通道NS/谱减/MCRA/控制门控/VAD/AGC",
+            "body_lines": [
+              401,
+              674
+            ],
+            "read": "bilingual full; noise/AGC kernels/direct tests/full PCM fixture functions",
+            "original_basis": "本批未全文读Ephraim-Malah/Cohen原文；书内公式/状态实现读全",
+            "conclusion": "谱减已声明已知前奏；块长alpha/块末可用时间及峰值保护自洽，不能当工业AGC听测",
+            "remaining": "MMSE-STSA/LSA/Cohen原文族独立核留下一研究批，非由正文阅读自动关闭"
+          },
+          {
+            "chapter": 10,
+            "family": "Q15/BFP/PTQ/QAT/定点算力/RTF/资源功耗",
+            "body_lines": [
+              675,
+              818
+            ],
+            "read": "bilingual full; engineering core and native fixtures full",
+            "original_basis": "XMOS块浮点官方定义§3.1/3.2；CMSIS原架构分支本批未全读",
+            "conclusion": "BFP混淆两种指数约定，guard headroom另有歧义；RTF累计/逐帧和不可抢占例边界清楚",
+            "remaining": "原NN量化训练、CMSIS-MVE、芯片周期/电流硬件值未测"
+          },
+          {
+            "chapter": 10,
+            "family": "P340/P808/true peak/客观质量指标及幻觉盲区",
+            "body_lines": [
+              819,
+              890
+            ],
+            "read": "bilingual full; pdm/eval core full",
+            "original_basis": "P3402000/P8082021/BS1770-5选定原页；SCOREQ原方法；TeamsV5相关表",
+            "conclusion": "R112限定采样率、R113缺TELR、R125补NMR；筛查均分不等于去偏；未由此宣称POLQA/ViSQOL等全部原整链已核",
+            "remaining": "P3402026全文、各神经指标原模型/权重/推理、正式受试者听测未执行"
+          },
+          {
+            "chapter": 10,
+            "family": "数据/仿真EDC、三维阵型、分布式、部署来源、遥测/故障",
+            "body_lines": [
+              891,
+              1149
+            ],
+            "read": "bilingual full; channel core/generator/tests/fig73 full; telemetry schema full",
+            "original_basis": "T20见R1B原定义；球阵独立四面体可逆矩阵反例；部署原项目此批未全核",
+            "conclusion": "M严格大于球谐数非必要；已知失效后必须同步选取双轴协方差/响应并重建；telemetry只校字段不能证明跨记录关系",
+            "remaining": "真实声腔数据、分布式第13章完整原依据、工业设备故障未执行"
+          },
+          {
+            "chapter": 11,
+            "family": "模块选型、会议WER/身份/槽位/时间评分",
+            "body_lines": [
+              30,
+              150
+            ],
+            "read": "bilingual full; all selection core/meeting drivers/direct tests read",
+            "original_basis": "MeetEval2023相关原文、Kanda2020§4.1.2",
+            "conclusion": "cp/ORC/MIMO/DI-cp/tcp区分及有限tiny核例自洽；保留原扩展未装/原文档NameError；不把mock当原整链",
+            "remaining": "2025 followup全文及全部原C++实现此批未读；未做ASR/语言分词"
+          },
+          {
+            "chapter": 11,
+            "family": "几何/产品形态/医疗法规/座舱A2B/ICC",
+            "body_lines": [
+              151,
+              234
+            ],
+            "read": "bilingual full; automotive core full",
+            "original_basis": "AD2437TRM、FDA2025CFR、P1150原相关页",
+            "conclusion": "OTC法规范围过宽；零SRO不等于零固定相位；稳定性不推出耳处g<1；P1150严格<15ms原文成立",
+            "remaining": "2026现行eCFR、IEC/ANSI法律效力、所有产品结构典型数字原出处不在此批闭合"
+          },
+          {
+            "chapter": 11,
+            "family": "硬条件三态/机会约束/Wilson与CP/联合覆盖",
+            "body_lines": [
+              235,
+              371
+            ],
+            "read": "bilingual full; selection core/direct tests全读",
+            "original_basis": "独立二项n1反例；Wilson覆盖原文摘要仅部分",
+            "conclusion": "区间硬约束三态正确；Wilson是近似覆盖而非有限样本至少95%，不能直接承诺Bonferroni保证；CP零失败/分配题不受此误用影响",
+            "remaining": "Wilson1927/Brown2001/2002全文未读；任意k CP端点应在公式注明k=n给1"
+          },
+          {
+            "chapter": 11,
+            "family": "Pareto/权重/缺评分事件/组成区间/配对比较/物理证据",
+            "body_lines": [
+              372,
+              461
+            ],
+            "read": "bilingual full; selection/audio/physics cores and generators/tests/fig41,42,59,74 full",
+            "original_basis": "本书独立代数/实际PCM整数分母设计；跨章MVDR依赖未整核",
+            "conclusion": "线性误差先加权再dB、区间顶点最坏与逐场景最坏、事件与数值分离、WNG/DI/实际噪声矩阵分离自洽；本批未重放PCM",
+            "remaining": "目标设备延迟与自然语音场景权重实测未测；不能据数学例做设备排名"
+          },
+          {
+            "chapter": 11,
+            "family": "标准认证/发版与外场门禁",
+            "body_lines": [
+              462,
+              474
+            ],
+            "read": "bilingual full; automotive certification branch/read tests",
+            "original_basis": "取得公开TeamsV5音频规范、P1150，非仅摘要",
+            "conclusion": "不能用给定几项toy阈值称整机Teams认证；原规范版本/设备类/测点决定要求；Wilson联合保证须修",
+            "remaining": "V4及商业保密流程、硬件/完整认证执行未做"
+          }
+        ],
+        "exercise_review": {
+          "rule": "两章50道题的中英全部题干、推导与参考答案已在正文连续区间读过；以下目录不替代全文。独立数值运行仅independent_calculations列出的7项，其余未在本批重跑统一题目入口/测试。",
+          "chapters": [
+            {
+              "chapter": 10,
+              "count": 28,
+              "entries": [
+                {
+                  "exercise_id": "E10-01",
+                  "anchor_line": 1164,
+                  "heading": "#### E10-01：把初始错位与 SRO 分开",
+                  "body_and_solution_read_ZH_EN": true,
+                  "execution": "not_run_this_batch; see small independent calculations where applicable"
+                },
+                {
+                  "exercise_id": "E10-02",
+                  "anchor_line": 1172,
+                  "heading": "#### E10-02：VAD 的迟滞与两帧尾音保持",
+                  "body_and_solution_read_ZH_EN": true,
+                  "execution": "not_run_this_batch; see small independent calculations where applicable"
+                },
+                {
+                  "exercise_id": "E10-03",
+                  "anchor_line": 1180,
+                  "heading": "#### E10-03：环形缓冲满了以后留下什么",
+                  "body_and_solution_read_ZH_EN": true,
+                  "execution": "not_run_this_batch; see small independent calculations where applicable"
+                },
+                {
+                  "exercise_id": "E10-04",
+                  "anchor_line": 1188,
+                  "heading": "#### E10-04：平均处理量够，为什么还会丢帧",
+                  "body_and_solution_read_ZH_EN": true,
+                  "execution": "not_run_this_batch; see small independent calculations where applicable"
+                },
+                {
+                  "exercise_id": "E10-05",
+                  "anchor_line": 1207,
+                  "heading": "#### E10-05：半个量化级怎样取整",
+                  "body_and_solution_read_ZH_EN": true,
+                  "execution": "not_run_this_batch; see small independent calculations where applicable"
+                },
+                {
+                  "exercise_id": "E10-06",
+                  "anchor_line": 1215,
+                  "heading": "#### E10-06：峰值保护与目标电平不是一回事",
+                  "body_and_solution_read_ZH_EN": true,
+                  "execution": "not_run_this_batch; see small independent calculations where applicable"
+                },
+                {
+                  "exercise_id": "E10-07",
+                  "anchor_line": 1223,
+                  "heading": "#### E10-07：一帧音频占多少字节",
+                  "body_and_solution_read_ZH_EN": true,
+                  "execution": "not_run_this_batch; see small independent calculations where applicable"
+                },
+                {
+                  "exercise_id": "E10-08",
+                  "anchor_line": 1231,
+                  "heading": "#### E10-08：块长不同要等到最小公倍数吗",
+                  "body_and_solution_read_ZH_EN": true,
+                  "execution": "not_run_this_batch; see small independent calculations where applicable"
+                },
+                {
+                  "exercise_id": "E10-09",
+                  "anchor_line": 1239,
+                  "heading": "#### E10-09：通道极性接反能否靠平均修好",
+                  "body_and_solution_read_ZH_EN": true,
+                  "execution": "not_run_this_batch; see small independent calculations where applicable"
+                },
+                {
+                  "exercise_id": "E10-10",
+                  "anchor_line": 1247,
+                  "heading": "#### E10-10：同一个平滑系数为何不能跨块长照搬",
+                  "body_and_solution_read_ZH_EN": true,
+                  "execution": "not_run_this_batch; see small independent calculations where applicable"
+                },
+                {
+                  "exercise_id": "E10-11",
+                  "anchor_line": 1255,
+                  "heading": "#### E10-11：同样的麦位误差为何有不同相位误差",
+                  "body_and_solution_read_ZH_EN": true,
+                  "execution": "not_run_this_batch; see small independent calculations where applicable"
+                },
+                {
+                  "exercise_id": "E10-12",
+                  "anchor_line": 1263,
+                  "heading": "#### E10-12：把一次跳变拟合成 SRO 会怎样",
+                  "body_and_solution_read_ZH_EN": true,
+                  "execution": "not_run_this_batch; see small independent calculations where applicable"
+                },
+                {
+                  "exercise_id": "E10-13",
+                  "anchor_line": 1271,
+                  "heading": "#### E10-13：功率谱减与地板",
+                  "body_and_solution_read_ZH_EN": true,
+                  "execution": "not_run_this_batch; see small independent calculations where applicable"
+                },
+                {
+                  "exercise_id": "E10-14",
+                  "anchor_line": 1279,
+                  "heading": "#### E10-14：平均算得过来，六帧为何仍错过期限？",
+                  "body_and_solution_read_ZH_EN": true,
+                  "execution": "not_run_this_batch; see small independent calculations where applicable"
+                },
+                {
+                  "exercise_id": "E10-15",
+                  "anchor_line": 1287,
+                  "heading": "#### E10-15：预卷、触发帧和结束保持怎样拼成一个片段？",
+                  "body_and_solution_read_ZH_EN": true,
+                  "execution": "not_run_this_batch; see small independent calculations where applicable"
+                },
+                {
+                  "exercise_id": "E10-16",
+                  "anchor_line": 1295,
+                  "heading": "#### E10-16：恰好在下一帧到达时完成，算不算丢帧？",
+                  "body_and_solution_read_ZH_EN": true,
+                  "execution": "not_run_this_batch; see small independent calculations where applicable"
+                },
+                {
+                  "exercise_id": "E10-17",
+                  "anchor_line": 1303,
+                  "heading": "#### E10-17：三个时间戳为什么不等于三段算法耗时？",
+                  "body_and_solution_read_ZH_EN": true,
+                  "execution": "not_run_this_batch; see small independent calculations where applicable"
+                },
+                {
+                  "exercise_id": "E10-18",
+                  "anchor_line": 1325,
+                  "heading": "#### E10-18：无偏功率差经过截断后还无偏吗",
+                  "body_and_solution_read_ZH_EN": true,
+                  "execution": "not_run_this_batch; see small independent calculations where applicable"
+                },
+                {
+                  "exercise_id": "E10-19",
+                  "anchor_line": 1340,
+                  "heading": "#### E10-19：精确插值为什么仍会混叠",
+                  "body_and_solution_read_ZH_EN": true,
+                  "execution": "not_run_this_batch; see small independent calculations where applicable"
+                },
+                {
+                  "exercise_id": "E10-20",
+                  "anchor_line": 1354,
+                  "heading": "#### E10-20：相同时间常数为何仍产生不同分块 AGC 输出",
+                  "body_and_solution_read_ZH_EN": true,
+                  "execution": "not_run_this_batch; see small independent calculations where applicable"
+                },
+                {
+                  "exercise_id": "E10-21",
+                  "anchor_line": 1365,
+                  "heading": "#### E10-21：MCRA 软控制怎样减慢噪声递归的污染",
+                  "body_and_solution_read_ZH_EN": true,
+                  "execution": "not_run_this_batch; see small independent calculations where applicable"
+                },
+                {
+                  "exercise_id": "E10-22",
+                  "anchor_line": 1385,
+                  "heading": "#### E10-22：有限 RIR 尾部怎样改变 Schroeder 衰减外推",
+                  "body_and_solution_read_ZH_EN": true,
+                  "execution": "not_run_this_batch; see small independent calculations where applicable"
+                },
+                {
+                  "exercise_id": "E10-23",
+                  "anchor_line": 1405,
+                  "heading": "#### E10-23：低平均负载为何仍被不可抢占任务阻塞",
+                  "body_and_solution_read_ZH_EN": true,
+                  "execution": "not_run_this_batch; see small independent calculations where applicable"
+                },
+                {
+                  "exercise_id": "E10-24",
+                  "anchor_line": 1413,
+                  "heading": "#### E10-24：单设备计数与外部计时能辨别哪个时钟",
+                  "body_and_solution_read_ZH_EN": true,
+                  "execution": "not_run_this_batch; see small independent calculations where applicable"
+                },
+                {
+                  "exercise_id": "E10-25",
+                  "anchor_line": 1428,
+                  "heading": "#### E10-25：非平稳噪声统计失配的期望功率与三分量分解复算",
+                  "body_and_solution_read_ZH_EN": true,
+                  "execution": "not_run_this_batch; see small independent calculations where applicable"
+                },
+                {
+                  "exercise_id": "E10-26",
+                  "anchor_line": 1439,
+                  "heading": "#### E10-26：坏麦置零后为何必须按子阵重算 MVDR",
+                  "body_and_solution_read_ZH_EN": true,
+                  "execution": "not_run_this_batch; see small independent calculations where applicable"
+                },
+                {
+                  "exercise_id": "E10-27",
+                  "anchor_line": 1452,
+                  "heading": "#### E10-27：PDM 抽取有符号/无符号位宽、通带滚降与双麦边沿偏斜",
+                  "body_and_solution_read_ZH_EN": true,
+                  "execution": "not_run_this_batch; see small independent calculations where applicable"
+                },
+                {
+                  "exercise_id": "E10-28",
+                  "anchor_line": 1474,
+                  "heading": "#### E10-28：P.340 双讲双工分级与 P.808 众包听测筛查",
+                  "body_and_solution_read_ZH_EN": true,
+                  "execution": "not_run_this_batch; see small independent calculations where applicable"
+                }
+              ]
+            },
+            {
+              "chapter": 11,
+              "count": 22,
+              "entries": [
+                {
+                  "exercise_id": "E11-01",
+                  "anchor_line": 479,
+                  "heading": "#### E11-01：把空间带宽、同步与延迟放进同一张选型表",
+                  "body_and_solution_read_ZH_EN": true,
+                  "execution": "not_run_this_batch; see small independent calculations where applicable"
+                },
+                {
+                  "exercise_id": "E11-02",
+                  "anchor_line": 496,
+                  "heading": "#### E11-02：评分覆盖与电池预算",
+                  "body_and_solution_read_ZH_EN": true,
+                  "execution": "not_run_this_batch; see small independent calculations where applicable"
+                },
+                {
+                  "exercise_id": "E11-03",
+                  "anchor_line": 506,
+                  "heading": "#### E11-03：平均文件分数与合并计数",
+                  "body_and_solution_read_ZH_EN": true,
+                  "execution": "not_run_this_batch; see small independent calculations where applicable"
+                },
+                {
+                  "exercise_id": "E11-04",
+                  "anchor_line": 514,
+                  "heading": "#### E11-04：p99 为什么还需要注明计算方法",
+                  "body_and_solution_read_ZH_EN": true,
+                  "execution": "not_run_this_batch; see small independent calculations where applicable"
+                },
+                {
+                  "exercise_id": "E11-05",
+                  "anchor_line": 524,
+                  "heading": "#### E11-05：带播放的周向语音终端",
+                  "body_and_solution_read_ZH_EN": true,
+                  "execution": "not_run_this_batch; see small independent calculations where applicable"
+                },
+                {
+                  "exercise_id": "E11-06",
+                  "anchor_line": 536,
+                  "heading": "#### E11-06：多人会议",
+                  "body_and_solution_read_ZH_EN": true,
+                  "execution": "not_run_this_batch; see small independent calculations where applicable"
+                },
+                {
+                  "exercise_id": "E11-07",
+                  "anchor_line": 546,
+                  "heading": "#### E11-07：跨时钟车载阵列",
+                  "body_and_solution_read_ZH_EN": true,
+                  "execution": "not_run_this_batch; see small independent calculations where applicable"
+                },
+                {
+                  "exercise_id": "E11-08",
+                  "anchor_line": 556,
+                  "heading": "#### E11-08：零次失败能证明多低的风险",
+                  "body_and_solution_read_ZH_EN": true,
+                  "execution": "not_run_this_batch; see small independent calculations where applicable"
+                },
+                {
+                  "exercise_id": "E11-09",
+                  "anchor_line": 570,
+                  "heading": "#### E11-09：平均错误减少，配对证据足够吗",
+                  "body_and_solution_read_ZH_EN": true,
+                  "execution": "not_run_this_batch; see small independent calculations where applicable"
+                },
+                {
+                  "exercise_id": "E11-10",
+                  "anchor_line": 588,
+                  "heading": "#### E11-10：硬约束之后，哪个候选更好",
+                  "body_and_solution_read_ZH_EN": true,
+                  "execution": "not_run_this_batch; see small independent calculations where applicable"
+                },
+                {
+                  "exercise_id": "E11-11",
+                  "anchor_line": 616,
+                  "heading": "#### E11-11：三个场景分别通过，能否同时作出同样声明",
+                  "body_and_solution_read_ZH_EN": true,
+                  "execution": "not_run_this_batch; see small independent calculations where applicable"
+                },
+                {
+                  "exercise_id": "E11-12",
+                  "anchor_line": 666,
+                  "heading": "#### E11-12：单模块都变差，组合为何可能变好",
+                  "body_and_solution_read_ZH_EN": true,
+                  "execution": "not_run_this_batch; see small independent calculations where applicable"
+                },
+                {
+                  "exercise_id": "E11-13",
+                  "anchor_line": 683,
+                  "heading": "#### E11-13：噪声压得更多，为何总误差反而更大",
+                  "body_and_solution_read_ZH_EN": true,
+                  "execution": "not_run_this_batch; see small independent calculations where applicable"
+                },
+                {
+                  "exercise_id": "E11-14",
+                  "anchor_line": 759,
+                  "heading": "#### E11-14：区间内确定支配与跨硬阈值是两个判断",
+                  "body_and_solution_read_ZH_EN": true,
+                  "execution": "not_run_this_batch; see small independent calculations where applicable"
+                },
+                {
+                  "exercise_id": "E11-15",
+                  "anchor_line": 784,
+                  "heading": "#### E11-15：两小时零误触发能支持多低的小时率",
+                  "body_and_solution_read_ZH_EN": true,
+                  "execution": "not_run_this_batch; see small independent calculations where applicable"
+                },
+                {
+                  "exercise_id": "E11-16",
+                  "anchor_line": 803,
+                  "heading": "#### E11-16：同样两个词，参考话段切分为何改变ORC",
+                  "body_and_solution_read_ZH_EN": true,
+                  "execution": "not_run_this_batch; see small independent calculations where applicable"
+                },
+                {
+                  "exercise_id": "E11-17",
+                  "anchor_line": 815,
+                  "heading": "#### E11-17：同一个词在错误时刻出现，词错误还能为零吗",
+                  "body_and_solution_read_ZH_EN": true,
+                  "execution": "not_run_this_batch; see small independent calculations where applicable"
+                },
+                {
+                  "exercise_id": "E11-18",
+                  "anchor_line": 847,
+                  "heading": "#### E11-18：场景组成变化后，哪种FIR才是合适候选",
+                  "body_and_solution_read_ZH_EN": true,
+                  "execution": "not_run_this_batch; see small independent calculations where applicable"
+                },
+                {
+                  "exercise_id": "E11-19",
+                  "anchor_line": 937,
+                  "heading": "#### E11-19：空输出、漏会话与评分失败是否都能填零",
+                  "body_and_solution_read_ZH_EN": true,
+                  "execution": "not_run_this_batch; see small independent calculations where applicable"
+                },
+                {
+                  "exercise_id": "E11-20",
+                  "anchor_line": 976,
+                  "heading": "#### E11-20：最低噪声的波束为何不能直接通过选型",
+                  "body_and_solution_read_ZH_EN": true,
+                  "execution": "not_run_this_batch; see small independent calculations where applicable"
+                },
+                {
+                  "exercise_id": "E11-21",
+                  "anchor_line": 1070,
+                  "heading": "#### E11-21：车载多音区总线同步、头枕波束与双讲保护",
+                  "body_and_solution_read_ZH_EN": true,
+                  "execution": "not_run_this_batch; see small independent calculations where applicable"
+                },
+                {
+                  "exercise_id": "E11-22",
+                  "anchor_line": 1107,
+                  "heading": "#### E11-22：车载 ICC 强化延迟、啸叫稳定裕度与认证规格",
+                  "body_and_solution_read_ZH_EN": true,
+                  "execution": "not_run_this_batch; see small independent calculations where applicable"
+                }
+              ]
+            }
+          ]
+        },
+        "report_reading": {
+          "rule": "仅实际投影并阅读报告语义字段；没有逐行阅读所有数百项源码身份记录，更没有重跑原系统。",
+          "semantic_fields_only": [
+            "codes/chapters/ch10/reports/industrial_contracts_current.json",
+            "codes/chapters/ch10/reports/industrial_interfaces_current.json",
+            "codes/chapters/ch10/reports/industrial_upstream_interfaces_current.json",
+            "codes/chapters/ch10/reports/stk_delay_current.json",
+            "codes/chapters/ch11/reports/meeting_kernel_contracts_current.json",
+            "codes/chapters/ch11/reports/meeting_scoring_interfaces_current.json"
+          ],
+          "observations": [
+            "限定helper与替代AST合同不等于神经/设备整链",
+            "原cp评分缺扩展、doc函数NameError和完整选集不一致仍保留",
+            "当前meeting kernel 13例，旧9例及4点时间控制分栏；本批未编译执行",
+            "文档114锁表项目与报告115是描述漂移，仅登记候选不重写历史身份"
+          ]
+        },
+        "rejected_or_not_adopted_candidates": [
+          {
+            "candidate": "P1150没有15ms限值",
+            "decision": "拒绝",
+            "reason": "已取得2020原标准PDF19§9.2.2.1明确严格<15ms；与测点/全音区对条件一起保留。"
+          },
+          {
+            "candidate": "Teams规范全部不可获得所以只能凭厂商摘要",
+            "decision": "拒绝",
+            "reason": "微软官方公开V5ZIP内有原音频PDF，已实际读相关表，见TEAMS_V5_PRIMARY。"
+          },
+          {
+            "candidate": "SCOREQ一定是传统全参考/或正文已明确混同配对参考",
+            "decision": "不这样定性",
+            "reason": "原NMR定义应补，但当前正文只有“有参考”不够精确，未明说同内容匹配。"
+          },
+          {
+            "candidate": "固定标签saWER错在必须做全局最优排列",
+            "decision": "撤回",
+            "reason": "Kanda原文best permutation段对应先忽略标签WER，SAWER另定义；检索截断不能当全文。"
+          },
+          {
+            "candidate": "同步总线有固定延迟因此也必须ASRC",
+            "decision": "拒绝",
+            "reason": "固定延迟/相位校准与持续速率偏差不同；可对齐固定样本而无ASRC。"
+          },
+          {
+            "candidate": "CIC原R16/R64位宽算错",
+            "decision": "拒绝",
+            "reason": "原幂2例18/26signed、17/25unsigned均正确，新反例仅一般非2幂的“精确最小”接口陈述。"
+          },
+          {
+            "candidate": "E11-21全部空间数值不可信",
+            "decision": "拒绝",
+            "reason": "独立球面传播+直接2x2求解吻合题值；应修假设与控制器验证措辞。"
+          },
+          {
+            "candidate": "PDM左右沿必然等于声学模拟采样半周期差",
+            "decision": "留待专门型号核验",
+            "reason": "官方TRM确认数据有效沿/复用，但不自动说明模拟调制器采样相位；ADI另文只说at worst。"
+          },
+          {
+            "candidate": "Wilson公式在k0未定义",
+            "decision": "拒绝",
+            "reason": "公式定义正常；问题是近似覆盖被当作保证，不是代数公式本身。"
+          }
+        ]
       }
     }
-  ]
+  ],
+  "coverage_row_reviews": {
+    "numerics-r2a-engineering-selection": {
+      "reviewed_entries": [
+        {
+          "baseline_id": "M271",
+          "coverage_line": 339,
+          "baseline_raw_row": "| §10.1.2 | 环形缓冲与预卷 | 本仓库可运行基线 | `codes/chapters/ch10/core/engineering.py::RingBuffer` | Python 教学容器不是无锁硬实时队列 |",
+          "current_evidence": "chapter10/core/engineering.py RingBuffer; chapter10 tests",
+          "finding_or_boundary": "读核心、接口及边界测试，Python容器不冒充无锁硬实时队列",
+          "table_read": true,
+          "book_source_and_tests_read": true,
+          "original_source_or_paper_standard_read": false,
+          "original_read_level": "not_verified_as_original_fulltext_this_batch",
+          "executed_current_book_helper": false,
+          "independent_in_memory_calculation": false,
+          "original_system_or_hardware_execution": false
+        },
+        {
+          "baseline_id": "M272",
+          "coverage_line": 340,
+          "baseline_raw_row": "| §10.1.1 | 截止期限/队列模拟 | 本仓库可运行基线 | `codes/chapters/ch10/core/engineering.py::simulate_deadline_queue` | 等待、计算与排队分别计量 |",
+          "current_evidence": "chapter10/core/engineering.py simulate_deadline_queue; E10 deadline examples; fig57 source",
+          "finding_or_boundary": "读排队/期限时刻与不可抢占例，服务耗时和响应耗时已分开",
+          "table_read": true,
+          "book_source_and_tests_read": true,
+          "original_source_or_paper_standard_read": false,
+          "original_read_level": "not_verified_as_original_fulltext_this_batch",
+          "executed_current_book_helper": false,
+          "independent_in_memory_calculation": false,
+          "original_system_or_hardware_execution": false
+        },
+        {
+          "baseline_id": "M276",
+          "coverage_line": 344,
+          "baseline_raw_row": "| §10.2.1 | SRO 线性拟合 | 本仓库可运行基线 | `codes/chapters/ch10/core/engineering.py::estimate_sro_ppm`；`codes/chapters/ch10/sro_closed_loop_demo.py` | 初始时差与斜率分开；示例用精确合成时间戳估计 |",
+          "current_evidence": "engineering.py estimate_sro_ppm; sro_closed_loop_demo.py; cross_chapter exercises",
+          "finding_or_boundary": "读精确与一阶斜率、常数截距/缺样隔离；不是盲音频SRO",
+          "table_read": true,
+          "book_source_and_tests_read": true,
+          "original_source_or_paper_standard_read": false,
+          "original_read_level": "not_verified_as_original_fulltext_this_batch",
+          "executed_current_book_helper": false,
+          "independent_in_memory_calculation": false,
+          "original_system_or_hardware_execution": false
+        },
+        {
+          "baseline_id": "M277",
+          "coverage_line": 345,
+          "baseline_raw_row": "| §10.2.1 | 线性插值 SRO 补偿 | 本仓库可运行基线 | `codes/chapters/ch10/core/engineering.py::resample_sro_to_reference`；`codes/chapters/ch10/sro_closed_loop_demo.py` | 示例含跨块状态和单点丢样标记；不含抗混叠与真实异步控制 |",
+          "current_evidence": "engineering.py resample_sro_to_reference; sro_closed_loop_demo.py; direct tests",
+          "finding_or_boundary": "读连续相位/缺口掩码；2抽头线性内插不是抗混叠ASRC产品",
+          "table_read": true,
+          "book_source_and_tests_read": true,
+          "original_source_or_paper_standard_read": false,
+          "original_read_level": "not_verified_as_original_fulltext_this_batch",
+          "executed_current_book_helper": false,
+          "independent_in_memory_calculation": false,
+          "original_system_or_hardware_execution": false
+        },
+        {
+          "baseline_id": "M278",
+          "coverage_line": 346,
+          "baseline_raw_row": "| §10.2.1 | libsamplerate 连续 SRC | 外部参考实现 | `libsamplerate`：`src/samplerate.c` | 速率比、消耗量与状态 |",
+          "current_evidence": "run_libsamplerate_sro.py full; test_codes_libsamplerate_sro.py full; research I04",
+          "finding_or_boundary": "当前仅读本书原接口驱动和测试、报告语义；没有重跑C库，也未以它代原src/samplerate.c逐行审读",
+          "table_read": true,
+          "book_source_and_tests_read": true,
+          "original_source_or_paper_standard_read": false,
+          "original_read_level": "not_verified_as_original_fulltext_this_batch",
+          "executed_current_book_helper": false,
+          "independent_in_memory_calculation": false,
+          "original_system_or_hardware_execution": false
+        },
+        {
+          "baseline_id": "M280",
+          "coverage_line": 348,
+          "baseline_raw_row": "| §10.3.2 | 功率谱减 | 本仓库可运行基线 | `codes/chapters/ch10/core/noise_suppression.py::power_spectral_subtraction`；[E10-13 与音频演示](../ch10/spectral_subtraction_demo.py) | 固定噪声专用前奏、单通道 STFT；无在线噪声跟踪与语音概率，音乐噪声仍可能出现 |",
+          "current_evidence": "noise_suppression.py full; spectral_subtraction_demo.py; fixture and tests",
+          "finding_or_boundary": "固定已知前奏功率谱估计，非在线MCRA；只读测试并核公式",
+          "table_read": true,
+          "book_source_and_tests_read": true,
+          "original_source_or_paper_standard_read": false,
+          "original_read_level": "not_verified_as_original_fulltext_this_batch",
+          "executed_current_book_helper": false,
+          "independent_in_memory_calculation": false,
+          "original_system_or_hardware_execution": false
+        },
+        {
+          "baseline_id": "M288",
+          "coverage_line": 356,
+          "baseline_raw_row": "| §10.3.4 | 能量迟滞/挂起 VAD | 本仓库可运行基线 | `codes/chapters/ch10/core/engineering.py::HysteresisVAD` | 能量门限，不是神经概率 |",
+          "current_evidence": "engineering.py HysteresisVAD; chapter10 experiments/tests",
+          "finding_or_boundary": "能量迟滞与挂起状态完整读；不是概率VAD",
+          "table_read": true,
+          "book_source_and_tests_read": true,
+          "original_source_or_paper_standard_read": false,
+          "original_read_level": "not_verified_as_original_fulltext_this_batch",
+          "executed_current_book_helper": false,
+          "independent_in_memory_calculation": false,
+          "original_system_or_hardware_execution": false
+        },
+        {
+          "baseline_id": "M289",
+          "coverage_line": 357,
+          "baseline_raw_row": "| §10.3.4 | 峰值保护 AGC | 本仓库可运行基线 | `codes/chapters/ch10/core/engineering.py::PeakProtectAGC` | 不代表完整响度/限幅器 |",
+          "current_evidence": "engineering.py PeakProtectAGC; audio_samples.py733–794; chapter10tests; fig40 both PNG",
+          "finding_or_boundary": "整块先读峰再施增益，有块末可用时刻；alpha改变保持时间常数不保证分块不变",
+          "table_read": true,
+          "book_source_and_tests_read": true,
+          "original_source_or_paper_standard_read": false,
+          "original_read_level": "not_verified_as_original_fulltext_this_batch",
+          "executed_current_book_helper": false,
+          "independent_in_memory_calculation": false,
+          "original_system_or_hardware_execution": false
+        },
+        {
+          "baseline_id": "M293",
+          "coverage_line": 361,
+          "baseline_raw_row": "| §10.4.1 | Q1.15 量化 | 本仓库可运行基线 | `codes/chapters/ch10/core/engineering.py::q15_quantize` | 最近偶数舍入与饱和 |",
+          "current_evidence": "engineering.py q15_quantize; related direct tests",
+          "finding_or_boundary": "读最近偶数舍入、饱和/有限类型边界；未执行目标DSP",
+          "table_read": true,
+          "book_source_and_tests_read": true,
+          "original_source_or_paper_standard_read": false,
+          "original_read_level": "not_verified_as_original_fulltext_this_batch",
+          "executed_current_book_helper": false,
+          "independent_in_memory_calculation": false,
+          "original_system_or_hardware_execution": false
+        },
+        {
+          "baseline_id": "M294",
+          "coverage_line": 362,
+          "baseline_raw_row": "| §10.4.1 | Q15 宽累加点积 | 本仓库可运行基线 | `codes/chapters/ch10/core/engineering.py::q15_dot` | 不默认与截位 DSP 逐位相同 |",
+          "current_evidence": "engineering.py q15_dot; related direct tests",
+          "finding_or_boundary": "读宽累加、最近偶数与符号/溢出边界；不默认对齐CMSIS截位",
+          "table_read": true,
+          "book_source_and_tests_read": true,
+          "original_source_or_paper_standard_read": false,
+          "original_read_level": "not_verified_as_original_fulltext_this_batch",
+          "executed_current_book_helper": false,
+          "independent_in_memory_calculation": false,
+          "original_system_or_hardware_execution": false
+        },
+        {
+          "baseline_id": "M295",
+          "coverage_line": 363,
+          "baseline_raw_row": "| §10.4.1；工业 I15 | CMSIS-DSP Q15 FIR | 外部参考实现 | `cmsis_dsp`：`Source/FilteringFunctions/arm_fir_q15.c` | 系数、状态、内核变体与周期 |",
+          "current_evidence": "industrial_interfaces.c full; audit native contracts/tests; researchI15",
+          "finding_or_boundary": "读本书原CMSIS调用夹具和逐位期望；本批未逐行读全部原arm_fir_q15.c及其各架构分支，未编译运行",
+          "table_read": true,
+          "book_source_and_tests_read": true,
+          "original_source_or_paper_standard_read": false,
+          "original_read_level": "not_verified_as_original_fulltext_this_batch",
+          "executed_current_book_helper": false,
+          "independent_in_memory_calculation": false,
+          "original_system_or_hardware_execution": false
+        },
+        {
+          "baseline_id": "M324",
+          "coverage_line": 392,
+          "baseline_raw_row": "| §10.9 | 遥测记录校验 | 本仓库可运行基线 | `codes/chapters/ch10/core/engineering.py::validate_telemetry`、`codes/chapters/ch10/engineering/telemetry_schema.json` | 类型/范围的无状态检查；累计RTF与可选逐帧服务RTF分开；生产者声明统计窗/计时范围/时钟域，校验器不证明跨记录关系 |",
+          "current_evidence": "engineering.py validate_telemetry; telemetry_schema.json1–99; telemetrytests",
+          "finding_or_boundary": "字段类型/范围与累计RTF口径已核；无状态validator不证明跨记录时序/计时真实性",
+          "table_read": true,
+          "book_source_and_tests_read": true,
+          "original_source_or_paper_standard_read": false,
+          "original_read_level": "not_verified_as_original_fulltext_this_batch",
+          "executed_current_book_helper": false,
+          "independent_in_memory_calculation": false,
+          "original_system_or_hardware_execution": false
+        },
+        {
+          "baseline_id": "M325",
+          "coverage_line": 393,
+          "baseline_raw_row": "| §10.9；E10-26 | 已知失效选集与约束重建 | 本仓库可运行基线 | `codes/chapters/ch10/core/channel_selection.py::select_channel_observations`、`select_mvdr_channels`；六份独立PCM与图73 | 已知删除列表同时选择观测、响应与协方差双轴；复用第5章MVDR，不计作新波束算法；无盲检测/自动加载/任意频率性能 |",
+          "current_evidence": "channel_selection.py/channel_audio.py; generate_channel_audio.py; fig73 generator/PNG/negative tests",
+          "finding_or_boundary": "观测/导向/协方差双轴选取与重建已读，已知失效列表非盲检测；此批不重放资产",
+          "table_read": true,
+          "book_source_and_tests_read": true,
+          "original_source_or_paper_standard_read": false,
+          "original_read_level": "not_verified_as_original_fulltext_this_batch",
+          "executed_current_book_helper": false,
+          "independent_in_memory_calculation": false,
+          "original_system_or_hardware_execution": false
+        },
+        {
+          "baseline_id": "M339",
+          "coverage_line": 407,
+          "baseline_raw_row": "| §11.4～11.6、E11-21～22 | 车载多音区 A²B/蓝牙时钟漂移与头枕双讲保护选型及座舱扩声（ICC）啸叫裕度与 3QUEST 认证判据 | 本仓库可运行基线 | `codes/chapters/ch11/core/automotive_selection.py::bus_clock_drift_metrics`、`multizone_cabin_selection_case`、`icc_comb_and_howling_metrics`、`icc_and_certification_selection_case` | 区分同步总线与异步蓝牙参考并联合检验本区双讲冻结；按 Barkhausen 稳定裕度与区间三态规则判定准入 |",
+          "current_evidence": "automotive_selection.py full; ch11 entry/direct tests; AD2437TRM/P1150/TeamsV5 selected original pages",
+          "finding_or_boundary": "独立2x2空间解与稳定反馈反例；原源证据确认零SRO不同固定时差、P1150<15ms；认证表版本/测点需改",
+          "table_read": true,
+          "book_source_and_tests_read": true,
+          "original_source_or_paper_standard_read": true,
+          "original_read_level": "selected_original_sections_only",
+          "executed_current_book_helper": false,
+          "independent_in_memory_calculation": true,
+          "original_system_or_hardware_execution": false
+        },
+        {
+          "baseline_id": "M340",
+          "coverage_line": 408,
+          "baseline_raw_row": "| §10.2、§10.5、§10.10、E10-27～28 | 数字 PDM 麦克风 CIC 抽取位宽/通带滚降/双麦边沿偏斜与 ITU-T P.340 双工分级及 P.808 众包听测筛查 | 本仓库可运行基线 | `codes/chapters/ch10/core/pdm_and_eval.py::cic_decimation_metrics`、`pdm_cic_teaching_case`、`p340_and_p808_evaluation`、`p340_p808_teaching_case` | 核算半时钟沿采样偏斜引起的窄带相位误差；按双讲衰减分级并过滤众包陷阱题无效样本 |",
+          "current_evidence": "pdm_and_eval.py full; ch10 entry/direct tests; P340/P808/AD2437 selected original pages",
+          "finding_or_boundary": "实际调用当前helper两小边界，并独立算CIC响应/位宽；P340原阈值及TELR未输入的问题成立；P808筛查不是无偏证明",
+          "table_read": true,
+          "book_source_and_tests_read": true,
+          "original_source_or_paper_standard_read": true,
+          "original_read_level": "selected_original_sections_only",
+          "executed_current_book_helper": true,
+          "independent_in_memory_calculation": true,
+          "original_system_or_hardware_execution": false
+        },
+        {
+          "baseline_id": "M352",
+          "coverage_line": 425,
+          "baseline_raw_row": "| §11.2 | cpWER | 外部参考实现 | `meeteval`：`meeteval/wer/wer/cp.py` | 全局说话人分组后的会话级排列；CSS复用的原始槽位不能直接当永久说话人流 |",
+          "current_evidence": "selection.py small_slot_word_errors; audit_meeting_scoring_interfaces.py; direct tests; MeetEval original§3",
+          "finding_or_boundary": "cp全局排列/空流补足；原生产cp缺Cython状态保留。只运行历史报告不代表本批重跑",
+          "table_read": true,
+          "book_source_and_tests_read": true,
+          "original_source_or_paper_standard_read": true,
+          "original_read_level": "selected_original_sections_only",
+          "executed_current_book_helper": false,
+          "independent_in_memory_calculation": false,
+          "original_system_or_hardware_execution": false
+        },
+        {
+          "baseline_id": "M353",
+          "coverage_line": 426,
+          "baseline_raw_row": "| §11.2 | ORC-WER | 外部参考实现 | `meeteval`：`meeteval/wer/wer/orc.py` | 参考片段到流映射，偏向内容完整性；不保证身份连续 |",
+          "current_evidence": "selection.py small_slot_word_errors; direct tests; MeetEval original§3",
+          "finding_or_boundary": "整段参考片段到槽位，不能拆词降低错误；暴力有限教学域不是可扩展评分器",
+          "table_read": true,
+          "book_source_and_tests_read": true,
+          "original_source_or_paper_standard_read": true,
+          "original_read_level": "selected_original_sections_only",
+          "executed_current_book_helper": false,
+          "independent_in_memory_calculation": false,
+          "original_system_or_hardware_execution": false
+        },
+        {
+          "baseline_id": "M354",
+          "coverage_line": 427,
+          "baseline_raw_row": "| §11.2 | MIMO-WER | 外部参考实现 | `meeteval`：`meeteval/wer/wer/mimo.py` | 流顺序、允许映射 |",
+          "current_evidence": "chapter11 bilingual text; audit_meeting_kernel_contracts.py; C++ fixture tests; MeetEval original§3",
+          "finding_or_boundary": "读原MIMO核驱动与原论文顺序条件；未重编译原头文件，本批未全文逐行读原C++核",
+          "table_read": true,
+          "book_source_and_tests_read": true,
+          "original_source_or_paper_standard_read": true,
+          "original_read_level": "selected_original_sections_only",
+          "executed_current_book_helper": false,
+          "independent_in_memory_calculation": false,
+          "original_system_or_hardware_execution": false
+        },
+        {
+          "baseline_id": "M355",
+          "coverage_line": 428,
+          "baseline_raw_row": "| §11.2 | DI-cpWER | 外部参考实现 | `meeteval`：`meeteval/wer/wer/di_cp.py` | 锁定入口使用贪心匹配；与理论最优定义、简化文档示例及 sa-WER 均须区分 |",
+          "current_evidence": "chapter11 bilingual text; audit_meeting_scoring_interfaces.py; original selected paper/method notes",
+          "finding_or_boundary": "贪心DI-cp与理论最优、上游docNameError分开；未重跑原扩展或阅读全文2025 followup",
+          "table_read": true,
+          "book_source_and_tests_read": true,
+          "original_source_or_paper_standard_read": false,
+          "original_read_level": "not_verified_as_original_fulltext_this_batch",
+          "executed_current_book_helper": false,
+          "independent_in_memory_calculation": false,
+          "original_system_or_hardware_execution": false
+        },
+        {
+          "baseline_id": "M356",
+          "coverage_line": 429,
+          "baseline_raw_row": "| §11.2；E11-17；附录 B §17.7；工业 I21 | tcpWER | 外部参考实现 | `meeteval`：`meeteval/wer/wer/time_constrained.py` | 时间约束、容差和词时间戳 |",
+          "current_evidence": "selection.py tiny_time_constrained_edit_distance; meeting kernel audits/tests; MeetEval original§4",
+          "finding_or_boundary": "正时长教学合同与原strict overlap零时长点边界分开；读13原核控制记录但本批未执行",
+          "table_read": true,
+          "book_source_and_tests_read": true,
+          "original_source_or_paper_standard_read": true,
+          "original_read_level": "selected_original_sections_only",
+          "executed_current_book_helper": false,
+          "independent_in_memory_calculation": false,
+          "original_system_or_hardware_execution": false
+        },
+        {
+          "baseline_id": "M357",
+          "coverage_line": 430,
+          "baseline_raw_row": "| 附录 B §17.7；工业 I21 | CHiME-8 文本规范化/评分 | 外部参考实现 | `chime-utils`：`chime_utils/scoring/meeteval.py`、`chime_utils/text_norm/`、`tests/test_normalizer.py` | 固定源码的缺文件分支和规范化幂等检查另有受控诊断；届次、划分、缺失场景与数据许可 |",
+          "current_evidence": "audit_meeting_scoring_interfaces.py full; direct tests; researchI21ZH全文/EN249–280",
+          "finding_or_boundary": "读AST假调用、缺文件误复用与一遍normalizer控制；不是官方整链/ASR执行，本批不称原源码全读",
+          "table_read": true,
+          "book_source_and_tests_read": true,
+          "original_source_or_paper_standard_read": false,
+          "original_read_level": "not_verified_as_original_fulltext_this_batch",
+          "executed_current_book_helper": false,
+          "independent_in_memory_calculation": false,
+          "original_system_or_hardware_execution": false
+        },
+        {
+          "baseline_id": "M359",
+          "coverage_line": 432,
+          "baseline_raw_row": "| §11.2 | sa-WER 说话人归属口径 | 原理索引 | 正文指标区别 | 不声称锁定 MeetEval 覆盖全部定义 |",
+          "current_evidence": "chapter11 bilingual metric definitions; Kanda2020§4.1.2 original",
+          "finding_or_boundary": "撤回由检索摘要误归因best permutation的候选；书中固定identity saWER口径自洽",
+          "table_read": true,
+          "book_source_and_tests_read": true,
+          "original_source_or_paper_standard_read": true,
+          "original_read_level": "selected_original_sections_only",
+          "executed_current_book_helper": false,
+          "independent_in_memory_calculation": false,
+          "original_system_or_hardware_execution": false
+        }
+      ],
+      "table_read_only_baseline_ids": [
+        "M273",
+        "M274",
+        "M275",
+        "M279",
+        "M281",
+        "M282",
+        "M283",
+        "M284",
+        "M285",
+        "M286",
+        "M287",
+        "M290",
+        "M291",
+        "M292",
+        "M296",
+        "M297",
+        "M298",
+        "M299",
+        "M300",
+        "M301",
+        "M302",
+        "M303",
+        "M304",
+        "M305",
+        "M306",
+        "M307",
+        "M308",
+        "M309",
+        "M310",
+        "M311",
+        "M312",
+        "M313",
+        "M314",
+        "M315",
+        "M316",
+        "M317",
+        "M318",
+        "M319",
+        "M320",
+        "M321",
+        "M322",
+        "M323",
+        "M326",
+        "M327",
+        "M328",
+        "M329",
+        "M330",
+        "M331",
+        "M332",
+        "M333",
+        "M334",
+        "M335",
+        "M336",
+        "M337",
+        "M338",
+        "M341",
+        "M342",
+        "M343",
+        "M344",
+        "M345",
+        "M346",
+        "M347",
+        "M348",
+        "M349",
+        "M350",
+        "M351",
+        "M358",
+        "M360"
+      ],
+      "scope_sha256": "4c37291fecfdce53d6abb1190048d91ab6d131a58dc947710007591b14e5fa89",
+      "rule": "本地核/原依据/实际运行各列分别计，原外部模块未读不得由本书驱动替代"
+    }
+  }
 }

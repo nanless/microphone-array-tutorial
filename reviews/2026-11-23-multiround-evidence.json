@@ -5914,12 +5914,117 @@
     ],
     "numerics-r1b/R1B-WPE-monotone-derivative": [
       "R138"
+    ],
+    "publication-r2a-foundations/R2A-O01": [
+      "R201"
+    ],
+    "publication-r2a-foundations/R2A-O02": [
+      "R202"
+    ],
+    "publication-r2a-foundations/R2A-O03": [
+      "R203"
+    ],
+    "publication-r2a-foundations/R2A-O04": [
+      "R204"
+    ],
+    "publication-r2a-foundations/R2A-O05": [
+      "R205"
+    ],
+    "publication-r2a-foundations/R2A-O06": [
+      "R206"
+    ],
+    "publication-r2a-foundations/R2A-C001": [
+      "R207"
+    ],
+    "publication-r2a-foundations/R2A-C002": [
+      "R105"
+    ],
+    "publication-r2a-foundations/R2A-C003": [
+      "R208"
+    ],
+    "publication-r2a-foundations/R2A-M01": [
+      "R209"
+    ],
+    "publication-r2a-foundations/R2A-M02": [
+      "R210"
+    ],
+    "publication-r2a-foundations/R2A-M03": [
+      "R211"
+    ],
+    "publication-r2a-foundations/R2A-M04": [
+      "R212"
+    ],
+    "publication-r2a-foundations/R2A-M05": [
+      "R213"
+    ],
+    "publication-r2a-foundations/R2A-M06": [
+      "R214"
+    ],
+    "publication-r2a-foundations/R2A-M07": [
+      "R215"
+    ],
+    "publication-r2a-foundations/R2A-M08": [
+      "R129"
+    ],
+    "publication-r2a-foundations/R2A-M09": [
+      "R216"
+    ],
+    "publication-r2a-foundations/R2A-M10": [
+      "R139"
+    ],
+    "publication-r2a-foundations/R2A-M11": [
+      "R205"
+    ],
+    "publication-r2a-foundations/R2A-M12": [
+      "R217"
+    ],
+    "publication-r2a-foundations/R2A-M13": [
+      "R218"
+    ],
+    "publication-r2a-foundations/R2A-M14": [
+      "R219"
+    ],
+    "publication-r2a-foundations/R2A-M15": [
+      "R220"
+    ],
+    "publication-r2a-foundations/R2A-K01": [
+      "R221"
+    ],
+    "publication-r2a-foundations/R2A-K02": [
+      "R222"
+    ],
+    "publication-r2a-foundations/R2A-K03": [
+      "R223"
+    ],
+    "publication-r2a-foundations/R2A-P01": [
+      "R224"
+    ],
+    "publication-r2a-foundations/R2A-P02": [
+      "R225"
+    ],
+    "publication-r2a-foundations/R2A-P03": [
+      "R226"
+    ],
+    "publication-r2a-foundations/R2A-P04": [
+      "R227"
+    ],
+    "publication-r2a-foundations/R2A-P05": [
+      "R228"
+    ],
+    "publication-r2a-foundations/R2A-P06": [
+      "R229"
+    ],
+    "publication-r2a-foundations/R2A-P07": [
+      "R230"
+    ],
+    "publication-r2a-foundations/R2A-P08": [
+      "R231"
     ]
   },
   "review_rounds": [
     {
       "round": "R2-A",
-      "status": "启动",
+      "status": "部分范围完成，继续交换全文审查",
       "read_before_review": [
         "reviews/2026-11-23-multiround-review.md",
         "reviews/2026-11-23-multiround-evidence.json"
@@ -5935,7 +6040,7 @@
           "english_pairs": true,
           "scope": "完整源行、推导题例、代码测试、引用图真实像素；相关跨章消费者",
           "repository_write": false,
-          "progress": "尚未收到实际覆盖结果"
+          "progress": "完成6份中英源6218行；14份相关代码/练习/生成器/测试全文和数学制图器；76项测试通过，22张编号图实际像素；范围外保留未读区间"
         },
         {
           "agent": "numerics_evidence",
@@ -5946,7 +6051,7 @@
           "english_pairs": true,
           "scope": "完整源行、相关核/入口/测试及引用图，独立质疑前轮工程/评分/认证结论",
           "repository_write": false,
-          "progress": "已接任务，未收到完整覆盖结果"
+          "progress": "进行中：第10章中英全文、第11章中文全文及英文前450行；代码/测试/图逐项推进，尚未收到最终包"
         },
         {
           "agent": "content_map",
@@ -5957,7 +6062,7 @@
           "english_pairs": true,
           "scope": "完整源行、相关核/入口/测试及引用图，独立质疑Joseph/样条/WPE/T20",
           "repository_write": false,
-          "progress": "已回报第6章中文1-170已读；其余未完成"
+          "progress": "进行中：第6章中英全文、相关16份代码/测试实读和24张PNG像素；第7章尚未完成，阶段包不作两章完成证明"
         }
       ],
       "root_publication_progress": {
@@ -5971,6 +6076,26 @@
             "path": "scripts/make_figures_en.py",
             "lines": 516,
             "sha256": "e5544a219a3627ab55aa850a86cc80632c69183db76bd182283d1484b70e4234"
+          },
+          {
+            "path": "scripts/build_site.py",
+            "lines": 2245,
+            "sha256": "41cc67f4cc693a3fbe5ec00b3e330bd4670f643764d3b691ac7bb161dbb9b53c"
+          },
+          {
+            "path": "scripts/build_markdown_helpers.py",
+            "lines": 306,
+            "sha256": "5917eb4c46d752cd4b429ac6825d7f11247e065b7fca50789a2c2ac00a4bcfc0"
+          },
+          {
+            "path": "scripts/inline_layout.js",
+            "lines": 212,
+            "sha256": "ff961cea640ce01952d2008eee0c0617a87e8c43452dba2121f97967b84d6ebd"
+          },
+          {
+            "path": "scripts/pdf_math.js",
+            "lines": 118,
+            "sha256": "56afe1e391dfdeec9b3c04960cafe960d49defc2c800c7fb5bb85db18afc3a69"
           }
         ],
         "partial_source_reads": [
@@ -5996,7 +6121,1516 @@
           "session_id": 57693,
           "log": "/private/tmp/masp-multiround-20261123/r2-baseline-unittest.log",
           "result": "运行中，未完成"
+        },
+        "browser_baseline": {
+          "status": "complete",
+          "page_count": 66,
+          "widths": [
+            320,
+            390,
+            1280
+          ],
+          "cases": 198,
+          "rendered": 198,
+          "global_horizontal_overflow": 0,
+          "math_error_nodes": 0,
+          "image_load_failures": 0,
+          "console_errors": 0,
+          "request_failures": 0,
+          "zero_size_cases_to_classify": 63,
+          "report_path": "/private/tmp/masp-multiround-20261123/browser-baseline/report.json",
+          "report_sha256": "201198f746e4f43d511ec18fa6c84c72ab8b281e3be8a5c2413f7969111ea78b",
+          "screenshot_scope": "每场景首屏900px，不是整页目视验收",
+          "actually_visually_opened_screenshots": [
+            "site__00_math-foundations__320.png",
+            "site__00_math-foundations__1280.png",
+            "site__06_aec__390.png",
+            "site_en__00_math-foundations__1280.png"
+          ],
+          "zero_size_note": "初查数学章两种视口均为隐藏导航/目录副本；其余场景待全量分类"
         }
+      }
+    },
+    {
+      "round": "R2-B",
+      "status": "已启动，未完成",
+      "assignments": [
+        {
+          "agent": "publication_ci",
+          "documents": [
+            "chapters/02_basics-signal-model.md",
+            "chapters/03_array-geometry.md"
+          ],
+          "english_pairs": true,
+          "repository_write": false,
+          "scope": "连续全文、相关核/入口/测试、引用图像素、跨章消费者；独立质疑前轮统计校准/窗/分数时延/秩条件"
+        }
+      ]
+    }
+  ],
+  "review_packets": [
+    {
+      "packet_id": "publication-r2a-foundations",
+      "received_date": "2026-11-23",
+      "status": "complete_for_assigned_scope",
+      "handoff_sha256": "fd861ac014a8e32e31d439cd870ec6d5cdacc0e7f3270a610949e298049d9ec5",
+      "data": {
+        "schema": "masp.r2-fulltext-review.v1",
+        "round": "R2-A",
+        "agent": "/root/publication_ci",
+        "date": "2026-11-23",
+        "status": "completed_requested_R2A_full_source_text_with_explicit_visual_and_dependency_limits",
+        "scope": [
+          "导读中英",
+          "第0章中英",
+          "第1章中英",
+          "对应核心/练习/测试",
+          "引用图29、84-87、1-6中英像素"
+        ],
+        "actual_permissions": {
+          "sandbox": "danger-full-access",
+          "approval": "never"
+        },
+        "repository_writes": false,
+        "coverage": [
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters/00_overview.md",
+            "total_lines": 578,
+            "actually_read_contiguous_line_intervals": [
+              [
+                1,
+                578
+              ]
+            ],
+            "unread_line_intervals": [],
+            "method": "分块直接输出审读；被工具截断部分已单独补读后才并入区间",
+            "not_implied": "全文读取不等于每条已完成独立推导/运行或版面验收"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters_en/00_overview.md",
+            "total_lines": 578,
+            "actually_read_contiguous_line_intervals": [
+              [
+                1,
+                578
+              ]
+            ],
+            "unread_line_intervals": [],
+            "method": "分块直接输出审读；被工具截断部分已单独补读后才并入区间",
+            "not_implied": "全文读取不等于每条已完成独立推导/运行或版面验收"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters/00_math-foundations.md",
+            "total_lines": 1747,
+            "actually_read_contiguous_line_intervals": [
+              [
+                1,
+                1747
+              ]
+            ],
+            "unread_line_intervals": [],
+            "method": "分块直接输出审读；被工具截断部分已单独补读后才并入区间",
+            "not_implied": "全文读取不等于每条已完成独立推导/运行或版面验收"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters_en/00_math-foundations.md",
+            "total_lines": 1747,
+            "actually_read_contiguous_line_intervals": [
+              [
+                1,
+                1747
+              ]
+            ],
+            "unread_line_intervals": [],
+            "method": "分块直接输出审读；被工具截断部分已单独补读后才并入区间",
+            "not_implied": "全文读取不等于每条已完成独立推导/运行或版面验收"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters/01_problem-definition.md",
+            "total_lines": 784,
+            "actually_read_contiguous_line_intervals": [
+              [
+                1,
+                784
+              ]
+            ],
+            "unread_line_intervals": [],
+            "method": "实际分块直接输出全文，先前截断的段落另读后合并",
+            "not_implied": "全文读取不等于全输入空间测试、依赖闭包或正式版面验收"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters_en/01_problem-definition.md",
+            "total_lines": 784,
+            "actually_read_contiguous_line_intervals": [
+              [
+                1,
+                784
+              ]
+            ],
+            "unread_line_intervals": [],
+            "method": "实际分块直接输出全文，先前截断的段落另读后合并",
+            "not_implied": "全文读取不等于全输入空间测试、依赖闭包或正式版面验收"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/reviews/2026-11-23-multiround-review.md",
+            "total_lines": 220,
+            "actually_read_contiguous_line_intervals": [
+              [
+                1,
+                220
+              ]
+            ],
+            "unread_line_intervals": [],
+            "method": "实际分块直接输出全文，先前截断的段落另读后合并",
+            "not_implied": "全文读取不等于全输入空间测试、依赖闭包或正式版面验收"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/core/chapter00_math.py",
+            "total_lines": 1945,
+            "actually_read_contiguous_line_intervals": [
+              [
+                1,
+                1945
+              ]
+            ],
+            "unread_line_intervals": [],
+            "method": "分块直接输出全文审读",
+            "not_implied": "源码全文读取不等于全参数空间测试或正式构建"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/chapter00_exercises.py",
+            "total_lines": 161,
+            "actually_read_contiguous_line_intervals": [
+              [
+                1,
+                161
+              ]
+            ],
+            "unread_line_intervals": [],
+            "method": "分块直接输出全文审读",
+            "not_implied": "源码全文读取不等于全参数空间测试或正式构建"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/tests/test_codes_ch00_math_foundations.py",
+            "total_lines": 488,
+            "actually_read_contiguous_line_intervals": [
+              [
+                1,
+                488
+              ]
+            ],
+            "unread_line_intervals": [],
+            "method": "分块直接输出全文审读",
+            "not_implied": "源码全文读取不等于全参数空间测试或正式构建"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/tests/test_codes_foundations_round3.py",
+            "total_lines": 128,
+            "actually_read_contiguous_line_intervals": [
+              [
+                1,
+                128
+              ]
+            ],
+            "unread_line_intervals": [],
+            "method": "分块直接输出全文审读",
+            "not_implied": "源码全文读取不等于全参数空间测试或正式构建"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/scripts/make_math_figures.py",
+            "total_lines": 793,
+            "actually_read_contiguous_line_intervals": [
+              [
+                1,
+                793
+              ]
+            ],
+            "unread_line_intervals": [],
+            "method": "分块直接输出全文审读",
+            "not_implied": "源码全文读取不等于全参数空间测试或正式构建"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch01/core/binaural_cues.py",
+            "total_lines": 94,
+            "actually_read_contiguous_line_intervals": [
+              [
+                1,
+                94
+              ]
+            ],
+            "unread_line_intervals": [],
+            "method": "实际分块直接输出全文，先前截断的段落另读后合并",
+            "not_implied": "全文读取不等于全输入空间测试、依赖闭包或正式版面验收"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch01/core/spectral_cues.py",
+            "total_lines": 129,
+            "actually_read_contiguous_line_intervals": [
+              [
+                1,
+                129
+              ]
+            ],
+            "unread_line_intervals": [],
+            "method": "实际分块直接输出全文，先前截断的段落另读后合并",
+            "not_implied": "全文读取不等于全输入空间测试、依赖闭包或正式版面验收"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch01/core/spatial_coherence_and_dba.py",
+            "total_lines": 504,
+            "actually_read_contiguous_line_intervals": [
+              [
+                1,
+                504
+              ]
+            ],
+            "unread_line_intervals": [],
+            "method": "实际分块直接输出全文，先前截断的段落另读后合并",
+            "not_implied": "全文读取不等于全输入空间测试、依赖闭包或正式版面验收"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch01/chapter01_experiments.py",
+            "total_lines": 316,
+            "actually_read_contiguous_line_intervals": [
+              [
+                1,
+                316
+              ]
+            ],
+            "unread_line_intervals": [],
+            "method": "实际分块直接输出全文，先前截断的段落另读后合并",
+            "not_implied": "全文读取不等于全输入空间测试、依赖闭包或正式版面验收"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch01/examples/generate_binaural_cues.py",
+            "total_lines": 151,
+            "actually_read_contiguous_line_intervals": [
+              [
+                1,
+                151
+              ]
+            ],
+            "unread_line_intervals": [],
+            "method": "实际分块直接输出全文，先前截断的段落另读后合并",
+            "not_implied": "全文读取不等于全输入空间测试、依赖闭包或正式版面验收"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch01/examples/generate_spectral_cues.py",
+            "total_lines": 176,
+            "actually_read_contiguous_line_intervals": [
+              [
+                1,
+                176
+              ]
+            ],
+            "unread_line_intervals": [],
+            "method": "实际分块直接输出全文，先前截断的段落另读后合并",
+            "not_implied": "全文读取不等于全输入空间测试、依赖闭包或正式版面验收"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/tests/test_codes_chapter01_experiments.py",
+            "total_lines": 333,
+            "actually_read_contiguous_line_intervals": [
+              [
+                1,
+                333
+              ]
+            ],
+            "unread_line_intervals": [],
+            "method": "实际分块直接输出全文，先前截断的段落另读后合并",
+            "not_implied": "全文读取不等于全输入空间测试、依赖闭包或正式版面验收"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/tests/test_codes_binaural_cues.py",
+            "total_lines": 200,
+            "actually_read_contiguous_line_intervals": [
+              [
+                1,
+                200
+              ]
+            ],
+            "unread_line_intervals": [],
+            "method": "实际分块直接输出全文，先前截断的段落另读后合并",
+            "not_implied": "全文读取不等于全输入空间测试、依赖闭包或正式版面验收"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/tests/test_codes_spectral_cues.py",
+            "total_lines": 124,
+            "actually_read_contiguous_line_intervals": [
+              [
+                1,
+                124
+              ]
+            ],
+            "unread_line_intervals": [],
+            "method": "实际分块直接输出全文，先前截断的段落另读后合并",
+            "not_implied": "全文读取不等于全输入空间测试、依赖闭包或正式版面验收"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/tests/test_build_binaural_audio.py",
+            "total_lines": 178,
+            "actually_read_contiguous_line_intervals": [
+              [
+                1,
+                178
+              ]
+            ],
+            "unread_line_intervals": [],
+            "method": "实际分块直接输出全文，先前截断的段落另读后合并",
+            "not_implied": "全文读取不等于全输入空间测试、依赖闭包或正式版面验收"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/scripts/make_figures.py",
+            "total_lines": 5422,
+            "actually_read_contiguous_line_intervals": [
+              [
+                428,
+                488
+              ],
+              [
+                1455,
+                1617
+              ],
+              [
+                2215,
+                2289
+              ],
+              [
+                2441,
+                2506
+              ],
+              [
+                2593,
+                2693
+              ]
+            ],
+            "unread_line_intervals": [
+              [
+                1,
+                427
+              ],
+              [
+                489,
+                1454
+              ],
+              [
+                1618,
+                2214
+              ],
+              [
+                2290,
+                2440
+              ],
+              [
+                2507,
+                2592
+              ],
+              [
+                2694,
+                5422
+              ]
+            ],
+            "method": "按本批消费者所用函数抽读；不冒称整文件全文"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/cross_chapter/exercises_spatial.py",
+            "total_lines": 504,
+            "actually_read_contiguous_line_intervals": [
+              [
+                1,
+                62
+              ],
+              [
+                180,
+                208
+              ],
+              [
+                482,
+                504
+              ]
+            ],
+            "unread_line_intervals": [
+              [
+                63,
+                179
+              ],
+              [
+                209,
+                481
+              ]
+            ],
+            "method": "按本批消费者所用函数抽读；不冒称整文件全文"
+          }
+        ],
+        "findings": [
+          {
+            "id": "R2A-O01",
+            "status": "candidate-P2",
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters/00_overview.md",
+            "line": 198,
+            "evidence": "一般CSM扫描b=Pq被称空间卷积；卷积还需PSF平移不变",
+            "recommendation": "改空间加权叠加/线性PSF映射，或明确卷积近似条件",
+            "independent_verification": "待完整对应依赖或原依据进一步核对；未修改"
+          },
+          {
+            "id": "R2A-O02",
+            "status": "confirmed-P2",
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters/00_overview.md",
+            "line": 367,
+            "evidence": "图62称441点球面网格；实际core/imaging.py:500-507为21x21平面z=.6",
+            "recommendation": "改球面波传播模型下的441点平面扫描网格，中英同步",
+            "independent_verification": "待完整对应依赖或原依据进一步核对；未修改"
+          },
+          {
+            "id": "R2A-O03",
+            "status": "confirmed-P2",
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters_en/00_overview.md",
+            "line": 380,
+            "evidence": "图75最小二乘目标最小点写peaks at，和中文取最小相反",
+            "recommendation": "改is minimized at/attains its minimum at",
+            "independent_verification": "待完整对应依赖或原依据进一步核对；未修改"
+          },
+          {
+            "id": "R2A-O04",
+            "status": "candidate-P2",
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters/00_overview.md",
+            "line": 206,
+            "evidence": "称完整无线实验复现指引；当前第13章及报告明确未执行网络",
+            "recommendation": "改网络模型与教学控制/研究入口，保留未执行边界",
+            "independent_verification": "待完整对应依赖或原依据进一步核对；未修改"
+          },
+          {
+            "id": "R2A-O05",
+            "status": "candidate-P2",
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters/00_overview.md",
+            "line": 74,
+            "evidence": "Joseph保正定；一般仅PSD保持，允许奇异P/R时非严格正定",
+            "recommendation": "待第0章条件全文读后裁决，必要改保半正定",
+            "independent_verification": "待完整对应依赖或原依据进一步核对；未修改"
+          },
+          {
+            "id": "R2A-O06",
+            "status": "confirmed-P3",
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters/00_overview.md",
+            "line": 189,
+            "evidence": "候选筛除与多场景权衡标§11.4，但对应主要位于§11.5子节",
+            "recommendation": "准确标§11.5.2-11.5.4，中英同步",
+            "independent_verification": "待完整对应依赖或原依据进一步核对；未修改"
+          },
+          {
+            "id": "R2A-C001",
+            "status": "confirmed-P2-glossary-body-inconsistency",
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters/00_math-foundations.md",
+            "line": 27,
+            "evidence": "Proper复高斯被要求零均值，proper定义仅零中心化伪协方差；圆对称关于原点另需零均值",
+            "recommendation": "待读§0.6完整定义后裁决",
+            "independent_verification": "待完整对应依赖或原依据进一步核对；未修改",
+            "note": "正文1075已准确区分非零均值proper与circularly symmetric；只修词表，不全局改正确正文。"
+          },
+          {
+            "id": "R2A-C002",
+            "status": "candidate-P2",
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters/00_math-foundations.md",
+            "line": 21,
+            "evidence": "COLA/WOLA列作所有无失真重建充要窗条件，NOLA逐点归一可能构成反例",
+            "recommendation": "与R105及本章WOLA定义整体独立复核",
+            "independent_verification": "待完整对应依赖或原依据进一步核对；未修改"
+          },
+          {
+            "id": "R2A-C003",
+            "status": "confirmed-P2-translation-strength",
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters_en/00_math-foundations.md",
+            "line": 13,
+            "evidence": "英文数学引言:13声称bit-reproducibly backed，中文仅精确复现；本轮76项测试以assert_allclose/AlmostEqual数值容差为主要标准，未建立跨CPU/NumPy/BLAS逐位合同。英文导读:290也将可精确复算提升为bit-reproducible。",
+            "recommendation": "两处分别改为numerically reproducible或reproducible analytical baseline，保留固定参数/seed/实源SHA等实际保证；不自动全局替换bit词，也不改变本应逐字节验证的PCM/资产合同。",
+            "independent_verification": "待完整对应依赖或原依据进一步核对；未修改"
+          },
+          {
+            "id": "R2A-M01",
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters/00_math-foundations.md",
+            "paired_path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters_en/00_math-foundations.md",
+            "line": 576,
+            "title": "一般非对称矩阵特征分解不存在",
+            "status": "confirmed-P2",
+            "evidence": "非对称方阵可以对角化，例如 [[1,1],[0,2]] 有不同特征值1、2；长方形无通常特征分解，非厄米方阵不保证酉对角化",
+            "recommendation": "改为长方形矩阵不适用通常特征分解，一般方阵也不保证酉对角化，而SVD普遍存在",
+            "verification": "全文审读+独立反例/复算；非修改"
+          },
+          {
+            "id": "R2A-M02",
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters/00_math-foundations.md",
+            "paired_path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters_en/00_math-foundations.md",
+            "line": 581,
+            "title": "式0-24把非零奇异值条件数比用于任意秩矩阵",
+            "status": "confirmed-P2",
+            "evidence": "G=diag(1,0)满足当前r=1定义；右端σ1²/σr²=1，而GᴴG奇异，通常κ₂=∞。代码tikhonov_svd_solve却正确返回∞",
+            "recommendation": "平方律限定满列秩；若讨论有效条件数需另命名且注明零空间",
+            "verification": "全文审读+独立反例/复算；非修改"
+          },
+          {
+            "id": "R2A-M03",
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters/00_math-foundations.md",
+            "paired_path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters_en/00_math-foundations.md",
+            "line": 611,
+            "title": "最佳秩逼近唯一性的中文作用域",
+            "status": "candidate-P3-scope-clarification",
+            "evidence": "中文紧接谱范数证明说gap>0时最优逼近唯一；谱范数下G=diag(3,1),K1，B=diag(3,0)和diag(2.5,0)均误差1，gap2；英文括号比较清楚限Frobenius",
+            "recommendation": "将唯一性显式限定Frobenius范数；谱范数最优一般不唯一",
+            "verification": "全文审读+独立反例/复算；非修改"
+          },
+          {
+            "id": "R2A-M04",
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters/00_math-foundations.md",
+            "paired_path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters_en/00_math-foundations.md",
+            "line": 624,
+            "title": "TLS间隙趋零必使末分量趋零",
+            "status": "confirmed-P2",
+            "evidence": "A=[1,0]ᵀ,b=[0,t]ᵀ,0<t<1时σ1(A)-σ2([A,b])=1-t→0，但末右奇异向量[0,1]末分量恒1，TLS恒0。原例数字仍正确",
+            "recommendation": "改为间隙退化时不再保证唯一稳定性，某些数据路径末分量接近0使解爆大；勿写必要极限",
+            "verification": "全文审读+独立反例/复算；非修改"
+          },
+          {
+            "id": "R2A-M05",
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters/00_math-foundations.md",
+            "paired_path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters_en/00_math-foundations.md",
+            "line": 731,
+            "title": "Rayleigh极值仅沿单一特征向量",
+            "status": "confirmed-P2",
+            "evidence": "H=I₂、w=[1,1]ᵀ同样最大且最小，不必平行指定u1或uM；重复极值空间内任意非零向量取等号",
+            "recommendation": "写属于最大/最小特征值对应特征子空间；仅简单特征值时为唯一方向",
+            "verification": "全文审读+独立反例/复算；非修改"
+          },
+          {
+            "id": "R2A-M06",
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters/00_math-foundations.md",
+            "paired_path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters_en/00_math-foundations.md",
+            "line": 830,
+            "title": "实值非常数函数处处不满足CR且不可复导",
+            "status": "confirmed-P2",
+            "evidence": "J(z)=|z|²在z0处CR成立且复导为0，但不能在含开邻域上全纯；把点态复可微和开集全纯等同",
+            "recommendation": "改为非常数实值函数不能在连通开域上全纯，但可在孤立点满足CR",
+            "verification": "全文审读+独立反例/复算；非修改"
+          },
+          {
+            "id": "R2A-M07",
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters/00_math-foundations.md",
+            "paired_path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters_en/00_math-foundations.md",
+            "line": 979,
+            "title": "MagLS严格下降且显著优于复LS",
+            "status": "confirmed-P2",
+            "evidence": "式0-43只是≤。A=I、m=[1,1]、c=[1,1]时误差恒0，无法严格降低，也不显著优于本已零误差的复LS；(Ac)k=0相位投影还须定义任意相位",
+            "recommendation": "改为单调不增、可能改善幅度误差；补零幅值任意相位/eps实现约定和非凸边界",
+            "verification": "全文审读+独立反例/复算；非修改"
+          },
+          {
+            "id": "R2A-M08",
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters/00_math-foundations.md",
+            "paired_path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters_en/00_math-foundations.md",
+            "line": 1007,
+            "title": "MM无条件必单调收敛",
+            "status": "confirmed-P2",
+            "evidence": "J=Q=0、argmin选择x_(t+1)=-x_t，x0=1，满足全部上界/相切条件而迭代1,-1不收敛。目标值有下界时才由单调得值收敛，不推出点列或驻点",
+            "recommendation": "区分不增链、下界时目标值收敛、点列/驻点需额外假设；原IRLS25步数值不被此反例否定",
+            "verification": "全文审读+独立反例/复算；非修改"
+          },
+          {
+            "id": "R2A-M09",
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters/00_math-foundations.md",
+            "paired_path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters_en/00_math-foundations.md",
+            "line": 1053,
+            "title": "方差可加只有各路互不相关",
+            "status": "confirmed-P2",
+            "evidence": "3路协方差[[1,.2,-.2],[.2,1,0],[-.2,0,1]]正定，单位权重交叉项抵消，和方差3=单方差和3，仍不两两不相关",
+            "recommendation": "改为互不相关是直接可加的充分条件；若对所有系数均可加才等价",
+            "verification": "全文审读+独立反例/复算；非修改"
+          },
+          {
+            "id": "R2A-M10",
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters/00_math-foundations.md",
+            "paired_path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters_en/00_math-foundations.md",
+            "line": 1105,
+            "title": "任意无偏估计量CRLB漏正则条件",
+            "status": "confirmed-P2",
+            "evidence": "Uniform(0,theta)样本上(n+1)/n max为无偏，方差theta²/[n(n+2)]小于按正文得分外积定义的逆theta²/n²；支撑依赖参数使积分微分交换失败。窄带高斯例仍满足常规条件",
+            "recommendation": "在定理前注明参数无关支撑/可微并可交换积分求导、有限非奇异FIM；奇异信息需可辨识子空间或广义界",
+            "verification": "全文审读+独立反例/复算；非修改"
+          },
+          {
+            "id": "R2A-M11",
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters/00_math-foundations.md",
+            "paired_path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters_en/00_math-foundations.md",
+            "line": 1190,
+            "title": "Joseph永远稳健与严格正定保证",
+            "status": "confirmed-P2",
+            "evidence": "两项PSD合同和只保证精确算术PSD；P=diag(1,0),H=[1,0],R=1仍有零方向。有限精度或错误Q/R不由Joseph形式排除",
+            "recommendation": "改为精确算术下保持对称半正定、通常改善数值稳健性；严格PD与滤波稳定性另需条件",
+            "verification": "全文审读+独立反例/复算；非修改",
+            "independent_counterexample": "P_prior=diag(1,0),H=[1,0],R=1,K=[.5,0]^T gives Joseph posterior diag(.5,0): PSD, not PD; ordinary stated full-rank example remains PD."
+          },
+          {
+            "id": "R2A-M12",
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters_en/00_math-foundations.md",
+            "paired_path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters/00_math-foundations.md",
+            "line": 1196,
+            "title": "一般Markov链无条件收敛（英文更强）",
+            "status": "confirmed-P2-English-unconditional-convergence",
+            "evidence": "英文:1196明确converging to stationary distribution，未附不可约/非周期等充分条件；中文“长期极限满足”本身可理解为若极限存在的条件陈述，不能一并判为同强度错误。P=[[0,1],[1,0]],pi0=[1,0]逐步[0,1],[1,0]不收敛，pi=[.5,.5]仍是平稳分布。",
+            "recommendation": "先定义任何满足pi P=pi的平稳分布，再说明有限不可约且非周期等充分条件下各初始分布收敛；英文与中文分别调整，保留已有正确递推式。",
+            "verification": "全文审读+独立反例/复算；非修改"
+          },
+          {
+            "id": "R2A-M13",
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters/00_math-foundations.md",
+            "paired_path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters_en/00_math-foundations.md",
+            "line": 1227,
+            "title": "NIS越门限被解读为高概率多径/野值",
+            "status": "confirmed-P2",
+            "evidence": "χ²门控只给正确模型下假拒概率，不能直接推出P(野值|拒绝)；全为正常高斯观测时仍约5%越95%门限",
+            "recommendation": "改为与当前高斯模型不相容而拒收，并明确正常观测假拒率α；后验多径概率还需先验及异类似然",
+            "verification": "全文审读+独立反例/复算；非修改"
+          },
+          {
+            "id": "R2A-M14",
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters/00_math-foundations.md",
+            "paired_path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters_en/00_math-foundations.md",
+            "line": 712,
+            "title": "图85c偏差—方差名实不符",
+            "status": "confirmed-P3",
+            "evidence": "scripts/make_math_figures.py:367-382固定单个delta_y=.10 u2，画确定性范数，不计算随机方差/均方误差；二范数非variance",
+            "recommendation": "改偏差—噪声放大折中，或明确随机扰动模型并实际画RMS/方差",
+            "verification": "全文审读+独立反例/复算；非修改"
+          },
+          {
+            "id": "R2A-M15",
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters/00_math-foundations.md",
+            "line": 865,
+            "title": "无约束协方差MLE等于样本协方差需正定条件",
+            "status": "confirmed-P2",
+            "evidence": "目标域R严格正定；若样本协方差diag(1,0)，取R=diag(1,eps)，L=1+log(eps)趋负无穷，无严格正定最小值；文字给出MLE=Rhat却未要求Rhat>0。",
+            "recommendation": "显式假定样本协方差正定；奇异样本需约束/正则模型，不能把奇异边界称该域内MLE。",
+            "paired_path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters_en/00_math-foundations.md",
+            "independent_calculation": "eps=.1,.01,.001 => L=-1.302585,-3.605170,-5.907755",
+            "additional_locations": [
+              "chapters/00_math-foundations.md:1077",
+              "chapters_en/00_math-foundations.md:865",
+              "chapters_en/00_math-foundations.md:1077"
+            ]
+          },
+          {
+            "id": "R2A-K01",
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/core/chapter00_math.py",
+            "line": 375,
+            "title": "旋转结果键名把列向量作用顺序写反",
+            "status": "confirmed-P2",
+            "evidence": "r_zyx=Rz@Ry@Rx；默认roll0时ex_under_rz_then_ry实际先Ry再Rz；另一键亦反。tests/test_codes_ch00_math_foundations.py:51-52沿用反向键名。数值矩阵与正文非交换例本身正确。",
+            "recommendation": "以矩阵乘积命名或准确标明先后及Rx；同步消费者/测试，若保留旧键则注明历史别名。"
+          },
+          {
+            "id": "R2A-K02",
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/core/chapter00_math.py",
+            "line": 1292,
+            "title": "实状态Kalman默默截断复协方差虚部",
+            "status": "confirmed-P2",
+            "evidence": "q_cov/r_cov/p_prev由Hermitian校验接受复数后直接.real；独立输入Q=[[1,.2j],[-.2j,1]],F=H=I,P=R=I,s=z=0被接受，predicted_cov=2I，虚相关被无提示丢弃。",
+            "recommendation": "实状态合同应先拒绝非零虚部协方差；如扩展复状态需全链共轭转置与复状态校验，不静默改模型。"
+          },
+          {
+            "id": "R2A-K03",
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/core/chapter00_math.py",
+            "line": 1026,
+            "title": "NNLS返回字段与full KKT verification措辞过强",
+            "status": "candidate-P2-api-contract",
+            "evidence": "P=[[1,.5],[.5,1]],b=[1,-.2],max_iters=1返回q_opt=[.4,.133333],dual_min=-.266667,互补残差.106667；没有converged/status，未满足KKT仍以opt命名。默认练习通过，不把有限预算情形称默认结果错误。",
+            "recommendation": "返回收敛标志、已执行迭代数与诊断容差；预算耗尽时明确近似值。可将q_opt改solution或加状态；补一项有意义的有限预算测试。"
+          },
+          {
+            "id": "R2A-P01",
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters_en/01_problem-definition.md",
+            "line": 295,
+            "title": "英文ILD误区行否定范围反向",
+            "status": "confirmed-P2-translation",
+            "evidence": "中文:295是误以为低于固定频率物理上绝对不存在声级差；英文Assuming zero physical level difference can ever exist...变成“零声级差可以存在”是误区。",
+            "recommendation": "改为Assuming ILD must always be zero below a fixed frequency，与中文及同表低频非零ILD例一致。"
+          },
+          {
+            "id": "R2A-P02",
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters/01_problem-definition.md",
+            "line": 234,
+            "title": "1.4kHz行为ITD上限与听神经锁相混为一层",
+            "status": "confirmed-P2-evidence-scope",
+            "evidence": "正文:234、304、306和图1c将特定纯音双耳任务约1.4kHz上限叙成听神经锁相硬截止。实际读Brughera2013方法/结果支持行为阈值；Johnson1980原研究摘要为猫听神经记录至6kHz以下；Verschooten/Joris2014原研究引言明确人体AN外周细结构上限当时未知且本实验只研究猫1kHz。不能从行为阈值直接推出所有听神经锁相上限，也不能用猫数字定人体硬截止。",
+            "recommendation": "图1c与正文用“人类利用纯音细结构作双耳ITD辨别的行为上限约1.4kHz（给定实验）”；神经层级另标模型与物种。4kHz包络例仅说明包络线索与载波细结构线索不同。",
+            "paired_path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters_en/01_problem-definition.md",
+            "source_urls": [
+              "https://pmc.ncbi.nlm.nih.gov/articles/PMC3663869/",
+              "https://pubmed.ncbi.nlm.nih.gov/7419827/",
+              "https://pmc.ncbi.nlm.nih.gov/articles/PMC4164685/"
+            ],
+            "limits": "没有在本轮取得Bernstein2003正文或人体AN实际新数据；不据此裁定4kHz生理绝对截止。"
+          },
+          {
+            "id": "R2A-P03",
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters/01_problem-definition.md",
+            "line": 300,
+            "title": "阶梯缩小时差被叫作降难度",
+            "status": "confirmed-P3",
+            "evidence": "连续3次正确后缩小差异实际提高辨别难度，正文两次称降难度。79.4%标准结论正确；p^3是把3连对或首次错视为更新块时的全对概率，不是任意单试次向下更新概率。",
+            "recommendation": "改为下调时差/提高难度；若保留简推，说明独立固定p、同等上下步长的更新事件平衡近似，文献实际有限步阶梯不等同无限稳态。"
+          },
+          {
+            "id": "R2A-P04",
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters_en/01_problem-definition.md",
+            "line": 722,
+            "title": "英文never equals把一般不等误写成绝不相等",
+            "status": "confirmed-P2-translation",
+            "evidence": "per-bin dB arithmetic averaging never equals broadband ILD为假：若所有频点左右响应幅比相同，所有频点dB平均与宽带功率比dB相等；例如左右完全相同均为0dB。中文:722仅说不能充当，语义强度较准确。",
+            "recommendation": "改为does not generally equal/cannot generally substitute for broadband ILD；保留当前−5.90dB数例。"
+          },
+          {
+            "id": "R2A-P05",
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters/01_problem-definition.md",
+            "line": 76,
+            "title": "声压校准不足以得到声功率W",
+            "status": "confirmed-P2",
+            "evidence": "Pa²与W维度不同；灵敏度和SPL标定只识别局部声压。声功率需表面声强积分，或另给自由场/阻抗/几何面积假设；同一点同压可对应不同辐射功率。",
+            "recommendation": "将此处限为Pa²；若讲W另列声强与面积/空间积分及其假设。",
+            "paired_path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters_en/01_problem-definition.md"
+          },
+          {
+            "id": "R2A-P06",
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters/01_problem-definition.md",
+            "line": 339,
+            "title": "相同双耳输出必丧失所有方位感过强",
+            "status": "candidate-P2-quantifier",
+            "evidence": "ILD/IPD在有效频点归零的代数正确；“所有空间方位感/全部集中头中”未排除原信号单耳谱形、动态线索及既有外化线索，本章:317恰解释单耳谱形可辅助方向。",
+            "recommendation": "限为左右差异线索丢失，通常趋向正中/内化；不要保证所有刺激、所有听者一律无方位感。"
+          },
+          {
+            "id": "R2A-P07",
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters/01_problem-definition.md",
+            "line": 121,
+            "title": "泄气孔声阻统称1/f闪烁需原器件模型支持",
+            "status": "evidence-gap-not-confirmed-error",
+            "evidence": "晶体管flicker与MEMS机械/声学热噪声不是同一来源；本章无原厂PSD/声阻热噪声模型来支持两者普遍严格1/f。练习明给1/f数学模型的计算仍正确。",
+            "recommendation": "寻找原始MEMS噪声建模/器件数据；无该依据时将1/f设为选定模型，并分开ASIC闪烁与声学阻尼热噪声。"
+          },
+          {
+            "id": "R2A-P08",
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters/01_problem-definition.md",
+            "line": 780,
+            "title": "连续渐近与精确离散结果差的来源可更完整",
+            "status": "candidate-P3-explanation",
+            "evidence": "原3.0625与3.179328数值正确。独立把因素拆开：连续精确sin约3.0527846543，离散渐近3.1891153375，离散精确3.1793282391；说明段只突出端点加权，尚有小角近似误差（反向抵消约.0098）。",
+            "recommendation": "补一句同时含离散求积与小角近似误差；若需教学可给四格对照，不改现准确最终结果。"
+          }
+        ],
+        "independent_calculations": [
+          {
+            "R105_independent": {
+              "N": 16,
+              "H": 8,
+              "interior": [
+                16,
+                80
+              ],
+              "g_min": 0.5,
+              "g_max": 1.0,
+              "unnormalized_max_error": 0.6171539205926966,
+              "pointwise_normalized_error": 2.220446049250313e-16
+            },
+            "TLS_original_example": {
+              "OLS": 1.9038461538461535,
+              "TLS": 2.0,
+              "singular": [
+                6.7082039324993685,
+                0.6708203932499371
+              ]
+            },
+            "TLS_gap_limit_counterexample": [
+              {
+                "t": 0.9,
+                "gap": 0.09999999999999998,
+                "v_last": 1,
+                "TLS": 0
+              },
+              {
+                "t": 0.99,
+                "gap": 0.010000000000000009,
+                "v_last": 1,
+                "TLS": 0
+              },
+              {
+                "t": 0.999,
+                "gap": 0.0010000000000000009,
+                "v_last": 1,
+                "TLS": 0
+              }
+            ],
+            "Davis_Kahan_examples": [
+              {
+                "Rdiag": [
+                  5,
+                  1
+                ],
+                "E": [
+                  [
+                    0.0,
+                    0.5
+                  ],
+                  [
+                    0.5,
+                    0.0
+                  ]
+                ],
+                "eigen": [
+                  5.061552812808831,
+                  0.9384471871911696
+                ],
+                "gap": 4.061552812808831,
+                "sin": 0.12218326369570447,
+                "bound": 0.12310562561766053
+              },
+              {
+                "Rdiag": [
+                  1.2,
+                  1
+                ],
+                "E": [
+                  [
+                    0.0,
+                    0.5
+                  ],
+                  [
+                    0.5,
+                    0.0
+                  ]
+                ],
+                "eigen": [
+                  1.6099019513592787,
+                  0.5900980486407214
+                ],
+                "gap": 0.6099019513592786,
+                "sin": 0.6339889056055381,
+                "bound": 0.8198039027185569
+              }
+            ],
+            "Schur_original": {
+              "5": [
+                -0.0567077257558336,
+                0.4083231087925729,
+                5.398384616963259
+              ],
+              "6": [
+                2.720534016431717e-17,
+                0.41432017941824717,
+                6.335679820581753
+              ],
+              "7": [
+                0.040848428035793354,
+                0.4198034189854268,
+                7.28934815297878
+              ]
+            },
+            "cond_counterexample": {
+              "G": [
+                [
+                  1,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "actual_cond": "inf",
+              "nonzero_singular_ratio": 1
+            },
+            "spectral_best_rank_nonunique": {
+              "G": [
+                [
+                  3,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ]
+              ],
+              "B1": [
+                [
+                  3,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "B2": [
+                [
+                  2.5,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "both_spectral_error": 1,
+              "gap": 2
+            },
+            "variance_only_if_counterexample": {
+              "covariance": [
+                [
+                  1,
+                  0.2,
+                  -0.2
+                ],
+                [
+                  0.2,
+                  1,
+                  0
+                ],
+                [
+                  -0.2,
+                  0,
+                  1
+                ]
+              ],
+              "sum_variance": 3,
+              "sum_individual_variance": 3,
+              "not_pairwise_uncorrelated": true
+            },
+            "MM_counterexample": {
+              "J": "identically 0",
+              "Q": "identically 0",
+              "argmin_selection": "x_(t+1)=-x_t, x_0=1",
+              "iterate_sequence": [
+                1,
+                -1,
+                1,
+                -1
+              ],
+              "objective_sequence": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "all_majorization_and_tangency_conditions": true,
+              "convergent_iterates": false
+            },
+            "CRLB_nonregular_counterexample": {
+              "family": "n independent Uniform(0,theta)",
+              "estimator": "(n+1)/n max(X_i)",
+              "unbiased": true,
+              "variance": "theta^2/[n(n+2)]",
+              "outer_score_information": "n^2/theta^2",
+              "claimed_inverse": "theta^2/n^2",
+              "violates_claim": "n(n+2)>n^2; support depends on theta"
+            }
+          },
+          {
+            "ch1_noise_budget_factor_separation": {
+              "continuous_asymptotic": 3.0625,
+              "continuous_exact_sin": 3.0527846543350066,
+              "discrete_asymptotic": 3.1891153374775274,
+              "discrete_exact_sin": 3.1793282391427846,
+              "formula": "output PSD multiplier=1/[2 sin²(2pi f d/c)], d=.01,c343; integrate 100..4000 by 1000001-point trapezoid, discrete100..4000 step10",
+              "correction_note": "first scratch attempt mistakenly used plain undelayed pair sine(pi fd/c); discarded, recomputed actual delayed endfire model sin(2pi fd/c) after checking code/formula, final values above only"
+            },
+            "equicorrelation_boundary": {
+              "M": 4,
+              "rho": -0.3333333333333333,
+              "eigen": [
+                0,
+                1.3333333333333333,
+                1.3333333333333333,
+                1.3333333333333333
+              ],
+              "mean_noise_variance": 0,
+              "interpretation": "PSD singular endpoint, ideal cancellation possible; ordinary positive-noise SNR gain ratio needs separately handle zero denominator"
+            },
+            "broadband_ILD_never_counterexample": "H_R=H_L=1 all bins, per-bin dB average=0=broadband ILD",
+            "Kalman_complex_input": "F=H=I2,Q=[[1,.2j],[-.2j,1]],R=P=I2,s=z=0 accepted, predicted_cov=2I silently drops imaginary correlation",
+            "NNLS_budget_control": {
+              "P": [
+                [
+                  1,
+                  0.5
+                ],
+                [
+                  0.5,
+                  1
+                ]
+              ],
+              "b": [
+                1,
+                -0.2
+              ],
+              "max_iters": 1,
+              "q": [
+                0.4,
+                0.1333333333333333
+              ],
+              "dual_min": -0.2666666666666666,
+              "complementary_slackness": 0.10666666666666665
+            },
+            "rank_deficient_covariance_MLE": "Rhat=diag(1,0), R=diag(1,eps), L=1+log eps -> -infinity, no strictly PD minimizer"
+          }
+        ],
+        "figure_pixel_reviews": [
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/figures/fig29_audio_examples.png",
+            "viewed": true,
+            "method": "view_image显示真实PNG，直接检查三面板轴/图例/曲线",
+            "observations": "三面板轴切换、3样本/8ms局部波形、1.2-1.8s已知双讲阴影与WPE谐波衰减均可见；中文字/英文图例无明显遮挡裁切；WPE初始瞬态约0.08，正文泛称0-2s全低于0.04过强",
+            "limits": "只看PNG显示尺寸；未核网站/PDF嵌入后的字号，不称出版版面验收"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/figures_en/fig29_audio_examples.png",
+            "viewed": true,
+            "method": "view_image显示真实PNG，直接检查三面板轴/图例/曲线",
+            "observations": "三面板轴切换、3样本/8ms局部波形、1.2-1.8s已知双讲阴影与WPE谐波衰减均可见；中文字/英文图例无明显遮挡裁切；WPE初始瞬态约0.08，正文泛称0-2s全低于0.04过强",
+            "limits": "只看PNG显示尺寸；未核网站/PDF嵌入后的字号，不称出版版面验收"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/figures/fig84_complex_phasor_fourier.png",
+            "actually_opened": true,
+            "method": "tools.view_image actual PNG",
+            "observations": "实际显示下标题、坐标、图例可读；逐项对照正文的相位/折回/分母、投影/收缩、Rayleigh/GEV/虚拟滞后、Frost/伪协方差/Kalman趋势。图85c确定性扰动命名见M14；英文图84c图例与n3最低点局部重叠为小改进候选。",
+            "not_verified": "没有打开网页/PDF最终版面，不宣称最终字号验收"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/figures_en/fig84_complex_phasor_fourier.png",
+            "actually_opened": true,
+            "method": "tools.view_image actual PNG",
+            "observations": "实际显示下标题、坐标、图例可读；逐项对照正文的相位/折回/分母、投影/收缩、Rayleigh/GEV/虚拟滞后、Frost/伪协方差/Kalman趋势。图85c确定性扰动命名见M14；英文图84c图例与n3最低点局部重叠为小改进候选。",
+            "not_verified": "没有打开网页/PDF最终版面，不宣称最终字号验收"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/figures/fig85_subspace_projection_svd.png",
+            "actually_opened": true,
+            "method": "tools.view_image actual PNG",
+            "observations": "实际显示下标题、坐标、图例可读；逐项对照正文的相位/折回/分母、投影/收缩、Rayleigh/GEV/虚拟滞后、Frost/伪协方差/Kalman趋势。图85c确定性扰动命名见M14；英文图84c图例与n3最低点局部重叠为小改进候选。",
+            "not_verified": "没有打开网页/PDF最终版面，不宣称最终字号验收"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/figures_en/fig85_subspace_projection_svd.png",
+            "actually_opened": true,
+            "method": "tools.view_image actual PNG",
+            "observations": "实际显示下标题、坐标、图例可读；逐项对照正文的相位/折回/分母、投影/收缩、Rayleigh/GEV/虚拟滞后、Frost/伪协方差/Kalman趋势。图85c确定性扰动命名见M14；英文图84c图例与n3最低点局部重叠为小改进候选。",
+            "not_verified": "没有打开网页/PDF最终版面，不宣称最终字号验收"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/figures/fig86_hermitian_rayleigh_gev.png",
+            "actually_opened": true,
+            "method": "tools.view_image actual PNG",
+            "observations": "实际显示下标题、坐标、图例可读；逐项对照正文的相位/折回/分母、投影/收缩、Rayleigh/GEV/虚拟滞后、Frost/伪协方差/Kalman趋势。图85c确定性扰动命名见M14；英文图84c图例与n3最低点局部重叠为小改进候选。",
+            "not_verified": "没有打开网页/PDF最终版面，不宣称最终字号验收"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/figures_en/fig86_hermitian_rayleigh_gev.png",
+            "actually_opened": true,
+            "method": "tools.view_image actual PNG",
+            "observations": "实际显示下标题、坐标、图例可读；逐项对照正文的相位/折回/分母、投影/收缩、Rayleigh/GEV/虚拟滞后、Frost/伪协方差/Kalman趋势。图85c确定性扰动命名见M14；英文图84c图例与n3最低点局部重叠为小改进候选。",
+            "not_verified": "没有打开网页/PDF最终版面，不宣称最终字号验收"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/figures/fig87_wirtinger_probability_bayesian.png",
+            "actually_opened": true,
+            "method": "tools.view_image actual PNG",
+            "observations": "实际显示下标题、坐标、图例可读；逐项对照正文的相位/折回/分母、投影/收缩、Rayleigh/GEV/虚拟滞后、Frost/伪协方差/Kalman趋势。图85c确定性扰动命名见M14；英文图84c图例与n3最低点局部重叠为小改进候选。",
+            "not_verified": "没有打开网页/PDF最终版面，不宣称最终字号验收"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/figures_en/fig87_wirtinger_probability_bayesian.png",
+            "actually_opened": true,
+            "method": "tools.view_image actual PNG",
+            "observations": "实际显示下标题、坐标、图例可读；逐项对照正文的相位/折回/分母、投影/收缩、Rayleigh/GEV/虚拟滞后、Frost/伪协方差/Kalman趋势。图85c确定性扰动命名见M14；英文图84c图例与n3最低点局部重叠为小改进候选。",
+            "not_verified": "没有打开网页/PDF最终版面，不宣称最终字号验收"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/figures/fig01_binaural.png",
+            "actually_opened": true,
+            "method": "tools.view_image实际打开本地PNG",
+            "observations": "红色指向声源/蓝色传播方向、Woodworth656/自由场510us及9us/度相符；图1c神经锁相层级问题见P02。",
+            "not_verified": "未打开最终网页/PDF，不宣称最终字号/重排验收"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/figures_en/fig01_binaural.png",
+            "actually_opened": true,
+            "method": "tools.view_image实际打开本地PNG",
+            "observations": "红色指向声源/蓝色传播方向、Woodworth656/自由场510us及9us/度相符；图1c神经锁相层级问题见P02。",
+            "not_verified": "未打开最终网页/PDF，不宣称最终字号/重排验收"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/figures/fig02_dsin_geometry.png",
+            "actually_opened": true,
+            "method": "tools.view_image实际打开本地PNG",
+            "observations": "实际两语图均看：正角先到麦2与tau12>0、正横0、正端射d/c及d sin theta垂足三角形一致；当前原尺寸标注可读，无可见裁切。",
+            "not_verified": "未打开最终网页/PDF，不宣称最终字号/重排验收"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/figures_en/fig02_dsin_geometry.png",
+            "actually_opened": true,
+            "method": "tools.view_image实际打开本地PNG",
+            "observations": "实际两语图均看：正角先到麦2与tau12>0、正横0、正端射d/c及d sin theta垂足三角形一致；当前原尺寸标注可读，无可见裁切。",
+            "not_verified": "未打开最终网页/PDF，不宣称最终字号/重排验收"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/figures/fig03_near_far_field.png",
+            "actually_opened": true,
+            "method": "tools.view_image实际打开本地PNG",
+            "observations": "实际两语图均看：近场r1>r2>r3与源位一致；远场明列相位曲率r>2D²/lambda并另列r>>D幅差条件。当前PNG轴/说明可读。",
+            "not_verified": "未打开最终网页/PDF，不宣称最终字号/重排验收"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/figures_en/fig03_near_far_field.png",
+            "actually_opened": true,
+            "method": "tools.view_image实际打开本地PNG",
+            "observations": "实际两语图均看：近场r1>r2>r3与源位一致；远场明列相位曲率r>2D²/lambda并另列r>>D幅差条件。当前PNG轴/说明可读。",
+            "not_verified": "未打开最终网页/PDF，不宣称最终字号/重排验收"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/figures/fig04_delay_phase.png",
+            "actually_opened": true,
+            "method": "tools.view_image实际打开本地PNG",
+            "observations": "实际两语图均看：延迟右移、负相位顺时针、4cm约.117ms、1kHz约−42°/2kHz−84°及未折叠直线一致；标注无明显裁切。",
+            "not_verified": "未打开最终网页/PDF，不宣称最终字号/重排验收"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/figures_en/fig04_delay_phase.png",
+            "actually_opened": true,
+            "method": "tools.view_image实际打开本地PNG",
+            "observations": "实际两语图均看：延迟右移、负相位顺时针、4cm约.117ms、1kHz约−42°/2kHz−84°及未折叠直线一致；标注无明显裁切。",
+            "not_verified": "未打开最终网页/PDF，不宣称最终字号/重排验收"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/figures/fig05_room_acoustics.png",
+            "actually_opened": true,
+            "method": "tools.view_image实际打开本地PNG",
+            "observations": "实际两语图均看：12ms直达峰、4反射、模拟尾、EDC506ms与距直达494ms/名义500ms分开；dc1m为该子图给定，不当实测。图下注单位清晰。",
+            "not_verified": "未打开最终网页/PDF，不宣称最终字号/重排验收"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/figures_en/fig05_room_acoustics.png",
+            "actually_opened": true,
+            "method": "tools.view_image实际打开本地PNG",
+            "observations": "实际两语图均看：12ms直达峰、4反射、模拟尾、EDC506ms与距直达494ms/名义500ms分开；dc1m为该子图给定，不当实测。图下注单位清晰。",
+            "not_verified": "未打开最终网页/PDF，不宣称最终字号/重排验收"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/figures/fig06_stft_cov.png",
+            "actually_opened": true,
+            "method": "tools.view_image实际打开本地PNG",
+            "observations": "实际两语图均看：32ms/8ms75%重叠、单麦谱与另用理论协方差明确分开；2大6小特征值相对噪声底0dB。原PNG标签可读，不能据此说最终PDF字号通过。",
+            "not_verified": "未打开最终网页/PDF，不宣称最终字号/重排验收"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/figures_en/fig06_stft_cov.png",
+            "actually_opened": true,
+            "method": "tools.view_image实际打开本地PNG",
+            "observations": "实际两语图均看：32ms/8ms75%重叠、单麦谱与另用理论协方差明确分开；2大6小特征值相对噪声底0dB。原PNG标签可读，不能据此说最终PDF字号通过。",
+            "not_verified": "未打开最终网页/PDF，不宣称最终字号/重排验收"
+          }
+        ],
+        "prior_findings_challenged": [
+          {
+            "id": "R105",
+            "result": "独立不同输入N16/H8验证成立；式0-16作为未归一OLA公式正确，不误报其本身",
+            "official_source": "https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.check_NOLA.html",
+            "read_locator": "Notes lines79-86及check_COLA Notes101-102",
+            "date": "2026-11-23"
+          },
+          {
+            "id": "R129",
+            "result": "原不等式链正确但点列收敛泛化不成立，独立J=Q=0反例见M08"
+          },
+          {
+            "id": "TLS/Davis–Kahan/Schur prior correct examples",
+            "result": "原数值全部通过独立NumPy计算；TLS邻接通用边界声明另由反例推翻M04，不把正确数字误报"
+          },
+          {
+            "id": "CRLB regularity candidate / C-R1B-02",
+            "result": "独立n样本Uniform反例支持缺条件；当前proper高斯窄带例未发现该问题，不改其已正确常数。参数无关支持是易教充分条件，不误写绝对必要。"
+          }
+        ],
+        "source_reads": [
+          {
+            "url": "https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.check_NOLA.html",
+            "date": "2026-11-23",
+            "actual_read": "工具返回全文145行；重点Notes79-86和examples106-135",
+            "not_read": "链接的原书未跟读"
+          },
+          {
+            "url": "https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.check_COLA.html",
+            "date": "2026-11-23",
+            "actual_read": "工具返回全文175行；重点Notes101-116",
+            "not_read": "链接原书/原论文未跟读"
+          },
+          {
+            "url": "https://arxiv.org/pdf/1010.1763",
+            "date": "2026-11-23",
+            "actual_read": "v3 §2.2定义/下降链，工具行271–428；§5行1391–1393及结论1783–1789明确不保证驻点收敛",
+            "not_read": "未读全24页"
+          },
+          {
+            "url": "https://arxiv.org/pdf/1405.0680",
+            "date": "2026-11-23",
+            "actual_read": "v1工具行21–133 Theorem1/2与mixed eigengap版本",
+            "not_read": "非全文，未把v1提取排版错误当书内定理错"
+          },
+          {
+            "url": "https://genome.sph.umich.edu/w/images/1/12/Bios602-wi13-lec13-presentation.pdf",
+            "date": "2026-11-23",
+            "actual_read": "CRLB summary regularity/nonregular slide pp34–38定位",
+            "not_read": "非全文"
+          },
+          {
+            "url": "https://www.stat.cmu.edu/~larry/=stat705/Lecture13.pdf",
+            "date": "2026-11-23",
+            "actual_read": "工具行0–288，Uniform MLE例220–225",
+            "not_read": "非全文，未单独作为CRLB条件依据"
+          },
+          {
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3663869/",
+            "date": "2026-11-23",
+            "actual_read": "Brughera2013方法95–109、结果115–151、高频188–197、神经模型200–264，discussion435–473部分",
+            "not_read": "未复现神经模型/原数据；未把局部读当全文"
+          },
+          {
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4310855/",
+            "date": "2026-11-23",
+            "actual_read": "Brown precedence引言/方法工具行0–128，任务区分",
+            "not_read": "非全文，不作为所有神经机制原始实验证据"
+          },
+          {
+            "url": "https://pubmed.ncbi.nlm.nih.gov/7419827/",
+            "date": "2026-11-23",
+            "actual_read": "Johnson1980原研究作者摘要，工具行230–232猫AN记录",
+            "not_read": "非正文/数据图，不能从摘要推出人体极限"
+          },
+          {
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4164685/",
+            "date": "2026-11-23",
+            "actual_read": "Verschooten/Joris2014原研究Abstract/Introduction/Methods工具行70–133，尤其71,78,87",
+            "not_read": "非全文/全部实验结果；本轮不采用其方法推广人体数据"
+          }
+        ],
+        "pending": [
+          "导读图目录列出的其余非本批图未逐张打开；本批实际像素范围仅1–6、29、84–87中英共22张，不声称全部87编号图验收",
+          "未执行正式音频/图/站点/PDF重生、主观听测、最终网页/PDF排版；76测试通过不代替目视",
+          "相关共享IO、全部跨章消费者/依赖闭包未全文读；partial文件未读区间按coverage明确保留",
+          "原始HRTF/优先效应/球散射等所有引用并未全文读；Bernstein2003/AOP/器件PSD原文尚缺，保持独立缺证",
+          "source SHA只说明指定当前源与报告/中文图元数据对应；不意味着全部报告数值和所有英文图来源重新完整重放",
+          "父代理独立继续第2～3章；本批不包含第2～3章全文"
+        ],
+        "executed_checks": [
+          {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m unittest tests.test_codes_ch00_math_foundations tests.test_codes_foundations_round3",
+            "result": "36 tests, 2.684s, OK",
+            "write_boundary": "未重建正式资产；测试自身临时夹具目录不计正式生成物"
+          },
+          {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m unittest tests.test_codes_chapter01_experiments tests.test_codes_binaural_cues tests.test_codes_spectral_cues tests.test_build_binaural_audio",
+            "result": "40 tests, 11.650s, OK",
+            "write_boundary": "测试临时夹具在仓外；未执行正式音频/图片/站点/PDF生成器"
+          },
+          {
+            "check": "图84–87报告source_sha256各4源与当前字节摘要比对；中文PNG NumericalReportDigest与对应JSON真实sha256比对",
+            "result": "4报告均匹配当前4源；4中文PNG报告digest均匹配",
+            "boundary": "源绑定检查，不等于报告全部数值重放；未核英文PNG元数据"
+          },
+          {
+            "check": "git status --short",
+            "result": "空，工作区干净；无仓内修改"
+          }
+        ],
+        "failed_or_limited_source_access": [
+          {
+            "url": "https://doi.org/10.1121/1.4861243",
+            "result": "Aaronson/Hartmann全文未取得；不宣称已读原正文"
+          },
+          {
+            "url": "https://doi.org/10.1121/1.1570431",
+            "result": "Bernstein2003 AIP不可访问；未读正文"
+          },
+          {
+            "url": "https://www.analog.com/media/en/technical-documentation/application-notes/AN-1112.pdf",
+            "result": "原厂PDF未取得，本轮未裁定AOP peak/RMS通用合同"
+          },
+          {
+            "url": "https://riunet.upv.es/server/api/core/bitstreams/f65b9337-1b1e-4013-9020-8338ac77ad6b/content",
+            "result": "本轮超时；成功读PMC正文片段是独立可访问来源，不把父轮PDF读取算本轮读取"
+          }
+        ],
+        "unified_evidence_read_scope": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/reviews/2026-11-23-multiround-evidence.json",
+          "actually_read": "完整附件键/packet目录；content-r1-r1b所有findings及导读/0/1主题完整条目与CRLB、MM、TLS/DavisKahan/Schur相关条目实际输出审读；不是其余chapter主题全附件全文",
+          "R1_subject_to_challenge": true
+        },
+        "not_adopted_candidates": [
+          {
+            "candidate": "Davis–Kahan必须改成population eigengap",
+            "reason": "不采用：现mixed/cross gap严格版本与原Theorem1吻合；两组数例均通过。"
+          },
+          {
+            "candidate": "TLS/Schur原手算错",
+            "reason": "不采用：实际复算原例全吻合；仅TLS泛化边界断言需修。"
+          },
+          {
+            "candidate": "双Hann50%无法重建或式0-16错误",
+            "reason": "不采用：逐点NOLA归一可重建；式0-16未归一OLA条件本身正确。修“必须75%”而非正确公式。"
+          },
+          {
+            "candidate": "MM IRLS当前数值实现失败",
+            "reason": "不采用：本轮未发现，默认练习通过；理论收敛泛称有反例。"
+          },
+          {
+            "candidate": "3down1up79.4%数字错误",
+            "reason": "不采用：更新块平衡推得标准79.37%；只修难度方向及推导事件口径。"
+          },
+          {
+            "candidate": "AOP必须统一RMS/peak换算",
+            "reason": "未采用待核：不同官方文档可能有specific test convention；未得到本器件/标准原段，不臆测。"
+          },
+          {
+            "candidate": "第1章3.179最终噪声比错误",
+            "reason": "不采用：正确模型sin(2pi fd/c)实际复算3.1793282391427846，与本章及测试吻合。"
+          }
+        ],
+        "coverage_totals": {
+          "source_prose_zh_en_lines": 6218,
+          "source_prose_files": 6,
+          "fullread_core_exercise_generator_test_files": 14,
+          "executed_tests": 76,
+          "actually_opened_numbered_pngs": 22,
+          "findings_including_candidates_and_gaps": 35,
+          "repository_mutation": false
+        },
+        "source_identity": [
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters/00_overview.md",
+            "sha256_at_handoff": "f79cfc2efcd10c17650803f4761258f0afb1a2cfd47a5c1a5b835b87a06a0ef6",
+            "boundary": "当前交接字节身份，不宣称无并发变化"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters_en/00_overview.md",
+            "sha256_at_handoff": "3be2c4c29c3c56f3c8bcf8509f8ecd2840b956a261be05a65cd25c74d43db810",
+            "boundary": "当前交接字节身份，不宣称无并发变化"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters/00_math-foundations.md",
+            "sha256_at_handoff": "f65ed468c0409167d6dc1ca4a2998cb5eb679544f4fad69f3aeb214521fd8879",
+            "boundary": "当前交接字节身份，不宣称无并发变化"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters_en/00_math-foundations.md",
+            "sha256_at_handoff": "8287c728cee6a9d6523bd7a884e6e47b7fa2d256c62593bdc77d86fa4392ae7d",
+            "boundary": "当前交接字节身份，不宣称无并发变化"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters/01_problem-definition.md",
+            "sha256_at_handoff": "20548729bd1c974a1aa90b408d13285f091b727f35d50169de908980d32a2588",
+            "boundary": "当前交接字节身份，不宣称无并发变化"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters_en/01_problem-definition.md",
+            "sha256_at_handoff": "b786e87b6b70e9f22ff80e529c74f4aa31bb67819acb1897bc352d7f96bbcf1e",
+            "boundary": "当前交接字节身份，不宣称无并发变化"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/reviews/2026-11-23-multiround-review.md",
+            "sha256_at_handoff": "7aa64bc37955b8485ee473585e98a5edde9173fe622c834137921ba02e5a6a43",
+            "boundary": "当前交接字节身份，不宣称无并发变化"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/core/chapter00_math.py",
+            "sha256_at_handoff": "10ef5c9247bda1a9e28d81cbe4208b032a93c552bf2f113a86f08ba02c43aa11",
+            "boundary": "当前交接字节身份，不宣称无并发变化"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/chapter00_exercises.py",
+            "sha256_at_handoff": "514c94e2fbcd586440aefee69ba547afbba92b87202f69435986bba6f61e298d",
+            "boundary": "当前交接字节身份，不宣称无并发变化"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/tests/test_codes_ch00_math_foundations.py",
+            "sha256_at_handoff": "bfd58d215a29243feb788eaa68a539a09c68b65df0d4ac710f6a9d00433b5110",
+            "boundary": "当前交接字节身份，不宣称无并发变化"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/tests/test_codes_foundations_round3.py",
+            "sha256_at_handoff": "1efe14f5ca52c279cffc9e56a09ce15b13f2e99523301f6b69053a84a85f1426",
+            "boundary": "当前交接字节身份，不宣称无并发变化"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/scripts/make_math_figures.py",
+            "sha256_at_handoff": "7da5037abffa5bdeb596a1f78b079d118d95564a3c858aaf5852cc23f5c60d35",
+            "boundary": "当前交接字节身份，不宣称无并发变化"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch01/core/binaural_cues.py",
+            "sha256_at_handoff": "7a3e70efdf99b68a62f861e1ac0b17d878fdb5bd812a5271c90aa0d78e6674f1",
+            "boundary": "当前交接字节身份，不宣称无并发变化"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch01/core/spectral_cues.py",
+            "sha256_at_handoff": "606f1eafdd111e15b2906afb17230c5539f44414a65b36ae617b7e516d0d6504",
+            "boundary": "当前交接字节身份，不宣称无并发变化"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch01/core/spatial_coherence_and_dba.py",
+            "sha256_at_handoff": "da04d2b9c3733eba810b654ae5425f4d6776c21e10856c9b60c3ea99feda1a55",
+            "boundary": "当前交接字节身份，不宣称无并发变化"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch01/chapter01_experiments.py",
+            "sha256_at_handoff": "c5f8339f9e7595acb88e1e22584123a3db699fc89b4d918f65801546cbb94016",
+            "boundary": "当前交接字节身份，不宣称无并发变化"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch01/examples/generate_binaural_cues.py",
+            "sha256_at_handoff": "a402bc0c0ff0de7657b4a92475fe979abefc7e101f876495a73f921117c75278",
+            "boundary": "当前交接字节身份，不宣称无并发变化"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch01/examples/generate_spectral_cues.py",
+            "sha256_at_handoff": "aac7b1914a38531c25dd608c4522beda8304f23acbce35b6d425945cedb9a000",
+            "boundary": "当前交接字节身份，不宣称无并发变化"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/tests/test_codes_chapter01_experiments.py",
+            "sha256_at_handoff": "83d4e0f217a2441cafa989d2b1b8b2559482ded06bd7a9761b84d81fc10f887a",
+            "boundary": "当前交接字节身份，不宣称无并发变化"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/tests/test_codes_binaural_cues.py",
+            "sha256_at_handoff": "b855527a6ae9e438595b9d82ef122f6c5be073d3e588b421823654f16ede54ae",
+            "boundary": "当前交接字节身份，不宣称无并发变化"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/tests/test_codes_spectral_cues.py",
+            "sha256_at_handoff": "3638fe5cb6f9a8ec7e89f4e641356a5ba75f840e5559fe179629cdbec85225be",
+            "boundary": "当前交接字节身份，不宣称无并发变化"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/tests/test_build_binaural_audio.py",
+            "sha256_at_handoff": "03d559d46a801cd5c79b7eae90f7fe05f6972c34cd3251cae45a96582f033110",
+            "boundary": "当前交接字节身份，不宣称无并发变化"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/scripts/make_figures.py",
+            "sha256_at_handoff": "4bc6a6ce675292c51d538c0f7d3c6f9c8fe3a2de2d0d7945f48cb4baaa801e49",
+            "boundary": "当前交接字节身份，不宣称无并发变化"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/cross_chapter/exercises_spatial.py",
+            "sha256_at_handoff": "9046103e61ae212de3ba3e934068a25d6702f53d49c4f6d4c9c0f2e9bbbeb663",
+            "boundary": "当前交接字节身份，不宣称无并发变化"
+          }
+        ]
       }
     }
   ]

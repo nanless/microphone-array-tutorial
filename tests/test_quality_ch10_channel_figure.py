@@ -1,4 +1,4 @@
-"""Isolated figure78 publication and preflight controls; no formal writes."""
+"""Isolated figure73 publication and preflight controls; no formal writes."""
 import hashlib
 import json
 from pathlib import Path
@@ -17,8 +17,8 @@ class ChannelFigureTests(unittest.TestCase):
         cls.root = Path(cls.temp.name)
         cls.audio = cls.root/'audio'
         cls.manifest = generator.generate_assets(cls.audio)
-        cls.png = cls.root/'fig78.png'
-        cls.report_path = cls.root/'figure78.json'
+        cls.png = cls.root/'fig73.png'
+        cls.report_path = cls.root/'figure73.json'
         cls.before = {p.name: (p.read_bytes(), p.stat().st_mtime_ns) for p in cls.audio.iterdir()}
         cls.report = figure.generate_figure(cls.png, cls.report_path, audio_directory=cls.audio)
 
@@ -28,7 +28,7 @@ class ChannelFigureTests(unittest.TestCase):
 
     def test_current_sources_actual_pcm_and_all_numerical_boundaries(self):
         report = json.loads(self.report_path.read_bytes())
-        self.assertEqual(report['exercise_id'], 'E10-34')
+        self.assertEqual(report['exercise_id'], 'E10-26')
         self.assertEqual(set(report['source_sha256']), set(generator.SOURCE_PATHS)|{'scripts/make_channel_figures.py'})
         self.assertEqual(report['source_sha256'], {name: hashlib.sha256((figure.ROOT/name).read_bytes()).hexdigest() for name in figure.SOURCE_PATHS})
         self.assertEqual(report['input_sha256'], {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in self.audio.iterdir()})
@@ -60,9 +60,9 @@ class ChannelFigureTests(unittest.TestCase):
             self.assertEqual(image.info['NumericalReportDigest'], hashlib.sha256(self.report_path.read_bytes()).hexdigest())
 
     def test_bad_destinations_are_rejected_before_inputs_and_no_report_is_touched(self):
-        targets = [figure.ROOT/'figures/fig63_noise_mismatch.png',
+        targets = [figure.ROOT/'figures/fig58_noise_mismatch.png',
                    figure.ROOT/'codes/chapters/ch10/core/channel_audio.py',
-                   figure.ROOT/'codes/chapters/ch10/reports/figure63_noise_mismatch.json']
+                   figure.ROOT/'codes/chapters/ch10/reports/figure58_noise_mismatch.json']
         for path in targets:
             with self.subTest(path=path), patch.object(figure, 'check_assets') as checked:
                 with self.assertRaises(ValueError):

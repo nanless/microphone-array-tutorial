@@ -46,7 +46,7 @@ Before reading ahead, review [Chapter 5, §5.5.1 on Multichannel Wiener Filterin
 
 #### Partitioning the Global Observation Vector by Node
 
-Consider a network of $U$ collaborative pickup nodes where node $u$ carries $M_u$ local microphones ($u = 1, \ldots, U$), giving $M = \sum_{u=1}^U M_u$ microphones network-wide. Fixing frequency bin $k$, stack node $u$'s local frequency-domain observations at frame $\ell$ into column vector $\vec x_u[k, \ell] \in \mathbb{C}^{M_u \times 1}$. Stacking all $U$ nodes vertically from a god's-eye view forms the $M$-dimensional global observation vector $\vec x \in \mathbb{C}^{M \times 1}$. Starting with a single latent scalar target source $s$ (omitting fixed $[k, \ell]$ indices below):
+Consider a network of $U$ collaborative pickup nodes where node $u$ carries $M_u$ local microphones ($u = 1, \ldots, U$), giving $M = \sum_{u=1}^U M_u$ microphones network-wide. Fixing frequency bin $k$, stack node $u$'s local frequency-domain observations at frame $\ell$ into column vector $\vec x_u[k, \ell] \in \mathbb{C}^{M_u \times 1}$. Stacking all $U$ nodes vertically from a global centralized view forms the $M$-dimensional global observation vector $\vec x \in \mathbb{C}^{M \times 1}$. Starting with a single latent scalar target source $s$ (omitting fixed $[k, \ell]$ indices below):
 
 $$\begin{gathered}
 \vec x=[\vec x_1^\top,\ldots,\vec x_U^\top]^\top,\\
@@ -106,7 +106,7 @@ Numerical implementations solve $\mathbf R_{xx}\vec w_u^\star = \vec r_{xd_u}$ v
 
 #### Target References Cannot Be Read Straight Off Noisy Recordings
 
-Newcomers to MWF often ask: "Since microphone $r_u$ is our reference channel, why not plug raw recording $x_{r_u}$ in for $d_u$ when forming $\mathbb{E}[\vec x x_{r_u}^*]$?" **Never!** Because $x_{r_u} = c_u s + n_{r_u}$ contains channel $r_u$'s own noise $n_{r_u}$, substituting $x_{r_u}$ for $d_u$ turns the normal equations into $\mathbf R_{xx}\vec w = \mathbf R_{xx}\vec e_{r_u}$, collapsing trivially to unit coordinate vector $\vec w = \vec e_{r_u}$—passing the noisy reference channel through untouched with zero noise reduction!
+Newcomers to MWF often ask: "Since microphone $r_u$ is our reference channel, why not plug raw recording $x_{r_u}$ in for $d_u$ when forming $\mathbb{E}[\vec x x_{r_u}^*]$?" This does not work. Because $x_{r_u} = c_u s + n_{r_u}$ contains channel $r_u$'s own noise $n_{r_u}$, substituting $x_{r_u}$ for $d_u$ turns the normal equations into $\mathbf R_{xx}\vec w = \mathbf R_{xx}\vec e_{r_u}$, collapsing trivially to unit coordinate vector $\vec w = \vec e_{r_u}$—passing the noisy reference channel through untouched with zero noise reduction.
 
 In real deployments where clean $d_u$ is unobservable, Voice Activity Detection (VAD) or time–frequency masks estimate $\hat{\mathbf R}_{nn}$ during noise-only frames and $\hat{\mathbf R}_{xx}$ during active speech, forming target covariance $\hat{\mathbf R}_{ss} = \hat{\mathbf R}_{xx} - \hat{\mathbf R}_{nn}$ (or the robust low-rank GEVD estimate of §13.12) and extracting column $r_u$ as $\vec r_{xd_u} = \hat{\mathbf R}_{ss}\vec e_{r_u}$. Note also that Eq. (13-3) corresponds to unweighted MWF (speech-distortion-weighted SDW-MWF of [Chapter 5](05_beamforming.md) at trade-off parameter $\mu = 1$); if nodes choose *different* noise-weighting factors $\mu_u$, their centralized optimal weights cease to be collinear under multi-source noise and single-channel broadcast theorems require modification.
 
@@ -157,15 +157,15 @@ Writing scalar Wiener gain $g_{\mathrm{W}} = \frac{\phi_s q}{1 + \phi_s q}$, con
 2. **Step 2 (Node-specific acoustic image projection)**: Multiply by node $u$'s reference transfer factor $c_u$ (appearing conjugated as $c_u^*$ inside $\vec w_u^\star$ so $\vec w^H\vec x$ restores $c_u$), projecting dry $s$ onto node $u$'s true acoustic image $c_u s$;
 3. **Step 3 (Single-channel real Wiener shrinkage)**: Multiply by scalar Wiener gain $g_{\mathrm{W}} = \frac{\rho}{1 + \rho} \in (0, 1)$, trading a slight target amplitude shrinkage for steeper residual noise reduction to land squarely at $\operatorname{NMSE}_u^\star = 1 / (1 + \rho)$.
 
-This three-factor structure immediately reveals the deepest secret of distributed collaborative enhancement: **because centralized optimal weights $\vec w_u^\star$ across every node $u = 1, \ldots, U$ are merely distinct complex scalar multiples of the *exact same* global vector $\mathbf R_{nn}^{-1}\vec a$, each node only ever needs to contribute a *one-dimensional* spatial projection to the rest of the network!** (Note that $\operatorname{NMSE}_u^\star$ requires $\phi_{d_u} > 0$, i.e., $\phi_s > 0$ and $c_u \ne 0$.)
+This three-factor structure immediately reveals the key structural property of distributed collaborative enhancement: **because centralized optimal weights $\vec w_u^\star$ across every node $u = 1, \ldots, U$ are merely distinct complex scalar multiples of the *exact same* global vector $\mathbf R_{nn}^{-1}\vec a$, each node only ever needs to contribute a *one-dimensional* spatial projection to the rest of the network.** (Note that $\operatorname{NMSE}_u^\star$ requires $\phi_{d_u} > 0$, i.e., $\phi_s > 0$ and $c_u \ne 0$.)
 
 #### Why Averaging Unnormalized MSE Across Nodes Distorts Rankings
 
-Equation (13-6) exposes a classic distributed evaluation trap. Suppose Node 1 sits farther from the talker with $d_1 = s$, while Node 2 sits closer where acoustic pressure is twice as strong: $d_2 = 2s$. By Eq. (13-6), Node 2's optimal weight is $2\times$ Node 1's, and its unnormalized MSE $J_2^\star = 4 J_1^\star$ is **$4\times$ larger**!
+Equation (13-6) exposes a classic distributed evaluation trap. Suppose Node 1 sits farther from the talker with $d_1 = s$, while Node 2 sits closer where acoustic pressure is twice as strong: $d_2 = 2s$. By Eq. (13-6), Node 2's optimal weight is $2\times$ Node 1's, and its unnormalized MSE $J_2^\star = 4 J_1^\star$ is **$4\times$ larger**.
 
-Yet Node 2's enhancement is *not* worse—its target reference power $\phi_{d_2} = 4\phi_{d_1}$ is also $4\times$ larger, making normalized $\operatorname{NMSE}_1^\star = \operatorname{NMSE}_2^\star = \frac{1}{1 + \phi_s q}$ identical. Averaging raw unnormalized MSEs across nodes penalizes whichever node sits closest to the talker!
+Yet Node 2's enhancement is *not* worse—its target reference power $\phi_{d_2} = 4\phi_{d_1}$ is also $4\times$ larger, making normalized $\operatorname{NMSE}_1^\star = \operatorname{NMSE}_2^\star = \frac{1}{1 + \phi_s q}$ identical. Averaging raw unnormalized MSEs across nodes penalizes whichever node sits closest to the talker.
 
-Always check conjugation of complex $c_u$ in code as well: for $c_u = 1 + \mathrm{j}$, $\vec w_u^\star$ carries $c_u^* = 1 - \mathrm{j}$ so $(\vec w_u^\star)^H\vec x$ conjugates it back to $1 + \mathrm{j}$; omitting conjugation flips output phase by $90^\circ$ (see [E13-07](#e13-07) and [Chapter 5, E05-20](05_beamforming.md#e05-20)).
+Always check conjugation of complex $c_u$ in code as well: for $c_u = 1 + \mathrm{j}$, $\vec w_u^\star$ carries $c_u^* = 1 - \mathrm{j}$ so $(\vec w_u^\star)^H\vec x$ conjugates it back to $1 + \mathrm{j}$; omitting conjugation flips output phase by $90^\circ$ (see [E13-01](#e13-01) and [Chapter 5, E05-11](05_beamforming.md#e05-11)).
 
 ### 13.5 Compressed Covariance and Effective Global Weights
 
@@ -194,7 +194,7 @@ $$\begin{aligned}
 \tilde{\mathbf R}_u\vec h_u^\star&=\tilde{\vec r}_u.
 \end{aligned}\tag{13-8}$$
 
-When is $\tilde{\mathbf R}_u \succ 0$ guaranteed nonsingular? Given $\mathbf R_{xx} \succ 0$, for any nonzero $\vec b \in \mathbb{C}^{L_u}$ with lifted vector $\vec v = \mathbf T_u\vec b$, $\vec b^H\tilde{\mathbf R}_u\vec b = \vec v^H\mathbf R_{xx}\vec v > 0 \iff \mathbf T_u\vec b \ne \vec 0$—i.e., **$\mathbf T_u$ must have full column rank**. Zero broadcasts ($\mathbf F_v = \mathbf 0$), linearly dependent broadcast columns, or setting $Q > M_v$ make $\mathbf T_u$ rank-deficient and $\tilde{\mathbf R}_u$ singular (safe fallback handling in [E13-13](#e13-13)).
+When is $\tilde{\mathbf R}_u \succ 0$ guaranteed nonsingular? Given $\mathbf R_{xx} \succ 0$, for any nonzero $\vec b \in \mathbb{C}^{L_u}$ with lifted vector $\vec v = \mathbf T_u\vec b$, $\vec b^H\tilde{\mathbf R}_u\vec b = \vec v^H\mathbf R_{xx}\vec v > 0 \iff \mathbf T_u\vec b \ne \vec 0$—i.e., **$\mathbf T_u$ must have full column rank**. Zero broadcasts ($\mathbf F_v = \mathbf 0$), linearly dependent broadcast columns, or setting $Q > M_v$ make $\mathbf T_u$ rank-deficient and $\tilde{\mathbf R}_u$ singular (safe fallback handling in [E13-07](#e13-07)).
 
 #### Local Filter Coefficients Versus Effective Global Weights
 
@@ -207,9 +207,9 @@ $$\begin{aligned}
 \qquad\vec w_{u,\mathrm{eff}}\in\mathbb{C}^{M\times 1}.
 \end{aligned}\tag{13-9}$$
 
-We call $\vec w_{u,\mathrm{eff}} = \mathbf T_u\vec h_u$ node $u$'s **effective global weight** across all $M$ raw microphones. Watch out for the #1 conjugation bug here: if remote node $v$ sends scalar $z_v = \vec f_v^H\vec x_v$ and local node $u$ applies scalar receiving weight $g_{uv}$, that branch contributes $g_{uv}^* z_v = g_{uv}^*(\vec f_v^H\vec x_v) = (\vec f_v g_{uv})^H\vec x_v$—so the effective weight on remote microphones $\vec x_v$ is the **unconjugated product** $\vec f_v g_{uv}$, never $\vec f_v g_{uv}^*$!
+We call $\vec w_{u,\mathrm{eff}} = \mathbf T_u\vec h_u$ node $u$'s **effective global weight** across all $M$ raw microphones. Note a frequent conjugation pitfall here: if remote node $v$ sends scalar $z_v = \vec f_v^H\vec x_v$ and local node $u$ applies scalar receiving weight $g_{uv}$, that branch contributes $g_{uv}^* z_v = g_{uv}^*(\vec f_v^H\vec x_v) = (\vec f_v g_{uv})^H\vec x_v$—so the effective weight on remote microphones $\vec x_v$ is the **unconjugated product** $\vec f_v g_{uv}$, never $\vec f_v g_{uv}^*$.
 
-Similarly, normalizing compressed columns internally for numerical conditioning ($\mathbf T'_u = \mathbf T_u\mathbf D$) rescales local coefficients to $\vec h'_u = \mathbf D^{-1}\vec h_u$ while leaving effective global weight $\mathbf T'_u\vec h'_u = \mathbf T_u\vec h_u$ and physical output completely invariant (see [E13-08](#e13-08)).
+Similarly, normalizing compressed columns internally for numerical conditioning ($\mathbf T'_u = \mathbf T_u\mathbf D$) rescales local coefficients to $\vec h'_u = \mathbf D^{-1}\vec h_u$ while leaving effective global weight $\mathbf T'_u\vec h'_u = \mathbf T_u\vec h_u$ and physical output completely invariant (see [E13-02](#e13-02)).
 
 ### 13.6 Proving Task-Specific Losslessness of Fixed Compression
 
@@ -277,7 +277,7 @@ $$\mathbf T_1=
 0 & 0 & -\tfrac{1}{2}
 \end{bmatrix}.$$
 
-In 3D compressed space, $\tilde{\vec r}_1 = \mathbf T_1^\top\vec a = [1, 1/2, 17/4]^\top$ (since $2\times 2 + (-1/2)^2 = 17/4$) and compressed noise covariance $\tilde{\mathbf R}_{nn,1} = \mathbf T_1^\top\mathbf I_4\mathbf T_1 = \operatorname{diag}(1, 1, 17/4)$ (note Channel 3's noise variance is $17/4$, not $1$!), giving $3 \times 3$ local covariance $\tilde{\mathbf R}_1$:
+In 3D compressed space, $\tilde{\vec r}_1 = \mathbf T_1^\top\vec a = [1, 1/2, 17/4]^\top$ (since $2\times 2 + (-1/2)^2 = 17/4$) and compressed noise covariance $\tilde{\mathbf R}_{nn,1} = \mathbf T_1^\top\mathbf I_4\mathbf T_1 = \operatorname{diag}(1, 1, 17/4)$ (note Channel 3's noise variance is $17/4$, not $1$), giving $3 \times 3$ local covariance $\tilde{\mathbf R}_1$:
 
 $$\begin{aligned}
 \tilde{\mathbf R}_1
@@ -295,16 +295,16 @@ Solving $\tilde{\mathbf R}_1\vec h_1^\star = [1, 1/2, 17/4]^\top$ gives $\vec h_
 $$\begin{aligned}
 \vec w_{1,\mathrm{eff}}&=\mathbf T_1\vec h_1^\star
 =\frac{1}{13}[2,\;1,\;2\times 2,\;-1]^\top\\
-&=\frac{1}{13}[2,\;1,\;4,\;-1]^\top=\vec w_1^\star!
+&=\frac{1}{13}[2,\;1,\;4,\;-1]^\top=\vec w_1^\star.
 \end{aligned}$$
 
-Exact 4-mic centralized weights and MSE $2/13$ are recovered! Equation (13-11) explains why: remote block $[4, -1]^\top / 13 = \frac{2}{13}[2, -1/2]^\top$ is collinear with $\vec f_2 = [2, -1/2]^\top$—and remains collinear for Node 2's own target $d_2 = 2s$ (unnormalized MSE $8/13$, NMSE $2/13$).
+Exact 4-mic centralized weights and MSE $2/13$ are recovered. Equation (13-11) explains why: remote block $[4, -1]^\top / 13 = \frac{2}{13}[2, -1/2]^\top$ is collinear with $\vec f_2 = [2, -1/2]^\top$—and remains collinear for Node 2's own target $d_2 = 2s$ (unnormalized MSE $8/13$, NMSE $2/13$).
 
 ### 13.8 Correlated-Noise Counterexample: Useful Observations Outside the Target Direction
 
 #### Change Only the Noise Covariance, and the Old Broadcast Fails
 
-After seeing §13.7, it is tempting to conclude: "Remote nodes just beamform toward the talker locally ($\vec f_2 = \vec a_2 = [2, -1/2]^\top$) and broadcast that!" Let us hold talker position, power, and node layout completely fixed while introducing **cross-node noise correlation** between remote sensors and local Mic 1 (e.g., HVAC duct noise or table vibration coupling across devices):
+After seeing §13.7, it is tempting to conclude: "Remote nodes just beamform toward the talker locally ($\vec f_2 = \vec a_2 = [2, -1/2]^\top$) and broadcast that." Let us hold talker position, power, and node layout completely fixed while introducing **cross-node noise correlation** between remote sensors and local Mic 1 (e.g., HVAC duct noise or table vibration coupling across devices):
 
 $$\mathbf R_{nn}=
 \begin{bmatrix}
@@ -319,9 +319,9 @@ Eigenvalues of $\mathbf R_{nn}$ are $1, 1, 1 \pm \sqrt{17}/5$ with $\lambda_{\mi
 $$\vec w_1^\star=\frac{1}{69}[25,\;4,\;11,\;-24]^\top,\qquad
 J_1^\star=\frac{8}{69}\approx 0.115942.$$
 
-Notice that cross-node noise correlation *lowers* centralized MSE from $2/13 \approx 0.153846$ down to $8/69 \approx 0.115942$ because the full array exploits remote sensors to cancel correlated noise inside local Mic 1!
+Notice that cross-node noise correlation *lowers* centralized MSE from $2/13 \approx 0.153846$ down to $8/69 \approx 0.115942$ because the full array exploits remote sensors to cancel correlated noise inside local Mic 1.
 
-What happens if Node 2 stubbornly keeps sending white-noise target-matched broadcast $z_2 = 2x_3 - \frac{1}{2}x_4$? Cross-correlating $z_2$'s noise against $n_1$ gives $\mathbb{E}[n_1(2n_3 - n_4/2)] = 2\times(1/5) - (1/2)\times(4/5) = 0$—exact cancellation!
+What happens if Node 2 stubbornly keeps sending white-noise target-matched broadcast $z_2 = 2x_3 - \frac{1}{2}x_4$? Cross-correlating $z_2$'s noise against $n_1$ gives $\mathbb{E}[n_1(2n_3 - n_4/2)] = 2\times(1/5) - (1/2)\times(4/5) = 0$—exact cancellation.
 
 Consequently, Node 1 sees the *exact same* $3 \times 3$ local covariance as under white noise, stays stuck at $[2, 1, 2]^\top / 13$ with MSE $2/13 \approx 0.153846$, and forfeits $2/13 - 8/69 = 34/897 \approx 0.037904$ of collaborative noise cancellation because remote block $[11, -24]^\top / 69$ no longer lies along $[2, -1/2]^\top$, violating Eq. (13-11).
 
@@ -329,8 +329,8 @@ Consequently, Node 1 sees the *exact same* $3 \times 3$ local covariance as unde
 
 What information did the old broadcast throw away? Inspect orthogonal remote combination $p_2 = \frac{1}{2}x_3 + 2x_4$ ($[1/2, 2]^\top$):
 
-- Target response is $\frac{1}{2} \times 2 + 2 \times (-\frac{1}{2}) = 0$—**target speech cancels to exact zero; listening to $p_2$ on headphones reveals pure hum/noise without a syllable of speech!**
-- Yet its cross-correlation with local noise $n_1$ is $(1/2)\times(1/5) + 2\times(4/5) = 17/10 = 1.7$—**strongly correlated with the interference corrupting Node 1!**
+- Target response is $\frac{1}{2} \times 2 + 2 \times (-\frac{1}{2}) = 0$—**target speech cancels to exact zero; listening to $p_2$ on headphones reveals pure hum/noise without a syllable of speech.**
+- Yet its cross-correlation with local noise $n_1$ is $(1/2)\times(1/5) + 2\times(4/5) = 17/10 = 1.7$—**strongly correlated with the interference corrupting Node 1.**
 
 Physically, speech-free combination $p_2$ acts as a **distributed Generalized Sidelobe Canceller (GSC) blocking-matrix noise reference** ([Chapter 5](05_beamforming.md)): Node 2 nulls the talker locally to extract a clean interference probe for Node 1 to subtract from $x_1$. Decomposing optimal remote block $[11, -24]^\top$ onto target-matched $[2, -1/2]^\top$ and blocking-reference $[1/2, 2]^\top$ shows both branches working together:
 
@@ -338,9 +338,18 @@ $$\begin{bmatrix}11\\-24\end{bmatrix}
 =8\begin{bmatrix}2\\-\tfrac{1}{2}\end{bmatrix}
 -10\begin{bmatrix}\tfrac{1}{2}\\2\end{bmatrix}.$$
 
-Transmitting only the first term severs the distributed GSC noise-cancellation path—so during field debugging, never dismiss a remote node as useless just because its broadcast stream sounds noisy!
+Transmitting only the first term severs the distributed GSC noise-cancellation path—so during field debugging, never dismiss a remote node as useless just because its broadcast stream sounds noisy.
 
-Better still, Node 2 still needs only **one** broadcast channel: transmitting adapted combination $z'_2 = 11x_3 - 24x_4$ lets Node 1 solve $\vec h_1^\star = [25, 4, 1]^\top / 69$, recovering $[25, 4, 11, -24]^\top / 69$ and MSE $8/69$ with zero loss ([E13-06](#e13-06)). The sole remaining question—how Node 2 discovers $[11, -24]^\top$ automatically without knowing cross-node correlations upfront—brings us to DANSE.
+Better still, Node 2 still needs only **one** broadcast channel: transmitting adapted combination $z'_2 = 11x_3 - 24x_4$ changes the 3D input $[x_1, x_2, z'_2]^\top$'s local cross-correlation vector to $[1, 1/2, 34]^\top$ and its local total covariance matrix to
+
+$$\tilde{\mathbf R}_1=
+\begin{bmatrix}
+2 & 1/2 & 17\\
+1/2 & 5/4 & 17\\
+17 & 17 & 1853
+\end{bmatrix},$$
+
+from which Node 1 solves $\vec h_1^\star = [25, 4, 1]^\top / 69$, lifting back globally to recover the centralized optimum $[25, 4, 11, -24]^\top / 69$ and minimum MSE $8/69$ with zero loss (if the broadcast vector is pre-scaled by $1/69$, the third local receiving coefficient scales synchronously up to $1$, leaving the lifted effective global weight completely unchanged). The sole remaining question—how Node 2 discovers $[11, -24]^\top$ automatically without knowing cross-node correlations upfront—brings us to DANSE.
 
 ### 13.9 Sequential DANSE: Updating Local Estimation and Outbound Broadcast Together
 
@@ -357,7 +366,7 @@ z_u&=\vec f_u^H\vec x_u,\\
 
 Two natural questions arise at Eq. (13-12): **First, why does reusing node $u$'s local filter block $\vec f_u$ as its outbound broadcast help every other node? Second, why not broadcast the cleaner full output $\hat d_u$ instead?**
 
-Section 13.4's rank-one structure answers both immediately: centralized optimal weights across all nodes share the same global vector $\mathbf R_{nn}^{-1}\vec a$ up to scalar factors. When active node $u$ solves local Eq. (13-8) $\hat d_u = \vec f_u^H\vec x_u + \vec g_u^H\vec z_{-u}$ given fixed $\vec z_{-u}$, local block $\vec f_u^H\vec x_u$ extracts **the best linear combination of node $u$'s own raw microphones $\vec x_u$ under the current global approximation**, whereas peer nodes already receive $\vec z$ from everyone else directly and lack *only* node $u$'s local slice! Broadcasting pure $z_u = \vec f_u^H\vec x_u$ hands neighbors the exact uncontaminated local update they need.
+Section 13.4's rank-one structure answers both immediately: centralized optimal weights across all nodes share the same global vector $\mathbf R_{nn}^{-1}\vec a$ up to scalar factors. When active node $u$ solves local Eq. (13-8) $\hat d_u = \vec f_u^H\vec x_u + \vec g_u^H\vec z_{-u}$ given fixed $\vec z_{-u}$, local block $\vec f_u^H\vec x_u$ extracts **the best linear combination of node $u$'s own raw microphones $\vec x_u$ under the current global approximation**, whereas peer nodes already receive $\vec z$ from everyone else directly and lack *only* node $u$'s local slice. Broadcasting pure $z_u = \vec f_u^H\vec x_u$ hands neighbors the exact uncontaminated local update they need.
 
 Broadcasting full $\hat d_u$ (containing $\vec g_u^H\vec z_{-u}$) would recirculate peer broadcasts in closed feedback loops across the network, destroying DANSE's loop-free subspace projection structure ([Bertrand & Moonen 2010, Part I §III-A Eqs. (6)–(14)](https://homes.esat.kuleuven.be/~abertran/reports/09-65.pdf)).
 
@@ -365,13 +374,13 @@ Round-robin execution activates one token-holding node $u$ per step ($1 \to 2 \t
 
 #### Exact Hand Calculation of Three Round-Robin Updates
 
-On §13.7's 4-mic white-noise setup ($\vec a = [1, 1/2, 2, -1/2]^\top, \phi_s = 1, \mathbf R_{nn} = \mathbf I_4$) with $d_1 = s$ and $d_2 = 2s$, let us trace three $3 \times 3$ updates ($1 \to 2 \to 1$) to watch them reach exact 4-mic centralized optimality:
+On §13.7's 4-mic white-noise setup ($\vec a = [1, 1/2, 2, -1/2]^\top, \phi_s = 1, \mathbf R_{nn} = \mathbf I_4$) with $d_1 = s$ and $d_2 = 2s$, let us trace three $3 \times 3$ updates ($1 \to 2 \to 1$) showing how they reach exact 4-mic centralized optimality:
 
 **Initialization**: Each node broadcasts its first local mic: $\vec f_1^{(0)} = \vec f_2^{(0)} = [1, 0]^\top$ ($z_1 = x_1, z_2 = x_3$).
 
 1. **Update 1 (Node 1 active)**: Input $[x_1, x_2, x_3]^\top$ has target vector $[1, 1/2, 2]^\top$ and unit white noise, giving $q = 1 + 1/4 + 4 = 21/4$ ($1 + q = 25/4$). Equation (13-6) yields $[\vec f_1^\top, g_1]^\top = \frac{4}{25}[1, 1/2, 2]^\top = [4, 2, 8]^\top / 25$. Node 1 sets $\vec f_1^{(1)} = [4, 2]^\top / 25$, achieving effective weight $[4, 2, 8, 0]^\top / 25$ and dropping MSE from local $4/9 \approx 0.4444$ to $4/25 = 0.16$.
-2. **Update 2 (Node 2 active)**: Input $[x_3, x_4, z_1]^\top$ ($z_1 = \frac{4x_1 + 2x_2}{25}$) targets $d_2 = 2s$. Because $z_1$ already bundles Mics 1 and 2 in optimal $2:1$ ratio, solving Node 2's $3 \times 3$ system yields $[\vec f_2^\top, g_2]^\top = [8, -2, 25]^\top / 13$, lifting to local $[8, -2]^\top / 13$ and remote $\frac{25}{13}[4, 2]^\top / 25 = [4, 2]^\top / 13$, i.e., $[4, 2, 8, -2]^\top / 13$—**at Step 2, Node 2 already attains exact 4-mic centralized optimality** (MSE $8/13$, NMSE $2/13$)! Node 2 updates $\vec f_2^{(2)} = [8, -2]^\top / 13$.
-3. **Update 3 (Node 1 active)**: Receiving $z_2 = \frac{8x_3 - 2x_4}{13}$, Node 1 solves $[2/13, 1/13, 1/2]^\top$, lifting remote $\frac{1}{2}[8, -2]^\top / 13 = [4, -1]^\top / 13$ to reach $[2, 1, 4, -1]^\top / 13$—**Node 1 also locks onto exact 4-mic centralized optimality with MSE $2/13 \approx 0.153846$!**
+2. **Update 2 (Node 2 active)**: Input $[x_3, x_4, z_1]^\top$ ($z_1 = \frac{4x_1 + 2x_2}{25}$) targets $d_2 = 2s$. Because $z_1$ already bundles Mics 1 and 2 in optimal $2:1$ ratio, solving Node 2's $3 \times 3$ system yields $[\vec f_2^\top, g_2]^\top = [8, -2, 25]^\top / 13$, lifting to local $[8, -2]^\top / 13$ and remote $\frac{25}{13}[4, 2]^\top / 25 = [4, 2]^\top / 13$, i.e., $[4, 2, 8, -2]^\top / 13$—**at Step 2, Node 2 already attains exact 4-mic centralized optimality** (MSE $8/13$, NMSE $2/13$). Node 2 updates $\vec f_2^{(2)} = [8, -2]^\top / 13$.
+3. **Update 3 (Node 1 active)**: Receiving $z_2 = \frac{8x_3 - 2x_4}{13}$, Node 1 solves $[2/13, 1/13, 1/2]^\top$, lifting remote $\frac{1}{2}[8, -2]^\top / 13 = [4, -1]^\top / 13$ to reach $[2, 1, 4, -1]^\top / 13$—**Node 1 also locks onto exact 4-mic centralized optimality with MSE $2/13 \approx 0.153846$.**
 
 #### Stale Receiving Weights Temporarily Inflate Error
 
@@ -387,13 +396,13 @@ $$\begin{aligned}
 &=\frac{1}{325}[52,\;26,\;64,\;-16]^\top.
 \end{aligned}$$
 
-Plugging into universal Eq. (13-3): target gain drops to $\frac{52 + 13 + 128 + 8}{325} = \frac{201}{325}$ (distortion $(1 - 201/325)^2 = \frac{15376}{105625}$) plus residual noise $\frac{7732}{105625}$, rebounding live MSE to $\frac{23108}{105625} \approx 0.218774 > 0.16$ until Step 3 readjusts $g_1$ from $8/25$ to $1/2$!
+Plugging into universal Eq. (13-3): target gain drops to $\frac{52 + 13 + 128 + 8}{325} = \frac{201}{325}$ (distortion $(1 - 201/325)^2 = \frac{15376}{105625}$) plus residual noise $\frac{7732}{105625}$, rebounding live MSE to $\frac{23108}{105625} \approx 0.218774 > 0.16$ until Step 3 readjusts $g_1$ from $8/25$ to $1/2$.
 
 Monotonic descent in DANSE proofs applies to a **shared surrogate global objective** at consistent states—never assume "every non-updating node's live audio improves monotonically whenever a peer changes its broadcast." Honest evaluation must recombine each node's cached receiving weights against the *currently active* remote broadcast at every instant.
 
-![Figure 70: Distortion-plus-noise MSE decomposition across centralized, local-only, and compressed broadcast directions](../figures_en/fig70_distributed_compression.png)
+![Figure 65: Distortion-plus-noise MSE decomposition across centralized, local-only, and compressed broadcast directions](../figures_en/fig65_distributed_compression.png)
 
-Figure 70 compares six fixed weight configurations across §13.7 white noise and §13.8 cross-node correlated noise (stacked orange = analytical target distortion, hatched blue = analytical residual noise, white diamonds = 16-bit PCM WAV integer error ratios over $28800$ steady samples):
+Figure 65 compares six fixed weight configurations across §13.7 white noise and §13.8 cross-node correlated noise (stacked orange = analytical target distortion, hatched blue = analytical residual noise, white diamonds = 16-bit PCM WAV integer error ratios over $28800$ steady samples):
 
 - **Panel (a) Spatially white noise**: Local 2-mic processing suffers high target distortion ($16/81 \approx 0.1975$) and noise ($20/81 \approx 0.2469$) for NMSE $4/9 \approx 0.44444$ (PCM $0.444451$); 4-mic centralized processing drops NMSE to $2/13 \approx 0.15385$ ($4/169$ distortion + $22/169$ noise), matched identically by scalar broadcast $2x_3 - \frac{1}{2}x_4$ per Eq. (13-11).
 - **Panel (b) Cross-node correlated noise**: Centralized processing exploits inter-node correlation to reach $8/69 \approx 0.11594$; keeping the stale white-noise broadcast forfeits the blocking reference and stalls at $2/13 \approx 0.15385$ (PCM $0.153858$), whereas adapted scalar broadcast $11x_3 - 24x_4$ restores $8/69$ losslessly, with white PCM diamonds matching analytical bar tops throughout.
@@ -404,13 +413,15 @@ Figure 70 compares six fixed weight configurations across §13.7 white noise and
 
 While §13.7 converged in three steps, cross-node noise coupling in §13.8 requires alternating iterations. Bertrand and Moonen proved that whenever $\mathbf R_{xx} \succ 0$ (requiring full-rank *noisy observation* covariance rather than full-rank signal covariance), all node targets are full-rank linear transforms of a shared $S$-dimensional latent source vector, broadcast dimension satisfies $Q = S$, and nodes update round-robin under exact stationary second-order statistics, every node's output converges to its centralized LMMSE optimum ([Bertrand & Moonen 2010, Part I §III-B Theorem III.1 & §IV-B Theorem IV.1](https://homes.esat.kuleuven.be/~abertran/reports/09-65.pdf)).
 
+The proof rests on three linked steps: (1) **Shared optimal column space**: because each node targets $\vec d_u = \mathbf B_u\vec s$ with invertible $\mathbf B_u \in \mathbb{C}^{Q \times S}$ ($Q = S$), every centralized solution $\mathbf W_u^\star = \mathbf R_{xx}^{-1}\mathbf R_{xs}\mathbf B_u^H$ shares the identical $Q$-dimensional column space $\operatorname{range}(\mathbf R_{xx}^{-1}\mathbf R_{xs})$ (reducing to $\operatorname{span}(\mathbf R_{nn}^{-1}\vec a)$ for $Q = S = 1$); (2) **Monotonic descent on a common surrogate objective**: mapping each node's output via $\mathbf B_u^{-1}$ onto the shared target $\vec s$, each active update minimizes the same global MSE $\mathbb{E}[\|\vec s - \mathbf W^H\vec x\|_2^2]$ exactly over node $u$'s coordinate block $(\mathbf F_u, \mathbf G_u)$ with peer compressors $\{\mathbf F_v\}_{v\ne u}$ held fixed, producing a monotonically non-increasing sequence bounded below by the centralized MMSE floor; (3) **Stationarity implies global optimality**: since $\mathbf R_{xx} \succ 0$ makes the global MSE strictly convex and the block parameterization spans all first-order feasible perturbations around any full-rank broadcast limit point, vanishing block gradients across nodes imply the global normal equations $\mathbf R_{xx}\mathbf W_u^\star = \mathbf R_{xd_u}$.
+
 Thus cross-node correlated noise never blocks Sequential DANSE—it automatically folds §13.8's GSC blocking reference into the scalar broadcast—whereas fixed non-adaptive beams enjoy no such guarantee.
 
 #### Simultaneous Updates Change Peer Inputs Underneath Each Solve
 
 Can all $U$ nodes solve local normal equations in parallel from iteration $i$'s broadcasts and switch to new broadcasts simultaneously (**Simultaneous DANSE**)?
 
-Beware the coupling hazard: Node 1 optimizes assuming Node 2 keeps sending $\vec f_2^i$ while Node 2 simultaneously optimizes assuming Node 1 keeps sending $\vec f_1^i$; the moment both switch broadcasts together, the peer signals assumed by both solves vanish simultaneously—just like two pedestrians stepping toward the same side of a hallway at once! Block-wise local optimality does *not* guarantee descent of a simultaneous step (Exercise [E13-21](#e13-21) constructs a $3 \times 3$ SPD Jacobi divergence counterexample).
+Beware the coupling hazard: Node 1 optimizes assuming Node 2 keeps sending $\vec f_2^i$ while Node 2 simultaneously optimizes assuming Node 1 keeps sending $\vec f_1^i$; the moment both switch broadcasts together, the peer signals assumed by both solves vanish simultaneously—just like two pedestrians stepping toward the same side of a hallway at once. Block-wise local optimality does *not* guarantee descent of a simultaneous step (Exercise [E13-14](#e13-14) constructs a $3 \times 3$ SPD Jacobi divergence counterexample).
 
 To damp simultaneous oscillations, practical implementations often apply convex relaxation with step size $0 < \alpha_i \le 1$:
 
@@ -423,9 +434,9 @@ Interfaces using Eq. (13-13) must specify whether receiving weights $\vec g_u$ a
 
 #### Provably Convergent Relaxed DANSE Adds a Basis-Alignment Subproblem
 
-Why is naive convex mixing Eq. (13-13) insufficient for general theoretical proofs at $Q \ge 1$? Consider basis gauge freedom: right-multiplying $\mathbf F_u^i$ by any invertible $Q \times Q$ rotation/scaling matrix (or flipping sign $-1$) leaves its $Q$-dimensional broadcast subspace unchanged! If $\mathcal F_u(\{\mathbf F_v^i\})$ happens to carry an opposite sign or rotated basis relative to $\mathbf F_u^i$, naive averaging in Eq. (13-13) can cancel valid subspace directions destructively!
+Why is naive convex mixing Eq. (13-13) insufficient for general theoretical proofs at $Q \ge 1$? Consider basis gauge freedom: right-multiplying $\mathbf F_u^i$ by any invertible $Q \times Q$ rotation/scaling matrix (or flipping sign $-1$) leaves its $Q$-dimensional broadcast subspace unchanged. If $\mathcal F_u(\{\mathbf F_v^i\})$ happens to carry an opposite sign or rotated basis relative to $\mathbf F_u^i$, naive averaging in Eq. (13-13) can cancel valid subspace directions destructively.
 
-Bertrand and Moonen resolved this in **$rS$-DANSE$^+$** ([Part II §IV-B Eqs. (22)–(28) & Theorem IV.1](https://homes.esat.kuleuven.be/~abertran/reports/09-178.pdf)): before convex mixing, solve a small auxiliary problem in broadcast space alone to find $Q \times Q$ basis-alignment block $\mathbf G_{uu}^{i+1}$, rotating $\mathbf F_u^i\mathbf G_{uu}^{i+1}$ into phase with the current target coordinate system prior to step-size $\alpha_i$ blending:
+Bertrand and Moonen resolved this in **$rS$-DANSE$^+$** ([Part II §IV-B Eqs. (22)–(28) & Theorem IV.1](https://homes.esat.kuleuven.be/~abertran/reports/09-178.pdf)): before convex mixing, denote the stacked network-wide old broadcast vector by $\vec z^i = [(\vec z_1^i)^\top, \ldots, (\vec z_U^i)^\top]^\top \in \mathbb{C}^{UQ \times 1}$ (where $\vec z_v^i = (\mathbf F_v^i)^H\vec x_v$). Node $u$ first solves a $UQ$-dimensional auxiliary LMMSE problem purely in broadcast space, $\hat{\mathbf G}_u^{i+1} = \arg\min_{\mathbf G \in \mathbb{C}^{UQ \times Q}} \mathbb{E}[\|\vec d_u - \mathbf G^H\vec z^i\|_2^2]$ (closed-form solution $\mathbf R_{zz,i}^{-1}\mathbf R_{z d_u,i}$), and extracts its $Q \times Q$ sub-block acting on node $u$'s own old broadcast $\vec z_u^i$ as the basis-alignment matrix $\mathbf G_{uu}^{i+1}$. Right-multiplying $\mathbf F_u^i$ by $\mathbf G_{uu}^{i+1}$ rotates the old broadcast into alignment with the same target coordinate system as the new local solution $\mathcal F_u(\{\mathbf F_v^i\})$ prior to convex blending with step size $\alpha_i$:
 
 $$\begin{aligned}
 \mathbf F_u^{i+1}
@@ -441,15 +452,15 @@ $$\begin{gathered}
 \sum_{i=0}^{\infty}\alpha_i=\infty,
 \end{gathered}\tag{13-15}$$
 
-both simultaneous and asynchronous updates are guaranteed to converge globally!
+both simultaneous and asynchronous updates are guaranteed to converge globally.
 
 In Eq. (13-15), $\alpha_i \to 0$ quells late-stage simultaneous coupling perturbations, while $\sum_{i=0}^\infty \alpha_i = \infty$ supplies infinite total travel distance so iterates never stall short of the optimum from distant initializations (deterministic exact-statistics analysis requires no $\sum_i \alpha_i^2 < \infty$ condition).
 
-Harmonic steps $\alpha_i = 1/(i + 1)$ satisfy all three conditions; constant $0.5$ violates $\alpha_i \to 0$; geometric $2^{-i-1}$ sums to $1 < \infty$ and stalls ([E13-22](#e13-22)). (Notation map to the original papers: their $J, K, Q$ denote nodes, broadcast streams, and sources—matching our $U, Q, S$, so their $K = Q$ is our $Q = S$.)
+Harmonic steps $\alpha_i = 1/(i + 1)$ satisfy all three conditions; constant $0.5$ violates $\alpha_i \to 0$; geometric $2^{-i-1}$ sums to $1 < \infty$ and stalls ([E13-15](#e13-15)). (Notation map to the original papers: their $J, K, Q$ denote nodes, broadcast streams, and sources—matching our $U, Q, S$, so their $K = Q$ is our $Q = S$.)
 
 #### Asynchronous Parameter Updates Still Require Synchronous Sample Clocks
 
-"Asynchronous DANSE" in the literature refers strictly to **asynchronous filter-parameter update instants**—allowing nodes to wake up and update weights at irregular intervals without a central token coordinator (provided every node updates infinitely often; Part II §IV-D fn. 8). Never misread "asynchronous weight updates" as "unsynchronized ADC sampling clocks"! Under crystal SRO, inter-node phases at bin $k$ rotate continuously every second, invalidating stationary spatial covariance Eq. (13-2) itself.
+"Asynchronous DANSE" in the literature refers strictly to **asynchronous filter-parameter update instants**—allowing nodes to wake up and update weights at irregular intervals without a central token coordinator (provided every node updates infinitely often; Part II §IV-D fn. 8). Never misread "asynchronous weight updates" as "unsynchronized ADC sampling clocks." Under crystal SRO, inter-node phases at bin $k$ rotate continuously every second, invalidating stationary spatial covariance Eq. (13-2) itself.
 
 ### 13.11 Multiple Targets and Network Topologies: Broadcast Dimension Governs Retained Directions
 
@@ -477,17 +488,32 @@ $$\mathbf A=\begin{bmatrix}
 
 Columns 1 and 2 of $\mathbf A$ are orthogonal ($0 + 0 + 1 - 1 = 0$) with squared norm $3$ each, decoupling centralized 4-mic estimates of $s_1$ and $s_2$ at MMSE $\frac{1}{1 + 3} = \frac{1}{4} = 0.25$ each.
 
-Locally at Node 1 ($x_1 = s_1 + n_1, x_2 = s_2 + n_2$), local MSE is $\frac{1}{1 + 1} = \frac{1}{2} = 0.50$ per source. If Node 2 broadcasts only scalar sum $z_2 = x_3 + x_4 = 2s_1 + (n_3 + n_4)$, $s_2$ cancels out completely: Node 1's MSE on $s_1$ drops to centralized $1/4$, while $s_2$ stalls at local $1/2$! Expanding to $Q = 2$ streams ($x_3 + x_4$ and $x_3 - x_4 = 2s_2 + (n_3 - n_4)$) spans $\operatorname{range}(\mathbf W_1^\star)$ in Eq. (13-16) and restores $1/4$ on both sources simultaneously ([E13-12](#e13-12)).
+Locally at Node 1 ($x_1 = s_1 + n_1, x_2 = s_2 + n_2$), local MSE is $\frac{1}{1 + 1} = \frac{1}{2} = 0.50$ per source. If Node 2 broadcasts only scalar sum $z_2 = x_3 + x_4 = 2s_1 + (n_3 + n_4)$, $s_2$ cancels out completely: Node 1's MSE on $s_1$ drops to centralized $1/4$, while $s_2$ stalls at local $1/2$. Expanding to $Q = 2$ streams ($x_3 + x_4$ and $x_3 - x_4 = 2s_2 + (n_3 - n_4)$) spans $\operatorname{range}(\mathbf W_1^\star)$ in Eq. (13-16) and restores $1/4$ on both sources simultaneously ([E13-06](#e13-06)).
 
 #### Full Meshes, Trees, and In-Network Sums Are Distinct Implementations
 
 Classical DANSE assumes a **fully connected** graph where every node hears all $U - 1$ peers directly ($L_u = M_u + (U - 1)Q$). In large halls, cabin buses, or multi-hop IoT networks where nodes communicate only with immediate neighbors (chains, stars, trees, or general connected graphs), full-mesh inputs are unavailable.
 
-Over cycle-free **tree topologies**, the core communication primitive is **multi-hop same-sample in-network summation**: each node forms $Q$-dimensional $\vec z_u$; leaves aggregate partial sums upward to a chosen root (up-cast) to form $\vec z_{\mathrm{sum}} = \sum_{v=1}^U \vec z_v$, which disseminates back down the tree (down-cast); subtracting own $\vec z_u$ gives every node $u$ the sum of all peers $\vec z_{-u,\mathrm{sum}} = \vec z_{\mathrm{sum}} - \vec z_u$. On chain $1 \leftrightarrow 2 \leftrightarrow 3$ rooted at Node 2, Nodes 1 and 3 send to 2 and receive $\vec z_{\mathrm{sum}}$ back in $2(U - 1) = 4$ directed messages (provided every summed packet carries identical sample timestamps!).
+Over cycle-free **tree topologies**, the core communication primitive is **multi-hop same-sample in-network summation**: each node forms $Q$-dimensional $\vec z_u$; leaves aggregate partial sums upward to a chosen root (up-cast) to form $\vec z_{\mathrm{sum}} = \sum_{v=1}^U \vec z_v$, which disseminates back down the tree (down-cast); subtracting own $\vec z_u$ gives every node $u$ the sum of all peers $\vec z_{-u,\mathrm{sum}} = \vec z_{\mathrm{sum}} - \vec z_u$. On chain $1 \leftrightarrow 2 \leftrightarrow 3$ rooted at Node 2, Nodes 1 and 3 send to 2 and receive $\vec z_{\mathrm{sum}}$ back in $2(U - 1) = 4$ directed messages (provided every summed packet carries identical sample timestamps).
 
-Crucially, **in-network summation alone does not yet constitute Topology-Independent DANSE (TI-DANSE)**: whereas full-mesh DANSE assigns each peer $v$ an independent receiving block, in-network summation welds all peers together into a single $Q$-dimensional sum $\vec z_{-u,\mathrm{sum}}$, shrinking local input dimension to $M_u + Q$!
+Crucially, **in-network summation alone does not yet constitute Topology-Independent DANSE (TI-DANSE)**: whereas full-mesh DANSE assigns each peer $v$ an independent receiving block, in-network summation welds all peers together into a single $Q$-dimensional sum $\vec z_{-u,\mathrm{sum}}$, shrinking local input dimension to $M_u + Q$.
 
-To make peer broadcasts directly summable without per-peer receiving matrices, Bertrand and Moonen introduced transmitter-side inverse coordinate normalization ($\mathbf P_u = \mathbf W_{uu}\mathbf G_u^{-1}$ in [TI-DANSE §§III–IV Theorems 1–2](https://homes.esat.kuleuven.be/~abertran/reports/15-87.pdf)). Exercise [E13-23](#e13-23) audits tree routing, message counts, and link-drop impacts; real networks must pair spanning-tree repair with statistical reset handling.
+To make peer broadcasts directly summable without per-peer receiving matrices, Szurley, Bertrand, and Moonen introduced transmitter-side inverse-transform normalization in TI-DANSE (*IEEE Transactions on Signal and Information Processing over Networks* 3(1), 2017 / [Technical Report 15-87 §§III–IV, Theorems 1–2](https://homes.esat.kuleuven.be/~abertran/reports/15-87.pdf)): right-multiplying node $u$'s local filter block $\mathbf F_u$ (denoted $\mathbf W_{uu}$ in the original paper) by the inverse of the $Q \times Q$ receiving matrix $\mathbf G_u^{-1}$ acting on the neighbor sum constructs the transmit compression matrix $\mathbf P_u = \mathbf F_u\mathbf G_u^{-1}$ (originally $\mathbf W_{uu}\mathbf G_u^{-1}$). Provided $\mathbf G_u \in \mathbb{C}^{Q \times Q}$ is invertible, factoring out $\mathbf G_u^H$ from node $u$'s local estimate verifies the coordinate alignment in three lines:
+
+$$\begin{aligned}
+\hat{\vec d}_u
+&=\mathbf F_u^H\vec x_u
+  +\mathbf G_u^H\sum_{v\ne u}\vec z_v\\
+&=\mathbf G_u^H\!\left(
+  \mathbf G_u^{-H}\mathbf F_u^H\vec x_u
+  +\sum_{v\ne u}\vec z_v\right),\\
+\vec z_u
+&=\mathbf P_u^H\vec x_u
+ =(\mathbf F_u\mathbf G_u^{-1})^H\vec x_u
+ =\mathbf G_u^{-H}\mathbf F_u^H\vec x_u.
+\end{aligned}$$
+
+Setting $\vec z_u = \mathbf P_u^H\vec x_u$ thus places node $u$'s local contribution into the exact same $Q$-dimensional global coordinate frame as the peer sum $\sum_{v\ne u}\vec z_v$, allowing all broadcasts to be added directly across the tree. Exercise [E13-16](#e13-16) audits tree routing, message counts, and link-drop impacts; real networks must pair spanning-tree repair with statistical reset handling.
 
 ### 13.12 GEVD and Recent Extensions: Which Step Each Method Modifies
 
@@ -506,7 +532,7 @@ $$\begin{aligned}
 \mathbf R_{xx}\vec q_j&=\lambda_j\mathbf R_{nn}\vec q_j.
 \end{aligned}\tag{13-18}$$
 
-Why whiten via $\mathbf W_n = \mathbf R_{nn}^{-1/2}$ instead of running standard PCA on $\mathbf R_{xx}$? Under strong directional interference, standard top eigenvectors of $\mathbf R_{xx}$ point straight at loud interferers; inside whitened $\mathbf C = \mathbf I + \mathbf W_n\mathbf R_{ss}\mathbf W_n$, background noise power equals $1$ isotropically along *every* direction! Consequently, under $\mathbf R_{ss} \succeq 0$, generalized eigenvalues obey $\lambda_1 \ge \lambda_2 \ge \cdots \ge \lambda_M \ge 1$: directions with $\lambda_j > 1$ carry target speech at SNR $\lambda_j - 1$, whereas $\lambda_j = 1$ represents pure noise (clamping finite-sample $\hat\lambda_j < 1$ to $1$ eliminates negative target powers completely).
+Why whiten via $\mathbf W_n = \mathbf R_{nn}^{-1/2}$ instead of running standard PCA on $\mathbf R_{xx}$? Under strong directional interference, standard top eigenvectors of $\mathbf R_{xx}$ point straight at loud interferers; inside whitened $\mathbf C = \mathbf I + \mathbf W_n\mathbf R_{ss}\mathbf W_n$, background noise power equals $1$ isotropically along *every* direction. Consequently, under $\mathbf R_{ss} \succeq 0$, generalized eigenvalues obey $\lambda_1 \ge \lambda_2 \ge \cdots \ge \lambda_M \ge 1$: directions with $\lambda_j > 1$ carry target speech at SNR $\lambda_j - 1$, whereas $\lambda_j = 1$ represents pure noise (clamping finite-sample $\hat\lambda_j < 1$ to $1$ eliminates negative target powers completely).
 
 Stacking the top $S$ eigenvectors ($\lambda_j > 1$) into semi-unitary $\mathbf V_S = [\vec v_1, \ldots, \vec v_S] \in \mathbb{C}^{M \times S}$, whitened target power along mode $j$ is $\lambda_j - 1$, giving whitened rank-$S$ covariance $\mathbf V_S\operatorname{diag}(\lambda_1 - 1, \ldots, \lambda_S - 1)\mathbf V_S^H$. De-whitening on both sides via $\mathbf R_{nn}^{1/2}$ yields the guaranteed-PSD **rank-$S$ target covariance estimate**:
 
@@ -537,7 +563,7 @@ $$\mathbf R_{nn}=\begin{bmatrix}1 & 1/2\\1/2 & 1\end{bmatrix}.
 
 Route 1 (direct Eq. (13-6)): $\mathbf R_{nn}^{-1}$ (diagonals $4/3$, off-diagonals $-2/3$) times $\vec a = [1, 2]^\top$ gives $\mathbf R_{nn}^{-1}\vec a = [0, 2]^\top$ and $q = 4$, so generalized eigenvalues are $\lambda_1 = 1 + q = 5$ and $\lambda_2 = 1$; dry-source MWF weight is $\frac{1}{5}[0, 2]^\top = [0, 2/5]^\top$ with MMSE $1/5 = 0.2$.
 
-Route 2 (**Cholesky triangular whitening**, standard in numerical code): factor $\mathbf R_{nn} = \mathbf L\mathbf L^H$ and whiten via $\mathbf L^{-1}$ to form $\tilde{\mathbf C} = \mathbf L^{-1}\mathbf R_{xx}\mathbf L^{-H}$ (crucially, because lower-triangular $\mathbf L$ is not Hermitian, the right factor *must* be conjugate-transpose inverse $\mathbf L^{-H} = (\mathbf L^H)^{-1}$, never $\mathbf L^{-1}$!):
+Route 2 (**Cholesky triangular whitening**, standard in numerical code): factor $\mathbf R_{nn} = \mathbf L\mathbf L^H$ and whiten via $\mathbf L^{-1}$ to form $\tilde{\mathbf C} = \mathbf L^{-1}\mathbf R_{xx}\mathbf L^{-H}$ (crucially, because lower-triangular $\mathbf L$ is not Hermitian, the right factor *must* be conjugate-transpose inverse $\mathbf L^{-H} = (\mathbf L^H)^{-1}$, never $\mathbf L^{-1}$):
 
 $$\begin{aligned}
 \mathbf L&=\begin{bmatrix}
@@ -554,7 +580,7 @@ $$\begin{aligned}
 &=\begin{bmatrix}2 & \sqrt{3}\\\sqrt{3} & 4\end{bmatrix}.
 \end{aligned}$$
 
-Whitened target $[1, \sqrt{3}]^\top$ has squared norm $1 + 3 = 4$, immediately giving eigenvalue $1 + 4 = 5$ along $[1, \sqrt{3}]^\top$ and $1$ along orthogonal $[-\sqrt{3}, 1]^\top$. Notice why Mic 1 receives exact weight $0$ in $[0, 2/5]^\top$: Mic 1's target amplitude is half of Mic 2's ($1 : 2$) while noise coupling from Mic 2 into Mic 1 is *also* $1/2$, making Mic 2 a sufficient statistic for $s$ so adding Mic 1 would only inject extra independent noise ([E13-24](#e13-24)).
+Whitened target $[1, \sqrt{3}]^\top$ has squared norm $1 + 3 = 4$, immediately giving eigenvalue $1 + 4 = 5$ along $[1, \sqrt{3}]^\top$ and $1$ along orthogonal $[-\sqrt{3}, 1]^\top$. Notice why Mic 1 receives exact weight $0$ in $[0, 2/5]^\top$: Mic 1's target amplitude is half of Mic 2's ($1 : 2$) while noise coupling from Mic 2 into Mic 1 is *also* $1/2$, making Mic 2 a sufficient statistic for $s$ so adding Mic 1 would only inject extra independent noise ([E13-17](#e13-17)).
 
 #### Preconditions and Engineering Boundaries of Recent Extensions
 
@@ -567,13 +593,13 @@ Recent advances extend DANSE across low-rank subspace estimation, SRO compensati
 | TI-GEVD-DANSE | Embeds local GEVD inside tree in-network summation with shared cross-node coordinate normalization | Normalization must transform filters and covariances consistently; low-rank truncation differs from full-rank proofs |
 | TI-DANSE$^+$ | Retains per-branch subtree partial sums at the root for higher-dimensional fusion before down-casting | Root dimension grows with node degree; topology/root switches require batch-isolated covariance tracking |
 
-Note the boundary between theoretical proofs and empirical observations: GEVD-DANSE proves sequential round-robin convergence rigorously while demonstrating simultaneous updates empirically ([Hassani et al. 2016, §§IV-B/C/F & V-A](https://ftp.esat.kuleuven.be/SISTA/abertran/reports/GEVD_DS_TSP2016.pdf)); SRO-aware DANSE decomposes estimated clock skew into frequency-proportional linear phase slopes plus integer frame-shift slips rather than a frequency-flat constant phase ([Chinaev, Thiergart & Habets, §§IV-A–C Eqs. (11)–(20)](https://arxiv.org/html/2211.02489v2)).
+Note the boundary between theoretical proofs and empirical observations: GEVD-DANSE proves sequential round-robin convergence rigorously while demonstrating simultaneous updates empirically ([Hassani et al. 2016, §§IV-B/C/F & V-A](https://ftp.esat.kuleuven.be/SISTA/abertran/reports/GEVD_DS_TSP2016.pdf)); SRO-aware DANSE tracks crystal frequency offset via inter-frame coherence products and decomposes it into per-bin fractional-delay linear phase slopes plus integer frame-shift slips rather than a frequency-flat constant phase (Didier, van Waterschoot, Doclo, & Moonen, *IEEE Open Journal of Signal Processing*, vol. 4, pp. 71–79, 2023 / [arXiv:2211.02489v2 §§IV-A–C Eqs. (11)–(20)](https://arxiv.org/html/2211.02489v2); upstream blind SRO estimators such as WACD/DWACD and DXCP-PhaT are detailed in §13.15).
 
-On general trees, TI-GEVD-DANSE stabilizes shared-sum scaling ([Didier et al. 2024, §§III–IV](https://ftp.esat.kuleuven.be/sista/pdidier/eusipco2024/eusipco24_pdidier_submission_v1.pdf)), while TI-DANSE$^+$ accelerates convergence via multi-branch root fusion and analyzes batch-isolated covariance estimation across broadcast updates ([2025 conference paper §§III–IV](https://arxiv.org/html/2506.20001v1); [2026 extended preprint §§III-C, III-G](https://arxiv.org/html/2506.02797v2)). Unifying all of these, Musluoglu and Bertrand's **Distributed Adaptive Signal Fusion (DASF)** framework (*IEEE TSP* 2022, Parts I & II) casts DANSE, distributed MVDR/LCMV, distributed GEVD, and distributed Canonical Correlation Analysis (CCA) as alternating compressed-subspace optimization over communication graphs.
+On general trees, TI-GEVD-DANSE stabilizes shared-sum scaling ([Didier et al. 2024, §§III–IV](https://ftp.esat.kuleuven.be/sista/pdidier/eusipco2024/eusipco24_pdidier_submission_v1.pdf)), while TI-DANSE$^+$ accelerates convergence via multi-branch root fusion and analyzes batch-isolated covariance estimation across broadcast updates ([2025 conference paper §§III–IV](https://arxiv.org/html/2506.20001v1); [2026 extended preprint §§III-C, III-G](https://arxiv.org/html/2506.02797v2)). Unifying all of these, the KU Leuven Bertrand group's **Distributed Adaptive Signal Fusion (DASF)** framework casts DANSE, distributed MVDR/LCMV, distributed GEVD, and distributed Canonical Correlation Analysis (CCA) as alternating compressed-subspace optimization over communication graphs.
 
 #### The Unified DASF Framework: When Compressed Subspaces Are Lossless for Constrained Beamformers
 
-Extending beyond unconstrained MSE $J_u(\vec w)$ to MVDR, max-SNR GEVD, and multi-null LCMV beamformers, **DASF** shows that whenever objectives and linear constraints depend on data solely through $\vec w^H\vec x$ second-order statistics, node $u$ receiving $R$ streams per peer ($L_u = M_u + (U - 1)R$, projection $\mathbf T_u \in \mathbb{C}^{M \times L_u}$) solves an isomorphic compressed problem:
+Extending beyond unconstrained MSE $J_u(\vec w)$ to MVDR, max-SNR GEVD, and multi-null LCMV beamformers, the **DASF** framework developed by Musluoglu and Bertrand (Part I) and Musluoglu, Hovine, and Bertrand (Part II) (*IEEE Transactions on Signal Processing*, vol. 71, pp. 1863–1878 and pp. 1879–1894, 2023; 2022 preprints) shows that whenever objectives and linear constraints depend on data solely through $\vec w^H\vec x$ second-order statistics, node $u$ receiving $R$ streams per peer ($L_u = M_u + (U - 1)R$, projection $\mathbf T_u \in \mathbb{C}^{M \times L_u}$) solves an isomorphic compressed problem:
 
 $$\begin{aligned}
 \tilde{\mathbf R}_{xx,u}&=\mathbf T_u^H\mathbf R_{xx}\mathbf T_u,\\
@@ -583,11 +609,15 @@ $$\begin{aligned}
 \text{s.t.}\;&\tilde{\mathbf C}_u^H\vec h_u=\vec f.
 \end{aligned}$$
 
-Under rank-one single-source $\mathbf R_{ss} = \phi_s\vec a\vec a^H$, centralized MWF, single-constraint MVDR ($\vec a^H\vec w = 1$), and principal GEVD (maximizing $\vec w^H\mathbf R_{xx}\vec w / \vec w^H\mathbf R_{nn}\vec w$) are all collinear with $\mathbf R_{nn}^{-1}\vec a$—so in §13.8's correlated-noise benchmark, Node 2's single adapted broadcast $z_2 = 11x_3 - 24x_4$ makes local MWF, local MVDR, and local principal GEVD at Node 1 **all simultaneously lossless**!
+Under rank-one single-source $\mathbf R_{ss} = \phi_s\vec a\vec a^H$, centralized MWF, single-constraint MVDR ($\vec a^H\vec w = 1$), and principal GEVD (maximizing $\vec w^H\mathbf R_{xx}\vec w / \vec w^H\mathbf R_{nn}\vec w$) are all collinear with $\mathbf R_{nn}^{-1}\vec a$—so in §13.8's correlated-noise benchmark, Node 2's single adapted broadcast $z_2 = 11x_3 - 24x_4$ makes local MWF, local MVDR, and local principal GEVD at Node 1 **all simultaneously lossless**.
 
 Once interference nulls form $P$ linear constraints $\mathbf C^H\vec w = \vec f$ ($\mathbf C \in \mathbb{C}^{M \times P}$ full column rank), with $\mathbf M = \mathbf C^H\mathbf R_{nn}^{-1}\mathbf C$ and $\vec\mu = \mathbf M^{-1}\vec f$, centralized $\vec w_{\mathrm{LCMV}}^\star = \mathbf R_{nn}^{-1}\mathbf C\vec\mu$ swings its remote block away from $\mathbf R_{nn}^{-1}\vec a$; keeping the old MVDR broadcast satisfies constraints locally at inflated output noise until DASF updates realign the compressor.
 
-Constrained DASF obeys a strict **local residual degrees-of-freedom rule**: local dimension $L_u$ must strictly exceed constraint count $P$ ($L_u > P$). If $L_u = P$, square constraint system $\tilde{\mathbf C}_u^H\vec h_u = \vec f$ locks $\vec h_u$ uniquely with $L_u - P = 0$ degrees of freedom left to reduce noise, freezing alternating updates at Step 1 until $R$ is increased so $L_u > P$ (full three-stage hand verification in [E13-27](#e13-27)).
+Constrained DASF obeys a strict **local residual degrees-of-freedom requirement**: local dimension $L_u$ must strictly exceed constraint count $P$ ($L_u > P$). If $L_u = P$, square constraint system $\tilde{\mathbf C}_u^H\vec h_u = \vec f$ locks $\vec h_u$ uniquely with $L_u - P = 0$ degrees of freedom left to reduce noise, freezing alternating updates at Step 1 until $R$ is increased so $L_u > P$ (full three-stage hand verification in [E13-20](#e13-20)).
+
+Historically, a decade before the general DASF formulation, Markovich-Golan, Gannot, and Cohen (EUSIPCO 2012; *IEEE Transactions on Audio, Speech, and Language Processing*, vol. 21, no. 2, pp. 343–356, 2013) directly generalized [Chapter 5's Generalized Sidelobe Canceller (GSC)](05_beamforming.md) to fully connected WASNs (**Distributed Multiple-Constraint GSC / LCMV**): each node splits its local observations into a constraint-preserving fixed beamformer branch and a local blocking-matrix noise-reference branch, exchanges reduced-dimension projections with peers, and adapts interference-cancelling weights distributively—forming a direct architectural bridge between Chapter 5's GSC and the unified DASF-LCMV subspace theory above.
+
+It is equally important to contrast two fundamental paradigms in distributed array signal processing. DANSE, DASF, and distributed GSC are **signal-broadcast** algorithms, whereas a major parallel literature develops **parameter-fusion** methods such as **Diffusion LMS** (Adapt-Then-Combine / Combine-Then-Adapt; Cattivelli & Sayed, *IEEE Transactions on Signal Processing*, vol. 58, no. 3, pp. 1035–1048, 2010; Sayed, *Foundations and Trends in Machine Learning*, vol. 7, no. 4–5, pp. 311–801, 2014, [DOI: 10.1561/2200000051](https://doi.org/10.1561/2200000051)) and distributed average consensus/gossip. Parameter diffusion and consensus assume each node observes full-dimensional regressors estimating a *shared global parameter vector* $\vec\theta$ (making them ideal for distributed diffuse-noise PSD averaging, network-wide DOA consensus, or shared parameter tracking), whereas in multichannel speech enhancement each node observes only its own spatial slice $\vec x_u \in \mathbb{C}^{M_u}$ and cannot form the cross-node inner product $\vec w^H\vec x$ without exchanging compressed waveforms or spectra.
 
 #### TI-dMWF: Finite-Pass Discovery and Estimation Require a Structured Source Model
 
@@ -613,24 +643,24 @@ Whereas offline population simulations recompute $\mathbf T_u^H\mathbf R_{xx}\ma
 
 #### Transform Old Statistics into New Coordinates Whenever Broadcast Versions Switch
 
-Inspecting "Instant 3" reveals a pervasive online bug: even if talkers and background noise remain completely stationary, a remote node doubling its broadcast gain quadruples that stream's variance and doubles its cross-spectra with local mics! Both old and new covariances are valid SPD matrices in their respective coordinates, yet blending them directly via an exponential forgetting factor feeds the solver a "mixed-coordinate chimera"—producing finite weights without a single warning while degrading physical output quality!
+Inspecting "Instant 3" reveals a pervasive online bug: even if talkers and background noise remain completely stationary, a remote node doubling its broadcast gain quadruples that stream's variance and doubles its cross-spectra with local mics. Both old and new covariances are valid SPD matrices in their respective coordinates, yet blending them directly via an exponential forgetting factor feeds the solver a "mixed-coordinate chimera"—producing finite weights without a single warning while degrading physical output quality.
 
-Whenever old and new inputs are related by a **known invertible linear transformation** (such as scalar gain rescaling or full-rank basis rotation), sandwiching old covariances and cross-correlations through that transformation aligns them cleanly into new coordinates prior to recursive blending (Exercise [E13-25](#e13-25) works out all four matrices and exact MSE deltas by hand).
+Whenever old and new inputs are related by a **known invertible linear transformation** (such as scalar gain rescaling or full-rank basis rotation), sandwiching old covariances and cross-correlations through that transformation aligns them cleanly into new coordinates prior to recursive blending (Exercise [E13-18](#e13-18) works out all four matrices and exact MSE deltas by hand).
 
 Coordinate transformation cannot resurrect directions previously annihilated by projection, however: whenever DANSE rotates a low-dimensional broadcast into a genuinely *new* sensor subspace orthogonal to the old broadcast, low-dimensional old statistics carry zero information along that new direction—requiring either fresh active/noise frame accumulation under the new broadcast or recomputation from a ring buffer of raw local frames ([TI-DANSE$^+$ extended preprint §III-G1](https://arxiv.org/html/2506.02797v2#S3.SS7.SSS1)).
 
-Intermittent wireless packet drops can trigger a second subtle covariance bug—**"every channel pair is PSD individually, yet the assembled matrix predicts negative power!"** Suppose staggered packet drops across three channels yield pairwise sample correlations $r_{12} = 0.9$, $r_{13} = 0.9$, and $r_{23} = -0.9$ estimated over non-identical frame subsets. Every $2 \times 2$ submatrix has eigenvalues $0.1$ and $1.9 > 0$.
+Intermittent wireless packet drops can trigger a second subtle covariance bug—**"every channel pair is PSD individually, yet the assembled matrix predicts negative power."** Suppose staggered packet drops across three channels yield pairwise sample correlations $r_{12} = 0.9$, $r_{13} = 0.9$, and $r_{23} = -0.9$ estimated over non-identical frame subsets. Every $2 \times 2$ submatrix has eigenvalues $0.1$ and $1.9 > 0$.
 
-Assembling all three into one $3 \times 3$ unit-diagonal matrix $\mathbf R$ and multiplying test vector $\vec v = [-1, 1, 1]^\top$ gives $\mathbf R\vec v = -0.8\vec v$—an unphysical negative eigenvalue $-0.8$ that crashes Cholesky factorization immediately (see the classic pairwise-complete covariance note in [R's `cor` documentation](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/cor.html))! Online covariance estimators must accumulate outer products exclusively over **complete frames where all channels are simultaneously valid under the same broadcast version**, logging valid snapshot counts explicitly.
+Assembling all three into one $3 \times 3$ unit-diagonal matrix $\mathbf R$ and multiplying test vector $\vec v = [-1, 1, 1]^\top$ gives $\mathbf R\vec v = -0.8\vec v$—an unphysical negative eigenvalue $-0.8$ that crashes Cholesky factorization immediately (see the classic pairwise-complete covariance note in [R's `cor` documentation](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/cor.html)). Online covariance estimators must accumulate outer products exclusively over **complete frames where all channels are simultaneously valid under the same broadcast version**, logging valid snapshot counts explicitly.
 
-#### Engineering Implementation Details in Author Reference MATLAB Code
+#### Smoothing Lag, Window Normalization, and Gating Alignment in Online Streaming Implementations
 
-Auditing open-source distributed audio codebases (such as the DANSE authors' MATLAB scripts and Python's `paderwasn`) reveals crucial smoothing and framing details beyond paper block diagrams (full source-level contract audits appear in the [Industrial Deployment Manual](../codes/chapters/ch00/research_en/03_industrial_deployment.md)):
+Translating idealized matrix equations into online WOLA streaming code requires close attention to four general signal-processing details (line-by-line interface audits of third-party reference implementations appear in the [Industrial Deployment Manual](../codes/chapters/ch00/research_en/03_industrial_deployment.md)):
 
-1. **Dual-filter smoothing and two-frame activation lag**: Reference code separates outbound filter $\mathbf W_{\mathrm{ext}}$ from local output filter $\mathbf W_{\mathrm{int}}$. Round-robin tokens gate updates to `Wext_target`, while `Wext` smooths exponentially toward `Wext_target` every frame and `Wint` updates every frame. Ordering creates a two-frame lag—tracing scalar state from $1$ with target switched to $3$ at Frame $0$ and smoothing factor $1/2$: because TX filtering precedes state update, Frame $0$ transmits $1$, Frame $1$ *still* transmits $1$ (smoothing to $(1 + 3)/2 = 2$ at end of Frame $1$), and only Frame $2$ transmits $2$!
-2. **Standard eigendecomposition vs. whitened GEVD**: Some legacy scripts run standard `eig` on $\hat{\mathbf R}_{xx} - \hat{\mathbf R}_{nn}$, picking algebraic `max(real(D))` before `abs`. Algebraic max differs from magnitude max—on negative eigenvalues $-4$ and $-1$, algebraic max selects $-1$ (`abs` $= 1$) rather than $4$! Prefer positive-definite whitened GEVD Eq. (13-18) with explicit $\max(\lambda_j, 1)$ clamping.
-3. **WOLA window overlap-squared sum, tail truncation, and diagonal loading**: Applying symmetric $\sqrt{\text{Hann}}$ windows at analysis and synthesis without dividing by overlap-squared sum leaves ripple—for $8$-point symmetric Hann $h[n] = \big(1 - \cos(2\pi n / 7)\big)/2$ ($n = 0, \ldots, 7$) at hop $H = 4$, steady overlap sums cycle through $h[0] + h[4] \approx 0.950484$ and $h[1] + h[5] \approx 0.799516 \ne 1$ (periodic $\sqrt{\text{Hann}}$ sums identically to $1$ at $H = N/2$). Check loop bounds too (an off-by-one upper bound on $24$ samples with $N=8, H=4$ processes starts $0, 4, 8, 12$ while dropping valid final frame $16$), and include diagonal loading against duplicate-channel singularity ([Bertrand et al. IWAENC 2010 §§II-C, III](https://homes.esat.kuleuven.be/~abertran/reports/IWAENC10.pdf)).
-4. **Aligned signal and VAD gating slices in SRO estimators**: In Dynamic Weighted Average Coherence Drift (DWACD)-style clock estimators, verify that the delayed correlation slice and VAD activity-count slice span the exact same sample range: slicing $8192$ samples for correlation while counting VAD activity over $16384$ samples lets $8192$ trailing speech samples pass a $6144$-sample gate while feeding $8192$ leading silence samples into cross-correlation!
+1. **Dual-filter smoothing and activation lag**: Streaming implementations typically split each node into an outbound broadcast filter branch and a local enhancement output filter branch; the round-robin token gates when the target broadcast weight is recomputed, while the active transmit weight smooths exponentially across frames to avoid waveform discontinuities. Applying the pre-update smoothed weight to the current frame before advancing the smoother state introduces a deterministic frame activation lag that must be accounted for in step-response and convergence budgets.
+2. **Whitened GEVD versus direct-subtraction eigendecomposition**: Running ordinary eigendecomposition directly on $\hat{\mathbf R}_{xx} - \hat{\mathbf R}_{nn}$ ignores the anisotropic noise metric and becomes ambiguous under finite-snapshot negative eigenvalues depending on algebraic versus magnitude sorting. Engineering implementations should prefer positive-definite whitened GEVD Eq. (13-18) with explicit clamping of generalized eigenvalues below $1$.
+3. **WOLA window COLA normalization and boundary completeness**: When both analysis and synthesis apply a $\sqrt{\text{Hann}}$ window at $50\%$ hop, only the **periodic** (DFT-even) Hann window achieves a constant overlap-add (COLA) unit squared-window sum; using a **symmetric** Hann window without dividing by the overlap sum introduces periodic steady-state amplitude ripple. Also verify frame-loop boundaries so the final complete frame is never truncated, and configure explicit diagonal loading for ill-conditioned or coherent noise channels (cf. [Bertrand et al. IWAENC 2010 §§II-C, III](https://homes.esat.kuleuven.be/~abertran/reports/IWAENC10.pdf)).
+4. **Aligned correlation and VAD gating windows in synchronization trackers**: In online cross-frame cross-correlation clock-drift trackers (such as DWACD in §13.15), the cross-correlation slice and the active-speech VAD gating window must span the exact same physical time interval; a wider gating window allows trailing speech to pass a noise-only correlation slice through the gate and bias the delay peak.
 
 ### 13.14 Budgeting Communication Bitrate, Matrix Memory, and Solver Compute
 
@@ -646,7 +676,7 @@ B_{\mathrm{spec}}
 \quad\text{bit/s}.
 \end{aligned}\tag{13-20}$$
 
-At standard $50\%$ overlap ($f_s = 16000\,\mathrm{Hz}, N = 512, H = 256, Q = 1$): $62.5$ frames/s $\times 257$ bins $\times 64$ bits $= 1028000\,\mathrm{bit/s}$—**more than $4\times$ higher than time-domain PCM16 ($256000\,\mathrm{bit/s}$)** due to $2\times$ overlap oversampling and $64$-bit unquantized complex floats! Unless paired with subband quantization or active-bin pruning, practical nodes typically synthesize a time-domain broadcast stream via inverse WOLA before encoding ([E13-15](#e13-15)).
+At standard $50\%$ overlap ($f_s = 16000\,\mathrm{Hz}, N = 512, H = 256, Q = 1$): $62.5$ frames/s $\times 257$ bins $\times 64$ bits $= 1028000\,\mathrm{bit/s}$—**more than $4\times$ higher than time-domain PCM16 ($256000\,\mathrm{bit/s}$)** due to $2\times$ overlap oversampling and $64$-bit unquantized complex floats. Unless paired with subband quantization or active-bin pruning, practical nodes typically synthesize a time-domain broadcast stream via inverse WOLA before encoding ([E13-09](#e13-09)).
 
 Link-layer primitives multiply air-time as well: true physical-layer broadcast over a shared medium sends $U$ packets/frame across $U$ nodes; point-to-point unicast over a full mesh sends $U(U - 1)$ packets/frame; and up-cast + down-cast over a tree sends $2(U - 1)$ directed link messages plus multi-hop latency.
 
@@ -656,11 +686,11 @@ Now check RAM and solver FLOPs. In full-mesh DANSE at $Q = 1$, node $u$ tracks $
 
 For $U = 4, M_u = 2$ ($M = 8$): a centralized $8 \times 8$ matrix takes $64 \times 16 = 1024$ bytes/bin; each distributed node ($L_u = 2 + 3 = 5$) takes only $25 \times 16 = 400$ bytes/bin (slashing single-device RAM and $O(L_u^3)$ Cholesky cost), whereas total memory across all $4$ devices sums to $4 \times 400 = 1600$ bytes/bin due to replicated broadcast statistics.
 
-When comparing convergence speed across schedules, never plot raw "outer iteration events" alone: one sequential event executes $1$ local matrix solve, whereas one simultaneous event executes $U$ local solves—always align horizontal axes by **cumulative node linear-system solves** ([E13-16](#e13-16) and Fig. 71).
+When comparing convergence speed across schedules, never plot raw "outer iteration events" alone: one sequential event executes $1$ local matrix solve, whereas one simultaneous event executes $U$ local solves—always align horizontal axes by **cumulative node linear-system solves** ([E13-10](#e13-10) and Fig. 66).
 
 #### Global Residuals Must Audit Currently Active Effective Weights
 
-Checking an active node's *local* compressed residual $\tilde{\mathbf R}_u\vec h_u - \tilde{\vec r}_u$ right after solving always reads zero—even under a completely wrong remote broadcast (§13.8)! Proper offline convergence diagnostics plug node $u$'s live effective global weight $\vec w_{u,\mathrm{eff}} = \mathbf T_u\vec h_u$ back into the centralized normal equations to form **global relative residual** $\epsilon_u$:
+Checking an active node's *local* compressed residual $\tilde{\mathbf R}_u\vec h_u - \tilde{\vec r}_u$ right after solving always reads zero—even under a completely wrong remote broadcast (§13.8). Proper offline convergence diagnostics plug node $u$'s live effective global weight $\vec w_{u,\mathrm{eff}} = \mathbf T_u\vec h_u$ back into the centralized normal equations to form **global relative residual** $\epsilon_u$:
 
 $$\begin{aligned}
 \vec\rho_u&=\mathbf R_{xx}\vec w_{u,\mathrm{eff}}-\vec r_{xd_u},\\
@@ -669,12 +699,12 @@ $$\begin{aligned}
 
 For $\vec r_{xd_u} \ne \vec 0$, $\epsilon_u$ is scale-invariant (computed with max-entry scaling against underflow, switching to covariance-normalized absolute residual if $\vec r_{xd_u} = \vec 0$). Always recombine non-updating peers' cached receiving weights with the **newest live broadcasts** when evaluating Eq. (13-21) so transient cross-node mismatches are captured faithfully.
 
-![Figure 71: Cumulative node matrix-solve budget and live update trajectories](../figures_en/fig71_distributed_updates.png)
+![Figure 66: Cumulative node matrix-solve budget and live update trajectories](../figures_en/fig66_distributed_updates.png)
 
-Figure 71 tracks Sequential, Simultaneous ($\alpha = 1$), and half-step Relaxed ($\alpha = 0.5$) DANSE on §13.8's 4-mic correlated-noise benchmark ($d_1 = s, d_2 = 2s$, initialized at $[1, 1/2]^\top$ and $[2, -1/2]^\top$) against **cumulative node matrix solves** (including the $2$ initial local solves):
+Figure 66 tracks Sequential, Simultaneous ($\alpha = 1$), and half-step Relaxed ($\alpha = 0.5$) DANSE on §13.8's 4-mic correlated-noise benchmark ($d_1 = s, d_2 = 2s$, initialized at $[1, 1/2]^\top$ and $[2, -1/2]^\top$) against **cumulative node matrix solves** (including the $2$ initial local solves):
 
-- **Panel (a) Worst-node live NMSE**: Notice the prominent spike on solid blue (Sequential) at Solves 3–4 ($\approx 0.43787$)—that is §13.9's stale-receiving-weight mismatch right after one node updates its broadcast before its peer re-solves! Immediately afterward it plunges onto centralized floor $8/69 \approx 0.11594$ (black dotted) within $16$ total solves, compared to $28$ solves for Simultaneous (red dashed) and $78$ solves for $\alpha = 0.5$ Relaxed (green dash-dot).
-- **Panel (b) Log global relative normal-equation residual**: Tracks $\max_u \epsilon_u$ down to $10^{-8}$ (black dotted), serving as an offline oracle diagnostic (online devices monitor step/output deltas without access to global $\mathbf R_{xx}$).
+- **Panel (a) Worst-node live NMSE**: Solid blue (Sequential) sits at $0.19048$ at Cumulative Solve 3 and spikes to $\approx 0.43787$ at Cumulative Solve 4—this is §13.9's stale-receiving-weight mismatch (red dashed Simultaneous hits an identical $0.43787$ initial peak upon completing its first round at Cumulative Solve 4): one node sharply updates its outbound broadcast while its peer still applies stale receiving weights, temporarily degrading live recombined output before plunging onto the centralized floor $8/69 \approx 0.11594$ (black dotted) within $16$ total solves, compared to $28$ solves for Simultaneous (red dashed) and $78$ solves for $\alpha = 0.5$ Relaxed (green dash-dot).
+- **Panel (b) Log global relative normal-equation residual**: Tracks $\max_u \epsilon_u$ down to $10^{-8}$ (black dotted), serving as an offline oracle diagnostic (online devices monitor step/output deltas without access to global $\mathbf R_{xx}$; relative ordering across schedules can vary with initialization and noise conditions).
 
 ### 13.15 Audio, Sampling Rate Offset, and Packet Loss: Honest Scoring on Finite Recordings
 
@@ -698,32 +728,24 @@ Tier 3 is indispensable because both $D[n]$ and $Y[n]$ undergo independent 16-bi
 
 #### SRO Compensation Alters Observation Statistics Rather Than Labels Alone
 
-Hardware clocking comes first in cross-device pickup ([Chapter 10, §10.2](10_engineering-practice.md#sec-10-2)). Over wired LANs in boardrooms or broadcast studios, **AES67 / IEEE 1588 PTPv2** interfaces phase-lock every node's local ADC clock to a single Grandmaster, eliminating SRO physically: at $48\,\mathrm{kHz}$, $\pm 1\,\mu\mathrm{s}$ worst-case opposing skew induces a static $1.728^\circ$ phase offset at $2.4\,\mathrm{kHz}$ ($< 0.001\,\mathrm{dB}$ coherent-sum loss).
+Hardware clocking comes first in cross-device pickup (for definitions of clock offset, crystal drift, and sample gaps as well as buffering architectures, see [Chapter 10, §10.2](10_engineering-practice.md#sec-10-2) and [§10.7](10_engineering-practice.md#sec-10-7)). Over wired LANs in boardrooms or broadcast studios, **AES67 / IEEE 1588 PTPv2** interfaces phase-lock every node's local ADC clock to a single Grandmaster, eliminating SRO physically: at $48\,\mathrm{kHz}$, $\pm 1\,\mu\mathrm{s}$ worst-case opposing skew induces a static $1.728^\circ$ phase offset at $2.4\,\mathrm{kHz}$ ($< 0.001\,\mathrm{dB}$ coherent-sum loss).
 
-Across ad-hoc consumer wireless networks (phones, tablets, earbuds, smart speakers) with independent quartz crystals drifting by $20$–$100\,\mathrm{ppm}$, $100\,\mathrm{ppm}$ rotates $2.4\,\mathrm{kHz}$ inter-node phase at $86.4^\circ/\mathrm{s}$—hitting a complete $180^\circ$ cancellation null in just $2.083\,\mathrm{s}$ and forcing software SRO tracking, Asynchronous Sample Rate Conversion (SRC), and packet-drop recovery ([E13-26](#e13-26)).
+Across ad-hoc consumer wireless networks (phones, tablets, earbuds, smart speakers) with independent quartz crystals drifting by $20$–$100\,\mathrm{ppm}$, $100\,\mathrm{ppm}$ rotates $2.4\,\mathrm{kHz}$ inter-node phase at $86.4^\circ/\mathrm{s}$—hitting a complete $180^\circ$ cancellation null in just $2.083\,\mathrm{s}$ and forcing software SRO tracking, Asynchronous Sample Rate Conversion (SRC), and packet-drop recovery ([E13-19](#e13-19)).
 
-Our clock control runs remote Node 2 $+100\,\mathrm{ppm}$ fast ($f_d = 16000 \times 1.0001 = 16001.6\,\mathrm{Hz}$, zero initial offset). At final local index $n = 31999$, the fast remote clock has elapsed $3.20$ fewer reference sample periods; conversely, reconstructing local instant $n = 31999$ via SRC queries remote **device array coordinate**
+Our synthetic clock control runs remote Node 2 $+100\,\mathrm{ppm}$ fast ($f_d = 16000 \times 1.0001 = 16001.6\,\mathrm{Hz}$, zero initial offset). To reconstruct the remote waveform at local reference instant $n / 16000\,\mathrm{s}$, the asynchronous sample-rate converter (SRC) must interpolate at remote device array coordinate $m = n \times 1.0001$ (at the end of $2\,\mathrm{s}$, $n = 31999 \Rightarrow m = 32002.1999$, so the remote device must supply at least $32004$ lookahead samples, corresponding to network lookahead buffering in real-time streams).
 
-$$m = n \times 1.0001 = 31999 \times 1.0001 = 32002.1999,$$
+Running this clock experiment reveals a notable effect: uncompensated $+100\,\mathrm{ppm}$ degrades steady-window NMSE from $2/13 \approx 0.153846$ to $0.350880$; applying known-rate linear-interpolation SRC (producing bit-identical results across full-buffer and stateful $257$-sample streaming chunks) drops fused NMSE to **$0.135724$—below the synchronous Wiener floor $2/13 \approx 0.153846$.** This does not break Wiener theory: **two-point linear interpolation acts as a first-order low-pass filter, attenuating remote $2900 / 3500\,\mathrm{Hz}$ high-frequency noise variance while barely touching the $700 / 1300\,\mathrm{Hz}$ target**—altering input noise covariance $\mathbf R_{nn}$ so the two numbers reflect different input statistical models.
 
-interpolating between remote indices $32002$ and $32003$—requiring at least $32004$ remote samples (and corresponding lookahead buffering in real-time streams).
+For wireless packet-drop gaps, deterministic recovery policies ("zero-fill remote stream under fixed weights," "repeat previous frame," or "explicitly switch to local 2-mic MWF weights") must be specified upfront. Excising $800$ contiguous remote samples over $[16000, 16800)$ ($5 \times 10\,\mathrm{ms}$ packets of $160$ samples), we report *both* full $28800$-sample steady-window NMSE and $800$-sample in-gap NMSE: inside the $800$-sample gap, naive zero-fill under unchanged weights spikes to $461/676 \approx 0.68195$ (PCM $0.681955$), whereas explicit fallback to local 2-mic MWF holds $4/9 \approx 0.44444$ (PCM $0.444451$); looking only at full-window averages ($0.168516$ vs. $0.161918$) dilutes a $50\,\mathrm{ms}$ dropout across $1.8\,\mathrm{s}$ of clean audio.
 
-Running this clock experiment reveals an instructive surprise: uncompensated $+100\,\mathrm{ppm}$ degrades steady-window NMSE from $2/13 \approx 0.153846$ to $0.350880$; applying known-rate linear-interpolation SRC (producing bit-identical results across full-buffer and stateful $257$-sample streaming chunks) drops fused NMSE to **$0.135724$—below the synchronous Wiener floor $2/13 \approx 0.153846$!** Did linear interpolation beat optimal Wiener theory? Of course not!
+Real-time streaming systems must also separate sender media timestamps, packet sequence numbers, local NIC arrival times, and fusion hard deadlines at the protocol layer (such as standard RTP/RTCP, [RFC 3550 §§5.1, 6.4.1](https://www.rfc-editor.org/rfc/rfc3550)): if a remote packet carrying $1000\,\mathrm{ms}$ audio arrives at $1020\,\mathrm{ms}$ after retransmission while local fallback already committed to audio DMA at $1018\,\mathrm{ms}$, that late packet can never retroactively rewrite already-played audio. Equally important, conventional single-channel VoIP adaptive jitter-buffer time-scaling (such as WebRTC NetEQ accelerate/preemptive-expand) and Bluetooth LE Audio LC3 or neural packet-loss concealment (PLC) optimize single-stream perceptual continuity by warping or resynthesizing phase trajectories, destroying cross-node sample-level **phase coherence**; coherent distributed spatial fusion must therefore operate directly on sample-clock-aligned streams with explicit missing-packet masks and local fallback, never on post-NetEQ time-warped or generative-PLC audio.
 
-**Two-point linear interpolation acts as a first-order low-pass filter, attenuating remote $2900\,\mathrm{Hz}$ and $3500\,\mathrm{Hz}$ high-frequency noise carriers substantially while barely touching the $700 / 1300\,\mathrm{Hz}$ target**—altering input noise covariance $\mathbf R_{nn}$ so the two numbers reflect different input statistical models!
+![Figure 67: Finite-recording clock compensation and packet-drop recovery controls](../figures_en/fig67_distributed_transport.png)
 
-For wireless packet-drop gaps, deterministic recovery policies ("zero-fill remote stream under fixed weights," "repeat previous frame," or "explicitly switch to local 2-mic MWF weights") must be scored on matched denominators.
-
-Excising $800$ contiguous remote samples over $[16000, 16800)$ ($5 \times 10\,\mathrm{ms}$ packets of $160$ samples), we report *both* full $28800$-sample steady-window NMSE and $800$-sample in-gap NMSE: inside the $800$-sample gap, naive zero-fill under unchanged weights spikes to $461/676 \approx 0.68195$ (PCM $0.681955$), whereas explicit fallback to local 2-mic MWF holds $4/9 \approx 0.44444$ (PCM $0.444451$); looking only at full-window averages ($0.168516$ vs. $0.161918$) dilutes a $50\,\mathrm{ms}$ dropout across $1.8\,\mathrm{s}$ of clean audio!
-
-Streaming systems must also separate **late packet arrivals** from offline backfill: at $16\,\mathrm{kHz}$ ($160$ samples $= 10\,\mathrm{ms}$), if the packet starting at sample $16000$ ($1000\,\mathrm{ms}$) arrives at $1020\,\mathrm{ms}$ after wireless retransmission while local DMA playback committed at hard deadline $1018\,\mathrm{ms}$, that late packet already missed real-time playout! Standard RTP/RTCP ([RFC 3550 §§5.1, 6.4.1](https://www.rfc-editor.org/rfc/rfc3550)) logs sender media timestamps, RTP sequence numbers, local NIC arrival times, and playout deadlines separately.
-
-![Figure 72: Finite-recording clock compensation and packet-drop recovery controls](../figures_en/fig72_distributed_transport.png)
-
-Figure 72 summarizes SRO compensation and $5$-packet ($800$-sample) dropout recovery across our $16\,\mathrm{kHz}$ WAVs ([E13-17](#e13-17) & [E13-18](#e13-18)):
+Figure 67 summarizes SRO compensation and $5$-packet ($800$-sample) dropout recovery across our $16\,\mathrm{kHz}$ WAVs ([E13-11](#e13-11) & [E13-12](#e13-12)):
 
 - **Panel (a) SRO and linear SRC**: Synchronous compressed NMSE is $0.153852$; uncompensated $+100\,\mathrm{ppm}$ inflates target distortion (orange) to $0.350885$; known-rate linear SRC restores target alignment while low-passing high-frequency noise (hatched blue) to $0.135726$ under the modified noise covariance.
-- **Panel (b) Finite-window cross-term diagnostic**: Exact zero under synchronous integer-period windows, versus $\approx -2.3 \times 10^{-5}$ signed cross-power (green) under $+100\,\mathrm{ppm}$ drift where carrier cycles lose exact orthogonality.
+- **Panel (b) Finite-window cross-term diagnostic**: Exact zero under synchronous integer-period windows, versus $\approx -2.3 \times 10^{-5}$ normalized signed cross-term (green; raw target–noise cross-power $-1.5668 \times 10^{-7}$ divided by reference power $P = 0.0068$ equals $-2.304 \times 10^{-5}$) under $+100\,\mathrm{ppm}$ drift where carrier cycles lose exact orthogonality.
 - **Panel (c) Full-window vs. in-gap scoring across $800$ dropped samples**: Full-window blue bars ($0.168521$ vs. $0.161924$) look deceptively close, whereas in-gap orange bars expose zero-fill's $0.681955$ collapse versus local-MWF fallback's $0.444451$.
 
 #### Quantization Error Bounds for PCM16 Remote Transport
@@ -740,13 +762,40 @@ $$\begin{aligned}
 
 For §13.7's $\vec w_r = [4, -1]^\top / 13$, per-mic quantization bounds peak link error by $(\Delta / 2)(5/13) = 5\Delta / 26$.
 
-Architecture 2 (distributed scalar broadcast): Node 2 forms $z_2 = 2x_3 - \frac{1}{2}x_4$ in `float64` first, quantizes $z_2$ once ($\le \Delta / 2$), and Node 1 multiplies by $g_{12} = 2/13$—tightening peak float-fusion link error to $(2/13)(\Delta / 2) = \Delta / 13 \approx 2.347506 \times 10^{-6}$; actual read-back of `remote_scalar_white.wav` measures $2.347005 \times 10^{-6}$, strictly inside the bound ([E13-19](#e13-19), prior to final output WAV quantization).
+Architecture 2 (distributed scalar broadcast): Node 2 forms $z_2 = 2x_3 - \frac{1}{2}x_4$ in `float64` first, quantizes $z_2$ once ($\le \Delta / 2$), and Node 1 multiplies by $g_{12} = 2/13$—tightening peak float-fusion link error to $(2/13)(\Delta / 2) = \Delta / 13 \approx 2.347506 \times 10^{-6}$; actual read-back of `remote_scalar_white.wav` measures $2.347005 \times 10^{-6}$, strictly inside the bound ([E13-13](#e13-13), prior to final output WAV quantization).
+
+#### Blind SRO Estimation, Node Geometry Self-Localization, and Wireless Physical-Layer Selection
+
+The clock control above assumed relative frequency offset $\varepsilon = +100\,\mathrm{ppm}$ was known upfront; in hardware-unlocked consumer wireless ad-hoc networks, however, **sampling rate offset $\varepsilon$ must be estimated blindly** directly from the asynchronous audio streams. Given an initial time offset $\tau_0$ and constant sampling rate offset $\varepsilon = (f_{s,2} - f_{s,1}) / f_{s,1}$ (with reference rate $f_s = f_{s,1}$, so $\varepsilon > 0$ means node 2 samples faster), a continuous pure-tone component $s(t) = e^{\mathrm{j}2\pi f_k t}$ is sampled as $x_1[n] = s(n / f_s) = e^{\mathrm{j}2\pi f_k n / f_s}$ at node 1 and $x_2[n] = s(n / f_{s,2} - \tau_0) = s\!\left(\frac{n}{f_s(1 + \varepsilon)} - \tau_0\right) \approx e^{\mathrm{j}2\pi f_k[(1 - \varepsilon)n / f_s - \tau_0]}$ ($|\varepsilon| \ll 1$) at node 2. In the STFT domain with hop size $H$, frame $\ell$ (centered at sample index $n = \ell H$) therefore satisfies $X_2[k, \ell] \approx X_1[k, \ell]\exp\!\big(-\mathrm{j}2\pi f_k(\tau_0 + \varepsilon\ell H / f_s)\big)$. Under the monograph's standard CSM conjugation convention $\hat\Gamma_{12}[k, \ell] = \hat{\mathbb{E}}\big[X_1[k, \ell]\,X_2^*[k, \ell]\big]$ (consistent with Eq. (13-2)), $\hat\Gamma_{12}[k, \ell] \propto \exp\!\big(+\mathrm{j}2\pi f_k(\tau_0 + \varepsilon\ell H / f_s)\big)$ rotates in phase by **$+2\pi f_k \varepsilon H / f_s$** per frame; forming the conjugate coherence product $P_k[\ell] = \hat\Gamma_{12}[k, \ell + L]\,\hat\Gamma_{12}^*[k, \ell]$ across a lag of $L$ frames cancels static acoustic transfer phase and $\tau_0$, leaving a linear phase ramp proportional to frequency $f_k$:
+
+$$\begin{aligned}
+\hat\Gamma_{12}[k,\ell]
+&=\hat{\mathbb{E}}\big[X_1[k,\ell]\,X_2^*[k,\ell]\big],\\
+\Delta\phi_k
+&=+2\pi f_k\frac{\varepsilon H}{f_s},\\
+P_k[\ell]
+&=\hat\Gamma_{12}[k,\ell+L]\,\hat\Gamma_{12}^*[k,\ell]
+\propto\exp\!\left(+\mathrm{j}2\pi f_k\frac{\varepsilon L H}{f_s}\right).
+\end{aligned}\tag{13-24}$$
+
+Implementing Eq. (13-24) requires verifying both the **conjugation sign convention** and the **phase-unwrapping bound**. First, under $\hat\Gamma_{12} = \hat{\mathbb{E}}[X_1 X_2^*]$, positive $\varepsilon > 0$ produces a positive phase slope (e.g., at $f_s = 16\,\mathrm{kHz}, \varepsilon = +100\,\mathrm{ppm}, f_k = 2\,\mathrm{kHz}, H = 128, L = 10$, $\arg P_k \approx +0.1005\,\mathrm{rad}$); flipping conjugation to $\hat{\mathbb{E}}[X_1^* X_2]$ (as used in some DWACD derivations) or swapping the reference node flips the sign of $\hat\varepsilon$, and feeding the negated estimate into an SRC doubles the drift instead of cancelling it. Second, to prevent $2\pi$ phase wrapping over lag $L$ up to the maximum analyzed frequency $f_{\max}$ (typically $f_s / 2$), total phase rotation must stay strictly inside $(-\pi, \pi)$, imposing the unambiguous lag bound $|\varepsilon| L H f_{\max} / f_s < 1/2$ (e.g., for $|\varepsilon| = 100\,\mathrm{ppm}$ and $f_{\max} = f_s / 2$, $L H < 10^4$ samples).
+
+Building on the coherence-drift mechanism in Eq. (13-24), two flagship blind SRO estimation families have emerged across academia and industry: first, **Weighted Average Coherence Drift (WACD) and its online dynamic variant DWACD** (Gburrek, Schmalenstroeer, & Haeb-Umbach, ICASSP 2022), which estimates $\hat\varepsilon$ via cross-frequency weighted phase-slope regression or inverse-DFT peak search on $P_k[\ell]$ paired with VAD-gated dynamic reference refreshes to track thermal crystal drift and talker switches; and second, the **Double Cross-Correlation Processor with Phase Transform (DXCP-PhaT)** (Chinaev, Thüne, & Enzner, *IEEE/ACM TASLP* vol. 29, pp. 1881–1896, 2021), which constructs a phase-transform-whitened second-order cross-correlation in the STFT domain to restore ergodicity of drifting cross-spectra, achieving robust online blind SRO and residual sampling time offset (STO) estimation even under strong reverberation and wide inter-node spacing—closing the loop with §13.12's SRO-aware DANSE (Didier et al., *IEEE OJSP* 2023). In real-world asynchronous multi-device meeting evaluations, the **CHiME-5/6/7/8** benchmarks (Barker et al., 2018; Watanabe et al., 2020; Cornell et al., 2023/2024) and **NOTSOFAR-1** (Vinnikov et al., Interspeech 2024) systematically test blind SRO trackers (DWACD / DXCP-PhaT) coupled with distributed beamforming and GSS front-ends under natural talker movement, strong reverberation, and free-running device clocks.
+
+Beyond purely blind DANSE requiring no explicit spatial priors, any system that jointly performs cross-node source localization, spatial sector constraints, or DASF-LCMV interference nulling must first solve **ad-hoc node geometry self-localization**: standard approaches use multi-source Time Difference of Arrival (TDOA) measurements to establish pairwise distance constraints solved jointly for node and source coordinates via Multidimensional Scaling (MDS) or nonlinear least squares, or exploit ambient diffuse-noise segments with the 3D isotropic diffuse coherence model $\operatorname{Re}\{\Gamma_{uv}(f)\} \approx \operatorname{sinc}(2f d_{uv} / c)$ to invert unknown inter-node distances $d_{uv}$ blindly.
+
+At the wireless hardware layer, transport technologies differ starkly in payload bitrate, jitter, clock synchronization precision, and packet-loss patterns, directly determining whether waveform-level collaborative enhancement is viable:
+
+| Transport PHY / Protocol | Typical Payload & Coding | Latency & Jitter Profile | Clock Synchronization Capability | Loss Pattern & Waveform-Level Collaboration Fit |
+|---|---|---|---|---|
+| **BLE LE Audio** (LC3 / ISO / Auracast) | $\approx 16$–$320\,\mathrm{kbit/s}$ lossy LC3 frames; supports Broadcast Isochronous Streams (BIS) | $10$–$30\,\mathrm{ms}$ fixed isochronous intervals, low jitter | Isochronous sync anchors ($\sim$few to tens of $\mu\mathrm{s}$); cross-chip residual SRO often persists | Frame-level drops; suited to ultra-low-power wearable single-stream broadcasts, but lossy coding alters linear spectral phase so coherent post-decode fusion needs care |
+| **Wi-Fi** (IEEE 802.11 CSMA/CA) | Tens to hundreds of $\mathrm{Mbit/s}$; carries uncompressed PCM16 / float streams | Channel contention induces $5$–$100\,\mathrm{ms}$ heavy random jitter and retransmission bursts | Relies on application-layer RTCP or TSF hardware timestamps; typically needs software SRO tracking | Bursty contiguous packet drops (tens of ms sample gaps); suited to high-bandwidth conference-table multi-device arrays with hard-deadline fallback policies |
+| **UWB** (IEEE 802.15.4z) | Several to tens of $\mathrm{Mbit/s}$ (short-range impulse radio) | Sub-millisecond short frames, low jitter | Nanosecond-grade hardware timestamps and centimeter-grade Two-Way Ranging (TWR) | Combines accurate node self-ranging with tight clock anchoring; ideal auxiliary link for multi-node geometric calibration and synchronization |
+| **Wired Ethernet AES67 / PTPv2** | Gigabit-LAN uncompressed $48\,\mathrm{kHz}$ PCM24 multichannel streams | Deterministic sub-ms to few-ms switched forwarding latency | Hardware PTPv2 grandmaster phase lock ($< 1\,\mu\mathrm{s}$, zero long-term SRO) | Negligible packet loss; industrial benchmark transport foundation for ceiling conference arrays, broadcast studios, and fixed distributed installations |
 
 #### Reproducible Entry Points and Audio Groups
 
-Core solvers live in [`codes/chapters/ch13/core/distributed.py`](../codes/chapters/ch13/core/distributed.py), AES67/PTPv2 and DASF solvers in [`codes/chapters/ch13/core/dasf_and_ptp.py`](../codes/chapters/ch13/core/dasf_and_ptp.py), and synthetic audio/transport controls in [`codes/chapters/ch13/core/distributed_audio.py`](../codes/chapters/ch13/core/distributed_audio.py). Note one transpose convention: prose writes $\tilde{\vec x} = \mathbf T^H\vec x$ with tall $\mathbf T$, whereas function parameter `projection` accepts wide row-mapping $\mathbf B = \mathbf T^H$ directly (so complex broadcast $\vec f^H\vec x$ enters `projection` as conjugated row $\vec f^H$, never $\vec f^\top$).
-
-Internally, `compressed_weights` and `raw_compressed_weights` return normalized-basis and raw-broadcast local weights respectively, while iteration logs separate `outputs_at_last_solve` from live recombined `cached_outputs`—reproducing Fig. 71(a)'s transient spikes directly.
+Core matrix and iterative solvers live in [`codes/chapters/ch13/core/distributed.py`](../codes/chapters/ch13/core/distributed.py), AES67/PTPv2 phase-budget and DASF constrained-subspace kernels in [`codes/chapters/ch13/core/dasf_and_ptp.py`](../codes/chapters/ch13/core/dasf_and_ptp.py), and synthetic audio/transport mismatch experiments in [`codes/chapters/ch13/core/distributed_audio.py`](../codes/chapters/ch13/core/distributed_audio.py). Note one transpose convention when reading the code: prose writes $\tilde{\vec x} = \mathbf T^H\vec x$ with tall column-full-rank $\mathbf T$, whereas the code accepts row-arranged observation mapping $\mathbf B = \mathbf T^H$ (complex broadcast $\vec f^H\vec x$ corresponds to conjugated row $\vec f^H$). For numerical conditioning and transient diagnostics, the solver normalizes nonzero compressed rows internally and records both normalized-coordinate and raw-broadcast local weights alongside two per-step states—each node's last-active proposal weight and its live effective weight recombined against the network's newest broadcasts—reproducing Fig. 66(a)'s cross-node transient mismatch spikes directly.
 
 Generate or strictly verify all $17$ WAVs and `MANIFEST.json` from the repository root via:
 
@@ -755,7 +804,7 @@ Generate or strictly verify all $17$ WAVs and `MANIFEST.json` from the repositor
 .venv/bin/python -m codes.chapters.ch13.examples.generate_distributed_audio --check
 ```
 
-`chapter13_exercises.run_experiments()` returns `E13-01`–`E13-27`. In Fig. 71 ($\max_u \epsilon_u < 10^{-8}$), Sequential, Simultaneous, and $\alpha=0.5$ Relaxed take $14, 26, 76$ update events ($16, 28, 78$ total matrix solves including $2$ initial local solves). The $17$ WAVs form eight comparison groups:
+`chapter13_exercises.run_experiments()` returns the complete result dictionary for `E13-01`–`E13-20`. In Fig. 66's correlated-noise convergence budget experiment (stopping criterion: every node's live effective weight satisfies Eq. (13-21) relative residual $< 10^{-8}$), Sequential, full-step Simultaneous, and fixed-$0.5$ half-step Relaxed take $14$ rounds ($14$ update solves), $13$ rounds ($26$ update solves), and $38$ rounds ($76$ update solves), respectively ($16, 28, 78$ cumulative matrix solves including the $2$ initial local solves). The $17$ synthetic WAVs are organized into eight comparison groups:
 
 | Audio Group | WAV Files | Listening & Numerical Verification Focus |
 |---|---|---|
@@ -768,220 +817,182 @@ Generate or strictly verify all $17$ WAVs and `MANIFEST.json` from the repositor
 | Crystal SRO & SRC | [Misaligned](../codes/chapters/ch13/distributed_audio/clock_misaligned_white.wav)<br>[Linear SRC corrected](../codes/chapters/ch13/distributed_audio/clock_linear_corrected_white.wav) | Audible $+100\,\mathrm{ppm}$ phase comb distortion and SRC restoration |
 | Contiguous packet-drop recovery | [Zero-fill](../codes/chapters/ch13/distributed_audio/packet_zerofill_white.wav)<br>[Local fallback](../codes/chapters/ch13/distributed_audio/packet_local_fallback_white.wav) | $50\,\mathrm{ms}$ dropout at $1.00$–$1.05\,\mathrm{s}$: amplitude dip vs. smooth local-MWF fallback |
 
-Exact disk integer ratios $E_{\mathrm{PCM}} / P_{\mathrm{ref}}$: white centralized $= 32352145920 / 210281178240$, correlated centralized $= 24381142920 / 210281178240$, correlated stale $= 32353470360 / 210281178240$, with Node 2 reference denominator $841117066920$ (independently rounded rather than exact $4\times$ Node 1's denominator); full records appear in [`MANIFEST.json`](../codes/chapters/ch13/distributed_audio/MANIFEST.json), the [Industrial Deployment Manual](../codes/chapters/ch00/research_en/03_industrial_deployment.md), and the [Exercises & Audio Manual](../codes/chapters/ch00/research_en/05_exercises_and_audio.md).
+Baseline $\mathrm{NMSE}_{\mathrm{PCM}}$ measured by reloading disk PCM16 integers over the $28800$-sample steady window are approximately $0.153852$ (white centralized), $0.115945$ (correlated centralized), and $0.153858$ (correlated stale broadcast), with Node 2's independently quantized reference energy denominator tracked separately; exact 64-bit integer numerators, denominators, and the full manifest are archived in [`MANIFEST.json`](../codes/chapters/ch13/distributed_audio/MANIFEST.json), with further deployment and reproducibility details in the [Industrial Deployment Manual](../codes/chapters/ch00/research_en/03_industrial_deployment.md) and the [Exercises & Audio Manual](../codes/chapters/ch00/research_en/05_exercises_and_audio.md).
 
-### 13.16 Twenty-Seven Exercises: From Compression Directions to End-to-End System Verification
+### 13.16 Twenty Exercises: From Compression Directions to End-to-End System Verification
 
-Exercises 1–12 cover compressed subspaces and sequential/simultaneous updates, 13–24 cover rank deficiency, bitrate/RAM accounting, SRO/dropout transport, and step-size rules, and 25–27 derive broadcast-switch coordinate transforms, AES67/PTPv2 sub-microsecond budgets, and unified DASF constrained subspaces. Unless noted otherwise, $d = s$ and $\phi_s = 1$, verifying every effective global weight via Eq. (13-3).
+Exercises 1–6 cover complex reference conjugation, broadcast-scale invariance, sequential/simultaneous update states, and multi-target broadcast rank; Exercises 7–17 trace rank-deficient fallback, bitrate and RAM accounting, clock/packet-loss transport, PCM16 bounds and three-tier steady-window scoring, convergence step-size rules, tree summation, and GEVD whitening; and Exercises 18–20 derive broadcast-switch coordinate transforms, AES67/PTPv2 sub-microsecond budgets, and the unified DASF constrained subspace framework. Unless noted otherwise, $d = s$ and $\phi_s = 1$, verifying every effective global weight via Eq. (13-3).
 
 <a id="e13-01"></a>
-#### E13-01: Node Partitioning and Node-Specific Target Scaling
+#### E13-01: Complex Reference Conjugation Cannot Be Omitted
 
-**Problem.** Two 2-mic nodes have $\vec a = [1, 1/2, 2, -1/2]^\top$. Write local/global observation vectors and dimensions; for $d_1 = s$ vs. $d_2 = 2s$, compare $\vec r_{xd_u}$ and explain whether unnormalized MSEs can be compared directly.
+**Problem.** Under §13.7's spatially white 4-mic model ($\vec a = [1, 1/2, 2, -1/2]^\top$, $\mathbf R_{nn} = \mathbf I_4$), set the reference target to complex acoustic image $d = (1 + \mathrm{j})s$: compute $\vec r_{xd}$, $\vec w^\star$, absolute MSE, and NMSE, and explain why unnormalized MSEs of two nodes with different reference amplitudes cannot be compared directly.
 
-**Solution.** Local $\vec x_1 = [x_1, x_2]^\top$ and $\vec x_2 = [x_3, x_4]^\top$ are $2 \times 1$; stacked $\vec x$ is $4 \times 1$ with $4 \times 4$ $\mathbf R_{xx}$. Cross-correlations are $\vec r_{xd_1} = \vec a$ ($\phi_{d_1} = 1$) and $\vec r_{xd_2} = 2\vec a$ ($\phi_{d_2} = 4$).
+**Solution.** By Eq. (13-5), observe the conjugation position: $\vec r_{xd} = \mathbb{E}[\vec x d^*] = (1 - \mathrm{j})\vec a$ gives $\vec w^\star = (1 - \mathrm{j})[2, 1, 4, -1]^\top / 13$, so conjugate-transpose output $(\vec w^\star)^H\vec x$ conjugates $(1 - \mathrm{j})^*$ back to the desired target phase $(1 + \mathrm{j})$. Because reference power becomes $|1 + \mathrm{j}|^2 = 2$, absolute MSE doubles to $4/13$ while normalized NMSE stays $2/13$. Omitting conjugation rotates output phase by $90^\circ$ despite preserving weight magnitude; likewise, Node 2 targeting $d_2 = 2s$ has $4\times$ Node 1's absolute MSE yet identical NMSE, so cross-node comparisons must align reference scale first.
 
-Node 2's optimal weight is $2\times$ Node 1's and its unnormalized MSE is $4\times$ Node 1's, yet normalized NMSEs are identical—always normalize by $\phi_{d_u}$ before cross-node comparison.
+Companion code also constructs complex transfer vector $[1, \mathrm{j}/2, 2, -1/2]^\top$ with Mic 2 as reference ($d = (\mathrm{j}/2)s$, reference power $1/4$), giving absolute MSE $\frac{1}{4}\times\frac{2}{13} = \frac{1}{26}$ while keeping normalized NMSE locked at $2/13$.
 
 <a id="e13-02"></a>
-#### E13-02: Complete Decomposition of Centralized White-Noise MWF
+#### E13-02: Broadcast Rescaling Invariance of Effective Global Weights
 
-**Problem.** Under $\mathbf R_{nn} = \mathbf I_4$, hand-calculate Node 1's centralized optimal weight, target amplitude response, target distortion power, residual noise power, and total MSE.
+**Problem.** Scale §13.7's remote broadcast filter $\vec f_2 = [2, -1/2]^\top$ by nonzero complex constant $\vec f'_2 = \gamma\vec f_2$ ($\gamma = 2\mathrm{j}$). Write the transformation rules for the new broadcast signal and receiving coefficient, and state when norm normalization must not be applied blindly.
 
-**Solution.** $q = 1 + 1/4 + 4 + 1/4 = 11/2$ gives $\vec w_1^\star = [2, 1, 4, -1]^\top / 13$ via Eq. (13-6). Target gain $(\vec w_1^\star)^\top\vec a = 11/13$ gives distortion $(11/13 - 1)^2 = 4/169$ plus residual white noise $\|\vec w_1^\star\|_2^2 = 22/169$, summing to $26/169 = 2/13$.
+**Solution.** The new broadcast signal $z'_2 = (\vec f'_2)^H\vec x_2 = \gamma^* z_2 = -2\mathrm{j}z_2$; keeping $(g'_{12})^* z'_2 = g_{12}^* z_2$ invariant requires $g'_{12} = g_{12} / \gamma$ (recomputing $\tilde{\mathbf R}_1$ consistently in the new coordinates—never reuse stale receiving weights after rescaling). In exact arithmetic, for any $\gamma \in \mathbb{C}\setminus\{0\}$, conjugate TX scaling and reciprocal RX compensation cancel identically, leaving $\vec w_{1,\mathrm{eff}}$ and physical output invariant; in finite-precision code, never divide by zero norm on a zero broadcast, and enforce a positive energy floor on near-zero broadcasts instead of amplifying rounding noise.
 
 <a id="e13-03"></a>
-#### E13-03: Cost of Local-Only Processing
+#### E13-03: True Round-Robin Updates and Stale Receiving Snapshots
 
-**Problem.** Compute Node 1's optimal weight and MSE using local $x_1, x_2$ alone and compare against [E13-02](#e13-02).
+**Problem.** Trace $1 \to 2 \to 1$ from $\vec f_1^{(0)} = \vec f_2^{(0)} = [1, 0]^\top$ on §13.9's white-noise model, listing both nodes' broadcasts, local weights, and live effective global weights at each step, and explain why Step 2 cannot claim monotonic improvement across the whole network.
 
-**Solution.** $q_{\mathrm{local}} = 1 + 1/4 = 5/4$ gives $\vec w_{\mathrm{local}} = [4, 2]^\top / 9$ ($[4, 2, 0, 0]^\top / 9$ globally), target gain $5/9$, distortion $16/81$, noise $20/81$, and total MSE $4/9 \approx 0.4444 \gg 2/13 \approx 0.1538$.
+**Solution.** The three active solves yield $[4, 2, 8]^\top / 25$, $[8, -2, 25]^\top / 13$ (noting Node 2's input ordering $[x_3, x_4, z_1]^\top$), and $[2/13, 1/13, 1/2]^\top$. Right after Step 2 switches Node 2 to $[8, -2]^\top / 13$, Node 1 has not yet re-solved and still holds Step 1's scalar $g_1 = 8/25$, forming live effective global weight $[52, 26, 64, -16]^\top / 325$ whose true MSE rebounds to $23108 / 105625 \approx 0.2188 > 0.16$ until Step 3 re-solves Node 1 down to $2/13$. Companion code also logs six sequential snapshots on §13.8's correlated-noise model (initialized at $[1, 1/2]^\top, [2, -1/2]^\top$), confirming the same transient cross-node mismatch.
 
 <a id="e13-04"></a>
-#### E13-04: Recovering the 4-Mic Optimum from One Scalar Broadcast
+#### E13-04: Finite Update Budgets Require Reporting Live Directions and Global Residuals
 
-**Problem.** Node 2 broadcasts $z_2 = 2x_3 - x_4 / 2$ so Node 1 observes $[x_1, x_2, z_2]^\top$. Write $\mathbf T_1$, compressed noise covariance, $\tilde{\vec r}_1$, $\vec h_1^\star$, and $\vec w_{1,\mathrm{eff}}$.
+**Problem.** When compute budgets permit only 1, 2, or 3 sequential updates, how should distance to the centralized optimum be measured? Why is checking the active node's local normal-equation residual alone insufficient?
 
-**Solution.** Rows of $4 \times 3$ $\mathbf T_1$ are $[1, 0, 0], [0, 1, 0], [0, 0, 2], [0, 0, -1/2]$. Compressed noise $\mathbf T_1^\top\mathbf I_4\mathbf T_1 = \operatorname{diag}(1, 1, 17/4)$ ($17/4 \ne 1$!) and $\tilde{\vec r}_1 = [1, 1/2, 17/4]^\top$ give $\vec h_1^\star = [2, 1, 2]^\top / 13$ and $\mathbf T_1\vec h_1^\star = [2, 1, 4, -1]^\top / 13$, recovering [E13-02](#e13-02)'s MSE $2/13$ losslessly.
+**Solution.** An active node solves Eq. (13-8) exactly inside its current compressed subspace, so its local residual vanishes identically—hiding both subspace truncation loss and peers' stale-coefficient mismatch. The right diagnostic recombines every node $u$'s cached receiving weights with the **currently live broadcasts** into $\vec w_{u,\mathrm{eff}}$, evaluating both true MSE via Eq. (13-3) and global normal-equation relative residual $\epsilon_u$ via Eq. (13-21).
+
+In the companion code's §13.8 correlated-noise trajectory—juxtaposing each node's last-active proposal weight against its live recombined effective global weight—sequential round-robin takes $14$ update rounds ($14$ update solves, totaling $16$ linear solver calls including the $2$ initial local solves) to drive every node's global residual below $10^{-8}$.
 
 <a id="e13-05"></a>
-#### E13-05: Why the Old Broadcast Becomes Lossy Under Correlated Noise
+#### E13-05: Simultaneous Versus Fixed Half-Step Relaxed Updates
 
-**Problem.** Add cross-node $R_{nn,13} = R_{nn,31} = 1/5$ and $R_{nn,14} = R_{nn,41} = 4/5$ to [E13-02](#e13-02) while keeping $z_2 = 2x_3 - x_4 / 2$. Verify SPD, compare centralized vs. compressed MSE, and identify the missing direction.
+**Problem.** On §13.8's 4-mic correlated-noise model (same initialization as [E13-04](#e13-04)), run full-step Simultaneous updates ($\alpha = 1$) and fixed half-step simplified Relaxed updates ($\alpha = 1/2$), logging effective weights, NMSE, update rounds, and cumulative solves, and explain whether $rS$-DANSE$^+$ convergence theorems apply directly.
 
-**Solution.** Eigenvalues $1, 1, 1 \pm \sqrt{17}/5 > 0$ confirm SPD. $\mathbf R_{nn}^{-1}\vec a = [25, 4, 11, -24]^\top / 8$ ($q = 61/8$) gives centralized $[25, 4, 11, -24]^\top / 69$ and MSE $8/69$. Because $2(1/5) - (1/2)(4/5) = 0$, $z_2$ cancels cross-node correlation completely, stalling compressed MSE at $2/13$ (excess loss $34/897$) by dropping zero-target GSC blocking reference $x_3 / 2 + 2x_4$ (correlation $17/10$ with $n_1$).
+**Solution.** At each update round, both nodes independently solve their local equations against the same old broadcast snapshot and then publish new broadcasts simultaneously (half-step relaxation blends old and new outbound broadcast filters $50/50$ while recombining cached receiving coefficients against the newly active broadcasts). On this correlated-noise benchmark, driving $\max_u \epsilon_u < 10^{-8}$ requires $13$ update rounds ($26$ update solves, plus $2$ initial local solves $= 28$ cumulative matrix solves) at $\alpha = 1$, and $38$ update rounds ($76$ update solves, $= 78$ cumulative matrix solves) at $\alpha = 1/2$, both reaching the centralized NMSE floor $8/69$. Watch the theoretical boundary: constant $\alpha = 1/2$ violates $\alpha_i \to 0$ in Eq. (13-15), and simplified mixing omits basis alignment $\mathbf G_{uu}^{i+1}$ in Eq. (13-14), so convergence here reflects benign conditioning rather than a universal guarantee from $rS$-DANSE$^+$.
 
 <a id="e13-06"></a>
-#### E13-06: Noise-Adapted Scalar Broadcast
+#### E13-06: Rank-Deficient Broadcast Under Two Simultaneous Targets
 
-**Problem.** Switch remote broadcast in [E13-05](#e13-05) to $z'_2 = 11x_3 - 24x_4$; find Node 1's local optimum and verify losslessness.
+**Problem.** On two-source orthogonal model Eq. (13-17), Node 1 must recover both $s_1$ and $s_2$, yet Node 2 broadcasts only scalar sum $x_3 + x_4$. Find centralized vs. compressed MSEs on both sources and state the minimal lossless fix.
 
-**Solution.** Input $[x_1, x_2, z'_2]^\top$ has $\tilde{\vec r}_1 = [1, 1/2, 34]^\top$ and local covariance:
-
-$$\tilde{\mathbf R}_1=
-\begin{bmatrix}
-2 & 1/2 & 17\\
-1/2 & 5/4 & 17\\
-17 & 17 & 1853
-\end{bmatrix}.\tag{13-24}$$
-
-Solving gives $\vec h_1^\star = [25, 4, 1]^\top / 69$, lifting to $[25, 4, 11, -24]^\top / 69$ and MSE $8/69$ via $[11, -24]^\top = 8[2, -1/2]^\top - 10[1/2, 2]^\top$. (Code passes scaled $[11, -24]^\top / 69$, rescaling raw local weight to $[25/69, 4/69, 1]^\top$ with identical lifted $\vec w_{1,\mathrm{eff}}$.)
+**Solution.** Centralized 4-mic MMSE is $1/(1 + 3) = 1/4$ on each source. Scalar $x_3 + x_4 = 2s_1 + n_3 + n_4$ cancels $s_2$ completely, letting Node 1 achieve lossless $1/4$ on $s_1$ while degrading $s_2$ to local single-mic $x_2$'s MSE of $1/2$. Adding difference stream $x_3 - x_4$ ($Q = 2$) satisfies column-space inclusion Eq. (13-16) (both columns of $\mathbf W_1^\star$ lie inside $\operatorname{range}(\mathbf T_1)$), illustrating why column-space inclusion is more fundamental than raw matrix rank (a high-rank projection pointing along the wrong directions still incurs loss).
 
 <a id="e13-07"></a>
-#### E13-07: Complex Reference Conjugation Cannot Be Omitted
+#### E13-07: Zero Broadcast and Safe Local Fallback
 
-**Problem.** Under 4-mic white noise, set $d = (1 + \mathrm{j})s$: compute $\vec r_{xd}$, $\vec w^\star$, MSE, and NMSE.
+**Problem.** When a remote node transmits an all-zero broadcast ($\vec f_2 = \vec 0$) due to mute gating or fault, what happens to the local compressed covariance matrix, how should solvers fall back safely, and why does "zero remote broadcast" never mean "remote noise was perfectly cancelled"?
 
-**Solution.** By Eq. (13-5), $\vec r_{xd} = \mathbb{E}[\vec x d^*] = (1 - \mathrm{j})\vec a$ gives $\vec w^\star = (1 - \mathrm{j})[2, 1, 4, -1]^\top / 13$, so $(\vec w^\star)^H\vec x$ conjugates $(1 - \mathrm{j})^*$ back to $(1 + \mathrm{j})$. With $|1 + \mathrm{j}|^2 = 2$, MSE doubles to $4/13$ while NMSE stays $2/13$ (omitting conjugation rotates output phase by $90^\circ$; code also checks $\vec a = [1, \mathrm{j}/2, 2, -1/2]^\top$ with Mic 2 reference $d = (\mathrm{j}/2)s$, giving MSE $1/26$ and NMSE $2/13$).
+**Solution.** Zero $\vec f_2$ introduces an all-zero column in $\mathbf T_1$, giving $\tilde{\mathbf R}_1 = \mathbf T_1^H\mathbf R_{xx}\mathbf T_1$ an all-zero row and column—losing positive definiteness and turning singular. A positive-definite solver detecting a zero-broadcast column should explicitly prune that uninformative remote channel and fall back cleanly to local standalone MWF (returning local optimal MSE $4/9$ on the white-noise benchmark). Zeroing a remote broadcast merely severs the communication link, discarding remote speech and noise alike rather than achieving "zero-noise enhancement."
 
 <a id="e13-08"></a>
-#### E13-08: Broadcast Rescaling Invariance of Effective Global Weights
+#### E13-08: Indefinite Matrices, Ill-Conditioning, and Diagonal Loading
 
-**Problem.** Scale [E13-04](#e13-04)'s broadcast filter by $\vec f'_2 = \gamma\vec f_2$ ($\gamma = 2\mathrm{j}$): relate $z'_2$ and $g'_{12}$, and state when norm normalization must be gated.
+**Problem.** Can a $2 \times 2$ real symmetric matrix with diagonal $1$ and off-diagonal $2$ represent a valid noise covariance? How does it differ fundamentally from positive-definite ill-conditioned $\operatorname{diag}(1, 10^{-12})$? Is adding diagonal loading $\delta\mathbf I$ ($\delta > 0$) merely a numerical linear-solver trick?
 
-**Solution.** $z'_2 = (\vec f'_2)^H\vec x_2 = \gamma^* z_2 = -2\mathrm{j}z_2$, so $(g'_{12})^* z'_2 = g_{12}^* z_2 \iff g'_{12} = g_{12} / \gamma$ (recomputing $\tilde{\mathbf R}_1$ consistently). For any $\gamma \in \mathbb{C}\setminus\{0\}$, $\vec w_{1,\mathrm{eff}}$ is invariant; in finite precision, gate zero/near-zero broadcasts with a positive energy floor rather than dividing by zero norm.
+**Solution.** The first matrix $\begin{bmatrix}1 & 2 \\ 2 & 1\end{bmatrix}$ has eigenvalues $3$ and $-1 < 0$—indefinite, predicting unphysical negative noise power along $[1, -1]^\top$—and must be rejected as an upstream statistical bug (such as §13.13's pairwise missing-packet assembly error). The second matrix $\operatorname{diag}(1, 10^{-12})$ has strictly positive eigenvalues and is physically valid, yet its condition number $10^{12}$ amplifies finite-snapshot variance and rounding error severely.
+
+Adding diagonal loading on the left-hand side to solve $(\mathbf R_{xx} + \delta\mathbf I)\vec w = \vec r_{xd_u}$ is mathematically equivalent to minimizing the regularized cost $J_u(\vec w) + \delta\|\vec w\|_2^2$ (physically equivalent to injecting independent virtual white noise of variance $\delta$ per channel). Loading therefore changes the optimization problem itself: evaluation reports must specify the physical units of $\delta$ and score loaded weights back on the **unloaded** original statistics in Eq. (13-3).
+
+Companion code first enforces Hermitian symmetry and positive semidefiniteness with block scaling against underflow, and demonstrates condition-number improvement versus original-objective trade-off under $\delta = 10^{-3}$ on the ill-conditioned case $\mathbf R_{nn} = \operatorname{diag}(1, 10^{-14})$, $\mathbf R_{ss} = \operatorname{diag}(1, 0)$.
 
 <a id="e13-09"></a>
-#### E13-09: True Round-Robin Updates and Stale Receiving Snapshots
+#### E13-09: Payload Bitrates Across PCM16, Float32, Complex64 Spectra, and Cast Modes
 
-**Problem.** Trace $1 \to 2 \to 1$ from $\vec f_1^{(0)} = \vec f_2^{(0)} = [1, 0]^\top$ in §13.9, explaining why Step 2 transiently degrades Node 1's live output.
+**Problem.** Compute $16\,\mathrm{kHz}$ mono net payload bitrates for time-domain PCM16, time-domain `float32`, and one-sided `complex64` spectra ($N = 512, H = 256$). Over a 4-node full mesh where each node broadcasts one stream, how many packets per cycle are transmitted under physical-layer broadcast versus point-to-point unicast?
 
-**Solution.** Local solves yield $[4, 2, 8]^\top / 25$, $[8, -2, 25]^\top / 13$ (input order $[x_3, x_4, z_1]^\top$), and $[2/13, 1/13, 1/2]^\top$. Right after Step 2 switches Node 2 to $[8, -2]^\top / 13$, Node 1 still holds $g_1 = 8/25$, forming $[52, 26, 64, -16]^\top / 325$ with MSE $23108 / 105625 \approx 0.2188 > 0.16$ until Step 3 re-solves Node 1 (code logs 6 sequential steps on [E13-05](#e13-05) as well).
+**Solution.** Net single-stream payloads are $256000$, $512000$, and $1028000\,\mathrm{bit/s}$ (`complex64` totals $64$ bits for real + imaginary combined—do not multiply by $2$ again). Across four nodes, shared physical-layer broadcast sends $4$ packets/cycle whereas per-receiver unicast sends $4 \times 3 = 12$ packets/cycle (excluding protocol headers and retransmissions). Always fix coding format and link-layer cast primitive before quoting compression savings.
+
+When auditing the companion code's `resource_control` field, note it uses quarter-window hop $H = 128$, doubling frame rate and raising per-node spectral bitrate to $2056000\,\mathrm{bit/s}$ ($4112000\,\mathrm{bit/s}$ across two nodes). Also verify the odd-FFT edge case: at $H = 256$ and odd $N = 511$, there are $256$ non-negative bins ($k = 0, \ldots, 255$), yielding $(16000 / 256) \times 256 \times 64 = 1024000\,\mathrm{bit/s}$, and top bin $\frac{255}{511}f_s < f_s / 2$ has a nonzero imaginary part that cannot be omitted as a real Nyquist bin.
 
 <a id="e13-10"></a>
-#### E13-10: Finite Update Budgets Require Reporting Live Directions and Global Residuals
+#### E13-10: Per-Node RAM, Network-Wide RAM, and Cumulative Matrix Solves
 
-**Problem.** After 1, 2, or 3 sequential updates, why is checking the active node's local normal-equation residual insufficient?
+**Problem.** Four 2-mic nodes each broadcast one stream, storing one single-bin local `complex128` ($16$-byte) covariance matrix. Compute per-node and network-wide byte counts against an 8-mic centralized hub, and explain why outer update-event counts cannot stand in for solver compute budgets.
 
-**Solution.** An active node's local residual vanishes identically inside its current compressed subspace, hiding both subspace truncation loss and peers' stale-coefficient mismatch. Recombine every node's cached receiving weights with live broadcasts (`cached_outputs` vs. `outputs_at_last_solve`) and evaluate both Eq. (13-3) MSE and Eq. (13-21) global residual $\epsilon_u$ (reaching $< 10^{-8}$ after $14$ updates / $16$ solves on [E13-05](#e13-05)).
+**Solution.** Each node has local dimension $L_u = 2 + 3 = 5$, taking $5^2 \times 16 = 400$ bytes/node and $1600$ bytes across all four nodes, versus $8^2 \times 16 = 1024$ bytes for one centralized $8 \times 8$ matrix (multiply by $2$ when storing both total and noise covariances, and by $F$ across bins). Distributed processing reduces per-device RAM and factorization size, while replicated broadcast statistics increase network-wide aggregate memory.
+
+For compute accounting, one simultaneous update event triggers $U$ separate local solves whereas one sequential round-robin event triggers $1$ solve (plus initial local solves); always track cumulative linear-system solves and distinguish this 4-node RAM configuration clearly from the 2-node convergence benchmark.
 
 <a id="e13-11"></a>
-#### E13-11: Simultaneous Versus Fixed Half-Step Relaxed Updates
+#### E13-11: Known SRO and Linear-Interpolation SRC Control
 
-**Problem.** Compare $\alpha = 1$ Simultaneous and $\alpha = 1/2$ simplified Relaxed updates on [E13-05](#e13-05), noting whether $rS$-DANSE$^+$ proofs apply directly.
+**Problem.** Compare a synchronous remote broadcast, a $+100\,\mathrm{ppm}$ misaligned remote stream, and a known-rate linear-interpolation SRC-compensated fused stream. Explain the interpolation coordinate direction and why SRC steady-window NMSE can fall below the ideal synchronous Wiener floor $2/13$.
 
-**Solution.** Reaching $\max_u \epsilon_u < 10^{-8}$ takes $26$ rounds ($28$ solves) at $\alpha = 1$ and $76$ rounds ($78$ solves) at $\alpha = 1/2$, both converging to NMSE $8/69$. Constant $\alpha = 1/2$ violates $\alpha_i \to 0$ in Eq. (13-15) and omits basis alignment $\mathbf G_{uu}^{i+1}$ in Eq. (13-14), so convergence here reflects benign conditioning rather than $rS$-DANSE$^+$'s general guarantee.
+**Solution.** At remote sampling rate $f_d = 16000 \times 1.0001 = 16001.6\,\mathrm{Hz}$, remote sample $m$ corresponds to physical time $m / f_d\,\mathrm{s}$; reconstructing local instant $n / 16000\,\mathrm{s}$ therefore interpolates at remote device array coordinate $m = n \cdot (f_d / 16000) = 1.0001 n$ (generating $32000$ local samples requires $32004$ remote boundary-support samples, with bit-identical output across full-buffer and stateful $257$-sample chunked streaming calls).
+
+Steady-window float NMSE drops from $\approx 0.350880$ (misaligned) to $\approx 0.135724$ after linear SRC—below synchronous $2/13 \approx 0.153846$. This does not violate LMMSE optimality: two-point linear interpolation applies high-frequency low-pass attenuation that suppresses the $2900 / 3500\,\mathrm{Hz}$ remote noise carriers and alters input noise covariance $\mathbf R_{nn}$; benchmarking optimality on the resampled stream requires recomputing the centralized optimum under the post-SRC covariance.
 
 <a id="e13-12"></a>
-#### E13-12: Rank-Deficient Broadcast Under Two Simultaneous Targets
+#### E13-12: Matching Denominators Across Packet-Drop Gap Strategies
 
-**Problem.** On two-source Eq. (13-17) where Node 2 broadcasts scalar $x_3 + x_4$, find centralized vs. compressed MSEs on $s_1, s_2$ and the minimal lossless fix.
+**Problem.** Over a contiguous $5$-packet ($800$-sample) remote dropout inside the steady window, hand-calculate in-gap analytical MSE and full $28800$-sample steady-window average MSE for "zero-fill remote stream (fixed weights)" versus "explicit fallback to local 2-mic MWF," explaining why both window metrics are indispensable.
 
-**Solution.** Centralized MMSE is $1/4$ on each source. Scalar $x_3 + x_4 = 2s_1 + n_3 + n_4$ cancels $s_2$, giving $1/4$ on $s_1$ but degrading $s_2$ to local $1/2$. Adding difference stream $x_3 - x_4$ ($Q = 2$) satisfies column-space inclusion Eq. (13-16) and restores $1/4$ on both.
+**Solution.** First compute analytical error inside the $800$-sample gap:
+
+1. **Zero-fill under unchanged weights**: Node 1's effective global weight truncates to $[2, 1, 0, 0]^\top / 13$, dropping target amplitude response to $\frac{2 + 1/2}{13} = \frac{5}{26}$. Target distortion spikes to $(1 - 5/26)^2 = 441/676$ plus local residual noise $\frac{2^2 + 1^2}{13^2} = \frac{5}{169} = \frac{20}{676}$, giving in-gap analytical MSE $461/676 \approx 0.68195$ (PCM read-back $\approx 0.681955$).
+2. **Explicit fallback to local 2-mic MWF**: Switching to local optimum $[4, 2, 0, 0]^\top / 9$ holds in-gap analytical MSE at $4/9 \approx 0.44444$ (PCM read-back $\approx 0.444451$), decisively outperforming blind zero-fill.
+
+Combining via gap time fraction $\eta = 800 / 28800 = 1 / 36$, full $28800$-sample float NMSE $(1 - \eta)(2/13) + \eta J_{\mathrm{gap}}$ yields $\approx 0.168516$ versus $\approx 0.161918$. Long steady averages dilute short dropouts until they appear nearly identical; only pairing full-window and in-gap metrics (never silently excising dropped samples from the denominator) exposes acute audible dropout collapse.
 
 <a id="e13-13"></a>
-#### E13-13: Zero Broadcast and Safe Local Fallback
+#### E13-13: PCM16 Remote Transport Error Bounds and Three-Tier Steady-Window Reconciliation
 
-**Problem.** When $\vec f_2 = \vec 0$ due to mute gating or fault, what happens to $\tilde{\mathbf R}_1$ and how should solvers fall back?
+**Problem.** (1) Encode the white-noise scalar broadcast $z_2 = 2x_3 - x_4 / 2$ to 16-bit integer WAV ($\Delta = 1/32768$), reload it to float, and fuse locally via receiving weight $2/13$: compute the peak float-fusion amplitude error bound from link quantization, compare against the measured value, and contrast with quantizing both remote mics individually before weighting; (2) for Fig. 65's four fixed-weight white- and correlated-noise schemes, explain why analytical fractions, pre-export `float64` components, and disk WAV integer ratios $E_{\mathrm{PCM}} / P_{\mathrm{ref}}$ match closely without needing bit-for-bit equality.
 
-**Solution.** Zero $\vec f_2$ creates a zero column in $\mathbf T_1$ and zero row/column in $\tilde{\mathbf R}_1$ (singular!). Detect zero-energy broadcast columns, prune them, and fall back cleanly to local 2-mic MWF (MSE $4/9$)—muting a link discards remote signal and noise alike rather than achieving "zero noise."
+**Solution.** (1) Forming scalar $z_2$ remotely and applying one PCM16 rounding introduces at most $\Delta / 2$ broadcast error; multiplying by local $2/13$ bounds fused float amplitude deviation by $(2/13)(\Delta / 2) = \Delta / 13 \approx 2.347506 \times 10^{-6}$ (and mean-square power increment by its square). Actual read-back fusion measures $2.347005 \times 10^{-6}$, strictly inside the bound. Conversely, quantizing both remote microphones independently to PCM16 before multiplying locally by $[4, -1]^\top / 13$ widens Eq. (13-23)'s peak bound to $(5/13)(\Delta / 2) = 5\Delta / 26$.
+
+(2) The three tiers serve distinct roles: the analytical tier yields exact rational numbers under ideal covariances (e.g., $2/13 \approx 0.153846$, $8/69 \approx 0.115942$); the double-precision float tier matches analytical values to over ten digits because the $28800$-sample steady window spans exact integer cycles of every sinusoidal carrier so cross-terms cancel to machine precision; and the disk PCM read-back tier applies independent 16-bit integer rounding to both clean reference $D[n]$ and fused output $Y[n]$, so $E_{\mathrm{PCM}} / P_{\mathrm{ref}}$ ($\approx 0.153852$, $0.115945$, $0.153858$) truthfully captures fixed-point rounding perturbations—always log pure link-quantization increments separately from final output WAV quantization error.
 
 <a id="e13-14"></a>
-#### E13-14: Indefinite Matrices, Ill-Conditioning, and Diagonal Loading
+#### E13-14: Divergence Counterexample Under Unrelaxed Jacobi Coupling
 
-**Problem.** Contrast $\begin{bmatrix}1 & 2 \\ 2 & 1\end{bmatrix}$ against $\operatorname{diag}(1, 10^{-12})$, and state what adding $\delta\mathbf I$ ($\delta > 0$) changes mathematically.
+**Problem.** On $3 \times 3$ SPD $\mathbf R = 0.1\mathbf I_3 + 0.9\,\vec 1\vec 1^\top$ with $\vec r = [1, 1, 1]^\top$, compare $\vec w^{i+1} = \vec w^i + \alpha\vec\rho^i$ ($\vec\rho^i = \vec r - \mathbf R\vec w^i$) from $\vec 0$ at $\alpha = 1$ vs. $\alpha = 1/2$.
 
-**Solution.** $\begin{bmatrix}1 & 2 \\ 2 & 1\end{bmatrix}$ has eigenvalues $3$ and $-1 < 0$ (indefinite—reject as an upstream bug!), whereas $\operatorname{diag}(1, 10^{-12}) \succ 0$ is physically valid with condition number $10^{12}$. Solving $(\mathbf R_{xx} + \delta\mathbf I)\vec w = \vec r_{xd_u}$ minimizes regularized objective $J_u(\vec w) + \delta\|\vec w\|_2^2$ (synthetic $\delta$ white noise); always score loaded weights back on **unloaded** Eq. (13-3).
+**Solution.** Eigenvalues $2.8, 0.1, 0.1 > 0$ confirm SPD with exact solution $\vec w^\star = \frac{5}{14}[1, 1, 1]^\top$. Error $\vec e^i = \vec w^i - \vec w^\star$ obeys $\vec e^{i+1} = (\mathbf I_3 - \alpha\mathbf R)\vec e^i$, converging iff spectral radius $\max_\lambda |1 - \alpha\lambda| < 1 \iff 0 < \alpha < 2 / 2.8 = 5/7$. At unrelaxed Jacobi $\alpha = 1$ (each coordinate minimizes quadratic cost exactly given stale peers), mode $2.8$ amplifies error by $1 - 2.8 = -1.8$, oscillating wildly ($1, -0.8, 2.44, -3.392, \ldots$); at $\alpha = 1/2 < 5/7$, factor $-0.4$ converges smoothly ($0.5, 0.3, 0.38, 0.348 \to 5/14$). (While this example is linear stationary Jacobi, simultaneous DANSE also restructures compressed subspaces nonlinearly, governed rigorously by Eq. (13-15) in the next exercise.)
 
 <a id="e13-15"></a>
-#### E13-15: Payload Bitrates Across PCM16, Float32, Complex64 Spectra, and Cast Modes
+#### E13-15: Auditing the Three Step-Size Conditions of $rS$-DANSE$^+$
 
-**Problem.** Compute $16\,\mathrm{kHz}$ mono payload bitrates for PCM16, `float32`, and `complex64` one-sided spectra ($N = 512, H = 256$), plus packet counts per cycle across 4 nodes under broadcast vs. unicast.
+**Problem.** Test $1/(i + 1)$, $1/2$, $2^{-i-1}$, and $1/(i + 1)^2$ ($i = 0, 1, 2, \ldots$) against Eq. (13-15), and note whether Eq. (13-15) suffices without $\mathbf G_{uu}^{i+1}$.
 
-**Solution.** Net payloads are $256000$, $512000$, and $1028000\,\mathrm{bit/s}$ (`complex64` is $64$ bits total). Four-node broadcast sends $4$ packets/cycle vs. $4 \times 3 = 12$ under unicast. (Code's `resource_control` uses $H = 128$, doubling spectral rate to $2056000\,\mathrm{bit/s}$/node; odd $N = 511$ at $H = 256$ has $256$ bins for $1024000\,\mathrm{bit/s}$ with complex highest bin $\frac{255}{511}f_s < f_s/2$.)
+**Solution.** Checking $\alpha_i \in (0, 1]$, $\lim_{i\to\infty}\alpha_i = 0$, and $\sum_{i=0}^\infty \alpha_i = \infty$:
+
+1. **Harmonic $1/(i + 1)$**: **passes all three** (dyadic blocks $[2^j, 2^{j+1}-1]$ each sum $\ge 2^j / 2^{j+1} = 1/2$, so the series diverges);
+2. **Constant $1/2$**: fails $\alpha_i \to 0$;
+3. **Geometric $2^{-i-1}$**: sums to $1 < \infty$, stalling from distant initializations;
+4. **Inverse-square $1/(i + 1)^2$**: sums to $\pi^2 / 6 < \infty$ (Basel problem), failing infinite total travel.
+
+Equation (13-15) is one part of $rS$-DANSE$^+$'s theorem and must pair with basis-alignment $\mathbf G_{uu}^{i+1}$ in Eq. (13-14), $\mathbf R_{xx} \succ 0$, and full-rank shared-target dimension $Q = S$—harmonic step sizes alone do not prove global convergence for simplified Eq. (13-13) without basis alignment.
 
 <a id="e13-16"></a>
-#### E13-16: Per-Node RAM, Network-Wide RAM, and Cumulative Matrix Solves
+#### E13-16: Directed Message Trace for Tree Same-Sample In-Network Summation
 
-**Problem.** For $U = 4, M_u = 2, Q = 1$ storing one `complex128` ($16$-byte) matrix/bin, compare per-node and 4-node bytes against centralized $8 \times 8$.
+**Problem.** On chain $1 \leftrightarrow 2 \leftrightarrow 3$ rooted at Node $1$ with same-sample scalars $z_1 = 1, z_2 = 2, z_3 = 3$, list all directed up-cast and down-cast messages, compute each node's peer sum, and explain the impact of link drops or stale-frame mixing.
 
-**Solution.** $L_u = 2 + 3 = 5$ takes $5^2 \times 16 = 400$ bytes/node ($1600$ bytes across 4 nodes) versus centralized $8^2 \times 16 = 1024$ bytes—lowering per-device RAM while replicating broadcast stats network-wide. Count actual node linear solves ($U$ per simultaneous step vs. $1$ per sequential step).
+**Solution.** $2(U - 1) = 4$ directed link messages complete network-wide summation:
+
+- **Up-cast to root**: leaf $3 \to 2$ sends $3$; Node $2$ adds its own $2$ and sends partial sum $2 + 3 = 5$ along $2 \to 1$; Root $1$ adds its own $1$ to form $z_{\mathrm{sum}} = 6$.
+- **Down-cast from root**: Root $1$ sends $6$ along $1 \to 2$; Node $2$ forwards $6$ along $2 \to 3$.
+
+Subtracting own $z_u$ gives Nodes $1, 2, 3$ exact peer sums $5, 4, 3$ (direct-neighbor-only exchange omits endpoints $1$ and $3$ from each other). Any broken link drops an entire subtree, and mixing unaligned stale-frame samples destroys the synchronous linear model (full TI-DANSE layers transmitter-side coordinate normalization and filter iteration atop this primitive).
 
 <a id="e13-17"></a>
-#### E13-17: Known SRO and Linear-Interpolation SRC Control
+#### E13-17: Cross-Checking GEVD Whitening Against Direct MWF
 
-**Problem.** Explain interpolation direction for $+100\,\mathrm{ppm}$ remote clock ($f_d = 16001.6\,\mathrm{Hz}$) and why SRC steady-window NMSE ($0.135724$) drops below synchronous $2/13$.
+**Problem.** On Eq. (13-19) ($\mathbf R_{nn}$ diagonals $1$, off-diagonals $1/2$) and $\vec a = [1, 2]^\top$, find both whitened eigenvalues, cross-check GEVD low-rank reconstruction against direct normal equations for optimal weights and MSE, and explain the physical meaning of pruning small eigenvalues.
 
-**Solution.** Local sample $n / 16000\,\mathrm{s}$ queries remote index $m = 1.0001 n$ (needing $32004$ remote samples for $32000$ outputs, identical across batch and stateful $257$-sample chunks). NMSE drops from $0.350880$ to $0.135724 < 2/13$ because two-point linear interpolation low-passes $2900 / 3500\,\mathrm{Hz}$ remote noise carriers, altering $\mathbf R_{nn}$.
+**Solution.** $\mathbf R_{nn}^{-1}\vec a = [0, 2]^\top$ ($q = 4$) gives $\|\mathbf R_{nn}^{-1/2}\vec a\|_2^2 = 4$, so whitened $\mathbf C = \mathbf I_2 + \vec b\vec b^H$ has principal eigenvalue $\lambda_1 = 5$ along $\vec b$ and pure-noise eigenvalue $\lambda_2 = 1$ along the orthogonal direction. Because the true target is rank-1 ($S = 1$), pruning $\lambda_2 = 1$ is completely lossless. Direct dry-source MWF yields $\vec w^\star = [0, 2/5]^\top$ (target gain $4/5 \Rightarrow$ distortion $(4/5 - 1)^2 = 1/25$, plus residual noise $4/25$, totaling MSE $1/5$).
 
-<a id="e13-18"></a>
-#### E13-18: Matching Denominators Across Packet-Drop Gap Strategies
-
-**Problem.** Over an $800$-sample remote dropout, hand-calculate in-gap and $28800$-sample full-window NMSEs for zero-fill vs. local-MWF fallback.
-
-**Solution.** Inside the $800$-sample gap:
-
-1. **Zero-fill under fixed weights** ($[2, 1, 0, 0]^\top / 13$): target gain $5/26$ gives distortion $(1 - 5/26)^2 = 441/676$ + noise $5/169 = 20/676 = 461/676 \approx 0.68195$ (PCM $0.681955$).
-2. **Local 2-mic MWF fallback** ($[4, 2, 0, 0]^\top / 9$): MSE $4/9 \approx 0.44444$ (PCM $0.444451$).
-
-With gap fraction $\eta = 800 / 28800 = 1 / 36$, full-window $(1 - \eta)(2/13) + \eta J_{\mathrm{gap}}$ gives $0.168516$ vs. $0.161918$—reporting both windows prevents long steady segments from masking acute dropout artifacts.
-
-<a id="e13-19"></a>
-#### E13-19: Exact PCM16 Remote Transport Error Bounds
-
-**Problem.** Compare peak link-quantization bounds ($\Delta = 1/32768$) for quantized scalar broadcast $z_2 = 2x_3 - x_4 / 2$ ($\times 2/13$) versus quantizing $x_3, x_4$ separately.
-
-**Solution.** Scalar broadcast quantization adds at most $(2/13)(\Delta / 2) = \Delta / 13 \approx 2.347506 \times 10^{-6}$ (measured $2.347005 \times 10^{-6}$); separate remote-mic quantization loosens Eq. (13-23) to $(5/13)(\Delta / 2) = 5\Delta / 26$.
-
-<a id="e13-20"></a>
-#### E13-20: Reconciling Analytical, Float, and Integer PCM Tiers
-
-**Problem.** Explain why analytical fractions, pre-export `float64` components, and WAV integer ratios $E_{\mathrm{PCM}} / P_{\mathrm{ref}}$ agree to high precision without bit-for-bit identity.
-
-**Solution.** Analytical evaluates exact covariances; `float64` matches to $\sim 10^{-15}$ over exact integer-cycle window $28800$; and disk PCM incorporates two independent 16-bit integer roundings on $D[n]$ and $Y[n]$.
-
-<a id="e13-21"></a>
-#### E13-21: Divergence Counterexample Under Unrelaxed Jacobi Coupling
-
-**Problem.** On $3 \times 3$ SPD $\mathbf R = 0.1\mathbf I_3 + 0.9\,\vec 1\vec 1^\top$ with $\vec r = [1, 1, 1]^\top$, compare $\vec w^{i+1} = \vec w^i + \alpha(\vec r - \mathbf R\vec w^i)$ from $\vec 0$ at $\alpha = 1$ vs. $\alpha = 1/2$.
-
-**Solution.** Eigenvalues $2.8, 0.1, 0.1 > 0$ give $\vec w^\star = \frac{5}{14}[1, 1, 1]^\top$, converging iff $|1 - \alpha\lambda| < 1 \iff 0 < \alpha < 2 / 2.8 = 5/7$. At unrelaxed Jacobi $\alpha = 1$, mode $2.8$ multiplies error by $1 - 2.8 = -1.8$, oscillating wildly ($1, -0.8, 2.44, -3.392, \ldots$); at $\alpha = 1/2 < 5/7$, factor $-0.4$ converges smoothly ($0.5, 0.3, 0.38, 0.348 \to 5/14$).
-
-<a id="e13-22"></a>
-#### E13-22: Auditing the Three Step-Size Conditions of $rS$-DANSE$^+$
-
-**Problem.** Test $1/(i + 1)$, $1/2$, $2^{-i-1}$, and $1/(i + 1)^2$ against Eq. (13-15), and note whether Eq. (13-15) suffices without $\mathbf G_{uu}^{i+1}$.
-
-**Solution.** Checking $\alpha_i \in (0, 1]$, $\alpha_i \to 0$, and $\sum \alpha_i = \infty$:
-
-1. **Harmonic $1/(i + 1)$**: **passes all three** (dyadic blocks $[2^j, 2^{j+1}-1]$ each sum $\ge 1/2 \implies \infty$);
-2. **Constant $1/2$**: fails $\alpha_i \to 0$;
-3. **Geometric $2^{-i-1}$**: sums to $1 < \infty$, stalling from distant starts;
-4. **Inverse-square $1/(i + 1)^2$**: converges to $\pi^2 / 6 < \infty$, failing infinite travel.
-
-Equation (13-15) must also pair with basis-alignment $\mathbf G_{uu}^{i+1}$ in Eq. (13-14), $\mathbf R_{xx} \succ 0$, and $Q = S$.
-
-<a id="e13-23"></a>
-#### E13-23: Directed Message Trace for Tree Same-Sample In-Network Summation
-
-**Problem.** On chain $1 \leftrightarrow 2 \leftrightarrow 3$ rooted at Node $1$ with $z_1 = 1, z_2 = 2, z_3 = 3$, list all directed messages and peer sums.
-
-**Solution.** $2(U - 1) = 4$ directed messages:
-
-- **Up-cast to root**: $3 \to 2$ sends $3$; $2 \to 1$ sends partial sum $2 + 3 = 5$; Root $1$ forms $z_{\mathrm{sum}} = 1 + 5 = 6$.
-- **Down-cast from root**: $1 \to 2$ sends $6$; $2 \to 3$ forwards $6$.
-
-Subtracting own $z_u$ gives Nodes $1, 2, 3$ exact peer sums $5, 4, 3$; link drops or stale-frame mixing break linear synchronous consistency.
-
-<a id="e13-24"></a>
-#### E13-24: Cross-Checking GEVD Whitening Against Direct MWF
-
-**Problem.** On Eq. (13-19) ($\mathbf R_{nn}$ diagonals $1$, off-diagonals $1/2$) and $\vec a = [1, 2]^\top$, verify whitened eigenvalues, GEVD rank-1 weight, and MSE.
-
-**Solution.** $\mathbf R_{nn}^{-1}\vec a = [0, 2]^\top$ ($q = 4$) gives $\|\mathbf R_{nn}^{-1/2}\vec a\|_2^2 = 4$, so whitened $\mathbf C$ has $\lambda_1 = 5$ and pure-noise $\lambda_2 = 1$. Discarding $\lambda_2 = 1$ is exact ($S = 1$), yielding $\vec w^\star = [0, 2/5]^\top$ (distortion $(4/5 - 1)^2 = 1/25$ + noise $4/25 = 1/5$), with symmetric square root $\mathbf G_n = \mathbf R_{nn}^{1/2}$ satisfying:
+For numerical self-checks, form symmetric positive-definite square root $\mathbf G_n = \mathbf R_{nn}^{1/2}$ from $\mathbf R_{nn}$'s eigenvalues ($3/2, 1/2$), map $\vec q_j = \mathbf G_n^{-1}\vec v_j$, and verify generalized orthonormality $\vec q_i^H\mathbf R_{nn}\vec q_j = \delta_{ij}$, generalized eigen-equation $\mathbf R_{xx}\vec q_j = \lambda_j\mathbf R_{nn}\vec q_j$, and §13.12's low-rank identity:
 
 $$\begin{aligned}
 \hat{\mathbf R}_{ss}
 &=(\lambda_1-1)\mathbf G_n\vec v_1\vec v_1^H\mathbf G_n
-=\vec a\vec a^\top.
+=\vec a\vec a^\top,
 \end{aligned}$$
 
-<a id="e13-25"></a>
-#### E13-25: Transforming Statistics into Consistent Coordinates After a Broadcast Version Switch
+eliminating swapped whitening factors or forgotten noise-floor subtraction bugs.
+
+<a id="e13-18"></a>
+#### E13-18: Transforming Statistics into Consistent Coordinates After a Broadcast Version Switch
 
 **Problem.** Two single-mic nodes observe $x_1 = s + n_1, x_2 = s + n_2$ ($d = s$; zero-mean uncorrelated unit-variance $s, n_1, n_2$). Old input at Node 1 is $\vec y = [x_1, x_2]^\top$; after Node 2 doubles broadcast gain, new input becomes $\vec y' = [x_1, 2x_2]^\top$.
 
 Hand-calculate: (1) old and new covariances, cross-correlations, and optimal weights; (2) mixed weight and true physical MSE on $[x_1, 2x_2]^\top$ when averaging old and new statistics $50/50$ without transformation; (3) lossless reuse via invertible transform $\mathbf C$ versus non-invertible subspace rotation.
+
+**Solution.** Five-step hand calculation:
 
 **Step 1: Invertible coordinate transformation rules.** For $\vec y' = \mathbf C\vec y$ with $d' = d$, $\vec p = \mathbb{E}[\vec y d^*]$, and $\mathbf C^{-H} = (\mathbf C^H)^{-1}$:
 
@@ -1004,7 +1015,7 @@ $$\begin{aligned}
 \vec p_1&=\mathbf C\vec p_0=[1,\;2]^\top.
 \end{aligned}\tag{13-26}$$
 
-Old optimum is $\vec h_{\mathrm{old}}^\star = [1/3, 1/3]^\top$; new optimum solves $2h'_1 + 2h'_2 = 1, 2h'_1 + 8h'_2 = 2 \Rightarrow \vec h_{\mathrm{new}}^\star = [1/3, 1/6]^\top$, mapping on $[x_1, 2x_2]^\top$ back to identical physical weight $[1/3, 1/3]^\top$!
+Old optimum is $\vec h_{\mathrm{old}}^\star = [1/3, 1/3]^\top$; new optimum solves $2h'_1 + 2h'_2 = 1, 2h'_1 + 8h'_2 = 2 \Rightarrow \vec h_{\mathrm{new}}^\star = [1/3, 1/6]^\top$, mapping on $[x_1, 2x_2]^\top$ back to identical physical weight $[1/3, 1/3]^\top$.
 
 **Step 3: Unconverted $50/50$ statistical mixing.** Averaging $\mathbf R_0, \mathbf R_1$ and $\vec p_0, \vec p_1$ directly:
 
@@ -1017,7 +1028,7 @@ $$\begin{aligned}
 \tfrac{3}{2}u+5v=\tfrac{3}{2}.
 \end{aligned}\tag{13-27}$$
 
-Eliminating $u$ gives $(31/8)v = 3/4 \Rightarrow v = 6/31, u = 11/31$. Although $\mathbf R_{\mathrm{mix}} \succ 0$ ($\det = 31/4 > 0$) triggers zero solver warnings, applying $[11/31, 6/31]^\top$ to $[x_1, 2x_2]^\top$ yields skewed physical weight $[11/31, 12/31]^\top$!
+Eliminating $u$ gives $(31/8)v = 3/4 \Rightarrow v = 6/31, u = 11/31$. Although $\mathbf R_{\mathrm{mix}} \succ 0$ ($\det = 31/4 > 0$) triggers zero solver warnings, applying $[11/31, 6/31]^\top$ to $[x_1, 2x_2]^\top$ yields skewed physical weight $[11/31, 12/31]^\top$.
 
 **Step 4: Exact physical MSE penalty.** On $[x_1, x_2]^\top$ ($H = w_1 + w_2$):
 
@@ -1036,13 +1047,15 @@ Unconverted mixing inflates MSE by $\Delta J = \frac{26}{2883} \approx 0.00902$.
 **Step 5: Proper coordinate transform vs. irreversible subspace switches.** Transforming $\mathbf C\mathbf R_0\mathbf C^H = \mathbf R_1$ and $\mathbf C\vec p_0 = \vec p_1$ via Eq. (13-25) before averaging preserves $J_{\mathrm{correct}} = 1/3$. Conversely, switching from $\vec y = [x_1, x_2]^\top$ to $\vec y' = [x_1, x_3]^\top$ maps $[0, 0, 1]^\top$ from $\vec y = \vec 0$ to $\vec y' = [0, 1]^\top \ne \vec 0$, which *no* $2 \times 2$ matrix $\mathbf C$ can achieve—requiring fresh frame accumulation whenever DANSE rotates into unseen subspaces. Verify via:
 
 ```bash
-.venv/bin/python -m codes.chapters.ch13.chapter13_exercises --exercise E13-25
+.venv/bin/python -m codes.chapters.ch13.chapter13_exercises --exercise E13-18
 ```
 
-<a id="e13-26"></a>
-#### E13-26: AES67/PTPv2 Sub-Microsecond Sync Budget Versus Software SRO-DANSE
+<a id="e13-19"></a>
+#### E13-19: AES67/PTPv2 Sub-Microsecond Sync Budget Versus Software SRO-DANSE
 
 **Problem.** On a $f_s = 48\,\mathrm{kHz}$ two-node system at $f = 2.4\,\mathrm{kHz}$: (1) under wired AES67 / IEEE 1588 PTPv2 ($|\tau_u| \le \tau_{\mathrm{PTP}} = 1\,\mu\mathrm{s}$), compute $T_s$, worst-case sample/phase skew, power attenuation of $\hat s = \frac{1}{2}(1 + e^{-\mathrm{j}\phi_{\max}})s$, and static waveform MSE relative to Node 1; (2) under wireless $\varepsilon = 100\,\mathrm{ppm}$ SRO, compute sample slip rate, $1$-sample slip period, $2.4\,\mathrm{kHz}$ phase rotation rate, first $180^\circ$ null time $t_{\mathrm{null}}$, and per-hop fractional shift / phase step at $N = 1024, H = 512$.
+
+**Solution.** Two-step budget calculation:
 
 **Step 1: AES67 / PTPv2 static hardware-locked budget.** $T_s = 1 / 48000\,\mathrm{s} = 125 / 6\,\mu\mathrm{s} \approx 20.833333\,\mu\mathrm{s}$. Single-node $\tau_{\mathrm{PTP}} = 1\,\mu\mathrm{s} = 0.048\,T_s$ shifts $2400\,\mathrm{Hz}$ by $0.864^\circ$ ($0.0048\pi\,\mathrm{rad}$).
 
@@ -1069,16 +1082,18 @@ t_{\mathrm{null}}&=\frac{1}{2f\varepsilon}
 &=0.9216^\circ.
 \end{aligned}\tag{13-30}$$
 
-Uncompensated $100\,\mathrm{ppm}$ wipes out $2.4\,\mathrm{kHz}$ speech completely at $2.08\,\mathrm{s}$, whereas SRO-DANSE must apply $0.9216^\circ$/hop linear phase slopes plus integer hop slips every $1 / 0.0512 \approx 19.53$ frames (verify via `.venv/bin/python -m codes.chapters.ch13.chapter13_exercises --exercise E13-26`).
+Uncompensated $100\,\mathrm{ppm}$ wipes out $2.4\,\mathrm{kHz}$ speech completely at $2.08\,\mathrm{s}$, whereas SRO-DANSE must apply $0.9216^\circ$/hop linear phase slopes plus integer hop slips every $1 / 0.0512 \approx 19.53$ frames (verify via `.venv/bin/python -m codes.chapters.ch13.chapter13_exercises --exercise E13-19`).
 
-<a id="e13-27"></a>
-#### E13-27: Unified DASF Subspaces: When Distributed MWF, MVDR, GEVD, and LCMV Align Versus Diverge
+<a id="e13-20"></a>
+#### E13-20: Unified DASF Subspaces: When Distributed MWF, MVDR, GEVD, and LCMV Align Versus Diverge
 
-**Problem.** On §13.8 / [E13-05](#e13-05)'s 4-mic correlated-noise model ($\vec a = [1, 1/2, 2, -1/2]^\top, \phi_s = 1$, $\mathbf R_{nn}^{-1}\vec a = [25, 4, 11, -24]^\top / 8, q = 61/8$):
+**Problem.** On §13.8's 4-mic correlated-noise model ($\vec a = [1, 1/2, 2, -1/2]^\top, \phi_s = 1$, $\mathbf R_{nn}^{-1}\vec a = [25, 4, 11, -24]^\top / 8, q = 61/8$):
 
 (1) Prove centralized MWF, MVDR ($\vec a^\top\vec w = 1$), and unit-noise-norm principal GEVD are collinear and simultaneously lossless under $z_2 = 11x_3 - 24x_4$; (2) add null $\vec b = [0, 1, 1, 0]^\top$ ($\mathbf C = [\vec a, \vec b], \vec f = [1, 0]^\top, P = 2$), hand-calculating centralized $\vec w_{\mathrm{LCMV}}^\star$, $P_{n,\mathrm{LCMV}}^\star$, stale-broadcast $P_{n,\mathrm{stale}}$, and sequential DASF-LCMV convergence; (3) add $\vec c_3 = [0, 0, 0, 1]^\top$ ($P = 3$), explaining $R = 1$ ($L_u = 3$) DOF lockup vs. $R = 2$ ($L_u = 4$) unlocking.
 
-**Stage 1: Shared 1D broadcast across three rank-one criteria.** Writing $\vec v_0 = [25, 4, 11, -24]^\top = 8\mathbf R_{nn}^{-1}\vec a$: $\vec w_{\mathrm{MWF}}^\star = \vec v_0 / 69$ (MSE $8/69$), $\vec w_{\mathrm{MVDR}}^\star = \vec v_0 / 61$ ($P_n = 8/61 \approx 0.131148$), and $\vec w_{\mathrm{GEVD}}^\star = \vec v_0 / (2\sqrt{122})$ ($\lambda_{\max} = 69/8 = 8.625$). Under $z_2 = 11x_3 - 24x_4$ ($\tilde{\vec a}_1 = [1, 1/2, 34]^\top$), local MWF $[25, 4, 1]^\top / 69$, local MVDR $[25, 4, 1]^\top / 61$, and local GEVD all lift via $\mathbf T_1$ with exact zero error!
+**Solution.** Three-stage hand calculation:
+
+**Stage 1: Shared 1D broadcast across three rank-one criteria.** Writing $\vec v_0 = [25, 4, 11, -24]^\top = 8\mathbf R_{nn}^{-1}\vec a$: $\vec w_{\mathrm{MWF}}^\star = \vec v_0 / 69$ (MSE $8/69$), $\vec w_{\mathrm{MVDR}}^\star = \vec v_0 / 61$ ($P_n = 8/61 \approx 0.131148$), and $\vec w_{\mathrm{GEVD}}^\star = \vec v_0 / (2\sqrt{122})$ ($\lambda_{\max} = 69/8 = 8.625$). Under $z_2 = 11x_3 - 24x_4$ ($\tilde{\vec a}_1 = [1, 1/2, 34]^\top$), local MWF $[25, 4, 1]^\top / 69$, local MVDR $[25, 4, 1]^\top / 61$, and local GEVD all lift via $\mathbf T_1$ with exact zero error.
 
 **Stage 2: Two-constraint LCMV subspace shift and stale-broadcast penalty.** Solving $\mathbf R_{nn}\vec u_b = \vec b$ gives $\mathbf R_{nn}^{-1}\vec b = [-5, 8, 9, 4]^\top / 8$, Gram matrix $\mathbf M = \mathbf C^\top\mathbf R_{nn}^{-1}\mathbf C$ ($M_{11} = 61/8, M_{12} = 15/8, M_{22} = 17/8, \det(8\mathbf M) = 812 = 4\times 203$), and $\vec\mu = \mathbf M^{-1}\vec f = \frac{2}{203}[17, -15]^\top$:
 
@@ -1103,7 +1118,7 @@ P_{n,\mathrm{stale}}-P_{n,\mathrm{LCMV}}^\star
 
 Because $L_u = 3 > P = 2$ retains $1$ noise-reduction DOF, sequential DASF-LCMV descends monotonically back to $34/203$ and Eq. (13-31).
 
-**Stage 3: $P = 3 = L_u$ DOF lockup vs. $R = 2$ unlocking.** Adding $\vec c_3 = [0, 0, 0, 1]^\top$ ($\vec f_3 = [1, 0, 0]^\top, P = 3$) gives centralized $[34, -26, 26, 0]^\top / 73$ ($P_n^\star = 196/365 \approx 0.536986$). At $R = 1$ ($L_u = 3 = P$, $L_u - P = 0$ DOFs!), from $\vec f_1^{(0)} = [1, 0]^\top, \vec f_2^{(0)} = [11, -24]^\top$, $3 \times 3$ $\tilde{\mathbf C}_1^\top\vec h_1 = [1, 0, 0]^\top$ welds $\vec h_1 = [1, 0, 0]^\top$ and global $[1, 0, 0, 0]^\top$ permanently at noise $1.0 > 196/365$; expanding to $R = 2$ ($L_u = 4 > 3$) unlocks $196/365$ on Pass 1 (verify via `.venv/bin/python -m codes.chapters.ch13.chapter13_exercises --exercise E13-27`).
+**Stage 3: $P = 3 = L_u$ DOF lockup vs. $R = 2$ unlocking.** Adding $\vec c_3 = [0, 0, 0, 1]^\top$ ($\vec f_3 = [1, 0, 0]^\top, P = 3$) gives centralized $[34, -26, 26, 0]^\top / 73$ ($P_n^\star = 196/365 \approx 0.536986$). At $R = 1$ ($L_u = 3 = P$, $L_u - P = 0$ DOFs), from $\vec f_1^{(0)} = [1, 0]^\top, \vec f_2^{(0)} = [11, -24]^\top$, $3 \times 3$ $\tilde{\mathbf C}_1^\top\vec h_1 = [1, 0, 0]^\top$ welds $\vec h_1 = [1, 0, 0]^\top$ and global $[1, 0, 0, 0]^\top$ permanently at noise $1.0 > 196/365$; expanding to $R = 2$ ($L_u = 4 > 3$) unlocks $196/365$ on Pass 1 (verify via `.venv/bin/python -m codes.chapters.ch13.chapter13_exercises --exercise E13-20`).
 
 ---
 

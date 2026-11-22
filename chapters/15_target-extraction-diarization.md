@@ -18,7 +18,7 @@
 2. **真实说话人数 $K$ 动态未知**：会议室里可能连续五分钟只有一人发言，随后突然出现三人抢话。固定 $K=2$ 或 $K=3$ 的网络在单人发言段容易把清辅音错误拆进空闲槽位，而在四人同时说话时又必然漏掉多余声源。
 3. **非目标人声浪费算力与带宽**：智能手表或定向助听器只需要提取佩戴者面前交谈对象的声音，后台把餐厅隔壁桌五位食客的聊天逐一分离重建纯属无效开销。
 
-**目标说话人提取（Target Speaker Extraction，TSE；文献亦称目标语音提取 Target Speech Extraction）**把问题从“分离所有人”切换为“给定一条描述目标的先验线索 $\mathcal C$，直接从多通道混合观测中只提取与 $\mathcal C$ 匹配的单一目标语音”。如果目标在当前时间段正在说话，系统输出不失真的目标波形；如果目标保持沉默而只有旁人在说话，系统应当输出安静的零信号。
+**目标说话人提取（Target Speaker Extraction，TSE；文献亦称目标语音提取 Target Speech Extraction，系统综述见 [Žmolíková 等，*IEEE Signal Processing Magazine* 2023](https://doi.org/10.1109/MSP.2023.3240008)）**把问题从“分离所有人”切换为“给定一条描述目标的先验线索 $\mathcal C$，直接从多通道混合观测中只提取与 $\mathcal C$ 匹配的单一目标语音”。如果目标在当前时间段正在说话，系统输出不失真的目标波形；如果目标保持沉默而只有旁人在说话，系统应当输出安静的零信号。
 
 #### 五类目标线索的物理形态与缩写对照
 
@@ -30,7 +30,7 @@
 | **空间角度锥线索** | 目标方位角与俯仰角区间 $(\theta_0 \pm \Delta\theta)$ | 智能电视前向拾音、车载主副驾分区 | 干扰源恰好站在目标身后同一直线上 |
 | **近场距离气泡线索** | 球面波前曲率限定的径向距离 $r \le r_{\mathrm{bubble}}$ | 开放式工位麦克风、双耳智能眼镜 | 阵列孔径过小（$r \gg 2D^2/\lambda$）或低频段 |
 | **视觉唇动线索** | 人脸检测框内嘴唇开合与口型时序特征 | 视频会议终端、带摄像头智能屏 | 端杯遮挡嘴唇、侧脸转头、相机管线滞后 |
-| **语义/概念提示线索** | 文本标签或事件类别嵌入 | 听觉场景按需拾音、辅助听觉设备 | 多人同属同一宽泛类别（如两位成年男性） |
+| **语义/概念提示线索** | 文本标签或事件类别嵌入（如 [Semantic Hearing，UIST 2023](https://doi.org/10.1145/3586183.3606779)） | 听觉场景按需拾音、双耳辅助听觉设备 | 多人同属同一宽泛类别（如两位成年男性） |
 
 表后选型规律十分清晰：没有任何单一模态能在全部物理场景下覆盖所有干扰形态。声纹不怕同方向遮挡但怕音色近似与短促应答词，空间角度不怕陌生人未注册但分不开同向远近两声源；近场距离气泡能压制同向远端串音却受限于物理孔径与声波波长，视觉唇动免疫声学强混响却易受端水杯挡嘴或侧脸转头影响。
 
@@ -81,11 +81,25 @@ $$\mathbf Z_{\mathrm{attn}}=\mathbf H
 +\mathbf V\,\operatorname{softmax}\!\left(
 \frac{\mathbf K^\top\mathbf Q}{\sqrt{d_k}}\right).\tag{15-3}$$
 
-式中 $\operatorname{softmax}(\cdot)$ 沿键帧维（列内）归一化，使每个音频帧 $t$ 自动汇聚与其时间最吻合的视觉口型特征，计算开销为 $\mathcal O(T T_{\mathrm{v}} d_k)$，显著高于式(15-2) FiLM 调制的 $\mathcal O(C T)$ 逐元素开销。因此静态声纹或固定方向锥普遍采用轻量级 FiLM，而帧同步唇动或动态追踪轨迹则优先采用交叉注意力或逐帧时变 FiLM。
+式中 $\operatorname{softmax}(\cdot)$ 沿键帧维（列内）归一化，使每个音频帧 $t$ 自动汇聚与其时间最吻合的视觉口型特征，计算开销为 $\mathcal O\bigl(T T_{\mathrm{v}} (d_k + C)\bigr)$，显著高于式(15-2) FiLM 调制的 $\mathcal O(C T)$ 逐元素开销。因此静态声纹或固定方向锥普遍采用轻量级 FiLM，而帧同步唇动或动态追踪轨迹则优先采用交叉注意力或逐帧时变 FiLM。
+
+#### 声纹嵌入骨干（x-vector / ECAPA-TDNN / WavLM）与空间角度条件网络
+
+静态声纹条件 $\vec e = g_{\mathrm{clue}}(\mathcal C)$ 的判别力直接决定条件提取器的上限。现代声纹编码器经历了三代典型演进：
+
+1. **x-vector（统计池化时延网络）**：[Snyder 等（ICASSP 2018）](https://doi.org/10.1109/ICASSP.2018.8461375) 用多层时延神经网络（TDNN）提取帧级声学表征，再沿整段注册语音计算各维特征的均值与标准差拼接（Statistics Pooling），将变长话段压为定长声纹向量。
+2. **ECAPA-TDNN（通道注意力与多尺度聚合）**：[Desplanques 等（Interspeech 2020）](https://arxiv.org/abs/2005.07143) 在一维残差块中引入多尺度 Res2Net 分支、Squeeze-and-Excitation（SE）通道重标定与通道相关的注意力统计池化，重点强化携带声道共振峰与基频个性的活跃浊音帧，成为目前开放式场景最常用的紧凑声纹骨干。
+3. **自监督语音基座（如 WavLM）**：[Chen 等（IEEE JSTSP 2022）](https://doi.org/10.1109/JSTSP.2022.3188113) 在预训练阶段主动构造多说话人重叠与噪声混叠任务并预测掩码隐表征，其多层加权特征在多人混叠与低信噪比注册条件下较传统梅尔频谱前端具有明显抗干扰优势。
+
+**短注册语音（$< 1$～$2\ \mathrm{s}$）为何容易失效？** 从统计池化物理机理看，话段级均值与标准差估计的方差近似反比于有效浊音帧数；当注册音频短于 $1$～$2\ \mathrm{s}$（仅含寥寥数个音节）时，音素覆盖严重不全，池化向量会强烈偏向当前所读具体音素的共振峰分布（即**内容泄漏，Phonetic Leakage**）而非说话人固有的声道几何不变量，导致目标注册向量与干扰声纹之间的余弦间隔骤缩，提取器在目标停顿间隙极易发生目标混淆切换。
+
+为了缓解声纹编码器与分离主干之间的表征失配，时域提取代表架构 **Time-Domain SpeakerBeam**（[Delcroix 等，ICASSP 2020](https://doi.org/10.1109/ICASSP40776.2020.9054683)）与 **SpEx+**（[Ge 等，Interspeech 2020](https://arxiv.org/abs/2005.04686)）进一步在混合支路与注册支路之间采用**权重共享（Weight-Tied）的多尺度时域卷积编码器**，让两条支路在同一学习滤波器组空间内对齐特征，再通过多任务说话人分类损失联合约束提取器。而当系统面对**未注册陌生说话人**但已知目标方位角 $\theta_0$ 时，多麦前端还可直接构造**空间角度特征（Angle Feature，AF）**作为条件线索：在[第 3 章 §3.1](03_array-geometry.md#sec-3-1) 与后文式(15-10)～(15-11)的远场正横坐标系下，理论通道间相位差为 $\Delta\phi_{pq}(\theta_0, f) = +\frac{2\pi f}{c}(x_p - x_q)\sin\theta_0$，对选定麦克风对集合 $\mathcal P$ 计算实测相位差与理论导向相位差的逐时频点平均余弦匹配度 $AF(f, t) = \frac{1}{|\mathcal P|}\sum_{(p,q)\in\mathcal P}\cos\bigl(\angle(X_p X_q^*) - \Delta\phi_{pq}(\theta_0, f)\bigr)$，将其与多通道谱特征或声纹嵌入联合送入提取网络，即可在免注册条件下锁定目标方向锥，并与声纹线索形成“方向抗同音色、声纹抗同方向”的互补防线。
+
+近年目标提取正沿着**空间区域可编程、语义提示与免声纹池化**三个方向持续演进：在空间与听觉交互侧，**Cone of Silence**（[Jenrungrot 等，NeurIPS 2020](https://arxiv.org/abs/2010.06007)）以二分角窗逐层锁定任意角度声源，**Semantic Hearing**（[Veluri 等，ACM UIST 2023](https://doi.org/10.1145/3586183.3606779)）在约 $6.6\ \mathrm{ms}$ 低延迟双耳因果架构上保留 ITD/ILD 线索实现按语义类别提取，**ReZero**（[Gu 与 Luo，*IEEE/ACM TASLP* 2024](https://doi.org/10.1109/TASLP.2024.3396567)）支持按自定义三维空间区域灵活提取目标声场，而 **SpatialNet**（[Quan 与 Li，*IEEE/ACM TASLP* 2024](https://doi.org/10.1109/TASLP.2023.3347517)）以窄带与跨带交替的多通道空间变换器显著强化了多麦空间线索建模；在声纹条件侧，**USEF-TSE**（[Zeng 与 Li，*IEEE TASLP* 2025](https://arxiv.org/abs/2409.02615)）直接用帧级交叉注意力对齐混合谱与注册语音、绕开定长说话人嵌入池化瓶颈，个性化分带循环网络（pBSRNN）则在连续流式目标提取中兼顾低算力与高音质。
 
 #### 目标沉默时标准 SI-SDR 为何出现零除零奇异
 
-目标说话人提取与盲分离在训练目标上有一个极易被忽视的根本差异：在长对话录音切出的 $2\ \mathrm{s}$～$4\ \mathrm{s}$ 训练片段中，**目标说话人很可能全程保持沉默**（参考真值波形恒为零向量 $\vec s_{\mathrm{ref}} = \vec 0 \in \mathbb{R}^N$），而背景干扰说话人正在讲话（混合输入 $\vec x \ne \vec 0$）。如果直接照搬单人增强或盲分离常用的尺度不变信号失真比（SI-SDR，[Le Roux 等，ICASSP 2019](https://arxiv.org/abs/1811.02508)）作为负损失，会出现什么代数退化？我们一步不跳地写出标准 SI-SDR 的投影分解公式：
+目标说话人提取与盲分离在训练目标上有一个极易被忽视的根本差异：在长对话录音切出的 $2\ \mathrm{s}$～$4\ \mathrm{s}$ 训练片段中，**目标说话人很可能全程保持沉默**（参考真值波形恒为零向量 $\vec s_{\mathrm{ref}} = \vec 0 \in \mathbb{R}^N$），而背景干扰说话人正在讲话（混合输入 $\vec x \ne \vec 0$）。回顾[第 8 章 §8.5](08_speech-separation.md#sec-8-5) 中用于单人增强与盲分离的标准尺度不变信号失真比（SI-SDR，[Le Roux 等，ICASSP 2019](https://arxiv.org/abs/1811.02508)），如果直接将其照搬作负损失，会出现什么代数退化？我们列出正交投影分解以显式定位奇异点：
 
 $$\begin{aligned}
 \alpha&=\frac{\hat{\vec s}^\top\vec s_{\mathrm{ref}}}
@@ -107,7 +121,7 @@ $$\mathrm{SI\text{-}SDR}(\hat{\vec s},\vec s_{\mathrm{ref}})
 
 #### 双态能量地板损失与单人过切分旁路保护
 
-为了在同一套训练准则下兼顾“目标发声段保真”与“目标沉默段抑噪”，条件提取器采用由参考信号能量门限 $\varepsilon_s \ge 0$ 判别的**双态损失函数（Dual-State TSE Loss）**（参见 [Delcroix 等，ICASSP 2020](https://doi.org/10.1109/ICASSP40776.2020.9054683) 关于非活动说话人静音约束的设计思想）。设活跃参考能量门限为 $\varepsilon_s$，沉默态相对混合能量地板系数为 $\tau_{\mathrm{floor}} > 0$（典型取值 $10^{-3}$，对应混合信号功率以下 $-30\ \mathrm{dB}$ 的静音底噪目标），记混合能量地板 $E_{\mathrm{floor}}=\tau_{\mathrm{floor}}\|\vec x\|_2^2$，定义双态损失 $\mathcal L_{\mathrm{dual}}$ 为：
+为了在同一套训练准则下兼顾“目标发声段保真”与“目标沉默段抑噪”，条件提取器采用由参考信号能量门限 $\varepsilon_s \ge 0$ 判别的**双态损失函数（Dual-State TSE Loss）**（关于目标缺席段静音能量约束与误触发评测，参见 [Borsdorf 等，Interspeech 2021](https://doi.org/10.21437/Interspeech.2021-1939) 与 [Delcroix 等，Interspeech 2022](https://doi.org/10.21437/Interspeech.2022-11252)）。设活跃参考能量门限为 $\varepsilon_s$，沉默态相对混合能量地板系数为 $\tau_{\mathrm{floor}} > 0$（典型取值 $10^{-3}$，对应混合信号功率以下 $-30\ \mathrm{dB}$ 的静音底噪目标），记混合能量地板 $E_{\mathrm{floor}}=\tau_{\mathrm{floor}}\|\vec x\|_2^2$，定义双态损失 $\mathcal L_{\mathrm{dual}}$ 为：
 
 $$\mathcal L_{\mathrm{dual}}=
 \begin{cases}
@@ -127,7 +141,13 @@ $$\mathcal L_{\mathrm{absent}}(\hat{\vec s},\vec x)
 
 逐项检验式(15-7)的边界行为与梯度性质：
 
-- **理想静音极小点**：当提取器准确输出零波形 $\hat{\vec s} = \vec 0$ 时，$\mathcal L_{\mathrm{absent}} = 0\ \mathrm{dB}$（即 $10\log_{10} 1$），恰好达到全局下界，且零点处对 $\hat{\vec s}$ 的梯度等于 $\vec 0$ 平滑收敛，不会像未加地板的 $\log_{10}(\|\hat{\vec s}\|_2^2)$ 那样在零点附近把梯度推向无穷大而引发权重震荡。
+- **理想静音极小点与有界平滑梯度**：当提取器准确输出零波形 $\hat{\vec s} = \vec 0$ 时，$\mathcal L_{\mathrm{absent}} = 0\ \mathrm{dB}$（即 $10\log_{10} 1$），恰好达到全局下界。直接对 $\hat{\vec s}$ 求梯度得：
+
+    $$\nabla_{\hat{\vec s}}\mathcal L_{\mathrm{absent}}
+    =\frac{20}{\ln 10}\frac{\hat{\vec s}}
+    {E_{\mathrm{floor}}+\|\hat{\vec s}\|_2^2}.$$
+
+    可见梯度在 $\hat{\vec s} = \vec 0$ 处严格归零平滑收敛，且由均值不等式 $E_{\mathrm{floor}} + \|\hat{\vec s}\|_2^2 \ge 2\sqrt{E_{\mathrm{floor}}}\,\|\hat{\vec s}\|_2$ 保证其范数全局有界（$\|\nabla_{\hat{\vec s}}\mathcal L_{\mathrm{absent}}\|_2 \le \frac{10}{\ln 10\sqrt{E_{\mathrm{floor}}}}$），避免未加地板的 $\log_{10}(\|\hat{\vec s}\|_2^2)$ 在零点附近把梯度推向无穷大而引发权重震荡。
 - **混合尺度自适应**：分母采用 $E_{\mathrm{floor}}=\tau_{\mathrm{floor}}\|\vec x\|_2^2$ 而非固定绝对常数，意味着无论录音整体数字电平调高 $10\ \mathrm{dB}$ 还是调低 $10\ \mathrm{dB}$，只要提取器对干扰源的相对能量抑制比 $\|\hat{\vec s}\|_2^2 / \|\vec x\|_2^2$ 相同，受到的 dB 惩罚完全一致。一旦残余泄漏远超混合地板（$\|\hat{\vec s}\|_2^2 \gg E_{\mathrm{floor}}$），惩罚随残余功率每增加十倍线性上升 $10\ \mathrm{dB}$。
 
 在部署双槽或多槽前端时，与“目标沉默”对偶的另一个高频工程退化是**单人说话段的清辅音过切分（Over-Splitting）**。当房间里其实只有一位说话人发言时，双输出分离器往往把元音浊音主干放入主槽 $\vec y_1$，却把高频清擦音（如 `/s/`、`/f/`、`/ɕ/`）或词尾送气声误判为“第二个人”塞进次槽 $\vec y_2$，导致主槽听感发闷缺字。为此在后处理阶段设立**零重叠能量比旁路判决**：计算次槽相对主槽的能量比 $R_{21,\mathrm{dB}}$ 并与门限 $\eta_{\mathrm{dB}}$（常取 $-18\ \mathrm{dB}$～$-15\ \mathrm{dB}$）比较：
@@ -160,13 +180,13 @@ R_{21,\mathrm{dB}}=10\log_{10}\!\left(
 
 **3. 结论与适用边界。** 该算例说明双态损失消除了静音段的除零奇异，并能用同一 dB 量纲惩罚干扰透传。但要注意它的失效边界：若在真实录音中把微弱耳语目标误标成零参考（或参考通道串入了邻座说话人声音使 $\|\vec s_{\mathrm{ref}}\|_2^2 > \varepsilon_s$），双态切换开关就会跳错分支，因此在制作训练数据时必须配合近讲麦克风交叉门限清洗参考标签。
 
-![图85：条件目标说话人提取的特征调制、沉默态损失与单人旁路保护](../figures/fig85_tse_conditioning_modes.png)
+![图80：条件目标说话人提取的特征调制、沉默态损失与单人旁路保护](../figures/fig80_tse_conditioning_modes.png)
 
-图 85 直观展示了条件目标说话人提取四个核心机制的定量行为（生成脚本 `scripts/make_tse_figures.py`）：
+图 80 直观展示了条件目标说话人提取四个核心机制的定量行为（生成脚本 `scripts/make_tse_figures.py`）：
 
 - **子图 (a) FiLM 通道仿射调制前后特征**：横轴为特征帧索引 $t \in \{0, 1, 2\}$，纵轴为特征激活值（无量纲）。红色方块实线（调制后通道 1）相比蓝色圆点虚线（原始通道 1）将动态范围放大两倍并整体下移 $0.5$，紫色菱形点划线（调制后通道 2）相比绿色三角点线（原始通道 2）将动态范围压缩一半并整体上移 $0.25$，展示条件向量如何逐通道重塑特征对比度。
 - **子图 (b) 目标沉默段双态能量地板惩罚**：横轴为残余泄漏相对混合能量的分贝比 $10\log_{10}(\|\hat{\vec s}\|_2^2 / \|\vec x\|_2^2)$（dB），纵轴为沉默态损失 $\mathcal L_{\mathrm{absent}}$（dB）。红色实线、蓝色虚线与绿色点划线分别对应 $\tau_{\mathrm{floor}} = 10^{-4}, 10^{-3}, 10^{-2}$：在极低泄漏区曲线平滑收敛至 $0\ \mathrm{dB}$ 水平线，一旦泄漏越过各自地板阈值则呈斜率 $1\ \mathrm{dB/dB}$ 的严格线性惩罚。
-- **子图 (c) 目标存在段的幅度缩放不变性**：横轴为输出幅度缩放系数 $\alpha \in [0.2, 2.2]$（无量纲），纵轴为损失或相对误差（dB）。蓝色实线（$-\mathrm{SI\text{-}SDR}$）在全区间恒定保持 $-20.0\ \mathrm{dB}$，而橙色虚线（逐点波形相对均方误差）只要 $\alpha$ 偏离 $1.0$ 便急剧恶化至 $0\ \mathrm{dB}$ 以上，解释了为何未标定增益提取网络需先用正交投影解耦幅度。
+- **子图 (c) 目标存在段的幅度缩放不变性**：横轴为输出幅度缩放系数 $\alpha \in [0.2, 2.2]$（无量纲），纵轴为损失或相对误差（dB）。蓝色实线（$-\mathrm{SI\text{-}SDR}$）在全区间恒定保持 $-20.0\ \mathrm{dB}$；而对 $\hat{\vec s} = \alpha(\vec s_{\mathrm{ref}} + 0.1\vec v)$（$\vec s_{\mathrm{ref}} \perp \vec v$ 且等范数），橙色虚线（逐点波形相对均方误差 $10\log_{10}(\|\hat{\vec s}-\vec s_{\mathrm{ref}}\|_2^2 / \|\vec s_{\mathrm{ref}}\|_2^2) = 10\log_{10}(1.01\alpha^2 - 2\alpha + 1)$）仅在 $\alpha = 1.0$ 处达到谷底 $-20.0\ \mathrm{dB}$，向两侧偏离后迅速抬升——由 $1.01\alpha^2 - 2\alpha + 1 < 1$ 解得它仅在 $\alpha \in (0, 2/1.01) \approx (0, 1.9802)$ 内低于 $0\ \mathrm{dB}$（例如在 $\alpha = 0.2$ 处恶化至 $-1.94\ \mathrm{dB}$），在 $\alpha = 2/1.01 \approx 1.98$ 处越过 $0\ \mathrm{dB}$（在 $0.05$ 步长绘图网格上于 $\alpha = 2.0$ 处达到 $+0.17\ \mathrm{dB}$），并在 $\alpha = 2.2$ 处升至 $+1.73\ \mathrm{dB}$，直观解释了为何未标定增益的提取网络需先用正交投影解耦幅度。
 - **子图 (d) 零重叠旁路门限与擦音保护**：横轴为次槽对主槽能量比 $R_{21,\mathrm{dB}}$（dB），纵轴为次槽激活状态（$0$ 为合并旁路，$1$ 为独立分离）。红色竖直虚线标出 $-18\ \mathrm{dB}$ 门限；单人清擦音泄漏点（$-20\ \mathrm{dB}$，绿圆点）落在门限左侧触发合并恢复，双人真实重叠点（$-6.02\ \mathrm{dB}$，蓝方块）落在右侧正常保持双流分离。
 
 ### 15.3 远场角度失灵时：近场球面波与声学距离气泡
@@ -175,7 +195,7 @@ R_{21,\mathrm{dB}}=10\log_{10}\!\left(
 
 设想在开放式工位或嘈杂咖啡馆里，用户佩戴智能眼镜或面对桌面阵列说话，距离阵列中心仅 $r_1 = 0.40\ \mathrm{m}$；而在用户正后方同一直线上 $r_2 = 4.00\ \mathrm{m}$ 处，另一位同事也在大声打电话。此时目标与干扰的方位角完全相同（均为正横（broadside）方向 $\theta = 0^\circ$）。回顾[第 5 章 §5.1](05_beamforming.md#sec-5-1)，任何基于**远场平面波假设**的波束形成器只认方向角 $\theta$：既然两者方位角都是 $0^\circ$，平面波导向矢量完全重合，传统角度波束无论怎样调权重，都无法保留近处说话人而单独压制正后方的远处干扰。
 
-破局的物理钥匙在于**波前曲率（Wavefront Curvature）**：近处 $0.40\ \mathrm{m}$ 的声音到达阵列时是一圈明显弯曲的球面波，而远处 $4.00\ \mathrm{m}$ 传来的波前已经接近平直的平面波。借用球面波曲率在阵列前方围出一块只接收 $r \le r_{\mathrm{bubble}}$ 范围内声音、而把同方向更远处声音挡在外面的空间区域，称为**声学距离气泡（Acoustic Distance Bubble）**（近年可穿戴与桌面近场拾音代表性工作可参见 [Chatterjee 等 ClearBuds，MobiSys 2022](https://doi.org/10.1145/3498361.3538933) 与 [Chen 等 Sound Bubbles，Nature Electronics 2024](https://doi.org/10.1038/s41928-024-01276-z)）。
+破局的物理钥匙在于**波前曲率（Wavefront Curvature）**：近处 $0.40\ \mathrm{m}$ 的声音到达阵列时是一圈明显弯曲的球面波，而远处 $4.00\ \mathrm{m}$ 传来的波前已经接近平直的平面波。借用球面波曲率在阵列前方围出一块只接收 $r \le r_{\mathrm{bubble}}$ 范围内声音、而把同方向更远处声音挡在外面的空间区域，称为**声学距离气泡（Acoustic Distance Bubble）**（如 [Chen 等 Sound Bubbles，Nature Electronics 2024](https://doi.org/10.1038/s41928-024-01276-z) 在可穿戴阵列上演示的可编程球面波距离气泡；与之相关的无线同步双耳自语音近场神经增强系统则见 [Chatterjee 等 ClearBuds，MobiSys 2022](https://doi.org/10.1145/3498361.3538933)）。
 
 我们建立严格的平面几何坐标把曲率相位算清楚。设 $M$ 元均匀线阵（ULA）沿 $x$ 轴对称排列，第 $m$ 支麦克风坐标为 $(x_m, 0)$，阵列中心位于原点 $(0, 0)$，总物理孔径为 $D = \max_m x_m - \min_m x_m$。方位角 $\theta \in [-\pi/2, \pi/2]$ 自正横 $+y$ 轴法线向 $+x$ 轴度量，则距离原点为 $r$、方位角为 $\theta$ 的点声源坐标为 $(r\sin\theta, r\cos\theta)$，它到第 $m$ 支麦克风的精确欧氏传播距离 $r_m(r, \theta)$ 为：
 
@@ -218,7 +238,7 @@ $$r_F=\frac{2D^2}{\lambda}=\frac{2D^2 f}{c}.\tag{15-12}$$
 
 现在我们在正横 $\theta = 0^\circ$ 的三麦克风对称均匀线阵（阵元坐标 $x_{-1} = -d, x_0 = 0, x_{+1} = +d$，总孔径 $D = 2d$）上，推导“无失真保留近场目标 $(r_1, 0^\circ)$、同时对同方向远场平面波形成精确零陷”的线性约束最小方差（LCMV）波束形成闭式解。
 
-为聚焦波前相位曲率的核心作用，先采用式(15-11)的纯相位模型（$r / r_m$ 幅度修正的定量影响见 [E15-06](#e15-06)）。在正横 $\theta = 0^\circ$ 下，中心阵元距离为 $r_0 = r$，两侧对称阵元距离均为 $\sqrt{r^2 + d^2}$，相对中心阵元的额外传播程差与滞后相位记为：
+为聚焦波前相位曲率的核心作用，先采用式(15-11)的纯相位模型（$r / r_m$ 幅度修正的定量影响见 [E15-04](#e15-04)）。在正横 $\theta = 0^\circ$ 下，中心阵元距离为 $r_0 = r$，两侧对称阵元距离均为 $\sqrt{r^2 + d^2}$，相对中心阵元的额外传播程差与滞后相位记为：
 
 $$\begin{aligned}
 \Delta r(r)&=\sqrt{r^2+d^2}-r,\\
@@ -270,7 +290,7 @@ $$\vec w_{\mathrm{reg}}
 =\mathbf C\bigl(\mathbf C^H\mathbf C+\delta\mathbf I_2\bigr)^{-1}
 \vec g,\tag{15-18}$$
 
-虽然遏制了权重范数急剧增大，但因为 $\vec a_1$ 与 $\vec a_\infty$ 几乎共线，正则化必然同时牺牲近场目标增益 $|B(r_1, 0^\circ)|^2 < 1$ 与远场零陷深度。
+虽然遏制了权重范数急剧增大，但因为 $\vec a_1$ 与 $\vec a_\infty$ 几乎共线，正则化必然同时牺牲近场目标增益 $|B(r_1, 0^\circ)|^2 < 1$ 与远场零陷深度。需要特别说明的是，式(15-18)必须在**约束空间 Gram 阵**上施加阻尼 $\delta\mathbf I_2$ 而非在传感器空间对 $\mathbf R_{nn} = \mathbf I_3$ 加白噪加载 $\epsilon\mathbf I_3$：后者把 $\mathbf I_3$ 替换为标量倍 $(1 + \epsilon)\mathbf I_3$，该标量在 $\mathbf R_{nn}^{-1}\mathbf C(\mathbf C^H\mathbf R_{nn}^{-1}\mathbf C)^{-1}\vec g$ 中分子分母精确抵消，无法改变无正则解；而式(15-18)等价于 $(\mathbf C\mathbf C^H + \delta\mathbf I_3)^{-1}\mathbf C\vec g$，实际求解的是软约束最小二乘 $\min_{\vec w}\|\mathbf C^H\vec w - \vec g\|_2^2 + \delta\|\vec w\|_2^2$，从而以放宽两项约束为代价压低权重范数。
 
 #### 锚点手算算例 15-2：10 cm 桌面线阵对 2 cm 微型线阵的距离气泡复算
 
@@ -291,11 +311,11 @@ $$\vec w_{\mathrm{reg}}
 
 **结论与工程选型启示**：单靠单侧耳塞柄 $2\ \mathrm{cm}$ 孔径不可能仅凭线性球面波曲率在 $0.4\ \mathrm{m}$～$1.0\ \mathrm{m}$ 形成可用距离气泡；可穿戴设备要想获得真正的近场气泡能力，必须采用**双耳跨头无线同步阵列**（把左右耳间距 $D \approx 0.16\ \mathrm{m}$～$0.18\ \mathrm{m}$ 或眼镜镜框全宽纳入孔径），并在低频段（$f < 800\ \mathrm{Hz}$）自动切换为神经网络掩码或耳间相干度滤波。
 
-![图86：近场球面波距离气泡的径向抑制与小孔径底噪边界](../figures/fig86_nearfield_distance_bubble.png)
+![图81：近场球面波距离气泡的径向抑制与小孔径底噪边界](../figures/fig81_nearfield_distance_bubble.png)
 
-图 86 将解析径向响应曲线与本章合成 PCM16 音频的实测波形、误差并列展示：
+图 81 将解析径向响应曲线与本章合成 PCM16 音频的实测波形、误差并列展示：
 
-- **子图 (a) 正横径向功率响应（$3430\ \mathrm{Hz}$）**：横轴为声源径向距离 $r \in [0.15, 5.0]\ \mathrm{m}$，纵轴为功率增益（dB）。红色虚线（传统远场 DSB）在全距离段近乎水平（$0\ \mathrm{dB}$），对 $4.0\ \mathrm{m}$ 同向干扰无抑制能力；蓝色实线（$d = 10\ \mathrm{cm}$ 距离气泡）在 $r_1 = 0.40\ \mathrm{m}$ 绿色点线处精确穿过 $0\ \mathrm{dB}$，随后随距离单调滚降，在 $r_2 = 4.00\ \mathrm{m}$ 紫色点线处压低至 $-19.65\ \mathrm{dB}$；橙色点划线（$d = 2\ \mathrm{cm}$ 正则气泡，$\delta = 5\times 10^{-4}$）则因孔径不足同时丢失近场增益与远场抑制斜率。
+- **子图 (a) 正横径向功率响应（$3430\ \mathrm{Hz}$）**：横轴为声源径向距离 $r \in [0.15, 5.0]\ \mathrm{m}$，纵轴为功率增益（dB）。红色虚线（传统远场 DSB）在 $r \gtrsim 0.5\ \mathrm{m}$ 区间近乎水平（$0\ \mathrm{dB}$），仅在极近场 $r = 0.15\ \mathrm{m}$ 处因球面波曲率失配略跌至 $-3.86\ \mathrm{dB}$，对 $4.0\ \mathrm{m}$ 同向干扰毫无抑制能力；蓝色实线（$d = 10\ \mathrm{cm}$ 距离气泡）在 $r_1 = 0.40\ \mathrm{m}$ 绿色点线处精确穿过 $0\ \mathrm{dB}$，随后随距离单调滚降，在 $r_2 = 4.00\ \mathrm{m}$ 紫色点线处压低至 $-19.65\ \mathrm{dB}$；橙色点划线（$d = 2\ \mathrm{cm}$ 正则气泡，$\delta = 5\times 10^{-4}$）则因孔径不足同时丢失近场增益与远场抑制斜率。
 - **子图 (b) 阵元间距与白噪声增益塌缩**：横轴为相邻阵元间距 $d$（cm），纵轴为无正则白噪声增益 $\mathrm{WNG}$（dB）。蓝色圆点实线直观呈现按 $d^4$ 变化的陡峭滚降，绿色虚线与红色点划线分别标出 $d = 10\ \mathrm{cm}$（$-4.21\ \mathrm{dB}$ 可用工作区）与 $d = 2\ \mathrm{cm}$（$-31.82\ \mathrm{dB}$ 底噪放大禁区）。
 - **子图 (c) 实际 PCM 波形对照（第 $1600$ 点起）**：横轴为自稳窗起点算起的相对时间（$0$～$3.0\ \mathrm{ms}$，共 $48$ 个采样点），纵轴为 PCM16 解码幅度（无量纲）。红色虚线（远场 DSB）被 $2500\ \mathrm{Hz}$ 同向干扰强烈拍频调制，而蓝色点划线（$10\ \mathrm{cm}$ 距离气泡）与绿色实线（$3200\ \mathrm{Hz}$ 近场目标参考）逐点重合。
 - **子图 (d) 稳窗实际 PCM16 归一化误差比**：横轴为三种波束形成方案（共同导出增益 $1.0$），纵轴为稳窗整型误差能量比 $E_{\mathrm{PCM}} / P_{\mathrm{ref}}$（无量纲）。远场 DSB 误差比达 $1.2226$，$10\ \mathrm{cm}$ 距离气泡骤降至 $0.0246$，而 $2\ \mathrm{cm}$ 小孔径正则气泡（音频设定 $\delta = 2\times 10^{-4}$）因目标衰减与底噪放大升至 $2.2760$。
@@ -327,7 +347,7 @@ $$\vec w_{\mathrm{reg}}
     -N_{\mathrm{cor}}^{(\pi)}(t).
     \end{aligned}\tag{15-20}$$
 
-把式(15-20)三式相加做一步关键检验：无论 $N_{\mathrm{ref}}(t) \ge N_{\mathrm{hyp}}(t)$ 还是 $N_{\mathrm{hyp}}(t) > N_{\mathrm{ref}}(t)$，$\max(0, a - b) + \max(0, b - a) + \min(a, b)$ 恒等于 $\max(a, b)$！因此第 $t$ 帧三项误差之和恒等于 $\max(N_{\mathrm{ref}}, N_{\mathrm{hyp}})$ 减去 $N_{\mathrm{cor}}^{(\pi)}(t)$。由于前两项 $E_{\mathrm{miss}}(t)$ 与 $E_{\mathrm{FA}}(t)$ 完全不依赖排列 $\pi$，最小化总误差等价于在 $K \times K$ 整数共现矩阵 $M_{k,j} = \sum_{t=0}^{T-1} r_{k,t} h_{j,t}$ 上求解**最大权二分图匹配问题**（可用精确整数匈牙利算法在 $\mathcal O(K^3)$ 时间内求得全局最优排列 $\pi^\star$）：
+把式(15-20)三式相加做一步关键检验：无论 $N_{\mathrm{ref}}(t) \ge N_{\mathrm{hyp}}(t)$ 还是 $N_{\mathrm{hyp}}(t) > N_{\mathrm{ref}}(t)$，$\max(0, a - b) + \max(0, b - a) + \min(a, b)$ 恒等于 $\max(a, b)$。因此第 $t$ 帧三项误差之和恒等于 $\max(N_{\mathrm{ref}}, N_{\mathrm{hyp}})$ 减去 $N_{\mathrm{cor}}^{(\pi)}(t)$。由于前两项 $E_{\mathrm{miss}}(t)$ 与 $E_{\mathrm{FA}}(t)$ 完全不依赖排列 $\pi$，最小化总误差等价于在 $K \times K$ 整数共现矩阵 $M_{k,j} = \sum_{t=0}^{T-1} r_{k,t} h_{j,t}$ 上求解**最大权二分图匹配问题**（可用精确整数匈牙利算法在 $\mathcal O(K^3)$ 时间内求得全局最优排列 $\pi^\star$）：
 
 $$\begin{aligned}
 \pi^\star&=\arg\max_{\pi\in\mathcal S_K}
@@ -338,13 +358,16 @@ E_{\mathrm{miss}}(t)+E_{\mathrm{FA}}(t)
 {\sum_{t=0}^{T-1}N_{\mathrm{ref}}(t)}.
 \end{aligned}\tag{15-21}$$
 
-这里必须澄清一个工程新手常犯的指标误读：**$\mathrm{DER}$ 完全可以合法地超过 $100\%$（即 $\mathrm{DER} > 1.0$），编写评测代码时绝不能对 $\mathrm{DER}$ 强加 $\min(1.0, \cdot)$ 截断！** 原因就在式(15-20)的第二项 $E_{\mathrm{FA}}(t)$：如果在一段静音较多或单人简短发言的录音中，前端因噪声误触发生成了多条虚警说话人轨道，累计虚警加混淆时长就会超过真实说话人总时长 $T_{\mathrm{ref}}$，从而产生大于 $100\%$ 的真实误差率。
+这里必须澄清两项工程新手常犯的评测误区：
+
+1. **$\mathrm{DER}$ 可以合法地超过 $100\%$（即 $\mathrm{DER} > 1.0$），评测代码绝不能强加 $\min(1.0, \cdot)$ 截断**：原因就在式(15-20)的虚警项 $E_{\mathrm{FA}}(t)$——在静音较多或单人简短发言的录音中，前端若因噪声误触发生成多条虚警说话人轨道，累计虚警加混淆时长即可超过真实说话人总时长 $T_{\mathrm{ref}}$。
+2. **必须显式声明宽容边界（Forgiveness Collar）与重叠段是否计入评测**：传统 NIST RT 与部分 AMI 基准在每条参考发言起止边界两侧各刨除 $\pm 0.25\ \mathrm{s}$ 的宽容边界（甚至早期部分评测还跳过了重叠语音段），而现代高难评测（如 DIHARD 与 CHiME-6/7/8）普遍要求**零宽容边界（$0\ \mathrm{s}$ collar）且计入全部重叠段**。仅切换 $\pm 0.25\ \mathrm{s}$ 宽容边界就会掩盖大量短促应答词（如“嗯”“好”）与快速抢话切边，使同一套系统的 $\mathrm{DER}$ 绝对读数相差 $5\%$～$10\%$，因此跨论文或跨产品横向对比前必须核对评分口径完全一致。
 
 #### 硬单标签聚类在重叠语音帧上的误差下界证明
 
 早期级联会议系统普遍采用“语音活动检测（VAD）分段 $\to$ 每段提取一个声纹向量（x-vector / d-vector）$\to$ 谱聚类或层次聚类给每帧打上**唯一一个**说话人标签”的流水线。为什么这套流程在自然多人讨论（重叠语音占比常达 $15\%$～$30\%$）中总是表现不佳？
 
-我们用两行不等式给出严格下界：任何硬单标签聚类器在第 $t$ 帧最多只能激活一条预测轨道，即硬约束 $N_{\mathrm{hyp}}(t) \le 1$。于是在任意有 $m_t = N_{\mathrm{ref}}(t) \ge 2$ 人同时说话的重叠帧上，代入式(15-20)第一式必有 $E_{\mathrm{miss}}(t) \ge m_t - 1$（因为 $N_{\mathrm{hyp}}(t) \le 1$）！即便该系统拥有**完美无误的真值 VAD**（静音帧零虚警，$E_{\mathrm{FA}}(t) = 0$）且在单人帧上实现**百分之百正确的声纹分类**（$E_{\mathrm{conf}}(t) = 0$），它在整段录音上的理论最低 $\mathrm{DER}$ 仍被锁死在如下正下界之上：
+我们用两行不等式给出严格下界：任何硬单标签聚类器在第 $t$ 帧最多只能激活一条预测轨道，即硬约束 $N_{\mathrm{hyp}}(t) \le 1$。于是在任意有 $m_t = N_{\mathrm{ref}}(t) \ge 2$ 人同时说话的重叠帧上，代入式(15-20)第一式必有 $E_{\mathrm{miss}}(t) \ge m_t - 1$（因为 $N_{\mathrm{hyp}}(t) \le 1$）。即便该系统拥有**完美无误的真值 VAD**（静音帧零虚警，$E_{\mathrm{FA}}(t) = 0$）且在单人帧上实现**百分之百正确的声纹分类**（$E_{\mathrm{conf}}(t) = 0$），它在整段录音上的理论最低 $\mathrm{DER}$ 仍被锁死在如下正下界之上：
 
 $$\mathrm{DER}_{\mathrm{single}}
 \ge\mathrm{DER}_{\min}^{\mathrm{single}}
@@ -353,15 +376,17 @@ $$\mathrm{DER}_{\mathrm{single}}
 
 式(15-22)告诉我们：只要不打破“每帧至多一个标签”的模型假设，把单段声纹编码器换得再大、把聚类相似度矩阵调得再精细，也无法削减分毫由 $\max(0, m_t - 1)$ 锁死的重叠漏检下界。要真正攻克重叠对话，日志模型必须从“单标签互斥划分”升级为“每位候选说话人各自拥有独立二元开关”的多标签检测架构——这正是端到端神经日志（EEND，[Fujita 等，Interspeech 2019](https://arxiv.org/abs/1909.06247)）与目标说话人语音活动检测（TS-VAD，[Medennikov 等，Interspeech 2020](https://arxiv.org/abs/2005.07272)）诞生的核心动因。
 
-更进一步，即便把输出层升级为独立二元开关，若仍将输出轨道数固定为常数 $K_{\mathrm{fixed}} = 2$（固定双槽置换不变训练 PIT），一旦真实会议出现第 $3$ 位发言人，最优二分图匹配下至少有一名真实说话人的全部发声帧无法分到独立轨道，同样会产生正比于未分配槽位发言时长的硬性漏检下界。Horiguchi 等人提出的端到端编码器—解码器吸引子网络（EEND-EDA，*IEEE/ACM TASLP* 2022）通过序列解码动态生成候选说话人吸引子，并以存在性概率门限自动停止扩展，从而在人数未知场景下消除固定槽位截断下界（吸引子停止准则与双槽下界复算见 [E15-17](#e15-17)）。
+更进一步，即便把输出层升级为独立二元开关，若仍将输出轨道数固定为常数 $K_{\mathrm{fixed}} = 2$（固定双槽置换不变训练 PIT），一旦真实会议出现第 $3$ 位发言人，最优二分图匹配下至少有一名真实说话人的全部发声帧无法分到独立轨道，同样会产生正比于未分配槽位发言时长的硬性漏检下界。Horiguchi 等人提出的端到端编码器—解码器吸引子网络（EEND-EDA，[IEEE/ACM TASLP 2022](https://doi.org/10.1109/TASLP.2022.3162080)）通过序列解码动态生成候选说话人吸引子，并以存在性概率门限自动停止扩展，从而在人数未知场景下消除固定槽位截断下界（吸引子停止准则与双槽下界复算见 [E15-13](#e15-13)）。
+
+**面向实时会议的流式在线日志（Streaming Diarization）与 2023–2025 年新进展**：上述基础 EEND-EDA 需要先读完数分钟整段录音再统一解码吸引子，无法直接满足实时字幕的低延迟要求。工程上把神经多标签日志推向流式分块运行主要依赖两条经典路径：一是**说话人追踪缓存（Speaker-Tracing Buffer，STB）**（[Xue 等，IEEE SLT 2021](https://doi.org/10.1109/SLT48900.2021.9383523)），在每个 $1$～$2\ \mathrm{s}$ 流式新块前拼接历史上已确立身份的代表性帧缓存，让自注意力在同一前向传播中锁定跨块一致的槽位编号，消除分块间的排列跳变；二是**局部—全局吸引子架构（EEND-GLA）**（[Horiguchi 等，IEEE/ACM TASLP 2023](https://doi.org/10.1109/TASLP.2022.3233237)），在短分块内用局部吸引子完成低延迟重叠检测，同时通过无监督在线全局聚类将各块局部吸引子增量归并到不设上限的全局说话人库中。近两年多标签日志进一步向幂集分类与到达序排序演进：Plaquet 与 Bredin（[Interspeech 2023](https://doi.org/10.21437/Interspeech.2023-205)）在 `pyannote.audio` 3.x 中引入**幂集多类交叉熵（Powerset）日志**，将单讲与双/三人重叠组合直接编码为互斥类别，摆脱敏感的逐类二值门限调参；**Sortformer**（[Park 等，ICML 2025](https://arxiv.org/abs/2409.06656)）以按首次发言时刻排序的 Sort Loss 替代置换不变训练，其后续 **Streaming Sortformer**（[Medennikov、Park 等，Interspeech 2025](https://arxiv.org/abs/2507.18446)）进一步配以到达序说话人缓存（Arrival-Order Speaker Cache，AOSC）支持流式在线日志；**DiariZen**（[Han 等，ICASSP 2025](https://arxiv.org/abs/2409.09408)）则将剪枝 WavLM 语音基座、Conformer 幂集局部分割与 VBx 全局聚类有机结合，在多个远场会议基准上刷新了混合日志精度。
 
 ### 15.5 多通道目标说话人语音活动检测（TS-VAD）与 GSS 协同闭环
 
 #### 空间相位差与声纹相似度的对数几率贝叶斯融合
 
-在多麦克风会议室（如 CHiME-6 / CHiME-7 餐厨与客厅多人对话场景）中，单靠单通道声纹做 TS-VAD 仍会在双人强重叠帧上犹豫不决：因为两人声音叠在一起后，该帧混合频谱算出的嵌入向量落在两位说话人声纹中心的中间地带，余弦相似度双双跌落到 $0.45$ 左右。此时麦克风阵列的**空间通道间相位差（Inter-channel Phase Difference，IPD）**恰好提供了与声纹互补的第二维证据——即便两人在同一帧发声，他们在时频平面不同频点上仍暴露出各自不同的到达方向相位！
+在多麦克风会议室（如 CHiME-6 / CHiME-7 餐厨与客厅多人对话场景）中，单靠单通道声纹做 TS-VAD 仍会在双人强重叠帧上犹豫不决：因为两人声音叠在一起后，该帧混合频谱算出的嵌入向量落在两位说话人声纹中心的中间地带，余弦相似度双双跌落到 $0.45$ 左右。此时麦克风阵列的**空间通道间相位差（Inter-channel Phase Difference，IPD）**恰好提供了与声纹互补的第二维证据——即便两人在同一帧发声，他们在时频平面不同频点上仍暴露出各自不同的到达方向相位。
 
-我们建立一个透明可复算的对数几率（Log-Odds）贝叶斯融合模型，展示多通道 TS-VAD 如何在每个时间块 $t$ 为第 $k$ 位候选说话人独立输出二元活动后验概率 $\gamma_{k,t} = P(z_{k,t} = 1 \mid \mathcal O_t)$（取值于 $(0, 1)$；注意：**不同说话人的 $\gamma_{k,t}$ 各自满足独立伯努利分布，绝不强求 $\sum_{k=1}^K \gamma_{k,t} = 1$**，因此双讲重叠帧完全可以同时输出 $\gamma_{1,t} = 0.90$ 与 $\gamma_{2,t} = 0.88$！）。
+我们建立一个透明可复算的对数几率（Log-Odds）贝叶斯融合模型，展示多通道 TS-VAD 如何在每个时间块 $t$ 为第 $k$ 位候选说话人独立输出二元活动后验概率 $\gamma_{k,t} = P(z_{k,t} = 1 \mid \mathcal O_t)$（取值于 $(0, 1)$；注意：**不同说话人的 $\gamma_{k,t}$ 各自满足独立伯努利分布，绝不强求 $\sum_{k=1}^K \gamma_{k,t} = 1$**，因此双讲重叠帧完全可以同时输出 $\gamma_{1,t} = 0.90$ 与 $\gamma_{2,t} = 0.88$）。
 
 设第 $k$ 位说话人的先验发声概率为 $\pi_k \in (0, 1)$，第 $t$ 帧观测到的空间相位匹配余弦度量为 $c_{k,t}^{\mathrm{sp}}$（定义为 $\cos(\Delta\psi_t - \Delta\phi_k) \in [-1, 1]$，其中 $\Delta\psi_t$ 为第 $t$ 帧实测麦间相位差，$\Delta\phi_k$ 为说话人 $k$ 的先验方向相位差），帧级声纹嵌入余弦相似度为 $c_{k,t}^{\mathrm{emb}} \in [-1, 1]$。在条件独立指数族似然下，空间对数似然比与声纹对数似然比在对数几率域直接相加（$\kappa_{\mathrm{sp}}, \kappa_{\mathrm{emb}} \ge 0$ 为判别锐度，$\tau_{\mathrm{sp}}, \tau_{\mathrm{emb}}$ 为等似然中性阈值）：
 
@@ -380,32 +405,58 @@ $$\gamma_{k,t}=\sigma(\eta_{k,t})
 
 #### 从 TS-VAD 软后验到导引源分离（GSS）与 MVDR 协方差门控
 
-拿到多说话人逐帧活动后验 $\gamma_{k,t}$ 之后，怎样回头驱动麦克风阵列把重叠在一起的声音分离开？Boeddeker 等人在 CHiME-5 评测中提出的**导引源分离（Guided Source Separation，GSS；亦译引导声源分离）**（[CHiME-5 Workshop 2018 原文](https://www.isca-archive.org/chime_2018/boeddecker18_chime.pdf)，其球面混合模型见[第 8 章 §8.4](08_speech-separation.md#sec-8-4)）打通了从“说话人日志”到“空间波束形成”的统计接口。
+拿到多说话人逐帧活动后验 $\gamma_{k,t}$ 之后，怎样回头驱动麦克风阵列把重叠在一起的声音分离开？Boeddeker 等人在 CHiME-5 评测中提出的**导引源分离（Guided Source Separation，GSS；亦译引导声源分离）**（[CHiME-5 Workshop 2018 原文](https://www.isca-archive.org/chime_2018/boeddecker18_chime.pdf)，其完整复角中心高斯混合模型 cACGMM 见[第 8 章 §8.4](08_speech-separation.md#sec-8-4)）打通了从“说话人日志”到“空间波束形成”的统计接口。
 
-这里需要重点厘清的一个工程细节是**目标协方差矩阵的排他性门控（Target-Exclusive Gating）**。假设我们要用参考通道 MVDR 波束提取第 $k$ 位说话人，需要从多通道窄带观测序列 $\vec x_t \in \mathbb{C}^M$（$t = 0, \ldots, T-1$）中分别估计目标语音空间协方差矩阵 $\hat{\mathbf R}_{ss}^{(k)}$ 与干扰加背景噪声空间协方差矩阵 $\hat{\mathbf R}_{vv}^{(k)}$。如果直接拿原始后验 $\gamma_{k,t}$ 当权重去累加 $\hat{\mathbf R}_{ss}^{(k)}$，那么在两人同时说话的重叠帧上（$\gamma_{1,t} \approx 0.9, \gamma_{2,t} \approx 0.9$），干扰说话人的强能量就会按高权重混入目标协方差 $\hat{\mathbf R}_{ss}^{(k)}$，严重拉偏波束主瓣甚至引发目标自相消。
+先厘清完整 GSS 与下述**频率无关帧级门控教学简化版**的边界：Boeddeker 原版 GSS 是在每个时频点 $(f, t)$ 上由日志活动约束迭代估计 cACGMM 空间混合后验，因而即便某干扰者全程与目标重叠，只要二者在不同频点上呈谱稀疏分离，仍能在时频格点级分离出各自的纯净协方差；而下方用全局帧级软后验 $\gamma_{k,t}$ 构造的简化闭式门控便于直观演示“排他性”与“去底噪”两项统计要件，其适用前提是对话窗口内存在目标独白帧与全场静音帧（若某干扰者全程只在重叠帧发声，则不会被纯帧级权重 $1 - \gamma_{k,t}$ 捕获）。
 
-正确的做法是利用全部在场说话人的后验概率，将“仅目标说话人 $k$ 独占发声、其余说话人均沉默”的乘积概率定义为目标协方差累加门控权重 $m_{k,t}^{\mathrm{tar}}$，而将“目标说话人 $k$ 沉默”的概率定义为干扰加噪声累加门控权重 $m_{k,t}^{\mathrm{int}}$：
+在帧级协方差估计中，必须同时避开两类统计偏差：
+
+1. **排他性门控（Target-Exclusive Gating）**：若直接拿原始后验 $\gamma_{k,t}$ 去累加目标协方差，双讲重叠帧（$\gamma_{1,t} \approx 0.9, \gamma_{2,t} \approx 0.9$）会把干扰说话人强能量按高权重混入目标协方差，拉偏主瓣并引发目标自相消。因此应以“仅目标 $k$ 独占发声”的乘积概率 $m_{k,t}^{\mathrm{tar}}$ 累加单讲观测协方差 $\hat{\mathbf R}_{xx,\mathrm{solo}}^{(k)}$，以 $m_{k,t}^{\mathrm{int}}$ 累加干扰加底噪协方差，并以全体沉默概率 $m_t^{\mathrm{sil}}$ 估计纯背景底噪协方差 $\hat{\mathbf R}_{nn}$：
 
 $$\begin{aligned}
 m_{k,t}^{\mathrm{tar}}&=\gamma_{k,t}
 \prod_{j\ne k}\bigl(1-\gamma_{j,t}\bigr),\\
-m_{k,t}^{\mathrm{int}}&=1-\gamma_{k,t},
+m_{k,t}^{\mathrm{int}}&=1-\gamma_{k,t},\\
+m_t^{\mathrm{sil}}&=\prod_{j=1}^{K}\bigl(1-\gamma_{j,t}\bigr),
 \end{aligned}\tag{15-25}$$
 
+2. **单讲观测协方差的底噪扣除（消除低信噪比 Souden MVDR 畸变偏置）**：切忌把单讲观测协方差 $\hat{\mathbf R}_{xx,\mathrm{solo}}^{(k)}$ 直接当成纯净目标语音协方差 $\hat{\mathbf R}_{ss}^{(k)}$。即便在目标独白帧上，阵列接收的仍是“目标语音加环境底噪”之和（$\vec x_t = \vec a_k s_{k,t} + \vec n_t$），其期望为 $\mathbf R_{ss}^{(k)} + \mathbf R_{nn}$。若未扣除 $\hat{\mathbf R}_{nn}$ 而直接代入 Souden MVDR，设各向同性白底噪 $\mathbf R_{vv} = \sigma_n^2\mathbf I_M$、单麦信噪比 $\rho = \phi_s / \sigma_n^2$（单位模导向矢量 $|a_{k,m}| = 1$，并取参考麦归一化 $a_{k,r} = 1$，更一般情形则对应归一化通带比 $\vec w_k^H\vec a_k / a_{k,r}$），由三行代数即得通带增益收缩：
+
+    $$\begin{aligned}
+    \mathbf R_{vv}^{-1}\hat{\mathbf R}_{xx,\mathrm{solo}}^{(k)}
+    &=\rho\,\vec a_k\vec a_k^H+\mathbf I_M,\\
+    \operatorname{tr}\!\bigl(\mathbf R_{vv}^{-1}
+    \hat{\mathbf R}_{xx,\mathrm{solo}}^{(k)}\bigr)
+    &=M\rho+M,\\
+    \frac{\vec w_k^H\vec a_k}{a_{k,r}}
+    &=\frac{\vec e_r^H(\rho\,\vec a_k\vec a_k^H+\mathbf I_M)\vec a_k}
+    {(M\rho+M)a_{k,r}}
+    =\frac{M\rho+1}{M\rho+M}<1.
+    \end{aligned}$$
+
+    在参考麦归一化 $a_{k,r} = 1$ 下，当 $M = 4$ 且背景底噪为 $0\ \mathrm{dB}$（$\rho = 1$）时，目标幅度缩水至 $5/8$（$-4.08\ \mathrm{dB}$）；若干扰协方差另叠加正交强干扰 $\phi_i\vec b\vec b^H$（$\vec b \perp \vec a_k, \phi_i \to \infty$），$\mathbf R_{vv}^{-1} \to \sigma_n^{-2}(\mathbf I_M - \frac{1}{M}\vec b\vec b^H)$ 会投影消去 $1$ 维噪声子空间，使分母迹降至 $M\rho + M - 1$，通带比仍缩水至 $\frac{M\rho + 1}{M\rho + M - 1} = 5/7$（$-2.92\ \mathrm{dB}$），产生约 $-3$～$-4\ \mathrm{dB}$ 的无失真约束违背。为此须扣除静音段背景底噪并投影回半正定锥 $(\cdot)_+$（工程上等价或更稳健的做法是对矩阵对 $(\hat{\mathbf R}_{xx,\mathrm{solo}}^{(k)}, \hat{\mathbf R}_{vv}^{(k)})$ 做广义特征值分解提取秩一目标主特征向量，见[第 5 章 §5.9](05_beamforming.md#sec-5-9) 与[第 13 章 §13.12](13_distributed-enhancement.md#sec-13-12)）：
+
 $$\begin{aligned}
-\hat{\mathbf R}_{ss}^{(k)}
+\hat{\mathbf R}_{xx,\mathrm{solo}}^{(k)}
 &=\frac{\sum_{t=0}^{T-1}m_{k,t}^{\mathrm{tar}}\,\vec x_t\vec x_t^H}
-{\sum_{t=0}^{T-1}m_{k,t}^{\mathrm{tar}}},\\
+{\sum_{t=0}^{T-1}m_{k,t}^{\mathrm{tar}}},
+\qquad
+\hat{\mathbf R}_{nn}
+=\frac{\sum_{t=0}^{T-1}m_t^{\mathrm{sil}}\,\vec x_t\vec x_t^H}
+{\sum_{t=0}^{T-1}m_t^{\mathrm{sil}}},\\
+\hat{\mathbf R}_{ss}^{(k)}
+&=\bigl(\hat{\mathbf R}_{xx,\mathrm{solo}}^{(k)}-\hat{\mathbf R}_{nn}\bigr)_+,\\
 \hat{\mathbf R}_{vv,0}^{(k)}
 &=\frac{\sum_{t=0}^{T-1}m_{k,t}^{\mathrm{int}}\,\vec x_t\vec x_t^H}
-{\sum_{t=0}^{T-1}m_{k,t}^{\mathrm{int}}},\\
+{\sum_{t=0}^{T-1}m_{k,t}^{\mathrm{int}}},
+\qquad
 \hat{\mathbf R}_{vv}^{(k)}
-&=\hat{\mathbf R}_{vv,0}^{(k)}
+=\hat{\mathbf R}_{vv,0}^{(k)}
 +\frac{\delta\,\operatorname{tr}(\hat{\mathbf R}_{vv,0}^{(k)})}{M}
 \mathbf I_M.
 \end{aligned}\tag{15-26}$$
 
-式中 $\hat{\mathbf R}_{vv,0}^{(k)}$ 为对角加载前的原始干扰协方差（注意此处下标 $vv$ 统指目标说话人 $k$ 以外的全部重叠说话人干扰与环境底噪之和，对应[第 5 章 §5.9](05_beamforming.md#sec-5-9) 与[第 8 章 §8.4](08_speech-separation.md#sec-8-4) 中的干扰加噪声协方差记号 $\hat{\mathbf R}_{nn}^{(k)}$），$\delta \ge 0$ 为相对迹加载系数。只要当前对话窗口内存在若干帧单人独白片段（使分母 $\sum_t m_{k,t}^{\mathrm{tar}} > 0$ 且 $\sum_t m_{k,t}^{\mathrm{int}} > 0$），式(15-26)就能在单讲段估计出纯净的目标与干扰空间统计，随后求解[第 5 章 E05-20](05_beamforming.md#e05-20) 推导的 Souden 参考通道无失真 MVDR 权重（选第 $r$ 支麦克风为单位参考列向量 $\vec e_r$）：
+式中埃尔米特半正定投影算子定义为：对任意埃尔米特矩阵的特征分解 $\mathbf M = \mathbf Q\operatorname{diag}(\lambda_1, \ldots, \lambda_M)\mathbf Q^H$，取 $(\mathbf M)_+ = \mathbf Q\operatorname{diag}\bigl(\max(\lambda_m, 0)\bigr)\mathbf Q^H$，将有限样本相减可能引入的负特征值截断归零。$\hat{\mathbf R}_{vv,0}^{(k)}$ 为对角加载前的原始干扰加噪声协方差（下标 $vv$ 统指目标说话人 $k$ 以外的全部重叠说话人干扰与环境底噪之和，对应[第 5 章 §5.9](05_beamforming.md#sec-5-9) 与[第 8 章 §8.4](08_speech-separation.md#sec-8-4) 中的 $\hat{\mathbf R}_{nn}^{(k)}$），$\delta \ge 0$ 为相对迹加载系数；仅在高环境信噪比（$\rho \gg 1$，如近讲或高信噪比合成演示）时 $\hat{\mathbf R}_{xx,\mathrm{solo}}^{(k)} \approx \hat{\mathbf R}_{ss}^{(k)}$ 才可近似省略减底噪步。随后求解[第 5 章 E05-11](05_beamforming.md#e05-11) 推导的 Souden 参考通道无失真 MVDR 权重（选第 $r$ 支麦克风为单位参考列向量 $\vec e_r$）：
 
 $$\begin{aligned}
 \vec w_k&=\frac{\bigl(\hat{\mathbf R}_{vv}^{(k)}\bigr)^{-1}
@@ -415,7 +466,7 @@ $$\begin{aligned}
 \hat s_{k,r}[t]&=\vec w_k^H\vec x_t,
 \end{aligned}\tag{15-27}$$
 
-并将这组固定空间权重 $\vec w_k$ **反过来作用到包含双讲重叠段在内的全部时间帧上**，从而在重叠帧上把干扰说话人压入空间零陷！
+并将这组固定空间权重 $\vec w_k$ **反过来作用到包含双讲重叠段在内的全部时间帧上**，从而在重叠帧上把干扰说话人压入空间零陷。
 
 #### 锚点手算算例 15-3：六帧重叠会议的 DER 下界、超百反例与空谱 TS-VAD 恢复
 
@@ -425,23 +476,23 @@ $$\begin{aligned}
 
 1. **核算参考说话人总时长分母**：说话人 1 共发声 $4 \times 0.5 = 2.0\ \mathrm{s}$，说话人 2 共发声 $3 \times 0.5 = 1.5\ \mathrm{s}$，故式(15-19)参考分母为 $T_{\mathrm{ref}} = 2.0 + 1.5 = 3.5\ \mathrm{s}$（因含 $1.0\ \mathrm{s}$ 双讲重叠，$T_{\mathrm{ref}}$ 比 $3.0\ \mathrm{s}$ 录音物理时长多出 $0.5\ \mathrm{s}$）。
 2. **硬单标签聚类下界核验**：重叠帧为 $t = 2, 3$（每帧 $N_{\mathrm{ref}}(t) = 2$）。代入式(15-22)，任何硬单标签系统至少漏检 $(2 - 1) + (2 - 1) = 2$ 个说话人帧（即 $1.0\ \mathrm{s}$），理论最低误差率为 $\mathrm{DER}_{\min}^{\mathrm{single}} = 1.0 / 3.5 = 2/7$（约 $28.57\%$）。倘若聚类器还在第 $4$ 帧把说话人 2 误归入簇 1 并在第 $5$ 帧静音处产生一次虚警（即预测矩阵 $\mathbf H$ 第 1 行为 $[1, 1, 1, 0, 1, 0]$、第 2 行为 $[0, 0, 0, 1, 0, 1]$），最优排列 $\pi^\star = (0, 1)$ 下漏检仍为 $1.0\ \mathrm{s}$，外加第 $5$ 帧虚警 $0.5\ \mathrm{s}$、第 $4$ 帧混淆 $0.5\ \mathrm{s}$，总误差率升至 $\mathrm{DER} = 2.0 / 3.5 = 4/7 \approx 57.14\%$。
-3. **合法 $\mathrm{DER} > 100\%$ 构造验证**：若前端因高底噪分裂出三条过触发预测轨道 $\mathbf H_{\mathrm{over}}$，三行依次为 $[0, 0, 0, 0, 1, 1]$、$[0, 0, 1, 0, 1, 1]$ 与 $[1, 1, 0, 0, 1, 1]$，补零对齐为 $3 \times 6$ 后求得最优匹配为第 1 真值配第 3 轨（命中帧 $0, 1$）、第 2 真值配第 2 轨（命中帧 $2, 4$），总正确命中 $4$ 帧。逐帧统计得帧 $2, 3$ 共漏检 $3$ 帧（$1.5\ \mathrm{s}$），帧 $4$ 多余两条轨道虚警 $2$ 帧、帧 $5$ 静音处三条轨道全虚警 $3$ 帧（合计虚警 $5$ 帧 $= 2.5\ \mathrm{s}$），混淆 $0\ \mathrm{s}$。总误差时长达 $1.5 + 2.5 = 4.0\ \mathrm{s} > 3.5\ \mathrm{s}$，故真实 $\mathrm{DER} = 4.0 / 3.5 = 8/7 \approx 114.29\%$（严格大于 $100\%$）！
+3. **合法 $\mathrm{DER} > 100\%$ 构造验证**：若前端因高底噪分裂出三条过触发预测轨道 $\mathbf H_{\mathrm{over}}$，三行依次为 $[0, 0, 0, 0, 1, 1]$、$[0, 0, 1, 0, 1, 1]$ 与 $[1, 1, 0, 0, 1, 1]$，补零对齐为 $3 \times 6$ 后求得最优匹配为第 1 真值配第 3 轨（命中帧 $0, 1$）、第 2 真值配第 2 轨（命中帧 $2, 4$），总正确命中 $4$ 帧。逐帧统计得帧 $2, 3$ 共漏检 $3$ 帧（$1.5\ \mathrm{s}$），帧 $4$ 多余两条轨道虚警 $2$ 帧、帧 $5$ 静音处三条轨道全虚警 $3$ 帧（合计虚警 $5$ 帧 $= 2.5\ \mathrm{s}$），混淆 $0\ \mathrm{s}$。总误差时长达 $1.5 + 2.5 = 4.0\ \mathrm{s} > 3.5\ \mathrm{s}$，故真实 $\mathrm{DER} = 4.0 / 3.5 = 8/7 \approx 114.29\%$（严格大于 $100\%$）。
 4. **空谱联合 TS-VAD 在重叠帧上的恢复**：取先验 $\pi_k = 0.5$（先验对数几率 $\ln 1 = 0$），设空间参数 $\kappa_{\mathrm{sp}} = 3.0$、$\tau_{\mathrm{sp}} = 0.25$，声纹参数 $\kappa_{\mathrm{emb}} = 4.0$、$\tau_{\mathrm{emb}} = 0.45$。在第 $2$ 帧双讲重叠处，说话人 1 的声纹相似度因混叠跌至 $c_{1,2}^{\mathrm{emb}} = 0.48$：若仅靠声纹（$\kappa_{\mathrm{sp}} = 0$），对数几率仅为 $4.0 \times (0.48 - 0.45) = 0.12$，后验 $\sigma(0.12) \approx 0.530$ 徘徊在判决边界边缘；融合空间相位对齐度 $c_{1,2}^{\mathrm{sp}} = 0.82$ 后，对数几率升至 $3.0 \times (0.82 - 0.25) + 0.12 = 1.83$，后验推高至 $\gamma_{1,2} = \sigma(1.83) \approx 0.862$（同理同帧说话人 2 由 $c_{2,2}^{\mathrm{emb}} = 0.46$ 与 $c_{2,2}^{\mathrm{sp}} = 0.78$ 得 $\eta_{2,2} = 1.63$、$\gamma_{2,2} \approx 0.836$），将 $0.5$ 门限化后的六帧 $\mathrm{DER}$ 降为 $0.00\%$。同时式(15-25)自动将该重叠帧的目标独占权重压低至 $m_{1,2}^{\mathrm{tar}} \approx 0.141$（由 $0.862 \times 0.164$ 求得），而保留单讲帧 $t = 0$ 的高纯度权重 $m_{1,0}^{\mathrm{tar}} \approx 0.950$（由 $0.979 \times 0.971$ 求得），确保送入 MVDR 的目标协方差不被重叠人声污染。
 
-![图87：多人重叠会议日志的 DER 分解、空谱 TS-VAD 与 GSS 掩码](../figures/fig87_diarization_tsvad_gss.png)
+![图82：多人重叠会议日志的 DER 分解、空谱 TS-VAD 与 GSS 掩码](../figures/fig82_diarization_tsvad_gss.png)
 
-图 87 完整呈现了这段六帧重叠会议从日志误差诊断到波束门控生成的全链条数据：
+图 82 完整呈现了这段六帧重叠会议从日志误差诊断到波束门控生成的全链条数据：
 
 - **子图 (a) 六帧重叠会议真值活动**：横轴为会议时间（$0.0$～$3.0\ \mathrm{s}$，每帧 $0.5\ \mathrm{s}$），纵轴为二值说话活动标志（$0/1$）。蓝色与橙色柱分别标示两位说话人的发声区间，淡红色背景高亮标出 $1.0$～$2.0\ \mathrm{s}$ 的双讲重叠区（任何单标签聚类在此必漏 $1.0\ \mathrm{s}$）。
 - **子图 (b) 四种输出假设的 DER 三分量分解**：横轴为四种日志输出假设，纵轴为误差时长占参考总时长（$3.5\ \mathrm{s}$）的百分比（$\%$）。堆叠柱拆分漏检（蓝）、虚警（红）与说话人混淆（橙）对总 $\mathrm{DER}$ 的贡献，依次对比单标签理论下界（$28.6\%$）、含混淆双簇（$57.1\%$）、越过黑色虚线基准的合法超百过触发案例（$114.3\%$）与空谱联合 TS-VAD（$0.0\%$）。
-- **子图 (c) 重叠帧上 TS-VAD 后验概率恢复**：横轴为帧索引 $t \in \{0, \ldots, 5\}$，纵轴为活动后验概率 $\gamma_{k,t}$（无量纲）。红色虚线显示仅用声纹时帧 $2, 3$ 后验跌落至 $0.5$ 灰色虚线附近；引入双麦空间相位差后，蓝色实线（说话人 1）与绿色点划线（说话人 2）在重叠区双双维持在 $0.83$ 以上。
+- **子图 (c) 重叠帧上 TS-VAD 后验概率恢复**：横轴为帧索引 $t \in \{0, \ldots, 5\}$，纵轴为活动后验概率 $\gamma_{k,t}$（无量纲）。红色虚线显示仅用声纹时说话人 1 在帧 $2, 3$ 的后验跌落至 $0.5$ 灰色虚线附近；引入双麦空间相位差后，蓝色实线（说话人 1）与绿色点划线（说话人 2）在重叠区双双维持在 $0.83$ 以上。
 - **子图 (d) GSS 协方差门控权重**：横轴为帧索引 $t \in \{0, \ldots, 5\}$，纵轴为协方差累加帧权重（无量纲）。对比紫色点线（未排他的原始 $\gamma_{1,t}$）与蓝色实线（排他乘积掩码 $m_{1,t}^{\mathrm{tar}}$），可见重叠帧 $t = 2, 3$ 的权重被显著压低，仅让纯净单讲帧 $t = 0, 1$ 主导目标协方差估计，而红色虚线 $m_{1,t}^{\mathrm{int}}$ 则准确覆盖说话人 2 独白帧 $t = 4$ 与纯背景噪声帧 $t = 5$。
 
 ### 15.6 远场视听多模态前端：帧率异构、管线滞后与唇部遮挡
 
 #### 音频 STFT 帧与视频曝光帧的物理时间轴映射
 
-当带屏智能音箱、车载座舱视觉感知或视频会议终端配备摄像头时，视觉唇部运动（Lip Motion）为目标说话人提取提供了免疫房间混响与声学串音的辅助线索（代表性架构见 [Ephrat 等 Looking to Listen，SIGGRAPH 2018](https://arxiv.org/abs/1804.03619) 与 [Afouras 等 The Conversation，Interspeech 2018](https://arxiv.org/abs/1804.04121)）。然而在硬件落地时，工程师首先必须对准**异构采样率与异步硬件管线延迟**：
+当带屏智能音箱、车载座舱视觉感知或视频会议终端配备摄像头时，视觉唇部运动（Lip Motion）为目标说话人提取提供了免疫房间混响与声学串音的辅助线索（早期经典架构见 [Ephrat 等 Looking to Listen，SIGGRAPH 2018](https://arxiv.org/abs/1804.03619) 与 [Afouras 等 The Conversation，Interspeech 2018](https://arxiv.org/abs/1804.04121)，近年则演进至引入自监督唇动与跨模态交叉注意力的 **MuSE** [Pan 等，ICASSP 2021](https://arxiv.org/abs/2010.07775) 及 **AV-SepFormer** [Lin 等，ICASSP 2023](https://doi.org/10.1109/ICASSP49357.2023.10094306)）。然而在硬件落地时，工程师首先必须对准**异构采样率与异步硬件管线延迟**：
 
 1. **采样帧率不成整数倍**：远场语音 STFT 通常采用 $f_s = 16\ \mathrm{kHz}$、帧移跳长 $H = 256$ 点（时间步长 $H_{\mathrm{a}} = 16\ \mathrm{ms}$，每秒 $62.5$ 帧）；而会议摄像头常以 $f_{\mathrm{v}} = 25\ \mathrm{fps}$（每帧曝光周期 $T_{\mathrm{v}} = 40\ \mathrm{ms}$）或 $30\ \mathrm{fps}$（$T_{\mathrm{v}} \approx 33.33\ \mathrm{ms}$）运行。以 $16\ \mathrm{ms}$ 与 $40\ \mathrm{ms}$ 为例，比值为 $T_{\mathrm{v}} / H_{\mathrm{a}} = 40 / 16 = 2.5$——即每 $2$ 帧视频（$80\ \mathrm{ms}$）恰好对应 $5$ 帧音频 STFT，呈现出交替重用 `[2 帧, 3 帧, 2 帧, 3 帧, ...]` 的非均匀有理节拍。
 2. **图像信号处理器（ISP）与接口传输滞后**：麦克风声学样本经 I2S/TDM 总线进入 DSP 往往只需几毫秒；而 CMOS 图像传感器完成整帧曝光读出、ISP 降噪宽动态处理、USB/MIPI 传输以及人脸检测裁剪，常常比同一物理时刻发出的声音晚到主机 **$\Delta t_{\mathrm{av}} = +60\ \mathrm{ms}$～$+150\ \mathrm{ms}$**。
@@ -466,7 +517,7 @@ $$R_{\mathrm{clip}}=\frac{1}{L_{\mathrm{cons}}}
 \mathbf{1}\!\Bigl\{\bigl(m[\ell]+0.5\bigr)T_{\mathrm{v}}
 <t_{\mathrm{onset}}\Bigr\}.\tag{15-29}$$
 
-式中 $\mathbf{1}\{\cdot\}$ 为条件成立取 $1$、否则取 $0$ 的指示函数。工程上消除这一截断主要有两条途径：一是在硬件驱动层用同步闪光拍手信号标定出精确的 $\Delta t_{\mathrm{av}}$，并在音频侧主动设立等长的环形延迟缓冲线（代价是端到端通话延迟增加 $\Delta t_{\mathrm{av}}$）；二是在要求超低延迟（如助听器 $< 15\ \mathrm{ms}$）而无法等待慢速相机帧时，禁止视觉分支在词首瞬态直接硬门控高频子带，只让视觉特征慢速调节空间波束的追踪先验。
+式中 $\mathbf{1}\{\cdot\}$ 为条件成立取 $1$、否则取 $0$ 的指示函数。从主观视听同步感知标准看，国际电信联盟 **ITU-R BT.1359-1** 规范将人类对音视频不同步的**可察觉阈限（Detectability）**定在音频超前 $+45\ \mathrm{ms}$ 至滞后 $-125\ \mathrm{ms}$，将**可接受阈限（Acceptability）**定在音频超前 $+90\ \mathrm{ms}$ 至滞后 $-185\ \mathrm{ms}$。摄像头管线滞后 $\Delta t_{\mathrm{av}} > 0$ 正好意味着音频超前于视频，因此未标定补偿的百毫秒级相机滞后既会在前端触发词首辅音截断，也已直接突破人眼主观可接受上限。工程上消除这一截断主要有两条途径：一是在硬件驱动层用同步闪光拍手信号标定出精确的 $\Delta t_{\mathrm{av}}$，并在音频侧主动设立等长的环形延迟缓冲线（代价是端到端通话延迟增加 $\Delta t_{\mathrm{av}}$）；二是在要求超低延迟（如助听器 $< 15\ \mathrm{ms}$）而无法等待慢速相机帧时，禁止视觉分支在词首瞬态直接硬门控高频子带，只让视觉特征慢速调节空间波束的追踪先验。
 
 #### 唇部遮挡下的视觉置信度门控与纯音频平滑回退
 
@@ -487,12 +538,12 @@ M_{\mathrm{fused}}[k,\ell]
 固定音频采样率 $f_s = 16\ \mathrm{kHz}$、帧移 $H_{\mathrm{a}} = 16\ \mathrm{ms}$（$256$ 点），视频帧率 $f_{\mathrm{v}} = 25\ \mathrm{fps}$（周期 $T_{\mathrm{v}} = 40\ \mathrm{ms}$）：
 
 1. **零滞后（$\Delta t_{\mathrm{av}} = 0\ \mathrm{ms}$）下的 `[2, 3]` 交替对齐验证**：前 $5$ 个音频帧（$\ell = 0, 1, 2, 3, 4$）的中心时刻依次为 $8, 24, 40, 56, 72\ \mathrm{ms}$。除以 $T_{\mathrm{v}} = 40\ \mathrm{ms}$ 取下整：$\ell = 0, 1$ 落入 $[0, 40)\ \mathrm{ms}$ 映射至视频帧 $m = 0$（共 $2$ 帧）；$\ell = 2, 3, 4$ 落入 $[40, 80)\ \mathrm{ms}$ 映射至视频帧 $m = 1$（共 $3$ 帧）；随后 $\ell = 5, 6$（$88, 104\ \mathrm{ms}$）映射至 $m = 2$（$2$ 帧），$\ell = 7, 8, 9$（$120, 136, 152\ \mathrm{ms}$）映射至 $m = 3$（$3$ 帧），严格呈现每 $80\ \mathrm{ms}$ 周期 `[2, 3]` 交替的 $2.5$ 倍重用规律。
-2. **$+120\ \mathrm{ms}$ 相机滞后对词首辅音的截断定量核算**：设说话人在 $\ell_0 = 10$（即 $t_{\mathrm{onset}} = 10 \times 16 = 160\ \mathrm{ms}$）张嘴发出持续 $L_{\mathrm{cons}} = 8$ 帧（$128\ \mathrm{ms}$，覆盖 $\ell = 10, \ldots, 17$，中心时刻 $168\ \mathrm{ms}$～$280\ \mathrm{ms}$）的词首清擦音 `/s/`。当相机管线存在未补偿正滞后 $\Delta t_{\mathrm{av}} = +120\ \mathrm{ms}$ 时，由式(15-28)逐帧核查 $\ell = 10, \ldots, 16$：其查询嘴唇时刻 $t_{\mathrm{a}}[\ell] - 120\ \mathrm{ms}$ 落在 $48\ \mathrm{ms}$～$144\ \mathrm{ms}$ 之间，映射到的视频帧索引依次为 $m \in \{1, 1, 2, 2, 2, 3, 3\}$，对应的真实嘴唇曝光中心最大仅为 $3.5 \times 40 = 140\ \mathrm{ms}$（小于 $160\ \mathrm{ms}$，全都是张嘴前的闭唇画面）。直到最后一帧 $\ell = 17$（$t_{\mathrm{a}}[17] = 280\ \mathrm{ms}$，查询时刻 $160\ \mathrm{ms}$）才切换到张嘴后的视频帧 $m = 4$（曝光中心 $180\ \mathrm{ms}$）。因此 $8$ 帧词首辅音中有 **$7$ 帧（$112\ \mathrm{ms}$，占比 $7/8 = 87.5\%$）**被滞后的闭嘴视觉信号错误截断。
+2. **$+120\ \mathrm{ms}$ 相机滞后对词首辅音的截断定量核算**：设说话人在 $\ell_0 = 10$（即 $t_{\mathrm{onset}} = 10 \times 16 = 160\ \mathrm{ms}$）张嘴发出持续 $L_{\mathrm{cons}} = 8$ 帧（$128\ \mathrm{ms}$，覆盖 $\ell = 10, \ldots, 17$，中心时刻 $168\ \mathrm{ms}$～$280\ \mathrm{ms}$）的词首清擦音 `/s/`。当相机管线存在未补偿正滞后 $\Delta t_{\mathrm{av}} = +120\ \mathrm{ms}$ 时，由式(15-28)逐帧核查 $\ell = 10, \ldots, 16$：其查询嘴唇时刻 $t_{\mathrm{a}}[\ell] - 120\ \mathrm{ms}$ 落在 $48\ \mathrm{ms}$～$144\ \mathrm{ms}$ 之间，映射到的视频帧索引依次为 $m \in \{1, 1, 2, 2, 2, 3, 3\}$，对应的真实嘴唇曝光中心最大仅为 $3.5 \times 40 = 140\ \mathrm{ms}$（小于 $160\ \mathrm{ms}$，全都是张嘴前的闭唇画面）。直到最后一帧 $\ell = 17$（$t_{\mathrm{a}}[17] = 280\ \mathrm{ms}$，查询时刻 $160\ \mathrm{ms}$）才切换到张嘴后的视频帧 $m = 4$（曝光中心 $180\ \mathrm{ms}$）。因此 $8$ 帧词首辅音中有 **$7$ 帧（$112\ \mathrm{ms}$，占比 $7/8 = 87.5\%$）**被滞后的闭嘴视觉信号错误截断，同时 $+120\ \mathrm{ms}$ 的音频超前量也已突破 ITU-R BT.1359-1 的 $+90\ \mathrm{ms}$ 视听同步可接受上限。
 3. **三阶段遮挡置信度门控复算**：在目标发声段（真实理想掩码为 $1.0$），设纯音频分支稳定给出 $M_{\mathrm{audio}} = 0.82$。依次考察正脸清晰（$\alpha = 0.90, M_{\mathrm{av}} = 0.96$）、侧脸转头（$\alpha = 0.40, M_{\mathrm{av}} = 0.65$）与举杯完全遮挡嘴唇（$\alpha = 0.05, M_{\mathrm{av}} = 0.05$）三个时刻：代入式(15-30)得融合掩码依次为 $0.10 \times 0.82 + 0.90 \times 0.96 = 0.946$、$0.60 \times 0.82 + 0.40 \times 0.65 = 0.752$ 以及 $0.95 \times 0.82 + 0.05 \times 0.05 = 0.7815$。在举杯挡嘴瞬间，未门控视听掩码从 $0.96$ 骤降至 $0.05$（幅度损失高达 $0.95$），而置信度门控将其维持在 $0.7815$（误差仅 $0.2185$）。
 
-![图88：远场视听多模态异构帧率、相机滞后截断与遮挡置信度回退](../figures/fig88_av_asynchrony_occlusion.png)
+![图83：远场视听多模态异构帧率、相机滞后截断与遮挡置信度回退](../figures/fig83_av_asynchrony_occlusion.png)
 
-图 88 将上述视听同步、滞后吃字与多说话人架构等待窗口放在同一组对照坐标中：
+图 83 将上述视听同步、滞后吃字与多说话人架构等待窗口放在同一组对照坐标中：
 
 - **子图 (a) $16\ \mathrm{ms}$ 音频帧与 $25\ \mathrm{fps}$ 视频曝光映射**：横轴为音频 STFT 帧索引 $\ell \in \{0, \ldots, 14\}$，纵轴为关联视频曝光帧索引 $m$。蓝色实线阶梯展示零滞后时 `[2, 3, 2, 3]` 交替上升的帧映射；红色虚线展示 $+120\ \mathrm{ms}$ 滞后时前 $10$ 个音频帧（$\ell = 0, \ldots, 9$，含前 $7$ 帧负时刻钳位与 $\ell = 7, 8, 9$ 首帧曝光）停留在 $m = 0$、后续全程滞后 $3$ 个视频帧的错位轨迹。
 - **子图 (b) 视觉正滞后引起的词首辅音丢失**：横轴为视频相对音频滞后 $\Delta t_{\mathrm{av}} \in [0, 160]\ \mathrm{ms}$，纵轴为 $128\ \mathrm{ms}$ 词首辅音被闭嘴帧截断的比例（$\%$）。滞后越过 $8\ \mathrm{ms}$（网格 $10\ \mathrm{ms}$ 处即达 $12.5\%$）后呈阶梯攀升，在蓝色虚线标出的 $+120\ \mathrm{ms}$ 处达 $87.5\%$，严格超过 $120\ \mathrm{ms}$（图中 $\ge 125\ \mathrm{ms}$）后整个词首辅音 $100\%$ 丢失。
@@ -503,7 +554,7 @@ M_{\mathrm{fused}}[k,\ell]
 
 #### 级联链路（Diarization → GSS → ASR）与联合架构（SOT / DiCoW）对比
 
-当工程团队接到“开发一套支持重叠抢话的远场多人会议纪要系统”任务时，架构评审往往集中在两条技术路线的取舍上：一条是在 CHiME-6 / CHiME-7 / CHiME-8 远场多通道评测中久经考验的**模块化级联架构**（多通道 TS-VAD 日志 $\to$ WPE 去混响 + GSS 空间掩码波束形成 $\to$ 单人语音识别大模型 ASR）；另一条是近年快速崛起的**端到端或条件化大模型联合架构**，代表方案包括序列化输出训练（Serialized Output Training，SOT，[Kanda 等，Interspeech 2020](https://arxiv.org/abs/2003.12687)）与日志条件化 Whisper（Diarization-Conditioned Whisper，DiCoW，[Polok 等，CSL 2026 / arXiv 预印本](https://arxiv.org/abs/2501.00114)）。
+当工程团队接到“开发一套支持重叠抢话的远场多人会议纪要系统”任务时，架构评审往往集中在两条技术路线的取舍上：一条是在 CHiME-6 / CHiME-7 / CHiME-8 DASR 及真实办公会议基准 **NOTSOFAR-1**（[Vinnikov 等，Interspeech 2024](https://doi.org/10.21437/Interspeech.2024-1788)）等远场多通道评测中经受长期检验的**模块化级联架构**（多通道 TS-VAD 日志 $\to$ WPE 去混响 + GSS 空间掩码波束形成 $\to$ 单人语音识别大模型 ASR）；另一条是近年快速崛起的**端到端或条件化大模型联合架构**，代表方案包括序列化输出训练（Serialized Output Training，SOT，[Kanda 等，Interspeech 2020](https://arxiv.org/abs/2003.12687)）与日志条件化 Whisper（Diarization-Conditioned Whisper，DiCoW，[Polok 等，*Computer Speech & Language* Vol. 95, 2026](https://doi.org/10.1016/j.csl.2025.101841)）。
 
 我们先看清两类联合方案的内部机制：SOT 不显式输出分离后的多路音频波形，而是在单个注意力解码器的词元序列中插入特殊的说话人切换标记 `<sc>`，约定按各段语音的首次发声先后次序（First-In, First-Out）依次拼写第一位与第二位说话人的重叠词句；DiCoW 则保留外部多标签说话人日志模块输出的帧级活动矩阵，将其编码为静音/目标单讲/目标重叠/非目标四态条件掩码直接注入预训练 Whisper 编码器各层（FDDT 帧级日志依赖变换），从而免去波形分离重建环节，直接按目标说话人逐路解码文字。下表从六个核心工程维度给出选型对照：
 
@@ -518,6 +569,8 @@ M_{\mathrm{fused}}[k,\ell]
 
 工程落地决策准则十分明确：凡是业务场景要求**保留每位发言人的独立纯净录音归档**（如庭审记录、医疗问诊质检、远程视频会议混音转发）或配备了几何标定清晰的 4～8 麦会议阵列，**`TS-VAD + WPE + GSS + 单人 ASR`** 依然是物理可解释性最强、重度重叠鲁棒性最高的基石方案；反之，若硬件仅有单麦克风或双麦手机录音、不需要导出分离音频且追求端侧紧凑部署，则 `SOT` 或 `DiCoW` 能够规避单麦波形分离引入的非线性伪影（Musical / Neural Artifacts），消除分离器与后端 ASR 之间的声学失配。
 
+在单目标语音识别场景下，同样的二元权衡也出现在**级联 `TSE + ASR`** 与**端到端目标说话人识别（Target-Speaker ASR，TS-ASR）**之间：级联 `TSE + ASR` 能够产出可听波形并零成本对接冻结的商用黑盒 ASR 或按业务热词即时切换语言模型，但前端若仅围绕 SI-SDR 波形失真优化，残留的非线性相位/频谱微畸变往往会意外推高后端词错率（通常需要用联合微调或后端多条件增广数据缓解）；端到端 `TS-ASR`（直接把注册声纹或空间角度特征通过 FiLM/交叉注意力注入 ASR 编码器，例如 [Kanda 等，Interspeech 2019](https://arxiv.org/abs/1906.10876) 与上述 `DiCoW` 条件识别路径）彻底绕开了波形重建误差传播与多模块显存冗余，在强重叠下往往具备更低 WER，代价是失去独立语音输出且更换声学域或词表时需联合训练条件编码层。
+
 为了在同一把标尺上公平评测上表三类异构系统的端到端会议纪要质量，远场多说话人基准（如 CHiME-6/7/8）统一采用**拼接最小排列词错率（Concatenated Minimum-Permutation Word Error Rate，`cpWER`）**。对整场会话中的每位真实说话人 $k$ 与每条系统输出说话人轨 $j$，分别按时间顺序将其全部话段拼接为完整词序列 $\mathcal{W}_k^{\mathrm{ref}}$ 与 $\mathcal{W}_j^{\mathrm{hyp}}$（若预测人数与真实人数不等，较少一方补空词序列 $\varnothing$ 对齐集合基数），遍历全部双射排列 $\pi \in \mathcal{P}$（工程上用[第 0 章 §0.6.4](00_math-foundations.md#sec-0-6-4) 匈牙利算法在多项式时间内精确求解）最小化全局总编辑距离：
 
 $$\mathrm{cpWER}
@@ -526,7 +579,7 @@ $$\mathrm{cpWER}
 \mathcal{W}_{\pi(k)}^{\mathrm{hyp}}\bigr)}
 {\sum_k |\mathcal{W}_k^{\mathrm{ref}}|}.$$
 
-务必看清发言人身份串槽在 `cpWER` 中引发的**双倍惩罚机理**：哪怕后端 ASR 一字不差地识别出了某句包含 $M_w$ 个词的发言，只要前端日志或连续流拼接（[第 8 章 §8.6](08_speech-separation.md#sec-8-6)）把这句话错误挂到了另一位参会者名下，它在真实说话人参考轨上会造成 $M_w$ 个**删词（Deletion）**，同时在被错挂的输出轨上造成 $M_w$ 个**插词（Insertion）**，单句错归属便直接产生 $2M_w$ 的双倍词错！进一步针对流式系统还需考核**时间约束最小排列词错率（Time-Constrained Minimum-Permutation WER，`tcpWER`）**：它在计算词级编辑距离时只允许时间戳偏差落在容限窗口（如 $\pm 5\ \mathrm{s}$）内的参考词与预测词配对，防止离线系统靠跨话轮长距离漂移侥幸抵消时间戳错位（选型规格与官方评分工具核验分别见[第 8 章 §8.5](08_speech-separation.md#sec-8-5)、[第 11 章 §11.5.2](11_selection-guide.md#sec-11-5-2) 与[附录 B §17.7](17_appendix-guide.md#sec-17-7)）。
+务必看清发言人身份串槽在 `cpWER` 中引发的**双倍惩罚机理**：哪怕后端 ASR 一字不差地识别出了某句包含 $M_w$ 个词的发言，只要前端日志或连续流拼接（[第 8 章 §8.6](08_speech-separation.md#sec-8-6)）把这句话错误挂到了另一位参会者名下，它在真实说话人参考轨上会造成 $M_w$ 个**删词（Deletion）**，同时在被错挂的输出轨上造成 $M_w$ 个**插词（Insertion）**，单句错归属便直接产生 $2M_w$ 的双倍词错。进一步针对流式系统还需考核**时间约束最小排列词错率（Time-Constrained Minimum-Permutation WER，`tcpWER`，标准评测工具集见 MeetEval，[von Neumann 等，CHiME-7 Workshop 2023](https://doi.org/10.21437/CHiME.2023-6)）**：它在计算词级编辑距离时只允许时间戳偏差落在容限窗口（如 $\pm 5\ \mathrm{s}$）内的参考词与预测词配对，防止离线系统靠跨话轮长距离漂移侥幸抵消时间戳错位（选型规格与官方评分工具核验分别见[第 8 章 §8.5](08_speech-separation.md#sec-8-5)、[第 11 章 §11.5.2](11_selection-guide.md#sec-11-5-2) 与[附录 B §17.7](17_appendix-guide.md#sec-17-7)）。
 
 #### 注册声纹漂移、双胞胎音色近似与冷启动工程对策
 
@@ -535,7 +588,7 @@ $$\mathrm{cpWER}
 1. **Lombard 效应与生理声纹漂移**：用户在安静卧室用轻柔语调录制了 $5\ \mathrm{s}$ 注册声纹，走到 $75\ \mathrm{dB(A)}$ 的地铁站或高速行车座舱时会本能地提高嗓门、拉高基频并改变共振峰斜率（Lombard 效应），重感冒鼻塞或清晨沙哑同样会使注册嵌入余弦相似度骤降 $0.15$～$0.25$。工程上应在高置信度单讲唤醒段（高 SNR 且空间方向稳定）对用户声纹模板执行慢速指数滑动均值更新，严禁在双讲重叠段更新模板以防把旁人声纹污染进主人模板。
 2. **同性别近亲或近似音色冲突**：当干扰者恰好是音色相近的同性别家庭成员时，单靠全局 d-vector 很容易在目标停顿间隙把干扰者的句子误吸进来（称为目标混淆切换）。此时必须绑定**空间方位锚点**或**唤醒词瞬态位置锁定**：由唤醒词确定目标当前所在的方位角锥 $(\hat\theta_0, \hat r_0)$，用空间与声纹双门限联合约束提取器。
 3. **短促应答词冷启动**：当目标只说“好”“对”“嗯”等不足 $300\ \mathrm{ms}$ 的单音节词时，短时频谱不足以区分声纹，必须依赖前序追踪状态（见[第 9 章 §9.3](09_source-tracking.md#sec-9-3) 的航迹保持机制）维持空间波束指向，避免因单帧声纹置信度波动切丢短词。
-4. **注册片段串音污染与排他门控池化**：免提录制注册声纹时，用户读完引导句后的尾随停顿常混入邻座同事的高信噪比插话；若仅按能量 VAD 截取高信噪比帧求均值，干扰声纹将线性掺入注册模板并同时激活两位说话人的提取通带。工程上应在注册池化阶段复用式(15-25)的多说话人排他掩码联合门控，剔除旁人抢话帧后再归一化建库（串音余弦漂移闭式分析与门控修复复算见 [E15-18](#e15-18)）。
+4. **注册片段串音污染与排他门控池化**：免提录制注册声纹时，用户读完引导句后的尾随停顿常混入邻座同事的高信噪比插话；若仅按能量 VAD 截取高信噪比帧求均值，干扰声纹将线性掺入注册模板并同时激活两位说话人的提取通带。工程上应在注册池化阶段复用式(15-25)的多说话人排他掩码联合门控，剔除旁人抢话帧后再归一化建库（串音余弦漂移闭式分析与门控修复复算见 [E15-14](#e15-14)）。
 
 ### 15.8 距离气泡合成音频实验与三层客观评分
 
@@ -563,7 +616,7 @@ h_m[0]\,x_m[n]+h_m[1]\,x_m[n-1]\bigr).\tag{15-32}$$
 
 #### 解析层、双精度浮点层与 PCM16 整型层的对比核验
 
-与全书音频验证规范一致，生成脚本将评分拆为解析期望层、双精度浮点层与重读磁盘 WAV 后的 16 位整型层（按满量程 $32768$ 解码，以近场目标参考在同一稳窗 $\mathcal I$ 内的整型平方和 $P_{\mathrm{ref}}$ 为统一分母）。在仓库根目录下运行以下命令即可生成或只读校验全部资产：
+沿用全书统一的三层核验方法，生成脚本将评分拆为解析期望层、双精度浮点层与重读磁盘 WAV 后的 16 位整型层（按满量程 $32768$ 解码，以近场目标参考在同一稳窗 $\mathcal I$ 内的整型平方和 $P_{\mathrm{ref}}$ 为统一分母）。在仓库根目录下运行以下命令即可生成或只读校验全部资产：
 
 ```bash
 .venv/bin/python -m codes.chapters.ch15.examples.generate_tse_audio
@@ -596,7 +649,7 @@ h_m[0]\,x_m[n]+h_m[1]\,x_m[n-1]\bigr).\tag{15-32}$$
 | 开启近场距离气泡后，远端人声变小但底噪嘶嘶声急剧抬升 | 阵元孔径相对工作频率过小（$r_1 \gg 2D^2/\lambda$），二阶空间差分引起 $\mathrm{WNG}$ 按 $d^4$ 陡降 | 按式(15-17)绘制全频带 $\mathrm{WNG}(f)$ 曲线；在 $r_F(f) < r_1$ 的低频子带加随频正则 $\delta(f)$ 或切回一阶波束 |
 | 会议录音 VAD 很准，但多人讨论段 $\mathrm{DER}$ 始终卡在 $25\%$ 左右下不去 | 日志后端仍采用每帧单标签谱聚类，受制于式(15-22)重叠漏检理论下界 | 单独统计参考重叠帧时长与 $T_{\mathrm{ref}}$ 之比；升级为 EEND 或多通道空谱联合 TS-VAD 多标签输出 |
 | 视听前端抗噪很好，唯独每次停顿后开口第一个字的前半截被吞掉 | 摄像头 ISP 与 USB 传输存在 $+80$～$+150\ \mathrm{ms}$ 正滞后，开口瞬间仍读到闭嘴旧帧 | 录制拍手闪光同步测试片实测 $\Delta t_{\mathrm{av}}$；在音频进入融合层前补齐精确匹配的 FIFO 延迟缓冲 |
-| 目标沉默间隙频繁漏出固定某位邻座同事的清晰整句 | 注册录音尾段混入该同事插话，纯能量 VAD 池化导致注册向量双通带激活 | 检查注册缓冲逐帧说话人后验，按 [E15-18](#e15-18) 叠加排他概率门限剔除串音帧或提示重录 |
+| 目标沉默间隙频繁漏出固定某位邻座同事的清晰整句 | 注册录音尾段混入该同事插话，纯能量 VAD 池化导致注册向量双通带激活 | 检查注册缓冲逐帧说话人后验，按 [E15-14](#e15-14) 叠加排他概率门限剔除串音帧或提示重录 |
 
 #### 远场目标提取与多人前端选型核查清单
 
@@ -607,176 +660,134 @@ h_m[0]\,x_m[n]+h_m[1]\,x_m[n-1]\bigr).\tag{15-32}$$
 3. **跨模态时钟与遮挡是否有硬保障？** 引入视觉唇动前必须确认能否接受等待相机管线的缓冲延迟，并强制配备式(15-30)视觉可见度门控回退支路，确保关灯、逆光或遮挡时系统下限不低于纯音频阵列基线。
 4. **下游消费的是“可听波形”还是“纯文本”？** 需要人工复听录音或对接冻结的商用黑盒 ASR 接口时，优先采用 `TS-VAD + GSS` 线性空间波束链路以保证零非线性伪影；算力受限且仅需最终文字流时，可评估分块 `SOT` 或 `DiCoW` 条件转写方案。
 
-### 15.10 本章练习（E15-01～E15-18）
+### 15.10 本章练习（E15-01～E15-14）
 
-以下 18 道练习覆盖条件调制、双态损失、近场距离气泡、重叠日志边界、空谱 TS-VAD/GSS、视听同步回退以及可变人数吸引子与抗串音注册的完整计算链。运行全部练习或按题号单独复核（如 `--exercise E15-01`）的命令如下：
+以下 14 道练习覆盖双态损失、单人旁路保护、近场距离气泡、重叠日志边界、空谱 TS-VAD/GSS、视听滞后截断以及可变人数吸引子与抗串音注册的完整计算链。运行全部练习或按题号单独复核（如 `--exercise E15-02`）的命令如下：
 
 ```bash
 .venv/bin/python -m codes.chapters.ch15.chapter15_exercises
-.venv/bin/python -m codes.chapters.ch15.chapter15_exercises --exercise E15-01
+.venv/bin/python -m codes.chapters.ch15.chapter15_exercises --exercise E15-02
 ```
 
 <a id="e15-01"></a>
 
-#### E15-01：FiLM 条件特征仿射调制与恒等退化核验
-
-**题目**：给定两通道三帧特征矩阵 $\mathbf H$，第 1 行为 $[1.0, -0.5, 2.0]$，第 2 行为 $[0.5, 1.5, -1.0]$。求：（1）在注册声纹参数 $\vec\gamma = [2.0, 0.5]^\top$、$\vec\beta = [-0.5, 0.25]^\top$ 下的调制输出 $\mathbf Z$；（2）写出使 $\mathbf Z = \mathbf H$（恒等透传）与 $\mathbf Z = \mathbf 0$（完全关断）的参数取值，并说明网络训练初期为何常将 $\vec\gamma$ 初始化为全 $1$、$\vec\beta$ 初始化为全 $0$。
-
-**解答**：（1）由式(15-2)逐通道仿射运算：第 1 行 $2.0 \times [1.0, -0.5, 2.0] - 0.5$ 得 $[1.5, -1.5, 3.5]$，第 2 行 $0.5 \times [0.5, 1.5, -1.0] + 0.25$ 得 $[0.5, 1.0, -0.25]$，拼回 $2 \times 3$ 矩阵 $\mathbf Z$。
-
-（2）当 $\vec\gamma = [1, 1]^\top$ 且 $\vec\beta = [0, 0]^\top$ 时精确还原 $\mathbf Z = \mathbf H$，当 $\vec\gamma = [0, 0]^\top$ 且 $\vec\beta = [0, 0]^\top$ 时完全关断 $\mathbf Z = \mathbf 0$。将条件层初始化在 $(\vec 1, \vec 0)$ 处可保证训练第 0 步不破坏预训练声学主干的梯度流，随后再由线索误差逐步拉开各通道的缩放差异。
-
-<a id="e15-02"></a>
-
-#### E15-02：目标沉默段标准 SI-SDR 奇异性与双态地板损失手算
+#### E15-01：目标沉默段标准 SI-SDR 奇异性与双态地板损失手算
 
 **题目**：设正交四维向量 $\vec s_{\mathrm{ref}} = [1, 1, -1, -1]^\top$、干扰 $\vec v = [1, -1, 1, -1]^\top$。（1）当目标在场、混合信号为 $\vec x = \vec s_{\mathrm{ref}} + \vec v$ 且提取输出为 $\hat{\vec s} = 0.5\vec s_{\mathrm{ref}} + 0.05\vec v$ 时，求式(15-6)双态损失；（2）当目标沉默（$\vec s_{\mathrm{ref}} = \vec 0$，混合输入 $\vec x = \vec v$，$\tau_{\mathrm{floor}} = 10^{-3}$）时，说明标准 SI-SDR 在哪一步失效，并分别求 $\hat{\vec s} = \vec 0$、$\hat{\vec s} = \sqrt{0.099}\,\vec v$ 与 $\hat{\vec s} = \vec v$ 三种输出下的双态损失。
 
-**解答**：（1）目标在场时 $\|\vec s_{\mathrm{ref}}\|_2^2 = 4 > 10^{-8}$，正交性使 $\hat{\vec s}^\top\vec s_{\mathrm{ref}} = 2.0$，$\alpha = 0.5$，$\|\vec s_{\mathrm{proj}}\|_2^2 = 1.0$，残余失真能量 $\|\vec e_{\mathrm{noise}}\|_2^2 = 0.01$，故尺度不变信号失真比为 $10\log_{10}(100) = 20.0\ \mathrm{dB}$，双态损失为 $-20.0\ \mathrm{dB}$。
+**参考答案**：承接锚点手算算例 15-1：（1）目标在场时 $\|\vec s_{\mathrm{ref}}\|_2^2 = 4 > 10^{-8}$，正交投影给出 $\alpha = 0.5$、$\|\vec s_{\mathrm{proj}}\|_2^2 = 1.0$、$\|\vec e_{\mathrm{noise}}\|_2^2 = 0.01$，故 $\mathrm{SI\text{-}SDR} = 20.0\ \mathrm{dB}$、双态损失为 $-20.0\ \mathrm{dB}$。（2）当 $\vec s_{\mathrm{ref}} = \vec 0$ 时，式(15-4)投影系数遭遇 $0/0$ 奇异；切入式(15-7)沉默分支后地板能量为 $E_{\mathrm{floor}} = 0.004$，三种输出（能量 $0, 0.396, 4.0$）对应双态损失依次为 $0.0\ \mathrm{dB}$、$+20.0\ \mathrm{dB}$ 与 $10\log_{10}(1001) \approx +30.004\ \mathrm{dB}$。
 
-（2）当 $\vec s_{\mathrm{ref}} = \vec 0$ 时，标准投影系数 $\hat{\vec s}^\top\vec 0 / \|\vec 0\|_2^2$ 出现 $0/0$ 除零奇异。切入式(15-7)沉默分支后，混合能量 $\|\vec x\|_2^2 = 4$，地板能量为 $E_{\mathrm{floor}} = 0.004$；三种输出的估计能量依次为 $0$、$0.396$、$4.0$，代入 $10\log_{10}(1 + \|\hat{\vec s}\|_2^2 / 0.004)$ 依次得 $0.0\ \mathrm{dB}$、$10\log_{10}(100) = +20.0\ \mathrm{dB}$ 与 $10\log_{10}(1001) \approx +30.004\ \mathrm{dB}$。
+<a id="e15-02"></a>
 
-<a id="e15-03"></a>
-
-#### E15-03：单人语音零重叠旁路门限与清擦音过切分恢复
+#### E15-02：单人语音零重叠旁路门限与清擦音过切分恢复
 
 **题目**：双槽前端主槽输出为 $\vec y_1 = [1.0, 0.0, -1.0, 0.0]^\top$，旁路门限设为 $\eta_{\mathrm{dB}} = -18.0\ \mathrm{dB}$。分别对单人清擦音泄漏次槽 $\vec y_2^{(a)} = [0.0, 0.1, 0.0, -0.1]^\top$ 与双人真实重叠次槽 $\vec y_2^{(b)} = [0.0, 0.5, 0.0, -0.5]^\top$ 计算能量比 $R_{21,\mathrm{dB}}$、旁路判决结果与最终输出能量。
 
-**解答**：主槽能量为 $\|\vec y_1\|_2^2 = 2.0$。情形 (a) 次槽能量为 $0.02$，$R_{21,\mathrm{dB}} = -20.0\ \mathrm{dB}$（由 $10\log_{10}(0.02 / 2.0)$ 算出，低于 $-18.0\ \mathrm{dB}$），触发旁路合并 $\vec y_{\mathrm{out}} = \vec y_1 + \vec y_2^{(a)}$，即 $[1.0, 0.1, -1.0, -0.1]^\top$，总输出能量恢复为 $2.02$。
+**参考答案**：主槽能量为 $\|\vec y_1\|_2^2 = 2.0$。情形 (a) 次槽能量为 $0.02$，$R_{21,\mathrm{dB}} = -20.0\ \mathrm{dB}$（由 $10\log_{10}(0.02 / 2.0)$ 算出，低于 $-18.0\ \mathrm{dB}$），触发旁路合并 $\vec y_{\mathrm{out}} = \vec y_1 + \vec y_2^{(a)}$，即 $[1.0, 0.1, -1.0, -0.1]^\top$，总输出能量恢复为 $2.02$。
 
 情形 (b) 次槽能量为 $0.5$，$R_{21,\mathrm{dB}} \approx -6.02\ \mathrm{dB}$（由 $10\log_{10}(0.25)$ 算出，不低于 $-18.0\ \mathrm{dB}$），保持双流独立输出，$\vec y_{\mathrm{out}} = \vec y_1$（能量 $2.0$）。
 
+<a id="e15-03"></a>
+
+#### E15-03：三麦正横距离气泡闭式权重、WNG 与同向远场抑制比
+
+**题目**：承接 §15.3 锚点手算算例 15-2 参数（$c = 343\ \mathrm{m/s}$、$f = 3430\ \mathrm{Hz}$、$r_1 = 0.40\ \mathrm{m}$），利用式(15-15)～(15-17)手算 $d = 0.10\ \mathrm{m}$ 与 $d = 0.02\ \mathrm{m}$ 两种孔径下的外侧滞后相位 $\phi_1$、白噪声增益 $\mathrm{WNG}$（dB）以及对同方向 $r_2 = 4.00\ \mathrm{m}$ 干扰源的功率抑制比。
+
+**参考答案**：对照锚点手算算例 15-2：$d = 0.10\ \mathrm{m}$ 时 $\phi_1 \approx -44.32^\circ$、$\mathrm{WNG} \approx 0.37937$（$-4.21\ \mathrm{dB}$），在 $r_2 = 4.00\ \mathrm{m}$（$\phi_2 \approx -4.499^\circ$）处功率比为 $0.01083$（抑制 $19.65\ \mathrm{dB}$）。当孔径缩至 $d = 0.02\ \mathrm{m}$ 时，$\phi_1 \approx -1.799^\circ$、$\mathrm{WNG} \approx 6.571 \times 10^{-4}$（$-31.82\ \mathrm{dB}$，较桌面阵恶化 $27.61\ \mathrm{dB}$）；尽管无噪理想条件下对 $4\ \mathrm{m}$ 干扰的抑制比仍达 $19.99\ \mathrm{dB}$，但传感器热噪声已被放大 $1522$ 倍而无法实用。
+
 <a id="e15-04"></a>
 
-#### E15-04：菲涅耳近场边界与球面波二阶泰勒曲率近似误差
-
-**题目**：在 $c = 343\ \mathrm{m/s}$、$f = 3430\ \mathrm{Hz}$ 下，正横声源位于 $r_1 = 0.40\ \mathrm{m}$。分别对三麦线阵间距 $d = 0.10\ \mathrm{m}$（总孔径 $D = 0.20\ \mathrm{m}$）和 $d = 0.02\ \mathrm{m}$（$D = 0.04\ \mathrm{m}$）求菲涅耳边界距离 $r_F$、两侧阵元精确程差 $\Delta r_1 = \sqrt{r_1^2 + d^2} - r_1$ 以及式(15-10)二阶曲率近似 $d^2 / (2r_1)$ 的毫米级偏差。
-
-**解答**：波长 $\lambda = 343 / 3430 = 0.10\ \mathrm{m}$。当 $d = 0.10\ \mathrm{m}$ 时，$r_F = 2 \times 0.20^2 / 0.10 = 0.80\ \mathrm{m}$（大于 $0.40\ \mathrm{m}$）；精确程差为 $(\sqrt{0.17} - 0.40)\ \mathrm{m}$（约 $12.3106\ \mathrm{mm}$），二阶近似为 $(0.01 / 0.80)\ \mathrm{m} = 12.5000\ \mathrm{mm}$，高阶余项偏差约 $0.189\ \mathrm{mm}$（折合相位 $0.68^\circ$，故正式计算仍应采用精确平方根式(15-9)）。
-
-当 $d = 0.02\ \mathrm{m}$ 时，$r_F = 2 \times 0.04^2 / 0.10 = 0.032\ \mathrm{m}$（远小于 $0.40\ \mathrm{m}$）；精确程差为 $(\sqrt{0.1604} - 0.40)\ \mathrm{m}$（约 $0.4997\ \mathrm{mm}$），二阶近似为 $0.5000\ \mathrm{mm}$。
-
-<a id="e15-05"></a>
-
-#### E15-05：三麦正横距离气泡闭式权重、WNG 与同向远场抑制比
-
-**题目**：承接 [E15-04](#e15-04) 参数（$f = 3430\ \mathrm{Hz}$、$r_1 = 0.40\ \mathrm{m}$），利用式(15-15)～(15-17)手算 $d = 0.10\ \mathrm{m}$ 与 $d = 0.02\ \mathrm{m}$ 两种孔径下的外侧滞后相位 $\phi_1$、白噪声增益 $\mathrm{WNG}$（dB）以及对同方向 $r_2 = 4.00\ \mathrm{m}$ 干扰源的功率抑制比。
-
-**解答**：当 $d = 0.10\ \mathrm{m}$ 时，$\phi_1 \approx -44.32^\circ$（由 $-360^\circ \times 0.12311$ 算得），代入式(15-17)得 $\mathrm{WNG} = \frac{8}{3}\sin^2(-22.159^\circ)$（约为 $0.37937$，即 $-4.21\ \mathrm{dB}$）；在 $r_2 = 4.00\ \mathrm{m}$ 处 $\phi_2 \approx -4.499^\circ$，代入式(15-16)得功率比 $\sin^2(-2.250^\circ)/\sin^2(-22.159^\circ)$（约为 $0.01083$），即抑制比 $19.65\ \mathrm{dB}$。
-
-当 $d = 0.02\ \mathrm{m}$ 时，$\phi_1 \approx -1.799^\circ$，$\mathrm{WNG} = \frac{8}{3}\sin^2(-0.899^\circ)$（约为 $6.571 \times 10^{-4}$，即 $-31.82\ \mathrm{dB}$，恶化 $27.61\ \mathrm{dB}$），对 $4\ \mathrm{m}$ 理想功率抑制比为 $19.99\ \mathrm{dB}$，但传感器热噪声已被放大逾千倍而无法实用。
-
-<a id="e15-06"></a>
-
-#### E15-06：纯相位导向模型与球面扩散衰减模型下的距离气泡失配分析
+#### E15-04：纯相位导向模型与球面扩散衰减模型下的距离气泡失配分析
 
 **题目**：在 $d = 0.10\ \mathrm{m}$、$r_1 = 0.40\ \mathrm{m}$、$f = 3430\ \mathrm{Hz}$ 下，真实自由场球面波在外侧阵元除相位滞后外还伴有式(15-11)的幅度衰减因子 $\rho = r_1 / \sqrt{r_1^2 + d^2}$。（1）计算 $\rho$ 的数值；（2）若波束形成器仍使用纯相位模型算出的式(15-15)权重去接收含 $\rho$ 衰减的真实近场波，目标功率增益偏离 $0\ \mathrm{dB}$ 多少？对无穷远平面波的零陷是否受影响？
 
-**解答**：（1）外侧幅度比为 $\rho = 4 / \sqrt{17} \approx 0.97014$（比中心阵元仅低 $0.26\ \mathrm{dB}$）。
+**参考答案**：（1）外侧幅度比为 $\rho = 4 / \sqrt{17} \approx 0.97014$（比中心阵元仅低 $0.26\ \mathrm{dB}$）。
 
 （2）真实含衰减目标导向矢量为 $[\rho u_1, 1, \rho u_1]^\top$（其中 $u_1 = e^{\mathrm{j}\phi_1}$），代入纯相位权重式(15-15)得复响应分子 $\rho u_1 - 1$ 与分母 $u_1 - 1$ 之比，模平方为 $0.9717$（仅偏离 $-0.125\ \mathrm{dB}$）。由于纯相位权重仍满足 $w_{-1} + w_0 + w_{+1} = 0$，它对无穷远平面波 $[1, 1, 1]^\top$ 的零陷依然精确等于 $0$；若在设计端直接按含衰减模型重解式(15-14)，匹配 $\mathrm{WNG}$ 为 $-4.33\ \mathrm{dB}$，$4\ \mathrm{m}$ 抑制比为 $19.53\ \mathrm{dB}$。
 
-<a id="e15-07"></a>
+<a id="e15-05"></a>
 
-#### E15-07：小孔径病态距离气泡的 Tikhonov 正则化权衡
+#### E15-05：小孔径病态距离气泡的 Tikhonov 正则化权衡
 
 **题目**：对 $d = 0.02\ \mathrm{m}$、$r_1 = 0.40\ \mathrm{m}$、$f = 3430\ \mathrm{Hz}$ 的病态距离气泡，按式(15-18)依次代入正则参数 $\delta \in \{0, 10^{-4}, 5\times 10^{-4}\}$ 与 $\delta = 2\times 10^{-3}$，观察权重范数 $\|\vec w\|_2$、近场目标功率增益 $|B(r_1)|^2$ 与 $4.0\ \mathrm{m}$ 干扰残留功率 $|B(r_2)|^2$ 的变化趋势并总结物理规律。
 
-**解答**：当 $\delta = 0$ 时，$\|\vec w\|_2 \approx 39.01$，$|B(r_1)|^2 = 1.000$，$|B(r_2)|^2 \approx 0.0100$；当 $\delta$ 增至 $10^{-4}, 5\times 10^{-4}, 2\times 10^{-3}$ 时，权重范数迅速回落至 $29.91, 15.47, 5.51$，但近场目标功率增益同步跌至 $0.780, 0.488, 0.325$，同时 $4.0\ \mathrm{m}$ 干扰残留功率从 $0.010$ 升至 $0.037, 0.117, 0.197$。
+**参考答案**：当 $\delta = 0$ 时，$\|\vec w\|_2 \approx 39.01$，$|B(r_1)|^2 = 1.000$，$|B(r_2)|^2 \approx 0.0100$；当 $\delta$ 增至 $10^{-4}, 5\times 10^{-4}, 2\times 10^{-3}$ 时，权重范数迅速回落至 $29.91, 15.47, 5.51$，但近场目标功率增益同步跌至 $0.780, 0.488, 0.325$，同时 $4.0\ \mathrm{m}$ 干扰残留功率从 $0.010$ 升至 $0.037, 0.117, 0.197$。
 
-当两约束列向量夹角仅约 $1.8^\circ$ 时，线性正则化只能在“底噪放大”与“目标衰减加干扰漏入”之间折中，无法突破小孔径物理自由度不足的限制。
+当外侧阵元曲率相位滞后仅约 $1.80^\circ$、两约束列向量 $\vec a_1$ 与 $\vec a_\infty$ 之间的埃尔米特夹角 $\theta_H = \arccos(|\vec a_\infty^H\vec a_1|/3) = \arcsin\!\bigl(\frac{2\sqrt{2}}{3}|\sin(\phi_1/2)|\bigr)$ 缩窄至仅约 $0.85^\circ$（精确值 $0.8480^\circ$）时，线性正则化只能在“底噪放大”与“目标衰减加干扰漏入”之间折中，无法突破小孔径物理自由度不足的限制。
 
-<a id="e15-08"></a>
+<a id="e15-06"></a>
 
-#### E15-08：六帧重叠会议的 DER 分解与标签置换不变性核验
+#### E15-06：六帧重叠会议的 DER 分解与标签置换不变性核验
 
 **题目**：对 §15.5 锚点算例的六帧参考活动矩阵 $\mathbf R$（两行依次为 $[1, 1, 1, 1, 0, 0]$ 与 $[0, 0, 1, 1, 1, 0]$，$\Delta T = 0.5\ \mathrm{s}$）及双簇预测假设 $\mathbf H$（两行依次为 $[1, 1, 1, 0, 1, 0]$ 与 $[0, 0, 0, 1, 0, 1]$），手算 $2 \times 2$ 共现矩阵 $\mathbf M = \mathbf R\mathbf H^\top$、最优排列、漏检时长、虚警时长、说话人混淆时长与总 $\mathrm{DER}$；再把 $\mathbf H$ 上下两行对调，验证结果是否完全不变。
 
-**解答**：矩阵乘法得共现矩阵 $\mathbf M$ 第 1 行为 $[3, 1]$、第 2 行为 $[1, 1]$：恒等排列 $\pi = (0, 1)$ 命中帧数为 $3 + 1 = 4$，交换排列 $\pi = (1, 0)$ 命中帧数为 $1 + 1 = 2$，故最优排列为 $\pi^\star = (0, 1)$。
+**参考答案**：矩阵乘法得共现矩阵 $\mathbf M = \mathbf R\mathbf H^\top$ 第 1 行为 $[3, 1]$、第 2 行为 $[2, 1]$（第 2 行第 1 列来自帧 $t = 2$ 与 $t = 4$ 两次共现）：恒等排列 $\pi = (0, 1)$ 命中帧数为 $3 + 1 = 4$，交换排列 $\pi = (1, 0)$ 命中帧数为 $1 + 2 = 3$，故最优排列为 $\pi^\star = (0, 1)$。
 
 逐帧核对 $t = 0\ldots 5$：帧 $2, 3$ 各漏检 $1$ 人（共 $2$ 帧 $= 1.0\ \mathrm{s}$），帧 $5$ 静音处虚警 $1$ 人（$0.5\ \mathrm{s}$），帧 $4$ 真值为说话人 2 而预测为第 1 预测簇（混淆 $1$ 帧 $= 0.5\ \mathrm{s}$）。分母 $T_{\mathrm{ref}} = 7 \times 0.5 = 3.5\ \mathrm{s}$，故 $\mathrm{DER} = 2.0 / 3.5 = 4/7 \approx 57.14\%$；将 $\mathbf H$ 两行对调后最优排列自动翻转为 $(1, 0)$，四项输出完全不变。
 
-<a id="e15-09"></a>
+<a id="e15-07"></a>
 
-#### E15-09：硬单标签聚类在多人重叠帧上的最低 DER 下界算例
+#### E15-07：硬单标签聚类在多人重叠帧上的最低 DER 下界算例
 
 **题目**：若一段 $10\ \mathrm{s}$ 会议录音由 $5\ \mathrm{s}$ 单人独白、$3\ \mathrm{s}$ 双人同时说话和 $2\ \mathrm{s}$ 三人同时说话组成，求参考说话人总时长 $T_{\mathrm{ref}}$ 以及任意硬单标签聚类系统在该录音上所能达到的理论最低 $\mathrm{DER}_{\min}^{\mathrm{single}}$，并用代码核验 §15.5 六帧会议算例的下界。
 
-**解答**：参考总说话人时长为 $T_{\mathrm{ref}} = 5 + 6 + 6 = 17\ \mathrm{s}$。硬单标签系统在每个时刻至多输出 $1$ 个标签，因此在 $3\ \mathrm{s}$ 双讲段必漏 $3 \times (2 - 1) = 3\ \mathrm{s}$，在 $2\ \mathrm{s}$ 三人重叠段必漏 $2 \times (3 - 1) = 4\ \mathrm{s}$，合计至少漏检 $7\ \mathrm{s}$，理论最低误差率为 $\mathrm{DER}_{\min}^{\mathrm{single}} = 7 / 17$（约 $41.18\%$）。
+**参考答案**：参考总说话人时长为 $T_{\mathrm{ref}} = 5 + 6 + 6 = 17\ \mathrm{s}$。硬单标签系统在每个时刻至多输出 $1$ 个标签，因此在 $3\ \mathrm{s}$ 双讲段必漏 $3 \times (2 - 1) = 3\ \mathrm{s}$，在 $2\ \mathrm{s}$ 三人重叠段必漏 $2 \times (3 - 1) = 4\ \mathrm{s}$，合计至少漏检 $7\ \mathrm{s}$，理论最低误差率为 $\mathrm{DER}_{\min}^{\mathrm{single}} = 7 / 17$（约 $41.18\%$）。
 
 在 §15.5 六帧算例上，代码求得重叠帧数 $2$、最少漏检 $1.0\ \mathrm{s}$、下界 $2/7 \approx 28.57\%$，与理想单标签输出一致。
 
-<a id="e15-10"></a>
+<a id="e15-08"></a>
 
-#### E15-10：虚警与漏检叠加导致合法 DER 超过 100% 的构造算例
+#### E15-08：虚警与漏检叠加导致合法 DER 超过 100% 的构造算例
 
-**题目**：在 [E15-08](#e15-08) 的六帧参考矩阵 $\mathbf R$（$T_{\mathrm{ref}} = 3.5\ \mathrm{s}$）下，给定三轨道预测矩阵 $\mathbf H$，三行依次为 $[0, 0, 0, 0, 1, 1]$、$[0, 0, 1, 0, 1, 1]$ 与 $[1, 1, 0, 0, 1, 1]$。完整手算补零后的 $3 \times 3$ 最优排列、三项误差秒数与真实 $\mathrm{DER}$，说明为何评测脚本严禁将 $\mathrm{DER}$ 截断到 $100\%$。
+**题目**：在 [E15-06](#e15-06) 的六帧参考矩阵 $\mathbf R$（$T_{\mathrm{ref}} = 3.5\ \mathrm{s}$）下，给定三轨道预测矩阵 $\mathbf H$，三行依次为 $[0, 0, 0, 0, 1, 1]$、$[0, 0, 1, 0, 1, 1]$ 与 $[1, 1, 0, 0, 1, 1]$。完整手算补零后的 $3 \times 3$ 最优排列、三项误差秒数与真实 $\mathrm{DER}$，说明为何评测脚本严禁将 $\mathrm{DER}$ 截断到 $100\%$。
 
-**解答**：将 $\mathbf R$ 补第 3 行全零后算 $3 \times 3$ 共现矩阵 $\mathbf M$（第 1 行 $[0, 1, 2]$、第 2 行 $[1, 2, 0]$、第 3 行全 $0$），最优排列 $\pi^\star = (2, 1, 0)$ 共命中 $2 + 2 + 0 = 4$ 帧。逐帧统计 $N_{\mathrm{ref}}(t) = [1, 1, 2, 2, 1, 0]$ 与 $N_{\mathrm{hyp}}(t) = [1, 1, 1, 0, 3, 3]$：帧 $2, 3$ 合计漏检 $3$ 帧（$1.5\ \mathrm{s}$），帧 $4, 5$ 合计虚警 $5$ 帧（$2.5\ \mathrm{s}$），所有帧上 $\min(N_{\mathrm{ref}}, N_{\mathrm{hyp}})$ 与命中序列相等故混淆为 $0\ \mathrm{s}$。
+**参考答案**：将 $\mathbf R$ 补第 3 行全零后算 $3 \times 3$ 共现矩阵 $\mathbf M_3 = \mathbf R_3\mathbf H_3^\top$（第 1 行 $[0, 1, 2]$、第 2 行 $[1, 2, 1]$，其中 $M_{2,3} = r_{2,4}h_{3,4} = 1$；第 3 行全 $0$），最优排列 $\pi^\star = (2, 1, 0)$ 共命中 $2 + 2 + 0 = 4$ 帧。逐帧统计 $N_{\mathrm{ref}}(t) = [1, 1, 2, 2, 1, 0]$ 与 $N_{\mathrm{hyp}}(t) = [1, 1, 1, 0, 3, 3]$：帧 $2, 3$ 合计漏检 $3$ 帧（$1.5\ \mathrm{s}$），帧 $4, 5$ 合计虚警 $5$ 帧（$2.5\ \mathrm{s}$），所有帧上 $\min(N_{\mathrm{ref}}, N_{\mathrm{hyp}})$ 与命中序列相等故混淆为 $0\ \mathrm{s}$。
 
 总误差时长为 $4.0\ \mathrm{s}$，$\mathrm{DER} = 4.0 / 3.5 = 8/7 \approx 114.29\%$。若人为截断为 $100\%$，就会掩盖多生成一条全静音虚警轨道与两条轨道之间的真实误差差异。
 
-<a id="e15-11"></a>
+<a id="e15-09"></a>
 
-#### E15-11：空间相位差与声纹相似度的 TS-VAD 对数几率贝叶斯融合
+#### E15-09：空间相位差与声纹相似度的 TS-VAD 对数几率贝叶斯融合
 
 **题目**：设先验 $\pi_k = 0.5$，融合参数取 $\kappa_{\mathrm{sp}} = 3.0$、$\tau_{\mathrm{sp}} = 0.25$、$\kappa_{\mathrm{emb}} = 4.0$、$\tau_{\mathrm{emb}} = 0.45$。在第 $3$ 帧双讲重叠处，测得说话人 1 的空间与声纹余弦分别为 $(0.80, 0.47)$，说话人 2 分别为 $(0.81, 0.49)$。手算仅用声纹（$\kappa_{\mathrm{sp}} = 0$）与空谱联合两种模式下的后验概率，并解释为何两位说话人后验之和可以大于 $1$。
 
-**解答**：先验项 $\ln(0.5 / 0.5) = 0$。仅用声纹时：$\eta_1 = 4.0 \times (0.47 - 0.45) = 0.08$（$\gamma_1 \approx 0.520$），$\eta_2 = 4.0 \times (0.49 - 0.45) = 0.16$（$\gamma_2 \approx 0.540$），均接近随机猜测。
+**参考答案**：先验项 $\ln(0.5 / 0.5) = 0$。仅用声纹时：$\eta_1 = 4.0 \times (0.47 - 0.45) = 0.08$（$\gamma_1 \approx 0.520$），$\eta_2 = 4.0 \times (0.49 - 0.45) = 0.16$（$\gamma_2 \approx 0.540$），均接近随机猜测。
 
 引入空间相位差后：$\eta_1 = 3.0 \times 0.55 + 0.08 = 1.73$，得 $\gamma_1 = (1 + e^{-1.73})^{-1} \approx 0.849$；$\eta_2 = 3.0 \times 0.56 + 0.16 = 1.84$，得 $\gamma_2 = (1 + e^{-1.84})^{-1} \approx 0.863$。由于 TS-VAD 将每位说话人的发声状态建模为独立二元随机变量而非互斥单选分类，$\gamma_1 + \gamma_2 \approx 1.712 > 1$ 准确反映了两人此刻同时发声。
 
-<a id="e15-12"></a>
+<a id="e15-10"></a>
 
-#### E15-12：由 TS-VAD 软后验构造 GSS 排他掩码并驱动 MVDR 波束
+#### E15-10：由 TS-VAD 软后验构造 GSS 排他掩码并驱动 MVDR 波束
 
-**题目**：承接 [E15-11](#e15-11) 求出的重叠帧后验 $(\gamma_1, \gamma_2) = (0.849, 0.863)$，对比直接用原始 $\gamma_1$ 估计目标协方差与用式(15-25)排他掩码 $m_1^{\mathrm{tar}} = \gamma_1(1 - \gamma_2)$ 估计目标协方差的物理差异，并核对配套双麦 MVDR 仿真中两者的干扰方向残留增益差。
+**题目**：承接 [E15-09](#e15-09) 求出的重叠帧后验 $(\gamma_1, \gamma_2) = (0.849, 0.863)$，对比直接用原始 $\gamma_1$ 估计目标协方差与用式(15-25)排他掩码 $m_1^{\mathrm{tar}} = \gamma_1(1 - \gamma_2)$ 估计目标协方差的物理差异，核对配套双麦 MVDR 仿真中两者的干扰方向残留增益差，并说明为何该高信噪比教学算例中未显式扣除 $\hat{\mathbf R}_{nn}$ 的通带偏差极小而在低信噪比实录中不可忽略。
 
-**解答**：在该双讲重叠帧上，原始 $\gamma_1 = 0.849$ 会把同时在场的说话人 2 能量按 $0.849$ 的高权重掺入目标空间协方差 $\hat{\mathbf R}_{ss}^{(1)}$，导致 Souden MVDR 误把干扰方向也当作需要保护的目标子空间；而式(15-25)算出的排他权重降至 $m_1^{\mathrm{tar}} = 0.849 \times 0.137 \approx 0.116$，显著抑制了重叠污染。
+**参考答案**：在该双讲重叠帧上，原始 $\gamma_1 = 0.849$ 会把同时在场的说话人 2 能量按 $0.849$ 的高权重掺入目标空间协方差 $\hat{\mathbf R}_{ss}^{(1)}$，导致 Souden MVDR 误把干扰方向也当作需要保护的目标子空间；而式(15-25)算出的排他权重降至 $m_1^{\mathrm{tar}} = 0.849 \times 0.137 \approx 0.116$，显著抑制了重叠污染。
 
-在配套 60 子帧双麦窄带实验中，采用排他掩码的 GSS-MVDR 对说话人 2 方向功率增益压低至约 $-30.5\ \mathrm{dB}$，而未做排他门控的朴素掩码仅压至约 $-19.2\ \mathrm{dB}$，干扰抑制比进一步提升约 $11.3\ \mathrm{dB}$。
+在配套 60 子帧双麦窄带实验中，采用排他掩码的 GSS-MVDR 对说话人 2 方向功率增益压低至约 $-30.5\ \mathrm{dB}$，而未做排他门控的朴素掩码仅压至约 $-19.2\ \mathrm{dB}$，干扰抑制比进一步提升约 $11.3\ \mathrm{dB}$。同时应注意边界条件：本 60 子帧教学算例的底噪幅值为 $0.05$（相对幅值 $1.0$ 的目标对应 $+26\ \mathrm{dB}$ 高环境信噪比，$\rho = 400$），未扣底噪的增益收缩因子 $(M\rho + 1)/(M\rho + M) = 801/802 \approx 0.9988$（仅 $-0.01\ \mathrm{dB}$），因而几乎被掩盖；但在 $0\ \mathrm{dB}$ 强背景噪声房间中，必须按式(15-26)扣除静音底噪 $\hat{\mathbf R}_{nn}$ 并做半正定投影或秩一 GEVD 提纯，否则会带来约 $-3$～$-4\ \mathrm{dB}$ 目标通带衰减。
 
-<a id="e15-13"></a>
+<a id="e15-11"></a>
 
-#### E15-13：16 kHz STFT 音频帧与 25 fps 视频曝光中心的异构对齐规律
+#### E15-11：摄像头管线正滞后对词首辅音段的能量截断定量计算
 
-**题目**：音频帧移 $H_{\mathrm{a}} = 16\ \mathrm{ms}$、视频帧率 $f_{\mathrm{v}} = 25\ \mathrm{fps}$（$T_{\mathrm{v}} = 40\ \mathrm{ms}$）、零管线滞后（$\Delta t_{\mathrm{av}} = 0$）。写出前 $15$ 个音频帧（$\ell = 0, \ldots, 14$，覆盖 $0$～$240\ \mathrm{ms}$）按式(15-28)映射到的视频帧序列，并统计第 $m = 0, \ldots, 5$ 号视频曝光帧各自关联了多少个音频帧。
+**题目**：在 §15.6 锚点手算算例 15-4 的帧率设定（$H_{\mathrm{a}} = 16\ \mathrm{ms}$、$f_{\mathrm{v}} = 25\ \mathrm{fps}$、$T_{\mathrm{v}} = 40\ \mathrm{ms}$）下，说话人于第 $\ell_0 = 10$ 帧（$t_{\mathrm{onset}} = 160\ \mathrm{ms}$）开口发出持续 $L_{\mathrm{cons}} = 8$ 帧（$128\ \mathrm{ms}$）的词首清擦音。按式(15-28)～(15-29)分别手算相机管线滞后 $\Delta t_{\mathrm{av}}$ 取 $0, 40, 80, 120\ \mathrm{ms}$ 时被闭嘴旧视频帧截断的音频帧数与损失百分比。
 
-**解答**：音频中心时刻为 $(16\ell + 8)\ \mathrm{ms}$，除以 $40\ \mathrm{ms}$ 取下整得前 $15$ 帧对应的视频索引序列为 $[0, 0, 1, 1, 1, 2, 2, 3, 3, 3, 4, 4, 5, 5, 5]$。统计 $m = 0, \ldots, 5$ 各自关联的音频帧计数依次为 $[2, 3, 2, 3, 2, 3]$，算术平均恰为 $2.5$ 音频帧/视频帧。
-
-<a id="e15-14"></a>
-
-#### E15-14：摄像头管线正滞后对词首辅音段的能量截断定量计算
-
-**题目**：在 [E15-13](#e15-13) 的帧率设定下，说话人于第 $\ell_0 = 10$ 帧（$t_{\mathrm{onset}} = 160\ \mathrm{ms}$）开口发出持续 $L_{\mathrm{cons}} = 8$ 帧（$128\ \mathrm{ms}$）的词首清擦音。按式(15-28)～(15-29)分别手算相机管线滞后 $\Delta t_{\mathrm{av}}$ 取 $0, 40, 80, 120\ \mathrm{ms}$ 时被闭嘴旧视频帧截断的音频帧数与损失百分比。
-
-**解答**：词首辅音覆盖 $\ell = 10, \ldots, 17$，中心时刻依次为 $168, 184, 200, 216, 232, 248, 264, 280\ \mathrm{ms}$。闭嘴旧视频帧为 $m \le 3$（曝光中心不高于 $140\ \mathrm{ms}$），即凡查询时刻 $t_{\mathrm{a}}[\ell] - \Delta t_{\mathrm{av}}$ 小于 $160\ \mathrm{ms}$ 的帧均被截断。
+**参考答案**：词首辅音覆盖 $\ell = 10, \ldots, 17$，中心时刻依次为 $168, 184, 200, 216, 232, 248, 264, 280\ \mathrm{ms}$。闭嘴旧视频帧为 $m \le 3$（曝光中心不高于 $140\ \mathrm{ms}$），即凡查询时刻 $t_{\mathrm{a}}[\ell] - \Delta t_{\mathrm{av}}$ 小于 $160\ \mathrm{ms}$ 的帧均被截断。
 
 逐档代入得：$\Delta t_{\mathrm{av}} = 0\ \mathrm{ms}$ 时 $0$ 帧被截（$0\%$）；$\Delta t_{\mathrm{av}} = 40\ \mathrm{ms}$ 时 $\ell = 10, 11$ 共 $2$ 帧被截（$25.0\%$）；$\Delta t_{\mathrm{av}} = 80\ \mathrm{ms}$ 时 $\ell = 10\ldots 14$ 共 $5$ 帧被截（$62.5\%$）；$\Delta t_{\mathrm{av}} = 120\ \mathrm{ms}$ 时 $\ell = 10\ldots 16$ 共 $7$ 帧被截（$87.5\%$，损失 $112\ \mathrm{ms}$）。
 
-<a id="e15-15"></a>
+<a id="e15-12"></a>
 
-#### E15-15：唇部遮挡下基于视觉置信度的视听掩码平滑回退
-
-**题目**：目标持续发声期间（理想掩码为 $1.0$），纯音频分支输出恒定为 $M_{\mathrm{audio}} = 0.82$；视听联合分支在“正脸清晰、侧脸转头、手部挡嘴”三阶段依次输出 $M_{\mathrm{av}} = [0.96, 0.65, 0.05]$，人脸关键点模块同步给出视觉置信度 $\alpha = [0.90, 0.40, 0.05]$。求式(15-30)三阶段融合掩码，并对比挡嘴阶段有无置信度门控时的绝对掩码误差。
-
-**解答**：按式(15-30)凸组合计算：正脸期 $0.10 \times 0.82 + 0.90 \times 0.96 = 0.946$，转头期 $0.60 \times 0.82 + 0.40 \times 0.65 = 0.752$，挡嘴期 $0.95 \times 0.82 + 0.05 \times 0.05 = 0.7815$。
-
-在挡嘴阶段，未门控视听掩码相对真值 $1.0$ 的绝对误差达 $|1.0 - 0.05| = 0.95$，而置信度门控回退后绝对误差降为 $|1.0 - 0.7815| = 0.2185$。
-
-<a id="e15-16"></a>
-
-#### E15-16：二抽头因果实滤波器实现正横距离气泡及三层误差核验
+#### E15-12：二抽头因果实滤波器实现正横距离气泡及三层误差核验
 
 **题目**：针对 §15.8 的合成音频参数（$f_s = 16\ \mathrm{kHz}$、$f_{\mathrm{tar}} = 3200\ \mathrm{Hz}$、$f_{\mathrm{int}} = 2500\ \mathrm{Hz}$、$r_1 = 0.40\ \mathrm{m}$、$r_2 = 4.00\ \mathrm{m}$，通道零基下标 $m \in \{0, 1, 2\}$）：（1）证明由式(15-31)构造的三通道二抽头实系数满足 $\sum_{m=0}^2 h_m[0] = 0$ 且 $\sum_{m=0}^2 h_m[1] = 0$；（2）读取远场 DSB、$10\ \mathrm{cm}$ 距离气泡与 $2\ \mathrm{cm}$ 小孔径气泡在解析层、双精度浮点层与 PCM16 整型层的稳窗归一化均方误差并说明三者关系。
 
-**解答**：（1）正横平面波零陷约束 $\vec w^H [1, 1, 1]^\top = 0$ 意味着 $\sum_{m=0}^2 w_m = 0$（对应 §15.3 对称下标的 $w_{-1} + w_0 + w_{+1} = 0$），即实部和 $\sum_{m=0}^2 \operatorname{Re}(w_m) = 0$ 且虚部和 $\sum_{m=0}^2 \operatorname{Im}(w_m) = 0$。对式(15-31)第一式求和立得 $\sum_{m=0}^2 h_m[1] = 0$，再对第二式求和立得 $\sum_{m=0}^2 h_m[0] = 0$，故正横任意频率平面波输入 $x_0[n] = x_1[n] = x_2[n] = p[n]$ 代入式(15-32)恒得 $y[n] \equiv 0$。
+**参考答案**：（1）正横平面波零陷约束 $\vec w^H [1, 1, 1]^\top = 0$ 意味着 $\sum_{m=0}^2 w_m = 0$（对应 §15.3 对称下标的 $w_{-1} + w_0 + w_{+1} = 0$），即实部和 $\sum_{m=0}^2 \operatorname{Re}(w_m) = 0$ 且虚部和 $\sum_{m=0}^2 \operatorname{Im}(w_m) = 0$。对式(15-31)第一式求和立得 $\sum_{m=0}^2 h_m[1] = 0$，再对第二式求和立得 $\sum_{m=0}^2 h_m[0] = 0$，故正横任意频率平面波输入 $x_0[n] = x_1[n] = x_2[n] = p[n]$ 代入式(15-32)恒得 $y[n] \equiv 0$。
 
-（2）三层稳窗归一化均方误差彼此吻合：远场 DSB 在解析/浮点层为 $1.2227$、PCM16 整型层为 $1.2226$（同向干扰残留）；$10\ \mathrm{cm}$ 距离气泡在三层均降至 $0.0246$（压除逾 $97.5\%$ 干扰能量）；$2\ \mathrm{cm}$ 正则小孔径气泡在解析/浮点层为 $2.2762$、PCM16 整型层为 $2.2760$（目标衰减叠加传感器底噪放大），浮点层与 PCM16 整型层之间约 $1\text{～}2 \times 10^{-4}$ 的尾差来自 16 位定点量化舍入。
+（2）三层稳窗归一化均方误差彼此吻合：远场 DSB 在解析/浮点层为 $1.2227$、PCM16 整型层为 $1.2226$（同向干扰残留）；$10\ \mathrm{cm}$ 距离气泡在三层均降至 $0.0246$（总残余误差能量——含干扰泄漏与放大后的传感器底噪——降至目标功率的 $2.46\%$，其中同向 $4\ \mathrm{m}$ 干扰能量被压除 $99.33\%$ 即 $21.72\ \mathrm{dB}$，其余残差主要由传感器底噪贡献）；$2\ \mathrm{cm}$ 正则小孔径气泡在解析/浮点层为 $2.2762$、PCM16 整型层为 $2.2760$（目标衰减叠加传感器底噪放大），浮点层与 PCM16 整型层之间约 $1\text{～}2 \times 10^{-4}$ 的尾差来自 16 位定点量化舍入。
 
-<a id="e15-17"></a>
+<a id="e15-13"></a>
 
-#### E15-17：EEND-EDA 吸引子存在性门控与固定槽位误差下界
+#### E15-13：EEND-EDA 吸引子存在性门控与固定槽位误差下界
 
 **题目**：给定 $D = 3$ 维帧特征矩阵 $\mathbf E \in \mathbb{R}^{3 \times T}$，序列吸引子模块依次解码候选说话人向量 $\vec a_s \in \mathbb{R}^3$（$s = 1, 2, \ldots$），由线性存在头 $\vec w_{\mathrm{exist}} = [1, 1, 1]^\top$、偏置 $b = -1.0$ 与门限 $\tau_{\mathrm{exist}} = 0.5$ 计算存在概率 $p_s$，保留首个跌破 $0.5$ 之前的 $\hat S$ 个吸引子拼成 $\mathbf A = [\vec a_1, \ldots, \vec a_{\hat S}]$ 并输出多标签活动后验：
 
@@ -789,13 +800,13 @@ p_s&=\sigma\bigl(\vec w_{\mathrm{exist}}^\top\vec a_s+b\bigr),\\
 
 求：（1）当双人场景输出候选吸引子 $\vec a_1 = [2, 0, 0]^\top$、$\vec a_2 = [0, 2, 0]^\top$、$\vec a_3 = [0.1, 0.1, 0]^\top$ 时，复算 $p_1, p_2, p_3$ 及停止人数 $\hat S$；（2）当会议切入三人场景（$T = 4$ 帧、每帧 $0.5\ \mathrm{s}$），真值活动矩阵 $\mathbf R_{\mathrm{3spk}}$ 三行依次为 $[1, 1, 1, 0]$、$[0, 1, 1, 0]$ 与 $[0, 0, 1, 1]$，帧嵌入矩阵 $\mathbf E$ 三行依次为 $[2, 2, 2, -2]$、$[-2, 2, 2, -2]$ 与 $[-2, -2, 2, 2]$，候选吸引子为 $\vec a_1 = [2, 0, 0]^\top$、$\vec a_2 = [0, 2, 0]^\top$、$\vec a_3 = [0, 0, 2]^\top$、$\vec a_4 = [0.1, 0.1, 0.1]^\top$ 时，对比 EEND-EDA 的 $\mathrm{DER}$ 与任意固定双槽（$K_{\mathrm{fixed}} = 2$）PIT 模型的理论最低 $\mathrm{DER}$ 下界。
 
-**解答**：（1）双人场景下三个候选吸引子的存在对数几率依次为 $2 - 1 = +1.0$、$2 - 1 = +1.0$ 与 $0.2 - 1 = -0.8$，故 $p_1 = p_2 = \sigma(1.0) \approx 0.731059 \ge 0.5$，而第 3 个吸引子 $p_3 = \sigma(-0.8) \approx 0.310026 < 0.5$，解码器准确在 $\hat S = 2$ 处停止。
+**参考答案**：（1）双人场景下三个候选吸引子的存在对数几率依次为 $2 - 1 = +1.0$、$2 - 1 = +1.0$ 与 $0.2 - 1 = -0.8$，故 $p_1 = p_2 = \sigma(1.0) \approx 0.731059 \ge 0.5$，而第 3 个吸引子 $p_3 = \sigma(-0.8) \approx 0.310026 < 0.5$，解码器准确在 $\hat S = 2$ 处停止。
 
 （2）三人场景下总参考说话人帧数为 $3 + 2 + 2 = 7$ 帧（$T_{\mathrm{ref}} = 3.5\ \mathrm{s}$，其中第 $2$ 帧为三人同时重叠）。EEND-EDA 对前三个正交吸引子均给出 $p_{1,2,3} \approx 0.731059 \ge 0.5$，在第 4 个候选处对数几率为 $0.3 - 1.0 = -0.7$，因 $p_4 = \sigma(-0.7) \approx 0.331812 < 0.5$ 自动停在 $\hat S = 3$；内积矩阵 $\mathbf A^\top\mathbf E$ 在发声格点全为 $+4$（后验 $\sigma(4) \approx 0.982014$）、沉默格点全为 $-4$（后验 $\sigma(-4) \approx 0.017986$），按 $0.5$ 二值化后与 $\mathbf R_{\mathrm{3spk}}$ 完全一致，实现 $\mathrm{DER}_{\mathrm{EDA}} = 0 / 7 = 0.00\%$。反之，任何固定双槽（$K_{\mathrm{fixed}} = 2$）模型在 $1$-对-$1$ 最优匹配下至多匹配两位活跃说话人，至少漏掉发言最少的一位说话人（$2$ 帧 $= 1.0\ \mathrm{s}$），故即便拥有理想双槽掩码，其最低误差率仍受限于 $2 / 7 \approx 28.57\%$（见 `eend_enrollment_robustness.py`）。
 
-<a id="e15-18"></a>
+<a id="e15-14"></a>
 
-#### E15-18：条件目标提取中的注册声纹串音污染与排他门控
+#### E15-14：条件目标提取中的注册声纹串音污染与排他门控
 
 **题目**：设目标说话人与干扰说话人的干净单位声纹嵌入分别为 $\|\vec e_1\|_2 = 1$、$\|\vec e_2\|_2 = 1$，两者余弦内积为 $\rho_{12} = \vec e_1^\top\vec e_2 \in (-1, 1)$。若注册片段因邻座串音混入线性比例 $\alpha > 0$ 的干扰嵌入，归一化后形成受污染注册模板：
 
@@ -810,9 +821,19 @@ $$\begin{aligned}
 
 求：（1）取 $\alpha = 0.5$（即 $-6.02\ \mathrm{dB}$ 串音泄漏），分别在正交声纹（$\rho_{12} = 0$）与同性别近似声纹（$\rho_{12} = 0.3$）下，手算目标余弦保持率 $\vec e_{\mathrm{cont}}^\top\vec e_1$、干扰误匹配余弦 $\vec e_{\mathrm{cont}}^\top\vec e_2$，以及在余弦门控 $g_k = \sigma(8(\vec e^\top\vec e_k - 0.40))$ 下正交干扰门控开度膨胀了多少倍；（2）给定 $6$ 帧注册缓冲：前 $4$ 帧为目标独白（帧嵌入 $\vec e_1 = [1, 0, 0]^\top$，$\mathrm{SNR}_t = 20\ \mathrm{dB}$，日志后验 $\gamma_{1,t} = 0.95, \gamma_{2,t} = 0.04$），后 $2$ 帧为目标停顿期干扰插话（帧嵌入 $\vec e_2 = [0, 1, 0]^\top$，$\mathrm{SNR}_t = 15\ \mathrm{dB}$，$\gamma_{1,t} = 0.05, \gamma_{2,t} = 0.92$），对比仅靠能量门限（$\mathrm{SNR}_t \ge 10\ \mathrm{dB}$）池化与叠加式(15-25)排他门限（$m_{1,t}^{\mathrm{tar}} \ge 0.60$）池化所得的模板精度。
 
-**解答**：（1）记未归一化模长 $Z = \sqrt{1 + 2\alpha\rho_{12} + \alpha^2}$，将 $\vec e_{\mathrm{cont}}$ 与 $\vec e_2$ 做内积同理可得干扰余弦 $(\rho_{12} + \alpha) / Z$。当 $\alpha = 0.5$ 且 $\rho_{12} = 0$ 时，$Z = \sqrt{5}/2$，目标余弦从 $1.0$ 跌至 $2/\sqrt{5} \approx 0.894427$（角度漂移 $26.57^\circ$），干扰余弦从 $0$ 跃升至 $1/\sqrt{5} \approx 0.447214$；代入门控函数，干净模板对干扰的门控仅为 $\sigma(-3.2) \approx 0.039166$，受污染模板则升至 $\sigma(8(1/\sqrt{5} - 0.40)) \approx 0.593320$，干扰泄漏门控膨胀约 $15.15$ 倍！当同性别声纹存在基础相关 $\rho_{12} = 0.3$ 时，$Z = \sqrt{1.55}$，目标余弦保持为 $1.15 / \sqrt{1.55} \approx 0.923702$，干扰余弦却飙升至 $0.80 / \sqrt{1.55} \approx 0.642575$，极易在目标沉默段放行旁人语音。
+**参考答案**：（1）记未归一化模长 $Z = \sqrt{1 + 2\alpha\rho_{12} + \alpha^2}$，将 $\vec e_{\mathrm{cont}}$ 与 $\vec e_2$ 做内积同理可得干扰余弦 $(\rho_{12} + \alpha) / Z$。当 $\alpha = 0.5$ 且 $\rho_{12} = 0$ 时，$Z = \sqrt{5}/2$，目标余弦从 $1.0$ 跌至 $2/\sqrt{5} \approx 0.894427$（角度漂移 $26.57^\circ$），干扰余弦从 $0$ 跃升至 $1/\sqrt{5} \approx 0.447214$；代入门控函数，干净模板对干扰的门控仅为 $\sigma(-3.2) \approx 0.039166$，受污染模板则升至 $\sigma(8(1/\sqrt{5} - 0.40)) \approx 0.593320$，干扰泄漏门控膨胀约 $15.15$ 倍。当同性别声纹存在基础相关 $\rho_{12} = 0.3$ 时，$Z = \sqrt{1.55}$，目标余弦保持为 $1.15 / \sqrt{1.55} \approx 0.923702$，干扰余弦却飙升至 $0.80 / \sqrt{1.55} \approx 0.642575$，极易在目标沉默段放行旁人语音。
 
 （2）在 $6$ 帧注册缓冲中，全部 $6$ 帧均满足 $\mathrm{SNR}_t \ge 10\ \mathrm{dB}$，故纯能量 VAD 池化保留全部 $6$ 帧，算术均值 $\frac{1}{6}(4\vec e_1 + 2\vec e_2)$ 归一化后恰为 $[2/\sqrt{5}, 1/\sqrt{5}, 0]^\top$（重现 $\alpha = 0.5$ 串音污染）。引入式(15-25)排他概率 $m_{1,t}^{\mathrm{tar}} = \gamma_{1,t}(1 - \gamma_{2,t})$ 后，前 $4$ 帧排他概率为 $0.95 \times 0.96 = 0.912 \ge 0.60$，后 $2$ 帧串音处骤降至 $0.05 \times 0.08 = 0.004 < 0.60$ 被自动剔除，池化均值精确还原纯净目标模板 $\hat{\vec e} = [1, 0, 0]^\top$（目标余弦 $1.000000$，干扰余弦 $0.000000$，见 `gated_enrollment_pooling`）。
+
+### 15.11 原始资料与延伸阅读
+
+#### 条件提取、近场气泡、多说话人日志与视听前端核心文献
+
+1. **条件调制与声纹嵌入骨干**：Perez, E., Strub, F., de Vries, H., Dumoulin, V., & Courville, A. (2018), *FiLM: Visual Reasoning with a General Conditioning Layer*, AAAI 2018（[arXiv:1709.07871](https://arxiv.org/abs/1709.07871)）；Snyder, D., Garcia-Romero, D., Sell, G., Povey, D., & Khudanpur, S. (2018), *X-Vectors: Robust DNN Embeddings for Speaker Recognition*, ICASSP 2018, pp. 5329–5333（[DOI](https://doi.org/10.1109/ICASSP.2018.8461375)）；Desplanques, B., Thienpondt, J., & Demuynck, K. (2020), *ECAPA-TDNN: Emphasized Channel Attention, Propagation and Aggregation in TDNN Based Speaker Verification*, Interspeech 2020（[arXiv:2005.07143](https://arxiv.org/abs/2005.07143)）；Chen, S., et al. (2022), *WavLM: Large-Scale Self-Supervised Pre-Training for Full Stack Speech Processing*, *IEEE JSTSP*, 16(6), 1505–1518（[DOI](https://doi.org/10.1109/JSTSP.2022.3188113)）。
+2. **目标说话人提取、空间语义线索与沉默段防误触发**：Žmolíková, K., Delcroix, M., Ochiai, T., Kinoshita, K., Černocký, J., & Yu, D. (2023), *Neural Target Speech Extraction: An Overview*, *IEEE Signal Processing Magazine*, 40(3), 8–29（[DOI](https://doi.org/10.1109/MSP.2023.3240008)）；Žmolíková, K., et al. (2019), *SpeakerBeam: Speaker Aware Neural Network for Target Speaker Extraction in Speech Mixtures*, *IEEE JSTSP*, 13(4), 800–814（[DOI](https://doi.org/10.1109/JSTSP.2019.2922820)）；Wang, Q., et al. (2019), *VoiceFilter: Targeted Voice Separation by Speaker-Conditioned Spectrogram Masking*, Interspeech 2019（[arXiv:1810.04826](https://arxiv.org/abs/1810.04826)）；Delcroix, M., et al. (2020), *Improving Speaker Discrimination of Target Speech Extraction With Time-Domain SpeakerBeam*, ICASSP 2020（[DOI](https://doi.org/10.1109/ICASSP40776.2020.9054683)）；Ge, M., Xu, C., Wang, L., Chng, E. S., Dang, J., & Li, H. (2020), *SpEx+: A Complete Time Domain Speaker Extraction Network*, Interspeech 2020（[arXiv:2005.04686](https://arxiv.org/abs/2005.04686)）；Jenrungrot, T., Jayaram, V., Seitz, S. M., & Kemelmacher-Shlizerman, I. (2020), *The Cone of Silence: Speech Separation by Localization*, NeurIPS 2020（[arXiv:2010.06007](https://arxiv.org/abs/2010.06007)）；Borsdorf, M., Xu, C., Li, H., & Schultz, T. (2021), *Universal Speaker Extraction in the Presence and Absence of Target Speakers for Speech of One and Two Talkers*, Interspeech 2021, pp. 1469–1473（[DOI](https://doi.org/10.21437/Interspeech.2021-1939)）；Delcroix, M., et al. (2022), *Listen only to me! How well can target speech extraction handle false alarms?*, Interspeech 2022, pp. 216–220（[DOI](https://doi.org/10.21437/Interspeech.2022-11252)）；Veluri, B., Itani, M., Chan, J., Yoshioka, T., & Gollakota, S. (2023), *Semantic Hearing: Programming Acoustic Scenes with Binaural Hearables*, ACM UIST 2023（[DOI](https://doi.org/10.1145/3586183.3606779)）；Gu, R., & Luo, Y. (2024), *ReZero: Region-Customizable Sound Extraction*, *IEEE/ACM TASLP*, 32, 2576–2589（[DOI](https://doi.org/10.1109/TASLP.2024.3396567)）；Quan, C., & Li, X. (2024), *SpatialNet: Extensively Learning Spatial Information for Multichannel Joint Speech Separation, Denoising and Dereverberation*, *IEEE/ACM TASLP*, 32, 1310–1323（[DOI](https://doi.org/10.1109/TASLP.2023.3347517)）；Zeng, B., & Li, M. (2025), *USEF-TSE: Universal Speaker Embedding Free Target Speaker Extraction*, *IEEE TASLP*, 33, 2110–2124（[arXiv:2409.02615](https://arxiv.org/abs/2409.02615)）。
+3. **近场声学距离气泡与可穿戴近场增强**：Chen, T., et al. (2024), *Hearable devices with sound bubbles*, *Nature Electronics*, 7, 1047–1058（[DOI](https://doi.org/10.1038/s41928-024-01276-z)）；Chatterjee, I., et al. (2022), *ClearBuds: Wireless Binaural Earbuds for Learning-Based Speech Enhancement*, ACM MobiSys 2022（[DOI](https://doi.org/10.1145/3498361.3538933)）。
+4. **多标签说话人日志、流式扩展与 GSS**：Fujita, Y., et al. (2019), *End-to-End Neural Speaker Diarization with Self-Attention*, Interspeech 2019（[arXiv:1909.06247](https://arxiv.org/abs/1909.06247)）；Medennikov, I., et al. (2020), *Target-Speaker Voice Activity Detection: A Novel Approach for Multi-Speaker Diarization in a Dinner Party Scenario*, Interspeech 2020（[arXiv:2005.07272](https://arxiv.org/abs/2005.07272)）；Horiguchi, S., et al. (2022), *Encoder-Decoder Based Attractors for End-to-End Neural Diarization*, *IEEE/ACM TASLP*, 30, 1493–1507（[DOI](https://doi.org/10.1109/TASLP.2022.3162080)）；Xue, Y., et al. (2021), *Online End-to-End Neural Diarization with Speaker-Tracing Buffer*, IEEE SLT 2021（[DOI](https://doi.org/10.1109/SLT48900.2021.9383523)）；Horiguchi, S., et al. (2023), *Online Neural Diarization of Unlimited Numbers of Speakers Using Global and Local Attractors*, *IEEE/ACM TASLP*, 31, 706–720（[DOI](https://doi.org/10.1109/TASLP.2022.3233237)）；Plaquet, A., & Bredin, H. (2023), *Powerset Multi-Class Cross Entropy Loss for Neural Speaker Diarization*, Interspeech 2023（[DOI](https://doi.org/10.21437/Interspeech.2023-205)）；Park, T. J., et al. (2025), *Sortformer: A Novel Approach for Permutation-Resolved Speaker Supervision in Speech-to-Text Systems*, ICML 2025（[arXiv:2409.06656](https://arxiv.org/abs/2409.06656)）；Medennikov, I., Park, T. J., et al. (2025), *Streaming Sortformer: Speaker Cache-Based Online Speaker Diarization with Arrival-Time Ordering*, Interspeech 2025（[arXiv:2507.18446](https://arxiv.org/abs/2507.18446)）；Han, J., et al. (2025), *Leveraging Self-Supervised Learning for Speaker Diarization* (DiariZen), ICASSP 2025（[arXiv:2409.09408](https://arxiv.org/abs/2409.09408)）；Boeddeker, C., et al. (2018), *Front-end Processing for the CHiME-5 Dinner Party Scenario*, CHiME-5 Workshop 2018（[ISCA Archive](https://www.isca-archive.org/chime_2018/boeddecker18_chime.pdf)）。
+5. **远场视听融合、会议基准与多说话人联合转写**：Ephrat, A., et al. (2018), *Looking to Listen at the Cocktail Party*, ACM SIGGRAPH 2018（[arXiv:1804.03619](https://arxiv.org/abs/1804.03619)）；Afouras, T., Chung, J. S., & Zisserman, A. (2018), *The Conversation: Deep Audio-Visual Speech Enhancement*, Interspeech 2018（[arXiv:1804.04121](https://arxiv.org/abs/1804.04121)）；Pan, Z., Tao, R., Xu, C., & Li, H. (2021), *MuSE: Multi-Modal Target Speaker Extraction with Visual Cues*, ICASSP 2021（[arXiv:2010.07775](https://arxiv.org/abs/2010.07775)）；Lin, J., et al. (2023), *AV-SepFormer: Cross-Attention SepFormer for Audio-Visual Target Speaker Extraction*, ICASSP 2023（[DOI](https://doi.org/10.1109/ICASSP49357.2023.10094306)）；ITU-R Recommendation BT.1359-1 (1998), *Relative Timing of Sound and Vision for Broadcasting*；Kanda, N., et al. (2019), *Auxiliary Interference Speaker Loss for Target-Speaker Speech Recognition*, Interspeech 2019（[arXiv:1906.10876](https://arxiv.org/abs/1906.10876)）；Kanda, N., et al. (2020), *Serialized Output Training for End-to-End Overlapped Speech Recognition*, Interspeech 2020（[arXiv:2003.12687](https://arxiv.org/abs/2003.12687)）；von Neumann, T., Boeddeker, C., Delcroix, M., & Haeb-Umbach, R. (2023), *MeetEval: A Toolkit for Computation of Word Error Rates for Meeting Transcription Systems*, CHiME-7 Workshop 2023（[DOI](https://doi.org/10.21437/CHiME.2023-6)）；Vinnikov, A., et al. (2024), *NOTSOFAR-1 Challenge: New Datasets, Baseline, and Tasks for Distant Meeting Transcription*, Interspeech 2024（[DOI](https://doi.org/10.21437/Interspeech.2024-1788)）；Polok, A., et al. (2026), *DiCoW: Diarization-Conditioned Whisper for Target Speaker Automatic Speech Recognition*, *Computer Speech & Language*, Vol. 95, 101841（[DOI](https://doi.org/10.1016/j.csl.2025.101841)）。
 
 ---
 

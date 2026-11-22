@@ -21,15 +21,15 @@ class ReferencePublicationTests(unittest.TestCase):
         self.root = Path(self.tmp.name)
         self.audio = self.root/'codes/chapters/ch06/reference_audio'
         shutil.copytree(ROOT/'codes/chapters/ch06/reference_audio', self.audio)
-        self.report = self.root/'codes/chapters/ch06/reports/figure74_reference_timing.json'
+        self.report = self.root/'codes/chapters/ch06/reports/figure69_reference_timing.json'
         self.report.parent.mkdir()
-        shutil.copy2(ROOT/'codes/chapters/ch06/reports/figure74_reference_timing.json', self.report)
+        shutil.copy2(ROOT/'codes/chapters/ch06/reports/figure69_reference_timing.json', self.report)
         for relative in json.loads(self.report.read_bytes())['source_sha256']:
             target = self.root/relative
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(ROOT/relative, target)
         (self.root/'figures').mkdir()
-        shutil.copy2(ROOT/'figures/fig74_reference_timing.png', self.root/'figures/fig74_reference_timing.png')
+        shutil.copy2(ROOT/'figures/fig69_reference_timing.png', self.root/'figures/fig69_reference_timing.png')
         self.site = self.root/'site'
         self.site.mkdir()
         build_site.stage_reference_audio(self.audio, self.site/'reference_audio')
@@ -65,12 +65,12 @@ class ReferencePublicationTests(unittest.TestCase):
 
     def test_report_rejects_numeric_types_even_when_png_digest_matches(self):
         original = json.loads(self.report.read_bytes())
-        with Image.open(self.root/'figures/fig74_reference_timing.png') as picture:
+        with Image.open(self.root/'figures/fig69_reference_timing.png') as picture:
             info = dict(picture.info)
         for field in ('figure','gain','channels'):
             with self.subTest(field=field):
                 report = copy.deepcopy(original)
-                if field == 'figure': report['figure'] = 74.0
+                if field == 'figure': report['figure'] = 69.0
                 elif field == 'gain': report['parameters']['common_export_gain'] = True
                 else: report['samples']['early']['pcm_integer_measurements']['step']['channels'] = True
                 self.report.write_text(json.dumps(report, allow_nan=False))
@@ -134,8 +134,8 @@ class ReferencePublicationTests(unittest.TestCase):
 
     def test_real_markdown_headers_select_only_their_scoped_phone_budgets(self):
         cases = (
-            (build_site.SRC/'06_aec.md', '| 处理输出 |', 54, '79.27 dB'),
-            (build_site.SRC/'06_aec.md', '| 文件分量 |', 52, '4209136228'),
+            (build_site.SRC/'06_aec.md', '| 抽头点 |', 48, 'Smart PA'),
+            (build_site.SRC/'06_aec.md', '| # | 测试项 |', 54, 'STFE'),
             (build_site.RESEARCH_ROOT/'05_exercises_and_audio.md', '| 文件 | 取点或输出 |', 60, '播放增益之前'),
             (build_site.RESEARCH_ROOT/'05_exercises_and_audio.md', '| 取点或输出 | 切换窗整数E |', 52, '8589947251'),
         )
@@ -158,7 +158,7 @@ class ReferencePublicationTests(unittest.TestCase):
         self.assertIn('@media screen{.main a[id^="e06-"]{scroll-margin-top:60px}}', build_site.CSS)
         source = build_site.SRC/'06_aec.md'
         actual, _ = build_site.render(source.read_text(), source)
-        for number in (40, 41, 42):
+        for number in (28, 29, 30):
             self.assertEqual(actual.count(f'id="e06-{number}"'), 1)
             self.assertIn(f'E06-{number}：', actual)
 

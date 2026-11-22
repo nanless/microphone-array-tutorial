@@ -517,50 +517,50 @@ class TestWearableAudioAndExercises(unittest.TestCase):
 
         payload = run_experiments()
         self.assertEqual(tuple(payload["exercises"].keys()), EXERCISE_IDS)
-        self.assertEqual(len(EXERCISE_IDS), 18)
+        self.assertEqual(len(EXERCISE_IDS), 15)
         ex = payload["exercises"]
 
         # E14-03: exact Frobenius norm of Rz(pi/2)Ry(pi/2) - Ry(pi/2)Rz(pi/2) is sqrt(6)
         self.assertAlmostEqual(ex["E14-03"]["commutator_frobenius_norm"], float(np.sqrt(6.0)), places=14)
 
-        # E14-09: hand-derived frontal weighting W_Omega = diag(1, 4, 1)
-        f0 = ex["E14-09"]["frontal4_reg0"]
+        # E14-07: hand-derived frontal weighting W_Omega = diag(1, 4, 1)
+        f0 = ex["E14-07"]["frontal4_reg0"]
         np.testing.assert_allclose(f0["weights"], [[0.2, 0.0], [-0.8, 0.0]], atol=1e-14)
         self.assertAlmostEqual(f0["weight_norm_squared"], 0.68, places=14)
         self.assertAlmostEqual(f0["broadside_magnitude"], 0.6, places=14)
-        f2 = ex["E14-09"]["frontal4_reg2.0"]
+        f2 = ex["E14-07"]["frontal4_reg2.0"]
         np.testing.assert_allclose(f2["weights"], [[0.0, 0.0], [-0.5, 0.0]], atol=1e-14)
         self.assertAlmostEqual(f2["weight_norm_squared"], 0.25, places=14)
         self.assertAlmostEqual(f2["broadside_magnitude"], 0.5, places=14)
 
-        # E14-12: hand-derived 250 Hz wind exp(-0.35*pi) and 2000 Hz diffuse sinc(60/343)
-        self.assertAlmostEqual(ex["E14-12"]["wind_coherence"][1], float(np.exp(-0.35 * np.pi)), places=14)
+        # E14-09: hand-derived 250 Hz wind exp(-0.35*pi) and 2000 Hz diffuse sinc(60/343)
+        self.assertAlmostEqual(ex["E14-09"]["wind_coherence"][1], float(np.exp(-0.35 * np.pi)), places=14)
         arg_2k = 60.0 * np.pi / 343.0
         self.assertAlmostEqual(
-            ex["E14-12"]["acoustic_diffuse_coherence"][4], float(np.sin(arg_2k) / arg_2k), places=14
+            ex["E14-09"]["acoustic_diffuse_coherence"][4], float(np.sin(arg_2k) / arg_2k), places=14
         )
 
-        # E14-16: causal fade-in tail difference on wearable_hearthrough_comb
-        ht_ana = ex["E14-16"]["analytic_expectations"]["wearable_hearthrough_comb"]["reference_mse_ch0"]
-        ht_flt = ex["E14-16"]["float_measurements"]["wearable_hearthrough_comb"]["reference_mse_ch0"]
-        ht_pcm = ex["E14-16"]["pcm_measurements"]["wearable_hearthrough_comb"]["reference_mse_ch0"]
+        # E14-13: causal fade-in tail difference on wearable_hearthrough_comb
+        ht_ana = ex["E14-13"]["analytic_expectations"]["wearable_hearthrough_comb"]["reference_mse_ch0"]
+        ht_flt = ex["E14-13"]["float_measurements"]["wearable_hearthrough_comb"]["reference_mse_ch0"]
+        ht_pcm = ex["E14-13"]["pcm_measurements"]["wearable_hearthrough_comb"]["reference_mse_ch0"]
         self.assertAlmostEqual(ht_ana, 0.01, places=15)
         self.assertGreater(ht_ana - ht_flt, 7.0e-9)
         self.assertLess(ht_ana - ht_flt, 8.5e-9)
         self.assertAlmostEqual(ht_pcm, 0.010001495537419235, places=12)
 
-        # E14-17 & E14-18 exact anchors
+        # E14-14 & E14-15 exact anchors
         self.assertAlmostEqual(
-            ex["E14-17"]["octahedron_3d"]["modes"]["max_re"]["r_E_norm"], 1.0 / np.sqrt(3.0), places=14
+            ex["E14-14"]["octahedron_3d"]["modes"]["max_re"]["r_E_norm"], 1.0 / np.sqrt(3.0), places=14
         )
-        self.assertTrue(ex["E14-18"]["sofa_valid_audit"]["passed"])
-        self.assertFalse(ex["E14-18"]["sofa_ear_swap_audit"]["passed"])
-        self.assertAlmostEqual(ex["E14-18"]["latency_20ms"]["angular_lag_deg"], 3.6, places=14)
+        self.assertTrue(ex["E14-15"]["sofa_valid_audit"]["passed"])
+        self.assertFalse(ex["E14-15"]["sofa_ear_swap_audit"]["passed"])
+        self.assertAlmostEqual(ex["E14-15"]["latency_20ms"]["angular_lag_deg"], 3.6, places=14)
 
         # Ensure JSON serializability without NaN/Inf
         encoded = json.dumps(payload, allow_nan=False)
-        self.assertIn("E14-18", encoded)
-        self.assertEqual(cli_main(["--exercise", "E14-17"]), 0)
+        self.assertIn("E14-15", encoded)
+        self.assertEqual(cli_main(["--exercise", "E14-14"]), 0)
 
 
 if __name__ == "__main__":

@@ -16,6 +16,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 import numpy as np
+from matplotlib.patches import Patch
 
 from codes.chapters.ch00.core.audio_samples import read_pcm16
 from codes.chapters.ch00.io_contracts import (
@@ -163,8 +164,8 @@ def build_fig81(inputs: dict[str, str], manifest_sha: str) -> None:
     )
     axes[0, 1].legend(loc="upper left")
 
-    axes[1, 0].plot(ddr_db, psi_analytic_ddr, color=C_GREEN, linewidth=2.0, label=r"解析关系 $1/(1+\mathrm{DDR}_{\mathrm{lin}})$")
-    axes[1, 0].axvline(0.0, color=C_MAIN, linestyle=":", label="DDR = 0 dB (ψ = 0.5)")
+    axes[1, 0].plot(ddr_db, psi_analytic_ddr, color=C_GREEN, linewidth=2.0, label=r"解析 $1/(1+\mathrm{DDR}_{\mathrm{lin}})$")
+    axes[1, 0].plot([0.0, 0.0], [0.0, 1.0], color=C_MAIN, linestyle=":", linewidth=1.5, zorder=1, label="DDR = 0 dB (ψ = 0.5)")
     axes[1, 0].set(
         title="(c) 直达与扩散声能比（DDR）映射",
         xlabel="直达扩散能量比 DDR / dB",
@@ -172,30 +173,31 @@ def build_fig81(inputs: dict[str, str], manifest_sha: str) -> None:
         xlim=(-15.0, 20.0),
         ylim=(0.0, 1.08),
     )
-    axes[1, 0].legend(loc="upper right")
+    axes[1, 0].legend(loc="upper right", framealpha=0.96, handlelength=1.4)
 
-    axes[1, 1].plot(kr_grid, np.abs(b0), color=C_BLUE, linewidth=2.0, label=r"零阶全向 $|b_0(\kappa R)|$")
+    axes[1, 1].plot(kr_grid, np.abs(b0), color=C_BLUE, linewidth=2.0, marker="o", markevery=28, markersize=4.5, label=r"零阶全向 $|b_0(\kappa R)|$")
     axes[1, 1].plot(
-        kr_grid, np.abs(b1), color=C_ORANGE, linestyle="--", linewidth=2.0, label=r"一阶偶极 $|b_1(\kappa R)|$"
+        kr_grid, np.abs(b1), color=C_ORANGE, linestyle="--", linewidth=2.0, marker="s", markevery=(14, 28), markersize=4.5, label=r"一阶偶极 $|b_1(\kappa R)|$"
     )
-    axes[1, 1].axvline(np.pi, color=C_RED, linestyle=":", linewidth=1.6, label=r"开球零陷 $\kappa R=\pi$")
+    axes[1, 1].plot([np.pi, np.pi], [0.0, 0.68], color=C_RED, linestyle=":", linewidth=1.7, zorder=2, label=r"开球零陷 $\kappa R=\pi$")
     axes[1, 1].set(
         title="(d) 开球四面体阵列径向模态幅度",
         xlabel=r"无量纲波数孔径积 $\kappa R$",
         ylabel="模态幅度增益",
         xlim=(0.0, 4.5),
-        ylim=(0.0, 1.08),
+        ylim=(0.0, 1.24),
+        yticks=[0.0, 0.2, 0.4, 0.6, 0.8, 1.0],
     )
-    axes[1, 1].legend(loc="upper right")
+    axes[1, 1].legend(loc="upper right", framealpha=0.96, handlelength=1.5)
 
     for ax in axes.flat:
         ax.grid(True, alpha=0.22)
         ax.set_axisbelow(True)
-    fig.suptitle("图81  FOA 声强参数化分析：双波干涉、扩散度映射与开球模态边界")
+    fig.suptitle("图76  FOA 声强参数化分析：双波干涉、扩散度映射与开球模态边界")
 
     report = {
-        "figure": 81,
-        "exercise_ids": ["E14-02", "E14-04", "E14-05", "E14-06"],
+        "figure": 76,
+        "exercise_ids": ["E14-02", "E14-04", "E14-05"],
         "source_sha256": inputs,
         "audio_manifest_sha256": manifest_sha,
         "anchor_points": {
@@ -220,8 +222,8 @@ def build_fig81(inputs: dict[str, str], manifest_sha: str) -> None:
     }
     _save_figure_and_report(
         fig,
-        "fig81_foa_intensity_diffuseness.png",
-        "figure81_foa_intensity_diffuseness.json",
+        "fig76_foa_intensity_diffuseness.png",
+        "figure76_foa_intensity_diffuseness.json",
         report,
         manifest_sha,
     )
@@ -265,18 +267,21 @@ def build_fig82(inputs: dict[str, str], manifest_sha: str) -> None:
 
     x3 = np.arange(3)
     width = 0.25
-    axes[0, 0].bar(x3 - width, np.abs(p3), width=width, color=C_MAIN, alpha=0.85, label="目标耳幅度")
-    axes[0, 0].bar(x3, m_ls3, width=width, color=C_RED, alpha=0.85, label="BSM-LS")
-    axes[0, 0].bar(x3 + width, m_mag3, width=width, color=C_GREEN, alpha=0.85, label="BSM-MagLS")
+    axes[0, 0].bar(x3 - width, np.abs(p3), width=width, color=C_MAIN, edgecolor=C_MAIN, linewidth=0.8, alpha=0.85, label="目标耳幅度")
+    axes[0, 0].bar(x3, m_ls3, width=width, color=C_RED, edgecolor=C_MAIN, linewidth=0.8, hatch="///", alpha=0.85, label="BSM-LS")
+    axes[0, 0].bar(x3 + width, m_mag3, width=width, color=C_GREEN, edgecolor=C_MAIN, linewidth=0.8, hatch="xxx", alpha=0.85, label="BSM-MagLS")
     axes[0, 0].set(
         title="(a) 双麦三方向手算算例幅度对比",
         xticks=x3,
         xticklabels=["端射 +90°", "正横 0° (零陷)", "端射 -90°"],
         ylabel="合成幅度增益",
         xlim=(-0.55, 2.55),
-        ylim=(0.0, 1.42),
+        ylim=(0.0, 1.48),
     )
-    axes[0, 0].legend(ncol=3, loc="upper center", fontsize=8.5)
+    axes[0, 0].legend(
+        ncol=3, loc="upper center", fontsize=8.2,
+        handlelength=1.35, columnspacing=0.75, handletextpad=0.35,
+    )
 
     axes[0, 1].axvspan(210.0, 330.0, color=C_RED, alpha=0.08, label="对侧头影区 210°～330°")
     axes[0, 1].plot(az_deg, 20.0 * np.log10(mag_target72), color=C_MAIN, linewidth=2.0, label="目标左耳幅度")
@@ -293,7 +298,7 @@ def build_fig82(inputs: dict[str, str], manifest_sha: str) -> None:
         xlim=(0.0, 355.0),
         ylim=(-23.5, 9.0),
     )
-    axes[0, 1].legend(ncol=2, loc="lower center")
+    axes[0, 1].legend(ncol=2, loc="lower center", framealpha=0.96)
 
     iters = np.arange(1, hist72.size + 1)
     axes[1, 0].plot(iters, hist72, "o-", color=C_BLUE, markersize=4, linewidth=1.8, label="交替相位投影目标值")
@@ -306,30 +311,43 @@ def build_fig82(inputs: dict[str, str], manifest_sha: str) -> None:
     )
     axes[1, 0].legend(loc="upper right")
 
-    axes[1, 1].plot(betas, ic_vals, color=C_PURPLE, linewidth=2.0, label=r"输出耳间相干度 $\mathrm{IC}_{\mathrm{out}}$")
-    axes[1, 1].plot(
-        betas, np.asarray(snr_gains) / 2.5, color=C_ORANGE, linestyle="--", linewidth=2.0, label="SNR 增益 / 2.5 dB"
-    )
-    for b_mark in (0.0, 0.2, 0.5, 1.0):
-        idx_m = int(round(b_mark * 100))
-        axes[1, 1].plot(b_mark, ic_vals[idx_m], "s", color=C_PURPLE)
-    axes[1, 1].set(
+    ax_ic = axes[1, 1]
+    ax_snr = ax_ic.twinx()
+    anchor_idx = [0, 20, 50, 100]
+    l_ic = ax_ic.plot(
+        betas, ic_vals, color=C_PURPLE, linewidth=2.0,
+        marker="s", markevery=anchor_idx, markersize=5.5,
+        label=r"输出耳间相干度 $\mathrm{IC}_{\mathrm{out}}$",
+    )[0]
+    l_snr = ax_snr.plot(
+        betas, snr_gains, color=C_ORANGE, linestyle="--", linewidth=2.0,
+        marker="^", markevery=anchor_idx, markersize=5.5,
+        label="单耳 SNR 增益 / dB",
+    )[0]
+    ax_ic.set(
         title="(d) BMVDR 参考混合系数 β 折中曲线",
         xlabel="原始参考麦混合比例 β",
-        ylabel="无量纲指标（IC 或归一化增益）",
         xlim=(-0.03, 1.03),
         ylim=(0.0, 1.12),
+        yticks=[0.0, 0.2, 0.4, 0.6, 0.8, 1.0],
     )
-    axes[1, 1].legend(loc="lower left")
+    ax_ic.set_ylabel(r"输出耳间相干度 $\mathrm{IC}_{\mathrm{out}}$", color=C_PURPLE)
+    ax_ic.tick_params(axis="y", colors=C_PURPLE)
+    ax_snr.set_ylabel("单耳 SNR 增益 / dB", color=C_ORANGE)
+    ax_snr.set_ylim(0.0, 2.75)
+    ax_snr.tick_params(axis="y", colors=C_ORANGE)
+    ax_snr.spines["right"].set_visible(True)
+    ax_snr.spines["right"].set_color(C_ORANGE)
+    ax_ic.legend(handles=[l_ic, l_snr], loc="lower left", framealpha=0.96)
 
     for ax in axes.flat:
         ax.grid(True, alpha=0.22)
         ax.set_axisbelow(True)
-    fig.suptitle("图82  高频双耳信号匹配（BSM-LS vs MagLS）与扩散噪声耳间相干度保持")
+    fig.suptitle("图77  高频双耳信号匹配（BSM-LS vs MagLS）与扩散噪声耳间相干度保持")
 
     report = {
-        "figure": 82,
-        "exercise_ids": ["E14-07", "E14-08", "E14-10", "E14-11"],
+        "figure": 77,
+        "exercise_ids": ["E14-06", "E14-07", "E14-08"],
         "source_sha256": inputs,
         "audio_manifest_sha256": manifest_sha,
         "anchor_3dir": {
@@ -352,8 +370,8 @@ def build_fig82(inputs: dict[str, str], manifest_sha: str) -> None:
     }
     _save_figure_and_report(
         fig,
-        "fig82_bsm_ls_vs_magls.png",
-        "figure82_bsm_ls_vs_magls.json",
+        "fig77_bsm_ls_vs_magls.png",
+        "figure77_bsm_ls_vs_magls.json",
         report,
         manifest_sha,
     )
@@ -385,10 +403,10 @@ def build_fig83(manifest: dict, signals: dict[str, np.ndarray], inputs: dict[str
     fig, axes = plt.subplots(2, 2, figsize=(9.5, 7.7), constrained_layout=True)
 
     axes[0, 0].plot(
-        f_coh, coh["acoustic_diffuse_coherence"], color=C_BLUE, linewidth=2.0, label="三维扩散声场 sinc(2fd/c)"
+        f_coh, coh["acoustic_diffuse_coherence"], color=C_BLUE, linewidth=2.0, marker="o", markevery=28, markersize=4.5, label="三维扩散声场 sinc(2fd/c)"
     )
     axes[0, 0].plot(
-        f_coh, coh["wind_coherence"], color=C_RED, linestyle="--", linewidth=2.0, label=r"Corcos 对流风噪（$U_c = 3\ \mathrm{m/s}$）"
+        f_coh, coh["wind_coherence"], color=C_RED, linestyle="--", linewidth=2.0, marker="s", markevery=(14, 28), markersize=4.5, label=r"Corcos 对流风噪（$U_c = 3\ \mathrm{m/s}$）"
     )
     axes[0, 0].set(
         title="(a) 1.5 cm 麦间距：声扩散与湍流风噪相干度",
@@ -397,20 +415,20 @@ def build_fig83(manifest: dict, signals: dict[str, np.ndarray], inputs: dict[str
         xlim=(0.0, 4000.0),
         ylim=(-0.05, 1.08),
     )
-    axes[0, 0].legend(loc="center right")
+    axes[0, 0].legend(loc="center right", framealpha=0.96)
 
-    axes[0, 1].semilogx(f_fus, sinr_air_db, color=C_RED, linestyle="--", linewidth=1.8, label="单气导外麦")
-    axes[0, 1].semilogx(f_fus, sinr_in_db, color=C_ORANGE, linestyle="-.", linewidth=1.8, label="单耳内闭塞/骨导")
-    axes[0, 1].semilogx(f_fus, sinr_fus_db, color=C_GREEN, linewidth=2.2, label="跨模态 MVDR 融合")
+    axes[0, 1].semilogx(f_fus, sinr_air_db, color=C_RED, linestyle="--", marker="s", markevery=(5, 16), markersize=4.5, linewidth=1.8, label="单气导外麦")
+    axes[0, 1].semilogx(f_fus, sinr_in_db, color=C_ORANGE, linestyle="-.", marker="^", markevery=(10, 16), markersize=4.8, linewidth=1.8, label="单耳内闭塞/骨导")
+    axes[0, 1].semilogx(f_fus, sinr_fus_db, color=C_GREEN, linewidth=2.3, marker="o", markevery=(0, 16), markersize=4.5, zorder=4, label="跨模态 MVDR 融合")
     axes[0, 1].scatter([250.0, 4000.0], [low_anchor["output_sinr_db"], high_anchor["output_sinr_db"]], color=C_MAIN, zorder=5)
     axes[0, 1].set(
         title="(b) 跨模态自语音融合输出 SINR 频响",
         xlabel="频率 / Hz（对数轴）",
         ylabel="输出信干噪比 SINR / dB",
         xlim=(100.0, 6000.0),
-        ylim=(-10.0, 32.0),
+        ylim=(-10.0, 36.0),
     )
-    axes[0, 1].legend(loc="upper right")
+    axes[0, 1].legend(loc="upper right", framealpha=0.96)
 
     # Panel (c): Actual PCM16 waveform excerpt [1600, 1696) = 6 ms
     start, count = 1600, 96
@@ -426,7 +444,7 @@ def build_fig83(manifest: dict, signals: dict[str, np.ndarray], inputs: dict[str
         xlim=(0.0, t_ms[-1]),
         ylim=(-0.44, 0.76),
     )
-    axes[1, 0].legend(ncol=2, loc="upper right")
+    axes[1, 0].legend(ncol=2, loc="upper right", framealpha=0.96)
 
     # Panel (d): Actual PCM16 steady-window reference MSE comparison
     keys_d = (
@@ -437,14 +455,24 @@ def build_fig83(manifest: dict, signals: dict[str, np.ndarray], inputs: dict[str
     )
     labels_d = ["外麦受风", "内麦未均衡", "朴素逆均衡", "MVDR 融合"]
     colors_d = [C_RED, C_PURPLE, C_ORANGE, C_GREEN]
+    hatches_d = ["///", "\\\\\\", "xxx", ""]
     pcm_mses = [manifest["samples"][k]["pcm_measurements"]["reference_mse_ch0"] for k in keys_d]
     ana_mses = [manifest["samples"][k]["analytic_expectations"]["reference_mse_ch0"] for k in keys_d]
 
     xd = np.arange(len(keys_d))
-    axes[1, 1].bar(xd, pcm_mses, color=colors_d, alpha=0.82, label="实际 PCM 稳窗 MSE")
+    for i, (val, color, hatch) in enumerate(zip(pcm_mses, colors_d, hatches_d)):
+        axes[1, 1].bar(
+            xd[i], val, color=color, edgecolor=C_MAIN, linewidth=0.85, hatch=hatch, alpha=0.82
+        )
     for i, a_val in enumerate(ana_mses):
-        axes[1, 1].plot([i - 0.3, i + 0.3], [a_val, a_val], "k--", linewidth=1.6, label="解析期望 MSE" if i == 0 else None)
-        axes[1, 1].text(i, pcm_mses[i] + max(pcm_mses) * 0.04, f"{pcm_mses[i]:.5f}", ha="center")
+        axes[1, 1].plot([i - 0.34, i + 0.34], [a_val, a_val], color="white", linewidth=3.4, zorder=4)
+        axes[1, 1].plot(
+            [i - 0.34, i + 0.34], [a_val, a_val], "k--", linewidth=1.8, zorder=5,
+            label="解析期望 MSE" if i == 0 else None,
+        )
+        axes[1, 1].text(i, pcm_mses[i] + max(pcm_mses) * 0.045, f"{pcm_mses[i]:.5f}", ha="center")
+    bar_proxy = Patch(facecolor="#D0D4D9", edgecolor=C_MAIN, hatch="///", linewidth=0.85, label="柱高：实际 PCM 稳窗 MSE")
+    ana_handle, _ = axes[1, 1].get_legend_handles_labels()
     axes[1, 1].set(
         title="(d) 稳窗 [1600, 30400) 实际 PCM 参考误差",
         xticks=xd,
@@ -452,16 +480,16 @@ def build_fig83(manifest: dict, signals: dict[str, np.ndarray], inputs: dict[str
         ylabel="均方误差 MSE",
         ylim=(0.0, max(pcm_mses) * 1.48),
     )
-    axes[1, 1].legend(loc="upper right")
+    axes[1, 1].legend(handles=[ana_handle[0], bar_proxy], loc="upper right", framealpha=0.96)
 
     for ax in axes.flat:
         ax.grid(True, alpha=0.22)
         ax.set_axisbelow(True)
-    fig.suptitle("图83  可穿戴抗风噪与气导/耳内闭塞跨模态 MVDR 自语音融合")
+    fig.suptitle("图78  可穿戴抗风噪与气导/耳内闭塞跨模态 MVDR 自语音融合")
 
     report = {
-        "figure": 83,
-        "exercise_ids": ["E14-12", "E14-13", "E14-16"],
+        "figure": 78,
+        "exercise_ids": ["E14-09", "E14-10", "E14-13"],
         "source_sha256": inputs,
         "audio_manifest_sha256": manifest_sha,
         "wav_sha256": {name: rec["sha256"] for name, rec in manifest["files"].items()},
@@ -473,8 +501,8 @@ def build_fig83(manifest: dict, signals: dict[str, np.ndarray], inputs: dict[str
     }
     _save_figure_and_report(
         fig,
-        "fig83_own_voice_fusion.png",
-        "figure83_own_voice_fusion.json",
+        "fig78_own_voice_fusion.png",
+        "figure78_own_voice_fusion.json",
         report,
         manifest_sha,
     )
@@ -488,35 +516,66 @@ def build_fig84(manifest: dict, signals: dict[str, np.ndarray], inputs: dict[str
     delays_ms = np.geomspace(0.05, 8.0, 160)
     first_notches_hz = 1000.0 / (2.0 * delays_ms)
 
-    fig, axes = plt.subplots(2, 2, figsize=(9.5, 7.7), constrained_layout=True)
+    fig, axes = plt.subplots(2, 2, figsize=(9.5, 8.3), constrained_layout=True)
 
     gain_2ms_db = 10.0 * np.log10(np.maximum(ht_2ms["power_gain"], 1e-3))
     gain_100us_db = 10.0 * np.log10(np.maximum(ht_100us["power_gain"], 1e-3))
     for f_notch in (750.0, 1250.0, 1750.0, 2250.0, 2750.0, 3250.0, 3750.0, 4250.0):
         axes[0, 0].axvline(f_notch, color="0.68", linestyle=":", linewidth=1.0, zorder=1)
-    axes[0, 0].plot(freqs, gain_2ms_db, color=C_RED, linewidth=1.8, label="处理延迟 τ = 2.0 ms")
+    axes[0, 0].plot(freqs, gain_2ms_db, color=C_RED, linewidth=1.8, label="延迟 τ = 2.0 ms")
     axes[0, 0].plot(freqs, gain_100us_db, color=C_BLUE, linestyle="--", linewidth=2.0, label="超低延迟 τ = 0.1 ms")
-    axes[0, 0].axvline(250.0, color=C_MAIN, linestyle=":", linewidth=1.5, label="首陷波 250 Hz（及高阶陷波）")
+    axes[0, 0].axvline(250.0, color=C_MAIN, linestyle=":", linewidth=1.6, zorder=2, label="首陷波 250 Hz（及奇次倍）")
+    axes[0, 0].set_title("(a) 通透模式漏声叠加功率增益频响", pad=60)
     axes[0, 0].set(
-        title="(a) 通透模式漏声叠加功率增益频响",
         xlabel="频率 / Hz",
         ylabel="叠加功率增益 / dB",
         xlim=(0.0, 4500.0),
-        ylim=(-30.0, 31.0),
+        ylim=(-30.0, 9.5),
+        yticks=[-30, -20, -10, 0, 6],
     )
-    axes[0, 0].legend(loc="upper right")
+    axes[0, 0].legend(
+        ncol=2, loc="lower center", bbox_to_anchor=(0.5, 1.02),
+        framealpha=0.96, handlelength=1.4, columnspacing=0.8,
+    )
 
     axes[0, 1].loglog(delays_ms, first_notches_hz, color=C_PURPLE, linewidth=2.2, label=r"首梳状陷波 $f_0 = 1/(2\tau)$")
     axes[0, 1].scatter([0.1, 2.0], [5000.0, 250.0], color=C_MAIN, zorder=5)
     axes[0, 1].axhline(4000.0, color=C_GREEN, linestyle="--", label="语音主频带上限 4 kHz")
+    axes[0, 1].axvline(0.125, color=C_GREEN, linestyle=":", linewidth=1.2, zorder=2)
+    axes[0, 1].annotate(
+        "(0.1 ms, 5 kHz)",
+        xy=(0.1, 5000.0),
+        xytext=(0.24, 8600.0),
+        fontsize=8.6,
+        color=C_MAIN,
+        bbox=dict(fc="white", ec="none", alpha=0.85, pad=0.8),
+        arrowprops=dict(arrowstyle="->", color=C_MAIN, lw=1.0),
+    )
+    axes[0, 1].annotate(
+        "(2.0 ms, 250 Hz)",
+        xy=(2.0, 250.0),
+        xytext=(1.75, 860.0),
+        fontsize=8.6,
+        color=C_MAIN,
+        bbox=dict(fc="white", ec="none", alpha=0.85, pad=0.8),
+        arrowprops=dict(arrowstyle="->", color=C_MAIN, lw=1.0),
+    )
+    axes[0, 1].text(
+        0.14, 72.0, r"$\tau=0.125\ \mathrm{ms}$",
+        fontsize=8.5, color=C_GREEN, ha="left", va="bottom",
+        bbox=dict(fc="white", ec="none", alpha=0.85, pad=0.6),
+    )
+    axes[0, 1].set_title("(b) 处理延迟 τ 与首个相消陷波位置", pad=60)
     axes[0, 1].set(
-        title="(b) 处理延迟 τ 与首个相消陷波位置",
         xlabel="端到端处理延迟 τ / ms（对数轴）",
         ylabel="首个相消陷波频率 f₀ / Hz",
         xlim=(0.05, 8.0),
         ylim=(50.0, 15000.0),
     )
-    axes[0, 1].legend(loc="upper right")
+    axes[0, 1].legend(
+        ncol=1, loc="lower center", bbox_to_anchor=(0.5, 1.02),
+        framealpha=0.96, handlelength=1.4,
+    )
 
     # Panel (c): Actual PCM16 waveform excerpt [1632, 1760) = 8 ms (2 full cycles of 250 Hz!)
     start, count = 1632, 128
@@ -542,8 +601,10 @@ def build_fig84(manifest: dict, signals: dict[str, np.ndarray], inputs: dict[str
 
     x2 = np.arange(2)
     w_bar = 0.28
-    axes[1, 1].bar(x2 - w_bar / 2, ref_mag, width=w_bar, color=C_BLUE, alpha=0.85, label="直达参考 PCM 幅度")
-    axes[1, 1].bar(x2 + w_bar / 2, ht_mag, width=w_bar, color=C_RED, alpha=0.85, label="2 ms 叠加 PCM 幅度")
+    axes[1, 1].bar(x2 - w_bar / 2, ref_mag, width=w_bar, color=C_BLUE, edgecolor=C_MAIN, linewidth=0.85, alpha=0.85, label="直达参考 PCM 幅度")
+    axes[1, 1].bar(x2 + w_bar / 2, ht_mag, width=w_bar, color=C_RED, edgecolor=C_MAIN, linewidth=0.85, hatch="///", alpha=0.85, label="2 ms 叠加 PCM 幅度")
+    for idx_b, val in enumerate(ref_mag):
+        axes[1, 1].text(idx_b - w_bar / 2, val + 0.008, f"{val:.4f}", ha="center")
     for idx_b, val in enumerate(ht_mag):
         axes[1, 1].text(idx_b + w_bar / 2, val + 0.008, f"{val:.4f}", ha="center")
     axes[1, 1].set(
@@ -551,18 +612,18 @@ def build_fig84(manifest: dict, signals: dict[str, np.ndarray], inputs: dict[str
         xticks=x2,
         xticklabels=["250 Hz（半波长相消）", "4000 Hz（8 周期同相）"],
         ylabel="正弦峰值幅度",
-        ylim=(0.0, 0.26),
+        ylim=(0.0, 0.275),
     )
-    axes[1, 1].legend(loc="upper left")
+    axes[1, 1].legend(loc="upper left", framealpha=0.96)
 
     for ax in axes.flat:
         ax.grid(True, alpha=0.22)
         ax.set_axisbelow(True)
-    fig.suptitle("图84  TWS 通透模式（Hear-Through）处理延迟与耳道漏声梳状滤波效应")
+    fig.suptitle("图79  TWS 通透模式（Hear-Through）处理延迟与耳道漏声梳状滤波效应")
 
     report = {
-        "figure": 84,
-        "exercise_ids": ["E14-14", "E14-15", "E14-16"],
+        "figure": 79,
+        "exercise_ids": ["E14-11", "E14-12", "E14-13"],
         "source_sha256": inputs,
         "audio_manifest_sha256": manifest_sha,
         "wav_sha256": {
@@ -576,8 +637,8 @@ def build_fig84(manifest: dict, signals: dict[str, np.ndarray], inputs: dict[str
     }
     _save_figure_and_report(
         fig,
-        "fig84_hear_through_comb.png",
-        "figure84_hear_through_comb.json",
+        "fig79_hear_through_comb.png",
+        "figure79_hear_through_comb.json",
         report,
         manifest_sha,
     )

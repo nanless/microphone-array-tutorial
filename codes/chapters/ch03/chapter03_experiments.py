@@ -1,4 +1,4 @@
-"""E03-08..20: deterministic geometry, ambiguity and calibration calculations.
+"""E03-08..18: deterministic geometry, ambiguity and calibration calculations.
 
 Run ``.venv/bin/python -m codes.chapters.ch03.chapter03_experiments``. The extra
 E03-07 result and metadata are separate from the exercise IDs. No imports write
@@ -61,7 +61,7 @@ def _first_half_power(response, limit):
 
 
 def exact_beamwidths():
-    """E03-08: first half-power crossings, not a borrowed aperture formula."""
+    """Worked examples 3-3 & 3-4: first half-power crossings, not a borrowed aperture formula."""
     rows = []
     ring_angles = np.arange(6)*np.pi/3
     layouts = {
@@ -107,7 +107,7 @@ def exact_beamwidths():
 
 
 def hexagon_ambiguity():
-    """E03-09: construct two exactly equal six-channel relative manifolds."""
+    """E03-08: construct two exactly equal six-channel relative manifolds."""
     radius = .0375
     ring = radius*np.column_stack((np.cos(np.arange(6)*np.pi/3), np.sin(np.arange(6)*np.pi/3)))
     critical = 343/(np.sqrt(3)*radius)
@@ -129,7 +129,7 @@ def hexagon_ambiguity():
 
 
 def planar_mirror():
-    """E03-10: a plane loses the sign of the direction's normal component."""
+    """E03-14 part 1 (h=0 coplanar mirror): a plane loses the sign of the direction's normal component."""
     azimuth = np.arctan2(.3, .4)
     elevation = np.arcsin(np.sqrt(.75))
     positions = np.array([[0,0,0],[.04,0,0],[0,.04,0],[0,0,.04]])
@@ -141,7 +141,7 @@ def planar_mirror():
 
 
 def coupling_regularization():
-    """E03-11: measurement noise is added AFTER the known mixing matrix."""
+    """E03-09: measurement noise is added AFTER the known mixing matrix."""
     c = np.array([[1.,.9],[.9,1.]])
     eta = .01
     inverse = np.linalg.solve(c, np.eye(2))
@@ -184,7 +184,7 @@ def relative_gain_ls(prediction, observation):
 
 
 def gain_least_squares():
-    """E03-12: complex conjugation and finite noisy calibration residuals."""
+    """E03-10: complex conjugation and finite noisy calibration residuals."""
     z = np.array([1.,2j]); true_gain = 1+.5j
     noise = np.array([.1,-.2j]); y = true_gain*z+noise
     estimate = relative_gain_ls(z,y); residual = y-estimate*z
@@ -197,7 +197,7 @@ def gain_least_squares():
 
 
 def coprime_holes():
-    """E03-13: distinguish total lags, aperture and hole-free segment."""
+    """E03-11: distinguish total lags, aperture and hole-free segment."""
     rows = []
     for name, positions in [('ula',[0,1,2,3,4,5]),('nested',[0,1,2,3,7,11]),('coprime',[0,3,4,6,8,9])]:
         p=np.asarray(positions); lags, counts=np.unique(p[:,None]-p[None,:],return_counts=True)
@@ -241,7 +241,7 @@ def coarray_companion():
 
 
 def dma_gain_mismatch():
-    """E03-14: separate analytic float calculations and actual published PCM."""
+    """E03-12: separate analytic float calculations and actual published PCM."""
     case=dma_calibration_case();signals=case['signals'];params=case['parameters']
     rows=[]
     for label,frequency,(start,stop) in [('front',1000.,(2400,10400)),('back',1600.,(15200,23200))]:
@@ -296,7 +296,7 @@ def dma_gain_mismatch():
 
 
 def noisy_calibration_reference():
-    """E03-15: exact four-outcome error-in-variables bias, not random accuracy."""
+    """E03-13: exact four-outcome error-in-variables bias, not random accuracy."""
     s=np.array([1.,1.,-1.,-1.]);error=np.array([.5,-.5,.5,-.5]);z=s+error;y=2*s
     gain=relative_gain_ls(z,y).real
     residual=y-gain*z
@@ -315,7 +315,7 @@ def noisy_calibration_reference():
 
 
 def nearly_planar_geometry():
-    """E03-16: full rank does not bound sensitivity or certify a unit vector."""
+    """E03-14: coplanar mirror (h=0) vs full-rank height sensitivity."""
     u=np.array([.3,.4,np.sqrt(.75)]);rows=[]
     for height in (.04,.004,.0004):
         g=np.diag([.04,.04,height]);tau=-g@u/343
@@ -329,12 +329,13 @@ def nearly_planar_geometry():
                      'raw_direction_norm':float(np.linalg.norm(raw)),
                      'unit_norm_residual':float(np.linalg.norm(raw)-1),
                      'linear_equation_residual_max_m':float(np.max(abs(g@raw+343*measured)))})
-    return {'true_direction':u.tolist(),'normal_delay_error_us':1.,'sound_speed_m_s':343.,'cases':rows,
+    return {'coplanar_mirror_h0':planar_mirror(),
+            'true_direction':u.tolist(),'normal_delay_error_us':1.,'sound_speed_m_s':343.,'cases':rows,
             'limits':'The raw unconstrained linear solution is not silently normalized. Full rank removes a noiseless mirror ambiguity but does not guarantee stability. Unit-vector constrained fitting is an additional model/optimization step.'}
 
 
 def multi_frequency_ambiguity():
-    """E03-17: unknown complex source per frequency; two frequencies can help."""
+    """E03-15: unknown complex source per frequency; two frequencies can help."""
     params=geometry_parameters();positions=np.asarray(params['positions_m']);angles=np.deg2rad(params['azimuths_deg'])
     candidates=plane_wave_steering(positions,[4000.,8000.],angles);rows=[]
     for index,frequency in enumerate((4000.,8000.)):
@@ -382,7 +383,7 @@ def fair_aperture_comparison():
 
 
 def known_direction_baseline():
-    """E03-18: external directions separate position from a fixed delay."""
+    """E03-16: external directions separate position from a fixed delay."""
     speed, offset = 343., 20e-6
     baseline = np.array([.04, .03, .02])
     directions = np.array([[1., 0, 0], [-1., 0, 0], [0, 1., 0], [0, 0, 1.]])
@@ -434,11 +435,12 @@ def known_direction_baseline():
 
 def run_exercises():
     return {f'E03-{number:02}':function() for number,function in enumerate(
-        (exact_beamwidths,hexagon_ambiguity,planar_mirror,coupling_regularization,gain_least_squares,coprime_holes,dma_gain_mismatch,
+        (hexagon_ambiguity,coupling_regularization,gain_least_squares,coprime_holes,dma_gain_mismatch,
          noisy_calibration_reference,nearly_planar_geometry,multi_frequency_ambiguity,
          known_direction_baseline,rigid_baffle_aperture_example,mems_gasket_leakage_example),8)}
 
 
 if __name__=='__main__':
     print(json.dumps({'exercises':run_exercises(),'E03-07_extension':coarray_companion(),
-                      'metadata':{'fair_aperture_comparison':fair_aperture_comparison()}},ensure_ascii=False,indent=2,allow_nan=False))
+                      'metadata':{'exact_beamwidths':exact_beamwidths(),
+                                  'fair_aperture_comparison':fair_aperture_comparison()}},ensure_ascii=False,indent=2,allow_nan=False))

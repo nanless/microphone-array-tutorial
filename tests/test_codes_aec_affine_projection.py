@@ -247,11 +247,11 @@ class TestAffineProjection(unittest.TestCase):
         self.assertEqual(state._columns.shape, (2, 0))
         self.assertEqual(state._desired.size, 0)
 
-    def test_demo_has_all_five_cases_and_finite_output(self):
+    def test_demo_has_all_four_cases_and_finite_output(self):
         result = run_demo()
         self.assertEqual({k for k in result if k.startswith("E06-")},
-                         {f"E06-{i}" for i in range(34, 39)})
-        self.assertAlmostEqual(result["E06-35"]["incorrect_posterior_weights"][0], 9/16)
+                         {f"E06-{i:02d}" for i in range(21, 25)})
+        self.assertAlmostEqual(result["E06-22"]["incorrect_posterior_weights"][0], 9/16)
 
 
 if __name__ == "__main__":

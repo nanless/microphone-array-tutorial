@@ -13,10 +13,10 @@ from scripts import quality_check as qc
 
 ROOT = Path(__file__).resolve().parents[1]
 TSE_SPECS = (
-    (85, "fig85_tse_conditioning_modes.png", "figure85_tse_conditioning_modes.json"),
-    (86, "fig86_nearfield_distance_bubble.png", "figure86_nearfield_distance_bubble.json"),
-    (87, "fig87_diarization_tsvad_gss.png", "figure87_diarization_tsvad_gss.json"),
-    (88, "fig88_av_asynchrony_occlusion.png", "figure88_av_asynchrony_occlusion.json"),
+    (80, "fig80_tse_conditioning_modes.png", "figure80_tse_conditioning_modes.json"),
+    (81, "fig81_nearfield_distance_bubble.png", "figure81_nearfield_distance_bubble.json"),
+    (82, "fig82_diarization_tsvad_gss.png", "figure82_diarization_tsvad_gss.json"),
+    (83, "fig83_av_asynchrony_occlusion.png", "figure83_av_asynchrony_occlusion.json"),
 )
 
 
@@ -36,8 +36,8 @@ class TsePublicationTests(unittest.TestCase):
             shutil.copy2(ROOT / "codes/chapters/ch15/reports" / json_name, report_dir / json_name)
             shutil.copy2(ROOT / "figures" / png_name, self.root / "figures" / png_name)
 
-        report86 = json.loads((report_dir / "figure86_nearfield_distance_bubble.json").read_bytes())
-        for relative in report86["source_sha256"]:
+        report81 = json.loads((report_dir / "figure81_nearfield_distance_bubble.json").read_bytes())
+        for relative in report81["source_sha256"]:
             target = self.root / relative
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(ROOT / relative, target)
@@ -85,17 +85,17 @@ class TsePublicationTests(unittest.TestCase):
         self.assertTrue(self.check(qc.check_tse_audio))
 
     def test_figure_rejects_equal_valued_wrong_types_with_matching_png_report_sha(self):
-        report_path = self.root / "codes/chapters/ch15/reports/figure86_nearfield_distance_bubble.json"
+        report_path = self.root / "codes/chapters/ch15/reports/figure81_nearfield_distance_bubble.json"
         original = json.loads(report_path.read_bytes())
         real_open = Image.open
-        with real_open(self.root / "figures/fig86_nearfield_distance_bubble.png") as picture:
-            info86 = dict(picture.info)
+        with real_open(self.root / "figures/fig81_nearfield_distance_bubble.png") as picture:
+            info81 = dict(picture.info)
 
         for field in ("figure", "nmse_bool", "bad_exercise"):
             with self.subTest(field=field):
                 report = copy.deepcopy(original)
                 if field == "figure":
-                    report["figure"] = 86.0
+                    report["figure"] = 81.0
                 elif field == "nmse_bool":
                     report["pcm_integer_nmse"]["bubble_d10cm"] = False
                 else:
@@ -104,8 +104,8 @@ class TsePublicationTests(unittest.TestCase):
                 updated_digest = hashlib.sha256(report_path.read_bytes()).hexdigest()
 
                 def fake_open(path, *args, **kwargs):
-                    if Path(path).name == "fig86_nearfield_distance_bubble.png":
-                        metadata = {**info86, "NumericalReportDigest": updated_digest}
+                    if Path(path).name == "fig81_nearfield_distance_bubble.png":
+                        metadata = {**info81, "NumericalReportDigest": updated_digest}
 
                         class Picture:
                             def __enter__(self_inner):

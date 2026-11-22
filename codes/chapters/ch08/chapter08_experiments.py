@@ -1,4 +1,4 @@
-"""Original small experiments E08-12..34, without upstream imports.
+"""Original small experiments E08-10..26, without upstream imports.
 
 Run with python -m codes.chapters.ch08.chapter08_experiments. No files are written.
 Substeps and supplied source/slot models are not complete separation systems.
@@ -21,14 +21,12 @@ import numpy as np
 
 from codes.chapters.ch00.core.audio_samples import css_overlap_case
 from codes.chapters.ch08.core.css import match_two_source_overlap, overlap_application_gain
-from codes.chapters.ch08.core.gss_teaching import guided_cacgmm_mvdr
-from codes.chapters.ch08.core.separation import guided_activity_posterior, masked_spatial_covariance, si_sdr
+from codes.chapters.ch08.core.separation import guided_activity_posterior
 from codes.chapters.ch08.core.separation_metrics_streaming import (
     ci_sdr_vs_si_sdr_experiment,
     streaming_mac_and_bypass_experiment,
 )
 from codes.chapters.ch00.cross_chapter.enhancement_step_exercises import ip_row
-from codes.chapters.ch00.cross_chapter.enhancement_structure_exercises import cacg_relative_density
 
 ROOT = Path(__file__).resolve().parents[3]
 CSS_STEMS = ('css_overlap_reference', 'css_overlap_mixture',
@@ -248,7 +246,7 @@ def run_experiments() -> dict:
     for row in range(2):
         sequential[row] = ip_row(sequential, covariance, row).conj()
     simultaneous = np.array([ip_row(np.eye(2), covariance, row).conj() for row in range(2)])
-    result['E08-12'] = {'covariance': covariance, 'sequential_rows': sequential,
+    result['E08-10'] = {'covariance': covariance, 'sequential_rows': sequential,
                         'simultaneous_rows': simultaneous,
                         'sequential_weighted_gram': sequential @ covariance @ sequential.conj().T,
                         'simultaneous_weighted_gram': simultaneous @ covariance @ simultaneous.conj().T}
@@ -258,46 +256,11 @@ def run_experiments() -> dict:
     gram = y @ y.T
     joint = np.linalg.solve(gram, y @ reference)
     scalar = (y @ reference) / np.diag(gram)
-    result['E08-13'] = {'outputs': y, 'reference': reference, 'gram': gram,
+    result['E08-11'] = {'outputs': y, 'reference': reference, 'gram': gram,
                         'joint_gains': joint, 'individual_gains': scalar,
                         'joint_sum': joint @ y, 'individual_sum': scalar @ y,
                         'complex_application_gain': np.array([2 + 1j]),
                         'pyroomacoustics_returned_conjugate': np.array([2 - 1j])}
-
-    sources = np.array([[1., -1., 0., 0.], [0., 0., 1., -1.]])
-    mixing = np.array([[1., 0.], [1., 1.]])
-    demixing = np.linalg.inv(mixing)
-    estimates = demixing @ (mixing @ sources)
-    zero_image = mixing[0, :, None] * estimates
-    try:
-        si_sdr(zero_image[1], mixing[0, 1] * sources[1])
-    except ValueError:
-        status = 'undefined_zero_reference_and_estimate'
-    else:
-        raise AssertionError('zero source image must not receive a valid SI-SDR')
-    result['E08-14'] = {'mixing': mixing, 'demixing': demixing, 'reference0_images': zero_image,
-                        'reference1_images': mixing[1, :, None] * estimates, 'second_reference0_score': status}
-
-    mixture = sources.sum(0)
-    consistent = np.tile(mixture / 2, (2, 1))
-    result['E08-15'] = {'sources': sources, 'mixture': mixture, 'consistent_outputs': consistent,
-                        'sum_error': float(np.max(np.abs(consistent.sum(0) - mixture))),
-                        'output_rank': int(np.linalg.matrix_rank(consistent)),
-                        'fixed_si_sdr_db': [si_sdr(consistent[i], sources[i]) for i in range(2)]}
-
-    original = np.eye(2)
-    rescaled = np.diag([1., 3.])
-    directions = rescaled.T / np.linalg.norm(rescaled.T, axis=1)[:, None]
-    result['E08-16'] = {'directions': directions,
-                        'identity_shape_density': cacg_relative_density(directions, np.eye(2)),
-                        'original_scm': masked_spatial_covariance(original[None], np.ones((1, 2)))[0],
-                        'radially_changed_scm': masked_spatial_covariance(rescaled[None], np.ones((1, 2)))[0]}
-
-    symmetric_x = np.tile(np.eye(2), (1, 6))[None]
-    fit = guided_cacgmm_mvdr(symmetric_x, np.ones((12, 2)), iterations=3)
-    result['E08-17'] = {'input': symmetric_x, 'posterior': fit['posterior'],
-                        'shape_matrices': fit['shape_matrices'], 'resets': fit['shape_reset_count'],
-                        'beam_diagnostics': fit['beam_diagnostics']}
 
     activity = np.array([[1], [0], [0]])
     densities = np.array([[9., 1.], [1., 1.], [1., 1.]])
@@ -305,7 +268,7 @@ def run_experiments() -> dict:
     posterior = guided_activity_posterior(prior, densities, activity)
     updated = posterior.mean(0)
     before, after = np.log(prior @ densities[0]), np.log(updated @ densities[0])
-    result['E08-18'] = {'activity': activity, 'fixed_densities': densities, 'posterior': posterior,
+    result['E08-12'] = {'activity': activity, 'fixed_densities': densities, 'posterior': posterior,
                         'initial_priors': prior, 'mean_posterior_priors': updated,
                         'conditional_log_likelihood_before': before, 'conditional_log_likelihood_after': after,
                         'change': after - before,
@@ -323,14 +286,14 @@ def run_experiments() -> dict:
     model = basis @ activation
     activation *= np.sqrt((basis.T @ (power / model ** 2)) / (basis.T @ (1 / model)))
     costs.append(objective(basis, activation))
-    result['E08-19'] = {'observed_power': power, 'updated_basis': basis, 'updated_activation': activation,
+    result['E08-13'] = {'observed_power': power, 'updated_basis': basis, 'updated_activation': activation,
                         'updated_power': basis @ activation, 'objectives_initial_basis_activation': costs,
                         'scope': 'positive one-basis Gaussian/IS NMF substeps with demixing fixed'}
 
     a = np.array([.5 * np.eye(2), .25 * np.eye(2), .25 * np.eye(2)])
     b = np.array([np.diag([.6, .2]), np.diag([.2, .4]), np.diag([.2, .4])])
     observation = np.array([1., 2.])
-    result['E08-20'] = {'source_scms_a': a, 'source_scms_b': b,
+    result['E08-14'] = {'source_scms_a': a, 'source_scms_b': b,
                         'observation_scm_a': a.sum(0), 'observation_scm_b': b.sum(0),
                         'first_wiener_image_a': a[0] @ np.linalg.solve(a.sum(0), observation),
                         'first_wiener_image_b': b[0] @ np.linalg.solve(b.sum(0), observation)}
@@ -342,55 +305,59 @@ def run_experiments() -> dict:
     z = q @ x
     separated_z = np.array([np.diag(d) / np.diag(diagonal.sum(0)) * z for d in diagonal])
     images = np.array([np.linalg.solve(q, item) for item in separated_z])
-    result['E08-21'] = {'Q': q, 'shapes': np.array([g1, g2]), 'congruence_diagonals': diagonal,
+    result['E08-15'] = {'Q': q, 'shapes': np.array([g1, g2]), 'congruence_diagonals': diagonal,
                         'QQH': q @ q.T, 'commutator': g1 @ g2 - g2 @ g1,
                         'observation': x, 'transformed_observation': z, 'diagonal_images': separated_z,
                         'microphone_images': images, 'sum_images': images.sum(0)}
 
-    target, other = np.array([1., 1j]), np.array([-.8, 1.])
-    observed = target + other
-    ideal = target / observed
-    bounded = np.clip((target * observed.conj()).real / abs(observed) ** 2, 0, 1)
-    result['E08-22'] = {'target': target, 'interference': other, 'mixture': observed,
-                        'complex_oracle_mask': ideal, 'best_bounded_real_mask': bounded,
-                        'bounded_output': bounded * observed, 'squared_errors': abs(bounded * observed - target) ** 2}
-
     audio = css_overlap_case()
     same = np.tile([1., -1., 1., -1.], (2, 1))
-    result['E08-23'] = {'audio_parameters': audio['parameters'], 'wav_stems': list(audio['signals']),
+    result['E08-16'] = {'audio_parameters': audio['parameters'], 'wav_stems': list(audio['signals']),
                         'float_matching': audio['parameters']['matching'],
                         'floating_si_sdr_db': audio['parameters']['floating_si_sdr_db'],
                         'published_audio': css_published_audio(),
                         'silence': match_two_source_overlap(np.zeros((2, 4)), np.zeros((2, 4))),
                         'identical_slots': match_two_source_overlap(same, same)}
-    result['E08-24'] = whitening_minicase()
-    result['E08-25'] = congruence_model_boundary()
-    result['E08-26'] = fastmnmf_scale_objective()
-    result['E08-27'] = mixture_consistency_minicase()
+    result['E08-17'] = whitening_minicase()
+    result['E08-18'] = congruence_model_boundary()
+    result['E08-19'] = fastmnmf_scale_objective()
+    result['E08-20'] = mixture_consistency_minicase()
+
+    target, other = np.array([1., 1j]), np.array([-.8, 1.])
+    observed = target + other
+    ideal = target / observed
+    bounded = np.clip((target * observed.conj()).real / abs(observed) ** 2, 0, 1)
+    unit_mask_control = {'target': target, 'interference': other, 'mixture': observed,
+                         'complex_oracle_mask': ideal, 'best_bounded_real_mask': bounded,
+                         'bounded_output': bounded * observed,
+                         'squared_errors': abs(bounded * observed - target) ** 2}
     from codes.chapters.ch08.core.mask_representation import run_experiment
     from codes.chapters.ch08.examples.mask_representation_demo import check_assets
     mask_report, _ = run_experiment()
-    result['E08-28'] = {'floating_point_experiment': mask_report,
+    result['E08-21'] = {'unit_scale_complex_control': unit_mask_control,
+                        'floating_point_experiment': mask_report,
                         'published_audio': check_assets()}
-    result['E08-29'] = css_polarity_minicase()
+
     from codes.chapters.ch08.core.consistency_teaching import run_experiment as consistency_experiment
     from codes.chapters.ch08.core.overiva_teaching import run_experiment as overiva_experiment
-    result['E08-30'] = consistency_experiment()
-    result['E08-31'] = overiva_experiment()
+    result['E08-22'] = consistency_experiment()
+    result['E08-23'] = overiva_experiment()
+
     from codes.chapters.ch08.core.css_audio import (FILE_NAMES, generate_experiment,
         parameters as css_parameters, analytic_measurements, measure_signal)
     from codes.chapters.ch08.examples.generate_css_audio import check_assets as check_css_assets
     css_control = generate_experiment()
     css_signals = css_control['signals']
-    result['E08-32'] = {'parameters': css_parameters(),
+    result['E08-24'] = {'four_point_discrete_control': css_polarity_minicase(),
+                        'parameters': css_parameters(),
                         'overlap_matching': css_control['overlap_matching'],
                         'overlap_application_gain': css_control['overlap_application_gain'],
                         'analytic': {name: analytic_measurements(name) for name in FILE_NAMES},
                         'floating_point_measurements': {name: measure_signal(value, css_signals['reference'])
                                                         for name, value in css_signals.items()},
                         'published_audio': check_css_assets()}
-    result['E08-33'] = ci_sdr_vs_si_sdr_experiment()
-    result['E08-34'] = streaming_mac_and_bypass_experiment()
+    result['E08-25'] = ci_sdr_vs_si_sdr_experiment()
+    result['E08-26'] = streaming_mac_and_bypass_experiment()
     return _plain(result)
 
 

@@ -1,4 +1,4 @@
-"""Generate Chapter 0 figures (fig89..fig92) and numerical JSON reports.
+"""Generate Chapter 0 figures (fig84..fig87) and numerical JSON reports.
 
 Run from the repository root:
     .venv/bin/python scripts/make_math_figures.py
@@ -27,7 +27,6 @@ from codes.chapters.ch00.core.chapter00_math import (
     phasor_delay_and_decibel_budget_example,
     proper_complex_gaussian_and_crlb_example,
     rayleigh_quotient_and_gev_diagonalization_example,
-    solve_hermitian_gev,
     stft_cola_window_reconstruction_example,
     stft_wola_roundtrip,
     svd_condition_and_tikhonov_loading_example,
@@ -118,7 +117,7 @@ def _build_fig89(sources: dict[str, str]) -> None:
     # (a) Complex phasor sum on unit circle
     ax = axes[0, 0]
     theta_grid = np.linspace(0.0, 2.0 * np.pi, 240)
-    ax.plot(np.cos(theta_grid), np.sin(theta_grid), color="#9aa5b1", linestyle=":", linewidth=1.3, label="单位圆 $|z|=1$")
+    ax.plot(np.cos(theta_grid), np.sin(theta_grid), color="#9aa5b1", linestyle=":", linewidth=1.3, label="单位圆 $|Z|=1$")
     ax.axhline(0.0, color="#cbd2d9", linewidth=0.9)
     ax.axvline(0.0, color="#cbd2d9", linewidth=0.9)
     ax.annotate(
@@ -145,8 +144,8 @@ def _build_fig89(sources: dict[str, str]) -> None:
     ax.annotate(
         r"$Z=1-\mathrm{j}$" + "\n" + r"$(|Z|=\sqrt{2},\ -45^\circ)$",
         xy=(0.56, -0.56),
-        xytext=(-1.52, -1.44),
-        bbox=dict(fc="white", ec="none", alpha=0.90, pad=1.0),
+        xytext=(-1.62, -1.42),
+        bbox=dict(fc="white", ec="none", alpha=0.90, pad=1.2),
         arrowprops=dict(arrowstyle="->", color=C_RED, lw=1.3),
         color=C_RED,
     )
@@ -155,8 +154,8 @@ def _build_fig89(sources: dict[str, str]) -> None:
         title="(a) 复平面相量合成（1 kHz，Δτ=250 μs）",
         xlabel=r"实部 $\mathrm{Re}\{Z\}$",
         ylabel=r"虚部 $\mathrm{Im}\{Z\}$",
-        xlim=(-1.60, 1.92),
-        ylim=(-1.62, 1.48),
+        xlim=(-1.80, 1.95),
+        ylim=(-1.65, 1.48),
     )
     ax.legend(loc="upper left")
 
@@ -173,7 +172,7 @@ def _build_fig89(sources: dict[str, str]) -> None:
         ax.plot(f_khz, phase_rad, color=color, linestyle=ls, linewidth=2.0, label=lbl)
     ax.scatter([0.5, 1.5, 2.5], ex03["unwrapped_phases_rad"], color=C_BLUE, zorder=4, label="E00-03 三频点采样")
     ax.set(
-        title="(b) 纯时延传递函数的线性相位斜率",
+        title=r"(b) 纯时延传递函数的线性相位斜率（$f_s=16\ \mathrm{kHz}$）",
         xlabel=r"频率 $f$ / kHz",
         ylabel=r"解缠绕相位 $\phi(f)$ / rad",
         xlim=(0.0, 4.0),
@@ -187,13 +186,26 @@ def _build_fig89(sources: dict[str, str]) -> None:
     y_zp = ex04["zero_padded_fft_convolution"]
     y_circ_pad = np.pad(ex04["circular_convolution_no_pad"], (0, 2), constant_values=np.nan)
     n_idx = np.arange(y_lin.size)
-    ax.plot(n_idx, y_lin, "o-", color=C_BLUE, linewidth=2.1, markersize=6, label="时域线性卷积真值（6 点）")
-    ax.plot(n_idx, y_zp, "s--", color=C_GREEN, linewidth=1.8, markersize=5, label=r"补零 FFT 乘积（$N_{\mathrm{pad}}=8$）")
-    ax.plot(np.arange(4), y_circ_pad[:4], "^:", color=C_RED, linewidth=2.0, markersize=7, label=r"未补零循环卷积（$N=4$）")
+    ax.plot(
+        n_idx, y_lin, "o-", color=C_BLUE, linewidth=2.1,
+        markerfacecolor="none", markeredgewidth=2.0, markersize=9.5, zorder=3,
+        label="时域线性卷积真值（6 点）",
+    )
+    ax.plot(
+        n_idx, y_zp, "s--", color=C_GREEN, linewidth=1.8,
+        markersize=5.6, zorder=4, label=r"补零 FFT 乘积（$N_{\mathrm{pad}}=8$）",
+    )
+    ax.plot(
+        np.arange(4), y_circ_pad[:4], "^:", color=C_RED, linewidth=2.0,
+        markersize=5.2, zorder=5, label=r"未补零循环卷积（$N=4$）",
+    )
     ax.annotate(
         "尾部 y[4]=0.5\n折回混叠至 n=0",
-        xy=(0.05, 1.50),
-        xytext=(1.55, 1.85),
+        xy=(0.0, 1.62),
+        xytext=(-0.22, 3.18),
+        ha="left",
+        va="center",
+        bbox=dict(fc="white", ec="none", alpha=0.88, pad=1.0),
         arrowprops=dict(arrowstyle="->", color=C_RED, lw=1.4),
         color=C_RED,
     )
@@ -201,8 +213,8 @@ def _build_fig89(sources: dict[str, str]) -> None:
         title="(c) 循环卷积尾部缠绕与补零线性卷积",
         xlabel=r"离散采样索引 $n$",
         ylabel=r"序列幅值 $y[n]$",
-        xlim=(-0.35, 5.35),
-        ylim=(-3.90, 2.85),
+        xlim=(-0.38, 5.35),
+        ylim=(-3.90, 3.85),
     )
     ax.legend(loc="lower left")
 
@@ -231,7 +243,7 @@ def _build_fig89(sources: dict[str, str]) -> None:
     ax.plot(sample_axis, sq_50, color=C_RED, linestyle="-.", linewidth=1.9, label="50% 重叠平方汉宁（0.50 至 1.00 波纹）")
     ax.plot(sample_axis, sq_75, color=C_PURPLE, linestyle=":", linewidth=2.0, label="75% 重叠平方汉宁（恒为 1.5）")
     ax.set(
-        title="(d) STFT 重叠相加合成窗分母包络",
+        title=r"(d) STFT 重叠相加合成窗分母包络（窗长 $N=32$）",
         xlabel=r"稳定窗内局部采样索引 $n$",
         ylabel=r"叠加分母增益 $g[n]$",
         xlim=(0, 63),
@@ -242,10 +254,10 @@ def _build_fig89(sources: dict[str, str]) -> None:
     for ax_i in axes.flat:
         ax_i.grid(True, alpha=0.22)
         ax_i.set_axisbelow(True)
-    fig.suptitle("图89  复数相量旋转、时延线性相位斜率、补零线性卷积与 COLA 重叠相加重建")
+    fig.suptitle("图84  复数相量旋转、时延线性相位斜率、补零线性卷积与 COLA 重叠相加重建")
 
     report = {
-        "figure": 89,
+        "figure": 84,
         "exercise_ids": ["E00-03", "E00-04", "E00-05"],
         "source_sha256": sources,
         "anchors": {
@@ -262,8 +274,8 @@ def _build_fig89(sources: dict[str, str]) -> None:
     }
     _save_report_and_png(
         fig,
-        "fig89_complex_phasor_fourier.png",
-        "figure89_complex_phasor_fourier.json",
+        "fig84_complex_phasor_fourier.png",
+        "figure84_complex_phasor_fourier.json",
         report,
     )
 
@@ -275,45 +287,52 @@ def _build_fig90(sources: dict[str, str]) -> None:
 
     fig, axes = plt.subplots(2, 2, figsize=(9.5, 7.8), constrained_layout=True)
 
-    # (a) Column-space orthogonal decomposition & Pythagoras check
+    # (a) Column-space orthogonal decomposition & Pythagoras check (exact E00-06 lengths!)
     ax = axes[0, 0]
-    u_dir = np.array([2.0, 1.0]) / math.sqrt(5.0)
-    b_demo = np.array([1.2, 1.6])
-    b_par_demo = float(np.dot(b_demo, u_dir)) * u_dir
-    t_line = np.linspace(-0.4, 2.3, 50)
+    u_dir = np.array([2.0, 1.0], dtype=np.float64) / math.sqrt(5.0)
+    u_perp = np.array([-u_dir[1], u_dir[0]], dtype=np.float64)
+    len_par = math.sqrt(ex06["norm_sq_parallel"])
+    len_perp = math.sqrt(ex06["norm_sq_orthogonal"])
+    b_par_2d = len_par * u_dir
+    b_perp_2d = len_perp * u_perp
+    b_2d = b_par_2d + b_perp_2d
+    t_line = np.linspace(-0.28, 1.65, 50)
     ax.plot(t_line * u_dir[0], t_line * u_dir[1], color=C_BLUE, linestyle="--", linewidth=1.6, label=r"列空间 $\mathcal{R}(\mathbf{A})$")
-    ax.annotate("", xy=b_demo, xytext=(0.0, 0.0), arrowprops=dict(arrowstyle="->", color=C_MAIN, lw=2.3))
-    ax.annotate("", xy=b_par_demo, xytext=(0.0, 0.0), arrowprops=dict(arrowstyle="->", color=C_GREEN, lw=2.3))
-    ax.annotate("", xy=b_demo, xytext=b_par_demo, arrowprops=dict(arrowstyle="->", color=C_RED, lw=2.2))
+    ax.annotate("", xy=b_2d, xytext=(0.0, 0.0), arrowprops=dict(arrowstyle="->", color=C_MAIN, lw=2.3))
+    ax.annotate("", xy=b_par_2d, xytext=(0.0, 0.0), arrowprops=dict(arrowstyle="->", color=C_GREEN, lw=2.3))
+    ax.annotate("", xy=b_2d, xytext=b_par_2d, arrowprops=dict(arrowstyle="->", color=C_RED, lw=2.2))
     # Right-angle square marker at foot of perpendicular
-    u_perp = np.array([-u_dir[1], u_dir[0]])
-    sq_sz = 0.11
+    sq_sz = 0.085
     ra_pts = np.array(
         [
-            b_par_demo - sq_sz * u_dir,
-            b_par_demo - sq_sz * u_dir + sq_sz * u_perp,
-            b_par_demo + sq_sz * u_perp,
+            b_par_2d - sq_sz * u_dir,
+            b_par_2d - sq_sz * u_dir + sq_sz * u_perp,
+            b_par_2d + sq_sz * u_perp,
         ]
     )
     ax.plot(ra_pts[:, 0], ra_pts[:, 1], color=C_MAIN, linewidth=1.2)
-    ax.text(0.36, 1.15, r"$\vec{b}$", color=C_MAIN)
-    ax.text(0.84, 0.20, r"$\vec{b}_\parallel = \mathbf{P}_{\mathcal{R}(\mathbf{A})}\vec{b}$", color=C_GREEN)
-    ax.text(1.50, 1.20, r"$\vec{b}_\perp \in \mathcal{N}(\mathbf{A}^H)$", color=C_RED)
+    ax.text(0.18, 0.82, r"$\vec{b}$", color=C_MAIN)
+    ax.text(0.55, 0.14, r"$\vec{b}_\parallel = \mathbf{P}_{\mathcal{R}(\mathbf{A})}\vec{b}$", color=C_GREEN)
+    ax.text(0.95, 0.96, r"$\vec{b}_\perp \in \mathcal{N}(\mathbf{A}^H)$", color=C_RED)
     ax.text(
-        -0.30,
-        1.76,
-        f"E00-06 复投影勾股核验：\n"
+        -0.24,
+        1.78,
+        f"E00-06 正交截面（$\\|\\vec{{b}}\\|_2^2={ex06['norm_sq_b']:.3f}$）：\n"
         f"$\\|\\vec{{b}}_\\parallel\\|_2^2={ex06['norm_sq_parallel']:.3f},\\ "
         f"\\|\\vec{{b}}_\\perp\\|_2^2={ex06['norm_sq_orthogonal']:.3f}$",
         color=C_MAIN,
+        fontsize=8.2,
+        ha="left",
+        va="top",
+        bbox=dict(fc="white", ec="#d9e2ec", alpha=0.92, pad=2.2),
     )
     ax.set_aspect("equal", adjustable="box")
     ax.set(
         title="(a) 列空间正交投影与左零空间正交分解",
         xlabel="第一正交基坐标",
         ylabel="第二正交基坐标",
-        xlim=(-0.40, 2.70),
-        ylim=(-0.28, 2.15),
+        xlim=(-0.32, 2.02),
+        ylim=(-0.22, 1.88),
     )
     ax.legend(loc="lower right")
 
@@ -399,9 +418,9 @@ def _build_fig90(sources: dict[str, str]) -> None:
         color=C_GREEN,
     )
     ax.set(
-        title="(d) Woodbury 秩一更新对干扰方向的抑制深度",
+        title=r"(d) Woodbury 秩一更新干扰抑制深度（$\sigma_n^2=1$）",
         xlabel="干扰噪声功率比 INR / dB",
-        ylabel=r"$\|\mathbf{R}^{-1}\vec{u}\|_2 / \|\vec{u}\|_2$ / dB",
+        ylabel=r"$\|\mathbf{R}^{-1}\vec{u}\|_2 / \|\mathbf{R}_0^{-1}\vec{u}\|_2$ / dB",
         xlim=(-10.0, 30.0),
         ylim=(-62.0, 6.0),
     )
@@ -410,10 +429,10 @@ def _build_fig90(sources: dict[str, str]) -> None:
     for ax_i in axes.flat:
         ax_i.grid(True, alpha=0.22)
         ax_i.set_axisbelow(True)
-    fig.suptitle("图90  列空间正交投影分解、奇异值谱、Tikhonov 对角加载与 Woodbury 秩一更新")
+    fig.suptitle("图85  列空间正交投影分解、奇异值谱、Tikhonov 对角加载与 Woodbury 秩一更新")
 
     report = {
-        "figure": 90,
+        "figure": 85,
         "exercise_ids": ["E00-06", "E00-07", "E00-08"],
         "source_sha256": sources,
         "anchors": {
@@ -430,8 +449,8 @@ def _build_fig90(sources: dict[str, str]) -> None:
     }
     _save_report_and_png(
         fig,
-        "fig90_subspace_projection_svd.png",
-        "figure90_subspace_projection_svd.json",
+        "fig85_subspace_projection_svd.png",
+        "figure85_subspace_projection_svd.json",
         report,
     )
 
@@ -474,49 +493,78 @@ def _build_fig91(sources: dict[str, str]) -> None:
         den = float(np.vdot(w_ph, r_nn @ w_ph).real)
         gev_eq_amp.append(num / den)
     ax.plot(phi_deg, gev_eq_amp, color=C_PURPLE, linewidth=2.1, label=r"等幅相位扫描 $[1,\ e^{\mathrm{j}\phi}]^\top$")
-    ax.axhline(ex09["max_gev_sinr"], color=C_RED, linestyle="--", linewidth=2.0, label=r"GEV 全局最优 $\lambda_{\max}=4/3$")
+    ax.axhline(ex09["max_gev_sinr"], color=C_RED, linestyle="--", linewidth=1.8, label=r"GEV 全局最优 $\lambda_{\max}=4/3$")
+    w_gev_opt = ex09["principal_gev_weight"]
+    phi_opt_deg = math.degrees(math.atan2((w_gev_opt[1] / w_gev_opt[0]).imag, (w_gev_opt[1] / w_gev_opt[0]).real))
     ax.scatter([90.0], [ex09["unwhitened_matched_sinr"]], color=C_BLUE, s=52, zorder=5, label=r"未白化匹配滤波（$\phi=90^\circ,\ 1.00$）")
+    ax.scatter(
+        [phi_opt_deg], [ex09["max_gev_sinr"]],
+        color=C_RED, marker="*", s=135, zorder=6,
+        label=rf"GEV 最优相角（$\phi^\star\approx {phi_opt_deg:.1f}^\circ,\ 4/3$）",
+    )
     ax.set(
         title="(b) 广义瑞利商极值与未白化匹配滤波差距",
         xlabel="第二阵元相对相位 φ / °",
         ylabel="广义瑞利商 SINR",
         xlim=(-180.0, 180.0),
-        ylim=(-0.05, 2.10),
+        ylim=(-0.05, 2.30),
     )
     ax.legend(loc="upper left")
 
-    # (c) Cholesky whitening geometric ellipse -> unit circle
+    # (c) Cholesky whitening geometric ellipse -> unit circle (consistent w / L^T w notation!)
     ax = axes[1, 0]
     ang = np.linspace(0.0, 2.0 * np.pi, 240)
     unit_circle = np.vstack([np.cos(ang), np.sin(ang)])
-    # Ellipse z^T R_nn z = 1 <=> R_nn^{1/2} z on unit circle => z = R_nn^{-1/2} u
+    # Weight-space unit noise-power ellipse: w^T R_nn w = 1 <=> ||L^T w||_2 = 1
     eig_v, eig_q = np.linalg.eigh(r_nn.real)
     r_inv_sqrt = eig_q @ np.diag(1.0 / np.sqrt(eig_v)) @ eig_q.T
     ellipse_pts = r_inv_sqrt @ unit_circle
-    ax.plot(ellipse_pts[0], ellipse_pts[1], color=C_ORANGE, linewidth=2.1, label=r"原空间噪声等值椭圆 $\vec{z}^\top\mathbf{R}_{nn}\vec{z}=1$")
+    ax.plot(
+        ellipse_pts[0], ellipse_pts[1], color=C_ORANGE, linewidth=2.1,
+        label=r"原权重空间等噪声功率椭圆 $\vec{w}^\top\mathbf{R}_{nn}\vec{w}=1$",
+    )
     ax.plot(
         unit_circle[0], unit_circle[1], color=C_BLUE, linestyle="--", linewidth=2.0,
-        label=r"白化后各向同性圆 $\vec{u}^\top\vec{u}=1$（$\vec{u}=\mathbf{L}_B^\top\vec{z}$）",
+        label=r"白化权重空间单位圆 $\|\mathbf{L}^\top\vec{w}\|_2=1$",
     )
-    gev_real = solve_hermitian_gev(np.array([[2.0, -1.5], [-1.5, 2.0]]), r_nn.real)
-    v_opt = gev_real["joint_diagonalizer_phi"][:, -1].real
-    v_opt = v_opt / np.linalg.norm(v_opt)
-    ax.annotate("", xy=0.95 * v_opt, xytext=(0.0, 0.0), arrowprops=dict(arrowstyle="->", color=C_GREEN, lw=2.2))
+    # Show the actual principal semi-axes of R_nn = [[2,1],[1,2]] (lambda_max=3 at +45°, lambda_min=1 at -45°)
+    e_plus = np.array([1.0, 1.0], dtype=np.float64) / math.sqrt(2.0)
+    e_minus = np.array([-1.0, 1.0], dtype=np.float64) / math.sqrt(2.0)
+    tip_plus = (1.0 / math.sqrt(3.0)) * e_plus
+    tip_minus = 1.0 * e_minus
     ax.annotate(
-        "实对称截面：\n白化消除方向偏心",
-        xy=(0.55 * v_opt[0], 0.55 * v_opt[1]),
-        xytext=(-2.22, 0.82),
-        bbox=dict(fc="white", ec="none", alpha=0.90, pad=1.0),
-        arrowprops=dict(arrowstyle="->", color=C_GREEN, lw=1.3),
-        color=C_GREEN,
+        "", xy=tip_plus, xytext=(0.0, 0.0),
+        arrowprops=dict(arrowstyle="->", color=C_RED, lw=2.1),
     )
-    ax.set_aspect("equal", adjustable="datalim")
+    ax.annotate(
+        "", xy=tip_minus, xytext=(0.0, 0.0),
+        arrowprops=dict(arrowstyle="->", color=C_GREEN, lw=2.1),
+    )
+    ax.annotate(
+        r"强相关轴 $+45^\circ$" + "\n" + r"半轴 $1/\sqrt{3}\approx 0.58$",
+        xy=(tip_plus[0] + 0.04, tip_plus[1] + 0.03),
+        xytext=(1.18, 0.68),
+        bbox=dict(fc="white", ec="none", alpha=0.90, pad=1.0),
+        arrowprops=dict(arrowstyle="->", color="#6b7280", ls="--", lw=1.05),
+        color=C_RED,
+        fontsize=8.5,
+    )
+    ax.annotate(
+        r"弱相关轴 $-45^\circ$" + "\n" + r"半轴 $1.00$",
+        xy=(tip_minus[0] - 0.05, tip_minus[1] + 0.03),
+        xytext=(-2.34, 0.82),
+        bbox=dict(fc="white", ec="none", alpha=0.90, pad=1.0),
+        arrowprops=dict(arrowstyle="->", color="#6b7280", ls="--", lw=1.05),
+        color=C_GREEN,
+        fontsize=8.5,
+    )
+    ax.set_aspect("equal", adjustable="box")
     ax.set(
-        title="(c) 白化合同变换：相关噪声椭圆化为单位圆",
-        xlabel="第一分量坐标",
-        ylabel="第二分量坐标",
-        xlim=(-2.45, 2.35),
-        ylim=(-2.38, 1.52),
+        title="(c) 白化合同变换：权重等噪声功率椭圆化为单位圆",
+        xlabel=r"第一通道权重坐标 $w_1$ / $\tilde{w}_1$",
+        ylabel=r"第二通道权重坐标 $w_2$ / $\tilde{w}_2$",
+        xlim=(-2.45, 2.55),
+        ylim=(-2.25, 1.38),
     )
     ax.legend(loc="lower center")
 
@@ -542,10 +590,10 @@ def _build_fig91(sources: dict[str, str]) -> None:
     for ax_i in axes.flat:
         ax_i.grid(True, alpha=0.22)
         ax_i.set_axisbelow(True)
-    fig.suptitle("图91  厄米瑞利商极值轨迹、广义特征值联合对角化与 Khatri–Rao 虚拟孔径展开")
+    fig.suptitle("图86  厄米瑞利商极值轨迹、广义特征值联合对角化与 Khatri–Rao 虚拟孔径展开")
 
     report = {
-        "figure": 91,
+        "figure": 86,
         "exercise_ids": ["E00-09", "E00-10"],
         "source_sha256": sources,
         "anchors": {
@@ -560,8 +608,8 @@ def _build_fig91(sources: dict[str, str]) -> None:
     }
     _save_report_and_png(
         fig,
-        "fig91_hermitian_rayleigh_gev.png",
-        "figure91_hermitian_rayleigh_gev.json",
+        "fig86_hermitian_rayleigh_gev.png",
+        "figure86_hermitian_rayleigh_gev.json",
         report,
     )
 
@@ -595,7 +643,7 @@ def _build_fig92(sources: dict[str, str]) -> None:
     ax.axhline(ex11["mvdr_output_power"], color=C_RED, linestyle=":", linewidth=2.0, label="MVDR 闭式下界 7/19 ≈ 0.368")
     ax.axhline(ex11["lcmv_output_power"], color=C_PURPLE, linestyle="-.", linewidth=1.6, label="LCMV 硬零陷功率 3/8 = 0.375")
     ax.set(
-        title=r"(a) Wirtinger 共轭梯度投影收敛轨迹",
+        title=r"(a) Frost 投影 Wirtinger 梯度下降轨迹",
         xlabel=r"迭代步数 $t$",
         ylabel=r"输出功率 $\vec{w}^H\mathbf{R}\vec{w}$",
         xticks=range(0, 11, 2),
@@ -613,23 +661,33 @@ def _build_fig92(sources: dict[str, str]) -> None:
     chol_imp = np.linalg.cholesky(cov_imp)
     z_imp = (chol_imp @ rng.normal(0.0, 1.0, size=(2, n_pts))).T
 
-    ax.scatter(z_prop[:, 0], z_prop[:, 1], s=12, alpha=0.38, color=C_BLUE, label=r"圆对称 Proper（$|C_{zz}|=0$）")
-    ax.scatter(z_imp[:, 0], z_imp[:, 1], s=12, alpha=0.42, color=C_RED, marker="^", label=r"非圆对称（$|C_{zz}|=0.721$）")
+    ax.scatter(z_prop[:, 0], z_prop[:, 1], s=12, alpha=0.38, color=C_BLUE, label=r"圆对称 Proper（$|C_{zz}|=0$，实线 $2\sigma$ 圆）")
+    ax.scatter(z_imp[:, 0], z_imp[:, 1], s=12, alpha=0.42, color=C_RED, marker="^", label=r"非圆对称（$|C_{zz}|=0.721$，虚线 $2\sigma$ 椭圆）")
     ang = np.linspace(0.0, 2.0 * np.pi, 200)
     unit_c = np.vstack([np.cos(ang), np.sin(ang)])
     c_prop = 2.0 * math.sqrt(0.5) * unit_c
     c_imp = 2.0 * (chol_imp @ unit_c)
     ax.plot(c_prop[0], c_prop[1], color=C_BLUE, linewidth=2.0)
     ax.plot(c_imp[0], c_imp[1], color=C_RED, linestyle="--", linewidth=2.0)
+    ax.text(
+        2.86,
+        2.02,
+        r"$2\sigma$ 等值线（覆盖 $1-e^{-2}\approx 86.5\%$）",
+        ha="right",
+        va="center",
+        fontsize=8.0,
+        color=C_MAIN,
+        bbox=dict(fc="white", ec="#d9e2ec", alpha=0.92, pad=1.8),
+    )
     ax.set_aspect("equal", adjustable="box")
     ax.set(
-        title="(b) 圆对称与非圆对称复高斯分布对比",
+        title=r"(b) 圆对称与非圆对称复高斯分布（含 $2\sigma$ 等值线）",
         xlabel=r"实部 $\mathrm{Re}\{z\}$",
         ylabel=r"虚部 $\mathrm{Im}\{z\}$",
-        xlim=(-2.75, 2.75),
-        ylim=(-2.15, 3.75),
+        xlim=(-2.95, 2.95),
+        ylim=(-2.10, 3.88),
     )
-    ax.legend(loc="upper left")
+    ax.legend(loc="upper center", fontsize=8.0, handletextpad=0.35, borderpad=0.35)
 
     # (c) 8-point real white-noise DFT variance vs pseudo-variance (DC & Nyquist exception)
     ax = axes[1, 0]
@@ -648,7 +706,7 @@ def _build_fig92(sources: dict[str, str]) -> None:
     ax.annotate("Nyquist 实频点", xy=(4.18, 1.01), xytext=(4.45, 1.16), arrowprops=dict(arrowstyle="->", color=C_ORANGE, lw=1.3), color=C_ORANGE)
     ax.set(
         title="(c) 实白噪声 8 点酉 DFT 的实频点非圆对称性",
-        xlabel="DFT 频点索引 k",
+        xlabel=r"DFT 频点索引 $k$",
         ylabel="二阶统计矩幅值",
         xticks=bins,
         ylim=(0.0, 1.95),
@@ -673,9 +731,9 @@ def _build_fig92(sources: dict[str, str]) -> None:
         p_cur = step_res["posterior_cov_joseph"]
 
     steps_x = np.arange(1, len(obs_seq) + 1)
-    ax.plot(steps_x, pred_vars, "s--", color=C_ORANGE, linewidth=2.0, markersize=5, label=r"先验预测方差 $P_{t|t-1}[0,0]$")
-    ax.plot(steps_x, post_vars, "o-", color=C_GREEN, linewidth=2.2, markersize=6, label=r"Joseph 后验方差 $P_{t|t}[0,0]$")
-    ax.axhline(3.0, color=C_BLUE, linestyle=":", linewidth=1.7, label="单帧观测噪声方差 R = 3.0")
+    ax.plot(steps_x, pred_vars, "s--", color=C_ORANGE, linewidth=2.0, markersize=5, label=r"先验预测方差 $(\mathbf{P}_{t|t-1})_{11}$")
+    ax.plot(steps_x, post_vars, "o-", color=C_GREEN, linewidth=2.2, markersize=6, label=r"Joseph 后验方差 $(\mathbf{P}_{t|t})_{11}$")
+    ax.axhline(3.0, color=C_BLUE, linestyle=":", linewidth=1.7, label=r"单帧观测噪声方差 $R = 3.0$")
     ax.annotate(
         "E00-14 第 1 步\n5.000 → 1.875",
         xy=(1.05, 1.90),
@@ -685,7 +743,7 @@ def _build_fig92(sources: dict[str, str]) -> None:
     )
     ax.set(
         title="(d) 卡尔曼预测—新息—Joseph 协方差递推",
-        xlabel="递推帧步 t",
+        xlabel=r"递推帧步 $t$",
         ylabel="位置状态误差方差",
         xticks=steps_x,
         ylim=(0.45, 9.20),
@@ -695,10 +753,10 @@ def _build_fig92(sources: dict[str, str]) -> None:
     for ax_i in axes.flat:
         ax_i.grid(True, alpha=0.22)
         ax_i.set_axisbelow(True)
-    fig.suptitle("图92  Wirtinger 共轭梯度下降、圆对称复高斯伪协方差判据、维纳正交与卡尔曼更新")
+    fig.suptitle("图87  Wirtinger 投影梯度下降、复高斯圆对称与实频点非圆性、卡尔曼 Joseph 协方差递推")
 
     report = {
-        "figure": 92,
+        "figure": 87,
         "exercise_ids": ["E00-11", "E00-13", "E00-14"],
         "source_sha256": sources,
         "seed": FIGURE_SEED_GAUSSIAN,
@@ -716,8 +774,8 @@ def _build_fig92(sources: dict[str, str]) -> None:
     }
     _save_report_and_png(
         fig,
-        "fig92_wirtinger_probability_bayesian.png",
-        "figure92_wirtinger_probability_bayesian.json",
+        "fig87_wirtinger_probability_bayesian.png",
+        "figure87_wirtinger_probability_bayesian.json",
         report,
     )
 

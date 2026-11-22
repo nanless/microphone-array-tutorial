@@ -1,4 +1,4 @@
-"""Figure61 provenance and geometry are checked independently of plotting."""
+"""Figure56 provenance and geometry are checked independently of plotting."""
 import copy
 import json
 from pathlib import Path
@@ -14,7 +14,7 @@ class TrackingInformationReportTests(unittest.TestCase):
     def setUp(self):
         temp = tempfile.TemporaryDirectory(); self.addCleanup(temp.cleanup)
         self.path = Path(temp.name)/'report.json'
-        self.original = json.loads((ROOT/'codes/chapters/ch09/reports/figure61_tracking_information.json').read_text())
+        self.original = json.loads((ROOT/'codes/chapters/ch09/reports/figure56_tracking_information.json').read_text())
 
     def check(self, report):
         self.path.write_text(json.dumps(report))
@@ -22,7 +22,7 @@ class TrackingInformationReportTests(unittest.TestCase):
 
     def test_actual_report_and_original_png_have_current_same_script(self):
         self.check(self.original)
-        self.assertEqual(quality.png_provenance_issues(ROOT/'figures/fig61_tracking_information.png',
+        self.assertEqual(quality.png_provenance_issues(ROOT/'figures/fig56_tracking_information.png',
                          ROOT/'scripts/make_figures.py'), [])
 
     def test_wrong_source_or_receiver_time_scope_is_rejected(self):

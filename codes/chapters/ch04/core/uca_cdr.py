@@ -1,9 +1,9 @@
-"""E04-26 & E04-27: UCA phase-mode ESPRIT and blind two-mic coherent-to-diffuse ratio (CDR).
+"""E04-22 & E04-23: UCA phase-mode ESPRIT and blind two-mic coherent-to-diffuse ratio (CDR).
 
 Pure-NumPy deterministic implementations without SciPy or import-time side effects.
 References:
 - Mathews & Zoltowski, IEEE Trans. Signal Process. 42(9), 1994 (UCA-ESPRIT).
-- Schwarz & Habets, Signal Processing 117, 2015, Eq. (25) (DOA-independent CDR).
+- Schwarz & Kellermann, IEEE/ACM TASLP 23(6):1006-1018, 2015, Eq. (25) (DOA-independent CDR; doi:10.1109/TASLP.2015.2418571).
 """
 
 from __future__ import annotations
@@ -150,7 +150,7 @@ def cdr_nodir(
     gamma_diff: float | np.ndarray,
     eps: float = 1e-12,
 ) -> np.ndarray:
-    """Estimate DOA-independent coherent-to-diffuse ratio (Schwarz & Habets 2015, Eq. 25)."""
+    """Estimate DOA-independent coherent-to-diffuse ratio (Schwarz & Kellermann, IEEE/ACM TASLP 2015, Eq. 25)."""
     eps_val = finite_real_scalar(eps, "eps")
     if eps_val <= 0.0 or eps_val >= 0.1:
         raise ValueError("eps must lie in (0, 0.1)")
@@ -197,7 +197,7 @@ def uca_phase_mode_example(
     true_azimuth_deg: float = 30.0,
     sound_speed: float = SPEED_OF_SOUND,
 ) -> dict[str, object]:
-    """E04-26: UCA circular-harmonics Vandermonde transform, M=8 vs M=4 aliasing, and Bessel zeros."""
+    """E04-22: UCA circular-harmonics Vandermonde transform, M=8 vs M=4 aliasing, and Bessel zeros."""
     r_m = finite_real_scalar(radius_m, "radius_m")
     kr = finite_real_scalar(kappa_r, "kappa_r")
     az = finite_real_scalar(true_azimuth_deg, "true_azimuth_deg")
@@ -265,7 +265,7 @@ def uca_phase_mode_example(
 
 
 def two_mic_cdr_example() -> dict[str, object]:
-    """E04-27: exact rational hand-calculation and boundary regimes for blind two-mic CDR_nodir."""
+    """E04-23: exact rational hand-calculation and boundary regimes for blind two-mic CDR_nodir."""
     gamma_n = 0.5
     true_cdr = 2.0
     gamma_s = 1j

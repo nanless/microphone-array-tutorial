@@ -1,4 +1,4 @@
-"""Publish figure77 only with exact fixed-PCM epochs and lifecycle records.
+"""Publish figure72 only with exact fixed-PCM epochs and lifecycle records.
 
 Every fixture is an ordinary temporary copy; no generator/FSM is the oracle
 and no published asset is modified by this test.
@@ -17,8 +17,8 @@ from scripts import quality_check as quality
 
 ROOT = Path(__file__).resolve().parents[1]
 AUDIO = 'codes/chapters/ch09/tracking_audio'
-REPORT = 'codes/chapters/ch09/reports/figure77_tracking_lifecycle.json'
-FIGURE = 'figures/fig77_tracking_lifecycle.png'
+REPORT = 'codes/chapters/ch09/reports/figure72_tracking_lifecycle.json'
+FIGURE = 'figures/fig72_tracking_lifecycle.png'
 SOURCES = {
     'scripts/make_tracking_figures.py', 'codes/chapters/ch09/core/lifecycle.py',
     'codes/chapters/ch09/examples/tracking_lifecycle_demo.py',

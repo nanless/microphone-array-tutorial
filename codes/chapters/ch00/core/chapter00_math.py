@@ -208,15 +208,38 @@ def coordinate_convention_bridge(
     r_rec = float(np.linalg.norm(pos_m))
     el_rec_deg = math.degrees(math.asin(np.clip(pos_m[2] / r_rec, -1.0, 1.0)))
     th_rec_deg = math.degrees(math.atan2(pos_m[0], pos_m[1]))
+
+    # AES69 / SOFA & AmbiX listener-local coordinates:
+    # +x_A = front (+y_book), +y_A = left (-x_book), +z_A = up (+z_book);
+    # phi_SOFA = azimuth CCW from front (+x_A -> +y_A) = -theta_book, delta_SOFA = elevation = phi_el.
+    sofa_az_deg = wrap_angle_pm180_deg(-th_deg)
+    sofa_el_deg = el_deg
+    u_ambix_sofa = np.array([u_vec[1], -u_vec[0], u_vec[2]], dtype=np.float64)
+    pos_ambix_sofa_m = r_m * u_ambix_sofa
+    sofa_az_rad = math.radians(sofa_az_deg)
+    sofa_el_rad = math.radians(sofa_el_deg)
+    u_from_sofa = np.array(
+        [
+            math.cos(sofa_el_rad) * math.cos(sofa_az_rad),
+            math.cos(sofa_el_rad) * math.sin(sofa_az_rad),
+            math.sin(sofa_el_rad),
+        ],
+        dtype=np.float64,
+    )
     return {
         "theta_book_deg": th_deg,
         "phi_el_deg": el_deg,
         "radius_m": r_m,
         "alpha_ccw_from_px_deg": alpha_deg,
         "colatitude_deg": colatitude_deg,
+        "sofa_azimuth_deg": sofa_az_deg,
+        "sofa_elevation_deg": sofa_el_deg,
         "unit_direction": u_vec,
         "position_cartesian_m": pos_m,
+        "ambix_sofa_unit_direction": u_ambix_sofa,
+        "ambix_sofa_position_cartesian_m": pos_ambix_sofa_m,
         "sh_consistency_error": float(np.linalg.norm(u_vec - u_from_sh)),
+        "ambix_sofa_consistency_error": float(np.linalg.norm(u_ambix_sofa - u_from_sofa)),
         "roundtrip_theta_book_deg": th_rec_deg,
         "roundtrip_phi_el_deg": el_rec_deg,
         "roundtrip_radius_m": r_rec,
@@ -876,11 +899,11 @@ def vec_kronecker_and_khatri_rao_example() -> dict:
     kron_eigs = np.linalg.eigvalsh(kron_pq)
     outer_eigs = np.sort(np.outer(np.linalg.eigvalsh(p_mat), np.linalg.eigvalsh(q_mat)).ravel())
 
-    # 3-sensor sparse linear array at integer lags {0, 1, 3} -> difference coarray {-3..+3} (7 unique lags!)
+    # 3-sensor sparse linear array at integer lags {0, 1, 3} -> difference coarray {-3..+3} (7 unique lags)
     sensor_pos = np.array([0, 1, 3], dtype=np.int64)
     diff_lags = sorted({int(m - n) for m in sensor_pos for n in sensor_pos})
     phases = np.array([0.35 * math.pi, -0.55 * math.pi], dtype=np.float64)
-    steer = np.exp(-1j * sensor_pos[:, None] * phases[None, :])
+    steer = np.exp(1j * sensor_pos[:, None] * phases[None, :])
     src_powers = np.array([2.0, 1.0], dtype=np.float64)
     noise_var = 0.25
 
@@ -1731,4 +1754,179 @@ def bessel_legendre_and_spherical_harmonics_example() -> dict:
         "legendre_orthogonality_fro_error": float(np.linalg.norm(gram_leg - expected_leg_diag, ord="fro")),
         "legendre_p3_odd_parity_error": odd_parity_err,
         "spherical_harmonic_addition_max_error": max(addition_errors),
+    }
+
+
+# ---------------------------------------------------------------------------
+# Additional Ch00 foundation primitives (Dirichlet, R^{1/2}, matrix Wirtinger,
+# Gauss-Markov GLS, Wilson CI / zero-failure bound, real FOA spherical harmonics)
+# ---------------------------------------------------------------------------
+
+def dirichlet_ula_array_factor(num_mics: int, psi_rad: float) -> dict:
+    """Compare direct M-element geometric sum sum_{m=0}^{M-1} exp(-j m psi)
+    against the closed-form Dirichlet kernel exp(-j (M-1) psi / 2) * sin(M psi / 2) / sin(psi / 2)."""
+    m_cnt = _check_int(num_mics, "num_mics", min_value=1)
+    psi = _check_real_scalar(psi_rad, "psi_rad")
+
+    idx = np.arange(m_cnt, dtype=np.float64)
+    direct = complex(np.sum(np.exp(-1j * idx * psi)))
+    half_psi = 0.5 * psi
+    sin_half = math.sin(half_psi)
+    if abs(sin_half) <= 1e-12:
+        # At psi = 2 k pi, every term exp(-j m 2 k pi) = 1, so both sum and limit equal +M
+        closed = complex(float(m_cnt), 0.0)
+    else:
+        phase = complex(math.cos(-0.5 * (m_cnt - 1) * psi), math.sin(-0.5 * (m_cnt - 1) * psi))
+        closed = phase * (math.sin(0.5 * m_cnt * psi) / sin_half)
+    return {
+        "num_mics": m_cnt,
+        "psi_rad": psi,
+        "direct_sum": direct,
+        "dirichlet_closed_form": closed,
+        "abs_error": abs(direct - closed),
+        "normalized_magnitude": abs(direct) / m_cnt,
+    }
+
+
+def hermitian_matrix_sqrt(mat: np.ndarray) -> dict:
+    """Compute Hermitian positive-definite square root R^{1/2} = U Lambda^{1/2} U^H
+    and its inverse R^{-1/2} = U Lambda^{-1/2} U^H."""
+    r = _check_hermitian(mat, "mat", strictly_pd=True)
+    eigvals, eigvecs = np.linalg.eigh(r)
+    sqrt_eigs = np.sqrt(eigvals)
+    r_sqrt = (eigvecs * sqrt_eigs[None, :]) @ eigvecs.conj().T
+    r_inv_sqrt = (eigvecs * (1.0 / sqrt_eigs)[None, :]) @ eigvecs.conj().T
+    return {
+        "r_sqrt": r_sqrt,
+        "r_inv_sqrt": r_inv_sqrt,
+        "eigenvalues": eigvals,
+        "square_fro_error": float(np.linalg.norm(r_sqrt @ r_sqrt - r, ord="fro")),
+        "whitening_fro_error": float(
+            np.linalg.norm(r_inv_sqrt @ r @ r_inv_sqrt - np.eye(r.shape[0]), ord="fro")
+        ),
+    }
+
+
+def matrix_wirtinger_logdet_check(w_mat: np.ndarray, fd_eps: float = 1e-6) -> dict:
+    """Verify matrix Wirtinger log-determinant gradient:
+    d ln|det(W)| / d W^* = 0.5 * W^{-H} against entry-wise real/imag central finite differences."""
+    w = _check_complex_array(w_mat, "w_mat", ndim=2)
+    m = w.shape[0]
+    if w.shape != (m, m):
+        raise ValueError(f"w_mat must be square, got {w.shape}")
+    _require_nonsingular(w, "w_mat")
+    eps = _check_real_scalar(fd_eps, "fd_eps", min_value=1e-10, max_value=1e-2)
+
+    def f_logabsdet(mat: np.ndarray) -> float:
+        return float(math.log(abs(np.linalg.det(mat))))
+
+    grad_analytic = 0.5 * np.linalg.inv(w).conj().T
+    grad_fd = np.zeros_like(w)
+    for row in range(m):
+        for col in range(m):
+            e_rc = np.zeros_like(w)
+            e_rc[row, col] = 1.0
+            df_dr = (f_logabsdet(w + eps * e_rc) - f_logabsdet(w - eps * e_rc)) / (2.0 * eps)
+            df_di = (f_logabsdet(w + 1j * eps * e_rc) - f_logabsdet(w - 1j * eps * e_rc)) / (2.0 * eps)
+            grad_fd[row, col] = 0.5 * (df_dr + 1j * df_di)
+
+    return {
+        "analytic_gradient": grad_analytic,
+        "fd_gradient": grad_fd,
+        "max_abs_error": float(np.max(np.abs(grad_analytic - grad_fd))),
+    }
+
+
+def gauss_markov_gls_solve(
+    a_mat: np.ndarray,
+    b_vec: np.ndarray,
+    noise_cov: np.ndarray,
+) -> dict:
+    """Generalized / Weighted Least Squares (Gauss-Markov BLUE) via Cholesky whitening C = L L^H."""
+    a = _check_complex_array(a_mat, "a_mat", ndim=2)
+    m, p = a.shape
+    if m < p:
+        raise ValueError("a_mat must have m >= p with full column rank")
+    b = _check_complex_array(b_vec, "b_vec", shape=(m,))
+    c_nn = _check_hermitian(noise_cov, "noise_cov", strictly_pd=True)
+    if c_nn.shape != (m, m):
+        raise ValueError("noise_cov dimension must match a_mat row count")
+
+    chol_l = np.linalg.cholesky(c_nn)
+    a_tilde = np.linalg.solve(chol_l, a)
+    b_tilde = np.linalg.solve(chol_l, b)
+
+    gram_gls = _check_hermitian(a_tilde.conj().T @ a_tilde, "A^H C^{-1} A", strictly_pd=True)
+    x_gls = np.linalg.solve(gram_gls, a_tilde.conj().T @ b_tilde)
+    cov_gls = np.linalg.inv(gram_gls)
+
+    # Direct metric orthogonality: A^H C^{-1} (A x_gls - b) == 0
+    resid_gls = a @ x_gls - b
+    weighted_orth = a.conj().T @ np.linalg.solve(c_nn, resid_gls)
+
+    # Compare against OLS covariance (A^H A)^{-1} A^H C A (A^H A)^{-1}
+    gram_ols = _check_hermitian(a.conj().T @ a, "A^H A", strictly_pd=True)
+    p_ols = np.linalg.solve(gram_ols, a.conj().T)
+    x_ols = p_ols @ b
+    cov_ols = p_ols @ c_nn @ p_ols.conj().T
+    cov_diff = 0.5 * ((cov_ols - cov_gls) + (cov_ols - cov_gls).conj().T)
+
+    return {
+        "cholesky_l": chol_l,
+        "x_gls": x_gls,
+        "x_ols": x_ols,
+        "cov_gls": cov_gls,
+        "cov_ols": cov_ols,
+        "weighted_orthogonality_norm": float(np.linalg.norm(weighted_orth)),
+        "cov_ols_minus_gls_min_eig": float(np.min(np.linalg.eigvalsh(cov_diff))),
+    }
+
+
+def binomial_zero_failure_upper_bound(n_trials: int, alpha: float = 0.05) -> float:
+    """Exact one-sided (1 - alpha) upper bound p_U = 1 - alpha^(1/n) when 0 failures occur in n trials."""
+    n = _check_int(n_trials, "n_trials", min_value=1)
+    a = _check_real_scalar(alpha, "alpha", min_value=0.0, strict_min=True, max_value=1.0, strict_max=True)
+    return float(1.0 - (a ** (1.0 / n)))
+
+
+def wilson_score_interval(
+    k_success: int,
+    n_trials: int,
+    z_value: float = 1.959963984540054,
+) -> dict:
+    """Wilson score confidence interval for binomial proportion k / n."""
+    n = _check_int(n_trials, "n_trials", min_value=1)
+    k = _check_int(k_success, "k_success", min_value=0, max_value=n)
+    z = _check_real_scalar(z_value, "z_value", min_value=0.0, strict_min=True)
+
+    p_hat = k / n
+    z2 = z * z
+    denom = 1.0 + z2 / n
+    center = (p_hat + z2 / (2.0 * n)) / denom
+    half_width = (z / denom) * math.sqrt((p_hat * (1.0 - p_hat) / n) + (z2 / (4.0 * n * n)))
+    return {
+        "p_hat": p_hat,
+        "lower": max(0.0, center - half_width),
+        "upper": min(1.0, center + half_width),
+        "center": center,
+        "half_width": half_width,
+    }
+
+
+def real_spherical_harmonic_foa(colatitude_rad: float, azimuth_rad: float) -> dict:
+    """Real first-order spherical harmonics (ACN 0..3: W, Y, Z, X) in SN3D, N3D, and orthonormal conventions."""
+    vt = _check_real_scalar(colatitude_rad, "colatitude_rad", min_value=0.0, max_value=math.pi)
+    az = _check_real_scalar(azimuth_rad, "azimuth_rad")
+    nx = math.sin(vt) * math.cos(az)
+    ny = math.sin(vt) * math.sin(az)
+    nz = math.cos(vt)
+    # ACN ordering: 0=(0,0) W, 1=(1,-1) Y, 2=(1,0) Z, 3=(1,+1) X
+    sn3d = np.array([1.0, ny, nz, nx], dtype=np.float64)
+    n3d = np.array([1.0, math.sqrt(3.0) * ny, math.sqrt(3.0) * nz, math.sqrt(3.0) * nx], dtype=np.float64)
+    ortho = n3d / math.sqrt(4.0 * math.pi)
+    return {
+        "unit_vec_xyz": np.array([nx, ny, nz], dtype=np.float64),
+        "acn_sn3d": sn3d,
+        "acn_n3d": n3d,
+        "acn_orthonormal": ortho,
     }

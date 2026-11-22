@@ -254,15 +254,16 @@ p.tutorial-exercise-lead{break-after:avoid;page-break-after:avoid}
 .pdf-imaging-hand-example{break-inside:avoid;page-break-inside:avoid}
 .chap p.tutorial-short-lead{break-after:avoid;page-break-after:avoid}
 .chap p.tutorial-anchor-only{margin:0;break-after:avoid;page-break-after:avoid}
-.chap p.tutorial-anchor-only+.anchor-alias,.chap p.tutorial-anchor-only+.anchor-alias+.anchor-alias,.chap p.tutorial-anchor-only+.anchor-alias+.anchor-alias+.anchor-alias{display:block;break-before:avoid;break-after:avoid;page-break-before:avoid;page-break-after:avoid}
+.chap>span.anchor-alias{display:block;break-after:avoid;page-break-after:avoid}
+.chap p.tutorial-anchor-only+.anchor-alias,.chap>span.anchor-alias+.anchor-alias{break-before:avoid;page-break-before:avoid}
 /* 第2章的图注和短引导句随其解释对象排版，避免只剩一行或孤立图注。 */
 #ch-2 p:has(+ol),#ch-2 p:has(+ul){break-after:avoid;page-break-after:avoid}
 #ch-2 p:has(>img[src$="fig03_near_far_field.png"]),#ch-2 p:has(>img[src$="fig05_room_acoustics.png"]){break-after:avoid;page-break-after:avoid}
 /* 第5章图15和首段模型口径留在同页，避免读者翻页对照曲线。 */
 #ch-5 p:has(>img[src$="fig15_wng_di.png"]){break-after:avoid;page-break-after:avoid}
-/* 第6章图39稍收高并连着第一段图解，纸版可在同页读框图与说明。 */
-#ch-6 img[src$="fig39_aec_pbfdaf_flow.png"]{max-height:180mm}
-#ch-6 p:has(>img[src$="fig39_aec_pbfdaf_flow.png"]){break-after:avoid;page-break-after:avoid}
+/* 第6章图34稍收高并连着第一段图解，纸版可在同页读框图与说明。 */
+#ch-6 img[src$="fig34_aec_pbfdaf_flow.png"]{max-height:180mm}
+#ch-6 p:has(>img[src$="fig34_aec_pbfdaf_flow.png"]){break-after:avoid;page-break-after:avoid}
 #ch-2 p:has(>strong:first-child):has(+p+p > mjx-container){break-after:avoid;page-break-after:avoid}
 /* 第4章的整段粗体算例标题和进阶引导随下一段排版。 */
 #ch-4 p:has(>strong:only-child){break-after:avoid;page-break-after:avoid}
@@ -634,7 +635,7 @@ def keep_imaging_hand_example(page):
     if len(positions) != 1:
         raise ValueError('成像手算标题缺失或重复，须重新核定有限分页组')
     pattern = (r'(<h3 id="ch-14-sec-u-3179856767">两个格点的完整手算</h3>.*?)'
-               r'(?=<p><img\b[^>]*src="\.\./figures/fig67_imaging_psf\.png")')
+               r'(?=<p><img\b[^>]*src="\.\./figures/fig62_imaging_psf\.png")')
     start = positions[0]
     match = re.match(pattern, page[start:], re.S)
     if match is None or any(match.group(1).count(r'\tag{' + number + '}') != 1
@@ -923,8 +924,8 @@ def build_html(build_date=None):
         '<table class="cover-stats-table">'
         '<thead><tr>'
         f'<th scope="col">{len(CHAPTERS)} 篇合订文档</th>'
-        '<th scope="col">443 道可运行练习</th>'
-        '<th scope="col">92 张溯源插图</th>'
+        '<th scope="col">352 道可运行练习</th>'
+        '<th scope="col">87 张溯源插图</th>'
         '<th scope="col">283 段配套音频</th>'
         '</tr></thead>'
         '<tbody><tr>'
@@ -1858,8 +1859,8 @@ def check_figures():
                 missing.append(f"{fname}: {m.group(1)}")
     if missing:
         raise SystemExit("缺图，中止：\n" + "\n".join(missing))
-    if len(refs) != 92:
-        raise SystemExit(f"唯一图片数异常：期望 92，实际 {len(refs)}")
+    if len(refs) != 87:
+        raise SystemExit(f"唯一图片数异常：期望 87，实际 {len(refs)}")
     print(f"图片检查通过（{len(CHAPTERS)} 篇、{len(refs)} 张唯一图片）")
 
 

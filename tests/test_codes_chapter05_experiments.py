@@ -19,7 +19,9 @@ from codes.chapters.ch05.beamformer_common_input_demo import run_experiment
 class ChapterFiveExamplesTest(unittest.TestCase):
     def test_catalog_is_complete_and_strict_json(self):
         results = ex.run_exercises()
-        self.assertEqual(set(results), {f'E05-{i:02d}' for i in range(8, 25)} | {'E05-28', 'E05-29'})
+        self.assertEqual(set(results), {f'E05-{i:02d}' for i in range(5, 18)})
+        self.assertEqual(results['E05-14']['metadata']['randomness'], 'fixed white-noise seed 20260522')
+        self.assertEqual(results['E05-05']['metadata']['randomness'], 'none')
         json.dumps(results, allow_nan=False)
 
     def test_gsc_solution_matches_inverse_variance_weights(self):
@@ -199,8 +201,8 @@ class ChapterFiveExamplesTest(unittest.TestCase):
             self.assertAlmostEqual(row['interference_plus_noise_output_power'], power)
             self.assertAlmostEqual(row['true_target_output_sinr_db'], 10*math.log10(abs(response)**2/power))
 
-    def test_e05_28_first_order_dma_wng_slope_and_gasket_leakage(self):
-        r = ex.exercise_05_28()
+    def test_e05_16_first_order_dma_wng_slope_and_gasket_leakage(self):
+        r = ex.exercise_05_16()
         q_factors = [row['directivity_factor_3d'] for row in r['classical_patterns']]
         np.testing.assert_allclose(q_factors, [3.0, 4.0, 2.0 + math.sqrt(3.0), 3.0], atol=1e-14)
         kd_200 = 4.0 * math.pi / 343.0
@@ -222,8 +224,8 @@ class ChapterFiveExamplesTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             first_order_dma_weights(17150.0, 0.01, 180.0, c=343.0, equalize=True)
 
-    def test_e05_29_kronecker_mvdr_exactness_vs_point_interferer_line_null(self):
-        r = ex.exercise_05_29()
+    def test_e05_17_kronecker_mvdr_exactness_vs_point_interferer_line_null(self):
+        r = ex.exercise_05_17()
         sep = r['separable_mvdr']
         expected_wx = np.array([(2 + 1j) / 4, (2 - 1j) / 4])
         expected_wy = np.array([3 / 4, 1 / 4])

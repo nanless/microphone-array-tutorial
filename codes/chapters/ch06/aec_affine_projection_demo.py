@@ -1,4 +1,4 @@
-"""E06-34--38: causal APA windows, regularization, freeze and path priors.
+"""E06-21..24: causal APA windows, regularization and path priors.
 
 Run python -m codes.chapters.ch06.aec_affine_projection_demo. Inputs are
 dimensionless deterministic arithmetic, not speech or device measurements.
@@ -37,7 +37,7 @@ def _two_columns(delta=1., mu=1., initial_weights=None):
 
 
 def projection_hand_case() -> dict:
-    """E34: warm the first TRUE observation while holding the zero weights."""
+    """E06-21: warm the first TRUE observation while holding the zero weights."""
     _, first, result = _two_columns()
     _, _, exact = _two_columns(delta=0.)
     one = APAState(2, 1, step_size=1., regularization=1., initial_history=[1.])
@@ -56,7 +56,7 @@ def projection_hand_case() -> dict:
 
 
 def same_weight_errors() -> dict:
-    """E35: an old emitted prior error is not a current-window prior error."""
+    """E06-22: an old emitted prior error is not a current-window prior error."""
     state = APAState(2, 2, step_size=1., regularization=1.)
     first = state.step(1., .5)
     second = state.step(2., 1.25)
@@ -74,26 +74,8 @@ def same_weight_errors() -> dict:
     })
 
 
-def freeze_window_control() -> dict:
-    """E36: a frozen contaminated observation remains until explicitly cleared."""
-    polluted = APAState(2, 2, step_size=1., regularization=1.)
-    held = polluted.step(1., 10., freeze=True)
-    resumed = polluted.step(2., 1.25)
-    cleared = APAState(2, 2, step_size=1., regularization=1.)
-    cleared.step(1., 10., freeze=True)
-    cleared.reset_projection_history()
-    history_after_clear = cleared.history
-    clean = cleared.step(2., 1.25)
-    return _plain({
-        "frozen_contaminated": held, "resumed_with_old_observation": resumed,
-        "render_history_after_projection_clear": history_after_clear,
-        "resumed_after_projection_clear": clean,
-        "K1_relation": "U has one column: delta equals the NLMS denominator floor",
-    })
-
-
 def rank_and_units() -> dict:
-    """E37: regularization permits a solve but contributes no new direction."""
+    """E06-23: regularization permits a solve but contributes no new direction."""
     singular = APAState(2, 2, step_size=1., regularization=0., initial_history=[1.])
     singular.step(1., 1., freeze=True)
     try:
@@ -115,7 +97,7 @@ def rank_and_units() -> dict:
 
 
 def path_prior_and_holdout() -> dict:
-    """E38: correct/wrong external priors choose solutions; neither raises rank."""
+    """E06-24: correct/wrong external priors choose solutions; neither raises rank."""
     truth = np.array([1., 2.])
     heldout_u = np.array([1., -1.])
     cases = {}
@@ -140,9 +122,10 @@ def path_prior_and_holdout() -> dict:
 def run_demo() -> dict:
     return {
         "scope": "dimensionless causal APA arithmetic, not industrial AEC performance",
-        "E06-34": projection_hand_case(), "E06-35": same_weight_errors(),
-        "E06-36": freeze_window_control(), "E06-37": rank_and_units(),
-        "E06-38": path_prior_and_holdout(),
+        "E06-21": projection_hand_case(),
+        "E06-22": same_weight_errors(),
+        "E06-23": rank_and_units(),
+        "E06-24": path_prior_and_holdout(),
     }
 
 

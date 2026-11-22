@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
-"""回声消除专题插图：图 26～32、37～39。
+"""回声消除专题插图：图 25、26、27、32～34。
 
 用法（仓库根目录）：
-    .venv/bin/python scripts/make_aec_figures.py  # 图 26～32、37～39 → figures/
-函数与图号对照：fig_problem→图26、fig_concept→图27、fig_nlms→图28、
-fig_erle→图29、fig_delay_dtd→图30、fig_nonlinear→图31、fig_hybrid→图32、
-fig_haar_crossband→图37、fig_adaptive_state_examples→图38、
-fig_pbfdaf_flow→图39。
+    .venv/bin/python scripts/make_aec_figures.py  # 图 25、26、27、32～34 → figures/
+函数与图号对照：fig_nlms→图25、fig_delay_dtd→图26、fig_nonlinear→图27、
+fig_haar_crossband→图32、fig_adaptive_state_examples→图33、
+fig_pbfdaf_flow→图34。
 """
 import hashlib
 import os
@@ -232,97 +231,13 @@ def mask_metric_intervals(times, values, intervals):
         masked[(times >= start) & (times < stop)] = np.nan
     return masked
 
-# ---- 图26：回声是怎么产生的 ----
-def fig_problem():
-    N = int(1.6 * FS)
-    r = np.random.default_rng(2601)
-    x = colored_x(N, seed=2602); h = 0.5 * synth_h(seed=2603)
-    echo = np.convolve(x, h, mode="full")[:N]
-    s = np.zeros(N); s[int(0.8*FS):int(1.2*FS)] = 0.7 * r.standard_normal(int(0.4*FS))
-    v = 0.02 * r.standard_normal(N)
-    d = echo + s + v
-    t = np.arange(N) / FS
-    fig = plt.figure(figsize=(9.8, 8.0), layout="constrained")
-    fig.suptitle("图26 回声形成：d[n] = s[n] + (x*h)[n] + v[n]", fontsize=FS_SUP)
-    gs = gridspec.GridSpec(2, 2, figure=fig, height_ratios=[0.9, 1.1])
-    ax = fig.add_subplot(gs[0, :])
-    ax.set_title("(a) 用脉冲响应 h[ℓ] 表示房间回声路径", fontsize=FS_TITLE)
-    ax.stem(h[:128], linefmt=C_BLUE, markerfmt="o", basefmt=" ", label="h抽头")
-    ax.set_xlabel("抽头索引 ℓ（采样）", fontsize=FS_LABEL); ax.set_ylabel("幅度（无量纲）", fontsize=FS_LABEL)
-    ax.annotate("0号抽头为直达声；25、62、103号为早期反射\n其余随机衰减项表示晚期尾", xy=(25, h[25]), xytext=(58, 0.43),
-                fontsize=FS_SMALL + 1, arrowprops=dict(arrowstyle="->", color=C_ORANGE), color=C_ORANGE)
-    ax.grid(ls=":", alpha=0.5); ax.tick_params(labelsize=FS_TINY)
-    ax = fig.add_subplot(gs[1, 0])
-    ax.set_title("(b) 参考、回声与合成近端分量", fontsize=FS_TITLE)
-    ax.plot(t, x, color=C_BLUE, lw=1, label="远端 x[n]")
-    ax.plot(t, echo, color=C_BLUE, ls="--", lw=1, label="回声 (x*h)[n]")
-    ax.plot(t, s, color=C_RED, lw=1, label="合成近端干扰 s[n]（非语音）")
-    ax.axvspan(0.8, 1.2, color=C_RED, alpha=0.10)
-    ax.set_xlim(0, 1.6); ax.set_ylim(-2.9, 4.1)
-    ax.set_xlabel("时间 (s)", fontsize=FS_LABEL); ax.set_ylabel("幅度（无量纲）", fontsize=FS_LABEL)
-    ax.legend(fontsize=FS_SMALL); ax.grid(ls=":", alpha=0.5); ax.tick_params(labelsize=FS_TINY)
-    ax = fig.add_subplot(gs[1, 1])
-    ax.set_title("(c) 麦克风里三者相加得 d[n]", fontsize=FS_TITLE)
-    ax.plot(t, d, color=C_MAIN, lw=1.2, label="麦克风 d[n]")
-    ax.plot(t, echo, color=C_BLUE, lw=1.0, ls="--", alpha=0.8, label="回声分量")
-    ax.axvspan(0.8, 1.2, color=C_RED, alpha=0.10)
-    ax.set_xlim(0, 1.6); ax.set_ylim(-2.9, 4.1)
-    ax.set_xlabel("时间 (s)", fontsize=FS_LABEL); ax.set_ylabel("幅度（无量纲）", fontsize=FS_LABEL)
-    ax.legend(fontsize=FS_SMALL); ax.grid(ls=":", alpha=0.5); ax.tick_params(labelsize=FS_TINY)
-    save(fig, "fig26_aec_problem.png")
-
-# ---- 图27：AEC 基本结构 ----
-def fig_concept():
-    fig, ax = plt.subplots(figsize=(9.8, 5.4), layout="constrained")
-    fig.suptitle("图27 AEC 结构：根据播放参考估计回声，再从麦克风信号中相减", fontsize=FS_SUP)
-    ax.set_xlim(0, 11); ax.set_ylim(-0.55, 6); ax.axis("off")
-    def box(x, y, w, h, text, fc):
-        ax.add_patch(Rectangle((x, y), w, h, fc=fc, ec="k", lw=1.2))
-        ax.text(x + w/2, y + h/2, text, ha="center", va="center", fontsize=FS_SMALL, color=C_MAIN)
-    def arrow(a, b, c="k", ls="-", w=1.4):
-        ax.add_patch(FancyArrowPatch(a, b, arrowstyle="-|>", mutation_scale=14, color=c, lw=w, ls=ls))
-    box(0.3, 2.5, 1.9, 1.4, "播放 x[n]", "#F5ECE4")
-    box(2.7, 2.5, 2.0, 1.4, "扬声器+房间 h", "#E8EFF5")
-    box(2.7, 0.4, 2.0, 1.2, "自适应滤波 ŵ\n(NLMS)", "#E8EFF5")
-    box(5.4, 0.4, 1.9, 1.2, "回声副本 ŷ[n]", "#F4E8E5")
-    box(5.4, 2.5, 1.9, 1.4, "麦克风 d[n]\n=回声+s[n]+v[n]", "#F4E8E5")
-    ax.add_patch(Circle((8.2, 3.2), 0.45, fc="white", ec="k", lw=1.4))
-    ax.text(8.2, 3.2, "Σ−", ha="center", va="center", fontsize=FS_LABEL + 4)
-    box(9.1, 2.5, 1.6, 1.4, "处理后输出 e[n]\n→波束/识别", "#E8F1EE")
-    box(7.7, 4.6, 2.2, 0.9, "DTD（由 x、d 判定）\n控制系数更新", "#F5ECE4")
-    arrow((2.2, 3.2), (2.7, 3.2), C_BLUE)
-    arrow((4.7, 3.2), (5.4, 3.2), C_BLUE)
-    arrow((1.25, 2.5), (3.0, 1.6), C_BLUE)
-    arrow((4.7, 1.0), (5.4, 1.0), C_BLUE)
-    arrow((7.3, 1.0), (8.02, 2.72), C_BLUE)
-    arrow((7.3, 3.2), (7.75, 3.2), C_BLUE)
-    arrow((8.65, 3.2), (9.1, 3.2), C_GREEN, w=2.0)
-    # DTD 的两路观测输入与下方的残差反馈是不同支路。
-    ax.plot([1.25, 1.25, 8.1], [3.9, 5.72, 5.72], color=C_PURPLE, lw=1.2)
-    arrow((8.1, 5.72), (8.1, 5.5), C_PURPLE)
-    ax.plot([6.35, 6.35, 9.25], [3.9, 4.28, 4.28], color=C_PURPLE, lw=1.2)
-    arrow((9.25, 4.28), (9.25, 4.6), C_PURPLE)
-    # 残差 e 沿底部返回滤波器更新端；DTD 控制反馈支路上的开关。
-    ax.plot([9.9, 9.9, 9.15], [2.5, 0.18, 0.18], color=C_BLUE, lw=1.4)
-    ax.add_patch(Rectangle((8.35, 0.03), 0.8, 0.3, fc="white", ec=C_RED, lw=1.2, zorder=4))
-    ax.plot([8.48, 8.98], [0.29, 0.08], color=C_RED, lw=1.6, zorder=5)
-    ax.plot([3.7, 8.35], [0.18, 0.18], color=C_BLUE, lw=1.4)
-    arrow((3.7, 0.18), (3.7, 0.4), C_BLUE)
-    ax.annotate("残差 e 驱动更新", xy=(7.8, 0.18), xytext=(6.8, -0.4),
-                fontsize=FS_SMALL, color=C_BLUE, ha="center",
-                arrowprops=dict(arrowstyle="->", color=C_BLUE, lw=1.1))
-    arrow((8.8, 4.6), (8.75, 0.33), C_RED, ls="--", w=1.8)
-    ax.annotate("估计回声路径", xy=(2.68, 1.0), xytext=(0.7, 0.35), fontsize=FS_SMALL + 2, color=C_PURPLE,
-                arrowprops=dict(arrowstyle="->", color=C_PURPLE, lw=1.8))
-    save(fig, "fig27_aec_concept.png")
-
-# ---- 图28：NLMS 路径估计 ----
+# ---- 图25：NLMS 路径估计 ----
 def fig_nlms():
     N = int(1.6 * FS); taps = 128
     h = np.exp(-np.arange(taps) / 25) * np.random.default_rng(2801).standard_normal(taps)
     x = colored_x(N, seed=2802); d = np.convolve(x, h, mode="full")[:N]
     e, snaps, _w, mism, snapshot_samples = nlms_adaptation_trace(
-        x, d, taps, 0.5, None, snapshot_interval=400, true_path=h
+        x, d, taps, 0.5, None, snapshot_interval=100, true_path=h
     )
     tc = snapshot_samples / FS
     tcc, erle = block_erle(d, e)
@@ -334,26 +249,28 @@ def fig_nlms():
         fig.add_subplot(grid[1, 0]),
         fig.add_subplot(grid[1, 1]),
     ]
-    fig.suptitle("图28 NLMS 自适应：路径估计逐步逼近真实响应", fontsize=FS_SUP)
+    fig.suptitle("图25 NLMS 自适应：路径估计逐步逼近真实响应", fontsize=FS_SUP)
     ax = axes[0]; ax.set_title("(a) ŵ 逐步逼近 h", fontsize=FS_TITLE)
-    ax.plot(h[:64], color="0.35", lw=2.2, marker="o", markevery=8, label="真实路径 h")
+    ax.plot(h[:64], color="0.35", lw=2.3, marker="o", markevery=8, ms=5.5, label="真实路径 h")
     cb_styles = [(C_BLUE, "-", "深蓝实线"), (C_ORANGE, "--", "橙色虚线"),
                  (C_GREEN, "-.", "绿色点划线"), (C_PURPLE, ":", "紫色点线")]
-    pick = [0, len(snaps)//3, 2*len(snaps)//3, len(snaps)-1]
+    # 选取指数递进早期快照（0、300、1200、6000 步），清晰展示抽头逐步逼近过程。
+    pick = [0, 3, 12, 60]
     for style_index, (j, (c, ls, _nm)) in enumerate(zip(pick, cb_styles)):
-        ax.plot(snaps[j][:64], color=c, ls=ls, lw=1.6,
-                marker=("o", "s", "^", "D")[style_index], markevery=10,
-                label=f"{snapshot_samples[j]}步")
+        ax.plot(snaps[j][:64], color=c, ls=ls, lw=1.7,
+                marker=("o", "s", "^", "D")[style_index],
+                markevery=(style_index * 2 + 1, 10), ms=5.2,
+                label=f"{snapshot_samples[j]} 步")
     ax.set_xlabel("抽头索引 ℓ（采样）", fontsize=FS_LABEL)
     ax.set_ylabel("滤波器系数（无量纲）", fontsize=FS_LABEL)
-    ax.legend(fontsize=FS_SMALL, ncols=3)
+    ax.legend(fontsize=FS_SMALL, ncols=3, loc="upper right")
     ax.grid(ls=":", alpha=0.5); ax.tick_params(labelsize=FS_TINY)
     ax = axes[1]; ax.set_title("(b) 失配下降，ERLE 上升", fontsize=FS_TITLE)
-    ax.plot(tc, mism, color=C_RED, ls="-", marker="o", markevery=5, label="失配(dB)")
+    ax.plot(tc, mism, color=C_RED, ls="-", marker="o", markevery=20, label="失配(dB)")
     ax.set_xlabel("时间 (s)", fontsize=FS_LABEL); ax.tick_params(labelsize=FS_TINY)
     ax2 = ax.twinx(); ax2.plot(tcc, erle, color=C_BLUE, ls="--", marker="s", markevery=6, label="ERLE(dB)")
-    ax.tick_params(labelsize=FS_TINY, colors=C_RED)
-    ax2.tick_params(labelsize=FS_TINY, colors=C_BLUE)
+    ax.tick_params(axis="y", labelsize=FS_TINY, colors=C_RED)
+    ax2.tick_params(axis="y", labelsize=FS_TINY, colors=C_BLUE)
     ax.set_ylabel("失配 (dB)", fontsize=FS_LABEL, color=C_RED)
     ax2.set_ylabel("ERLE (dB)", fontsize=FS_LABEL, color=C_BLUE)
     ax.grid(ls=":", alpha=0.5)
@@ -369,57 +286,9 @@ def fig_nlms():
                 markevery=8, label=f"μ={mu}")
     ax.set_xlabel("时间 (s)", fontsize=FS_LABEL); ax.set_ylabel("ERLE (dB)", fontsize=FS_LABEL)
     ax.legend(fontsize=FS_SMALL); ax.grid(ls=":", alpha=0.5); ax.tick_params(labelsize=FS_TINY)
-    save(fig, "fig28_aec_nlms.png")
+    save(fig, "fig25_aec_nlms.png")
 
-# ---- 图29：ERLE + 合成近端干扰时的真值冻结 ----
-def fig_erle():
-    N = int(1.6 * FS); taps = 128
-    h = np.exp(-np.arange(taps) / 25) * np.random.default_rng(2901).standard_normal(taps)
-    x = colored_x(N, seed=2902); echo = np.convolve(x, h, mode="full")[:N]
-    s = np.zeros(N); s[int(0.8*FS):int(1.2*FS)] = 0.7 * np.random.default_rng(2903).standard_normal(int(0.4*FS))
-    d = echo + s
-    freeze = np.zeros(N, bool); freeze[int(0.8*FS):int(1.2*FS)] = True
-    e, _, _ = nlms_run(x, d, taps, 0.5, freeze)
-    tcc, erle = block_erle(echo, e)
-    plateau = float(np.nanmean(erle[(tcc > 0.45) & (tcc < 0.8)]))
-    t = np.arange(N) / FS
-    envs = [rms_envelope(sig) for sig in (x, d, e)]
-    env_scale = max(float(np.max(env)) for env in envs)
-    envs = [env / max(env_scale, 1e-12) for env in envs]
-    fig = plt.figure(figsize=(9.8, 9.0), layout="constrained")
-    fig.suptitle("图29 NLMS 收敛与合成近端干扰时的冻结", fontsize=FS_SUP)
-    gs = gridspec.GridSpec(4, 1, figure=fig, height_ratios=[0.75, 0.75, 0.75, 1.5])
-    labels = ["x[n]", "d[n]", "e[n]"]
-    titles = ["(a) 远端参考信号 x[n] 归一化包络", "(b) 麦克风观测 d[n] 归一化包络", "(c) 线性残差 e[n] 归一化包络"]
-    colors = [C_BLUE, C_RED, C_GREEN]
-    for row, (env, label, title_str, color) in enumerate(zip(envs, labels, titles, colors)):
-        ax = fig.add_subplot(gs[row])
-        ax.set_title(title_str, loc="left", fontsize=FS_TITLE)
-        ax.plot(t[::16], env[::16], color=color, lw=1.1)
-        ax.axvspan(0.8, 1.2, color=C_RED, alpha=0.10)
-        ax.set_xlim(0, 1.6); ax.set_ylim(0, 1.08)
-        ax.set_ylabel(label, fontsize=FS_LABEL, color=color)
-        ax.grid(ls=":", alpha=0.4); ax.tick_params(labelsize=FS_TINY)
-        if row < 2:
-            ax.tick_params(labelbottom=False)
-        else:
-            ax.set_xlabel("时间 (s)；纵轴为共同尺度的归一化均方根（RMS）包络", fontsize=FS_SMALL)
-    ax = fig.add_subplot(gs[3]); ax.set_title("(d) ERLE 只在远端单讲区评价", fontsize=FS_TITLE)
-    erle_view = erle.copy()
-    erle_view[(tcc >= 0.8) & (tcc < 1.2)] = np.nan
-    ax.plot(tcc, erle_view, color=C_BLUE, lw=1.6, label="ERLE（干扰段不绘制）")
-    ax.axvspan(0.8, 1.2, color=C_RED, alpha=0.10)
-    ax.text(1.0, np.nanmax(erle_view)*0.88, "合成近端干扰段（非语音）\nERLE 不评价回声抵消量", ha="center", fontsize=FS_SMALL + 1, color=C_RED,
-            bbox=dict(fc="white", ec=C_RED, lw=0.7, alpha=0.9, boxstyle="round,pad=0.3"))
-    ax.annotate(f"指定窗块 dB 均值≈{plateau:.0f} dB", xy=(0.62, plateau), xytext=(0.05, plateau+3),
-                fontsize=FS_LABEL, color=C_BLUE, va="top",
-                arrowprops=dict(arrowstyle="->", color=C_BLUE))
-    ax.set_xlim(0, 1.6); ax.set_xlabel("时间 (s)", fontsize=FS_LABEL); ax.set_ylabel("ERLE (dB)", fontsize=FS_LABEL)
-    ax.legend(fontsize=FS_SMALL, loc="lower right")
-    ax.grid(ls=":", alpha=0.5); ax.tick_params(labelsize=FS_TINY)
-    save(fig, "fig29_aec_erle_freeze.png")
-
-# ---- 图30：延迟 × 合成近端干扰 ----
+# ---- 图26：延迟对齐与合成近端测试信号时的冻结 ----
 def fig_delay_dtd():
     N = int(1.6 * FS); taps = 128; delay = 300
     h = np.exp(-np.arange(taps) / 25) * np.random.default_rng(3001).standard_normal(taps)
@@ -442,54 +311,78 @@ def fig_delay_dtd():
     pa = float(np.nanmean(er_align[(tcc > 0.45) & (tcc < 0.8)]))
     pm = float(np.nanmean(er_mis[(tcc > 0.45) & (tcc < 0.8)]))
     fig = plt.figure(figsize=(9.8, 8.0), layout="constrained")
-    grid = fig.add_gridspec(2, 2, height_ratios=(0.92, 1.08))
+    grid = fig.add_gridspec(2, 2, height_ratios=(0.94, 1.06))
     axes = [
         fig.add_subplot(grid[0, :]),
         fig.add_subplot(grid[1, 0]),
         fig.add_subplot(grid[1, 1]),
     ]
-    fig.suptitle("图30 延迟对齐与合成近端干扰时的冻结", fontsize=FS_SUP)
+    fig.suptitle("图26 延迟对齐与合成近端测试信号时的冻结", fontsize=FS_SUP)
     ax = axes[0]; ax.set_title("(a) 参考—麦克风有符号互相关", fontsize=FS_TITLE)
     seg = 4000
     corr = np.correlate(d[:seg], x[:seg], mode="full")
     lags = np.arange(len(corr)) - (seg - 1)
     corr = corr / np.max(np.abs(corr))
     tau_hat = int(lags[np.argmax(corr)])
-    ax.plot(lags, corr, color=C_PURPLE, lw=1.0)
-    ax.axvline(tau_hat, color=C_PURPLE, ls="--")
     peak_value = float(corr[np.argmax(corr)])
+    tau_neg = int(lags[np.argmin(corr)])
+    neg_value = float(corr[np.argmin(corr)])
+    ax.plot(lags, corr, color=C_PURPLE, lw=1.1)
+    ax.axvline(delay, color=C_GREEN, ls="--", lw=1.5)
+    ax.axvline(tau_hat, color=C_PURPLE, ls=":", lw=1.4)
+    ax.plot(tau_neg, neg_value, "v", color=C_RED, ms=6.5, zorder=5)
+    ax.annotate(
+        f"真实延迟 {delay} 采样",
+        xy=(delay, 0.34),
+        xytext=(delay - 155, 0.38),
+        fontsize=FS_SMALL,
+        color=C_GREEN,
+        arrowprops=dict(arrowstyle="->", color=C_GREEN, lw=1.3),
+    )
     ax.annotate(
         f"最大正峰约 {tau_hat} 采样",
         xy=(tau_hat, peak_value),
-        xytext=(tau_hat + 45, 0.36),
-        fontsize=FS_SMALL + 1,
+        xytext=(tau_hat + 42, 0.38),
+        fontsize=FS_SMALL,
         color=C_PURPLE,
-        arrowprops=dict(arrowstyle="->", color=C_PURPLE),
+        arrowprops=dict(arrowstyle="->", color=C_PURPLE, lw=1.3),
     )
-    ax.text(0.03, 0.06, "设置的纯延迟为300采样；\n有色参考与多径会移动相关峰",
+    ax.annotate(
+        f"主负峰约 {tau_neg} 采样（{neg_value:.2f}）",
+        xy=(tau_neg, neg_value),
+        xytext=(tau_neg + 48, -0.92),
+        fontsize=FS_SMALL,
+        color=C_RED,
+        arrowprops=dict(arrowstyle="->", color=C_RED, lw=1.3),
+    )
+    ax.text(0.03, 0.07, "设置的纯延迟为 300 采样；\n有色参考与多径会移动相关峰",
             transform=ax.transAxes, fontsize=FS_SMALL, color="0.25",
-            bbox=dict(fc="white", ec="0.7", alpha=0.9))
-    ax.set_xlim(-50, delay + 200); ax.set_ylim(-1.08, 0.62)
+            bbox=dict(fc="white", ec="0.7", alpha=0.92))
+    ax.set_xlim(-50, delay + 200); ax.set_ylim(-1.12, 0.65)
     ax.set_xlabel("滞后（采样）", fontsize=FS_LABEL)
     ax.set_ylabel("归一化有符号互相关", fontsize=FS_LABEL)
     ax.grid(ls=":", alpha=0.5); ax.tick_params(labelsize=FS_TINY)
     ax = axes[1]; ax.set_title("(b) 使用真值 300 点对齐；滤波器 128 抽头", fontsize=FS_TITLE)
-    ax.plot(tcc, er_align_view, color=C_BLUE, lw=1.6, label=f"真值对齐（指定窗约{pa:.0f}dB）")
-    ax.plot(tcc, er_mis_view, color="0.6", lw=1.4, ls="--", label=f"不对齐（单讲约{pm:.0f}dB）")
+    ax.plot(tcc, er_align_view, color=C_BLUE, lw=1.6, marker="o", markevery=8, ms=4.8,
+            label=f"真值对齐（指定窗约 {pa:.0f} dB）")
+    ax.plot(tcc, er_mis_view, color="0.55", lw=1.5, ls="--", marker="s", markevery=8, ms=4.5,
+            label=f"不对齐（单讲约 {pm:.0f} dB）")
     ax.axvspan(0.8, 1.2, color=C_RED, alpha=0.08)
-    ax.set_ylim(-10, 40); ax.set_xlabel("时间 (s)", fontsize=FS_LABEL); ax.set_ylabel("ERLE (dB)", fontsize=FS_LABEL)
-    ax.legend(fontsize=FS_SMALL); ax.grid(ls=":", alpha=0.5); ax.tick_params(labelsize=FS_TINY)
-    ax = axes[2]; ax.set_title("(c) 近端干扰时的更新与恢复", fontsize=FS_TITLE)
-    ax.plot(tcc, er_align_view, color=C_BLUE, lw=1.6, label="干扰时冻结更新")
-    ax.plot(tcc, er_nof_view, color=C_RED, lw=1.4, ls="--", label="干扰时继续更新")
+    ax.set_ylim(-10, 42); ax.set_xlabel("时间 (s)", fontsize=FS_LABEL); ax.set_ylabel("ERLE (dB)", fontsize=FS_LABEL)
+    ax.legend(fontsize=FS_SMALL, loc="upper left"); ax.grid(ls=":", alpha=0.5); ax.tick_params(labelsize=FS_TINY)
+    ax = axes[2]; ax.set_title("(c) 合成近端测试信号时的更新与恢复", fontsize=FS_TITLE)
+    ax.plot(tcc, er_align_view, color=C_BLUE, lw=1.6, marker="o", markevery=8, ms=4.8,
+            label="测试信号段冻结更新")
+    ax.plot(tcc, er_nof_view, color=C_RED, lw=1.5, ls="--", marker="^", markevery=8, ms=4.8,
+            label="测试信号段继续更新")
     ax.axvspan(0.8, 1.2, color=C_RED, alpha=0.10)
-    ax.text(1.0, -5, "合成近端干扰段（非语音）\nERLE 不用于评估回声", ha="center", fontsize=FS_SMALL, color=C_RED)
-    ax.set_ylim(-10, 40); ax.set_xlabel("时间 (s)", fontsize=FS_LABEL); ax.set_ylabel("ERLE (dB)", fontsize=FS_LABEL)
-    ax.legend(fontsize=FS_SMALL); ax.grid(ls=":", alpha=0.5); ax.tick_params(labelsize=FS_TINY)
-    save(fig, "fig30_aec_delay_dtd.png")
+    ax.text(1.0, -5.5, "合成近端测试信号段（非语音）\nERLE 不用于评估回声", ha="center", fontsize=FS_SMALL, color=C_RED)
+    ax.set_ylim(-10, 42); ax.set_xlabel("时间 (s)", fontsize=FS_LABEL); ax.set_ylabel("ERLE (dB)", fontsize=FS_LABEL)
+    ax.legend(fontsize=FS_SMALL, loc="upper left"); ax.grid(ls=":", alpha=0.5); ax.tick_params(labelsize=FS_TINY)
+    save(fig, "fig26_aec_delay_dtd.png")
     print(f"对齐约 {pa:.1f} dB，不对齐约 {pm:.1f} dB")
 
-# ---- 图31：非线性失配 ----
+# ---- 图27：非线性失配 ----
 def fig_nonlinear():
     N = int(3.0 * FS); taps = 256
     r = np.random.default_rng(3101)
@@ -503,97 +396,43 @@ def fig_nonlinear():
     t1, er1 = block_erle(echo_lin, e1, blk=800)
     t2, er2 = block_erle(echo_nl, e2, blk=800)
     p1 = float(np.nanmean(er1[t1 > 2.2])); p2 = float(np.nanmean(er2[t2 > 2.2]))
-    fig = plt.figure(figsize=(9.8, 5.8), layout="constrained")
-    fig.suptitle("图31 本仿真中的线性匹配与非线性失配", fontsize=FS_SUP)
-    gs = gridspec.GridSpec(1, 2, figure=fig, width_ratios=[2.2, 1])
+    fig = plt.figure(figsize=(9.8, 5.5), layout="constrained")
+    fig.suptitle("图27 线性路径匹配与非线性失配", fontsize=FS_SUP)
+    gs = gridspec.GridSpec(1, 2, figure=fig, width_ratios=[1.55, 1.0])
     ax = fig.add_subplot(gs[0]); ax.set_title("(a) 线性路径与非线性路径", fontsize=FS_TITLE)
     ax.plot(t1, er1, color=C_BLUE, ls="-", marker="o", markevery=8,
-            label=f"线性路径（本次仿真后段均值 {p1:.0f} dB）")
+            label=f"线性路径（后段均值 {p1:.0f} dB）")
     ax.plot(t2, er2, color=C_RED, lw=2.2, ls="--", marker="s", markevery=8,
             label=f"tanh 非线性路径（后段均值 {p2:.0f} dB）")
     ax.set_ylim(-5, 45); ax.set_xlabel("时间 (s)", fontsize=FS_LABEL); ax.set_ylabel("ERLE (dB)", fontsize=FS_LABEL)
     ax.legend(fontsize=FS_SMALL, loc="upper left"); ax.grid(ls=":", alpha=0.5); ax.tick_params(labelsize=FS_TINY)
-    ax.text(0.04, 0.06, "参数：256 抽头，μ=0.3，驱动系数 1.1。\n数值只描述本次仿真，不代表统一性能上限。",
+    ax.text(0.04, 0.06, "参数：256 抽头，μ = 0.3，驱动系数 1.1",
             transform=ax.transAxes, fontsize=FS_SMALL, color="0.25",
-            bbox=dict(fc="white", ec="0.7", alpha=0.9))
+            bbox=dict(fc="white", ec="0.7", alpha=0.92))
     ax = fig.add_subplot(gs[1]); ax.set_title("(b) tanh 非线性映射", fontsize=FS_TITLE)
     xx = np.linspace(-2, 2, 400)
-    ax.plot(xx, xx, color="0.6", ls="--", label="线性")
-    ax.plot(xx, np.tanh(1.1*xx)/np.tanh(1.1), color=C_RED, ls="-",
-            marker="o", markevery=40, label=r"归一化软削波 $\tanh(1.1x)/\tanh(1.1)$")
+    ax.plot(xx, xx, color="0.55", ls="--", lw=1.6, label="线性割线 y = x")
+    ax.plot(xx, np.tanh(1.1*xx)/np.tanh(1.1), color=C_RED, ls="-", lw=2.0,
+            marker="o", markevery=40, ms=5.0, label=r"$\tanh(1.1x)/\tanh(1.1)$")
     ax.axvspan(1, 2, color=C_RED, alpha=0.08); ax.axvspan(-2, -1, color=C_RED, alpha=0.08)
+    ax.set_xlim(-2.1, 2.1); ax.set_ylim(-2.15, 2.25)
     ax.set_aspect("equal", adjustable="box")
     ax.set_xlabel("归一化输入幅度（无量纲）", fontsize=FS_LABEL)
     ax.set_ylabel("归一化输出幅度（无量纲）", fontsize=FS_LABEL)
-    ax.legend(fontsize=FS_SMALL); ax.grid(ls=":", alpha=0.5); ax.tick_params(labelsize=FS_TINY)
+    ax.legend(fontsize=FS_SMALL, loc="upper left", framealpha=0.96, handlelength=1.6)
+    ax.grid(ls=":", alpha=0.5); ax.tick_params(labelsize=FS_TINY)
     ax.text(
-        0.5,
+        0.96,
         0.04,
-        "输入幅度增大后，输出逐渐\n偏离线性关系",
+        "输入幅度增大后，\n输出逐渐偏离线性关系",
         transform=ax.transAxes,
-        ha="center",
+        ha="right",
         va="bottom",
         fontsize=FS_SMALL,
         color=C_RED,
-        bbox=dict(fc="white", ec="none", alpha=0.82, pad=1.5),
+        bbox=dict(fc="white", ec="#E5C7C0", lw=0.7, alpha=0.94, boxstyle="round,pad=0.25"),
     )
-    save(fig, "fig31_aec_nonlinear.png")
-
-# ---- 图32：混合流程与条件化选型 ----
-def fig_hybrid():
-    fig = plt.figure(figsize=(9.8, 5.8), layout="constrained")
-    fig.suptitle("图32 线性回声消除与残余抑制：按系统条件选择模块", fontsize=FS_SUP)
-    ax = fig.add_subplot(1, 1, 1)
-    ax.set_title("混合处理流程：线性前级与残余后处理各有适用前提", fontsize=FS_TITLE)
-    ax.set_xlim(0, 14); ax.set_ylim(-0.8, 6.8); ax.axis("off")
-    def box(x, y, w, h, text, fc, fs=FS_SMALL):
-        ax.add_patch(Rectangle((x, y), w, h, fc=fc, ec="k", lw=1.2))
-        ax.text(x+w/2, y+h/2, text, ha="center", va="center", fontsize=fs, color=C_MAIN)
-    def arrow(a, b, c="k", w=1.4):
-        ax.add_patch(FancyArrowPatch(a, b, arrowstyle="-|>", mutation_scale=14, color=c, lw=w))
-    # 音频主链从麦克风信号开始；远端参考是线性 AEC 的第二路输入。
-    box(0.2, 3.2, 2.0, 1.6, "麦克风信号 d[n]\n近端+回声+噪声", "#F4E8E5")
-    box(2.8, 3.2, 2.2, 1.6, "线性 AEC\nPBFDAF / FDKF", "#E8EFF5")
-    box(5.5, 3.2, 1.8, 1.6, "线性残差 e[n]", "#E8EFF5")
-    box(7.8, 3.2, 2.4, 1.6, "学习型残余抑制\n输入可含 e 与可选参考", "#F4E9D8")
-    box(10.7, 3.2, 2.0, 1.6, "处理后输出\n→语音识别", "#E8F1EE")
-    for a, b in [((2.2, 4.0), (2.8, 4.0)), ((5.0, 4.0), (5.5, 4.0)),
-                 ((7.3, 4.0), (7.8, 4.0)), ((10.2, 4.0), (10.7, 4.0))]:
-        arrow(a, b, C_BLUE)
-    box(0.2, 0.9, 1.9, 1.2, "远端参考 x[n]\n从播放链路末端取", "#F5ECE4")
-    box(2.6, 0.9, 1.8, 1.2, "延迟估计与对齐\n得到 $x_a[n]$", "#E8EFF5")
-    arrow((2.1, 1.5), (2.6, 1.5), C_BLUE)
-    arrow((3.5, 2.1), (3.9, 3.2), C_BLUE)
-    # 延迟估计还必须观察麦克风；参考单独不能给出相对传播时差。
-    ax.plot([1.2, 1.2, 3.1], [3.2, 2.6, 2.6], color=C_RED, lw=1.2)
-    arrow((3.1, 2.6), (3.1, 2.1), C_RED)
-    ax.text(1.3, 2.68, "观测 d[n]", fontsize=FS_SMALL, color=C_RED)
-    # 可选条件参考从对齐框下缘绕行，避开下方更新控制的观测与输出箭头。
-    ax.plot([3.5, 3.5, 9.0, 9.0], [0.9, -0.12, -0.12, 3.2],
-            color=C_BLUE, lw=1.0, ls=":")
-    ax.text(9.5, 1.85, "可选：$x_a[n]$ 作为\n学习模型输入",
-            ha="left", fontsize=FS_SMALL, color=C_BLUE)
-    box(5.0, 0.35, 2.0, 0.85, "DTD 与步长控制", "#F5ECE4")
-    # 此框示意用对齐参考及线性残差统计来约束更新；不是唯一的 DTD 判据。
-    arrow((4.4, 1.5), (5.0, 0.78), C_PURPLE)
-    arrow((6.4, 3.2), (6.4, 1.2), C_PURPLE)
-    arrow((6.0, 1.2), (4.5, 3.2), C_ORANGE)
-    ax.text(3.4, 5.75, "线性 AEC 同时接收麦克风信号 d[n]\n和对齐参考 $x_a[n]$",
-            fontsize=FS_SMALL, color=C_BLUE, ha="center")
-    ax.text(9.6, 5.75, "后处理的适用范围与近端损伤\n须在目标条件下验证",
-            fontsize=FS_SMALL, color=C_ORANGE, ha="center")
-    ax.text(
-        7.0,
-        -0.62,
-        "选型核对：参考位置与对齐  •  双讲保护  •  训练条件覆盖  •  "
-        "近端保真  •  算力、内存与端到端时延",
-        ha="center",
-        va="bottom",
-        fontsize=FS_SMALL,
-        color="0.25",
-        bbox=dict(fc="#F4F2EE", ec="0.7", boxstyle="round,pad=0.3"),
-    )
-    save(fig, "fig32_aec_hybrid_select.png")
+    save(fig, "fig27_aec_nonlinear.png")
 
 
 def haar_delay_example():
@@ -626,10 +465,10 @@ def haar_delay_example():
 
 
 def fig_haar_crossband():
-    """图37：PR 滤波器组与一拍延迟后的交叉带项分开解释。"""
+    """图32：PR 滤波器组与一拍延迟后的交叉带项分开解释。"""
     x, _u, full, diagonal = haar_delay_example()
     fig = plt.figure(figsize=(9.8, 7.5), layout="constrained")
-    fig.suptitle("图37 两带 Haar：完美重建不等于逐带回声路径等价", fontsize=FS_SUP)
+    fig.suptitle("图32 两带 Haar：完美重建不等于逐带回声路径等价", fontsize=FS_SUP)
     grid = fig.add_gridspec(2, 1, height_ratios=(1.05, 1.0))
 
     ax = fig.add_subplot(grid[0])
@@ -657,7 +496,7 @@ def fig_haar_crossband():
                        ((8.45, 2.52), (9.0, 2.52))]:
         arrow(start, end)
     ax.text(5.0, 1.35,
-            r"$G_{01}=(1-z^{-1})/2,\quad G_{10}=(z^{-1}-1)/2$：两项一般不为零",
+            r"$G_{01}=(1-z_b^{-1})/2,\quad G_{10}=(z_b^{-1}-1)/2$（$z_b^{-1}$ 为子带块延迟）：两项一般不为零",
             ha="center", va="center", fontsize=FS_SMALL, color=C_RED)
     ax.text(5.0, 0.65,
             "分析后立即合成可完美重建 x；中间加入延迟路径后，不能只保留 G₀₀、G₁₁。",
@@ -677,15 +516,14 @@ def fig_haar_crossband():
     ax.legend(fontsize=FS_SMALL, ncols=2, loc="upper right")
     ax.grid(axis="y", ls=":", alpha=0.5)
     ax.tick_params(labelsize=FS_TINY)
-    ax.text(0.5, -0.27,
-            "完整：[0,1,0,0]；仅同带：[0,0.5,0,0.5]。\n"
-            "后者删去了交叉项，不是训练后的 AEC 残差。",
+    ax.text(0.5, -0.25,
+            "完整映射输出 [0, 1, 0, 0]；删去交叉带项 G₀₁、G₁₀ 后仅得 [0, 0.5, 0, 0.5]。",
             transform=ax.transAxes, fontsize=FS_SMALL, va="top", ha="center", color=C_MAIN)
-    save(fig, "fig37_aec_subband.png")
+    save(fig, "fig32_aec_subband.png")
 
 
 def adaptive_state_example():
-    """图38 的精确小例数据；三种方法的纵轴不作为彼此性能比较。"""
+    """图33 的精确小例数据；三种方法的纵轴不作为彼此性能比较。"""
     weights = np.array([0.8, 0.2])
     kappas = np.array([-1.0, 0.0, 1.0])
     gains = np.array([
@@ -705,10 +543,10 @@ def adaptive_state_example():
 
 
 def fig_adaptive_state_examples():
-    """图38：抽头分配、逆相关状态及假设统计量如何改变更新。"""
+    """图33：抽头分配、逆相关状态及假设统计量如何改变更新。"""
     kappas, gains, rls_matrices, kalman_gains = adaptive_state_example()
     fig = plt.figure(figsize=(9.8, 8.2), layout="constrained")
-    fig.suptitle("图38 IPNLMS、RLS 与 Kalman：三种不同的更新状态", fontsize=FS_SUP)
+    fig.suptitle("图33 IPNLMS、RLS 与 Kalman：三种不同的更新状态", fontsize=FS_SUP)
     grid = fig.add_gridspec(2, 2, height_ratios=(1.0, 1.15))
 
     ax = fig.add_subplot(grid[0, :])
@@ -724,7 +562,7 @@ def fig_adaptive_state_examples():
     ax.legend(fontsize=FS_SMALL, ncols=2)
     ax.grid(axis="y", ls=":", alpha=0.5)
     ax.tick_params(labelsize=FS_TINY)
-    ax.text(0.99, 0.91, r"本例 $\varepsilon_g \to 0$；只表示单步份额，不是长期收敛结果。",
+    ax.text(0.99, 0.91, r"$\varepsilon_g \to 0$ 下的单步抽头更新份额",
             transform=ax.transAxes, fontsize=FS_SMALL, ha="right", va="top",
             bbox=dict(fc="white", ec="0.7", alpha=0.95))
 
@@ -744,8 +582,9 @@ def fig_adaptive_state_examples():
     ax.legend(fontsize=FS_SMALL, ncols=3, loc="upper right")
     ax.grid(ls=":", alpha=0.5)
     ax.tick_params(labelsize=FS_TINY)
-    ax.text(0.02, 0.08,
-            r"$\lambda=1/2,\ P_{-1}=I,\ \mathbf{x}_0=[1,0],\ \mathbf{x}_1=[1,1]$",
+    ax.text(0.03, 0.05,
+            r"$\lambda=1/2,\ \mathbf{P}_{-1}=\mathbf{I}_2$" + "\n"
+            + r"$\vec{x}_0=[1,0]^\top,\ \vec{x}_1=[1,1]^\top$",
             transform=ax.transAxes, fontsize=FS_SMALL, va="bottom",
             bbox=dict(fc="white", ec="0.7", alpha=0.95))
 
@@ -765,17 +604,17 @@ def fig_adaptive_state_examples():
     ax.set_ylim(0, 1.08)
     ax.grid(axis="y", ls=":", alpha=0.5)
     ax.tick_params(labelsize=FS_TINY)
-    ax.text(0.03, 0.95, "Ψ 与 " + r"$P^-$" + " 均人为指定；本图不实现双讲或突变检测。",
+    ax.text(0.03, 0.95, "给定方差下的标量增益 " + r"$K = P^-/(P^-+\Psi)$",
             transform=ax.transAxes, fontsize=FS_SMALL, va="top",
             bbox=dict(fc="white", ec="0.7", alpha=0.95))
-    save(fig, "fig38_aec_four_methods.png")
+    save(fig, "fig33_aec_four_methods.png")
 
 
 def fig_pbfdaf_flow():
-    """图39：一块 PBFDAF 的先验预测与更新；两种半块操作分开画。"""
+    """图34：一块 PBFDAF 的先验预测与更新；两种半块操作分开画。"""
     # 保持流程图纵横比，使 A4 等宽嵌入后的框字和注记更大。
     fig = plt.figure(figsize=(8.2, 8.54), layout="constrained")
-    fig.suptitle("图39 PBFDAF：参考历史、有效输出与受控权重更新", fontsize=FS_SUP)
+    fig.suptitle("图34 PBFDAF：参考历史、有效输出与受控权重更新", fontsize=FS_SUP)
     grid = fig.add_gridspec(2, 1, height_ratios=(1.02, 1.0))
     prediction_ax = fig.add_subplot(grid[0])
     update_ax = fig.add_subplot(grid[1])
@@ -844,9 +683,11 @@ def fig_pbfdaf_flow():
     prediction_ax.text(12.05, 0.98, r"$e_m=d_m-\hat y_m$",
                        va="center", fontsize=FS_SMALL, color=C_MAIN)
     arrow(prediction_ax, (11.8, 2.35), (11.35, 1.25), color=C_GREEN)
+    prediction_ax.text(11.72, 1.56, "−", ha="center", va="center", fontsize=FS_SMALL, color=C_GREEN, fontweight="bold")
     prediction_ax.plot([10.65, 13.45, 13.45, 11.2],
                        [5.275, 5.275, 1.68, 1.68], color=C_RED, lw=1.45)
     arrow(prediction_ax, (11.2, 1.68), (11.2, 1.29), color=C_RED)
+    prediction_ax.text(10.88, 1.48, "+", ha="center", va="center", fontsize=FS_SMALL, color=C_RED, fontweight="bold")
     arrow(prediction_ax, (11.5, 0.98), (11.95, 0.98), color=C_GREEN)
     prediction_ax.text(0.2, 0.28,
                        "$u_m=[b_{m-1},b_m]$；$Q_m=\\sum_pW_pX_{m-p}$；后 $N$ 点为 $\\hat y_m$。\n"
@@ -887,9 +728,9 @@ def fig_pbfdaf_flow():
     arrow(update_ax, (6.06, 2.10), (6.06, 2.7))
     update_ax.text(3.4, 1.65, r"复参考共轭 $X_{m-p}^*$",
                    ha="center", fontsize=FS_SMALL, color=C_BLUE)
-    box(update_ax, 7.025, 1.20, 2.18, 0.67,
+    box(update_ax, 7.12, 1.20, 1.95, 0.67,
         "旧权重 $W_p(m)$", "#F1EEF5")
-    arrow(update_ax, (8.115, 1.87), (8.115, 2.7), color=C_PURPLE)
+    arrow(update_ax, (8.095, 1.87), (8.095, 2.7), color=C_PURPLE)
     box(update_ax, 7.45, 4.72, 2.20, 0.88,
         "外部冻结控制\n仅关闭权重更新", "#F5ECE4")
     arrow(update_ax, (8.05, 4.72), (6.13, 3.69),
@@ -899,15 +740,15 @@ def fig_pbfdaf_flow():
                    color="0.35", lw=1.3, linestyle="--")
     arrow(update_ax, (12.83, 1.86), (12.83, 2.7),
           color="0.35", style="--", width=1.3)
-    update_ax.text(10.55, 1.48, "不约束：直接提交候选",
+    update_ax.text(11.68, 1.46, "不约束：直接提交候选",
                    ha="center", fontsize=FS_SMALL, color="0.28")
     update_ax.text(0.2, 0.55,
                    "$R_m=\\sum_q|X_{m-q}|^2+\\delta$，$\\Delta W_p=\\mu X_{m-p}^*E_m/R_m$。\n"
                    "冻结时保留旧权重，参考历史仍移位；末分区的补位也清零。",
                    fontsize=FS_SMALL, color="0.28")
-    save(fig, "fig39_aec_pbfdaf_flow.png")
+    save(fig, "fig34_aec_pbfdaf_flow.png")
 
 if __name__ == "__main__":
-    fig_problem(); fig_concept(); fig_nlms(); fig_erle(); fig_delay_dtd(); fig_nonlinear(); fig_hybrid()
+    fig_nlms(); fig_delay_dtd(); fig_nonlinear()
     fig_haar_crossband(); fig_adaptive_state_examples(); fig_pbfdaf_flow()
     print("ALL DONE")

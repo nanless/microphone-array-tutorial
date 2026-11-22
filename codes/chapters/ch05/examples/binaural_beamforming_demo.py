@@ -72,9 +72,9 @@ def run_exercises():
     c = np.column_stack((a, b_complex))
     right = lcmv_weights(np.eye(3), c, np.conj([1, 1j / 3]))
     return {
-        "E05-25": {role: row["interferer_response"] for role, row in report.items()},
-        "E05-26": {role: row["unit_background_output_covariance"] for role, row in report.items()},
-        "E05-27": {"null_weights": report["null"]["weights"],
+        "E05-18": {role: row["interferer_response"] for role, row in report.items()},
+        "E05-19": {role: row["unit_background_output_covariance"] for role, row in report.items()},
+        "E05-20": {"null_weights": report["null"]["weights"],
                    "complex_right_response_real_imag": [
                        float(np.vdot(right, b_complex).real),
                        float(np.vdot(right, b_complex).imag),
@@ -138,7 +138,7 @@ def prepare_assets():
             actual_pcm_total=_pcm_scores(pcm),
         )
     return payloads, {
-        "schema_version": 1, "exercises": ["E05-25", "E05-26", "E05-27"],
+        "schema_version": 1, "exercises": ["E05-18", "E05-19", "E05-20"],
         "origin": "deterministic five-tone component control, not measured acoustics",
         "sample_rate_hz": FS, "samples_per_channel": LENGTH,
         "channel_order": ["left", "right"], "common_export_gain": 1.0,

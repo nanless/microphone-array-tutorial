@@ -71,14 +71,16 @@ class FigureAlgorithmTest(unittest.TestCase):
         axis = figure.axes[0]
         rir = axis.lines[0].get_ydata()
         low, high = axis.get_ylim()
-        self.assertAlmostEqual(float(np.min(rir)), -2.6486010524467476, places=12)
+        self.assertAlmostEqual(float(np.min(rir)), -0.44, places=12)
+        self.assertAlmostEqual(float(np.max(rir)), 1.0, places=12)
+        self.assertAlmostEqual(low, -0.68, places=12)
+        self.assertAlmostEqual(high, 1.42, places=12)
         self.assertLess(low, float(np.min(rir)))
         self.assertGreater(high, float(np.max(rir)))
-        self.assertGreaterEqual(high, 3.1)
         energy = np.cumsum(rir[::-1]**2)[::-1]
         crossing = np.flatnonzero(energy <= energy[0] * 1e-6)[0]
-        self.assertEqual(int(crossing), 8222)
-        self.assertTrue(any('514 ms' in item.get_text() and '502 ms' in item.get_text()
+        self.assertEqual(int(crossing), 8104)
+        self.assertTrue(any('506 ms' in item.get_text() and '494 ms' in item.get_text()
                             for item in figure.axes[1].texts))
 
     def capture_figure(self, builder):
@@ -708,13 +710,13 @@ class FigureAlgorithmTest(unittest.TestCase):
         self.assertFalse(first.get_window_extent(renderer).overlaps(
             second.get_window_extent(renderer)))
 
-    def test_fig21_footer_has_its_own_nonoverlapping_grid_row(self):
-        report_path = ROOT / 'codes/chapters/ch07/reports/figure21_wpe.json'
+    def test_fig20_footer_has_its_own_nonoverlapping_grid_row(self):
+        report_path = ROOT / 'codes/chapters/ch07/reports/figure20_wpe.json'
         before = (report_path.read_bytes(), report_path.stat().st_mtime_ns)
         from unittest.mock import patch
         original_write = Path.write_text
         with tempfile.TemporaryDirectory() as temporary:
-            isolated_report = Path(temporary) / 'figure21_wpe.json'
+            isolated_report = Path(temporary) / 'figure20_wpe.json'
             def redirect_report(path, payload, *args, **kwargs):
                 destination = isolated_report if path == report_path else path
                 return original_write(destination, payload, *args, **kwargs)

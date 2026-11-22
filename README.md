@@ -6,7 +6,7 @@
 
 **[在线进入交互式课程站 →](https://nanless.github.io/microphone-array-tutorial/)** · **[▶ 零安装 4 麦波束实验室](https://nanless.github.io/microphone-array-tutorial/assets/readme/lab/array-lab.html)** · **[🔊 15 麦真实房间试听](https://nanless.github.io/microphone-array-tutorial/site/#course-cases)** · **[全书合订本 PDF](dist/microphone-array-tutorial.pdf)** · [第 0 章数学基础](chapters/00_math-foundations.md) · [全书导读目录](chapters/00_overview.md) · **[English Edition (Web / PDF / Docs)](README_EN.md)**
 
-**16 章正文 · 2 篇附录 · 443 道可运行练习 · 92 张编号图** · **283 段配套 WAV 音频** · **129 个开源项目源码对照**
+**16 章正文 · 2 篇附录 · 352 道可运行练习 · 87 张编号图** · **283 段配套 WAV 音频** · **129 个开源项目源码对照**
 
 <picture>
   <source media="(prefers-reduced-motion: reduce)" srcset="assets/readme/course-cover-still.svg">
@@ -33,7 +33,7 @@
 ## 本书的四个核心特点
 
 - **不跳关键步骤的数学闭环**：专门设立[第 0 章《全书数学基础与信号分析预备》](chapters/00_math-foundations.md)，从零推导三维旋转 $\mathrm{SO}(3)$、复相量与 STFT 完美重建（COLA）、子空间投影与 Woodbury 秩一更新、Wirtinger 复变求导、复高斯 CRLB 与维纳—卡尔曼递推；正文每条公式均配物理直觉与成立前提。
-- **443 道手算锚点 + 纯 NumPy 复算**：拒绝黑箱调库，核心算法均提供无第三方重依赖的纯 NumPy 实现与小规模精确分数手算例（如 2 麦 4 点 DFT、3 麦距离气泡、2 格反卷积），方便逐元素核对共轭符号、归一化系数与矩阵维度。
+- **352 道手算锚点 + 纯 NumPy 复算**：拒绝黑箱调库，核心算法均提供无第三方重依赖的纯 NumPy 实现与小规模精确分数手算例（如 2 麦 4 点 DFT、3 麦距离气泡、2 格反卷积），方便逐元素核对共轭符号、归一化系数与矩阵维度。
 - **283 段配套音频 + 专讲“什么时候会失效”**：除正常增益效果外，配套 31 套独立专题音频（连同主清单共 32 套、283 段受控合成音频与真实混响录音），专门重现**高频空间混叠栅瓣、强相干反射假峰、导向失配目标自消、低频差分白噪声放大、AEC 参考超窗/双讲发散、100 ppm 晶振频偏（SRO）抵消**等典型工程失效现场。
 - **从仿真脚本直通量产硬件与开源生态**：[第 10 章](chapters/10_engineering-practice.md)与[第 11 章](chapters/11_selection-guide.md)逐项核算级联拓扑、端到端延迟路径、定点动态范围、每秒乘加数（MACs）与帕累托验收规格书；另配 [6 篇源码研究手册](codes/chapters/ch00/research/README.md)，对照 WebRTC AEC3、SpeexDSP、nara_wpe、Acoular、pyroomacoustics 等 129 个上游项目。
 
@@ -87,8 +87,8 @@ python3 -m venv .venv
 - **按章查找教学代码与 283 段音频清单**：[`codes/chapters/README.md`](codes/chapters/README.md)
 - **算法覆盖矩阵（正文公式 ↔ 教学核 ↔ 测试 ↔ 上游实现）**：[`codes/chapters/ch00/COVERAGE.md`](codes/chapters/ch00/COVERAGE.md)
 - **上游开源实现与工业部署研究手册（6 篇）**：[`codes/chapters/ch00/research/README.md`](codes/chapters/ch00/research/README.md)
-- **92 张插图、静态课程站与标签化 A4 合订本 PDF 构建说明**：[`scripts/README.md`](scripts/README.md)
+- **87 张插图、静态课程站与标签化 A4 合订本 PDF 构建说明**：[`scripts/README.md`](scripts/README.md)
 - **第三方代码、公开数据集署名与许可边界**：[`codes/chapters/ch00/THIRD_PARTY.md`](codes/chapters/ch00/THIRD_PARTY.md)
-- **完整英文版（19 章正文、6 篇研究手册、92 张英文插图、英文课程站与英文合订本 PDF）**：[`README_EN.md`](README_EN.md) · [`chapters_en/`](chapters_en/00_overview.md) · [`dist/microphone-array-tutorial-en.pdf`](dist/microphone-array-tutorial-en.pdf)
+- **完整英文版（19 章正文、6 篇研究手册、87 张英文插图、英文课程站与英文合订本 PDF）**：[`README_EN.md`](README_EN.md) · [`chapters_en/`](chapters_en/00_overview.md) · [`dist/microphone-array-tutorial-en.pdf`](dist/microphone-array-tutorial-en.pdf)
 
 本仓库原创软件代码与脚本采用 [MIT 许可证](LICENSE)，原创教材正文、研究手册与教学插图采用 [CC BY-NC-SA 4.0 许可证](LICENSE-DOCS)；随仓引用的第三方源码片段与公开声学数据集均严格保留各自原始许可条款。

@@ -19,6 +19,7 @@ from codes.chapters.ch01.core.spatial_coherence_and_dba import (
     hermitian_psd_sqrt_coloring,
     iec61672_a_weighting,
     sofa_spherical_to_cartesian_and_colatitude,
+    spatial_coherence_coloring_and_boundary,
 )
 from codes.chapters.ch00.core.audio_samples import alignment_error_case, prepare_exports, read_pcm16
 
@@ -30,7 +31,7 @@ class Chapter01ExperimentsTest(unittest.TestCase):
             set(results),
             {
                 'E01-04', 'E01-05', 'E01-06', 'E01-07', 'E01-08',
-                'E01-09', 'E01-10', 'E01-11', 'E01-12',
+                'E01-09', 'E01-10', 'E01-11',
             },
         )
         json.dumps(results, allow_nan=False)
@@ -205,7 +206,7 @@ class Chapter01ExperimentsTest(unittest.TestCase):
         self.assertTrue(all(row['finite_metrics_rejected'] for row in result['zero_support_controls']))
 
     def test_spatial_coherence_coloring_matches_rational_and_singular_identities(self):
-        result = run_exercises()['E01-11']
+        result = spatial_coherence_coloring_and_boundary()
         two_real = result['two_mic_real']
         # Independent rational derivation for rho = 24/25:
         # lambda_min = 1/25, lambda_max = 49/25; sqrt = 1/5, 7/5 -> [[4/5, 3/5], [3/5, 4/5]].
@@ -261,7 +262,7 @@ class Chapter01ExperimentsTest(unittest.TestCase):
             color_white_samples(np.eye(2), np.ones((3, 4)))
 
     def test_sensor_dba_budget_and_sofa_coordinates_match_closed_forms(self):
-        result = run_exercises()['E01-12']
+        result = run_exercises()['E01-11']
         spot_by_f = {row['frequency_hz']: row for row in result['iec61672_spot_table']}
         self.assertEqual(spot_by_f[1000.0]['a_db'], 0.0)
         self.assertEqual(spot_by_f[1000.0]['power_weight'], 1.0)
@@ -278,6 +279,8 @@ class Chapter01ExperimentsTest(unittest.TestCase):
         self.assertEqual(result['dba_band_50_8000_hz']['num_points'], 796)
         self.assertLess(result['dba_band_50_8000_hz']['a_weighted_ratio_b_over_a'], 1.0)
         self.assertGreater(result['dba_band_50_8000_hz']['apparent_dba_advantage_b_db'], 1.5)
+        self.assertEqual(result['dba_band_20_20000_hz']['num_points'], 1999)
+        self.assertAlmostEqual(result['dba_band_20_20000_hz']['apparent_dba_advantage_b_db'], 1.9149, places=3)
 
         diff = result['endfire_differential_1cm']
         expected_wng_100 = 2.0 * math.sin(2.0 * math.pi * 100.0 * 0.01 / 343.0) ** 2
@@ -287,7 +290,7 @@ class Chapter01ExperimentsTest(unittest.TestCase):
         self.assertAlmostEqual(diff['speech_band_100_4000_asymptotic_penalty_b_db'], 20.0 * math.log10(7 / 4), places=13)
         self.assertGreater(diff['speech_band_100_4000_grid_ratio_b_over_a'], 3.1)
 
-        sofa_pt = result['sofa_reference_point']
+        sofa_pt = sofa_spherical_to_cartesian_and_colatitude(-30.0, 30.0, 1.0)
         self.assertEqual(sofa_pt['colatitude_deg'], 60.0)
         self.assertEqual(sofa_pt['book_azimuth_deg'], 30.0)
         self.assertEqual(sofa_pt['azimuth_sofa_wrapped_360_deg'], 330.0)

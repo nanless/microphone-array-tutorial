@@ -1,0 +1,25 @@
+{
+  "figure": 86,
+  "exercise_ids": [
+    "E00-09",
+    "E00-10"
+  ],
+  "source_sha256": {
+    "codes/chapters/ch00/core/chapter00_math.py": "c505afb7ba7777e2fcdd808a7a9322a3fc34d1ef3e2d7222d287359a1270032b",
+    "codes/chapters/ch00/io_contracts.py": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974",
+    "scripts/make_figures.py": "e4aa12c851ee0907b2c3c87cc802bed2940a1c6f63525b0a7405960547beaf87",
+    "scripts/make_math_figures.py": "6ee0615d97901ed057ff48742f1cf9c6f38d21f54ddc18072aae0673401bf126"
+  },
+  "anchors": {
+    "r_nn_eigenvalues": [
+      1.0,
+      3.0
+    ],
+    "max_gev_sinr": 1.3333333333333335,
+    "unwhitened_matched_sinr": 1.0,
+    "whitening_sinr_gain_db": 1.249387366083,
+    "sparse_unique_virtual_lags": 7,
+    "khatri_rao_vec_max_abs_error": 2.220446049250313e-16
+  },
+  "scope": "Chapter 0 Hermitian Rayleigh bounds, GEV Cholesky whitening, and Khatri-Rao difference coarray"
+}

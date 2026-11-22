@@ -35,9 +35,9 @@ class FoundationParagraphTest(unittest.TestCase):
         parser.feed(render(excerpt, path)[0])
         self.assertEqual(len(parser.items),2)
         self.assertIn("WNG",parser.items[0])
-        self.assertNotIn("口径注",parser.items[0])
+        self.assertNotIn("定义注",parser.items[0])
         self.assertIn("DI",parser.items[1])
-        self.assertIn("口径注",parser.items[1])
+        self.assertIn("定义注",parser.items[1])
 
 
 if __name__ == "__main__":

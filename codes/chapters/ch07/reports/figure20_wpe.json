@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "generator": "scripts/make_figures.py::fig_wpe",
+  "source_sha256": "e4aa12c851ee0907b2c3c87cc802bed2940a1c6f63525b0a7405960547beaf87",
+  "generator_inputs": {
+    "scripts/make_figures.py": "e4aa12c851ee0907b2c3c87cc802bed2940a1c6f63525b0a7405960547beaf87",
+    "codes/chapters/ch07/core/dereverberation.py": "39c93bf31d1b1deac607cd734bbacee596cdacce2d58c4b5c304b04df7e04eb7",
+    "codes/chapters/ch02/core/conventions.py": "4e80a27490f05ddd5f4826361420c0c8d0b331464d1e5629c5def492da47b1d7"
+  },
+  "data_type": "mathematical synthetic signal and impulse response; not real speech or measured RIR",
+  "parameters": {
+    "sample_rate_hz": 16000,
+    "duration_seconds": 1.4,
+    "seed": 21001,
+    "rir_length_samples": 12800,
+    "direct_delay_samples": 160,
+    "decay_parameter_seconds": 0.6,
+    "drr_db": 6.0,
+    "fft_size": 512,
+    "hop_samples": 128,
+    "window": "symmetric Hann (numpy.hanning)",
+    "center": false,
+    "padding": false,
+    "taps": 10,
+    "delay_frames": 6,
+    "iterations": 3,
+    "power_smoothing": "5 frames centered, truncate and renormalize at boundaries",
+    "relative_power_floor": 1e-05,
+    "relative_loading": 1e-06
+  },
+  "time_axis": "Reference delayed 160 samples; input and output stay on receiver timeline; no propagation compensation",
+  "measurement": {
+    "frequency_bins": 257,
+    "frequency_range_hz": [
+      0,
+      8000
+    ],
+    "display_frequency_range_hz": [
+      0,
+      2500
+    ],
+    "frame_count": 172,
+    "last_frame_start_ms": 1368.0,
+    "active_frames": 96,
+    "quiet_frames": 61,
+    "other_frames": 15,
+    "active_threshold_fraction_of_reference_peak": 0.1,
+    "quiet_threshold_fraction_of_reference_peak": 0.01,
+    "nmse_alignment": "one complex gain over all active frame-frequency coefficients"
+  },
+  "results": {
+    "input": {
+      "quiet_energy": 11884.23581846863,
+      "total_energy": 677482.1699634285,
+      "quiet_energy_ratio_db": -17.559266089885973,
+      "active_scale_aligned_nmse_db": -8.66696520469487
+    },
+    "output": {
+      "quiet_energy": 4119.550343237339,
+      "total_energy": 424136.9458754826,
+      "quiet_energy_ratio_db": -20.12656290238749,
+      "active_scale_aligned_nmse_db": -7.69767914889961
+    }
+  }
+}

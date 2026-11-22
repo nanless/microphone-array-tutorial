@@ -30,13 +30,9 @@ from scripts.make_aec_figures import (
 class AecFiguresTest(unittest.TestCase):
     def test_aec_figures_fit_final_width_and_keep_key_text_readable(self):
         builders = [
-            aec_figures.fig_problem,
-            aec_figures.fig_concept,
             aec_figures.fig_nlms,
-            aec_figures.fig_erle,
             aec_figures.fig_delay_dtd,
             aec_figures.fig_nonlinear,
-            aec_figures.fig_hybrid,
             aec_figures.fig_haar_crossband,
             aec_figures.fig_adaptive_state_examples,
             aec_figures.fig_pbfdaf_flow,
@@ -51,7 +47,7 @@ class AecFiguresTest(unittest.TestCase):
                 for builder in builders:
                     builder()
 
-            self.assertEqual(len(figures), 10)
+            self.assertEqual(len(figures), 6)
             for name, figure in figures.items():
                 with self.subTest(figure=name):
                     self.assertLessEqual(figure.get_size_inches()[0], 10.0)
@@ -81,25 +77,12 @@ class AecFiguresTest(unittest.TestCase):
                         11.0,
                     )
 
-            figure26 = figures["fig26_aec_problem.png"]
-            self.assertEqual(figure26.axes[0].get_xlabel(), "抽头索引 ℓ（采样）")
-            self.assertEqual(len(figure26.axes), 3)
-            self.assertEqual(figure26.axes[0].get_subplotspec().colspan.stop, 2)
-            self.assertTrue(any("非语音" in line.get_label()
-                                for line in figure26.axes[1].get_lines()))
-
-            figure27 = figures["fig27_aec_concept.png"]
-            dtd_inputs = [patch for patch in figure27.axes[0].patches
-                          if isinstance(patch, FancyArrowPatch)
-                          and patch.get_edgecolor() == aec_figures.matplotlib.colors.to_rgba(aec_figures.C_PURPLE)]
-            self.assertGreaterEqual(len(dtd_inputs), 2)
-
-            figure28 = figures["fig28_aec_nlms.png"]
-            path_axis = next(axis for axis in figure28.axes if axis.get_title().startswith("(a)"))
-            trend_axis = next(axis for axis in figure28.axes if axis.get_title().startswith("(b)"))
-            step_axis = next(axis for axis in figure28.axes if axis.get_title().startswith("(c)"))
+            figure25 = figures["fig25_aec_nlms.png"]
+            path_axis = next(axis for axis in figure25.axes if axis.get_title().startswith("(a)"))
+            trend_axis = next(axis for axis in figure25.axes if axis.get_title().startswith("(b)"))
+            step_axis = next(axis for axis in figure25.axes if axis.get_title().startswith("(c)"))
             trend_twin = next(
-                axis for axis in figure28.axes
+                axis for axis in figure25.axes
                 if not axis.get_title() and axis.get_ylabel() == "ERLE (dB)"
             )
             self.assertEqual(path_axis.get_ylabel(), "滤波器系数（无量纲）")
@@ -113,8 +96,8 @@ class AecFiguresTest(unittest.TestCase):
             )
             self.assertTrue(all(line.get_marker() != "None" for line in step_axis.get_lines()))
 
-            figure31 = figures["fig31_aec_nonlinear.png"]
-            erle_axis, mapping_axis = figure31.axes
+            figure27 = figures["fig27_aec_nonlinear.png"]
+            erle_axis, mapping_axis = figure27.axes
             self.assertNotEqual(
                 erle_axis.get_lines()[0].get_linestyle(),
                 erle_axis.get_lines()[1].get_linestyle(),
@@ -129,7 +112,7 @@ class AecFiguresTest(unittest.TestCase):
             self.assertGreaterEqual(mapping_note.get_fontsize(), 11.0)
             self.assertIs(mapping_note.get_transform(), mapping_axis.transAxes)
             self.assertLessEqual(mapping_note.get_position()[1], 0.10)
-            figure31.canvas.draw()
+            figure27.canvas.draw()
             note_bounds = mapping_note.get_window_extent()
             axis_bounds = mapping_axis.get_window_extent()
             self.assertGreaterEqual(note_bounds.x0, axis_bounds.x0)
@@ -137,33 +120,24 @@ class AecFiguresTest(unittest.TestCase):
             self.assertGreaterEqual(note_bounds.y0, axis_bounds.y0)
             self.assertLessEqual(note_bounds.y1, axis_bounds.y1)
 
-            figure32 = figures["fig32_aec_hybrid_select.png"]
-            self.assertEqual(len(figure32.axes), 1)
-            self.assertFalse(figure32.axes[0].tables)
-            control_inputs = [patch for patch in figure32.axes[0].patches
-                              if isinstance(patch, FancyArrowPatch)
-                              and patch.get_edgecolor() == aec_figures.matplotlib.colors.to_rgba(aec_figures.C_PURPLE)]
-            self.assertEqual(len(control_inputs), 2)
             self.assertTrue(any("非语音" in text.get_text()
-                                for text in figures["fig29_aec_erle_freeze.png"].axes[-1].texts))
-            self.assertTrue(any("非语音" in text.get_text()
-                                for text in figures["fig30_aec_delay_dtd.png"].axes[-1].texts))
+                                for text in figures["fig26_aec_delay_dtd.png"].axes[-1].texts))
 
-            figure37 = figures["fig37_aec_subband.png"]
-            self.assertEqual(len(figure37.axes), 2)
-            self.assertEqual(figure37.axes[1].get_xlabel(), "输出采样索引 n（采样）")
-            self.assertEqual(figure37.axes[1].get_ylabel(), "输出幅度（无量纲）")
-            self.assertEqual(len(figure37.axes[1].patches), 8)
+            figure32 = figures["fig32_aec_subband.png"]
+            self.assertEqual(len(figure32.axes), 2)
+            self.assertEqual(figure32.axes[1].get_xlabel(), "输出采样索引 n（采样）")
+            self.assertEqual(figure32.axes[1].get_ylabel(), "输出幅度（无量纲）")
+            self.assertEqual(len(figure32.axes[1].patches), 8)
 
-            figure38 = figures["fig38_aec_four_methods.png"]
-            self.assertEqual(len(figure38.axes), 3)
-            self.assertEqual(figure38.axes[0].get_ylabel(), "归一化份额 g（无量纲）")
-            self.assertEqual(figure38.axes[1].get_ylabel(), "P 元素（本例无量纲）")
-            self.assertEqual(figure38.axes[2].get_ylabel(), "K，X=1（无量纲）")
+            figure33 = figures["fig33_aec_four_methods.png"]
+            self.assertEqual(len(figure33.axes), 3)
+            self.assertEqual(figure33.axes[0].get_ylabel(), "归一化份额 g（无量纲）")
+            self.assertEqual(figure33.axes[1].get_ylabel(), "P 元素（本例无量纲）")
+            self.assertEqual(figure33.axes[2].get_ylabel(), "K，X=1（无量纲）")
 
-            figure39 = figures["fig39_aec_pbfdaf_flow.png"]
-            self.assertEqual(len(figure39.axes), 2)
-            prediction, update = figure39.axes
+            figure34 = figures["fig34_aec_pbfdaf_flow.png"]
+            self.assertEqual(len(figure34.axes), 2)
+            prediction, update = figure34.axes
             prediction_text = "\n".join(text.get_text() for text in prediction.texts)
             update_text = "\n".join(text.get_text() for text in update.texts)
             for expected in ("线性等效路径", "参考谱历史", "旧权重 $W_p(m)$",
@@ -178,14 +152,14 @@ class AecFiguresTest(unittest.TestCase):
                               and patch.get_edgecolor() ==
                               aec_figures.matplotlib.colors.to_rgba(aec_figures.C_PURPLE)]
             self.assertGreaterEqual(len(control_arrows), 2)
-            figure39.canvas.draw()
-            for axis in figure39.axes:
+            figure34.canvas.draw()
+            for axis in figure34.axes:
                 for text in axis.texts:
                     extent = text.get_window_extent()
-                    self.assertGreaterEqual(extent.x0, figure39.bbox.x0 - 2)
-                    self.assertLessEqual(extent.x1, figure39.bbox.x1 + 2)
-                    self.assertGreaterEqual(extent.y0, figure39.bbox.y0 - 2)
-                    self.assertLessEqual(extent.y1, figure39.bbox.y1 + 2)
+                    self.assertGreaterEqual(extent.x0, figure34.bbox.x0 - 2)
+                    self.assertLessEqual(extent.x1, figure34.bbox.x1 + 2)
+                    self.assertGreaterEqual(extent.y0, figure34.bbox.y0 - 2)
+                    self.assertLessEqual(extent.y1, figure34.bbox.y1 + 2)
         finally:
             for figure in figures.values():
                 plt.close(figure)
@@ -399,7 +373,7 @@ class AecFiguresTest(unittest.TestCase):
         self.assertGreater(aligned_plateau, misaligned_plateau + 20.0)
         self.assertTrue(np.isnan(view[(times >= 0.8) & (times < 1.2)]).all())
 
-    def test_figure30_uses_readable_two_row_layout_and_labels_both_erle_axes(self):
+    def test_figure26_uses_readable_two_row_layout_and_labels_both_erle_axes(self):
         captured = {}
 
         def capture(figure, name):
@@ -411,7 +385,7 @@ class AecFiguresTest(unittest.TestCase):
 
         figure = captured["figure"]
         try:
-            self.assertEqual(captured["name"], "fig30_aec_delay_dtd.png")
+            self.assertEqual(captured["name"], "fig26_aec_delay_dtd.png")
             self.assertEqual(len(figure.axes), 3)
             correlation_axis, alignment_axis, double_talk_axis = figure.axes
 

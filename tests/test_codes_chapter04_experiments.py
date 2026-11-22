@@ -20,7 +20,7 @@ from codes.chapters.ch00.core.audio_samples import doa_ambiguity_case, prepare_e
 class Chapter04ExperimentsTests(unittest.TestCase):
     def test_catalog_keys_and_strict_json(self):
         results = ex.run_exercises()
-        self.assertEqual(set(results), {f'E04-{i:02d}' for i in range(12, 28)})
+        self.assertEqual(set(results), {f'E04-{i:02d}' for i in range(12, 24)})
         json.dumps(results, allow_nan=False)
 
     def test_nyquist_recovers_original_grid_and_half_sample(self):
@@ -92,7 +92,8 @@ class Chapter04ExperimentsTests(unittest.TestCase):
         self.assertNotAlmostEqual(gcc_phat(-delayed, reference, 16000)[0], original[0])
 
     def test_gauss_newton_closed_form_normal_equations(self):
-        r = ex.gauss_newton_one_step()
+        combined = ex.gauss_newton_and_gls()
+        r = combined['gauss_newton_step']
         z = np.array([np.sqrt(.85)-np.sqrt(.65), .5-np.sqrt(.65), np.sqrt(.45)-np.sqrt(.65)])
         j = -np.sqrt(2)*np.array([[1., 0.], [0., 1.], [1., 1.]])
         expected = np.array([[2., -1.], [-1., 2.]])/6 @ j.T @ z
@@ -100,6 +101,8 @@ class Chapter04ExperimentsTests(unittest.TestCase):
         np.testing.assert_allclose(r['jacobian'], j)
         np.testing.assert_allclose(r['step_m'], expected)
         self.assertAlmostEqual(r['residual_after_m'], .013927510559068, places=13)
+        gls = combined['correlated_tdoa_gls']['methods']
+        np.testing.assert_allclose(gls['gls']['step_m'], [-.03/math.sqrt(2), 0.], atol=1e-15)
 
     def test_crlb_exact_sine_square_sum(self):
         r = ex.local_delay_crlb()
@@ -152,8 +155,8 @@ class Chapter04ExperimentsTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 bessel_jn(0, bad_x)
 
-    def test_e04_26_uca_phase_mode_esprit_aliasing_and_bessel_zeros(self):
-        r = ex.exercise_04_26()
+    def test_e04_22_uca_phase_mode_esprit_aliasing_and_bessel_zeros(self):
+        r = ex.exercise_04_22()
         self.assertAlmostEqual(r['j0_1'], 0.7651976865579666, places=15)
         self.assertAlmostEqual(r['j1_1'], 0.44005058574493355, places=15)
         self.assertLess(r['abs_bias_m8_deg'], 3e-4)
@@ -181,8 +184,8 @@ class Chapter04ExperimentsTests(unittest.TestCase):
         with self.assertRaises(np.linalg.LinAlgError):
             uca_phase_mode_esprit(np.eye(8), 1.0, n_sources=1)
 
-    def test_e04_27_cdr_nodir_exact_rational_and_regimes(self):
-        r = ex.exercise_04_27()
+    def test_e04_23_cdr_nodir_exact_rational_and_regimes(self):
+        r = ex.exercise_04_23()
         # Hand-derived exact rationals: gamma_x = 1/6 + 2j/3, |gamma_x|^2 = 17/36, CDR = 2, w = 2/3.
         self.assertAlmostEqual(r['observed_gamma_x_real'], 1.0 / 6.0, places=15)
         self.assertAlmostEqual(r['observed_gamma_x_imag'], 2.0 / 3.0, places=15)

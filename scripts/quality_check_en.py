@@ -158,9 +158,9 @@ def check_en_repo_docs(errors: list[str]) -> None:
 def check_figures_and_svgs(errors: list[str]) -> None:
     zh_figs = sorted(p.name for p in FIGURES_ZH.glob("fig*.png"))
     en_figs = sorted(p.name for p in FIGURES_EN.glob("fig*.png")) if FIGURES_EN.is_dir() else []
-    if len(zh_figs) != 92 or en_figs != zh_figs:
+    if len(zh_figs) != 87 or en_figs != zh_figs:
         errors.append(
-            f"figures_en mismatch: expected 92 matching files, got {len(en_figs)} "
+            f"figures_en mismatch: expected 87 matching files, got {len(en_figs)} "
             f"(missing={sorted(set(zh_figs) - set(en_figs))[:8]})"
         )
     else:

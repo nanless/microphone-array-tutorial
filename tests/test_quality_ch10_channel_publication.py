@@ -17,7 +17,7 @@ class ChannelPublicationTests(unittest.TestCase):
         cls.directory=Path(cls.temp.name)/'audio'
         cls.manifest=generate_assets(cls.directory)
         cls.pcm=q._check_channel_pcm(cls.directory,cls.manifest)
-        cls.report=q._read_audio_manifest(q.ROOT/'codes/chapters/ch10/reports/figure78_channel_failure.json')
+        cls.report=q._read_audio_manifest(q.ROOT/'codes/chapters/ch10/reports/figure73_channel_failure.json')
 
     @classmethod
     def tearDownClass(cls):

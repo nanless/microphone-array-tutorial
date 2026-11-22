@@ -1,0 +1,84 @@
+{
+  "figure": 77,
+  "exercise_ids": [
+    "E14-06",
+    "E14-07",
+    "E14-08"
+  ],
+  "source_sha256": {
+    "codes/chapters/ch14/core/spatial_parametric.py": "1f866763a1f4c555f1f33508821ab75a169e7f29af0790d0f97dc302ca40b503",
+    "codes/chapters/ch14/core/binaural_matching.py": "a6d18a54486a598137f0c8796c73f69fd34ddac7da6490dcba116936e6205598",
+    "codes/chapters/ch14/core/wearable_fusion.py": "5deae74694ec39faece6a4cd8464c81b9f8e50f9716e8553ca0f88516aef1e63",
+    "codes/chapters/ch14/core/wearable_audio.py": "5cafa2fdb7de21b6ebc997defc03184c68a87ada3b050bd0dfdfd03bd329eb2d",
+    "codes/chapters/ch14/examples/generate_wearable_audio.py": "f2bfa4cab432c4ac03de06c9f15c7813589781420928e8fadd7281c9f12c3ec1",
+    "codes/chapters/ch02/core/conventions.py": "4e80a27490f05ddd5f4826361420c0c8d0b331464d1e5629c5def492da47b1d7",
+    "codes/chapters/ch00/core/audio_samples.py": "bf1145e19e2ec99623c0583220192922c24f0ed3d293212309fe4a2f3bfc8385",
+    "codes/chapters/ch00/io_contracts.py": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974",
+    "scripts/make_figures.py": "e4aa12c851ee0907b2c3c87cc802bed2940a1c6f63525b0a7405960547beaf87",
+    "scripts/make_wearable_figures.py": "e400ae7c4b25d92cd6befe15745b7c943c03141bdb252c71b1f4faf85b19a148"
+  },
+  "audio_manifest_sha256": "0880de492a09f9c25e945e0804e78cc81d40619c7d1b6e911f416b5a6d0d91e3",
+  "anchor_3dir": {
+    "ls_magnitudes": [
+      0.7071067811865477,
+      0.0,
+      0.7071067811865477
+    ],
+    "magls_magnitudes": [
+      1.0000000000000002,
+      1.0000000000000002,
+      1.0000000000000002
+    ]
+  },
+  "circular_4khz_72dir": {
+    "ls_weighted_mag_mse": 0.24830851514413768,
+    "magls_weighted_mag_mse": 0.0005766904874244198,
+    "objective_history": [
+      17.923411443766884,
+      6.093657171215549,
+      2.720538760982859,
+      1.401650456808888,
+      0.8084178134569334,
+      0.5147477632396479,
+      0.3587262961678259,
+      0.2705963025167943,
+      0.21797727661445693,
+      0.1849878053763046,
+      0.16342484681193442,
+      0.14883105566340307,
+      0.13866482337274166,
+      0.1314114620964327,
+      0.12613210357578158,
+      0.12222449540103522,
+      0.1192906950224017,
+      0.11706095524711078,
+      0.11534834244547254,
+      0.11402079966406621,
+      0.11298345465594051,
+      0.1121671317744572,
+      0.1115207250140447,
+      0.11100603357664857,
+      0.11059420260930083
+    ],
+    "monotonically_non_increasing": true
+  },
+  "reference_mixing_points": {
+    "beta_0.0": {
+      "ic_out": 0.9999999999999999,
+      "snr_gain_db": 2.218487496163564
+    },
+    "beta_0.2": {
+      "ic_out": 0.948051948051948,
+      "snr_gain_db": 2.104192878355744
+    },
+    "beta_0.5": {
+      "ic_out": 0.7142857142857142,
+      "snr_gain_db": 1.5490195998574312
+    },
+    "beta_1.0": {
+      "ic_out": 0.2,
+      "snr_gain_db": -0.0
+    }
+  },
+  "plot_scope": "deterministic 2-mic and 4-mic BSM-LS vs BSM-MagLS directional magnitudes, objective monotonicity, and BMVDR reference mixing curve"
+}

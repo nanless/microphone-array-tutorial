@@ -1,13 +1,13 @@
 {
   "schema_version": 1,
-  "exercise_id": "E02-16",
+  "exercise_id": "E02-14",
   "sample_rate_hz": 16000,
   "samples_per_channel": 32320,
   "channels": 1,
   "common_export_gain": 1.0,
   "source_sha256": {
     "codes/chapters/ch02/core/stft_convolution.py": "bd949afc3c4cd8f01fdd3f7b2a4f3a1835f695d79c7bc535d145e25cc56c590c",
-    "codes/chapters/ch02/examples/generate_stft_convolution.py": "41dbd59b101dff8629d50a93e0b8c922de0b845f3c7116e751233c95591c69ce",
+    "codes/chapters/ch02/examples/generate_stft_convolution.py": "be1d05c61a0c98a8d80e1eb3fcbdeb2031c4abaec3da50aac190471368563e06",
     "codes/chapters/ch02/core/spectral.py": "5ade0b101cc00615276b3b60c3659ece3e68ad614cd2cb2edeb568359f034059",
     "codes/chapters/ch02/core/conventions.py": "4e80a27490f05ddd5f4826361420c0c8d0b331464d1e5629c5def492da47b1d7",
     "codes/chapters/ch00/core/audio_samples.py": "bf1145e19e2ec99623c0583220192922c24f0ed3d293212309fe4a2f3bfc8385",

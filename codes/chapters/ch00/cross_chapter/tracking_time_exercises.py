@@ -128,7 +128,7 @@ def run_exercises():
                    "stale_angle_lag_deg": 2.4},
         "E10-15": vad,
         "E11-08": {"confidence": 0.95,
-                   "upper_bounds": {str(n): zero_failure_upper_bound(n) for n in (20, 100, 1000)},
+                   "upper_bounds": {str(n): zero_failure_upper_bound(n) for n in (20, 100, 298, 299, 1000)},
                    "target_failure_rate": 0.01,
                    "minimum_zero_failure_trials": math.ceil(math.log(0.05) / math.log1p(-0.01))},
     }

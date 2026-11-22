@@ -13,10 +13,10 @@ from scripts import quality_check as qc
 
 ROOT = Path(__file__).resolve().parents[1]
 WEARABLE_SPECS = (
-    (81, "fig81_foa_intensity_diffuseness.png", "figure81_foa_intensity_diffuseness.json"),
-    (82, "fig82_bsm_ls_vs_magls.png", "figure82_bsm_ls_vs_magls.json"),
-    (83, "fig83_own_voice_fusion.png", "figure83_own_voice_fusion.json"),
-    (84, "fig84_hear_through_comb.png", "figure84_hear_through_comb.json"),
+    (76, "fig76_foa_intensity_diffuseness.png", "figure76_foa_intensity_diffuseness.json"),
+    (77, "fig77_bsm_ls_vs_magls.png", "figure77_bsm_ls_vs_magls.json"),
+    (78, "fig78_own_voice_fusion.png", "figure78_own_voice_fusion.json"),
+    (79, "fig79_hear_through_comb.png", "figure79_hear_through_comb.json"),
 )
 
 
@@ -36,8 +36,8 @@ class WearablePublicationTests(unittest.TestCase):
             shutil.copy2(ROOT / "codes/chapters/ch14/reports" / json_name, report_dir / json_name)
             shutil.copy2(ROOT / "figures" / png_name, self.root / "figures" / png_name)
 
-        report83 = json.loads((report_dir / "figure83_own_voice_fusion.json").read_bytes())
-        for relative in report83["source_sha256"]:
+        report78 = json.loads((report_dir / "figure78_own_voice_fusion.json").read_bytes())
+        for relative in report78["source_sha256"]:
             target = self.root / relative
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(ROOT / relative, target)
@@ -85,17 +85,17 @@ class WearablePublicationTests(unittest.TestCase):
         self.assertTrue(self.check(qc.check_wearable_audio))
 
     def test_figure_rejects_equal_valued_wrong_types_with_matching_png_report_sha(self):
-        report_path = self.root / "codes/chapters/ch14/reports/figure83_own_voice_fusion.json"
+        report_path = self.root / "codes/chapters/ch14/reports/figure78_own_voice_fusion.json"
         original = json.loads(report_path.read_bytes())
         real_open = Image.open
-        with real_open(self.root / "figures/fig83_own_voice_fusion.png") as picture:
-            info83 = dict(picture.info)
+        with real_open(self.root / "figures/fig78_own_voice_fusion.png") as picture:
+            info78 = dict(picture.info)
 
         for field in ("figure", "mse_bool", "bad_exercise"):
             with self.subTest(field=field):
                 report = copy.deepcopy(original)
                 if field == "figure":
-                    report["figure"] = 83.0
+                    report["figure"] = 78.0
                 elif field == "mse_bool":
                     report["pcm_reference_mse_ch0"]["wearable_fused_output"] = False
                 else:
@@ -104,8 +104,8 @@ class WearablePublicationTests(unittest.TestCase):
                 updated_digest = hashlib.sha256(report_path.read_bytes()).hexdigest()
 
                 def fake_open(path, *args, **kwargs):
-                    if Path(path).name == "fig83_own_voice_fusion.png":
-                        metadata = {**info83, "NumericalReportDigest": updated_digest}
+                    if Path(path).name == "fig78_own_voice_fusion.png":
+                        metadata = {**info78, "NumericalReportDigest": updated_digest}
 
                         class Picture:
                             def __enter__(self_inner):

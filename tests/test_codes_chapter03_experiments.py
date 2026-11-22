@@ -9,9 +9,10 @@ from codes.chapters.ch00.core.audio_samples import dma_calibration_case, prepare
 
 
 class Chapter03ExperimentsTest(unittest.TestCase):
-    def test_registry_has_thirteen_serializable_exercises(self):
+    def test_registry_has_eleven_serializable_exercises(self):
         result=ch3.run_exercises()
-        self.assertEqual(set(result),{f'E03-{n:02}' for n in range(8,21)})
+        self.assertEqual(set(result),{f'E03-{n:02}' for n in range(8,19)})
+        self.assertIn('coplanar_mirror_h0',result['E03-14'])
         json.dumps(result,allow_nan=False)
 
     def test_known_direction_baseline_matches_scalar_hand_solution(self):

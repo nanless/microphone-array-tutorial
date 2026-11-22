@@ -24,7 +24,7 @@ class Chapter11ExperimentsTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         # Unit fixtures are generated only in a temporary directory. The main
-        # E19 branch always reads the already published four repository WAVs.
+        # E11-13 branch always reads the already published four repository WAVs.
         cls.temporary = tempfile.TemporaryDirectory()
         cls.addClassCleanup(cls.temporary.cleanup)
         cls.scenario_directory = Path(cls.temporary.name) / 'scenarios'
@@ -33,7 +33,7 @@ class Chapter11ExperimentsTests(unittest.TestCase):
         cls.audio = selection_tradeoff_case()
 
     def test_identifiers_and_pareto_analytic_intersection(self):
-        self.assertEqual(list(self.results), [f'E11-{i}' for i in range(10, 30)])
+        self.assertEqual(list(self.results), [f'E11-{i}' for i in range(10, 23)])
         x = self.results['E11-10']
         self.assertEqual(x['feasible'], ['A', 'B', 'C'])
         self.assertEqual(x['pareto'], ['A', 'B'])
@@ -67,20 +67,8 @@ class Chapter11ExperimentsTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     upper_limit_verdict([[invalid, invalid]], [1])
 
-    def test_composition_reversal_and_fixed_weights(self):
-        x = self.results['E11-11']
-        np.testing.assert_allclose(x['scene_rates'], [[1/10, 3/10], [2/25, 7/25]])
-        np.testing.assert_allclose(x['pooled_rates'], [3/25, 13/50])
-        np.testing.assert_allclose(x['fixed_weight_rates'], [1/5, 9/50])
-
-    def test_missing_score_interval_contains_competitor(self):
-        x = self.results['E11-12']
-        np.testing.assert_allclose(x['complete_mean_bounds'], [81/25, 101/25])
-        self.assertFalse(x['ranking_determined'])
-        self.assertFalse(x['is_confidence_interval'])
-
     def test_joint_risk_coverage_uses_bonferroni_not_independence(self):
-        x = self.results['E11-13']
+        x = self.results['E11-11']
         upper = x['simultaneous_upper_each']
         self.assertAlmostEqual((1-upper)**100, 1/60)
         self.assertEqual(x['minimum_zero_failure_trials_each'], 408)
@@ -88,7 +76,7 @@ class Chapter11ExperimentsTests(unittest.TestCase):
         self.assertLessEqual(.99**408, 1/60)
 
     def test_deadline_counts_missing_and_late_responses_in_pressure_scenario(self):
-        result = self.results['E11-13']['deadline_acceptance']
+        result = self.results['E11-11']['deadline_acceptance']
         a, b = (result['candidates'][candidate] for candidate in ('A', 'B'))
         a_stress, b_stress = a['scenarios']['stress'], b['scenarios']['stress']
         self.assertEqual((a_stress['on_time'], a_stress['late'], a_stress['absent']), (17, 1, 2))
@@ -105,8 +93,6 @@ class Chapter11ExperimentsTests(unittest.TestCase):
         self.assertLess(complement, Fraction(1, 160))
 
     def test_interval_verdict_boundaries_and_missingness(self):
-        self.assertEqual(self.results['E11-14']['verdicts'],
-                         {'A': 'pass', 'B': 'undetermined', 'C': 'fail', 'D': 'undetermined'})
         self.assertEqual(upper_limit_verdict([[150, 150]], [150]), 'pass')
         self.assertEqual(upper_limit_verdict([[150, 151]], [150]), 'undetermined')
         self.assertEqual(upper_limit_verdict([None, [2, 3]], [1, 1]), 'fail')
@@ -115,17 +101,13 @@ class Chapter11ExperimentsTests(unittest.TestCase):
                 upper_limit_verdict(bounds, limits)
 
     def test_interaction_is_computed_from_four_cells(self):
-        x = self.results['E11-15']
+        x = self.results['E11-12']
         self.assertEqual(x['interaction_percentage_points'], -15)
         self.assertEqual(x['best_configuration'], 'AB')
         # At A absent, B costs +3; at A present, B changes errors by -12.
         self.assertEqual((x['errors']['B']-x['errors']['none'], x['errors']['AB']-x['errors']['A']), (3, -12))
 
     def test_slot_reuse_has_global_permutation_penalty(self):
-        x = self.results['E11-16']
-        self.assertEqual((x['cp_errors'], x['orc_errors']), (2, 0))
-        self.assertEqual(x['orc_assignment_utterance_to_slot'], [0, 1, 0])
-        self.assertEqual(x['cp_wer'], 2/3)
         reordered = small_slot_word_errors([['a'], ['b'], ['c']], [0, 1, 2], [['b'], ['a', 'c']])
         self.assertEqual((reordered['cp_errors'], reordered['orc_errors']), (2, 0))
         identity = small_slot_word_errors([['a'], ['b'], ['c']], [0, 1, 0], [['a', 'c'], ['b']])
@@ -138,23 +120,6 @@ class Chapter11ExperimentsTests(unittest.TestCase):
             small_slot_word_errors([['a']]*7, [0]*7, [['a']])
         with self.assertRaises(ValueError):
             small_slot_word_errors([[]], [0], [['a']])
-
-    def test_threshold_cost_direction_and_exposure(self):
-        a, b = self.results['E11-17']['rows']
-        self.assertEqual([r['misses'] for r in (a, b)], [1, 2])
-        self.assertEqual([r['false_events_per_hour'] for r in (a, b)], [.5, 0])
-        self.assertEqual([r['cost_2miss_5false'] for r in (a, b)], [7, 4])
-        self.assertEqual([r['cost_10miss_1false'] for r in (a, b)], [11, 20])
-        self.assertEqual([r['passes_miss_rate_limit'] for r in (a, b)], [True, False])
-
-    def test_same_index_clock_error_by_physical_times(self):
-        x = self.results['E11-18']
-        expected = [1000*(t-t/(1+80e-6)) for t in [1, 10, 300]]
-        np.testing.assert_allclose(x['same_index_exact_ms'], expected, rtol=2e-12)
-        self.assertAlmostEqual(x['exact_interval_without_initial_residual_s'], 1.2501)
-        interval = x['robust_interval_s']
-        self.assertAlmostEqual(interval, 100009/112500)
-        self.assertAlmostEqual(20e-6 + interval - interval/(1+90e-6), 100e-6, places=15)
 
     def test_sign_test_preserves_big_integer_and_mixed_comparisons(self):
         for baseline, candidate in (([2**53+1], [2**53]),
@@ -178,6 +143,8 @@ class Chapter11ExperimentsTests(unittest.TestCase):
         self.assertIsNone(z['log_one_sided_pvalue'])
 
     def test_zero_failure_extreme_integer_is_controlled(self):
+        self.assertAlmostEqual(zero_failure_upper_bound(298), 0.0100024317, places=7)
+        self.assertAlmostEqual(zero_failure_upper_bound(299), 0.0099691454, places=7)
         self.assertGreater(zero_failure_upper_bound(10**300), 0)
         with self.assertRaisesRegex(ValueError, 'range'):
             zero_failure_upper_bound(10**400)
@@ -221,7 +188,7 @@ class Chapter11ExperimentsTests(unittest.TestCase):
         for length, expected_error in ((3, 91223542800), (9, 249713672400)):
             name, delay = f'selection_fir{length}', (length-1)//2
             output, start, stop = values[name], 1600+delay, 30400+delay
-            actual = self.results['E11-19']['pcm_analysis']['candidates'][name]
+            actual = self.results['E11-13']['pcm_analysis']['candidates'][name]
             target = amplitude(output, 1500, start, stop)/amplitude(values['selection_clean'], 1500, 1600, 30400)
             noise = amplitude(output, 3500, start, stop)/amplitude(values['selection_mixture'], 3500, 1600, 30400)
             self.assertAlmostEqual(actual['target_1500_retention'], target, places=12)
@@ -229,20 +196,11 @@ class Chapter11ExperimentsTests(unittest.TestCase):
             denominator = sum(v*v for v in integers['selection_clean'][1600:30400])
             numerator = sum((integers[name][i+delay]-integers['selection_clean'][i])**2 for i in range(1600,30400))
             self.assertEqual((numerator,denominator), (expected_error,791595378000))
-            self.assertEqual(self.results['E11-19']['integer_analysis'][name]['integer_error_squared_sum'], numerator)
+            self.assertEqual(self.results['E11-13']['integer_analysis'][name]['integer_error_squared_sum'], numerator)
             self.assertAlmostEqual(actual['aligned_total_nmse'], numerator/denominator, places=14)
 
-    def test_weighted_sum_cannot_reach_middle_nondominated_point(self):
-        x = self.results['E11-20']
-        self.assertEqual(x['pareto'], ['A','B','C'])
-        self.assertEqual((x['B_minimum_weight'],x['B_maximum_weight']), (float(Fraction(3,5)),float(Fraction(2,5))))
-        self.assertFalse(x['B_selectable_by_linear_weight'])
-        # The incompatible inequalities are exact, not a sampled weight grid.
-        self.assertGreater(Fraction(3,5),Fraction(2,5))
-        self.assertEqual((x['constraint_feasible'],x['constraint_winner']), (['B','C'],'B'))
-
     def test_interval_dominance_checks_all_vertices_and_counterexamples(self):
-        x = self.results['E11-21']
+        x = self.results['E11-14']
         self.assertTrue(x['A_dominates_B'])
         self.assertFalse(x['A_dominates_C'])
         self.assertFalse(x['C_dominates_A'])
@@ -254,7 +212,7 @@ class Chapter11ExperimentsTests(unittest.TestCase):
         self.assertEqual(x['latency_verdicts'],{'A':'pass','B':'fail','C':'undetermined'})
 
     def test_poisson_zero_events_uses_hours_not_trial_count(self):
-        x = self.results['E11-22']
+        x = self.results['E11-15']
         rate = -math.log(.05)/2
         self.assertAlmostEqual(x['poisson_rate_upper_per_hour'],rate)
         self.assertAlmostEqual(math.exp(-2*rate),.05)
@@ -262,14 +220,14 @@ class Chapter11ExperimentsTests(unittest.TestCase):
         self.assertGreater(x['poisson_rate_upper_per_hour'],.1)
 
     def test_whole_utterance_cannot_be_split_between_output_slots(self):
-        x = self.results['E11-23']['cases']
+        x = self.results['E11-16']['cases']
         self.assertEqual((x['whole']['orc_errors'],x['split']['orc_errors']), (2,0))
         self.assertEqual((x['whole']['cp_errors'],x['split']['cp_errors']), (2,2))
         self.assertEqual((x['whole']['reference_words'],x['split']['reference_words']), (2,2))
         self.assertEqual(x['whole']['orc_wer'],1)
 
     def test_time_constraint_allows_error_rate_above_one(self):
-        x = self.results['E11-24']
+        x = self.results['E11-17']
         self.assertEqual(x['ordinary_errors'],0)
         self.assertEqual([r['time_constrained_errors'] for r in x['cases']], [2,0,0])
         self.assertEqual(x['cases'][0]['time_constrained_wer'],2)
@@ -288,7 +246,7 @@ class Chapter11ExperimentsTests(unittest.TestCase):
         self.assertEqual(tiny_time_constrained_edit_distance(ref,hyp,rt,ht),min(all_costs(0,0,0)))
 
     def test_scenario_composition_has_distinct_robust_objectives(self):
-        x = self.results['E11-25']
+        x = self.results['E11-18']
         def response(length,frequency):
             # Explicit finite cosine sum around the filter center.
             half=(length-1)//2
@@ -308,7 +266,7 @@ class Chapter11ExperimentsTests(unittest.TestCase):
             self.assertNotEqual(max(endpoints),max(single,dual))
 
     def test_scenario_actual_pcm_integer_sums_and_missing_assets(self):
-        manifest=self.results['E11-25']['published_audio']
+        manifest=self.results['E11-18']['published_audio']
         expected={'single':(395812398600,[87210066600,152494200]),
                   'dual':(791595378000,[91223542800,249713672400])}
         def read(stem):
@@ -354,7 +312,7 @@ class Chapter11ExperimentsTests(unittest.TestCase):
             self.assertEqual((wav.read_bytes(),wav.stat().st_mtime_ns),before)
 
     def test_multizone_cabin_selection_independent_geometry_and_guard(self):
-        res = self.results['E11-28']
+        res = self.results['E11-21']
         self.assertEqual(res['bus_verdicts'], {'a2b_sync': 'pass', 'bt_async_uncorrected': 'fail'})
         bt = res['bus_clocks']['bt_async_uncorrected']
         expected_drift_s = float(Fraction(60 * 50, 1_000_050))
@@ -381,7 +339,7 @@ class Chapter11ExperimentsTests(unittest.TestCase):
             bus_clock_drift_metrics(True, 60.0, 4000.0, 5.0)
 
     def test_icc_comb_notches_howling_margin_and_teams_interval_verdict(self):
-        res = self.results['E11-29']
+        res = self.results['E11-22']
         pa = res['path_A_8ms']
         pb = res['path_B_22ms']
         # Independent odd-multiple enumeration in [300, 3400] Hz.

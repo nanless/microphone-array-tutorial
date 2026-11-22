@@ -1,4 +1,4 @@
-"""E10-18..36: engineering calculations and checked PCM, not hardware benchmarks.
+"""E10-18..28: engineering calculations and checked PCM, not hardware benchmarks.
 
 Run ``python -m codes.chapters.ch10.chapter10_experiments``. Every answer is computed
 from the stated inputs. Published audio is checked read-only, never regenerated.
@@ -18,26 +18,14 @@ import wave
 from fractions import Fraction
 from pathlib import Path
 import numpy as np
-from codes.chapters.ch10.core.engineering import q15_dot, resample_sro_to_reference
+from codes.chapters.ch10.core.engineering import resample_sro_to_reference
 from codes.chapters.ch10.core.noise_suppression import power_spectral_subtraction
 from codes.chapters.ch00.core.audio_samples import agc_blocks_case, prepare_exports
 from codes.chapters.ch00.examples.generate_audio_samples import INPUTS
-from codes.chapters.ch10.sro_closed_loop_demo import StatefulLinearClockCorrector
 from codes.chapters.ch10.core.noise_mismatch import build_fixture, analyze_fixture, analyze_pcm, STEMS
 from codes.chapters.ch10.examples.generate_noise_mismatch import check_assets, OUTPUT as NOISE_OUTPUT
 from codes.chapters.ch10.core.channel_selection import teaching_channel_selection
 from codes.chapters.ch10.core.pdm_and_eval import pdm_cic_teaching_case, p340_p808_teaching_case
-
-
-def rtf_anchor():
-    sample_rate, window, hop, service_ms = 16000, 512, 128, 4.
-    audio_ms, services_ms = np.array([10., 100.]), np.array([1., 90.])
-    return {'sample_rate_hz': sample_rate, 'window_samples': window, 'hop_samples': hop,
-            'service_ms': service_ms, 'hop_rtf': service_ms / (1000 * hop / sample_rate),
-            'wrong_window_rtf': service_ms / (1000 * window / sample_rate),
-            'audio_ms': audio_ms.tolist(), 'services_ms': services_ms.tolist(),
-            'aggregate_rtf': float(services_ms.sum() / audio_ms.sum()),
-            'unweighted_mean_rtf': float(np.mean(services_ms / audio_ms))}
 
 
 def subtraction_anchor():
@@ -55,71 +43,6 @@ def subtraction_anchor():
             'clipped_mean': float(np.mean(np.abs(enhanced[0, 1:])**2))}
 
 
-def q15_anchor():
-    x, h = np.array([1, 1], dtype=np.int16), np.array([16384, 16384], dtype=np.int16)
-    products = x.astype(np.int64) * h
-    worst = np.array([-32768, -32768], dtype=np.int16)
-    return {'x': x.tolist(), 'h': h.tolist(), 'products': products.tolist(),
-            'round_once': int(q15_dot(x, h)),
-            'round_each': int(np.rint(products / 32768).sum()),
-            'two_worst_products_sum': sum(int(v)**2 for v in worst),
-            'int32_max': int(np.iinfo(np.int32).max),
-            'saturated_result': int(q15_dot(worst, worst)),
-            'safe_int64_length_bound': (2**63 - 1) // 2**30}
-
-
-def critical_path_anchor():
-    capture, a, b, c = 32., 4., 7., 3.
-    finish_a, finish_b = capture + a, capture + b
-    return {'capture_ms': capture, 'service_ms': {'A': a, 'B': b, 'C': c},
-            'parallel_finish_a_ms': finish_a, 'parallel_finish_b_ms': finish_b,
-            'parallel_finish_c_ms': max(finish_a, finish_b) + c,
-            'single_worker_finish_c_ms': capture + a + b + c}
-
-
-def phase_drift_anchor():
-    epsilon, time, fs = 100e-6, 1., 16000
-    exact_delay = time * epsilon / (1 + epsilon)
-    approximate_delay = time * epsilon
-    result = {}
-    for frequency in (1000, 4000):
-        exact = abs(math.cos(math.pi * frequency * exact_delay))
-        approximate = abs(math.cos(math.pi * frequency * approximate_delay))
-        result[str(frequency)] = {'exact_amplitude': exact, 'exact_db': 20 * math.log10(exact),
-                                 'first_order_amplitude': approximate,
-                                 'first_order_db': 20 * math.log10(approximate)}
-    return {'sample_rate_hz': fs, 'epsilon': epsilon, 'reference_time_s': time,
-            'exact_delay_s': exact_delay, 'first_order_delay_s': approximate_delay,
-            'frequencies_hz': result}
-
-
-def memory_anchor():
-    persistent, scratch = 512, [128, 96]
-    buffered = 3 * 4 * 160 * np.dtype(np.float32).itemsize / 1024
-    return {'persistent_kib': persistent, 'scratch_kib': scratch,
-            'serial_peak_kib': persistent + max(scratch),
-            'parallel_peak_kib': persistent + sum(scratch), 'in_flight_kib': buffered,
-            'serial_with_buffers_kib': persistent + max(scratch) + buffered,
-            'parallel_with_buffers_kib': persistent + sum(scratch) + buffered}
-
-
-def streaming_anchor():
-    values = [n / 3 for n in range(6)]
-    result = {}
-    for name, chunks in [('complete', [[0, 1], [2, 3, 4, 5]]),
-                         ('missing_index_2', [[0, 1], [3, 4, 5]])]:
-        state = StatefulLinearClockCorrector(2., 3., 0., 4)
-        output = []
-        per_push = []
-        for indices in chunks:
-            emitted = state.push(indices, [values[i] for i in indices])
-            output.extend(emitted)
-            per_push.append(emitted)
-        result[name] = {'chunks': chunks, 'outputs': output, 'per_push_outputs': per_push}
-    return {'reference_rate_hz': 2, 'device_rate_hz': 3, 'device_start_s': 0,
-            'device_values': values, 'device_capture_times_s': values, **result}
-
-
 def alias_anchor():
     input_rate, output_rate, frequency, count = 8000, 4000, 3000, 17
     signal = np.cos(2 * np.pi * frequency * np.arange(count) / input_rate)
@@ -130,18 +53,6 @@ def alias_anchor():
             'output': output.tolist(), 'alias_frequency_hz': 1000,
             'max_alias_error': float(np.max(np.abs(output - alias))),
             'anti_alias_filter_run': False}
-
-
-def telemetry_anchor():
-    indices, timestamps = [0, 1, 3], [0, 10_000_000, 30_000_000]
-    hop, sample_rate, channels = 160, 16000, 4
-    missing_frames = sum(max(b - a - 1, 0) for a, b in zip(indices, indices[1:]))
-    return {'frame_indices': indices, 'first_sample_timestamp_ns': timestamps,
-            'expected_first_sample_timestamp_ns': [i * hop * 10**9 // sample_rate for i in indices],
-            'hop_samples': hop, 'sample_rate_hz': sample_rate, 'channels': channels,
-            'missing_time_samples': missing_frames * hop,
-            'missing_scalar_values': missing_frames * hop * channels,
-            'in_flight_blocks': 3, 'processing_blocks': 1, 'waiting_blocks': 3 - 1}
 
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -322,20 +233,6 @@ def clock_identifiability_anchor():
             'common_timer_scale_cancels_for_two_actual_devices': True}
 
 
-def padded_rtf_anchor():
-    length, window, hop, fs = 1000, 512, 256, 16000
-    starts = list(range(0, length+window-hop, hop))
-    service = Fraction(1, 100)
-    padded = starts[-1]+hop
-    return {'input_samples': length, 'window_samples': window, 'hop_samples': hop,
-            'sample_rate_hz': fs, 'call_start_samples': starts, 'call_count': len(starts),
-            'printed_denominator_samples': padded, 'cropped_output_samples': length,
-            'controlled_service_s': float(service), 'printed_rtf': float(service*fs/padded),
-            'source_duration_rtf': float(service*fs/length),
-            'scope': 'fixed original wrapper arithmetic, hypothetical 10ms; no ONNX inference timing',
-            'upstream_commit': 'f85223bd546b27f39dc0744e0310dcd246f750a4'}
-
-
 def noise_mismatch_anchor(directory=None):
     """Check the published six-WAV experiment, then score stored PCM again.
 
@@ -357,7 +254,7 @@ def noise_mismatch_anchor(directory=None):
 
 
 def channel_selection_anchor(directory=None):
-    """E10-34 hand control plus strict read-only check of actual six PCM files.
+    """E10-26 hand control plus strict read-only check of actual six PCM files.
 
     No source estimation or repair: missing, changed, or stale assets fail.
     Recompute PCM integer error from actual stored samples, separately from
@@ -416,10 +313,8 @@ def p340_p808_anchor():
 
 
 def run_experiments():
-    functions = [rtf_anchor, subtraction_anchor, q15_anchor, critical_path_anchor,
-                 phase_drift_anchor, memory_anchor, streaming_anchor, alias_anchor,
-                 telemetry_anchor, agc_anchor, noise_update_anchor, finite_rir_anchor,
-                 blocking_anchor, clock_identifiability_anchor, padded_rtf_anchor,
+    functions = [subtraction_anchor, alias_anchor, agc_anchor, noise_update_anchor,
+                 finite_rir_anchor, blocking_anchor, clock_identifiability_anchor,
                  noise_mismatch_anchor, channel_selection_anchor, pdm_cic_anchor,
                  p340_p808_anchor]
     return {f'E10-{number:02d}': function() for number, function in enumerate(functions, 18)}

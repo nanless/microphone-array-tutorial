@@ -480,21 +480,20 @@ def esprit_least_squares_small() -> dict:
 
 
 def run_exercises() -> dict:
-    """Return twenty-eight JSON results, including 7 x 200 MDL resampling trials."""
+    """Return twenty-five JSON results, including 7 x 200 MDL resampling trials."""
     functions = {
         "E01-01": correlated_noise, "E01-02": amplitude_and_power,
         "E02-01": stft_framing, "E02-02": complex_covariance, "E02-03": stft_roundtrip,
         "E03-01": difference_coarray, "E03-02": endfire_error,
         "E04-01": gcc_sign_and_silence, "E04-02": coherent_source_rank, "E04-03": spatial_alias,
-        "E05-01": mwf_rank_condition, "E05-02": mvdr_loading_tradeoff,
         "E01-03": unequal_noise_average, "E02-04": masked_snapshot_rank,
         "E02-05": recursive_startup, "E03-03": azimuth_roundtrip,
         "E03-04": near_to_far_error, "E04-04": coherent_spatial_smoothing,
-        "E05-03": beam_output_noise, "E05-04": complex_constraint_response,
+        "E05-01": complex_constraint_response,
         "E04-05": mdl_candidate_scores,
         "E02-06": mask_common_scale, "E03-05": differential_gain_pattern,
         "E03-06": complex_gain_calibration,
-        "E04-06": mdl_repeated_trials, "E05-05": mvdr_finite_noise_null,
+        "E04-06": mdl_repeated_trials, "E05-02": mvdr_finite_noise_null,
         "E04-07": four_mic_fractional_delay,
         "E04-09": esprit_least_squares_small,
     }

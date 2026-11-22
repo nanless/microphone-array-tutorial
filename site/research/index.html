@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>源码研究导读 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="c03066f19b2d"><style>
+<meta name="source-digest" content="91332460b1a7"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -388,7 +388,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <tr>
 <td><a href="05_exercises_and_audio.html">练习与音频实验</a></td>
 <td>第 0～11 章、扩展专题Ⅰ～Ⅳ、附录 A/B</td>
-<td>443 道代码练习、主109个合成WAV、30套独立合成170个WAV与4个真实录音摘录/派生的复算、许可和边界；逐套入口见<a href="../index.html#audio-assets">导读完整音频表</a></td>
+<td>352 道代码练习、主109个合成WAV、30套独立合成170个WAV与4个真实录音摘录/派生的复算、许可和边界；逐套入口见<a href="../index.html#audio-assets">导读完整音频表</a></td>
 </tr>
 </tbody>
 </table></div>
@@ -402,7 +402,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>线性求解返回有限数组，却不满足约束或与手算不符：先读<a href="04_source_reproduction.html#appendix-solver-contracts">附录 A 求解合同</a>，分开检查数据类型、数值秩、残差与物理目标。</li>
 <li>想更换为论文中的新方法：先对齐论文的输入条件、训练信息、因果性与输出目标，再决定是否替换现有模块。</li>
 <li>想复现附录B中的神经研究方向：从<a href="04_source_reproduction.html#appendix-b-reproduction">八类任务与版本边界</a>选择一个输出目标，再核对源码、权重、数据和计时范围；TAC的静态结构证据不代替原网络运行。</li>
-<li>想先复算一个答案、听辨一次时延或削波：从<a href="05_exercises_and_audio.html">练习与音频实验</a>选择稳定题号或音频组，并结合图 34 核对波形与参数。合成样例不是自然语音，也不代替正式听测。</li>
+<li>想先复算一个答案、听辨一次时延或削波：从<a href="05_exercises_and_audio.html">练习与音频实验</a>选择稳定题号或音频组，并结合图 29 核对波形与参数。合成样例不是自然语音，也不代替正式听测。</li>
 </ul>
 <span id="sec-3" class="anchor-alias" aria-hidden="true"></span><span id="阅读源码的共同顺序" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-517ca81f96">阅读源码的共同顺序</h2>
 <ol>
@@ -447,14 +447,14 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <p>本地取得源码的状态由获取工具生成，见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/upstream/README.md">源码获取说明</a>。
 许可与依赖属于各上游项目；本手册不把不同项目的源码合并成一个重新授权的软件包。</p>
 <p>第4章另有 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch04/reports/doatools_esprit_reference.json">doatools ESPRIT 固定接口对照</a>和<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch04/reports/figure13_gcc_reverb.json">图13的逐次统计</a>。默认加权的原版偏差、取消加权与独立参考分开记录；完整数字、适用范围与源码入口见空间篇第14节。</p>
-<p>第12章扩展专题Ⅰ提供<a href="../12_acoustic-imaging.html">声学成像正文</a>、<a href="01_spatial_and_tracking.html#imaging-contract-audit">逐层源码合同</a>和<a href="05_exercises_and_audio.html#471-二十题分别核对什么">20题及五WAV实验</a>。输出是参考声压贡献及区域量；原算法、教学算例和工业条件分别核对。</p>
-<p>分布式专题Ⅱ将<a href="../13_distributed-enhancement.html">节点目标与压缩条件</a>、<a href="03_industrial_deployment.html#distributed-network-deployment">原论文与工业网络</a>、<a href="04_source_reproduction.html#distributed-reproduction">固定源码合同</a>和<a href="05_exercises_and_audio.html#distributed-exercises-audio">27题及17WAV</a>互链。原统计算法、已知真值音频、源码获取与完整设备执行分别记录。</p>
-<p>空间与可穿戴阵列专题Ⅲ提供<a href="../14_spatial-wearable-arrays.html">球谐采集、双耳匹配与跨模态融合正文</a>以及<a href="05_exercises_and_audio.html#wearable-exercises-audio">18题与六WAV实验</a>。条件目标提取与多通道日志专题Ⅳ提供<a href="../15_target-extraction-diarization.html">线索条件化、近场距离气泡与TS-VAD/GSS正文</a>以及<a href="05_exercises_and_audio.html#tse-exercises-audio">18题与六WAV实验</a>。</p>
+<p>第12章扩展专题Ⅰ提供<a href="../12_acoustic-imaging.html">声学成像正文</a>、<a href="01_spatial_and_tracking.html#imaging-contract-audit">逐层源码合同</a>和<a href="05_exercises_and_audio.html#471-18题分别核对什么">18题及五WAV实验</a>。输出是参考声压贡献及区域量；原算法、教学算例和工业条件分别核对。</p>
+<p>分布式专题Ⅱ将<a href="../13_distributed-enhancement.html">节点目标与压缩条件</a>、<a href="03_industrial_deployment.html#distributed-network-deployment">原论文与工业网络</a>、<a href="04_source_reproduction.html#distributed-reproduction">固定源码合同</a>和<a href="05_exercises_and_audio.html#distributed-exercises-audio">20题及17WAV</a>互链。原统计算法、已知真值音频、源码获取与完整设备执行分别记录。</p>
+<p>空间与可穿戴阵列专题Ⅲ提供<a href="../14_spatial-wearable-arrays.html">球谐采集、双耳匹配与跨模态融合正文</a>以及<a href="05_exercises_and_audio.html#wearable-exercises-audio">15题与六WAV实验</a>。条件目标提取与多通道日志专题Ⅳ提供<a href="../15_target-extraction-diarization.html">线索条件化、近场距离气泡与TS-VAD/GSS正文</a>以及<a href="05_exercises_and_audio.html#tse-exercises-audio">14题与六WAV实验</a>。</p>
 <p>导读推荐的<a href="04_source_reproduction.html#overview-source-entrypoints">WASN同步与LibriCSS公开评测源码</a>现已按固定提交取得限定选集。代码身份核验、原接口静态观察与未执行的依赖/评分/设备边界分别保留，不能用源码文件数代表工业验收。</p>
 <span id="sec-4" class="anchor-alias" aria-hidden="true"></span><span id="文档命令与结果的对应关系" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-c039b2bc79">文档、命令与结果的对应关系</h2>
 <ul>
 <li>学习入口与章号：<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/README.md">项目首页</a>、<a href="../index.html">导读</a>与<a href="../00_math-foundations.html">第 0 章数学基础</a>。第 0～15 章为正文（其中第 12～15 章是扩展专题），第 16、17 章是附录。</li>
-<li>443个稳定代码题与30套独立合成音频（含1套真实录音共32套清单）：<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/README.md#audio-inventory">代码目录</a>和本手册的练习篇；题数、WAV数、算法数分别统计。</li>
+<li>352个稳定代码题与30套独立合成音频（含1套真实录音共32套清单）：<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/README.md#audio-inventory">代码目录</a>和本手册的练习篇；题数、WAV数、算法数分别统计。</li>
 <li>从资产到网页/PDF：<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/scripts/README.md#audio-regeneration">构建说明</a>，先核真实生成源与清单，再发布副本。</li>
 <li>取得固定源码：<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/upstream/README.md">获取说明</a>；它不会安装或执行上游。当前选集状态与限定原方法结果分别保留。</li>
 </ul>

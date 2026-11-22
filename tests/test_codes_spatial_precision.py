@@ -16,7 +16,7 @@ from codes.chapters.ch00.cross_chapter.spatial_precision_exercises import (
 class SpatialPrecisionExercisesTest(unittest.TestCase):
     def test_catalog_contract(self):
         result = run_exercises()
-        self.assertEqual(set(result), {"E02-07", "E04-10", "E05-06"})
+        self.assertEqual(set(result), {"E02-07", "E04-10", "E05-03"})
         self.assertTrue(all(isinstance(value, dict) for value in result.values()))
 
     def test_elapsed_time_not_frame_count(self):

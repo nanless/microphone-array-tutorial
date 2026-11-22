@@ -374,68 +374,62 @@
   },
   "exercise_aliases": {
     "16_appendix-symbols-math.md": {
-      "e16-14": {
+      "e16-10": {
         "original_id": "e12-14",
         "legacy_ids": [
           "e12-14",
           "e14-14"
         ],
-        "heading_id": "sec-u-7bf1c7588b"
+        "heading_id": "sec-u-1f33bf7dc5"
       },
-      "e16-15": {
+      "e16-14": {
         "original_id": "e12-15",
         "legacy_ids": [
           "e12-15",
-          "e14-15"
+          "e14-15",
+          "e12-19",
+          "e14-19"
         ],
-        "heading_id": "sec-u-a87d89ce6d"
+        "heading_id": "sec-u-b7c6ebe600"
       },
-      "e16-16": {
+      "e16-11": {
         "original_id": "e12-16",
         "legacy_ids": [
           "e12-16",
           "e14-16"
         ],
-        "heading_id": "sec-u-ff8521801e"
+        "heading_id": "sec-u-ee4c3e8f61"
       },
-      "e16-17": {
+      "e16-12": {
         "original_id": "e12-17",
         "legacy_ids": [
           "e12-17",
           "e14-17"
         ],
-        "heading_id": "sec-u-7cb5badab0"
+        "heading_id": "sec-u-76145f9ed0"
       },
-      "e16-18": {
+      "e16-13": {
         "original_id": "e12-18",
         "legacy_ids": [
           "e12-18",
           "e14-18"
         ],
-        "heading_id": "sec-u-401a933cc4"
+        "heading_id": "sec-u-261df26518"
       },
-      "e16-19": {
-        "original_id": "e12-19",
-        "legacy_ids": [
-          "e12-19",
-          "e14-19"
-        ],
-        "heading_id": "sec-u-0cf65b9988"
-      },
-      "e16-20": {
+      "e16-15": {
         "original_id": "e12-20",
         "legacy_ids": [
           "e12-20",
           "e14-20"
         ],
-        "heading_id": "sec-u-670d7ca59e"
+        "heading_id": "sec-u-6f6ba9c2c8"
       },
-      "e16-21": {
+      "sec-16-4": {
         "original_id": "e14-21",
         "legacy_ids": [
           "e14-21"
         ],
-        "heading_id": "sec-u-0e76cc66ab"
+        "heading_id": "sec-16-4"
       }
     },
     "17_appendix-guide.md": {
@@ -447,228 +441,309 @@
         ],
         "heading_id": "sec-17-6-8"
       },
-      "e17-11": {
+      "e17-09": {
         "original_id": "e13-11",
         "legacy_ids": [
           "e13-11",
           "e15-11"
         ],
-        "heading_id": "sec-u-852b50db5d"
+        "heading_id": "sec-u-990d0e2aed"
       },
-      "e17-12": {
+      "e17-10": {
         "original_id": "e13-12",
         "legacy_ids": [
           "e13-12",
           "e15-12"
         ],
-        "heading_id": "sec-u-a41bfbbab5"
+        "heading_id": "sec-u-fe30a89239"
       },
-      "e17-13": {
+      "e17-12": {
         "original_id": "e13-13",
         "legacy_ids": [
           "e13-13",
-          "e15-13"
+          "e15-13",
+          "e13-15",
+          "e15-15"
         ],
-        "heading_id": "sec-u-d44d703e08"
+        "heading_id": "sec-u-7db9df573f"
       },
-      "e17-14": {
+      "e17-11": {
         "original_id": "e13-14",
         "legacy_ids": [
           "e13-14",
           "e15-14"
         ],
-        "heading_id": "sec-u-a237f010d4"
+        "heading_id": "sec-u-69a1412d8e"
       },
-      "e17-15": {
-        "original_id": "e13-15",
-        "legacy_ids": [
-          "e13-15",
-          "e15-15"
-        ],
-        "heading_id": "sec-u-def2767fe6"
-      },
-      "e17-16": {
+      "e17-13": {
         "original_id": "e15-16",
         "legacy_ids": [
           "e15-16"
         ],
-        "heading_id": "sec-u-3396687cce"
+        "heading_id": "sec-u-e78e69cadc"
       }
     },
     "12_acoustic-imaging.md": {
       "e12-01": {
         "original_id": "e14-01",
+        "legacy_ids": [
+          "e14-01"
+        ],
         "heading_id": "sec-u-99b7bb34d6"
       },
-      "e12-02": {
+      "sec-12-13": {
         "original_id": "e14-02",
-        "heading_id": "sec-u-f0f86235ee"
+        "legacy_ids": [
+          "e14-02",
+          "e14-08"
+        ],
+        "heading_id": "sec-12-13"
+      },
+      "e12-02": {
+        "original_id": "e14-03",
+        "legacy_ids": [
+          "e14-03"
+        ],
+        "heading_id": "sec-u-6afcc47205"
       },
       "e12-03": {
-        "original_id": "e14-03",
-        "heading_id": "sec-u-1844251c9d"
+        "original_id": "e14-04",
+        "legacy_ids": [
+          "e14-04"
+        ],
+        "heading_id": "sec-u-10593ce475"
       },
       "e12-04": {
-        "original_id": "e14-04",
-        "heading_id": "sec-u-ab20495b47"
+        "original_id": "e14-05",
+        "legacy_ids": [
+          "e14-05"
+        ],
+        "heading_id": "sec-u-5f859559c9"
       },
       "e12-05": {
-        "original_id": "e14-05",
-        "heading_id": "sec-u-2fcef4767e"
+        "original_id": "e14-06",
+        "legacy_ids": [
+          "e14-06"
+        ],
+        "heading_id": "sec-u-0295e9517e"
       },
       "e12-06": {
-        "original_id": "e14-06",
-        "heading_id": "sec-u-cdd0dc66e7"
+        "original_id": "e14-07",
+        "legacy_ids": [
+          "e14-07"
+        ],
+        "heading_id": "sec-u-fc79dc44f2"
       },
       "e12-07": {
-        "original_id": "e14-07",
-        "heading_id": "sec-u-e1197de104"
+        "original_id": "e14-09",
+        "legacy_ids": [
+          "e14-09"
+        ],
+        "heading_id": "sec-u-25be8b6461"
       },
       "e12-08": {
-        "original_id": "e14-08",
-        "heading_id": "sec-u-864e5d6a6f"
+        "original_id": "e14-10",
+        "legacy_ids": [
+          "e14-10"
+        ],
+        "heading_id": "sec-u-b9276fe765"
       },
       "e12-09": {
-        "original_id": "e14-09",
-        "heading_id": "sec-u-7731a0181a"
+        "original_id": "e14-11",
+        "legacy_ids": [
+          "e14-11"
+        ],
+        "heading_id": "sec-u-95831eb566"
       },
       "e12-10": {
-        "original_id": "e14-10",
-        "heading_id": "sec-u-c1484bb4f1"
+        "original_id": "e14-12",
+        "legacy_ids": [
+          "e14-12"
+        ],
+        "heading_id": "sec-u-fdc10bae1e"
       },
       "e12-11": {
-        "original_id": "e14-11",
-        "heading_id": "sec-u-ce6e25be4f"
+        "original_id": "e14-13",
+        "legacy_ids": [
+          "e14-13"
+        ],
+        "heading_id": "sec-u-9b2b724fdf"
       },
       "e12-12": {
-        "original_id": "e14-12",
-        "heading_id": "sec-u-f72f530d8f"
+        "original_id": "e14-14",
+        "legacy_ids": [
+          "e14-14"
+        ],
+        "heading_id": "sec-u-df2535e30e"
       },
       "e12-13": {
-        "original_id": "e14-13",
-        "heading_id": "sec-u-54ce6bf1ed"
+        "original_id": "e14-15",
+        "legacy_ids": [
+          "e14-15"
+        ],
+        "heading_id": "sec-u-65dbe997d4"
       },
       "e12-14": {
-        "original_id": "e14-14",
-        "heading_id": "sec-u-c010f17b9c"
+        "original_id": "e14-16",
+        "legacy_ids": [
+          "e14-16"
+        ],
+        "heading_id": "sec-u-6454fae4c0"
       },
       "e12-15": {
-        "original_id": "e14-15",
-        "heading_id": "sec-u-ca5815de33"
+        "original_id": "e14-17",
+        "legacy_ids": [
+          "e14-17"
+        ],
+        "heading_id": "sec-u-cd2132f69a"
       },
       "e12-16": {
-        "original_id": "e14-16",
-        "heading_id": "sec-u-3a315b135c"
-      },
-      "e12-17": {
-        "original_id": "e14-17",
-        "heading_id": "sec-u-35150a13e5"
-      },
-      "e12-18": {
         "original_id": "e14-18",
-        "heading_id": "sec-u-21b3677ebd"
+        "legacy_ids": [
+          "e14-18"
+        ],
+        "heading_id": "sec-u-25728c151b"
       }
     },
     "13_distributed-enhancement.md": {
-      "e13-01": {
+      "sec-13-16": {
         "original_id": "e15-01",
-        "heading_id": "sec-u-ae60fe614c"
+        "legacy_ids": [
+          "e15-01",
+          "e15-02",
+          "e15-03",
+          "e15-04",
+          "e15-05",
+          "e15-06"
+        ],
+        "heading_id": "sec-13-16"
+      },
+      "e13-01": {
+        "original_id": "e15-07",
+        "legacy_ids": [
+          "e15-07"
+        ],
+        "heading_id": "sec-u-e712089bd9"
       },
       "e13-02": {
-        "original_id": "e15-02",
-        "heading_id": "sec-u-d2277f09c0"
+        "original_id": "e15-08",
+        "legacy_ids": [
+          "e15-08"
+        ],
+        "heading_id": "sec-u-1339e48bd7"
       },
       "e13-03": {
-        "original_id": "e15-03",
-        "heading_id": "sec-u-990fd59df5"
+        "original_id": "e15-09",
+        "legacy_ids": [
+          "e15-09"
+        ],
+        "heading_id": "sec-u-745773ac58"
       },
       "e13-04": {
-        "original_id": "e15-04",
-        "heading_id": "sec-u-9493aad880"
+        "original_id": "e15-10",
+        "legacy_ids": [
+          "e15-10"
+        ],
+        "heading_id": "sec-u-243b80151f"
       },
       "e13-05": {
-        "original_id": "e15-05",
-        "heading_id": "sec-u-a123bcf090"
+        "original_id": "e15-11",
+        "legacy_ids": [
+          "e15-11"
+        ],
+        "heading_id": "sec-u-16ab690f45"
       },
       "e13-06": {
-        "original_id": "e15-06",
-        "heading_id": "sec-u-b7dac779da"
+        "original_id": "e15-12",
+        "legacy_ids": [
+          "e15-12"
+        ],
+        "heading_id": "sec-u-ee42fea78d"
       },
       "e13-07": {
-        "original_id": "e15-07",
-        "heading_id": "sec-u-9bcc32b7fe"
+        "original_id": "e15-13",
+        "legacy_ids": [
+          "e15-13"
+        ],
+        "heading_id": "sec-u-01d67224fd"
       },
       "e13-08": {
-        "original_id": "e15-08",
-        "heading_id": "sec-u-40ecac23db"
+        "original_id": "e15-14",
+        "legacy_ids": [
+          "e15-14"
+        ],
+        "heading_id": "sec-u-75575e4f83"
       },
       "e13-09": {
-        "original_id": "e15-09",
-        "heading_id": "sec-u-15a9194ba1"
+        "original_id": "e15-15",
+        "legacy_ids": [
+          "e15-15"
+        ],
+        "heading_id": "sec-u-7ec15b4413"
       },
       "e13-10": {
-        "original_id": "e15-10",
-        "heading_id": "sec-u-ecaa4b04e4"
+        "original_id": "e15-16",
+        "legacy_ids": [
+          "e15-16"
+        ],
+        "heading_id": "sec-u-7af8af3cc0"
       },
       "e13-11": {
-        "original_id": "e15-11",
-        "heading_id": "sec-u-5159378837"
+        "original_id": "e15-17",
+        "legacy_ids": [
+          "e15-17"
+        ],
+        "heading_id": "sec-u-ce0e0d840a"
       },
       "e13-12": {
-        "original_id": "e15-12",
-        "heading_id": "sec-u-481fa3de3e"
+        "original_id": "e15-18",
+        "legacy_ids": [
+          "e15-18"
+        ],
+        "heading_id": "sec-u-97a3c2617d"
       },
       "e13-13": {
-        "original_id": "e15-13",
-        "heading_id": "sec-u-43c36175b8"
+        "original_id": "e15-19",
+        "legacy_ids": [
+          "e15-19",
+          "e15-20"
+        ],
+        "heading_id": "sec-u-826f17e30f"
       },
       "e13-14": {
-        "original_id": "e15-14",
-        "heading_id": "sec-u-478a33071c"
+        "original_id": "e15-21",
+        "legacy_ids": [
+          "e15-21"
+        ],
+        "heading_id": "sec-u-641c7c2c6a"
       },
       "e13-15": {
-        "original_id": "e15-15",
-        "heading_id": "sec-u-4bad0eb87f"
+        "original_id": "e15-22",
+        "legacy_ids": [
+          "e15-22"
+        ],
+        "heading_id": "sec-u-3631413245"
       },
       "e13-16": {
-        "original_id": "e15-16",
-        "heading_id": "sec-u-d6bfdb5b5e"
+        "original_id": "e15-23",
+        "legacy_ids": [
+          "e15-23"
+        ],
+        "heading_id": "sec-u-d07c497049"
       },
       "e13-17": {
-        "original_id": "e15-17",
-        "heading_id": "sec-u-270f9db859"
+        "original_id": "e15-24",
+        "legacy_ids": [
+          "e15-24"
+        ],
+        "heading_id": "sec-u-63cbc678eb"
       },
       "e13-18": {
-        "original_id": "e15-18",
-        "heading_id": "sec-u-4e97b65795"
-      },
-      "e13-19": {
-        "original_id": "e15-19",
-        "heading_id": "sec-u-0c9a031714"
-      },
-      "e13-20": {
-        "original_id": "e15-20",
-        "heading_id": "sec-u-5bc0cc2c13"
-      },
-      "e13-21": {
-        "original_id": "e15-21",
-        "heading_id": "sec-u-9e15aaffec"
-      },
-      "e13-22": {
-        "original_id": "e15-22",
-        "heading_id": "sec-u-4db262b2cd"
-      },
-      "e13-23": {
-        "original_id": "e15-23",
-        "heading_id": "sec-u-0b8e41071b"
-      },
-      "e13-24": {
-        "original_id": "e15-24",
-        "heading_id": "sec-u-7e45f79bb0"
-      },
-      "e13-25": {
         "original_id": "e15-25",
-        "heading_id": "sec-u-632be6e3e5"
+        "legacy_ids": [
+          "e15-25"
+        ],
+        "heading_id": "sec-u-c4927d5b7e"
       }
     },
     "14_spatial-wearable-arrays.md": {
@@ -700,231 +775,213 @@
         ],
         "heading_id": "sec-u-aaed61c801"
       },
-      "e14-05": {
+      "sec-u-9f4b3966bf": {
         "original_id": "e16-05",
         "legacy_ids": [
           "e16-05"
         ],
-        "heading_id": "sec-u-4d29765748"
+        "heading_id": "sec-u-9f4b3966bf"
       },
-      "e14-06": {
+      "e14-05": {
         "original_id": "e16-06",
         "legacy_ids": [
           "e16-06"
         ],
-        "heading_id": "sec-u-3bbb9fdf58"
+        "heading_id": "sec-u-6b1501756c"
       },
-      "e14-07": {
+      "e14-06": {
         "original_id": "e16-07",
         "legacy_ids": [
-          "e16-07"
-        ],
-        "heading_id": "sec-u-998d17d4b8"
-      },
-      "e14-08": {
-        "original_id": "e16-08",
-        "legacy_ids": [
+          "e16-07",
           "e16-08"
         ],
-        "heading_id": "sec-u-7932ba5f44"
+        "heading_id": "sec-u-c5f9a35654"
       },
-      "e14-09": {
+      "e14-07": {
         "original_id": "e16-09",
         "legacy_ids": [
           "e16-09"
         ],
-        "heading_id": "sec-u-2a0c89082a"
+        "heading_id": "sec-u-b6d6b23c09"
       },
-      "e14-10": {
+      "sec-u-e70b9483ab": {
         "original_id": "e16-10",
         "legacy_ids": [
           "e16-10"
         ],
-        "heading_id": "sec-u-1772a2308a"
+        "heading_id": "sec-u-e70b9483ab"
       },
-      "e14-11": {
+      "e14-08": {
         "original_id": "e16-11",
         "legacy_ids": [
           "e16-11"
         ],
-        "heading_id": "sec-u-e3dbfefc58"
+        "heading_id": "sec-u-bfb7be7dca"
       },
-      "e14-12": {
+      "e14-09": {
         "original_id": "e16-12",
         "legacy_ids": [
           "e16-12"
         ],
-        "heading_id": "sec-u-4b9298cdaa"
+        "heading_id": "sec-u-e47db953e2"
       },
-      "e14-13": {
+      "e14-10": {
         "original_id": "e16-13",
         "legacy_ids": [
           "e16-13"
         ],
-        "heading_id": "sec-u-6385bcdab7"
+        "heading_id": "sec-u-b498770aad"
       },
-      "e14-14": {
+      "e14-11": {
         "original_id": "e16-14",
         "legacy_ids": [
           "e16-14"
         ],
-        "heading_id": "sec-u-6c58daa8de"
+        "heading_id": "sec-u-40f9972c5d"
       },
-      "e14-15": {
+      "e14-12": {
         "original_id": "e16-15",
         "legacy_ids": [
           "e16-15"
         ],
-        "heading_id": "sec-u-d9fe9adc55"
+        "heading_id": "sec-u-8463384ecc"
       },
-      "e14-16": {
+      "e14-13": {
         "original_id": "e16-16",
         "legacy_ids": [
           "e16-16"
         ],
-        "heading_id": "sec-u-5a34d829b8"
+        "heading_id": "sec-u-4ed81e38ff"
       },
-      "e14-17": {
+      "e14-14": {
         "original_id": "e16-17",
         "legacy_ids": [
           "e16-17"
         ],
-        "heading_id": "sec-u-a2a77f50a2"
+        "heading_id": "sec-u-52f6b499cb"
       },
-      "e14-18": {
+      "e14-15": {
         "original_id": "e16-18",
         "legacy_ids": [
           "e16-18"
         ],
-        "heading_id": "sec-u-d3076b1ca1"
+        "heading_id": "sec-u-66209d9215"
       }
     },
     "15_target-extraction-diarization.md": {
       "e15-01": {
         "original_id": "e17-01",
         "legacy_ids": [
-          "e17-01"
-        ],
-        "heading_id": "sec-u-7260e8bb52"
-      },
-      "e15-02": {
-        "original_id": "e17-02",
-        "legacy_ids": [
+          "e17-01",
           "e17-02"
         ],
-        "heading_id": "sec-u-477f784bc2"
+        "heading_id": "sec-15-10"
       },
-      "e15-03": {
+      "e15-02": {
         "original_id": "e17-03",
         "legacy_ids": [
           "e17-03"
         ],
-        "heading_id": "sec-u-972638914c"
+        "heading_id": "sec-u-2d3d839fde"
       },
-      "e15-04": {
+      "sec-15-3": {
         "original_id": "e17-04",
         "legacy_ids": [
           "e17-04"
         ],
-        "heading_id": "sec-u-dba20ea272"
+        "heading_id": "sec-15-3"
       },
-      "e15-05": {
+      "e15-03": {
         "original_id": "e17-05",
         "legacy_ids": [
           "e17-05"
         ],
-        "heading_id": "sec-u-3219c8f9e8"
+        "heading_id": "sec-u-c8721eee93"
       },
-      "e15-06": {
+      "e15-04": {
         "original_id": "e17-06",
         "legacy_ids": [
           "e17-06"
         ],
-        "heading_id": "sec-u-f8d6da3847"
+        "heading_id": "sec-u-3f00ade651"
       },
-      "e15-07": {
+      "e15-05": {
         "original_id": "e17-07",
         "legacy_ids": [
           "e17-07"
         ],
-        "heading_id": "sec-u-c101fdacd3"
+        "heading_id": "sec-u-81ff5862ba"
       },
-      "e15-08": {
+      "e15-06": {
         "original_id": "e17-08",
         "legacy_ids": [
           "e17-08"
         ],
-        "heading_id": "sec-u-cba35fb5e1"
+        "heading_id": "sec-u-7fc253decf"
       },
-      "e15-09": {
+      "e15-07": {
         "original_id": "e17-09",
         "legacy_ids": [
           "e17-09"
         ],
-        "heading_id": "sec-u-babc01c78f"
+        "heading_id": "sec-u-7492136e0e"
       },
-      "e15-10": {
+      "e15-08": {
         "original_id": "e17-10",
         "legacy_ids": [
           "e17-10"
         ],
-        "heading_id": "sec-u-98c35aede6"
+        "heading_id": "sec-u-555b43ef15"
       },
-      "e15-11": {
+      "e15-09": {
         "original_id": "e17-11",
         "legacy_ids": [
           "e17-11"
         ],
-        "heading_id": "sec-u-f030237235"
+        "heading_id": "sec-u-a724bb1ad5"
       },
-      "e15-12": {
+      "e15-10": {
         "original_id": "e17-12",
         "legacy_ids": [
           "e17-12"
         ],
-        "heading_id": "sec-u-76e2b3cbad"
+        "heading_id": "sec-u-5cd392eb9e"
       },
-      "e15-13": {
+      "sec-15-6": {
         "original_id": "e17-13",
         "legacy_ids": [
-          "e17-13"
+          "e17-13",
+          "e17-15"
         ],
-        "heading_id": "sec-u-5427085a40"
+        "heading_id": "sec-15-6"
       },
-      "e15-14": {
+      "e15-11": {
         "original_id": "e17-14",
         "legacy_ids": [
           "e17-14"
         ],
-        "heading_id": "sec-u-fcb2ba8992"
+        "heading_id": "sec-u-9e65f470a2"
       },
-      "e15-15": {
-        "original_id": "e17-15",
-        "legacy_ids": [
-          "e17-15"
-        ],
-        "heading_id": "sec-u-617b8246f6"
-      },
-      "e15-16": {
+      "e15-12": {
         "original_id": "e17-16",
         "legacy_ids": [
           "e17-16"
         ],
-        "heading_id": "sec-u-22086f7ea6"
+        "heading_id": "sec-u-3e004b09fa"
       },
-      "e15-17": {
+      "e15-13": {
         "original_id": "e17-17",
         "legacy_ids": [
           "e17-17"
         ],
-        "heading_id": "sec-u-c7cc19996d"
+        "heading_id": "sec-u-a6a7f14956"
       },
-      "e15-18": {
+      "e15-14": {
         "original_id": "e17-18",
         "legacy_ids": [
           "e17-18"
         ],
-        "heading_id": "sec-u-6fb2bbba75"
+        "heading_id": "sec-u-a423afa58c"
       }
     }
   }

@@ -96,8 +96,8 @@ class ImagingAlgebraTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             clean_sc_full_csm(removed, self.w)
 
-    def test_exercise_07_unequal_amplitude_dr_compensation(self):
-        control = run_experiments()['exercises']['E12-07']['unequal_amplitude_control']
+    def test_exercise_06_unequal_amplitude_dr_compensation(self):
+        control = run_experiments()['exercises']['E12-06']['unequal_amplitude_control']
         full = np.asarray(control['full_csm_real_imag'])
         removed = np.asarray(control['diagonal_removed_csm_real_imag'])
         # Independent a=(1,2) outer product, with both retained off-diagonals 2.
@@ -285,12 +285,13 @@ class ImagingAudioTests(unittest.TestCase):
 
     def test_all_eighteen_ids_and_finite_json(self):
         results=run_experiments()
-        self.assertEqual(set(results['exercises']),{'E12-'+str(i).zfill(2) for i in range(1,21)})
+        self.assertEqual(set(results['exercises']),{'E12-'+str(i).zfill(2) for i in range(1,19)})
         json.dumps(results,allow_nan=False)
-        self.assertFalse(results['exercises']['E12-12']['sklearn_executed'])
-        self.assertAlmostEqual(results['exercises']['E12-12']['affine_math_q'],87/35)
-        self.assertTrue(results['exercises']['E12-19']['diagonal_removed_rejected'])
-        self.assertLess(results['exercises']['E12-20']['fb_map_nu_2_max_abs_error'],2e-15)
+        self.assertFalse(results['exercises']['E12-10']['sklearn_executed'])
+        self.assertAlmostEqual(results['exercises']['E12-10']['affine_math_q'],87/35)
+        np.testing.assert_allclose(results['exercises']['E12-15']['unconstrained_inverse_q'],[16/15,-4/15],atol=1e-15)
+        self.assertTrue(results['exercises']['E12-17']['diagonal_removed_rejected'])
+        self.assertLess(results['exercises']['E12-18']['fb_map_nu_2_max_abs_error'],2e-15)
 
 
 class ImagingAssetContractTests(unittest.TestCase):

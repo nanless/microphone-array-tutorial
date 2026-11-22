@@ -20,10 +20,10 @@ from scripts import quality_check as qc
 ROOT = Path(__file__).resolve().parents[1]
 
 CH00_FIG_SPECS = (
-    (89, "fig89_complex_phasor_fourier.png", "figure89_complex_phasor_fourier.json"),
-    (90, "fig90_subspace_projection_svd.png", "figure90_subspace_projection_svd.json"),
-    (91, "fig91_hermitian_rayleigh_gev.png", "figure91_hermitian_rayleigh_gev.json"),
-    (92, "fig92_wirtinger_probability_bayesian.png", "figure92_wirtinger_probability_bayesian.json"),
+    (84, "fig84_complex_phasor_fourier.png", "figure84_complex_phasor_fourier.json"),
+    (85, "fig85_subspace_projection_svd.png", "figure85_subspace_projection_svd.json"),
+    (86, "fig86_hermitian_rayleigh_gev.png", "figure86_hermitian_rayleigh_gev.json"),
+    (87, "fig87_wirtinger_probability_bayesian.png", "figure87_wirtinger_probability_bayesian.json"),
 )
 
 EXPECTED_CH00_PLOT_SOURCES = {
@@ -47,7 +47,7 @@ FORBIDDEN_CALQUES = (
 
 
 def verify_ch00_figures_and_reports(root: Path) -> list[str]:
-    """Validate fig89..92 PNGs and figure89..92 JSON reports under root."""
+    """Validate fig84..87 PNGs and figure84..87 JSON reports under root."""
     errors: list[str] = []
     try:
         for num, png_name, json_name in CH00_FIG_SPECS:
@@ -114,8 +114,8 @@ class Chapter00MarkdownAndPublicationTests(unittest.TestCase):
     def test_markdown_structure_banners_headings_and_line_budget(self):
         lines = self.text.splitlines()
         self.assertGreaterEqual(len(lines), 1150)
-        self.assertLessEqual(len(lines), 1450)
-        self.assertTrue(lines[0].startswith("> 本篇是第 0 章（正文与扩展专题共 16 章，即第 0～15 章"))
+        self.assertLessEqual(len(lines), 1750)
+        self.assertTrue(any(line.startswith("> 本篇是第 0 章（正文与扩展专题共 16 章，即第 0～15 章") for line in lines[:5]))
         self.assertIn("导读首页：[00_overview.md](00_overview.md) ｜ 下一篇：[01_problem-definition.md](01_problem-definition.md)", self.text)
         self.assertEqual(lines[-1].strip(), "> 📄 本篇信息：配图 4 张 ｜ [回首页](00_overview.md)")
 
@@ -167,7 +167,7 @@ class Chapter00MarkdownAndPublicationTests(unittest.TestCase):
         self.assertEqual(ch00_sec_issues, [])
 
         fig_refs = qc.extract_figure_references(self.text)
-        self.assertEqual([num for _, _, num in fig_refs], [89, 90, 91, 92])
+        self.assertEqual([num for _, _, num in fig_refs], [84, 85, 86, 87])
 
     def test_figures_reports_permissions_and_exercise_numerical_alignment(self):
         self.assertEqual(verify_ch00_figures_and_reports(ROOT), [])
@@ -179,14 +179,14 @@ class Chapter00MarkdownAndPublicationTests(unittest.TestCase):
             self.assertEqual(png_mode, 0o644)
             self.assertEqual(json_mode, 0o644)
 
-        r89 = strict_json_loads((ROOT / "codes/chapters/ch00/reports/figure89_complex_phasor_fourier.json").read_bytes())
-        self.assertAlmostEqual(r89["anchors"]["parseval_energy"], ex_data["E00-04"]["time_energy"], places=15)
-        r90 = strict_json_loads((ROOT / "codes/chapters/ch00/reports/figure90_subspace_projection_svd.json").read_bytes())
-        self.assertAlmostEqual(r90["anchors"]["condition_number_2"], ex_data["E00-07"]["condition_number_2"], places=12)
-        r91 = strict_json_loads((ROOT / "codes/chapters/ch00/reports/figure91_hermitian_rayleigh_gev.json").read_bytes())
-        self.assertAlmostEqual(r91["anchors"]["max_gev_sinr"], ex_data["E00-09"]["max_gev_sinr"], places=14)
-        r92 = strict_json_loads((ROOT / "codes/chapters/ch00/reports/figure92_wirtinger_probability_bayesian.json").read_bytes())
-        self.assertAlmostEqual(r92["anchors"]["mvdr_output_power"], ex_data["E00-11"]["mvdr_output_power"], places=14)
+        r84 = strict_json_loads((ROOT / "codes/chapters/ch00/reports/figure84_complex_phasor_fourier.json").read_bytes())
+        self.assertAlmostEqual(r84["anchors"]["parseval_energy"], ex_data["E00-04"]["time_energy"], places=15)
+        r85 = strict_json_loads((ROOT / "codes/chapters/ch00/reports/figure85_subspace_projection_svd.json").read_bytes())
+        self.assertAlmostEqual(r85["anchors"]["condition_number_2"], ex_data["E00-07"]["condition_number_2"], places=12)
+        r86 = strict_json_loads((ROOT / "codes/chapters/ch00/reports/figure86_hermitian_rayleigh_gev.json").read_bytes())
+        self.assertAlmostEqual(r86["anchors"]["max_gev_sinr"], ex_data["E00-09"]["max_gev_sinr"], places=14)
+        r87 = strict_json_loads((ROOT / "codes/chapters/ch00/reports/figure87_wirtinger_probability_bayesian.json").read_bytes())
+        self.assertAlmostEqual(r87["anchors"]["mvdr_output_power"], ex_data["E00-11"]["mvdr_output_power"], places=14)
 
     def test_negative_controls_detect_tampered_types_digests_and_sources(self):
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -205,23 +205,23 @@ class Chapter00MarkdownAndPublicationTests(unittest.TestCase):
                 )
             self.assertEqual(verify_ch00_figures_and_reports(tmp_root), [])
 
-            # Tamper 1: float figure number 89.0 or bool anchor value rejected even if PNG digest were updated
-            rep89_path = tmp_root / "codes/chapters/ch00/reports/figure89_complex_phasor_fourier.json"
-            orig89 = json.loads(rep89_path.read_text(encoding="utf-8"))
-            bad_fig = copy.deepcopy(orig89)
-            bad_fig["figure"] = 89.0
-            rep89_path.write_text(json.dumps(bad_fig), encoding="utf-8")
+            # Tamper 1: float figure number 84.0 or bool anchor value rejected even if PNG digest were updated
+            rep84_path = tmp_root / "codes/chapters/ch00/reports/figure84_complex_phasor_fourier.json"
+            orig84 = json.loads(rep84_path.read_text(encoding="utf-8"))
+            bad_fig = copy.deepcopy(orig84)
+            bad_fig["figure"] = 84.0
+            rep84_path.write_text(json.dumps(bad_fig), encoding="utf-8")
             self.assertTrue(verify_ch00_figures_and_reports(tmp_root))
 
-            bad_bool = copy.deepcopy(orig89)
+            bad_bool = copy.deepcopy(orig84)
             bad_bool["anchors"]["parseval_energy"] = True
-            rep89_path.write_text(json.dumps(bad_bool), encoding="utf-8")
+            rep84_path.write_text(json.dumps(bad_bool), encoding="utf-8")
             self.assertTrue(verify_ch00_figures_and_reports(tmp_root))
 
             # Restore report, tamper source file bytes -> caught by source_sha256 check
             shutil.copy2(
-                ROOT / "codes/chapters/ch00/reports/figure89_complex_phasor_fourier.json",
-                rep89_path,
+                ROOT / "codes/chapters/ch00/reports/figure84_complex_phasor_fourier.json",
+                rep84_path,
             )
             (tmp_root / "codes/chapters/ch00/core/chapter00_math.py").write_text("# modified\n", encoding="utf-8")
             errs = verify_ch00_figures_and_reports(tmp_root)

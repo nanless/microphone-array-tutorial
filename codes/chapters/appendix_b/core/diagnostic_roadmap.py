@@ -1,6 +1,6 @@
 """Cascade bottleneck attribution and troubleshooting roadmap kernels for Appendix B.
 
-Implements E17-16:
+Implements E17-13:
 1. Exact SINR / dB accounting across a 3-disturbance cascade (Linear AEC ->
    MIMO-WPE -> Spatial MVDR), contrasting downstream-only tuning under an
    unfixed upstream echo bottleneck against upstream-first remediation.
@@ -76,7 +76,7 @@ def cascade_bottleneck_budget(
     wrong_mvdr_diffuse_factor: float = 0.50,
     full_mvdr_factor: float = 0.25,
 ) -> dict[str, object]:
-    """Compute exact 3-stage cascade SINR attribution (E17-16)."""
+    """Compute exact 3-stage cascade SINR attribution (E17-13)."""
     p_s = _validate_real_scalar(target_power, "target_power")
     p_echo = _validate_real_scalar(echo_power, "echo_power")
     p_rev = _validate_real_scalar(late_reverb_power, "late_reverb_power")
@@ -302,7 +302,7 @@ def diagnose_pipeline_symptom(telemetry: dict[str, object]) -> dict[str, object]
 
 
 def diagnostic_roadmap_controls() -> dict[str, object]:
-    """Return JSON-safe E17-16 cascade attribution and fault-routing fixture."""
+    """Return JSON-safe E17-13 cascade attribution and fault-routing fixture."""
     budget = cascade_bottleneck_budget()
     canonical_cases = {
         "clock_drift": diagnose_pipeline_symptom({"sro_ppm": 100.0}),
@@ -327,7 +327,7 @@ def diagnostic_roadmap_controls() -> dict[str, object]:
         "healthy_pipeline": diagnose_pipeline_symptom({}),
     }
     return {
-        "exercise_id": "E17-16",
+        "exercise_id": "E17-13",
         "cascade_budget": budget,
         "symptom_triage": canonical_cases,
         "scope": (

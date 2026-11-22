@@ -1,4 +1,4 @@
-"""Independent scalar model oracle and isolated Figure79 publication paths."""
+"""Independent scalar model oracle and isolated Figure74 publication paths."""
 import cmath
 import hashlib
 import importlib.util
@@ -99,7 +99,7 @@ class SelectionFigureTests(unittest.TestCase):
             report = figure.generate_figure(image, report_path)
             saved = json.loads(report_path.read_text())
             self.assertEqual(saved, report)
-            self.assertEqual(report['exercise_id'], 'E11-27')
+            self.assertEqual(report['exercise_id'], 'E11-20')
             self.assertEqual(len(report['source_sha256']), 8)
             for path, digest in report['source_sha256'].items():
                 self.assertEqual(digest, hashlib.sha256((ROOT/path).read_bytes()).hexdigest())
@@ -121,7 +121,7 @@ class SelectionFigureTests(unittest.TestCase):
             linked = root/'linked'; linked.symlink_to(root, target_is_directory=True)
             directory = root/'directory.png'; directory.mkdir()
             bad_images = [linked/'new.png', linked/'../new.png', directory,
-                          ROOT/'figures/fig46_selection_pareto.png', ROOT/'source.png', root/'wrong.txt']
+                          ROOT/'figures/fig41_selection_pareto.png', ROOT/'source.png', root/'wrong.txt']
             with mock.patch.object(figure, 'beamformer_selection_case') as model:
                 for path in bad_images:
                     with self.subTest(path=path), self.assertRaises(ValueError):

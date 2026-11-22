@@ -88,7 +88,7 @@ class DelayPublicationTest(unittest.TestCase):
             self.assertTrue(errors)
 
     def test_truncated_decay_curve_is_rejected_before_png_identity(self):
-        report = build_site.ROOT / "codes/chapters/ch07/reports/figure75_prediction_delays.json"
+        report = build_site.ROOT / "codes/chapters/ch07/reports/figure70_prediction_delays.json"
         obj = json.loads(report.read_bytes())
         obj["power_decay_control"]["relative_power"].pop()
         altered = json.dumps(obj).encode()

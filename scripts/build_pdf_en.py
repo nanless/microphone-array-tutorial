@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Build the English A4 Monograph PDF (`dist/microphone-array-tutorial-en.pdf`)
-from `chapters_en/` (19 files) and `figures_en/` (92 figures).
+from `chapters_en/` (19 files) and `figures_en/` (87 figures).
 
 Usage (from repository root):
     .venv/bin/python scripts/build_pdf_en.py
@@ -374,8 +374,8 @@ def build_html_en(build_date: str | None = None):
         '<table class="cover-stats-table">'
         "<thead><tr>"
         f'<th scope="col">{len(CHAPTERS_EN)} Chapters &amp; Guides</th>'
-        '<th scope="col">443 Runnable Exercises</th>'
-        '<th scope="col">92 Traced Figures</th>'
+        '<th scope="col">352 Runnable Exercises</th>'
+        '<th scope="col">87 Traced Figures</th>'
         '<th scope="col">283 Companion WAVs</th>'
         "</tr></thead>"
         "<tbody><tr>"
@@ -449,8 +449,9 @@ def pdf_alias_targets_en() -> dict[str, str]:
                 for old in historical_aliases(name, zh_primary):
                     bind(prefix + old, target)
         for current, record in exercise_alias_records(name).items():
+            resolved_target = aliases.get(prefix + current, prefix + current)
             for old_id in record.get("legacy_ids", [record["original_id"]]):
-                bind(prefix + old_id, prefix + current)
+                bind(prefix + old_id, resolved_target)
     return aliases
 
 
@@ -824,8 +825,8 @@ def check_figures_en() -> None:
                 missing.append(f"{fname}: {m.group(1)}")
     if missing:
         raise SystemExit("Missing English figures:\n" + "\n".join(missing))
-    if len(refs) != 92:
-        raise SystemExit(f"Expected 92 unique figure references in chapters_en/, got {len(refs)}")
+    if len(refs) != 87:
+        raise SystemExit(f"Expected 87 unique figure references in chapters_en/, got {len(refs)}")
     print(f"English figures check passed ({len(CHAPTERS_EN)} parts, {len(refs)} unique figures)")
 
 

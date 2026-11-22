@@ -19,7 +19,7 @@ class TestEnhancementExercises(unittest.TestCase):
     def test_stable_ids_and_serialization(self):
         expected = {f'E{chapter:02d}-{exercise:02d}'
                     for chapter in range(6, 10)
-                    for exercise in range(1, 7 if chapter == 6 else 8 if chapter == 8 else 6)}
+                    for exercise in range(1, 7 if chapter in (6, 8) else 6)}
         self.assertEqual(set(self.results), expected)
         json.dumps(self.results,allow_nan=False)
         self.assertEqual(self.results,run_exercises())
@@ -92,10 +92,9 @@ class TestEnhancementExercises(unittest.TestCase):
         self.assertTrue(result['oracle_alignment'])
 
     def test_gss_activity_has_a_background_route_for_silence(self):
-        result = self.results['E08-07']
-        self.assertEqual(result['unnormalized_scores'], [[1., 0., .2], [0., 0., .2]])
-        np.testing.assert_allclose(result['posterior'], [[5/6, 0, 1/6], [0, 0, 1]], atol=1e-15)
-        self.assertEqual(result['no_background_silent_frame_denominator'], 0.)
+        posterior = guided_activity_posterior(
+            [.5, .3, .2], [[2., 1., 1.], [2., 1., 1.]], [[1, 0], [0, 0]])
+        np.testing.assert_allclose(posterior, [[5/6, 0, 1/6], [0, 0, 1]], atol=1e-15)
 
     def test_gss_activity_rejects_missing_background_and_bad_activity(self):
         likelihoods = [[2., 1., 1.], [2., 1., 1.]]

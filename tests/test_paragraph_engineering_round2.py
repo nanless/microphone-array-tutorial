@@ -9,7 +9,7 @@ from tests.test_paragraph_spatial import chapter_fragment, rendered_lists
 class EngineeringRoundTwoParagraphTest(unittest.TestCase):
     def test_project_boundaries_are_four_items_not_one_prose_paragraph(self):
         start = "开源实现也要按任务筛选。"
-        source, path = chapter_fragment("11_selection-guide.md", start, "本书按")
+        source, path = chapter_fragment("11_selection-guide.md", start, "教学基线通过单元测试")
         html, lists = rendered_lists(start + source, path)
         self.assertEqual([len(items) for items in lists], [4])
         for item, name, boundary in zip(

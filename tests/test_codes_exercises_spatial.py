@@ -9,7 +9,9 @@ import unittest
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from codes.chapters.ch00.cross_chapter.exercises_spatial import run_exercises
+from codes.chapters.ch00.cross_chapter.exercises_spatial import (
+    mvdr_loading_tradeoff, mwf_rank_condition, run_exercises,
+)
 
 
 class SpatialExerciseTest(unittest.TestCase):
@@ -17,12 +19,12 @@ class SpatialExerciseTest(unittest.TestCase):
     def setUpClass(cls):
         cls.results = run_exercises()
 
-    def test_registry_has_twenty_eight_finite_json_results(self):
+    def test_registry_has_twenty_five_finite_json_results(self):
         expected = {"E01-01", "E01-02", "E02-01", "E02-02", "E02-03", "E03-01",
                     "E03-02", "E04-01", "E04-02", "E04-03", "E05-01", "E05-02",
                     "E01-03", "E02-04", "E02-05", "E03-03", "E03-04", "E04-04",
-                    "E05-03", "E05-04", "E04-05", "E02-06", "E03-05", "E03-06",
-                    "E04-06", "E04-07", "E04-09", "E05-05"}
+                    "E04-05", "E02-06", "E03-05", "E03-06",
+                    "E04-06", "E04-07", "E04-09"}
         self.assertEqual(set(self.results), expected)
         json.dumps(self.results, allow_nan=False)
 
@@ -150,13 +152,13 @@ class SpatialExerciseTest(unittest.TestCase):
         np.testing.assert_allclose(row["music_scores"], [1e15, 1e15], rtol=1e-12)
 
     def test_mwf_shortcut_requires_rank_one(self):
-        full, rank_one = self.results["E05-01"]["cases"]
+        full, rank_one = mwf_rank_condition()["cases"]
         np.testing.assert_allclose(full["general_weights"], [2 / 3, 0])
         np.testing.assert_allclose(full["trace_shortcut_weights"], [1 / 2, 0])
         np.testing.assert_allclose(rank_one["trace_shortcut_weights"], [2 / 3, 0])
 
     def test_mvdr_hand_weights_and_loading_tradeoff(self):
-        plain, loaded = self.results["E05-02"]["cases"]
+        plain, loaded = mvdr_loading_tradeoff()["cases"]
         np.testing.assert_allclose(plain["weight_imag"], [5 / 11, -5 / 11])
         self.assertAlmostEqual(plain["interference_amplitude"], math.sqrt(2) / 22)
         self.assertAlmostEqual(plain["wng_linear"], 242 / 221)

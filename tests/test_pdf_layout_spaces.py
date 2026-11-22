@@ -337,7 +337,7 @@ class LayoutSpaceContentTests(unittest.TestCase):
 HAND = ('<h3 id="ch-14-sec-u-3179856767">两个格点的完整手算</h3>'
         '<p>输入：</p><p>$$a=1\\tag{12-10}$$</p>'
         '<p>结果：</p><p>$$b=2\\tag{12-11}$$</p><p>解释。</p>')
-IMAGE = '<p><img alt="图67" src="../figures/fig67_imaging_psf.png" /></p>'
+IMAGE = '<p><img alt="图62" src="../figures/fig62_imaging_psf.png" /></p>'
 
 
 class ImagingHandLayoutTests(unittest.TestCase):
@@ -363,7 +363,7 @@ class ImagingHandLayoutTests(unittest.TestCase):
     def test_escaped_code_and_nearby_lookalikes_are_never_swallowed_into_group(self):
         code = ('<pre><code>&lt;h3 id="ch-14-sec-u-3179856767"&gt;'
                 '两个格点的完整手算&lt;/h3&gt; $$literal\\tag{12-10}$$</code></pre>')
-        similar = HAND.replace('3179856767', '3179856768') + IMAGE.replace('fig67_', 'fig670_')
+        similar = HAND.replace('3179856767', '3179856768') + IMAGE.replace('fig62_', 'fig620_')
         hidden = ['', '<!--' + HAND + IMAGE + '-->',
                   '<pre><code>' + HAND + IMAGE + '</code></pre>',
                   '<script>const literal = `' + HAND + IMAGE + '`;</script>',

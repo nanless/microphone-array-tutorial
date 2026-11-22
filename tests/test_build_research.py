@@ -342,15 +342,18 @@ class ResearchBuildTest(unittest.TestCase):
 
     def test_chapter_four_mdl_precedes_audio_and_summary_exercises(self):
         source = (ROOT / "chapters/04_doa-estimation.md").read_text(encoding="utf-8")
-        headings = re.findall(r"^### (4\.(?:9|10|11)) (.+)$", source, re.MULTILINE)
+        headings = re.findall(r"^### (4\.(?:6|7|8|9)) (.+)$", source, re.MULTILINE)
         self.assertEqual(headings, [
-            ("4.9", "MDL 源数估计：逐候选评分与数值例"),
-            ("4.10", "四麦亚采样时差：从几何到可听信号"),
-            ("4.11", "本章练习"),
+            ("4.6", "子空间类：MUSIC、ESPRIT、宽带聚焦与源数估计"),
+            ("4.7", "稀疏重构、学习式定位与近场模型失配"),
+            ("4.8", "定位算法总对比与分辨率边界"),
+            ("4.9", "本章练习"),
         ])
+        self.assertLess(source.index("#### 4.6.1 源数估计：特征值间隙、AIC 与 MDL"),
+                        source.index("### 4.9 本章练习"))
+        self.assertLess(source.index("#### E04-01"), source.index("#### E04-05"))
         self.assertLess(source.index("#### E04-05"), source.index("#### E04-06"))
         self.assertLess(source.index("#### E04-06"), source.index("#### E04-07"))
-        self.assertLess(source.index("#### E04-07"), source.index("#### E04-01"))
 
     def test_pdf_same_chapter_unknown_fragment_is_rejected(self):
         with self.assertRaises(ValueError):

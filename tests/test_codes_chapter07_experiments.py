@@ -1,4 +1,4 @@
-"""Independent rational, polynomial, DFT and actual PCM anchors for E07-08..26."""
+"""Independent rational, polynomial, DFT and actual PCM anchors for E07-08..21."""
 import cmath
 import hashlib
 import json
@@ -84,24 +84,6 @@ class Chapter07Experiments(unittest.TestCase):
         self.assertEqual(z(r['prediction_both_permuted']),18-1j)
         self.assertEqual(z(r['prediction_history_only_permuted']),16+11j)
 
-    def test_frame_count_does_not_identify_collinear_parameters(self):
-        cases = ex.frame_count_and_rank()['cases']
-        np.testing.assert_allclose(cases['repeated']['eigenvalues'],[0,8],atol=1e-15)
-        np.testing.assert_allclose(cases['repeated']['minimum_norm_coefficients'],[.75,.75],atol=1e-15)
-        np.testing.assert_allclose(cases['repeated']['absolute_loading_1_coefficients'],[2/3,2/3],atol=1e-15)
-        np.testing.assert_array_equal(cases['independent']['eigenvalues'],[2,2])
-        np.testing.assert_allclose(cases['independent']['minimum_norm_coefficients'],[1,2],atol=1e-15)
-        # Null direction changes coefficients but leaves every training value.
-        np.testing.assert_array_equal(np.ones((4,2)) @ [1.,-1.],np.zeros(4))
-
-    def test_window_overlap_by_explicit_sample_sets(self):
-        r = ex.frame_window_overlap()
-        for item, expected in zip(r['cases'], [128,0]):
-            a,b = item['nearest_history_support_samples']
-            self.assertEqual(len(set(range(512)) & set(range(a,b))),expected)
-            self.assertEqual(item['overlap_samples'],expected)
-        self.assertEqual([a['oldest_frame_start_offset_samples'] for a in r['cases']],[-896,-1024])
-
     def test_exponential_statistics_independent_fraction_sum(self):
         r = ex.exponential_statistics()
         # Expand all three weighted terms plus the decayed initial statistics.
@@ -117,26 +99,18 @@ class Chapter07Experiments(unittest.TestCase):
         self.assertEqual(r['two_fully_frozen_statistics_steps']['correlation'],3.5)
 
     def test_mint_polynomial_identity_and_post_path_noise(self):
-        a,b = ex.mint_near_common_zero()['cases']
-        np.testing.assert_allclose(a['constant_inverse_weights'],[.5,.5],atol=1e-14)
-        np.testing.assert_allclose(b['constant_inverse_weights'],[-49,50],rtol=1e-14)
-        np.testing.assert_allclose(a['summed_impulse_response'],[1,0],atol=1e-14)
-        np.testing.assert_allclose(b['summed_impulse_response'],[1,0],atol=1e-14)
-        self.assertAlmostEqual(a['post_path_independent_unit_noise_variance'],.5)
-        self.assertAlmostEqual(b['post_path_independent_unit_noise_variance'],4901,places=9)
-        self.assertAlmostEqual(b['perturbed_second_response_tap'],-.049,places=12)
-        self.assertFalse(ex.mint_near_common_zero()['common_zero_case']['constant_inverse_exists'])
+        res = ex.constrained_regularized_mint()
+        a, b = res['exact_unregularized_cases']
+        np.testing.assert_allclose(a['constant_inverse_weights'], [.5, .5], atol=1e-14)
+        np.testing.assert_allclose(b['constant_inverse_weights'], [-49, 50], rtol=1e-14)
+        np.testing.assert_allclose(a['summed_impulse_response'], [1, 0], atol=1e-14)
+        np.testing.assert_allclose(b['summed_impulse_response'], [1, 0], atol=1e-14)
+        self.assertAlmostEqual(a['post_path_independent_unit_noise_variance'], .5)
+        self.assertAlmostEqual(b['post_path_independent_unit_noise_variance'], 4901, places=9)
+        self.assertAlmostEqual(b['perturbed_second_response_tap'], -.049, places=12)
+        self.assertFalse(res['common_zero_case']['constant_inverse_exists'])
 
-    def test_resource_bytes_not_timing(self):
-        a,b = ex.wpe_resource_budget()['cases']
-        self.assertEqual((a['channels'],a['taps'],a['history_dimension']),(8,10,80))
-        self.assertEqual(a['one_correlation_array_bytes'],26316800)
-        self.assertEqual(a['one_predictor_array_bytes'],2631680)
-        self.assertEqual(b['one_correlation_array_bytes'],4*a['one_correlation_array_bytes'])
-        self.assertEqual(b['one_predictor_array_bytes'],4*a['one_predictor_array_bytes'])
-        self.assertEqual(b['dense_factorization_cubic_dimension_proxy'],8*a['dense_factorization_cubic_dimension_proxy'])
-
-    def test_loaded_wpd_missing_term_against_rational_solution(self):
+    def test_loaded_wpd_factorization_against_rational_solution(self):
         r = ex.loaded_wpd_factorization()
         np.testing.assert_allclose(r['G'],np.diag([1/3,0]),atol=1e-15)
         np.testing.assert_allclose(r['schur'],np.diag([8/3,2]),atol=1e-15)
@@ -149,13 +123,13 @@ class Chapter07Experiments(unittest.TestCase):
 
     def test_stable_ids_and_finite_json(self):
         r = ex.run_experiments(repo_root=self.root, mint_directory=self.mint)
-        self.assertEqual(set(r), {f'E07-{i:02d}' for i in range(8, 27)})
-        self.assertEqual(len(r['E07-17']['files']),4)
-        self.assertEqual(r['E07-22']['cases']['common']['residual'], [0,0,0,0])
-        self.assertEqual(r['E07-22']['cases']['aligned']['residual'], [0,1,0,0])
-        self.assertAlmostEqual(r['E07-23']['rows'][-1]['power_ratio'], 1e-6)
-        self.assertEqual(len(r['E07-24']['files']),6)
-        json.dumps(r,allow_nan=False)
+        self.assertEqual(set(r), {f'E07-{i:02d}' for i in range(8, 22)})
+        self.assertEqual(len(r['E07-13']['files']), 4)
+        self.assertAlmostEqual(r['E07-18']['rows'][-1]['power_ratio'], 1e-6)
+        self.assertEqual(r['E07-19']['discrete_source_clock_control']['cases']['common']['residual'], [0, 0, 0, 0])
+        self.assertEqual(r['E07-19']['discrete_source_clock_control']['cases']['aligned']['residual'], [0, 1, 0, 0])
+        self.assertEqual(len(r['E07-19']['files']), 6)
+        json.dumps(r, allow_nan=False)
 
     def test_published_predictable_pcm_independent_integer_score(self):
         r = ex.predictable_target_audio(self.root)['published_audio']

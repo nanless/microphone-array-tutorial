@@ -1,6 +1,6 @@
-"""Run E14-01..18 with pure NumPy and in-memory PCM; never write files or use network.
+"""Run E14-01..15 with pure NumPy and in-memory PCM; never write files or use network.
 
-Usage: python -m codes.chapters.ch14.chapter14_exercises [--exercise E14-07]
+Usage: python -m codes.chapters.ch14.chapter14_exercises [--exercise E14-06]
 """
 from __future__ import annotations
 
@@ -54,7 +54,7 @@ from codes.chapters.ch14.core.wearable_fusion import (
     hear_through_response,
 )
 
-EXERCISE_IDS = tuple(f"E14-{i:02d}" for i in range(1, 19))
+EXERCISE_IDS = tuple(f"E14-{i:02d}" for i in range(1, 16))
 
 
 def _json(value):
@@ -150,23 +150,7 @@ def _ex04_intensity_bounds() -> dict:
     }
 
 
-def _ex05_two_wave_interference() -> dict:
-    cases = {}
-    for deg in (0, 60, 90, 180):
-        phi = np.deg2rad(deg)
-        p = 1.0 + np.exp(1j * phi)
-        u = np.array([1.0 + 0.0j, np.exp(1j * phi), 0.0 + 0.0j])
-        res = active_intensity_and_diffuseness(p, u, rho0=1.0, c=1.0)
-        az_deg = float(np.rad2deg(np.arctan2(res["intensity_unit"][1], res["intensity_unit"][0])))
-        cases[f"delta_phi_{deg}deg"] = {
-            **res,
-            "intensity_norm": float(np.linalg.norm(res["active_intensity"])),
-            "phantom_intensity_azimuth_deg": az_deg if res["valid_direction"] else None,
-        }
-    return cases
-
-
-def _ex06_dirac_stream_split() -> dict:
+def _ex05_dirac_stream_split() -> dict:
     # Single wave vs two uncorrelated equal-power opposite waves (+x and -x) over 4 orthogonal phases
     phases = np.array([0.0, 0.5 * np.pi, np.pi, 1.5 * np.pi])
     p_opp = 1.0 + np.exp(1j * phases)
@@ -189,19 +173,7 @@ def _ex06_dirac_stream_split() -> dict:
     }
 
 
-def _ex07_bsm_ls_notch() -> dict:
-    h_mat = np.array([[1.0, 1.0, 1.0], [1.0j, 1.0, -1.0j]], dtype=np.complex128)
-    p_ear = np.array([1.0, -1.0, 1.0], dtype=np.complex128)
-    w_ls = bsm_ls_weights(h_mat, p_ear)
-    metrics = bsm_directional_metrics(h_mat, p_ear, w_ls)
-    return {
-        "gram_inverse": np.linalg.inv(h_mat @ h_mat.conj().T),
-        "w_ls": w_ls,
-        **metrics,
-    }
-
-
-def _ex08_bsm_magls_monotonic() -> dict:
+def _ex06_bsm_magls_monotonic() -> dict:
     h_mat = np.array([[1.0, 1.0, 1.0], [1.0j, 1.0, -1.0j]], dtype=np.complex128)
     p_ear = np.array([1.0, -1.0, 1.0], dtype=np.complex128)
     w_mag1, hist1 = bsm_magls_weights(h_mat, np.abs(p_ear), n_iters=1)
@@ -228,7 +200,7 @@ def _ex08_bsm_magls_monotonic() -> dict:
     }
 
 
-def _ex09_bsm_weighting_regularization() -> dict:
+def _ex07_bsm_weighting_regularization() -> dict:
     h_mat = np.array([[1.0, 1.0, 1.0], [1.0j, 1.0, -1.0j]], dtype=np.complex128)
     p_ear = np.array([1.0, -1.0, 1.0], dtype=np.complex128)
     frontal_w = np.array([1.0, 4.0, 1.0], dtype=np.float64)
@@ -250,25 +222,7 @@ def _ex09_bsm_weighting_regularization() -> dict:
     return results
 
 
-def _ex10_bmvdr_coherence_collapse() -> dict:
-    gamma_in = 0.2
-    r_nn = np.array([[1.0, gamma_in], [gamma_in, 1.0]], dtype=np.complex128)
-    a = np.array([1.0, 1.0], dtype=np.complex128)
-    r_inv_a = np.linalg.solve(r_nn, a)
-    w_bmvdr = r_inv_a / np.real(np.vdot(a, r_inv_a))
-    res = binaural_coherence_with_mixing(r_nn, w_bmvdr, w_bmvdr, beta=0.0, ref_idx=(0, 1))
-    snr_gain_db = float(-10.0 * np.log10(res["var_L"]))
-    return {
-        "gamma_in": gamma_in,
-        "w_bmvdr_L": w_bmvdr,
-        "w_bmvdr_R": w_bmvdr,
-        "output_noise_variance": res["var_L"],
-        "snr_gain_db": snr_gain_db,
-        "ic_out": res["ic_out"],
-    }
-
-
-def _ex11_reference_mixing_tradeoff() -> dict:
+def _ex08_reference_mixing_tradeoff() -> dict:
     gamma_in = 0.2
     r_nn = np.array([[1.0, gamma_in], [gamma_in, 1.0]], dtype=np.complex128)
     w_bmvdr = np.array([0.5, 0.5], dtype=np.complex128)
@@ -286,12 +240,12 @@ def _ex11_reference_mixing_tradeoff() -> dict:
     return {"beta_for_ic_0p5": float(1.0 / np.sqrt(2.0)), "sweep": sweep}
 
 
-def _ex12_wind_coherence() -> dict:
+def _ex09_wind_coherence() -> dict:
     freqs = np.array([100.0, 250.0, 500.0, 1000.0, 2000.0], dtype=np.float64)
     return corcos_wind_coherence(freqs, d_m=0.015, u_conv_mps=3.0, alpha_long=0.14)
 
 
-def _ex13_cross_modal_fusion() -> dict:
+def _ex10_cross_modal_fusion() -> dict:
     low = cross_modal_mvdr_mmse(2.0, np.diag([4.0, 0.04]), phi_s=1.0)
     high = cross_modal_mvdr_mmse(0.1, np.diag([0.05, 0.04]), phi_s=1.0)
     return {
@@ -301,7 +255,7 @@ def _ex13_cross_modal_fusion() -> dict:
     }
 
 
-def _ex14_hearthrough_comb() -> dict:
+def _ex11_hearthrough_comb() -> dict:
     freqs = np.array([125.0, 250.0, 500.0, 750.0, 1000.0, 2000.0, 4000.0], dtype=np.float64)
     resp = hear_through_response(freqs, tau_proc_s=0.002, g_leak=1.0, g_ht=1.0)
     tau_max_phase30_2khz_us = 1e6 / (12.0 * 2000.0)
@@ -313,7 +267,7 @@ def _ex14_hearthrough_comb() -> dict:
     }
 
 
-def _ex15_wearable_resource_budget() -> dict:
+def _ex12_wearable_resource_budget() -> dict:
     fs_comm = 16000
     n_fft = 256
     hop = 128
@@ -342,7 +296,7 @@ def _ex15_wearable_resource_budget() -> dict:
     }
 
 
-def _ex16_audio_three_tier_audit() -> dict:
+def _ex13_audio_three_tier_audit() -> dict:
     report, signals = run_experiment()
     decoded = {k: read_pcm16(pcm16_bytes(v, SAMPLE_RATE))[1] for k, v in signals.items()}
     pcm_ref = decoded["wearable_clean_ref"]
@@ -356,7 +310,7 @@ def _ex16_audio_three_tier_audit() -> dict:
     }
 
 
-def _ex17_ambisonics_max_re_decoding() -> dict:
+def _ex14_ambisonics_max_re_decoding() -> dict:
     src_px = np.array([1.0, 0.0, 0.0], dtype=np.float64)
     modes_2d = {}
     for mode in ("basic", "max_re", "in_phase"):
@@ -388,7 +342,7 @@ def _ex17_ambisonics_max_re_decoding() -> dict:
     }
 
 
-def _ex18_sofa_and_head_tracking_latency() -> dict:
+def _ex15_sofa_and_head_tracking_latency() -> dict:
     src_sph = np.array([30.0, 45.0, 1.5], dtype=np.float64)
     src_cart = sofa_spherical_to_cartesian(src_sph)
     src_roundtrip = sofa_cartesian_to_spherical(src_cart)
@@ -428,20 +382,17 @@ def run_experiments() -> dict:
         "E14-02": _ex02_open_sphere_radial(),
         "E14-03": _ex03_foa_rotation(),
         "E14-04": _ex04_intensity_bounds(),
-        "E14-05": _ex05_two_wave_interference(),
-        "E14-06": _ex06_dirac_stream_split(),
-        "E14-07": _ex07_bsm_ls_notch(),
-        "E14-08": _ex08_bsm_magls_monotonic(),
-        "E14-09": _ex09_bsm_weighting_regularization(),
-        "E14-10": _ex10_bmvdr_coherence_collapse(),
-        "E14-11": _ex11_reference_mixing_tradeoff(),
-        "E14-12": _ex12_wind_coherence(),
-        "E14-13": _ex13_cross_modal_fusion(),
-        "E14-14": _ex14_hearthrough_comb(),
-        "E14-15": _ex15_wearable_resource_budget(),
-        "E14-16": _ex16_audio_three_tier_audit(),
-        "E14-17": _ex17_ambisonics_max_re_decoding(),
-        "E14-18": _ex18_sofa_and_head_tracking_latency(),
+        "E14-05": _ex05_dirac_stream_split(),
+        "E14-06": _ex06_bsm_magls_monotonic(),
+        "E14-07": _ex07_bsm_weighting_regularization(),
+        "E14-08": _ex08_reference_mixing_tradeoff(),
+        "E14-09": _ex09_wind_coherence(),
+        "E14-10": _ex10_cross_modal_fusion(),
+        "E14-11": _ex11_hearthrough_comb(),
+        "E14-12": _ex12_wearable_resource_budget(),
+        "E14-13": _ex13_audio_three_tier_audit(),
+        "E14-14": _ex14_ambisonics_max_re_decoding(),
+        "E14-15": _ex15_sofa_and_head_tracking_latency(),
     }
     if set(exercises) != set(EXERCISE_IDS):
         raise AssertionError("exercise ID set differs")

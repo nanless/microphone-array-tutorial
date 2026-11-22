@@ -66,7 +66,7 @@ class SpatialParagraphTest(unittest.TestCase):
 
     def test_beamforming_derivation_and_postfilters_are_separate_list_items(self):
         cases = (
-            ("#### 阵因子、主瓣与旁瓣", "均匀加权等价", ("残余相位差", "未归一化", "实际单位响应", "主瓣边缘")),
+            ("#### 阵因子、旁瓣与白噪声增益上限", "上述 $3.01", ("主瓣与栅瓣", "第一旁瓣电平", "白噪声增益硬上限")),
             ("### 5.7 后置滤波", "#### 5.7.1", ("Zelinski", "McCowan", "对数谱幅度")),
         )
         for start, end, labels in cases:
@@ -78,15 +78,15 @@ class SpatialParagraphTest(unittest.TestCase):
                     self.assertIn(label, item)
                 self.assertNotIn("<pre>", html)
 
-    def test_mvdr_implementation_has_three_separate_questions(self):
+    def test_mvdr_robust_routes_are_four_separate_items(self):
         source, path = chapter_fragment(
-            "05_beamforming.md", "**实现中的三个问题**", "#### 对角加载、WNG"
+            "05_beamforming.md", "除固定对角加载外，四条经典加固路线如下：", "排障对照表"
         )
-        _, lists = rendered_lists("**实现中的三个问题**" + source, path)
-        self.assertEqual([len(items) for items in lists], [3])
-        for item, phrase in zip(lists[0], ("从哪来", "病态与对角加载", "混响中的约束对象")):
+        _, lists = rendered_lists(source, path)
+        self.assertEqual([len(items) for items in lists], [4])
+        for item, phrase in zip(lists[0], ("SOCP", "特征空间投影", "空间谱积分协方差重构", "前后向空间平滑")):
             self.assertIn(phrase, item)
-        self.assertIn(r"\hat{\mathbf R}_{nn}+\varepsilon\mathbf I", lists[0][1])
+        self.assertIn(r"\hat{\mathbf R}_{nn}", lists[0][0])
 
     def test_kalman_five_steps_keep_equations_and_explanations_in_their_items(self):
         source, path = chapter_fragment(
@@ -95,7 +95,7 @@ class SpatialParagraphTest(unittest.TestCase):
         html, lists = rendered_lists("**卡尔曼滤波（KF）的五步递推**" + source, path)
         self.assertEqual([len(items) for items in lists], [5])
         labels = ("预测状态", "预测协方差", "计算卡尔曼增益", "更新状态", "更新协方差")
-        for number, (item, label) in enumerate(zip(lists[0], labels), start=2):
+        for number, (item, label) in enumerate(zip(lists[0], labels), start=3):
             self.assertIn(label, item)
             equation = rf"\tag{{9-{number}}}"
             self.assertEqual(item.count(equation), 1)
@@ -118,32 +118,28 @@ class SpatialParagraphTest(unittest.TestCase):
         _, lists = rendered_lists("频率为 3.4 kHz。距离为 0.05 m。", ROOT / "chapters/example.md")
         self.assertEqual(lists, [])
 
-    def test_mask_beamforming_keeps_math_and_explanation_inside_three_steps(self):
+    def test_mask_beamforming_keeps_three_open_source_checks_separate(self):
         source, path = chapter_fragment(
-            "05_beamforming.md", "一个可复现的处理顺序如下。", "**两麦小例子**"
+            "05_beamforming.md", "上线前务必核对三处常见接口语义差异：", "### 5.10 波束形成算法总对比"
         )
         html, lists = rendered_lists(source, path)
         self.assertEqual([len(items) for items in lists], [3])
-        self.assertIn(r"\hat{\mathbf R}_{vv}", lists[0][0])
-        self.assertIn("零掩码拥有统计依据", lists[0][0])
-        self.assertIn(r"\lambda_{\max}", lists[0][1])
-        self.assertIn("尺度规则", lists[0][1])
-        self.assertIn("滤波与检查", lists[0][2])
-        self.assertGreaterEqual(html.count("<p>"), 6)
+        self.assertIn("BAN 尺度与 RTF", lists[0][0])
+        self.assertIn("SDW-MWF", lists[0][1])
+        self.assertIn("声学成像功率图", lists[0][2])
         self.assertNotIn("<pre>", html)
 
     def test_reviewed_topic_changes_are_separate_rendered_paragraphs(self):
         checks = [
             ("02_basics-signal-model.md", "周期 Hann 窗", "会在两端补半窗"),
-            ("02_basics-signal-model.md", "需要加载时采用", "实际运行时还应记录"),
-            ("04_doa-estimation.md", "信噪比高、快拍充足时", "相干源场景还存在"),
-            ("04_doa-estimation.md", "这些方法的源码也应分别阅读", "DCASE2022 基线则通过"),
-            ("04_doa-estimation.md", "最小输出检查可以先做手算", "换到 DCASE2025 基线时"),
-            ("04_doa-estimation.md", "本书的原创 NumPy 基线位于", "是式(4-5)的远场"),
-            ("04_doa-estimation.md", "接入实际录音时还要固定", "Capon/MVDR 使用"),
-            ("04_doa-estimation.md", "Capon/MVDR 使用", "MUSIC 使用厄米特征分解"),
-            ("05_beamforming.md", "§5.7 的噪声估计也需要", "Cohen 的"),
-            ("05_beamforming.md", "以参考麦选择向量", "分子、分母要用同一频带"),
+            ("02_basics-signal-model.md", "在掩码加权批量或流式统计中", "需要加载时采用"),
+            ("04_doa-estimation.md", "相干多径降秩与前后向空间平滑", "root-MUSIC 多项式求根"),
+            ("04_doa-estimation.md", "输入特征从原始复谱走向物理对齐", "输出表示从双分支解耦"),
+            ("04_doa-estimation.md", "DCASE2022 官方基线", "不同届 DCASE Task 3 的输出格式不可混用"),
+            ("04_doa-estimation.md", "不同届 DCASE Task 3 的输出格式不可混用", "至于单靠音频估计"),
+            ("04_doa-estimation.md", "结果与不可观测边界", "本书原创纯 NumPy 基线位于"),
+            ("05_beamforming.md", "最小值控制递归平均（MCRA", "经过帧对齐"),
+            ("05_beamforming.md", "以参考麦", "虚抬降噪分贝"),
         ]
         for filename, first, second in checks:
             path = ROOT / "chapters" / filename
@@ -158,51 +154,50 @@ class SpatialParagraphTest(unittest.TestCase):
 
     def test_noise_reduction_formula_has_its_own_block(self):
         source, path = chapter_fragment(
-            "05_beamforming.md", "上表“目标保持条件”", "#### 5.10.1 延伸阅读"
+            "05_beamforming.md", "**工程选型三台阶**", "#### 5.10.1 延伸阅读"
         )
-        html, _ = render("上表“目标保持条件”" + source, path)
+        html, _ = render("**工程选型三台阶**" + source, path)
         paragraphs = re.findall(r"<p>(.*?)</p>", html, flags=re.S)
         def paragraph_index(needle):
             matches = [index for index, paragraph in enumerate(paragraphs) if needle in paragraph]
             self.assertEqual(len(matches), 1, f"Expected one paragraph containing {needle}")
             return matches[0]
 
-        intro = paragraph_index("目标保持条件")
-        nr_formula = paragraph_index(r"\tag{5-24}")
-        nr_explanation = paragraph_index("分子、分母要用同一频带")
-        example = paragraph_index("取四麦 ULA")
+        intro = paragraph_index("工程选型三台阶")
+        nr_intro = paragraph_index("以参考麦")
+        nr_formula = paragraph_index(r"\tag{5-28}")
+        nr_explanation = paragraph_index("虚抬降噪分贝")
         self.assertRegex(html, r"<h4[^>]*>同输入算例：零陷、WNG 与目标损伤</h4>")
-        example_conditions = paragraph_index("设计使用精确的干扰加噪声协方差")
-        sinr_definition = paragraph_index("真实目标输出信干噪比按同一功率口径计算")
-        sinr_formula = paragraph_index(r"\tag{5-25}")
-        hand_check = paragraph_index("可先独立核对 DSB 行")
-        boundary = paragraph_index("表中数字")
+        example = paragraph_index("取四麦 ULA")
+        sinr_formula = paragraph_index(r"\tag{5-29}")
+        summary = paragraph_index("四组数字浓缩了全章核心权衡")
 
         self.assertEqual(
-            [intro, nr_formula, nr_explanation, example, example_conditions,
-             sinr_definition, sinr_formula, hand_check, boundary],
-            sorted({intro, nr_formula, nr_explanation, example, example_conditions,
-                    sinr_definition, sinr_formula, hand_check, boundary}),
-            "Baseline, formulas, conditions, hand check and boundary must stay in distinct ordered paragraphs",
+            [intro, nr_intro, nr_formula, nr_explanation, example, sinr_formula, summary],
+            sorted({intro, nr_intro, nr_formula, nr_explanation, example, sinr_formula, summary}),
+            "Baseline, formulas, example and summary must stay in distinct ordered paragraphs",
         )
         self.assertTrue(paragraphs[nr_formula].strip().startswith("$$"))
         self.assertTrue(paragraphs[nr_formula].strip().endswith("$$"))
         self.assertTrue(paragraphs[sinr_formula].strip().startswith("$$"))
         self.assertTrue(paragraphs[sinr_formula].strip().endswith("$$"))
-        self.assertLess(html.index(r"\tag{5-25}"), html.index("<table>"))
-        self.assertLess(html.index("</table>"), html.index("可先独立核对 DSB 行"))
+        self.assertLess(html.index(r"\tag{5-29}"), html.index("<table>"))
+        self.assertLess(html.index("</table>"), html.index("四组数字浓缩了全章核心权衡"))
 
-    def test_music_and_nearfield_formula_belongs_to_third_step(self):
-        for start, end, formula, explanation in (
-                ("**思想三步**", "**第 2 步为什么成立**", r"\tag{4-13}", "正交检验的含义"),
-                ("**锚点算法：角度 × 距离球面扫描。**", "实际 SRP 或宽带最大似然",
-                 r"\tag{4-18}", "分母为 3")):
-            source, path = chapter_fragment("04_doa-estimation.md", start, end)
-            html, lists = rendered_lists(start+source, path)
-            self.assertEqual([len(items) for items in lists], [3])
-            self.assertIn(formula, lists[0][2])
-            self.assertIn(explanation, lists[0][2])
-            self.assertNotIn("<pre>", html)
+    def test_music_and_nearfield_formula_structure(self):
+        source, path = chapter_fragment("04_doa-estimation.md", "思想三步", "**正交性成立的三步证明**")
+        html, lists = rendered_lists("**MUSIC思想三步" + source, path)
+        self.assertEqual([len(items) for items in lists], [3])
+        self.assertIn(r"\tag{4-15}", lists[0][2])
+        self.assertNotIn("<pre>", html)
+
+        nf_source, nf_path = chapter_fragment(
+            "04_doa-estimation.md", "**锚点算法：角度 × 距离球面扫描**", "**结果与不可观测边界**"
+        )
+        nf_html, _ = render("**锚点算法：角度 × 距离球面扫描**" + nf_source, nf_path)
+        self.assertIn(r"\tag{4-29}", nf_html)
+        self.assertIn("分母为 $3$", nf_html)
+        self.assertNotIn("<pre>", nf_html)
 
     def test_mwf_cost_conditions_and_rank_one_relation_have_separate_blocks(self):
         start = "#### 5.5.1 多通道维纳滤波与秩一目标模型"
@@ -214,9 +209,8 @@ class SpatialParagraphTest(unittest.TestCase):
         paragraphs = re.findall(r"<p>(.*?)</p>", html, flags=re.S)
         # Locate technical paragraphs by their complete distinctive content,
         # rather than requiring a historical list layout that no longer exists.
-        checks = (r"定义 $s_{\mathrm{out}}", r"\tag{5-13}", "真实混合输出",
-                  r"\mu\to\infty", "只有秩一目标模型", r"\tag{5-14}",
-                  "可先验证", "目标二阶矩满秩")
+        checks = (r"s_{\mathrm{ref}}", r"\tag{5-13}", r"\mu\to\infty",
+                  r"\tag{5-14}", "目标协方差满秩")
         indices = []
         for needle in checks:
             found = [i for i, paragraph in enumerate(paragraphs) if needle in paragraph]
@@ -227,13 +221,13 @@ class SpatialParagraphTest(unittest.TestCase):
             formula = next(p.strip() for p in paragraphs if tag in p)
             self.assertTrue(formula.startswith("$$") and formula.endswith("$$"))
         self.assertIn(r"\frac{\phi_s q}{\mu+\phi_s q}", html)
-        self.assertIn(r"a_r=1", paragraphs[indices[4]])
+        self.assertIn(r"a_r=1", paragraphs[indices[2]])
         self.assertNotIn("<pre>", html)
 
     def test_accdoa_external_and_book_azimuths_are_complementary(self):
         source = (ROOT / "chapters/04_doa-estimation.md").read_text(encoding="utf-8")
-        self.assertIn(r"同一方向记为 $60^\circ$", source)
-        self.assertIn(r"用 $90^\circ$ 减去外部方位角，得到约 $60^\circ$", source)
+        self.assertIn(r"\operatorname{atan2}(0.25,0.433)\approx 30^\circ", source)
+        self.assertIn(r"顺时针计角为 $60^\circ$", source)
         # The published three-decimal vector is rounded, not an exact 30-degree ray.
         x, y = .433, .25
         external = math.degrees(math.atan2(y, x))

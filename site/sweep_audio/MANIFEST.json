@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
-  "exercise_id": "E02-19",
+  "exercise_id": "E02-17",
   "sample_rate_hz": 16000,
   "common_export_gain": 1.0,
   "source_sha256": {
     "codes/chapters/ch02/core/deconvolution.py": "aedc4f6f1dd74872e83acc816e8b21aba5eadd4fdc14727897dd7d76465be241",
-    "codes/chapters/ch02/examples/generate_sweep_audio.py": "21d85121059084145b7488b4e667ff8677692d45fbd7c252e28c02faf27cec77",
+    "codes/chapters/ch02/examples/generate_sweep_audio.py": "f3103b6d6aec25cba7063ca509e61ce1e0a348e5dfcef2f3e30391b9b8f5f44e",
     "codes/chapters/ch02/core/conventions.py": "4e80a27490f05ddd5f4826361420c0c8d0b331464d1e5629c5def492da47b1d7",
     "codes/chapters/ch00/core/audio_samples.py": "bf1145e19e2ec99623c0583220192922c24f0ed3d293212309fe4a2f3bfc8385",
     "codes/chapters/ch00/io_contracts.py": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974"

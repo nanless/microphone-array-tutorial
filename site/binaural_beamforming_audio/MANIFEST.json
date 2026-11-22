@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "exercises": [
-    "E05-25",
-    "E05-26",
-    "E05-27"
+    "E05-18",
+    "E05-19",
+    "E05-20"
   ],
   "origin": "deterministic five-tone component control, not measured acoustics",
   "sample_rate_hz": 16000,
@@ -51,7 +51,7 @@
   "fade_samples_each_end": 320,
   "sample_format": "signed little endian PCM16, ties to even, decode scale 32768",
   "source_sha256": {
-    "codes/chapters/ch05/examples/binaural_beamforming_demo.py": "e384f898438f4b410928ad096db7bce76a5947624ae5d856ca125368e0281545",
+    "codes/chapters/ch05/examples/binaural_beamforming_demo.py": "5a22686c64bb1a695c045002d8005e9dc5b75fc3fbb15639d9f6bf9fdec96a57",
     "codes/chapters/ch05/core/beamforming.py": "481f79a66fcc4c1f232704ee3a516b596d28ebc89d9045c494b71f6206b77216",
     "codes/chapters/ch04/core/covariance.py": "d704be037100ee53caf6e2130fbabbe14ce6eeff9e3d11dde389fd368d271249",
     "codes/chapters/ch02/core/conventions.py": "4e80a27490f05ddd5f4826361420c0c8d0b331464d1e5629c5def492da47b1d7",

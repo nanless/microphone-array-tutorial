@@ -420,48 +420,43 @@ class DefensiveContractsTests(unittest.TestCase):
 
 
 class TSEAudioAndExercisesTests(unittest.TestCase):
-    def test_exercise_runner_covers_all_18_ids_and_hand_values(self):
+    def test_exercise_runner_covers_all_14_ids_and_hand_values(self):
         payload = ex17.run_experiments()
         json_text = json.dumps(payload, allow_nan=False)
         self.assertTrue(len(json_text) > 100)
         ex = payload["exercises"]
         self.assertEqual(tuple(ex.keys()), ex17.EXERCISE_IDS)
-        self.assertEqual(len(ex), 18)
+        self.assertEqual(len(ex), 14)
 
-        self.assertEqual(ex["E15-01"]["enrolled_modulated"], [[1.5, -1.5, 3.5], [0.5, 1.0, -0.25]])
-        self.assertAlmostEqual(ex["E15-02"]["target_present"]["loss_db"], -20.0, places=12)
-        self.assertAlmostEqual(ex["E15-02"]["target_absent_moderate_leak"]["loss_db"], 20.0, places=12)
+        self.assertAlmostEqual(ex["E15-01"]["target_present"]["loss_db"], -20.0, places=12)
+        self.assertAlmostEqual(ex["E15-01"]["target_absent_moderate_leak"]["loss_db"], 20.0, places=12)
+        self.assertTrue(ex["E15-02"]["single_speaker_fricative_bypass"]["bypass_separation"])
+        self.assertFalse(ex["E15-02"]["two_speaker_overlap_retained"]["bypass_separation"])
+        self.assertAlmostEqual(ex["E15-03"]["d_10cm"]["wng_db"], -4.2094, places=3)
         self.assertAlmostEqual(
-            ex["E15-04"]["d_10cm"]["exact_extra_path_mm"],
-            (math.sqrt(0.17) - 0.40) * 1000.0,
-            places=12,
+            ex["E15-04"]["outer_amplitude_ratio_r0_over_r1"], 4.0 / math.sqrt(17.0), places=14
         )
-        self.assertAlmostEqual(
-            ex["E15-06"]["outer_amplitude_ratio_r0_over_r1"], 4.0 / math.sqrt(17.0), places=14
-        )
-        self.assertAlmostEqual(ex["E15-08"]["imperfect_2cluster"]["der"], 4.0 / 7.0, places=14)
-        self.assertTrue(ex["E15-08"]["permutation_invariant_der"])
-        self.assertAlmostEqual(ex["E15-09"]["theoretical_bound"]["der_lower_bound"], 2.0 / 7.0, places=14)
-        self.assertAlmostEqual(ex["E15-10"]["over_triggering_3track"]["der"], 8.0 / 7.0, places=14)
-        self.assertAlmostEqual(ex["E15-11"]["joint_der"], 0.0, places=14)
-        self.assertEqual(ex["E15-13"]["audio_frames_per_video_exposure"], [2, 3, 2, 3, 2, 3])
+        self.assertAlmostEqual(ex["E15-06"]["imperfect_2cluster"]["der"], 4.0 / 7.0, places=14)
+        self.assertTrue(ex["E15-06"]["permutation_invariant_der"])
+        self.assertAlmostEqual(ex["E15-07"]["theoretical_bound"]["der_lower_bound"], 2.0 / 7.0, places=14)
+        self.assertAlmostEqual(ex["E15-08"]["over_triggering_3track"]["der"], 8.0 / 7.0, places=14)
+        self.assertAlmostEqual(ex["E15-09"]["joint_der"], 0.0, places=14)
         self.assertEqual(
-            [row["clipped_consonant_frames"] for row in ex["E15-14"]["camera_lag_consonant_clipping_sweep"]],
+            [row["clipped_consonant_frames"] for row in ex["E15-11"]["camera_lag_consonant_clipping_sweep"]],
             [0, 2, 5, 7],
         )
-        np.testing.assert_allclose(ex["E15-15"]["mask_fused"], [0.946, 0.752, 0.7815], rtol=0.0, atol=1e-14)
-        self.assertLess(ex["E15-16"]["pcm"]["bubble_d10cm"]["integer_reference_nmse"], 0.025)
-        self.assertEqual(ex["E15-17"]["two_speaker_stopping_check"]["estimated_num_speakers"], 2)
-        self.assertAlmostEqual(ex["E15-17"]["three_speaker_eend_eda"]["der"], 0.0, places=14)
-        self.assertAlmostEqual(ex["E15-17"]["fixed_2slot_oracle_der"], 2.0 / 7.0, places=14)
+        self.assertLess(ex["E15-12"]["pcm"]["bubble_d10cm"]["integer_reference_nmse"], 0.025)
+        self.assertEqual(ex["E15-13"]["two_speaker_stopping_check"]["estimated_num_speakers"], 2)
+        self.assertAlmostEqual(ex["E15-13"]["three_speaker_eend_eda"]["der"], 0.0, places=14)
+        self.assertAlmostEqual(ex["E15-13"]["fixed_2slot_oracle_der"], 2.0 / 7.0, places=14)
         self.assertAlmostEqual(
-            ex["E15-18"]["orthogonal_speakers_alpha0p5"]["target_cosine"], 2.0 / math.sqrt(5.0), places=14
+            ex["E15-14"]["orthogonal_speakers_alpha0p5"]["target_cosine"], 2.0 / math.sqrt(5.0), places=14
         )
-        self.assertAlmostEqual(ex["E15-18"]["six_frame_enrollment_remedy"]["gated_target_cosine"], 1.0, places=14)
+        self.assertAlmostEqual(ex["E15-14"]["six_frame_enrollment_remedy"]["gated_target_cosine"], 1.0, places=14)
         stream = io.StringIO()
         with unittest.mock.patch("sys.stdout", stream):
-            self.assertEqual(ex17.main(["--json", "--exercise", "E15-03"]), 0)
-        self.assertEqual(set(json.loads(stream.getvalue())["exercises"]), {"E15-03"})
+            self.assertEqual(ex17.main(["--json", "--exercise", "E15-02"]), 0)
+        self.assertEqual(set(json.loads(stream.getvalue())["exercises"]), {"E15-02"})
 
     def test_generate_and_strict_check_tse_audio_in_tempdir(self):
         with self.assertRaises(ValueError):

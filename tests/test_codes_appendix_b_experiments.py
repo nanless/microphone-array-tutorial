@@ -1,4 +1,4 @@
-"""Independent analytic and existing-PCM checks for Appendix B E17-03..16."""
+"""Independent analytic and existing-PCM checks for Appendix B E17-03..13."""
 
 from __future__ import annotations
 
@@ -37,7 +37,7 @@ class AppendixBExperimentsTest(unittest.TestCase):
         self.assertEqual(result["assets"]["figure"]["file"], "ROOM_RESULTS.png")
         self.assertTrue(result["convergence_check"]["within_threshold"])
 
-    def test_e13_03_fixed_pairs_and_seeded_cases_do_not_support_monotonic_claim(self):
+    def test_e17_03_fixed_pairs_and_seeded_cases_do_not_support_monotonic_claim(self):
         result = paired_room_comparison(_read_results()["results"])
         for pair in result["fixed_pairs"].values():
             self.assertEqual((pair["near_distance_m"], pair["far_distance_m"]), (1.0, 2.5))
@@ -55,7 +55,7 @@ class AppendixBExperimentsTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "retain angle"):
             paired_room_comparison(bad)
 
-    def test_e13_04_median_is_not_ratio_of_pooled_energy(self):
+    def test_e17_04_median_is_not_ratio_of_pooled_energy(self):
         result = four_mic_drr_and_convolution()
         one_to_four_db = 10 * math.log10(4)
         np.testing.assert_allclose(result["per_mic_drr_db"],
@@ -71,21 +71,7 @@ class AppendixBExperimentsTest(unittest.TestCase):
         self.assertEqual(result["full_output_energy"], result["direct_output_energy"] +
                          result["reflected_output_energy"] + result["cross_term_in_full_energy"])
 
-    def test_e13_05_extrapolation_is_time_shift_invariant_and_rejects_bad_edc(self):
-        original = t20_from_edc_points([.05, .15, .25], [-5, -15, -25])
-        shifted = t20_from_edc_points([.15, .25, .35], [-5, -15, -25])
-        self.assertAlmostEqual(original["slope_db_per_s"], -100)
-        self.assertAlmostEqual(original["t20_s"], .2)
-        self.assertAlmostEqual(original["t60_extrapolated_s"], .6)
-        self.assertAlmostEqual(shifted["t60_extrapolated_s"], .6)
-        for times, decay in (([0, .1], [-5, -25]),
-                             ([0, .1, .2], [-5, -15, -14]),
-                             ([0, .1, .2], [-4, -14, -24]),
-                             ([0, .1, .1], [-5, -15, -25])):
-            with self.assertRaises(ValueError):
-                t20_from_edc_points(times, decay)
-
-    def test_e13_06_srp_phase_has_correct_sign_and_analytic_scores(self):
+    def test_e17_05_srp_phase_has_correct_sign_and_analytic_scores(self):
         result = two_mic_srp_phase()
         phi = 2 * math.pi * 1000 * .02 / 343
         self.assertAlmostEqual(result["tau_12_us"], .02 / 343 * 1e6)
@@ -94,7 +80,7 @@ class AppendixBExperimentsTest(unittest.TestCase):
                                    [math.cos(2 * phi), math.cos(phi), 1.], atol=1e-14)
         self.assertEqual(result["candidate_azimuth_deg"], [-30., 0., 30.])
 
-    def test_e13_07_existing_pcm_readback_exposes_library_delay(self):
+    def test_e17_06_existing_pcm_readback_exposes_library_delay(self):
         manifest = json.loads((ROOM / "MANIFEST.json").read_text(encoding="utf-8"))
         result = room_pcm_readback(manifest, _read_results())
         self.assertEqual(result["shapes_frames_channels"], {
@@ -115,10 +101,11 @@ class AppendixBExperimentsTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "digest differs"):
             room_pcm_readback(corrupted, _read_results())
 
-    def test_e13_08_evidence_levels_do_not_skip_stages(self):
+    def test_e17_07_evidence_levels_and_exact_ids(self):
         result = run_exercises()
-        self.assertEqual(set(result), {f"E17-{number:02d}" for number in range(3, 17)})
-        stages = result["E17-08"]
+        self.assertEqual(set(result), {f"E17-{number:02d}" for number in range(3, 14)})
+        json.dumps(result, allow_nan=False)
+        stages = result["E17-07"]
         self.assertTrue(stages["cases_are_hypothetical"])
         self.assertEqual([len(stages[name]) for name in "ABC"], [2, 4, 5])
         self.assertNotIn("source obtained", stages["A"])
@@ -130,7 +117,7 @@ class AppendixBExperimentsTest(unittest.TestCase):
             evidence_claims(locked=1, license_checked=True, obtained=False,
                             executed=False, scored=False)
 
-    def test_e13_09_published_pcm_window_changes_five_of_six_directions(self):
+    def test_e17_08_published_pcm_window_changes_five_of_six_directions(self):
         manifest = json.loads((ROOM / "MANIFEST.json").read_text(encoding="utf-8"))
         result = room_pcm_srp_windows(manifest, _read_results())
         self.assertEqual(result["first_second_interval_samples"], [0, 16000])
@@ -142,8 +129,6 @@ class AppendixBExperimentsTest(unittest.TestCase):
         expected = [
             # Independently recomputed from current actual int16 bytes with
             # sin^2 periodic Hann, a sliding-window FFT and raw pair phases.
-            # The rebuilt PRA environment changed 51 samples by one LSB;
-            # PHAT on the quiet tail consequently changes some peak digits.
             ("fixed_near_left", 38497, -29, -35, .8433347979094756, .4602514450784251),
             ("fixed_near_right", 38497, 29, 35, .8406587645307314, .4611163527954634),
             ("fixed_far_left", 38532, -32, -41, .6679868354467086, .4005346768045548),
@@ -169,24 +154,6 @@ class AppendixBExperimentsTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "digest differs"):
             room_pcm_srp_windows(damaged, _read_results())
 
-    def test_e13_10_equal_drr_does_not_fix_dc_or_nyquist_response(self):
-        same, opposite = equal_drr_different_spectra()["cases"]
-        self.assertEqual(same["direct_rir"], [1, 0, 0])
-        self.assertEqual(same["reflected_rir"], [0, .5, .5])
-        self.assertEqual(opposite["reflected_rir"], [0, .5, -.5])
-        for case in (same, opposite):
-            self.assertEqual(case["direct_energy"], 1)
-            self.assertEqual(case["reflected_energy"], .5)
-            self.assertAlmostEqual(case["drr_db"], 10 * math.log10(2))
-        self.assertEqual((same["reflected_dc_response"],
-                          same["reflected_nyquist_response"]), (1, 0))
-        self.assertEqual((opposite["reflected_dc_response"],
-                          opposite["reflected_nyquist_response"]), (0, -1))
-        self.assertEqual((same["full_dc_response"], same["full_nyquist_response"]),
-                         (2, 1))
-        self.assertEqual((opposite["full_dc_response"], opposite["full_nyquist_response"]),
-                         (1, 0))
-
     def test_existing_plot_and_result_paths_are_never_overwritten(self):
         with tempfile.TemporaryDirectory() as temporary:
             directory = Path(temporary)
@@ -204,28 +171,37 @@ class AppendixBExperimentsTest(unittest.TestCase):
                               plot, directory, result_path)
             self.assertEqual(result_path.read_bytes(), b"user results")
 
-    def test_e13_11_shared_maps_are_permutation_equivariant_not_copy_invariant(self):
+    def test_e17_09_shared_maps_are_permutation_equivariant_not_copy_invariant(self):
         result = shared_tac_fixture()
         self.assertEqual(result['original']['output'], [7., 13.])
         self.assertEqual(result['permuted']['output'], [13., 7.])
         self.assertEqual(result['all_channels_duplicated']['output'], [7., 13., 7., 13.])
-        self.assertAlmostEqual(result['one_channel_duplicated']['mean'], 10/3)
-        np.testing.assert_allclose(result['one_channel_duplicated']['output'], [19/3, 19/3, 37/3], atol=2e-15)
+        self.assertAlmostEqual(result['one_channel_duplicated']['mean'], 10 / 3)
+        np.testing.assert_allclose(result['one_channel_duplicated']['output'], [19 / 3, 19 / 3, 37 / 3], atol=2e-15)
 
-    def test_e13_12_common_scale_preserves_known_rir_metrics(self):
+    def test_e17_10_common_scale_preserves_known_rir_metrics(self):
         result = scaled_rir_metrics()
         self.assertEqual([row['common_amplitude'] for row in result['cases']], [1., 1e-200, 1e200])
         for row in result['cases']:
-            self.assertAlmostEqual(row['drr_db'], 10*math.log10(4), places=11)
+            self.assertAlmostEqual(row['drr_db'], 10 * math.log10(4), places=11)
             self.assertAlmostEqual(row['t60_from_rir_s'], .6, delta=2e-7)
 
-    def test_e13_13_conditioning_recovers_endpoint_line(self):
-        cases = conditioned_t20_times()['cases']
-        for name, slope, t60 in (('large_origin', -5., 12.), ('tiny_span', -1e201, 6e-200), ('large_span', -1e-199, 6e200)):
-            self.assertLess(abs(cases[name]['slope_db_per_s']/slope-1), 1e-14)
-            self.assertLess(abs(cases[name]['t60_extrapolated_s']/t60-1), 1e-14)
+    def test_e17_11_equal_drr_spectra_and_actual_pcm_integer_denominator(self):
+        same, opposite = equal_drr_different_spectra()["cases"]
+        self.assertEqual(same["direct_rir"], [1, 0, 0])
+        self.assertEqual(same["reflected_rir"], [0, .5, .5])
+        self.assertEqual(opposite["reflected_rir"], [0, .5, -.5])
+        for case in (same, opposite):
+            self.assertEqual(case["direct_energy"], 1)
+            self.assertEqual(case["reflected_energy"], .5)
+            self.assertAlmostEqual(case["drr_db"], 10 * math.log10(2))
+        self.assertEqual((same["reflected_dc_response"],
+                          same["reflected_nyquist_response"]), (1, 0))
+        self.assertEqual((opposite["reflected_dc_response"],
+                          opposite["reflected_nyquist_response"]), (0, -1))
+        self.assertEqual((same["full_dc_response"], same["full_nyquist_response"]), (2, 1))
+        self.assertEqual((opposite["full_dc_response"], opposite["full_nyquist_response"]), (1, 0))
 
-    def test_e13_14_formal_actual_pcm_preserves_integer_denominator(self):
         result = response_audio_anchor()
         self.assertEqual(result['parameters']['source_score'], [1600, 30400])
         self.assertEqual(result['pcm_analysis']['integer_reference_squared_sum'], 309262788000)
@@ -235,10 +211,36 @@ class AppendixBExperimentsTest(unittest.TestCase):
             self.assertEqual(row['integer_error_squared_sum'], error)
             self.assertEqual(row['integer_reference_squared_sum'], 309262788000)
             self.assertEqual(row['scored_samples'], 28800)
-            self.assertEqual(row['nmse'], error/309262788000)
+            self.assertEqual(row['nmse'], error / 309262788000)
 
-    def test_e15_16_cascade_bottleneck_and_diagnostic_triage(self):
-        row = run_exercises()["E17-16"]
+    def test_e17_12_t20_slope_conditioning_and_truncated_edc(self):
+        original = t20_from_edc_points([.05, .15, .25], [-5, -15, -25])
+        shifted = t20_from_edc_points([.15, .25, .35], [-5, -15, -25])
+        self.assertAlmostEqual(original["slope_db_per_s"], -100)
+        self.assertAlmostEqual(original["t20_s"], .2)
+        self.assertAlmostEqual(original["t60_extrapolated_s"], .6)
+        self.assertAlmostEqual(shifted["t60_extrapolated_s"], .6)
+        for times, decay in (([0, .1], [-5, -25]),
+                             ([0, .1, .2], [-5, -15, -14]),
+                             ([0, .1, .2], [-4, -14, -24]),
+                             ([0, .1, .1], [-5, -15, -25])):
+            with self.assertRaises(ValueError):
+                t20_from_edc_points(times, decay)
+
+        cases = conditioned_t20_times()['cases']
+        for name, slope, t60 in (('large_origin', -5., 12.),
+                                 ('tiny_span', -1e201, 6e-200),
+                                 ('large_span', -1e-199, 6e200)):
+            self.assertLess(abs(cases[name]['slope_db_per_s'] / slope - 1), 1e-14)
+            self.assertLess(abs(cases[name]['t60_extrapolated_s'] / t60 - 1), 1e-14)
+
+        row = run_exercises()["E17-12"]
+        self.assertAlmostEqual(row["three_point_slope"]["t60_extrapolated_s"], 0.6, places=14)
+        self.assertAlmostEqual(row["time_origin_conditioning"]["cases"]["large_origin"]["t60_extrapolated_s"], 12.0, places=12)
+        self.assertAlmostEqual(row["point"]["finite_relative_energy"], 1.0 / 11.0, places=14)
+
+    def test_e17_13_cascade_bottleneck_and_diagnostic_triage(self):
+        row = run_exercises()["E17-13"]
         budget = row["cascade_budget"]
 
         # Hand-derived raw SINR = 1 / 10.51, wrong downstream-only = 1 / 10.055

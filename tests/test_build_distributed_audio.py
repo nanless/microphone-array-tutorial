@@ -107,11 +107,11 @@ class DistributedPublicationTests(unittest.TestCase):
         html=build_site.render('[清单](../codes/chapters/ch13/distributed_audio/MANIFEST.json?view=1#schema)',chapter)[0]
         self.assertIn('href="distributed_audio/MANIFEST.json?view=1#schema"',html)
         self.assertEqual(build_pdf.rewrite_repository_links(
-            '<a href="13_distributed-enhancement.md#e13-24">GEVD</a>'
+            '<a href="13_distributed-enhancement.md#e13-17">GEVD</a>'
             '<a href="14_appendix-symbols-math.md#sec-1">附录A</a>'
             '<a href="15_appendix-guide.md#sec-13-6">练习</a>',ROOT/'chapters/00_overview.md'),
-            '<a href="#ch-15-e13-24">GEVD</a><a href="#ch-12">附录A</a><a href="#ch-13-sec-13-6">练习</a>')
-        self.assertIn('id="e13-24"',(self.site/'13_distributed-enhancement.html').read_text())
+            '<a href="#ch-15-e13-17">GEVD</a><a href="#ch-12">附录A</a><a href="#ch-13-sec-13-6">练习</a>')
+        self.assertIn('id="e13-17"',(self.site/'13_distributed-enhancement.html').read_text())
 
     def test_site_digest_binds_all_eighteen_distributed_members(self):
         original_read=Path.read_bytes
@@ -140,11 +140,11 @@ class DistributedPublicationTests(unittest.TestCase):
 
 class DistributedFigureTests(unittest.TestCase):
     def report(self,number):
-        name={70:'compression',71:'updates',72:'transport'}[number]
+        name={65:'compression',66:'updates',67:'transport'}[number]
         return ROOT/f'codes/chapters/ch13/reports/figure{number}_distributed_{name}.json'
 
     def test_all_reports_pass_independent_arithmetic(self):
-        for number in (70,71,72):
+        for number in (65,66,67):
             quality._check_distributed_figure_report(self.report(number),number)
 
     def assert_rejected(self,number,mutate):
@@ -157,21 +157,21 @@ class DistributedFigureTests(unittest.TestCase):
         def stale(d):
             h=d['results']['trajectories']['round_robin']['history'][1]
             h['cached_outputs'][0]=h['outputs_at_last_solve'][0]
-        self.assert_rejected(71,stale)
+        self.assert_rejected(66,stale)
         def wrong_snapshot(d):
             h=d['results']['trajectories']['simultaneous']['history'][1]
             h['solutions'][1]['incoming_compressions'][0]=h['compressions_after'][0]
-        self.assert_rejected(71,wrong_snapshot)
+        self.assert_rejected(66,wrong_snapshot)
 
     def test_wrong_integer_reference_and_unsigned_cross_terms_fail(self):
         def wrong_D(d):d['results']['rows']['central_white']['pcm']['D']*=4
-        self.assert_rejected(70,wrong_D)
+        self.assert_rejected(65,wrong_D)
         def wrong_gap(d):d['results']['rows']['packet_zerofill_white']['pcm']['packet']['samples']=28800
-        self.assert_rejected(72,wrong_gap)
+        self.assert_rejected(67,wrong_gap)
         def unsigned(d):
             row=d['results']['rows']['clock_misaligned_white']['float_components']
             row['target_noise_cross_power']=abs(row['target_noise_cross_power'])
-        self.assert_rejected(72,unsigned)
+        self.assert_rejected(67,unsigned)
 
 
 if __name__=='__main__':unittest.main()

@@ -66,21 +66,21 @@ class ResearchQualityTests(unittest.TestCase):
 
     def test_explicit_baselines_preserve_tutorial_pdf_and_figure_counts(self):
         self.assertEqual(quality.EXPECTED_CHAPTER_COUNT, 19)
-        self.assertEqual(quality.EXPECTED_SECTION_COUNT, 180)
-        self.assertEqual(quality.EXPECTED_SUBSECTION_COUNT, 915)
-        self.assertEqual(quality.EXPECTED_OUTLINE_ITEM_COUNT, 1114)
-        self.assertEqual(quality.EXPECTED_FIGURE_NUMBERS, set(range(1, 93)))
-        self.assertEqual(quality.EXPECTED_EXERCISE_COUNT, 443)
-        self.assertEqual(quality.EXPECTED_SUBSECTION_COUNTS['00_math-foundations.md'], 45)
+        self.assertEqual(quality.EXPECTED_SECTION_COUNT, 172)
+        self.assertEqual(quality.EXPECTED_SUBSECTION_COUNT, 827)
+        self.assertEqual(quality.EXPECTED_OUTLINE_ITEM_COUNT, 1018)
+        self.assertEqual(quality.EXPECTED_FIGURE_NUMBERS, set(range(1, 88)))
+        self.assertEqual(quality.EXPECTED_EXERCISE_COUNT, 352)
+        self.assertEqual(quality.EXPECTED_SUBSECTION_COUNTS['00_math-foundations.md'], 48)
         self.assertEqual(quality.EXPECTED_EXERCISE_COUNTS['00_math-foundations.md'], 16)
-        self.assertEqual(quality.EXPECTED_SUBSECTION_COUNTS['17_appendix-guide.md'], 31)
-        self.assertEqual(quality.EXPECTED_EXERCISE_COUNTS['17_appendix-guide.md'], 16)
+        self.assertEqual(quality.EXPECTED_SUBSECTION_COUNTS['17_appendix-guide.md'], 28)
+        self.assertEqual(quality.EXPECTED_EXERCISE_COUNTS['17_appendix-guide.md'], 13)
         self.assertEqual(quality.EXPECTED_SECTION_COUNTS['13_distributed-enhancement.md'], 16)
-        self.assertEqual(quality.EXPECTED_SUBSECTION_COUNTS['13_distributed-enhancement.md'], 68)
+        self.assertEqual(quality.EXPECTED_SUBSECTION_COUNTS['13_distributed-enhancement.md'], 62)
         self.assertEqual(quality.EXPECTED_SECTION_COUNTS['14_spatial-wearable-arrays.md'], 12)
-        self.assertEqual(quality.EXPECTED_SUBSECTION_COUNTS['14_spatial-wearable-arrays.md'], 48)
-        self.assertEqual(quality.EXPECTED_SECTION_COUNTS['15_target-extraction-diarization.md'], 10)
-        self.assertEqual(quality.EXPECTED_SUBSECTION_COUNTS['15_target-extraction-diarization.md'], 43)
+        self.assertEqual(quality.EXPECTED_SUBSECTION_COUNTS['14_spatial-wearable-arrays.md'], 45)
+        self.assertEqual(quality.EXPECTED_SECTION_COUNTS['15_target-extraction-diarization.md'], 11)
+        self.assertEqual(quality.EXPECTED_SUBSECTION_COUNTS['15_target-extraction-diarization.md'], 41)
         self.assertEqual(quality.EXPECTED_RESEARCH_PAGE_COUNT, 6)
         self.assertEqual(quality.EXPECTED_RESEARCH_PAGES, (
             ("README.md", "index.html"),
@@ -104,9 +104,9 @@ class ResearchQualityTests(unittest.TestCase):
         key = '13_distributed-enhancement.md'
         original = documents[key]
         # Keep the registry/reference mentions: removing the title still loses a definition.
-        documents[key] = original.replace('#### E13-24', '#### 控制24', 1)
+        documents[key] = original.replace('#### E13-17', '#### 控制17', 1)
         self.assertTrue(quality.exercise_definition_issues(documents))
-        documents[key] = original.replace('#### E13-24', '#### E13-23', 1)
+        documents[key] = original.replace('#### E13-17', '#### E13-16', 1)
         self.assertTrue(quality.exercise_definition_issues(documents))
         self.assertEqual(quality.exercise_ids_from_markdown(
             '#### E13-01 题干\n\n参考 E13-02\n\n| E13-03 |\n\n'

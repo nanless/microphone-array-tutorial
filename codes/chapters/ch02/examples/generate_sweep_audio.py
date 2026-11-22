@@ -1,4 +1,4 @@
-"""Generate/check E02-19 digital sweep, complete/noisy/cut response controls.
+"""Generate/check E02-17 digital sweep, complete/noisy/cut response controls.
 
 The excitation has 32000 samples; the three responses have 32160 samples.
 All are mathematical mono PCM16 signals at gain 1. --check only replays and
@@ -146,7 +146,7 @@ def expected_assets():
                              'quantization_max_abs_error': error,
                              'pcm_integer_measurements': integer_score}
     manifest = {
-        'schema_version': 1, 'exercise_id': 'E02-19', 'sample_rate_hz': 16000,
+        'schema_version': 1, 'exercise_id': 'E02-17', 'sample_rate_hz': 16000,
         'common_export_gain': 1.,
         'source_sha256': {name: hashlib.sha256(validate_parent_chain(ROOT / name).read_bytes()).hexdigest()
                           for name in SOURCE_PATHS},

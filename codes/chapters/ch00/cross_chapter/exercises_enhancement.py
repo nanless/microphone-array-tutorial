@@ -177,21 +177,7 @@ def run_exercises() -> dict:
                                         for index in range(references.shape[0])],
         oracle_alignment=True)
 
-    # One GSS E step with fixed spatial likelihoods. The background class is
-    # always active, so a frame without a speaking person still normalizes.
-    mixture_weights = np.array([.5, .3, .2])
-    likelihoods = np.array([[2., 1., 1.], [2., 1., 1.]])
-    activity = np.array([[1, 0], [0, 0]])
-    posterior = guided_activity_posterior(mixture_weights, likelihoods, activity)
-    results['E08-07'] = dict(
-        class_order=['speaker_1', 'speaker_2', 'background'],
-        mixture_weights=mixture_weights.tolist(),
-        spatial_likelihoods=likelihoods.tolist(),
-        speaker_activity=activity.tolist(),
-        unnormalized_scores=[[1., 0., .2], [0., 0., .2]],
-        posterior=posterior.tolist(),
-        no_background_silent_frame_denominator=0.,
-        note='Fixed likelihoods test gating and normalization only; no cACGMM or WER evaluation.')
+    # E08-07 (fixed-likelihood GSS E-step) was removed as verbatim prose duplicate in Option B.
 
     dt, density, acceleration_variance = .1, 2., 4.
     continuous = density*np.array([[dt**3/3,dt**2/2],[dt**2/2,dt]])

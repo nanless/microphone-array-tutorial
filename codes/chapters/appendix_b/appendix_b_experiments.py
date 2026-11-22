@@ -1,7 +1,7 @@
-"""Appendix B E17-03..16: fixed-room calculations and evidence boundaries.
+"""Appendix B E17-03..13: fixed-room calculations and evidence boundaries.
 
 This module does not execute pyroomacoustics or create assets. E17-03,
-E17-07 and E17-09 read checked-in synthetic room results or PCM; the other
+E17-06 and E17-08 read checked-in synthetic room results or PCM; the other
 exercises use small analytic fixtures with independent answers.
 """
 
@@ -322,7 +322,7 @@ def response_audio_anchor(directory=None) -> dict:
 
 
 def truncated_edc_fixture() -> dict:
-    """E17-15: fixed noiseless exponential tails, not a room measurement.
+    """E17-12: fixed noiseless exponential tails, not a room measurement.
 
     Reuse the unique RIR metric implementation for every T60. The explicit
     reverse sum here exposes the exact sample interval consumed by that
@@ -395,24 +395,24 @@ def run_exercises() -> dict:
     return {
         "E17-03": paired_room_comparison(results["results"]),
         "E17-04": four_mic_drr_and_convolution(),
-        "E17-05": {**edc, "shifted_time_t60_s": shifted["t60_extrapolated_s"]},
-        "E17-06": two_mic_srp_phase(),
-        "E17-07": room_pcm_readback(manifest, results),
-        "E17-08": {"cases_are_hypothetical": True,
+        "E17-05": two_mic_srp_phase(),
+        "E17-06": room_pcm_readback(manifest, results),
+        "E17-07": {"cases_are_hypothetical": True,
                     "A": evidence_claims(locked=True, license_checked=True,
                                          obtained=False, executed=False, scored=False),
                     "B": evidence_claims(locked=True, license_checked=True,
                                          obtained=True, executed=True, scored=False),
                     "C": evidence_claims(locked=True, license_checked=True,
                                          obtained=True, executed=True, scored=True)},
-        "E17-09": room_pcm_srp_windows(manifest, results),
-        "E17-10": equal_drr_different_spectra(),
-        "E17-11": shared_tac_fixture(),
-        "E17-12": scaled_rir_metrics(),
-        "E17-13": conditioned_t20_times(),
-        "E17-14": response_audio_anchor(),
-        "E17-15": truncated_edc_fixture(),
-        "E17-16": diagnostic_roadmap_controls(),
+        "E17-08": room_pcm_srp_windows(manifest, results),
+        "E17-09": shared_tac_fixture(),
+        "E17-10": scaled_rir_metrics(),
+        "E17-11": {**response_audio_anchor(),
+                   "endpoint_spectra": equal_drr_different_spectra()},
+        "E17-12": {**truncated_edc_fixture(),
+                   "three_point_slope": {**edc, "shifted_time_t60_s": shifted["t60_extrapolated_s"]},
+                   "time_origin_conditioning": conditioned_t20_times()},
+        "E17-13": diagnostic_roadmap_controls(),
     }
 
 

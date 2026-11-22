@@ -15,7 +15,7 @@ class Round3PublicationTest(unittest.TestCase):
         path = ROOT / 'chapters/17_appendix-guide.md'
         source = path.read_text()
         cases = [('**第 4 章（定位）**', '**第 5 章（波束形成）**', '图 12', '在个人副本的'),
-                 ('**第 5 章（波束形成）**', '**第 7 章（去混响）**', '从拉格朗日', '图 15')]
+                 ('**第 5 章（波束形成）**', '#### 17.6.3', '手算（导向失配与对角加载实战）', '图 15')]
         for start, end, first, second in cases:
             with self.subTest(start=start):
                 passage = source.split(start, 1)[1].split(end, 1)[0]

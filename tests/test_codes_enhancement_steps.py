@@ -1,4 +1,4 @@
-"""Independent fractions, complex geometry and boundaries for five exercises."""
+"""Independent fractions, complex geometry and boundaries for four exercises."""
 from fractions import Fraction as F
 import unittest
 import numpy as np
@@ -7,10 +7,10 @@ from codes.chapters.ch00.cross_chapter.enhancement_step_exercises import ip_row,
 
 class EnhancementSteps(unittest.TestCase):
     def test_stable_ids(self):
-        self.assertEqual(set(run_exercises()), {'E06-21', 'E07-06', 'E08-08', 'E08-09', 'E08-10'})
+        self.assertEqual(set(run_exercises()), {'E06-11', 'E07-06', 'E08-07', 'E08-08'})
 
     def test_aec_batch_and_online_fraction_oracle(self):
-        result = run_exercises()['E06-21']
+        result = run_exercises()['E06-11']
         expected, errors, w = [], [], F(4, 5)
         for x, s in zip([1, 1, -1, -1], [F(1, 2), -F(1, 2), F(1, 2), -F(1, 2)]):
             e = F(4, 5)*x+s-w*x
@@ -31,7 +31,7 @@ class EnhancementSteps(unittest.TestCase):
         self.assertEqual(result['zero_raw_power'], 0)
 
     def test_ip_real_analytic(self):
-        result = run_exercises()['E08-08']
+        result = run_exercises()['E08-07']
         np.testing.assert_allclose(result['column_real'], [np.sqrt(2/3), -1/np.sqrt(6)])
         self.assertAlmostEqual(result['weighted_norm'], 1)
         self.assertAlmostEqual(result['euclidean_norm_squared'], 5/6)
@@ -59,21 +59,13 @@ class EnhancementSteps(unittest.TestCase):
                 ip_row(w, v, n)
 
     def test_nmf_multiplication_and_scale_ambiguity(self):
-        result = run_exercises()['E08-09']
+        result = run_exercises()['E08-08']
         expected = [[float(F(101, 50)), float(F(11, 10))], [float(F(11, 10)), float(F(13, 4))]]
         np.testing.assert_allclose(result['power'], expected)
         np.testing.assert_allclose(result['rescaled_power'], expected)
         rank_one = result['one_basis_power']
         self.assertEqual(rank_one, [[2, .5], [1, .25]])
         self.assertAlmostEqual(np.linalg.det(rank_one), 0)
-
-    def test_mvdr_constraint_outputs_and_gev(self):
-        result = run_exercises()['E08-10']
-        np.testing.assert_allclose(result['weights'], [.5, .5])
-        np.testing.assert_allclose(result['snapshot_outputs'], [1, 0], atol=1e-15)
-        np.testing.assert_allclose(result['gev_eigenvalues'], [1/9, 9])
-        self.assertAlmostEqual(result['target_output_power'], .9)
-        self.assertAlmostEqual(result['interference_output_power'], .1)
 
 
 if __name__ == '__main__':

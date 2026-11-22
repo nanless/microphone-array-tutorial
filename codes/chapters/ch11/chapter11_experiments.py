@@ -1,7 +1,7 @@
-"""E11-10..29: computed selection examples, not product benchmark scores.
+"""E11-10..22: computed selection examples, not product benchmark scores.
 
 Run ``python -m codes.chapters.ch11.chapter11_experiments``. No network, model or
-recording is used. Tables are constructed; E11-19/25 strictly check and read
+recording is used. Tables are constructed; E11-13/18 strictly check and read
 published mathematical-tone WAVs. Missing or stale assets are never regenerated.
 """
 from __future__ import annotations
@@ -35,26 +35,6 @@ def pareto_anchor():
             'feasible': [names[i] for i in feasible], 'pareto': [names[feasible[i]] for i in indices],
             'wer_scale': .2, 'latency_scale_ms': 150., 'weight_crossing': latency_difference / (latency_difference + wer_difference),
             'weighted_rankings': rankings}
-
-
-def composition_anchor():
-    errors = np.array([[90, 30], [8, 252]])
-    words = np.array([[900, 100], [100, 900]])
-    weights = np.array([.5, .5])
-    rates = errors / words
-    return {'errors': errors.tolist(), 'words': words.tolist(), 'scene_weights': weights.tolist(),
-            'scene_rates': rates.tolist(), 'pooled_rates': (errors.sum(axis=1) / words.sum(axis=1)).tolist(),
-            'fixed_weight_rates': (rates @ weights).tolist()}
-
-
-def missing_score_anchor():
-    total, successful, score_sum, bounds, competitor = 10, 8, 30.4, [1., 5.], 3.6
-    interval = [(score_sum + (total-successful)*bound) / total for bound in bounds]
-    return {'total': total, 'successful': successful, 'sum_successful_scores': score_sum,
-            'physical_score_bounds': bounds, 'successful_mean': score_sum / successful,
-            'complete_mean_bounds': interval, 'competitor_complete_mean': competitor,
-            'ranking_determined': interval[0] > competitor or interval[1] < competitor,
-            'is_confidence_interval': False}
 
 
 def deadline_acceptance_anchor():
@@ -123,14 +103,6 @@ def simultaneous_risk_anchor():
             'deadline_acceptance': deadline_acceptance_anchor()}
 
 
-def interval_anchor():
-    limits = [150., 1.]
-    candidates = {'A': [[142, 148], [.85, .95]], 'B': [[147, 153], [.85, .95]],
-                  'C': [[151, 155], [.8, .9]], 'D': [[140, 145], None]}
-    return {'limits_latency_ms_power_w': limits, 'intervals': candidates,
-            'verdicts': {name: upper_limit_verdict(bounds, limits) for name, bounds in candidates.items()}}
-
-
 def interaction_anchor():
     errors, words = {'none': 20, 'A': 22, 'B': 23, 'AB': 10}, 100
     rates = {k: v / words for k, v in errors.items()}
@@ -141,65 +113,9 @@ def interaction_anchor():
             'constructed_scores_not_asr_run': True}
 
 
-def slots_anchor():
-    utterances, speakers, hypotheses = [['a'], ['b'], ['c']], [0, 1, 2], [['a', 'c'], ['b']]
-    return {'reference_utterances': utterances, 'speaker_labels': speakers, 'hypothesis_slots': hypotheses,
-            **small_slot_word_errors(utterances, speakers, hypotheses),
-            'scorer': 'bounded independent token enumeration; no upstream production kernel'}
-
-
-def threshold_anchor():
-    positives, negative_events = np.array([.9, .8, .55, .45]), np.array([.7, .4, .3, .1])
-    exposure_hours = 2.
-    rows = []
-    for threshold in (.5, .75):
-        misses, false_events = int(np.sum(positives < threshold)), int(np.sum(negative_events >= threshold))
-        rows.append({'threshold': threshold, 'misses': misses, 'false_events': false_events,
-                     'miss_rate': misses / len(positives), 'false_events_per_hour': false_events / exposure_hours,
-                     'cost_2miss_5false': 2*misses + 5*false_events,
-                     'cost_10miss_1false': 10*misses + false_events,
-                     'passes_miss_rate_limit': misses / len(positives) <= .25})
-    return {'positive_scores': positives.tolist(), 'negative_event_scores': negative_events.tolist(),
-            'negative_exposure_hours': exposure_hours, 'positive_trials': len(positives),
-            'activation_rule': 'score >= threshold', 'miss_rate_limit': .25, 'rows': rows}
-
-
-def exact_sro_anchor():
-    epsilon, times = 80e-6, np.array([1., 10., 300.])
-    initial_bound, budget, upper = 20e-6, 100e-6, 90e-6
-    return {'epsilon': epsilon, 'reference_times_s': times.tolist(),
-            'first_order_ms': (1000 * epsilon * times).tolist(),
-            'same_index_exact_ms': (1000 * epsilon * times / (1+epsilon)).tolist(),
-            'exact_interval_without_initial_residual_s': budget*(1+epsilon)/epsilon,
-            'first_order_interval_without_initial_residual_s': budget/epsilon,
-            'residual_alignment_bound_s': initial_bound, 'epsilon_bounds': [70e-6, upper],
-            'absolute_error_budget_s': budget,
-            'robust_interval_s': (budget-initial_bound)*(1+upper)/upper}
-
-
 def audio_anchor():
     from codes.chapters.ch11.examples.generate_selection_audio import check_main_selection_assets
     return check_main_selection_assets()
-
-
-def unsupported_weight_anchor():
-    # Common factor 5 preserves exact ordering without float point conversion.
-    names, numerators = ['A', 'B', 'C'], [[0, 5], [3, 3], [5, 0]]
-    points = [[Fraction(v, 5) for v in row] for row in numerators]
-    a, b, c = points
-    slope = lambda row: row[0] - row[1]
-    # B has slope zero; solve B <= A and B <= C independently.
-    upper = (a[1] - b[1]) / (slope(b) - slope(a))
-    lower = (b[1] - c[1]) / (slope(c) - slope(b))
-    limit = Fraction(3, 5)
-    feasible = [i for i, row in enumerate(points) if row[1] <= limit]
-    winner = min(feasible, key=lambda i: points[i][0])
-    return {'names': names, 'normalized_points': [[float(v) for v in row] for row in points],
-            'pareto': [names[i] for i in pareto_minima(numerators)],
-            'B_minimum_weight': float(lower), 'B_maximum_weight': float(upper),
-            'B_selectable_by_linear_weight': lower <= upper,
-            'second_metric_upper_limit': float(limit),
-            'constraint_feasible': [names[i] for i in feasible], 'constraint_winner': names[winner]}
 
 
 def interval_dominance_anchor():
@@ -302,9 +218,8 @@ def icc_certification_anchor():
 
 
 def run_experiments(*, scenario_directory=None):
-    functions = [pareto_anchor, composition_anchor, missing_score_anchor, simultaneous_risk_anchor,
-                 interval_anchor, interaction_anchor, slots_anchor, threshold_anchor, exact_sro_anchor, audio_anchor,
-                 unsupported_weight_anchor, interval_dominance_anchor, poisson_exposure_anchor,
+    functions = [pareto_anchor, simultaneous_risk_anchor, interaction_anchor, audio_anchor,
+                 interval_dominance_anchor, poisson_exposure_anchor,
                  utterance_boundary_anchor, time_edit_anchor,
                  lambda: scenario_audio_anchor(scenario_directory), scoring_events_anchor,
                  physical_selection_anchor, multizone_cabin_anchor, icc_certification_anchor]

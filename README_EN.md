@@ -6,7 +6,7 @@ A complete, open bilingual (English & Chinese) technical monograph and runnable 
 
 **[Open English Interactive Course →](https://nanless.github.io/microphone-array-tutorial/site_en/)** · **[▶ 1-Click 4-Mic Browser Lab](https://nanless.github.io/microphone-array-tutorial/assets/readme/lab/array-lab.html?lang=en)** · **[🔊 15-Mic Real Room Demo](https://nanless.github.io/microphone-array-tutorial/site_en/#course-cases)** · **[English Monograph PDF](dist/microphone-array-tutorial-en.pdf)** · [Math Foundations (Ch 0)](chapters_en/00_math-foundations.md) · [Full Contents](chapters_en/00_overview.md) · [简体中文](README.md)
 
-**16 chapters · 2 appendices · 443 runnable exercises · 92 numbered figures** · **283 companion WAV files** · **129 upstream open-source references**
+**16 chapters · 2 appendices · 352 runnable exercises · 87 numbered figures** · **283 companion WAV files** · **129 upstream open-source references**
 
 <picture>
   <source media="(prefers-reduced-motion: reduce)" srcset="assets/readme/course-cover-still-en.svg">
@@ -33,7 +33,7 @@ A single microphone collapses target speech, competing talkers, room reflections
 ## Four Defining Strengths
 
 - **Zero-Gap Mathematical Derivations**: [Chapter 0 (*Mathematical & Signal Analysis Foundations*)](chapters_en/00_math-foundations.md) builds $\mathrm{SO}(3)$ rotations, complex phasors, STFT COLA reconstruction, subspace projections, Sherman–Morrison–Woodbury updates, Wirtinger complex calculus, circular complex Gaussians, CRLB, and Wiener–Kalman recursion from scratch.
-- **443 Hand-Worked Anchors + Pure NumPy Implementations**: Every core equation is paired with small exact-fraction hand calculations and dependency-light NumPy code so you can verify conjugate signs, FFT scaling, and matrix shapes without black-box wrappers.
+- **352 Hand-Worked Anchors + Pure NumPy Implementations**: Every core equation is paired with small exact-fraction hand calculations and dependency-light NumPy code so you can verify conjugate signs, FFT scaling, and matrix shapes without black-box wrappers.
 - **283 Controlled & Real WAV Assets Exposing Failure Modes**: Alongside the main 109-clip manifest, 31 dedicated audio suites (283 WAVs in total) reproduce real engineering pitfalls—spatial aliasing grating lobes, coherent reflection false peaks, steering-mismatch target cancellation, superdirective low-frequency white-noise amplification, AEC double-talk divergence, and 100 ppm sampling-rate offset (SRO) drift.
 - **Production Hardware & Upstream Codebase Audits**: [Chapters 10](chapters_en/10_engineering-practice.md) and [11](chapters_en/11_selection-guide.md) cover cascade topology, end-to-end latency budgets, fixed-point scaling, MACs/power estimation, and Pareto acceptance specs, backed by [6 implementation manuals](codes/chapters/ch00/research_en/README.md) auditing WebRTC AEC3, SpeexDSP, nara_wpe, Acoular, pyroomacoustics, and more.
 
@@ -86,7 +86,7 @@ python3 -m venv .venv
 - **Algorithm coverage matrix (equations ↔ code ↔ tests ↔ upstream)**: [`codes/chapters/ch00/COVERAGE_EN.md`](codes/chapters/ch00/COVERAGE_EN.md)
 - **Upstream source & industrial deployment manuals (6 guides)**: [`codes/chapters/ch00/research_en/README.md`](codes/chapters/ch00/research_en/README.md)
 - **Upstream lockfile & offline acquisition guide**: [`codes/chapters/ch00/upstream/README_EN.md`](codes/chapters/ch00/upstream/README_EN.md)
-- **92-figure generation, static websites & tagged A4 PDF builds**: [`scripts/README_EN.md`](scripts/README_EN.md)
+- **87-figure generation, static websites & tagged A4 PDF builds**: [`scripts/README_EN.md`](scripts/README_EN.md)
 - **Third-party attributions & dataset terms**: [`codes/chapters/ch00/THIRD_PARTY_EN.md`](codes/chapters/ch00/THIRD_PARTY_EN.md)
 - **Collaboration & verification specification**: [`AGENTS_EN.md`](AGENTS_EN.md) · **Chinese Edition**: [`README.md`](README.md) · [`dist/microphone-array-tutorial.pdf`](dist/microphone-array-tutorial.pdf)
 

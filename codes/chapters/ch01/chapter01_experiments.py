@@ -1,6 +1,6 @@
-"""Chapter 1: finite records, alignment error and two distinct head models.
+"""Chapter 1: finite records, alignment error, binaural cues, and dBA self-noise budget.
 
-Run ``.venv/bin/python -m codes.chapters.ch01.chapter01_experiments``. E01-04--12
+Run ``.venv/bin/python -m codes.chapters.ch01.chapter01_experiments``. E01-04--11
 use deterministic mathematical inputs and actual published mathematical WAVs,
 not device or listener measurements.
 No files are written. Powers are dimensionless digital mean squares, without
@@ -20,8 +20,8 @@ import numpy as np
 
 from codes.chapters.ch00.core.audio_samples import alignment_error_case, read_pcm16
 from codes.chapters.ch01.core.spatial_coherence_and_dba import (
+    iec61672_a_weighting,
     sensor_dba_trap_and_sofa_coordinates,
-    spatial_coherence_coloring_and_boundary,
 )
 from codes.chapters.ch01.examples.generate_binaural_cues import check_assets, wav_metadata
 
@@ -275,6 +275,33 @@ generator check. They are mathematical controls, not measured HRIRs.
                       "Quantized PCM response ratios need not equal analytic ratios exactly."}
 
 
+def sensor_dba_noise_budget() -> dict:
+    """E01-11: IEC 61672-1 A-weighting vs 1/f differential self-noise budget."""
+    full = sensor_dba_trap_and_sofa_coordinates()
+    grid_full_audio = np.arange(20.0, 20000.0 + 1.0, 10.0, dtype=np.float64)
+    w_full = np.asarray(iec61672_a_weighting(grid_full_audio)["power_weight"], dtype=np.float64)
+    psd_a_full = np.ones_like(grid_full_audio)
+    psd_b_full = 0.5 * (1.0 + 1000.0 / grid_full_audio)
+    ratio_full = float(np.sum(psd_b_full * w_full) / np.sum(psd_a_full * w_full))
+    return {
+        "iec61672_spot_table": full["iec61672_spot_table"],
+        "r_a_1000": full["r_a_1000"],
+        "mic_b_over_a_unweighted_100hz": full["mic_b_over_a_unweighted_100hz"],
+        "mic_b_over_a_unweighted_100hz_db": full["mic_b_over_a_unweighted_100hz_db"],
+        "dba_band_50_8000_hz": full["dba_band_50_8000_hz"],
+        "dba_band_20_20000_hz": {
+            "num_points": int(grid_full_audio.size),
+            "a_weighted_ratio_b_over_a": ratio_full,
+            "apparent_dba_advantage_b_db": float(-10.0 * np.log10(ratio_full)),
+        },
+        "endfire_differential_1cm": full["endfire_differential_1cm"],
+        "limits": (
+            "Analytical parametric self-noise PSD model under IEC 61672-1 A-weighting and "
+            "first-order endfire differential equalization; not anechoic chamber MEMS characterization."
+        ),
+    }
+
+
 def run_exercises() -> dict:
     """Stable exercise IDs; metadata lives inside each individual result."""
     return {"E01-04": finite_record_cross_terms(),
@@ -282,8 +309,7 @@ def run_exercises() -> dict:
             "E01-07": mixture_power_and_identifiability(),
             "E01-08": binaural_level_and_delay(), "E01-09": white_noise_gain(),
             "E01-10": spectral_response_and_source_spectrum(),
-            "E01-11": spatial_coherence_coloring_and_boundary(),
-            "E01-12": sensor_dba_trap_and_sofa_coordinates()}
+            "E01-11": sensor_dba_noise_budget()}
 
 
 if __name__ == "__main__":

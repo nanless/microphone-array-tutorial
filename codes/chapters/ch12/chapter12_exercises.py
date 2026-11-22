@@ -1,6 +1,6 @@
-"""Run E12-01..20 without writing files, downloading data or importing Acoular.
+"""Run E12-01..18 without writing files, downloading data or importing Acoular.
 
-Usage: python -m codes.chapters.ch12.chapter12_exercises [--exercise E12-06]
+Usage: python -m codes.chapters.ch12.chapter12_exercises [--exercise E12-05]
 The JSON wrapper keeps metadata separate from the stable ID-to-result map.
 """
 from __future__ import annotations
@@ -27,7 +27,7 @@ from codes.chapters.ch12.core.imaging_audio import (
 )
 from codes.chapters.ch12.core.functional_beamforming import functional_beamforming_controls
 
-EXERCISE_IDS = tuple('E12-'+str(i).zfill(2) for i in range(1, 21))
+EXERCISE_IDS = tuple('E12-'+str(i).zfill(2) for i in range(1, 19))
 
 
 def _json(value):
@@ -47,7 +47,7 @@ def _json(value):
 
 
 def run_experiments():
-    """Return finite JSON with exercises[E12-01..20]; no file IO or side effects."""
+    """Return finite JSON with exercises[E12-01..18]; no file IO or side effects."""
     toy = two_cell_experiment(); a, w, p = toy['A'], toy['W'], toy['P']
     cases = toy['cases']; independent = cases['independent']; coherent = cases['coherent']
     sphere = spherical_scan_experiment()
@@ -88,7 +88,6 @@ def run_experiments():
         'scan_with_matched_compensation': unequal_removed_scan*unequal_compensation,
     }
     inconsistent_b = np.array([1., 0.])
-    valid_v = np.sqrt(4/3)*np.array([1., np.exp(1j*np.pi/3)])
     gains = np.array([.5, 1., 2.])
     uncorrected, corrected = [], []
     for gain in gains:
@@ -123,24 +122,22 @@ def run_experiments():
         'E12-01': {'peak_amplitude': .2, 'mean_square': .2**2/2,
                    'normalization_power_scale': .02, 'CSM_scaling_for_double_amplitude': 4.,
                    'units': 'digital amplitude squared; no acoustic calibration'},
-        'E12-02': {'A_real_imag': a, 'W_real_imag': w, 'response_real_imag': w.conj().T@a,
-                   'P': p, 'q': toy['q'], 'b': independent['b'], 'P_condition_number': float(np.linalg.cond(p))},
-        'E12-03': {'forward': forward, 'forward_backward': both,
+        'E12-02': {'forward': forward, 'forward_backward': both,
                    'nonunit_diagonal': damas_gauss_seidel(2*p, 2*independent['b'], iterations=2),
                    'slow_P': slow_p, 'slow_condition_number': float(np.linalg.cond(slow_p)),
                    'slow_q_after_100': slow['q'], 'slow_error_factor_per_forward_sweep': .99**2},
-        'E12-04': {'audio_parameters': parameters(), 'PCM_source_pairs': source_pairs,
+        'E12-03': {'audio_parameters': parameters(), 'PCM_source_pairs': source_pairs,
                    'quadrature_source_amplitudes_real_imag': np.array([1., -.5j]),
                    'quadrature_R_real_imag': quadrature_r, 'quadrature_b': quadrature_b,
                    'quadrature_inverse_q': np.linalg.solve(p, quadrature_b),
                    'quadrature_magnitude_squared_coherence': 1.,
                    'boundary': 'time-orthogonal same-frequency tones remain spectrally coherent'},
-        'E12-05': {'q_true': toy['q'], 'R_real_imag': coherent['R'], 'b': coherent['b'],
+        'E12-04': {'q_true': toy['q'], 'R_real_imag': coherent['R'], 'b': coherent['b'],
                    'q_inverse': coherent['q_inverse'], 'scan_residual': p@coherent['q_inverse']-coherent['b'],
                    'full_csm_residual': coherent['full_csm_residual'],
                    'coherence_gamma': toy['coherence_gamma'], 'coherence_inverse_q': toy['coherence_inverse_q'],
                    'PCM': pcm['array_coherent']},
-        'E12-06': {'duplicate_P': duplicate_p, 'duplicate_b': duplicate_b,
+        'E12-05': {'duplicate_P': duplicate_p, 'duplicate_b': duplicate_b,
                    'two_indistinguishable_q': [[1., .25], [.75, .5]],
                    'duplicate_GS': damas_gauss_seidel(duplicate_p, duplicate_b, iterations=1),
                    'offgrid_b': off_b, 'offgrid_inverse_q': off_q,
@@ -150,52 +147,48 @@ def run_experiments():
                        'local_peaks', 'dirty_grid_sum', 'source_power_sum', 'scope')},
                    'spherical_source_cell_scan': sphere['b'][sphere['source_grid_indices']],
                    'spherical_source_cell_P': sphere['psf_columns'][sphere['source_grid_indices']]},
-        'E12-07': {'diagonal_removed_R_real_imag': removed_r, 'eigenvalues': np.linalg.eigvalsh(removed_r),
+        'E12-06': {'diagonal_removed_R_real_imag': removed_r, 'eigenvalues': np.linalg.eigvalsh(removed_r),
                    'normalized_removed_scan': removed_b, 'clipped_scan': np.maximum(removed_b, 0),
                    'changed_P': 2*p-1., 'original_P_is_inapplicable': True,
                    'unequal_amplitude_control': unequal_control},
-        'E12-08': {'P': p, 'b': inconsistent_b, 'valid_input_R_real_imag': np.outer(valid_v, valid_v.conj()),
-                   'valid_input_scan': scan_power(np.outer(valid_v, valid_v.conj()), w),
-                   'GS': damas_gauss_seidel(p, inconsistent_b, iterations=10),
-                   'NNLS': finite_nnls(p, inconsistent_b),
-                   'unconstrained_inverse_q': np.linalg.solve(p, inconsistent_b),
-                   'scope': 'GS fixed point and least-squares NNLS have different objectives for incompatible data'},
-        'E12-09': {'second_channel_gains': gains, 'uncorrected_power': uncorrected,
+        'E12-07': {'second_channel_gains': gains, 'uncorrected_power': uncorrected,
                    'calibrated_power': corrected, 'reference_power': 1.},
-        'E12-10': {'point_source_total': float(toy['q'].sum()), 'dirty_two_cell_total': float(independent['b'].sum()),
+        'E12-08': {'point_source_total': float(toy['q'].sum()), 'dirty_two_cell_total': float(independent['b'].sum()),
                    'point_source_total_db_re_1': float(10*np.log10(toy['q'].sum())),
                    'dirty_two_cell_total_db_re_1': float(10*np.log10(independent['b'].sum())),
                    'incorrect_average_source_db': float(np.mean(10*np.log10(toy['q']))),
                    'PCM_measurements': pcm, 'audio_group_is_independent_of_main_109_WAVs': True},
-        'E12-11': {'single_source_clean': clean, 'two_source_damping_1': clean_two,
+        'E12-09': {'single_source_clean': clean, 'two_source_damping_1': clean_two,
                    'two_source_true_q': toy['q'],
                    'boundary': 'zero full residual need not give the original physical source powers'},
-        'E12-12': {'a': fit_a, 'R_real_imag': fit_r, 'full_frobenius_q': fit_full,
+        'E12-10': {'a': fit_a, 'R_real_imag': fit_r, 'full_frobenius_q': fit_full,
                    'upper_unweighted_q': fit_upper, 'upper_real_design': vu, 'upper_real_target': yu,
                    'affine_math_q': float(affine[0]), 'affine_math_intercept': float(affine[1]),
                    'sklearn_executed': False,
                    'full_fit_residual': csm_residual(fit_r, fit_full*template),
                    'upper_fit_residual': csm_residual(fit_r, fit_upper*template)},
-        'E12-13': {'sample_rate_hz': fs, 'n_fft': n_fft, 'bin_width_hz': fs/n_fft,
+        'E12-11': {'sample_rate_hz': fs, 'n_fft': n_fft, 'bin_width_hz': fs/n_fft,
                    'examples': spectrum_examples, 'shared_STFT': 'codes.chapters.ch02.core.spectral.stft',
                    'endpoint_rule': 'factor 1 at DC/even Nyquist; factor 2 at all other rFFT bins'},
-        'E12-14': {'original_reference_position_m': [0., 0., 0.], 'original_q': sphere['q'],
+        'E12-12': {'original_reference_position_m': [0., 0., 0.], 'original_q': sphere['q'],
                    'new_reference': sphere['reference_change'], 'power_multiplier': 153/73,
                    'boundary': 'reference pressure power changes; sensor CSM does not'},
-        'E12-15': {'density_per_hz': [.01, .02], 'frequency_bin_widths_hz': [100., 200.],
+        'E12-13': {'density_per_hz': [.01, .02], 'frequency_bin_widths_hz': [100., 200.],
                    'integrated_frequency_power': float(integrate_psd([.01, .02], [100., 200.])),
                    'point_quantities': [1., .25], 'point_total': region_power([1., .25], all_cells),
                    'area_density_quantities': [1., .25], 'cell_areas_m2': [.04, .04],
                    'density_area_total': region_power([1., .25], all_cells, cell_area_m2=[.04, .04])},
-        'E12-16': {'a': fit_a, 'R_real_imag': joint_r,
+        'E12-14': {'a': fit_a, 'R_real_imag': joint_r,
                    'joint_fit': single_source_csm_fit(joint_r, fit_a, include_white_noise=True),
                    'one_microphone': single_source_csm_fit([[2.5]], [1.], include_white_noise=True),
                    'one_microphone_identifiable_relation': 'q + sigma_squared = 2.5',
                    'scope': 'known single steering, independent equal white sensor noise; not constrained production CMF'},
-        'E12-17': damas_csm_objective_experiment(),
-        'E12-18': distinct_column_ambiguity_experiment(),
-        'E12-19': fb_controls['E12-19'],
-        'E12-20': fb_controls['E12-20'],
+        'E12-15': {**damas_csm_objective_experiment(),
+                   'scan_nnls': finite_nnls(p, inconsistent_b),
+                   'unconstrained_inverse_q': np.linalg.solve(p, inconsistent_b)},
+        'E12-16': distinct_column_ambiguity_experiment(),
+        'E12-17': fb_controls['E12-19'],
+        'E12-18': fb_controls['E12-20'],
     }
     if set(exercises) != set(EXERCISE_IDS):
         raise AssertionError('exercise ID set differs')

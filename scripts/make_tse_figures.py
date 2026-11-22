@@ -1,4 +1,4 @@
-"""Generate Chapter 15 figures (fig85..fig88) and numerical JSON reports.
+"""Generate Chapter 15 figures (fig80..fig83) and numerical JSON reports.
 
 Run from the repository root after generating tse_audio:
     .venv/bin/python scripts/make_tse_figures.py
@@ -144,8 +144,8 @@ def _build_fig85(sources: dict[str, str], manifest_sha: str) -> None:
     )
 
     report = {
-        "figure": 85,
-        "exercise_ids": ["E15-01", "E15-02", "E15-03"],
+        "figure": 80,
+        "exercise_ids": ["E15-01", "E15-02"],
         "source_sha256": sources,
         "audio_manifest_sha256": manifest_sha,
         "film_input": h_feat.tolist(),
@@ -166,25 +166,29 @@ def _build_fig85(sources: dict[str, str], manifest_sha: str) -> None:
 
     fig, axes = plt.subplots(2, 2, figsize=(9.5, 7.8), constrained_layout=True)
     frames = np.arange(3)
-    axes[0, 0].plot(frames - 0.06, h_feat[0], "o--", color=C_BLUE, label="原始通道 1")
-    axes[0, 0].plot(frames + 0.06, z_mod[0], "s-", color=C_RED, label="调制后通道 1")
-    axes[0, 0].plot(frames - 0.06, h_feat[1], "^:", color=C_GREEN, label="原始通道 2")
-    axes[0, 0].plot(frames + 0.06, z_mod[1], "d-.", color=C_PURPLE, label="调制后通道 2")
+    axes[0, 0].plot(frames, h_feat[0], "o--", color=C_BLUE, markersize=6.5, linewidth=1.7, label="原始通道 1")
+    axes[0, 0].plot(frames, z_mod[0], "s-", color=C_RED, markersize=6.5, linewidth=1.9, label="调制后通道 1")
+    axes[0, 0].plot(frames, h_feat[1], "^:", color=C_GREEN, markersize=7.0, linewidth=1.7, label="原始通道 2")
+    axes[0, 0].plot(frames, z_mod[1], "d-.", color=C_PURPLE, markersize=5.8, markerfacecolor="white", markeredgewidth=1.6, linewidth=1.8, label="调制后通道 2")
     axes[0, 0].set(
         title="(a) FiLM 通道仿射调制前后特征",
         xlabel="特征帧索引 t",
         ylabel="特征激活值（无量纲）",
         xticks=frames,
+        xlim=(-0.22, 2.22),
         ylim=(-2.2, 4.9),
     )
-    axes[0, 0].legend(ncol=2, loc="upper left")
+    axes[0, 0].legend(ncol=2, loc="upper left", framealpha=0.96)
 
-    for tau_str, label, color, style in (
-        ("0.0001", "地板系数 1e-4", C_RED, "-"),
-        ("0.001", "地板系数 1e-3", C_BLUE, "--"),
-        ("0.01", "地板系数 1e-2", C_GREEN, "-."),
-    ):
-        axes[0, 1].plot(leak_db_grid, absent_curves[tau_str], style, color=color, linewidth=1.8, label=label)
+    for idx_t, (tau_str, label, color, style, mk) in enumerate((
+        ("0.0001", r"地板系数 $\tau_{\mathrm{floor}}=10^{-4}$", C_RED, "-", "o"),
+        ("0.001", r"地板系数 $\tau_{\mathrm{floor}}=10^{-3}$", C_BLUE, "--", "s"),
+        ("0.01", r"地板系数 $\tau_{\mathrm{floor}}=10^{-2}$", C_GREEN, "-.", "^"),
+    )):
+        axes[0, 1].plot(
+            leak_db_grid, absent_curves[tau_str], style, color=color,
+            marker=mk, markevery=(idx_t * 5, 16), markersize=4.5, linewidth=1.8, label=label,
+        )
     axes[0, 1].axhline(0.0, color="black", linestyle=":", linewidth=1.0)
     axes[0, 1].set(
         title="(b) 目标沉默段双态能量地板惩罚",
@@ -192,30 +196,31 @@ def _build_fig85(sources: dict[str, str], manifest_sha: str) -> None:
         ylabel="沉默态损失 / dB",
         ylim=(-2.0, 44.0),
     )
-    axes[0, 1].legend(loc="upper left")
+    axes[0, 1].legend(loc="upper left", framealpha=0.96)
 
-    axes[1, 0].plot(alphas, neg_sisdr_vals, "-", color=C_BLUE, linewidth=2.0, label="尺度不变 -SI-SDR")
-    axes[1, 0].plot(alphas, waveform_err_db, "--", color=C_ORANGE, linewidth=1.8, label="逐点波形相对误差")
-    axes[1, 0].axvline(1.0, color="gray", linestyle=":", linewidth=1.0)
+    axes[1, 0].plot(alphas, neg_sisdr_vals, "-", color=C_BLUE, marker="o", markevery=8, markersize=4.5, linewidth=2.0, label="尺度不变 -SI-SDR")
+    axes[1, 0].plot(alphas, waveform_err_db, "--", color=C_ORANGE, marker="s", markevery=(4, 8), markersize=4.5, linewidth=1.8, label="逐点波形相对误差")
+    axes[1, 0].axvline(1.0, color="gray", linestyle=":", linewidth=1.0, zorder=1)
     axes[1, 0].set(
         title="(c) 目标存在段：幅度缩放不变性对比",
         xlabel="输出幅度缩放系数 α",
         ylabel="损失或相对误差 / dB",
         ylim=(-24.0, 13.0),
     )
-    axes[1, 0].legend(loc="upper left")
+    axes[1, 0].legend(loc="upper left", framealpha=0.96)
 
     ratio_grid = np.linspace(-30.0, 0.0, 121, dtype=np.float64)
     sec_gate = (ratio_grid >= -18.0).astype(np.float64)
     axes[1, 1].step(ratio_grid, sec_gate, where="post", color=C_MAIN, linewidth=2.0, label="次槽独立保留标志")
-    axes[1, 1].axvline(-18.0, color=C_RED, linestyle="--", linewidth=1.4, label="旁路门限 -18 dB")
-    axes[1, 1].plot([-20.0], [0.0], "o", color=C_GREEN, markersize=8, label="单人擦音合并 (-20 dB)")
+    axes[1, 1].plot([-18.0, -18.0], [-0.10, 1.06], color=C_RED, linestyle="--", linewidth=1.6, zorder=2, label="旁路门限 -18 dB")
+    axes[1, 1].plot([-20.0], [0.0], "o", color=C_GREEN, markersize=8, zorder=5, label="单人擦音合并 (-20 dB)")
     axes[1, 1].plot(
         [keep_overlap["energy_ratio_db"]],
         [1.0],
         "s",
         color=C_BLUE,
         markersize=8,
+        zorder=5,
         label=f"双人重叠保留 ({keep_overlap['energy_ratio_db']:.2f} dB)",
     )
     axes[1, 1].set(
@@ -225,16 +230,16 @@ def _build_fig85(sources: dict[str, str], manifest_sha: str) -> None:
         yticks=[0, 1],
         ylim=(-0.18, 2.05),
     )
-    axes[1, 1].legend(loc="upper left", handlelength=1.5)
+    axes[1, 1].legend(loc="upper left", handlelength=1.5, framealpha=0.96)
 
     for ax in axes.flat:
         ax.grid(True, alpha=0.22)
         ax.set_axisbelow(True)
-    fig.suptitle("图85  条件目标说话人提取：特征调制、沉默态损失与单人旁路保护")
+    fig.suptitle("图80  条件目标说话人提取：特征调制、沉默态损失与单人旁路保护")
     _save_report_and_png(
         fig,
-        "fig85_tse_conditioning_modes.png",
-        "figure85_tse_conditioning_modes.json",
+        "fig80_tse_conditioning_modes.png",
+        "figure80_tse_conditioning_modes.json",
         report,
         manifest_sha,
     )
@@ -248,7 +253,7 @@ def _build_fig86(manifest: dict, sources: dict[str, str], manifest_sha: str) -> 
 
     w_dsb = np.full(3, 1.0 / 3.0, dtype=np.complex128)
     dsb_rad = [
-        float(abs(np.vdot(w_dsb, spherical_ula_steering([-0.10, 0.0, 0.10], float(r), 0.0, 3430.0))) ** 2)
+        float(abs(np.vdot(w_dsb, spherical_ula_steering([-0.10, 0.0, 0.10], float(r), 0.0, 3430.0, c=343.0))) ** 2)
         for r in radii
     ]
 
@@ -270,8 +275,8 @@ def _build_fig86(manifest: dict, sources: dict[str, str], manifest_sha: str) -> 
     }
 
     report = {
-        "figure": 86,
-        "exercise_ids": ["E15-04", "E15-05", "E15-07", "E15-16"],
+        "figure": 81,
+        "exercise_ids": ["E15-03", "E15-04", "E15-05", "E15-12"],
         "source_sha256": sources,
         "audio_manifest_sha256": manifest_sha,
         "wav_sha256": {name: rec["sha256"] for name, rec in manifest["files"].items()},
@@ -288,34 +293,50 @@ def _build_fig86(manifest: dict, sources: dict[str, str], manifest_sha: str) -> 
         "limits": manifest["limits"],
     }
 
-    fig, axes = plt.subplots(2, 2, figsize=(9.5, 7.8), constrained_layout=True)
-    axes[0, 0].plot(radii, report["radial_gain_db"]["dsb_d10cm"], "--", color=C_RED, linewidth=1.7, label="远场 DSB (d=10 cm)")
-    axes[0, 0].plot(radii, report["radial_gain_db"]["bubble_d10cm"], "-", color=C_BLUE, linewidth=2.0, label="距离气泡 (d=10 cm)")
-    axes[0, 0].plot(radii, report["radial_gain_db"]["bubble_d2cm_reg5e4"], "-.", color=C_ORANGE, linewidth=1.8, label="正则气泡 (d=2 cm)")
-    axes[0, 0].axvline(0.40, color=C_GREEN, linestyle=":", linewidth=1.2, label="近场目标 0.4 m")
-    axes[0, 0].axvline(4.00, color=C_PURPLE, linestyle=":", linewidth=1.2, label="同向干扰 4.0 m")
+    fig, axes = plt.subplots(2, 2, figsize=(9.5, 8.6), constrained_layout=True)
+    dsb_db = report["radial_gain_db"]["dsb_d10cm"]
+    axes[0, 0].plot(radii, dsb_db, "--", color=C_RED, marker="s", markevery=(10, 30), markersize=4.5, linewidth=1.8, label="远场 DSB (10 cm)")
+    axes[0, 0].plot(radii, report["radial_gain_db"]["bubble_d10cm"], "-", color=C_BLUE, marker="o", markevery=(0, 30), markersize=4.5, linewidth=2.0, label="距离气泡 (10 cm)")
+    axes[0, 0].plot(radii, report["radial_gain_db"]["bubble_d2cm_reg5e4"], "-.", color=C_ORANGE, marker="^", markevery=(20, 30), markersize=4.8, linewidth=1.8, label=r"正则气泡 (2 cm, $\delta=5\times 10^{-4}$)")
+    axes[0, 0].axvline(0.40, color=C_GREEN, linestyle=":", linewidth=1.4, zorder=1, label="目标 0.4 m")
+    axes[0, 0].axvline(4.00, color=C_PURPLE, linestyle=":", linewidth=1.4, zorder=1, label="干扰 4.0 m")
+    axes[0, 0].plot(radii[0], dsb_db[0], "s", color=C_RED, markersize=5.5, zorder=5)
+    axes[0, 0].annotate(
+        f"r=0.15 m: {dsb_db[0]:.1f} dB",
+        xy=(radii[0], dsb_db[0]),
+        xytext=(0.75, -18.5),
+        color=C_RED,
+        arrowprops=dict(arrowstyle="->", color=C_RED, lw=1.1, connectionstyle="arc3,rad=-0.15"),
+    )
+    axes[0, 0].set_title("(a) 正横径向功率响应 (3430 Hz)")
     axes[0, 0].set(
-        title="(a) 正横径向功率响应 (3430 Hz)",
         xlabel="声源径向距离 r / m",
         ylabel="功率增益 / dB",
         xlim=(0.05, 5.10),
-        ylim=(-25.0, 22.0),
+        ylim=(-25.0, 23.0),
+        yticks=[-20, -10, 0, 10, 20],
     )
-    axes[0, 0].legend(ncol=2, loc="upper right")
+    axes[0, 0].legend(
+        ncol=2, loc="upper right", fontsize=8.2,
+        framealpha=0.96, handlelength=1.25, handletextpad=0.35, columnspacing=0.6,
+    )
 
+    wng_10 = broadside_distance_bubble_weights(0.10, 0.40, 3430.0, c=343.0)["wng_db"]
+    wng_02 = broadside_distance_bubble_weights(0.02, 0.40, 3430.0, c=343.0)["wng_db"]
     axes[0, 1].plot(spacings * 100.0, wng_curve, "o-", color=C_BLUE, markersize=4, linewidth=1.8, label="无正则 WNG")
-    axes[0, 1].axvline(10.0, color=C_GREEN, linestyle="--", label="d=10 cm (-4.21 dB)")
-    axes[0, 1].axvline(2.0, color=C_RED, linestyle="-.", label="d=2 cm (-31.82 dB)")
-    axes[0, 1].axhline(-10.0, color="0.55", linestyle=":", linewidth=1.1)
+    axes[0, 1].plot([10.0, 10.0], [-46.5, wng_10], color=C_GREEN, linestyle="--", linewidth=1.6, label=f"d=10 cm ({wng_10:.2f} dB)")
+    axes[0, 1].plot([2.0, 2.0], [-46.5, wng_02], color=C_RED, linestyle="-.", linewidth=1.6, label=f"d=2 cm ({wng_02:.2f} dB)")
+    axes[0, 1].plot([10.0, 2.0], [wng_10, wng_02], "D", color=C_MAIN, markerfacecolor="white", markeredgewidth=1.5, markersize=6, zorder=5)
+    axes[0, 1].axhline(-10.0, color="0.55", linestyle=":", linewidth=1.1, zorder=1)
     axes[0, 1].text(15.2, -11.6, "−10 dB 参考线", ha="right", va="top", color="0.35")
     axes[0, 1].set(
         title="(b) 阵元间距与白噪声增益塌缩",
         xlabel="相邻阵元间距 d / cm",
         ylabel="白噪声增益 WNG / dB",
         xlim=(0.4, 15.6),
-        ylim=(-46.5, 6.0),
+        ylim=(-46.5, 10.5),
     )
-    axes[0, 1].legend(loc="lower right")
+    axes[0, 1].legend(loc="lower right", framealpha=0.96)
 
     s0, count = 1600, 48
     t_ms = np.arange(count) / 16000.0 * 1000.0
@@ -329,14 +350,15 @@ def _build_fig86(manifest: dict, sources: dict[str, str], manifest_sha: str) -> 
         xlim=(-0.06, t_ms[-1] + 0.08),
         ylim=(-0.35, 0.66),
     )
-    axes[1, 0].legend(loc="upper right")
+    axes[1, 0].legend(loc="upper right", framealpha=0.96)
 
     bar_keys = ("farfield_dsb", "bubble_d10cm", "bubble_d2cm_illcond")
     bar_labels = ["远场 DSB\n(d=10 cm)", "距离气泡\n(d=10 cm)", "小孔径气泡\n(d=2 cm)"]
     bar_vals = [pcm_nmse[k] for k in bar_keys]
     bar_colors = [C_RED, C_BLUE, C_ORANGE]
-    axes[1, 1].bar(np.arange(3), bar_vals, color=bar_colors, width=0.55, alpha=0.85)
-    for idx, val in enumerate(bar_vals):
+    bar_hatches = ["///", "", "xxx"]
+    for idx, (val, color, hatch) in enumerate(zip(bar_vals, bar_colors, bar_hatches)):
+        axes[1, 1].bar(idx, val, color=color, edgecolor=C_MAIN, linewidth=0.85, hatch=hatch, width=0.55, alpha=0.85)
         axes[1, 1].text(idx, val + 0.08, f"{val:.4f}", ha="center")
     axes[1, 1].text(
         0.03,
@@ -359,11 +381,11 @@ def _build_fig86(manifest: dict, sources: dict[str, str], manifest_sha: str) -> 
     for ax in axes.flat:
         ax.grid(True, alpha=0.22)
         ax.set_axisbelow(True)
-    fig.suptitle("图86  近场球面波距离气泡：同向远场抑制与小孔径底噪边界")
+    fig.suptitle("图81  近场球面波距离气泡：同向远场抑制与小孔径底噪边界")
     _save_report_and_png(
         fig,
-        "fig86_nearfield_distance_bubble.png",
-        "figure86_nearfield_distance_bubble.json",
+        "fig81_nearfield_distance_bubble.png",
+        "figure81_nearfield_distance_bubble.json",
         report,
         manifest_sha,
     )
@@ -404,8 +426,8 @@ def _build_fig87(sources: dict[str, str], manifest_sha: str) -> None:
     m_interf = 1.0 - post_joint[0]
 
     report = {
-        "figure": 87,
-        "exercise_ids": ["E15-08", "E15-09", "E15-10", "E15-11", "E15-12"],
+        "figure": 82,
+        "exercise_ids": ["E15-06", "E15-07", "E15-08", "E15-09", "E15-10"],
         "source_sha256": sources,
         "audio_manifest_sha256": manifest_sha,
         "ref_activity": ref_act.tolist(),
@@ -417,11 +439,11 @@ def _build_fig87(sources: dict[str, str], manifest_sha: str) -> None:
         "gss_interference_mask": m_interf.tolist(),
     }
 
-    fig, axes = plt.subplots(2, 2, figsize=(9.5, 7.8), constrained_layout=True)
+    fig, axes = plt.subplots(2, 2, figsize=(9.5, 8.6), constrained_layout=True)
     t_centers = np.arange(6) * 0.5 + 0.25
-    axes[0, 0].bar(t_centers - 0.09, ref_act[0], width=0.16, color=C_BLUE, label="说话人 1 真值")
-    axes[0, 0].bar(t_centers + 0.09, ref_act[1], width=0.16, color=C_ORANGE, label="说话人 2 真值")
-    axes[0, 0].axvspan(1.0, 2.0, color=C_RED, alpha=0.14, label="双讲重叠区 (必漏 1.0 s)")
+    axes[0, 0].bar(t_centers - 0.09, ref_act[0], width=0.16, color=C_BLUE, edgecolor=C_MAIN, linewidth=0.75, label="说话人 1 真值")
+    axes[0, 0].bar(t_centers + 0.09, ref_act[1], width=0.16, color=C_ORANGE, edgecolor=C_MAIN, linewidth=0.75, hatch="///", label="说话人 2 真值")
+    axes[0, 0].fill_between([1.0, 2.0], 0.0, 1.08, color=C_RED, alpha=0.14, zorder=0, label="双讲重叠区 (必漏 1.0 s)")
     axes[0, 0].set(
         title="(a) 六帧重叠会议真值活动（总参考 3.5 s）",
         xlabel="会议时间 / s（每帧 0.5 s）",
@@ -430,17 +452,17 @@ def _build_fig87(sources: dict[str, str], manifest_sha: str) -> None:
         yticks=[0, 1],
         ylim=(0.0, 1.72),
     )
-    axes[0, 0].legend(loc="upper right")
+    axes[0, 0].legend(loc="upper right", framealpha=0.96)
 
     case_keys = ("single_bound", "imperfect_2c", "over_100", "tsvad_joint")
     x_pos = np.arange(4)
     miss_pct = [100.0 * der_cases[k]["miss_s"] / 3.5 for k in case_keys]
     fa_pct = [100.0 * der_cases[k]["false_alarm_s"] / 3.5 for k in case_keys]
     conf_pct = [100.0 * der_cases[k]["speaker_confusion_s"] / 3.5 for k in case_keys]
-    axes[0, 1].bar(x_pos, miss_pct, width=0.52, color=C_BLUE, label="漏检 Miss")
-    axes[0, 1].bar(x_pos, fa_pct, width=0.52, bottom=miss_pct, color=C_RED, label="虚警 FA")
+    axes[0, 1].bar(x_pos, miss_pct, width=0.52, color=C_BLUE, edgecolor=C_MAIN, linewidth=0.75, label="漏检 Miss")
+    axes[0, 1].bar(x_pos, fa_pct, width=0.52, bottom=miss_pct, color=C_RED, edgecolor=C_MAIN, linewidth=0.75, hatch="///", label="虚警 FA")
     bottom_conf = [m + f for m, f in zip(miss_pct, fa_pct)]
-    axes[0, 1].bar(x_pos, conf_pct, width=0.52, bottom=bottom_conf, color=C_ORANGE, label="混淆 Conf")
+    axes[0, 1].bar(x_pos, conf_pct, width=0.52, bottom=bottom_conf, color=C_ORANGE, edgecolor=C_MAIN, linewidth=0.75, hatch="xxx", label="混淆 Conf")
     axes[0, 1].axhline(100.0, color="black", linestyle="--", linewidth=1.1, label="100% 基准线")
     for idx, k in enumerate(case_keys):
         tot = 100.0 * der_cases[k]["der"]
@@ -453,44 +475,52 @@ def _build_fig87(sources: dict[str, str], manifest_sha: str) -> None:
         xticklabels=["单标签\n下界", "含混淆\n双簇", "过触发\n(>100%)", "空谱联合\nTS-VAD"],
         ylim=(0.0, 178.0),
     )
-    axes[0, 1].legend(ncol=2, loc="upper left")
+    axes[0, 1].legend(ncol=2, loc="upper left", framealpha=0.96)
 
     frames = np.arange(6)
     axes[1, 0].plot(frames, post_spec[0], "o--", color=C_RED, linewidth=1.6, label="仅声纹 Spk1")
     axes[1, 0].plot(frames, post_joint[0], "s-", color=C_BLUE, linewidth=2.0, label="空谱联合 Spk1")
     axes[1, 0].plot(frames, post_joint[1], "^-.", color=C_GREEN, linewidth=1.8, label="空谱联合 Spk2")
     axes[1, 0].axhline(0.5, color="gray", linestyle=":", linewidth=1.0)
+    axes[1, 0].set_title("(c) 重叠帧上 TS-VAD 后验概率恢复", pad=52)
     axes[1, 0].set(
-        title="(c) 重叠帧上 TS-VAD 后验概率恢复",
         xlabel="帧索引 $t$",
         ylabel=r"活动后验概率 $\gamma$",
         xticks=frames,
+        yticks=[0.0, 0.25, 0.5, 0.75, 1.0],
         xlim=(-0.25, 5.25),
-        ylim=(-0.06, 1.50),
+        ylim=(-0.05, 1.06),
     )
-    axes[1, 0].legend(ncol=2, loc="upper right")
+    axes[1, 0].legend(
+        ncol=2, loc="lower center", bbox_to_anchor=(0.5, 1.02),
+        framealpha=0.96, handlelength=1.5, columnspacing=0.9,
+    )
 
-    axes[1, 1].plot(frames, m_tar_excl, "s-", color=C_BLUE, linewidth=2.0, label=r"目标独占掩码 $m_{\mathrm{tar}}$")
-    axes[1, 1].plot(frames, m_interf, "o--", color=C_RED, linewidth=1.8, label=r"干扰加噪声掩码 $m_{\mathrm{int}}$")
-    axes[1, 1].plot(frames, post_joint[0], "^:", color=C_PURPLE, linewidth=1.5, label=r"未排他原始 $\gamma_1$")
+    axes[1, 1].plot(frames, m_tar_excl, "s-", color=C_BLUE, linewidth=2.0, label=r"目标独占 $m_{\mathrm{tar}}$")
+    axes[1, 1].plot(frames, m_interf, "o--", color=C_RED, linewidth=1.8, label=r"干扰加噪 $m_{\mathrm{int}}$")
+    axes[1, 1].plot(frames, post_joint[0], "^:", color=C_PURPLE, linewidth=1.5, label=r"未排他 $\gamma_1$")
+    axes[1, 1].set_title("(d) GSS 协方差门控权重（提取说话人 1）", pad=52)
     axes[1, 1].set(
-        title="(d) GSS 协方差门控权重（提取说话人 1）",
         xlabel="帧索引 $t$",
         ylabel="协方差累加帧权重",
         xticks=frames,
+        yticks=[0.0, 0.25, 0.5, 0.75, 1.0],
         xlim=(-0.25, 5.25),
-        ylim=(-0.06, 1.68),
+        ylim=(-0.05, 1.06),
     )
-    axes[1, 1].legend(loc="upper right")
+    axes[1, 1].legend(
+        ncol=2, loc="lower center", bbox_to_anchor=(0.5, 1.02),
+        framealpha=0.96, handlelength=1.5, columnspacing=0.9,
+    )
 
     for ax in axes.flat:
         ax.grid(True, alpha=0.22)
         ax.set_axisbelow(True)
-    fig.suptitle("图87  多人重叠会议日志：DER 下界、空谱 TS-VAD 与 GSS 掩码")
+    fig.suptitle("图82  多人重叠会议日志：DER 下界、空谱 TS-VAD 与 GSS 掩码")
     _save_report_and_png(
         fig,
-        "fig87_diarization_tsvad_gss.png",
-        "figure87_diarization_tsvad_gss.json",
+        "fig82_diarization_tsvad_gss.png",
+        "figure82_diarization_tsvad_gss.json",
         report,
         manifest_sha,
     )
@@ -518,8 +548,8 @@ def _build_fig88(sources: dict[str, str], manifest_sha: str) -> None:
     arch_latency_s = [0.032, 1.20, 4.50]
 
     report = {
-        "figure": 88,
-        "exercise_ids": ["E15-13", "E15-14", "E15-15"],
+        "figure": 83,
+        "exercise_ids": ["E15-11"],
         "source_sha256": sources,
         "audio_manifest_sha256": manifest_sha,
         "sync_video_indices": sync_map["video_frame_indices"].tolist(),
@@ -532,7 +562,7 @@ def _build_fig88(sources: dict[str, str], manifest_sha: str) -> None:
         "architecture_chunk_latency_s": dict(zip(["streaming_tse", "chunked_joint", "offline_gss"], arch_latency_s)),
     }
 
-    fig, axes = plt.subplots(2, 2, figsize=(9.5, 7.8), constrained_layout=True)
+    fig, axes = plt.subplots(2, 2, figsize=(9.5, 8.5), constrained_layout=True)
     aud_idx = np.arange(15)
     axes[0, 0].step(
         aud_idx, sync_map["video_frame_indices"], where="mid",
@@ -549,61 +579,65 @@ def _build_fig88(sources: dict[str, str], manifest_sha: str) -> None:
         yticks=range(6),
         ylim=(-0.4, 5.8),
     )
-    axes[0, 0].legend(loc="upper left")
+    axes[0, 0].legend(loc="upper left", framealpha=0.96)
 
     axes[0, 1].plot(lags_ms, loss_pct, "o-", color=C_RED, markersize=4, linewidth=1.8, label="词首辅音截断率")
-    axes[0, 1].axvline(120.0, color=C_BLUE, linestyle="--", label="+120 ms 滞后 (87.5%)")
+    axes[0, 1].axvline(120.0, color=C_BLUE, linestyle="--", linewidth=1.5, label="+120 ms 滞后 (87.5%)")
     axes[0, 1].set(
         title="(b) 视觉正滞后引起的词首辅音丢失",
         xlabel=r"视频相对音频滞后 $\Delta t_{\mathrm{av}}$ / ms",
         ylabel="128 ms 词首辅音被抑制比例 / %",
         ylim=(-5.0, 108.0),
     )
-    axes[0, 1].legend(loc="lower right")
+    axes[0, 1].legend(loc="upper left", framealpha=0.96)
 
     axes[1, 0].plot(t_frames, alpha_traj, "^:", color=C_PURPLE, linewidth=1.6, label=r"视觉置信度 $\alpha_\ell$")
-    axes[1, 0].plot(t_frames, m_av_traj, "o--", color=C_RED, linewidth=1.7, label=r"未门控视听掩码 $M_{\mathrm{av}}$")
-    axes[1, 0].plot(t_frames, m_fused_traj, "s-", color=C_BLUE, linewidth=2.0, label=r"门控融合掩码 $M_{\mathrm{fused}}$")
-    axes[1, 0].axvspan(6.0, 9.0, color=C_ORANGE, alpha=0.15, label="手部遮挡嘴唇区")
+    axes[1, 0].plot(t_frames, m_av_traj, "o--", color=C_RED, linewidth=1.7, label=r"未门控 $M_{\mathrm{av}}$")
+    axes[1, 0].plot(t_frames, m_fused_traj, "s-", color=C_BLUE, linewidth=2.0, label=r"门控融合 $M_{\mathrm{fused}}$")
+    axes[1, 0].axvspan(6.0, 9.0, color=C_ORANGE, alpha=0.15, zorder=0, label="手部遮挡嘴唇区")
+    axes[1, 0].set_title("(c) 唇部遮挡下的置信度门控平滑回退", pad=12)
     axes[1, 0].set(
-        title="(c) 唇部遮挡下的置信度门控平滑回退",
         xlabel=r"时间块索引 $\ell$",
         ylabel="掩码增益或置信度",
-        ylim=(0.0, 1.66),
+        yticks=[0.0, 0.25, 0.5, 0.75, 1.0],
+        ylim=(-0.04, 1.44),
     )
     axes[1, 0].legend(
         ncol=2,
         loc="upper center",
         framealpha=0.96,
-        handlelength=1.2,
+        handlelength=1.4,
         handletextpad=0.35,
-        columnspacing=0.65,
+        columnspacing=0.75,
         borderpad=0.3,
     )
 
     y_pos = np.arange(3)
-    axes[1, 1].barh(
-        y_pos, arch_latency_s, color=[C_GREEN, C_BLUE, C_ORANGE],
-        edgecolor=C_MAIN, linewidth=0.75, height=0.52, alpha=0.85,
-    )
-    for idx, val in enumerate(arch_latency_s):
-        axes[1, 1].text(val + 0.12, idx, f"{val:.3g} s", va="center")
+    arch_colors = [C_GREEN, C_BLUE, C_ORANGE]
+    arch_hatches = ["", "///", "xxx"]
+    for idx, (val, color, hatch) in enumerate(zip(arch_latency_s, arch_colors, arch_hatches)):
+        axes[1, 1].barh(
+            idx, val, color=color, edgecolor=C_MAIN, linewidth=0.85,
+            hatch=hatch, height=0.52, alpha=0.85,
+        )
+        axes[1, 1].text(val * 1.18, idx, f"{val:.3g} s", va="center")
+    axes[1, 1].set_xscale("log")
+    axes[1, 1].set_title("(d) 三类前端算法等待窗口（典型量级示意）", pad=12)
     axes[1, 1].set(
-        title="(d) 三类前端算法等待窗口（典型量级示意）",
-        xlabel="典型最小上下文等待窗口 / s",
+        xlabel="典型最小上下文等待窗口 / s（对数轴）",
         yticks=y_pos,
         yticklabels=arch_names,
-        xlim=(0.0, 5.5),
+        xlim=(0.01, 20.0),
     )
 
     for ax in axes.flat:
         ax.grid(True, alpha=0.22)
         ax.set_axisbelow(True)
-    fig.suptitle("图88  远场视听多模态与多说话人架构：异构帧率、滞后截断与遮挡回退")
+    fig.suptitle("图83  远场视听多模态与多说话人架构：异构帧率、滞后截断与遮挡回退")
     _save_report_and_png(
         fig,
-        "fig88_av_asynchrony_occlusion.png",
-        "figure88_av_asynchrony_occlusion.json",
+        "fig83_av_asynchrony_occlusion.png",
+        "figure83_av_asynchrony_occlusion.json",
         report,
         manifest_sha,
     )

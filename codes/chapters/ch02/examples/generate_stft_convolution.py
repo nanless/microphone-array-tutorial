@@ -1,4 +1,4 @@
-"""Generate/check the independent E02-16 finite-window convolution WAVs.
+"""Generate/check the independent E02-14 finite-window convolution WAVs.
 
 Run ``python -m codes.chapters.ch02.examples.generate_stft_convolution``.
 ``--check`` reconstructs in memory and checks the exact published set without
@@ -56,7 +56,7 @@ def expected_assets() -> tuple[dict[str, bytes], dict]:
     if np.min(denominator) <= 1e-12:
         raise ValueError("Retained samples lack WOLA support")
     manifest = {
-        "schema_version": 1, "exercise_id": "E02-16", "sample_rate_hz": SAMPLE_RATE,
+        "schema_version": 1, "exercise_id": "E02-14", "sample_rate_hz": SAMPLE_RATE,
         "samples_per_channel": OUTPUT_SAMPLES, "channels": 1, "common_export_gain": 1.,
         "source_sha256": {path: hashlib.sha256((ROOT/path).read_bytes()).hexdigest()
                           for path in SOURCE_PATHS},

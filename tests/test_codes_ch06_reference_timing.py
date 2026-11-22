@@ -42,8 +42,11 @@ class ReferenceTimingTests(unittest.TestCase):
 
     def test_catalog_preserves_old_cases_and_adds_separate_ids(self):
         cases = run_experiments()
-        self.assertEqual(list(cases), [f'E06-{i:02d}' for i in range(22, 34)] + ['E06-40', 'E06-41', 'E06-43', 'E06-44'])
-        self.assertEqual(cases['E06-26']['prior_residual'], [0., 0., 3., 5.5, 2., 0.])
+        self.assertEqual(
+            list(cases),
+            [f'E06-{i:02d}' for i in range(12, 21)] + ['E06-26', 'E06-27', 'E06-29', 'E06-30'],
+        )
+        self.assertEqual(cases['E06-16']['prior_residual'], [0., 0., 3., 5.5, 2., 0.])
 
 
 if __name__ == '__main__':

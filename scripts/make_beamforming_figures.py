@@ -1,4 +1,4 @@
-"""Generate figure 73 from the actual E05-23 PCM and its checked manifest.
+"""Generate figure 68 from the actual E05-15 PCM and its checked manifest.
 
 Run from the repository root: .venv/bin/python scripts/make_beamforming_figures.py
 Existing figure generators retain their independent source identities.
@@ -24,7 +24,7 @@ def measurements():
               for path in (*manifest['source_sha256'], 'scripts/make_figures.py',
                            'scripts/make_beamforming_figures.py')}
     manifest_sha = hashlib.sha256((DEFAULT_OUTPUT/'MANIFEST.json').read_bytes()).hexdigest()
-    report = {'figure': 73, 'exercise_id': 'E05-23', 'source_sha256': inputs,
+    report = {'figure': 68, 'exercise_id': 'E05-15', 'source_sha256': inputs,
               'audio_manifest_sha256': manifest_sha,
               'wav_sha256': {name: record['sha256'] for name, record in manifest['files'].items()},
               'parameters': manifest['parameters'], 'samples': manifest['samples'],
@@ -37,34 +37,38 @@ def measurements():
 
 def main():
     manifest, report, signals = measurements()
-    report_path = ROOT/'codes/chapters/ch05/reports/figure73_phase_reference.json'
+    report_path = ROOT/'codes/chapters/ch05/reports/figure68_phase_reference.json'
     report_path.parent.mkdir(parents=True, exist_ok=True)
     report_path.write_text(json.dumps(report, ensure_ascii=False, indent=2, allow_nan=False)+'\n', encoding='utf-8')
     names, labels, colors = ('reference', 'flip', 'quadrature'), ('参考', '高频反号', '高频正交'), (C_BLUE, C_RED, C_GREEN)
+    styles, markers, hatches = ('-', '--', '-.'), ('o', 's', '^'), ('', '//', '..')
     fig, axes = plt.subplots(2, 2, figsize=(9.5, 7.7), constrained_layout=True)
     fig.get_layout_engine().set(w_pad=0.06, h_pad=0.09, wspace=0.04, hspace=0.06)
     fs, start, count = 16000, 2400, 64
     time = np.arange(count)/fs*1000
-    for name, label, color in zip(names, labels, colors):
-        axes[0, 0].plot(time, signals[name][start:start+count], label=label, color=color, linewidth=1.5)
+    for name, label, color, style in zip(names, labels, colors, styles):
+        axes[0, 0].plot(time, signals[name][start:start+count], style, label=label, color=color, linewidth=1.6)
     axes[0, 0].set(title='(a) 实际 PCM：同钟、同增益', xlabel='从第 2400 点起的时间 / ms', ylabel='解码幅度')
-    axes[0, 0].set_ylim(-.225, .295)
-    axes[0, 0].legend(ncol=3, loc='upper right', fontsize=11)
+    axes[0, 0].set_ylim(-.225, .305)
+    axes[0, 0].legend(ncol=3, loc='upper center', fontsize=9.8, handlelength=1.4,
+                      columnspacing=0.8, handletextpad=0.4)
     x = np.arange(2)
-    for i, (name, label, color) in enumerate(zip(names, labels, colors)):
+    for i, (name, label, color, marker) in enumerate(zip(names, labels, colors, markers)):
         pair = np.asarray(manifest['samples'][name]['pcm_measurements']['response_real_imag'])
         phase = np.angle(pair[:, 0]+1j*pair[:, 1])*180/np.pi
         # The signed half-turn is the same phase class; choose +180 for clarity.
         phase[np.isclose(abs(phase), 180)] = 180
-        axes[0, 1].plot(x+(i-1)*.03, phase, 'o', color=color, label=label)
+        axes[0, 1].plot(x+(i-1)*.03, phase, marker, color=color, label=label, markersize=6.5)
     axes[0, 1].set(title='(b) PCM 分量相对参考的相位', xticks=x, xticklabels=['500 Hz', '1500 Hz'],
                    yticks=[-90, 0, 90, 180], ylabel='输出相对相位 / °')
     axes[0, 1].legend(loc='upper left')
     power = [manifest['samples'][n]['pcm_integer_measurements']['mean_square_all_channels'] for n in names]
     error = [manifest['samples'][n]['pcm_integer_measurements']['total_reference_mse_per_channel'][0] for n in names]
-    for ax, values, title, ylabel in ((axes[1, 0], power, '(c) 稳窗实际 PCM 功率', '均方幅度'),
+    for ax, values, title, ylabel in ((axes[1, 0], power, '(c) 稳窗实际 PCM 功率', '平均功率'),
                                     (axes[1, 1], error, '(d) 同窗实际 PCM 总参考误差', 'MSE')):
-        ax.bar(np.arange(3), values, color=colors, alpha=.8)
+        bars = ax.bar(np.arange(3), values, color=colors, alpha=.82, edgecolor='#1E242B', linewidth=0.5)
+        for bar, hatch in zip(bars, hatches):
+            bar.set_hatch(hatch)
         ax.set(title=title, xticks=np.arange(3), xticklabels=labels, ylabel=ylabel)
         ax.set_ylim(0, max(values)*1.32)
         for i, value in enumerate(values):
@@ -77,14 +81,14 @@ def main():
     for ax in axes.flat:
         ax.grid(axis='y', alpha=.2)
         ax.set_axisbelow(True)
-    fig.suptitle('图73  已知逐频相位对照：等解析功率仍有不同波形')
+    fig.suptitle('图68  已知逐频相位对照：等解析功率仍有不同波形')
     finalize_figure(fig)
     metadata = {'SourceScript': 'scripts/make_beamforming_figures.py',
                 'SourceScriptDigest': report['source_sha256']['scripts/make_beamforming_figures.py'],
                 'GeneratorInputs': json.dumps(report['source_sha256'], sort_keys=True),
                 'AudioManifestDigest': report['audio_manifest_sha256'],
                 'NumericalReportDigest': hashlib.sha256(report_path.read_bytes()).hexdigest()}
-    destination = ROOT/'figures/fig73_phase_reference.png'
+    destination = ROOT/'figures/fig68_phase_reference.png'
     fig.savefig(destination, dpi=150, bbox_inches='tight', facecolor='white', metadata=metadata)
     plt.close(fig)
     print(destination.relative_to(ROOT))

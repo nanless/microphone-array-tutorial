@@ -1,4 +1,4 @@
-"""Independent-scope AEC arithmetic experiments E06-22..33, E06-40..41, and E06-43..44.
+"""Independent-scope AEC arithmetic experiments E06-12..20, E06-26..27, and E06-29..30.
 
 All values are dimensionless unless units are explicitly recorded. These
 small cases isolate identifiability, state timing and score definitions;
@@ -16,9 +16,6 @@ import json
 import numpy as np
 
 from codes.chapters.ch06.core.aec import NLMSState
-from codes.chapters.ch06.core.aec_kalman_matrix import KalmanAECState
-from codes.chapters.ch06.core.aec_rls import RLSState
-from codes.chapters.ch06.core.double_talk import ncc_activity_states
 from codes.chapters.ch06.aec_kalman_scalar_demo import scalar_kalman_step
 from codes.chapters.ch06.aec_controlled_doubletalk import increment_metrics
 from codes.chapters.ch06.core.reference_timing import reference_gain_order, echo_tail_activity
@@ -100,27 +97,6 @@ def missing_reference_block() -> dict:
             'scope': 'known fixed path and frozen coefficients; reference history still advances'}
 
 
-def ncc_gate_boundaries() -> dict:
-    alternating = np.array([1., -1., 1., -1.])
-    orthogonal = np.array([1., 1., -1., -1.])
-    zero = np.zeros(4)
-    x = np.concatenate((zero, alternating, zero, alternating, alternating, alternating))
-    d = np.concatenate((zero, .5 * alternating, orthogonal, orthogonal, zero, -alternating))
-    states, ncc = ncc_activity_states(x, d, frame_size=4, activity_rms=.1,
-                                      coherence_threshold=.8)
-    return {'frame_labels': ['silence', 'far_only', 'near_only', 'double_talk',
-                             'far_active_mic_quiet', 'inverted_polarity_far'],
-            'reference_frames': x.reshape(-1, 4).tolist(),
-            'microphone_frames': d.reshape(-1, 4).tolist(),
-            'states': states.tolist(), 'absolute_ncc': ncc.tolist(),
-            'activity_rms': .1, 'coherence_threshold': .8,
-            'buffering': {'example_frame_samples': 160, 'sample_rate_hz': 16000,
-                          'frame_duration_seconds': .01,
-                          'first_sample_wait_seconds': 159 / 16000,
-                          'decision_at_last_sample_index': 159},
-            'scope': 'same-frame gating needs buffering; absolute activity threshold remains scale-dependent'}
-
-
 def prior_posterior_scoring() -> dict:
     result = scalar_kalman_step(previous_weight=0., previous_variance=1., transition=1.,
                                process_variance=0., reference=1., observation=2.,
@@ -133,45 +109,6 @@ def prior_posterior_scoring() -> dict:
             'prior_error': prior, 'posterior_error': posterior,
             'same_observation_fit_power_difference_db': float(20 * np.log10(abs(prior / posterior))),
             'scope': 'posterior fits the scored observation; not a causal cancellation improvement'}
-
-
-def freeze_state_clocks() -> dict:
-    state = KalmanAECState(1, transition=.5, process_covariance=[[1.]],
-                           observation_variance=1., initial_covariance=[[3.]], initial_weights=[2.])
-    steps = [state.step(1., 9., freeze=True) for _ in range(2)]
-    rls = RLSState(1, forgetting_factor=.5, initial_regularization=1 / 3,
-                   initial_weights=[2.])
-    rls.process([1., 1.], [9., 9.], freeze=[True, True])
-    wrong = KalmanAECState(1, transition=1., process_covariance=[[0.]],
-                           observation_variance=1., initial_covariance=[[0.]])
-    wrong_step = wrong.step(1., 2.)
-    return {'kalman': {'initial_weight': 2., 'initial_variance': 3., 'transition': .5,
-                       'process_variance': 1., 'weights': [float(s['posterior_weights'][0]) for s in steps],
-                       'variances': [float(s['posterior_covariance'][0, 0]) for s in steps]},
-            'rls': {'forgetting_factor': .5, 'weight': float(rls.weights[0]),
-                    'inverse_reference_correlation': float(rls.inverse_covariance[0, 0])},
-            'zero_uncertainty_wrong_prior': {'true_weight': 2., 'gain': float(wrong_step['gain'][0]),
-                                            'posterior_weight': float(wrong.weights[0]),
-                                            'prior_error': wrong_step['prior_error']},
-            'scope': 'Kalman prediction clock continues under observation freeze; RLS freezes forgetting too; P and Q zero cannot repair a wrong prior'}
-
-
-def covariance_model_boundaries() -> dict:
-    candidates = {'singular_psd': [[1., 1.], [1., 1.]],
-                  'indefinite': [[1., 2.], [2., 1.]],
-                  'small_asymmetric': [[1e-20, 1e-20], [0., 1e-20]],
-                  'negative_variance': [[-1e-11, 0.], [0., 1.]]}
-    results = {}
-    for name, value in candidates.items():
-        try:
-            state = KalmanAECState(2, transition=1., process_covariance=np.zeros((2, 2)),
-                                   observation_variance=1., initial_covariance=value)
-        except ValueError:
-            results[name] = {'accepted': False}
-        else:
-            results[name] = {'accepted': True, 'covariance': state.covariance.tolist()}
-    return {'inputs': candidates, 'outcomes': results,
-            'scope': 'covariance may be singular PSD, but negative variance or material asymmetry is not roundoff'}
 
 
 def block_db_aggregation() -> dict:
@@ -214,16 +151,22 @@ def increment_orthogonal_decomposition() -> dict:
 
 
 def run_experiments() -> dict:
-    functions = [shared_reference_normalization, reference_identifiability, causal_delay_support,
-                 clock_drift_phase, missing_reference_block, ncc_gate_boundaries,
-                 prior_posterior_scoring, freeze_state_clocks, covariance_model_boundaries,
-                 block_db_aggregation, normalized_update_expectation,
-                 increment_orthogonal_decomposition]
-    cases = {f'E06-{index:02d}': function() for index, function in enumerate(functions, 22)}
-    cases['E06-40'] = reference_gain_order()
-    cases['E06-41'] = echo_tail_activity()
-    cases['E06-43'] = hammerstein_orthogonal_basis()
-    cases['E06-44'] = stereo_decorrelation_and_loop_deadlines()
+    functions = [
+        shared_reference_normalization,
+        reference_identifiability,
+        causal_delay_support,
+        clock_drift_phase,
+        missing_reference_block,
+        prior_posterior_scoring,
+        block_db_aggregation,
+        normalized_update_expectation,
+        increment_orthogonal_decomposition,
+    ]
+    cases = {f'E06-{index:02d}': function() for index, function in enumerate(functions, 12)}
+    cases['E06-26'] = reference_gain_order()
+    cases['E06-27'] = echo_tail_activity()
+    cases['E06-29'] = hammerstein_orthogonal_basis()
+    cases['E06-30'] = stereo_decorrelation_and_loop_deadlines()
     return cases
 
 

@@ -9,16 +9,16 @@ from codes.chapters.ch05.examples import binaural_beamforming_demo as demo
 class BinauralBeamformingTest(unittest.TestCase):
     def test_matched_interference_power_does_not_imply_matched_spatial_cues(self):
         result = demo.run_exercises()
-        directional = result["E05-25"]
+        directional = result["E05-18"]
         np.testing.assert_allclose(directional["bmvdr"], [1/3, 1/3])
         np.testing.assert_allclose(directional["blcmv"], [1/3, -1/3])
         np.testing.assert_allclose(directional["null"], [0, 0], atol=1e-15)
-        diffuse = result["E05-26"]["blcmv"]
+        diffuse = result["E05-19"]["blcmv"]
         np.testing.assert_allclose(diffuse, [[1/3, 1/3], [1/3, 1/2]])
         self.assertAlmostEqual(diffuse[0][1] / np.sqrt(diffuse[0][0] * diffuse[1][1]),
                                np.sqrt(2/3))
         np.testing.assert_allclose(
-            result["E05-27"]["complex_right_response_real_imag"], [0, 1/3], atol=1e-15)
+            result["E05-20"]["complex_right_response_real_imag"], [0, 1/3], atol=1e-15)
 
     def test_actual_stereo_pcm_preserves_distinct_signed_tone_and_integer_scores(self):
         manifest = demo.check_assets()

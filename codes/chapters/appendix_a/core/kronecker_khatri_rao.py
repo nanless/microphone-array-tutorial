@@ -77,7 +77,7 @@ def khatri_rao_product(left: object, right: object) -> np.ndarray:
 
 
 def kronecker_khatri_rao_controls() -> dict[str, object]:
-    """E16-21: deterministic JSON-safe verification of Kronecker & Khatri-Rao identities."""
+    """E00-10: deterministic JSON-safe verification of Kronecker & Khatri-Rao identities."""
     a_mat = np.array([[1.0, 1.0], [1.0j, -1.0]], dtype=np.complex128)
     q_vec = np.array([2.0, 1.0], dtype=np.float64)
 
@@ -118,7 +118,7 @@ def kronecker_khatri_rao_controls() -> dict[str, object]:
     wng_db = 10.0 * math.log10(wng_linear)
 
     return {
-        "exercise_id": "E16-21",
+        "exercise_id": "E00-10",
         "A": _complex_record(a_mat),
         "q": q_vec.tolist(),
         "hermitian_csm": {

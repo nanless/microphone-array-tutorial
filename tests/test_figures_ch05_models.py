@@ -20,7 +20,7 @@ class Chapter05FigureModelsTest(unittest.TestCase):
 
     def test_derivative_response_and_expected_power_have_independent_oracles(self):
         fig, name = self.capture(make_figures.fig_derivative_constraints)
-        self.assertEqual(name, 'fig55_derivative_constraints.png')
+        self.assertEqual(name, 'fig50_derivative_constraints.png')
         complex_ax, error_ax, power_ax = fig.axes
         weights = [(Fraction(4, 7), Fraction(2, 7), Fraction(1, 7)),
                    (Fraction(4, 13), Fraction(5, 13), Fraction(4, 13))]
@@ -45,7 +45,7 @@ class Chapter05FigureModelsTest(unittest.TestCase):
 
     def test_probability_and_geometric_gain_follow_density_ratio(self):
         fig, name = self.capture(make_figures.fig_omlsa_probability)
-        self.assertEqual(name, 'fig56_omlsa_probability.png')
+        self.assertEqual(name, 'fig51_omlsa_probability.png')
         posterior_ax, gain_ax = fig.axes
         for q, posterior_index, gain_index in ((.5, 0, 0), (.2, 1, 2)):
             line = posterior_ax.lines[posterior_index]

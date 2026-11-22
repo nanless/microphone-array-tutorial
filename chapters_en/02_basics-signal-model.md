@@ -43,7 +43,7 @@ Read Figure 2 across its three panels to cement these geometric relationships vi
 
 #### 2.1.2 Discrete Sampling, Clock Synchronization, and Sound-Speed Mismatch
 
-Digital hardware observes discrete samples spaced at fixed sampling intervals rather than continuous-time waveforms. At a standard $16\ \mathrm{kHz}$ sampling rate, adjacent samples are separated by $1/16000=62.5\ \mathrm{\mu s}$, during which sound travels roughly $343\times62.5\times10^{-6}\approx2.14\ \mathrm{cm}$. Across a $4\ \mathrm{cm}$ microphone pair, the maximum physical TDOA is only $\approx 116.6\ \mathrm{\mu s}$—less than two sample periods! Peak-picking cross-correlation strictly at integer sample lags would quantize the entire hemisphere into barely a handful of coarse bearings, so practical localizers rely on **subsample TDOA estimation**—via parabolic or sinc peak interpolation, spectral zero-padding upsampling, or frequency-domain cross-phase slope fitting (§4.2). Likewise, compensating non-integer delays in the time domain cannot naively substitute two-point linear interpolation for higher-order fractional-delay FIR filters without suffering severe high-frequency roll-off and null collapse (Exercise E02-22 compares two-point linear interpolation quantitatively against windowed-sinc FIR filters).
+Digital hardware observes discrete samples spaced at fixed sampling intervals rather than continuous-time waveforms. At a standard $16\ \mathrm{kHz}$ sampling rate, adjacent samples are separated by $1/16000=62.5\ \mathrm{\mu s}$, during which sound travels roughly $343\times62.5\times10^{-6}\approx2.14\ \mathrm{cm}$. Across a $4\ \mathrm{cm}$ microphone pair, the maximum physical TDOA is only $\approx 116.6\ \mathrm{\mu s}$—less than two sample periods. Peak-picking cross-correlation strictly at integer sample lags would quantize the entire hemisphere into barely a handful of coarse bearings, so practical localizers rely on **subsample TDOA estimation**—via parabolic or sinc peak interpolation, spectral zero-padding upsampling, or frequency-domain cross-phase slope fitting (§4.2). Likewise, compensating non-integer delays in the time domain cannot naively substitute two-point linear interpolation for higher-order fractional-delay FIR filters without suffering severe high-frequency roll-off and null collapse (Exercise E02-20 compares two-point linear interpolation quantitatively against windowed-sinc FIR filters).
 
 Comparing microsecond delays across microphones also demands a tightly synchronized sampling clock across all channels. Single-enclosure devices typically drive a multichannel Analog-to-Digital Converter (ADC) from one shared crystal oscillator; ad-hoc distributed arrays formed from phones and laptops, by contrast, run on independent crystals. A mere $50\ \mathrm{ppm}$ ($50$ parts per million) relative clock offset between two devices accumulates $50\times10^{-6}\times3600=0.18\ \mathrm{s}$ of drift over $1$ hour ($3600\ \mathrm{s}$)—over three orders of magnitude larger than microsecond acoustic TDOAs—requiring hardware clock synchronization or online Sampling Rate Offset (SRO) compensation (§10.2).
 
@@ -76,13 +76,7 @@ When can spherical waves safely be simplified into plane waves? Array literature
 Consider a centro-symmetric linear or planar aperture of half-aperture $a = D/2$ with a point source located on the broadside normal at distance $r$ from the array center:
 
 1. **Exact spherical path-length difference**: Whereas a broadside plane wave strikes center and edge sensors simultaneously, a spherical wave travels distance $r$ to the center and hypotenuse $\sqrt{r^2+a^2}$ to the outermost sensor, giving excess edge path $\Delta r=\sqrt{r^2+a^2}-r$.
-2. **First-order Taylor expansion for $r\gg a$**: Factoring out $r$ and expanding $\sqrt{1+x}\approx1+x/2$ for $x=(a/r)^2\ll1$ gives
-
-    $$\begin{aligned}
-    \Delta r &= r\left[\sqrt{1+\left(\frac{a}{r}\right)^2}-1\right]\\
-    &\approx r\cdot\frac{a^2}{2r^2} = \frac{a^2}{2r}.
-    \end{aligned}$$
-
+2. **First-order Taylor expansion for $r\gg a$**: Factoring out $r$ and applying the first-order binomial expansion from [Chapter 0 §0.1.2 Eq. (0-5)](00_math-foundations.md#sec-0-1-2) ($\sqrt{1+x}\approx1+x/2$ for $x=(a/r)^2\ll1$) gives $\Delta r \approx a^2/(2r)$.
 3. **Applying the $\lambda/16$ phase-error tolerance**: Excess path $\Delta r$ induces phase error $2\pi\Delta r/\lambda$. Adopting the conventional $\Delta r\le\lambda/16$ tolerance (limiting phase curvature error to $2\pi/16=\pi/8=22.5^\circ$) yields
 
     $$\begin{aligned}
@@ -92,14 +86,16 @@ Consider a centro-symmetric linear or planar aperture of half-aperture $a = D/2$
 
     Substituting $a=D/2$ for a centered aperture gives the familiar $r\ge 2D^2/\lambda=r_F$; if the reference origin is not centered, retain maximum sensor radius $a$ directly inside $8a^2/\lambda$.
 
-Why choose $\lambda/16$ ($22.5^\circ$)? Summing two equal-amplitude phasors misaligned by $\pi/8\ \mathrm{rad}$ yields normalized magnitude $|1+e^{\mathrm{j}\pi/8}|/2=\cos(\pi/16)\approx0.9808$—a negligible $0.17\ \mathrm{dB}$ loss on a conventional delay-and-sum mainlobe. This $\lambda/16$ convention originated in aperture antenna range testing (see [ETSI ETR 273-1-1 Clause 7.2.3.1, p. 76](https://www.etsi.org/deliver/etsi_etr/200_299/2730101/01_60/etr_2730101e01p.pdf)). Adaptive beamformers steering deep cancellation nulls require tighter phase tolerances and correspondingly larger transition distances than $2D^2/\lambda$.
+Why choose $\lambda/16$ ($22.5^\circ$)? Summing a worst-case pair of equal-amplitude edge phasors misaligned by $\pi/8\ \mathrm{rad}$ yields normalized magnitude $|1+e^{\mathrm{j}\pi/8}|/2=\cos(\pi/16)\approx0.9808$—a negligible $0.17\ \mathrm{dB}$ loss on a conventional delay-and-sum mainlobe (for a continuous uniform aperture, the integrated loss is even smaller at $\approx 0.06\ \mathrm{dB}$; see [Chapter 0 §0.1.2](00_math-foundations.md#sec-0-1-2)). This $\lambda/16$ convention originated in aperture antenna range testing (see [ETSI ETR 273-1-1 Clause 7.2.3.1, p. 76](https://www.etsi.org/deliver/etsi_etr/200_299/2730101/01_60/etr_2730101e01p.pdf)). Adaptive beamformers steering deep cancellation nulls require tighter phase tolerances and correspondingly larger transition distances than $2D^2/\lambda$.
 
-Solving $\sqrt{r^2+a^2}\le r+\lambda/16$ ($r\ge 0$) exactly without Taylor approximation by squaring both sides yields $r \ge \max\!\left(0,\; \frac{8a^2}{\lambda} - \frac{\lambda}{32}\right)$ (for tiny half-apertures $a\le\lambda/16$, excess path never exceeds $\lambda/16$ even as $r\to 0$). Crucially, however, $r_F$ checks *only* broadside phase curvature—it checks neither $r\gg D$ nor $1/r_m$ amplitude ratios across sensors! Two concrete geometries illustrate both failure directions:
+Solving $\sqrt{r^2+a^2}\le r+\lambda/16$ ($r\ge 0$) exactly without Taylor approximation by squaring both sides yields $r \ge \max\!\left(0,\; \frac{8a^2}{\lambda} - \frac{\lambda}{32}\right)$ (for tiny half-apertures $a\le\lambda/16$, excess path never exceeds $\lambda/16$ even as $r\to 0$). Crucially, however, $r_F$ checks *only* broadside phase curvature—it replaces neither the two companion Fraunhofer criteria $r\gg D$ and $r\gg\lambda$ nor checks on $1/r_m$ amplitude ratios across sensors. Two concrete geometries illustrate both failure directions:
 
-- On a compact $D=7\ \mathrm{cm}$ smart-speaker circular array at $1\ \mathrm{kHz}$ ($\lambda=0.343\ \mathrm{m}$), $r_F=2\times0.07^2/0.343\approx2.86\ \mathrm{cm}$. Yet a talker lips-on at $3\ \mathrm{cm}$ violates $r\gg D$ completely—near-edge and far-edge sensor distances differ several-fold with massive $1/r_m$ amplitude imbalance, so $r>2.86\ \mathrm{cm}$ certainly does *not* justify a far-field plane-wave model!
+- On a compact $D=7\ \mathrm{cm}$ smart-speaker circular array at $1\ \mathrm{kHz}$ ($\lambda=0.343\ \mathrm{m}$), $r_F=2\times0.07^2/0.343\approx2.86\ \mathrm{cm}$. Yet a talker lips-on at $3\ \mathrm{cm}$ violates $r\gg D$ completely—near-edge and far-edge sensor distances differ several-fold with large $1/r_m$ amplitude imbalance, so $r>2.86\ \mathrm{cm}$ does *not* justify a far-field plane-wave model.
 - Conversely, on a large $D=1.26\ \mathrm{m}$ conference-room linear array at $1\ \mathrm{kHz}$, $r_F=2\times1.26^2/0.343\approx9.26\ \mathrm{m}$: inside a typical conference room only a few meters wide, talkers sit permanently inside the array's radiating near field, where plane-wave steering vectors suffer substantial spherical curvature mismatch.
 
-Fraunhofer distance is therefore a smooth scaling guideline rather than a sharp physical boundary; before adopting a plane-wave model, always check phase curvature at the highest operating frequency alongside range-to-aperture ratio $r/D$ and inter-sensor amplitude ratios (tabulated side by side in Exercise E02-09).
+Fraunhofer distance is therefore a smooth scaling guideline rather than a sharp physical boundary; before adopting a plane-wave model, always check phase curvature at the highest operating frequency alongside range-to-aperture ratio $r/D$, electrical range $r/\lambda$, and inter-sensor amplitude ratios (tabulated side by side in Exercise E02-09).
+
+In close-talking headsets, handsets, and near-mouth pickup scenarios, one must further distinguish the **radiating Fresnel near field** from the **acoustic reactive near field**. In classical aperture field theory (Balanis, *Antenna Theory: Analysis and Design*, Ch. 2), the radiating Fresnel zone for electrically large apertures spans $0.62\sqrt{D^3/\lambda} \le r < 2D^2/\lambda$; for acoustically small point monopoles, particle velocity combines a propagating $1/r$ component with an inertial near-field $1/r^2$ component whose reactive boundary sits at dimensionless electrical range $\kappa r = 2\pi r/\lambda = 1$ (i.e., $r \approx \lambda/(2\pi) = c/(2\pi f)$): at an adult male pitch fundamental of $150\ \mathrm{Hz}$, the reactive near-field radius spans roughly $36\ \mathrm{cm}$, shrinking to $\approx 5.5\ \mathrm{cm}$ at $1\ \mathrm{kHz}$. Once a source enters the reactive zone $\kappa r \lesssim 1$, acoustic pressure and particle velocity develop a strong quadrature phase shift and the pressure gradient climbs as $1/r^2$—much faster than scalar pressure's $1/r$ scaling—giving rise to the pronounced low-frequency boost known as the **proximity effect** in pressure-gradient microphones and close-talk first-order differential arrays (examined further in Chapter 5 §5.3).
 
 ![Figure 3 Near-field spherical-wave vs. far-field plane-wave acoustic models](../figures_en/fig03_near_far_field.png)
 
@@ -158,7 +154,7 @@ X(f)&=\int_{-\infty}^{\infty}
 x(t)e^{-\mathrm{j}2\pi ft}\,\mathrm{d}t.
 \end{aligned}$$
 
-Under this transform, delaying a signal by $\tau$ seconds multiplies its spectrum by a unit-modulus complex exponential:
+Under this transform, the change of variables $u'=t-\tau$ in [Chapter 0 §0.2.1 Eq. (0-9)](00_math-foundations.md#sec-0-2-1) directly shows that delaying a signal by $\tau$ seconds multiplies its spectrum by a unit-modulus complex exponential:
 
 $$\begin{aligned}
 s(t-\tau)\ \xrightarrow{\mathcal{F}}\ 
@@ -166,20 +162,14 @@ S(f)\,e^{-\mathrm{j}2\pi f\tau}
 =S(f)\,e^{-\mathrm{j}\omega\tau}.
 \end{aligned}$$
 
-Where does the minus sign in the exponent come from? Substitute $u'=t-\tau$ ($t=u'+\tau$, $\mathrm{d}t=\mathrm{d}u'$, integration limits unchanged on $(-\infty,+\infty)$):
+When a sensor lags the reference ($\tau>0$), phase $-2\pi f\tau$ is negative; when a sensor leads the reference ($\tau<0$), the double negative makes $-2\pi f\tau$ positive. Double-check directly on a real cosine $s(t)=\cos(2\pi ft)$: delaying by $\tau$ gives
 
 $$\begin{aligned}
-\int_{-\infty}^{\infty} s(t-\tau)e^{-\mathrm{j}2\pi ft}\,\mathrm{d}t
-&=\int_{-\infty}^{\infty} s(u')\,
-e^{-\mathrm{j}2\pi f(u'+\tau)}\,\mathrm{d}u'\\
-&=e^{-\mathrm{j}2\pi f\tau}
-\int_{-\infty}^{\infty} s(u')e^{-\mathrm{j}2\pi fu'}\,\mathrm{d}u'\\
-&=e^{-\mathrm{j}2\pi f\tau}S(f).
+s(t-\tau)&=\cos\bigl(2\pi f(t-\tau)\bigr)
+=\cos(2\pi ft - 2\pi f\tau)\\
+&=\operatorname{Re}\!\bigl\{e^{-\mathrm{j}2\pi f\tau}
+e^{+\mathrm{j}2\pi ft}\bigr\},
 \end{aligned}$$
-
-Independent of dummy variable $u'$, $e^{-\mathrm{j}2\pi f\tau}$ factors outside the integral: when a sensor lags the reference ($\tau>0$), phase $-2\pi f\tau$ is negative; when a sensor leads the reference ($\tau<0$), the double negative makes $-2\pi f\tau$ positive. Double-check directly on a real cosine $s(t)=\cos(2\pi ft)$: delaying by $\tau$ gives
-
-$$s(t-\tau)=\cos\bigl(2\pi f(t-\tau)\bigr)=\cos(2\pi ft - 2\pi f\tau)=\operatorname{Re}\!\bigl\{e^{-\mathrm{j}2\pi f\tau}e^{+\mathrm{j}2\pi ft}\bigr\},$$
 
 confirming directly that under DSP forward kernel $e^{-\mathrm{j}2\pi ft}$ and inverse kernel $e^{+\mathrm{j}2\pi ft}$, *later arrival $\tau>0$ always carries negative phase lag $e^{-\mathrm{j}2\pi f\tau}$*. When reading physical acoustics monographs that adopt harmonic time dependence $e^{-\mathrm{j}\omega t}$ for synthesis, remember that all delay exponents and steering-vector conjugates flip sign globally relative to DSP convention.
 
@@ -236,7 +226,7 @@ Verify physical meaning, matrix shapes, and physical units on every symbol in Eq
 
 Localization algorithms probe observations $\vec x$ against candidate $\vec a(\theta)$ across directions to estimate unknown $\theta$; beamformers use known $\vec a(\theta_0)$ to design linear weights realigning staggered channel phases coherently.
 
-**Worked Anchor: Steering Vector of a 3-Microphone Uniform Linear Array**
+**Worked Example: Steering Vector of a 3-Microphone Uniform Linear Array**
 
 - **Inputs & convention**: Sensors 1, 2, 3 of a 3-mic ULA lie along $+x$ at $x=0,0.04,0.08\ \mathrm{m}$ ($d=0.04\ \mathrm{m}$), $c=343\ \mathrm{m/s}$, far-field tone at $\theta=+30^\circ$ and $f=1000\ \mathrm{Hz}$, referenced to microphone 1.
 - **Step-by-step substitution**: Because $+30^\circ$ sits closer to right-hand sensors, arrival delays relative to microphone 1 are
@@ -282,7 +272,7 @@ x_m[n]&=\sum_{q=0}^{Q-1}h_m[q]\,u[n-q]+v_m[n].
 
 Read Eq. (2-2) as a weighted sum of delayed echoes: every nonzero tap $h_m[q]$ represents a propagation path delayed by $q$ samples and scaled by $h_m[q]$. Distinguish source excitation $u[n]$ in Eq. (2-2) carefully from reference-mic target $s(t)$ in Eq. (2-1): $u[n]$ lives at the talker's mouth so direct propagation lag and $1/r$ attenuation reside inside the direct tap of $h_m[q]$, whereas $s(t)$ in §2.3 has already absorbed propagation to microphone 1.
 
-Verify the exact degenerate bridge back from Eq. (2-2) to free-field Eq. (2-1): in an anechoic room with zero wall reflections, $h_m[q]$ collapses to a single direct tap $\alpha_m\delta[q-q_m]$, reducing Eq. (2-2) to $x_m[n]=\alpha_m u[n-q_m]+v_m[n]$. Returning to continuous time with direct lag $\tau_m$, defining $s(t)=\alpha_1 u(t-\tau_1)$ under far-field equal attenuation $\alpha_m/\alpha_1\approx1$ and relative delay $\tau_{m1}=\tau_m-\tau_1$ gives $x_m(t)=s(t-\tau_{m1})+v_m(t)$, whose Fourier transform recovers Eq. (2-1) identically. Exercise E02-15 computes all 6 samples of a 4-sample source convolved with a 3-tap RIR by hand.
+Verify the limiting case reducing Eq. (2-2) back to free-field Eq. (2-1): in an anechoic room with zero wall reflections, $h_m[q]$ collapses to a single direct tap $\alpha_m\delta[q-q_m]$, reducing Eq. (2-2) to $x_m[n]=\alpha_m u[n-q_m]+v_m[n]$. Returning to continuous time with direct lag $\tau_m$, defining $s(t)=\alpha_1 u(t-\tau_1)$ under far-field equal attenuation $\alpha_m/\alpha_1\approx1$ and relative delay $\tau_{m1}=\tau_m-\tau_1$ gives $x_m(t)=s(t-\tau_{m1})+v_m(t)$, whose Fourier transform recovers Eq. (2-1) identically. Exercise E02-13 computes all 6 samples of a 4-sample source convolved with a 3-tap RIR by hand.
 
 Clapping your hands in an empty room makes the crisp direct arrival and decaying tail audible, yet a recorded handclap is *not* a metrological RIR: a clap has finite duration, non-flat spectrum, and directional radiation compounded by microphone response. Quantitative RIR measurement plays a controlled broadband excitation (such as the exponential sine sweep at the end of this section) followed by deconvolution.
 
@@ -296,7 +286,7 @@ Ordered by arrival time and perceptual/algorithmic role, an indoor RIR partition
 
 Compare horizontal and vertical physical quantities across the three panels of Figure 5:
 
-- **Panel (a) Room Impulse Response waveform**: Plotting normalized amplitude against time ($\mathrm{ms}$), the unit direct pulse arrives at $12\ \mathrm{ms}$, followed by four discrete early reflection spikes riding atop a dense exponentially decaying stochastic tail; the dashed vertical line at $92\ \mathrm{ms}$ ($80\ \mathrm{ms}$ post-direct) marks the nominal early/late split. Note that in strongly reflective or occluded rooms, the direct tap is not guaranteed to be the tallest peak in the RIR.
+- **Panel (a) Room Impulse Response waveform**: Plotting normalized amplitude against time ($\mathrm{ms}$), the direct-sound pulse arrives at $12\ \mathrm{ms}$ (normalized main-peak amplitude $1$), followed immediately by four clearly distinguishable discrete early reflection spikes that transition into a dense exponentially decaying late stochastic reflection tail; the dashed vertical line at $92\ \mathrm{ms}$ ($80\ \mathrm{ms}$ post-direct) marks the nominal early/late split. Note that in strongly reflective or occluded rooms, the direct tap is not guaranteed to be the tallest peak in the RIR.
 - **Panel (b) Remaining energy decay curve and $T_{60}$**: Because raw bipolar RIR oscillations obscure decay slopes, the vertical axis plots backward-integrated remaining acoustic energy in $\mathrm{dB}$ from time $t$ to $\infty$ (Schroeder integration, formalized next) against time ($\mathrm{ms}$). The elapsed time over which this smooth curve drops from $0\ \mathrm{dB}$ at direct arrival down to $-60\ \mathrm{dB}$ defines reverberation time $T_{60}$.
 - **Panel (c) Direct-to-Reverberant Ratio and critical distance**: Plotting level ($\mathrm{dB}$) relative to the steady reverberant floor ($0\ \mathrm{dB}$ dashed red) against source-to-mic distance $d$ ($\mathrm{m}$), inverse-square direct sound follows $-20\log_{10}(d/d_c)$ (solid green). Normalized here to critical distance $d_c=1.0\ \mathrm{m}$, direct energy dominates inside $d<1.0\ \mathrm{m}$ ($\mathrm{DRR}>0\ \mathrm{dB}$, green shading), matches reverberant energy at $d=1.0\ \mathrm{m}$ ($\mathrm{DRR}=0\ \mathrm{dB}$), and falls below reverberant energy beyond $1.0\ \mathrm{m}$ ($\mathrm{DRR}<0\ \mathrm{dB}$).
 
@@ -315,11 +305,22 @@ Here $V$ is room volume ($\mathrm{m^3}$); $S_i$ and $\alpha_i\in[0,1]$ are the s
 
 Check typical numbers for a $5\ \mathrm{m}\times4\ \mathrm{m}\times2.8\ \mathrm{m}$ living room ($V=56\ \mathrm{m^3}$): with furnishings yielding $A=18\ \mathrm{m^2}$, Eq. (2-3) gives $T_{60}=0.161\times56/18\approx0.50\ \mathrm{s}$. Adding thick rugs or acoustic drapes increases $A$ and shortens $T_{60}$ proportionally.
 
-Where does the magic constant $0.161$ in Eq. (2-3) come from? Under an ideal diffuse field with weak absorption, five transparent steps derive it from energy conservation:
+Where does the constant $0.161$ in Eq. (2-3) come from? Under an ideal diffuse field with weak absorption, first evaluate the acoustic energy flux striking unit wall area per second, unifying the mean free path, Sabine's formula, and critical distance in one sweep:
 
-1. **Diffuse-field premise**: During decay, acoustic energy density $E(t)$ ($\mathrm{J/m^3}$) is spatially uniform and propagates isotropically; each boundary reflection absorbs average fraction $\bar\alpha=A/S$.
-2. **Mean free path**: Integral geometry proves that the average flight distance between successive wall hits inside a convex enclosure of volume $V$ and surface area $S$ equals $\ell_{\mathrm{mfp}}=4V/S$ (check units and intuition: $V/S$ has units of meters, growing with volume and shrinking with wall area; in a cube of side $L$, $\ell_{\mathrm{mfp}}=4L^3/(6L^2)=2L/3$).
-3. **Fractional energy loss rate**: Traveling at speed $c$, a ray strikes walls $c/\ell_{\mathrm{mfp}}=cS/(4V)$ times per second, losing fraction $\bar\alpha$ per hit for a relative power loss rate $\frac{cS\bar\alpha}{4V}=\frac{cA}{4V}$.
+1. **Diffuse-field premise and hemispherical cosine flux integral**: Let indoor reverberant energy density $E(t)$ ($\mathrm{J/m^3}$) be spatially uniform and distributed isotropically over all $4\pi\ \mathrm{sr}$, carrying $E/(4\pi)$ per steradian. Taking a small wall patch with inward normal as polar axis $\vartheta=0$ in spherical coordinates $(\vartheta,\varphi)$, only the incident hemisphere ($0\le\vartheta\le\pi/2$, $0\le\varphi<2\pi$) delivers energy onto the wall at normal velocity component $c\cos\vartheta$ across solid-angle element $\mathrm{d}\Omega=\sin\vartheta\,\mathrm{d}\vartheta\,\mathrm{d}\varphi$. Integrating over the incident hemisphere yields incident wall energy flux $J_{\mathrm{in}}$ ($\mathrm{W/m^2}$):
+
+    $$\begin{aligned}
+    J_{\mathrm{in}}
+    &=\int_0^{2\pi}\!\!\int_0^{\pi/2}\frac{E}{4\pi}
+    (c\cos\vartheta)\sin\vartheta\,
+    \mathrm{d}\vartheta\,\mathrm{d}\varphi\\
+    &=\frac{E c}{4\pi}\cdot2\pi
+    \int_0^{\pi/2}\sin\vartheta\cos\vartheta\,\mathrm{d}\vartheta
+    =\frac{E c}{4}.
+    \end{aligned}$$
+
+2. **Wall-collision rate and mean free path**: With total interior surface area $S$ and total acoustic energy $E V$, total power striking the walls equals $J_{\mathrm{in}} S = E c S/4$; dividing by $E V$ yields the average number of wall collisions per second $\frac{J_{\mathrm{in}} S}{E V}=\frac{cS}{4V}$—equivalently, the convex-enclosure **mean free path** $\ell_{\mathrm{mfp}}=4V/S$ (e.g., $\ell_{\mathrm{mfp}}=4L_0^3/(6L_0^2)=2L_0/3$ in a cube of side $L_0$).
+3. **Fractional energy loss rate**: Each boundary bounce absorbs average fraction $\bar\alpha=A/S$, yielding a fractional power loss rate of $\frac{cS\bar\alpha}{4V}=\frac{cA}{4V}$.
 4. **First-order differential equation**:
 
     $$\begin{aligned}
@@ -327,7 +328,7 @@ Where does the magic constant $0.161$ in Eq. (2-3) come from? Under an ideal dif
     \Longrightarrow\quad E(t)&=E_0\,e^{-\frac{cA}{4V}t}.
     \end{aligned}$$
 
-5. **Evaluating the $60\ \mathrm{dB}$ decay point**: $10\log_{10}(E(T_{60})/E_0) = -60\ \mathrm{dB}$ means $E(T_{60})/E_0=10^{-6}$ (one-millionth in energy—never $10^{-3}$!). Setting $e^{-\frac{cA}{4V}T_{60}}=10^{-6}$, taking natural logs $\frac{cA}{4V}T_{60}=6\ln10$, and substituting $c=343\ \mathrm{m/s}$ gives:
+5. **Evaluating the $60\ \mathrm{dB}$ decay point**: $10\log_{10}(E(T_{60})/E_0) = -60\ \mathrm{dB}$ means $E(T_{60})/E_0=10^{-6}$ (one-millionth in energy, not $10^{-3}$). Setting $e^{-\frac{cA}{4V}T_{60}}=10^{-6}$, taking natural logs $\frac{cA}{4V}T_{60}=6\ln10$, and substituting $c=343\ \mathrm{m/s}$ gives:
 
     $$\begin{aligned}
     T_{60}&=\frac{24\ln10}{c}\frac{V}{A}
@@ -335,13 +336,22 @@ Where does the magic constant $0.161$ in Eq. (2-3) come from? Under an ideal dif
     &\approx0.161\,\frac{V}{A}.
     \end{aligned}$$
 
-Numerator $24\ln10$ is simply $6\ln10$ times geometric factor $4$, giving constant $0.161$ physical units of $\mathrm{s/m}$.
+Numerator $24\ln10$ is simply $6\ln10$ times the geometric factor $4$ from the hemispherical flux integral, giving constant $0.161$ physical units of $\mathrm{s/m}$.
 
 Steps 3–4 linearized discrete survival factor $(1-\bar\alpha)$ per bounce under $\bar\alpha\ll1$. In heavily treated rooms where $\bar\alpha$ is no longer small, $N_c=\frac{cS}{4V}t$ bounces leave exact survival fraction $(1-\bar\alpha)^{N_c} = e^{N_c\ln(1-\bar\alpha)}$, yielding **Eyring's reverberation formula** ([Eyring 1930](https://doi.org/10.1121/1.1915175)):
 
 $$T_{60}=\frac{-0.161\,V}{S\ln(1-\bar\alpha)}.$$
 
 Check both limits: as $\bar\alpha\to0^+$, $-\ln(1-\bar\alpha)\approx\bar\alpha$ reduces $S\bar\alpha=A$ back to Sabine's formula; formally as $\bar\alpha\to1^-$, $-\ln(1-\bar\alpha)\to+\infty$ drives Eyring's $T_{60}\to 0$ cleanly, whereas Sabine's formula falsely predicts residual $0.161V/S$ (though of course an anechoic chamber ceases to host a diffuse field).
+
+When absorption is distributed highly unevenly across the three orthogonal surface pairs—for example, an acoustically tiled ceiling and carpeted floor paired with bare reflective side walls (the flat-room geometry analyzed in Exercise E02-19)—both Sabine and Eyring formulas lose accuracy because they rely on a single surface-averaged $\bar\alpha$. For such rooms, Fitzroy (*JASA*, 31(7), 893–897, 1959; see also Kuttruff, *Room Acoustics*) gives the area-weighted three-axis estimate using opposing-pair areas $S_x,S_y,S_z$ and mean absorptions $\bar\alpha_x,\bar\alpha_y,\bar\alpha_z$:
+
+$$\begin{aligned}
+T_{60} &= \frac{0.161\,V}{S^2}
+\biggl[\frac{S_x}{-\ln(1-\bar\alpha_x)} \\
+&\quad + \frac{S_y}{-\ln(1-\bar\alpha_y)}
++ \frac{S_z}{-\ln(1-\bar\alpha_z)}\biggr].
+\end{aligned}$$
 
 #### 2.4.3 Direct-to-Reverberant Ratio and Critical Distance
 
@@ -360,20 +370,7 @@ $$d_c\approx0.057\sqrt{\frac{V}{T_{60}}}\ \text{(m)}.\tag{2-4}$$
 
 For a directional source (such as a human mouth radiating higher on-axis intensity than its spherical mean by directivity factor $Q$, with $Q=1$ for omnidirectional radiation), multiply $Q$ inside the radical: $d_c\approx0.057\sqrt{QV/T_{60}}$.
 
-To see exactly where the recurring factor of $4$ in Eq. (2-4) and the mean free path comes from, evaluate the hemispherical cosine integral for one-sided acoustic intensity striking a wall in an isotropic diffuse field: let total reverberant energy density $E_r$ ($\mathrm{J/m^3}$) be spread uniformly over $4\pi\ \mathrm{sr}$ at $E_r/(4\pi)$ per steradian. Setting polar axis $\vartheta=0$ along the inward wall normal, only the incident hemisphere ($0\le\vartheta\le\pi/2$, $0\le\varphi<2\pi$) delivers energy onto the wall at normal speed $c\cos\vartheta$ across solid-angle element $\mathrm{d}\Omega = \sin\vartheta\,\mathrm{d}\vartheta\,\mathrm{d}\varphi$. Integrating yields incident wall intensity $J_{\mathrm{in}}$ ($\mathrm{W/m^2}$):
-
-$$\begin{aligned}
-J_{\mathrm{in}}
-&=\int_0^{2\pi}\!\!\int_0^{\pi/2}\frac{E_r}{4\pi}
-(c\cos\vartheta)\sin\vartheta\,
-\mathrm{d}\vartheta\,\mathrm{d}\varphi\\
-&=\frac{E_r c}{4\pi}\cdot2\pi
-\int_0^{\pi/2}\sin\vartheta\cos\vartheta\,\mathrm{d}\vartheta\\
-&=\frac{E_r c}{2}\left[\frac{\sin^2\vartheta}{2}\right]_0^{\pi/2}
-=\frac{E_r c}{4}.
-\end{aligned}$$
-
-With $J_{\mathrm{in}}=E_r c/4$ in hand, critical distance follows in four short steps:
+Reusing the incident wall energy flux $J_{\mathrm{in}}=E_r c/4$ derived from the hemispherical cosine integral in the previous section, critical distance follows immediately in four short steps:
 
 1. **Direct energy density $E_d$**: An omnidirectional source of acoustic power $W$ ($\mathrm{W}$) produces spherical intensity $I_d=W/(4\pi r^2)$ and traveling-wave energy density $E_d=I_d/c=W/(4\pi r^2 c)$ (multiplied by $Q$ for directional sources).
 2. **Steady-state reverberant energy density $E_r$**: Absorbed wall power across equivalent absorption area $A$ equals $P_{\mathrm{abs}}=(E_r c/4)A$. Steady-state power balance $W = E_r cA/4$ gives $E_r=4W/(cA)$.
@@ -405,11 +402,26 @@ On our $5\ \mathrm{m}\times4\ \mathrm{m}\times2.8\ \mathrm{m}$ room ($V=56\ \mat
 | Omnidirectional critical distance ($Q=1$) | $\sqrt{18/(16\pi)}$ | $0.5984\ \mathrm{m}$ |
 | Directional source critical distance ($Q=4$) | $\sqrt{4\times18/(16\pi)}$ | $1.1968\ \mathrm{m}$ |
 
-Three practical takeaways jump out from this table:
+(Note: the first two rows show four decimal places solely for exact arithmetic verification of the `0.161` formula—unrounded $24\ln 10/343\approx 0.161114$ yields $0.5012\ \mathrm{s}$ and $0.4495\ \mathrm{s}$—whereas physical accuracy is at most two to three significant digits.)
+
+Three practical takeaways follow from this table:
 
 - **Rows 1 vs. 2**: Because $-\ln(1-\bar\alpha)\approx0.2220>\bar\alpha\approx0.1991$, Eyring predicts slightly faster decay than first-order Sabine for identical $A$; both assume diffuse mixing, so real-room accuracy depends on absorber placement and frequency band.
-- **Rows 3 vs. 4**: Evaluating exact $\sqrt{QA/(16\pi)}$ (avoiding intermediate $0.057$ rounding) shows reverberation matching an omnidirectional talker by just $\approx 0.60\ \mathrm{m}$, whereas $Q=4$ directional radiation doubles $d_c$ to $\approx 1.20\ \mathrm{m}$.
-- **Beyond critical distance**: $d_c$ marks $\mathrm{DRR}=0\ \mathrm{dB}$, *not* an algorithmic cliff where pickup stops working! On Figure 5(c) ($d_c=1.0\ \mathrm{m}$), standing at $3\ \mathrm{m}$ gives $\mathrm{DRR}=-20\log_{10}(3/1)\approx-9.5\ \mathrm{dB}$—reverberant energy is nearly $9\times$ direct energy, explaining why smart speakers and meeting pods combine beamforming (suppressing off-axis reflections) with WPE dereverberation (stripping late tails).
+- **Rows 3 vs. 4 and room constant $R$**: Evaluating exact Sabine $\sqrt{QA/(16\pi)}$ (avoiding intermediate $0.057$ rounding) shows reverberation matching an omnidirectional talker by just $\approx 0.60\ \mathrm{m}$, whereas $Q=4$ directional radiation doubles $d_c$ to $\approx 1.20\ \mathrm{m}$. Under Hopkins–Stryker / Eyring accounting (where direct waves lose fraction $\bar\alpha$ on their first bounce before entering the reverberant field; see Beranek and Kuttruff), reverberant density becomes $E_r = 4W(1-\bar\alpha)/(cS\bar\alpha) = 4W/(cR)$ with **room constant** $R = \frac{S\bar\alpha}{1-\bar\alpha}$ and $d_c = \sqrt{QR/(16\pi)}$; for this room ($S=90.4\ \mathrm{m^2}, A=18\ \mathrm{m^2}, \bar\alpha\approx0.1991$), $R\approx 22.48\ \mathrm{m^2}$ gives omnidirectional $d_c = 0.669\ \mathrm{m}$ ($+11.7\%$ above Sabine's $0.598\ \mathrm{m}$).
+- **Beyond critical distance**: $d_c$ marks $\mathrm{DRR}=0\ \mathrm{dB}$, *not* an algorithmic cliff where pickup stops working. On Figure 5(c) ($d_c=1.0\ \mathrm{m}$), standing at $3\ \mathrm{m}$ gives $\mathrm{DRR}=-20\log_{10}(3/1)\approx-9.5\ \mathrm{dB}$—reverberant energy is nearly $9\times$ direct energy, explaining why smart speakers and meeting pods combine beamforming (suppressing off-axis reflections) with WPE dereverberation (stripping late tails).
+
+**Low-Frequency Breakdown of the Diffuse-Field Assumption: Schroeder Frequency**
+
+Sabine's formula, critical distance, and the spherical $\operatorname{sinc}$ diffuse noise model in §2.6.8 all rely on the statistical-acoustics premise that many overlapping room normal modes mix the sound field uniformly. Once frequency drops low enough that wavelength approaches the room dimensions, the sound field ceases to be uniformly diffuse and becomes dominated by sparsely separated discrete standing-wave resonances (the **modal regime**)—moving a microphone by half a meter between a pressure antinode and node can swing sound pressure level by over ten decibels. Acoustician M. R. Schroeder (1954, 1962; review in [Schroeder 1996, *JASA* 99(5)](https://doi.org/10.1121/1.414868)) defined the crossover separating the modal regime from the statistical **diffuse regime** by requiring threefold modal overlap $M_{\mathrm{ov}} = \Delta f_{-3\mathrm{dB}}\cdot\frac{\mathrm{d}N}{\mathrm{d}f} = 3$, using single-mode half-power bandwidth $\Delta f_{-3\mathrm{dB}} = \frac{6\ln 10}{2\pi T_{60}} \approx \frac{2.20}{T_{60}}$ and Weyl's asymptotic modal density $\frac{\mathrm{d}N}{\mathrm{d}f} \approx \frac{4\pi V f^2}{c^3}$:
+
+$$\begin{aligned}
+\frac{6\ln 10}{2\pi T_{60}}\cdot\frac{4\pi V f^2}{c^3} &= 3 \\
+\Longrightarrow\quad f_{\mathrm{Sch}}
+&= \sqrt{\frac{c^3}{4\ln 10}}\sqrt{\frac{T_{60}}{V}} \\
+&\approx 2000\sqrt{\frac{T_{60}}{V}}\ \text{(Hz)},
+\end{aligned}$$
+
+where room volume $V$ is in $\mathrm{m^3}$ and reverberation time $T_{60}$ is in $\mathrm{s}$ (at $c=343\ \mathrm{m/s}$, the exact coefficient $\sqrt{c^3/(4\ln 10)}\approx 2093$ is conventionally rounded to $2000$ following Schroeder 1962/1996). Checking our $5\ \mathrm{m}\times4\ \mathrm{m}\times2.8\ \mathrm{m}$ room ($V=56\ \mathrm{m^3}$, lowest axial standing-wave mode at $c/(2\times5)=34.3\ \mathrm{Hz}$): substituting Sabine $T_{60}\approx0.50\ \mathrm{s}$ puts the Schroeder frequency at $f_{\mathrm{Sch}}\approx2000\sqrt{0.50/56}\approx\mathbf{189\ \mathrm{Hz}}$ ($\approx 179\ \mathrm{Hz}$ using Eyring's $0.45\ \mathrm{s}$). In small living rooms, bedrooms, and car cabins (where $V$ of only a few cubic meters pushes $f_{\mathrm{Sch}}$ up to $300\text{--}500\ \mathrm{Hz}$), human vocal fundamentals lie squarely inside the modal regime below $f_{\mathrm{Sch}}$—never blindly apply Sabine decay or isotropic diffuse-coherence models there.
 
 Returning to Figure 5(b), extracting $T_{60}$ cleanly from a single RIR uses **[Schroeder backward energy integration](https://doi.org/10.1121/1.1909343)** (Energy Decay Curve, EDC), integrating remaining squared impulse energy from $t\ge t_0$ onward normalized to total energy at direct arrival $t_0$:
 
@@ -419,7 +431,7 @@ D(t)&=10\log_{10}\frac{E_{\mathrm{rem}}(t)}
 {E_{\mathrm{rem}}(t_0)}.
 \end{aligned}$$
 
-Because $h^2(\tau)\ge0$, advancing lower limit $t$ makes $D(t)$ strictly monotonically non-increasing, smoothing away zero-crossing oscillations (discrete summation Eq. (2-18) is verified in Exercise E02-11). In Figure 5(b), nominal exponential $T_{60}=0.500\ \mathrm{s}$ starts at direct arrival $t_0=0.012\ \mathrm{s}$; superposing four early reflections plus a fixed random tail crosses $-60\ \mathrm{dB}$ at absolute time $\approx 0.514\ \mathrm{s}$, yielding elapsed decay $\approx 0.502\ \mathrm{s}$ after subtracting the $0.012\ \mathrm{s}$ pre-arrival propagation delay (always measure $T_{60}$ from direct arrival, never from $t=0$).
+Because $h^2(\tau)\ge0$, advancing lower limit $t$ makes $D(t)$ strictly monotonically non-increasing, smoothing away zero-crossing oscillations (discrete summation Eq. (2-18) is verified in Exercise E02-11). In Figure 5(b), nominal exponential $T_{60}=500\ \mathrm{ms}$ starts at direct arrival $t_0=12\ \mathrm{ms}$; superposing $4$ discrete early reflections with an exponentially decaying late tail causes the EDC to cross $-60\ \mathrm{dB}$ for the first time at absolute time $506\ \mathrm{ms}$ (i.e., $494\ \mathrm{ms}$ after direct arrival), closely matching the nominal $500\ \mathrm{ms}$ envelope decay (always subtract the $12\ \mathrm{ms}$ pre-arrival propagation silence and measure reverberation time from direct onset).
 
 In real rooms, ambient background noise flattens the decay curve into a horizontal floor well before $-60\ \mathrm{dB}$. Accordingly, [ISO 3382-2:2008 §3.5, §6](https://www.iso.org/standard/36201.html) (see also [ISO 26101-2:2024 §3.1 Note 2 preview](https://cdn.standards.iteh.ai/samples/80878/f518546e15e14344a88592ebc8222e9b/ISO-26101-2-2024.pdf)) fits linear decay slopes over clean mid-decay intervals—such as $-5$ to $-25\ \mathrm{dB}$ extrapolated to $T_{20}$, or $-5$ to $-35\ \mathrm{dB}$ extrapolated to $T_{30}$—avoiding both the initial direct-path drop and the late noise floor.
 
@@ -427,10 +439,10 @@ In real rooms, ambient background noise flattens the decay curve into a horizont
 
 Algorithm development relies on both ground-truth room simulations and real-room acoustic measurements:
 
-- **Geometric Image-Source simulation**: Allen and Berkley's classic **Image-Source Method** ([Allen & Berkley 1979](https://doi.org/10.1121/1.382599)) replaces every specular wall bounce with free-field radiation from a virtual mirror source reflected across the wall plane, summing hundreds or thousands of mirror images by path length and reflection order. Open-source `pyroomacoustics` provides a ready implementation (pinned throughout this repository to [pyroomacoustics 0.10.0](https://pypi.org/project/pyroomacoustics/0.10.0/)). When configuring image-source runs, carefully distinguish **energy absorption** $\alpha$ from **pressure amplitude reflection** $\beta=\sqrt{1-\alpha}$, and always re-evaluate the Schroeder EDC on the synthesized RIR to check actual decay time under finite reflection order.
-- **Exponential Sine-Sweep (ESS) measurement**: To measure real rooms, industry overwhelmingly uses Farina's **Exponential Sine Sweep** ([Farina 2000, AES Convention Paper 5093 §2](https://www.angelofarina.it/Public/papers/134-AES00.PDF); [AES e-Library record](https://aes.org/publications/elibrary-page/?id=10211)): a loudspeaker plays a sinusoid whose instantaneous frequency sweeps exponentially upward while microphones record the full response (including post-sweep reverb tail), followed by inverse-sweep deconvolution. Provided the room stays approximately time-invariant without ADC/amp hard clipping over a sufficiently long sweep, harmonic distortions generated by the loudspeaker pack cleanly at *negative lag times* ahead of the linear impulse response! Exercise E02-19 and its companion $16\ \mathrm{kHz}$ digital sine-sweep audio suite quantify regularized deconvolution, additive measurement noise, tail truncation, and 16-bit PCM quantization step by step.
+- **Geometric Image-Source simulation**: Allen and Berkley's classic **Image-Source Method** ([Allen & Berkley 1979](https://doi.org/10.1121/1.382599)) replaces every specular wall bounce with free-field radiation from a virtual mirror source reflected across the wall plane, summing hundreds or thousands of mirror images by path length and reflection order. Open-source `pyroomacoustics` provides a ready implementation (used in the companion code and appendix experiments: [pyroomacoustics 0.10.0](https://pypi.org/project/pyroomacoustics/0.10.0/)). When configuring image-source runs, carefully distinguish **energy absorption** $\alpha$ from **pressure amplitude reflection** $\beta=\sqrt{1-\alpha}$, and always re-evaluate the Schroeder EDC on the synthesized RIR to check actual decay time under finite reflection order.
+- **Exponential Sine-Sweep (ESS) measurement**: To measure real rooms, industry widely uses Farina's **Exponential Sine Sweep** ([Farina 2000, AES Convention Paper 5093 §2](https://www.angelofarina.it/Public/papers/134-AES00.PDF); [AES e-Library record](https://aes.org/publications/elibrary-page/?id=10211)): a loudspeaker plays a sinusoid whose instantaneous frequency sweeps exponentially upward (rate constant $L_s = T_s/\ln(f_2/f_1)$) while microphones record the full response (including post-sweep reverb tail), followed by inverse-sweep deconvolution—because an ESS has a pink power spectrum ($-3\ \mathrm{dB/oct}$), the matched time-reversed inverse filter applies an exponential decay envelope $e^{-t/L_s}$ (halving amplitude per downward octave in time, i.e., $-6\ \mathrm{dB/oct}$ envelope weighting, giving the inverse filter a $+3\ \mathrm{dB/oct}$ spectrum that cancels the sweep's $-3\ \mathrm{dB/oct}$ slope to whiten the deconvolved response). Provided the room stays approximately time-invariant without ADC/amp hard clipping over a sufficiently long sweep, the $k$-th loudspeaker harmonic distortion impulse shifts cleanly ahead of the linear IR by exact negative lag $\Delta t_k = L_s\ln k$ (requiring $L_s\ln 2 > T_{60}$ so the second-harmonic tail does not overlap the linear response; see Novak, Lotton, and Simon, *JAES*, 63(10), 786–798, 2015, for the synchronized swept-sine exact phase formulation). Exercise E02-17 walks from a 4-point hand calculation through $16\ \mathrm{kHz}$ digital sine-sweep audio to quantify regularized deconvolution, additive measurement noise, tail truncation, and 16-bit PCM quantization step by step.
 
-When playing sweeps is infeasible, blind $T_{60}$ or DRR estimation from natural speech obeys distinct identifiability constraints: two-mic spatial coherence reflects direct-to-diffuse energy ratio directly, whereas $T_{60}$ cannot be inferred from a static power ratio alone and requires tracking free-decay slopes across speech offsets. Upstream tool APIs and precision sound-speed models are audited in [Source Research Manual 1](../codes/chapters/ch00/research_en/01_spatial_and_tracking.md).
+When playing sweeps is infeasible, blind $T_{60}$ or DRR estimation from natural speech obeys distinct identifiability constraints: two-mic spatial coherence reflects direct-to-diffuse energy ratio directly, whereas $T_{60}$ cannot be inferred from a static power ratio alone and requires tracking free-decay slopes across speech offsets. Upstream tool APIs and precision sound-speed models are documented in [Source Research Manual 1](../codes/chapters/ch00/research_en/01_spatial_and_tracking.md).
 
 Having traced sound waves from the talker through the room to the microphones, we next organize multichannel discrete waveforms into the exact three-dimensional data arrays consumed by spatial algorithms.
 
@@ -457,17 +469,30 @@ Here $x_m[\cdot]$ is channel-$m$ real audio, $z_{m,\ell}[q]$ is the windowed fra
 
 In a full two-sided $N$-point DFT array, upper indices $k>N/2$ represent negative physical frequencies $(k-N)f_s/N<0$, and for even $N$, bin $k=N/2$ is the shared Nyquist bin $\pm f_s/2$. Centered boundary padding or tail padding simply zero-extends $x_m$ prior to evaluating Eq. (2-5).
 
-By default our educational code sets $N_w=N$, distinguishing them only when examining within-frame zero-padding ($N>N_w$). Using the periodic Hann window $g[q]=\tfrac12-\tfrac12\cos(2\pi q/N_w)$ ($q=0,\dots,N_w-1$), Exercise E02-13 works out every windowed sample, FFT bin, and overlap-add denominator on a 4-point sequence by hand.
+By default our educational code sets $N_w=N$, distinguishing them only when examining within-frame zero-padding ($N>N_w$). Using the periodic Hann window $g[q]=\tfrac12-\tfrac12\cos(2\pi q/N_w)$ ($q=0,\dots,N_w-1$), Exercise E02-12 works out every windowed sample, FFT bin, and overlap-add denominator on a 4-point sequence by hand.
 
 The core service performed by the STFT is converting one broadband time-delay problem into parallel **approximately narrowband** subproblems. Because fixed delay $\tau$ induces phase rotation $-2\pi f_k\tau$ proportional to $f_k$, every bin $k$ must use its own frequency-specific steering vector $\vec a(f_k,\theta)$.
 
-Why "approximately" narrowband? Because finite window length $N_w$ gives each STFT bin a nonzero mainlobe passband width: components offset by $|\Delta f|\le B$ from bin center $f_k$ incur up to $2\pi B|\tau|\ \mathrm{rad}$ phase approximation error when modeled solely at $f_k$ (e.g., $B=125\ \mathrm{Hz}$ and $|\tau|=0.5\ \mathrm{ms}$ give $\pi/8=22.5^\circ$). Note that passband width $B$ is set by physical window length $N_w$—zero-padding the FFT alone interpolates bin spacing without narrowing the window's mainlobe!
+Why "approximately" narrowband? Because finite window length $N_w$ gives each STFT bin a nonzero mainlobe passband width: components offset by $|\Delta f|\le B$ from bin center $f_k$ incur up to $2\pi B|\tau|\ \mathrm{rad}$ phase approximation error when modeled solely at $f_k$ (e.g., $B=125\ \mathrm{Hz}$ and $|\tau|=0.5\ \mathrm{ms}$ give $\pi/8=22.5^\circ$). Note that passband width $B$ is set by physical window length $N_w$—zero-padding the FFT alone interpolates bin spacing without narrowing the window's mainlobe.
 
-More fundamentally, contrast time-domain linear convolution against per-frame STFT multiplication: whereas infinite-length DTFT turns LTI convolution into exact bin-wise multiplication, finite-window STFT truncates waveforms across frame boundaries—so whenever RIR length is non-negligible, exact STFT output comprises the *multiplicative transfer-function* main term plus **cross-frame terms** spilling in from earlier frames and **cross-band terms** leaking from neighboring bins ([Avargel & Cohen 2007, §II Eqs. (7)–(11)](https://webee.technion.ac.il/Sites/People/IsraelCohen/Publications/TASL_May2007.pdf)).
+More fundamentally, contrast time-domain linear convolution against short-time spectral multiplication: whereas the infinite-length DTFT turns LTI convolution into exact bin-wise multiplication, under a finite-window STFT, Avargel and Cohen ([2007, *IEEE TASLP* 15(4), 1305–1319, §II Eqs. (7)–(11)](https://webee.technion.ac.il/Sites/People/IsraelCohen/Publications/TASL_May2007.pdf); *IEEE SPL* 14(8), 537–540) prove that exact LTI convolution requires **cross-band filters** coupling both frames and frequency bins:
 
-Only when $N_w$ far exceeds inter-sensor direct delays—rendering cross-frame and cross-band terms negligible—does free-field propagation reduce cleanly at each bin $(f_k,\ell)$ to $\vec x\approx\vec a(f_k,\theta)\,s+\vec v$; in reverberant rooms, single-frame multiplication captures only direct + early reflections while multi-frame tails require cross-frame filtering such as Chapter 7 WPE. Exercise E02-16 compares exact linear convolution, circular wrap-around, and truncated per-frame multiplication sample for sample on a 4-point window.
+$$
+X_m[k,\ell] = \sum_{k'}\sum_{p} H_m[k,k',p]\,S[k',\ell-p] + V_m[k,\ell].
+$$
 
-**Worked Anchor: STFT Tensor Dimensions for 1 Second of 4-Microphone Audio**
+The ratio of channel impulse-response length $Q$ to window length $N_w$ dictates how far this exact sum can be truncated:
+
+- **Convolutive Transfer Function (CTF) model**: Dropping cross-band coupling ($k'\ne k$) while retaining a $P$-tap cross-frame convolution inside each subband $k$ yields the CTF model ([Talmon, Cohen, and Gannot 2009, *IEEE TASLP* 17(4)](https://doi.org/10.1109/TASL.2008.2009576)):
+
+  $$
+  X_m[k,\ell] \approx \sum_{p=0}^{P-1} H_m[k,p]\,S[k,\ell-p] + V_m[k,\ell],
+  $$
+
+  where $H_m[k,p]$ is the $p$-th frame tap of subband $k$ and the required frame order scales as $P \approx \lceil (Q + N_w - 1)/H \rceil$. When indoor reverberation far exceeds a single STFT frame (e.g., $T_{60}=0.5\ \mathrm{s}$ vs. $32\ \mathrm{ms}$ window), Chapter 7 Weighted Prediction Error (WPE) dereverberation and Chapter 6 frequency-domain subband acoustic echo cancellation operate within this CTF framework to model and cancel long tails.
+- **Multiplicative Transfer Function (MTF) approximation**: When the analysis window far exceeds the primary impulse-response span ($N_w \gg Q$), dropping cross-frame taps ($p>0$) as well reduces Eq. (2-2) at each cell to single-frame multiplication $X_m[k,\ell] \approx H_m[k]\,S[k,\ell] + V_m[k,\ell]$. The free-field narrowband steering model $\vec x \approx \vec a(f_k,\theta)\,s + \vec v$ used across Chapters 2–5 is a special case of MTF. Exercise E02-14 (with companion `framewise_mtf.wav` audio comparison) dissects the error of per-frame MTF multiplication relative to exact linear convolution sample by sample on a 4-point window.
+
+**Worked Example: STFT Tensor Dimensions for 1 Second of 4-Microphone Audio**
 
 - **Inputs & convention**: $M=4$ microphones, $f_s=16\ \mathrm{kHz}$, duration $1\ \mathrm{s}$ ($16000$ samples/channel), $32\ \mathrm{ms}$ analysis window, $8\ \mathrm{ms}$ hop, one-sided real FFT with zero extra FFT padding.
 - **Step-by-step numbers**:
@@ -504,23 +529,17 @@ $$\begin{aligned}
 &=\hat{\mathbf C}_L+\bar{\vec x}\bar{\vec x}^{H}.
 \end{aligned}\tag{2-7}$$
 
-Verify this directly by expanding the product via $(\vec a-\vec b)^H=\vec a^H-\vec b^H$ and pulling constant $\bar{\vec x}$ outside the sum over $\ell$:
+Expanding the first line into four terms and substituting $\frac1L\sum_{\ell=1}^L\vec x_\ell=\bar{\vec x}$ gives:
 
 $$\begin{aligned}
 \hat{\mathbf C}_L
 &=\frac1L\sum_{\ell=1}^{L}\bigl(
 \vec x_\ell\vec x_\ell^H-\vec x_\ell\bar{\vec x}^H
--\bar{\vec x}\vec x_\ell^H+\bar{\vec x}\bar{\vec x}^H\bigr)\\
-&=\frac1L\sum_{\ell=1}^{L}\vec x_\ell\vec x_\ell^H
--\Bigl(\frac1L\sum_{\ell=1}^{L}\vec x_\ell\Bigr)\bar{\vec x}^H\\
-&\quad-\bar{\vec x}\Bigl(\frac1L\sum_{\ell=1}^{L}\vec x_\ell\Bigr)^H
-+\frac1L\cdot L\,\bar{\vec x}\bar{\vec x}^H\\
-&=\hat{\mathbf R}_{xx}-\bar{\vec x}\bar{\vec x}^H
--\bar{\vec x}\bar{\vec x}^H+\bar{\vec x}\bar{\vec x}^H\\
-&=\hat{\mathbf R}_{xx}-\bar{\vec x}\bar{\vec x}^H.
+-\bar{\vec x}\vec x_\ell^H+\bar{\vec x}\bar{\vec x}^H\bigr)
+=\hat{\mathbf R}_{xx}-\bar{\vec x}\bar{\vec x}^H,
 \end{aligned}$$
 
-Moving $-\bar{\vec x}\bar{\vec x}^H$ to the left recovers Eq. (2-7): $\hat{\mathbf R}_{xx}$ and $\hat{\mathbf C}_L$ coincide if and only if $\bar{\vec x}=\vec 0$, while unbiased unknown-mean i.i.d. covariance uses denominator $L-1$ ($\frac{L}{L-1}\hat{\mathbf C}_L$, compared side by side on two snapshots in Exercise E02-14).
+which rearranges directly to the second line of Eq. (2-7) (exact matrix counterpart to Chapter 1 scalar identity $P_u=V_N+\bar u^2$). Thus $\hat{\mathbf R}_{xx}$ and $\hat{\mathbf C}_L$ coincide if and only if $\bar{\vec x}=\vec 0$, while unbiased unknown-mean i.i.d. covariance replaces denominator $L$ with $L-1$ ($\frac{L}{L-1}\hat{\mathbf C}_L$). Check immediately on two real snapshots $\vec x_1=[1,0]^\top$ and $\vec x_2=[1,2]^\top$: sample mean $\bar{\vec x}=[1,1]^\top$ has outer product $\bar{\vec x}\bar{\vec x}^H=\begin{bmatrix}1&1\\1&1\end{bmatrix}$, leaving uncentered $\hat{\mathbf R}_{xx}=\begin{bmatrix}1&1\\1&2\end{bmatrix}$ (full rank $2$) whereas both centered $\hat{\mathbf C}_L=\begin{bmatrix}0&0\\0&1\end{bmatrix}$ and unbiased $\hat{\mathbf C}_{L-1}=\begin{bmatrix}0&0\\0&2\end{bmatrix}$ have rank $1$—choosing between them must follow the physical signal model, never opportunistic invertibility.
 
 Evaluate one concrete two-mic outer product $\vec x=[1,2\mathrm{j}]^\top$ to inspect every entry of this $M\times M$ matrix:
 
@@ -531,7 +550,7 @@ $$\begin{aligned}
 =\begin{bmatrix}1&-2\mathrm{j}\\2\mathrm{j}&4\end{bmatrix}.
 \end{aligned}$$
 
-Notice how conjugate transposition turns $2\mathrm{j}$ into $-2\mathrm{j}$. Main-diagonal entries $1$ and $4$ equal squared channel magnitudes $|X_1|^2, |X_2|^2$ (non-negative real channel energies); off-diagonal entries $X_1X_2^*=-2\mathrm{j}$ and $X_2X_1^*=+2\mathrm{j}$ are complex conjugates ($\mathbf R^H=\mathbf R$, **Hermitian**), whose phase angles preserve inter-channel phase lags!
+Notice how conjugate transposition turns $2\mathrm{j}$ into $-2\mathrm{j}$. Main-diagonal entries $1$ and $4$ equal squared channel magnitudes $|X_1|^2, |X_2|^2$ (non-negative real channel energies); off-diagonal entries $X_1X_2^*=-2\mathrm{j}$ and $X_2X_1^*=+2\mathrm{j}$ are complex conjugates ($\mathbf R^H=\mathbf R$, **Hermitian**), whose phase angles preserve inter-channel phase lags.
 
 Different algorithms plug distinct statistics into this same outer-product machinery: Capon scanning and MUSIC localization typically form mixture $\hat{\mathbf R}_{xx}$, whereas [§5.4 MVDR beamforming](05_beamforming.md#sec-5-4) ideally requires interference-plus-noise covariance $\hat{\mathbf R}_{vv}$ (often denoted $\hat{\mathbf R}_{nn}$; substituting mixture $\hat{\mathbf R}_{xx}$ yields Minimum Power Distortionless Response, MPDR).
 
@@ -544,7 +563,7 @@ $$\begin{aligned}
 +\mathbf C_{sv}^H\mathbf A^H.
 \end{aligned}$$
 
-The canonical textbook split $\mathbf A\mathbf R_{ss}\mathbf A^H + \sigma^2\mathbf I$ relies simultaneously on *two independent* statistical assumptions: first, zero source–noise cross-covariance $\mathbf C_{sv}=\mathbf 0$ eliminating the last two terms; second, **spatially white noise** $\mathbf R_{vv}=\sigma^2\mathbf I$ at the current bin (note again that $\sigma^2(f)$ varying across frequency—temporally colored noise—does not violate spatial whiteness). Crucially, $\mathbf R_{vv}=\sigma^2\mathbf I$ does *not* imply $\mathbf C_{sv}=\mathbf 0$—Exercise E02-17 constructs an explicit counterexample where spatially white noise negatively correlated with the source wipes out the signal eigenvalue completely!
+The canonical textbook split $\mathbf A\mathbf R_{ss}\mathbf A^H + \sigma^2\mathbf I$ relies simultaneously on *two independent* statistical assumptions: first, zero source–noise cross-covariance $\mathbf C_{sv}=\mathbf 0$ eliminating the last two terms; second, **spatially white noise** $\mathbf R_{vv}=\sigma^2\mathbf I$ at the current bin (note again that $\sigma^2(f)$ varying across frequency—temporally colored noise—does not violate spatial whiteness). Crucially, $\mathbf R_{vv}=\sigma^2\mathbf I$ does *not* imply $\mathbf C_{sv}=\mathbf 0$—Exercise E02-15 constructs an explicit counterexample where spatially white noise negatively correlated with the source cancels the signal eigenvalue completely.
 
 ![Figure 6 End-to-end data pipeline from waveform framing to spatial covariance eigenspectrum](../figures_en/fig06_stft_cov.png)
 
@@ -553,7 +572,7 @@ Trace the complete array dataflow across panels `(a) → (b) → (c) → (d)` of
 - **Panel (a) Overlapping windowed framing**: Over the leading $200\ \mathrm{ms}$ of a $1.2\ \mathrm{s}$, $16\ \mathrm{kHz}$ synthetic harmonic signal (seed `6001`, gray), dashed blue boxes and bell curves show a $32\ \mathrm{ms}$ ($512$-sample) periodic Hann window hopping rightward every $8\ \mathrm{ms}$ ($128$ samples, $75\%$ overlap).
 - **Panel (b) Single-mic spectrogram & snapshot extraction**: Plotting one-sided frequency ($0\text{--}8\ \mathrm{kHz}$) vs. frame start time ($\mathrm{ms}$) in relative digital dB $20\log_{10}(|S|/\max|S|)$ ($[-60, 0]\ \mathrm{dB}$), the white cross marks zero-based frame $\ell=60$ ($480\ \mathrm{ms}$), bin $k=20$ ($625\ \mathrm{Hz}$)—slicing all $M$ channels at $(k,\ell)$ forms spatial snapshot $\vec x(f_k,\ell)$.
 - **Panel (c) Spatial covariance magnitude $|\mathbf R_{xx}|$**: To display subspace structure cleanly, panels `(c)`–`(d)` evaluate an analytical 8-mic half-wavelength ULA hosting two uncorrelated far-field sources at $-20^\circ$ (power $10$) and $30^\circ$ (power $5$), $\mathbf R_{ss}=\operatorname{diag}(10,5)$, plus uncorrelated unit spatially white noise $\mathbf I_8$. Notice the crisp **diagonal-stripe (Hermitian Toeplitz) pattern**: main diagonal $i=j$ equals total per-mic power $10+5+1=16$ everywhere, and every sub-diagonal of constant lag $i-j$ shares identical magnitude because equal-lag ULA pairs share identical baseline $(i-j)d$ (directional phases reside inside the off-diagonal complex arguments).
-- **Panel (d) Eigenvalue spectrum & subspace split**: Plotting the $8$ eigenvalues of `(c)` in $10\log_{10}(\lambda_m/1)\ \mathrm{dB}$ shows the leading $K=2$ red bars towering above $0\ \mathrm{dB}$ (spanning the 2D **signal subspace**) while the trailing $M-K=6$ blue bars sit flat at $0\ \mathrm{dB}$ (unit noise floor, spanning the 6D **noise subspace**). Chapter 4 MUSIC exploits exact orthogonality between true steering vectors and the noise subspace—requiring an accurate narrowband manifold, $K<M$, full column rank $\mathbf A$, non-coherent sources (full-rank $\mathbf R_{ss}$), $\mathbf C_{sv}=\mathbf 0$, and spatially white noise; coherent early reflections or scarce snapshots blur this sharp step.
+- **Panel (d) Eigenvalue spectrum & subspace split**: Plotting the $8$ eigenvalues of `(c)` in $10\log_{10}(\lambda_m/1)\ \mathrm{dB}$ shows the leading $K=2$ red bars standing well above $0\ \mathrm{dB}$ (spanning the 2D **signal subspace**) while the trailing $M-K=6$ noise eigenvalues sit flat on the $0\ \mathrm{dB}$ noise floor (unit noise variance, spanning the 6D **noise subspace**). Chapter 4 MUSIC exploits exact orthogonality between true steering vectors and the noise subspace—requiring an accurate narrowband manifold, $K<M$, full column rank $\mathbf A$, non-coherent sources (full-rank $\mathbf R_{ss}$), $\mathbf C_{sv}=\mathbf 0$, and spatially white noise; coherent early reflections or scarce snapshots blur this sharp step.
 
 On finite data, estimating $\hat{\mathbf R}_{xx}(f_k)$ via Eq. (2-6) hits two practical algebraic boundaries:
 
@@ -563,7 +582,7 @@ On finite data, estimating $\hat{\mathbf R}_{xx}(f_k)$ via Eq. (2-6) hits two pr
 
     Whenever $L<M$, uncentered $M\times M$ $\hat{\mathbf R}_{xx}$ is guaranteed singular; subtracting empirical mean $\bar{\vec x}$ in $\hat{\mathbf C}_L$ imposes $\sum_{\ell=1}^L(\vec x_\ell-\bar{\vec x})=\vec 0$ and caps rank at $L-1$, making $\hat{\mathbf C}_L$ singular whenever $L\le M$.
 
-2. **Correlated overlapping frames & ill-conditioned inversion**: Even for $L\ge M$, $75\%$-overlapping STFT frames share three-quarters of their samples, leaving effective degrees of freedom well below $L$ so trailing eigenvalues jitter near zero and blow up $\hat{\mathbf R}^{-1}$ in Capon/MVDR. No magic rule like "$L\ge 2M$ is always safe" replaces condition-number monitoring and regularization.
+2. **Correlated overlapping frames & ill-conditioned inversion**: Even for $L\ge M$, $75\%$-overlapping STFT frames share three-quarters of their samples, leaving effective degrees of freedom well below $L$ so trailing eigenvalues jitter near zero and amplify $\hat{\mathbf R}^{-1}$ in Capon/MVDR. No fixed rule like "$L\ge 2M$ is always safe" replaces condition-number monitoring and regularization.
 
 Two remedies stabilize finite-sample covariances. First is **linear shrinkage** (equivalent to trace-normalized diagonal loading in §5.4), pulling $\hat{\mathbf R}_{xx}$ toward scaled identity $\bar\sigma_x^2\mathbf I$ with $\bar\sigma_x^2=\operatorname{tr}\hat{\mathbf R}_{xx}/M$:
 
@@ -577,7 +596,9 @@ where $\rho\in[0,1]$ shifts every eigenvalue $\lambda_i\ge 0$ to $(1-\rho)\lambd
 
 Second is weighting snapshots by speech/noise **time-frequency masks** to isolate target vs. interference-plus-noise covariances (§8.4)—suppressing target leakage while reducing effective snapshot count during silence/overlap, so masked covariances are almost always paired with shrinkage/loading.
 
-#### STFT Synthesis: NOLA and Real-Spectrum Endpoints
+**Matrix Coloring and Positive-Semidefinite Boundaries for Spatially Correlated Noise**: Conversely, synthesizing multichannel diffuse or directional test noise with a prescribed unit-diagonal **spatial coherence matrix** $\mathbf\Gamma(f)$ from uncorrelated white noise $\vec z$ ($\mathbb{E}[\vec z\vec z^H]=\mathbf I_M$; spherical/cylindrical methods in [Habets et al., *JASA* 124(5), 2008](https://doi.org/10.1121/1.2987429)) requires a coloring factor $\mathbf C$ with $\vec v=\mathbf C\vec z$ and $\mathbf C\mathbf C^H=\mathbf\Gamma(f)$. Non-negative output power for arbitrary weights requires Hermitian positive semidefiniteness (PSD); applying the spectral decomposition $\mathbf\Gamma=\mathbf U\mathbf\Lambda\mathbf U^H$ in [Chapter 0 §0.3.3](00_math-foundations.md#sec-0-3-3) yields the Hermitian square root $\mathbf C=\mathbf\Gamma^{1/2}=\mathbf U\mathbf\Lambda^{1/2}\mathbf U^H$ satisfying $\mathbb{E}[\vec v\vec v^H]=\mathbf\Gamma$. Unlike lower-triangular Cholesky factorization—which requires strict positive definiteness and fails on rank-deficient boundaries such as DC diffuse noise ($\mathbf\Gamma(0)=\vec 1\vec 1^\top$, rank $1$) or the Chapter 1 E01-01 four-mic bound $\rho=-1/3$—$\mathbf\Gamma^{1/2}$ remains exact and unique across all PSD boundaries, while matrices with genuinely negative eigenvalues (e.g., $\rho=-0.4$, $\lambda_{\min}=-0.2$) must be rejected explicitly as unphysical (reference implementation in [`spatial_coherence_and_dba.py`](../codes/chapters/ch01/core/spatial_coherence_and_dba.py)).
+
+#### 2.5.3 STFT Synthesis: NOLA and Real-Spectrum Endpoints
 
 After frequency-domain beamforming or masking, short-time spectra must synthesize back into playable real waveforms. In [`spectral.py`](../codes/chapters/ch02/core/spectral.py), multichannel STFT tensors have shape `channels × freq_bins × frames` ($M\times F\times L$), from which [`covariance.py`](../codes/chapters/ch03/core/covariance.py) accumulates $F$ matrices of shape $M\times M$. On unmodified spectra, inverse real FFT recovers windowed frame $z_{m,\ell}[q]=x_m[\ell H+q]g[q]$; multiplying again by synthesis window $g[q]$, overlap-adding across frames covering sample $n$, and dividing samplewise by squared-window sum $D_g[n]$ executes **Weighted Overlap-Add (WOLA)**:
 
@@ -592,9 +613,9 @@ Here $q_\ell=n-\ell H$ is local frame offset (zero outside $[0,N_w-1]$). Substit
 
 Enabling `center=True` pads half-windows at both ends so leading and trailing samples sit under nonzero interior window weights during offline processing; in real-time streaming, however, offline zero-lag alignment *never* means zero algorithmic latency—end-to-end latency budgets must faithfully count frame-fill buffering, window length, hop size, and DMA block sizes.
 
-Whenever spectral modifications alter a one-sided spectrum prior to inverse transformation, **real-signal Hermitian endpoint constraints** apply: DC ($k=0$) must be purely real, and for even $N$, self-conjugate Nyquist ($k=N/2$) must likewise be purely real (for odd $N$, no Nyquist bin exists and top bin $k=(N-1)/2$ remains a general complex positive frequency). Matching [NumPy `irfft` conventions](https://numpy.org/doc/stable/reference/generated/numpy.fft.irfft.html), our synthesizer discards imaginary parts written onto DC or even-$N$ Nyquist (tested in Exercise E02-13). Even when every individual frame obeys real-endpoint symmetry, modified adjacent frames generally disagree on shared overlap samples—Exercise E02-20 shows how WOLA resolves inter-frame conflicts via least squares and why re-taking the STFT alters the spectrum.
+Whenever spectral modifications alter a one-sided spectrum prior to inverse transformation, **real-signal Hermitian endpoint constraints** apply: DC ($k=0$) must be purely real, and for even $N$, self-conjugate Nyquist ($k=N/2$) must likewise be purely real (for odd $N$, no Nyquist bin exists and top bin $k=(N-1)/2$ remains a general complex positive frequency). Matching [NumPy `irfft` conventions](https://numpy.org/doc/stable/reference/generated/numpy.fft.irfft.html), our synthesizer discards imaginary parts written onto DC or even-$N$ Nyquist (tested in Exercise E02-12). Even when every individual frame obeys real-endpoint symmetry, modified adjacent frames generally disagree on shared overlap samples—Exercise E02-18 shows how WOLA resolves inter-frame conflicts via least squares and why re-taking the STFT alters the spectrum.
 
-#### Recursive Covariance: Initialization and Effective Weight
+#### 2.5.4 Recursive Covariance: Initialization and Effective Weight
 
 Offline batch processing averages across an utterance via Eq. (2-6); real-time streaming systems tracking moving talkers and non-stationary noise instead update covariances frame by frame via a forgetting-factor **Exponential Moving Average (EMA)**. At bin $f_k$ with non-negative frame mask weight $q_\ell\ge0$ ($q_\ell=1$ unmasked) and forgetting factor $\alpha\in(0,1)$, starting from $\mathbf S_0=\mathbf 0$ and scalar weight accumulator $b_0=0$:
 
@@ -605,22 +626,20 @@ b_\ell&=\alpha\,b_{\ell-1}+(1-\alpha)\,q_\ell,\qquad
 \hat{\mathbf R}_\ell=\frac{\mathbf S_\ell}{b_\ell}.
 \end{aligned}$$
 
-Why propagate scalar weight $b_\ell$ alongside matrix $\mathbf S_\ell$? Unmasked ($q_\ell\equiv1$) from zero initialization, step 1 produces $\mathbf S_1=(1-\alpha)\vec x_1\vec x_1^H$—shrunk to $(1-\alpha)$ of true scale! Dividing by $b_\ell=1-\alpha^\ell$ removes startup bias completely (verified over steps 1–3 in Exercise E02-05, while Exercise E02-07 derives how $\alpha$ rescales with hop size to hold physical memory constant $T=-\Delta t_{\mathrm{upd}}/\ln\alpha$ invariant). Starting from PSD $\mathbf S_0$ with non-negative weights preserves algebraic Hermitian positive semidefiniteness at every step.
+Why propagate scalar weight $b_\ell$ alongside matrix $\mathbf S_\ell$? Unmasked ($q_\ell\equiv1$) from zero initialization, step 1 produces $\mathbf S_1=(1-\alpha)\vec x_1\vec x_1^H$—shrunk to $(1-\alpha)$ of true scale. Dividing by $b_\ell=1-\alpha^\ell$ removes startup bias completely (verified over steps 1–3 in Exercise E02-05, while Exercise E02-07 derives how $\alpha$ rescales with hop size to hold physical forgetting time constant $\tau_{\mathrm{ema}}=-\Delta t_{\mathrm{upd}}/\ln\alpha$ invariant). Starting from PSD $\mathbf S_0$ with non-negative weights preserves algebraic Hermitian positive semidefiniteness at every step.
 
-When every frame at a bin has zero mask weight ($b_\ell=0$), zero valid observations exist—production code must explicitly flag missing statistics and fall back to the prior valid matrix or fixed beamforming rather than stuffing $\varepsilon$ into the denominator to fabricate an all-zero matrix. When mask weights are positive but tiny across frames, normalizing by $\max_t q_t$ prior to accumulation leaves $\hat{\mathbf R}$ invariant while preventing float64 underflow (Exercise E02-06).
+When every frame at a bin has zero mask weight ($b_\ell=0$), zero valid observations exist—production code must explicitly flag missing statistics and fall back to the prior valid matrix or fixed beamforming rather than adding $\varepsilon$ into the denominator to fabricate an all-zero matrix. When mask weights are positive but tiny across frames, normalizing by $\max_t q_t$ prior to accumulation leaves $\hat{\mathbf R}$ invariant while preventing float64 underflow (Exercise E02-06).
 
-Tiny asymmetric floating-point rounding drift is cleaned via $\frac12(\hat{\mathbf R}+\hat{\mathbf R}^H)$, and trace-relative loading $\alpha_{\mathrm{load}}\bar\sigma_R^2\mathbf I$ ($\bar\sigma_R^2=\operatorname{tr}(\hat{\mathbf R})/M$) scales regularization automatically with input signal level.
+Tiny asymmetric floating-point rounding drift is cleaned via $\frac12(\hat{\mathbf R}+\hat{\mathbf R}^H)$, and trace-relative loading $\alpha_{\mathrm{load}}\bar\sigma_R^2\mathbf I$ ($\bar\sigma_R^2=\operatorname{tr}(\hat{\mathbf R})/M$) scales regularization automatically with input signal level. Deploying online covariance estimation in practice also requires pairing voice-activity gating, condition-number monitoring, and singular fallback policies (runnable streaming baselines live in [`ch02_05_baselines.py`](../codes/chapters/ch00/cross_chapter/ch02_05_baselines.py)).
 
-Production logs should always record forgetting factor $\alpha$, VAD/SPP update-freeze rules, cumulative effective weight per bin, condition numbers, and singular/empty fallback policies—concrete parameters that govern real-world performance far more than saying "we used MVDR" (runnable streaming baselines live in [`ch02_05_baselines.py`](../codes/chapters/ch00/cross_chapter/ch02_05_baselines.py)).
+#### 2.5.5 Real Recordings: Why Cross-Terms Cannot Be Casually Dropped
 
-#### 2.5.3 Real Recordings: Why Cross-Terms Cannot Be Casually Dropped
+Textbook derivations routinely assume "uncorrelated noise across channels drops by $1/M$ upon $M$-mic averaging." Real acoustic environments rarely oblige. Let us test this directly on synchronized 16-channel natural recordings from the `NRIVER` (rushing river) scene of the public [DEMAND multichannel ambient noise corpus](https://zenodo.org/records/1227121): slicing the leading $10\ \mathrm{s}$ at $16\ \mathrm{kHz}$ (`[0, 160000)`, $N_{\mathrm{sig}}=160000$ samples/channel), we form equal-weight averages $y[n]=\frac1M\sum_{m=1}^M x_m[n]$ across channels $1\text{--}2$ and channels $1\text{--}16$ (CC BY-SA 3.0; array geometry and processing provenance documented in [`real_audio/README.md`](../codes/chapters/ch02/real_audio/README.md)).
 
-Textbook derivations routinely assume "uncorrelated noise across channels drops by $1/M$ upon $M$-mic averaging." Real acoustic environments rarely oblige. Let us test this directly on synchronized 16-channel natural recordings from the `NRIVER` (rushing river) scene of the public [DEMAND multichannel ambient noise corpus](https://zenodo.org/records/1227121): slicing the leading $10\ \mathrm{s}$ at $16\ \mathrm{kHz}$ (`[0, 160000)`, $T=160000$ samples/channel), we form equal-weight averages $y[n]=\frac1M\sum_{m=1}^M x_m[n]$ across channels $1\text{--}2$ and channels $1\text{--}16$ (CC BY-SA 3.0; array geometry and processing provenance documented in [`real_audio/README.md`](../codes/chapters/ch02/real_audio/README.md)).
-
-Decoding signed 16-bit PCM integers by dividing by $32768$ into full-scale normalized float64 and evaluating uncentered cross-channel second moments $R_{ij}=\frac1T\sum_{n=0}^{T-1}x_i[n]x_j[n]$ splits averaged mean-square power into diagonal vs. off-diagonal cross-terms:
+Decoding signed 16-bit PCM integers by dividing by $32768$ into full-scale normalized float64 and evaluating uncentered cross-channel second moments $R_{ij}=\frac{1}{N_{\mathrm{sig}}}\sum_{n=0}^{N_{\mathrm{sig}}-1}x_i[n]x_j[n]$ splits averaged mean-square power into diagonal vs. off-diagonal cross-terms:
 
 $$\begin{aligned}
-\frac1T\sum_{n=0}^{T-1}y^2[n]
+\frac{1}{N_{\mathrm{sig}}}\sum_{n=0}^{N_{\mathrm{sig}}-1}y^2[n]
 &=\frac{1}{M^2}\sum_{i=1}^{M}\sum_{j=1}^{M}R_{ij}\\
 &=\frac{1}{M^2}\sum_{i=1}^{M}R_{ii}
 +\frac{1}{M^2}\sum_{i\ne j}R_{ij}.
@@ -628,20 +647,20 @@ $$\begin{aligned}
 
 Term 1 ($\frac{1}{M^2}\sum_{i=1}^M R_{ii}$) gives the uncorrelated prediction retaining true per-channel variances without assuming equal gains, while Term 2 ($\frac{1}{M^2}\sum_{i\ne j}R_{ij}$) sums inter-channel spatial correlations:
 
-| Averaged Channels | Diagonal-Only Predicted Power | Actual Averaged Power (with Cross-Terms) | Exported WAV Deviation vs. Diagonal Prediction (dB) |
+| Averaged Channels | Diagonal-Only Predicted Power | Actual Averaged Power (with Cross-Terms) | Deviation vs. Diagonal Prediction (dB) |
 |---|---:|---:|---:|
-| Channels 1–2 ($M=2$) | $5.653225\times10^{-6}$ | $6.683714\times10^{-6}$ | $+0.7272$ |
-| Channels 1–16 ($M=16$) | $6.857479\times10^{-7}$ | $1.809816\times10^{-6}$ | $+4.2148$ |
+| Channels 1–2 ($M=2$) | $5.653\times10^{-6}$ | $6.684\times10^{-6}$ | $+0.73$ |
+| Channels 1–16 ($M=16$) | $6.857\times10^{-7}$ | $1.810\times10^{-6}$ | $+4.21$ |
 
-Powers are reported in dimensionless digital full-scale squared ($\mathrm{FS}^2$, uncalibrated to $\mathrm{Pa}^2$; exported WAVs share unit gain $1$ with single PCM16 rounding).
+Powers are reported in dimensionless digital full-scale squared ($\mathrm{FS}^2$, uncalibrated to $\mathrm{Pa}^2$).
 
-The physical lesson is unmistakable: rushing river water is a spatially extended propagating acoustic field rather than independent electronic thermal hiss, making off-diagonal $R_{ij}$ ($i\ne j$) substantially positive across a compact array! Averaging 2 channels underpredicts residual noise by $\approx 0.73\ \mathrm{dB}$; averaging all 16 channels accumulates $16\times15=240$ positive cross-terms, leaving actual residual noise **$4.21\ \mathrm{dB}$ higher** ($2.64\times$ in power) than naive "$1/M$" white-noise scaling! Never extrapolate electronic white-noise "$10\log_{10}M$" gains onto real ambient sound fields (step-by-step Exercise R01 calculations, 10-segment $1\ \mathrm{s}$ fluctuations, and audio links appear in [Real River Recording Experiment R01](../codes/chapters/ch00/research_en/05_exercises_and_audio.md#sec-u-74856fabf5)).
+The physical lesson is clear: rushing river water is a spatially extended propagating acoustic field rather than independent electronic thermal hiss, making off-diagonal $R_{ij}$ ($i\ne j$) substantially positive across a compact array. Averaging 2 channels underpredicts residual noise by $\approx 0.73\ \mathrm{dB}$; averaging all 16 channels accumulates $16\times15=240$ positive cross-terms, leaving actual residual noise **$4.21\ \mathrm{dB}$ higher** ($2.64\times$ in power) than naive "$1/M$" white-noise scaling. Never extrapolate electronic white-noise "$10\log_{10}M$" gains onto real ambient sound fields (step-by-step Exercise R01 calculations, 10-segment $1\ \mathrm{s}$ fluctuations, and audio links appear in [Real River Recording Experiment R01](../codes/chapters/ch00/research_en/05_exercises_and_audio.md#12-r01-spatial-cross-terms-in-a-real-16-mic-river-recording)).
 
-#### 2.5.4 How Speech Signals Reshape Estimation Conditions
+#### 2.5.6 How Speech Signals Reshape Estimation Conditions
 
 While the narrowband equations above hold for arbitrary waveforms, natural human speech possesses three distinctive time-frequency properties that shape every downstream algorithm:
 
-1. **Wideband span with harmonic pitch structure**: Voiced vowels pack dense pitch harmonics across hundreds of hertz while unvoiced fricatives extend above several kilohertz. Strong vowel periodicity causes raw time-domain cross-correlation to sprout secondary pitch peaks rivaling the true TDOA peak—motivating spectral magnitude whitening in GCC-PHAT (§4.2).
+1. **Wideband span with harmonic pitch structure**: Voiced vowels pack dense pitch harmonics across hundreds of hertz while unvoiced fricatives extend above several kilohertz. Strong vowel periodicity causes raw time-domain cross-correlation to produce secondary pitch peaks rivaling the true TDOA peak—motivating spectral magnitude whitening in GCC-PHAT (§4.2).
 2. **Short-time quasi-stationarity vs. long-term non-stationarity**: Vocal-tract articulation stays roughly stable over $20\text{--}30\ \mathrm{ms}$ yet jumps abruptly across syllables and pauses—justifying tens-of-milliseconds STFT windows paired with forgetting-factor or mask-gated covariance tracking.
 3. **Approximate W-disjoint orthogonality (time-frequency sparsity)**: Even when two or three talkers overlap in time, unfolding the mixture onto a fine STFT grid leaves most individual $(f_k,\ell)$ cells dominated by a single talker—enabling Chapter 8 spatial clustering and mask-based covariance estimation (§8.4), though heavy room reverberation smears energy across frames and erodes sparsity.
 
@@ -672,11 +691,11 @@ Plotting directional magnitude gain $|B(f,\Omega)|$ across angle at fixed freque
 Comparing the left and right panels of Figure 7 shows immediately what happens when inter-sensor spacing crosses half a wavelength:
 
 - **Panel (a) Alias-free beampattern anatomy**: Plotting normalized gain ($\mathrm{dB}$) across horizontal angle ($[-90^\circ, 90^\circ]$) for an 8-mic ULA at half-wavelength spacing $d=\lambda/2$ steered equally to $\theta_0=30^\circ$, the mainlobe stands cleanly at $30^\circ$ with $-3.01\ \mathrm{dB}$ width $\approx 14.8^\circ$ (red double arrow; narrow-beam Eq. (2-11) gives $\approx 14.7^\circ$), highest sidelobe $\approx -12.8\ \mathrm{dB}$ (dashed orange), and crisp cancellation nulls on both sides.
-- **Panel (b) Grating lobe triggered above half-wavelength spacing**: Steering the same 8-mic ULA to $\theta_0=60^\circ$, dashed blue keeps $d=\lambda/2$ with a single $0\ \mathrm{dB}$ peak at $60^\circ$; solid red doubles spacing to $d=\lambda$, narrowing the $60^\circ$ mainlobe while sprouting an equally tall $0\ \mathrm{dB}$ replica peak at $\theta\approx-7.7^\circ$—a **grating lobe** that renders the array completely blind to the difference between $60^\circ$ and $-7.7^\circ$ at this frequency!
+- **Panel (b) Grating lobe triggered above half-wavelength spacing**: Steering the same 8-mic ULA to $\theta_0=60^\circ$, dashed blue keeps $d=\lambda/2$ with a single $0\ \mathrm{dB}$ peak at $60^\circ$; solid red doubles spacing to $d=\lambda$, narrowing the $60^\circ$ mainlobe while creating an equally tall $0\ \mathrm{dB}$ replica peak at $\theta\approx-7.7^\circ$—a **grating lobe** that renders the array completely blind to the difference between $60^\circ$ and $-7.7^\circ$ at this frequency.
 
 #### 2.6.1 Half-Power Beamwidth: How Wide Is the Mainlobe?
 
-**Half-Power Beamwidth (HPBW)** is the angular separation between the two points on either side of the mainlobe peak where power response drops to $1/2$ of its peak. On a decibel scale, half power is $10\log_{10}(0.5)\approx-3.01\ \mathrm{dB}$; in amplitude, half power corresponds to $1/\sqrt{2}\approx0.7071$, giving the identical $20\log_{10}(1/\sqrt{2})\approx-3.01\ \mathrm{dB}$. Thus "half-power points" and "$-3\ \mathrm{dB}$ points" refer to the exact same angles (whereas half *amplitude* is $-6.02\ \mathrm{dB}$, or quarter power).
+**Half-Power Beamwidth (HPBW)** is the angular separation between the two points on either side of the mainlobe peak where power response drops to $1/2$ of its peak. On a decibel scale, half power is $10\log_{10}(0.5)\approx-3.01\ \mathrm{dB}$; in amplitude, half power corresponds to $1/\sqrt{2}\approx0.7071$, giving the identical $20\log_{10}(1/\sqrt{2})\approx-3.01\ \mathrm{dB}$. Thus "half-power points" and "$-3\ \mathrm{dB}$ points" refer to the same angles (whereas half *amplitude* is $-6.02\ \mathrm{dB}$, or quarter power).
 
 In conventional delay-and-sum spatial scanning, once two equal-power sources sit closer together than one HPBW, their mainlobes merge into a single peak. For an $M$-element equal-weight ULA of spacing $d$ steered to $\theta_0$ away from endfire at moderate-to-large $M$, HPBW (in $\mathrm{rad}$) obeys the classic narrow-beam approximation:
 
@@ -684,19 +703,15 @@ $$\begin{aligned}
 \mathrm{HPBW}&\approx\frac{0.886\,\lambda}{Md\cos\theta_0}.
 \end{aligned}\tag{2-11}$$
 
-Where do $0.886$ and denominator $Md$ come from? Three lines of geometric-series summation derive the exact ULA array factor right now. Placing sensors at $md$ ($m=0,1,\dots,M-1$) with $\kappa=2\pi/\lambda$ and equal delay-and-sum weights $w_m=\frac1M e^{+\mathrm{j}\kappa md\sin\theta_0}$, a plane wave from $\theta$ leaves inter-element residual phase $\psi=\kappa d(\sin\theta-\sin\theta_0)$. Summing geometric ratio $e^{\mathrm{j}\psi}$ ($\psi\notin 2\pi\mathbb{Z}$) in Eq. (2-10) and factoring half-angle phases $e^{\mathrm{j}M\psi/2}$ and $e^{\mathrm{j}\psi/2}$ from numerator and denominator gives:
+Where do $0.886$ and denominator $Md$ come from? Placing sensors at $md$ ($m=0,1,\dots,M-1$) with $\kappa=2\pi/\lambda$ and equal delay-and-sum weights $w_m=\frac1M e^{+\mathrm{j}\kappa md\sin\theta_0}$, a plane wave from $\theta$ leaves inter-element residual phase $\psi=\kappa d(\sin\theta-\sin\theta_0)$. Substituting into Eq. (2-10) and applying the finite geometric-series identity from [Chapter 0 §0.2.1 Eq. (0-8)](00_math-foundations.md#sec-0-2-1) (noting that Chapter 0 sums $e^{-\mathrm{j}m\psi}$ whereas here $a_m = e^{+\mathrm{j}\kappa x_m\sin\theta}$ and $B=\vec w^H\vec a$ sum the conjugate $e^{+\mathrm{j}m\psi}$, leaving $|B(\psi)|$ identical and reversing only the linear phase prefactor) yields, for $\psi\notin 2\pi\mathbb{Z}$:
 
 $$\begin{aligned}
 B(\psi)&=\frac{1}{M}\sum_{m=0}^{M-1}e^{\mathrm{j}m\psi}
-=\frac{1-e^{\mathrm{j}M\psi}}{M(1-e^{\mathrm{j}\psi})}\\
-&=\frac{e^{\mathrm{j}(M-1)\psi/2}}{M}\cdot
-\frac{e^{-\mathrm{j}M\psi/2}-e^{\mathrm{j}M\psi/2}}
-{e^{-\mathrm{j}\psi/2}-e^{\mathrm{j}\psi/2}}\\
-&=e^{\mathrm{j}(M-1)\psi/2}\,
+=e^{\mathrm{j}(M-1)\psi/2}\,
 \frac{\sin(M\psi/2)}{M\sin(\psi/2)}.
 \end{aligned}$$
 
-Taking modulus via $e^{\mathrm{j}z}-e^{-\mathrm{j}z}=2\mathrm{j}\sin z$ yields the discrete **Dirichlet kernel** $|B(\psi)|=|\sin(M\psi/2)|/|M\sin(\psi/2)|$. For large $M$ and small $|\psi|\ll1$ near the mainlobe, $M\sin(\psi/2)\approx M\psi/2$; setting $x=M\psi/2$, solving $|\sin x/x|=1/\sqrt{2}$ numerically gives $x_{3\mathrm{dB}}\approx1.39156$, or one-sided phase half-width $\psi_{3\mathrm{dB}}=2x_{3\mathrm{dB}}/M$. Linearizing $\Delta\psi\approx\kappa d\cos\theta_0\,\Delta\theta$ around $\theta_0$ gives full two-sided beamwidth:
+Taking modulus yields the discrete **Dirichlet kernel** $|B(\psi)|=|\sin(M\psi/2)|/|M\sin(\psi/2)|$. For large $M$ and small $|\psi|\ll1$ near the mainlobe, $M\sin(\psi/2)\approx M\psi/2$; setting $x=M\psi/2$, solving $|\sin x/x|=1/\sqrt{2}$ numerically gives $x_{3\mathrm{dB}}\approx1.39156$, or one-sided phase half-width $\psi_{3\mathrm{dB}}=2x_{3\mathrm{dB}}/M$. Linearizing $\Delta\psi\approx\kappa d\cos\theta_0\,\Delta\theta$ around $\theta_0$ gives full two-sided beamwidth:
 
 $$\begin{aligned}
 \mathrm{HPBW}=2\Delta\theta
@@ -709,7 +724,7 @@ Tracing this derivation exposes both physical scaling laws and exact breakdown b
 
 - **Electrical aperture & steering broadening**: Larger array length in wavelengths (higher frequency / shorter $\lambda$, or wider aperture) sharpens the mainlobe; steering away from broadside ($\cos 0^\circ=1$) toward endfire ($\theta_0\to\pm90^\circ$, $\cos\theta_0\to0$) foreshortens projected aperture and broadens the mainlobe. Checking Figure 7(a) ($M=8$, $d=\lambda/2$, $\theta_0=30^\circ$) gives $0.886/(4\cos 30^\circ) \approx 0.2558\ \mathrm{rad} \approx 14.7^\circ$, matching exact numerical $14.8^\circ$ closely.
 - **$Md$ vs. physical span $(M-1)d$**: The Dirichlet denominator carries $Md$, whereas center-to-center physical span between end sensors is $D_{\mathrm{phys}}=(M-1)d$—close at large $M$, but never interchangeable on 3- or 4-mic arrays.
-- **Never plug low-frequency wide beams blindly into Eq. (2-11)**: Small-angle linearization fails once the mainlobe grows wide. On a $7\ \mathrm{cm}$ array at $1\ \mathrm{kHz}$ ($\lambda=0.343\ \mathrm{m}$), $0.886\lambda/0.07\approx4.34\ \mathrm{rad}\approx249^\circ$—exceeding the entire $[-90^\circ,90^\circ]$ visible hemisphere! At low frequencies or near endfire, evaluate the exact Dirichlet kernel to check whether $-3.01\ \mathrm{dB}$ crossings even exist (Chapter 3 Worked Example 3-4); achieving low-frequency directivity on centimeter-scale arrays requires differential or superdirective weighting (Chapter 5 §5.3).
+- **Never plug low-frequency wide beams blindly into Eq. (2-11)**: Small-angle linearization fails once the mainlobe grows wide. On a $7\ \mathrm{cm}$ array at $1\ \mathrm{kHz}$ ($\lambda=0.343\ \mathrm{m}$), $0.886\lambda/0.07\approx4.34\ \mathrm{rad}\approx249^\circ$—exceeding the entire $[-90^\circ,90^\circ]$ visible hemisphere. At low frequencies or near endfire, evaluate the exact Dirichlet kernel to check whether $-3.01\ \mathrm{dB}$ crossings even exist (Chapter 3 Worked Example 3-4); achieving low-frequency directivity on centimeter-scale arrays requires differential or superdirective weighting (Chapter 5 §5.3).
 
 #### 2.6.2 Side Lobe Level: How Much Leaks In from Other Directions?
 
@@ -717,7 +732,7 @@ Tracing this derivation exposes both physical scaling laws and exact breakdown b
 
 By Fourier duality, uniform sensor weights act as a hard rectangular spatial window accompanied by sinc sidelobe ringing; tapering weights higher in the middle and softer at the edges (Hamming or Dolph–Chebyshev shading) suppresses sidelobes substantially at the price of a wider mainlobe. Suppressing only specific strong interferers without broadening the mainlobe uses adaptive MVDR nulling (§5.4).
 
-On small-channel-count arrays, do not blindly quote the $-13.26\ \mathrm{dB}$ asymptotic limit! On Figure 7(a)'s 8-mic ULA at $30^\circ$, visible SLL is $\approx -12.8\ \mathrm{dB}$; on a 4-mic half-wave ULA at broadside $\theta_0=0^\circ$ ($u=\sin\theta$), exact Dirichlet magnitude $\bigl|\frac{\sin(2\pi u)}{4\sin(\pi u/2)}\bigr|$ simplifies via double-angle identities to $|\cos(\pi u/2)\cos(\pi u)| = |z(2z^2-1)|$ for $z=\cos(\pi|u|/2)$ on $1/2<|u|<1$, peaking at $z=1/\sqrt{6}$ with magnitude $2/(3\sqrt{6})\approx0.2722$—an exact SLL of $20\log_{10}[2/(3\sqrt{6})]\approx-11.30\ \mathrm{dB}$; and on a 2-mic half-wave broadside pair, the mainlobe rolls monotonically down to endfire nulls with *zero* sidelobes in visible space.
+On small-channel-count arrays, do not blindly quote the $-13.26\ \mathrm{dB}$ asymptotic limit. On Figure 7(a)'s 8-mic ULA at $30^\circ$, visible SLL is $\approx -12.8\ \mathrm{dB}$; on a 4-mic half-wave ULA at broadside $\theta_0=0^\circ$ ($u=\sin\theta$), exact Dirichlet magnitude $\bigl|\frac{\sin(2\pi u)}{4\sin(\pi u/2)}\bigr|$ simplifies via double-angle identities to $|\cos(\pi u/2)\cos(\pi u)| = |z(2z^2-1)|$ for $z=\cos(\pi|u|/2)$ on $1/2<|u|<1$, peaking at $z=1/\sqrt{6}$ with magnitude $2/(3\sqrt{6})\approx0.2722$—an exact SLL of $20\log_{10}[2/(3\sqrt{6})]\approx-11.30\ \mathrm{dB}$; and on a 2-mic half-wave broadside pair, the mainlobe rolls monotonically down to endfire nulls with *zero* sidelobes in visible space.
 
 #### 2.6.3 Directivity Index: Target-Direction Advantage in a Diffuse Field
 
@@ -761,68 +776,94 @@ $$\begin{aligned}
 \Longrightarrow\quad\theta&=\arcsin(-0.1340)\approx-7.7^\circ,
 \end{aligned}$$
 
-pinpointing the full-height $0\ \mathrm{dB}$ grating lobe at $-7.7^\circ$ in Figure 7(b)! Across consumer microphone spacings $d=2\text{--}4\ \mathrm{cm}$, half-wavelength condition $f\le c/(2d)$ places the alias-free ceiling between $343/(2\times0.04)\approx4.29\ \mathrm{kHz}$ and $343/(2\times0.02)\approx8.58\ \mathrm{kHz}$—the exact spatial dual of Nyquist's temporal sampling theorem ($f_s\ge 2f_{\max}$ vs. $d\le\lambda/2$).
+pinpointing the full-height $0\ \mathrm{dB}$ grating lobe at $-7.7^\circ$ in Figure 7(b). Across consumer microphone spacings $d=2\text{--}4\ \mathrm{cm}$, half-wavelength condition $f\le c/(2d)$ places the alias-free ceiling between $343/(2\times0.04)\approx4.29\ \mathrm{kHz}$ and $343/(2\times0.02)\approx8.58\ \mathrm{kHz}$—the exact spatial dual of Nyquist's temporal sampling theorem ($f_s\ge 2f_{\max}$ vs. $d\le\lambda/2$).
 
 **Why $d \le \lambda/2$ Is the Full-Field Safe Line** (three-step proof):
 
 1. Adjacent sensors experience plane-wave phase lag $\psi = 2\pi d\sin\theta/\lambda$ (measured from broadside);
-2.Modulo-$2\pi$ periodicity makes $\psi$ and $\psi+2\pi$ indistinguishable: whenever $\frac{2\pi d}{\lambda}(\sin\theta-\sin\theta_0)=2\pi$, i.e., $\sin\theta-\sin\theta_0=\frac{\lambda}{d}$, direction $\theta$ produces the exact same sensor phases as $\theta_0$, spawning a unit-height grating lobe;
+2. Modulo-$2\pi$ periodicity makes $\psi$ and $\psi+2\pi$ indistinguishable: whenever $\frac{2\pi d}{\lambda}(\sin\theta-\sin\theta_0)=2\pi$, i.e., $\sin\theta-\sin\theta_0=\frac{\lambda}{d}$, direction $\theta$ produces the same sensor phases as $\theta_0$, creating a unit-height grating lobe;
 3. Because $\sin\in[-1,1]$ bounds $|\sin\theta-\sin\theta_0|\le2$, setting $d<\lambda/2$ forces $\lambda/d>2$, leaving *zero* real solutions across visible space. Conversely, $d>\lambda/2$ forfeits full-field protection—whether a grating lobe actually enters visible space at a given steering angle $\theta_0$ depends on whether $\sin\theta_0 \pm \lambda/d$ lands inside $[-1,1]$.
 
 Check the exact boundary $d=\lambda/2$: steering to $\theta_0=-90^\circ$ leaves $\sin(+90^\circ)-\sin(-90^\circ)=2=\lambda/d$, giving $+\pi$ and $-\pi$ inter-sensor phases (differing by $2\pi$) at opposite endfires. Strict uniqueness over closed $[-90^\circ,90^\circ]$ thus requires $d<\lambda/2$; the engineering rule "$d\le\lambda/2$" simply excludes endfire-to-endfire boundary degeneracy.
+
+**Unified Wave-Vector $\vec k$-Space (`k-space`) Perspective**: Extending 1D linear arrays to arbitrary 2D planar or 3D spherical arrays becomes transparent upon introducing the **wave vector** $\vec k = -\kappa\vec u = -\frac{2\pi}{\lambda}\vec u$ ($\mathrm{rad/m}$) pointing along wave propagation, so steering components read uniformly $a_m(\vec k)=e^{-\mathrm{j}\vec k^\top(\vec r_m-\vec r_1)}$. Every physically propagating far-field plane wave lies on the **dispersion sphere** $\|\vec k\|_2=\omega/c$ (the "visible region") in wavenumber space. Placing microphones on a regular spatial grid samples the continuous sound-pressure field at discrete lattice sites—by multidimensional Fourier duality, the beampattern $B(\vec k)$ repeats periodically across the **reciprocal lattice** in wavenumber space, and visible grating lobes appear whenever any shifted replica falls inside the dispersion sphere (comprehensive treatment in Johnson & Dudgeon 1993 / Van Trees 2002). This single spatial-sampling theorem unifies the 1D ULA threshold $d<\lambda/2$ with the 6-mic regular hexagonal ring threshold $d<\lambda/\sqrt{3}$ derived in Chapter 3 §3.2.2.
 
 #### 2.6.6 Theoretical Precision Floor: The Cramér–Rao Lower Bound
 
 Whereas HPBW asks *when two sources can be separated*, single-source localization asks: *Given sensor coordinates, SNR, and snapshot count, what is the smallest error variance achievable by any unbiased bearing estimator?* That statistical yardstick is the **Cramér–Rao Lower Bound (CRLB, or CRB)**. On a first reading, focus on the qualitative scaling of the five denominator factors in Eq. (2-14), returning for matrix details alongside Chapter 4 DOA benchmarks.
 
-Every CRLB formula depends on its exact signal and noise model (circular complex Gaussians and FIM basics appear in [Chapter 0 §0.6](00_math-foundations.md#sec-0-6); full matrix derivation in [Stoica & Nehorai 1989](https://doi.org/10.1109/29.17564) and Exercise E02-12): here we adopt the **single-source, narrowband far-field, deterministic unknown source waveform** model—$T$ independent snapshots with unknown deterministic complex source amplitudes $s_t$ treated as nuisance parameters (so amplitude fluctuations cannot masquerade as angle cues), an $M$-sensor ULA of spacing $d$, spatially white circular complex Gaussian noise of variance $\sigma^2$, and per-sensor linear $\mathrm{SNR}=\frac{1}{T\sigma^2}\sum_{t=1}^T|s_t|^2$. Unbiased variance on azimuth $\theta$ (in $\mathrm{rad}^2$) is bounded below by:
+Every CRLB formula depends on its exact signal and noise model (circular complex Gaussians and FIM basics appear in [Chapter 0 §0.6](00_math-foundations.md#sec-0-6); full matrix derivation in [Stoica & Nehorai 1989](https://doi.org/10.1109/29.17564)): here we adopt the **single-source, narrowband far-field, deterministic unknown source waveform** model—$L_{\mathrm{snap}}$ independent snapshots with unknown deterministic complex source amplitudes $s_\ell$ treated as nuisance parameters (so amplitude fluctuations cannot masquerade as angle cues), an $M$-sensor ULA of spacing $d$, spatially white circular complex Gaussian noise of variance $\sigma^2$, and per-sensor linear $\mathrm{SNR}=\frac{1}{L_{\mathrm{snap}}\sigma^2}\sum_{\ell=1}^{L_{\mathrm{snap}}}|s_\ell|^2$.
+
+Why do unknown complex source amplitudes project angular information onto the orthogonal complement? In the partitioned Fisher information matrix over $(\theta, s_1, \dots, s_{L_{\mathrm{snap}}})$, any scaling or rotation of the observation mean along $\vec a(\theta)$ is absorbed completely by unknown $s_\ell$; eliminating the nuisance parameters $\{s_\ell\}$ via a **block Schur complement** (tools in [Chapter 0 §0.3.5](00_math-foundations.md#sec-0-3-5) and [§0.6.2](00_math-foundations.md#sec-0-6-2)) projects steering derivative $\vec a'=\partial\vec a/\partial\theta$ orthogonally onto the subspace perpendicular to $\vec a$, $\vec a'_\perp = \bigl(\mathbf I - \frac{\vec a\vec a^H}{M}\bigr)\vec a'$, yielding effective bearing Fisher information $J_\theta = 2 L_{\mathrm{snap}}\,\mathrm{SNR}\,\|\vec a'_\perp\|_2^2$ (factor $2$ from independent real and imaginary parts of proper complex Gaussian noise). On a ULA $x_m=md$ ($m=0,1,\dots,M-1$), setting $\mathbf D_m=\operatorname{diag}(0,1,\dots,M-1)$, $\bar m=(M-1)/2$, and $\eta(\theta)=\frac{2\pi d}{\lambda}\cos\theta$ expands the projection directly:
+
+$$\begin{aligned}
+\vec a'(\theta) &= \mathrm{j}\eta(\theta)\mathbf D_m\vec a(\theta), \\
+\frac{\vec a^H\vec a'}{M} &= \mathrm{j}\eta(\theta)\frac{1}{M}\sum_{m=0}^{M-1} m
+= \mathrm{j}\eta(\theta)\bar m, \\
+\vec a'_\perp &= \left(\mathbf I - \frac{\vec a\vec a^H}{M}\right)\vec a'
+= \mathrm{j}\eta(\theta)(\mathbf D_m - \bar m\mathbf I)\vec a(\theta), \\
+\|\vec a'_\perp\|_2^2 &= \eta^2(\theta)\sum_{m=0}^{M-1}(m-\bar m)^2
+= \eta^2(\theta)\frac{M(M^2-1)}{12}.
+\end{aligned}$$
+
+Substituting $\|\vec a'_\perp\|_2^2$ into $J_\theta = 2 L_{\mathrm{snap}}\,\mathrm{SNR}\,\|\vec a'_\perp\|_2^2$ and inverting gives the unbiased azimuth variance floor (in $\mathrm{rad}^2$):
 
 $$\begin{aligned}
 \eta(\theta)&=\frac{2\pi d}{\lambda}\cos\theta,\\
 G_\theta&=M(M^2-1)\eta^2(\theta),\\
-\mathrm{CRLB}(\theta)&=\frac{6}{T\,\mathrm{SNR}\,G_\theta}.
+\mathrm{CRLB}(\theta)&=\frac{6}{L_{\mathrm{snap}}\,\mathrm{SNR}\,G_\theta}.
 \end{aligned}\tag{2-14}$$
 
 Unpack each physical factor in Eq. (2-14):
 
-- **Phase-sensitivity factor $\eta(\theta) = \frac{2\pi d}{\lambda}\cos\theta$**: Differentiating $\kappa d\sin\theta$ with respect to $\theta$ gives inter-sensor phase sensitivity per radian; approaching endfire ($\theta\to\pm90^\circ$, $\cos\theta\to0$) kills angular phase sensitivity ($\eta(\theta)\to0$) and sends $\mathrm{CRLB}(\theta)\to\infty$, confirming severe endfire bearing degradation on linear arrays.
-- **Sensor-index variance $M(M^2-1)$**: Comes from centered squared sensor indices $\sum_{m=1}^M(m-\bar m)^2=\frac{M(M^2-1)}{12}$ around array centroid $\bar m=\frac{M+1}{2}$ (shifting zero-based $m'=m-1$ in E02-12 shifts $\bar m'=\frac{M-1}{2}$ identically; multiplying by complex-Gaussian FIM factor $2$ leaves $12/2=6$ in the numerator). Distinguish two ways of "adding microphones": **fixing spacing $d$** while adding sensors outward grows aperture so $M(M^2-1)d^2 \sim M^3d^2$ cuts variance as $1/M^3$; **fixing total enclosure span $D=(M-1)d$** while packing sensors denser inside sets $d=D/(M-1)$ so $M(M^2-1)d^2=\frac{M(M+1)}{M-1}D^2 \sim MD^2$ improves variance only linearly as $1/M$—never claim $1/M^3$ gains inside a fixed enclosure!
-- **Local curvature vs. global aliasing**: CRLB evaluates *local* log-likelihood curvature around true $\theta$ and is completely blind to *global* grating lobes! On a 4-mic ULA at $d=\lambda$, $\theta=+30^\circ$ and $\theta=-30^\circ$ share identical steering vector $[1,-1,1,-1]^\top$; plugging $T=100, \mathrm{SNR}=10$ into Eq. (2-14) reports a tiny local bound $\approx0.105^\circ$ even though *no* estimator can tell $-30^\circ$ from $+30^\circ$! Always verify global manifold identifiability before quoting CRLB.
+- **Phase-sensitivity factor $\eta(\theta) = \frac{2\pi d}{\lambda}\cos\theta$**: Differentiating $\kappa d\sin\theta$ with respect to $\theta$ gives inter-sensor phase sensitivity per radian; approaching endfire ($\theta\to\pm90^\circ$, $\cos\theta\to0$) eliminates angular phase sensitivity ($\eta(\theta)\to0$) and sends $\mathrm{CRLB}(\theta)\to\infty$, confirming severe endfire bearing degradation on linear arrays.
+- **Sensor-index variance $M(M^2-1)$**: Comes from centered squared sensor indices $\sum_{m=0}^{M-1}(m-\frac{M-1}{2})^2=\frac{M(M^2-1)}{12}$ (identical whether indices start at $0$ or $1$). Distinguish two ways of "adding microphones": **fixing spacing $d$** while adding sensors outward grows aperture so $M(M^2-1)d^2 \sim M^3d^2$ cuts variance as $1/M^3$; **fixing total enclosure span $D=(M-1)d$** while packing sensors denser inside sets $d=D/(M-1)$ so $M(M^2-1)d^2=\frac{M(M+1)}{M-1}D^2 \sim MD^2$ improves variance only linearly as $1/M$—never claim $1/M^3$ gains inside a fixed enclosure.
+- **Deterministic vs. stochastic source models at low SNR**: Eq. (2-14) applies to the deterministic (conditional) unknown-source model (Stoica & Nehorai 1989). Under the **stochastic (unconditional)** circular-Gaussian source model (Stoica & Nehorai, *IEEE TASSP*, 38(12), 2140–2150, 1990; Van Trees, *Optimum Array Processing*, 2002, §8.4), the single-source ULA CRLB acquires an extra factor $\bigl(1 + \frac{1}{M\cdot\mathrm{SNR}}\bigr)$: negligible when $M\cdot\mathrm{SNR}\gg 1$, but scaling as $1/\mathrm{SNR}^2$ in the low-SNR regime ($M\cdot\mathrm{SNR}\ll 1$).
+- **Local curvature vs. global aliasing**: CRLB evaluates *local* log-likelihood curvature around true $\theta$ and is blind to *global* grating lobes. On a 4-mic ULA at $d=\lambda$, $\theta=+30^\circ$ and $\theta=-30^\circ$ share identical steering vector $[1,-1,1,-1]^\top$; plugging $L_{\mathrm{snap}}=100, \mathrm{SNR}=10$ into Eq. (2-14) reports a small local bound $\approx0.105^\circ$ even though *no* estimator can tell $-30^\circ$ from $+30^\circ$. Always verify global manifold identifiability before quoting CRLB.
 
-#### 2.6.7 Worked Example 2-1: Evaluating All Five Factors of the CRLB
+#### 2.6.7 Worked Example 2-1: Evaluating All Five CRLB Factors and Comparing Observation Budgets
 
-Walk through Eq. (2-14) on a compact tabletop array to see every factor in action:
+Walk through Eq. (2-14) on a compact tabletop array and compare quantitatively how SNR, snapshot count, and incidence angle move the bearing floor:
 
-- **Inputs & convention**: $M=6$-mic ULA, spacing $d=1.4\ \mathrm{cm}=0.014\ \mathrm{m}$ (physical span $(6-1)\times1.4=7.0\ \mathrm{cm}$), $c=343\ \mathrm{m/s}$, $f=1\ \mathrm{kHz}$ ($\lambda=0.343\ \mathrm{m}$), broadside target $\theta=0^\circ$ ($\cos 0^\circ=1$), $T=100$ independent snapshots, evaluating per-sensor $\mathrm{SNR}=10\ \mathrm{dB}$ vs. $0\ \mathrm{dB}$.
-- **Step-by-step substitution**: Convert dB SNR to linear power ratios—$10\ \mathrm{dB}\to\mathrm{SNR}=10^{10/10}=10$ and $0\ \mathrm{dB}\to\mathrm{SNR}=10^{0/10}=1$. At $\mathrm{SNR}=10$, evaluate all five denominator factors:
+- **Inputs & convention**: $M=6$-mic ULA, spacing $d=1.4\ \mathrm{cm}=0.014\ \mathrm{m}$ (physical span $(6-1)\times1.4=7.0\ \mathrm{cm}$), $c=343\ \mathrm{m/s}$, $f=1\ \mathrm{kHz}$ ($\lambda=0.343\ \mathrm{m}$), baseline broadside target $\theta=0^\circ$ ($\cos 0^\circ=1$), $L_{\mathrm{snap}}=100$ independent snapshots, per-sensor $\mathrm{SNR}=10\ \mathrm{dB}$; also compare $0\ \mathrm{dB}$, $20\ \mathrm{dB}$, $1000$ snapshots, and off-broadside $60^\circ$.
+- **Step-by-step substitution**: At $10\ \mathrm{dB}$ ($\mathrm{SNR}=10$), the five denominator factors are:
 
-    1. Independent snapshots $T=100$;
+    1. Independent snapshots $L_{\mathrm{snap}}=100$;
     2. Linear $\mathrm{SNR}=10$;
     3. Index-moment factor $M(M^2-1)=6\times(36-1)=210$;
     4. Squared electrical spacing $(2\pi d/\lambda)^2=(0.028\pi/0.343)^2\approx0.06577$;
     5. Projection factor $\cos^2 0^\circ=1$.
 
-    Multiplying all five gives $T\,\mathrm{SNR}\,G_\theta\approx1.381\times10^4$ ($100\times10\times210\times0.06577\times1$); substituting into Eq. (2-14):
+    Multiplying all five gives $L_{\mathrm{snap}}\,\mathrm{SNR}\,G_\theta\approx1.381\times10^4$; substituting into Eq. (2-14):
 
     $$\begin{aligned}
     \mathrm{CRLB}(0^\circ)
     &\approx\frac{6}{100\times10\times210\times0.06577}\\
-    &\approx4.34\times10^{-4}\ \mathrm{rad}^2.
+    &\approx4.344\times10^{-4}\ \mathrm{rad}^2.
     \end{aligned}$$
 
-- **Final result**: Taking the square root and multiplying by $180/\pi$ gives standard-deviation floor $\sqrt{4.344\times10^{-4}}\approx0.0208\ \mathrm{rad}$ (**$1.19^\circ$**, or $\approx 1.2^\circ$) at $10\ \mathrm{dB}$ SNR; dropping SNR to $0\ \mathrm{dB}$ ($10\times$ lower) inflates variance $10\times$ and standard deviation $\sqrt{10}\times$ to **$3.78^\circ$** ($\approx 3.8^\circ$).
-- **Physical note & boundaries**: Even in free space without reverb or calibration mismatch, a $7\ \mathrm{cm}$ aperture at $1\ \mathrm{kHz}$ and $0\ \mathrm{dB}$ SNR limits single-bin unbiased precision to several degrees; indoors, overlapping-frame correlation reduces effective $T$, while early reflections and phase mismatch inject systematic bias outside this unbiased bound.
+- **Observation-budget comparison** (taking square root and multiplying by $180/\pi$ for degree standard-deviation floor):
+
+    | Observation Budget | Variance Floor $\mathrm{CRLB}$ ($\mathrm{rad}^2$) | Std. Dev. Floor (°) | Physical Scaling Relation |
+    |---|---:|---:|---|
+    | $100$ snapshots, $10\ \mathrm{dB}$, $0^\circ$ (baseline) | $4.344\times10^{-4}$ | $1.19$ | Baseline condition |
+    | $100$ snapshots, $0\ \mathrm{dB}$, $0^\circ$ | $4.344\times10^{-3}$ | $3.78$ | $-10\ \mathrm{dB}$ SNR scales std. dev. by $\sqrt{10}$ |
+    | $100$ snapshots, $20\ \mathrm{dB}$, $0^\circ$ | $4.344\times10^{-5}$ | $0.38$ | $+10\ \mathrm{dB}$ SNR shrinks std. dev. by $1/\sqrt{10}$ |
+    | $1000$ snapshots, $10\ \mathrm{dB}$, $0^\circ$ | $4.344\times10^{-5}$ | $0.38$ | $10\times$ independent snapshots algebraically equivalent to $+10\ \mathrm{dB}$ |
+    | $100$ snapshots, $10\ \mathrm{dB}$, $60^\circ$ | $1.738\times10^{-3}$ | $2.39$ | $\cos^2 60^\circ=1/4$ quadruples variance and doubles std. dev. |
+
+- **Physical note & boundaries**: Raising SNR by $10\ \mathrm{dB}$ and accumulating $10\times$ independent snapshots are algebraically equivalent, yet accumulating $10\times$ stationary snapshots demands a much longer dwell window (during which moving talkers may already shift bearing); indoors, overlapping-frame correlation reduces effective independent snapshots, while early reflections and channel phase mismatch inject systematic bias outside this unbiased floor.
 
 #### 2.6.8 Worked Example 2-2: DI and WNG on the Same Array
 
 Consider an $M=4$ half-wavelength ULA ($d=\lambda/2$, physical span $1.5\lambda$) using broadside ($\theta_0=0^\circ$) equal-weight delay-and-sum ($w_m=1/4$), verifying why both metrics coincide at $\approx 6\ \mathrm{dB}$ at this exact spacing:
 
 - **WNG in dB**: At broadside $\vec a(0^\circ)=[1,1,1,1]^\top$ and $\vec w=[1/4,1/4,1/4,1/4]^\top$, $\vec w^H\vec a=1$ and $\|\vec w\|_2^2=4\times(1/16)=1/4$ hit the linear ceiling $\mathrm{WNG}=4$, giving $\mathrm{WNG}_{\mathrm{dB}} = 10\log_{10}4 \approx$ **6.02 dB** ($\approx$ **6 dB**);
-- **DI**: Integrating the 4-mic half-wavelength DSB pattern over the full 3D sphere in Eq. (2-12) (worked out term by term in E02-10) yields the exact same $\mathrm{DI} = 10\log_{10}4 \approx$ **6.02 dB** ($\approx$ **6 dB**).
+- **DI**: Integrating the 4-mic half-wavelength DSB pattern over the full 3D sphere in Eq. (2-12) (worked out term by term in E02-10) yields the identical $\mathrm{DI} = 10\log_{10}4 \approx$ **6.02 dB** ($\approx$ **6 dB**).
 
-    Why does 3D spherically isotropic $\mathrm{DI}$ equal electronic $\mathrm{WNG}_{\mathrm{dB}}$ identically at $d=\lambda/2$? As proven in Chapter 0 §0.7 and Chapter 5 §5.1, 3D spherical diffuse spatial coherence across omnidirectional sensors separated by $r_{mn}$ equals $\operatorname{sinc}(2r_{mn}/\lambda)$. At half-wavelength spacing $d=\lambda/2$, sensors separated by $q=|m-n|$ lags satisfy $2r_{mn}/\lambda=q$, giving coherence $\operatorname{sinc}(q) = 0$ for every distinct pair ($q\ne0$)! At this exact frequency, the 3D diffuse spatial covariance matrix collapses to $\mathbf I_M$—sharing identical second-order spatial statistics with uncorrelated white sensor noise.
+    Why does 3D spherically isotropic $\mathrm{DI}$ equal electronic $\mathrm{WNG}_{\mathrm{dB}}$ identically at $d=\lambda/2$? As proven in [Chapter 0 §0.7](00_math-foundations.md#sec-0-7) and Chapter 5 §5.1 (foundational derivation and reverberation-chamber measurement in [Cook, Waterhouse, Berendt, Edelman, and Thompson, *JASA* 27(6), 1072–1077, 1955](https://doi.org/10.1121/1.1908122)), 3D spherical diffuse spatial coherence across omnidirectional sensors separated by $r_{mn}$ equals $\operatorname{sinc}(2r_{mn}/\lambda)$. At half-wavelength spacing $d=\lambda/2$, sensors separated by $q=|m-n|$ lags satisfy $2r_{mn}/\lambda=q$, giving coherence $\operatorname{sinc}(q) = 0$ for every distinct pair ($q\ne0$). At this frequency, the 3D diffuse spatial covariance matrix collapses to $\mathbf I_M$—sharing identical second-order spatial statistics with uncorrelated white sensor noise.
 
-    *Convention note*: Throughout this book ([Chapter 0 §0.7](00_math-foundations.md#sec-0-7), §5.1, [Appendix A](16_appendix-symbols-math.md#sec-16-1)), normalized $\operatorname{sinc}(x)=\sin(\pi x)/(\pi x)$ ($\operatorname{sinc}(0)=1$) places zeros at nonzero integers $q$; papers defining unnormalized $\sin x/x$ place those same zeros at $q\pi$. Also note that in automotive cabins or acoustically tiled, carpeted low-ceiling conference rooms where vertical reflections are heavily absorbed, residual noise hugs the horizontal plane closer to a 2D cylindrical diffuse field with coherence $J_0(\kappa d)$ (Exercise E02-21 quantifies the zero-crossing shift and excess noise leakage when 3D superdirective weights operate in a 2D cabin).
+    *Convention note*: Throughout this book ([Chapter 0 §0.7](00_math-foundations.md#sec-0-7), §5.1, [Appendix A](16_appendix-symbols-math.md#sec-16-1)), normalized $\operatorname{sinc}(x)=\sin(\pi x)/(\pi x)$ ($\operatorname{sinc}(0)=1$) places zeros at nonzero integers $q$; papers defining unnormalized $\sin x/x$ place those same zeros at $q\pi$. Also note that in automotive cabins or acoustically tiled, carpeted low-ceiling conference rooms where vertical reflections are heavily absorbed, residual noise hugs the horizontal plane closer to a 2D cylindrical diffuse field with coherence $J_0(\kappa d)$ (Exercise E02-19 quantifies the zero-crossing shift and excess noise leakage when 3D superdirective weights operate in a 2D cabin).
 
 Scaling takeaway: at half-wavelength spacing under 3D diffuse statistics, 4-mic DSB delivers $\approx 6\ \mathrm{dB}$ on both $\mathrm{WNG}_{\mathrm{dB}}$ and $\mathrm{DI}$. At low frequencies ($d\ll\lambda/2$) where diffuse noise becomes strongly correlated ($\operatorname{sinc}(2d/\lambda)\approx1$), DSB keeps $\mathrm{WNG}_{\mathrm{dB}} = 6\ \mathrm{dB}$ while $\mathrm{DI}$ collapses toward $0\ \mathrm{dB}$—whereas switching to superdirective weights holds $\mathrm{DI}$ up at the cost of plunging $\mathrm{WNG}_{\mathrm{dB}}$.
 
@@ -839,7 +880,7 @@ For an isotropic free-field point source at $\vec p$ and omnidirectional microph
 $$\frac{e^{-\mathrm{j}2\pi f r_m/c}}{r_m},\qquad
 r_m=\|\vec p-\vec r_m\|_2.$$
 
-Keeping the exact same reference normalization as §2.3—referencing to direct arrival at microphone 1 (absorbing $\frac{1}{r_1}e^{-\mathrm{j}2\pi f r_1/c}$ into scalar $s$)—yields the **near-field spherical-wave steering vector** $\vec a(f,\vec p)$ parameterized by 3D position $\vec p$:
+Keeping the same reference normalization as §2.3—referencing to direct arrival at microphone 1 (absorbing $\frac{1}{r_1}e^{-\mathrm{j}2\pi f r_1/c}$ into scalar $s$)—yields the **near-field spherical-wave steering vector** $\vec a(f,\vec p)$ parameterized by 3D position $\vec p$:
 
 $$\begin{aligned}
 \phi_m&=\frac{2\pi f}{c}(r_m-r_1),\\
@@ -855,7 +896,7 @@ On baffled enclosures or directional capsules, hardware directional gain ratios 
 
 #### 2.7.2 Range Observability and Unidentifiable Degeneracies
 
-How does a near-field array sense range $r$? Centering the coordinate origin at the array centroid with source $\vec p=r\vec u$ ($r=\|\vec p\|_2$, $\|\vec u\|_2=1$) and sensor offsets $\vec q_m$, expanding $r_m^2=\|r\vec u-\vec q_m\|_2^2 = r^2-2r\vec u^\top\vec q_m+\|\vec q_m\|_2^2$ to second order for $\|\vec q_m\|_2/r\ll1$ gives:
+How does a near-field array sense range $r$? Centering the coordinate origin at the array centroid with source $\vec p=r\vec u$ ($r=\|\vec p\|_2$, $\|\vec u\|_2=1$) and sensor offsets $\vec q_m$, applying the second-order binomial expansion from [Chapter 0 §0.1.2 Eq. (0-5)](00_math-foundations.md#sec-0-1-2) to $r_m^2=\|r\vec u-\vec q_m\|_2^2 = r^2-2r\vec u^\top\vec q_m+\|\vec q_m\|_2^2$ for $\|\vec q_m\|_2/r\ll1$ gives:
 
 $$\begin{aligned}
 r_m&=r-\vec u^\top\vec q_m
@@ -867,9 +908,9 @@ Equation (2-16) cleanly separates three physical orders:
 
 - **Zeroth-order common range $r$**: Cancels out identically upon subtracting reference $r_1$;
 - **First-order linear projection $-\vec u^\top\vec q_m$**: Depends solely on unit bearing $\vec u$ (far-field DOA cue);
-- **Second-order curvature $\frac{\|\vec q_m\|_2^2-(\vec u^\top\vec q_m)^2}{2r}$**: Writing transverse sensor offset perpendicular to line of sight $\vec u$ as $\vec q_{m,\perp}$, numerator $\|\vec q_m\|_2^2-(\vec u^\top\vec q_m)^2$ equals $\|\vec q_{m,\perp}\|_2^2$! At broadside ($\vec u^\top\vec q_m=0$) with edge offset $D/2$, this recovers Fraunhofer excess path $D^2/(8r)$ from §2.2. Smaller $r$ and wider transverse aperture amplify quadratic phase curvature, making $r$ observable from phase.
+- **Second-order curvature $\frac{\|\vec q_m\|_2^2-(\vec u^\top\vec q_m)^2}{2r}$**: Writing transverse sensor offset perpendicular to line of sight $\vec u$ as $\vec q_{m,\perp}$, numerator $\|\vec q_m\|_2^2-(\vec u^\top\vec q_m)^2$ equals $\|\vec q_{m,\perp}\|_2^2$. At broadside ($\vec u^\top\vec q_m=0$) with edge offset $D/2$, this recovers Fraunhofer excess path $D^2/(8r)$ from §2.2. Smaller $r$ and wider transverse aperture amplify quadratic phase curvature, making $r$ observable from phase.
 
-Equation (2-16) simultaneously exposes an instructive geometric degeneracy: on a collinear array when a near-field point source lies strictly along **endfire** ($\vec q_m \parallel \vec u$ for every $m$), transverse offsets vanish identically ($\|\vec q_m\|_2^2-(\vec u^\top\vec q_m)^2=0$), exact distances reduce purely to the first-order linear term, and **spherical phase curvature vanishes to exact zero**! Phase alone then conveys zero curvature range cue, even though inverse-distance amplitude ratios $r_1/r_m$ remain huge (at $0.2\ \mathrm{m}$ endfire in E02-09, the nearest sensor receives $2\times$ the center amplitude despite $0^\circ$ phase curvature error). More broadly, whenever $D^2/(r\lambda)\ll1$, single-aperture ranging becomes ill-conditioned, and robust 3D localization deploys spatially separated subarrays via triangulation.
+Equation (2-16) simultaneously exposes an instructive geometric degeneracy: on a collinear array when a near-field point source lies strictly along **endfire** ($\vec q_m \parallel \vec u$ for every $m$), transverse offsets vanish identically ($\|\vec q_m\|_2^2-(\vec u^\top\vec q_m)^2=0$), exact distances reduce purely to the first-order linear term, and **spherical phase curvature vanishes identically**. Phase alone then conveys zero curvature range cue, even though inverse-distance amplitude ratios $r_1/r_m$ remain large (at $0.2\ \mathrm{m}$ endfire in E02-09, the nearest sensor receives $2\times$ the center amplitude despite $0^\circ$ phase curvature error). More broadly, whenever $D^2/(r\lambda)\ll1$, single-aperture ranging becomes ill-conditioned, and robust 3D localization deploys spatially separated subarrays via triangulation.
 
 #### 2.7.3 Model Selection Must Check Both Phase and Amplitude
 
@@ -881,13 +922,15 @@ With the physical and mathematical foundations of array signal processing firmly
 
 ### Chapter Exercises
 
-Work through the key intermediate numbers by hand before running the verification scripts below (all synthetic WAVs in this chapter are generated from exact deterministic models to isolate physical or numerical mechanisms, rather than representing live room speech recordings):
+This chapter provides 20 graded exercises—work through the key intermediate numbers by hand before running the verification scripts below (all synthetic WAVs in this chapter are generated from exact deterministic models using shared export gain $1$ to isolate physical mechanisms, distinct from real room speech recordings; full 16-bit PCM quantization breakdowns and reproduction steps appear in [Chapter Coding Exercises & Audio Experiments](../codes/chapters/ch00/research_en/05_exercises_and_audio.md)):
 
 - **E02-01–E02-06**: Verified by [`exercises_spatial.py`](../codes/chapters/ch00/cross_chapter/exercises_spatial.py), practicing STFT frame counts, NOLA reconstruction, cross-spectrum phase signs, and masked/recursive covariance normalization;
 - **E02-07–E02-08**: Verified by [`spatial_precision_exercises.py`](../codes/chapters/ch00/cross_chapter/spatial_precision_exercises.py) and [`spatial_model_exercises.py`](../codes/chapters/ch00/cross_chapter/spatial_model_exercises.py), checking EMA physical time constants and one-sided Parseval power scaling;
-- **E02-09–E02-22**: Unified runner [`chapter02_experiments.py`](../codes/chapters/ch02/chapter02_experiments.py), testing near-field amplitude/phase mismatch, 3D vs. 2D DI integration, $T_{60}$ vs. DRR decoupling, subspace-projected CRLB, STFT endpoint & inter-frame consistency, mean centering, finite-window STFT convolution, correlated source–noise counterexamples, dual window normalizations, ESS sweep deconvolution, 3D vs. 2D diffuse coherence mismatch, and fractional-delay FIR filters.
+- **E02-09–E02-20**: Unified runner [`chapter02_experiments.py`](../codes/chapters/ch02/chapter02_experiments.py), testing near-field amplitude/phase mismatch, 3D vs. 2D DI integration, $T_{60}$ vs. DRR decoupling, 4-point STFT & endpoint conventions, short-RIR destructive interference, finite-window MTF convolution approximation, correlated source–noise counterexamples, dual window normalizations, ESS sweep deconvolution, STFT consistency projection, 3D vs. 2D diffuse coherence mismatch, and fractional-delay FIR filters.
 
-#### E02-01: Why Does the Exact Same Recording Yield Two Different Frame Counts?
+<a id="e02-01"></a>
+
+#### E02-01: Why Does the Same Recording Yield Two Different Frame Counts?
 
 On a $1\ \mathrm{s}$, $8\ \mathrm{kHz}$ signal with $256$-sample window and $64$-sample hop, compare `center=False` vs. `center=True`, and compare $256$-point vs. $512$-point real FFTs on the same $256$-sample frame: which array dimensions change, and what physical information remains unchanged?
 
@@ -895,21 +938,27 @@ On a $1\ \mathrm{s}$, $8\ \mathrm{kHz}$ signal with $256$-sample window and $64$
 
 Taking $256$-point vs. $512$-point one-sided real FFTs outputs $256/2+1=129$ vs. $512/2+1=257$ frequency bins at spacings $8000/256=31.25\ \mathrm{Hz}$ vs. $8000/512=15.625\ \mathrm{Hz}$. Within-frame zero-padding interpolates the DTFT grid more finely without increasing observation duration or narrowing window mainlobe resolution; similarly, the $4$ extra boundary-padded frames contain zero newly captured acoustic samples.
 
+<a id="e02-02"></a>
+
 #### E02-02: Checking Channel Order Using Complex Covariance.
 
 Each of two channels has power $2$, with microphone 1 leading microphone 2 in phase by $30^\circ$. Construct two snapshots $\vec x$ and $-\vec x$ with zero empirical mean, and compute the second-moment matrix, eigenvalues, and off-diagonal phase after swapping channel order.
 
 **Reference Solution**: Take $\vec x=\sqrt{2}\,[e^{\mathrm{j}\pi/6},1]^\top$. Because $\vec x$ and $-\vec x$ share identical outer products, their two-frame average has diagonals $R_{11}=R_{22}=2$, upper-right entry $R_{12}=2e^{\mathrm{j}\pi/6}=\sqrt{3}+\mathrm{j}$, and lower-left entry $R_{21}=R_{12}^*=\sqrt{3}-\mathrm{j}$, with $\det = 4-|R_{12}|^2=0$, trace $4$, and eigenvalues $\{0, 4\}$.
 
-If PCB wiring or audio channel indexing swaps the two channels without swapping sensor coordinates in software, $R_{12}$ conjugates to $\sqrt{3}-\mathrm{j}$, flipping phase from $+30^\circ$ to $-30^\circ$ and mirroring estimated bearings left-to-right!
+If PCB wiring or audio channel indexing swaps the two channels without swapping sensor coordinates in software, $R_{12}$ conjugates to $\sqrt{3}-\mathrm{j}$, flipping phase from $+30^\circ$ to $-30^\circ$ and mirroring estimated bearings left-to-right.
 
-Always check conjugation conventions on third-party cross-spectral routines as well: [SciPy `csd(x, y)`](https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.csd.html) computes $X^*Y$, whereas Eq. (2-6) places $X_1X_2^*$ in entry $(1,2)$. Test with an 8-point unit impulse: placing mic 1 at sample $1$ ($X_1=e^{-\mathrm{j}\pi/4}$ at bin $1$) and mic 2 at sample $0$ ($X_2=1$) makes $X_1X_2^*$ and $X_1^*X_2$ conjugates whose IDFTs peak at circular lags $+1$ (index $1$) vs. $-1$ (index $7$). Because both conventions produce valid Hermitian PSD matrices, checking non-negative eigenvalues alone never catches flipped conjugation—always run a known-delay impulse test!
+Always check conjugation conventions on third-party cross-spectral routines as well: [SciPy `csd(x, y)`](https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.csd.html) computes $X^*Y$, whereas Eq. (2-6) places $X_1X_2^*$ in entry $(1,2)$. Test with an 8-point unit impulse: placing mic 1 at sample $1$ ($X_1=e^{-\mathrm{j}\pi/4}$ at bin $1$) and mic 2 at sample $0$ ($X_2=1$) makes $X_1X_2^*$ and $X_1^*X_2$ conjugates whose IDFTs peak at circular lags $+1$ (index $1$) vs. $-1$ (index $7$). Because both conventions produce valid Hermitian PSD matrices, checking non-negative eigenvalues alone never catches flipped conjugation—always run a known-delay impulse test.
+
+<a id="e02-03"></a>
 
 #### E02-03: With Plenty of Overlap, Why Can the Very First Sample Still Be Unrecoverable?
 
 Draw $1\ \mathrm{s}$ of $8\ \mathrm{kHz}$ zero-mean Gaussian samples (seed `20260922`) using a $256$-point periodic Hann window and $64$-sample hop, comparing `center=True` vs. `center=False` STFT/iSTFT round-trips.
 
 **Reference Solution**: With `center=True` trimmed back to original length, float64 round-trip max absolute error stays below $10^{-12}$. With `center=False` (no leading half-window pad), initial sample $n=0$ is covered solely by frame $0$'s leading tap $g[0]=0$, forcing denominator $D_g[0]=0$ in Eq. (2-9) in violation of [SciPy's NOLA condition](https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.check_NOLA.html)—so our `istft` raises an explicit non-invertibility error rather than silently zeroing sample $0$. Checking "$75\%$ overlap" is not enough—every retained sample must satisfy $D_g[n]>0$; causal streaming systems without lookahead padding either use asymmetric nonzero startup windows or discard the initial half-window ramp.
+
+<a id="e02-04"></a>
 
 #### E02-04: Does a Nonzero Mask Sum Guarantee an Invertible Covariance?
 
@@ -922,7 +971,9 @@ $$\mathbf R_A=\begin{bmatrix}1&1/2\\1/2&1/2\end{bmatrix},\qquad
 
 $\mathbf R_A$ has $\det = 1/4$ and full rank $2$ (invertible), whereas $\mathbf R_B$ has $\det = 0$ and rank $1$ (singular). Scaling $[1,0,1]$ to $[2,0,2]$ cancels $2$ between numerator and denominator, leaving $\mathbf R_A$ unchanged.
 
-Effective frame count $L_w=(\sum_t q_t)^2/\sum_t q_t^2$ equals $2$ vs. $1$ here, yet large $L_w$ alone never guarantees full rank—$100$ identical collinear snapshots with $q_t=1$ give $L_w=100$ and rank $1$! When $q_t\equiv 0$, reject estimation explicitly rather than dividing by tiny $\varepsilon$.
+Effective frame count $L_w=(\sum_t q_t)^2/\sum_t q_t^2$ equals $2$ vs. $1$ here, yet large $L_w$ alone never guarantees full rank—$100$ identical collinear snapshots with $q_t=1$ give $L_w=100$ and rank $1$. When $q_t\equiv 0$, reject estimation explicitly rather than dividing by tiny $\varepsilon$.
+
+<a id="e02-05"></a>
 
 #### E02-05: Why Is Recursive Covariance Biased Low at Startup?
 
@@ -938,41 +989,32 @@ For constant snapshot $\vec x=[1,2]^\top$ initialized at $\mathbf S_0=\mathbf 0$
 
 The slow ramp-up of $\mathbf S_t$ is purely a zero-initialization artifact ($b_t<1$) rather than growing signal power; dividing by $b_t$ restores unbiased $\mathbf Q$ immediately at step 1 (while keeping rank $1$, since scale correction never adds spatial diversity). Under frame skipping, VAD pauses, or soft masks, propagate $b_t=\alpha b_{t-1}+(1-\alpha)q_t$ dynamically rather than hardcoding $1-2^{-t}$.
 
+<a id="e02-06"></a>
+
 #### E02-06: Does a Tiny Mask Value Mean No Data Exists?
 
-On the three snapshots $[1,0]^\top, [0,1]^\top, [1,1]^\top$ of E02-04, test scale invariance under $q_t=c\,[1,0,1]$ across $c\in\{10^{-4},1,10^4\}$ for both $\hat{\mathbf R}$ and distortionless MVDR weights, contrasting small positive $c$ against all-zero $q_t\equiv 0$.
+Extending the positive scale invariance of E02-04 on snapshots $[1,0]^\top, [0,1]^\top, [1,1]^\top$ across multiple orders of magnitude, test $q_t=c\,[1,0,1]$ for $c\in\{10^{-4},1,10^4\}$ on both $\hat{\mathbf R}$ and distortionless MVDR weights, contrasting small positive $c$ against all-zero $q_t\equiv 0$.
 
-**Reference Solution**: For any $c>0$:
-
-$$\begin{aligned}
-\sum_t q_t\vec x_t\vec x_t^H
-&=c\begin{bmatrix}2&1\\1&1\end{bmatrix},\qquad
-\sum_t q_t=2c,
-\end{aligned}$$
-
-canceling $c$ identically to produce
-
-$$\begin{aligned}
-\hat{\mathbf R}&=\frac{1}{2c}\,c\begin{bmatrix}2&1\\1&1\end{bmatrix}
-=\begin{bmatrix}1&1/2\\1/2&1/2\end{bmatrix},
-\end{aligned}$$
-
-and leaving $\vec w_{\mathrm{MVDR}}=\hat{\mathbf R}^{-1}\vec a/(\vec a^H\hat{\mathbf R}^{-1}\vec a)$ completely invariant across all three scales (in fact, $c$ cancels inside MVDR even without $2c$ normalization).
+**Reference Solution**: For any $c>0$, dividing weighted sum $c\begin{bmatrix}2&1\\1&1\end{bmatrix}$ by total weight $2c$ cancels $c$ identically, recovering the same $\hat{\mathbf R}=\begin{bmatrix}1&1/2\\1/2&1/2\end{bmatrix}$ as in E02-04 and leaving $\vec w_{\mathrm{MVDR}}=\hat{\mathbf R}^{-1}\vec a/(\vec a^H\hat{\mathbf R}^{-1}\vec a)$ strictly invariant across all three scales (in fact, $c$ cancels inside MVDR even without $2c$ normalization).
 
 Hardcoding an arbitrary threshold like "declare silence whenever $\sum_t q_t<10^{-3}$" falsely discards valid unnormalized soft masks ($c=10^{-4}$), whereas exact $q_t\equiv 0$ carries zero information and must trigger explicit fallback. Converting log-likelihoods via `log-sum-exp` and dividing weights by $q_{\max}=\max_t q_t$ prevents float64 underflow/overflow cleanly across arbitrary dynamic ranges.
 
+<a id="e02-07"></a>
+
 #### E02-07: Under the Same Forgetting Factor, Why Does Changing Hop Size Slow Tracking Down?
 
-Under $\mathbf S_t=\alpha\mathbf S_{t-1}+(1-\alpha)\mathbf Q_t$ at fixed $\alpha=0.98$, compare $1/e$ decay times across update intervals $\Delta t_{\mathrm{upd}}=8\ \mathrm{ms}$ vs. $16\ \mathrm{ms}$, and compute the $\alpha$ values required to maintain a $0.4\ \mathrm{s}$ physical time constant in both cases.
+Under $\mathbf S_t=\alpha\mathbf S_{t-1}+(1-\alpha)\mathbf Q_t$ at fixed $\alpha=0.98$, compare $1/e$ decay time constant $\tau_{\mathrm{ema}}$ across update intervals $\Delta t_{\mathrm{upd}}=8\ \mathrm{ms}$ vs. $16\ \mathrm{ms}$, and compute the $\alpha$ values required to maintain a $\tau_{\mathrm{ema}}=0.4\ \mathrm{s}$ physical time constant in both cases.
 
-**Reference Solution**: After $k$ updates spaced by physical interval $\Delta t_{\mathrm{upd}}$ ($\Delta t_{\mathrm{upd}}=H/f_s$ when updating every frame), initial state weight decays to $\alpha^k$. Equating $\alpha^{t/\Delta t_{\mathrm{upd}}}=e^{-t/T}$ at $t=k\,\Delta t_{\mathrm{upd}}$ gives $T=-\Delta t_{\mathrm{upd}}/\ln\alpha$ and inverse formula $\alpha=e^{-\Delta t_{\mathrm{upd}}/T}$:
+**Reference Solution**: After $k$ updates spaced by physical interval $\Delta t_{\mathrm{upd}}$ ($\Delta t_{\mathrm{upd}}=H/f_s$ when updating every frame), initial state weight decays to $\alpha^k$. Equating $\alpha^{t/\Delta t_{\mathrm{upd}}}=e^{-t/\tau_{\mathrm{ema}}}$ at $t=k\,\Delta t_{\mathrm{upd}}$ gives $\tau_{\mathrm{ema}}=-\Delta t_{\mathrm{upd}}/\ln\alpha$ and inverse formula $\alpha=e^{-\Delta t_{\mathrm{upd}}/\tau_{\mathrm{ema}}}$:
 
-| Update Interval $\Delta t_{\mathrm{upd}}$ | Time Constant $T$ at Fixed $\alpha=0.98$ | Required $\alpha=e^{-\Delta t_{\mathrm{upd}}/T}$ for $T=0.4\ \mathrm{s}$ |
+| Update Interval $\Delta t_{\mathrm{upd}}$ | Time Constant $\tau_{\mathrm{ema}}$ at Fixed $\alpha=0.98$ | Required $\alpha=e^{-\Delta t_{\mathrm{upd}}/\tau_{\mathrm{ema}}}$ for $\tau_{\mathrm{ema}}=0.4\ \mathrm{s}$ |
 |---:|---:|---:|
-| $0.008\ \mathrm{s}$ | $0.395987\ \mathrm{s}$ | $0.980199$ |
-| $0.016\ \mathrm{s}$ | $0.791973\ \mathrm{s}$ | $0.960789$ |
+| $0.008\ \mathrm{s}$ | $0.3960\ \mathrm{s}$ | $0.9802$ |
+| $0.016\ \mathrm{s}$ | $0.7920\ \mathrm{s}$ | $0.9608$ |
 
-Doubling hop size from $8\ \mathrm{ms}$ to $16\ \mathrm{ms}$ halves updates per second—keeping $\alpha=0.98$ doubles memory tail from $\approx 0.40\ \mathrm{s}$ to $\approx 0.79\ \mathrm{s}$ and makes adaptive beams lag behind moving talkers! Always recompute $\alpha=e^{-\Delta t_{\mathrm{upd}}/T}$ whenever hop size or frame-decimation changes (during VAD freeze, state holds constant rather than decaying with wall-clock time). Note also that asymptotic EMA weights $q_k=(1-\alpha)\alpha^k$ satisfy $\sum_{k=0}^\infty q_k=1$ and $\sum_{k=0}^\infty q_k^2=(1-\alpha)/(1+\alpha)$, giving $L_w=(1+\alpha)/(1-\alpha)=99$ at $\alpha=0.98$—though $75\%$ frame overlap means $L_w=99$ is far fewer than $99$ independent snapshots.
+Doubling hop size from $8\ \mathrm{ms}$ to $16\ \mathrm{ms}$ halves updates per second—keeping $\alpha=0.98$ doubles memory tail from $\approx 0.40\ \mathrm{s}$ to $\approx 0.79\ \mathrm{s}$ and makes adaptive beams lag behind moving talkers. Always recompute $\alpha=e^{-\Delta t_{\mathrm{upd}}/\tau_{\mathrm{ema}}}$ whenever hop size or frame-decimation changes (during VAD freeze, state holds constant rather than decaying with wall-clock time). Note also that asymptotic EMA weights $q_k=(1-\alpha)\alpha^k$ satisfy $\sum_{k=0}^\infty q_k=1$ and $\sum_{k=0}^\infty q_k^2=(1-\alpha)/(1+\alpha)$, giving $L_w=(1+\alpha)/(1-\alpha)=99$ at $\alpha=0.98$—though $75\%$ frame overlap means $L_w=99$ is far fewer than $99$ independent snapshots.
+
+<a id="e02-08"></a>
 
 #### E02-08: Why Doesn't the Sum of Squared One-Sided Spectral Magnitudes Equal Signal Power?
 
@@ -981,31 +1023,33 @@ On four real unwindowed samples $x=[1,0,-1,0]$, NumPy's unnormalized forward `rf
 **Reference Solution**:
 
 1. **Time-domain ground truth**: $(1^2+0^2+(-1)^2+0^2)/4=0.5$ (discrete mean square; $\mathrm{Pa}^2$ if calibrated).
-2. **Restoring omitted negative-frequency energy**: Full 4-point DFT is `[0, 2, 0, 2]`, whereas `rfft` keeps only non-negative `[0, 2, 0]`. Interior positive bins paired with conjugate negative bins must carry weight $2$, while unpaired DC ($k=0$) and even-$N$ Nyquist ($k=N/2$) carry weight $1$. For $L$-sample input zero-padded to $N\ge L$ with one-sided $X_+[k]$, Parseval's identity gives total energy $E_x$ and original-support mean square $P_x$:
+2. **Restoring omitted negative-frequency energy**: Full 4-point DFT is `[0, 2, 0, 2]`, whereas `rfft` keeps only non-negative `[0, 2, 0]`. Interior positive bins paired with conjugate negative bins must carry weight $2$, while unpaired DC ($k=0$) and even-$N$ Nyquist ($k=N/2$) carry weight $1$. For $N_x$-sample input zero-padded to $N\ge N_x$ with one-sided $X_+[k]$, Parseval's identity gives total energy $E_x$ and original-support mean square $P_x$:
 
     $$\begin{aligned}
-    E_x&=\sum_{n=0}^{L-1}|x[n]|^2
+    E_x&=\sum_{n=0}^{N_x-1}|x[n]|^2
     =\frac{1}{N}\sum_{k=0}^{\lfloor N/2\rfloor}c_k|X_+[k]|^2,\\
-    P_x&=\frac{1}{NL}\sum_{k=0}^{\lfloor N/2\rfloor}c_k|X_+[k]|^2,\qquad
+    P_x&=\frac{1}{N N_x}\sum_{k=0}^{\lfloor N/2\rfloor}c_k|X_+[k]|^2,\qquad
     c_k=\begin{cases}
     1,&k\in\mathcal{E},\\
     2,&k\notin\mathcal{E},
     \end{cases}
     \end{aligned}\tag{2-17}$$
 
-    where self-conjugate endpoint set is $\mathcal{E}=\{0\}$ for odd $N$ and $\mathcal{E}=\{0,N/2\}$ for even $N$. At $L=N=4$, weighted sum $1\times0^2+2\times2^2+1\times0^2=8$ divided by $NL=16$ gives $P_x=8/16=0.5$.
+    where self-conjugate endpoint set is $\mathcal{E}=\{0\}$ for odd $N$ and $\mathcal{E}=\{0,N/2\}$ for even $N$. At $N_x=N=4$, weighted sum $1\times0^2+2\times2^2+1\times0^2=8$ divided by $N N_x=16$ gives $P_x=8/16=0.5$.
 
 3. **Five representative sequences & zero-padding checks** ("Weighted Sum" = $\sum_k c_k|X_+[k]|^2$):
 
-    | Sequence & Operation | Support $L$ | FFT $N$ | Weighted Sum | Original Mean Square $P_x$ |
+    | Sequence & Operation | Support $N_x$ | FFT $N$ | Weighted Sum | Original Mean Square $P_x$ |
     |---|---:|---:|---:|---:|
-    | $[1,0,-1,0]$, unpadded | 4 | 4 | 8 | $0.500000$ |
-    | $[1,1,1,1]$, pure DC | 4 | 4 | 16 | $1.000000$ |
-    | $[1,-1,1,-1]$, pure Nyquist | 4 | 4 | 16 | $1.000000$ |
-    | $[1,0,-1,0]$, padded with 4 zeros | 4 | 8 | 16 | $0.500000$ |
-    | $[1,-1,0]$, odd-length FFT | 3 | 3 | 6 | $0.666667$ |
+    | $[1,0,-1,0]$, unpadded | 4 | 4 | 8 | $0.5000$ |
+    | $[1,1,1,1]$, pure DC | 4 | 4 | 16 | $1.0000$ |
+    | $[1,-1,1,-1]$, pure Nyquist | 4 | 4 | 16 | $1.0000$ |
+    | $[1,0,-1,0]$, padded with 4 zeros | 4 | 8 | 16 | $0.5000$ |
+    | $[1,-1,0]$, odd-length FFT | 3 | 3 | 6 | $0.6667$ |
 
-Zero-padding $[1,0,-1,0]$ to $N=8$ yields one-sided $[0,1+\mathrm{j},2,1-\mathrm{j},0]$ with weighted sum $2\times(2+4+2)=16$; dividing by $NL=8\times4=32$ preserves $P_x=0.5$ identically (mistakenly dividing by $N^2=64$ dilutes power across the 4 appended zeros to $0.25$). On odd $N=3$ without a Nyquist bin, `[0, 1.5+j*sqrt(3)/2]` carries weight $c_1=2$ on its top bin to give $6/(3\times3)=2/3$. Meanwhile, one-sided periodogram PSD $S_{xx}[k]=c_k|X_+[k]|^2/(f_s L)$ ($\text{power}/\mathrm{Hz}$) multiplied by bin width $f_s/N$ sums straight back to Eq. (2-17) ([NumPy `rfft`](https://numpy.org/doc/stable/reference/generated/numpy.fft.rfft.html), [SciPy `periodogram`](https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.periodogram.html); [`spatial_model_exercises.py`](../codes/chapters/ch00/cross_chapter/spatial_model_exercises.py) explicitly rejects complex inputs and truncating $N<L$).
+Zero-padding $[1,0,-1,0]$ to $N=8$ yields one-sided $[0,1+\mathrm{j},2,1-\mathrm{j},0]$ with weighted sum $2\times(2+4+2)=16$; dividing by $N N_x=8\times4=32$ preserves $P_x=0.5$ identically (mistakenly dividing by $N^2=64$ dilutes power across the 4 appended zeros to $0.25$). On odd $N=3$ without a Nyquist bin, `[0, 1.5+j*sqrt(3)/2]` carries weight $c_1=2$ on its top bin to give $6/(3\times3)=2/3$. Meanwhile, one-sided periodogram PSD $S_{xx}[k]=c_k|X_+[k]|^2/(f_s N_x)$ ($\text{power}/\mathrm{Hz}$) multiplied by bin width $f_s/N$ sums straight back to Eq. (2-17) ([NumPy `rfft`](https://numpy.org/doc/stable/reference/generated/numpy.fft.rfft.html), [SciPy `periodogram`](https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.periodogram.html)).
+
+<a id="e02-09"></a>
 
 #### E02-09: When Phase Error Is Tiny, Can Amplitude Differences Be Ignored?
 
@@ -1020,11 +1064,13 @@ Three omnidirectional mics sit at $x=[-0.1,0,0.1]\ \mathrm{m}$ referenced to the
 | $0.2\ \mathrm{m}$, $90^\circ$ | $0.666667$ / $1$ / $2.000000$ | $0$ / $0$ / $0$ |
 | $2\ \mathrm{m}$, $90^\circ$ | $0.952381$ / $1$ / $1.052632$ | $0$ / $0$ / $0$ |
 
-At $0.2\ \mathrm{m}$ broadside, $\sqrt{0.05}\approx0.2236068\ \mathrm{m}$ gives $0.0236068\ \mathrm{m}$ excess path and $-24.78^\circ$ phase error. Most striking is row 3 ($0.2\ \mathrm{m}$, $90^\circ$ endfire): collinear distances $0.3,0.2,0.1\ \mathrm{m}$ minus $0.2\ \mathrm{m}$ match planar projections $\mp0.1\ \mathrm{m}$ identically, giving **exact $0^\circ$ phase curvature error**—yet the right sensor at $0.1\ \mathrm{m}$ receives **$2\times$ the center amplitude and $3\times$ the left amplitude**! Near-field checks must always inspect phase curvature and amplitude ratios together.
+At $0.2\ \mathrm{m}$ broadside, $\sqrt{0.05}\approx0.2236068\ \mathrm{m}$ gives $0.0236068\ \mathrm{m}$ excess path and $-24.78^\circ$ phase error. Notably, row 3 ($0.2\ \mathrm{m}$, $90^\circ$ endfire) has collinear distances $0.3,0.2,0.1\ \mathrm{m}$ minus $0.2\ \mathrm{m}$ matching planar projections $\mp0.1\ \mathrm{m}$ identically, giving **exact $0^\circ$ phase curvature error**—yet the right sensor at $0.1\ \mathrm{m}$ receives **$2\times$ the center amplitude and $3\times$ the left amplitude**. Near-field checks must always inspect phase curvature and amplitude ratios together.
+
+<a id="e02-10"></a>
 
 #### E02-10: Why Do Spherical Averaging and Horizontal Circular Averaging Give Different DI Values?
 
-On a 4-element half-wavelength broadside ULA with $w_m=1/4$ and axial direction cosine $u$, normalized response $B(u)=\tfrac14\sum_{m=0}^{3}e^{\mathrm{j}\pi mu}$ satisfies $B(0)=1$. Compare 3D spherical vs. 2D horizontal circular DI.
+On a 4-element half-wavelength broadside Uniform Linear Array with $w_m=1/4$ and axial direction cosine $u$, normalized response $B(u)=\tfrac14\sum_{m=0}^{3}e^{\mathrm{j}\pi mu}$ satisfies $B(0)=1$. Compute the average power response and Directivity Index (DI) under a 3D spherically isotropic sound field vs. a 2D horizontal circularly isotropic sound field, compare both against $\mathrm{WNG}_{\mathrm{dB}}$, and explain the geometric reason why the two DI values differ.
 
 **Reference Solution**:
 
@@ -1040,9 +1086,11 @@ On a 4-element half-wavelength broadside ULA with $w_m=1/4$ and axial direction 
 
     since the $4$ diagonal integrals ($m=n$) equal $1$ while off-diagonals vanish via $\frac{\sin[\pi(m-n)]}{\pi(m-n)}=0$—giving $\mathrm{DI}_{\mathrm{3D}} = -10\log_{10}(1/4) = 10\log_{10}4\approx6.020600\ \mathrm{dB}$, matching $\mathrm{WNG}_{\mathrm{dB}}=10\log_{10}4$ identically.
 
-- **2D horizontal circularly isotropic field**: Averaging $|B(\sin\theta)|^2$ uniformly over $\theta\in[0,2\pi)$ yields $\overline{P}_{\mathrm{2D}}\approx0.168327$, or $\mathrm{DI}_{\mathrm{2D}}\approx7.7385\ \mathrm{dB}$! Why higher? Uniform $\theta$ lingers near endfire $\theta=\pm90^\circ$ where $\mathrm{d}u=\cos\theta\,\mathrm{d}\theta\to0$, concentrating integration weight right where $B(\pm 1)=0$ and shrinking denominator power. Always verify whether a paper's DI integrates over the 3D sphere or the 2D horizontal circle!
+- **2D horizontal circularly isotropic field**: Averaging $|B(\sin\theta)|^2$ uniformly over $\theta\in[0,2\pi)$ yields $\overline{P}_{\mathrm{2D}}\approx0.168327$, or $\mathrm{DI}_{\mathrm{2D}}\approx7.7385\ \mathrm{dB}$. Why higher? Uniform $\theta$ lingers near endfire $\theta=\pm90^\circ$ where $\mathrm{d}u=\cos\theta\,\mathrm{d}\theta\to0$, concentrating integration weight right where $B(\pm 1)=0$ and shrinking denominator power. Always verify whether a paper's DI integrates over the 3D sphere or the 2D horizontal circle.
 
-#### E02-11: With the Exact Same Reverberation Time, Can DRR Still Differ?
+<a id="e02-11"></a>
+
+#### E02-11: With the Same Reverberation Time, Can DRR Still Differ?
 
 Using a shared synthetic source and explicitly separated RIR components—direct tap at $12\ \mathrm{ms}$ plus a stochastic reflection tail starting $20\ \mathrm{ms}$ post-direct built from a fixed Gaussian sequence multiplied by envelope $\exp[-3\ln(10)t/T_{60}]$ and scaled to target energy—compare three nominal pairs: $(T_{60},\mathrm{DRR})=(0.2\ \mathrm{s},0\ \mathrm{dB})$, $(0.6\ \mathrm{s},0\ \mathrm{dB})$, and $(0.6\ \mathrm{s},6\ \mathrm{dB})$.
 
@@ -1064,69 +1112,25 @@ Using a shared synthetic source and explicitly separated RIR components—direct
 | $0.6$ / $0$ | $587.6250$ | $600.6250$ |
 | $0.6$ / $6$ | $550.1875$ | $600.6250$ |
 
-Comparing rows 2 and 3 tells the whole story: both share the identical $0.6\ \mathrm{s}$ exponential tail profile, with row 3 simply scaling total tail energy down by $6\ \mathrm{dB}$. Normalized to tail-start energy alone (right column), both cross $-60\ \mathrm{dB}$ at the exact same $600.6250\ \mathrm{ms}$; normalized to full RIR energy $E[n_0]$ including the strong direct tap (middle column), stepping past the direct tap drops row 3 down a steep initial step so remaining tail energy hits $-60\ \mathrm{dB}$ of total energy earlier at $550.1875\ \mathrm{ms}$—explaining why ISO 3382 fits decay slope $\beta$ ($T_{60}=-60/\beta$) starting from $-5\ \mathrm{dB}$ below the direct step!
+Comparing rows 2 and 3 makes the mechanism clear: both share the identical $0.6\ \mathrm{s}$ exponential tail profile, with row 3 scaling total tail energy down by $6\ \mathrm{dB}$. Normalized to tail-start energy alone (right column), both cross $-60\ \mathrm{dB}$ at the same $600.6250\ \mathrm{ms}$; normalized to full RIR energy $E[n_0]$ including the strong direct tap (middle column), stepping past the direct tap drops row 3 down a steep initial step so remaining tail energy hits $-60\ \mathrm{dB}$ of total energy earlier at $550.1875\ \mathrm{ms}$—explaining why ISO 3382 fits decay slope $\beta$ ($T_{60}=-60/\beta$) starting from $-5\ \mathrm{dB}$ below the direct step.
 
-Listen directly to how *decay rate* sounds distinct from *reverberation level* across four synthetic WAVs (tapered noise burst seed `2026092801`, $16\ \mathrm{kHz}$, $2.5\ \mathrm{s}$, shared export gain $1$; keep playback volume fixed—details in [Room Decay Audio Section 24](../codes/chapters/ch00/research_en/05_exercises_and_audio.md#sec-u-4225084214) and the [Main Audio Manifest](../codes/chapters/ch00/audio/MANIFEST.json)): [Delay-aligned dry reference](../codes/chapters/ch07/audio/room_decay_dry.wav), [Short decay / 0 dB DRR](../codes/chapters/ch07/audio/room_decay_short_drr0.wav), [Long decay / 0 dB DRR](../codes/chapters/ch07/audio/room_decay_long_drr0.wav), and [Long decay / 6 dB DRR](../codes/chapters/ch07/audio/room_decay_long_drr6.wav). Note that subtracting dry PCM16 from reverberant PCM16 mixes two independent 16-bit rounding errors, so exact DRR verification always evaluates separated RIR components directly.
+Listen directly to how *decay rate* sounds distinct from *reverberation level* across four synthetic WAVs (keep playback volume fixed; details in [Room Decay Audio Section 24](../codes/chapters/ch00/research_en/05_exercises_and_audio.md#24-decoupling-reverberation-decay-time-t-from-direct-to-reverberant-ratio-drr)): [Delay-aligned dry reference](../codes/chapters/ch07/audio/room_decay_dry.wav), [Short decay / 0 dB DRR](../codes/chapters/ch07/audio/room_decay_short_drr0.wav), [Long decay / 0 dB DRR](../codes/chapters/ch07/audio/room_decay_long_drr0.wav), and [Long decay / 6 dB DRR](../codes/chapters/ch07/audio/room_decay_long_drr6.wav).
 
-#### E02-12: Re-Deriving the CRLB from Sensor Positions and Comparing Observation Budgets
+<a id="e02-12"></a>
 
-Extending Worked Example 2-1 ($M=6$ mics, $d=0.014\ \mathrm{m}$, $c=343\ \mathrm{m/s}$, $f=1\ \mathrm{kHz}$, $100$ independent snapshots, $10\ \mathrm{dB}$ per-sensor SNR), re-derive the CRLB via subspace projection and compare standard-deviation floors across $20\ \mathrm{dB}$ SNR, $1000$ snapshots, and $60^\circ$ bearing.
-
-**Reference Solution**: Under unknown deterministic complex source amplitudes $s_t$, any perturbation of $\vec x_t$ parallel to $\vec a(\theta)$ is indistinguishable from a source gain/phase change and carries zero bearing information. Bearing Fisher information $J_\theta$ therefore projects derivative $\vec a'=\partial\vec a/\partial\theta$ onto the orthogonal complement of $\vec a$ (projector $\mathbf I-\vec a\vec a^H/M$ since $\|\vec a\|_2^2=M$):
-
-$$\begin{aligned}
-\vec a'_\perp
-&=\Bigl(\mathbf I-\frac{\vec a\vec a^H}{M}\Bigr)\vec a',\\
-J_\theta&=2T\,\mathrm{SNR}\,\|\vec a'_\perp\|_2^2,\\
-\mathrm{CRLB}(\theta)&=J_\theta^{-1}.
-\end{aligned}\tag{2-19}$$
-
-Factor $2$ comes from independent real and imaginary parts of proper complex Gaussian noise. On a zero-based ULA $x_m=md$ ($m=0,\dots,M-1$), $a'_m=\mathrm{j}\frac{2\pi d\cos\theta}{\lambda}m\,a_m$, and projector $\mathbf I-\vec a\vec a^H/M$ subtracts centroid index $\bar m=(M-1)/2$ from $m$! Thus:
-
-$$\begin{aligned}
-\|\vec a'_\perp\|_2^2
-&=\left(\frac{2\pi d\cos\theta}{\lambda}\right)^2
-\sum_{m=0}^{M-1}\left(m-\frac{M-1}{2}\right)^2\\
-&=\left(\frac{2\pi d\cos\theta}{\lambda}\right)^2
-\frac{M(M^2-1)}{12},
-\end{aligned}$$
-
-which multiplied by $2T\,\mathrm{SNR}$ flips $2/12=1/6$ into numerator $6$ of Eq. (2-14). Across all four observation budgets:
-
-| Observation Budget | Variance Floor $\mathrm{CRLB}$ ($\mathrm{rad}^2$) | Std. Dev. Floor (°) |
-|---|---:|---:|
-| $100$ snapshots, $10\ \mathrm{dB}$, $0^\circ$ | $0.000434415$ | $1.194194$ |
-| $100$ snapshots, $20\ \mathrm{dB}$, $0^\circ$ | $0.000043441$ | $0.377637$ |
-| $1000$ snapshots, $10\ \mathrm{dB}$, $0^\circ$ | $0.000043441$ | $0.377637$ |
-| $100$ snapshots, $10\ \mathrm{dB}$, $60^\circ$ | $0.001737658$ | $2.388388$ |
-
-Boosting per-sensor SNR by $10\ \mathrm{dB}$ ($\times10$ linear) and collecting $10\times$ more independent snapshots cut variance identically by $1/10$ (std. dev. by $1/\sqrt{10}$), though $10\times$ snapshots demand $10\times$ longer stationary dwell during which moving talkers drift; steering to $60^\circ$ ($\cos^2 60^\circ=1/4$) quadruples variance and doubles standard deviation to $\approx 2.39^\circ$.
-
-#### E02-13: How Does a 4-Point STFT Window, Transform, and Reconstruct?
+#### E02-12: How Does a 4-Point STFT Window, Transform, and Reconstruct?
 
 For frame $x=[1,2,3,4]$, periodic Hann window $g=[0,1/2,1,1/2]$, and unnormalized $N=4$ FFT, compute the windowed frame and one-sided spectrum, then check hop-$2$ overlap synthesis.
 
 **Reference Solution**: Elementwise windowing gives $z=[0,1,3,2]$. Evaluating the 4-point DFT ($e^{-\mathrm{j}\pi kq/2}$) gives DC $Z[0]=0+1+3+2=6$, positive bin $Z[1]=0+1(-\mathrm{j})+3(-1)+2(\mathrm{j})=-3+\mathrm{j}$, and Nyquist $Z[2]=0-1+3-2=0$, i.e., `rfft(z)=[6, -3+1j, 0]`. Single-frame `irfft` returns windowed $z=[0,1,3,2]$ where $g[0]=0$ has erased $x[0]=1$.
 
-Extending input to $6$ samples $[1,2,3,4,5,6]$ across frames starting at $0$ and $2$: frame $2$ windows $[3,4,5,6]$ into $[0,2,5,3]$; multiplying synthesis windows and overlap-adding via Eq. (2-9) gives numerators $[0,1/2,3,2,5,3/2]$ and denominators $D_g[n]=[0,1/4,1,1/2,1,1/4]$. At interior shared sample $n=3$ where both windows equal $1/2$, numerator $(1/2)^2x[3]+(1/2)^2x[3]=x[3]/2$ divided by $1/4+1/4=1/2$ recovers $x[3]=4$ exactly; at unpadded left endpoint $n=0$, $D_g[0]=0$ leaves $x[0]$ unrecoverable—illustrating concretely why `center=True` prepends a half-window of zeros to shift $x[0]$ under nonzero window support.
+Extending input to $6$ samples $[1,2,3,4,5,6]$ across frames starting at $0$ and $2$: frame $2$ windows $[3,4,5,6]$ into $[0,2,5,3]$; multiplying synthesis windows and overlap-adding via Eq. (2-9) gives numerators $[0,1/2,3,2,5,3/2]$ and denominators $D_g[n]=[0,1/4,1,1/2,1,1/4]$. At interior shared sample $n=3$ where both windows equal $1/2$, numerator $(1/2)^2x[3]+(1/2)^2x[3]=x[3]/2$ divided by $1/4+1/4=1/2$ recovers $x[3]=4$ exactly; at unpadded left endpoint $n=0$, $D_g[0]=0$ leaves $x[0]$ unrecoverable, reproducing the exact `center=False` boundary breakdown seen in E02-03.
 
-**Follow-up: What does `irfft` output if imaginary parts are injected onto one-sided endpoints?** Using a rectangular window: at even `n=4`, `irfft([4+9j, 0, 0], n=4)` returns `[1, 1, 1, 1]` and `irfft([0, 0, 4+9j], n=4)` returns `[1, -1, 1, -1]`—discarding $+9\mathrm{j}$ on self-conjugate DC and Nyquist completely; at odd `n=5`, however, top bin $k=2$ in `irfft([0, 0, 1j], n=5)` is *not* Nyquist—paired with $-\mathrm{j}$ at $k=3$, it synthesizes real sinusoid $x[n]=-\frac25\sin(4\pi n/5) \approx [0,-0.235114,0.380423,-0.380423,0.235114]$ (blindly zeroing the last bin's imaginary part on odd $N$ wipes out valid high-frequency audio!).
+**Follow-up: What does `irfft` output if imaginary parts are injected onto one-sided endpoints?** Using a rectangular window: at even `n=4`, `irfft([4+9j, 0, 0], n=4)` returns `[1, 1, 1, 1]` and `irfft([0, 0, 4+9j], n=4)` returns `[1, -1, 1, -1]`—discarding $+9\mathrm{j}$ on self-conjugate DC and Nyquist completely; at odd `n=5`, however, top bin $k=2$ in `irfft([0, 0, 1j], n=5)` is *not* Nyquist—paired with $-\mathrm{j}$ at $k=3$, it synthesizes real sinusoid $x[n]=-\frac25\sin(4\pi n/5) \approx [0,-0.2351,0.3804,-0.3804,0.2351]$ (blindly zeroing the last bin's imaginary part on odd $N$ removes valid high-frequency audio).
 
-#### E02-14: Population Zero Mean vs. Zero Empirical Sample Mean—What Is the Difference?
+<a id="e02-13"></a>
 
-Given two snapshots $\vec x_1=[1,0]^\top$ and $\vec x_2=[1,2]^\top$, compute empirical mean, uncentered second moment, $1/L$ centered covariance, and $1/(L-1)$ unbiased covariance.
-
-**Reference Solution**: Sample mean is $\bar{\vec x}=\frac12(\vec x_1+\vec x_2)=[1,1]^\top$. Uncentered outer products $\begin{bmatrix}1&0\\0&0\end{bmatrix}$ and $\begin{bmatrix}1&2\\2&4\end{bmatrix}$ vs. centered deviations $\vec x_1-\bar{\vec x}=[0,-1]^\top$ and $\vec x_2-\bar{\vec x}=[0,1]^\top$ yield:
-
-$$\begin{aligned}
-\hat{\mathbf R}_{xx}&=\begin{bmatrix}1&1\\1&2\end{bmatrix},\qquad
-\hat{\mathbf C}_L=\begin{bmatrix}0&0\\0&1\end{bmatrix},\qquad
-\hat{\mathbf C}_{L-1}=\begin{bmatrix}0&0\\0&2\end{bmatrix}.
-\end{aligned}$$
-
-Checking Eq. (2-7): $\hat{\mathbf R}_{xx}-\hat{\mathbf C}_L = \begin{bmatrix}1&1\\1&1\end{bmatrix} = \bar{\vec x}\bar{\vec x}^H$. Centered deviations vary only along entry $2$, leaving $\hat{\mathbf C}_L$ and $\hat{\mathbf C}_{L-1}$ rank $1$, whereas rank-one mean outer product $\bar{\vec x}\bar{\vec x}^H$ lifts uncentered $\hat{\mathbf R}_{xx}$ to $\det = 1$ and rank $2$. Even when drawn from a zero-mean population, finite batches rarely have $\bar{\vec x}=\vec 0$; whether to center must follow the physical signal model rather than opportunistic invertibility.
-
-#### E02-15: How Does a Single Reflection Alter Six Output Samples?
+#### E02-13: How Does a Single Reflection Alter Six Output Samples?
 
 Convolve source $u=[1,2,0,-1]$ with discrete RIR $h=[1,0,0.5]$ (zero outside support) retaining the full tail without truncation.
 
@@ -1141,9 +1145,11 @@ Convolve source $u=[1,2,0,-1]$ with discrete RIR $h=[1,0,0.5]$ (zero outside sup
 | 4 | $0$ | $0$ | $0$ |
 | 5 | $0$ | $-0.5$ | $-0.5$ |
 
-Inspect sample $n=3$: direct $-1$ meets delayed reflection $+1$ (from peak $2$ two samples earlier) in exact **destructive interference**, zeroing $x[3]=0$! Total energies reflect this directly: direct energy is $1+4+0+1=6$ and standalone reflection energy is $0.25\times6=1.5$, yet combined output energy is $1+4+0.25+0+0+0.25=5.5<6$ due to negative coherent cross-term $2\sum_n u[n](0.5u[n-2])=2\times(-1)=-2$ ($6+1.5-2=5.5$). Energies add directly only for orthogonal or uncorrelated signals—coherent early reflections can cancel direct speech just as readily as reinforce it.
+Inspect sample $n=3$: direct $-1$ meets delayed reflection $+1$ (from peak $2$ two samples earlier) in exact **destructive interference**, zeroing $x[3]=0$. Total energies reflect this directly: direct energy is $1+4+0+1=6$ and standalone reflection energy is $0.25\times6=1.5$, yet combined output energy is $1+4+0.25+0+0+0.25=5.5<6$ due to negative coherent cross-term $2\sum_n u[n](0.5u[n-2])=2\times(-1)=-2$ ($6+1.5-2=5.5$). Energies add directly only for orthogonal or uncorrelated signals—coherent early reflections can cancel direct speech just as readily as reinforce it.
 
-#### E02-16: After Zero-Padding the FFT, Does Per-Frame Multiplication Equal Full Linear Convolution?
+<a id="e02-14"></a>
+
+#### E02-14: After Zero-Padding the FFT, Does Per-Frame Multiplication (MTF) Equal Full Linear Convolution?
 
 Take source $u=[1,2,3,4]$ and filter $h=[1,0,1/2]$ (full linear convolution length $4+3-1=6$, zero-extending $u$ to $[1,2,3,4,0,0]$ for aligned 6-sample comparison). Using 4-point periodic Hann analysis and synthesis windows $g=[0,1/2,1,1/2]$ at hop $2$ with `center=True` frame starts $-2,0,2,4$, compare exact time-domain linear convolution, 4-point per-frame FFT circular multiplication, and 8-point zero-padded per-frame linear multiplication (keeping the leading 4 samples per frame prior to WOLA Eq. (2-9)).
 
@@ -1168,7 +1174,7 @@ Take source $u=[1,2,3,4]$ and filter $h=[1,0,1/2]$ (full linear convolution leng
     | $2$ | $[0,2,0,1]$ | $[0,2,0,1]$ |
     | $4$ | $[0,0,0,0]$ | $[0,0,0,0]$ |
 
-4. **WOLA synthesis comparison**: At $n=1$, 4-point WOLA gives $(1\cdot\frac12+2\cdot\frac12)/(1/2)=3$ (wrap-around error) while 8-point WOLA recovers $(\frac12+\frac12)/(1/2)=2$. At $n=3$, however, *both* give $(2.5\cdot\frac12+2\cdot\frac12)/(1/2)=4.5$—missing $0.5$ from true $5$!
+4. **WOLA synthesis comparison**: At $n=1$, 4-point WOLA gives $(1\cdot\frac12+2\cdot\frac12)/(1/2)=3$ (wrap-around error) while 8-point WOLA recovers $(\frac12+\frac12)/(1/2)=2$. At $n=3$, however, *both* give $(2.5\cdot\frac12+2\cdot\frac12)/(1/2)=4.5$—missing $0.5$ from true $5$.
 
     | Computation Path | 6-Sample Output |
     |---|---|
@@ -1183,44 +1189,41 @@ w_b[q]&=g[q]\sum_{p=0}^{Q-1}h[p]\,u[b+q-p],\\
 v_b[q]&=\sum_{p=0}^{Q-1}h[p]\,u[b+q-p]\,g[q-p],\\
 w_b[q]-v_b[q]&=\sum_{p=0}^{Q-1}h[p]\,u[b+q-p]\,
 \bigl(g[q]-g[q-p]\bigr).
-\end{aligned}\tag{2-20}$$
+\end{aligned}\tag{2-19}$$
 
-The culprit is non-commutativity $g[q]-g[q-p]\ne0$ (with $g=0$ outside $[0,3]$): a $p$-sample-delayed tap weights earlier input $u[b+q-p]$ by current window $g[q]$ in true convolution, whereas pre-windowing multiplied it by shifted $g[q-p]$! At $b=0,q=2$, $w_0[2]=g[2](u[2]+\frac12 u[0])=3.5$, whereas $v_0[2]=g[2]u[2]+\frac12 g[0]u[0]=3+0=3$ because $g[0]=0$ already killed $u[0]=1$ before the FFT ever ran (exact block frequency-domain FIR filtering requires overlap-add keeping full $N_w+Q-1$ tails or overlap-save / PBFDAF in Chapter 6 [§6.2.1](06_aec.md#sec-6-2-1)).
+The cause is non-commutativity $g[q]-g[q-p]\ne0$ (with $g=0$ outside $[0,3]$): a $p$-sample-delayed tap weights earlier input $u[b+q-p]$ by current window $g[q]$ in true convolution, whereas pre-windowing multiplied it by shifted $g[q-p]$. At $b=0,q=2$, $w_0[2]=g[2](u[2]+\frac12 u[0])=3.5$, whereas $v_0[2]=g[2]u[2]+\frac12 g[0]u[0]=3+0=3$ because $g[0]=0$ already zeroed $u[0]=1$ before the FFT ran (exact block frequency-domain FIR filtering requires overlap-add keeping full $N_w+Q-1$ tails or overlap-save / PBFDAF in Chapter 6 [§6.2.1](06_aec.md#sec-6-2-1)).
 
-![Figure 50 Exact linear convolution vs. 4-point and 8-point zero-padded per-frame STFT multiplication](../figures_en/fig50_stft_convolution.png)
+![Figure 45 Exact linear convolution vs. 4-point and 8-point zero-padded per-frame STFT multiplication](../figures_en/fig45_stft_convolution.png)
 
-Trace sample index $n=0,1,2,3,4,5$ down the three panels of Figure 50 (unfiltered STFT round-trip already verified to match $[1,2,3,4,0,0]$):
+Trace sample index $n=0,1,2,3,4,5$ down the three panels of Figure 45 (unfiltered STFT round-trip already verified to match $[1,2,3,4,0,0]$):
 
 - **Panel `(a)` Exact time-domain linear convolution**: Blue stem plot $[1,2,3.5,5,1.5,2]$ retaining early reflection superposition at $n=2,3$ and post-offset tail at $n=4,5$.
-- **Panel `(b)` Per-frame 4-point FFT product + WOLA**: Filled red squares $[1,3,3,4.5,0,1]$ vs. open blue reference circles, bulging spuriously to $3$ at $n=1$ due to circular wrap-around.
-- **Panel `(c)` Per-frame 8-point zero-padded product (4-pt slice) + WOLA**: Filled purple squares $[1,2,3,4.5,0,1]$ fixing circular wrap-around at $n=1$ while still deviating by $[-0.5,-0.5,-1.5,-1.0]$ across $n=2,3,4,5$ due to 4-point slicing and Eq. (2-20) window non-commutativity.
+- **Panel `(b)` Per-frame 4-point FFT product + WOLA**: Filled red squares $[1,3,3,4.5,0,1]$ vs. open blue reference circles, rising spuriously to $3$ at $n=1$ due to circular wrap-around.
+- **Panel `(c)` Per-frame 8-point zero-padded product (4-pt slice) + WOLA**: Filled purple squares $[1,2,3,4.5,0,1]$ fixing circular wrap-around at $n=1$ while still deviating by $[-0.5,-0.5,-1.5,-1.0]$ across $n=2,3,4,5$ due to 4-point slicing and Eq. (2-19) window non-commutativity.
 
-Three $16\ \mathrm{kHz}$ synthetic WAVs render this audible on a $2\ \mathrm{s}$ four-chord source ($440,997,1733,2819\ \mathrm{Hz}$, amplitude $0.06$ per tone) convolved with unit direct tap plus a $320$-sample ($20\ \mathrm{ms}$), $0.5$-gain echo under $512$-point periodic Hann / $128$-hop `center=True` STFT ($N=32320$ samples = $2.02\ \mathrm{s}$, shared gain $1$):
+**Companion Audio Comparison**: Three $16\ \mathrm{kHz}$ synthetic WAVs render this on a $2\ \mathrm{s}$ four-chord source filtered by unit direct tap plus a $320$-sample ($20\ \mathrm{ms}$), $0.5$-gain reflection ($512$-point periodic Hann / $128$-hop `center=True` STFT):
 
-- [Unfiltered STFT round-trip](../codes/chapters/ch02/stft_audio/stft_roundtrip.wav) (unfiltered tail-padded dry source check)
+- [Unfiltered STFT round-trip](../codes/chapters/ch02/stft_audio/stft_roundtrip.wav) (unfiltered tail-padded dry source check, float64 error $<10^{-16}$ vs. dry source)
 - [Exact time-domain convolution](../codes/chapters/ch02/stft_audio/full_convolution.wav) (true filtered benchmark $x_{\mathrm{full}}[n]$)
 - [Per-frame multiplicative approximation](../codes/chapters/ch02/stft_audio/framewise_mtf.wav) (single-frame MTF output $\hat x[n]$)
+- [STFT convolution metadata](../codes/chapters/ch02/stft_audio/MANIFEST.json) (records parameters and float/PCM error metrics for all three WAVs)
 
-Referenced to $x_{\mathrm{full}}[n]$ across $[0,32320)$, define samplewise error, MSE, and relative error energy $\varepsilon_E$:
+Referenced to $x_{\mathrm{full}}[n]$ across all $N=32320$ samples, define MSE and dimensionless relative error energy $\varepsilon_E$:
 
 $$\begin{aligned}
 e[n]&=\hat x[n]-x_{\mathrm{full}}[n],\qquad
 \mathrm{MSE}=\frac1N\sum_{n=0}^{N-1}e^2[n],\\
 \varepsilon_E&=\frac{\sum_{n=0}^{N-1}e^2[n]}
 {\sum_{n=0}^{N-1}x_{\mathrm{full}}^2[n]}.
-\end{aligned}\tag{2-21}$$
+\end{aligned}\tag{2-20}$$
 
-| Evaluated Output (vs. Exact Convolution) | Float64 $\mathrm{MSE}$ | PCM16 Readback $\mathrm{MSE}$ |
-|---|---:|---:|
-| Unfiltered STFT round-trip | $7.067123\times10^{-4}$ | $7.067108\times10^{-4}$ |
-| Exact time-domain convolution | $0$ | $0$ |
-| Per-frame MTF approximation | $6.304544\times10^{-4}$ | $6.304503\times10^{-4}$ |
+Because the $320$-sample reflection delay already spans $62.5\%$ of the $512$-sample analysis window, per-frame MTF multiplication incurs $\mathrm{MSE}\approx6.30\times10^{-4}$ and relative error energy $\varepsilon_E\approx17.9\%$ against exact convolution (while the unfiltered round-trip's $\mathrm{MSE}\approx7.07\times10^{-4}$ vs. full convolution simply reflects the absent reflection), quantifying clearly why exceeding the short-window regime forces the transition from MTF to CTF (details in [`stft_convolution.py`](../codes/chapters/ch02/core/stft_convolution.py) and [Audio Experiment Manual](../codes/chapters/ch00/research_en/05_exercises_and_audio.md)).
 
-Unfiltered round-trip error against the *dry source* is $\approx 8.3\times10^{-17}$ (row 1's $7.07\times10^{-4}$ simply reflects the absent $20\ \mathrm{ms}$ echo); in row 3, because a $320$-sample echo spans $62.5\%$ of the $512$-sample window, per-frame multiplication incurs $\varepsilon_E\approx0.179286$ ($17.9\%$ relative error energy!). Verify read-only via [`generate_stft_convolution.py`](../codes/chapters/ch02/examples/generate_stft_convolution.py) `--check` ([MANIFEST.json](../codes/chapters/ch02/stft_audio/MANIFEST.json)).
+<a id="e02-15"></a>
 
-#### E02-17: Noise Is Spatially White—Why Is No Signal Eigenvalue Visible?
+#### E02-15: Noise Is Spatially White—Why Is No Signal Eigenvalue Visible?
 
-In two-mic model $\vec x=\vec a s+\vec v$ with $\vec a=[1,1]^\top$, let independent Rademacher variables $s,\xi_1,\xi_2 \in \{-1, +1\}$ each take $\pm 1$ with probability $1/2$ (zero mean, unit variance; dictionary keys `s, u, v` in code), and construct noise:
+In two-mic model $\vec x=\vec a s+\vec v$ with $\vec a=[1,1]^\top$, let independent Rademacher variables $s,\xi_1,\xi_2 \in \{-1, +1\}$ each take $\pm 1$ with probability $1/2$ (zero mean, unit variance), and construct noise:
 
 $$\begin{aligned}
 v_1&=-\frac{s}{2}+\frac{\xi_1}{2}+\frac{\xi_2}{\sqrt{2}},\\
@@ -1244,22 +1247,24 @@ Evaluate $\mathbf R_{vv}$, source–noise cross-covariance $\mathbf C_{sv}$, and
     | $1$ | $1$ | $-1$ | $0$ | $1$ |
     | $1$ | $1$ | $1$ | $0$ | $1$ |
 
-2. **Confirming exact spatial whiteness of $\vec v$**: Zero pairwise correlations give $\mathbb{E}[v_1^2]=\mathbb{E}[v_2^2]=(-1/2)^2+(1/2)^2+(1/\sqrt{2})^2=1$ and $\mathbb{E}[v_1v_2]=1/4+1/4-1/2=0$, so $\mathbf R_{vv}=\mathbb{E}[\vec v\vec v^H]=\mathbf I_2$ is strictly spatially white!
+2. **Confirming exact spatial whiteness of $\vec v$**: Zero pairwise correlations give $\mathbb{E}[v_1^2]=\mathbb{E}[v_2^2]=(-1/2)^2+(1/2)^2+(1/\sqrt{2})^2=1$ and $\mathbb{E}[v_1v_2]=1/4+1/4-1/2=0$, so $\mathbf R_{vv}=\mathbb{E}[\vec v\vec v^H]=\mathbf I_2$ is strictly spatially white.
 3. **Nonzero source–noise cross-covariance**: Shared $-s/2$ gives $\mathbb{E}[sv_1]=\mathbb{E}[sv_2]=-1/2$, i.e., $\mathbf C_{sv}=[-1/2,-1/2]$. Expanding full second moment for $\vec x=\mathbf A\vec s+\vec v$:
 
     $$\begin{aligned}
     \mathbf C_{sv}&=\mathbb{E}[\vec s\vec v^H],\\
     \mathbf R_{xx}&=\mathbf A\mathbf R_{ss}\mathbf A^H+\mathbf R_{vv}
     +\mathbf A\mathbf C_{sv}+\mathbf C_{sv}^H\mathbf A^H.
-    \end{aligned}\tag{2-22}$$
+    \end{aligned}\tag{2-21}$$
 
-    With $\vec a\vec a^H = \mathbf J=\begin{bmatrix}1&1\\1&1\end{bmatrix}$, cross-terms $\vec a\mathbf C_{sv}$ and $\mathbf C_{sv}^H\vec a^H$ each equal $-\frac12\mathbf J$, summing to $-\mathbf J$ and canceling $\mathbf J$ completely:
+    With $\vec a\vec a^H = \mathbf J=\begin{bmatrix}1&1\\1&1\end{bmatrix}$, cross-terms $\vec a\mathbf C_{sv}$ and $\mathbf C_{sv}^H\vec a^H$ each equal $-\frac12\mathbf J$, summing to $-\mathbf J$ and canceling $\mathbf J$ completely in Eq. (2-21):
 
     $$\mathbf R_{xx}=\mathbf J+\mathbf I_2-\mathbf J=\mathbf I_2.$$
 
-Checking $x_1=s/2+\xi_1/2+\xi_2/\sqrt{2}$ and $x_2=s/2+\xi_1/2-\xi_2/\sqrt{2}$ directly confirms unit variances and zero correlation: $\mathbf R_{xx}=\mathbf I_2$ has eigenvalues $\{1, 1\}$ with *zero* excess signal eigenvalue! Blindly dropping cross-terms into $\vec a\vec a^H+\mathbf R_{vv}=\begin{bmatrix}2&1\\1&2\end{bmatrix}$ falsely predicts $\{3, 1\}$—proving that subspace source enumeration requires *both* spatial whiteness and source–noise orthogonality independently.
+Checking $x_1=s/2+\xi_1/2+\xi_2/\sqrt{2}$ and $x_2=s/2+\xi_1/2-\xi_2/\sqrt{2}$ directly confirms unit variances and zero correlation: $\mathbf R_{xx}=\mathbf I_2$ has eigenvalues $\{1, 1\}$ with *zero* excess signal eigenvalue. Blindly dropping cross-terms into $\vec a\vec a^H+\mathbf R_{vv}=\begin{bmatrix}2&1\\1&2\end{bmatrix}$ falsely predicts $\{3, 1\}$—proving that subspace source enumeration requires *both* spatial whiteness and source–noise orthogonality independently.
 
-#### E02-18: Why Can't Amplitude Correction and Power Correction Share the Same Factor on a Hann Window?
+<a id="e02-16"></a>
+
+#### E02-16: Why Can't Amplitude Correction and Power Correction Share the Same Factor on a Hann Window?
 
 Using an 8-point periodic Hann window and unnormalized forward DFT, compare a unit-amplitude bin-centered cosine at $k_0=2$ against the equiprobable ensemble of all $256$ binary sequences in $\{-1,+1\}^8$. Compute coherent gain, incoherent power factor, and Equivalent Noise Bandwidth (ENBW), verifying tone amplitude vs. noise power normalizations.
 
@@ -1271,9 +1276,9 @@ U_g=\frac1N\sum_{q=0}^{N-1}g^2[q],\\
 \mathrm{ENBW}_{\mathrm{bins}}
 &=\frac{N\sum_q g^2[q]}{\bigl(\sum_q g[q]\bigr)^2}
 =\frac{U_g}{G_g^2}.
-\end{aligned}\tag{2-23}$$
+\end{aligned}\tag{2-22}$$
 
-1. **Exact constants for 8-point periodic Hann**: With $a=(2-\sqrt{2})/4, b=(2+\sqrt{2})/4$ ($a+b=1, a^2+b^2=3/4$), $g=[0,a,1/2,b,1,b,1/2,a]$ gives $\sum_q g[q]=4$ and $\sum_q g^2[q]=1+2(\frac14)+2(\frac34)=3$: $G_g=1/2$, $U_g=3/8=0.375$, and $\mathrm{ENBW}_{\mathrm{bins}}=(3/8)/(1/4)=1.5$ ($1.5\,f_s/N\ \mathrm{Hz}$). Notice $G_g^2=1/4\ne U_g=3/8$!
+1. **Exact constants for 8-point periodic Hann**: With $a=(2-\sqrt{2})/4, b=(2+\sqrt{2})/4$ ($a+b=1, a^2+b^2=3/4$), $g=[0,a,1/2,b,1,b,1/2,a]$ gives $\sum_q g[q]=4$ and $\sum_q g^2[q]=1+2(\frac14)+2(\frac34)=3$: $G_g=1/2$, $U_g=3/8=0.375$, and $\mathrm{ENBW}_{\mathrm{bins}}=(3/8)/(1/4)=1.5$ ($1.5\,f_s/N\ \mathrm{Hz}$), showing $G_g^2=1/4\ne U_g=3/8$.
 2. **Coherent tone peak scales with $G_g$**: $x[q]=\cos(2\pi\cdot 2q/8)=[1,0,-1,0,1,0,-1,0]$ (MS $0.5$) windows to $z=[0,0,-1/2,0,1,0,-1/2,0]$ with $Z[2]=2$; dividing $2|Z[2]|$ by $NG_g=4$ recovers exact unit tone amplitude $1$.
 3. **Stationary white-noise power scales with $U_g$**: Across all $256$ sequences $\vec\xi\in\{-1,1\}^8$ ($\mathbb{E}[\vec\xi\vec\xi^\top]=\mathbf I_8$, unit MS), $g^2[q]\xi_q^2=g^2[q]$ gives exact windowed MS $U_g=3/8$ on every realization:
 
@@ -1282,15 +1287,21 @@ U_g=\frac1N\sum_{q=0}^{N-1}g^2[q],\\
     | 8-pt $k_0=2$ unit cosine | $0.5$ | $0.1875$ | $0.5$ | $0.75$ |
     | $256$-sequence $\pm1$ ensemble | $1$ | $0.375$ | $1$ | $1.5$ |
 
-Dividing noise power by coherent $G_g^2$ inflates white-noise PSD by $\mathrm{ENBW}_{\mathrm{bins}}=1.5\times$ ($+1.76\ \mathrm{dB}$)! Always normalize isolated tone amplitudes by $\sum_q g[q]$ and broadband noise PSDs by $f_s\sum_q g^2[q]$ ([SciPy `periodogram`](https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.periodogram.html); on non-stationary short ramps like $[1,2,3,4]$ in E02-13, dividing by $U_g$ yields window-square-weighted MS $28/3\approx9.3333$ vs. raw $7.5$).
+Dividing noise power by coherent $G_g^2$ overestimates white-noise PSD by $\mathrm{ENBW}_{\mathrm{bins}}=1.5\times$ ($+1.76\ \mathrm{dB}$). Always normalize isolated tone amplitudes by $\sum_q g[q]$ and broadband noise PSDs by $f_s\sum_q g^2[q]$ ([SciPy `periodogram`](https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.periodogram.html); on non-stationary short ramps like $[1,2,3,4]$ in E02-12, dividing by $U_g$ yields window-square-weighted MS $28/3\approx9.333$ vs. raw $7.5$).
 
-#### E02-19: Given a Known Excitation Signal, How Do We Invert an Unknown Acoustic Path?
+<a id="e02-17"></a>
 
-Reversing E02-15/E02-16—where $h$ was known and $x$ computed—simulate acoustic system identification: given known playback excitation $u$ and recorded output $x$, recover unknown path $h$ (contrast Chapter 7 MINT, which assumes known paths $h_m$ to invert unknown source $u$).
+#### E02-17: Given a Known Excitation Signal, How Do We Invert an Unknown Acoustic Path?
+
+Reversing E02-13 and E02-14—where $h$ was known and $x$ computed—simulate acoustic room measurement (known-excitation system identification; contrast Chapter 7 MINT, which assumes known multichannel paths to invert an unknown source):
+
+1. Given two-tap test excitation $u=[1,1/2]$ and ground-truth three-tap path $h=[1,0,1/2]$ (yielding full linear convolution output $x=[1,1/2,1/2,1/4]$), compute the unregularized bin-wise 4-point DFT division, then derive both the 4-point circular-space Tikhonov regularized solution at $\varepsilon=1/4$ and the time-domain regularized solution under a known 3-tap finite-support prior, explaining why the two differ;
+2. Replace the excitation with Nyquist-null sequence $u=[1,1]$ (output $[1,1,1/2,1/2]$), and contrast identifiability under bin-wise 4-point division vs. 3-tap time-domain convolution-matrix inversion;
+3. Using the companion $16\ \mathrm{kHz}$ Exponential Sine Sweep (ESS) audio suite, analyze the error mechanisms of preserving the full reverb tail, additive measurement noise, and 16-bit PCM quantization.
 
 **Reference Solution**:
 
-1. **Four-point noiseless exact rational check**: Excitation $u=[1,1/2]$ through 3-tap path $h=[1,0,1/2]$ produces 4-point linear convolution $x=[1,1/2,1/2,1/4]$. Zero-padding $u$ and $h$ to $4$ points gives unnormalized DFTs:
+1. **Four-point noiseless rational example and bin-wise division**: Zero-padding $u=[1,1/2]$ and $h=[1,0,1/2]$ to $4$ points gives unnormalized DFTs:
 
     | 4-Point Bin $k$ | Excitation $U[k]$ | Output $X[k]$ | True Path $H[k]$ |
     |---:|---|---|---|
@@ -1301,31 +1312,25 @@ Reversing E02-15/E02-16—where $h$ was known and $x$ computed—simulate acoust
 
     Because $X[k]=U[k]H[k]$ with all $U[k]\ne 0$, IDFT of $X[k]/U[k]$ recovers $[1,0,1/2,0]$ exactly.
 
-2. **Additive measurement noise & Tikhonov regularized deconvolution**: Under $X[k]=U[k]H[k]+V[k]$, naive $X[k]/U[k] = H[k]+V[k]/U[k]$ blows up wherever $|U[k]|\ll1$. Penalizing $|z|^2$ per bin via Tikhonov regularization gives:
+2. **Additive measurement noise & Tikhonov regularized deconvolution**: Under $X[k]=U[k]H[k]+V[k]$, direct division $X[k]/U[k] = H[k]+V[k]/U[k]$ diverges severely wherever $|U[k]|\ll1$. Penalizing $|z|^2$ per bin via Tikhonov regularization gives:
 
     $$\begin{aligned}
     \widehat H[k]&=\mathop{\arg\min}_{z\in\mathbb{C}}
     \Bigl(|U[k]z-X[k]|^2+\varepsilon|z|^2\Bigr),\\
     \widehat H[k]&=\frac{U^*[k]X[k]}{|U[k]|^2+\varepsilon}.
-    \end{aligned}\tag{2-24}$$
+    \end{aligned}\tag{2-23}$$
 
-    Completing the square (or Wirtinger differentiation) on $(|U|^2+\varepsilon)|z|^2-z^*U^*X-zUX^*+|X|^2$ yields $(|U|^2+\varepsilon)z=U^*X$ ($|U[k]|^2+\varepsilon>0$; sweep audio uses dimensionless $\varepsilon=\rho\max_k|U[k]|^2$). Substituting $X[k]=U[k]H[k]+V[k]$ separates shrinkage bias from noise gain:
+    Expanding the objective and setting its gradient to zero yields Eq. (2-23) ($\varepsilon\ge0$ shares the dimension of $|U[k]|^2$; the sweep experiment below parameterizes dimensionless $\varepsilon=\rho\max_k|U[k]|^2$). Substituting $X[k]=U[k]H[k]+V[k]$ into Eq. (2-23) separates shrinkage bias from noise gain:
 
     $$\begin{aligned}
     \widehat H[k]&=\gamma_k H[k]
     +\frac{U^*[k]V[k]}{|U[k]|^2+\varepsilon},\\
     \gamma_k&=\frac{|U[k]|^2}{|U[k]|^2+\varepsilon}.
-    \end{aligned}\tag{2-25}$$
+    \end{aligned}\tag{2-24}$$
 
-    At $\varepsilon=1/4$ on our noiseless example, $|U[k]|^2 = [9/4,5/4,1/4,5/4]$ gives $\gamma_k = [9/10,5/6,1/2,5/6]$ and $\widehat H=[27/20,5/12,3/4,5/12]$, whose 4-point IDFT is
+    Plugging the noiseless table above with $\varepsilon=1/4$ gives $|U[k]|^2 = [9/4,5/4,1/4,5/4]$, $\gamma_k = [9/10,5/6,1/2,5/6]$, and $\widehat H=[27/20,5/12,3/4,5/12]$, whose 4-point IDFT is $\widehat h=[11/15,\,3/20,\,19/60,\,3/20]$. Notice tap $4$ becomes nonzero ($3/20$) because unconstrained bin-wise inversion optimizes across all $4$ circular taps freely.
 
-    $$\widehat h=\begin{bmatrix}
-    11/15 & 3/20 & 19/60 & 3/20
-    \end{bmatrix},$$
-
-    leaking nonzero $3/20$ onto tap $4$ because unconstrained bin-wise inversion optimizes across all $4$ circular taps freely!
-
-3. **Finite-support prior & spectral-null identifiability**: Enforcing known 3-tap causal support writes $\vec x=\mathbf T_u\vec h$:
+3. **Finite-support prior & spectral-null identifiability**: Under a known 3-tap causal support, the time-domain linear model reads $\vec x=\mathbf T_u\vec h$:
 
     $$\mathbf T_u=\begin{bmatrix}
     1&0&0\\
@@ -1334,72 +1339,39 @@ Reversing E02-15/E02-16—where $h$ was known and $x$ computed—simulate acoust
     0&0&1/2
     \end{bmatrix}.$$
 
-    Minimizing $\|\mathbf T_u\vec h-\vec x\|_2^2+\frac14\|\vec h\|_2^2$ via $\mathbf M_u\vec h=\mathbf T_u^\top\vec x$ ($\mathbf M_u = \mathbf T_u^\top\mathbf T_u+\frac14\mathbf I_3$) yields exact $\vec h=[67/84,\,3/28,\,8/21]^\top$—distinct from truncating $\widehat h$. Moreover, for Nyquist-null excitation $u=[1,1]$, 4-point DFT division hits $0/0$ at $k=2$ ($[1,-1,1,-1]$ lies in the circular nullspace), yet under 3-tap support the leading $3\times 3$ block of $\mathbf T_u$ is unit-diagonal lower triangular ($\det = 1$), uniquely recovering $h_0=1,h_1=0,h_2=1/2$ from $[1,1,1/2,1/2]$! Path identifiability always depends jointly on excitation spectrum and support constraints ([`deconvolution.py`](../codes/chapters/ch02/core/deconvolution.py)).
+    Solving the 3D regularized normal equations $(\mathbf T_u^\top\mathbf T_u+\frac14\mathbf I_3)\vec h=\mathbf T_u^\top\vec x$ yields exact rational $\vec h=[67/84,\,3/28,\,8/21]^\top$—distinct from truncating $\widehat h$. Moreover, for Nyquist-null excitation $u=[1,1]$, 4-point DFT division hits $0/0$ at $k=2$ ($[1,-1,1,-1]$ lies in the circular nullspace), yet under 3-tap support the leading $3\times 3$ block of $\mathbf T_u$ is unit-diagonal lower triangular ($\det = 1$), uniquely recovering $h_0=1,h_1=0,h_2=1/2$ from $[1,1,1/2,1/2]$ (reference implementation in [`deconvolution.py`](../codes/chapters/ch02/core/deconvolution.py)).
 
-The [Digital Sine-Sweep Experiment](#sec-u-14a48a3357) below scales regularized deconvolution up to $16\ \mathrm{kHz}$ exponential sine sweeps to test full reverb tails, measurement noise, and 16-bit PCM quantization.
+4. **Long-sequence digital sine-sweep audio verification (full tail, noise, and quantization)**: Following §2.4.4's Exponential Sine Sweep (ESS; [Farina 2000 §2](https://www.angelofarina.it/Public/papers/134-AES00.PDF); synchronized phase refinement in Novak et al., 2015), integrating instantaneous frequency $f(t)=f_1\exp[t\ln(f_2/f_1)/T_s]$ gives phase and discrete sweep sequence:
 
-#### Digital Sine-Sweep Experiment: What Full Tails, Noise, and Quantization Each Affect
+    $$\begin{aligned}
+    L_s&=\frac{T_s}{\ln(f_2/f_1)},\qquad
+    \varphi(t)=2\pi f_1 L_s\left(e^{t/L_s}-1\right),\\
+    u[n]&=A_s\,a[n]\sin\varphi(n/f_s).
+    \end{aligned}\tag{2-25}$$
 
-Extending E02-19 onto synthetic $16\ \mathrm{kHz}$ WAVs over a known two-tap FIR path, write out Farina's Exponential Sine Sweep (ESS; [Farina 2000 §2, p. 6](https://www.angelofarina.it/Public/papers/134-AES00.PDF)) from start frequency $f_1>0$ to stop frequency $f_2>0$ over duration $T_s$, integrating instantaneous angular frequency $2\pi f(t) = 2\pi f_1\exp[t\ln(f_2/f_1)/T_s]$ into phase $\varphi(t)$ (never write $2\pi f(t)t$!):
+    Here the time-reversed inverse filter applies exponential envelope weighting $e^{-t/L_s}$ (halving amplitude per octave, i.e., $-6\ \mathrm{dB/oct}$, to whiten the pink sweep spectrum) and isolates the $k$-th harmonic distortion impulse at negative lag $\Delta t_k = L_s\ln k$ ahead of the linear IR. At $f_s=16\ \mathrm{kHz}$, a $2\ \mathrm{s}$ ($32000$-sample) sweep from $f_1=100\ \mathrm{Hz}$ to $f_2=6000\ \mathrm{Hz}$ ($A_s=0.2$, $10\ \mathrm{ms}$ fades) drives two-tap FIR path $h[0]=0.8, h[160]=0.25$ (full response retains the $160$-sample reflection tail for $32160$ samples), archived as four companion WAVs ([sweep excitation](../codes/chapters/ch02/sweep_audio/sweep_source.wav), [complete response](../codes/chapters/ch02/sweep_audio/sweep_complete.wav), [noisy response](../codes/chapters/ch02/sweep_audio/sweep_noisy.wav), and [tail-cut response](../codes/chapters/ch02/sweep_audio/sweep_cut.wav); metadata and verification metrics in [`MANIFEST.json`](../codes/chapters/ch02/sweep_audio/MANIFEST.json)). Define full-$N_{\mathrm{FFT}}=65536$ relative IR error energy $\varepsilon_h$:
 
-$$\begin{aligned}
-L_s&=\frac{T_s}{\ln(f_2/f_1)},\\
-\varphi(t)&=2\pi f_1 L_s\left(e^{t/L_s}-1\right),\\
-u[n]&=A_s\,a[n]\sin\varphi(n/f_s).
-\end{aligned}\tag{2-26}$$
+    $$\begin{aligned}
+    \varepsilon_h&=\frac{\sum_{n=0}^{N_{\mathrm{FFT}}-1}|\widehat h[n]-h[n]|^2}
+    {\sum_{n=0}^{N_{\mathrm{FFT}}-1}|h[n]|^2}.
+    \end{aligned}\tag{2-26}$$
 
-Differentiating checks $\varphi'(t)/(2\pi)=f_1 e^{t/L_s}=f(t)$, with time scale $L_s$ ($\mathrm{s}$), peak amplitude $A_s$, and fade envelope $a[n]$:
+    Four representative comparisons appear below (all 12 float64 and PCM16 diagnostic settings appear in [Audio Experiment Manual](../codes/chapters/ch00/research_en/05_exercises_and_audio.md)):
 
-| Configuration Item | Fixed Value & Physical Role |
-|---|---|
-| Sweep excitation | $f_s=16000\ \mathrm{Hz}$, $32000$ samples ($T_s=2\ \mathrm{s}$), $f_1=100\ \mathrm{Hz}$, $f_2=6000\ \mathrm{Hz}$, $A_s=0.2$ |
-| Fade-in/out envelope | $a[n]=\min\{1,\,n/160,\,(31999-n)/160\}$, $160$-sample ($10\ \mathrm{ms}$) linear tapers |
-| Ground-truth FIR path | $h[0]=0.8$, $h[160]=0.25$, zero elsewhere ($10\ \mathrm{ms}$ echo, true support $[0,161)$) |
-| Full response length | $32000+161-1=32160$ samples, retaining the full $160$-sample post-sweep tail |
-| Additive noise | Zero-mean Gaussian $\sigma=0.003$ (seed `2026100402`) |
-| Deconvolution grid | $N_{\mathrm{FFT}}=65536$, $\rho\in\{0,10^{-8},10^{-6},10^{-4}\}$, $\varepsilon=\rho\max_k\lvert U[k]\rvert^2$ per domain |
+    | Experimental Condition | Relative $\rho$ | Float64 Full-IR $\varepsilon_h$ | PCM16 Readback $\varepsilon_h$ | Core Physical Takeaway |
+    |---|---:|---:|---:|---|
+    | Complete tail, noiseless | $0$ | $1.37\times10^{-23}$ | $0.423$ | Weak stopband ($6\text{--}8\ \mathrm{kHz}$) denominator amplifies 16-bit quantization noise |
+    | Complete tail, noiseless | $10^{-8}$ | $0.131$ | $0.133$ | Small regularization suppresses stopband division amplification |
+    | Complete tail, noisy ($\sigma=0.003$) | $0$ / $10^{-4}$ | $1.07\times10^5$ / $0.249$ | $6.60\times10^4$ / $0.249$ | Unregularized estimate buried in noise; $\rho=10^{-4}$ stabilizes with band-limited shrinkage |
+    | $160$-sample tail truncated | $0$ / $10^{-6}$ | $290$ / $0.264$ | $301$ / $0.264$ | Premature stop breaks linear-convolution tail, amplifying unregularized error $100\times$ |
 
-All four mono WAVs export at shared gain $1$ without per-file normalization:
+    Consequently, practical RIR measurements must record trailing silence longer than $T_{60}$, apply in-band regularization matched to the measurement noise floor, and restrict evaluation to the loudspeaker's truly excited passband.
 
-- Excitation: [Known sine-sweep source](../codes/chapters/ch02/sweep_audio/sweep_source.wav) ($32000$ samples)
-- Complete output: [Full-tail path output](../codes/chapters/ch02/sweep_audio/sweep_complete.wav) ($32160$ samples, full $160$-sample tail)
-- Noisy output: [Noisy path output](../codes/chapters/ch02/sweep_audio/sweep_noisy.wav) ($32160$ samples)
-- Tail-cut output: [Zeroed-tail output](../codes/chapters/ch02/sweep_audio/sweep_cut.wav) ($32160$ samples, zeroing $[32000,32160)$ to mimic premature stop)
+<a id="e02-18"></a>
 
-Rather than cherry-picking only taps $n=0$ and $n=160$, evaluate relative IR error energy $\varepsilon_h$ across all $N_{\mathrm{FFT}}=65536$ samples against zero-padded truth ($E_h=0.8^2+0.25^2=0.7025$):
+#### E02-18: Every Frame Inverts Cleanly—Why Is It Still an Inconsistent STFT?
 
-$$\begin{aligned}
-E_h&=\sum_{n=0}^{N_{\mathrm{FFT}}-1}|h[n]|^2,\qquad
-E_e=\sum_{n=0}^{N_{\mathrm{FFT}}-1}|\widehat h[n]-h[n]|^2,\\
-\varepsilon_h&=\frac{E_e}{E_h}.
-\end{aligned}\tag{2-27}$$
-
-Compare float64 vs. 16-bit PCM readback across all 12 settings (full 24-entry inside/outside $[0,161)$ breakdown in [MANIFEST.json](../codes/chapters/ch02/sweep_audio/MANIFEST.json), verified via [`generate_sweep_audio.py`](../codes/chapters/ch02/examples/generate_sweep_audio.py) `--check`):
-
-| Output Condition | Relative $\rho$ | Float64 Full-IR $\varepsilon_h$ | PCM16 Readback Full-IR $\varepsilon_h$ |
-|---|---:|---:|---:|
-| Complete tail, noiseless | $0$ | $1.3681144\times10^{-23}$ | $0.42315764$ |
-| Complete tail, noiseless | $10^{-8}$ | $0.13136503$ | $0.13289149$ |
-| Complete tail, noiseless | $10^{-6}$ | $0.21815084$ | $0.21816416$ |
-| Complete tail, noiseless | $10^{-4}$ | $0.24749115$ | $0.24749168$ |
-| Complete tail, noisy | $0$ | $107437.12$ | $65979.904$ |
-| Complete tail, noisy | $10^{-8}$ | $62.863570$ | $66.371779$ |
-| Complete tail, noisy | $10^{-6}$ | $0.41263535$ | $0.41394282$ |
-| Complete tail, noisy | $10^{-4}$ | $0.24926292$ | $0.24926621$ |
-| $160$-sample tail zeroed | $0$ | $289.65461$ | $300.99159$ |
-| $160$-sample tail zeroed | $10^{-8}$ | $1.1514012$ | $1.1623974$ |
-| $160$-sample tail zeroed | $10^{-6}$ | $0.26413575$ | $0.26420721$ |
-| $160$-sample tail zeroed | $10^{-4}$ | $0.25344926$ | $0.25345023$ |
-
-Three engineering lessons jump straight off this table:
-
-1. **Why does noiseless $\rho=0$ jump from $10^{-23}$ in float64 to $0.423$ after saving to 16-bit WAV?** Because the sweep stops at $6000\ \mathrm{Hz}$, leaving $6000\text{--}8000\ \mathrm{Hz}$ stopband power down near $10^{-10}$ ($14$ orders of magnitude below passband peak $1.51\times10^4$)! Independent 16-bit quantization dithers stopband bins just enough for tiny $|U[k]|^2$ denominators to blow up out-of-support $[161,65536)$ noise to $0.41907684$ (versus just $0.004081$ inside $[0,161)$). Adding tiny $\rho=10^{-8}$ clamps stopband division and drops PCM error immediately to $0.1329$.
-2. **Noise and premature stop-recording destruction**: At $\rho=0$, either $\sigma=0.003$ noise or cutting off the final $10\ \mathrm{ms}$ echo tail magnifies stopband mismatch by $10^2$–$10^5\times$, burying the impulse response completely.
-3. **Regularization vs. band-limitation bias**: Raising $\rho$ to $10^{-4}$ tames both noisy and truncated runs near $\approx 0.25$, yet zeroing out the unexcited $6\text{--}8\ \mathrm{kHz}$ quarter-band via $\gamma_k\approx0$ inherently leaves $\approx 0.2475$ band-limited shrinkage bias against an ideal full-band impulse. Practical RIR measurements always record silence past $T_{60}$ and restrict evaluation to the loudspeaker's excited passband.
-
-#### E02-20: Every Frame Inverts Cleanly—Why Is It Still an Inconsistent STFT?
-
-With 4-point rectangular window $g=[1,1,1,1]$, hop $H=2$, and `center=True` over a 4-sample domain (three frames at starts $-2,0,2$ covering $n\in\{0,1,2,3\}$ twice each with flat $D_g[n]=2$, satisfying NOLA), prescribe three valid real-endpoint one-sided spectra $Y_\ell[k]$ ($k=0,1,2$):
+E02-12 checked single-frame real DC and Nyquist constraints. Now keep every frame's real-spectrum endpoints completely valid and test **whether adjacent overlapping frames impose contradictory demands on shared time-domain samples**. With 4-point rectangular window $g=[1,1,1,1]$, hop $H=2$, and `center=True` over a 4-sample domain (three frames at starts $-2,0,2$ with flat $D_g[n]\equiv 2$, strictly satisfying NOLA), prescribe three valid one-sided spectra $Y_\ell[k]$ ($k=0,1,2$):
 
 | Frame Start | Prescribed $[Y_\ell[0],Y_\ell[1],Y_\ell[2]]$ | Single-Frame `irfft` Sequence |
 |---:|---|---|
@@ -1407,9 +1379,11 @@ With 4-point rectangular window $g=[1,1,1,1]$, hop $H=2$, and `center=True` over
 | $0$ | $[0,2,0]$ | $[1,0,-1,0]$ |
 | $2$ | $[0,0,0]$ | $[0,0,0,0]$ |
 
+Identify which samples suffer inter-frame conflicts, compute the WOLA-synthesized waveform $\widehat x$ via Eq. (2-9) and re-analyzed consistent spectrum $P(Y)$, and verify Pythagoras's theorem across the original energy, consistent projection, and conflict residual.
+
 **Reference Solution**:
 
-1. **Pinpointing inter-frame contradiction**: Every frame has real DC and Nyquist, yet global sample $n=0$ is demanded to equal $0$ by frame $-2$ (at local $q=2$) *and* simultaneously demanded to equal $1$ by frame $0$ (at local $q=0$)! Likewise $n=2$ is demanded to equal $-1$ and $0$. *No* 4-sample real waveform in existence has this STFT!
+1. **Pinpointing inter-frame contradiction**: Every frame has real DC and Nyquist, yet global sample $n=0$ is demanded to equal $0$ by frame $-2$ (at local $q=2$) *and* simultaneously demanded to equal $1$ by frame $0$ (at local $q=0$). Likewise $n=2$ is demanded to equal $-1$ and $0$. *No* 4-sample real waveform has this STFT.
 2. **WOLA least-squares compromise**: Equation (2-9) averages $(0+1)/2=1/2$ at $n=0$ and $(-1+0)/2=-1/2$ at $n=2$, outputting $\widehat x=[1/2,0,-1/2,0]$ (minimizing $(x[0]-0)^2+(x[0]-1)^2$).
 3. **Re-analyzing $\widehat x$ changes the STFT**: Taking the forward STFT of $\widehat x=[1/2,0,-1/2,0]$ gives:
 
@@ -1419,50 +1393,47 @@ With 4-point rectangular window $g=[1,1,1,1]$, hop $H=2$, and `center=True` over
     | $0$ | $[1/2,0,-1/2,0]$ | $[0,1,0]$ |
     | $2$ | $[-1/2,0,0,0]$ | $[-1/2,-1/2,-1/2]$ |
 
-Center bin $k=1$ shrank from $2$ to $1$ while $\pm 1/2$ leaked into the flanking frames! Denoting forward STFT by $\mathcal{S}$ and perfect-reconstruction WOLA by $\mathcal{T}$ ($\mathcal{T}\mathcal{S}x=x$), $P(Y)=\mathcal{S}(\mathcal{T}Y)$ is an idempotent projector:
+Center bin $k=1$ shrank from $2$ to $1$ while $\pm 1/2$ leaked into the flanking frames. Denoting forward STFT by $\mathcal{S}$ and perfect-reconstruction WOLA by $\mathcal{T}$ ($\mathcal{T}\mathcal{S}x=x$), $P(Y)=\mathcal{S}(\mathcal{T}Y)$ is an idempotent projector:
 
 $$\begin{aligned}
 P(Y)&=\mathcal{S}(\mathcal{T}Y),\\
 P(P(Y))&=P(Y),\\
 Y&=P(Y)\quad\text{defines STFT consistency}.
-\end{aligned}\tag{2-28}$$
+\end{aligned}\tag{2-27}$$
 
 Under Parseval bin weights $c=[1,2,1]$ from E02-08, squared spectral distance
 
 $$\begin{aligned}
 D(Y,Z)&=\sum_\ell\sum_{k=0}^{2}
 c_k|Y_\ell[k]-Z_\ell[k]|^2
-\end{aligned}\tag{2-29}$$
+\end{aligned}\tag{2-28}$$
 
-splits input energy $D(Y,0)=2\times2^2=8$ orthogonally into consistent $D(P(Y),0)=1+2+1=4$ plus discarded inconsistent $D(Y,P(Y))=1+2+1=4$ ($8=4+4$, Pythagoras! Classic least-squares synthesis in [Griffin & Lim 1984, §II Eqs. (4)–(6)](https://doi.org/10.1109/TASSP.1984.1164317) / [PDF](https://dub.ucsd.edu/CATbox/Reader/GriffinLimMSTFT.pdf) and [SciPy `istft`](https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.istft.html); verified in [`stft_consistency.py`](../codes/chapters/ch02/core/stft_consistency.py) and exploited for neural separation consistency in Chapter 8 [Eq. (8-31)](08_speech-separation.md#sec-u-110769710d)).
+splits input energy $D(Y,0)=2\times2^2=8$ orthogonally into consistent $D(P(Y),0)=1+2+1=4$ plus discarded inconsistent $D(Y,P(Y))=1+2+1=4$, satisfying Pythagoras's identity $8=4+4$ (classic least-squares synthesis in [Griffin & Lim 1984, §II Eqs. (4)–(6)](https://doi.org/10.1109/TASSP.1984.1164317) / [PDF](https://dub.ucsd.edu/CATbox/Reader/GriffinLimMSTFT.pdf) and [SciPy `istft`](https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.istft.html); verified in [`stft_consistency.py`](../codes/chapters/ch02/core/stft_consistency.py), and leveraged in Chapter 8 to refine neural speech-separation outputs).
 
-#### E02-21: By How Much Do Coherence Zeros Differ Between Spherical and Cylindrical Diffuse Fields?
+<a id="e02-19"></a>
+
+#### E02-19: By How Much Do Coherence Zeros Differ Between Spherical and Cylindrical Diffuse Fields?
 
 For two omnidirectional mics spaced at $d=4\ \mathrm{cm}=0.04\ \mathrm{m}$ ($c=343\ \mathrm{m/s}$, $\kappa=2\pi f/c$), derive 3D spherical vs. 2D horizontal cylindrical diffuse coherence functions and their first zero-crossing frequencies; then place a 3D-designed endfire ($\theta_0=+90^\circ$, $\vec a(f)=[1,e^{\mathrm{j}\kappa d}]^\top$) superdirective pair inside a 2D cylindrical cabin field and evaluate predicted vs. actual noise power and DI in the low-frequency limit and at $500\ \mathrm{Hz}$, $3282.0\ \mathrm{Hz}$, and $4287.5\ \mathrm{Hz}$ ([`diffuse_and_fractional.py`](../codes/chapters/ch02/core/diffuse_and_fractional.py)).
 
 **Reference Solution**:
 
-1. **Closed-form spherical vs. circular integrals**: Aligning polar axis along the baseline ($u=\cos\vartheta\in[-1,1]$) vs. integrating around horizontal azimuth $\alpha\in[0,2\pi)$ gives:
+1. **Closed-form spherical vs. circular integrals**: Full derivations appear in [Chapter 0 §0.7.1–§0.7.2 Eqs. (0-59)–(0-60)](00_math-foundations.md#sec-0-7-1) (seminal 3D $\operatorname{sinc}$ derivation and measurement in [Cook et al., *JASA* 27(6), 1955](https://doi.org/10.1121/1.1908122)): aligning the polar axis along the baseline ($u=\cos\vartheta\in[-1,1]$) vs. integrating around horizontal azimuth $\alpha\in[0,2\pi)$ gives:
 
     $$\begin{aligned}
     \Gamma_{\mathrm{3D}}(f,d)
-    &=\frac{1}{4\pi}\int_0^{2\pi}\!\!\int_0^{\pi}
-    e^{\mathrm{j}\kappa d\cos\vartheta}
-    \sin\vartheta\,\mathrm{d}\vartheta\,\mathrm{d}\alpha\\
     &=\frac{1}{2}\int_{-1}^{1}e^{\mathrm{j}\kappa d u}\,\mathrm{d}u
     =\frac{\sin(\kappa d)}{\kappa d}
     =\operatorname{sinc}\!\left(\frac{2fd}{c}\right),\\
     \Gamma_{\mathrm{2D}}(f,d)
     &=\frac{1}{2\pi}\int_0^{2\pi}
-    e^{\mathrm{j}\kappa d\cos\alpha}\,\mathrm{d}\alpha\\
-    &=\sum_{m=0}^{\infty}\frac{(-1)^m}{(m!)^2}
-    \left(\frac{\kappa d}{2}\right)^{2m}
+    e^{\mathrm{j}\kappa d\cos\alpha}\,\mathrm{d}\alpha
     =J_0(\kappa d).
-    \end{aligned}\tag{2-30}$$
+    \end{aligned}\tag{2-29}$$
 
-    Low-frequency Taylor expansions $1-(\kappa d)^2/6$ (3D) vs. $1-(\kappa d)^2/4$ (2D) show faster horizontal decorrelation in 2D ($\mathbb{E}[\cos^2\alpha]=1/2 > \mathbb{E}[\cos^2\vartheta]=1/3$) when ceiling/carpet absorption removes steep elevation waves!
+    Low-frequency Taylor expansions $1-(\kappa d)^2/6$ (3D) vs. $1-(\kappa d)^2/4$ (2D) show faster horizontal decorrelation in 2D ($\mathbb{E}[\cos^2\alpha]=1/2 > \mathbb{E}[\cos^2\vartheta]=1/3$) when ceiling/carpet absorption removes steep elevation waves.
 
-2. **First zero crossing shifts $23.45\%$ lower**: 3D hits zero at $\kappa d=\pi$, $f_{0,\mathrm{3D}}=c/(2d)=343/0.08 =$ **4287.5000 Hz** (where 2D is already strongly negative at $J_0(\pi)\approx\mathbf{-0.304242}$); 2D hits zero at the first root of $J_0$, $j_{0,1}\approx2.404826\ \mathrm{rad}$, $f_{0,\mathrm{2D}}=c\,j_{0,1}/(2\pi d) \approx$ **3281.9944 Hz**—$23.45\%$ lower (where 3D is still $+0.279395$)!
+2. **First zero crossing shifts $23.45\%$ lower**: 3D hits zero at $\kappa d=\pi$, $f_{0,\mathrm{3D}}=c/(2d)=343/0.08 =$ **4287.5 Hz** (where 2D is already strongly negative at $J_0(\pi)\approx\mathbf{-0.3042}$); 2D hits zero at the first root of $J_0$, $j_{0,1}\approx2.4048\ \mathrm{rad}$, $f_{0,\mathrm{2D}}=c\,j_{0,1}/(2\pi d) \approx$ **3282.0 Hz**—$23.45\%$ lower (where 3D is still $+0.2794$).
 
 3. **Excess noise leakage & DI inflation inside a 2D cabin**: For distortionless $\vec w^H\vec a=1$, actual 2D output noise power and directivity factor read:
 
@@ -1472,25 +1443,27 @@ For two omnidirectional mics spaced at $d=4\ \mathrm{cm}=0.04\ \mathrm{m}$ ($c=3
     Q_{\mathrm{2D}}(\vec w)
     &=\frac{|\vec w^H\vec a|^2}
     {\vec w^H\mathbf{\Gamma}_{\mathrm{2D}}\vec w}.
-    \end{aligned}\tag{2-31}$$
+    \end{aligned}\tag{2-30}$$
 
-    As $\kappa d\to0^+$, 3D-optimal endfire hypercardioid (null at $109.47^\circ$) predicts $P_{\mathrm{out,3D}}=1/4$ ($Q_{\mathrm{3D}}=4$, $\mathrm{DI}_{\mathrm{3D}}=6.0206\ \mathrm{dB}$), yet inside a 2D cylindrical cabin leaks $P_{\mathrm{out,2D}}=11/32=\mathbf{0.34375}$ (**$+1.3830\ \mathrm{dB}$** extra noise), dropping actual 2D DI to $10\log_{10}(32/11)\approx\mathbf{4.6376\ \mathrm{dB}}$ (whereas a true 2D-optimal supercardioid with $120^\circ$ null achieves $Q_{\mathrm{2D}}=3$, $4.7712\ \mathrm{dB}$, with milder WNG penalty). Evaluating $\vec w_{\mathrm{SD,3D}}=\vec u_3/(\vec a^H\vec u_3)$ ($\vec u_3=\mathbf{\Gamma}_{\mathrm{3D}}^{-1}\vec a$):
+    In the low-frequency limit $\kappa d\to 0^+$, any distortionless first-order endfire pattern has the form $B(\vartheta)=\alpha+(1-\alpha)\cos\vartheta$ ($B(0)=1$). Using $\mathbb{E}_{\mathrm{3D}}[\cos^2\vartheta]=1/3$ and $\mathbb{E}_{\mathrm{2D}}[\cos^2\alpha]=1/2$, its 3D and 2D diffuse output powers are $P_{\mathrm{3D}}(\alpha)=\alpha^2+\frac{1}{3}(1-\alpha)^2$ and $P_{\mathrm{2D}}(\alpha)=\alpha^2+\frac{1}{2}(1-\alpha)^2$. Setting derivatives to zero yields the 3D-optimal hypercardioid at $\alpha=1/4$ (null $\arccos(-1/3)\approx 109.47^\circ$, $P_{\mathrm{out,3D}}=1/4$, $Q_{\mathrm{3D}}=4$, $\mathrm{DI}_{\mathrm{3D}}=6.02\ \mathrm{dB}$), which in a 2D cylindrical cabin leaks $P_{\mathrm{2D}}(1/4)=\frac{1}{16}+\frac{9}{32}=\frac{11}{32}=\mathbf{0.34375}$ (**$+1.38\ \mathrm{dB}$** extra noise), dropping actual 2D DI to $10\log_{10}(32/11)\approx\mathbf{4.64\ \mathrm{dB}}$; minimizing $P_{\mathrm{2D}}(\alpha)$ directly gives the 2D-optimal supercardioid at $\alpha=1/3$ (null $\arccos(-1/2)=120^\circ$, $P_{\mathrm{out,2D}}=1/3$, $Q_{\mathrm{2D}}=3$, $4.77\ \mathrm{dB}$, with milder WNG penalty). At finite frequencies, evaluating the closed-form solution $\vec w_{\mathrm{SD,3D}}=\mathbf{\Gamma}_{\mathrm{3D}}^{-1}\vec a/(\vec a^H\mathbf{\Gamma}_{\mathrm{3D}}^{-1}\vec a)$ (derived in [Chapter 0 §0.5.2](00_math-foundations.md#sec-0-5-2) and [Chapter 5 §5.3](05_beamforming.md#sec-5-3)) across all three frequencies gives:
 
     | Frequency (Hz) | $\Gamma_{\mathrm{3D}}$ / $\Gamma_{\mathrm{2D}}$ | 3D Pred. DI (dB) | Actual 2D DI (dB) | 2D Excess Noise (dB) | 2D-Optimal DI (dB) |
     |---:|---|---:|---:|---:|---:|
-    | $500.0$ | $+0.9778$ / $+0.9667$ | $5.9816$ | $4.6036$ | $+1.3780$ | $4.7386$ |
-    | $3282.0$ | $+0.2794$ / $0.0000$ | $4.1801$ | $2.9065$ | $+1.2736$ | $3.0103$ |
-    | $4287.5$ | $0.0000$ / $-0.3042$ | $3.0103$ | $1.8567$ | $+1.1536$ | $1.8567$ |
+    | $500.0$ | $+0.9778$ / $+0.9667$ | $5.98$ | $4.60$ | $+1.38$ | $4.74$ |
+    | $3282.0$ | $+0.2794$ / $0.0000$ | $4.18$ | $2.91$ | $+1.27$ | $3.01$ |
+    | $4287.5$ | $0.0000$ / $-0.3042$ | $3.01$ | $1.86$ | $+1.15$ | $1.86$ |
 
-    At $4287.5\ \mathrm{Hz}$ ($\kappa d=\pi$, $\vec a=[1,-1]^\top$), the 3D model assumes zero noise correlation ($\vec w_{\mathrm{SD,3D}}=[1/2,-1/2]^\top$, predicting $3.01\ \mathrm{dB}$), whereas negative 2D coherence $J_0(\pi)\approx-0.3042$ adds constructively under subtraction to $(1-J_0(\pi))/2\approx0.6521$, cutting real gain to $1.86\ \mathrm{dB}$! Fixed superdirective designs for car cabins and low-ceiling conference rooms should always calibrate prior coherence against empty-cabin measurements rather than hardcoding 3D $\operatorname{sinc}$.
+    At $4287.5\ \mathrm{Hz}$ ($\kappa d=\pi$, $\vec a=[1,-1]^\top$), the 3D model assumes zero noise correlation ($\vec w_{\mathrm{SD,3D}}=[1/2,-1/2]^\top$, predicting $3.01\ \mathrm{dB}$), whereas negative 2D coherence $J_0(\pi)\approx-0.3042$ adds constructively under subtraction to $(1-J_0(\pi))/2\approx0.6521$, reducing actual gain to $1.86\ \mathrm{dB}$. Fixed superdirective designs for car cabins and low-ceiling conference rooms should always calibrate prior coherence against empty-cabin measurements rather than hardcoding 3D $\operatorname{sinc}$.
 
-#### E02-22: Why Does Half-Sample Linear Interpolation Ruin High-Frequency Beams and Nulls?
+<a id="e02-20"></a>
+
+#### E02-20: Why Does Half-Sample Linear Interpolation Ruin High-Frequency Beams and Nulls?
 
 At $f_s=16\ \mathrm{kHz}$, suppose time-domain alignment requires integer delay $M_0$ on channel 1 and half-sample delay $M_0+0.5$ on channel 2. Applying two-point linear interpolation $y[n]=\frac12 x[n]+\frac12 x[n-1]$ to channel 2: (1) hand-calculate magnitude response at DC, $4\ \mathrm{kHz}$ ($f_s/4$), and $8\ \mathrm{kHz}$ (Nyquist) on 4-point sequences; (2) evaluate equal-weight DSB target loss and two-mic blocking-subtraction null residual; (3) switch to a causal DC-normalized $8$-tap Hamming-windowed sinc FIR ($D=3.5$ samples, delaying channel 1 by $3$ integer samples to match group delay) and compare at $1,4,6,8\ \mathrm{kHz}$, noting the Type-II Nyquist boundary.
 
 **Reference Solution**:
 
-1. **Two-point linear interpolator response & 4-point check**: With $\Omega_{\mathrm{d}}=2\pi f/f_s\in[0,\pi]$, fractional $\eta\in[0,1]$ linear interpolation and causal DC-normalized length-$L=2M_h$ windowed sinc ($D=(M_h-1)+\eta$) read:
+1. **Two-point linear interpolator response & 4-point check**: With $\Omega_{\mathrm{d}}=2\pi f/f_s\in[0,\pi]$, fractional $\eta\in[0,1]$ linear interpolation and causal DC-normalized $K_{\mathrm{tap}}=2M_h$-tap windowed sinc ($D=(M_h-1)+\eta$) read:
 
     $$\begin{aligned}
     H_{\mathrm{lin}}(\Omega_{\mathrm{d}};\eta)
@@ -1500,21 +1473,21 @@ At $f_s=16\ \mathrm{kHz}$, suppose time-domain alignment requires integer delay 
     \cos\!\left(\frac{\Omega_{\mathrm{d}}}{2}\right),\\
     h_{\mathrm{wsinc}}[n]
     &=\frac{w[n]\,\operatorname{sinc}(n-D)}
-    {\sum_{q=0}^{L-1}w[q]\,\operatorname{sinc}(q-D)}.
-    \end{aligned}\tag{2-32}$$
+    {\sum_{q=0}^{K_{\mathrm{tap}}-1}w[q]\,\operatorname{sinc}(q-D)}.
+    \end{aligned}\tag{2-31}$$
 
-    Factor $\cos(\Omega_{\mathrm{d}}/2)$ exposes the flaw instantly: while phase $e^{-\mathrm{j}\Omega_{\mathrm{d}}/2}$ is exact, magnitude is sliced by a cosine low-pass roll-off! Checking 4-point kernel $h_{\mathrm{lin},4}=[1/2,1/2,0,0]$ (DFT $[1,\,0.5-0.5\mathrm{j},\,0,\,0.5+0.5\mathrm{j}]$): DC $[1,1,1,1]\to[1,1,1,1]$ ($0\ \mathrm{dB}$); quarter-rate $4\ \mathrm{kHz}$ $[1,0,-1,0]\to[0.5,0.5,-0.5,-0.5]$ of amplitude $1/\sqrt{2}\approx\mathbf{0.707107}$ (**$-3.0103\ \mathrm{dB}$**); and $8\ \mathrm{kHz}$ $[1,-1,1,-1]\to[0,0,0,0]$ (**$-\infty\ \mathrm{dB}$ complete Nyquist notch**)!
+    Factor $\cos(\Omega_{\mathrm{d}}/2)$ reveals the cause directly: while phase $e^{-\mathrm{j}\Omega_{\mathrm{d}}/2}$ is exact, magnitude is attenuated by a cosine low-pass roll-off. Checking 4-point kernel $h_{\mathrm{lin},4}=[1/2,1/2,0,0]$ (DFT $[1,\,0.5-0.5\mathrm{j},\,0,\,0.5+0.5\mathrm{j}]$): DC $[1,1,1,1]\to[1,1,1,1]$ ($0\ \mathrm{dB}$); quarter-rate $4\ \mathrm{kHz}$ $[1,0,-1,0]\to[0.5,0.5,-0.5,-0.5]$, whose underlying sinusoidal peak amplitude shrinks to $1/\sqrt{2}\approx\mathbf{0.7071}$ (sampled at $\pm 45^\circ$ to $\pm 0.5$, matching RMS ratio $0.5/(1/\sqrt{2})=1/\sqrt{2}$, or **$-3.01\ \mathrm{dB}$**); and $8\ \mathrm{kHz}$ $[1,-1,1,-1]\to[0,0,0,0]$ (**$-\infty\ \mathrm{dB}$ complete Nyquist notch**).
 
-2. **High-frequency collapse when pairing integer and half-sample channels**: With group-delay-compensated $\tilde H = H(\Omega_{\mathrm{d}})e^{+\mathrm{j}D\Omega_{\mathrm{d}}}$, two-mic DSB target gain drops to $\frac12|1+\tilde H|$ while blocking-matrix null leakage jumps to $|1-\tilde H|$. Comparing linear interpolation against the symmetric $8$-tap Hamming-windowed sinc (first half $\approx [-0.00733,0.03248,-0.13734,0.61219]$, second half mirrored):
+2. **High-frequency degradation when pairing integer and half-sample channels**: With group-delay-compensated $\tilde H = H(\Omega_{\mathrm{d}})e^{+\mathrm{j}D\Omega_{\mathrm{d}}}$, two-mic DSB target gain drops to $\frac12|1+\tilde H|$ while blocking-matrix null leakage rises to $|1-\tilde H|$. Comparing linear interpolation against the symmetric $8$-tap Hamming-windowed sinc (first half $\approx [-0.00733,0.03248,-0.13734,0.61219]$, second half mirrored):
 
     | Frequency (kHz) | Linear Interp. DSB (dB) | Linear Blocking Leakage (dB) | 8-Tap Sinc DSB (dB) | 8-Tap Sinc Blocking Leakage (dB) |
     |---:|---:|---:|---:|---:|
-    | $1$ | $-0.0839$ | $-34.3273$ | $+0.0247$ | $-44.8894$ |
-    | $4$ | $-1.3754$ | $-10.6658$ | $+0.0160$ | $-48.6606$ |
-    | $6$ | $-3.2061$ | $-4.1898$ | $-0.9735$ | $-13.4709$ |
-    | $8$ | $-6.0206$ | $0.0000$ | $-6.0206$ | $0.0000$ |
+    | $1$ | $-0.08$ | $-34.33$ | $+0.02$ | $-44.89$ |
+    | $4$ | $-1.38$ | $-10.67$ | $+0.02$ | $-48.66$ |
+    | $6$ | $-3.21$ | $-4.19$ | $-0.97$ | $-13.47$ |
+    | $8$ | $-6.02$ | $0.00$ | $-6.02$ | $0.00$ |
 
-3. **Engineering takeaway & Type-II Nyquist boundary**: At $4\ \mathrm{kHz}$ right inside core consonant speech, two-point linear interpolation degrades cancellation nulls to a meager **$-10.67\ \mathrm{dB}$**, whereas an $8$-tap Hamming-windowed sinc (with $M_h-1=3$ integer delay on channel 1) deepens the null to **$-48.66\ \mathrm{dB}$** (nearly $38\ \mathrm{dB}$ improvement; $16$ taps pushes $6\ \mathrm{kHz}$ to $-45.14\ \mathrm{dB}$). Finally, inspect $8\ \mathrm{kHz}$ ($\Omega_{\mathrm{d}}=\pi$): *every* even-length symmetric ($h[n]=h[L-1-n]$, Type-II) linear-phase FIR at $\eta=0.5$ cancels in pairs under alternating sum $\sum_{n=0}^{L-1}(-1)^n h[n] = 0$! High-fidelity time-domain wideband beamformers therefore combine higher-order windowed-sinc or Lagrange fractional-delay filters with a slight oversampling guard band below $f_s/2$.
+3. **Engineering takeaway & Type-II Nyquist boundary**: At $4\ \mathrm{kHz}$ inside core consonant speech, two-point linear interpolation degrades cancellation nulls to **$-10.67\ \mathrm{dB}$**, whereas an $8$-tap Hamming-windowed sinc (with $M_h-1=3$ integer delay on channel 1) deepens the null to **$-48.66\ \mathrm{dB}$** (nearly $38\ \mathrm{dB}$ improvement; $16$ taps pushes $6\ \mathrm{kHz}$ to $-45.14\ \mathrm{dB}$). Finally, inspect $8\ \mathrm{kHz}$ ($\Omega_{\mathrm{d}}=\pi$): *every* even-length symmetric ($h[n]=h[K_{\mathrm{tap}}-1-n]$, Type-II) linear-phase FIR at $\eta=0.5$ cancels in pairs under alternating sum $\sum_{n=0}^{K_{\mathrm{tap}}-1}(-1)^n h[n] = 0$. High-fidelity time-domain wideband beamformers therefore combine higher-order windowed-sinc or Lagrange fractional-delay filters with a slight oversampling guard band below $f_s/2$.
 
 ---
 

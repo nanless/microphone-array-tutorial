@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Generate all 92 English scientific figures into ``figures_en/`` non-destructively.
+"""Generate all 87 English scientific figures into ``figures_en/`` non-destructively.
 
 Usage (from repository root):
     .venv/bin/python scripts/make_figures_en.py
@@ -433,10 +433,11 @@ def generate_all_english_figures(only_scripts: tuple[str, ...] = FIGURE_SCRIPTS)
             # 3. Switch to clean English sans-serif stack & translate every Text artist
             prev_family = list(plt.rcParams["font.family"])
             prev_sans = list(plt.rcParams["font.sans-serif"])
+            prev_minus = plt.rcParams["axes.unicode_minus"]
             try:
                 plt.rcParams["font.family"] = "sans-serif"
                 plt.rcParams["font.sans-serif"] = list(ENGLISH_SANS_FONTS)
-                plt.rcParams["axes.unicode_minus"] = False
+                plt.rcParams["axes.unicode_minus"] = True
 
                 self.canvas.draw()
 
@@ -464,6 +465,7 @@ def generate_all_english_figures(only_scripts: tuple[str, ...] = FIGURE_SCRIPTS)
             finally:
                 plt.rcParams["font.family"] = prev_family
                 plt.rcParams["font.sans-serif"] = prev_sans
+                plt.rcParams["axes.unicode_minus"] = prev_minus
 
         Path.write_text = patched_write_text
         Path.write_bytes = patched_write_bytes
@@ -501,7 +503,7 @@ def main() -> int:
         "--scripts",
         nargs="*",
         default=list(FIGURE_SCRIPTS),
-        help="Subset of figure scripts to run (defaults to all 12 scripts = 92 figures).",
+        help="Subset of figure scripts to run (defaults to all 12 scripts = 87 figures).",
     )
     args = parser.parse_args()
     saved = generate_all_english_figures(tuple(args.scripts))

@@ -1,4 +1,4 @@
-"""Generate figure77 from independently re-read existing Chapter09 PCM.
+"""Generate figure72 from independently re-read existing Chapter09 PCM.
 
 Only this new figure/report are written. No WAV or historical report is
 regenerated. Paths are preflighted before numerical work; no race-proof or
@@ -25,8 +25,8 @@ from codes.chapters.ch00.io_contracts import validate_report_destination, write_
 from codes.chapters.ch09.examples.tracking_lifecycle_demo import run_demo, SOURCE_PATHS as DEMO_SOURCES
 from codes.chapters.ch09.examples.chapter09_tracking_audio import OUTPUT
 
-FIGURE = ROOT/'figures/fig77_tracking_lifecycle.png'
-REPORT = ROOT/'codes/chapters/ch09/reports/figure77_tracking_lifecycle.json'
+FIGURE = ROOT/'figures/fig72_tracking_lifecycle.png'
+REPORT = ROOT/'codes/chapters/ch09/reports/figure72_tracking_lifecycle.json'
 SOURCE_PATHS = ('scripts/make_tracking_figures.py', *DEMO_SOURCES)
 
 
@@ -60,7 +60,7 @@ def generate_figure(figure_path=FIGURE, report_path=REPORT, *, audio_directory=O
     phase_codes = [0 if row['phase']=='absent' else
                    (2*row['track_id']-1 if row['phase']=='tentative' else 2*row['track_id'])
                    for row in lifecycle['rows']]
-    report = {'schema_version': 1, 'exercise_id': 'E09-25',
+    report = {'schema_version': 1, 'exercise_id': 'E09-19',
         'script_sha256': hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         'source_sha256': {path: hashlib.sha256((ROOT/path).read_bytes()).hexdigest() for path in SOURCE_PATHS},
         'environment': {'python': platform.python_version(), 'numpy': np.__version__,
@@ -93,14 +93,20 @@ def generate_figure(figure_path=FIGURE, report_path=REPORT, *, audio_directory=O
                     label='24 个 RMS 门控缺测帧')
     axes[0].set(xlabel='状态所属时刻 / 接收窗中心 (s)',ylabel='方位角 (°)',
                 title='(a) 同一实际 PCM 的方位观测与连续卡尔曼状态轨迹')
+    ymin_a, ymax_a = axes[0].get_ylim()
+    axes[0].set_ylim(ymin_a, max(ymax_a, 48.0))
     axes[0].legend(loc='upper left')
-    axes[1].step(publication, phase_codes, where='post', color='#1F5A92', linewidth=2)
+    # Prepend initial absent state at t=0 s before the first frame arrives at 0.032 s.
+    step_t = np.concatenate(([0.0], publication))
+    step_codes = np.concatenate(([0], phase_codes))
+    axes[1].step(step_t, step_codes, where='post', color='#1F5A92', linewidth=2)
     axes[1].set(yticks=range(5),yticklabels=['无轨迹','候选 ID 1','确认 ID 1','候选 ID 2','确认 ID 2'],
+                xlim=(-0.03, float(publication[-1]) + 0.04),
                 ylim=(-.4,4.6),xlabel='事件发布时刻 / 接收块到齐 (s)',
-                title='(b) 连续 3 帧确认；超时退役后分配新 ID 并保持因果发布')
+                title='(b) 由无轨迹起跳、连续 3 帧确认；超时退役后分配新 ID')
     first_confirm=lifecycle['events'][1]
-    axes[1].annotate('第 3 帧到齐才确认：0.052 s',
-        xy=(first_confirm['publication_time_s'],2),xytext=(.18,3.7),
+    axes[1].annotate('0.032 s 首帧建候选；0.052 s 第 3 帧确认',
+        xy=(first_confirm['publication_time_s'],2),xytext=(.22,3.7),
         arrowprops={'arrowstyle':'->','color':'#1F5A92'}, fontsize=11)
     axes[1].annotate('重新确认 ID 2：1.112 s',xy=(1.112,4),xytext=(1.3,2.75),
         arrowprops={'arrowstyle':'->','color':'#1F5A92'}, fontsize=11)
@@ -120,7 +126,7 @@ def generate_figure(figure_path=FIGURE, report_path=REPORT, *, audio_directory=O
     fig.legend(handles, labels, loc='lower center', bbox_to_anchor=(.5,.035), fontsize=11)
     for ax in axes:
         ax.grid(linestyle=':',alpha=.45)
-    fig.suptitle('图77  PCM 观测 → 轨迹确认、静默保持与超时退役',fontsize=14)
+    fig.suptitle('图72  PCM 观测 → 轨迹确认、静默保持与超时退役',fontsize=14)
     fig.tight_layout(rect=(0,.15,1,.965),h_pad=2.5)
     fig.text(.5,.008,'注：本例按固定确认与过期门限演示单轨迹槽位的建立、缺测保持与超时退役过程。',
              ha='center',fontsize=11)

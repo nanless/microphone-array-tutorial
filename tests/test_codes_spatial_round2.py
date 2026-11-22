@@ -11,7 +11,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from codes.chapters.ch05.core.beamforming import mvdr_weights
 from codes.chapters.ch04.core.doa import capon_spectrum
 from codes.chapters.ch03.core.geometry import near_field_steering
-from codes.chapters.ch00.cross_chapter.exercises_spatial import run_exercises
+from codes.chapters.ch00.cross_chapter.exercises_spatial import beam_output_noise, run_exercises
 
 
 class SpatialRoundTwoTest(unittest.TestCase):
@@ -73,7 +73,7 @@ class SpatialRoundTwoTest(unittest.TestCase):
         self.assertEqual((row["subarray_count"], row["subarray_channels"]), (2, 3))
 
     def test_postfilter_uses_beam_output_noise(self):
-        row = self.results["E05-03"]
+        row = beam_output_noise()
         self.assertAlmostEqual(row["true_output_noise"], 8 / 15)
         self.assertAlmostEqual(row["total_output_power"], 53 / 15)
         self.assertAlmostEqual(row["independent_model_output_noise_estimate"], 7 / 30)
@@ -81,7 +81,7 @@ class SpatialRoundTwoTest(unittest.TestCase):
         self.assertAlmostEqual(row["independent_model_gain"], 99 / 106)
 
     def test_complex_lcmv_constraint_needs_conjugate_response(self):
-        row = self.results["E05-04"]
+        row = self.results["E05-01"]
         np.testing.assert_allclose(row["unconjugated_f_response_imag"], [0, -1])
         np.testing.assert_allclose(row["correct_weight_real"], [1, 0])
         np.testing.assert_allclose(row["correct_weight_imag"], [0, -1])

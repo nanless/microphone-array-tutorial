@@ -1,6 +1,5 @@
-"""Independent fraction and analytic expectations for E06-11..E06-20."""
+"""Independent fraction and analytic expectations for E06-08..E06-10."""
 import json
-import math
 from pathlib import Path
 import subprocess
 import sys
@@ -12,55 +11,27 @@ from codes.chapters.ch06.aec_advanced_exercises import run_exercises
 class AdvancedAECExercisesTest(unittest.TestCase):
     def test_stable_ids_and_json(self):
         result = run_exercises()
-        self.assertEqual(list(result), [f"E06-{n:02d}" for n in range(11, 21)])
+        self.assertEqual(list(result), ["E06-08", "E06-09", "E06-10"])
         json.dumps(result, allow_nan=False)
         script = Path(__file__).resolve().parents[1] / "codes/chapters/ch06/aec_advanced_exercises.py"
         proc = subprocess.run([sys.executable, str(script)], capture_output=True, text=True, check=True)
         self.assertEqual(json.loads(proc.stdout), result)
 
-    def test_haar_and_diagonal_model_are_distinct(self):
-        result = run_exercises()
-        self.assertEqual(result["E06-11"]["input_high_band"], [0, 0])
-        self.assertAlmostEqual(result["E06-11"]["echo_high_band"][0], -math.sqrt(.5))
-        self.assertAlmostEqual(result["E06-11"]["echo_high_band"][1], math.sqrt(.5))
-        self.assertEqual(result["E06-12"]["missing_cross_terms"], [0, .5, 0, -.5])
+    def test_ipnlms_zero_start_deadlock(self):
+        self.assertEqual(run_exercises()["E06-08"]["pure_proportionate_zero_start_update"], [0, 0])
 
-    def test_ipnlms_floor_and_zero_start(self):
-        row = run_exercises()["E06-13"]
-        self.assertEqual(row["gain"], [.45, .3])
-        self.assertEqual(row["denominator"], 1.)
-        self.assertEqual(row["update"], [.09, .06])
-        self.assertEqual(row["uniform_update"], [.08, .08])
-        self.assertEqual(run_exercises()["E06-14"]["pure_proportionate_zero_start_update"], [0, 0])
-
-    def test_rls_time_and_independent_batch_solution(self):
+    def test_rls_forgetting_time_conversion(self):
         result = run_exercises()
-        self.assertAlmostEqual(result["E06-15"]["old_observation_weight_after_100_updates"], .3660323412732292)
-        self.assertEqual(result["E06-15"]["elapsed_seconds_if_16khz_sample_updates"], .00625)
-        self.assertEqual(result["E06-15"]["elapsed_seconds_if_10ms_block_updates"], 1.)
-        self.assertAlmostEqual(result["E06-17"]["normal_determinant"], 19 / 16)
-        for got, expected in zip(result["E06-17"]["batch_weights"], [18 / 19, 16 / 19]):
-            self.assertAlmostEqual(got, expected)
+        self.assertAlmostEqual(result["E06-09"]["old_observation_weight_after_100_updates"], .3660323412732292)
+        self.assertEqual(result["E06-09"]["elapsed_seconds_if_16khz_sample_updates"], .00625)
+        self.assertEqual(result["E06-09"]["elapsed_seconds_if_10ms_block_updates"], 1.)
 
-    def test_kalman_known_near_end_and_cross_covariance(self):
+    def test_two_band_haar_block_cost(self):
         result = run_exercises()
-        row = result["E06-16"]
-        self.assertAlmostEqual(row["fixed_low_variance_gain"], 10 / 21)
-        self.assertAlmostEqual(row["fixed_low_variance_weight"], 440 / 231)
-        self.assertAlmostEqual(row["oracle_high_variance_gain"], 1 / 111)
-        self.assertAlmostEqual(row["oracle_high_variance_weight"], 10 / 11 + 23 / 1221)
-        self.assertEqual(result["E06-18"]["complete_innovation_variance"], 4.5)
-        self.assertAlmostEqual(result["E06-18"]["diagonal_only_innovation_variance"], 19 / 6)
-
-    def test_crossband_hand_step_and_block_cost(self):
-        result = run_exercises()
-        row = result["E06-19"]
-        self.assertEqual(row["first_block_denominator"], 3)
-        self.assertAlmostEqual(row["low_input_to_low_output_weight"], 1 / 3)
-        self.assertAlmostEqual(row["low_input_to_high_output_weight"], -1 / 3)
-        self.assertEqual(row["high_input_weights"], [0, 0])
-        self.assertEqual(result["E06-20"]["minimum_block_taps"], 3)
-        self.assertEqual(result["E06-20"]["unconstrained_crossband_weights"], 12)
+        self.assertEqual(result["E06-10"]["physical_taps"], 4)
+        self.assertEqual(result["E06-10"]["minimum_block_taps"], 3)
+        self.assertEqual(result["E06-10"]["unconstrained_crossband_weights"], 12)
+        self.assertEqual(result["E06-10"]["minimum_pairing_wait_samples"], 1)
 
 
 if __name__ == "__main__":

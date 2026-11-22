@@ -1,4 +1,4 @@
-"""E05-08--24 and E05-28--29: small models and strictly checked published waveform fixtures.
+"""E05-05..17: small models and strictly checked published waveform fixtures.
 
 Run .venv/bin/python -m codes.chapters.ch05.chapter05_experiments. No files are
 written. These are original deterministic examples, not upstream benchmarks.
@@ -439,14 +439,59 @@ def channel_mask_prefilter_model() -> dict:
             'Souden paper reproduction, online state or speech enhancement performance is run.'}
 
 
-def exercise_05_28() -> dict:
-    """E05-28: first-order DMA frequency-invariant null synthesis, +6 dB/oct WNG drop, and gasket leak."""
+def gsc_equivalence_and_boundary() -> dict:
+    """E05-05: GSC null-space equivalence to LCMV plus single-snapshot and correlated-interference boundaries."""
+    return {
+        'lcmv_equivalence': gsc_lcmv_equivalence(),
+        'statistical_boundary': gsc_statistical_boundary(),
+    }
+
+
+def postfilter_noise_models() -> dict:
+    """E05-07: Zelinski pairwise-difference non-negativity and McCowan coherence-corrected ill-conditioning."""
+    return {
+        'zelinski_pair_difference': zelinski_pair_difference(),
+        'mccowan_coherent_noise': coherent_noise_pair(),
+    }
+
+
+def gev_souden_mwf_scale() -> dict:
+    """E05-11: GEV/MVDR/MWF scale MSE and Souden complex reference-image & full-rank boundary."""
+    return {
+        'gev_mwf_scale': gev_mwf_scale(),
+        'souden_reference_channel': souden_reference_channel(),
+    }
+
+
+def mask_scm_validity_and_rank() -> dict:
+    """E05-12: non-negative mask validity, Kish effective sample count, and per-channel prefilter rank jump."""
+    return {
+        'nonnegative_mask_model': nonnegative_mask_model(),
+        'channel_mask_prefilter': channel_mask_prefilter_model(),
+    }
+
+
+def derivative_lcmv_and_audio() -> dict:
+    """E05-14: derivative-constrained LCMV local complex flatness and two-tone synthetic audio MSE."""
+    return {
+        'derivative_lcmv': derivative_lcmv(),
+        'derivative_audio': derivative_audio_results(),
+    }
+
+
+def exercise_05_16() -> dict:
+    """E05-16: first-order DMA frequency-invariant null synthesis, +6 dB/oct WNG drop, and gasket leak."""
     return first_order_dma_example()
 
 
-def exercise_05_29() -> dict:
-    """E05-29: separable planar Kronecker MVDR vs non-separable point-interferer LCMV null coupling."""
+def exercise_05_17() -> dict:
+    """E05-17: separable planar Kronecker MVDR vs non-separable point-interferer LCMV null coupling."""
     return kronecker_beamforming_example()
+
+
+# Backward-compatible aliases for external callers referencing pre-refactor names.
+exercise_05_28 = exercise_05_16
+exercise_05_29 = exercise_05_17
 
 
 def _pack(value):
@@ -464,42 +509,29 @@ def _pack(value):
 
 
 def run_exercises() -> dict:
-    entries = [
-        *(
-            (f'E05-{index:02d}', function)
-            for index, function in enumerate(
-                [
-                    gsc_lcmv_equivalence,
-                    gsc_statistical_boundary,
-                    frost_finite_step,
-                    zelinski_pair_difference,
-                    coherent_noise_pair,
-                    target_covariance_contamination,
-                    gev_mwf_scale,
-                    first_order_spatial_rank,
-                    gsc_audio_results,
-                    nonnegative_mask_model,
-                    derivative_lcmv,
-                    norm_ball_robust,
-                    souden_reference_channel,
-                    om_lsa_probability_combination,
-                    derivative_audio_results,
-                    frequency_phase_ambiguity,
-                    channel_mask_prefilter_model,
-                ],
-                8,
-            )
-        ),
-        ('E05-28', exercise_05_28),
-        ('E05-29', exercise_05_29),
+    functions = [
+        gsc_equivalence_and_boundary,
+        frost_finite_step,
+        postfilter_noise_models,
+        target_covariance_contamination,
+        first_order_spatial_rank,
+        gsc_audio_results,
+        gev_souden_mwf_scale,
+        mask_scm_validity_and_rank,
+        norm_ball_robust,
+        derivative_lcmv_and_audio,
+        frequency_phase_ambiguity,
+        exercise_05_16,
+        exercise_05_17,
     ]
     results = {}
-    for ex_id, function in entries:
+    for index, function in enumerate(functions, 5):
+        ex_id = f'E05-{index:02d}'
         result = function()
         result['metadata'] = {
             'kind': 'original deterministic teaching experiment',
             'numpy_version': np.__version__,
-            'randomness': 'fixed white-noise seed 20260522' if ex_id == 'E05-22' else 'none',
+            'randomness': 'fixed white-noise seed 20260522' if ex_id == 'E05-14' else 'none',
         }
         results[ex_id] = _pack(result)
     return results

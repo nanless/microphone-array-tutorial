@@ -1,4 +1,4 @@
-"""Publication boundaries for independent E02-19 excitation/response assets."""
+"""Publication boundaries for independent E02-17 excitation/response assets."""
 import json
 from pathlib import Path
 import shutil

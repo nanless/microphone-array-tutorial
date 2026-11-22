@@ -1,4 +1,4 @@
-"""Nineteen WPE/MINT arithmetic and audio experiments, E07-08 through E07-26.
+"""Fourteen WPE/MINT arithmetic and audio experiments, E07-08 through E07-21.
 
 These are small declared models, not benchmarks. Complex arrays are encoded
 as separate real/imag lists for strict JSON. Importing does not run or write.
@@ -76,34 +76,6 @@ def history_permutation() -> dict:
             'scope': 'reorder history and filter together; this does not reconcile different upstream time indices'}
 
 
-def frame_count_and_rank() -> dict:
-    target = np.array([1., 2., 1., 2.])
-    cases = {'repeated': np.ones((4, 2)), 'independent': np.tile(np.eye(2), (2, 1))}
-    result = {}
-    for name, q in cases.items():
-        R, r = q.T @ q, q.T @ target
-        result[name] = {'history_rows': q.tolist(), 'correlation': R.tolist(),
-                        'eigenvalues': np.linalg.eigvalsh(R).tolist(), 'rank': int(np.linalg.matrix_rank(R)),
-                        'minimum_norm_coefficients': np.linalg.lstsq(q, target, rcond=None)[0].tolist(),
-                        'absolute_loading_1_coefficients': np.linalg.solve(R+np.eye(2), r).tolist()}
-    return {'dimension': 2, 'valid_frames': 4, 'target': target.tolist(), 'cases': result,
-            'scope': 'rank concerns these declared regression snapshots; enough rows is necessary but not sufficient for independent parameters'}
-
-
-def frame_window_overlap() -> dict:
-    cases = []
-    for delay in (3, 4):
-        history = [-delay*128, 512-delay*128]
-        overlap = max(0, min(512, history[1])-max(0, history[0]))
-        cases.append({'delay_frames': delay, 'nearest_history_support_samples': history,
-                      'overlap_samples': overlap, 'overlap_seconds': overlap/16000,
-                      'oldest_frame_start_offset_samples': -(delay+5-1)*128})
-    return {'sample_rate_hz': 16000, 'window_samples': 512, 'hop_samples': 128, 'taps': 5,
-            'current_support_samples': [0, 512], 'interval_convention': 'half-open unwindowed frame support',
-            'cases': cases,
-            'scope': 'Hann endpoint zeros do not make overlapping windows independent; history span is not an extra wait for future samples'}
-
-
 def exponential_statistics() -> dict:
     q, target = np.array([1., 2., 1.]), np.array([.8, 1.6, 1.])
     alpha, R, r = .5, 2., 1.
@@ -124,36 +96,6 @@ def exponential_statistics() -> dict:
             'scope': 'declared powers and direct statistics, both policies still advance frame history; separate locked-upstream silence probe uses its own inverse-matrix update',
             'silence_probe': 'codes/chapters/ch07/examples/wpe_silence_boundary.py',
             'silence_report': 'codes/chapters/ch07/reports/chapter07_online_wpe_silence.json'}
-
-
-def mint_near_common_zero() -> dict:
-    result = []
-    for a, b in ((.5, -.5), (.5, .49)):
-        u = np.array([-b, a])/(a-b)
-        response = u[0]*np.array([1., a])+u[1]*np.array([1., b])
-        result.append({'a': a, 'b': b, 'constant_inverse_weights': u.tolist(),
-                       'summed_impulse_response': response.tolist(),
-                       'post_path_independent_unit_noise_variance': float(u @ u),
-                       'first_path_second_tap_perturbation': .001,
-                       'perturbed_second_response_tap': float(response[1]+.001*u[0])})
-    return {'cases': result, 'common_zero_case': {'a': .5, 'b': .5, 'constant_inverse_exists': False},
-            'scope': 'two known FIR paths [1,a],[1,b]; independent equal-variance noise enters after each path. Not noise amplification for pre-path common source noise.'}
-
-
-def wpe_resource_budget() -> dict:
-    result = []
-    for channels in (8, 16):
-        dimension, bins, taps = channels*10, 257, 10
-        covariance = bins*dimension**2*16
-        predictor = bins*dimension*channels*16
-        result.append({'channels': channels, 'taps': taps, 'frequency_bins': bins,
-                       'history_dimension': dimension, 'complex128_bytes': 16,
-                       'one_correlation_array_bytes': covariance,
-                       'one_correlation_array_MiB': covariance/2**20,
-                       'one_predictor_array_bytes': predictor, 'one_predictor_array_MiB': predictor/2**20,
-                       'per_bin_outer_product_entries': dimension**2,
-                       'dense_factorization_cubic_dimension_proxy': dimension**3})
-    return {'cases': result, 'scope': 'array storage and dimension-order proxies only; no timing claim, no Hermitian packed storage, and excludes input/history copies, solver workspace and all other state'}
 
 
 def loaded_wpd_factorization() -> dict:
@@ -217,7 +159,7 @@ def predictable_target_audio(repo_root=ROOT) -> dict:
             or parameters.get('sample_rate_hz') != 16000 or parameters.get('samples') != 32000
             or parameters.get('score_windows_samples') != {'steady_target': [6400, 14400],
                                                           'post_source_tail': [16000, 32000]}):
-        raise ValueError('actual predictable-audio parameters differ from E07-17')
+        raise ValueError('actual predictable-audio parameters differ from E07-13')
     names = ['wpe_predictable_'+part for part in ('target', 'reverberant', 'oracle_inverse', 'output')]
     records = manifest.get('files', [])
     decoded, summary = {}, {}
@@ -321,19 +263,27 @@ def constrained_regularized_mint() -> dict:
     exact = constrained_design(a, b, 0)
     regularized = constrained_design(a, b, Fraction(1, 10000))
     exact['cost_at_regularization_1e_4'] = float(Fraction(4901, 10000))
+    unregularized_cases = []
+    for pa, pb in ((.5, -.5), (.5, .49)):
+        u = np.array([-pb, pa])/(pa-pb)
+        response = u[0]*np.array([1., pa])+u[1]*np.array([1., pb])
+        unregularized_cases.append({
+            'a': pa, 'b': pb, 'constant_inverse_weights': u.tolist(),
+            'summed_impulse_response': response.tolist(),
+            'post_path_independent_unit_noise_variance': float(u @ u),
+            'first_path_second_tap_perturbation': .001,
+            'perturbed_second_response_tap': float(response[1]+.001*u[0]),
+        })
     return {'a': .5, 'b': .49, 'regularization': .0001,
             'exact_inverse': exact, 'regularized': regularized,
-            'scope': 'fixed direct coefficient sum=1; reflection distortion versus weight-norm penalty, not a general MINT optimum'}
+            'exact_unregularized_cases': unregularized_cases,
+            'common_zero_case': {'a': .5, 'b': .5, 'constant_inverse_exists': False},
+            'scope': 'fixed direct coefficient sum=1; exact well-separated/near-common-zero contrast plus reflection distortion versus weight-norm penalty, not a general MINT optimum'}
 
 
 def actual_mint_audio(directory=None) -> dict:
     from codes.chapters.ch07.examples.mint_teaching_demo import DEFAULT_OUTPUT, check_assets
     return check_assets(DEFAULT_OUTPUT if directory is None else Path(directory))
-
-
-def source_clock_delays() -> dict:
-    from codes.chapters.ch07.core.prediction_delays import source_clock_example
-    return source_clock_example()
 
 
 def late_power_unit_conversion() -> dict:
@@ -342,8 +292,11 @@ def late_power_unit_conversion() -> dict:
 
 
 def actual_delay_audio(directory=None) -> dict:
+    from codes.chapters.ch07.core.prediction_delays import source_clock_example
     from codes.chapters.ch07.examples.generate_delay_audio import DEFAULT_OUTPUT, check_assets
-    return check_assets(DEFAULT_OUTPUT if directory is None else Path(directory))
+    report = dict(check_assets(DEFAULT_OUTPUT if directory is None else Path(directory)))
+    report['discrete_source_clock_control'] = source_clock_example()
+    return report
 
 
 def online_silence_pullback() -> dict:
@@ -358,11 +311,10 @@ def cascade_ordering_and_tap_budget() -> dict:
 
 def run_experiments(*, repo_root=ROOT, mint_directory=None, delay_directory=None) -> dict:
     functions = [complex_weighted_fit, power_floor_and_smoothing, history_permutation,
-                 frame_count_and_rank, frame_window_overlap, exponential_statistics,
-                 mint_near_common_zero, wpe_resource_budget, loaded_wpd_factorization,
+                 exponential_statistics, loaded_wpd_factorization,
                  predictable_target_audio, real_cepstrum_phase_ambiguity,
                  design_normal_comparison, constrained_regularized_mint, actual_mint_audio,
-                 source_clock_delays, late_power_unit_conversion, actual_delay_audio,
+                 late_power_unit_conversion, actual_delay_audio,
                  online_silence_pullback, cascade_ordering_and_tap_budget]
     result = {}
     for i, function in enumerate(functions, 8):

@@ -150,43 +150,42 @@ EXPECTED_SECTION_COUNTS = {
     "01_problem-definition.md": 3,
     "02_basics-signal-model.md": 8,
     "03_array-geometry.md": 5,
-    "04_doa-estimation.md": 11,
+    "04_doa-estimation.md": 9,
     "05_beamforming.md": 11,
-    "06_aec.md": 17,
+    "06_aec.md": 10,
     "07_wpe-dereverberation.md": 10,
     "08_speech-separation.md": 8,
-    "09_source-tracking.md": 6,
-    "10_engineering-practice.md": 12,
+    "09_source-tracking.md": 7,
+    "10_engineering-practice.md": 11,
     "11_selection-guide.md": 7,
     "12_acoustic-imaging.md": 14,
     "13_distributed-enhancement.md": 16,
     "14_spatial-wearable-arrays.md": 12,
-    "15_target-extraction-diarization.md": 10,
+    "15_target-extraction-diarization.md": 11,
     "16_appendix-symbols-math.md": 4,
     "17_appendix-guide.md": 7,
 }
 # 第 0～17 章的源 h4 进入合订目录和 PDF 第三级书签。此表是独立发布
 # 基线，不从构建脚本或待检产物反推。
 EXPECTED_SUBSECTION_COUNTS = {
-    "00_math-foundations.md": 45,
-    "01_problem-definition.md": 24,
-    "02_basics-signal-model.md": 51,  # 新增E19、独立数字扫频主题与E20
-    "03_array-geometry.md": 34,
-    "04_doa-estimation.md": 50,
-    "05_beamforming.md": 51,
-    "06_aec.md": 73,  # reference-gain topic and E40/E41/E42 are four independent h4 topics
-    "07_wpe-dereverberation.md": 60,
-    "08_speech-separation.md": 65,  # OverIVA topic and three separately navigable exercises
-    "09_source-tracking.md": 64,  # three independent topics and E09-24/25/26
-    "10_engineering-practice.md": 58,
-    "11_selection-guide.md": 43,  # two evidence topics and E11-26/27 are independently navigable
+    "00_math-foundations.md": 48,
+    "01_problem-definition.md": 22,
+    "02_basics-signal-model.md": 48,
+    "03_array-geometry.md": 33,
+    "04_doa-estimation.md": 44,
+    "05_beamforming.md": 40,
+    "06_aec.md": 60,
+    "07_wpe-dereverberation.md": 55,
+    "08_speech-separation.md": 58,
+    "09_source-tracking.md": 58,
+    "10_engineering-practice.md": 51,
+    "11_selection-guide.md": 39,
     "12_acoustic-imaging.md": 68,
-    # 40 separately navigable topics and 25 exercise headings, manually read.
-    "13_distributed-enhancement.md": 68,
-    "14_spatial-wearable-arrays.md": 48,
-    "15_target-extraction-diarization.md": 43,
-    "16_appendix-symbols-math.md": 39,
-    "17_appendix-guide.md": 31,
+    "13_distributed-enhancement.md": 62,
+    "14_spatial-wearable-arrays.md": 45,
+    "15_target-extraction-diarization.md": 41,
+    "16_appendix-symbols-math.md": 27,
+    "17_appendix-guide.md": 28,
 }
 # 上表为独立发布基线，不从待检 HTML 或构建器反推。
 EXPECTED_CHAPTERS = [
@@ -228,21 +227,21 @@ EXPECTED_LEGACY_ROUTES = {
     "16_spatial-wearable-arrays.html": "14_spatial-wearable-arrays.html",
     "17_target-extraction-diarization.html": "15_target-extraction-diarization.html",
 }
-EXPECTED_SECTION_COUNT = 180
-EXPECTED_SUBSECTION_COUNT = 915
-EXPECTED_OUTLINE_ITEM_COUNT = 1114
-EXPECTED_FIGURE_NUMBERS = set(range(1, 93))
-EXPECTED_EXERCISE_COUNT = 443
+EXPECTED_SECTION_COUNT = 172
+EXPECTED_SUBSECTION_COUNT = 827
+EXPECTED_OUTLINE_ITEM_COUNT = 1018
+EXPECTED_FIGURE_NUMBERS = set(range(1, 88))
+EXPECTED_EXERCISE_COUNT = 352
 EXPECTED_EXERCISE_COUNTS = {
     '00_math-foundations.md': 16,
-    '01_problem-definition.md': 12, '02_basics-signal-model.md': 22,
-    '03_array-geometry.md': 20, '04_doa-estimation.md': 27,
-    '05_beamforming.md': 29, '06_aec.md': 44, '07_wpe-dereverberation.md': 26,
-    '08_speech-separation.md': 34, '09_source-tracking.md': 28,
-    '10_engineering-practice.md': 36, '11_selection-guide.md': 29,
-    '12_acoustic-imaging.md': 20, '13_distributed-enhancement.md': 27,
-    '14_spatial-wearable-arrays.md': 18, '15_target-extraction-diarization.md': 18,
-    '16_appendix-symbols-math.md': 21, '17_appendix-guide.md': 16,
+    '01_problem-definition.md': 11, '02_basics-signal-model.md': 20,
+    '03_array-geometry.md': 18, '04_doa-estimation.md': 23,
+    '05_beamforming.md': 20, '06_aec.md': 30, '07_wpe-dereverberation.md': 21,
+    '08_speech-separation.md': 26, '09_source-tracking.md': 22,
+    '10_engineering-practice.md': 28, '11_selection-guide.md': 22,
+    '12_acoustic-imaging.md': 18, '13_distributed-enhancement.md': 20,
+    '14_spatial-wearable-arrays.md': 15, '15_target-extraction-diarization.md': 14,
+    '16_appendix-symbols-math.md': 15, '17_appendix-guide.md': 13,
 }
 # 研究附站使用独立显式清单，不挤占 16 篇教程或教程 PDF 大纲基线。
 # 此清单不能从构建器或待检 HTML 反推。
@@ -610,11 +609,11 @@ def check_sources(errors: list[str], notices: list[str]):
                           ROOT / "scripts" / "README.md",
                           ROOT / "codes" / "chapters" / "README.md") if p.exists()]
     readme_zh = ROOT / "README.md"
-    if readme_zh.exists() and "16 章正文 · 2 篇附录 · 443 道可运行练习 · 92 张编号图" not in readme_zh.read_text(encoding="utf-8"):
-        fail(errors, "README.md 全书统计基线过期：应含 16 章正文 · 2 篇附录 · 443 道可运行练习 · 92 张编号图")
+    if readme_zh.exists() and "16 章正文 · 2 篇附录 · 352 道可运行练习 · 87 张编号图" not in readme_zh.read_text(encoding="utf-8"):
+        fail(errors, "README.md 全书统计基线过期：应含 16 章正文 · 2 篇附录 · 352 道可运行练习 · 87 张编号图")
     readme_en = ROOT / "README_EN.md"
-    if readme_en.exists() and "16 chapters · 2 appendices · 443 runnable exercises · 92 numbered figures" not in readme_en.read_text(encoding="utf-8"):
-        fail(errors, "README_EN.md 全书统计基线过期：应含 16 chapters · 2 appendices · 443 runnable exercises · 92 numbered figures")
+    if readme_en.exists() and "16 chapters · 2 appendices · 352 runnable exercises · 87 numbered figures" not in readme_en.read_text(encoding="utf-8"):
+        fail(errors, "README_EN.md 全书统计基线过期：应含 16 chapters · 2 appendices · 352 runnable exercises · 87 numbered figures")
     for path in paths:
         original = path.read_text(encoding="utf-8")
         errors.extend(f"{path.relative_to(ROOT)}: {issue}"
@@ -870,77 +869,77 @@ def check_figures(errors: list[str]):
             if width < 800 or height < 300:
                 fail(errors, f"图片分辨率过低：figures/{name}: {width}×{height}")
             number = int(re.match(r"fig(\d{2})_", name).group(1))
-            script_name = ("make_math_figures.py" if 89 <= number <= 92 else "make_wearable_figures.py" if 81 <= number <= 84 else "make_tse_figures.py" if 85 <= number <= 88 else "make_selection_figures.py" if number == 79 else "make_channel_figures.py" if number == 78 else "make_tracking_figures.py" if number == 77 else "make_css_figures.py" if number == 76 else "make_delay_figures.py" if number == 75 else "make_reference_figures.py" if number == 74 else "make_beamforming_figures.py" if number == 73 else "make_figures.py" if number <= 25 or number in (33, 34, 35, 36, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 80)
+            script_name = ("make_math_figures.py" if 84 <= number <= 87 else "make_wearable_figures.py" if 76 <= number <= 79 else "make_tse_figures.py" if 80 <= number <= 83 else "make_selection_figures.py" if number == 74 else "make_channel_figures.py" if number == 73 else "make_tracking_figures.py" if number == 72 else "make_css_figures.py" if number == 71 else "make_delay_figures.py" if number == 70 else "make_reference_figures.py" if number == 69 else "make_beamforming_figures.py" if number == 68 else "make_figures.py" if number <= 24 or number in (28, 29, 30, 31, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 75)
                            else "make_aec_figures.py")
             script_path = ROOT / "scripts" / script_name
             for issue in png_provenance_issues(path, script_path):
                 fail(errors, f"PNG 溯源失效：figures/{name}: {issue}")
-            if 81 <= number <= 84:
+            if 76 <= number <= 79:
                 expected = hashlib.sha256((WEARABLE_AUDIO_ROOT / "MANIFEST.json").read_bytes()).hexdigest()
                 with Image.open(path) as image:
                     if image.info.get("AudioManifestDigest") != expected:
                         fail(errors, f"图{number}可穿戴音频清单摘要失效")
-            if 85 <= number <= 88:
+            if 80 <= number <= 83:
                 expected = hashlib.sha256((TSE_AUDIO_ROOT / "MANIFEST.json").read_bytes()).hexdigest()
                 with Image.open(path) as image:
                     if image.info.get("AudioManifestDigest") != expected:
                         fail(errors, f"图{number}目标提取音频清单摘要失效")
-            if number == 80:
-                check_imaging_objective_png(path, ROOT/'codes/chapters/ch12/reports/figure80_imaging_objectives.json')
-            if number == 21:
-                report_path = ROOT / "codes/chapters/ch07/reports/figure21_wpe.json"
+            if number == 75:
+                check_imaging_objective_png(path, ROOT/'codes/chapters/ch12/reports/figure75_imaging_objectives.json')
+            if number == 20:
+                report_path = ROOT / "codes/chapters/ch07/reports/figure20_wpe.json"
                 with Image.open(path) as image:
                     for issue in wpe_figure_provenance_issues(
                             image.info, json.loads(report_path.read_text(encoding="utf-8"))):
                         fail(errors, issue)
-            if number == 44:
+            if number == 39:
                 expected = hashlib.sha256((ROOT / "codes/chapters/ch09/tracking_audio/MANIFEST.json").read_bytes()).hexdigest()
                 with Image.open(path) as image:
                     if image.info.get("AudioManifestDigest") != expected:
-                        fail(errors, "图44独立追踪音频清单摘要失效")
-            if number == 58:
+                        fail(errors, "图39独立追踪音频清单摘要失效")
+            if number == 53:
                 expected = hashlib.sha256((APA_AUDIO_ROOT / "MANIFEST.json").read_bytes()).hexdigest()
                 with Image.open(path) as image:
                     if image.info.get("AudioManifestDigest") != expected:
-                        fail(errors, "图58独立APA音频清单摘要失效")
-            if number == 59:
+                        fail(errors, "图53独立APA音频清单摘要失效")
+            if number == 54:
                 expected = hashlib.sha256((MINT_AUDIO_ROOT / "MANIFEST.json").read_bytes()).hexdigest()
                 with Image.open(path) as image:
                     if image.info.get("AudioManifestDigest") != expected:
-                        fail(errors, "图59独立已知路径逆音频清单摘要失效")
-            if number == 60:
+                        fail(errors, "图54独立已知路径逆音频清单摘要失效")
+            if number == 55:
                 expected = hashlib.sha256((MASK_AUDIO_ROOT / "MANIFEST.json").read_bytes()).hexdigest()
                 with Image.open(path) as image:
                     if image.info.get("AudioManifestDigest") != expected:
-                        fail(errors, "图60独立FFT掩码音频清单摘要失效")
-            if number == 64:
+                        fail(errors, "图55独立FFT掩码音频清单摘要失效")
+            if number == 59:
                 expected = hashlib.sha256((SCENARIO_AUDIO_ROOT / "MANIFEST.json").read_bytes()).hexdigest()
                 with Image.open(path) as image:
                     if image.info.get("AudioManifestDigest") != expected:
-                        fail(errors, "图64跨场景清单摘要失效")
-                _check_selection_scenarios_report(ROOT / "codes/chapters/ch11/reports/figure64_selection_scenarios.json")
-            if number == 65:
+                        fail(errors, "图59跨场景清单摘要失效")
+                _check_selection_scenarios_report(ROOT / "codes/chapters/ch11/reports/figure59_selection_scenarios.json")
+            if number == 60:
                 expected = hashlib.sha256((WEIGHTED_AUDIO_ROOT / "MANIFEST.json").read_bytes()).hexdigest()
                 with Image.open(path) as image:
                     if image.info.get("AudioManifestDigest") != expected:
-                        fail(errors, "图65已知噪声权重清单摘要失效")
-                _check_weighted_noise_report(ROOT / "codes/chapters/appendix_a/reports/figure65_weighted_noise.json")
-            if number == 66:
+                        fail(errors, "图60已知噪声权重清单摘要失效")
+                _check_weighted_noise_report(ROOT / "codes/chapters/appendix_a/reports/figure60_weighted_noise.json")
+            if number == 61:
                 manifest_path = RESPONSE_AUDIO_ROOT / 'MANIFEST.json'
                 with Image.open(path) as image:
                     if image.info.get('AudioManifestDigest') != hashlib.sha256(manifest_path.read_bytes()).hexdigest():
-                        fail(errors, '图66同DRR频响清单摘要失效')
-                _check_equal_drr_report(ROOT/'codes/chapters/appendix_b/reports/figure66_equal_drr_response.json')
-            if number == 63:
+                        fail(errors, '图61同DRR频响清单摘要失效')
+                _check_equal_drr_report(ROOT/'codes/chapters/appendix_b/reports/figure61_equal_drr_response.json')
+            if number == 58:
                 expected = hashlib.sha256((NOISE_AUDIO_ROOT / "MANIFEST.json").read_bytes()).hexdigest()
                 with Image.open(path) as image:
                     if image.info.get("AudioManifestDigest") != expected:
-                        fail(errors, "图63独立噪声失配清单摘要失效")
-            if number == 62:
-                _check_engineering_limits_report(ROOT / "codes/chapters/ch10/reports/figure62_engineering_limits.json")
-            if number == 61:
-                _check_tracking_information_report(ROOT / "codes/chapters/ch09/reports/figure61_tracking_information.json")
-            if number in (34, 35, 36, 40, 41, 43, 45, 47, 49):
+                        fail(errors, "图58独立噪声失配清单摘要失效")
+            if number == 57:
+                _check_engineering_limits_report(ROOT / "codes/chapters/ch10/reports/figure57_engineering_limits.json")
+            if number == 56:
+                _check_tracking_information_report(ROOT / "codes/chapters/ch09/reports/figure56_tracking_information.json")
+            if number in (29, 30, 31, 35, 36, 38, 40, 42, 44):
                 expected = hashlib.sha256((ROOT / "codes/chapters/ch00/audio/MANIFEST.json").read_bytes()).hexdigest()
                 with Image.open(path) as image:
                     if image.info.get("AudioManifestDigest") != expected:
@@ -950,10 +949,10 @@ def check_figures(errors: list[str]):
 
 
 IMAGING_FIGURE_REPORTS = {
-    67: 'figure67_imaging_psf.json',
-    68: 'figure68_imaging_model_checks.json',
-    69: 'figure69_imaging_calibration.json',
-    80: 'figure80_imaging_objectives.json',
+    62: 'figure62_imaging_psf.json',
+    63: 'figure63_imaging_model_checks.json',
+    64: 'figure64_imaging_calibration.json',
+    75: 'figure75_imaging_objectives.json',
 }
 IMAGING_FIGURE_SOURCES = (
     'scripts/make_figures.py', 'codes/chapters/ch12/core/imaging.py',
@@ -970,7 +969,7 @@ def check_imaging_objective_png(path, report_path):
         picture.load()
         if (picture.info.get('NumericalReportDigest') != digest
                 or picture.info.get('SourceScriptDigest') != script_digest):
-            raise ValueError('图80 PNG报告或真实绘图源摘要失效')
+            raise ValueError('图75 PNG报告或真实绘图源摘要失效')
 
 
 def _check_imaging_figure_report(path, number):
@@ -1045,9 +1044,9 @@ def _check_imaging_figure_report(path, number):
               '交叉项改变非相干逆解')
 
     data = report['results']
-    if number in (67, 68):
+    if number in (62, 63):
         two_cell(data['two_cell'])
-    if number == 67:
+    if number == 62:
         spatial = data['spherical_scan']
         close(spatial['frequency_hz'], 4000., '频率')
         close(spatial['sound_speed_m_s'], 343., '声速')
@@ -1085,7 +1084,7 @@ def _check_imaging_figure_report(path, number):
         close(spatial['dirty_grid_sum'], scan.sum(), '扫描格求和')
         close(spatial['source_power_sum'], 1.25, '源总量')
         if len(spatial['local_peaks']) != 2:
-            raise ValueError('图67两处局部峰数量不同')
+            raise ValueError('图62两处局部峰数量不同')
         for source_index, grid_index in enumerate((215, 225)):
             local = np.flatnonzero(np.linalg.norm(grid[:, :2]-grid[grid_index, :2], axis=1) <= .09+1e-12)
             peak = int(local[np.argmax(scan[local])])
@@ -1093,15 +1092,15 @@ def _check_imaging_figure_report(path, number):
             exact_int(row['peak_grid_index'], peak, '局部峰格索引')
             close(row['peak_position_m'], grid[peak], '局部峰位置')
             close(row['position_error_m'], np.linalg.norm(grid[peak]-grid[grid_index]), '峰偏移')
-    elif number == 68:
+    elif number == 63:
         if type(data['log_plot_floor']) is not float or data['log_plot_floor'] != 1e-16:
-            raise ValueError('图68对数显示地板不同')
+            raise ValueError('图63对数显示地板不同')
         for name, passes in (('forward', 1), ('forward_backward', 2)):
             result = data[name]
             exact_int(result['iterations'], 8, '外层轮数')
             exact_int(result['passes_per_iteration'], passes, '每轮扫描次数')
             if result['sweep'] != name:
-                raise ValueError('图68遍历方向不同')
+                raise ValueError('图63遍历方向不同')
             close(result['relaxation'], 1., '松弛系数')
             # Exact rational closed form for this two-cell zero-start control.
             # Forward: e1=(1/16)^n, e2=-e1/4. The final reverse pass also
@@ -1117,7 +1116,7 @@ def _check_imaging_figure_report(path, number):
         exact_int(clean['completed_iterations'], 20, 'CLEAN轮数')
         close(clean['damping'], .6, 'CLEAN扣除比例')
         if len(clean['steps']) != 20:
-            raise ValueError('图68 CLEAN逐轮记录数量不同')
+            raise ValueError('图63 CLEAN逐轮记录数量不同')
         for n, step in enumerate(clean['steps'], 1):
             power = 2*.4**(n-1)
             exact_int(step['iteration'], n, 'CLEAN轮序')
@@ -1131,7 +1130,7 @@ def _check_imaging_figure_report(path, number):
         close(data['rank_one_cumulative'], cumulative, 'CLEAN累计分配')
         close(clean['clean_map'], [cumulative[-1]], 'CLEAN末轮累计图')
         complex_close(clean['residual_csm'], 2*.4**20*np.ones((2, 2)), 'CLEAN末轮残余CSM')
-    elif number == 69:
+    elif number == 64:
         gains = np.linspace(.4, 2.2, 61)
         close(data['second_channel_gain'], gains, '已知增益控制')
         close(data['uncalibrated_scan'], (1+gains)**2/4, '校准前扫描')
@@ -1142,10 +1141,10 @@ def _check_imaging_figure_report(path, number):
         close(data['region_db_relative_to_one'],
               [10*np.log10(5/4), 10*np.log10(25/16), -10*np.log10(2)], '线性量汇总后的dB')
         if data['scope'] != 'analytic controls; default-intercept estimate is independent mathematics, not sklearn execution':
-            raise ValueError('图69截距执行范围说明不同')
-    elif number == 80:
+            raise ValueError('图64截距执行范围说明不同')
+    elif number == 75:
         if set(data) != {'experiment', 'plotted'}:
-            raise ValueError('图80实验与绘图结构不同')
+            raise ValueError('图75实验与绘图结构不同')
         experiment, plotted = data['experiment'], data['plotted']
         r = np.array([[4/3, 2/3-2j*np.sqrt(3)/3],
                       [2/3+2j*np.sqrt(3)/3, 4/3]])
@@ -2647,12 +2646,12 @@ def check_tracking_audio(errors):
 
 
 def check_tracking_lifecycle_figure(errors):
-    """Check figure77's fixed PCM events and both clocks independently of the FSM."""
+    """Check figure72's fixed PCM events and both clocks independently of the FSM."""
     try:
         from PIL import Image
         source = ROOT / "codes/chapters/ch09/tracking_audio"
         validate_asset_directory(source, {"source.wav", "array_noisy.wav", "MANIFEST.json"}, check=True)
-        report = _read_audio_manifest(ROOT / "codes/chapters/ch09/reports/figure77_tracking_lifecycle.json")
+        report = _read_audio_manifest(ROOT / "codes/chapters/ch09/reports/figure72_tracking_lifecycle.json")
         required = {
             "scripts/make_tracking_figures.py", "codes/chapters/ch09/core/lifecycle.py",
             "codes/chapters/ch09/examples/tracking_lifecycle_demo.py",
@@ -2666,11 +2665,11 @@ def check_tracking_lifecycle_figure(errors):
         actual_inputs = {name: hashlib.sha256((source/name).read_bytes()).hexdigest()
                          for name in ("source.wav", "array_noisy.wav", "MANIFEST.json")}
         if (type(report.get("schema_version")) is not int or report["schema_version"] != 1
-                or report.get("exercise_id") != "E09-25"
+                or report.get("exercise_id") != "E09-19"
                 or not same_metadata(report.get("source_sha256"), actual_sources)
                 or not same_metadata(report.get("input_sha256"), actual_inputs)
                 or report.get("script_sha256") != actual_sources["scripts/make_tracking_figures.py"]):
-            raise ValueError("figure77 source or actual PCM identity differs")
+            raise ValueError("figure72 source or actual PCM identity differs")
         manifest = _read_audio_manifest(source/"MANIFEST.json")
         _check_tracking_frame_arithmetic(manifest, source/"array_noisy.wav")
         analysis = manifest["pcm_analysis"]
@@ -2782,15 +2781,15 @@ def check_tracking_lifecycle_figure(errors):
                 "Available-time age and state-time age are different contracts. "
                 "No new WAV, Bernoulli/LMB filter, multi-target association, hardware result or formal listening study."):
             raise ValueError("figure77 PCM and execution limits differ")
-        with Image.open(validate_parent_chain(ROOT/"figures/fig77_tracking_lifecycle.png")) as picture:
+        with Image.open(validate_parent_chain(ROOT/"figures/fig72_tracking_lifecycle.png")) as picture:
             if (picture.info.get("SourceScript") != "scripts/make_tracking_figures.py"
                     or picture.info.get("SourceScriptDigest") != report["script_sha256"]
                     or picture.info.get("AudioManifestDigest") != actual_inputs["MANIFEST.json"]
                     or picture.info.get("SourceClosureDigest") !=
                        hashlib.sha256(json.dumps(actual_sources,sort_keys=True).encode()).hexdigest()):
-                raise ValueError("figure77 PNG source and actual PCM provenance differ")
+                raise ValueError("figure72 PNG source and actual PCM provenance differ")
     except Exception as error:
-        fail(errors,"图77实际PCM、生命周期与时刻："+str(error))
+        fail(errors,"图72实际PCM、生命周期与时刻："+str(error))
 
 
 def _check_tracking_frame_arithmetic(manifest, array_path):
@@ -3534,29 +3533,29 @@ def check_phase_figure(errors):
         from PIL import Image
         manifest_path = PHASE_AUDIO_ROOT/'MANIFEST.json'
         manifest = strict_json_loads(manifest_path.read_bytes())
-        path = ROOT/'codes/chapters/ch05/reports/figure73_phase_reference.json'
+        path = ROOT/'codes/chapters/ch05/reports/figure68_phase_reference.json'
         report = strict_json_loads(path.read_bytes())
         source_paths = set(manifest['source_sha256']) | {'scripts/make_figures.py', 'scripts/make_beamforming_figures.py'}
         if set(report['source_sha256']) != source_paths:
-            raise ValueError('figure73 true plotting dependency set differs')
+            raise ValueError('figure68 true plotting dependency set differs')
         for name, digest in report['source_sha256'].items():
             if hashlib.sha256(validate_parent_chain(ROOT/name).read_bytes()).hexdigest() != digest:
-                raise ValueError('figure73 actual source SHA differs: '+name)
+                raise ValueError('figure68 actual source SHA differs: '+name)
         manifest_sha = hashlib.sha256(manifest_path.read_bytes()).hexdigest()
-        if (type(report['figure']) is not int or report['figure'] != 73 or report['exercise_id'] != 'E05-23'
+        if (type(report['figure']) is not int or report['figure'] != 68 or report['exercise_id'] != 'E05-15'
                 or report['audio_manifest_sha256'] != manifest_sha
                 or not same_metadata(report['parameters'], manifest['parameters'])
                 or not same_metadata(report['samples'], manifest['samples'])
                 or report['wav_sha256'] != {n:r['sha256'] for n,r in manifest['files'].items()}):
-            raise ValueError('figure73 actual audio/report mismatch')
-        with Image.open(ROOT/'figures/fig73_phase_reference.png') as picture:
+            raise ValueError('figure68 actual audio/report mismatch')
+        with Image.open(ROOT/'figures/fig68_phase_reference.png') as picture:
             metadata = picture.info
         if (metadata.get('AudioManifestDigest') != manifest_sha
                 or metadata.get('NumericalReportDigest') != hashlib.sha256(path.read_bytes()).hexdigest()
                 or strict_json_loads(metadata.get('GeneratorInputs','{}')) != report['source_sha256']):
-            raise ValueError('figure73 PNG input or numerical-report identity differs')
+            raise ValueError('figure68 PNG input or numerical-report identity differs')
     except (OSError, ValueError, KeyError, TypeError) as error:
-        fail(errors, '图73真实来源与评分：'+str(error))
+        fail(errors, '图68真实来源与评分：'+str(error))
 
 
 def check_reference_audio(errors):
@@ -3621,37 +3620,37 @@ def check_reference_figure(errors):
         from PIL import Image
         manifest_path = REFERENCE_AUDIO_ROOT/'MANIFEST.json'
         manifest = strict_json_loads(manifest_path.read_bytes())
-        path = ROOT/'codes/chapters/ch06/reports/figure74_reference_timing.json'
+        path = ROOT/'codes/chapters/ch06/reports/figure69_reference_timing.json'
         report = strict_json_loads(path.read_bytes())
         source_paths = set(manifest['source_sha256']) | {'scripts/make_figures.py', 'scripts/make_reference_figures.py'}
         if set(report['source_sha256']) != source_paths:
-            raise ValueError('figure74 actual plotting dependency set differs')
+            raise ValueError('figure69 actual plotting dependency set differs')
         for name, digest in report['source_sha256'].items():
             if hashlib.sha256(validate_parent_chain(ROOT/name).read_bytes()).hexdigest() != digest:
-                raise ValueError('figure74 source SHA differs: '+name)
+                raise ValueError('figure69 source SHA differs: '+name)
         manifest_sha = hashlib.sha256(manifest_path.read_bytes()).hexdigest()
-        if (type(report['figure']) is not int or report['figure'] != 74 or report['exercise_id'] != 'E06-42'
+        if (type(report['figure']) is not int or report['figure'] != 69 or report['exercise_id'] != 'E06-28'
                 or report['audio_manifest_sha256'] != manifest_sha
                 or not same_metadata(report['parameters'], manifest['parameters'])
                 or not same_metadata(report['samples'], manifest['samples'])
                 or not same_metadata(report['pcm_tail_activity'], manifest['pcm_tail_activity'])
                 or report['wav_sha256'] != {n:r['sha256'] for n,r in manifest['files'].items()}):
-            raise ValueError('figure74 actual audio/report mismatch')
+            raise ValueError('figure69 actual audio/report mismatch')
         with wave.open(str(REFERENCE_AUDIO_ROOT/'reference_echo.wav'), 'rb') as reader:
             raw = reader.readframes(33600)
         samples = np.asarray(struct.unpack('<33600h', raw)[32000:], dtype=np.float64)/32768
         frames = samples.reshape(10,160)
         rms = np.sqrt(np.mean((frames-frames.mean(axis=1,keepdims=True))**2,axis=1)).tolist()
         if not same_metadata(report['plotted_tail_centered_rms'], rms):
-            raise ValueError('figure74 plotted tail RMS differs from actual integer PCM')
-        with Image.open(ROOT/'figures/fig74_reference_timing.png') as picture:
+            raise ValueError('figure69 plotted tail RMS differs from actual integer PCM')
+        with Image.open(ROOT/'figures/fig69_reference_timing.png') as picture:
             metadata = picture.info
         if (metadata.get('AudioManifestDigest') != manifest_sha
                 or metadata.get('NumericalReportDigest') != hashlib.sha256(path.read_bytes()).hexdigest()
                 or strict_json_loads(metadata.get('GeneratorInputs','{}')) != report['source_sha256']):
-            raise ValueError('figure74 PNG input or numerical-report identity differs')
+            raise ValueError('figure69 PNG input or numerical-report identity differs')
     except (OSError, ValueError, KeyError, TypeError, wave.Error, struct.error) as error:
-        fail(errors, '图74真实来源与评分：'+str(error))
+        fail(errors, '图69真实来源与评分：'+str(error))
 
 
 def check_delay_audio(errors):
@@ -3716,44 +3715,44 @@ def check_delay_audio(errors):
 
 
 def check_delay_figure(errors):
-    """Bind figure 75 to actual audio, numerical report and current dependencies."""
+    """Bind figure 70 to actual audio, numerical report and current dependencies."""
     try:
         from PIL import Image
         manifest_path = DELAY_AUDIO_ROOT/'MANIFEST.json'
         manifest = strict_json_loads(manifest_path.read_bytes())
-        path = ROOT/'codes/chapters/ch07/reports/figure75_prediction_delays.json'
+        path = ROOT/'codes/chapters/ch07/reports/figure70_prediction_delays.json'
         report = strict_json_loads(path.read_bytes())
         source_paths = set(manifest['source_sha256']) | {'scripts/make_figures.py','scripts/make_delay_figures.py'}
         if set(report['source_sha256']) != source_paths:
-            raise ValueError('figure75 plotting dependencies differ')
+            raise ValueError('figure70 plotting dependencies differ')
         for name,digest in report['source_sha256'].items():
             if hashlib.sha256(validate_parent_chain(ROOT/name).read_bytes()).hexdigest() != digest:
-                raise ValueError('figure75 true source SHA differs: '+name)
+                raise ValueError('figure70 true source SHA differs: '+name)
         manifest_sha = hashlib.sha256(manifest_path.read_bytes()).hexdigest()
         expected_errors = {'common_residual': {'E':9715561194,'D':9715561194,'nmse':1.0},
                            'aligned_residual': {'E':0,'D':9715561194,'nmse':0.0}}
-        if (type(report['figure']) is not int or report['figure'] != 75
-                or report['exercise_ids'] != ['E07-22','E07-23','E07-24']
+        if (type(report['figure']) is not int or report['figure'] != 70
+                or report['exercise_ids'] != ['E07-18','E07-19']
                 or report['audio_manifest_sha256'] != manifest_sha
                 or report['scoring_interval_samples'] != [1536,30720]
                 or not same_metadata(report['parameters'],manifest['parameters'])
                 or not same_metadata(report['pcm_integer_errors'],expected_errors)
                 or report['wav_sha256'] != {n:r['sha256'] for n,r in manifest['files'].items()}):
-            raise ValueError('figure75 formal PCM/report identity differs')
+            raise ValueError('figure70 formal PCM/report identity differs')
         decay = report['power_decay_control']
         if decay['hops'] != list(range(76)) or decay['T60_seconds'] != .6 or decay['hop_seconds'] != .008:
-            raise ValueError('figure75 decay time units differ')
+            raise ValueError('figure70 decay time units differ')
         for n,power,wrong in zip(decay['hops'],decay['relative_power'],decay['wrong_amplitude_factor_used_as_power'],strict=True):
             if not math.isclose(power,10**(-.08*n),rel_tol=2e-14) or not math.isclose(wrong,10**(-.04*n),rel_tol=2e-14):
-                raise ValueError('figure75 power/amplitude decay differs')
-        with Image.open(ROOT/'figures/fig75_prediction_delays.png') as picture:
+                raise ValueError('figure70 power/amplitude decay differs')
+        with Image.open(ROOT/'figures/fig70_prediction_delays.png') as picture:
             metadata = picture.info
         if (metadata.get('AudioManifestDigest') != manifest_sha
                 or metadata.get('NumericalReportDigest') != hashlib.sha256(path.read_bytes()).hexdigest()
                 or strict_json_loads(metadata.get('GeneratorInputs','{}')) != report['source_sha256']):
-            raise ValueError('figure75 PNG actual inputs/report differ')
+            raise ValueError('figure70 PNG actual inputs/report differ')
     except (OSError,ValueError,KeyError,TypeError) as error:
-        fail(errors,'图75真实来源与评分：'+str(error))
+        fail(errors,'图70真实来源与评分：'+str(error))
 
 
 
@@ -3808,38 +3807,38 @@ def check_css_audio(errors):
 
 
 def check_css_figure(errors):
-    """Bind figure76 to actual audio and source identity, with strict field types."""
+    """Bind figure71 to actual audio and source identity, with strict field types."""
     try:
         from PIL import Image
         manifest_path = CSS_AUDIO_ROOT/'MANIFEST.json'
         manifest = strict_json_loads(manifest_path.read_bytes())
-        path = ROOT/'codes/chapters/ch08/reports/figure76_css_polarity_gain.json'
+        path = ROOT/'codes/chapters/ch08/reports/figure71_css_polarity_gain.json'
         report = strict_json_loads(path.read_bytes())
         expected_sources = set(manifest['source_sha256']) | {'scripts/make_figures.py','scripts/make_css_figures.py'}
         if set(report['source_sha256']) != expected_sources:
-            raise ValueError('figure76 actual plotting dependencies differ')
+            raise ValueError('figure71 actual plotting dependencies differ')
         for name,digest in report['source_sha256'].items():
             if hashlib.sha256(validate_parent_chain(ROOT/name).read_bytes()).hexdigest() != digest:
-                raise ValueError('figure76 actual source SHA differs: '+name)
+                raise ValueError('figure71 actual source SHA differs: '+name)
         manifest_sha = hashlib.sha256(manifest_path.read_bytes()).hexdigest()
         measurements = {k:r['pcm_integer_measurements'] for k,r in manifest['samples'].items()}
-        if (type(report['figure']) is not int or report['figure'] != 76
-                or report['exercise_ids'] != ['E08-29','E08-32']
+        if (type(report['figure']) is not int or report['figure'] != 71
+                or report['exercise_ids'] != ['E08-24']
                 or report['audio_manifest_sha256'] != manifest_sha
                 or report['waveform_display_interval_samples'] != [14800,15120]
                 or not same_metadata(report['parameters'],manifest['parameters'])
                 or not same_metadata(report['overlap_fit'],manifest['overlap_fit'])
                 or not same_metadata(report['pcm_integer_measurements'],measurements)
                 or report['wav_sha256'] != {n:r['sha256'] for n,r in manifest['files'].items()}):
-            raise ValueError('figure76 actual audio/report mismatch')
-        with Image.open(ROOT/'figures/fig76_css_polarity_gain.png') as picture:
+            raise ValueError('figure71 actual audio/report mismatch')
+        with Image.open(ROOT/'figures/fig71_css_polarity_gain.png') as picture:
             metadata = picture.info
         if (metadata.get('AudioManifestDigest') != manifest_sha
                 or metadata.get('NumericalReportDigest') != hashlib.sha256(path.read_bytes()).hexdigest()
                 or strict_json_loads(metadata.get('GeneratorInputs','{}')) != report['source_sha256']):
-            raise ValueError('figure76 PNG actual inputs/report differ')
+            raise ValueError('figure71 PNG actual inputs/report differ')
     except (OSError,ValueError,KeyError,TypeError) as error:
-        fail(errors,'图76真实来源与评分：'+str(error))
+        fail(errors,'图71真实来源与评分：'+str(error))
 
 
 def check_distributed_audio(errors):
@@ -3878,12 +3877,12 @@ def _check_distributed_figure_report(path, number):
     import numpy as np
     report = _read_tracking_manifest(path)
     fields={'schema_version','scope','source_sha256','results'}
-    if number in (70,72):fields.add('audio_manifest_sha256')
+    if number in (65,67):fields.add('audio_manifest_sha256')
     if (set(report)!=fields or report['scope'] !=
             'known-statistics finite teaching controls; not blind DANSE or industrial performance'):
         raise ValueError('distributed figure fields/execution scope differ')
     expected_sources = set(DISTRIBUTED_AUDIO_SOURCES) | {'scripts/make_figures.py'}
-    if number == 71:
+    if number == 66:
         expected_sources = {'scripts/make_figures.py', 'codes/chapters/ch13/core/distributed.py',
                             'codes/chapters/ch02/core/conventions.py', 'codes/chapters/ch04/core/covariance.py',
                             'codes/chapters/ch00/io_contracts.py'}
@@ -3903,7 +3902,7 @@ def _check_distributed_figure_report(path, number):
         close(row['total_mse'], sum(row[f] for f in fields), 'signed component sum')
         close(row['normalized_mse'], row['total_mse']/row['reference_power'], 'float reference denominator')
     data = report['results']
-    if number in (70, 72):
+    if number in (65, 67):
         manifest_path = DISTRIBUTED_AUDIO_ROOT/'MANIFEST.json'
         if report['audio_manifest_sha256'] != hashlib.sha256(manifest_path.read_bytes()).hexdigest():
             raise ValueError('distributed figure audio manifest SHA differs')
@@ -3914,11 +3913,11 @@ def _check_distributed_figure_report(path, number):
             expected = {'E': row['integer_error_squared_sum_E'], 'D': row['integer_reference_squared_sum_D'],
                         'samples': row['samples'], 'nmse': row['integer_nmse_E_over_D']}
             _compare_selection_report(declared, expected, f'figure{number}/{key}/{label}')
-        if number == 70:
+        if number == 65:
             expected = {'local_node1': 4/9, 'central_white': 2/13, 'compressed_white': 2/13,
                         'stale_correlated': 2/13, 'central_correlated': 8/69, 'compressed_correlated': 8/69}
             if set(data['rows']) != set(expected) or data['window'] != [1600,30400]:
-                raise ValueError('figure70 cases/scoring window differ')
+                raise ValueError('figure65 cases/scoring window differ')
             for key, target in expected.items():
                 row = data['rows'][key]
                 close(row['analytic']['normalized_mse'], target, 'fixed rational cost')
@@ -3933,19 +3932,19 @@ def _check_distributed_figure_report(path, number):
                        row['analytic']['reference_target_power']],
                       [.0068*(w@a-1)**2,.0068*(w@noise@w),.0068], 'independent signal/noise quadratic forms')
                 component(row['float'])
-                _compare_selection_report(row['float'], manifest['samples'][key]['float_components']['steady'], 'figure70 float')
+                _compare_selection_report(row['float'], manifest['samples'][key]['float_components']['steady'], 'figure65 float')
                 score(key, 'steady', row['pcm'])
         else:
             expected = {'compressed_white', 'clock_misaligned_white', 'clock_linear_corrected_white',
                         'packet_zerofill_white', 'packet_local_fallback_white'}
             if set(data['rows']) != expected:
-                raise ValueError('figure72 case set differs')
+                raise ValueError('figure67 case set differs')
             for key, row in data['rows'].items():
                 labels = ('steady', 'packet') if key.startswith('packet_') else ('steady',)
                 for label in labels:
                     floating = row['float_components'][label] if len(labels)>1 else row['float_components']
                     component(floating)
-                    _compare_selection_report(floating, manifest['samples'][key]['float_components'][label], 'figure72 float')
+                    _compare_selection_report(floating, manifest['samples'][key]['float_components'][label], 'figure67 float')
                     score(key, label, row['pcm'][label] if len(labels)>1 else row['pcm'])
             for key, expected in (('packet_zerofill_white',461/676), ('packet_local_fallback_white',4/9)):
                 close(data['rows'][key]['float_components']['packet']['normalized_mse'], expected, 'gap rational control')
@@ -3953,11 +3952,11 @@ def _check_distributed_figure_report(path, number):
                       data['rows'][key]['float_components']['target_noise_cross_power']/ .0068]
                      for key in ('compressed_white', 'clock_misaligned_white', 'clock_linear_corrected_white')]
             close(data['cross_terms'], cross, 'signed cross panel')
-            _compare_selection_report(data['clock'], manifest['float_clock_control'], 'figure72 known-rate SRC')
+            _compare_selection_report(data['clock'], manifest['float_clock_control'], 'figure67 known-rate SRC')
             if data['parameters']['scoring_windows_samples'] != {'steady':[1600,30400], 'packet':[16000,16800]}:
-                raise ValueError('figure72 gap/global windows differ')
+                raise ValueError('figure67 gap/global windows differ')
         return
-    if number != 71:
+    if number != 66:
         raise ValueError('unknown distributed figure')
     a = np.array([1., .5, 2., -.5]); Rs = np.outer(a,a); Rn = np.eye(4)
     Rn[0,2] = Rn[2,0] = .2; Rn[0,3] = Rn[3,0] = .8; Rx = Rs+Rn
@@ -4046,7 +4045,7 @@ def _check_distributed_figure_report(path, number):
 
 
 def check_distributed_figures(errors):
-    for number, name in {70:'compression',71:'updates',72:'transport'}.items():
+    for number, name in {65:'compression',66:'updates',67:'transport'}.items():
         try:
             _check_distributed_figure_report(ROOT/f'codes/chapters/ch13/reports/figure{number}_distributed_{name}.json',number)
         except (OSError, ValueError, KeyError, TypeError, IndexError, wave.Error) as error:
@@ -4326,13 +4325,13 @@ def _check_channel_figure_report(report, manifest, pcm, directory):
     inputs={name:hashlib.sha256((directory/name).read_bytes()).hexdigest()
             for name in CHANNEL_AUDIO_WAVS|{'MANIFEST.json'}}
     if (type(report['schema_version']) is not int or report['schema_version']!=1
-            or report['exercise_id']!='E10-34' or report['source_sha256']!=sources
+            or report['exercise_id']!='E10-26' or report['source_sha256']!=sources
             or report['script_sha256']!=sources['scripts/make_channel_figures.py']
             or report['input_sha256']!=inputs):
-        raise ValueError('figure78 actual source or input identity differs')
+        raise ValueError('figure73 actual source or input identity differs')
     for key in ('parameters','model','analytic','samples','files','limits'):
         if not same_metadata(report[key],manifest[key]):
-            raise ValueError('figure78 audio contract differs: '+key)
+            raise ValueError('figure73 audio contract differs: '+key)
     plot=report['plot_data'];roles=['healthy_output','stale_output','recomputed_output']
     fixed={'output_roles':roles,'effective_weights_after_prescribed_fault':[[1.,-.5,.5],[0.,-.5,.5],[0.,.5,.5]],
         'target_gain_analytic':[1.,0.,1.],'reference_NMSE_analytic':[.5,1.5,1.5],
@@ -4357,18 +4356,18 @@ def check_channel_figure(errors):
         manifest_path=CHANNEL_AUDIO_ROOT/'MANIFEST.json'
         manifest=_read_audio_manifest(manifest_path)
         pcm=_check_channel_pcm(CHANNEL_AUDIO_ROOT,manifest)
-        report_path=ROOT/'codes/chapters/ch10/reports/figure78_channel_failure.json'
+        report_path=ROOT/'codes/chapters/ch10/reports/figure73_channel_failure.json'
         report=_read_audio_manifest(report_path)
         _check_channel_figure_report(report,manifest,pcm,CHANNEL_AUDIO_ROOT)
-        with Image.open(validate_parent_chain(ROOT/'figures/fig78_channel_failure.png')) as picture:
+        with Image.open(validate_parent_chain(ROOT/'figures/fig73_channel_failure.png')) as picture:
             if (picture.info.get('SourceScript')!='scripts/make_channel_figures.py'
                     or picture.info.get('SourceScriptDigest')!=report['script_sha256']
                     or strict_json_loads(picture.info['GeneratorInputs'])!=report['source_sha256']
                     or picture.info.get('AudioManifestDigest')!=report['input_sha256']['MANIFEST.json']
                     or picture.info.get('NumericalReportDigest')!=hashlib.sha256(report_path.read_bytes()).hexdigest()):
-                raise ValueError('figure78 PNG source, audio or report binding differs')
+                raise ValueError('figure73 PNG source, audio or report binding differs')
     except (OSError,ValueError,KeyError,TypeError,wave.Error,struct.error) as error:
-        fail(errors,'图78已知坏麦与实际PCM：'+str(error))
+        fail(errors,'图73已知坏麦与实际PCM：'+str(error))
 
 
 def _check_selection_figure_report(report):
@@ -4380,9 +4379,9 @@ def _check_selection_figure_report(report):
              'codes/chapters/ch02/core/conventions.py', 'codes/chapters/ch00/io_contracts.py'}
     sources = {p: hashlib.sha256(validate_parent_chain(ROOT/p).read_bytes()).hexdigest() for p in paths}
     if (type(report['schema_version']) is not int or report['schema_version'] != 1
-            or report['exercise_id'] != 'E11-27' or report['source_sha256'] != sources
+            or report['exercise_id'] != 'E11-20' or report['source_sha256'] != sources
             or report['script_sha256'] != sources['scripts/make_selection_figures.py']):
-        raise ValueError('figure79 actual source identity differs')
+        raise ValueError('figure74 actual source identity differs')
     case, plot = report['numerical_case'], report['plot_data']
     scope = 'known single-frequency ensemble covariances; no device measurements, audio or optimizer for worst-case uncertainty'
     limits = ('Known single-frequency ensemble statistics and prescribed 5-degree target mismatch only; '
@@ -4473,17 +4472,17 @@ def _check_selection_figure_report(report):
 def check_selection_figure(errors):
     try:
         from PIL import Image
-        report_path = ROOT/'codes/chapters/ch11/reports/figure79_selection_evidence.json'
+        report_path = ROOT/'codes/chapters/ch11/reports/figure74_selection_evidence.json'
         report = _read_audio_manifest(report_path)
         _check_selection_figure_report(report)
-        with Image.open(validate_parent_chain(ROOT/'figures/fig79_selection_evidence.png')) as picture:
+        with Image.open(validate_parent_chain(ROOT/'figures/fig74_selection_evidence.png')) as picture:
             if (picture.info.get('SourceScript') != 'scripts/make_selection_figures.py'
                     or picture.info.get('SourceScriptDigest') != report['script_sha256']
                     or strict_json_loads(picture.info['GeneratorInputs']) != report['source_sha256']
                     or picture.info.get('NumericalReportDigest') != hashlib.sha256(report_path.read_bytes()).hexdigest()):
-                raise ValueError('figure79 PNG source or numerical report binding differs')
+                raise ValueError('figure74 PNG source or numerical report binding differs')
     except (OSError, ValueError, KeyError, TypeError, OverflowError) as error:
-        fail(errors, '图79独立物理复算与证据状态：'+str(error))
+        fail(errors, '图74独立物理复算与证据状态：'+str(error))
 
 
 def check_noise_audio(errors):
@@ -4888,10 +4887,10 @@ def check_wearable_figures(errors):
             "scripts/make_wearable_figures.py",
         }
         specs = (
-            (81, "fig81_foa_intensity_diffuseness.png", "figure81_foa_intensity_diffuseness.json"),
-            (82, "fig82_bsm_ls_vs_magls.png", "figure82_bsm_ls_vs_magls.json"),
-            (83, "fig83_own_voice_fusion.png", "figure83_own_voice_fusion.json"),
-            (84, "fig84_hear_through_comb.png", "figure84_hear_through_comb.json"),
+            (76, "fig76_foa_intensity_diffuseness.png", "figure76_foa_intensity_diffuseness.json"),
+            (77, "fig77_bsm_ls_vs_magls.png", "figure77_bsm_ls_vs_magls.json"),
+            (78, "fig78_own_voice_fusion.png", "figure78_own_voice_fusion.json"),
+            (79, "fig79_hear_through_comb.png", "figure79_hear_through_comb.json"),
         )
         for num, png_name, json_name in specs:
             report_path = ROOT / "codes/chapters/ch14/reports" / json_name
@@ -4908,7 +4907,7 @@ def check_wearable_figures(errors):
             for rel, digest in report["source_sha256"].items():
                 if hashlib.sha256(validate_parent_chain(ROOT / rel).read_bytes()).hexdigest() != digest:
                     raise ValueError(f"figure{num} source SHA differs: {rel}")
-            if num == 81:
+            if num == 76:
                 ap = report.get("anchor_points", {})
                 in0 = ap.get("in_phase_0deg", {})
                 out180 = ap.get("out_of_phase_180deg", {})
@@ -4916,15 +4915,15 @@ def check_wearable_figures(errors):
                         or abs(in0.get("diffuseness", -1) - (1.0 - math.sqrt(2.0) / 1.5)) > 1e-12
                         or abs(out180.get("diffuseness", -1) - 1.0) > 1e-12
                         or abs(ap.get("open_sphere_first_null_kr", -1) - math.pi) > 1e-12):
-                    raise ValueError("figure81 independent closed-form anchor mismatch")
-            if num == 82:
+                    raise ValueError("figure76 independent closed-form anchor mismatch")
+            if num == 77:
                 circ = report.get("circular_4khz_72dir", {})
                 hist = circ.get("objective_history", [])
                 if (not circ.get("monotonically_non_increasing")
                         or not hist or any(b > a + 1e-12 for a, b in zip(hist, hist[1:]))
                         or circ.get("magls_weighted_mag_mse", 1.0) >= circ.get("ls_weighted_mag_mse", 0.0)):
-                    raise ValueError("figure82 MagLS monotonicity or MSE improvement mismatch")
-            if num == 83:
+                    raise ValueError("figure77 MagLS monotonicity or MSE improvement mismatch")
+            if num == 78:
                 keys_d = ("wearable_air_wind_2ch", "wearable_inear_occluded",
                           "wearable_inear_equalized", "wearable_fused_output")
                 expected_pcm_mse = {k: manifest["samples"][k]["pcm_measurements"]["reference_mse_ch0"] for k in keys_d}
@@ -4935,8 +4934,8 @@ def check_wearable_figures(errors):
                         or not same_metadata(report.get("analytic_reference_mse_ch0"), expected_ana_mse)
                         or report.get("anchor_250hz_sinr_db", 0.0) < 19.5
                         or report.get("anchor_4000hz_sinr_db", 0.0) < 12.5):
-                    raise ValueError("figure83 actual audio/report mismatch")
-            if num == 84:
+                    raise ValueError("figure78 actual audio/report mismatch")
+            if num == 79:
                 expected_wav = {k: manifest["files"][k]["sha256"]
                                 for k in ("wearable_clean_ref.wav", "wearable_hearthrough_comb.wav")}
                 notches = report.get("comb_notches_2ms_up_to_4500hz")
@@ -4945,7 +4944,7 @@ def check_wearable_figures(errors):
                         or not isinstance(notches, list) or len(notches) != 9
                         or any(type(v) not in (int, float) or abs(v - exp) > 1e-12
                                for v, exp in zip(notches, expected_notches))):
-                    raise ValueError("figure84 actual audio/report mismatch")
+                    raise ValueError("figure79 actual audio/report mismatch")
             with Image.open(validate_parent_chain(ROOT / "figures" / png_name)) as picture:
                 metadata = picture.info
             if (metadata.get("SourceScript") != "scripts/make_wearable_figures.py"
@@ -4955,7 +4954,7 @@ def check_wearable_figures(errors):
                     or strict_json_loads(metadata.get("GeneratorInputs", "{}").encode("utf-8")) != report["source_sha256"]):
                 raise ValueError(f"figure{num} PNG provenance or numerical-report identity differs")
     except (OSError, ValueError, KeyError, TypeError) as error:
-        fail(errors, "图81～84真实来源与评分：" + str(error))
+        fail(errors, "图76～79真实来源与评分：" + str(error))
 
 
 def check_tse_audio(errors):
@@ -5026,7 +5025,7 @@ def check_tse_audio(errors):
 
 
 def check_tse_figures(errors):
-    """Bind figures 85..88 to actual tse_audio manifest, JSON reports, and source SHAs."""
+    """Bind figures 80..83 to actual tse_audio manifest, JSON reports, and source SHAs."""
     try:
         from PIL import Image
         manifest_path = TSE_AUDIO_ROOT / "MANIFEST.json"
@@ -5040,10 +5039,10 @@ def check_tse_figures(errors):
             "scripts/make_tse_figures.py",
         }
         specs = (
-            (85, "fig85_tse_conditioning_modes.png", "figure85_tse_conditioning_modes.json"),
-            (86, "fig86_nearfield_distance_bubble.png", "figure86_nearfield_distance_bubble.json"),
-            (87, "fig87_diarization_tsvad_gss.png", "figure87_diarization_tsvad_gss.json"),
-            (88, "fig88_av_asynchrony_occlusion.png", "figure88_av_asynchrony_occlusion.json"),
+            (80, "fig80_tse_conditioning_modes.png", "figure80_tse_conditioning_modes.json"),
+            (81, "fig81_nearfield_distance_bubble.png", "figure81_nearfield_distance_bubble.json"),
+            (82, "fig82_diarization_tsvad_gss.png", "figure82_diarization_tsvad_gss.json"),
+            (83, "fig83_av_asynchrony_occlusion.png", "figure83_av_asynchrony_occlusion.json"),
         )
         for num, png_name, json_name in specs:
             report_path = ROOT / "codes/chapters/ch15/reports" / json_name
@@ -5060,14 +5059,14 @@ def check_tse_figures(errors):
             for rel, digest in report["source_sha256"].items():
                 if hashlib.sha256(validate_parent_chain(ROOT / rel).read_bytes()).hexdigest() != digest:
                     raise ValueError(f"figure{num} source SHA differs: {rel}")
-            if num == 85:
+            if num == 80:
                 byp = report.get("bypass_examples", {})
                 sisdr = report.get("present_neg_sisdr_db", [])
                 if (not sisdr or any(abs(v - (-20.0)) > 1e-11 for v in sisdr)
                         or byp.get("single_fricative_bypass") is not True
                         or byp.get("dual_overlap_bypass") is not False):
-                    raise ValueError("figure85 scale-invariance or bypass boundary mismatch")
-            if num == 86:
+                    raise ValueError("figure80 scale-invariance or bypass boundary mismatch")
+            if num == 81:
                 expected_wav = {n: r["sha256"] for n, r in manifest["files"].items()}
                 expected_nmse = {
                     k: manifest["samples"][k]["pcm_measurements"]["pcm_integer_measurements"]["integer_reference_nmse"]
@@ -5076,20 +5075,20 @@ def check_tse_figures(errors):
                 if (report.get("wav_sha256") != expected_wav
                         or not same_metadata(report.get("pcm_integer_nmse"), expected_nmse)
                         or report.get("limits") != manifest["limits"]):
-                    raise ValueError("figure86 actual audio/report mismatch")
-            if num == 87:
+                    raise ValueError("figure81 actual audio/report mismatch")
+            if num == 82:
                 slb = report.get("single_label_bound", {})
                 dc = report.get("der_cases", {})
                 if (abs(slb.get("der_lower_bound", -1.0) - 2.0 / 7.0) > 1e-12
                         or dc.get("tsvad_joint", {}).get("der", 1.0) >= dc.get("single_bound", {}).get("der", 0.0)):
-                    raise ValueError("figure87 DER lower bound or TS-VAD improvement mismatch")
-            if num == 88:
+                    raise ValueError("figure82 DER lower bound or TS-VAD improvement mismatch")
+            if num == 83:
                 alpha_v = report.get("occlusion_alpha_v", [])
                 mask_av = report.get("occlusion_mask_av", [])
                 mask_fused = report.get("occlusion_mask_fused", [])
                 if (not alpha_v or len(alpha_v) != len(mask_av) or len(alpha_v) != len(mask_fused)
                         or report.get("consonant_loss_percent", [1.0])[0] != 0.0):
-                    raise ValueError("figure88 AV alignment/occlusion series mismatch")
+                    raise ValueError("figure83 AV alignment/occlusion series mismatch")
             with Image.open(validate_parent_chain(ROOT / "figures" / png_name)) as picture:
                 metadata = picture.info
             if (metadata.get("SourceScript") != "scripts/make_tse_figures.py"
@@ -5099,11 +5098,11 @@ def check_tse_figures(errors):
                     or strict_json_loads(metadata.get("GeneratorInputs", "{}").encode("utf-8")) != report["source_sha256"]):
                 raise ValueError(f"figure{num} PNG provenance or numerical-report identity differs")
     except (OSError, ValueError, KeyError, TypeError) as error:
-        fail(errors, "图85～88真实来源与评分：" + str(error))
+        fail(errors, "图80～83真实来源与评分：" + str(error))
 
 
 def check_math_figures(errors):
-    """Bind figures 89..92 to Chapter 0 JSON reports, PNG provenance, and closed-form invariants."""
+    """Bind figures 84..87 to Chapter 0 JSON reports, PNG provenance, and closed-form invariants."""
     try:
         from PIL import Image
         expected_sources = {
@@ -5113,10 +5112,10 @@ def check_math_figures(errors):
             "scripts/make_math_figures.py",
         }
         specs = (
-            (89, "fig89_complex_phasor_fourier.png", "figure89_complex_phasor_fourier.json"),
-            (90, "fig90_subspace_projection_svd.png", "figure90_subspace_projection_svd.json"),
-            (91, "fig91_hermitian_rayleigh_gev.png", "figure91_hermitian_rayleigh_gev.json"),
-            (92, "fig92_wirtinger_probability_bayesian.png", "figure92_wirtinger_probability_bayesian.json"),
+            (84, "fig84_complex_phasor_fourier.png", "figure84_complex_phasor_fourier.json"),
+            (85, "fig85_subspace_projection_svd.png", "figure85_subspace_projection_svd.json"),
+            (86, "fig86_hermitian_rayleigh_gev.png", "figure86_hermitian_rayleigh_gev.json"),
+            (87, "fig87_wirtinger_probability_bayesian.png", "figure87_wirtinger_probability_bayesian.json"),
         )
         for num, png_name, json_name in specs:
             report_path = ROOT / "codes/chapters/ch00/reports" / json_name
@@ -5133,25 +5132,25 @@ def check_math_figures(errors):
                 if hashlib.sha256(validate_parent_chain(ROOT / rel).read_bytes()).hexdigest() != digest:
                     raise ValueError(f"figure{num} source SHA differs: {rel}")
             anchors = report.get("anchors", {})
-            if num == 89:
+            if num == 84:
                 if (abs(anchors.get("quadrature_phasor_magnitude", 0.0) - math.sqrt(2.0)) > 1e-12
                         or abs(anchors.get("quadrature_phasor_phase_deg", 0.0) - (-45.0)) > 1e-12
                         or anchors.get("zero_padded_max_abs_error", 1.0) > 1e-13
                         or anchors.get("hann_50pct_max_abs_error", 1.0) > 1e-13):
-                    raise ValueError("figure89 closed-form Fourier/COLA anchor mismatch")
-            elif num == 90:
+                    raise ValueError("figure84 closed-form Fourier/COLA anchor mismatch")
+            elif num == 85:
                 if abs((anchors.get("norm_sq_parallel", 0.0) + anchors.get("norm_sq_orthogonal", 0.0))
                        - anchors.get("norm_sq_b", -1.0)) > 1e-12:
-                    raise ValueError("figure90 Pythagorean projection decomposition mismatch")
-            elif num == 91:
+                    raise ValueError("figure85 Pythagorean projection decomposition mismatch")
+            elif num == 86:
                 if (anchors.get("r_nn_eigenvalues") != [1.0, 3.0]
                         or abs(anchors.get("max_gev_sinr", 0.0) - 4.0 / 3.0) > 1e-12
                         or anchors.get("khatri_rao_vec_max_abs_error", 1.0) > 1e-13):
-                    raise ValueError("figure91 Rayleigh/GEV/Khatri-Rao anchor mismatch")
-            elif num == 92:
+                    raise ValueError("figure86 Rayleigh/GEV/Khatri-Rao anchor mismatch")
+            elif num == 87:
                 if (anchors.get("mvdr_output_power", 1.0) > anchors.get("lcmv_output_power", 0.0) + 1e-12
                         or anchors.get("improper_pseudo_variance_abs", 0.0) <= 0.0):
-                    raise ValueError("figure92 MVDR/LCMV/proper-Gaussian anchor mismatch")
+                    raise ValueError("figure87 MVDR/LCMV/proper-Gaussian anchor mismatch")
             with Image.open(validate_parent_chain(ROOT / "figures" / png_name)) as picture:
                 metadata = picture.info
             if (metadata.get("SourceScript") != "scripts/make_math_figures.py"
@@ -5160,28 +5159,28 @@ def check_math_figures(errors):
                     or strict_json_loads(metadata.get("GeneratorInputs", "{}").encode("utf-8")) != report["source_sha256"]):
                 raise ValueError(f"figure{num} PNG provenance or numerical-report identity differs")
     except (OSError, ValueError, KeyError, TypeError) as error:
-        fail(errors, "图89～92真实来源与数学不变量：" + str(error))
+        fail(errors, "图84～87真实来源与数学不变量：" + str(error))
 
 
 def check_stft_figure50_report(errors):
-    """Verify figure50_stft_convolution.json source SHA and closed-form linear vs circular WOLA."""
+    """Verify figure45_stft_convolution.json source SHA and closed-form linear vs circular WOLA."""
     try:
         import numpy as np
-        report_path = ROOT / "codes/chapters/ch02/reports/figure50_stft_convolution.json"
+        report_path = ROOT / "codes/chapters/ch02/reports/figure45_stft_convolution.json"
         report = strict_json_loads(validate_parent_chain(report_path).read_bytes())
         expected_sha = hashlib.sha256(validate_parent_chain(ROOT / "scripts/make_figures.py").read_bytes()).hexdigest()
         if (report.get("source_script") != "scripts/make_figures.py"
                 or report.get("source_script_sha256") != expected_sha
-                or report.get("exercise") != "E02-16"):
-            raise ValueError("figure50 report source identity mismatch")
+                or report.get("exercise") != "E02-14"):
+            raise ValueError("figure45 report source identity mismatch")
         inp = np.asarray(report["input"], dtype=float)
         ir = np.asarray(report["impulse_response"], dtype=float)
         if (not np.allclose(np.convolve(inp, ir), np.asarray(report["linear_full"], dtype=float), atol=1e-12)
                 or not np.allclose(np.asarray(report["synthesis_denominator"], dtype=float), [1.0, 0.5, 1.0, 0.5, 1.0, 0.5], atol=1e-12)
                 or not np.allclose(np.asarray(report["wola_outputs"]["identity"], dtype=float)[:4], inp, atol=1e-12)):
-            raise ValueError("figure50 linear convolution or WOLA synthesis denominator mismatch")
+            raise ValueError("figure45 linear convolution or WOLA synthesis denominator mismatch")
     except (OSError, ValueError, KeyError, TypeError) as error:
-        fail(errors, "图50数值报告核验：" + str(error))
+        fail(errors, "图45数值报告核验：" + str(error))
 
 
 def check_portable_exports(errors):

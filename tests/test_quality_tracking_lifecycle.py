@@ -45,13 +45,13 @@ class TrackingLifecycleFigureTests(unittest.TestCase):
                 self.assertGreater(png.height,1200)
 
     def test_disallowed_report_and_linked_parents_rejected_before_input_read(self):
-        protected=ROOT/'codes/chapters/ch09/reports/figure22_tracking.json'
+        protected=ROOT/'codes/chapters/ch09/reports/figure21_tracking.json'
         old=(protected.read_bytes(),protected.stat().st_mtime_ns)
         with tempfile.TemporaryDirectory() as name:
             base=Path(name)
             with patch('scripts.make_tracking_figures.run_demo',side_effect=AssertionError('must not read')):
                 with self.assertRaises(ValueError):generate_figure(base/'a.png',protected)
-                with self.assertRaises(ValueError):generate_figure(ROOT/'figures/fig22_tracking.png',base/'a.json')
+                with self.assertRaises(ValueError):generate_figure(ROOT/'figures/fig21_tracking.png',base/'a.json')
                 target=base/'target';target.mkdir();link=base/'linked';link.symlink_to(target)
                 with self.assertRaises(ValueError):generate_figure(link/'a.png',base/'a.json')
                 self.assertEqual(list(target.iterdir()),[])

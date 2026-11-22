@@ -1,4 +1,4 @@
-"""Chapter 9 anchors independently derived from fractions/moments/geometry."""
+"""Chapter 9 anchors (E09-10..22) independently derived from fractions/moments/geometry."""
 from fractions import Fraction as F
 import math
 from pathlib import Path
@@ -9,7 +9,7 @@ from unittest.mock import patch
 import wave
 import numpy as np
 from codes.chapters.ch09.chapter09_experiments import (
-    actual_tracking_audio, run_experiments, small_set_distances, white_acceleration_covariance,
+    actual_tracking_audio, run_experiments, small_set_distances,
 )
 from codes.chapters.ch09.core.echo_av_fusion import (
     _wrap_angle_deg,
@@ -31,8 +31,8 @@ class Chapter09ExperimentsTests(unittest.TestCase):
         generate(cls.audio_directory)
         cls.results = run_experiments(audio_directory=cls.audio_directory)
 
-    def test_seventeen_stable_ids(self):
-        self.assertEqual(set(self.results), {f'E09-{i:02}' for i in range(10, 29)})
+    def test_thirteen_stable_ids(self):
+        self.assertEqual(set(self.results), {f'E09-{i:02}' for i in range(10, 23)})
 
     def test_bearing_ekf_geometry_and_fraction_posterior(self):
         item = self.results['E09-10']
@@ -51,7 +51,7 @@ class Chapter09ExperimentsTests(unittest.TestCase):
 
     def test_ut_matches_gaussian_second_and_fourth_moments(self):
         item = self.results['E09-11']
-        # For a standard normal E[X²]=1, E[X⁴]=3; odd moments vanish.
+        # For a standard normal E[X^2]=1, E[X^4]=3; odd moments vanish.
         self.assertEqual(item['mean'], 1.)
         self.assertEqual(item['variance'], 3-1**2)
         self.assertEqual(item['state_observation_cross_covariance'], 0.)
@@ -71,33 +71,26 @@ class Chapter09ExperimentsTests(unittest.TestCase):
         self.assertEqual(item['explicit_zero_prior_after_update'], [0., 1.])
         self.assertEqual(item['prior_reset_method'], 'set_prior_weights')
 
-    def test_jpda_normalizer_from_product_minus_collisions(self):
+    def test_phd_cardinality_and_bernoulli_empty_observation(self):
         item = self.results['E09-13']
-        likelihood_ratios = [[math.exp(-(z-x)**2/18)/(3*math.sqrt(2*math.pi))/.01
-                              for z in [15, 31, 48]] for x in [30, 50]]
-        # Independent expansion: multiply all assignments then subtract three
-        # forbidden double uses of each detection. No event-loop copy.
-        a, b = likelihood_ratios
-        normalizer = (.1+.9*sum(a))*(.1+.9*sum(b))-.81*sum(x*y for x, y in zip(a, b))
-        self.assertAlmostEqual(item['normalizer'], normalizer, places=11)
-        self.assertEqual(len(item['events']), 13)
-        self.assertAlmostEqual(sum(row['probability'] for row in item['events']), 1.)
-        expected_A31 = .9*a[1]*(.1+.9*(b[0]+b[2]))/normalizer
-        self.assertAlmostEqual(item['marginals_miss_then_detections'][0][2], expected_A31)
-        self.assertAlmostEqual(item['symmetric_update']['mixture_variance'], float(F(4,5)+F(8,5)**2))
-        self.assertGreater(item['symmetric_update']['mixture_variance'], .8)
-
-    def test_phd_does_not_determine_cardinality_distribution(self):
-        item = self.results['E09-14']
         for key, variance in [('model_A_count_probability_0_1_2', 0), ('model_B_count_probability_0_1_2', 1)]:
             probabilities = item[key]
             mean = sum(i*p for i, p in enumerate(probabilities))
             self.assertEqual(mean, 1)
             self.assertEqual(sum((i-mean)**2*p for i, p in enumerate(probabilities)), variance)
         np.testing.assert_allclose(item['empty_observation_posterior_mass'], [.1, .1])
+        bernoulli = item['bernoulli_empty_observation']
+        r = F(4, 5)
+        for case, detection, posterior in zip(bernoulli['cases'], [F(9, 10), F(1, 10)], [F(2, 7), F(18, 23)]):
+            numerator = r*(1-detection)
+            denominator = (1-r)+numerator
+            self.assertEqual(numerator/denominator, posterior)
+            self.assertAlmostEqual(case['empty_observation_probability'], float(denominator))
+            self.assertAlmostEqual(case['bernoulli_posterior_existence'], float(posterior))
+            self.assertAlmostEqual(case['different_poisson_phd_posterior_mass'], float(numerator))
 
     def test_ospa_and_gospa_cardinality_normalization_and_boundaries(self):
-        item = self.results['E09-15']
+        item = self.results['E09-14']
         self.assertEqual(item['original']['ospa'], 6.)
         self.assertEqual(item['original']['gospa_alpha2'], 7.)
         self.assertEqual(item['added_common_correct_target']['ospa'], 4.)
@@ -111,9 +104,9 @@ class Chapter09ExperimentsTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 small_set_distances(first, second, **kwargs)
 
-    def test_fixed_lag_matches_direct_joint_gaussian_conditioning(self):
-        item = self.results['E09-16']
-        # x1 prior variance2, x2 variance3, cov2; measurement covariance [[3,2],[2,4]].
+    def test_fixed_lag_rts_and_oosm_late_observation_joint_gaussian(self):
+        item = self.results['E09-15']
+        # RTS part: x1 prior variance 2, x2 variance 3, cov 2; measurement covariance [[3,2],[2,4]].
         cross = np.array([2., 2.]); innovation_covariance = np.array([[3., 2.], [2., 4.]])
         posterior_mean = cross@np.linalg.solve(innovation_covariance, [1., 0.])
         posterior_variance = 2-cross@np.linalg.solve(innovation_covariance, cross)
@@ -124,32 +117,25 @@ class Chapter09ExperimentsTests(unittest.TestCase):
         np.testing.assert_allclose(item['filtered_means'], [2/3, 1/4])
         np.testing.assert_allclose(item['filtered_variances'], [2/3, 5/8])
         self.assertEqual(item['extra_observation_delay_steps'], 1)
-
-    def test_units_covariance_and_nis_scale_together(self):
-        item = self.results['E09-17']; scale = math.pi/180
-        np.testing.assert_allclose(item['posterior_state_deg'], [907/25, 29/5])
-        np.testing.assert_allclose(item['posterior_covariance_deg_units'], [[144/25, 18/5], [18/5, 5]])
-        np.testing.assert_allclose(np.array(item['posterior_state_rad'])/scale, [907/25, 29/5])
-        np.testing.assert_allclose(np.array(item['posterior_covariance_rad_units'])/scale**2, [[144/25, 18/5], [18/5, 5]])
-        self.assertAlmostEqual(item['nis_degrees'], 4/25)
-        self.assertAlmostEqual(item['nis_radians'], 4/25)
-        self.assertAlmostEqual(item['nis_if_mean_only_converted'], 4/25*scale**2)
-
-    def test_continuous_noise_composition_and_negative_cross_term(self):
-        item = self.results['E09-18']
-        # Integrals of 2*[s²,s;s,1] from s=0 to .2.
-        expected = np.array([[2/375, 1/25], [1/25, 2/5]])
-        np.testing.assert_allclose(item['Q_full'], expected)
-        np.testing.assert_allclose(item['composed_two_halves'], expected)
-        self.assertNotEqual(item['wrong_sum_without_state_propagation'][0][0], expected[0, 0])
-        np.testing.assert_allclose(item['prediction_without_observation'], [[3., 0.], [0., 1.]])
-        np.testing.assert_array_equal(white_acceleration_covariance(0, 2), np.zeros((2, 2)))
-        for dt, density in ((-1, 2), (1, -1), (True, 2)):
-            with self.assertRaises(ValueError):
-                white_acceleration_covariance(dt, density)
+        # OOSM part: independent inverse of S=[[3,2],[2,4]], determinant 8.
+        oosm = item['oosm_late_observation']
+        inverse = [[F(1, 2), F(-1, 4)], [F(-1, 4), F(3, 8)]]
+        oosm_cross = [F(2), F(3)]
+        gain = [sum(oosm_cross[i]*inverse[i][j] for i in range(2)) for j in range(2)]
+        self.assertEqual(gain, [F(1, 4), F(5, 8)])
+        mean = 2*gain[0]-gain[1]
+        variance = 3-sum(g*x for g, x in zip(gain, oosm_cross))
+        self.assertEqual((mean, variance), (F(-1, 8), F(5, 8)))
+        self.assertAlmostEqual(oosm['joint_mean'], float(mean))
+        self.assertAlmostEqual(oosm['joint_variance'], float(variance))
+        self.assertAlmostEqual(oosm['chronological_replay'][-1]['mean'], float(mean))
+        self.assertAlmostEqual(oosm['chronological_replay'][-1]['variance'], float(variance))
+        self.assertEqual(oosm['drop_late_observation'], {'mean': -.75, 'variance': .75})
+        self.assertAlmostEqual(oosm['wrong_current_time_update']['mean'], 3/7)
+        self.assertAlmostEqual(oosm['wrong_current_time_update']['variance'], 3/7)
 
     def test_audio_uses_independent_denominators_and_measured_timing(self):
-        item = self.results['E09-19']
+        item = self.results['E09-16']
         self.assertEqual(item['pcm_scores']['valid_observation_count'], 173)
         self.assertEqual(item['pcm_scores']['missing_observation_count'], 24)
         self.assertAlmostEqual(item['first_state_time_s'], 255.5/16000)
@@ -201,66 +187,48 @@ class Chapter09ExperimentsTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             small_set_distances([0], [math.ulp(0.)], cutoff=180, order=2)
 
-    def test_correlated_observations_fraction_posterior(self):
-        item = self.results['E09-20']
+    def test_correlated_observations_and_bearing_scale_nullspace(self):
+        item = self.results['E09-17']
+        corr = item['correlated_observations']
         rho = F(9, 10)
         determinant = 4-(1+rho)**2
         gain = (1-rho)/determinant
         self.assertEqual(gain, F(10, 39))
-        np.testing.assert_allclose(item['joint_gain'], [float(gain)]*2)
-        self.assertAlmostEqual(item['joint_mean'], float(2*gain))
-        self.assertAlmostEqual(item['joint_variance'], float(1-2*gain))
-        self.assertAlmostEqual(item['wrong_independent_mean'], 2/3)
-        self.assertAlmostEqual(item['wrong_independent_variance'], 1/3)
-        self.assertGreater(item['joint_variance'], item['wrong_independent_variance'])
+        np.testing.assert_allclose(corr['joint_gain'], [float(gain)]*2)
+        self.assertAlmostEqual(corr['joint_mean'], float(2*gain))
+        self.assertAlmostEqual(corr['joint_variance'], float(1-2*gain))
+        self.assertAlmostEqual(corr['wrong_independent_mean'], 2/3)
+        self.assertAlmostEqual(corr['wrong_independent_variance'], 1/3)
+        self.assertGreater(corr['joint_variance'], corr['wrong_independent_variance'])
 
-    def test_full_time_bearing_scale_ambiguity_and_exact_rank(self):
-        item = self.results['E09-21']
-        np.testing.assert_array_equal(item['bearings_deg'], item['scaled_bearings_deg'])
-        np.testing.assert_allclose(item['ranges_m'], [math.sqrt(5), math.sqrt(8), math.sqrt(13)])
-        np.testing.assert_array_equal(item['scaled_ranges_m'], 2*np.array(item['ranges_m']))
+        scale = item['bearing_scale_ambiguity']
+        np.testing.assert_array_equal(scale['bearings_deg'], scale['scaled_bearings_deg'])
+        np.testing.assert_allclose(scale['ranges_m'], [math.sqrt(5), math.sqrt(8), math.sqrt(13)])
+        np.testing.assert_array_equal(scale['scaled_ranges_m'], 2*np.array(scale['ranges_m']))
         rows = [[2, -1, 0, 0], [2, -2, 2, -2], [2, -3, 4, -6]]
-        np.testing.assert_array_equal(item['stacked_jacobian_without_positive_row_denominators'], rows)
-        # Exact nonzero 3x3 minor (columns0,1,3) proves rank>=3; one
-        # independent null direction proves rank<=3 without float SVD.
-        a,b,c = [[F(row[j]) for j in (0,1,3)] for row in rows]
-        determinant = a[0]*(b[1]*c[2]-b[2]*c[1])-a[1]*(b[0]*c[2]-b[2]*c[0])+a[2]*(b[0]*c[1]-b[1]*c[0])
-        self.assertEqual(determinant, 4)
-        self.assertEqual(item['stacked_rank'], 3)
-        self.assertTrue(all(sum(F(v)*u for v,u in zip(row, [1,2,1,0])) == 0 for row in rows))
-        np.testing.assert_array_equal(item['stacked_null_product'], [0,0,0])
+        np.testing.assert_array_equal(scale['stacked_jacobian_without_positive_row_denominators'], rows)
+        a, b, c = [[F(row[j]) for j in (0, 1, 3)] for row in rows]
+        det3 = a[0]*(b[1]*c[2]-b[2]*c[1])-a[1]*(b[0]*c[2]-b[2]*c[0])+a[2]*(b[0]*c[1]-b[1]*c[0])
+        self.assertEqual(det3, 4)
+        self.assertEqual(scale['stacked_rank'], 3)
+        self.assertTrue(all(sum(F(v)*u for v, u in zip(row, [1, 2, 1, 0])) == 0 for row in rows))
+        np.testing.assert_array_equal(scale['stacked_null_product'], [0, 0, 0])
 
-    def test_empty_observation_bernoulli_differs_from_poisson_phd(self):
-        item = self.results['E09-22']
-        r = F(4,5)
-        for case, detection, posterior in zip(item['cases'], [F(9,10), F(1,10)], [F(2,7), F(18,23)]):
-            numerator = r*(1-detection)
-            denominator = (1-r)+numerator
-            self.assertEqual(numerator/denominator, posterior)
-            self.assertAlmostEqual(case['empty_observation_probability'], float(denominator))
-            self.assertAlmostEqual(case['bernoulli_posterior_existence'], float(posterior))
-            self.assertAlmostEqual(case['different_poisson_phd_posterior_mass'], float(numerator))
-
-    def test_late_observation_joint_conditioning_replay_and_wrong_time(self):
-        item = self.results['E09-23']
-        # Independent inverse of S=[[3,2],[2,4]], determinant8.
-        inverse = [[F(1,2), F(-1,4)], [F(-1,4), F(3,8)]]
-        cross = [F(2),F(3)]
-        gain = [sum(cross[i]*inverse[i][j] for i in range(2)) for j in range(2)]
-        self.assertEqual(gain, [F(1,4), F(5,8)])
-        mean = 2*gain[0]-gain[1]
-        variance = 3-sum(g*x for g,x in zip(gain,cross))
-        self.assertEqual((mean, variance), (F(-1,8), F(5,8)))
-        self.assertAlmostEqual(item['joint_mean'], float(mean))
-        self.assertAlmostEqual(item['joint_variance'], float(variance))
-        self.assertAlmostEqual(item['chronological_replay'][-1]['mean'], float(mean))
-        self.assertAlmostEqual(item['chronological_replay'][-1]['variance'], float(variance))
-        self.assertEqual(item['drop_late_observation'], {'mean': -.75, 'variance': .75})
-        self.assertAlmostEqual(item['wrong_current_time_update']['mean'], 3/7)
-        self.assertAlmostEqual(item['wrong_current_time_update']['variance'], 3/7)
+    def test_imm_lifecycle_and_spherical_vmf_present(self):
+        imm = self.results['E09-18']
+        self.assertEqual(len(imm['steps']), 3)
+        self.assertAlmostEqual(imm['steps'][0]['fused_variance'], 0.897358874054, places=9)
+        self.assertAlmostEqual(imm['steps'][1]['fused_variance'], 2.556447667640, places=9)
+        self.assertAlmostEqual(imm['steps'][2]['fused_variance'], 4.117809823150, places=9)
+        life = self.results['E09-19']
+        self.assertEqual(life['lifecycle']['counts']['confirmed_publications'], 187)
+        self.assertEqual(life['state_age_comparison']['counts']['confirmed_publications'], 189)
+        sph = self.results['E09-20']
+        self.assertAlmostEqual(sph['world_angles']['azimuth_deg'], -60.0, places=12)
+        self.assertAlmostEqual(sph['static_vmf_posterior']['concentration'], 5.0, places=12)
 
     def test_echo_sector_gating_hijack_and_double_talk(self):
-        item = self.results['E09-27']
+        item = self.results['E09-21']
         hijack = item['ungated_hijack']
         # Step 1 exact fractions: P1^- = [[6, 1], [1, 1]], S1 = 10, K1 = [3/5, 1/10], nu1 = -65.
         self.assertEqual(hijack['step1_nis'], float(F((-65) ** 2, 10)))
@@ -314,14 +282,12 @@ class Chapter09ExperimentsTests(unittest.TestCase):
             )
 
     def test_av_oosm_retrodiction_fov_and_mota_vs_ospa(self):
-        item = self.results['E09-28']
+        item = self.results['E09-22']
         oosm = item['oosm_retrodiction']
-        # Naive H = [1, 0]: innovation = 10 - 13 = -3, S = 10, K = [9/10, 2], posterior = [103/10, 94].
         naive = oosm['naive_current_time']
         self.assertAlmostEqual(naive['innovation_deg'], -3.0, places=12)
         np.testing.assert_allclose(naive['posterior_state'], [float(F(103, 10)), 94.0], atol=1e-13)
 
-        # Exact retrodiction H_retro = [1, -3/100]: P H^T = [42/5, 17], S = 889/100, K = [840/889, 1700/889].
         retro = oosm['retrodiction']
         self.assertAlmostEqual(retro['innovation_deg'], 0.0, places=14)
         self.assertAlmostEqual(retro['innovation_variance_deg2'], float(F(889, 100)), places=12)
@@ -340,7 +306,6 @@ class Chapter09ExperimentsTests(unittest.TestCase):
         np.testing.assert_allclose(oosm['chronological_replay_state_at_t4'], [13.0, 100.0], atol=1e-13)
         np.testing.assert_allclose(oosm['chronological_replay_covariance_at_t4'], expected_cov, atol=1e-12)
 
-        # Out-of-FOV Bernoulli missed detection: r = 4/5, p_D = 0 outside [-45, 45] vs naive p_D = 19/20.
         fov = item['camera_fov_existence']
         self.assertFalse(fov['in_fov'])
         self.assertAlmostEqual(fov['fov_aware_posterior_existence'], float(F(4, 5)), places=14)
@@ -348,7 +313,6 @@ class Chapter09ExperimentsTests(unittest.TestCase):
         self.assertEqual(naive_r, F(1, 6))
         self.assertAlmostEqual(fov['naive_posterior_existence'], float(naive_r), places=14)
 
-        # CLEAR MOT vs label-free OSPA.
         swap = item['identity_vs_set_metrics']['pure_id_swap']
         self.assertEqual(swap['ospa_per_frame_deg'], [0.0, 0.0])
         self.assertEqual(swap['clear_mot']['idsw'], 2)
@@ -362,7 +326,6 @@ class Chapter09ExperimentsTests(unittest.TestCase):
         self.assertEqual(swap_echo['clear_mot']['idsw'], 2)
         self.assertAlmostEqual(swap_echo['clear_mot']['mota'], float(F(1, 4)), places=14)
 
-        # Regression checks: 1-to-1 correspondence eviction, angle wrapping, and FoV edge cases.
         reappear = clear_mot_angular_summary(
             [{1: 0.0}, {2: 0.0}, {1: 2.0, 2: 0.0}],
             [{1: 0.0}, {1: 0.0}, {1: 0.0, 2: 2.0}],

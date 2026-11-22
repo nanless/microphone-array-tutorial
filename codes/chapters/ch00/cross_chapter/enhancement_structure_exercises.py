@@ -1,4 +1,4 @@
-"""Independent arithmetic for E07-07, E08-11 and E09-09.
+"""Independent arithmetic for E07-07, E08-09 and E09-09.
 
 These small functions expose structural identities. They are not full WPD,
 cACGMM or IMM pipelines and do not process or generate audio.
@@ -194,7 +194,7 @@ def run_exercises():
     posterior /= posterior.sum()
     return {
         "E07-07": {key: value.real.tolist() for key, value in wpd.items()},
-        "E08-11": {"raw": raw.real.tolist(), "shape": shape.real.tolist(),
+        "E08-09": {"raw": raw.real.tolist(), "shape": shape.real.tolist(),
                    "relative_density": cacg_relative_density(np.eye(2), shape).tolist(),
                    "twice_shape_density": cacg_relative_density(np.eye(2), 2 * shape).tolist(),
                    "second_raw": second_raw.real.tolist(), "second_shape": second_shape.real.tolist()},

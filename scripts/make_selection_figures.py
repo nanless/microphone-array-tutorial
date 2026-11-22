@@ -1,4 +1,4 @@
-"""Figure79: known covariance, target mismatch and explicit evidence thresholds.
+"""Figure74: known covariance, target mismatch and explicit evidence thresholds.
 
 The Chapter 11 physical case reuses the unique Chapter 5 solvers. This script
 plots its pure numerical result, writes no audio and makes no device/ASR claim.
@@ -22,8 +22,8 @@ import numpy as np
 from codes.chapters.ch00.io_contracts import validate_parent_chain, validate_report_destination, write_json_report
 from codes.chapters.ch11.core.selection_physics import beamformer_selection_case
 
-FIGURE = ROOT/'figures/fig79_selection_evidence.png'
-REPORT = ROOT/'codes/chapters/ch11/reports/figure79_selection_evidence.json'
+FIGURE = ROOT/'figures/fig74_selection_evidence.png'
+REPORT = ROOT/'codes/chapters/ch11/reports/figure74_selection_evidence.json'
 SOURCE_PATHS = (
     'scripts/make_selection_figures.py',
     'codes/chapters/ch11/core/selection_physics.py',
@@ -91,7 +91,7 @@ def generate_figure(figure_path=FIGURE, report_path=REPORT):
         'DI_scope': 'DI uses the separate 3-D isotropic diffuse coherence Gamma, not the actual R_n',
         'decision_scope': 'known nominal/actual directions; acoustic-only eligibility does not supply missing device evidence',
     }
-    report = {'schema_version': 1, 'exercise_id': 'E11-27',
+    report = {'schema_version': 1, 'exercise_id': 'E11-20',
               'script_sha256': sources['scripts/make_selection_figures.py'],
               'source_sha256': sources, 'numerical_case': case, 'plot_data': plot_data,
               'environment': {'python': platform.python_version(), 'numpy': np.__version__,
@@ -125,24 +125,33 @@ def generate_figure(figure_path=FIGURE, report_path=REPORT):
         axes[0, 0].annotate(f'{value:.4f}', (position, value), xytext=offset,
                            textcoords='offset points', ha=alignment, fontsize=11.5)
     axes[0, 0].set(title=r'(a) 当前 $\mathbf{R}_{nn}$：噪声与总误差', ylabel='无量纲：噪声 / $P_s$ 或 NMSE',
-                   xticks=x, xticklabels=labels, ylim=(0, 1.32))
+                   xticks=x, xticklabels=labels, ylim=(0, 1.50))
     axes[0, 0].legend(loc='upper right'); axes[0, 0].grid(axis='y', alpha=.2)
-    axes[0, 1].bar(x, error, color=colors, width=.55)
+    hatches = ['' if row['acoustic_verdict'] == 'pass' else '//' for row in rows]
+    bars_b = axes[0, 1].bar(x, error, color=colors, width=.55, edgecolor='#1E242B', linewidth=0.5)
+    for bar, hatch in zip(bars_b, hatches):
+        bar.set_hatch(hatch)
     limit = parameters['response_amplitude_error_upper_limit']
     axes[0, 1].axhline(limit, color='#444444', linestyle='--', label=f'硬上限 {limit:.2f}')
     for position, value in zip(x, error):
-        anchor_y = limit if position == 0 else value
-        axes[0, 1].annotate(f'{value:.5f}', (position, anchor_y), xytext=(0, 6 if position == 0 else 7),
-                           textcoords='offset points', ha='center', fontsize=11.5,
-                           bbox=dict(fc='white', ec='none', alpha=0.88, pad=0.8) if position == 0 else None)
-    axes[0, 1].set(title='(b) 真实方向 5°：目标响应偏差', ylabel=r'$|\vec{w}^H \vec{a}_{\mathrm{true}} - 1|$（无量纲）',
+        if position == 0:
+            axes[0, 1].annotate(f'{value:.5f}', xy=(position, value), xytext=(position, 0.068),
+                               ha='center', va='bottom', fontsize=11.5,
+                               bbox=dict(fc='white', ec='none', alpha=0.90, pad=0.8),
+                               arrowprops=dict(arrowstyle='->', color='#237263', lw=1.1))
+        else:
+            axes[0, 1].annotate(f'{value:.5f}', (position, value), xytext=(0, 7),
+                               textcoords='offset points', ha='center', fontsize=11.5)
+    axes[0, 1].set(title='(b) 真实方向 5°：目标响应偏差', ylabel=r'$|\vec{w}^{\,H} \vec{a}_{\mathrm{true}} - 1|$（无量纲）',
                    xticks=x, xticklabels=labels, ylim=(0, .285))
     axes[0, 1].legend(loc='upper right'); axes[0, 1].grid(axis='y', alpha=.2)
-    axes[1, 0].bar(x, wng, color=colors, width=.55)
+    bars_c = axes[1, 0].bar(x, wng, color=colors, width=.55, edgecolor='#1E242B', linewidth=0.5)
+    for bar, hatch in zip(bars_c, hatches):
+        bar.set_hatch(hatch)
     wng_limit = parameters['WNG_lower_limit_dB']
     axes[1, 0].axhline(wng_limit, color='#444444', linestyle='--', label=f'硬下限 {wng_limit:g} dB')
     for position, value in zip(x, wng):
-        axes[1, 0].annotate(f'{value:.2f}', (position, value), xytext=(0, 7 if value >= 0 else -16),
+        axes[1, 0].annotate(f'{value:.2f}'.replace('-', '−'), (position, value), xytext=(0, 7 if value >= 0 else -16),
                            textcoords='offset points', ha='center', fontsize=11.5)
     axes[1, 0].set(title='(c) WNG：绿色满足全部声学条件', ylabel='WNG（dB）',
                    xticks=x, xticklabels=labels, ylim=(-11.5, 6.8))
@@ -150,7 +159,7 @@ def generate_figure(figure_path=FIGURE, report_path=REPORT):
     axes[1, 0].grid(axis='y', alpha=.2)
     axes[1, 1].axis('off'); axes[1, 1].set_title('(d) 另模型 DI 与完整设备证据', pad=12)
     verdict = {'pass': '通过', 'fail': '失败', 'undetermined': '证据不足'}
-    cells = [[label, f'{value:.2f}', verdict[row['acoustic_verdict']], verdict[row['device_verdict']]]
+    cells = [[label, f'{value:.2f}'.replace('-', '−'), verdict[row['acoustic_verdict']], verdict[row['device_verdict']]]
              for label, value, row in zip(labels, di, rows)]
     table = axes[1, 1].table(cellText=cells, colLabels=['候选', '另模型 DI (dB)', '声学条件', '完整设备'],
                             colWidths=[.20, .31, .23, .26], cellLoc='center', bbox=[0, .45, 1, .46])
@@ -165,9 +174,9 @@ def generate_figure(figure_path=FIGURE, report_path=REPORT):
                     ha='center', transform=axes[1, 1].transAxes, fontsize=11.5, linespacing=1.4)
     axes[1, 1].text(.5, .05, '声学合格者中 α=1 的实际 NMSE 更低；\n全部缺少设备延迟证据，不能宣布整机已选定。',
                     ha='center', transform=axes[1, 1].transAxes, fontsize=11.5, linespacing=1.5)
-    fig.suptitle('图79  同一已知单频模型：先核硬条件，再比较损失', fontsize=16)
+    fig.suptitle('图74  同一已知单频模型：先核硬条件，再比较损失', fontsize=16)
     fig.text(.5, .012, '三麦间距 4 cm · 1 kHz · 名义目标 0° / 干扰 20° / 实际目标 5° · $P_s=1$\n'
-             '已知统计的数学基准；不产生音频，不代表未知失配保证、设备实测或语音识别成绩。',
+             '单频解析选型基准：声学硬条件与整机延迟证据分开审查。',
              ha='center', fontsize=11.5)
     fig.tight_layout(rect=(0, .075, 1, .95), h_pad=2.0, w_pad=2.0)
     if _sources() != sources:

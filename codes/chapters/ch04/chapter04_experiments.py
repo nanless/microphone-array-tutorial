@@ -1,4 +1,4 @@
-"""E04-12..27: deterministic DOA anchors, boundaries and PCM phase checks.
+"""E04-12..23: deterministic DOA anchors, boundaries and PCM phase checks.
 
 Run with ``python -m codes.chapters.ch04.chapter04_experiments``. No files are
 written; no external implementation is imported or run. Local bounds and
@@ -67,7 +67,7 @@ def read_published_audio(group, expected_channels, *, audio_root=None, manifest_
 
 
 def nyquist_interpolation():
-    """E04-12: original Nyquist is split, and inverse-FFT gain is restored."""
+    """§4.2 prose anchor: original Nyquist is split, and inverse-FFT gain is restored."""
     from scripts.make_figures import gcc_phat_interpolated
     x = np.array([1., 0., 0., 0.])
     lags, values, _ = gcc_phat_interpolated(x, x, 1., interp=2)
@@ -79,7 +79,7 @@ def nyquist_interpolation():
 
 
 def srp_frequency_and_grid():
-    """E04-13: equal frequency weights and the near-field TDOA objective."""
+    """E04-12: equal frequency weights and the near-field TDOA objective (y in [-0.5, 5.2] m)."""
     positions = np.array([[0., 0.], [.08575, 0.]])
     frequencies = np.array([1000., 2000.])
     candidates = np.deg2rad([-30., 0., 30.])
@@ -107,7 +107,7 @@ def srp_frequency_and_grid():
 
 
 def phat_order_and_floors():
-    """E04-14: normalization is nonlinear; three zero protections differ."""
+    """§4.2 prose anchor: normalization is nonlinear; three zero protections differ."""
     cross = np.array([1., -9.])
     magnitudes = np.array([1., .01, .001, 0.])
     threshold = .01
@@ -120,7 +120,7 @@ def phat_order_and_floors():
 
 
 def esprit_basis_and_alias():
-    """E04-15: a common basis gives similar shift matrices, not equal entries."""
+    """E04-13: a common basis gives similar shift matrices, not equal entries."""
     a = np.exp(1j*np.pi*np.arange(4)[:, None]*np.array([-.5, .5]))
     t = np.array([[1., 1.], [0., 1.]])
     es = a@t
@@ -138,7 +138,7 @@ def esprit_basis_and_alias():
 
 
 def gauss_newton_one_step():
-    """E04-16: one unweighted range-difference least-squares step, in metres."""
+    """E04-14 (Part 1): one unweighted range-difference least-squares step, in metres."""
     mics = np.array([[0., 0.], [1., 0.], [0., 1.], [1., 1.]])
     truth, initial = np.array([.4, .7]), np.array([.5, .5])
     def model(point):
@@ -159,7 +159,7 @@ def gauss_newton_one_step():
 
 
 def local_delay_crlb():
-    """E04-17: known cosine in real iid Gaussian noise, local delay parameter."""
+    """E04-15: known cosine in real iid Gaussian noise, local delay parameter."""
     frequency, fs, variance = 1000., 8000., .01
     n = np.arange(8)
     derivative = 2*np.pi*frequency*np.sin(2*np.pi*frequency*n/fs)
@@ -172,7 +172,7 @@ def local_delay_crlb():
 
 
 def audio_phase_ambiguity(*, audio_root=None, manifest_path=None):
-    """E04-18: score only known active bins in one complete steady period."""
+    """E04-16: score only known active bins in one complete steady period."""
     case = doa_ambiguity_case()
     files, groups = prepare_exports({'doa_ambiguity': case})
     published = read_published_audio('doa_ambiguity', {'doa_ambiguity_tone.wav':2, 'doa_ambiguity_broadband.wav':2}, audio_root=audio_root, manifest_path=manifest_path)
@@ -201,7 +201,7 @@ def audio_phase_ambiguity(*, audio_root=None, manifest_path=None):
 
 
 def nonunitary_focusing_noise():
-    """E04-19: perfect manifold matching does not preserve white noise."""
+    """E04-17: perfect manifold matching does not preserve white noise."""
     a = np.ones(2); q = np.array([1.,-1.]); r = np.ones((2,2))+np.eye(2)
     transform = np.array([[2.,-1.],[-1.,2.]])
     focused = (r+transform@r@transform.T)/2
@@ -219,7 +219,7 @@ def nonunitary_focusing_noise():
 
 
 def aic_mdl_comparison():
-    """E04-20: one fixed eigenvalue vector; not a sampled detection rate."""
+    """§4.6.1 prose anchor: one fixed eigenvalue vector; not a sampled detection rate."""
     eigenvalues = np.array([9.,4.,1.2,.8]); snapshots = 100
     aic, aic_scores = aic_source_count(eigenvalues,snapshots)
     mdl, mdl_scores = mdl_source_count(eigenvalues,snapshots)
@@ -233,7 +233,7 @@ def aic_mdl_comparison():
 
 
 def correlated_tdoa_gls():
-    """E04-21: fixed error at the true centre; OLS vs known-error GLS step."""
+    """E04-14 (Part 2): fixed error at the true centre; OLS vs known-error GLS step."""
     jacobian = -np.sqrt(2)*np.array([[1.,0.],[0.,1.],[1.,1.]])
     residual = np.array([.02,-.01,.03])
     covariance = .0001*(np.eye(3)+np.ones((3,3)))
@@ -254,7 +254,7 @@ def correlated_tdoa_gls():
 
 
 def unitary_coherent_focusing():
-    """E04-22: exact ideal vectors plus checked independent audio measurements."""
+    """E04-18: exact ideal vectors plus checked independent audio measurements."""
     a_minus=np.array([1.,-1j,-1.,1j]); a_plus=a_minus.conj()
     first=a_minus-1j*a_plus; third=a_plus+1j*a_minus
     focused=third[[0,3,2,1]]
@@ -271,7 +271,7 @@ def unitary_coherent_focusing():
 
 
 def root_music_polynomial():
-    """E04-23 analytic reciprocal roots vs floating repeated-root splitting.
+    """E04-19 analytic reciprocal roots vs floating repeated-root splitting.
 
     This fixed three-channel polynomial diagnostic is not a general root-MUSIC
     estimator: no root selection or source-count inference is implemented.
@@ -290,7 +290,7 @@ def root_music_polynomial():
 
 
 def coherent_reflection_false_peak():
-    """E04-24: rank one does not identify the direct path of one emitter.
+    """E04-20: rank one does not identify the direct path of one emitter.
 
     The signal covariance is exact and noiseless. The separate 0.1 I control
     is a virtual white-noise covariance, not noise added to the audio assets.
@@ -349,7 +349,7 @@ def coherent_reflection_false_peak():
 
 
 def exact_ctf_cross_relation():
-    """E04-25: exact artificial two-tap frame-domain CTF, without STFT audio.
+    """E04-21: exact artificial two-tap frame-domain CTF, without STFT audio.
 
     Cross convolution uses plain coefficients, not conjugated coefficients.
     Source frames and the complete one-frame output tails are retained. Only
@@ -404,23 +404,44 @@ def exact_ctf_cross_relation():
     }
 
 
-def exercise_04_26():
-    """E04-26: UCA circular-harmonics Vandermonde transform, M=8 vs M=4 aliasing, and Bessel zeros."""
+def gauss_newton_and_gls():
+    """E04-14: unified 4-mic unit-square Gauss-Newton step and correlated-TDOA GLS update."""
+    return {
+        'gauss_newton_step': gauss_newton_one_step(),
+        'correlated_tdoa_gls': correlated_tdoa_gls(),
+    }
+
+
+def exercise_04_22():
+    """E04-22: UCA circular-harmonics Vandermonde transform, M=8 vs M=4 aliasing, and Bessel zeros."""
     return uca_phase_mode_example()
 
 
-def exercise_04_27():
-    """E04-27: blind DOA-independent two-mic coherent-to-diffuse ratio (CDR) estimator."""
+def exercise_04_23():
+    """E04-23: blind DOA-independent two-mic coherent-to-diffuse ratio (CDR) estimator."""
     return two_mic_cdr_example()
 
 
+# Backward-compatible aliases for external callers referencing pre-refactor names.
+exercise_04_26 = exercise_04_22
+exercise_04_27 = exercise_04_23
+
+
 def run_exercises():
-    functions = [nyquist_interpolation, srp_frequency_and_grid, phat_order_and_floors,
-                 esprit_basis_and_alias, gauss_newton_one_step, local_delay_crlb, audio_phase_ambiguity,
-                 nonunitary_focusing_noise, aic_mdl_comparison, correlated_tdoa_gls,
-                 unitary_coherent_focusing, root_music_polynomial,
-                 coherent_reflection_false_peak, exact_ctf_cross_relation,
-                 exercise_04_26, exercise_04_27]
+    functions = [
+        srp_frequency_and_grid,
+        esprit_basis_and_alias,
+        gauss_newton_and_gls,
+        local_delay_crlb,
+        audio_phase_ambiguity,
+        nonunitary_focusing_noise,
+        unitary_coherent_focusing,
+        root_music_polynomial,
+        coherent_reflection_false_peak,
+        exact_ctf_cross_relation,
+        exercise_04_22,
+        exercise_04_23,
+    ]
     return {f'E04-{i:02d}': function() for i, function in enumerate(functions, 12)}
 
 

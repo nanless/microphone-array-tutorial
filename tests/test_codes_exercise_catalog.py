@@ -1,4 +1,4 @@
-"""Explicit cross-module, chapter and research inventory for 443 exercises."""
+"""Explicit cross-module, chapter and research inventory for 352 exercises."""
 
 import json
 import re
@@ -49,48 +49,48 @@ from codes.chapters.appendix_b import interpolation_exercise
 ROOT = Path(__file__).resolve().parents[1]
 EXPECTED = {
     "chapter00": {f"E00-{n:02d}" for n in range(1, 17)},
-    "tse": {f"E15-{n:02d}" for n in range(1, 19)},
-    "wearable": {f"E14-{n:02d}" for n in range(1, 19)},
-    "distributed": {f"E13-{n:02d}" for n in range(1, 28)},
-    "imaging": {f"E12-{n:02d}" for n in range(1, 21)},
-    "apa": {f"E06-{n:02d}" for n in range(34, 39)},
-    "apa_audio": {"E06-39"},
-    "reference_audio": {"E06-42"},
-    "appendix_b": {f"E17-{n:02d}" for n in range(3, 17)},
-    "appendix_a": {f"E16-{n:02d}" for n in range(6, 22)},
-    "chapter11": {f"E11-{n:02d}" for n in range(10, 30)},
-    "chapter10": {f"E10-{n:02d}" for n in range(18, 37)},
-    "chapter09": {f"E09-{n:02d}" for n in range(10, 29)},
-    "chapter08": {f"E08-{n:02d}" for n in range(12, 35)},
-    "chapter07": {f"E07-{n:02d}" for n in range(8, 27)},
-    "chapter06": {f"E06-{n:02d}" for n in range(22, 34)} | {"E06-40", "E06-41", "E06-43", "E06-44"},
-    "binaural_beamforming": {"E05-25", "E05-26", "E05-27"},
-    "chapter05": {f"E05-{n:02d}" for n in range(8, 25)} | {"E05-28", "E05-29"},
-    "chapter04": {f"E04-{n:02d}" for n in range(12, 28)},
-    "chapter03": {f"E03-{n:02d}" for n in range(8, 21)},
-    "chapter02": {f"E02-{n:02d}" for n in range(9, 23)},
-    "chapter01": {f"E01-{n:02d}" for n in range(4, 13)},
-    "spatial_model": {"E02-08", "E04-11", "E05-07", "E16-05"},
-    "enhancement_structure": {"E07-07", "E08-11", "E09-09"},
+    "tse": {f"E15-{n:02d}" for n in range(1, 15)},
+    "wearable": {f"E14-{n:02d}" for n in range(1, 16)},
+    "distributed": {f"E13-{n:02d}" for n in range(1, 21)},
+    "imaging": {f"E12-{n:02d}" for n in range(1, 19)},
+    "apa": {f"E06-{n:02d}" for n in range(21, 25)},
+    "apa_audio": {"E06-25"},
+    "reference_audio": {"E06-28"},
+    "appendix_b": {f"E17-{n:02d}" for n in range(3, 14)},
+    "appendix_a": {f"E16-{n:02d}" for n in range(6, 16)},
+    "chapter11": {f"E11-{n:02d}" for n in range(10, 23)},
+    "chapter10": {f"E10-{n:02d}" for n in range(18, 29)},
+    "chapter09": {f"E09-{n:02d}" for n in range(10, 23)},
+    "chapter08": {f"E08-{n:02d}" for n in range(10, 27)},
+    "chapter07": {f"E07-{n:02d}" for n in range(8, 22)},
+    "chapter06": {f"E06-{n:02d}" for n in range(12, 21)} | {"E06-26", "E06-27", "E06-29", "E06-30"},
+    "binaural_beamforming": {"E05-18", "E05-19", "E05-20"},
+    "chapter05": {f"E05-{n:02d}" for n in range(5, 18)},
+    "chapter04": {f"E04-{n:02d}" for n in range(12, 24)},
+    "chapter03": {f"E03-{n:02d}" for n in range(8, 19)},
+    "chapter02": {f"E02-{n:02d}" for n in range(9, 21)},
+    "chapter01": {f"E01-{n:02d}" for n in range(4, 12)},
+    "spatial_model": {"E02-08", "E04-11", "E05-04", "E16-05"},
+    "enhancement_structure": {"E07-07", "E08-09", "E09-09"},
     "engineering_boundary": {"E10-16", "E10-17", "E11-09"},
     "interpolation": {"E17-02"},
-    "spatial_precision": {"E02-07", "E04-10", "E05-06"},
-    "enhancement_steps": {"E06-21", "E07-06", "E08-08", "E08-09", "E08-10"},
+    "spatial_precision": {"E02-07", "E04-10", "E05-03"},
+    "enhancement_steps": {"E06-11", "E07-06", "E08-07", "E08-08"},
     "time_state": {"E09-07", "E09-08", "E10-15", "E11-08"},
     "spatial": {
         "E01-01", "E01-02", "E02-01", "E02-02", "E02-03", "E03-01",
-        "E03-02", "E04-01", "E04-02", "E04-03", "E05-01", "E05-02",
-        "E01-03", "E02-04", "E02-05", "E03-03", "E03-04", "E04-04", "E05-03", "E05-04", "E04-05",
-        "E02-06", "E03-05", "E03-06", "E04-06", "E04-07", "E04-09", "E05-05",
+        "E03-02", "E04-01", "E04-02", "E04-03",
+        "E01-03", "E02-04", "E02-05", "E03-03", "E03-04", "E04-04", "E05-01", "E04-05",
+        "E02-06", "E03-05", "E03-06", "E04-06", "E04-07", "E04-09", "E05-02",
     },
     "enhancement": {
         "E06-01", "E06-02", "E06-03", "E07-01", "E07-02", "E07-03",
         "E08-01", "E08-02", "E08-03", "E09-01", "E09-02", "E09-03",
         "E06-04", "E06-05", "E07-04", "E07-05", "E08-04", "E08-05", "E09-04", "E09-05",
-        "E06-06", "E08-06", "E08-07",
+        "E06-06", "E08-06",
     },
-    "aec_minicases": {"E06-07", "E06-08", "E06-09", "E06-10"},
-    "aec_advanced": {f"E06-{number:02d}" for number in range(11, 21)},
+    "aec_minicases": {"E06-07"},
+    "aec_advanced": {"E06-08", "E06-09", "E06-10"},
     "tracking_crossing": {"E09-06"},
     "coarray": {"E03-07"},
     "doa_resolution": {"E04-08"},
@@ -102,9 +102,8 @@ EXPECTED = {
     },
     "spectral_subtraction": {"E10-13"},
 }
-AEC_CASE_KEYS = {"E06-07": "overlap_save", "E06-08": "ipnlms",
-                 "E06-09": "geigel", "E06-10": "delay_polarity"}
-RUNNERS = {"chapter00": lambda: chapter00_exercises.run_experiments()["exercises"], "tse": lambda: chapter15_exercises.run_experiments()["exercises"], "wearable": lambda: chapter14_exercises.run_experiments()["exercises"], "distributed": lambda: chapter13_exercises.run_experiments()["exercises"], "imaging": lambda: chapter12_exercises.run_experiments()["exercises"], "apa": lambda: {k: v for k, v in apa_demo().items() if k != "scope"}, "apa_audio": lambda: {"E06-39": apa_audio_experiment()[1]}, "reference_audio": lambda: {"E06-42": reference_audio_assets()[1]}, "appendix_b": appendix_b_experiments.run_exercises,
+AEC_CASE_KEYS = {"E06-07": "delay_polarity"}
+RUNNERS = {"chapter00": lambda: chapter00_exercises.run_experiments()["exercises"], "tse": lambda: chapter15_exercises.run_experiments()["exercises"], "wearable": lambda: chapter14_exercises.run_experiments()["exercises"], "distributed": lambda: chapter13_exercises.run_experiments()["exercises"], "imaging": lambda: chapter12_exercises.run_experiments()["exercises"], "apa": lambda: {k: v for k, v in apa_demo().items() if k != "scope"}, "apa_audio": lambda: {"E06-25": apa_audio_experiment()[1]}, "reference_audio": lambda: {"E06-28": reference_audio_assets()[1]}, "appendix_b": appendix_b_experiments.run_exercises,
            "appendix_a": appendix_a_experiments.run_experiments,
            "chapter11": chapter11_experiments.run_experiments,
            "chapter09": chapter09_experiments.run_experiments,
@@ -155,9 +154,9 @@ class ExerciseCatalogTest(unittest.TestCase):
     def setUpClass(cls):
         cls.results = {name: run() for name, run in RUNNERS.items()}
 
-    def test_independent_inventory_has_443_unique_ids(self):
-        self.assertEqual(len(ALL_IDS), 443)
-        self.assertEqual(sum(map(len, EXPECTED.values())), 443)
+    def test_independent_inventory_has_352_unique_ids(self):
+        self.assertEqual(len(ALL_IDS), 352)
+        self.assertEqual(sum(map(len, EXPECTED.values())), 352)
 
     def test_each_module_returns_exact_assigned_ids(self):
         for name, results in self.results.items():
@@ -183,7 +182,7 @@ class ExerciseCatalogTest(unittest.TestCase):
                 text = chapters[0].read_text(encoding="utf-8")
                 self.assertRegex(text, rf"\b{re.escape(exercise_id)}\b")
 
-    def test_chapter_and_research_inventories_cover_exactly_443_ids(self):
+    def test_chapter_and_research_inventories_cover_exactly_352_ids(self):
         chapters = "\n".join(path.read_text(encoding="utf-8")
                              for path in (ROOT / "chapters").glob("*.md"))
         research = (ROOT / "codes/chapters/ch00/research/05_exercises_and_audio.md").read_text(encoding="utf-8")

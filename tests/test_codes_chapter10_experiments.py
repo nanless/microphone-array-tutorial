@@ -1,4 +1,4 @@
-"""Independent answers for E10-18..36 and read-only PCM contract failures."""
+"""Independent answers for E10-18..28 and read-only PCM contract failures."""
 import math
 import json
 import shutil
@@ -9,7 +9,9 @@ from fractions import Fraction
 from pathlib import Path
 import unittest
 import numpy as np
-from codes.chapters.ch10.chapter10_experiments import run_experiments, agc_anchor, noise_mismatch_anchor, channel_selection_anchor, ROOT
+from codes.chapters.ch10.chapter10_experiments import (
+    run_experiments, agc_anchor, noise_mismatch_anchor, channel_selection_anchor, ROOT,
+)
 from codes.chapters.ch10.core.noise_mismatch import build_fixture
 from codes.chapters.ch10.core.pdm_and_eval import cic_decimation_metrics, p340_and_p808_evaluation
 from codes.chapters.ch10.examples.generate_noise_mismatch import OUTPUT as NOISE_OUTPUT
@@ -22,105 +24,18 @@ class Chapter10ExperimentsTests(unittest.TestCase):
         cls.answers = run_experiments()
 
     def test_identifiers(self):
-        self.assertEqual(list(self.answers), [f'E10-{i}' for i in range(18, 37)])
-
-    def test_channel_selection_separates_target_loss_and_noise(self):
-        answer = self.answers['E10-34']
-        controls = answer['mathematical_control']['controls']
-        self.assertEqual(controls['stale']['target_response_real_imag'], [0, 0])
-        self.assertEqual(controls['stale']['normalized_noise_power'], .5)
-        self.assertAlmostEqual(controls['recomputed']['target_response_real_imag'][0], 1)
-        self.assertAlmostEqual(controls['recomputed']['normalized_noise_power'], 1.5)
-        self.assertTrue(answer['pcm_validation']['checked_read_only'])
-        self.assertTrue(answer['pcm_validation']['scored_from_stored_integer_pcm'])
-        measured = answer['pcm_analysis']
-        self.assertEqual(measured['reference_squared_sum_pcm_integer'], 146027417700)
-        self.assertEqual(measured['mse_integer_denominator'], 29205777612800)
-        for role, error in [('healthy_output', 73014637900), ('stale_output', 219018750300),
-                            ('recomputed_output', 219050854800)]:
-            row = measured['scores'][role]
-            self.assertEqual(row['error_squared_sum_pcm_integer'], error)
-            self.assertEqual(row['mse'], error/29205777612800)
-            self.assertEqual(row['nmse'], error/146027417700)
-
-    def test_channel_missing_assets_are_not_generated(self):
-        with tempfile.TemporaryDirectory() as directory:
-            missing = Path(directory)/'not-generated'
-            with self.assertRaises(ValueError):
-                channel_selection_anchor(missing)
-            self.assertFalse(missing.exists())
-
-    def test_channel_corrupt_pcm_is_not_repaired(self):
-        from codes.chapters.ch10.examples.generate_channel_audio import DEFAULT_OUTPUT
-        with tempfile.TemporaryDirectory() as directory:
-            destination = Path(directory)/'assets'
-            shutil.copytree(DEFAULT_OUTPUT, destination)
-            path = destination/'channel_stale_output.wav'
-            changed = bytearray(path.read_bytes())
-            changed[44+2*10000] ^= 1
-            path.write_bytes(changed)
-            before = {p.name: (p.read_bytes(), p.stat().st_mtime_ns)
-                      for p in destination.iterdir()}
-            with self.assertRaises(ValueError):
-                channel_selection_anchor(destination)
-            self.assertEqual(before, {p.name: (p.read_bytes(), p.stat().st_mtime_ns)
-                                     for p in destination.iterdir()})
-
-    def test_rtf_uses_hop_and_duration_weights(self):
-        x = self.answers['E10-18']
-        self.assertEqual(x['hop_rtf'], .5)
-        self.assertEqual(x['wrong_window_rtf'], .125)
-        self.assertAlmostEqual(x['aggregate_rtf'], 91/110)
-        self.assertEqual(x['unweighted_mean_rtf'], .5)
+        self.assertEqual(list(self.answers), [f'E10-{i:02d}' for i in range(18, 29)])
 
     def test_subtraction_expectation_then_clipping(self):
-        x = self.answers['E10-19']
+        x = self.answers['E10-18']
         self.assertEqual(x['unclipped_power'], [3., -1.])
         self.assertEqual(x['mean_cross_term'], 0)
         self.assertAlmostEqual(x['clipped_mean'], 1.5)
 
-    def test_q15_rounding_and_wide_sum(self):
-        x = self.answers['E10-20']
-        self.assertEqual((x['round_once'], x['round_each']), (1, 0))
-        self.assertEqual(x['two_worst_products_sum'], 2147483648)
-        self.assertEqual(x['saturated_result'], 32767)
-        self.assertEqual(x['safe_int64_length_bound'], 8589934591)
-
-    def test_dag_parallel_and_serial(self):
-        x = self.answers['E10-21']
-        self.assertEqual(x['parallel_finish_c_ms'], 42)
-        self.assertEqual(x['single_worker_finish_c_ms'], 46)
-
-    def test_phase_exact_clock_and_complex_sum(self):
-        x = self.answers['E10-22']
-        self.assertAlmostEqual(x['exact_delay_s'], 1/10001)
-        for f in (1000, 4000):
-            gain = abs((1 + np.exp(-2j*np.pi*f/10001))/2)
-            self.assertAlmostEqual(x['frequencies_hz'][str(f)]['exact_amplitude'], gain)
-        self.assertAlmostEqual(x['frequencies_hz']['4000']['first_order_db'], -10.2003527182792)
-
-    def test_memory_lifetimes(self):
-        x = self.answers['E10-23']
-        self.assertEqual(x['in_flight_kib'], 7.5)
-        self.assertEqual(x['serial_with_buffers_kib'], 647.5)
-        self.assertEqual(x['parallel_with_buffers_kib'], 743.5)
-
-    def test_streaming_gap_recovers_at_valid_support(self):
-        x = self.answers['E10-24']
-        self.assertEqual(x['complete']['outputs'], [(0, 0.), (1, .5), (2, 1.), (3, 1.5)])
-        self.assertEqual(x['missing_index_2']['outputs'], [(0, 0.), (1, None), (2, 1.), (3, 1.5)])
-
     def test_alias_is_indistinguishable_at_output_samples(self):
-        x = self.answers['E10-25']
+        x = self.answers['E10-19']
         np.testing.assert_allclose(x['output'], [1, 0, -1, 0, 1, 0, -1, 0, 1], atol=1e-14)
         self.assertFalse(x['anti_alias_filter_run'])
-
-    def test_telemetry_units(self):
-        x = self.answers['E10-26']
-        self.assertEqual(x['missing_time_samples'], 160)
-        self.assertEqual(x['missing_scalar_values'], 640)
-        self.assertEqual(x['waiting_blocks'], 2)
-        self.assertEqual(x['expected_first_sample_timestamp_ns'], [0, 10_000_000, 30_000_000])
 
     def test_agc_independent_block_recurrence_and_pcm(self):
         case = agc_blocks_case()
@@ -142,12 +57,12 @@ class Chapter10ExperimentsTests(unittest.TestCase):
             np.testing.assert_array_equal(pcm[0], np.rint(expected*.7*32768)/32768)
             _, reference = read_pcm16(files['agc_blocks_input.wav'][0])
             for window, (start, stop) in case['parameters']['score_windows_samples_half_open'].items():
-                ratio = np.linalg.norm(pcm[0,start:stop]) / np.linalg.norm(reference[0,start:stop])
+                ratio = np.linalg.norm(pcm[0, start:stop]) / np.linalg.norm(reference[0, start:stop])
                 self.assertAlmostEqual(case['pcm_analysis']['agc_blocks_'+name]['windows'][window]['rms_ratio'], ratio)
         self.assertEqual(groups['agc_blocks']['common_export_gain'], .7)
 
     def test_agc_block_time_and_preburst_difference(self):
-        x = self.answers['E10-27']
+        x = self.answers['E10-20']
         self.assertEqual(x['availability']['10ms']['first_block_end_s'], .01)
         self.assertEqual(x['availability']['100ms']['first_block_end_s'], .1)
         a = x['float_analysis']
@@ -155,7 +70,7 @@ class Chapter10ExperimentsTests(unittest.TestCase):
         self.assertAlmostEqual(a['agc_blocks_100ms']['windows']['before_burst']['rms_ratio'], .93293158806913)
 
     def test_agc_published_integer_energy_independent(self):
-        answer = self.answers['E10-27']
+        answer = self.answers['E10-20']
         self.assertTrue(answer['pcm_validation']['scored_from_stored_integer_pcm'])
         root = ROOT / 'codes/chapters/ch10/audio'
         def integers(stem):
@@ -203,7 +118,7 @@ class Chapter10ExperimentsTests(unittest.TestCase):
                 elif mutation == 'nan':
                     manifest['groups']['agc_blocks']['common_export_gain'] = float('nan')
                 elif mutation == 'bool':
-                    next(r for r in manifest['files'] if r['group']=='agc_blocks')['channels'] = True
+                    next(r for r in manifest['files'] if r['group'] == 'agc_blocks')['channels'] = True
                 blob = json.dumps(manifest)
                 if mutation == 'duplicate':
                     blob = '{"schema_version": 2,'+blob[1:]
@@ -213,21 +128,21 @@ class Chapter10ExperimentsTests(unittest.TestCase):
                 self.assertEqual(path.read_text(), blob)
 
     def test_soft_noise_update_exact_fractions(self):
-        rows = self.answers['E10-28']['rows']
+        rows = self.answers['E10-21']['rows']
         p, noise = Fraction(0), Fraction(1)
         for row, indicator, expected in zip(rows, (1, 1, 0),
-                                            (Fraction(9,5), Fraction(54,25), Fraction(603,200))):
+                                            (Fraction(9, 5), Fraction(54, 25), Fraction(603, 200))):
             p = (p+indicator)/2
             # Average the H1 hold and H0 recursive update directly, rather
             # than reproducing the implementation's combined retention.
-            noise = p*noise+(1-p)*(Fraction(4,5)*noise+Fraction(9,5))
+            noise = p*noise+(1-p)*(Fraction(4, 5)*noise+Fraction(9, 5))
             self.assertEqual(noise, expected)
             self.assertEqual(Fraction(row['noise_power_fraction']), noise)
-        self.assertFalse(self.answers['E10-28']['complete_mcra_run'])
+        self.assertFalse(self.answers['E10-21']['complete_mcra_run'])
 
     def test_finite_tail_independent_reverse_sum(self):
-        x = self.answers['E10-29']
-        squared = [Fraction(1), Fraction(1,2), Fraction(1,4), Fraction(1,8)]
+        x = self.answers['E10-22']
+        squared = [Fraction(1), Fraction(1, 2), Fraction(1, 4), Fraction(1, 8)]
         running, reverse = Fraction(0), []
         for value in reversed(squared):
             running += value
@@ -241,7 +156,7 @@ class Chapter10ExperimentsTests(unittest.TestCase):
         self.assertFalse(x['rt20_measurement'])
 
     def test_nonpreemptive_timeline_and_bound_are_distinct(self):
-        x = self.answers['E10-30']
+        x = self.answers['E10-23']
         job = x['nonpreemptive']
         self.assertEqual(job['B_start_ms']+x['tasks']['B']['service_ms'], job['A_start_ms'])
         self.assertEqual(job['A_finish_ms']-job['A_release_ms'], 16)
@@ -249,23 +164,14 @@ class Chapter10ExperimentsTests(unittest.TestCase):
         self.assertEqual(x['response_upper_bound_ms'], 17)
 
     def test_external_clock_ambiguity_exact_and_common_scale_cancellation(self):
-        x = self.answers['E10-31']
+        x = self.answers['E10-24']
         device2 = Fraction(100020001, 100000000)
-        timer2 = Fraction(10001,10000)
-        self.assertEqual(device2/timer2, Fraction(10001,10000))
+        timer2 = Fraction(10001, 10000)
+        self.assertEqual(device2/timer2, Fraction(10001, 10000))
         self.assertEqual([r['observed_rate_ratio_fraction'] for r in x['scenarios']], ['10001/10000']*2)
         self.assertEqual(x['timestamp_slope_fraction'], '1/10001')
-        for timer in (Fraction(1), Fraction(17,13)):
+        for timer in (Fraction(1), Fraction(17, 13)):
             self.assertEqual((device2/timer)/(timer2/timer), device2/timer2)
-
-    def test_original_wrapper_padding_is_not_source_time(self):
-        x = self.answers['E10-32']
-        self.assertEqual(x['call_start_samples'], [0,256,512,768,1024])
-        self.assertEqual(x['call_count'], 5)
-        self.assertEqual(x['printed_denominator_samples'], 1280)
-        self.assertEqual(x['cropped_output_samples'], 1000)
-        self.assertEqual(x['printed_rtf'], .125)
-        self.assertEqual(x['source_duration_rtf'], .16)
 
     def test_noise_expected_power_integrates_entire_window(self):
         fixture = build_fixture()
@@ -282,38 +188,37 @@ class Chapter10ExperimentsTests(unittest.TestCase):
 
     def test_noise_conditioned_components_keep_finite_cross_term(self):
         fixture = build_fixture()
-        answer = self.answers['E10-33']
+        answer = self.answers['E10-25']
         for window, (start, stop) in fixture['parameters']['score_windows'].items():
             reference = fixture['signals']['noise_reference'][0, start:stop]
             for stem, parts in fixture['components'].items():
                 distortion = parts['target'][0, start:stop]-reference
                 residual = parts['noise'][0, start:stop]
-                # Direct sample-by-sample identity, not a sum of report fields.
                 mse = sum(float(d+n)**2 for d, n in zip(distortion, residual))/(stop-start)
                 measured = answer['floating_point']['score_windows'][window]['scores'][stem+'.wav']
                 self.assertAlmostEqual(mse, measured['mse'], places=14)
-                cross = 2*sum(float(d)*float(n) for d,n in zip(distortion,residual))/(stop-start)
+                cross = 2*sum(float(d)*float(n) for d, n in zip(distortion, residual))/(stop-start)
                 self.assertAlmostEqual(cross, measured['twice_cross_term'], places=14)
         self.assertLess(answer['floating_point']['score_windows']['before_step']['scores']
                         ['noise_polluted.wav']['twice_cross_term'], 0)
 
     def test_noise_published_pcm_integer_scores(self):
-        answer = self.answers['E10-33']
+        answer = self.answers['E10-25']
         self.assertTrue(answer['pcm_validation']['scored_from_stored_integer_pcm'])
         integers = {}
         for path in NOISE_OUTPUT.glob('*.wav'):
             with wave.open(str(path), 'rb') as reader:
                 self.assertEqual((reader.getframerate(), reader.getnchannels(), reader.getnframes()),
-                                 (16000,1,32000))
-                integers[path.name] = struct.unpack('<32000h',reader.readframes(32000))
-        for window, (start,stop) in answer['parameters']['score_windows'].items():
+                                 (16000, 1, 32000))
+                integers[path.name] = struct.unpack('<32000h', reader.readframes(32000))
+        for window, (start, stop) in answer['parameters']['score_windows'].items():
             measured = answer['pcm_analysis']['score_windows'][window]
             reference = integers['noise_reference.wav'][start:stop]
             denominator = sum(v*v for v in reference)
             self.assertEqual(denominator, 71466999200)
             self.assertEqual(measured['reference_squared_sum_pcm_integer'], denominator)
             for filename, row in measured['scores'].items():
-                numerator = sum((v-r)**2 for v,r in zip(integers[filename][start:stop],reference))
+                numerator = sum((v-r)**2 for v, r in zip(integers[filename][start:stop], reference))
                 self.assertEqual(row['error_squared_sum_pcm_integer'], numerator)
                 self.assertEqual(row['mse'], numerator/((stop-start)*32768**2))
                 self.assertEqual(row['nmse'], numerator/denominator)
@@ -328,7 +233,7 @@ class Chapter10ExperimentsTests(unittest.TestCase):
     def test_noise_corrupt_pcm_is_not_repaired(self):
         with tempfile.TemporaryDirectory() as directory:
             destination = Path(directory)/'assets'
-            shutil.copytree(NOISE_OUTPUT,destination)
+            shutil.copytree(NOISE_OUTPUT, destination)
             self.assertTrue(noise_mismatch_anchor(destination)['pcm_validation']['checked_read_only'])
             path = destination/'noise_fixed.wav'
             changed = bytearray(path.read_bytes())
@@ -338,8 +243,50 @@ class Chapter10ExperimentsTests(unittest.TestCase):
                 noise_mismatch_anchor(destination)
             self.assertEqual(path.read_bytes(), changed)
 
+    def test_channel_selection_separates_target_loss_and_noise(self):
+        answer = self.answers['E10-26']
+        controls = answer['mathematical_control']['controls']
+        self.assertEqual(controls['stale']['target_response_real_imag'], [0, 0])
+        self.assertEqual(controls['stale']['normalized_noise_power'], .5)
+        self.assertAlmostEqual(controls['recomputed']['target_response_real_imag'][0], 1)
+        self.assertAlmostEqual(controls['recomputed']['normalized_noise_power'], 1.5)
+        self.assertTrue(answer['pcm_validation']['checked_read_only'])
+        self.assertTrue(answer['pcm_validation']['scored_from_stored_integer_pcm'])
+        measured = answer['pcm_analysis']
+        self.assertEqual(measured['reference_squared_sum_pcm_integer'], 146027417700)
+        self.assertEqual(measured['mse_integer_denominator'], 29205777612800)
+        for role, error in [('healthy_output', 73014637900), ('stale_output', 219018750300),
+                            ('recomputed_output', 219050854800)]:
+            row = measured['scores'][role]
+            self.assertEqual(row['error_squared_sum_pcm_integer'], error)
+            self.assertEqual(row['mse'], error/29205777612800)
+            self.assertEqual(row['nmse'], error/146027417700)
+
+    def test_channel_missing_assets_are_not_generated(self):
+        with tempfile.TemporaryDirectory() as directory:
+            missing = Path(directory)/'not-generated'
+            with self.assertRaises(ValueError):
+                channel_selection_anchor(missing)
+            self.assertFalse(missing.exists())
+
+    def test_channel_corrupt_pcm_is_not_repaired(self):
+        from codes.chapters.ch10.examples.generate_channel_audio import DEFAULT_OUTPUT
+        with tempfile.TemporaryDirectory() as directory:
+            destination = Path(directory)/'assets'
+            shutil.copytree(DEFAULT_OUTPUT, destination)
+            path = destination/'channel_stale_output.wav'
+            changed = bytearray(path.read_bytes())
+            changed[44+2*10000] ^= 1
+            path.write_bytes(changed)
+            before = {p.name: (p.read_bytes(), p.stat().st_mtime_ns)
+                      for p in destination.iterdir()}
+            with self.assertRaises(ValueError):
+                channel_selection_anchor(destination)
+            self.assertEqual(before, {p.name: (p.read_bytes(), p.stat().st_mtime_ns)
+                                     for p in destination.iterdir()})
+
     def test_pdm_cic_register_droop_and_half_clock_skew_independent(self):
-        ans = self.answers['E10-35']
+        ans = self.answers['E10-27']
         r16 = ans['stage1_R16']
         r64 = ans['stage1_R64']
         r64_16k = ans['single_16khz_R64_7khz']
@@ -347,10 +294,31 @@ class Chapter10ExperimentsTests(unittest.TestCase):
         omega_pdm = 2 * math.pi * 7000 / 3_072_000
         box16 = abs(sum(np.exp(-1j * omega_pdm * k) for k in range(16)) / 16)
         box64 = abs(sum(np.exp(-1j * omega_pdm * k) for k in range(64)) / 64)
-        self.assertEqual((r16['dc_gain'], r16['max_register_bits'], r16['fits_signed_24bit']),
-                         (65536, 17, True))
-        self.assertEqual((r64['dc_gain'], r64['max_register_bits'], r64['fits_signed_24bit']),
-                         (16777216, 25, False))
+        # Bipolar signed two's-complement {-1, +1} (B_in=2) vs unipolar unsigned {0, 1} (B_in=1):
+        # 17-bit signed max is 2**16 - 1 = 65535 < 65536 (overflows at all +1); needs 18-bit signed (6-bit headroom in 24-bit).
+        # 25-bit signed max is 2**24 - 1 = 16777215 < 16777216 (overflows at all +1); needs 26-bit signed.
+        self.assertLess((1 << 16) - 1, 16**4)
+        self.assertGreaterEqual((1 << 17) - 1, 16**4)
+        self.assertLess((1 << 24) - 1, 64**4)
+        self.assertGreaterEqual((1 << 25) - 1, 64**4)
+        self.assertEqual(
+            (r16['dc_gain'], r16['unipolar_unsigned_bits'], r16['bipolar_signed_bits'],
+             r16['max_register_bits'], r16['signed_24bit_headroom_bits'],
+             r16['fits_unsigned_24bit'], r16['fits_signed_24bit']),
+            (65536, 17, 18, 18, 6, True, True),
+        )
+        self.assertEqual(
+            (r64['dc_gain'], r64['unipolar_unsigned_bits'], r64['bipolar_signed_bits'],
+             r64['max_register_bits'], r64['signed_24bit_headroom_bits'],
+             r64['fits_unsigned_24bit'], r64['fits_signed_24bit']),
+            (16777216, 25, 26, 26, -2, False, False),
+        )
+        # Explicit unipolar unsigned call (input_bits=1) still reports unsigned 17/25 and bipolar signed 18/26.
+        r16_unipolar = cic_decimation_metrics(3_072_000.0, 16, 4, 7000.0, input_bits=1)
+        self.assertEqual((r16_unipolar['max_register_bits'], r16_unipolar['bipolar_signed_bits']), (17, 18))
+        r64_unipolar = cic_decimation_metrics(3_072_000.0, 64, 4, 7000.0, input_bits=1)
+        self.assertEqual((r64_unipolar['max_register_bits'], r64_unipolar['bipolar_signed_bits']), (25, 26))
+
         self.assertAlmostEqual(r16['passband_gain'], box16**4, places=12)
         self.assertAlmostEqual(r16['passband_droop_db'], 80 * math.log10(box16), places=11)
         self.assertAlmostEqual(r64['passband_droop_db'], 80 * math.log10(box64), places=11)
@@ -380,7 +348,7 @@ class Chapter10ExperimentsTests(unittest.TestCase):
                 cic_decimation_metrics(**bad_kwargs)
 
     def test_p340_duplex_types_and_p808_exact_fraction_screening(self):
-        ans = self.answers['E10-36']
+        ans = self.answers['E10-28']
         p340 = ans['p340']
         self.assertEqual([p340[k]['overall_type'] for k in ('A', 'B', 'C')],
                          ['Type 3', 'Type 2b', 'Type 1'])
@@ -402,3 +370,7 @@ class Chapter10ExperimentsTests(unittest.TestCase):
                 (0.2, 0.2), {'C': (0.16, 0.18)},
                 [{'worker_id': 'bad', 'trap': 3, 'gold': (3, 3), 'clips': [3, 3]}],
             )
+
+
+if __name__ == '__main__':
+    unittest.main()

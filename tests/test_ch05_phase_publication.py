@@ -22,16 +22,16 @@ class PhasePublicationTests(unittest.TestCase):
         self.audio = self.root/'codes/chapters/ch05/phase_audio'
         shutil.copytree(ROOT/'codes/chapters/ch05/phase_audio', self.audio)
         self.manifest = json.loads((self.audio/'MANIFEST.json').read_bytes())
-        self.report_path = self.root/'codes/chapters/ch05/reports/figure73_phase_reference.json'
+        self.report_path = self.root/'codes/chapters/ch05/reports/figure68_phase_reference.json'
         self.report_path.parent.mkdir()
-        shutil.copy2(ROOT/'codes/chapters/ch05/reports/figure73_phase_reference.json', self.report_path)
+        shutil.copy2(ROOT/'codes/chapters/ch05/reports/figure68_phase_reference.json', self.report_path)
         report = json.loads(self.report_path.read_bytes())
         for relative in report['source_sha256']:
             target = self.root/relative
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(ROOT/relative, target)
         (self.root/'figures').mkdir()
-        shutil.copy2(ROOT/'figures/fig73_phase_reference.png', self.root/'figures/fig73_phase_reference.png')
+        shutil.copy2(ROOT/'figures/fig68_phase_reference.png', self.root/'figures/fig68_phase_reference.png')
         self.site = self.root/'site'
         shutil.copytree(self.audio, self.site/'phase_audio')
         (self.site/'research').mkdir()
@@ -64,12 +64,12 @@ class PhasePublicationTests(unittest.TestCase):
 
     def test_figure_rejects_equal_valued_wrong_types_with_matching_png_report_sha(self):
         original = json.loads(self.report_path.read_bytes())
-        with Image.open(self.root/'figures/fig73_phase_reference.png') as picture:
+        with Image.open(self.root/'figures/fig68_phase_reference.png') as picture:
             info = dict(picture.info)
         for field in ('figure','gain','channels'):
             with self.subTest(field=field):
                 report = copy.deepcopy(original)
-                if field == 'figure': report['figure'] = 73.0
+                if field == 'figure': report['figure'] = 68.0
                 elif field == 'gain': report['parameters']['common_export_gain'] = True
                 else: report['samples']['reference']['pcm_integer_measurements']['channels'] = True
                 self.report_path.write_text(json.dumps(report, allow_nan=False))

@@ -1,4 +1,4 @@
-"""Figure78: prescribed channel failure, known covariance and actual PCM.
+"""Figure73: prescribed channel failure, known covariance and actual PCM.
 
 Only the explicit current figure/report or ordinary external paths are written.
 This is a fixed time-domain teaching control, not fault diagnosis or a
@@ -23,8 +23,8 @@ from codes.chapters.ch00.io_contracts import validate_parent_chain, validate_rep
 from codes.chapters.ch10.examples.generate_channel_audio import (
     DEFAULT_OUTPUT, FILE_NAMES, SOURCE_PATHS as AUDIO_SOURCES, check_assets, integer_measurements, _codes)
 
-FIGURE = ROOT/'figures/fig78_channel_failure.png'
-REPORT = ROOT/'codes/chapters/ch10/reports/figure78_channel_failure.json'
+FIGURE = ROOT/'figures/fig73_channel_failure.png'
+REPORT = ROOT/'codes/chapters/ch10/reports/figure73_channel_failure.json'
 SOURCE_PATHS = ('scripts/make_channel_figures.py', *AUDIO_SOURCES)
 OUTPUT_ROLES = ('healthy_output', 'stale_output', 'recomputed_output')
 LABELS = ('健康全阵', '故障后旧权重', '故障后子阵重算')
@@ -72,7 +72,7 @@ def generate_figure(figure_path=FIGURE, report_path=REPORT, *, audio_directory=D
     diagnostic = [integers[name]['projection_gain_per_channel'][0] for name in OUTPUT_ROLES]
     nmse_analytic = [data['analytic'][name]['reference_NMSE'] for name in OUTPUT_ROLES]
     nmse_pcm = [integers[name]['reference_NMSE_per_channel'][0] for name in OUTPUT_ROLES]
-    report = {'schema_version': 1, 'exercise_id': 'E10-34', 'script_sha256': sources['scripts/make_channel_figures.py'],
+    report = {'schema_version': 1, 'exercise_id': 'E10-26', 'script_sha256': sources['scripts/make_channel_figures.py'],
         'source_sha256': sources, 'input_sha256': input_sha,
         'parameters': data['parameters'], 'model': data['model'], 'analytic': data['analytic'],
         'samples': data['samples'], 'files': data['files'], 'limits': data['limits'],
@@ -98,7 +98,7 @@ def generate_figure(figure_path=FIGURE, report_path=REPORT, *, audio_directory=D
         'legend.facecolor': '#FAF9F6', 'legend.edgecolor': '#DDD8CE', 'legend.framealpha': 0.92})
     fig, axes = plt.subplots(3, 1, figsize=(9.6, 10.2), gridspec_kw={'height_ratios': [.82, 1.15, 1.1]})
     axes[0].axis('off')
-    axes[0].set_title(r'(a) 已知噪声时间协方差与解析对照：$\mathbf{R}_{nn}=0.005\mathbf{B}\mathbf{B}^\top$', pad=12)
+    axes[0].set_title(r'(a) 已知噪声时间协方差与解析对照：$\mathbf{R}_{nn,\mathrm{time}}=0.005\,\mathbf{R}_{nn}\ (\mathbf{R}_{nn}=\mathbf{B}\mathbf{B}^\top)$', pad=12)
     rows = [[LABELS[i], ('[1, −0.5, 0.5]', '[0, −0.5, 0.5]', '[0, 0.5, 0.5]')[i],
              str(int(target_gain[i])), f"{data['analytic'][name]['noise_mean_square']:.4f}"]
             for i, name in enumerate(OUTPUT_ROLES)]
@@ -116,14 +116,14 @@ def generate_figure(figure_path=FIGURE, report_path=REPORT, *, audio_directory=D
     time = report['plot_data']['waveform_time_ms']
     axes[1].plot(time, report['plot_data']['waveform_pcm']['reference'], color='#1E242B', linewidth=2,
                  label='实际 PCM 参考（500 Hz）')
-    for name, label, color in zip(OUTPUT_ROLES, LABELS, COLORS):
-        axes[1].plot(time, report['plot_data']['waveform_pcm'][name], color=color, linewidth=1.25, alpha=.88, label=label)
+    for name, label, color, style in zip(OUTPUT_ROLES, LABELS, COLORS, ('-', '--', '-.')):
+        axes[1].plot(time, report['plot_data']['waveform_pcm'][name], style, color=color, linewidth=1.35, alpha=.90, label=label)
     axes[1].set(xlabel='共同采样时轴 (ms)', ylabel='实际 PCM / 32768', ylim=(-.22, .35),
                 title='(b) 同一 128 点片段；各输出仍保留所声明的噪声分量')
     axes[1].grid(alpha=.55); axes[1].legend(ncol=2, loc='upper right')
     x = np.arange(3); width = .32
-    bars1 = axes[2].bar(x-width/2, diagnostic, width, color='#3E76A3', label='实际 PCM 参考投影（诊断）')
-    bars2 = axes[2].bar(x+width/2, nmse_pcm, width, color='#C46B48', label='实际 PCM 总 NMSE')
+    bars1 = axes[2].bar(x-width/2, diagnostic, width, color='#3E76A3', edgecolor='#1E242B', linewidth=0.5, label='实际 PCM 参考投影（诊断）')
+    bars2 = axes[2].bar(x+width/2, nmse_pcm, width, color='#C46B48', hatch='//', edgecolor='#1E242B', linewidth=0.5, label='实际 PCM 总 NMSE')
     axes[2].plot(x-width/2, target_gain, 'k_', markersize=17, markeredgewidth=2, label='解析目标响应')
     axes[2].plot(x+width/2, nmse_analytic, 'kd', markersize=5, label='解析总 NMSE')
     for bars in (bars1, bars2):
@@ -133,7 +133,7 @@ def generate_figure(figure_path=FIGURE, report_path=REPORT, *, audio_directory=D
     axes[2].set(xticks=x, xticklabels=LABELS, ylim=(-.13, 2.0), ylabel='无量纲比值',
                 title='(c) 总误差相近，目标保留不同；不对输出拟合增益或时移')
     axes[2].grid(axis='y', alpha=.2); axes[2].legend(ncol=2, loc='upper left')
-    fig.suptitle('图78  指定通道失效后：旧权重与子阵重算的输出分解', fontsize=15)
+    fig.suptitle('图73  指定通道失效后：旧权重与子阵重算的输出分解', fontsize=15)
     fig.text(.5, .012, '16 kHz · 共同增益 1 · 评分 [2400, 29600) 共 27200 点\n'
              '确定性正交频点与已知宽带时间统计；不是逐频 SCM、盲故障诊断、设备成绩或正式听测。',
              ha='center', fontsize=10)

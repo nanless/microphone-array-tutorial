@@ -198,23 +198,23 @@ class PdfHeadingDestinationTest(unittest.TestCase):
 class BuildHelpersTest(unittest.TestCase):
     def test_research_figure_image_uses_published_relative_path(self):
         source = build_site.RESEARCH_ROOT / '05_exercises_and_audio.md'
-        original = ('<img src="../../../../figures/fig73_phase_reference.png?view=1&amp;mode=pcm#plot" alt="PCM">'
+        original = ('<img src="../../../../figures/fig68_phase_reference.png?view=1&amp;mode=pcm#plot" alt="PCM">'
                     '<img src="https://example.org/figures/control.png">'
                     '<img src="../../../../figures/missing.png">'
-                    '<code>&lt;img src="../../../../figures/fig73_phase_reference.png"&gt;</code>')
+                    '<code>&lt;img src="../../../../figures/fig68_phase_reference.png"&gt;</code>')
         actual = build_site.rewrite_site_links(original, source)
-        self.assertIn('src="../../figures/fig73_phase_reference.png?view=1&amp;mode=pcm#plot"', actual)
+        self.assertIn('src="../../figures/fig68_phase_reference.png?view=1&amp;mode=pcm#plot"', actual)
         for unchanged in ('<img src="https://example.org/figures/control.png">',
                           '<img src="../../../../figures/missing.png">',
-                          '<code>&lt;img src="../../../../figures/fig73_phase_reference.png"&gt;</code>'):
+                          '<code>&lt;img src="../../../../figures/fig68_phase_reference.png"&gt;</code>'):
             self.assertIn(unchanged, actual)
         chapter = build_site.SRC / '05_beamforming.md'
         self.assertEqual(build_site.rewrite_site_links(
-            '<img src="../figures/fig73_phase_reference.png">', chapter),
-            '<img src="../figures/fig73_phase_reference.png">')
+            '<img src="../figures/fig68_phase_reference.png">', chapter),
+            '<img src="../figures/fig68_phase_reference.png">')
         self.assertEqual(build_site.rewrite_site_links(
-            '<img data-src="../../../../figures/fig73_phase_reference.png" src = "../../../../figures/fig73_phase_reference.png">', source),
-            '<img data-src="../../../../figures/fig73_phase_reference.png" src = "../../figures/fig73_phase_reference.png">')
+            '<img data-src="../../../../figures/fig68_phase_reference.png" src = "../../../../figures/fig68_phase_reference.png">', source),
+            '<img data-src="../../../../figures/fig68_phase_reference.png" src = "../../figures/fig68_phase_reference.png">')
 
     @staticmethod
     def budget_fixture(headers, *, aligned=False):
@@ -648,7 +648,7 @@ class BuildHelpersTest(unittest.TestCase):
                 '## 专题\n\n### 14.1 模型\n\n'
                 '[旧附录](14_appendix-symbols-math.html#e14-14)\n\n末段。\n')
             (source / names[2]).write_text(
-                '## 数学\n\n### 12.1 原主题\n\n<a id="e16-14"></a>\n\n末段。\n')
+                '## 数学\n\n### 12.1 原主题\n\n<a id="e16-10"></a>\n\n末段。\n')
             (source / names[3]).write_text('## 路径\n\n### 13.1 原路径\n\n末段。\n')
             chapters = [(name, name) for name in names]
             # The synthetic imaging chapter lacks the real two-point example.
@@ -663,8 +663,8 @@ class BuildHelpersTest(unittest.TestCase):
                              ['ch-0', 'ch-14', 'ch-12', 'ch-13'])
             self.assertIn('id="ch-12-sec-12-1"', page)
             self.assertIn('id="ch-12-e14-14"', page)
-            self.assertIn('id="ch-12-e16-14"', page)
-            self.assertIn('href="#ch-12-e16-14"', page)
+            self.assertIn('id="ch-12-e16-10"', page)
+            self.assertIn('href="#ch-12-e16-10"', page)
             self.assertNotIn('id="ch-2-sec-12-1"', page)
             self.assertIn('全书完', page)
             documents = {name: (source / name).read_text() for name in names}
@@ -1010,10 +1010,10 @@ class BuildHelpersTest(unittest.TestCase):
         )
 
     def test_figure_semantics_accept_any_reuse_and_reject_mismatch_or_orphan(self):
-        refs = [(f"图{i} 示意", f"fig{i:02d}_x.png", i) for i in range(1, 93)]
+        refs = [(f"图{i} 示意", f"fig{i:02d}_x.png", i) for i in range(1, 88)]
         refs.extend([("图1 复用", "fig01_x.png", 1),
                      ("图23 复用", "fig23_x.png", 23)])
-        names = [f"fig{i:02d}_x.png" for i in range(1, 93)]
+        names = [f"fig{i:02d}_x.png" for i in range(1, 88)]
         self.assertEqual(quality_check.figure_inventory_issues(refs, names), [])
         bad_refs = list(refs)
         bad_refs[0] = ("图2 错配", "fig01_x.png", 1)

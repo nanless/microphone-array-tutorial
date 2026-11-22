@@ -1,4 +1,4 @@
-"""E02-09--22: geometry, statistics, windows and inverse-model boundaries.
+"""E02-09--20: geometry, statistics, windows and inverse-model boundaries.
 
 Run ``.venv/bin/python -m codes.chapters.ch02.chapter02_experiments``. Results are
 mathematical examples, not room/device or listening measurements. The module
@@ -200,7 +200,7 @@ def rir_decay() -> dict:
 
 
 def crb_parameter_changes() -> dict:
-    """E02-12: formula (2-14), deterministic unknown complex amplitudes."""
+    """Section 2.6.7 worked example 2-1: formula (2-14), deterministic unknown complex amplitudes."""
     microphones, spacing, wavelength = 6, .014, .343
     rows = []
     for snapshots, snr_db, angle in ((100, 10, 0), (100, 20, 0),
@@ -221,7 +221,7 @@ def crb_parameter_changes() -> dict:
 
 
 def four_sample_stft() -> dict:
-    """E02-13: separate a single analysis frame from local WOLA support."""
+    """E02-12: separate a single analysis frame from local WOLA support."""
     signal = np.array([1., 2., 3., 4.])
     window = periodic_hann(4)
     windowed = signal * window
@@ -248,7 +248,7 @@ def four_sample_stft() -> dict:
 
 
 def endpoint_projection() -> dict:
-    """E02-13: modified one-sided endpoint semantics, including odd n_fft."""
+    """E02-12: modified one-sided endpoint semantics, including odd n_fft."""
     source = np.arange(1., 7.)
     rows = []
     for n_fft in (4, 5):
@@ -271,7 +271,7 @@ def endpoint_projection() -> dict:
 
 
 def correlated_source_noise() -> dict:
-    """E02-17: spatially white noise need not be uncorrelated with the source."""
+    """E02-15: spatially white noise need not be uncorrelated with the source."""
     outcomes = np.array(list(itertools.product((-1., 1.), repeat=3)))
     s, u, v = outcomes.T
     noise = np.vstack((-.5*s+.5*u+v/np.sqrt(2), -.5*s+.5*u-v/np.sqrt(2)))
@@ -293,12 +293,12 @@ def correlated_source_noise() -> dict:
 
 
 def finite_window_convolution() -> dict:
-    """E02-16; the numerical implementation is uniquely archived in core."""
+    """E02-14; the numerical implementation is uniquely archived in core."""
     return finite_window_example()
 
 
 def window_calibration() -> dict:
-    """E02-18: coherent amplitude versus noise-energy window normalization."""
+    """E02-16: coherent amplitude versus noise-energy window normalization."""
     n_fft, bin_index = 8, 2
     window = periodic_hann(n_fft)
     coherent_gain = float(np.mean(window))
@@ -330,7 +330,7 @@ def window_calibration() -> dict:
 
 
 def sample_centering() -> dict:
-    """E02-14: population-mean zero is not a zero finite sample mean."""
+    """Section 2.5.2 numerical check: population-mean zero is not a zero finite sample mean."""
     x = np.array([[1., 1.], [0., 2.]])  # channels x frames
     mean = x.mean(axis=1)
     second = spatial_covariance(x[:, None, :])[0]
@@ -346,7 +346,7 @@ def sample_centering() -> dict:
 
 
 def short_fir_convolution() -> dict:
-    """E02-15: explicitly retain full tails and the direct/reflection cross term."""
+    """E02-13: explicitly retain full tails and the direct/reflection cross term."""
     source = np.array([1., 2., 0., -1.])
     h = np.array([1., 0., .5])
     output = np.convolve(source, h, mode='full')
@@ -365,7 +365,7 @@ def short_fir_convolution() -> dict:
 
 
 def known_excitation_inverse(root: Path = ROOT) -> dict:
-    """E02-19: exact short control plus current, strictly checked audio results.
+    """E02-17: exact short control plus current, strictly checked audio results.
 
     The full four-point circular solution and a known three-tap solution are
     distinct objectives. Published sweep results come only from complete asset
@@ -402,13 +402,12 @@ def known_excitation_inverse(root: Path = ROOT) -> dict:
 
 def run_exercises() -> dict:
     return {'E02-09': near_far_errors(), 'E02-10': diffuse_integration(),
-            'E02-11': rir_decay(), 'E02-12': crb_parameter_changes(),
-            'E02-13': four_sample_stft(), 'E02-14': sample_centering(),
-            'E02-15': short_fir_convolution(), 'E02-16': finite_window_convolution(),
-            'E02-17': correlated_source_noise(), 'E02-18': window_calibration(),
-            'E02-19': known_excitation_inverse(), 'E02-20': consistency_example(),
-            'E02-21': diffuse_field_mismatch_example(),
-            'E02-22': fractional_delay_notch_example()}
+            'E02-11': rir_decay(), 'E02-12': four_sample_stft(),
+            'E02-13': short_fir_convolution(), 'E02-14': finite_window_convolution(),
+            'E02-15': correlated_source_noise(), 'E02-16': window_calibration(),
+            'E02-17': known_excitation_inverse(), 'E02-18': consistency_example(),
+            'E02-19': diffuse_field_mismatch_example(),
+            'E02-20': fractional_delay_notch_example()}
 
 
 if __name__ == '__main__':

@@ -1,4 +1,4 @@
-"""Figure80 outputs stay isolated and match independent scalar objectives."""
+"""Figure75 outputs stay isolated and match independent scalar objectives."""
 import hashlib
 import json
 from pathlib import Path
@@ -17,7 +17,7 @@ class ImagingObjectiveFigureTests(unittest.TestCase):
     def setUpClass(cls):
         cls.temporary = tempfile.TemporaryDirectory()
         cls.root = Path(cls.temporary.name).resolve()
-        cls.image = cls.root/'fig80_imaging_objectives.png'
+        cls.image = cls.root/'fig75_imaging_objectives.png'
         cls.fonts = []
         cls.axes_ranges = []
         save = drawing.save
@@ -34,7 +34,7 @@ class ImagingObjectiveFigureTests(unittest.TestCase):
                 patch.object(drawing, 'CODE_CHAPTERS', cls.root/'codes/chapters'), \
                 patch.object(drawing, 'save', side_effect=capture):
             drawing.fig_imaging_objectives()
-        cls.report_path = cls.root/'codes/chapters/ch12/reports/figure80_imaging_objectives.json'
+        cls.report_path = cls.root/'codes/chapters/ch12/reports/figure75_imaging_objectives.json'
         cls.report = json.loads(cls.report_path.read_text())
 
     @classmethod

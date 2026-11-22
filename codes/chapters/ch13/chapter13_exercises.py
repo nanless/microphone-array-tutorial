@@ -1,6 +1,6 @@
-"""Run E13-01..27 with NumPy and in-memory PCM; never write or download.
+"""Run E13-01..20 with NumPy and in-memory PCM; never write or download.
 
-Usage: python -m codes.chapters.ch13.chapter13_exercises [--exercise E13-06]
+Usage: python -m codes.chapters.ch13.chapter13_exercises [--exercise E13-01]
 Metadata is outside the stable exercise-ID map. Known-model controls are not
 the MATLAB DANSE chain, a theorem proof, or a measured distributed system.
 """
@@ -27,7 +27,7 @@ from codes.chapters.ch13.core.dasf_and_ptp import (
     ptp_vs_sro_phase_budget, dasf_unification_control,
 )
 
-EXERCISE_IDS = tuple('E13-'+str(i).zfill(2) for i in range(1, 28))
+EXERCISE_IDS = tuple('E13-'+str(i).zfill(2) for i in range(1, 21))
 
 
 def _json(value):
@@ -73,7 +73,7 @@ def resource_control():
 def run_experiments():
     covariance = run_covariance_experiments(); model = covariance['model']
     rs, rn, a = model['Rs'], model['correlated'], model['a']
-    white = covariance['cases']['white']; correlated = covariance['cases']['correlated']
+    correlated = covariance['cases']['correlated']
     report, signals = run_experiment()
     decoded = {key: read_pcm16(pcm16_bytes(value, SAMPLE_RATE))[1] for key, value in signals.items()}
     pcm = {key: measure_signal(decoded[key], key, reference=decoded[ref], pcm=True)
@@ -113,70 +113,56 @@ def run_experiments():
     load = float((loaded-ill_rx)[0, 0].real)
     loaded_w = np.linalg.solve(loaded, ill_rs[:, 0])
     exercises = {
-        'E13-01': {'a': a, 'nodes': model['nodes'], 'references': model['references'],
-                   'Rs': rs, 'white_Rn': model['white'], 'Rx': rs+model['white'],
-                   'cross_covariances': [rs[:, r] for r in model['references']],
-                   'desired_reference_powers': [1., 4.]},
-        'E13-02': {'weights': white['central_weights'], 'components': white['central_components'],
-                   'normal_equation_residual': (rs+model['white'])@white['central_weights']-rs[:, 0]},
-        'E13-03': {'local': white['local'], 'central': white['central_components'],
-                   'no_observation_zero_weights': mse_components(rs, model['white'], np.zeros(4))},
-        'E13-04': {'raw_projection': raw_projection, 'compressed': white['correct'],
-                   'raw_compressed_weights': white['correct']['compressed_weights']/np.array([1., 1., np.sqrt(4.25)]),
-                   'scope': 'raw weights here apply to [x1,x2,2*x3-.5*x4]; normalized solver coordinates are separately returned'},
-        'E13-05': {'Rn': rn, 'noise_eigenvalues': np.linalg.eigvalsh(rn), 'central': correlated['central_components'],
-                   'central_weights': correlated['central_weights'], 'stale': correlated['stale'],
-                   'lost_constraint_normal': [0., 0., .5, 2.],
-                   'optimal_weight_constraint_violation': float(np.array([0., 0., .5, 2.])@correlated['central_weights'].real)},
-        'E13-06': {'correct_direction': correlated['central_weights'][2:], 'compressed': correlated['correct']},
-        'E13-07': {'a': complex_a, 'reference': 1, 'cross_covariance': complex_rs[:, 1], 'weights': complex_w,
+        'E13-01': {'a': complex_a, 'reference': 1, 'cross_covariance': complex_rs[:, 1], 'weights': complex_w,
                    'response': np.vdot(complex_w, complex_a), 'desired_response': complex_a[1],
                    'components': mse_components(complex_rs, np.eye(4), complex_w, 1),
                    'node2_weights': correlated['node2_weights'], 'node2_components': correlated['node2_components']},
-        'E13-08': {'normalized_scale_controls': scale_controls, 'raw_conditions': raw_conditions,
+        'E13-02': {'normalized_scale_controls': scale_controls, 'raw_conditions': raw_conditions,
                    'scope': 'row normalization preserves a nonzero compression subspace; it cannot recover a zero or lost direction'},
-        'E13-09': steps,
-        'E13-10': covariance['round_robin'],
-        'E13-11': {'simultaneous': covariance['simultaneous'], 'simultaneous_half': covariance['simultaneous_half'],
+        'E13-03': steps,
+        'E13-04': covariance['round_robin'],
+        'E13-05': {'simultaneous': covariance['simultaneous'], 'simultaneous_half': covariance['simultaneous_half'],
                    'scope': 'finite known-covariance control; relaxation applies only to broadcast local weights, with solved output proposals recorded unchanged'},
-        'E13-12': {'A': multi_a, 'full_weights': multi_full, 'remote_weight_rank': int(np.linalg.matrix_rank(multi_full[2:])),
+        'E13-06': {'A': multi_a, 'full_weights': multi_full, 'remote_weight_rank': int(np.linalg.matrix_rank(multi_full[2:])),
                    'compressed': multi_compressed, 'full_components': [mse_components(multi_rs, multi_rn, multi_full[:, r], r) for r in (0, 1)]},
-        'E13-13': {'zero_compression_local_policy': zero, 'default_policy': 'reject zero peer compression',
+        'E13-07': {'zero_compression_local_policy': zero, 'default_policy': 'reject zero peer compression',
                    'zero_reference_target_power': mse_components(np.diag([1., 0.]), np.eye(2), np.zeros(2), 1)},
-        'E13-14': {'rejections': rejected, 'ill_Rs': ill_rs, 'ill_Rn': ill_rn,
+        'E13-08': {'rejections': rejected, 'ill_Rs': ill_rs, 'ill_Rn': ill_rn,
                    'loaded_covariance': loaded, 'additive_load': load, 'loaded_weights': loaded_w,
                    'physical_components': mse_components(ill_rs, ill_rn, loaded_w),
                    'extra_objective_penalty': float(load*np.vdot(loaded_w, loaded_w).real),
                    'scope': 'loading changes the objective; invalid original noise covariance is rejected before loading'},
-        'E13-15': resource_control(),
-        'E13-16': {'resources': resource_control()['network'],
+        'E13-09': resource_control(),
+        'E13-10': {'resources': resource_control()['network'],
                    'observed_solve_counts': {key: covariance[key]['total_solve_count'] for key in ('round_robin', 'simultaneous', 'simultaneous_half')},
                    'new_audio_seconds_per_STFT_call': 128/16000,
                    'scope': 'matrix bytes and count proxies; no measured hardware runtime or power'},
-        'E13-17': {'parameters': report['parameters']['clock'], 'clock': report['clock'],
+        'E13-11': {'parameters': report['parameters']['clock'], 'clock': report['clock'],
                    'synchronous_float': report['float_components']['central_white'],
                    'misaligned_float': report['float_components']['clock_misaligned_white'],
                    'linear_corrected_float': report['float_components']['clock_linear_corrected_white'],
                    'PCM': {key: pcm[key] for key in ('clock_misaligned_white', 'clock_linear_corrected_white')},
                    'warning': 'interpolation attenuates frequencies and changes noise covariance; lower total MSE is not recovery of the original synchronous optimum'},
-        'E13-18': {'packet': report['parameters']['packet'],
+        'E13-12': {'packet': report['parameters']['packet'],
                    'analytic': {key: report['analytic_expected'][key] for key in ('packet_zerofill_white', 'packet_local_fallback_white')},
                    'float': {key: report['float_components'][key] for key in ('packet_zerofill_white', 'packet_local_fallback_white')},
                    'PCM': {key: pcm[key] for key in ('packet_zerofill_white', 'packet_local_fallback_white')}},
-        'E13-19': {'transport': report['transport'], 'parameters': report['parameters']['transport'],
-                   'float': report['float_components']['transport_pcm16_white'], 'PCM': pcm['transport_pcm16_white']},
-        'E13-20': {'target_steady_power': POWER, 'finite_actual_target_power': report['finite_steady_target_power'],
-                   'float_basis_covariance': report['finite_steady_basis_covariance'],
-                   'finite_source_noise_cross': report['finite_steady_source_noise_cross'],
-                   'PCM': {key: pcm[key] for key in ('central_white', 'central_correlated', 'central_node2_correlated', 'stale_correlated')},
-                   'scope': 'all integer scores use the genuine same-reference PCM; no fitted gain, delay or averaged dB'},
-        'E13-21': {'unrelaxed': jacobi_control(), 'half': jacobi_control(.5, 40)},
-        'E13-22': step_size_control(),
-        'E13-23': tree_sum_control(),
-        'E13-24': gevd_control(),
-        'E13-25': broadcast_statistics_control(),
-        'E13-26': ptp_vs_sro_phase_budget(),
-        'E13-27': dasf_unification_control(),
+        'E13-13': {'transport': report['transport'], 'parameters': report['parameters']['transport'],
+                   'float': report['float_components']['transport_pcm16_white'], 'PCM': pcm['transport_pcm16_white'],
+                   'three_tier_audit': {
+                       'target_steady_power': POWER, 'finite_actual_target_power': report['finite_steady_target_power'],
+                       'float_basis_covariance': report['finite_steady_basis_covariance'],
+                       'finite_source_noise_cross': report['finite_steady_source_noise_cross'],
+                       'PCM': {key: pcm[key] for key in ('central_white', 'central_correlated', 'central_node2_correlated', 'stale_correlated')},
+                       'scope': 'all integer scores use the genuine same-reference PCM; no fitted gain, delay or averaged dB',
+                   }},
+        'E13-14': {'unrelaxed': jacobi_control(), 'half': jacobi_control(.5, 40)},
+        'E13-15': step_size_control(),
+        'E13-16': tree_sum_control(),
+        'E13-17': gevd_control(),
+        'E13-18': broadcast_statistics_control(),
+        'E13-19': ptp_vs_sro_phase_budget(),
+        'E13-20': dasf_unification_control(),
     }
     if set(exercises) != set(EXERCISE_IDS):
         raise AssertionError('exercise ID set differs')

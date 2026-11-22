@@ -1,4 +1,4 @@
-"""Five independent arithmetic exercises, E06-21/E07-06/E08-08..10.
+"""Four independent arithmetic exercises, E06-11/E07-06/E08-07..08.
 
 No audio, model weights, training, file writes or network access. Arrays use the
 chapter's column-vector convention; an AuxIVA matrix stores conjugate rows.
@@ -89,7 +89,7 @@ def run_exercises() -> dict:
     inverse_action = np.linalg.solve(interference, steering)
     beam = inverse_action / (steering @ inverse_action)
     return {
-        'E06-21': {'cross_sum': float(x @ s), 'batch_path': float(x @ d / (x @ x)),
+        'E06-11': {'cross_sum': float(x @ s), 'batch_path': float(x @ d / (x @ x)),
                    'prior_residuals': residual, 'online_paths': path,
                    'correlated_batch_path': float(x @ (.8*x+.25*x) / (x@x))},
         'E07-06': {'channel_powers': (np.abs(errors)**2).tolist(),
@@ -97,17 +97,12 @@ def run_exercises() -> dict:
                    'one_channel_scaled': float(np.mean(np.abs(errors*np.array([1., 2.]))**2)),
                    'all_channels_scaled': float(np.mean(np.abs(2*errors)**2)),
                    'zero_raw_power': 0.0},
-        'E08-08': {'column_real': ip.real.tolist(),
+        'E08-07': {'column_real': ip.real.tolist(),
                    'weighted_norm': float(np.vdot(ip, v@ip).real),
                    'euclidean_norm_squared': float(np.vdot(ip, ip).real)},
-        'E08-09': {'power': (basis@activation).tolist(),
+        'E08-08': {'power': (basis@activation).tolist(),
                    'rescaled_power': (rescaled_basis@rescaled_activation).tolist(),
                    'one_basis_power': np.outer(basis[:, 0], activation[0]).tolist()},
-        'E08-10': {'target_scm': target.tolist(), 'interference_scm': interference.tolist(),
-                   'weights': beam.tolist(), 'snapshot_outputs': (beam@snapshots).tolist(),
-                   'target_output_power': float(beam@target@beam),
-                   'interference_output_power': float(beam@interference@beam),
-                   'gev_eigenvalues': sorted(np.linalg.eigvals(np.linalg.solve(interference, target)).real.tolist())},
     }
 
 

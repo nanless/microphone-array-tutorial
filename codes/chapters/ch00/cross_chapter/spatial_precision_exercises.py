@@ -1,4 +1,4 @@
-"""E02-07, E04-10 and E05-06: deterministic algebra, not audio benchmarks.
+"""E02-07, E04-10 and E05-03: deterministic algebra, not audio benchmarks.
 
 Run ``.venv/bin/python codes/chapters/ch00/cross_chapter/spatial_precision_exercises.py``.
 No files are written. TDOA units are microseconds; covariance uses their square.
@@ -82,7 +82,7 @@ def run_exercises() -> dict:
     results = {
         "E02-07": forgetting_time(),
         "E04-10": tdoa_consistency(),
-        "E05-06": mismatch_bound(),
+        "E05-03": mismatch_bound(),
     }
     for result in results.values():
         result["metadata"] = {"kind": "deterministic mathematical example",

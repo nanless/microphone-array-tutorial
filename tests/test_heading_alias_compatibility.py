@@ -66,60 +66,61 @@ class HistoricalHeadingCompatibilityTest(unittest.TestCase):
         "sec-u-df0df6b6aa": "sec-u-72b906da5d",  # Appendix B 15 -> 17
         "sec-u-6dcf2e71ad": "sec-u-3e47e38b8d",  # Spatial/Wearable 16 -> 14
         "sec-u-a79ebcacde": "sec-u-bbb1d49208",  # TSE/Diarization 17 -> 15
-        "sec-u-bd5fecaa8e": "sec-u-45eb1ba17e",
+        "sec-u-45eb1ba17e": "sec-u-bf0d4d6877",  # 92 -> 87 figures, same figure map
+        "sec-u-bd5fecaa8e": "sec-u-bf0d4d6877",
         "sec-u-461c9549d0": "sec-u-a8458c949f",
-        "sec-u-d200046a3a": "sec-u-45eb1ba17e",
+        "sec-u-d200046a3a": "sec-u-bf0d4d6877",
         "sec-u-142ea3f046": "sec-u-a8458c949f",
-        "sec-u-d12b48e159": "sec-u-45eb1ba17e",
-        "sec-u-10c3704f3f": "sec-u-45eb1ba17e",
-        "sec-u-f96924fd43": "sec-u-45eb1ba17e",
-        "sec-u-8838edd879": "sec-u-45eb1ba17e",
-        "sec-u-55e537d650": "sec-u-45eb1ba17e",
-        "sec-u-dccee38a3d": "sec-u-45eb1ba17e",
-        "sec-u-e445ebf98d": "sec-u-45eb1ba17e",
-        "sec-u-726cf32300": "sec-u-45eb1ba17e",
-        "sec-u-dacd520d2c": "sec-u-45eb1ba17e",
-        "sec-u-9c77d218fe": "sec-u-45eb1ba17e",
+        "sec-u-d12b48e159": "sec-u-bf0d4d6877",
+        "sec-u-10c3704f3f": "sec-u-bf0d4d6877",
+        "sec-u-f96924fd43": "sec-u-bf0d4d6877",
+        "sec-u-8838edd879": "sec-u-bf0d4d6877",
+        "sec-u-55e537d650": "sec-u-bf0d4d6877",
+        "sec-u-dccee38a3d": "sec-u-bf0d4d6877",
+        "sec-u-e445ebf98d": "sec-u-bf0d4d6877",
+        "sec-u-726cf32300": "sec-u-bf0d4d6877",
+        "sec-u-dacd520d2c": "sec-u-bf0d4d6877",
+        "sec-u-9c77d218fe": "sec-u-bf0d4d6877",
         "sec-u-2afd7c6509": "sec-u-a8458c949f",
-        "sec-u-ec3f837100": "sec-u-45eb1ba17e",
+        "sec-u-ec3f837100": "sec-u-bf0d4d6877",
         "sec-u-06e6cf7b78": "sec-u-a8458c949f",
-        "sec-u-8657cda209": "sec-u-45eb1ba17e",
-        "sec-u-0d7a1562fa": "sec-u-45eb1ba17e",
-        "sec-u-8a5dd76e40": "sec-u-45eb1ba17e",
-        "sec-u-f19f47c7c1": "sec-u-45eb1ba17e",
-        "sec-u-2b17484f3b": "sec-u-45eb1ba17e",
-        "sec-u-cb1ede6c60": "sec-u-45eb1ba17e",
-        "sec-u-5edae53c5f": "sec-u-45eb1ba17e",
-        "sec-u-5c63f4d83e": "sec-u-45eb1ba17e",
-        "sec-u-36fa20efde": "sec-u-45eb1ba17e",
+        "sec-u-8657cda209": "sec-u-bf0d4d6877",
+        "sec-u-0d7a1562fa": "sec-u-bf0d4d6877",
+        "sec-u-8a5dd76e40": "sec-u-bf0d4d6877",
+        "sec-u-f19f47c7c1": "sec-u-bf0d4d6877",
+        "sec-u-2b17484f3b": "sec-u-bf0d4d6877",
+        "sec-u-cb1ede6c60": "sec-u-bf0d4d6877",
+        "sec-u-5edae53c5f": "sec-u-bf0d4d6877",
+        "sec-u-5c63f4d83e": "sec-u-bf0d4d6877",
+        "sec-u-36fa20efde": "sec-u-bf0d4d6877",
         "sec-u-b7a71b077a": "sec-u-3937b1b94e",
         "sec-u-efc5552983": "sec-u-f958564d39",
-        "sec-u-1e72416790": "sec-u-45eb1ba17e",
-        "sec-u-6ef8e18126": "sec-u-45eb1ba17e",
-        "sec-u-1e5d8a2bad": "sec-u-45eb1ba17e",
-        "sec-u-627ed3907e": "sec-u-45eb1ba17e",
-        "sec-u-3a0278b879": "sec-u-45eb1ba17e",
-        "sec-u-3ebc13ca5a": "sec-u-45eb1ba17e",
-        "sec-u-d538d6d0a5": "sec-u-45eb1ba17e",
-        "sec-u-0943a9ed3c": "sec-u-45eb1ba17e",
-        "sec-u-d8fd1002de": "sec-u-45eb1ba17e",
+        "sec-u-1e72416790": "sec-u-bf0d4d6877",
+        "sec-u-6ef8e18126": "sec-u-bf0d4d6877",
+        "sec-u-1e5d8a2bad": "sec-u-bf0d4d6877",
+        "sec-u-627ed3907e": "sec-u-bf0d4d6877",
+        "sec-u-3a0278b879": "sec-u-bf0d4d6877",
+        "sec-u-3ebc13ca5a": "sec-u-bf0d4d6877",
+        "sec-u-d538d6d0a5": "sec-u-bf0d4d6877",
+        "sec-u-0943a9ed3c": "sec-u-bf0d4d6877",
+        "sec-u-d8fd1002de": "sec-u-bf0d4d6877",
     }
 
     def test_previous_41_figure_map_hash_still_reaches_same_map(self):
         source = ROOT / "chapters/00_overview.md"
         html, _ = build_site.render(source.read_text(), source)
         parsed = AliasDestinations(html)
-        self.assertEqual(parsed.targets["sec-u-d538d6d0a5"], "sec-u-45eb1ba17e")
-        self.assertEqual(parsed.targets["sec-u-d8fd1002de"], "sec-u-45eb1ba17e")
+        self.assertEqual(parsed.targets["sec-u-d538d6d0a5"], "sec-u-bf0d4d6877")
+        self.assertEqual(parsed.targets["sec-u-d8fd1002de"], "sec-u-bf0d4d6877")
         html, _ = build_pdf.build_html(build_date="2026-09-28")
         parsed = AliasDestinations(html)
-        self.assertEqual(parsed.targets["ch-0-sec-u-d538d6d0a5"], "ch-0-sec-u-45eb1ba17e")
-        self.assertEqual(parsed.targets["ch-0-sec-u-d8fd1002de"], "ch-0-sec-u-45eb1ba17e")
+        self.assertEqual(parsed.targets["ch-0-sec-u-d538d6d0a5"], "ch-0-sec-u-bf0d4d6877")
+        self.assertEqual(parsed.targets["ch-0-sec-u-d8fd1002de"], "ch-0-sec-u-bf0d4d6877")
 
     def test_previous_79_figure_and_imaging_budget_topics_keep_their_identity(self):
         cases = (
-            ('00_overview.md', 'sec-u-d12b48e159', 'sec-u-45eb1ba17e',
-             '6. 插图地图：92 张编号图在哪篇', 'ch-0-'),
+            ('00_overview.md', 'sec-u-d12b48e159', 'sec-u-bf0d4d6877',
+             '6. 插图地图：87 张编号图在哪篇', 'ch-0-'),
             ('12_acoustic-imaging.md', 'sec-u-c93fb52739', 'sec-u-8378eb57b1',
              '噪声与源量预算怎样改变拟合目标', 'ch-14-'),
         )
@@ -143,11 +144,11 @@ class HistoricalHeadingCompatibilityTest(unittest.TestCase):
             with self.subTest(prefix=prefix):
                 parsed = AliasDestinations(html)
                 old = prefix + "sec-u-3ebc13ca5a"
-                current = prefix + "sec-u-45eb1ba17e"
+                current = prefix + "sec-u-bf0d4d6877"
                 self.assertEqual(parsed.targets[old], current)
                 self.assertEqual(parsed.ids[old], 1)
                 self.assertEqual(parsed.ids[current], 1)
-                self.assertEqual(parsed.heading_titles[current], "6. 插图地图：92 张编号图在哪篇")
+                self.assertEqual(parsed.heading_titles[current], "6. 插图地图：87 张编号图在哪篇")
 
     def test_previous_60_and_original_sequential_map_keep_same_figure_topic(self):
         source = ROOT / "chapters/00_overview.md"
@@ -155,20 +156,20 @@ class HistoricalHeadingCompatibilityTest(unittest.TestCase):
         combined_html, _ = build_pdf.build_html(build_date="2026-10-01")
         for html, prefix in ((site_html, ""), (combined_html, "ch-0-")):
             parsed = AliasDestinations(html)
-            current = prefix + "sec-u-45eb1ba17e"
+            current = prefix + "sec-u-bf0d4d6877"
             for old in (prefix + "sec-u-f19f47c7c1", prefix + "sec-u-2b17484f3b",
                         prefix + "sec-u-0d7a1562fa", prefix + "sec-23"):
                 self.assertEqual(parsed.targets[old], current)
                 self.assertEqual(parsed.ids[old], 1)
-            self.assertEqual(parsed.heading_titles[current], "6. 插图地图：92 张编号图在哪篇")
+            self.assertEqual(parsed.heading_titles[current], "6. 插图地图：87 张编号图在哪篇")
 
     def test_previous_69_figure_and_15_file_primary_anchors_keep_map_topics(self):
         source = ROOT / "chapters/00_overview.md"
         site_html, _ = build_site.render(source.read_text(), source)
         combined_html, _ = build_pdf.build_html(build_date="2026-10-04")
         cases = (
-            ("sec-u-9c77d218fe", "sec-u-45eb1ba17e",
-             "6. 插图地图：92 张编号图在哪篇"),
+            ("sec-u-9c77d218fe", "sec-u-bf0d4d6877",
+             "6. 插图地图：87 张编号图在哪篇"),
             ("sec-u-2afd7c6509", "sec-u-a8458c949f",
              "2. 19 个文件一览"),
         )
@@ -202,23 +203,26 @@ class HistoricalHeadingCompatibilityTest(unittest.TestCase):
         combined_html, _ = build_pdf.build_html(build_date="2026-10-04")
         for html, prefix in ((site_html, ""), (combined_html, "ch-1-")):
             parsed = AliasDestinations(html)
-            old = prefix + "sec-u-81896116fa"
-            current = prefix + "sec-u-5e074a7e92"
-            self.assertEqual(parsed.targets[old], current)
-            self.assertEqual(parsed.ids[old], 1)
+            current = prefix + "sec-1-1"
+            for old in (prefix + "sec-u-81896116fa", prefix + "sec-u-5e074a7e92"):
+                self.assertEqual(parsed.targets[old], current)
+                self.assertEqual(parsed.ids[old], 1)
             self.assertEqual(parsed.ids[current], 1)
-            self.assertEqual(parsed.heading_titles[current], "任务定义与理想阵列收益")
+            self.assertEqual(parsed.heading_titles[current], "1.1 任务定义与理想阵列收益")
 
     def test_chapter_one_distance_heading_keeps_original_topic_link(self):
         source = ROOT / "chapters/01_problem-definition.md"
         html, _ = build_site.render(source.read_text(), source)
         parsed = AliasDestinations(html)
-        self.assertEqual(parsed.targets["sec-u-05ec932a34"], "sec-u-c36b7ac16e")
+        self.assertEqual(parsed.targets["sec-u-05ec932a34"], "sec-1-1-1")
+        self.assertEqual(parsed.targets["sec-u-c36b7ac16e"], "sec-1-1-1")
         self.assertEqual(parsed.ids["sec-u-05ec932a34"], 1)
         html, _ = build_pdf.build_html(build_date="2026-09-29")
         parsed = AliasDestinations(html)
         self.assertEqual(parsed.targets["ch-1-sec-u-05ec932a34"],
-                         "ch-1-sec-u-c36b7ac16e")
+                         "ch-1-sec-1-1-1")
+        self.assertEqual(parsed.targets["ch-1-sec-u-c36b7ac16e"],
+                         "ch-1-sec-1-1-1")
         self.assertEqual(parsed.ids["ch-1-sec-u-05ec932a34"], 1)
 
     def test_every_frozen_sequence_stays_with_its_original_topic(self):
@@ -262,7 +266,7 @@ class HistoricalHeadingCompatibilityTest(unittest.TestCase):
             self.assertEqual(parsed.ids[old], 1)
         for sequence, current in {"sec-20": "sec-u-3937b1b94e",
                                   "sec-21": "sec-u-f958564d39",
-                                  "sec-23": "sec-u-45eb1ba17e"}.items():
+                                  "sec-23": "sec-u-bf0d4d6877"}.items():
             self.assertEqual(parsed.targets[sequence], current)
 
     def test_combined_book_keeps_the_same_overview_destinations(self):
@@ -274,14 +278,16 @@ class HistoricalHeadingCompatibilityTest(unittest.TestCase):
             self.assertEqual(parsed.ids["ch-0-" + old], 1)
         for sequence, current in {"sec-20": "sec-u-3937b1b94e",
                                   "sec-21": "sec-u-f958564d39",
-                                  "sec-23": "sec-u-45eb1ba17e"}.items():
+                                  "sec-23": "sec-u-bf0d4d6877"}.items():
             self.assertEqual(parsed.targets["ch-0-" + sequence], "ch-0-" + current)
 
     def test_ch01_ch05_ch13_and_research_05_aliases_resolve_cleanly(self):
         s01 = ROOT / "chapters" / "01_problem-definition.md"
         p01 = AliasDestinations(build_site.render(s01.read_text(), s01)[0])
-        self.assertEqual(p01.targets["sec-1-1"], "sec-u-1d5f9c4fa9")
-        self.assertEqual(p01.targets["sec-2"], "sec-u-1d5f9c4fa9")
+        self.assertEqual(p01.targets["sec-u-1d5f9c4fa9"], "sec-1-2")
+        self.assertEqual(p01.targets["sec-2"], "sec-1-1")
+        self.assertEqual(p01.ids["sec-1-1"], 1)
+        self.assertEqual(p01.ids["sec-1-2"], 1)
         s05 = ROOT / "chapters" / "05_beamforming.md"
         p05 = AliasDestinations(build_site.render(s05.read_text(), s05)[0])
         self.assertEqual(p05.targets["sec-u-fb93744989"], "sec-5-5-1")

@@ -44,7 +44,7 @@ This chapter progresses through Cross-Spectral Matrix (CSM) estimation, conventi
 | CMF | Covariance Matrix Fitting | Bypasses beamformed scan maps to fit individual entries of the observed CSM directly using a dictionary of non-negative source powers |
 | NNLS | Non-Negative Least Squares | Convex optimization framework minimizing squared residuals in either scan domain or matrix domain under non-negative source constraints |
 
-The clearest learning path follows the causal signal-processing chain: assign each candidate grid node a spherical-wave propagation vector first, estimate the Cross-Spectral Matrix (CSM) from synchronous multi-channel recordings, evaluate conventional beamforming quadratic forms via spatial weights to see why the Point Spread Function (PSF) produces mainlobes and sidelobes, and finally enter non-negative inversion and coherent-component stripping. Because DAMAS, CLEAN-SC, and CMF each modify a different link along this chain, practical method selection must weigh their mathematical objectives and failure modes rather than comparing spot sharpness on cherry-picked demo plots.
+The clearest learning path follows the causal signal-processing chain: assign each candidate grid node a spherical-wave propagation vector first, estimate the Cross-Spectral Matrix (CSM) from synchronous multi-channel recordings, evaluate conventional beamforming quadratic forms via spatial weights to see why the Point Spread Function (PSF) produces mainlobes and sidelobes, and finally enter non-negative inversion and coherent-component stripping. Because DAMAS, CLEAN-SC, and CMF each modify a different link along this chain, practical method selection must weigh their mathematical objectives and failure modes rather than comparing spot sharpness on selectively chosen demonstration plots.
 
 #### Prerequisites and Notation in This Chapter
 
@@ -86,13 +86,13 @@ In other words, defining unknown source coefficient $s_j$ as "the acoustic press
 
 Double-check the exponential sign as well: throughout this book, forward Fourier transforms use kernel $e^{-\mathrm{j}2\pi f t}$, so a delayed arrival ($\tau = \Delta r_{mj}/c > 0$, i.e., $r_{mj} > r_{0j}$) multiplies by negative-phase factor $e^{-\mathrm{j}2\pi f\tau} = e^{-\mathrm{j}\kappa\Delta r_{mj}}$. Far-field plane-wave formulas in [Chapter 5](05_beamforming.md) display positive exponents along positive arrival angles simply because sensors upstream toward the incoming wavefront receive waves *earlier* than the origin ($\Delta r_{mj} < 0$), turning two negatives positive—both conventions are completely consistent.
 
-In the two-microphone, two-grid-node hand-calculation anchor running throughout this chapter, Candidate Source 2 arrives at Mic 2 **later** than at Mic 1, carrying phase factor $e^{-\mathrm{j}2\pi/3}$. Accidentally conjugating $\vec a_j$ in code leaves magnitude-squared PSF entries and synthetic scan powers unchanged on paper, yet flips the sign of all off-diagonal imaginary parts in the CSM—inverting left and right completely once connected to real FFT microphone data! Propagation vectors, synthetic audio delays, and CSM conjugation order must therefore be locked together.
+In the two-microphone, two-grid-node hand-calculation anchor running throughout this chapter, Candidate Source 2 arrives at Mic 2 **later** than at Mic 1, carrying phase factor $e^{-\mathrm{j}2\pi/3}$. Accidentally conjugating $\vec a_j$ in code leaves magnitude-squared PSF entries and synthetic scan powers unchanged on paper, yet flips the sign of all off-diagonal imaginary parts in the CSM—inverting left and right completely once connected to real FFT microphone data. Propagation vectors, synthetic audio delays, and CSM conjugation order must therefore be locked together.
 
 #### The Reference Point Sets the Physical Scale of Source Quantities
 
 Common reference point $\vec r_0$ need not coincide with a physical microphone. Choosing the array center as $\vec r_0$ compares acoustic pressure contributions fairly from the array's vantage point, though peripheral grid nodes have larger $r_{0j}$ than on-axis nodes. Because dimensionless distance ratios are absorbed into $\vec a_j$ in Eq. (12-2), inverted source coefficients $s_j$ inherit the physical acoustic pressure dimension at $\vec r_0$ directly (mean-square source power $q_j$ has units $\mathrm{Pa}^2$ at $\vec r_0$).
 
-Shifting reference location from $\vec r_0$ to another point $\vec r_1$ obviously cannot alter the physical pressures $\vec a_j s_j$ sensed at the microphones. Consequently, whenever rescaled propagation vector $\vec a'_j$ shrinks or grows with the new reference distance, true source strength $s'_j$ scales inversely so product $\vec a'_j s'_j = \vec a_j s_j$ remains invariant. Exercise [E12-14](#e12-14) verifies this exact invariance step by step on 3D coordinates.
+Shifting reference location from $\vec r_0$ to another point $\vec r_1$ obviously cannot alter the physical pressures $\vec a_j s_j$ sensed at the microphones. Consequently, whenever rescaled propagation vector $\vec a'_j$ shrinks or grows with the new reference distance, true source strength $s'_j$ scales inversely so product $\vec a'_j s'_j = \vec a_j s_j$ remains invariant. Exercise [E12-12](#e12-12) verifies this exact invariance step by step on 3D coordinates.
 
 Other source-strength conventions appear widely in papers and commercial acoustic cameras—such as surface volume velocity, coefficients under unit-Euclidean-norm columns ($\|\tilde{\vec a}_j\|_2 = 1$), or free-field mean-square pressure standardized to $1\,\mathrm{m}$ from each individual source. All are mathematically valid, but before comparing "source power" numbers across publications or software packages, always inspect column normalization conventions and apply explicit scale conversion.
 
@@ -153,7 +153,7 @@ $$\begin{aligned}
 
 One-sided folding factor $\epsilon_k$ equals $2$ at interior positive bins ($1 \le k < N/2$) to fold symmetric negative-frequency energy, and equals $1$ at DC ($k = 0$) and even-$N$ Nyquist ($k = N/2$) where no distinct conjugate partner exists. For pressure-calibrated inputs ($\mathrm{Pa}$), $\mathbf S[k]$ has units $\mathrm{Pa}^2/\mathrm{Hz}$ and $\mathbf R_{\mathrm{bin}}[k]$ has units $\mathrm{Pa}^2$; for uncalibrated digital audio, both carry squared digital full-scale units.
 
-Never confuse the two standard window normalization constants: coherent amplitude sum $S_1 = \sum_{n=0}^{N-1} v[n]$ must *not* replace energy sum $U$ in the denominator of Eq. (12-5). While $S_1$ calibrates single-bin peak reading of an isolated bin-centered tone, $U$ preserves broadband noise PSD and multi-bin integrated power. Applying a tapered window spreads a bin-centered tone across its center bin and immediate sidebins so the center bin alone reads lower than total tone power—yet summing $\mathbf R_{\mathrm{bin}}[k]$ across those affected bins recovers exact total power (Exercise [E12-13](#e12-13) verifies both $24$-point rectangular and periodic Hann windows by hand).
+Never confuse the two standard window normalization constants: coherent amplitude sum $S_1 = \sum_{n=0}^{N-1} v[n]$ must *not* replace energy sum $U$ in the denominator of Eq. (12-5). While $S_1$ calibrates single-bin peak reading of an isolated bin-centered tone, $U$ preserves broadband noise PSD and multi-bin integrated power. Applying a tapered window spreads a bin-centered tone across its center bin and immediate sidebins so the center bin alone reads lower than total tone power—yet summing $\mathbf R_{\mathrm{bin}}[k]$ across those affected bins recovers exact total power (Exercise [E12-11](#e12-11) verifies both $24$-point rectangular and periodic Hann windows by hand).
 
 Summing diagonal entries across all one-sided bins for channel $m$ confirms time–frequency Parseval consistency:
 
@@ -182,7 +182,7 @@ q_j&=\mathbb{E}[|s_j|^2]\ge 0.
 
 Whenever radiators at distinct locations are driven by a common rotating shaft, or direct waves reflect off floors or wind-tunnel walls to form coherent image sources, $\mathbf R_{ss}$ acquires nonzero off-diagonal pairs $R_{ss,jh}\vec a_j\vec a_h^H$ and $R_{ss,jh}^*\vec a_h\vec a_j^H$ ($j \ne h$). Constructive and destructive spatial interference from these cross-terms cannot be represented as a sum of non-negative independent point-source powers.
 
-Keep "population statistical incoherence" distinct from "exact zero sample cross-spectrum over finite snapshots" as well: genuinely independent random sources still exhibit finite-sample cross-spectral fluctuations around zero (reduced by averaging more snapshots, noting that heavily overlapped STFT frames are not independent snapshots); conversely, alternating inter-block phases in our pedagogical synthetic WAVs to cancel $20$-block sample cross-spectra to exact zero is a deterministic orthogonal phase code for isolating algebraic variables, never proof of stochastic independence (see Exercise [E12-04](#e12-04)).
+Keep "population statistical incoherence" distinct from "exact zero sample cross-spectrum over finite snapshots" as well: genuinely independent random sources still exhibit finite-sample cross-spectral fluctuations around zero (reduced by averaging more snapshots, noting that heavily overlapped STFT frames are not independent snapshots); conversely, alternating inter-block phases in our pedagogical synthetic WAVs to cancel $20$-block sample cross-spectra to exact zero is a deterministic orthogonal phase code for isolating algebraic variables, never proof of stochastic independence (see Exercise [E12-03](#e12-03)).
 
 ### 12.4 Why Scan Maps Exhibit Mainlobes and Sidelobes
 
@@ -210,9 +210,32 @@ Under this normalization, a single noiseless source of power $q_i$ at node $i$ (
 
 #### Unit Matched Response Does Not Guarantee Unbiased 3D Depth Peaks
 
-It is tempting to assume that because Eq. (12-8) aligns phases perfectly and normalizes gain to $1$ at true source position $\vec p_j$, scanning across 3D space must attain its global maximum at $\vec p_j$. Under near-field spherical waves, **that is false!** Varying longitudinal scan depth simultaneously alters phases and $1/r$ amplitudes in Eq. (12-2), rescaling $\|\vec a_i\|_2^2$ in the denominator of Eq. (12-8)—scanning deeper shrinks $\|\vec a_i\|_2$ and *inflates* weight norm $\|\vec w_i\|_2 = 1/\|\vec a_i\|_2$, which can push scan readings behind the source higher than at the true source depth!
+It is tempting to assume that because Eq. (12-8) aligns phases perfectly and normalizes gain to $1$ at true source position $\vec p_j$, scanning across 3D space must attain its global maximum at $\vec p_j$. Under near-field spherical waves, **that is false**. Under the reference-normalized model Eq. (12-2) with $\vec r_0$ at the array center, varying longitudinal scan depth $z$ simultaneously alters phases and amplitude ratios $r_{0i}/r_{mi}$. For a planar array on $z = 0$ with radial element offsets $\rho_m = \|\vec r_m - \vec r_0\|_2$ scanning an on-axis point $(0, 0, z)$, $|a_{mi}|^2 = z^2 / (z^2 + \rho_m^2)$, so the derivative of squared steering norm with respect to depth is strictly positive:
 
-Sarradj systematically compared four standard steering-vector formulations in 3D source mapping: phase-only compensation, phase-plus-amplitude compensation preserving true-location source strength (Eq. (12-8), Sarradj Formulation III), unit-norm weights $\vec a_i / \|\vec a_i\|_2$ guaranteeing unbiased 3D single-source peak location at the expense of source-strength scale (Formulation IV), and two intermediate normalizations. Exact single-source algebra proves that *no* fixed conventional steering formulation simultaneously achieves unbiased 3D peak depth and unbiased source-strength amplitude unconditionally (see [Sarradj 2012, §§2.1–2.5 Eqs. (7)–(13)](https://doi.org/10.1155/2012/292695)).
+$$\frac{\mathrm{d}}{\mathrm{d}z}\|\vec a_i\|_2^2
+=\sum_{m=1}^{M}\frac{2z\rho_m^2}{(z^2+\rho_m^2)^2}>0.$$
+
+Under Eq. (12-2), scanning deeper ($z \uparrow$) therefore increases $\|\vec a_i\|_2$ monotonically toward $\sqrt{M}$, whereas **scanning closer to the array ($z \downarrow$) shrinks $\|\vec a_i\|_2$ monotonically toward $0$**; consequently, weight norm $\|\vec w_i^{\mathrm{III}}\|_2 = 1/\|\vec a_i\|_2$ (and $r_{mi}/r_{0i}$ in Formulation II) inflates at shallower depths, pulling the 3D peaks of Formulations II and III **closer to the array (shallower than $z_{\mathrm{true}}$)** rather than deeper behind the source (conversely, under an unnormalized free-field Green's function $1/r_{mi}$ without the $r_{0i}$ numerator, $\|\vec g_i\|_2$ shrinks with depth and pulls peaks deeper behind the source).
+
+Sarradj systematically compared four classical steering-vector formulations in 3D source mapping (see [Sarradj 2012, §§2.1–2.5 Eqs. (7)–(13) & Table 1](https://doi.org/10.1155/2012/292695) and Acoular's `steer_type` names); their exact expressions and near-field/far-field properties are summarized below:
+
+| Formulation & Acoular Name | Exact Steering-Weight Expression | Noiseless Single-Source 3D Peak | Source-Strength Reading at True Location | Far-Field Equal-Amplitude Limit ($|a_{mi}|=1$) |
+|---|---|---|---|---|
+| Formulation I (`classic`) | $w_{mi}^{\mathrm{I}} = \dfrac{1}{M}\dfrac{a_{mi}}{|a_{mi}|} = \dfrac{1}{M}e^{-\mathrm{j}\kappa\Delta r_{mi}}$ | **Unbiased** (equal-weight, lower SNR than IV) | Biased (equals $\frac{q_j}{M^2}(\sum_m \frac{r_{0j}}{r_{mj}})^2$) | $\vec a_i / M$ |
+| Formulation II (`inverse`) | $w_{mi}^{\mathrm{II}} = \dfrac{1}{M}\dfrac{1}{a_{mi}^*} = \dfrac{1}{M}\dfrac{r_{mi}}{r_{0i}}e^{-\mathrm{j}\kappa\Delta r_{mi}}$ | Biased | Unbiased ($\vec w_i^H\vec a_i=1$) | $\vec a_i / M$ |
+| Formulation III (`true level`, Eq. (12-8)) | $\vec w_i^{\mathrm{III}} = \dfrac{\vec a_i}{\|\vec a_i\|_2^2}$ | Biased | Unbiased (and WNG-optimal) | $\vec a_i / M$ |
+| Formulation IV (`true location`) | $\vec w_i^{\mathrm{IV}} = \dfrac{\vec a_i}{\sqrt{M}\|\vec a_i\|_2}$ | **Unbiased** ($1/r$-matched, higher SNR than I) | Biased (equals $\frac{\|\vec a_j\|_2^2}{M}q_j$) | $\vec a_i / M$ |
+
+For a noiseless single source $\mathbf R = q_j\vec a_j\vec a_j^H$, both Formulation I and Formulation IV guarantee strictly unbiased 3D peak locations. For Formulation I, the triangle inequality directly gives
+
+$$\begin{aligned}
+b_i^{\mathrm{I}}
+&=\frac{q_j}{M^2}\left|\sum_{m=1}^{M}\frac{r_{0j}}{r_{mj}}
+e^{\mathrm{j}\kappa(\Delta r_{mi}-\Delta r_{mj})}\right|^2\\
+&\le\frac{q_j}{M^2}\left(\sum_{m=1}^{M}\frac{r_{0j}}{r_{mj}}\right)^2,
+\end{aligned}$$
+
+where the positive magnitudes $r_{0j}/r_{mj}$ are independent of scan index $i$, so equality holds strictly when all phases align identically at $\vec p_i = \vec p_j$ (and similarly with diagonal removal); Formulation I's drawback relative to IV is lower SNR and White Noise Gain (WNG) because it omits $1/r$ amplitude matching, not noiseless localization bias. Next, pay close attention to the $\sqrt{M}$ factor in the denominator of Formulation IV: it fixes every scan node's weight norm to $\|\vec w_i^{\mathrm{IV}}\|_2 = 1/\sqrt{M}$, so the Cauchy–Schwarz inequality guarantees $b_i^{\mathrm{IV}} = \frac{q_j}{M}\frac{|\vec a_i^H\vec a_j|^2}{\|\vec a_i\|_2^2} \le \frac{\|\vec a_j\|_2^2}{M}q_j$ with strict equality when $\vec a_i$ is collinear with $\vec a_j$ (at the true 3D source position); simultaneously, in the far-field limit ($|a_{mi}|=1,\ \|\vec a_i\|_2 = \sqrt{M}$), the factor $1/\sqrt{M}$ brings $\vec w_i^{\mathrm{IV}}$ back to $\vec a_i / M$ and restores output power $q_j$ identically (omitting $1/\sqrt{M}$ by using unit-norm $\vec a_i/\|\vec a_i\|_2$ would inflate far-field power by a factor of $M$). The table also confirms algebraically that *no* fixed conventional steering formulation can unconditionally achieve both unbiased 3D peak location and unbiased source-strength amplitude in unknown-depth near-field scans.
 
 Accordingly, industrial imaging of quasi-planar machinery fixes a 2D scan grid onto the known radiating surface via laser rangefinders or CAD drawings first, allowing Eq. (12-8) to preserve both lateral localization and physical source scale; extending the same weights across unknown 3D depths requires explicit assessment of depth bias and weight amplification.
 
@@ -244,15 +267,15 @@ $$\begin{aligned}
 \vec q=\begin{pmatrix}1\\1/4\end{pmatrix}.
 \end{aligned}\tag{12-10}$$
 
-**Step-by-step substitution and intermediate values**: Evaluate complex cross-response $\vec w_1^H\vec a_2$ first. Using $e^{-\mathrm{j}2\pi/3} = -1/2 - \mathrm{j}\sqrt{3}/2$ gives
+**Step-by-step substitution and intermediate values**: Evaluate the complex spatial response matrix $\mathbf W^H\mathbf A$ first (where $\mathbf W = [\vec w_1, \vec w_2] = \mathbf A / 2$). Using $e^{-\mathrm{j}2\pi/3} = -1/2 - \mathrm{j}\sqrt{3}/2$, the conjugate inner product gives $\vec w_1^H\vec a_2 = \frac{1}{2}(1 + e^{-\mathrm{j}2\pi/3}) = \frac{1}{4} - \mathrm{j}\frac{\sqrt{3}}{4}$, and symmetrically $\vec w_2^H\vec a_1 = (\vec w_1^H\vec a_2)^* = \frac{1}{4} + \mathrm{j}\frac{\sqrt{3}}{4}$:
 
-$$\begin{aligned}
-\vec w_1^H\vec a_2&=\frac{1}{2}\left(1+e^{-\mathrm{j}2\pi/3}\right)\\
-&=\frac{1}{2}\left(\frac{1}{2}-\mathrm{j}\frac{\sqrt{3}}{2}\right)
-=\frac{1}{4}-\mathrm{j}\frac{\sqrt{3}}{4}.
-\end{aligned}$$
+$$\mathbf W^H\mathbf A =
+\begin{pmatrix}
+1 & 1/4 - \mathrm{j}\sqrt{3}/4 \\
+1/4 + \mathrm{j}\sqrt{3}/4 & 1
+\end{pmatrix}.$$
 
-Taking squared modulus yields off-diagonal coupling $P_{12} = |1/4 - \mathrm{j}\sqrt{3}/4|^2 = 1/16 + 3/16 = 1/4$; symmetrically $P_{21} = |\vec w_2^H\vec a_1|^2 = |\vec a_1^H\vec w_2|^2 = 1/4$. Assuming zero sensor noise ($\vec b_n = \vec 0$), the **exact scan result** is:
+Taking the **entry-wise Hadamard squared modulus** of $\mathbf W^H\mathbf A$ (never matrix multiplication $(\mathbf W^H\mathbf A)^2$) yields off-diagonal coupling $P_{12} = P_{21} = (1/4)^2 + (\sqrt{3}/4)^2 = 1/16 + 3/16 = 1/4$. Assuming zero sensor noise ($\vec b_n = \vec 0$), the **exact scan result** is:
 
 $$\begin{aligned}
 \mathbf P&=\begin{pmatrix}1&1/4\\1/4&1\end{pmatrix},\\
@@ -262,16 +285,16 @@ $$\begin{aligned}
 =\begin{pmatrix}17/16\\1/2\end{pmatrix}.
 \end{aligned}\tag{12-11}$$
 
-**Physical takeaway and validity boundaries**: Inspect $\vec b = [17/16, 1/2]^\top = [1.0625, 0.5]^\top$—Node 1's true power is $1$, yet its scan reading inflates to $17/16$ ($+1/16$ leaked from Source 2); Node 2's true power is only $1/4 = 0.25$, yet leakage $\frac{1}{4}\times 1 = 1/4$ from strong Source 1 equals Node 2's own power, **doubling** Node 2's scan reading to $1/2$! Summing raw scan pixels as "total radiated energy" gives $17/16 + 8/16 = 25/16 = 1.5625$, overstating true total source power $1 + 1/4 = 5/4 = 1.25$ by $25\%$—that excess $5/16$ is pure double-counting from overlapping spatial beams, not extra acoustic radiation. Remember too that $\vec b = \mathbf P\vec q$ in Eq. (12-11) holds only when both sources are incoherent, lie on grid nodes, and match $\mathbf A$ without modeling error.
+**Physical takeaway and validity boundaries**: Inspect $\vec b = [17/16, 1/2]^\top = [1.0625, 0.5]^\top$—Node 1's true power is $1$, yet its scan reading inflates to $17/16$ ($+1/16$ leaked from Source 2); Node 2's true power is only $1/4 = 0.25$, yet leakage $\frac{1}{4}\times 1 = 1/4$ from strong Source 1 equals Node 2's own power, **doubling** Node 2's scan reading to $1/2$. Summing raw scan pixels as "total radiated energy" gives $17/16 + 8/16 = 25/16 = 1.5625$, overstating true total source power $1 + 1/4 = 5/4 = 1.25$ by $25\%$—that excess $5/16$ is pure double-counting from overlapping spatial beams, not extra acoustic radiation. Note that this two-mic, two-node model serves to isolate incoherent deconvolution algebra (requiring incoherent on-grid sources and exact $\mathbf A$) rather than representing multi-source wind-tunnel measurements.
 
-![Figure 67: Point spread functions, 2D conventional beamforming scan, and non-negative deconvolution comparison](../figures_en/fig67_imaging_psf.png)
+![Figure 62: Point spread functions, 2D conventional beamforming scan, and non-negative deconvolution comparison](../figures_en/fig62_imaging_psf.png)
 
-Figure 67 pairs our two-node hand calculation with a 2D near-field planar array benchmark to make the interplay among true source distribution, single-source PSF, and multi-source conventional scan maps crystal clear (all quantities normalized to common reference source strength):
+Figure 62 pairs our two-node hand calculation with a 2D near-field planar array benchmark to make the interplay among true source distribution, single-source PSF, and multi-source conventional scan maps crystal clear (all quantities normalized to common reference source strength):
 
 - **Panel (a) Array and source-plane geometry**: Blue dots mark an $8$-microphone uniform circular ring of radius $0.2\,\mathrm{m}$ in plane $z = 0$ with common reference origin marked by a black cross; the dashed box outlines the $21 \times 21 = 441$-node 2D scan plane at $z = 0.6\,\mathrm{m}$ ($x, y \in [-0.3, 0.3]\,\mathrm{m}$, step $0.03\,\mathrm{m}$), with red stars at the strong left source $(-0.15, 0, 0.6)\,\mathrm{m}$ (strength $1.0$) and weak right source $(0.15, 0, 0.6)\,\mathrm{m}$ (strength $0.25$).
 - **Panel (b) Two-node PSF matrix**: Heatmap of the $2 \times 2$ matrix in Eq. (12-11) (horizontal column $j$ = true source node, vertical row $i$ = scan node), showing unit diagonal response $1.00$ and $0.25$ cross-node leakage.
 - **Panel (c) 2D strong-source PSF**: Normalized $441$-node map at $4\,\mathrm{kHz}$ ($c = 343\,\mathrm{m/s}$) when illuminating the strong left source alone. Response at the left white cross equals $1$ exactly, surrounded by a finite-aperture mainlobe plus curved sidelobe arcs that lift the right white cross (weak-source location) to $\approx 0.255$.
-- **Panel (d) Two-source conventional beamforming map**: Activating incoherent strong ($1.0$) and weak ($0.25$) sources together superimposes the sloped sidelobe skirt of Source 1 onto Source 2's mainlobe, pushing the right local maximum (yellow $\times$) outward by one full grid step ($30\,\mathrm{mm}$, to $x = 0.18\,\mathrm{m}$)—demonstrating that even when both sources sit squarely on grid intersections, conventional scan peaks can shift away from weak-source ground truth (see [E12-06](#e12-06)).
+- **Panel (d) Two-source conventional beamforming map**: Activating incoherent strong ($1.0$) and weak ($0.25$) sources together superimposes the sloped sidelobe skirt of Source 1 onto Source 2's mainlobe, pushing the right local maximum (yellow $\times$) outward by one full grid step ($30\,\mathrm{mm}$, to $x = 0.18\,\mathrm{m}$)—demonstrating that even when both sources sit squarely on grid intersections, conventional scan peaks can shift away from weak-source ground truth (see [E12-05](#e12-05)).
 - **Panel (e) Two-node inversion and regional sum**: Comparing ground truth (green: $1.00, 0.25$), conventional scan (blue: $1.0625, 0.50$), and inverted values (orange: $1.00, 0.25$) shows why raw scan pixel sums systematically overestimate total source strength.
 - **Panel (f) Propagation-model mismatch cut**: Horizontal profile along $y = 0$ ($x \in [-0.3, 0.3]\,\mathrm{m}$) on the exact same near-field spherical-wave CSM, contrasting matched spherical-wave weights Eq. (12-2) (solid blue) against mismatched far-field plane-wave weights omitting distance ratios and wavefront curvature (dashed red)—plane-wave mismatch depresses peak readings and distorts spatial profiles noticeably.
 
@@ -286,11 +309,11 @@ P_{ii}q_i+\sum_{j\ne i}P_{ij}q_j&=b_i,\\
 q_i&=\frac{b_i-\sum_{j\ne i}P_{ij}q_j}{P_{ii}}.
 \end{aligned}$$
 
-On well-conditioned $2 \times 2$ toy example Eq. (12-11), $\mathbf P$ is nonsingular and noiseless so $\mathbf P^{-1}\vec b = [1, 1/4]^\top$ directly. In real acoustic imaging, however, unconstrained linear inversion hits two brick walls immediately: first, grid count $J$ routinely spans hundreds or thousands of nodes (e.g., $J = 441$ in Fig. 67), whereas an $M$-microphone CSM carries at most $M^2$ real linearly independent degrees of freedom; whenever $J \gg M^2$, $\mathbf P$ is massively rank-deficient with infinitely many linear solutions.
+On well-conditioned $2 \times 2$ toy example Eq. (12-11), $\mathbf P$ is nonsingular and noiseless so $\mathbf P^{-1}\vec b = [1, 1/4]^\top$ directly. In real acoustic imaging, however, unconstrained linear inversion hits two brick walls immediately: first, grid count $J$ routinely spans hundreds or thousands of nodes (e.g., $J = 441$ in Fig. 62), whereas an $M$-microphone CSM carries at most $M^2$ real linearly independent degrees of freedom; whenever $J \gg M^2$, $\mathbf P$ is massively rank-deficient with infinitely many linear solutions.
 
 Second, adjacent fine-grid steering columns are nearly collinear, making $\mathbf P$ severely ill-conditioned: tiny finite-snapshot fluctuations or geometric errors explode under unconstrained inversion or pseudoinversion, producing wild positive–negative oscillations across neighboring pixels—assigning huge positive power to one node alongside physically absurd **negative acoustic source power** next door so their sidelobes cancel to fit $\vec b$.
 
-By Eq. (12-6), independent mean-square source power $q_j = \mathbb{E}[|s_j|^2]$ can never be negative physically (coherent interference cross-terms do not belong to an independent-source power vector). Brooks and Humphreys's DAMAS algorithm enforces this physical floor directly by pairing the row-wise Rearrangement above with coordinate-wise **non-negativity projection**, suppressing oscillatory ringing and stripping sidelobes across sparse source fields (notation below matches [Brooks & Humphreys 2004, Eqs. (18), (23), (24)](https://ntrs.nasa.gov/api/citations/20080015889/downloads/20080015889.pdf)).
+By Eq. (12-6), independent mean-square source power $q_j = \mathbb{E}[|s_j|^2]$ can never be negative physically (coherent interference cross-terms do not belong to an independent-source power vector). Brooks and Humphreys's DAMAS algorithm enforces this physical floor directly by pairing the row-wise rearrangement above with coordinate-wise **non-negativity projection**, suppressing oscillatory ringing and stripping sidelobes across sparse source fields (notation below matches [Brooks & Humphreys 2004, Eqs. (18), (23), (24)](https://ntrs.nasa.gov/api/citations/20080015889/downloads/20080015889.pdf)).
 
 #### One Original DAMAS Iteration Comprises Two Sweep Directions
 
@@ -327,7 +350,15 @@ Substituting Eq. (12-11) ($P_{11} = P_{22} = 1$, $P_{12} = P_{21} = 1/4$, $\vec 
 | 2 | $257/256 = 1.00390625$ | $255/1024 = 0.2490234375$ |
 | 3 | $4097/4096 \approx 1.00024414$ | $4095/16384 \approx 0.24993896$ |
 
-Within just three forward sweeps, estimates approach ground truth $[1, 0.25]^\top$ to within $3 \times 10^{-4}$ because off-diagonal coupling is $1/4$, contracting error by $(1/4)^2 = 1/16$ per sweep. Moving two grid nodes close together so off-diagonal coupling hits $0.99$ degrades per-sweep contraction to $0.99^2 = 0.9801$, slowing convergence dramatically (see [E12-03](#e12-03)). Practical solvers must monitor iteration count, step norm $\|\vec q^{(t)} - \vec q^{(t-1)}\|$, and residual norm jointly: hitting `max_iter` does not prove convergence, and tiny step deltas along ill-conditioned valleys can masquerade as stagnation.
+Within just three forward sweeps, estimates approach ground truth $[1, 0.25]^\top$ to within $3 \times 10^{-4}$—a contraction rate immediately explained by the Gauss–Seidel splitting $\mathbf P = \mathbf L + \mathbf U$ (lower triangular $\mathbf L$ including the diagonal, strictly upper triangular $\mathbf U$): for an unconstrained $2 \times 2$ system, the iteration matrix is
+
+$$-\mathbf L^{-1}\mathbf U=
+\begin{pmatrix}
+0 & -P_{12}/P_{11}\\
+0 & P_{12}P_{21}/(P_{11}P_{22})
+\end{pmatrix},$$
+
+whose sole nonzero eigenvalue is $P_{12}P_{21}/(P_{11}P_{22}) = P_{12}^2$ (here $(1/4)^2 = 1/16$). Moving two grid nodes close together so off-diagonal coupling hits $0.99$ degrades per-sweep contraction to $0.99^2 = 0.9801$, slowing convergence substantially (see [E12-02](#e12-02)). On general rank-deficient grids ($J > M^2$), Chardon et al.'s (2021) equivalence proven in §12.7 guarantees that positive diagonal entries $G_{ii} = \|\vec a_i\|_2^4 > 0$ suffice for each projected coordinate-descent step to decrease convex quadratic $F(\vec q)$ monotonically. Practical solvers must monitor iteration count, step norm $\|\vec q^{(t)} - \vec q^{(t-1)}\|$, and residual norm jointly: hitting `max_iter` does not prove convergence, and tiny step deltas along ill-conditioned valleys can masquerade as stagnation.
 
 #### Scan-Domain NNLS Minimizes a Different Objective
 
@@ -348,7 +379,7 @@ $$\begin{gathered}
 q_i u_i=0\quad\text{for each }i=1,\ldots,J.
 \end{gathered}\tag{12-14}$$
 
-Many newcomers assume projected GS in DAMAS solves scan-domain NNLS Eq. (12-13)—**it does not!** A two-node counterexample settles this immediately: keep $\mathbf P$ from Eq. (12-11) and set $\vec b = [1, 0]^\top$. Starting at zero, Eq. (12-12) gives $q_1 = 1$ and $q_2 = \max(0, -1/4) = 0$ on Step 1 and stays parked at fixed point $[1, 0]^\top$ forever with squared scan residual $\|\mathbf P\vec q - \vec b\|_2^2 = 1/16 = 0.0625$; whereas scan-domain NNLS under Eq. (12-14) ([E12-08](#e12-08)) slightly trims $q_1$ to reduce Node 2's leaked residual, attaining its unique minimum at $[16/17, 0]^\top$ with lower scan residual $1/17 \approx 0.0588$!
+Many newcomers assume projected GS in DAMAS solves scan-domain NNLS Eq. (12-13)—**it does not**. A two-node counterexample settles this immediately: keep $\mathbf P$ from Eq. (12-11) and set $\vec b = [1, 0]^\top$. Starting at zero, Eq. (12-12) gives $q_1 = 1$ and $q_2 = \max(0, -1/4) = 0$ on Step 1 and stays parked at fixed point $[1, 0]^\top$ forever with squared scan residual $\|\mathbf P\vec q - \vec b\|_2^2 = 1/16 \approx 0.0625$; whereas scan-domain NNLS under Eq. (12-14) ([E12-15](#e12-15)) slightly trims $q_1$ to reduce Node 2's leaked residual, attaining its unique minimum at $[16/17, 0]^\top$ with lower scan residual $1/17 \approx 0.0588$.
 
 DAMAS fixed points do *not* minimize Eq. (12-13)—Section 12.7 reveals the exact convex matrix-domain objective they actually minimize under full CSM. Always specify the mathematical cost function before comparing deconvolved maps.
 
@@ -356,7 +387,7 @@ DAMAS fixed points do *not* minimize Eq. (12-13)—Section 12.7 reveals the exac
 
 #### Scan Peaks and Their Spatially Coherent Channel Structure
 
-Both DAMAS and scan-domain NNLS treat theoretical PSF matrix $\mathbf P$ as exact ground truth: whenever weak wind-tunnel wall reflections or mild microphone amplitude–phase errors perturb true sidelobes away from free-field predictions, PSF deconvolution misinterprets uncancelled residual sidelobes as phantom sources. Sijtsma's CLEAN-SC (CLEAN based on Spatial Source Coherence) takes a clever alternative route: instead of subtracting theoretical free-field sidelobes from a lookup matrix, it follows the current scan peak to **fish out the entire actual channel vector spatially coherent with that peak directly from the observed CSM** and strips its rank-one contribution out in one piece (see [Sijtsma 2007, NLR-TP-2007-345 §§2.4, 4.6](https://reports.nlr.nl/server/api/core/bitstreams/813b0521-b37c-4aff-be61-7a8bceaa06d4/content)). Locating the peak still relies on $\vec w_i$, of course, so gross geometric steering errors do not vanish by magic.
+Both DAMAS and scan-domain NNLS treat theoretical PSF matrix $\mathbf P$ as exact ground truth: whenever weak wind-tunnel wall reflections or mild microphone amplitude–phase errors perturb true sidelobes away from free-field predictions, PSF deconvolution misinterprets uncancelled residual sidelobes as phantom sources. Sijtsma's CLEAN-SC (CLEAN based on Spatial Source Coherence) takes an alternative route: instead of subtracting theoretical free-field sidelobes from a lookup matrix, it follows the current scan peak to **extract the entire actual channel vector spatially coherent with that peak directly from the observed CSM** and strips its rank-one contribution out in one piece (see [Sijtsma 2007, NLR-TP-2007-345 §§2.4, 4.6](https://reports.nlr.nl/server/api/core/bitstreams/813b0521-b37c-4aff-be61-7a8bceaa06d4/content)). Locating the peak still relies on $\vec w_i$, of course, so gross geometric steering errors do not disappear automatically.
 
 Let us establish the algebra on a **full CSM** (diagonal retained) first. Denoting the current degraded residual CSM by $\mathbf D$ (initialized at $\mathbf D^{(0)} = \hat{\mathbf R}$), scan all grid nodes to locate maximum peak index $p$ with peak value $B = \vec w_p^H\mathbf D\vec w_p > 0$; given dimensionless loop gain $0 < \phi \le 1$, one iteration takes just four lines:
 
@@ -367,7 +398,7 @@ B&=\vec w_p^H\mathbf D\vec w_p,\\
 \mathbf D_{\mathrm{next}}&=\mathbf D-\phi\mathbf G.
 \end{aligned}\tag{12-15}$$
 
-Why does $\vec h = \mathbf D\vec w_p / B$ fish out the dominant source's true propagation vector from a composite CSM? Suppose $\mathbf D$ comprises dominant source $p$'s actual rank-one contribution $q_p\vec g_p\vec g_p^H$ (where $\vec g_p$ includes mild channel perturbations or weak coherent reflections, normalized to $\vec w_p^H\vec g_p = 1$) plus mutually incoherent weaker sources/noise $\mathbf D_{\mathrm{other}}$. Right-multiplying $\mathbf D$ by peak beam weight $\vec w_p$ computes the cross-correlation vector $\mathbb{E}[\vec x y_p^*] = \mathbf D\vec w_p$ between raw microphone signals $\vec x$ and peak beam output $y_p = \vec w_p^H\vec x$: whenever the mainlobe suppresses off-peak weak sources ($\mathbf D_{\mathrm{other}}\vec w_p \approx \vec 0$),
+Why does $\vec h = \mathbf D\vec w_p / B$ extract the dominant source's true propagation vector from a composite CSM? Suppose $\mathbf D$ comprises dominant source $p$'s actual rank-one contribution $q_p\vec g_p\vec g_p^H$ (where $\vec g_p$ includes mild channel perturbations or weak coherent reflections, normalized to $\vec w_p^H\vec g_p = 1$) plus mutually incoherent weaker sources/noise $\mathbf D_{\mathrm{other}}$. Right-multiplying $\mathbf D$ by peak beam weight $\vec w_p$ computes the cross-correlation vector $\mathbb{E}[\vec x y_p^*] = \mathbf D\vec w_p$ between raw microphone signals $\vec x$ and peak beam output $y_p = \vec w_p^H\vec x$: whenever the mainlobe suppresses off-peak weak sources ($\mathbf D_{\mathrm{other}}\vec w_p \approx \vec 0$),
 
 $$\begin{aligned}
 \mathbf D\vec w_p&\approx q_p\vec g_p(\vec g_p^H\vec w_p),\\
@@ -375,13 +406,13 @@ q_p\vec g_p(\vec g_p^H\vec w_p)&=q_p\vec g_p,\\
 B&=\vec w_p^H\mathbf D\vec w_p\approx q_p|\vec w_p^H\vec g_p|^2=q_p.
 \end{aligned}$$
 
-Dividing the two gives $\vec h = \mathbf D\vec w_p / B \approx \vec g_p$, pulling out the dominant source's true complex amplitude–phase signature across all $M$ microphones along peak beam $\vec w_p$! Subtracting $\phi\mathbf G = \phi B\vec h\vec h^H$ from $\mathbf D$ strips out both the main peak and *every actual sidelobe coherent with it* simultaneously. Conservative loop gains ($\phi = 0.5$ or $0.6$) strip energy robustly across multiple passes; remember that the power accumulated onto node $p$ of the clean map each pass must equal the stripped fraction $\phi B$, never full $B$ when only $\phi\mathbf G$ was subtracted!
+Dividing the two gives $\vec h = \mathbf D\vec w_p / B \approx \vec g_p$, isolating the dominant source's true complex amplitude–phase signature across all $M$ microphones via projection onto peak beam $\vec w_p$. Subtracting $\phi\mathbf G = \phi B\vec h\vec h^H$ from $\mathbf D$ strips out both the main peak and *every actual sidelobe coherent with it* simultaneously. Conservative loop gains ($\phi = 0.5$ or $0.6$) strip energy robustly across multiple passes; remember that the power accumulated onto node $p$ of the clean map each pass must equal the stripped fraction $\phi B$, never full $B$ when only $\phi\mathbf G$ was subtracted.
 
 In stopping logic, halt immediately whenever peak residual scan $B \le 0$ (or upon reaching a relative stopping threshold or `max_iter`) rather than dividing by zero; numerical tolerances serve solely to guard against floating-point roundoff, never to silently accept a strongly indefinite, corrupted input CSM.
 
 #### Why Full-CSM Stripping Preserves Positive Semidefiniteness
 
-A remarkable algebraic guarantee holds for full-CSM CLEAN-SC: whenever current residual $\mathbf D \succeq 0$ is Hermitian positive semidefinite, subtracting Eq. (12-15) keeps $\mathbf D_{\mathrm{next}} \succeq 0$ strictly positive semidefinite regardless of inter-source crosstalk—never creating negative eigenvalues! The proof takes three lines: first note $\vec w_p^H\vec h = (\vec w_p^H\mathbf D\vec w_p)/B = 1$; letting $\mathbf D^{1/2}$ be the unique Hermitian PSD square root of $\mathbf D \succeq 0$, define $\vec u = \mathbf D^{1/2}\vec w_p / \sqrt{B}$, which has unit norm $\vec u^H\vec u = (\vec w_p^H\mathbf D\vec w_p)/B = 1$. Rewriting $\mathbf G$ via $\mathbf D^{1/2}$ and $\vec u$ yields:
+A useful algebraic guarantee holds for full-CSM CLEAN-SC: whenever current residual $\mathbf D \succeq 0$ is Hermitian positive semidefinite, subtracting Eq. (12-15) keeps $\mathbf D_{\mathrm{next}} \succeq 0$ strictly positive semidefinite regardless of inter-source crosstalk, without creating negative eigenvalues. The proof takes three lines: first note $\vec w_p^H\vec h = (\vec w_p^H\mathbf D\vec w_p)/B = 1$; letting $\mathbf D^{1/2}$ be the unique Hermitian PSD square root of $\mathbf D \succeq 0$, define $\vec u = \mathbf D^{1/2}\vec w_p / \sqrt{B}$, which has unit norm $\vec u^H\vec u = (\vec w_p^H\mathbf D\vec w_p)/B = 1$. Rewriting $\mathbf G$ via $\mathbf D^{1/2}$ and $\vec u$ yields:
 
 $$\begin{aligned}
 \mathbf G&=\frac{(\mathbf D\vec w_p)(\vec w_p^H\mathbf D)}{B}
@@ -394,7 +425,7 @@ Orthogonal projector $\mathbf I - \vec u\vec u^H$ has eigenvalue $0$ along unit 
 
 #### Complete First-Pass Two-Source Hand Calculation and Clean Map
 
-Let us work through one full-CSM CLEAN-SC pass at $\phi = 1$ on incoherent two-source benchmark Eq. (12-10) to see how weak-source leakage perturbs $\vec h$. **Inputs**: From $\mathbf R = \vec a_1\vec a_1^H + 0.25\vec a_2\vec a_2^H$ and $e^{+\mathrm{j}2\pi/3} = -1/2 + \mathrm{j}\sqrt{3}/2$, the observed $2 \times 2$ CSM is:
+Let us work through one full-CSM CLEAN-SC pass at $\phi = 1$ on incoherent two-source benchmark Eq. (12-10) to see how weak-source leakage perturbs $\vec h$. **Inputs**: From $\mathbf R = \vec a_1\vec a_1^H + 0.25\vec a_2\vec a_2^H$ and $e^{+\mathrm{j}2\pi/3} = -1/2 + \mathrm{j}\sqrt{3}/2$, the observed $2 \times 2$ CSM is (noting that Source 2 arrives late at Mic 2 with negative propagation phase, while $R_{12} = x_1 x_2^*$ conjugates Channel 2 so two negatives turn positive, giving upper-right entry $R_{12} = 1 + \frac{1}{4}e^{+\mathrm{j}2\pi/3} = 7/8 + \mathrm{j}\sqrt{3}/8$ with positive imaginary part, and its conjugate in the lower-left):
 
 $$\mathbf R=
 \begin{pmatrix}
@@ -429,20 +460,31 @@ $$\begin{aligned}
 &=\frac{3}{17}\begin{pmatrix}1&-1\\-1&1\end{pmatrix},
 \end{aligned}$$
 
-whose eigenvalues are $0$ and $6/17 \ge 0$, confirming Eq. (12-16)! Notice, however, that whereas Source 1's true steering vector is $[1, 1]^\top$, extracted $\vec h$ carries imaginary perturbation $\pm\mathrm{j}\sqrt{3}/17$—because $1/16$ of Source 2's power leaked through Beam 1 and pulled the first-pass coherent vector slightly off-axis (Exercise [E12-11](#e12-11) continues Pass 2 to exact zero residual).
+whose eigenvalues are $0$ and $6/17 \ge 0$, confirming Eq. (12-16). Notice, however, that whereas Source 1's true steering vector is $[1, 1]^\top$, extracted $\vec h$ carries imaginary perturbation $\pm\mathrm{j}\sqrt{3}/17$—because $1/16$ of Source 2's power leaked through Beam 1 and pulled the first-pass coherent vector slightly off-axis (Exercise [E12-09](#e12-09) continues Pass 2 to exact zero residual).
 
 After termination, imaging packages plot accumulated clean strengths $\phi B$ at peak coordinates or convolve them with a user-chosen narrow Gaussian display beam into a smooth "clean map," optionally adding the residual scan map back. Remember that clean-beam Gaussian width is purely a cosmetic display parameter that never improves physical array resolution, and regional power integration must explicitly state whether unstripped residual CSM energy is included.
 
 #### Full-CSM and Diagonal-Removed CLEAN-SC Formulas Are Not Interchangeable
 
-In wind-tunnel aeroacoustic testing where boundary-layer turbulence buffets microphone diaphragms with strong uncorrelated self-noise, engineers routinely zero out CSM diagonals first (Diagonal Removal, §12.8) before running CLEAN-SC. Watch out for a classic implementation trap: **never plug diagonal-zeroed $\mathbf D_{\mathrm{trim}}$ straight into full-CSM Eq. (12-15)!** Because $\mathbf D_{\mathrm{trim}}$ has zeros along its main diagonal, $\mathbf D_{\mathrm{trim}}\vec w_p$ omits the coherent component's own diagonal auto-powers completely. Sijtsma's original derivation introduces diagonal-restoration matrix $\mathbf H(\vec h) = \operatorname{diag}(|h_1|^2,\ldots,|h_M|^2)$, yielding a coupled nonlinear fixed-point equation ([Sijtsma 2007, Eqs. (24)–(27) & §4.6](https://reports.nlr.nl/server/api/core/bitstreams/813b0521-b37c-4aff-be61-7a8bceaa06d4/content)):
+In wind-tunnel aeroacoustic testing where boundary-layer turbulence buffets microphone diaphragms with strong uncorrelated self-noise, engineers routinely zero out CSM diagonals first (Diagonal Removal, §12.8) before running CLEAN-SC. Watch out for a classic implementation trap: **never plug diagonal-zeroed $\mathbf D_{\mathrm{trim}}$ straight into full-CSM Eq. (12-15)**. Because $\mathbf D_{\mathrm{trim}}$ has zeros along its main diagonal, $\mathbf D_{\mathrm{trim}}\vec w_p$ omits the coherent component's own diagonal auto-powers completely.
+
+Let $\vec w_p$ denote the DR-compensated peak steering vector ($\vec w_p = \sqrt{\gamma_p}\,\vec a_p / \|\vec a_p\|_2^2$ via §12.8 Eq. (12-23), so peak reading $B = \vec w_p^H\mathbf D_{\mathrm{trim}}\vec w_p > 0$), introduce diagonal-restoration matrix $\mathbf H(\vec h) = \operatorname{diag}(|h_1|^2,\ldots,|h_M|^2)$ (retaining only the main diagonal of $\vec h\vec h^H$), and postulate $\mathbf D_{\mathrm{trim}} \approx B\bigl(\vec h\vec h^H - \mathbf H(\vec h)\bigr)$. Dividing by $B$ and right-multiplying by $\vec w_p$, then left-multiplying the resulting vector identity by $\vec w_p^H$ (using $\vec w_p^H\mathbf D_{\mathrm{trim}}\vec w_p / B = 1$), yields:
+
+$$\begin{aligned}
+\frac{\mathbf D_{\mathrm{trim}}\vec w_p}{B}+\mathbf H(\vec h)\vec w_p
+&=(\vec w_p^H\vec h)^*\vec h,\\
+1+\vec w_p^H\mathbf H(\vec h)\vec w_p
+&=|\vec w_p^H\vec h|^2.
+\end{aligned}$$
+
+Selecting the real positive phase gauge $\vec w_p^H\vec h = \sqrt{1+\vec w_p^H\mathbf H(\vec h)\vec w_p}$ and substituting back into the first line directly gives Sijtsma's coupled nonlinear fixed-point equation ([Sijtsma 2007, Eqs. (24)–(27) & §4.6](https://reports.nlr.nl/server/api/core/bitstreams/813b0521-b37c-4aff-be61-7a8bceaa06d4/content)):
 
 $$\vec h=
 \frac{\mathbf D_{\mathrm{trim}}\vec w_p/B+\mathbf H(\vec h)\vec w_p}
 {\sqrt{1+\vec w_p^H\mathbf H(\vec h)\vec w_p}}.
 \tag{12-17}$$
 
-Because unknown $\vec h$ appears on both sides of Eq. (12-17), each outer CLEAN-SC pass requires an inner fixed-point loop paired strictly with diagonal-removed weight normalization. Exercise [E12-11](#e12-11) focuses on full-CSM Eq. (12-15); whenever auditing an external `CLEAN-SC` library, check first whether it executes the full-CSM branch or the inner-loop diagonal-removed branch.
+The physical intuition of Eq. (12-17) is transparent: the numerator term $\mathbf H(\vec h)\vec w_p$ restores the coherent auto-power entries stripped away by diagonal removal back into the cross-correlation vector, while the denominator $\sqrt{1 + \vec w_p^H\mathbf H(\vec h)\vec w_p}$ ensures that the peak scale of that coherent component under diagonal-removed scan weights remains strictly consistent with the observed peak $B$. Because unknown $\vec h$ appears on both sides of Eq. (12-17), each outer CLEAN-SC pass requires an inner fixed-point loop paired strictly with diagonal-removed weight normalization. Exercise [E12-09](#e12-09) focuses on full-CSM Eq. (12-15); whenever auditing an external `CLEAN-SC` library, check first whether it executes the full-CSM branch or the inner-loop diagonal-removed branch.
 
 ### 12.7 Retaining the Cross-Spectral Matrix: Fitting the Source Statistical Model Directly
 
@@ -471,13 +513,13 @@ $$\begin{aligned}
 &\quad+2\sum_{1\le m<n\le M}(\operatorname{Im} E_{mn})^2.
 \end{aligned}\tag{12-19}$$
 
-Equation (12-19) dictates the exact compact real vectorization: from each $M \times M$ Hermitian matrix, pack the $M$ real diagonal entries, the $\frac{M(M-1)}{2}$ upper-triangular real parts **multiplied by $\sqrt{2}$**, and the $\frac{M(M-1)}{2}$ upper-triangular imaginary parts **also multiplied by $\sqrt{2}$** into a real column vector of length $M + M(M-1) = M^2$! Squaring $\sqrt{2}$ restores factor $2$, matching the full complex Frobenius norm to machine precision.
+Equation (12-19) dictates the exact compact real vectorization: from each $M \times M$ Hermitian matrix, pack the $M$ real diagonal entries, the $\frac{M(M-1)}{2}$ upper-triangular real parts **multiplied by $\sqrt{2}$**, and the $\frac{M(M-1)}{2}$ upper-triangular imaginary parts **also multiplied by $\sqrt{2}$** into a real column vector of length $M + M(M-1) = M^2$. Squaring $\sqrt{2}$ restores factor $2$, matching the full complex Frobenius norm to machine precision.
 
-Avoid two frequent coding bugs here: first, dropping the lower triangle while forgetting to multiply upper-triangular real and imaginary parts by $\sqrt{2}$ cuts all cross-channel phase weights in half (silently altering the objective; see [E12-12](#e12-12)); second, taking `np.real()` on complex $\mathbf H$ and discarding imaginary parts wipes out odd-symmetric phase differences and creates severe mirror-image ghosts.
+Avoid two frequent coding bugs here: first, dropping the lower triangle while forgetting to multiply upper-triangular real and imaginary parts by $\sqrt{2}$ cuts all cross-channel phase weights in half (silently altering the objective; see [E12-10](#e12-10)); second, taking `np.real()` on complex $\mathbf H$ and discarding imaginary parts wipes out odd-symmetric phase differences and creates severe mirror-image ghosts.
 
 #### When DAMAS Fixed Points Coincide with Full-CSM Fitting
 
-Section 12.5 left an intriguing puzzle: since projected GS in DAMAS does *not* minimize scan residual $\|\mathbf P\vec q - \vec b\|_2^2$, what objective *does* it optimize? Chardon et al. proved a clean equivalence: under a **full CSM** and **matched weights Eq. (12-8)**, unrelaxed DAMAS iteration is literally cyclic **coordinate descent** on the **full-CSM Frobenius fitting objective Eq. (12-18)**!
+Section 12.5 left an open question: since projected GS in DAMAS does *not* minimize scan residual $\|\mathbf P\vec q - \vec b\|_2^2$, what objective *does* it optimize? Chardon et al. proved a direct equivalence: under a **full CSM** and **matched weights Eq. (12-8)**, unrelaxed DAMAS iteration is literally cyclic **coordinate descent** on the **full-CSM Frobenius fitting objective Eq. (12-18)**.
 
 Three lines of elementary matrix algebra reveal why right away. With rank-one template $\mathbf T_j = \vec a_j\vec a_j^H$, expanding $F(\vec q) = \|\mathbf E\|_F^2$ has quadratic Gram entry $G_{ij} = \langle\mathbf T_i, \mathbf T_j\rangle_F = \operatorname{tr}(\mathbf T_i^H\mathbf T_j)$. Cycling the trace via $\operatorname{tr}(\mathbf X\mathbf Y) = \operatorname{tr}(\mathbf Y\mathbf X)$ contracts vectors into scalars:
 
@@ -488,18 +530,19 @@ G_{ij}&=\operatorname{tr}(\vec a_i\vec a_i^H\vec a_j\vec a_j^H)
 =|\vec a_i^H\vec a_j|^2.
 \end{aligned}$$
 
-Similarly, linear term $h_i = \langle\mathbf T_i, \hat{\mathbf R}\rangle_F = \operatorname{tr}(\vec a_i\vec a_i^H\hat{\mathbf R}) = \vec a_i^H\hat{\mathbf R}\vec a_i$. Comparing against matched-weight PSF and scan entries in Eqs. (12-8)–(12-9) with positive row-scale constant $\Lambda_{a,ii} = (\vec a_i^H\vec a_i)^2 > 0$:
+Similarly, linear term $h_i = \langle\mathbf T_i, \hat{\mathbf R}\rangle_F = \operatorname{tr}(\vec a_i\vec a_i^H\hat{\mathbf R}) = \vec a_i^H\hat{\mathbf R}\vec a_i$. Comparing against matched-weight PSF and scan entries in §12.4 Eqs. (12-8)–(12-9) with $\vec w_i = \vec a_i / (\vec a_i^H\vec a_i)$ and collecting squared column energies into positive diagonal row-scaling matrix $\boldsymbol\Lambda_a \in \mathbb{R}^{J\times J}$ ($\Lambda_{a,ii} = (\vec a_i^H\vec a_i)^2 > 0$) yields exact row-scaling identities linking template Gram matrix $\mathbf G$ and right-hand vector $\vec h$:
 
 $$\begin{aligned}
-P_{ij}&=\frac{|\vec a_i^H\vec a_j|^2}{\Lambda_{a,ii}}
-=\frac{G_{ij}}{\Lambda_{a,ii}},\\
-b_i&=\frac{\vec a_i^H\hat{\mathbf R}\vec a_i}{\Lambda_{a,ii}}
-=\frac{h_i}{\Lambda_{a,ii}}.
-\end{aligned}$$
+G_{ij}&=|\vec a_i^H\vec a_j|^2,\qquad
+h_i=\vec a_i^H\hat{\mathbf R}\vec a_i,\\
+\Lambda_{a,ii}&=(\vec a_i^H\vec a_i)^2>0,\\
+\mathbf G&=\boldsymbol\Lambda_a\mathbf P,\qquad
+\vec h=\boldsymbol\Lambda_a\vec b.
+\end{aligned}\tag{12-20}$$
 
-Row $i$ of CMF Gram matrix $G_{ij}$ and Row $i$ of scan PSF $P_{ij}$ differ by the *exact same strictly positive row factor* $\Lambda_{a,ii} > 0$—as do $h_i$ and $b_i$! Minimizing convex quadratic $F(\vec q)$ over $q_i \ge 0$ with $q_{j\ne i}$ held fixed cancels $\Lambda_{a,ii}$ from numerator and denominator of $(h_i - \sum_{j\ne i} G_{ij}q_j) / G_{ii}$, reproducing DAMAS update Eq. (12-12) $q_i \leftarrow \max\{0, t_i / P_{ii}\}$ identically ([Chardon et al., §§3.1–3.3 Theorems 1–3 & Eqs. (15)–(18)](https://gilleschardon.fr/papers/damascmf.pdf))!
+Row $i$ of CMF Gram matrix $G_{ij}$ and Row $i$ of scan PSF $P_{ij}$ in Eq. (12-20) differ by the *exact same strictly positive row factor* $\Lambda_{a,ii} > 0$, as do $h_i$ and $b_i$. Minimizing convex quadratic $F(\vec q)$ over $q_i \ge 0$ with $q_{j\ne i}$ held fixed cancels $\Lambda_{a,ii}$ from numerator and denominator of $(h_i - \sum_{j\ne i} G_{ij}q_j) / G_{ii}$, reproducing DAMAS update Eq. (12-12) $q_i \leftarrow \max\{0, t_i / P_{ii}\}$ identically; even when $J > M^2$ makes $\mathbf G$ rank-deficient, positive diagonals $G_{ii} = \|\vec a_i\|_2^4 > 0$ ensure each cyclic projected coordinate-descent step monotonically lowers $F(\vec q)$ ([Chardon et al., §§3.1–3.3 Theorems 1–3 & Eqs. (15)–(18)](https://gilleschardon.fr/papers/damascmf.pdf)).
 
-This equivalence requires full diagonals in both CSM and templates, no pre-clamping of negative scan values, and no extra noise columns, $\ell_1$ budgets, or constant intercepts (while column norms $\|\vec a_i\|_2$ need *not* be equal); moreover, coordinate descent attains global optimality only upon converging to a KKT fixed point rather than at arbitrary truncated iteration counts. Exercise [E12-17](#e12-17) writes out complete matrix equations Eqs. (12-29)–(12-31), contrasts full-CSM CMF against scan-domain NNLS on identical data, and verifies the consistent diagonal-zeroed counterpart ([Chardon et al., §3.5](https://gilleschardon.fr/papers/damascmf.pdf)).
+This equivalence requires full diagonals in both CSM and templates, no pre-clamping of negative scan values, and no extra noise columns, $\ell_1$ budgets, or constant intercepts (while column norms $\|\vec a_i\|_2$ need *not* be equal); moreover, coordinate descent attains global optimality only upon converging to a KKT fixed point rather than at arbitrary truncated iteration counts. Exercise [E12-15](#e12-15) builds directly on Eq. (12-20) to contrast full-CSM CMF against scan-domain NNLS on identical legal CSM data, and verifies both consistent diagonal-zeroed projections and unequal-norm columns ([Chardon et al., §3.5](https://gilleschardon.fr/papers/damascmf.pdf)).
 
 #### How Noise Variance and Sparsity Budgets Reshape the Objective
 
@@ -511,11 +554,11 @@ $$\begin{aligned}
 +\sigma^2\mathbf I,\\
 \min_{\vec d,\sigma^2}\;&\|\hat{\mathbf R}-\mathbf M_d\|_F^2,\\
 \text{s.t.}\;&d_j\ge 0,\;\sigma^2\ge 0,\;\sum_{j=1}^J d_j\le\Lambda.
-\end{aligned}\tag{12-20}$$
+\end{aligned}\tag{12-21}$$
 
-Budget ceiling $\Lambda \ge 0$ caps total energy allocated across grid nodes (equivalent to non-negative $\ell_1$ regularization) in units matched to unit-norm columns $\tilde{\vec a}_j = \vec a_j / \|\vec a_j\|_2$; converting back to reference-point mean-square pressures divides node $j$ by $\|\vec a_j\|_2^2$ (see [Yardibi et al. 2008](https://doi.org/10.1121%2F1.2896754) for adaptive $\Lambda$ selection). Keep unbudgeted baseline Eq. (12-18) distinct from Eq. (12-20).
+Budget ceiling $\Lambda \ge 0$ caps total energy allocated across grid nodes (equivalent to non-negative $\ell_1$ regularization) in units matched to unit-norm columns $\tilde{\vec a}_j = \vec a_j / \|\vec a_j\|_2$; converting back to reference-point mean-square pressures divides node $j$ by $\|\vec a_j\|_2^2$ (see [Yardibi et al. 2008](https://doi.org/10.1121%2F1.2896754) for adaptive $\Lambda$ selection). Keep unbudgeted baseline Eq. (12-18) distinct from Eq. (12-21).
 
-Exercise [E12-16](#e12-16) isolates the minimal "one source template + unknown white noise $\sigma^2\mathbf I$" pair to show how the identity column enters the real vectorized dictionary and when single-microphone degeneration destroys source-versus-noise identifiability.
+Exercise [E12-14](#e12-14) isolates the minimal "one source template + unknown white noise $\sigma^2\mathbf I$" pair to show how the identity column enters the real vectorized dictionary and when single-microphone degeneration destroys source-versus-noise identifiability.
 
 #### Two Residuals That Must Be Interpreted Separately
 
@@ -532,15 +575,17 @@ During wind-tunnel runs or high-speed flow measurements, turbulent boundary laye
 $$\begin{gathered}
 \mathbf D_R=\operatorname{diag}(R_{11},\ldots,R_{MM}),\\
 \mathbf R_{\mathrm{trim}}=\mathbf R-\mathbf D_R.
-\end{gathered}\tag{12-21}$$
+\end{gathered}\tag{12-22}$$
 
-There is no free lunch: diagonal entry $R_{mm} = \sum_{j=1}^J q_j|a_{mj}|^2 + \sigma_m^2$ contains not only unwanted self-noise $\sigma_m^2$, but also **target auto-power** $\sum_j q_j|a_{mj}|^2$! Zeroing the diagonal discards $M$ auto-power equations alongside channel self-noise. Moreover, finite-snapshot sample cross-spectra of uncorrelated noise do not vanish identically, and large-scale coherent flow structures correlating across adjacent sensors bypass diagonal removal altogether.
+(Note: the literature also writes $\mathbf D_R = \operatorname{diag}(\mathbf R)$, where $\operatorname{diag}(\cdot)$ acting on a square matrix extracts its main-diagonal matrix, distinct from $\operatorname{diag}(\vec q)$ constructing a diagonal matrix from a vector in §§12.3 and 12.7.)
+
+This gain comes with a trade-off: diagonal entry $R_{mm} = \sum_{j=1}^J q_j|a_{mj}|^2 + \sigma_m^2$ contains not only unwanted self-noise $\sigma_m^2$, but also **target auto-power** $\sum_j q_j|a_{mj}|^2$. Zeroing the diagonal discards $M$ auto-power equations alongside channel self-noise. Moreover, finite-snapshot sample cross-spectra of uncorrelated noise do not vanish identically, and large-scale coherent flow structures correlating across adjacent sensors bypass diagonal removal altogether.
 
 Once diagonal removal is applied to $\mathbf R$, both scan weights/compensation and the deconvolution PSF matrix must be rebuilt consistently under the exact same diagonal-removed operator—never feed a diagonal-removed scan map into a full-CSM PSF ([Brooks & Humphreys 2004, p. 6 Eqs. (17), (20), (21)](https://ntrs.nasa.gov/api/citations/20080015889/downloads/20080015889.pdf), noting that diagonal-removed PSF off-diagonals can turn negative).
 
 #### Why Negative Scan Values Appear
 
-Running diagonal-removed beamforming for the first time often startles users when negative numbers appear in the scan array: "How can acoustic power be negative?!" Two lines of $2 \times 2$ arithmetic explain everything: apply anti-phase weight $\vec w = [1/2, -1/2]^\top$ to zero-diagonal symmetric matrix $\mathbf R_{\mathrm{trim}}$ with off-diagonals $1/2$:
+Running diagonal-removed beamforming for the first time can be unexpected when negative numbers appear in the scan array ("how can acoustic power be negative?"). Two lines of $2 \times 2$ arithmetic explain why: apply anti-phase weight $\vec w = [1/2, -1/2]^\top$ to zero-diagonal symmetric matrix $\mathbf R_{\mathrm{trim}}$ with off-diagonals $1/2$:
 
 $$\begin{aligned}
 \mathbf R_{\mathrm{trim}}&=
@@ -550,7 +595,7 @@ $$\begin{aligned}
 b&=\vec w^H\mathbf R_{\mathrm{trim}}\vec w=-\frac{1}{4}<0.
 \end{aligned}$$
 
-Inspecting trace and eigenvalues shows why: $\operatorname{tr}(\mathbf R_{\mathrm{trim}}) = 0$ with eigenvalues $+1/2$ and $-1/2$—**stripping positive diagonal auto-powers makes $\mathbf R_{\mathrm{trim}}$ indefinite!** Its quadratic form sums cross-channel correlations alone, turning negative wherever channels interfere out of phase at the steering angle, without implying "negative acoustic energy." While dB plotting routines clamp non-positive pixels to a display floor, un-clamped signed values *must* be preserved when feeding diagonal-removed deconvolution or checking residuals (see [E12-17](#e12-17)).
+Inspecting trace and eigenvalues shows why: $\operatorname{tr}(\mathbf R_{\mathrm{trim}}) = 0$ with eigenvalues $+1/2$ and $-1/2$—**stripping positive diagonal auto-powers makes $\mathbf R_{\mathrm{trim}}$ indefinite**. Its quadratic form sums cross-channel correlations alone, turning negative wherever channels interfere out of phase at the steering angle, without implying "negative acoustic energy." While dB plotting routines clamp non-positive pixels to a display floor, un-clamped signed values *must* be preserved when feeding diagonal-removed deconvolution or checking residuals (see [E12-15](#e12-15)).
 
 #### Microphone-Count Compensation Factors Carry Preconditions
 
@@ -566,13 +611,13 @@ Restoring unit single-source matched response at node $i$ requires multiplying b
 $$\gamma_i=
 \frac{(\vec a_i^H\vec a_i)^2}
 {(\vec a_i^H\vec a_i)^2-\sum_{m=1}^{M}|a_{mi}|^4}.
-\tag{12-22}$$
+\tag{12-23}$$
 
-Check degenerate boundaries first: if the denominator vanishes (e.g., only $1$ microphone has nonzero response), diagonal removal erased $100\%$ of that source's signal and no finite factor can recover it. Under equal-amplitude far-field waves ($|a_{mi}| = c_0 > 0, M > 1$), $(\vec a_i^H\vec a_i)^2 = M^2 c_0^4$ and $\sum_m |a_{mi}|^4 = M c_0^4$, simplifying Eq. (12-22) to textbook constant $\frac{M^2}{M^2 - M} = \frac{M}{M - 1}$ (replacing $M^2$ total entries by $M(M - 1)$ off-diagonal entries).
+Check degenerate boundaries first: if the denominator vanishes (e.g., only $1$ microphone has nonzero response), diagonal removal erased $100\%$ of that source's signal and no finite factor can recover it. Under equal-amplitude far-field waves ($|a_{mi}| = c_0 > 0, M > 1$), $(\vec a_i^H\vec a_i)^2 = M^2 c_0^4$ and $\sum_m |a_{mi}|^4 = M c_0^4$, simplifying Eq. (12-23) to textbook constant $\frac{M^2}{M^2 - M} = \frac{M}{M - 1}$ (replacing $M^2$ total entries by $M(M - 1)$ off-diagonal entries).
 
-Under unequal near-field $1/r$ attenuations, however, applying constant $\frac{M}{M - 1}$ introduces amplitude bias! For unequal two-mic vector $\vec a = [1, 2]^\top$ with $\vec w = \vec a / 5 = [1/5, 2/5]^\top$, full-CSM response is $1$; zeroing diagonals $1$ and $4$ leaves off-diagonals $2$, dropping the quadratic form to $2 \times (1/5) \times (2/5) \times 2 = 8/25 = 0.32$.
+Under unequal near-field $1/r$ attenuations, however, applying constant $\frac{M}{M - 1}$ introduces amplitude bias. For unequal two-mic vector $\vec a = [1, 2]^\top$ with $\vec w = \vec a / 5 = [1/5, 2/5]^\top$, full-CSM response is $1$; zeroing diagonals $1$ and $4$ leaves off-diagonals $2$, dropping the quadratic form to $2 \times (1/5) \times (2/5) \times 2 = 8/25 = 0.32$.
 
-Multiplying by far-field constant $\frac{M}{M-1} = 2$ recovers only $16/25 = 0.64$; exact Eq. (12-22) gives $\gamma = 25 / (25 - 17) = 25/8$, restoring unit source strength $1$ exactly (see [E12-07](#e12-07) and Fig. 69(b)).
+Multiplying by far-field constant $\frac{M}{M-1} = 2$ recovers only $16/25 = 0.64$; exact Eq. (12-23) gives $\gamma = 25 / (25 - 17) = 25/8$, restoring unit source strength $1$ exactly (see [E12-06](#e12-06) and Fig. 64(b)).
 
 ### 12.9 When Pretty Maps Mislead: Violated Physical Conditions
 
@@ -593,11 +638,11 @@ $$\begin{gathered}
 \end{pmatrix},\\
 b_i=\vec w_i^H\mathbf R_{\mathrm{coh}}\vec w_i,\qquad
 \vec b=\begin{pmatrix}21/16\\3/4\end{pmatrix}.
-\end{gathered}\tag{12-23}$$
+\end{gathered}\tag{12-24}$$
 
 Off-diagonals remain conjugate-symmetric while interference splits channel auto-powers into $9/4 = 2.25$ and $3/4 = 0.75$.
 
-**Failure diagnosis**: Solving incoherent PSF equation $\mathbf P\vec q = \vec b$ blindly yields strictly positive $\vec q_{\mathrm{wrong}} = [6/5, 9/20]^\top = [1.20, 0.45]^\top$ with **exact zero scan residual**! Yet both values miss true marginal powers $[1, 0.25]^\top$, and substituting $\vec q_{\mathrm{wrong}}$ back into incoherent CSM Eq. (12-6) predicts equal channel auto-powers $33/20 = 1.65$ against observed $2.25$ and $0.75$, leaving a massive full-CSM squared Frobenius residual of $27/20 = 1.35$ (see [E12-05](#e12-05)).
+**Failure diagnosis**: Solving incoherent PSF equation $\mathbf P\vec q = \vec b$ blindly yields strictly positive $\vec q_{\mathrm{wrong}} = [6/5, 9/20]^\top = [1.20, 0.45]^\top$ with **exact zero scan residual**. Yet both values miss true marginal powers $[1, 0.25]^\top$, and substituting $\vec q_{\mathrm{wrong}}$ back into incoherent CSM Eq. (12-6) predicts equal channel auto-powers $33/20 = 1.65$ against observed $2.25$ and $0.75$, leaving a massive full-CSM squared Frobenius residual of $27/20 = 1.35$ (see [E12-04](#e12-04)).
 
 "A non-negative point-source map reproduces the scan map" never proves "those numbers equal true independent source powers." Similarly, under strong specular wall reflections, CLEAN-SC absorbs direct plus reflected waves into a single composite vector $\vec h$; its single-pass peak cannot be split naively into independent physical sources.
 
@@ -609,9 +654,9 @@ Even without exact duplicates, subdividing a grid far finer than the Rayleigh re
 
 #### Pairwise-Distinct Columns Can Still Be Jointly Unidentifiable
 
-Checking that "no two columns are parallel" still does not suffice! Because source powers $q_j$ weight rank-one templates $\mathbf T_j = \vec a_j\vec a_j^H$, pairwise-distinct templates can still be **jointly linearly dependent**. Exercise [E12-18](#e12-18) constructs four distinct two-mic phase columns where Nodes $\{1, 3\}$ at unit power generate $2\mathbf I_2$ and disjoint Nodes $\{2, 4\}$ at unit power *also* generate $2\mathbf I_2$—indistinguishable even from the full complex CSM!
+Checking that "no two columns are parallel" still does not suffice. Because source powers $q_j$ weight rank-one templates $\mathbf T_j = \vec a_j\vec a_j^H$, pairwise-distinct templates can still be **jointly linearly dependent**. Exercise [E12-16](#e12-16) constructs four distinct two-mic phase columns where Nodes $\{1, 3\}$ at unit power generate $2\mathbf I_2$ and disjoint Nodes $\{2, 4\}$ at unit power *also* generate $2\mathbf I_2$—indistinguishable even from the full complex CSM.
 
-Exercise [E12-18](#e12-18) fixes sensor noise to zero first to isolate source-dictionary ambiguity; adding unknown white noise $\sigma^2\mathbf I_2$ introduces yet another exact explanation ($\vec q = \vec 0, \sigma^2 = 2$), showing how richer noise models can create source–noise identifiability trade-offs.
+Exercise [E12-16](#e12-16) fixes sensor noise to zero first to isolate source-dictionary ambiguity; adding unknown white noise $\sigma^2\mathbf I_2$ introduces yet another exact explanation ($\vec q = \vec 0, \sigma^2 = 2$), showing how richer noise models can create source–noise identifiability trade-offs.
 
 Dimensionally, $M \times M$ Hermitian matrices span at most $M^2$ real dimensions, making $J \le M^2$ necessary but never sufficient for template independence; whether nullspace perturbations preserve $\vec q \ge 0$ near a specific sparse solution depends on its active support.
 
@@ -629,22 +674,22 @@ Sources between grid nodes split energy across neighboring nodes; strong sources
 
 An **on-axis circular-ring depth counterexample** makes longitudinal degeneracy exact: for the $8$-mic ring of radius $0.2\,\mathrm{m}$ at $z = 0$ referenced to $(0,0,0)$, compare axial depths $z = 0.6\,\mathrm{m}$ and $z = 0.2\,\mathrm{m}$. Every ring mic is equidistant from any on-axis point, so Eq. (12-2) produces $8$ identical entries with squared moduli $0.6^2 / (0.6^2 + 0.2^2) = 0.9$ at $z = 0.6\,\mathrm{m}$ and $0.2^2 / (0.2^2 + 0.2^2) = 0.5$ at $z = 0.2\,\mathrm{m}$.
 
-Both depths generate scalar multiples of all-ones matrix $\vec 1\vec 1^\top$: power $q$ at $z = 0.6\,\mathrm{m}$ ($0.9q\,\vec 1\vec 1^\top$) and power $1.8q$ at $z = 0.2\,\mathrm{m}$ ($0.5 \times 1.8q\,\vec 1\vec 1^\top$) produce the *exact same CSM* regardless of how many microphones populate the ring! Adding one center microphone at $(0,0,0)$ holds center gain at $1$ while ring gain varies with $z$, breaking this two-point axial degeneracy via center-to-ring amplitude ratio (without implying arbitrary 3D volumetric identifiability).
+Both depths generate scalar multiples of all-ones matrix $\vec 1\vec 1^\top$: power $q$ at $z = 0.6\,\mathrm{m}$ ($0.9q\,\vec 1\vec 1^\top$) and power $1.8q$ at $z = 0.2\,\mathrm{m}$ ($0.5 \times 1.8q\,\vec 1\vec 1^\top$) produce the *exact same CSM* regardless of how many microphones populate the ring. Adding one center microphone at $(0,0,0)$ holds center gain at $1$ while ring gain varies with $z$, breaking this two-point axial degeneracy via center-to-ring amplitude ratio (without implying arbitrary 3D volumetric identifiability).
 
 #### Finite Snapshots, Dead Channels, and Over-Interpretation
 
 Averaging more independent snapshots reduces variance, whereas non-stationary RPM ramps or moving sources smear distinct physical states together over long windows; re-running solvers on one frozen CSM with tweaked hyperparameters never substitutes for acquiring independent snapshots.
 
-When a dead channel occurs in the field, remove that channel consistently from raw streams, propagation dictionary $\mathbf A$, weights $\mathbf W$, and $\hat{\mathbf R}$, re-normalizing over surviving sensors—never zero out a dead waveform while keeping full-$M$ normalization denominators!
+When a dead channel occurs in the field, remove that channel consistently from raw streams, propagation dictionary $\mathbf A$, weights $\mathbf W$, and $\hat{\mathbf R}$, re-normalizing over surviving sensors—never zero out a dead waveform while keeping full-$M$ normalization denominators.
 
-![Figure 68: Acoustic imaging model checks: sweep directions, source coherence, CSM residuals, and full-CSM CLEAN-SC stripping](../figures_en/fig68_imaging_model_checks.png)
+![Figure 63: Acoustic imaging model checks: sweep directions, source coherence, CSM residuals, and full-CSM CLEAN-SC stripping](../figures_en/fig63_imaging_model_checks.png)
 
-Figure 68 contrasts sweep conventions, source coherence mismatch, and CLEAN-SC stripping across four panels (matching [E12-03](#e12-03), [E12-05](#e12-05), and [E12-11](#e12-11)):
+Figure 63 contrasts sweep conventions, source coherence mismatch, and CLEAN-SC stripping across four panels (matching [E12-02](#e12-02), [E12-04](#e12-04), and [E12-09](#e12-09)):
 
-- **Panel (a) DAMAS sweep direction and convergence**: Log max error versus outer iteration count on the two-node benchmark. Bidirectional iterations (orange, forward + reverse per pass) drop twice as fast per outer count as forward-only sweeps (blue) while performing twice as many inner updates—always normalize speed comparisons by inner multiply-adds.
+- **Panel (a) DAMAS sweep direction and convergence**: Log max source-power error versus outer iteration count on the two-node benchmark. In the special $J = 2$ two-node case, the forward sweep ends by updating $q_2$, so the reverse sweep's first step immediately re-updates the same boundary coordinate $q_2$ (idempotently leaving it unchanged) before updating $q_1$, and the next forward sweep's first step likewise re-updates $q_1$ (again unchanged); consequently, the orange bidirectional curve and blue forward-only curve descend **strictly in parallel** on a log scale with the *exact same* contraction factor per outer iteration ($1/16$), with the orange curve holding a constant half-sweep ($4\times$ error) lead solely from its extra effective $q_1$ update in Iteration 1. Only when grid count $J \ge 3$ does symmetric bidirectional iteration perform $2J - 2$ effective updates per pass versus $J$ for forward-only, approaching twice the per-pass contraction rate as $J$ grows (while doubling multiply-adds—so speed benchmarks must always align on effective updates).
 - **Panel (b) Inversion bias across inter-source coherence**: Holding marginal powers at $1.0$ (blue dashed) and $0.25$ (red dashed) while sweeping real coherence $\gamma \in [-1, 1]$; incoherent inversion (solid curves) crosses truth exclusively at $\gamma = 0$, overestimating for $\gamma > 0$ and underestimating for $\gamma < 0$.
 - **Panel (c) Wrong coherent solution at zero scan residual**: At $\gamma = 1$, incoherent solution $[1.20, 0.45]$ (red) misses marginal truth $[1.00, 0.25]$ (green); scan residual is $0$, whereas full-CSM relative Frobenius residual hits $0.3873$, flagging coherence violation immediately.
-- **Panel (d) Full-CSM single-source CLEAN-SC stripping**: True source $2$ (green dotted) at loop gain $\phi = 0.6$; residual peak $2 \times 0.4^\ell$ (orange dashed) decays monotonically while accumulated clean power $2(1 - 0.4^\ell)$ (solid blue) converges to $2$ by Pass 20.
+- **Panel (d) Full-CSM single-source CLEAN-SC stripping**: True source $2$ (green dotted) at loop gain $\phi = 0.6$; residual peak $2 \times 0.4^\ell$ (orange dashed) decays monotonically while accumulated clean power $2(1 - 0.4^\ell)$ (solid blue) converges to $2$ by Pass 20. The four panels have distinct physical vertical scales and verify individual mechanisms rather than ranking algorithms head-to-head.
 
 ### 12.10 Regional Map Summation, Frequency-Band Integration, and Physical Units
 
@@ -653,9 +698,9 @@ Figure 68 contrasts sweep conventions, source coherence mismatch, and CLEAN-SC s
 Under Eqs. (12-1) and (12-6), $q_j$ denotes the discrete point-source mean-square pressure contribution assigned to grid node $j$ ($\mathrm{Pa}^2$ or squared digital units), so total contribution from region of interest $\mathcal G$ sums linearly across nodes inside $\mathcal G$:
 
 $$Q_{\mathcal G}=\sum_{j\in\mathcal G}q_j.
-\tag{12-24}$$
+\tag{12-25}$$
 
-Never multiply Eq. (12-24) by grid cell area $\Delta A_j$, or refining grid resolution would artificially shrink a discrete point source's regional sum! Area-weighted summation $\sum_{j\in\mathcal G}\rho_{q,j}\Delta A_j$ applies *only* when a package defines maps as continuous areal power density $\rho_q(\vec p)$ ($\mathrm{Pa}^2/\mathrm{m}^2$), requiring synchronized conversion upon grid refinement (see [E12-15](#e12-15)). Linear regional addition also presupposes mutual incoherence inside $\mathcal G$ and a shared reference point $\vec r_0$.
+Never multiply Eq. (12-25) by grid cell area $\Delta A_j$, or refining grid resolution would artificially shrink a discrete point source's regional sum. Area-weighted summation $\sum_{j\in\mathcal G}\rho_{q,j}\Delta A_j$ applies *only* when a package defines maps as continuous areal power density $\rho_q(\vec p)$ ($\mathrm{Pa}^2/\mathrm{m}^2$), requiring synchronized conversion upon grid refinement (see [E12-13](#e12-13)). Linear regional addition also presupposes mutual incoherence inside $\mathcal G$ and a shared reference point $\vec r_0$.
 
 A two-source example distinguishes **"pressure at one shared reference point" from "pressure at $1\,\mathrm{m}$ from each individual source"**: two incoherent monopoles at $1\,\mathrm{m}$ and $2\,\mathrm{m}$ from the array center each contribute $0.25\,\mathrm{Pa}^2$ at the array center, producing an actual physical total mean-square pressure of $0.50\,\mathrm{Pa}^2$ at that point.
 
@@ -668,9 +713,9 @@ Once calibrated to physical $\mathrm{Pa}$ with regional/band linear mean-square 
 $$\begin{aligned}
 L_p&=10\log_{10}\frac{Q}{p_{\mathrm{ref}}^2},\\
 p_{\mathrm{ref}}&=20\,\mu\mathrm{Pa}.
-\end{aligned}\tag{12-25}$$
+\end{aligned}\tag{12-26}$$
 
-Composite SPL always sums linear powers *first* and takes logarithms *last*: adding $1.00\,\mathrm{Pa}^2$ ($\approx 93.9794\,\mathrm{dB\ SPL}$) and incoherent $0.25\,\mathrm{Pa}^2$ ($\approx 87.9588\,\mathrm{dB\ SPL}$) yields $1.25\,\mathrm{Pa}^2$ ($\approx 94.9485\,\mathrm{dB\ SPL}$)—never add or average dB numbers directly! Uncalibrated digital waveforms must report squared digital units or explicitly labeled relative dB, and colormap dynamic-range floors applied to zero pixels must never be misread as measured background source floors.
+Composite SPL always sums linear powers *first* and takes logarithms *last*: adding $1.00\,\mathrm{Pa}^2$ ($\approx 93.9794\,\mathrm{dB\ SPL}$) and incoherent $0.25\,\mathrm{Pa}^2$ ($\approx 87.9588\,\mathrm{dB\ SPL}$) yields $1.25\,\mathrm{Pa}^2$ ($\approx 94.9485\,\mathrm{dB\ SPL}$)—never add or average dB numbers directly. Uncalibrated digital waveforms must report squared digital units or explicitly labeled relative dB, and colormap dynamic-range floors applied to zero pixels must never be misread as measured background source floors.
 
 #### Frequency-Band Integration and Spectral Weighting
 
@@ -680,7 +725,7 @@ $$\begin{aligned}
 Q_{\mathcal G,\mathcal B}
 &=\sum_{k\in\mathcal B}\sum_{j\in\mathcal G}q_j[k]\\
 &=\sum_{k\in\mathcal B}\sum_{j\in\mathcal G}S_{q,j}[k]\Delta f_k.
-\end{aligned}\tag{12-26}$$
+\end{aligned}\tag{12-27}$$
 
 Changing FFT length $N$ scales per-bin powers and PSDs differently via $\Delta f_k = f_s / N$; keeping both conventions distinct keeps band-integrated levels invariant to $N$. Frequency weightings $W(f)$ (such as A-weighting) multiply linear bin powers by $|W(f_k)|^2$ prior to summation and must be labeled distinctly from unweighted Z/linear levels.
 
@@ -689,9 +734,9 @@ Changing FFT length $N$ scales per-bin powers and PSDs differently via $\Delta f
 Acoustic power ($\mathrm{W}$) integrates normal active acoustic intensity over an enclosing surface; reference-point $\mathrm{Pa}^2$ alone does not measure normal intensity directly. Only under **ideal free-field, omnidirectional outward spherical radiation** at known distance $r$, medium density $\rho$, and sound speed $c$ can radial intensity $q / (\rho c)$ ($\mathrm{W/m^2}$) multiply sphere area $4\pi r^2$:
 
 $$W=4\pi r^2\frac{q}{\rho c}.
-\tag{12-27}$$
+\tag{12-28}$$
 
-Structural reflections, source directivity, near-field reactive energy, and mean flow all violate Eq. (12-27), while $r$ varies across grid nodes; this chapter therefore retains explicit reference mean-square pressure dimensions rather than relabeling maps in watts.
+Structural reflections, source directivity, near-field reactive energy, and mean flow all violate Eq. (12-28), while $r$ varies across grid nodes; this chapter therefore retains explicit reference mean-square pressure dimensions rather than relabeling maps in watts.
 
 ### 12.11 Industrial Measurement Practice and Advanced Method Selection
 
@@ -702,22 +747,22 @@ Real array microphones, preamplifiers, and ADC channels exhibit individual sensi
 $$\begin{aligned}
 \vec x&=\mathbf K\vec d,\\
 \mathbf R_{xx}&=\mathbf K\mathbf R_{dd}\mathbf K^H.
-\end{aligned}\tag{12-28}$$
+\end{aligned}\tag{12-29}$$
 
 Multiplying all channels accidentally by $2$ inflates all squared quantities $4\times$ ($+6.0206\,\mathrm{dB}$ SPL error), leaving hotspot locations intact while corrupting absolute levels; wiring one channel with inverted polarity ($180^\circ$ phase flip) turns constructive two-mic summation into destructive cancellation, unfixable by any post-hoc dB offset. Amplitude–phase calibration, sensor coordinate surveying, clock sync, and dead-channel health checks are separate audit items ([Chapter 3](03_array-geometry.md)); always archive raw digital streams alongside calibration version metadata.
 
-Note too that "average outer products into $\mathbf R_{dd}$ first, then sandwich $\mathbf K\mathbf R_{dd}\mathbf K^H$ once" in Eq. (12-28) holds *only* when $\mathbf K$ stays constant across every snapshot in the averaging window. Mid-run range-gain switches or polarity flips require per-snapshot phase restoration prior to averaging or segmented accumulation across switch boundaries.
+Note too that "average outer products into $\mathbf R_{dd}$ first, then sandwich $\mathbf K\mathbf R_{dd}\mathbf K^H$ once" in Eq. (12-29) holds *only* when $\mathbf K$ stays constant across every snapshot in the averaging window. Mid-run range-gain switches or polarity flips require per-snapshot phase restoration prior to averaging or segmented accumulation across switch boundaries.
 
 A two-mic, two-snapshot example shows why order matters: using §12.3 RMS coefficients, let Snapshot 1 be $[1, 1]^\top$ and Snapshot 2 suffer a known right-channel polarity flip to $[1, -1]^\top$. Averaging outer products *before* correction cancels off-diagonal cross-spectra $+1$ and $-1$ to $0$, leaving $\mathbf I_2$—no post-hoc phase multiplier can resurrect a zeroed cross-spectrum, leaving equal-weight beam $[1/2, 1/2]^\top$ stuck at $1/2$.
 
 Restoring Snapshot 2's right channel by $-1$ back to $[1, 1]^\top$ *before* averaging preserves the all-ones CSM and full beam power $1$. Field recorders should retain raw snapshot streams or accumulate per calibration state so cross-frame cancellation never goes undetected.
 
-![Figure 69: Channel gain calibration, near-field diagonal-removal compensation, CSM fitting objectives, and regional dB aggregation](../figures_en/fig69_imaging_calibration.png)
+![Figure 64: Channel gain calibration, near-field diagonal-removal compensation, CSM fitting objectives, and regional dB aggregation](../figures_en/fig64_imaging_calibration.png)
 
-Figure 69 connects channel gain calibration, near-field DR compensation, CMF objective variants, and regional dB summation across four analytical panels (matching [E12-09](#e12-09), [E12-07](#e12-07), [E12-12](#e12-12), and [E12-10](#e12-10)):
+Figure 64 connects channel gain calibration, near-field DR compensation, CMF objective variants, and regional dB summation across four analytical panels (matching [E12-07](#e12-07), [E12-06](#e12-06), [E12-10](#e12-10), and [E12-08](#e12-08)):
 
-- **Panel (a) Channel amplitude gain vs. absolute source reading**: Holding Mic 1 gain at $1$ while sweeping Mic 2 gain $g \in [0.4, 2.2]$. Uncalibrated scan output (solid red) drifts as $((1+g)/2)^2$ across $0.49$–$2.56$ (an absolute error hidden whenever plots self-normalize to peak $0\,\mathrm{dB}$); Eq. (12-28) calibration (green dashed) restores $1.0$ identically.
-- **Panel (b) Near-field unequal-amplitude DR compensation**: For $\vec a = [1, 2]^\top$, full-CSM matched response is $1$ (green), dropping to $8/25 = 0.32$ upon diagonal removal (blue); far-field equal-amplitude factor $\frac{M}{M-1}=2$ reaches only $16/25 = 0.64$ (red), whereas exact Eq. (12-22) factor $25/8$ restores $1.0$ (orange).
+- **Panel (a) Channel amplitude gain vs. absolute source reading**: Holding Mic 1 gain at $1$ while sweeping Mic 2 gain $g \in [0.4, 2.2]$. Uncalibrated scan output (solid red) drifts as $((1+g)/2)^2$ across $0.49$–$2.56$ (an absolute error hidden whenever plots self-normalize to peak $0\,\mathrm{dB}$); Eq. (12-29) calibration (green dashed) restores $1.0$ identically.
+- **Panel (b) Near-field unequal-amplitude DR compensation**: For $\vec a = [1, 2]^\top$, full-CSM matched response is $1$ (green), dropping to $8/25 = 0.32$ upon diagonal removal (blue); far-field equal-amplitude factor $\frac{M}{M-1}=2$ reaches only $16/25 = 0.64$ (red), whereas exact Eq. (12-23) factor $25/8$ restores $1.0$ (orange).
 - **Panel (c) Optimal source estimates across CSM regression objectives**: On $\mathbf R = \operatorname{diag}(1, 10)$ with $\vec a = [1, 2]^\top$, exact Frobenius CMF gives $41/25 = 1.64$ (green), omitting $\sqrt{2}$ on upper-triangle terms shifts to $41/21 \approx 1.952$ (blue), and leaving an unphysical regression intercept enabled jumps to $87/35 \approx 2.486$ with $-1.6$ intercept (red).
 - **Panel (d) Linear power summation vs. dB order**: On benchmark $[1, 0.25]$, summing linear source powers before $10\log_{10}$ gives $+0.9691\,\mathrm{dB\ re}\ 1$ (green); summing PSF-overlapped scan pixels inflates to $+1.9382\,\mathrm{dB\ re}\ 1$ (blue); averaging the two individual dB levels yields $-3.0103\,\mathrm{dB\ re}\ 1$ (red).
 
@@ -725,30 +770,80 @@ Figure 69 connects channel gain calibration, near-field DR compensation, CMF obj
 
 NASA field-array deployment procedures distinguish laboratory bench absolute calibration before/after campaigns from in-situ reference-source drift monitoring: field check-sources are subject to loudspeaker directivity, atmospheric absorption, temperature/humidity/wind shifts, and transducer drift, so relative in-situ checks supplement rather than replace full-channel bench calibration ([Humphreys et al. 2017, §§II–III](https://ntrs.nasa.gov/api/citations/20170006081/downloads/20170006081.pdf)).
 
-Complete industrial imaging provenance logs should record physical channel wiring, 3D sensor coordinates, reference coordinate frame and scan-plane pose, sampling rate, FFT window/hop, ambient sound speed, integration band, CSM physical units, calibration version, DR and compensation rules, grid bounds/spacing, solver stopping criteria, and regional integration polygons—plus optical camera intrinsics/extrinsics when overlaying heatmaps onto photographs.
+Complete industrial imaging provenance logs should record physical channel wiring, 3D sensor coordinates, reference coordinate frame and scan-plane pose, sampling rate, FFT window/hop, ambient sound speed, integration band, CSM physical units, calibration version, DR and compensation rules, grid bounds/spacing, solver stopping criteria, and regional integration polygons. Before applying quiescent free-field propagation to wind tunnels or high-speed rotating rigs, audit propagation physics first: adding deconvolution iterations only fits the existing dictionary harder without restoring missing convective shift, shear-layer refraction, Doppler motion, or optical registration errors.
 
-Before applying quiescent free-field propagation to wind tunnels or high-speed rotating rigs, audit propagation physics first: adding deconvolution iterations only fits the existing dictionary harder without restoring missing shear-layer refraction, Doppler kinematics, or clock synchronization.
+#### Wind-Tunnel Convective Propagation, Shear-Layer Refraction, and Rotating-Source De-Dopplerization
+
+Aeroacoustic testing of airfoils, landing gear, and automotive side-mirror/A-pillar wind noise represents the premier industrial application of acoustic imaging, where quiescent free-field Eq. (12-2) no longer applies directly:
+
+1. **Convective Green's function in uniform subsonic mean flow**: Let uniform background flow move along $+x$ with Mach vector $\vec M_a = (M_a, 0, 0)^\top$ ($0 \le M_a < 1$, Prandtl–Glauert factor $\beta = \sqrt{1 - M_a^2}$), and write displacement from candidate source $\vec p_j$ to microphone $m$ as $\Delta\vec r_{mj} = \vec r_m - \vec p_j = (\Delta x, \Delta y, \Delta z)^\top$. A spherical wavefront emitted at $\vec p_j$ simultaneously expands at sound speed $c$ and convects downstream at velocity $c\vec M_a$, so arrival time $\tau_{mj}$ at $\vec r_m$ satisfies $\|\Delta\vec r_{mj} - c\tau_{mj}\vec M_a\|_2^2 = c^2\tau_{mj}^2$. Setting $r_c = c\tau_{mj}$ and expanding the square gives:
+
+$$\begin{aligned}
+(\Delta x - M_a r_c)^2 + \Delta y^2 + \Delta z^2 &= r_c^2, \\
+\beta^2 r_c^2 + 2 M_a \Delta x\,r_c - \|\Delta\vec r_{mj}\|_2^2 &= 0.
+\end{aligned}$$
+
+For subsonic flow ($\beta^2 = 1 - M_a^2 > 0$), the discriminant equals $4\bigl[\Delta x^2 + \beta^2(\Delta y^2 + \Delta z^2)\bigr] > 0$, so taking the unique positive causal root $r_{c,mj} > 0$ yields the effective convective propagation distance and travel time:
+
+$$\begin{aligned}
+r_{c,mj} &= \frac{1}{\beta^2}\!\left(
+  -M_a\Delta x + \sqrt{\Delta x^2 + \beta^2(\Delta y^2 + \Delta z^2)}
+\right), \\
+\tau_{mj} &= \frac{r_{c,mj}}{c}.
+\end{aligned}\tag{12-30}$$
+
+Check two physical limits immediately: directly downstream ($\Delta x = L > 0, \Delta y = \Delta z = 0$), $r_{c,mj} = L/(1+M_a)$ (accelerated arrival); directly upstream ($\Delta x = -L < 0$), $r_{c,mj} = L/(1-M_a)$ (delayed arrival); and at $M_a = 0$, $r_{c,mj}$ reduces identically to geometric distance $\|\Delta\vec r_{mj}\|_2$. For a typical wind-tunnel flow $M_a = 0.2$ ($\beta \approx 0.9798$) at normal standoff $\Delta z = 1.0\,\mathrm{m}$, upstream ($\Delta x = -0.5\,\mathrm{m}$) and downstream ($\Delta x = +0.5\,\mathrm{m}$) sensors at equal geometric range $1.1180\,\mathrm{m}$ experience effective convective distances stretched to $1.2500\,\mathrm{m}$ ($+0.385\,\mathrm{ms}$ late) and compressed to $1.0417\,\mathrm{m}$ ($-0.223\,\mathrm{ms}$ early); applying a quiescent-air model interprets that early downstream arrival as a tilted wavefront, shifting a broadside source's apparent location downstream by roughly $+0.21\,\mathrm{m}$. For wind-tunnel source-strength calibration, note also a subtle distinction: while convective distance $r_{c,mj} = c\tau_{mj}$ governs the phase factor $e^{-\mathrm{j}\kappa r_{c,mj}}$, the **amplitude factor** of the free-field convective Green's function scales inversely with modified radius $R^*_{mj} = \sqrt{\Delta x^2 + \beta^2(\Delta y^2 + \Delta z^2)}$ (i.e., $\propto 1/R^*_{mj}$, not $1/r_{c,mj}$).
+
+2. **Amiet shear-layer refraction correction in open-jet wind tunnels**: When the phased array stands outside an open-jet wind tunnel inside a quiescent anechoic plenum, sound waves first convect inside the jet and then refract across the shear layer separating the high-speed jet from still air. **Amiet (1978)** models a thin shear layer as a planar vortex sheet and invokes Fermat's principle of least time to find the refraction point $\vec p_{\mathrm{sl}}$ stationarizing total travel time $\tau_{mj} = \min_{\vec p_{\mathrm{sl}}}\!\bigl[\tau_{\mathrm{in}}(\vec p_j \to \vec p_{\mathrm{sl}}) + \|\vec r_m - \vec p_{\mathrm{sl}}\|_2 / c\bigr]$, alongside amplitude transmission corrections across the layer, removing both systematic downstream positional shift and amplitude distortion.
+
+3. **ROSI de-Dopplerization for rotating and moving sources**: On cooling fans, propellers, wind-turbine blades, or pass-by vehicles, source coordinate $\vec p_s(t_e)$ moves continuously with emission time $t_e$; forming a static CSM blurs localized blade sources into a smeared ring. **ROSI (Rotating Source Identifier, Sijtsma et al. 2001)** discretizes candidate nodes in a rotating frame fixed to the blades, computing reception time $t_r$ at microphone $m$ for each emission instant $t_e$ via the retarded-time equation:
+
+$$t_r = t_e + \frac{\|\vec r_m - \vec p_s(t_e)\|_2}{c}.
+\tag{12-31}$$
+
+Raw time-domain microphone waveforms are then non-uniformly resampled at $t_r(t_e)$ and compensated for instantaneous spreading distance and Doppler amplification, flattening time-varying Doppler frequency shifts and amplitude–phase modulations into the blade-stationary frame before conventional scanning or deconvolution (in strong mean flow, replace the Euclidean distance in Eq. (12-31) with convective distance Eq. (12-30)).
+
+#### Spiral Acoustic Camera Array Design and Optical Overlay Registration
+
+Commercial acoustic cameras and wind-tunnel phased arrays rarely adopt the single-ring circular array of Fig. 62 or regular rectangular grids; instead, they overwhelmingly employ **Underbrink multi-arm logarithmic spirals** (Underbrink 2002) or Vogel sunflower spirals. The reason is spatial sampling geometry: regular grids contain abundant redundant inter-sensor difference vectors, exciting periodic **spatial-aliasing grating lobes** matching mainlobe height once wavelength falls below twice the minimum spacing; multi-arm logarithmic spirals transition sensor density smoothly from core to perimeter with staggered arm angles, distributing 2D difference-coarray lags nearly uniformly and non-redundantly so grating-lobe energy disperses into a low background floor—sharply depressing **Maximum Sidelobe Level (MSL)** across multiple octaves.
+
+Given physical array diameter (aperture) $D$, the **Rayleigh spatial resolution limit** separating two adjacent equal-strength point sources at normal range $z$ and wavelength $\lambda = c/f$ under conventional beamforming is:
+
+$$\Delta x \approx 1.22\,\frac{\lambda z}{D} = 1.22\,\frac{c\,z}{f D}.
+\tag{12-32}$$
+
+Checking Eq. (12-32) on Fig. 62's geometry: radius $0.2\,\mathrm{m}$ gives aperture $D = 0.4\,\mathrm{m}$ at depth $z = 0.6\,\mathrm{m}$ and $f = 4\,\mathrm{kHz}$ ($c = 343\,\mathrm{m/s},\ \lambda \approx 8.58\,\mathrm{cm}$), yielding Rayleigh limit $\Delta x \approx 15.7\,\mathrm{cm}$. This explains two key observations in Fig. 62 immediately: first, although the two sources are separated by $30\,\mathrm{cm} \approx 1.9\,\Delta x$ and barely resolved, they remain inside the strong-sidelobe coupling zone where the strong source's skirt pushes the weak peak outward by $3\,\mathrm{cm}$; second, subdividing grid spacing far below $\Delta x$ cannot bypass diffraction limit Eq. (12-32). In hardware selection, low-frequency angular resolution is governed strictly by total aperture $D$, whereas high-frequency MSL is controlled by minimum effective spacing and spiral-arm irregularity.
+
+Overlaying acoustic heatmaps onto optical equipment photographs maps each 3D scan node $\tilde{\vec p}_j = [x_j, y_j, z_j, 1]^\top$ (homogeneous world coordinates) onto homogeneous image pixels $\tilde{\vec u}_{\mathrm{px}} = [u_j, v_j, 1]^\top$ via the pinhole camera model:
+
+$$\tilde{\vec u}_{\mathrm{px}} \propto \mathbf K_{\mathrm{cam}}\,[\mathbf R_{\mathrm{cam}} \mid \vec t_{\mathrm{cam}}]\,\tilde{\vec p}_j,
+\tag{12-33}$$
+
+where $\mathbf K_{\mathrm{cam}} \in \mathbb{R}^{3\times 3}$ is the camera intrinsic matrix (focal lengths and principal point) and $[\mathbf R_{\mathrm{cam}} \mid \vec t_{\mathrm{cam}}] \in \mathbb{R}^{3\times 4}$ is the rigid extrinsic transform from array coordinates to optical camera coordinates (reducing to a 2D planar homography when all scan nodes share a single plane). The most deceptive field mislocalization bug is **parallax shift from camera-to-array baseline offset combined with scan-depth error**: place the array center at $(0, 0, 0)$, the optical lens at $(b_{\mathrm{cam}}, 0, 0)$, and a true on-axis radiator at $(0, 0, z)$ while the operator specifies assumed scan plane $\zeta = \hat z$. By similar triangles, the camera line of sight to the true source follows ray $x(\zeta) = b_{\mathrm{cam}}(1 - \zeta/z)$, intersecting the assumed scan plane $\zeta = \hat z$ at $x(\hat z) = b_{\mathrm{cam}}(1 - \hat z/z)$ (offset by $b_{\mathrm{cam}}|\hat z/z - 1|$ from the acoustic reconstruction $(0, 0, \hat z)$ along $x=0$); conversely, projecting $(0, 0, \hat z)$ back onto the true source plane $\zeta = z$ along the camera ray produces lateral parallax displacement $\Delta x_{\mathrm{par}} \approx b_{\mathrm{cam}}|1 - z/\hat z|$ on the physical part surface. For example, at $b_{\mathrm{cam}} = 0.15\,\mathrm{m}$, true part depth $z = 1.0\,\mathrm{m}$, and mis-entered scan depth $\hat z = 1.2\,\mathrm{m}$, the hotspot shifts $2.5\,\mathrm{cm}$ off the true component ($3.0\,\mathrm{cm}$ on the scan plane), easily misattributing a noisy bearing to an adjacent bolt. Field practice therefore prefers an array-centered coaxial camera paired with real-time laser rangefinding, or direct import of 3D CAD / LiDAR point-cloud meshes as scan grids.
 
 #### Which Link Each Advanced Imaging Method Modifies
 
-When field conditions violate "stationary, incoherent, isotropic monopole, quiescent free field," specialized methods modify the specific broken link:
+When field conditions violate "stationary, incoherent, isotropic monopole, quiescent free field" or hit dense-grid compute bottlenecks, specialized methods modify the specific broken link:
 
 | Method | Model or Algorithmic Link Modified | Target Regime and Engineering Boundaries |
 |---|---|---|
-| DAMAS-C / CMF-C | Expands diagonal independent source powers to a full source covariance matrix with cross-spectra | Specular reflections or shaft-coherent sources; $O(J^2)$ unknowns require PSD and sparsity regularization |
+| DAMAS2 / FFT-NNLS / FFT-RL | Approximates PSF as shift-invariant over moderate view angles, replacing dense matrix products with 2D FFT convolution and regularized iterations (DAMAS2, FFT-NNLS, or Richardson–Lucy) | Accelerates original DAMAS by $10^2\text{–}10^3\times$ (Dougherty 2005; Ehrenfried & Koop 2007); shift-invariance breaks down under wide near-field angles or strong 3D depth variation |
+| Orthogonal Beamforming (OBF) | Eigendecomposes full CSM, scans each orthogonal eigenmode separately, and assigns each eigenvalue's energy to its peak grid node | Recovers absolute source levels rapidly without iterative deconvolution (Sarradj 2010, Acoular `BeamformerOrthogonal`); requires distinct strengths and incoherent sources |
+| TIDY | Executes CLEAN-SC-style coherent stripping directly in the time domain using Cross-Correlation Matrices (CCM) | Targets high-speed jets, shock waves, and non-stationary broadband transients (Dougherty & Podboy 2009); cost grows with delay-lag window |
+| DAMAS-C / CMF-C | Expands diagonal independent source powers to a full source covariance matrix with cross-spectra | Specular reflections or shaft-coherent sources; exploding unknowns require PSD and sparsity regularization |
 | HR-CLEAN-SC | Decouples coherent-vector extraction marker from peak location, selecting mainlobe source markers less contaminated by neighbor sidelobes | Reduces first-pass crosstalk and peak shift for closely spaced sources; still requires accurate candidate steering vectors |
 | SODIX | Jointly fits source positions and directional radiation amplitudes toward individual microphones | Directive sources violating monopole isotropy; $J \times M$ non-negative parameters require spatial and directional smoothing |
-| Moving / rotating source imaging | Models time-varying emission/reception propagation delays and $1/r(t)$ factors in time domain | Pass-by vehicles, helicopter rotors, cooling fans (emission/reception time semantics match [Chapter 9](09_source-tracking.md)); static time-averaged CSM invalid |
-| Flow-field aeroacoustic imaging | Incorporates mean-flow convection, refraction, or open-jet shear-layer ray tracing into $\vec a_j$ | Out-of-flow phased arrays in wind tunnels; uncorrected convection/refraction shifts apparent sources downstream |
+| ROSI rotating/moving source imaging | Resamples time-domain waveforms at retarded emission times Eq. (12-31) to de-Dopplerize and reconstruct maps in the co-moving frame | Fans, propellers, wind-turbine blades, and pass-by noise (Sijtsma et al. 2001); static time-averaged CSM invalid |
+| Flow-field & shear-layer imaging | Recomputes steering vectors with convective distance Eq. (12-30) and Amiet (1978) shear-layer refraction | Out-of-flow phased arrays in wind tunnels; uncorrected refraction shifts apparent sources downstream |
 | Nearfield Acoustic Holography (NAH) | Back-propagates wavefields from a close hologram plane to reconstruct surface pressure, normal velocity, and active intensity | Sub-wavelength near-field wavefield reconstruction requiring dense sampling and evanescent-wave regularization |
-| Functional Beamforming (FB) | Raises eigenvalues of full PSD CSM to power $1/\nu$, scans, and restores power $\nu$ | Non-iterative $\nu$-th-power sidelobe suppression; breaks multi-source linear superposition and integrated power conservation, underestimating off-grid weak sources |
+| Functional Beamforming (FB) | Raises eigenvalues of full PSD CSM to power $1/\nu$ via Eq. (12-34), scans, and restores power $\nu$ | Non-iterative $\nu$-th-power sidelobe suppression; breaks multi-source linear superposition and integrated power conservation, underestimating off-grid weak sources |
 | **Spherical Harmonic Panoramic Imaging (SH-CBF / Modal Deconvolution)** | Projects rigid spherical array pressures onto spherical harmonics (SH), equalizes radial scattering $b_n(\kappa r)$, and performs $4\pi$ scanning or spherical shift-invariant deconvolution | Automotive cabin Buzz, Squeak, and Rattle (BSR) and aircraft cabin $4\pi$ acoustic cameras; usable order bounded by aliasing $N\approx \kappa r$ and low-frequency radial-inverse WNG amplification ([Chapter 5, §5.8](05_beamforming.md#sec-5-8) & [Chapter 14, §14.2](14_spatial-wearable-arrays.md#sec-14-2)) |
 
-Match each field pathology to its corresponding physical extension: under strong specular reflections or shaft-locked cross-terms ([E12-05](#e12-05)), adopt DAMAS-C or CMF-C ([Yardibi et al. 2008](https://doi.org/10.1121%2F1.2896754)) rather than misapplying scalar non-negative Eq. (12-18).
+Match each field pathology to its corresponding physical extension (for a field-wide comparative review spanning conventional beamforming, Sarradj I–IV, DAMAS/DAMAS2/FFT-NNLS, CLEAN-SC, HR-CLEAN-SC, CMF, Functional Beamforming, and benchmark array datasets B1–B12, see [Merino-Martínez et al. 2019](https://doi.org/10.1007/s13272-019-00383-4)): under strong specular reflections or shaft-locked cross-terms ([E12-04](#e12-04)), adopt DAMAS-C or CMF-C ([Yardibi et al. 2008](https://doi.org/10.1121%2F1.2896754)) rather than misapplying scalar non-negative Eq. (12-18).
 
 HR-CLEAN-SC identifies candidate source regions first, picks a mainlobe source marker retaining strong self-response while minimizing neighbor PSF leakage to extract $\vec h$, and re-scans that clean component to refine peak coordinates ([Sijtsma & Snellen 2016, §2.5](https://www.bebec.eu/fileadmin/bebec/downloads/bebec-2016/papers/BeBeC-2016-S1.pdf)); placing markers where target response itself is weak destabilizes extraction.
 
-SODIX assigns non-negative source-to-microphone radiation amplitudes across all $J \times M$ pairs instead of a single scalar $q_j$, requiring directional and spatial smoothness regularizers for well-posedness ([Funke et al. 2014, Eqs. (6)–(10)](https://elib.dlr.de/94587/1/BeBeC-2014-11_Funke_SODIX.pdf)). Nearfield Acoustic Holography (NAH) back-propagates both propagating waves and exponentially decaying evanescent waves from a close measurement plane, demanding sub-wavelength sensor spacing, standoff control, and wavenumber filtering so evanescent-wave inversion does not blow up sensor noise ([Maynard et al. 1985, §III](https://doi.org/10.1121/1.392911)).
+SODIX assigns non-negative source-to-microphone radiation amplitudes across all $J \times M$ pairs instead of a single scalar $q_j$, requiring directional and spatial smoothness regularizers for well-posedness ([Funke et al. 2014, Eqs. (6)–(10)](https://elib.dlr.de/94587/1/BeBeC-2014-11_Funke_SODIX.pdf)). Nearfield Acoustic Holography (NAH) occupies a distinct physical regime from phased-array beamforming: NAH places a dense array at close standoff $z \ll \lambda$ with aperture at least as large as the vibrating source surface so exponentially decaying evanescent waves are captured for sub-wavelength spatial resolution—requiring wavenumber regularization to prevent severe sensor-noise amplification during back-propagation ([Maynard et al. 1985, §III](https://doi.org/10.1121/1.392911); Williams 1999)—whereas phased-array beamforming operates at standoff $z \gtrsim D$ on propagating waves alone, allowing compact arrays to image wide structures at the cost of the Rayleigh diffraction limit $\Delta x \sim \lambda z / D$.
 
 #### Functional Beamforming: Suppressing Sidelobes via Fractional CSM Powers
 
@@ -762,36 +857,35 @@ $$\begin{aligned}
 \tilde{\vec a}_i&=\frac{\vec a_i}{\|\vec a_i\|_2},\qquad
 b_{\mathrm{FB},i}(\nu)=\frac{1}{\|\vec a_i\|_2^2}
 \bigl(\tilde{\vec a}_i^H\mathbf R^{1/\nu}\tilde{\vec a}_i\bigr)^\nu.
-\end{aligned}$$
+\end{aligned}\tag{12-34}$$
 
-Check two anchor cases immediately: at $\nu = 1$, $\mathbf R^{1} = \mathbf R$ and $\tilde{\vec a}_i / \|\vec a_i\|_2 = \vec w_i$ recover conventional matched beamforming $b_{\mathrm{FB},i}(1) = b_i = \vec w_i^H\mathbf R\vec w_i$ identically; for a single noiseless point source $\mathbf R = q_1\vec a_1\vec a_1^H$, the sole nonzero eigenvalue $\lambda_1 = q_1\|\vec a_1\|_2^2$ ($\vec u_1 = \tilde{\vec a}_1$) preserves exact peak $b_{\mathrm{FB},1}(\nu) = q_1$ via $|\tilde{\vec a}_1^H\tilde{\vec a}_1| = 1$ while raising equal-norm sidelobes $|\tilde{\vec a}_i^H\tilde{\vec a}_1|^2 < 1$ to power $\nu$ (turning a $-6\,\mathrm{dB}$ sidelobe into $-12\,\mathrm{dB}$ at $\nu = 2$ and $-24\,\mathrm{dB}$ at $\nu = 4$; see [E12-19](#e12-19))!
+Check two anchor cases immediately: at $\nu = 1$, $\mathbf R^{1} = \mathbf R$ and $\tilde{\vec a}_i / \|\vec a_i\|_2 = \vec w_i$ recover conventional matched beamforming $b_{\mathrm{FB},i}(1) = b_i = \vec w_i^H\mathbf R\vec w_i$ identically; for a single noiseless point source $\mathbf R = q_1\vec a_1\vec a_1^H$, the sole nonzero eigenvalue $\lambda_1 = q_1\|\vec a_1\|_2^2$ ($\vec u_1 = \tilde{\vec a}_1$) preserves exact peak $b_{\mathrm{FB},1}(\nu) = q_1$ via $|\tilde{\vec a}_1^H\tilde{\vec a}_1| = 1$ while raising equal-norm sidelobes $|\tilde{\vec a}_i^H\tilde{\vec a}_1|^2 < 1$ to power $\nu$ (turning a $-6\,\mathrm{dB}$ sidelobe into $-12\,\mathrm{dB}$ at $\nu = 2$ and $-24\,\mathrm{dB}$ at $\nu = 4$; see [E12-17](#e12-17)).
 
 Before using Functional Beamforming, enforce three hard boundaries:
 
 1. **Diagonal removal is strictly forbidden**: Fractional powers require non-negative eigenvalues ($\lambda_m \ge 0$) of a Hermitian PSD matrix; zeroing the diagonal (§12.8) creates negative eigenvalues where real fractional powers break down algebraically and physically (Acoular's `BeamformerFunctional` hard-locks `r_diag = False` accordingly).
-2. **Multi-source integrated power is not conserved**: For $\nu > 1$, matrix roots are non-additive—$(\mathbf R_1 + \mathbf R_2)^{1/2} \ne \mathbf R_1^{1/2} + \mathbf R_2^{1/2}$! Multi-source FB maps neither equal sums of single-source FB maps nor recover true total power when divided by single-source PSF column sums (see exact $2 \times 2$ square-root calculation in [E12-20](#e12-20)).
-3. **Off-grid or steering-mismatched weak sources suffer exponential underestimation**: When $M > J$, noiseless/high-SNR CSMs have $M - J$ zero (or noise-floor) eigenvalues. Whenever discretization or mild mismatch projects fraction $\eta \in (0, 1)$ of a weak source's steering energy onto the signal subspace and spills $1 - \eta$ into the nullspace, raising to power $\nu$ attenuates the weak source as $\eta^\nu q_2$ (a mild $\eta = 0.8$ loses nearly $7.75\,\mathrm{dB}$ at $\nu = 8$; see [E12-20](#e12-20)). Use FB for fast hotspot localization, returning to linear power-conserving methods for quantitative regional integration.
+2. **Multi-source integrated power is not conserved**: For $\nu > 1$, matrix roots are non-additive—$(\mathbf R_1 + \mathbf R_2)^{1/2} \ne \mathbf R_1^{1/2} + \mathbf R_2^{1/2}$. Multi-source FB maps neither equal sums of single-source FB maps nor recover true total power when divided by single-source PSF column sums (see exact $2 \times 2$ square-root calculation in [E12-18](#e12-18)).
+3. **Off-grid or steering-mismatched weak sources suffer exponential underestimation**: When $M > J$, noiseless/high-SNR CSMs have $M - J$ zero (or noise-floor) eigenvalues. Whenever discretization or mild mismatch projects fraction $\eta \in (0, 1)$ of a weak source's steering energy onto the signal subspace and spills $1 - \eta$ into the nullspace, raising to power $\nu$ attenuates the weak source as $\eta^\nu q_2$ (a mild $\eta = 0.8$ loses nearly $7.75\,\mathrm{dB}$ at $\nu = 8$; see [E12-18](#e12-18)). Use FB for fast hotspot localization, returning to linear power-conserving methods for quantitative regional integration.
 
 #### Audit Open-Source Library Interfaces Item by Item
 
-When calling open-source packages such as [Acoular](https://github.com/acoular/acoular) or author reference code [`DAMAS`](https://github.com/gilleschardon/DAMAS), matching class names do not guarantee identical internal normalizations. Verify small analytical test cases against these interface checkpoints first (full source-level contract audits appear in the [Spatial & Tracking Research Manual](../codes/chapters/ch00/research_en/01_spatial_and_tracking.md)):
+When calling open-source acoustic imaging libraries in engineering or research (such as Python's widely used [Acoular](https://github.com/acoular/acoular) or the authors' public [DAMAS / CMF reference code](https://github.com/gilleschardon/DAMAS)), identical class names do not guarantee matching internal normalizations or branch formulas. Before integration, run small analytical benchmarks across three general interface checks (detailed interface audits appear in the [Spatial & Tracking Research Manual](../codes/chapters/ch00/research_en/01_spatial_and_tracking.md)):
 
-- **Conjugation order, spectral scaling, and diagonal-removal defaults**: Check whether CSM forms $\vec x\vec x^H$ or its transpose, whether spectral arrays already include one-sided factor $\epsilon_k$ and bin width $\Delta f$, whether `r_diag` defaults to `True`, and whether scan maps and PSFs share matched DR/weight rules.
-- **Actual behavior of example scripts and calibration classes**: Inspect arguments actually passed at runtime—for instance, an Acoular open-jet airfoil CMF example declares `num = 3` yet calls `synthetic(cfreq, 1)` inside its loop (integrating full octave bands rather than $1/3$-octave bands) under quiescent `Environment(c=346.04)` without shear-layer refraction ([upstream wind-tunnel script](https://github.com/acoular/acoular/blob/13d3d7df74ac1a8135c7ec71da098cbbc03d8652/examples/wind_tunnel_examples/example_airfoil_in_open_jet_cmf.py)); similarly, [`calib.py`](https://github.com/acoular/acoular/blob/13d3d7df74ac1a8135c7ec71da098cbbc03d8652/acoular/calib.py) applies real XML scale factors entry-wise without estimating complex phase responses or clock skew.
-- **CLEAN-SC full-CSM branch scaling and CMF regression flags**: On a full-CSM single source ($q = 2, \phi = 0.6$, 20 passes), Sijtsma Eq. (12-15) and our numerical kernel accumulate $2(1 - 0.4^{20}) \approx 2.0000$, whereas implementations reusing DR weight scaling along the full-CSM branch return $\approx 4.8125$; when calling generic linear regressors inside CMF, verify $\sqrt{2}$ off-diagonal scaling and explicitly set `fit_intercept=False`.
-- **Meaning of active-set uniqueness flags**: `unique=True` returned by active-set solvers such as [`damas.py`](https://github.com/gilleschardon/DAMAS/blob/61987952e2237e6b088a169ee891dd96576f2565/damas.py) certifies only that the restricted Gram submatrix on the *currently selected support* is nonsingular—it does *not* rule out disjoint non-negative supports generating the exact same CSM across the full dictionary (see [E12-18](#e12-18)).
+1. **Conjugation order, spectral dimensions, diagonal removal, and flow environment consistency**: Verify whether the CSM forms $\vec x\vec x^H$ or its transpose, whether spectral arrays already include one-sided factor $\epsilon_k$ and bin width $\Delta f$, whether diagonal removal (`r_diag`) defaults to on, and whether scan maps and PSFs share identical DR and Sarradj steering-weight conventions; for wind-tunnel examples or band integration, also confirm whether convective/shear-layer compensation is enabled, what integration bandwidth (octave vs. $1/3$-octave) is actually called, and whether calibration modules apply real magnitude scaling only or full complex phase calibration.
+2. **CLEAN-SC branch scaling and CMF intercept / $\sqrt{2}$ weighting**: Verify that single-source full-CSM CLEAN-SC stripping converges to true source strength rather than applying diagonal-removed scaling factors; when invoking generic regression or sparse solvers for CMF, confirm both real and imaginary upper-triangular entries are multiplied by $\sqrt{2}$ to match the full Frobenius norm, and explicitly disable default constant intercepts (`fit_intercept=False`).
+3. **Active-set uniqueness flags do not certify full-dictionary uniqueness**: When an active-set NNLS/DAMAS solver returns `unique=True`, that typically certifies only positive definiteness of the Gram submatrix on the currently active nonzero support—it does not rule out another non-negative solution across the full dictionary generating the exact same observed CSM (see [E12-16](#e12-16)).
 
 ### 12.12 Using This Chapter's Code and Audio Assets
 
 #### Run Read-Only In-Memory Exercises First
 
-Core algorithms reside in [`imaging.py`](../codes/chapters/ch12/core/imaging.py) and [`functional_beamforming.py`](../codes/chapters/ch12/core/functional_beamforming.py), with all 20 exercises reproduced via [`chapter12_exercises.py`](../codes/chapters/ch12/chapter12_exercises.py) from the repository root:
+Core algorithms reside in [`imaging.py`](../codes/chapters/ch12/core/imaging.py) and [`functional_beamforming.py`](../codes/chapters/ch12/core/functional_beamforming.py), with all 18 exercises reproduced via [`chapter12_exercises.py`](../codes/chapters/ch12/chapter12_exercises.py) from the repository root:
 
 ```bash
 .venv/bin/python -m codes.chapters.ch12.chapter12_exercises
 ```
 
-`run_experiments()` returns a JSON-serializable dictionary keying `E12-01`–`E12-20` under `exercises`, separating exact analytical matrices, `float64` waveforms, and 16-bit PCM read-back statistics. Common-scale normalization guards CSM formation and relative Frobenius residuals against `float64` underflow/overflow so tiny nonzero signals are never misclassified as exact silence.
+`run_experiments()` returns a JSON-serializable dictionary keying `E12-01`–`E12-18` under `exercises`, separating exact analytical matrices, `float64` waveforms, and 16-bit PCM read-back statistics. Common-scale normalization guards CSM formation and relative Frobenius residuals against `float64` underflow/overflow so tiny nonzero signals are never misclassified as exact silence.
 
 #### What the Known-Delay Synthetic Audio Preserves
 
@@ -825,7 +919,7 @@ Dividing PCM read-back powers by reference power $0.02$ aligns directly with dim
 
 ### 12.13 Exercises and Step-by-Step Solutions
 
-Every exercise below maps 1-to-1 to its stable ID in `chapter12_exercises.py`. Small matrices use exact rationals/radicals rounded only for final display, and complex inner/outer products use conjugate transpose $^H$ throughout.
+All 18 exercises below map 1-to-1 to their stable IDs (`E12-01`–`E12-18`) in `chapter12_exercises.py`. Unless noted otherwise, small matrices use exact rationals or radicals rounded only for final display, and complex inner/outer products use conjugate transpose $^H$ throughout.
 
 <a id="e12-01"></a>
 
@@ -837,47 +931,29 @@ Every exercise below maps 1-to-1 to its stable ID in `chapter12_exercises.py`. S
 
 Outer product $z z^* = 0.04$ overestimates mean-square power by **$2\times$**; dividing by $2$ via Eq. (12-4) ($z z^* / 2$, or RMS phasor $s = z / \sqrt{2}$ giving $s s^*$) restores $0.02$ exactly.
 
-Doubling all channel waveforms multiplies both sides of $\vec x\vec x^H$ by $2$, scaling the entire CSM by **$4\times$** ($+6.0206\,\mathrm{dB}$). Remember that division by $2$ holds strictly for interior tones $f \in (0, f_s/2)$; DC and Nyquist scaling appear in [E12-13](#e12-13), and physical $\mathrm{Pa}$ calibration in §12.11.
+Doubling all channel waveforms multiplies both sides of $\vec x\vec x^H$ by $2$, scaling the entire CSM by **$4\times$** ($+6.0206\,\mathrm{dB}$). Remember that division by $2$ holds strictly for interior tones $f \in (0, f_s/2)$; DC and Nyquist scaling appear in [E12-11](#e12-11), and physical $\mathrm{Pa}$ calibration in §12.11.
 
 <a id="e12-02"></a>
 
-#### E12-02: Element-by-Element Two-Node PSF Calculation
+#### E12-02: Is One Bidirectional DAMAS Iteration Identical to One Forward Sweep?
 
-**Problem.** From Eq. (12-10), write out $\mathbf A$, weight matrix $\mathbf W = [\vec w_1, \vec w_2]$, complex response $\mathbf W^H\mathbf A$, PSF matrix $\mathbf P$, and scan vector $\vec b$ for $\vec q = [1, 1/4]^\top$, identifying conjugate-symmetric off-diagonal entries.
+**Problem.** Starting from $\vec 0$ on Eq. (12-11), compare intermediate vectors across the first two passes of forward-only sweeps versus original bidirectional DAMAS iterations, and explain why the two error curves run strictly parallel on the log plot of Fig. 63(a) for $J = 2$. What happens if both $\mathbf P$ and $\vec b$ are multiplied by $2$ while an implementation omits division by $P_{ii}$? Finally, set off-diagonal coupling to $0.99$ and explain the slow convergence.
 
-**Solution.** Using $e^{-\mathrm{j}2\pi/3} = -1/2 - \mathrm{j}\sqrt{3}/2$ and column norm squared $1^2 + 1^2 = 2$ gives $\mathbf W = \mathbf A / 2$ and inner-product matrix:
+**Solution.** Forward-only sweeps give $[17/16, 15/64]^\top$ and $[257/256, 255/1024]^\top$ (§12.5). Under original bidirectional DAMAS, Iteration 1 runs forward to $[17/16, 15/64]^\top$ then immediately reverses—first updating Node 2 to $1/2 - \frac{1}{4}\times\frac{17}{16} = 15/64$ (**boundary idempotent, unchanged**), then immediately using it to update Node 1 to $17/16 - \frac{1}{4}\times\frac{15}{64} = 257/256$, finishing Iteration 1 at $[257/256, 15/64]^\top$.
 
-$$\mathbf W^H\mathbf A=
-\begin{pmatrix}
-1 & 1/4-\mathrm{j}\sqrt{3}/4\\
-1/4+\mathrm{j}\sqrt{3}/4 & 1
-\end{pmatrix}.$$
-
-Taking **entry-wise Hadamard squared modulus** (never matrix multiplication $(\mathbf W^H\mathbf A)^2$!) gives off-diagonal $(1/4)^2 + (\sqrt{3}/4)^2 = 1/4$, reproducing $\mathbf P$ and $\vec b = \mathbf P\vec q = [17/16, 1/2]^\top$ in Eq. (12-11).
-
-In observed CSM $\mathbf R = \vec a_1\vec a_1^H + 0.25\vec a_2\vec a_2^H$, upper-right entry $R_{12} = 1 + \frac{1}{4}e^{+\mathrm{j}2\pi/3} = 7/8 + \mathrm{j}\sqrt{3}/8$ conjugates lower-left $R_{21} = 7/8 - \mathrm{j}\sqrt{3}/8$: Source 2 arrives late at Mic 2 (negative phase in $a_{22}$), which $x_1 x_2^*$ conjugates to positive imaginary part in $R_{12}$.
-
-<a id="e12-03"></a>
-
-#### E12-03: Is One Bidirectional DAMAS Iteration Identical to One Forward Sweep?
-
-**Problem.** Starting from $\vec 0$ on Eq. (12-11), compare intermediate vectors across the first two passes of forward-only sweeps versus bidirectional DAMAS iterations. What happens if both $\mathbf P$ and $\vec b$ are multiplied by $2$ while an implementation omits division by $P_{ii}$? Finally, set off-diagonal coupling to $0.99$ and explain the slow convergence.
-
-**Solution.** Forward-only sweeps give $[17/16, 15/64]^\top$ and $[257/256, 255/1024]^\top$ (§12.5). Under bidirectional DAMAS, Iteration 1 runs forward to $[17/16, 15/64]^\top$ then immediately reverses—updating Node 2 to $1/2 - \frac{1}{4}\times\frac{17}{16} = 15/64$ (unchanged) and Node 1 to $17/16 - \frac{1}{4}\times\frac{15}{64} = 257/256$, finishing Iteration 1 at $[257/256, 15/64]^\top$.
-
-Bidirectional Iteration 2 sweeps forward to update Node 2 to $255/1024$, then reverses to update Node 1 to $4097/4096$, finishing at $[4097/4096, 255/1024]^\top$. Intermediate states and inner multiply-adds differ, so convergence plots must specify sweep conventions.
+Likewise, Iteration 2's forward sweep begins by re-updating Node 1 to $257/256$ (again boundary idempotent, unchanged) and then updates Node 2 to $255/1024$; its reverse sweep begins by re-updating Node 2 unchanged and advances Node 1 to $4097/4096$, finishing at $[4097/4096, 255/1024]^\top$. Thus in the special $J = 2$ case, aside from the single extra effective $q_1$ update in Iteration 1's reverse half giving a constant $4\times$ lead (cutting initial max error from $1/16$ to $1/64$), every subsequent bidirectional iteration executes only two alternating effective updates—contracting error by the exact same factor of $1/16$ per iteration as a forward-only sweep, so the two log-error curves in Fig. 63(a) run strictly parallel. Only for grid sizes $J \ge 3$ does each bidirectional iteration carry $2J - 2$ effective updates, driving its per-iteration decay rate toward twice that of forward-only sweeps.
 
 Scaling both $\mathbf P$ and $\vec b$ by $2$ ($P_{ii} = 2$) cancels in numerator and denominator of Eq. (12-12); hardcoding $P_{ii} \equiv 1$ corrupts source scales completely.
 
 At off-diagonal PSF $0.99$, eigenvalues of $\mathbf P$ become $1.99$ and $0.01$ (condition number $199$), slowing per-sweep linear error contraction to $0.99^2 = 0.9801$: even after $100$ forward sweeps, estimates sit at $[1.03383325, 0.21650508]^\top$, noticeably short of $[1, 0.25]^\top$.
 
-<a id="e12-04"></a>
+<a id="e12-03"></a>
 
-#### E12-04: Does Time-Domain Orthogonality Guarantee Spectral Incoherence?
+#### E12-03: Does Time-Domain Orthogonality Guarantee Spectral Incoherence?
 
 **Problem.** Equal-frequency $\cos(\Omega_{\mathrm{d}} n)$ and $\sin(\Omega_{\mathrm{d}} n)$ have zero real inner product over full periods—does that make their single-frequency complex cross-spectrum vanish? Contrast "cross-snapshot phase-coded cancellation" against "single-snapshot same-bin coherence" on our $20$-block audio.
 
-**Solution.** **No!** With RMS phasors $s_1 = 1$ (cosine) and $s_2 = -\mathrm{j}/2$ (sine), single-snapshot cross-spectrum is $s_1 s_2^* = +\mathrm{j}/2 \ne 0$ with magnitude-squared coherence $|\mathrm{j}/2|^2 / (1 \times 1/4) = 1$ ($100\%$ coherent)! Real time-domain orthogonality zeroes only the **real part** of $s_1 s_2^*$, leaving pure imaginary $+\mathrm{j}/2$ to interfere strongly across spatial beams:
+**Solution.** **No.** With RMS phasors $s_1 = 1$ (cosine) and $s_2 = -\mathrm{j}/2$ (sine), single-snapshot cross-spectrum is $s_1 s_2^* = +\mathrm{j}/2 \ne 0$ with magnitude-squared coherence $|\mathrm{j}/2|^2 / (1 \times 1/4) = 1$ ($100\%$ coherent). Real time-domain orthogonality zeroes only the **real part** of $s_1 s_2^*$, leaving pure imaginary $+\mathrm{j}/2$ to interfere strongly across spatial beams:
 
 $$\begin{aligned}
 b_1&=\frac{17}{16}-\frac{\sqrt{3}}{4}\approx 0.62948730,\\
@@ -898,28 +974,28 @@ Clamping negative entries to zero merely inflates residuals without fixing missi
 
 In our phase-coded WAVs, each individual block remains a fully coherent two-tone pair; Eq. (12-6) holds over the $20$-block average solely because Source 2 flips polarity across even/odd blocks so cross-block $s_1 s_2^*$ cancels to zero (with tiny 16-bit PCM quantization residuals retained faithfully in read-back checks).
 
-<a id="e12-05"></a>
+<a id="e12-04"></a>
 
-#### E12-05: Does Zero Scan Residual Prove Accurate Source Powers?
+#### E12-04: Does Zero Scan Residual Prove Accurate Source Powers?
 
-**Problem.** Solve incoherent $\mathbf P\vec q = \vec b$ on fully coherent observation Eq. (12-23), contrasting scan-domain residual against full-CSM Frobenius residual; when sweeping inter-source coherence deterministically, what metadata should be logged?
+**Problem.** Solve incoherent $\mathbf P\vec q = \vec b$ on fully coherent observation Eq. (12-24), contrasting scan-domain residual against full-CSM Frobenius residual; when sweeping inter-source coherence deterministically, what metadata should be logged?
 
 **Solution.** Solving $q_1 + q_2 / 4 = 21/16$ and $q_1 / 4 + q_2 = 3/4$ yields $q_1 = 6/5 = 1.20$ and $q_2 = 9/20 = 0.45$, satisfying both equations with **exact zero scan residual**.
 
-Reconstructing incoherent CSM Eq. (12-6) from $\vec q_{\mathrm{wrong}} = [6/5, 9/20]^\top$, however, gives equal diagonals $33/20$ and upper-right entry $6/5 + \frac{9}{20}e^{+\mathrm{j}2\pi/3} = 39/40 + \mathrm{j}9\sqrt{3}/40$. Subtracting true $\mathbf R_{\mathrm{coh}}$ in Eq. (12-23) leaves diagonal errors $-3/5$ and $+9/10$ plus upper-right error $-3/20 - \mathrm{j}3\sqrt{3}/20$, totaling via Eq. (12-19):
+Reconstructing incoherent CSM Eq. (12-6) from $\vec q_{\mathrm{wrong}} = [6/5, 9/20]^\top$, however, gives equal diagonals $33/20$ and upper-right entry $6/5 + \frac{9}{20}e^{+\mathrm{j}2\pi/3} = 39/40 + \mathrm{j}9\sqrt{3}/40$. Subtracting true $\mathbf R_{\mathrm{coh}}$ in Eq. (12-24) leaves diagonal errors $-3/5$ and $+9/10$ plus upper-right error $-3/20 - \mathrm{j}3\sqrt{3}/20$, totaling via Eq. (12-19):
 
 $$\begin{aligned}
 \|\mathbf E\|_F^2&=(-0.6)^2+0.9^2+2(9/400+27/400)\\
 &=\frac{9}{25}+\frac{81}{100}+\frac{72}{400}=\frac{27}{20}=1.35.
 \end{aligned}$$
 
-This large matrix residual exposes coherence violation immediately (true marginal powers remain $1$ and $0.25$). When sweeping $\gamma \in [-1, 1]$ (Fig. 68(b)), archive ground-truth source covariances alongside $\gamma$ so deterministic parameter sweeps are never confused with random Monte Carlo trials.
+This large matrix residual exposes coherence violation immediately (true marginal powers remain $1$ and $0.25$). The numerical kernel further sweeps inter-source coherence $\gamma \in [-1, 1]$ (Fig. 63(b)) alongside PCM read-back on `array_coherent.wav`; always archive ground-truth source covariances and $\gamma$ alongside results so deterministic parameter sweeps are never confused with random Monte Carlo draws.
 
-<a id="e12-06"></a>
+<a id="e12-05"></a>
 
-#### E12-06: Duplicate Columns, Off-Grid Splitting, and the 2D 441-Node Benchmark
+#### E12-05: Duplicate Columns, Off-Grid Splitting, and the 2D 441-Node Benchmark
 
-**Problem.** (1) List three distinct non-negative exact solutions when $2 \times 2$ $\mathbf P = \vec 1\vec 1^\top$ and $\vec b = [1.25, 1.25]^\top$; (2) invert a unit off-grid source at $[1, e^{-\mathrm{j}\pi/3}]^\top$ on our two-node dictionary, checking power sum and CSM residual; (3) verify weak-source peak shift and 441-pixel scan sum in Fig. 67.
+**Problem.** (1) List three distinct non-negative exact solutions when $2 \times 2$ $\mathbf P = \vec 1\vec 1^\top$ and $\vec b = [1.25, 1.25]^\top$; (2) invert a unit off-grid source at $[1, e^{-\mathrm{j}\pi/3}]^\top$ on our two-node dictionary, checking power sum and CSM residual; (3) verify weak-source peak shift and 441-pixel scan sum in Fig. 62.
 
 **Solution.** Auditing all three discretization effects:
 
@@ -927,71 +1003,59 @@ This large matrix residual exposes coherence violation immediately (true margina
 2. **Off-grid single-source splitting**: Unit source $\vec a_{\mathrm{true}} = [1, e^{-\mathrm{j}\pi/3}]^\top$ produces equal scan readings $b_1 = |1 + e^{-\mathrm{j}\pi/3}|^2 / 4 = 3/4$ and $b_2 = |1 + e^{+\mathrm{j}\pi/3}|^2 / 4 = 3/4$. Inverting Eq. (12-11) yields $\vec q = [3/5, 3/5]^\top$: scan residual is zero, yet summed power inflates $20\%$ to $6/5 = 1.2$, with squared CSM Frobenius residual $2/5 = 0.4$ (relative Frobenius error $\sqrt{0.4 / 4} = \sqrt{0.1} \approx 0.31622777$). Never misread off-grid splitting of one source as twin physical sources.
 3. **2D $441$-node planar benchmark**: $8$-mic ring of radius $0.2\,\mathrm{m}$ at $z = 0$ ($c = 343\,\mathrm{m/s}, f = 4\,\mathrm{kHz}$), scanning $21 \times 21 = 441$ nodes on $z = 0.6\,\mathrm{m}$ ($x, y \in [-0.3, 0.3]\,\mathrm{m}$, step $0.03\,\mathrm{m}$) with incoherent spherical sources at $(-0.15, 0, 0.6)\,\mathrm{m}$ ($1.0$) and $(0.15, 0, 0.6)\,\mathrm{m}$ ($0.25$). Cross-PSF is $\approx 0.25508837$, giving scan readings $1.06377209$ and $0.50508837$; within $0.09\,\mathrm{m}$ neighborhoods, the strong peak lands on truth while strong-source sidelobe slope pushes the weak peak outward by $0.03\,\mathrm{m}$ to $(0.18, 0, 0.6)\,\mathrm{m}$. Summing all $441$ raw scan pixels gives $72.17393775 \gg 1.25$.
 
-<a id="e12-07"></a>
+<a id="e12-06"></a>
 
-#### E12-07: Can the Original PSF Still Be Used After Diagonal Removal?
+#### E12-06: Can the Original PSF Still Be Used After Diagonal Removal?
 
-**Problem.** Zero out the diagonal of [E12-02](#e12-02)'s CSM and multiply by two-mic far-field factor $2$: find DR scan vector $\vec b_{\mathrm{DR}}$, consistent PSF $\mathbf P_{\mathrm{DR}}$, and eigenvalues of $\mathbf R_{\mathrm{trim}}$; then test constant factor $2$ on unequal near-field vector $[1, 2]^\top$.
+**Problem.** Zero out the diagonal of §12.6's incoherent two-source CSM and multiply by two-mic far-field factor $2$: find DR scan vector $\vec b_{\mathrm{DR}}$, consistent PSF $\mathbf P_{\mathrm{DR}}$, and eigenvalues of $\mathbf R_{\mathrm{trim}}$; then test constant factor $2$ on unequal near-field vector $[1, 2]^\top$.
 
-**Solution.** With $\|\vec w_i\|_2^2 = 1/2$ and diagonal $5/4$ in [E12-02](#e12-02), zeroing the diagonal subtracts $\frac{5}{4} \times \frac{1}{2} = 5/8$ to give $[7/16, -1/8]^\top$, which factor $2$ scales to $\vec b_{\mathrm{DR}} = [7/8, -1/4]^\top$.
+**Solution.** With $\|\vec w_i\|_2^2 = 1/2$ and common diagonal $5/4$ in Eq. (12-10) and §12.6, zeroing the diagonal subtracts $\frac{5}{4} \times \frac{1}{2} = 5/8$ to give $[7/16, -1/8]^\top$, which factor $2$ scales to $\vec b_{\mathrm{DR}} = [7/8, -1/4]^\top$.
 
 Zeroing unit diagonals of each source template and multiplying by $2$ yields negative-off-diagonal DR PSF:
 
 $$\mathbf P_{\mathrm{DR}}=2\mathbf P-\vec 1\vec 1^\top
 =\begin{pmatrix}1 & -1/2\\-1/2 & 1\end{pmatrix}.$$
 
-Checking $\mathbf P_{\mathrm{DR}}[1, 1/4]^\top = [1 - 1/8,\; -1/2 + 1/4]^\top = [7/8, -1/4]^\top = \vec b_{\mathrm{DR}}$ confirms exact consistency—reusing full-CSM $\mathbf P$ breaks the linear equation outright! Off-diagonal modulus of $\mathbf R_{\mathrm{trim}}$ is $\sqrt{49/64 + 3/64} = \sqrt{13}/4$, giving indefinite eigenvalues $\pm\sqrt{13}/4 \approx \pm 0.90138782$; clamping negative $-1/4$ to zero prior to inversion corrupts the right-hand side as well.
+Checking $\mathbf P_{\mathrm{DR}}[1, 1/4]^\top = [1 - 1/8,\; -1/2 + 1/4]^\top = [7/8, -1/4]^\top = \vec b_{\mathrm{DR}}$ confirms exact consistency—reusing full-CSM $\mathbf P$ breaks the linear equation outright. Off-diagonal modulus of $\mathbf R_{\mathrm{trim}}$ is $\sqrt{49/64 + 3/64} = \sqrt{13}/4$, giving indefinite eigenvalues $\pm\sqrt{13}/4 \approx \pm 0.90138782$; clamping negative $-1/4$ to zero prior to inversion corrupts the right-hand side as well.
 
-On unequal near-field $\vec a = [1, 2]^\top$ ($\vec w = [1/5, 2/5]^\top$, off-diagonals $2$), DR scan gives $2 \times (1/5) \times (2/5) \times 2 = 8/25 = 0.32$; exact Eq. (12-22) requires $\gamma = 25 / (25 - 17) = 25/8$ rather than constant $2$.
+On unequal near-field $\vec a = [1, 2]^\top$ ($\vec w = [1/5, 2/5]^\top$, off-diagonals $2$), DR scan gives $2 \times (1/5) \times (2/5) \times 2 = 8/25 = 0.32$; exact Eq. (12-23) requires $\gamma = 25 / (25 - 17) = 25/8$ rather than constant $2$.
 
-<a id="e12-08"></a>
+<a id="e12-07"></a>
 
-#### E12-08: Why Projected GS and Scan-Domain NNLS Give Two Different Answers
+#### E12-07: How Channel Gain Calibration Restores Absolute Scan Scale
 
-**Problem.** Given $\mathbf P$ from Eq. (12-11) and $\vec b = [1, 0]^\top$, hand-calculate the projected GS fixed point, scan-domain NNLS minimizer, and unconstrained inverse, checking KKT Eq. (12-14); verify that $\vec b = [1, 0]^\top$ is physically realizable by a valid PSD CSM.
-
-**Solution.** Comparing all three:
-
-1. **Projected GS (DAMAS) fixed point**: $q_1 \leftarrow \max(0, 1 - q_2 / 4)$, $q_2 \leftarrow \max(0, 0 - q_1 / 4)$ steps from $\vec 0$ to $[1, 0]^\top$ immediately and stays clamped there ($-1/4 < 0$), with residual $[0, 1/4]^\top$ and squared scan error $1/16 = 0.0625$.
-2. **Scan-domain NNLS minimizer**: Along $q_2 = 0$, $(q_1 - 1)^2 + (q_1 / 4)^2 = \frac{17}{16}q_1^2 - 2q_1 + 1$ minimizes at $q_1 = 16/17$, dropping squared scan residual to $1/17 \approx 0.05882353 < 1/16$ (residual $[-1/17, 4/17]^\top$). Half-squared gradient $\vec u = \mathbf P^\top(\mathbf P\vec q - \vec b) = [0, 15/68]^\top$ satisfies Eq. (12-14) ($q_1 > 0 \Rightarrow u_1 = 0$; $q_2 = 0 \Rightarrow u_2 > 0$), while unconstrained inverse $[16/15, -4/15]^\top$ is infeasible.
-3. **PSD CSM realizability**: Single-snapshot $\vec v = \sqrt{4/3}[1, e^{+\mathrm{j}\pi/3}]^\top$ forms $\mathbf R = \vec v\vec v^H \succeq 0$ where $\vec w_2^H\vec v = 0$ ($b_2 = 0$ by $\pi$ phase cancellation) and $b_1 = \frac{1}{3}|1 + e^{+\mathrm{j}\pi/3}|^2 = 1$—boundary clamping arises naturally from an off-grid physical source.
-
-<a id="e12-09"></a>
-
-#### E12-09: How Channel Gain Calibration Restores Absolute Scan Scale
-
-**Problem.** A target arrives as $[1, 1]^\top$ while Mic 2 carries uncalibrated gain $g \in \{0.5, 1, 2\}$. Evaluate equal-weight scan $[1/2, 1/2]^\top$ before and after applying $\mathbf K = \operatorname{diag}(1, 1/g)$ via Eq. (12-28).
+**Problem.** A target arrives as $[1, 1]^\top$ while Mic 2 carries uncalibrated gain $g \in \{0.5, 1, 2\}$. Evaluate equal-weight scan $[1/2, 1/2]^\top$ before and after applying $\mathbf K = \operatorname{diag}(1, 1/g)$ via Eq. (12-29).
 
 **Solution.** Uncalibrated $\vec d = [1, g]^\top$ gives beam amplitude $(1 + g)/2$ and scan power $(1 + g)^2 / 4 \in \{0.5625, 1, 2.25\}$.
 
 Sandwiching $\mathbf R_{dd} = \vec d\vec d^\top$ via $\mathbf R_{xx} = \mathbf K\mathbf R_{dd}\mathbf K^H$ restores $\vec 1\vec 1^\top$ and unit scan power $1$ across all $g$ (omitting right-hand $\mathbf K^H$ breaks Hermitian symmetry and Channel 2 auto-power). Note in hardware design that post-amplifier circuit noise is scaled by $1/g^2$ alongside acoustic pressure.
 
-<a id="e12-10"></a>
+<a id="e12-08"></a>
 
-#### E12-10: Regional Power Sums, dB Conversion, and Actual PCM Read-Back
+#### E12-08: Regional Power Sums, dB Conversion, and Actual PCM Read-Back
 
 **Problem.** On our two-node benchmark referenced to digital power $1$, compare dB values ($\mathrm{dB\ re}\ 1$) of true regional power sum versus raw scan sum, check whether averaging per-source dB levels equals total dB, and cross-check against PCM read-back.
 
 **Solution.** True power sum $1 + 0.25 = 1.25$ converts to $10\log_{10}(1.25) \approx +0.96910013\,\mathrm{dB\ re}\ 1$; raw scan sum $17/16 + 1/2 = 1.5625$ converts to $+1.93820026\,\mathrm{dB\ re}\ 1$ ($+0.97\,\mathrm{dB}$ PSF overlap inflation).
 
-Averaging per-source levels $0\,\mathrm{dB\ re}\ 1$ and $-6.02059991\,\mathrm{dB\ re}\ 1$ gives $-3.01029996\,\mathrm{dB\ re}\ 1$—the geometric mean $\sqrt{1 \times 0.25} = 0.5$, never total radiated power!
+Averaging per-source levels $0\,\mathrm{dB\ re}\ 1$ and $-6.02059991\,\mathrm{dB\ re}\ 1$ gives $-3.01029996\,\mathrm{dB\ re}\ 1$—the geometric mean $\sqrt{1 \times 0.25} = 0.5$, never total radiated power.
 
 In companion WAVs, peak amplitudes $0.2, 0.1$ give analytical powers $0.02, 0.005$ (true sum $0.025$, scan sum $0.03125$), matched up to 16-bit integer quantization under `pcm_measurements` in `MANIFEST.json`.
 
-<a id="e12-11"></a>
+<a id="e12-09"></a>
 
-#### E12-11: Step-by-Step Full-CSM CLEAN-SC Stripping
+#### E12-09: Step-by-Step Full-CSM CLEAN-SC Stripping
 
 **Problem.** (1) On single-source $\mathbf R = 2\,\vec 1\vec 1^\top$ ($\vec w = \vec 1 / 2, \phi = 0.6$), compute Passes 1–3 and Pass 20; (2) run two passes at $\phi = 1$ on §12.6's incoherent two-source CSM to check whether driving $\mathbf D_2 = \mathbf 0$ yields true powers $[1, 1/4]^\top$.
 
 **Solution.** Evaluating Eq. (12-15):
 
 1. **Single-source geometric convergence**: Pass 1 finds $B_1 = 2, \vec h_1 = \vec 1$, logs $\phi B_1 = 1.2$, and scales residual by $0.4$; Pass 2 finds $B_2 = 0.8$, logs $0.48$ (cumulative $1.68$); Pass 3 finds $B_3 = 0.32$, logs $0.192$ (cumulative $1.872$). At Pass 20, cumulative clean power reaches $2(1 - 0.4^{20}) \approx 1.9999999780$ with residual peak $2 \times 0.4^{20} \approx 2.1990 \times 10^{-8}$.
-2. **Two-source two-pass exact zeroing at $\phi = 1$**: Pass 1 (§12.6) logs $B_1 = 17/16$ at Node 1, leaving $\mathbf D_1 = \frac{3}{17}[1,-1]^\top[1,-1]$. Pass 2 scans $\vec w_1^H\mathbf D_1\vec w_1 = 0$ at Node 1 and $B_2 = \vec w_2^H\mathbf D_1\vec w_2 = \frac{3}{68}|1 - e^{-\mathrm{j}2\pi/3}|^2 = 9/68$ at Node 2; subtracting at $\phi = 1$ drives $\mathbf D_2 = \mathbf 0$ **identically to zero**! Yet clean-map powers $[17/16, 9/68]^\top \approx [1.0625, 0.13235]^\top$ miss $[1, 0.25]^\top$ (even channel-averaged traces $\operatorname{tr}(\mathbf G_1)/2 = 73/68$ and $\operatorname{tr}(\mathbf G_2)/2 = 12/68$, while summing to $85/68 = 1.25$, redistribute power via Pass 1 crosstalk)—proving that zero residual CSM does not guarantee unbiased multi-source power separation.
+2. **Two-source two-pass exact zeroing at $\phi = 1$**: Pass 1 (§12.6) logs $B_1 = 17/16$ at Node 1, leaving $\mathbf D_1 = \frac{3}{17}[1,-1]^\top[1,-1]$. Pass 2 scans $\vec w_1^H\mathbf D_1\vec w_1 = 0$ at Node 1 and $B_2 = \vec w_2^H\mathbf D_1\vec w_2 = \frac{3}{68}|1 - e^{-\mathrm{j}2\pi/3}|^2 = 9/68$ at Node 2; subtracting at $\phi = 1$ drives $\mathbf D_2 = \mathbf 0$ **identically to zero**. Yet clean-map powers $[17/16, 9/68]^\top \approx [1.0625, 0.13235]^\top$ miss $[1, 0.25]^\top$ (even channel-averaged traces $\operatorname{tr}(\mathbf G_1)/2 = 73/68$ and $\operatorname{tr}(\mathbf G_2)/2 = 12/68$, while summing to $85/68 = 1.25$, redistribute power via Pass 1 crosstalk)—proving that zero residual CSM does not guarantee unbiased multi-source power separation.
 
-<a id="e12-12"></a>
+<a id="e12-10"></a>
 
-#### E12-12: Exact Frobenius Norm, Unweighted Half-Triangle, and Unphysical Intercepts
+#### E12-10: Exact Frobenius Norm, Unweighted Half-Triangle, and Unphysical Intercepts
 
 **Problem.** Fit $q\vec a\vec a^H$ ($\vec a = [1, 2]^\top$) to $\mathbf R = \operatorname{diag}(1, 10)$ under exact Frobenius Eq. (12-19) versus omitting $\sqrt{2}$ on upper-triangle entries; if an all-ones intercept column is also included, does it model physical white noise?
 
@@ -1006,11 +1070,11 @@ minimized at $50q - 82 = 0 \Rightarrow q^\star = 41/25 = 1.64$ (minimum $33.76$)
 
 Dropping $\sqrt{2}$ changes cost to $(q - 1)^2 + (4q - 10)^2 + (2q)^2 = 21q^2 - 82q + 101$, biasing $q$ to $41/21 \approx 1.95238095$.
 
-Adding an all-ones intercept $[1, 1, 1, 1]^\top$ alongside unweighted $[1, 4, 2, 0]^\top$ against $[1, 10, 0, 0]^\top$ yields $q = 87/35 \approx 2.48571429$ with intercept $-8/5 = -1.6$—injecting $-1.6$ into off-diagonal real and imaginary cross-spectra rather than physical diagonal white noise $[1, 1, 0, 0]^\top$ ([E12-16](#e12-16)).
+Adding an all-ones intercept $[1, 1, 1, 1]^\top$ alongside unweighted $[1, 4, 2, 0]^\top$ against $[1, 10, 0, 0]^\top$ yields $q = 87/35 \approx 2.48571429$ with intercept $-8/5 = -1.6$—injecting $-1.6$ into off-diagonal real and imaginary cross-spectra rather than physical diagonal white noise $[1, 1, 0, 0]^\top$ ([E12-14](#e12-14)).
 
-<a id="e12-13"></a>
+<a id="e12-11"></a>
 
-#### E12-13: Window Energy, PSD Normalization, and Endpoint Folding Factors
+#### E12-11: Window Energy, PSD Normalization, and Endpoint Folding Factors
 
 **Problem.** At $f_s = 24000\,\mathrm{Hz}$ and $N = 24$, evaluate one-sided bin powers via Eq. (12-5) for $x[n] = 0.2\cos(2\pi \cdot 2n / 24)$ under rectangular versus periodic Hann windows; then verify $\epsilon_k$ at DC ($0.2$) and Nyquist ($0.2(-1)^n$).
 
@@ -1022,15 +1086,15 @@ $$x_v[n]=0.1\cos\!\left(\frac{2\pi\cdot 2n}{24}\right)
 -0.05\cos\!\left(\frac{2\pi n}{24}\right)
 -0.05\cos\!\left(\frac{2\pi\cdot 3n}{24}\right).$$
 
-Unnormalized FFT magnitudes at $k = 1, 2, 3$ are $0.6, 1.2, 0.6$; plugging into Eq. (12-5) ($N U = 216, \epsilon_k = 2$) gives bin powers $\frac{1}{300}, \frac{1}{75}, \frac{1}{300}$. Although center bin $k=2$ drops to $1/75 \approx 0.01333$, summing bins $1..3$ recovers $\frac{1 + 4 + 1}{300} = 0.02$ identically!
+Unnormalized FFT magnitudes at $k = 1, 2, 3$ are $0.6, 1.2, 0.6$; plugging into Eq. (12-5) ($N U = 216, \epsilon_k = 2$) gives bin powers $\frac{1}{300}, \frac{1}{75}, \frac{1}{300}$. Although center bin $k=2$ drops to $1/75 \approx 0.01333$, summing bins $1..3$ recovers $\frac{1 + 4 + 1}{300} = 0.02$ identically.
 
 At endpoints under rectangular window: DC $x[n] = 0.2$ ($k = 0$) and Nyquist $x[n] = 0.2(-1)^n$ ($k = 12$) both have FFT magnitude $4.8$; with $\epsilon_0 = \epsilon_{12} = 1$, Eq. (12-5) gives $\frac{1 \times 4.8^2}{576} = 0.04 = 0.2^2$ (neither multiplying $\epsilon = 2$ nor dividing time-domain $A^2$ by $2$).
 
-<a id="e12-14"></a>
+<a id="e12-12"></a>
 
-#### E12-14: Why Shifting the Reference Point Leaves the Physical CSM Invariant
+#### E12-12: Why Shifting the Reference Point Leaves the Physical CSM Invariant
 
-**Problem.** In [E12-06](#e12-06)'s 2D setup with sources at $(\pm 0.15, 0, 0.6)\,\mathrm{m}$, shift common reference from $(0, 0, 0)$ to $(0, 0, 0.2)\,\mathrm{m}$: compute rescaled $\vec q'$ and prove algebraically that $\mathbf R$ is unchanged.
+**Problem.** In [E12-05](#e12-05)'s 2D setup with sources at $(-0.15, 0, 0.6)\,\mathrm{m}$ and $(0.15, 0, 0.6)\,\mathrm{m}$, shift common reference from $(0, 0, 0)$ to $(0, 0, 0.2)\,\mathrm{m}$: compute rescaled $\vec q'$ and prove algebraically that $\mathbf R$ is unchanged.
 
 **Solution.** Squared reference distances change from $r_0^2 = (\pm 0.15)^2 + 0.6^2 = 0.3825\,\mathrm{m}^2$ to $r_1^2 = (\pm 0.15)^2 + 0.4^2 = 0.1825\,\mathrm{m}^2$, scaling mean-square reference pressure by $r_0^2 / r_1^2 = 153 / 73$:
 
@@ -1040,20 +1104,20 @@ $$\vec q'=\frac{153}{73}\begin{pmatrix}1\\1/4\end{pmatrix}
 
 Writing $\delta_r = r_1 - r_0$ and $\eta_0 = (r_1/r_0)e^{\mathrm{j}\kappa\delta_r}$ in Eq. (12-2), $\vec a'_j = \eta_0\vec a_j$ and $s'_j = \eta_0^{-1} s_j$ cancel identically in $\vec a'_j s'_j = \vec a_j s_j$ and $q'_j\vec a'_j(\vec a'_j)^H = q_j\vec a_j\vec a_j^H$.
 
-<a id="e12-15"></a>
+<a id="e12-13"></a>
 
-#### E12-15: Which Quantities Multiply Bandwidth and Cell Area?
+#### E12-13: Which Quantities Multiply Bandwidth and Cell Area?
 
 **Problem.** (1) Sum two adjacent bins with PSDs $0.01$ and $0.02\ \mathrm{Hz}^{-1}$ over widths $100\,\mathrm{Hz}$ and $200\,\mathrm{Hz}$; (2) on two $0.04\,\mathrm{m}^2$ cells reading $1$ and $0.25$, compute regional totals under discrete point-source versus areal-density conventions, plus $2\times 2$ cell refinement rules.
 
 **Solution.** Matching integration dimensions:
 
 1. **Frequency integration**: Multiply PSDs by bin widths before summing: $0.01 \times 100 + 0.02 \times 200 = 1 + 4 = 5$ (raw $0.03$ has density units).
-2. **Spatial summation and refinement**: Under discrete point-source Eq. (12-24), sum directly to $1.25$; under areal density ($\mathrm{m}^{-2}$), multiply area to get $(1 + 0.25) \times 0.04 = 0.05$. Splitting a $0.04\,\mathrm{m}^2$ cell of uniform density $1$ (total $0.04$) into four $0.01\,\mathrm{m}^2$ subcells holds density at $1$ while scaling per-subcell discrete point power to $1 \times 0.01 = 0.01$ (summing across 4 subcells back to $0.04$).
+2. **Spatial summation and refinement**: Under discrete point-source Eq. (12-25), sum directly to $1.25$; under areal density ($\mathrm{m}^{-2}$), multiply area to get $(1 + 0.25) \times 0.04 = 0.05$. Splitting a $0.04\,\mathrm{m}^2$ cell of uniform density $1$ (total $0.04$) into four $0.01\,\mathrm{m}^2$ subcells holds density at $1$ while scaling per-subcell discrete point power to $1 \times 0.01 = 0.01$ (summing across 4 subcells back to $0.04$).
 
-<a id="e12-16"></a>
+<a id="e12-14"></a>
 
-#### E12-16: Separating Source Power from Spatially White Noise
+#### E12-14: Separating Source Power from Spatially White Noise
 
 **Problem.** Fit $q\vec a\vec a^H + \sigma^2\mathbf I$ ($\vec a = [1, 2]^\top$) to CSM with diagonals $2.5, 8.5$ and off-diagonals $4$: write out real dictionary columns, Gram matrix, and solution; can a single microphone ($a = 1, R = 2.5$) separate the two?
 
@@ -1072,66 +1136,56 @@ Solving $25q + 5\sigma^2 = 52.5$ and $5q + 2\sigma^2 = 11$ ($5\times\text{Eq. 2}
 
 At $M = 1$ ($a = 1$), dictionary $[1, 1]$ has rank $1$ with a single equation $q + \sigma^2 = 2.5$, leaving an entire unidentifiable segment $q, \sigma^2 \ge 0$ (minimum-norm pseudoinverse $[1.25, 1.25]^\top$ is an arbitrary numerical split, never evidence of $0\,\mathrm{dB}$ SNR).
 
-<a id="e12-17"></a>
+<a id="e12-15"></a>
 
-#### E12-17: One Scan Map, Two Distinct Minimization Objectives
+#### E12-15: One Scan Map, Two Distinct Minimization Objectives
 
-**Problem.** Using [E12-02](#e12-02)'s dictionary and $\mathbf P$ against rank-one $\mathbf R = \vec v\vec v^H$ ($\vec v = \sqrt{4/3}[1, e^{\mathrm{j}\pi/3}]^\top$), compute $\vec b$, Gram matrix $\mathbf G$, and $\vec h$; contrast minimizers of full-CSM non-negative fitting versus scan-domain NNLS; and verify consistent diagonal-zeroed and unequal-norm extensions.
+**Problem.** Using Eqs. (12-10)–(12-11)'s two-mic dictionary and $\mathbf P$ against rank-one PSD matrix $\mathbf R = \vec v\vec v^H$ ($\vec v = \sqrt{4/3}[1, e^{\mathrm{j}\pi/3}]^\top$), compute $\vec b$, template Gram matrix $\mathbf G$, and $\vec h$; contrast the unconstrained linear inverse, projected GS (full-CSM non-negative fitting), and scan-domain NNLS with their KKT conditions and costs; and verify consistent diagonal-zeroed and unequal-norm extensions.
 
-**Solution.** Writing general matrix notation from §12.7 first: with $\mathbf T_j = \vec a_j\vec a_j^H$, matched weights Eq. (12-8), positive diagonal row-scale matrix $\boldsymbol\Lambda_a \in \mathbb{R}^{J \times J}$, symmetric template Gram matrix $\mathbf G$, and linear vector $\vec h$:
-
-$$\begin{aligned}
-G_{ij}&=|\vec a_i^H\vec a_j|^2,\qquad
-h_i=\vec a_i^H\hat{\mathbf R}\vec a_i,\\
-\Lambda_{a,ii}&=(\vec a_i^H\vec a_i)^2>0,\\
-\mathbf G&=\boldsymbol\Lambda_a\mathbf P,\qquad
-\vec h=\boldsymbol\Lambda_a\vec b.
-\end{aligned}\tag{12-29}$$
-
-Expanding full-CSM squared Frobenius objective $F(\vec q) = \|\mathbf E_q\|_F^2$ ($\mathbf E_q = \sum_j q_j\mathbf T_j - \hat{\mathbf R}$):
+**Solution.** Building directly on §12.7 Eq. (12-20) ($\mathbf G = \boldsymbol\Lambda_a\mathbf P$ and $\vec h = \boldsymbol\Lambda_a\vec b$), denote the full-CSM squared Frobenius objective of Eq. (12-18) by $F(\vec q)$ with residual $\mathbf E_q = \sum_j q_j\mathbf T_j - \hat{\mathbf R}$, expanding term by term:
 
 $$\begin{aligned}
 F(\vec q)&=\|\mathbf E_q\|_F^2\\
 &=\vec q^\top\mathbf G\vec q-2\vec h^\top\vec q
 +\|\hat{\mathbf R}\|_F^2.
-\end{aligned}\tag{12-30}$$
+\end{aligned}\tag{12-35}$$
 
-Minimizing over $q_i \ge 0$ with $q_{j\ne i}$ fixed (writing $r_i^G = h_i - \sum_{j\ne i} G_{ij} q_j$ and $r_i^P = b_i - \sum_{j\ne i} P_{ij} q_j$) gives:
+Minimizing over $q_i \ge 0$ with $q_{j\ne i}$ fixed (writing $r_i^G = h_i - \sum_{j\ne i} G_{ij} q_j$ and $r_i^P = b_i - \sum_{j\ne i} P_{ij} q_j$) cancels positive $\Lambda_{a,ii}$ from Eq. (12-20):
 
 $$\begin{aligned}
 q_i&\leftarrow\max(0,r_i^G/G_{ii})
 =\max\bigl(0,(\Lambda_{a,ii}r_i^P)/(\Lambda_{a,ii}P_{ii})\bigr)\\
 &=\max(0,r_i^P/P_{ii}),
-\end{aligned}\tag{12-31}$$
+\end{aligned}\tag{12-36}$$
 
-canceling $\Lambda_{a,ii}$ to match unrelaxed DAMAS Eq. (12-12) identically! Because Gram matrix $\mathbf G \succeq 0$ makes $F(\vec q)$ convex, any fixed point satisfying $\vec q \ge 0$, $\mathbf G\vec q - \vec h \ge 0$, and $q_i(\mathbf G\vec q - \vec h)_i = 0$ globally minimizes Eq. (12-30) ([Chardon et al., §§3.1–3.3](https://gilleschardon.fr/papers/damascmf.pdf)), even when unequal column norms make $\mathbf P$ asymmetric while $\mathbf G = \boldsymbol\Lambda_a\mathbf P$ remains symmetric; scan-domain NNLS $S(\vec q) = \|\mathbf P\vec q - \vec b\|_2^2$ uses Hessian $\mathbf P^\top\mathbf P \ne \mathbf G$.
+reproducing unrelaxed DAMAS Eq. (12-12) identically. Because Gram matrix $\mathbf G \succeq 0$ makes $F(\vec q)$ convex, any fixed point satisfying $\vec q \ge 0$, $\mathbf G\vec q - \vec h \ge 0$, and $q_i(\mathbf G\vec q - \vec h)_i = 0$ globally minimizes Eq. (12-35) ([Chardon et al., §§3.1–3.3 Theorems 1–3 & Eqs. (15)–(18)](https://gilleschardon.fr/papers/damascmf.pdf)); scan-domain NNLS $S(\vec q) = \|\mathbf P\vec q - \vec b\|_2^2$ uses Hessian $\mathbf P^\top\mathbf P \ne \mathbf G$.
 
-Substituting our numbers ($\|\vec a_i\|_2^2 = 2 \Rightarrow \boldsymbol\Lambda_a = 4\mathbf I_2$, $|\vec a_1^H\vec a_2|^2 = 1$, $\|\mathbf R\|_F^2 = (\vec v^H\vec v)^2 = 64/9$, $\vec a_2^H\vec v = 0$):
+Substituting our numbers ($\|\vec a_i\|_2^2 = 2 \Rightarrow \boldsymbol\Lambda_a = 4\mathbf I_2$, $|\vec a_1^H\vec a_2|^2 = 1$, $\|\mathbf R\|_F^2 = (\vec v^H\vec v)^2 = 64/9$, $\vec w_2^H\vec v = 0 \Rightarrow b_2 = 0$, $b_1 = \frac{1}{3}|1 + e^{\mathrm{j}\pi/3}|^2 = 1$, confirming $\vec b = [1, 0]^\top$ is generated by a valid rank-one PSD CSM from an off-grid source):
 
 $$\begin{gathered}
 \mathbf G=\begin{pmatrix}4&1\\1&4\end{pmatrix},\qquad
 \vec b=\begin{pmatrix}1\\0\end{pmatrix},\\
 \vec h=\boldsymbol\Lambda_a\vec b=[4,\;0]^\top,\qquad
 \|\mathbf R\|_F^2=\frac{64}{9}.
-\end{gathered}\tag{12-32}$$
+\end{gathered}\tag{12-37}$$
 
-Writing non-negative scalars $q_1 = u \ge 0, q_2 = v \ge 0$:
+Writing both squared-error objectives directly in terms of non-negative source-power coordinates $(q_1, q_2)$ ($q_1, q_2 \ge 0$):
 
 $$\begin{aligned}
-F(u,v)&=4u^2+2uv+4v^2-8u+\frac{64}{9},\\
-S(u,v)&=\left(u+\frac{v}{4}-1\right)^2+\left(\frac{u}{4}+v\right)^2.
-\end{aligned}\tag{12-33}$$
+F(q_1,q_2)&=4q_1^2+2q_1q_2+4q_2^2-8q_1+\frac{64}{9},\\
+S(q_1,q_2)&=\left(q_1+\frac{q_2}{4}-1\right)^2+\left(\frac{q_1}{4}+q_2\right)^2.
+\end{aligned}\tag{12-38}$$
 
-For $F(u, v)$: at $[1, 0]^\top$, half-gradient $\mathbf G\vec q - \vec h = [0, 1]^\top \ge 0$ satisfies KKT with eigenvalues $3, 5 > 0$, giving unique global minimizer $[1, 0]^\top$ and $F(1, 0) = 28/9$.
+The unconstrained linear inverse $\mathbf P^{-1}\vec b = [16/15, -4/15]^\top$ is infeasible under $\vec q \ge 0$. For $F(q_1, q_2)$: unrelaxed projected GS steps immediately from $\vec 0$ to $[1, 0]^\top$ and stays fixed there; half-gradient $\mathbf G\vec q - \vec h = [0, 1]^\top \ge 0$ satisfies KKT with positive eigenvalues $3, 5 > 0$, making $[1, 0]^\top$ the unique global minimizer of $F$ with $F(1, 0) = 28/9$ (scan residual $[0, 1/4]^\top$, $S = 1/16$).
 
-For $S(u, v)$: along $v = 0$, $2(u - 1) + u / 8 = 0$ gives unique global minimizer $[16/17, 0]^\top$ with half-gradient $[0, 15/68]^\top \ge 0$ and $F(16/17, 0) = 4(16/17 - 1)^2 + 28/9 = 8128/2601$:
+For $S(q_1, q_2)$: along $q_2 = 0$, $2(q_1 - 1) + q_1 / 8 = 0$ yields unique global minimizer $[16/17, 0]^\top$ with residual $[-1/17, 4/17]^\top$, $S = 1/17 < 1/16$, half-gradient $\mathbf P^\top(\mathbf P\vec q - \vec b) = [0, 15/68]^\top \ge 0$ satisfying Eq. (12-14), and $F(16/17, 0) = 4(16/17 - 1)^2 + 28/9 = 8128/2601$:
 
 | Solver Formulation | Optimal $\vec q \ge 0$ | Squared Scan Residual $S(\vec q)$ | Full-CSM Residual $F(\vec q)$ |
 |---|---|---:|---:|
 | DAMAS fixed point / Full-CSM CMF | $[1, 0]^\top$ | $1/16 \approx 0.06250$ | $28/9 \approx 3.11111$ |
 | Scan-domain NNLS | $[16/17, 0]^\top$ | $1/17 \approx 0.05882$ | $8128/2601 \approx 3.12495$ |
 
-Each wins strictly on its own objective ($28/9 < 8128/2601$ vs. $1/17 < 1/16$); never compare $0.05882$ directly against $3.11111$ across incompatible rulers.
+Each wins strictly on its own objective ($28/9 < 8128/2601$ vs. $1/17 < 1/16$); never compare $0.05882$ directly against $3.11111$ across incompatible rulers, and because the true source generating $\mathbf R$ sits off-grid, neither boundary solution equals physical true source power.
 
 **Extension 1 (Consistent diagonal-zeroed projection)**: Zero-diagonal projector $\mathcal O(\cdot)$ gives $\mathbf T'_i = \mathcal O(\mathbf T_i)$, $\mathbf R' = \mathcal O(\mathbf R)$, and inner products:
 
@@ -1140,25 +1194,25 @@ $$\begin{gathered}
 \vec h'=\begin{pmatrix}4/3\\-8/3\end{pmatrix}.
 \end{gathered}$$
 
-Multiplying by two-mic factor $2$ gives DR PSF $\mathbf G'/2$ and signed DR scan $\vec h'/2 = [2/3, -4/3]^\top$ (retaining $-4/3$ unclamped!). Along $q_2 = 0$, DR-CSM fitting solves $2q_1 - 4/3 = 0 \Rightarrow [2/3, 0]^\top$, whereas DR scan-domain NNLS minimizes $(q_1 - 2/3)^2 + (-q_1/2 + 4/3)^2 \Rightarrow [16/15, 0]^\top$:
+Multiplying by two-mic factor $2$ gives DR PSF $\mathbf G'/2$ and signed DR scan $\vec h'/2 = [2/3, -4/3]^\top$ (retaining $-4/3$ unclamped). Along $q_2 = 0$, DR-CSM fitting solves $2q_1 - 4/3 = 0 \Rightarrow [2/3, 0]^\top$ (second half-gradient component $2 > 0$), whereas DR scan-domain NNLS minimizes $(q_1 - 2/3)^2 + (-q_1/2 + 4/3)^2 \Rightarrow [16/15, 0]^\top$ (second half-gradient component $3/5 > 0$):
 
 | Diagonal-Zeroed Formulation | Optimal $\vec q \ge 0$ | Compensated Scan Residual | DR-CSM Residual |
 |---|---|---:|---:|
 | DR-CSM non-negative fitting | $[2/3, 0]^\top$ | $1$ | $8/3 \approx 2.66667$ |
 | DR scan-domain NNLS | $[16/15, 0]^\top$ | $4/5 = 0.8$ | $224/75 \approx 2.98667$ |
 
-**Extension 2 (Unequal column norms)**: Scaling Column 2 by $2$ ($\|\vec a_2\|_2^2 = 8, \boldsymbol\Lambda_a = \operatorname{diag}(4, 64)$) makes $\mathbf P$ asymmetric (rows $[1, 1]$ and $[1/16, 1]$), yet $\mathbf G = \boldsymbol\Lambda_a\mathbf P$ (rows $[4, 4]$ and $[4, 64]$) remains strictly symmetric without equal-norm assumptions.
+**Extension 2 (Unequal column norms)**: Scaling Column 2 by $2$ ($\|\vec a_2\|_2^2 = 8, \boldsymbol\Lambda_a = \operatorname{diag}(4, 64)$) makes $\mathbf P$ asymmetric (rows $[1, 1]$ and $[1/16, 1]$), yet $\mathbf G = \boldsymbol\Lambda_a\mathbf P$ (rows $[4, 4]$ and $[4, 64]$) remains strictly symmetric, verifying Eq. (12-20) without equal-norm assumptions.
 
-![Figure 80: Non-negative iso-cost contours and distinct boundary minimizers of scan-domain NNLS versus full-CSM CMF](../figures_en/fig80_imaging_objectives.png)
+![Figure 75: Non-negative iso-cost contours and distinct boundary minimizers of scan-domain NNLS versus full-CSM CMF](../figures_en/fig75_imaging_objectives.png)
 
-Figure 80 zooms into $q_1 \in [0.8, 1.1],\; q_2 \in [0, 0.2]$ to visualize Eq. (12-33):
+Figure 75 zooms into $q_1 \in [0.8, 1.1],\; q_2 \in [0, 0.2]$ to visualize Eq. (12-38):
 
 - **Panel (a) Scan residual $S(q_1, q_2) = \|\mathbf P\vec q - \vec b\|_2^2$**: Blue ellipses (unconstrained minimum at $[16/15, -4/15]^\top$) graze boundary $q_2 = 0$ at blue dot $(16/17, 0) \approx (0.9412, 0)$ ($S = 1/17 \approx 0.05882 < 1/16$ at green square $(1, 0)$).
 - **Panel (b) Full-CSM residual $F(q_1, q_2)$**: Replacing Hessian $\mathbf P^\top\mathbf P$ by $\mathbf G$ rotates the green ellipses so tangency along $q_2 = 0$ shifts to green square $(1, 0)$—the exact DAMAS fixed point ($F = 28/9 \approx 3.11111 < 8128/2601$ at blue dot).
 
-<a id="e12-18"></a>
+<a id="e12-16"></a>
 
-#### E12-18: Why Four Pairwise-Distinct Steering Columns Remain Unidentifiable
+#### E12-16: Why Four Pairwise-Distinct Steering Columns Remain Unidentifiable
 
 **Problem.** With zero noise on $M = 2$ mics and four distinct columns $\vec a_j = [1, z_j]^\top$ ($z_j \in \{1, \mathrm{j}, -1, -\mathrm{j}\}$), prove disjoint $[1, 0, 1, 0]^\top$ and $[0, 1, 0, 1]^\top$ produce identical full CSMs; find $\vec b$, dictionary rank, and the complete non-negative solution segment, plus the impact of adding $\sigma^2\mathbf I_2$.
 
@@ -1171,9 +1225,9 @@ $$\begin{aligned}
 \mathbf T_2+\mathbf T_4
 &=\begin{pmatrix}1&-\mathrm{j}\\\mathrm{j}&1\end{pmatrix}
 +\mathbf T_2^\top=2\mathbf I_2.
-\end{aligned}\tag{12-34}$$
+\end{aligned}\tag{12-39}$$
 
-Both $[1, 0, 1, 0]^\top$ and $[0, 1, 0, 1]^\top$ generate the exact same full complex CSM $2\mathbf I_2$!
+Both $[1, 0, 1, 0]^\top$ and $[0, 1, 0, 1]^\top$ generate the exact same full complex CSM $2\mathbf I_2$.
 
 Under $\vec w_i = \vec a_i / 2$, adjacent coupling $|1 \pm \mathrm{j}|^2 / 4 = 1/2$ and opposite coupling $0$ yield:
 
@@ -1184,9 +1238,9 @@ $$\mathbf P=\frac{1}{2}\begin{pmatrix}
 1 & 0 & 1 & 2
 \end{pmatrix},\qquad
 \vec b=\begin{pmatrix}1\\1\\1\\1\end{pmatrix}.
-\tag{12-35}$$
+\tag{12-40}$$
 
-Real dictionary $\mathbf H$ via Eq. (12-19) has columns $[1, 1, \sqrt{2}, 0]^\top$, $[1, 1, 0, -\sqrt{2}]^\top$, $[1, 1, -\sqrt{2}, 0]^\top$, $[1, 1, 0, \sqrt{2}]^\top$: Rows 1 and 2 are identical, so despite $J = 4 \le M^2 = 4$, $\operatorname{rank}(\mathbf H) = \operatorname{rank}(\mathbf P) = 3$ (eigenvalues of $\mathbf P$: $0, 1, 1, 2$)!
+Real dictionary $\mathbf H$ via Eq. (12-19) has columns $[1, 1, \sqrt{2}, 0]^\top$, $[1, 1, 0, -\sqrt{2}]^\top$, $[1, 1, -\sqrt{2}, 0]^\top$, $[1, 1, 0, \sqrt{2}]^\top$: Rows 1 and 2 are identical, so despite $J = 4 \le M^2 = 4$, $\operatorname{rank}(\mathbf H) = \operatorname{rank}(\mathbf P) = 3$ (eigenvalues of $\mathbf P$: $0, 1, 1, 2$).
 
 Both share 1D nullspace vector $\vec n = [1, -1, 1, -1]^\top$, generating the exact non-negative solution segment:
 
@@ -1194,26 +1248,17 @@ $$\begin{gathered}
 \vec q(t)=\frac{1}{2}\begin{pmatrix}1\\1\\1\\1\end{pmatrix}
 +t\begin{pmatrix}1\\-1\\1\\-1\end{pmatrix},\\
 -\frac{1}{2}\le t\le\frac{1}{2}.
-\end{gathered}\tag{12-36}$$
+\end{gathered}\tag{12-41}$$
 
-Endpoints $t = \mp 1/2$ recover $[0, 1, 0, 1]^\top$ and $[1, 0, 1, 0]^\top$, with constant $\ell_1$ sum $\sum_j q_j(t) \equiv 2$ throughout (so $\ell_1$ regularization cannot break the tie between two 2-sparse endpoints either!). Appending $\sigma^2\mathbf I_2$ adds pure-noise explanation $\vec q = \vec 0, \sigma^2 = 2$.
+Endpoints $t = \mp 1/2$ recover $[0, 1, 0, 1]^\top$ and $[1, 0, 1, 0]^\top$, with constant $\ell_1$ sum $\sum_j q_j(t) \equiv 2$ throughout (so $\ell_1$ regularization cannot break the tie between two 2-sparse endpoints either). Appending $\sigma^2\mathbf I_2$ adds pure-noise explanation $\vec q = \vec 0, \sigma^2 = 2$; our numerical kernel explicitly returns the nullspace direction and multiple representative solutions to flag intrinsic geometric ambiguity.
 
-<a id="e12-19"></a>
+<a id="e12-17"></a>
 
-#### E12-19: Why Functional Beamforming Preserves Single-Source Peaks and Exponentiates Sidelobes
+#### E12-17: Why Functional Beamforming Preserves Single-Source Peaks and Exponentiates Sidelobes
 
-**Problem.** For $\mathbf R \succeq 0$ and $\nu \ge 1$: (1) prove on noiseless single source $\mathbf R = q_1\vec a_1\vec a_1^H$ ($q_1 > 0$) that $b_{\mathrm{FB},1}(\nu) = q_1$ regardless of near-field column norms, reducing to $q_1 P_{i1}^\nu$ under equal norms; (2) compute $\vec b_{\mathrm{FB}}(\nu)$ and sidelobe dB at $\nu = 1, 2, 4$ on our two-node benchmark ($q_1 = 1, q_2 = 0, P_{21} = 1/4$), and explain why DR matrices fail.
+**Problem.** For $\mathbf R \succeq 0$ and $\nu \ge 1$, adopt the matched-scale Functional Beamforming definition of §12.11 Eq. (12-34). (1) Prove on noiseless single source $\mathbf R = q_1\vec a_1\vec a_1^H$ ($q_1 > 0$) that $b_{\mathrm{FB},1}(\nu) = q_1$ regardless of near-field column norms, reducing to $q_1 P_{i1}^\nu$ under equal norms; (2) compute $\vec b_{\mathrm{FB}}(\nu)$ and sidelobe dB at $\nu = 1, 2, 4$ on our two-node benchmark ($q_1 = 1, q_2 = 0, P_{21} = 1/4$), and explain why DR matrices fail.
 
-**Solution.** With $\mathbf R = \sum_{m=1}^M \lambda_m\vec u_m\vec u_m^H$ ($\lambda_m \ge 0$) and $\tilde{\vec a}_i = \vec a_i / \|\vec a_i\|_2$:
-
-$$\begin{aligned}
-\mathbf R^{1/\nu}
-&=\sum_{m=1}^{M}\lambda_m^{1/\nu}\vec u_m\vec u_m^H,\\
-b_{\mathrm{FB},i}(\nu)&=\frac{1}{\|\vec a_i\|_2^2}
-\bigl(\tilde{\vec a}_i^H\mathbf R^{1/\nu}\tilde{\vec a}_i\bigr)^\nu.
-\end{aligned}\tag{12-37}$$
-
-Rank-one $\mathbf R = q_1\vec a_1\vec a_1^H = \lambda_1\tilde{\vec a}_1\tilde{\vec a}_1^H$ has sole nonzero eigenvalue $\lambda_1 = q_1\|\vec a_1\|_2^2$ ($\vec u_1 = \tilde{\vec a}_1$) and $M - 1$ zeros ($0^{1/\nu} = 0$), giving $\mathbf R^{1/\nu} = \lambda_1^{1/\nu}\tilde{\vec a}_1\tilde{\vec a}_1^H$:
+**Solution.** Rewriting rank-one $\mathbf R = q_1\vec a_1\vec a_1^H = \lambda_1\tilde{\vec a}_1\tilde{\vec a}_1^H$ gives sole nonzero eigenvalue $\lambda_1 = q_1\|\vec a_1\|_2^2$ ($\vec u_1 = \tilde{\vec a}_1$) and $M - 1$ zero eigenvalues ($0^{1/\nu} = 0$), so $\mathbf R^{1/\nu} = \lambda_1^{1/\nu}\tilde{\vec a}_1\tilde{\vec a}_1^H$. Substituting into §12.11 Eq. (12-34):
 
 $$\begin{aligned}
 \tilde{\vec a}_i^H\mathbf R^{1/\nu}\tilde{\vec a}_i
@@ -1221,57 +1266,57 @@ $$\begin{aligned}
 \bigl|\tilde{\vec a}_i^H\tilde{\vec a}_1\bigr|^2,\\
 b_{\mathrm{FB},i}(\nu)&=q_1\frac{\|\vec a_1\|_2^2}{\|\vec a_i\|_2^2}
 \bigl|\tilde{\vec a}_i^H\tilde{\vec a}_1\bigr|^{2\nu}.
-\end{aligned}\tag{12-38}$$
+\end{aligned}\tag{12-42}$$
 
-At $i = 1$, $\|\vec a_1\|_2^2 / \|\vec a_1\|_2^2 = 1$ and $|\tilde{\vec a}_1^H\tilde{\vec a}_1| = 1$ give $b_{\mathrm{FB},1}(\nu) = q_1$ identically for all $\nu \ge 1$; under equal norms $\|\vec a_i\|_2 = \|\vec a_1\|_2$, $P_{i1} = |\tilde{\vec a}_i^H\tilde{\vec a}_1|^2$ reduces Eq. (12-38) to $b_{\mathrm{FB},i}(\nu) = q_1 P_{i1}^\nu$:
+At $i = 1$, $\|\vec a_1\|_2^2 / \|\vec a_1\|_2^2 = 1$ and $|\tilde{\vec a}_1^H\tilde{\vec a}_1| = 1$ give $b_{\mathrm{FB},1}(\nu) = q_1$ identically for all $\nu \ge 1$; under equal norms $\|\vec a_i\|_2 = \|\vec a_1\|_2$, $P_{i1} = |\vec w_i^H\vec a_1|^2 = |\tilde{\vec a}_i^H\tilde{\vec a}_1|^2$ reduces Eq. (12-42) to $b_{\mathrm{FB},i}(\nu) = q_1 P_{i1}^\nu$:
 
-- $\nu = 1$: $[1, 1/4]^\top = [1, 0.25]^\top$ ($-6.0206\,\mathrm{dB}$ sidelobe);
-- $\nu = 2$: $[1, 1/16]^\top = [1, 0.0625]^\top$ ($-12.0412\,\mathrm{dB}$ sidelobe);
-- $\nu = 4$: $[1, 1/256]^\top \approx [1, 0.003906]^\top$ ($-24.0824\,\mathrm{dB}$ sidelobe).
+- $\nu = 1$ (conventional scan): $[1, 1/4]^\top = [1, 0.25]^\top$ ($-6.0206\,\mathrm{dB}$ sidelobe);
+- $\nu = 2$ (matrix square root): $[1, 1/16]^\top = [1, 0.0625]^\top$ ($-12.0412\,\mathrm{dB}$ sidelobe);
+- $\nu = 4$ (fourth root): $[1, 1/256]^\top \approx [1, 0.003906]^\top$ ($-24.0824\,\mathrm{dB}$ sidelobe).
 
 Zeroing the diagonal yields eigenvalues $+1$ and $-1 < 0$, making real $(-1)^{1/\nu}$ undefined; our kernel raises an explicit error on indefinite inputs.
 
-<a id="e12-20"></a>
+<a id="e12-18"></a>
 
-#### E12-20: $2 \times 2$ Matrix Square Root, Non-Conservation of Power, and Weak-Source Underestimation
+#### E12-18: $2 \times 2$ Matrix Square Root, Non-Conservation of Power, and Weak-Source Underestimation
 
 **Problem.** (1) On incoherent $\vec q = [1, 1/4]^\top$, hand-calculate $\mathbf R^{1/2}$ via Cayley–Hamilton and exact $\vec b_{\mathrm{FB}}(2)$; (2) test whether summing $\vec b_{\mathrm{FB}}(2)$ or dividing by single-source PSF sum recovers $1.25$; (3) on a 3-mic setup ($q_1 = 1$ on-grid, orthogonal weak source $q_2 = 1/4$ with off-grid cosine-squared overlap $\eta = 4/5$), evaluate $\nu = 1, 2, 8$ to explain weak-source underestimation.
 
 **Solution.** Step by step:
 
-**Step 1: $2 \times 2$ PSD square root and exact two-source FB.** From [E12-02](#e12-02), $\mathbf R$ has diagonals $5/4$, $R_{12} = (7 + \mathrm{j}\sqrt{3})/8$, trace $T_R = 5/2$, and $\det(\mathbf R) = 25/16 - 13/16 = 3/4 > 0$. By $2 \times 2$ Cayley–Hamilton ($\tau_R = T_R + 2\sqrt{\det\mathbf R}$):
+**Step 1: $2 \times 2$ PSD square root and exact two-source FB.** From §12.6, $\mathbf R$ has diagonals $5/4$, $R_{12} = (7 + \mathrm{j}\sqrt{3})/8$, trace $T_R = 5/2$, and $\det(\mathbf R) = 25/16 - 13/16 = 3/4 > 0$ (eigenvalues $(5 \pm \sqrt{13})/4 > 0$). By $2 \times 2$ Cayley–Hamilton ($D_R = \sqrt{\det\mathbf R}$, $\tau_R = T_R + 2D_R$):
 
 $$\begin{aligned}
 \mathbf R^{1/2}&=\frac{\mathbf R+\sqrt{\det\mathbf R}\,\mathbf I_2}
 {\sqrt{\tau_R}},\\
 \sqrt{\det\mathbf R}&=\frac{\sqrt{3}}{2},\qquad
 \tau_R=\frac{5+2\sqrt{3}}{2}.
-\end{aligned}\tag{12-39}$$
+\end{aligned}\tag{12-43}$$
 
-Since $\|\vec a_i\|_2^2 = 2$, $\tilde{\vec a}_i^H\mathbf R\tilde{\vec a}_i = 2b_i$, and $\tilde{\vec a}_i^H\mathbf I_2\tilde{\vec a}_i = 1$, substituting Eq. (12-39) into Eq. (12-37) at $\nu = 2$ gives directly in terms of $b_i$:
+Since $\|\vec a_i\|_2^2 = 2$, $\tilde{\vec a}_i^H\mathbf R\tilde{\vec a}_i = 2b_i$, and $\tilde{\vec a}_i^H\mathbf I_2\tilde{\vec a}_i = 1$, substituting Eq. (12-43) into §12.11 Eq. (12-34) at $\nu = 2$ gives directly in terms of $b_i$:
 
 $$\begin{aligned}
 \tilde{\vec a}_i^H\mathbf R^{1/2}\tilde{\vec a}_i
 &=\frac{2b_i+\sqrt{3}/2}{\sqrt{(5+2\sqrt{3})/2}},\\
 b_{\mathrm{FB},i}(2)&=\frac{(4b_i+\sqrt{3})^2}{4(5+2\sqrt{3})}.
-\end{aligned}\tag{12-40}$$
+\end{aligned}\tag{12-44}$$
 
 Plugging $4b_1 = 17/4$ and $4b_2 = 2$ and rationalizing via $(5 + 2\sqrt{3})(5 - 2\sqrt{3}) = 13$:
 
 - Node 1: $b_{\mathrm{FB},1}(2) = (869 + 6\sqrt{3})/832 \approx 1.05696190$ (scan $1.0625$, truth $1.00$);
 - Node 2: $b_{\mathrm{FB},2}(2) = (11 + 6\sqrt{3})/52 \approx 0.41139048$ (scan $0.5000$, truth $0.25$).
 
-**Step 2: Non-conservation of integrated power.** At $\nu = 1$, $(25/16) / (5/4) = 1.25$ exactly. At $\nu = 2$, $(\mathbf R_1 + \mathbf R_2)^{1/2} \ne \mathbf R_1^{1/2} + \mathbf R_2^{1/2}$ yields sum $(1045 + 102\sqrt{3})/832 \approx 1.46835238$ ($\ne 1.25$, and $\ne 85/64 = 1.328125$); dividing by single-source $\nu=2$ PSF sum $1 + 1/16 = 17/16$ gives $(1045 + 102\sqrt{3})/884 \approx 1.38197871 \ne 1.25$!
+**Step 2: Non-conservation of integrated power.** At $\nu = 1$, $(25/16) / (5/4) = 1.25$ exactly. At $\nu = 2$, $(\mathbf R_1 + \mathbf R_2)^{1/2} \ne \mathbf R_1^{1/2} + \mathbf R_2^{1/2}$ yields sum $(1045 + 102\sqrt{3})/832 \approx 1.46835238$ ($\ne 1.25$, and $\ne 85/64 = 1.328125$); dividing by single-source $\nu=2$ PSF sum $1 + 1/16 = 17/16$ gives $(1045 + 102\sqrt{3})/884 \approx 1.38197871 \ne 1.25$.
 
 (Note by Loewner–Heinz operator monotonicity of $t^{1/\nu}$ for $\nu \ge 1$: $\mathbf R \succeq q_j\vec a_j\vec a_j^H \implies b_{\mathrm{FB},j}(\nu) \ge q_j$ whenever incoherent sources sit *exactly* on grid nodes.)
 
 **Step 3: Multi-sensor off-grid weak-source underestimation.** When $M = 3 > J = 2$ ($\vec a_1 = [1, 1, 1]^\top, q_1 = 1$; orthogonal $\vec a_{\mathrm{true},2} = [1, z, z^2]^\top, z = e^{-\mathrm{j}2\pi/3}, q_2 = 1/4$), eigenvalues of $\mathbf R$ are $\lambda_1 = 3, \lambda_2 = 3/4$, and **nullspace $\lambda_3 = 0$**.
 
-When Scan Node 2's unit vector $\vec v_{\mathrm{s}} \perp \vec a_1$ has off-grid overlap $\eta = |\vec v_{\mathrm{s}}^H\vec v_{\mathrm{t}}|^2 = 4/5 = 0.8$ with true unit vector $\vec v_{\mathrm{t}}$ and spills $1 - \eta = 1/5$ into the $\lambda_3 = 0$ kernel, Eq. (12-37) yields compressed quadratic form $(3q_2)^{1/\nu}\eta$ and output $b_{\mathrm{FB},\mathrm{scan},2}(\nu) = \eta^\nu q_2$:
+When Scan Node 2's unit vector $\vec v_{\mathrm{s}} \perp \vec a_1$ has off-grid overlap $\eta = |\vec v_{\mathrm{s}}^H\vec v_{\mathrm{t}}|^2 = 4/5 = 0.8$ with true unit vector $\vec v_{\mathrm{t}}$ and spills $1 - \eta = 1/5$ into the $\lambda_3 = 0$ kernel, Eq. (12-34) yields compressed quadratic form $(3q_2)^{1/\nu}\eta$ and output $b_{\mathrm{FB},\mathrm{scan},2}(\nu) = \eta^\nu q_2$:
 
 - $\nu = 1$: $0.8 \times 0.25 = 0.2000$ ($-0.9691\,\mathrm{dB}$);
 - $\nu = 2$: $0.8^2 \times 0.25 = 0.1600$ ($-1.9382\,\mathrm{dB}$);
-- $\nu = 8$: $0.8^8 \times 0.25 = 0.04194304$ (**$-7.7528\,\mathrm{dB}$ severe underestimation!**).
+- $\nu = 8$: $0.8^8 \times 0.25 = 0.04194304$ (**$-7.7528\,\mathrm{dB}$ severe underestimation**).
 
 Destructive inter-source coherence (e.g., $\vec x = \vec a_1 - 0.5\,e^{\mathrm{j}\pi/3}\vec a_2$ with $\vec a_2^H\vec x = 0$) can likewise drive even an on-grid source reading to $0 < 0.25$.
 
@@ -1280,16 +1325,24 @@ Destructive inter-source coherence (e.g., $\vec x = \vec a_1 - 0.5\,e^{\mathrm{j
 The following references underpin the wave-propagation models, deconvolution derivations, and industrial measurement standards of this chapter:
 
 - Brooks, T. F. & Humphreys, W. M., *A Deconvolution Approach for the Mapping of Acoustic Sources (DAMAS) Determined from Phased Microphone Arrays*, AIAA 2004-2954: Eqs. (18)–(24) formulate standard and diagonal-removed DAMAS iterations; pp. 10–13 analyze off-grid splitting, scan boundaries, and specular reflections ([18-page NASA conference PDF](https://ntrs.nasa.gov/api/citations/20080015889/downloads/20080015889.pdf); journal version in *Journal of Sound and Vibration* 294, 2006, [DOI](https://doi.org/10.1016/j.jsv.2005.12.046)).
-- Chardon, G., Picheral, J., & Ollivier, F., *Theoretical analysis of the DAMAS algorithm and efficient implementation of the Covariance Matrix Fitting method for large-scale problems*, *Journal of Sound and Vibration*, 2021: §§3.1–3.5 Theorems 1–3 and Eqs. (15)–(18) establish equivalence between full/DR CSM Frobenius fitting and DAMAS fixed points while contrasting scan-domain NNLS ([author preprint](https://gilleschardon.fr/papers/damascmf.pdf)).
+- Chardon, G., Picheral, J., & Ollivier, F., *Theoretical analysis of the DAMAS algorithm and efficient implementation of the Covariance Matrix Fitting method for large-scale problems*, *Journal of Sound and Vibration* 508, 116208, 2021: §§3.1–3.5 Theorems 1–3 and Eqs. (15)–(18) establish equivalence between full/DR CSM Frobenius fitting and DAMAS fixed points while contrasting scan-domain NNLS ([DOI](https://doi.org/10.1016/j.jsv.2021.116208); [author preprint](https://gilleschardon.fr/papers/damascmf.pdf)).
 - Sijtsma, P., *CLEAN Based on Spatial Source Coherence*, NLR-TP-2007-345, 2007: Eqs. (24)–(30) and §§4.3–4.6 derive spatial-coherence stripping and inner-loop diagonal-removed CLEAN-SC ([NLR technical report](https://reports.nlr.nl/server/api/core/bitstreams/813b0521-b37c-4aff-be61-7a8bceaa06d4/content)).
 - Yardibi, T. et al., *Sparsity constrained deconvolution approaches for acoustic source mapping*, *J. Acoust. Soc. Am.* 123(5), 2008: formulates CMF with diagonal noise variance and $\ell_1$ sparsity budgets alongside correlated-source CMF-C ([DOI](https://doi.org/10.1121%2F1.2896754)).
 - Sarradj, E., *Three-Dimensional Acoustic Source Mapping with Different Beamforming Steering Vector Formulations*, *Advances in Acoustics and Vibration*, 2012: §§2–3 compare peak location and amplitude properties of four steering-vector formulations across 2D planes and 3D volumes ([DOI](https://doi.org/10.1155/2012/292695)).
+- Sarradj, E., *A fast signal subspace approach for the determination of absolute levels from phased microphone array measurements*, *Journal of Sound and Vibration* 329(9), 1553–1569, 2010: introduces Orthogonal Beamforming (OBF) via CSM eigendecomposition for rapid localization and absolute source-level recovery.
+- Amiet, R. K., *Refraction of sound by a shear layer*, *Journal of Sound and Vibration* 58(4), 467–482, 1978: formulates refraction angle, travel-time, and amplitude corrections across a thin vortex-sheet shear layer in open-jet wind tunnels.
+- Underbrink, J. R., *Aeroacoustic Phased Array Testing in Low Speed Wind Tunnels*, in Mueller, T. J. (ed.), *Aeroacoustic Measurements*, Springer, 2002, pp. 98–217: systematically presents multi-arm logarithmic spiral acoustic camera arrays (Underbrink spirals), MSL suppression, and wind-tunnel calibration.
+- Sijtsma, P., Oerlemans, S., & Holthusen, H., *Location of Rotating Sources by Phased Array Measurements*, AIAA 2001-2167 (NLR-TP-2001-135), 2001: introduces retarded-time resampling de-Dopplerization for rotating-source imaging (ROSI).
+- Dougherty, R. P., *Extensions of DAMAS and Benefits and Limitations of Deconvolution in Beamforming*, AIAA 2005-2961, 2005: introduces DAMAS2/DAMAS3 accelerated by shift-invariant PSF approximation and 2D FFT convolution.
+- Ehrenfried, K. & Koop, L., *Comparison of Iterative Deconvolution Algorithms for the Mapping of Acoustic Sources*, *AIAA Journal* 45(7), 1584–1595, 2007: introduces and benchmarks fast shift-invariant 2D-FFT deconvolution methods including FFT-NNLS and Richardson–Lucy (FFT-RL).
+- Merino-Martínez, R. et al., *A review of acoustic imaging methods using phased microphone arrays*, *CEAS Aeronautical Journal* 10(1), 197–230, 2019: comprehensive benchmark review of conventional beamforming, Sarradj I–IV, DAMAS/DAMAS2/FFT-NNLS, CLEAN-SC, HR-CLEAN-SC, CMF, Functional Beamforming, and benchmark array datasets B1–B12 ([DOI](https://doi.org/10.1007/s13272-019-00383-4)).
+- Dougherty, R. P. & Podboy, G. G., *Improved Phased Array Imaging of a Model Jet*, AIAA 2009-3186, 2009: introduces time-domain cross-correlation deconvolution (TIDY) for broadband non-stationary jet noise.
 - Humphreys, W. M. et al., *Evaluation of Methods for In-Situ Calibration of Field-Deployable Microphone Phased Arrays*, AIAA 2017-4176: §§II–IV distinguish bench absolute calibration from field check-source drift monitoring ([NASA report PDF](https://ntrs.nasa.gov/api/citations/20170006081/downloads/20170006081.pdf)).
 - Dougherty, R. P., *Functional Beamforming*, BeBeC-2014-01, 2014: introduces non-iterative sidelobe suppression via fractional CSM powers $\mathbf R^{1/\nu}$, analyzing single-source peak preservation and multi-source weak-source boundaries ([BeBeC paper](https://www.bebec.eu/fileadmin/bebec/downloads/bebec-2014/papers/BeBeC-2014-01.pdf)).
 - Sijtsma, P. & Snellen, M., *High resolution CLEAN-SC*, BeBeC-2016-S1: §2.5 details mainlobe source-marker selection and peak re-scanning ([BeBeC paper](https://www.bebec.eu/fileadmin/bebec/downloads/bebec-2016/papers/BeBeC-2016-S1.pdf)).
 - Funke, S., Dougherty, R. P., & Michel, U., *SODIX in comparison with various deconvolution methods*, BeBeC-2014-11: Eqs. (6)–(10) formulate directive source fitting with spatial/directional regularization ([DLR paper](https://elib.dlr.de/94587/1/BeBeC-2014-11_Funke_SODIX.pdf)).
-- Maynard, J. D., Williams, E. G., & Lee, Y., *Nearfield acoustic holography: I. Theory of generalized holography and the development of NAH*, *J. Acoust. Soc. Am.* 78(4), 1985: §III analyzes propagating waves, evanescent-wave back-propagation, and sensor noise amplification ([DOI](https://doi.org/10.1121/1.392911)).
-- Open-source implementations and contract audits: [Acoular official repository](https://github.com/acoular/acoular), [`SOURCES.lock.json`](../codes/chapters/ch00/SOURCES.lock.json), and the [Spatial & Tracking Research Manual](../codes/chapters/ch00/research_en/01_spatial_and_tracking.md).
+- Maynard, J. D., Williams, E. G., & Lee, Y., *Nearfield acoustic holography: I. Theory of generalized holography and the development of NAH*, *J. Acoust. Soc. Am.* 78(4), 1985: §III analyzes propagating waves, evanescent-wave back-propagation, and sensor noise amplification ([DOI](https://doi.org/10.1121/1.392911)); comprehensive monograph in Williams, E. G., *Fourier Acoustics: Sound Radiation and Nearfield Acoustical Holography*, Academic Press, 1999.
+- Open-source implementations and interface checks: [Acoular official repository](https://github.com/acoular/acoular) and the [Spatial & Tracking Research Manual](../codes/chapters/ch00/research_en/01_spatial_and_tracking.md).
 
 ---
 

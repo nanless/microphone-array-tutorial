@@ -27,6 +27,12 @@ class Chapter00MathKernelTests(unittest.TestCase):
         np.testing.assert_allclose(cb["position_cartesian_m"], 1.5 * expected_u, rtol=0.0, atol=1e-15)
         self.assertAlmostEqual(cb["alpha_ccw_from_px_deg"], 60.0, places=13)
         self.assertAlmostEqual(cb["colatitude_deg"], 45.0, places=13)
+        self.assertAlmostEqual(cb["sofa_azimuth_deg"], -30.0, places=13)
+        self.assertAlmostEqual(cb["sofa_elevation_deg"], 45.0, places=13)
+        expected_u_sofa = np.array([math.sqrt(6.0) / 4.0, -math.sqrt(2.0) / 4.0, math.sqrt(2.0) / 2.0])
+        np.testing.assert_allclose(cb["ambix_sofa_unit_direction"], expected_u_sofa, rtol=0.0, atol=1e-15)
+        np.testing.assert_allclose(cb["ambix_sofa_position_cartesian_m"], 1.5 * expected_u_sofa, rtol=0.0, atol=1e-15)
+        self.assertLess(cb["ambix_sofa_consistency_error"], 1e-15)
         self.assertAlmostEqual(res["spherical_law_of_cosines"]["central_angle_deg"], 90.0, places=13)
 
         fr = res["fresnel_approximation"]
@@ -217,8 +223,74 @@ class Chapter00MathKernelTests(unittest.TestCase):
         self.assertAlmostEqual(
             res["rigid_sphere_b0_abs_at_pi"], res["rigid_sphere_b0_closed_form_abs_at_pi"], places=14
         )
+        # Regression guard against the factor-of-pi simplification bug: 4*pi/sqrt(pi^2+1) == 4/sqrt(1+1/pi^2)
+        self.assertAlmostEqual(
+            res["rigid_sphere_b0_abs_at_pi"],
+            4.0 * math.pi / math.sqrt(math.pi ** 2 + 1.0),
+            places=14,
+        )
         self.assertLess(res["legendre_orthogonality_fro_error"], 1e-14)
         self.assertLess(res["spherical_harmonic_addition_max_error"], 1e-14)
+
+    def test_expanded_ch00_primitives_and_negative_controls(self):
+        # 1. M-element ULA Dirichlet kernel vs direct geometric sum (including grating-lobe limit psi=2*pi)
+        for psi in (0.0, 0.35 * math.pi, 0.5 * math.pi, 2.0 * math.pi, -1.25):
+            dres = cm.dirichlet_ula_array_factor(4, psi)
+            self.assertLess(dres["abs_error"], 1e-14)
+        self.assertAlmostEqual(cm.dirichlet_ula_array_factor(4, 2.0 * math.pi)["normalized_magnitude"], 1.0, places=14)
+        self.assertLess(cm.dirichlet_ula_array_factor(4, 0.5 * math.pi)["normalized_magnitude"], 1e-14)
+
+        # 2. Hermitian square root R^{1/2} and R^{-1/2}
+        r_mat = np.array([[2.0, 1.0 - 0.5j], [1.0 + 0.5j, 3.0]], dtype=np.complex128)
+        sq = cm.hermitian_matrix_sqrt(r_mat)
+        self.assertLess(sq["square_fro_error"], 1e-14)
+        self.assertLess(sq["whitening_fro_error"], 1e-14)
+
+        # 3. Matrix Wirtinger log-determinant gradient: d ln|det W| / d W^* = 0.5 W^{-H}
+        w_mat = np.array([[2.0 + 1.0j, 1.0], [0.5j, 1.0 - 1.0j]], dtype=np.complex128)
+        lw = cm.matrix_wirtinger_logdet_check(w_mat)
+        self.assertLess(lw["max_abs_error"], 1e-9)
+
+        # 4. Gauss-Markov GLS via Cholesky whitening & BLUE optimality
+        a_gls = np.array([[1.0], [1.0]], dtype=np.complex128)
+        b_gls = np.array([1.2, 0.8], dtype=np.complex128)
+        c_gls = np.array([[1.0, 0.8], [0.8, 2.0]], dtype=np.complex128)
+        gls = cm.gauss_markov_gls_solve(a_gls, b_gls, c_gls)
+        self.assertLess(gls["weighted_orthogonality_norm"], 1e-14)
+        self.assertGreaterEqual(gls["cov_ols_minus_gls_min_eig"], 0.0)
+        # Correlated strong noise produces negative weight on noisier mic when C = [[1, 1.2], [1.2, 2]]
+        c_neg = np.array([[1.0, 1.2], [1.2, 2.0]], dtype=np.complex128)
+        w_gls_neg = np.linalg.solve(c_neg, a_gls)
+        w_gls_neg = (w_gls_neg / (a_gls.conj().T @ w_gls_neg)).ravel().real
+        self.assertGreater(w_gls_neg[0], 1.0)
+        self.assertLess(w_gls_neg[1], 0.0)
+
+        # 5. Binomial zero-failure upper bound & Wilson score interval
+        self.assertAlmostEqual(cm.binomial_zero_failure_upper_bound(299, 0.05), 1.0 - 0.05 ** (1.0 / 299.0), places=15)
+        self.assertLess(cm.binomial_zero_failure_upper_bound(299, 0.05), 0.01)
+        self.assertGreater(cm.binomial_zero_failure_upper_bound(298, 0.05), 0.01)
+        w_ci = cm.wilson_score_interval(0, 20, z_value=1.959963984540054)
+        self.assertEqual(w_ci["lower"], 0.0)
+        self.assertGreater(w_ci["upper"], 0.16)
+
+        # 6. First-order real spherical harmonics ACN / SN3D / N3D / orthonormal
+        foa = cm.real_spherical_harmonic_foa(math.pi / 3.0, math.pi / 4.0)
+        np.testing.assert_allclose(foa["acn_n3d"][1:], math.sqrt(3.0) * foa["acn_sn3d"][1:], rtol=0.0, atol=1e-15)
+        np.testing.assert_allclose(foa["acn_orthonormal"], foa["acn_n3d"] / math.sqrt(4.0 * math.pi), rtol=0.0, atol=1e-15)
+        # Addition theorem check on real orthonormal n=1 harmonics: sum_m Y^2 = 3/(4*pi)
+        self.assertAlmostEqual(float(np.sum(foa["acn_orthonormal"][1:] ** 2)), 3.0 / (4.0 * math.pi), places=15)
+
+        # Strict negative controls on new primitives
+        with self.assertRaises(ValueError):
+            cm.dirichlet_ula_array_factor(True, 0.5)
+        with self.assertRaises(ValueError):
+            cm.hermitian_matrix_sqrt(np.diag([1.0, -1.0]))
+        with self.assertRaises(ValueError):
+            cm.matrix_wirtinger_logdet_check(np.array([[1.0, 1.0], [1.0, 1.0]]))
+        with self.assertRaises(ValueError):
+            cm.wilson_score_interval(21, 20)
+        with self.assertRaises(ValueError):
+            cm.binomial_zero_failure_upper_bound(10, 1.0)
 
     def test_strict_validation_rejects_booleans_complex_nan_and_invalid_domains(self):
         # Boolean rejected where int or float is required

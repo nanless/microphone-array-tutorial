@@ -56,13 +56,21 @@ def cic_decimation_metrics(
     eval_freq_hz: float,
     *,
     diff_delay: int = 1,
-    input_bits: int = 1,
+    input_bits: int = 2,
     mic_spacing_m: float = 0.012,
     sound_speed: float = SPEED_OF_SOUND,
     hal_freq_hz: float = 1000.0,
     hal_gains: tuple[float, float] = (1.0, 0.8),
 ) -> dict[str, float | int | bool]:
-    """Compute exact CIC register width, passband droop, group delay, and stereo skew."""
+    """Compute exact CIC register width, passband droop, group delay, and stereo skew.
+
+    For 1-bit PDM streams, distinguishes unipolar unsigned ``{0, 1}`` inputs
+    (``B_in = 1`` -> ``1 + ceil(N * log2(R * M))`` unsigned bits, e.g. 17/25 bit)
+    from bipolar signed two's-complement ``{-1, +1}`` inputs (``B_in = 2`` ->
+    ``2 + ceil(N * log2(R * M))`` signed bits, e.g. 18/26 bit, because a 25-bit
+    signed register maxes out at ``2**24 - 1`` and overflows on an all-``+1``
+    stream producing ``+2**24``).
+    """
     f_pdm = finite_real_scalar(pdm_clock_hz, "pdm_clock_hz")
     f_eval = finite_real_scalar(eval_freq_hz, "eval_freq_hz")
     d_m = finite_real_scalar(mic_spacing_m, "mic_spacing_m")
@@ -94,7 +102,12 @@ def cic_decimation_metrics(
 
     dc_gain = rm ** n_stages
     bit_growth = (dc_gain - 1).bit_length()
+    unipolar_unsigned_bits = 1 + bit_growth
+    bipolar_signed_bits = 2 + bit_growth
     max_register_bits = b_in + bit_growth
+    signed_24bit_headroom_bits = 24 - bipolar_signed_bits
+    fits_unsigned_24bit = unipolar_unsigned_bits <= 24
+    fits_signed_24bit = (bipolar_signed_bits <= 24) if b_in <= 2 else (max_register_bits <= 24)
 
     arg_small = math.pi * f_eval / f_pdm
     arg_large = arg_small * rm
@@ -133,8 +146,12 @@ def cic_decimation_metrics(
         "eval_freq_hz": f_eval,
         "dc_gain": dc_gain,
         "bit_growth": bit_growth,
+        "unipolar_unsigned_bits": unipolar_unsigned_bits,
+        "bipolar_signed_bits": bipolar_signed_bits,
         "max_register_bits": max_register_bits,
-        "fits_signed_24bit": max_register_bits <= 24,
+        "fits_unsigned_24bit": fits_unsigned_24bit,
+        "fits_signed_24bit": fits_signed_24bit,
+        "signed_24bit_headroom_bits": signed_24bit_headroom_bits,
         "single_stage_gain": single_stage_gain,
         "passband_gain": passband_gain,
         "passband_droop_db": passband_droop_db,
@@ -153,7 +170,7 @@ def cic_decimation_metrics(
 
 
 def pdm_cic_teaching_case() -> dict[str, object]:
-    """Return the E10-35 stereo PDM CIC decimation and skew control."""
+    """Return the E10-27 stereo PDM CIC decimation and skew control."""
     stage1_r16 = cic_decimation_metrics(3_072_000.0, 16, 4, 7000.0)
     stage1_r64 = cic_decimation_metrics(3_072_000.0, 64, 4, 7000.0)
     stage1_r64_20k = cic_decimation_metrics(3_072_000.0, 64, 4, 20000.0)
@@ -359,7 +376,7 @@ def p340_and_p808_evaluation(
 
 
 def p340_p808_teaching_case() -> dict[str, object]:
-    """Return the E10-36 P.340 double-talk and P.808 crowd-screening control."""
+    """Return the E10-28 P.340 double-talk and P.808 crowd-screening control."""
     result = p340_and_p808_evaluation(
         single_talk_rms=(0.20, 0.20),
         candidates_dt_rms={

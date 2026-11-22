@@ -1,5 +1,6 @@
-"""Chapter 9 anchors (E09-10..22) independently derived from fractions/moments/geometry."""
+"""Chapter 9 anchors (E09-10..23) independently derived from fractions/moments/geometry."""
 from fractions import Fraction as F
+import json
 import math
 from pathlib import Path
 import struct
@@ -9,7 +10,10 @@ from unittest.mock import patch
 import wave
 import numpy as np
 from codes.chapters.ch09.chapter09_experiments import (
-    actual_tracking_audio, run_experiments, small_set_distances,
+    actual_tracking_audio,
+    jpda_vs_gnn_crossing_case,
+    run_experiments,
+    small_set_distances,
 )
 from codes.chapters.ch09.core.echo_av_fusion import (
     _wrap_angle_deg,
@@ -31,8 +35,9 @@ class Chapter09ExperimentsTests(unittest.TestCase):
         generate(cls.audio_directory)
         cls.results = run_experiments(audio_directory=cls.audio_directory)
 
-    def test_thirteen_stable_ids(self):
-        self.assertEqual(set(self.results), {f'E09-{i:02}' for i in range(10, 23)})
+    def test_fourteen_stable_ids_and_strict_json(self):
+        self.assertEqual(set(self.results), {f'E09-{i:02}' for i in range(10, 24)})
+        json.dumps(self.results, allow_nan=False)
 
     def test_bearing_ekf_geometry_and_fraction_posterior(self):
         item = self.results['E09-10']
@@ -391,6 +396,73 @@ class Chapter09ExperimentsTests(unittest.TestCase):
             oosm_cv_retrodiction_update(
                 np.array([0.0, 0.0]), np.array([[1.0, 1.0], [1.0, 1.0 - 1e-8]]), 1.0, 1.0, 0.1
             )
+
+    def test_jpda_marginal_weights_and_spread_inflation_vs_gnn(self):
+        item = self.results['E09-23']
+        self.assertEqual(item['innovation_variance_deg2'], 4.0)
+        self.assertEqual(item['kalman_gain'], 0.5)
+        self.assertEqual(item['detection_probability'], 1.0)
+
+        # Scenario 1: separated approach (-2, +2) with detections (-1.5, +1.5).
+        sep = item['separated_approach']
+        np.testing.assert_allclose(sep['innovations_deg'], [[0.5, -3.5], [3.5, -0.5]], atol=1e-15)
+        self.assertAlmostEqual(sep['straight_event_kernel'], math.exp(-1.0 / 16.0), places=14)
+        self.assertAlmostEqual(sep['swapped_event_kernel'], math.exp(-49.0 / 16.0), places=14)
+        self.assertAlmostEqual(sep['log_odds_straight_vs_swapped'], 3.0, places=14)
+        b11_sep = 1.0 / (1.0 + math.exp(-3.0))
+        b21_sep = 1.0 / (1.0 + math.exp(3.0))
+        np.testing.assert_allclose(sep['marginal_beta'], [[b11_sep, b21_sep], [b21_sep, b11_sep]], atol=1e-14)
+        np.testing.assert_allclose(sep['gnn']['posterior_means_deg'], [-1.75, 1.75], atol=1e-15)
+        np.testing.assert_allclose(sep['gnn']['posterior_variances_deg2'], [1.0, 1.0], atol=1e-15)
+        expected_spread_sep = 0.25 * b11_sep * b21_sep * (3.0 ** 2)
+        np.testing.assert_allclose(
+            sep['jpda']['spread_of_means_variance_deg2'],
+            [expected_spread_sep, expected_spread_sep],
+            atol=1e-14,
+        )
+        np.testing.assert_allclose(
+            sep['jpda']['posterior_variances_deg2'],
+            [1.0 + expected_spread_sep, 1.0 + expected_spread_sep],
+            atol=1e-14,
+        )
+
+        # Scenario 2: ambiguous crossing (-0.5, +0.5) with detections (-0.4, +0.4).
+        cross = item['ambiguous_crossing']
+        np.testing.assert_allclose(cross['innovations_deg'], [[0.1, -0.9], [0.9, -0.1]], atol=1e-15)
+        self.assertAlmostEqual(cross['straight_event_kernel'], math.exp(-1.0 / 400.0), places=14)
+        self.assertAlmostEqual(cross['swapped_event_kernel'], math.exp(-81.0 / 400.0), places=14)
+        self.assertAlmostEqual(cross['log_odds_straight_vs_swapped'], 0.2, places=14)
+        b11 = 1.0 / (1.0 + math.exp(-0.2))
+        b21 = 1.0 / (1.0 + math.exp(0.2))
+        np.testing.assert_allclose(cross['marginal_beta'], [[b11, b21], [b21, b11]], atol=1e-14)
+
+        # Hard GNN ignores 45% swap probability and reports overconfident variance 1.0.
+        np.testing.assert_allclose(cross['gnn']['posterior_means_deg'], [-0.45, 0.45], atol=1e-15)
+        np.testing.assert_allclose(cross['gnn']['posterior_variances_deg2'], [1.0, 1.0], atol=1e-15)
+
+        # JPDA combined innovation, coalescence mean, and Eq. (9-31) spread-of-means inflation.
+        nu_bar_1 = b11 * 0.1 + b21 * 0.9
+        m_jpda_1 = -0.5 + 0.5 * nu_bar_1
+        m_cond = np.array([-0.5 + 0.5 * 0.1, -0.5 + 0.5 * 0.9])
+        spread_eq931 = b11 * (m_cond[0] - m_jpda_1) ** 2 + b21 * (m_cond[1] - m_jpda_1) ** 2
+        spread_closed = 0.25 * b11 * b21 * (0.8 ** 2)
+        self.assertAlmostEqual(spread_eq931, spread_closed, places=15)
+        self.assertGreater(spread_closed, 0.0)
+        np.testing.assert_allclose(cross['jpda']['combined_innovations_deg'], [nu_bar_1, -nu_bar_1], atol=1e-14)
+        np.testing.assert_allclose(cross['jpda']['posterior_means_deg'], [m_jpda_1, -m_jpda_1], atol=1e-14)
+        np.testing.assert_allclose(cross['jpda']['spread_of_means_variance_deg2'], [spread_closed, spread_closed], atol=1e-14)
+        np.testing.assert_allclose(cross['jpda']['posterior_variances_deg2'], [1.0 + spread_closed, 1.0 + spread_closed], atol=1e-14)
+        self.assertGreater(cross['jpda']['posterior_variances_deg2'][0], cross['gnn']['posterior_variances_deg2'][0])
+        self.assertLess(cross['jpda']['posterior_separation_deg'], cross['gnn']['posterior_separation_deg'])
+
+        # Reject malformed inputs cleanly.
+        for bad_call in (
+            lambda: jpda_vs_gnn_crossing_case([0.0], [0.0, 1.0]),
+            lambda: jpda_vs_gnn_crossing_case([-1.0, 1.0], [-1.0, 1.0], prior_variance_deg2=0.0),
+            lambda: jpda_vs_gnn_crossing_case([-1.0, 1.0], [-1.0, 1.0], measurement_variance_deg2=-1.0),
+        ):
+            with self.assertRaises(ValueError):
+                bad_call()
 
 
 if __name__ == '__main__':

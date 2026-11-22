@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Chapter 14 · Spatial Sound Fields & Wearable Arrays · Microphone Array Signal Processing</title>
-<meta name="source-digest" content="7b2bf0186a72"><style>
+<meta name="source-digest" content="6fa82909c83a"><style>
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -362,7 +362,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="14_spatial-wearable-arrays.html#sec-u-96240cf007">Coherent Superposition of Passive Ear-Canal Leakage and Active Electro-Acoustic Playback</a></li>
 <li>&nbsp;&nbsp;<a href="14_spatial-wearable-arrays.html#sec-u-9718d71d6d">Worked Calculation 14-4 (Part B): 250 Hz Comb Notch at 2 ms Latency and Reading Figure 79</a></li>
 <li>&nbsp;&nbsp;<a href="14_spatial-wearable-arrays.html#sec-u-1bb667cb45">Microsecond Time-Domain Hardware Pipelines and Milliwatt Compute Budgets</a></li>
-<li><a href="14_spatial-wearable-arrays.html#sec-14-11">14.11 Reproducible Code Entry Points, Synthetic Audio Controls, and Exercises (E14-01–E14-15)</a></li>
+<li><a href="14_spatial-wearable-arrays.html#sec-14-11">14.11 Reproducible Code Entry Points, Synthetic Audio Controls, and Exercises (E14-01–E14-16)</a></li>
 <li>&nbsp;&nbsp;<a href="14_spatial-wearable-arrays.html#sec-u-537ea8a07e">Code Architecture and Six Synthetic WAV Controls</a></li>
 <li>&nbsp;&nbsp;<a href="14_spatial-wearable-arrays.html#sec-u-f9ab6b5d81">E14-01: Tetrahedral A-Format to SN3D B-Format Encoding and Channel Ordering</a></li>
 <li>&nbsp;&nbsp;<a href="14_spatial-wearable-arrays.html#sec-u-9cb1575955">E14-02: Open-Sphere Modal Null $\kappa R = \pi$ and Spatial Aliasing Ceiling</a></li>
@@ -379,6 +379,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="14_spatial-wearable-arrays.html#sec-u-714c5a7b78">E14-13: Three-Tier Reconciliation Across All Six Wearable Synthetic WAVs</a></li>
 <li>&nbsp;&nbsp;<a href="14_spatial-wearable-arrays.html#sec-u-3652b73e43">E14-14: First-Order Ambisonic Energy-Vector ($\max\text{-}r_E$) Decoding and Sidelobe Suppression</a></li>
 <li>&nbsp;&nbsp;<a href="14_spatial-wearable-arrays.html#sec-u-57d2001b55">E14-15: SOFA Binaural Coordinate Conventions and Head-Tracking Latency Bounds</a></li>
+<li>&nbsp;&nbsp;<a href="14_spatial-wearable-arrays.html#sec-u-10e64ea03a">E14-16: Rigid-Sphere Higher-Order Ambisonics ($N=2$, 9-Channel vs. $N=1$, 4-Channel) Radial Mode Boost and Low-Frequency WNG Amplification</a></li>
 <li><a href="14_spatial-wearable-arrays.html#sec-14-12">14.12 Primary References and Further Reading</a></li>
 <li>&nbsp;&nbsp;<a href="14_spatial-wearable-arrays.html#sec-u-7353b029bc">Foundational Literature on Spatial Sound Coding, Binaural Matching, and Wearable Fusion</a></li>
 </ul>
@@ -427,7 +428,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="14_spatial-wearable-arrays.html#sec-u-96240cf007">Coherent Superposition of Passive Ear-Canal Leakage and Active Electro-Acoustic Playback</a></li>
 <li>&nbsp;&nbsp;<a href="14_spatial-wearable-arrays.html#sec-u-9718d71d6d">Worked Calculation 14-4 (Part B): 250 Hz Comb Notch at 2 ms Latency and Reading Figure 79</a></li>
 <li>&nbsp;&nbsp;<a href="14_spatial-wearable-arrays.html#sec-u-1bb667cb45">Microsecond Time-Domain Hardware Pipelines and Milliwatt Compute Budgets</a></li>
-<li><a href="14_spatial-wearable-arrays.html#sec-14-11">14.11 Reproducible Code Entry Points, Synthetic Audio Controls, and Exercises (E14-01–E14-15)</a></li>
+<li><a href="14_spatial-wearable-arrays.html#sec-14-11">14.11 Reproducible Code Entry Points, Synthetic Audio Controls, and Exercises (E14-01–E14-16)</a></li>
 <li>&nbsp;&nbsp;<a href="14_spatial-wearable-arrays.html#sec-u-537ea8a07e">Code Architecture and Six Synthetic WAV Controls</a></li>
 <li>&nbsp;&nbsp;<a href="14_spatial-wearable-arrays.html#sec-u-f9ab6b5d81">E14-01: Tetrahedral A-Format to SN3D B-Format Encoding and Channel Ordering</a></li>
 <li>&nbsp;&nbsp;<a href="14_spatial-wearable-arrays.html#sec-u-9cb1575955">E14-02: Open-Sphere Modal Null $\kappa R = \pi$ and Spatial Aliasing Ceiling</a></li>
@@ -444,6 +445,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="14_spatial-wearable-arrays.html#sec-u-714c5a7b78">E14-13: Three-Tier Reconciliation Across All Six Wearable Synthetic WAVs</a></li>
 <li>&nbsp;&nbsp;<a href="14_spatial-wearable-arrays.html#sec-u-3652b73e43">E14-14: First-Order Ambisonic Energy-Vector ($\max\text{-}r_E$) Decoding and Sidelobe Suppression</a></li>
 <li>&nbsp;&nbsp;<a href="14_spatial-wearable-arrays.html#sec-u-57d2001b55">E14-15: SOFA Binaural Coordinate Conventions and Head-Tracking Latency Bounds</a></li>
+<li>&nbsp;&nbsp;<a href="14_spatial-wearable-arrays.html#sec-u-10e64ea03a">E14-16: Rigid-Sphere Higher-Order Ambisonics ($N=2$, 9-Channel vs. $N=1$, 4-Channel) Radial Mode Boost and Low-Frequency WNG Amplification</a></li>
 <li><a href="14_spatial-wearable-arrays.html#sec-14-12">14.12 Primary References and Further Reading</a></li>
 <li>&nbsp;&nbsp;<a href="14_spatial-wearable-arrays.html#sec-u-7353b029bc">Foundational Literature on Spatial Sound Coding, Binaural Matching, and Wearable Fusion</a></li>
 </ul></nav></details>
@@ -995,6 +997,7 @@ r_{\mathrm{LR}}(\beta)
 \end{aligned}$$</p>
 <p>where the plus sign in $\pm\omega\tau$ corresponds to downstream flow (mic $1$ to mic $2$, where internal delay $\tau$ adds to convective delay $d/U_c$) and the minus sign to upstream flow (mic $2$ to mic $1$, where internal delay $\tau$ partially cancels $d/U_c$). At $250\ \mathrm{Hz}$ ($\lambda = 1.37\ \mathrm{m}$) across $d = 1.5\ \mathrm{cm}$, a first-order cardioid differential array ($\tau = d/c$, $180^\circ$ rear null) requires equalization $1/[2\sin(\kappa d)] \approx \frac{c}{4\pi fd} \approx 7.3\times$ ($+17.25\ \mathrm{dB}$) to maintain unit talker response, while a zero-delay figure-of-eight dipole ($\tau = 0$) requires $\frac{c}{2\pi fd} \approx 14.6\times$ ($+23.26\ \mathrm{dB}$). While highly correlated far-field ambient sound cancels upon subtraction, the zero-delay dipole at $250\ \mathrm{Hz}$ hits $\cos(2.5\pi) = 0$ for an exact $+3.01\ \mathrm{dB}$ wind-variance doubling, and the delayed cardioid shifts slightly to $+3.11\ \mathrm{dB}$ (downstream) or $+2.91\ \mathrm{dB}$ (upstream) via $\pm\omega\tau$—amplifying output low-frequency wind power by <strong>$+20.2$ to $+20.4\ \mathrm{dB}$ (cardioid) and $+26.3\ \mathrm{dB}$ (dipole)</strong> above a single omnidirectional microphone.</p>
 <p>Commercial hearables therefore run real-time wind detectors monitoring <strong>low-frequency inter-mic coherence drop plus steep sub-$500\ \mathrm{Hz}$ spectral tilt</strong>: as soon as $50$–$500\ \mathrm{Hz}$ coherence plunges below acoustic bounds amid surging low-band energy, the pipeline boosts diagonal loading (gracefully relaxing toward delay-and-sum) or hands low-frequency speech capture over to occluded internal sensors.</p>
+<p><strong>Strouhal Vortex-Shedding Physics of Open-Cell Foam and Fur Windscreens</strong>: Before relying solely on electronic wind suppression, it is worth examining why conventional microphones depend on porous windscreens. Airflow at speed $U$ past a bare bluff body such as a microphone capsule or earbud stem of characteristic diameter $D$ sheds periodic Kármán vortices at the <strong>Strouhal shedding frequency</strong> $f_s = \mathrm{St}\,U / D$, where $\mathrm{St} \approx 0.2$ for cylindrical stems in subcritical flow. At a modest cycling or brisk outdoor wind speed $U = 5\ \mathrm{m/s}$ and stem diameter $D = 6\ \mathrm{mm}$, shedding falls at $f_s = 0.2 \times 5 / 0.006 \approx 167\ \mathrm{Hz}$—squarely inside the human voice fundamental band, where simple high-pass filtering cannot remove it without thinning speech. Open-cell polyurethane foam and long-fiber fur ("deadcat") windscreens suppress wind buffeting through <strong>two coupled physical mechanisms</strong>: (i) expanding the effective aerodynamic boundary-layer diameter $D_{\mathrm{eff}} \gg D$ lowers vortex-shedding frequency and energy while shifting turbulent eddy generation away from the diaphragm so evanescent hydrodynamic pressure decays before reaching the acoustic port, and (ii) spatially averaging and decorrelating small-scale convective eddies (whose Corcos correlation length satisfies $\ell_c \sim U_c / \omega \ll D_{\mathrm{eff}}$) across the enlarged porous surface while leaving long-wavelength far-field acoustic waves ($\kappa D_{\mathrm{eff}} \ll 1$) nearly unattenuated. In practice, thick foam or fur windscreens deliver roughly $15$–$30\ \mathrm{dB}$ of low-frequency wind rejection at the cost of $1$–$4\ \mathrm{dB}$ of high-frequency acoustic insertion loss—and suffer severe pore blockage and high-frequency roll-off once wetted by sweat or rain. This physical size-and-moisture trade-off explains why ultra-compact TWS earbuds cannot accommodate thick windscreens and must combine recessed mesh-screened acoustic port geometry with §14.8 Corcos cross-mic coherence wind detection and §14.9 in-ear cross-modal fusion.</p>
 <span id="sec-31" class="anchor-alias" aria-hidden="true"></span><span id="sec-16-9" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-14-9">14.9 Cross-Modal Own-Voice Fusion of Air-Conduction and Occluded In-Ear / Bone-Conduction Sensors</h2>
 <span id="sec-32" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-d4e886693e" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-f2215861c1">Ear-Canal Occlusion Effect and High-Frequency Bone-Conduction Roll-Off</h3>
 <p>When the wearer speaks, own-voice energy reaches an earbud along two complementary physical pathways: airborne radiation diffracting around the cheek to outer <strong>air-conduction microphones</strong>, and vocal-tract / mandible / skull-cartilage vibrations exciting acoustic pressure inside the eartip-sealed ear canal (captured by an inward <strong>In-Ear Microphone</strong>) or driving a <strong>Voice Pickup Unit (VPU)</strong> bone-conduction accelerometer pressed against the ear-canal wall:</p>
@@ -1125,7 +1128,7 @@ m=0,1,2,\ldots
 </ol>
 <p><strong>Wearable ANC and voice-uplink coexistence</strong>: In hybrid-ANC earbuds, the same outer feedforward (FF) microphone(s) and inward ear-canal feedback (FB) microphone typically serve both the sub-$100\ \mu\mathrm{s}$ ANC loop and the block-based voice-uplink DSP, creating two tightly coupled closed-loop interactions: first, <strong>ear-canal secondary-path $S(z)$ echo cancellation prior to §14.9 fusion</strong>—during calls, the earbud receiver simultaneously plays far-end speech plus ANC anti-noise into the sealed ear canal, coupling strongly into the inward FB microphone through the receiver-to-FB-mic <strong>secondary path $S(z)$</strong> (often $+10$ to $+25\ \mathrm{dB}$ louder than bone-conducted own voice); an in-ear linear echo canceller driven by the known receiver feed and online-tracked $\hat S(z)$ must therefore subtract this playback component <em>before</em> the FB channel enters §14.9's cross-modal own-voice MVDR/MMSE fusion, lest far-end voice and ANC anti-noise leak into the uplink or corrupt $H_{\mathrm{occ}}(f)$ estimation. Second, <strong><code>FxLMS</code> adaptation gating during own-voice speech</strong>—adaptive feedback/hybrid ANC relies on Filtered-x LMS (<code>FxLMS</code>) using $\hat S(z)$ to drive ear-canal residual error to zero; whenever the wearer speaks, high-energy bone-conducted own voice enters the FB error microphone as a strong near-end disturbance, so unchecked <code>FxLMS</code> either diverges or attempts to cancel and distort the wearer's own voice. Production hearables therefore pair an own-voice activity detector (OVAD, combining FF/FB energy ratios and coherence) to freeze or throttle <code>FxLMS</code> step sizes during own-voice speech while transitioning smoothly to Active Occlusion Effect Cancellation (OEC).</p>
 <p><strong>Bluetooth Classic HFP vs. BLE LE Audio uplink trade-offs</strong>: Front-end spatial capability is also bounded by the wireless transport profile. Legacy <strong>Bluetooth Classic HFP (<code>SCO</code> / <code>eSCO</code>)</strong> enforces a <strong>mono-only uplink</strong>—progressing from $8\ \mathrm{kHz}$ narrowband <code>CVSD</code> ($64\ \mathrm{kbps}$) and ubiquitous $16\ \mathrm{kHz}$ wideband <code>mSBC</code> ($7.5\ \mathrm{ms}$ frame) to HFP 1.9's $32\ \mathrm{kHz}$ Super Wideband (<code>SWB</code> via <code>LC3-SWB</code>)—forcing all earbud-side beamforming and §14.9 cross-modal fusion to collapse to one mono uplink stream (and typically downgrading simultaneous downlink audio to voice-band quality while the mic is active). <strong>BLE LE Audio</strong> replaces <code>mSBC</code> with the higher-efficiency <strong><code>LC3</code> codec</strong> ($8$–$48\ \mathrm{kHz}$ at $7.5\ \mathrm{ms}$ or $10\ \mathrm{ms}$ frame intervals, maintaining low distortion at $32$–$64\ \mathrm{kbps}$/channel) over <strong>Connected Isochronous Streams (<code>CIS</code>)</strong> for synchronized, independent bidirectional unicast links to both left and right earbuds (complemented by one-to-many <strong>Broadcast Isochronous Streams (<code>BIS</code> / <code>Auracast</code>)</strong> for public assistive listening). Within a $\sim 20$–$40\ \mathrm{ms}$ end-to-end wireless latency budget, <code>CIS</code> makes <strong>binaural stereo uplink</strong> (enabling spatial calling, XR capture, and host-side binaural beamforming) alongside concurrent wideband downlink playback feasible, subject to RF packet-loss concealment (PLC) and sub-microsecond inter-ear clock synchronization (<a href="10_engineering-practice.html#sec-10-2">Chapter 10, §10.2</a> &amp; <a href="13_distributed-enhancement.html">Chapter 13</a>).</p>
-<span id="sec-40" class="anchor-alias" aria-hidden="true"></span><span id="sec-16-11" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-14-11">14.11 Reproducible Code Entry Points, Synthetic Audio Controls, and Exercises (E14-01–E14-15)</h2>
+<span id="sec-40" class="anchor-alias" aria-hidden="true"></span><span id="sec-16-11" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-14-11">14.11 Reproducible Code Entry Points, Synthetic Audio Controls, and Exercises (E14-01–E14-16)</h2>
 <span id="sec-41" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-ab1107bf82" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-537ea8a07e">Code Architecture and Six Synthetic WAV Controls</h3>
 <p>Pure-NumPy kernels under <code>codes/chapters/ch14/</code> implement every equation in this chapter: <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch14/core/spatial_parametric.py"><code>spatial_parametric.py</code></a> (tetrahedral A/B-format encoding, 3D Euler rotations, active intensity &amp; diffuseness); <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch14/core/binaural_matching.py"><code>binaural_matching.py</code></a> (BSM-LS, monotonic BSM-MagLS &amp; reference-mixed IC); <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch14/core/wearable_fusion.py"><code>wearable_fusion.py</code></a> (cross-modal MVDR/MMSE, Hear-Through comb response &amp; Corcos wind coherence); and <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch14/core/ambisonic_sofa_rendering.py"><code>ambisonic_sofa_rendering.py</code></a> (FOA $\max\text{-}r_E$ decoding, <code>SOFA</code> geometry verification &amp; head-tracking lag bounds).</p>
 <p><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch14/examples/generate_wearable_audio.py"><code>generate_wearable_audio.py</code></a> writes $6$ deterministic $16\ \mathrm{kHz}$, $32000$-sample ($2.0\ \mathrm{s}$) PCM16 WAVs plus <a href="../site/wearable_audio/MANIFEST.json"><code>MANIFEST.json</code></a> under <code>codes/chapters/ch14/wearable_audio/</code> at common gain $1.0$, with $1600$-sample raised-cosine fades bracketing $28800$-sample ($1.8\ \mathrm{s}$) integer-cycle steady window $[1600, 30400)$.</p>
@@ -1144,7 +1147,7 @@ m=0,1,2,\ldots
 .venv/bin/python scripts/make_wearable_figures.py
 .venv/bin/python -m codes.chapters.ch14.chapter14_exercises --exercise E14-06
 </code></pre>
-<p>Exercises <code>E14-01</code>–<code>E14-15</code> log analytical expectations, pre-export <code>float64</code> components, and decoded 16-bit integer WAV ratios (scaled by $32768$) separately:</p>
+<p>Exercises <code>E14-01</code>–<code>E14-16</code> log analytical expectations, pre-export <code>float64</code> components, and decoded 16-bit integer WAV ratios (scaled by $32768$) separately:</p>
 <p>$$\mathrm{NMSE}_{\mathrm{PCM}}
 =\frac{\sum_{n=1600}^{30399}\bigl(Y_{\mathrm{int}}[n]
 -D_{\mathrm{int}}[n]\bigr)^2}
@@ -1272,8 +1275,169 @@ d_\ell(\vec n_s)
 <li><strong>Buffered wireless link ($\tau_{\mathrm{lag}} = 80\ \mathrm{ms}$)</strong>: $\Delta\theta_{\mathrm{lag}} = 14.40^\circ$ (chord $\approx 0.250666$), more than seven times the static MAA and visibly dragging world-locked images;</li>
 <li><strong>Linear lookahead ($\hat\tau = 65\ \mathrm{ms}$)</strong>: cuts steady-turn lag to $\lvert 80 - 65\rvert = 15\ \mathrm{ms} \implies 2.70^\circ$ (chord $\approx 0.047120$), but a sudden head stop incurs $\lvert\dot\theta_{\mathrm{yaw}}\rvert\hat\tau = 11.70^\circ$ reverse overshoot—motivating $20$–$40\ \mathrm{ms}$ prediction horizons with angular-acceleration damping.</li>
 </ul>
-<span id="sec-57" class="anchor-alias" aria-hidden="true"></span><span id="sec-16-12" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-14-12">14.12 Primary References and Further Reading</h2>
-<span id="sec-58" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-0b797dff82" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-7353b029bc">Foundational Literature on Spatial Sound Coding, Binaural Matching, and Wearable Fusion</h3>
+<p><a id="e14-16"></a></p>
+<span id="sec-57" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-93f31db349" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-10e64ea03a">E14-16: Rigid-Sphere Higher-Order Ambisonics ($N=2$, 9-Channel vs. $N=1$, 4-Channel) Radial Mode Boost and Low-Frequency WNG Amplification</h3>
+<p><strong>Problem.</strong> Consider a rigid solid spherical array of radius $R = 4.2\ \mathrm{cm}$ (commercial $Q = 32$-capsule Eigenmike em32 scale) at sound speed $c = 343\ \mathrm{m/s}$, using the sphere-mean normalization of §14.2 ($4\pi$-free, with DC limit $b_0^{\mathrm{rigid}}(0) = 1$, differing from <a href="05_beamforming.html#sec-5-8">Chapter 5, §5.8</a> Eq. (5-24) solely by constant $4\pi$):</p>
+<p>$$b_n^{\mathrm{rigid}}(\kappa R)=\mathrm{j}^n\!\left[j_n(\kappa R)-\frac{j_n'(\kappa R)}{h_n^{(2)\prime}(\kappa R)}\,h_n^{(2)}(\kappa R)\right]=\frac{\mathrm{j}^{n-1}}{(\kappa R)^2\,h_n^{(2)\prime}(\kappa R)}.$$</p>
+<p>Compare first-order FOA ($N = 1$, $(N+1)^2 = 4$ channels, orders $n = 0, 1$) against second-order HOA ($N = 2$, $9$ channels, orders $n = 0, 1, 2$) across $\kappa R \in \{0.2, 0.5, 1.0\}$: (1) compute the corresponding frequencies $f$, exact modal magnitudes $\lvert b_n^{\mathrm{rigid}}(\kappa R)\rvert$, and unregularized inverse-equalization boosts $20\log_{10}(1/\lvert b_n^{\mathrm{rigid}}(\kappa R)\rvert)$, verifying the low-frequency scaling slopes ($+20\ \mathrm{dB/dec}$ for $n = 1$ vs. $+40\ \mathrm{dB/dec}$ for $n = 2$); (2) apply Tikhonov-regularized radial equalization $g_n^{\mathrm{reg}} = b_n^{\mathrm{rigid}*} / (\lvert b_n^{\mathrm{rigid}}\rvert^2 + \beta^2)$ ($\beta = 0.05$), comparing unregularized versus regularized modal boosts, retained modal responses $h_n^{\mathrm{reg}} = g_n^{\mathrm{reg}} b_n^{\mathrm{rigid}}$, spherical-harmonic plane-wave decomposition (PWD) white noise gain $\mathrm{WNG}^{(N)}/Q$ (and $\mathrm{WNG}_{Q=32}^{(N)}$ at $Q = 32$), and mean per-channel N3D white-noise amplification $\bar{G}_{\mathrm{noise}}^{(N)}$, showing quantitatively why practical HOA encoders gracefully roll back from $N = 2$ to $N = 1$ (or $N = 0$) below the spatial cutoff frequency.</p>
+<p><strong>Solution.</strong> (1) From $f = \kappa R \cdot c / (2\pi R)$, $\kappa R \in \{0.2, 0.5, 1.0\}$ map to $f \approx 259.95, 649.88, 1299.77\ \mathrm{Hz}$. Expanding the derivatives of $h_n^{(2)}(x)$ yields exact rational-polynomial identities convenient for hand checks (writing $x = \kappa R$):</p>
+<p>$$\frac{1}{\lvert b_0^{\mathrm{rigid}}(x)\rvert^2}=1+x^2,\qquad \frac{1}{\lvert b_1^{\mathrm{rigid}}(x)\rvert^2}=\frac{4}{x^2}+x^2,\qquad \frac{1}{\lvert b_2^{\mathrm{rigid}}(x)\rvert^2}=\frac{81}{x^4}+\frac{9}{x^2}-2+x^2.$$</p>
+<p>These immediately yield low-frequency asymptotics $\lvert b_1^{\mathrm{rigid}}(x)\rvert \approx x/2$ (inverse boost $2/x$, i.e., $+20\ \mathrm{dB/dec}$) and $\lvert b_2^{\mathrm{rigid}}(x)\rvert \approx x^2/9$ (inverse boost $9/x^2$, i.e., $+40\ \mathrm{dB/dec}$). By AM–GM, the Tikhonov filter magnitude obeys the strict peak ceiling $\lvert g_n^{\mathrm{reg}}\rvert \le \frac{1}{2\beta} = 10$ ($+20.00\ \mathrm{dB}$, attained at $\lvert b_n\rvert = \beta$). Evaluating every mode across all three operating points (<code>E14-16</code> in <code>chapter14_exercises</code>):</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable data table"><table>
+<thead>
+<tr>
+<th scope="col">$\kappa R$ ($f$)</th>
+<th scope="col">Order $n$ (Channels)</th>
+<th scope="col" style="text-align: right;">$\lvert b_n^{\mathrm{rigid}}\rvert$</th>
+<th scope="col" style="text-align: right;">Unreg Boost (dB)</th>
+<th scope="col" style="text-align: right;">Reg Gain $\lvert g_n^{\mathrm{reg}}\rvert$ (dB)</th>
+<th scope="col" style="text-align: right;">Retained Response $h_n^{\mathrm{reg}}$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$0.2$ ($259.95\ \mathrm{Hz}$)</td>
+<td>$n=0$ ($1$)</td>
+<td style="text-align: right;">$0.980581$</td>
+<td style="text-align: right;">$+0.17$</td>
+<td style="text-align: right;">$+0.15$</td>
+<td style="text-align: right;">$0.9974$</td>
+</tr>
+<tr>
+<td>$0.2$ ($259.95\ \mathrm{Hz}$)</td>
+<td>$n=1$ ($3$)</td>
+<td style="text-align: right;">$0.099980$</td>
+<td style="text-align: right;">$+20.00$</td>
+<td style="text-align: right;">$+18.06$</td>
+<td style="text-align: right;">$0.7999$</td>
+</tr>
+<tr>
+<td>$0.2$ ($259.95\ \mathrm{Hz}$)</td>
+<td>$n=2$ ($5$)</td>
+<td style="text-align: right;">$0.004435$</td>
+<td style="text-align: right;">$+47.06$</td>
+<td style="text-align: right;">$+4.91$</td>
+<td style="text-align: right;">$0.0078$</td>
+</tr>
+<tr>
+<td>$0.5$ ($649.88\ \mathrm{Hz}$)</td>
+<td>$n=0$ ($1$)</td>
+<td style="text-align: right;">$0.894427$</td>
+<td style="text-align: right;">$+0.97$</td>
+<td style="text-align: right;">$+0.94$</td>
+<td style="text-align: right;">$0.9969$</td>
+</tr>
+<tr>
+<td>$0.5$ ($649.88\ \mathrm{Hz}$)</td>
+<td>$n=1$ ($3$)</td>
+<td style="text-align: right;">$0.248069$</td>
+<td style="text-align: right;">$+12.11$</td>
+<td style="text-align: right;">$+11.76$</td>
+<td style="text-align: right;">$0.9610$</td>
+</tr>
+<tr>
+<td>$0.5$ ($649.88\ \mathrm{Hz}$)</td>
+<td>$n=2$ ($5$)</td>
+<td style="text-align: right;">$0.027418$</td>
+<td style="text-align: right;">$+31.24$</td>
+<td style="text-align: right;">$+18.52$</td>
+<td style="text-align: right;">$0.2312$</td>
+</tr>
+<tr>
+<td>$1.0$ ($1299.77\ \mathrm{Hz}$)</td>
+<td>$n=0$ ($1$)</td>
+<td style="text-align: right;">$0.707107$</td>
+<td style="text-align: right;">$+3.01$</td>
+<td style="text-align: right;">$+2.97$</td>
+<td style="text-align: right;">$0.9950$</td>
+</tr>
+<tr>
+<td>$1.0$ ($1299.77\ \mathrm{Hz}$)</td>
+<td>$n=1$ ($3$)</td>
+<td style="text-align: right;">$0.447214$</td>
+<td style="text-align: right;">$+6.99$</td>
+<td style="text-align: right;">$+6.88$</td>
+<td style="text-align: right;">$0.9877$</td>
+</tr>
+<tr>
+<td>$1.0$ ($1299.77\ \mathrm{Hz}$)</td>
+<td>$n=2$ ($5$)</td>
+<td style="text-align: right;">$0.106000$</td>
+<td style="text-align: right;">$+19.49$</td>
+<td style="text-align: right;">$+17.75$</td>
+<td style="text-align: right;">$0.8180$</td>
+</tr>
+</tbody>
+</table></div>
+<p>Moving down from $\kappa R = 0.5$ to $0.2$ ($\log_{10}(2.5) \approx 0.3979\ \mathrm{dec}$), first-order unregularized boost climbs by $7.89\ \mathrm{dB}$ ($19.84\ \mathrm{dB/dec}$) whereas second-order boost surges by $15.82\ \mathrm{dB}$ ($39.76\ \mathrm{dB/dec}$), confirming $(\kappa R)^{-n}$ scaling. Notably, $\kappa R = 1.0$ gives exact values $\lvert b_0\rvert = 1/\sqrt{2}$, $\lvert b_1\rvert = 1/\sqrt{5}$, and $\lvert b_2\rvert = 1/\sqrt{89}$, while at $\kappa R = 0.2$ ($260\ \mathrm{Hz}$), unregularized $n = 2$ inverse equalization explodes to $225.50\times$ ($+47.06\ \mathrm{dB}$).</p>
+<p>(2) Across $Q$ uniform spherical capsules forming a spherical $2N$-design, mean per-channel N3D white-noise power amplification (per unit $\sigma_v^2/Q$) and $N$-th-order PWD beamformer white noise gain satisfy:</p>
+<p>$$\bar{G}_{\mathrm{noise}}^{(N)}=\frac{1}{(N+1)^2}\sum_{n=0}^{N}(2n+1)\,\lvert g_n\rvert^2,\qquad \frac{\mathrm{WNG}^{(N)}}{Q}=\frac{\bigl(\sum_{n=0}^{N}(2n+1)\,g_n b_n^{\mathrm{rigid}}\bigr)^2}{\sum_{n=0}^{N}(2n+1)\,\lvert g_n\rvert^2}.$$</p>
+<p>Comparing $N = 1$ ($4$ ch) vs. $N = 2$ ($9$ ch) without regularization and at $\beta = 0.05$ (with $Q = 32$ values in parentheses):</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable data table"><table>
+<thead>
+<tr>
+<th scope="col">$\kappa R$</th>
+<th scope="col">Order (Ch)</th>
+<th scope="col" style="text-align: right;">Unreg $\mathrm{WNG}/Q$ ($Q=32$) (dB)</th>
+<th scope="col" style="text-align: right;">Reg $\mathrm{WNG}/Q$ ($Q=32$) (dB)</th>
+<th scope="col" style="text-align: right;">Unreg Mean Ch Noise $\bar{G}_{\mathrm{noise}}$ (dB)</th>
+<th scope="col" style="text-align: right;">Reg Mean Ch Noise $\bar{G}_{\mathrm{noise}}$ (dB)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$0.2$</td>
+<td>$N=1$ ($4$)</td>
+<td style="text-align: right;">$-12.75$ ($+2.30$)</td>
+<td style="text-align: right;">$-12.23$ ($+2.82$)</td>
+<td style="text-align: right;">$+18.77$</td>
+<td style="text-align: right;">$+16.84$</td>
+</tr>
+<tr>
+<td>$0.2$</td>
+<td>$N=2$ ($9$)</td>
+<td style="text-align: right;">$-34.97$ ($-19.92$)</td>
+<td style="text-align: right;">$-12.47$ ($+2.58$)</td>
+<td style="text-align: right;">$+44.52$</td>
+<td style="text-align: right;">$+13.65$</td>
+</tr>
+<tr>
+<td>$0.5$</td>
+<td>$N=1$ ($4$)</td>
+<td style="text-align: right;">$-4.95$ ($+10.10$)</td>
+<td style="text-align: right;">$-4.88$ ($+10.18$)</td>
+<td style="text-align: right;">$+10.97$</td>
+<td style="text-align: right;">$+10.63$</td>
+</tr>
+<tr>
+<td>$0.5$</td>
+<td>$N=2$ ($9$)</td>
+<td style="text-align: right;">$-19.18$ ($-4.13$)</td>
+<td style="text-align: right;">$-12.00$ ($+3.05$)</td>
+<td style="text-align: right;">$+28.72$</td>
+<td style="text-align: right;">$+16.50$</td>
+</tr>
+<tr>
+<td>$1.0$</td>
+<td>$N=1$ ($4$)</td>
+<td style="text-align: right;">$-0.26$ ($+14.79$)</td>
+<td style="text-align: right;">$-0.25$ ($+14.80$)</td>
+<td style="text-align: right;">$+6.28$</td>
+<td style="text-align: right;">$+6.18$</td>
+</tr>
+<tr>
+<td>$1.0$</td>
+<td>$N=2$ ($9$)</td>
+<td style="text-align: right;">$-7.56$ ($+7.49$)</td>
+<td style="text-align: right;">$-6.86$ ($+8.19$)</td>
+<td style="text-align: right;">$+17.10$</td>
+<td style="text-align: right;">$+15.43$</td>
+</tr>
+</tbody>
+</table></div>
+<p>At $\kappa R = 0.2$ ($260\ \mathrm{Hz}$), forcing unregularized $N = 2$ encoding drops the $32$-capsule WNG by $22.22\ \mathrm{dB}$ from $+2.30\ \mathrm{dB}$ ($N = 1$) down to $-19.92\ \mathrm{dB}$ (with mean channel noise amplification reaching $+44.52\ \mathrm{dB}$). With $\beta = 0.05$, because $\lvert b_2\rvert = 0.004435 \ll \beta$, second-order gain automatically folds back to $+4.91\ \mathrm{dB}$ with retained response $h_2^{\mathrm{reg}} = 0.0078$, recovering $+22.50\ \mathrm{dB}$ of WNG back to $+2.58\ \mathrm{dB}$ (and lowering mean channel noise gain to $+13.65\ \mathrm{dB}$) so the encoder behaves smoothly like an $N = 1$ FOA array below cutoff. As frequency rises through $\kappa R = 0.5$ ($650\ \mathrm{Hz}$, transition $h_2^{\mathrm{reg}} = 0.2312$, $+7.18\ \mathrm{dB}$ WNG recovery) to $\kappa R = 1.0$ ($1300\ \mathrm{Hz}$), second-order spatial resolution unlocks cleanly ($h_2^{\mathrm{reg}} = 0.8180$, $\mathrm{WNG}_{Q=32} = +8.19\ \mathrm{dB}$).</p>
+<span id="sec-58" class="anchor-alias" aria-hidden="true"></span><span id="sec-16-12" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-14-12">14.12 Primary References and Further Reading</h2>
+<span id="sec-59" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-0b797dff82" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-7353b029bc">Foundational Literature on Spatial Sound Coding, Binaural Matching, and Wearable Fusion</h3>
 <ul>
 <li>Gerzon, M. A., <em>Periphony: With-Height Sound Reproduction</em>, <em>Journal of the Audio Engineering Society (JAES)</em> 21(1), 1973, pp. 2–10 (<a href="https://www.aes.org/publications/elibrary-page/?id=2012">AES E-Library</a>): establishes First-Order Ambisonics ($W, X, Y, Z$) and tetrahedral spherical capture geometry.</li>
 <li>Nachbar, C., Zotter, F., Deleflie, E., &amp; Sontacchi, A., <em>AmbiX — A Suggested Ambisonics Format</em>, Ambisonics Symposium 2011: defines ACN channel ordering, SN3D normalization, and 3D rotation interfaces.</li>

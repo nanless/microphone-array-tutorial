@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Chapter 16 · Appendix A: Symbols, Glossary & Math Lookup · Microphone Array Signal Processing</title>
-<meta name="source-digest" content="7b2bf0186a72"><style>
+<meta name="source-digest" content="6fa82909c83a"><style>
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -1301,7 +1301,7 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 </tbody>
 </table></div>
 <span id="sec-16-3-5" class="anchor-alias" aria-hidden="true"></span><span id="sec-16-3-6" class="anchor-alias" aria-hidden="true"></span><span id="sec-16-3-7" class="anchor-alias" aria-hidden="true"></span><span id="sec-12-3" class="anchor-alias" aria-hidden="true"></span><span id="sec-12-3-5" class="anchor-alias" aria-hidden="true"></span><span id="sec-12-3-6" class="anchor-alias" aria-hidden="true"></span><span id="sec-12-3-7" class="anchor-alias" aria-hidden="true"></span><span id="sec-14-3" class="anchor-alias" aria-hidden="true"></span><span id="sec-14-3-5" class="anchor-alias" aria-hidden="true"></span><span id="sec-14-3-6" class="anchor-alias" aria-hidden="true"></span><span id="sec-14-3-7" class="anchor-alias" aria-hidden="true"></span><span id="sec-10" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-16-3">16.3 Frequently Used Mathematical and Numerical Quick-Reference Cards</h2>
-<p>This section distills the acoustic-unit conversions, complex-matrix and Wirtinger identities, regularization-parameter boundaries, and NumPy/SciPy API traps invoked most frequently across the main text into four compact quick-reference cards; complete step-by-step proofs, geometric figures, and worked derivations are consolidated in <a href="00_math-foundations.html">Chapter 0: Mathematical Foundations</a> (jump directly to <a href="00_math-foundations.html#sec-0-2">§0.2</a>–<a href="00_math-foundations.html#sec-0-6">§0.6</a>).</p>
+<p>This section distills the acoustic-unit conversions, complex-matrix and Wirtinger identities, regularization-parameter boundaries, and NumPy/SciPy API traps invoked most frequently across the main text into four compact quick-reference cards; complete step-by-step proofs, geometric figures, and worked derivations are consolidated in <a href="00_math-foundations.html">Chapter 0: Mathematical Foundations</a> (jump directly to <a href="00_math-foundations.html#sec-0-1">§0.1</a>–<a href="00_math-foundations.html#sec-0-7">§0.7</a>).</p>
 <span id="sec-12-3-1" class="anchor-alias" aria-hidden="true"></span><span id="sec-14-3-1" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-16-3-1">16.3.1 Decibels and Acoustic Units Quick-Reference Card</h3>
 <p>This monograph uses forward Fourier kernel $e^{-\mathrm{j}2\pi ft}$ uniformly: a time delay $x(t-\tau)$ produces frequency-domain phase shift $e^{-\mathrm{j}2\pi f\tau}$, and the far-field plane-wave steering component is $a_m=e^{-\mathrm{j}2\pi f\tau_{m1}}=e^{+\mathrm{j}2\pi f(\vec r_m-\vec r_1)^\top\vec u/c}$ (full derivation in <a href="00_math-foundations.html#sec-0-2-1">§0.2.1</a>, §2.3). Across identical load impedance, power/energy ratios use $10\log_{10}(P_2/P_1)$, whereas pressure/voltage/amplitude ratios use $20\log_{10}(|A_2|/|A_1|)$ (<a href="00_math-foundations.html#sec-0-2-2">§0.2.2</a>):</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable data table"><table>
@@ -1398,6 +1398,21 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 <td>$(\mathbf B_1\otimes\mathbf A_1)(\mathbf B_2\otimes\mathbf A_2)$<br>$=(\mathbf B_1\mathbf B_2)\otimes(\mathbf A_1\mathbf A_2)$;<br>$\operatorname{vec}(\mathbf A\mathbf X\mathbf B^\top)=(\mathbf B\otimes\mathbf A)\operatorname{vec}(\mathbf X)$;<br>$\operatorname{vec}(\mathbf A\operatorname{diag}(\vec q)\mathbf A^H)=(\mathbf A^*\odot\mathbf A)\vec q$</td>
 <td>Unifies difference coarrays (§3.3), separable planar arrays (§5.5), and CMF imaging (§12.7); keep left-factor conjugation $\mathbf A^*$ (<a href="00_math-foundations.html#sec-0-4-3">§0.4.3</a>)</td>
 </tr>
+<tr>
+<td>Unit quaternions &amp; SLERP</td>
+<td>$\mathbf R(\mathbf q)=(q_w^2-\lVert\vec q_v\rVert_2^2)\mathbf I_3$<br>$+2\vec q_v\vec q_v^\top+2q_w[\vec q_v]_\times$;<br>$\operatorname{SLERP}=\frac{\sin((1-t)\Omega)}{\sin\Omega}\mathbf q_0+\frac{\sin(t\Omega)}{\sin\Omega}\mathbf q_1$</td>
+<td>$\lVert\mathbf q\rVert_2=1$, double cover $\mathbf q\sim-\mathbf q$; enforce $\mathbf q_0^\top\mathbf q_1\ge 0$ for shortest arc in IMU &amp; head tracking (<a href="00_math-foundations.html#sec-0-1-3">§0.1.3</a>, §9.2.3, §14.3)</td>
+</tr>
+<tr>
+<td>Polyphase &amp; Noble identities</td>
+<td>$H(z)=\sum_{p=0}^{D-1}z^{-p}E_p(z^D)$;<br>$E(z^D)\!\to\!(\downarrow D)\equiv(\downarrow D)\!\to\!E(z)$;<br>$(\uparrow U)\!\to\!E(z^U)\equiv E(z)\!\to\!(\uparrow U)$</td>
+<td>Moves decimation/interpolation filtering to low rate with exact $1/D$ MAC reduction in subband AEC &amp; PDM decimation (<a href="00_math-foundations.html#sec-0-2-5">§0.2.5</a>, §6.2.3, §10.2)</td>
+</tr>
+<tr>
+<td>Schur-complement LMI &amp; SDP</td>
+<td>$\vec x^H\mathbf A\vec x\le t\;(\mathbf A\succ\mathbf 0)$<br>$\Longleftrightarrow\;\begin{bmatrix}\mathbf A^{-1} & \vec x \\ \vec x^H & t\end{bmatrix}\succeq\mathbf 0$</td>
+<td>Converts convex quadratic/SOCP bounds to LMIs for robust beamforming &amp; gridless ANM (<a href="00_math-foundations.html#sec-0-3-5">§0.3.5</a>, <a href="00_math-foundations.html#sec-0-5-3">§0.5.3</a>, §5.4, §12.11)</td>
+</tr>
 </tbody>
 </table></div>
 <p>In addition, for zero-padded finite-length complex sequences, this monograph uniformly defines discrete cross-correlation by conjugating the second sequence (matching <code>scipy.signal.correlate</code>, obeying conjugate anti-symmetry $R_{21}[q]=R_{12}^*[-q]$, and peaking at positive lag $q>0$ whenever Channel 1 arrives $q$ samples later; see <a href="#e16-12">E16-12</a>):</p>
@@ -1457,6 +1472,18 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 <td>—</td>
 <td>Explicit squaring inflates condition number to $\kappa_2(\mathbf A^H\mathbf A)=\kappa_2(\mathbf A)^2$</td>
 <td>For $\kappa_2(\mathbf A)\gtrsim 10^8$, <code>float64</code> normal equations lose weak axes in roundoff; call QR/SVD directly (<a href="00_math-foundations.html#sec-0-3-4">§0.3.4</a>)</td>
+</tr>
+<tr>
+<td>Total Least Squares (TLS)</td>
+<td>Same scale as $[\mathbf A,\vec b]$ (no extra penalty)</td>
+<td>SVD of augmented $[\mathbf A,\vec b]$ gives<br>$\hat{\vec x}_{\mathrm{TLS}}=-\vec v_{1:n,n+1}/v_{n+1,n+1}$</td>
+<td>Requires $\sigma_n(\mathbf A)>\sigma_{n+1}([\mathbf A,\vec b])$ or noise blows up near degeneracy; underpins TLS-ESPRIT (<a href="00_math-foundations.html#sec-0-3-4">§0.3.4</a>, §4.6)</td>
+</tr>
+<tr>
+<td>Weyl &amp; Davis–Kahan bounds</td>
+<td>$\lVert\mathbf E\rVert_2$ and gap $\Delta_{\mathrm{gap}}$ share power units</td>
+<td>$\lvert\lambda_i(\hat{\mathbf R})-\lambda_i(\mathbf R)\rvert\le\lVert\mathbf E\rVert_2$;<br>$\lVert\sin\Theta(\hat{\mathbf U}_s,\mathbf U_s)\rVert_2\le\lVert\mathbf E\rVert_2/\Delta_{\mathrm{gap}}$</td>
+<td>$\Delta_{\mathrm{gap}}=\lambda_K(\mathbf R)-\lambda_{K+1}(\hat{\mathbf R})>0$; MUSIC/ESPRIT suffers threshold collapse as $\lVert\mathbf E\rVert_2\to\Delta_{\mathrm{gap}}$ (<a href="00_math-foundations.html#sec-0-3-4">§0.3.4</a>, §4.6)</td>
 </tr>
 </tbody>
 </table></div>

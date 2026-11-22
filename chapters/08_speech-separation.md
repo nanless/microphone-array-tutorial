@@ -283,7 +283,7 @@ v_{nk}&=\begin{cases}
 \vec y_f(t)\leftarrow\vec y_f(t)-\vec v_k\,y_{kf}(t).
 \end{aligned}\tag{8-9}$$
 
-逐项验证式(8-9)：对所有 $n\ne k$，更新后的第 $n$ 路输出 $y_{nf}^{\mathrm{new}}(t)=y_{nf}(t)-v_{nk}y_{kf}(t)$ 严格满足加权正交 $\sum_t r_n(t)^{-1}y_{nf}^{\mathrm{new}}(t)y_{kf}^*(t)=0$；对 $n=k$，新行 $(\vec w_{kf}^{\mathrm{new}})^H=(1-v_{kk})\vec w_{kf}^H$ 严格满足归一化 $(\vec w_{kf}^{\mathrm{new}})^H\mathbf V_{kf}\vec w_{kf}^{\mathrm{new}}=1$；每步同样严格保证 AuxIVA 辅助目标单调非增且零步长调参，而单频点扫完 $k=1,\dots,M$ 全源与 $T$ 帧的完整一轮开销从 IP 的 $O(TM^3+M^4)$ 降至 $O(TM^2+M^3)$（在帧统计累加与矩阵更新两项上均实现 $M$ 倍加速；`pyroomacoustics` 与 `ssspy` 的 AuxIVA 均提供了 `IP` 与 `ISS` 分支供切换）。
+逐项验证式(8-9)：对所有 $n\ne k$，更新后的第 $n$ 路输出 $y_{nf}^{\mathrm{new}}(t)=y_{nf}(t)-v_{nk}y_{kf}(t)$ 严格满足加权正交 $\sum_t r_n(t)^{-1}y_{nf}^{\mathrm{new}}(t)y_{kf}^*(t)=0$；对 $n=k$，新行 $(\vec w_{kf}^{\mathrm{new}})^H=(1-v_{kk})\vec w_{kf}^H$ 严格满足归一化 $(\vec w_{kf}^{\mathrm{new}})^H\mathbf V_{kf}\vec w_{kf}^{\mathrm{new}}=1$；每步同样严格保证 AuxIVA 辅助目标单调非增且零步长调参，而单频点扫完 $k=1,\dots,M$ 全源与 $T$ 帧的完整一轮开销从 IP 的 $O(TM^3+M^4)$ 降至 $O(TM^2+M^3)$（在帧统计累加与矩阵更新两项上均实现 $M$ 倍加速；`pyroomacoustics` 与 `ssspy` 的 AuxIVA 均提供了 `IP` 与 `ISS` 分支供切换，手算与收敛对照见练习 [E08-27](#e08-27)）。
 
 进一步将批处理时间平均改为带指数遗忘因子 $\alpha\in(0,1)$ 的逐帧递推统计（用新到达的单帧复谱 $\vec x_f(t)$ 更新加权二阶矩，并复用轻量级 $O(M^2)$ ISS 秩一修正更新 $\mathbf W_f$，配合逐帧或递推回投影），便得到低延迟流式盲源分离框架 **Online AuxIVA-ISS**（参见 [Nakashima 与 Ono，APSIPA ASC 2022](https://doi.org/10.23919/APSIPAASC55919.2022.9979837)）。相比离线整段批处理，在线版能够追踪缓慢走动的说话人，但同样须防范遗忘因子 $\alpha$ 过小引发的方差震荡以及全员静音段引发的协方差退化。
 
@@ -845,6 +845,17 @@ $$\begin{aligned}
 
 以 $f_s=16\ \mathrm{kHz}$、$H=128$（$8\ \mathrm{ms}$，$R=125\ \mathrm{帧/s}$）、$B=4$、$D=64$、$K_{\mathrm{proj}}=4$ 为例，直接在 $F=256$ 个窄带频点上逐频递推就高达约 $2.10\ \mathrm{GMAC/s}$；工程轻量化架构（如 **Mel-McNet**，Yang、Yang 与 Li，Interspeech 2025，通过将线性 STFT 频点压缩至梅尔子带再送入 McNet 主干，相对全频点线性 McNet 削减约 $60\%$ 计算量）先将高频稠密线性频点压缩到 $F_{\mathrm{mel}}=64$ 个梅尔（Mel）或等效非均匀子带上做跨带—时序建模，可将线性主干算力精确压降 $4$ 倍至约 $0.524\ \mathrm{GMAC/s}$（完整算力核算见[练习 E08-26](#e08-26)）。
 
+**未知说话人数场景下的递归分离：OR-PIT 与 RSAN**：上述深度分离网络多按固定输出头数 $N$ 配合整句 `uPIT` 训练，而流式 `CSS` 通常在短块内固定 $2$ 个输出槽位并辅以单人旁路门控。当整段混合录音中的说话人数 $N$ 预先未知且可能大于固定槽位数时，文献形成了两类经典的**递归逐人剥离**架构：
+
+- **一分其余置换不变训练（One-and-Rest PIT，OR-PIT；Takahashi 等，Interspeech 2019）**：将分离器训练为固定的二输出模块，每步把当前输入混合 $y$ 拆成一位前景说话人 $\hat s_1$ 与其余 $N-1$ 位说话人的残余混合 $\hat r_1$；推理时把残余波形 $\hat r_k$ 递归送回同一网络逐一剥离，直至二分类停止判定头或残余能量门控终止递归。该设计在 $N=1$ 单人段一步即停、天然避免固定多槽位过度切分，并可在结构上泛化至超过训练集最大人数的混合；代价是每步提取残留的串扰与失真会在后续递归步 $\hat r_k$ 上串行累积，且推理时延随 $N$ 线性增长。
+- **循环选择性注意力网络（Recurrent Selective Attention Network，RSAN；Kinoshita 等，ICASSP 2018）**：在 STFT 时频域显式维护一张逐点非负的**残余掩码预算** $R^{(k)}$，初始置 $R^{(0)}=\mathbf 1$，第 $k$ 步结合混合谱与剩余预算输出一位说话人的时频掩码 $M^{(k)}$，并按
+
+  $$R^{(k)}=\max\!\bigl(0,\;R^{(k-1)}-M^{(k-1)}\bigr)$$
+
+  递推更新下一轮可用掩码（从 $k=1$ 起扣除已分配掩码），直至剩余掩码总质量低于门限 $\tau$ 时停止。与 OR-PIT 不同，RSAN 在掩码域显式贯彻了混合掩码守恒约束，无需把分离出的时域残余波形反复送回前端编码器重新提特征。
+
+在真实多人会议部署中，整句级递归的 OR-PIT 与 RSAN 仍受限于串行延迟随人数线性递增、强噪声/混响下停止门限 $\tau$ 易误触发以及长流跨块身份对齐等瓶颈；因此工业会议前端通常优先采用**双槽流式 CSS**（利用 $1.2\text{～}2.4\ \mathrm{s}$ 短块内三人以上同时抢话概率较低的统计规律并配单人旁路保护），或在[第 15 章](15_target-extraction-diarization.md)进一步引入由日志模型显式给出人数与活动区间的**日志导引分离前端**（如 `TS-VAD` + `WPE` + `GSS`）。
+
 #### 混合一致性与STFT一致性
 
 当深度网络直接预测复数掩码或各说话人复谱 $\widehat y_1,\dots,\widehat y_N$ 时，经常违背两条基本的物理自洽约束：一是多路估计谱加起来不等于参考麦观测混合谱 $x$；二是网络吐出的复数矩阵未必是任何一条真实时域波形做 STFT 所能产生的合法谱。**混合一致性（mixture consistency）**与 **STFT 一致性（STFT consistency）**正是架在网络输出端的两层可微物理投影层（注意它们只能修补物理自洽性，本身不能创造声源独立性）。
@@ -1063,7 +1074,7 @@ $${\mathbf B}=\begin{bmatrix}1&0.2\\0.5&1\end{bmatrix},\qquad
 3. **相对密度与尺度不变性**：新矩阵行列式为 $3/4$，逆矩阵为 $\operatorname{diag}(2/3,2)$。略去球面公共常数，两方向的密度因子 $(\det\mathbf B)^{-1}q_t^{-M}$ 分别为 $(4/3)(2/3)^{-2}=3$ 与 $(4/3)\times2^{-2}=1/3$。对任意正数 $c>0$，若将 ${\mathbf B}$ 替换为 $c{\mathbf B}$，则 $\det(c{\mathbf B})=c^M\det {\mathbf B}$，同时二次型变为 $q_t/c$，密度公式中的 $c^{-M}$ 与 $(1/c)^{-M}$ 精确抵消。反过来看观测径向缩放：若把两帧原始观测从 $[\vec e_1,\vec e_2]$ 放大为 $[\vec e_1,3\vec e_2]$，复球面投影后的单位方向与相对 cACG 密度分毫不变，但后级波束形成汇总的未归一化原始功率 SCM 却由 $\operatorname{diag}(1/2,1/2)$ 跳变为 $\operatorname{diag}(1/2,9/2)$——前端 cACGMM 抹平径向音量跳变、后端 SCM 恢复真实物理功率，二者切勿混淆。
 4. **单方向退化与向单位阵收缩**：若继续固定 $\gamma_1=3/4,\gamma_2=1/4$ 再算一轮，迹归一后矩阵变为 $\operatorname{diag}(1.8,0.2)$；若极端情况下两帧方向都等于 $[1,0]^\top$，一步更新就会得出奇异矩阵 $\operatorname{diag}(2,0)$，迹虽为 $2$ 却已不可逆。因此工程与教学整链在迹归一后必须叠加 $(1-\delta){\mathbf B}+\delta{\mathbf I}_M$ 收缩（如 $\delta=0.02$ 时特征值保底为 $1.98,0.02$），并在某类责任权重总和不足时重置该分量（复算脚本见 [`enhancement_structure_exercises.py`](../codes/chapters/ch00/cross_chapter/enhancement_structure_exercises.py) 与 [`test_codes_enhancement_structure.py`](../tests/test_codes_enhancement_structure.py)）。
 
-以下 E08-10～E08-26 可通过 `.venv/bin/python -m codes.chapters.ch08.chapter08_experiments` 统一运行复算，代码总入口为 [`chapter08_experiments.py`](../codes/chapters/ch08/chapter08_experiments.py) 中的 `run_experiments()`，涉及配套音频的题目会直接读取仓内 WAV 样本核验指标。
+以下 E08-10～E08-27 可通过 `.venv/bin/python -m codes.chapters.ch08.chapter08_experiments` 统一运行复算，代码总入口为 [`chapter08_experiments.py`](../codes/chapters/ch08/chapter08_experiments.py) 中的 `run_experiments()`，涉及配套音频的题目会直接读取仓内 WAV 样本核验指标。
 
 <a id="e08-10"></a>
 
@@ -1620,6 +1631,52 @@ p&=\arg\max_{i\in\{1,2\}}E_i,\qquad
 2. **为什么近 $20\ \mathrm{dB}$ 的高分照样损害识别率**：对完整单人真值 $\vec{s}=\vec{s}_{\mathrm{v}}+\vec{s}_{\mathrm{f}}$，由于 $\vec{s}_{\mathrm{v}}^\top\vec{s}_{\mathrm{f}}=0$，主槽位 $\hat{\vec{s}}_1=\vec{s}_{\mathrm{v}}$ 在 $\vec{s}$ 上的最优标量投影系数为 $\alpha_\star=99/100=0.99$，投影目标能量为 $0.99^2\times 100=98.01$，正交误差能量 $\|\vec{s}_{\mathrm{v}}-0.99\vec{s}\|_2^2=0.01^2\times 99+0.99^2\times 1=0.99$，比值恰为 $98.01/0.99=99$。因此主槽位的 `SI-SDR` 高达 $10\log_{10}(99)\approx +19.95635\ \mathrm{dB}$；但被切到次槽位丢弃的那 $1\%$ 能量恰恰承载着清擦音词尾（如复数或所有格 `/s/`），导致这句 $4$ 词语音直接错掉 $1$ 个词，词错率从 $0\%$ 跳升至 $1/4=25\%$。
 
    代入式(8-41)核算主次槽位能量比：$E_1=99$、$E_2=1$（主槽位 $p=1$），次主能量比 $\eta_{\mathrm{dB}}=10\log_{10}(1/99)\approx -19.95635\ \mathrm{dB}$，满足 $\eta_{\mathrm{dB}}\le -18.0\ \mathrm{dB}$，触发单说话人旁路合并，活跃主槽位输出 $\hat{\vec{s}}_{\mathrm{out},1}=\hat{\vec{s}}_1+\hat{\vec{s}}_2=\vec{s}$、次槽位清零 $\hat{\vec{s}}_{\mathrm{out},2}=\vec{0}$，清擦音无损归位，误差归零且词错率回到 $0\%$（若主能量落在槽位 $2$ 即 $p=2$，合并结果同样自动落在活跃主槽位 $\hat{\vec{s}}_{\mathrm{out},2}=\vec{s}$）。反之，当两位说话人真实重叠且主次能量为 $99$ 与 $9.9$ 时，$\eta_{\mathrm{dB}}=10\log_{10}(9.9/99)=-10.0\ \mathrm{dB}>-18.0\ \mathrm{dB}$，门控保持关闭，双槽位原样返回 $(\hat{\vec{s}}_1,\hat{\vec{s}}_2)$ 而不丢弃第二说话人（代码验证见 [`separation_metrics_streaming.py`](../codes/chapters/ch08/core/separation_metrics_streaming.py) 与 `E08-26`）。
+
+<a id="e08-27"></a>
+
+#### E08-27：AuxIVA 迭代源导向（ISS）无求逆秩一更新与迭代投影（IP）收敛对照
+
+考察 §8.3 单个复数频点上的双通道 AuxIVA 辅助目标最小化。给定两张厄米正定加权协方差矩阵与初始解混矩阵（按式(8-6)约定，$\mathbf W$ 的第 $n$ 行为 $\vec w_n^H$）：
+
+$$\mathbf V_1=\begin{bmatrix}4&4\mathrm j\\-4\mathrm j&20\end{bmatrix},\qquad
+\mathbf V_2=\begin{bmatrix}20&4\mathrm j\\-4\mathrm j&4\end{bmatrix},\qquad
+\mathbf W^{(0)}=\mathbf I_2.$$
+
+定义固定加权协方差下的 AuxIVA 辅助代价函数：
+
+$$Q(\mathbf W)=\sum_{n=1}^2 \vec w_n^H\mathbf V_n\vec w_n-2\ln\lvert\det\mathbf W\rvert.$$
+
+完成以下复算：（1）计算初始代价 $Q(\mathbf W^{(0)})$；（2）分别手算一轮完整**迭代投影（IP，式(8-8)）**与一轮完整**无求逆迭代源导向（ISS，式(8-9) 秩一更新 $\mathbf W\leftarrow\mathbf W-\vec v_k\vec w_k^H$）**，给出两者的中间量、更新后矩阵与代价，验证 $Q(\mathbf W^{(0)})>Q(\mathbf W_{\mathrm{ISS}}^{(1)})$；（3）将 IP 与 ISS 各自迭代至 $K=5$ 轮，验证两者单调下降并收敛至同一全局最优驻点（代价差低于 $10^{-10}$），并对照两者的矩阵运算复杂度。
+
+**参考答案**：
+
+1. **初始代价**：$\vec w_1^{(0)}=[1,0]^\top$、$\vec w_2^{(0)}=[0,1]^\top$ 且 $\det\mathbf W^{(0)}=1$，故 $\vec w_1^{(0)H}\mathbf V_1\vec w_1^{(0)}=4$、$\vec w_2^{(0)H}\mathbf V_2\vec w_2^{(0)}=4$，初始代价 $Q(\mathbf W^{(0)})=4+4-2\ln 1=8$。
+2. **第 1 轮 IP 扫描（需两次 $2\times 2$ 线性求解）**：
+   - 更新第 $1$ 行：解 $\mathbf W^{(0)}\mathbf V_1\vec u_1=\vec e_1$（$\det\mathbf V_1=64$）得 $\vec u_1=[5/16,\;\mathrm j/16]^\top$，二次型 $\vec u_1^H\mathbf V_1\vec u_1=5/16$，归一化写回共轭转置得第一行 $[\sqrt{5}/4,\;-\mathrm j/(4\sqrt{5})]$，此时代价降至 $5+\ln(16/5)\approx 6.163151$。
+   - 立即使用更新后的 $\mathbf W$ 解 $(\mathbf W\mathbf V_2)\vec u_2=\vec e_2$ 得 $\vec u_2=[-\mathrm j/20,\;3/10]^\top$，二次型 $\vec u_2^H\mathbf V_2\vec u_2=29/100$，归一化后完整第 1 轮 IP 矩阵与代价为：
+
+     $$\mathbf W_{\mathrm{IP}}^{(1)}=\begin{bmatrix}\dfrac{\sqrt{5}}{4}&-\dfrac{\mathrm j}{4\sqrt{5}}\\\dfrac{\mathrm j}{2\sqrt{29}}&\dfrac{3}{\sqrt{29}}\end{bmatrix},\qquad
+     Q(\mathbf W_{\mathrm{IP}}^{(1)})=2+\ln\frac{320}{29}\approx 4.401025.$$
+
+3. **第 1 轮 ISS 扫描（零矩阵求逆，纯内积与秩一外积）**：按 $v_{nk}=\frac{\vec w_n^H\mathbf V_n\vec w_k}{\vec w_k^H\mathbf V_n\vec w_k}$（$n\ne k$）与 $v_{kk}=1-(\vec w_k^H\mathbf V_k\vec w_k)^{-1/2}$ 顺序推进：
+   - 第 $k=1$ 步（沿 $\vec w_1^{(0)}=[1,0]^\top$）：$v_{11}=1-4^{-1/2}=1/2$，$v_{21}=(-4\mathrm j)/20=-\mathrm j/5$；秩一更新 $\mathbf W^{(1/2)}_{\mathrm{ISS}}=\mathbf W^{(0)}-\vec v_1\vec w_1^{(0)H}=\begin{bmatrix}1/2&0\\\mathrm j/5&1\end{bmatrix}$，此时第 $2$ 行二次型缩至 $16/5$、行列式为 $1/2$，代价立即由 $8$ 降至 $1+16/5-2\ln(1/2)=21/5+2\ln 2\approx 5.586294$。
+   - 第 $k=2$ 步（沿 $\vec w_2^{(1/2)}=[-\mathrm j/5,\;1]^\top$）：$v_{22}=1-(16/5)^{-1/2}=1-\sqrt{5}/4\approx 0.440983$；分子 $(\vec w_1^{(1/2)})^H\mathbf V_1\vec w_2^{(1/2)}=8\mathrm j/5$、分母 $(\vec w_2^{(1/2)})^H\mathbf V_1\vec w_2^{(1/2)}=464/25$，得 $v_{12}=\frac{5}{58}\mathrm j\approx 0.086207\,\mathrm j$。执行 $\mathbf W_{\mathrm{ISS}}^{(1)}=\mathbf W^{(1/2)}_{\mathrm{ISS}}-\vec v_2(\vec w_2^{(1/2)})^H$：
+
+     $$\mathbf W_{\mathrm{ISS}}^{(1)}=\begin{bmatrix}\dfrac{15}{29}&-\dfrac{5}{58}\mathrm j\\\dfrac{\mathrm j}{4\sqrt{5}}&\dfrac{\sqrt{5}}{4}\end{bmatrix},\qquad
+     Q(\mathbf W_{\mathrm{ISS}}^{(1)})=\frac{54}{29}+\ln\frac{64}{5}\approx 4.411514<8.$$
+
+4. **$K=5$ 轮收敛至同一最优解与复杂度对照**：广义特征值问题 $\mathbf V_1\vec u=\mu\mathbf V_2\vec u$ 的精确特征值为 $\mu_{1,2}=3\mp 2\sqrt{2}$，对应解析全局最小代价 $Q^\star=2+\ln\bigl(64(3-2\sqrt{2})\bigr)\approx 4.396135909321$。五轮扫描代价演化如下表：
+
+   | 轮次 $k$ | IP 代价 $Q(\mathbf W_{\mathrm{IP}}^{(k)})$ | ISS 代价 $Q(\mathbf W_{\mathrm{ISS}}^{(k)})$ |
+   |---:|---:|---:|
+   | $0$ | $8.000000000000$ | $8.000000000000$ |
+   | $1$ | $4.401025165807$ | $4.411514136443$ |
+   | $2$ | $4.396140157111$ | $4.396140166916$ |
+   | $3$ | $4.396135913002$ | $4.396135913002$ |
+   | $4$ | $4.396135909324$ | $4.396135909324$ |
+   | $5$ | $4.396135909321$ | $4.396135909321$ |
+
+   第 $5$ 轮时两者与 $Q^\star$ 的偏差均小于 $10^{-14}$，两者自身代价差仅约 $8.88\times 10^{-16}\ll 10^{-10}$，且均将 $(\mathbf V_1,\mathbf V_2)$ 同时合同对角化为 $\operatorname{diag}(1,\;3+2\sqrt{2})$ 与 $\operatorname{diag}(3+2\sqrt{2},\;1)$。这验证了 ISS 完整保留了 AuxIVA 的免步长单调下降性质，同时彻底消去每步 $O(M^3)$ 矩阵求逆（单步矩阵更新降至 $O(M^2)$，含 $T$ 帧统计的整轮单频开销由 IP 的 $O(TM^3+M^4)$ 降至 $O(TM^2+M^3)$；代码验证见 [`chapter08_experiments.py`](../codes/chapters/ch08/chapter08_experiments.py) 中 `E08-27`）。
 
 ---
 

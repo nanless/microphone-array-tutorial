@@ -1,4 +1,4 @@
-"""Independent-scope AEC arithmetic experiments E06-12..20, E06-26..27, and E06-29..30.
+"""Independent-scope AEC arithmetic experiments E06-12..20, E06-26..27, and E06-29..32.
 
 All values are dimensionless unless units are explicitly recorded. These
 small cases isolate identifiability, state timing and score definitions;
@@ -150,6 +150,156 @@ def increment_orthogonal_decomposition() -> dict:
             'scope': 'output increment may contain adaptive-state changes; decomposition is algebra, not isolated near-end recovery'}
 
 
+def pbfdkf_double_talk_and_forgetting() -> dict:
+    """E06-31: PBFDKF measurement-variance inflation under double-talk and state forgetting factor A."""
+    true_weight = 1.0
+    initial_weight = 0.8
+    initial_error = true_weight - initial_weight
+    initial_misalignment_db = float(20.0 * np.log10(abs(initial_error) / abs(true_weight)))
+    prior_variance = 0.04
+    regressor = 1.0
+
+    def evaluate_regime(near_end: float, psi_e: float) -> dict:
+        residual = initial_error * regressor + near_end
+        kalman_gain = float(prior_variance * regressor / (prior_variance * (regressor ** 2) + psi_e))
+        weight_increment = float(kalman_gain * residual)
+        posterior_weight = float(initial_weight + weight_increment)
+        posterior_error = float(true_weight - posterior_weight)
+        posterior_variance = float((1.0 - kalman_gain * regressor) * prior_variance)
+        error_change_db = float(20.0 * np.log10(abs(posterior_error) / abs(initial_error)))
+        normalized_misalignment_db = float(20.0 * np.log10(abs(posterior_error) / abs(true_weight)))
+        return {
+            'near_end_s': float(near_end),
+            'residual_e': float(residual),
+            'psi_e': float(psi_e),
+            'kalman_gain': kalman_gain,
+            'weight_increment': weight_increment,
+            'posterior_weight': posterior_weight,
+            'posterior_error': posterior_error,
+            'abs_posterior_error': float(abs(posterior_error)),
+            'posterior_variance': posterior_variance,
+            'error_change_db': error_change_db,
+            'normalized_misalignment_db': normalized_misalignment_db,
+        }
+
+    dt_residual = initial_error * regressor + 2.0
+    opp_residual = initial_error * regressor - 2.0
+    regimes = {
+        'clean_far_end_single_talk': evaluate_regime(0.0, 0.01),
+        'unguarded_double_talk': evaluate_regime(2.0, 0.01),
+        'adapted_pbfdkf_double_talk': evaluate_regime(2.0, float(dt_residual ** 2)),
+        'adapted_pbfdkf_ml_variance': evaluate_regime(
+            2.0, float(max(0.0, dt_residual ** 2 - (regressor ** 2) * prior_variance))
+        ),
+        'adapted_pbfdkf_opposite_polarity': evaluate_regime(-2.0, float(opp_residual ** 2)),
+    }
+
+    sigma_w_sq = 1.0
+    psi_e_ss = 0.01
+    steady_state = {}
+    for label, a_val in [('A_0_999', 0.999), ('A_0_99', 0.99)]:
+        psi_delta = float((1.0 - a_val ** 2) * sigma_w_sq)
+        # Positive root of (P^-)^2 + (psi_e*(1 - A^2) - psi_delta)*P^- - psi_delta*psi_e = 0
+        b_coef = psi_e_ss * (1.0 - a_val ** 2) - psi_delta
+        c_coef = -psi_delta * psi_e_ss
+        p_minus_ss = float((-b_coef + np.sqrt(b_coef ** 2 - 4.0 * c_coef)) / 2.0)
+        k_ss = float(p_minus_ss / (p_minus_ss + psi_e_ss))
+        p_post_ss = float((1.0 - k_ss) * p_minus_ss)
+        steady_state[label] = {
+            'state_transition_A': float(a_val),
+            'process_variance_psi_delta': psi_delta,
+            'time_constant_blocks': float(-1.0 / np.log(a_val)),
+            'prior_variance_ss': p_minus_ss,
+            'kalman_gain_ss': k_ss,
+            'posterior_variance_ss': p_post_ss,
+            'excess_misalignment_ss_db': float(10.0 * np.log10(p_post_ss / sigma_w_sq)),
+        }
+
+    p_999 = steady_state['A_0_999']['posterior_variance_ss']
+    p_99 = steady_state['A_0_99']['posterior_variance_ss']
+    k_999 = steady_state['A_0_999']['kalman_gain_ss']
+    k_99 = steady_state['A_0_99']['kalman_gain_ss']
+
+    return {
+        'model': {
+            'true_weight_W': float(true_weight),
+            'initial_weight_W0': float(initial_weight),
+            'initial_error_W0_tilde': float(initial_error),
+            'initial_misalignment_db': initial_misalignment_db,
+            'prior_variance_P0_minus': float(prior_variance),
+            'regressor_X': float(regressor),
+            'measurement_noise_v': 0.0,
+        },
+        'regimes': regimes,
+        'steady_state_forgetting': {
+            'sigma_W_sq': float(sigma_w_sq),
+            'psi_e': float(psi_e_ss),
+            'cases': steady_state,
+            'gain_ratio_099_over_0999': float(k_99 / k_999),
+            'excess_floor_increase_db': float(10.0 * np.log10(p_99 / p_999)),
+        },
+        'scope': (
+            'Single-bin scalar frequency-domain Kalman AEC update and Riccati fixed-point '
+            'comparison; illustrates variance-gated soft step control rather than full-band speech scoring.'
+        ),
+    }
+
+
+def res_wiener_and_cng_matching() -> dict:
+    """E06-32: residual echo suppression Wiener gain with floor G_min and CNG level matching."""
+    g_min = 0.1
+    phi_nn = 0.01
+
+    def evaluate_frame(phi_ss: float, phi_bb: float) -> dict:
+        g_raw = float(phi_ss / (phi_ss + phi_bb + phi_nn))
+        g_res = float(max(g_min, g_raw))
+        clamped = bool(g_raw < g_min)
+        gain_db = float(20.0 * np.log10(g_res))
+        echo_suppression_db = float(-gain_db)
+        output_echo_psd = float((g_res ** 2) * phi_bb)
+        output_noise_no_cng = float((g_res ** 2) * phi_nn)
+        output_noise_no_cng_db = float(10.0 * np.log10(output_noise_no_cng))
+        pumping_no_cng_db = float(10.0 * np.log10(output_noise_no_cng / phi_nn))
+        phi_cng = float(max(0.0, (1.0 - g_res ** 2) * phi_nn))
+        cng_amp_scale = float(np.sqrt(max(0.0, 1.0 - g_res ** 2)))
+        output_noise_with_cng = float(output_noise_no_cng + phi_cng)
+        pumping_with_cng_db = float(10.0 * np.log10(output_noise_with_cng / phi_nn))
+        return {
+            'phi_ss': float(phi_ss),
+            'phi_bb': float(phi_bb),
+            'phi_nn': float(phi_nn),
+            'g_unclamped': g_raw,
+            'g_res': g_res,
+            'clamped_by_floor': clamped,
+            'gain_db': gain_db,
+            'speech_attenuation_db': gain_db,
+            'echo_suppression_db': echo_suppression_db,
+            'output_echo_psd': output_echo_psd,
+            'output_noise_psd_without_cng': output_noise_no_cng,
+            'output_noise_db_without_cng': output_noise_no_cng_db,
+            'noise_pumping_db_without_cng': pumping_no_cng_db,
+            'cng_psd': phi_cng,
+            'cng_amplitude_scale': cng_amp_scale,
+            'output_noise_psd_with_cng': output_noise_with_cng,
+            'noise_pumping_db_with_cng': pumping_with_cng_db,
+        }
+
+    return {
+        'g_min': float(g_min),
+        'g_min_db': float(20.0 * np.log10(g_min)),
+        'target_background_noise_psd': float(phi_nn),
+        'target_background_noise_db': float(10.0 * np.log10(phi_nn)),
+        'frames': {
+            'far_end_single_talk': evaluate_frame(0.0, 0.25),
+            'double_talk': evaluate_frame(1.0, 0.25),
+        },
+        'scope': (
+            'Single-bin stationary uncorrelated PSD algebra for Wiener RES gain clamping '
+            'and CNG power matching; assumes accurate PSD estimation and uncorrelated CNG phase.'
+        ),
+    }
+
+
 def run_experiments() -> dict:
     functions = [
         shared_reference_normalization,
@@ -167,6 +317,8 @@ def run_experiments() -> dict:
     cases['E06-27'] = echo_tail_activity()
     cases['E06-29'] = hammerstein_orthogonal_basis()
     cases['E06-30'] = stereo_decorrelation_and_loop_deadlines()
+    cases['E06-31'] = pbfdkf_double_talk_and_forgetting()
+    cases['E06-32'] = res_wiener_and_cng_matching()
     return cases
 
 

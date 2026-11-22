@@ -44,7 +44,7 @@ class ReferenceTimingTests(unittest.TestCase):
         cases = run_experiments()
         self.assertEqual(
             list(cases),
-            [f'E06-{i:02d}' for i in range(12, 21)] + ['E06-26', 'E06-27', 'E06-29', 'E06-30'],
+            [f'E06-{i:02d}' for i in range(12, 21)] + ['E06-26', 'E06-27', 'E06-29', 'E06-30', 'E06-31', 'E06-32'],
         )
         self.assertEqual(cases['E06-16']['prior_residual'], [0., 0., 3., 5.5, 2., 0.])
 

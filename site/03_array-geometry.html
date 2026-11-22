@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 3 章 · 阵列几何形态 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="a0289902c00e"><style>
+<meta name="source-digest" content="b82b7d85f70d"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -1069,6 +1069,21 @@ g'_m a_m(\theta'_q)
 <p>还要注意区分两个向量：<strong>拟合残差</strong> $\vec r=\vec y-\hat g\vec z$ 因最小二乘最优性恒满足正交条件 $\vec z^H\vec r=0$，而有限样本下的<strong>真实测量噪声</strong> $\vec n=\vec y-g\vec z$ 一般并不满足 $\vec z^H\vec n=0$，因此绝不能拿“拟合残差与输入正交”来证明 $\hat g$ 已经等于无偏物理真值；此外，若把本身混有强噪声的参考麦 $X_0$ 直接当作精确无噪的 $z_i$ 代入分母，分母多出的参考噪声功率会导致估计增益系统性偏向零（即统计学中的含误差变量衰减偏差，章末 E03-13 用 4 个观测算出真值 $2$ 被低估为 $1.6$ 且训练残差反而更小）。</p>
 <p>本书 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch03/examples/self_calibration_demo.py"><code>self_calibration_demo.py</code></a> 与 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch03/core/calibration.py"><code>calibration.py</code></a> 提供了一个把上述可辨识性原理落到代码里的受锚自校准演示：4 麦均匀线阵依次录制 $3$ 个未知单源场景（每场景 $48$ 帧，角度限于无空间混叠的 $[-60^\circ,60^\circ]$），固定 $g_0=1$ 并额外给定第 $1$ 路相对第 $0$ 路的外部独立测量相位锚以锁死线性相位斜率，再交替消元源复谱、搜索场景方向、更新通道增益幅度。</p>
 <p>在仓库根目录下直接运行 <code>.venv/bin/python -m codes.chapters.ch03.examples.self_calibration_demo</code> 即可复现两组鲜明对照：在随机种子 <code>307</code>、复高斯噪声均方根 $0.005$ 下，给定正确相位锚 $0^\circ$ 时 21 轮收敛，三个真实方向 $[-40^\circ,0^\circ,35^\circ]$ 恢复为 $[-39.994^\circ,-0.012^\circ,34.997^\circ]$（目标值由 $0.011823$ 降至 $0.011719$）；而对完全无噪的同一份数据故意把外部相位锚设错为 $+5^\circ$，算法同样顺利收敛且目标残差低至 $1.1\times10^{-28}$，估计出的三个方向却整体偏到了 $[-49.631^\circ,-6.840^\circ,27.031^\circ]$——再一次用数字证明：<strong>拟合残差极小只能说明模型自洽，不能证明外部锚点正确</strong>。</p>
+<p><strong>免外部标定源的在线扩散场增益自校准</strong>：设备出厂部署后往往不再具备消声室或受控标定声源，却仍会随时间发生 MEMS 振膜老化、防尘网积灰堵塞或温湿度漂移导致的慢变通道幅度失配。在无需外部校准声源的现场工况下，可利用房间内长期存在的<strong>各向同性扩散背景噪声</strong>执行在线盲幅度追踪（此处沿用 $1$ 起点通道下标 $m=1,\dots,M$，以麦 1 为参考基准）：由声活动检测／语音存在概率（VAD / SPP）与低跨麦相干度联合门控，仅在“无说话人且空间近似扩散”的纯背景帧上更新统计量。对匹配的理想全向阵元，各通道接收到的长时扩散背景功率谱密度同为 $\Phi_{\mathrm{diff}}(f)$，加上各自独立的电路本底自噪声方差 $\sigma_{v,m}^2(f)$ 后，各通道期望功率与慢速指数平滑相对幅度增益估计器分别为：</p>
+<p>$$\begin{aligned}
+\mathbb{E}\bigl[\lvert X_m(f,t)\rvert^2\bigr]
+&= \lvert g_m(f)\rvert^2\,\Phi_{\mathrm{diff}}(f) + \sigma_{v,m}^2(f)\text{，}\\
+\bar\Phi_{mm}(f,t)
+&= \alpha\,\bar\Phi_{mm}(f,t-1) + (1-\alpha)\,\lvert X_m(f,t)\rvert^2\text{，}\qquad
+\hat\gamma_m(f) = \sqrt{\frac{\bar\Phi_{mm}(f)}{\bar\Phi_{11}(f)}}\text{。}
+\end{aligned}$$</p>
+<p>当扩散环境声显著高于器件本底自噪声（$\lvert g_m(f)\rvert^2\Phi_{\mathrm{diff}}(f) \gg \sigma_{v,m}^2(f)$）时，公因子 $\Phi_{\mathrm{diff}}(f)$ 在分子分母中消去，$\hat\gamma_m(f)$ 无偏收敛至相对幅度比 $\lvert g_m(f)\rvert / \lvert g_1(f)\rvert$，在数字前端乘以补偿因子 $1/\hat\gamma_m(f)$ 即可自动拉平慢变幅度漂移（参见 Tashev 2004 提出的仅修幅度在线校准框架）。工程部署必须严守<strong>三条硬物理失效边界</strong>：</p>
+<ol>
+<li><strong>只修幅度、不修相位</strong>：各向同性扩散场的单通道自功率 $\lvert X_m\rvert^2$ 彻底抹去了复相位 $\Delta\phi_m(f)$，因此扩散场自校准只能拉平通道幅度 $\lvert g_m(f)\rvert$，无法校正通道间相位或声孔低频极点失配（相位仍须依赖已知方向标定、产线双频测试或 TDOA 残差校准）；</li>
+<li><strong>定向／各向异性背景噪声偏置</strong>：若设备一侧紧邻空调出风口、电脑风扇等局部定向噪声源，未做低相干度门控时会把近侧麦克风多收到的声能误判为灵敏度偏高，使 $\hat\gamma_m(f)$ 系统性偏向靠近噪声源的通道；</li>
+<li><strong>安静房间自噪声底污染</strong>：当环境极安静、器件自噪声 $\sigma_{v,m}^2(f)$ 与 $\Phi_{\mathrm{diff}}(f)$ 同量级甚至反超时，比值被各路相近的电路底噪拉向 $1$，掩盖真实声孔衰减，必须加设最低环境噪声门限（保证足够扩散信噪比）才允许更新。</li>
+</ol>
+<p><em>数值核对</em>：设麦 2 因防尘网积灰灵敏度相对麦 1 跌落 $-3.0\ \mathrm{dB}$（功率比 $10^{-3/10} \approx 0.5012$）。在扩散噪声主导条件下，平滑功率比 $\bar\Phi_{22}/\bar\Phi_{11} = 0.5012$ 给出 $\hat\gamma_2 = \sqrt{0.5012} \approx 0.7080$（精确值 $10^{-3/20} \approx 0.7079$），施加数字补偿 $1/\hat\gamma_2 \approx 1.4125$ 恰好恢复 $0.0\ \mathrm{dB}$ 匹配；反之，若两麦本已精确一致（$\lvert g_1\rvert = \lvert g_2\rvert = 1$），但在单位扩散噪声 $\Phi_{\mathrm{diff}}$ 之上叠加了一台靠近麦 2 的未门控定向风扇（在麦 1 处功率 $0.5\,\Phi_{\mathrm{diff}}$、在麦 2 处功率 $2.0\,\Phi_{\mathrm{diff}}$，即麦 2 侧风扇响度高出 $+6.02\ \mathrm{dB}$），则观测功率比变为 $(1 + 2.0)/(1 + 0.5) = 2.0000$，导出 $\hat\gamma_2 = \sqrt{2} \approx 1.4142$，引入 <strong>$+3.01\ \mathrm{dB}$</strong> 的校准偏置（反而把完好的麦 2 错误压低 $-3.01\ \mathrm{dB}$；若风扇完全盖过扩散场，偏置进一步逼近 $+6.0\ \mathrm{dB}$）；若回到积灰 $-3.0\ \mathrm{dB}$ 场景但房间安静至 $\sigma_v^2 = \Phi_{\mathrm{diff}}$（$0\ \mathrm{dB}$ 扩散自噪比），比值被拉高至 $(0.5012 + 1)/(1 + 1) = 0.7506$，$\hat\gamma_2 \approx 0.8664$（$-1.25\ \mathrm{dB}$），仍残留 $1.75\ \mathrm{dB}$ 未补误差。</p>
 <span id="sec-12" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-3-4-2">3.4.2 互耦补偿：把串音矩阵抵消掉</h3>
 <p>单通道复增益 $\operatorname{diag}(\vec g)$ 只刻画各路自己的幅相偏差；当紧凑电路板上的模拟走线或共享电源在通道间产生线性电串扰，且串扰系数近似不随声波入射角变化时，可用 $M\times M$ 频率相关耦合矩阵 $\mathbf C(f)$ 描述，此时实际阵列流形变为 $\mathbf C(f)\vec a(f,\theta)$（互耦存在下的测向与自校准经典分析见 Friedlander 与 Weiss 1991，<em>IEEE TAP</em>；若偏差源于音箱外壳声学绕射与声影，响应本身随入射方向 $\theta$ 改变，则应直接存储方向相关的实测流形 $\vec a_{\mathrm{meas}}(f,\theta)$，不能硬塞进固定矩阵 $\mathbf C(f)$）。</p>
 <p>已知可逆耦合矩阵 $\mathbf C$ 时，能不能直接在接收端左乘精确逆矩阵 $\mathbf C^{-1}$ 把串音消掉？动笔前必须先看清<strong>噪声是在串扰之前还是串扰之后混进来的</strong>。设进入耦合网络前的理想无串扰信号向量为 $\vec s$，耦合前声学环境噪声为 $\vec n_{\mathrm{pre}}$，耦合后 ADC 读出端底噪为 $\vec n_{\mathrm{post}}$：</p>

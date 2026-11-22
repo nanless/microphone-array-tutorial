@@ -1,4 +1,4 @@
-"""Analytic/fractional expectations and actual PCM for E08-10..26."""
+"""Analytic/fractional expectations and actual PCM for E08-10..27."""
 from fractions import Fraction as F
 import hashlib
 import json
@@ -7,7 +7,12 @@ from pathlib import Path
 import tempfile
 import unittest
 import numpy as np
-from codes.chapters.ch08.chapter08_experiments import ROOT, css_published_audio, run_experiments
+from codes.chapters.ch08.chapter08_experiments import (
+    ROOT,
+    auxiva_iss_vs_ip_experiment,
+    css_published_audio,
+    run_experiments,
+)
 from codes.chapters.ch08.core.separation import si_sdr
 from codes.chapters.ch08.core.separation_metrics_streaming import (
     ci_sdr_toeplitz,
@@ -26,7 +31,7 @@ class Chapter08Exercises(unittest.TestCase):
         cls.r = run_experiments()
 
     def test_ids_and_finite_json(self):
-        self.assertEqual(set(self.r), {f'E08-{i:02}' for i in range(10, 27)})
+        self.assertEqual(set(self.r), {f'E08-{i:02}' for i in range(10, 28)})
         json.dumps(self.r, allow_nan=False)
 
     def test_sequential_complex_rows(self):
@@ -331,6 +336,84 @@ class Chapter08Exercises(unittest.TestCase):
         ):
             with self.assertRaises(ValueError):
                 bad_call()
+
+    def test_auxiva_iss_rank1_vs_ip_convergence(self):
+        r = self.r['E08-27']
+        self.assertEqual(r['sweeps'], 5)
+        self.assertEqual(r['initial_cost'], 8.0)
+        self.assertEqual(r['ip_matrix_solves_per_sweep'], 2)
+        self.assertEqual(r['iss_matrix_solves_per_sweep'], 0)
+
+        # Sweep 1 IP exact analytic checks:
+        ip1, ip2 = r['sweep1_ip']
+        np.testing.assert_allclose(
+            complex_array(ip1['unnormalized_direction']),
+            [float(F(5, 16)), 1j * float(F(1, 16))],
+            atol=1e-15,
+        )
+        self.assertAlmostEqual(ip1['cost_after'], 5.0 + math.log(float(F(16, 5))), places=13)
+        np.testing.assert_allclose(
+            complex_array(ip2['unnormalized_direction']),
+            [-1j * float(F(1, 20)), float(F(3, 10))],
+            atol=1e-15,
+        )
+        self.assertAlmostEqual(ip2['cost_after'], 2.0 + math.log(float(F(320, 29))), places=13)
+        expected_w_ip1 = np.array([
+            [math.sqrt(5.0) / 4.0, -1j / (4.0 * math.sqrt(5.0))],
+            [1j / (2.0 * math.sqrt(29.0)), 3.0 / math.sqrt(29.0)],
+        ])
+        np.testing.assert_allclose(complex_array(ip2['W_after']), expected_w_ip1, atol=1e-14)
+
+        # Sweep 1 ISS exact analytic checks (zero matrix inversions):
+        iss1, iss2 = r['sweep1_iss']
+        np.testing.assert_allclose(
+            complex_array(iss1['steering_vector']),
+            [float(F(1, 2)), -1j * float(F(1, 5))],
+            atol=1e-15,
+        )
+        np.testing.assert_allclose(
+            complex_array(iss1['W_after']),
+            [[0.5, 0.0], [0.2j, 1.0]],
+            atol=1e-15,
+        )
+        self.assertAlmostEqual(iss1['cost_after'], float(F(21, 5)) + 2.0 * math.log(2.0), places=13)
+        np.testing.assert_allclose(
+            complex_array(iss2['steering_vector']),
+            [1j * float(F(5, 58)), 1.0 - math.sqrt(5.0) / 4.0],
+            atol=1e-14,
+        )
+        expected_w_iss1 = np.array([
+            [float(F(15, 29)), -1j * float(F(5, 58))],
+            [1j / (4.0 * math.sqrt(5.0)), math.sqrt(5.0) / 4.0],
+        ])
+        np.testing.assert_allclose(complex_array(iss2['W_after']), expected_w_iss1, atol=1e-14)
+        self.assertAlmostEqual(
+            iss2['cost_after'],
+            float(F(54, 29)) + math.log(float(F(64, 5))),
+            places=13,
+        )
+
+        # Monotone descent and 5-sweep convergence to exact global minimum Q*.
+        self.assertTrue(r['ip_monotone_decreasing'])
+        self.assertTrue(r['iss_monotone_decreasing'])
+        self.assertGreater(r['initial_cost'], r['iss_cost_history'][1])
+        self.assertGreater(r['initial_cost'], r['ip_cost_history'][1])
+        q_star = 2.0 + math.log(64.0 * (3.0 - 2.0 * math.sqrt(2.0)))
+        self.assertAlmostEqual(r['exact_global_min_cost'], q_star, places=14)
+        self.assertLess(r['final_cost_gap_ip_vs_iss'], 1e-10)
+        self.assertLess(r['ip_gap_to_optimum'], 1e-10)
+        self.assertLess(r['iss_gap_to_optimum'], 1e-10)
+
+        # Final weighted Grams diagonalize (V1, V2) with unit target diagonals.
+        mu2 = 3.0 + 2.0 * math.sqrt(2.0)
+        for key in ('ip_final_weighted_grams', 'iss_final_weighted_grams'):
+            g1, g2 = (complex_array(item) for item in r[key])
+            np.testing.assert_allclose(g1, np.diag([1.0, mu2]), atol=1e-6)
+            np.testing.assert_allclose(g2, np.diag([mu2, 1.0]), atol=1e-6)
+
+        for bad_sweeps in (0, -1, True, 2.5):
+            with self.assertRaises(ValueError):
+                auxiva_iss_vs_ip_experiment(sweeps=bad_sweeps)  # type: ignore[arg-type]
 
 
 if __name__ == '__main__':

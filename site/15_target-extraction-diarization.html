@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 15 章 · 条件目标提取与多通道日志 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="a0289902c00e"><style>
+<meta name="source-digest" content="b82b7d85f70d"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -360,7 +360,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li><a href="15_target-extraction-diarization.html#sec-15-9">15.9 工程排障清单与选型决策树</a></li>
 <li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-5acf2d16a5">常见线上故障现象、物理根因与定位步骤</a></li>
 <li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-892777d628">远场目标提取与多人前端选型核查清单</a></li>
-<li><a href="15_target-extraction-diarization.html#sec-15-10">15.10 本章练习（E15-01～E15-14）</a></li>
+<li><a href="15_target-extraction-diarization.html#sec-15-10">15.10 本章练习（E15-01～E15-15）</a></li>
 <li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-ad12f37af4">E15-01：目标沉默段标准 SI-SDR 奇异性与双态地板损失手算</a></li>
 <li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-2d3d839fde">E15-02：单人语音零重叠旁路门限与清擦音过切分恢复</a></li>
 <li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-c8721eee93">E15-03：三麦正横距离气泡闭式权重、WNG 与同向远场抑制比</a></li>
@@ -375,6 +375,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-3e004b09fa">E15-12：二抽头因果实滤波器实现正横距离气泡及三层误差核验</a></li>
 <li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-a6a7f14956">E15-13：EEND-EDA 吸引子存在性门控与固定槽位误差下界</a></li>
 <li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-a423afa58c">E15-14：条件目标提取中的注册声纹串音污染与排他门控</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-783c26cf8e">E15-15：FiLM 仿射条件调制与唇部遮挡下的视觉置信度门控回退</a></li>
 <li><a href="15_target-extraction-diarization.html#sec-15-11">15.11 原始资料与延伸阅读</a></li>
 <li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-e6aa774c20">条件提取、近场气泡、多说话人日志与视听前端核心文献</a></li>
 </ul>
@@ -419,7 +420,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li><a href="15_target-extraction-diarization.html#sec-15-9">15.9 工程排障清单与选型决策树</a></li>
 <li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-5acf2d16a5">常见线上故障现象、物理根因与定位步骤</a></li>
 <li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-892777d628">远场目标提取与多人前端选型核查清单</a></li>
-<li><a href="15_target-extraction-diarization.html#sec-15-10">15.10 本章练习（E15-01～E15-14）</a></li>
+<li><a href="15_target-extraction-diarization.html#sec-15-10">15.10 本章练习（E15-01～E15-15）</a></li>
 <li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-ad12f37af4">E15-01：目标沉默段标准 SI-SDR 奇异性与双态地板损失手算</a></li>
 <li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-2d3d839fde">E15-02：单人语音零重叠旁路门限与清擦音过切分恢复</a></li>
 <li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-c8721eee93">E15-03：三麦正横距离气泡闭式权重、WNG 与同向远场抑制比</a></li>
@@ -434,6 +435,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-3e004b09fa">E15-12：二抽头因果实滤波器实现正横距离气泡及三层误差核验</a></li>
 <li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-a6a7f14956">E15-13：EEND-EDA 吸引子存在性门控与固定槽位误差下界</a></li>
 <li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-a423afa58c">E15-14：条件目标提取中的注册声纹串音污染与排他门控</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-783c26cf8e">E15-15：FiLM 仿射条件调制与唇部遮挡下的视觉置信度门控回退</a></li>
 <li><a href="15_target-extraction-diarization.html#sec-15-11">15.11 原始资料与延伸阅读</a></li>
 <li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-e6aa774c20">条件提取、近场气泡、多说话人日志与视听前端核心文献</a></li>
 </ul></nav></details>
@@ -1134,8 +1136,8 @@ h_m[0]\,x_m[n]+h_m[1]\,x_m[n-1]\bigr).\tag{15-32}$$</p>
 <li><strong>跨模态时钟与遮挡是否有硬保障？</strong> 引入视觉唇动前必须确认能否接受等待相机管线的缓冲延迟，并强制配备式(15-30)视觉可见度门控回退支路，确保关灯、逆光或遮挡时系统下限不低于纯音频阵列基线。</li>
 <li><strong>下游消费的是“可听波形”还是“纯文本”？</strong> 需要人工复听录音或对接冻结的商用黑盒 ASR 接口时，优先采用 <code>TS-VAD + GSS</code> 线性空间波束链路以保证零非线性伪影；算力受限且仅需最终文字流时，可评估分块 <code>SOT</code> 或 <code>DiCoW</code> 条件转写方案。</li>
 </ol>
-<span id="sec-37" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-7260e8bb52" class="anchor-alias" aria-hidden="true"></span><span id="sec-17-10" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-dcccc65379" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-15-10">15.10 本章练习（E15-01～E15-14）</h2>
-<p>以下 14 道练习覆盖双态损失、单人旁路保护、近场距离气泡、重叠日志边界、空谱 TS-VAD/GSS、视听滞后截断以及可变人数吸引子与抗串音注册的完整计算链。运行全部练习或按题号单独复核（如 <code>--exercise E15-02</code>）的命令如下：</p>
+<span id="sec-37" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-7260e8bb52" class="anchor-alias" aria-hidden="true"></span><span id="sec-17-10" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-dcccc65379" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-15-10">15.10 本章练习（E15-01～E15-15）</h2>
+<p>以下 15 道练习覆盖双态损失、单人旁路保护、近场距离气泡、重叠日志边界、空谱 TS-VAD/GSS、视听滞后截断、可变人数吸引子、抗串音注册，以及 FiLM 仿射调制与唇部遮挡置信度门控回退的完整计算链。运行全部练习或按题号单独复核（如 <code>--exercise E15-02</code>）的命令如下：</p>
 <pre><code class="language-bash">.venv/bin/python -m codes.chapters.ch15.chapter15_exercises
 .venv/bin/python -m codes.chapters.ch15.chapter15_exercises --exercise E15-02
 </code></pre>
@@ -1223,8 +1225,60 @@ p_s&=\sigma\bigl(\vec w_{\mathrm{exist}}^\top\vec a_s+b\bigr),\\
 <p>求：（1）取 $\alpha = 0.5$（即 $-6.02\ \mathrm{dB}$ 串音泄漏），分别在正交声纹（$\rho_{12} = 0$）与同性别近似声纹（$\rho_{12} = 0.3$）下，手算目标余弦保持率 $\vec e_{\mathrm{cont}}^\top\vec e_1$、干扰误匹配余弦 $\vec e_{\mathrm{cont}}^\top\vec e_2$，以及在余弦门控 $g_k = \sigma(8(\vec e^\top\vec e_k - 0.40))$ 下正交干扰门控开度膨胀了多少倍；（2）给定 $6$ 帧注册缓冲：前 $4$ 帧为目标独白（帧嵌入 $\vec e_1 = [1, 0, 0]^\top$，$\mathrm{SNR}_t = 20\ \mathrm{dB}$，日志后验 $\gamma_{1,t} = 0.95, \gamma_{2,t} = 0.04$），后 $2$ 帧为目标停顿期干扰插话（帧嵌入 $\vec e_2 = [0, 1, 0]^\top$，$\mathrm{SNR}_t = 15\ \mathrm{dB}$，$\gamma_{1,t} = 0.05, \gamma_{2,t} = 0.92$），对比仅靠能量门限（$\mathrm{SNR}_t \ge 10\ \mathrm{dB}$）池化与叠加式(15-25)排他门限（$m_{1,t}^{\mathrm{tar}} \ge 0.60$）池化所得的模板精度。</p>
 <p><strong>参考答案</strong>：（1）记未归一化模长 $Z = \sqrt{1 + 2\alpha\rho_{12} + \alpha^2}$，将 $\vec e_{\mathrm{cont}}$ 与 $\vec e_2$ 做内积同理可得干扰余弦 $(\rho_{12} + \alpha) / Z$。当 $\alpha = 0.5$ 且 $\rho_{12} = 0$ 时，$Z = \sqrt{5}/2$，目标余弦从 $1.0$ 跌至 $2/\sqrt{5} \approx 0.894427$（角度漂移 $26.57^\circ$），干扰余弦从 $0$ 跃升至 $1/\sqrt{5} \approx 0.447214$；代入门控函数，干净模板对干扰的门控仅为 $\sigma(-3.2) \approx 0.039166$，受污染模板则升至 $\sigma(8(1/\sqrt{5} - 0.40)) \approx 0.593320$，干扰泄漏门控膨胀约 $15.15$ 倍。当同性别声纹存在基础相关 $\rho_{12} = 0.3$ 时，$Z = \sqrt{1.55}$，目标余弦保持为 $1.15 / \sqrt{1.55} \approx 0.923702$，干扰余弦却飙升至 $0.80 / \sqrt{1.55} \approx 0.642575$，极易在目标沉默段放行旁人语音。</p>
 <p>（2）在 $6$ 帧注册缓冲中，全部 $6$ 帧均满足 $\mathrm{SNR}_t \ge 10\ \mathrm{dB}$，故纯能量 VAD 池化保留全部 $6$ 帧，算术均值 $\frac{1}{6}(4\vec e_1 + 2\vec e_2)$ 归一化后恰为 $[2/\sqrt{5}, 1/\sqrt{5}, 0]^\top$（重现 $\alpha = 0.5$ 串音污染）。引入式(15-25)排他概率 $m_{1,t}^{\mathrm{tar}} = \gamma_{1,t}(1 - \gamma_{2,t})$ 后，前 $4$ 帧排他概率为 $0.95 \times 0.96 = 0.912 \ge 0.60$，后 $2$ 帧串音处骤降至 $0.05 \times 0.08 = 0.004 \lt  0.60$ 被自动剔除，池化均值精确还原纯净目标模板 $\hat{\vec e} = [1, 0, 0]^\top$（目标余弦 $1.000000$，干扰余弦 $0.000000$，见 <code>gated_enrollment_pooling</code>）。</p>
-<span id="sec-52" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-15-11">15.11 原始资料与延伸阅读</h2>
-<span id="sec-53" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-e6aa774c20">条件提取、近场气泡、多说话人日志与视听前端核心文献</h3>
+<p><a id="e15-15"></a></p>
+<span id="sec-52" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-783c26cf8e">E15-15：FiLM 仿射条件调制与唇部遮挡下的视觉置信度门控回退</h3>
+<p><strong>题目</strong>：（1）<strong>FiLM 仿射调制对比度与动态范围鲁棒性（§15.2）</strong>：设主干网络在某时频格点输出二维通道特征向量 $\vec h = [2.0, -1.0]^\top$（两维分别承载目标与干扰响应，原始通道能量比 $h_1^2 / h_2^2 = 4.0$，即 $+6.02\ \mathrm{dB}$）。线索编码器通过式(15-1)将两位候选目标的注册向量 $\vec e_A = [1, 0]^\top$ 与 $\vec e_B = [0, 1]^\top$ 映射为调制参数 $\vec\gamma_A = [1.5, 0.2]^\top, \vec\beta_A = [0.1, 0.0]^\top$ 以及 $\vec\gamma_B = [0.2, 1.5]^\top, \vec\beta_B = [0.0, 0.1]^\top$。按式(15-2)计算 $\vec h'_k = \vec\gamma_k \odot \vec h + \vec\beta_k$ 对应的输出向量、通道能量比 $h'_{k,1}{}^2 / h'_{k,2}{}^2$（线性值与 dB 值）及切换目标 A/B 产生的总对比度摆幅；再与纯加性偏置条件化 $\vec h^{\mathrm{add}}_k = \vec h + \vec\beta_k$ 对比（并考察混合信号能量整体抬升 $+20\ \mathrm{dB}$、即幅度扩大 $10$ 倍至 $10\vec h$ 时的表现）。</p>
+<p>（2）<strong>唇部遮挡下的对数几率视觉置信度门控回退（§15.6）</strong>：与式(15-30)掩码域凸组合回退相呼应，在语音存在检测的对数几率视听融合模型中定义</p>
+<p>$$\ell_{\mathrm{AV}}=\ell_A+w_v(c_v)\,\ell_V,\qquad p_{\mathrm{AV}}=\sigma(\ell_{\mathrm{AV}})=\frac{1}{1+e^{-\ell_{\mathrm{AV}}}},\qquad w_v(c_v)=\operatorname{clip}\!\left(\frac{c_v-c_{\min}}{c_{\max}-c_{\min}},\,0,\,1\right),$$</p>
+<p>其中门控上下限取 $c_{\min} = 0.3, c_{\max} = 0.8$。当目标说话人正在发声、音频分支给出对数几率 $\ell_A = +2.0$，而摄像头因杯子或手部遮挡误报唇部静止的假阴性视觉对数几率 $\ell_V = -4.0$ 时，分别计算 $p_A, p_V$ 以及以下三种门控条件下的融合对数几率 $\ell_{\mathrm{AV}}$ 与语音存在后验 $p_{\mathrm{AV}}$：（a）未门控固定融合（$w_v = 1.0$）；（b）重度遮挡导致视觉检测置信度跌至 $c_v = 0.25$；（c）部分遮挡置信度 $c_v = 0.45$。并求令判决翻转（$p_{\mathrm{AV}} = 0.5$）的临界视觉置信度 $c_v^\star$。</p>
+<p><strong>参考答案</strong>：（1）代入式(15-2)逐元素计算（对应 <code>chapter15_exercises</code> 的 <code>E15-15</code> 条目，调用 <code>film_conditioning</code>）：</p>
+<ul>
+<li><strong>目标 A（$\vec\gamma_A = [1.5, 0.2]^\top, \vec\beta_A = [0.1, 0.0]^\top$）</strong>：$\vec h'_A = [1.5 \times 2.0 + 0.1,\ 0.2 \times (-1.0) + 0.0]^\top = [3.1, -0.2]^\top$，通道能量比为 $3.1^2 / (-0.2)^2 = 9.61 / 0.04 = 240.25$（$10\log_{10}(240.25) \approx +23.81\ \mathrm{dB}$）；</li>
+<li><strong>目标 B（$\vec\gamma_B = [0.2, 1.5]^\top, \vec\beta_B = [0.0, 0.1]^\top$）</strong>：$\vec h'_B = [0.2 \times 2.0 + 0.0,\ 1.5 \times (-1.0) + 0.1]^\top = [0.4, -1.4]^\top$，通道能量比为 $0.4^2 / (-1.4)^2 = 0.16 / 1.96 = 4/49 \approx 0.081633$（$10\log_{10}(4/49) \approx -10.88\ \mathrm{dB}$）。</li>
+</ul>
+<p>切换条件向量从 A 到 B 实现了 $23.81 - (-10.88) = 34.69\ \mathrm{dB}$（精确值 $34.688\ \mathrm{dB}$）的乘性对比度摆幅。反观纯加性偏置 $\vec h + \vec\beta_k$：名义尺度下仅得到 $[2.1, -1.0]^\top$（$+6.44\ \mathrm{dB}$）与 $[2.0, -0.9]^\top$（$+6.94\ \mathrm{dB}$），摆幅仅 $-0.49\ \mathrm{dB}$，根本无法翻转两通道的主导关系；当输入混合能量波动 $+20\ \mathrm{dB}$（$10\vec h = [20.0, -10.0]^\top$）时，FiLM 输出 $[30.1, -2.0]^\top$（$+23.55\ \mathrm{dB}$）与 $[4.0, -14.9]^\top$（$-11.42\ \mathrm{dB}$），几乎完整保持了 $34.97\ \mathrm{dB}$ 对比度摆幅（逼近与输入幅度无关的纯乘性极限 $40\log_{10}(1.5/0.2) \approx 35.00\ \mathrm{dB}$），而固定加性偏置被大幅度特征彻底淹没（$[20.1, -10.0]^\top$ 对应 $+6.06\ \mathrm{dB}$ 对 $[20.0, -9.9]^\top$ 对应 $+6.11\ \mathrm{dB}$，摆幅萎缩至 $-0.04\ \mathrm{dB}$）。这就是条件提取主干必须依赖乘性缩放 $\vec\gamma$ 而不能只靠加性偏置的原因。</p>
+<p>（2）先算单模态后验概率：$p_A = \sigma(2.0) = (1 + e^{-2})^{-1} \approx 0.880797$（音频清晰检出目标说话），$p_V = \sigma(-4.0) = (1 + e^{4})^{-1} \approx 0.017986$（遮挡视觉严重误报静音）。依次核对三种门控策略：</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
+<thead>
+<tr>
+<th scope="col">门控工况</th>
+<th scope="col" style="text-align: right;">视觉置信度 $c_v$</th>
+<th scope="col" style="text-align: right;">视觉权重 $w_v$</th>
+<th scope="col" style="text-align: right;">融合对数几率 $\ell_{\mathrm{AV}}$</th>
+<th scope="col" style="text-align: right;">融合后验 $p_{\mathrm{AV}}$</th>
+<th scope="col">判决结果（$p_{\mathrm{AV}} \ge 0.5$）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>未门控固定融合</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">$1.00$</td>
+<td style="text-align: right;">$-2.00$</td>
+<td style="text-align: right;">$0.119203$</td>
+<td>误判静音（目标语音断流）</td>
+</tr>
+<tr>
+<td>重度遮挡回退</td>
+<td style="text-align: right;">$0.25$</td>
+<td style="text-align: right;">$0.00$</td>
+<td style="text-align: right;">$+2.00$</td>
+<td style="text-align: right;">$0.880797$</td>
+<td>检出（平滑退回纯音频）</td>
+</tr>
+<tr>
+<td>部分遮挡降权</td>
+<td style="text-align: right;">$0.45$</td>
+<td style="text-align: right;">$0.30$</td>
+<td style="text-align: right;">$+0.80$</td>
+<td style="text-align: right;">$0.689974$</td>
+<td>检出（抑制假阴性下拉）</td>
+</tr>
+</tbody>
+</table></div>
+<p>令 $\ell_{\mathrm{AV}} = 2.0 - 4.0\,w_v = 0$ 解得临界权重 $w_v^\star = 0.50$，代回线性斜坡得临界视觉置信度 $c_v^\star = 0.3 + 0.50 \times (0.8 - 0.3) = 0.55$。可见一旦嘴唇遮挡发生，若缺少按检测置信度动态收敛的门控权重 $w_v(c_v)$，单个强负视觉对数几率便会把目标语音后验从 $0.880797$ 拉崩至 $0.119203$；而引入门控后，重度遮挡（$c_v = 0.25 \lt  0.3$）使 $w_v = 0$ 精确退回纯音频基线 $0.880797$，部分遮挡（$c_v = 0.45$）按 $w_v = 0.30$ 降权仍稳妥保持 $p_{\mathrm{AV}} \approx 0.689974 > 0.5$，避免了多模态前端在视觉失效时反而劣于单音频基线。</p>
+<span id="sec-53" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-15-11">15.11 原始资料与延伸阅读</h2>
+<span id="sec-54" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-e6aa774c20">条件提取、近场气泡、多说话人日志与视听前端核心文献</h3>
 <ol>
 <li><strong>条件调制与声纹嵌入骨干</strong>：Perez, E., Strub, F., de Vries, H., Dumoulin, V., &amp; Courville, A. (2018), <em>FiLM: Visual Reasoning with a General Conditioning Layer</em>, AAAI 2018（<a href="https://arxiv.org/abs/1709.07871">arXiv:1709.07871</a>）；Snyder, D., Garcia-Romero, D., Sell, G., Povey, D., &amp; Khudanpur, S. (2018), <em>X-Vectors: Robust DNN Embeddings for Speaker Recognition</em>, ICASSP 2018, pp. 5329–5333（<a href="https://doi.org/10.1109/ICASSP.2018.8461375">DOI</a>）；Desplanques, B., Thienpondt, J., &amp; Demuynck, K. (2020), <em>ECAPA-TDNN: Emphasized Channel Attention, Propagation and Aggregation in TDNN Based Speaker Verification</em>, Interspeech 2020（<a href="https://arxiv.org/abs/2005.07143">arXiv:2005.07143</a>）；Chen, S., et al. (2022), <em>WavLM: Large-Scale Self-Supervised Pre-Training for Full Stack Speech Processing</em>, <em>IEEE JSTSP</em>, 16(6), 1505–1518（<a href="https://doi.org/10.1109/JSTSP.2022.3188113">DOI</a>）。</li>
 <li><strong>目标说话人提取、空间语义线索与沉默段防误触发</strong>：Žmolíková, K., Delcroix, M., Ochiai, T., Kinoshita, K., Černocký, J., &amp; Yu, D. (2023), <em>Neural Target Speech Extraction: An Overview</em>, <em>IEEE Signal Processing Magazine</em>, 40(3), 8–29（<a href="https://doi.org/10.1109/MSP.2023.3240008">DOI</a>）；Žmolíková, K., et al. (2019), <em>SpeakerBeam: Speaker Aware Neural Network for Target Speaker Extraction in Speech Mixtures</em>, <em>IEEE JSTSP</em>, 13(4), 800–814（<a href="https://doi.org/10.1109/JSTSP.2019.2922820">DOI</a>）；Wang, Q., et al. (2019), <em>VoiceFilter: Targeted Voice Separation by Speaker-Conditioned Spectrogram Masking</em>, Interspeech 2019（<a href="https://arxiv.org/abs/1810.04826">arXiv:1810.04826</a>）；Delcroix, M., et al. (2020), <em>Improving Speaker Discrimination of Target Speech Extraction With Time-Domain SpeakerBeam</em>, ICASSP 2020（<a href="https://doi.org/10.1109/ICASSP40776.2020.9054683">DOI</a>）；Ge, M., Xu, C., Wang, L., Chng, E. S., Dang, J., &amp; Li, H. (2020), <em>SpEx+: A Complete Time Domain Speaker Extraction Network</em>, Interspeech 2020（<a href="https://arxiv.org/abs/2005.04686">arXiv:2005.04686</a>）；Jenrungrot, T., Jayaram, V., Seitz, S. M., &amp; Kemelmacher-Shlizerman, I. (2020), <em>The Cone of Silence: Speech Separation by Localization</em>, NeurIPS 2020（<a href="https://arxiv.org/abs/2010.06007">arXiv:2010.06007</a>）；Borsdorf, M., Xu, C., Li, H., &amp; Schultz, T. (2021), <em>Universal Speaker Extraction in the Presence and Absence of Target Speakers for Speech of One and Two Talkers</em>, Interspeech 2021, pp. 1469–1473（<a href="https://doi.org/10.21437/Interspeech.2021-1939">DOI</a>）；Delcroix, M., et al. (2022), <em>Listen only to me! How well can target speech extraction handle false alarms?</em>, Interspeech 2022, pp. 216–220（<a href="https://doi.org/10.21437/Interspeech.2022-11252">DOI</a>）；Veluri, B., Itani, M., Chan, J., Yoshioka, T., &amp; Gollakota, S. (2023), <em>Semantic Hearing: Programming Acoustic Scenes with Binaural Hearables</em>, ACM UIST 2023（<a href="https://doi.org/10.1145/3586183.3606779">DOI</a>）；Gu, R., &amp; Luo, Y. (2024), <em>ReZero: Region-Customizable Sound Extraction</em>, <em>IEEE/ACM TASLP</em>, 32, 2576–2589（<a href="https://doi.org/10.1109/TASLP.2024.3393713">DOI</a>）；Quan, C., &amp; Li, X. (2024), <em>SpatialNet: Extensively Learning Spatial Information for Multichannel Joint Speech Separation, Denoising and Dereverberation</em>, <em>IEEE/ACM TASLP</em>, 32, 1310–1323（<a href="https://doi.org/10.1109/TASLP.2024.3357036">DOI</a>）；Zeng, B., &amp; Li, M. (2025), <em>USEF-TSE: Universal Speaker Embedding Free Target Speaker Extraction</em>, <em>IEEE TASLP</em>, 33, 2110–2124（<a href="https://arxiv.org/abs/2409.02615">arXiv:2409.02615</a>）。</li>

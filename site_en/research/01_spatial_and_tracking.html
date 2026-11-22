@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Spatial Processing & Tracking Sources · Microphone Array Signal Processing</title>
-<meta name="source-digest" content="7b2bf0186a72"><style>
+<meta name="source-digest" content="6fa82909c83a"><style>
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -2191,7 +2191,7 @@ C_{\mathrm{PAN}}&=\frac{\vec w^H\mathbf R_n\vec a}{\vec w^H\mathbf R_n\vec w},\\
 <li><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch14/core/wearable_fusion.py"><code>wearable_fusion.py</code></a>: Models Corcos turbulent boundary-layer wind-noise spatial coherence, split-band cross-modal MVDR/MMSE fusion of external air-conduction and occluded in-ear microphones, and TWS hear-through processing-delay comb filtering.</li>
 <li><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch14/core/ambisonic_sofa_rendering.py"><code>ambisonic_sofa_rendering.py</code></a>: Verifies FOA max-$\vec r_E$ order-weighted loudspeaker decoding, AES69/SOFA <code>SimpleFreeFieldHRIR</code> coordinate transformations, and head-tracked motion-to-sound latency budgets.</li>
 </ul>
-<p>Together these four modules power Exercises <code>E14-01</code> through <code>E14-15</code> and six 16 kHz synthetic WAVs scored across analytical, float64, and PCM16 integer tiers—verifying exact equations, conditioning, and quantization bounds without claiming individualized HRTF measurement, bone-conduction hardware calibration, or subjective listening scores.</p>
+<p>Together these four modules power Exercises <code>E14-01</code> through <code>E14-16</code> and six 16 kHz synthetic WAVs scored across analytical, float64, and PCM16 integer tiers—verifying exact equations, conditioning, and quantization bounds without claiming individualized HRTF measurement, bone-conduction hardware calibration, or subjective listening scores.</p>
 <span id="622-五个锁定上游仓库的源码核验与未执行边界" class="anchor-alias" aria-hidden="true"></span><span id="622-source-provenance-and-unexecuted-boundaries-across-five-locked-upstream-repositories" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-62-2">62.2 Source Provenance and Unexecuted Boundaries Across Five Locked Upstream Repositories</h3>
 <p><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/SOURCES.lock.json"><code>SOURCES.lock.json</code></a> and <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/SOURCE_STATUS.json"><code>SOURCE_STATUS.json</code></a> lock five MIT-licensed plain-text subsets for Chapter 14, all verified offline at <code>source_verified</code> (<code>execution="not_run"</code>):</p>
 <ul>

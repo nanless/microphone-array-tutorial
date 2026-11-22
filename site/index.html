@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>从入门到工业实践 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="a0289902c00e"><style>
+<meta name="source-digest" content="b82b7d85f70d"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -582,11 +582,11 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
       </div>
       <div class="course-stats" aria-label="全书规模概览">
         <div><strong>16 章 + 2 附录</strong><span>零跳步推导与失效边界</span></div>
-        <div><strong>352 道练习</strong><span>手算锚点 + 纯 NumPy 复算</span></div>
+        <div><strong>360 道练习</strong><span>手算锚点 + 纯 NumPy 复算</span></div>
         <div><strong>283 段音频</strong><span>实录与受控合成对照</span></div>
         <div><strong>87 张编号图</strong><span>脚本溯源与数值核验</span></div>
       </div>
-      <p class="course-note">16 章正文 · 2 篇附录 · 352 道可运行练习 · 87 张编号图 · 129 个开源项目对照</p>
+      <p class="course-note">16 章正文 · 2 篇附录 · 360 道可运行练习 · 87 张编号图 · 129 个开源项目对照</p>
     </div>
 
     <figure class="course-demo" data-source="mvdr">
@@ -1122,7 +1122,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li><a href="index.html#sec-u-cc2724a31a">附录：下一步清单</a></li>
 </ul></nav></details>
 <span id="sec-1" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-50ba72ce3a">多麦克风阵列信号处理教程 · 导读与导航</h2>
-<p>欢迎进入全书总导航页。本书共 <strong>19 篇正文文档</strong>——本页导读、<strong>16 章核心与前沿正文</strong>（第 0～15 章，含第 0 章全书数学基础与第 12～15 章四篇扩展专题）以及 <strong>2 篇速查与排错附录</strong>；另配 <strong>352 道纯 NumPy 可运行练习</strong>、<strong>283 段试听音频</strong>、<strong>87 张脚本溯源插图</strong>（外加附录 B 房间仿真补充图 1 张）与 <strong>6 篇<a href="research/index.html">源码研究手册</a></strong>（源码研究手册专注第三方上游实现与复现边界，不计入教程正文篇数）。</p>
+<p>欢迎进入全书总导航页。本书共 <strong>19 篇正文文档</strong>——本页导读、<strong>16 章核心与前沿正文</strong>（第 0～15 章，含第 0 章全书数学基础与第 12～15 章四篇扩展专题）以及 <strong>2 篇速查与排错附录</strong>；另配 <strong>360 道纯 NumPy 可运行练习</strong>、<strong>283 段试听音频</strong>、<strong>87 张脚本溯源插图</strong>（外加附录 B 房间仿真补充图 1 张）与 <strong>6 篇<a href="research/index.html">源码研究手册</a></strong>（源码研究手册专注第三方上游实现与复现边界，不计入教程正文篇数）。</p>
 <p><strong>快速切入指南</strong>：</p>
 <ul>
 <li><strong>零基础系统学习</strong>：先读<a href="00_math-foundations.html">第 0 章 · 数学基础</a>与<a href="01_problem-definition.html">第 1 章 · 问题定义</a>，或先到本页<a href="#sec-u-6d43c0086f">第 8 节</a>对照图 29 试听双麦对齐前后差异。</li>
@@ -1417,10 +1417,10 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <p>围绕真实无线链路，本专题进一步讨论传输量化误差、压缩系数版本切换后的统计量坐标变换、节点间采样率偏移（如 $100\ \mathrm{ppm}$ 频偏）补偿以及网络丢包时的补零与本地回退策略（完整无线实验复现指引见<a href="13_distributed-enhancement.html#sec-13-15">专题 §13.15</a>）。</p>
 <span id="sec-u-6dcf2e71ad" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-3e47e38b8d"><a href="14_spatial-wearable-arrays.html">14 · 扩展专题Ⅲ：空间声场采集、参数化编码与可穿戴阵列</a></h3>
 <p>本专题（第 14 章，配图 4 张）面向全景声录制、扩展现实头显、智能眼镜、真无线耳机与数字助听器，建议在读完第 1、2、5 章后选读。与交付单路增强波形的桌面阵列不同，全景声采集与可穿戴设备需要在受限孔径和头部散射条件下保留三维方位线索与自然听觉包围感。</p>
-<p>全章从一阶全景声（FOA）ACN/SN3D 约定、正四面体编码均衡与头部追踪三维声场逆旋转出发，推导方向性音频编码（DirAC）的有功声强与扩散度参数化分析；随后展开非规则阵列双耳信号匹配（BSM-LS 与高频幅度最小二乘 MagLS）及用参考麦克风混合抑制背景噪声头中坍缩的解析折中，并剖析 Corcos 湍流风噪模型、气导与耳道闭塞内麦跨模态 MVDR 自语音融合，以及耳机通透模式（Hear-Through）的百微秒梳状滤波延迟边界（配套练习 <code>E14-01</code>～<code>E14-15</code> 与 <code>wearable_audio</code> 见<a href="14_spatial-wearable-arrays.html#sec-14-11">专题 §14.11</a>）。</p>
+<p>全章从一阶全景声（FOA）ACN/SN3D 约定、正四面体编码均衡与头部追踪三维声场逆旋转出发，推导方向性音频编码（DirAC）的有功声强与扩散度参数化分析；随后展开非规则阵列双耳信号匹配（BSM-LS 与高频幅度最小二乘 MagLS）及用参考麦克风混合抑制背景噪声头中坍缩的解析折中，并剖析 Corcos 湍流风噪模型、气导与耳道闭塞内麦跨模态 MVDR 自语音融合，以及耳机通透模式（Hear-Through）的百微秒梳状滤波延迟边界（配套练习 <code>E14-01</code>～<code>E14-16</code> 与 <code>wearable_audio</code> 见<a href="14_spatial-wearable-arrays.html#sec-14-11">专题 §14.11</a>）。</p>
 <span id="sec-u-a79ebcacde" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-bbb1d49208"><a href="15_target-extraction-diarization.html">15 · 扩展专题Ⅳ：条件目标说话人提取、多通道日志与远场多模态前端</a></h3>
 <p>本专题（第 15 章，配图 4 张）面向个人目标说话人提取与多人重叠会议转写，建议在读完第 2、5、8 章后选读。面对无条件盲分离槽位缺少身份锚点、同方向远近声源重叠与多人抢话等工程难题，系统需要融合声纹、近场距离、说话人活动与视觉唇动线索驱动前端提取。</p>
-<p>全章先推导条件特征仿射调制（FiLM）与交叉注意力注入、消除目标沉默段零除零奇异性的双态训练损失及单人段零重叠清擦音旁路准则，再给出利用球面波曲率区分同向远近声源的三麦正横声学距离气泡闭式解与孔径四次方（$d^4$）底噪边界。随后定量拆解说话人日志误差率（DER）三分量与空谱联合目标说话人语音活动检测（TS-VAD）对导引源分离（GSS）的排他门控，分析视听异构帧率对齐、相机管线滞后截断与唇部遮挡回退，并对比模块化级联（<code>TS-VAD→GSS→ASR</code>）与联合识别架构（<code>SOT</code>、<code>DiCoW</code>）的选型依据（配套练习 <code>E15-01</code>～<code>E15-14</code> 与 <code>tse_audio</code> 见<a href="15_target-extraction-diarization.html#sec-15-8">专题 §15.8～§15.10</a>）。</p>
+<p>全章先推导条件特征仿射调制（FiLM）与交叉注意力注入、消除目标沉默段零除零奇异性的双态训练损失及单人段零重叠清擦音旁路准则，再给出利用球面波曲率区分同向远近声源的三麦正横声学距离气泡闭式解与孔径四次方（$d^4$）底噪边界。随后定量拆解说话人日志误差率（DER）三分量与空谱联合目标说话人语音活动检测（TS-VAD）对导引源分离（GSS）的排他门控，分析视听异构帧率对齐、相机管线滞后截断与唇部遮挡回退，并对比模块化级联（<code>TS-VAD→GSS→ASR</code>）与联合识别架构（<code>SOT</code>、<code>DiCoW</code>）的选型依据（配套练习 <code>E15-01</code>～<code>E15-15</code> 与 <code>tse_audio</code> 见<a href="15_target-extraction-diarization.html#sec-15-8">专题 §15.8～§15.10</a>）。</p>
 <span id="sec-u-01420ec5a6" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-69afa9f448" class="anchor-alias" aria-hidden="true"></span><span id="sec-16" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-40bcb86655"><a href="16_appendix-symbols-math.html">16 · 附录 A：符号、术语、数学</a></h3>
 <p>本篇（配图 3 张）是全书的随手查阅工具书（完整分步数学推导与 16 道基础练习见<a href="00_math-foundations.html">第 0 章</a>，本篇聚焦全局符号基准、中英术语词典与四张紧凑速查卡），无需按顺序从头通读：</p>
 <ul>
@@ -2218,7 +2218,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <p>核对完基础输出后，可运行单元测试套件检验正常输入、退化边界与异常输入处理；若想针对某一章单独调试，可按<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/README.md">代码地图</a>定位对应模块与测试文件：</p>
 <pre><code class="language-bash">.venv/bin/python -m unittest discover -s tests -p 'test_codes*.py' -v
 </code></pre>
-<p>需要从头重新生成音频或重绘插图时，可参照<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/scripts/README.md">构建说明</a>与附录 B <a href="17_appendix-guide.html#sec-17-7">§17.7</a> 操作（附录 B 房间仿真练习需在固定版本 <code>pyroomacoustics</code> 独立环境中生成）。此外，全书共配 352 道稳定编号代码练习（<code>E00-01</code> 至 <code>E17-13</code>）：其中第 0～13 章与附录 A、B 的 323 道汇总于<a href="research/05_exercises_and_audio.html">章节代码练习与音频实验</a>（含第 0 章 16 道 <code>E00-01</code>～<code>E00-16</code>），第 14、15 章的 29 道分别见<a href="14_spatial-wearable-arrays.html#sec-14-11">专题Ⅲ §14.11</a>与<a href="15_target-extraction-diarization.html#sec-15-10">专题Ⅳ §15.10</a>，每道题均给出明确输入、运行入口与可核查数值结果。</p>
+<p>需要从头重新生成音频或重绘插图时，可参照<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/scripts/README.md">构建说明</a>与附录 B <a href="17_appendix-guide.html#sec-17-7">§17.7</a> 操作（附录 B 房间仿真练习需在固定版本 <code>pyroomacoustics</code> 独立环境中生成）。此外，全书共配 360 道稳定编号代码练习（<code>E00-01</code> 至 <code>E17-13</code>）：其中第 0～13 章与附录 A、B 的 329 道汇总于<a href="research/05_exercises_and_audio.html">章节代码练习与音频实验</a>（含第 0 章 16 道 <code>E00-01</code>～<code>E00-16</code>），第 14、15 章的 31 道分别见<a href="14_spatial-wearable-arrays.html#sec-14-11">专题Ⅲ §14.11</a>与<a href="15_target-extraction-diarization.html#sec-15-10">专题Ⅳ §15.10</a>，每道题均给出明确输入、运行入口与可核查数值结果。</p>
 <p><a id="audio-assets"></a></p>
 <p>仓库配套音频分为两类：除表格末行的 DEMAND 为真实自然环境多通道录音摘录外，其余 31 套均为受控数学模型生成的确定性合成音频（用于隔离单一物理因素、精确对比解析理论值与 16 位脉冲编码调制（Pulse-Code Modulation，PCM）量化读回值）。试听前请先调低耳机或扬声器音量；网页音频播放器默认不自动播放。下表列出全部 32 套音频资产的清单入口、文件数量与观察重点：</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>

@@ -1221,7 +1221,7 @@ Corresponding to [Chapter 14 (Extension Topic III)](../../../../chapters_en/14_s
 - [`wearable_fusion.py`](../../ch14/core/wearable_fusion.py): Models Corcos turbulent boundary-layer wind-noise spatial coherence, split-band cross-modal MVDR/MMSE fusion of external air-conduction and occluded in-ear microphones, and TWS hear-through processing-delay comb filtering.
 - [`ambisonic_sofa_rendering.py`](../../ch14/core/ambisonic_sofa_rendering.py): Verifies FOA max-$\vec r_E$ order-weighted loudspeaker decoding, AES69/SOFA `SimpleFreeFieldHRIR` coordinate transformations, and head-tracked motion-to-sound latency budgets.
 
-Together these four modules power Exercises `E14-01` through `E14-15` and six 16 kHz synthetic WAVs scored across analytical, float64, and PCM16 integer tiers—verifying exact equations, conditioning, and quantization bounds without claiming individualized HRTF measurement, bone-conduction hardware calibration, or subjective listening scores.
+Together these four modules power Exercises `E14-01` through `E14-16` and six 16 kHz synthetic WAVs scored across analytical, float64, and PCM16 integer tiers—verifying exact equations, conditioning, and quantization bounds without claiming individualized HRTF measurement, bone-conduction hardware calibration, or subjective listening scores.
 
 ### 62.2 Source Provenance and Unexecuted Boundaries Across Five Locked Upstream Repositories
 

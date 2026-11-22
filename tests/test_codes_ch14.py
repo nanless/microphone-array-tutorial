@@ -1,11 +1,13 @@
 """Independent hand-calculated unit tests for Chapter 14 spatial & wearable modules."""
 from __future__ import annotations
 
+import io
 import json
 import os
 from pathlib import Path
 import tempfile
 import unittest
+import unittest.mock
 import warnings
 
 import numpy as np
@@ -550,7 +552,7 @@ class TestWearableAudioAndExercises(unittest.TestCase):
 
         payload = run_experiments()
         self.assertEqual(tuple(payload["exercises"].keys()), EXERCISE_IDS)
-        self.assertEqual(len(EXERCISE_IDS), 15)
+        self.assertEqual(len(EXERCISE_IDS), 16)
         ex = payload["exercises"]
 
         # E14-03: exact Frobenius norm of Rz(pi/2)Ry(pi/2) - Ry(pi/2)Rz(pi/2) is sqrt(6)
@@ -590,10 +592,53 @@ class TestWearableAudioAndExercises(unittest.TestCase):
         self.assertFalse(ex["E14-15"]["sofa_ear_swap_audit"]["passed"])
         self.assertAlmostEqual(ex["E14-15"]["latency_20ms"]["angular_lag_deg"], 3.6, places=14)
 
+        # E14-16: Rigid-sphere HOA (N=2, 9 ch vs. N=1, 4 ch) radial mode boost and Tikhonov WNG
+        e16 = ex["E14-16"]
+        self.assertAlmostEqual(e16["radius_m"], 0.042, places=15)
+        self.assertAlmostEqual(e16["tikhonov_beta"], 0.05, places=15)
+        self.assertAlmostEqual(e16["tikhonov_max_gain_db"], 20.0, places=14)
+        self.assertEqual(len(e16["sweep"]), 3)
+        # Independent exact rational-polynomial closed forms for 1/|b_n^rigid(x)|^2:
+        # n=0: 1 + x^2; n=1: 4/x^2 + x^2; n=2: 81/x^4 + 9/x^2 - 2 + x^2
+        for row in e16["sweep"]:
+            x = row["kr"]
+            exp_inv_sq = {
+                "n0": 1.0 + x**2,
+                "n1": 4.0 / (x**2) + x**2,
+                "n2": 81.0 / (x**4) + 9.0 / (x**2) - 2.0 + x**2,
+            }
+            for key, inv_sq in exp_inv_sq.items():
+                self.assertAlmostEqual(row["modes"][key]["b_magnitude"], 1.0 / np.sqrt(inv_sq), places=12)
+                self.assertAlmostEqual(
+                    row["modes"][key]["unreg_boost_db"], 10.0 * np.log10(inv_sq), places=12
+                )
+        # Check exact kr=0.2 low-frequency collapse and Tikhonov rollback from N=2 toward N=1
+        kr02 = e16["sweep"][0]
+        self.assertAlmostEqual(kr02["frequency_hz"], 0.2 * 343.0 / (2.0 * np.pi * 0.042), places=12)
+        self.assertAlmostEqual(kr02["modes"]["n1"]["unreg_boost_db"], 10.0 * np.log10(100.04), places=12)
+        self.assertAlmostEqual(kr02["modes"]["n2"]["unreg_boost_db"], 10.0 * np.log10(50848.04), places=11)
+        self.assertLess(kr02["modes"]["n2"]["reg_effective_response"], 0.01)
+        self.assertLess(kr02["orders"]["N2"]["unreg_wng_q32_db"], -19.9)
+        self.assertGreater(kr02["orders"]["N2"]["reg_wng_recovery_db"], 22.5)
+        self.assertAlmostEqual(kr02["orders"]["N2"]["reg_wng_q32_db"], 2.5806695130145, places=10)
+        # At kr=1.0, exact |b_0|=1/sqrt(2), |b_1|=1/sqrt(5), |b_2|=1/sqrt(89) and n=2 unlocks (>0.81)
+        kr10 = e16["sweep"][2]
+        self.assertAlmostEqual(kr10["modes"]["n0"]["b_magnitude"], 1.0 / np.sqrt(2.0), places=14)
+        self.assertAlmostEqual(kr10["modes"]["n1"]["b_magnitude"], 1.0 / np.sqrt(5.0), places=14)
+        self.assertAlmostEqual(kr10["modes"]["n2"]["b_magnitude"], 1.0 / np.sqrt(89.0), places=14)
+        self.assertGreater(kr10["modes"]["n2"]["reg_effective_response"], 0.81)
+        # Asymptotic slope scaling (~20 dB/dec for n=1 vs ~40 dB/dec for n=2)
+        self.assertGreater(e16["low_freq_boost_slope_kr0p2_to_0p5_db_per_dec"]["n1"], 19.5)
+        self.assertGreater(e16["low_freq_boost_slope_kr0p2_to_0p5_db_per_dec"]["n2"], 39.5)
+
         # Ensure JSON serializability without NaN/Inf
         encoded = json.dumps(payload, allow_nan=False)
-        self.assertIn("E14-15", encoded)
+        self.assertIn("E14-16", encoded)
         self.assertEqual(cli_main(["--exercise", "E14-14"]), 0)
+        stream16 = io.StringIO()
+        with unittest.mock.patch("sys.stdout", stream16):
+            self.assertEqual(cli_main(["--exercise", "E14-16"]), 0)
+        self.assertEqual(set(json.loads(stream16.getvalue())["exercises"]), {"E14-16"})
 
 
 if __name__ == "__main__":

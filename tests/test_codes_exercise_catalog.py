@@ -1,4 +1,4 @@
-"""Explicit cross-module, chapter and research inventory for 352 exercises."""
+"""Explicit cross-module, chapter and research inventory for 360 exercises."""
 
 import json
 import re
@@ -49,9 +49,9 @@ from codes.chapters.appendix_b import interpolation_exercise
 ROOT = Path(__file__).resolve().parents[1]
 EXPECTED = {
     "chapter00": {f"E00-{n:02d}" for n in range(1, 17)},
-    "tse": {f"E15-{n:02d}" for n in range(1, 15)},
-    "wearable": {f"E14-{n:02d}" for n in range(1, 16)},
-    "distributed": {f"E13-{n:02d}" for n in range(1, 21)},
+    "tse": {f"E15-{n:02d}" for n in range(1, 16)},
+    "wearable": {f"E14-{n:02d}" for n in range(1, 17)},
+    "distributed": {f"E13-{n:02d}" for n in range(1, 22)},
     "imaging": {f"E12-{n:02d}" for n in range(1, 19)},
     "apa": {f"E06-{n:02d}" for n in range(21, 25)},
     "apa_audio": {"E06-25"},
@@ -60,13 +60,13 @@ EXPECTED = {
     "appendix_a": {f"E16-{n:02d}" for n in range(6, 16)},
     "chapter11": {f"E11-{n:02d}" for n in range(10, 23)},
     "chapter10": {f"E10-{n:02d}" for n in range(18, 29)},
-    "chapter09": {f"E09-{n:02d}" for n in range(10, 23)},
-    "chapter08": {f"E08-{n:02d}" for n in range(10, 27)},
+    "chapter09": {f"E09-{n:02d}" for n in range(10, 24)},
+    "chapter08": {f"E08-{n:02d}" for n in range(10, 28)},
     "chapter07": {f"E07-{n:02d}" for n in range(8, 22)},
-    "chapter06": {f"E06-{n:02d}" for n in range(12, 21)} | {"E06-26", "E06-27", "E06-29", "E06-30"},
+    "chapter06": {f"E06-{n:02d}" for n in range(12, 21)} | {"E06-26", "E06-27", "E06-29", "E06-30", "E06-31", "E06-32"},
     "binaural_beamforming": {"E05-18", "E05-19", "E05-20"},
     "chapter05": {f"E05-{n:02d}" for n in range(5, 18)},
-    "chapter04": {f"E04-{n:02d}" for n in range(12, 24)},
+    "chapter04": {f"E04-{n:02d}" for n in range(12, 25)},
     "chapter03": {f"E03-{n:02d}" for n in range(8, 19)},
     "chapter02": {f"E02-{n:02d}" for n in range(9, 21)},
     "chapter01": {f"E01-{n:02d}" for n in range(4, 12)},
@@ -154,9 +154,9 @@ class ExerciseCatalogTest(unittest.TestCase):
     def setUpClass(cls):
         cls.results = {name: run() for name, run in RUNNERS.items()}
 
-    def test_independent_inventory_has_352_unique_ids(self):
-        self.assertEqual(len(ALL_IDS), 352)
-        self.assertEqual(sum(map(len, EXPECTED.values())), 352)
+    def test_independent_inventory_has_360_unique_ids(self):
+        self.assertEqual(len(ALL_IDS), 360)
+        self.assertEqual(sum(map(len, EXPECTED.values())), 360)
 
     def test_each_module_returns_exact_assigned_ids(self):
         for name, results in self.results.items():
@@ -182,7 +182,7 @@ class ExerciseCatalogTest(unittest.TestCase):
                 text = chapters[0].read_text(encoding="utf-8")
                 self.assertRegex(text, rf"\b{re.escape(exercise_id)}\b")
 
-    def test_chapter_and_research_inventories_cover_exactly_352_ids(self):
+    def test_chapter_and_research_inventories_cover_exactly_360_ids(self):
         chapters = "\n".join(path.read_text(encoding="utf-8")
                              for path in (ROOT / "chapters").glob("*.md"))
         research = (ROOT / "codes/chapters/ch00/research/05_exercises_and_audio.md").read_text(encoding="utf-8")

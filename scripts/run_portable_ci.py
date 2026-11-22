@@ -5,7 +5,7 @@ On the original Apple Silicon generation host (with `.gitignore`d `_downloads/` 
 On clean GitHub Actions runners (`ubuntu-latest` or `macos-15` without `_downloads/`), runs:
   1. Full Chinese & English Markdown, figure, website, combined HTML, and <50 MiB PDF quality gates;
   2. Cryptographic SHA-256 verification across all 32 audio manifests and 35 figure JSON reports;
-  3. Chapter package layout & 352-exercise bilingual catalog verification;
+  3. Chapter package layout & 360-exercise bilingual catalog verification;
   4. Chapter 0 math foundations and Chapters 2–9 cross-chapter numerical baselines;
   5. All self-contained unit test modules in `tests/` (excluding only tests that require `.gitignore`d
      `codes/chapters/ch00/upstream/_downloads/` checkouts or exact `macOS-27.2.1` OS-kernel string comparison).
@@ -181,17 +181,17 @@ def verify_layout_and_bilingual_exercise_catalog(errors: list[str]) -> None:
     layout_case.test_chapter_packages_and_module_sources()
 
     all_ids = test_codes_exercise_catalog.ALL_IDS
-    if len(all_ids) != 352:
-        errors.append(f"Expected 352 unique exercise IDs, got {len(all_ids)}")
+    if len(all_ids) != 360:
+        errors.append(f"Expected 360 unique exercise IDs, got {len(all_ids)}")
     zh_chapters = "\n".join(p.read_text("utf-8") for p in sorted((ROOT / "chapters").glob("*.md")))
     en_chapters = "\n".join(p.read_text("utf-8") for p in sorted((ROOT / "chapters_en").glob("*.md")))
     if _documented_exercise_ids(zh_chapters) != all_ids:
-        errors.append("Chinese chapters exercise inventory differs from canonical 352 IDs")
+        errors.append("Chinese chapters exercise inventory differs from canonical 360 IDs")
     if _documented_exercise_ids(en_chapters) != all_ids:
         missing = sorted(all_ids - _documented_exercise_ids(en_chapters))
         extra = sorted(_documented_exercise_ids(en_chapters) - all_ids)
         errors.append(f"English chapters exercise inventory differs (missing={missing[:10]}, extra={extra[:10]})")
-    print(f"Verified chapter-only code layout (41 entry points) and 352-exercise ZH/EN catalog parity")
+    print(f"Verified chapter-only code layout (41 entry points) and 360-exercise ZH/EN catalog parity")
 
 
 def run_portable_quality_gates() -> None:

@@ -1,4 +1,4 @@
-"""Teaching experiments E09-10..22; no writes on import/run.
+"""Teaching experiments E09-10..23; no writes on import/run.
 
 These are small arithmetic/controlled-signal examples, not complete EKF, UKF,
 PHD, GOSPA tracking systems or device evaluations. No upstream imports.
@@ -89,6 +89,115 @@ def small_set_distances(truth, estimate, *, cutoff=10., order=1):
     return {'ospa': ospa, 'gospa_alpha2': gospa,
             'matched_capped_cost_power': power, 'matched_capped_cost_power_status': status,
             'cardinality_difference': n-m}
+
+
+def jpda_vs_gnn_crossing_case(
+    predicted_bearings_deg,
+    detections_deg,
+    *,
+    prior_variance_deg2: float = 2.0,
+    measurement_variance_deg2: float = 2.0,
+) -> dict:
+    """Exact 2-track, 2-detection JPDA vs hard GNN update with P_D=1 and zero clutter."""
+    pred = finite_real_array(predicted_bearings_deg, 'predicted_bearings_deg')
+    meas = finite_real_array(detections_deg, 'detections_deg')
+    p_minus = finite_real_scalar(prior_variance_deg2, 'prior_variance_deg2')
+    r_meas = finite_real_scalar(measurement_variance_deg2, 'measurement_variance_deg2')
+    if pred.shape != (2,) or meas.shape != (2,):
+        raise ValueError('predicted_bearings_deg and detections_deg must each have length 2')
+    if p_minus <= 0.0 or r_meas <= 0.0:
+        raise ValueError('prior and measurement variances must be strictly positive')
+
+    s_var = p_minus + r_meas
+    k_gain = p_minus / s_var
+    p_cond = (1.0 - k_gain) * p_minus
+
+    # Row j indexes detection z_j, column t indexes track theta_t^-.
+    nu = meas[:, None] - pred[None, :]
+    norm_factor = 1.0 / math.sqrt(2.0 * math.pi * s_var)
+    likelihood = norm_factor * np.exp(-0.5 * (nu ** 2) / s_var)
+
+    # Joint events under P_D = 1, no clutter:
+    # Theta_1 (straight): (1->1, 2->2); Theta_2 (swapped): (2->1, 1->2).
+    e1 = 0.5 * float(nu[0, 0] ** 2 + nu[1, 1] ** 2) / s_var
+    e2 = 0.5 * float(nu[1, 0] ** 2 + nu[0, 1] ** 2) / s_var
+    w1_kernel = math.exp(-e1)
+    w2_kernel = math.exp(-e2)
+    log_odds = e2 - e1
+    # Log-domain normalization avoids overflow for arbitrary separations.
+    if log_odds >= 0.0:
+        p_straight = 1.0 / (1.0 + math.exp(-log_odds))
+        p_swapped = math.exp(-log_odds) * p_straight
+    else:
+        p_swapped = 1.0 / (1.0 + math.exp(log_odds))
+        p_straight = math.exp(log_odds) * p_swapped
+
+    beta = np.array([[p_straight, p_swapped], [p_swapped, p_straight]], dtype=float)
+
+    # Hard GNN picks the maximum-likelihood 1-to-1 permutation.
+    if p_straight >= p_swapped:
+        gnn_event = 'straight'
+        gnn_innovations = np.array([nu[0, 0], nu[1, 1]], dtype=float)
+        gnn_assigned = np.array([meas[0], meas[1]], dtype=float)
+    else:
+        gnn_event = 'swapped'
+        gnn_innovations = np.array([nu[1, 0], nu[0, 1]], dtype=float)
+        gnn_assigned = np.array([meas[1], meas[0]], dtype=float)
+    gnn_means = pred + k_gain * gnn_innovations
+    gnn_vars = np.array([p_cond, p_cond], dtype=float)
+
+    # JPDA combined innovation and spread-of-the-means covariance inflation.
+    nu_bar = np.sum(beta * nu, axis=0)
+    jpda_means = pred + k_gain * nu_bar
+    spread_vars = (k_gain ** 2) * (np.sum(beta * (nu ** 2), axis=0) - nu_bar ** 2)
+    jpda_vars = p_cond + spread_vars
+
+    return {
+        'predicted_bearings_deg': pred,
+        'detections_deg': meas,
+        'innovation_variance_deg2': s_var,
+        'kalman_gain': k_gain,
+        'conditional_posterior_variance_deg2': p_cond,
+        'innovations_deg': nu,
+        'likelihood_matrix_per_deg': likelihood,
+        'straight_event_kernel': w1_kernel,
+        'swapped_event_kernel': w2_kernel,
+        'log_odds_straight_vs_swapped': log_odds,
+        'joint_event_probabilities': {'straight': p_straight, 'swapped': p_swapped},
+        'marginal_beta': beta,
+        'gnn': {
+            'selected_event': gnn_event,
+            'assigned_detections_deg': gnn_assigned,
+            'posterior_means_deg': gnn_means,
+            'posterior_variances_deg2': gnn_vars,
+            'posterior_separation_deg': float(abs(gnn_means[1] - gnn_means[0])),
+        },
+        'jpda': {
+            'combined_innovations_deg': nu_bar,
+            'posterior_means_deg': jpda_means,
+            'spread_of_means_variance_deg2': spread_vars,
+            'posterior_variances_deg2': jpda_vars,
+            'posterior_separation_deg': float(abs(jpda_means[1] - jpda_means[0])),
+        },
+    }
+
+
+def jpda_vs_gnn_crossing_experiment() -> dict:
+    """Compare JPDA marginal weights & covariance inflation vs hard GNN on symmetric crossings."""
+    return {
+        'prior_variance_deg2': 2.0,
+        'measurement_variance_deg2': 2.0,
+        'innovation_variance_deg2': 4.0,
+        'kalman_gain': 0.5,
+        'detection_probability': 1.0,
+        'clutter_intensity': 0.0,
+        'separated_approach': jpda_vs_gnn_crossing_case([-2.0, 2.0], [-1.5, 1.5]),
+        'ambiguous_crossing': jpda_vs_gnn_crossing_case([-0.5, 0.5], [-0.4, 0.4]),
+        'scope': (
+            '1-D scalar-azimuth 2-track, 2-detection symmetric crossing with P_D=1 and zero clutter; '
+            'exact 2-event JPDA vs hard GNN single-frame update, not full multi-frame MHT or clutter gating'
+        ),
+    }
 
 
 def _plain(value):
@@ -330,6 +439,9 @@ def run_experiments(*, audio_directory=TRACKING_OUTPUT):
 
     # E09-22 (old E09-28): Audio-visual OOSM retrodiction, FoV blind-zone & CLEAR MOT vs OSPA.
     result['E09-22'] = av_oosm_and_mot_experiment()
+
+    # E09-23: JPDA marginal association weights & covariance inflation vs hard GNN crossing.
+    result['E09-23'] = jpda_vs_gnn_crossing_experiment()
 
     return _plain(result)
 

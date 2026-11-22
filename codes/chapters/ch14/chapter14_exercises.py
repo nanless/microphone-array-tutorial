@@ -1,4 +1,4 @@
-"""Run E14-01..15 with pure NumPy and in-memory PCM; never write files or use network.
+"""Run E14-01..16 with pure NumPy and in-memory PCM; never write files or use network.
 
 Usage: python -m codes.chapters.ch14.chapter14_exercises [--exercise E14-06]
 """
@@ -15,6 +15,10 @@ import json
 import numpy as np
 
 from codes.chapters.ch00.core.audio_samples import pcm16_bytes, read_pcm16
+from codes.chapters.ch00.core.chapter00_math import (
+    spherical_bessel_derivative,
+    spherical_bessel_jy,
+)
 from codes.chapters.ch02.core.conventions import SPEED_OF_SOUND
 from codes.chapters.ch14.core.ambisonic_sofa_rendering import (
     REGULAR_HEXAGON_2D_DIRS,
@@ -54,7 +58,7 @@ from codes.chapters.ch14.core.wearable_fusion import (
     hear_through_response,
 )
 
-EXERCISE_IDS = tuple(f"E14-{i:02d}" for i in range(1, 16))
+EXERCISE_IDS = tuple(f"E14-{i:02d}" for i in range(1, 17))
 
 
 def _json(value):
@@ -376,6 +380,117 @@ def _ex15_sofa_and_head_tracking_latency() -> dict:
     }
 
 
+def _ex16_hoa_radial_boost_wng() -> dict:
+    """Rigid-sphere HOA (N=2, 9 ch vs. N=1, 4 ch) radial mode boost and Tikhonov WNG."""
+    radius_m = 0.042
+    c = SPEED_OF_SOUND
+    q_capsules = 32
+    beta = 0.05
+    kr_grid = (0.2, 0.5, 1.0)
+
+    sweep = []
+    for kr in kr_grid:
+        freq_hz = float(kr * c / (2.0 * np.pi * radius_m))
+        b_modes = []
+        mode_rows = {}
+        for n in (0, 1, 2):
+            jn, yn = spherical_bessel_jy(n, kr)
+            djn, dyn = spherical_bessel_derivative(n, kr)
+            hn2 = complex(float(jn), -float(yn))
+            dhn2 = complex(float(djn), -float(dyn))
+            # Ch14 §14.2 sphere-mean normalization (without 4*pi solid-angle factor, b0(0) = 1)
+            bn_direct = (1j**n) * (float(jn) - (float(djn) / dhn2) * hn2)
+            bn_wronskian = (1j ** (n - 1)) / ((kr**2) * dhn2)
+            if abs(bn_direct - bn_wronskian) > 1e-12 * max(1.0, abs(bn_wronskian)):
+                raise AssertionError("rigid-sphere Wronskian identity mismatch")
+            b_modes.append(bn_wronskian)
+
+            mag = float(abs(bn_wronskian))
+            inv_mag = 1.0 / mag
+            g_reg = bn_wronskian.conjugate() / (mag * mag + beta * beta)
+            g_reg_mag = float(abs(g_reg))
+            eff_resp = float((mag * mag) / (mag * mag + beta * beta))
+            mode_rows[f"n{n}"] = {
+                "order": n,
+                "num_channels": 2 * n + 1,
+                "b_rigid": bn_wronskian,
+                "b_magnitude": mag,
+                "unreg_boost_linear": inv_mag,
+                "unreg_boost_db": float(20.0 * np.log10(inv_mag)),
+                "reg_gain_linear": g_reg_mag,
+                "reg_gain_db": float(20.0 * np.log10(g_reg_mag)),
+                "reg_effective_response": eff_resp,
+            }
+
+        order_summary = {}
+        for max_order in (1, 2):
+            n_channels = (max_order + 1) ** 2
+            g_unreg = [1.0 / b_modes[n] for n in range(max_order + 1)]
+            g_reg = [
+                b_modes[n].conjugate() / (abs(b_modes[n]) ** 2 + beta * beta)
+                for n in range(max_order + 1)
+            ]
+
+            sum_noise_unreg = float(
+                sum((2 * n + 1) * (abs(g_unreg[n]) ** 2) for n in range(max_order + 1))
+            )
+            sum_noise_reg = float(
+                sum((2 * n + 1) * (abs(g_reg[n]) ** 2) for n in range(max_order + 1))
+            )
+            sig_reg = float(
+                abs(sum((2 * n + 1) * g_reg[n] * b_modes[n] for n in range(max_order + 1)))
+            )
+
+            wng_norm_unreg = float((n_channels**2) / sum_noise_unreg)
+            wng_norm_reg = float((sig_reg**2) / sum_noise_reg)
+            mean_ch_noise_unreg = sum_noise_unreg / n_channels
+            mean_ch_noise_reg = sum_noise_reg / n_channels
+
+            order_summary[f"N{max_order}"] = {
+                "max_order": max_order,
+                "num_channels": n_channels,
+                "unreg_wng_per_capsule_db": float(10.0 * np.log10(wng_norm_unreg)),
+                "reg_wng_per_capsule_db": float(10.0 * np.log10(wng_norm_reg)),
+                "unreg_wng_q32_db": float(10.0 * np.log10(q_capsules * wng_norm_unreg)),
+                "reg_wng_q32_db": float(10.0 * np.log10(q_capsules * wng_norm_reg)),
+                "unreg_mean_channel_noise_amp_db": float(10.0 * np.log10(mean_ch_noise_unreg)),
+                "reg_mean_channel_noise_amp_db": float(10.0 * np.log10(mean_ch_noise_reg)),
+                "reg_wng_recovery_db": float(10.0 * np.log10(wng_norm_reg / wng_norm_unreg)),
+            }
+
+        sweep.append(
+            {
+                "kr": kr,
+                "frequency_hz": freq_hz,
+                "modes": mode_rows,
+                "orders": order_summary,
+            }
+        )
+
+    log10_ratio = float(np.log10(0.5 / 0.2))
+    slope_n1 = (
+        sweep[0]["modes"]["n1"]["unreg_boost_db"] - sweep[1]["modes"]["n1"]["unreg_boost_db"]
+    ) / log10_ratio
+    slope_n2 = (
+        sweep[0]["modes"]["n2"]["unreg_boost_db"] - sweep[1]["modes"]["n2"]["unreg_boost_db"]
+    ) / log10_ratio
+
+    return {
+        "radius_m": radius_m,
+        "sound_speed_mps": c,
+        "reference_capsule_count": q_capsules,
+        "tikhonov_beta": beta,
+        "tikhonov_max_gain_linear": 1.0 / (2.0 * beta),
+        "tikhonov_max_gain_db": float(20.0 * np.log10(1.0 / (2.0 * beta))),
+        "normalization": "Ch14_sphere_mean_rigid_b_n (4pi-free, b_0(0)=1)",
+        "low_freq_boost_slope_kr0p2_to_0p5_db_per_dec": {
+            "n1": float(slope_n1),
+            "n2": float(slope_n2),
+        },
+        "sweep": sweep,
+    }
+
+
 def run_experiments() -> dict:
     exercises = {
         "E14-01": _ex01_tetra_encoding(),
@@ -393,6 +508,7 @@ def run_experiments() -> dict:
         "E14-13": _ex13_audio_three_tier_audit(),
         "E14-14": _ex14_ambisonics_max_re_decoding(),
         "E14-15": _ex15_sofa_and_head_tracking_latency(),
+        "E14-16": _ex16_hoa_radial_boost_wng(),
     }
     if set(exercises) != set(EXERCISE_IDS):
         raise AssertionError("exercise ID set differs")

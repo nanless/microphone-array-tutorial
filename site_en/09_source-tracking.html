@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Chapter 9 · Sound Source Tracking · Microphone Array Signal Processing</title>
-<meta name="source-digest" content="7b2bf0186a72"><style>
+<meta name="source-digest" content="6fa82909c83a"><style>
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -383,6 +383,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="09_source-tracking.html#sec-u-0de40a765f">E09-20: 3-D Pose Transformation, Tangent-Plane Projection, and Spherical vMF Updating</a></li>
 <li>&nbsp;&nbsp;<a href="09_source-tracking.html#sec-u-a999d42fe6">E09-21: On-Device Loudspeaker Residual-Echo Clutter Sector Gating</a></li>
 <li>&nbsp;&nbsp;<a href="09_source-tracking.html#sec-u-1c0e2232b7">E09-22: Audio-Visual Lag Retrodiction, Camera FOV Blind Spots, and Identity Metrics</a></li>
+<li>&nbsp;&nbsp;<a href="09_source-tracking.html#sec-u-0aa2ddfa14">E09-23: JPDA Marginal Association Probabilities vs. Hard GNN Assignment on Symmetric Crossing Tracks</a></li>
 <li><a href="09_source-tracking.html#sec-9-7">9.7 Chapter Summary</a></li>
 </ul>
 <div class="chap"><a href="10_engineering-practice.html">Chapter 10 · Real-Time Systems, Evaluation & Deployment</a></div>
@@ -461,6 +462,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="09_source-tracking.html#sec-u-0de40a765f">E09-20: 3-D Pose Transformation, Tangent-Plane Projection, and Spherical vMF Updating</a></li>
 <li>&nbsp;&nbsp;<a href="09_source-tracking.html#sec-u-a999d42fe6">E09-21: On-Device Loudspeaker Residual-Echo Clutter Sector Gating</a></li>
 <li>&nbsp;&nbsp;<a href="09_source-tracking.html#sec-u-1c0e2232b7">E09-22: Audio-Visual Lag Retrodiction, Camera FOV Blind Spots, and Identity Metrics</a></li>
+<li>&nbsp;&nbsp;<a href="09_source-tracking.html#sec-u-0aa2ddfa14">E09-23: JPDA Marginal Association Probabilities vs. Hard GNN Assignment on Symmetric Crossing Tracks</a></li>
 <li><a href="09_source-tracking.html#sec-9-7">9.7 Chapter Summary</a></li>
 </ul></nav></details>
 <blockquote>
@@ -1277,7 +1279,7 @@ L(A)&=p_D^d(1-p_D)^{2-d}
 \bar{\mathbf{P}}&=\sum_j\beta_j
 \bigl(\mathbf{P}_j+\vec{\delta}_j\vec{\delta}_j^\top\bigr).
 \end{aligned}\tag{9-31}$$</p>
-<p>Exactly like IMM mixing in Eq. (9-18), $\bar{\mathbf{P}}$ adds onto the weighted average of conditioned covariances $\mathbf{P}_j$ a positive-semidefinite <strong>association-uncertainty spread-of-means term</strong> $\sum_j\beta_j\vec{\delta}_j\vec{\delta}_j^\top$. For example, consider a 1-D scalar track with prior mean $0$, variance $4$, and measurement variance $R=1$ (gain $K=0.8$) facing two equally probable ($\beta_1=\beta_2=0.5$) symmetric candidate measurements at $-2$ and $+2$: the conditioned posterior means are $-1.6$ and $+1.6$ with conditioned variances $0.8$ each, so Eq. (9-31) gives a true mixture variance of $0.8+0.5\times(-1.6)^2+0.5\times(+1.6)^2=3.36$; naively averaging the two measurements to $0$ before running an ordinary KF produces the same mean $0$ yet reports an overconfident variance of $0.8$, omitting $2.56$ of association-ambiguity variance (for the equivalent combined-innovation form see <a href="https://doi.org/10.1109/JOE.1983.1145560">Fortmann, Bar-Shalom &amp; Scheffe 1983, §II, Eqs. (2.11)–(2.13)</a> and Bar-Shalom, Willett &amp; Tian, 2011). Precisely because JPDA collapses multi-hypothesis posteriors into unimodal Gaussians at every frame, closely spaced or crossing tracks share middle measurements and pull toward each other (<strong>track coalescence</strong>), so soft association alone cannot preserve speaker identities across crossings.</p>
+<p>Exactly like IMM mixing in Eq. (9-18), $\bar{\mathbf{P}}$ adds onto the weighted average of conditioned covariances $\mathbf{P}_j$ a positive-semidefinite <strong>association-uncertainty spread-of-means term</strong> $\sum_j\beta_j\vec{\delta}_j\vec{\delta}_j^\top$. For example, consider a 1-D scalar track with prior mean $0$, variance $4$, and measurement variance $R=1$ (gain $K=0.8$) facing two equally probable ($\beta_1=\beta_2=0.5$) symmetric candidate measurements at $-2$ and $+2$: the conditioned posterior means are $-1.6$ and $+1.6$ with conditioned variances $0.8$ each, so Eq. (9-31) gives a true mixture variance of $0.8+0.5\times(-1.6)^2+0.5\times(+1.6)^2=3.36$; naively averaging the two measurements to $0$ before running an ordinary KF produces the same mean $0$ yet reports an overconfident variance of $0.8$, omitting $2.56$ of association-ambiguity variance (for the equivalent combined-innovation form see <a href="https://doi.org/10.1109/JOE.1983.1145560">Fortmann, Bar-Shalom &amp; Scheffe 1983, §II, Eqs. (2.11)–(2.13)</a> and Bar-Shalom, Willett &amp; Tian, 2011; <a href="#e09-23">Exercise E09-23</a> quantitatively compares JPDA marginal weights and spread-of-means inflation against hard GNN on symmetric crossing tracks). Precisely because JPDA collapses multi-hypothesis posteriors into unimodal Gaussians at every frame, closely spaced or crossing tracks share middle measurements and pull toward each other (<strong>track coalescence</strong>), so soft association alone cannot preserve speaker identities across crossings.</p>
 <span id="sec-u-55fd9b25d3" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-54c92b1ef7">Multi-Frame Hypotheses, Labels, and Track-Before-Detect</h3>
 <p>Three distinct paradigms address the Frame 3 crossing ambiguity:</p>
 <ul>
@@ -1844,10 +1846,10 @@ t_{\mathrm{available}}&=\frac{n_0+512}{16000},\\
 </li>
 </ol>
 <span id="sec-u-9d29271e5a" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-fd1491d61f">Entrypoints and Conventions for Runnable Exercises</h3>
-<p>This chapter provides $22$ reproducible exercises (E09-01–E09-22) spanning continuous-time discretization, linear/nonlinear Kalman filtering, particle resampling, multi-target set estimation and set metrics, fixed-lag smoothing and out-of-sequence measurements, two-mic disk PCM waveform tracking and lifecycle state machines, as well as 3-D pose/spherical tracking, loudspeaker residual-echo sector gating, and heterogeneous audio-visual latency fusion.</p>
+<p>This chapter provides $23$ reproducible exercises (E09-01–E09-23) spanning continuous-time discretization, linear/nonlinear Kalman filtering, particle resampling, multi-target set estimation and set metrics, fixed-lag smoothing and out-of-sequence measurements, two-mic disk PCM waveform tracking and lifecycle state machines, as well as 3-D pose/spherical tracking, loudspeaker residual-echo sector gating, heterogeneous audio-visual latency fusion, and JPDA soft association versus hard GNN on crossing tracks.</p>
 <p>Execution entrypoints: E09-01–E09-05 run via <code>.venv/bin/python -m codes.chapters.ch00.cross_chapter.exercises_enhancement</code> (<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/exercises_enhancement.py"><code>exercises_enhancement.py</code></a>), E09-06 corresponds to §9.3.3's crossing script, E09-07–E09-08 live in <code>tracking_time_exercises.py</code>, and E09-09 lives in <code>enhancement_structure_exercises.py</code>. Every exercise models physical bearings or true acoustic propagation delays, never stereo panning.</p>
 <span id="sec-u-b51bd23596" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-faa303803c">Implementation Boundaries of Chapter 9 Experiments</h3>
-<p>Exercises E09-10–E09-22 run via <code>.venv/bin/python -m codes.chapters.ch09.chapter09_experiments</code> (<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch09/chapter09_experiments.py"><code>chapter09_experiments.py</code></a>). E09-16 and E09-19 read the repository's 16-bit two-mic PCM WAV directly from disk to verify localization, filtering, and lifecycle events, while the remaining exercises isolate self-contained analytical and edge-case checks (e.g., scaling set distances by cutoff $c$ before raising to power $p$ to prevent float underflow).</p>
+<p>Exercises E09-10–E09-23 run via <code>.venv/bin/python -m codes.chapters.ch09.chapter09_experiments</code> (<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch09/chapter09_experiments.py"><code>chapter09_experiments.py</code></a>). E09-16 and E09-19 read the repository's 16-bit two-mic PCM WAV directly from disk to verify localization, filtering, and lifecycle events, while the remaining exercises isolate self-contained analytical and edge-case checks (e.g., scaling set distances by cutoff $c$ before raising to power $p$ to prevent float underflow).</p>
 <p><a id="e09-01"></a></p>
 <span id="sec-u-87e2fb92df" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-fa4505e1df">E09-01: Switching Units from "Per Frame" to "Per Second"</h3>
 <p>Initial state $[30^\circ,5^\circ/\mathrm{s}]^\top$, $\mathbf{P}_0=\operatorname{diag}(4,1)$; predict every $0.1\ \mathrm{s}$ using pre-discretized $\mathbf{Q}=\operatorname{diag}(0.1,0.01)$ across two consecutive dropouts.</p>
@@ -2265,6 +2267,70 @@ P_{1|2}&=\frac{2}{3}+\left(\frac{2}{5}\right)^2\left(\frac{5}{8}-\frac{5}{3}\rig
 </tbody>
 </table></div>
 <p>Unlabeled <code>OSPA</code> is blind to pure identity swaps whereas <code>MOTA</code> catches $\mathrm{IDSW}=2$; adding the $-45^\circ$ ghost track degrades both metrics simultaneously (implementation in <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch09/core/echo_av_fusion.py"><code>echo_av_fusion.py</code></a>).</p>
+<p><a id="e09-23"></a></p>
+<span id="sec-u-4125ba21cf" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-0aa2ddfa14">E09-23: JPDA Marginal Association Probabilities vs. Hard GNN Assignment on Symmetric Crossing Tracks</h3>
+<p>Consider single-frame 1-D scalar-azimuth updates for two symmetric crossing tracks from §9.3.1–§9.3.2. Both tracks share prior variance $P^-=2.0\ \mathrm{deg}^2$ and measurement variance $R=2.0\ \mathrm{deg}^2$, giving innovation variance $S=P^-+R=4.0\ \mathrm{deg}^2$ ($\sigma_S=2.0^\circ$) and Kalman gain $K=P^-/S=0.5$. To keep every step hand-checkable, take $P_D=1$ with zero clutter so exactly two one-to-one joint events exist: straight $\Theta_1=\{(1\to 1),(2\to 2)\}$ and swapped $\Theta_2=\{(2\to 1),(1\to 2)\}$. Compute:</p>
+<ol>
+<li><strong>Separated approach</strong>: predicted bearings $\hat\theta_1^-=-2.0^\circ$, $\hat\theta_2^-=+2.0^\circ$ with detections $z_1=-1.5^\circ$, $z_2=+1.5^\circ$. Using Gaussian likelihoods $g_{jt}=\mathcal N(z_j;\ \hat\theta_t^-,S)$, compute joint event weights, marginal JPDA weights $\beta_{jt}$, and posterior means and variances;</li>
+<li><strong>Ambiguous crossing instant</strong>: predicted bearings $\hat\theta_1^-=-0.5^\circ$, $\hat\theta_2^-=+0.5^\circ$ with detections $z_1=-0.4^\circ$, $z_2=+0.4^\circ$. Contrast hard <strong>GNN</strong> (fixing $\beta_{11}=1$) against <strong>JPDA</strong>'s combined innovation $\bar\nu_1=\beta_{11}\nu_{11}+\beta_{21}\nu_{21}$ and <strong>spread-of-the-means covariance inflation</strong> $\tilde P_1=K^2\bigl(\sum_j\beta_{j1}\nu_{j1}^2-\bar\nu_1^2\bigr)$, showing how JPDA widens posterior uncertainty during close crossings while exhibiting track coalescence.</li>
+</ol>
+<p><strong>Solution</strong>:</p>
+<ol>
+<li><strong>Separated approach (log-odds $3$; straight event dominates)</strong>: Innovations $\nu_{jt}=z_j-\hat\theta_t^-$ are $\nu_{11}=+0.5^\circ,\;\nu_{22}=-0.5^\circ$ and $\nu_{21}=+3.5^\circ,\;\nu_{12}=-3.5^\circ$. Dropping the shared prefactor $(2\pi S)^{-1}=(8\pi)^{-1}$, the two joint event kernels are</li>
+</ol>
+<p>$$\begin{aligned}
+   w(\Theta_1)&\propto\exp\!\left(-\frac{0.5^2+(-0.5)^2}{2\times 4}\right)
+   =e^{-1/16}\approx 0.939413,\\
+   w(\Theta_2)&\propto\exp\!\left(-\frac{3.5^2+(-3.5)^2}{2\times 4}\right)
+   =e^{-49/16}\approx 0.046771.
+   \end{aligned}$$</p>
+<p>Since $w(\Theta_2)/w(\Theta_1)=e^{-(49-1)/16}=e^{-3}$, the exact JPDA marginal weights are</p>
+<p>$$\beta_{11}=\beta_{22}=\frac{1}{1+e^{-3}}\approx 0.952574,\qquad
+   \beta_{21}=\beta_{12}=\frac{1}{1+e^{3}}\approx 0.047426.$$</p>
+<p>Hard GNN selects $\Theta_1$, giving $\hat\theta_{1,\mathrm{GNN}}^+=-1.75^\circ$, $\hat\theta_{2,\mathrm{GNN}}^+=+1.75^\circ$, and $P_{\mathrm{GNN}}=(1-K)P^-=1.0\ \mathrm{deg}^2$. JPDA yields $\bar\nu_1\approx +0.642278^\circ$ and $\hat\theta_{1,\mathrm{JPDA}}^+\approx -1.678861^\circ$; because the $4.74\%$ swap hypothesis spans $3.0^\circ$, spread inflation adds $\tilde P_1=0.25\times\beta_{11}\beta_{21}\times 3.0^2\approx 0.101647\ \mathrm{deg}^2$ for total variance $1.101647\ \mathrm{deg}^2$.</p>
+<ol start="2">
+<li><strong>Ambiguous crossing instant (log-odds drops to $0.2$; honest variance inflation and coalescence)</strong>: Innovations shrink to $\nu_{11}=+0.1^\circ,\;\nu_{22}=-0.1^\circ$ and $\nu_{21}=+0.9^\circ,\;\nu_{12}=-0.9^\circ$, bringing joint kernels close at $w(\Theta_1)\propto e^{-1/400}\approx 0.997503$ and $w(\Theta_2)\propto e^{-81/400}\approx 0.816686$ (ratio $e^{-80/400}=e^{-0.2}$), so</li>
+</ol>
+<p>$$\beta_{11}=\beta_{22}=\frac{1}{1+e^{-0.2}}\approx 0.549834,\qquad
+   \beta_{21}=\beta_{12}=\frac{1}{1+e^{0.2}}\approx 0.450166.$$</p>
+<p>With a $45.02\%$ swap chance, Track 1 updates compare as follows (Track 2 is strictly antisymmetric):</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable data table"><table>
+<thead>
+<tr>
+<th scope="col">Quantity</th>
+<th scope="col" style="text-align: right;">Hard GNN (assumes $\beta_{11}=1$)</th>
+<th scope="col" style="text-align: right;">Soft JPDA ($\beta_{11}\approx 0.5498,\;\beta_{21}\approx 0.4502$)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Effective innovation ($\mathrm{deg}$)</td>
+<td style="text-align: right;">$+0.100000$</td>
+<td style="text-align: right;">$\bar\nu_1=+0.460133$</td>
+</tr>
+<tr>
+<td>Track 1 posterior mean ($\mathrm{deg}$)</td>
+<td style="text-align: right;">$-0.450000$</td>
+<td style="text-align: right;">$-0.269934$</td>
+</tr>
+<tr>
+<td>Posterior track separation ($\mathrm{deg}$)</td>
+<td style="text-align: right;">$0.900000$</td>
+<td style="text-align: right;">$0.539867$ (pulled inward)</td>
+</tr>
+<tr>
+<td>Spread-of-means inflation $\tilde P_1$ ($\mathrm{deg}^2$)</td>
+<td style="text-align: right;">$0.000000$</td>
+<td style="text-align: right;">$+0.039603$</td>
+</tr>
+<tr>
+<td>Total posterior variance $P_1^+$ ($\mathrm{deg}^2$)</td>
+<td style="text-align: right;">$1.000000$ (overconfident)</td>
+<td style="text-align: right;">$1.039603$</td>
+</tr>
+</tbody>
+</table></div>
+<p>Because both conditioned posteriors $m_{j1}=\hat\theta_1^-+K\nu_{j1}$ share variance $P_c=(1-K)P^-=1.0\ \mathrm{deg}^2$, Eq. (9-31) moment matching equals $\tilde P_1=K^2\bigl(\sum_j\beta_{j1}\nu_{j1}^2-\bar\nu_1^2\bigr)=K^2\beta_{11}\beta_{21}(\nu_{21}-\nu_{11})^2\approx 0.039603\ \mathrm{deg}^2>0$ identically. JPDA therefore widens posterior uncertainty instead of reporting an overconfident $1.0\ \mathrm{deg}^2$ during a near-50/50 crossing, while unimodal moment matching contracts track separation from $0.90^\circ$ to $0.54^\circ$—quantifying the track-coalescence trade-off noted in §9.3.2 (verified in <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch09/chapter09_experiments.py"><code>chapter09_experiments.py</code></a>, <code>E09-23</code>).</p>
 <h2 id="sec-9-7">9.7 Chapter Summary</h2>
 <p>Starting from the jitter and occlusion pitfalls of single-frame localization, this chapter built a systematic source-tracking framework for microphone arrays:</p>
 <ol>

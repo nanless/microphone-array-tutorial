@@ -172,18 +172,18 @@ EXPECTED_SUBSECTION_COUNTS = {
     "01_problem-definition.md": 22,
     "02_basics-signal-model.md": 48,
     "03_array-geometry.md": 33,
-    "04_doa-estimation.md": 44,
+    "04_doa-estimation.md": 45,
     "05_beamforming.md": 40,
-    "06_aec.md": 60,
+    "06_aec.md": 62,
     "07_wpe-dereverberation.md": 55,
-    "08_speech-separation.md": 58,
-    "09_source-tracking.md": 58,
+    "08_speech-separation.md": 59,
+    "09_source-tracking.md": 59,
     "10_engineering-practice.md": 51,
     "11_selection-guide.md": 39,
     "12_acoustic-imaging.md": 68,
-    "13_distributed-enhancement.md": 62,
-    "14_spatial-wearable-arrays.md": 45,
-    "15_target-extraction-diarization.md": 41,
+    "13_distributed-enhancement.md": 63,
+    "14_spatial-wearable-arrays.md": 46,
+    "15_target-extraction-diarization.md": 42,
     "16_appendix-symbols-math.md": 27,
     "17_appendix-guide.md": 28,
 }
@@ -228,19 +228,19 @@ EXPECTED_LEGACY_ROUTES = {
     "17_target-extraction-diarization.html": "15_target-extraction-diarization.html",
 }
 EXPECTED_SECTION_COUNT = 173
-EXPECTED_SUBSECTION_COUNT = 827
-EXPECTED_OUTLINE_ITEM_COUNT = 1019
+EXPECTED_SUBSECTION_COUNT = 835
+EXPECTED_OUTLINE_ITEM_COUNT = 1027
 EXPECTED_FIGURE_NUMBERS = set(range(1, 88))
-EXPECTED_EXERCISE_COUNT = 352
+EXPECTED_EXERCISE_COUNT = 360
 EXPECTED_EXERCISE_COUNTS = {
     '00_math-foundations.md': 16,
     '01_problem-definition.md': 11, '02_basics-signal-model.md': 20,
-    '03_array-geometry.md': 18, '04_doa-estimation.md': 23,
-    '05_beamforming.md': 20, '06_aec.md': 30, '07_wpe-dereverberation.md': 21,
-    '08_speech-separation.md': 26, '09_source-tracking.md': 22,
+    '03_array-geometry.md': 18, '04_doa-estimation.md': 24,
+    '05_beamforming.md': 20, '06_aec.md': 32, '07_wpe-dereverberation.md': 21,
+    '08_speech-separation.md': 27, '09_source-tracking.md': 23,
     '10_engineering-practice.md': 28, '11_selection-guide.md': 22,
-    '12_acoustic-imaging.md': 18, '13_distributed-enhancement.md': 20,
-    '14_spatial-wearable-arrays.md': 15, '15_target-extraction-diarization.md': 14,
+    '12_acoustic-imaging.md': 18, '13_distributed-enhancement.md': 21,
+    '14_spatial-wearable-arrays.md': 16, '15_target-extraction-diarization.md': 15,
     '16_appendix-symbols-math.md': 15, '17_appendix-guide.md': 13,
 }
 # 研究附站使用独立显式清单，不挤占 16 篇教程或教程 PDF 大纲基线。
@@ -609,11 +609,11 @@ def check_sources(errors: list[str], notices: list[str]):
                           ROOT / "scripts" / "README.md",
                           ROOT / "codes" / "chapters" / "README.md") if p.exists()]
     readme_zh = ROOT / "README.md"
-    if readme_zh.exists() and "16 章正文 · 2 篇附录 · 352 道可运行练习 · 87 张编号图" not in readme_zh.read_text(encoding="utf-8"):
-        fail(errors, "README.md 全书统计基线过期：应含 16 章正文 · 2 篇附录 · 352 道可运行练习 · 87 张编号图")
+    if readme_zh.exists() and "16 章正文 · 2 篇附录 · 360 道可运行练习 · 87 张编号图" not in readme_zh.read_text(encoding="utf-8"):
+        fail(errors, "README.md 全书统计基线过期：应含 16 章正文 · 2 篇附录 · 360 道可运行练习 · 87 张编号图")
     readme_en = ROOT / "README_EN.md"
-    if readme_en.exists() and "16 chapters · 2 appendices · 352 runnable exercises · 87 numbered figures" not in readme_en.read_text(encoding="utf-8"):
-        fail(errors, "README_EN.md 全书统计基线过期：应含 16 chapters · 2 appendices · 352 runnable exercises · 87 numbered figures")
+    if readme_en.exists() and "16 chapters · 2 appendices · 360 runnable exercises · 87 numbered figures" not in readme_en.read_text(encoding="utf-8"):
+        fail(errors, "README_EN.md 全书统计基线过期：应含 16 chapters · 2 appendices · 360 runnable exercises · 87 numbered figures")
     for path in paths:
         original = path.read_text(encoding="utf-8")
         errors.extend(f"{path.relative_to(ROOT)}: {issue}"

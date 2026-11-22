@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 4 章 · 声源定位（DOA 估计） · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="a0289902c00e"><style>
+<meta name="source-digest" content="b82b7d85f70d"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -367,6 +367,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="04_doa-estimation.html#sec-u-864b262929">E04-21：首 CTF 系数比怎样从交叉关系中求出？</a></li>
 <li>&nbsp;&nbsp;<a href="04_doa-estimation.html#sec-u-b5c1c0bb0a">E04-22：圆阵相位模式变换怎样导出范德蒙德 ESPRIT？</a></li>
 <li>&nbsp;&nbsp;<a href="04_doa-estimation.html#sec-u-4cad4c44cd">E04-23：双麦盲相干扩散比怎样闭式筛除混响频点？</a></li>
+<li>&nbsp;&nbsp;<a href="04_doa-estimation.html#sec-u-81112153bb">E04-24：$\ell_1$ 稀疏定位的离网格基底失配与 SELD 位置相关 $F_{20^\circ}$ 耦合</a></li>
 </ul>
 <div class="chap"><a href="05_beamforming.html">第 5 章 · 波束形成</a></div>
 <div class="chap"><a href="06_aec.html">第 6 章 · 声学回声消除（AEC）</a></div>
@@ -438,6 +439,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="04_doa-estimation.html#sec-u-864b262929">E04-21：首 CTF 系数比怎样从交叉关系中求出？</a></li>
 <li>&nbsp;&nbsp;<a href="04_doa-estimation.html#sec-u-b5c1c0bb0a">E04-22：圆阵相位模式变换怎样导出范德蒙德 ESPRIT？</a></li>
 <li>&nbsp;&nbsp;<a href="04_doa-estimation.html#sec-u-4cad4c44cd">E04-23：双麦盲相干扩散比怎样闭式筛除混响频点？</a></li>
+<li>&nbsp;&nbsp;<a href="04_doa-estimation.html#sec-u-81112153bb">E04-24：$\ell_1$ 稀疏定位的离网格基底失配与 SELD 位置相关 $F_{20^\circ}$ 耦合</a></li>
 </ul></nav></details>
 <blockquote>
 <p>本篇是本书正文第 4 章；正文与扩展专题共 16 章（第 0～15 章，其中第 0 章为数学基础，第 12～15 章为四篇扩展专题），另有附录 A、B。本篇可独立阅读，前后篇见下方导航。</p>
@@ -1348,7 +1350,7 @@ F_k&=N(M-k)\ln\!\left(\frac{a_k}{g_k}\right),\\
 <p>$$\hat{\vec s}=\arg\min_{\vec s\in\mathbb C^{N_g}}\;
 \frac{1}{2}\|\vec y-\boldsymbol\Phi\vec s\|_2^2+\mu\|\vec s\|_1,\qquad
 \|\vec s\|_1=\sum_{g=1}^{N_g}|s_g|\text{。}$$</p>
-<p>阅读稀疏定位文献时切忌给所有方法贴上同一组“单快拍、免源数”标签：经典的 <a href="https://doi.org/10.1109/TSP.2005.850882">L1-SVD（Malioutov 等, <em>IEEE TSP</em>, 2005）</a>先对多快拍数据矩阵做 SVD 压缩至低维子空间，再用 $\ell_{2,1}$ 行联合稀疏范数求解；<strong>稀疏贝叶斯学习（Sparse Bayesian Learning，SBL，<a href="https://doi.org/10.1109/LSP.2016.2598550">Gerstoft 等, <em>IEEE SPL</em>, 2016</a>）</strong>则为每个网格方向赋予独立先验方差超参数 $\gamma_g\ge 0$（$\vec s\sim\mathcal{CN}(\vec 0,\boldsymbol\Gamma_{\mathrm{sbl}})$，$\boldsymbol\Gamma_{\mathrm{sbl}}=\operatorname{diag}(\gamma_1,\ldots,\gamma_{N_g})$），观测边缘协方差为 $\boldsymbol\Sigma_x=\sigma^2\mathbf I_M+\boldsymbol\Phi\boldsymbol\Gamma_{\mathrm{sbl}}\boldsymbol\Phi^H$。对边缘对数似然 $\mathcal L(\boldsymbol\gamma)=-\ln\det\boldsymbol\Sigma_x-\operatorname{tr}(\boldsymbol\Sigma_x^{-1}\hat{\mathbf R}_{xx})$ 求偏导置零，利用 $\partial\ln\det\boldsymbol\Sigma_x/\partial\gamma_g=\vec a_g^H\boldsymbol\Sigma_x^{-1}\vec a_g$ 与 $\partial\boldsymbol\Sigma_x^{-1}/\partial\gamma_g=-\boldsymbol\Sigma_x^{-1}\vec a_g\vec a_g^H\boldsymbol\Sigma_x^{-1}$ 得驻点条件 $\vec a_g^H\boldsymbol\Sigma_x^{-1}\hat{\mathbf R}_{xx}\boldsymbol\Sigma_x^{-1}\vec a_g=\vec a_g^H\boldsymbol\Sigma_x^{-1}\vec a_g$（代入 $\hat{\mathbf R}_{xx}=\frac{1}{L}\mathbf X\mathbf X^H$ 即分子为 $\|\vec a_g^H\boldsymbol\Sigma_x^{-1}\mathbf X\|_2^2/L$），由此导出 MacKay 定点更新 $\gamma_g^{\mathrm{new}}=\gamma_g\,\frac{\|\vec a_g^H\boldsymbol\Sigma_x^{-1}\mathbf X\|_2^2/L}{\vec a_g^H\boldsymbol\Sigma_x^{-1}\vec a_g}$，自动剪枝无关网格而无需手工调正则系数 $\mu$，且对相干多源具备较强适应力。上述网格稀疏方法仍共同面临<strong>网格失配（off-grid mismatch）</strong>——真实声源落在格点之间时会发生能量分裂。</p>
+<p>阅读稀疏定位文献时切忌给所有方法贴上同一组“单快拍、免源数”标签：经典的 <a href="https://doi.org/10.1109/TSP.2005.850882">L1-SVD（Malioutov 等, <em>IEEE TSP</em>, 2005）</a>先对多快拍数据矩阵做 SVD 压缩至低维子空间，再用 $\ell_{2,1}$ 行联合稀疏范数求解；<strong>稀疏贝叶斯学习（Sparse Bayesian Learning，SBL，<a href="https://doi.org/10.1109/LSP.2016.2598550">Gerstoft 等, <em>IEEE SPL</em>, 2016</a>）</strong>则为每个网格方向赋予独立先验方差超参数 $\gamma_g\ge 0$（$\vec s\sim\mathcal{CN}(\vec 0,\boldsymbol\Gamma_{\mathrm{sbl}})$，$\boldsymbol\Gamma_{\mathrm{sbl}}=\operatorname{diag}(\gamma_1,\ldots,\gamma_{N_g})$），观测边缘协方差为 $\boldsymbol\Sigma_x=\sigma^2\mathbf I_M+\boldsymbol\Phi\boldsymbol\Gamma_{\mathrm{sbl}}\boldsymbol\Phi^H$。对边缘对数似然 $\mathcal L(\boldsymbol\gamma)=-\ln\det\boldsymbol\Sigma_x-\operatorname{tr}(\boldsymbol\Sigma_x^{-1}\hat{\mathbf R}_{xx})$ 求偏导置零，利用 $\partial\ln\det\boldsymbol\Sigma_x/\partial\gamma_g=\vec a_g^H\boldsymbol\Sigma_x^{-1}\vec a_g$ 与 $\partial\boldsymbol\Sigma_x^{-1}/\partial\gamma_g=-\boldsymbol\Sigma_x^{-1}\vec a_g\vec a_g^H\boldsymbol\Sigma_x^{-1}$ 得驻点条件 $\vec a_g^H\boldsymbol\Sigma_x^{-1}\hat{\mathbf R}_{xx}\boldsymbol\Sigma_x^{-1}\vec a_g=\vec a_g^H\boldsymbol\Sigma_x^{-1}\vec a_g$（代入 $\hat{\mathbf R}_{xx}=\frac{1}{L}\mathbf X\mathbf X^H$ 即分子为 $\|\vec a_g^H\boldsymbol\Sigma_x^{-1}\mathbf X\|_2^2/L$），由此导出 MacKay 定点更新 $\gamma_g^{\mathrm{new}}=\gamma_g\,\frac{\|\vec a_g^H\boldsymbol\Sigma_x^{-1}\mathbf X\|_2^2/L}{\vec a_g^H\boldsymbol\Sigma_x^{-1}\vec a_g}$，自动剪枝无关网格而无需手工调正则系数 $\mu$，且对相干多源具备较强适应力。上述网格稀疏方法仍共同面临<strong>网格失配（off-grid mismatch）</strong>——真实声源落在格点之间时会发生能量分裂与旁瓣泄漏（定量复算见 <a href="#e04-24">E04-24</a>）。</p>
 <p><strong>无网格连续参数方法：FRIDA 与原子范数</strong>。为了从根源上消除离散角度网格量化误差，无网格（gridless）方法直接在连续角度域中恢复参数：</p>
 <ul>
 <li><strong>FRIDA（有限新息率波达方向估计，<a href="https://doi.org/10.1109/ICASSP.2017.7952744">Pan 等, <em>ICASSP</em>, 2017</a>；<a href="https://dokmanic.ece.illinois.edu/assets/pdf/Pan2016tv.pdf">扩展稿</a>）</strong>：在二维远场互不相关点源模型下，利用贝塞尔展开将任意已知平面排布的跨通道协方差映射为均匀采样的复指数和，再用零化滤波器从连续频率参数直接反解水平方位角；</li>
@@ -1479,6 +1481,15 @@ J=\sqrt{\frac13\sum_{m=1}^3e_m^2}\text{。}
 </tbody>
 </table></div>
 <p><strong>结果与不可观测边界</strong>：九宫格在 $(0.20\ \mathrm{m},30^\circ)$ 唯一归零，但在同方向 $30^\circ$ 上从 $0.20\ \mathrm{m}$ 到 $0.50\ \mathrm{m}$ 失配跳了 $6.8\ \mu\mathrm{s}$，而从 $0.50\ \mathrm{m}$ 拉远到 $2.00\ \mathrm{m}$ 只再增 $3.4\ \mu\mathrm{s}$——因为时差对距离的偏导按 $O(1/r^2)$ 迅速衰减，距离一旦远超孔径，代价谷底退化为平坦长槽，此时系统必须诚实回报“距离不可观测、仅输出可靠 DOA”。</p>
+<p><strong>逆距离 $\rho = 1/r$ 统一近场与远场参数化</strong>：上述 $O(1/r^2)$ 灵敏度衰减也提示我们，直接以米制距离 $r\in[r_{\min},\infty)$ 作为优化坐标时，远场极限 $r\to\infty$ 会引起数值奇异、网格截断和雅可比矩阵退化。改用<strong>逆距离（波前曲率）</strong> $\rho = 1/r \ge 0$（单位 $\mathrm{m}^{-1}$），以阵列中心 $\vec r_0 = \vec 0$ 为参考、声源方向单位矢量为 $\vec u$，第 $m$ 麦到点声源 $\vec p = \vec u/\rho$ 的精确球面距离为</p>
+<p>$$r_m(\theta,\rho) = \frac{1}{\rho}\sqrt{1 - 2\rho(\vec r_m^\top\vec u) + \rho^2\|\vec r_m\|_2^2},$$</p>
+<p>扣除中心距离 $r_0 = 1/\rho$ 并作分子有理化与泰勒展开，得相对路程差：</p>
+<p>$$\begin{aligned}
+\Delta r_m(\theta,\rho) = r_m - r_0
+&= \frac{-2(\vec r_m^\top\vec u) + \rho\|\vec r_m\|_2^2}{1 + \sqrt{1 - 2\rho(\vec r_m^\top\vec u) + \rho^2\|\vec r_m\|_2^2}} \\
+&= -\vec r_m^\top\vec u + \frac{\rho}{2}\Bigl(\|\vec r_m\|_2^2 - (\vec r_m^\top\vec u)^2\Bigr) + O\bigl(\rho^2\|\vec r_m\|_2^3\bigr)\text{。}
+\end{aligned}$$</p>
+<p>有理化形式对全部 $\rho \ge 0$ 精确成立且完全消除 $1/\rho$ 数值相消：令 $\rho = 0$ 时它平滑退化为远场平面波路程差 $-\vec r_m^\top\vec u$，且关于 $\rho$ 的偏导在远场边界 $\rho = 0$ 处保持有限非零常数 $\frac{1}{2}\bigl(\|\vec r_m\|_2^2 - (\vec r_m^\top\vec u)^2\bigr)$，不存在 $r\to\infty$ 奇异性。因此，只需在紧致有界区域 $(\theta,\rho)\in[-\pi/2,\pi/2]\times[0,\rho_{\max}]$（$\rho_{\max}=1/r_{\min}$）内执行二维网格搜索或 Gauss–Newton 迭代，即可用同一套坐标无缝覆盖远场（$\rho=0$）与近场（$\rho>0$），并将本章远场 DOA 自然衔接到<a href="12_acoustic-imaging.html#sec-12-2">第 12 章近场声学成像</a>与<a href="15_target-extraction-diarization.html#sec-15-3">第 15 章声学距离气泡</a>。沿用上文 $3$ 麦线阵（$x_m\in\{-5,0,+5\}\ \mathrm{cm}$，$c=343\ \mathrm{m/s}$，$f=4\ \mathrm{kHz}$）核验曲率相位：在 $\theta=30^\circ$ 下，$\rho=0$ 对应精确平面波路程差 $[+25.00,0,-25.00]\ \mathrm{mm}$（曲率相位 $0^\circ$）；当声源移至 $r=0.50\ \mathrm{m}$（$\rho=2.0\ \mathrm{m}^{-1}$），精确路程差变为 $[+26.78,0,-23.03]\ \mathrm{mm}$，相对远场的曲率增量 $[+1.78,0,+1.97]\ \mathrm{mm}$（二次项 $\frac{1}{2}\rho x_m^2\cos^2 30^\circ=+1.875\ \mathrm{mm}$）在 $4\ \mathrm{kHz}$ 产生 $[+7.48^\circ,0^\circ,+8.27^\circ]$ 的曲率相位（均方根 $6.44^\circ$；正横 $\theta=0^\circ$ 下两外侧麦各产生 $+2.49\ \mathrm{mm}$ 与 $+10.47^\circ$ 曲率相位）。</p>
 <span id="sec-4-7-2" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-374bae76e9" class="anchor-alias" aria-hidden="true"></span><span id="sec-14" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-5e48a77123">可执行基线与工程实现注意事项</h3>
 <p>本书原创纯 NumPy 基线位于 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch04/core/doa.py"><code>doa.py</code></a>（含 <code>gcc_phat</code>、<code>srp_phat</code>、<code>bartlett_spectrum</code>、<code>capon_spectrum</code>、<code>music_spectrum</code>、<code>esprit_ula</code>、<code>aic_source_count</code> 与 <code>mdl_source_count</code>）及 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch04/core/uca_cdr.py"><code>uca_cdr.py</code></a>，导向矢量统一由 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch03/core/geometry.py"><code>geometry.py</code></a> 生成（端到端基线见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/ch02_05_baselines.py"><code>ch02_05_baselines.py</code></a>）。工程落地或对接外部开源库（如 <code>pyroomacoustics</code>、<code>doatools</code>、ODAS 等）时须先过四道核对关：</p>
 <ol>
@@ -1636,7 +1647,7 @@ J=\sqrt{\frac13\sum_{m=1}^3e_m^2}\text{。}
 </table></div>
 <p>在 $20\ \mathrm{dB}$、$400$ 快拍下，当间距收窄至 $8^\circ$（小于 $8$ 元线阵约 $14^\circ$ 的常规主瓣宽度）时，Bartlett 全部 $200$ 次（$0\%$，$95\%$ Wilson 区间 $[0,1.9\%]$）主瓣融合失败，而 Capon 与已知 $K=2$ 的 MUSIC 实现 $200/200$（$[98.1\%,100\%]$）全中。一旦退到 $0\ \mathrm{dB}$、$64$ 快拍，$8^\circ$ 下 Capon 跌至 $0/200$（$199$ 次位置超差、$1$ 次单峰融合），Bartlett 在 $15^\circ$ 出现 $3$ 次超差（$197/200$），即便给定精确源数 $K=2$ 的 MUSIC 也仅成功 $99/200$（$49.5\%$，区间 $[42.6\%,56.4\%]$）——离开信噪比、快拍数与源数先验空谈“超分辨”没有工程意义（单因素改参复算见 <a href="#e04-08">E04-08</a>）。</p>
 <span id="sec-4-11" class="anchor-alias" aria-hidden="true"></span><span id="sec-16" class="anchor-alias" aria-hidden="true"></span><span id="sec-19" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-4-9">4.9 本章练习</h2>
-<p>本节按 <code>E04-01</code>～<code>E04-23</code> 顺序汇集全章全部 23 道可复算练习：其中 <code>E04-01</code>～<code>E04-07</code> 与 <code>E04-09</code> 由 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/exercises_spatial.py"><code>exercises_spatial.py</code></a> 复算，<code>E04-08</code> 由 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch04/doa_resolution_trials.py"><code>doa_resolution_trials.py</code></a> 复算，<code>E04-10</code> 与 <code>E04-11</code> 分别由 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/spatial_precision_exercises.py"><code>spatial_precision_exercises.py</code></a> 和 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/spatial_model_exercises.py"><code>spatial_model_exercises.py</code></a> 复算，<code>E04-12</code>～<code>E04-23</code> 十二道进阶题共用单一命令行入口 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch04/chapter04_experiments.py"><code>chapter04_experiments.py</code></a>（<code>.venv/bin/python -m codes.chapters.ch04.chapter04_experiments</code>）。以下配套的多组合成 WAV 均由已知几何与解析信号模型生成，用于核验时延符号、亚采样对齐与矩阵秩变化；建议先在纸上推算关键中间数字，再用对应脚本核对。</p>
+<p>本节按 <code>E04-01</code>～<code>E04-24</code> 顺序汇集全章全部 24 道可复算练习：其中 <code>E04-01</code>～<code>E04-07</code> 与 <code>E04-09</code> 由 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/exercises_spatial.py"><code>exercises_spatial.py</code></a> 复算，<code>E04-08</code> 由 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch04/doa_resolution_trials.py"><code>doa_resolution_trials.py</code></a> 复算，<code>E04-10</code> 与 <code>E04-11</code> 分别由 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/spatial_precision_exercises.py"><code>spatial_precision_exercises.py</code></a> 和 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/spatial_model_exercises.py"><code>spatial_model_exercises.py</code></a> 复算，<code>E04-12</code>～<code>E04-24</code> 十三道进阶题共用单一命令行入口 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch04/chapter04_experiments.py"><code>chapter04_experiments.py</code></a>（<code>.venv/bin/python -m codes.chapters.ch04.chapter04_experiments</code>）。以下配套的多组合成 WAV 均由已知几何与解析信号模型生成，用于核验时延符号、亚采样对齐与矩阵秩变化；建议先在纸上推算关键中间数字，再用对应脚本核对。</p>
 <p><a id="e04-01"></a></p>
 <h3 id="sec-u-10983698db">E04-01：交换两段录音，延迟应怎样变化？</h3>
 <p>在 $f_s=16\ \mathrm{kHz}$ 下构造两路信号，使麦克风 $1$ 比麦克风 $2$ 晚到 $3$ 个采样点（采用前补零平移而非圆周循环移位）。分别对单脉冲输入和固定种子宽带随机序列运行 <code>gcc_phat</code>，再将两通道次序对调重算一次；同时检验全零静音输入会触发什么行为，并核查 $d=4\ \mathrm{cm}$ 下的物理可见域。</p>
@@ -2009,6 +2020,60 @@ P_{\max}=9+6\sqrt 2\approx 17.485281\text{。}
 \sqrt{b^2-ac_0}=\frac{24}{36},\qquad
 \widehat{\mathrm{CDR}}_{\mathrm{nodir}}=\frac{14+24}{19}=\mathbf{2}\text{，}$$</p>
 <p>对应可靠性权重 $w_{\mathrm{CDR}}=2/3$。三条边界核验：① 纯混响 $\Gamma_x=\Gamma_n=1/2$ 时 $a=b=0$，输出 $\widehat{\mathrm{CDR}}=0,w_{\mathrm{CDR}}=0$；② 强直达 $\Gamma_x=0.999\mathrm{j}$ 时输出 $\widehat{\mathrm{CDR}}\approx 999.125$（$w_{\mathrm{CDR}}\to 1$）；③ 直流极限 $f\to 0$ 时 $\Gamma_n=\operatorname{sinc}(2fd/c)\to 1$（归一化 $\sin(\pi x)/(\pi x)$）与正横平面波相干重合，失去可辨识性，<code>cdr_nodir</code> 对 $|\Gamma_n|\ge 1$ 明确报错拒绝。</p>
+<p><a id="e04-24"></a></p>
+<h3 id="sec-u-81112153bb">E04-24：$\ell_1$ 稀疏定位的离网格基底失配与 SELD 位置相关 $F_{20^\circ}$ 耦合</h3>
+<p>针对 §4.7 的两项现代定位边界完成可复算验证（入口见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch04/chapter04_experiments.py"><code>chapter04_experiments.py</code></a> 的 <code>exercise_04_24</code>）：</p>
+<ol>
+<li><strong>离网格基底失配（Off-Grid Basis Mismatch）</strong>：取 $M=8$ 元半波长均匀线阵（$d=\lambda/2$），构建 $5^\circ$ 步长粗糙角度字典 $\mathcal G=\{-60^\circ,-55^\circ,\ldots,+60^\circ\}$（共 $N_g=25$ 列单位范数导向矢量 $\vec\phi(\theta)=\frac{1}{\sqrt{8}}[1,e^{\mathrm{j}\pi\sin\theta},\ldots,e^{\mathrm{j}7\pi\sin\theta}]^\top$）。对无噪单源分别置于<strong>在格点</strong> $\theta_{\mathrm{on}}=10.0^\circ$ 与<strong>离格点</strong> $\theta_{\mathrm{off}}=12.5^\circ$（恰在 $10^\circ$ 与 $15^\circ$ 中点），按<a href="00_math-foundations.html#sec-0-5-3">第 0 章 §0.5.3</a> 的复数近端软阈值迭代（ISTA）求解复 LASSO $\min_{\vec s\in\mathbb C^{25}}\frac{1}{2}\|\vec y-\boldsymbol\Phi\vec s\|_2^2+\mu\|\vec s\|_1$（$\mu=0.02$，固定步长 $\alpha=1/\|\boldsymbol\Phi\|_2^2$，从零初值迭代 $1500$ 步），比较：(a) 恢复支撑稀疏度（以 $|s_g|>10^{-6}$ 计）；(b) 峰值权重与相邻 $10^\circ/15^\circ$ 格点间的能量分裂；(c) 相对拟合残差 $\|\vec y-\boldsymbol\Phi\vec s\|_2/\|\vec y\|_2$ 与虚假旁瓣泄漏。</li>
+<li><strong>SELD 位置相关 $F_{20^\circ}$ 耦合</strong>：设共有 $N_{\mathrm{ref}}=4$ 个真实声学事件，系统预测的全部 $4$ 个事件类别均与真值一致，在标准 DCASE SELD 空间门限 $T_{\mathrm{DOA}}=20^\circ$ 下四者的 DOA 误差为 $[5^\circ,12^\circ,19^\circ,24^\circ]$。按位置相关事件检测口径（类别匹配但角误差超过 $20^\circ$ 时同时记为 $1$ 次漏检 $\mathrm{FN}_{20^\circ}$ 与 $1$ 次虚警 $\mathrm{FP}_{20^\circ}$），计算位置相关 $F_{20^\circ}=\frac{2\,\mathrm{TP}_{20^\circ}}{2\,\mathrm{TP}_{20^\circ}+\mathrm{FP}_{20^\circ}+\mathrm{FN}_{20^\circ}}$、类别相关定位召回率 $LR_{\mathrm{CD}}$ 与平均定位误差 $LE_{\mathrm{CD}}$；再对比当第 $4$ 个事件角误差由 $24^\circ$ 改善至 $18^\circ$ 时各项指标的跳变。</li>
+</ol>
+<p><strong>参考答案</strong>：</p>
+<ol>
+<li><strong>在格点与离格点 ISTA 精确对照</strong>：字典谱范数平方 $L=\|\boldsymbol\Phi\|_2^2\approx 4.112507$，步长 $\alpha\approx 0.243161$；$1500$ 步迭代后两组解的 KKT 活动集与非活动集违约均低于 $10^{-15}$，达到严格全局最优：</li>
+</ol>
+<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
+<thead>
+<tr>
+<th scope="col">真实声源角度</th>
+<th scope="col" style="text-align: right;">支撑原子数</th>
+<th scope="col" style="text-align: right;">峰值方向与权重</th>
+<th scope="col" style="text-align: right;">$10^\circ / 15^\circ$ 能量占比</th>
+<th scope="col">虚假旁瓣原子（方向与权重）</th>
+<th scope="col" style="text-align: right;">$\lVert\vec s\rVert_1$</th>
+<th scope="col" style="text-align: right;">相对残差 $\lVert\vec y-\boldsymbol\Phi\vec s\rVert_2/\lVert\vec y\rVert_2$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>在格点 $10.0^\circ$</td>
+<td style="text-align: right;">$1$</td>
+<td style="text-align: right;">$10^\circ$：$0.980000$（$100.00\%$）</td>
+<td style="text-align: right;">$100.00\%$ / $0.00\%$</td>
+<td>无（$0$ 个，$0.00\%$）</td>
+<td style="text-align: right;">$0.980000$</td>
+<td style="text-align: right;">$0.020000$</td>
+</tr>
+<tr>
+<td>离格点 $12.5^\circ$</td>
+<td style="text-align: right;">$4$</td>
+<td style="text-align: right;">$15^\circ$：$0.515831$（$50.90\%$）</td>
+<td style="text-align: right;">$49.06\%$ / $50.90\%$</td>
+<td>$-5^\circ$（$0.010330$）、$+30^\circ$（$0.010922$）</td>
+<td style="text-align: right;">$1.043479$</td>
+<td style="text-align: right;">$0.034898$</td>
+</tr>
+</tbody>
+</table></div>
+<p>在格点时，由于 $\vec y=\vec\phi(10^\circ)$ 与字典单列精确对齐，满足 KKT 条件的解析解为唯一非零原子 $s_{10^\circ}=1-\mu=0.980000$、相对残差恰好等于 $\mu=0.020000$ 且零旁瓣泄漏。落到离格点 $12.5^\circ$ 后，支撑稀疏度由 $1$ 膨胀至 $4$：主能量分裂到相邻 $10^\circ$（$|s|=0.506397$，占 $\|\vec s\|_2^2$ 的 $49.06\%$）与 $15^\circ$（$|s|=0.515831$，占 $50.90\%$；因 $\sin\theta$ 为上凸函数，空间频率上 $12.5^\circ$ 略近于 $15^\circ$，相关系数 $0.954101>0.953217$），峰值权重几乎腰斩；同时在 $-5^\circ$ 与 $+30^\circ$ 渗出 $2$ 个虚假旁瓣原子（合计占 $\ell_1$ 权重的 $2.04\%$、$\ell_2^2$ 能量的 $0.0432\%$），相对残差攀升至 $0.034898$（为在格点的 $1.745$ 倍），$\|\vec s\|_1$ 反而膨胀至 $1.043479>1$。这也定量解释了 §4.7 为何需要引入无网格连续参数方法（FRIDA / 原子范数）。</p>
+<ol start="2">
+<li><strong>SELD 空间门限耦合</strong>：改进前，误差 $[5^\circ,12^\circ,19^\circ,24^\circ]$ 中有 $3$ 个满足 $\le 20^\circ$，第 $4$ 个因 $24^\circ>20^\circ$ 同时记作 $1$ 个漏检与 $1$ 个虚警，故 $\mathrm{TP}_{20^\circ}=3,\mathrm{FP}_{20^\circ}=1,\mathrm{FN}_{20^\circ}=1$，得</li>
+</ol>
+<p>$$\begin{aligned}
+F_{20^\circ} &= \frac{2\times 3}{2\times 3+1+1}=\frac{6}{8}=75.0\%,\qquad
+LR_{\mathrm{CD}}=\frac{4}{4}=100.0\%,\\
+LE_{\mathrm{CD}} &= \frac{5^\circ+12^\circ+19^\circ+24^\circ}{4}=15.0^\circ\text{。}
+\end{aligned}$$</p>
+<p>当仅将第 $4$ 个事件角误差由 $24^\circ$ 修正 $6^\circ$ 至 $18^\circ$ 后，全部 $4$ 个事件落入门限内（$\mathrm{TP}_{20^\circ}=4,\mathrm{FP}_{20^\circ}=0,\mathrm{FN}_{20^\circ}=0$）：平均角误差 $LE_{\mathrm{CD}}$ 仅微降 $1.5^\circ$ 至 $13.5^\circ$、$LR_{\mathrm{CD}}$ 保持 $100.0\%$，但位置相关 $F_{20^\circ}$ 骤升 $+25.0$ 个百分点至 $100.0\%$——可见空间硬门限耦合会使单事件越界同时扣减精确率与召回率，评测 SELD 模型时须将 $F_{20^\circ}$ 与 $LE_{\mathrm{CD}},LR_{\mathrm{CD}}$ 联合解读。</p>
 <hr />
 <blockquote>
 <p>📄 本篇信息：配图 7 张 ｜ <a href="index.html">回首页</a></p>

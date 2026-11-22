@@ -1,4 +1,4 @@
-"""Original small experiments E08-10..26, without upstream imports.
+"""Original small experiments E08-10..27, without upstream imports.
 
 Run with python -m codes.chapters.ch08.chapter08_experiments. No files are written.
 Substeps and supplied source/slot models are not complete separation systems.
@@ -225,6 +225,133 @@ def css_polarity_minicase():
             'scope': 'same sample times, nonzero clean overlap, known scalar relation; no universal identity/delay repair'}
 
 
+def _auxiva_cost(w_matrix: np.ndarray, covariances: tuple[np.ndarray, ...]) -> float:
+    """Evaluate fixed-V AuxIVA auxiliary cost sum_n w_n^H V_n w_n - 2 ln|det W|."""
+    w = np.asarray(w_matrix, dtype=np.complex128)
+    quad_sum = 0.0
+    for idx, cov in enumerate(covariances):
+        col = w[idx].conj()
+        quad_sum += float(np.vdot(col, cov @ col).real)
+    sign, logdet = np.linalg.slogdet(w)
+    if sign == 0 or not math.isfinite(float(logdet)):
+        raise ValueError('demixing matrix must be nonsingular')
+    return float(quad_sum - 2.0 * float(logdet))
+
+
+def _auxiva_ip_sweep(w_matrix: np.ndarray, covariances: tuple[np.ndarray, ...]):
+    """Run one sequential Iterative Projection (IP) sweep using M linear solves."""
+    w = np.asarray(w_matrix, dtype=np.complex128).copy()
+    dim = w.shape[0]
+    steps = []
+    for src in range(dim):
+        cov = covariances[src]
+        e_vec = np.zeros(dim, dtype=np.complex128)
+        e_vec[src] = 1.0
+        direction = np.linalg.solve(w @ cov, e_vec)
+        quad = float(np.vdot(direction, cov @ direction).real)
+        w[src] = (direction / math.sqrt(quad)).conj()
+        steps.append({
+            'source_index': src + 1,
+            'unnormalized_direction': direction.copy(),
+            'direction_quadratic_form': quad,
+            'W_after': w.copy(),
+            'cost_after': _auxiva_cost(w, covariances),
+        })
+    return w, steps
+
+
+def _auxiva_iss_sweep(w_matrix: np.ndarray, covariances: tuple[np.ndarray, ...]):
+    """Run one inversion-free Iterative Source Steering (ISS) rank-1 sweep."""
+    w = np.asarray(w_matrix, dtype=np.complex128).copy()
+    dim = w.shape[0]
+    steps = []
+    for k in range(dim):
+        w_k = w[k].conj()
+        v_vec = np.zeros(dim, dtype=np.complex128)
+        for n in range(dim):
+            cov_n = covariances[n]
+            denom = float(np.vdot(w_k, cov_n @ w_k).real)
+            if denom <= 0.0 or not math.isfinite(denom):
+                raise ValueError('ISS denominator must be strictly positive and finite')
+            if n == k:
+                v_vec[k] = 1.0 - 1.0 / math.sqrt(denom)
+            else:
+                w_n = w[n].conj()
+                v_vec[n] = np.vdot(w_n, cov_n @ w_k) / denom
+        w = w - np.outer(v_vec, w[k])
+        steps.append({
+            'steering_index': k + 1,
+            'steering_vector': v_vec.copy(),
+            'W_after': w.copy(),
+            'cost_after': _auxiva_cost(w, covariances),
+        })
+    return w, steps
+
+
+def auxiva_iss_vs_ip_experiment(sweeps: int = 5) -> dict:
+    """Compare AuxIVA IP vs inversion-free ISS rank-1 sweeps on a 2x2 complex bin."""
+    if isinstance(sweeps, bool) or not isinstance(sweeps, int) or sweeps < 1:
+        raise ValueError('sweeps must be a positive integer')
+    v1 = np.array([[4.0, 4.0j], [-4.0j, 20.0]], dtype=np.complex128)
+    v2 = np.array([[20.0, 4.0j], [-4.0j, 4.0]], dtype=np.complex128)
+    covariances = (v1, v2)
+    w0 = np.eye(2, dtype=np.complex128)
+
+    # Exact closed-form global minimum via generalized eigenvalues of (V1, V2).
+    mu1 = 3.0 - 2.0 * math.sqrt(2.0)
+    mu2 = 3.0 + 2.0 * math.sqrt(2.0)
+    det_v2 = float(np.linalg.det(v2).real)
+    exact_global_min_cost = 2.0 + math.log(mu1 * det_v2)
+
+    q0 = _auxiva_cost(w0, covariances)
+    w_ip = w0.copy()
+    w_iss = w0.copy()
+    ip_costs = [q0]
+    iss_costs = [q0]
+    sweep1_ip = None
+    sweep1_iss = None
+    for idx in range(sweeps):
+        w_ip, ip_steps = _auxiva_ip_sweep(w_ip, covariances)
+        w_iss, iss_steps = _auxiva_iss_sweep(w_iss, covariances)
+        ip_costs.append(ip_steps[-1]['cost_after'])
+        iss_costs.append(iss_steps[-1]['cost_after'])
+        if idx == 0:
+            sweep1_ip = ip_steps
+            sweep1_iss = iss_steps
+
+    return {
+        'V1': v1,
+        'V2': v2,
+        'W0': w0,
+        'sweeps': sweeps,
+        'initial_cost': q0,
+        'generalized_eigenvalues': [mu1, mu2],
+        'exact_global_min_cost': exact_global_min_cost,
+        'sweep1_ip': sweep1_ip,
+        'sweep1_iss': sweep1_iss,
+        'ip_cost_history': ip_costs,
+        'iss_cost_history': iss_costs,
+        'ip_monotone_decreasing': all(b < a for a, b in zip(ip_costs, ip_costs[1:])),
+        'iss_monotone_decreasing': all(b < a for a, b in zip(iss_costs, iss_costs[1:])),
+        'ip_final_W': w_ip,
+        'iss_final_W': w_iss,
+        'ip_final_cost': ip_costs[-1],
+        'iss_final_cost': iss_costs[-1],
+        'final_cost_gap_ip_vs_iss': abs(ip_costs[-1] - iss_costs[-1]),
+        'ip_gap_to_optimum': abs(ip_costs[-1] - exact_global_min_cost),
+        'iss_gap_to_optimum': abs(iss_costs[-1] - exact_global_min_cost),
+        'ip_final_weighted_grams': [w_ip @ v1 @ w_ip.conj().T, w_ip @ v2 @ w_ip.conj().T],
+        'iss_final_weighted_grams': [w_iss @ v1 @ w_iss.conj().T, w_iss @ v2 @ w_iss.conj().T],
+        'ip_matrix_solves_per_sweep': 2,
+        'iss_matrix_solves_per_sweep': 0,
+        'scope': (
+            'fixed 2x2 Hermitian positive-definite weighted covariances at one frequency bin; '
+            'compares auxiliary-function IP against inversion-free ISS rank-1 sweeps, '
+            'not full broadband AuxIVA'
+        ),
+    }
+
+
 def _plain(value):
     if isinstance(value, dict):
         return {key: _plain(item) for key, item in value.items()}
@@ -358,6 +485,7 @@ def run_experiments() -> dict:
                         'published_audio': check_css_assets()}
     result['E08-25'] = ci_sdr_vs_si_sdr_experiment()
     result['E08-26'] = streaming_mac_and_bypass_experiment()
+    result['E08-27'] = auxiva_iss_vs_ip_experiment()
     return _plain(result)
 
 

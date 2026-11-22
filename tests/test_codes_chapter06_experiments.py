@@ -1,4 +1,4 @@
-"""Hand fractions and independent physical/metric anchors for E06-12..20,26..27,29..30."""
+"""Hand fractions and independent physical/metric anchors for E06-12..20,26..27,29..32."""
 from fractions import Fraction as F
 import json
 import math
@@ -16,7 +16,7 @@ class Chapter06Experiments(unittest.TestCase):
     def test_ids_and_finite_serialization(self):
         self.assertEqual(
             set(self.results),
-            {f'E06-{n:02d}' for n in range(12, 21)} | {'E06-26', 'E06-27', 'E06-29', 'E06-30'},
+            {f'E06-{n:02d}' for n in range(12, 21)} | {'E06-26', 'E06-27', 'E06-29', 'E06-30', 'E06-31', 'E06-32'},
         )
         json.dumps(self.results, allow_nan=False)
 
@@ -176,6 +176,83 @@ class Chapter06Experiments(unittest.TestCase):
             ns.first_order_allpass_decorrelate([1.0, 0.0], [1.0, 0.0])
         with self.assertRaises(ValueError):
             ns.dual_filter_switch_decision(True, 0.1, 0.9)
+
+    def test_e06_31_pbfdkf_double_talk_variance_and_forgetting(self):
+        r = self.results['E06-31']
+        json.dumps(r, allow_nan=False)
+        reg = r['regimes']
+        # (a) Clean far-end single-talk: K = 4/5, W1 = 24/25, err1 = 1/25, P1 = 1/125.
+        st = reg['clean_far_end_single_talk']
+        self.assertAlmostEqual(st['kalman_gain'], float(F(4, 5)), places=15)
+        self.assertAlmostEqual(st['posterior_weight'], float(F(24, 25)), places=15)
+        self.assertAlmostEqual(st['posterior_error'], float(F(1, 25)), places=15)
+        self.assertAlmostEqual(st['posterior_variance'], float(F(1, 125)), places=15)
+        self.assertAlmostEqual(st['error_change_db'], 20.0 * math.log10(0.04 / 0.2), places=12)
+        self.assertAlmostEqual(st['normalized_misalignment_db'], 20.0 * math.log10(0.04), places=12)
+        # (b) Unguarded double-talk: K = 4/5, W1 = 64/25, err1 = -39/25 (+17.84 dB blowup).
+        ug = reg['unguarded_double_talk']
+        self.assertAlmostEqual(ug['residual_e'], 2.2, places=15)
+        self.assertAlmostEqual(ug['kalman_gain'], float(F(4, 5)), places=15)
+        self.assertAlmostEqual(ug['posterior_weight'], float(F(64, 25)), places=15)
+        self.assertAlmostEqual(ug['posterior_error'], float(F(-39, 25)), places=15)
+        self.assertAlmostEqual(ug['error_change_db'], 20.0 * math.log10(1.56 / 0.2), places=12)
+        # (c) Adapted PBFDKF (Psi_e = |e|^2 = 4.84): K = 1/122, dW = 11/610, W1 = 499/610, err1 = 111/610.
+        ad = reg['adapted_pbfdkf_double_talk']
+        self.assertAlmostEqual(ad['psi_e'], 4.84, places=14)
+        self.assertAlmostEqual(ad['kalman_gain'], float(F(1, 122)), places=14)
+        self.assertAlmostEqual(ad['weight_increment'], float(F(11, 610)), places=14)
+        self.assertAlmostEqual(ad['posterior_weight'], float(F(499, 610)), places=14)
+        self.assertAlmostEqual(ad['posterior_error'], float(F(111, 610)), places=14)
+        self.assertLess(ad['abs_posterior_error'], 0.2)
+        # ML-subtracted variance (Psi_e = 4.80) and opposite-polarity burst (s = -2.0).
+        ml = reg['adapted_pbfdkf_ml_variance']
+        self.assertAlmostEqual(ml['kalman_gain'], float(F(1, 121)), places=15)
+        self.assertAlmostEqual(ml['posterior_error'], float(F(2, 11)), places=15)
+        opp = reg['adapted_pbfdkf_opposite_polarity']
+        self.assertAlmostEqual(opp['kalman_gain'], float(F(1, 82)), places=15)
+        self.assertAlmostEqual(opp['weight_increment'], float(F(-9, 410)), places=15)
+        # Steady-state Riccati fixed point: A = 0.999 vs A = 0.99.
+        ss = r['steady_state_forgetting']
+        c999 = ss['cases']['A_0_999']
+        c99 = ss['cases']['A_0_99']
+        for case in (c999, c99):
+            a_val = case['state_transition_A']
+            p_m = case['prior_variance_ss']
+            p_p = case['posterior_variance_ss']
+            k_ss = case['kalman_gain_ss']
+            psi_d = case['process_variance_psi_delta']
+            self.assertAlmostEqual((a_val ** 2) * p_p + psi_d, p_m, places=14)
+            self.assertAlmostEqual(p_p, k_ss * ss['psi_e'], places=14)
+        self.assertGreater(c99['kalman_gain_ss'], 2.0 * c999['kalman_gain_ss'])
+        self.assertGreater(ss['excess_floor_increase_db'], 3.0)
+
+    def test_e06_32_res_wiener_gain_floor_and_cng_matching(self):
+        r = self.results['E06-32']
+        json.dumps(r, allow_nan=False)
+        self.assertAlmostEqual(r['g_min'], 0.1, places=15)
+        self.assertAlmostEqual(r['target_background_noise_psd'], 0.01, places=15)
+        # (a) Far-end single-talk: unclamped 0, clamped 0.1 (-20 dB), noise 1e-4 (-40 dB), CNG 0.0099.
+        fe = r['frames']['far_end_single_talk']
+        self.assertEqual(fe['g_unclamped'], 0.0)
+        self.assertAlmostEqual(fe['g_res'], 0.1, places=15)
+        self.assertTrue(fe['clamped_by_floor'])
+        self.assertAlmostEqual(fe['echo_suppression_db'], 20.0, places=12)
+        self.assertAlmostEqual(fe['output_echo_psd'], 0.0025, places=15)
+        self.assertAlmostEqual(fe['output_noise_psd_without_cng'], 1e-4, places=15)
+        self.assertAlmostEqual(fe['noise_pumping_db_without_cng'], -20.0, places=12)
+        self.assertAlmostEqual(fe['cng_psd'], 0.0099, places=15)
+        self.assertAlmostEqual(fe['output_noise_psd_with_cng'], 0.01, places=15)
+        self.assertAlmostEqual(fe['noise_pumping_db_with_cng'], 0.0, places=12)
+        # (b) Double-talk: G = 50/63, noise_no_cng = 25/3969, cng = 1469/396900 -> exact 0.01.
+        dt = r['frames']['double_talk']
+        self.assertFalse(dt['clamped_by_floor'])
+        self.assertAlmostEqual(dt['g_res'], float(F(50, 63)), places=15)
+        self.assertAlmostEqual(dt['speech_attenuation_db'], 20.0 * math.log10(50.0 / 63.0), places=12)
+        self.assertAlmostEqual(dt['echo_suppression_db'], -20.0 * math.log10(50.0 / 63.0), places=12)
+        self.assertAlmostEqual(dt['output_noise_psd_without_cng'], float(F(25, 3969)), places=15)
+        self.assertAlmostEqual(dt['cng_psd'], float(F(1469, 396900)), places=15)
+        self.assertAlmostEqual(dt['output_noise_psd_with_cng'], 0.01, places=15)
+        self.assertAlmostEqual(dt['noise_pumping_db_with_cng'], 0.0, places=12)
 
 
 if __name__ == '__main__':

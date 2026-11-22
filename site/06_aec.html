@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 6 章 · 声学回声消除（AEC） · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="a0289902c00e"><style>
+<meta name="source-digest" content="b82b7d85f70d"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -385,6 +385,8 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="06_aec.html#sec-u-72911abeab">E06-28：用实际 PCM 核对增益切换与纯回声尾声</a></li>
 <li>&nbsp;&nbsp;<a href="06_aec.html#sec-u-716b51ef19">E06-29：奇次幂基与正交 Legendre 基的 Hammerstein 条件数及坐标解耦</a></li>
 <li>&nbsp;&nbsp;<a href="06_aec.html#sec-u-7e695b3bc6">E06-30：立体声时变全通去相关、物理 ANC/ICC 因果期限与主从双滤波器切换</a></li>
+<li>&nbsp;&nbsp;<a href="06_aec.html#sec-u-4f444b2b4b">E06-31：PBFDKF 双讲观测方差抬升 $\Psi_e$ 与状态遗忘因子 $A$ 的稳态权衡</a></li>
+<li>&nbsp;&nbsp;<a href="06_aec.html#sec-u-6d7defcea5">E06-32：残余回声抑制维纳地板增益 $G_{\min}$ 与舒适噪声（CNG）电平匹配</a></li>
 <li><a href="06_aec.html#sec-6-10">6.10 延伸阅读</a></li>
 </ul>
 <div class="chap"><a href="07_wpe-dereverberation.html">第 7 章 · 去混响（WPE）</a></div>
@@ -471,6 +473,8 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="06_aec.html#sec-u-72911abeab">E06-28：用实际 PCM 核对增益切换与纯回声尾声</a></li>
 <li>&nbsp;&nbsp;<a href="06_aec.html#sec-u-716b51ef19">E06-29：奇次幂基与正交 Legendre 基的 Hammerstein 条件数及坐标解耦</a></li>
 <li>&nbsp;&nbsp;<a href="06_aec.html#sec-u-7e695b3bc6">E06-30：立体声时变全通去相关、物理 ANC/ICC 因果期限与主从双滤波器切换</a></li>
+<li>&nbsp;&nbsp;<a href="06_aec.html#sec-u-4f444b2b4b">E06-31：PBFDKF 双讲观测方差抬升 $\Psi_e$ 与状态遗忘因子 $A$ 的稳态权衡</a></li>
+<li>&nbsp;&nbsp;<a href="06_aec.html#sec-u-6d7defcea5">E06-32：残余回声抑制维纳地板增益 $G_{\min}$ 与舒适噪声（CNG）电平匹配</a></li>
 <li><a href="06_aec.html#sec-6-10">6.10 延伸阅读</a></li>
 </ul></nav></details>
 <blockquote>
@@ -1467,6 +1471,11 @@ P_5(x)=\frac{1}{8}(63x^5-70x^3+15x).
 \end{aligned}$$</p>
 <p>它们在 $[-1,1]$ 上严格满足正交积分 $\int_{-1}^{1}P_p P_q\,\mathrm{d}x=\frac{2}{2q+1}\delta_{pq}$。$P_3(x)$ 与 $P_5(x)$ 主动从高次幂 $x^3,x^5$ 中扣除了全部低阶奇次子空间的投影分量，使得在 $x\sim\mathcal U(-1,1)$ 下 $\mathbb{E}[P_1(x)P_3(x)]=(5/2)(1/5)-(3/2)(1/3)=0$，三支路未缩放相关矩阵直接对角化为 $\operatorname{diag}(1/3,1/7,1/11)$（条件数骤降至 $11/3\approx 3.67$），再乘尺度因子 $\sqrt{2q+1}$ 即化为条件数等于 $1$ 的标准单位阵。当然，真实语音的瞬时幅度更接近集中在零点附近的超高斯分布且存在时间相关性，Legendre 基在真实语音上并非绝对零相关，但剥离各阶多项式的主导共线成分后，依然能大幅压低多支路条件数并加快非线性 AEC 收敛（参见 Kuech &amp; Kellermann, <em>Signal Processing</em>, 2006）。工程实现中必须严守 <strong>$|x|\le 1$ 定义域护栏</strong>：Legendre 多项式仅在 $[-1,1]$ 上正交且有界，一旦输入幅值越界就会急剧发散（例如 $P_5(1.5)\approx 33.08$），因此送入多项式展开前必须先做幅度归一化或硬钳位；在动态范围波动较大的场景中，亦可改用天然有界的<strong>三角函数链路自适应滤波器（FLAF / FLANN</strong>，展开基为 $\{\sin(\pi k x),\cos(\pi k x)\}$；Comminiello et al., <em>IEEE TASLP</em>, 2013; <em>IEEE/ACM TASLP</em>, 2015）或局部支撑的<strong>样条自适应滤波器（SAF</strong>；Scarpiniti et al., <em>Signal Processing</em>, 2013）以规避高阶多项式溢出。</p>
 <p>对于功放前级滤波不可忽略的硬件，<a href="https://www.iwaenc.org/proceedings/1997/nsip97/pdf/author/ns970521.pdf">Nollett &amp; Jones（NSIP 1997）</a>进一步考察了 $L\to N\to L$ 的 Wiener–Hammerstein 结构：其实验室测试采用廉价有源 PC 扬声器在大音量（主要受功放硬削顶限制）下播放基频与幅度时变的合成元音，以 $30$ 抽头前滤波器加 $200$ 抽头后滤波器的 LNL 结构对照同总长 $230$ 抽头的线性 NLMS，稳态 $\mathrm{ERLE}$ 由 $11.1\ \mathrm{dB}$ 提升至 $19.5\ \mathrm{dB}$（改善 $8.4\ \mathrm{dB}$）。阅读这类文献数据时须注意实验边界：该组实物测试使用的是合成元音且未给出采样率与重复统计，工程选型时仍须在目标扬声器与真实双讲语料上重新实测收益。</p>
+<p><strong>样条自适应滤波器（SAF）与记忆多项式 / Volterra 核对比</strong>：除全局多项式外，<a href="https://doi.org/10.1016/j.sigpro.2012.09.021">Scarpiniti 等（<em>Signal Processing</em>, 2013）</a>提出的<strong>样条自适应滤波器（Spline Adaptive Filter，SAF）</strong>以 Wiener（$L\to N$）或 Hammerstein（$N\to L$）级联把 $L$ 抽头线性自适应 FIR 与一张由 $Q$ 个控制点 $\vec q\in\mathbb{R}^Q$ 参数化的光滑分段三次 Catmull–Rom 或均匀 B 样条查找表（LUT）串联。设均匀节点步长为 $\Delta x$，对任意样条输入 $s[n]$ 定位所在区段索引 $i$ 与归一化局部坐标 $u\in[0,1)$（$\vec u=[u^3,u^2,u,1]^\top$、$\dot{\vec u}=[3u^2,2u,1,0]^\top$），每次仅激活相邻的 <strong>$4$ 个控制点</strong> $\vec q_{i:i+3}=[q_i,q_{i+1},q_{i+2},q_{i+3}]^\top$：</p>
+<p>$$\hat y[n] = \vec u^\top\mathbf C\,\vec q_{i:i+3},\qquad
+\frac{\partial\hat y[n]}{\partial\vec q_{i:i+3}} = \mathbf C^\top\vec u,\qquad
+\frac{\partial\hat y[n]}{\partial s[n]} = \frac{1}{\Delta x}\,\dot{\vec u}^\top\mathbf C\,\vec q_{i:i+3},$$</p>
+<p>其中 $\mathbf C\in\mathbb{R}^{4\times 4}$ 为固定三次 Catmull–Rom 或 B 样条基矩阵。与 Volterra 核和记忆多项式（广义 Hammerstein）相比，SAF 具有三点鲜明差异：① <strong>局部 4 节点支撑与低复杂度</strong>：每样本仅更新 $L$ 个线性抽头与 $4$ 个活动控制点，将每拍非线性更新开销锁在 $O(L+4)$（远低于二阶 Volterra 的 $O(L^2)$ 与 $Q$ 支路记忆多项式的 $O(QL)$），且彻底避开高阶幂项（$x^5,x^7$）越界发散与范德蒙德 / Hilbert 病态条件数；② <strong>平滑拟合硬削顶且可微</strong>：各段控制点局部独立调整，能自然贴合微型扬声器的陡峭软饱和乃至硬削顶拐点，同时保持 $C^1$/$C^2$ 光滑可微以向线性前级顺畅反传梯度；③ <strong>记忆结构边界与工程定位</strong>：单级静态样条本身无法刻画任意跨时延交叉乘积记忆非线性，若硬件存在显著前后级动态耦合仍须级联 Hammerstein–Wiener 模块，从而将 SAF 清晰地定位在纯线性 AEC 与 §6.5.2–§6.5.3 的学习型混合 / 个性化神经 AEC（pAEC）之间。</p>
 <span id="sec-u-15fd0add02" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-920aee2313">Smart PA 扬声器保护与参考取点后移</h3>
 <p>除了微型扬声器本体的机械失真，现代智能手机、智能音箱与便携会议终端中几乎普遍内置了<strong>智能功放（Smart PA）保护算法</strong>，成为线性 AEC 在大音量下发散的另一大隐形源头：</p>
 <ul>
@@ -2544,7 +2553,7 @@ E_{\Delta}
 </table></div>
 </blockquote>
 <span id="sec-6-1-10" class="anchor-alias" aria-hidden="true"></span><span id="sec-6-1-17" class="anchor-alias" aria-hidden="true"></span><span id="sec-6-16" class="anchor-alias" aria-hidden="true"></span><span id="sec-18" class="anchor-alias" aria-hidden="true"></span><span id="sec-25" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-6-9">6.9 概念自测与精选练习</h2>
-<p><strong>概念自测题</strong>（聚焦物理机理与工程架构辨析；建议先合上正文独立作答，再对照下方解析逐题自检，定量数值复算见后文 <code>E06-01</code>～<code>E06-30</code>）：</p>
+<p><strong>概念自测题</strong>（聚焦物理机理与工程架构辨析；建议先合上正文独立作答，再对照下方解析逐题自检，定量数值复算见后文 <code>E06-01</code>～<code>E06-32</code>）：</p>
 <ol>
 <li>
 <p>默写麦克风观测三项模型式(6-1)，说明每个符号的物理含义、AEC 的核心目标，以及数字波形相减（AEC）与空气声场物理相消（ANC / 车载 ICC）的本质差异。</p>
@@ -2634,7 +2643,7 @@ E_{\Delta}
 <p>式(6-35)定义 $\mathrm{ERL}$ 为参考与麦克风真实回声功率比（物理隔离），$\mathrm{SER}$ 为近端语音与回声功率比；$\mathrm{TCLw}$ 为频带加权整机总耦合损耗（近似 $\mathrm{ERL}+\mathrm{ERLE}_{\mathrm{total}}$，ITU-T P.340/P.1100 远端单讲标称要求通常 $\ge 46\ \mathrm{dB}$）；P.340 按发端双讲衰减 $A_{H,S,\mathrm{dt}}$ 将双工能力分为 Category 1（$\le 3\ \mathrm{dB}$）、2a（$\le 6\ \mathrm{dB}$）、2b（$\le 9\ \mathrm{dB}$）、2c（$\le 12\ \mathrm{dB}$）与 3（$>12\ \mathrm{dB}$）。ITU-T G.167（已废止，由 P.340/P.1100/G.161 承接）面向房间声学回声，而 G.168 专门规范电信网路电回声消除器。产线回归 A3 须对固定 STFE 录音同时核查线性段与最终段双取点及 TCLw，A4 须在版本化双讲集上同步监控近端衰减分级、回声泄漏与抽头稳定性（见 §6.8.1～§6.8.2）。</p>
 </li>
 </ol>
-<p>下面进入本章 <strong>30 道精选可运行编程与手算练习（E06-01～E06-30）</strong>。配套复算入口涵盖跨章脚本 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/exercises_enhancement.py"><code>exercises_enhancement.py</code></a>（<code>E06-01</code>～<code>E06-06</code>）、<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/aec_algorithm_minicases.py"><code>aec_algorithm_minicases.py</code></a>（<code>E06-07</code>）、<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/aec_advanced_exercises.py"><code>aec_advanced_exercises.py</code></a>（<code>E06-08</code>～<code>E06-10</code>）、<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/enhancement_step_exercises.py"><code>enhancement_step_exercises.py</code></a>（<code>E06-11</code>）、<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/chapter06_experiments.py"><code>chapter06_experiments.py</code></a>（<code>E06-12</code>～<code>E06-20</code>、<code>E06-26</code>～<code>E06-27</code>、<code>E06-29</code>～<code>E06-30</code>）、<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/aec_affine_projection_demo.py"><code>aec_affine_projection_demo.py</code></a>（<code>E06-21</code>～<code>E06-24</code>）以及独立音频生成校验脚本（<code>E06-25</code>、<code>E06-28</code>）；完整音频目录见<a href="research/05_exercises_and_audio.html">练习及音频手册</a>。</p>
+<p>下面进入本章 <strong>32 道精选可运行编程与手算练习（E06-01～E06-32）</strong>。配套复算入口涵盖跨章脚本 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/exercises_enhancement.py"><code>exercises_enhancement.py</code></a>（<code>E06-01</code>～<code>E06-06</code>）、<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/aec_algorithm_minicases.py"><code>aec_algorithm_minicases.py</code></a>（<code>E06-07</code>）、<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/aec_advanced_exercises.py"><code>aec_advanced_exercises.py</code></a>（<code>E06-08</code>～<code>E06-10</code>）、<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/enhancement_step_exercises.py"><code>enhancement_step_exercises.py</code></a>（<code>E06-11</code>）、<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/chapter06_experiments.py"><code>chapter06_experiments.py</code></a>（<code>E06-12</code>～<code>E06-20</code>、<code>E06-26</code>～<code>E06-27</code>、<code>E06-29</code>～<code>E06-32</code>）、<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/aec_affine_projection_demo.py"><code>aec_affine_projection_demo.py</code></a>（<code>E06-21</code>～<code>E06-24</code>）以及独立音频生成校验脚本（<code>E06-25</code>、<code>E06-28</code>）；完整音频目录见<a href="research/05_exercises_and_audio.html">练习及音频手册</a>。</p>
 <p><a id="e06-01"></a></p>
 <h3 id="sec-u-1964f88839">E06-01：脉冲是否能让全部抽头收敛？</h3>
 <p>取参考序列 $x=[1,0,0]$、麦克风无噪回声 $d=[0.8,-0.2,0.1]$，设 $L=3$ 抽头、全零初值、步长 $\mu=0.5$、$\varepsilon=0$（滑窗全零时跳过更新）。逐样本写出回归向量、先验残差与最终抽头。</p>
@@ -3269,6 +3278,116 @@ P_5(x)&=\frac{1}{8}(63x^5-70x^3+15x).
 3. <strong>双滤波器三态判定</strong>：窗口 A（单讲突变，$E_{\mathrm{sh}}/E_{\mathrm{fg}}=0.0625\lt 0.25$ 且 $c_{xd}=0.95\ge 0.8$）触发正向扶正拷贝 <code>copy_shadow_to_foreground</code>；窗口 B（双讲阴影发散，比值 $2.5>2.0$）触发反向纠偏重置 <code>reset_shadow_from_foreground</code>；窗口 C（双讲期阴影过拟合压低近端使比值 $0.20\lt 0.25$，但相干度仅 $c_{xd}=0.30\lt 0.8$）被相干门限拦截，输出 <code>hold</code> 保护主滤波器不被污染。</p>
 </li>
 </ol>
+<p><a id="e06-31"></a></p>
+<h3 id="sec-u-4f444b2b4b">E06-31：PBFDKF 双讲观测方差抬升 $\Psi_e$ 与状态遗忘因子 $A$ 的稳态权衡</h3>
+<p>承接 §6.2.7 的单频点状态空间频域卡尔曼 AEC 模型（代码见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/chapter06_experiments.py"><code>chapter06_experiments.py</code></a> 的 <code>pbfdkf_double_talk_and_forgetting</code>）：设状态转移方程为 $W_{k+1}=A W_k+\Delta W_k$（过程噪声方差 $\Psi_\Delta=(1-A^2)\sigma_W^2$，对应式(6-21)的 $a$ 与 $\Phi_m$），真实回声路径 $W=1.0$、先验估计 $\hat W_0^-=0.8$（初值误差 $\widetilde W_0=W-\hat W_0^-=0.2$，归一化失配 $20\log_{10}(|\widetilde W_0|/|W|)=-13.98\ \mathrm{dB}$）、先验误差方差 $P_0^-=0.04$、参考 $X=1.0$、背景底噪 $v=0$。</p>
+<ol>
+<li>对比强近端双讲突发（$s=2.0$，先验残差 $e=\widetilde W_0 X+s=2.2$）下的三种更新工况，求出各自的卡尔曼增益 $K=P_0^-X^*/(P_0^-|X|^2+\Psi_e)$、后验权重 $\hat W_1$、后验误差 $\widetilde W_1=W-\hat W_1$ 及相对初值误差的变化量 $20\log_{10}(|\widetilde W_1|/|\widetilde W_0|)$：
+   - (a) <strong>纯净远端单讲</strong>（$s=0,e=0.2$，$\Psi_e=0.01$）；
+   - (b) <strong>无保护双讲</strong>（$s=2.0,e=2.2$，沿用 $\Psi_e=0.01$）；
+   - (c) <strong>观测方差自适应 PBFDKF</strong>（$s=2.0,e=2.2$，取瞬时残差功率估计 $\hat\Psi_e=|e|^2=4.84$，并核对扣除路径方差的极大似然估计 $\hat\Psi_e^{\mathrm{ML}}=\max(0,|e|^2-|X|^2P_0^-)=4.80$ 与反相突发 $s=-2.0$）。</li>
+<li>在平稳单讲条件（$\sigma_W^2=1.0,|X|=1.0,\Psi_e=0.01$）下，求解一维离散代数 Riccati 不动点 $P_\infty^-=A^2 P_\infty+\Psi_\Delta$、$P_\infty=\Psi_e P_\infty^-/(P_\infty^-+\Psi_e)$，对比遗忘因子 $A=0.999$ 与 $A=0.99$ 的有效记忆长度、稳态跟踪增益 $K_\infty$ 与稳态过剩误差底 $P_\infty$。</li>
+</ol>
+<p><strong>参考答案</strong>：</p>
+<ol>
+<li><strong>三种更新工况精确对照</strong>：</li>
+</ol>
+<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
+<thead>
+<tr>
+<th scope="col">更新工况</th>
+<th scope="col" style="text-align: right;">残差 $e$</th>
+<th scope="col" style="text-align: right;">观测方差 $\Psi_e$</th>
+<th scope="col" style="text-align: right;">卡尔曼增益 $K$</th>
+<th scope="col" style="text-align: right;">后验权重 $\hat W_1$</th>
+<th scope="col" style="text-align: right;">后验误差 $\widetilde W_1$</th>
+<th scope="col" style="text-align: right;">相对初值误差变化（dB）</th>
+<th scope="col" style="text-align: right;">归一化失配（dB）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>(a) 纯净远端单讲</td>
+<td style="text-align: right;">$0.20$</td>
+<td style="text-align: right;">$0.01$</td>
+<td style="text-align: right;">$0.800000$</td>
+<td style="text-align: right;">$0.960000$</td>
+<td style="text-align: right;">$+0.040000$</td>
+<td style="text-align: right;">$-13.98$</td>
+<td style="text-align: right;">$-27.96$</td>
+</tr>
+<tr>
+<td>(b) 无保护双讲</td>
+<td style="text-align: right;">$2.20$</td>
+<td style="text-align: right;">$0.01$</td>
+<td style="text-align: right;">$0.800000$</td>
+<td style="text-align: right;">$2.560000$</td>
+<td style="text-align: right;">$-1.560000$</td>
+<td style="text-align: right;">$+17.84$</td>
+<td style="text-align: right;">$+3.86$</td>
+</tr>
+<tr>
+<td>(c) 自适应 PBFDKF（$\hat\Psi_e=\lvert e\rvert^2$）</td>
+<td style="text-align: right;">$2.20$</td>
+<td style="text-align: right;">$4.84$</td>
+<td style="text-align: right;">$0.008197$</td>
+<td style="text-align: right;">$0.818033$</td>
+<td style="text-align: right;">$+0.181967$</td>
+<td style="text-align: right;">$-0.82$</td>
+<td style="text-align: right;">$-14.80$</td>
+</tr>
+</tbody>
+</table></div>
+<p>解析核对：(a) 单讲时 $K=0.04/0.05=4/5=0.80$，权重推进至 $\hat W_1=0.96$，误差由 $0.20$ 缩减至 $0.04$（下降 $-13.98\ \mathrm{dB}$，后验方差 $P_1=0.008$）；(b) 双讲期若漏抬 $\Psi_e$，$K=0.80$ 把强近端直接灌入权重，使 $\hat W_1=0.80+0.80\times 2.20=2.56$，误差由 $0.20$ 暴涨至 $-1.56$（发散 $+17.84\ \mathrm{dB}$）；(c) 启用瞬时方差 $\hat\Psi_e=4.84$ 后，增益自动压低近百倍至 $K=0.04/4.88=1/122\approx 0.008197$，权重位移仅 $+11/610\approx +0.018033$（$|\widetilde W_1|=111/610\approx 0.181967\lt 0.20$，$P_1\approx 0.039672$）。若改用扣除路径项的 $\hat\Psi_e^{\mathrm{ML}}=4.80$，得 $K=1/121\approx 0.008264$、$\widetilde W_1=2/11\approx 0.181818$；即便遇最不利反相双讲 $s=-2.0$（$e=-1.8,\hat\Psi_e=3.24$），$K=1/82\approx 0.012195$ 亦将权重漂移限制在 $-0.021951$（误差仅微增 $+0.90\ \mathrm{dB}$）——定量表明在线 $\hat\Psi_e$ 估计如何以连续软门控取代脆弱的二值硬冻结。</p>
+<ol start="2">
+<li><strong>状态遗忘因子 $A=0.999$ 对 $A=0.99$ 的稳态权衡</strong>：联立不动点方程得二次方程 $(P_\infty^-)^2+\bigl(\Psi_e(1-A^2)-\Psi_\Delta\bigr)P_\infty^--\Psi_\Delta\Psi_e=0$，且不动点恒满足 $P_\infty=K_\infty\Psi_e$：
+   - <strong>$A=0.999$</strong>：过程噪声 $\Psi_\Delta=0.001999$，时间常数 $\tau=-1/\ln A\approx 999.50$ 块，算得 $P_\infty^-\approx 0.005569$、稳态增益 $K_\infty\approx 0.357686$、稳态后验误差方差 $P_\infty\approx 0.003577$（$-24.46\ \mathrm{dB}$）；
+   - <strong>$A=0.99$</strong>：过程噪声放大近 $10$ 倍至 $\Psi_\Delta=0.019900$，时间常数缩短 $10$ 倍至 $\tau\approx 99.50$ 块，算得 $P_\infty^-\approx 0.027056$、稳态跟踪增益升至 $K_\infty\approx 0.730139$（为 $A=0.999$ 的 $2.04$ 倍），但稳态过剩误差底同步抬高 $+3.10\ \mathrm{dB}$ 至 $P_\infty\approx 0.007301$（$-21.37\ \mathrm{dB}$）。</li>
+</ol>
+<p><a id="e06-32"></a></p>
+<h3 id="sec-u-6d7defcea5">E06-32：残余回声抑制维纳地板增益 $G_{\min}$ 与舒适噪声（CNG）电平匹配</h3>
+<p>承接 §6.5.1 的频域残余回声抑制与舒适噪声合成模型（代码见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/chapter06_experiments.py"><code>chapter06_experiments.py</code></a> 的 <code>res_wiener_and_cng_matching</code>）：在线性 AEC 输出的单个频点上，记近端语音功率谱密度为 $\hat\Phi_{ss}$、残余回声功率谱密度为 $\hat\Phi_{bb}$（对应 §6.5.1 的 $\hat\Phi_{e_{\mathrm{res}}}$）、平稳背景底噪功率谱密度为 $\hat\Phi_{nn}=0.01$（$-20.00\ \mathrm{dB}$）。采用带最小增益地板 $G_{\min}=0.1$（$-20.00\ \mathrm{dB}$）的维纳 RES 增益：</p>
+<p>$$G_{\mathrm{RES}} = \max\!\left(G_{\min},\;\frac{\hat\Phi_{ss}}{\hat\Phi_{ss}+\hat\Phi_{bb}+\hat\Phi_{nn}}\right)\text{。}$$</p>
+<p>对以下两种典型语音帧分别计算未钳位增益、实际增益 $G_{\mathrm{RES}}$、残余回声抑制量（dB）、近端语音衰减量（dB）以及不加 CNG 时的输出背景噪声底，再按 $\Phi_{\mathrm{CNG}}=\max\bigl(0,(1-G_{\mathrm{RES}}^2)\hat\Phi_{nn}\bigr)$ 计算维持恒定背景底噪 $\Phi_{\mathrm{target}}=\hat\Phi_{nn}=0.01$ 所需的舒适噪声注入功率：</p>
+<ul>
+<li>(a) <strong>远端单讲帧</strong>：$\hat\Phi_{ss}=0$，$\hat\Phi_{bb}=0.25$，$\hat\Phi_{nn}=0.01$；</li>
+<li>(b) <strong>双讲帧</strong>：$\hat\Phi_{ss}=1.0$，$\hat\Phi_{bb}=0.25$，$\hat\Phi_{nn}=0.01$。</li>
+</ul>
+<p><strong>参考答案</strong>：</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
+<thead>
+<tr>
+<th scope="col">帧类型</th>
+<th scope="col" style="text-align: right;">未钳位增益</th>
+<th scope="col" style="text-align: right;">实际 $G_{\mathrm{RES}}$</th>
+<th scope="col" style="text-align: right;">回声抑制 / 语音衰减</th>
+<th scope="col" style="text-align: right;">无 CNG 输出底噪（跌落）</th>
+<th scope="col" style="text-align: right;">注入 $\Phi_{\mathrm{CNG}}$（幅度系数）</th>
+<th scope="col" style="text-align: right;">加 CNG 后输出底噪（起伏）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>(a) 远端单讲</td>
+<td style="text-align: right;">$0.000000$</td>
+<td style="text-align: right;">$0.100000$（钳位）</td>
+<td style="text-align: right;">$20.00\ \mathrm{dB}$ / $-20.00\ \mathrm{dB}$</td>
+<td style="text-align: right;">$1.00\times 10^{-4}$（$-40.00\ \mathrm{dB}$，跌 $-20.00\ \mathrm{dB}$）</td>
+<td style="text-align: right;">$0.009900$（$0.994987$）</td>
+<td style="text-align: right;">$0.010000$（$0.00\ \mathrm{dB}$）</td>
+</tr>
+<tr>
+<td>(b) 双讲</td>
+<td style="text-align: right;">$0.793651$</td>
+<td style="text-align: right;">$0.793651$（未钳位）</td>
+<td style="text-align: right;">$2.01\ \mathrm{dB}$ / $-2.01\ \mathrm{dB}$</td>
+<td style="text-align: right;">$0.006299$（$-22.01\ \mathrm{dB}$，跌 $-2.01\ \mathrm{dB}$）</td>
+<td style="text-align: right;">$0.003701$（$0.608374$）</td>
+<td style="text-align: right;">$0.010000$（$0.00\ \mathrm{dB}$）</td>
+</tr>
+</tbody>
+</table></div>
+<p>逐项核对：(a) 远端单讲帧无近端语音，未钳位维纳增益归零，地板钳位输出 $G_{\mathrm{RES}}=G_{\min}=0.1$（$-20.00\ \mathrm{dB}$），将残余回声功率由 $0.25$ 压低 $20.00\ \mathrm{dB}$ 至 $0.0025$；但若不补舒适噪声，平稳底噪会被同步压低 $20.00\ \mathrm{dB}$ 至 $0.1^2\times 0.01=10^{-4}$（$-40.00\ \mathrm{dB}$），在单讲与沉默切换处制造明显的“死寂抽吸（dead-air pumping）”。(b) 双讲帧中 $G_{\mathrm{RES}}=1.0/(1.0+0.25+0.01)=50/63\approx 0.793651>G_{\min}$，近端语音仅衰减 $20\log_{10}(50/63)\approx -2.01\ \mathrm{dB}$（残余回声同步衰减 $2.01\ \mathrm{dB}$ 至 $0.157470$），无 CNG 时输出底噪为 $(50/63)^2\times 0.01=25/3969\approx 0.006299$（$-22.01\ \mathrm{dB}$）。(c) 注入互不相关舒适噪声后，单讲帧补入 $\Phi_{\mathrm{CNG}}=0.99\times 0.01=0.009900$（幅度系数 $\sqrt{0.99}\approx 0.994987$），双讲帧补入 $\Phi_{\mathrm{CNG}}=(1-(50/63)^2)\times 0.01=1469/396900\approx 0.003701$（幅度系数 $\approx 0.608374$），两帧合成总背景噪声均精确等于 $G_{\mathrm{RES}}^2\hat\Phi_{nn}+\Phi_{\mathrm{CNG}}=0.010000$（$-20.00\ \mathrm{dB}$，起伏 $0.00\ \mathrm{dB}$）。</p>
 <span id="sec-6-1-11" class="anchor-alias" aria-hidden="true"></span><span id="sec-6-1-18" class="anchor-alias" aria-hidden="true"></span><span id="sec-6-17" class="anchor-alias" aria-hidden="true"></span><span id="sec-19" class="anchor-alias" aria-hidden="true"></span><span id="sec-26" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-6-10">6.10 延伸阅读</h2>
 <p>纵观近年学术与工业演进，声学回声消除的前沿探索主要聚焦在四条脉络上：以轻量深度网络在线估计自适应步长或卡尔曼状态空间噪声协方差、在多麦克风多扬声器阵列中联合优化回声抵消与空间干扰抑制、融合低延迟声纹条件实现个性化全双工拾音，以及构建契合人耳双讲听感的非侵入式可微评价指标。研读新文献时，养成先核查“是否严格因果、总帧级延迟多少毫秒、参考取自播放链何处、双讲信回比分布如何”四个前提的习惯，有助于看清算法的真实工程边界。</p>
 <ol>

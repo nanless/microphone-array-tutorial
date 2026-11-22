@@ -1689,7 +1689,7 @@ VAP起始代码检查0→1转换，初始已经活动的区间还须独立核边
 - [`wearable_fusion.py`](../../ch14/core/wearable_fusion.py)：建立 Corcos 湍流边界层风噪相干模型、外麦气导与耳内闭塞麦克风分频带跨模态 MVDR/MMSE 融合，以及 TWS 通透模式（Hear-Through）处理延迟引发的耳道梳状滤波。
 - [`ambisonic_sofa_rendering.py`](../../ch14/core/ambisonic_sofa_rendering.py)：核验 FOA max-$\vec r_E$ 能量矢量阶数加权扬声器解码、AES69/SOFA `SimpleFreeFieldHRIR` 坐标变换及头部追踪运动到声音延迟（Motion-to-Photon/Sound Latency）预算。
 
-以上四个模块承载 `E14-01`～`E14-15` 与六份 16 kHz 数学合成 WAV 的解析、浮点及 PCM16 整型对照。计算仅验证指定物理方程、矩阵条件数与量化边界，不包含个体化实测 HRTF、骨导传感器硬件标定或主观空间听感评测。
+以上四个模块承载 `E14-01`～`E14-16` 与六份 16 kHz 数学合成 WAV 的解析、浮点及 PCM16 整型对照。计算仅验证指定物理方程、矩阵条件数与量化边界，不包含个体化实测 HRTF、骨导传感器硬件标定或主观空间听感评测。
 
 ### 62.2 五个锁定上游仓库的源码核验与未执行边界
 

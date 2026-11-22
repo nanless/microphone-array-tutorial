@@ -626,6 +626,8 @@ where the plus sign in $\pm\omega\tau$ corresponds to downstream flow (mic $1$ t
 
 Commercial hearables therefore run real-time wind detectors monitoring **low-frequency inter-mic coherence drop plus steep sub-$500\ \mathrm{Hz}$ spectral tilt**: as soon as $50$–$500\ \mathrm{Hz}$ coherence plunges below acoustic bounds amid surging low-band energy, the pipeline boosts diagonal loading (gracefully relaxing toward delay-and-sum) or hands low-frequency speech capture over to occluded internal sensors.
 
+**Strouhal Vortex-Shedding Physics of Open-Cell Foam and Fur Windscreens**: Before relying solely on electronic wind suppression, it is worth examining why conventional microphones depend on porous windscreens. Airflow at speed $U$ past a bare bluff body such as a microphone capsule or earbud stem of characteristic diameter $D$ sheds periodic Kármán vortices at the **Strouhal shedding frequency** $f_s = \mathrm{St}\,U / D$, where $\mathrm{St} \approx 0.2$ for cylindrical stems in subcritical flow. At a modest cycling or brisk outdoor wind speed $U = 5\ \mathrm{m/s}$ and stem diameter $D = 6\ \mathrm{mm}$, shedding falls at $f_s = 0.2 \times 5 / 0.006 \approx 167\ \mathrm{Hz}$—squarely inside the human voice fundamental band, where simple high-pass filtering cannot remove it without thinning speech. Open-cell polyurethane foam and long-fiber fur ("deadcat") windscreens suppress wind buffeting through **two coupled physical mechanisms**: (i) expanding the effective aerodynamic boundary-layer diameter $D_{\mathrm{eff}} \gg D$ lowers vortex-shedding frequency and energy while shifting turbulent eddy generation away from the diaphragm so evanescent hydrodynamic pressure decays before reaching the acoustic port, and (ii) spatially averaging and decorrelating small-scale convective eddies (whose Corcos correlation length satisfies $\ell_c \sim U_c / \omega \ll D_{\mathrm{eff}}$) across the enlarged porous surface while leaving long-wavelength far-field acoustic waves ($\kappa D_{\mathrm{eff}} \ll 1$) nearly unattenuated. In practice, thick foam or fur windscreens deliver roughly $15$–$30\ \mathrm{dB}$ of low-frequency wind rejection at the cost of $1$–$4\ \mathrm{dB}$ of high-frequency acoustic insertion loss—and suffer severe pore blockage and high-frequency roll-off once wetted by sweat or rain. This physical size-and-moisture trade-off explains why ultra-compact TWS earbuds cannot accommodate thick windscreens and must combine recessed mesh-screened acoustic port geometry with §14.8 Corcos cross-mic coherence wind detection and §14.9 in-ear cross-modal fusion.
+
 ### 14.9 Cross-Modal Own-Voice Fusion of Air-Conduction and Occluded In-Ear / Bone-Conduction Sensors
 
 #### Ear-Canal Occlusion Effect and High-Frequency Bone-Conduction Roll-Off
@@ -789,7 +791,7 @@ This latency divide dictates **heterogeneous dual-path audio SoC architectures**
 
 **Bluetooth Classic HFP vs. BLE LE Audio uplink trade-offs**: Front-end spatial capability is also bounded by the wireless transport profile. Legacy **Bluetooth Classic HFP (`SCO` / `eSCO`)** enforces a **mono-only uplink**—progressing from $8\ \mathrm{kHz}$ narrowband `CVSD` ($64\ \mathrm{kbps}$) and ubiquitous $16\ \mathrm{kHz}$ wideband `mSBC` ($7.5\ \mathrm{ms}$ frame) to HFP 1.9's $32\ \mathrm{kHz}$ Super Wideband (`SWB` via `LC3-SWB`)—forcing all earbud-side beamforming and §14.9 cross-modal fusion to collapse to one mono uplink stream (and typically downgrading simultaneous downlink audio to voice-band quality while the mic is active). **BLE LE Audio** replaces `mSBC` with the higher-efficiency **`LC3` codec** ($8$–$48\ \mathrm{kHz}$ at $7.5\ \mathrm{ms}$ or $10\ \mathrm{ms}$ frame intervals, maintaining low distortion at $32$–$64\ \mathrm{kbps}$/channel) over **Connected Isochronous Streams (`CIS`)** for synchronized, independent bidirectional unicast links to both left and right earbuds (complemented by one-to-many **Broadcast Isochronous Streams (`BIS` / `Auracast`)** for public assistive listening). Within a $\sim 20$–$40\ \mathrm{ms}$ end-to-end wireless latency budget, `CIS` makes **binaural stereo uplink** (enabling spatial calling, XR capture, and host-side binaural beamforming) alongside concurrent wideband downlink playback feasible, subject to RF packet-loss concealment (PLC) and sub-microsecond inter-ear clock synchronization ([Chapter 10, §10.2](10_engineering-practice.md#sec-10-2) & [Chapter 13](13_distributed-enhancement.md)).
 
-### 14.11 Reproducible Code Entry Points, Synthetic Audio Controls, and Exercises (E14-01–E14-15)
+### 14.11 Reproducible Code Entry Points, Synthetic Audio Controls, and Exercises (E14-01–E14-16)
 
 #### Code Architecture and Six Synthetic WAV Controls
 
@@ -815,7 +817,7 @@ Run generation, asset verification, figure rendering, or individual exercises fr
 .venv/bin/python -m codes.chapters.ch14.chapter14_exercises --exercise E14-06
 ```
 
-Exercises `E14-01`–`E14-15` log analytical expectations, pre-export `float64` components, and decoded 16-bit integer WAV ratios (scaled by $32768$) separately:
+Exercises `E14-01`–`E14-16` log analytical expectations, pre-export `float64` components, and decoded 16-bit integer WAV ratios (scaled by $32768$) separately:
 
 $$\mathrm{NMSE}_{\mathrm{PCM}}
 =\frac{\sum_{n=1600}^{30399}\bigl(Y_{\mathrm{int}}[n]
@@ -1008,6 +1010,53 @@ At $\dot\theta_{\mathrm{yaw}} = 180^\circ/\mathrm{s}$ ($\lvert p\rvert = 1, \phi
 - **Low-latency link ($\tau_{\mathrm{lag}} = 20\ \mathrm{ms}$)**: $\Delta\theta_{\mathrm{lag}} = 3.60^\circ$ (chord $2\sin 1.80^\circ \approx 0.062822$), slightly above the static frontal Minimum Audible Angle ($\mathrm{MAA} \approx 1^\circ$–$2^\circ$) yet safely within the dynamic Minimum Audible Movement Angle ($\mathrm{MAMA} \approx 4^\circ$–$6^\circ$) during rapid head turns;
 - **Buffered wireless link ($\tau_{\mathrm{lag}} = 80\ \mathrm{ms}$)**: $\Delta\theta_{\mathrm{lag}} = 14.40^\circ$ (chord $\approx 0.250666$), more than seven times the static MAA and visibly dragging world-locked images;
 - **Linear lookahead ($\hat\tau = 65\ \mathrm{ms}$)**: cuts steady-turn lag to $\lvert 80 - 65\rvert = 15\ \mathrm{ms} \implies 2.70^\circ$ (chord $\approx 0.047120$), but a sudden head stop incurs $\lvert\dot\theta_{\mathrm{yaw}}\rvert\hat\tau = 11.70^\circ$ reverse overshoot—motivating $20$–$40\ \mathrm{ms}$ prediction horizons with angular-acceleration damping.
+
+<a id="e14-16"></a>
+
+#### E14-16: Rigid-Sphere Higher-Order Ambisonics ($N=2$, 9-Channel vs. $N=1$, 4-Channel) Radial Mode Boost and Low-Frequency WNG Amplification
+
+**Problem.** Consider a rigid solid spherical array of radius $R = 4.2\ \mathrm{cm}$ (commercial $Q = 32$-capsule Eigenmike em32 scale) at sound speed $c = 343\ \mathrm{m/s}$, using the sphere-mean normalization of §14.2 ($4\pi$-free, with DC limit $b_0^{\mathrm{rigid}}(0) = 1$, differing from [Chapter 5, §5.8](05_beamforming.md#sec-5-8) Eq. (5-24) solely by constant $4\pi$):
+
+$$b_n^{\mathrm{rigid}}(\kappa R)=\mathrm{j}^n\!\left[j_n(\kappa R)-\frac{j_n'(\kappa R)}{h_n^{(2)\prime}(\kappa R)}\,h_n^{(2)}(\kappa R)\right]=\frac{\mathrm{j}^{n-1}}{(\kappa R)^2\,h_n^{(2)\prime}(\kappa R)}.$$
+
+Compare first-order FOA ($N = 1$, $(N+1)^2 = 4$ channels, orders $n = 0, 1$) against second-order HOA ($N = 2$, $9$ channels, orders $n = 0, 1, 2$) across $\kappa R \in \{0.2, 0.5, 1.0\}$: (1) compute the corresponding frequencies $f$, exact modal magnitudes $\lvert b_n^{\mathrm{rigid}}(\kappa R)\rvert$, and unregularized inverse-equalization boosts $20\log_{10}(1/\lvert b_n^{\mathrm{rigid}}(\kappa R)\rvert)$, verifying the low-frequency scaling slopes ($+20\ \mathrm{dB/dec}$ for $n = 1$ vs. $+40\ \mathrm{dB/dec}$ for $n = 2$); (2) apply Tikhonov-regularized radial equalization $g_n^{\mathrm{reg}} = b_n^{\mathrm{rigid}*} / (\lvert b_n^{\mathrm{rigid}}\rvert^2 + \beta^2)$ ($\beta = 0.05$), comparing unregularized versus regularized modal boosts, retained modal responses $h_n^{\mathrm{reg}} = g_n^{\mathrm{reg}} b_n^{\mathrm{rigid}}$, spherical-harmonic plane-wave decomposition (PWD) white noise gain $\mathrm{WNG}^{(N)}/Q$ (and $\mathrm{WNG}_{Q=32}^{(N)}$ at $Q = 32$), and mean per-channel N3D white-noise amplification $\bar{G}_{\mathrm{noise}}^{(N)}$, showing quantitatively why practical HOA encoders gracefully roll back from $N = 2$ to $N = 1$ (or $N = 0$) below the spatial cutoff frequency.
+
+**Solution.** (1) From $f = \kappa R \cdot c / (2\pi R)$, $\kappa R \in \{0.2, 0.5, 1.0\}$ map to $f \approx 259.95, 649.88, 1299.77\ \mathrm{Hz}$. Expanding the derivatives of $h_n^{(2)}(x)$ yields exact rational-polynomial identities convenient for hand checks (writing $x = \kappa R$):
+
+$$\frac{1}{\lvert b_0^{\mathrm{rigid}}(x)\rvert^2}=1+x^2,\qquad \frac{1}{\lvert b_1^{\mathrm{rigid}}(x)\rvert^2}=\frac{4}{x^2}+x^2,\qquad \frac{1}{\lvert b_2^{\mathrm{rigid}}(x)\rvert^2}=\frac{81}{x^4}+\frac{9}{x^2}-2+x^2.$$
+
+These immediately yield low-frequency asymptotics $\lvert b_1^{\mathrm{rigid}}(x)\rvert \approx x/2$ (inverse boost $2/x$, i.e., $+20\ \mathrm{dB/dec}$) and $\lvert b_2^{\mathrm{rigid}}(x)\rvert \approx x^2/9$ (inverse boost $9/x^2$, i.e., $+40\ \mathrm{dB/dec}$). By AM–GM, the Tikhonov filter magnitude obeys the strict peak ceiling $\lvert g_n^{\mathrm{reg}}\rvert \le \frac{1}{2\beta} = 10$ ($+20.00\ \mathrm{dB}$, attained at $\lvert b_n\rvert = \beta$). Evaluating every mode across all three operating points (`E14-16` in `chapter14_exercises`):
+
+| $\kappa R$ ($f$) | Order $n$ (Channels) | $\lvert b_n^{\mathrm{rigid}}\rvert$ | Unreg Boost (dB) | Reg Gain $\lvert g_n^{\mathrm{reg}}\rvert$ (dB) | Retained Response $h_n^{\mathrm{reg}}$ |
+|---|---|---:|---:|---:|---:|
+| $0.2$ ($259.95\ \mathrm{Hz}$) | $n=0$ ($1$) | $0.980581$ | $+0.17$ | $+0.15$ | $0.9974$ |
+| $0.2$ ($259.95\ \mathrm{Hz}$) | $n=1$ ($3$) | $0.099980$ | $+20.00$ | $+18.06$ | $0.7999$ |
+| $0.2$ ($259.95\ \mathrm{Hz}$) | $n=2$ ($5$) | $0.004435$ | $+47.06$ | $+4.91$ | $0.0078$ |
+| $0.5$ ($649.88\ \mathrm{Hz}$) | $n=0$ ($1$) | $0.894427$ | $+0.97$ | $+0.94$ | $0.9969$ |
+| $0.5$ ($649.88\ \mathrm{Hz}$) | $n=1$ ($3$) | $0.248069$ | $+12.11$ | $+11.76$ | $0.9610$ |
+| $0.5$ ($649.88\ \mathrm{Hz}$) | $n=2$ ($5$) | $0.027418$ | $+31.24$ | $+18.52$ | $0.2312$ |
+| $1.0$ ($1299.77\ \mathrm{Hz}$) | $n=0$ ($1$) | $0.707107$ | $+3.01$ | $+2.97$ | $0.9950$ |
+| $1.0$ ($1299.77\ \mathrm{Hz}$) | $n=1$ ($3$) | $0.447214$ | $+6.99$ | $+6.88$ | $0.9877$ |
+| $1.0$ ($1299.77\ \mathrm{Hz}$) | $n=2$ ($5$) | $0.106000$ | $+19.49$ | $+17.75$ | $0.8180$ |
+
+Moving down from $\kappa R = 0.5$ to $0.2$ ($\log_{10}(2.5) \approx 0.3979\ \mathrm{dec}$), first-order unregularized boost climbs by $7.89\ \mathrm{dB}$ ($19.84\ \mathrm{dB/dec}$) whereas second-order boost surges by $15.82\ \mathrm{dB}$ ($39.76\ \mathrm{dB/dec}$), confirming $(\kappa R)^{-n}$ scaling. Notably, $\kappa R = 1.0$ gives exact values $\lvert b_0\rvert = 1/\sqrt{2}$, $\lvert b_1\rvert = 1/\sqrt{5}$, and $\lvert b_2\rvert = 1/\sqrt{89}$, while at $\kappa R = 0.2$ ($260\ \mathrm{Hz}$), unregularized $n = 2$ inverse equalization explodes to $225.50\times$ ($+47.06\ \mathrm{dB}$).
+
+(2) Across $Q$ uniform spherical capsules forming a spherical $2N$-design, mean per-channel N3D white-noise power amplification (per unit $\sigma_v^2/Q$) and $N$-th-order PWD beamformer white noise gain satisfy:
+
+$$\bar{G}_{\mathrm{noise}}^{(N)}=\frac{1}{(N+1)^2}\sum_{n=0}^{N}(2n+1)\,\lvert g_n\rvert^2,\qquad \frac{\mathrm{WNG}^{(N)}}{Q}=\frac{\bigl(\sum_{n=0}^{N}(2n+1)\,g_n b_n^{\mathrm{rigid}}\bigr)^2}{\sum_{n=0}^{N}(2n+1)\,\lvert g_n\rvert^2}.$$
+
+Comparing $N = 1$ ($4$ ch) vs. $N = 2$ ($9$ ch) without regularization and at $\beta = 0.05$ (with $Q = 32$ values in parentheses):
+
+| $\kappa R$ | Order (Ch) | Unreg $\mathrm{WNG}/Q$ ($Q=32$) (dB) | Reg $\mathrm{WNG}/Q$ ($Q=32$) (dB) | Unreg Mean Ch Noise $\bar{G}_{\mathrm{noise}}$ (dB) | Reg Mean Ch Noise $\bar{G}_{\mathrm{noise}}$ (dB) |
+|---|---|---:|---:|---:|---:|
+| $0.2$ | $N=1$ ($4$) | $-12.75$ ($+2.30$) | $-12.23$ ($+2.82$) | $+18.77$ | $+16.84$ |
+| $0.2$ | $N=2$ ($9$) | $-34.97$ ($-19.92$) | $-12.47$ ($+2.58$) | $+44.52$ | $+13.65$ |
+| $0.5$ | $N=1$ ($4$) | $-4.95$ ($+10.10$) | $-4.88$ ($+10.18$) | $+10.97$ | $+10.63$ |
+| $0.5$ | $N=2$ ($9$) | $-19.18$ ($-4.13$) | $-12.00$ ($+3.05$) | $+28.72$ | $+16.50$ |
+| $1.0$ | $N=1$ ($4$) | $-0.26$ ($+14.79$) | $-0.25$ ($+14.80$) | $+6.28$ | $+6.18$ |
+| $1.0$ | $N=2$ ($9$) | $-7.56$ ($+7.49$) | $-6.86$ ($+8.19$) | $+17.10$ | $+15.43$ |
+
+At $\kappa R = 0.2$ ($260\ \mathrm{Hz}$), forcing unregularized $N = 2$ encoding drops the $32$-capsule WNG by $22.22\ \mathrm{dB}$ from $+2.30\ \mathrm{dB}$ ($N = 1$) down to $-19.92\ \mathrm{dB}$ (with mean channel noise amplification reaching $+44.52\ \mathrm{dB}$). With $\beta = 0.05$, because $\lvert b_2\rvert = 0.004435 \ll \beta$, second-order gain automatically folds back to $+4.91\ \mathrm{dB}$ with retained response $h_2^{\mathrm{reg}} = 0.0078$, recovering $+22.50\ \mathrm{dB}$ of WNG back to $+2.58\ \mathrm{dB}$ (and lowering mean channel noise gain to $+13.65\ \mathrm{dB}$) so the encoder behaves smoothly like an $N = 1$ FOA array below cutoff. As frequency rises through $\kappa R = 0.5$ ($650\ \mathrm{Hz}$, transition $h_2^{\mathrm{reg}} = 0.2312$, $+7.18\ \mathrm{dB}$ WNG recovery) to $\kappa R = 1.0$ ($1300\ \mathrm{Hz}$), second-order spatial resolution unlocks cleanly ($h_2^{\mathrm{reg}} = 0.8180$, $\mathrm{WNG}_{Q=32} = +8.19\ \mathrm{dB}$).
 
 ### 14.12 Primary References and Further Reading
 

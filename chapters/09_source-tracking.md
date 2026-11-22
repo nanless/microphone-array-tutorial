@@ -734,7 +734,7 @@ $$\begin{aligned}
 \bigl(\mathbf{P}_j+\vec{\delta}_j\vec{\delta}_j^\top\bigr).
 \end{aligned}\tag{9-31}$$
 
-与 IMM 交互式(9-18)同理，$\bar{\mathbf{P}}$ 除了加权平均各条件下的滤波协方差 $\mathbf{P}_j$，还多出一项正半定的**关联不确定度扩散项** $\sum_j\beta_j\vec{\delta}_j\vec{\delta}_j^\top$。例如一维标量轨迹先验均值 $0$、方差 $4$，测量方差 $R=1$（增益 $K=0.8$），面对等概率（$\beta_1=\beta_2=0.5$）的两条对称候选观测 $-2$ 与 $+2$：各条件后验均值分别为 $-1.6$ 与 $+1.6$、条件方差同为 $0.8$，按式(9-31)算出的真实混合方差为 $0.8+0.5\times(-1.6)^2+0.5\times(+1.6)^2=3.36$；若简化地先把两观测平均成 $0$ 再跑普通 KF，虽然均值同为 $0$，方差却虚降为 $0.8$，漏掉了高达 $2.56$ 的关联归属不确定度（组合新息等价写法详见 [Fortmann、Bar-Shalom 与 Scheffe 1983 JPDA 原文 §II 式(2.11)–(2.13)](https://doi.org/10.1109/JOE.1983.1145560)，以及 Bar-Shalom、Willett 与 Tian 2011 专著）。也正因每帧都把多假设强行压回单高斯，当两人交叉并行时，两条轨迹会因共享中间观测而相互吸引靠拢（即轨迹合并现象，track coalescence），单靠软关联并不能保住说话人身份。
+与 IMM 交互式(9-18)同理，$\bar{\mathbf{P}}$ 除了加权平均各条件下的滤波协方差 $\mathbf{P}_j$，还多出一项正半定的**关联不确定度扩散项** $\sum_j\beta_j\vec{\delta}_j\vec{\delta}_j^\top$。例如一维标量轨迹先验均值 $0$、方差 $4$，测量方差 $R=1$（增益 $K=0.8$），面对等概率（$\beta_1=\beta_2=0.5$）的两条对称候选观测 $-2$ 与 $+2$：各条件后验均值分别为 $-1.6$ 与 $+1.6$、条件方差同为 $0.8$，按式(9-31)算出的真实混合方差为 $0.8+0.5\times(-1.6)^2+0.5\times(+1.6)^2=3.36$；若简化地先把两观测平均成 $0$ 再跑普通 KF，虽然均值同为 $0$，方差却虚降为 $0.8$，漏掉了高达 $2.56$ 的关联归属不确定度（组合新息等价写法详见 [Fortmann、Bar-Shalom 与 Scheffe 1983 JPDA 原文 §II 式(2.11)–(2.13)](https://doi.org/10.1109/JOE.1983.1145560)，以及 Bar-Shalom、Willett 与 Tian 2011 专著；对称交叉轨迹上的 JPDA 边缘权重、方差扩散与硬指派 GNN 定量对照见练习 [E09-23](#e09-23)）。也正因每帧都把多假设强行压回单高斯，当两人交叉并行时，两条轨迹会因共享中间观测而相互吸引靠拢（即轨迹合并现象，track coalescence），单靠软关联并不能保住说话人身份。
 
 #### 多帧假设、标签与检测前追踪
 
@@ -1197,13 +1197,13 @@ $$\begin{aligned}
 
 #### 可运行练习的入口与约定
 
-本章共设 $22$ 道可复算练习（E09-01～E09-22），覆盖物理时间单位离散化、卡尔曼与非线性滤波、粒子重采样、多目标集合估计与集合距离、固定滞后平滑与乱序观测、双麦实测波形追踪与生命周期状态机，以及三维姿态球面追踪、扬声器残余回声门控和视听异构延迟融合。
+本章共设 $23$ 道可复算练习（E09-01～E09-23），覆盖物理时间单位离散化、卡尔曼与非线性滤波、粒子重采样、多目标集合估计与集合距离、固定滞后平滑与乱序观测、双麦实测波形追踪与生命周期状态机，以及三维姿态球面追踪、扬声器残余回声门控、视听异构延迟融合和对称交叉下的 JPDA 软关联对照。
 
 运行入口按模块归口如下：E09-01～E09-05 由 `.venv/bin/python -m codes.chapters.ch00.cross_chapter.exercises_enhancement` 执行（源码见 [`exercises_enhancement.py`](../codes/chapters/ch00/cross_chapter/exercises_enhancement.py)），E09-06 对应 §9.3.3 的双轨交叉脚本，E09-07～E09-08 归口至 `tracking_time_exercises.py`，E09-09 归口至 `enhancement_structure_exercises.py`。所有练习均直接处理物理方位或真实传播时延，不用双声道音量平衡（声像移动）冒充阵列时延线索。
 
 #### 新练习的实现边界
 
-E09-10～E09-22 的统一运行入口为 `.venv/bin/python -m codes.chapters.ch09.chapter09_experiments`（源码见 [`chapter09_experiments.py`](../codes/chapters/ch09/chapter09_experiments.py)）。其中 E09-16 与 E09-19 直接读取配套的 16 位双麦 PCM 波形完成定位、滤波与生命周期事件核验，其余各题聚焦单个核心公式或统计边界的独立数值复算（例如集合距离先按截断尺度缩放以防止极小正距离平方下溢）。
+E09-10～E09-23 的统一运行入口为 `.venv/bin/python -m codes.chapters.ch09.chapter09_experiments`（源码见 [`chapter09_experiments.py`](../codes/chapters/ch09/chapter09_experiments.py)）。其中 E09-16 与 E09-19 直接读取配套的 16 位双麦 PCM 波形完成定位、滤波与生命周期事件核验，其余各题聚焦单个核心公式或统计边界的独立数值复算（例如集合距离先按截断尺度缩放以防止极小正距离平方下溢）。
 
 <a id="e09-01"></a>
 
@@ -1562,6 +1562,50 @@ $$\begin{aligned}
 | 互换 ID 加第 2 帧 $-45^\circ$ 虚警 | $0^\circ$ / $10/3^\circ$（约 $3.33^\circ$） | $0$ | $1$ | $2$ | $1-3/4=0.25$ |
 
 无标签 `OSPA` 对纯身份互换不敏感，唯有 `MOTA` 捕获了 $\mathrm{IDSW}=2$；叠加 $-45^\circ$ 假轨后两者同步恶化（实现核见 [`echo_av_fusion.py`](../codes/chapters/ch09/core/echo_av_fusion.py)）。
+
+<a id="e09-23"></a>
+
+#### E09-23：对称交叉轨迹上的 JPDA 边缘关联概率与硬指派 GNN 对照
+
+考察 §9.3.1～§9.3.2 的一维标量方位双轨双观测对称交叉单帧更新。两条轨迹具有相同的先验预测方差 $P^-=2.0\ \mathrm{deg}^2$ 与量测方差 $R=2.0\ \mathrm{deg}^2$，故新息方差 $S=P^-+R=4.0\ \mathrm{deg}^2$（标准差 $\sigma_S=2.0^\circ$）、卡尔曼增益 $K=P^-/S=0.5$。为聚焦双事件核心机理，设检测概率 $P_D=1$ 且无杂波（全部合法一对一联合事件仅有顺接 $\Theta_1=\{(1\to 1),(2\to 2)\}$ 与交叉 $\Theta_2=\{(2\to 1),(1\to 2)\}$ 两种）。完成两项复算：
+
+1. **相向逼近情形**：预测方位 $\hat\theta_1^-=-2.0^\circ$、$\hat\theta_2^-=+2.0^\circ$，观测集合 $z_1=-1.5^\circ$、$z_2=+1.5^\circ$。按高斯似然矩阵 $g_{jt}=\mathcal N(z_j;\ \hat\theta_t^-,S)$ 算出联合事件权重、JPDA 边缘关联概率 $\beta_{jt}$ 及后验均值与方差；
+2. **近交叉模糊情形**：预测方位 $\hat\theta_1^-=-0.5^\circ$、$\hat\theta_2^-=+0.5^\circ$，观测集合 $z_1=-0.4^\circ$、$z_2=+0.4^\circ$。比较硬指派 **GNN**（将 $\beta_{11}$ 硬置为 $1$）与 **JPDA** 软组合新息 $\bar\nu_1=\beta_{11}\nu_{11}+\beta_{21}\nu_{21}$ 及其**均值扩散协方差增量** $\tilde P_1=K^2\bigl(\sum_j\beta_{j1}\nu_{j1}^2-\bar\nu_1^2\bigr)$，说明 JPDA 如何在近交叉瞬间诚实放宽后验不确定度，同时观察轨迹合并效应。
+
+**参考答案**：
+
+1. **相向逼近情形（对数几率 $3$，顺接主导）**：定义新息矩阵 $\nu_{jt}=z_j-\hat\theta_t^-$，得 $\nu_{11}=+0.5^\circ,\;\nu_{22}=-0.5^\circ$ 与 $\nu_{21}=+3.5^\circ,\;\nu_{12}=-3.5^\circ$。消去两事件公共前置常数 $(2\pi S)^{-1}=(8\pi)^{-1}$ 后，两个联合事件的相对权重分别为
+
+   $$\begin{aligned}
+   w(\Theta_1)&\propto\exp\!\left(-\frac{0.5^2+(-0.5)^2}{2\times 4}\right)
+   =e^{-1/16}\approx 0.939413,\\
+   w(\Theta_2)&\propto\exp\!\left(-\frac{3.5^2+(-3.5)^2}{2\times 4}\right)
+   =e^{-49/16}\approx 0.046771.
+   \end{aligned}$$
+
+   比值 $w(\Theta_2)/w(\Theta_1)=e^{-(49-1)/16}=e^{-3}$，故 JPDA 边缘关联概率为
+
+   $$\beta_{11}=\beta_{22}=\frac{1}{1+e^{-3}}\approx 0.952574,\qquad
+   \beta_{21}=\beta_{12}=\frac{1}{1+e^{3}}\approx 0.047426.$$
+
+   硬 GNN 选 $\Theta_1$，给出 $\hat\theta_{1,\mathrm{GNN}}^+=-1.75^\circ$、$\hat\theta_{2,\mathrm{GNN}}^+=+1.75^\circ$ 与 $P_{\mathrm{GNN}}=(1-K)P^-=1.0\ \mathrm{deg}^2$；JPDA 给出 $\bar\nu_1\approx +0.642278^\circ$、$\hat\theta_{1,\mathrm{JPDA}}^+\approx -1.678861^\circ$，因残余 $4.74\%$ 交叉假设跨度达 $3.0^\circ$，扩散方差 $\tilde P_1=0.25\times\beta_{11}\beta_{21}\times 3.0^2\approx 0.101647\ \mathrm{deg}^2$，总后验方差升至 $1.101647\ \mathrm{deg}^2$。
+
+2. **近交叉模糊情形（对数几率骤降至 $0.2$，方差诚实扩张与轨迹合并）**：新息缩小为 $\nu_{11}=+0.1^\circ,\;\nu_{22}=-0.1^\circ$ 与 $\nu_{21}=+0.9^\circ,\;\nu_{12}=-0.9^\circ$，两联合事件核权重拉近为 $w(\Theta_1)\propto e^{-1/400}\approx 0.997503$ 与 $w(\Theta_2)\propto e^{-81/400}\approx 0.816686$，比值 $e^{-80/400}=e^{-0.2}$，于是
+
+   $$\beta_{11}=\beta_{22}=\frac{1}{1+e^{-0.2}}\approx 0.549834,\qquad
+   \beta_{21}=\beta_{12}=\frac{1}{1+e^{0.2}}\approx 0.450166.$$
+
+   在交叉概率高达 $45.02\%$ 的瞬间，GNN 与 JPDA 对轨迹 1（轨迹 2 严格反对称）的更新结果对照如下表：
+
+   | 比较项 | 硬指派 GNN（假定 $\beta_{11}=1$） | 软关联 JPDA（$\beta_{11}\approx 0.5498,\;\beta_{21}\approx 0.4502$） |
+   |---|---:|---:|
+   | 有效新息（度） | $+0.100000$ | $\bar\nu_1=+0.460133$ |
+   | 轨迹 1 后验均值（度） | $-0.450000$ | $-0.269934$ |
+   | 双轨后验间距（度） | $0.900000$ | $0.539867$（向中点靠拢） |
+   | 扩散方差增量 $\tilde P_1$（$\mathrm{deg}^2$） | $0.000000$ | $+0.039603$ |
+   | 总后验方差 $P_1^+$（$\mathrm{deg}^2$） | $1.000000$（过度自信） | $1.039603$ |
+
+   由于条件后验均值 $m_{j1}=\hat\theta_1^-+K\nu_{j1}$ 共享相同条件方差 $P_c=(1-K)P^-=1.0\ \mathrm{deg}^2$，式(9-31)矩匹配严格等价于 $\tilde P_1=K^2\bigl(\sum_j\beta_{j1}\nu_{j1}^2-\bar\nu_1^2\bigr)=K^2\beta_{11}\beta_{21}(\nu_{21}-\nu_{11})^2\approx 0.039603\ \mathrm{deg}^2>0$。一方面，JPDA 避免像硬 GNN 那样在接近五五开的交叉瞬间仍报出虚假紧致的 $1.0\ \mathrm{deg}^2$ 方差；另一方面，其单高斯矩匹配使两轨后验间距由 $0.90^\circ$ 收窄至 $0.54^\circ$，定量呈现了 §9.3.2 所述的轨迹合并代价（代码验证见 [`chapter09_experiments.py`](../codes/chapters/ch09/chapter09_experiments.py) 中 `E09-23`）。
 
 ### 9.7 本章小结
 

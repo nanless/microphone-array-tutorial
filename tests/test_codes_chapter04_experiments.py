@@ -21,7 +21,7 @@ from codes.chapters.ch00.core.audio_samples import doa_ambiguity_case, prepare_e
 class Chapter04ExperimentsTests(unittest.TestCase):
     def test_catalog_keys_and_strict_json(self):
         results = ex.run_exercises()
-        self.assertEqual(set(results), {f'E04-{i:02d}' for i in range(12, 24)})
+        self.assertEqual(set(results), {f'E04-{i:02d}' for i in range(12, 25)})
         json.dumps(results, allow_nan=False)
 
     def test_nyquist_recovers_original_grid_and_half_sample(self):
@@ -215,6 +215,55 @@ class Chapter04ExperimentsTests(unittest.TestCase):
             cdr_nodir(1.01 + 0.0j, 0.5)
         with self.assertRaises(ValueError):
             cdr_nodir(0.5, 1.0)
+
+    def test_e04_24_off_grid_l1_mismatch_and_seld_f20(self):
+        r = ex.exercise_04_24()
+        json.dumps(r, allow_nan=False)
+        l1 = r['off_grid_l1_mismatch']
+        self.assertEqual((l1['num_mics'], l1['grid_size'], l1['grid_step_deg']), (8, 25, 5.0))
+        self.assertAlmostEqual(l1['mu'], 0.02, places=15)
+        on = l1['on_grid']
+        off = l1['off_grid']
+        # On-grid exact analytical LASSO optimum: single atom at 10 deg with weight 1 - mu = 0.98.
+        self.assertEqual(on['support_count'], 1)
+        self.assertEqual(on['peak_angle_deg'], 10.0)
+        self.assertAlmostEqual(on['peak_magnitude'], 0.98, places=12)
+        self.assertAlmostEqual(on['peak_energy_fraction'], 1.0, places=14)
+        self.assertAlmostEqual(on['weight_at_15_deg'], 0.0, places=14)
+        self.assertEqual(on['sidelobe_atom_count'], 0)
+        self.assertAlmostEqual(on['relative_residual_l2'], 0.02, places=12)
+        self.assertLess(on['kkt_active_error'], 1e-12)
+        self.assertLess(on['kkt_inactive_error'], 1e-12)
+        # Off-grid 12.5 deg splits across 10 & 15 deg plus two spurious sidelobes (-5, +30 deg).
+        self.assertEqual(off['support_count'], 4)
+        self.assertEqual([a['angle_deg'] for a in off['active_atoms']], [-5.0, 10.0, 15.0, 30.0])
+        self.assertEqual(off['peak_angle_deg'], 15.0)
+        self.assertAlmostEqual(off['weight_at_10_deg'], 0.506397, places=5)
+        self.assertAlmostEqual(off['weight_at_15_deg'], 0.515831, places=5)
+        self.assertGreater(off['weight_at_15_deg'], off['weight_at_10_deg'])
+        self.assertEqual(off['sidelobe_atom_count'], 2)
+        self.assertAlmostEqual(off['adjacent_10_15_energy_fraction'], 0.999568, places=5)
+        self.assertAlmostEqual(off['sidelobe_energy_fraction'], 0.000432, places=5)
+        self.assertAlmostEqual(off['relative_residual_l2'], 0.034898, places=5)
+        self.assertGreater(off['relative_residual_l2'], on['relative_residual_l2'])
+        self.assertGreater(off['l1_norm'], 1.0)
+        self.assertLess(off['kkt_active_error'], 1e-12)
+        self.assertLess(off['kkt_inactive_error'], 1e-12)
+        # Part 2: SELD location-dependent F_{20 deg} coupling.
+        seld = r['seld_location_dependent_f1']
+        self.assertEqual(seld['doa_threshold_deg'], 20.0)
+        before = seld['before_refinement']
+        after = seld['after_refinement']
+        self.assertEqual((before['tp_20'], before['fp_20'], before['fn_20']), (3, 1, 1))
+        self.assertAlmostEqual(before['f_20_percent'], 75.0, places=12)
+        self.assertAlmostEqual(before['lr_cd_percent'], 100.0, places=12)
+        self.assertAlmostEqual(before['le_cd_deg'], 15.0, places=12)
+        self.assertEqual((after['tp_20'], after['fp_20'], after['fn_20']), (4, 0, 0))
+        self.assertAlmostEqual(after['f_20_percent'], 100.0, places=12)
+        self.assertAlmostEqual(after['lr_cd_percent'], 100.0, places=12)
+        self.assertAlmostEqual(after['le_cd_deg'], 13.5, places=12)
+        self.assertAlmostEqual(seld['f_20_gain_percentage_points'], 25.0, places=12)
+        self.assertAlmostEqual(seld['le_cd_reduction_deg'], 1.5, places=12)
 
 
 if __name__ == '__main__':

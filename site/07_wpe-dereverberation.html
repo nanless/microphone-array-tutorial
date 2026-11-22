@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 7 章 · 去混响（WPE） · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="a0289902c00e"><style>
+<meta name="source-digest" content="b82b7d85f70d"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -532,6 +532,16 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 </ul>
 <p>从物理上看，单支麦克风在某个频率陷入声学零陷时能量丢失无法挽回，而只要另一支麦克风在同一复频率处没有同时归零，多路互补就能拼出无混响的纯延迟响应。</p>
 <p>然而 MINT 在实际语音前端极少单独落地：它不仅要求 RIR 预先精确测出且在说话人微动时不发生漂移，而且一旦两条路径存在<strong>近似公共零点</strong>，贝祖方程虽在代数上可解，求出的逆滤波权重 $U_1,U_2$ 幅度却会急剧膨胀，将各麦克风通道的独立底噪放大成百上千倍（本章练习 <a href="#e07-16">E07-16</a> 将完整手算精确逆与正则逆的噪声放大取舍，<a href="#e07-17">E07-17</a> 给出可听音频对照）。</p>
+<p><strong>盲通道辨识的交叉关系（Cross-Relation）桥接</strong>：既然 MINT 卡在“需要预先测出真实 RIR”，能否先仅凭多通道观测盲辨识出各路冲激响应，再送入 MINT 求逆？在无噪 $M$ 通道单输入多输出（SIMO）房间中，各路观测满足 $x_m[n]=(h_m*s)[n]$（$m=1,\dots,M$）；由线性卷积交换律，任意一对通道 $1\le i\lt j\le M$ 恒满足<strong>交叉关系恒等式（Cross-Relation，CR；Xu 等，<em>IEEE TSP</em>，1995）</strong>：</p>
+<p>$$x_i[n]*h_j[n]-x_j[n]*h_i[n]=0\qquad(\forall\,1\le i\lt j\le M).$$</p>
+<p>将全部 $\binom{M}{2}$ 对通道在有效时间窗内的卷积关系按估计阶数 $L$（对应每路 $L+1$ 个抽头）堆叠，即得齐次块 Sylvester 线性系统 $\mathbf X_{\mathrm{CR}}\vec h=\vec 0$（其中 $\vec h=[\vec h_1^\top,\dots,\vec h_M^\top]^\top\in\mathbb{R}^{M(L+1)}$）。当 $M$ 个通道多项式 $\{H_m(z)\}_{m=1}^M$ <strong>互素</strong>（恰好与前文 MINT 所需的贝祖条件一致）、阶数严格匹配真实阶数 $L=L_{\mathrm{true}}$，且声源 $s[n]$ 满足持续激励条件时，$\mathbf X_{\mathrm{CR}}$ 具有唯一的<strong>一维右零空间</strong>，可在相差单个公共标量增益的意义下盲辨识全部 $M$ 条声学路径。</p>
+<p>然而在真实房间中，“CR 盲辨识 + MINT 精确求逆”的级联链会在三个环节同时失效：</p>
+<ul>
+<li><strong>加性底噪扰动</strong>：环境噪声会抬高 $\mathbf X_{\mathrm{CR}}$ 的最小奇异值并偏转零空间基向量，使通道抽头估计误差随信噪比下降迅速放大；</li>
+<li><strong>近似公共零点</strong>：一旦各路 RIR 存在近似公共零点，$\mathbf X_{\mathrm{CR}}$ 会出现多个逼近零的小奇异值，不仅让 CR 辨识率先病态，后续 MINT 求逆还会在同一批近公共零点上二次放大底噪；</li>
+<li><strong>通道阶数高估（$L>L_{\mathrm{true}}$）</strong>：任意阶数不超过 $L-L_{\mathrm{true}}$ 的公共多项式因子 $C(z)$ 均构造出满足全部交叉关系的解 $\tilde H_m(z)=C(z)H_m(z)$，使 $\mathbf X_{\mathrm{CR}}$ 的零空间维数从 $1$ 膨胀至 $L-L_{\mathrm{true}}+1$；而真实房间指数衰减的长混响尾本就不存在精确截断阶数 $L_{\mathrm{true}}$，辨识唯一性随之瓦解。</li>
+</ul>
+<p>正是“盲辨识 + 精确求逆全部 RIR 抽头”在噪声、近公共零点与阶数失配面前的双重脆弱，促使实用去混响转向 <strong>WPE</strong>——无需辨识或求逆单个 RIR 抽头，仅在 STFT 域利用历史观测线性预测并相干减去晚期混响拖尾。</p>
 <p><strong>倒谱域加窗（liftering）</strong>试图避开路径测量，借助同态信号处理把声源与房间响应拆开。它先对观测功率谱取自然对数 $\ln|X|^2$（其数值恰好是对数幅度 $\ln|X|$ 对应实倒谱的两倍；遇到零谱值时须先加正数下限保护），再做逆傅里叶变换回到倒谱域。倒谱横轴称为倒频率（quefrency），量纲与时间或采样点相同，而非频率单位 Hz。</p>
 <p>如果长卷积能理想地写成频域乘积 $X=SH$，取对数后就有 $\ln|SH|^2=\ln|S|^2+\ln|H|^2$，声门激励、声道共振与房间反射在倒谱轴上似乎变成了可加分量。可惜在实际语音处理中，短时分析窗并不满足长卷积等价为逐频乘积的前提，基音谐波结构与早期房间反射在倒频率轴上也经常重叠；更重要的是，实倒谱在取模平方时彻底丢掉了相位，单靠倒谱窗平滑幅度谱并不能恢复正确的复数相位（<a href="https://dsp-group.mit.edu/wp-content/uploads/2024/11/nonnlinearfiltering_1968.pdf">Oppenheim、Schafer 与 Stockham，1968，§VI</a> 讨论的精确回声分离依赖复倒谱与相位解缠，对一般混响房间极不稳健，详见练习 <a href="#e07-14">E07-14</a>）。</p>
 <p><strong>谱方差抑制</strong>放弃恢复混响相位，转而在能量域估计晚期混响的功率谱方差 $\sigma_r^2(n,f)$，再像单通道维纳滤波或对数谱幅度估计器那样乘以实数增益压低拖尾。以 Lebart、Boucher 与 Denbigh（<em>Acta Acustica united with Acustica</em>，2001）及 <a href="https://israelcohen.com/wp-content/uploads/2018/05/SPL_Sep2009.pdf">Habets、Gannot 与 Cohen（<em>IEEE SPL</em>，2009，§II～V）</a> 为例，该方法依据混响时间 $T_{60}$ 和直达混响比（Direct-to-Reverberant Ratio，DRR）建立扩散声场的指数功率衰减模型。它的计算开销极小，但由于只在幅度上做实数衰减而不抵消复数相位，衰减过猛时容易产生音乐噪声或吃字失真，衰减不足时又会残留明显混响感。</p>

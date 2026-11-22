@@ -429,7 +429,7 @@ All figures are generated deterministically by `scripts/make_*_figures.py` with 
 | Web & PDF accessibility | Check `lang`, `alt` text, heading hierarchy, `<th scope="col">`, keyboard focus, `/StructTreeRoot`, `Formula` `ActualText` & bookmark targets | Supported checks pass; uncertified screen-reader/PDF-UA items stated honestly |
 | Build scripts or dependencies | Run affected builders plus regression tests (`unittest discover` & `quality_check.py`) | Zero exit code, complete outputs, zero unintended dependency/file mutations |
 
-Current full-build baselines enforced by explicit constants in `scripts/quality_check.py`: **87 numbered PNGs** + **1 room plot**, **19 current tutorial pages** + **8 legacy compatibility pages** + **6 research manual pages** (**33 HTML pages**), and **19 chapter-level + 173 section-level + 827 subsection-level = 1,019 PDF bookmarks**. Quality gates must compare against independent explicit baselines rather than self-comparing dynamically generated counts, verify PNG `SourceScriptDigest` provenance, check sparse/blank PDF pages, and enforce independent expected values in numerical unit tests (checking Hermitian/PSD properties, scaling invariance, complex-input rejection on real APIs, overflow guards, and degenerate zero-energy/all-dropout edge cases).
+Current full-build baselines enforced by explicit constants in `scripts/quality_check.py`: **87 numbered PNGs** + **1 room plot**, **19 current tutorial pages** + **8 legacy compatibility pages** + **6 research manual pages** (**33 HTML pages**), and **19 chapter-level + 173 section-level + 835 subsection-level = 1,027 PDF bookmarks**. Quality gates must compare against independent explicit baselines rather than self-comparing dynamically generated counts, verify PNG `SourceScriptDigest` provenance, check sparse/blank PDF pages, and enforce independent expected values in numerical unit tests (checking Hermitian/PSD properties, scaling invariance, complex-input rejection on real APIs, overflow guards, and degenerate zero-energy/all-dropout edge cases).
 
 
 ## 8. Engineering Discipline
@@ -467,7 +467,7 @@ Current full-build baselines enforced by explicit constants in `scripts/quality_
 
 ### 8.6 Chapter Exercises and Audio Assets
 
-- Assign stable IDs (`E00-01`–`E17-13`) to all 352 exercises, keeping chapter prose, worked solutions, CLI return values, unit tests, `COVERAGE*.md`, `codes/chapters/README*.md`, and `05_exercises_and_audio.md` synchronized 1-to-1 (adding exercises never inflates the 388-row algorithm count; importing a module must never trigger experiments, disk writes, or network calls).
+- Assign stable IDs (`E00-01`–`E17-13`) to all 360 exercises, keeping chapter prose, worked solutions, CLI return values, unit tests, `COVERAGE*.md`, `codes/chapters/README*.md`, and `05_exercises_and_audio.md` synchronized 1-to-1 (adding exercises never inflates the 388-row algorithm count; importing a module must never trigger experiments, disk writes, or network calls).
 - Specify time units, block sizes, update instants, and exact freeze semantics (weights vs. covariance vs. reference history vs. state prediction) on stateful exercises; enforce explicit ordered token lists in WER scorers.
 - Keep one shared export gain per comparison group (never per-file peak normalization), separate analytic expectations, float components, and readback `PCM16` integer metrics (`E`, `D`, `E/D`), preserve CC BY-SA 3.0 / ODC-By 1.0 attributions alongside staged real-audio copies, default HTML `<audio>` players to non-autoplay with volume-down guidance, and ensure every `--check` mode is strictly read-only.
 
@@ -487,7 +487,7 @@ Structure completion reports concisely in order (omitting inapplicable items):
 ### 10.1 Research & Page-by-Page QA Ledgers
 
 - Keep items as `Modified` until final compiled HTML/PDF artifacts are inspected, promoting to `Verified` only with concrete page numbers or report paths.
-- Synchronize counts separately across algorithms (`388`), exercises (`352`), figures (`87` + `1` room plot), published WAVs (`283`), indexed Git projects (`129`), fetched checkouts (`112`), and archive sources (`2`).
+- Synchronize counts separately across algorithms (`388`), exercises (`360`), figures (`87` + `1` room plot), published WAVs (`283`), indexed Git projects (`129`), fetched checkouts (`112`), and archive sources (`2`).
 - Verify PDF bookmarks via named destinations (`id` → page & viewport coordinates) rather than text matching that could land on TOC lines.
 - Distinguish original paper-author repositories from maintainer re-implementations, preserve unmodified upstream failures separately from isolated compatibility shims, and save post-E-step posteriors separately from post-M-step parameters in iterative EM/BSS routines.
 

@@ -660,9 +660,9 @@ Before locking down a system software/hardware stack at project kickoff, work se
 3. **Are cross-modal clocking and occlusion fallbacks guaranteed?** Before adding visual lip motion, confirm whether the product latency budget tolerates waiting for the camera pipeline, and mandate the Eq. (15-30) visual-visibility confidence fallback path so darkness, backlighting, or hand occlusion never drops performance below the audio-only array baseline.
 4. **Does the downstream consumer expect "listenable waveforms" or "text only"?** Whenever human audio review is required or a frozen commercial black-box ASR API sits downstream, favor the linear spatial beamforming pipeline `TS-VAD + GSS` for zero nonlinear artifacts; when compute is tight and only final text transcripts are needed, evaluate chunked `SOT` or `DiCoW` conditioned transcription.
 
-### 15.10 Chapter Exercises (E15-01–E15-14)
+### 15.10 Chapter Exercises (E15-01–E15-15)
 
-The 14 exercises below span dual-state losses, single-speaker bypass protection, near-field distance bubbles, overlapped diarization bounds, spatial–spectral TS-VAD/GSS, audio–visual lag clipping, variable-speaker attractors, and crosstalk-resilient enrollment. Run all exercises or verify an individual problem (e.g., `--exercise E15-02`) via:
+The 15 exercises below span dual-state losses, single-speaker bypass protection, near-field distance bubbles, overlapped diarization bounds, spatial–spectral TS-VAD/GSS, audio–visual lag clipping, variable-speaker attractors, crosstalk-resilient enrollment, and FiLM affine modulation with lip-occlusion visual confidence gating. Run all exercises or verify an individual problem (e.g., `--exercise E15-02`) via:
 
 ```bash
 .venv/bin/python -m codes.chapters.ch15.chapter15_exercises
@@ -824,6 +824,35 @@ Compute: (1) at $\alpha = 0.5$ ($-6.02\ \mathrm{dB}$ crosstalk bleed), for both 
 **Solution**: (1) Writing the unnormalized norm $Z = \sqrt{1 + 2\alpha\rho_{12} + \alpha^2}$, taking the inner product of $\vec e_{\mathrm{cont}}$ with $\vec e_2$ similarly yields interferer cosine $(\rho_{12} + \alpha) / Z$. At $\alpha = 0.5$ and $\rho_{12} = 0$, $Z = \sqrt{5}/2$, target cosine drops from $1.0$ to $2/\sqrt{5} \approx 0.894427$ ($26.57^\circ$ angular drift), and interferer cosine jumps from $0$ to $1/\sqrt{5} \approx 0.447214$; substituting into the gate function shows clean-template interferer gating is just $\sigma(-3.2) \approx 0.039166$, whereas the contaminated template inflates interferer gating to $\sigma(8(1/\sqrt{5} - 0.40)) \approx 0.593320$—a $\sim 15.15\times$ increase in interferer leakage. When same-gender voiceprints carry baseline correlation $\rho_{12} = 0.3$, $Z = \sqrt{1.55}$, target cosine stays at $1.15 / \sqrt{1.55} \approx 0.923702$ while interferer cosine surges to $0.80 / \sqrt{1.55} \approx 0.642575$, readily passing bystander speech during target silence.
 
 (2) Across the $6$-frame enrollment buffer, all $6$ frames satisfy $\mathrm{SNR}_t \ge 10\ \mathrm{dB}$, so energy-only VAD pooling retains all $6$ frames and normalizes $\frac{1}{6}(4\vec e_1 + 2\vec e_2)$ to $[2/\sqrt{5}, 1/\sqrt{5}, 0]^\top$ (reproducing the $\alpha = 0.5$ crosstalk contamination). Adding the Eq. (15-25) target-exclusive probability $m_{1,t}^{\mathrm{tar}} = \gamma_{1,t}(1 - \gamma_{2,t})$ gives $0.95 \times 0.96 = 0.912 \ge 0.60$ on the first $4$ frames and $0.05 \times 0.08 = 0.004 < 0.60$ on the final $2$ crosstalk frames, rejecting them automatically so pooled normalization recovers the exact uncorrupted target template $\hat{\vec e} = [1, 0, 0]^\top$ (target cosine $1.000000$, interferer cosine $0.000000$; see `gated_enrollment_pooling`).
+
+<a id="e15-15"></a>
+
+#### E15-15: FiLM Affine Modulation Conditioning and Lip-Occlusion Visual Confidence Gating Fallback
+
+**Problem**: (1) **FiLM affine conditioning contrast and dynamic-range robustness (§15.2)**: Let a backbone network emit a 2-channel TF-bin feature vector $\vec h = [2.0, -1.0]^\top$ representing mixed target and interferer feature channels (raw channel energy ratio $h_1^2 / h_2^2 = 4.0$, i.e., $+6.02\ \mathrm{dB}$). Via Eq. (15-1), two candidate enrollment embeddings $\vec e_A = [1, 0]^\top$ and $\vec e_B = [0, 1]^\top$ map to modulation parameters $\vec\gamma_A = [1.5, 0.2]^\top, \vec\beta_A = [0.1, 0.0]^\top$ and $\vec\gamma_B = [0.2, 1.5]^\top, \vec\beta_B = [0.0, 0.1]^\top$, respectively. Compute the exact FiLM outputs $\vec h'_k = \vec\gamma_k \odot \vec h + \vec\beta_k$ of Eq. (15-2), their channel energy ratios $h'_{k,1}{}^2 / h'_{k,2}{}^2$ (linear and dB), and the total contrast swing between selecting A versus B; then contrast against pure additive bias conditioning $\vec h^{\mathrm{add}}_k = \vec h + \vec\beta_k$, including when input mixture energy fluctuates by $+20\ \mathrm{dB}$ ($10\times$ amplitude to $10\vec h$).
+
+(2) **Lip-occlusion visual confidence gating fallback in log-odds fusion (§15.6)**: Complementing the mask-domain convex interpolation of Eq. (15-30), consider log-odds audio–visual speech-presence fusion
+
+$$\ell_{\mathrm{AV}}=\ell_A+w_v(c_v)\,\ell_V,\qquad p_{\mathrm{AV}}=\sigma(\ell_{\mathrm{AV}})=\frac{1}{1+e^{-\ell_{\mathrm{AV}}}},\qquad w_v(c_v)=\operatorname{clip}\!\left(\frac{c_v-c_{\min}}{c_{\max}-c_{\min}},\,0,\,1\right),$$
+
+with confidence ramp limits $c_{\min} = 0.3$ and $c_{\max} = 0.8$. During active target speech, the audio branch reports log-odds $\ell_A = +2.0$ while an occluded camera reports false-negative lip-activity log-odds $\ell_V = -4.0$. Compute $p_A, p_V$, and the fused log-odds $\ell_{\mathrm{AV}}$ and posterior $p_{\mathrm{AV}}$ under: (a) ungated fixed fusion ($w_v = 1.0$); (b) severe lip occlusion dropping detector confidence to $c_v = 0.25$; (c) partial occlusion at $c_v = 0.45$. Also find the critical visual confidence $c_v^\star$ where the decision flips ($p_{\mathrm{AV}} = 0.5$).
+
+**Solution**: (1) Applying Eq. (15-2) element-wise (`E15-15` in `chapter15_exercises`, calling `film_conditioning`):
+
+- **Target A ($\vec\gamma_A = [1.5, 0.2]^\top, \vec\beta_A = [0.1, 0.0]^\top$)**: $\vec h'_A = [1.5 \times 2.0 + 0.1,\ 0.2 \times (-1.0) + 0.0]^\top = [3.1, -0.2]^\top$, with channel energy ratio $3.1^2 / (-0.2)^2 = 9.61 / 0.04 = 240.25$ ($10\log_{10}(240.25) \approx +23.81\ \mathrm{dB}$);
+- **Target B ($\vec\gamma_B = [0.2, 1.5]^\top, \vec\beta_B = [0.0, 0.1]^\top$)**: $\vec h'_B = [0.2 \times 2.0 + 0.0,\ 1.5 \times (-1.0) + 0.1]^\top = [0.4, -1.4]^\top$, with channel energy ratio $0.4^2 / (-1.4)^2 = 0.16 / 1.96 = 4/49 \approx 0.081633$ ($10\log_{10}(4/49) \approx -10.88\ \mathrm{dB}$).
+
+Switching the conditioning cue from A to B yields a $23.81 - (-10.88) = 34.69\ \mathrm{dB}$ (exact $34.688\ \mathrm{dB}$) multiplicative contrast swing. By contrast, pure additive bias conditioning $\vec h + \vec\beta_k$ produces $[2.1, -1.0]^\top$ ($+6.44\ \mathrm{dB}$) vs. $[2.0, -0.9]^\top$ ($+6.94\ \mathrm{dB}$)—a $-0.49\ \mathrm{dB}$ shift that cannot even reverse channel dominance. When mixture energy rises by $+20\ \mathrm{dB}$ ($10\vec h = [20.0, -10.0]^\top$), FiLM emits $[30.1, -2.0]^\top$ ($+23.55\ \mathrm{dB}$) vs. $[4.0, -14.9]^\top$ ($-11.42\ \mathrm{dB}$), preserving a $34.97\ \mathrm{dB}$ contrast swing (approaching the scale-invariant multiplicative limit $40\log_{10}(1.5/0.2) \approx 35.00\ \mathrm{dB}$), whereas additive bias is swamped by the larger feature scale ($[20.1, -10.0]^\top$ at $+6.06\ \mathrm{dB}$ vs. $[20.0, -9.9]^\top$ at $+6.11\ \mathrm{dB}$, shrinking to $-0.04\ \mathrm{dB}$). Multiplicative channel scaling $\vec\gamma$ is therefore indispensable whenever target and interferer energies fluctuate over wide dynamic ranges.
+
+(2) Single-modality posteriors are $p_A = \sigma(2.0) = (1 + e^{-2})^{-1} \approx 0.880797$ (strong audio detection) and $p_V = \sigma(-4.0) = (1 + e^{4})^{-1} \approx 0.017986$ (severe false-negative visual silence from occlusion). Evaluating all three gating cases:
+
+| Gating Regime | Visual Confidence $c_v$ | Visual Weight $w_v$ | Fused Log-Odds $\ell_{\mathrm{AV}}$ | Fused Posterior $p_{\mathrm{AV}}$ | Decision ($p_{\mathrm{AV}} \ge 0.5$) |
+|---|---:|---:|---:|---:|---|
+| Ungated fixed fusion | — | $1.00$ | $-2.00$ | $0.119203$ | False silence (target dropout) |
+| Severe occlusion fallback | $0.25$ | $0.00$ | $+2.00$ | $0.880797$ | Active (clean audio-only fallback) |
+| Partial occlusion down-weighting | $0.45$ | $0.30$ | $+0.80$ | $0.689974$ | Active (false-negative damped) |
+
+Setting $\ell_{\mathrm{AV}} = 2.0 - 4.0\,w_v = 0$ yields critical weight $w_v^\star = 0.50$, corresponding to critical confidence $c_v^\star = 0.3 + 0.50 \times (0.8 - 0.3) = 0.55$. Without confidence gating, a single strongly negative occluded visual log-odds drags target speech posterior from $0.880797$ down to $0.119203$ (causing target dropout); with confidence gating, severe occlusion ($c_v = 0.25 < 0.3$) sets $w_v = 0.0$ for exact audio-only fallback ($0.880797$), while partial occlusion ($c_v = 0.45$) attenuates the visual term to $w_v = 0.30$ and holds $p_{\mathrm{AV}} \approx 0.689974 > 0.5$, ensuring multimodal fusion never underperforms the audio-only baseline under visual obstruction.
 
 ### 15.11 Primary References and Further Reading
 

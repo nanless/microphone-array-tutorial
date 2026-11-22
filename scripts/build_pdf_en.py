@@ -374,7 +374,7 @@ def build_html_en(build_date: str | None = None):
         '<table class="cover-stats-table">'
         "<thead><tr>"
         f'<th scope="col">{len(CHAPTERS_EN)} Chapters &amp; Guides</th>'
-        '<th scope="col">352 Runnable Exercises</th>'
+        '<th scope="col">360 Runnable Exercises</th>'
         '<th scope="col">87 Traced Figures</th>'
         '<th scope="col">283 Companion WAVs</th>'
         "</tr></thead>"

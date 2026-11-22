@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>空间处理与追踪源码研究 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="a0289902c00e"><style>
+<meta name="source-digest" content="b82b7d85f70d"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -2408,7 +2408,7 @@ C_{\mathrm{PAN}}&=\frac{\vec w^H\mathbf R_n\vec a}{\vec w^H\mathbf R_n\vec w},\\
 <li><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch14/core/wearable_fusion.py"><code>wearable_fusion.py</code></a>：建立 Corcos 湍流边界层风噪相干模型、外麦气导与耳内闭塞麦克风分频带跨模态 MVDR/MMSE 融合，以及 TWS 通透模式（Hear-Through）处理延迟引发的耳道梳状滤波。</li>
 <li><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch14/core/ambisonic_sofa_rendering.py"><code>ambisonic_sofa_rendering.py</code></a>：核验 FOA max-$\vec r_E$ 能量矢量阶数加权扬声器解码、AES69/SOFA <code>SimpleFreeFieldHRIR</code> 坐标变换及头部追踪运动到声音延迟（Motion-to-Photon/Sound Latency）预算。</li>
 </ul>
-<p>以上四个模块承载 <code>E14-01</code>～<code>E14-15</code> 与六份 16 kHz 数学合成 WAV 的解析、浮点及 PCM16 整型对照。计算仅验证指定物理方程、矩阵条件数与量化边界，不包含个体化实测 HRTF、骨导传感器硬件标定或主观空间听感评测。</p>
+<p>以上四个模块承载 <code>E14-01</code>～<code>E14-16</code> 与六份 16 kHz 数学合成 WAV 的解析、浮点及 PCM16 整型对照。计算仅验证指定物理方程、矩阵条件数与量化边界，不包含个体化实测 HRTF、骨导传感器硬件标定或主观空间听感评测。</p>
 <span id="622-五个锁定上游仓库的源码核验与未执行边界" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-62-2">62.2 五个锁定上游仓库的源码核验与未执行边界</h3>
 <p><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/SOURCES.lock.json">SOURCES.lock.json</a> 与 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/SOURCE_STATUS.json">SOURCE_STATUS.json</a> 登记了与本章对应的五个 MIT 许可纯文本选集，离线核验状态均为 <code>source_verified</code>（<code>execution="not_run"</code>）：</p>
 <ul>

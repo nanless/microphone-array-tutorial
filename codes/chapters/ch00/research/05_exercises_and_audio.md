@@ -4,7 +4,7 @@
 
 先按章节做手算，再运行对应脚本，最后听同一模型产生的音频。代码输出不是预填的答案表；程序从输入重新计算结果，回归测试另外保留手算、解析边界或已知模型作为判据。
 
-本页索引 352 道带稳定编号的代码题（`E00-01`～`E17-13`），以及独立的真实录音练习 R01。`E00-01` 表示第 0 章的第 1 道数学预备代码题，`E01-01` 表示第 1 章的第 1 道代码题；附录 B 中另有按 1～17 编号的综合题，两套题号各自使用。
+本页索引 360 道带稳定编号的代码题（`E00-01`～`E17-13`），以及独立的真实录音练习 R01。`E00-01` 表示第 0 章的第 1 道数学预备代码题，`E01-01` 表示第 1 章的第 1 道代码题；附录 B 中另有按 1～17 编号的综合题，两套题号各自使用。
 
 E06-07～E06-10 使用无量纲回声模型检查 AEC 的计算与边界，其中 E06-08～10 可用精确答案程序核对。第 15、16 节另提供参数不同的合成音频；试听文件本身不是题目真值。
 
@@ -73,28 +73,28 @@ E06-07～E06-10 使用无量纲回声模型检查 AEC 的计算与边界，其�
 | 第 3 章 E03-01～07 | 差集重数、端射角误差、三维方位、近远场、复增益标定及物理协方差到虚拟协同阵 | [空间练习](../cross_chapter/exercises_spatial.py)（01～06）；[协同阵 E03-07](../../ch03/coarray_covariance_exercise.py) |
 | 第 3 章 E03-08～18 | 完整相位歧义、互耦噪声放大、复增益最小二乘、互质洞、双麦差分、带噪参考、共面镜像与近共面满秩、多频相位、已知方向基线、刚性球障板散射孔径偏置与硅麦密封垫泄漏声学高通极点失配 | [几何与校准实验](../../ch03/chapter03_experiments.py) |
 | 第 4 章 E04-01～09 | 延迟正号、相干源秩、栅瓣歧义、空间平滑、MDL、双源分辨率重复抽样与 ESPRIT 最小二乘 | [空间练习](../cross_chapter/exercises_spatial.py)（01～07、09）；[分辨率 E04-08](../../ch04/doa_resolution_trials.py) |
-| 第 4 章 E04-12～23 | SRP直求和与近场网格、ESPRIT基与分支、GN与相关TDOA的GLS一步、局部时延CRLB、纯音歧义与宽带约束、非酉聚焦噪声、酉聚焦跨频秩、root-MUSIC多项式、相干反射假峰、人工CTF首比、UCA贝塞尔相位模式ESPRIT与双麦盲相干扩散比（CDR）筛选 | [定位逐步实验](../../ch04/chapter04_experiments.py) |
+| 第 4 章 E04-12～24 | SRP直求和与近场网格、ESPRIT基与分支、GN与相关TDOA的GLS一步、局部时延CRLB、纯音歧义与宽带约束、非酉聚焦噪声、酉聚焦跨频秩、root-MUSIC多项式、相干反射假峰、人工CTF首比、UCA贝塞尔相位模式ESPRIT、双麦盲相干扩散比（CDR）筛选及 $\ell_1$ 稀疏定位离网格失配与 SELD 位置相关 $F_{20^\circ}$ 耦合 | [定位逐步实验](../../ch04/chapter04_experiments.py) |
 | 第 5 章 E05-01～02 | 复响应约束与有限干扰抑制 | [空间练习](../cross_chapter/exercises_spatial.py) |
 | 第 5 章 E05-05～20 | GSC零空间与单快拍/相干相消、Frost投影、Zelinski非负性与McCowan相干边界、MPDR失配自消、四麦球谐秩、GSC泄漏冻结音频、GEV/Souden/MWF参考声像与满秩边界、掩码与逐通道预滤波秩跳变、最坏范数球约束、导数约束复响应与双音PCM、逐频相位旋转、一阶差分波束与平面阵Kronecker分解、双耳MVDR/LCMV线索保持（18～20） | [波束逐步实验](../../ch05/chapter05_experiments.py)（05～17）；[双耳波束演示](../../ch05/examples/binaural_beamforming_demo.py)（18～20） |
 | 第 6 章 E06-01～10 | NLMS、双讲冻结、误差极性、噪声底、三次非线性、负极性延迟峰、IPNLMS正则起步、RLS记忆长度与两带延迟抽头 | [增强练习](../cross_chapter/exercises_enhancement.py)（01～06）；[AEC 小例](../../ch06/aec_algorithm_minicases.py)（07）；[进阶手算](../../ch06/aec_advanced_exercises.py)（08～10） |
 | 第 6 章 E06-12～20 | 多参考共同分母与可辨识性、因果对齐、漂移、参考断流、后验评分、块ERLE的dB均值、NLMS归一化偏差与注入增量分解 | [AEC逐步实验](../../ch06/chapter06_experiments.py) |
 | 第 6 章 E06-21～25 | 二维参数空间仿射投影几何、窗口重算、共线输入Gram秩亏与正则阻尼、路径先验留出验证及强自相关有色参考冻结留出窗六WAV评分 | [APA逐步缩例](../../ch06/aec_affine_projection_demo.py)（21～24）；[有色参考音频生成/核验](../../ch06/examples/generate_apa_audio.py)（25）；展开见§40 |
-| 第 6 章 E06-26～30 | 已知播放增益与卷积顺序、参考当前静音与纯回声尾声、三个实际PCM评分窗、奇次幂与 Legendre 正交基 Hammerstein 扩维 AEC 及立体声时变全通去相关、环路因果期限与主从双滤波器切换 | [逐样本核](../../ch06/core/reference_timing.py)、[非线性与立体声核](../../ch06/core/nonlinear_and_stereo.py)、[章节入口](../../ch06/chapter06_experiments.py)（26～27、29～30）、[六WAV生成/核验](../../ch06/examples/generate_reference_audio.py)（28）；展开见§56 |
+| 第 6 章 E06-26～32 | 已知播放增益与卷积顺序、参考当前静音与纯回声尾声、三个实际PCM评分窗、奇次幂与 Legendre 正交基 Hammerstein 扩维 AEC、立体声时变全通去相关与主从双滤波器切换、PBFDKF 双讲观测方差抬升与状态遗忘因子稳态权衡及残余回声抑制维纳地板增益与 CNG 电平匹配 | [逐样本核](../../ch06/core/reference_timing.py)、[非线性与立体声核](../../ch06/core/nonlinear_and_stereo.py)、[章节入口](../../ch06/chapter06_experiments.py)（26～27、29～32）、[六WAV生成/核验](../../ch06/examples/generate_reference_audio.py)（28）；展开见§56 |
 | 第 7 章 E07-01～05 | 有效帧、复数预测、秩亏加载、离线因果性、WPD | [增强练习](../cross_chapter/exercises_enhancement.py) |
 | 第 7 章 E07-08～17 | 复数拟合、功率约束、历史置换、递推先验、整块加载、可预测目标与已知路径逆音频、实倒谱相位、正规方程退化、MINT近似公零点噪声放大与受限正则逆、六个PCM对照 | [WPE逐步实验](../../ch07/chapter07_experiments.py) |
 | 第 7 章 E07-18～21 | T60功率衰减单位、分布式传播时差与六个PCM波形对照、长静音下在线RLS-WPE逆协方差爆炸与凸对角回拉门控及AEC+WPE线性级联可辨识性与分频带阶数预算 | [到达与历史核](../../ch07/core/prediction_delays.py)、[在线与级联核](../../ch07/core/online_and_cascade.py)、[章节入口](../../ch07/chapter07_experiments.py)、[六WAV生成/只读核验](../../ch07/examples/generate_delay_audio.py)；展开见§57 |
 | 第 8 章 E08-01～06 | SI-SDR、排列、已知解混、回投影、掩码地板与跨块身份 | [增强练习](../cross_chapter/exercises_enhancement.py) |
-| 第 8 章 E08-10～26 | 复数逐行IP、联合回投影、活动门控先验反例、ILRMA更新、欠定MNMF辨识、合同对角化重构、重叠区关联音频、白化反例、三张矩阵共同对角边界、FastMNMF雅可比、加权混合一致性、有界/无界实掩码与复掩码表示、两个一致性次序、PCA/OverIVA背景约束、排列匹配后极性与增益跳变音频、卷积不变CI-SDR过拟合边界及流式算力预算与单人段旁路门控 | [分离逐步实验](../../ch08/chapter08_experiments.py) |
+| 第 8 章 E08-10～27 | 复数逐行IP、联合回投影、活动门控先验反例、ILRMA更新、欠定MNMF辨识、合同对角化重构、重叠区关联音频、白化反例、三张矩阵共同对角边界、FastMNMF雅可比、加权混合一致性、有界/无界实掩码与复掩码表示、两个一致性次序、PCA/OverIVA背景约束、排列匹配后极性与增益跳变音频、卷积不变CI-SDR过拟合边界、流式算力预算与单人段旁路门控及 AuxIVA 无求逆秩一 ISS 与 IP 收敛对照 | [分离逐步实验](../../ch08/chapter08_experiments.py) |
 | 第 9 章 E09-01～06 | 缺测、环绕、粒子、两类过程噪声、新息门控与交叉身份错配 | [增强练习](../cross_chapter/exercises_enhancement.py)（01～05）；[追踪交叉与限速](../../ch09/tracking_crossing_dropout_demo.py)（06） |
-| 第 9 章 E09-10～22 | EKF一步、无迹矩、圆周歧义与正先验支持、PHD人数方差与伯努利空观测、OSPA/GOSPA边界、固定滞后RTS平滑与乱序观测、实际双麦PCM波形链、相关观测与纯方位尺度歧义、完整对数似然IMM缺测递推、双麦PCM生命周期、三维姿态与球面vMF、本机扬声器残余回声杂波扇区门控及视听异构延迟回溯与视场盲区漏检 | [追踪逐步实验](../../ch09/chapter09_experiments.py)；音频独立见§31与§59 |
+| 第 9 章 E09-10～23 | EKF一步、无迹矩、圆周歧义与正先验支持、PHD人数方差与伯努利空观测、OSPA/GOSPA边界、固定滞后RTS平滑与乱序观测、实际双麦PCM波形链、相关观测与纯方位尺度歧义、完整对数似然IMM缺测递推、双麦PCM生命周期、三维姿态与球面vMF、本机扬声器残余回声杂波扇区门控、视听异构延迟回溯与视场盲区漏检及对称交叉轨迹 JPDA 边缘关联概率与硬指派 GNN 对照 | [追踪逐步实验](../../ch09/chapter09_experiments.py)；音频独立见§31与§59 |
 | 第 10 章 E10-01～14 | 时钟、VAD、缓冲、期限、定点、增益、帧/字节、块适配、功率谱减与全链资源预算 | [工程练习](../cross_chapter/exercises_engineering.py)（01～12、14）；[谱减演示](../../ch10/spectral_subtraction_demo.py)（13） |
 | 第 10 章 E10-18～28 | 谱减截断偏差、精确插值混叠、整块AGC音频、MCRA软更新滞后/有限尾部逆积分/非抢占阻塞/外部时钟尺度/噪声失配六WAV/已知坏麦重建六WAV（21～26）、PDM CIC抽取位宽滚降与边沿偏斜及ITU-T P.340双工分级与P.808众包听测筛查 | [工程逐步实验](../../ch10/chapter10_experiments.py)；专项音频见§43与§60 |
 | 第 11 章 E11-01～07 | 资源约束、失败率统计、WER 聚合、延迟分位数和三个场景选型决策 | [工程练习](../cross_chapter/exercises_engineering.py) |
 | 第 11 章 E11-10～22 | 硬约束Pareto集、同时风险界、模块交互、FIR噪声与总误差取舍、区间支配与硬阈值三态、两小时零误触发泊松上界、ORC话段敏感、时间窗编辑误差、跨场景FIR选型、评分缺失覆盖、同阵列验收证据、车载多音区总线漂移/双讲保护及座舱扩声（ICC）啸叫裕度与3QUEST认证判据 | [选型逐步实验](../../ch11/chapter11_experiments.py)；音频见§33与§44 |
 | 第 12 章 E12-01～18 | 复幅度与均方CSM、DAMAS前/双向遍历、相位码快拍、相干源假成功、重复列/离网格与441格泄漏、对角删除、幅度校准、单频区域量、完整CSM CLEAN-SC、CMF目标、窗谱端点、参考点变换、频带积分、源噪可辨识性、Gram目标对照、四列不可辨识及Dougherty函数波束形成特征谱幂次压缩与积分不守恒 | [成像逐步实验](../../ch12/chapter12_exercises.py)；五份快拍WAV与展开见§47 |
-| 第 13 章 E13-01～20 | 复参考共轭、广播尺度、顺序/同时/松弛更新与陈旧快照、多目标秩亏、零广播回退、加载目标、比特率与矩阵内存、100 ppm线性SRC、连续丢包缺口、PCM16传输界与三层稳窗评分、Jacobi与步长条件、树求和、GEVD白化、广播坐标重映射、AES67/PTPv2同步预算及DASF统一子空间 | [分布式逐步实验](../../ch13/chapter13_exercises.py)；17份WAV与展开见§48 |
-| 第 14 章 E14-01～15 | 四面体 FOA 编码、开球零陷、欧拉旋转、声强 DirAC、BSM-MagLS/方向加权、双耳参考混合、跨模态抗风噪融合、通透梳状滤波、超低功耗预算与六WAV三层对账、FOA max-rE 能量矢量扬声器解码与 SOFA 坐标及头部追踪延迟预算 | [可穿戴逐步实验](../../ch14/chapter14_exercises.py)；六WAV见§61 |
-| 第 15 章 E15-01～14 | 双态地板损失、零重叠旁路、球面波距离气泡与孔径病态、DER 下界与合法超100%、空谱 TS-VAD/GSS、视听滞后截断、二抽头距离气泡PCM、EEND-EDA 吸引子存在性门控与注册声纹串音排他净化 | [目标提取逐步实验](../../ch15/chapter15_exercises.py)；六WAV见§62 |
+| 第 13 章 E13-01～21 | 复参考共轭、广播尺度、顺序/同时/松弛更新与陈旧快照、多目标秩亏、零广播回退、加载目标、比特率与矩阵内存、100 ppm线性SRC、连续丢包缺口、PCM16传输界与三层稳窗评分、Jacobi与步长条件、树求和、GEVD白化、广播坐标重映射、AES67/PTPv2同步预算、DASF统一子空间及 DWACD 双窗盲 SRO 估计与语音活动门控 | [分布式逐步实验](../../ch13/chapter13_exercises.py)；17份WAV与展开见§48 |
+| 第 14 章 E14-01～16 | 四面体 FOA 编码、开球零陷、欧拉旋转、声强 DirAC、BSM-MagLS/方向加权、双耳参考混合、跨模态抗风噪融合、通透梳状滤波、超低功耗预算与六WAV三层对账、FOA max-rE 能量矢量扬声器解码、SOFA 坐标及头部追踪延迟预算及刚性球二阶 HOA 径向模态提升与低频 WNG 放大 | [可穿戴逐步实验](../../ch14/chapter14_exercises.py)；六WAV见§61 |
+| 第 15 章 E15-01～15 | 双态地板损失、零重叠旁路、球面波距离气泡与孔径病态、DER 下界与合法超100%、空谱 TS-VAD/GSS、视听滞后截断、二抽头距离气泡PCM、EEND-EDA 吸引子存在性门控、注册声纹串音排他净化及 FiLM 仿射条件调制与唇部遮挡视觉置信度门控回退 | [目标提取逐步实验](../../ch15/chapter15_exercises.py)；六WAV见§62 |
 | 附录 A E16-01～04 | 卷积、复二阶矩、秩亏最小二乘、空间白化与 PHAT 的区别 | [工程练习](../cross_chapter/exercises_engineering.py) |
 | 附录 A E16-06～15 | 有符号 FFT 频点、分块卷积尾部、SDW 噪声零空间极限、绝对与相对加载尺度、复LS残差、数值判秩截断与ridge、复相关共轭反序、`eigh` 前提、已知对角噪声WLS与双通道音频、完整相关噪声负权重与同步白化 | [附录 A 逐步实验](../../appendix_a/appendix_a_experiments.py)；音频见§34与§45 |
 | 附录 B E17-01 | 同组共同增益与独立归一化 | [工程练习](../cross_chapter/exercises_engineering.py) |
@@ -1956,6 +1956,7 @@ e^{-\mathrm j2\pi 2000n/24000},\\
 | E13-18 | 同物理二观测，第二压缩坐标乘2后累计统计 | 正确同坐标累计MSE$1/3$；直接混合旧/新坐标的当前MSE$329/961$，损失$26/2883$；混合矩阵仍正定 |
 | E13-19 | AES67/PTPv2 亚微秒硬件同步预算与软件 SRO-DANSE 对照 | 48 kHz 下 ±1 μs 锁相在 2.4 kHz 最坏相移 1.728°（衰减 <0.001 dB）；自由晶振 100 ppm 每秒滑移 4.8 点、2.083 s 首次 180° 相消 |
 | E13-20 | DASF 统一子空间：分布式 MWF、MVDR、GEVD 与 LCMV 何时同方向、何时分道扬镳 | 单源秩一下三者共享同一压缩一维方向；双约束 LCMV 死守旧广播恶化，L_u = P = 3 自由度耗尽锁死需双路广播 R = 2 解锁 |
+| E13-21 | DWACD 双窗盲 SRO 估计与语音活动门控（$+100\,\mathrm{ppm}$、$B=200$ 帧、非对称静音与强突发噪声对照） | 理论漂移 $5.12$ 样本、相位斜率 $0.02\pi\ \mathrm{rad/bin}$；联合活动门控消除质心错位偏差，本地突发噪声下避免无门控互谱信噪比暴跌约 $26\,\mathrm{dB}$ 与 MSC 崩塌 |
 
 ```bash
 .venv/bin/python -m codes.chapters.ch13.chapter13_exercises
@@ -2276,7 +2277,7 @@ p=1、2、3给出三行[1/2,1,1+j]、[0,1/2,1/4−j/2]、[1,0,0]。这是普通�
 
 若改为稳定持续复指数，相关设计行成比例，秩只有1；即使记录很长，三个归一化未知量仍不唯一。已知初始化边界若另进入观测，会增加额外激励，必须单独说明。Q设错、a0接近零、带噪设计列或路径变化则需要新的估计模型。
 
-[章节代码](../../ch04/chapter04_experiments.py)直接从公开输入卷积、组矩阵、求解并检查持续单音的秩，不预填结果。真实DP-RTF的CTF窗权、首反射间隔、PSD噪声差分、活动段及候选响应匹配见[研究58](01_spatial_and_tracking.md#sec-u-1ca23edba5)；这道教学代数题不是作者MATLAB系统或实房间定位复现。
+[章节代码](../../ch04/chapter04_experiments.py)直接从公开输入卷积、组矩阵、求解并检查持续单音的秩，不预填结果。真实DP-RTF的CTF窗权、首反射间隔、PSD噪声差分、活动段及候选响应匹配见[研究58](01_spatial_and_tracking.md#sec-u-1ca23edba5)；这道教学代数题不是作者MATLAB系统或实房间定位复现。同一入口另含 [E04-24](../../../../chapters/04_doa-estimation.md#e04-24)，在 $M=8$ 半波长线阵 $5^\circ$ 粗糙字典上量化 $\ell_1$ 稀疏定位的离网格能量泄漏，并核对 SELD 空间门限 $T_{\mathrm{DOA}}=20^\circ$ 下平均角误差与位置相关 $F_{20^\circ}$ 指标的耦合跃变（纯解析/数值验证，不新增 WAV）。
 
 
 <a id="phase-reference-audio"></a>
@@ -2419,7 +2420,7 @@ E06-28将这个运算顺序扩为可播放的数学模型。采样率16kHz，源
 
 第一项执行E06-26/27短核，第二项在内存完整重放六文件并核对当前源、严格JSON、固定参数和普通七成员目录，不补文件、不改清单。首次生成去掉`--check`。唯一[音频核](../../ch06/core/reference_audio.py)复用NLMS、NCC和共享PCM/IO；[生成器](../../ch06/examples/generate_reference_audio.py)与[发布测试](../../../../tests/test_ch06_reference_publication.py)分别核对资产和网站副本。
 
-[图69源](../../../../scripts/make_reference_figures.py)读取核验后的PCM，[同次报告](../../ch06/reports/figure69_reference_timing.json)绑定八音频源、两绘图源、清单与六WAV摘要，分开给定增益、实际残差、解析/PCM功率和尾声帧RMS。WebRTC的音量变化通知与XMOS特定模式的参考活动保持属于各自控制接口，不能由它们推断参考样本已自动乘增益、历史已完整保留或近端声已被识别；固定源码边界见[AEC研究](02_aec_wpe_separation.md)与[工业部署](03_industrial_deployment.md)。
+[图69源](../../../../scripts/make_reference_figures.py)读取核验后的PCM，[同次报告](../../ch06/reports/figure69_reference_timing.json)绑定八音频源、两绘图源、清单与六WAV摘要，分开给定增益、实际残差、解析/PCM功率和尾声帧RMS。WebRTC的音量变化通知与XMOS特定模式的参考活动保持属于各自控制接口，不能由它们推断参考样本已自动乘增益、历史已完整保留或近端声已被识别；固定源码边界见[AEC研究](02_aec_wpe_separation.md)与[工业部署](03_industrial_deployment.md)。同一入口另含 [E06-31](../../../../chapters/06_aec.md#e06-31)（PBFDKF 双讲观测方差抬升 $\hat\Psi_e=|e|^2$ 与状态遗忘因子 $A=0.999$ 对 $0.99$ 的稳态不动点权衡）及 [E06-32](../../../../chapters/06_aec.md#e06-32)（残余回声抑制维纳地板增益 $G_{\min}=0.1$ 与舒适噪声功率匹配 $\Phi_{\mathrm{CNG}}=(1-G_{\mathrm{RES}}^2)\hat\Phi_{nn}$），均为纯数值复算，不新增 WAV。
 
 
 <a id="known-arrival-audio"></a>
@@ -2532,7 +2533,7 @@ E06-28将这个运算顺序扩为可播放的数学模型。采样率16kHz，源
 .venv/bin/python -m codes.chapters.ch08.examples.generate_css_audio --check
 ```
 
-只读核验拒绝多余成员、链接、元数据漂移和真实源变化，不自动修补。这个实验没有运行CSS分离器、识别说话人、修复任意时延或频率相位，也不是自然语音或正式听测。
+只读核验拒绝多余成员、链接、元数据漂移和真实源变化，不自动修补。这个实验没有运行CSS分离器、识别说话人、修复任意时延或频率相位，也不是自然语音或正式听测。此外，[E08-27](../../../../chapters/08_speech-separation.md#e08-27) 在同一章节入口 `chapter08_experiments` 中复算单频双通道 AuxIVA 的无求逆秩一迭代源导向（ISS）更新与迭代投影（IP）收敛对照：第 5 轮两者距共同最优目标 $Q^\star$ 的偏差均小于 $10^{-14}$，验证 ISS 保持免步长单调下降并消去 $O(M^3)$ 矩阵求逆（无额外 WAV）。
 
 
 <a id="tracking-model-lifecycle-sphere-exercises"></a>
@@ -2580,7 +2581,7 @@ E06-28将这个运算顺序扩为可播放的数学模型。采样率16kHz，源
 .venv/bin/python scripts/make_tracking_figures.py
 ```
 
-前三个命令只读复算；最后一条真实生成图72与数值报告。来源与原始方法边界见[空间研究§61](01_spatial_and_tracking.md#tracking-model-lifecycle-sphere)，数值与失败输入的独立测试见[IMM/球面回归](../../../../tests/test_codes_ch09_imm_spherical.py)、[生命周期回归](../../../../tests/test_codes_ch09_lifecycle.py)和[发布合同回归](../../../../tests/test_quality_ch09_lifecycle_publication.py)。本节未实现动态球面滤波、未知姿态估计或真实房间定位，客观PCM核验也不是正式听测。
+前三个命令只读复算；最后一条真实生成图72与数值报告。来源与原始方法边界见[空间研究§61](01_spatial_and_tracking.md#tracking-model-lifecycle-sphere)，数值与失败输入的独立测试见[IMM/球面回归](../../../../tests/test_codes_ch09_imm_spherical.py)、[生命周期回归](../../../../tests/test_codes_ch09_lifecycle.py)和[发布合同回归](../../../../tests/test_quality_ch09_lifecycle_publication.py)。同一章节入口另含 [E09-23](../../../../chapters/09_source-tracking.md#e09-23)，在对称双轨交叉帧上对照联合概率数据关联（JPDA）边缘权重与均值散布协方差扩散（$\tilde P_1=+0.039603\ \mathrm{deg}^2$）与过度自信的硬指派 GNN。本节未实现动态球面滤波、未知姿态估计或真实房间定位，客观PCM核验也不是正式听测。
 
 
 <a id="known-channel-failure-exercise"></a>
@@ -2651,7 +2652,7 @@ E06-28将这个运算顺序扩为可播放的数学模型。采样率16kHz，源
 
 ## 61. 第14章空间声场与可穿戴阵列对照实验
 
-[扩展专题Ⅲ](../../../../chapters/14_spatial-wearable-arrays.md)通过 E14-01～15 复算四面体 FOA 编码、开球径向模态零陷、三维欧拉旋转对偶、有功声强与扩散度参数化分析、BSM-MagLS 与方向加权双耳匹配、BMVDR 参考混合、Corcos 风噪相干、气导与耳内闭塞跨模态 MVDR 融合、TWS 通透模式（Hear-Through）处理延迟导致的耳道梳状滤波效应、超低功耗预算、六 WAV 三层对账，以及 FOA max-rE 能量矢量扬声器解码与 SOFA 坐标及头部追踪延迟容限。
+[扩展专题Ⅲ](../../../../chapters/14_spatial-wearable-arrays.md)通过 E14-01～16 复算四面体 FOA 编码、开球径向模态零陷、三维欧拉旋转对偶、有功声强与扩散度参数化分析、BSM-MagLS 与方向加权双耳匹配、BMVDR 参考混合、Corcos 风噪相干、气导与耳内闭塞跨模态 MVDR 融合、TWS 通透模式（Hear-Through）处理延迟导致的耳道梳状滤波效应、超低功耗预算、六 WAV 三层对账、FOA max-rE 能量矢量扬声器解码与 SOFA 坐标及头部追踪延迟容限，以及 [E14-16](../../../../chapters/14_spatial-wearable-arrays.md#e14-16) 的刚性球（$R=4.2\ \mathrm{cm}$）二阶 HOA（$N=2$ 九通道）对比一阶 FOA（$N=1$ 四通道）径向模态提升与低频 WNG 放大界限（$\kappa R=0.2$ 处无正则二阶 WNG 跌落 $22.22\ \mathrm{dB}$）。
 
 ### 61.1 六份 16 kHz 数学合成对照音频
 
@@ -2676,7 +2677,7 @@ E06-28将这个运算顺序扩为可播放的数学模型。采样率16kHz，源
 
 ## 62. 第15章条件目标提取与近场距离气泡对照实验
 
-[扩展专题Ⅳ](../../../../chapters/15_target-extraction-diarization.md)通过 E15-01～14 复算目标存在与沉默双态能量地板损失、单人擦音零重叠旁路门限、球面波同向距离气泡 LCMV 波束形成与小孔径正则权衡、重叠会议单标签 DER 理论下界与合法超 100% 构造、空谱联合 TS-VAD 后验与排他 GSS 掩码、摄像头正滞后词首截断、二抽头距离气泡 PCM 三层对账，以及 EEND-EDA 吸引子存在性门控与注册声纹串音排他净化。
+[扩展专题Ⅳ](../../../../chapters/15_target-extraction-diarization.md)通过 E15-01～15 复算目标存在与沉默双态能量地板损失、单人擦音零重叠旁路门限、球面波同向距离气泡 LCMV 波束形成与小孔径正则权衡、重叠会议单标签 DER 理论下界与合法超 100% 构造、空谱联合 TS-VAD 后验与排他 GSS 掩码、摄像头正滞后词首截断、二抽头距离气泡 PCM 三层对账、EEND-EDA 吸引子存在性门控、注册声纹串音排他净化，以及 [E15-15](../../../../chapters/15_target-extraction-diarization.md#e15-15) 的 FiLM 仿射条件调制对比度切换与唇部遮挡对数几率视觉置信度门控回退（临界视觉置信度 $c_v^\star=0.55$）。
 
 ### 62.1 六份 16 kHz 近场球面波距离气泡对照音频
 

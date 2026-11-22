@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 16 章 · 附录 A：符号术语数学 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="a0289902c00e"><style>
+<meta name="source-digest" content="b82b7d85f70d"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -1301,7 +1301,7 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 </tbody>
 </table></div>
 <span id="sec-16-3-5" class="anchor-alias" aria-hidden="true"></span><span id="sec-16-3-6" class="anchor-alias" aria-hidden="true"></span><span id="sec-16-3-7" class="anchor-alias" aria-hidden="true"></span><span id="sec-12-3" class="anchor-alias" aria-hidden="true"></span><span id="sec-12-3-5" class="anchor-alias" aria-hidden="true"></span><span id="sec-12-3-6" class="anchor-alias" aria-hidden="true"></span><span id="sec-12-3-7" class="anchor-alias" aria-hidden="true"></span><span id="sec-14-3" class="anchor-alias" aria-hidden="true"></span><span id="sec-14-3-5" class="anchor-alias" aria-hidden="true"></span><span id="sec-14-3-6" class="anchor-alias" aria-hidden="true"></span><span id="sec-14-3-7" class="anchor-alias" aria-hidden="true"></span><span id="sec-10" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-16-3">16.3 常用数学与数值速查卡</h2>
-<p>本节将正文各章高频调用的量纲换算、复矩阵与 Wirtinger 恒等式、正则化参数边界以及 NumPy/SciPy 接口陷阱浓缩为四张速查卡；所有不跳步的完整定理证明、几何图解与基础算例均集中于<a href="00_math-foundations.html">第 0 章全书数学基础</a>（按需直达 <a href="00_math-foundations.html#sec-0-2">§0.2</a>～<a href="00_math-foundations.html#sec-0-6">§0.6</a>）。</p>
+<p>本节将正文各章高频调用的量纲换算、复矩阵与 Wirtinger 恒等式、正则化参数边界以及 NumPy/SciPy 接口陷阱浓缩为四张速查卡；所有不跳步的完整定理证明、几何图解与基础算例均集中于<a href="00_math-foundations.html">第 0 章全书数学基础</a>（按需直达 <a href="00_math-foundations.html#sec-0-1">§0.1</a>～<a href="00_math-foundations.html#sec-0-7">§0.7</a>）。</p>
 <span id="sec-12-3-1" class="anchor-alias" aria-hidden="true"></span><span id="sec-14-3-1" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-16-3-1">16.3.1 分贝与声学量纲速查卡</h3>
 <p>本书统一采用前向傅里叶核 $e^{-\mathrm{j}2\pi ft}$：时域延迟 $x(t-\tau)$ 对应频域相移 $e^{-\mathrm{j}2\pi f\tau}$，远场平面波导向分量为 $a_m=e^{-\mathrm{j}2\pi f\tau_{m1}}=e^{+\mathrm{j}2\pi f(\vec r_m-\vec r_1)^\top\vec u/c}$（完整推导见<a href="00_math-foundations.html#sec-0-2-1">§0.2.1</a>、§2.3）。同一负载阻抗下，功率/能量比用 $10\log_{10}(P_2/P_1)$，声压/电压/波形幅度比用 $20\log_{10}(|A_2|/|A_1|)$（<a href="00_math-foundations.html#sec-0-2-2">§0.2.2</a>）：</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
@@ -1398,6 +1398,21 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 <td>$(\mathbf B_1\otimes\mathbf A_1)(\mathbf B_2\otimes\mathbf A_2)$<br>$=(\mathbf B_1\mathbf B_2)\otimes(\mathbf A_1\mathbf A_2)$；<br>$\operatorname{vec}(\mathbf A\mathbf X\mathbf B^\top)=(\mathbf B\otimes\mathbf A)\operatorname{vec}(\mathbf X)$；<br>$\operatorname{vec}(\mathbf A\operatorname{diag}(\vec q)\mathbf A^H)=(\mathbf A^*\odot\mathbf A)\vec q$</td>
 <td>统一差分共阵（§3.3）、可分离平面阵（§5.5）与 CMF 成像（§12.7）；左因子须取共轭 $\mathbf A^*$（<a href="00_math-foundations.html#sec-0-4-3">§0.4.3</a>）</td>
 </tr>
+<tr>
+<td>单位四元数与 SLERP</td>
+<td>$\mathbf R(\mathbf q)=(q_w^2-\lVert\vec q_v\rVert_2^2)\mathbf I_3$<br>$+2\vec q_v\vec q_v^\top+2q_w[\vec q_v]_\times$；<br>$\operatorname{SLERP}=\frac{\sin((1-t)\Omega)}{\sin\Omega}\mathbf q_0+\frac{\sin(t\Omega)}{\sin\Omega}\mathbf q_1$</td>
+<td>$\lVert\mathbf q\rVert_2=1$、双重覆盖 $\mathbf q\sim-\mathbf q$；须先使 $\mathbf q_0^\top\mathbf q_1\ge 0$ 取最短弧，支撑 IMU 与头部追踪（<a href="00_math-foundations.html#sec-0-1-3">§0.1.3</a>、§9.2.3、§14.3）</td>
+</tr>
+<tr>
+<td>多相分解与 Noble 恒等式</td>
+<td>$H(z)=\sum_{p=0}^{D-1}z^{-p}E_p(z^D)$；<br>$E(z^D)\!\to\!(\downarrow D)\equiv(\downarrow D)\!\to\!E(z)$；<br>$(\uparrow U)\!\to\!E(z^U)\equiv E(z)\!\to\!(\uparrow U)$</td>
+<td>将高率抽取/插值滤波移至低率侧，算力精确降至 $1/D$，支撑子带 AEC 与 PDM 抽取（<a href="00_math-foundations.html#sec-0-2-5">§0.2.5</a>、§6.2.3、§10.2）</td>
+</tr>
+<tr>
+<td>Schur 补 LMI 与 SDP</td>
+<td>$\vec x^H\mathbf A\vec x\le t\;(\mathbf A\succ\mathbf 0)$<br>$\Longleftrightarrow\;\begin{bmatrix}\mathbf A^{-1} & \vec x \\ \vec x^H & t\end{bmatrix}\succeq\mathbf 0$</td>
+<td>将凸二次/SOCP 约束等价转为线性矩阵不等式，支撑稳健波束形成与无网格 ANM（<a href="00_math-foundations.html#sec-0-3-5">§0.3.5</a>、<a href="00_math-foundations.html#sec-0-5-3">§0.5.3</a>、§5.4、§12.11）</td>
+</tr>
 </tbody>
 </table></div>
 <p>此外，本书对有限长补零复数序列的离散互相关统一采用第二路取共轭的定义（与 <code>scipy.signal.correlate</code> 约定一致，满足反对称关系 $R_{21}[q]=R_{12}^*[-q]$，第 1 路晚到 $q>0$ 点则正滞后出峰，见 <a href="#e16-12">E16-12</a>）：</p>
@@ -1457,6 +1472,18 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 <td>—</td>
 <td>显式相乘令条件数平方放大至 $\kappa_2(\mathbf A^H\mathbf A)=\kappa_2(\mathbf A)^2$</td>
 <td>$\kappa_2(\mathbf A)\gtrsim 10^8$ 时 <code>float64</code> 正规方程将淹没弱方向，代码须直调 QR/SVD（<a href="00_math-foundations.html#sec-0-3-4">§0.3.4</a>）</td>
+</tr>
+<tr>
+<td>总体最小二乘（TLS）</td>
+<td>$[\mathbf A,\vec b]$ 同尺度（无外加正则参）</td>
+<td>对增广阵 $[\mathbf A,\vec b]$ 做 SVD 取末右奇异向量<br>$\hat{\vec x}_{\mathrm{TLS}}=-\vec v_{1:n,n+1}/v_{n+1,n+1}$</td>
+<td>需满足 $\sigma_n(\mathbf A)>\sigma_{n+1}([\mathbf A,\vec b])$，临近退化时放大噪声；支撑 TLS-ESPRIT（<a href="00_math-foundations.html#sec-0-3-4">§0.3.4</a>、§4.6）</td>
+</tr>
+<tr>
+<td>Weyl 与 Davis–Kahan 微扰界</td>
+<td>$\lVert\mathbf E\rVert_2$ 与间隙 $\Delta_{\mathrm{gap}}$ 同功率量纲</td>
+<td>$\lvert\lambda_i(\hat{\mathbf R})-\lambda_i(\mathbf R)\rvert\le\lVert\mathbf E\rVert_2$；<br>$\lVert\sin\Theta(\hat{\mathbf U}_s,\mathbf U_s)\rVert_2\le\lVert\mathbf E\rVert_2/\Delta_{\mathrm{gap}}$</td>
+<td>$\Delta_{\mathrm{gap}}=\lambda_K(\mathbf R)-\lambda_{K+1}(\hat{\mathbf R})>0$；当 $\lVert\mathbf E\rVert_2$ 逼近 $\Delta_{\mathrm{gap}}$ 时 MUSIC/ESPRIT 发生门限坍塌（<a href="00_math-foundations.html#sec-0-3-4">§0.3.4</a>、§4.6）</td>
 </tr>
 </tbody>
 </table></div>

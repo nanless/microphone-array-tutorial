@@ -139,9 +139,9 @@
 | `build_pdf_en.py` | 英文合订本构建器。合并 `chapters_en/` 19 篇文档与 `figures_en/` 87 张插图，通过无头 Chrome 打印标签化 A4 英文 PDF，并写入三级书签、语言元数据与对象流无损压缩；支持 `--html-only`、`--pdf-only`、`--no-bookmarks`、`--build-date` | `dist/combined_en.html` 与 `dist/microphone-array-tutorial-en.pdf` |
 | `quality_check_en.py` | 英文版与双许可自动化门禁。核验 `LICENSE`/`LICENSE-DOCS`、全部 68 份中英配对文档顶栏（`language_bars.py --check`）、中英章节/研究手册标题层级与 `\tag` 一致性、87 张英文插图与 5 张英文 SVG、`site_en/` 33 页内链与两份 `<50 MiB` PDF | 英文版与双许可通过/失败门禁报告 |
 | `language_bars.py` | 维护全部 68 份中英配对 Markdown 顶部仅供 GitHub 浏览的 `🌐` 中英切换行（建站与合订本前由 `build_markdown_helpers.shield_math` 剔除）；`--check` 为严格只读漂移核验 | 68 份配对 Markdown 首部切换行 |
-| `run_portable_ci.py` | 跨平台 CI 入口。在无 `_downloads/` 缓存的 GitHub Actions（`ubuntu-latest` / `macos-15`）或本机上统一运行中英文发布门禁、32 套音频清单与 35 份图表 JSON 的 SHA-256 核验、352 题双语索引及自包含单元测试 | 跨平台 CI 综合验证结果 |
+| `run_portable_ci.py` | 跨平台 CI 入口。在无 `_downloads/` 缓存的 GitHub Actions（`ubuntu-latest` / `macos-15`）或本机上统一运行中英文发布门禁、32 套音频清单与 35 份图表 JSON 的 SHA-256 核验、360 题双语索引及自包含单元测试 | 跨平台 CI 综合验证结果 |
 
-352 道稳定编号的代码题可从各章入口复算，例如：
+360 道稳定编号的代码题可从各章入口复算，例如：
 
 ```bash
 .venv/bin/python -m codes.chapters.ch00.chapter00_exercises

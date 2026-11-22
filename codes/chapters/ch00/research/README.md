@@ -32,7 +32,7 @@
 | [回声、去混响与语音分离](02_aec_wpe_separation.md) | 第 6～8、15 章 | 自适应控制、在线状态、盲分离与条件目标提取、多通道日志、神经结构与推理依赖 |
 | [工业部署与评测](03_industrial_deployment.md) | 第 10～11、13 章、附录 B | 设备回调、时钟与重采样、嵌入式处理、推理运行时和评分 |
 | [取得源码后怎样复现](04_source_reproduction.md) | 全书 | 提交核对、输入适配、最小实验、独立数值校验和结果登记 |
-| [练习与音频实验](05_exercises_and_audio.md) | 第 0～11 章、扩展专题Ⅰ～Ⅳ、附录 A/B | 352 道代码练习、主109个合成WAV、30套独立合成170个WAV与4个真实录音摘录/派生的复算、许可和边界；逐套入口见[导读完整音频表](../../../../chapters/00_overview.md#audio-assets) |
+| [练习与音频实验](05_exercises_and_audio.md) | 第 0～11 章、扩展专题Ⅰ～Ⅳ、附录 A/B | 360 道代码练习、主109个合成WAV、30套独立合成170个WAV与4个真实录音摘录/派生的复算、许可和边界；逐套入口见[导读完整音频表](../../../../chapters/00_overview.md#audio-assets) |
 
 研究手册中的“实验”分两种。已执行的结果明确记录输入、环境和输出；建议读者执行的实验写明步骤和判据，
 不预填性能数字。外部项目有源码，不代表本机已经完成安装、训练、推理或产品验收。
@@ -71,9 +71,9 @@
 
 第12章扩展专题Ⅰ提供[声学成像正文](../../../../chapters/12_acoustic-imaging.md)、[逐层源码合同](01_spatial_and_tracking.md#imaging-contract-audit)和[18题及五WAV实验](05_exercises_and_audio.md#471-18题分别核对什么)。输出是参考声压贡献及区域量；原算法、教学算例和工业条件分别核对。
 
-分布式专题Ⅱ将[节点目标与压缩条件](../../../../chapters/13_distributed-enhancement.md)、[原论文与工业网络](03_industrial_deployment.md#distributed-network-deployment)、[固定源码合同](04_source_reproduction.md#distributed-reproduction)和[20题及17WAV](05_exercises_and_audio.md#distributed-exercises-audio)互链。原统计算法、已知真值音频、源码获取与完整设备执行分别记录。
+分布式专题Ⅱ将[节点目标与压缩条件](../../../../chapters/13_distributed-enhancement.md)、[原论文与工业网络](03_industrial_deployment.md#distributed-network-deployment)、[固定源码合同](04_source_reproduction.md#distributed-reproduction)和[21题及17WAV](05_exercises_and_audio.md#distributed-exercises-audio)互链。原统计算法、已知真值音频、源码获取与完整设备执行分别记录。
 
-空间与可穿戴阵列专题Ⅲ提供[球谐采集、双耳匹配与跨模态融合正文](../../../../chapters/14_spatial-wearable-arrays.md)以及[15题与六WAV实验](05_exercises_and_audio.md#wearable-exercises-audio)。条件目标提取与多通道日志专题Ⅳ提供[线索条件化、近场距离气泡与TS-VAD/GSS正文](../../../../chapters/15_target-extraction-diarization.md)以及[14题与六WAV实验](05_exercises_and_audio.md#tse-exercises-audio)。
+空间与可穿戴阵列专题Ⅲ提供[球谐采集、双耳匹配与跨模态融合正文](../../../../chapters/14_spatial-wearable-arrays.md)以及[16题与六WAV实验](05_exercises_and_audio.md#wearable-exercises-audio)。条件目标提取与多通道日志专题Ⅳ提供[线索条件化、近场距离气泡与TS-VAD/GSS正文](../../../../chapters/15_target-extraction-diarization.md)以及[15题与六WAV实验](05_exercises_and_audio.md#tse-exercises-audio)。
 
 导读推荐的[WASN同步与LibriCSS公开评测源码](04_source_reproduction.md#overview-source-entrypoints)现已按固定提交取得限定选集。代码身份核验、原接口静态观察与未执行的依赖/评分/设备边界分别保留，不能用源码文件数代表工业验收。
 
@@ -81,7 +81,7 @@
 ## 文档、命令与结果的对应关系
 
 - 学习入口与章号：[项目首页](../../../../README.md)、[导读](../../../../chapters/00_overview.md)与[第 0 章数学基础](../../../../chapters/00_math-foundations.md)。第 0～15 章为正文（其中第 12～15 章是扩展专题），第 16、17 章是附录。
-- 352个稳定代码题与30套独立合成音频（含1套真实录音共32套清单）：[代码目录](../../README.md#audio-inventory)和本手册的练习篇；题数、WAV数、算法数分别统计。
+- 360个稳定代码题与30套独立合成音频（含1套真实录音共32套清单）：[代码目录](../../README.md#audio-inventory)和本手册的练习篇；题数、WAV数、算法数分别统计。
 - 从资产到网页/PDF：[构建说明](../../../../scripts/README.md#audio-regeneration)，先核真实生成源与清单，再发布副本。
 - 取得固定源码：[获取说明](../upstream/README.md)；它不会安装或执行上游。当前选集状态与限定原方法结果分别保留。
 

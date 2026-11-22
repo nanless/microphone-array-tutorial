@@ -283,7 +283,7 @@ v_{nk}&=\begin{cases}
 \vec y_f(t)\leftarrow\vec y_f(t)-\vec v_k\,y_{kf}(t).
 \end{aligned}\tag{8-9}$$
 
-Verify each piece of Eq. (8-9): for all $n\ne k$, the updated $n$-th output $y_{nf}^{\mathrm{new}}(t)=y_{nf}(t)-v_{nk}y_{kf}(t)$ satisfies strict weighted orthogonality $\sum_t r_n(t)^{-1}y_{nf}^{\mathrm{new}}(t)y_{kf}^*(t)=0$; for $n=k$, the updated row $(\vec w_{kf}^{\mathrm{new}})^H=(1-v_{kk})\vec w_{kf}^H$ satisfies exact normalization $(\vec w_{kf}^{\mathrm{new}})^H\mathbf V_{kf}\vec w_{kf}^{\mathrm{new}}=1$; every step preserves strict monotonic non-increasing descent of the AuxIVA auxiliary objective with zero step-size tuning while lowering full-sweep per-bin complexity across $k=1,\dots,M$ and $T$ frames from IP's $O(TM^3+M^4)$ to $O(TM^2+M^3)$ (a factor-$M$ reduction on both frame accumulation and matrix algebra; both `pyroomacoustics` and `ssspy` expose `IP` and `ISS` branches for AuxIVA).
+Verify each piece of Eq. (8-9): for all $n\ne k$, the updated $n$-th output $y_{nf}^{\mathrm{new}}(t)=y_{nf}(t)-v_{nk}y_{kf}(t)$ satisfies strict weighted orthogonality $\sum_t r_n(t)^{-1}y_{nf}^{\mathrm{new}}(t)y_{kf}^*(t)=0$; for $n=k$, the updated row $(\vec w_{kf}^{\mathrm{new}})^H=(1-v_{kk})\vec w_{kf}^H$ satisfies exact normalization $(\vec w_{kf}^{\mathrm{new}})^H\mathbf V_{kf}\vec w_{kf}^{\mathrm{new}}=1$; every step preserves strict monotonic non-increasing descent of the AuxIVA auxiliary objective with zero step-size tuning while lowering full-sweep per-bin complexity across $k=1,\dots,M$ and $T$ frames from IP's $O(TM^3+M^4)$ to $O(TM^2+M^3)$ (a factor-$M$ reduction on both frame accumulation and matrix algebra; both `pyroomacoustics` and `ssspy` expose `IP` and `ISS` branches for AuxIVA, and [Exercise E08-27](#e08-27) compares IP and ISS step by step).
 
 Replacing batch time averaging with frame-by-frame exponential-forgetting statistics ($\alpha\in(0,1)$) updated as each new complex frame $\vec x_f(t)$ arrives—paired with lightweight $O(M^2)$ ISS rank-one updates on $\mathbf W_f$ and frame-wise or recursive projection back—yields the low-latency streaming BSS framework **Online AuxIVA-ISS** ([Nakashima & Ono, APSIPA ASC 2022](https://doi.org/10.23919/APSIPAASC55919.2022.9979837)). Unlike offline batch processing, the online variant tracks slowly moving talkers, while similarly requiring safeguards against variance jitter from overly small $\alpha$ and covariance degeneracy during all-speaker silences.
 
@@ -845,6 +845,17 @@ $$\begin{aligned}
 
 At $f_s=16\ \mathrm{kHz}$, $H=128$ ($8\ \mathrm{ms}$, $R=125\ \mathrm{frames/s}$), $B=4$, $D=64$, and $K_{\mathrm{proj}}=4$, stepping across all $F=256$ narrowband bins already burns $\approx 2.10\ \mathrm{GMAC/s}$; lightweight edge designs (such as **Mel-McNet**, Yang, Yang & Li, Interspeech 2025, which compresses linear STFT bins onto Mel subbands before the McNet backbone to cut compute by roughly $60\%$ relative to full-bin linear McNet) compress dense high-frequency linear bins onto $F_{\mathrm{mel}}=64$ Mel or nonuniform subbands before cross-band/temporal modeling, cutting backbone MACs by an exact factor of $4\times$ down to $\approx 0.524\ \mathrm{GMAC/s}$ (see [Exercise E08-26](#e08-26) for full MAC accounting).
 
+**Recursive Separation for Unknown Speaker Counts: OR-PIT vs. RSAN**: The deep separators above are predominantly trained with fixed-$N$ `uPIT` output heads, while streaming `CSS` fixes $2$ slots per short chunk guarded by single-speaker bypass. When the active speaker count $N$ in an utterance is unknown in advance and may exceed any fixed head count, two canonical **recursive one-by-one separation** architectures emerge:
+
+- **One-and-Rest PIT (OR-PIT; Takahashi et al., Interspeech 2019)**: trains a binary separator that splits mixture $y$ into one foreground speaker $\hat s_1$ plus the residual $(N-1)$-speaker mixture $\hat r_1$, iterating recursively on $\hat r_k$ until a binary stopping classifier or residual-energy gate halts recursion. This design halts after one pass on solo speech ($N=1$)—avoiding fixed-slot over-splitting—and scales structurally beyond training speaker counts, at the cost of sequential error accumulation across residual steps $\hat r_k$ and inference latency growing linearly with $N$.
+- **Recurrent Selective Attention Network (RSAN; Kinoshita et al., ICASSP 2018)**: operates in the STFT time–frequency domain by maintaining an explicit nonnegative **residual mask budget** $R^{(k)}$ initialized at $R^{(0)}=\mathbf 1$, emitting one speaker mask $M^{(k)}$ per iteration and updating the remaining budget via
+
+  $$R^{(k)}=\max\!\bigl(0,\;R^{(k-1)}-M^{(k-1)}\bigr)$$
+
+  (subtracting previously assigned masks for $k\ge 1$) until remaining mask mass drops below a stopping threshold $\tau$. Unlike OR-PIT, RSAN explicitly enforces mixture-mask conservation inside the mask domain without feeding separated time-domain residuals back through a front-end encoder.
+
+In real multi-party meetings, utterance-level recursive OR-PIT and RSAN still face sequential latency growth, stopping-threshold fragility under noise and reverberation, and cross-chunk permutation stitching across long streams; production conference pipelines therefore typically prefer either **two-slot streaming CSS** (exploiting the low odds of $\ge 3$ simultaneous speakers inside $1.2$–$2.4\ \mathrm{s}$ chunks alongside single-speaker bypass) or the **diarization-guided front ends** developed in [Chapter 15](15_target-extraction-diarization.md) (such as `TS-VAD` + `WPE` + `GSS`, where explicit diarization supplies both speaker count and temporal activity).
+
 #### Mixture Consistency and STFT Consistency
 
 When a deep network directly predicts complex masks or separated complex spectrograms $\widehat y_1,\dots,\widehat y_N$, its raw outputs routinely violate two fundamental physical self-consistency laws: first, the $N$ estimated spectra fail to sum back to the mixture spectrum $x$ at the reference microphone; second, an arbitrary complex matrix emitted by a neural network need not be the valid STFT of *any* real-valued time-domain waveform. **Mixture consistency** and **STFT consistency** append differentiable physical projection layers onto network outputs (keep in mind they enforce physical self-consistency only and cannot create source independence on their own).
@@ -1063,7 +1074,7 @@ Summing and multiplying by $2$ yields $\widetilde{\mathbf B}^{(1)}=\operatorname
 3. **Relative density and scale invariance**: The updated matrix has determinant $3/4$ and inverse $\operatorname{diag}(2/3,2)$. Dropping shared spherical constants, density factors $(\det\mathbf B)^{-1}q_t^{-M}$ along ${\vec z}_1,{\vec z}_2$ are $(4/3)(2/3)^{-2}=3$ and $(4/3)\times2^{-2}=1/3$. Replacing ${\mathbf B}$ by $c{\mathbf B}$ ($c>0$) scales $\det(c{\mathbf B})=c^M\det {\mathbf B}$ and $q_t\to q_t/c$, so $c^{-M}$ and $(1/c)^{-M}$ cancel identically. Conversely, scaling two raw observations from $[\vec e_1,\vec e_2]$ to $[\vec e_1,3\vec e_2]$ leaves unit-sphere directions and relative cACG densities completely unchanged, yet jumps the downstream unnormalized raw power SCM from $\operatorname{diag}(1/2,1/2)$ to $\operatorname{diag}(1/2,9/2)$—front-end cACGMM flattens radial loudness swings while back-end SCMs restore true physical power; never conflate the two.
 4. **Collinear degeneracy and shrinkage toward $\mathbf I_M$**: Running a second fixed-point step at fixed $\gamma_1=3/4,\gamma_2=1/4$ sharpens ${\mathbf B}$ to $\operatorname{diag}(1.8,0.2)$; in the extreme where both frames equal $[1,0]^\top$, a single step produces singular $\operatorname{diag}(2,0)$ (trace $2$, yet non-invertible). Practical and teaching pipelines therefore apply $(1-\delta){\mathbf B}+\delta{\mathbf I}_M$ shrinkage after trace normalization (e.g., $\delta=0.02$ floors eigenvalues at $1.98,0.02$) and reset components whose responsibility sum falls too low (see [`enhancement_structure_exercises.py`](../codes/chapters/ch00/cross_chapter/enhancement_structure_exercises.py) and [`test_codes_enhancement_structure.py`](../tests/test_codes_enhancement_structure.py)).
 
-Exercises E08-10–E08-26 below run end-to-end via `.venv/bin/python -m codes.chapters.ch08.chapter08_experiments`, coordinated by `run_experiments()` in [`chapter08_experiments.py`](../codes/chapters/ch08/chapter08_experiments.py). Exercises referencing published audio recompute integer-sample metrics directly from the WAV files on disk.
+Exercises E08-10–E08-27 below run end-to-end via `.venv/bin/python -m codes.chapters.ch08.chapter08_experiments`, coordinated by `run_experiments()` in [`chapter08_experiments.py`](../codes/chapters/ch08/chapter08_experiments.py). Exercises referencing published audio recompute integer-sample metrics directly from the WAV files on disk.
 
 <a id="e08-10"></a>
 
@@ -1620,6 +1631,52 @@ With engineering bypass threshold $\tau_{\mathrm{gate}}=-18.0\ \mathrm{dB}$, com
 2. **Why an almost $+20\ \mathrm{dB}$ SI-SDR still harms recognition accuracy**: Against full solo ground truth $\vec{s}=\vec{s}_{\mathrm{v}}+\vec{s}_{\mathrm{f}}$ ($\vec{s}_{\mathrm{v}}^\top\vec{s}_{\mathrm{f}}=0$), dominant slot $\hat{\vec{s}}_1=\vec{s}_{\mathrm{v}}$ has optimal scalar projection $\alpha_\star=99/100=0.99$, target projection energy $0.99^2\times 100=98.01$, and orthogonal error $\|\vec{s}_{\mathrm{v}}-0.99\vec{s}\|_2^2=0.01^2\times 99+0.99^2\times 1=0.99$, yielding an exact ratio of $98.01/0.99=99$. Dominant-slot `SI-SDR` therefore scores $10\log_{10}(99)\approx +19.95635\ \mathrm{dB}$; yet discarding the $1\%$ energy shifted to Slot 2 strips the word-final unvoiced fricative `/s/` (plural or possessive marker), corrupting $1$ of the $4$ words and jumping WER from $0\%$ to $1/4=25\%$.
 
    Evaluating Eq. (8-41): $E_1=99, E_2=1$ ($p=1$) gives $\eta_{\mathrm{dB}}=10\log_{10}(1/99)\approx -19.95635\ \mathrm{dB}\le -18.0\ \mathrm{dB}$, triggering solo-speaker bypass merging to output $\hat{\vec{s}}_{\mathrm{out},1}=\hat{\vec{s}}_1+\hat{\vec{s}}_2=\vec{s}$ and $\hat{\vec{s}}_{\mathrm{out},2}=\vec{0}$, restoring the fricative losslessly with zero error and $0\%$ WER (symmetrically routing to $\hat{\vec{s}}_{\mathrm{out},2}=\vec{s}$ when $p=2$). Conversely, on a genuine two-speaker overlap with energies $99$ and $9.9$, $\eta_{\mathrm{dB}}=10\log_{10}(9.9/99)=-10.0\ \mathrm{dB}>-18.0\ \mathrm{dB}$ keeps the gate open, passing $(\hat{\vec{s}}_1,\hat{\vec{s}}_2)$ untouched without dropping Speaker 2 (code verified in [`separation_metrics_streaming.py`](../codes/chapters/ch08/core/separation_metrics_streaming.py) and `E08-26`).
+
+<a id="e08-27"></a>
+
+#### E08-27: AuxIVA Iterative Source Steering (ISS) Inversion-Free Rank-1 Update vs. Iterative Projection (IP)
+
+Consider single-bin two-channel AuxIVA auxiliary-function minimization from §8.3. Given two Hermitian positive-definite weighted covariances and initial demixing matrix (following Eq. (8-6), row $n$ of $\mathbf W$ stores $\vec w_n^H$):
+
+$$\mathbf V_1=\begin{bmatrix}4&4\mathrm j\\-4\mathrm j&20\end{bmatrix},\qquad
+\mathbf V_2=\begin{bmatrix}20&4\mathrm j\\-4\mathrm j&4\end{bmatrix},\qquad
+\mathbf W^{(0)}=\mathbf I_2.$$
+
+Define the fixed-covariance AuxIVA auxiliary cost:
+
+$$Q(\mathbf W)=\sum_{n=1}^2 \vec w_n^H\mathbf V_n\vec w_n-2\ln\lvert\det\mathbf W\rvert.$$
+
+Compute: (1) the initial cost $Q(\mathbf W^{(0)})$; (2) one full sweep of **Iterative Projection (IP, Eq. (8-8))** versus one full sweep of **inversion-free Iterative Source Steering (ISS, Eq. (8-9) rank-1 update $\mathbf W\leftarrow\mathbf W-\vec v_k\vec w_k^H$)**, reporting intermediate vectors, updated matrices, and costs to verify $Q(\mathbf W^{(0)})>Q(\mathbf W_{\mathrm{ISS}}^{(1)})$; (3) $K=5$ sweeps of both IP and ISS, verifying monotonic descent to the exact same stationary minimum (cost gap $<10^{-10}$) and contrasting their matrix-algebra complexities.
+
+**Solution**:
+
+1. **Initial cost**: With $\vec w_1^{(0)}=[1,0]^\top$, $\vec w_2^{(0)}=[0,1]^\top$, and $\det\mathbf W^{(0)}=1$, we have $\vec w_1^{(0)H}\mathbf V_1\vec w_1^{(0)}=4$ and $\vec w_2^{(0)H}\mathbf V_2\vec w_2^{(0)}=4$, giving $Q(\mathbf W^{(0)})=4+4-2\ln 1=8$.
+2. **Sweep 1 of IP (requires two $2\times 2$ linear solves)**:
+   - Row $1$: solving $\mathbf W^{(0)}\mathbf V_1\vec u_1=\vec e_1$ ($\det\mathbf V_1=64$) yields $\vec u_1=[5/16,\;\mathrm j/16]^\top$ with $\vec u_1^H\mathbf V_1\vec u_1=5/16$; writing back the normalized conjugate transpose gives row $1$ as $[\sqrt{5}/4,\;-\mathrm j/(4\sqrt{5})]$ and drops cost to $5+\ln(16/5)\approx 6.163151$.
+   - Row $2$: immediately using updated $\mathbf W$ to solve $(\mathbf W\mathbf V_2)\vec u_2=\vec e_2$ gives $\vec u_2=[-\mathrm j/20,\;3/10]^\top$ with $\vec u_2^H\mathbf V_2\vec u_2=29/100$, producing Sweep 1 matrix and cost:
+
+     $$\mathbf W_{\mathrm{IP}}^{(1)}=\begin{bmatrix}\dfrac{\sqrt{5}}{4}&-\dfrac{\mathrm j}{4\sqrt{5}}\\\dfrac{\mathrm j}{2\sqrt{29}}&\dfrac{3}{\sqrt{29}}\end{bmatrix},\qquad
+     Q(\mathbf W_{\mathrm{IP}}^{(1)})=2+\ln\frac{320}{29}\approx 4.401025.$$
+
+3. **Sweep 1 of ISS (zero matrix inversions; pure inner products and rank-1 outer products)**: Applying $v_{nk}=\frac{\vec w_n^H\mathbf V_n\vec w_k}{\vec w_k^H\mathbf V_n\vec w_k}$ ($n\ne k$) and $v_{kk}=1-(\vec w_k^H\mathbf V_k\vec w_k)^{-1/2}$ sequentially:
+   - Step $k=1$ (along $\vec w_1^{(0)}=[1,0]^\top$): $v_{11}=1-4^{-1/2}=1/2$ and $v_{21}=(-4\mathrm j)/20=-\mathrm j/5$; rank-1 update $\mathbf W^{(1/2)}_{\mathrm{ISS}}=\mathbf W^{(0)}-\vec v_1\vec w_1^{(0)H}=\begin{bmatrix}1/2&0\\\mathrm j/5&1\end{bmatrix}$ shrinks row $2$'s quadratic form to $16/5$ with $\det=1/2$, dropping cost immediately from $8$ to $1+16/5-2\ln(1/2)=21/5+2\ln 2\approx 5.586294$.
+   - Step $k=2$ (along $\vec w_2^{(1/2)}=[-\mathrm j/5,\;1]^\top$): $v_{22}=1-(16/5)^{-1/2}=1-\sqrt{5}/4\approx 0.440983$; numerator $(\vec w_1^{(1/2)})^H\mathbf V_1\vec w_2^{(1/2)}=8\mathrm j/5$ and denominator $(\vec w_2^{(1/2)})^H\mathbf V_1\vec w_2^{(1/2)}=464/25$ yield $v_{12}=\frac{5}{58}\mathrm j\approx 0.086207\,\mathrm j$. Updating $\mathbf W_{\mathrm{ISS}}^{(1)}=\mathbf W^{(1/2)}_{\mathrm{ISS}}-\vec v_2(\vec w_2^{(1/2)})^H$ gives:
+
+     $$\mathbf W_{\mathrm{ISS}}^{(1)}=\begin{bmatrix}\dfrac{15}{29}&-\dfrac{5}{58}\mathrm j\\\dfrac{\mathrm j}{4\sqrt{5}}&\dfrac{\sqrt{5}}{4}\end{bmatrix},\qquad
+     Q(\mathbf W_{\mathrm{ISS}}^{(1)})=\frac{54}{29}+\ln\frac{64}{5}\approx 4.411514<8.$$
+
+4. **Convergence after $K=5$ sweeps and complexity contrast**: Generalized eigenvalues of $\mathbf V_1\vec u=\mu\mathbf V_2\vec u$ are $\mu_{1,2}=3\mp 2\sqrt{2}$, yielding exact closed-form minimum $Q^\star=2+\ln\bigl(64(3-2\sqrt{2})\bigr)\approx 4.396135909321$. Cost trajectories across $5$ sweeps:
+
+   | Sweep $k$ | IP Cost $Q(\mathbf W_{\mathrm{IP}}^{(k)})$ | ISS Cost $Q(\mathbf W_{\mathrm{ISS}}^{(k)})$ |
+   |---:|---:|---:|
+   | $0$ | $8.000000000000$ | $8.000000000000$ |
+   | $1$ | $4.401025165807$ | $4.411514136443$ |
+   | $2$ | $4.396140157111$ | $4.396140166916$ |
+   | $3$ | $4.396135913002$ | $4.396135913002$ |
+   | $4$ | $4.396135909324$ | $4.396135909324$ |
+   | $5$ | $4.396135909321$ | $4.396135909321$ |
+
+   By sweep $5$, both methods reach within $<10^{-14}$ of $Q^\star$ with inter-method gap $\approx 8.88\times 10^{-16}\ll 10^{-10}$, jointly congruence-diagonalizing $(\mathbf V_1,\mathbf V_2)$ to $\operatorname{diag}(1,\;3+2\sqrt{2})$ and $\operatorname{diag}(3+2\sqrt{2},\;1)$. ISS thus preserves step-size-free monotonic AuxIVA descent while completely eliminating $O(M^3)$ matrix inversions (cutting matrix updates to $O(M^2)$ per step and full $T$-frame single-bin sweeps from IP's $O(TM^3+M^4)$ to $O(TM^2+M^3)$; verified in [`chapter08_experiments.py`](../codes/chapters/ch08/chapter08_experiments.py), `E08-27`).
 
 ---
 

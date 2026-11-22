@@ -517,6 +517,16 @@ $$\begin{aligned}
 
 Setting $\vec z_u = \mathbf P_u^H\vec x_u$ thus places node $u$'s local contribution into the exact same $Q$-dimensional global coordinate frame as the peer sum $\sum_{v\ne u}\vec z_v$, allowing all broadcasts to be added directly across the tree. Exercise [E13-16](#e13-16) audits tree routing, message counts, and link-drop impacts; real networks must pair spanning-tree repair with statistical reset handling.
 
+**Covariance Matrix Resizing Under Ad-Hoc Node Dropout and Rejoin.** In a fully connected $U$-node ad-hoc DANSE network, each node $u$ maintains $L_u \times L_u$ local total covariance $\tilde{\mathbf R}_{xx, u}$ (Eq. (13-8)'s $\tilde{\mathbf R}_u$) and local noise covariance $\tilde{\mathbf R}_{nn, u}$ over $\tilde{\vec x}_u = [\vec x_u^\top, \vec z_{-u}^\top]^\top$ ($L_u = M_u + (U - 1)Q$). When remote node $q$ ($q \ne u$) drops out due to power loss, departure, or heartbeat timeout, each surviving node $u$ avoids resetting the network by deleting the $Q$ rows and $Q$ columns corresponding to $\vec z_q$ via principal-submatrix extraction—yielding $(L_u - Q) \times (L_u - Q)$ matrices $\tilde{\mathbf R}_{xx, u}^{\mathrm{red}}$ and $\tilde{\mathbf R}_{nn, u}^{\mathrm{red}}$ (automatically preserving strict positive definiteness)—and immediately solving the reduced local system with the reduced target covariance $\tilde{\mathbf R}_{ss, u}^{\mathrm{red}}$:
+
+$$\vec h_u^{\mathrm{red}} = \big(\tilde{\mathbf R}_{xx, u}^{\mathrm{red}}\big)^{-1}\tilde{\mathbf R}_{ss, u}^{\mathrm{red}}\vec e_{r_u},$$
+
+which preserves all converged statistics across the surviving $U - 1$ nodes and transitions cleanly to the reduced-topology optimum (reducing directly to local $M_u$-mic MWF in a two-node network). This contrasts sharply with the zero-fill packet-gap trap in §13.15, where zeroing out $\vec z_q$ under stale weights triggers severe gain collapse and feeding zero vectors into recursive covariance estimation renders $\tilde{\mathbf R}_{xx, u}$ rank-deficient. Conversely, when node $q$ rejoins (or a new node enters), each surviving node $u$ expands its $L_u \times L_u$ covariances to $(L_u + Q) \times (L_u + Q)$ via warm-started block-diagonal padding:
+
+$$\tilde{\mathbf R}_{xx, u}^{\mathrm{new}} = \begin{bmatrix} \tilde{\mathbf R}_{xx, u}^{\mathrm{old}} & \mathbf 0 \\ \mathbf 0 & \sigma_0^2\mathbf I_Q \end{bmatrix}, \qquad \tilde{\mathbf R}_{nn, u}^{\mathrm{new}} = \begin{bmatrix} \tilde{\mathbf R}_{nn, u}^{\mathrm{old}} & \mathbf 0 \\ \mathbf 0 & \sigma_0^2\mathbf I_Q \end{bmatrix},$$
+
+where diagonal loading $\sigma_0^2 > 0$ guarantees immediate invertibility and zero initial cross-covariances hold the newly appended receiving weights at zero at the instant of join so surviving channels remain undisturbed. Momentarily raising the forgetting/adaptation rate during the brief rejoin transient (either via a short-horizon forgetting factor on the rank-1 update or a convex warm-up blend toward freshly accumulated post-join frames guarded by a Cholesky positive-definiteness check) lets cross-node covariances with $\vec z_q$ converge rapidly without destabilizing the surviving nodes.
+
 ### 13.12 GEVD and Recent Extensions: Which Step Each Method Modifies
 
 #### Noise Whitening Turns the Noise Metric into a Euclidean Metric
@@ -784,6 +794,19 @@ Implementing Eq. (13-24) requires verifying both the **conjugation sign conventi
 
 Building on the coherence-drift mechanism in Eq. (13-24), two flagship blind SRO estimation families have emerged across academia and industry: first, **Weighted Average Coherence Drift (WACD) and its online dynamic variant DWACD** (Gburrek, Schmalenstroeer, & Haeb-Umbach, ICASSP 2022), which estimates $\hat\varepsilon$ via cross-frequency weighted phase-slope regression or inverse-DFT peak search on $P_k[\ell]$ paired with VAD-gated dynamic reference refreshes to track thermal crystal drift and talker switches; and second, the **Double Cross-Correlation Processor with Phase Transform (DXCP-PhaT)** (Chinaev, Thüne, & Enzner, *IEEE/ACM TASLP* vol. 29, pp. 1881–1896, 2021), which constructs a phase-transform-whitened second-order cross-correlation in the STFT domain to restore ergodicity of drifting cross-spectra, achieving robust online blind SRO and residual sampling time offset (STO) estimation even under strong reverberation and wide inter-node spacing—closing the loop with §13.12's SRO-aware DANSE (Didier et al., *IEEE OJSP* 2023). In real-world asynchronous multi-device meeting evaluations, the **CHiME-5/6/7/8** benchmarks (Barker et al., 2018; Watanabe et al., 2020; Cornell et al., 2023/2024) and **NOTSOFAR-1** (Vinnikov et al., Interspeech 2024) systematically test blind SRO trackers (DWACD / DXCP-PhaT) coupled with distributed beamforming and GSS front-ends under natural talker movement, strong reverberation, and free-running device clocks.
 
+**Explicit WOLA-SRO Integer-Hop Slip and Fractional Frequency-Domain Phase Compensation.** Once relative offset $\varepsilon = (f_{s,q} - f_s) / f_s$ is estimated, a WOLA pipeline can compensate drift directly without inserting a standalone time-domain asynchronous resampler by splitting the cumulative drift into an integer circular-buffer slip and a fractional STFT-domain linear phase rotation. Following Eq. (13-24)'s exact sign convention ($\varepsilon > 0$ means remote node $q$ samples faster than reference node $1$), by frame $\ell$ with hop size $H$ the remote stream has accumulated $\delta(\ell) = \varepsilon\ell H$ extra samples, so reading a raw frame at index $\ell H$ lags behind the reference clock by $+\delta(\ell)$ samples and imparts extraneous phase $e^{-\mathrm{j}\frac{2\pi k}{N}\delta(\ell)}$ onto $X_q[k,\ell]$. Decompose $\delta(\ell)$ into its nearest integer $m_\ell$ and bounded fractional residual $\Delta_\ell$:
+
+$$\begin{aligned}
+\delta(\ell) &= \varepsilon\ell H = m_\ell + \Delta_\ell,
+\qquad m_\ell = \operatorname{round}\!\big(\delta(\ell)\big)\in\mathbb{Z},
+\quad |\Delta_\ell| \le 0.5,\\
+\tilde X_q[k,\ell] &= X_q^{(\mathrm{slip})}[k,\ell]\,
+\exp\!\left(+\mathrm{j}\frac{2\pi k}{N}\Delta_\ell\right),
+\qquad k = 0, 1, \dots, N/2.
+\end{aligned}$$
+
+Step 1 advances node $q$'s circular input-buffer read pointer by $+m_\ell$ samples (reading frame $\ell$ starting at $\ell H + m_\ell$: losslessly skipping $1$ sample whenever $m_\ell$ increments by $+1$ for $\varepsilon > 0$, or stepping back $1$ sample whenever $m_\ell$ decrements for $\varepsilon < 0$), leaving the slipped spectrum $X_q^{(\mathrm{slip})}[k,\ell]$ with only the residual lag $+\Delta_\ell \in [-0.5, 0.5]$ samples (phase $e^{-\mathrm{j}\frac{2\pi k}{N}\Delta_\ell}$). Step 2 multiplies positive-frequency bins $k = 0, \dots, N/2$ by the **positive-sign** linear phase factor $\exp\!\big(+\mathrm{j}\frac{2\pi k}{N}\Delta_\ell\big)$ (with conjugate symmetry on negative bins $k > N/2$ and real Nyquist bin $k = N/2$) to cancel that residual phase—flipping this sign would double the residual drift instead of cancelling it. Note the **intra-frame approximation bound**: modeling continuous resampling as a single frame-wide delay $\Delta_\ell$ holds accurately only when intra-frame drift satisfies $|\varepsilon| N \ll 1$ (e.g., at $\varepsilon = 100\,\mathrm{ppm}$ and $N = 512$, $|\varepsilon| N = 0.0512 \ll 1$, holding window-edge phase error under $4.6^\circ$ even at Nyquist); under severe SRO or very long windows with $|\varepsilon| N \gtrsim 0.5$, intra-frame time stretching smears energy across adjacent DFT bins beyond what bin-wise phase multiplication can repair, requiring time-domain windowed-sinc or Farrow resampling instead (see [E13-21](#e13-21) for quantitative verification of DWACD blind SRO estimation and activity gating).
+
 Beyond purely blind DANSE requiring no explicit spatial priors, any system that jointly performs cross-node source localization, spatial sector constraints, or DASF-LCMV interference nulling must first solve **ad-hoc node geometry self-localization**: standard approaches use multi-source Time Difference of Arrival (TDOA) measurements to establish pairwise distance constraints solved jointly for node and source coordinates via Multidimensional Scaling (MDS) or nonlinear least squares, or exploit ambient diffuse-noise segments with the 3D isotropic diffuse coherence model $\operatorname{Re}\{\Gamma_{uv}(f)\} \approx \operatorname{sinc}(2f d_{uv} / c)$ to invert unknown inter-node distances $d_{uv}$ blindly.
 
 At the wireless hardware layer, transport technologies differ starkly in payload bitrate, jitter, clock synchronization precision, and packet-loss patterns, directly determining whether waveform-level collaborative enhancement is viable:
@@ -806,7 +829,7 @@ Generate or strictly verify all $17$ WAVs and `MANIFEST.json` from the repositor
 .venv/bin/python -m codes.chapters.ch13.examples.generate_distributed_audio --check
 ```
 
-`chapter13_exercises.run_experiments()` returns the complete result dictionary for `E13-01`–`E13-20`. In Fig. 66's correlated-noise convergence budget experiment (stopping criterion: every node's live effective weight satisfies Eq. (13-21) relative residual $< 10^{-8}$), Sequential, full-step Simultaneous, and fixed-$0.5$ half-step Relaxed take $14$ rounds ($14$ update solves), $13$ rounds ($26$ update solves), and $38$ rounds ($76$ update solves), respectively ($16, 28, 78$ cumulative matrix solves including the $2$ initial local solves). The $17$ synthetic WAVs are organized into eight comparison groups:
+`chapter13_exercises.run_experiments()` returns the complete result dictionary for `E13-01`–`E13-21`. In Fig. 66's correlated-noise convergence budget experiment (stopping criterion: every node's live effective weight satisfies Eq. (13-21) relative residual $< 10^{-8}$), Sequential, full-step Simultaneous, and fixed-$0.5$ half-step Relaxed take $14$ rounds ($14$ update solves), $13$ rounds ($26$ update solves), and $38$ rounds ($76$ update solves), respectively ($16, 28, 78$ cumulative matrix solves including the $2$ initial local solves). The $17$ synthetic WAVs are organized into eight comparison groups:
 
 | Audio Group | WAV Files | Listening & Numerical Verification Focus |
 |---|---|---|
@@ -821,9 +844,9 @@ Generate or strictly verify all $17$ WAVs and `MANIFEST.json` from the repositor
 
 Baseline $\mathrm{NMSE}_{\mathrm{PCM}}$ measured by reloading disk PCM16 integers over the $28800$-sample steady window are approximately $0.153852$ (white centralized), $0.115945$ (correlated centralized), and $0.153858$ (correlated stale broadcast), with Node 2's independently quantized reference energy denominator tracked separately; exact 64-bit integer numerators, denominators, and the full manifest are archived in [`MANIFEST.json`](../codes/chapters/ch13/distributed_audio/MANIFEST.json), with further deployment and reproducibility details in the [Industrial Deployment Manual](../codes/chapters/ch00/research_en/03_industrial_deployment.md) and the [Exercises & Audio Manual](../codes/chapters/ch00/research_en/05_exercises_and_audio.md).
 
-### 13.16 Twenty Exercises: From Compression Directions to End-to-End System Verification
+### 13.16 Twenty-One Exercises: From Compression Directions to End-to-End System Verification
 
-Exercises 1–6 cover complex reference conjugation, broadcast-scale invariance, sequential/simultaneous update states, and multi-target broadcast rank; Exercises 7–17 trace rank-deficient fallback, bitrate and RAM accounting, clock/packet-loss transport, PCM16 bounds and three-tier steady-window scoring, convergence step-size rules, tree summation, and GEVD whitening; and Exercises 18–20 derive broadcast-switch coordinate transforms, AES67/PTPv2 sub-microsecond budgets, and the unified DASF constrained subspace framework. Unless noted otherwise, $d = s$ and $\phi_s = 1$, verifying every effective global weight via Eq. (13-3).
+Exercises 1–6 cover complex reference conjugation, broadcast-scale invariance, sequential/simultaneous update states, and multi-target broadcast rank; Exercises 7–17 trace rank-deficient fallback, bitrate and RAM accounting, clock/packet-loss transport, PCM16 bounds and three-tier steady-window scoring, convergence step-size rules, tree summation, and GEVD whitening; and Exercises 18–21 examine broadcast-switch coordinate transforms, AES67/PTPv2 sub-microsecond budgets, the unified DASF constrained subspace framework, and DWACD double-window blind SRO estimation with activity gating. Unless noted otherwise, $d = s$ and $\phi_s = 1$, verifying every effective global weight via Eq. (13-3).
 
 <a id="e13-01"></a>
 #### E13-01: Complex Reference Conjugation Cannot Be Omitted
@@ -1121,6 +1144,49 @@ P_{n,\mathrm{stale}}-P_{n,\mathrm{LCMV}}^\star
 Because $L_u = 3 > P = 2$ retains $1$ noise-reduction DOF, sequential DASF-LCMV descends monotonically back to $34/203$ and Eq. (13-31).
 
 **Stage 3: $P = 3 = L_u$ DOF lockup vs. $R = 2$ unlocking.** Adding $\vec c_3 = [0, 0, 0, 1]^\top$ ($\vec f_3 = [1, 0, 0]^\top, P = 3$) gives centralized $[34, -26, 26, 0]^\top / 73$ ($P_n^\star = 196/365 \approx 0.536986$). At $R = 1$ ($L_u = 3 = P$, $L_u - P = 0$ DOFs), from $\vec f_1^{(0)} = [1, 0]^\top, \vec f_2^{(0)} = [11, -24]^\top$, $3 \times 3$ $\tilde{\mathbf C}_1^\top\vec h_1 = [1, 0, 0]^\top$ welds $\vec h_1 = [1, 0, 0]^\top$ and global $[1, 0, 0, 0]^\top$ permanently at noise $1.0 > 196/365$; expanding to $R = 2$ ($L_u = 4 > 3$) unlocks $196/365$ on Pass 1 (verify via `.venv/bin/python -m codes.chapters.ch13.chapter13_exercises --exercise E13-20`).
+
+<a id="e13-21"></a>
+#### E13-21: DWACD Double-Window Blind SRO Estimation and Activity Gating
+
+**Problem.** Following §13.15 Eq. (13-24)'s cross-PSD conjugation convention $\hat\Gamma_{12}[k,\ell] = \hat{\mathbb{E}}[X_1[k,\ell]\,X_2^*[k,\ell]]$, consider two asynchronous nodes with reference sampling rate $f_s = 16\,\mathrm{kHz}$, FFT size $N = 512$, hop $H = 256$ ($16\,\mathrm{ms}$), true relative SRO $\varepsilon = +100\,\mathrm{ppm} = 10^{-4}$ (Node 2 samples faster), and static acoustic TDOA $\tau_0 = 1.75$ samples. Construct two correlation segments of length $L_w = 100$ frames separated by nominal lag $B = 200$ frames ($B H / f_s = 3.2\,\mathrm{s}$), and estimate $\hat\varepsilon$ over bins $k \in [16, 128]$ ($500$–$4000\,\mathrm{Hz}$, $113$ bins) from the double-window product $P[k] = \bar\Gamma_{12}^{(2)}[k]\big(\bar\Gamma_{12}^{(1)}[k]\big)^*$ via WACD coherent inner-product peak search:
+
+(1) Compute the exact true cumulative drift $\Delta n_{\mathrm{true}}$ over $B$ frames, theoretical phase slope $\alpha_{\mathrm{true}}$ across bins, endpoint phases at $k = 16$ and $k = 128$, and intra-frame drift $|\varepsilon| N$, explaining why principal-value phase already wraps past $2\pi$ at $k = 128$ whereas complex inner-product peak search remains unambiguous up to $|\Delta n| < N / 2$;
+
+(2) Let active speech frames carry coherent broadband speech plus independent local sensor noise ($P_s = 100, P_n = 1$, SNR $+20\,\mathrm{dB}$) and inactive frames carry mutually uncorrelated silence or local noise bursts (SNR $-\infty\,\mathrm{dB}$, random cross-phase). Using deterministic synthesis (seed `13021`, $20$ trials), compare **jointly active gated DWACD** against **ungated full-segment averaging** across three regimes: (i) $60\%$ active speech + $40\%$ quiet silence (testing both symmetric and asymmetric window activity, checking the conjugation sign-flip trap and centroid-shift bias); (ii) $60\%$ active speech + $40\%$ strong local noise bursts ($P_{\mathrm{burst}} = 2500 = 25 P_s$); and (iii) $20\%$ active speech + $80\%$ strong local noise bursts ($P_{\mathrm{burst}} = 1000 = 10 P_s$).
+
+**Solution.** Verify in three steps combining closed-form anchors and deterministic simulation:
+
+**Step 1: Closed-form drift, phase slope, and unambiguous range.** Across $B = 200$ frames ($B H = 51200$ samples $= 3.2\,\mathrm{s}$), the exact drift and linear phase slope are:
+
+$$\begin{aligned}
+\Delta n_{\mathrm{true}} &= \varepsilon B H = 10^{-4}\times 200\times 256 = 5.12\ \text{samples},\\
+\alpha_{\mathrm{true}} &= \frac{2\pi}{N}\Delta n_{\mathrm{true}} = \frac{2\pi}{512}\times 5.12 = 0.02\pi \approx 0.062832\ \mathrm{rad/bin}.
+\end{aligned}$$
+
+At the band endpoints, theoretical phase reaches $\phi(16) = 0.32\pi \approx 1.0053\,\mathrm{rad}$ and $\phi(128) = 2.56\pi \approx 8.0425\,\mathrm{rad}$, wrapping past $\pi$ twice while adjacent-bin steps stay at $0.02\pi \ll \pi$. Because Eq. (13-24)'s conjugate product $P[k]$ cancels static TDOA $\tau_0 = 1.75$ samples identically, WACD coherent peak search maximizes the zero-intercept matched-filter objective
+
+$$\widehat{\Delta n} = \arg\max_{\tau}\operatorname{Re}\!\left\{\sum_{k=16}^{128} P[k]\,e^{-\mathrm{j}\frac{2\pi k}{N}\tau}\right\}, \qquad \hat\varepsilon = \frac{\widehat{\Delta n}}{B H},$$
+
+via coarse grid scan followed by golden-section refinement, remaining unambiguous up to $|\Delta n| < N / 2 = 256$ samples at unit bin spacing without fragile phase unwrapping. Intra-frame drift is $|\varepsilon| N = 0.0512 \ll 1$ samples, well inside §13.15's WOLA linear-phase validity bound.
+
+**Step 2: Symmetric vs. asymmetric silence—how centroid shift injects systematic bias.** Under symmetric $60\%$ speech + $40\%$ quiet silence (first $60$ frames active in both segments; $60$ jointly active pairs, analytic gated cross-PSD SNR $16.913\,\mathrm{dB}$), gated DWACD recovers $\widehat{\Delta n} = 5.1232$ samples and $\hat\varepsilon = +100.062\,\mathrm{ppm}$ (error $+0.062\,\mathrm{ppm}$, band-mean MSC $0.8198$, phase RMSE $0.0784\,\mathrm{rad}$, $20$-trial RMSE $0.265\,\mathrm{ppm}$); reversing conjugation to $\hat{\mathbb{E}}[X_1^* X_2]$ flips the estimate cleanly to $-100.062\,\mathrm{ppm}$. When quiet silence has tiny power ($P_{\mathrm{sil}} = 1 \ll P_s = 100$) *and* symmetric timing, unnormalized energy-weighted averaging barely shifts (ungated single trial $+100.061\,\mathrm{ppm}$, $20$-trial RMSE $0.266\,\mathrm{ppm}$).
+
+Once silence breaks window symmetry—Segment 1 active on frames $0$–$59$ (centroid $29.5$) and Segment 2 active on frames $240$–$299$ (centroid $269.5$)—the actual speech-centroid separation stretches to $240.0$ frames instead of nominal $B = 200$, leaving $20$ jointly active pairs at exact lag $B = 200$. Jointly active gated DWACD still recovers $\widehat{\Delta n} = 5.1152$ samples and $\hat\varepsilon = +99.905\,\mathrm{ppm}$ (error $-0.095\,\mathrm{ppm}$, MSC $0.9618$, phase RMSE $0.0560\,\mathrm{rad}$, $20$-trial RMSE $0.129\,\mathrm{ppm}$), whereas ungated averaging divides $240$ frames of drift by nominal $B = 200$, yielding $\widehat{\Delta n} = 6.1479$ samples, $\hat\varepsilon = +120.077\,\mathrm{ppm}$ (phase RMSE $0.9982\,\mathrm{rad}$), $20$-trial mean bias $+19.954\,\mathrm{ppm}$, and RMSE $19.955\,\mathrm{ppm}$—matching the exact $+20\%$ theoretical centroid bias ($+120.0\,\mathrm{ppm}$).
+
+**Step 3: Cross-PSD SNR collapse under uncorrelated local noise bursts.** When speech pauses contain high-variance uncorrelated local noise (such as fan turbulence, keystrokes, or handling transients), inactive variance $L_{\mathrm{inact}} P_{\mathrm{burst}}^2$ overwhelms ungated averaging, as summarized across all four regimes:
+
+| Regime ($\varepsilon = +100\,\mathrm{ppm}$) | Strategy | Analytic Cross-PSD SNR (dB) | Single-Trial $\hat\varepsilon$ (ppm) | Mean MSC | Phase RMSE (rad) | 20-Trial RMSE (ppm) |
+|---|---|---|---|---|---|---|
+| Symmetric $60\%$ speech + $40\%$ silence | Jointly gated | $+16.913$ | $+100.062$ | $0.8198$ | $0.0784$ | $0.265$ |
+| Asymmetric $60\%$ speech + $40\%$ silence | Gated / Ungated | $+12.835$ / $+16.913$ | $+99.905$ / $+120.077$ | $0.9618$ / $0.8118$ | $0.0560$ / $0.9982$ | $0.129$ / $19.955$ |
+| $60\%$ speech + $40\%$ local bursts ($25 P_s$) | Gated / Ungated | $+16.913$ / $-9.209$ | $+99.654$ / $+105.751$ | $0.8239$ / $0.0270$ | $0.0977$ / $1.7628$ | $0.141$ / $223.156$ |
+| $20\%$ speech + $80\%$ local bursts ($10 P_s$) | Gated / Ungated | $+12.835$ / $-13.110$ | $+99.894$ / $-86.643$ | $0.9623$ / $0.0121$ | $0.0582$ / $1.7657$ | $0.135$ / $207.738$ |
+
+Under both local-burst regimes, ungated cross-PSD SNR plunges by roughly $26\,\mathrm{dB}$ (to $-9.209\,\mathrm{dB}$ and $-13.110\,\mathrm{dB}$), mean MSC collapses from $0.82$–$0.96$ down to $0.012$–$0.027$, phase RMSE approaches the uniform-random-phase limit $\pi / \sqrt{3} \approx 1.8138\,\mathrm{rad}$, and $20$-trial RMSE explodes to $207.7$–$223.2\,\mathrm{ppm}$ (with the $80\%$ burst single trial mis-estimating $-86.643\,\mathrm{ppm}$, flipping even the drift sign). Jointly active gated DWACD holds single-trial error under $0.35\,\mathrm{ppm}$ and $20$-trial RMSE within $0.13$–$0.27\,\mathrm{ppm}$ across all four regimes. Verify all numbers from the repository root via:
+
+```bash
+.venv/bin/python -m codes.chapters.ch13.chapter13_exercises --exercise E13-21
+```
 
 ### 13.17 Primary References and Further Reading
 

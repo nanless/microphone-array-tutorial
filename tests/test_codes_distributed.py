@@ -11,7 +11,9 @@ from codes.chapters.ch13.core.distributed import (
 from codes.chapters.ch13.core.dasf_and_ptp import (
     ptp_vs_sro_phase_budget, centralized_lcmv, dasf_lcmv_updates, dasf_unification_control,
 )
-from codes.chapters.ch13.chapter13_exercises import run_experiments, resource_control
+from codes.chapters.ch13.chapter13_exercises import (
+    run_experiments, resource_control, dwacd_sro_gating_control,
+)
 
 
 class DistributedTests(unittest.TestCase):
@@ -315,9 +317,62 @@ class DistributedTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 bad_call()
 
+    def test_dwacd_sro_gating_control_anchors_and_failures(self):
+        ctrl = dwacd_sro_gating_control()
+        self.assertEqual(ctrl, dwacd_sro_gating_control())
+        analytic = ctrl['analytic']
+        self.assertAlmostEqual(analytic['true_drift_samples'], 5.12, places=12)
+        self.assertAlmostEqual(analytic['true_phase_slope_rad_per_bin'], 0.02 * math.pi, places=14)
+        self.assertAlmostEqual(analytic['phase_at_k_min_rad'], 0.32 * math.pi, places=14)
+        self.assertAlmostEqual(analytic['phase_at_k_max_rad'], 2.56 * math.pi, places=14)
+        self.assertTrue(analytic['wraps_past_pi_at_k_max'])
+        self.assertAlmostEqual(analytic['unambiguous_wacd_drift_limit_samples'], 256.0, places=12)
+        self.assertAlmostEqual(analytic['intra_frame_drift_samples'], 0.0512, places=14)
+
+        sym = ctrl['symmetric_60pct_speech_40pct_quiet_silence']
+        self.assertEqual(sym['jointly_active_pairs'], 60)
+        self.assertLess(abs(sym['single_trial']['gated']['error_ppm']), 0.5)
+        self.assertLess(sym['gated_rmse_ppm'], 0.5)
+        self.assertLess(
+            abs(sym['single_trial']['gated']['eps_hat_ppm'] + sym['single_trial']['reversed_conjugation_eps_hat_ppm']),
+            1e-5,
+        )
+
+        asym = ctrl['asymmetric_60pct_speech_40pct_quiet_silence']
+        self.assertEqual(asym['jointly_active_pairs'], 20)
+        self.assertAlmostEqual(asym['active_centroid_lag_frames'], 240.0, places=12)
+        self.assertAlmostEqual(asym['expected_ungated_centroid_ppm'], 120.0, places=12)
+        self.assertLess(abs(asym['single_trial']['gated']['error_ppm']), 0.5)
+        self.assertLess(asym['gated_rmse_ppm'], 0.5)
+        self.assertAlmostEqual(asym['ungated_mean_bias_ppm'], 20.0, delta=0.5)
+        self.assertGreater(asym['ungated_rmse_ppm'], 15.0)
+
+        for key in ('symmetric_60pct_speech_40pct_local_noise_bursts',
+                    'sparse_20pct_speech_80pct_local_noise_bursts'):
+            case = ctrl[key]
+            self.assertLess(abs(case['single_trial']['gated']['error_ppm']), 1.0)
+            self.assertLess(case['gated_rmse_ppm'], 0.5)
+            self.assertGreater(case['single_trial']['gated']['mean_msc'], 0.8)
+            self.assertGreater(
+                case['analytic_cross_psd_snr_gated_db'] - case['analytic_cross_psd_snr_ungated_db'],
+                25.0,
+            )
+            self.assertLess(case['single_trial']['ungated']['mean_msc'], 0.05)
+            self.assertGreater(case['single_trial']['ungated']['phase_rmse_rad'], 1.5)
+            self.assertGreater(case['ungated_rmse_ppm'], 100.0)
+
+        for bad_call in (
+            lambda: dwacd_sro_gating_control(seed=True),
+            lambda: dwacd_sro_gating_control(trials=0),
+            lambda: dwacd_sro_gating_control(trials=True),
+        ):
+            with self.assertRaises(ValueError):
+                bad_call()
+        json.dumps(ctrl, allow_nan=False)
+
     def test_independent_exercise_id_set_and_finite_json(self):
         result = run_experiments()
-        expected = {'E13-'+str(i).zfill(2) for i in range(1, 21)}
+        expected = {'E13-'+str(i).zfill(2) for i in range(1, 22)}
         self.assertEqual(set(result['exercises']), expected)
         self.assertNotIn('schema_version', result['exercises'])
         json.dumps(result, allow_nan=False)

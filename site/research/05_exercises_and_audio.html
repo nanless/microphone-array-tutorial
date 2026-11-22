@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>章节代码练习与音频实验 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="a0289902c00e"><style>
+<meta name="source-digest" content="b82b7d85f70d"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -694,7 +694,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 </ul></nav></details>
 <span id="sec-1" class="anchor-alias" aria-hidden="true"></span><span id="章节代码练习与音频实验" class="anchor-alias" aria-hidden="true"></span><h1 id="sec-u-c621965c02">章节代码练习与音频实验</h1>
 <p>先按章节做手算，再运行对应脚本，最后听同一模型产生的音频。代码输出不是预填的答案表；程序从输入重新计算结果，回归测试另外保留手算、解析边界或已知模型作为判据。</p>
-<p>本页索引 352 道带稳定编号的代码题（<code>E00-01</code>～<code>E17-13</code>），以及独立的真实录音练习 R01。<code>E00-01</code> 表示第 0 章的第 1 道数学预备代码题，<code>E01-01</code> 表示第 1 章的第 1 道代码题；附录 B 中另有按 1～17 编号的综合题，两套题号各自使用。</p>
+<p>本页索引 360 道带稳定编号的代码题（<code>E00-01</code>～<code>E17-13</code>），以及独立的真实录音练习 R01。<code>E00-01</code> 表示第 0 章的第 1 道数学预备代码题，<code>E01-01</code> 表示第 1 章的第 1 道代码题；附录 B 中另有按 1～17 编号的综合题，两套题号各自使用。</p>
 <p>E06-07～E06-10 使用无量纲回声模型检查 AEC 的计算与边界，其中 E06-08～10 可用精确答案程序核对。第 15、16 节另提供参数不同的合成音频；试听文件本身不是题目真值。</p>
 <p>第 3～11、13～16、18、21～30、32～34 节对应主清单的 109 个数学合成样本；其余各节配套 <strong>31 套独立专题音频清单</strong>（共 174 段 WAV，连同主清单合计 32 套、283 段音频），涵盖第 12 节另行授权的真实同步录音（4 段）、第 17 节隔离环境房间白噪声仿真（18 段），以及第 1～15 章与附录 A/B 的 29 套主环境受控数学合成对照样本（如双耳与谱线索、有限窗卷积与扫频反卷积、多频几何与基线校准、相干反射与已知聚焦、导数约束/逐频相位/双耳波束、APA 与播放增益尾声、MINT 与保护延迟、掩码表示/CSS/GSS、运动源与追踪生命周期、噪声失配与坏麦重建、场景选型、成像快拍、分布式协同增强、第 61 节第 14 章可穿戴阵列六样本与第 62 节第 15 章近场距离气泡六样本等）。不同音频的来源和可作的比较不同，试听前先查看各节的条件。</p>
 <p>主音频按章存放，统一由<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/examples/generate_audio_samples.py">生成器</a>和<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/audio/MANIFEST.json">清单</a>管理。清单记录每组模型、种子、共同导出增益、采样率、通道、帧数、量化误差、运行环境、源文件摘要与逐 WAV 摘要；不把某组的谐波模板套到其他组。PCM16 编码按最近偶数舍入，不加抖动或自动限幅，RMS 对全部通道与采样一起计算。运行生成器并附加 <code>--check</code> 时只在内存重算和读回比对，不重写资产；严格字节核对也比较 Python、NumPy 和平台记录，异机不通过不等于算法错误。生成中断造成清单与 WAV 不一致时，先保留异常目录，再生成到新的空目录核对，通过后更新受影响资产并构建图和网站；不要手改单个生成文件。样本没有真人录音或模型权重，客观读回和浏览器加载不等于正式听测。</p>
@@ -790,8 +790,8 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <td><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/exercises_spatial.py">空间练习</a>（01～07、09）；<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch04/doa_resolution_trials.py">分辨率 E04-08</a></td>
 </tr>
 <tr>
-<td>第 4 章 E04-12～23</td>
-<td>SRP直求和与近场网格、ESPRIT基与分支、GN与相关TDOA的GLS一步、局部时延CRLB、纯音歧义与宽带约束、非酉聚焦噪声、酉聚焦跨频秩、root-MUSIC多项式、相干反射假峰、人工CTF首比、UCA贝塞尔相位模式ESPRIT与双麦盲相干扩散比（CDR）筛选</td>
+<td>第 4 章 E04-12～24</td>
+<td>SRP直求和与近场网格、ESPRIT基与分支、GN与相关TDOA的GLS一步、局部时延CRLB、纯音歧义与宽带约束、非酉聚焦噪声、酉聚焦跨频秩、root-MUSIC多项式、相干反射假峰、人工CTF首比、UCA贝塞尔相位模式ESPRIT、双麦盲相干扩散比（CDR）筛选及 $\ell_1$ 稀疏定位离网格失配与 SELD 位置相关 $F_{20^\circ}$ 耦合</td>
 <td><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch04/chapter04_experiments.py">定位逐步实验</a></td>
 </tr>
 <tr>
@@ -820,9 +820,9 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <td><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/aec_affine_projection_demo.py">APA逐步缩例</a>（21～24）；<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/examples/generate_apa_audio.py">有色参考音频生成/核验</a>（25）；展开见§40</td>
 </tr>
 <tr>
-<td>第 6 章 E06-26～30</td>
-<td>已知播放增益与卷积顺序、参考当前静音与纯回声尾声、三个实际PCM评分窗、奇次幂与 Legendre 正交基 Hammerstein 扩维 AEC 及立体声时变全通去相关、环路因果期限与主从双滤波器切换</td>
-<td><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/core/reference_timing.py">逐样本核</a>、<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/core/nonlinear_and_stereo.py">非线性与立体声核</a>、<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/chapter06_experiments.py">章节入口</a>（26～27、29～30）、<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/examples/generate_reference_audio.py">六WAV生成/核验</a>（28）；展开见§56</td>
+<td>第 6 章 E06-26～32</td>
+<td>已知播放增益与卷积顺序、参考当前静音与纯回声尾声、三个实际PCM评分窗、奇次幂与 Legendre 正交基 Hammerstein 扩维 AEC、立体声时变全通去相关与主从双滤波器切换、PBFDKF 双讲观测方差抬升与状态遗忘因子稳态权衡及残余回声抑制维纳地板增益与 CNG 电平匹配</td>
+<td><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/core/reference_timing.py">逐样本核</a>、<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/core/nonlinear_and_stereo.py">非线性与立体声核</a>、<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/chapter06_experiments.py">章节入口</a>（26～27、29～32）、<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/examples/generate_reference_audio.py">六WAV生成/核验</a>（28）；展开见§56</td>
 </tr>
 <tr>
 <td>第 7 章 E07-01～05</td>
@@ -845,8 +845,8 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <td><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/exercises_enhancement.py">增强练习</a></td>
 </tr>
 <tr>
-<td>第 8 章 E08-10～26</td>
-<td>复数逐行IP、联合回投影、活动门控先验反例、ILRMA更新、欠定MNMF辨识、合同对角化重构、重叠区关联音频、白化反例、三张矩阵共同对角边界、FastMNMF雅可比、加权混合一致性、有界/无界实掩码与复掩码表示、两个一致性次序、PCA/OverIVA背景约束、排列匹配后极性与增益跳变音频、卷积不变CI-SDR过拟合边界及流式算力预算与单人段旁路门控</td>
+<td>第 8 章 E08-10～27</td>
+<td>复数逐行IP、联合回投影、活动门控先验反例、ILRMA更新、欠定MNMF辨识、合同对角化重构、重叠区关联音频、白化反例、三张矩阵共同对角边界、FastMNMF雅可比、加权混合一致性、有界/无界实掩码与复掩码表示、两个一致性次序、PCA/OverIVA背景约束、排列匹配后极性与增益跳变音频、卷积不变CI-SDR过拟合边界、流式算力预算与单人段旁路门控及 AuxIVA 无求逆秩一 ISS 与 IP 收敛对照</td>
 <td><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch08/chapter08_experiments.py">分离逐步实验</a></td>
 </tr>
 <tr>
@@ -855,8 +855,8 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <td><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/exercises_enhancement.py">增强练习</a>（01～05）；<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch09/tracking_crossing_dropout_demo.py">追踪交叉与限速</a>（06）</td>
 </tr>
 <tr>
-<td>第 9 章 E09-10～22</td>
-<td>EKF一步、无迹矩、圆周歧义与正先验支持、PHD人数方差与伯努利空观测、OSPA/GOSPA边界、固定滞后RTS平滑与乱序观测、实际双麦PCM波形链、相关观测与纯方位尺度歧义、完整对数似然IMM缺测递推、双麦PCM生命周期、三维姿态与球面vMF、本机扬声器残余回声杂波扇区门控及视听异构延迟回溯与视场盲区漏检</td>
+<td>第 9 章 E09-10～23</td>
+<td>EKF一步、无迹矩、圆周歧义与正先验支持、PHD人数方差与伯努利空观测、OSPA/GOSPA边界、固定滞后RTS平滑与乱序观测、实际双麦PCM波形链、相关观测与纯方位尺度歧义、完整对数似然IMM缺测递推、双麦PCM生命周期、三维姿态与球面vMF、本机扬声器残余回声杂波扇区门控、视听异构延迟回溯与视场盲区漏检及对称交叉轨迹 JPDA 边缘关联概率与硬指派 GNN 对照</td>
 <td><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch09/chapter09_experiments.py">追踪逐步实验</a>；音频独立见§31与§59</td>
 </tr>
 <tr>
@@ -885,18 +885,18 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <td><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch12/chapter12_exercises.py">成像逐步实验</a>；五份快拍WAV与展开见§47</td>
 </tr>
 <tr>
-<td>第 13 章 E13-01～20</td>
-<td>复参考共轭、广播尺度、顺序/同时/松弛更新与陈旧快照、多目标秩亏、零广播回退、加载目标、比特率与矩阵内存、100 ppm线性SRC、连续丢包缺口、PCM16传输界与三层稳窗评分、Jacobi与步长条件、树求和、GEVD白化、广播坐标重映射、AES67/PTPv2同步预算及DASF统一子空间</td>
+<td>第 13 章 E13-01～21</td>
+<td>复参考共轭、广播尺度、顺序/同时/松弛更新与陈旧快照、多目标秩亏、零广播回退、加载目标、比特率与矩阵内存、100 ppm线性SRC、连续丢包缺口、PCM16传输界与三层稳窗评分、Jacobi与步长条件、树求和、GEVD白化、广播坐标重映射、AES67/PTPv2同步预算、DASF统一子空间及 DWACD 双窗盲 SRO 估计与语音活动门控</td>
 <td><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch13/chapter13_exercises.py">分布式逐步实验</a>；17份WAV与展开见§48</td>
 </tr>
 <tr>
-<td>第 14 章 E14-01～15</td>
-<td>四面体 FOA 编码、开球零陷、欧拉旋转、声强 DirAC、BSM-MagLS/方向加权、双耳参考混合、跨模态抗风噪融合、通透梳状滤波、超低功耗预算与六WAV三层对账、FOA max-rE 能量矢量扬声器解码与 SOFA 坐标及头部追踪延迟预算</td>
+<td>第 14 章 E14-01～16</td>
+<td>四面体 FOA 编码、开球零陷、欧拉旋转、声强 DirAC、BSM-MagLS/方向加权、双耳参考混合、跨模态抗风噪融合、通透梳状滤波、超低功耗预算与六WAV三层对账、FOA max-rE 能量矢量扬声器解码、SOFA 坐标及头部追踪延迟预算及刚性球二阶 HOA 径向模态提升与低频 WNG 放大</td>
 <td><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch14/chapter14_exercises.py">可穿戴逐步实验</a>；六WAV见§61</td>
 </tr>
 <tr>
-<td>第 15 章 E15-01～14</td>
-<td>双态地板损失、零重叠旁路、球面波距离气泡与孔径病态、DER 下界与合法超100%、空谱 TS-VAD/GSS、视听滞后截断、二抽头距离气泡PCM、EEND-EDA 吸引子存在性门控与注册声纹串音排他净化</td>
+<td>第 15 章 E15-01～15</td>
+<td>双态地板损失、零重叠旁路、球面波距离气泡与孔径病态、DER 下界与合法超100%、空谱 TS-VAD/GSS、视听滞后截断、二抽头距离气泡PCM、EEND-EDA 吸引子存在性门控、注册声纹串音排他净化及 FiLM 仿射条件调制与唇部遮挡视觉置信度门控回退</td>
 <td><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch15/chapter15_exercises.py">目标提取逐步实验</a>；六WAV见§62</td>
 </tr>
 <tr>
@@ -3681,6 +3681,11 @@ e^{-\mathrm j2\pi 2000n/24000},\\
 <td>DASF 统一子空间：分布式 MWF、MVDR、GEVD 与 LCMV 何时同方向、何时分道扬镳</td>
 <td>单源秩一下三者共享同一压缩一维方向；双约束 LCMV 死守旧广播恶化，L_u = P = 3 自由度耗尽锁死需双路广播 R = 2 解锁</td>
 </tr>
+<tr>
+<td>E13-21</td>
+<td>DWACD 双窗盲 SRO 估计与语音活动门控（$+100\,\mathrm{ppm}$、$B=200$ 帧、非对称静音与强突发噪声对照）</td>
+<td>理论漂移 $5.12$ 样本、相位斜率 $0.02\pi\ \mathrm{rad/bin}$；联合活动门控消除质心错位偏差，本地突发噪声下避免无门控互谱信噪比暴跌约 $26\,\mathrm{dB}$ 与 MSC 崩塌</td>
+</tr>
 </tbody>
 </table></div>
 <pre><code class="language-bash">.venv/bin/python -m codes.chapters.ch13.chapter13_exercises
@@ -4233,7 +4238,7 @@ e^{-\mathrm j2\pi 2000n/24000},\\
 <p>p=1、2、3给出三行[1/2,1,1+j]、[0,1/2,1/4−j/2]、[1,0,0]。这是普通转置的代数方程，不是把列取共轭后的复内积。第三行先解g0=1+j，再将它代入第一行，与第二行形成2×2方程。最后得到g1=1/4−j/2、g2=−1/2，行列式−1/4−j非零，条件数约3.3402476969。</p>
 <p>首系数比1+j幅度√2、相位45°。另定义人工帧调制频率ω=π/2，在该帧频率处A=1−j/2，B=1/2+3j/4，B/A=0.1+0.8j，幅度约0.8062257748、相位约82.87498365°。这里的ω描述帧序列调制，不是某个STFT物理bin的Hz；整路径之比已经混合两个CTF抽头，不能当作首路径比。</p>
 <p>若改为稳定持续复指数，相关设计行成比例，秩只有1；即使记录很长，三个归一化未知量仍不唯一。已知初始化边界若另进入观测，会增加额外激励，必须单独说明。Q设错、a0接近零、带噪设计列或路径变化则需要新的估计模型。</p>
-<p><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch04/chapter04_experiments.py">章节代码</a>直接从公开输入卷积、组矩阵、求解并检查持续单音的秩，不预填结果。真实DP-RTF的CTF窗权、首反射间隔、PSD噪声差分、活动段及候选响应匹配见<a href="01_spatial_and_tracking.html#sec-u-1ca23edba5">研究58</a>；这道教学代数题不是作者MATLAB系统或实房间定位复现。</p>
+<p><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch04/chapter04_experiments.py">章节代码</a>直接从公开输入卷积、组矩阵、求解并检查持续单音的秩，不预填结果。真实DP-RTF的CTF窗权、首反射间隔、PSD噪声差分、活动段及候选响应匹配见<a href="01_spatial_and_tracking.html#sec-u-1ca23edba5">研究58</a>；这道教学代数题不是作者MATLAB系统或实房间定位复现。同一入口另含 <a href="../04_doa-estimation.html#e04-24">E04-24</a>，在 $M=8$ 半波长线阵 $5^\circ$ 粗糙字典上量化 $\ell_1$ 稀疏定位的离网格能量泄漏，并核对 SELD 空间门限 $T_{\mathrm{DOA}}=20^\circ$ 下平均角误差与位置相关 $F_{20^\circ}$ 指标的耦合跃变（纯解析/数值验证，不新增 WAV）。</p>
 <p><a id="phase-reference-audio"></a></p>
 <span id="sec-144" class="anchor-alias" aria-hidden="true"></span><span id="55-第5章逐频相位波形参考与通道掩码" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-36848845c9">55. 第5章：逐频相位、波形参考与通道掩码</h2>
 <p>本节连接正文 <a href="../05_beamforming.html#e05-15">E05-15</a> 与 <a href="../05_beamforming.html#e05-12">E05-12</a>。前者检查“逐频功率和目标噪声比保持”能否推出“参考波形保持”；后者检查逐通道预滤波后的空间向量、有效秩和协方差归一。题目的计算由<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch05/chapter05_experiments.py">章节入口</a>重新执行，下面的音频只属于E05-15已知分量控制。</p>
@@ -4421,7 +4426,7 @@ e^{-\mathrm j2\pi 2000n/24000},\\
 .venv/bin/python scripts/make_reference_figures.py
 </code></pre>
 <p>第一项执行E06-26/27短核，第二项在内存完整重放六文件并核对当前源、严格JSON、固定参数和普通七成员目录，不补文件、不改清单。首次生成去掉<code>--check</code>。唯一<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/core/reference_audio.py">音频核</a>复用NLMS、NCC和共享PCM/IO；<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/examples/generate_reference_audio.py">生成器</a>与<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/tests/test_ch06_reference_publication.py">发布测试</a>分别核对资产和网站副本。</p>
-<p><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/scripts/make_reference_figures.py">图69源</a>读取核验后的PCM，<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/reports/figure69_reference_timing.json">同次报告</a>绑定八音频源、两绘图源、清单与六WAV摘要，分开给定增益、实际残差、解析/PCM功率和尾声帧RMS。WebRTC的音量变化通知与XMOS特定模式的参考活动保持属于各自控制接口，不能由它们推断参考样本已自动乘增益、历史已完整保留或近端声已被识别；固定源码边界见<a href="02_aec_wpe_separation.html">AEC研究</a>与<a href="03_industrial_deployment.html">工业部署</a>。</p>
+<p><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/scripts/make_reference_figures.py">图69源</a>读取核验后的PCM，<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/reports/figure69_reference_timing.json">同次报告</a>绑定八音频源、两绘图源、清单与六WAV摘要，分开给定增益、实际残差、解析/PCM功率和尾声帧RMS。WebRTC的音量变化通知与XMOS特定模式的参考活动保持属于各自控制接口，不能由它们推断参考样本已自动乘增益、历史已完整保留或近端声已被识别；固定源码边界见<a href="02_aec_wpe_separation.html">AEC研究</a>与<a href="03_industrial_deployment.html">工业部署</a>。同一入口另含 <a href="../06_aec.html#e06-31">E06-31</a>（PBFDKF 双讲观测方差抬升 $\hat\Psi_e=|e|^2$ 与状态遗忘因子 $A=0.999$ 对 $0.99$ 的稳态不动点权衡）及 <a href="../06_aec.html#e06-32">E06-32</a>（残余回声抑制维纳地板增益 $G_{\min}=0.1$ 与舒适噪声功率匹配 $\Phi_{\mathrm{CNG}}=(1-G_{\mathrm{RES}}^2)\hat\Phi_{nn}$），均为纯数值复算，不新增 WAV。</p>
 <p><a id="known-arrival-audio"></a></p>
 <span id="sec-156" class="anchor-alias" aria-hidden="true"></span><span id="57-第7章到达时间预测历史与功率单位" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-593023041f">57. 第7章：到达时间、预测历史与功率单位</h2>
 <p>本节对应<a href="../07_wpe-dereverberation.html#e07-18">E07-18～19</a>和<a href="../../figures/fig70_prediction_delays.png">图70</a>。先写清每个接收样本来自哪个源时刻，再拟合一个实数历史系数。晚期功率衰减是另一个独立统计模型，不能拿该功率曲线代替下面的PCM测量。</p>
@@ -4565,7 +4570,7 @@ e^{-\mathrm j2\pi 2000n/24000},\\
 <pre><code class="language-bash">.venv/bin/python -m codes.chapters.ch08.chapter08_experiments
 .venv/bin/python -m codes.chapters.ch08.examples.generate_css_audio --check
 </code></pre>
-<p>只读核验拒绝多余成员、链接、元数据漂移和真实源变化，不自动修补。这个实验没有运行CSS分离器、识别说话人、修复任意时延或频率相位，也不是自然语音或正式听测。</p>
+<p>只读核验拒绝多余成员、链接、元数据漂移和真实源变化，不自动修补。这个实验没有运行CSS分离器、识别说话人、修复任意时延或频率相位，也不是自然语音或正式听测。此外，<a href="../08_speech-separation.html#e08-27">E08-27</a> 在同一章节入口 <code>chapter08_experiments</code> 中复算单频双通道 AuxIVA 的无求逆秩一迭代源导向（ISS）更新与迭代投影（IP）收敛对照：第 5 轮两者距共同最优目标 $Q^\star$ 的偏差均小于 $10^{-14}$，验证 ISS 保持免步长单调下降并消去 $O(M^3)$ 矩阵求逆（无额外 WAV）。</p>
 <p><a id="tracking-model-lifecycle-sphere-exercises"></a></p>
 <span id="sec-166" class="anchor-alias" aria-hidden="true"></span><span id="59-第9章模式密度实际pcm生命周期与球面方向" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-66cc1801f7">59. 第9章：模式密度、实际PCM生命周期与球面方向</h2>
 <span id="sec-167" class="anchor-alias" aria-hidden="true"></span><span id="591-两个模式与连续缺测的逐步计算" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-59-1">59.1 两个模式与连续缺测的逐步计算</h3>
@@ -4617,7 +4622,7 @@ e^{-\mathrm j2\pi 2000n/24000},\\
 .venv/bin/python -m codes.chapters.ch09.examples.chapter09_tracking_audio --check
 .venv/bin/python scripts/make_tracking_figures.py
 </code></pre>
-<p>前三个命令只读复算；最后一条真实生成图72与数值报告。来源与原始方法边界见<a href="01_spatial_and_tracking.html#tracking-model-lifecycle-sphere">空间研究§61</a>，数值与失败输入的独立测试见<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/tests/test_codes_ch09_imm_spherical.py">IMM/球面回归</a>、<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/tests/test_codes_ch09_lifecycle.py">生命周期回归</a>和<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/tests/test_quality_ch09_lifecycle_publication.py">发布合同回归</a>。本节未实现动态球面滤波、未知姿态估计或真实房间定位，客观PCM核验也不是正式听测。</p>
+<p>前三个命令只读复算；最后一条真实生成图72与数值报告。来源与原始方法边界见<a href="01_spatial_and_tracking.html#tracking-model-lifecycle-sphere">空间研究§61</a>，数值与失败输入的独立测试见<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/tests/test_codes_ch09_imm_spherical.py">IMM/球面回归</a>、<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/tests/test_codes_ch09_lifecycle.py">生命周期回归</a>和<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/tests/test_quality_ch09_lifecycle_publication.py">发布合同回归</a>。同一章节入口另含 <a href="../09_source-tracking.html#e09-23">E09-23</a>，在对称双轨交叉帧上对照联合概率数据关联（JPDA）边缘权重与均值散布协方差扩散（$\tilde P_1=+0.039603\ \mathrm{deg}^2$）与过度自信的硬指派 GNN。本节未实现动态球面滤波、未知姿态估计或真实房间定位，客观PCM核验也不是正式听测。</p>
 <p><a id="known-channel-failure-exercise"></a></p>
 <span id="sec-170" class="anchor-alias" aria-hidden="true"></span><span id="60-第10章已知坏麦后的约束与评分" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-a361707370">60. 第10章：已知坏麦后的约束与评分</h2>
 <span id="sec-171" class="anchor-alias" aria-hidden="true"></span><span id="601-先改观测坐标再重算权重" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-60-1">60.1 先改观测坐标，再重算权重</h3>
@@ -4723,7 +4728,7 @@ e^{-\mathrm j2\pi 2000n/24000},\\
 </ul>
 <p><a id="wearable-exercises-audio"></a></p>
 <span id="sec-175" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-c3cb1966de" class="anchor-alias" aria-hidden="true"></span><span id="61-第16章空间声场与可穿戴阵列对照实验" class="anchor-alias" aria-hidden="true"></span><span id="61-第14章空间声场与可穿戴阵列对照实验" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-94bcdb96bb">61. 第14章空间声场与可穿戴阵列对照实验</h2>
-<p><a href="../14_spatial-wearable-arrays.html">扩展专题Ⅲ</a>通过 E14-01～15 复算四面体 FOA 编码、开球径向模态零陷、三维欧拉旋转对偶、有功声强与扩散度参数化分析、BSM-MagLS 与方向加权双耳匹配、BMVDR 参考混合、Corcos 风噪相干、气导与耳内闭塞跨模态 MVDR 融合、TWS 通透模式（Hear-Through）处理延迟导致的耳道梳状滤波效应、超低功耗预算、六 WAV 三层对账，以及 FOA max-rE 能量矢量扬声器解码与 SOFA 坐标及头部追踪延迟容限。</p>
+<p><a href="../14_spatial-wearable-arrays.html">扩展专题Ⅲ</a>通过 E14-01～16 复算四面体 FOA 编码、开球径向模态零陷、三维欧拉旋转对偶、有功声强与扩散度参数化分析、BSM-MagLS 与方向加权双耳匹配、BMVDR 参考混合、Corcos 风噪相干、气导与耳内闭塞跨模态 MVDR 融合、TWS 通透模式（Hear-Through）处理延迟导致的耳道梳状滤波效应、超低功耗预算、六 WAV 三层对账、FOA max-rE 能量矢量扬声器解码与 SOFA 坐标及头部追踪延迟容限，以及 <a href="../14_spatial-wearable-arrays.html#e14-16">E14-16</a> 的刚性球（$R=4.2\ \mathrm{cm}$）二阶 HOA（$N=2$ 九通道）对比一阶 FOA（$N=1$ 四通道）径向模态提升与低频 WNG 放大界限（$\kappa R=0.2$ 处无正则二阶 WNG 跌落 $22.22\ \mathrm{dB}$）。</p>
 <span id="sec-176" class="anchor-alias" aria-hidden="true"></span><span id="611-六份-16-khz-数学合成对照音频" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-61-1">61.1 六份 16 kHz 数学合成对照音频</h3>
 <p>六份样本均为 16 kHz、每通道 32000 点（2.0 s）有符号 PCM16 文件，首尾各 1600 点余弦升起包络，稳态评分窗口固定为半开区间 <code>[1600, 30400)</code>（共 28800 点），共同导出增益为 <code>1.0</code>。目标信号为 <code>250 Hz</code> 与 <code>4000 Hz</code> 等幅（各 <code>0.1</code>）双音叠加，稳态总功率为 <code>0.01</code>。播放前请先调低音量：</p>
 <ul>
@@ -4741,7 +4746,7 @@ e^{-\mathrm j2\pi 2000n/24000},\\
 </code></pre>
 <p><a id="tse-exercises-audio"></a></p>
 <span id="sec-177" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-3d1374a482" class="anchor-alias" aria-hidden="true"></span><span id="62-第17章条件目标提取与近场距离气泡对照实验" class="anchor-alias" aria-hidden="true"></span><span id="62-第15章条件目标提取与近场距离气泡对照实验" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-426c78e4cd">62. 第15章条件目标提取与近场距离气泡对照实验</h2>
-<p><a href="../15_target-extraction-diarization.html">扩展专题Ⅳ</a>通过 E15-01～14 复算目标存在与沉默双态能量地板损失、单人擦音零重叠旁路门限、球面波同向距离气泡 LCMV 波束形成与小孔径正则权衡、重叠会议单标签 DER 理论下界与合法超 100% 构造、空谱联合 TS-VAD 后验与排他 GSS 掩码、摄像头正滞后词首截断、二抽头距离气泡 PCM 三层对账，以及 EEND-EDA 吸引子存在性门控与注册声纹串音排他净化。</p>
+<p><a href="../15_target-extraction-diarization.html">扩展专题Ⅳ</a>通过 E15-01～15 复算目标存在与沉默双态能量地板损失、单人擦音零重叠旁路门限、球面波同向距离气泡 LCMV 波束形成与小孔径正则权衡、重叠会议单标签 DER 理论下界与合法超 100% 构造、空谱联合 TS-VAD 后验与排他 GSS 掩码、摄像头正滞后词首截断、二抽头距离气泡 PCM 三层对账、EEND-EDA 吸引子存在性门控、注册声纹串音排他净化，以及 <a href="../15_target-extraction-diarization.html#e15-15">E15-15</a> 的 FiLM 仿射条件调制对比度切换与唇部遮挡对数几率视觉置信度门控回退（临界视觉置信度 $c_v^\star=0.55$）。</p>
 <span id="sec-178" class="anchor-alias" aria-hidden="true"></span><span id="621-六份-16-khz-近场球面波距离气泡对照音频" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-62-1">62.1 六份 16 kHz 近场球面波距离气泡对照音频</h3>
 <p>六份样本均为 16 kHz、每通道 32000 点（2.0 s）有符号 PCM16 文件，首尾各 800 点线性渐变，稳态评分窗口固定为半开区间 <code>[1600, 30400)</code>（共 28800 点），共同导出增益为 <code>1.0</code>。正侧向 <code>0°</code> 同时存在 <code>r = 0.40 m</code> 的 <code>3200 Hz</code> 近场目标（稳态均方 <code>0.0128</code>）与 <code>r = 4.00 m</code> 的 <code>2500 Hz</code> 远场同向干扰（稳态均方 <code>0.0128</code>），并叠加正交传感器底噪。播放前请先调低音量：</p>
 <ul>

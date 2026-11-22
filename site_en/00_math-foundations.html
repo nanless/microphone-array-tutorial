@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Chapter 0 · Mathematical & Signal Analysis Foundations · Microphone Array Signal Processing</title>
-<meta name="source-digest" content="7b2bf0186a72"><style>
+<meta name="source-digest" content="6fa82909c83a"><style>
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -710,6 +710,24 @@ r_m &= \|\,r\vec u - \vec r_m\,\|_2
 \end{bmatrix}.
 \end{aligned}\tag{0-6}$$</p>
 <p>Direct determinant expansion confirms $\det\mathbf R_z(\alpha) = \cos^2\alpha + \sin^2\alpha = 1$ (and identically for $\mathbf R_y, \mathbf R_x$), while orthogonality $\mathbf R^\top\mathbf R = \mathbf I_3$ immediately implies two corollaries: first, rotations strictly preserve vector lengths and angles, $\|\mathbf R\vec v\|_2^2 = (\mathbf R\vec v)^\top(\mathbf R\vec v) = \vec v^\top(\mathbf R^\top\mathbf R)\vec v = \|\vec v\|_2^2$; second, inversion requires no elimination, $\mathbf R^{-1} = \mathbf R^\top$. In engineering deployment, guard against two pitfalls: first, <strong>finite 3D rotations do not commute</strong> (for instance, applying $\mathbf R_x(90^\circ)$ then $\mathbf R_z(90^\circ)$ to $\vec e_y = [0, 1, 0]^\top$ produces $\mathbf R_z(90^\circ)[0,0,1]^\top = [0,0,1]^\top$, whereas reversing the order gives $\mathbf R_x(90^\circ)[-1,0,0]^\top = [-1,0,0]^\top$, pointing in a completely different direction; <code>E00-02</code> systematically evaluates the commutator norm between $\mathbf R_z\mathbf R_y$ and $\mathbf R_y\mathbf R_z$); second, <strong>active source rotation and passive listener-head rotation are transpose inverses</strong>—if the wearer's head rotates relative to the world frame by $\mathbf R_{\mathrm{head}}$, a world-fixed source at $\vec v_{\mathrm{world}}$ has head-local coordinates $\mathbf R_{\mathrm{head}}^\top\vec v_{\mathrm{world}}$, and omitting the transpose swings virtual acoustic images twice as far in the wrong direction.</p>
+<p><strong>Unit Quaternions and Spherical Linear Interpolation (SLERP)</strong>: Chaining Euler angles $\mathbf R_z(\alpha)\mathbf R_y(\beta)\mathbf R_x(\gamma)$ suffers from <strong>gimbal lock</strong> near pitch $\beta = \pm 90^\circ$, where two rotation axes align and one degree of freedom collapses; likewise, naive entrywise linear interpolation $(1-t)\mathbf R_0 + t\mathbf R_1$ breaks orthogonality $\mathbf R^\top\mathbf R = \mathbf I_3$ and leaves $\mathrm{SO}(3)$. Practical 3D attitude systems instead represent a right-handed rotation by angle $\phi$ about unit axis $\vec k \in \mathbb{R}^3$ ($\|\vec k\|_2 = 1$) with a four-parameter <strong>unit quaternion</strong>:</p>
+<p>$$\mathbf q = \begin{bmatrix}q_w\\ \vec q_v\end{bmatrix}
+= \begin{bmatrix}\cos(\phi/2)\\ \sin(\phi/2)\,\vec k\end{bmatrix}\in\mathbb{R}^4,\qquad
+\|\mathbf q\|_2^2 = q_w^2 + \|\vec q_v\|_2^2 = 1.$$</p>
+<p>Denoting the skew-symmetric cross-product matrix of $\vec v = [v_x, v_y, v_z]^\top$ by $[\vec v]_\times = \begin{bmatrix}0 & -v_z & v_y\\ v_z & 0 & -v_x\\ -v_y & v_x & 0\end{bmatrix}$ (so $[\vec v]_\times\vec u = \vec v\times\vec u$), the exact map into $\mathrm{SO}(3)$ (equivalent to Rodrigues' formula) and gimbal-lock-free <strong>Hamilton product</strong> composition read:</p>
+<p>$$\begin{aligned}
+\mathbf R(\mathbf q) &= \bigl(q_w^2 - \|\vec q_v\|_2^2\bigr)\mathbf I_3 + 2\vec q_v\vec q_v^\top + 2q_w[\vec q_v]_\times \in \mathrm{SO}(3),\\
+\mathbf q_2 \otimes \mathbf q_1 &= \begin{bmatrix}
+q_{w,2}q_{w,1} - \vec q_{v,2}^\top\vec q_{v,1}\\
+q_{w,2}\vec q_{v,1} + q_{w,1}\vec q_{v,2} + \vec q_{v,2}\times\vec q_{v,1}
+\end{bmatrix},\qquad
+\mathbf R(\mathbf q_2 \otimes \mathbf q_1) = \mathbf R(\mathbf q_2)\mathbf R(\mathbf q_1),
+\end{aligned}$$</p>
+<p>with inverse given simply by conjugation $\mathbf q^{-1} = \mathbf q^* = [q_w, -\vec q_v^\top]^\top$ (matching $\mathbf R(\mathbf q)^\top$). Because every term in $\mathbf R(\mathbf q)$ is homogeneous quadratic in $\mathbf q$, $\mathbf R(-\mathbf q) = \mathbf R(\mathbf q)$: antipodal unit quaternions $\mathbf q$ and $-\mathbf q$ on $\mathbb{S}^3$ encode the <strong>exact same</strong> 3D rotation (a $2$-to-$1$ <strong>double cover</strong> of $\mathrm{SO}(3)$ corresponding to angles $\phi$ and $\phi - 2\pi$). In high-rate IMU attitude tracking (<a href="09_source-tracking.html#sec-9-2-3">Chapter 9 §9.2.3</a>, <a href="09_source-tracking.html#sec-9-4">§9.4</a>) and frame-synchronous head-tracked binaural rendering (<a href="14_spatial-wearable-arrays.html#sec-14-3">Chapter 14 §14.3</a>), constant-angular-velocity geodesic interpolation between $\mathbf q_0$ and $\mathbf q_1$ ($t \in [0, 1]$) first enforces $\cos\Omega = \mathbf q_0^\top\mathbf q_1 \ge 0$ ($\Omega \in [0, \pi/2]$) by flipping $\mathbf q_1 \leftarrow -\mathbf q_1$ whenever $\mathbf q_0^\top\mathbf q_1 \lt  0$ so interpolation follows the <strong>shortest arc</strong> rather than swinging through $360^\circ - \phi$, and then applies <strong>Spherical Linear Interpolation (SLERP)</strong>:</p>
+<p>$$\operatorname{SLERP}(\mathbf q_0, \mathbf q_1; t)
+= \frac{\sin\bigl((1-t)\Omega\bigr)}{\sin\Omega}\,\mathbf q_0
++ \frac{\sin(t\Omega)}{\sin\Omega}\,\mathbf q_1\qquad(\cos\Omega = \mathbf q_0^\top\mathbf q_1 \ge 0),$$</p>
+<p>falling back to normalized linear interpolation as $\Omega \to 0$ to prevent $0/0$ cancellation. <em>Hand verification</em>: a $90^\circ$ rotation about $+z$ ($\vec k = [0, 0, 1]^\top,\ \phi = 90^\circ$) yields $\mathbf q_1 = \bigl[\frac{\sqrt 2}{2},\, 0,\, 0,\, \frac{\sqrt 2}{2}\bigr]^\top$; substituting gives $q_w^2 - \|\vec q_v\|_2^2 = 0$, $2\vec q_v\vec q_v^\top = \operatorname{diag}(0, 0, 1)$, and $2q_w[\vec q_v]_\times = \begin{bmatrix}0 & -1 & 0\\ 1 & 0 & 0\\ 0 & 0 & 0\end{bmatrix}$, summing identically to $\mathbf R_z(90^\circ)$ in Eq. (0-6). Interpolating from identity $\mathbf q_0 = [1, 0, 0, 0]^\top$ to $\mathbf q_1$ gives $\cos\Omega = \frac{\sqrt 2}{2} \Rightarrow \Omega = 45^\circ$; at midpoint $t = 0.5$, weight $\frac{\sin 22.5^\circ}{\sin 45^\circ} \approx 0.5412$ produces $\operatorname{SLERP}(\mathbf q_0, \mathbf q_1; 0.5) = [\cos 22.5^\circ,\, 0,\, 0,\, \sin 22.5^\circ]^\top \approx [0.9239,\, 0,\, 0,\, 0.3827]^\top$, mapping exactly to $\mathbf R_z(45^\circ)$ (whereas passing $-\mathbf q_1$ without sign-flipping yields $\Omega = 135^\circ$ and routes the midpoint around the long arc to $-135^\circ$).</p>
 <hr />
 <span id="sec-6" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-0-2">0.2 Complex Phasors, Decibel Scales, Fourier Analysis, and Discrete LTI Systems</h2>
 <span id="sec-7" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-0-2-1">0.2.1 Complex Arithmetic, Euler's Formula, and the $M$-Element Dirichlet Kernel</h3>
@@ -934,6 +952,14 @@ h_{\mathrm{ideal}}[n] &= \frac{\sin\bigl(\pi(n - \tau)\bigr)}{\pi(n - \tau)} = \
 = \sqrt{1 - 4\alpha(1 - \alpha)\sin^2\!\left(\frac{\omega}{2}\right)}.
 \end{aligned}\tag{0-19}$$</p>
 <p>Equation (0-19) reveals that at half-sample delay $\alpha = 0.5$, $\lvert H_{\mathrm{lin}}(e^{\mathrm{j}\omega})\rvert = \lvert\cos(\omega/2)\rvert$: fairly flat at low frequencies, yet <strong>rolling off to zero</strong> at the Nyquist frequency $\omega = \pi$ (already hitting $-3\ \mathrm{dB}$ at $f_s/4$). High-fidelity wideband fractional delays therefore require windowed truncated $\operatorname{sinc}$ or higher-order Lagrange / Farrow filters (see <a href="17_appendix-guide.html">Appendix B Figure 36</a>).</p>
+<p><strong>Multirate Polyphase Decomposition and Noble Identities</strong>: In oversampled subband acoustic echo cancellation filterbanks (<a href="06_aec.html#sec-6-2-3">Chapter 6 §6.2.3</a>) and digital PDM microphone decimation chains (<a href="10_engineering-practice.html#sec-10-2">Chapter 10 §10.2</a>), FIR filters sit directly adjacent to integer decimators $(\downarrow D)$ (keeping $y[k] = w[kD]$) or upsamplers $(\uparrow U)$ (inserting $U-1$ zeros between samples, obeying $X_\uparrow(z) = X(z^U)$ in the Z-domain). Computing all $L$ FIR taps at the high input rate $f_s$ only to discard $D-1$ out of every $D$ outputs wastes a fraction $(D-1)/D$ of all multiply-accumulate (MAC) operations. Partitioning the impulse-response index via Euclidean division $m = nD + p$ ($n \ge 0,\ p \in \{0, 1, \ldots, D-1\}$) casts any transfer function $H(z)$ exactly into its <strong>$D$-branch Type-1 polyphase decomposition</strong>, which combines with the two <strong>Noble Identities</strong> to push all filtering onto the low-rate side:</p>
+<p>$$\begin{aligned}
+H(z) &= \sum_{p=0}^{D-1} z^{-p}\,E_p(z^D),\qquad
+E_p(z) \triangleq \sum_{n=0}^{\infty} h[nD + p]\,z^{-n},\\
+E(z^D) &\longrightarrow (\downarrow D) \;\equiv\; (\downarrow D) \longrightarrow E(z)\qquad\text{(decimation Noble identity),}\\
+(\uparrow U) &\longrightarrow E(z^U) \;\equiv\; E(z) \longrightarrow (\uparrow U)\qquad\text{(interpolation Noble identity).}
+\end{aligned}$$</p>
+<p><em>Two-line verification</em>: For decimation, the left cascade outputs $w[kD] = \sum_n e[n]\,x[kD - nD] = \sum_n e[n]\,x[(k-n)D]$, identical to downsampling $x_\downarrow[k] = x[kD]$ first and convolving with $e[n]$; for interpolation, the left cascade has Z-transform $E(z^U)X(z^U) = \bigl[E(z)X(z)\bigr]_{z \leftarrow z^U}$, identical to low-rate filtering by $E(z)$ followed by zero insertion. <em>Compute check and boundary</em>: Consider a $64$-tap anti-aliasing FIR decimated by $D = 4$ (e.g., $f_s = 64\ \mathrm{kHz} \to 16\ \mathrm{kHz}$): direct high-rate filtering costs $64 f_s$ MAC/s ($4.096\ \mathrm{MMAC/s}$); decomposing into $4$ polyphase branches of $16$ taps each and moving every $E_p(z^4)$ across $(\downarrow 4)$ via the decimation Noble identity runs all four branches at $f_s/4$, cutting compute to $4 \times 16 \times (f_s/4) = 16 f_s$ MAC/s ($1.024\ \mathrm{MMAC/s}$)—an exact <strong>$D$-fold reduction</strong> with zero approximation error. Two caveats apply: the identities require the subfilter to depend strictly on $z^D$ (or $z^U$), which polyphase splitting provides; and polyphase restructuring preserves $H(z)$ identically without altering its stopband, so insufficient attenuation above $\omega = \pi/D$ still aliases after decimation.</p>
 <hr />
 <span id="sec-12" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-0-3">0.3 Complex Linear Algebra, Orthogonal Projections, Matrix Decompositions, and Block Inversion</h2>
 <span id="sec-13" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-0-3-1">0.3.1 Matrix Arithmetic Warm-Up, Complex Inner-Product Norms, and the Cauchy–Schwarz Inequality</h3>
@@ -1067,6 +1093,21 @@ L_{ij} &= \frac{1}{L_{jj}}\!\left(R_{ij} - \sum_{k=1}^{j-1} L_{ik}L_{jk}^*\right
 \min_{\operatorname{rank}(\mathbf B)\le K}\|\mathbf G - \mathbf B\|_2
 = \|\mathbf G - \mathbf G_K\|_2 = \sigma_{K+1}.$$</p>
 <p>A one-line dimension count proves the spectral-norm bound: any $\mathbf B$ with $\operatorname{rank}(\mathbf B) \le K$ has a nullspace $\mathcal N(\mathbf B)$ of dimension at least $N - K$, which must intersect the $(K+1)$-dimensional span $\operatorname{span}\{\vec v_1, \ldots, \vec v_{K+1}\}$ in a unit vector $\vec z$, giving $\|(\mathbf G - \mathbf B)\vec z\|_2 = \|\mathbf G\vec z\|_2 \ge \sigma_{K+1}$, with equality at $\mathbf B = \mathbf G_K$ (likewise $\mathbf B = \mathbf G_K$ attains the Frobenius lower bound, uniquely whenever $\sigma_K > \sigma_{K+1}$). This theorem directly underpins Total Least-Squares ESPRIT (TLS-ESPRIT, projecting the noisy stacked subarray matrix $[\mathbf E_{s1}, \mathbf E_{s2}]$ to best rank-$K$ form in <a href="04_doa-estimation.html#sec-4-6">Chapter 4 §4.6</a>) and low-rank subspace denoising.</p>
+<p><strong>Total Least Squares (TLS) and Weyl / Davis–Kahan Perturbation Bounds</strong>: Ordinary Least Squares (OLS) assumes that design matrix $\mathbf A \in \mathbb{C}^{m\times n}$ ($m > n$) is exact and confines all measurement error to $\vec b \in \mathbb{C}^m$. In subspace equations such as TLS-ESPRIT (<a href="04_doa-estimation.html#sec-4-6">Chapter 4 §4.6</a>), however, both subarray eigenvector matrices carry finite-snapshot estimation noise, causing OLS to suffer errors-in-variables attenuation bias (cf. <a href="03_array-geometry.html#sec-3-4-1">Chapter 3 §3.4.1</a>). <strong>Total Least Squares (TLS)</strong> seeks the smallest joint Frobenius perturbation to both $\mathbf A$ and $\vec b$ that makes the linear system consistent:</p>
+<p>$$\min_{\Delta\mathbf A,\,\Delta\vec b,\,\vec x}
+\bigl(\|\Delta\mathbf A\|_F^2 + \|\Delta\vec b\|_2^2\bigr)
+\quad\text{s.t.}\quad
+(\mathbf A + \Delta\mathbf A)\vec x = \vec b + \Delta\vec b.$$</p>
+<p>Rewriting the constraint as $[\mathbf A + \Delta\mathbf A,\ \vec b + \Delta\vec b]\begin{bmatrix}\vec x\\ -1\end{bmatrix} = \vec 0$ shows that the perturbed augmented matrix $[\mathbf A + \Delta\mathbf A,\ \vec b + \Delta\vec b] \in \mathbb{C}^{m\times (n+1)}$ must have rank at most $n$. Taking the SVD of the unperturbed augmented matrix $[\mathbf A,\ \vec b] = \mathbf U\boldsymbol{\Sigma}\mathbf V^H$ (with singular values $\sigma_1 \ge \cdots \ge \sigma_{n+1} \ge 0$ and trailing right singular vector partitioned as $\vec v_{n+1} = [\vec v_{1:n,\,n+1}^\top,\ v_{n+1,n+1}]^\top$), the Eckart–Young–Mirsky theorem above implies that the optimal rank-$n$ perturbation drops the weakest singular triplet $\sigma_{n+1}\vec u_{n+1}\vec v_{n+1}^H$, placing $\vec v_{n+1}$ in the nullspace. Whenever the generic separation condition $\sigma_n(\mathbf A) > \sigma_{n+1}([\mathbf A,\ \vec b])$ holds (guaranteeing $v_{n+1,n+1} \neq 0$), scaling the last entry to $-1$ gives the unique closed-form TLS solution:</p>
+<p>$$\hat{\vec x}_{\mathrm{TLS}} = -\frac{1}{v_{n+1,n+1}}\,\vec v_{1:n,\,n+1}.$$</p>
+<p>For example, starting from noiseless $x_{\mathrm{true}} = 2$ with $\mathbf A_0 = [1, 2, 2]^\top,\ \vec b_0 = [2, 4, 4]^\top$ and adding an orthogonal perturbation yielding $\mathbf A = [1.4, 1.6, 2.2]^\top,\ \vec b = [1.8, 4.2, 3.9]^\top$, OLS projects only $\vec b$ and underestimates $\hat x_{\mathrm{OLS}} \approx 1.9038$, whereas the SVD of $[\mathbf A, \vec b]$ ($\sigma_1(\mathbf A) \approx 3.0594 > \sigma_2([\mathbf A, \vec b]) \approx 0.6708$) yields trailing singular vector $[0.8944, -0.4472]^\top$ and recovers $\hat x_{\mathrm{TLS}} = 2.0000$ without attenuation bias (note, however, that as $\sigma_n(\mathbf A) \to \sigma_{n+1}([\mathbf A, \vec b])$, $v_{n+1,n+1} \to 0$ and TLS amplifies noise more aggressively than OLS).</p>
+<p>Going further, how finite-snapshot covariance error $\mathbf E = \hat{\mathbf R} - \mathbf R$ (with $\mathbf R, \mathbf E \in \mathbb{C}^{M\times M}$ Hermitian and eigenvalues sorted in descending order) perturbs eigenvalues and signal subspaces is governed rigorously by two foundational spectral perturbation bounds:</p>
+<p>$$\begin{aligned}
+\bigl\lvert\lambda_i(\hat{\mathbf R}) - \lambda_i(\mathbf R)\bigr\rvert &\le \|\mathbf E\|_2\qquad(i = 1, \ldots, M)\qquad\text{(Weyl's eigenvalue inequality),}\\
+\bigl\|\sin\Theta(\hat{\mathbf U}_s, \mathbf U_s)\bigr\|_2 &\le \frac{\|\mathbf E\|_2}{\Delta_{\mathrm{gap}}}\qquad\text{(Davis–Kahan }\sin\Theta\text{ theorem),}\\
+\Delta_{\mathrm{gap}} &= \lambda_K(\mathbf R) - \lambda_{K+1}(\hat{\mathbf R}) > 0,
+\end{aligned}$$</p>
+<p>where $\mathbf U_s, \hat{\mathbf U}_s \in \mathbb{C}^{M\times K}$ hold orthonormal bases for the top-$K$ signal eigenvectors of $\mathbf R$ and $\hat{\mathbf R}$, and $\Theta(\hat{\mathbf U}_s, \mathbf U_s)$ is the diagonal matrix of principal angles between the two subspaces ($\|\sin\Theta(\hat{\mathbf U}_s, \mathbf U_s)\|_2 = \|\hat{\mathbf U}_s\hat{\mathbf U}_s^H - \mathbf U_s\mathbf U_s^H\|_2$). <strong>Weyl's inequality</strong> ensures no eigenvalue shifts by more than $\|\mathbf E\|_2$, while the <strong>Davis–Kahan theorem</strong> reveals that invariant-subspace accuracy is controlled by the ratio of perturbation norm to the <strong>eigengap $\Delta_{\mathrm{gap}}$</strong>—explaining directly why MUSIC and ESPRIT (<a href="04_doa-estimation.html#sec-4-6">Chapter 4 §4.6</a>) undergo an abrupt <strong>SNR/snapshot threshold collapse</strong>: when sources are well separated at high SNR, $\Delta_{\mathrm{gap}}$ is wide and subspace error shrinks smoothly (e.g., $\mathbf R = \operatorname{diag}(5, 1)$ with off-diagonal real perturbation $E_{12} = E_{21} = 0.5$, $\|\mathbf E\|_2 = 0.5$, gives $\hat\lambda = [5.0616,\ 0.9384]$ obeying Weyl $0.0616 \le 0.5$, $\Delta_{\mathrm{gap}} = 4.0616$, and $\sin\Theta = 0.1222 \le 0.5/4.0616 = 0.1231$); once low SNR, tight angular spacing, or strong source correlation compresses $\lambda_K(\mathbf R)$ so $\|\mathbf E\|_2$ approaches $\Delta_{\mathrm{gap}}$ (e.g., $\mathbf R = \operatorname{diag}(1.2, 1.0)$ under the same $\|\mathbf E\|_2 = 0.5$ drops $\Delta_{\mathrm{gap}}$ to $0.6099$ and drives actual $\sin\Theta$ up to $0.6340$, a $39.3^\circ$ rotation), signal and noise subspaces swap and DOA error jumps abruptly into gross outliers.</p>
 <span id="sec-17" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-0-3-5">0.3.5 Sherman–Morrison–Woodbury Lemma and Block Schur-Complement Inversion</h3>
 <p>In Recursive Least Squares (RLS; <a href="06_aec.html#sec-6-2-6">Chapter 6 §6.2.6</a>), online WPE (<a href="07_wpe-dereverberation.html#sec-7-4">Chapter 7 §7.4</a>), and single-interferer analytical MVDR, covariance matrices routinely take the form "easily inverted base $\mathbf A \in \mathbb{C}^{M\times M}$ plus low-rank update $\mathbf U\mathbf C\mathbf V$" ($\mathbf U \in \mathbb{C}^{M\times K}, \mathbf C \in \mathbb{C}^{K\times K}, \mathbf V \in \mathbb{C}^{K\times M}, K \ll M$). Whenever $\mathbf A$, $\mathbf C$, and the capacitance matrix $\mathbf C^{-1} + \mathbf V\mathbf A^{-1}\mathbf U$ are invertible, the <strong>Sherman–Morrison–Woodbury matrix inversion lemma</strong> cuts $O(M^3)$ inversion down to $O(K^3)$:</p>
 <p>$$(\mathbf A + \mathbf U\mathbf C\mathbf V)^{-1}
@@ -1338,6 +1379,16 @@ d_k^{(t)} &= m_k\,\frac{(\mathbf A\vec c^{(t)})_k}{\lvert(\mathbf A\vec c^{(t)})
 \dfrac{z}{\lvert z\rvert}\max(\lvert z\rvert - \tau,\ 0), & z \in \mathbb{C}\text{ (returning }0\text{ when }\lvert z\rvert \le \tau\text{).}
 \end{cases}$$</p>
 <p>Applying this operator entrywise defines $\operatorname{prox}_{\tau\|\cdot\|_1}(\vec z)$: weak entries with magnitude at most $\tau$ collapse cleanly to exact zero while larger entries shrink continuously toward zero by $\tau$ without hard-threshold discontinuities, complementing the smooth reweighted IRLS surrogate in §0.5.4 Eq. (0-44).</p>
+<p><strong>Semidefinite Programming (SDP) and Schur-Complement LMIs</strong>: Generalizing the Second-Order Cone Programs (SOCP) of item 1 onto the convex cone of Hermitian positive semidefinite matrices ($\mathbf X \succeq \mathbf 0$), minimizing a linear objective subject to affine matrix inequalities (Linear Matrix Inequalities, LMIs) defines a <strong>Semidefinite Program (SDP)</strong>—a convex problem globally solvable in polynomial time by interior-point methods. The algebraic bridge that converts convex quadratic power bounds or SOCP norm constraints into LMIs is directly the block LDU <strong>Schur complement</strong> of §0.3.5 Eq. (0-28): for any Hermitian positive definite $\mathbf A \succ \mathbf 0$, vector $\vec x \in \mathbb{C}^M$, and real scalar $t \in \mathbb{R}$, congruence factorization gives</p>
+<p>$$\begin{bmatrix}\mathbf A^{-1} & \vec x\\ \vec x^H & t\end{bmatrix}
+= \begin{bmatrix}\mathbf I_M & \mathbf 0\\ \vec x^H\mathbf A & 1\end{bmatrix}
+  \begin{bmatrix}\mathbf A^{-1} & \mathbf 0\\ \mathbf 0 & t - \vec x^H\mathbf A\vec x\end{bmatrix}
+  \begin{bmatrix}\mathbf I_M & \mathbf A\vec x\\ \mathbf 0 & 1\end{bmatrix}.$$</p>
+<p>Because invertible congruence preserves positive semidefiniteness and $\mathbf A^{-1} \succ \mathbf 0$, the block matrix is positive semidefinite if and only if its scalar Schur complement is non-negative, yielding the canonical <strong>Schur-complement LMI equivalence</strong>:</p>
+<p>$$\vec x^H\mathbf A\vec x \le t\quad(\mathbf A \succ \mathbf 0)
+\qquad\Longleftrightarrow\qquad
+\begin{bmatrix}\mathbf A^{-1} & \vec x\\ \vec x^H & t\end{bmatrix} \succeq \mathbf 0.$$</p>
+<p>In particular, writing $\begin{bmatrix}s\mathbf I_M & \vec y\\ \vec y^H & s\end{bmatrix} \succeq \mathbf 0$ ($s > 0$) shows immediately that every SOCP norm bound $\|\vec y\|_2 \le s$ embeds directly into SDP. This equivalence underpins two major advanced topics across the book: <strong>robust worst-case beamforming</strong> in <a href="05_beamforming.html#sec-5-4">Chapter 5 §5.4</a> (<a href="05_beamforming.html#sec-5-4-1">§5.4.1</a>)—casting quadratic noise-power bounds $\vec w^H\hat{\mathbf R}_{nn}\vec w \le t$ and steering/covariance uncertainty sets into convex conic solvers—and <strong>gridless Atomic-Norm Minimization (ANM)</strong> in <a href="12_acoustic-imaging.html#sec-12-11">Chapter 12 §12.11</a> (and <a href="04_doa-estimation.html#sec-4-7">Chapter 4 §4.7</a>), which solves the Hermitian Toeplitz SDP $\min_{\mathbf T(\vec u)\succeq \mathbf 0,\,t}\frac{1}{2}\bigl(t + \frac{1}{M}\operatorname{tr}\mathbf T(\vec u)\bigr)$ subject to Schur-complement LMI $\begin{bmatrix}\mathbf T(\vec u) & \vec y\\ \vec y^H & t\end{bmatrix} \succeq \mathbf 0$ to eliminate discrete-grid basis mismatch. <em>Numerical check and boundaries</em>: For $\mathbf A = \operatorname{diag}(2, 4) \succ \mathbf 0$ and $\vec x = [1, 1]^\top$, $\vec x^H\mathbf A\vec x = 6$; inspecting the $3\times 3$ block matrix $\begin{bmatrix}0.5 & 0 & 1\\ 0 & 0.25 & 1\\ 1 & 1 & t\end{bmatrix}$ confirms $\lambda_{\min} = 0$ exactly at $t = 6$ (tight boundary), $\lambda_{\min} = +0.0408 > 0$ at $t = 7$ (strictly feasible), and $\lambda_{\min} = -0.0567 \lt  0$ at $t = 5$ (infeasible). Two practical limits apply: interior-point SDP cost grows steeply with matrix dimension $M$, making real-time per-bin SDPs on large arrays far heavier than closed-form RCB or SOCP; and when semidefinite relaxation (SDR) is applied to non-convex quadratics, an optimal matrix with $\operatorname{rank}(\mathbf X^\star) > 1$ yields only a lower bound rather than an exact rank-1 beamformer weight vector.</p>
 <span id="sec-27" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-0-5-4">0.5.4 Majorization–Minimization (MM), EM Algorithm, KL/IS Divergences, and Gauss–Newton</h3>
 <p>Many statistical array objectives (time-varying WPE variance, AuxIVA, ILRMA, cACGMM spatial mixture models, sparse imaging) lack closed-form solutions yet all fall under one step-size-free, monotonically convergent parent framework—<strong>Majorization–Minimization (MM)</strong>. To minimize a difficult objective $J(\vec x)$, construct at current iterate $\vec x^{(t)}$ an easy-to-minimize surrogate upper bound $Q(\vec x \mid \vec x^{(t)})$ satisfying <strong>global majorization</strong> $Q(\vec x \mid \vec x^{(t)}) \ge J(\vec x)$ ($\forall\,\vec x$) and <strong>tangency</strong> $Q(\vec x^{(t)} \mid \vec x^{(t)}) = J(\vec x^{(t)})$. Setting $\vec x^{(t+1)} = \arg\min_{\vec x} Q(\vec x \mid \vec x^{(t)})$ locks in monotonic descent in one line:</p>
 <p>$$J\bigl(\vec x^{(t+1)}\bigr) \le Q\bigl(\vec x^{(t+1)} \mid \vec x^{(t)}\bigr)
@@ -1744,19 +1795,19 @@ Y_n^m(\vartheta, \alpha)
 <tr>
 <td><a href="04_doa-estimation.html#sec-4-2">Chapter 4 §4.2</a>, <a href="04_doa-estimation.html#sec-4-6">§4.6</a>, <a href="04_doa-estimation.html#sec-4-7">§4.7</a></td>
 <td>GCC-PHAT, SRP-PHAT, Chan/LM, Capon, MUSIC/Root-MUSIC/ESPRIT, sparse DOA, and MDL</td>
-<td>§0.2.3 Eq. (0-15) cross-correlation; §0.2.5 Z-plane unit circle (Root-MUSIC); §0.3.2 Eq. (0-22) orthogonal complement; §0.3.4 Eckart–Young–Mirsky; §0.5.2 Capon Lagrangian; §0.5.3 $\ell_1$ soft-thresholding; §0.5.4 Eq. (0-46) LM; §0.6.2 Eq. (0-51) CRLB/MDL; §0.7.2 cylindrical Bessel $J_n$ modal truncation</td>
+<td>§0.2.3 Eq. (0-15) cross-correlation; §0.2.5 Z-plane unit circle (Root-MUSIC); §0.3.2 Eq. (0-22) orthogonal complement; §0.3.4 Eckart–Young–Mirsky, TLS &amp; Weyl/Davis–Kahan bounds; §0.5.2 Capon Lagrangian; §0.5.3 $\ell_1$ soft-thresholding; §0.5.4 Eq. (0-46) LM; §0.6.2 Eq. (0-51) CRLB/MDL; §0.7.2 cylindrical Bessel $J_n$ modal truncation</td>
 <td>Coherent reflections causing rank loss and missed MUSIC peaks; sample subspace collapse when $L \lt  M$</td>
 </tr>
 <tr>
 <td><a href="05_beamforming.html#sec-5-4">Chapter 5 §5.4</a>, <a href="05_beamforming.html#sec-5-8">§5.8</a></td>
 <td>DSB, loaded superdirective, MVDR, LCMV, Frost/GSC, MWF, and SH beamforming</td>
-<td>§0.3.1 Eq. (0-21); §0.4.2 Eq. (0-32) GEV; §0.5.2 Eq. (0-40) LCMV; §0.5.3 (item 1 SOCP, Eq. (0-42) Frost projected gradient); §0.7 Eqs. (0-59), (0-63) rigid-sphere Wronskian modal weighting, (0-64)</td>
+<td>§0.3.1 Eq. (0-21); §0.4.2 Eq. (0-32) GEV; §0.5.2 Eq. (0-40) LCMV; §0.5.3 (SOCP/SDP Schur LMI, Eq. (0-42) Frost projected gradient); §0.7 Eqs. (0-59), (0-63) rigid-sphere Wronskian modal weighting, (0-64)</td>
 <td>Forgetting complex conjugation on LCMV complex constraint targets; omitting loading at low frequencies on compact arrays</td>
 </tr>
 <tr>
 <td><a href="06_aec.html#sec-6-1">Chapter 6 §6.1</a>, <a href="06_aec.html#sec-6-2">§6.2</a></td>
 <td>LMS/NLMS, FDAF, affine projection, RLS, and Kalman echo cancellation</td>
-<td>§0.2.3 Eq. (0-14) zero-padded conv.; §0.2.5 Z-transform; §0.3.5 Eq. (0-26) Woodbury; §0.3.6 circulant; §0.5.1 Eq. (0-36); §0.6.3 Eq. (0-54)</td>
+<td>§0.2.3 Eq. (0-14) zero-padded conv.; §0.2.5 Z-transform &amp; polyphase/Noble; §0.3.5 Eq. (0-26) Woodbury; §0.3.6 circulant; §0.5.1 Eq. (0-36); §0.6.3 Eq. (0-54)</td>
 <td>Omitting FDAF gradient constraint causing wrap-around; failing to freeze during double-talk so near-end speech corrupts taps</td>
 </tr>
 <tr>
@@ -1774,13 +1825,13 @@ Y_n^m(\vartheta, \alpha)
 <tr>
 <td><a href="09_source-tracking.html#sec-9-2">Chapter 9 §9.2</a>, <a href="09_source-tracking.html#sec-9-3">§9.3</a></td>
 <td>Kalman/EKF/UKF/IMM, particle filter, vMF, PHD, and multi-target GNN association</td>
-<td>§0.1.3 Eq. (0-6) $\mathrm{SO}(3)$; §0.6.3 Eq. (0-54) Joseph; §0.6.4 Eqs. (0-55)–(0-57); §0.6.5 Eq. (0-58) Mahalanobis $\chi^2$ gating</td>
+<td>§0.1.3 Eq. (0-6) $\mathrm{SO}(3)$, unit quaternions &amp; SLERP; §0.6.3 Eq. (0-54) Joseph; §0.6.4 Eqs. (0-55)–(0-57); §0.6.5 Eq. (0-58) Mahalanobis $\chi^2$ gating</td>
 <td>Losing positive definiteness under quantization with shortcut $(\mathbf I - \tilde{\mathbf K}\mathbf H)\mathbf P$; forgetting angle wrap at $\pm 180^\circ$</td>
 </tr>
 <tr>
 <td><a href="10_engineering-practice.html#sec-10-2">Chapter 10 §10.2</a>, <a href="10_engineering-practice.html#sec-10-4">§10.4</a></td>
 <td>Sampling Rate Offset (SRO), fixed-point quantization range, and RTF budgets</td>
-<td>§0.2.2 Eqs. (0-10)–(0-11) dB &amp; SQNR; §0.2.4 hop buffering; §0.2.5 fractional delay; §0.3.4 condition number &amp; precision</td>
+<td>§0.2.2 Eqs. (0-10)–(0-11) dB &amp; SQNR; §0.2.4 hop buffering; §0.2.5 fractional delay &amp; polyphase/Noble; §0.3.4 condition number &amp; precision</td>
 <td>Using window length $N/f_s$ instead of hop $H/f_s$ in RTF denominator; confusing mean-of-dB vs. dB-of-mean across blocks</td>
 </tr>
 <tr>
@@ -1792,7 +1843,7 @@ Y_n^m(\vartheta, \alpha)
 <tr>
 <td><a href="12_acoustic-imaging.html#sec-12-5">Chapter 12 §12.5</a>, <a href="12_acoustic-imaging.html#sec-12-7">§12.7</a></td>
 <td>Dirty beam maps, PSF, DAMAS, NNLS, and CSM fitting</td>
-<td>§0.4.3 Eqs. (0-33)–(0-34) vectorization; §0.5.3 Eq. (0-41) NNLS KKT complementary slackness &amp; projected Gauss–Seidel (DAMAS)</td>
+<td>§0.4.3 Eqs. (0-33)–(0-34) vectorization; §0.5.3 Eq. (0-41) NNLS/DAMAS &amp; SDP Schur LMI (gridless ANM)</td>
 <td>Clipping negative unconstrained LS entries to zero as fake NNLS; labeling uncalibrated maps as $\mathrm{dB\ SPL}$</td>
 </tr>
 <tr>
@@ -1804,7 +1855,7 @@ Y_n^m(\vartheta, \alpha)
 <tr>
 <td><a href="14_spatial-wearable-arrays.html#sec-14-2">Chapter 14 §14.2</a>, <a href="14_spatial-wearable-arrays.html#sec-14-6">§14.6</a></td>
 <td>FOA/HOA, ACN/SN3D/N3D, DirAC, BSM-MagLS binaural matching, and head tracking</td>
-<td>§0.1.1/§0.1.3 SOFA &amp; passive head rotation; §0.3.1 Eq. (0-21); §0.5.3 Eq. (0-43) MagLS; §0.7.3–§0.7.4 Eqs. (0-63)–(0-64)</td>
+<td>§0.1.1/§0.1.3 SOFA, passive head rotation &amp; quaternion SLERP; §0.3.1 Eq. (0-21); §0.5.3 Eq. (0-43) MagLS; §0.7.3–§0.7.4 Eqs. (0-63)–(0-64)</td>
 <td>Dropping transpose $\mathbf R^\top$ in head-tracked rendering; blindly inverting open-sphere modal nulls at $\kappa R = \pi$</td>
 </tr>
 <tr>

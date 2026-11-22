@@ -428,13 +428,13 @@ class DefensiveContractsTests(unittest.TestCase):
 
 
 class TSEAudioAndExercisesTests(unittest.TestCase):
-    def test_exercise_runner_covers_all_14_ids_and_hand_values(self):
+    def test_exercise_runner_covers_all_15_ids_and_hand_values(self):
         payload = ex17.run_experiments()
         json_text = json.dumps(payload, allow_nan=False)
         self.assertTrue(len(json_text) > 100)
         ex = payload["exercises"]
         self.assertEqual(tuple(ex.keys()), ex17.EXERCISE_IDS)
-        self.assertEqual(len(ex), 14)
+        self.assertEqual(len(ex), 15)
 
         self.assertAlmostEqual(ex["E15-01"]["target_present"]["loss_db"], -20.0, places=12)
         self.assertAlmostEqual(ex["E15-01"]["target_absent_moderate_leak"]["loss_db"], 20.0, places=12)
@@ -461,10 +461,53 @@ class TSEAudioAndExercisesTests(unittest.TestCase):
             ex["E15-14"]["orthogonal_speakers_alpha0p5"]["target_cosine"], 2.0 / math.sqrt(5.0), places=14
         )
         self.assertAlmostEqual(ex["E15-14"]["six_frame_enrollment_remedy"]["gated_target_cosine"], 1.0, places=14)
+
+        # E15-15: FiLM affine modulation contrast swing & lip-occlusion visual confidence gating
+        e15 = ex["E15-15"]
+        nom = e15["film_conditioning"]["nominal_scale"]
+        np.testing.assert_allclose(nom["film_target_A"]["output_h"], [3.1, -0.2], atol=1e-14)
+        np.testing.assert_allclose(nom["film_target_B"]["output_h"], [0.4, -1.4], atol=1e-14)
+        self.assertAlmostEqual(nom["film_target_A"]["channel_energy_ratio"], 240.25, places=12)
+        self.assertAlmostEqual(nom["film_target_B"]["channel_energy_ratio"], 4.0 / 49.0, places=14)
+        self.assertAlmostEqual(
+            nom["film_contrast_swing_db"],
+            10.0 * math.log10(240.25 / (4.0 / 49.0)),
+            places=12,
+        )
+        self.assertAlmostEqual(nom["film_contrast_swing_db"], 34.68799485041134, places=11)
+        # +20 dB (10x amplitude) robustness: FiLM retains ~34.97 dB swing while bias-only collapses (<0.1 dB)
+        s10 = e15["film_conditioning"]["scaled_plus20db_10x_amplitude"]
+        self.assertGreater(s10["film_contrast_swing_db"], 34.9)
+        self.assertLess(abs(s10["additive_bias_only_swing_db"]), 0.05)
+
+        vcg = e15["visual_confidence_gating"]
+        self.assertAlmostEqual(vcg["audio_speech_prob"], 1.0 / (1.0 + math.exp(-2.0)), places=14)
+        self.assertAlmostEqual(vcg["visual_speech_prob"], 1.0 / (1.0 + math.exp(4.0)), places=14)
+        self.assertFalse(vcg["ungated_wv_1p0"]["target_detected"])
+        self.assertAlmostEqual(
+            vcg["ungated_wv_1p0"]["fused_speech_prob"], 1.0 / (1.0 + math.exp(2.0)), places=14
+        )
+        self.assertTrue(vcg["severe_occlusion_cv_0p25"]["target_detected"])
+        self.assertAlmostEqual(vcg["severe_occlusion_cv_0p25"]["visual_weight"], 0.0, places=15)
+        self.assertAlmostEqual(
+            vcg["severe_occlusion_cv_0p25"]["fused_speech_prob"], vcg["audio_speech_prob"], places=14
+        )
+        self.assertTrue(vcg["partial_occlusion_cv_0p45"]["target_detected"])
+        self.assertAlmostEqual(vcg["partial_occlusion_cv_0p45"]["visual_weight"], 0.30, places=14)
+        self.assertAlmostEqual(vcg["partial_occlusion_cv_0p45"]["fused_log_odds"], 0.80, places=14)
+        self.assertAlmostEqual(
+            vcg["partial_occlusion_cv_0p45"]["fused_speech_prob"], 1.0 / (1.0 + math.exp(-0.8)), places=14
+        )
+        self.assertAlmostEqual(vcg["critical_flip_confidence"], 0.55, places=14)
+
         stream = io.StringIO()
         with unittest.mock.patch("sys.stdout", stream):
             self.assertEqual(ex17.main(["--json", "--exercise", "E15-02"]), 0)
         self.assertEqual(set(json.loads(stream.getvalue())["exercises"]), {"E15-02"})
+        stream15 = io.StringIO()
+        with unittest.mock.patch("sys.stdout", stream15):
+            self.assertEqual(ex17.main(["--json", "--exercise", "E15-15"]), 0)
+        self.assertEqual(set(json.loads(stream15.getvalue())["exercises"]), {"E15-15"})
 
     def test_generate_and_strict_check_tse_audio_in_tempdir(self):
         with self.assertRaises(ValueError):

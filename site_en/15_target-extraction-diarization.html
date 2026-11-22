@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Chapter 15 · Conditioned Target Extraction & Diarization · Microphone Array Signal Processing</title>
-<meta name="source-digest" content="7b2bf0186a72"><style>
+<meta name="source-digest" content="6fa82909c83a"><style>
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -360,7 +360,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li><a href="15_target-extraction-diarization.html#sec-15-9">15.9 Engineering Troubleshooting Checklist and Selection Decision Tree</a></li>
 <li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-862fb6941f">Common Field Failure Symptoms, Physical Root Causes, and Diagnostic Steps</a></li>
 <li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-d335ee9067">Far-Field Target Extraction and Multi-Speaker Front-End Selection Checklist</a></li>
-<li><a href="15_target-extraction-diarization.html#sec-15-10">15.10 Chapter Exercises (E15-01–E15-14)</a></li>
+<li><a href="15_target-extraction-diarization.html#sec-15-10">15.10 Chapter Exercises (E15-01–E15-15)</a></li>
 <li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-0cf3c382d5">E15-01: Standard SI-SDR Singularity on Target-Silent Segments and Dual-State Floor Loss Calculation</a></li>
 <li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-98a40c419d">E15-02: Single-Speaker Zero-Overlap Bypass Threshold and Unvoiced Fricative Over-Splitting Recovery</a></li>
 <li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-95caf9f1c2">E15-03: Closed-Form Weights, WNG, and Co-Directional Far-Field Suppression of a Three-Mic Broadside Distance Bubble</a></li>
@@ -375,6 +375,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-531ee81e02">E15-12: Two-Tap Causal Real FIR Implementation of a Broadside Distance Bubble and Three-Tier Error Verification</a></li>
 <li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-dae5b51e65">E15-13: EEND-EDA Attractor Existence Gating and Fixed-Slot Error Lower Bounds</a></li>
 <li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-5ae6582766">E15-14: Enrollment Crosstalk Contamination and Target-Exclusive Gating in Conditional Target Extraction</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-ce9bad1bd5">E15-15: FiLM Affine Modulation Conditioning and Lip-Occlusion Visual Confidence Gating Fallback</a></li>
 <li><a href="15_target-extraction-diarization.html#sec-15-11">15.11 Primary References and Further Reading</a></li>
 <li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-b2fbb95b86">Core Literature on Conditional Extraction, Near-Field Bubbles, Multi-Speaker Diarization, and Audio–Visual Front-Ends</a></li>
 </ul>
@@ -419,7 +420,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li><a href="15_target-extraction-diarization.html#sec-15-9">15.9 Engineering Troubleshooting Checklist and Selection Decision Tree</a></li>
 <li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-862fb6941f">Common Field Failure Symptoms, Physical Root Causes, and Diagnostic Steps</a></li>
 <li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-d335ee9067">Far-Field Target Extraction and Multi-Speaker Front-End Selection Checklist</a></li>
-<li><a href="15_target-extraction-diarization.html#sec-15-10">15.10 Chapter Exercises (E15-01–E15-14)</a></li>
+<li><a href="15_target-extraction-diarization.html#sec-15-10">15.10 Chapter Exercises (E15-01–E15-15)</a></li>
 <li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-0cf3c382d5">E15-01: Standard SI-SDR Singularity on Target-Silent Segments and Dual-State Floor Loss Calculation</a></li>
 <li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-98a40c419d">E15-02: Single-Speaker Zero-Overlap Bypass Threshold and Unvoiced Fricative Over-Splitting Recovery</a></li>
 <li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-95caf9f1c2">E15-03: Closed-Form Weights, WNG, and Co-Directional Far-Field Suppression of a Three-Mic Broadside Distance Bubble</a></li>
@@ -434,6 +435,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-531ee81e02">E15-12: Two-Tap Causal Real FIR Implementation of a Broadside Distance Bubble and Three-Tier Error Verification</a></li>
 <li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-dae5b51e65">E15-13: EEND-EDA Attractor Existence Gating and Fixed-Slot Error Lower Bounds</a></li>
 <li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-5ae6582766">E15-14: Enrollment Crosstalk Contamination and Target-Exclusive Gating in Conditional Target Extraction</a></li>
+<li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-ce9bad1bd5">E15-15: FiLM Affine Modulation Conditioning and Lip-Occlusion Visual Confidence Gating Fallback</a></li>
 <li><a href="15_target-extraction-diarization.html#sec-15-11">15.11 Primary References and Further Reading</a></li>
 <li>&nbsp;&nbsp;<a href="15_target-extraction-diarization.html#sec-u-b2fbb95b86">Core Literature on Conditional Extraction, Near-Field Bubbles, Multi-Speaker Diarization, and Audio–Visual Front-Ends</a></li>
 </ul></nav></details>
@@ -1134,8 +1136,8 @@ h_m[0]\,x_m[n]+h_m[1]\,x_m[n-1]\bigr).\tag{15-32}$$</p>
 <li><strong>Are cross-modal clocking and occlusion fallbacks guaranteed?</strong> Before adding visual lip motion, confirm whether the product latency budget tolerates waiting for the camera pipeline, and mandate the Eq. (15-30) visual-visibility confidence fallback path so darkness, backlighting, or hand occlusion never drops performance below the audio-only array baseline.</li>
 <li><strong>Does the downstream consumer expect "listenable waveforms" or "text only"?</strong> Whenever human audio review is required or a frozen commercial black-box ASR API sits downstream, favor the linear spatial beamforming pipeline <code>TS-VAD + GSS</code> for zero nonlinear artifacts; when compute is tight and only final text transcripts are needed, evaluate chunked <code>SOT</code> or <code>DiCoW</code> conditioned transcription.</li>
 </ol>
-<span id="sec-37" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-7260e8bb52" class="anchor-alias" aria-hidden="true"></span><span id="sec-17-10" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-dcccc65379" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-15-10">15.10 Chapter Exercises (E15-01–E15-14)</h2>
-<p>The 14 exercises below span dual-state losses, single-speaker bypass protection, near-field distance bubbles, overlapped diarization bounds, spatial–spectral TS-VAD/GSS, audio–visual lag clipping, variable-speaker attractors, and crosstalk-resilient enrollment. Run all exercises or verify an individual problem (e.g., <code>--exercise E15-02</code>) via:</p>
+<span id="sec-37" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-7260e8bb52" class="anchor-alias" aria-hidden="true"></span><span id="sec-17-10" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-dcccc65379" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-15-10">15.10 Chapter Exercises (E15-01–E15-15)</h2>
+<p>The 15 exercises below span dual-state losses, single-speaker bypass protection, near-field distance bubbles, overlapped diarization bounds, spatial–spectral TS-VAD/GSS, audio–visual lag clipping, variable-speaker attractors, crosstalk-resilient enrollment, and FiLM affine modulation with lip-occlusion visual confidence gating. Run all exercises or verify an individual problem (e.g., <code>--exercise E15-02</code>) via:</p>
 <pre><code class="language-bash">.venv/bin/python -m codes.chapters.ch15.chapter15_exercises
 .venv/bin/python -m codes.chapters.ch15.chapter15_exercises --exercise E15-02
 </code></pre>
@@ -1223,8 +1225,60 @@ p_s&=\sigma\bigl(\vec w_{\mathrm{exist}}^\top\vec a_s+b\bigr),\\
 <p>Compute: (1) at $\alpha = 0.5$ ($-6.02\ \mathrm{dB}$ crosstalk bleed), for both orthogonal voiceprints ($\rho_{12} = 0$) and similar same-gender voiceprints ($\rho_{12} = 0.3$), hand-calculate target cosine retention $\vec e_{\mathrm{cont}}^\top\vec e_1$, interferer false-match cosine $\vec e_{\mathrm{cont}}^\top\vec e_2$, and the inflation factor of orthogonal interferer gate opening under cosine gate $g_k = \sigma(8(\vec e^\top\vec e_k - 0.40))$; (2) given a $6$-frame enrollment buffer where the first $4$ frames are target solo ($\vec e_1 = [1, 0, 0]^\top$, $\mathrm{SNR}_t = 20\ \mathrm{dB}$, posteriors $\gamma_{1,t} = 0.95, \gamma_{2,t} = 0.04$) and the final $2$ frames are interferer interjections during a target pause ($\vec e_2 = [0, 1, 0]^\top$, $\mathrm{SNR}_t = 15\ \mathrm{dB}$, $\gamma_{1,t} = 0.05, \gamma_{2,t} = 0.92$), compare template accuracy under energy-only VAD pooling ($\mathrm{SNR}_t \ge 10\ \mathrm{dB}$) versus adding Eq. (15-25) target-exclusive gating ($m_{1,t}^{\mathrm{tar}} \ge 0.60$).</p>
 <p><strong>Solution</strong>: (1) Writing the unnormalized norm $Z = \sqrt{1 + 2\alpha\rho_{12} + \alpha^2}$, taking the inner product of $\vec e_{\mathrm{cont}}$ with $\vec e_2$ similarly yields interferer cosine $(\rho_{12} + \alpha) / Z$. At $\alpha = 0.5$ and $\rho_{12} = 0$, $Z = \sqrt{5}/2$, target cosine drops from $1.0$ to $2/\sqrt{5} \approx 0.894427$ ($26.57^\circ$ angular drift), and interferer cosine jumps from $0$ to $1/\sqrt{5} \approx 0.447214$; substituting into the gate function shows clean-template interferer gating is just $\sigma(-3.2) \approx 0.039166$, whereas the contaminated template inflates interferer gating to $\sigma(8(1/\sqrt{5} - 0.40)) \approx 0.593320$—a $\sim 15.15\times$ increase in interferer leakage. When same-gender voiceprints carry baseline correlation $\rho_{12} = 0.3$, $Z = \sqrt{1.55}$, target cosine stays at $1.15 / \sqrt{1.55} \approx 0.923702$ while interferer cosine surges to $0.80 / \sqrt{1.55} \approx 0.642575$, readily passing bystander speech during target silence.</p>
 <p>(2) Across the $6$-frame enrollment buffer, all $6$ frames satisfy $\mathrm{SNR}_t \ge 10\ \mathrm{dB}$, so energy-only VAD pooling retains all $6$ frames and normalizes $\frac{1}{6}(4\vec e_1 + 2\vec e_2)$ to $[2/\sqrt{5}, 1/\sqrt{5}, 0]^\top$ (reproducing the $\alpha = 0.5$ crosstalk contamination). Adding the Eq. (15-25) target-exclusive probability $m_{1,t}^{\mathrm{tar}} = \gamma_{1,t}(1 - \gamma_{2,t})$ gives $0.95 \times 0.96 = 0.912 \ge 0.60$ on the first $4$ frames and $0.05 \times 0.08 = 0.004 \lt  0.60$ on the final $2$ crosstalk frames, rejecting them automatically so pooled normalization recovers the exact uncorrupted target template $\hat{\vec e} = [1, 0, 0]^\top$ (target cosine $1.000000$, interferer cosine $0.000000$; see <code>gated_enrollment_pooling</code>).</p>
-<span id="sec-52" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-15-11">15.11 Primary References and Further Reading</h2>
-<span id="sec-53" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-e6aa774c20" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-b2fbb95b86">Core Literature on Conditional Extraction, Near-Field Bubbles, Multi-Speaker Diarization, and Audio–Visual Front-Ends</h3>
+<p><a id="e15-15"></a></p>
+<span id="sec-52" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-783c26cf8e" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-ce9bad1bd5">E15-15: FiLM Affine Modulation Conditioning and Lip-Occlusion Visual Confidence Gating Fallback</h3>
+<p><strong>Problem</strong>: (1) <strong>FiLM affine conditioning contrast and dynamic-range robustness (§15.2)</strong>: Let a backbone network emit a 2-channel TF-bin feature vector $\vec h = [2.0, -1.0]^\top$ representing mixed target and interferer feature channels (raw channel energy ratio $h_1^2 / h_2^2 = 4.0$, i.e., $+6.02\ \mathrm{dB}$). Via Eq. (15-1), two candidate enrollment embeddings $\vec e_A = [1, 0]^\top$ and $\vec e_B = [0, 1]^\top$ map to modulation parameters $\vec\gamma_A = [1.5, 0.2]^\top, \vec\beta_A = [0.1, 0.0]^\top$ and $\vec\gamma_B = [0.2, 1.5]^\top, \vec\beta_B = [0.0, 0.1]^\top$, respectively. Compute the exact FiLM outputs $\vec h'_k = \vec\gamma_k \odot \vec h + \vec\beta_k$ of Eq. (15-2), their channel energy ratios $h'_{k,1}{}^2 / h'_{k,2}{}^2$ (linear and dB), and the total contrast swing between selecting A versus B; then contrast against pure additive bias conditioning $\vec h^{\mathrm{add}}_k = \vec h + \vec\beta_k$, including when input mixture energy fluctuates by $+20\ \mathrm{dB}$ ($10\times$ amplitude to $10\vec h$).</p>
+<p>(2) <strong>Lip-occlusion visual confidence gating fallback in log-odds fusion (§15.6)</strong>: Complementing the mask-domain convex interpolation of Eq. (15-30), consider log-odds audio–visual speech-presence fusion</p>
+<p>$$\ell_{\mathrm{AV}}=\ell_A+w_v(c_v)\,\ell_V,\qquad p_{\mathrm{AV}}=\sigma(\ell_{\mathrm{AV}})=\frac{1}{1+e^{-\ell_{\mathrm{AV}}}},\qquad w_v(c_v)=\operatorname{clip}\!\left(\frac{c_v-c_{\min}}{c_{\max}-c_{\min}},\,0,\,1\right),$$</p>
+<p>with confidence ramp limits $c_{\min} = 0.3$ and $c_{\max} = 0.8$. During active target speech, the audio branch reports log-odds $\ell_A = +2.0$ while an occluded camera reports false-negative lip-activity log-odds $\ell_V = -4.0$. Compute $p_A, p_V$, and the fused log-odds $\ell_{\mathrm{AV}}$ and posterior $p_{\mathrm{AV}}$ under: (a) ungated fixed fusion ($w_v = 1.0$); (b) severe lip occlusion dropping detector confidence to $c_v = 0.25$; (c) partial occlusion at $c_v = 0.45$. Also find the critical visual confidence $c_v^\star$ where the decision flips ($p_{\mathrm{AV}} = 0.5$).</p>
+<p><strong>Solution</strong>: (1) Applying Eq. (15-2) element-wise (<code>E15-15</code> in <code>chapter15_exercises</code>, calling <code>film_conditioning</code>):</p>
+<ul>
+<li><strong>Target A ($\vec\gamma_A = [1.5, 0.2]^\top, \vec\beta_A = [0.1, 0.0]^\top$)</strong>: $\vec h'_A = [1.5 \times 2.0 + 0.1,\ 0.2 \times (-1.0) + 0.0]^\top = [3.1, -0.2]^\top$, with channel energy ratio $3.1^2 / (-0.2)^2 = 9.61 / 0.04 = 240.25$ ($10\log_{10}(240.25) \approx +23.81\ \mathrm{dB}$);</li>
+<li><strong>Target B ($\vec\gamma_B = [0.2, 1.5]^\top, \vec\beta_B = [0.0, 0.1]^\top$)</strong>: $\vec h'_B = [0.2 \times 2.0 + 0.0,\ 1.5 \times (-1.0) + 0.1]^\top = [0.4, -1.4]^\top$, with channel energy ratio $0.4^2 / (-1.4)^2 = 0.16 / 1.96 = 4/49 \approx 0.081633$ ($10\log_{10}(4/49) \approx -10.88\ \mathrm{dB}$).</li>
+</ul>
+<p>Switching the conditioning cue from A to B yields a $23.81 - (-10.88) = 34.69\ \mathrm{dB}$ (exact $34.688\ \mathrm{dB}$) multiplicative contrast swing. By contrast, pure additive bias conditioning $\vec h + \vec\beta_k$ produces $[2.1, -1.0]^\top$ ($+6.44\ \mathrm{dB}$) vs. $[2.0, -0.9]^\top$ ($+6.94\ \mathrm{dB}$)—a $-0.49\ \mathrm{dB}$ shift that cannot even reverse channel dominance. When mixture energy rises by $+20\ \mathrm{dB}$ ($10\vec h = [20.0, -10.0]^\top$), FiLM emits $[30.1, -2.0]^\top$ ($+23.55\ \mathrm{dB}$) vs. $[4.0, -14.9]^\top$ ($-11.42\ \mathrm{dB}$), preserving a $34.97\ \mathrm{dB}$ contrast swing (approaching the scale-invariant multiplicative limit $40\log_{10}(1.5/0.2) \approx 35.00\ \mathrm{dB}$), whereas additive bias is swamped by the larger feature scale ($[20.1, -10.0]^\top$ at $+6.06\ \mathrm{dB}$ vs. $[20.0, -9.9]^\top$ at $+6.11\ \mathrm{dB}$, shrinking to $-0.04\ \mathrm{dB}$). Multiplicative channel scaling $\vec\gamma$ is therefore indispensable whenever target and interferer energies fluctuate over wide dynamic ranges.</p>
+<p>(2) Single-modality posteriors are $p_A = \sigma(2.0) = (1 + e^{-2})^{-1} \approx 0.880797$ (strong audio detection) and $p_V = \sigma(-4.0) = (1 + e^{4})^{-1} \approx 0.017986$ (severe false-negative visual silence from occlusion). Evaluating all three gating cases:</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable data table"><table>
+<thead>
+<tr>
+<th scope="col">Gating Regime</th>
+<th scope="col" style="text-align: right;">Visual Confidence $c_v$</th>
+<th scope="col" style="text-align: right;">Visual Weight $w_v$</th>
+<th scope="col" style="text-align: right;">Fused Log-Odds $\ell_{\mathrm{AV}}$</th>
+<th scope="col" style="text-align: right;">Fused Posterior $p_{\mathrm{AV}}$</th>
+<th scope="col">Decision ($p_{\mathrm{AV}} \ge 0.5$)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ungated fixed fusion</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">$1.00$</td>
+<td style="text-align: right;">$-2.00$</td>
+<td style="text-align: right;">$0.119203$</td>
+<td>False silence (target dropout)</td>
+</tr>
+<tr>
+<td>Severe occlusion fallback</td>
+<td style="text-align: right;">$0.25$</td>
+<td style="text-align: right;">$0.00$</td>
+<td style="text-align: right;">$+2.00$</td>
+<td style="text-align: right;">$0.880797$</td>
+<td>Active (clean audio-only fallback)</td>
+</tr>
+<tr>
+<td>Partial occlusion down-weighting</td>
+<td style="text-align: right;">$0.45$</td>
+<td style="text-align: right;">$0.30$</td>
+<td style="text-align: right;">$+0.80$</td>
+<td style="text-align: right;">$0.689974$</td>
+<td>Active (false-negative damped)</td>
+</tr>
+</tbody>
+</table></div>
+<p>Setting $\ell_{\mathrm{AV}} = 2.0 - 4.0\,w_v = 0$ yields critical weight $w_v^\star = 0.50$, corresponding to critical confidence $c_v^\star = 0.3 + 0.50 \times (0.8 - 0.3) = 0.55$. Without confidence gating, a single strongly negative occluded visual log-odds drags target speech posterior from $0.880797$ down to $0.119203$ (causing target dropout); with confidence gating, severe occlusion ($c_v = 0.25 \lt  0.3$) sets $w_v = 0.0$ for exact audio-only fallback ($0.880797$), while partial occlusion ($c_v = 0.45$) attenuates the visual term to $w_v = 0.30$ and holds $p_{\mathrm{AV}} \approx 0.689974 > 0.5$, ensuring multimodal fusion never underperforms the audio-only baseline under visual obstruction.</p>
+<span id="sec-53" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-15-11">15.11 Primary References and Further Reading</h2>
+<span id="sec-54" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-e6aa774c20" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-b2fbb95b86">Core Literature on Conditional Extraction, Near-Field Bubbles, Multi-Speaker Diarization, and Audio–Visual Front-Ends</h3>
 <ol>
 <li><strong>Conditional modulation and speaker embedding backbones</strong>: Perez, E., Strub, F., de Vries, H., Dumoulin, V., &amp; Courville, A. (2018), <em>FiLM: Visual Reasoning with a General Conditioning Layer</em>, AAAI 2018 (<a href="https://arxiv.org/abs/1709.07871">arXiv:1709.07871</a>); Snyder, D., Garcia-Romero, D., Sell, G., Povey, D., &amp; Khudanpur, S. (2018), <em>X-Vectors: Robust DNN Embeddings for Speaker Recognition</em>, ICASSP 2018, pp. 5329–5333 (<a href="https://doi.org/10.1109/ICASSP.2018.8461375">DOI</a>); Desplanques, B., Thienpondt, J., &amp; Demuynck, K. (2020), <em>ECAPA-TDNN: Emphasized Channel Attention, Propagation and Aggregation in TDNN Based Speaker Verification</em>, Interspeech 2020 (<a href="https://arxiv.org/abs/2005.07143">arXiv:2005.07143</a>); Chen, S., et al. (2022), <em>WavLM: Large-Scale Self-Supervised Pre-Training for Full Stack Speech Processing</em>, <em>IEEE JSTSP</em>, 16(6), 1505–1518 (<a href="https://doi.org/10.1109/JSTSP.2022.3188113">DOI</a>).</li>
 <li><strong>Target speaker extraction, spatial/semantic clues, and silence false-alarm control</strong>: Žmolíková, K., Delcroix, M., Ochiai, T., Kinoshita, K., Černocký, J., &amp; Yu, D. (2023), <em>Neural Target Speech Extraction: An Overview</em>, <em>IEEE Signal Processing Magazine</em>, 40(3), 8–29 (<a href="https://doi.org/10.1109/MSP.2023.3240008">DOI</a>); Žmolíková, K., et al. (2019), <em>SpeakerBeam: Speaker Aware Neural Network for Target Speaker Extraction in Speech Mixtures</em>, <em>IEEE JSTSP</em>, 13(4), 800–814 (<a href="https://doi.org/10.1109/JSTSP.2019.2922820">DOI</a>); Wang, Q., et al. (2019), <em>VoiceFilter: Targeted Voice Separation by Speaker-Conditioned Spectrogram Masking</em>, Interspeech 2019 (<a href="https://arxiv.org/abs/1810.04826">arXiv:1810.04826</a>); Delcroix, M., et al. (2020), <em>Improving Speaker Discrimination of Target Speech Extraction With Time-Domain SpeakerBeam</em>, ICASSP 2020 (<a href="https://doi.org/10.1109/ICASSP40776.2020.9054683">DOI</a>); Ge, M., Xu, C., Wang, L., Chng, E. S., Dang, J., &amp; Li, H. (2020), <em>SpEx+: A Complete Time Domain Speaker Extraction Network</em>, Interspeech 2020 (<a href="https://arxiv.org/abs/2005.04686">arXiv:2005.04686</a>); Jenrungrot, T., Jayaram, V., Seitz, S. M., &amp; Kemelmacher-Shlizerman, I. (2020), <em>The Cone of Silence: Speech Separation by Localization</em>, NeurIPS 2020 (<a href="https://arxiv.org/abs/2010.06007">arXiv:2010.06007</a>); Borsdorf, M., Xu, C., Li, H., &amp; Schultz, T. (2021), <em>Universal Speaker Extraction in the Presence and Absence of Target Speakers for Speech of One and Two Talkers</em>, Interspeech 2021, pp. 1469–1473 (<a href="https://doi.org/10.21437/Interspeech.2021-1939">DOI</a>); Delcroix, M., et al. (2022), <em>Listen only to me! How well can target speech extraction handle false alarms?</em>, Interspeech 2022, pp. 216–220 (<a href="https://doi.org/10.21437/Interspeech.2022-11252">DOI</a>); Veluri, B., Itani, M., Chan, J., Yoshioka, T., &amp; Gollakota, S. (2023), <em>Semantic Hearing: Programming Acoustic Scenes with Binaural Hearables</em>, ACM UIST 2023 (<a href="https://doi.org/10.1145/3586183.3606779">DOI</a>); Gu, R., &amp; Luo, Y. (2024), <em>ReZero: Region-Customizable Sound Extraction</em>, <em>IEEE/ACM TASLP</em>, 32, 2576–2589 (<a href="https://doi.org/10.1109/TASLP.2024.3393713">DOI</a>); Quan, C., &amp; Li, X. (2024), <em>SpatialNet: Extensively Learning Spatial Information for Multichannel Joint Speech Separation, Denoising and Dereverberation</em>, <em>IEEE/ACM TASLP</em>, 32, 1310–1323 (<a href="https://doi.org/10.1109/TASLP.2024.3357036">DOI</a>); Zeng, B., &amp; Li, M. (2025), <em>USEF-TSE: Universal Speaker Embedding Free Target Speaker Extraction</em>, <em>IEEE TASLP</em>, 33, 2110–2124 (<a href="https://arxiv.org/abs/2409.02615">arXiv:2409.02615</a>).</li>

@@ -4,7 +4,7 @@
 
 **[← 返回项目主页](../../README.md)** · **[全书导读目录](../../chapters/00_overview.md)** · **[算法覆盖表 COVERAGE.md](ch00/COVERAGE.md)** · **[6 篇源码研究手册](ch00/research/README.md)** · **[跳到完整音频清单 ↓](#audio-inventory)**
 
-本目录汇总全书 **352 道稳定编号练习**与 **283 段发布级 WAV 音频**的唯一真实实现。每章下的 `core/` 存放无黑箱封装的纯 NumPy 算法数值核，`examples/` 存放受控音频生成器与上游开源库合同探针；同一算法核只在首次讲授的章节实现一次，后续章节直接导入复用（例如第 4 章 Capon 与第 5 章 MVDR/LCMV 共用的协方差校验与相对对角加载统一归档于 [`ch04/core/covariance.py`](ch04/core/covariance.py)）。共享目录 `ch00/` 承载第 0 章数学基础核与十六道练习、跨章综合基线、主音频总清单、全书索引及上游获取工具。
+本目录汇总全书 **360 道稳定编号练习**与 **283 段发布级 WAV 音频**的唯一真实实现。每章下的 `core/` 存放无黑箱封装的纯 NumPy 算法数值核，`examples/` 存放受控音频生成器与上游开源库合同探针；同一算法核只在首次讲授的章节实现一次，后续章节直接导入复用（例如第 4 章 Capon 与第 5 章 MVDR/LCMV 共用的协方差校验与相对对角加载统一归档于 [`ch04/core/covariance.py`](ch04/core/covariance.py)）。共享目录 `ch00/` 承载第 0 章数学基础核与十六道练习、跨章综合基线、主音频总清单、全书索引及上游获取工具。
 
 | 目录 | 主要实验模块（统一前缀 `codes.chapters.`） | 复算范围与边界 |
 |---|---|---|
@@ -12,18 +12,18 @@
 | [ch01](ch01/) | `ch01.chapter01_experiments` | E01-04～11；有限记录、残余延迟、球头、混合功率、ILD/WNG、频率相关响应与硅麦 dBA 预算；数学输入及实际PCM读回 |
 | [ch02](ch02/) | `ch02.chapter02_experiments` | E02-09～20；传播、频谱、协方差、采样、已知激励辨识与STFT一致性，不是设备测量 |
 | [ch03](ch03/) | `ch03.chapter03_experiments`、`ch03.coarray_covariance_exercise`、`ch03.examples.self_calibration_demo` | 单章入口E03-08～18，协同阵入口E03-07，与单独的受外部相位锚约束标定示例；几何、模糊、校准和虚拟滞后统计，不是全盲设备标定 |
-| [ch04](ch04/) | `ch04.chapter04_experiments`、`ch04.doa_resolution_trials` | E04-08、E04-12～23；包括相关误差GLS、非酉聚焦噪声、双频酉秩、解析root-MUSIC、相干反射与圆阵相位模式；分辨率试验保留分类计数与统计分母 |
+| [ch04](ch04/) | `ch04.chapter04_experiments`、`ch04.doa_resolution_trials` | E04-08、E04-12～24；包括相关误差GLS、非酉聚焦噪声、双频酉秩、解析root-MUSIC、相干反射、圆阵相位模式及离网格稀疏定位与SELD耦合；分辨率试验保留分类计数与统计分母 |
 | [ch05](ch05/) | `ch05.chapter05_experiments`、`ch05.beamformer_common_input_demo` | 单章入口E05-05～17；E05-18～20 用 `ch05.examples.binaural_beamforming_demo`；E05-01～04由跨章入口提供；同输入波束、独立导数约束与逐频相位PCM限于所声明条件；`ch05.examples.generate_derivative_audio --check`只读核验八源/实际PCM，`ch05.examples.generate_phase_audio --check`核五源及三PCM；当前原方法审计与历史报告分开 |
-| [ch06](ch06/) | `ch06.chapter06_experiments`、`ch06.aec_algorithm_minicases`、`ch06.aec_partitioned_demo`、`ch06.aec_affine_projection_demo`、`ch06.examples.generate_apa_audio`、`ch06.examples.generate_reference_audio` | E06-07～10、E06-12～30及AEC算法缩例；已知增益/历史尾声六PCM严格只读核验与冻结预测，APA训练/留出另计；原方法current报告与历史报告分开，外部库/录音有独立依赖 |
+| [ch06](ch06/) | `ch06.chapter06_experiments`、`ch06.aec_algorithm_minicases`、`ch06.aec_partitioned_demo`、`ch06.aec_affine_projection_demo`、`ch06.examples.generate_apa_audio`、`ch06.examples.generate_reference_audio` | E06-07～10、E06-12～32及AEC算法缩例；已知增益/历史尾声六PCM严格只读核验与冻结预测，APA训练/留出另计，含PBFDKF双讲方差抬升与RES/CNG电平匹配；原方法current报告与历史报告分开，外部库/录音有独立依赖 |
 | [ch07](ch07/) | `ch07.chapter07_experiments`、`ch07.wpe_temporal_contract`、`ch07.examples.mint_teaching_demo`、`ch07.examples.generate_delay_audio`、`ch07.examples.audit_upstream_wpe_contracts` | 单章入口E07-08～21，E07-01～07由跨章入口提供；在线WPE时间/排列、设计矩阵求解、已知到达与历史PCM控制及逆滤波噪声权衡；`mint_teaching_demo --check`只读核验，NeMo仅固定源码静态检查 |
-| [ch08](ch08/) | `ch08.chapter08_experiments`、`ch08.gss_activity_error_demo`、`ch08.examples.mask_representation_demo`、`ch08.examples.generate_css_audio`、`ch08.examples.audit_upstream_separation_contracts` | 单章入口E08-10～26，E08-01～09由跨章入口提供；另有固定密度下活动标注误差；不是官方 GPU 整链 |
-| [ch09](ch09/) | `ch09.chapter09_experiments`、`ch09.tracking_crossing_dropout_demo` | E09-06、E09-10～22；轨迹交叉、缺测、模式密度、双时钟生命周期与球面方向的限定例 |
+| [ch08](ch08/) | `ch08.chapter08_experiments`、`ch08.gss_activity_error_demo`、`ch08.examples.mask_representation_demo`、`ch08.examples.generate_css_audio`、`ch08.examples.audit_upstream_separation_contracts` | 单章入口E08-10～27（含AuxIVA无求逆ISS与IP收敛对照），E08-01～09由跨章入口提供；另有固定密度下活动标注误差；不是官方 GPU 整链 |
+| [ch09](ch09/) | `ch09.chapter09_experiments`、`ch09.tracking_crossing_dropout_demo` | E09-06、E09-10～23；轨迹交叉与JPDA/GNN软硬关联对照、缺测、模式密度、双时钟生命周期与球面方向的限定例 |
 | [ch10](ch10/) | `ch10.chapter10_experiments`、`ch10.spectral_subtraction_demo`、`ch10.sro_closed_loop_demo` | E10-13、E10-18～28；合成时间戳及有状态插值，不是声卡实时实测 |
 | [ch11](ch11/) | `ch11.chapter11_experiments` | E11-10～22；硬约束、评分和 FIR 取舍，示意分数不代表产品测量 |
 | [ch12](ch12/) | `ch12.chapter12_exercises`、`ch12.examples.generate_imaging_audio`、`ch12.examples.audit_upstream_imaging_contracts` | E12-01～18；球面CSM/PSF、DAMAS前/双向、有限小矩阵NNLS、作者full-CSM CLEAN-SC及目标失配；五独立PCM及固定原方法差异分开 |
-| [ch13](ch13/) | `ch13.chapter13_exercises`、`ch13.examples.generate_distributed_audio`、`ch13.examples.audit_upstream_distributed_contracts` | E13-01～20；指定MWF任务与压缩、真实广播后接收状态、GEVD/树控制；17独立PCM及限定原helper合同分开 |
-| [ch14](ch14/) | `ch14.chapter14_exercises`、`ch14.examples.generate_wearable_audio` | E14-01～15；FOA四面体编码、声强DirAC、BSM-MagLS、BMVDR参考混合、跨模态抗风噪融合与通透梳状滤波；6份独立PCM分开解析/浮点/整型评分 |
-| [ch15](ch15/) | `ch15.chapter15_exercises`、`ch15.examples.generate_tse_audio` | E15-01～14；双态地板损失、零重叠旁路、近场球面波距离气泡、空谱TS-VAD/GSS门控、视听正滞后与声纹串音门控；6份独立PCM分开解析/浮点/整型评分 |
+| [ch13](ch13/) | `ch13.chapter13_exercises`、`ch13.examples.generate_distributed_audio`、`ch13.examples.audit_upstream_distributed_contracts` | E13-01～21；指定MWF任务与压缩、真实广播后接收状态、GEVD/树控制与DWACD盲SRO活动门控；17独立PCM及限定原helper合同分开 |
+| [ch14](ch14/) | `ch14.chapter14_exercises`、`ch14.examples.generate_wearable_audio` | E14-01～16；FOA四面体编码与二阶HOA径向提升、声强DirAC、BSM-MagLS、BMVDR参考混合、跨模态抗风噪融合与通透梳状滤波；6份独立PCM分开解析/浮点/整型评分 |
+| [ch15](ch15/) | `ch15.chapter15_exercises`、`ch15.examples.generate_tse_audio` | E15-01～15；FiLM条件调制、双态地板损失、零重叠旁路、近场球面波距离气泡、空谱TS-VAD/GSS门控、视听正滞后与唇部遮挡置信度回退、声纹串音门控；6份独立PCM分开解析/浮点/整型评分 |
 | [appendix_a](appendix_a/) | `appendix_a.appendix_a_experiments` | E16-06～15；复投影、已知噪声加权、截断与正则、相关共轭、EVD前提、实际PCM及完整相关噪声GLS/同步白化；旧01～05仍复用跨章唯一实现 |
 | [appendix_b](appendix_b/) | `appendix_b.appendix_b_experiments`、`appendix_b.interpolation_exercise` | E17-02～13；E17-02 读回主音频 PCM，E17-03～13 核查房间结果、PCM、来源证据、TAC共享结构、能量尺度、同DRR输出、时间条件化与有限尾部EDC及全链路级联排障归因，不重跑房间仿真 |
 
@@ -39,7 +39,7 @@
 
 `DSB target response` 和 `MVDR target response` 应接近 1；STFT 重建误差接近浮点舍入。极高的匹配无噪声 AEC ERLE 是算术收敛检查，队列示例中的超期次数则来自构造的负载，二者均不代表设备测量。完整核对步骤见导读。
 
-旧的 `codes.examples.*` 和 `codes.array_tutorial.*` 导入路径已经退出仓内接口。运行时使用上表中的章节模块；修改题目时改唯一真实源文件，再核对全书 352 个稳定练习 ID、对应章节和覆盖表。
+旧的 `codes.examples.*` 和 `codes.array_tutorial.*` 导入路径已经退出仓内接口。运行时使用上表中的章节模块；修改题目时改唯一真实源文件，再核对全书 360 个稳定练习 ID、对应章节和覆盖表。
 
 E10-17 的变长回调时序在 [跨章工程边界入口](ch00/cross_chapter/engineering_boundary_exercises.py) 内复算。 [MacBook Air 单麦实测](ch10/examples/macbook_audio_latency/README.md)提供原生测量程序、回调时间戳日志和逐次声学偏移。第 11 章统一入口的 E11-11 同时报迟到、未交付、分场景分母和合并结果；[R01 实录](ch02/real_audio/README.md)另用于检查整段和最差窗口的区别。
 
@@ -165,7 +165,7 @@ HARKTOOL5 与 Vo RFS 的归档摘要和选择范围单独记录，不混入 129 
 
 E08-22沿用第2章唯一STFT核，逐共享样本核对两个一致性次序；E08-23区分PCA投掉弱目标与给定目标行的OverIVA背景约束；E08-24按同钟观测重叠拟合真实标量，分开主窗与后窗的解析、浮点和实际PCM整数误差。`ch08.examples.generate_css_audio --check`严格只读重放四WAV与独立清单，不代表盲CSS或身份追踪。作者OverIVA四MIT原文件与MeCo十六个许可明确的部分原文件已在受管理源码目录取得，固定身份与未运行边界见[分离研究手册](ch00/research/02_aec_wpe_separation.md)。
 
-第9章共22题，E09-18～20逐步计算完整模式密度与连续缺测、实际PCM单槽生命周期、已知姿态与静态球面概率。`tracking.py` 是连续白角加速度 Q 的唯一实现；`set_prior_weights` 明确重设数学支持，显示下溢与真实零分开记录。E09-16核验实际文件后读回PCM，不用内存样本替代正式音频。当前外部源码合同见[原方法报告](ch09/reports/upstream_tracking_contracts_current.json)与[接口报告](ch09/reports/tracking_upstream_interfaces_current.json)和[来源研究](ch00/research/01_spatial_and_tracking.md#tracking-contract-audit)，替身控制流与完整算法运行分栏记录。
+第9章共23题，E09-18～20逐步计算完整模式密度与连续缺测、实际PCM单槽生命周期、已知姿态与静态球面概率，E09-23对照对称交叉轨迹的JPDA边缘关联与硬指派GNN。`tracking.py` 是连续白角加速度 Q 的唯一实现；`set_prior_weights` 明确重设数学支持，显示下溢与真实零分开记录。E09-16核验实际文件后读回PCM，不用内存样本替代正式音频。当前外部源码合同见[原方法报告](ch09/reports/upstream_tracking_contracts_current.json)与[接口报告](ch09/reports/tracking_upstream_interfaces_current.json)和[来源研究](ch00/research/01_spatial_and_tracking.md#tracking-contract-audit)，替身控制流与完整算法运行分栏记录。
 
 第10章共28题，扩展入口计算E10-18～28；[六个独立噪声失配WAV](ch10/noise_audio/MANIFEST.json)由 `ch10.examples.generate_noise_mismatch` 管理，不并入主109。纯前奏固定、目标污染与已知方差对照使用同一输入和导出增益；浮点分量与两个6400点实际PCM窗口分开。[工业合同工具](ch10/examples/audit_industrial_contracts.py)只运行明确限定的固定原源码接口，模型与ARM性能不在执行范围，历史报告不改写。
 
@@ -187,13 +187,13 @@ E08-22沿用第2章唯一STFT核，逐共享样本核对两个一致性次序；
 
 `ch12.examples.generate_imaging_audio --check`严格核六普通成员及当前真实源、完整PCM回放，五份WAV不并入主109。`ch12.examples.audit_upstream_imaging_contracts`默认终端，只在显式`--report`时写当前合同；固定Acoular源码身份、整选集不匹配、方法相符/已确认差异/未执行分开。没有运行完整Acoular包、JIT/HDF5或风洞录音。
 
-第13章扩展专题Ⅱ接第12章后。20题入口只读；17个16kHz数学WAV共同增益1、32000点即时混合，评分窗1600:30400及缺包窗16000:16800分开。
+第13章扩展专题Ⅱ接第12章后。21题入口只读；17个16kHz数学WAV共同增益1、32000点即时混合，评分窗1600:30400及缺包窗16000:16800分开。
 
 九真实源与整数E/D随清单保存，`--check`严格核18普通成员并完整只读重放。已知100ppm线性SRC改变频响与噪声统计，不是盲时钟估计。当前原合同仅执行paderwasn三个AST原helper和MATLAB静态审读；没有原MATLAB、完整DWACD或无线设备成绩。
 
-第14章扩展专题Ⅲ接第13章后。`ch14.chapter14_exercises`只读复算15题；`ch14.examples.generate_wearable_audio --check`严格核七普通成员与六个真实源，六份16kHz数学合成WAV在1600:30400稳窗分开解析、浮点与实际PCM整数评分，不并入主109。
+第14章扩展专题Ⅲ接第13章后。`ch14.chapter14_exercises`只读复算16题；`ch14.examples.generate_wearable_audio --check`严格核七普通成员与六个真实源，六份16kHz数学合成WAV在1600:30400稳窗分开解析、浮点与实际PCM整数评分，不并入主109。
 
-第15章扩展专题Ⅳ接第14章后。`ch15.chapter15_exercises`只读复算14题；`ch15.examples.generate_tse_audio --check`严格核七普通成员与六个真实源，六份16kHz数学合成WAV在1600:30400稳窗分开解析、浮点与实际PCM整数E/D评分，不并入主109。
+第15章扩展专题Ⅳ接第14章后。`ch15.chapter15_exercises`只读复算15题；`ch15.examples.generate_tse_audio --check`严格核七普通成员与六个真实源，六份16kHz数学合成WAV在1600:30400稳窗分开解析、浮点与实际PCM整数E/D评分，不并入主109。
 
 E10-26的[通道选集核](ch10/core/channel_selection.py)同时处理观测轴、目标响应与协方差双轴，复用第5章唯一MVDR；[六WAV独立清单](ch10/channel_audio/MANIFEST.json)使用确定性正交音与固定实权重。[生成入口](ch10/examples/generate_channel_audio.py)的`--check`完整只读重放。图73和手册分开目标损伤、噪声与真实PCM总误差，不把失效后的两项解析NMSE相同写成PCM严格相同。
 

@@ -90,6 +90,20 @@
     window.MaspPdfMath = staged.map(({source, mml, rawSpeech, speech}) => ({...source, mml, rawSpeech, speech}));
     await document.fonts.ready;
     ArrayTutorialLayout.apply();
+    // Prevent wide multi-column auto-layout tables from widening the A4 print canvas
+    // and triggering Chrome whole-document shrink-to-fit.
+    const maxTableWidth = document.body.clientWidth;
+    if (maxTableWidth > 0) {
+      for (const table of document.querySelectorAll("table")) {
+        if (table.getBoundingClientRect().width > maxTableWidth + 1) {
+          table.style.tableLayout = "fixed";
+          table.style.fontSize = "7.6pt";
+          for (const cell of table.querySelectorAll("th, td")) {
+            cell.style.padding = "3px 4px";
+          }
+        }
+      }
+    }
     document.documentElement.dataset.pdfMathReady = String(seen.size);
     return seen.size;
   }

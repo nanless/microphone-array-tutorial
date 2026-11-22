@@ -1,4 +1,4 @@
-"""Run E15-01..14 with pure NumPy and in-memory PCM16; never write files or access network.
+"""Run E15-01..15 with pure NumPy and in-memory PCM16; never write files or access network.
 
 Usage: .venv/bin/python -m codes.chapters.ch15.chapter15_exercises [--exercise E15-02]
 """
@@ -18,6 +18,7 @@ import numpy as np
 from codes.chapters.ch00.core.audio_samples import pcm16_bytes, read_pcm16
 from codes.chapters.ch15.core.av_alignment import map_video_to_audio_frames
 from codes.chapters.ch15.core.conditional_tse import (
+    film_conditioning,
     inspect_standard_sisdr,
     tse_dual_state_loss,
     zero_overlap_bypass_decision,
@@ -45,7 +46,7 @@ from codes.chapters.ch15.core.tse_audio import (
     run_experiment,
 )
 
-EXERCISE_IDS = tuple(f"E15-{i:02d}" for i in range(1, 15))
+EXERCISE_IDS = tuple(f"E15-{i:02d}" for i in range(1, 16))
 
 
 def _json(value):
@@ -98,6 +99,116 @@ def _tsvad_meeting_cues() -> tuple[np.ndarray, np.ndarray]:
         dtype=np.float64,
     )
     return obs_ipd_cos, emb_sim
+
+
+def _ex15_film_and_visual_confidence_gating() -> dict:
+    """E15-15: FiLM affine conditioning contrast swing & lip-occlusion visual confidence gating."""
+    h_vec = np.array([2.0, -1.0], dtype=np.float64)
+    w_gamma = np.array([[1.5, 0.2], [0.2, 1.5]], dtype=np.float64)
+    w_beta = np.array([[0.1, 0.0], [0.0, 0.1]], dtype=np.float64)
+    e_a = np.array([1.0, 0.0], dtype=np.float64)
+    e_b = np.array([0.0, 1.0], dtype=np.float64)
+
+    gamma_a = w_gamma @ e_a
+    beta_a = w_beta @ e_a
+    gamma_b = w_gamma @ e_b
+    beta_b = w_beta @ e_b
+
+    def _eval_scale(h_in: np.ndarray) -> dict:
+        h_film_a = film_conditioning(h_in[:, None], gamma_a, beta_a)[:, 0]
+        h_film_b = film_conditioning(h_in[:, None], gamma_b, beta_b)[:, 0]
+        ratio_a = float((h_film_a[0] ** 2) / (h_film_a[1] ** 2))
+        ratio_b = float((h_film_b[0] ** 2) / (h_film_b[1] ** 2))
+        ratio_a_db = float(10.0 * math.log10(ratio_a))
+        ratio_b_db = float(10.0 * math.log10(ratio_b))
+
+        h_add_a = h_in + beta_a
+        h_add_b = h_in + beta_b
+        add_ratio_a = float((h_add_a[0] ** 2) / (h_add_a[1] ** 2))
+        add_ratio_b = float((h_add_b[0] ** 2) / (h_add_b[1] ** 2))
+        add_ratio_a_db = float(10.0 * math.log10(add_ratio_a))
+        add_ratio_b_db = float(10.0 * math.log10(add_ratio_b))
+
+        return {
+            "input_h": h_in,
+            "input_channel_energy_ratio": float((h_in[0] ** 2) / (h_in[1] ** 2)),
+            "input_channel_energy_ratio_db": float(10.0 * math.log10((h_in[0] ** 2) / (h_in[1] ** 2))),
+            "film_target_A": {
+                "gamma": gamma_a,
+                "beta": beta_a,
+                "output_h": h_film_a,
+                "channel_energy_ratio": ratio_a,
+                "channel_energy_ratio_db": ratio_a_db,
+            },
+            "film_target_B": {
+                "gamma": gamma_b,
+                "beta": beta_b,
+                "output_h": h_film_b,
+                "channel_energy_ratio": ratio_b,
+                "channel_energy_ratio_db": ratio_b_db,
+            },
+            "film_contrast_swing_db": ratio_a_db - ratio_b_db,
+            "additive_bias_only_target_A": {
+                "output_h": h_add_a,
+                "channel_energy_ratio": add_ratio_a,
+                "channel_energy_ratio_db": add_ratio_a_db,
+            },
+            "additive_bias_only_target_B": {
+                "output_h": h_add_b,
+                "channel_energy_ratio": add_ratio_b,
+                "channel_energy_ratio_db": add_ratio_b_db,
+            },
+            "additive_bias_only_swing_db": add_ratio_a_db - add_ratio_b_db,
+        }
+
+    # Part 2: Log-odds AV speech-presence fusion with visual confidence gating fallback
+    def _sigmoid(x: float) -> float:
+        return 1.0 / (1.0 + math.exp(-x))
+
+    ell_a = 2.0
+    ell_v = -4.0
+    c_min = 0.3
+    c_max = 0.8
+
+    def _gate_weight(c_v: float) -> float:
+        return float(np.clip((c_v - c_min) / (c_max - c_min), 0.0, 1.0))
+
+    def _fuse(w_v: float, c_v: float | None = None) -> dict:
+        ell_av = ell_a + w_v * ell_v
+        p_av = _sigmoid(ell_av)
+        out = {
+            "visual_weight": float(w_v),
+            "fused_log_odds": float(ell_av),
+            "fused_speech_prob": float(p_av),
+            "target_detected": bool(p_av >= 0.5),
+        }
+        if c_v is not None:
+            out["visual_confidence"] = float(c_v)
+        return out
+
+    w_crit = -ell_a / ell_v
+    c_crit = c_min + w_crit * (c_max - c_min)
+
+    return {
+        "film_conditioning": {
+            "nominal_scale": _eval_scale(h_vec),
+            "scaled_plus20db_10x_amplitude": _eval_scale(10.0 * h_vec),
+            "pure_multiplicative_asymptotic_swing_db": float(40.0 * math.log10(1.5 / 0.2)),
+        },
+        "visual_confidence_gating": {
+            "audio_log_odds": ell_a,
+            "audio_speech_prob": _sigmoid(ell_a),
+            "visual_log_odds": ell_v,
+            "visual_speech_prob": _sigmoid(ell_v),
+            "c_min": c_min,
+            "c_max": c_max,
+            "critical_flip_weight": float(w_crit),
+            "critical_flip_confidence": float(c_crit),
+            "ungated_wv_1p0": _fuse(1.0),
+            "severe_occlusion_cv_0p25": _fuse(_gate_weight(0.25), c_v=0.25),
+            "partial_occlusion_cv_0p45": _fuse(_gate_weight(0.45), c_v=0.45),
+        },
+    }
 
 
 def run_experiments() -> dict:
@@ -370,6 +481,7 @@ def run_experiments() -> dict:
                 "gated_interferer_cosine": float(np.dot(enr_pool["gated_embedding"], e_int_orth)),
             },
         },
+        "E15-15": _ex15_film_and_visual_confidence_gating(),
     }
     if set(exercises) != set(EXERCISE_IDS):
         raise AssertionError("Chapter 15 exercise ID set mismatch")

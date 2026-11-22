@@ -182,6 +182,7 @@ td,th{word-break:normal;overflow-wrap:break-word;hyphens:auto}
 td code,th code,td a,th a{overflow-wrap:anywhere;word-break:break-word}
 mjx-container{font-size:100%!important;max-width:100%;break-inside:avoid;page-break-inside:avoid}
 mjx-container[jax="SVG"][display="true"]{display:inline-block!important;width:100%;padding:5px 0;box-sizing:border-box}
+mjx-container[jax="SVG"][display="true"] svg{max-width:100%;height:auto}
 mjx-container[jax="SVG"]:not([display="true"]){display:inline-block;padding-block:2px}
 td mjx-container[jax="SVG"],th mjx-container[jax="SVG"]{max-width:100%;overflow:visible}
 td mjx-container[jax="SVG"] svg,th mjx-container[jax="SVG"] svg{max-width:100%;height:auto}
@@ -257,6 +258,7 @@ td code,th code,td a,th a{overflow-wrap:anywhere;word-break:break-word}
 /* MathJax 的行内长式与展示式均需留在 A4 正文宽度内。 */
 mjx-container{font-size:100%!important;max-width:100%;break-inside:avoid;page-break-inside:avoid}
 mjx-container[jax="SVG"][display="true"]{display:inline-block!important;width:100%;padding:5px 0;box-sizing:border-box}
+mjx-container[jax="SVG"][display="true"] svg{max-width:100%;height:auto}
 mjx-container[jax="SVG"]:not([display="true"]){display:inline-block;padding-block:2px}
 td mjx-container[jax="SVG"],th mjx-container[jax="SVG"]{max-width:100%;overflow:visible}
 td mjx-container[jax="SVG"] svg,th mjx-container[jax="SVG"] svg{max-width:100%;height:auto}
@@ -1191,7 +1193,7 @@ def build_html(build_date=None):
         '<table class="cover-stats-table">'
         '<thead><tr>'
         f'<th scope="col">{len(CHAPTERS)} 篇合订文档</th>'
-        '<th scope="col">352 道可运行练习</th>'
+        '<th scope="col">360 道可运行练习</th>'
         '<th scope="col">87 张溯源插图</th>'
         '<th scope="col">283 段配套音频</th>'
         '</tr></thead>'

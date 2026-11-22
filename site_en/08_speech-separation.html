@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Chapter 8 · Multichannel Speech Separation · Microphone Array Signal Processing</title>
-<meta name="source-digest" content="7b2bf0186a72"><style>
+<meta name="source-digest" content="6fa82909c83a"><style>
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -384,6 +384,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="08_speech-separation.html#sec-u-26a4fddd7c">E08-24: Polarity and Gain Jumps Under Matched Permutations: Hand Calculation and Two-Chunk Audio</a></li>
 <li>&nbsp;&nbsp;<a href="08_speech-separation.html#sec-u-0756a463e7">E08-25: Convolutive-Invariant CI-SDR and Filter Overfitting Boundaries</a></li>
 <li>&nbsp;&nbsp;<a href="08_speech-separation.html#sec-u-77c63646fe">E08-26: Narrowband–Crossband Streaming Compute Budget and Single-Speaker Bypass Gating</a></li>
+<li>&nbsp;&nbsp;<a href="08_speech-separation.html#sec-u-a3d62e0a1d">E08-27: AuxIVA Iterative Source Steering (ISS) Inversion-Free Rank-1 Update vs. Iterative Projection (IP)</a></li>
 </ul>
 <div class="chap"><a href="09_source-tracking.html">Chapter 9 · Sound Source Tracking</a></div>
 <div class="chap"><a href="10_engineering-practice.html">Chapter 10 · Real-Time Systems, Evaluation & Deployment</a></div>
@@ -464,6 +465,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="08_speech-separation.html#sec-u-26a4fddd7c">E08-24: Polarity and Gain Jumps Under Matched Permutations: Hand Calculation and Two-Chunk Audio</a></li>
 <li>&nbsp;&nbsp;<a href="08_speech-separation.html#sec-u-0756a463e7">E08-25: Convolutive-Invariant CI-SDR and Filter Overfitting Boundaries</a></li>
 <li>&nbsp;&nbsp;<a href="08_speech-separation.html#sec-u-77c63646fe">E08-26: Narrowband–Crossband Streaming Compute Budget and Single-Speaker Bypass Gating</a></li>
+<li>&nbsp;&nbsp;<a href="08_speech-separation.html#sec-u-a3d62e0a1d">E08-27: AuxIVA Iterative Source Steering (ISS) Inversion-Free Rank-1 Update vs. Iterative Projection (IP)</a></li>
 </ul></nav></details>
 <blockquote>
 <p>This chapter is Chapter 8 of the main text; the book comprises 16 chapters across the core chapters and extended topics (Chapters 0–15, where Chapter 0 covers mathematical foundations and Chapters 12–15 are four extended special topics), plus Appendices A and B. This chapter can be read independently; see the navigation links below for the preceding and following chapters.</p>
@@ -763,7 +765,7 @@ v_{nk}&=\begin{cases}
 \mathbf W_f&\leftarrow\mathbf W_f-\vec v_k\vec w_{kf}^H,\qquad
 \vec y_f(t)\leftarrow\vec y_f(t)-\vec v_k\,y_{kf}(t).
 \end{aligned}\tag{8-9}$$</p>
-<p>Verify each piece of Eq. (8-9): for all $n\ne k$, the updated $n$-th output $y_{nf}^{\mathrm{new}}(t)=y_{nf}(t)-v_{nk}y_{kf}(t)$ satisfies strict weighted orthogonality $\sum_t r_n(t)^{-1}y_{nf}^{\mathrm{new}}(t)y_{kf}^*(t)=0$; for $n=k$, the updated row $(\vec w_{kf}^{\mathrm{new}})^H=(1-v_{kk})\vec w_{kf}^H$ satisfies exact normalization $(\vec w_{kf}^{\mathrm{new}})^H\mathbf V_{kf}\vec w_{kf}^{\mathrm{new}}=1$; every step preserves strict monotonic non-increasing descent of the AuxIVA auxiliary objective with zero step-size tuning while lowering full-sweep per-bin complexity across $k=1,\dots,M$ and $T$ frames from IP's $O(TM^3+M^4)$ to $O(TM^2+M^3)$ (a factor-$M$ reduction on both frame accumulation and matrix algebra; both <code>pyroomacoustics</code> and <code>ssspy</code> expose <code>IP</code> and <code>ISS</code> branches for AuxIVA).</p>
+<p>Verify each piece of Eq. (8-9): for all $n\ne k$, the updated $n$-th output $y_{nf}^{\mathrm{new}}(t)=y_{nf}(t)-v_{nk}y_{kf}(t)$ satisfies strict weighted orthogonality $\sum_t r_n(t)^{-1}y_{nf}^{\mathrm{new}}(t)y_{kf}^*(t)=0$; for $n=k$, the updated row $(\vec w_{kf}^{\mathrm{new}})^H=(1-v_{kk})\vec w_{kf}^H$ satisfies exact normalization $(\vec w_{kf}^{\mathrm{new}})^H\mathbf V_{kf}\vec w_{kf}^{\mathrm{new}}=1$; every step preserves strict monotonic non-increasing descent of the AuxIVA auxiliary objective with zero step-size tuning while lowering full-sweep per-bin complexity across $k=1,\dots,M$ and $T$ frames from IP's $O(TM^3+M^4)$ to $O(TM^2+M^3)$ (a factor-$M$ reduction on both frame accumulation and matrix algebra; both <code>pyroomacoustics</code> and <code>ssspy</code> expose <code>IP</code> and <code>ISS</code> branches for AuxIVA, and <a href="#e08-27">Exercise E08-27</a> compares IP and ISS step by step).</p>
 <p>Replacing batch time averaging with frame-by-frame exponential-forgetting statistics ($\alpha\in(0,1)$) updated as each new complex frame $\vec x_f(t)$ arrives—paired with lightweight $O(M^2)$ ISS rank-one updates on $\mathbf W_f$ and frame-wise or recursive projection back—yields the low-latency streaming BSS framework <strong>Online AuxIVA-ISS</strong> (<a href="https://doi.org/10.23919/APSIPAASC55919.2022.9979837">Nakashima &amp; Ono, APSIPA ASC 2022</a>). Unlike offline batch processing, the online variant tracks slowly moving talkers, while similarly requiring safeguards against variance jitter from overly small $\alpha$ and covariance degeneracy during all-speaker silences.</p>
 <span id="sec-u-a1ce2603df" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-52ebb840bc">Power Model and Alternating Updates of ILRMA</h3>
 <p><strong>ILRMA (Independent Low-Rank Matrix Analysis)</strong>. Whereas AuxIVA asks only that a speaker's energy across frequencies rise and fall together, signals with fine harmonic or resonant structure—such as tenor harmonics or sustained musical instruments—benefit from a stronger spectral prior: ILRMA models the time-frequency power spectrogram of each independent source $n$ via a rank-$K$ nonnegative matrix factorization (NMF) as a sum of products of $K$ nonnegative spectral bases and temporal activations, optimizing them jointly with the unmixing matrices $\mathbf W_f$ (Exercise <a href="#e08-08">E08-08</a> works through a $2\times 2$ hand calculation illustrating the physical meaning of spectral bases and activations).</p>
@@ -1355,6 +1357,14 @@ C_{ij}&=\frac{|\vec u_i^\top \vec v_j|}
 \qquad R=\frac{f_s}{H}.
 \end{aligned}\tag{8-32}$$</p>
 <p>At $f_s=16\ \mathrm{kHz}$, $H=128$ ($8\ \mathrm{ms}$, $R=125\ \mathrm{frames/s}$), $B=4$, $D=64$, and $K_{\mathrm{proj}}=4$, stepping across all $F=256$ narrowband bins already burns $\approx 2.10\ \mathrm{GMAC/s}$; lightweight edge designs (such as <strong>Mel-McNet</strong>, Yang, Yang &amp; Li, Interspeech 2025, which compresses linear STFT bins onto Mel subbands before the McNet backbone to cut compute by roughly $60\%$ relative to full-bin linear McNet) compress dense high-frequency linear bins onto $F_{\mathrm{mel}}=64$ Mel or nonuniform subbands before cross-band/temporal modeling, cutting backbone MACs by an exact factor of $4\times$ down to $\approx 0.524\ \mathrm{GMAC/s}$ (see <a href="#e08-26">Exercise E08-26</a> for full MAC accounting).</p>
+<p><strong>Recursive Separation for Unknown Speaker Counts: OR-PIT vs. RSAN</strong>: The deep separators above are predominantly trained with fixed-$N$ <code>uPIT</code> output heads, while streaming <code>CSS</code> fixes $2$ slots per short chunk guarded by single-speaker bypass. When the active speaker count $N$ in an utterance is unknown in advance and may exceed any fixed head count, two canonical <strong>recursive one-by-one separation</strong> architectures emerge:</p>
+<ul>
+<li><strong>One-and-Rest PIT (OR-PIT; Takahashi et al., Interspeech 2019)</strong>: trains a binary separator that splits mixture $y$ into one foreground speaker $\hat s_1$ plus the residual $(N-1)$-speaker mixture $\hat r_1$, iterating recursively on $\hat r_k$ until a binary stopping classifier or residual-energy gate halts recursion. This design halts after one pass on solo speech ($N=1$)—avoiding fixed-slot over-splitting—and scales structurally beyond training speaker counts, at the cost of sequential error accumulation across residual steps $\hat r_k$ and inference latency growing linearly with $N$.</li>
+<li><strong>Recurrent Selective Attention Network (RSAN; Kinoshita et al., ICASSP 2018)</strong>: operates in the STFT time–frequency domain by maintaining an explicit nonnegative <strong>residual mask budget</strong> $R^{(k)}$ initialized at $R^{(0)}=\mathbf 1$, emitting one speaker mask $M^{(k)}$ per iteration and updating the remaining budget via</li>
+</ul>
+<p>$$R^{(k)}=\max\!\bigl(0,\;R^{(k-1)}-M^{(k-1)}\bigr)$$</p>
+<p>(subtracting previously assigned masks for $k\ge 1$) until remaining mask mass drops below a stopping threshold $\tau$. Unlike OR-PIT, RSAN explicitly enforces mixture-mask conservation inside the mask domain without feeding separated time-domain residuals back through a front-end encoder.</p>
+<p>In real multi-party meetings, utterance-level recursive OR-PIT and RSAN still face sequential latency growth, stopping-threshold fragility under noise and reverberation, and cross-chunk permutation stitching across long streams; production conference pipelines therefore typically prefer either <strong>two-slot streaming CSS</strong> (exploiting the low odds of $\ge 3$ simultaneous speakers inside $1.2$–$2.4\ \mathrm{s}$ chunks alongside single-speaker bypass) or the <strong>diarization-guided front ends</strong> developed in <a href="15_target-extraction-diarization.html">Chapter 15</a> (such as <code>TS-VAD</code> + <code>WPE</code> + <code>GSS</code>, where explicit diarization supplies both speaker count and temporal activity).</p>
 <span id="sec-u-110769710d" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-e4d71adf7d">Mixture Consistency and STFT Consistency</h3>
 <p>When a deep network directly predicts complex masks or separated complex spectrograms $\widehat y_1,\dots,\widehat y_N$, its raw outputs routinely violate two fundamental physical self-consistency laws: first, the $N$ estimated spectra fail to sum back to the mixture spectrum $x$ at the reference microphone; second, an arbitrary complex matrix emitted by a neural network need not be the valid STFT of <em>any</em> real-valued time-domain waveform. <strong>Mixture consistency</strong> and <strong>STFT consistency</strong> append differentiable physical projection layers onto network outputs (keep in mind they enforce physical self-consistency only and cannot create source independence on their own).</p>
 <p>Consider first <strong>weighted mixture consistency projection</strong> at an individual TF bin. Suppose $N$ estimates $\widehat y_n$ and mixture observation $x$ are aligned to the exact same reference microphone scale (if ambient noise is non-negligible, allocate a dedicated $(N+1)$-th noise slot rather than forcing clean speaker slots to swallow background noise). Given positive uncertainty weights $v_n>0$ (with variance dimensions—larger $v_n$ indicates higher uncertainty and absorbs a larger share of the residual), solve the minimum weighted squared adjustment subject to summing to $x$:</p>
@@ -1595,7 +1605,7 @@ Y&=P_{\mathcal S}(Y).
 <li><strong>Relative density and scale invariance</strong>: The updated matrix has determinant $3/4$ and inverse $\operatorname{diag}(2/3,2)$. Dropping shared spherical constants, density factors $(\det\mathbf B)^{-1}q_t^{-M}$ along ${\vec z}_1,{\vec z}_2$ are $(4/3)(2/3)^{-2}=3$ and $(4/3)\times2^{-2}=1/3$. Replacing ${\mathbf B}$ by $c{\mathbf B}$ ($c>0$) scales $\det(c{\mathbf B})=c^M\det {\mathbf B}$ and $q_t\to q_t/c$, so $c^{-M}$ and $(1/c)^{-M}$ cancel identically. Conversely, scaling two raw observations from $[\vec e_1,\vec e_2]$ to $[\vec e_1,3\vec e_2]$ leaves unit-sphere directions and relative cACG densities completely unchanged, yet jumps the downstream unnormalized raw power SCM from $\operatorname{diag}(1/2,1/2)$ to $\operatorname{diag}(1/2,9/2)$—front-end cACGMM flattens radial loudness swings while back-end SCMs restore true physical power; never conflate the two.</li>
 <li><strong>Collinear degeneracy and shrinkage toward $\mathbf I_M$</strong>: Running a second fixed-point step at fixed $\gamma_1=3/4,\gamma_2=1/4$ sharpens ${\mathbf B}$ to $\operatorname{diag}(1.8,0.2)$; in the extreme where both frames equal $[1,0]^\top$, a single step produces singular $\operatorname{diag}(2,0)$ (trace $2$, yet non-invertible). Practical and teaching pipelines therefore apply $(1-\delta){\mathbf B}+\delta{\mathbf I}_M$ shrinkage after trace normalization (e.g., $\delta=0.02$ floors eigenvalues at $1.98,0.02$) and reset components whose responsibility sum falls too low (see <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/enhancement_structure_exercises.py"><code>enhancement_structure_exercises.py</code></a> and <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/tests/test_codes_enhancement_structure.py"><code>test_codes_enhancement_structure.py</code></a>).</li>
 </ol>
-<p>Exercises E08-10–E08-26 below run end-to-end via <code>.venv/bin/python -m codes.chapters.ch08.chapter08_experiments</code>, coordinated by <code>run_experiments()</code> in <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch08/chapter08_experiments.py"><code>chapter08_experiments.py</code></a>. Exercises referencing published audio recompute integer-sample metrics directly from the WAV files on disk.</p>
+<p>Exercises E08-10–E08-27 below run end-to-end via <code>.venv/bin/python -m codes.chapters.ch08.chapter08_experiments</code>, coordinated by <code>run_experiments()</code> in <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch08/chapter08_experiments.py"><code>chapter08_experiments.py</code></a>. Exercises referencing published audio recompute integer-sample metrics directly from the WAV files on disk.</p>
 <p><a id="e08-10"></a></p>
 <span id="sec-u-a88a31a5cb" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-485e483a5c">E08-10: Why Must Complex IP Write Back Conjugate Transposes and Update Row by Row?</h3>
 <p>Start from ${\mathbf W}_0={\mathbf I}_2$ and, to isolate algebraic coupling clearly, let both rows share the same Hermitian positive-definite weighted matrix</p>
@@ -2225,6 +2235,78 @@ p&=\arg\max_{i\in\{1,2\}}E_i,\qquad
 <li><strong>Why an almost $+20\ \mathrm{dB}$ SI-SDR still harms recognition accuracy</strong>: Against full solo ground truth $\vec{s}=\vec{s}_{\mathrm{v}}+\vec{s}_{\mathrm{f}}$ ($\vec{s}_{\mathrm{v}}^\top\vec{s}_{\mathrm{f}}=0$), dominant slot $\hat{\vec{s}}_1=\vec{s}_{\mathrm{v}}$ has optimal scalar projection $\alpha_\star=99/100=0.99$, target projection energy $0.99^2\times 100=98.01$, and orthogonal error $\|\vec{s}_{\mathrm{v}}-0.99\vec{s}\|_2^2=0.01^2\times 99+0.99^2\times 1=0.99$, yielding an exact ratio of $98.01/0.99=99$. Dominant-slot <code>SI-SDR</code> therefore scores $10\log_{10}(99)\approx +19.95635\ \mathrm{dB}$; yet discarding the $1\%$ energy shifted to Slot 2 strips the word-final unvoiced fricative <code>/s/</code> (plural or possessive marker), corrupting $1$ of the $4$ words and jumping WER from $0\%$ to $1/4=25\%$.</li>
 </ol>
 <p>Evaluating Eq. (8-41): $E_1=99, E_2=1$ ($p=1$) gives $\eta_{\mathrm{dB}}=10\log_{10}(1/99)\approx -19.95635\ \mathrm{dB}\le -18.0\ \mathrm{dB}$, triggering solo-speaker bypass merging to output $\hat{\vec{s}}_{\mathrm{out},1}=\hat{\vec{s}}_1+\hat{\vec{s}}_2=\vec{s}$ and $\hat{\vec{s}}_{\mathrm{out},2}=\vec{0}$, restoring the fricative losslessly with zero error and $0\%$ WER (symmetrically routing to $\hat{\vec{s}}_{\mathrm{out},2}=\vec{s}$ when $p=2$). Conversely, on a genuine two-speaker overlap with energies $99$ and $9.9$, $\eta_{\mathrm{dB}}=10\log_{10}(9.9/99)=-10.0\ \mathrm{dB}>-18.0\ \mathrm{dB}$ keeps the gate open, passing $(\hat{\vec{s}}_1,\hat{\vec{s}}_2)$ untouched without dropping Speaker 2 (code verified in <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch08/core/separation_metrics_streaming.py"><code>separation_metrics_streaming.py</code></a> and <code>E08-26</code>).</p>
+<p><a id="e08-27"></a></p>
+<span id="sec-u-af1ec9689a" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-a3d62e0a1d">E08-27: AuxIVA Iterative Source Steering (ISS) Inversion-Free Rank-1 Update vs. Iterative Projection (IP)</h3>
+<p>Consider single-bin two-channel AuxIVA auxiliary-function minimization from §8.3. Given two Hermitian positive-definite weighted covariances and initial demixing matrix (following Eq. (8-6), row $n$ of $\mathbf W$ stores $\vec w_n^H$):</p>
+<p>$$\mathbf V_1=\begin{bmatrix}4&4\mathrm j\\-4\mathrm j&20\end{bmatrix},\qquad
+\mathbf V_2=\begin{bmatrix}20&4\mathrm j\\-4\mathrm j&4\end{bmatrix},\qquad
+\mathbf W^{(0)}=\mathbf I_2.$$</p>
+<p>Define the fixed-covariance AuxIVA auxiliary cost:</p>
+<p>$$Q(\mathbf W)=\sum_{n=1}^2 \vec w_n^H\mathbf V_n\vec w_n-2\ln\lvert\det\mathbf W\rvert.$$</p>
+<p>Compute: (1) the initial cost $Q(\mathbf W^{(0)})$; (2) one full sweep of <strong>Iterative Projection (IP, Eq. (8-8))</strong> versus one full sweep of <strong>inversion-free Iterative Source Steering (ISS, Eq. (8-9) rank-1 update $\mathbf W\leftarrow\mathbf W-\vec v_k\vec w_k^H$)</strong>, reporting intermediate vectors, updated matrices, and costs to verify $Q(\mathbf W^{(0)})>Q(\mathbf W_{\mathrm{ISS}}^{(1)})$; (3) $K=5$ sweeps of both IP and ISS, verifying monotonic descent to the exact same stationary minimum (cost gap $\lt 10^{-10}$) and contrasting their matrix-algebra complexities.</p>
+<p><strong>Solution</strong>:</p>
+<ol>
+<li><strong>Initial cost</strong>: With $\vec w_1^{(0)}=[1,0]^\top$, $\vec w_2^{(0)}=[0,1]^\top$, and $\det\mathbf W^{(0)}=1$, we have $\vec w_1^{(0)H}\mathbf V_1\vec w_1^{(0)}=4$ and $\vec w_2^{(0)H}\mathbf V_2\vec w_2^{(0)}=4$, giving $Q(\mathbf W^{(0)})=4+4-2\ln 1=8$.</li>
+<li>
+<p><strong>Sweep 1 of IP (requires two $2\times 2$ linear solves)</strong>:
+   - Row $1$: solving $\mathbf W^{(0)}\mathbf V_1\vec u_1=\vec e_1$ ($\det\mathbf V_1=64$) yields $\vec u_1=[5/16,\;\mathrm j/16]^\top$ with $\vec u_1^H\mathbf V_1\vec u_1=5/16$; writing back the normalized conjugate transpose gives row $1$ as $[\sqrt{5}/4,\;-\mathrm j/(4\sqrt{5})]$ and drops cost to $5+\ln(16/5)\approx 6.163151$.
+   - Row $2$: immediately using updated $\mathbf W$ to solve $(\mathbf W\mathbf V_2)\vec u_2=\vec e_2$ gives $\vec u_2=[-\mathrm j/20,\;3/10]^\top$ with $\vec u_2^H\mathbf V_2\vec u_2=29/100$, producing Sweep 1 matrix and cost:</p>
+<p>$$\mathbf W_{\mathrm{IP}}^{(1)}=\begin{bmatrix}\dfrac{\sqrt{5}}{4}&-\dfrac{\mathrm j}{4\sqrt{5}}\\\dfrac{\mathrm j}{2\sqrt{29}}&\dfrac{3}{\sqrt{29}}\end{bmatrix},\qquad
+     Q(\mathbf W_{\mathrm{IP}}^{(1)})=2+\ln\frac{320}{29}\approx 4.401025.$$</p>
+</li>
+<li>
+<p><strong>Sweep 1 of ISS (zero matrix inversions; pure inner products and rank-1 outer products)</strong>: Applying $v_{nk}=\frac{\vec w_n^H\mathbf V_n\vec w_k}{\vec w_k^H\mathbf V_n\vec w_k}$ ($n\ne k$) and $v_{kk}=1-(\vec w_k^H\mathbf V_k\vec w_k)^{-1/2}$ sequentially:
+   - Step $k=1$ (along $\vec w_1^{(0)}=[1,0]^\top$): $v_{11}=1-4^{-1/2}=1/2$ and $v_{21}=(-4\mathrm j)/20=-\mathrm j/5$; rank-1 update $\mathbf W^{(1/2)}_{\mathrm{ISS}}=\mathbf W^{(0)}-\vec v_1\vec w_1^{(0)H}=\begin{bmatrix}1/2&0\\\mathrm j/5&1\end{bmatrix}$ shrinks row $2$'s quadratic form to $16/5$ with $\det=1/2$, dropping cost immediately from $8$ to $1+16/5-2\ln(1/2)=21/5+2\ln 2\approx 5.586294$.
+   - Step $k=2$ (along $\vec w_2^{(1/2)}=[-\mathrm j/5,\;1]^\top$): $v_{22}=1-(16/5)^{-1/2}=1-\sqrt{5}/4\approx 0.440983$; numerator $(\vec w_1^{(1/2)})^H\mathbf V_1\vec w_2^{(1/2)}=8\mathrm j/5$ and denominator $(\vec w_2^{(1/2)})^H\mathbf V_1\vec w_2^{(1/2)}=464/25$ yield $v_{12}=\frac{5}{58}\mathrm j\approx 0.086207\,\mathrm j$. Updating $\mathbf W_{\mathrm{ISS}}^{(1)}=\mathbf W^{(1/2)}_{\mathrm{ISS}}-\vec v_2(\vec w_2^{(1/2)})^H$ gives:</p>
+<p>$$\mathbf W_{\mathrm{ISS}}^{(1)}=\begin{bmatrix}\dfrac{15}{29}&-\dfrac{5}{58}\mathrm j\\\dfrac{\mathrm j}{4\sqrt{5}}&\dfrac{\sqrt{5}}{4}\end{bmatrix},\qquad
+     Q(\mathbf W_{\mathrm{ISS}}^{(1)})=\frac{54}{29}+\ln\frac{64}{5}\approx 4.411514\lt 8.$$</p>
+</li>
+<li>
+<p><strong>Convergence after $K=5$ sweeps and complexity contrast</strong>: Generalized eigenvalues of $\mathbf V_1\vec u=\mu\mathbf V_2\vec u$ are $\mu_{1,2}=3\mp 2\sqrt{2}$, yielding exact closed-form minimum $Q^\star=2+\ln\bigl(64(3-2\sqrt{2})\bigr)\approx 4.396135909321$. Cost trajectories across $5$ sweeps:</p>
+</li>
+</ol>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable data table"><table>
+<thead>
+<tr>
+<th scope="col" style="text-align: right;">Sweep $k$</th>
+<th scope="col" style="text-align: right;">IP Cost $Q(\mathbf W_{\mathrm{IP}}^{(k)})$</th>
+<th scope="col" style="text-align: right;">ISS Cost $Q(\mathbf W_{\mathrm{ISS}}^{(k)})$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">$0$</td>
+<td style="text-align: right;">$8.000000000000$</td>
+<td style="text-align: right;">$8.000000000000$</td>
+</tr>
+<tr>
+<td style="text-align: right;">$1$</td>
+<td style="text-align: right;">$4.401025165807$</td>
+<td style="text-align: right;">$4.411514136443$</td>
+</tr>
+<tr>
+<td style="text-align: right;">$2$</td>
+<td style="text-align: right;">$4.396140157111$</td>
+<td style="text-align: right;">$4.396140166916$</td>
+</tr>
+<tr>
+<td style="text-align: right;">$3$</td>
+<td style="text-align: right;">$4.396135913002$</td>
+<td style="text-align: right;">$4.396135913002$</td>
+</tr>
+<tr>
+<td style="text-align: right;">$4$</td>
+<td style="text-align: right;">$4.396135909324$</td>
+<td style="text-align: right;">$4.396135909324$</td>
+</tr>
+<tr>
+<td style="text-align: right;">$5$</td>
+<td style="text-align: right;">$4.396135909321$</td>
+<td style="text-align: right;">$4.396135909321$</td>
+</tr>
+</tbody>
+</table></div>
+<p>By sweep $5$, both methods reach within $\lt 10^{-14}$ of $Q^\star$ with inter-method gap $\approx 8.88\times 10^{-16}\ll 10^{-10}$, jointly congruence-diagonalizing $(\mathbf V_1,\mathbf V_2)$ to $\operatorname{diag}(1,\;3+2\sqrt{2})$ and $\operatorname{diag}(3+2\sqrt{2},\;1)$. ISS thus preserves step-size-free monotonic AuxIVA descent while completely eliminating $O(M^3)$ matrix inversions (cutting matrix updates to $O(M^2)$ per step and full $T$-frame single-bin sweeps from IP's $O(TM^3+M^4)$ to $O(TM^2+M^3)$; verified in <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch08/chapter08_experiments.py"><code>chapter08_experiments.py</code></a>, <code>E08-27</code>).</p>
 <hr />
 <blockquote>
 <p>📄 Page Info: 4 figures | <a href="index.html">Back to Overview</a></p>

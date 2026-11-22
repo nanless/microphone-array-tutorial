@@ -21,7 +21,7 @@
 
 2026-09-29 第 4 章把 GCC 向量 MLP、共素阵 GCC-PHAT 图 CNN 与 STFT 相位图 CNN 分作三条原理索引。只核论文方法；未核到与论文逐项对应、许可明确且可再分发的作者实现，不能把相关但不同年份的代码当作该论文整链复现。图 11/14/28 的图文口径已按当前绘图源核对。
 
-第9章的[当前接口报告](../ch09/reports/tracking_upstream_interfaces_current.json)与[当前原方法合同](../ch09/reports/upstream_tracking_contracts_current.json)分开记录ODAS原C、SAF原step计数替身与FilterPy/JPDA原方法。两份旧历史报告及来源锁保持原执行条件；sPIT仅为原理索引。22道代码题、图56和图72分别按解析、实际PCM与接口合同核查。新增两个限定机制行是单槽生命周期和一次静态vMF条件化；IMM原行增加完整标量教学递推，不把三道练习直接计作三个新算法。
+第9章的[当前接口报告](../ch09/reports/tracking_upstream_interfaces_current.json)与[当前原方法合同](../ch09/reports/upstream_tracking_contracts_current.json)分开记录ODAS原C、SAF原step计数替身与FilterPy/JPDA原方法。两份旧历史报告及来源锁保持原执行条件；sPIT仅为原理索引。23道代码题、图56和图72分别按解析、实际PCM与接口合同核查。新增两个限定机制行是单槽生命周期和一次静态vMF条件化；IMM原行增加完整标量教学递推，不把三道练习直接计作三个新算法。
 
 2026-10-04 第5章复核另登记逐通道已知预滤波、原相位连续化函数及在线逐通道掩码原理三项及PAN原理索引；E05-15的三份相位控制不是新GEV算法，不另计算法行。当前限定执行见三份新的current报告，旧三报告保持真实原字节与747ec历史工具身份。
 
@@ -469,21 +469,21 @@
 
 ## 章节代码练习与音频映射
 
-全书共 352 道代码练习（`E00-01`～`E17-13`）与 87 张编号图（含第 0 章图 84～87），练习使用稳定 ID。下表只登记学习入口，不改变上面的 388 行算法统计（其中第 0 章 `codes/chapters/ch00/core/chapter00_math.py` 与 `chapter00_exercises.py` 承载全书共用的 16 道数学与信号分析预备练习，不重复计作新的阵列估计算法行）。补充的空间精算、增强步骤、时间状态模块分别提供 3/4/4 道题，双耳波束另有 3 道题。三个原有 `exercises_` 模块各自提供 `run_exercises()`，分别有 25/22/25 道题；AEC 边界小例另有 1 道，进阶 AEC 手算另有 3 道；E03-07、E04-08、E09-06 与 E10-13 由独立实验入口提供。E04-08 的 200 次独立双源抽样只说明固定模型中的分辨事件频率和 Wilson 区间。E04-04 是固定矩阵的前向空间平滑演示，不扩称为支持任意阵列的公共估计接口。
+全书共 360 道代码练习（`E00-01`～`E17-13`）与 87 张编号图（含第 0 章图 84～87），练习使用稳定 ID。下表只登记学习入口，不改变上面的 388 行算法统计（其中第 0 章 `codes/chapters/ch00/core/chapter00_math.py` 与 `chapter00_exercises.py` 承载全书共用的 16 道数学与信号分析预备练习，不重复计作新的阵列估计算法行）。补充的空间精算、增强步骤、时间状态模块分别提供 3/4/4 道题，双耳波束另有 3 道题。三个原有 `exercises_` 模块各自提供 `run_exercises()`，分别有 25/22/25 道题；AEC 边界小例另有 1 道，进阶 AEC 手算另有 3 道；E03-07、E04-08、E09-06 与 E10-13 由独立实验入口提供。E04-08 的 200 次独立双源抽样只说明固定模型中的分辨事件频率和 Wilson 区间。E04-04 是固定矩阵的前向空间平滑演示，不扩称为支持任意阵列的公共估计接口。
 
 | 章节与稳定 ID | 练习入口 | 回归测试 |
 |---|---|---|
 | 第 0 章：E00-01～16（16题） | [数学基础逐步复算](chapter00_exercises.py)、[十六道数学基础数值核](core/chapter00_math.py)、[图84～87生成脚本](../../../scripts/make_math_figures.py) | [独立数学基础测试](../../../tests/test_codes_ch00_math_foundations.py)、[发布与图84～87溯源测试](../../../tests/test_ch00_math_publication.py) |
 | 扩展专题Ⅰ：E12-01～18（18题） | [成像逐层复算](../ch12/chapter12_exercises.py)、[五份快拍音频](../ch12/imaging_audio/MANIFEST.json)、[原源合同](../ch12/reports/upstream_imaging_contracts_current.json) | [独立教学/PCM测试](../../../tests/test_codes_imaging.py)、[原源和目标测试](../../../tests/test_codes_imaging_contracts.py) |
-| 扩展专题Ⅱ：E13-01～20（20题） | [分布式逐步复算](../ch13/chapter13_exercises.py)、[17份传输控制音频](../ch13/distributed_audio/MANIFEST.json)、[固定原源合同](../ch13/reports/upstream_distributed_contracts_current.json) | [独立数学/状态测试](../../../tests/test_codes_distributed.py)、[PCM资产测试](../../../tests/test_codes_distributed_audio.py)、[上游合同测试](../../../tests/test_codes_distributed_contracts.py) |
-| 扩展专题Ⅲ：E14-01～15（15题） | [可穿戴与空间阵列逐步复算](../ch14/chapter14_exercises.py)、[六份可穿戴控制音频](../ch14/wearable_audio/MANIFEST.json) | [独立手算与PCM测试](../../../tests/test_codes_ch14.py)、[发布与图表溯源测试](../../../tests/test_ch14_wearable_publication.py) |
-| 扩展专题Ⅳ：E15-01～14（14题） | [条件目标提取与日志逐步复算](../ch15/chapter15_exercises.py)、[六份近场距离气泡音频](../ch15/tse_audio/MANIFEST.json) | [独立手算与PCM测试](../../../tests/test_codes_ch15.py)、[发布与图表溯源测试](../../../tests/test_ch15_tse_publication.py) |
+| 扩展专题Ⅱ：E13-01～21（21题） | [分布式逐步复算](../ch13/chapter13_exercises.py)、[17份传输控制音频](../ch13/distributed_audio/MANIFEST.json)、[固定原源合同](../ch13/reports/upstream_distributed_contracts_current.json) | [独立数学/状态测试](../../../tests/test_codes_distributed.py)、[PCM资产测试](../../../tests/test_codes_distributed_audio.py)、[上游合同测试](../../../tests/test_codes_distributed_contracts.py) |
+| 扩展专题Ⅲ：E14-01～16（16题） | [可穿戴与空间阵列逐步复算](../ch14/chapter14_exercises.py)、[六份可穿戴控制音频](../ch14/wearable_audio/MANIFEST.json) | [独立手算与PCM测试](../../../tests/test_codes_ch14.py)、[发布与图表溯源测试](../../../tests/test_ch14_wearable_publication.py) |
+| 扩展专题Ⅳ：E15-01～15（15题） | [条件目标提取与日志逐步复算](../ch15/chapter15_exercises.py)、[六份近场距离气泡音频](../ch15/tse_audio/MANIFEST.json) | [独立手算与PCM测试](../../../tests/test_codes_ch15.py)、[发布与图表溯源测试](../../../tests/test_ch15_tse_publication.py) |
 | 第6章：E06-21～25（5题） | [APA四个完整缩例](../ch06/aec_affine_projection_demo.py)（E06-21～24）、[有色参考训练/留出](../ch06/examples/generate_apa_audio.py)（E06-25） | [状态/手算测试](../../../tests/test_codes_aec_affine_projection.py)、[PCM实验测试](../../../tests/test_codes_aec_apa_audio.py) |
-| 第6章：E06-26～30（5题） | [增益与尾声逐样本控制](../ch06/core/reference_timing.py)、[章节入口](../ch06/chapter06_experiments.py)（E06-26～27、29～30）、[六份PCM生成/只读核验](../ch06/examples/generate_reference_audio.py)（E06-28） | [独立手算边界](../../../tests/test_codes_ch06_reference_timing.py)、[完整PCM回放](../../../tests/test_codes_ch06_reference_audio.py)、[发布与整数评分](../../../tests/test_ch06_reference_publication.py) |
+| 第6章：E06-26～32（7题） | [增益与尾声逐样本控制](../ch06/core/reference_timing.py)、[章节入口](../ch06/chapter06_experiments.py)（E06-26～27、29～32）、[六份PCM生成/只读核验](../ch06/examples/generate_reference_audio.py)（E06-28） | [独立手算边界](../../../tests/test_codes_ch06_reference_timing.py)、[完整PCM回放](../../../tests/test_codes_ch06_reference_audio.py)、[发布与整数评分](../../../tests/test_ch06_reference_publication.py) |
 | 第 6 章：E06-12～20（9题） | [AEC 状态、数值与指标实验](../ch06/chapter06_experiments.py) | [独立测试](../../../tests/test_codes_chapter06_experiments.py)、[数值边界](../../../tests/test_codes_aec_numerical_boundaries.py) |
 | 第 5 章：E05-05～17（13题） | [约束、谱估计与状态实验](../ch05/chapter05_experiments.py) | [独立测试](../../../tests/test_codes_chapter05_experiments.py)、[GSC状态测试](../../../tests/test_codes_gsc.py)、[相位/掩码独立模型](../../../tests/test_codes_ch05_phase_mask_models.py)、[三PCM全回放](../../../tests/test_codes_ch05_phase_audio.py) |
 | 第 5 章：E05-18～20（3题） | [双耳波束逐步演示与四份PCM](../ch05/examples/binaural_beamforming_demo.py) | [双耳波束独立测试](../../../tests/test_codes_binaural_beamforming.py) |
-| 第 4 章：E04-12～23（12题） | [定位逐步实验](../ch04/chapter04_experiments.py) | [原逐步实验测试](../../../tests/test_codes_chapter04_experiments.py)、[直达路径与CTF独立测试](../../../tests/test_codes_ch04_direct_path.py)、[相干反射PCM测试](../../../tests/test_codes_ch04_reflection_audio.py) |
+| 第 4 章：E04-12～24（13题） | [定位逐步实验](../ch04/chapter04_experiments.py) | [原逐步实验测试](../../../tests/test_codes_chapter04_experiments.py)、[直达路径与CTF独立测试](../../../tests/test_codes_ch04_direct_path.py)、[相干反射PCM测试](../../../tests/test_codes_ch04_reflection_audio.py) |
 | 第 3 章：E03-08～18（11题） | [几何与校准逐步实验](../ch03/chapter03_experiments.py)、[已知方向唯一逆核](../ch03/core/baseline_calibration.py)、[六PCM训练/留出清单](../ch03/baseline_audio/MANIFEST.json)、[当前原方法合同](../ch03/reports/upstream_coarray_contracts.json) | [独立题目测试](../../../tests/test_codes_chapter03_experiments.py)、[独立逆核测试](../../../tests/test_codes_ch03_baseline_calibration.py)、[完整音频回放](../../../tests/test_codes_baseline_audio.py)、[来源与写入合同](../../../tests/test_codes_ch03_upstream_coarray.py) |
 | 第 2 章：E02-09～20（12题） | [声学模型逐步实验](../ch02/chapter02_experiments.py) | [独立测试](../../../tests/test_codes_chapter02_experiments.py) |
 | 第 1 章：E01-04～11（8题） | [基础逐步实验](../ch01/chapter01_experiments.py) | [独立测试](../../../tests/test_codes_chapter01_experiments.py) |
@@ -493,10 +493,10 @@
 | 第 6～9 章：`E06-01`～`E06-10`、`E07-01`～`E07-05`、`E08-01`～`E08-06`、`E09-01`～`E09-06`（27 题） | [exercises_enhancement.py](cross_chapter/exercises_enhancement.py)（22 题）；[AEC 边界小例](../ch06/aec_algorithm_minicases.py)（`E06-07`）；[AEC 三个进阶手算](../ch06/aec_advanced_exercises.py)（`E06-08`～`E06-10`）；[交叉追踪 E09-06](../ch09/tracking_crossing_dropout_demo.py) | [test_codes_exercises_enhancement.py](../../../tests/test_codes_exercises_enhancement.py)、[test_codes_aec_minicases.py](../../../tests/test_codes_aec_minicases.py)、[test_codes_aec_advanced_exercises.py](../../../tests/test_codes_aec_advanced_exercises.py)、[test_codes_tracking_crossing_dropout.py](../../../tests/test_codes_tracking_crossing_dropout.py) |
 | 第 10～11 章、附录 A/B：`E10-01`～`E10-14`、`E11-01`～`E11-07`、`E16-01`～`E16-04`、`E17-01`（26 题） | [exercises_engineering.py](cross_chapter/exercises_engineering.py)（25 题）；[谱减 E10-13](../ch10/spectral_subtraction_demo.py)（1 题） | [test_codes_exercises_engineering.py](../../../tests/test_codes_exercises_engineering.py)、[test_codes_spectral_subtraction.py](../../../tests/test_codes_spectral_subtraction.py) |
 | E02-07、E04-10、E05-03（3题） | [空间精算](cross_chapter/spatial_precision_exercises.py) | [独立测试](../../../tests/test_codes_spatial_precision.py) |
-| E09-10～22（13题） | [第9章逐步计算](../ch09/chapter09_experiments.py) | [独立解析测试](../../../tests/test_codes_chapter09_experiments.py)、[PCM音频](../../../tests/test_codes_tracking_audio.py) |
+| E09-10～23（14题） | [第9章逐步计算](../ch09/chapter09_experiments.py) | [独立解析测试](../../../tests/test_codes_chapter09_experiments.py)、[PCM音频](../../../tests/test_codes_tracking_audio.py) |
 | E10-18～28（11题） | [第10章工程逐步计算](../ch10/chapter10_experiments.py) | [独立解析与PCM测试](../../../tests/test_codes_chapter10_experiments.py)、[数值边界](../../../tests/test_codes_engineering_ch10_boundaries.py) |
 | E11-10～22（13题） | [第11章约束与选型逐步计算](../ch11/chapter11_experiments.py)；[小规模选型与评分模型](../ch11/core/selection.py)；[同一物理阵列选型](../ch11/core/selection_physics.py)；[四路同增益FIR音频](audio/MANIFEST.json)、[独立双场景八WAV](../ch11/scenario_audio/MANIFEST.json)；[原词编辑核合同](../ch11/reports/meeting_kernel_contracts_current.json) | [独立解析、整数边界与PCM测试](../../../tests/test_codes_chapter11_experiments.py)、[完整资产回放](../../../tests/test_codes_selection_audio.py)、[事件与独立物理闭式](../../../tests/test_codes_selection_evidence.py)、[写前模型保护](../../../tests/test_codes_ch11_selection_fixture_guard.py)、[原核身份与执行](../../../tests/test_codes_meeting_kernel_contracts.py) |
-| E08-10～26（17题） | [第8章逐步计算](../ch08/chapter08_experiments.py) | [独立测试](../../../tests/test_codes_chapter08_experiments.py) |
+| E08-10～27（18题） | [第8章逐步计算](../ch08/chapter08_experiments.py) | [独立测试](../../../tests/test_codes_chapter08_experiments.py) |
 | E07-08～21（14题） | [第7章逐步计算](../ch07/chapter07_experiments.py) | [独立测试](../../../tests/test_codes_chapter07_experiments.py) |
 | E06-11、E07-06、E08-07～08（4题） | [增强逐步计算](cross_chapter/enhancement_step_exercises.py) | [独立测试](../../../tests/test_codes_enhancement_steps.py) |
 | E09-07～08、E10-15、E11-08（4题） | [时间与状态](cross_chapter/tracking_time_exercises.py) | [独立测试](../../../tests/test_codes_time_state_exercises.py) |
@@ -541,7 +541,7 @@
 本仓库不提交下载缓存、模型权重或未经授权的第三方语料。109 个自行合成的教学 WAV 按章放在 `codes/chapters/*/audio/`，单一总清单位于 `codes/chapters/ch00/audio/MANIFEST.json`；许可明确的 DEMAND 小型摘录和派生文件位于 `codes/chapters/ch02/real_audio/`，不包含完整下载归档。独立上游工作目录的取得、许可保留与未执行项目按来源状态记录报告。算法、源码或排除范围变化时，同步修改本表、研究说明、来源清单和真实验证记录。
 
 
-真实数据练习 R01 使用 [prepare_real_recordings.py](../ch02/examples/prepare_real_recordings.py) 与 [real_recordings.py](../ch02/core/real_recordings.py)，测试见 [test_codes_real_recordings.py](../../../tests/test_codes_real_recordings.py)。R01 比较 DEMAND 录音的数字域二阶矩、交叉项与零延时均值，不是新增定位或增强算法，亦不计入上述 352 道合成/手算代码题。数据来源和许可另见 [real_audio/](../ch02/real_audio/README.md)。
+真实数据练习 R01 使用 [prepare_real_recordings.py](../ch02/examples/prepare_real_recordings.py) 与 [real_recordings.py](../ch02/core/real_recordings.py)，测试见 [test_codes_real_recordings.py](../../../tests/test_codes_real_recordings.py)。R01 比较 DEMAND 录音的数字域二阶矩、交叉项与零延时均值，不是新增定位或增强算法，亦不计入上述 360 道合成/手算代码题。数据来源和许可另见 [real_audio/](../ch02/real_audio/README.md)。
 
 四组模型与边界练习对应以下独立实现；主音频新增的 4 个 interpolation 文件验证固定滤波误差，不是完整采样率转换性能。
 

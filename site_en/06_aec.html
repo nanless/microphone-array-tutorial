@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Chapter 6 · Acoustic Echo Cancellation (AEC) · Microphone Array Signal Processing</title>
-<meta name="source-digest" content="7b2bf0186a72"><style>
+<meta name="source-digest" content="6fa82909c83a"><style>
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -385,6 +385,8 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="06_aec.html#sec-u-76eeec867d">E06-28: Verifying Gain Transitions and Pure Echo Tails on Actual 16-Bit PCM</a></li>
 <li>&nbsp;&nbsp;<a href="06_aec.html#sec-u-237a0faf15">E06-29: Hammerstein Condition Numbers and Coordinate Decoupling for Odd Power vs. Orthogonal Legendre Bases</a></li>
 <li>&nbsp;&nbsp;<a href="06_aec.html#sec-u-7a9713d205">E06-30: Stereo TV-APF Decorrelation, Physical ANC/ICC Causality Deadlines, and Dual-Filter Switching</a></li>
+<li>&nbsp;&nbsp;<a href="06_aec.html#sec-u-eeb8d6a490">E06-31: PBFDKF Double-Talk Variance Inflation $\Psi_e$ and Steady-State Forgetting Factor $A$</a></li>
+<li>&nbsp;&nbsp;<a href="06_aec.html#sec-u-dcfcef48a5">E06-32: Residual Echo Suppression Wiener Gain Floor $G_{\min}$ and Comfort Noise Level Matching</a></li>
 <li><a href="06_aec.html#sec-6-10">6.10 Further Reading</a></li>
 </ul>
 <div class="chap"><a href="07_wpe-dereverberation.html">Chapter 7 · Dereverberation (WPE)</a></div>
@@ -471,6 +473,8 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="06_aec.html#sec-u-76eeec867d">E06-28: Verifying Gain Transitions and Pure Echo Tails on Actual 16-Bit PCM</a></li>
 <li>&nbsp;&nbsp;<a href="06_aec.html#sec-u-237a0faf15">E06-29: Hammerstein Condition Numbers and Coordinate Decoupling for Odd Power vs. Orthogonal Legendre Bases</a></li>
 <li>&nbsp;&nbsp;<a href="06_aec.html#sec-u-7a9713d205">E06-30: Stereo TV-APF Decorrelation, Physical ANC/ICC Causality Deadlines, and Dual-Filter Switching</a></li>
+<li>&nbsp;&nbsp;<a href="06_aec.html#sec-u-eeb8d6a490">E06-31: PBFDKF Double-Talk Variance Inflation $\Psi_e$ and Steady-State Forgetting Factor $A$</a></li>
+<li>&nbsp;&nbsp;<a href="06_aec.html#sec-u-dcfcef48a5">E06-32: Residual Echo Suppression Wiener Gain Floor $G_{\min}$ and Comfort Noise Level Matching</a></li>
 <li><a href="06_aec.html#sec-6-10">6.10 Further Reading</a></li>
 </ul></nav></details>
 <blockquote>
@@ -1467,6 +1471,11 @@ P_5(x)=\frac{1}{8}(63x^5-70x^3+15x).
 \end{aligned}$$</p>
 <p>They obey strict orthogonality $\int_{-1}^{1}P_p P_q\,\mathrm{d}x=\frac{2}{2q+1}\delta_{pq}$ on $[-1,1]$. By explicitly subtracting all lower-order odd projections from $x^3$ and $x^5$, $\mathbb{E}[P_1(x)P_3(x)]=(5/2)(1/5)-(3/2)(1/3)=0$ under $x\sim\mathcal U(-1,1)$, diagonalizing the three-branch unscaled Gram matrix to $\operatorname{diag}(1/3,1/7,1/11)$ (condition number drops to $11/3\approx 3.67$), and scaling by $\sqrt{2q+1}$ turns it into the identity matrix with condition number $1$. Real speech has super-Gaussian instantaneous amplitudes concentrated near zero plus temporal correlation, so Legendre bases are not strictly zero-correlated on live speech, yet stripping dominant polynomial collinearity still slashes multi-branch condition numbers and speeds up nonlinear AEC convergence (see Kuech &amp; Kellermann, <em>Signal Processing</em>, 2006). Implementations must enforce a strict <strong>$|x|\le 1$ domain guard</strong>: Legendre polynomials remain orthogonal and bounded only on $[-1,1]$ and diverge rapidly once $|x|>1$ (for example, $P_5(1.5)\approx 33.08$), requiring amplitude normalization or clamping prior to expansion; where signal levels fluctuate widely, bounded <strong>trigonometric Functional Link Adaptive Filters (FLAF / FLANN</strong>, expanding $x$ onto $\{\sin(\pi k x),\cos(\pi k x)\}$; Comminiello et al., <em>IEEE TASLP</em>, 2013; <em>IEEE/ACM TASLP</em>, 2015) or locally supported <strong>Spline Adaptive Filters (SAF</strong>; Scarpiniti et al., <em>Signal Processing</em>, 2013) offer practical overflow-free alternatives.</p>
 <p>For hardware with non-negligible pre-amplifier filtering, <a href="https://www.iwaenc.org/proceedings/1997/nsip97/pdf/author/ns970521.pdf">Nollett &amp; Jones (NSIP 1997)</a> investigated an $L\to N\to L$ Wiener–Hammerstein structure: on an inexpensive active PC loudspeaker driven hard into amplifier clipping using synthetic vowels with time-varying pitch and amplitude, a $30$-tap pre-filter plus $200$-tap post-filter LNL model outperformed a $230$-tap linear NLMS filter of equal total length, raising steady-state $\mathrm{ERLE}$ from $11.1\ \mathrm{dB}$ to $19.5\ \mathrm{dB}$ (an $+8.4\ \mathrm{dB}$ gain). When interpreting such literature numbers, keep experimental boundaries in mind: the benchmark used synthetic vowels without reporting sampling rate or repeat statistics, so real product selection must re-measure gains on target loudspeakers and live double-talk corpora.</p>
+<p><strong>Spline Adaptive Filters (SAF) vs. Memory Polynomial and Volterra Models</strong>: Beyond global polynomials, the <strong>Spline Adaptive Filter (SAF)</strong> introduced by <a href="https://doi.org/10.1016/j.sigpro.2012.09.021">Scarpiniti et al. (<em>Signal Processing</em>, 2013)</a> cascades an $L$-tap linear adaptive FIR with a smooth piecewise-cubic Catmull–Rom or uniform B-spline lookup table (LUT) parameterized by $Q$ control points $\vec q\in\mathbb{R}^Q$ in a Wiener ($L\to N$) or Hammerstein ($N\to L$) topology. With uniform knot spacing $\Delta x$, each spline input $s[n]$ maps to a span index $i$ and local coordinate $u\in[0,1)$ ($\vec u=[u^3,u^2,u,1]^\top$, $\dot{\vec u}=[3u^2,2u,1,0]^\top$), activating <strong>only $4$ adjacent knots</strong> $\vec q_{i:i+3}=[q_i,q_{i+1},q_{i+2},q_{i+3}]^\top$:</p>
+<p>$$\hat y[n] = \vec u^\top\mathbf C\,\vec q_{i:i+3},\qquad
+\frac{\partial\hat y[n]}{\partial\vec q_{i:i+3}} = \mathbf C^\top\vec u,\qquad
+\frac{\partial\hat y[n]}{\partial s[n]} = \frac{1}{\Delta x}\,\dot{\vec u}^\top\mathbf C\,\vec q_{i:i+3},$$</p>
+<p>where $\mathbf C\in\mathbb{R}^{4\times 4}$ is the fixed cubic Catmull–Rom or uniform B-spline basis matrix. Compared with Volterra kernels and memory-polynomial (generalized Hammerstein) expansions, SAF exhibits three clear engineering contrasts: (i) <strong>local 4-knot support and low complexity</strong>—updating $L$ linear taps plus only $4$ active control points keeps per-sample nonlinear update cost at $O(L+4)$ (versus $O(L^2)$ for second-order Volterra and $O(QL)$ for $Q$-branch memory polynomials), avoiding high-order power numerical explosion ($x^5,x^7$) and Vandermonde/Hilbert ill-conditioning; (ii) <strong>smooth hard-clipping adaptation with differentiability</strong>—control points adapt locally to sharp micro-speaker soft-saturation and hard-clipping knees while preserving $C^1$/$C^2$ differentiability for clean gradient backpropagation to the linear FIR; and (iii) <strong>memory-structure boundary and system positioning</strong>—a single static spline block cannot represent arbitrary cross-delay memory nonlinearities without cascading Hammerstein–Wiener blocks, cleanly positioning SAF between pure linear AEC and the hybrid/neural personalized AEC (pAEC) architectures of §6.5.2–§6.5.3.</p>
 <span id="sec-u-15fd0add02" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-920aee2313" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-5360991619">Smart PA Loudspeaker Protection and Shifting the Reference Tap-Off Downstream</h3>
 <p>Beyond mechanical transducer distortion, modern smartphones, smart speakers, and portable conference terminals almost universally embed <strong>Smart Power Amplifier (Smart PA) protection algorithms</strong>, forming another major hidden trigger for linear AEC divergence at high volume:</p>
 <ul>
@@ -2544,7 +2553,7 @@ E_{\Delta}
 </table></div>
 </blockquote>
 <span id="sec-6-1-10" class="anchor-alias" aria-hidden="true"></span><span id="sec-6-1-17" class="anchor-alias" aria-hidden="true"></span><span id="sec-6-16" class="anchor-alias" aria-hidden="true"></span><span id="sec-18" class="anchor-alias" aria-hidden="true"></span><span id="sec-25" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-6-9">6.9 Conceptual Self-Check and Selected Exercises</h2>
-<p><strong>Conceptual Self-Check Questions</strong> (focused on physical mechanisms and engineering architecture; try answering closed-book first before consulting the reference explanations below, and proceed to <code>E06-01</code>–<code>E06-30</code> for quantitative numerical verification):</p>
+<p><strong>Conceptual Self-Check Questions</strong> (focused on physical mechanisms and engineering architecture; try answering closed-book first before consulting the reference explanations below, and proceed to <code>E06-01</code>–<code>E06-32</code> for quantitative numerical verification):</p>
 <ol>
 <li>
 <p>Write down the three-term microphone observation model Eq. (6-1) from memory, define each symbol physically, state the core goal of AEC, and explain the fundamental distinction between digital waveform subtraction (AEC) and physical acoustic wave superposition in air (ANC / in-cabin ICC).</p>
@@ -2634,7 +2643,7 @@ E_{\Delta}
 <p>Equation (6-35) defines $\mathrm{ERL}$ (physical isolation), $\mathrm{SER}$ (near-end to echo ratio), and $\mathrm{ERLE}$; $\mathrm{TCLw}$ integrates weighted end-to-end single-talk echo loss ($\approx\mathrm{ERL}+\mathrm{ERLE}_{\mathrm{total}}$, nominally $\ge 46\ \mathrm{dB}$ in ITU-T P.340/P.1100); P.340 grades sending double-talk attenuation $A_{H,S,\mathrm{dt}}$ into Categories 1 ($\le 3\ \mathrm{dB}$), 2a ($\le 6\ \mathrm{dB}$), 2b ($\le 9\ \mathrm{dB}$), 2c ($\le 12\ \mathrm{dB}$), and 3 ($>12\ \mathrm{dB}$). Withdrawn G.167 (succeeded by P.340/P.1100/G.161) addressed acoustic echo whereas G.168 governs network electrical echo cancellers. Regression A3 checks linear and final STFE outputs plus TCLw independently, while A4 verifies duplex category, echo leakage, and tap stability on versioned double-talk clips (see §6.8.1–§6.8.2).</p>
 </li>
 </ol>
-<p>We now proceed to the <strong>30 selected runnable programming and hand-calculation exercises (E06-01–E06-30)</strong>. Companion verification entry points span <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/exercises_enhancement.py"><code>exercises_enhancement.py</code></a> (<code>E06-01</code>–<code>E06-06</code>), <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/aec_algorithm_minicases.py"><code>aec_algorithm_minicases.py</code></a> (<code>E06-07</code>), <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/aec_advanced_exercises.py"><code>aec_advanced_exercises.py</code></a> (<code>E06-08</code>–<code>E06-10</code>), <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/enhancement_step_exercises.py"><code>enhancement_step_exercises.py</code></a> (<code>E06-11</code>), <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/chapter06_experiments.py"><code>chapter06_experiments.py</code></a> (<code>E06-12</code>–<code>E06-20</code>, <code>E06-26</code>–<code>E06-27</code>, <code>E06-29</code>–<code>E06-30</code>), <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/aec_affine_projection_demo.py"><code>aec_affine_projection_demo.py</code></a> (<code>E06-21</code>–<code>E06-24</code>), and standalone audio generation/verification scripts (<code>E06-25</code>, <code>E06-28</code>); full audio catalog in the <a href="research/05_exercises_and_audio.html">Exercises &amp; Audio Manual</a>.</p>
+<p>We now proceed to the <strong>32 selected runnable programming and hand-calculation exercises (E06-01–E06-32)</strong>. Companion verification entry points span <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/exercises_enhancement.py"><code>exercises_enhancement.py</code></a> (<code>E06-01</code>–<code>E06-06</code>), <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/aec_algorithm_minicases.py"><code>aec_algorithm_minicases.py</code></a> (<code>E06-07</code>), <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/aec_advanced_exercises.py"><code>aec_advanced_exercises.py</code></a> (<code>E06-08</code>–<code>E06-10</code>), <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/enhancement_step_exercises.py"><code>enhancement_step_exercises.py</code></a> (<code>E06-11</code>), <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/chapter06_experiments.py"><code>chapter06_experiments.py</code></a> (<code>E06-12</code>–<code>E06-20</code>, <code>E06-26</code>–<code>E06-27</code>, <code>E06-29</code>–<code>E06-32</code>), <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/aec_affine_projection_demo.py"><code>aec_affine_projection_demo.py</code></a> (<code>E06-21</code>–<code>E06-24</code>), and standalone audio generation/verification scripts (<code>E06-25</code>, <code>E06-28</code>); full audio catalog in the <a href="research/05_exercises_and_audio.html">Exercises &amp; Audio Manual</a>.</p>
 <p><a id="e06-01"></a></p>
 <span id="sec-u-1964f88839" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-2bd48cb3cd">E06-01: Can a Single Impulse Make All Taps Converge?</h3>
 <p>Take reference $x=[1,0,0]$ and noiseless microphone echo $d=[0.8,-0.2,0.1]$, with $L=3$ taps, all-zero initial weights, step size $\mu=0.5$, and $\varepsilon=0$ (skipping updates whenever the sliding window is all zero). Write out the regression vectors, a priori residuals, and final taps sample by sample.</p>
@@ -3269,6 +3278,116 @@ P_5(x)&=\frac{1}{8}(63x^5-70x^3+15x).
 3. <strong>Dual-filter three-state decisions</strong>: Window A (single-talk path jump: $E_{\mathrm{sh}}/E_{\mathrm{fg}}=0.0625\lt 0.25$ and $c_{xd}=0.95\ge 0.8$) triggers forward promotion <code>copy_shadow_to_foreground</code>; Window B (double-talk shadow divergence: ratio $2.5>2.0$) triggers reverse recovery <code>reset_shadow_from_foreground</code>; Window C (double-talk shadow overfitting suppressing near-end so ratio $0.20\lt 0.25$, yet low coherence $c_{xd}=0.30\lt 0.8$) is blocked by the coherence gate, emitting <code>hold</code> to protect the foreground weights.</p>
 </li>
 </ol>
+<p><a id="e06-31"></a></p>
+<span id="sec-u-4f444b2b4b" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-eeb8d6a490">E06-31: PBFDKF Double-Talk Variance Inflation $\Psi_e$ and Steady-State Forgetting Factor $A$</h3>
+<p>Building on the single-bin state-space frequency-domain Kalman AEC model of §6.2.7 (code <code>pbfdkf_double_talk_and_forgetting</code> in <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/chapter06_experiments.py"><code>chapter06_experiments.py</code></a>): take state transition $W_{k+1}=A W_k+\Delta W_k$ (process noise variance $\Psi_\Delta=(1-A^2)\sigma_W^2$, matching $a$ and $\Phi_m$ in Eq. (6-21)), true echo path $W=1.0$, prior estimate $\hat W_0^-=0.8$ (initial error $\widetilde W_0=W-\hat W_0^-=0.2$, normalized misalignment $20\log_{10}(|\widetilde W_0|/|W|)=-13.98\ \mathrm{dB}$), prior error variance $P_0^-=0.04$, regressor $X=1.0$, and ambient noise $v=0$.</p>
+<ol>
+<li>Compare three update regimes under a strong near-end double-talk burst ($s=2.0$, prior residual $e=\widetilde W_0 X+s=2.2$), computing Kalman gain $K=P_0^-X^*/(P_0^-|X|^2+\Psi_e)$, posterior weight $\hat W_1$, posterior error $\widetilde W_1=W-\hat W_1$, and error change relative to $|\widetilde W_0|$, $20\log_{10}(|\widetilde W_1|/|\widetilde W_0|)$:
+   - (a) <strong>Clean far-end single-talk</strong> ($s=0, e=0.2$, $\Psi_e=0.01$);
+   - (b) <strong>Unguarded double-talk</strong> ($s=2.0, e=2.2$, naively keeping $\Psi_e=0.01$);
+   - (c) <strong>Measurement-variance-adapted PBFDKF</strong> ($s=2.0, e=2.2$, using instantaneous residual power $\hat\Psi_e=|e|^2=4.84$, and cross-checking the path-variance-subtracted ML estimate $\hat\Psi_e^{\mathrm{ML}}=\max(0,|e|^2-|X|^2P_0^-)=4.80$ as well as an opposite-polarity burst $s=-2.0$).</li>
+<li>Under stationary single-talk ($\sigma_W^2=1.0, |X|=1.0, \Psi_e=0.01$), solve the scalar algebraic Riccati fixed point $P_\infty^-=A^2 P_\infty+\Psi_\Delta$, $P_\infty=\Psi_e P_\infty^-/(P_\infty^-+\Psi_e)$, contrasting state forgetting factors $A=0.999$ and $A=0.99$ in terms of effective memory time constant, steady-state tracking gain $K_\infty$, and excess-error floor $P_\infty$.</li>
+</ol>
+<p><strong>Reference Solution</strong>:</p>
+<ol>
+<li><strong>Exact Comparison Across the Three Update Regimes</strong>:</li>
+</ol>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable data table"><table>
+<thead>
+<tr>
+<th scope="col">Update Regime</th>
+<th scope="col" style="text-align: right;">Residual $e$</th>
+<th scope="col" style="text-align: right;">Variance $\Psi_e$</th>
+<th scope="col" style="text-align: right;">Kalman Gain $K$</th>
+<th scope="col" style="text-align: right;">Posterior Weight $\hat W_1$</th>
+<th scope="col" style="text-align: right;">Posterior Error $\widetilde W_1$</th>
+<th scope="col" style="text-align: right;">Error Change vs. $\lvert\widetilde W_0\rvert$ (dB)</th>
+<th scope="col" style="text-align: right;">Normalized Misalignment (dB)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>(a) Clean far-end single-talk</td>
+<td style="text-align: right;">$0.20$</td>
+<td style="text-align: right;">$0.01$</td>
+<td style="text-align: right;">$0.800000$</td>
+<td style="text-align: right;">$0.960000$</td>
+<td style="text-align: right;">$+0.040000$</td>
+<td style="text-align: right;">$-13.98$</td>
+<td style="text-align: right;">$-27.96$</td>
+</tr>
+<tr>
+<td>(b) Unguarded double-talk</td>
+<td style="text-align: right;">$2.20$</td>
+<td style="text-align: right;">$0.01$</td>
+<td style="text-align: right;">$0.800000$</td>
+<td style="text-align: right;">$2.560000$</td>
+<td style="text-align: right;">$-1.560000$</td>
+<td style="text-align: right;">$+17.84$</td>
+<td style="text-align: right;">$+3.86$</td>
+</tr>
+<tr>
+<td>(c) Adapted PBFDKF ($\hat\Psi_e=\lvert e\rvert^2$)</td>
+<td style="text-align: right;">$2.20$</td>
+<td style="text-align: right;">$4.84$</td>
+<td style="text-align: right;">$0.008197$</td>
+<td style="text-align: right;">$0.818033$</td>
+<td style="text-align: right;">$+0.181967$</td>
+<td style="text-align: right;">$-0.82$</td>
+<td style="text-align: right;">$-14.80$</td>
+</tr>
+</tbody>
+</table></div>
+<p>Analytical verification: (a) In single-talk, $K=0.04/0.05=4/5=0.80$, advancing the weight to $\hat W_1=0.96$ and cutting error from $0.20$ to $0.04$ ($-13.98\ \mathrm{dB}$ error reduction, posterior variance $P_1=0.008$). (b) Failing to inflate $\Psi_e$ during double-talk keeps $K=0.80$, driving $\hat W_1=0.80+0.80\times 2.20=2.56$ and blowing up weight error from $0.20$ to $-1.56$ ($+17.84\ \mathrm{dB}$ divergence). (c) Inflating $\hat\Psi_e=4.84$ cuts gain nearly $100\times$ to $K=0.04/4.88=1/122\approx 0.008197$, restricting weight drift to $+11/610\approx +0.018033$ ($|\widetilde W_1|=111/610\approx 0.181967\lt 0.20$, $P_1\approx 0.039672$). Using the path-subtracted ML estimate $\hat\Psi_e^{\mathrm{ML}}=4.80$ yields nearly identical protection ($K=1/121\approx 0.008264$, $\widetilde W_1=2/11\approx 0.181818$); even under an adversarial opposite-polarity burst $s=-2.0$ ($e=-1.8$, $\hat\Psi_e=3.24$), $K=1/82\approx 0.012195$ limits weight drift to $-0.021951$ ($+0.90\ \mathrm{dB}$ vs. $+17.84\ \mathrm{dB}$)—showing quantitatively how continuous online $\hat\Psi_e$ estimation replaces brittle binary double-talk detectors.</p>
+<ol start="2">
+<li><strong>Steady-State Trade-Off ($A=0.999$ vs. $A=0.99$)</strong>: Eliminating $P_\infty$ yields the quadratic $(P_\infty^-)^2+\bigl(\Psi_e(1-A^2)-\Psi_\Delta\bigr)P_\infty^--\Psi_\Delta\Psi_e=0$, with fixed-point identity $P_\infty=K_\infty\Psi_e$:
+   - <strong>$A=0.999$</strong>: process noise $\Psi_\Delta=0.001999$, memory constant $\tau=-1/\ln A\approx 999.50$ blocks, giving $P_\infty^-\approx 0.005569$, steady-state gain $K_\infty\approx 0.357686$, and posterior variance floor $P_\infty\approx 0.003577$ ($-24.46\ \mathrm{dB}$);
+   - <strong>$A=0.99$</strong>: process noise rises nearly $10\times$ to $\Psi_\Delta=0.019900$, memory constant shortens $10\times$ to $\tau\approx 99.50$ blocks, lifting steady-state tracking gain $2.04\times$ to $K_\infty\approx 0.730139$ ($P_\infty^-\approx 0.027056$), at the cost of a $+3.10\ \mathrm{dB}$ higher excess-error floor $P_\infty\approx 0.007301$ ($-21.37\ \mathrm{dB}$).</li>
+</ol>
+<p><a id="e06-32"></a></p>
+<span id="sec-u-6d7defcea5" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-dcfcef48a5">E06-32: Residual Echo Suppression Wiener Gain Floor $G_{\min}$ and Comfort Noise Level Matching</h3>
+<p>Building on the frequency-domain RES and CNG model of §6.5.1 (code <code>res_wiener_and_cng_matching</code> in <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch06/chapter06_experiments.py"><code>chapter06_experiments.py</code></a>): at a single frequency bin of the linear AEC residual, let near-end speech PSD be $\hat\Phi_{ss}$, residual echo PSD be $\hat\Phi_{bb}$ (matching $\hat\Phi_{e_{\mathrm{res}}}$ in §6.5.1), and stationary background noise PSD be $\hat\Phi_{nn}=0.01$ ($-20.00\ \mathrm{dB}$). Apply the floored Wiener RES gain with $G_{\min}=0.1$ ($-20.00\ \mathrm{dB}$):</p>
+<p>$$G_{\mathrm{RES}} = \max\!\left(G_{\min},\;\frac{\hat\Phi_{ss}}{\hat\Phi_{ss}+\hat\Phi_{bb}+\hat\Phi_{nn}}\right).$$</p>
+<p>For the two speech frames below, compute the unclamped gain, clamped gain $G_{\mathrm{RES}}$, residual echo suppression (dB), speech attenuation (dB), and output background noise floor without CNG; then compute the uncorrelated comfort noise PSD $\Phi_{\mathrm{CNG}}=\max\bigl(0,(1-G_{\mathrm{RES}}^2)\hat\Phi_{nn}\bigr)$ required to maintain a constant perceived background floor $\Phi_{\mathrm{target}}=\hat\Phi_{nn}=0.01$:</p>
+<ul>
+<li>(a) <strong>Far-end single-talk frame</strong>: $\hat\Phi_{ss}=0$, $\hat\Phi_{bb}=0.25$, $\hat\Phi_{nn}=0.01$;</li>
+<li>(b) <strong>Double-talk frame</strong>: $\hat\Phi_{ss}=1.0$, $\hat\Phi_{bb}=0.25$, $\hat\Phi_{nn}=0.01$.</li>
+</ul>
+<p><strong>Reference Solution</strong>:</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable data table"><table>
+<thead>
+<tr>
+<th scope="col">Frame Type</th>
+<th scope="col" style="text-align: right;">Unclamped Gain</th>
+<th scope="col" style="text-align: right;">Applied $G_{\mathrm{RES}}$</th>
+<th scope="col" style="text-align: right;">Echo Suppression / Speech Loss</th>
+<th scope="col" style="text-align: right;">Noise Floor w/o CNG (Dip)</th>
+<th scope="col" style="text-align: right;">Injected $\Phi_{\mathrm{CNG}}$ (Amp. Scale)</th>
+<th scope="col" style="text-align: right;">Noise Floor w/ CNG (Ripple)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>(a) Far-end single-talk</td>
+<td style="text-align: right;">$0.000000$</td>
+<td style="text-align: right;">$0.100000$ (clamped)</td>
+<td style="text-align: right;">$20.00\ \mathrm{dB}$ / $-20.00\ \mathrm{dB}$</td>
+<td style="text-align: right;">$1.00\times 10^{-4}$ ($-40.00\ \mathrm{dB}$, dip $-20.00\ \mathrm{dB}$)</td>
+<td style="text-align: right;">$0.009900$ ($0.994987$)</td>
+<td style="text-align: right;">$0.010000$ ($0.00\ \mathrm{dB}$)</td>
+</tr>
+<tr>
+<td>(b) Double-talk</td>
+<td style="text-align: right;">$0.793651$</td>
+<td style="text-align: right;">$0.793651$ (unclamped)</td>
+<td style="text-align: right;">$2.01\ \mathrm{dB}$ / $-2.01\ \mathrm{dB}$</td>
+<td style="text-align: right;">$0.006299$ ($-22.01\ \mathrm{dB}$, dip $-2.01\ \mathrm{dB}$)</td>
+<td style="text-align: right;">$0.003701$ ($0.608374$)</td>
+<td style="text-align: right;">$0.010000$ ($0.00\ \mathrm{dB}$)</td>
+</tr>
+</tbody>
+</table></div>
+<p>Step-by-step check: (a) During far-end single-talk, the unclamped Wiener gain drops to $0$, so the floor clamps $G_{\mathrm{RES}}=G_{\min}=0.1$ ($-20.00\ \mathrm{dB}$), suppressing residual echo by $20.00\ \mathrm{dB}$ from $0.25$ to $0.0025$; without CNG, however, stationary background noise is simultaneously dragged down $20.00\ \mathrm{dB}$ from $0.01$ ($-20.00\ \mathrm{dB}$) to $0.1^2\times 0.01=10^{-4}$ ($-40.00\ \mathrm{dB}$), creating audible "dead-air pumping." (b) During double-talk, $G_{\mathrm{RES}}=1.0/(1.0+0.25+0.01)=50/63\approx 0.793651>G_{\min}$, imposing only $20\log_{10}(50/63)\approx -2.01\ \mathrm{dB}$ speech attenuation (and matching $2.01\ \mathrm{dB}$ residual echo attenuation, $0.25\to 0.157470$), while lowering background noise without CNG to $(50/63)^2\times 0.01=25/3969\approx 0.006299$ ($-22.01\ \mathrm{dB}$). (c) Injecting uncorrelated comfort noise adds $\Phi_{\mathrm{CNG}}=0.99\times 0.01=0.009900$ (amplitude factor $\sqrt{0.99}\approx 0.994987$) in frame (a) and $\Phi_{\mathrm{CNG}}=(1-(50/63)^2)\times 0.01=1469/396900\approx 0.003701$ (amplitude factor $\approx 0.608374$) in frame (b), restoring exact background noise continuity $G_{\mathrm{RES}}^2\hat\Phi_{nn}+\Phi_{\mathrm{CNG}}=0.010000$ ($-20.00\ \mathrm{dB}$, $0.00\ \mathrm{dB}$ pumping) across both frames.</p>
 <span id="sec-6-1-11" class="anchor-alias" aria-hidden="true"></span><span id="sec-6-1-18" class="anchor-alias" aria-hidden="true"></span><span id="sec-6-17" class="anchor-alias" aria-hidden="true"></span><span id="sec-19" class="anchor-alias" aria-hidden="true"></span><span id="sec-26" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-6-10">6.10 Further Reading</h2>
 <p>Across recent academic and industrial developments, acoustic echo cancellation advances primarily along four threads: using lightweight deep networks to estimate adaptive step sizes or Kalman state-space noise covariances online, jointly optimizing echo cancellation and spatial interference suppression in multi-microphone/multi-loudspeaker arrays, fusing low-latency speaker conditioning for personalized full-duplex capture, and constructing non-intrusive differentiable quality metrics aligned with human double-talk perception. When reading new papers, cultivating the habit of checking four prerequisites first—"strictly causal or not, total frame latency in milliseconds, playback-chain reference tap-off location, and double-talk SER distribution"—reveals an algorithm's real engineering boundaries.</p>
 <ol>

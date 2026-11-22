@@ -1009,6 +1009,14 @@ They obey strict orthogonality $\int_{-1}^{1}P_p P_q\,\mathrm{d}x=\frac{2}{2q+1}
 
 For hardware with non-negligible pre-amplifier filtering, [Nollett & Jones (NSIP 1997)](https://www.iwaenc.org/proceedings/1997/nsip97/pdf/author/ns970521.pdf) investigated an $L\to N\to L$ Wiener–Hammerstein structure: on an inexpensive active PC loudspeaker driven hard into amplifier clipping using synthetic vowels with time-varying pitch and amplitude, a $30$-tap pre-filter plus $200$-tap post-filter LNL model outperformed a $230$-tap linear NLMS filter of equal total length, raising steady-state $\mathrm{ERLE}$ from $11.1\ \mathrm{dB}$ to $19.5\ \mathrm{dB}$ (an $+8.4\ \mathrm{dB}$ gain). When interpreting such literature numbers, keep experimental boundaries in mind: the benchmark used synthetic vowels without reporting sampling rate or repeat statistics, so real product selection must re-measure gains on target loudspeakers and live double-talk corpora.
 
+**Spline Adaptive Filters (SAF) vs. Memory Polynomial and Volterra Models**: Beyond global polynomials, the **Spline Adaptive Filter (SAF)** introduced by [Scarpiniti et al. (*Signal Processing*, 2013)](https://doi.org/10.1016/j.sigpro.2012.09.021) cascades an $L$-tap linear adaptive FIR with a smooth piecewise-cubic Catmull–Rom or uniform B-spline lookup table (LUT) parameterized by $Q$ control points $\vec q\in\mathbb{R}^Q$ in a Wiener ($L\to N$) or Hammerstein ($N\to L$) topology. With uniform knot spacing $\Delta x$, each spline input $s[n]$ maps to a span index $i$ and local coordinate $u\in[0,1)$ ($\vec u=[u^3,u^2,u,1]^\top$, $\dot{\vec u}=[3u^2,2u,1,0]^\top$), activating **only $4$ adjacent knots** $\vec q_{i:i+3}=[q_i,q_{i+1},q_{i+2},q_{i+3}]^\top$:
+
+$$\hat y[n] = \vec u^\top\mathbf C\,\vec q_{i:i+3},\qquad
+\frac{\partial\hat y[n]}{\partial\vec q_{i:i+3}} = \mathbf C^\top\vec u,\qquad
+\frac{\partial\hat y[n]}{\partial s[n]} = \frac{1}{\Delta x}\,\dot{\vec u}^\top\mathbf C\,\vec q_{i:i+3},$$
+
+where $\mathbf C\in\mathbb{R}^{4\times 4}$ is the fixed cubic Catmull–Rom or uniform B-spline basis matrix. Compared with Volterra kernels and memory-polynomial (generalized Hammerstein) expansions, SAF exhibits three clear engineering contrasts: (i) **local 4-knot support and low complexity**—updating $L$ linear taps plus only $4$ active control points keeps per-sample nonlinear update cost at $O(L+4)$ (versus $O(L^2)$ for second-order Volterra and $O(QL)$ for $Q$-branch memory polynomials), avoiding high-order power numerical explosion ($x^5,x^7$) and Vandermonde/Hilbert ill-conditioning; (ii) **smooth hard-clipping adaptation with differentiability**—control points adapt locally to sharp micro-speaker soft-saturation and hard-clipping knees while preserving $C^1$/$C^2$ differentiability for clean gradient backpropagation to the linear FIR; and (iii) **memory-structure boundary and system positioning**—a single static spline block cannot represent arbitrary cross-delay memory nonlinearities without cascading Hammerstein–Wiener blocks, cleanly positioning SAF between pure linear AEC and the hybrid/neural personalized AEC (pAEC) architectures of §6.5.2–§6.5.3.
+
 #### Smart PA Loudspeaker Protection and Shifting the Reference Tap-Off Downstream
 
 Beyond mechanical transducer distortion, modern smartphones, smart speakers, and portable conference terminals almost universally embed **Smart Power Amplifier (Smart PA) protection algorithms**, forming another major hidden trigger for linear AEC divergence at high volume:
@@ -1547,7 +1555,7 @@ For third-party industrial open-source codebases—including SpeexDSP `mdf.c`, W
 
 ### 6.9 Conceptual Self-Check and Selected Exercises
 
-**Conceptual Self-Check Questions** (focused on physical mechanisms and engineering architecture; try answering closed-book first before consulting the reference explanations below, and proceed to `E06-01`–`E06-30` for quantitative numerical verification):
+**Conceptual Self-Check Questions** (focused on physical mechanisms and engineering architecture; try answering closed-book first before consulting the reference explanations below, and proceed to `E06-01`–`E06-32` for quantitative numerical verification):
 
 1. Write down the three-term microphone observation model Eq. (6-1) from memory, define each symbol physically, state the core goal of AEC, and explain the fundamental distinction between digital waveform subtraction (AEC) and physical acoustic wave superposition in air (ANC / in-cabin ICC).
 
@@ -1607,7 +1615,7 @@ For third-party industrial open-source codebases—including SpeexDSP `mdf.c`, W
 
 14. Equation (6-35) defines $\mathrm{ERL}$ (physical isolation), $\mathrm{SER}$ (near-end to echo ratio), and $\mathrm{ERLE}$; $\mathrm{TCLw}$ integrates weighted end-to-end single-talk echo loss ($\approx\mathrm{ERL}+\mathrm{ERLE}_{\mathrm{total}}$, nominally $\ge 46\ \mathrm{dB}$ in ITU-T P.340/P.1100); P.340 grades sending double-talk attenuation $A_{H,S,\mathrm{dt}}$ into Categories 1 ($\le 3\ \mathrm{dB}$), 2a ($\le 6\ \mathrm{dB}$), 2b ($\le 9\ \mathrm{dB}$), 2c ($\le 12\ \mathrm{dB}$), and 3 ($>12\ \mathrm{dB}$). Withdrawn G.167 (succeeded by P.340/P.1100/G.161) addressed acoustic echo whereas G.168 governs network electrical echo cancellers. Regression A3 checks linear and final STFE outputs plus TCLw independently, while A4 verifies duplex category, echo leakage, and tap stability on versioned double-talk clips (see §6.8.1–§6.8.2).
 
-We now proceed to the **30 selected runnable programming and hand-calculation exercises (E06-01–E06-30)**. Companion verification entry points span [`exercises_enhancement.py`](../codes/chapters/ch00/cross_chapter/exercises_enhancement.py) (`E06-01`–`E06-06`), [`aec_algorithm_minicases.py`](../codes/chapters/ch06/aec_algorithm_minicases.py) (`E06-07`), [`aec_advanced_exercises.py`](../codes/chapters/ch06/aec_advanced_exercises.py) (`E06-08`–`E06-10`), [`enhancement_step_exercises.py`](../codes/chapters/ch00/cross_chapter/enhancement_step_exercises.py) (`E06-11`), [`chapter06_experiments.py`](../codes/chapters/ch06/chapter06_experiments.py) (`E06-12`–`E06-20`, `E06-26`–`E06-27`, `E06-29`–`E06-30`), [`aec_affine_projection_demo.py`](../codes/chapters/ch06/aec_affine_projection_demo.py) (`E06-21`–`E06-24`), and standalone audio generation/verification scripts (`E06-25`, `E06-28`); full audio catalog in the [Exercises & Audio Manual](../codes/chapters/ch00/research_en/05_exercises_and_audio.md).
+We now proceed to the **32 selected runnable programming and hand-calculation exercises (E06-01–E06-32)**. Companion verification entry points span [`exercises_enhancement.py`](../codes/chapters/ch00/cross_chapter/exercises_enhancement.py) (`E06-01`–`E06-06`), [`aec_algorithm_minicases.py`](../codes/chapters/ch06/aec_algorithm_minicases.py) (`E06-07`), [`aec_advanced_exercises.py`](../codes/chapters/ch06/aec_advanced_exercises.py) (`E06-08`–`E06-10`), [`enhancement_step_exercises.py`](../codes/chapters/ch00/cross_chapter/enhancement_step_exercises.py) (`E06-11`), [`chapter06_experiments.py`](../codes/chapters/ch06/chapter06_experiments.py) (`E06-12`–`E06-20`, `E06-26`–`E06-27`, `E06-29`–`E06-32`), [`aec_affine_projection_demo.py`](../codes/chapters/ch06/aec_affine_projection_demo.py) (`E06-21`–`E06-24`), and standalone audio generation/verification scripts (`E06-25`, `E06-28`); full audio catalog in the [Exercises & Audio Manual](../codes/chapters/ch00/research_en/05_exercises_and_audio.md).
 
 <a id="e06-01"></a>
 
@@ -2166,6 +2174,56 @@ Perform exact arithmetic checks on three engineering boundaries from §6.1, §6.
     For true stereo path $\vec h_{\mathrm{true}}=[0.8,0.2,0.4,0.1]^\top$ (four-snapshot echoes $[0.8,0.6,1.0,0.55]^\top$), $\mathbf U_{\mathrm{tv}}^{-1}\vec y$ uniquely recovers $\vec h_{\mathrm{true}}$;
 2. **Causal delay budgets and comb notches**: Maximum electronic delay for causal ANC is only $\tau_{\mathrm{elec,max}}=100/343\ \mathrm{ms}\approx 0.2915\ \mathrm{ms}$ ($\approx 4.66$ samples), exceeded $27.44\times$ by an $8\ \mathrm{ms}$ block PBFDAF—ruling it out for wideband causal physical ANC—whereas open-loop digital AEC handles $50\ \mathrm{ms}$ delays directly via memory buffers. In ICC, peak-to-notch ripple reaches $20\log_{10}\frac{1+0.8}{1-0.8}=20\log_{10}9\approx 19.08\ \mathrm{dB}$ (closed-loop howling margin $-20\log_{10}(0.5)\approx 6.02\ \mathrm{dB}$): compliant $\tau_{\mathrm{loop}}=10\ \mathrm{ms}<15\ \mathrm{ms}$ gives $\Delta f=100\ \mathrm{Hz}$, first notch $50\ \mathrm{Hz}$, and $10$ notches in $[0,1000)\ \mathrm{Hz}$; non-compliant $\tau_{\mathrm{loop}}=25\ \mathrm{ms}>15\ \mathrm{ms}$ packs $\Delta f=40\ \mathrm{Hz}$, first notch $20\ \mathrm{Hz}$, and $25$ deep notches across $[0,1000)\ \mathrm{Hz}$;
 3. **Dual-filter three-state decisions**: Window A (single-talk path jump: $E_{\mathrm{sh}}/E_{\mathrm{fg}}=0.0625<0.25$ and $c_{xd}=0.95\ge 0.8$) triggers forward promotion `copy_shadow_to_foreground`; Window B (double-talk shadow divergence: ratio $2.5>2.0$) triggers reverse recovery `reset_shadow_from_foreground`; Window C (double-talk shadow overfitting suppressing near-end so ratio $0.20<0.25$, yet low coherence $c_{xd}=0.30<0.8$) is blocked by the coherence gate, emitting `hold` to protect the foreground weights.
+
+<a id="e06-31"></a>
+
+#### E06-31: PBFDKF Double-Talk Variance Inflation $\Psi_e$ and Steady-State Forgetting Factor $A$
+
+Building on the single-bin state-space frequency-domain Kalman AEC model of §6.2.7 (code `pbfdkf_double_talk_and_forgetting` in [`chapter06_experiments.py`](../codes/chapters/ch06/chapter06_experiments.py)): take state transition $W_{k+1}=A W_k+\Delta W_k$ (process noise variance $\Psi_\Delta=(1-A^2)\sigma_W^2$, matching $a$ and $\Phi_m$ in Eq. (6-21)), true echo path $W=1.0$, prior estimate $\hat W_0^-=0.8$ (initial error $\widetilde W_0=W-\hat W_0^-=0.2$, normalized misalignment $20\log_{10}(|\widetilde W_0|/|W|)=-13.98\ \mathrm{dB}$), prior error variance $P_0^-=0.04$, regressor $X=1.0$, and ambient noise $v=0$.
+
+1. Compare three update regimes under a strong near-end double-talk burst ($s=2.0$, prior residual $e=\widetilde W_0 X+s=2.2$), computing Kalman gain $K=P_0^-X^*/(P_0^-|X|^2+\Psi_e)$, posterior weight $\hat W_1$, posterior error $\widetilde W_1=W-\hat W_1$, and error change relative to $|\widetilde W_0|$, $20\log_{10}(|\widetilde W_1|/|\widetilde W_0|)$:
+   - (a) **Clean far-end single-talk** ($s=0, e=0.2$, $\Psi_e=0.01$);
+   - (b) **Unguarded double-talk** ($s=2.0, e=2.2$, naively keeping $\Psi_e=0.01$);
+   - (c) **Measurement-variance-adapted PBFDKF** ($s=2.0, e=2.2$, using instantaneous residual power $\hat\Psi_e=|e|^2=4.84$, and cross-checking the path-variance-subtracted ML estimate $\hat\Psi_e^{\mathrm{ML}}=\max(0,|e|^2-|X|^2P_0^-)=4.80$ as well as an opposite-polarity burst $s=-2.0$).
+2. Under stationary single-talk ($\sigma_W^2=1.0, |X|=1.0, \Psi_e=0.01$), solve the scalar algebraic Riccati fixed point $P_\infty^-=A^2 P_\infty+\Psi_\Delta$, $P_\infty=\Psi_e P_\infty^-/(P_\infty^-+\Psi_e)$, contrasting state forgetting factors $A=0.999$ and $A=0.99$ in terms of effective memory time constant, steady-state tracking gain $K_\infty$, and excess-error floor $P_\infty$.
+
+**Reference Solution**:
+
+1. **Exact Comparison Across the Three Update Regimes**:
+
+| Update Regime | Residual $e$ | Variance $\Psi_e$ | Kalman Gain $K$ | Posterior Weight $\hat W_1$ | Posterior Error $\widetilde W_1$ | Error Change vs. $\lvert\widetilde W_0\rvert$ (dB) | Normalized Misalignment (dB) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| (a) Clean far-end single-talk | $0.20$ | $0.01$ | $0.800000$ | $0.960000$ | $+0.040000$ | $-13.98$ | $-27.96$ |
+| (b) Unguarded double-talk | $2.20$ | $0.01$ | $0.800000$ | $2.560000$ | $-1.560000$ | $+17.84$ | $+3.86$ |
+| (c) Adapted PBFDKF ($\hat\Psi_e=\lvert e\rvert^2$) | $2.20$ | $4.84$ | $0.008197$ | $0.818033$ | $+0.181967$ | $-0.82$ | $-14.80$ |
+
+Analytical verification: (a) In single-talk, $K=0.04/0.05=4/5=0.80$, advancing the weight to $\hat W_1=0.96$ and cutting error from $0.20$ to $0.04$ ($-13.98\ \mathrm{dB}$ error reduction, posterior variance $P_1=0.008$). (b) Failing to inflate $\Psi_e$ during double-talk keeps $K=0.80$, driving $\hat W_1=0.80+0.80\times 2.20=2.56$ and blowing up weight error from $0.20$ to $-1.56$ ($+17.84\ \mathrm{dB}$ divergence). (c) Inflating $\hat\Psi_e=4.84$ cuts gain nearly $100\times$ to $K=0.04/4.88=1/122\approx 0.008197$, restricting weight drift to $+11/610\approx +0.018033$ ($|\widetilde W_1|=111/610\approx 0.181967<0.20$, $P_1\approx 0.039672$). Using the path-subtracted ML estimate $\hat\Psi_e^{\mathrm{ML}}=4.80$ yields nearly identical protection ($K=1/121\approx 0.008264$, $\widetilde W_1=2/11\approx 0.181818$); even under an adversarial opposite-polarity burst $s=-2.0$ ($e=-1.8$, $\hat\Psi_e=3.24$), $K=1/82\approx 0.012195$ limits weight drift to $-0.021951$ ($+0.90\ \mathrm{dB}$ vs. $+17.84\ \mathrm{dB}$)—showing quantitatively how continuous online $\hat\Psi_e$ estimation replaces brittle binary double-talk detectors.
+
+2. **Steady-State Trade-Off ($A=0.999$ vs. $A=0.99$)**: Eliminating $P_\infty$ yields the quadratic $(P_\infty^-)^2+\bigl(\Psi_e(1-A^2)-\Psi_\Delta\bigr)P_\infty^--\Psi_\Delta\Psi_e=0$, with fixed-point identity $P_\infty=K_\infty\Psi_e$:
+   - **$A=0.999$**: process noise $\Psi_\Delta=0.001999$, memory constant $\tau=-1/\ln A\approx 999.50$ blocks, giving $P_\infty^-\approx 0.005569$, steady-state gain $K_\infty\approx 0.357686$, and posterior variance floor $P_\infty\approx 0.003577$ ($-24.46\ \mathrm{dB}$);
+   - **$A=0.99$**: process noise rises nearly $10\times$ to $\Psi_\Delta=0.019900$, memory constant shortens $10\times$ to $\tau\approx 99.50$ blocks, lifting steady-state tracking gain $2.04\times$ to $K_\infty\approx 0.730139$ ($P_\infty^-\approx 0.027056$), at the cost of a $+3.10\ \mathrm{dB}$ higher excess-error floor $P_\infty\approx 0.007301$ ($-21.37\ \mathrm{dB}$).
+
+<a id="e06-32"></a>
+
+#### E06-32: Residual Echo Suppression Wiener Gain Floor $G_{\min}$ and Comfort Noise Level Matching
+
+Building on the frequency-domain RES and CNG model of §6.5.1 (code `res_wiener_and_cng_matching` in [`chapter06_experiments.py`](../codes/chapters/ch06/chapter06_experiments.py)): at a single frequency bin of the linear AEC residual, let near-end speech PSD be $\hat\Phi_{ss}$, residual echo PSD be $\hat\Phi_{bb}$ (matching $\hat\Phi_{e_{\mathrm{res}}}$ in §6.5.1), and stationary background noise PSD be $\hat\Phi_{nn}=0.01$ ($-20.00\ \mathrm{dB}$). Apply the floored Wiener RES gain with $G_{\min}=0.1$ ($-20.00\ \mathrm{dB}$):
+
+$$G_{\mathrm{RES}} = \max\!\left(G_{\min},\;\frac{\hat\Phi_{ss}}{\hat\Phi_{ss}+\hat\Phi_{bb}+\hat\Phi_{nn}}\right).$$
+
+For the two speech frames below, compute the unclamped gain, clamped gain $G_{\mathrm{RES}}$, residual echo suppression (dB), speech attenuation (dB), and output background noise floor without CNG; then compute the uncorrelated comfort noise PSD $\Phi_{\mathrm{CNG}}=\max\bigl(0,(1-G_{\mathrm{RES}}^2)\hat\Phi_{nn}\bigr)$ required to maintain a constant perceived background floor $\Phi_{\mathrm{target}}=\hat\Phi_{nn}=0.01$:
+
+- (a) **Far-end single-talk frame**: $\hat\Phi_{ss}=0$, $\hat\Phi_{bb}=0.25$, $\hat\Phi_{nn}=0.01$;
+- (b) **Double-talk frame**: $\hat\Phi_{ss}=1.0$, $\hat\Phi_{bb}=0.25$, $\hat\Phi_{nn}=0.01$.
+
+**Reference Solution**:
+
+| Frame Type | Unclamped Gain | Applied $G_{\mathrm{RES}}$ | Echo Suppression / Speech Loss | Noise Floor w/o CNG (Dip) | Injected $\Phi_{\mathrm{CNG}}$ (Amp. Scale) | Noise Floor w/ CNG (Ripple) |
+|---|---:|---:|---:|---:|---:|---:|
+| (a) Far-end single-talk | $0.000000$ | $0.100000$ (clamped) | $20.00\ \mathrm{dB}$ / $-20.00\ \mathrm{dB}$ | $1.00\times 10^{-4}$ ($-40.00\ \mathrm{dB}$, dip $-20.00\ \mathrm{dB}$) | $0.009900$ ($0.994987$) | $0.010000$ ($0.00\ \mathrm{dB}$) |
+| (b) Double-talk | $0.793651$ | $0.793651$ (unclamped) | $2.01\ \mathrm{dB}$ / $-2.01\ \mathrm{dB}$ | $0.006299$ ($-22.01\ \mathrm{dB}$, dip $-2.01\ \mathrm{dB}$) | $0.003701$ ($0.608374$) | $0.010000$ ($0.00\ \mathrm{dB}$) |
+
+Step-by-step check: (a) During far-end single-talk, the unclamped Wiener gain drops to $0$, so the floor clamps $G_{\mathrm{RES}}=G_{\min}=0.1$ ($-20.00\ \mathrm{dB}$), suppressing residual echo by $20.00\ \mathrm{dB}$ from $0.25$ to $0.0025$; without CNG, however, stationary background noise is simultaneously dragged down $20.00\ \mathrm{dB}$ from $0.01$ ($-20.00\ \mathrm{dB}$) to $0.1^2\times 0.01=10^{-4}$ ($-40.00\ \mathrm{dB}$), creating audible "dead-air pumping." (b) During double-talk, $G_{\mathrm{RES}}=1.0/(1.0+0.25+0.01)=50/63\approx 0.793651>G_{\min}$, imposing only $20\log_{10}(50/63)\approx -2.01\ \mathrm{dB}$ speech attenuation (and matching $2.01\ \mathrm{dB}$ residual echo attenuation, $0.25\to 0.157470$), while lowering background noise without CNG to $(50/63)^2\times 0.01=25/3969\approx 0.006299$ ($-22.01\ \mathrm{dB}$). (c) Injecting uncorrelated comfort noise adds $\Phi_{\mathrm{CNG}}=0.99\times 0.01=0.009900$ (amplitude factor $\sqrt{0.99}\approx 0.994987$) in frame (a) and $\Phi_{\mathrm{CNG}}=(1-(50/63)^2)\times 0.01=1469/396900\approx 0.003701$ (amplitude factor $\approx 0.608374$) in frame (b), restoring exact background noise continuity $G_{\mathrm{RES}}^2\hat\Phi_{nn}+\Phi_{\mathrm{CNG}}=0.010000$ ($-20.00\ \mathrm{dB}$, $0.00\ \mathrm{dB}$ pumping) across both frames.
 
 ### 6.10 Further Reading
 

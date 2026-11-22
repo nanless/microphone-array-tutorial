@@ -303,7 +303,7 @@ $$\begin{gathered}
 
 ### 16.3 常用数学与数值速查卡
 
-本节将正文各章高频调用的量纲换算、复矩阵与 Wirtinger 恒等式、正则化参数边界以及 NumPy/SciPy 接口陷阱浓缩为四张速查卡；所有不跳步的完整定理证明、几何图解与基础算例均集中于[第 0 章全书数学基础](00_math-foundations.md)（按需直达 [§0.2](00_math-foundations.md#sec-0-2)～[§0.6](00_math-foundations.md#sec-0-6)）。
+本节将正文各章高频调用的量纲换算、复矩阵与 Wirtinger 恒等式、正则化参数边界以及 NumPy/SciPy 接口陷阱浓缩为四张速查卡；所有不跳步的完整定理证明、几何图解与基础算例均集中于[第 0 章全书数学基础](00_math-foundations.md)（按需直达 [§0.1](00_math-foundations.md#sec-0-1)～[§0.7](00_math-foundations.md#sec-0-7)）。
 
 #### 16.3.1 分贝与声学量纲速查卡
 
@@ -331,6 +331,9 @@ $$\begin{gathered}
 | MVDR / LCMV 闭式解 | $\vec w_{\mathrm{MVDR}}=\frac{\mathbf R^{-1}\vec a}{\vec a^H\mathbf R^{-1}\vec a}$；$\vec w_{\mathrm{LCMV}}=\mathbf R^{-1}\mathbf C(\mathbf C^H\mathbf R^{-1}\mathbf C)^{-1}\vec f$ | $\mathbf R\succ\mathbf 0$、$\mathbf C$ 满列秩；线性约束 $\mathbf C^H\vec w=\vec f$ 中指定响应 $g_k=\vec w^H\vec c_k$ 须取共轭 $f_k=g_k^*$（[§0.5.2](00_math-foundations.md#sec-0-5-2)、§5.4～§5.5） |
 | Woodbury / Sherman–Morrison | $(\mathbf M+\mathbf U\mathbf C\mathbf V)^{-1}=\mathbf M^{-1}-\mathbf M^{-1}\mathbf U$<br>$\cdot(\mathbf C^{-1}+\mathbf V\mathbf M^{-1}\mathbf U)^{-1}\mathbf V\mathbf M^{-1}$；<br>秩一 $(\mathbf M+\vec u\vec v^H)^{-1}=\mathbf M^{-1}-\frac{\mathbf M^{-1}\vec u\vec v^H\mathbf M^{-1}}{1+\vec v^H\mathbf M^{-1}\vec u}$ | 将在线遗忘协方差递推求逆由 $O(M^3)$ 降至 $O(M^2)$；长期有限字长递推须定期对称化 $\frac{1}{2}(\mathbf P+\mathbf P^H)$（[§0.3.5](00_math-foundations.md#sec-0-3-5)） |
 | 列优先 $\operatorname{vec}$ / Kronecker / Khatri–Rao | $(\mathbf B_1\otimes\mathbf A_1)(\mathbf B_2\otimes\mathbf A_2)$<br>$=(\mathbf B_1\mathbf B_2)\otimes(\mathbf A_1\mathbf A_2)$；<br>$\operatorname{vec}(\mathbf A\mathbf X\mathbf B^\top)=(\mathbf B\otimes\mathbf A)\operatorname{vec}(\mathbf X)$；<br>$\operatorname{vec}(\mathbf A\operatorname{diag}(\vec q)\mathbf A^H)=(\mathbf A^*\odot\mathbf A)\vec q$ | 统一差分共阵（§3.3）、可分离平面阵（§5.5）与 CMF 成像（§12.7）；左因子须取共轭 $\mathbf A^*$（[§0.4.3](00_math-foundations.md#sec-0-4-3)） |
+| 单位四元数与 SLERP | $\mathbf R(\mathbf q)=(q_w^2-\lVert\vec q_v\rVert_2^2)\mathbf I_3$<br>$+2\vec q_v\vec q_v^\top+2q_w[\vec q_v]_\times$；<br>$\operatorname{SLERP}=\frac{\sin((1-t)\Omega)}{\sin\Omega}\mathbf q_0+\frac{\sin(t\Omega)}{\sin\Omega}\mathbf q_1$ | $\lVert\mathbf q\rVert_2=1$、双重覆盖 $\mathbf q\sim-\mathbf q$；须先使 $\mathbf q_0^\top\mathbf q_1\ge 0$ 取最短弧，支撑 IMU 与头部追踪（[§0.1.3](00_math-foundations.md#sec-0-1-3)、§9.2.3、§14.3） |
+| 多相分解与 Noble 恒等式 | $H(z)=\sum_{p=0}^{D-1}z^{-p}E_p(z^D)$；<br>$E(z^D)\!\to\!(\downarrow D)\equiv(\downarrow D)\!\to\!E(z)$；<br>$(\uparrow U)\!\to\!E(z^U)\equiv E(z)\!\to\!(\uparrow U)$ | 将高率抽取/插值滤波移至低率侧，算力精确降至 $1/D$，支撑子带 AEC 与 PDM 抽取（[§0.2.5](00_math-foundations.md#sec-0-2-5)、§6.2.3、§10.2） |
+| Schur 补 LMI 与 SDP | $\vec x^H\mathbf A\vec x\le t\;(\mathbf A\succ\mathbf 0)$<br>$\Longleftrightarrow\;\begin{bmatrix}\mathbf A^{-1} & \vec x \\ \vec x^H & t\end{bmatrix}\succeq\mathbf 0$ | 将凸二次/SOCP 约束等价转为线性矩阵不等式，支撑稳健波束形成与无网格 ANM（[§0.3.5](00_math-foundations.md#sec-0-3-5)、[§0.5.3](00_math-foundations.md#sec-0-5-3)、§5.4、§12.11） |
 
 此外，本书对有限长补零复数序列的离散互相关统一采用第二路取共轭的定义（与 `scipy.signal.correlate` 约定一致，满足反对称关系 $R_{21}[q]=R_{12}^*[-q]$，第 1 路晚到 $q>0$ 点则正滞后出峰，见 [E16-12](#e16-12)）：
 
@@ -357,6 +360,8 @@ $$\begin{aligned}
 | 岭正则（Ridge / 零阶 Tikhonov） | $\delta$ 与 $\mathbf A^H\mathbf A$ 同量纲 | 平滑软收缩因子 $\sigma_i^2/(\sigma_i^2+\delta)$ | 弱方向连续压低而非截断清零，残差满足 $\mathbf A^H\hat{\vec r}_\delta=-\delta\hat{\vec x}_\delta$（[E16-11](#e16-11)） |
 | Moore–Penrose 伪逆 $\mathbf R^+$ 代逆 | 依赖秩截断门限 | 直接抹除 $\mathbf R$ 的零空间方向 | 奇异 $\mathbf R$ 下若目标导向在零空间有非零投影，伪逆解与 $\delta\to 0^+$ 真 MVDR 极限相悖（[E16-05](#e16-05)） |
 | 显式正规方程 $\mathbf A^H\mathbf A$ vs QR / SVD | — | 显式相乘令条件数平方放大至 $\kappa_2(\mathbf A^H\mathbf A)=\kappa_2(\mathbf A)^2$ | $\kappa_2(\mathbf A)\gtrsim 10^8$ 时 `float64` 正规方程将淹没弱方向，代码须直调 QR/SVD（[§0.3.4](00_math-foundations.md#sec-0-3-4)） |
+| 总体最小二乘（TLS） | $[\mathbf A,\vec b]$ 同尺度（无外加正则参） | 对增广阵 $[\mathbf A,\vec b]$ 做 SVD 取末右奇异向量<br>$\hat{\vec x}_{\mathrm{TLS}}=-\vec v_{1:n,n+1}/v_{n+1,n+1}$ | 需满足 $\sigma_n(\mathbf A)>\sigma_{n+1}([\mathbf A,\vec b])$，临近退化时放大噪声；支撑 TLS-ESPRIT（[§0.3.4](00_math-foundations.md#sec-0-3-4)、§4.6） |
+| Weyl 与 Davis–Kahan 微扰界 | $\lVert\mathbf E\rVert_2$ 与间隙 $\Delta_{\mathrm{gap}}$ 同功率量纲 | $\lvert\lambda_i(\hat{\mathbf R})-\lambda_i(\mathbf R)\rvert\le\lVert\mathbf E\rVert_2$；<br>$\lVert\sin\Theta(\hat{\mathbf U}_s,\mathbf U_s)\rVert_2\le\lVert\mathbf E\rVert_2/\Delta_{\mathrm{gap}}$ | $\Delta_{\mathrm{gap}}=\lambda_K(\mathbf R)-\lambda_{K+1}(\hat{\mathbf R})>0$；当 $\lVert\mathbf E\rVert_2$ 逼近 $\Delta_{\mathrm{gap}}$ 时 MUSIC/ESPRIT 发生门限坍塌（[§0.3.4](00_math-foundations.md#sec-0-3-4)、§4.6） |
 
 #### 16.3.4 NumPy / SciPy 数值陷阱速查卡
 

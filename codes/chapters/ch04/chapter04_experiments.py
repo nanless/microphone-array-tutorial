@@ -1,4 +1,4 @@
-"""E04-12..23: deterministic DOA anchors, boundaries and PCM phase checks.
+"""E04-12..24: deterministic DOA anchors, boundaries and PCM phase checks.
 
 Run with ``python -m codes.chapters.ch04.chapter04_experiments``. No files are
 written; no external implementation is imported or run. Local bounds and
@@ -422,6 +422,154 @@ def exercise_04_23():
     return two_mic_cdr_example()
 
 
+def exercise_04_24():
+    """E04-24: off-grid basis mismatch in l1 sparse DOA (ISTA) and SELD F_20 coupling.
+
+    Pure-NumPy complex ISTA on an 8-mic half-wavelength ULA with a 5-deg grid
+    over [-60, +60] deg (25 atoms), contrasting on-grid (10.0 deg) vs. off-grid
+    (12.5 deg) noiseless recovery, paired with DCASE SELD location-dependent
+    F_{20 deg} / class-dependent LE_{CD} coupling under T_DOA = 20 deg.
+    """
+    num_mics = 8
+    spacing_wavelengths = 0.5
+    mic_idx = np.arange(num_mics, dtype=float)
+    grid_deg = np.arange(-60.0, 60.1, 5.0)
+
+    def unit_steering(angle_deg: float) -> np.ndarray:
+        return np.exp(1j * 2.0 * np.pi * spacing_wavelengths * mic_idx
+                      * np.sin(np.deg2rad(angle_deg))) / np.sqrt(num_mics)
+
+    dictionary = np.column_stack([unit_steering(float(g)) for g in grid_deg])
+    lipschitz = float(np.linalg.norm(dictionary, 2) ** 2)
+    step = 1.0 / lipschitz
+    mu = 0.02
+    iterations = 1500
+    support_threshold = 1e-6
+    idx_10 = int(np.where(grid_deg == 10.0)[0][0])
+    idx_15 = int(np.where(grid_deg == 15.0)[0][0])
+
+    def solve_ista(target_deg: float) -> dict:
+        y = unit_steering(target_deg)
+        s = np.zeros(grid_deg.size, dtype=complex)
+        thresh = step * mu
+        for _ in range(iterations):
+            z = s - step * (dictionary.conj().T @ (dictionary @ s - y))
+            mag = np.abs(z)
+            shrink = np.where(mag > thresh, 1.0 - thresh / np.maximum(mag, 1e-30), 0.0)
+            s = shrink * z
+        mags = np.abs(s)
+        l2_sq = float(np.sum(mags ** 2))
+        l1_norm = float(np.sum(mags))
+        residual = y - dictionary @ s
+        rel_residual = float(np.linalg.norm(residual) / np.linalg.norm(y))
+        grad = dictionary.conj().T @ residual
+        active_idx = np.where(mags > support_threshold)[0]
+        inactive_idx = np.setdiff1d(np.arange(grid_deg.size), active_idx)
+        kkt_active_err = float(
+            np.max(np.abs(grad[active_idx] - mu * s[active_idx] / mags[active_idx]))
+        ) if active_idx.size else 0.0
+        kkt_inactive_err = float(
+            np.max(np.maximum(0.0, np.abs(grad[inactive_idx]) - mu))
+        ) if inactive_idx.size else 0.0
+        peak_idx = int(np.argmax(mags))
+        w10 = float(mags[idx_10])
+        w15 = float(mags[idx_15])
+        adj_energy_frac = float((w10 ** 2 + w15 ** 2) / l2_sq) if l2_sq > 0.0 else 0.0
+        sidelobe_idx = [int(i) for i in active_idx if int(i) not in (idx_10, idx_15)]
+        sidelobe_energy_frac = float(sum(float(mags[i]) ** 2 for i in sidelobe_idx) / l2_sq) if l2_sq > 0.0 else 0.0
+        sidelobe_l1_frac = float(sum(float(mags[i]) for i in sidelobe_idx) / l1_norm) if l1_norm > 0.0 else 0.0
+        active_atoms = [
+            {
+                'angle_deg': float(grid_deg[i]),
+                'magnitude': float(mags[i]),
+                'energy_fraction': float((mags[i] ** 2) / l2_sq) if l2_sq > 0.0 else 0.0,
+            }
+            for i in active_idx
+        ]
+        return {
+            'true_angle_deg': float(target_deg),
+            'support_count': int(active_idx.size),
+            'active_atoms': active_atoms,
+            'peak_angle_deg': float(grid_deg[peak_idx]),
+            'peak_magnitude': float(mags[peak_idx]),
+            'peak_energy_fraction': float((mags[peak_idx] ** 2) / l2_sq) if l2_sq > 0.0 else 0.0,
+            'weight_at_10_deg': w10,
+            'weight_at_15_deg': w15,
+            'adjacent_10_15_energy_fraction': adj_energy_frac,
+            'sidelobe_atom_count': int(len(sidelobe_idx)),
+            'sidelobe_energy_fraction': sidelobe_energy_frac,
+            'sidelobe_l1_fraction': sidelobe_l1_frac,
+            'l1_norm': l1_norm,
+            'relative_residual_l2': rel_residual,
+            'kkt_active_error': kkt_active_err,
+            'kkt_inactive_error': kkt_inactive_err,
+        }
+
+    on_grid = solve_ista(10.0)
+    off_grid = solve_ista(12.5)
+
+    doa_threshold_deg = 20.0
+
+    def seld_metrics(errors_deg: list[float]) -> dict:
+        n_ref = len(errors_deg)
+        tp = sum(1 for e in errors_deg if e <= doa_threshold_deg)
+        fn = n_ref - tp
+        fp = n_ref - tp  # class-matched prediction outside spatial gate counts as 1 FN and 1 FP
+        precision = float(tp / (tp + fp))
+        recall = float(tp / (tp + fn))
+        f_score = float(2 * tp / (2 * tp + fp + fn))
+        lr_cd = float(n_ref / n_ref)
+        le_cd = float(sum(errors_deg) / n_ref)
+        return {
+            'n_ref': int(n_ref),
+            'doa_errors_deg': [float(e) for e in errors_deg],
+            'tp_20': int(tp),
+            'fp_20': int(fp),
+            'fn_20': int(fn),
+            'precision_20': precision,
+            'recall_20': recall,
+            'f_20': f_score,
+            'f_20_percent': float(100.0 * f_score),
+            'lr_cd': lr_cd,
+            'lr_cd_percent': float(100.0 * lr_cd),
+            'le_cd_deg': le_cd,
+        }
+
+    seld_before = seld_metrics([5.0, 12.0, 19.0, 24.0])
+    seld_after = seld_metrics([5.0, 12.0, 19.0, 18.0])
+
+    return {
+        'off_grid_l1_mismatch': {
+            'num_mics': int(num_mics),
+            'spacing_wavelengths': float(spacing_wavelengths),
+            'grid_min_deg': float(grid_deg[0]),
+            'grid_max_deg': float(grid_deg[-1]),
+            'grid_step_deg': 5.0,
+            'grid_size': int(grid_deg.size),
+            'mu': float(mu),
+            'lipschitz_constant': lipschitz,
+            'step_size': step,
+            'iterations': int(iterations),
+            'support_threshold': float(support_threshold),
+            'corr_10_to_12_5': float(abs(np.vdot(unit_steering(10.0), unit_steering(12.5)))),
+            'corr_15_to_12_5': float(abs(np.vdot(unit_steering(15.0), unit_steering(12.5)))),
+            'on_grid': on_grid,
+            'off_grid': off_grid,
+        },
+        'seld_location_dependent_f1': {
+            'doa_threshold_deg': float(doa_threshold_deg),
+            'before_refinement': seld_before,
+            'after_refinement': seld_after,
+            'f_20_gain_percentage_points': float(seld_after['f_20_percent'] - seld_before['f_20_percent']),
+            'le_cd_reduction_deg': float(seld_before['le_cd_deg'] - seld_after['le_cd_deg']),
+        },
+        'limits': (
+            'Noiseless single-snapshot ULA basis-mismatch diagnostic and fixed 4-event '
+            'SELD threshold arithmetic; not a noisy multi-source or DCASE benchmark.'
+        ),
+    }
+
+
 # Backward-compatible aliases for external callers referencing pre-refactor names.
 exercise_04_26 = exercise_04_22
 exercise_04_27 = exercise_04_23
@@ -441,6 +589,7 @@ def run_exercises():
         exact_ctf_cross_relation,
         exercise_04_22,
         exercise_04_23,
+        exercise_04_24,
     ]
     return {f'E04-{i:02d}': function() for i, function in enumerate(functions, 12)}
 

@@ -16,8 +16,14 @@ concurrency:
 
 jobs:
   verify:
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-15, windows-latest]
+    runs-on: ${{ matrix.os }}
     steps:
+      - name: Preserve source bytes during checkout
+        run: git config --global core.autocrlf false
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
@@ -35,5 +41,5 @@ jobs:
           node assets/readme/lab/export-lab.mjs --check
           python scripts/course_home/export_portable.py --check
           python scripts/course_home_en/export_portable.py --check
-      - name: Run Chinese & English quality gates, SHA-256 manifest checks, and unit tests
+      - name: Check bilingual publications, 35 numeric reports, asset identities, and selected tests
         run: python scripts/run_portable_ci.py

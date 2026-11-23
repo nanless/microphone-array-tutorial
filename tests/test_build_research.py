@@ -93,42 +93,74 @@ class ResearchBuildTest(unittest.TestCase):
                 self.assertEqual(path.read_text(encoding="utf-8"), "old " + path.name)
 
     def test_pdf_failures_before_or_during_publication_preserve_old_pair(self):
+        from pypdf import PdfWriter
+
+        source_digest = "0123456789ab"
+        html = (f'<html><head><meta name="tutorial-source-digest" content="{source_digest}">'
+                '<meta name="tutorial-build-date" content="2026-11-23"></head>'
+                '<body>new HTML</body></html>')
+
+        def pdf_bytes(identity=None):
+            writer = PdfWriter()
+            writer.add_blank_page(width=595, height=842)
+            if identity is not None:
+                writer.add_metadata(identity.metadata())
+            output = io.BytesIO()
+            writer.write(output)
+            return output.getvalue()
+
         for failure in ("print", "bookmarks", "links", "publish"):
             with self.subTest(failure=failure), tempfile.TemporaryDirectory() as temporary:
                 output = Path(temporary)
                 combined = output / "combined.html"
                 pdf = output / "microphone-array-tutorial.pdf"
                 combined.write_text("old HTML", encoding="utf-8")
-                pdf.write_bytes(b"old PDF")
+                original_pdf = pdf_bytes()
+                pdf.write_bytes(original_pdf)
                 replace = build_site.os.replace
+                reached = []
 
-                def print_stub(source, target, _minimum):
+                def print_stub(source, target, _minimum, *, input_identity):
+                    reached.append("print")
                     self.assertNotEqual(source, combined)
                     self.assertEqual(source.parent, combined.parent)
                     self.assertEqual(combined.read_text(encoding="utf-8"), "old HTML")
-                    target.write_bytes(b"new PDF")
+                    self.assertEqual(input_identity, build_pdf.html_input_identity(source.read_bytes()))
+                    target.write_bytes(pdf_bytes(input_identity))
                     if failure == "print":
                         raise RuntimeError("injected print failure")
 
+                def bookmarks_stub(*args, **kwargs):
+                    reached.append("bookmarks")
+                    if failure == "bookmarks":
+                        raise RuntimeError("injected bookmarks failure")
+
+                def links_stub(*args, **kwargs):
+                    reached.append("links")
+                    if failure == "links":
+                        raise RuntimeError("injected links failure")
+
                 def replace_stub(source, target):
                     if failure == "publish" and target == pdf:
+                        reached.append("publish")
                         raise OSError("injected publish failure")
                     return replace(source, target)
 
                 with contextlib.ExitStack() as stack:
                     stack.enter_context(mock.patch.object(build_pdf, "OUT", output))
+                    stack.enter_context(mock.patch.object(build_pdf, "source_digest", return_value=source_digest))
                     stack.enter_context(mock.patch.object(build_pdf, "check_figures"))
-                    stack.enter_context(mock.patch.object(build_pdf, "build_html", return_value=("new HTML", [])))
+                    stack.enter_context(mock.patch.object(build_pdf, "build_html", return_value=(html, [])))
                     stack.enter_context(mock.patch.object(build_pdf, "print_pdf", side_effect=print_stub))
-                    stack.enter_context(mock.patch.object(build_pdf, "add_bookmarks",
-                        side_effect=RuntimeError("injected bookmarks failure") if failure == "bookmarks" else None))
-                    stack.enter_context(mock.patch.object(build_pdf, "validate_pdf_links",
-                        side_effect=RuntimeError("injected links failure") if failure == "links" else None))
+                    stack.enter_context(mock.patch.object(build_pdf, "add_bookmarks", side_effect=bookmarks_stub))
+                    stack.enter_context(mock.patch.object(build_pdf, "validate_pdf_links", side_effect=links_stub))
                     stack.enter_context(mock.patch.object(build_site.os, "replace", side_effect=replace_stub))
-                    with self.assertRaisesRegex((RuntimeError, OSError), "injected"):
+                    expected_error = SystemExit if failure == "publish" else RuntimeError
+                    with self.assertRaisesRegex(expected_error, "injected"):
                         build_pdf.main([])
+                self.assertEqual(reached[-1], failure)
                 self.assertEqual(combined.read_text(encoding="utf-8"), "old HTML")
-                self.assertEqual(pdf.read_bytes(), b"old PDF")
+                self.assertEqual(pdf.read_bytes(), original_pdf)
                 self.assertEqual({path.name for path in output.iterdir()}, {combined.name, pdf.name})
 
     def test_print_figures_reserve_space_for_chapter_and_section_headings(self):

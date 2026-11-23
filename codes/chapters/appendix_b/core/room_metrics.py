@@ -107,13 +107,17 @@ def _fit_decay(times, decay):
     if (not math.isfinite(slope) or slope >= 0 or not math.isfinite(t20)
             or not math.isfinite(t60) or t20 <= 0 or t60 <= 0):
         raise ValueError('EDC slope and positive decay times exceed float64 support')
-    return {'slope_db_per_s': slope, 't20_s': t20, 't60_extrapolated_s': t60}
+    return {'slope_db_per_s': slope, 'decay_20db_interval_s': t20,
+            't20_s': t60, 't60_extrapolated_s': t60}
 
 
 def t20_from_edc_points(times_s, decay_db):
     """Three or more preselected strictly falling -5..-25 dB points.
 
     This fixture fit is not a general RIR estimator or crossing interpolator.
+    T20 is the 60 dB extrapolation from the -5..-25 dB fit. The 20 dB
+    interval of the fitted line is returned as decay_20db_interval_s; it is
+    not the raw time between threshold-crossing samples on a curved EDC.
     The slope and both returned positive times must be representable.
     """
     times, decay = real_array(times_s, 'EDC times'), real_array(decay_db, 'EDC dB')

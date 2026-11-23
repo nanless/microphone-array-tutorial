@@ -85,5 +85,17 @@ def hermitian_part(matrix: np.ndarray) -> np.ndarray:
         raise ValueError("matrix must be square on its last two axes")
     if not np.all(np.isfinite(array)):
         raise ValueError("matrix contains NaN or infinity")
-    # Divide before adding: two valid values near float64's limit must not overflow.
-    return 0.5 * array + 0.5 * np.swapaxes(array.conj(), -1, -2)
+    adjoint = np.swapaxes(array.conj(), -1, -2)
+
+    def midpoint(first, second):
+        # Add first to retain subnormal values. Only an overflowing sum needs
+        # the alternative order; the mean of two finite components is finite.
+        with np.errstate(over="ignore", under="ignore"):
+            total = first + second
+            return np.where(np.isfinite(total), total * 0.5,
+                            first * 0.5 + second * 0.5)
+
+    result = np.empty_like(array)
+    result.real = midpoint(array.real, adjoint.real)
+    result.imag = midpoint(array.imag, adjoint.imag)
+    return result

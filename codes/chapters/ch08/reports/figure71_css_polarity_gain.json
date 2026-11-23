@@ -7,13 +7,13 @@
     "codes/chapters/ch08/core/css_audio.py": "10cb718e2c628269be5859e6da806baf908b7774a2d561f3e27e8a8eafca9831",
     "codes/chapters/ch08/examples/generate_css_audio.py": "d2fa0ed9d25d0df2e0a1270a916b737218e07af08b863fa24f4638f54d12b8dc",
     "codes/chapters/ch08/core/css.py": "d5b76cdb13f6f7ec30ec29a1a3ae25cdcc5c553c8e9294b9e45c259a70bd3226",
-    "codes/chapters/ch02/core/conventions.py": "4e80a27490f05ddd5f4826361420c0c8d0b331464d1e5629c5def492da47b1d7",
+    "codes/chapters/ch02/core/conventions.py": "79af1b8f7fe664e64e7ad786082c36a29664eacbdda63fba96a944e548304865",
     "codes/chapters/ch00/core/audio_samples.py": "1a7aad90d08fb8c27511aa463a6cc6dd6d4d2d230b27ed82549531f1f18edaba",
     "codes/chapters/ch00/io_contracts.py": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974",
-    "scripts/make_figures.py": "4bc6a6ce675292c51d538c0f7d3c6f9c8fe3a2de2d0d7945f48cb4baaa801e49",
-    "scripts/make_css_figures.py": "4869461d61de281ebe1aba4fd3a06e1df8b45f8d0eb888c42296d9ee293abd24"
+    "scripts/make_figures.py": "bf9058d1c3d6ed15bab41ea092439170cd324011936645d577408106813a485a",
+    "scripts/make_css_figures.py": "c6aa19e23460295eedda300f387ba90df417ccfc994c37ba444b1706d2eb1046"
   },
-  "audio_manifest_sha256": "a88fca6d019cf8bff094ae472aefb57ecbc41c9b68de78d1eff6aceff0604b45",
+  "audio_manifest_sha256": "c48e7c1f06a29af047c35d75a135db152eb502907a780fdb20342a4a696c454f",
   "wav_sha256": {
     "css_reference.wav": "c1c6e0178745c9244dd8ed952a80ddf0b57215b5d5631486319f6d6bfa6c1181",
     "css_naive.wav": "07900ed65cbcedc9054ef3e7c0366344ba0ff7b07965851d0619fbfa81be9433",

@@ -30,7 +30,7 @@ def _seconds(tick, denominator):
 
 
 def teaching_lifecycle(frames, *, sample_rate_hz=16000, window_samples=512,
-                       confirmation_frames=3, maximum_age_ticks=6400,
+                       confirmation_frames=3, maximum_age_ticks=6400, hop_samples=160,
                        age_clock='available'):
     """Apply a declared consecutive-hit/expiry policy to a single slot.
 
@@ -38,7 +38,8 @@ def teaching_lifecycle(frames, *, sample_rate_hz=16000, window_samples=512,
     to its window centre, not its availability time. Expiry is strictly age
     > maximum_age_ticks; equality is retained. At an incoming frame the old
     track is first aged before a new measurement can refresh it. A candidate
-    requires consecutive valid frames and disappears on a miss. A confirmed
+    requires consecutive valid frames and disappears on a miss. Input must
+    include every hop, including misses; skipped frames are rejected. A confirmed
     track coasts through misses until expiry. Reacquisition after expiry gets
     a fresh monotonically increasing local ID. Confirmation is published only
     at the completing frame's availability time; no earlier row is relabelled.
@@ -50,6 +51,7 @@ def teaching_lifecycle(frames, *, sample_rate_hz=16000, window_samples=512,
     fs = _integer(sample_rate_hz, 'sample_rate_hz', minimum=1)
     window = _integer(window_samples, 'window_samples', minimum=1)
     needed = _integer(confirmation_frames, 'confirmation_frames', minimum=1)
+    hop = _integer(hop_samples, 'hop_samples', minimum=1)
     maximum = _integer(maximum_age_ticks, 'maximum_age_ticks')
     if type(age_clock) is not str or age_clock not in ('available', 'state'):
         raise ValueError('age_clock must be available or state')
@@ -67,11 +69,13 @@ def teaching_lifecycle(frames, *, sample_rate_hz=16000, window_samples=512,
     # Validate the whole input before processing; do not silently reinterpret
     # an already-declared timestamp from another clock or frame convention.
     ticks = []
-    previous_start = -1
+    previous_start = None
     for start, valid, state_time, available_time in zip(*columns):
         start = _integer(start, 'start_sample')
-        if start <= previous_start or type(valid) is not bool:
-            raise ValueError('start samples must increase and validity must be bool')
+        if type(valid) is not bool:
+            raise ValueError('validity must be bool')
+        if previous_start is not None and start != previous_start + hop:
+            raise ValueError('all frames must be supplied at the declared hop_samples')
         state_tick, available_tick = 2*start+window-1, 2*(start+window)
         denominator = 2*fs
         expected = (_seconds(state_tick, denominator), _seconds(available_tick, denominator))
@@ -128,6 +132,7 @@ def teaching_lifecycle(frames, *, sample_rate_hz=16000, window_samples=512,
             'age_ticks': age, 'age_s': None if age is None else _seconds(age, 2*fs),
             'publish_confirmed': phase == 'confirmed', 'events': frame_events})
     return {'parameters': {'sample_rate_hz': fs, 'window_samples': window,
+            'hop_samples': hop,
             'tick_denominator_hz': 2*fs, 'confirmation_frames': needed,
             'maximum_age_ticks': maximum, 'maximum_age_s': _seconds(maximum, 2*fs),
             'age_clock': age_clock, 'expiry_comparison': 'strictly greater; equality retained',

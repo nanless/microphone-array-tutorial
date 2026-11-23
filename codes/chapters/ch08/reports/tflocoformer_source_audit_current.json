@@ -32,12 +32,12 @@
       ],
       "note": "MERL author repository, source only. No pretrained weights, training data, inference performance or streaming claim."
     },
-    "lock_sha256": "ea8ce3cf679d70d06305f4942dbf9afeee94b69bd0ad7a5b9b09470c327a598f",
+    "lock_sha256": "55721fbe8027f67bf3159827b8b58c14bc327ea5e0221b216303681340e890e7",
     "source_document_paths": {
       "lock": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/SOURCES.lock.json",
       "status": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/SOURCE_STATUS.json"
     },
-    "status_sha256": "be926fccb75979e2f2ac428ac6c65c76a46d672771e21a01d589908d776fcac0",
+    "status_sha256": "96e37d461be3c0c5c07986b48100e935405334d22f346d8efb59ca49b07aa502",
     "recorded_complete_selection": {
       "id": "tf-locoformer",
       "revision": "7a615460d347ff7334a13dbb831d16280da72cdc",
@@ -304,7 +304,7 @@
   },
   "actual_dependency_sha256": {
     "codes/chapters/ch08/examples/tflocoformer_source_audit.py": "0456975cdcd673f5d3362a4e0cda5a26673554fd1981f37f23613c8efdebfe6d",
-    "codes/chapters/ch04/core/upstream_contracts.py": "8669f007ee16a15433598b8f451f226cceb3163bdbc2bf690709504874743167",
+    "codes/chapters/ch04/core/upstream_contracts.py": "e868220b7388ae3124d1098df9de4095e061c1982fb1a251ad7c27c6c0742be5",
     "codes/chapters/ch00/io_contracts.py": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974",
     "codes/chapters/ch00/upstream/fetch_upstreams.py": "442d17a5818ef0edf620bde85cc7959c1e73602a47f75e1cc8fce2b227ae11b4"
   },

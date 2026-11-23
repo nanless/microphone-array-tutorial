@@ -73,24 +73,11 @@ CSS_EN = (
 
 
 def source_digest_en() -> str:
-    digest = hashlib.sha256()
-    paths = sorted(SRC_EN.glob("*.md"))
-    paths += [build_site_en.RESEARCH_EN / name for name, _ in build_site_en.RESEARCH_EN_PAGES]
-    paths += [
-        Path(__file__),
-        ROOT / "scripts" / "build_pdf.py",
-        ROOT / "scripts" / "build_site_en.py",
-        ROOT / "scripts" / "build_markdown_helpers.py",
-        build_site.INLINE_LAYOUT_PATH,
-        build_pdf.PDF_MATH_SCRIPT,
-    ]
-    paths += sorted(FIG_EN.glob("fig*.png"))
-    for path in paths:
-        digest.update(path.relative_to(ROOT).as_posix().encode("utf-8"))
-        digest.update(b"\0")
-        digest.update(path.read_bytes())
-        digest.update(b"\0")
-    return digest.hexdigest()[:12]
+    from scripts import publication_dependencies_en as dependencies
+
+    paths = dependencies.pdf_sources(
+        ROOT, SRC_EN, build_site_en.RESEARCH_EN, [name for name, _ in build_site_en.RESEARCH_EN_PAGES])
+    return dependencies.source_digest(ROOT, paths)
 
 
 def is_exercise_anchor_en(fragment: str, source_path: Path) -> bool:
@@ -223,6 +210,7 @@ def append_book_end_en(html: str) -> str:
 
 def build_html_en(build_date: str | None = None):
     build_pdf.check_mathjax_assets()
+    input_digest = source_digest_en()
     body_parts = []
     outline = []
     n_imgs = 0
@@ -384,7 +372,7 @@ def build_html_en(build_date: str | None = None):
         "<td>Script-Generated &amp; Numerically Verified</td>"
         "<td>Real Room Recordings &amp; Controlled Fixtures</td>"
         "</tr></tbody></table>"
-        f'<article class="meta"><p style="margin:0">Build date {date_s} · Source sha256 {source_digest_en()}<br/>'
+        f'<article class="meta"><p style="margin:0">Build date {date_s} · Source sha256 {input_digest}<br/>'
         f"{len(CHAPTERS_EN)} parts in one volume · Full-text searchable with 3-level bookmarks and accessible SRE MathSpeak formula tags</p></article>"
         "</div>"
     )
@@ -397,6 +385,8 @@ def build_html_en(build_date: str | None = None):
     )
     page = (
         '<!DOCTYPE html><html lang="en" data-tutorial-print-layout="a4"><head><meta charset="utf-8">'
+        f'<meta name="tutorial-build-date" content="{date_s}">'
+        f'<meta name="tutorial-source-digest" content="{input_digest}">'
         f"<title>Microphone Array Signal Processing (Full Monograph)</title><style>{CSS_EN}</style>"
         "<script>\n"
         + build_site.INLINE_LAYOUT_PATH.read_text(encoding="utf-8")
@@ -415,6 +405,8 @@ def build_html_en(build_date: str | None = None):
     n_secs = sum(len(s) for _, _, s in outline)
     n_subsecs = sum(len(subsecs) for _, _, secs in outline for _t, _sid, subsecs in secs)
     unique_imgs = len(set(re.findall(r'<img [^>]*src="([^"]+)"', page)))
+    if source_digest_en() != input_digest:
+        raise ValueError("English publication sources changed while constructing HTML")
     print(f"Combined EN: {len(CHAPTERS_EN)} parts / {n_secs} sections / {n_subsecs} subsections / {unique_imgs} unique figures ({n_imgs} refs)")
     return page, outline
 
@@ -456,113 +448,88 @@ def pdf_alias_targets_en() -> dict[str, str]:
 
 
 def _verified_contourless_space_font(font_ref) -> bool:
-    from io import BytesIO
-    from fontTools.ttLib import TTFont, TTLibError
-
-    if build_pdf.verified_layout_space_font(font_ref):
-        return True
-    try:
-        font = font_ref.get_object()
-        if font.get("/Subtype") != "/Type0" or font.get("/Encoding") != "/Identity-H":
-            return False
-        descendant = font["/DescendantFonts"][0].get_object()
-        if descendant.get("/Subtype") != "/CIDFontType2" or descendant.get("/CIDToGIDMap") != "/Identity":
-            return False
-        data = descendant["/FontDescriptor"]["/FontFile2"].get_data()
-        with TTFont(BytesIO(data)) as embedded:
-            glyph = embedded.getGlyphOrder()[3]
-            return "glyf" in embedded and embedded["glyf"][glyph].numberOfContours == 0
-    except (KeyError, IndexError, ValueError, TypeError, OSError, TTLibError):
-        return False
+    """Require the shared encoding, Unicode, outline and positive-advance proof."""
+    return build_pdf.verified_layout_space_font(font_ref)
 
 
 def _mark_orphan_layout_span_spaces(writer: PdfWriter) -> int:
-    """Wrap top-level `/Span << /ActualText ( ) >> BDC ... (\\000\\003) Tj EMC` blocks
-    that lie outside any `/MCID` or `/Artifact` and use a verified contourless space font
-    as `/Artifact << /Type /Layout >> BDC ... EMC`.
+    """Mark only proven layout-space shows, retaining their original text advance.
+
+    Parse PDF operators so inherited Tf and saved q/Q state are authoritative.
+    Unknown fonts, nested semantic marks and unsupported blocks remain content.
     """
-    import zlib
-    from pypdf.generic import EncodedStreamObject, IndirectObject, StreamObject
+    from pypdf.generic import ContentStream, DecodedStreamObject
 
-    token_re = re.compile(rb"(/[A-Za-z0-9_]+)[ \t\r\n]*<<([^>]*)>>[ \t\r\n]*BDC|\b(EMC)\b")
-    span_space_re = re.compile(
-        rb"^/Span\s*<<\s*/ActualText\s*\(\s*\)\s*>>\s*BDC\s*"
-        rb"(?:/(F\d+)\s+[0-9.]+\s+Tf\s+)?"
-        rb"(?:[0-9.+-]+\s+){2,6}(?:Tm|Td)\s+"
-        rb"\(\\000\\003\)\s*Tj\s*EMC$",
-        re.S,
-    )
-    font_proofs: dict[tuple, bool] = {}
+    proofs = {}
     fixed_total = 0
-
     for page in writer.pages:
-        ref = page.raw_get("/Contents")
-        if not hasattr(ref, "idnum"):
+        if page.get_contents() is None:
             continue
-        cid = ref.idnum
-        obj = writer._objects[cid - 1]
-        if not isinstance(obj, StreamObject) or obj.get("/DecodeParms") is not None:
-            continue
-        raw = obj.get_data()
-        if b"/Span" not in raw:
-            continue
-
-        # Locate top-level /Span BDC..EMC ranges outside any /MCID or /Artifact
-        stack = []
-        replacements = []
-        for m in token_re.finditer(raw):
-            if m.group(1):
-                tag, props = m.group(1), m.group(2)
-                stack.append((tag, b"/MCID" in props, tag == b"/Artifact", m.start()))
-            else:
-                if not stack:
+        content = ContentStream(page.get_contents(), writer)
+        operations = content.operations
+        font, font_stack, marks, replacements = None, [], [], []
+        shown_fonts = {}
+        balanced = True
+        for index, (operands, operation) in enumerate(operations):
+            if operation == b"q":
+                font_stack.append(font)
+            elif operation == b"Q":
+                if not font_stack:
+                    balanced = False
+                    break
+                font = font_stack.pop()
+            elif operation == b"Tf":
+                font = operands[0] if len(operands) == 2 else None
+            elif operation == b"gs":
+                # ExtGState may set Font independently of Tf. Until that form
+                # is proved, keep following inherited shows semantic.
+                font = None
+            if operation == b"Tj":
+                shown_fonts[index] = font
+            if operation in (b"BDC", b"BMC"):
+                props = operands[1] if operation == b"BDC" and len(operands) == 2 else None
+                semantic = (operands[0] == "/Artifact" or
+                            isinstance(props, dict) and "/MCID" in props)
+                protected = semantic or any(mark[2] for mark in marks)
+                marks.append((index, props, protected))
+            elif operation == b"EMC":
+                if not marks:
+                    balanced = False
+                    break
+                start, props, protected = marks.pop()
+                if (protected or operations[start][0][0] != "/Span"
+                        or not isinstance(props, dict) or set(props) != {"/ActualText"}
+                        or props["/ActualText"] != " "):
                     continue
-                tag, has_mcid, is_art, start_pos = stack.pop()
-                if tag == b"/Span" and not has_mcid and not is_art and not any(h or a for _, h, a, _ in stack):
-                    end_pos = m.end()
-                    block = raw[start_pos:end_pos]
-                    sm = span_space_re.match(block)
-                    if sm:
-                        fname = "/" + sm.group(1).decode("ascii") if sm.group(1) else None
-                        ok = True
-                        if fname:
-                            res = page.get("/Resources", {}).get("/Font", {}).get(fname)
-                            if res is not None:
-                                resolved = res.get_object()
-                                iref = getattr(resolved, "indirect_reference", None)
-                                key = ("ind", iref.idnum) if iref else ("dir", id(resolved))
-                                if key not in font_proofs:
-                                    font_proofs[key] = _verified_contourless_space_font(res)
-                                ok = font_proofs[key]
-                        if ok:
-                            new_block = re.sub(
-                                rb"^/Span\s*<<\s*/ActualText\s*\(\s*\)\s*>>\s*BDC",
-                                b"/Artifact << /Type /Layout >> BDC",
-                                block,
-                                count=1,
-                            )
-                            replacements.append((start_pos, end_pos, new_block))
-
-        if replacements:
-            out_parts = []
-            pos = 0
-            for s, e, nb in replacements:
-                out_parts.append(raw[pos:s])
-                out_parts.append(nb)
-                pos = e
-            out_parts.append(raw[pos:])
-            new_raw = b"".join(out_parts)
-            comp = zlib.compress(new_raw, 9)
-            enc = EncodedStreamObject()
-            for k, v in obj.items():
-                if k not in ("/Length", "/Filter", "/DecodeParms"):
-                    enc[NameObject(k)] = v
-            enc._data = comp
-            enc[NameObject("/Filter")] = NameObject("/FlateDecode")
-            enc[NameObject("/Length")] = build_pdf.pypdf_number(len(comp)) if hasattr(build_pdf, "pypdf_number") else __import__("pypdf.generic", fromlist=["NumberObject"]).NumberObject(len(comp))
-            enc.indirect_reference = obj.indirect_reference or IndirectObject(cid, 0, writer)
-            writer._objects[cid - 1] = enc
-            fixed_total += len(replacements)
+                block = operations[start + 1:index]
+                if block and block[0][1] == b"Tf":
+                    block = block[1:]
+                if (len(block) != 2 or block[0][1] not in (b"Tm", b"Td")
+                        or len(block[0][0]) != (6 if block[0][1] == b"Tm" else 2)
+                        or block[1][1] != b"Tj" or len(block[1][0]) != 1
+                        or getattr(block[1][0][0], "_original_bytes", None) != b"\x00\x03"):
+                    continue
+                active_font = shown_fonts.get(index - 1)
+                resource = page.get("/Resources", {}).get("/Font", {}).get(active_font)
+                if resource is None:
+                    continue
+                resolved = resource.get_object()
+                reference = getattr(resolved, "indirect_reference", None)
+                key = ("indirect", reference.idnum) if reference else ("direct", id(resolved))
+                if key not in proofs:
+                    proofs[key] = _verified_contourless_space_font(resource)
+                if proofs[key]:
+                    replacements.append(start)
+        if not balanced or marks or font_stack or not replacements:
+            continue
+        for start in replacements:
+            operations[start] = ([NameObject("/Artifact"), DictionaryObject({
+                NameObject("/Type"): NameObject("/Layout")})], b"BDC")
+        content.operations = operations
+        stream = DecodedStreamObject()
+        stream.set_data(build_pdf.pdf_content_bytes_losslessly(operations, writer))
+        page[NameObject("/Contents")] = writer._add_object(stream.flate_encode(9))
+        fixed_total += len(replacements)
     return fixed_total
 
 
@@ -659,7 +626,11 @@ def normalize_pdf_semantics_en(writer: PdfWriter, outline, aliases=None) -> None
     metadata[NameObject("/Subtype")] = NameObject("/XML")
 
 
-def print_pdf_en(combined: Path, pdf: Path, timeout_min_pages: int = 100) -> int:
+def print_pdf_en(combined: Path, pdf: Path, timeout_min_pages: int = 100, *, input_identity) -> int:
+    build_pdf.require_unchanged_pdf_input(input_identity, combined, source_digest_en)
+    html_bytes = combined.read_bytes()
+    if build_pdf.html_input_identity(html_bytes) != input_identity:
+        raise ValueError("English print input identity differs")
     chrome = build_pdf.find_chrome()
     if not Path(chrome).exists():
         raise SystemExit(f"Chrome not found: {chrome}")
@@ -714,12 +685,17 @@ def print_pdf_en(combined: Path, pdf: Path, timeout_min_pages: int = 100) -> int
         if not tmp_pdf.exists():
             raise SystemExit(f"English PDF not generated\n{log_text}")
         print("generated raw EN", tmp_pdf, tmp_pdf.stat().st_size // 1024 // 1024, "MiB")
+        build_pdf.require_unchanged_pdf_input(input_identity, combined, source_digest_en)
         writer = PdfWriter(clone_from=PdfReader(str(tmp_pdf)))
-        build_pdf.tag_pdf_formulas(writer, build_pdf.pdf_math_sources(combined.read_text(encoding="utf-8")))
+        build_pdf.tag_pdf_formulas(writer, build_pdf.pdf_math_sources(html_bytes.decode("utf-8")))
+        writer.add_metadata(input_identity.metadata())
+        build_pdf.preserve_pdf_float_values(writer)
         with tmp_pdf.open("wb") as stream:
             writer.write(stream)
         reader = PdfReader(str(tmp_pdf))
         build_pdf.validate_pdf_structure_tags(reader)
+        if build_pdf.PDFInputIdentity.from_metadata(reader.metadata or {}) != input_identity:
+            raise ValueError("English printed PDF lost its HTML identity")
         npages = len(reader.pages)
         page_texts = []
         scale_samples = []
@@ -755,20 +731,24 @@ def print_pdf_en(combined: Path, pdf: Path, timeout_min_pages: int = 100) -> int
         too_small = [(p, round(s, 4)) for p, s in scale_samples if s < 0.74]
         if too_small:
             raise SystemExit(f"English PDF body scaled down (<0.75): {too_small[:5]}")
+        build_pdf.require_unchanged_pdf_input(input_identity, combined, source_digest_en)
         os.replace(tmp_pdf, pdf)
     finally:
         tmp_pdf.unlink(missing_ok=True)
     return npages
 
 
-def add_bookmarks_en(pdf_path: Path, outline, aliases=None):
+def add_bookmarks_en(pdf_path: Path, outline, aliases=None, *, input_identity):
     reader = PdfReader(str(pdf_path))
+    if (build_pdf.PDFInputIdentity.from_metadata(reader.metadata or {}) != input_identity
+            or source_digest_en() != input_identity.source_digest):
+        raise ValueError("English bookmark input identity differs")
     writer = PdfWriter(clone_from=reader)
     writer.add_metadata({
         "/Title": "Microphone Array Signal Processing",
         "/Subject": "From Fundamentals to Industrial Practice",
         "/Creator": "scripts/build_pdf_en.py",
-        "/SourceDigest": source_digest_en(),
+        **input_identity.metadata(),
     })
     writer._root_object.update({NameObject("/Lang"): TextStringObject("en-US")})
     if aliases is not None:
@@ -804,6 +784,9 @@ def add_bookmarks_en(pdf_path: Path, outline, aliases=None):
             build_pdf.write_pdf_with_object_streams(writer, f)
         tagged = PdfReader(str(tmp_path))
         build_pdf.validate_pdf_structure_tags(tagged)
+        if (build_pdf.PDFInputIdentity.from_metadata(tagged.metadata or {}) != input_identity
+                or source_digest_en() != input_identity.source_digest):
+            raise ValueError("English PDF input identity changed during bookmarking")
         if aliases is not None:
             build_pdf.validate_pdf_named_aliases(tagged, aliases)
         os.replace(tmp_path, pdf_path)
@@ -814,19 +797,18 @@ def add_bookmarks_en(pdf_path: Path, outline, aliases=None):
 
 
 def check_figures_en() -> None:
-    missing = []
+    from scripts.quality_check_en import check_figures_and_svgs
+    errors = []
+    check_figures_and_svgs(errors)
     refs = set()
     for fname, _ in CHAPTERS_EN:
         md = (SRC_EN / fname).read_text(encoding="utf-8")
-        for m in re.finditer(r"\.\./figures(?:_en)?/([^\")\s]+)", md):
-            refs.add(m.group(1))
-            path = FIG_EN / m.group(1)
-            if not path.exists() or path.stat().st_size == 0:
-                missing.append(f"{fname}: {m.group(1)}")
-    if missing:
-        raise SystemExit("Missing English figures:\n" + "\n".join(missing))
-    if len(refs) != 87:
-        raise SystemExit(f"Expected 87 unique figure references in chapters_en/, got {len(refs)}")
+        refs.update(re.findall(r"\.\./figures(?:_en)?/([^\")\s]+)", md))
+    from scripts.quality_check import EXPECTED_FIGURES
+    if refs != set(EXPECTED_FIGURES):
+        errors.append("English chapter figure references differ from publication catalog")
+    if errors:
+        raise SystemExit("English figures check failed:\n" + "\n".join(errors))
     print(f"English figures check passed ({len(CHAPTERS_EN)} parts, {len(refs)} unique figures)")
 
 
@@ -851,30 +833,51 @@ def main(argv=None) -> None:
         if not args.pdf_only:
             check_figures_en()
             page, outline = build_html_en(args.build_date)
+            identity = build_pdf.verify_canonical_html_input(
+                page.encode("utf-8"), build_html_en, source_digest_en)
             fd, tmp_name = tempfile.mkstemp(prefix="combined-en-", suffix=".html", dir=OUT)
             os.close(fd)
             tmp_html = Path(tmp_name)
-            tmp_html.write_text(page, encoding="utf-8")
+            tmp_html.write_bytes(page.encode("utf-8"))
         if args.html_only:
+            build_pdf.require_unchanged_pdf_input(identity, tmp_html, source_digest_en)
             build_site.publish_files([(tmp_html, combined)])
             print("saved", combined, "(html only)")
             return
         if args.pdf_only:
-            html = combined.read_text(encoding="utf-8")
+            from scripts.quality_check_en import cached_html_issues_en
+            html_bytes = combined.read_bytes()
+            identity = build_pdf.verify_canonical_html_input(html_bytes, build_html_en, source_digest_en)
+            html = html_bytes.decode("utf-8")
+            issues = cached_html_issues_en(html, source_digest_en())
+            if issues:
+                raise SystemExit("\n".join(issues))
             outline = build_pdf.outline_from_html(html)
+            fd, tmp_name = tempfile.mkstemp(prefix="combined-en-", suffix=".html", dir=OUT)
+            os.close(fd)
+            tmp_html = Path(tmp_name)
+            tmp_html.write_bytes(html_bytes)
         fd, tmp_name = tempfile.mkstemp(prefix="validated-en-", suffix=".pdf", dir=OUT)
         os.close(fd)
         tmp_pdf = Path(tmp_name)
-        print_pdf_en(tmp_html or combined, tmp_pdf, args.min_pages)
+        print_pdf_en(tmp_html, tmp_pdf, args.min_pages, input_identity=identity)
         if not args.no_bookmarks:
-            add_bookmarks_en(tmp_pdf, outline, pdf_alias_targets_en())
+            add_bookmarks_en(tmp_pdf, outline, pdf_alias_targets_en(), input_identity=identity)
         build_pdf.validate_pdf_links(tmp_pdf)
-        replacements = [] if tmp_html is None else [(tmp_html, combined)]
+        verified = build_pdf.verify_pdf_input_metadata(PdfReader(str(tmp_pdf)), build_html_en, source_digest_en)
+        if verified != identity:
+            raise ValueError("English final PDF differs from the captured HTML input")
+        build_pdf.require_unchanged_pdf_input(identity, tmp_html, source_digest_en)
+        if args.pdf_only:
+            build_pdf.require_unchanged_pdf_input(identity, combined, source_digest_en)
+        replacements = [] if args.pdf_only else [(tmp_html, combined)]
         replacements.append((tmp_pdf, pdf))
         build_site.publish_files(replacements)
         os.chmod(pdf, 0o644)
         sz_mib = pdf.stat().st_size / (1024 * 1024)
         print(f"saved {pdf} ({sz_mib:.2f} MiB)")
+    except (ValueError, TypeError, OSError) as exc:
+        raise SystemExit(f"English PDF build failed: {exc}") from exc
     finally:
         if tmp_html is not None:
             tmp_html.unlink(missing_ok=True)

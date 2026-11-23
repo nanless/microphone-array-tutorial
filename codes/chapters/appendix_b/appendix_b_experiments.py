@@ -356,7 +356,8 @@ def truncated_edc_fixture() -> dict:
             'fit_start_db': float(decay_db[start]),
             'fit_stop_db': float(decay_db[stop]),
             'slope_db_per_s': -60.0 / t60,
-            't20_s': t60 / 3.0, 't60_extrapolated_s': t60,
+            'decay_20db_interval_s': t60 / 3.0,
+            't20_s': t60, 't60_extrapolated_s': t60,
             'geometric_vs_reverse_sum_max_absolute':
                 float(np.max(np.abs(geometric - relative))),
         })

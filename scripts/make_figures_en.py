@@ -23,6 +23,7 @@ Design guarantees:
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -71,6 +72,15 @@ FIGURES_EN_DIR = (REPOSITORY_ROOT / "figures_en").resolve()
 CODES_DIR = (REPOSITORY_ROOT / "codes").resolve()
 
 
+def translation_metadata(filename: str) -> dict[str, str]:
+    return {
+        "FigureFilename": filename,
+        "TranslationScript": "scripts/make_figures_en.py",
+        "TranslationScriptSHA256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+        "TranslationTableSHA256": hashlib.sha256(TRANSLATIONS_PATH.read_bytes()).hexdigest(),
+    }
+
+
 def _load_primary_charmap() -> set[int] | None:
     try:
         font_path = fm.findfont(
@@ -103,6 +113,7 @@ class FigureTranslator:
     def __init__(self, json_path: Path) -> None:
         payload = json.loads(json_path.read_text(encoding="utf-8"))
         self.exact: dict[str, str] = dict(payload["exact"])
+        self.figure_overrides: dict[str, dict[str, str]] = payload.get("figure_overrides", {})
         self.regex_rules: list[tuple[re.Pattern[str], str]] = [
             (re.compile(rule["pattern"]), rule["replacement"])
             for rule in payload.get("regex_rules", [])
@@ -202,8 +213,10 @@ def _assert_zero_cjk(fig: matplotlib.figure.Figure, fig_name: str, stage: str) -
 def _autofit_translated_layout(
     fig: matplotlib.figure.Figure,
     was_translated: set[int],
+    protected_fonts: dict[int, float] | None = None,
 ) -> None:
     """Adjust font sizes gently where English strings would overflow containers."""
+    protected_fonts = protected_fonts or {}
     fig.canvas.draw()
     renderer = fig.canvas.get_renderer()
     fig_bbox = fig.bbox
@@ -224,7 +237,7 @@ def _autofit_translated_layout(
 
         for txt in ax.texts:
             s = txt.get_text().strip()
-            if not s or not txt.get_visible():
+            if not s or not txt.get_visible() or id(txt) in protected_fonts:
                 continue
             tb = txt.get_window_extent(renderer)
             if tb.width <= 0 or tb.height <= 0:
@@ -283,7 +296,7 @@ def _autofit_translated_layout(
         if ax_bbox.width > 35:
             max_title_w = (1.06 if len(fig.axes) > 1 else 1.22) * ax_bbox.width
             for title_obj in (ax.title, ax._left_title, ax._right_title):
-                if title_obj.get_text().strip():
+                if title_obj.get_text().strip() and id(title_obj) not in protected_fonts:
                     tb = title_obj.get_window_extent(renderer)
                     if tb.width > max_title_w:
                         scale = max_title_w / tb.width
@@ -295,7 +308,8 @@ def _autofit_translated_layout(
             if lb.width > 0.80 * ax_bbox.width:
                 scale = max(0.76, (0.78 * ax_bbox.width) / lb.width)
                 for lt in leg.get_texts():
-                    lt.set_fontsize(max(8.0, lt.get_fontsize() * scale))
+                    if id(lt) not in protected_fonts:
+                        lt.set_fontsize(max(8.0, lt.get_fontsize() * scale))
 
         if ax.axison:
             xt_items = []
@@ -330,10 +344,123 @@ def _autofit_translated_layout(
                     ftxt.set_fontsize(max(8.5, ftxt.get_fontsize() * scale))
 
 
+def _apply_figure_text_overrides(fig, filename, overrides):
+    """Apply reviewed short labels only within their named figure."""
+    replacements = overrides.get(filename, {})
+    found = set()
+    for artist in fig.findobj(mtext.Text, include_self=True):
+        old = artist.get_text()
+        if old in replacements:
+            text = replacements[old]
+            artist.set_text(text)
+            _set_artist_font(artist, text)
+            found.add(old)
+    if found != set(replacements):
+        raise ValueError(f"{filename}: reviewed label missing from figure")
+
+
+def _publication_font_artists(fig, filename):
+    """Keep reviewed titles/legends readable; their translations must fit at full size."""
+    title_axes = {
+        "fig12_gcc_phat.png": (2,),
+        "fig85_subspace_projection_svd.png": (2,),
+        "fig83_av_asynchrony_occlusion.png": (2, 3),
+        "fig38_css_overlap.png": (0,),
+        "fig61_equal_drr_response.png": (0, 1, 2),
+    }
+    legend_axes = {
+        "fig83_av_asynchrony_occlusion.png": (2,),
+        "fig77_bsm_ls_vs_magls.png": (0, 1),
+        "fig61_equal_drr_response.png": (2,),
+        "fig68_phase_reference.png": (0,),
+        "fig78_own_voice_fusion.png": (2,),
+        "fig79_hear_through_comb.png": (0,),
+        "fig81_nearfield_distance_bubble.png": (0,),
+        "fig82_diarization_tsvad_gss.png": (2,),
+        "fig87_wirtinger_probability_bayesian.png": (1,),
+    }
+    protected = {}
+    if filename == "fig18_aec.png":
+        annotations = {
+            0: {"Playback\n$x[n]$", "NLMS\n$\\hat{\\vec{w}}[n+1]$"},
+            3: {"Synthetic\nnear-end burst"},
+        }
+        for index, labels in annotations.items():
+            matches = [artist for artist in fig.axes[index].texts
+                       if artist.get_text() in labels]
+            if len(matches) != len(labels):
+                raise ValueError(f"{filename}: reviewed annotation missing from figure")
+            for artist in matches:
+                artist.set_fontsize(11)
+                protected[id(artist)] = 11.0
+    for index in title_axes.get(filename, ()):
+        artist = fig.axes[index].title
+        artist.set_fontsize(12)
+        protected[id(artist)] = 12.0
+    for index in legend_axes.get(filename, ()):
+        legend = fig.axes[index].get_legend()
+        if legend is not None:
+            for artist in legend.get_texts():
+                artist.set_fontsize(11)
+                protected[id(artist)] = 11.0
+    return protected
+
+
+def _validate_publication_fonts(fig, filename, protected):
+    """Reject a bad fit instead of silently reducing selected text sizes."""
+    if not protected:
+        return
+    fig.canvas.draw()
+    renderer = fig.canvas.get_renderer()
+    for ax in fig.axes:
+        width = ax.get_window_extent(renderer).width
+        for artist in ax.texts:
+            if id(artist) not in protected:
+                continue
+            bounds = artist.get_window_extent(renderer)
+            if (artist.get_fontsize() != protected[id(artist)]
+                    or bounds.x0 < fig.bbox.x0 or bounds.x1 > fig.bbox.x1
+                    or bounds.y0 < fig.bbox.y0 or bounds.y1 > fig.bbox.y1):
+                raise ValueError(f"{filename}: shorten or move the full-size annotation")
+            # These two flowchart labels belong to actual centered boxes.
+            # The independent near-end annotation does not belong to its axvspan.
+            if filename == "fig18_aec.png" and ax is fig.axes[0]:
+                center = artist.get_transform().transform(artist.get_position())
+                boxes = [p.get_window_extent(renderer) for p in ax.patches
+                         if isinstance(p, Rectangle)]
+                boxes = [box for box in boxes
+                         if abs((box.x0 + box.x1) / 2 - center[0]) < 1
+                         and abs((box.y0 + box.y1) / 2 - center[1]) < 1]
+                if (len(boxes) != 1 or bounds.width > .90 * boxes[0].width
+                        or bounds.height > .86 * boxes[0].height):
+                    raise ValueError(f"{filename}: shorten the full-size flowchart label")
+        if id(ax.title) in protected:
+            if (ax.title.get_fontsize() != protected[id(ax.title)]
+                    or ax.title.get_window_extent(renderer).width > 1.06 * width):
+                raise ValueError(f"{filename}: shorten or wrap the full-size subplot title")
+        legend = ax.get_legend()
+        if legend is not None and any(id(t) in protected for t in legend.get_texts()):
+            if (any(t.get_fontsize() != protected.get(id(t), t.get_fontsize())
+                    for t in legend.get_texts())
+                    or legend.get_window_extent(renderer).width > 1.02 * width):
+                raise ValueError(f"{filename}: shorten the full-size legend")
+
+
+def _staged_report_bytes(canonical, staged, read_bytes):
+    """Bind regenerated geometry to its report, requiring a current Chinese report."""
+    actual = read_bytes(staged)
+    if not canonical.is_file() or read_bytes(canonical) != actual:
+        raise ValueError(
+            f"{canonical.name}: regenerated report differs; rebuild Chinese figures first")
+    return actual
+
+
 def generate_all_english_figures(only_scripts: tuple[str, ...] = FIGURE_SCRIPTS) -> list[Path]:
+    from scripts.figure_report_contracts import FIGURE_REPORTS
     translator = FigureTranslator(TRANSLATIONS_PATH)
     FIGURES_EN_DIR.mkdir(parents=True, exist_ok=True)
     saved_files: list[Path] = []
+    canonical_reports = {REPOSITORY_ROOT / item.report_relative for item in FIGURE_REPORTS}
 
     with tempfile.TemporaryDirectory(prefix="masp_fig_en_reports_") as tmp_str:
         tmpdir = Path(tmp_str).resolve()
@@ -368,10 +495,10 @@ def generate_all_english_figures(only_scripts: tuple[str, ...] = FIGURE_SCRIPTS)
             return orig_write_bytes(target, data, *args, **kwargs)
 
         def patched_read_bytes(self: Path) -> bytes:
-            if self.exists():
-                return orig_read_bytes(self)
             redir = _is_protected_repo_write(self)
             if redir is not None and redir.exists():
+                if self.resolve() in canonical_reports:
+                    return _staged_report_bytes(self, redir, orig_read_bytes)
                 return orig_read_bytes(redir)
             return orig_read_bytes(self)
 
@@ -450,14 +577,21 @@ def generate_all_english_figures(only_scripts: tuple[str, ...] = FIGURE_SCRIPTS)
                         was_translated.add(id(obj))
                     _set_artist_font(obj, new_s)
 
+                _apply_figure_text_overrides(self, out_path.name, translator.figure_overrides)
                 _assert_zero_cjk(self, out_path.name, "pre-save")
-                _autofit_translated_layout(self, was_translated)
+                protected_fonts = _publication_font_artists(self, out_path.name)
+                _autofit_translated_layout(self, was_translated, protected_fonts)
+                _validate_publication_fonts(self, out_path.name, protected_fonts)
 
                 # Re-sync tick label fonts after draw regenerated any tick labels
                 for obj in self.findobj(mtext.Text, include_self=True):
                     _set_artist_font(obj, obj.get_text())
 
                 out_path.parent.mkdir(parents=True, exist_ok=True)
+                kwargs["metadata"] = {
+                    **(kwargs.get("metadata") or {}),
+                    **translation_metadata(out_path.name),
+                }
                 result = orig_savefig(self, out_path, *args, **kwargs)
                 _assert_zero_cjk(self, out_path.name, "post-save")
                 saved_files.append(out_path)

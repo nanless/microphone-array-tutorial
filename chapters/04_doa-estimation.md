@@ -50,7 +50,7 @@
 - **图 11(a) 波束扫描类空间谱**：横轴为候选方位角（$-90^\circ$～$90^\circ$），纵轴为按各自最大值归一化后的输出功率（单位 dB），两条竖向灰虚线与顶部倒三角标出 $-20^\circ$ 与 $30^\circ$ 真实声源方位。蓝色实线 Bartlett 谱就是常规延迟求和波束在各方向的平均输出功率，受 $8$ 元线阵孔径限制，两个主瓣较宽，且在两峰之间及外侧留下了约 $-12$～$-18\ \mathrm{dB}$ 的起伏旁瓣；红色虚线 Capon/MVDR 谱在保持候选方向单位增益的同时自适应压低其余方向泄漏，不仅主峰明显收窄，还将非声源方向的背景平坦地压低到约 $-26\ \mathrm{dB}$。
 - **图 11(b) MUSIC 伪谱**：纵轴画的是候选导向矢量向噪声子空间投影能量倒数的对数（按自身峰值归一到 $0\ \mathrm{dB}$）。绿色实线在 $-20^\circ$ 与 $30^\circ$ 处形成极细的针状尖峰，这是因为理想模型下真实导向矢量与噪声子空间正交，投影残差分母趋近于零。
 
-把两张子图对照起来看：Capon 纵轴度量的是候选方向滤波后的物理输出功率（单位 dB），而 MUSIC 伪谱峰值只反映“正交吻合程度”，并不代表物理声源功率强弱。同时工程中绝不能单靠数谱峰个数来定声源数——强旁瓣、相干反射或少快拍扰动都可能制造假峰或把双峰融成单峰。MUSIC 与 ESPRIT 等子空间方法在定位前必须先估计独立信号维数 $K<M$（待 §4.5～§4.6 定义空间协方差矩阵与特征分解后，[§4.6.1](#sec-4-6-1) 将系统推导特征值间隙、AIC 与 MDL 源数估计准则），而双通道互相关时延估计则不需要预设源数。下面先从最基础的两只麦克风讲起。
+把两张子图对照起来看：无加载时，Capon 纵轴度量候选方向滤波后的物理输出功率；带加载分数还含正则代价，详见 §4.5（单位 dB），而 MUSIC 伪谱峰值只反映“正交吻合程度”，并不代表物理声源功率强弱。同时工程中绝不能单靠数谱峰个数来定声源数——强旁瓣、相干反射或少快拍扰动都可能制造假峰或把双峰融成单峰。MUSIC 与 ESPRIT 等子空间方法在定位前必须先估计独立信号维数 $K<M$（待 §4.5～§4.6 定义空间协方差矩阵与特征分解后，[§4.6.1](#sec-4-6-1) 将系统推导特征值间隙、AIC 与 MDL 源数估计准则），而双通道互相关时延估计则不需要预设源数。下面先从最基础的两只麦克风讲起。
 
 ### 4.2 GCC-PHAT：“对齐两段录音，找最吻合的错位”
 
@@ -160,7 +160,7 @@ G[k]&=X_1[k]X_2^*[k]\\
 | 加权名称 | 频域权重 $\Phi(f)$ | 设计动机与适用边界 |
 |---|---|---|
 | 普通互相关（CC） | $1$ | 不改频谱幅度；在平稳加性白噪声且源谱平坦时表现稳健，但源谱集中在窄带或共振峰时主峰明显展宽 |
-| Roth 处理器 | $1/(\hat G_{11}(f)+\varepsilon)$ | 用通道 1 的平滑自功率谱做逆滤波，相当于估计通道 1 到通道 2 的脉冲响应；结果随两通道排列顺序变化 |
+| Roth 处理器 | $1/(\hat G_{11}(f)+\varepsilon)$ | 用通道 1 的平滑自功率谱做逆滤波，按本章 $G_{12}=X_1X_2^*$ 约定，无噪且忽略地板时得到 $G_{12}/G_{11}=H_{21}^*$；逆变换是通道 1 到 2 响应的共轭时反形式，不能省略共轭或输入顺序 |
 | 平滑相干变换（SCOT） | $1/\sqrt{\hat G_{11}(f)\hat G_{22}(f)}$ | 用两路平滑自功率谱的几何均值作对称白化；必须注明 $\hat G_{11},\hat G_{22}$ 采用帧间递推还是 Welch 平均 |
 | **相位变换（PHAT）** | $1/(\lvert X_1(f)X_2^*(f)\rvert+\varepsilon)$ | 直接消去互谱幅度、仅保留相位斜率，对室内语音包络起伏适应力强；但对低信噪比弱频点敏感，需配下限保护 |
 | 最大似然加权（ML / Hannan–Thomson） | $\dfrac{\lvert\gamma_{12}(f)\rvert^2}{\lvert G_{12}(f)\rvert\,(1-\lvert\gamma_{12}(f)\rvert^2)}$ | 在平稳零均值高斯信号与互不相关高斯噪声模型下渐近达到宽带 CRLB；强混响相干多径下模型前提不再成立 |
@@ -273,7 +273,7 @@ Ng(t)&=H_0+H_{N/2}\cos(\pi t)
 - **图 13(b) $150$ 次命中率与 $95\%$ Wilson 置信区间**：$\mathrm{DRR}=+6\ \mathrm{dB}$ 与 $0\ \mathrm{dB}$ 始终贴近 $100\%$，降至 $-6\ \mathrm{dB}$ 后断崖式跌落到 $33\%$～$45\%$，印证 DRR 是决定主峰存亡的首要因素。
 - **图 13(c) 峰值对比度统计**：纵轴为 $\max g/(\operatorname{median}|g|+10^{-12})$，实心标记与阴影带为 $150$ 次中位数与四分位区间（IQR），三条曲线按 $\mathrm{DRR}=+6,0,-6\ \mathrm{dB}$ 严格分层。
 
-**基于时频稀疏性的双麦多说话人定位（WDO / DUET）**：双麦 GCC-PHAT 每帧只提取一个全局主峰，遇到两名以上说话人同时发声往往束手无策。然而语音在 STFT 时频平面上具有很强的**窗不相交正交性（W-Disjoint Orthogonality，WDO）**——绝大多数活跃时频格 $(k,\ell)$ 只由**某一位**说话人主导。利用这一物理稀疏性，**DUET（Degenerate Unmixing Estimation Technique，[Yılmaz 与 Rickard, *IEEE TSP*, 2004](https://doi.org/10.1109/TSP.2004.828896)）**在每个活跃时频格直接计算两麦复谱比 $X_2(k,\ell)/X_1(k,\ell)=\hat a(k,\ell)e^{-\mathrm{j}2\pi f_k\hat\delta(k,\ell)}$，提取该格点的瞬时相对衰减 $\hat\alpha(k,\ell)=\hat a-\hat a^{-1}$ 与相对时延 $\hat\delta(k,\ell)=-\frac{1}{2\pi f_k}\arg\big(X_2(k,\ell)/X_1(k,\ell)\big)$（$f_k>0$，注意此处 $\hat\delta=\tau_{21}=-\tau_{12}$，且需满足阵元间距小于最短半波长以防相位卷绕），再以时频能量 $|X_1 X_2|^p f_k^q$ 为权重在二维 $(\alpha,\delta)$ 平面上累加平滑直方图——有几位同时发声的说话人，直方图上就会自然聚出几个清晰峰团，从而突破“两麦只能定一源”的瓶颈（弱混响、近距小间距双麦有效；强混响破坏 WDO 稀疏性后峰团会迅速弥散融合）。
+**基于时频稀疏性的双麦多说话人定位（WDO / DUET）**：双麦 GCC-PHAT 每帧只提取一个全局主峰，遇到两名以上说话人同时发声往往束手无策。然而语音在 STFT 时频平面上具有很强的**窗不相交正交性（W-Disjoint Orthogonality，WDO）**——绝大多数活跃时频格 $(k,\ell)$ 只由**某一位**说话人主导。利用这一物理稀疏性，**DUET（Degenerate Unmixing Estimation Technique，[Yılmaz 与 Rickard, *IEEE TSP*, 2004](https://doi.org/10.1109/TSP.2004.828896)）**在每个活跃时频格直接计算两麦复谱比 $X_2(k,\ell)/X_1(k,\ell)=\hat a(k,\ell)e^{-\mathrm{j}2\pi f_k\hat\delta(k,\ell)}$，提取该格点的瞬时相对衰减 $\hat\alpha(k,\ell)=\hat a-\hat a^{-1}$ 与相对时延 $\hat\delta(k,\ell)=-\frac{1}{2\pi f_k}\arg\big(X_2(k,\ell)/X_1(k,\ell)\big)$（$f_k>0$，注意此处 $\hat\delta=\tau_{21}=-\tau_{12}$，且需满足阵元间距小于最短半波长以防相位卷绕），再以时频能量 $|X_1 X_2|^p f_k^q$ 为权重在二维 $(\alpha,\delta)$ 平面上累加平滑直方图——若不同源的相对衰减和时延参数可区分、且各源有足够占优格点，直方图才可能聚出对应的峰团；WDO 本身不保证这一点，例如两个源的混合比始终同为 $2$ 时只形成同一簇。满足上述附加条件时，DUET 可能突破“两麦只能定一源”的瓶颈（弱混响、近距小间距双麦有效；强混响破坏 WDO 稀疏性后峰团会迅速弥散融合）。
 
 > 单对麦克风在低 DRR 或多声源下极易被单个反射假峰带偏。第 4.3 节引入 SRP-PHAT，把所有麦克风对的整条相关响应投射到空间网格上联合投票。
 
@@ -325,7 +325,7 @@ S(\theta)&=\frac1B\sum_{i<j}C_{ij}(\theta)\text{。}
 **SRP-PHAT 的三类经典加速思路**：朴素全网格扫描复杂度高达 $O(N_{\mathrm{grid}}B)$（查表）或 $O(N_{\mathrm{grid}}BF)$（逐频直接求和），在三维房间或大阵元数下实时开销巨大。现代工程主要采用三条加速路线：
 
 1. **分层体积分支定界（H-SRP / Volumetric SRP）**：把搜索空间逐级划分为由粗到细的立体网格单元（voxel），在每个粗单元内利用各麦对时差上下界 $[\tau_{ij,\min},\tau_{ij,\max}]$ 计算该单元内可能达到的 SRP 得分上界，把上界低于当前最优候选的整个体素分支安全剪枝，再对存活单元继续细化，从而在不漏掉全局最优的前提下将搜索点数压缩一到两个数量级；
-2. **奇异值分解低秩投影加速（SVD-PHAT，[Grondin 与 Glass, *ICASSP*, 2019](https://doi.org/10.1109/ICASSP.2019.8683253)）**：把全部 $N_{\mathrm{grid}}$ 个候选位置、全部 $B$ 对麦克风与 $F$ 个频点的复相位查找表排成大矩阵 $\mathbf W\in\mathbb C^{N_{\mathrm{grid}}\times BF}$。由于邻近候选点与相邻频点的导向相位高度相关，$\mathbf W$ 的有效数值秩 $K_{\mathrm{svd}}\ll\min(N_{\mathrm{grid}},BF)$。离线做一次截断 SVD 分解 $\mathbf W\approx\mathbf U\mathbf S\mathbf V^H$ 后，在线阶段只需把当前帧白化互谱长向量 $\vec y\in\mathbb C^{BF}$ 投影到 $K_{\mathrm{svd}}$ 维低维空间 $\vec z=\mathbf V^H\vec y$，再在 $K_{\mathrm{svd}}$ 维空间内用 $k$-d 树寻找与 $\vec z$ 内积最大的行（对应最高 SRP 得分），把实时运算量降至 $O(K_{\mathrm{svd}}(BF+N_{\mathrm{grid}}))$ 甚至次线性搜索；
+2. **奇异值分解低秩投影加速（SVD-PHAT，[Grondin 与 Glass, *ICASSP*, 2019](https://doi.org/10.1109/ICASSP.2019.8683253)）**：把全部 $N_{\mathrm{grid}}$ 个候选位置、全部 $B$ 对麦克风与 $F$ 个频点的复相位查找表排成大矩阵 $\mathbf W\in\mathbb C^{N_{\mathrm{grid}}\times BF}$。由于邻近候选点与相邻频点的导向相位高度相关，$\mathbf W$ 的有效数值秩 $K_{\mathrm{svd}}\ll\min(N_{\mathrm{grid}},BF)$。离线做一次截断 SVD 分解 $\mathbf W\approx\mathbf U\mathbf S\mathbf V^H$ 后，在线阶段只需把当前帧白化互谱长向量 $\vec y\in\mathbb C^{BF}$ 投影到 $K_{\mathrm{svd}}$ 维低维空间 $\vec z=\mathbf V^H\vec y$，令 $\mathbf D=\mathbf U\mathbf S$、第 $q$ 行为 $\vec d_q^\top$。将 $\vec d_q^*$ 与 $\vec z$ 分别除以其范数后，可用 $k$-d 树做欧氏最近邻搜索；它对应归一化实内积最大化，只有各候选行范数近似相同时，才近似等价于原低秩 SRP 得分排序。全行扫描开销为 $O(K_{\mathrm{svd}}N_{\mathrm{grid}})$；最近邻索引可减少这一搜索开销，但在线投影仍需 $O(K_{\mathrm{svd}}BF)$，不能把整条处理链称为次线性；
 3. **平行等距麦对互谱合并（SMP-PHAT，[Grondin 等, 2022](https://arxiv.org/html/2203.14409v1)）**：对规则几何阵列（如均匀线阵、矩形平面阵、立方体阵），大量不同麦克风对共享**完全相同的位移矢量** $\vec r_i-\vec r_j$，因而在远场平面波模型下拥有完全一致的预测时差 $\tau_{ij}(\theta)$。SMP-PHAT 先在频域把共享同一位移矢量的平行麦对白化互谱直接相加合并为一组等效互谱，再统一做 IFFT 查表累加，显著减少冗余逆变换与查表次数。
 
 #### 算例 4-1：SRP-PHAT 的六麦对累积
@@ -343,7 +343,7 @@ S(\theta)&=\frac1B\sum_{i<j}C_{ij}(\theta)\text{。}
 
 将麦对 $(i,j)$ 的真实时差折算为采样点数 $\delta_{ij}=(d_i-d_j)/0.0214375$：例如 $\delta_{12}=(2.500000-2.468117)/0.0214375\approx +1.4873$ 点。
 
-**第二步：对比候选点 A $(2.0,1.5)\ \mathrm{m}$（真源）与候选点 B $(0.5,0.5)\ \mathrm{m}$（同方向近距错位点）**。点 B 到四麦距离依次约为 $0.707107, 0.679412, 0.686222, 0.657647\ \mathrm{m}$，六对时差错位 $\Delta\delta_{ij}=\delta_{ij}(\vec r_B)-\delta_{ij}$ 与得分汇总如下：
+**第二步：对比候选点 A $(2.0,1.5)\ \mathrm{m}$（真源）与候选点 B $(0.5,0.5)\ \mathrm{m}$（近似同方向的近距错位点）**。点 B 到四麦距离依次约为 $0.707107, 0.679412, 0.686222, 0.657647\ \mathrm{m}$，六对时差错位 $\Delta\delta_{ij}=\delta_{ij}(\vec r_B)-\delta_{ij}$ 与得分汇总如下：
 
 | 麦对 $(i,j)$ | 真值（即 A 的预测） | B 的预测 | B 的错位 $\Delta\delta_{ij}$ | B 的 $\operatorname{sinc}$ 得分 |
 |---|---:|---:|---:|---:|
@@ -487,6 +487,8 @@ $$P_C(\theta)=\frac{1}{\vec a^H(\theta)\hat{\mathbf R}_{xx}^{-1}\vec a(\theta)}\
 
 扫描角偏离真源时，优化器动用剩余自由度在真源方向压低响应使 $P_C(\theta)$ 骤降；扫到真源时，无失真约束迫使滤波器放行真源从而打出尖峰。快拍数 $L<M$ 时 $\hat{\mathbf R}_{xx}$ 奇异不可逆，实际实现须施加对角加载并用线性方程组求解代替显式求逆——汇报时务必区分带功率量纲的**绝对加载** $\hat{\mathbf R}_{xx}+\delta\mathbf I$ 与尺度不变的无量纲**相对加载** $\hat{\mathbf R}_{xx}+\eta\frac{\operatorname{tr}(\hat{\mathbf R}_{xx})}{M}\mathbf I$。
 
+若加载矩阵为 $\mathbf A=\hat{\mathbf R}_{xx}+\delta\mathbf I$，对应权重为 $\vec w_\delta=\mathbf A^{-1}\vec a/(\vec a^H\mathbf A^{-1}\vec a)$，则加载 Capon 分数 $1/(\vec a^H\mathbf A^{-1}\vec a)=\vec w_\delta^H\mathbf A\vec w_\delta$，比实际输出功率 $\vec w_\delta^H\hat{\mathbf R}_{xx}\vec w_\delta$ 多 $\delta\|\vec w_\delta\|_2^2$。例如 $\mathbf R=\operatorname{diag}(1,9)$、$\vec a=[1,1]^\top$、$\delta=5$ 时，两者分别为 $4.2$ 和 $1.3$；汇报时须说明使用哪一个量。
+
 #### 算例 4-3：Bartlett 与 Capon——同一个 $\hat{\mathbf{R}}_{xx}$，两种读法
 
 **输入与口径**：取 $M=2$ 半波距线阵（$\vec a(\theta)=[1,e^{+\mathrm{j}\pi\sin\theta}]^\top$），单源位于 $\theta=0^\circ$（功率 $1$），每通道独立白噪声方差 $\sigma^2=0.25$（输入信噪比 $6.02\ \mathrm{dB}$）。理想总体协方差为 $\hat{\mathbf R}_{xx}=\vec a_0\vec a_0^H+0.25\mathbf I=\begin{bmatrix}1.25&1\\1&1.25\end{bmatrix}$。
@@ -548,7 +550,7 @@ $$\mathbf R_{\mathrm{fb}}=\frac{1}{2}\big(\mathbf R_{\mathrm f}+\mathbf J\mathbf
 
 $$\mathbf J\mathbf R_{\mathrm f}^*\mathbf J=\mathbf A_P\!\left(\frac{1}{L}\sum_{l=1}^{L}\mathbf D^{-(P+l-2)}\mathbf R_{ss}^*\mathbf D^{+(P+l-2)}\right)\!\mathbf A_P^H+\sigma^2\mathbf I_P\text{，}$$
 
-等价于在 $\mathbf C_{\mathrm f}$ 旁再拼入 $L$ 列共轭倒序向量 $\mathbf D^{-(P+l-2)}\vec c^*$（总等效子阵数翻倍为 $2L$）。只要两源相对相位未落入使共轭倒序向量与前向列空间共线的孤立简并点（例如 [E04-04](#e04-04) 中相对相位为 $\pi/2$ 的特殊情形），只需满足 $2L\ge K$ 与 $P=M-L+1\ge K+1$，联立即可把最少阵元需求从 $2K$ 降至 **$M\ge\lceil 3K/2\rceil$**，最大可分辨完全相干源数从 $\lfloor M/2\rfloor$ 提升至 **$\lfloor 2M/3\rfloor$**，有效保留了更多物理孔径（例如 $M=4$ 解析 $K=2$ 相干源时，前向平滑需拆为 $P=3$ 损失一节孔径，而 FBSS 在非简并相位下甚至 $L=1,P=4$ 即可保满孔径恢复秩 $2$，见 [E04-04](#e04-04)）。
+等价于在 $\mathbf C_{\mathrm f}$ 旁再拼入 $L$ 列共轭倒序向量 $\mathbf D^{-(P+l-2)}\vec c^*$，记其组成 $\mathbf C_{\mathrm b}$。恢复 $K$ 维信号子空间须有 $\mathbf A_P$ 满列秩与 $\operatorname{rank}[\mathbf C_{\mathrm f},\mathbf C_{\mathrm b}]=K$，并保留至少一维噪声子空间，即 $P\ge K+1$。$2L\ge K$ 只是拼接列数的必要条件；一般非简并相位下可达到这一容量，但不能代替秩检查。因此最少阵元容量可从 FSS 的 $2K$ 降至 **$M\ge\lceil3K/2\rceil$**，相应源数容量为 **$\lfloor2M/3\rfloor$**，这些都不是对任意相干相位的保证。例如 $K=3,L=2,P=4$，若 $\vec c=\mathbf D^{-(P+L-2)/2}\vec1$，则后向两列恰为前向两列的倒序，拼接秩至多为 $2$。对 $K=2$，相对相位也可能落入 [E04-04](#e04-04) 的简并情形；非简并时，$M=4,L=1,P=4$ 可保留全孔径恢复秩 $2$，而 FSS 需要 $P=3$。
 
 **root-MUSIC 多项式求根**：对于均匀线阵，可彻底免去角度网格扫描。令复变量 $z=e^{+\mathrm{j}\frac{2\pi d}{\lambda}\sin\theta}$，导向矢量为 $\vec a(z)=[1,z,\ldots,z^{M-1}]^\top$，记噪声正交投影阵 $\mathbf Q=\mathbf E_n\mathbf E_n^H$。利用单位圆 $|z|=1$ 上 $z^*=z^{-1}$，把 MUSIC 分母沿各条对角线合并同幂次并通乘 $z^{M-1}$ 延拓到复平面，得到 $2(M-1)$ 次共轭对称多项式：
 
@@ -563,7 +565,7 @@ p(z)&=z^{M-1}\sum_{r=-(M-1)}^{M-1}c_r z^r=0\text{。}
 
 #### 窄带方法二：ESPRIT（LS、TLS 与圆阵相位模式）
 
-如果阵列具备**平移不变子阵结构**（如 ULA 前 $P$ 麦与平移 $\Delta d$ 后的后 $P$ 麦），[Roy 与 Kailath（*IEEE TASSP*, 1989）](https://doi.org/10.1109/29.32276)提出的 ESPRIT 无需网格扫描，直接通过 $K\times K$ 矩阵特征值闭式反演所有方向。关键前提是从**同一个全阵协方差 $\hat{\mathbf R}_{xx}$** 提取统一信号子空间 $\mathbf E_s\in\mathbb C^{M\times K}$，再用选行阵 $\mathbf J_1,\mathbf J_2\in\mathbb R^{P\times M}$ 截出两块（绝不可对两子阵各自独立做特征分解）。因满秩白噪下存在唯一可逆混合阵 $\mathbf T$ 使 $\mathbf E_s=\mathbf A\mathbf T$，且 $\mathbf A_2=\mathbf A_1\mathbf D$（$\mathbf D=\operatorname{diag}(\psi_1,\ldots,\psi_K)$，$\psi_k=e^{+\mathrm{j}2\pi\Delta d\sin\theta_k/\lambda}$），消去 $\mathbf A_1$ 立得旋转不变方程与角度反演式：
+如果阵列具备**平移不变子阵结构**（如 ULA 前 $P$ 麦与平移 $\Delta d$ 后的后 $P$ 麦），[Roy 与 Kailath（*IEEE TASSP*, 1989）](https://doi.org/10.1109/29.32276)提出的 ESPRIT 无需网格扫描，直接通过 $K\times K$ 矩阵特征值闭式反演所有方向。关键前提是从**同一个全阵协方差 $\hat{\mathbf R}_{xx}$** 提取统一信号子空间 $\mathbf E_s\in\mathbb C^{M\times K}$，再用选行阵 $\mathbf J_1,\mathbf J_2\in\mathbb R^{P\times M}$ 截出两块（绝不可对两子阵各自独立做特征分解）。因满秩白噪下存在唯一可逆混合阵 $\mathbf T$ 使 $\mathbf E_s=\mathbf A\mathbf T$，且 $\mathbf A_2=\mathbf A_1\mathbf D$（$\mathbf D=\operatorname{diag}(\psi_1,\ldots,\psi_K)$，$\psi_k=e^{+\mathrm{j}2\pi\Delta d\sin\theta_k/\lambda}$），还须要求 $\operatorname{rank}(\mathbf A_1)=K$，才能从子阵方程恢复旋转算子；全阵 $\mathbf A$ 满列秩并不足够。在此前提下可消去 $\mathbf A_1$，得到旋转不变方程与角度反演式：
 
 $$\begin{aligned}
 \mathbf E_{s1}&=\mathbf J_1\mathbf E_s=\mathbf A_1\mathbf T,\qquad
@@ -599,7 +601,7 @@ b_n(\varphi)&=\frac{1}{M}\sum_{m=0}^{M-1}e^{-\mathrm{j}n\gamma_m}a_m(\varphi)
 \tilde{\vec a}_2(\varphi)=e^{-\mathrm{j}\varphi}\tilde{\vec a}_1(\varphi)\text{。}
 \end{aligned}\tag{4-22}$$
 
-因为柱贝塞尔函数 $|J_\ell(\kappa r)|$ 在阶数 $|\ell|>\kappa r$ 后迅速衰减（参见[第 0 章 §0.7.2](00_math-foundations.md#sec-0-7-2)），取模式阶 $|n|\le N_m$（如一阶 $N_m=1$）时，经验条件 $M>2\kappa r+2$ 可将首阶圆周折叠混叠 $|J_{n\pm M}(\kappa r)|$ 压至极低；在模式域协方差 $\mathbf R_{\mathrm{mode}}=\mathbf B_{\mathrm{pm}}\mathbf R_{xx}\mathbf B_{\mathrm{pm}}^H$ 上即可直接施行旋转不变闭式求解。需注意：这里展示的是水平面 1D 径向均衡相位模式 ESPRIT，而 [Mathews 与 Zoltowski（*IEEE TSP*, 1994）](https://doi.org/10.1109/78.317861) 原文针对未知俯仰角的二维定位，利用柱贝塞尔递推恒等式在实值波束空间构造封闭方程，避开了未知俯仰角下 $J_n(\kappa r\sin\vartheta)$ 无法直接求逆的难题；此外，开放圆阵在 $J_n(\kappa r)=0$ 处存在奇异零频，商用智能音箱常借刚性圆柱或球壳散射加以消除（数值验证与 $M=8$ vs $M=4$ 混叠对照见 [E04-22](#e04-22)）。
+因为柱贝塞尔函数 $|J_\ell(\kappa r)|$ 在阶数 $|\ell|>\kappa r$ 后迅速衰减（参见[第 0 章 §0.7.2](00_math-foundations.md#sec-0-7-2)），取模式阶 $|n|\le N_m$（如一阶 $N_m=1$）时，经验条件 $M>2\kappa r+2$ 可将首阶圆周折叠混叠 $|J_{n\pm M}(\kappa r)|$ 压至极低；模式域协方差为 $\mathbf R_{\mathrm{mode}}=\mathbf B_{\mathrm{pm}}\mathbf R_{xx}\mathbf B_{\mathrm{pm}}^H$。径向均衡不是酉变换：即使阵元噪声为 $\sigma^2\mathbf I$，模式噪声也变成 $\sigma^2\mathbf B_{\mathrm{pm}}\mathbf B_{\mathrm{pm}}^H$。对等角采样且互异的模式，该矩阵为 $\sigma^2\operatorname{diag}(|w_n|^2)/M$，通常各模式方差不同。应按该噪声模型白化后提取信号子空间，再撤销白化恢复原模式坐标，才能套用式(4-22)的平移关系；若阵元噪声本身有色，还须提供对应噪声统计。随附三模态核采用阵元白噪声假设，无噪控制仍保留圆周混叠误差。需注意：这里展示的是水平面 1D 径向均衡相位模式 ESPRIT，而 [Mathews 与 Zoltowski（*IEEE TSP*, 1994）](https://doi.org/10.1109/78.317861) 原文针对未知俯仰角的二维定位，利用柱贝塞尔递推恒等式在实值波束空间构造封闭方程，避开了未知俯仰角下 $J_n(\kappa r\sin\vartheta)$ 无法直接求逆的难题；此外，开放圆阵在 $J_n(\kappa r)=0$ 处存在奇异零频，商用智能音箱常借刚性圆柱或球壳散射加以消除（数值验证与 $M=8$ vs $M=4$ 混叠对照见 [E04-22](#e04-22)）。
 
 #### 宽带聚焦：CSSM、RSS、WAVES 与 TOPS
 
@@ -649,7 +651,7 @@ P_{\mathrm{TOPS}}(\theta)&=\frac{1}{\sigma_{\min}\big(\mathbf D(\theta)\big)}\te
 
 与“把塌缩的秩撑回来”不同，强混响下另一条高效思路是利用语音时频稀疏性，**先筛出直达声占绝对主导的干净时频格再定位**。首先要破除一个直觉误区：**单频秩为 $1$ 或双麦相干度等于 $1$，并不代表只含直达声。** 直达 $\vec a$ 与单条强反射 $\beta\vec b$ 同源于公共声源 $S$ 时，单频合成接收向量 $(\vec a+\beta\vec b)S$ 的外积照样严格秩 $1$、通道相干模照样为 $1$，但其主特征向量指向合成流形而非直达声方向（见 [E04-20](#e04-20)）。因此可靠的直达筛选必须引入跨频率、跨时间帧或扩散场相干先验：
 
-1. **直达占优检验（DPD）**：[Nadiri 与 Rafaely（*IEEE/ACM TASLP*, 2014）](https://doi.org/10.1109/TASLP.2014.2337846)在球面阵列球谐波域（空间方向与频率解耦）做局部“时间帧 × 邻近频点”平滑，计算局部相关矩阵最大与次大奇异值之比——仅当单一路径直达声主导时跨频平均仍保秩 $1$（奇异值比高），混入延迟反射则相位随频率旋转顶起次大奇异值。随后 [Rafaely 与 Alhaiany（*Signal Processing* 143:42–47, 2018）](https://doi.org/10.1016/j.sigpro.2017.08.010)进一步提出了基于声场方向性（directivity）的快速 DPD 替代方案，无需跨频平滑与矩阵 SVD 即可显著降低算力。
+1. **直达占优检验（DPD）**：[Nadiri 与 Rafaely（*IEEE/ACM TASLP*, 2014）](https://doi.org/10.1109/TASLP.2014.2337846)在球面阵列球谐波域（空间方向与频率解耦）做局部“时间帧 × 邻近频点”平滑，计算局部相关矩阵最大与次大奇异值之比——单个方向路径占优时跨频平均可保持近似秩 $1$（奇异值比高），多个可区分路径叠加则可能顶起次大奇异值。单条强反射本身也能通过这种检验，因此高比值只提供主导路径候选，不能独立证明它是物理直达声。随后 [Rafaely 与 Alhaiany（*Signal Processing* 143:42–47, 2018）](https://doi.org/10.1016/j.sigpro.2017.08.010)进一步提出了基于声场方向性（directivity）的快速 DPD 替代方案，无需跨频平滑与矩阵 SVD 即可显著降低算力。
 2. **直达路径相对传递函数（DP-RTF，[Li、Girin、Horaud 与 Gannot, *IEEE/ACM TASLP*, 2016](https://www.gipsa-lab.grenoble-inp.fr/~laurent.girin/papers/Li_et_al_TASLP_2016.pdf)）**：在固定 STFT 频点上用跨时间帧的短**卷积传递函数（CTF）**近似长房间响应（$x_p=\sum_{q=0}^{Q-1}a_q s_{p-q}$，$y_p=\sum_{q=0}^{Q-1}b_q s_{p-q}$），利用两通道卷积交换律 $a*y=b*x$ 消去未知源 $s_p$，回归出代表首达直达声的第 $0$ 帧抽头比 $g_0=b_0/a_0$。以两抽头（$Q=2$）为例，两边同除以 $a_0$ 得到只含观测量的线性回归（注意取普通转置 $\vec z_p^\top\vec g$ 而非共轭转置）：
 
 $$\begin{aligned}
@@ -658,7 +660,7 @@ $$\begin{aligned}
 y_p&=\vec z_p^\top\vec g\text{。}
 \end{aligned}\tag{4-25}$$
 
-该方法要求直达声与首条强反射相对分析窗长度可分，且源包络随时间非平稳起伏以保证回归满秩（五帧手算消元与恒幅纯音秩退化反例见 [E04-21](#e04-21)）。
+该方法要求直达声与首条强反射相对分析窗长度可分，并要求观测设计矩阵具有足够的持续激励和满列秩；包络起伏是常见激励来源，但不是必要条件，恒模而相位变化的序列也可能满秩（五帧手算消元与恒幅纯音秩退化反例见 [E04-21](#e04-21)）。
 3. **双麦盲相干扩散比加权（$\mathrm{CDR}_{\mathrm{nodir}}$，[Andreas Schwarz 与 Walter Kellermann, *IEEE/ACM TASLP* 23(6):1006–1018, 2015, 式(25)](https://doi.org/10.1109/TASLP.2015.2418571)）**：对双麦紧凑阵，将三维各向同性扩散混响场建模为已知实相干度 $\Gamma_n(f)=\operatorname{sinc}(2fd/c)$（采用归一化定义 $\operatorname{sinc}(x)=\sin(\pi x)/(\pi x)$），将未知方向平面波直达声建模为单位模复相干 $\Gamma_s=e^{\mathrm{j}\phi_s}$。由观测复相干 $\Gamma_x=(\gamma\Gamma_s+\Gamma_n)/(\gamma+1)$ 移项并利用 $|\Gamma_s|^2=1$ 消去未知方位相位 $\phi_s$，即可完全盲方向闭式解出直达混响比 $\widehat{\mathrm{CDR}}_{\mathrm{nodir}}$ 及可靠性权重 $w_{\mathrm{CDR}}=\hat\gamma/(\hat\gamma+1)$：
 
 $$\begin{aligned}
@@ -753,16 +755,16 @@ $$\hat{\vec s}=\arg\min_{\vec s\in\mathbb C^{N_g}}\;
 **无网格连续参数方法：FRIDA 与原子范数**。为了从根源上消除离散角度网格量化误差，无网格（gridless）方法直接在连续角度域中恢复参数：
 
 - **FRIDA（有限新息率波达方向估计，[Pan 等, *ICASSP*, 2017](https://doi.org/10.1109/ICASSP.2017.7952744)；[扩展稿](https://dokmanic.ece.illinois.edu/assets/pdf/Pan2016tv.pdf)）**：在二维远场互不相关点源模型下，利用贝塞尔展开将任意已知平面排布的跨通道协方差映射为均匀采样的复指数和，再用零化滤波器从连续频率参数直接反解水平方位角；
-- **原子范数最小化（Atomic Norm Minimization，[Tang 等, *IEEE TIT*, 2013](https://doi.org/10.1109/TIT.2013.2277451)；[Yang 与 Xie, *IEEE TSP*, 2015](https://doi.org/10.1109/TSP.2015.2420541)）**：把连续角度上的全部导向矢量定义为无穷维原子库 $\mathcal A=\{\vec a(\theta):\theta\in[-90^\circ,90^\circ]\}$。沿用含噪观测 $\vec y$ 与去噪信号 $\vec x$ 的记号，对 $M$ 元均匀线阵（或部分观测线阵），借范德蒙德分解定理可将单快拍去噪原子范数优化 $\min_{\vec x}\frac{1}{2}\|\vec y-\vec x\|_2^2+\mu\|\vec x\|_{\mathcal A}$ 严格转化为半定规划（SDP，正则权 $\mu$ 统一位于正则项前）：
+- **原子范数最小化（Atomic Norm Minimization，[Tang 等, *IEEE TIT*, 2013](https://doi.org/10.1109/TIT.2013.2277451)；[Yang 与 Xie, *IEEE TSP*, 2015](https://doi.org/10.1109/TSP.2015.2420541)）**：把连续角度上的全部导向矢量定义为无穷维原子库 $\mathcal A=\{\vec a(\theta):\theta\in[-90^\circ,90^\circ]\}$。沿用含噪观测 $\vec y$ 与去噪信号 $\vec x$ 的记号，对完整观测的 $M$ 元均匀线阵，借范德蒙德分解定理可将单快拍去噪原子范数优化 $\min_{\vec x}\frac{1}{2}\|\vec y-\vec x\|_2^2+\mu\|\vec x\|_{\mathcal A}$ 严格转化为半定规划（SDP，正则权 $\mu$ 统一位于正则项前）：
 
 $$\min_{t\ge 0,\,\vec u\in\mathbb C^M,\,\vec x\in\mathbb C^M}\;
 \frac{\mu}{2}\!\left(t+\frac{1}{M}\operatorname{tr}\big(\mathcal T(\vec u)\big)\right)
 +\frac{1}{2}\|\vec y-\vec x\|_2^2,\qquad
 \text{s.t.}\;\begin{bmatrix}\mathcal T(\vec u)&\vec x\\\vec x^H&t\end{bmatrix}\succeq\mathbf 0\text{，}$$
 
-其中 $\mathcal T(\vec u)$ 是由首列 $\vec u$ 生成的 $M\times M$ 厄米托普利茨矩阵；求得最优 $\mathcal T(\vec u^*)$ 后，对其做 Vandermonde 分解或直接运行 root-MUSIC / ESPRIT 即可读出连续角度。
+若只观测阵元集合 $\Omega$，保留完整 ULA 上的潜在向量 $\vec x$，将数据项改为 $\frac12\|\vec y_\Omega-\mathbf P_\Omega\vec x\|_2^2$，其中 $\mathbf P_\Omega$ 选择实际观测行；不能把短观测向量直接与全长 $\vec x$ 相减。这里 $\mathcal T(\vec u)$ 是由首列 $\vec u$ 生成的 $M\times M$ 厄米托普利茨矩阵；求得最优 $\mathcal T(\vec u^*)$ 后，对其做 Vandermonde 分解或直接运行 root-MUSIC / ESPRIT 即可读出连续角度。
 
-> **无网格原子范数的最小分离度界（Minimum Separation Bound）**：摆脱离散网格并不意味着可无限分辨紧邻双源。记均匀线阵归一化空间频率为 $u=(d/\lambda)\sin\theta\in[-1/2,1/2)$，对应离散频谱截断阶 $f_c$（阵元数 $M=2f_c+1$）。[Candès 与 Fernandez-Granda（*CPAM*, 2014）](https://doi.org/10.1002/cpa.21455)证明任意复相位源的精确无网格凸恢复充分条件为 $\Delta u_{\min}\ge 2/f_c=4/(M-1)$（大阵元下约 $4/M$）；[Fernandez-Granda（*Information and Inference*, 2016）](https://doi.org/10.1093/imaiai/iaw005)进一步收紧至 $1.26/f_c=2.52/(M-1)$（约 $2.52/M$），而在 $\Delta u_{\min}<2/(M-1)$ 附近凸松弛会出现峰值粘连。可见连续凸优化消除了网格量化误差，但并未突破有限孔径的物理衍射下限。
+> **无网格凸恢复的分离度充分条件**：在无噪、连续复指数模型下，记圆周空间频率距离 $d_{\mathbb T}(u_i,u_j)=\min_{k\in\mathbb Z}|u_i-u_j-k|$，$\Delta u_{\min}$ 为不同源之间的最小圆周距离。对称频谱截断阶为 $f_c$、样本数 $M=2f_c+1$ 时，[Candès 与 Fernandez-Granda（*CPAM*, 2014）](https://doi.org/10.1002/cpa.21455)的定理在 $f_c\ge128$ 及 $\Delta u_{\min}\ge2/f_c=4/(M-1)$ 下保证任意复相位源的精确凸恢复；[Fernandez-Granda（*Information and Inference*, 2016）](https://doi.org/10.1093/imaiai/iaw005)在 $f_c\ge1000$ 下将充分分离度收紧至 $1.26/f_c=2.52/(M-1)$。这些是给定模型与参数范围中的保证条件，不是所有有限阵列都不可突破的物理分辨硬界；未满足条件也不等于每个具体源配置都恢复失败。
 
 #### 学习式定位与神经 SELD 演进
 
@@ -778,11 +780,11 @@ $$\min_{t\ge 0,\,\vec u\in\mathbb C^M,\,\vec x\in\mathbb C^M}\;
 | **Cross3D / Neural-SRP**（[Díaz-Guerra 等, *TASLP*, 2021](https://doi.org/10.1109/TASLP.2020.3040031)；[Grinstein 等, *IEEE OJSP*, 2024](https://doi.org/10.1109/OJSP.2023.3340057)） | SRP-PHAT 三维空间图或成对神经特征映射至任意候选位置 | 因果 3D CNN 追踪或几何无关的神经 SRP 空间评分 | 衔接经典任意几何 SRP（§4.3）与神经定位；跨阵泛化仍须核验标定与混响覆盖 |
 | **icoDOA**（[Díaz-Guerra 等, *TASLP*, 2023](https://doi.org/10.1109/TASLP.2022.3224282)） | 采样到正二十面体球面网格的 SRP-PHAT 响应图 | 球面卷积 + soft-argmax 连续三维方向 | 与同网格 SRP 直接取峰对照；60 种离散旋转对称不等于任意三维旋转 |
 | **IPDnet**（[Wang 等, *TASLP*, 2024](https://doi.org/10.1109/TASLP.2024.3507560)） | 多通道 STFT 复谱 | 估计干净直达声通道间相位差（IPD），再几何反解 | 须核对麦克风对排列顺序与跨阵列泛化条件 |
-| **ACCDOA / mACCDOA**（[Shimada 等, *ICASSP*, 2021](https://doi.org/10.1109/ICASSP39728.2021.9413609)；[Shimada 等, *ICASSP*, 2022](https://doi.org/10.1109/ICASSP43922.2022.9746384)） | 多通道空谱特征（常配 FOA 声强矢量或 SALSA-Lite） | 活动强度与方向耦合的三维矢量（多轨配 ADPIT） | 模长代表活动概率而非物理米制距离；单轨无法容纳同类双源 |
+| **ACCDOA / mACCDOA**（[Shimada 等, *ICASSP*, 2021](https://doi.org/10.1109/ICASSP39728.2021.9413609)；[Shimada 等, *ICASSP*, 2022](https://doi.org/10.1109/ICASSP43922.2022.9746384)） | 多通道空谱特征（常配 FOA 声强矢量或 SALSA-Lite） | 活动强度与方向耦合的三维矢量（多轨配 ADPIT） | 模长是活动分数，未经校准不等于活动概率，也不是物理米制距离；单轨无法容纳同类双源 |
 
-这条演进脉络背后有两条清晰的物理主线：一是**输入特征从原始复谱走向物理对齐的空谱表示**——对于一阶全景声（FOA，四面体阵编码为 $W,X,Y,Z$ 四通道，详见[第 14 章 §14.2](14_spatial-wearable-arrays.md#sec-14-2)），**伪声强（DOA 指向）矢量（pseudo-intensity vector）**$\vec I(k,\ell)\propto\operatorname{Re}\!\big\{W^*(k,\ell)[X(k,\ell),Y(k,\ell),Z(k,\ell)]^\top\big\}$ 在每个时频点沿 $+\vec u_s$ 指向声源（与沿 $-\vec u_s$ 传播的物理有功声强 $\frac{1}{2}\operatorname{Re}\{p\vec v^*\}$ 方向相反），与对数梅尔谱逐格对齐；对于一般开放麦克风阵，**SALSA** 及其轻量版 **SALSA-Lite** 则把归一化主特征向量或频率归一化通道相位差 $\operatorname{arg}(X_m X_1^*)/(2\pi f_k)$ 直接叠加到线性频谱通道上，使卷积核与 **CST-former** 的三轴注意力能够同步捕捉谐波结构和物理方向线索。
+这条演进脉络背后有两条清晰的物理主线：一是**输入特征从原始复谱走向物理对齐的空谱表示**——对于一阶全景声（FOA，四面体阵编码为 $W,X,Y,Z$ 四通道，详见[第 14 章 §14.2](14_spatial-wearable-arrays.md#sec-14-2)），**伪声强（DOA 指向）矢量（pseudo-intensity vector）**$\vec I(k,\ell)\propto\operatorname{Re}\!\big\{W^*(k,\ell)[X(k,\ell),Y(k,\ell),Z(k,\ell)]^\top\big\}$ 与对数梅尔谱逐格对齐。在单平面波或单一主导路径假设下，它沿 $+\vec u_s$ 指向该路径来源，与沿 $-\vec u_s$ 传播的物理有功声强 $\frac{1}{2}\operatorname{Re}\{p\vec v^*\}$ 方向相反；多源叠加时则可能抵消，例如同相等幅对向两波合成 $[W,X,Y,Z]=[2,0,0,0]$ 后该矢量为零；对于一般开放麦克风阵，**SALSA** 及其轻量版 **SALSA-Lite** 则把归一化主特征向量或频率归一化通道相位差 $\operatorname{arg}(X_m X_1^*)/(2\pi f_k)$ 直接叠加到线性频谱通道上，使卷积核与 **CST-former** 的三轴注意力能够同步捕捉谐波结构和物理方向线索。
 
-二是**输出表示从双分支解耦走向统一几何与语义声图**——单轨 ACCDOA 将活动概率编码为矢量模长、方向编码为矢量指向（例如外部自 $+x$ 逆时针计角输出 `(0.433, 0.25)` 对应方位 $\operatorname{atan2}(0.25,0.433)\approx 30^\circ$、换算本书自 $+y$ 顺时针计角为 $60^\circ$，模长 $0.5$ 若低于活动阈值 $0.6$ 则判为未检出）；多轨 **multi-ACCDOA** 配合辅助复制置换不变训练（ADPIT，[Shimada 等, *ICASSP*, 2022](https://doi.org/10.1109/ICASSP43922.2022.9746384)；[DCASE2022 官方基线](https://github.com/sharathadavanne/seld-dcase2022)）解决了同类同帧多源碰撞，但单帧槽位号不等于第 9 章跨时间持久的说话人轨迹身份。
+二是**输出表示从双分支解耦走向统一几何与语义声图**——单轨 ACCDOA 用矢量模长给出活动分数、方向编码为矢量指向（例如外部自 $+x$ 逆时针计角输出 `(0.433, 0.25)` 对应方位 $\operatorname{atan2}(0.25,0.433)\approx 30^\circ$、换算本书自 $+y$ 顺时针计角为 $60^\circ$，模长 $0.5$ 若低于活动阈值 $0.6$ 则判为未检出）；该模长不是自动校准的活动概率，例如始终有源但两个相反方向等概率出现时，回归条件均值矢量可为零，活动概率却仍为 $1$。多轨 **multi-ACCDOA** 配合辅助复制置换不变训练（ADPIT，[Shimada 等, *ICASSP*, 2022](https://doi.org/10.1109/ICASSP43922.2022.9746384)；[DCASE2022 官方基线](https://github.com/sharathadavanne/seld-dcase2022)）解决了同类同帧多源碰撞，但单帧槽位号不等于第 9 章跨时间持久的说话人轨迹身份。
 
 **不同届 DCASE Task 3 的输出格式不可混用**：DCASE 国际挑战赛的 SELD 评测逐年演进，引用或复用基线代码前必须核对具体届次与通道定义：
 
@@ -826,7 +828,7 @@ $$\begin{aligned}
 &= -\vec r_m^\top\vec u + \frac{\rho}{2}\Bigl(\|\vec r_m\|_2^2 - (\vec r_m^\top\vec u)^2\Bigr) + O\bigl(\rho^2\|\vec r_m\|_2^3\bigr)\text{。}
 \end{aligned}$$
 
-有理化形式对全部 $\rho \ge 0$ 精确成立且完全消除 $1/\rho$ 数值相消：令 $\rho = 0$ 时它平滑退化为远场平面波路程差 $-\vec r_m^\top\vec u$，且关于 $\rho$ 的偏导在远场边界 $\rho = 0$ 处保持有限非零常数 $\frac{1}{2}\bigl(\|\vec r_m\|_2^2 - (\vec r_m^\top\vec u)^2\bigr)$，不存在 $r\to\infty$ 奇异性。因此，只需在紧致有界区域 $(\theta,\rho)\in[-\pi/2,\pi/2]\times[0,\rho_{\max}]$（$\rho_{\max}=1/r_{\min}$）内执行二维网格搜索或 Gauss–Newton 迭代，即可用同一套坐标无缝覆盖远场（$\rho=0$）与近场（$\rho>0$），并将本章远场 DOA 自然衔接到[第 12 章近场声学成像](12_acoustic-imaging.md#sec-12-2)与[第 15 章声学距离气泡](15_target-extraction-diarization.md#sec-15-3)。沿用上文 $3$ 麦线阵（$x_m\in\{-5,0,+5\}\ \mathrm{cm}$，$c=343\ \mathrm{m/s}$，$f=4\ \mathrm{kHz}$）核验曲率相位：在 $\theta=30^\circ$ 下，$\rho=0$ 对应精确平面波路程差 $[+25.00,0,-25.00]\ \mathrm{mm}$（曲率相位 $0^\circ$）；当声源移至 $r=0.50\ \mathrm{m}$（$\rho=2.0\ \mathrm{m}^{-1}$），精确路程差变为 $[+26.78,0,-23.03]\ \mathrm{mm}$，相对远场的曲率增量 $[+1.78,0,+1.97]\ \mathrm{mm}$（二次项 $\frac{1}{2}\rho x_m^2\cos^2 30^\circ=+1.875\ \mathrm{mm}$）在 $4\ \mathrm{kHz}$ 产生 $[+7.48^\circ,0^\circ,+8.27^\circ]$ 的曲率相位（均方根 $6.44^\circ$；正横 $\theta=0^\circ$ 下两外侧麦各产生 $+2.49\ \mathrm{mm}$ 与 $+10.47^\circ$ 曲率相位）。
+有理化形式对全部 $\rho \ge 0$ 精确成立且完全消除 $1/\rho$ 数值相消：令 $\rho = 0$ 时它平滑退化为远场平面波路程差 $-\vec r_m^\top\vec u$，且关于 $\rho$ 的偏导在远场边界 $\rho = 0$ 处保持有限、由几何决定的常数；该值可为零，例如同侧线阵端射时距离曲率信息消失。其表达式为 $\frac{1}{2}\bigl(\|\vec r_m\|_2^2 - (\vec r_m^\top\vec u)^2\bigr)$，不存在 $r\to\infty$ 奇异性。因此，只需在紧致有界区域 $(\theta,\rho)\in[-\pi/2,\pi/2]\times[0,\rho_{\max}]$（$\rho_{\max}=1/r_{\min}$）内执行二维网格搜索或 Gauss–Newton 迭代，即可用同一套坐标无缝覆盖远场（$\rho=0$）与近场（$\rho>0$），并将本章远场 DOA 自然衔接到[第 12 章近场声学成像](12_acoustic-imaging.md#sec-12-2)与[第 15 章声学距离气泡](15_target-extraction-diarization.md#sec-15-3)。沿用上文 $3$ 麦线阵（$x_m\in\{-5,0,+5\}\ \mathrm{cm}$，$c=343\ \mathrm{m/s}$，$f=4\ \mathrm{kHz}$）核验曲率相位：在 $\theta=30^\circ$ 下，$\rho=0$ 对应精确平面波路程差 $[+25.00,0,-25.00]\ \mathrm{mm}$（曲率相位 $0^\circ$）；当声源移至 $r=0.50\ \mathrm{m}$（$\rho=2.0\ \mathrm{m}^{-1}$），精确路程差变为 $[+26.78,0,-23.03]\ \mathrm{mm}$，相对远场的曲率增量 $[+1.78,0,+1.97]\ \mathrm{mm}$（二次项 $\frac{1}{2}\rho x_m^2\cos^2 30^\circ=+1.875\ \mathrm{mm}$）在 $4\ \mathrm{kHz}$ 产生 $[+7.48^\circ,0^\circ,+8.27^\circ]$ 的曲率相位（均方根 $6.44^\circ$；正横 $\theta=0^\circ$ 下两外侧麦各产生 $+2.49\ \mathrm{mm}$ 与 $+10.47^\circ$ 曲率相位）。
 
 #### 可执行基线与工程实现注意事项
 
@@ -1174,7 +1176,7 @@ $$\mathbf Z=\begin{bmatrix}\tfrac12&1&1+\mathrm{j}\\0&\tfrac12&\tfrac14-\tfrac12
 \vec y=\begin{bmatrix}\tfrac14-\tfrac12\mathrm{j}\\0\\1+\mathrm{j}\end{bmatrix},\qquad
 \mathbf Z\vec g=\vec y\text{。}\tag{4-37}$$
 
-由第 $3$ 行一眼读出首抽头比 $g_0=1+\mathrm{j}$（相位精确 $45^\circ$），回代解得 $g_2=-1/2$、$g_1=1/4-\mathrm{j}/2$，干净剥离了反射抽头。对照整段两抽头频率响应比 $B(\pi/2)/A(\pi/2)=[(1+\mathrm{j})+(1/4-\mathrm{j}/2)(-\mathrm{j})]/[1-\mathrm{j}/2]=0.1+0.8\mathrm{j}$，相位已拉偏至 $82.875^\circ$。而若源信号退化为无包络起伏的恒幅稳态复指数 $s_p=e^{+\mathrm{j}\omega p}$，相邻帧成比例，无论取多少帧设计矩阵秩恒为 $1$ 而不可解——证明语音包络的非平稳起伏正是跨帧交叉回归可辨识首达路径的物理前提。
+由第 $3$ 行一眼读出首抽头比 $g_0=1+\mathrm{j}$（相位精确 $45^\circ$），回代解得 $g_2=-1/2$、$g_1=1/4-\mathrm{j}/2$，干净剥离了反射抽头。对照整段两抽头频率响应比 $B(\pi/2)/A(\pi/2)=[(1+\mathrm{j})+(1/4-\mathrm{j}/2)(-\mathrm{j})]/[1-\mathrm{j}/2]=0.1+0.8\mathrm{j}$，相位已拉偏至 $82.875^\circ$。而若源信号退化为无包络起伏的恒幅稳态复指数 $s_p=e^{+\mathrm{j}\omega p}$，相邻帧成比例，无论取多少帧设计矩阵秩恒为 $1$ 而不可解——这说明稳态单一复指数缺少足够激励，所需条件是设计矩阵满列秩，而非幅度包络必须起伏。
 
 <a id="e04-22"></a>
 

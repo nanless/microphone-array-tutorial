@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 16 章 · 附录 A：符号术语数学 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="b82b7d85f70d"><style>
+<meta name="source-digest" content="58a2e18a2abd"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -733,7 +733,7 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">COLA / WOLA（常数重叠相加 / 加权重叠相加）</td>
-<td>COLA 要求分析窗与合成窗按帧移 $H$ 平移乘积累加后在整个平稳时间轴上恒为非零常数（$\sum_\ell w_{\mathrm{syn}}[n-\ell H]w_{\mathrm{ana}}[n-\ell H]=C$），是 STFT 无失真完美重建的充要条件；WOLA 在分析与合成两端各施加窗函数（如开方 Hann 双窗）以压制频域修改引发的块边界不连续，详见<a href="00_math-foundations.html#sec-0-2-4">§0.2.4</a>、§2.5</td>
+<td>COLA 要求分析窗与合成窗按帧移 $H$ 平移乘积累加后在整个平稳时间轴上恒为非零常数（$\sum_\ell w_{\mathrm{syn}}[n-\ell H]w_{\mathrm{ana}}[n-\ell H]=C$），在不作逐点归一化的重叠相加中保证未改谱信号以常增益重建；若按窗乘积之和逐点归一化，该和处处非零即可；WOLA 在分析与合成两端各施加窗函数（如开方 Hann 双窗）以压制频域修改引发的块边界不连续，详见<a href="00_math-foundations.html#sec-0-2-4">§0.2.4</a>、§2.5</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">快拍（snapshot）</td>
@@ -749,7 +749,7 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">超定方程组</td>
-<td>独立方程条数多于未知数个数的线性方程组。当右端观测向量恰好落在系数矩阵列空间内时存在精确解，不相容时则通过最小二乘寻找残差范数最小的近似解。在 TDOA 定位中，多组麦克风对的时差往往共享同一个参考到达时刻，方程条数增加并不代表独立几何约束等量增加（§4.4）</td>
+<td>方程条数多于未知数个数的线性方程组；独立约束数由系数矩阵的秩决定。当右端观测向量恰好落在系数矩阵列空间内时存在精确解，不相容时则通过最小二乘寻找残差范数最小的近似解。在 TDOA 定位中，多组麦克风对的时差往往共享同一个参考到达时刻，方程条数增加并不代表独立几何约束等量增加（§4.4）</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:8em">双曲线定位</td>
@@ -1370,7 +1370,7 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 </tr>
 <tr>
 <td>圆对称复高斯例外</td>
-<td>伪协方差 $\mathbb{E}[\vec z\vec z^\top]=\mathbf 0$ 时方为圆对称（proper）</td>
+<td>对零均值复高斯，伪协方差 $\mathbb{E}[\vec z\vec z^\top]=\mathbf 0$ 等价于 proper 性与圆对称性</td>
 <td>实信号 DFT 的直流（$k=0$）与偶数长 Nyquist（$k=N/2$）恒实，伪协方差非零（<a href="00_math-foundations.html#sec-0-6-1">§0.6.1</a>、§7.2）</td>
 </tr>
 <tr>
@@ -1401,7 +1401,7 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 <tr>
 <td>单位四元数与 SLERP</td>
 <td>$\mathbf R(\mathbf q)=(q_w^2-\lVert\vec q_v\rVert_2^2)\mathbf I_3$<br>$+2\vec q_v\vec q_v^\top+2q_w[\vec q_v]_\times$；<br>$\operatorname{SLERP}=\frac{\sin((1-t)\Omega)}{\sin\Omega}\mathbf q_0+\frac{\sin(t\Omega)}{\sin\Omega}\mathbf q_1$</td>
-<td>$\lVert\mathbf q\rVert_2=1$、双重覆盖 $\mathbf q\sim-\mathbf q$；须先使 $\mathbf q_0^\top\mathbf q_1\ge 0$ 取最短弧，支撑 IMU 与头部追踪（<a href="00_math-foundations.html#sec-0-1-3">§0.1.3</a>、§9.2.3、§14.3）</td>
+<td>$\lVert\mathbf q\rVert_2=1$、双重覆盖 $\mathbf q\sim-\mathbf q$；须先使 $\mathbf q_0^\top\mathbf q_1\ge 0$ 取最短弧；$\Omega=0$ 时取连续极限 $\mathbf q(t)=\mathbf q_0$，近重合时可用归一化线性插值，支撑 IMU 与头部追踪（<a href="00_math-foundations.html#sec-0-1-3">§0.1.3</a>、§9.2.3、§14.3）</td>
 </tr>
 <tr>
 <td>多相分解与 Noble 恒等式</td>
@@ -1470,7 +1470,7 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 <tr>
 <td>显式正规方程 $\mathbf A^H\mathbf A$ vs QR / SVD</td>
 <td>—</td>
-<td>显式相乘令条件数平方放大至 $\kappa_2(\mathbf A^H\mathbf A)=\kappa_2(\mathbf A)^2$</td>
+<td>满列秩时，显式相乘令条件数平方放大至 $\kappa_2(\mathbf A^H\mathbf A)=\kappa_2(\mathbf A)^2$</td>
 <td>$\kappa_2(\mathbf A)\gtrsim 10^8$ 时 <code>float64</code> 正规方程将淹没弱方向，代码须直调 QR/SVD（<a href="00_math-foundations.html#sec-0-3-4">§0.3.4</a>）</td>
 </tr>
 <tr>
@@ -1501,7 +1501,7 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 <tr>
 <td><code>np.fft.fftfreq</code> vs <code>rfftfreq</code></td>
 <td>完整双边 DFT 后半区对应负频率（末格 $k=N-1$ 为 $-f_s/N$）；偶数 $N$ 的 Nyquist 格点 $k=N/2$ 在双边记 $-f_s/2$、单边记 $+f_s/2$</td>
-<td>按式(16-1)对齐正负频率，切勿把数组下标直接当高于 $f_s/2$ 的正频率；单边谱求能量对内部频点乘 $2$、两端点乘 $1$</td>
+<td>按式(16-1)对齐正负频率，切勿把数组下标直接当高于 $f_s/2$ 的正频率；单边谱求能量时 DC 乘 $1$，偶数 $N$ 的 Nyquist 格点乘 $1$，其余保留频点均乘 $2$（含奇数 $N$ 的最高保留频点）</td>
 <td><a href="#e16-06">E16-06</a></td>
 </tr>
 <tr>
@@ -1757,7 +1757,7 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 <p>给定病态对角矩阵 $\mathbf{A}=\operatorname{diag}(1,10^{-8})$ 与右端观测 $\vec{b}=[1,10^{-8}]^\top$（数学精确解为 $[1,1]^\top$）。先分别传入显式阈值 <code>rcond=1e-10</code> 与 <code>rcond=1e-6</code> 调用 <code>numpy.linalg.lstsq</code>，记录数值秩与真实残差；再按式(16-3)计算 $\delta=10^{-16}$ 时的岭正则（Ridge）解析解并对比。</p>
 <p><strong>参考答案</strong>：</p>
 <p><strong>第一步：对比两种 <code>rcond</code> 门限下的硬截断。</strong> $\mathbf{A}$ 的两个奇异值为 $\sigma_1=1$ 与 $\sigma_2=10^{-8}$。当设 <code>rcond=1e-10</code> 时，截断门限为 $10^{-10}$，两个奇异值均保留，报告数值秩为 $2$，返回完整解 $[1,1]^\top$，真实残差为零；当设 <code>rcond=1e-6</code> 时，$\sigma_2=10^{-8}\lt 10^{-6}$ 被硬性置零，报告数值秩降为 $1$，返回截断最小范数解 $[1,0]^\top$，代回原方程算得真实残差为 $[0,-10^{-8}]^\top$（二范数为 $10^{-8}$）。特别留意接口细节：由于本题行数 $m=2$ 不大于列数 $p=2$，两次调用返回的 <code>residuals</code> 字段均为空数组——哪怕第二次实际存在 $10^{-8}$ 的非零残差也是如此，因此工程代码必须显式用 $\|\mathbf{A}\hat{\vec{x}}-\vec{b}\|_2$ 复算残差。</p>
-<p><strong>第二步：对比 $\delta=10^{-16}$ 的 Ridge 软收缩。</strong> 将 $\delta=10^{-16}$ 代入式(16-3)的两条解耦标量方程 $(1+\delta)x_1=1$ 与 $(10^{-16}+\delta)x_2=10^{-8}$，精确解为 $\hat{\vec{x}}_\delta=[1/(1+10^{-16}),\ 1/2]^\top$（双精度浮点下第一分量会舍入显示为 $1.0$）：由于在弱方向上恰有 $\delta=\sigma_2^2=10^{-16}$，软收缩因子 $\frac{\sigma_2^2}{\sigma_2^2+\delta}=\frac{1}{2}$ 将第二分量平滑压缩为精确值的一半，既不像全秩解那样原样放行，也不像 TSVD 那样一刀砍成 $0$；其残差内积 $\mathbf A^H\hat{\vec r}_\delta$ 等于 $-\delta\hat{\vec x}_\delta$。这也再次印证了无量纲相对比值 <code>rcond</code> 与同量纲惩罚系数 $\delta$ 对应着不同的数学目标。</p>
+<p><strong>第二步：对比 $\delta=10^{-16}$ 的 Ridge 软收缩。</strong> 将 $\delta=10^{-16}$ 代入式(16-3)的两条解耦标量方程 $(1+\delta)x_1=1$ 与 $(10^{-16}+\delta)x_2=10^{-16}$，精确解为 $\hat{\vec{x}}_\delta=[1/(1+10^{-16}),\ 1/2]^\top$（双精度浮点下第一分量会舍入显示为 $1.0$）：由于在弱方向上恰有 $\delta=\sigma_2^2=10^{-16}$，软收缩因子 $\frac{\sigma_2^2}{\sigma_2^2+\delta}=\frac{1}{2}$ 将第二分量平滑压缩为精确值的一半，既不像全秩解那样原样放行，也不像 TSVD 那样一刀砍成 $0$；其残差内积 $\mathbf A^H\hat{\vec r}_\delta$ 等于 $-\delta\hat{\vec x}_\delta$。这也再次印证了无量纲相对比值 <code>rcond</code> 与同量纲惩罚系数 $\delta$ 对应着不同的数学目标。</p>
 <p><span id="e12-17" class="anchor-alias exercise-alias" aria-hidden="true"></span><span id="e14-17" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e16-12"></a></p>
 <span id="sec-u-7cb5badab0" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-0e9dab8b8b" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-e05d86e60e" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-76145f9ed0">E16-12：复相关漏共轭会把真正的延迟峰抵消吗？</h3>
 <p>设同起点（$n=0$）的两段复数短序列为 $x_2=[1,\mathrm{j},0]$、$x_1=[0,1,\mathrm{j}]$（区间外为零，第 1 路严格等于第 2 路延迟 $1$ 个采样点）。按式(16-2)逐点计算 $q=-2,-1,0,1,2$ 处的正确复互相关 $R_{12}[q]$ 与交换顺序后的 $R_{21}[q]$，再观察若漏掉第二路复共轭会发生什么。</p>
@@ -1850,7 +1850,7 @@ n_2[n]&=0.06e[n]\cos(2\pi\cdot 4000n/16000).
 <p>$$\mathbf{C}^{-1}=\frac{4}{7}
 \begin{bmatrix}4&-3/2\\-3/2&1\end{bmatrix}.\tag{16-5}$$</p>
 <p>右乘 $\vec{a}=[1,1]^\top$ 得 $\mathbf{C}^{-1}\vec{a}=[10/7,-2/7]^\top$，再算归一化分母 $\vec{a}^H\mathbf{C}^{-1}\vec{a}=10/7-2/7=8/7$，相除即得最优权重 $\vec{h}=[5/4,-1/4]^\top$。注意看：第二个通道的权重变成了负数 $-1/4$，但两通道权重之和 $5/4+(-1/4)=1$ 依然精确保持目标无失真通过。</p>
-<p>为什么负权重反而能降噪？将第二路噪声正交分解为 $n_2=(3/2)n_1+\xi$，由协方差矩阵算得 $\mathbb{E}[n_1\xi^*]=0$ 且独立残差功率 $\mathbb{E}[|\xi|^2]=4-(9/4)\times 1=7/4$；代入输出噪声 $(5/4)n_1-(1/4)n_2=(7/8)n_1-(1/4)\xi$，部分共模相关噪声 $n_1$ 被相减抵消，剩余两正交项功率之和仅为 $(7/8)^2\times 1+(1/4)^2\times(7/4)=49/64+7/64=7/8$（可见线性滤波权重允许取负值或大于 $1$，不能套用 $[0,1]$ 时频活动掩码的直觉）。</p>
+<p>为什么负权重反而能降噪？将第二路噪声正交分解为 $n_2=(3/2)n_1+\xi$，由协方差矩阵算得 $\mathbb{E}[n_1\xi^*]=0$ 且不相关残差功率 $\mathbb{E}[|\xi|^2]=4-(9/4)\times 1=7/4$；代入输出噪声 $(5/4)n_1-(1/4)n_2=(7/8)n_1-(1/4)\xi$，部分共模相关噪声 $n_1$ 被相减抵消，剩余两正交项功率之和仅为 $(7/8)^2\times 1+(1/4)^2\times(7/4)=49/64+7/64=7/8$（可见线性滤波权重允许取负值或大于 $1$，不能套用 $[0,1]$ 时频活动掩码的直觉）。</p>
 <p><strong>第二步：在同一真实协方差 $\mathbf{C}$ 下横向核算方差。</strong> 对任意满足无偏条件的权重 $\vec{h}$，估计误差为 $\hat{x}-x_*=\vec{h}^H\vec{n}$，真实总体方差必须统一用完整的 $\vec{h}^H\mathbf{C}\vec{h}$ 评估（包括忽略相关项算出的对角加权 $[4/5,1/5]^\top$）：</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
 <thead>

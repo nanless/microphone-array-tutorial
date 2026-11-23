@@ -217,7 +217,8 @@ class AppendixBExperimentsTest(unittest.TestCase):
         original = t20_from_edc_points([.05, .15, .25], [-5, -15, -25])
         shifted = t20_from_edc_points([.15, .25, .35], [-5, -15, -25])
         self.assertAlmostEqual(original["slope_db_per_s"], -100)
-        self.assertAlmostEqual(original["t20_s"], .2)
+        self.assertAlmostEqual(original["decay_20db_interval_s"], .2)
+        self.assertAlmostEqual(original["t20_s"], .6)
         self.assertAlmostEqual(original["t60_extrapolated_s"], .6)
         self.assertAlmostEqual(shifted["t60_extrapolated_s"], .6)
         for times, decay in (([0, .1], [-5, -25]),

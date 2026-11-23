@@ -372,8 +372,8 @@ def so3_rotation_matrix_composition_example(
         "r_yzx": r_yzx,
         "orthogonality_fro_error": float(np.linalg.norm(r_zyx.T @ r_zyx - np.eye(3), ord="fro")),
         "determinant": float(np.linalg.det(r_zyx)),
-        "ex_under_rz_then_ry": r_zyx @ e_x,
-        "ex_under_ry_then_rz": r_yzx @ e_x,
+        "ex_under_r_zyx": r_zyx @ e_x,
+        "ex_under_r_yzx": r_yzx @ e_x,
         "commutator_frobenius_norm": float(np.linalg.norm(r_zyx - r_yzx, ord="fro")),
         "input_vector": vec,
         "input_norm": float(np.linalg.norm(vec)),
@@ -1022,24 +1022,49 @@ def solve_nnls_projected_gradient(
     max_iters: int = 500,
     tol: float = 1e-13,
 ) -> dict:
-    """Minimize 0.5 * ||P q - b||_2^2 subject to q >= 0 via exact-Lipschitz projected gradient
-    with active-set KKT polish and full KKT verification."""
+    """Run projected gradient with an active-set polish for nonnegative LS.
+
+    ``q`` is the final iterate, including when the iteration budget is exhausted.
+    ``converged`` tests the infinity norm of ``q - max(q - step*gradient, 0)``
+    against ``tol`` after a common scaling of P and b; the residual has the
+    same units as ``q``. Objective and dual diagnostics retain the original
+    problem units. Lost nonzero normalized powers, unrepresentable iterates,
+    or unrepresentable diagnostics raise ValueError.
+    """
     p = _check_real_array(p_mat, "p_mat", ndim=2)
     b = _check_real_array(b_vec, "b_vec", shape=(p.shape[0],))
     n_it = _check_int(max_iters, "max_iters", min_value=1)
     eps_tol = _check_real_scalar(tol, "tol", min_value=1e-15, max_value=1e-4)
 
-    gram = p.T @ p
-    rhs = p.T @ b
+    problem_scale = float(np.max(np.abs(p)))
+    if problem_scale == 0.0:
+        raise ValueError("p_mat must not be identically zero")
+    with np.errstate(over="ignore", under="ignore", invalid="ignore", divide="ignore"):
+        normalized_p, normalized_b = p / problem_scale, b / problem_scale
+        normalized_powers = normalized_p * normalized_p
+        rhs_terms = normalized_p * normalized_b[:, None]
+        gram = normalized_p.T @ normalized_p
+        rhs = normalized_p.T @ normalized_b
+    if not (np.all(np.isfinite(normalized_b)) and np.all(np.isfinite(gram))
+            and np.all(np.isfinite(rhs))):
+        raise ValueError("NNLS normalized problem exceeds floating-point range")
+    if (np.any((p != 0) & (normalized_p == 0))
+            or np.any((b != 0) & (normalized_b == 0))
+            or np.any((normalized_p != 0) & (normalized_powers == 0))
+            or np.any((normalized_p != 0) & (normalized_b[:, None] != 0) & (rhs_terms == 0))):
+        raise ValueError("NNLS normalized terms lose nonzero values outside floating-point range")
     lip = float(np.max(np.linalg.eigvalsh(gram)))
     if lip <= 0.0:
         raise ValueError("p_mat must not be identically zero")
     step = 1.0 / lip
     q = np.zeros(p.shape[1], dtype=np.float64)
-    for _ in range(n_it):
-        grad = gram @ q - rhs
-        q_next = np.maximum(0.0, q - step * grad)
-        if float(np.linalg.norm(q_next - q)) <= eps_tol:
+    for iteration in range(1, n_it + 1):
+        with np.errstate(over="ignore", invalid="ignore"):
+            grad = gram @ q - rhs
+            q_next = np.maximum(0.0, q - step * grad)
+        if not (np.all(np.isfinite(grad)) and np.all(np.isfinite(q_next))):
+            raise ValueError("NNLS iterate exceeds floating-point range")
+        if float(np.max(np.abs(q_next - q))) <= eps_tol:
             q = q_next
             break
         q = q_next
@@ -1047,8 +1072,10 @@ def solve_nnls_projected_gradient(
     # Active-set subspace polish on positive support
     support = q > 1e-10
     if np.any(support):
-        p_sup = p[:, support]
-        q_sup, *_ = np.linalg.lstsq(p_sup, b, rcond=None)
+        p_sup = normalized_p[:, support]
+        q_sup, *_ = np.linalg.lstsq(p_sup, normalized_b, rcond=None)
+        if not np.all(np.isfinite(q_sup)):
+            raise ValueError("NNLS active-set solution exceeds floating-point range")
         if np.all(q_sup >= 0.0):
             q_cand = np.zeros_like(q)
             q_cand[support] = q_sup
@@ -1056,12 +1083,35 @@ def solve_nnls_projected_gradient(
             if np.all(grad_cand >= -1e-12):
                 q = q_cand
 
-    grad_final = gram @ q - rhs
-    comp_slack = float(np.max(np.abs(q * grad_final)))
+    with np.errstate(over="ignore", under="ignore", invalid="ignore"):
+        grad_normalized = gram @ q - rhs
+        grad_final = (grad_normalized * problem_scale) * problem_scale
+        complementarity = q * grad_final
+        comp_slack = float(np.max(np.abs(complementarity)))
+        projected_residual = float(np.max(np.abs(q - np.maximum(0.0, q - step * grad_normalized))))
+        error = normalized_p @ q - normalized_b
+        error_peak = float(np.max(np.abs(error)))
+        if error_peak:
+            physical_peak = error_peak * problem_scale
+            objective = float((physical_peak * (physical_peak / 2)) * np.sum((error / error_peak) ** 2))
+        else:
+            objective = 0.0
+    if not (np.all(np.isfinite(grad_final)) and np.isfinite(comp_slack)
+            and np.isfinite(projected_residual) and np.isfinite(objective)):
+        raise ValueError("NNLS diagnostics exceed floating-point range")
+    if (np.any((grad_normalized != 0) & (grad_final == 0))
+            or np.any((q != 0) & (grad_final != 0) & (complementarity == 0))
+            or error_peak > 0 and objective == 0):
+        raise ValueError("NNLS diagnostics lose nonzero values outside floating-point range")
+    converged = projected_residual <= eps_tol
     return {
-        "q_opt": q,
+        "q": q,
+        "converged": converged,
+        "iterations": iteration,
+        "stopping_reason": "kkt_tolerance" if converged else "iteration_limit",
+        "projected_gradient_residual": projected_residual,
         "dual_multiplier_mu": grad_final,
-        "objective_value": 0.5 * float(np.sum((p @ q - b) ** 2)),
+        "objective_value": objective,
         "primal_min_entry": float(np.min(q)),
         "dual_min_entry": float(np.min(grad_final)),
         "complementary_slackness_max_abs": comp_slack,
@@ -1164,17 +1214,85 @@ def complex_second_order_moments(
     var_imag: float,
     corr_ri: float = 0.0,
 ) -> dict:
-    """Analytical covariance E[|z|^2] and pseudo-covariance E[z^2] for zero-mean z = u + j v."""
+    """Analytical second moments for zero-mean ``z = u + j v``.
+
+    Propriety is decided from the variance/correlation parameters, not from
+    a tolerance applied to rounded moments. Nonzero moments that cannot be
+    represented as finite nonzero float64 values are rejected. The magnitude
+    is evaluated before subnormal component rounding.
+    """
     su2 = _check_real_scalar(var_real, "var_real", min_value=0.0)
     sv2 = _check_real_scalar(var_imag, "var_imag", min_value=0.0)
     rho = _check_real_scalar(corr_ri, "corr_ri", min_value=-1.0, max_value=1.0)
     cov_r = su2 + sv2
-    pseudo_c = complex(su2 - sv2, 2.0 * rho * math.sqrt(su2 * sv2))
+    if not math.isfinite(cov_r):
+        raise ValueError("total variance exceeds float64 range")
+    product = su2 * sv2
+    ordinary_product = np.finfo(float).tiny <= product < math.inf
+    if ordinary_product:
+        geometric_mean = math.sqrt(product)
+        imaginary = (2.0 * rho) * geometric_mean
+    elif su2 == 0.0 or sv2 == 0.0 or rho == 0.0:
+        imaginary = 0.0
+    else:
+        # Keep the square root in a normal mantissa range until the final
+        # scaling. Rounding a subnormal geometric mean first can lose a
+        # representable covariance component, e.g. sqrt(u*2u)/2 -> u.
+        first, first_exp = math.frexp(su2)
+        second, second_exp = math.frexp(sv2)
+        correlation, correlation_exp = math.frexp(rho)
+        exponent, odd = divmod(first_exp + second_exp, 2)
+        mantissa = (2.0 * correlation) * math.sqrt(first * second * (2.0 if odd else 1.0))
+        try:
+            imaginary = math.ldexp(mantissa, exponent + correlation_exp)
+        except OverflowError:
+            # |Im C| <= R analytically; final rounding at the largest finite
+            # value must not turn a finite valid variance into an overflow.
+            imaginary = math.copysign(cov_r, rho)
+
+    exact_imaginary_square = None
+
+    def imaginary_square():
+        from fractions import Fraction
+        return (4 * Fraction.from_float(rho)**2
+                * Fraction.from_float(su2) * Fraction.from_float(sv2))
+
+    def subnormal_square_root(squared):
+        # All inputs are binary floats, so the squared expression is an exact
+        # rational. Round sqrt(squared) in units of 2^-1074, including ties.
+        scaled = squared * (1 << 2148)
+        numerator, denominator = scaled.numerator, scaled.denominator
+        lower = math.isqrt(numerator // denominator)
+        difference = 4 * numerator - denominator * (2 * lower + 1)**2
+        rounded = lower + int(difference > 0 or (difference == 0 and lower % 2))
+        return math.ldexp(float(rounded), -1074)
+
+    if su2 > 0.0 and sv2 > 0.0 and rho != 0.0 and abs(imaginary) < np.finfo(float).tiny:
+        exact_imaginary_square = imaginary_square()
+        imaginary = math.copysign(subnormal_square_root(exact_imaginary_square), rho)
+    if (not math.isfinite(imaginary) or
+            (su2 > 0.0 and sv2 > 0.0 and rho != 0.0 and imaginary == 0.0)):
+        raise ValueError("nonzero pseudo-covariance component exceeds float64 range")
+    pseudo_c = complex(su2 - sv2, imaginary)
+    if rho == 0.0 or su2 == 0.0 or sv2 == 0.0:
+        magnitude = abs(su2 - sv2)
+    elif abs(rho) == 1.0:
+        magnitude = cov_r
+    else:
+        magnitude = min(cov_r, abs(pseudo_c))
+        if magnitude < np.finfo(float).tiny:
+            from fractions import Fraction
+            difference = Fraction.from_float(su2) - Fraction.from_float(sv2)
+            if exact_imaginary_square is None:
+                exact_imaginary_square = imaginary_square()
+            magnitude = subnormal_square_root(difference**2 + exact_imaginary_square)
+    if not math.isfinite(magnitude):
+        raise ValueError("pseudo-covariance magnitude exceeds float64 range")
     return {
         "variance_r": cov_r,
         "pseudo_variance_c": pseudo_c,
-        "pseudo_variance_abs": abs(pseudo_c),
-        "is_proper_second_order": bool(abs(pseudo_c) <= 1e-15),
+        "pseudo_variance_abs": magnitude,
+        "is_proper_second_order": bool(su2 == sv2 and (rho == 0.0 or su2 == 0.0)),
     }
 
 
@@ -1289,10 +1407,10 @@ def kalman_joseph_step(
     m_dim = h.shape[0]
     if h.shape[1] != n_dim:
         raise ValueError("h_mat column count must match state dimension")
-    q = _check_hermitian(q_cov, "q_cov", psd=True).real
-    r = _check_hermitian(r_cov, "r_cov", strictly_pd=True).real
+    q = _check_hermitian(_check_real_array(q_cov, "q_cov", ndim=2), "q_cov", psd=True).real
+    r = _check_hermitian(_check_real_array(r_cov, "r_cov", ndim=2), "r_cov", strictly_pd=True).real
     s0 = _check_real_array(s_prev, "s_prev", shape=(n_dim,))
-    p0 = _check_hermitian(p_prev, "p_prev", psd=True).real
+    p0 = _check_hermitian(_check_real_array(p_prev, "p_prev", ndim=2), "p_prev", psd=True).real
     z = _check_real_array(z_obs, "z_obs", shape=(m_dim,))
     if q.shape != (n_dim, n_dim) or p0.shape != (n_dim, n_dim) or r.shape != (m_dim, m_dim):
         raise ValueError("covariance dimensions mismatch state/measurement sizes")

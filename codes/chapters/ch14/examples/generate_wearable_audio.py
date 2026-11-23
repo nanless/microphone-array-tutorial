@@ -250,6 +250,34 @@ def _independent_score(x: np.ndarray, ref: np.ndarray, comp: dict | None = None,
     return out
 
 
+def _independent_analytic_expectations() -> dict:
+    """Sum powers of fixed orthogonal spectral lines, without the model helper."""
+    reference = {250: 0.1, 4000: 0.1}
+    lines = {
+        "wearable_clean_ref": dict(reference),
+        "wearable_air_wind_2ch": {**reference, 125: 0.2, 3500: 0.02 - 0.01j},
+        "wearable_inear_occluded": {250: 0.2, 4000: 0.01, 175: 0.02, 5000: 0.02},
+        "wearable_inear_equalized": {**reference, 175: 0.01, 5000: 0.2},
+        "wearable_fused_output": {
+            **reference, 125: 0.2 / 401, 175: 4 / 401,
+            3500: (0.02 - 0.01j) * 80 / 81, 5000: 0.2 / 81,
+        },
+        "wearable_hearthrough_comb": {250: 0.0, 4000: 0.2},
+    }
+    expected = {}
+    for key, coefficients in lines.items():
+        distortion = float(sum(abs(coefficients[f] - a) ** 2 / 2 for f, a in reference.items()))
+        noise = float(sum(abs(a) ** 2 / 2 for f, a in coefficients.items() if f not in reference))
+        expected[key] = {
+            "steady_mean_square_ch0": float(sum(abs(a) ** 2 / 2 for a in coefficients.values())),
+            "tone_complex_amplitudes_ch0": [[float(coefficients[f]), 0.0] for f in reference],
+            "target_distortion_power": distortion,
+            "residual_noise_power": noise,
+            "reference_mse_ch0": distortion + noise,
+        }
+    return expected
+
+
 def _validate_model(report: dict, arrays: dict[str, np.ndarray]) -> None:
     fixed_waves, fixed_comps = _fixed_waveforms()
     if (
@@ -258,6 +286,14 @@ def _validate_model(report: dict, arrays: dict[str, np.ndarray]) -> None:
         or not same_metadata(report.get("limits"), _FIXED_LIMITS)
     ):
         raise ValueError("wearable audio model fixed metadata/types/limits differ")
+    if not _numeric_metadata(report.get("analytic_expectations"), _independent_analytic_expectations()):
+        raise ValueError("wearable audio independent analytic expectations differ")
+    for row in report["analytic_expectations"].values():
+        for field, value in row.items():
+            if any(token in field for token in ("power", "mse", "mean_square")):
+                values = value if isinstance(value, list) else [value]
+                if any(v < 0.0 for v in values):
+                    raise ValueError("independent analytic powers/errors must be non-negative")
     if type(arrays) is not dict or arrays.keys() != fixed_waves.keys():
         raise ValueError("wearable audio fixture members differ")
     ref = fixed_waves["wearable_clean_ref"]

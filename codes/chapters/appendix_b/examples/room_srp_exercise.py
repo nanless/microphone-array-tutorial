@@ -31,6 +31,7 @@ from codes.chapters.appendix_b.core.room_metrics import (
 )
 
 PRA_VERSION = "0.10.0"
+PRA_NUM_THREADS = 2
 ROOM_DIM_M = (12.0, 10.0, 6.0)
 ARRAY_CENTER_M = (6.0, 5.0, 3.0)
 MIC_OFFSETS_M = ((-0.03, -0.03), (0.03, -0.03), (-0.03, 0.03), (0.03, 0.03))
@@ -65,6 +66,7 @@ def runtime_environment(pra):
             'scipy': scipy.__version__, 'pyroomacoustics': pra.__version__,
             'platform': platform.platform(), 'pra_num_threads':
                 __import__('os').environ.get('PRA_NUM_THREADS'),
+            'pra_num_threads_effective': pra.constants.get('num_threads'),
             'pyroomacoustics_source_sha256': {name: hashlib.sha256((library/name).read_bytes()).hexdigest()
                 for name in ('room.py', 'acoustics.py', 'parameters.py')}}
 
@@ -228,6 +230,12 @@ def validate_configuration(config: dict) -> None:
 
 def _make_room(pra: object, source_m: list[float], microphones_m: list[list[float]],
                absorption: float, max_order: int):
+    # PRA accumulates fractional-delay RIRs in float32 thread-local buffers.
+    # Preserve the published summation order without changing the process env.
+    pra.constants.set("num_threads", PRA_NUM_THREADS)
+    threads = pra.constants.get("num_threads")
+    if type(threads) is not int or threads != PRA_NUM_THREADS:
+        raise RuntimeError("room simulation requires two effective PRA threads")
     room = pra.ShoeBox(ROOM_DIM_M, fs=SAMPLE_RATE_HZ,
                        materials=pra.Material(absorption), max_order=max_order,
                        air_absorption=False, ray_tracing=False, use_rand_ism=False)
@@ -356,7 +364,7 @@ def plot_results(report: dict, path: Path) -> None:
     values = ([r["drr_db_median"] for r in rows],
               [r["t60_s_median"] for r in rows],
               [r["absolute_doa_error_deg"] for r in rows])
-    ylabels = ("Median microphone DRR (dB)", "T20-extrapolated T60 (s)",
+    ylabels = ("Median microphone DRR (dB)", "T20-method RT (s)",
                "Absolute SRP-PHAT error (°)")
     hatches = ("///", "\\\\", "..", "xx", "//", "--")
     for ax, data, ylabel in zip(axes, values, ylabels):

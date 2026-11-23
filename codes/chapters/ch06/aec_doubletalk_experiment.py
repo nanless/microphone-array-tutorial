@@ -20,6 +20,7 @@ from pathlib import Path
 import wave
 
 import numpy as np
+from codes.chapters.ch04.core import upstream_contracts as contracts
 
 from codes.chapters.ch06.examples.aec_real_pair_experiment import (
     FRAME, PAIR_DIR, RATE, ROOT, SOURCE_COMMIT, power_ratio_db,
@@ -105,22 +106,35 @@ def run(library: Path, directory: Path = PAIR_DIR) -> tuple[dict, np.ndarray]:
     return result, outputs["paired"]
 
 
+def output_target(path, pair_dir, library):
+    """New ordinary WAV outside the repository and original inputs."""
+    target = contracts.report_target(path, protected=(pair_dir, library))
+    if target.suffix.lower() != ".wav":
+        raise ValueError("output WAV must use .wav")
+    if target.exists():
+        raise FileExistsError("refusing to overwrite an existing output WAV")
+    return target
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--speex-library", type=Path, required=True)
     parser.add_argument("--pair-dir", type=Path, default=PAIR_DIR)
-    parser.add_argument("--output-wav", type=Path, help="Optional output only inside ignored cache")
+    parser.add_argument("--output-wav", type=Path, help="Optional new ordinary WAV outside the repository")
     args = parser.parse_args()
+    target = (output_target(args.output_wav, args.pair_dir, args.speex_library)
+              if args.output_wav is not None else None)
     result, output = run(args.speex_library, args.pair_dir)
-    if args.output_wav:
-        destination = args.output_wav.resolve()
-        if not destination.is_relative_to((ROOT / "codes/chapters/ch00/upstream/_downloads").resolve()):
-            raise ValueError("output WAV must stay inside the Git-ignored upstream cache")
-        if destination.exists():
-            raise FileExistsError("refusing to overwrite an existing output WAV")
-        with wave.open(str(destination), "wb") as wav:
-            wav.setparams((1, 2, RATE, len(output), "NONE", "not compressed"))
-            wav.writeframes(output.astype("<i2").tobytes())
+    if target is not None:
+        destination = output_target(target, args.pair_dir, args.speex_library)
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        destination = output_target(destination, args.pair_dir, args.speex_library)
+        # Exclusive creation prevents replacement between the finite checks.
+        # It does not claim a race-free parent chain or crash-atomic WAV write.
+        with destination.open("xb") as stream:
+            with wave.open(stream, "wb") as wav:
+                wav.setparams((1, 2, RATE, len(output), "NONE", "not compressed"))
+                wav.writeframes(output.astype("<i2").tobytes())
     print(json.dumps(result, ensure_ascii=False, indent=2, allow_nan=False))
 
 

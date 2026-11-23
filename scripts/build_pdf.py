@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""合订本构建脚本：18 篇文档 → 单页 HTML → Chrome 无头打印 A4 PDF。
+"""合订本构建脚本：19 篇文档 → 单页 HTML → Chrome 无头打印 A4 PDF。
 
 做的事情（按顺序）：
-  1. 读 chapters/ 18 篇 Markdown，用 markdown 库转 HTML（数学段先 shield 再贴回，
+  1. 读 chapters/ 19 篇 Markdown，用 markdown 库转 HTML（数学段先 shield 再贴回，
      与 build_site.py 同逻辑，保证两端渲染一致）。
   2. 每篇包进 <div class="chap">，篇标题记 id="ch-{i}"；统一标题层级后，
      编号小节使用 ch-{i}-sec-x-y 稳定标识，并保留旧顺序别名。
@@ -24,7 +24,7 @@
 或 which 回退）。PDF 公式使用本地 MathJax 3.2.2 SVG 与 SRE 4.0.6 英文结构说明，构建不联网。
 
 已知边界（诚实写在前面）：
-  - PDF 书签与合订本 TOC 包含篇/节/子节三级；第 1～17 章（含附录）的源 h4 作为第三级。
+  - PDF 书签与合订本 TOC 包含篇/节/子节三级；第 0～17 章（含附录）的源 h4 作为第三级。
   - Chrome 输出结构标签；克隆页面写书签以保留标签。仍需人工检查公式辅助文本和阅读顺序。
   - 页眉页脚关闭（--no-pdf-header-footer），PDF 内无页码——Chrome 无头打印不支持
     CSS 生成页码，要页码得换 WeasyPrint/Prince 链路。
@@ -45,6 +45,7 @@ import subprocess
 import tempfile
 import time
 import unicodedata
+from functools import lru_cache
 from pathlib import Path
 
 try:
@@ -55,6 +56,8 @@ try:
     from scripts.chapter_identity import (pdf_topic_number, canonical_source,
         canonical_exercise, inject_exercise_aliases, LEGACY_HTML_ROUTES,
         exercise_alias_records)
+    from scripts.pdf_input_identity import (PDFInputIdentity, html_input_identity,
+        verify_canonical_html_input, require_unchanged_pdf_input, verify_pdf_input_metadata)
 except ModuleNotFoundError:  # 直接执行脚本时使用同目录模块。
     import build_site
     from build_markdown_helpers import (protect_code, restore_code, validate_url_schemes,
@@ -63,6 +66,8 @@ except ModuleNotFoundError:  # 直接执行脚本时使用同目录模块。
     from chapter_identity import (pdf_topic_number, canonical_source,
         canonical_exercise, inject_exercise_aliases, LEGACY_HTML_ROUTES,
         exercise_alias_records)
+    from pdf_input_identity import (PDFInputIdentity, html_input_identity,
+        verify_canonical_html_input, require_unchanged_pdf_input, verify_pdf_input_metadata)
 
 ROOT = Path(__file__).parent.parent
 SRC = ROOT / "chapters"
@@ -605,6 +610,7 @@ def toc_label(title):
 
 def source_digest():
     """发布输入的稳定摘要；避免把生成物自身所在提交写回生成物造成循环漂移。"""
+    from scripts.figure_report_contracts import FIGURE_REPORTS
     digest = hashlib.sha256()
     paths = sorted(SRC.glob("*.md"))
     paths += [build_site.RESEARCH_ROOT / name for name, _ in build_site.RESEARCH]
@@ -616,6 +622,7 @@ def source_digest():
               ROOT / "scripts" / "legacy_sequential_anchors.json"]
     paths += sorted(path for path in MATHJAX_DIR.rglob("*") if path.is_file())
     paths += sorted((ROOT / "figures").glob("fig*.png"))
+    paths.append(ROOT / "codes/chapters/appendix_b/room_audio/ROOM_RESULTS.png")
     paths += [Path(__file__), PDF_MATH_SCRIPT,
               ROOT / "scripts" / "make_math_figures.py",
               ROOT / "scripts" / "make_figures.py",
@@ -631,6 +638,10 @@ def source_digest():
               ROOT / "scripts" / "make_tse_figures.py",
               ROOT / "requirements.txt"]
     paths.append(ROOT / "codes/chapters/ch00/io_contracts.py")
+    paths += [ROOT / entry.report_relative for entry in FIGURE_REPORTS]
+    paths += [ROOT / "scripts/figure_report_contracts.py",
+              ROOT / "scripts/portable_figure_report_checks.py",
+              ROOT / "scripts/pdf_input_identity.py", ROOT / "scripts/quality_check.py"]
     for path in paths:
         digest.update(path.relative_to(ROOT).as_posix().encode("utf-8"))
         digest.update(b"\0")
@@ -819,6 +830,105 @@ def pdf_math_sources(html):
     return sources
 
 
+@lru_cache(maxsize=1)
+def _pdf_round_trip_float_type():
+    from decimal import Decimal
+    from math import isfinite
+    from pypdf.generic import FloatObject
+
+    class RoundTripFloat(FloatObject):
+        def myrepr(self):
+            value = float(self)
+            if not isfinite(value):
+                raise ValueError('PDF operands must be finite')
+            result = format(Decimal(repr(value)), 'f')
+            result = result if '.' in result else result + '.0'
+            # The paired pypdf reader accepts at most 47 characters here:
+            # its next buffered read includes the separating delimiter.
+            if len(result) > 47:
+                raise ValueError('PDF decimal exceeds the paired reader numeric-token limit')
+            return result
+    return RoundTripFloat
+
+
+def pdf_content_bytes_losslessly(operations, pdf):
+    """Serialize parsed operators without reducing floating-point precision.
+
+    pypdf's default FloatObject formatting can shorten unrelated coordinates.
+    Local numeric wrappers retain round-trip float values without changing the
+    library's global precision or resolving indirect references. Wrapped floats
+    use ordinary decimal notation within the paired reader's token limit;
+    values needing more than 47 characters are rejected before publication.
+    """
+    from pypdf.generic import ArrayObject, ContentStream, DictionaryObject, FloatObject
+    RoundTripFloat = _pdf_round_trip_float_type()
+
+    def preserve(value):
+        if isinstance(value, FloatObject):
+            return RoundTripFloat(float(value))
+        if isinstance(value, ArrayObject):
+            return ArrayObject([preserve(item) for item in value])
+        if isinstance(value, DictionaryObject):
+            return DictionaryObject({key: preserve(item) for key, item in value.items()})
+        if isinstance(value, list):
+            return [preserve(item) for item in value]
+        if isinstance(value, dict):
+            return {key: preserve(item) for key, item in value.items()}
+        return value
+
+    stream = ContentStream(None, pdf)
+    stream.operations = [(preserve(operands), operator) for operands, operator in operations]
+    return stream.get_data()
+
+
+def preserve_pdf_float_values(writer):
+    """Preserve writer-owned dictionary/array floats without copying references.
+
+    Page boxes, Form matrices and resource dictionaries are serialized outside
+    content streams. Their numeric values need the same precision policy.
+    Stream payloads and indirect references are left intact.
+    """
+    from pypdf.generic import ArrayObject, DictionaryObject, FloatObject, IndirectObject
+    RoundTripFloat = _pdf_round_trip_float_type()
+    visited, replacements = set(), {}
+
+    def preserve(value):
+        if isinstance(value, FloatObject):
+            identity = id(value)
+            if identity not in replacements:
+                replacement = RoundTripFloat(float(value))
+                reference = getattr(value, 'indirect_reference', None)
+                if reference is not None:
+                    replacement.indirect_reference = reference
+                replacements[identity] = replacement
+            return replacements[identity]
+        if isinstance(value, IndirectObject):
+            if value.pdf is not writer:
+                raise ValueError('PDF references must be cloned into the writer before serialization')
+            return value
+        if isinstance(value, (ArrayObject, DictionaryObject)):
+            identity = id(value)
+            if identity in visited:
+                return value
+            visited.add(identity)
+            if isinstance(value, DictionaryObject):
+                for key, child in list(value.items()):
+                    replacement = preserve(child)
+                    if replacement is not child:
+                        value[key] = replacement
+            else:
+                for index, child in enumerate(value):
+                    replacement = preserve(child)
+                    if replacement is not child:
+                        value[index] = replacement
+        return value
+
+    for index, value in enumerate(writer._objects):
+        writer._objects[index] = preserve(value)
+    if getattr(writer, '_ID', None) is not None:
+        preserve(writer._ID)
+
+
 def verified_layout_space_font(font):
     """Prove CID 0003 is a Unicode space with no embedded TrueType outline.
 
@@ -827,6 +937,7 @@ def verified_layout_space_font(font):
     not prove that text has no ink. Unsupported font contracts remain content.
     """
     from io import BytesIO
+    from math import isfinite
     from fontTools.ttLib import TTFont, TTLibError
     try:
         font = font.get_object()
@@ -838,6 +949,50 @@ def verified_layout_space_font(font):
         descendant = descendants[0].get_object()
         if (descendant.get('/Subtype') != '/CIDFontType2'
                 or descendant.get('/CIDToGIDMap') != '/Identity'):
+            return False
+        # PDF /W and /DW determine text advance, independently of TrueType hmtx.
+        # Handle both standard /W forms and reject ambiguous overlapping ranges.
+        default_width = descendant.get('/DW', 1000)
+        if (isinstance(default_width, bool) or not isinstance(default_width, (int, float))
+                or not isfinite(default_width)):
+            return False
+        space_width = default_width
+        widths = descendant.get('/W', [])
+        if not isinstance(widths, list):
+            return False
+        position, intervals = 0, []
+        while position < len(widths):
+            first = widths[position]
+            if (isinstance(first, bool) or not isinstance(first, int)
+                    or not 0 <= first <= 65535 or position + 1 >= len(widths)):
+                return False
+            next_value = widths[position + 1]
+            if isinstance(next_value, list):
+                if not next_value:
+                    return False
+                last = first + len(next_value) - 1
+                values = next_value
+                position += 2
+                if first <= 3 <= last:
+                    space_width = values[3 - first]
+            else:
+                last = next_value
+                if (isinstance(last, bool) or not isinstance(last, int)
+                        or position + 2 >= len(widths)):
+                    return False
+                values = [widths[position + 2]]
+                position += 3
+                if first <= 3 <= last:
+                    space_width = values[0]
+            if not first <= last <= 65535:
+                return False
+            if any(not (last < lower or first > upper) for lower, upper in intervals):
+                return False
+            intervals.append((first, last))
+            if any(isinstance(value, bool) or not isinstance(value, (int, float))
+                   or not isfinite(value) for value in values):
+                return False
+        if space_width <= 0:
             return False
         cmap = font['/ToUnicode'].get_data()
         # Chrome also emits ranges for other glyphs in the same font, or folds
@@ -989,6 +1144,10 @@ def tag_pdf_formulas(writer, sources):
                 if not font_stack: raise SystemExit('PDF图形状态栈不平衡')
                 font = font_stack.pop()
             elif operation == b'Tf': font = operands[0]
+            elif operation == b'gs':
+                # An ExtGState may replace /Font without a Tf operation.
+                # Unknown effective fonts remain semantic content.
+                font = None
             if operation == b'BDC':
                 props = operands[-1]
                 mcid = props.get('/MCID') if isinstance(props, dict) else None
@@ -1034,7 +1193,7 @@ def tag_pdf_formulas(writer, sources):
         # the full-book writer. The only edited operations are the same MCID's
         # BDC role/ActualText; no geometry or paint operation is rewritten.
         serialized = DecodedStreamObject()
-        serialized.set_data(content.get_data())
+        serialized.set_data(pdf_content_bytes_losslessly(content.operations, writer))
         page[NameObject('/Contents')] = writer._add_object(serialized.flate_encode(9))
         for mcid, (identity, speech) in slots.items():
             node = found[identity]
@@ -1164,6 +1323,7 @@ def build_html(build_date=None):
         toc.append("</li>")
     toc.append("</ul></section>")
     date_s = resolve_build_date(build_date)
+    input_digest = source_digest()
     cover = (
         '<div class="cover">'
         '<article class="cover-banner">'
@@ -1203,7 +1363,7 @@ def build_html(build_date=None):
         '<td>脚本生成摘要与数值核验绑定</td>'
         '<td>真实混响实录与受控合成对照</td>'
         '</tr></tbody></table>'
-        f'<article class="meta"><p style="margin:0">构建日期 {date_s} · 源文件 sha256 {source_digest()}<br/>'
+        f'<article class="meta"><p style="margin:0">构建日期 {date_s} · 源文件 sha256 {input_digest}<br/>'
         f'共 {len(CHAPTERS)} 篇：导读、16 章正文（含第 0 章数学基础与四篇扩展专题）、2 篇附录 · 支持全文检索、三级书签跳转与公式无障碍语义</p></article>'
         '</div>'
     )
@@ -1217,6 +1377,8 @@ def build_html(build_date=None):
                   + ''.join(f'<a href="#{identity}">.</a>' for identity in real_ids)
                   + '</div>')
     page = ("<!DOCTYPE html><html lang=\"zh-CN\" data-tutorial-print-layout=\"a4\"><head><meta charset=\"utf-8\">"
+            f'<meta name="tutorial-build-date" content="{date_s}">'
+            f'<meta name="tutorial-source-digest" content="{input_digest}">'
             f"<title>麦克风阵列信号处理教程（合订本）</title><style>{CSS}</style>"
             "<script>\n" + build_site.INLINE_LAYOUT_PATH.read_text(encoding="utf-8") +
             "\n</script><script>" + PDF_MATH_SCRIPT.read_text(encoding="utf-8") + "</script>"
@@ -1564,149 +1726,305 @@ def recompress_pdf_images_losslessly(writer):
 
 
 def deduplicate_pdf_vector_glyphs(writer):
-    """Losslessly factor repeated MathJax vector glyph subpaths into shared /Form XObjects
-    and fold Chrome's duplicate fill+stroke subpaths (`h f /Gxx gs <same> h S`) into `B`.
+    """Factor complete, contiguous closed painted paths into shared Forms.
+
+    Actual PDF operators delimit paths, so text strings cannot supply geometry.
+    Any intervening state/clip/text operator leaves the whole pending path intact.
+    A fill-and-stroke B/B* remains one B/B* operation, with inherited state.
+    Every new Form bounds the complete visible page under a conservatively
+    enclosed axis-aligned content transform. This avoids choosing a user-space
+    padding for device-dependent antialiasing or adjusted strokes. Unbounded,
+    singular, non-axis-aligned or numerically uncertain transforms stay raw.
+    Existing page resource names are never reused for a new Form.
     """
     import collections
+    import math
     import zlib
-    from pypdf.generic import (ArrayObject, DictionaryObject, EncodedStreamObject,
-                               FloatObject, IndirectObject, NameObject, NumberObject, StreamObject)
+    from fractions import Fraction
+    from pypdf.generic import (ArrayObject, BooleanObject, ContentStream, DictionaryObject,
+                               EncodedStreamObject, FloatObject, NameObject, NumberObject)
 
-    coord_num_re = re.compile(rb"[+-]?\d+(?:\.\d+)?")
-    move_re = re.compile(rb"^(?:[+-]?\d+(?:\.\d+)?[ \t]+){2}m\r?$")
-    seg_re = re.compile(rb"^(?:[+-]?\d+(?:\.\d+)?[ \t]+){2,6}(?:l|c|v|y|re)\r?$")
-    gs_re = re.compile(rb"^/G\d+[ \t]+gs\r?$")
+    path_ops = {b'm': 2, b'l': 2, b'c': 6, b'v': 4, b'y': 4, b're': 4, b'h': 0}
+    end_ops = {b'S', b's', b'f', b'F', b'f*', b'B', b'B*', b'b', b'b*', b'n'}
 
-    def _parse_page_tokens(raw):
-        lines = [ln.rstrip(b"\r") for ln in raw.splitlines()]
-        n = len(lines)
-        tokens = []
-        i = 0
-        while i < n:
-            line = lines[i]
-            if move_re.match(line):
-                j = i + 1
-                while j < n and (seg_re.match(lines[j]) or move_re.match(lines[j]) or lines[j] == b"h"):
-                    j += 1
-                if j < n and lines[j] in (b"f", b"f*", b"S", b"B", b"B*") and j > i + 1 and lines[j - 1] == b"h":
-                    geom = b"\n".join(lines[i:j])
-                    paint = lines[j]
-                    if paint == b"f" and j + 2 < n and gs_re.match(lines[j + 1]):
-                        gs_line = lines[j + 1]
-                        span_len = j - i
-                        k_end = j + 2 + span_len
-                        if k_end < n and lines[k_end] == b"S" and b"\n".join(lines[j + 2:k_end]) == geom:
-                            tokens.append(("RAW", gs_line))
-                            tokens.append(("PATH", geom, b"B"))
-                            i = k_end + 1
-                            continue
-                    tokens.append(("PATH", geom, paint))
-                    i = j + 1
-                    continue
-            tokens.append(("RAW", line))
-            i += 1
-        return tokens
+    def bounds(operations, padding):
+        points = []
+        for operands, operator in operations:
+            if len(operands) != path_ops[operator]:
+                return None
+            if any(isinstance(value, bool) or not isinstance(value, (int, float))
+                   or not math.isfinite(value) for value in operands):
+                return None
+            values = list(map(float, operands))
+            if operator == b're':
+                x, y, width, height = values
+                points.extend(((x, y), (x + width, y + height)))
+            else:
+                points.extend(zip(values[0::2], values[1::2]))
+        if not points or not all(math.isfinite(v) for point in points for v in point):
+            return None
+        xs, ys = zip(*points)
+        # Bezier curves lie in the convex hull of their control points.
+        box = [min(xs) - padding, min(ys) - padding,
+               max(xs) + padding, max(ys) + padding]
+        return box if all(math.isfinite(value) for value in box) else None
 
-    def _bbox(geom):
-        nums = [float(x) for x in coord_num_re.findall(geom)]
-        xs, ys = nums[0::2], nums[1::2]
-        pad = 25.0
-        return [min(xs) - pad, min(ys) - pad, max(xs) + pad, max(ys) + pad]
+    def finite_number(value, lower):
+        return (float(value) if isinstance(value, (int, float))
+                and not isinstance(value, bool) and math.isfinite(value)
+                and value >= lower else None)
 
-    page_tokens = {}
-    counts = collections.Counter()
-    for pno, page in enumerate(writer.pages):
-        ref = page.raw_get("/Contents")
-        if not hasattr(ref, "idnum"):
+    def serialized(operations):
+        return pdf_content_bytes_losslessly(operations, writer)
+
+    def inherited(page, name, default=None):
+        node, seen = page, set()
+        while isinstance(node, dict):
+            if id(node) in seen:
+                raise ValueError('cyclic PDF page inheritance')
+            seen.add(id(node))
+            if name in node:
+                value = node[name]
+                return value.get_object() if hasattr(value, 'get_object') else value
+            node = node.get('/Parent')
+            node = node.get_object() if hasattr(node, 'get_object') else node
+        return default
+
+    def exact_number(value):
+        if (isinstance(value, (int, float)) and not isinstance(value, bool)
+                and math.isfinite(value)):
+            return Fraction(value)
+        return None
+
+    budget = Fraction(2 ** 24)
+    relative_rounding = Fraction(1, 2 ** 23)
+    subnormal_rounding = Fraction(1, 2 ** 149)
+
+    def enclosed(low, high, translation_scale=0):
+        # Conservative content-local binary32/64 rounding enclosure. All
+        # supported inputs, products, sums and interval endpoints stay inside
+        # 2**24, far below binary32 overflow. Large intermediate transforms
+        # cannot regain eligibility by cancelling back to a small final value.
+        if max(abs(low), abs(high)) > budget:
+            return None
+        error = max(abs(low), abs(high), translation_scale) * relative_rounding + subnormal_rounding
+        result = low - error, high + error
+        if max(map(abs, result)) > budget:
+            return None
+        # Round interval endpoints outward onto a binary64 grid so repeated
+        # compositions do not grow unbounded rational denominators. This only
+        # widens bounds; it never changes path operands or their serialization.
+        result = (Fraction(math.nextafter(float(result[0]), -math.inf)),
+                  Fraction(math.nextafter(float(result[1]), math.inf)))
+        return result if max(map(abs, result)) <= budget else None
+
+    def number_interval(value):
+        number = exact_number(value)
+        if number is None or abs(number) > budget:
+            return None
+        return (number, number) if number == 0 else enclosed(number, number)
+
+    def multiply(left, right):
+        if left is None or right is None:
+            return None
+        if left == (0, 0) or right == (0, 0):
+            return Fraction(0), Fraction(0)
+        products = [a * b for a in left for b in right]
+        return enclosed(min(products), max(products))
+
+    def translate(product, offset, page_scale):
+        if product is None or offset is None:
+            return None
+        # The initial device matrix may translate/flip by a page dimension.
+        # Include that scale even when the local sum happens to be an integer.
+        return enclosed(product[0] + offset[0], product[1] + offset[1], page_scale)
+
+    def concatenate_axis_transform(transform, operands, page_scale):
+        if transform is None or len(operands) != 6:
+            return None
+        numbers = [number_interval(value) for value in operands]
+        if any(value is None for value in numbers):
+            return None
+        aa, bb, cc, dd, ee, ff = numbers
+        if bb != (0, 0) or cc != (0, 0):
+            return None
+        a, d, e, f = transform
+        result = (multiply(a, aa), multiply(d, dd),
+                  translate(multiply(a, ee), e, page_scale),
+                  translate(multiply(d, ff), f, page_scale))
+        if any(value is None for value in result):
+            return None
+        if any(low <= 0 <= high for low, high in result[:2]):
+            return None
+        return result
+
+    def visible_page_bounds(media_box, transform):
+        if transform is None or not isinstance(media_box, (list, tuple)) or len(media_box) != 4:
+            return None
+        values = [number_interval(value) for value in media_box]
+        if any(value is None for value in values):
+            return None
+        left, bottom, right, top = values
+        if left[1] >= right[0] or bottom[1] >= top[0]:
+            return None
+        a, d, e, f = transform
+        if any(low <= 0 <= high for low, high in (a, d)):
+            return None
+        xx = [(x - offset) / scale for x in (left[0], right[1]) for offset in e for scale in a]
+        yy = [(y - offset) / scale for y in (bottom[0], top[1]) for offset in f for scale in d]
+        # Exact rational endpoint inversion and outward integer rounding enclose
+        # the whole page, including the accumulated transform uncertainty.
+        box = [math.floor(min(xx)) - 1, math.floor(min(yy)) - 1,
+               math.ceil(max(xx)) + 1, math.ceil(max(yy)) + 1]
+        return box if max(map(abs, box)) <= 2 ** 24 else None
+
+    counts, boxes, pages, path_operations = collections.Counter(), {}, [], {}
+    reserved_names = set()
+    for page in writer.pages:
+        resources = inherited(page, '/Resources', DictionaryObject())
+        if not isinstance(resources, dict):
             continue
-        obj = writer._objects[ref.idnum - 1]
-        if not isinstance(obj, StreamObject) or obj.get("/DecodeParms") is not None:
+        xobjects = resources.get('/XObject', DictionaryObject())
+        xobjects = xobjects.get_object() if hasattr(xobjects, 'get_object') else xobjects
+        if not isinstance(xobjects, dict):
             continue
-        toks = _parse_page_tokens(obj.get_data())
-        page_tokens[pno] = (ref.idnum, toks)
-        for kind, *rest in toks:
-            if kind == "PATH" and len(rest[0]) >= 60:
-                counts[(rest[0], rest[1])] += 1
+        reserved_names.update(map(str, xobjects))
+        content = page.get_contents()
+        if content is None:
+            continue
+        tokens, pending, uninterrupted = [], [], True
+        width, miter, stroke_adjust, state_stack = 1.0, 10.0, False, []
+        transform = ((Fraction(1), Fraction(1)), (Fraction(1), Fraction(1)),
+                     (Fraction(0), Fraction(0)), (Fraction(0), Fraction(0)))
+        media_box = inherited(page, '/MediaBox')
+        media_values = [exact_number(value) for value in media_box] if isinstance(media_box, list) else []
+        page_scale = max(map(abs, media_values)) if len(media_values) == 4 and None not in media_values else budget + 1
+        if page_scale > budget:
+            transform = None
+        for operation in ContentStream(content, writer).operations:
+            operands, operator = operation
+            if operator == b'q':
+                state_stack.append((width, miter, stroke_adjust, transform))
+            elif operator == b'Q':
+                width, miter, stroke_adjust, transform = (state_stack.pop() if state_stack
+                                                          else (None, None, None, None))
+            elif operator == b'cm':
+                transform = concatenate_axis_transform(transform, operands, page_scale)
+            elif operator == b'w':
+                width = finite_number(operands[0], 0) if len(operands) == 1 else None
+            elif operator == b'M':
+                miter = finite_number(operands[0], 1) if len(operands) == 1 else None
+            elif operator == b'gs':
+                states = resources.get('/ExtGState', DictionaryObject()).get_object()
+                state = states.get(operands[0]) if isinstance(states, dict) and len(operands) == 1 else None
+                state = state.get_object() if state is not None else None
+                if not isinstance(state, dict):
+                    width, miter, stroke_adjust = None, None, None
+                else:
+                    if '/LW' in state:
+                        width = finite_number(state['/LW'], 0)
+                    if '/ML' in state:
+                        miter = finite_number(state['/ML'], 1)
+                    if '/SA' in state:
+                        adjustment = state['/SA']
+                        stroke_adjust = adjustment.value if isinstance(adjustment, BooleanObject) else None
+            if operator in path_ops:
+                pending.append(operation)
+            elif pending and operator in end_ops:
+                supported_paint = operator in (b'f', b'f*')
+                if (operator in (b'B', b'B*') and width is not None and width > 0
+                        and miter is not None and stroke_adjust is False):
+                    supported_paint = True
+                if (operator == b'S' and uninterrupted and width is not None
+                        and miter is not None and stroke_adjust in (True, False)):
+                    supported_paint = True
+                valid_geometry = bounds(pending, 0.0) if uninterrupted and supported_paint else None
+                bbox = visible_page_bounds(media_box, transform) if valid_geometry is not None else None
+                if (supported_paint and pending[0][1] in (b'm', b're')
+                        and pending[-1][1] == b'h' and bbox is not None):
+                    geometry = serialized(pending)
+                    key = (geometry, operator)
+                    path_operations.setdefault(key, pending + [operation])
+                    tokens.append(('PATH', key))
+                    counts[key] += 1
+                    if key in boxes:
+                        previous = boxes[key]
+                        bbox = [min(previous[0], bbox[0]), min(previous[1], bbox[1]),
+                                max(previous[2], bbox[2]), max(previous[3], bbox[3])]
+                    boxes[key] = bbox
+                else:
+                    tokens.extend(('RAW', value) for value in pending)
+                    tokens.append(('RAW', operation))
+                pending, uninterrupted = [], True
+            elif pending:
+                pending.append(operation)
+                uninterrupted = False
+            else:
+                tokens.append(('RAW', operation))
+        tokens.extend(('RAW', value) for value in pending)
+        pages.append((page, resources, xobjects, tokens))
 
-    eligible = {k for k, c in counts.items() if c >= 3 and len(k[0]) * c >= 400}
+    eligible = sorted((key for key, count in counts.items()
+                       if count >= 3 and len(key[0]) * count >= 400),
+                      key=lambda key: (-counts[key], key))
     if not eligible:
         return 0
+    forms, names, next_name = {}, {}, 1
+    for key in eligible:
+        while f'/FmM{next_name}' in reserved_names:
+            next_name += 1
+        name = f'/FmM{next_name}'
+        reserved_names.add(name)
+        next_name += 1
+        geometry, paint = key
+        compressed = zlib.compress(geometry + paint + b'\n', 9)
+        form = EncodedStreamObject()
+        form._data = compressed
+        form.update({NameObject('/Type'): NameObject('/XObject'),
+                     NameObject('/Subtype'): NameObject('/Form'),
+                     NameObject('/FormType'): NumberObject(1),
+                     NameObject('/BBox'): ArrayObject([_pdf_round_trip_float_type()(v) for v in boxes[key]]),
+                     NameObject('/Resources'): DictionaryObject(),
+                     NameObject('/Filter'): NameObject('/FlateDecode'),
+                     NameObject('/Length'): NumberObject(len(compressed))})
+        forms[key], names[key] = writer._add_object(form), name
 
-    form_refs = {}
-    form_names = {}
-    for idx, (geom, paint) in enumerate(sorted(eligible, key=lambda k: -counts[k]), 1):
-        fname = f"/FmM{idx}"
-        bbox = _bbox(geom)
-        comp = zlib.compress(geom + b"\n" + paint + b"\n", 9)
-        fobj = EncodedStreamObject()
-        fobj._data = comp
-        fobj[NameObject("/Type")] = NameObject("/XObject")
-        fobj[NameObject("/Subtype")] = NameObject("/Form")
-        fobj[NameObject("/FormType")] = NumberObject(1)
-        fobj[NameObject("/BBox")] = ArrayObject([FloatObject(round(v, 2)) for v in bbox])
-        fobj[NameObject("/Resources")] = DictionaryObject()
-        fobj[NameObject("/Filter")] = NameObject("/FlateDecode")
-        fobj[NameObject("/Length")] = NumberObject(len(comp))
-        form_refs[(geom, paint)] = writer._add_object(fobj)
-        form_names[(geom, paint)] = fname
-
-    for pno, (cid, toks) in page_tokens.items():
-        page = writer.pages[pno]
-        used_on_page = {}
-        out_lines = []
-        for kind, *rest in toks:
-            if kind == "RAW":
-                out_lines.append(rest[0])
+    for page, resources, xobjects, tokens in pages:
+        operations, used = [], {}
+        for kind, *values in tokens:
+            if kind == 'RAW':
+                operations.append(values[0])
+            elif values[0] in forms:
+                key = values[0]
+                used[NameObject(names[key])] = forms[key]
+                operations.append(([NameObject(names[key])], b'Do'))
             else:
-                key = (rest[0], rest[1])
-                if key in form_refs:
-                    fname = form_names[key]
-                    used_on_page[fname] = form_refs[key]
-                    out_lines.append(f"{fname} Do".encode("ascii"))
-                else:
-                    out_lines.append(rest[0])
-                    out_lines.append(rest[1])
-        comp = zlib.compress(b"\n".join(out_lines) + b"\n", 9)
-        old_obj = writer._objects[cid - 1]
-        enc = EncodedStreamObject()
-        for k, v in old_obj.items():
-            if k not in ("/Length", "/Filter", "/DecodeParms"):
-                enc[NameObject(k)] = v
-        enc._data = comp
-        enc[NameObject("/Filter")] = NameObject("/FlateDecode")
-        enc[NameObject("/Length")] = NumberObject(len(comp))
-        enc.indirect_reference = old_obj.indirect_reference or IndirectObject(cid, 0, writer)
-        writer._objects[cid - 1] = enc
-
-        if used_on_page:
-            res = page.get("/Resources")
-            res_obj = res.get_object() if hasattr(res, "get_object") else res
-            if res_obj is None:
-                res_obj = DictionaryObject()
-                page[NameObject("/Resources")] = res_obj
-            xobj = res_obj.get("/XObject")
-            xobj_dict = xobj.get_object() if hasattr(xobj, "get_object") else xobj
-            if xobj_dict is None:
-                xobj_dict = DictionaryObject()
-                res_obj[NameObject("/XObject")] = xobj_dict
-            for fname, fref in used_on_page.items():
-                xobj_dict[NameObject(fname)] = fref
-    return len(eligible)
+                operations.extend(path_operations[values[0]])
+        if not used:
+            continue
+        # New dictionaries keep shared or inherited resources unchanged.
+        new_resources, new_xobjects = DictionaryObject(resources), DictionaryObject(xobjects)
+        new_xobjects.update(used)
+        new_resources[NameObject('/XObject')] = new_xobjects
+        page[NameObject('/Resources')] = new_resources
+        compressed = zlib.compress(pdf_content_bytes_losslessly(operations, writer), 9)
+        encoded = EncodedStreamObject()
+        encoded._data = compressed
+        encoded[NameObject('/Filter')] = NameObject('/FlateDecode')
+        encoded[NameObject('/Length')] = NumberObject(len(compressed))
+        page[NameObject('/Contents')] = writer._add_object(encoded)
+    return len(forms)
 
 
-def compact_pdf_page_paths(writer):
-    """Trim redundant sub-micrometer float decimals on standalone Bezier/line path operators."""
+def compress_pdf_page_streams_losslessly(writer):
+    """Recompress content bytes without rounding path or text coordinates."""
     import zlib
     from pypdf.generic import EncodedStreamObject, IndirectObject, NameObject, NumberObject, StreamObject
 
-    path_line_re = re.compile(rb"^((?:[+-]?\d+(?:\.\d+)?[ \t]+){2,6})(m|l|c|v|y|re)\r?$", re.M)
-    float_trim_re = re.compile(rb"([+-]?\d+\.\d{2})\d+")
-
-    def _trim(match):
-        return float_trim_re.sub(rb"\1", match.group(1)).replace(b"-0.00", b"0") + match.group(2)
-
     page_content_ids = set()
     for page in writer.pages:
+        if "/Contents" not in page:
+            continue
         ref = page.raw_get("/Contents")
         if hasattr(ref, "idnum"):
             page_content_ids.add(ref.idnum)
@@ -1723,8 +2041,7 @@ def compact_pdf_page_paths(writer):
         if flt not in (None, "/FlateDecode", [NameObject("/FlateDecode")]) or obj.get("/DecodeParms") is not None:
             continue
         raw = obj.get_data()
-        slim = path_line_re.sub(_trim, raw)
-        compressed = zlib.compress(slim, 9)
+        compressed = zlib.compress(raw, 9)
         old_encoded = getattr(obj, "_data", None)
         if not isinstance(old_encoded, (bytes, bytearray)) or flt is None or len(compressed) < len(old_encoded):
             encoded = EncodedStreamObject()
@@ -1749,7 +2066,11 @@ def write_pdf_with_object_streams(writer, out_stream, *, chunk_size=200):
     writer._resolve_links()
     recompress_pdf_images_losslessly(writer)
     deduplicate_pdf_vector_glyphs(writer)
-    compact_pdf_page_paths(writer)
+    compress_pdf_page_streams_losslessly(writer)
+    # Replaced page streams must not be serialized as unreachable old copies.
+    # References through the structure tree (including MCR /Stm) remain live.
+    writer.compress_identical_objects(remove_duplicates=False, remove_unreferenced=True)
+    preserve_pdf_float_values(writer)
 
     protected_ids = set()
     root_ref = writer.root_object.indirect_reference
@@ -1857,13 +2178,19 @@ def write_pdf_with_object_streams(writer, out_stream, *, chunk_size=200):
     out_stream.write(f"\nendobj\nstartxref\n{xref_offset}\n%%EOF\n".encode("ascii"))
 
 
-def add_bookmarks(pdf_path, outline, aliases=None):
+def add_bookmarks(pdf_path, outline, aliases=None, *, input_identity):
     """按 outline 写三级大纲（篇 + 节 + 指定子节），校验后原子替换 PDF。"""
+    if not isinstance(input_identity, PDFInputIdentity):
+        raise TypeError('bookmarks require a captured PDFInputIdentity')
+    if source_digest() != input_identity.source_digest:
+        raise ValueError('publication sources changed before PDF post-processing')
     try:
         from pypdf import PdfReader, PdfWriter
     except ImportError as e:
         raise SystemExit("缺少 pypdf，无法写入并校验书签") from e
     reader = PdfReader(str(pdf_path))
+    if PDFInputIdentity.from_metadata(reader.metadata or {}) != input_identity:
+        raise ValueError('bookmarks cannot relabel a PDF from another HTML input')
     # Chrome 的 PDF 页面含结构标签；append(reader) 会丢掉文档根的
     # StructTreeRoot 和每页的 StructParents。完整克隆后再追加书签。
     writer = PdfWriter(clone_from=reader)
@@ -1871,7 +2198,7 @@ def add_bookmarks(pdf_path, outline, aliases=None):
         "/Title": "麦克风阵列信号处理教程",
         "/Subject": "从入门到工业实践",
         "/Creator": "scripts/build_pdf.py",
-        "/SourceDigest": source_digest(),
+        **input_identity.metadata(),
     })
     from pypdf.generic import NameObject, TextStringObject
     writer._root_object.update({NameObject("/Lang"): TextStringObject("zh-CN")})
@@ -1913,8 +2240,12 @@ def add_bookmarks(pdf_path, outline, aliases=None):
             write_pdf_with_object_streams(writer, f)
         tagged = PdfReader(str(tmp_path))
         validate_pdf_structure_tags(tagged)
+        if PDFInputIdentity.from_metadata(tagged.metadata or {}) != input_identity:
+            raise SystemExit('PDF 后处理未保留实际 HTML 输入身份')
         if aliases is not None:
             validate_pdf_named_aliases(tagged, aliases)
+        if source_digest() != input_identity.source_digest:
+            raise ValueError('publication sources changed during PDF post-processing')
         os.replace(tmp_path, pdf_path)
     finally:
         tmp_path.unlink(missing_ok=True)
@@ -1948,11 +2279,25 @@ def contains_unrendered_math(text):
     )
 
 
+def pdf_marked_true(reader):
+    """Require a parsed PDF boolean true, rather than Python object truthiness."""
+    from pypdf.generic import BooleanObject, DictionaryObject
+    mark_info = reader.trailer['/Root'].get('/MarkInfo')
+    if mark_info is None or not hasattr(mark_info, 'get_object'):
+        return False
+    mark_info = mark_info.get_object()
+    if not isinstance(mark_info, DictionaryObject):
+        return False
+    marked = mark_info.get('/Marked')
+    if marked is not None and hasattr(marked, 'get_object'):
+        marked = marked.get_object()
+    return isinstance(marked, BooleanObject) and marked.value is True
+
+
 def validate_pdf_structure_tags(reader):
     """确认 Chrome 结构树在加书签前后均存在；不等同 PDF/UA 验证。"""
     root = reader.trailer["/Root"]
-    mark_info = root.get("/MarkInfo")
-    if not mark_info or not bool(mark_info.get_object().get("/Marked")):
+    if not pdf_marked_true(reader):
         raise SystemExit("PDF 缺少 /MarkInfo /Marked；不能验收结构标签")
     tree = root.get("/StructTreeRoot")
     if not tree:
@@ -2017,7 +2362,11 @@ def validate_pdf_body_scale(reader, samples=None):
         raise SystemExit(f"PDF 正文被额外缩小（正常 px→pt 比例为 0.75）：{too_small[:5]}；请检查过宽公式或表格")
 
 
-def print_pdf(combined, pdf, timeout_min_pages=100):
+def print_pdf(combined, pdf, timeout_min_pages=100, *, input_identity):
+    if not isinstance(input_identity, PDFInputIdentity):
+        raise TypeError('printing requires a captured PDFInputIdentity')
+    require_unchanged_pdf_input(input_identity, combined, source_digest)
+    captured_html = combined.read_bytes()
     chrome = find_chrome()
     if not Path(chrome).exists():
         raise SystemExit(f"找不到 Chrome：{chrome}")
@@ -2065,11 +2414,17 @@ def print_pdf(combined, pdf, timeout_min_pages=100):
         try:
             from pypdf import PdfReader, PdfWriter
             writer = PdfWriter(clone_from=PdfReader(str(tmp_pdf)))
-            tag_pdf_formulas(writer, pdf_math_sources(combined.read_text(encoding="utf-8")))
+            require_unchanged_pdf_input(input_identity, combined, source_digest)
+            tag_pdf_formulas(writer, pdf_math_sources(captured_html.decode('utf-8')))
+            writer.add_metadata(input_identity.metadata())
+            writer._resolve_links()
+            preserve_pdf_float_values(writer)
             with tmp_pdf.open("wb") as stream:
                 writer.write(stream)
             reader = PdfReader(str(tmp_pdf))
             validate_pdf_structure_tags(reader)
+            if PDFInputIdentity.from_metadata(reader.metadata or {}) != input_identity:
+                raise ValueError('PDF 打印后丢失实际 HTML 输入身份')
             npages = len(reader.pages)
             page_texts = []
             scale_samples = []
@@ -2108,6 +2463,7 @@ def print_pdf(combined, pdf, timeout_min_pages=100):
             raise SystemExit("PDF 数学字形探针的正文边界缺失；不能验收公式")
         validate_pdf_text_codepoints("\n".join(page_texts))
         validate_pdf_body_scale(reader, samples=scale_samples)
+        require_unchanged_pdf_input(input_identity, combined, source_digest)
         os.replace(tmp_pdf, pdf)
     finally:
         tmp_pdf.unlink(missing_ok=True)
@@ -2116,7 +2472,7 @@ def print_pdf(combined, pdf, timeout_min_pages=100):
 
 
 def check_figures():
-    """合订前检查：正文引用的图必须存在、非空，并覆盖 88 个编号文件。"""
+    """合订前检查：正文引用的图必须存在、非空，并覆盖 87 个编号文件。"""
     missing = []
     refs = set()
     for fname, _ in CHAPTERS:
@@ -2193,26 +2549,27 @@ def main(argv=None):
     tmp_html = None
     tmp_pdf = None
     try:
+        before = source_digest()
         if not args.pdf_only:
             check_figures()
             page, outline = build_html(args.build_date)
-            fd, tmp_name = tempfile.mkstemp(prefix="combined-", suffix=".html", dir=OUT)
-            os.close(fd)
-            tmp_html = Path(tmp_name)
-            tmp_html.write_text(page, encoding="utf-8")
+            html_bytes = page.encode('utf-8')
+        else:
+            html_bytes = combined.read_bytes()
+        identity = verify_canonical_html_input(html_bytes, build_html, source_digest)
+        if before != identity.source_digest:
+            raise ValueError('publication sources changed while collecting HTML')
+        fd, tmp_name = tempfile.mkstemp(prefix="combined-", suffix=".html", dir=OUT)
+        os.close(fd)
+        tmp_html = Path(tmp_name)
+        tmp_html.write_bytes(html_bytes)
+        require_unchanged_pdf_input(identity, tmp_html, source_digest)
         if args.html_only:
             build_site.publish_files([(tmp_html, combined)])
             print("saved", combined, "html only, skip printing")
             return
         if args.pdf_only:
-            html = combined.read_text(encoding="utf-8")
-            embedded_digest = digest_from_html(html)
-            current_digest = source_digest()
-            if embedded_digest != current_digest:
-                raise SystemExit(
-                    "--pdf-only 拒绝使用陈旧 combined.html："
-                    f"内嵌摘要 {embedded_digest or '缺失'}，当前源文件 {current_digest}。"
-                    "请先运行完整构建或 --html-only。")
+            html = html_bytes.decode('utf-8')
             outline = outline_from_html(html)
             subsec_count = sum(len(subsecs) for _, _, secs in outline
                                for _title, _sid, subsecs in secs)
@@ -2222,15 +2579,27 @@ def main(argv=None):
         os.close(fd)
         tmp_pdf = Path(tmp_name)
         # 临时 HTML 与正式 HTML 同目录，图片相对路径保持一致。
-        print_pdf(tmp_html or combined, tmp_pdf, args.min_pages)
+        print_pdf(tmp_html, tmp_pdf, args.min_pages, input_identity=identity)
+        require_unchanged_pdf_input(identity, tmp_html, source_digest)
         if not args.no_bookmarks:
-            add_bookmarks(tmp_pdf, outline, pdf_alias_targets())
+            add_bookmarks(tmp_pdf, outline, pdf_alias_targets(), input_identity=identity)
+        require_unchanged_pdf_input(identity, tmp_html, source_digest)
+        if args.pdf_only and combined.read_bytes() != html_bytes:
+            raise ValueError('combined.html changed after the private print snapshot was captured')
         validate_pdf_links(tmp_pdf)
-        replacements = [] if tmp_html is None else [(tmp_html, combined)]
+        from pypdf import PdfReader
+        if PDFInputIdentity.from_metadata(PdfReader(tmp_pdf).metadata or {}) != identity:
+            raise ValueError('PDF lost the identity of its actual HTML input')
+        replacements = [] if args.pdf_only else [(tmp_html, combined)]
         replacements.append((tmp_pdf, pdf))
+        require_unchanged_pdf_input(identity, tmp_html, source_digest)
+        if args.pdf_only and combined.read_bytes() != html_bytes:
+            raise ValueError('combined.html changed during final PDF validation')
         build_site.publish_files(replacements)
         os.chmod(pdf, 0o644)
         print("saved", pdf)
+    except (ValueError, TypeError, OSError) as error:
+        raise SystemExit(f'PDF 输入或发布核验失败：{error}') from error
     finally:
         if tmp_html is not None:
             tmp_html.unlink(missing_ok=True)

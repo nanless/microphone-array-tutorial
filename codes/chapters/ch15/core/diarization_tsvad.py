@@ -279,6 +279,10 @@ def gss_soft_gated_mvdr(
 ) -> dict:
     """Estimate target-exclusive and interference SCMs from TS-VAD posteriors and solve Souden MVDR.
 
+    ``target_scm`` is a weighted solo-observation SCM, still containing ambient
+    noise and soft-mask leakage. It approximates a rank-one target SCM only in
+    the high-SNR control (E15-10); no general distortionless guarantee follows.
+
     Parameters
     ----------
     observations:
@@ -290,7 +294,7 @@ def gss_soft_gated_mvdr(
     diag_loading:
         Relative trace loading added to the interference-plus-noise covariance.
     ref_mic:
-        Reference microphone index for distortionless target-image preservation.
+        Reference microphone index for the Souden target-image convention.
     """
     raw_x = np.asarray(observations)
     if raw_x.dtype.kind not in "iufc" or raw_x.ndim != 2 or min(raw_x.shape) < 1:

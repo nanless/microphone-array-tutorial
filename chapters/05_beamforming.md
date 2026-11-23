@@ -162,7 +162,7 @@ $$\begin{aligned}
 Q(\alpha)&=\frac{(\alpha+1)^2}{\alpha^2+1/3}\text{。}
 \end{aligned}$$
 
-式(5-7)清晰给出四类经典一阶模式的参数对照（由 $\mathrm{d}Q/\mathrm{d}\alpha=0$ 得超心形 $\alpha=1/3$ 达双麦 Uzkov 上限 $Q_{\max}=4$；而最大化前后半球功率比 $\mathrm{FBR}=\frac{\int_0^{\pi/2}D^2\sin\varphi\,\mathrm{d}\varphi}{\int_{\pi/2}^\pi D^2\sin\varphi\,\mathrm{d}\varphi}=\frac{\alpha^2+\alpha+1/3}{\alpha^2-\alpha+1/3}$ 求导置零立得**超级心形 $\alpha=1/\sqrt 3$**，前后比达 $7+4\sqrt 3\approx 11.44\ \mathrm{dB}$）：
+式(5-7)清晰给出四类经典一阶模式的参数对照（由 $\mathrm{d}Q/\mathrm{d}\alpha=0$ 得超心形 $\alpha=1/3$ 达双麦 Uzkov 上限 $Q_{\max}=4$；而最大化前后半球功率比 $\mathrm{FBR}=\frac{\int_0^{\pi/2}D^2\sin\varphi\,\mathrm{d}\varphi}{\int_{\pi/2}^\pi D^2\sin\varphi\,\mathrm{d}\varphi}=\frac{\alpha^2+\alpha+1/3}{\alpha^2-\alpha+1/3}$ 求导置零立得**超级心形 $\alpha=1/\sqrt 3$**，线性前后功率比达 $7+4\sqrt 3\approx13.928$，换成分贝为 $10\log_{10}(7+4\sqrt3)\approx11.44\ \mathrm{dB}$）：
 
 | 一阶模式名称 | 延迟比 $\alpha$ | 零陷轴向角 $\varphi_{\mathrm{null}}$ | 球面指向因数 $Q$ | 指向性指数 $\mathrm{DI}$ | 核心优化准则 |
 |---|---:|---:|---:|---:|---|
@@ -183,12 +183,12 @@ Q(\alpha)&=\frac{(\alpha+1)^2}{\alpha^2+1/3}\text{。}
     因此配套 $1/(\mathrm{j}\omega)$ 低频积分均衡器将前向增益拉平为 $1$ 时，非相关自噪声输出功率按 $1/G_{\mathrm{WNG}}\propto(\lambda/d)^2$ 增长——频率每降一个倍频程底噪功率放大 $4$ 倍（$+6\ \mathrm{dB}$），必须在语音下限（如 $100$～$150\ \mathrm{Hz}$）设增益封顶与高通滚降。
 
 2. **近场效应（Proximity Effect）与混响房间 DI 退化**：上述推导假定远场平面波；当人嘴靠近耳机或手持麦克风（$r\sim 10$～$20\ \mathrm{cm}$ 满足 $\kappa r\lesssim 1$）时，球面波声压梯度 $\frac{\partial}{\partial r}\big(\frac{e^{-\mathrm{j}\kappa r}}{r}\big)=-\big(\mathrm{j}\kappa+\frac{1}{r}\big)\frac{e^{-\mathrm{j}\kappa r}}{r}$ 除了远场项 $\mathrm{j}\kappa$ 外还多出与距离成反比的近场项 $1/r$，赋予近讲低频相对远场噪声额外 $\propto\sqrt{1+1/(\kappa r)^2}\sim 1/(\kappa r)$ 的低频抬升。这在耳机与近讲通话中既是天然抵消 $+6\ \mathrm{dB/oct}$ 高通滚降、拉开近讲语音与远场底噪信噪比的利器，也会造成声源远近移动时的低频音色变化；另一方面，在强混响房间内，如果早期强反射恰好从主瓣方向进入，实测有效指向性指数往往明显低于理论自由场 DI。
-3. **MEMS 密封垫圈漏气相位失配**：$d=1$～$2\ \mathrm{cm}$ 在 $200\ \mathrm{Hz}$ 时的真实声程相位差 $\kappa d$ 仅 $2^\circ$～$4^\circ$，垫圈微漏气造成的一阶高通相移（$3^\circ$～$15^\circ$）比真实声程差还大，足以显著破坏后向零陷（[E05-16](#e05-16) 量化了 $5^\circ$ 漏气使后向响应反超前向 $+1.52\ \mathrm{dB}$ 的失效现象）。
+3. **MEMS 密封垫圈漏气相位失配**：$d=1$～$2\ \mathrm{cm}$ 在 $200\ \mathrm{Hz}$ 时的真实声程相位差 $\kappa d$ 仅 $2^\circ$～$4^\circ$，垫圈微漏气造成的一阶高通相移（$3^\circ$～$15^\circ$）比真实声程差还大，足以显著破坏后向零陷（[E05-16](#e05-16) 量化了 $5^\circ$ 漏气使后向响应超过名义前向单位响应 $+1.52\ \mathrm{dB}$ 的失效现象）。
 4. **单频手算核验与高阶权衡**：取 $d=2\ \mathrm{cm}$、$c=343\ \mathrm{m/s}$、心形 $\alpha=1$（$T\approx 58.31\ \mu\mathrm{s}$），$500\ \mathrm{Hz}$ 处名义前向幅度 $|H_f|=2\sin(\kappa d)\approx 0.3643$，均衡后 $\mathrm{WNG}_{\mathrm{dB}}=10\log_{10}(|H_f|^2/2)\approx -11.78\ \mathrm{dB}$，$1\%$ 增益失配使后向零陷相对名义前向响应抬至 $-31.23\ \mathrm{dB}$；至 $\kappa d=\pi$（约 $8.58\ \mathrm{kHz}$）前向出现梳状相消决定高频上限。级联 $N$ 阶差分（如二阶超心形 $Q_{\max}=9\leftrightarrow 9.54\ \mathrm{dB}$）使未均衡低频前向幅度降为 $\mathcal O((\kappa d)^N)$，均衡为 $1$ 后白噪声输出功率随之按 $(\lambda/d)^{2N}$（$+6N\ \mathrm{dB/oct}$）急剧放大（系统矩阵与白噪声正则化设计见 [Elko, 2004](https://doi.org/10.1007/1-4020-7769-6_2) 与 [Benesty & Chen, Springer, 2013](https://doi.org/10.1007/978-3-642-33753-6)），故实用紧凑阵列普遍采用分频设计：极低频退回一阶或 DSB，中频启用高阶差分，高频切回常规波束。
 
 **宽带频率不变波束形成（FIB）的综合方法**：无论 DSB 还是高阶分频设计，固定物理孔径 $D$ 的均匀线阵都面临宽带波束宽度随频率收缩的问题——正横半功率波束宽度 $\theta_{\mathrm{HPBW}}(f)\approx 0.886\,\lambda/(D\cos\theta_0)\propto c/(fD)$ 随频率 $f$ 成反比变窄。尽管正对轴向 $\theta_0$ 的直达目标响应恒为 $1$，任何落在主瓣边缘或旁瓣区的偏轴声源与混响在低频段仍落入宽主瓣而几乎无衰减，到高频段却因主瓣收窄被大幅压低，等效于对偏轴信号施加了一级随角度变化的**低通声染色滤波器**。工程上消除偏轴声染色、综合**宽带频率不变波束形成器（Frequency-Invariant Beamforming，FIB）**主要有两条经典路径：
 
-1. **连续孔径缩放与孔径加权（Ward–Kennedy–Williamson 原理，*IEEE TSP*, 1995）**：要令自由场方向图在宽带内与频率无关，须保持各频点的有效电孔径乘积 $f\cdot D_{\mathrm{eff}}(f)=f_0 D_0$ 为常数。对沿 $x$ 轴分布的连续线孔径，取参考频率 $f_0$ 下的原型窗函数 $g(u)$（支撑于 $\lvert u\rvert\le D_0/2$）并按频率伸缩空间加权 $w(x,f)$，作换元 $u=(f/f_0)x$（满足 $\mathrm{d}u=(f/f_0)\,\mathrm{d}x$）即可证明预对齐宽带方向图严格与 $f$ 无关：
+1. **连续孔径缩放与孔径加权（Ward–Kennedy–Williamson 原理，*JASA* 97(2):1023–1034, 1995）**：要令自由场方向图在宽带内与频率无关，须保持各频点的有效电孔径乘积 $f\cdot D_{\mathrm{eff}}(f)=f_0 D_0$ 为常数。对沿 $x$ 轴分布的连续线孔径，取参考频率 $f_0$ 下的原型窗函数 $g(u)$（支撑于 $\lvert u\rvert\le D_0/2$）并按频率伸缩空间加权 $w(x,f)$，作换元 $u=(f/f_0)x$（满足 $\mathrm{d}u=(f/f_0)\,\mathrm{d}x$）即可证明预对齐宽带方向图严格与 $f$ 无关：
 
     $$w(x,f)=\frac{f}{f_0}\,g\!\left(\frac{f}{f_0}x\right),\qquad B(\theta,f)=\int w^*(x,f)\,e^{+\mathrm{j}\frac{2\pi f}{c}x\sin\theta}\,\mathrm{d}x=\int g^*(u)\,e^{+\mathrm{j}\frac{2\pi f_0}{c}u\sin\theta}\,\mathrm{d}u\text{。}$$
 
@@ -226,7 +226,7 @@ $$\vec w_{\mathrm{MVDR}}=\frac{\mathbf R_{nn}^{-1}\vec a}{\vec a^H\mathbf R_{nn}
 
     正标量 $(1+\phi_s q)^{-1}$ 在分子与分母中精确约去，故 $\vec w_{\mathrm{MPDR}}=\vec w_{\mathrm{MVDR}}$。
 
-- **存在微小导向失配 $\Delta\vec a$ 时，MPDR 随输入 SNR 升高发生剧烈目标自消**：一旦真实目标导向 $\vec a_{\mathrm{true}}=\vec a+\Delta\vec a$ 偏离约束向量 $\vec a$，MPDR 把 $\mathbf R_{xx}$ 中携带强目标能量的 $\phi_s\vec a_{\mathrm{true}}\vec a_{\mathrm{true}}^H$ 视为待最小化的干扰项，输入信噪比越高，优化器压制真实目标的力度就越猛，导致输出 SINR 随输入 SNR 升高不升反降（[E05-08](#e05-08) 完整手算了输入 SNR 升至 $100$ 时 MPDR 把失配目标压低超 $43\ \mathrm{dB}$ 的过程）。这正是工程上始终优先采用 VAD/SPP 或 DNN 掩码估计纯净 $\hat{\mathbf R}_{nn}$、而非直接拿 $\hat{\mathbf R}_{xx}$ 求逆的根本原因。
+- **非共线导向形状失配可能导致强目标自消**：当真实目标导向 $\vec a_{\mathrm{true}}=\vec a+\Delta\vec a$ 与约束向量 $\vec a$ 不共线时，MPDR 把 $\mathbf R_{xx}$ 中携带强目标能量的 $\phi_s\vec a_{\mathrm{true}}\vec a_{\mathrm{true}}^H$ 视为待最小化的干扰项，在本节给定的强目标模型中，输入 SNR 增大可强化这一压制，使输出 SINR 反而下降；若失配只是公共复尺度 $\vec a_{\mathrm{true}}=c\vec a$，约束仍固定其真实响应为 $c$，不存在同样的空间自消机制（[E05-08](#e05-08) 完整手算了输入 SNR 升至 $100$ 时 MPDR 把失配目标压低超 $43\ \mathrm{dB}$ 的过程）。这正是工程上始终优先采用 VAD/SPP 或 DNN 掩码估计纯净 $\hat{\mathbf R}_{nn}$、而非直接拿 $\hat{\mathbf R}_{xx}$ 求逆的根本原因。
 
 观察式(5-9)两个特例：$\mathbf R_{nn}=\phi_n\mathbf I$ 时退化为 DSB；$\mathbf R_{nn}=\phi_d\mathbf\Gamma$ 时退化为式(5-6)超指向。
 
@@ -249,7 +249,9 @@ $$\vec w_{\mathrm{MVDR}}=\frac{1}{22}\begin{bmatrix}11+10\mathrm{j}\\11-10\mathr
 
 #### 对角加载、WNG 约束与 LOCATA 实录对照
 
-在无失真约束 $\vec w^H\vec a=1$ 下施加白噪声增益下限 $G_{\mathrm{WNG}}\ge G_{\min}$（即 $\|\vec w\|_2^2\le\delta=1/G_{\min}$；对单位模导向 $\|\vec a\|_2^2=M$ 要求 $\delta\ge 1/M$，一般导向为 $\delta\ge 1/\|\vec a\|_2^2$），引入非负拉格朗日乘子 $\varepsilon\ge 0$ 写增广拉格朗日函数 $\mathcal L=\vec w^H(\hat{\mathbf R}_{nn}+\varepsilon\mathbf I)\vec w-\varepsilon\delta+\lambda(1-\vec w^H\vec a)+\lambda^*(1-\vec a^H\vec w)$，立即表明 **WNG 范数约束的对偶解等价于对角加载 MVDR**（[Cox, Zeskind & Owen, *IEEE TASSP*, 1987](https://doi.org/10.1109/TASSP.1987.1165054)）。由 KKT 互补松弛条件 $\varepsilon(\|\vec w\|_2^2-\delta)=0$：若未加载已满足 $\|\vec w(0)\|_2^2\le\delta$ 则 $\varepsilon^\star=0$；否则记 $\hat{\mathbf R}_{nn}=\sum_{m=1}^M\lambda_m\vec u_m\vec u_m^H$、$\alpha_m=|\vec u_m^H\vec a|^2$ 与 $S_k(\varepsilon)=\sum_{m=1}^M\alpha_m(\lambda_m+\varepsilon)^{-k}$，则 $\|\vec w(\varepsilon)\|_2^2=S_2/S_1^2$，求导得 $\frac{\mathrm{d}}{\mathrm{d}\varepsilon}(S_2/S_1^2)=2(S_2^2-S_1S_3)/S_1^3\le 0$（由柯西—施瓦茨不等式，只要 $\vec a$ 在至少两个不同特征值上非零即严格单调递减），随 $\varepsilon\to\infty$ 平滑降至 $1/\|\vec a\|_2^2$（单位模导向下即 $1/M\le\delta$），故存在唯一正加载量 $\varepsilon^\star>0$ 使解恰好落在边界 $\|\vec w(\varepsilon^\star)\|_2^2=\delta$ 上（闭式反推算例见 [E05-04](#e05-04)）。
+在无失真约束 $\vec w^H\vec a=1$ 下施加白噪声增益下限 $G_{\mathrm{WNG}}\ge G_{\min}$（即 $\|\vec w\|_2^2\le\delta=1/G_{\min}$；对单位模导向 $\|\vec a\|_2^2=M$ 要求 $\delta\ge 1/M$，一般导向为 $\delta\ge 1/\|\vec a\|_2^2$），引入非负拉格朗日乘子 $\varepsilon\ge 0$ 写增广拉格朗日函数 $\mathcal L=\vec w^H(\hat{\mathbf R}_{nn}+\varepsilon\mathbf I)\vec w-\varepsilon\delta+\lambda(1-\vec w^H\vec a)+\lambda^*(1-\vec a^H\vec w)$，立即表明 **WNG 范数约束的对偶解等价于对角加载 MVDR**（[Cox, Zeskind & Owen, *IEEE TASSP*, 1987](https://doi.org/10.1109/TASSP.1987.1165054)）。由 KKT 互补松弛条件 $\varepsilon(\|\vec w\|_2^2-\delta)=0$：若未加载已满足 $\|\vec w(0)\|_2^2\le\delta$ 则 $\varepsilon^\star=0$；否则记 $\hat{\mathbf R}_{nn}=\sum_{m=1}^M\lambda_m\vec u_m\vec u_m^H$、$\alpha_m=|\vec u_m^H\vec a|^2$ 与 $S_k(\varepsilon)=\sum_{m=1}^M\alpha_m(\lambda_m+\varepsilon)^{-k}$，则 $\|\vec w(\varepsilon)\|_2^2=S_2/S_1^2$，求导得 $\frac{\mathrm{d}}{\mathrm{d}\varepsilon}(S_2/S_1^2)=2(S_2^2-S_1S_3)/S_1^3\le 0$（由柯西—施瓦茨不等式，只要 $\vec a$ 在至少两个不同特征值上非零即严格单调递减），随 $\varepsilon\to\infty$ 平滑降至 $1/\|\vec a\|_2^2$（单位模导向下即 $1/M\le\delta$），对严格预算 $\delta>1/\|\vec a\|_2^2$、约束激活且上述严格递减条件成立时，存在唯一有限正加载量 $\varepsilon^\star>0$ 使解恰好落在边界 $\|\vec w(\varepsilon^\star)\|_2^2=\delta$ 上（闭式反推算例见 [E05-04](#e05-04)）。
+
+若 $\delta<1/\|\vec a\|_2^2$，问题不可行；若恰取等号，可行权重只有最小范数解 $\vec w=\vec a/\|\vec a\|_2^2$，一般须以 $\varepsilon\to\infty$ 的极限得到，不保证存在有限加载根。例如双麦算例的 $\|\vec w(\varepsilon)\|^2=1/2+50/(11+\varepsilon)^2$ 永远大于端点 $1/2$。
 
 为保证尺度不变性，本书采用无量纲相对对角加载系数 $\alpha_{\mathrm{dl}}\ge 0$（对应第 4 章 Capon 谱中的无量纲加载符号 $\eta$，避免与 DMA 延迟比 $\alpha$ 及遗忘因子混淆）：
 
@@ -264,13 +266,13 @@ $\alpha_{\mathrm{dl}}$ 是连接纯数据驱动 MVDR（$\alpha_{\mathrm{dl}}\to 
 | A（目标），$2.65$～$3.10\ \mathrm{s}$ | $-2.42\ \mathrm{dB}$ | $-3.28\ \mathrm{dB}$ | $-0.86\ \mathrm{dB}$ |
 | B（干扰），$4.08$～$4.68\ \mathrm{s}$ | $-8.96\ \mathrm{dB}$ | $-16.38\ \mathrm{dB}$ | $-7.42\ \mathrm{dB}$ |
 
-MVDR 相对 DSB 额外压制干扰 B 达 $7.42\ \mathrm{dB}$，而对目标 A 仅多耗 $0.86\ \mathrm{dB}$（两法在单讲 A 窗功率低于单麦是因为波束同时压掉了原单麦录音里的房间混响与底噪；交互试听见[导读音频试听与复现总表](00_overview.md#audio-assets)）。
+在这两个单讲评分窗内，MVDR 相对 DSB 的带内总功率在 B 窗下降 $7.42\ \mathrm{dB}$，在 A 窗下降 $0.86\ \mathrm{dB}$。这里计入了相应说话人的直达声、反射和底噪，不能仅凭总功率把 A 窗下降归为干净目标损失，也不能全部归为去混响或降噪；分量保真需要干净参考或额外模型证据（交互试听见[导读音频试听与复现总表](00_overview.md#audio-assets)）。
 
 #### 5.4.1 稳健波束形成方法
 
 工程失配归结为四类根源：**A 导向矢量失配**、**B 有限快拍协方差误差**、**C 相干干扰/强早反射**、**D 目标泄漏进 $\hat{\mathbf R}_{nn}$ 引发自消**。除固定对角加载外，四条经典加固路线如下：
 
-1. **最差情况范数球优化（SOCP）与稳健 Capon 波束形成（RCB）**：设真实目标导向落在以名义导向 $\vec a_0$ 为球心的欧氏球 $\mathcal U=\{\vec a_0+\vec e:\|\vec e\|_2\le\epsilon\}$ 内，要求球内最坏幅度响应 $|\vec w^H\vec a|\ge 1$（[Vorobyov, Gershman & Luo, *IEEE TSP*, 2003](https://doi.org/10.1109/TSP.2002.806865)），转化为凸二阶锥规划 $\min\vec w^H\hat{\mathbf R}_{nn}\vec w\ \text{s.t.}\ \operatorname{Re}(\vec w^H\vec a_0)\ge 1+\epsilon\|\vec w\|_2$（注意名义响应大于 $1$，手算证明见 [E05-13](#e05-13)）。[Li, Stoica 与 Wang（*IEEE TSP*, 2003）](https://doi.org/10.1109/TSP.2003.812831)从同一球不确定集出发，通过最大化匹配功率导出**稳健 Capon 波束形成（RCB）**的数据相关自适应对角加载闭式迭代，严格证明了 **RCB 与 Vorobyov 最差情况 SOCP 的最优权重仅差一个正缩放标量**（方向图与输出 SINR 完全相同）。
+1. **最差情况范数球优化（SOCP）与稳健 Capon 波束形成（RCB）**：设真实目标导向落在以名义导向 $\vec a_0$ 为球心的欧氏球 $\mathcal U=\{\vec a_0+\vec e:\|\vec e\|_2\le\epsilon\}$ 内，要求球内最坏幅度响应 $|\vec w^H\vec a|\ge 1$（[Vorobyov, Gershman & Luo, *IEEE TSP*, 2003](https://doi.org/10.1109/TSP.2002.806865)），转化为凸二阶锥规划 $\min\vec w^H\hat{\mathbf R}_{nn}\vec w\ \text{s.t.}\ \operatorname{Re}(\vec w^H\vec a_0)\ge 1+\epsilon\|\vec w\|_2$（注意名义响应大于 $1$，手算证明见 [E05-13](#e05-13)）。[Li, Stoica 与 Wang（*IEEE TSP*, 2003）](https://doi.org/10.1109/TSP.2003.812831)从同一球不确定集出发，通过最大化匹配功率导出**稳健 Capon 波束形成（RCB）**的数据相关自适应对角加载闭式迭代，严格证明了 **RCB 与 Vorobyov 最差情况 SOCP 的最优权重仅差一个正缩放标量**（归一化方向图与输出 SINR 相同，但绝对复响应随该标量缩放）。
 2. **特征空间投影波束形成（[Chang & Yeh, *IEEE TAP*, 1992](https://doi.org/10.1109/8.202711)）**：将名义导向正交投影到主导信号加干扰子空间 $\tilde{\vec a}=\mathbf U_s\mathbf U_s^H\vec a_0$ 再求权重，抑制噪声子空间抖动与小角度自消；风险在于低信噪比下目标特征值误被裁入噪声子空间。
 3. **空间谱积分协方差重构（[Gu & Leshem, *IEEE TSP*, 2012](https://doi.org/10.1109/TSP.2012.2194289)）**：在全空间计算 Capon 谱 $\hat P(\theta)=[\vec a^H(\theta)\hat{\mathbf R}_{xx}^{-1}\vec a(\theta)]^{-1}$，挖除目标扇区 $\Theta_{\mathrm{tar}}$ 后，仅在其补集 $\bar\Theta=\Theta\setminus\Theta_{\mathrm{tar}}$ 上积分重构纯净干扰加噪声协方差 $\hat{\mathbf R}_{nn}=\int_{\bar\Theta}\hat P(\theta)\vec a(\theta)\vec a^H(\theta)\,\mathrm{d}\theta$，同时配合二阶锥/二次约束二次规划（QCQP）在线校正目标导向矢量；离散网格求和实现时需注意角步长 $\Delta\theta$ 缩放与背景白噪声底噪项的归一化对齐。
 4. **前后向空间平滑（FBSS）**：对均匀线阵上的 C 类相干干扰，按[第 4 章 §4.6](04_doa-estimation.md#sec-4-6) 式(4-17)切分子阵作前后向平滑恢复满秩（[Pillai & Kwon, 1989](https://doi.org/10.1109/29.17496)），代价是孔径缩减且权重须作用在子阵结构上；在语音增强中，更常优先用 RTF 将有益早期反射并入目标约束向量。
@@ -416,7 +418,7 @@ $$\Delta h_l=\mu_{\mathrm{step}}\frac{u_l e_l^*}{|u_l|^2+\varepsilon},\qquad h_{
 注意共轭位置：展开 $|e_l|^2=(d_l-h_l^*u_l)(d_l^*-h_l u_l^*)$，按 Wirtinger 法则（与 §5.4、§5.5.2 及第 0 章 §0.5.1 一致）有 $\partial|e_l|^2/\partial h_l^*=-u_l e_l^*$（而 $\partial|e_l|^2/\partial h_l=-u_l^*e_l$），故最速下降负共轭梯度增量正是 $+u_l e_l^*$。
 6. **定量诊断目标泄漏**：若说话人偏到 $\theta=2^\circ$，下支路漏入 $\mathbf B^H\vec a(2^\circ)=1-e^{+\mathrm{j}\pi\sin 2^\circ}\approx 0.0060-0.1094\mathrm{j}$（功率比约 $1.2\%$）。若目标发声段未冻结更新，NLMS 会把 $|h|$ 拉高到约 $9.1$ 把主语音彻底消成静音（试听对比见 [E05-10](#e05-10)）。实用 GSC 必配三道保险：① 按高 SPP 冻结或缩步长；② 权重范数限幅（leaky NLMS / 球面投影）；③ 引入 ABM。
 
-当且仅当 $\mathbf C^H\vec w_q=\vec f$、$\mathbf B$ 张满完备零空间 $\mathcal N(\mathbf C^H)$ 且下支路精确求解同协方差维纳方程 $\mathbf R_{uu}\vec h_{\mathrm{opt}}=\vec r_{ud}$ 时，GSC 合成权重与式(5-11)的 LCMV 逐元素严格等价（[Breed & Strauss, *IEEE SPL*, 2002](https://doi.org/10.1109/LSP.2002.800506)）。当 $\mathbf R_{nn}\succ\mathbf 0$ 时，将 $\mathbf R_{uu}=\mathbf B^H\mathbf R_{nn}\mathbf B$ 与 $\vec r_{ud}=\mathbf B^H\mathbf R_{nn}\vec w_q$ 代入 $\vec w_{\mathrm{GSC}}=\vec w_q-\mathbf B\mathbf R_{uu}^{-1}\vec r_{ud}$，直接核验两条投影恒等式：
+若 $\mathbf C^H\vec w_q=\vec f$、$\mathbf B$ 张满完备零空间 $\mathcal N(\mathbf C^H)$ 且下支路精确求解同协方差维纳方程 $\mathbf R_{uu}\vec h_{\mathrm{opt}}=\vec r_{ud}$ 时，GSC 合成权重与式(5-11)的 LCMV 逐元素严格等价（[Breed & Strauss, *IEEE SPL*, 2002](https://doi.org/10.1109/LSP.2002.800506)）。完备零空间保证这套参数化覆盖所有可行权重；某个固定实例即使用较少的阻塞列，也可能碰巧得到同一最优解，故不应把完备性称为每个实例同解的必要条件。当 $\mathbf R_{nn}\succ\mathbf 0$ 时，将 $\mathbf R_{uu}=\mathbf B^H\mathbf R_{nn}\mathbf B$ 与 $\vec r_{ud}=\mathbf B^H\mathbf R_{nn}\vec w_q$ 代入 $\vec w_{\mathrm{GSC}}=\vec w_q-\mathbf B\mathbf R_{uu}^{-1}\vec r_{ud}$，直接核验两条投影恒等式：
 
 $$\begin{aligned}
 \mathbf C^H\vec w_{\mathrm{GSC}}&=\vec f=\mathbf C^H\vec w_{\mathrm{LCMV}},\\
@@ -536,7 +538,7 @@ $$b_n^{\mathrm{rigid}}(\kappa R)=\frac{4\pi\mathrm{j}^{n-1}}{(\kappa R)^2 h_n^{(
 
 在全部正频率上模长严格大于零，彻底根除了内部特征零点，还带来高频最高约 $+6\ \mathrm{dB}$ 的表面反射增益（但低频高阶仍按 $(\kappa R)^n$ 衰减，强行逆均衡同样损失 WNG）。二维均匀圆阵的平行工具为相位模式处理，单环开放圆阵的柱贝塞尔零点可通过刚性圆柱障板或同心多环圆阵（CCMA，[Huang, Chen & Benesty, *IEEE/ACM TASLP*, 2018](https://doi.org/10.1109/TASLP.2018.2862826)）规避。
 
-**球谐域波束形成五步实现规程**：① 按上限频率定阶数 $N\approx\lceil\kappa_{\max}R\rceil$，至少需 $M\ge(N+1)^2$ 麦（如 $R=4.2\ \mathrm{cm}, f=4\ \mathrm{kHz}$ 处 $\kappa R\approx 3.08$，$N=3$ 至少需 $16$ 麦）；② 核验球面阵元采样矩阵条件数（满足 $M\ge(N+1)^2$ 绝非充分条件，见 [E05-09](#e05-09)）；③ 采用 Tikhonov 正则化逆径向补偿 $b_n^*/(|b_n|^2+\beta^2)$ 并按频带逐阶解锁高阶模态；④ 在 $\varphi_{nm}$ 域配合 Wigner-$D$ 旋转或模态 MVDR 合成波束；⑤ 用合成平面波闭环核验 Condon–Shortley 符号与 $(\vartheta,\alpha)$ 映射。一阶全景声（FOA）ACN/SN3D 标准、A-to-B 编码与头部追踪逆旋转详见[第 14 章 §14.2～§14.4](14_spatial-wearable-arrays.md#sec-14-2)。
+**球谐域波束形成五步实现规程**：① 按上限频率定阶数 $N\approx\lceil\kappa_{\max}R\rceil$，至少需 $M\ge(N+1)^2$ 麦（如 $R=4.2\ \mathrm{cm}, f=4\ \mathrm{kHz}$ 处 $\kappa R\approx3.08$，按向上取整规则为 $N=4$，至少需 $25$ 麦；选择 $N=3$、$16$ 麦则须另给截断误差预算）；② 核验球面阵元采样矩阵条件数（满足 $M\ge(N+1)^2$ 绝非充分条件，见 [E05-09](#e05-09)）；③ 采用 Tikhonov 正则化逆径向补偿 $b_n^*/(|b_n|^2+\beta^2)$ 并按频带逐阶解锁高阶模态；④ 在 $\varphi_{nm}$ 域配合 Wigner-$D$ 旋转或模态 MVDR 合成波束；⑤ 用合成平面波闭环核验 Condon–Shortley 符号与 $(\vartheta,\alpha)$ 映射。一阶全景声（FOA）ACN/SN3D 标准、A-to-B 编码与头部追踪逆旋转详见[第 14 章 §14.2～§14.4](14_spatial-wearable-arrays.md#sec-14-2)。
 
 ### 5.9 深度神经网络（DNN）波束形成
 
@@ -666,7 +668,7 @@ P_{in}&=P_i+\|\vec w\|_2^2,\qquad
 
 #### 5.10.1 延伸阅读：Kumatani 等的远场语音阵列处理综述
 
-推荐精读 Kumatani、McDonough 与 Raj（*IEEE SPM*, 2012, 29(6):127–140，[DOI](https://doi.org/10.1109/MSP.2012.2205285)；[托管 PDF](https://course.ece.cmu.edu/~ece792/handouts/KumataniEtAl12.pdf)）。该文在 $T_{60}\approx 525\ \mathrm{ms}$ 房间重放 TIMIT 语料（$37$ 人 $3241$ 词）的对比实验生动印证了 §5.3 与 §5.8 的物理结论：直径仅 $8.4\ \mathrm{cm}$ 的 $32$ 麦 Eigenmike 刚性球阵采用球谐超指向，在 $28^\circ$ 与 $68^\circ$ 的识别 WER 稳稳维持在 $10.2\%$ 与 $9.7\%$（优于同阵 DSB 的 $12.0\%/13.5\%$）；而 $1.26\ \mathrm{m}$ 的 $64$ 麦大线阵虽在 $28^\circ$ 达到 $9.3\%$，一到近端射 $68^\circ$ 就因投影孔径缩水退化至 $12.8\%$。同时牢记：前端客观 SNR 提升不自动等价于后端 ASR 识别率改善，前后端必须联合验收。
+推荐精读 Kumatani、McDonough 与 Raj（*IEEE SPM*, 2012, 29(6):127–140，[DOI](https://doi.org/10.1109/MSP.2012.2205285)；[托管 PDF](https://course.ece.cmu.edu/~ece792/handouts/KumataniEtAl12.pdf)）。该文表 4、5 所报声学模型自适应后的第 4 次解码结果，在 $T_{60}\approx 525\ \mathrm{ms}$ 房间重放 TIMIT 语料（$37$ 人 $3241$ 词）的对比实验生动印证了 §5.3 与 §5.8 的物理结论：直径仅 $8.4\ \mathrm{cm}$ 的 $32$ 麦 Eigenmike 刚性球阵采用球谐超指向，在 $28^\circ$ 与 $68^\circ$ 的识别 WER 稳稳维持在 $10.2\%$ 与 $9.7\%$（优于同阵 DSB 的 $12.0\%/13.5\%$）；而 $1.26\ \mathrm{m}$ 的 $64$ 麦大线阵虽在 $28^\circ$ 达到 $9.3\%$，一到近端射 $68^\circ$ 就因投影孔径缩水退化至 $12.8\%$。同时牢记：前端客观 SNR 提升不自动等价于后端 ASR 识别率改善，前后端必须联合验收。
 
 > **本章小结**：DSB 守住白噪声增益上限 $M$；超指向与 DMA 在低频拿 WNG 换取指向性并受制于气密配对；MVDR/MPDR、LCMV、Frost 与 GSC 从不同结构求解约束最小方差，SDW-MWF 以加权 MSE 统一空间与频谱权衡；MCRA、LSA 与 OM-LSA 负责抑制残余底噪；刚性球谐域赋予三维全向转向；掩码统计（CS/CW/Souden/GEV）与全神经空谱滤波把波束形成推向强混响非平稳场景。验收任何波束形成器，都必须同时汇报目标失真、$\mathrm{WNG}_{\mathrm{dB}}$、噪声抑制量、延迟与下游任务指标。
 
@@ -842,7 +844,7 @@ G_{\mathrm{WNG}}(\varepsilon)=\frac{1}{1/2+50/(11+\varepsilon)^2}\text{。}\tag{
 2. **逐通道掩码平方根预滤波**：对两帧相同观测 $\vec x_1=\vec x_2=[1,1]^\top$（原秩 $1$），先做 $\vec z_n=\sqrt{\vec m_n}\odot\vec x_n$ 再求两帧平均外积：对比固定不等通道掩码 $\vec m_1=\vec m_2=[1,1/4]^\top$ 与随帧交替掩码 $\vec m_1=[1,1/4]^\top,\vec m_2=[1/4,1]^\top$ 对 RTF 与矩阵秩的破坏（参见 [Middelberg 等, 2026 预印本 §3.1](https://arxiv.org/pdf/2607.26623)）。
 
 **参考答案**：
-1. 负掩码 $[2,-1]$ 产生不定矩阵 $\operatorname{diag}(2,-1)$，违背功率非负公理导致求解崩溃；三组非负掩码对比中，$[1,0]$ 秩亏为 $\operatorname{diag}(1,0)$，而 $[10^{-300},10^{-300}]$ 虽然非零帧数与 $N_{\mathrm{eff}}$ 均为 $2$，但权重和 $W=2\times 10^{-300}\ll\epsilon$ 使输出缩为 $10^{-288}\mathbf I_2$（无有效观测证据），故门控须联合校验 $W$ 与 $N_{\mathrm{eff}}$。
+1. 负掩码 $[2,-1]$ 产生不定矩阵 $\operatorname{diag}(2,-1)$，违背功率非负公理导致求解崩溃；三组非负掩码对比中，$[1,0]$ 秩亏为 $\operatorname{diag}(1,0)$，而 $[10^{-300},10^{-300}]$ 虽然非零帧数与 $N_{\mathrm{eff}}$ 均为 $2$，但权重和 $W=2\times 10^{-300}\ll\epsilon$ 使输出缩为 $10^{-288}\mathbf I_2$（固定分母地板改变了数值归一化）。三组权重中，统一正缩放本应保留归一化协方差与 Kish 有效样本量，因此 $W$ 小不能单独解释为缺乏统计证据；活动证据须结合掩码标定与 $N_{\mathrm{eff}}$ 判断。
 2. 固定不等通道掩码给出 $\widetilde{\vec a}=[1,1/2]^\top$（伪 RTF，若据此设计 MVDR $[4/5,2/5]^\top$ 作用回原始观测 $[1,1]^\top$ 会给出 $6/5=1.2$ 的 $20\%$ 增益失真）；随帧交替掩码则得出 $\mathbf R_{\mathrm{alt}}=\begin{bmatrix}5/8&1/2\\1/2&5/8\end{bmatrix}$，降序特征值为 $[9/8,1/8]$，**矩阵秩由 $1$ 增至 $2$**。而共享标量掩码（均值 $5/8$）始终保持秩 $1$ 且忠实还原原 RTF $[1,1]^\top$。
 
 <a id="e05-13"></a>
@@ -901,7 +903,7 @@ $$G_{\mathrm{WNG}}(f)=2\sin^2(\kappa d),\qquad
 
 - **$200\ \mathrm{Hz}$**（$\kappa_1 d\approx 0.036637\ \mathrm{rad}\approx 2.10^\circ$）：$G_{\mathrm{WNG}}\approx 2.6833\times 10^{-3}\implies\mathrm{WNG}_{\mathrm{dB}}\approx -25.71\ \mathrm{dB}$；
 - **$100\ \mathrm{Hz}$**（$\kappa_2 d\approx 0.018318\ \mathrm{rad}$）：$G_{\mathrm{WNG}}\approx 6.7105\times 10^{-4}\implies\mathrm{WNG}_{\mathrm{dB}}\approx -31.73\ \mathrm{dB}$（频率减半再跌 $6.02\ \mathrm{dB}$）；
-- **$5^\circ$ 垫圈漏气（$200\ \mathrm{Hz}$）**：$|B_{\mathrm{leak}}|=\sin(2.5^\circ)/\sin(0.036637)\approx\mathbf{1.1909}$（$+1.52\ \mathrm{dB}$），后向响应反超前向目标，原因在于 $5^\circ$ 寄生相移已是真实声程差 $2.10^\circ$ 的两倍多（纯 NumPy 核见 [`dma_kronecker.py`](../codes/chapters/ch05/core/dma_kronecker.py)）。
+- **$5^\circ$ 垫圈漏气（$200\ \mathrm{Hz}$）**：$|B_{\mathrm{leak}}|=\sin(2.5^\circ)/\sin(0.036637)\approx\mathbf{1.1909}$（相对名义前向单位响应为 $+1.52\ \mathrm{dB}$）；同一失配下实际前向幅度约为 $0.191$，因此实际后向/前向比约为 $15.90\ \mathrm{dB}$，原因在于 $5^\circ$ 寄生相移已是真实声程差 $2.10^\circ$ 的两倍多（纯 NumPy 核见 [`dma_kronecker.py`](../codes/chapters/ch05/core/dma_kronecker.py)）。
 
 <a id="e05-17"></a>
 
@@ -921,7 +923,7 @@ $$\vec w_{\mathrm{joint}}=\frac{(\mathbf R_x^{-1}\vec a_x)\otimes(\mathbf R_y^{-
 |---|---:|---:|---:|---:|
 | 双子阵置零克罗内克 | $1$ | $0$ | $1.00$（$0.00\ \mathrm{dB}$） | **$0$（完全衰减）** |
 | 仅 $x$ 子阵置零克罗内克 | $1$ | $0$ | $2.00$（$3.01\ \mathrm{dB}$） | **$0$（整列连带衰减）** |
-| **联合 $4\times 4$ LCMV** | **$1$** | **$0$** | **$3.00$（$4.77\ \mathrm{dB}$）** | $2/9\approx 0.222$（正常透射） |
+| **联合 $4\times 4$ LCMV** | **$1$** | **$0$** | **$3.00$（$4.77\ \mathrm{dB}$）** | $2/9\approx 0.222$（非零透射，约衰减 $6.53\ \mathrm{dB}$） |
 
 <a id="e05-18"></a>
 
@@ -943,7 +945,7 @@ $$\vec w_{\mathrm{joint}}=\frac{(\mathbf R_x^{-1}\vec a_x)\otimes(\mathbf R_y^{-
 
 沿用 E05-18 三组双耳权重，在三通道单位白噪背景 $\mathbf R_{vv}=\mathbf I_3$ 下，计算各耳背景功率 $P_e=\|\vec w_e\|_2^2$、双耳互功率 $C_{\mathrm{LR}}=\vec w_{\mathrm{L}}^H\vec w_{\mathrm{R}}$ 与归一化耳间相干模长 $|C_{\mathrm{LR}}|/\sqrt{P_{\mathrm{L}}P_{\mathrm{R}}}$。
 
-**参考答案**：参考直通 $P_{\mathrm{L}}=P_{\mathrm{R}}=1,C_{\mathrm{LR}}=0$（相干模 $0$，包围感最自然）；BMVDR $P_{\mathrm{L}}=P_{\mathrm{R}}=C_{\mathrm{LR}}=1/3$（相干模坍缩为 $1$）；BLCMV 左耳 $P_{\mathrm{L}}=1/3$、右耳 $P_{\mathrm{R}}=1/2$、互功率 $C_{\mathrm{LR}}=1/3$，相干模为 $\frac{1/3}{\sqrt{(1/3)(1/2)}}=\sqrt{2/3}\approx 0.8165$（$\mathrm{MSC}=2/3$）。有限三麦阵加上干扰约束后自由度仅剩 $1$，保住点干扰线索的同时仍付出了一定右耳底噪与背景相关性代价。
+**参考答案**：参考直通 $P_{\mathrm{L}}=P_{\mathrm{R}}=1,C_{\mathrm{LR}}=0$（相干模 $0$，保留了本例参考背景的零相干结构；自然感仍须听测）；BMVDR $P_{\mathrm{L}}=P_{\mathrm{R}}=C_{\mathrm{LR}}=1/3$（相干模坍缩为 $1$）；BLCMV 左耳 $P_{\mathrm{L}}=1/3$、右耳 $P_{\mathrm{R}}=1/2$、互功率 $C_{\mathrm{LR}}=1/3$，相干模为 $\frac{1/3}{\sqrt{(1/3)(1/2)}}=\sqrt{2/3}\approx 0.8165$（$\mathrm{MSC}=2/3$）。有限三麦阵加上干扰约束后自由度仅剩 $1$，保住点干扰线索的同时仍付出了一定右耳底噪与背景相关性代价。
 
 <a id="e05-20"></a>
 

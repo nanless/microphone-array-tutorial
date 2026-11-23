@@ -2,12 +2,12 @@
   "record": "https://zenodo.org/records/3630471",
   "source_sha256": {
     "scripts/course_home/prepare_locata.py": "46c89d6d1e583225f7d8e03aaf5f51f9ad92d9e350c32f72b72697d0edad5b98",
-    "codes/chapters/ch02/core/conventions.py": "4e80a27490f05ddd5f4826361420c0c8d0b331464d1e5629c5def492da47b1d7",
+    "codes/chapters/ch02/core/conventions.py": "79af1b8f7fe664e64e7ad786082c36a29664eacbdda63fba96a944e548304865",
     "codes/chapters/ch02/core/spectral.py": "5ade0b101cc00615276b3b60c3659ece3e68ad614cd2cb2edeb568359f034059",
     "codes/chapters/ch03/core/geometry.py": "5a680848301358415f74647199a4c57b65086f0b2580f91706c912ad208d7bdb",
-    "codes/chapters/ch04/core/covariance.py": "d704be037100ee53caf6e2130fbabbe14ce6eeff9e3d11dde389fd368d271249",
+    "codes/chapters/ch04/core/covariance.py": "1fd3d333bb3963bdf81cefe79de3270a485066c57f8b37138e54f1e63ce62a63",
     "codes/chapters/ch04/core/doa.py": "33582d40ec9030537709d79bf13f4a904d2246f388e628aada7f66e8fb6dec04",
-    "codes/chapters/ch05/core/beamforming.py": "481f79a66fcc4c1f232704ee3a516b596d28ebc89d9045c494b71f6206b77216"
+    "codes/chapters/ch05/core/beamforming.py": "e78028539b12d826175e1fc339c086efd8e75e66f937c21558807ec506604e2f"
   },
   "members_sha256": {
     "dev/task2/recording1/dicit/audio_array_dicit.wav": "76b949375cee3185983aaf7cd839840f6ba76a88f7bbea6d308d376f5813a9dc",
@@ -834,8 +834,8 @@
       125,
       8000
     ],
-    "min_model_white_noise_gain_db": 4.143868534656851,
-    "max_model_response_error": 8.469146707540354e-16,
+    "min_model_white_noise_gain_db": 4.1438685346568525,
+    "max_model_response_error": 1.0985005433398634e-15,
     "strong_demo": {
       "model_target_blocking_error": 1.4637612725888055e-16,
       "postfilter_strength": 0.5,

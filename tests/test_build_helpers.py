@@ -30,7 +30,7 @@ class PdfHeadingDestinationTest(unittest.TestCase):
     """Independent PDF objects distinguish heading identity from repeated text."""
 
     @staticmethod
-    def fixture_bytes(named, bookmarks=(), page_texts=None):
+    def fixture_bytes(named, bookmarks=(), page_texts=None, input_identity=None):
         from pypdf import PdfWriter
         from pypdf.generic import (
             ArrayObject, BooleanObject, DecodedStreamObject, DictionaryObject, Fit, FloatObject,
@@ -38,6 +38,8 @@ class PdfHeadingDestinationTest(unittest.TestCase):
         )
 
         writer = PdfWriter()
+        if input_identity is not None:
+            writer.add_metadata(input_identity.metadata())
         pages = [writer.add_blank_page(width=595, height=842) for _ in range(3)]
         structure = DictionaryObject({NameObject("/Type"): NameObject("/StructTreeRoot")})
         structure_ref = writer._add_object(structure)
@@ -143,13 +145,16 @@ class PdfHeadingDestinationTest(unittest.TestCase):
         ])]
         with tempfile.TemporaryDirectory() as temporary:
             pdf_path = Path(temporary) / "heading-identities.pdf"
+            identity = build_pdf.PDFInputIdentity('0123456789ab', '0' * 64, '2026-11-23')
             pdf_path.write_bytes(self.fixture_bytes(
-                named, page_texts=["Repeated title", "Repeated title", "Body only"]))
+                named, page_texts=["Repeated title", "Repeated title", "Body only"],
+                input_identity=identity))
             original = PdfReader(pdf_path)
             self.assertIn("Repeated title", original.pages[0].extract_text())
             self.assertIn("Repeated title", original.pages[1].extract_text())
             self.assertNotIn("math", original.pages[2].extract_text())
-            build_pdf.add_bookmarks(pdf_path, outline)
+            with mock.patch.object(build_pdf, 'source_digest', return_value=identity.source_digest):
+                build_pdf.add_bookmarks(pdf_path, outline, input_identity=identity)
             reader = PdfReader(pdf_path)
             chapter, children = reader.outline
             first, second, grandchildren = children
@@ -1264,6 +1269,7 @@ class BuildHelpersTest(unittest.TestCase):
             info = PngImagePlugin.PngInfo()
             info.add_text("SourceScript", "make_figures.py")
             info.add_text("SourceScriptDigest", digest)
+            info.add_text("FigureFilename", image_path.name)
             Image.new("RGB", (8, 8)).save(image_path, pnginfo=info)
             self.assertEqual(
                 quality_check.png_provenance_issues(image_path, script), [])

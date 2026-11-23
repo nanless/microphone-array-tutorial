@@ -1,5 +1,6 @@
 """Independent arithmetic, strict report binding and optional native execution."""
 import json
+import hashlib
 import math
 from pathlib import Path
 import shutil
@@ -7,6 +8,7 @@ import unittest
 from unittest.mock import patch
 
 from codes.chapters.ch00.core.source_history import verify_lock_binding
+from codes.chapters.ch04.core import upstream_contracts as contracts
 from codes.chapters.ch01.examples import audit_libmysofa_loudness as audit
 
 REPORT = audit.ROOT / "codes/chapters/ch01/reports/libmysofa_loudness.json"
@@ -23,9 +25,9 @@ class LoudnessReportTest(unittest.TestCase):
     def setUpClass(cls):
         cls.report = strict_load(REPORT.read_text(encoding="utf-8"))
 
-    def test_report_binds_current_audit_historical_lock_and_unchanged_used_project(self):
+    def test_report_binds_actual_historical_git_tool_lock_and_unchanged_used_project(self):
         r = self.report
-        self.assertEqual(r["audit_source_sha256"], audit.sha256(Path(audit.__file__)))
+        self.assertEqual(r["audit_source_sha256"], hashlib.sha256(contracts.historical_bytes(audit.__file__)).hexdigest())
         verify_lock_binding(r["source"]["lock_sha256"], ("libmysofa",), current_lock=audit.LOCK)
         self.assertEqual(r["source"]["revision"], audit.REVISION)
         self.assertTrue(r["source"]["worktree_clean"])

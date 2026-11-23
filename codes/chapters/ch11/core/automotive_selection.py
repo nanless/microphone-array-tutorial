@@ -333,7 +333,16 @@ def icc_comb_and_howling_metrics(
     min_gain_margin_db: float = 6.0,
     p1150_limit_ms: float = 15.0,
 ) -> dict[str, object]:
-    """Compute exact ICC excess delay, comb notches in band, and howling margin."""
+    """Compute the declared two-path delay/comb and scalar gain-margin budget.
+
+    ``dsp_delay_ms`` includes mouth-to-microphone propagation and the complete
+    electronic path up to loudspeaker emission, as explicitly assumed in
+    E11-22. ``spk_to_ear_delay_ms`` is the remaining reinforced first-arrival
+    path; ``direct_delay_ms`` is the mouth-to-listening-position direct first
+    arrival. Their difference is the excess arrival delay. The assumed ear
+    pressure ratio 0<g<1 is independent of acoustic loop stability. The 6 dB
+    loop-margin budget is not P.1150 Annex D's residual-echo/background test.
+    """
     t_dsp_f = finite_real_scalar(dsp_delay_ms, "dsp_delay_ms")
     t_spk_f = finite_real_scalar(spk_to_ear_delay_ms, "spk_to_ear_delay_ms")
     t_dir_f = finite_real_scalar(direct_delay_ms, "direct_delay_ms")
@@ -403,7 +412,7 @@ def icc_comb_and_howling_metrics(
 
 
 def icc_and_certification_selection_case() -> dict[str, object]:
-    """Return the E11-22 ITU-T P.1150 ICC and Teams/3QUEST certification control."""
+    """Return the E11-22 ITU-T P.1150 ICC and constructed conferencing product-budget control."""
     path_a = icc_comb_and_howling_metrics(12.0)
     path_b = icc_comb_and_howling_metrics(26.0)
 
@@ -430,7 +439,7 @@ def icc_and_certification_selection_case() -> dict[str, object]:
             "verdict": verdict,
         }
 
-    # Enterprise conferencing speakerphone certification (Teams / 3QUEST / TCLw):
+    # Constructed product limits, not Microsoft/Zoom certification clauses.
     # Convert lower-bound requirements x >= L into minimized intervals [-x_high, -x_low] <= -L.
     cert_metrics = {
         "3quest_s_mos": {"measured": [4.1, 4.1], "min_limit": 3.8},
@@ -474,10 +483,10 @@ def icc_and_certification_selection_case() -> dict[str, object]:
         "howling_max_gain_db": path_a["howling_max_gain_db"],
         "howling_max_gain_linear": path_a["howling_max_gain_linear"],
         "howling_gain_candidates": gain_checks,
-        "teams_certification": {
+        "constructed_acceptance": {
             "metrics": cert_metrics,
             "per_metric_verdicts": per_metric_verdicts,
         },
-        "teams_certification_verdict": teams_verdict,
-        "scope": "closed-form two-ray comb ripple, scalar Barkhausen margin, and interval certification table",
+        "constructed_acceptance_verdict": teams_verdict,
+        "scope": "closed-form two-ray comb ripple, scalar Barkhausen margin, and constructed interval acceptance table",
     }

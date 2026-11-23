@@ -1287,6 +1287,7 @@ def clean_label(text):
 
 def source_digest():
     """站点正文与构建器的稳定摘要，用于拒绝陈旧生成物。"""
+    from scripts.figure_report_contracts import FIGURE_REPORTS
     digest = hashlib.sha256()
     paths = sorted(SRC.glob("*.md"))
     paths += [RESEARCH_ROOT / name for name, _ in RESEARCH]
@@ -1321,6 +1322,10 @@ def source_digest():
               ROOT / "scripts" / "make_tse_figures.py",
               ROOT / "requirements.txt"]
     paths.append(ROOT / "codes/chapters/ch00/io_contracts.py")
+    paths += [ROOT / entry.report_relative for entry in FIGURE_REPORTS]
+    paths += [ROOT / "scripts/figure_report_contracts.py",
+              ROOT / "scripts/portable_figure_report_checks.py",
+              ROOT / "scripts/pdf_input_identity.py", ROOT / "scripts/quality_check.py"]
     for path in paths:
         digest.update(path.relative_to(ROOT).as_posix().encode("utf-8"))
         digest.update(b"\0")

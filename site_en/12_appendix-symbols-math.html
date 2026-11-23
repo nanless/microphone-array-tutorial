@@ -2,7 +2,7 @@
 <link rel="canonical" href="16_appendix-symbols-math.html"><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Chapter 16 · Appendix A: Symbols, Glossary & Math Lookup · Microphone Array Signal Processing</title>
-<meta name="source-digest" content="6fa82909c83a"><style>
+<meta name="source-digest" content="7a209e3fba3d"><style>
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -734,7 +734,7 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 </tr>
 <tr>
 <td>COLA / WOLA (Constant Overlap-Add / Weighted Overlap-Add)</td>
-<td>COLA requires that shifted products of analysis and synthesis windows sum to a non-zero constant across the steady time axis ($\sum_\ell w_{\mathrm{syn}}[n-\ell H]w_{\mathrm{ana}}[n-\ell H]=C$), providing the necessary and sufficient condition for distortionless STFT perfect reconstruction; WOLA applies windows on both analysis and synthesis sides (e.g., dual square-root Hann windows) to suppress block-boundary discontinuities induced by spectral modification (<a href="00_math-foundations.html#sec-0-2-4">§0.2.4</a>, §2.5)</td>
+<td>COLA requires that shifted products of analysis and synthesis windows sum to a non-zero constant across the steady time axis ($\sum_\ell w_{\mathrm{syn}}[n-\ell H]w_{\mathrm{ana}}[n-\ell H]=C$), giving constant-gain reconstruction of unmodified spectra when overlap-add uses no pointwise normalization; with pointwise normalization by this sum, it suffices that the sum is nonzero everywhere; WOLA applies windows on both analysis and synthesis sides (e.g., dual square-root Hann windows) to suppress block-boundary discontinuities induced by spectral modification (<a href="00_math-foundations.html#sec-0-2-4">§0.2.4</a>, §2.5)</td>
 </tr>
 <tr>
 <td>Snapshot</td>
@@ -750,7 +750,7 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 </tr>
 <tr>
 <td>Overdetermined System</td>
-<td>A linear system having strictly more independent equations than unknowns. Admits an exact solution when the right-hand observation vector lies inside the column space of the coefficient matrix, and otherwise seeks a minimum-residual-norm approximate solution via least squares. In TDOA localization, pairwise time differences across microphone pairs often share a common reference arrival time, so adding extra pair equations does not add an equal number of independent geometric constraints (§4.4)</td>
+<td>A linear system having more equations than unknowns; the coefficient matrix rank determines the number of independent constraints. Admits an exact solution when the right-hand observation vector lies inside the column space of the coefficient matrix, and otherwise seeks a minimum-residual-norm approximate solution via least squares. In TDOA localization, pairwise time differences across microphone pairs often share a common reference arrival time, so adding extra pair equations does not add an equal number of independent geometric constraints (§4.4)</td>
 </tr>
 <tr>
 <td>Hyperbolic Localization</td>
@@ -1371,7 +1371,7 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 </tr>
 <tr>
 <td>Circularly symmetric complex Gaussian exceptions</td>
-<td>Proper (circularly symmetric) iff pseudo-covariance $\mathbb{E}[\vec z\vec z^\top]=\mathbf 0$</td>
+<td>For zero-mean complex Gaussians, proper and circularly symmetric iff pseudo-covariance $\mathbb{E}[\vec z\vec z^\top]=\mathbf 0$</td>
 <td>Real-signal DFT DC ($k=0$) and even-length Nyquist ($k=N/2$) bins are strictly real with non-zero pseudo-covariance (<a href="00_math-foundations.html#sec-0-6-1">§0.6.1</a>, §7.2)</td>
 </tr>
 <tr>
@@ -1402,7 +1402,7 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 <tr>
 <td>Unit quaternions &amp; SLERP</td>
 <td>$\mathbf R(\mathbf q)=(q_w^2-\lVert\vec q_v\rVert_2^2)\mathbf I_3$<br>$+2\vec q_v\vec q_v^\top+2q_w[\vec q_v]_\times$;<br>$\operatorname{SLERP}=\frac{\sin((1-t)\Omega)}{\sin\Omega}\mathbf q_0+\frac{\sin(t\Omega)}{\sin\Omega}\mathbf q_1$</td>
-<td>$\lVert\mathbf q\rVert_2=1$, double cover $\mathbf q\sim-\mathbf q$; enforce $\mathbf q_0^\top\mathbf q_1\ge 0$ for shortest arc in IMU &amp; head tracking (<a href="00_math-foundations.html#sec-0-1-3">§0.1.3</a>, §9.2.3, §14.3)</td>
+<td>$\lVert\mathbf q\rVert_2=1$, double cover $\mathbf q\sim-\mathbf q$; enforce $\mathbf q_0^\top\mathbf q_1\ge 0$ for the shortest arc; at $\Omega=0$ use the continuous limit $\mathbf q(t)=\mathbf q_0$, and near coincidence use normalized linear interpolation for IMU &amp; head tracking (<a href="00_math-foundations.html#sec-0-1-3">§0.1.3</a>, §9.2.3, §14.3)</td>
 </tr>
 <tr>
 <td>Polyphase &amp; Noble identities</td>
@@ -1471,7 +1471,7 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 <tr>
 <td>Explicit normal equations $\mathbf A^H\mathbf A$ vs. QR / SVD</td>
 <td>—</td>
-<td>Explicit squaring inflates condition number to $\kappa_2(\mathbf A^H\mathbf A)=\kappa_2(\mathbf A)^2$</td>
+<td>For full-column-rank $\mathbf A$, explicit squaring inflates the condition number to $\kappa_2(\mathbf A^H\mathbf A)=\kappa_2(\mathbf A)^2$</td>
 <td>For $\kappa_2(\mathbf A)\gtrsim 10^8$, <code>float64</code> normal equations lose weak axes in roundoff; call QR/SVD directly (<a href="00_math-foundations.html#sec-0-3-4">§0.3.4</a>)</td>
 </tr>
 <tr>
@@ -1502,7 +1502,7 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 <tr>
 <td><code>np.fft.fftfreq</code> vs. <code>rfftfreq</code></td>
 <td>Upper half of a full two-sided DFT stores negative frequencies (last bin $k=N-1$ is $-f_s/N$); even-$N$ Nyquist bin $k=N/2$ is labeled $-f_s/2$ two-sided vs. $+f_s/2$ one-sided</td>
-<td>Map signed frequencies via Eq. (16-1); never treat trailing indices as $> f_s/2$; in one-sided Parseval sums multiply interior bins by $2$ and endpoints by $1$</td>
+<td>Map signed frequencies via Eq. (16-1); never treat trailing indices as $> f_s/2$; in one-sided Parseval sums weight DC by $1$, the Nyquist bin by $1$ only for even $N$, and all other retained bins by $2$, including the highest retained bin for odd $N$</td>
 <td><a href="#e16-06">E16-06</a></td>
 </tr>
 <tr>
@@ -1758,7 +1758,7 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 <p>Given ill-conditioned diagonal matrix $\mathbf{A}=\operatorname{diag}(1,10^{-8})$ and observation $\vec{b}=[1,10^{-8}]^\top$ (exact solution $[1,1]^\top$), call <code>numpy.linalg.lstsq</code> with <code>rcond=1e-10</code> versus <code>rcond=1e-6</code> to record numerical rank and true residual norm; then compute the Ridge analytical solution of Eq. (16-3) at $\delta=10^{-16}$ and contrast them.</p>
 <p><strong>Solution</strong>:</p>
 <p><strong>Step 1: Hard truncation across <code>rcond</code> cutoffs.</strong> The singular values of $\mathbf{A}$ are $\sigma_1=1$ and $\sigma_2=10^{-8}$. At <code>rcond=1e-10</code>, both exceed $10^{-10}$, reporting rank $2$, full solution $[1,1]^\top$, and zero true residual; at <code>rcond=1e-6</code>, $\sigma_2=10^{-8}\lt 10^{-6}$ is hard-zeroed, dropping reported rank to $1$ and returning truncated minimum-norm solution $[1,0]^\top$ with true residual $[0,-10^{-8}]^\top$ (2-norm $10^{-8}$). Note the API trap: because $m=2\le p=2$, <code>lstsq</code> returns an <strong>empty</strong> <code>residuals</code> array on <strong>both</strong> calls—even when the second call has a non-zero $10^{-8}$ residual—so code must always evaluate $\|\mathbf{A}\hat{\vec{x}}-\vec{b}\|_2$ explicitly.</p>
-<p><strong>Step 2: Soft shrinkage under Ridge at $\delta=10^{-16}$.</strong> Substituting $\delta=10^{-16}$ into the decoupled scalar equations $(1+\delta)x_1=1$ and $(10^{-16}+\delta)x_2=10^{-8}$ of Eq. (16-3) gives exact solution $\hat{\vec{x}}_\delta=[1/(1+10^{-16}),\ 1/2]^\top$ (rounding to $1.0$ in float64 on entry 1): because $\delta=\sigma_2^2=10^{-16}$ along the weak axis, soft shrinkage $\frac{\sigma_2^2}{\sigma_2^2+\delta}=\frac{1}{2}$ halves component 2 smoothly—neither passing it untouched nor chopping it abruptly to $0$—with residual inner product $\mathbf A^H\hat{\vec r}_\delta = -\delta\hat{\vec x}_\delta$, confirming that dimensionless <code>rcond</code> and unit-bearing $\delta$ solve distinct mathematical problems.</p>
+<p><strong>Step 2: Soft shrinkage under Ridge at $\delta=10^{-16}$.</strong> Substituting $\delta=10^{-16}$ into the decoupled scalar equations $(1+\delta)x_1=1$ and $(10^{-16}+\delta)x_2=10^{-16}$ of Eq. (16-3) gives exact solution $\hat{\vec{x}}_\delta=[1/(1+10^{-16}),\ 1/2]^\top$ (rounding to $1.0$ in float64 on entry 1): because $\delta=\sigma_2^2=10^{-16}$ along the weak axis, soft shrinkage $\frac{\sigma_2^2}{\sigma_2^2+\delta}=\frac{1}{2}$ halves component 2 smoothly—neither passing it untouched nor chopping it abruptly to $0$—with residual inner product $\mathbf A^H\hat{\vec r}_\delta = -\delta\hat{\vec x}_\delta$, confirming that dimensionless <code>rcond</code> and unit-bearing $\delta$ solve distinct mathematical problems.</p>
 <p><span id="e12-17" class="anchor-alias exercise-alias" aria-hidden="true"></span><span id="e14-17" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e16-12"></a></p>
 <span id="sec-u-7cb5badab0" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-0e9dab8b8b" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-e05d86e60e" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-76145f9ed0" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-3202181de2">E16-12: Does Omitting Conjugation in Complex Cross-Correlation Cancel the True Delay Peak?</h3>
 <p>For zero-padded complex sequences starting at $n=0$, $x_2=[1,\mathrm{j},0]$ and $x_1=[0,1,\mathrm{j}]$ (Channel 1 equals Channel 2 delayed by exactly $1$ sample), evaluate $R_{12}[q]$ and $R_{21}[q]$ via Eq. (16-2) across $q=-2,-1,0,1,2$, then check what happens if conjugation on the second argument is omitted.</p>

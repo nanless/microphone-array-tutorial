@@ -93,7 +93,9 @@ def hermitian_fractional_power(
     eig_max = max(float(np.max(np.abs(eigenvalues))), 1e-300)
     if float(np.min(eigenvalues)) < -tol * eig_max:
         raise ValueError("csm must be positive semidefinite")
-    clipped = np.where(eigenvalues > tol * eig_max, eigenvalues, 0.0)
+    # Tolerance admits small negative roundoff; it is not a rank-truncation
+    # threshold. Every positive eigenvalue contributes, including at nu=1.
+    clipped = np.maximum(eigenvalues, 0.0)
     with np.errstate(over="raise", invalid="raise"):
         powered = (scale ** exp_val) * np.power(clipped, exp_val)
         reconstructed = (eigenvectors * powered) @ eigenvectors.conj().T
@@ -105,8 +107,9 @@ def hermitian_fractional_power(
 def closed_form_2x2_sqrt(csm: object, *, tol: float = 1e-12) -> np.ndarray:
     """Exact 2x2 Cayley-Hamilton Hermitian positive semidefinite square root.
 
-    For 2x2 H >= 0:
+    For nonzero 2x2 H >= 0:
         H^(1/2) = (H + sqrt(det H) I_2) / sqrt(tr H + 2 sqrt(det H)).
+    The zero matrix has zero square root and is handled before this quotient.
     """
     herm = _validate_hpsd_csm(csm, tol=tol)
     if herm.shape != (2, 2):
@@ -348,7 +351,9 @@ def functional_beamforming_controls() -> dict[str, dict[str, object]]:
         "coherent_dipole_fb_nu_2": coherent_fb2,
         "scope": (
             "matrix fractional powers are non-additive: FB does not conserve integrated "
-            "multi-source power and suppresses off-grid weak sources as eta^nu when rank(R) < M"
+            "multi-source power; eta^nu weak-source attenuation here assumes a single "
+            "weak-source eigenmode, no scan projection onto other signal modes, "
+            "remaining scan energy in the nullspace, and the example's matched norms"
         ),
     }
 

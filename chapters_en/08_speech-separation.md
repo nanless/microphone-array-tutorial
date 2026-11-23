@@ -137,9 +137,9 @@ $$
 
 Enumerating the $2!=2$ permutations: the identity permutation $\pi=(1,2)$ (sum along the main diagonal) gives a total loss of $0.4+0.6=1.0$; the swapped permutation $\pi=(2,1)$ (sum along the anti-diagonal) gives $3.1+2.8=5.9$. Since $1.0<5.9$, the identity permutation wins, and the training loss for this step is $\mathcal L_{\mathrm{PIT}}=1.0$.
 
-Many beginners looking at the outer $\min$ operator in Eq. (8-5) ask: **Isn't the minimum function non-differentiable at ties—how are backpropagation gradients computed?** The answer is **subgradient routing**, standard across convex analysis and deep learning: except on the measure-zero crease in continuous floating-point space where two permutations achieve the exact same loss (where choosing either constitutes a valid subgradient), the winning permutation $\pi^\star$ is strictly unique almost everywhere. The $\min$ operator then acts like a single-pole double-throw switch: during backpropagation, **gradients are routed exclusively through the winning pairs $(\hat s_n,s_{\pi^\star(n)})$ back to their respective output heads**, while all unselected matrix entries receive identically zero gradient.
+Backpropagation through Eq. (8-5) follows the **active permutation branch**. When the minimizing permutation $\pi^\star$ is unique and pairwise losses are differentiable, the local gradient is exactly that branch's gradient, routed through the selected pairs $(\hat s_n,s_{\pi^\star(n)})$. At an exact tie the objective may be nondifferentiable, so an implementation must specify branch selection or gradient combination. This automatic-differentiation convention is not a convex-subgradient guarantee: a pointwise minimum of losses is generally nonconvex, as $\min(x,-x)=-|x|$ shows at zero.
 
-Once you grasp this subgradient switch, it becomes immediately clear why early "frame-level independent PIT" performed poorly in listening tests and had to be upgraded to **utterance-level PIT (uPIT)**:
+Once you grasp this permutation-branch switch, it becomes immediately clear why early "frame-level independent PIT" performed poorly in listening tests and had to be upgraded to **utterance-level PIT (uPIT)**:
 
 - If each frame independently picks its own minimum-loss permutation, single-frame local error is minimized, yet on overlapping unvoiced consonants, breathing pauses, or transitional frames with comparable energy, the two permutation losses are nearly tied; the switch $\pi^\star$ then flips erratically between adjacent frames, causing a single output channel to jump abruptly from a male voice in one second to a female voice in the next;
 - **uPIT** forces every frame across an entire utterance (several seconds long) to share **a single common** permutation $\pi^\star$, compelling the network internally to exploit long-range timbre, pitch, and spatial continuity to lock the same person's voice into the same output slot from start to finish. Even with uPIT, however, when sliding windows chop up a long meeting recording and encounter single-speaker chunks (where the secondary slot should output silence) or cross-window stitching boundaries, **slot flipping** still occurs across silent intervals and adjacent chunks—precisely why continuous speech separation (CSS) in §8.6 requires dedicated cross-chunk alignment and single-speaker bypass protection.
@@ -349,7 +349,7 @@ J_{\mathrm{MNMF}}=\sum_{f,t}\bigl(\ln\det \mathbf R_{ft}
 +\vec x_{ft}^H \mathbf R_{ft}^{-1}\vec x_{ft}\bigr).
 \end{gathered}\tag{8-13}$$
 
-Freed from $N=M$, Eq. (8-13) naturally accommodates underdetermined mixtures $N>M$ (though its large parameter space and strong nonconvexity make warm-starting via AuxIVA/ILRMA or directional initialization crucial; Exercise [E08-14](#e08-14) further proves that at an isolated time-frequency bin, an identical total covariance $\mathbf R_{ft}$ admits infinitely many source decompositions, so cross-frequency low-rank bases and cross-frame constant spatial matrices are essential to achieve identifiability).
+Freed from $N=M$, Eq. (8-13) naturally accommodates underdetermined mixtures $N>M$ (though its large parameter space and strong nonconvexity make warm-starting via AuxIVA/ILRMA or directional initialization crucial; Exercise [E08-14](#e08-14) further proves that at an isolated time-frequency bin, an identical total covariance $\mathbf R_{ft}$ admits infinitely many source decompositions, cross-frequency low-rank bases and shared spatial matrices reduce freedom, but trace normalization and sharing alone do not generally guarantee a unique decomposition. For example, sources sharing a spatial shape and time activation permit continuous power redistribution without changing total covariance).
 
 After convergence, having no unmixing matrix $\mathbf W_f$, MNMF reconstructs the $n$-th source image across all $M$ microphones via the Gaussian posterior conditional mean $\mathbb{E}[\vec c_{nft}\mid\vec x_{ft}]$—the **Multichannel Wiener Filter (MWF)**:
 
@@ -495,7 +495,7 @@ Before selecting an algorithm, let us compare parameter counts and complexity or
 
 **Compact implementation sequence**. Below is our five-step teaching procedure incorporating explicit gating and positive-definiteness safeguards to make data flow and state dependencies crystal clear:
 
-1. **Low-energy screening and spherical projection**: Screen out near-silent bins with $\|\vec Y(f,t)\|_2\le\varepsilon_E$ from the post-WPE spectrum $\vec Y(f,t)$, and project remaining valid bins onto unit vectors $\vec z=\vec Y/\|\vec Y\|_2$. Allocate one spatial component per speaker $j=1,\dots,J$ plus an always-active background component $j=0$ ($a_0(t)\equiv 1$); initialize positive-definite shape matrices $\mathbf B_j(f)$ with $\mathbf I_M$ or initial directional outer products.
+1. **Low-energy screening and spherical projection**: Screen out near-silent bins with $\|\vec Y(f,t)\|_2\le\varepsilon_E$ from the post-WPE spectrum $\vec Y(f,t)$, and project remaining valid bins onto unit vectors $\vec z=\vec Y/\|\vec Y\|_2$. Allocate one spatial component per speaker $j=1,\dots,J$ plus an always-active background component $j=0$ ($a_0(t)\equiv 1$); initialize positive-definite shape matrices $\mathbf B_j(f)$ with $\mathbf I_M$. A directional outer product $\vec a\vec a^H$ is only rank-one positive semidefinite for multiple channels and requires positive loading or shrinkage toward identity.
 2. **E-step (activity-gated responsibilities)**: On valid bins, evaluate gated nonnegative scores $\tilde\gamma_j(f,t)=a_j(t)\pi_j(f)p(\vec z(f,t)\mid\mathbf B_j(f))$ and normalize into soft-mask posteriors $\gamma_j(f,t)=\tilde\gamma_j(f,t)/\sum_{\ell=0}^J \tilde\gamma_\ell(f,t)$ (for Bayesian posteriors and mixture EM preliminaries, see [Chapter 0, §0.6](00_math-foundations.md#sec-0-6); production code evaluates log-domain scores to prevent underflow, and the positive-weight always-active background class guarantees $\gamma_0=1$ on all-speaker silent frames, whereas omitting the background class causes division-by-zero failure during silence).
 3. **M-step (fixed-point shape update and trace normalization)**: Divide each directional outer product $\vec z\vec z^H$ by the current quadratic form $\vec z^H\mathbf B_j^{-1}\vec z$, accumulate weighted by $\gamma_j$, apply slight shrinkage toward $\mathbf I_M$ for positive-definite regularization, and rescale so $\operatorname{tr}(\mathbf B_j)=M$ (in our teaching code, if a component's total posterior weight falls below the channel count $M$, it safely resets to $\mathbf I_M$ and increments a diagnostic counter).
 4. **Termination and state logging**: Repeat E- and M-steps until reaching the iteration cap or convergence tolerance, logging actual iterations and reset counts (once shrinkage regularization, weight floors, and resets are active, one must not claim strict monotonic likelihood ascent of idealized unconstrained EM).
@@ -668,20 +668,22 @@ The projection scalar $\alpha$ is the exact closed-form minimizer of $\min_\alph
 
 When carrying SI-SDR over to **multi-microphone beamforming and reverberant speech separation**, however, watch out for its major blind spot. The projection factor $\alpha$ in Eq. (8-25) is merely a **zeroth-order scalar**: if an estimated waveform shifts by even $1$–$2$ samples of propagation delay relative to the reference (see Exercise [E08-01](#e08-01)), or undergoes mild, benign frequency-response equalization from a linear MVDR beamformer, human ears and downstream ASR hear crystal-clear speech, yet single-scalar SI-SDR dumps that entire benign linear filtering difference into orthogonal distortion—handing out very low or even negative scores.
 
-For this reason, multichannel and far-field separation benchmarks (such as SMS-WSJ, URGENT, and the open-source `fgnt/ci_sdr` toolkit) widely adopt the **Convolutive-Invariant Signal-to-Distortion Ratio (CI-SDR, [Boeddeker et al., ICASSP 2021](https://doi.org/10.1109/ICASSP39728.2021.9414661))**: upgrading single-scalar scaling to orthogonal projection onto the subspace spanned by a **short causal $L$-tap FIR Toeplitz convolution**. Letting causal delayed shifts of length-$N$ reference $\vec s$ form the $N\times L$ Toeplitz matrix $[\mathbf T_L(\vec s)]_{t,\tau}=s[t-\tau]$, the least-squares matching filter and decibel ratio are:
+**Convolutive-Invariant Signal-to-Distortion Ratio (CI-SDR, [Boeddeker et al., ICASSP 2021](https://doi.org/10.1109/ICASSP39728.2021.9414661))** extends scalar matching to a short causal FIR convolution subspace. Following the full-convolution convention in `fgnt/ci_sdr`, a length-$N$ reference and an $L$-tap filter produce $N+L-1$ samples. Append $L-1$ zeros to the estimate to obtain $\hat{\vec s}_{\mathrm{pad}}$ on the same domain. The matrix $\mathbf T_L(\vec s)\in\mathbb R^{(N+L-1)\times L}$ has entries $s[t-\tau]$ for $t=0,\dots,N+L-2$ and $\tau=0,\dots,L-1$, taking reference samples outside the record as zero. For a nonzero reference this full matrix has full column rank. The matching filter and score are:
 
 $$\begin{aligned}
 \hat{\vec h}_\star&=\arg\min_{\vec h\in\mathbb{R}^L}
-\|\hat{\vec s}-\mathbf T_L(\vec s)\vec h\|_2^2
+\|\hat{\vec s}_{\mathrm{pad}}-\mathbf T_L(\vec s)\vec h\|_2^2
 =(\mathbf T_L^\top\mathbf T_L)^{-1}
-\mathbf T_L^\top\hat{\vec s},\\
+\mathbf T_L^\top\hat{\vec s}_{\mathrm{pad}},\\
 \vec s_{\mathrm{tar}}&=\mathbf T_L(\vec s)\hat{\vec h}_\star,\quad
 \mathrm{CI\text{-}SDR}=10\log_{10}
 \frac{\|\vec s_{\mathrm{tar}}\|_2^2}
-{\|\hat{\vec s}-\vec s_{\mathrm{tar}}\|_2^2}.
+{\|\hat{\vec s}_{\mathrm{pad}}-\vec s_{\mathrm{tar}}\|_2^2}.
 \end{aligned}\tag{8-26}$$
 
-At $16\ \mathrm{kHz}$ sampling, standard evaluation fixes $L=512$ taps ($32\ \mathrm{ms}$): just long enough to absorb inter-element propagation delays, STFT framing offsets, and short early equalization while still penalizing competing-speaker crosstalk and nonlinear artifacts severely. Never inflate $L$ unchecked—once $L$ approaches signal length $N$, $\mathbf T_L(\vec s)$ spans all of $\mathbb{R}^N$ and overfits even pure orthogonal noise to a spuriously inflated score (see [Exercise E08-25](#e08-25) for a 4-sample hand proof of this overfitting boundary); moreover, every CI-SDR report must still state explicitly whether $\vec s$ is the anechoic dry signal or the reverberant source image at a reference microphone.
+Filter length specifies the linear response that the score may absorb. For example, $L=512$ at $16\ \mathrm{kHz}$ corresponds to $32\ \mathrm{ms}$ of filter taps; which delays and equalization changes it accommodates depends on the actual response. Fix the length, centering convention, and dry-source versus reference-microphone image before comparing systems. A larger filter permits a larger matching subspace and should not be selected afterwards simply to improve the score.
+
+The complete tail belongs to the scoring domain. Keeping only the first $N$ convolution samples can produce an invertible square matrix at $L=N$ that fits any $N$-sample estimate while ignoring its out-of-window filter tail. The full matrix still has $N+L-1$ rows, so $L=N$ alone does not imply perfect fitting. [Exercise E08-25](#e08-25) compares the two objectives on identical inputs. The implementation solves the least-squares problem directly rather than explicitly inverting the normal equations.
 
 #### Reporting Conventions for Separation Metrics
 
@@ -782,17 +784,18 @@ When scaling supervised separation networks from a single microphone to a microp
     \cos\mathrm{IPD}_{pq}(f,t)
     &=\cos\!\bigl(\Delta\phi_{pq}(f,t)\bigr)
      =\operatorname{Re}\!\left(\frac{X_p(f,t)X_q^*(f,t)}
-     {|X_p(f,t)|\,|X_q(f,t)|+\varepsilon}\right),\\
+     {|X_p(f,t)|\,|X_q(f,t)|}\right),\\
     \sin\mathrm{IPD}_{pq}(f,t)
     &=\sin\!\bigl(\Delta\phi_{pq}(f,t)\bigr)
      =\operatorname{Im}\!\left(\frac{X_p(f,t)X_q^*(f,t)}
-     {|X_p(f,t)|\,|X_q(f,t)|+\varepsilon}\right),\\
+     {|X_p(f,t)|\,|X_q(f,t)|}\right),\\
     \mathrm{ILD}_{pq}(f,t)
     &=20\log_{10}\frac{|X_p(f,t)|+\varepsilon}
       {|X_q(f,t)|+\varepsilon}.
     \end{aligned}\tag{8-30}$$
 
-    Evaluating $\cos\mathrm{IPD}$ and $\sin\mathrm{IPD}$ directly from the real and imaginary parts of the normalized cross-spectrum also avoids `atan2` and trigonometric call overhead;
+    For two nonzero bins, real and imaginary parts of the ideal normalized cross-spectrum give exact unit-circle coordinates without `atan2` or trigonometric calls. Adding $\varepsilon$ to denominator $|X_p||X_q|$ for low-energy protection also multiplies them by $|X_p||X_q|/(|X_p||X_q|+\varepsilon)$, so they are attenuated features rather than exact cosine/sine on the unit circle. With $X_p=X_q=\sqrt\varepsilon$, the real feature is $1/2$;
+
 2. **Stacked raw multichannel complex spectra (Stacked Multi-Channel RI)**: Modern end-to-end complex backbones (such as multichannel TF-GridNet and Online SpatialNet below) instead stack real and imaginary parts of all $M$ microphones directly into $2M$ input channels, letting the network implicitly learn multichannel magnitude–phase coupling and nonlinear spatiotemporal filtering without manual microphone-pair selection—at the cost of stricter requirements on cross-geometry generalization.
 
 To break free from both the high algorithmic latency of long-window STFTs and the phase ceiling of real masks, deep speech separation pioneered the learnable "Encoder–Mask Separator–Decoder" latent-space paradigm:
@@ -850,9 +853,9 @@ At $f_s=16\ \mathrm{kHz}$, $H=128$ ($8\ \mathrm{ms}$, $R=125\ \mathrm{frames/s}$
 - **One-and-Rest PIT (OR-PIT; Takahashi et al., Interspeech 2019)**: trains a binary separator that splits mixture $y$ into one foreground speaker $\hat s_1$ plus the residual $(N-1)$-speaker mixture $\hat r_1$, iterating recursively on $\hat r_k$ until a binary stopping classifier or residual-energy gate halts recursion. This design halts after one pass on solo speech ($N=1$)—avoiding fixed-slot over-splitting—and scales structurally beyond training speaker counts, at the cost of sequential error accumulation across residual steps $\hat r_k$ and inference latency growing linearly with $N$.
 - **Recurrent Selective Attention Network (RSAN; Kinoshita et al., ICASSP 2018)**: operates in the STFT time–frequency domain by maintaining an explicit nonnegative **residual mask budget** $R^{(k)}$ initialized at $R^{(0)}=\mathbf 1$, emitting one speaker mask $M^{(k)}$ per iteration and updating the remaining budget via
 
-  $$R^{(k)}=\max\!\bigl(0,\;R^{(k-1)}-M^{(k-1)}\bigr)$$
+  $$R^{(k)}=\max\!\bigl(0,\;R^{(k-1)}-M^{(k)}\bigr)$$
 
-  (subtracting previously assigned masks for $k\ge 1$) until remaining mask mass drops below a stopping threshold $\tau$. Unlike OR-PIT, RSAN explicitly enforces mixture-mask conservation inside the mask domain without feeding separated time-domain residuals back through a front-end encoder.
+  for $k=1,2,\ldots$: first estimate current mask $M^{(k)}$ from $R^{(k-1)}$, then subtract it. This indexing follows the [same authors' 2019 block-online extension, §§2.1–2.2, Eq. (1)](https://arxiv.org/pdf/1902.07881); stop when mean remaining mask $\frac1{TF}\sum_{t,f}R^{(k)}_{tf}$ falls below $\tau$. Unlike OR-PIT, RSAN explicitly maintains a residual attention budget inside the mask domain without feeding separated time-domain residuals back through a front-end encoder.
 
 In real multi-party meetings, utterance-level recursive OR-PIT and RSAN still face sequential latency growth, stopping-threshold fragility under noise and reverberation, and cross-chunk permutation stitching across long streams; production conference pipelines therefore typically prefer either **two-slot streaming CSS** (exploiting the low odds of $\ge 3$ simultaneous speakers inside $1.2$–$2.4\ \mathrm{s}$ chunks alongside single-speaker bypass) or the **diarization-guided front ends** developed in [Chapter 15](15_target-extraction-diarization.md) (such as `TS-VAD` + `WPE` + `GSS`, where explicit diarization supplies both speaker count and temporal activity).
 
@@ -916,7 +919,7 @@ To inspect full academic and industrial open-source implementations side by side
 
 | Algorithm Family | Official Upstream Entrypoints | Engineering Reproduction & Integration Checkpoints |
 |---|---|---|
-| AuxIVA, ILRMA | `pyroomacoustics` (`auxiva.py`, `ilrma.py`); `ssspy` (`iva.py`, `ilrma.py`) | Verify IP / ISS update branches, determined $N=M$ assumption, power floors, and projection-back scale conventions |
+| AuxIVA, ILRMA | `pyroomacoustics` (`auxiva.py`, `ilrma.py`); `ssspy` (`iva.py`, `ilrma.py`) | Pinned PRA `auxiva.py` uses IP linear solves; `ssspy` separately offers ISS and other updates. Check source count, power floors, and projection-back conventions for each |
 | MNMF, FastMNMF / 2 | `ssspy` (`mnmf.py`); `pyroomacoustics` (`fastmnmf.py`, `fastmnmf2.py`) | Pin random seeds and initialization, basis count $K$, trace normalization, and Wiener reconstruction reference mic |
 | TRINICON | `pyroomacoustics` (`trinicon.py`) | Public implementation is hardcoded to a 2-output second-order special case; distinguish filter tap length from block size |
 | cACGMM | `pb_bss` (`distribution/cacgmm.py`) | Check zero-norm screening prior to spherical projection, empty-cluster resets, log-domain underflow guards, and power-SCM handoff |
@@ -1563,30 +1566,33 @@ Inspect the four panels of Fig. 71: Fig. 71(a) plots the three overlap transitio
 
 #### E08-25: Convolutive-Invariant CI-SDR and Filter Overfitting Boundaries
 
-On a discrete window of length $N=4$, let the anechoic reference be $\vec{s}=\vec{s}_0=[1,0,-1,0]^\top$, its $1$-sample causal shift be $\vec{s}_1=[0,1,0,-1]^\top$, and a weak interference orthogonal to both be $\vec{w}=0.1[1,-1,1,-1]^\top$. Evaluate `CI-SDR` via the causal $L$-tap truncated Toeplitz convolution matrix $\mathbf{T}_L(\vec{s})\in\mathbb{R}^{N\times L}$ of §8.5 Eq. (8-26) (whose $l$-th column causally right-shifts $\vec{s}$ by $l$ samples with zero padding, $l=0,\dots,L-1$), clamping zero-residual or zero-projection cases at $\pm 120\ \mathrm{dB}$ using relative floor $10^{-12}$. Compute exact `SI-SDR` ($L=1$) and `CI-SDR` across three cases:
+On a record of length $N=4$, let the reference be $\vec s_0=[1,0,-1,0]^\top$, the delayed signal $\vec s_1=[0,1,0,-1]^\top$, and weak interference $\vec w=0.1[1,-1,1,-1]^\top$. Retain all $N+L-1$ convolution samples in Eq. (8-26) and append $L-1$ zeros to the estimate. Use relative energy floor $10^{-12}$, reporting zero projection and zero residual at $-120$ and $+120\ \mathrm{dB}$ respectively. Calculate:
 
-1. Pure $1$-sample propagation delay $\hat{\vec{s}}=\vec{s}_1$: compare `SI-SDR` vs. $L=2$ `CI-SDR`;
-2. Two-tap direct-plus-early-reflection plus weak interference $\hat{\vec{s}}=\vec{s}_0+\vec{s}_1+\vec{w}$: compare `SI-SDR` vs. $L=2$ `CI-SDR`;
-3. Pure strong interference $\hat{\vec{s}}=10\vec{w}=[1,-1,1,-1]^\top$ evaluated with tap count carelessly inflated to $L=4=N$.
+1. $\hat{\vec s}=\vec s_1$, comparing $L=1$ and $L=2$;
+2. $\hat{\vec s}=\vec s_0+\vec s_1+\vec w$, comparing $L=1$ and $L=2$;
+3. $\hat{\vec s}=[1,-1,1,-1]^\top$, comparing full-tail $L=4$ scoring with fitting only the first four samples.
 
 **Solution**:
 
-1. **Orthogonality of the two-column Toeplitz basis and Cases 1–2**: For $L=2$, $\mathbf{T}_2(\vec{s})=[\vec{s}_0,\;\vec{s}_1]$. Because $\vec{s}_0^\top\vec{s}_1=0$ and $\|\vec{s}_0\|_2^2=\|\vec{s}_1\|_2^2=2$, the Gram matrix is diagonal $\mathbf{G}_2=\mathbf{T}_2^\top\mathbf{T}_2=2\mathbf{I}_2$, while $\vec{s}_0^\top\vec{w}=0$, $\vec{s}_1^\top\vec{w}=0$, and $\|\vec{w}\|_2^2=0.04$.
-   - **Case 1**: $\hat{\vec{s}}=\vec{s}_1$ has zero inner product with $\vec{s}_0$, so scalar projection gives $\alpha_\star=0$ and hits the floor at $\mathrm{SI\text{-}SDR}=-120.0\ \mathrm{dB}$; $L=2$ `CI-SDR` solves $\hat{\vec{h}}_\star=\tfrac{1}{2}[0,2]^\top=[0,1]^\top$ with exact zero residual, hitting $+120.0\ \mathrm{dB}$.
-   - **Case 2**: For $\hat{\vec{s}}=\vec{s}_0+\vec{s}_1+\vec{w}$, scalar `SI-SDR` projects onto $\vec{s}_0$ alone ($\alpha_\star=1$), penalizing useful early reflection $\vec{s}_1$ as distortion with $\|\vec{s}_0\|_2^2=2$ vs. $\|\vec{s}_1+\vec{w}\|_2^2=2.04$, dropping to $10\log_{10}(50/51)\approx -0.086002\ \mathrm{dB}$. Switching to $L=2$ `CI-SDR` fits $\hat{\vec{h}}_\star=[1,1]^\top$ across the two-tap room impulse response, yielding target projection energy $\|\vec{s}_0+\vec{s}_1\|_2^2=4$ against pure interference $\vec{w}$ ($0.04$), faithfully recovering $+20.000000\ \mathrm{dB}$.
+1. **The two-column basis and first two cases**: At $L=2$, the columns are $\vec s_0$ and $\vec s_1$, each extended by one zero. Thus $\mathbf T_2^\top\mathbf T_2=2\mathbf I_2$. Both columns are orthogonal to the zero-padded $\vec w$, whose energy is $0.04$.
 
-2. **Overfitting failure when tap length equals window length**: In Case 3, $\hat{\vec{s}}=10\vec{w}=[1,-1,1,-1]^\top$ is orthogonal to both $\vec{s}_0$ and $\vec{s}_1$ (zero speech content). Yet expanding to $L=4=N$ turns $\mathbf{T}_4(\vec{s})$ into a unit lower-triangular $4\times 4$ square matrix:
+    In Case 1, scalar projection is zero and yields $-120\ \mathrm{dB}$. With $L=2$, $\hat{\vec h}=[0,1]^\top$ produces the padded estimate exactly over all five samples, giving $+120\ \mathrm{dB}$.
 
-   $$\mathbf{T}_4(\vec{s})
-   =\begin{bmatrix}
-   1&0&0&0\\
-   0&1&0&0\\
-   -1&0&1&0\\
-   0&-1&0&1
-   \end{bmatrix},\qquad
-   \det\mathbf{T}_4(\vec{s})=1.$$
+    In Case 2, $L=1$ gives target energy $2$ and residual energy $2.04$, hence $10\log_{10}(50/51)\approx-0.086002\ \mathrm{dB}$. At $L=2$, $\hat{\vec h}=[1,1]^\top$ gives energies $4$ and $0.04$, or $20\ \mathrm{dB}$. The final reference sample is zero, so these two-tap outputs have no nonzero tail after sample four. Full-tail and cropped scores happen to agree in these cases.
 
-   Because $\mathbf{T}_4(\vec{s})$ is invertible of full rank, forward substitution yields unique exact solution $\hat{\vec{h}}_\star=[1,-1,2,-2]^\top$ satisfying $\mathbf{T}_4(\vec{s})\hat{\vec{h}}_\star=\hat{\vec{s}}$ identically with zero residual—awarding $+120.0\ \mathrm{dB}$ to $100\%$ pure interference. Linear algebra thus requires $L\ll N$ (e.g., fixing $L=512$ taps $=32\ \mathrm{ms}$ on multi-second utterances) and prohibits long projection filters on short segments (code verified in [`separation_metrics_streaming.py`](../codes/chapters/ch08/core/separation_metrics_streaming.py) and `E08-25`).
+2. **Why dropping the tail changes the answer**: Fitting only the first four samples in Case 3 uses
+
+    $$\mathbf T_{4,\mathrm{crop}}=
+    \begin{bmatrix}1&0&0&0\\0&1&0&0\\-1&0&1&0\\0&-1&0&1\end{bmatrix}.$$
+
+    Its determinant is $1$, and $[1,-1,2,-2]^\top$ fits the four samples perfectly. Its full convolution also has tail $[-2,2,0]^\top$ with energy $8$, which the cropped objective entirely omits.
+
+    Full-tail scoring has seven design rows and normal equations
+
+    $$\begin{bmatrix}2&0&-1&0\\0&2&0&-1\\-1&0&2&0\\0&-1&0&2\end{bmatrix}\hat{\vec h}
+    =[0,0,1,-1]^\top.$$
+
+    Solve the coupled first/third and second/fourth unknowns to obtain $\hat{\vec h}=[1,-1,2,-2]^\top/3$. The projection is $[1,-1,1,-1,-2,2,0]^\top/3$, with energy $4/3$. Subtracting it from the padded estimate gives residual energy $8/3$, hence $\mathrm{CI\text{-}SDR}=10\log_{10}(1/2)\approx-3.0103\ \mathrm{dB}$. At $L=4=N$, this full objective does not give pure interference a perfect score. Cropped and full-tail scoring are different conventions; reproduce both in [`separation_metrics_streaming.py`](../codes/chapters/ch08/core/separation_metrics_streaming.py).
 
 <a id="e08-26"></a>
 

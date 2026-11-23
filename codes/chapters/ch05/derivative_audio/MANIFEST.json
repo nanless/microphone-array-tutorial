@@ -6,10 +6,10 @@
   "source_sha256": {
     "codes/chapters/ch05/core/derivative_audio.py": "00f8dc7fe8523a52525fd63057b5338697bc530fbda351e1117ab08227468f99",
     "codes/chapters/ch05/examples/generate_derivative_audio.py": "bc4f2aad4d55e94965bc3ad681f1d524e72d50fb20a8492f36280b4da483df9e",
-    "codes/chapters/ch05/core/beamforming.py": "481f79a66fcc4c1f232704ee3a516b596d28ebc89d9045c494b71f6206b77216",
-    "codes/chapters/ch04/core/covariance.py": "d704be037100ee53caf6e2130fbabbe14ce6eeff9e3d11dde389fd368d271249",
+    "codes/chapters/ch05/core/beamforming.py": "e78028539b12d826175e1fc339c086efd8e75e66f937c21558807ec506604e2f",
+    "codes/chapters/ch04/core/covariance.py": "1fd3d333bb3963bdf81cefe79de3270a485066c57f8b37138e54f1e63ce62a63",
     "codes/chapters/ch03/core/geometry.py": "5a680848301358415f74647199a4c57b65086f0b2580f91706c912ad208d7bdb",
-    "codes/chapters/ch02/core/conventions.py": "4e80a27490f05ddd5f4826361420c0c8d0b331464d1e5629c5def492da47b1d7",
+    "codes/chapters/ch02/core/conventions.py": "79af1b8f7fe664e64e7ad786082c36a29664eacbdda63fba96a944e548304865",
     "codes/chapters/ch00/core/audio_samples.py": "1a7aad90d08fb8c27511aa463a6cc6dd6d4d2d230b27ed82549531f1f18edaba",
     "codes/chapters/ch00/io_contracts.py": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974"
   },

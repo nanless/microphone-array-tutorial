@@ -234,6 +234,53 @@ def _numeric_metadata(actual, expected) -> bool:
     return actual == expected
 
 
+def _independent_analytic_expectations() -> dict:
+    """Closed-form spectral-line oracle using independent Cramer's-rule taps.
+
+    Each interior frequency completes integer cycles in the scoring window;
+    squared complex amplitudes therefore add with a factor of one half.
+    No waveform projection or imported model expectation is used here.
+    """
+    source_power = float(0.16 ** 2 / 2)
+    noise_power = float(0.012 ** 2 / 2)
+    expected = {
+        "near_target_ref": {"mean_square_per_channel": [source_power]},
+        "far_interferer_ref": {"mean_square_per_channel": [source_power]},
+        "array_3ch": {"mean_square_per_channel": [2 * source_power + noise_power] * 3},
+    }
+    controls = (
+        ("farfield_dsb", 0.10, np.column_stack((np.ones(3) / 3, np.zeros(3)))),
+        ("bubble_d10cm", 0.10, _independent_closed_form_taps(0.10, 0.0)),
+        ("bubble_d2cm_illcond", 0.02, _independent_closed_form_taps(0.02, 2e-4)),
+    )
+    for key, spacing, taps in controls:
+        def response(frequency, distance):
+            total = 0j
+            for position, (h0, h1) in zip((-spacing, 0.0, spacing), taps):
+                path = (float(np.hypot(distance, position)) - distance) / 343.0
+                total += (h0 + h1 * np.exp(-2j * np.pi * frequency / 16000)) * np.exp(-2j * np.pi * frequency * path)
+            return total
+        target = response(3200, 0.4)
+        interference = response(2500, 4.0)
+        sensor = float(sum(noise_power * abs(h0 + h1 * np.exp(-2j * np.pi * f / 16000)) ** 2
+                           for f, (h0, h1) in zip((1100, 1300, 1700), taps)))
+        target_power = float(source_power * abs(target) ** 2)
+        distortion = float(source_power * abs(target - 1) ** 2)
+        leakage = float(source_power * abs(interference) ** 2)
+        mse = distortion + leakage + sensor
+        expected[key] = {
+            "mean_square_per_channel": [target_power + leakage + sensor],
+            "target_output_power": target_power,
+            "target_distortion_power": distortion,
+            "interferer_leakage_power": leakage,
+            "sensor_noise_output_power": sensor,
+            "reference_mse": mse,
+            "reference_nmse": float(mse / source_power),
+            "interferer_rejection_db": float(-10 * np.log10(max(abs(interference) ** 2, 1e-30))),
+        }
+    return expected
+
+
 def _validate_model(report: dict, arrays: dict[str, np.ndarray]) -> None:
     fixed = _fixed_waveforms()
     if (
@@ -242,6 +289,14 @@ def _validate_model(report: dict, arrays: dict[str, np.ndarray]) -> None:
         or not same_metadata(report.get("limits"), _FIXED_LIMITS)
     ):
         raise ValueError("tse_audio model fixed metadata/types/limits differ")
+    if not _numeric_metadata(report.get("analytic_expectations"), _independent_analytic_expectations()):
+        raise ValueError("tse_audio independent analytic expectations differ")
+    for row in report["analytic_expectations"].values():
+        for field, value in row.items():
+            if any(token in field for token in ("power", "mse", "mean_square")):
+                values = value if isinstance(value, list) else [value]
+                if any(v < 0.0 for v in values):
+                    raise ValueError("independent analytic powers/errors must be non-negative")
     if type(arrays) is not dict or arrays.keys() != fixed.keys():
         raise ValueError("tse_audio fixture members differ")
     for key, expected in fixed.items():

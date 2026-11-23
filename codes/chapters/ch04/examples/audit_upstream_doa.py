@@ -93,6 +93,20 @@ def build_report():
     identities.clear()
     files.clear()
     entries = {project: verify_checkout(project) for project in REVISIONS}
+    if importlib.metadata.version('pyroomacoustics') != '0.10.0':
+        raise RuntimeError('requires pyroomacoustics==0.10.0')
+    path_before = list(sys.path)
+    try:
+        sys.path.insert(0, str(CACHE / 'doatools'))
+        installed = contracts.package_preflight('pyroomacoustics', CACHE / 'pyroomacoustics')
+        doatools = contracts.package_preflight('doatools', CACHE / 'doatools', CACHE / 'doatools/doatools')
+        with contracts.source_imports('pyroomacoustics', installed), contracts.source_imports('doatools', doatools):
+            return _execute_report(entries, installed, doatools)
+    finally:
+        sys.path[:] = path_before
+
+
+def _execute_report(entries, installed, doatools):
     import pyroomacoustics as pra
     if importlib.metadata.version('pyroomacoustics') != '0.10.0':
         raise RuntimeError('requires pyroomacoustics==0.10.0')
@@ -143,7 +157,6 @@ def build_report():
     s0 = pra.doa.SRP(L, fs, nfft, mode='near', r=np.array([0.2]), azimuth=np.deg2rad([0, 90, 180]))
     sf = pra.doa.SRP(L, fs, nfft, mode='far', azimuth=np.deg2rad([0, 90, 180]))
     r['srp_near_one_distance'] = {'n_points': s0.grid.n_points, 'candidate_radius': [0.2], 'grid_cartesian_norms': np.linalg.norm(s0.grid.cartesian, axis=0).tolist(), 'mode_vector_near_vs_far_max_difference': float(np.max(np.abs(s0.mode_vec[20, :, :] - sf.mode_vec[20, :, :])))}
-    sys.path.insert(0, str(CACHE / 'doatools'))
     from doatools.model.sources import FarField1DSourcePlacement
     from doatools.estimation.core import get_noise_subspace, ensure_n_resolvable_sources
     f = extract('doatools', 'doatools/estimation/music.py', 'RootMUSIC1D', 'estimate', {'np': np, 'get_noise_subspace': get_noise_subspace, 'ensure_n_resolvable_sources': ensure_n_resolvable_sources, 'FarField1DSourcePlacement': FarField1DSourcePlacement})
@@ -209,6 +222,8 @@ def build_report():
         'independent_scale_invariant_F': independent_F[0],
         'scope': 'original eigenvalue product underflow; not a valid finite likelihood score',
     }
+    contracts.package_unchanged(installed)
+    contracts.package_unchanged(doatools)
     state_after = {p: {'head': git(CACHE / p, 'rev-parse', 'HEAD'), 'status': git(CACHE / p, 'status', '--porcelain', '--untracked-files=no')} for p in state_before}
     for module in tuple(sys.modules.values()):
         filename = getattr(module, '__file__', None)
@@ -219,7 +234,7 @@ def build_report():
         verify_checkout(project)
     if state_before != state_after:
         raise RuntimeError('upstream checkout changed during execution')
-    return {'run_utc': datetime.now(timezone.utc).isoformat(), 'run_asia_shanghai': datetime.now(ZoneInfo('Asia/Shanghai')).isoformat(), 'audit_source_sha256': sha(pathlib.Path(__file__)), 'lock_sha256': sha(LOCK), 'lock_entries': entries, 'scope': {'TOPS': 'installed 0.10.0 original full class; seven relevant Python DOA files exactly equal fixed cache', 'CSSM_WAVES': 'original AST helper bodies with simulated first-frequency rejection; WAVES diagonal eigenspace adapter; original _process not run', 'RootMUSIC': 'original estimate method and fixed helper imports; original NumPy failure, then local complex_ alias facade', 'SRP': 'original constructor and mode-vector inspection only; no complete near-field renderer', 'spatial_smooth': 'original AST preprocessing method, float/complex success and integer dtype failure', 'source_counts': 'original AST ld_stat/aic/mdl; ascending inputs, scalar log-sum reference and classified product underflow', 'claims_excluded': ['fixed upstream patch', 'real audio accuracy', 'hardware validation', 'paper benchmark reproduction', 'FRIDA', 'sparse solvers', 'full package compatibility']}, 'tolerances': {'root_angle_deg': 1e-06, 'smoothing_absolute': 1e-14, 'independent_TOPS_true_norm': 1e-12, 'wheel_source_equal': 'byte exact'}, 'python': sys.version, 'executable': sys.executable, 'environment': {x: importlib.metadata.version(x) for x in ['numpy', 'scipy', 'pyroomacoustics', 'Cython', 'pybind11']}, 'before': state_before, 'after': state_after, 'source_contracts': identities.copy(), 'report_source_sha256': contracts.dependencies(__file__), 'sources': files.copy(), 'wheel_python_sources': wheel_match, 'results': r}
+    return {'run_utc': datetime.now(timezone.utc).isoformat(), 'run_asia_shanghai': datetime.now(ZoneInfo('Asia/Shanghai')).isoformat(), 'audit_source_sha256': sha(pathlib.Path(__file__)), 'lock_sha256': sha(LOCK), 'lock_entries': entries, 'scope': {'TOPS': 'installed 0.10.0 original full class; discoverable package Python blobs preflighted before source-byte execution; seven relevant DOA files also match cache; compiled extensions and external imports are not a verified source closure', 'CSSM_WAVES': 'original AST helper bodies with simulated first-frequency rejection; WAVES diagonal eigenspace adapter; original _process not run', 'RootMUSIC': 'original estimate method and fixed helper imports; original NumPy failure, then local complex_ alias facade', 'SRP': 'original constructor and mode-vector inspection only; no complete near-field renderer', 'spatial_smooth': 'original AST preprocessing method, float/complex success and integer dtype failure', 'source_counts': 'original AST ld_stat/aic/mdl; ascending inputs, scalar log-sum reference and classified product underflow', 'claims_excluded': ['fixed upstream patch', 'real audio accuracy', 'hardware validation', 'paper benchmark reproduction', 'FRIDA', 'sparse solvers', 'full package compatibility']}, 'tolerances': {'root_angle_deg': 1e-06, 'smoothing_absolute': 1e-14, 'independent_TOPS_true_norm': 1e-12, 'wheel_source_equal': 'byte exact'}, 'python': sys.version, 'executable': sys.executable, 'environment': {x: importlib.metadata.version(x) for x in ['numpy', 'scipy', 'pyroomacoustics', 'Cython', 'pybind11']}, 'before': state_before, 'after': state_after, 'source_contracts': identities.copy(), 'report_source_sha256': contracts.dependencies(__file__), 'sources': files.copy(), 'wheel_python_sources': wheel_match, 'direct_source_execution': {'pyroomacoustics': installed, 'doatools': doatools}, 'results': r}
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)

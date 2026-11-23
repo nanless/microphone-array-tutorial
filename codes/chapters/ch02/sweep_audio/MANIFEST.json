@@ -6,7 +6,7 @@
   "source_sha256": {
     "codes/chapters/ch02/core/deconvolution.py": "202f40fa839398125d961257aff04c3109b454fed500719e929242a10659d541",
     "codes/chapters/ch02/examples/generate_sweep_audio.py": "f3103b6d6aec25cba7063ca509e61ce1e0a348e5dfcef2f3e30391b9b8f5f44e",
-    "codes/chapters/ch02/core/conventions.py": "4e80a27490f05ddd5f4826361420c0c8d0b331464d1e5629c5def492da47b1d7",
+    "codes/chapters/ch02/core/conventions.py": "79af1b8f7fe664e64e7ad786082c36a29664eacbdda63fba96a944e548304865",
     "codes/chapters/ch00/core/audio_samples.py": "1a7aad90d08fb8c27511aa463a6cc6dd6d4d2d230b27ed82549531f1f18edaba",
     "codes/chapters/ch00/io_contracts.py": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974"
   },

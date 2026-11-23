@@ -186,6 +186,7 @@ def generate_figure(figure_path=FIGURE, report_path=REPORT):
     figure_path.parent.mkdir(parents=True, exist_ok=True)
     _destination(figure_path, FIGURE, '.png')
     fig.savefig(figure_path, dpi=150, bbox_inches='tight', facecolor='white', metadata={
+        'FigureFilename': figure_path.name,
         'SourceScript': 'scripts/make_selection_figures.py', 'SourceScriptDigest': report['script_sha256'],
         'GeneratorInputs': json.dumps(sources, sort_keys=True),
         'NumericalReportDigest': _sha(report_path.read_bytes())})

@@ -63,10 +63,16 @@ def build_report():
     name = '_masp_said_original_compression'
     spec = importlib.util.spec_from_file_location(name, CACHE / 'said/utils/compression.py')
     module = importlib.util.module_from_spec(spec)
-    prior = sys.modules.get(name)
+    absent = object()
+    prior = sys.modules.get(name, absent)
     sys.modules[name] = module  # dataclass resolves annotations via this entry.
     try:
-        spec.loader.exec_module(module)
+        payload = contracts.ordinary_file(spec.origin).read_bytes()
+        executed_sha = hashlib.sha256(payload).hexdigest()
+        if executed_sha != records['said/utils/compression.py']['sha256']:
+            raise ValueError('SAID execution bytes differ from the verified original')
+        exec(compile(payload, spec.origin, 'exec', dont_inherit=True), module.__dict__)
+        module.__micarray_original_source_sha256__ = executed_sha
         high = {'id': 7, 'image_id': 11, 'category_id': 1, 'score': .9,
                 'extra': 'preserved', 'segmentation': [[[0,0,1],[2,0,.5],[8,0,.09],[12,0,0]]]}
         low = {'id': 8, 'image_id': 11, 'category_id': 1, 'score': .1,
@@ -121,7 +127,7 @@ def build_report():
                     'scope': 'reduced artificial one-byte limit exercises fallback/exhaustion; not a 20MB real recording',
                 }
     finally:
-        if prior is None:
+        if prior is absent:
             sys.modules.pop(name, None)
         else:
             sys.modules[name] = prior
@@ -137,7 +143,8 @@ def build_report():
         'report_source_sha256': contracts.dependencies(__file__), 'before': before, 'after': after, 'sources': records,
         'environment': {'python': sys.version, 'executable': sys.executable, 'numpy': importlib.metadata.version('numpy')},
         'scope': {
-            'execution': 'unchanged original compression.py loaded as standalone module; stdlib + NumPy; no said package import',
+            'execution': 'verified source bytes compiled as complete original compression.py; existing pyc neither read nor changed; stdlib + NumPy; no said package import',
+            'executed_source_sha256': executed_sha,
             'functions': ['compress_annotation', 'compress_prediction_directory(workers=1)',
                           '_wrapped_coordinates', '_minimum_wrapped_distance_squared'],
             'claims_excluded': ['Torch/model execution', 'weights acquisition', 'acoustic prediction accuracy',

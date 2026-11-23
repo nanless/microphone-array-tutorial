@@ -32,12 +32,12 @@
       ],
       "note": "Maintainer official synthesis toolkit; only source and notices, no rawwaves or device audio. DelayL is studied as an interpolation component, not a complete array frontend."
     },
-    "lock_sha256": "ea8ce3cf679d70d06305f4942dbf9afeee94b69bd0ad7a5b9b09470c327a598f",
+    "lock_sha256": "55721fbe8027f67bf3159827b8b58c14bc327ea5e0221b216303681340e890e7",
     "source_document_paths": {
       "lock": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/SOURCES.lock.json",
       "status": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/SOURCE_STATUS.json"
     },
-    "status_sha256": "be926fccb75979e2f2ac428ac6c65c76a46d672771e21a01d589908d776fcac0",
+    "status_sha256": "96e37d461be3c0c5c07986b48100e935405334d22f346d8efb59ca49b07aa502",
     "recorded_complete_selection": {
       "id": "stk",
       "revision": "6aacd357d76250bb7da2b1ddf675651828784bbc",
@@ -1509,15 +1509,15 @@
     "dependency_files": [
       {
         "path": "tu0.d",
-        "sha256": "7ae4b378b24c997ce9db987b8d48b2eeb51d0b0c06fe8fdc3b1a22f4031b833b"
+        "sha256": "5ae684e4a8e0eb0ce6c1a6733b3c86221a84624f51007a06dbef33738de09e4b"
       },
       {
         "path": "tu1.d",
-        "sha256": "94219f0a57a7db4f3457d56e66c0432cf1bc60a82e0fa6b48e32070e7ed01af2"
+        "sha256": "5274492a1fde459e956d1863f129872769df25d7d3ce553e73c1773c62d5fde2"
       },
       {
         "path": "tu2.d",
-        "sha256": "7a1f304a76ea1431bc98c866d7ae83593b0dc9f28ff5caabd122b43afcd15110"
+        "sha256": "6a57fe541168c894523dac96da28111c325832e5fec20c3246a97b6b291b0ad9"
       }
     ],
     "original_compile_inputs": {
@@ -1561,15 +1561,15 @@
     },
     "compiler_environment_inputs": {
       "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/SDKSettings.json": {
-        "sha256": "7b93ad7e534cc4b31c6a4e39d19b5e0288acf2168c2649479a796d1cb51939fb",
-        "bytes": 7948
+        "sha256": "82165b15ee21419d4cffaba8895797391b908ac9499ba70f561f3e1bd16758d6",
+        "bytes": 8018
       },
       "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/Availability.h": {
         "sha256": "d39d74d343b5f3dc147525c5f4ba99c1ae9133bccc57eb6205a74d0ba99d92cb",
         "bytes": 28849
       },
       "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/AvailabilityInternal.h": {
-        "sha256": "4b7f7e27b33d7ccdcc21654b0016eaa4187ce63387eb135babf269cddedcb9b0",
+        "sha256": "e6af434988fdfb150c1eaa593ad9c421c3c2dabdb1cb1908e123baa305f16619",
         "bytes": 68834
       },
       "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/AvailabilityInternalLegacy.h": {
@@ -1577,8 +1577,8 @@
         "bytes": 414416
       },
       "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/AvailabilityVersions.h": {
-        "sha256": "e9f8f7e0eb62c904cf7dca1fd6ba2fe28ba7a382cd9b5339fd03f6de13e66d02",
-        "bytes": 33346
+        "sha256": "ac777f1ab509ef2851de9bfa718a159b8eacb140aa8b6c3b0105b34d5b413b60",
+        "bytes": 33855
       },
       "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/___wctype.h": {
         "sha256": "b226c1e20cabb4d18a12b50631ce14a6087deb9442a4a10dda96b8b4a773b667",
@@ -3761,8 +3761,8 @@
         "bytes": 2856
       },
       "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/make_transparent.h": {
-        "sha256": "bc732a384e773cfcd3880ee0281dc3f7c6ad3e7b21933b71791185c3c2801fdf",
-        "bytes": 1889
+        "sha256": "24b887de499915c4d9675347f2efc760481cf6dbc3bf4f6d75536097feeec925",
+        "bytes": 2002
       },
       "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/make_unsigned.h": {
         "sha256": "fa6732be816377e896f626441d57ef32008c8b529a2452894be7582aa5d511f0",
@@ -4445,8 +4445,8 @@
         "bytes": 3855
       },
       "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/_symbol_aliasing.h": {
-        "sha256": "be0bd8cbed76094f86924f0e24c8bbf7b4f2020e95b480966cad14a5c1138ecd",
-        "bytes": 43981
+        "sha256": "1fca032431f48bfd19173b325f49fe413c072d6bb0e033b6f4421a4577cc5abe",
+        "bytes": 44711
       },
       "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/_types/_blkcnt_t.h": {
         "sha256": "3526cf25ca7734bf6bc945c9483727b8c1ab3fde5ad8fb23acad7489e231330d",
@@ -4866,10 +4866,10 @@
       }
     }
   },
-  "binary_sha256": "f0e3f672b10405abf88a5966ba62a4d59451b09c985427b38fceed3086c56bc9",
+  "binary_sha256": "e16b9a058df80561e0299b392ac1b14084927b2f3d02a7a4616fef58c62e7f53",
   "actual_dependencies_sha256": {
     "codes/chapters/ch10/examples/run_stk_delay_probe.py": "649912f62b3c20a2ad31df0f515875e016760d5c16923f060839eaf5a2d136a3",
-    "codes/chapters/ch04/core/upstream_contracts.py": "8669f007ee16a15433598b8f451f226cceb3163bdbc2bf690709504874743167",
+    "codes/chapters/ch04/core/upstream_contracts.py": "e868220b7388ae3124d1098df9de4095e061c1982fb1a251ad7c27c6c0742be5",
     "codes/chapters/ch00/io_contracts.py": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974",
     "codes/chapters/ch00/upstream/fetch_upstreams.py": "442d17a5818ef0edf620bde85cc7959c1e73602a47f75e1cc8fce2b227ae11b4",
     "codes/chapters/ch10/examples/stk_delay_probe.cpp": "00cf0d68ed5c99feb156d016de587d80ca9ff033aa523943ae1be27e827ea7c0",
@@ -4879,7 +4879,7 @@
     "system": "Darwin",
     "machine": "arm64",
     "python": "3.13.12",
-    "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)"
+    "compiler": "Apple clang version 21.0.0 (clang-2100.4.1.1)"
   },
   "source_files_sha256": {
     "include/DelayL.h": "f6503770b4c653c5ce117143f047852be4f1d30d383867be4258b4f78e2e26f7",

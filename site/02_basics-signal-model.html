@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 2 章 · 声音到达阵列时发生了什么 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="b82b7d85f70d"><style>
+<meta name="source-digest" content="58a2e18a2abd"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -811,14 +811,14 @@ D(t)&=10\log_{10}\frac{E_{\mathrm{rem}}(t)}
 <p>算法研发阶段既需要在已知真值的可控房间里做仿真，也需要在真实样机房间里做实测，两者的标准方法各有讲究：</p>
 <ul>
 <li><strong>几何镜像法仿真</strong>：最经典的合成方法是 Allen 与 Berkley 提出的<strong>镜像声源法（Image-Source Method）</strong>（见 <a href="https://doi.org/10.1121/1.382599">Allen 与 Berkley 1979 原论文</a>），它把声波经墙面的每一次镜面反射等效为墙外对称位置处一个虚拟镜像声源的自由场直达辐射，再把成百上千个镜像源按各自距离与反射次数叠加成完整 RIR。开源库 <code>pyroomacoustics</code> 提供了现成的实现（本书代码与附录房间实验采用 <a href="https://pypi.org/project/pyroomacoustics/0.10.0/">pyroomacoustics 0.10.0 发布版</a>）。配置镜像法时要注意区分墙面的<strong>能量吸声系数</strong> $\alpha$ 与<strong>声压幅度反射系数</strong> $\beta=\sqrt{1-\alpha}$；而且由赛宾公式反推的墙面参数和有限反射阶数只是输入配置，生成 RIR 后仍应重算 Schroeder 曲线核验实际衰减时间。</li>
-<li><strong>指数正弦扫频实测</strong>：要测量一间真实房间的 RIR，工业界广泛采用 Farina 提出的<strong>指数正弦扫频（Exponential Sine Sweep，ESS）</strong>方法（见 <a href="https://www.angelofarina.it/Public/papers/134-AES00.PDF">Farina 2000，AES Convention Paper 5093 原作者全文 §2</a> 与 <a href="https://aes.org/publications/elibrary-page/?id=10211">AES 正式出版记录</a>）：扬声器播放一段瞬时频率随时间按指数规律上升的正弦扫频信号（时间常数 $L_s=T_s/\ln(f_2/f_1)$），麦克风同步录下含混响的完整响应（必须留够扫频停止后的混响拖尾），再用配套逆滤波器做反卷积即可恢复线性 RIR——因指数扫频能量谱呈粉红斜率（每倍频程衰减 $3\ \mathrm{dB}$），时域反褶匹配逆滤波器需乘上指数衰减包络 $e^{-t/L_s}$（随时间每下降一个倍频程幅度减半，即 $-6\ \mathrm{dB/oct}$ 包络加权，使逆滤波器频谱呈 $+3\ \mathrm{dB/oct}$ 以抵消扫频的 $-3\ \mathrm{dB/oct}$ 斜率并白化总响应）。在系统近似时不变、未发生放大器或麦克风削波且扫频足够长的前提下，扬声器的第 $k$ 阶谐波失真脉冲在反卷积结果中会自动提前到线性主脉冲左侧的精确负时间偏移 $\Delta t_k = L_s\ln k$ 处（因此同时测量谐波与混响时需满足 $L_s\ln 2 > T_{60}$，避免二次谐波拖尾侵入线性响应；同步相位精化公式见 Novak、Lotton 与 Simon，<em>JAES</em>，63(10)，786–798，2015）。章末 E02-17 会从 4 点手算一路推到 $16\ \mathrm{kHz}$ 扫频音频，定量演示正则化反卷积、后加噪声、截断尾部与 16 位 PCM 量化的影响。</li>
+<li><strong>指数正弦扫频实测</strong>：要测量一间真实房间的 RIR，工业界广泛采用 Farina 提出的<strong>指数正弦扫频（Exponential Sine Sweep，ESS）</strong>方法（见 <a href="https://www.angelofarina.it/Public/papers/134-AES00.PDF">Farina 2000，AES Convention Paper 5093 原作者全文 §2</a> 与 <a href="https://aes.org/publications/elibrary-page/?id=10211">AES 正式出版记录</a>）：扬声器播放一段瞬时频率随时间按指数规律上升的正弦扫频信号（时间常数 $L_s=T_s/\ln(f_2/f_1)$），麦克风同步录下含混响的完整响应（必须留够扫频停止后的混响拖尾），再用配套逆滤波器做反卷积即可恢复线性 RIR——因指数扫频能量谱呈粉红斜率（每倍频程衰减 $3\ \mathrm{dB}$），时域反褶匹配逆滤波器需乘上指数衰减包络 $e^{-t/L_s}$（随时间每下降一个倍频程幅度减半，即 $-6\ \mathrm{dB/oct}$ 包络加权，使逆滤波器频谱呈 $+3\ \mathrm{dB/oct}$ 以抵消扫频的 $-3\ \mathrm{dB/oct}$ 斜率并白化总响应）。在系统近似时不变、未发生放大器或麦克风削波且扫频足够长的前提下，扬声器的第 $k$ 阶谐波失真脉冲在反卷积结果中会自动提前到线性主脉冲左侧的精确负时间偏移 $\Delta t_k = L_s\ln k$ 处（若要分离二次谐波与线性响应，$L_s\ln 2$ 应大于按容许残差选定的有效尾长；$T_{60}$ 表示衰减 $60\ \mathrm{dB}$ 的时间，不能单独保证尾声为零；同步相位精化公式见 Novak、Lotton 与 Simon，<em>JAES</em>，63(10)，786–798，2015）。章末 E02-17 会从 4 点手算一路推到 $16\ \mathrm{kHz}$ 扫频音频，定量演示正则化反卷积、后加噪声、截断尾部与 16 位 PCM 量化的影响。</li>
 </ul>
 <p>如果应用场景不允许播放扫频测试音，也可以研究从自然说话声中盲估 $T_{60}$ 或 DRR，但两者的可辨识机理不同：例如双麦空间相干度可直接反映直达－弥散能量比，却不能仅凭单频或宽带能量比直接算出 $T_{60}$，后者还必须借助语音停顿处的能量衰减斜率或参数化混响尾模型。关于上游仿真与测量工具的具体函数接口差异及高精度环境声速模型索引，可进一步查阅<a href="research/01_spatial_and_tracking.html">空间处理研究手册</a>。</p>
 <p>理解了声波从声源经过房间到达各路麦克风的物理过程后，下一步就是把采集到的多通道离散波形整理成算法可以直接处理的数据结构。</p>
 <span id="sec-6" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-2-5">2.5 数据怎么组织：STFT、快拍与协方差矩阵</h2>
 <p>后面的定位、波束形成、去混响与语音分离算法，几乎都在同一套三维数据结构上工作：先把每路麦克风的连续波形变换成短时频谱（STFT），再在每个时频格上取出多通道快拍（snapshot），最后沿时间帧统计空间协方差矩阵。下面把这三步的数学定义、近似条件与计算细节逐一拆开。</p>
 <h3 id="sec-2-5-1">2.5.1 从波形到逐频点的短时谱</h3>
-<p>语音是典型的宽带非平稳信号，整段录音直接做一次全局傅里叶变换会丢失声源与音素随时间的变化。<strong>短时傅里叶变换（Short-Time Fourier Transform，STFT）</strong>把每路波形切成前后重叠的短帧，每帧乘上一条平滑分析窗后再做快速傅里叶变换（Fast Fourier Transform，FFT），从而得到“频率 × 时间帧”的二维复数网格。网格上的每一个复数同时携带幅度与相位；图 6(b) 这样的语谱图只把幅度或功率映射成颜色深浅，决定空间方向的跨通道相位差依然保存在复数数组内部。</p>
+<p>语音是典型的宽带非平稳信号，单看整段录音的一张幅度谱，很难直接看出音素何时出现、声源何时改变；保留完整复数频谱的全局傅里叶变换仍可逆，并没有丢掉原波形的时间信息。<strong>短时傅里叶变换（Short-Time Fourier Transform，STFT）</strong>把每路波形切成前后重叠的短帧，每帧乘上一条平滑分析窗后再做快速傅里叶变换（Fast Fourier Transform，FFT），从而得到“频率 × 时间帧”的二维复数网格。网格上的每一个复数同时携带幅度与相位；图 6(b) 这样的语谱图只把幅度或功率映射成颜色深浅，决定空间方向的跨通道相位差依然保存在复数数组内部。</p>
 <p>帧长与帧移随下游任务而异：语音增强与波束形成常用 $32\ \mathrm{ms}$ 窗长配 $8\ \mathrm{ms}$ 帧移（$75\%$ 重叠），而自动语音识别（Automatic Speech Recognition，ASR）前端如 <a href="https://kaldi-asr.org/doc/feat.html">Kaldi 官方 MFCC 特征提取示例</a>常采用 $25\ \mathrm{ms}$ 帧长配 $10\ \mathrm{ms}$ 帧移。跨论文复现实验时，务必先对齐采样率、窗函数类型、窗长与帧移。</p>
 <p>设实分析窗 $g[q]$ 的长度为 $N_w$ 个采样点，帧移为 $H$ 个采样点，FFT 点数为 $N\ge N_w$。先写出不在信号两端补零、帧索引从 $\ell=0$ 起算的前向分析式（本书前向 FFT 统一不除以 $N$）：</p>
 <p>$$\begin{aligned}
@@ -983,8 +983,8 @@ b_\ell&=\alpha\,b_{\ell-1}+(1-\alpha)\,q_\ell,\qquad
 </tr>
 </tbody>
 </table></div>
-<p>表中功率单位为数字满刻度幅度平方（$\mathrm{FS}^2$，未经声压级校准故不写作 $\mathrm{Pa}^2$）。</p>
-<p>读表立刻看出一个关键现象：河水声并非各麦克风独立的电路底噪，而是具有空间延展与传播相关性的真实声场，紧凑阵列各麦之间的互相关项 $R_{ij}$（$i\ne j$）显著为正。只平均 2 路时，忽略交叉项低估了约 $0.73\ \mathrm{dB}$；把全部 16 路叠在一起时，共有 $16\times15=240$ 个正交叉项累加，实际残留噪声功率比“独立降噪 $1/M$”的乐观预测高出 <strong>$4.21\ \mathrm{dB}$</strong>（功率约为预测值的 $2.64$ 倍）。这说明：面对真实环境噪声（包括扩散混响、远处交通声、水流声），不能把麦克风电路白噪声的“$10\log_{10}M$ 降噪规律”照搬过去；练习 R01 的逐步计算、10 个连续 $1\ \mathrm{s}$ 子段波动与试听文件详见<a href="research/05_exercises_and_audio.html#12-r01真实河流录音中的通道相关项">真实河流录音实验</a>。</p>
+<p>表中功率单位为数字满刻度幅度平方（$\mathrm{FS}^2$，未经声压级校准故不写作 $\mathrm{Pa}^2$）。“实际平均功率”由平均后取整导出的 PCM 计算；上面的二阶矩恒等式对应输入 PCM 的未量化算术平均，两者之间还存在导出取整误差。</p>
+<p>读表立刻看出一个关键现象：河水声并非各麦克风独立的电路底噪，而是具有空间延展与传播相关性的真实声场，这段记录中跨通道互相关项 $R_{ij}$（$i\ne j$）的总和显著为正。只平均 2 路时，忽略交叉项低估了约 $0.73\ \mathrm{dB}$；把全部 16 路叠在一起时，共有 $16\times15=240$ 个有向交叉项，其总和为正，实际残留噪声功率比“独立降噪 $1/M$”的乐观预测高出 <strong>$4.21\ \mathrm{dB}$</strong>（功率约为预测值的 $2.64$ 倍）。这说明：面对真实环境噪声（包括扩散混响、远处交通声、水流声），不能把麦克风电路白噪声的“$10\log_{10}M$ 降噪规律”照搬过去；练习 R01 的逐步计算、10 个连续 $1\ \mathrm{s}$ 子段波动与试听文件详见<a href="research/05_exercises_and_audio.html#12-r01真实河流录音中的通道相关项">真实河流录音实验</a>。</p>
 <h3 id="sec-2-5-6">2.5.6 语音信号会改变哪些估计条件</h3>
 <p>前面推导的模型对任意窄带信号都成立，而真实人声有三条独特的时频秉性，直接塑造了后续章节的算法形态：</p>
 <ol>
@@ -1006,7 +1006,7 @@ B(f,\Omega)&=\vec w^H\vec a(f,\Omega)\text{。}
 <li><strong>主瓣（main lobe）</strong>：围绕设计指向角（图中为 $30^\circ$）隆起的最高主峰，各阵元信号在此方向同相叠加；</li>
 <li><strong>半功率波束宽度（HPBW）</strong>：主瓣两侧增益从峰值跌落约 $3.01\ \mathrm{dB}$（功率减半）处的两个交点之间的张角，即图中的红色水平双箭头；</li>
 <li><strong>旁瓣（side lobes）</strong>：主瓣两侧交替起伏的次级局部波峰，源于有限孔径截断产生的空间频率振铃，来自旁瓣方向的干扰会按相应衰减漏进输出；</li>
-<li><strong>零点（nulls）</strong>：多路信号相位恰好成对抵消、使 $|B(f,\Omega)|=0$（分贝图上向下尖锐深陷）的方向；需要注意，单频波束图上的零点只代表该频率处相消，宽带干扰在其他频率上的零点位置会发生偏移。</li>
+<li><strong>零点（nulls）</strong>：各通道加权复矢量之和为零、使 $|B(f,\Omega)|=0$（分贝图上向下尖锐深陷）的方向；成对反相只是其中一种相消方式。单频波束图上的零点只代表该频率处相消，宽带干扰在其他频率上的零点位置会发生偏移。</li>
 </ul>
 <p><img alt="图7 波束图解剖与栅瓣" src="../figures/fig07_beampattern_anatomy.png" onerror="this.alt+='（图缺失）'" /></p>
 <p>对比图 7 的左右两幅子图可以直观看到阵元间距跨越半波长前后的变化：</p>
@@ -1016,7 +1016,7 @@ B(f,\Omega)&=\vec w^H\vec a(f,\Omega)\text{。}
 </ul>
 <h3 id="sec-2-6-1">2.6.1 半功率波束宽度：主瓣有多宽</h3>
 <p><strong>半功率波束宽度（Half-Power Beamwidth，HPBW）</strong>定义为目标主瓣左右两侧功率降到峰值功率一半（$1/2$）处的两个方向角之差。在分贝刻度上，功率减半是 $10\log_{10}(0.5)\approx-3.01\ \mathrm{dB}$；若按幅度比计算，功率减半对应幅度变为 $1/\sqrt{2}\approx0.7071$，换算分贝同样是 $20\log_{10}(1/\sqrt{2})\approx-3.01\ \mathrm{dB}$。因此“半功率点”与“$-3\ \mathrm{dB}$ 点”指的是同一个位置（幅度减半则是 $-6.02\ \mathrm{dB}$，对应功率降为 $1/4$）。</p>
-<p>常规延迟求和扫描定位时，两个等强声源的角间距一旦小于 HPBW，两座主瓣就会融合成单峰而难以分辨。对于阵元数为 $M$、相邻间距为 $d$、指向 $\theta_0$ 的等权均匀线阵，当阵元数较多且不靠近端射时，其主瓣宽度（单位 $\mathrm{rad}$）可用经典的窄主瓣公式近似：</p>
+<p>常规延迟求和扫描定位时，HPBW 提供了分辨相邻声源的一个经验尺度。两源距离较近时，扫描峰可能难以分开，但是否出现两个峰还取决于源间相干性、功率比、具体阵因子和判峰规则，不能把 HPBW 当作双源必然合并的硬阈值。对于阵元数为 $M$、相邻间距为 $d$、指向 $\theta_0$ 的等权均匀线阵，当阵元数较多且不靠近端射时，其主瓣宽度（单位 $\mathrm{rad}$）可用经典的窄主瓣公式近似：</p>
 <p>$$\begin{aligned}
 \mathrm{HPBW}&\approx\frac{0.886\,\lambda}{Md\cos\theta_0}\text{。}
 \end{aligned}\tag{2-11}$$</p>
@@ -1079,7 +1079,8 @@ B(\psi)&=\frac{1}{M}\sum_{m=0}^{M-1}e^{\mathrm{j}m\psi}
 <li>$\sin$ 的取值范围是 $[-1,1]$，所以 $|\sin\theta-\sin\theta_0|\le2$。当 $d\lt \lambda/2$ 时，$\lambda/d>2$，上式在可见范围内无解。反之，$d>\lambda/2$ 只表示不再保证全视场无栅瓣；某个特定转向是否出现可见等高栅瓣，还要检查上式是否有可见解。</li>
 </ol>
 <p>等号边界可直接代入核对：$d=\lambda/2$、$\theta=+90^\circ$ 与 $\theta_0=-90^\circ$ 时，$\sin\theta-\sin\theta_0=2=\lambda/d$，两个端射方向的相邻阵元相位分别为 $+\pi$ 与 $-\pi$（相差整整 $2\pi$）。因此若把可视角域取为包含两端射的闭区间 $[-90^\circ,90^\circ]$，严格无歧义要求 $d\lt \lambda/2$；工程口诀“半波长安全线”默认排除了这对正负端射边界退化。</p>
-<p><strong>波数向量 $\vec k$ 空间（k-space）的统一视角</strong>：把一维线阵推广到任意二维平面阵或三维球阵时，引入沿声波传播方向的<strong>波数向量（wave vector）</strong> $\vec k = -\kappa\vec u = -\frac{2\pi}{\lambda}\vec u$（单位 $\mathrm{rad/m}$），导向分量可统一写作 $a_m(\vec k)=e^{-\mathrm{j}\vec k^\top(\vec r_m-\vec r_1)}$。所有物理可传播的远场平面波在波数空间里都落在半径为 $\kappa=\omega/c$ 的<strong>色散球面</strong> $\|\vec k\|_2=\omega/c$ 上（即“可见区”）。在规则空间网格上布设麦克风，相当于在空间域以阵元格点采样连续声压场——按多维傅里叶对偶，波束图 $B(\vec k)$ 必然在波数空间的<strong>倒易格点（reciprocal lattice）</strong>上周期延拓复制：只要某个相邻复制主峰的波数平移向量落进色散球面内部，可见角域就会长出等高栅瓣（系统阐述见 Johnson &amp; Dudgeon 1993 / Van Trees 2002）。这一视角把一维均匀线阵 $d\lt \lambda/2$ 与第 3 章 §3.2.2 六麦正六边形圆环 $d\lt \lambda/\sqrt{3}$ 统一成了同一条空间采样定理。</p>
+<p><strong>波数向量 $\vec k$ 空间（k-space）的统一视角</strong>：引入沿声波传播方向的<strong>波数向量（wave vector）</strong> $\vec k=-\kappa\vec u=-\frac{2\pi}{\lambda}\vec u$（单位 $\mathrm{rad/m}$），导向分量可写作 $a_m(\vec k)=e^{-\mathrm{j}\vec k^\top(\vec r_m-\vec r_1)}$。三维空间中，可传播远场平面波的波数向量位于半径 $\kappa=\omega/c$ 的<strong>色散球面</strong> $\|\vec k\|_2=\omega/c$ 上；平面阵只能观测阵面内的波数分量，其投影可见域是半径 $\kappa$ 的圆盘。</p>
+<p>若阵元位于规则空间格点，波束响应会在对应的<strong>倒易格点（reciprocal lattice）</strong>上重复。判断等高复制峰是否成为可见栅瓣，要检查它是否落在该阵列的可见域：完整三维波数需落在球面，平面阵的二维投影则需落在圆盘内。球内一点若不在球面上，就不是同频率的三维传播方向。按各自几何与视场应用这个判据，可以得到一维均匀线阵的 $d\lt \lambda/2$ 条件，以及第 3 章 §3.2.2 正六边形圆环的 $d\lt \lambda/\sqrt{3}$ 条件（系统论述见 Johnson &amp; Dudgeon 1993、Van Trees 2002）。</p>
 <h3 id="sec-2-6-6">2.6.6 精度理论下界：克拉美－罗下界</h3>
 <p>前面讲的主瓣宽度衡量“能不能分开两个源”，而在单声源定位中我们还会问：给定麦克风坐标、信噪比和观测帧数，任何无偏角度估计器的误差方差最少还有多大？回答这个问题的统计标尺就是<strong>克拉美－罗下界（Cramér–Rao Lower Bound，CRLB，文献与代码中亦常简记为 CRB）</strong>。初次阅读若觉得统计推导偏重，只需先记住式(2-14)分母里五个物理因子的定性规律，学到第 4 章评估 DOA 算法精度时再回头细嚼。</p>
 <p>写具体的 CRLB 公式前必须交代清楚信号与噪声模型，因为改换假设会改变前面的常数（圆对称复高斯分布与统计估计基础见<a href="00_math-foundations.html#sec-0-6">第 0 章 §0.6</a>，完整矩阵推导参见 <a href="https://doi.org/10.1109/29.17564">Stoica 与 Nehorai 1989 经典论文</a>）：这里采用<strong>单声源、窄带远场、确定性未知源信号</strong>模型——即共有 $L_{\mathrm{snap}}$ 个统计独立的快拍，每帧目标源复幅度 $s_\ell$ 视为未知确定性干扰参数（不能把幅度波动冒充方向信息）；阵列为间距 $d$ 的 $M$ 元均匀线阵；加性噪声为各阵元方差同为 $\sigma^2$ 的圆对称复高斯白噪声；单阵元线性信噪比定义为 $\mathrm{SNR}=\frac{1}{L_{\mathrm{snap}}\sigma^2}\sum_{\ell=1}^{L_{\mathrm{snap}}}|s_\ell|^2$。</p>
@@ -2063,41 +2064,41 @@ c_k|Y_\ell[k]-Z_\ell[k]|^2\text{。}
     {\vec w^H\mathbf{\Gamma}_{\mathrm{2D}}\vec w}\text{。}
     \end{aligned}\tag{2-30}$$</p>
 <p>在低频极限 $\kappa d\to0^+$ 下，任意一阶端射无失真方向图可写为 $B(\vartheta)=\alpha+(1-\alpha)\cos\vartheta$（$B(0)=1$）：由 $\mathbb{E}_{\mathrm{3D}}[\cos^2\vartheta]=1/3$ 与 $\mathbb{E}_{\mathrm{2D}}[\cos^2\alpha]=1/2$，其三维与二维输出噪声功率分别为 $P_{\mathrm{3D}}(\alpha)=\alpha^2+\frac{1}{3}(1-\alpha)^2$ 与 $P_{\mathrm{2D}}(\alpha)=\alpha^2+\frac{1}{2}(1-\alpha)^2$。令导数为零立得：三维最优取 $\alpha=1/4$（超心形零点 $\arccos(-1/3)\approx109.47^\circ$，$P_{\mathrm{out,3D}}=1/4$，$Q_{\mathrm{3D}}=4$，$\mathrm{DI}_{\mathrm{3D}}=6.02\ \mathrm{dB}$），但将其放入二维柱面场时实际功率为 $P_{\mathrm{2D}}(1/4)=\frac{1}{16}+\frac{9}{32}=\frac{11}{32}=\mathbf{0.34375}$，比预期漏入 <strong>$+1.38\ \mathrm{dB}$</strong> 额外混响噪声，真实二维 DI 降至 $10\log_{10}(32/11)\approx\mathbf{4.64\ \mathrm{dB}}$；反过来，直接最小化 $P_{\mathrm{2D}}(\alpha)$ 得二维最优 $\alpha=1/3$（零点 $\arccos(-1/2)=120^\circ$，$P_{\mathrm{out,2D}}=1/3$，$Q_{\mathrm{2D}}=3$，即 $4.77\ \mathrm{dB}$，且白噪声放大更温和）。在有限频率下由闭式解 $\vec w_{\mathrm{SD,3D}}=\mathbf{\Gamma}_{\mathrm{3D}}^{-1}\vec a/(\vec a^H\mathbf{\Gamma}_{\mathrm{3D}}^{-1}\vec a)$（推导见<a href="00_math-foundations.html#sec-0-5-2">第 0 章 §0.5.2</a> 与<a href="05_beamforming.html#sec-5-3">第 5 章 §5.3</a>）核验三个特征频点：</p>
-<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table class="tutorial-budget-table" style="--tutorial-table-width:64em">
+<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
 <thead>
 <tr>
-<th scope="col" style="text-align: right;--tutorial-column-width:8em" class="tutorial-short-column">频率（Hz）</th>
-<th scope="col" class="tutorial-short-column" style="--tutorial-column-width:12em">$\Gamma_{\mathrm{3D}}$ ／ $\Gamma_{\mathrm{2D}}$</th>
-<th scope="col" style="text-align: right;--tutorial-column-width:11em" class="tutorial-short-column">三维预测 DI（dB）</th>
-<th scope="col" style="text-align: right;--tutorial-column-width:11em" class="tutorial-short-column">二维实测 DI（dB）</th>
-<th scope="col" style="text-align: right;--tutorial-column-width:11em" class="tutorial-short-column">二维漏噪增量（dB）</th>
-<th scope="col" style="text-align: right;--tutorial-column-width:11em" class="tutorial-short-column">二维最优 DI（dB）</th>
+<th scope="col" style="text-align: right;">频率（Hz）</th>
+<th scope="col">$\Gamma_{\mathrm{3D}}$ ／ $\Gamma_{\mathrm{2D}}$</th>
+<th scope="col" style="text-align: right;">三维预测 DI（dB）</th>
+<th scope="col" style="text-align: right;">二维模型 DI（dB）</th>
+<th scope="col" style="text-align: right;">二维漏噪增量（dB）</th>
+<th scope="col" style="text-align: right;">二维最优 DI（dB）</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: right;--tutorial-column-width:8em" class="tutorial-short-column">$500.0$</td>
-<td class="tutorial-short-column" style="--tutorial-column-width:12em">$+0.9778$ ／ $+0.9667$</td>
-<td style="text-align: right;--tutorial-column-width:11em" class="tutorial-short-column">$5.98$</td>
-<td style="text-align: right;--tutorial-column-width:11em" class="tutorial-short-column">$4.60$</td>
-<td style="text-align: right;--tutorial-column-width:11em" class="tutorial-short-column">$+1.38$</td>
-<td style="text-align: right;--tutorial-column-width:11em" class="tutorial-short-column">$4.74$</td>
+<td style="text-align: right;">$500.0$</td>
+<td>$+0.9778$ ／ $+0.9667$</td>
+<td style="text-align: right;">$5.98$</td>
+<td style="text-align: right;">$4.60$</td>
+<td style="text-align: right;">$+1.38$</td>
+<td style="text-align: right;">$4.74$</td>
 </tr>
 <tr>
-<td style="text-align: right;--tutorial-column-width:8em" class="tutorial-short-column">$3282.0$</td>
-<td class="tutorial-short-column" style="--tutorial-column-width:12em">$+0.2794$ ／ $0.0000$</td>
-<td style="text-align: right;--tutorial-column-width:11em" class="tutorial-short-column">$4.18$</td>
-<td style="text-align: right;--tutorial-column-width:11em" class="tutorial-short-column">$2.91$</td>
-<td style="text-align: right;--tutorial-column-width:11em" class="tutorial-short-column">$+1.27$</td>
-<td style="text-align: right;--tutorial-column-width:11em" class="tutorial-short-column">$3.01$</td>
+<td style="text-align: right;">$3282.0$</td>
+<td>$+0.2794$ ／ $0.0000$</td>
+<td style="text-align: right;">$4.18$</td>
+<td style="text-align: right;">$2.91$</td>
+<td style="text-align: right;">$+1.27$</td>
+<td style="text-align: right;">$3.01$</td>
 </tr>
 <tr>
-<td style="text-align: right;--tutorial-column-width:8em" class="tutorial-short-column">$4287.5$</td>
-<td class="tutorial-short-column" style="--tutorial-column-width:12em">$0.0000$ ／ $-0.3042$</td>
-<td style="text-align: right;--tutorial-column-width:11em" class="tutorial-short-column">$3.01$</td>
-<td style="text-align: right;--tutorial-column-width:11em" class="tutorial-short-column">$1.86$</td>
-<td style="text-align: right;--tutorial-column-width:11em" class="tutorial-short-column">$+1.15$</td>
-<td style="text-align: right;--tutorial-column-width:11em" class="tutorial-short-column">$1.86$</td>
+<td style="text-align: right;">$4287.5$</td>
+<td>$0.0000$ ／ $-0.3042$</td>
+<td style="text-align: right;">$3.01$</td>
+<td style="text-align: right;">$1.86$</td>
+<td style="text-align: right;">$+1.15$</td>
+<td style="text-align: right;">$1.86$</td>
 </tr>
 </tbody>
 </table></div>

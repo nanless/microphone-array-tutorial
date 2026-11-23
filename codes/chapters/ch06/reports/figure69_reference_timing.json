@@ -7,13 +7,13 @@
     "codes/chapters/ch06/core/aec.py": "6f534c06a0e3a0376b9052a70eda7da776ad25eaf1eeae960be094d4d9037e37",
     "codes/chapters/ch06/core/aec_numeric.py": "23e0251d4c161cfe757606156f8b1a7472cc33e729544096eb8ce76255108236",
     "codes/chapters/ch06/core/double_talk.py": "cf05b1037cbb8b98ca563e5c7ed25cfb4a823ce272de3d39c69470f1880dfc42",
-    "codes/chapters/ch02/core/conventions.py": "4e80a27490f05ddd5f4826361420c0c8d0b331464d1e5629c5def492da47b1d7",
+    "codes/chapters/ch02/core/conventions.py": "79af1b8f7fe664e64e7ad786082c36a29664eacbdda63fba96a944e548304865",
     "codes/chapters/ch00/core/audio_samples.py": "1a7aad90d08fb8c27511aa463a6cc6dd6d4d2d230b27ed82549531f1f18edaba",
     "codes/chapters/ch00/io_contracts.py": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974",
-    "scripts/make_figures.py": "4bc6a6ce675292c51d538c0f7d3c6f9c8fe3a2de2d0d7945f48cb4baaa801e49",
-    "scripts/make_reference_figures.py": "1e0dcf6a823f6d61fbf8cfdbf14de161d9a36ef5a138e58794eb6f3920e82751"
+    "scripts/make_figures.py": "bf9058d1c3d6ed15bab41ea092439170cd324011936645d577408106813a485a",
+    "scripts/make_reference_figures.py": "292c4c3dfa67b9977c04646d396c406c4eaeaf130a0c22b797fad24c7646b74f"
   },
-  "audio_manifest_sha256": "a6b9a0a25260c72f6478706a46077d9cd24b64341b79e7c90ff93f0a3f6ed049",
+  "audio_manifest_sha256": "36825dceac18effe94a4455792fe8d4f6073342f2a93383a3e0a40a2c1008db6",
   "wav_sha256": {
     "reference_early.wav": "93de05321a4ed50523ab597d785b79636552edc0e5ee349b266d90a3737cce30",
     "reference_late.wav": "6eb5f90e33ef245250ebf4d2c297248f868ddfd2826124eb13d59448ea3015cf",

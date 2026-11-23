@@ -12,14 +12,13 @@ if __name__ == "__main__" and not __package__:
     from pathlib import Path as _ChapterEntryPath
     _chapter_entry_sys.path.insert(0, str(_ChapterEntryPath(__file__).resolve().parents[3]))
 
-from itertools import permutations
-from decimal import Decimal, localcontext
 import json
 import math
 from pathlib import Path
 import numpy as np
 from codes.chapters.ch02.core.conventions import finite_real_array, finite_real_scalar
 from codes.chapters.ch09.core.echo_av_fusion import (
+    small_set_distances,
     av_oosm_and_mot_experiment,
     echo_clutter_gating_experiment,
 )
@@ -32,63 +31,6 @@ from codes.chapters.ch09.core.spherical_tracking import (
     direction_from_angles, angles_from_direction, rotate_direction,
     normalized_direction_covariance, vmf_static_update, vmf_resultant_length,
 )
-
-
-def small_set_distances(truth, estimate, *, cutoff=10., order=1):
-    """OSPA and alpha=2 GOSPA on <=7 scalar circular angles, p=1 or 2.
-
-    Exhaustive enumeration is intentionally small. This scores unordered
-    position sets, never identity continuity. Empty/empty is zero; one empty
-    set has OSPA=c and GOSPA=(c^p*n/2)^(1/p). Compute roots in cutoff-normalized
-    units, so a tiny positive c does not become zero by squaring it. A power
-    cost outside float64 is None with an explicit status, never a false zero.
-    Reject a lost nonzero normalized distance or final metric: this teaching
-    solver does not claim arbitrary finite-scale support.
-    """
-    first = finite_real_array(truth, 'truth')
-    second = finite_real_array(estimate, 'estimate')
-    cutoff = finite_real_scalar(cutoff, 'cutoff')
-    order = finite_real_scalar(order, 'order')
-    if first.ndim != 1 or second.ndim != 1 or max(first.size, second.size) > 7:
-        raise ValueError('small 1-D sets of at most seven angles are required')
-    if not 0 < cutoff <= 180 or order not in (1, 2):
-        raise ValueError('this teaching helper supports 0<c<=180 degrees and p=1 or 2')
-    first, second = wrap_angle(first), wrap_angle(second)
-    if np.unique(first).size != first.size or np.unique(second).size != second.size:
-        raise ValueError('sets must not contain duplicate positions modulo 360')
-    if first.size > second.size:
-        first, second = second, first
-    m, n = len(first), len(second)
-    best_root, best_distances = math.inf, ()
-    for assignment in permutations(range(n), m):
-        distances = tuple(min(cutoff, abs(float(wrap_angle(first[i]-second[j]))))
-                          for i, j in enumerate(assignment))
-        normalized = tuple(distance/cutoff for distance in distances)
-        if any(d != 0 and unit == 0 for d, unit in zip(distances, normalized)):
-            raise ValueError('nonzero normalized set distance exceeds solver support')
-        root = math.fsum(normalized) if order == 1 else math.hypot(*normalized)
-        if root < best_root:
-            best_root, best_distances = root, distances
-    # Keep the restored powers in Decimal until the final root. Apart from
-    # protecting subnormal cutoffs, this preserves simple exact p=1 anchors
-    # such as (2+10)/2=6 without normalized-domain restoration rounding.
-    with localcontext() as context:
-        context.prec = 80
-        exact_power = sum((Decimal.from_float(d)**int(order) for d in best_distances), Decimal(0))
-        unmatched = Decimal.from_float(cutoff)**int(order)*(n-m)
-        ospa_power = (exact_power+unmatched)/n if n else Decimal(0)
-        gospa_power = exact_power+unmatched/2
-        ospa = float(ospa_power if order == 1 else ospa_power.sqrt())
-        gospa = float(gospa_power if order == 1 else gospa_power.sqrt())
-        power = float(exact_power)
-    if any(exact != 0 and value == 0 for exact, value in ((ospa_power, ospa), (gospa_power, gospa))):
-        raise ValueError('positive set metric exceeds floating-point range')
-    status = 'representable'
-    if exact_power != 0 and power == 0:
-        power, status = None, 'positive_power_underflow'
-    return {'ospa': ospa, 'gospa_alpha2': gospa,
-            'matched_capped_cost_power': power, 'matched_capped_cost_power_status': status,
-            'cardinality_difference': n-m}
 
 
 def jpda_vs_gnn_crossing_case(

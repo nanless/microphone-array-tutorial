@@ -2,11 +2,11 @@
   "schema_version": 2,
   "actual_dependency_sha256": {
     "codes/chapters/ch07/examples/wpe_silence_boundary.py": "3d44e26ffb89bc3e67cedb16f118e2a6bb0b3c9bb6f8a4ff319f6d1f217e3648",
-    "codes/chapters/ch04/core/upstream_contracts.py": "8669f007ee16a15433598b8f451f226cceb3163bdbc2bf690709504874743167",
+    "codes/chapters/ch04/core/upstream_contracts.py": "e868220b7388ae3124d1098df9de4095e061c1982fb1a251ad7c27c6c0742be5",
     "codes/chapters/ch00/io_contracts.py": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974",
     "codes/chapters/ch00/upstream/fetch_upstreams.py": "442d17a5818ef0edf620bde85cc7959c1e73602a47f75e1cc8fce2b227ae11b4",
     "codes/chapters/ch07/examples/compare_online_wpe_reference.py": "6bb47c9ab66c265514cfbcfba4abb4f727d6e92aecc7b2dfba2559ffd66b2f04",
-    "codes/chapters/ch02/core/conventions.py": "4e80a27490f05ddd5f4826361420c0c8d0b331464d1e5629c5def492da47b1d7"
+    "codes/chapters/ch02/core/conventions.py": "79af1b8f7fe664e64e7ad786082c36a29664eacbdda63fba96a944e548304865"
   },
   "scope": "deterministic float64 silence failure, not room or speech quality",
   "environment": {
@@ -173,15 +173,15 @@
         "version": "0.0.11",
         "files": {
           "wpe.py": {
-            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/.venv/lib/python3.13/site-packages/nara_wpe/wpe.py",
+            "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/nara_wpe/wpe.py",
             "sha256": "385a6f1c67071ba3e243c8a24fe4a041484c55280ad4ed0dbadefa4679a606d2"
           },
           "__init__.py": {
-            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/.venv/lib/python3.13/site-packages/nara_wpe/__init__.py",
+            "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/nara_wpe/__init__.py",
             "sha256": "26c8332cb0ed6de30286eb6e88f29c96fec8830dadc54fcd15877e6f5a1dbf1d"
           },
           "distribution_LICENSE": {
-            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/.venv/lib/python3.13/site-packages/nara_wpe-0.0.11.dist-info/LICENSE",
+            "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/nara_wpe-0.0.11.dist-info/LICENSE",
             "sha256": "f9fad5befd31a5c5540fb671fa56efd59d959959ffe1b6a8156a66549d6410f0"
           }
         },
@@ -385,15 +385,15 @@
         "version": "0.0.11",
         "files": {
           "wpe.py": {
-            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/.venv/lib/python3.13/site-packages/nara_wpe/wpe.py",
+            "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/nara_wpe/wpe.py",
             "sha256": "385a6f1c67071ba3e243c8a24fe4a041484c55280ad4ed0dbadefa4679a606d2"
           },
           "__init__.py": {
-            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/.venv/lib/python3.13/site-packages/nara_wpe/__init__.py",
+            "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/nara_wpe/__init__.py",
             "sha256": "26c8332cb0ed6de30286eb6e88f29c96fec8830dadc54fcd15877e6f5a1dbf1d"
           },
           "distribution_LICENSE": {
-            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/.venv/lib/python3.13/site-packages/nara_wpe-0.0.11.dist-info/LICENSE",
+            "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/nara_wpe-0.0.11.dist-info/LICENSE",
             "sha256": "f9fad5befd31a5c5540fb671fa56efd59d959959ffe1b6a8156a66549d6410f0"
           }
         },

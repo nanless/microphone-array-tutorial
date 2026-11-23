@@ -40,13 +40,15 @@ def first_order_dma_weights(
         raise ValueError("null_angle_deg must lie in rear hemisphere [90.0, 180.0]")
 
     alpha = -math.cos(math.radians(null_deg))
-    tau_0 = alpha * spacing / sound_speed
-    omega = 2.0 * math.pi * f_hz
-    w_raw = np.array([1.0 + 0.0j, -np.exp(1j * omega * tau_0)], dtype=np.complex128)
+    propagation_cycles = f_hz * (spacing / sound_speed)
+    propagation_phase = 2.0 * math.pi * propagation_cycles
+    if not math.isfinite(propagation_phase) or propagation_phase == 0:
+        raise ValueError("DMA propagation phase is outside supported float64 range")
+    w_raw = np.array([1.0 + 0.0j, -np.exp(1j * (alpha * propagation_phase))], dtype=np.complex128)
     if not equalize:
         return w_raw
 
-    a_target = np.array([1.0 + 0.0j, np.exp(-1j * omega * spacing / sound_speed)], dtype=np.complex128)
+    a_target = np.array([1.0 + 0.0j, np.exp(-1j * propagation_phase)], dtype=np.complex128)
     resp_target = complex(np.vdot(w_raw, a_target))
     if abs(resp_target) <= 1e-12:
         raise ValueError("DMA target response vanishes at spatial aliasing frequency; cannot equalize")

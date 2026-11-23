@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 11 章 · 总结与选型指南 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="b82b7d85f70d"><style>
+<meta name="source-digest" content="58a2e18a2abd"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -365,7 +365,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="11_selection-guide.html#sec-u-9a9e847f8b">E11-19：空输出、漏会话与评分失败是否都能填零</a></li>
 <li>&nbsp;&nbsp;<a href="11_selection-guide.html#sec-u-b11c3808bc">E11-20：最低噪声的波束为何不能直接通过选型</a></li>
 <li>&nbsp;&nbsp;<a href="11_selection-guide.html#sec-u-8b058725f6">E11-21：车载多音区总线同步、头枕波束与双讲保护</a></li>
-<li>&nbsp;&nbsp;<a href="11_selection-guide.html#sec-u-7593e4a86b">E11-22：车载 ICC 强化延迟、啸叫稳定裕度与认证规格</a></li>
+<li>&nbsp;&nbsp;<a href="11_selection-guide.html#sec-u-09e5b0bade">E11-22：车载 ICC 强化延迟、啸叫稳定裕度与产品预算</a></li>
 <li><a href="11_selection-guide.html#sec-11-7">11.7 后续阅读</a></li>
 </ul>
 <div class="chap"><a href="12_acoustic-imaging.html">第 12 章 · 声学成像与噪声源诊断</a></div>
@@ -422,7 +422,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="11_selection-guide.html#sec-u-9a9e847f8b">E11-19：空输出、漏会话与评分失败是否都能填零</a></li>
 <li>&nbsp;&nbsp;<a href="11_selection-guide.html#sec-u-b11c3808bc">E11-20：最低噪声的波束为何不能直接通过选型</a></li>
 <li>&nbsp;&nbsp;<a href="11_selection-guide.html#sec-u-8b058725f6">E11-21：车载多音区总线同步、头枕波束与双讲保护</a></li>
-<li>&nbsp;&nbsp;<a href="11_selection-guide.html#sec-u-7593e4a86b">E11-22：车载 ICC 强化延迟、啸叫稳定裕度与认证规格</a></li>
+<li>&nbsp;&nbsp;<a href="11_selection-guide.html#sec-u-09e5b0bade">E11-22：车载 ICC 强化延迟、啸叫稳定裕度与产品预算</a></li>
 <li><a href="11_selection-guide.html#sec-11-7">11.7 后续阅读</a></li>
 </ul></nav></details>
 <blockquote>
@@ -719,7 +719,7 @@ $$</p>
 <p>反之，只要沿法向引入第四只非共面麦克风 $\vec p_4 = (0, 0, 0.04)^\top\ \mathrm{m}$，它在两个方向上的程差投影立刻分化为 $+0.032\ \mathrm{m}$ 与 $-0.032\ \mathrm{m}$。取声速 $c = 343\ \mathrm{m/s}$、频率 $f = 1\ \mathrm{kHz}$，第 4 麦相对第 1 麦的导向相位分别为 $\pm 2\pi f(0.032)/c \approx \pm 0.58619\ \mathrm{rad}$，上下镜像二解随之解耦（全空间任意方向的完整秩判据见第 3 章练习 <a href="03_array-geometry.html#e03-14">E03-14</a>）。</p>
 <span id="sec-5" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-11-4">11.4 典型产品形态与场景推导</h2>
 <h3 id="sec-u-1b49981a73">六类产品形态的硬件、结构、功耗与认证矩阵</h3>
-<p>不同终端形态在麦克风接口、结构声学边界、芯片算力、散热功耗、延迟红线与强制法规上相差数个数量级。下表给出六大主流产品形态的典型工程数量级参考，用于在立项初期快速锁定可行设计空间：</p>
+<p>下表给出六类产品的构造性设计预算，用于比较接口、结构、功耗与等待时间；未绑定具体型号和测试工况的范围不是设备实测，也不是认证条款。强制要求须另按适用产品、规范版本及测点核对：</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
 <thead>
 <tr>
@@ -761,7 +761,7 @@ $$</p>
 <td>2～4 麦气导+内麦/骨导 VPU（低功耗 PDM/I²S）</td>
 <td>耳道闭塞效应、防尘网/防水透气膜高频相移、强风湍流</td>
 <td>超低功耗蓝牙 SoC+DSP；单耳 $5\text{～}15\ \mathrm{mW}$、眼镜 $20\text{～}60\ \mathrm{mW}$，无主动散热</td>
-<td>单位增益主动通透无梳状理想 $\le 100\ \mu\mathrm{s}$（商用折中 $\lt 0.5\text{～}1\ \mathrm{ms}$）；语音上行 $\lt 30\text{～}60\ \mathrm{ms}$</td>
+<td>等幅通透路径首陷波 $\ge5\ \mathrm{kHz}$ 要求 $\le100\ \mu\mathrm{s}$；$0.5\text{～}1\ \mathrm{ms}$ 项目预算需核响应与听测；语音上行 $\lt 30\text{～}60\ \mathrm{ms}$</td>
 <td>蓝牙 HFP/LE Audio、整机温升与比吸收率（SAR）</td>
 </tr>
 <tr>
@@ -769,7 +769,7 @@ $$</p>
 <td>2～4 麦双耳无线协同（超低功耗 PDM + NFMI/BLE Audio）</td>
 <td>$7\text{～}12\ \mathrm{mm}$ 极小孔径、耳模声反馈啸叫、IP68 防耳垢膜</td>
 <td>专用助听 ASIC/DSP；整机 $1\text{～}3\ \mathrm{mW}$，续航 $16\text{～}24\ \mathrm{h}$</td>
-<td>助听直通延迟 $\lt 5\text{～}10\ \mathrm{ms}$（开放耳道防梳状常控 $\lt 5\ \mathrm{ms}$）</td>
+<td>候选本地直通预算 $5\text{～}10\ \mathrm{ms}$，结合实际增益、漏声与听力条件评估</td>
 <td>IEC 60601-2-66 医电安全、FDA 21 CFR 800.30 / ANSI/CTA-2051、OSPL90 硬限幅</td>
 </tr>
 <tr>
@@ -786,7 +786,7 @@ $$</p>
 <ul>
 <li><strong>结构声腔与防水透气膜的幅相畸变</strong>：麦克风壳体开孔与其后背声道形成微小型亥姆霍兹谐振腔（Helmholtz resonator），若开孔长度与截面积匹配不当，会在 $3\text{～}8\ \mathrm{kHz}$ 内引入数分贝谐振峰；而在户外音箱、智能眼镜与工业 IoT 节点上贴装 IP67/IP68 防水透气膜（ePTFE）后，膜片张力个体离散度会带来高频插入损耗与数度至十余度的通道间相位漂移——凡采用超指向或紧零陷自适应波束的产品，必须在装配整机外壳与防水膜后重新实测阵列流形与 WNG。</li>
 <li><strong>工业 IoT $\mu\mathrm{W}$ 级常开唤醒与 KWS 运行点权衡</strong>：受制于纽扣电池或数年的免维护续航，工业边缘语音/声学监测节点普遍采用“双级唤醒架构”——主处理器与神经声学模型长期深度休眠，仅保留 $10\text{～}200\ \mu\mathrm{W}$ 级常开模拟包络检测或极轻量数字 VAD 监听异常声能；一旦越阈，再在数毫秒内拉起主 MCU/NPU 执行完整关键词检测（KWS）或故障诊断。在选定唤醒阈值 $\tau$ 时，必须同时考核正事件的无量纲漏检率 $r_{\mathrm{miss}} = N_{\mathrm{miss}}/N_+$ 与连续负样本暴露时长 $T_-$ 上的每小时误触发率 $\nu_{\mathrm{FA}} = N_{\mathrm{FA}}/T_-$（且零误触发的持续测试时长须按泊松置信界核算，见 <a href="#e11-15">E11-15</a>），防止高频误唤醒耗尽主核功耗预算。</li>
-<li><strong>医疗与 OTC 助听设备的法规与听觉安全底线</strong>：助听器绝非“缩小版耳机”。医用与非处方（OTC）助听产品除须满足助听设备专用医电安全标准 <strong>IEC 60601-2-66</strong> 外，在电声指标上还受 <strong>FDA 21 CFR 800.30</strong> 与 <strong>ANSI/CTA-2051</strong> 的法定硬限约束：最大输出声压级 <strong>OSPL90（$90\ \mathrm{dB\ SPL}$ 输入下的输出上限）$\le 111\ \mathrm{dB\ SPL}$</strong>（启用输入受控压缩时 $\le 117\ \mathrm{dB\ SPL}$），法规级处理延迟上限 <strong>$\le 15\ \mathrm{ms}$</strong>，自生噪声 <strong>$\le 32\ \mathrm{dBA}$</strong>，总谐波失真加噪声（THD+N，21 CFR 800.30(e)(1)）<strong>$\le 5\%$</strong>，并须在输出端实施硬件/固件压缩限幅以防止突发脉冲或啸叫击伤残余听力；同时，在开放式或通气耳塞佩戴下，还须按增益工况严格区分两类防梳状滤波延迟上限——对于<strong>带正插入增益的开放式助听器</strong>（约 $1\ \mathrm{kHz}$ 以上扩声增益主导耳道漏声），心理声学梳状染色烦恼度上限迫使全链路直通延迟进一步严控在 <strong>$\lt 5\text{～}10\ \mathrm{ms}$</strong> 以内（常控 $\lt 5\ \mathrm{ms}$），而对于<strong>单位增益的 TWS 主动通透耳机</strong>，无梳状理想上限须压低至 <strong>$\le 100\ \mu\mathrm{s}$</strong>（商用折中 $\lt 0.5\text{～}1\ \mathrm{ms}$，详见<a href="14_spatial-wearable-arrays.html#sec-14-10">扩展专题Ⅲ §14.10</a> 式(14-27)），任何长窗 STFT 或大前瞻神经降噪模型都会在合规与听感审查首轮即被淘汰。</li>
+<li><strong>助听设备法规范围与路径增益条件</strong>：本书已核的2025版 FDA 21 CFR 800.30 针对其定义的 OTC 气导助听器，并非全部医疗助听设备的共同门限；其中最大输出、噪声、失真和延迟须依条款规定的信号、频带与测量方法判定。ANSI/CTA-2051 与 IEC 60601-2-66 也不能不分产品范围统称为同一法定硬限。上表延迟与功耗是示意预算：通透路径只有在主动与被动漏声幅度接近、要求首陷波不低于 $5\ \mathrm{kHz}$ 时才得到 $100\ \mu\mathrm{s}$ 条件，不能当成普适听觉或法规阈值。</li>
 </ul>
 <h3 id="sec-u-8198d86843">场景条件变化与智能座舱硬边界</h3>
 <p>掌握了六类形态的硬件边界后，下表以四类典型声学工况为例，展示如何顺着现场约束的变化一步步推导出系统链路，而非背诵僵化的标准配方：</p>
@@ -817,7 +817,7 @@ $$</p>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:6em">耳机或助听设备</td>
 <td>若监听路径对延迟和电池很敏感</td>
-<td>监听与通话上行可采用不同链路。固定双麦波束和轻量 NS 是候选基线，不是必选答案；法规、反馈路径、佩戴变化和听觉安全优先。非规则镜框双耳信号匹配（BSM/MagLS）、双耳相干度保持、抗风噪跨模态自语音融合，以及单位增益主动通透模式的防梳状滤波延迟约束（无梳状理想 $\le 100\ \mu\mathrm{s}$、商用折中 $\lt 0.5\text{～}1\ \mathrm{ms}$，显著严于正插入增益开放式助听器的 $\lt 5\text{～}10\ \mathrm{ms}$ 上限）详见<a href="14_spatial-wearable-arrays.html#sec-14-5">扩展专题Ⅲ §14.5～§14.10</a>。</td>
+<td>监听与通话上行可采用不同链路。固定双麦波束和轻量 NS 是候选基线，不是必选答案；法规、反馈路径、佩戴变化和听觉安全优先。非规则镜框双耳信号匹配（BSM/MagLS）、双耳相干度保持、抗风噪跨模态自语音融合，以及取决于增益与漏声的本地监听延迟设计（等幅两路首陷波条件给出 $100\ \mu\mathrm{s}$，助听偏好与项目预算则须按各自条件评估）详见<a href="14_spatial-wearable-arrays.html#sec-14-5">扩展专题Ⅲ §14.5～§14.10</a>。</td>
 </tr>
 </tbody>
 </table></div>
@@ -829,11 +829,11 @@ $$</p>
 <p>此外，碰撞事故后的紧急救援呼叫（eCall）遵循 <strong>P.1140</strong>，要求在气囊爆开或车窗破碎等极端畸变工况下仍保住公共安全应答点的可懂度底线；而把前排语音实时扩声给后排乘客的<strong>车载座舱通话增强（ICC）</strong>则由 <strong>P.1150</strong> 专门规范，重点考核闭环啸叫稳定裕度、听音费力程度、空间定位保持及强化延迟上限。</p>
 </li>
 <li>
-<p><strong>A²B 同步音频总线与异构域 SRO 的架构分野</strong>：现代座舱往往在顶棚、遮阳板与多座头枕内分布十余只数字麦克风。若整车采用 <strong>A²B（Automotive Audio Bus，车载音频总线）</strong> 单主多从菊花链架构，主节点通过单根非屏蔽双绞线同时下发主位时钟、帧同步与供电，所有远端从节点锁相环严格锁定在同一主时钟源上，天然实现<strong>零相对 SRO</strong> 与低于 $50\ \mu\mathrm{s}$ 的确定性传输延迟，跨座位波束与多声道媒体 AEC 可直接共享精确相位。</p>
+<p><strong>A²B 同步音频总线与异构域 SRO 的架构分野</strong>：现代座舱往往在顶棚、遮阳板与多座头枕内分布十余只数字麦克风。若整车采用 <strong>A²B（Automotive Audio Bus，车载音频总线）</strong> 单主多从菊花链架构，主节点通过单根非屏蔽双绞线同时下发主位时钟、帧同步与供电，所有远端从节点锁相环严格锁定在同一主时钟源上，天然实现<strong>零相对 SRO</strong> 与低于 $50\ \mu\mathrm{s}$ 的确定性传输延迟，补偿各节点固定传输延迟后，跨座位波束与多声道媒体 AEC 可按共同时间轴比较通道相位。</p>
 <p>反之，一旦引入蓝牙免提手机、USB 外挂记录仪或跨独立晶振电子控制单元（ECU）的以太网流，不同时钟域之间就会出现数十至上百 ppm 的相对 SRO 与包抖动：设快时钟采样率为 $f_s(1+\varepsilon)$、慢时钟为 $f_s$，在慢时钟时刻 $T = n/f_s$ 处同索引第 $n$ 点的精确物理时差为 $\Delta t = \varepsilon T/(1+\varepsilon)$（百 ppm 下常近似为 $\varepsilon T$）；若每次重对齐仍留有初始残差 $b$ 且频偏上界为 $\varepsilon_{\max}$，则维持总错位不超过 $B$ 的最坏周期必须严守 $T \le (B - b)(1+\varepsilon_{\max})/\varepsilon_{\max}$（例如 $B = 100\ \mu\mathrm{s}$、$b = 20\ \mu\mathrm{s}$、$\varepsilon_{\max} = 90\ \mathrm{ppm}$ 时，周期由无残差 $80\ \mathrm{ppm}$ 下的 $1.25\ \mathrm{s}$ 急缩至约 $0.89\ \mathrm{s}$）。此时若直接套用跨节点 MVDR 或固定多通道回声滤波器，数秒内的微秒级采样漂移便会令空间零陷与回声对消彻底失效（见章末 <a href="#e11-01">E11-01</a>、<a href="#e11-07">E11-07</a> 与 <a href="#e11-21">E11-21</a>），必须在选型首环插入硬件时间戳捕获与在线异步采样率转换（ASRC）。</p>
 </li>
 <li>
-<p><strong>头枕阵音区隔离度 LCR 与 ICC $\lt 15\ \mathrm{ms}$ 梳状滤波硬约束</strong>：多音区座舱要让主驾、副驾与后排乘客独立唤醒并发出指令而互不串扰，近年广泛采用嵌入座椅头枕两侧的近场双麦/四麦微分阵。设座位 $z$ 的增强输出通道在本区乘员以标准声压发声时的有效语音功率为 $P_{z\leftarrow z}$，在邻座 $q\ (q\ne z)$ 以同声压发声时漏入座位 $z$ 输出的串扰功率为 $P_{z\leftarrow q}$；同时考虑 ICC 模式下，后排乘客双耳同时接收到前排说话人的车厢空气直达声，以及经麦克风拾音、DSP 增强与后排扬声器辐射的扩声信号（记扩声相对直达声的附加延迟为 $\Delta_{\mathrm{Rx}} > 0$；在满足闭环声反馈稳定的常规 ICC 环路增益配置下，到达人耳处的相对声压幅度比满足 $0 \lt  g \lt  1$）。提取空气直达声的公共传播时延相位后，本区与串扰功率比（Local-to-Crosstalk Ratio，LCR）及人耳处双径叠加的归一化功率传递函数 $|H_{\mathrm{ICC}}(f)|^2$ 分别为：</p>
+<p><strong>头枕阵音区隔离度 LCR 与 ICC $\lt 15\ \mathrm{ms}$ 梳状滤波硬约束</strong>：多音区座舱要让主驾、副驾与后排乘客独立唤醒并发出指令而互不串扰，近年广泛采用嵌入座椅头枕两侧的近场双麦/四麦微分阵。设座位 $z$ 的增强输出通道在本区乘员以标准声压发声时的有效语音功率为 $P_{z\leftarrow z}$，在邻座 $q\ (q\ne z)$ 以同声压发声时漏入座位 $z$ 输出的串扰功率为 $P_{z\leftarrow q}$；同时考虑 ICC 模式下，后排乘客双耳同时接收到前排说话人的车厢空气直达声，以及经麦克风拾音、DSP 增强与后排扬声器辐射的扩声信号（记扩声相对直达声的附加延迟为 $\Delta_{\mathrm{Rx}} > 0$；本双径例额外假设到达人耳处的相对声压幅度比为 $0\lt g\lt 1$；闭环稳定本身不能推出该不等式）。提取空气直达声的公共传播时延相位后，本区与串扰功率比（Local-to-Crosstalk Ratio，LCR）及人耳处双径叠加的归一化功率传递函数 $|H_{\mathrm{ICC}}(f)|^2$ 分别为：</p>
 </li>
 </ul>
 <p>$$
@@ -849,7 +849,7 @@ f_m &= \frac{2m + 1}{2\Delta_{\mathrm{Rx}}},
 $$</p>
 <p>式(11-2)从物理机理上拆开了座舱选型的三重硬边界。先看第一行的音区隔离度 $\mathrm{LCR}_{z,q}$：头枕距本区嘴部仅约 $15\text{～}25\ \mathrm{cm}$，而距邻座嘴部约 $70\text{～}100\ \mathrm{cm}$ 且有人头声影遮挡，单靠近场球面衰减与双麦延迟求和即可获得约 $10\text{～}15\ \mathrm{dB}$ 的原始声学隔离；若进一步利用 A²B 同步总线引入邻座头枕参考信号做跨区干扰抵消（注意 $4\ \mathrm{cm}$ 窄间距单头枕强拉零陷容易造成白噪声增益严重恶化），并配合本区/邻区功率比双讲冻结保护以防止主驾说话被反向自相消，就能在保持高稳健性的同时将系统级 $\mathrm{LCR}_{z,q}$ 推高至 $25\text{～}36\ \mathrm{dB}$ 以上（完整选型对比见章末 <a href="#e11-21">E11-21</a>）。</p>
 <p>再看后两式的双径干涉机理：当余弦项 $\cos(2\pi f\Delta_{\mathrm{Rx}})=-1$ 时，直达声与扩声在频域每隔 $\Delta f = 1/\Delta_{\mathrm{Rx}}$ 发生一次相消干涉，形成密集的梳状滤波凹陷序列 $f_m$。若在 ICC 通路照搬帧长 $32\ \mathrm{ms}$、帧移 $16\ \mathrm{ms}$ 的常规 STFT 增强或带数十毫秒前瞻的神经分离网络，仅算法缓冲就使 $\Delta_{\mathrm{Rx}} \ge 22\text{～}25\ \mathrm{ms}$，在 $300\text{～}3400\ \mathrm{Hz}$ 核心语音频带内每隔约 $40\text{～}45\ \mathrm{Hz}$ 就挖出一个深达十余分贝的凹谷（多达近 70 处凹陷），产生刺耳的空桶金属音并破坏哈斯优先效应（Haas effect）的前方声像融合。</p>
-<p>因此 <strong>ITU-T P.1150 强制规定座舱扩声附加延迟 $\Delta_{\mathrm{Rx}} \lt  15\ \mathrm{ms}$</strong>（量产工程常严控在 $4\text{～}10\ \mathrm{ms}$），将候选算法严格锁定在时域短抽头 FIR 或超低延迟子带架构之内，一切长窗与前瞻模块均被硬约束直接排除。同时，后排扬声器声波还会经车厢空气路径重新耦合回前排拾音麦构成声学闭环：严格的<strong>巴克豪森（Barkhausen）自激振荡判据</strong>要求闭环幅值 $\ge 0\ \mathrm{dB}$ <strong>且</strong>闭环相位恰好满足 $0^\circ \bmod 360^\circ$；由于包含电子处理链路与车厢回传声程在内的 ICC 闭环总延迟约 $15\text{～}16\ \mathrm{ms}$，使相位每隔约 $62\text{～}67\ \mathrm{Hz}$ 便翻转一周，在语音频带内密集命中数十个零相位点，因此工程上必须对全频带幅值裕度施压，预留至少 $\mathrm{GM}_{\min}\ge 6\ \mathrm{dB}$ 的啸叫增益稳定裕度并据此反推电子扩声增益上限（定量核算见章末 <a href="#e11-22">E11-22</a>）。</p>
+<p>因此 <strong>ITU-T P.1150 强制规定座舱扩声附加延迟 $\Delta_{\mathrm{Rx}} \lt  15\ \mathrm{ms}$</strong>（量产工程常严控在 $4\text{～}10\ \mathrm{ms}$），将候选算法严格锁定在时域短抽头 FIR 或超低延迟子带架构之内，一切长窗与前瞻模块均被硬约束直接排除。同时，后排扬声器声波还会经车厢空气路径重新耦合回前排拾音麦构成声学闭环：严格的<strong>巴克豪森（Barkhausen）自激振荡判据</strong>要求闭环幅值 $\ge 0\ \mathrm{dB}$ <strong>且</strong>闭环相位恰好满足 $0^\circ \bmod 360^\circ$；由于包含电子处理链路与车厢回传声程在内的 ICC 闭环总延迟约 $15\text{～}16\ \mathrm{ms}$，使相位每隔约 $62\text{～}67\ \mathrm{Hz}$ 便翻转一周，在语音频带内密集命中数十个零相位点，因此工程上必须对全频带幅值裕度施压，按本题设计预算预留 $\mathrm{GM}_{\min}\ge 6\ \mathrm{dB}$ 的啸叫增益稳定裕度（不等于 P.1150 附录D中另一测点的残余回声/背景差值条件）并据此反推电子扩声增益上限（定量核算见章末 <a href="#e11-22">E11-22</a>）。</p>
 <span id="sec-6" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-11-5">11.5 把候选方案写成可验证的规格</h2>
 <h3 id="sec-11-5-1">11.5.1 先写规格和证据口径</h3>
 <p>选型讨论不能停留在口头形容词上；要把候选方案送上同一张评审桌，规格书必须逐项锁定以下九类信息：</p>
@@ -910,8 +910,8 @@ $$</p>
 </ul>
 <p>选择开源项目时应把规范仓库、固定提交或发布、许可证、支持平台、输入输出接口约定、维护状态和最小回归测试一起写入方案（参见 §10.8.1）。</p>
 <p>教学基线通过单元测试，证明的是数学公式约定与退化边界条件吻合预期，并不替代目标设备上的工程验收；迈向工业量产时，具体开源工具链、外围重采样/读写/客观打分库的接口语义与嵌入式运行时选型详见<a href="10_engineering-practice.html#sec-10-5">第 10 章 §10.5</a>、<a href="10_engineering-practice.html#sec-10-8">§10.8</a> 及<a href="research/03_industrial_deployment.html">工业部署研究</a>，本章聚焦于如何将这些条件写成可证伪的验收规则与统计门禁。</p>
-<p>面向商用办公市场的免提全向麦与视频会议一体机，还须在立项规格书中直接对齐企业会议硬件认证红线（以 <strong>Microsoft Teams Rooms</strong> 等企业会议认证规范为例；<strong>Zoom Rooms</strong> 同样严考全双工 AEC、降噪与清晰度，具体数值条款须对照对应版本认证手册）。与同车厢实时扩声的车载 ICC（受制于 $\Delta_{\mathrm{Rx}}\lt 15\ \mathrm{ms}$ 与本地开环啸叫裕度）不同，远程会议终端通过网络与远端教室隔离，允许上行 DSP 链路拥有 $20\text{～}40\ \mathrm{ms}$ 的处理预算，认证焦点随之转向全双工回声压制与真实扩散噪声场下的语音质量：一方面，单讲状态须考核符合 ITU-T G.122 的<strong>加权终端耦合损耗（weighted Terminal Coupling Loss，$\mathrm{TCL}_w$）</strong>，Microsoft Teams Rooms 工程准入通常要求标称播放音量下 $\mathrm{TCL}_w \ge 55\ \mathrm{dB}$、最大音量下仍守住 $\mathrm{TCL}_w \ge 46\ \mathrm{dB}$，并配合 ITU-T P.340 双讲分级杜绝靠硬门控静音刷高单讲指标（见<a href="10_engineering-practice.html#e10-28">第 10 章 E10-28</a>）。</p>
-<p>另一方面，为了检验波束形成器在真实声场而非单点人工白噪声下的表现，须注意区分两代背景噪声复现标准：较早期的 <strong>ETSI ES 202 396-1</strong> 采用 4.1 声道扬声器系统并在人工头躯干模拟器（HATS）双耳处作单点均衡，适用于单麦手机与手持终端评测；而现代多麦会议认证实验室普遍采用 <strong>ETSI TS 103 224</strong> 声场复现规程，在消声或半消声室四周布置 8 扬声器（或免提 4 扬声器）环并在多麦克风空间网格上作联合均衡校准，从而准确重现咖啡厅、开放办公区等环境的阵元间空间相干矩阵。随后按 <strong>ETSI TS 103 106（<code>3QUEST</code>）</strong> 标准同步输出含噪条件下的语音分量质量（<code>S-MOS</code>）、背景噪声抑制度（<code>N-MOS</code>）与综合质量（<code>G-MOS</code>）三项得分。在最终准入评审中，这组多维认证门槛同样服从下文的三态判据——只要最大音量 $\mathrm{TCL}_w$ 等任一指标的实测置信或波动区间横跨红线，整机状态就只能定为“证据不足”而不得签发认证通过（算例见章末 <a href="#e11-22">E11-22</a>）。</p>
+<p>企业会议终端验收须先固定规范版本、设备类别、Standard/Premium 等级及声学测点。公开 <a href="https://download.microsoft.com/download/1/2/5/125f0389-d733-4951-9117-d36589f3c86c/V5%20Release.zip">Microsoft Teams Audio Specification v5.0</a>对共享免提终端分别规定 TCL $>50/>56\ \mathrm{dB}$，相应 3QUEST 语音/噪声最低分分别为 $3.5/2.9$ 与 $3.8/3.2$，均须连同该版本的信号、音量和测量条件使用，不能统写成 S/N/G 均须 $3.8$。规范的发送/接收端延迟测点也不能用纯 DSP 处理耗时代替。</p>
+<p>另一方面，为了检验波束形成器在真实声场而非单点人工白噪声下的表现，须注意区分两代背景噪声复现标准：较早期的 <strong>ETSI ES 202 396-1</strong> 采用 4.1 声道扬声器系统并在人工头躯干模拟器（HATS）双耳处作单点均衡，适用于单麦手机与手持终端评测；而现代多麦会议认证实验室普遍采用 <strong>ETSI TS 103 224</strong> 声场复现规程，在消声或半消声室四周布置 8 扬声器（或免提 4 扬声器）环并在多麦克风空间网格上作联合均衡校准，从而准确重现咖啡厅、开放办公区等环境的阵元间空间相干矩阵。随后按 <strong>ETSI TS 103 106（<code>3QUEST</code>）</strong> 标准同步输出含噪条件下的语音分量质量（<code>S-MOS</code>）、背景噪声抑制度（<code>N-MOS</code>）与综合质量（<code>G-MOS</code>）三项得分。在产品准入评审中，可按下文三态规则筛查预先规定的预算与证据区间；若任一指标的区间横跨预算门限，该项判为“证据不足”。章末 <a href="#e11-22">E11-22</a>用构造区间演示这一教学规则，具体认证仍须依据适用规范与授权流程。</p>
 <p><strong>主流商业生态语音认证要点（CarPlay / Android Auto / AVS）。</strong> 除企业会议系统外，车载互联与消费级远场语音终端接入主流商业生态时，同样须在立项规格书中把各生态的架构级测试维度前置为硬约束（具体数值门限与测试用例以对应版本官方认证文档为准）：</p>
 <ul>
 <li><strong>Apple CarPlay</strong>：以 §11.4 所述的车载免提通话基础标准 <strong>ITU-T P.1100 / P.1110</strong>（及超宽带扩展）为底座，并叠加 <strong>Apple Accessory Interface Specification（AIS）</strong>，同步考核宽带/超宽带免提通话与 Siri 语音唤醒打断（barge-in）两类工作流——严格限制发送与接收频响包络（mask）、空闲底噪水平、端到端往返延迟上限，以及双讲衰减与回声损耗门限，同时要求在不发生削波失真、不破坏后端语音识别音频波形的前提下完成播放打断拾音。</li>
@@ -1022,7 +1022,8 @@ $$</p>
       \frac{\hat{p} + z^2/(2n) + s_z}{1 + z^2/n}.
     \end{aligned}\tag{11-5}
     $$</p>
-<p>我们先做两个边界检验：当 $k = 0$（$\hat{p} = 0$）时，式(11-5)分子化简为 $z^2/(2n) + z^2/(2n) = z^2/n$，给出严格为正的合理上界 $z^2/(n + z^2)$（例如 $n = 200$、双侧 $z = 1.96$ 时为 $3.8416 / 203.8416 \approx 1.88\%$，与第 4 章 §4.8.1（及 E04-06 / E04-08）的 $[0, 1.9\%]$ 吻合）；当 $k = n$（$\hat{p} = 1$）时，上界精确收敛到 $1$。再算一个工程锚点：设某候选跑了 $n = 100$ 次独立压力会话，出现 $k = 1$ 次超时（经验违约率 $\hat{p} = 1\%$ 恰好压在 $p_0 = 1\%$ 门槛上），取单侧 $95\%$ 分位数 $z = 1.6449$（$z^2 \approx 2.7055$）代入式(11-5)，得 $z^2/(2n) \approx 0.01353$、半宽 $s_z \approx 0.02123$，分子合计约 $0.04476$，除以分母 $1.02706$ 得 $p_{\mathrm{U,Wilson}} \approx 4.36\%$。作为保守精确对照，<strong>Clopper–Pearson 单侧精确二项上界</strong> $p_{\mathrm{U,CP}}$ 由下式解出（当 $k = 0$ 时退化为式(11-4)）：</p>
+<p>Wilson 的覆盖率是近似名义值：例如 $n=1,p=0.75$ 时，单侧名义95%的 Wilson 上界实际仅以 $0.75$ 的概率覆盖。严格有限样本联合保证须采用本身有效的单场景界，例如 Clopper–Pearson 或 E11-11 已用的精确二项尾检验；Bonferroni 不能修复单个近似区间的欠覆盖。</p>
+<p>我们先做两个边界检验：当 $k = 0$（$\hat{p} = 0$）时，式(11-5)分子化简为 $z^2/(2n) + z^2/(2n) = z^2/n$，给出严格为正的合理上界 $z^2/(n + z^2)$（例如 $n = 200$、双侧 $z = 1.96$ 时为 $3.8416 / 203.8416 \approx 1.88\%$，与第 4 章 §4.8.1（及 E04-06 / E04-08）的 $[0, 1.9\%]$ 吻合）；当 $k = n$（$\hat{p} = 1$）时，上界精确收敛到 $1$。再算一个工程锚点：设某候选跑了 $n = 100$ 次独立压力会话，出现 $k = 1$ 次超时（经验违约率 $\hat{p} = 1\%$ 恰好压在 $p_0 = 1\%$ 门槛上），取单侧 $95\%$ 分位数 $z = 1.6449$（$z^2 \approx 2.7055$）代入式(11-5)，得 $z^2/(2n) \approx 0.01353$、半宽 $s_z \approx 0.02123$，分子合计约 $0.04476$，除以分母 $1.02706$ 得 $p_{\mathrm{U,Wilson}} \approx 4.36\%$。作为保守精确对照，<strong>Clopper–Pearson 单侧精确二项上界</strong> $p_{\mathrm{U,CP}}$ 在 $0\le k\lt n$ 时由下式解出（$k=0$ 时退化为式(11-4)）；当 $k=n$，即每次都观察到违约事件时，上界为 $1$：</p>
 <p>$$
     \begin{aligned}
     \sum_{i=0}^{k}\binom{n}{i}p_{\mathrm{U,CP}}^i(1 - p_{\mathrm{U,CP}})^{n-i}
@@ -1104,7 +1105,7 @@ $$</p>
 <ol>
 <li><strong>有界量表缺失样本的代数包络</strong>：若有异常样本未能产出分数，只有当评价量表本身具有严格物理上下界 $[a, b]$（如 1～5 分主观 MOS）时，才能将缺失的 $N - m$ 项分别代入 $a$ 与 $b$ 算出完整集均值的确定性可能区间 $\bar z_{\min} = [S + (N - m)a]/N$、$\bar z_{\max} = [S + (N - m)b]/N$（例如 10 项中 8 项成功且均分为 $3.8$，总和 $S = 30.4$，在 $[1, 5]$ 量表下完整集均值包络为 $[3.24, 4.04]$，恰好覆盖完整集均分 $3.6$ 的对手而无法判定胜负，且该包络是确定性极值界而非置信区间）。</li>
 <li><strong>多场景联合覆盖的 Bonferroni 分配</strong>：当规格书要求 $J$ 个独立场景<strong>同时</strong>满足各自风险上界且联合置信度不低于 $1-\alpha$ 时，单场景各自取 $95\%$ 会导致联合覆盖率退化，须用 Bonferroni 并集上界预先将单侧尾概率拆分为 $\alpha_j = \alpha / J$（见 <a href="#e11-11">E11-11</a>）。</li>
-<li><strong>开发集封板与盲测集单次出证</strong>：所有超参数调节与模块去留必须在开发集上封板锁定，随后在盲测集上只跑一次出最终验收证据——反复盯着测试集分数调参，会使式(11-4)和式(11-5)承诺的置信覆盖率彻底失效。</li>
+<li><strong>开发集封板与盲测集单次出证</strong>：所有超参数调节与模块去留必须在开发集上封板锁定，随后在盲测集上只跑一次出最终验收证据——反复盯着测试集分数调参，会使式(11-4)的精确覆盖与式(11-5)的近似名义覆盖彻底失效。</li>
 </ol>
 <h3 id="sec-11-5-6">11.5.6 部署场景组成未知时怎样比较</h3>
 <p>式(11-8)假定产品上线后的真实场景占比 $\vec\omega = (\omega_1, \dots, \omega_J)^\top$ 已经精确知道。但在新机型首发前，工程团队往往只能给出某个场景占比的合理波动范围 $\mathcal{W}$（例如预估单人安静指令占比 $q \in [q_-, q_+] = [0.25, 0.75]$，却无法确切保证它恰好等于中点 $0.50$），或者要求系统在<strong>每一个场景</strong>下都守住可接受的误差上界。此时切忌把区间中点硬当成已知概率代入式(11-8)，而应明确区分<strong>限定组成区间的最坏风险</strong> $R(x)$ 与<strong>全单纯形逐场景最坏风险（minimax 准则）</strong> $S(x)$：</p>
@@ -1122,7 +1123,7 @@ $$</p>
 <p>自动化评测流水线中，“识别结果为空词表”与“系统崩溃未产出结果文件”在物理和统计上是两类性质完全不同的事件：前者属于合法的空假设输出——系统正常跑完但把所有语音都误判成了静音，参考中的 $W$ 个词全部计为删除错误，编辑距离明确等于 $W$；后者则属于未完成交付的系统故障。同样地，输出 JSON/文本格式损毁、参考文件读取失败或评分脚本抛出运行时异常，也都尚未产生合法的编辑错误计数，不得在异常捕获分支里随手填一个 <code>errors = 0</code>（那会把崩溃的会话误计为零错）。</p>
 <p>规范的评分包装器（见章末 <a href="#e11-19">E11-19</a>）首先校验测试计划本身的合法性（如会话 ID 唯一且参考词表非空），随后逐场独立记录事件状态与数值：若仅对成功评分的子集汇总 WER，分子与分母都只能累加该成功子集内的错误数与参考词数，并必须并列公布<strong>会话评分覆盖率</strong>与<strong>参考词评分覆盖率</strong>（因为崩溃长会话包含的词数往往远多于短会话，两个覆盖率并不相等）。更要注意，WER 因包含插入错误而没有固定的 $100\%$ 上界，无法像 §11.5.5 的 1～5 分有界量表那样靠代数极值补出完整集均值上下界；只要协议规定“全部计划会话可评分才具备完整榜单排名资格”，缺漏任何一场都必须如实标为未获完整排名资格。</p>
 <h3 id="sec-11-5-8">11.5.8 同一物理候选的噪声收益与硬约束</h3>
-<p>最后回到阵列信号处理本身，把物理层指标与整机验收串成闭环。横向对比一组波束形成候选时，必须先把测试环境的真实噪声空间协方差矩阵、参考阵元目标定义以及允许的安装/定位角度偏差固定下来，同时核查输出残余噪声功率、存在方向偏差时的目标复响应失真以及白噪声增益 WNG。未加对角加载的标准 MVDR 往往能在纸面上把特定方向的干扰压到最低，却伴随巨大的复权重范数（WNG 跌为负分贝，传感器自噪声成倍放大），且目标方向稍偏 $5^\circ$ 就会发生严重的目标自相消。</p>
+<p>最后回到阵列信号处理本身，把物理层指标与整机验收串成闭环。横向对比一组波束形成候选时，必须先把测试环境的真实噪声空间协方差矩阵、参考阵元目标定义以及允许的安装/定位角度偏差固定下来，同时核查输出残余噪声功率、存在方向偏差时的目标复响应失真以及白噪声增益 WNG。未加对角加载的标准 MVDR 往往能在纸面上把特定方向的干扰压到最低，但在高 SNR、非共线导向失配下可能伴随较大复权重范数与目标自相消；E11-20 的 $5^\circ$ 结果属于给定协方差与几何控制，不是普遍失效门限。</p>
 <p>同时要分清不同空间指标背后的物理噪声模型：WNG 度量的是各通道独立同方差自噪声的抑制比，标准球面各向同性 DI 度量的是三维均匀弥散声场的抑制比，而真实考场的混合噪声可能是“一路强定向干扰加微弱自噪声”——三者对应的空间协方差矩阵各不相同，不可拿标准弥散场算出的 DI 去充当当前定向干扰场景下的实际输出噪声（见章末 <a href="#e11-20">E11-20</a> 及图 74）。即便某个波束候选顺利通过了全部声学硬条件并在同噪声模型下取得了最低总误差，只要它还没有完成宽带因果滤波实现与目标设备上的端到端延迟实测，按照式(11-3)的三态准则，整机规格状态依然只能停留在“证据不足”，不能越过硬件验证直接宣布定型。</p>
 <h3 id="sec-11-5-9">11.5.9 从实验室到外场的分层验收与 OTA 回归门禁</h3>
 <p>把前面的数学工具落到研发与量产节奏里，建议按“由可控到开放、由单模块到整机回归”的四层门禁组织测试协议，避免用低成本的仿真或单一安静室录音替代真实交付证据：</p>
@@ -1151,7 +1152,7 @@ $$</p>
 <tr>
 <td>3. 外场分层实测矩阵</td>
 <td>覆盖<code>距离 × 方位 × SNR × RT60 × 双讲 × 播放档位 × 温湿度/老化</code>正交工况，冻结真实场景权重 $\vec\omega$</td>
-<td>按式(11-4)/(11-5)与 Bonferroni 核算多场景联合覆盖，并列报配对符号检验与覆盖率</td>
+<td>严格联合覆盖采用精确二项界或有效尾检验与 Bonferroni；式(11-5)只作近似名义区间，并列报配对符号检验与覆盖率</td>
 <td>与基线同输入配对比较；仅在开发集封板后跑一次冻结盲测集定型</td>
 </tr>
 <tr>
@@ -1930,7 +1931,7 @@ $$</p>
 <li><strong>候选 2a（主驾头枕双麦 DSB）</strong>：阵元置于主驾脑后 $(-0.35,-0.20)$ 与 $(-0.35,-0.24)\ \mathrm{m}$（间距 $4\ \mathrm{cm}$），距主驾精确为 $[0.20,0.24]\ \mathrm{m}$（幅度比 $5/6$，$\|\vec a_{\mathrm{D}}\|_2^2=61/36$，$\|\vec w\|_2^2=36/61\approx 0.590164$，白噪声增益 $10\log_{10}(61/36)\approx$ <strong>$+2.290273\ \mathrm{dB}$</strong>），距副驾精确为 $[\sqrt{0.53},0.74]\ \mathrm{m}$（约 $[0.728011,0.74]\ \mathrm{m}$）。主驾输出功率为 $1.000000$，副驾串扰幅度 $|y_{\mathrm{P,pri}}|\approx 0.285489$（功率 $0.081504$），单靠球面衰减与同相求和仅得 $\mathrm{LCR}_{1,2}=$ <strong>$10.888202\ \mathrm{dB}$</strong>（低于 $25\ \mathrm{dB}$），<strong>失败</strong>。</li>
 <li><strong>候选 2b（主驾头枕双麦零陷 LCMV）</strong>：以 $\mathbf C=[\vec a_{\mathrm{D}},\vec a_{\mathrm{P}}]$ 强置副驾方向零陷；即便计入副驾第 2 麦 $5\%$ 座舱散射扰动（$h_{\mathrm{P},1}\to 1.05\,h_{\mathrm{P},1}$），串扰功率仍压至 $7.810873\times 10^{-4}$、隔离度达 <strong>$31.073004\ \mathrm{dB}$</strong>（$\ge 25\ \mathrm{dB}$）。然而在 $4\ \mathrm{cm}$ 小孔径上同时分离两个同侧近场点源，迫使权重范数暴涨至 $\|\vec w\|_2^2\approx 8.416997$，白噪声增益跌至 <strong>$-9.251572\ \mathrm{dB}$</strong>（低于 $-3.0\ \mathrm{dB}$），违反自噪声硬约束<strong>失败</strong>。</li>
 </ul>
-<p><strong>第三步：A²B 跨音区参考抵消与双讲自相消保护核验。</strong> 利用 A²B 总线零时延引入副驾头枕第 0 麦 $(+0.35,-0.20)\ \mathrm{m}$ 作为跨区参考 $x_{\mathrm{ref}}$（对副驾 $|h_{\mathrm{P,ref}}|=1.0$，对主驾反向泄漏 $|h_{\mathrm{D,ref}}|=\sqrt{4/53}\approx 0.274721$），构造 $y_1=y_{\mathrm{DSB},1}-g_{12}x_{\mathrm{ref}}$：</p>
+<p><strong>第三步：A²B 跨音区参考抵消与双讲自相消保护核验。</strong> 在已标定并补齐固定节点延迟后，利用 A²B 总线引入副驾头枕第 0 麦 $(+0.35,-0.20)\ \mathrm{m}$ 作为跨区参考 $x_{\mathrm{ref}}$（对副驾 $|h_{\mathrm{P,ref}}|=1.0$，对主驾反向泄漏 $|h_{\mathrm{D,ref}}|=\sqrt{4/53}\approx 0.274721$），构造 $y_1=y_{\mathrm{DSB},1}-g_{12}x_{\mathrm{ref}}$：</p>
 <ul>
 <li><strong>候选 2c（未加双讲保护的在线自适应抵消）</strong>：若在乘员开口时仍不冻结标量维纳权重 $g_{12}$，等功率双讲下主驾目标信号被反向泄漏扣减，隔离度跌至 <strong>$11.240916\ \mathrm{dB}$</strong> 且自相消损失达 <strong>$1.312311\ \mathrm{dB}$</strong>（超出 $1.0\ \mathrm{dB}$ 上限，且主驾单独说话 $P_{\mathrm{P}}=0$ 时更会把主驾自身语音衰减 <strong>$37.670015\ \mathrm{dB}$</strong>），违反双讲保护红线<strong>失败</strong>。</li>
 <li><strong>候选 2d（带音区功率比冻结保护的标定跨区抵消）</strong>：仅在副驾单讲标定段锁定系数 $g_{12,\mathrm{cal}}$ 为 $0.95\,y_{\mathrm{P,pri}}/h_{\mathrm{P,ref}}$（模值 $|g_{12,\mathrm{cal}}|\approx 0.271215$，预留 $5\%$ 散射余量），一旦主驾音区与副驾音区功率比越阈即冻结系数。此时三通道等效权重范数平方为 $\|\vec w\|_2^2 = 36/61+|g_{12,\mathrm{cal}}|^2\approx 0.663721$，而因跨区反向泄漏使主驾有效输出功率变为 $P_{D,\mathrm{out}} \approx 0.861713 \ne 1$（不再满足单位无失真约束，故不能套用简化式 $-10\log_{10}\|\vec w\|_2^2 \approx +1.7801\ \mathrm{dB}$），须按广义白噪声增益定义计算：</li>
@@ -1987,9 +1988,9 @@ $$</p>
 </table></div>
 <p>表中最后一行的隔离度达 <strong>$36.262429\ \mathrm{dB}$</strong>、白噪声增益保持 <strong>$+1.133769\ \mathrm{dB}$</strong>、双讲目标损失仅 <strong>$0.646372\ \mathrm{dB}$</strong>（即使按任意最坏反相界核算亦仅为 $0.672551\ \mathrm{dB}\le 1.0\ \mathrm{dB}$），成为唯一满足全部四项硬约束的入选架构。</p>
 <p><a id="e11-22"></a></p>
-<h3 id="sec-u-7593e4a86b">E11-22：车载 ICC 强化延迟、啸叫稳定裕度与认证规格</h3>
+<h3 id="sec-u-09e5b0bade">E11-22：车载 ICC 强化延迟、啸叫稳定裕度与产品预算</h3>
 <p>在大型三排座舱的车载通话增强（ICC）设计中，前排说话人至后排乘客双耳的空气直达传播时延为 $t_{\mathrm{dir}}=5.0\ \mathrm{ms}$，后排顶棚扬声器至人耳时延为 $t_{\mathrm{spk\to ear}}=1.0\ \mathrm{ms}$，到达人耳处的扩声与直达声幅度比为 $g=0.8$，核心语音频带取 $[300,3400]\ \mathrm{Hz}$；后排扬声器耦合回前排拾音麦的最坏闭环声反馈增益为 $20\log_{10}|\beta_{\mathrm{fb}}|=-18.0\ \mathrm{dB}$。</p>
-<p>试按 ITU-T P.1150（$\Delta_{\mathrm{Rx}}\lt 15\ \mathrm{ms}$）与 §11.4 式(11-2)：（1）对比短抽头时域 FIR 链路 A（$t_{\mathrm{DSP,A}}=12.0\ \mathrm{ms}$）与带前瞻神经增强链路 B（$t_{\mathrm{DSP,B}}=26.0\ \mathrm{ms}$）在语音频带内的精确梳状凹陷个数及峰谷纹波（题设中的 $t_{\mathrm{DSP}}$ 已合并前排口—麦空气传播延迟 $t_{\mathrm{mouth\to mic}}$ 及 ADC/DAC/功放链路延迟）；（2）导出保证 $\mathrm{GM}_{\min}=6.0\ \mathrm{dB}$ 啸叫稳定裕度的最大安全扩声增益；（3）对照一台企业会议免提终端的 <code>3QUEST</code> 与 <code>TCLw</code> 实测区间，给出式(11-3)三态认证结论。</p>
+<p>试按 ITU-T P.1150（$\Delta_{\mathrm{Rx}}\lt 15\ \mathrm{ms}$）与 §11.4 式(11-2)：（1）对比短抽头时域 FIR 链路 A（$t_{\mathrm{DSP,A}}=12.0\ \mathrm{ms}$）与带前瞻神经增强链路 B（$t_{\mathrm{DSP,B}}=26.0\ \mathrm{ms}$）在语音频带内的精确梳状凹陷个数及峰谷纹波（题设中的 $t_{\mathrm{DSP}}$ 已合并前排口—麦空气传播延迟 $t_{\mathrm{mouth\to mic}}$ 及 ADC/DAC/功放链路延迟）；（2）导出保证 $\mathrm{GM}_{\min}=6.0\ \mathrm{dB}$ 啸叫稳定裕度的最大安全扩声增益；（3）对照为企业会议免提终端构造的 <code>3QUEST</code> 与 <code>TCLw</code> 区间，按本题教学产品预算与式(11-3)给出三态准入结论。</p>
 <p><strong>参考答案</strong>：</p>
 <p><strong>第一步：附加强化延迟与 $[300,3400]\ \mathrm{Hz}$ 梳状凹陷精确计数。</strong> 记扩声总到达时延 $t_{\mathrm{arr}} = t_{\mathrm{DSP}}+t_{\mathrm{spk\to ear}}$（其中 $t_{\mathrm{DSP}}$ 已含前排约 $0.6\text{～}1.5\ \mathrm{ms}$ 的口—麦空气时延与编解码/功放耗时），则净附加延迟为 $\Delta_{\mathrm{Rx}}=t_{\mathrm{arr}}-t_{\mathrm{dir}}$，由式(11-2)知相消凹陷位于奇数倍半间隔 $f_m=(2m+1)/(2\Delta_{\mathrm{Rx}})$：</p>
 <ul>
@@ -2008,7 +2009,7 @@ G_{\mathrm{ICC,dB}}
 \end{aligned}\tag{11-23}
 $$</p>
 <p>代入 $20\log_{10}|\beta_{\mathrm{fb}}|=-18.0\ \mathrm{dB}$ 与工程最小增益裕度 $\mathrm{GM}_{\min}=6.0\ \mathrm{dB}$，由式(11-23)立即锁定最大安全扩声增益 $G_{\mathrm{ICC,\max}}=18.0-6.0$ 为 <strong>$12.0\ \mathrm{dB}$</strong>（线性幅度放大约 <strong>$3.981072$</strong> 倍）：若强开 $15.0\ \mathrm{dB}$ 则裕度缩水至 $3.0\ \mathrm{dB}$（尾音金属振铃判失败），推至 $18.0\ \mathrm{dB}$ 即触发 $\mathrm{LG}_{\mathrm{dB}}=0\ \mathrm{dB}$ 持续啸叫。</p>
-<p><strong>第三步：与远程会议终端认证规格的正交对照。</strong> 现有一台参评 Microsoft Teams Rooms 认证的桌面全向麦，实测上行 DSP 延迟为 $[28.0,32.0]\ \mathrm{ms}$（满足远程会议 $\le 40.0\ \mathrm{ms}$ 上限），在 ETSI TS 103 224 背景噪声场下的 <code>3QUEST</code> 三维分依次为 <code>S-MOS</code> $=4.1$、<code>N-MOS</code> $=4.3$、<code>G-MOS</code> $=4.0$（均高于 $3.8$ 下限），标称音量加权终端耦合损耗 $\mathrm{TCL}_w=58.0\ \mathrm{dB}\ge 55.0\ \mathrm{dB}$，唯独最大音量档受扬声器轻微非线性波动影响测得 $\mathrm{TCL}_w\in[44.5,47.0]\ \mathrm{dB}$（准入下限为 $46.0\ \mathrm{dB}$）。将下界约束 $x\ge L$ 统一翻转为最小化区间 $[-u,-\ell]\le -L$ 代入 §11.5.3 式(11-3)：前五项全部<strong>通过</strong>，但最大音量 $\mathrm{TCL}_w$ 区间横跨 $46.0\ \mathrm{dB}$ 红线，故整机认证结论严格判为<strong>证据不足</strong>（<code>undetermined</code>，复算源码见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch11/core/automotive_selection.py"><code>automotive_selection.py</code></a>）。</p>
+<p><strong>第三步：构造的产品预算区间核验。</strong> 本题自行规定 S/N/G 均至少 $3.8$、标称/最大音量 TCLw 至少 $55/46\ \mathrm{dB}$、上行 DSP 至多 $40\ \mathrm{ms}$；这些是教学输入，不是 Microsoft v5 认证条款。给定 S/N/G $4.1/4.3/4.0$、标称 TCLw $58$、最大音量 TCLw $[44.5,47.0]$、DSP $[28,32]$，其余五项通过，最大音量区间跨越本题门限，产品预算结论为 <code>undetermined</code>，不授予认证。</p>
 <span id="sec-15" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-11-7">11.7 后续阅读</h2>
 <p>如果工程任务从“提取增强语音流”转向“定位并量化机械设备、风洞或车体表面的噪声辐射源强”，请继续阅读<a href="12_acoustic-imaging.html">扩展专题Ⅰ：声学成像</a>，重点区分空间扫描功率图、反卷积源强反演、绝对声压级校准与频带积分量。</p>
 <p>如果系统由多台物理分离、通过无线受限带宽组网的麦克风节点协同完成语音增强，请继续阅读<a href="13_distributed-enhancement.html">扩展专题Ⅱ：分布式麦克风协同增强</a>，先核对第 5 章的参考通道定义与第 10 章的跨设备采样率同步前提（若所有麦克风已通过同步总线接入同一颗处理器，直接采用集中式多通道链路即可，无须引入分布式迭代传输协议）。</p>

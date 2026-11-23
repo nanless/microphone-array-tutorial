@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "script_sha256": "4bc6a6ce675292c51d538c0f7d3c6f9c8fe3a2de2d0d7945f48cb4baaa801e49",
+  "script_sha256": "bf9058d1c3d6ed15bab41ea092439170cd324011936645d577408106813a485a",
   "scope": "deterministic teaching counterexamples; no measured speech, room or hardware performance",
   "soft_update": {
     "power": [

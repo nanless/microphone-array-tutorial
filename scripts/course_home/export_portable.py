@@ -43,6 +43,7 @@ def portable(template, css, script):
         return f'href="{escape(path, quote=True)}"'
 
     template = re.sub(r'href="([^"]+)"', link, template)
+    template = re.sub(r' data-lang-peer="[^\"]+"', "", template)
     template = template.replace('src="../assets/readme/cases/', f'src="{PAGES}assets/readme/cases/')
     root_open = '<div class="course" id="course-home" tabindex="-1">'
     if not template.startswith(root_open) or not template.endswith("</div>\n"):

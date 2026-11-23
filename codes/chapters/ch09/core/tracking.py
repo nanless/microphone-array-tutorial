@@ -14,11 +14,12 @@ from codes.chapters.ch02.core.conventions import finite_real_array, finite_real_
 def wrap_angle(angle: float | np.ndarray) -> float | np.ndarray:
     """Map degrees to ``[-180, 180)``."""
 
-    # Reduce before adding 180 so large finite angles cannot overflow.
     value = finite_real_array(angle, "angle")
-    wrapped = (value % 360.0 + 180.0) % 360.0 - 180.0
-    # Addition at the 180-degree scale cannot resolve very small directions.
-    wrapped = np.where(np.abs(value) < 1e-12, value, wrapped)
+    # Signed remainder preserves every value already inside the principal
+    # interval. Adding 180 first can merge distinct adjacent float64 angles.
+    reduced = np.fmod(value, 360.0)
+    wrapped = np.where(reduced >= 180.0, reduced-360.0,
+                       np.where(reduced < -180.0, reduced+360.0, reduced))
     return float(wrapped) if wrapped.ndim == 0 else wrapped
 
 

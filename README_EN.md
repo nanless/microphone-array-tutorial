@@ -6,7 +6,7 @@ A complete, open bilingual (English & Chinese) technical monograph and runnable 
 
 **[Open English Interactive Course →](https://nanless.github.io/microphone-array-tutorial/site_en/)** · **[▶ 1-Click 4-Mic Browser Lab](https://nanless.github.io/microphone-array-tutorial/assets/readme/lab/array-lab.html?lang=en)** · **[🔊 15-Mic Real Room Demo](https://nanless.github.io/microphone-array-tutorial/site_en/#course-cases)** · **[English Monograph PDF](dist/microphone-array-tutorial-en.pdf)** · [Math Foundations (Ch 0)](chapters_en/00_math-foundations.md) · [Full Contents](chapters_en/00_overview.md)
 
-**16 chapters · 2 appendices · 360 runnable exercises · 87 numbered figures** · **283 companion WAV files** · **129 upstream open-source references**
+**16 chapters · 2 appendices · 360 runnable exercises · 87 numbered figures** · **283 companion WAV files** · **129 upstream Git project source entries**
 
 <picture>
   <source media="(prefers-reduced-motion: reduce)" srcset="assets/readme/course-cover-still-en.svg">
@@ -24,7 +24,7 @@ A single microphone collapses target speech, competing talkers, room reflections
 | **DOA Localization** | Where is the talker, and why do reflections create false peaks? | Inter-mic time delays & subspace orthogonality: GCC-PHAT, SRP-PHAT, MUSIC, ESPRIT | Azimuth/elevation or 3D coordinates · [Chapter 4](chapters_en/04_doa-estimation.md) |
 | **Beamforming** | How do we preserve target speech distortionlessly while suppressing side noise? | Steering-vector constraints & interference covariance inversion: DSB, Superdirective, MVDR, LCMV, GSC, MWF | Enhanced mono or binaural audio · [Chapter 5](chapters_en/05_beamforming.md) |
 | **Acoustic Echo Cancellation (AEC)** | How do we remove the device's own loudspeaker playback during full-duplex calls? | Synchronized playback loopback & partitioned frequency-domain adaptation: NLMS, PBFDAF, APA, FDKF, DTD | Echo-free near-end speech · [Chapter 6](chapters_en/06_aec.md) |
-| **Blind Dereverberation (WPE)** | How do we strip late room reflections without a clean reference signal? | Multi-channel delayed linear prediction with guard interval $\Delta$: offline/online WPE, MINT | Dereverberated speech · [Chapter 7](chapters_en/07_wpe-dereverberation.md) |
+| **Blind Dereverberation (WPE)** | How do we strip late room reflections without a clean reference signal? | Multi-channel delayed linear prediction with guard interval $\Delta$: offline/online WPE; MINT separately uses known multichannel paths for inverse filtering | Dereverberated speech · [Chapter 7](chapters_en/07_wpe-dereverberation.md) |
 | **Speech Separation** | How do we unmix overlapping talkers (the cocktail party problem)? | Cross-frequency source priors, activity guidance & masks: IVA, ILRMA, GSS, PIT, streaming CSS | Separated speaker streams · [Chapter 8](chapters_en/08_speech-separation.md) |
 | **Source Tracking** | How do we keep adaptive beams locked when talkers move or pause? | Bayesian state-space filtering & data association: Kalman, Particle Filter, IMM, track lifecycle | Smooth angle trajectories & uncertainty · [Chapter 9](chapters_en/09_source-tracking.md) |
 
@@ -41,7 +41,7 @@ A single microphone collapses target speech, competing talkers, room reflections
 
 ## Listen First: Two Zero-Install Browser Experiments
 
-1. **[15-Mic Real Room Localization & MVDR Comparison](https://nanless.github.io/microphone-array-tutorial/site_en/#course-cases)**: Built on real multichannel room recordings from the LOCATA benchmark. Toggle between speakers A and B to inspect SRP-PHAT spatial spectra (35° estimate vs. 34.4° optical ground truth) and A/B-compare the single mic, 15-mic delay-and-sum, and MVDR with postfiltering (**12.9 dB** extra interferer suppression with **1.5 dB** target loss).
+1. **[15-Mic Real Room Localization & MVDR Comparison](https://nanless.github.io/microphone-array-tutorial/site_en/#course-cases)**: Built on real multichannel room recordings from the LOCATA benchmark. Toggle between speakers A and B to inspect SRP-PHAT spatial spectra (35° estimate vs. 34.4° optical ground truth) and A/B-compare the single mic, 15-mic delay-and-sum, and MVDR with postfiltering (300–3400 Hz total recorded energy **12.9 dB** below Delay-and-Sum in the B-only scoring segment and **1.5 dB** below it in the A-only segment).
 2. **[Which Side Should Four Mics Listen To? Interactive Browser Lab (EN/中文)](https://nanless.github.io/microphone-array-tutorial/assets/readme/lab/array-lab.html?lang=en)** (offline guide in [`assets/readme/lab/`](assets/readme/lab/README_EN.md)): Steer live between source A and source B, then switch B to a **250 Hz low tone**—hear and measure why the exact same sample delays suppress high-frequency B below **0.01%** yet leave **82.1% power** at 250 Hz.
 
 ---
@@ -62,7 +62,7 @@ A single microphone collapses target speech, competing talkers, room reflections
 
 ---
 
-## Quick Local Setup & Verification (3 Minutes, CPU-Only)
+## Local Setup & Verification (CPU-Only)
 
 ```bash
 git clone https://github.com/nanless/microphone-array-tutorial.git

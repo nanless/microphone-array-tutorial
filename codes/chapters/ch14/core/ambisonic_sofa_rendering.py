@@ -249,7 +249,12 @@ def audit_sofa_simple_freefield_geometry(
     atol: float = 1e-6,
     strict: bool = False,
 ) -> dict:
-    """Audit AES69-2022 ``SimpleFreeFieldHRIR`` listener triad and binaural ``ReceiverPosition``.
+    """Check listener geometry and a declared symmetric-head integration policy.
+
+    AES69-2022 ReceiverPosition is listener-local; ListenerView/ListenerUp are
+    global directions. Radius/symmetry checks below are application heuristics,
+    not normative AES69 conformance requirements. ``strict`` enforces this
+    entire teaching policy, not a complete SOFA file validator.
 
     Detects four recurrent real-world SOFA integration bugs:
     1. Non-unit or non-orthogonal ``ListenerView`` / ``ListenerUp`` vectors.
@@ -302,7 +307,9 @@ def audit_sofa_simple_freefield_geometry(
     left_raw_norm = float(np.linalg.norm(left_raw))
     left_axis = left_raw / left_raw_norm if left_raw_norm > 1e-12 else np.zeros(3, dtype=np.float64)
 
-    ear_left_proj = recv_cart @ left_axis
+    # ReceiverPosition already uses local +x front, +y left, +z up. Projecting
+    # it onto a global left axis would falsely reject a rotated listener.
+    ear_left_proj = recv_cart[:, 1]
     ear_radii_m = np.linalg.norm(recv_cart, axis=1)
     ear_order_valid = bool(
         axes_orthonormal and ear_left_proj[0] > tol and ear_left_proj[1] < -tol
@@ -335,6 +342,9 @@ def audit_sofa_simple_freefield_geometry(
         "axes_orthonormal": axes_orthonormal,
         "view_up_dot": ortho_dot,
         "left_axis": left_axis,
+        "left_axis_coordinate_system": "global",
+        "receiver_coordinate_system": "listener_local",
+        "policy": "symmetric binaural teaching geometry; not full AES69 conformance",
         "receiver_cartesian_m": recv_cart,
         "receiver_spherical": recv_sph,
         "ear_left_projection_m": ear_left_proj,

@@ -1,8 +1,8 @@
 {
-  "run_utc": "2026-11-11T08:25:36.963517+00:00",
-  "run_asia_shanghai": "2026-11-11T16:25:36.963733+08:00",
-  "audit_source_sha256": "626a9a7ae981696bc332fe62f995c668a1b8f65549718920777ca2c1c6b6e169",
-  "lock_sha256": "60ebc7b692d28b5d5406e3cb137d2dcc43b154ea2c4e3d3ac739cf7fda18abeb",
+  "run_utc": "2026-11-22T22:37:25.193576+00:00",
+  "run_asia_shanghai": "2026-11-23T06:37:25.193852+08:00",
+  "audit_source_sha256": "d8d5a3aa075af82588b2132becb5ee6abab5fe2d622bc9a7797a01d49abe681c",
+  "lock_sha256": "55721fbe8027f67bf3159827b8b58c14bc327ea5e0221b216303681340e890e7",
   "lock_entries": {
     "pyroomacoustics": {
       "id": "pyroomacoustics",
@@ -68,7 +68,7 @@
     }
   },
   "scope": {
-    "TOPS": "installed 0.10.0 original full class; seven relevant Python DOA files exactly equal fixed cache",
+    "TOPS": "installed 0.10.0 original full class; discoverable package Python blobs preflighted before source-byte execution; seven relevant DOA files also match cache; compiled extensions and external imports are not a verified source closure",
     "CSSM_WAVES": "original AST helper bodies with simulated first-frequency rejection; WAVES diagonal eigenspace adapter; original _process not run",
     "RootMUSIC": "original estimate method and fixed helper imports; original NumPy failure, then local complex_ alias facade",
     "SRP": "original constructor and mode-vector inspection only; no complete near-field renderer",
@@ -91,12 +91,12 @@
     "wheel_source_equal": "byte exact"
   },
   "python": "3.13.12 | packaged by conda-forge | (main, Feb  5 2026, 06:11:05) [Clang 19.1.7 ]",
-  "executable": "/private/tmp/masp-damas-stage-V8smia/venv/bin/python",
+  "executable": "/private/tmp/masp-multiround-20261123/room-runtime/bin/python",
   "environment": {
     "numpy": "2.5.3",
     "scipy": "1.18.1",
     "pyroomacoustics": "0.10.0",
-    "Cython": "3.3.0",
+    "Cython": "3.3.1",
     "pybind11": "3.1.0"
   },
   "before": {
@@ -162,12 +162,12 @@
           "pyroomacoustics/bss/trinicon.py"
         ]
       },
-      "lock_sha256": "60ebc7b692d28b5d5406e3cb137d2dcc43b154ea2c4e3d3ac739cf7fda18abeb",
+      "lock_sha256": "55721fbe8027f67bf3159827b8b58c14bc327ea5e0221b216303681340e890e7",
       "source_document_paths": {
         "lock": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/SOURCES.lock.json",
         "status": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/SOURCE_STATUS.json"
       },
-      "status_sha256": "b57d21d42651084303252c66fee49ea8d0ccfcc4108e2e89c5c79b99f8ef8690",
+      "status_sha256": "96e37d461be3c0c5c07986b48100e935405334d22f346d8efb59ca49b07aa502",
       "recorded_complete_selection": {
         "id": "pyroomacoustics",
         "revision": "0dd39f2614b7fc44b2cc63dbe7d60f4641068890",
@@ -300,12 +300,12 @@
           "doatools/utils/conversion.py"
         ]
       },
-      "lock_sha256": "60ebc7b692d28b5d5406e3cb137d2dcc43b154ea2c4e3d3ac739cf7fda18abeb",
+      "lock_sha256": "55721fbe8027f67bf3159827b8b58c14bc327ea5e0221b216303681340e890e7",
       "source_document_paths": {
         "lock": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/SOURCES.lock.json",
         "status": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/SOURCE_STATUS.json"
       },
-      "status_sha256": "b57d21d42651084303252c66fee49ea8d0ccfcc4108e2e89c5c79b99f8ef8690",
+      "status_sha256": "96e37d461be3c0c5c07986b48100e935405334d22f346d8efb59ca49b07aa502",
       "recorded_complete_selection": {
         "id": "doatools",
         "revision": "9469db201e0418aef6b97583ef54b6fec2769502",
@@ -770,8 +770,8 @@
     }
   },
   "report_source_sha256": {
-    "codes/chapters/ch04/examples/audit_upstream_doa.py": "626a9a7ae981696bc332fe62f995c668a1b8f65549718920777ca2c1c6b6e169",
-    "codes/chapters/ch04/core/upstream_contracts.py": "8669f007ee16a15433598b8f451f226cceb3163bdbc2bf690709504874743167",
+    "codes/chapters/ch04/examples/audit_upstream_doa.py": "d8d5a3aa075af82588b2132becb5ee6abab5fe2d622bc9a7797a01d49abe681c",
+    "codes/chapters/ch04/core/upstream_contracts.py": "e868220b7388ae3124d1098df9de4095e061c1982fb1a251ad7c27c6c0742be5",
     "codes/chapters/ch00/io_contracts.py": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974",
     "codes/chapters/ch00/upstream/fetch_upstreams.py": "442d17a5818ef0edf620bde85cc7959c1e73602a47f75e1cc8fce2b227ae11b4"
   },
@@ -1042,6 +1042,1232 @@
       "same": true
     }
   },
+  "direct_source_execution": {
+    "pyroomacoustics": {
+      "package": "pyroomacoustics",
+      "package_root": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics",
+      "python_files": {
+        "pyroomacoustics/__init__.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/__init__.py",
+          "sha256": "0ed7d227ed39cb5a5a6c7994877dfee8855d14e5400f53bd9b3a3c0e3efc5baa",
+          "git_blob": "acaa290e1e6ba46b669eb4191c0038b0d7bff479"
+        },
+        "pyroomacoustics/acoustics.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/acoustics.py",
+          "sha256": "3196254709071ab1061982133f05be94e7da554f2619db98d829203839d7c4d2",
+          "git_blob": "d6becec68609bf9a163cc3e9dac16882a8699db3"
+        },
+        "pyroomacoustics/adaptive/__init__.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/adaptive/__init__.py",
+          "sha256": "493e6d9b7e68ecbdd552385c982ee11c84db7879726cc9857bf2414d6e6cf7a5",
+          "git_blob": "728817785c88e00e5c547a8907b337a478fb081d"
+        },
+        "pyroomacoustics/adaptive/adaptive_filter.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/adaptive/adaptive_filter.py",
+          "sha256": "06a4e1df0b4441743535c4b3bd911bb2f460277ad79d4bc7f044f331592288bf",
+          "git_blob": "8bfb307db5a46ccd70626b771040387bee2b4745"
+        },
+        "pyroomacoustics/adaptive/data_structures.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/adaptive/data_structures.py",
+          "sha256": "1a15289625fd6673c6f2996c368d1b4974e5eba884c0f5670ca9f91a37118dc5",
+          "git_blob": "88c74a89795464fa911892fdb50e6e0aba1b600f"
+        },
+        "pyroomacoustics/adaptive/lms.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/adaptive/lms.py",
+          "sha256": "77cac8b1373ead313d2bb401ec33167a6234092b71db5c2332e08fd8f00237aa",
+          "git_blob": "dac915b867a02432e24859c6ae793473c645777d"
+        },
+        "pyroomacoustics/adaptive/rls.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/adaptive/rls.py",
+          "sha256": "228ca23a2cb8253f40b645d3c4804cd958b729e6b18babc43db10b1b722bd7ec",
+          "git_blob": "bf5549b790c8c4dea17ebaf294742315da5708c5"
+        },
+        "pyroomacoustics/adaptive/subband_lms.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/adaptive/subband_lms.py",
+          "sha256": "d3b55f2aacd030df694e901bb9baf5039b11aea98dcb003037a609689252f2ec",
+          "git_blob": "70c0cf9247203ec1b693207f00f8a3715833e469"
+        },
+        "pyroomacoustics/adaptive/util.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/adaptive/util.py",
+          "sha256": "673a1036f530eb57a9c62c53dd93fc35f1ab5c0c4ac11ba43770710478a3d299",
+          "git_blob": "cea9300528c4d86ce6195364c28606145531ae62"
+        },
+        "pyroomacoustics/beamforming.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/beamforming.py",
+          "sha256": "04142595a0fd0b76404d92dbe2aaa93613b4037a774e309595d3c7792a492387",
+          "git_blob": "817379b2a2681f29aa3be3770aa1efb610a85a6b"
+        },
+        "pyroomacoustics/bss/__init__.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/bss/__init__.py",
+          "sha256": "c730059635ea660cc6ec76b4b32e65556e9295143c6d123bf896d9024dcae290",
+          "git_blob": "194c8f0688485aa3cc7ad2ac9887271b50c6ef48"
+        },
+        "pyroomacoustics/bss/auxiva.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/bss/auxiva.py",
+          "sha256": "61016f0b27b8b4f1cfecdddb99c3f11f038552695abb299d10b6855d3c24ad6a",
+          "git_blob": "4d3110d17f53ebd4e73345cad9dbe038bad1e8d4"
+        },
+        "pyroomacoustics/bss/common.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/bss/common.py",
+          "sha256": "d142a27bdbd80e8a4f0c31e78759c9884f6ed44c0609b89e38902d86e50ee11c",
+          "git_blob": "b076b266910a4b3f5a48022f0fcd90a2c7539837"
+        },
+        "pyroomacoustics/bss/fastmnmf.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/bss/fastmnmf.py",
+          "sha256": "a13c253bc971d4dab7ae8f3d87ab7c309eb6b560b44e2b4c09b7018b50540518",
+          "git_blob": "cbab55d6358d5127264deabd5c3e28b6d2f9956f"
+        },
+        "pyroomacoustics/bss/fastmnmf2.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/bss/fastmnmf2.py",
+          "sha256": "378ff43327cb7968e1ae08e0acf7b7099ad0267e11ae0559cf4d82a18b44093c",
+          "git_blob": "92b6ad7a8d9b6db36cb2005e42ff4619767c8461"
+        },
+        "pyroomacoustics/bss/ilrma.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/bss/ilrma.py",
+          "sha256": "1bed68575f0bbfc899aade4f2f17f5210004b30ea7f0737b8acba3ccb5bd15b3",
+          "git_blob": "a1c2cfe5fe9acf5129787a143681c42e057a43b6"
+        },
+        "pyroomacoustics/bss/sparseauxiva.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/bss/sparseauxiva.py",
+          "sha256": "870d221caa7feeea056b905b901c095bd1aea6480b58a50c6df0fe61bbb7529d",
+          "git_blob": "d9fb801717d7b73833e055e2f9c4e11d4d28f8fa"
+        },
+        "pyroomacoustics/bss/trinicon.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/bss/trinicon.py",
+          "sha256": "4202bb2b0834f982e246db37131c902fb078b533989512f81a6e162742b663fe",
+          "git_blob": "57d981886c6050d89018784c456a9c3cf32c0eca"
+        },
+        "pyroomacoustics/datasets/__init__.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/datasets/__init__.py",
+          "sha256": "b96d0bcda6c32e800286fa8b207c3455dee3630f40f3bdab5bb22ca93657b3aa",
+          "git_blob": "6165a503390037542fa7b62852be744966671b2d"
+        },
+        "pyroomacoustics/datasets/base.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/datasets/base.py",
+          "sha256": "b6c6d33eab60e1be2f25fbc10fc68b16a0c792623d0dd16efe7be1a081bcb9a4",
+          "git_blob": "0dfb4d2d74a31644c579fce74040ffc0984089be"
+        },
+        "pyroomacoustics/datasets/cmu_arctic.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/datasets/cmu_arctic.py",
+          "sha256": "e1bdb8ac9d539039c181e9da24666214aaae283bfcf1c3a1c1094b7f460e14de",
+          "git_blob": "f9836197860a5ccce988a01cb31bc1c1fc56cea7"
+        },
+        "pyroomacoustics/datasets/google_speech_commands.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/datasets/google_speech_commands.py",
+          "sha256": "a50b4fda483d8aee9dd762d81451d756c5a1a02a030638e6c455717b8b4b4e39",
+          "git_blob": "5d7bb3eb0b19609deea3f65a26c086f3a480bc73"
+        },
+        "pyroomacoustics/datasets/sofa.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/datasets/sofa.py",
+          "sha256": "aa74fd982482f95835542cf790186f6aead6a9d8f367ef0ef94aa6a40a18f267",
+          "git_blob": "6e2594b0966c298c9631a3b22287dff415cce8df"
+        },
+        "pyroomacoustics/datasets/timit.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/datasets/timit.py",
+          "sha256": "e95f97ec5e1c22f20242557783ce794bee72af3eaaf042bc6f3d10d27a02e90a",
+          "git_blob": "2e8dc7d7a23fbcb1ad2b7fc0e0848a9e812aa8bb"
+        },
+        "pyroomacoustics/datasets/utils.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/datasets/utils.py",
+          "sha256": "e83a2db4a72399f91b1eb0a241507a2a37472de712c89e0945bdd22d1f486aa1",
+          "git_blob": "57a958ba75fd79824d12a28f5848f38ccfdcf409"
+        },
+        "pyroomacoustics/denoise/__init__.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/denoise/__init__.py",
+          "sha256": "f4466eb401e587b1fabbf96d711fd9ca1d048d99269aa53bec8fdd8728b055f9",
+          "git_blob": "789d6cc09750d3ead0af56e97125918322e3af91"
+        },
+        "pyroomacoustics/denoise/iterative_wiener.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/denoise/iterative_wiener.py",
+          "sha256": "4f35175752807b18a51796f774ef3695d78ad42d3dbd9ec605bcd4c5629f2bf8",
+          "git_blob": "e40b474c37f9365aa21c0c8863725d6d4fc3360e"
+        },
+        "pyroomacoustics/denoise/spectral_subtraction.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/denoise/spectral_subtraction.py",
+          "sha256": "6c634c11293c485ae9e3bcde033e97cd2a5ef517ab48b2a52ef1fc7665ae915c",
+          "git_blob": "edae40556486180a07cd181cff6121535c60473b"
+        },
+        "pyroomacoustics/denoise/subspace.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/denoise/subspace.py",
+          "sha256": "f364f9776daf9b6ff92e52de1c38ce67457c8da1d1087c0a6018a90654a36413",
+          "git_blob": "ddd1b51e9e368606ff5f7dd769fd0db079dc1d4d"
+        },
+        "pyroomacoustics/directivities/__init__.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/directivities/__init__.py",
+          "sha256": "b568046366fbc7fd899b9c4e2995d0239b4c7ed53052c8e97ff1498558382866",
+          "git_blob": "3656746d837f50006163f2279835516b3956000b"
+        },
+        "pyroomacoustics/directivities/analytic.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/directivities/analytic.py",
+          "sha256": "ad73684fa88c0f7df1581adaea5740801f0b850942f8ceaf3d494fb204c17e2e",
+          "git_blob": "5f52dcf886534aa799a0b6f7867d138b6e76626c"
+        },
+        "pyroomacoustics/directivities/base.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/directivities/base.py",
+          "sha256": "16bfd3ced040bf7283380b0e4bed1a667c402127dc575b82b53d130b3804ea77",
+          "git_blob": "14bca9e37a2eaeed9dd68dc16e1a8299fcd20b3a"
+        },
+        "pyroomacoustics/directivities/direction.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/directivities/direction.py",
+          "sha256": "e0d9b46913129857c85b23a1003695117e6388f60aa07731cebc5f5626412bb6",
+          "git_blob": "16780e878d86ba6691b3ee25f1d87ad4e4c999d4"
+        },
+        "pyroomacoustics/directivities/harmonics.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/directivities/harmonics.py",
+          "sha256": "7e741e16135f54f8cd4288ddaa5e29e24306d2fa546c5287031ac2a2fdfdbc80",
+          "git_blob": "bd5f6be599a8ba53bc2d7e51372bb36b5765b4b6"
+        },
+        "pyroomacoustics/directivities/histogram.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/directivities/histogram.py",
+          "sha256": "3e4c6503f0c9147004d5bffd1b82ef7e7eab6745a52b22424806b13b8330ce6c",
+          "git_blob": "e24f6f2a52559ce18b9a6800ff7dfb6c3b72480c"
+        },
+        "pyroomacoustics/directivities/integration.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/directivities/integration.py",
+          "sha256": "ebd8b722302efd53a0f501761809872cf7515a19bdab137098d9009586b9f9d6",
+          "git_blob": "7aab525067798fdd2a74489ee48b996d63818b08"
+        },
+        "pyroomacoustics/directivities/interp.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/directivities/interp.py",
+          "sha256": "9ba15bcb5176e5288d54a1fa2c1497678e82a0306d334e6f843dd75f38f7878b",
+          "git_blob": "c0809532002ce219b2625c56ea69948b5781b259"
+        },
+        "pyroomacoustics/directivities/measured.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/directivities/measured.py",
+          "sha256": "8571a9627c1330c21fde02199f87249ca588f19ac1a52dd12aa1f87d7c8cdb1e",
+          "git_blob": "894bd6eb21b604d423936bd598d1a044441b8654"
+        },
+        "pyroomacoustics/directivities/sofa.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/directivities/sofa.py",
+          "sha256": "adc03c4487937a04e4bce571104c963a1d91660448f641aed313a250cc2ac039",
+          "git_blob": "2f074b1c31f93b19d7ccb6f98a1d0b5cf3bc2e57"
+        },
+        "pyroomacoustics/doa/__init__.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/doa/__init__.py",
+          "sha256": "1da0ec2510f9a20b6db7b6ad77ffa43d4236a06fe1acb55a432f15f7a5d57aa3",
+          "git_blob": "057d52c67cdb1deeb87c38c3fbe00fdd32b9ec5e"
+        },
+        "pyroomacoustics/doa/cssm.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/doa/cssm.py",
+          "sha256": "df467df5b518ecaf508cac25b996c70cdc56ec753b303db960e48e7457e86218",
+          "git_blob": "c40adcdb889a2b708c0db330f4a4438a31ae6d50"
+        },
+        "pyroomacoustics/doa/detect_peaks.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/doa/detect_peaks.py",
+          "sha256": "daf9bdf65d162b43aac4914296399470b5a51606d7688eb9023b1ad993dad443",
+          "git_blob": "ed3d122008ec55151c51f33bb63ea67aea947622"
+        },
+        "pyroomacoustics/doa/doa.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/doa/doa.py",
+          "sha256": "8332e1fc9234ff37613b6cddcae2e4d67dc73f624fb8640dcdd5b5721b6e110c",
+          "git_blob": "132b70cb37651f737fda815f0350500854d0428e"
+        },
+        "pyroomacoustics/doa/frida.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/doa/frida.py",
+          "sha256": "ba35b882aa812f92a73203faba521bad4ec2e87c88ecb0d197826680d2d7f9df",
+          "git_blob": "6e51a0e6346627cc771db370119c9c22dac43488"
+        },
+        "pyroomacoustics/doa/grid.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/doa/grid.py",
+          "sha256": "61babdb6fee8f30e28d26101721ceccd1d0ddf2d5c4f744e77310558741ee1d6",
+          "git_blob": "28013cfa08fec4f28fecc315f9095be03a47b570"
+        },
+        "pyroomacoustics/doa/music.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/doa/music.py",
+          "sha256": "1a51555b04c34bf1cfae0ded621862eada327d83c5466fb6fb36b2d7d9eabd90",
+          "git_blob": "07cf6a6d3857af27f8ce876f21373b3e4a9d85e2"
+        },
+        "pyroomacoustics/doa/normmusic.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/doa/normmusic.py",
+          "sha256": "fbaaed8e75104179d22b880c5fda4e7d5afbb43ec42e0f4883910ab219809fa7",
+          "git_blob": "b91a1eb1ccc5b5fcb8fdb347a8f644c98da5cf70"
+        },
+        "pyroomacoustics/doa/plotters.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/doa/plotters.py",
+          "sha256": "c98defbb7eb505fffe10b068275cf81bf933823ccacf4c19068c15bd730275d7",
+          "git_blob": "764f3d24967b1ee7ed5624d9515b905a3c6f72c1"
+        },
+        "pyroomacoustics/doa/srp.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/doa/srp.py",
+          "sha256": "2ffd37c4c681a31ea13d6d3cdecf3b5b7f110c4e440c0a23951eea90617f4a0e",
+          "git_blob": "7bc8438e4f610d4774549ee69d414ce358e6e78a"
+        },
+        "pyroomacoustics/doa/tools_fri_doa_plane.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/doa/tools_fri_doa_plane.py",
+          "sha256": "7dd4391abd3d195fb37274a8362d76b668dcb5dbc07dbb75e970791ead9ee86a",
+          "git_blob": "255685b4d62ae60225cde0539058cab8eac5e188"
+        },
+        "pyroomacoustics/doa/tops.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/doa/tops.py",
+          "sha256": "815fdd063c5afb481b8181882b86f9901a22461dd141d94f55b211a7456d4a25",
+          "git_blob": "7a9eb0c472ef49b9c807ea2069bfcbfa4c925d27"
+        },
+        "pyroomacoustics/doa/utils.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/doa/utils.py",
+          "sha256": "cb6e286bb2d29045f1dc623e0634257af4e2fd021a3007124d8314a35279226e",
+          "git_blob": "0ff9d1493fb5e4fc9665bc2d0978f7d29ba2ef4d"
+        },
+        "pyroomacoustics/doa/waves.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/doa/waves.py",
+          "sha256": "08eeecfe5f402689a11dcda4e051c72963f6387ab0cd7236a7751edc02d659c3",
+          "git_blob": "e05102627e0c53486e88b07b1566fee6ea16ca0e"
+        },
+        "pyroomacoustics/experimental/__init__.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/experimental/__init__.py",
+          "sha256": "669a66e23fadf1a0ab6ebbc98f8c587a7f110a8daba2feee62d13d179b2d8093",
+          "git_blob": "74b76607074667bd0524521ccc20c25f7c836049"
+        },
+        "pyroomacoustics/experimental/deconvolution.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/experimental/deconvolution.py",
+          "sha256": "c1a0d576e39d24d6bb7375aee2b201b03eab6c4dd94ddd0959b36d7194c8e78f",
+          "git_blob": "3d457ab22c5126f22c18818f55c5a619c3a07085"
+        },
+        "pyroomacoustics/experimental/delay_calibration.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/experimental/delay_calibration.py",
+          "sha256": "5a8860c31ab0110afc800fc744ec2668ee1a233f6d667f3ccc714bddcac05307",
+          "git_blob": "839637adbb773b3f7bd32901192fe8b6c05edb3c"
+        },
+        "pyroomacoustics/experimental/localization.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/experimental/localization.py",
+          "sha256": "409f8c442c2baafeb50277cd5ad09de5c69ec6b0000ac8d118ae7673fec84864",
+          "git_blob": "e2485b2cb4398f478f12cce2d87d460c3f69735b"
+        },
+        "pyroomacoustics/experimental/measure_ir.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/experimental/measure_ir.py",
+          "sha256": "75d5abbcd81d5d49afff2ec051c9aa754f4751b8f0345bdace91b8dcde29cc3f",
+          "git_blob": "b598a832c093228426fbb63285e2177c574c857f"
+        },
+        "pyroomacoustics/experimental/physics.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/experimental/physics.py",
+          "sha256": "d6a32527d4fdd422cb9676cc9affc4af88ec3757e00dced4ed4a797c39de4706",
+          "git_blob": "165eeb0db93dc37cbb59f09f10ac18b3929d9a6a"
+        },
+        "pyroomacoustics/experimental/point_cloud.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/experimental/point_cloud.py",
+          "sha256": "7a95fc9b76a00c441cdbc3f8a57ede8d549f161fadaf661cf2f1485a00b2063d",
+          "git_blob": "ec25e03f397c2eb8348fe7dfc58bb1b873c4dda0"
+        },
+        "pyroomacoustics/experimental/rt60.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/experimental/rt60.py",
+          "sha256": "c066a78677371003818123efe3b8e1a7dbd75c8a21de6404ab94ea95c0e2c1f3",
+          "git_blob": "6a3162e2e4900a8799ab2b76a1d38373e5f889d0"
+        },
+        "pyroomacoustics/experimental/signals.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/experimental/signals.py",
+          "sha256": "5b767d283794be3cc55d5cc67727a3ba6f685217f8767f04f63092e38f5614b6",
+          "git_blob": "243591101d2001bd83a955d2544cf805eb1cf510"
+        },
+        "pyroomacoustics/metrics.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/metrics.py",
+          "sha256": "392ac03810a66bbaea52d13ae7b910e7cc7b8cad278bb64a5ea82a3aaee45480",
+          "git_blob": "0f0b05c070da8a54d5919caac7df8bf898640ed2"
+        },
+        "pyroomacoustics/multirate.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/multirate.py",
+          "sha256": "10faf630c80ba72cd904a889e4894a59a2fc5956070a264ceadcb280bebd57bc",
+          "git_blob": "4edb237b3a3275eddb0b032363573cebaef53aa4"
+        },
+        "pyroomacoustics/parameters.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/parameters.py",
+          "sha256": "dac6389cdaf949659cb2d8dbe01655593f423b35492bc857a43c4af9b24b4ed2",
+          "git_blob": "e36853133fc48fad36f2813e0f9eeda05a5a18b7"
+        },
+        "pyroomacoustics/phase/__init__.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/phase/__init__.py",
+          "sha256": "15eb01f9dadb23995d8ebac21e9a139a9260973314bd978b35d1bdb4101e15cd",
+          "git_blob": "49cb25905f834f14f88fbfb2a948fcf47ebc7948"
+        },
+        "pyroomacoustics/phase/gl.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/phase/gl.py",
+          "sha256": "24b7c8fde9b8317f5f91c2c6f16fe82a0e97e4d7f21660ee2a2b5a1219274217",
+          "git_blob": "e31d02a4712246f0e357d258d6891e8d21d8be52"
+        },
+        "pyroomacoustics/random/__init__.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/random/__init__.py",
+          "sha256": "ceadb1a48a89b5823d3219fb7b230add8bcf539be179aac68f4a891e18ddd830",
+          "git_blob": "7bce0453205e6efb3839be6ca0a53a4281d6f42c"
+        },
+        "pyroomacoustics/random/distributions.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/random/distributions.py",
+          "sha256": "8143d0b755ee480fcc005c99b3b742da451987211f2f20f1516f90a9a9d617b6",
+          "git_blob": "30a5334131aca3aff2cbacd63b85fab12069a06d"
+        },
+        "pyroomacoustics/random/generator.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/random/generator.py",
+          "sha256": "ec2913d582cd238e0406c69a3de328baddc35845e728b689d436f6b992db7b85",
+          "git_blob": "efc95938572ebd38c2c1e806349b28e92d1bc1b1"
+        },
+        "pyroomacoustics/random/sampler.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/random/sampler.py",
+          "sha256": "16721080251af485a13d1728c39137e50c60c018c2f86d48d1b6b10915d67f48",
+          "git_blob": "9c7b6b79a96dd1636855dbf157326d61fd20dd19"
+        },
+        "pyroomacoustics/random/spherical.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/random/spherical.py",
+          "sha256": "215b83462ec582dd0664971c751fa8e21b62473521cd2e2cf2ea8d99ed98f38d",
+          "git_blob": "e3cd920fbdb33ec9f03050c5d99b9fbd7f079553"
+        },
+        "pyroomacoustics/recognition.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/recognition.py",
+          "sha256": "efd873824f7cddc9db8bff2ebdc1e6468d26392d80c86e065553afa7fcadb4a8",
+          "git_blob": "d2b68e0e072790c99799f8a291c4478093be7d74"
+        },
+        "pyroomacoustics/room.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/room.py",
+          "sha256": "b4189f582459811f8dbbf3885882e115db60b7b48b4ca0a3672dbef39118e4dc",
+          "git_blob": "dc0b446c5474afc37ccef73aa36a9a01d91b6847"
+        },
+        "pyroomacoustics/simulation/__init__.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/simulation/__init__.py",
+          "sha256": "59aedc3ee41abb4fc687bc1f789e463f4a8472240f76d922e37edc9453eb38ce",
+          "git_blob": "ede5538c188c31053bb42774bc13654a81e6cef7"
+        },
+        "pyroomacoustics/simulation/ism.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/simulation/ism.py",
+          "sha256": "d3fab7322346e3b95d2d4f357b100af83f2eef3c98af3cbe53dd93454d297bca",
+          "git_blob": "ca7c135c4981cc34ae86620a82d2107db7e254ba"
+        },
+        "pyroomacoustics/simulation/rt.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/simulation/rt.py",
+          "sha256": "8229f07ecda05bf8a0d3ad10f582db017b07d62f14984424af2675512ac10450",
+          "git_blob": "685091cb27dd5be069cffe477e30cd9c393b156e"
+        },
+        "pyroomacoustics/soundsource.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/soundsource.py",
+          "sha256": "1e367bc85867ad7f94dad47fdf283e3d5282d83533e48ddfab906c0195a35f4c",
+          "git_blob": "f316437ddccb446a23fff1e12b7b6f7a74e144c1"
+        },
+        "pyroomacoustics/sync.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/sync.py",
+          "sha256": "b2b37d3a575848ea16cc72ab3e7ee53855e8b781168d832ccb5025ade3525abb",
+          "git_blob": "61ce3bd797c05e8070aaf05e20810b11f404c6a4"
+        },
+        "pyroomacoustics/transform/__init__.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/transform/__init__.py",
+          "sha256": "e53b794e0847b07bc20b686009e02b1b32f9bc6db3e9da0cced242d28c8b4c87",
+          "git_blob": "e11fb411dba0b442b2082d6355e8251a975888b0"
+        },
+        "pyroomacoustics/transform/dft.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/transform/dft.py",
+          "sha256": "218f0710ba15238e5a7e01cca5e568402859f110de91696bf51623e12198d04b",
+          "git_blob": "e67dbed12501ae03c40814e1f21e63cab021497f"
+        },
+        "pyroomacoustics/transform/stft.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/transform/stft.py",
+          "sha256": "de7f545d00e4beb532b3bbbae0149a19b92a6140f3408fde1b3fe83e3cd04595",
+          "git_blob": "73dd75f244626fd1b0e20c570f8ecd28c8e9fa18"
+        },
+        "pyroomacoustics/utilities.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/utilities.py",
+          "sha256": "9fe6989cbae61c022f91a1f107ce818325430417e59a4c56338995d3298942d9",
+          "git_blob": "3b9bf9ea4dc43b41224a24cf760f99f6f1d06686"
+        },
+        "pyroomacoustics/version.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/version.py",
+          "sha256": "bf8ce62a3b0a38f65ba7a06b5a8cfb88ae124f4b1d65d521f5b41226696e679a",
+          "git_blob": "61fb31cae0fa46c861a191a7f499615d6da8ecda"
+        },
+        "pyroomacoustics/windows.py": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/windows.py",
+          "sha256": "650411aca973e06e9bc2200066d03321a21b38efba2adc4d7e16d7965c4dab0d",
+          "git_blob": "3e7b592b514115e0d948e885149d04a08ebec1b0"
+        }
+      },
+      "existing_pyc_sha256": {
+        "__pycache__/__init__.cpython-313.pyc": "272c6ca3e8d26a20ac1b2be05a6dd18c24dcce072c3fd794819ee02d72e4759a",
+        "__pycache__/acoustics.cpython-313.pyc": "905dd2cf690dd9559634f754a5d68c483745be71cb3b027700ae5c29264153f0",
+        "__pycache__/beamforming.cpython-313.pyc": "74a6fd2ab51a2dac82c6af313f3c9a5d522a58adde739f6c87b9b6f4189a36fa",
+        "__pycache__/metrics.cpython-313.pyc": "0336426eb223e59fe569912d257e0665545dc684ea2d0d891def3fb723c6f0c8",
+        "__pycache__/multirate.cpython-313.pyc": "b3c50ad7de98d33d8a7e03d8aef4c60175cc70db3a09a3aa4d48b522ee60a244",
+        "__pycache__/parameters.cpython-313.pyc": "69257180581c85bedb5292aad2f23c35d7ad08d86de0752a7bb563405fdb512b",
+        "__pycache__/recognition.cpython-313.pyc": "0ce8d1ebccccfcfd92148c28a2b9aa1a896372cf49414594d2fba303fff57b2b",
+        "__pycache__/room.cpython-313.pyc": "995ee3fe069c3fac43aa01f5554dc126487f94a746e693e68234dbd8e0d2e74f",
+        "__pycache__/soundsource.cpython-313.pyc": "a53d0a5548e30ab041d21214d686fa71aff6baebc9aa3ce421944f8bd821fe6b",
+        "__pycache__/sync.cpython-313.pyc": "d0b41cf9af7fbc3c9942f9c842049aee3973cac57d025292e4dd8f77351e0357",
+        "__pycache__/utilities.cpython-313.pyc": "7d0462db3082a77ee5ccf9e75e31164d8e92795e11c0fe02f48aaa404a563919",
+        "__pycache__/version.cpython-313.pyc": "fdd095564fef04ed4bb2cc9328036f79888b712ef605ab8e918c091615d1610b",
+        "__pycache__/windows.cpython-313.pyc": "92b8d216d7ce100b89553b5c012eb0426b63ede9c9747d913a6d0a236223a84a",
+        "adaptive/__pycache__/__init__.cpython-313.pyc": "36e99c36276201bc0a2ab3dc7e6bff40d8225e73355e22a55346cc3d3bc09a77",
+        "adaptive/__pycache__/adaptive_filter.cpython-313.pyc": "b22cdc2aab4777db52bd3721dd334817d4bef0f99e985499e1819e1787f974af",
+        "adaptive/__pycache__/data_structures.cpython-313.pyc": "cc5546e1a3aeff12bb8879b937dbd4c4de028211666b02cb71d9d5b55cc115a8",
+        "adaptive/__pycache__/lms.cpython-313.pyc": "e7c96d4620789413e8db28a5ecb47e684d9608bcfa04a937befb1bbabdbccf6d",
+        "adaptive/__pycache__/rls.cpython-313.pyc": "ca1a86ea0e8bc898790f7cc3a33d59c3cbb72290df04e0bf8a8825ee9c948381",
+        "adaptive/__pycache__/subband_lms.cpython-313.pyc": "d548f50f0573dc435cc00691145cb465c2c49a380201c27bad3cb628803d1c71",
+        "adaptive/__pycache__/util.cpython-313.pyc": "fc60819f04261e45d6aee16d4e6d2d183c95552547417cf1d3fe59d3d45174c3",
+        "bss/__pycache__/__init__.cpython-313.pyc": "e3624e3c5655832e8f2670364f88858bca9b35dbe57ea2c0230f71d958a78c75",
+        "bss/__pycache__/auxiva.cpython-313.pyc": "742ee5b8b934acc0d0bc72d86cae4c00d38d66e2af4dff60695379c2a9d11868",
+        "bss/__pycache__/common.cpython-313.pyc": "cbb8d7da13ba7732711c24fcc74017f2f6ded9a10cb23eae29a38a984fe55bea",
+        "bss/__pycache__/fastmnmf.cpython-313.pyc": "1abf7d63e1a8102f558ca675b0d5e7d87f31b7fb64d532b59cbb932ccf37eaab",
+        "bss/__pycache__/fastmnmf2.cpython-313.pyc": "cbc3d903cbedc134201dd739b9320dc32ff436ed8020c3dcf9b77f73fbb4630e",
+        "bss/__pycache__/ilrma.cpython-313.pyc": "c7552c6bd3b8370ddd2c74c042b8786f7a6172e4bca1bca631dab2bda7c77c47",
+        "bss/__pycache__/sparseauxiva.cpython-313.pyc": "f020c7e697522aabd0396a9f3844da5a61766cceea80041b8da63285a444b03f",
+        "bss/__pycache__/trinicon.cpython-313.pyc": "7e5f46c4456c37870ecbb39b3e5241c664b93a477de2b7ba7c930d7861322566",
+        "datasets/__pycache__/__init__.cpython-313.pyc": "beb2caaa61b048ee8984c0dc457380acd532451dc106b332afb8f1c0774d62de",
+        "datasets/__pycache__/base.cpython-313.pyc": "ac44d3199e89d5e262382d7e926cc670a2aacfbfc861c013f00d3269b36473df",
+        "datasets/__pycache__/cmu_arctic.cpython-313.pyc": "10c01ea88b1485a797bcb27957c5f4f6235f09655b4bf2016512b43efb5e8d03",
+        "datasets/__pycache__/google_speech_commands.cpython-313.pyc": "9ae2bc2a65f10b8dc037d79813611ff7bedea70ebb2a91d04673d8c99c160e58",
+        "datasets/__pycache__/sofa.cpython-313.pyc": "3baf21675a0a7407b1b0109ebaf4afddef944ef6a64c478a45e141bf1f38311f",
+        "datasets/__pycache__/timit.cpython-313.pyc": "cdb90ad59277ce8ed27e3df6769c832c3edea207614609a8711bb44f3be66341",
+        "datasets/__pycache__/utils.cpython-313.pyc": "233e925abc9975c34976bb313beea2d1ac0e28ddafa98e020e6389625f3c6367",
+        "denoise/__pycache__/__init__.cpython-313.pyc": "ed129b60a56cd2e9595cae9443d826f8afc60a540b8ded753ff89c0d89996c80",
+        "denoise/__pycache__/iterative_wiener.cpython-313.pyc": "87e7bea9ffc9994b6ee674c8422a9e2dd38e7611838eb2718cf3d184c0161202",
+        "denoise/__pycache__/spectral_subtraction.cpython-313.pyc": "b88e08f1aaffeab52f93b1fd71c51d8ebfbda65796d67e81057c5a63a83e4b70",
+        "denoise/__pycache__/subspace.cpython-313.pyc": "fc059840f190e7da9002b102843cd1e5380ebac17bdd6f5beb003a98144f83f7",
+        "directivities/__pycache__/__init__.cpython-313.pyc": "c2f048a90d5816dcd5c481c0e27c877eb4a985ea218c4ca0cd6a962d14ec6f55",
+        "directivities/__pycache__/analytic.cpython-313.pyc": "e7a2e6a442ae6f5c71fe641130f592043a76e016290b171d49e1135d7f81286c",
+        "directivities/__pycache__/base.cpython-313.pyc": "25469d839eab5d985d76ad921f45b25b74f4242f1e7e7970cb005f62e6d94948",
+        "directivities/__pycache__/direction.cpython-313.pyc": "40cde34542834e57af73fb69e1fc0687cff6699f00767f32758ddff4b5b4aaaa",
+        "directivities/__pycache__/harmonics.cpython-313.pyc": "7d259759f6e95f2d68dc57e0791e6ff4941c6856eade681400b34a8242e76e59",
+        "directivities/__pycache__/histogram.cpython-313.pyc": "6bdbe3be1bce37aafc2bc278a06027d428f0803873a2f636f763030d6fff5a39",
+        "directivities/__pycache__/integration.cpython-313.pyc": "e4593ad30c20e10b7bf896907930d9989de5e72c11aa85e39bd14b89fa274144",
+        "directivities/__pycache__/interp.cpython-313.pyc": "84e8f48ea1c6b8411fdd26dc33760e74cc98f0a740a2c5fe42af9a7b4227f278",
+        "directivities/__pycache__/measured.cpython-313.pyc": "be92a8473129b7d82d601f97c550cb8b3c9ef8b91b584d9457e47d6c626010c4",
+        "directivities/__pycache__/sofa.cpython-313.pyc": "8160470af307f4b77d0f568f36afdb66c5ad20a90ca1cd96e7bbb1d3e570661d",
+        "doa/__pycache__/__init__.cpython-313.pyc": "ef84f23cce4efc239393a3eca41712a9ece86ad61f16c159929a112ce5ca2312",
+        "doa/__pycache__/cssm.cpython-313.pyc": "45bb95275f9b93f91c2d45aa29246338f04ef43ac349c14c323781934e86e2ae",
+        "doa/__pycache__/detect_peaks.cpython-313.pyc": "e6685ca6193da0bf0a10dad0ba509b5cd8537ec8b4c148b6bf142ee33151e983",
+        "doa/__pycache__/doa.cpython-313.pyc": "94137ee487f36242a6e509c6fc169d8df16073c6421648e65af31d0faf190685",
+        "doa/__pycache__/frida.cpython-313.pyc": "707902e13180cb4b30e25864c328bbbbf0f02c95fd8a5b44c9b1346dccf613b8",
+        "doa/__pycache__/grid.cpython-313.pyc": "60a68c1cb9bf7567a8f298c97775c17c478438ba7ea016d63da0dc1f86e5bcc8",
+        "doa/__pycache__/music.cpython-313.pyc": "dff1951148b5f004bbe1d59754824f2a58ed6c1b26fea0e6b8a13af379e75482",
+        "doa/__pycache__/normmusic.cpython-313.pyc": "c224b2ffdea4aded42d7911c75da55c36568db9b5fd51b1cedf31260e070180e",
+        "doa/__pycache__/plotters.cpython-313.pyc": "3419ea66e48e2c33f60585dbd9b81d2306923f0b78e8fe593f6bb4636f2f4424",
+        "doa/__pycache__/srp.cpython-313.pyc": "804dd1564fffe0c6edc8f6410b8b9def5a44eee3083355077090034db4d8ff06",
+        "doa/__pycache__/tools_fri_doa_plane.cpython-313.pyc": "a7d78cd5a9e09ac3b2381cd8dba274556f3ae1d08bd742b56970419a87f16f35",
+        "doa/__pycache__/tops.cpython-313.pyc": "eb3b2fe18ddcc892cb71579e132cbdf48e5a96c130035f8653aee5d9346bd627",
+        "doa/__pycache__/utils.cpython-313.pyc": "6327acbe5ff043c42a527a6ff671ea3ff1846f2dce77f23e5c3df03fe5161972",
+        "doa/__pycache__/waves.cpython-313.pyc": "0267e4743839d12c66f2c14c2d48c16e2ba93b54ae64c9302aa9a88be69e7dd7",
+        "experimental/__pycache__/__init__.cpython-313.pyc": "41fca0078c84a29182ef88fe7304b153186b05ef45dac47d616aca901c4bb1f3",
+        "experimental/__pycache__/deconvolution.cpython-313.pyc": "d54268ac480cf8df35fd084e660a0d9576fcd4549d41249d5c84c0b9e1fa657f",
+        "experimental/__pycache__/delay_calibration.cpython-313.pyc": "257ff1efaa7c303b5eab9ae15f43662efb1cf7392ed7cbb7c23def1c5bf0a830",
+        "experimental/__pycache__/localization.cpython-313.pyc": "8b761b22bfae1234d02bdccbf2e7cce79ad6b17acaf0436649f41e354bf0e300",
+        "experimental/__pycache__/measure_ir.cpython-313.pyc": "4f823008783a455628d1addf3671eee7ae2fb7f72826762e0643511559eb1d1f",
+        "experimental/__pycache__/physics.cpython-313.pyc": "727bdfd3767afd128fe18547eb02b1e524908caa8cf1137468c239a2430404dc",
+        "experimental/__pycache__/point_cloud.cpython-313.pyc": "bfa633d193d0f5ed80dbcd197e892b16269180822304a172f44e17d3db8d1fbb",
+        "experimental/__pycache__/rt60.cpython-313.pyc": "abda797bf75c8484ee5735d09d08fb3527be96f1739e56613c24bf378c10001b",
+        "experimental/__pycache__/signals.cpython-313.pyc": "63c0548746e2959a15dd7792001fd3d540747d2a9708fe112cbec94a345c4709",
+        "phase/__pycache__/__init__.cpython-313.pyc": "dcb0a687a738f863eb4b047dd6fca7d740adf57b18407069cd81f69ea2224036",
+        "phase/__pycache__/gl.cpython-313.pyc": "c2656b9697e69c06a25e8fb95ef590a9b3931413e31a9888e35a276a9d695891",
+        "random/__pycache__/__init__.cpython-313.pyc": "23ee7d86a0f45f38a85ce1dc4f89adeb4ef95e1e26db0f04c30bfeae9e5d34f2",
+        "random/__pycache__/distributions.cpython-313.pyc": "dc3688aec36c10a814367c7094c525c260c0af3828178f8376b5f57399b7e78c",
+        "random/__pycache__/generator.cpython-313.pyc": "46bd56f4b8e972ceb197230f870e7b269c6f7b60a32cf1af0022a101344ad7bb",
+        "random/__pycache__/sampler.cpython-313.pyc": "ceccd1a60ff932e0d30e7ab09eb5a835419926cd84995199f1e5d38dc8acfe7d",
+        "random/__pycache__/spherical.cpython-313.pyc": "36b919ab88e531edb4f5e18c46ae11a86abd5412be91c9383d4fe2f4c88bf1f8",
+        "simulation/__pycache__/__init__.cpython-313.pyc": "23e27d15088c49f1cb33e9a145333924bfea24c93a8211df075dc74201a767b9",
+        "simulation/__pycache__/ism.cpython-313.pyc": "9156d1ff4b5e14c90adf7f119deea5393769b42046341b7c6ff7a7a7624f0081",
+        "simulation/__pycache__/rt.cpython-313.pyc": "fbb779dc94b541b54deb168b58461c1314f35dfe11772094f111faedc2e61e2f",
+        "transform/__pycache__/__init__.cpython-313.pyc": "b1ff1f683dfaea985681c07432f2d51e00b5d359c5b9517164f6ac75bf1f2fbb",
+        "transform/__pycache__/dft.cpython-313.pyc": "2b98273381f4f8755e2c3b81cbb1f12b57cb4ad377261cec5fabba8f9a5b3bdc",
+        "transform/__pycache__/stft.cpython-313.pyc": "9cfb01fc9680fcfe2844875d1e0e6725cc75e845915f0c065a40988fda8dc53a"
+      },
+      "existing_pyc_execution": "bypassed by direct-source loader",
+      "scope": "all discovered package Python files, before import; compiled extensions and external dependencies are not fixed-source Python blobs",
+      "executed_python_sources": {
+        "pyroomacoustics.adaptive.adaptive_filter": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/adaptive/adaptive_filter.py",
+          "executed_source_sha256": "06a4e1df0b4441743535c4b3bd911bb2f460277ad79d4bc7f044f331592288bf"
+        },
+        "pyroomacoustics.adaptive.data_structures": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/adaptive/data_structures.py",
+          "executed_source_sha256": "1a15289625fd6673c6f2996c368d1b4974e5eba884c0f5670ca9f91a37118dc5"
+        },
+        "pyroomacoustics.adaptive.lms": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/adaptive/lms.py",
+          "executed_source_sha256": "77cac8b1373ead313d2bb401ec33167a6234092b71db5c2332e08fd8f00237aa"
+        },
+        "pyroomacoustics.adaptive.util": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/adaptive/util.py",
+          "executed_source_sha256": "673a1036f530eb57a9c62c53dd93fc35f1ab5c0c4ac11ba43770710478a3d299"
+        },
+        "pyroomacoustics.adaptive.rls": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/adaptive/rls.py",
+          "executed_source_sha256": "228ca23a2cb8253f40b645d3c4804cd958b729e6b18babc43db10b1b722bd7ec"
+        },
+        "pyroomacoustics.adaptive.subband_lms": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/adaptive/subband_lms.py",
+          "executed_source_sha256": "d3b55f2aacd030df694e901bb9baf5039b11aea98dcb003037a609689252f2ec"
+        },
+        "pyroomacoustics.adaptive": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/adaptive/__init__.py",
+          "executed_source_sha256": "493e6d9b7e68ecbdd552385c982ee11c84db7879726cc9857bf2414d6e6cf7a5"
+        },
+        "pyroomacoustics.bss.common": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/bss/common.py",
+          "executed_source_sha256": "d142a27bdbd80e8a4f0c31e78759c9884f6ed44c0609b89e38902d86e50ee11c"
+        },
+        "pyroomacoustics.bss.auxiva": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/bss/auxiva.py",
+          "executed_source_sha256": "61016f0b27b8b4f1cfecdddb99c3f11f038552695abb299d10b6855d3c24ad6a"
+        },
+        "pyroomacoustics.bss.fastmnmf": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/bss/fastmnmf.py",
+          "executed_source_sha256": "a13c253bc971d4dab7ae8f3d87ab7c309eb6b560b44e2b4c09b7018b50540518"
+        },
+        "pyroomacoustics.bss.fastmnmf2": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/bss/fastmnmf2.py",
+          "executed_source_sha256": "378ff43327cb7968e1ae08e0acf7b7099ad0267e11ae0559cf4d82a18b44093c"
+        },
+        "pyroomacoustics.bss.ilrma": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/bss/ilrma.py",
+          "executed_source_sha256": "1bed68575f0bbfc899aade4f2f17f5210004b30ea7f0737b8acba3ccb5bd15b3"
+        },
+        "pyroomacoustics.bss.sparseauxiva": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/bss/sparseauxiva.py",
+          "executed_source_sha256": "870d221caa7feeea056b905b901c095bd1aea6480b58a50c6df0fe61bbb7529d"
+        },
+        "pyroomacoustics.bss.trinicon": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/bss/trinicon.py",
+          "executed_source_sha256": "4202bb2b0834f982e246db37131c902fb078b533989512f81a6e162742b663fe"
+        },
+        "pyroomacoustics.bss": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/bss/__init__.py",
+          "executed_source_sha256": "c730059635ea660cc6ec76b4b32e65556e9295143c6d123bf896d9024dcae290"
+        },
+        "pyroomacoustics.datasets.base": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/datasets/base.py",
+          "executed_source_sha256": "b6c6d33eab60e1be2f25fbc10fc68b16a0c792623d0dd16efe7be1a081bcb9a4"
+        },
+        "pyroomacoustics.datasets.utils": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/datasets/utils.py",
+          "executed_source_sha256": "e83a2db4a72399f91b1eb0a241507a2a37472de712c89e0945bdd22d1f486aa1"
+        },
+        "pyroomacoustics.datasets.cmu_arctic": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/datasets/cmu_arctic.py",
+          "executed_source_sha256": "e1bdb8ac9d539039c181e9da24666214aaae283bfcf1c3a1c1094b7f460e14de"
+        },
+        "pyroomacoustics.datasets.google_speech_commands": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/datasets/google_speech_commands.py",
+          "executed_source_sha256": "a50b4fda483d8aee9dd762d81451d756c5a1a02a030638e6c455717b8b4b4e39"
+        },
+        "pyroomacoustics.datasets.sofa": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/datasets/sofa.py",
+          "executed_source_sha256": "aa74fd982482f95835542cf790186f6aead6a9d8f367ef0ef94aa6a40a18f267"
+        },
+        "pyroomacoustics.transform.dft": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/transform/dft.py",
+          "executed_source_sha256": "218f0710ba15238e5a7e01cca5e568402859f110de91696bf51623e12198d04b"
+        },
+        "pyroomacoustics.transform.stft": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/transform/stft.py",
+          "executed_source_sha256": "de7f545d00e4beb532b3bbbae0149a19b92a6140f3408fde1b3fe83e3cd04595"
+        },
+        "pyroomacoustics.transform": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/transform/__init__.py",
+          "executed_source_sha256": "e53b794e0847b07bc20b686009e02b1b32f9bc6db3e9da0cced242d28c8b4c87"
+        },
+        "pyroomacoustics.datasets.timit": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/datasets/timit.py",
+          "executed_source_sha256": "e95f97ec5e1c22f20242557783ce794bee72af3eaaf042bc6f3d10d27a02e90a"
+        },
+        "pyroomacoustics.datasets": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/datasets/__init__.py",
+          "executed_source_sha256": "b96d0bcda6c32e800286fa8b207c3455dee3630f40f3bdab5bb22ca93657b3aa"
+        },
+        "pyroomacoustics.random.generator": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/random/generator.py",
+          "executed_source_sha256": "ec2913d582cd238e0406c69a3de328baddc35845e728b689d436f6b992db7b85"
+        },
+        "pyroomacoustics.random.spherical": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/random/spherical.py",
+          "executed_source_sha256": "215b83462ec582dd0664971c751fa8e21b62473521cd2e2cf2ea8d99ed98f38d"
+        },
+        "pyroomacoustics.random.distributions": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/random/distributions.py",
+          "executed_source_sha256": "8143d0b755ee480fcc005c99b3b742da451987211f2f20f1516f90a9a9d617b6"
+        },
+        "pyroomacoustics.random.sampler": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/random/sampler.py",
+          "executed_source_sha256": "16721080251af485a13d1728c39137e50c60c018c2f86d48d1b6b10915d67f48"
+        },
+        "pyroomacoustics.random": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/random/__init__.py",
+          "executed_source_sha256": "ceadb1a48a89b5823d3219fb7b230add8bcf539be179aac68f4a891e18ddd830"
+        },
+        "pyroomacoustics.doa.detect_peaks": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/doa/detect_peaks.py",
+          "executed_source_sha256": "daf9bdf65d162b43aac4914296399470b5a51606d7688eb9023b1ad993dad443"
+        },
+        "pyroomacoustics.doa.utils": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/doa/utils.py",
+          "executed_source_sha256": "cb6e286bb2d29045f1dc623e0634257af4e2fd021a3007124d8314a35279226e"
+        },
+        "pyroomacoustics.doa.grid": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/doa/grid.py",
+          "executed_source_sha256": "61babdb6fee8f30e28d26101721ceccd1d0ddf2d5c4f744e77310558741ee1d6"
+        },
+        "pyroomacoustics.doa.doa": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/doa/doa.py",
+          "executed_source_sha256": "8332e1fc9234ff37613b6cddcae2e4d67dc73f624fb8640dcdd5b5721b6e110c"
+        },
+        "pyroomacoustics.doa.music": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/doa/music.py",
+          "executed_source_sha256": "1a51555b04c34bf1cfae0ded621862eada327d83c5466fb6fb36b2d7d9eabd90"
+        },
+        "pyroomacoustics.doa.cssm": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/doa/cssm.py",
+          "executed_source_sha256": "df467df5b518ecaf508cac25b996c70cdc56ec753b303db960e48e7457e86218"
+        },
+        "pyroomacoustics.doa.tools_fri_doa_plane": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/doa/tools_fri_doa_plane.py",
+          "executed_source_sha256": "7dd4391abd3d195fb37274a8362d76b668dcb5dbc07dbb75e970791ead9ee86a"
+        },
+        "pyroomacoustics.doa.frida": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/doa/frida.py",
+          "executed_source_sha256": "ba35b882aa812f92a73203faba521bad4ec2e87c88ecb0d197826680d2d7f9df"
+        },
+        "pyroomacoustics.doa.normmusic": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/doa/normmusic.py",
+          "executed_source_sha256": "fbaaed8e75104179d22b880c5fda4e7d5afbb43ec42e0f4883910ab219809fa7"
+        },
+        "pyroomacoustics.doa.srp": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/doa/srp.py",
+          "executed_source_sha256": "2ffd37c4c681a31ea13d6d3cdecf3b5b7f110c4e440c0a23951eea90617f4a0e"
+        },
+        "pyroomacoustics.doa.tops": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/doa/tops.py",
+          "executed_source_sha256": "815fdd063c5afb481b8181882b86f9901a22461dd141d94f55b211a7456d4a25"
+        },
+        "pyroomacoustics.doa.waves": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/doa/waves.py",
+          "executed_source_sha256": "08eeecfe5f402689a11dcda4e051c72963f6387ab0cd7236a7751edc02d659c3"
+        },
+        "pyroomacoustics.doa": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/doa/__init__.py",
+          "executed_source_sha256": "1da0ec2510f9a20b6db7b6ad77ffa43d4236a06fe1acb55a432f15f7a5d57aa3"
+        },
+        "pyroomacoustics.parameters": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/parameters.py",
+          "executed_source_sha256": "dac6389cdaf949659cb2d8dbe01655593f423b35492bc857a43c4af9b24b4ed2"
+        },
+        "pyroomacoustics.sync": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/sync.py",
+          "executed_source_sha256": "b2b37d3a575848ea16cc72ab3e7ee53855e8b781168d832ccb5025ade3525abb"
+        },
+        "pyroomacoustics.utilities": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/utilities.py",
+          "executed_source_sha256": "9fe6989cbae61c022f91a1f107ce818325430417e59a4c56338995d3298942d9"
+        },
+        "pyroomacoustics.denoise.iterative_wiener": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/denoise/iterative_wiener.py",
+          "executed_source_sha256": "4f35175752807b18a51796f774ef3695d78ad42d3dbd9ec605bcd4c5629f2bf8"
+        },
+        "pyroomacoustics.denoise.spectral_subtraction": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/denoise/spectral_subtraction.py",
+          "executed_source_sha256": "6c634c11293c485ae9e3bcde033e97cd2a5ef517ab48b2a52ef1fc7665ae915c"
+        },
+        "pyroomacoustics.denoise.subspace": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/denoise/subspace.py",
+          "executed_source_sha256": "f364f9776daf9b6ff92e52de1c38ce67457c8da1d1087c0a6018a90654a36413"
+        },
+        "pyroomacoustics.denoise": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/denoise/__init__.py",
+          "executed_source_sha256": "f4466eb401e587b1fabbf96d711fd9ca1d048d99269aa53bec8fdd8728b055f9"
+        },
+        "pyroomacoustics.experimental.deconvolution": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/experimental/deconvolution.py",
+          "executed_source_sha256": "c1a0d576e39d24d6bb7375aee2b201b03eab6c4dd94ddd0959b36d7194c8e78f"
+        },
+        "pyroomacoustics.experimental.physics": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/experimental/physics.py",
+          "executed_source_sha256": "d6a32527d4fdd422cb9676cc9affc4af88ec3757e00dced4ed4a797c39de4706"
+        },
+        "pyroomacoustics.experimental.delay_calibration": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/experimental/delay_calibration.py",
+          "executed_source_sha256": "5a8860c31ab0110afc800fc744ec2668ee1a233f6d667f3ccc714bddcac05307"
+        },
+        "pyroomacoustics.experimental.point_cloud": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/experimental/point_cloud.py",
+          "executed_source_sha256": "7a95fc9b76a00c441cdbc3f8a57ede8d549f161fadaf661cf2f1485a00b2063d"
+        },
+        "pyroomacoustics.experimental.localization": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/experimental/localization.py",
+          "executed_source_sha256": "409f8c442c2baafeb50277cd5ad09de5c69ec6b0000ac8d118ae7673fec84864"
+        },
+        "pyroomacoustics.experimental.signals": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/experimental/signals.py",
+          "executed_source_sha256": "5b767d283794be3cc55d5cc67727a3ba6f685217f8767f04f63092e38f5614b6"
+        },
+        "pyroomacoustics.experimental.measure_ir": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/experimental/measure_ir.py",
+          "executed_source_sha256": "75d5abbcd81d5d49afff2ec051c9aa754f4751b8f0345bdace91b8dcde29cc3f"
+        },
+        "pyroomacoustics.experimental.rt60": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/experimental/rt60.py",
+          "executed_source_sha256": "c066a78677371003818123efe3b8e1a7dbd75c8a21de6404ab94ea95c0e2c1f3"
+        },
+        "pyroomacoustics.experimental": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/experimental/__init__.py",
+          "executed_source_sha256": "669a66e23fadf1a0ab6ebbc98f8c587a7f110a8daba2feee62d13d179b2d8093"
+        },
+        "pyroomacoustics.phase.gl": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/phase/gl.py",
+          "executed_source_sha256": "24b7c8fde9b8317f5f91c2c6f16fe82a0e97e4d7f21660ee2a2b5a1219274217"
+        },
+        "pyroomacoustics.phase": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/phase/__init__.py",
+          "executed_source_sha256": "15eb01f9dadb23995d8ebac21e9a139a9260973314bd978b35d1bdb4101e15cd"
+        },
+        "pyroomacoustics.acoustics": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/acoustics.py",
+          "executed_source_sha256": "3196254709071ab1061982133f05be94e7da554f2619db98d829203839d7c4d2"
+        },
+        "pyroomacoustics.windows": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/windows.py",
+          "executed_source_sha256": "650411aca973e06e9bc2200066d03321a21b38efba2adc4d7e16d7965c4dab0d"
+        },
+        "pyroomacoustics.directivities.base": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/directivities/base.py",
+          "executed_source_sha256": "16bfd3ced040bf7283380b0e4bed1a667c402127dc575b82b53d130b3804ea77"
+        },
+        "pyroomacoustics.directivities.direction": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/directivities/direction.py",
+          "executed_source_sha256": "e0d9b46913129857c85b23a1003695117e6388f60aa07731cebc5f5626412bb6"
+        },
+        "pyroomacoustics.directivities.integration": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/directivities/integration.py",
+          "executed_source_sha256": "ebd8b722302efd53a0f501761809872cf7515a19bdab137098d9009586b9f9d6"
+        },
+        "pyroomacoustics.directivities.analytic": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/directivities/analytic.py",
+          "executed_source_sha256": "ad73684fa88c0f7df1581adaea5740801f0b850942f8ceaf3d494fb204c17e2e"
+        },
+        "pyroomacoustics.directivities.harmonics": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/directivities/harmonics.py",
+          "executed_source_sha256": "7e741e16135f54f8cd4288ddaa5e29e24306d2fa546c5287031ac2a2fdfdbc80"
+        },
+        "pyroomacoustics.directivities.histogram": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/directivities/histogram.py",
+          "executed_source_sha256": "3e4c6503f0c9147004d5bffd1b82ef7e7eab6745a52b22424806b13b8330ce6c"
+        },
+        "pyroomacoustics.directivities.interp": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/directivities/interp.py",
+          "executed_source_sha256": "9ba15bcb5176e5288d54a1fa2c1497678e82a0306d334e6f843dd75f38f7878b"
+        },
+        "pyroomacoustics.directivities.sofa": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/directivities/sofa.py",
+          "executed_source_sha256": "adc03c4487937a04e4bce571104c963a1d91660448f641aed313a250cc2ac039"
+        },
+        "pyroomacoustics.directivities.measured": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/directivities/measured.py",
+          "executed_source_sha256": "8571a9627c1330c21fde02199f87249ca588f19ac1a52dd12aa1f87d7c8cdb1e"
+        },
+        "pyroomacoustics.directivities": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/directivities/__init__.py",
+          "executed_source_sha256": "b568046366fbc7fd899b9c4e2995d0239b4c7ed53052c8e97ff1498558382866"
+        },
+        "pyroomacoustics.soundsource": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/soundsource.py",
+          "executed_source_sha256": "1e367bc85867ad7f94dad47fdf283e3d5282d83533e48ddfab906c0195a35f4c"
+        },
+        "pyroomacoustics.beamforming": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/beamforming.py",
+          "executed_source_sha256": "04142595a0fd0b76404d92dbe2aaa93613b4037a774e309595d3c7792a492387"
+        },
+        "pyroomacoustics.metrics": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/metrics.py",
+          "executed_source_sha256": "392ac03810a66bbaea52d13ae7b910e7cc7b8cad278bb64a5ea82a3aaee45480"
+        },
+        "pyroomacoustics.multirate": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/multirate.py",
+          "executed_source_sha256": "10faf630c80ba72cd904a889e4894a59a2fc5956070a264ceadcb280bebd57bc"
+        },
+        "pyroomacoustics.recognition": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/recognition.py",
+          "executed_source_sha256": "efd873824f7cddc9db8bff2ebdc1e6468d26392d80c86e065553afa7fcadb4a8"
+        },
+        "pyroomacoustics.simulation.ism": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/simulation/ism.py",
+          "executed_source_sha256": "d3fab7322346e3b95d2d4f357b100af83f2eef3c98af3cbe53dd93454d297bca"
+        },
+        "pyroomacoustics.simulation.rt": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/simulation/rt.py",
+          "executed_source_sha256": "8229f07ecda05bf8a0d3ad10f582db017b07d62f14984424af2675512ac10450"
+        },
+        "pyroomacoustics.simulation": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/simulation/__init__.py",
+          "executed_source_sha256": "59aedc3ee41abb4fc687bc1f789e463f4a8472240f76d922e37edc9453eb38ce"
+        },
+        "pyroomacoustics.room": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/room.py",
+          "executed_source_sha256": "b4189f582459811f8dbbf3885882e115db60b7b48b4ca0a3672dbef39118e4dc"
+        },
+        "pyroomacoustics.version": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/version.py",
+          "executed_source_sha256": "bf8ce62a3b0a38f65ba7a06b5a8cfb88ae124f4b1d65d521f5b41226696e679a"
+        },
+        "pyroomacoustics": {
+          "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/pyroomacoustics/__init__.py",
+          "executed_source_sha256": "0ed7d227ed39cb5a5a6c7994877dfee8855d14e5400f53bd9b3a3c0e3efc5baa"
+        }
+      },
+      "unchanged_after": true
+    },
+    "doatools": {
+      "package": "doatools",
+      "package_root": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools",
+      "python_files": {
+        "doatools/__init__.py": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/__init__.py",
+          "sha256": "6728002245fa35b8da83573359d41afb23fe18cd66044ffdb2cdb55e1fff2457",
+          "git_blob": "8dee4bf82514a765d3b4052d8a8c9cc33a4114e1"
+        },
+        "doatools/_version.py": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/_version.py",
+          "sha256": "9f1f2e4fd34e9240362b38d4f50dfa72f6654e2fbb6c21d53c891709093065ff",
+          "git_blob": "fb13a35566fc1310dc45da579266b78e6eb62f85"
+        },
+        "doatools/estimation/__init__.py": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/estimation/__init__.py",
+          "sha256": "42b9eff3f5c41ccad84f9aecefe8a5de6d2564e9e05982365b809755b482ccdf",
+          "git_blob": "0014afc1945c32cab309a6e309ab26fc75a44598"
+        },
+        "doatools/estimation/beamforming.py": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/estimation/beamforming.py",
+          "sha256": "fa3720a2590f820eb87e04a3075d4ffc56e5d724eed7f9ef949ffc871882758e",
+          "git_blob": "5d7013edb48945eb234106df6d0a8a44d614d0b5"
+        },
+        "doatools/estimation/coarray.py": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/estimation/coarray.py",
+          "sha256": "26028a116fb22cb2de583d7ed112bd5c0b0446f1c802d89a66ffbb17a2c4869c",
+          "git_blob": "ee9d3e5dd86af891e2c99c3cb9932fde4bc492c0"
+        },
+        "doatools/estimation/core.py": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/estimation/core.py",
+          "sha256": "63a0e2d9a3561c0270aaa2d6f207777257ccff607bd11d72dab5c3f5419649d8",
+          "git_blob": "09deb3b6c5c54f9348ae186bcc802462553fa5ca"
+        },
+        "doatools/estimation/esprit.py": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/estimation/esprit.py",
+          "sha256": "06f24db5d0f04928dca8c7821fe53c821534c9473c6afef399ffd0746d474711",
+          "git_blob": "ac70c2b130e34df17d6b9c090c8c8a49fdf430b5"
+        },
+        "doatools/estimation/grid.py": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/estimation/grid.py",
+          "sha256": "254af4554543891cb75803247b4631c0473d1fc5cee0c9131e78d8cfebb548d0",
+          "git_blob": "de5e7a2dc7fe58a17022a39dfbd2dbb0c07f973c"
+        },
+        "doatools/estimation/min_norm.py": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/estimation/min_norm.py",
+          "sha256": "2f46c83b4f6ceb2460623c631270b3b2e2e587f0c5bc8267b4d6912c4fc2b7cf",
+          "git_blob": "e8a59431d9808bc78b62c28476f8be6af1b87978"
+        },
+        "doatools/estimation/ml.py": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/estimation/ml.py",
+          "sha256": "9c841364059558d27afbe2d11c0c560735f90e5ddb91bfe64ee0199e1892609a",
+          "git_blob": "ac7bfcd5e270c3d8e7859c455329fa2177511e88"
+        },
+        "doatools/estimation/music.py": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/estimation/music.py",
+          "sha256": "f33e411318b06628af8078f1f3bfc5122525d2273c763b23da3a2388101e5a3a",
+          "git_blob": "00f960ef5bec6bf023e317105ac90a4e3b32d262"
+        },
+        "doatools/estimation/preprocessing.py": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/estimation/preprocessing.py",
+          "sha256": "f4785d6d74eaef4451292aee511431b29379b38b4de61f1183c20dfb4e7e2b54",
+          "git_blob": "d8002b72fa5cee7fd3633bd605ae429debb7d5a0"
+        },
+        "doatools/estimation/source_number.py": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/estimation/source_number.py",
+          "sha256": "fba799581f17bc2748bcac25e402c427f37b7355d0b1eb28bfaedb990b9f67a5",
+          "git_blob": "d11dfd8d1c18f5ff2bc866c5a86ec31052950bc1"
+        },
+        "doatools/estimation/sparse.py": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/estimation/sparse.py",
+          "sha256": "8141c8eb968d7262e8957eb8ac253eaf6ea48186955c3953cc6b4f9c5fba46d0",
+          "git_blob": "403c2e3a2cc5098226d813d6fcfc1c5f651e0663"
+        },
+        "doatools/model/__init__.py": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/model/__init__.py",
+          "sha256": "56ac2f38058690974d7e86b09899a2f139da52c01993f08c366d40c8a06f7e25",
+          "git_blob": "e938bcda66fd54b9a22c2353ce97975f12a9c39e"
+        },
+        "doatools/model/array_elements.py": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/model/array_elements.py",
+          "sha256": "365bddeff15f413420c22a03f8d4360cd6f3b794d82a5ac1e5e2fbb7ca50fb5f",
+          "git_blob": "84015328cfdaaf0ed062387700a9acd5f4b8a2c7"
+        },
+        "doatools/model/arrays.py": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/model/arrays.py",
+          "sha256": "02a08374c51fea1a5f8c2f5431dbd817c31c40316f61c05f8877ba0f822eb1bf",
+          "git_blob": "6d19a232c35aba2d2c1bb198b1c03712b6ac7187"
+        },
+        "doatools/model/coarray.py": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/model/coarray.py",
+          "sha256": "8bb686753c85ac3e7635dde7586e478dc3f878d6e85b98d79c4cee58f95f1d03",
+          "git_blob": "6fc54b9e313db1de2c703bffa8cde97eb8edfa36"
+        },
+        "doatools/model/perturbations.py": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/model/perturbations.py",
+          "sha256": "aa5bf08e9dd078c58cb698d8c43631970ee95ca6ce03a67e8f41181fdde1fd49",
+          "git_blob": "627b9d36cd1c3282e40e921747e71eb67956b281"
+        },
+        "doatools/model/signals.py": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/model/signals.py",
+          "sha256": "5547492983007d07e914b0907a37612bab69bc8eee4da0daf548a30047e9d1f5",
+          "git_blob": "a2282cd68ef6c0c0f81d1d21624e015cc51e1ca7"
+        },
+        "doatools/model/snapshots.py": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/model/snapshots.py",
+          "sha256": "6d920dc7ad23429c3e71ed05e19b1b3ef900280e48e6b26bcc5f3268cfdb195d",
+          "git_blob": "11c2ea48af16fe50db0d0322e3753d08a9ff7867"
+        },
+        "doatools/model/sources.py": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/model/sources.py",
+          "sha256": "0fe676c55c4b6f2e73ad99323398bd71bc8d80bbf8c56b24f9313af85e980e25",
+          "git_blob": "8e619a642692de2f11adf280b428e0191954194f"
+        },
+        "doatools/optim/__init__.py": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/optim/__init__.py",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+        },
+        "doatools/optim/l1lsq.py": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/optim/l1lsq.py",
+          "sha256": "2bd8f2b55f90d3ac2e61c95994f1c8f7a3d1e7b41fd197fb4b0410463aae9fce",
+          "git_blob": "00ea66aad6a20d5a7224f166c27b88c8c2da1e3c"
+        },
+        "doatools/performance/__init__.py": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/performance/__init__.py",
+          "sha256": "620147e828261ba3772d3ae64983698383665cd5eb723c78bcbbe3b32dd5db94",
+          "git_blob": "75a36353bb00ef573d1d618d133f7c9fb808ebe5"
+        },
+        "doatools/performance/crb.py": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/performance/crb.py",
+          "sha256": "aedc92e2d4e4006c31dad01601bde0d6b1a1b0402f3e028bc0daa34b1d592d6c",
+          "git_blob": "dbb68093c9710b077d0c1a66312ee278cdf2d832"
+        },
+        "doatools/performance/mse.py": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/performance/mse.py",
+          "sha256": "cbe4f84c09307ef90575666fcaf99c6c57e38bd53e3db4cb771ac0b696e1b3c4",
+          "git_blob": "aece6fab14cde34cc2254e090cbdd836841e786a"
+        },
+        "doatools/performance/utils.py": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/performance/utils.py",
+          "sha256": "a54d0d34fdab9dcb34e86abf93103e426c6a8948b4d848a4ae18662f42cef394",
+          "git_blob": "0fa08301d2c56c02dfc77639ae0811e61caa38b3"
+        },
+        "doatools/plotting/__init__.py": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/plotting/__init__.py",
+          "sha256": "354b24a687c07376d5c00967c05fc7363a87b1eac34a09d09bd34a4747c81a69",
+          "git_blob": "e6ced205d71a3b1fa988b4bd0eb48290951cc02d"
+        },
+        "doatools/plotting/plot_array.py": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/plotting/plot_array.py",
+          "sha256": "02152089a1492050a429e31d8da54fcb3f02e89493cb32a9e788f2a9494857d3",
+          "git_blob": "325c04ea3043626d1b095acb963d8b9122ab11f1"
+        },
+        "doatools/plotting/plot_spectrum.py": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/plotting/plot_spectrum.py",
+          "sha256": "0f652e1d657b51496b9f2463d62664c3c0c29e2d8e76ea20686871fa841584c7",
+          "git_blob": "2d6829f9f27080c960a9ce8fd2bbb28408d68ab2"
+        },
+        "doatools/tests/__init__.py": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/tests/__init__.py",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+        },
+        "doatools/tests/test_array_designs.py": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/tests/test_array_designs.py",
+          "sha256": "5a40a2cf75b798e2322c06d5ed4d65c8e621edc3ea3fae0621da198667ecd5f1",
+          "git_blob": "25ac381b0406623dbd7a37eb29a5a892aee2015d"
+        },
+        "doatools/tests/test_beamforming.py": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/tests/test_beamforming.py",
+          "sha256": "f98c7677fba7b3ff64dd1daa48ff29de2bf96669980e571af4a30c6cf533f802",
+          "git_blob": "cf8600b4e997aca1491a19bfd52d3166305aecb6"
+        },
+        "doatools/tests/test_coarray.py": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/tests/test_coarray.py",
+          "sha256": "7b891b6ed98f2e7727c226fc7c5a48cf7fddba34fcdce964109b452281184f1f",
+          "git_blob": "8202b85e2dcd303607f4b6cb0f8a9e1f4f28c9e9"
+        },
+        "doatools/tests/test_coarray_music.py": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/tests/test_coarray_music.py",
+          "sha256": "79c4265208d6725272feae49d2cc0eed32491480a56a39ead03c13663336a507",
+          "git_blob": "7735a35d22ce174a5b0655de7acb3d5e5b6b0131"
+        },
+        "doatools/tests/test_crb.py": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/tests/test_crb.py",
+          "sha256": "624f38d5571e0bd91fff6f9712dcbf6c3c46e9ca645d1823a248ce7fa8dde36c",
+          "git_blob": "cd14212571ca57f2a18e9c35185237dbd146bf68"
+        },
+        "doatools/tests/test_esprit.py": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/tests/test_esprit.py",
+          "sha256": "a5778a2a0e46a857e820d852f262e476bfe4b03af1f4ec46c2b3aaba7c991d41",
+          "git_blob": "4fb23f2f3b85b7f7db112ae782242ad3f5715ce5"
+        },
+        "doatools/tests/test_grids.py": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/tests/test_grids.py",
+          "sha256": "0c8e8963706b6c1fd240bdfdce4a2bec90796416ec39a46cee24a5e458e270c5",
+          "git_blob": "27fff9a8b99b9c46b9924db891fba48222bd379e"
+        },
+        "doatools/tests/test_mse.py": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/tests/test_mse.py",
+          "sha256": "ca5d33d0f938a7d34aa097e3d185651ecada3aad0a333770a97feebfd3e557a9",
+          "git_blob": "6ff52dd6b560287343bd37523d6fa7f5c2f3f8d5"
+        },
+        "doatools/tests/test_music.py": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/tests/test_music.py",
+          "sha256": "15296d8098e564508fb40f9b56a9256b7d5932c0e3c5eb7808c5c1a65e7b19b3",
+          "git_blob": "ae500f89799c039e66128885762f9718680fe247"
+        },
+        "doatools/tests/test_preprocessing.py": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/tests/test_preprocessing.py",
+          "sha256": "f48ac6024f55c9ef124a6134fc8aa8b50322370ee9a19bf785b6ffb60ca40cc8",
+          "git_blob": "0af27cb7bf2726f00158f36fcdcb66ade16181a6"
+        },
+        "doatools/tests/test_signals.py": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/tests/test_signals.py",
+          "sha256": "23f0cac72e564e767702380c9c6e372b4c45f3e028f5b27ce014421c3fc18edc",
+          "git_blob": "ff86ef6c16155eddba848cd1b420034a9430175a"
+        },
+        "doatools/tests/test_source_number.py": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/tests/test_source_number.py",
+          "sha256": "6879566d459c58d7e356a069b48b8c061299e52d56bf86609cc22d9c94a7fa63",
+          "git_blob": "eb1a974406acce671c7d29d086a0ea7bba1d166c"
+        },
+        "doatools/tests/test_source_placement.py": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/tests/test_source_placement.py",
+          "sha256": "b06e5364ac1ebe481f98261962f132d78519b79953e3ec7c05b0b621ab7cc689",
+          "git_blob": "e18c275f1ba4d584b6c18b441712a5931e557d1c"
+        },
+        "doatools/tests/test_utils.py": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/tests/test_utils.py",
+          "sha256": "01a0f07d274bfb792b1bcbe6bd416809a3a6be1ab5a26e9416907b099704f186",
+          "git_blob": "ce0d36cf28ac356d5d3e9064f1576573973dd6a5"
+        },
+        "doatools/utils/__init__.py": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/utils/__init__.py",
+          "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+          "git_blob": "8b137891791fe96927ad78e64b0aad7bded08bdc"
+        },
+        "doatools/utils/conversion.py": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/utils/conversion.py",
+          "sha256": "41e3089e456c617046302a7cbc1c5a417872db0513dffb29ac52e31ae6ba80e3",
+          "git_blob": "1dbcc5317a9fdb5f638f69bd3eab6371fd79a3f9"
+        },
+        "doatools/utils/math.py": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/utils/math.py",
+          "sha256": "0b1e286ecb1c89811225bb72c0d263de6a82d647b3617ca23cab6346e4331148",
+          "git_blob": "56c298f914bc614f52e1e26c3f2d53482f9e43d4"
+        }
+      },
+      "existing_pyc_sha256": {},
+      "existing_pyc_execution": "bypassed by direct-source loader",
+      "scope": "all discovered package Python files, before import; compiled extensions and external dependencies are not fixed-source Python blobs",
+      "executed_python_sources": {
+        "doatools._version": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/_version.py",
+          "executed_source_sha256": "9f1f2e4fd34e9240362b38d4f50dfa72f6654e2fbb6c21d53c891709093065ff"
+        },
+        "doatools": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/__init__.py",
+          "executed_source_sha256": "6728002245fa35b8da83573359d41afb23fe18cd66044ffdb2cdb55e1fff2457"
+        },
+        "doatools.model.array_elements": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/model/array_elements.py",
+          "executed_source_sha256": "365bddeff15f413420c22a03f8d4360cd6f3b794d82a5ac1e5e2fbb7ca50fb5f"
+        },
+        "doatools.utils": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/utils/__init__.py",
+          "executed_source_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+        },
+        "doatools.utils.math": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/utils/math.py",
+          "executed_source_sha256": "0b1e286ecb1c89811225bb72c0d263de6a82d647b3617ca23cab6346e4331148"
+        },
+        "doatools.model.perturbations": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/model/perturbations.py",
+          "executed_source_sha256": "aa5bf08e9dd078c58cb698d8c43631970ee95ca6ce03a67e8f41181fdde1fd49"
+        },
+        "doatools.model.arrays": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/model/arrays.py",
+          "executed_source_sha256": "02a08374c51fea1a5f8c2f5431dbd817c31c40316f61c05f8877ba0f822eb1bf"
+        },
+        "doatools.model.coarray": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/model/coarray.py",
+          "executed_source_sha256": "8bb686753c85ac3e7635dde7586e478dc3f878d6e85b98d79c4cee58f95f1d03"
+        },
+        "doatools.model.signals": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/model/signals.py",
+          "executed_source_sha256": "5547492983007d07e914b0907a37612bab69bc8eee4da0daf548a30047e9d1f5"
+        },
+        "doatools.utils.conversion": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/utils/conversion.py",
+          "executed_source_sha256": "41e3089e456c617046302a7cbc1c5a417872db0513dffb29ac52e31ae6ba80e3"
+        },
+        "doatools.model.sources": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/model/sources.py",
+          "executed_source_sha256": "0fe676c55c4b6f2e73ad99323398bd71bc8d80bbf8c56b24f9313af85e980e25"
+        },
+        "doatools.model.snapshots": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/model/snapshots.py",
+          "executed_source_sha256": "6d920dc7ad23429c3e71ed05e19b1b3ef900280e48e6b26bcc5f3268cfdb195d"
+        },
+        "doatools.model": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/model/__init__.py",
+          "executed_source_sha256": "56ac2f38058690974d7e86b09899a2f139da52c01993f08c366d40c8a06f7e25"
+        },
+        "doatools.estimation.core": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/estimation/core.py",
+          "executed_source_sha256": "63a0e2d9a3561c0270aaa2d6f207777257ccff607bd11d72dab5c3f5419649d8"
+        },
+        "doatools.estimation.music": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/estimation/music.py",
+          "executed_source_sha256": "f33e411318b06628af8078f1f3bfc5122525d2273c763b23da3a2388101e5a3a"
+        },
+        "doatools.estimation.min_norm": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/estimation/min_norm.py",
+          "executed_source_sha256": "2f46c83b4f6ceb2460623c631270b3b2e2e587f0c5bc8267b4d6912c4fc2b7cf"
+        },
+        "doatools.estimation.esprit": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/estimation/esprit.py",
+          "executed_source_sha256": "06f24db5d0f04928dca8c7821fe53c821534c9473c6afef399ffd0746d474711"
+        },
+        "doatools.estimation.beamforming": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/estimation/beamforming.py",
+          "executed_source_sha256": "fa3720a2590f820eb87e04a3075d4ffc56e5d724eed7f9ef949ffc871882758e"
+        },
+        "doatools.optim": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/optim/__init__.py",
+          "executed_source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "doatools.optim.l1lsq": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/optim/l1lsq.py",
+          "executed_source_sha256": "2bd8f2b55f90d3ac2e61c95994f1c8f7a3d1e7b41fd197fb4b0410463aae9fce"
+        },
+        "doatools.estimation.sparse": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/estimation/sparse.py",
+          "executed_source_sha256": "8141c8eb968d7262e8957eb8ac253eaf6ea48186955c3953cc6b4f9c5fba46d0"
+        },
+        "doatools.estimation.ml": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/estimation/ml.py",
+          "executed_source_sha256": "9c841364059558d27afbe2d11c0c560735f90e5ddb91bfe64ee0199e1892609a"
+        },
+        "doatools.estimation.grid": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/estimation/grid.py",
+          "executed_source_sha256": "254af4554543891cb75803247b4631c0473d1fc5cee0c9131e78d8cfebb548d0"
+        },
+        "doatools.estimation.coarray": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/estimation/coarray.py",
+          "executed_source_sha256": "26028a116fb22cb2de583d7ed112bd5c0b0446f1c802d89a66ffbb17a2c4869c"
+        },
+        "doatools.estimation.preprocessing": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/estimation/preprocessing.py",
+          "executed_source_sha256": "f4785d6d74eaef4451292aee511431b29379b38b4de61f1183c20dfb4e7e2b54"
+        },
+        "doatools.estimation.source_number": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/estimation/source_number.py",
+          "executed_source_sha256": "fba799581f17bc2748bcac25e402c427f37b7355d0b1eb28bfaedb990b9f67a5"
+        },
+        "doatools.estimation": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/doatools/doatools/estimation/__init__.py",
+          "executed_source_sha256": "42b9eff3f5c41ccad84f9aecefe8a5de6d2564e9e05982365b809755b482ccdf"
+        }
+      },
+      "unchanged_after": true
+    }
+  },
   "results": {
     "cssm_filtered_mapping": {
       "original_diagonal": [
@@ -1097,9 +2323,9 @@
     "tops": {
       "original_peak_deg": 49.0,
       "independent_peak_deg": 30.0,
-      "original_min_singular_value": 0.3758918943721752,
+      "original_min_singular_value": 0.3758918606848927,
       "independent_at_true_deg": 2.2541350341453035e-16,
-      "max_absolute_norm_difference": 0.5236364634946317,
+      "max_absolute_norm_difference": 0.5236365425723937,
       "bins": [
         10,
         20,
@@ -1681,91 +2907,91 @@
         ]
       ],
       "all_original_singular_values": [
-        0.7356198625767366,
+        0.7356197980682347,
         0.7286153264608034,
         0.721439706271134,
-        0.7140963798499468,
+        0.7140964406387789,
         0.7065889104578866,
         0.6989211915159383,
         0.6910975733836323,
-        0.6831226376850824,
-        0.6750013799993595,
-        0.6667396307366311,
-        0.6583429105814125,
-        0.649817765201016,
+        0.6831225820552926,
+        0.6750014343143185,
+        0.6667395777431309,
+        0.658342858914276,
+        0.6498178155387074,
         0.6411711332780311,
         0.6324106094946992,
         0.6235439616433787,
-        0.6145801127850066,
-        0.6055281550905938,
-        0.596398336490598,
+        0.6145800227322447,
+        0.605528242510199,
+        0.5963984212939472,
         0.5872014619332662,
-        0.5779487338479928,
+        0.5779488134857075,
         0.5686531841185619,
         0.5593276019967108,
         0.5499866053743985,
-        0.5406454302337587,
-        0.5313205589178365,
+        0.540645465078336,
+        0.5313205252648731,
         0.5220295046020273,
         0.5127909700558625,
-        0.503625020832763,
-        0.49455300082537434,
+        0.5036250813048203,
+        0.49455305913843406,
         0.4855975311111852,
         0.4767828470648549,
-        0.468134191866864,
+        0.4681342441162112,
         0.4596786691020345,
-        0.4514444961560038,
-        0.44346139564546977,
-        0.43576034461012664,
-        0.4283735109507681,
+        0.451444544746224,
+        0.4434614425323979,
+        0.4357603898827387,
+        0.4283734672000418,
         0.4213338599792282,
         0.41467544111931715,
         0.40843249730190195,
-        0.4026394878151825,
-        0.39733074477631775,
-        0.39253955620976155,
-        0.38829820325576575,
+        0.40263952646726225,
+        0.39733066949722934,
+        0.3925395194724891,
+        0.38829823920344825,
         0.384637090395545,
         0.38158391517478535,
-        0.3791637072073941,
-        0.37739752429331724,
-        0.376302721402752,
-        0.3758918943721752,
-        0.37617268536709114,
-        0.3771479306339088,
-        0.37881526661188664,
+        0.37916367293112235,
+        0.3773975582510142,
+        0.3763027551637171,
+        0.3758918606848927,
+        0.3761726516294611,
+        0.37714799845950614,
+        0.3788153008251957,
         0.38116740551500355,
-        0.38419210777850193,
-        0.3878729770154293,
+        0.3841921429699399,
+        0.3878730128844221,
         0.3921894685778393,
-        0.39711763108571324,
+        0.397117668684902,
         0.40263079128591184,
-        0.40869962355393036,
-        0.41529341313570733,
-        0.4223799212279267,
-        0.42992658464486116,
+        0.40869958372959575,
+        0.4152933720159883,
+        0.42237996376294945,
+        0.42992654057632224,
         0.4379001983562915,
-        0.4462678317307053,
+        0.44626773676623194,
         0.4549969669067395,
-        0.46405571451378974,
+        0.4640556631709013,
         0.4734131312620546,
         0.48303922745122335,
         0.4929052176946024,
-        0.5029835652378404,
+        0.5029836255559521,
         0.5132479719669935,
         0.523673371110245,
         0.5342359406717562,
-        0.5449134155195656,
+        0.5449133447257959,
         0.5556842651730787,
         0.5665286219055499,
-        0.5774275772583815,
-        0.5883633007706593,
+        0.5774274977642483,
+        0.5883632182369839,
         0.5993190348805117,
         0.6102791555594163,
-        0.6212287692793387,
-        0.6321542115389774,
+        0.6212288152852091,
+        0.6321541639006902,
         0.6430423726390431,
-        0.6538812577524874,
+        0.6538812067832842,
         0.6646592580648867,
         0.6753659214832112,
         0.6859913352849577,
@@ -1773,24 +2999,24 @@
         0.7069617453374288,
         0.7172900372830393,
         0.7275036370377276,
-        0.7375956967206628,
+        0.7375955670096748,
         0.7475594239040912,
-        0.7573891326509561,
-        0.7670791445218489,
-        0.7766245905148311,
-        0.7860207883119646,
+        0.7573890642679483,
+        0.7670792146658427,
+        0.7766246624154146,
+        0.7860206410101563,
         0.7952631236160576,
-        0.804347997013734,
+        0.804347919888228,
         0.8132718518005763,
-        0.8220312715739396,
+        0.8220311910200091,
         0.8306231776975028,
         0.8390453060628033,
         0.8472950289062414,
         0.855370389423298,
-        0.8632693080504731,
+        0.8632693968892858,
         0.8709903266651888,
         0.8785319651235103,
-        0.8858930385977629,
+        0.8858929450415504,
         0.8930723454342537,
         0.9000690990090087,
         0.9068826191051227,
@@ -1798,249 +3024,249 @@
         0.9199578438049366,
         0.9262188948871851,
         0.9322952427715124,
-        0.9381869319406345,
-        0.9438938108660768,
-        0.9494161310271332,
+        0.9381868270132592,
+        0.9438937046582977,
+        0.9494160235729658,
         0.9547538869996143,
         0.959907760328359,
         0.9648776851975395,
         0.9696643514545009,
-        0.9742680859505115,
+        0.9742679727972693,
         0.9786891532630699,
-        0.9829284222658162,
-        0.9869864421564679,
+        0.9829285374396802,
+        0.9869863260296776,
         0.9908632914475489,
-        0.9945600748166072,
+        0.9945601927324592,
         0.998077281847637,
-        1.0014155848031754,
+        1.0014153457091723,
         1.0045752282853893,
         1.0075572728910047,
-        1.0103621460593764,
-        1.0129905902434269,
-        1.0154431068660672,
+        1.0103620243667735,
+        1.0129904679168367,
+        1.0154429839464387,
         1.0177201251700172,
         1.0198226113833522,
         1.0217510749959409,
-        1.0235059260028836,
-        1.0250878419377303,
-        1.026497262841773,
+        1.0235058011234932,
+        1.025087716672018,
+        1.0264971372313618,
         1.0277347595121211,
-        1.0288009665220568,
+        1.0288008403472135,
         1.0296960088300957,
-        1.0304208856137604,
+        1.0304207590412622,
         1.0309756983653557,
         1.0313608470414488,
         1.0315769655524627,
-        1.031624412136302,
-        1.0315035841782656,
-        1.0312145998979432,
+        1.0316243487021266,
+        1.0315034573396396,
+        1.0312147266655407,
         1.0307582484941398,
-        1.030134658117218,
+        1.0301345316150279,
         1.0293441836114834,
-        1.0283872793986897,
+        1.0283872163619896,
         1.0272641217148728,
         1.0259752402956939,
-        1.0245207647051064,
-        1.0229013051045392,
-        1.0211172011633416,
-        1.019168590985519,
-        1.0170558500569689,
+        1.024520889832294,
+        1.0229014298364623,
+        1.0211170768661744,
+        1.0191684671622947,
+        1.0170557267465845,
         1.0147795902549752,
-        1.0123401694328011,
-        1.0097378230267815,
-        1.0069731558109591,
+        1.0123400472632476,
+        1.0097377014845246,
+        1.0069732766885897,
         1.0040467764750267,
-        1.0009593024625956,
+        1.0009591830244948,
         0.9977108311216119,
-        0.9943023775830223,
-        0.9907345632054767,
+        0.9943022597282959,
+        0.9907344461950193,
         0.9870078099509956,
         0.9831233350639488,
         0.9790817560381669,
-        0.9748841421159055,
-        0.9705312174170191,
+        0.9748840288195182,
+        0.9705311051301254,
         0.966024274840473,
         0.9613644977137159,
-        0.9565530825106353,
+        0.9565531915864085,
         0.9515915712884748,
         0.9464813090823915,
-        0.9412238860999679,
-        0.9358215517201949,
+        0.9412239917077758,
+        0.9358214473212435,
         0.9302754316185109,
         0.9245880491658258,
         0.9187617417575094,
         0.9127984810427956,
         0.9067012776341179,
-        0.9004725742889702,
-        0.8941156256698319,
-        0.8876333218454451,
-        0.8810291455834001,
+        0.9004726709499352,
+        0.8941155303688396,
+        0.8876332279213005,
+        0.8810290530516863,
         0.8743067702167744,
-        0.8674700489617638,
+        0.8674701386672744,
         0.8605231802787471,
-        0.85347050815866,
+        0.8534705949921348,
         0.8463168514613747,
-        0.8390672105337913,
-        0.8317266645349515,
-        0.8243010064626489,
-        0.8167962738561859,
+        0.8390671266064326,
+        0.8317265820696395,
+        0.8243010874620491,
+        0.8167963533874046,
         0.8092187919628828,
-        0.8015752085444705,
-        0.7938724454524333,
-        0.7861180195497542,
-        0.7783198157850152,
+        0.8015750553551232,
+        0.7938722951930958,
+        0.7861179458806207,
+        0.7783197435702116,
         0.7704859505346765,
         0.7626252006087104,
         0.7547467638349189,
-        0.74685990785478,
-        0.7389746333716419,
-        0.7311013581829352,
-        0.7232507575562932,
-        0.7154344128178678,
-        0.7076637005378883,
+        0.7468598413598773,
+        0.7389745031752106,
+        0.7311012944644792,
+        0.7232508822710846,
+        0.7154343518010274,
+        0.7076637602364647,
         0.6999509786129076,
-        0.692308676314765,
-        0.6847496698126299,
-        0.6772875003007527,
-        0.6699358679532954,
+        0.6923086191787939,
+        0.6847497257077377,
+        0.6772874456172675,
+        0.6699358144504935,
         0.6627085053909499,
-        0.6556201480259237,
+        0.6556200967852716,
         0.6486851815177715,
         0.6419184778237755,
         0.6353350339002563,
         0.628949807924793,
-        0.6227780525104607,
+        0.6227780062748429,
         0.6168347654877874,
         0.6111347559375511,
-        0.6056929421452814,
+        0.6056928546781147,
         0.6005233939454334,
-        0.5956403535978387,
-        0.5910571807784493,
+        0.5956404381857658,
+        0.591057139132855,
         0.5867864403957933,
-        0.5828404422485061,
+        0.5828404827442599,
         0.5792301920290638,
         0.5759658916683111,
-        0.5730568186188706,
+        0.5730567403236224,
         0.5705108224955129,
-        0.5683344144093362,
-        0.5665332132362768,
+        0.5683343373991903,
+        0.5665331367134883,
         0.5651109815578875,
-        0.564070404978307,
-        0.5634122630941879,
+        0.5640703291193851,
+        0.5634121874121831,
         0.5631360835045847,
-        0.5632400634747299,
+        0.5632399878389803,
         0.5637203437423413,
-        0.564572316653656,
-        0.5657893946998117,
-        0.5673638599589388,
-        0.5692870068097753,
+        0.564572278656663,
+        0.565789356538818,
+        0.5673639367063069,
+        0.5692869295412577,
         0.5715484091897342,
-        0.5741370157935096,
-        0.5770408986272196,
-        0.580246822206459,
-        0.5837412023292564,
+        0.5741370943842264,
+        0.5770408589333662,
+        0.5802468623426053,
+        0.5837412429502766,
         0.5875096983200878,
         0.5915375780717653,
-        0.5958096198096744,
-        0.6003103239165105,
+        0.5958095774916786,
+        0.6003102809567656,
         0.6050240329603127,
-        0.6099350845761884,
+        0.6099351732728736,
         0.615027865972061,
         0.6202863906400037,
         0.6256954838174563,
-        0.631239690329692,
-        0.6369040144062895,
+        0.6312397853308189,
+        0.6369040627631509,
         0.6426739181099095,
         0.6485347293085604,
         0.6544727292756937,
         0.6604743417859733,
-        0.6665264000966187,
+        0.6665264530562369,
         0.6726162861090108,
-        0.6787318667001855,
-        0.6848613105326207,
+        0.6787318117832184,
+        0.6848613664459561,
         0.6909935095963953,
         0.6971175017412131,
         0.703223300723451,
         0.7093008320997427,
-        0.7153408252207414,
+        0.7153407642198635,
         0.7213343684207086,
-        0.7272729794842042,
+        0.7272729164313185,
         0.733148678557707,
         0.7389538676207419,
         0.7446813251490608,
-        0.7503241285158049,
-        0.7558759054895609,
+        0.7503240614026143,
+        0.755875973599602,
         0.761330551066076,
         0.7666824750716017,
         0.7719260145793998,
-        0.777056161767143,
-        0.7820682546560828,
+        0.7770562337476592,
+        0.7820683275681573,
         0.7869576385176774,
         0.7917201960847234,
-        0.7963518564437739,
+        0.7963517808440774,
         0.8008487541393996,
         0.805207630219552,
         0.809425007355025,
         0.8134978093494458,
         0.8174231424094831,
-        0.8211983830573639,
+        0.8211982222758248,
         0.8248206209088278,
-        0.8282876256300696,
-        0.831597214133154,
+        0.8282875438453059,
+        0.8315972965728144,
         0.834747165966119,
         0.8377353862820687,
-        0.8405600762501473,
+        0.8405599920238762,
         0.8432193163241479,
         0.8457114858914638,
         0.8480349266398829,
         0.8501879389291469,
         0.8521694715042708,
-        0.8539776562781387,
-        0.8556115348229972,
+        0.8539775693414547,
+        0.8556113602836817,
         0.857069411051675,
-        0.8583505944322378,
+        0.858350506602926,
         0.8594533010942175,
         0.86037711078655,
         0.8611203299695478,
         0.8616821944144073,
-        0.8620618144366596,
+        0.862061725846217,
         0.862257998333171,
         0.8622697863878356,
-        0.8620965432927522,
-        0.8617369871017966,
+        0.8620964546951716,
+        0.8617370756255076,
         0.8611907881850067,
         0.8604568029781875,
-        0.859534231379722,
-        0.8584226205186408,
+        0.8595343194514462,
+        0.8584227083627112,
         0.8571210788888641,
-        0.8556288145677281,
+        0.8556289018409375,
         0.8539454909133368,
         0.852070361608988,
-        0.8500028929212801,
-        0.8477425135401083,
+        0.8500029790505867,
+        0.8477425992119435,
         0.8452889690227271,
         0.8426415641701185,
         0.8398002005042841,
-        0.8367645374807033,
+        0.836764620948063,
         0.8335345144526476,
-        0.8301097826710815,
-        0.8264903063398582,
+        0.8301098648160952,
+        0.82649038777009,
         0.8226761279986569,
-        0.8186674664068617,
-        0.8144644143781581,
-        0.8100672042452634,
+        0.8186675463028928,
+        0.8144644934559201,
+        0.8100673606976813,
         0.8054765361949426,
         0.8006925851580986,
         0.7957161927417313,
         0.7905481122696746,
-        0.7851893397212237,
+        0.7851894132164159,
         0.7796409134595322,
         0.7739040175789317,
         0.7679801489506176,
-        0.7618709933830651,
+        0.7618710625777948,
         0.7555781776231223,
         0.7491039176866976,
-        0.7424501575291053
+        0.7424502232411144
       ],
       "independent_projection_norms": [
         0.21940926180955558,
@@ -2429,7 +3655,7 @@
     "root_music_facade": {
       "resolved": true,
       "angles_deg": [
-        29.999999711097722
+        29.999999797741992
       ],
       "independent_expected_deg": [
         30.0

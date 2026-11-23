@@ -9,6 +9,8 @@ No SciPy imports; deterministic float64.
 from __future__ import annotations
 
 from itertools import permutations
+from decimal import Decimal, localcontext
+from codes.chapters.ch09.core.tracking import _checked_covariance, wrap_angle
 import math
 import numbers
 import numpy as np
@@ -47,28 +49,14 @@ def _integer(value, name: str, *, minimum: int | None = None) -> int:
 
 
 def _wrap_angle_deg(angle: float | np.ndarray) -> float | np.ndarray:
-    value = _finite_real_array(angle, "angle")
-    wrapped = ((value + 180.0) % 360.0) - 180.0
-    wrapped = np.where(wrapped >= 180.0, -180.0, wrapped)
-    wrapped = np.where(np.abs(value) < 1e-12, value, wrapped)
-    return float(wrapped) if wrapped.ndim == 0 else wrapped
+    return wrap_angle(_finite_real_array(angle, "angle"))
 
 
 def _checked_psd_2x2(matrix, name: str = "covariance") -> np.ndarray:
     arr = _finite_real_array(matrix, name)
     if arr.shape != (2, 2):
         raise ValueError(f"{name} must have shape (2, 2)")
-    if not np.allclose(arr, arr.T, rtol=1e-12, atol=1e-15):
-        raise ValueError(f"{name} must be symmetric")
-    sym = 0.5 * (arr + arr.T)
-    eigvals, vecs = np.linalg.eigh(sym)
-    tol = 32.0 * np.finfo(float).eps * max(1.0, float(eigvals[-1]))
-    if eigvals[0] < -tol:
-        raise ValueError(f"{name} must be positive semidefinite")
-    if eigvals[0] < 0.0:
-        clipped = vecs @ np.diag(np.maximum(eigvals, 0.0)) @ vecs.T
-        sym = 0.5 * (clipped + clipped.T)
-    return sym
+    return _checked_covariance(arr, name)
 
 
 def echo_sector_gate(
@@ -214,6 +202,63 @@ def fov_bernoulli_missed_detection_update(
     }
 
 
+def small_set_distances(truth, estimate, *, cutoff=10., order=1):
+    """OSPA and alpha=2 GOSPA on <=7 scalar circular angles, p=1 or 2.
+
+    Exhaustive enumeration is intentionally small. This scores unordered
+    position sets, never identity continuity. Empty/empty is zero; one empty
+    set has OSPA=c and GOSPA=(c^p*n/2)^(1/p). Compute roots in cutoff-normalized
+    units, so a tiny positive c does not become zero by squaring it. A power
+    cost outside float64 is None with an explicit status, never a false zero.
+    Reject a lost nonzero normalized distance or final metric: this teaching
+    solver does not claim arbitrary finite-scale support.
+    """
+    first = _finite_real_array(truth, 'truth')
+    second = _finite_real_array(estimate, 'estimate')
+    cutoff = _finite_real_scalar(cutoff, 'cutoff')
+    order = _finite_real_scalar(order, 'order')
+    if first.ndim != 1 or second.ndim != 1 or max(first.size, second.size) > 7:
+        raise ValueError('small 1-D sets of at most seven angles are required')
+    if not 0 < cutoff <= 180 or order not in (1, 2):
+        raise ValueError('this teaching helper supports 0<c<=180 degrees and p=1 or 2')
+    first, second = _wrap_angle_deg(first), _wrap_angle_deg(second)
+    if np.unique(first).size != first.size or np.unique(second).size != second.size:
+        raise ValueError('sets must not contain duplicate positions modulo 360')
+    if first.size > second.size:
+        first, second = second, first
+    m, n = len(first), len(second)
+    best_root, best_distances = math.inf, ()
+    for assignment in permutations(range(n), m):
+        distances = tuple(min(cutoff, abs(float(_wrap_angle_deg(first[i]-second[j]))))
+                          for i, j in enumerate(assignment))
+        normalized = tuple(distance/cutoff for distance in distances)
+        if any(d != 0 and unit == 0 for d, unit in zip(distances, normalized)):
+            raise ValueError('nonzero normalized set distance exceeds solver support')
+        root = math.fsum(normalized) if order == 1 else math.hypot(*normalized)
+        if root < best_root:
+            best_root, best_distances = root, distances
+    # Keep the restored powers in Decimal until the final root. Apart from
+    # protecting subnormal cutoffs, this preserves simple exact p=1 anchors
+    # such as (2+10)/2=6 without normalized-domain restoration rounding.
+    with localcontext() as context:
+        context.prec = 80
+        exact_power = sum((Decimal.from_float(d)**int(order) for d in best_distances), Decimal(0))
+        unmatched = Decimal.from_float(cutoff)**int(order)*(n-m)
+        ospa_power = (exact_power+unmatched)/n if n else Decimal(0)
+        gospa_power = exact_power+unmatched/2
+        ospa = float(ospa_power if order == 1 else ospa_power.sqrt())
+        gospa = float(gospa_power if order == 1 else gospa_power.sqrt())
+        power = float(exact_power)
+    if any(exact != 0 and value == 0 for exact, value in ((ospa_power, ospa), (gospa_power, gospa))):
+        raise ValueError('positive set metric exceeds floating-point range')
+    status = 'representable'
+    if exact_power != 0 and power == 0:
+        power, status = None, 'positive_power_underflow'
+    return {'ospa': ospa, 'gospa_alpha2': gospa,
+            'matched_capped_cost_power': power, 'matched_capped_cost_power_status': status,
+            'cardinality_difference': n-m}
+
+
 def angular_ospa_distance(
     truth_deg: np.ndarray | list[float],
     estimate_deg: np.ndarray | list[float],
@@ -221,30 +266,10 @@ def angular_ospa_distance(
     cutoff_deg: float = 10.0,
     order: int = 1,
 ) -> float:
-    """Label-free circular OSPA distance for <= 7 targets (p = 1 or 2)."""
-    first = _finite_real_array(truth_deg, "truth_deg")
-    second = _finite_real_array(estimate_deg, "estimate_deg")
-    cutoff = _finite_real_scalar(cutoff_deg, "cutoff_deg")
+    """Label-free circular OSPA, using the chapter's unique set-distance kernel."""
     p_ord = _integer(order, "order", minimum=1)
-    if first.ndim != 1 or second.ndim != 1 or max(first.size, second.size) > 7:
-        raise ValueError("truth_deg and estimate_deg must be 1-D arrays of length <= 7")
-    if not 0.0 < cutoff <= 180.0 or p_ord not in (1, 2):
-        raise ValueError("require 0 < cutoff_deg <= 180 and order in {1, 2}")
-    first = np.asarray(_wrap_angle_deg(first), dtype=np.float64).reshape(-1)
-    second = np.asarray(_wrap_angle_deg(second), dtype=np.float64).reshape(-1)
-    if first.size > second.size:
-        first, second = second, first
-    m, n = first.size, second.size
-    if n == 0:
-        return 0.0
-    best_cost = math.inf
-    for perm in permutations(range(n), m):
-        dists = [min(cutoff, abs(float(_wrap_angle_deg(first[i] - second[j])))) for i, j in enumerate(perm)]
-        cost = sum(d ** p_ord for d in dists)
-        if cost < best_cost:
-            best_cost = cost
-    total = (best_cost + (cutoff ** p_ord) * (n - m)) / n
-    return float(total if p_ord == 1 else math.sqrt(total))
+    return small_set_distances(truth_deg, estimate_deg,
+                               cutoff=cutoff_deg, order=p_ord)["ospa"]
 
 
 def _validate_id_angle_frame(frame, name: str) -> dict[int, float]:
@@ -329,7 +354,7 @@ def clear_mot_angular_summary(
                     if gid in prev_correspondence and prev_correspondence[gid] != hid
                 )
                 pair_ids = tuple((gid, hid) for gid, hid, _ in chosen)
-                cand_key = (-count, round(dist_sum, 12), switches, pair_ids)
+                cand_key = (-count, dist_sum, switches, pair_ids)
                 if best_key is None or cand_key < best_key:
                     best_key = cand_key
                     best_pairs = list(chosen)

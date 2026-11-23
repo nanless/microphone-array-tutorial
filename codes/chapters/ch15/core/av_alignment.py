@@ -25,8 +25,19 @@ def map_video_to_audio_frames(
     av_offset_s: float = 0.0,
     onset_frame: int = 10,
     consonant_frames: int = 8,
+    *,
+    alignment_mode: str = "online_last_arrived",
 ) -> dict:
-    """Map video exposure frames onto audio STFT hop centers and quantify onset clipping under lag.
+    """Map video to audio using explicit online arrival or offline association.
+
+    Online mode selects the last frame whose center timestamp plus ISP lag
+    has arrived. This is a center-arrival teaching model, not an assertion
+    that a real camera delivers a full exposure at its center. Offline mode
+    associates the nearest exposure center, allowing a future-arriving frame.
+    Audio decisions in this finite model occur at the stated hop-center times;
+    a real STFT/inference availability delay is not measured here.
+    An unavailable online frame has index -1 and zero timestamp placeholders;
+    consumers must use ``valid_video_mask`` before indexing or plotting.
 
     Parameters
     ----------
@@ -53,6 +64,8 @@ def map_video_to_audio_frames(
     hop = finite_real_scalar(audio_hop_s, "audio_hop_s")
     fps = finite_real_scalar(video_fps, "video_fps")
     offset = finite_real_scalar(av_offset_s, "av_offset_s")
+    if not isinstance(alignment_mode, str) or alignment_mode not in ("online_last_arrived", "offline_nearest_exposure"):
+        raise ValueError("unknown alignment_mode")
     if hop <= 0.0 or fps <= 0.0:
         raise ValueError("audio_hop_s and video_fps must be strictly positive")
 
@@ -85,19 +98,35 @@ def map_video_to_audio_frames(
     ):
         raise ValueError("audio-visual timestamp mapping exceeds finite float64/int64 support")
 
-    raw_video_idx = np.floor(scaled_vid_query).astype(np.int64)
-    clamped_before_start = raw_video_idx < 0
-    video_indices = np.maximum(0, raw_video_idx)
-    video_exposure_centers_s = (video_indices + 0.5) * video_period_s
-    effective_lip_lag_s = audio_times_s - video_exposure_centers_s
+    def associate(scaled_query: np.ndarray, audio_times: np.ndarray):
+        online = alignment_mode == "online_last_arrived"
+        indices = np.floor(scaled_query - (0.5 if online else 0.0)).astype(np.int64)
+        if online:
+            # Rounding a quotient must never admit even a slightly future arrival.
+            arrival = (indices + 0.5) * video_period_s + offset
+            indices = indices - (arrival > audio_times)
+            valid = indices >= 0
+            indices = np.where(valid, indices, -1)
+        else:
+            indices = np.maximum(0, indices)
+            valid = np.ones(indices.shape, dtype=bool)
+        centers = np.where(valid, (indices + 0.5) * video_period_s, 0.0)
+        arrivals = np.where(valid, centers + offset, 0.0)
+        return indices, valid, centers, arrivals
+
+    video_indices, valid_video, video_exposure_centers_s, video_arrivals_s = associate(
+        scaled_vid_query, audio_times_s,
+    )
+    effective_lip_lag_s = np.where(valid_video, audio_times_s - video_exposure_centers_s, 0.0)
 
     # Quantify word-initial consonant clipping when talker mouth opens at t_onset = onset_frame * hop
-    cons_vid_idx = np.maximum(0, np.floor(scaled_cons_query).astype(np.int64))
-    cons_vid_centers_s = (cons_vid_idx + 0.5) * video_period_s
-    if not (np.all(np.isfinite(video_exposure_centers_s)) and np.all(np.isfinite(cons_vid_centers_s))):
-        raise ValueError("mapped video exposure centers exceed finite float64 range")
+    _, cons_valid, cons_vid_centers_s, _ = associate(scaled_cons_query, cons_times_s)
+    if not all(np.all(np.isfinite(values)) for values in (
+        video_exposure_centers_s, cons_vid_centers_s, video_arrivals_s, effective_lip_lag_s,
+    )):
+        raise ValueError("mapped video timestamps exceed finite float64 range")
     # A video exposure centered strictly before t_onset_s captures pre-speech closed lips -> gates onset off
-    clipped_mask = cons_vid_centers_s < (t_onset_s - 1e-12)
+    clipped_mask = (~cons_valid) | (cons_vid_centers_s < (t_onset_s - 1e-12))
     clipped_consonant_frames = int(np.sum(clipped_mask))
     consonant_loss_fraction = float(clipped_consonant_frames / int(consonant_frames))
 
@@ -108,11 +137,15 @@ def map_video_to_audio_frames(
         "video_period_s": video_period_s,
         "hops_per_video_frame": hops_per_vid,
         "av_offset_s": offset,
+        "alignment_mode": alignment_mode,
         "audio_center_times_s": audio_times_s,
+        "audio_decision_times_s": audio_times_s.copy(),
         "queried_lip_times_s": queried_lip_times_s,
         "video_frame_indices": video_indices,
-        "clamped_pre_start_mask": clamped_before_start,
+        "valid_video_mask": valid_video,
+        "unavailable_video_mask": ~valid_video,
         "mapped_video_centers_s": video_exposure_centers_s,
+        "mapped_video_arrival_times_s": video_arrivals_s,
         "effective_lip_lag_s": effective_lip_lag_s,
         "onset_audit": {
             "onset_frame": int(onset_frame),

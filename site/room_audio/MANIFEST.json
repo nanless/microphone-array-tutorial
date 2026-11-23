@@ -310,21 +310,22 @@
     }
   ],
   "source_sha256": {
-    "codes/chapters/appendix_b/examples/room_srp_exercise.py": "598509685594821f88c058be7bf0ce256b12032fbe36173804ee2a14ea62bf81",
-    "codes/chapters/appendix_b/core/room_metrics.py": "79e984ea8eb0afee3157247e06bf2f2a01056e411068168cfe134faf799a8e51",
+    "codes/chapters/appendix_b/examples/room_srp_exercise.py": "aeadb54d948ef3be6497fc25abf9e13e60688061fcf07f94c3aa1dbe7fe58d0f",
+    "codes/chapters/appendix_b/core/room_metrics.py": "1009828945dd58c906caa11821162ce90eeb4d7f2c526e41666bc79c5ded5478",
     "codes/chapters/ch02/core/spectral.py": "5ade0b101cc00615276b3b60c3659ece3e68ad614cd2cb2edeb568359f034059",
-    "codes/chapters/ch02/core/conventions.py": "4e80a27490f05ddd5f4826361420c0c8d0b331464d1e5629c5def492da47b1d7",
+    "codes/chapters/ch02/core/conventions.py": "79af1b8f7fe664e64e7ad786082c36a29664eacbdda63fba96a944e548304865",
     "codes/chapters/ch04/core/doa.py": "33582d40ec9030537709d79bf13f4a904d2246f388e628aada7f66e8fb6dec04",
     "codes/chapters/ch03/core/geometry.py": "5a680848301358415f74647199a4c57b65086f0b2580f91706c912ad208d7bdb",
-    "codes/chapters/ch04/core/covariance.py": "d704be037100ee53caf6e2130fbabbe14ce6eeff9e3d11dde389fd368d271249"
+    "codes/chapters/ch04/core/covariance.py": "1fd3d333bb3963bdf81cefe79de3270a485066c57f8b37138e54f1e63ce62a63"
   },
   "environment": {
     "python": "3.13.12",
     "numpy": "2.5.3",
     "scipy": "1.18.1",
     "pyroomacoustics": "0.10.0",
-    "platform": "macOS-26.6.1-arm64-arm-64bit-Mach-O",
-    "pra_num_threads": "2",
+    "platform": "macOS-27.2.1-arm64-arm-64bit-Mach-O",
+    "pra_num_threads": null,
+    "pra_num_threads_effective": 2,
     "pyroomacoustics_source_sha256": {
       "room.py": "b4189f582459811f8dbbf3885882e115db60b7b48b4ca0a3672dbef39118e4dc",
       "acoustics.py": "3196254709071ab1061982133f05be94e7da554f2619db98d829203839d7c4d2",

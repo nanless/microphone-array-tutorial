@@ -6,7 +6,7 @@
 
 **[在线进入交互式课程站 →](https://nanless.github.io/microphone-array-tutorial/)** · **[▶ 零安装 4 麦波束实验室](https://nanless.github.io/microphone-array-tutorial/assets/readme/lab/array-lab.html)** · **[🔊 15 麦真实房间试听](https://nanless.github.io/microphone-array-tutorial/site/#course-cases)** · **[全书合订本 PDF](dist/microphone-array-tutorial.pdf)** · [第 0 章数学基础](chapters/00_math-foundations.md) · [全书导读目录](chapters/00_overview.md) · **[English Edition (Web / PDF / Docs)](README_EN.md)**
 
-**16 章正文 · 2 篇附录 · 360 道可运行练习 · 87 张编号图** · **283 段配套 WAV 音频** · **129 个开源项目源码对照**
+**16 章正文 · 2 篇附录 · 360 道可运行练习 · 87 张编号图** · **283 段配套 WAV 音频** · **129 个上游 Git 项目来源索引**
 
 <picture>
   <source media="(prefers-reduced-motion: reduce)" srcset="assets/readme/course-cover-still.svg">
@@ -24,7 +24,7 @@
 | **声源定位（DOA）** | 说话人在哪个方向？多径反射下为何会指错？ | 麦间到达时差与子空间正交性：GCC-PHAT、SRP-PHAT、MUSIC、ESPRIT | 方位角或空间坐标 · [第 4 章](chapters/04_doa-estimation.md) |
 | **波束形成（Beamforming）** | 怎样无失真保留目标方向人声，同时压低旁向噪声？ | 导向矢量无失真约束与干扰协方差逆加权：DSB、超指向、MVDR、LCMV、GSC、MWF | 增强后的单路或双耳音频 · [第 5 章](chapters/05_beamforming.md) |
 | **声学回声消除（AEC）** | 全双工通话中，怎样干净减除设备自己播出的声音？ | 同步播放参考回采与分块频域自适应：NLMS、PBFDAF、APA、FDKF、双讲冻结 | 减除耦合回声后的近端语音 · [第 6 章](chapters/06_aec.md) |
-| **盲去混响（WPE）** | 没有干净参考信号时，怎样削弱房间多次反射拖尾？ | 跳过保护间隔 $\Delta$ 的多通道延迟线性预测与时变方差加权：离线/在线 WPE、MINT | 压低晚期混响的清晰语音 · [第 7 章](chapters/07_wpe-dereverberation.md) |
+| **盲去混响（WPE）** | 没有干净参考信号时，怎样削弱房间多次反射拖尾？ | 跳过保护间隔 $\Delta$ 的多通道延迟线性预测与时变方差加权：离线/在线 WPE；另介绍基于已知多通道路径的 MINT 逆滤波 | 压低晚期混响的清晰语音 · [第 7 章](chapters/07_wpe-dereverberation.md) |
 | **语音分离（Separation）** | 多人同时抢话（鸡尾酒会问题）时怎样拆成独立音轨？ | 非高斯跨频共变、活动先验与时频掩码：IVA、ILRMA、GSS、PIT、连续流拼接 CSS | 分离后的多路说话人音轨 · [第 8 章](chapters/08_speech-separation.md) |
 | **声源追踪（Tracking）** | 说话人边走边说、停顿静默时，怎样稳住自适应波束？ | 状态空间贝叶斯递推与数据关联：Kalman、粒子滤波、IMM、轨迹确认与退役状态机 | 连续平滑的角度轨迹与不确定度 · [第 9 章](chapters/09_source-tracking.md) |
 
@@ -41,7 +41,7 @@
 
 ## 先听为快：两个无需安装环境的在线实验
 
-1. **[15 麦真实混响房间定位与 MVDR 波束对比](https://nanless.github.io/microphone-array-tutorial/site/#course-cases)**：基于公开基准数据集 LOCATA 的真实房间多通道录音，在线切换说话人 A / B 查看 SRP-PHAT 空间扫描谱峰（估计 35° 对光学真值 34.4°），并同步跳转试听“单麦原始录音 vs 15 路延迟求和 vs MVDR 加后滤波”（干扰段额外压低 **12.9 dB**，目标损失仅 **1.5 dB**）。
+1. **[15 麦真实混响房间定位与 MVDR 波束对比](https://nanless.github.io/microphone-array-tutorial/site/#course-cases)**：基于公开基准数据集 LOCATA 的真实房间多通道录音，在线切换说话人 A / B 查看 SRP-PHAT 空间扫描谱峰（估计 35° 对光学真值 34.4°），并同步跳转试听“单麦原始录音 vs 15 路延迟求和 vs MVDR 加后滤波”（相对延迟求和，B 单讲评分段的 300–3400 Hz 录音总能量低 **12.9 dB**，A 单讲评分段低 **1.5 dB**）。
 2. **[四支麦，听哪边？零安装浏览器波束实验室](https://nanless.github.io/microphone-array-tutorial/assets/readme/lab/array-lab.html)**（离线说明见 [`assets/readme/lab/`](assets/readme/lab/README.md)）：在网页中实时切换单麦、对准左边 A 与对准右边 B，再把右侧干扰一键切成 **250 Hz 低音**——直观听见并算清为什么同一组采样时差能把高频干扰压到 **0.01% 以下**，面对长波长低频干扰却残留 **82.1% 功率**。
 
 ---
@@ -62,7 +62,7 @@
 
 ---
 
-## 3 分钟本地运行与复算验证
+## 本地运行与复算验证
 
 克隆仓库并安装轻量基础依赖（核心教学练习仅依赖 `numpy`、`matplotlib` 等基础科学计算包，无需 GPU）：
 

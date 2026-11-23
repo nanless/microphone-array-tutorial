@@ -375,7 +375,7 @@
 
     <section class="course-case-audio" aria-labelledby="course-real-audio-title">
       <h3 id="course-real-audio-title">Synchronized A/B Listening on the 15-Mic Room Recording</h3>
-      <p>All three tracks share an identical timeline and export gain. Click “Jump to Interferer B” (4.08–4.68 s) to hear interference suppression, “Jump to Target A” (2.65–3.10 s) to verify distortionless speech fidelity, and “Jump to Overlap” (4.90–5.70 s).</p>
+      <p>All three tracks share an identical timeline and export gain. Click “Jump to Interferer B” (4.08–4.68 s) to hear interference suppression, “Jump to Target A” (2.65–3.10 s) to listen for changes in target clarity and coloration, and “Jump to Overlap” (4.90–5.70 s).</p>
       <div class="course-audio-jumps" role="group" aria-label="Synchronize all three audio players to the same timestamp" hidden>
         <button type="button" data-course-seek="2.65">Jump to Target A (2.65s)</button>
         <button type="button" data-course-seek="4.08">Jump to Interferer B (4.08s)</button>
@@ -394,7 +394,7 @@
         </div>
         <figcaption>
           <strong>Measure Both Interference Rejection and Target Distortion</strong>
-          <p>Across 300–3400 Hz, MVDR + postfiltering suppresses interferer B by an extra <b>12.9 dB</b> beyond 15-mic Delay-and-Sum while incurring only <b>1.5 dB</b> target loss during A-only speech, computed directly from 50 ms PCM windows.</p>
+          <p>Across 300–3400 Hz, the total recorded energy of MVDR + postfiltering is <b>12.9 dB</b> below Delay-and-Sum in the B-only scoring segment and <b>1.5 dB</b> below it in the A-only segment; both include room reflections and background sound. The plotted level curves separately use 50 ms windows of the actual WAVs.</p>
         </figcaption>
       </figure>
       <p class="course-note">Provenance: <a href="https://zenodo.org/records/3630471">LOCATA Corpus</a> · <a href="../assets/readme/cases/locata/NOTICE.txt">Attribution, License &amp; Reproduction</a> · <a href="../assets/readme/cases/locata/MANIFEST.json">Windowed PCM Manifest</a> · <a href="../assets/readme/cases/locata/mvdr.wav">Linear-Only MVDR Reference WAV</a></p>

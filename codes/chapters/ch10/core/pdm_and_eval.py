@@ -62,14 +62,17 @@ def cic_decimation_metrics(
     hal_freq_hz: float = 1000.0,
     hal_gains: tuple[float, float] = (1.0, 0.8),
 ) -> dict[str, float | int | bool]:
-    """Compute exact CIC register width, passband droop, group delay, and stereo skew.
+    """Compute safe CIC register-width bounds, exact droop, delay, and edge skew.
 
     For 1-bit PDM streams, distinguishes unipolar unsigned ``{0, 1}`` inputs
     (``B_in = 1`` -> ``1 + ceil(N * log2(R * M))`` unsigned bits, e.g. 17/25 bit)
     from bipolar signed two's-complement ``{-1, +1}`` inputs (``B_in = 2`` ->
     ``2 + ceil(N * log2(R * M))`` signed bits, e.g. 18/26 bit, because a 25-bit
     signed register maxes out at ``2**24 - 1`` and overflows on an all-``+1``
-    stream producing ``+2**24``).
+    stream producing ``+2**24``). These bounds are exact for the power-of-two
+    gains in E10-27; they need not be the minimum width at other gains. Edge
+    skew is an assumed residual acoustic timing offset, not a consequence of
+    PDM data-valid edges alone.
     """
     f_pdm = finite_real_scalar(pdm_clock_hz, "pdm_clock_hz")
     f_eval = finite_real_scalar(eval_freq_hz, "eval_freq_hz")
@@ -89,9 +92,9 @@ def cic_decimation_metrics(
         raise ValueError("hal_freq_hz must be positive")
 
     rm = r * m_delay
-    nyquist_after_cic = f_pdm / (2.0 * rm)
+    nyquist_after_cic = f_pdm / (2.0 * r)
     if not (0.0 < f_eval < nyquist_after_cic):
-        raise ValueError("eval_freq_hz must lie strictly inside (0, pdm_clock_hz / (2 * decimation * diff_delay))")
+        raise ValueError("eval_freq_hz must lie strictly inside (0, pdm_clock_hz / (2 * decimation))")
 
     if not isinstance(hal_gains, Sequence) or isinstance(hal_gains, (str, bytes)) or len(hal_gains) != 2:
         raise ValueError("hal_gains must be a two-element numeric sequence")
@@ -225,7 +228,15 @@ def p340_and_p808_evaluation(
     gold_targets: tuple[float, float] = (4.8, 1.4),
     gold_tol: float = 1.0,
 ) -> dict[str, object]:
-    """Classify ITU-T P.340 duplex types and filter ITU-T P.808 crowd ratings."""
+    """Compute attenuation categories and screen a constructed ACR vote table.
+
+    Thresholds refer to P.340 (05/2000), Table 4. The supplied RMS values
+    determine only its send/receive attenuation categories. They do not
+    include the double-talk TELR or the specified acoustic measurements, so
+    the joint terminal type remains unknown, including at zero attenuation.
+    The vote filter illustrates trap/gold screening, not statistical debiasing
+    or a complete execution of the P.808 listening protocol.
+    """
     if (not isinstance(single_talk_rms, Sequence)
             or isinstance(single_talk_rms, (str, bytes))
             or len(single_talk_rms) != 2):
@@ -238,7 +249,7 @@ def p340_and_p808_evaluation(
     if not isinstance(candidates_dt_rms, dict) or not candidates_dt_rms:
         raise ValueError("candidates_dt_rms must be a non-empty dict")
 
-    p340_results: dict[str, dict[str, float | str]] = {}
+    p340_results: dict[str, dict[str, object]] = {}
     for name, pair in candidates_dt_rms.items():
         if not isinstance(name, str) or not name:
             raise ValueError("candidate names must be non-empty strings")
@@ -252,7 +263,7 @@ def p340_and_p808_evaluation(
         ah_r_db = 20.0 * math.log10(u_r_st / u_r_dt)
         send_type = _classify_p340_sending(ah_s_db)
         recv_type = _classify_p340_receiving(ah_r_db)
-        overall_type = P340_TYPES[max(P340_TYPES.index(send_type), P340_TYPES.index(recv_type))]
+        attenuation_type = P340_TYPES[max(P340_TYPES.index(send_type), P340_TYPES.index(recv_type))]
         p340_results[name] = {
             "u_send_dt": u_s_dt,
             "u_recv_dt": u_r_dt,
@@ -260,7 +271,10 @@ def p340_and_p808_evaluation(
             "receiving_dt_attenuation_db": ah_r_db,
             "sending_type": send_type,
             "receiving_type": recv_type,
-            "overall_type": overall_type,
+            "attenuation_type": attenuation_type,
+            "joint_type": None,
+            "joint_status": "insufficient_evidence",
+            "missing_evidence": ["double_talk_telr", "specified_acoustic_measurement_conditions"],
         }
 
     trap_target = _positive_int(trap_expected, "trap_expected")
@@ -351,7 +365,7 @@ def p340_and_p808_evaluation(
 
     raw_mean = sum(raw_votes, Fraction(0)) / len(raw_votes)
     screened_mean = sum(screened_votes, Fraction(0)) / len(screened_votes)
-    debias = screened_mean - raw_mean
+    screening_difference = screened_mean - raw_mean
     retention = Fraction(len(accepted_ids), len(worker_rows))
 
     return {
@@ -369,8 +383,8 @@ def p340_and_p808_evaluation(
             "raw_mos": float(raw_mean),
             "screened_mos_fraction": str(screened_mean),
             "screened_mos": float(screened_mean),
-            "mos_debias_fraction": str(debias),
-            "mos_debias_delta": float(debias),
+            "screening_difference_fraction": str(screening_difference),
+            "screening_difference": float(screening_difference),
         },
     }
 
@@ -395,8 +409,8 @@ def p340_p808_teaching_case() -> dict[str, object]:
     )
     result["single_talk_erle_db"] = {"A": 48.0, "B": 35.0, "C": 32.0}
     result["evaluator_blind_spots"] = {
-        "POLQA_P863": "intrusive auto-alignment masks fixed 250 ms buffer latency",
-        "ViSQOL_v3": "patch spectro-temporal similarity tolerates constant lag and mild phase warp",
+        "POLQA_P863": "quality scoring with alignment does not replace a separate latency measurement",
+        "ViSQOL_v3": "aligned patch similarity does not establish acceptable latency or continuity",
         "DNSMOS_P835": "non-intrusive neural MOS can reward generative vocoder hallucinations without WER check",
         "NISQA": "blind dimension predictor is sensitive to out-of-domain codec/far-field priors without ASR",
     }

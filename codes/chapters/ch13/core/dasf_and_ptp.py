@@ -14,6 +14,8 @@ from __future__ import annotations
 import math
 import numpy as np
 
+from codes.chapters.ch05.core.beamforming import lcmv_weights
+
 
 def _validate_real_scalar(value: object, name: str) -> float:
     if isinstance(value, (bool, np.bool_)) or not isinstance(
@@ -248,7 +250,12 @@ def centralized_lcmv(
     *,
     condition_limit: float = 1e12,
 ) -> dict[str, object]:
-    """Solve min_w w^H R_nn w subject to C^H w = f."""
+    """Wrap the chapter-5 unique LCMV solver with chapter-13 diagnostics.
+
+    The constraint is C^H w=f, so the output response w^H C is conj(f).
+    Constraint diagnostics use column units and restore finite original units;
+    unrepresentable nonzero residuals or noise power are rejected explicitly.
+    """
     cov = _validate_spd_covariance(r_nn, "r_nn", condition_limit=condition_limit)
     c_mat = _validate_complex_array(constraints, "constraints", ndim=2)
     f_vec = _validate_complex_array(response, "response", ndim=1)
@@ -260,19 +267,46 @@ def centralized_lcmv(
     if p_dim > m_dim:
         raise ValueError("number of linear constraints P cannot exceed dimension M")
 
-    k_mat = np.linalg.solve(cov, c_mat)
-    gram = 0.5 * (c_mat.conj().T @ k_mat + (c_mat.conj().T @ k_mat).conj().T)
-    gram_eigs = np.linalg.eigvalsh(gram)
-    if float(gram_eigs[-1]) <= 0.0 or float(gram_eigs[0]) <= 1e-12 * float(gram_eigs[-1]):
-        raise ValueError("constraint matrix C is rank-deficient")
-    lagrange = np.linalg.solve(gram, f_vec)
-    weights = k_mat @ lagrange
-    noise_power = float(np.vdot(weights, cov @ weights).real)
-    constraint_residual = float(np.max(np.abs(c_mat.conj().T @ weights - f_vec)))
+    scales = np.max(np.maximum(np.abs(c_mat.real), np.abs(c_mat.imag)), axis=0)
+    with np.errstate(over="raise", invalid="raise", divide="raise", under="ignore"):
+        try:
+            f_real_unit = f_vec.real / scales
+            f_imag_unit = f_vec.imag / scales
+        except FloatingPointError as exc:
+            raise ValueError("LCMV normalized response exceeds floating-point range") from exc
+    if np.any((f_vec.real != 0) & (f_real_unit == 0)) or np.any(
+        (f_vec.imag != 0) & (f_imag_unit == 0)
+    ):
+        raise ValueError("nonzero LCMV normalized response is below float64 support")
+    f_unit = f_real_unit + 1j * f_imag_unit
+
+    try:
+        weights = lcmv_weights(cov, c_mat, f_vec, condition_limit=condition_limit)
+    except np.linalg.LinAlgError as exc:
+        raise ValueError(str(exc)) from exc
+    # The unique solver checks constraints in normalized column units. Keep
+    # those units for diagnostics too: raw C.H @ w can overflow before terms
+    # cancel even when the exact residual is zero.
+    with np.errstate(over="raise", invalid="raise", divide="raise"):
+        try:
+            c_unit = c_mat.real / scales + 1j * (c_mat.imag / scales)
+            residual_unit = c_unit.conj().T @ weights - f_unit
+            residual_real = residual_unit.real * scales
+            residual_imag = residual_unit.imag * scales
+            residual_abs = np.hypot(residual_real, residual_imag)
+            noise_power = float(np.vdot(weights, cov @ weights).real)
+        except FloatingPointError as exc:
+            raise ValueError("LCMV diagnostics exceed floating-point range") from exc
+    if not np.all(np.isfinite(residual_abs)) or not math.isfinite(noise_power):
+        raise ValueError("LCMV diagnostics exceed floating-point range")
+    if np.any((residual_unit != 0) & (residual_abs == 0)):
+        raise ValueError("nonzero LCMV constraint diagnostic is below float64 support")
+    if noise_power < 0 or (noise_power == 0 and np.any(weights != 0)):
+        raise ValueError("positive LCMV noise power is outside float64 support")
+    constraint_residual = float(np.max(residual_abs))
     return {
         "weights": weights,
         "noise_power": noise_power,
-        "lagrange_multipliers": lagrange,
         "constraint_max_abs_residual": constraint_residual,
     }
 

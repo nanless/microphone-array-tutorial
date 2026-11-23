@@ -159,11 +159,11 @@ class Chapter06Experiments(unittest.TestCase):
         self.assertAlmostEqual(icc['howling_gain_margin_db'], 20.0 * math.log10(2.0), places=12)
         c10, c25 = icc['cases']
         self.assertEqual(
-            (c10['itu_t_p1150_compliant'], c10['comb_notch_spacing_hz'], c10['first_notch_hz'], c10['notches_in_0_to_1000_hz']),
+            (c10['meets_arrival_difference_limit'], c10['comb_notch_spacing_hz'], c10['first_notch_hz'], c10['notches_in_0_to_1000_hz']),
             (True, 100.0, 50.0, 10),
         )
         self.assertEqual(
-            (c25['itu_t_p1150_compliant'], c25['comb_notch_spacing_hz'], c25['first_notch_hz'], c25['notches_in_0_to_1000_hz']),
+            (c25['meets_arrival_difference_limit'], c25['comb_notch_spacing_hz'], c25['first_notch_hz'], c25['notches_in_0_to_1000_hz']),
             (False, 40.0, 20.0, 25),
         )
 

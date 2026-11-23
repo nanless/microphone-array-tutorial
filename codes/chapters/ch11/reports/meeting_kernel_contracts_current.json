@@ -2,7 +2,7 @@
   "schema_version": 2,
   "actual_dependencies": {
     "codes/chapters/ch11/examples/audit_meeting_kernel_contracts.py": "71bd94ee728154930b43f8c96918718163908d3d6e9672181bbfcef66e98e959",
-    "codes/chapters/ch04/core/upstream_contracts.py": "8669f007ee16a15433598b8f451f226cceb3163bdbc2bf690709504874743167",
+    "codes/chapters/ch04/core/upstream_contracts.py": "e868220b7388ae3124d1098df9de4095e061c1982fb1a251ad7c27c6c0742be5",
     "codes/chapters/ch00/io_contracts.py": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974",
     "codes/chapters/ch00/upstream/fetch_upstreams.py": "442d17a5818ef0edf620bde85cc7959c1e73602a47f75e1cc8fce2b227ae11b4",
     "codes/chapters/ch10/examples/run_industrial_interfaces.py": "6501c7bdb2e5cd529dd9436cbc99ffd31ec1398fced8d0dc98c62a8524c3111c"
@@ -12,7 +12,7 @@
     "dependency_files": [
       {
         "path": "driver.d",
-        "sha256": "e847b28d43c80433944202e95011ae845da22daa49fd5900fd46abfd211a1ea7"
+        "sha256": "1e0b636a2abde43be57af4648e0f2264bf9b9f86911d312249012fe29fc5b9d3"
       }
     ],
     "original_compile_inputs": {
@@ -32,15 +32,15 @@
     "local_drivers": {},
     "compiler_environment_inputs": {
       "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/SDKSettings.json": {
-        "sha256": "7b93ad7e534cc4b31c6a4e39d19b5e0288acf2168c2649479a796d1cb51939fb",
-        "bytes": 7948
+        "sha256": "82165b15ee21419d4cffaba8895797391b908ac9499ba70f561f3e1bd16758d6",
+        "bytes": 8018
       },
       "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/Availability.h": {
         "sha256": "d39d74d343b5f3dc147525c5f4ba99c1ae9133bccc57eb6205a74d0ba99d92cb",
         "bytes": 28849
       },
       "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/AvailabilityInternal.h": {
-        "sha256": "4b7f7e27b33d7ccdcc21654b0016eaa4187ce63387eb135babf269cddedcb9b0",
+        "sha256": "e6af434988fdfb150c1eaa593ad9c421c3c2dabdb1cb1908e123baa305f16619",
         "bytes": 68834
       },
       "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/AvailabilityInternalLegacy.h": {
@@ -48,8 +48,8 @@
         "bytes": 414416
       },
       "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/AvailabilityVersions.h": {
-        "sha256": "e9f8f7e0eb62c904cf7dca1fd6ba2fe28ba7a382cd9b5339fd03f6de13e66d02",
-        "bytes": 33346
+        "sha256": "ac777f1ab509ef2851de9bfa718a159b8eacb140aa8b6c3b0105b34d5b413b60",
+        "bytes": 33855
       },
       "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/___wctype.h": {
         "sha256": "b226c1e20cabb4d18a12b50631ce14a6087deb9442a4a10dda96b8b4a773b667",
@@ -2292,8 +2292,8 @@
         "bytes": 2856
       },
       "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/make_transparent.h": {
-        "sha256": "bc732a384e773cfcd3880ee0281dc3f7c6ad3e7b21933b71791185c3c2801fdf",
-        "bytes": 1889
+        "sha256": "24b887de499915c4d9675347f2efc760481cf6dbc3bf4f6d75536097feeec925",
+        "bytes": 2002
       },
       "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/make_unsigned.h": {
         "sha256": "fa6732be816377e896f626441d57ef32008c8b529a2452894be7582aa5d511f0",
@@ -2976,8 +2976,8 @@
         "bytes": 3855
       },
       "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/_symbol_aliasing.h": {
-        "sha256": "be0bd8cbed76094f86924f0e24c8bbf7b4f2020e95b480966cad14a5c1138ecd",
-        "bytes": 43981
+        "sha256": "1fca032431f48bfd19173b325f49fe413c072d6bb0e033b6f4421a4577cc5abe",
+        "bytes": 44711
       },
       "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/_types/_blkcnt_t.h": {
         "sha256": "3526cf25ca7734bf6bc945c9483727b8c1ab3fde5ad8fb23acad7489e231330d",
@@ -3397,13 +3397,13 @@
       }
     }
   },
-  "created_utc": "2026-10-05T02:19:35.465388+00:00",
+  "created_utc": "2026-11-22T22:52:36.557655+00:00",
   "tool_sha256": "71bd94ee728154930b43f8c96918718163908d3d6e9672181bbfcef66e98e959",
   "checkout": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/meeteval",
   "revision": "6e3dc81284f2d6928f7ef9e620fd3b6906daa429",
   "origin": "https://github.com/fgnt/meeteval.git",
-  "source_lock_sha256": "ea8ce3cf679d70d06305f4942dbf9afeee94b69bd0ad7a5b9b09470c327a598f",
-  "source_lock_project_count": 115,
+  "source_lock_sha256": "55721fbe8027f67bf3159827b8b58c14bc327ea5e0221b216303681340e890e7",
+  "source_lock_project_count": 129,
   "sources": [
     {
       "path": "LICENSE",
@@ -3493,12 +3493,12 @@
         "setup.py"
       ]
     },
-    "lock_sha256": "ea8ce3cf679d70d06305f4942dbf9afeee94b69bd0ad7a5b9b09470c327a598f",
+    "lock_sha256": "55721fbe8027f67bf3159827b8b58c14bc327ea5e0221b216303681340e890e7",
     "source_document_paths": {
       "lock": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/SOURCES.lock.json",
       "status": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/SOURCE_STATUS.json"
     },
-    "status_sha256": "be926fccb75979e2f2ac428ac6c65c76a46d672771e21a01d589908d776fcac0",
+    "status_sha256": "96e37d461be3c0c5c07986b48100e935405334d22f346d8efb59ca49b07aa502",
     "recorded_complete_selection": {
       "id": "meeteval",
       "revision": "6e3dc81284f2d6928f7ef9e620fd3b6906daa429",
@@ -3732,16 +3732,16 @@
       "-O2",
       "-MD",
       "-MF",
-      "/private/tmp/masp-meeting-kernel-wmj_fwxt/driver.d",
-      "/private/tmp/masp-meeting-kernel-wmj_fwxt/driver.cc",
+      "/private/tmp/masp-meeting-kernel-ksl9gct8/driver.d",
+      "/private/tmp/masp-meeting-kernel-ksl9gct8/driver.cc",
       "-o",
-      "/private/tmp/masp-meeting-kernel-wmj_fwxt/driver"
+      "/private/tmp/masp-meeting-kernel-ksl9gct8/driver"
     ],
     "compiler_binary": {
       "path": "/usr/bin/c++",
-      "sha256": "44a68ddc1983d6cff3fd35ba3f9ba5f82004216f1dcde69892b3d1b06e408698"
+      "sha256": "ed6f5284033aa2aae6a58427c25ba3ab119947b40365627b24e5d51a4b70a1cd"
     },
-    "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+    "compiler": "Apple clang version 21.0.0 (clang-2100.4.1.1)\nTarget: arm64-apple-darwin27.2.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
     "compile_stderr": "",
     "execution_stderr": ""
   },
@@ -3752,7 +3752,7 @@
   },
   "environment": {
     "python": "3.13.12 | packaged by conda-forge | (main, Feb  5 2026, 06:11:05) [Clang 19.1.7 ]",
-    "platform": "macOS-26.6.1-arm64-arm-64bit-Mach-O",
+    "platform": "macOS-27.2.1-arm64-arm-64bit-Mach-O",
     "scientific_packages_required": false,
     "compile_environment_policy": "Git, Python, CMake, compiler, include and linker overrides removed"
   },

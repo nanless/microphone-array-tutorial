@@ -21,12 +21,14 @@ FIRST_BESSEL_J0_ROOT = 2.404825557695773
 
 
 def bessel_j0(x: np.ndarray | float, *, max_terms: int = 80) -> np.ndarray:
-    """Evaluate J_0(x) in pure NumPy via convergent power series and Jacobi-Anger/Hankel forms.
+    """Approximate J_0(x) with power series and Jacobi-Anger/Hankel forms.
 
     Validates finite real input via ``finite_real_array`` (rejects complex/bool/NaN/Inf).
-    Uses exact alternating power series for ``|x| <= 12``, spectrally convergent 128-point
-    Jacobi-Anger midpoint quadrature for ``12 < |x| <= 56``, and 7-term Hankel asymptotic
-    expansion for ``|x| > 56``, achieving ``< 1e-14`` absolute error for all finite ``float64``.
+    ``max_terms`` bounds the small-argument power series (``|x| <= 4``);
+    failure to meet its stopping criterion raises ``ValueError``. Larger arguments
+    use 128-point Jacobi-Anger midpoint quadrature through ``|x| = 56`` and a
+    seven-term Hankel expansion beyond it. These are floating-point approximations,
+    not a platform-independent absolute-error guarantee over all finite float64.
     """
     if isinstance(max_terms, (bool, np.bool_)) or not isinstance(max_terms, (int, np.integer)) or max_terms < 20:
         raise ValueError("max_terms must be an integer >= 20")
@@ -34,7 +36,9 @@ def bessel_j0(x: np.ndarray | float, *, max_terms: int = 80) -> np.ndarray:
     abs_x = np.abs(arr)
     out = np.empty_like(abs_x, dtype=np.float64)
 
-    mask_series = abs_x <= 12.0
+    # Beyond this range cancellation in the alternating series can dominate
+    # the small final term; a small truncation remainder alone is insufficient.
+    mask_series = abs_x <= 4.0
     if np.any(mask_series):
         xs = abs_x[mask_series]
         quarter_x2 = 0.25 * xs * xs
@@ -45,9 +49,11 @@ def bessel_j0(x: np.ndarray | float, *, max_terms: int = 80) -> np.ndarray:
             acc = acc + term
             if float(np.max(np.abs(term))) <= 1e-17 * max(1.0, float(np.max(np.abs(acc)))):
                 break
+        else:
+            raise ValueError("max_terms is insufficient for the J0 power series")
         out[mask_series] = acc
 
-    mask_mid = (abs_x > 12.0) & (abs_x <= 56.0)
+    mask_mid = (abs_x > 4.0) & (abs_x <= 56.0)
     if np.any(mask_mid):
         xm = abs_x[mask_mid]
         # Exact Jacobi-Anger Fourier identity on [0, pi]: 128-pt midpoint alias error < 1e-60 on |x| <= 56.
@@ -58,9 +64,10 @@ def bessel_j0(x: np.ndarray | float, *, max_terms: int = 80) -> np.ndarray:
     mask_asymp = abs_x > 56.0
     if np.any(mask_asymp):
         xa = abs_x[mask_asymp]
-        inv8x = 1.0 / (8.0 * xa)
+        inv8x = (1.0 / xa) / 8.0
         inv8x2 = inv8x * inv8x
-        # Hankel asymptotic series for nu = 0 through c7 (truncation < 1e-17 for |x| > 56).
+        # Hankel asymptotic series for nu = 0 through c7. Omitted terms near
+        # the branch boundary remain part of the approximation error.
         c1 = -1.0 * inv8x
         c2 = 4.5 * inv8x2
         c3 = -37.5 * inv8x2 * inv8x
@@ -70,8 +77,17 @@ def bessel_j0(x: np.ndarray | float, *, max_terms: int = 80) -> np.ndarray:
         c7 = -c6 * (169.0 / 7.0) * inv8x
         p0 = 1.0 - c2 + c4 - c6
         q0 = c1 - c3 + c5 - c7
-        chi = xa - 0.25 * math.pi
-        out[mask_asymp] = np.sqrt(2.0 / (math.pi * xa)) * (p0 * np.cos(chi) - q0 * np.sin(chi))
+        # Rotate after trigonometric argument reduction: subtracting pi/4 from
+        # a large float can lose that entire offset. Divide before multiplying
+        # so a finite argument never requires forming pi*x or 8*x.
+        cos_x, sin_x = np.cos(xa), np.sin(xa)
+        cos_chi = (cos_x + sin_x) / math.sqrt(2.0)
+        sin_chi = (sin_x - cos_x) / math.sqrt(2.0)
+        amplitude = math.sqrt(2.0 / math.pi) / np.sqrt(xa)
+        out[mask_asymp] = amplitude * (p0 * cos_chi - q0 * sin_chi)
+
+    if not np.all(np.isfinite(out)):
+        raise ValueError("J0 evaluation exceeded the supported floating-point range")
 
     return out
 

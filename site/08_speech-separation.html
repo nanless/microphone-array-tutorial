@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 8 章 · 语音分离 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="b82b7d85f70d"><style>
+<meta name="source-digest" content="58a2e18a2abd"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -629,8 +629,8 @@ e^{+\mathrm{j}84^\circ},\ e^{+\mathrm{j}126^\circ}\bigr]^\top,
 \begin{bmatrix}0.4&3.1\\2.8&0.6\end{bmatrix}.
 $$</p>
 <p>枚举 $2!=2$ 种排列：顺排 $\pi=(1,2)$（主对角线之和）总损失为 $0.4+0.6=1.0$；反排 $\pi=(2,1)$（副对角线之和）总损失为 $3.1+2.8=5.9$。因为 $1.0\lt 5.9$，顺排胜出，本步训练损失即取 $\mathcal L_{\mathrm{PIT}}=1.0$。</p>
-<p>很多初学者看到式(8-5)外层的 $\min$ 操作会问：<strong>最小值函数不是在打平时不可导吗，反向传播梯度是怎么算的？</strong> 答案正是凸分析与深度学习里最常用的<strong>次梯度路由（subgradient routing）</strong>：除了两套排列损失分毫不差地精确相等（在连续浮点空间中测度为零的折点，任选其一即构成合法次梯度）之外，在绝大多数点上胜出排列 $\pi^\star$ 严格唯一；此时 $\min$ 算子就像一个单刀双掷开关，反向传播时<strong>只把梯度沿着胜出配对 $(\hat s_n,s_{\pi^\star(n)})$ 原路传回各输出分支</strong>，未入选排列对应的矩阵元素梯度全部置零。</p>
-<p>理解了次梯度开关，就能立刻明白为什么早期“逐帧独立做 PIT”在听感上严重失效，而必须升级为<strong>整句级置换不变训练（utterance-level PIT，uPIT）</strong>：</p>
+<p>式(8-5)的反向传播可按<strong>活动排列分支</strong>理解：当最小损失对应的排列 $\pi^\star$ 唯一、成对损失可微时，局部梯度就是该胜出分支的梯度，只沿配对 $(\hat s_n,s_{\pi^\star(n)})$ 传回输出头。若多个排列恰好并列，函数可能不可微，程序须约定选一条分支或如何合并；这是一项自动微分规则，不能直接称为凸函数的次梯度保证，因为若干损失的逐点最小值一般并不凸。例如 $\min(x,-x)=-|x|$ 在零点就不满足凸次梯度不等式。</p>
+<p>理解了排列分支开关，就能立刻明白为什么早期“逐帧独立做 PIT”在听感上严重失效，而必须升级为<strong>整句级置换不变训练（utterance-level PIT，uPIT）</strong>：</p>
 <ul>
 <li>如果每一帧独立挑最小排列，虽然单帧局部误差最小，但在两人交叠的清辅音、呼吸停顿或能量接近的过渡帧上，两套排列损失非常接近，开关 $\pi^\star$ 极易在相邻帧之间来回跳变，导致同一个输出声道上一秒还是男声、下一秒突然跳成女声；</li>
 <li><strong>uPIT</strong> 强制整句话（数秒长）的所有帧共享<strong>同一个</strong>排列 $\pi^\star$，逼迫网络内部利用长程音色、基频与空间连续性自己把同一个人的声音自始至终锁在同一个输出槽位里。不过即便用了 uPIT，当滑窗切分长会议录音遇到“某块只有一人说话（另一槽位应输出静音）”或跨滑窗拼接时，静音段与相邻块之间依然会发生<strong>槽位翻转（slot flipping）</strong>，这正是 §8.6 连续语音分离（CSS）必须专门设计跨块对齐与单人旁路保护的原因。</li>
@@ -812,7 +812,7 @@ g'(B)&=-\frac{c_1}{B^2}+c_2=0
 J_{\mathrm{MNMF}}=\sum_{f,t}\bigl(\ln\det \mathbf R_{ft}
 +\vec x_{ft}^H \mathbf R_{ft}^{-1}\vec x_{ft}\bigr).
 \end{gathered}\tag{8-13}$$</p>
-<p>由于不再要求 $N=M$，式(8-13)天然可以容纳 $N>M$ 的欠定声源（但参数量庞大且高度非凸，极度依赖用 AuxIVA/ILRMA 预热或良好的方向初始化；练习 <a href="#e08-14">E08-14</a> 还将证明单时频点上相同总协方差 $\mathbf R_{ft}$ 存在无穷多种源拆分方式，必须靠跨频跨帧低秩结构才能锁定各源）。</p>
+<p>由于不再要求 $N=M$，式(8-13)天然可以容纳 $N>M$ 的欠定声源（但参数量庞大且高度非凸，极度依赖用 AuxIVA/ILRMA 预热或良好的方向初始化；练习 <a href="#e08-14">E08-14</a> 还将证明单时频点上相同总协方差 $\mathbf R_{ft}$ 存在无穷多种源拆分方式，跨频跨帧低秩结构和共享空间模型可减少自由度，但迹归一化与共享参数本身并不普遍保证唯一分解。例如两源共享同一空间形状和时间激活时，可在两源之间连续重新分配功率而不改变总协方差）。</p>
 <p>参数收敛后，因为没有解混矩阵 $\mathbf W_f$，MNMF 通过计算高斯后验条件均值 $\mathbb{E}[\vec c_{nft}\mid\vec x_{ft}]$——即<strong>多通道维纳滤波（Multichannel Wiener Filter，MWF）</strong>来重构第 $n$ 个源在全部 $M$ 支麦克风上的源图像估计：</p>
 <p>$$\begin{aligned}
 \hat{\vec c}_{nft}&=\mathbf R_{nft}
@@ -918,7 +918,7 @@ J_{\mathrm{FastMNMF}}&=\sum_{f,t,m}\Bigl(
 <h3 id="sec-8-4-2">8.4.2 活动约束下的 EM 迭代</h3>
 <p><strong>紧凑实现顺序</strong>。下面列出本书带严格门控与正定保护的教学迭代五步流程，理清数据流转与状态依赖：</p>
 <ol>
-<li><strong>低能量筛除与球面投影</strong>：从 WPE 输出复谱 $\vec Y(f,t)$ 中剔除 $\|\vec Y(f,t)\|_2\le\varepsilon_E$ 的静默点，对其余有效点计算严格单位方向向量 $\vec z=\vec Y/\|\vec Y\|_2$。为 $J$ 位说话人各分配一个空间分量，并追加恒活跃的背景噪声分量 $j=0$（$a_0(t)\equiv 1$）；用单位阵或初始方向外积初始化正定形状矩阵 $\mathbf B_j(f)$。</li>
+<li><strong>低能量筛除与球面投影</strong>：从 WPE 输出复谱 $\vec Y(f,t)$ 中剔除 $\|\vec Y(f,t)\|_2\le\varepsilon_E$ 的静默点，对其余有效点计算严格单位方向向量 $\vec z=\vec Y/\|\vec Y\|_2$。为 $J$ 位说话人各分配一个空间分量，并追加恒活跃的背景噪声分量 $j=0$（$a_0(t)\equiv 1$）；用单位阵初始化正定形状矩阵 $\mathbf B_j(f)$；若用初始方向外积 $\vec a\vec a^H$，须加正加载或向单位阵收缩，因为多通道的单方向外积仅为秩一半正定矩阵。</li>
 <li><strong>E 步（活动门控责任概率）</strong>：在有效时频点上计算门控非负得分 $\tilde\gamma_j(f,t)=a_j(t)\pi_j(f)p(\vec z(f,t)\mid\mathbf B_j(f))$，归一化得软掩码后验 $\gamma_j(f,t)=\tilde\gamma_j(f,t)/\sum_{\ell=0}^J \tilde\gamma_\ell(f,t)$（贝叶斯后验与混合模型期望最大化（EM）框架见<a href="00_math-foundations.html#sec-0-6">第 0 章 §0.6</a>；实际代码在对数域防下溢计算，正权重的恒活跃背景类保证了全员静音帧仍有合法后验 $\gamma_0=1$，若删去背景类则全员静音时分母归零崩溃）。</li>
 <li><strong>M 步（形状矩阵不动点更新与迹归一化）</strong>：将每个方向外积 $\vec z\vec z^H$ 除以当轮二次型 $\vec z^H\mathbf B_j^{-1}\vec z$ 后按责任权重 $\gamma_j$ 加权累加，施加向单位阵微弱收缩的正定正则化，再统一缩放使 $\operatorname{tr}(\mathbf B_j)=M$（本书实现中若某分量后验权重总和不足通道数 $M$，则安全重置为单位阵并累加诊断计数）。</li>
 <li><strong>迭代终止与状态记录</strong>：重复 E 步与 M 步至设定轮数上限或变化阈值，显式记录实际轮数与重置次数（引入收缩正则、权重地板和重置保护后，不应再套用理想无约束 EM 的似然单调递增结论）。</li>
@@ -1068,18 +1068,19 @@ N_{\mathrm{eff}}(f)
 \end{aligned}\tag{8-25}$$</p>
 <p>投影系数 $\alpha$ 正是一维最小二乘 $\min_\alpha\|\hat{\vec s}-\alpha\vec s\|_2^2$ 的闭式解（求导令 $-2\vec s^\top\hat{\vec s}+2\alpha\vec s^\top\vec s=0$ 即得），它保证了目标分量 $\vec s_{\mathrm{tar}}$ 与失真残差 $\vec e_\perp$ 严格正交（满足勾股分解 $\|\hat{\vec s}\|_2^2=\|\alpha\vec s\|_2^2+\|\vec e_\perp\|_2^2$），从而防止模型靠把整体增益缩到极小来欺骗分母。<strong>SI-SDR 提升量（SI-SDRi）</strong>定义为分离输出 SI-SDR 减去参考麦克风混合输入 SI-SDR，计算两者时必须锁定完全相同的去均值与数值下限约定。</p>
 <p>不过，把 SI-SDR 搬到<strong>多麦克风波束形成与混响房间分离</strong>时，一定要警惕它的重大盲区。式(8-25)的投影系数 $\alpha$ 只是一个<strong>零阶单标量</strong>：只要估计波形相对于参考波形发生了哪怕 $1$～$2$ 个采样点的传播时移（见练习 <a href="#e08-01">E08-01</a>），或者经过了线性 MVDR 波束形成器带来的轻微良性频响均衡，人耳与后端语音识别都觉得极其清晰，单标量 SI-SDR 却会把这部分良性线性滤波差全部判为正交失真，打出极低甚至负数的分值。</p>
-<p>为此，多通道与远场语音分离基准（如 SMS-WSJ、URGENT 以及开源评测库 <code>fgnt/ci_sdr</code>）广泛采用<strong>卷积不变信号失真比（Convolutive-Invariant SDR，CI-SDR，<a href="https://doi.org/10.1109/ICASSP39728.2021.9414661">Boeddeker 等，ICASSP 2021</a>）</strong>：把单标量缩放升级为抽头长度为 $L$ 的<strong>短因果 FIR 托普利茨（Toeplitz）卷积子空间正交投影</strong>。记长度 $N$ 参考序列 $\vec s$ 的因果移位列组成 $N\times L$ 托普利茨矩阵 $[\mathbf T_L(\vec s)]_{t,\tau}=s[t-\tau]$，最小二乘最优匹配滤波器与分贝比写为：</p>
+<p><strong>卷积不变信号失真比（Convolutive-Invariant SDR，CI-SDR，<a href="https://doi.org/10.1109/ICASSP39728.2021.9414661">Boeddeker 等，ICASSP 2021</a>）</strong>把单标量缩放扩展为短因果 FIR 卷积子空间的正交投影。按照评测库 <code>fgnt/ci_sdr</code> 的完整卷积口径，长度 $N$ 的参考与 $L$ 抽头滤波器产生 $N+L-1$ 点结果。为在同一范围比较，把估计末尾补 $L-1$ 个零，记为 $\hat{\vec s}_{\mathrm{pad}}$；卷积矩阵 $\mathbf T_L(\vec s)\in\mathbb R^{(N+L-1)\times L}$ 的元素为 $s[t-\tau]$，其中 $t=0,\dots,N+L-2$、$\tau=0,\dots,L-1$，参考范围外的样本取零。对非零参考，完整卷积矩阵满列秩，最优滤波器与分贝比为：</p>
 <p>$$\begin{aligned}
 \hat{\vec h}_\star&=\arg\min_{\vec h\in\mathbb{R}^L}
-\|\hat{\vec s}-\mathbf T_L(\vec s)\vec h\|_2^2
+\|\hat{\vec s}_{\mathrm{pad}}-\mathbf T_L(\vec s)\vec h\|_2^2
 =(\mathbf T_L^\top\mathbf T_L)^{-1}
-\mathbf T_L^\top\hat{\vec s},\\
+\mathbf T_L^\top\hat{\vec s}_{\mathrm{pad}},\\
 \vec s_{\mathrm{tar}}&=\mathbf T_L(\vec s)\hat{\vec h}_\star,\quad
 \mathrm{CI\text{-}SDR}=10\log_{10}
 \frac{\|\vec s_{\mathrm{tar}}\|_2^2}
-{\|\hat{\vec s}-\vec s_{\mathrm{tar}}\|_2^2}.
+{\|\hat{\vec s}_{\mathrm{pad}}-\vec s_{\mathrm{tar}}\|_2^2}.
 \end{aligned}\tag{8-26}$$</p>
-<p>在 $16\ \mathrm{kHz}$ 采样率下，标准评测约定取 $L=512$ 抽头（即 $32\ \mathrm{ms}$）：这一长度刚好足以吸收阵元几何时延、STFT 分块偏移与短早期均衡，同时严厉惩罚其他说话人的漏音串扰与非线性畸变。切忌把 $L$ 无节制调大——一旦 $L$ 逼近信号总长度 $N$，$\mathbf T_L(\vec s)$ 张满整个 $\mathbb{R}^N$ 空间，连纯正交噪声都能被过拟合出虚高满分（$4$ 点完整手算与过拟合边界见<a href="#e08-25">练习 E08-25</a>）；此外，评分前仍须明确声明参考 $\vec s$ 是无混响干声还是指定参考麦上的源图像。</p>
+<p>滤波器长度决定评分允许吸收多长的线性响应。例如，在 $16\ \mathrm{kHz}$ 下固定 $L=512$ 相当于 $32\ \mathrm{ms}$ 的抽头长度；它能容许哪些传播时差和均衡变化，还取决于实际响应。比较前应固定 $L$、去均值口径，以及参考是干声还是指定参考麦源图像。增大 $L$ 会扩大可匹配的滤波空间，不能为提高分数而事后选择长度。</p>
+<p>完整尾部也是评分目标的一部分：若只保留卷积前 $N$ 点，$L=N$ 时可能得到能任意拟合这 $N$ 点的方阵，却完全不惩罚窗外滤波尾声。完整矩阵仍有 $N+L-1$ 行，不能从“抽头数等于原窗长”直接推出任意输出都可无误差拟合。<a href="#e08-25">练习 E08-25</a>用同一组输入比较这两个目标；实现采用直接最小二乘求解，避免显式形成正规方程的逆。</p>
 <h3 id="sec-u-bb03e8a10f">分离指标的报告口径</h3>
 <p>为了使实验数字具备可复现、可对比的工程价值，报告任何分离指标时须完整交代以下四项要素：</p>
 <ul>
@@ -1228,17 +1229,19 @@ C_{ij}&=\frac{|\vec u_i^\top \vec v_j|}
     \cos\mathrm{IPD}_{pq}(f,t)
     &=\cos\!\bigl(\Delta\phi_{pq}(f,t)\bigr)
      =\operatorname{Re}\!\left(\frac{X_p(f,t)X_q^*(f,t)}
-     {|X_p(f,t)|\,|X_q(f,t)|+\varepsilon}\right),\\
+     {|X_p(f,t)|\,|X_q(f,t)|}\right),\\
     \sin\mathrm{IPD}_{pq}(f,t)
     &=\sin\!\bigl(\Delta\phi_{pq}(f,t)\bigr)
      =\operatorname{Im}\!\left(\frac{X_p(f,t)X_q^*(f,t)}
-     {|X_p(f,t)|\,|X_q(f,t)|+\varepsilon}\right),\\
+     {|X_p(f,t)|\,|X_q(f,t)|}\right),\\
     \mathrm{ILD}_{pq}(f,t)
     &=20\log_{10}\frac{|X_p(f,t)|+\varepsilon}
       {|X_q(f,t)|+\varepsilon}.
     \end{aligned}\tag{8-30}$$</p>
-<p>利用归一化互谱实虚部直接计算 $\cos\mathrm{IPD}$ 与 $\sin\mathrm{IPD}$ 还省去了 <code>atan2</code> 与三角函数开销；
-2. <strong>原始多通道堆叠复谱（Stacked Multi-Channel RI）</strong>：现代端到端复数骨干网（如下文的多麦 TF-GridNet 与 Online SpatialNet）则直接把全部 $M$ 支麦克风的实部与虚部堆叠成 $2M$ 通道输入，由网络自动隐式学习多麦幅相耦合与非线性空时滤波，省去了人工挑选阵元对的启发式步骤，但对跨阵列几何泛化提出了更高要求。</p>
+<p>对两路非零频格，理想归一化互谱的实虚部给出严格单位圆坐标，并省去 <code>atan2</code> 与三角函数开销。若为低能保护在分母 $|X_p||X_q|$ 上加 $\varepsilon$，实虚部还会乘衰减因子 $|X_p||X_q|/(|X_p||X_q|+\varepsilon)$，不再严格等于余弦、正弦或落在单位圆上；例如 $X_p=X_q=\sqrt\varepsilon$ 时实部为 $1/2$；</p>
+</li>
+<li>
+<p><strong>原始多通道堆叠复谱（Stacked Multi-Channel RI）</strong>：现代端到端复数骨干网（如下文的多麦 TF-GridNet 与 Online SpatialNet）则直接把全部 $M$ 支麦克风的实部与虚部堆叠成 $2M$ 通道输入，由网络自动隐式学习多麦幅相耦合与非线性空时滤波，省去了人工挑选阵元对的启发式步骤，但对跨阵列几何泛化提出了更高要求。</p>
 </li>
 </ol>
 <p>为了彻底摆脱固定长窗 STFT 的高延迟与实掩码相位瓶颈，深度学习语音分离开启了“编码器—掩码分离网—解码器”的可学习潜空间范式：</p>
@@ -1362,8 +1365,8 @@ C_{ij}&=\frac{|\vec u_i^\top \vec v_j|}
 <li><strong>一分其余置换不变训练（One-and-Rest PIT，OR-PIT；Takahashi 等，Interspeech 2019）</strong>：将分离器训练为固定的二输出模块，每步把当前输入混合 $y$ 拆成一位前景说话人 $\hat s_1$ 与其余 $N-1$ 位说话人的残余混合 $\hat r_1$；推理时把残余波形 $\hat r_k$ 递归送回同一网络逐一剥离，直至二分类停止判定头或残余能量门控终止递归。该设计在 $N=1$ 单人段一步即停、天然避免固定多槽位过度切分，并可在结构上泛化至超过训练集最大人数的混合；代价是每步提取残留的串扰与失真会在后续递归步 $\hat r_k$ 上串行累积，且推理时延随 $N$ 线性增长。</li>
 <li><strong>循环选择性注意力网络（Recurrent Selective Attention Network，RSAN；Kinoshita 等，ICASSP 2018）</strong>：在 STFT 时频域显式维护一张逐点非负的<strong>残余掩码预算</strong> $R^{(k)}$，初始置 $R^{(0)}=\mathbf 1$，第 $k$ 步结合混合谱与剩余预算输出一位说话人的时频掩码 $M^{(k)}$，并按</li>
 </ul>
-<p>$$R^{(k)}=\max\!\bigl(0,\;R^{(k-1)}-M^{(k-1)}\bigr)$$</p>
-<p>递推更新下一轮可用掩码（从 $k=1$ 起扣除已分配掩码），直至剩余掩码总质量低于门限 $\tau$ 时停止。与 OR-PIT 不同，RSAN 在掩码域显式贯彻了混合掩码守恒约束，无需把分离出的时域残余波形反复送回前端编码器重新提特征。</p>
+<p>$$R^{(k)}=\max\!\bigl(0,\;R^{(k-1)}-M^{(k)}\bigr)$$</p>
+<p>递推更新下一轮可用掩码（$k=1,2,\ldots$：先用 $R^{(k-1)}$ 估计本轮 $M^{(k)}$，再扣除它）。这里的索引与<a href="https://arxiv.org/pdf/1902.07881">同作者 2019 年块在线扩展 §2.1～2.2、式(1)</a>一致；剩余掩码平均值 $\frac1{TF}\sum_{t,f}R^{(k)}_{tf}$ 低于门限 $\tau$ 时停止。与 OR-PIT 不同，RSAN 在掩码域显式维护残余注意力预算，无需把分离出的时域残余波形反复送回前端编码器重新提特征。</p>
 <p>在真实多人会议部署中，整句级递归的 OR-PIT 与 RSAN 仍受限于串行延迟随人数线性递增、强噪声/混响下停止门限 $\tau$ 易误触发以及长流跨块身份对齐等瓶颈；因此工业会议前端通常优先采用<strong>双槽流式 CSS</strong>（利用 $1.2\text{～}2.4\ \mathrm{s}$ 短块内三人以上同时抢话概率较低的统计规律并配单人旁路保护），或在<a href="15_target-extraction-diarization.html">第 15 章</a>进一步引入由日志模型显式给出人数与活动区间的<strong>日志导引分离前端</strong>（如 <code>TS-VAD</code> + <code>WPE</code> + <code>GSS</code>）。</p>
 <h3 id="sec-u-110769710d">混合一致性与STFT一致性</h3>
 <p>当深度网络直接预测复数掩码或各说话人复谱 $\widehat y_1,\dots,\widehat y_N$ 时，经常违背两条基本的物理自洽约束：一是多路估计谱加起来不等于参考麦观测混合谱 $x$；二是网络吐出的复数矩阵未必是任何一条真实时域波形做 STFT 所能产生的合法谱。<strong>混合一致性（mixture consistency）</strong>与 <strong>STFT 一致性（STFT consistency）</strong>正是架在网络输出端的两层可微物理投影层（注意它们只能修补物理自洽性，本身不能创造声源独立性）。</p>
@@ -1414,7 +1417,7 @@ Y&=P_{\mathcal S}(Y).
 <tr>
 <td>AuxIVA、ILRMA</td>
 <td><code>pyroomacoustics</code>（<code>auxiva.py</code>、<code>ilrma.py</code>）；<code>ssspy</code>（<code>iva.py</code>、<code>ilrma.py</code>）</td>
-<td>核对 IP / ISS 更新分支、正定源数条件、功率地板与回投影尺度约定</td>
+<td>固定 PRA <code>auxiva.py</code> 为 IP 线性求解路径；<code>ssspy</code> 另有 ISS 等选项，须分别核对源数、功率地板与回投影尺度</td>
 </tr>
 <tr>
 <td>MNMF、FastMNMF / 2</td>
@@ -2171,32 +2174,30 @@ J_\star&=\frac{1}{2}\Bigl[
 </ul>
 <p><a id="e08-25"></a></p>
 <h3 id="sec-u-68f23c2dfd">E08-25：卷积不变 CI-SDR 与滤波器过拟合边界</h3>
-<p>在长度 $N=4$ 的离散时间窗上，设消声参考源为 $\vec{s}=\vec{s}_0=[1,0,-1,0]^\top$，其延迟 $1$ 点的移位信号为 $\vec{s}_1=[0,1,0,-1]^\top$，与二者均正交的微弱干扰向量为 $\vec{w}=0.1[1,-1,1,-1]^\top$。按 §8.5 式(8-26)的因果 $L$ 抽头截断托普利茨卷积矩阵 $\mathbf{T}_L(\vec{s})\in\mathbb{R}^{N\times L}$（第 $l$ 列为向右因果移位 $l$ 点并零填充，$l=0,\dots,L-1$）计算 <code>CI-SDR</code>；对零残差或零投影功率按分母下界 $10^{-12}$ 截断在 $\pm 120\ \mathrm{dB}$。依次手算以下三种情形下 <code>SI-SDR</code>（等价于 $L=1$）与 <code>CI-SDR</code> 的精确分值：</p>
+<p>在长度 $N=4$ 的记录上，设参考为 $\vec s_0=[1,0,-1,0]^\top$，延迟一路为 $\vec s_1=[0,1,0,-1]^\top$，微弱干扰为 $\vec w=0.1[1,-1,1,-1]^\top$。按式(8-26)保留 $N+L-1$ 点完整卷积尾部，并把估计末尾补 $L-1$ 个零。相对能量下限取 $10^{-12}$，零投影和零残差分别按 $-120$ 与 $+120\ \mathrm{dB}$ 报告。计算：</p>
 <ol>
-<li>纯 $1$ 点传播时延 $\hat{\vec{s}}=\vec{s}_1$，比较 <code>SI-SDR</code> 与 $L=2$ 的 <code>CI-SDR</code>；</li>
-<li>双抽头房间直达加早期反射加微弱干扰 $\hat{\vec{s}}=\vec{s}_0+\vec{s}_1+\vec{w}$，比较 <code>SI-SDR</code> 与 $L=2$ 的 <code>CI-SDR</code>；</li>
-<li>纯强干扰估计 $\hat{\vec{s}}=10\vec{w}=[1,-1,1,-1]^\top$，但评测抽头数盲目放宽至 $L=4=N$。</li>
+<li>$\hat{\vec s}=\vec s_1$，比较 $L=1$ 与 $L=2$；</li>
+<li>$\hat{\vec s}=\vec s_0+\vec s_1+\vec w$，比较 $L=1$ 与 $L=2$；</li>
+<li>$\hat{\vec s}=[1,-1,1,-1]^\top$，比较 $L=4$ 的完整评分与只拟合前四点的截尾评分。</li>
 </ol>
 <p><strong>参考答案</strong>：</p>
 <ol>
 <li>
-<p><strong>两列卷积基的正交性与前两种情形</strong>：当 $L=2$ 时，$\mathbf{T}_2(\vec{s})=[\vec{s}_0,\;\vec{s}_1]$。由于 $\vec{s}_0^\top\vec{s}_1=0$ 且 $\|\vec{s}_0\|_2^2=\|\vec{s}_1\|_2^2=2$，正规方程系数矩阵恰为对角阵 $\mathbf{G}_2=\mathbf{T}_2^\top\mathbf{T}_2=2\mathbf{I}_2$，同时 $\vec{s}_0^\top\vec{w}=0$、$\vec{s}_1^\top\vec{w}=0$、$\|\vec{w}\|_2^2=0.04$。
-   - <strong>情形 1</strong>：$\hat{\vec{s}}=\vec{s}_1$ 与参考 $\vec{s}_0$ 内积严格为 $0$，单标量投影给出 $\alpha_\star=0$、目标投影为零向量，触发下界得到 $\mathrm{SI\text{-}SDR}=-120.0\ \mathrm{dB}$；而 $L=2$ 的 <code>CI-SDR</code> 求得 $\hat{\vec{h}}_\star=\tfrac{1}{2}[0,2]^\top=[0,1]^\top$，残差精确为零，达到上限 $+120.0\ \mathrm{dB}$。
-   - <strong>情形 2</strong>：$\hat{\vec{s}}=\vec{s}_0+\vec{s}_1+\vec{w}$，单标量 <code>SI-SDR</code> 只能投影到 $\vec{s}_0$ 上（$\alpha_\star=1$），把携带着有效语音能量的早期反射 $\vec{s}_1$ 全部当成失真，算得 $\|\vec{s}_0\|_2^2=2$、$\|\vec{s}_1+\vec{w}\|_2^2=2.04$，分值跌至 $10\log_{10}(50/51)\approx -0.086002\ \mathrm{dB}$。改用 $L=2$ 的 <code>CI-SDR</code> 后，$\hat{\vec{h}}_\star=[1,1]^\top$ 完整吸收两抽头房间冲激响应，目标投影能量为 $\|\vec{s}_0+\vec{s}_1\|_2^2=4$，残差仅剩纯干扰 $\vec{w}$（能量 $0.04$），真实信干比精确还原为 $10\log_{10}(4/0.04)=+20.000000\ \mathrm{dB}$。</p>
+<p><strong>两列卷积基与前两种情形</strong>：当 $L=2$ 时，两列是各补一个零的 $\vec s_0$ 与 $\vec s_1$，因此 $\mathbf T_2^\top\mathbf T_2=2\mathbf I_2$。两列都与补零后的 $\vec w$ 正交，且 $\|\vec w\|^2=0.04$。</p>
+<p>对情形 1，$L=1$ 的投影系数为零，得 $-120\ \mathrm{dB}$；$L=2$ 时 $\hat{\vec h}=[0,1]^\top$，五点完整卷积精确等于补零估计，得 $+120\ \mathrm{dB}$。</p>
+<p>对情形 2，$L=1$ 时目标能量为 $2$、残差能量为 $2.04$，得 $10\log_{10}(50/51)\approx-0.086002\ \mathrm{dB}$。$L=2$ 时 $\hat{\vec h}=[1,1]^\top$，目标能量为 $4$、残差能量为 $0.04$，得 $20\ \mathrm{dB}$。本例参考末样本为零，两个抽头在原四点之后没有非零尾声，所以这两组结果与前四点评分恰好相同。</p>
 </li>
 <li>
-<p><strong>抽头数等于窗长时的过拟合灾难</strong>：在情形 3 中，$\hat{\vec{s}}=10\vec{w}=[1,-1,1,-1]^\top$ 与 $\vec{s}_0,\vec{s}_1$ 均正交（真实语音成分为零）。然而当抽头数取到 $L=4=N$ 时，截断卷积矩阵变成对角元全为 $1$ 的 $4\times 4$ 单位下三角方阵：</p>
+<p><strong>截掉尾部为何会给出不同答案</strong>：情形 3 中，如果只拟合前四点，矩阵为</p>
+<p>$$\mathbf T_{4,\mathrm{crop}}=
+    \begin{bmatrix}1&0&0&0\\0&1&0&0\\-1&0&1&0\\0&-1&0&1\end{bmatrix}.$$</p>
+<p>它的行列式为 $1$，解为 $[1,-1,2,-2]^\top$，四点残差为零。但这个滤波器的完整输出还包含尾声 $[-2,2,0]^\top$，其能量为 $8$；只看前四点把这部分误差全部漏掉了。</p>
+<p>完整评分的设计矩阵有七行。将尾部纳入后，正规方程为</p>
+<p>$$\begin{bmatrix}2&0&-1&0\\0&2&0&-1\\-1&0&2&0\\0&-1&0&2\end{bmatrix}\hat{\vec h}
+    =[0,0,1,-1]^\top.$$</p>
+<p>把第 1、3 个未知量与第 2、4 个未知量分别联立，得到 $\hat{\vec h}=[1,-1,2,-2]^\top/3$。目标投影为 $[1,-1,1,-1,-2,2,0]^\top/3$，目标能量为 $4/3$，补零估计减去投影后的残差能量为 $8/3$，所以 $\mathrm{CI\text{-}SDR}=10\log_{10}(1/2)\approx-3.0103\ \mathrm{dB}$。$L=4=N$ 在这个完整目标下没有给纯干扰满分；截尾评分与完整评分是不同指标口径。复算入口为 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch08/core/separation_metrics_streaming.py"><code>separation_metrics_streaming.py</code></a>。</p>
 </li>
 </ol>
-<p>$$\mathbf{T}_4(\vec{s})
-   =\begin{bmatrix}
-   1&0&0&0\\
-   0&1&0&0\\
-   -1&0&1&0\\
-   0&-1&0&1
-   \end{bmatrix},\qquad
-   \det\mathbf{T}_4(\vec{s})=1.$$</p>
-<p>因为 $\mathbf{T}_4(\vec{s})$ 满秩可逆，前向回代立得唯一精确解 $\hat{\vec{h}}_\star=[1,-1,2,-2]^\top$，使得 $\mathbf{T}_4(\vec{s})\hat{\vec{h}}_\star=\hat{\vec{s}}$ 恒成立、拟合残差精确归零，纯粹的干扰噪声也获得了 $+120.0\ \mathrm{dB}$ 的虚高分值。这从线性代数维度直接证明：评测卷积容差滤波器长度必须严格满足 $L\ll N$（例如在数秒长的句子上固定 $L=512$ 点即 $32\ \mathrm{ms}$），绝不能在短分段上放开长抽头投影（代码验证见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch08/core/separation_metrics_streaming.py"><code>separation_metrics_streaming.py</code></a> 与 <code>E08-25</code>）。</p>
 <p><a id="e08-26"></a></p>
 <h3 id="sec-u-ac6be39cf8">E08-26：窄带跨带流式算力预算与单人段旁路门控</h3>
 <p>题设分成两部分：</p>

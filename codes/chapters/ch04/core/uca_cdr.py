@@ -91,6 +91,9 @@ def uca_phase_mode_esprit(
 ) -> tuple[np.ndarray, np.ndarray]:
     """Estimate horizontal azimuths (deg) via 3-mode (-1, 0, +1) UCA phase-mode ESPRIT.
 
+    Assumes spatially white sensor noise. Radial equalization colors the mode
+    noise; whiten before eigendecomposition, then map the signal subspace back
+    to the original mode coordinates before applying shift invariance.
     Returns ``(azimuth_estimates_deg, mode_covariance_3x3)`` where azimuths follow the
     book convention (0 deg broadside +y, clockwise toward +x, wrapped to (-180, 180]).
     """
@@ -123,13 +126,22 @@ def uca_phase_mode_esprit(
         raise np.linalg.LinAlgError("zero phase-mode covariance has no signal subspace")
 
     r_scaled = (r_mode.real / peak) + 1j * (r_mode.imag / peak)
-    evals, evecs = np.linalg.eigh(r_scaled)
+    # For sensor noise sigma^2 I, mode noise is sigma^2 * B B^H.
+    # Equally spaced Fourier rows are orthogonal, so B B^H is diagonal
+    # with entries |w_radial|^2/M. The common scalar 1/M is immaterial.
+    radial_magnitude = np.abs(w_radial)
+    r_white = r_scaled / radial_magnitude[:, None] / radial_magnitude[None, :]
+    white_peak = float(np.max(np.maximum(np.abs(r_white.real), np.abs(r_white.imag))))
+    if white_peak == 0:
+        raise np.linalg.LinAlgError("whitened mode covariance has no signal subspace")
+    r_white = r_white.real / white_peak + 1j * (r_white.imag / white_peak)
+    evals, evecs = np.linalg.eigh(.5*r_white + .5*r_white.conj().T)
     k_src = int(n_sources)
     tol = 100.0 * np.finfo(float).eps * 3.0 * max(1.0, float(np.max(np.abs(evals))))
     if evals[-k_src] <= tol or evals[-k_src] - evals[-k_src - 1] <= tol:
         raise np.linalg.LinAlgError("phase-mode signal subspace is not separated from noise")
 
-    u_s = evecs[:, -k_src:]
+    u_s = radial_magnitude[:, None] * evecs[:, -k_src:]
     u_upper, u_lower = u_s[:-1], u_s[1:]
     if np.linalg.matrix_rank(u_upper) < k_src or np.linalg.matrix_rank(u_lower) < k_src:
         raise np.linalg.LinAlgError("phase-mode ESPRIT subarray is rank deficient")

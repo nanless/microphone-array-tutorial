@@ -44,12 +44,12 @@ class LifecycleTests(unittest.TestCase):
 
     def test_equal_boundary_retained_and_one_tick_after_expires(self):
         # window1 centre is an exact sample; availability remains distinct.
-        item=teaching_lifecycle(frames([0,1,2,3202,3203],[True,True,True,False,False],window=1),
-                                window_samples=1,age_clock='state')
-        self.assertEqual(item['rows'][3]['age_ticks'],6400)
-        self.assertEqual(item['rows'][3]['phase'],'confirmed')
+        item=teaching_lifecycle(frames(list(range(3204)),[True]*3+[False]*3201,window=1),
+                                window_samples=1,hop_samples=1,age_clock='state')
+        self.assertEqual(item['rows'][3202]['age_ticks'],6400)
+        self.assertEqual(item['rows'][3202]['phase'],'confirmed')
         self.assertEqual(item['events'][-1]['age_ticks'],6402)
-        self.assertEqual(item['events'][-1]['frame'],4)
+        self.assertEqual(item['events'][-1]['frame'],3203)
 
     def test_candidate_miss_resets_confirmation_and_allocates_fresh_id(self):
         item=teaching_lifecycle(frames([0,160,320,480,640,800],[True,True,False,True,True,True]))
@@ -57,9 +57,11 @@ class LifecycleTests(unittest.TestCase):
                          [('candidate',1),('candidate_lost',1),('candidate',2),('confirmed',2)])
         self.assertEqual(item['events'][-1]['frame'],5)
 
-    def test_expiry_precedes_a_valid_reacquisition_after_a_long_jump(self):
-        item=teaching_lifecycle(frames([0,160,320,10000],[True]*4))
-        self.assertEqual(item['rows'][-1]['events'],['expired','candidate'])
+    def test_expiry_precedes_a_valid_reacquisition_after_missing_frames(self):
+        starts=list(range(0,10081,160))
+        item=teaching_lifecycle(frames(starts,[True]*3+[False]*(len(starts)-4)+[True]))
+        self.assertEqual(item['events'][-2]['event'],'expired')
+        self.assertEqual(item['rows'][-1]['events'],['candidate'])
         self.assertEqual(item['rows'][-1]['phase'],'tentative')
         self.assertEqual(item['rows'][-1]['track_id'],2)
 

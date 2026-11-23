@@ -8,6 +8,7 @@ from pathlib import Path
 import hashlib
 import json
 import platform
+import re
 import sys
 
 # Direct script execution starts Python's search path in scripts/; the chapter
@@ -141,9 +142,22 @@ def finalize_figure(fig):
 
 
 def save(fig, name, extra_metadata=None):
+    from scripts.figure_report_contracts import REPORT_BY_NUMBER
+    metadata = {**figure_png_metadata(), **(extra_metadata or {}),
+                "FigureFilename": Path(name).name}
+    match = re.match(r"fig(\d+)", Path(name).name)
+    contract = REPORT_BY_NUMBER.get(int(match.group(1))) if match else None
+    if contract is not None:
+        if contract.png_filename != Path(name).name:
+            raise ValueError("figure filename differs from the fixed report contract")
+        report_path = CODE_CHAPTERS / Path(contract.report_relative).relative_to("codes/chapters")
+        digest = hashlib.sha256(report_path.read_bytes()).hexdigest()
+        if "NumericalReportDigest" in metadata and metadata["NumericalReportDigest"] != digest:
+            raise ValueError("figure report digest differs from the report actually written")
+        metadata["NumericalReportDigest"] = digest
     finalize_figure(fig)
     fig.savefig(OUT / name, dpi=150, bbox_inches="tight", facecolor="white",
-                metadata={**figure_png_metadata(), **(extra_metadata or {})})
+                metadata=metadata)
     plt.close(fig)
     print("saved", name)
 
@@ -696,8 +710,13 @@ def fig_gcc_phat():
     tt = np.arange(n)[m] / fs * 1e3
     display_scale = max(np.max(np.abs(x1[m])), np.max(np.abs(x2[m])))
     up_vis = 16
-    x2_fine = np.fft.irfft(np.fft.rfft(x2), n=n * up_vis) * up_vis
-    x1_fine = np.fft.irfft(np.fft.rfft(x1), n=n * up_vis) * up_vis
+    display_spectra = [np.fft.rfft(signal) for signal in (x2, x1)]
+    # The old even-length Nyquist term becomes an interior positive-frequency
+    # term; its conjugate partner supplies the other half after zero padding.
+    for spectrum in display_spectra:
+        spectrum[-1] *= 0.5
+    x2_fine, x1_fine = [np.fft.irfft(spectrum, n=n * up_vis) * up_vis
+                        for spectrum in display_spectra]
     t_fine = np.arange(n * up_vis) / (fs * up_vis)
     mf = (t_fine >= t0) & (t_fine <= t0 + 5e-4)
     ax.plot(t_fine[mf] * 1e3, x2_fine[mf] / display_scale, "-", color=C_BLUE, lw=1.5, alpha=0.85)
@@ -1130,7 +1149,6 @@ def fig_tracking():
     ax.grid(ls=":", alpha=0.5)
     fig.suptitle("图21  声源追踪示意（模拟）", fontsize=FS_SUP)
     fig.tight_layout(rect=(0, .16, 1, .95), h_pad=2.0, w_pad=2.2)
-    save(fig, "fig21_tracking.png")
     valid = ~missing
     rmse = lambda mask, values: float(np.sqrt(np.mean((values[mask]-true[mask])**2)))
     report = {
@@ -1159,6 +1177,7 @@ def fig_tracking():
         "interpretation": "Single synthetic angular sequence, not microphone/audio input; no confidence interval or general performance claim."}
     target = Path(__file__).resolve().parents[1]/"codes/chapters/ch09/reports/figure21_tracking.json"
     target.write_text(json.dumps(report,ensure_ascii=False,indent=2,allow_nan=False)+"\n")
+    save(fig, "fig21_tracking.png")
 
 
 # ----------------------------------------------------------------------
@@ -2173,8 +2192,6 @@ def fig_wpe():
         for name in ("scripts/make_figures.py",
                      "codes/chapters/ch07/core/dereverberation.py",
                      "codes/chapters/ch02/core/conventions.py")}
-    save(fig, "fig20_wpe.png", {
-        "GeneratorInputs": json.dumps(wpe_sources, sort_keys=True)})
     report = {
         "schema_version": 1,
         "generator": "scripts/make_figures.py::fig_wpe",
@@ -2201,12 +2218,21 @@ def fig_wpe():
     }
     for name, spectrum, ratio, nmse in [("input", Yr, rev_quiet_db, rev_nmse_db),
                                       ("output", Xd, wpe_quiet_db, wpe_nmse_db)]:
+        reference_active = Yc_aligned[:, active].ravel()
+        estimate_active = spectrum[:, active].ravel()
+        cross = np.vdot(reference_active, estimate_active)
         report["results"][name] = {
             "quiet_energy": float(np.sum(np.abs(spectrum[:, quiet])**2)),
             "total_energy": float(np.sum(np.abs(spectrum)**2)),
-            "quiet_energy_ratio_db": float(ratio), "active_scale_aligned_nmse_db": float(nmse)}
+            "quiet_energy_ratio_db": float(ratio), "active_scale_aligned_nmse_db": float(nmse),
+            "active_alignment": {
+                "reference_energy": float(np.vdot(reference_active, reference_active).real),
+                "estimate_energy": float(np.vdot(estimate_active, estimate_active).real),
+                "reference_conjugate_dot_estimate": [float(cross.real), float(cross.imag)]}}
     destination = Path(__file__).resolve().parents[1] / "codes/chapters/ch07/reports/figure20_wpe.json"
     destination.write_text(json.dumps(report, ensure_ascii=False, indent=2)+"\n", encoding="utf-8")
+    save(fig, "fig20_wpe.png", {
+        "GeneratorInputs": json.dumps(wpe_sources, sort_keys=True)})
 
 
 # ----------------------------------------------------------------------
@@ -2273,7 +2299,7 @@ def fig_binaural():
     ax = fig.add_subplot(3, 1, 3)
     ax.set_xlim(0, 1); ax.set_ylim(0, 1); ax.axis("off")
     rows = [
-        (0.76, C_BLUE, "细结构 ITD", "低频纯音相位差；约 1～1.5 kHz 以上\n听觉系统对细结构相位的锁相能力显著下降。"),
+        (0.76, C_BLUE, "细结构 ITD", "低频纯音相位差；行为实验中约 1.4 kHz\n以上纯音细结构 ITD 敏感性明显下降。"),
         (0.46, C_RED, "ILD", "头颅声影引起的双耳声级差；高频头影效应显著增强，\n约 4～5 kHz 以上（尤以 5～12 kHz）还叠加耳廓谱线索。"),
         (0.16, C_GREEN, "包络 ITD", "高频调幅信号仍可由包络时差提供水平定位线索。"),
     ]
@@ -2404,6 +2430,7 @@ def fig_gcc_reverb():
     fig._panel_vertical_gap = min(
         axes[index].get_position().y0 - axes[index + 1].get_position().y1
         for index in range(2))
+    write_gcc_reverb_report(stats, OUT.parent / "codes/chapters/ch04/reports/figure13_gcc_reverb.json")
     save(fig, "fig13_gcc_reverb.png")
     return stats
 
@@ -4601,7 +4628,6 @@ def fig_tracking_information():
     fig.supxlabel('上排：固定阵列对匀速目标的瞬时方位几何（位置与速度同步缩放不改变方位序列）。\n'
                   '下排：同一标量状态在两次相关噪声观测下的线性最小均方误差后验方差（ρ=1 取单次观测极限）。',
                   fontsize=FS_SMALL)
-    save(fig, 'fig56_tracking_information.png')
     report = {
         'schema_version': 1, 'script_sha256': source_script_digest(),
         'scope': 'instantaneous bearing geometry ignoring propagation delay, and Gaussian conditioning; not receiver-time audio, a benchmark or repeated sampling',
@@ -4622,6 +4648,7 @@ def fig_tracking_information():
     }
     target = CODE_CHAPTERS/'ch09/reports/figure56_tracking_information.json'
     target.write_text(json.dumps(report, ensure_ascii=False, indent=2, allow_nan=False)+'\n')
+    save(fig, 'fig56_tracking_information.png')
 
 
 def fig_engineering_limits():
@@ -4679,7 +4706,6 @@ def fig_engineering_limits():
     ax.set_title('(c) 非抢占：总利用率0.35，A仍超期')
     ax.legend(loc='upper center', bbox_to_anchor=(.5,-.30), ncol=4, fontsize=FS_SMALL)
     fig.suptitle('图57  噪声、有限尾部与任务阻塞：三个条件不能省略', fontsize=FS_SUP)
-    save(fig, 'fig57_engineering_limits.png')
     report = {'schema_version':1, 'script_sha256':source_script_digest(),
               'scope':'deterministic teaching counterexamples; no measured speech, room or hardware performance',
               'soft_update': {'power':[9,9,9], 'initial_noise':1, 'initial_probability':0,
@@ -4698,6 +4724,7 @@ def fig_engineering_limits():
     target = CODE_CHAPTERS/'ch10/reports/figure57_engineering_limits.json'
     target.parent.mkdir(parents=True,exist_ok=True)
     target.write_text(json.dumps(report,ensure_ascii=False,indent=2,allow_nan=False)+'\n')
+    save(fig, 'fig57_engineering_limits.png')
 
 
 def fig_noise_mismatch():
@@ -5370,8 +5397,7 @@ def main():
     fig_aec_pipeline()
     fig_wpe()
     fig_binaural()
-    write_gcc_reverb_report(fig_gcc_reverb(),
-        Path(__file__).resolve().parents[1] / "codes/chapters/ch04/reports/figure13_gcc_reverb.json")
+    fig_gcc_reverb()
     fig_delay_phase()
     fig_beampattern_anatomy()
     fig_dsin_geometry()

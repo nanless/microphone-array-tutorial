@@ -108,6 +108,7 @@
     "(a) 近场模型：球面波，响应依赖距离与方向": "(a) Near-Field Model: Spherical Wave (Range & Angle)",
     "(a) 通透模式漏声叠加功率增益频响": "(a) Hear-Through Acoustic-Leakage Comb Filter Gain",
     "(a) 采样率偏移（100 ppm）与已知速率线性校正": "(a) Sample-Rate Offset (100 ppm) & Known-Rate Linear SRC",
+    "(a) 音频决策时刻关联最近已到达的视频帧": "(a) Latest Arrived Video Frame at Each Audio Decision",
     "(a) 音频观测形成后才进入滤波器": "(a) Causally Delayed GCC-PHAT DOA Feeds Kalman Filter",
     "(a)(b) 平行线为波前，箭头为传播方向；各平面子图只比较几何形态，坐标不代表统一的米制尺度。": "(a)(b) Parallel lines denote wavefronts and arrows show propagation; coordinates illustrate topology rather than a common metric scale.",
     "(b) 1250 Hz：还需旋转相位": "(b) 1250 Hz: Quadrature Mix Requires Phase Rotation",
@@ -209,7 +210,7 @@
     "(c) 二维强源 PSF；匹配点响应为 1": "(c) 2D PSF of Strong Source (Peak = 1)",
     "(c) 人工 PHD 强度示意：积分=2\n（角度约定：−90°～+90°）": "(c) Synthetic PHD Intensity (Integral = 2, Span [−90°, +90°])",
     "(c) 冻结留出 [24000, 32000)，共同 8000 点：噪声条件下阶数更高未必更优": "(c) Frozen Hold-Out [24000, 32000): Higher Projection Order K Amplifies Gradient Noise",
-    "(c) 几何换算：真值 $\\theta=30^\\circ$，插值峰反推 $\\hat{\\theta}\\approx 30.16^\\circ$\n（$\\theta$ 自正横方向起算）": "(c) Geometry: True $\\theta=30^\\circ$, Inverted $\\hat{\\theta}\\approx 30.16^\\circ$\n($\\theta$ measured from broadside)",
+    "(c) 几何换算：真值 $\\theta=30^\\circ$，插值峰反推 $\\hat{\\theta}\\approx 30.16^\\circ$\n（$\\theta$ 自正横方向起算）": "(c) True $\\theta=30^\\circ$, inferred $\\hat{\\theta}\\approx30.16^\\circ$\n(Angles from broadside)",
     "(c) 双音合成 WAV 读回；排除两端淡入淡出，不拟合时延或增益": "(c) Dual-Tone WAV Readback (Steady Window, No Delay/Gain Fit)",
     "(c) 合成近端测试信号时的更新与恢复": "(c) Freezing vs. Unfrozen Adaptation Under Near-End Burst",
     "(c) 同一 5 包缺口：整段稳窗与缺口内评分对比": "(c) 5-Packet Dropout: Full-Window vs. Gap-Only NMSE",
@@ -217,7 +218,7 @@
     "(c) 同一标量状态：先验方差1，观测各方差1": "(c) Correlated Observations Yield Diminishing Information",
     "(c) 同一输入噪声，已知矩阵求解；两路各自对参考评分": "(c) Ill-Conditioned Inversion Under Identical Input Noise",
     "(c) 同窗 28800 点；不拟合增益": "(c) Dual-Tone Output Error (28800 Pts, No Fit)",
-    "(c) 唇部遮挡下的置信度门控平滑回退": "(c) Confidence-Gated Audio Fallback Under Lip Occlusion",
+    "(c) 唇部遮挡下的置信度门控平滑回退": "(c) Gated Audio Fallback\nUnder Lip Occlusion",
     "(c) 四麦均匀线阵 ULA": "(c) 4-Mic Uniform Linear (ULA)",
     "(c) 固定27200点，不拟合时移或增益": "(c) Steady-Window MSE (27200 Pts, No Fit)",
     "(c) 实白噪声 8 点酉 DFT 的实频点非圆对称性": "(c) 8-Pt Unitary DFT of Real White Noise (Non-Circular DC/Nyquist)",
@@ -235,6 +236,7 @@
     "(c) 步长 μ：无噪声模型中的有限时段收敛": "(c) Step Size μ: Finite-Horizon Convergence (Noiseless)",
     "(c) 独立理论例：空间二阶矩阵 $\\mathbf{R}$（8麦）": "(c) Independent Example: Matrix $\\mathbf{R}$ (8 Mics)",
     "(c) 病态逆（$\\kappa_2=1000$）偏差—方差折中曲线": "(c) Ill-Conditioned ($\\kappa_2=1000$) Bias–Variance Trade-Off",
+    "(c) 病态逆（$\\kappa_2=1000$）固定扰动与收缩误差": "(c) $\\kappa_2=1000$: Fixed Perturbation\nand Shrinkage Error",
     "(c) 白化合同变换：权重等噪声功率椭圆化为单位圆": "(c) Cholesky Whitening: Weight Noise Ellipse → Unit Circle",
     "(c) 目标存在段：幅度缩放不变性对比": "(c) Scale-Invariant −SI-SDR vs. Scale-Sensitive SNR Loss",
     "(c) 目标更接近参考，噪声代价仍须单算": "(c) Lower Target Distortion vs. Higher Output Noise",
@@ -254,6 +256,7 @@
     "(d) GSS 协方差门控权重（提取说话人 1）": "(d) Exclusive GSS Covariance Masks (Speaker 1)",
     "(d) STFT 重叠相加合成窗分母包络（窗长 $N=32$）": "(d) STFT COLA Window-Envelope Sums ($N=32$)",
     "(d) Woodbury 秩一更新干扰抑制深度（$\\sigma_n^2=1$）": "(d) Woodbury Rank-1 Null Depth vs. INR ($\\sigma_n^2=1$)",
+    "(d) 三类前端的给定教学等待预算": "(d) Assigned Teaching Wait Budgets",
     "(d) 三类前端算法等待窗口（典型量级示意）": "(d) Algorithmic Context Latency Across Three Architectures",
     "(d) 先确定线性量，再求和和取对数": "(d) Sum Linear Source Powers Before Taking dB",
     "(d) 卡尔曼预测—新息—Joseph 协方差递推": "(d) Kalman Predict–Update Joseph Covariance Recursion",
@@ -277,6 +280,7 @@
     "(g) 螺旋阵/对数阵（12 麦）": "(g) 12-Mic Logarithmic Spiral Array",
     "(h) 分布式/非规则阵": "(h) Distributed / Irregular",
     "(h) 分布式/非规则阵（5 节点）": "(h) 5-Node Distributed / Irregular",
+    "+120 ms 滞后 (100%)": "+120 ms lag (100%)",
     "+120 ms 滞后 (87.5%)": "+120 ms lag (87.5%)",
     "+20° 干扰": "+20° interferer",
     "+y，θ=0°": "+y (θ = 0°)",
@@ -301,7 +305,7 @@
     "1500 Hz 解析包络": "1500 Hz analytic gain",
     "1500 Hz（三次谐波）": "1500 Hz (3rd harmonic)",
     "16 kHz · 共同增益 1 · 评分 [2400, 29600) 共 27200 点\n确定性正交频点与已知宽带时间统计；不是逐频 SCM、盲故障诊断、设备成绩或正式听测。": "16 kHz · Export gain 1 · Window [2400, 29600) (27200 samples)\nDeterministic orthogonal tones with known noise covariance (oracle fault indicator, not blind detection).",
-    "16 kHz、2 秒已知双频信号；共同导出增益 1，全段 FFT 后施加共同包络。\n上排展示未加包络的解析复数相量，下排对比解析稳态均方误差与 PCM16 读回实测值。": "16 kHz, 2 s known dual-tone signal (shared export gain 1). Top row shows complex bin phasors;\nbottom panel compares exact analytic MSE ceilings against actual PCM16 readback.",
+    "16 kHz、2 秒已知双频信号；共同导出增益 1，全段 FFT 后施加共同包络。\n上排展示未加包络的解析复数相量，下排对比解析稳态均方误差与 PCM16 读回实测值。": "16 kHz, 2 s known dual-tone signal (shared export gain 1). Top row shows complex bin phasors;\nbottom panel compares analytic steady-state MSE against actual PCM16 readback.",
     "16 kHz，L=16，μ=0.2，δ=0.001，seed=20261001；AR(1) 系数 0.98、激励标准差 0.015。\n同一输入与路径下按先预测后更新递推，保留 13 点卷积尾部（不计入留出窗评分）；\n训练输入为双精度浮点，留出窗同时比较浮点分量分解与 PCM16 读回误差。": "16 kHz, L = 16, μ = 0.2, δ = 0.001, seed = 20261001; AR(1) pole 0.98, innovation σ = 0.015.\nFrozen after 1.5 s; 8000-sample hold-out compares float error components against PCM16 readback.",
     "2 ms 叠加 PCM 幅度": "2 ms superposition amp.",
     "20 ms 块 RMS / 满量程": "20 ms block RMS / full scale",
@@ -499,6 +503,7 @@
     "位置状态误差方差": "Position error variance",
     "低优先级B执行15 ms": "Low-prio task B (15 ms)",
     "低频纯音相位差；约 1～1.5 kHz 以上\n听觉系统对细结构相位的锁相能力显著下降。": "Low-freq carrier phase diff.; neural phase\nlocking drops sharply above ~1–1.5 kHz.",
+    "低频纯音相位差；行为实验中约 1.4 kHz\n以上纯音细结构 ITD 敏感性明显下降。": "Low-frequency pure-tone phase differences; behavioral\nfine-structure ITD sensitivity declines above ~1.4 kHz.",
     "保留尺度的 Y (F, M, T)": "Unnormalized Y (F, M, T)",
     "信号＋噪声": "Signal + noise",
     "候选": "Cand.",
@@ -664,6 +669,7 @@
     "回声路径 $h[n]$": "Echo path $h[n]$",
     "回归器只含过去帧；若用整段数据估计 G，算法仍使用未来信息。": "Regressor uses past frames only; batch estimation of G over full utterance is still non-causal.",
     "固定合成权重（无量纲）": "Linear combination weight",
+    "固定扰动放大项": "Perturbation term",
     "固定权重\n$\\vec{w}_q^{\\,H}$": "Fixed branch\n$\\vec{w}_q^{\\,H}$",
     "固定阵列中心": "Fixed array center",
     "图1  人类双耳定位线索：几何 ITD 与双工理论的作用频段": "Fig. 1  Human Binaural Localization Cues: Geometric ITD & Duplex-Theory Frequency Bands",
@@ -788,8 +794,8 @@
     "失败": "FAIL",
     "失配 (dB)": "System mismatch (dB)",
     "头影：远侧耳被头遮挡\n路程差 → 双耳时间差 ITD\n遮挡 → 双耳声级差 ILD": "Head shadow on far ear\nPath diff. → ITD\nShadowing → ILD",
-    "头颅声影引起的双耳声级差；高频头影效应显著增强，5～8 kHz 以上还叠加耳廓谱线索。": "Head-shadow level diff.; strong at high freq., plus pinna spectral notches above 5–8 kHz.",
     "头颅声影引起的双耳声级差；高频头影效应显著增强，\n约 4～5 kHz 以上（尤以 5～12 kHz）还叠加耳廓谱线索。": "Head-shadow level diff. at high freq.;\npinna spectral cues add above ~4–5 kHz.",
+    "头颅声影引起的双耳声级差；高频头影效应显著增强，5～8 kHz 以上还叠加耳廓谱线索。": "Head-shadow level diff.; strong at high freq., plus pinna spectral notches above 5–8 kHz.",
     "奇异值 $\\sigma$（对数坐标）": "Singular value $\\sigma$ (log scale)",
     "学习后级：按模型输入、前视与训练范围配置，在目标条件下测泛化与损伤。": "Neural post-filter suppresses residual echo; verify lookahead latency & near-end distortion.",
     "学习型残余抑制\n使用 e 与可选参考": "Neural RES\nuses e & opt. ref.",
@@ -830,7 +836,7 @@
     "实际参与的通道权重": "Effective Channel Weights",
     "实际整数误差 E / 参考整数能量 D": "Integer error ratio E / D",
     "实际边际源量": "True marginal q",
-    "对侧头影区 210°～330°": "Contralateral shadow 210°–330°",
+    "对侧头影区 210°～330°": "Shadow 210°–330°",
     "对应边际源真值": "Marginal source power",
     "对数螺旋 $r_k=r_0\\,a^k$": "Log spiral $r_k=r_0\\,a^k$",
     "对照方案": "Configuration",
@@ -926,7 +932,7 @@
     "总误差期望 2.8906": "Total MSE 2.8906",
     "总误差期望 3.1014": "Total MSE 3.1014",
     "恢复误差 RMS / 满量程": "Recovery error RMS / full scale",
-    "手部遮挡嘴唇区": "Lip occlusion span",
+    "手部遮挡嘴唇区": "Lip occlusion",
     "扩散度 ψ": "Diffuseness ψ",
     "扫描域 NNLS：q=(16/17, 0)\n1/17 ≈ 0.05882（较优 Δ≈−0.0037）": "Dirty-map NNLS: q = (16/17, 0)\n1/17 ≈ 0.05882 (Δ ≈ −0.0037)",
     "扫描域 NNLS：q=(16/17, 0)\n8128/2601 ≈ 3.12495（Δ≈+0.0138）": "Dirty-map NNLS: q = (16/17, 0)\n8128/2601 ≈ 3.12495 (Δ ≈ +0.0138)",
@@ -1060,6 +1066,7 @@
     "次槽独立保留标志": "Slot-2 active indicator",
     "正交双波瞬时扩散度": "Instantaneous ψ(Δφ)",
     "正则化收缩偏差项": "Regularization bias",
+    "正则化收缩误差项": "Shrinkage error",
     "正则化目标值 J(w, φ)": "Regularized MagLS loss J(w, φ)",
     "正则气泡 (2 cm, $\\delta=5\\times 10^{-4}$)": "Loaded bubble (2 cm, $\\delta=5\\times 10^{-4}$)",
     "正前方 0°": "Front 0°",
@@ -1145,7 +1152,7 @@
     "目标参考": "Target ref.",
     "目标响应": "Target Gain",
     "目标响应均为 1；灰点划线为 0 dB；100～8000 Hz 共 300 个对数等距频点。": "Unit distortionless target gain; dash-dotted = 0 dB; 300 log-spaced bins over 100–8000 Hz.",
-    "目标左耳幅度": "Target left-ear HRTF",
+    "目标左耳幅度": "Target left ear",
     "目标污染固定": "Target-leaked PSD",
     "目标独占 $m_{\\mathrm{tar}}$": "Exclusive target $m_{\\mathrm{tar}}$",
     "目标耳幅度": "Target HRTF mag.",
@@ -1223,7 +1230,7 @@
     "窗长 32ms\n帧移 8ms\n相邻帧重叠75%": "Win: 32 ms\nHop: 8 ms\n75% overlap",
     "竖直示意坐标（无量纲）": "Vertical coordinate (dimensionless)",
     "竖线为平面波波前\n沿基线向左传播": "Vertical wavefronts\nmoving left along baseline",
-    "端到端处理延迟 τ / ms（对数轴）": "End-to-end hear-through latency τ (ms, log scale)",
+    "两路相对到达延迟 τ / ms（对数轴）": "Active-to-passive arrival delay τ (ms, log scale)",
     "端射 +90°": "Endfire +90°",
     "端射 -90°": "Endfire −90°",
     "第 0 步后": "After step 0",
@@ -1262,6 +1269,7 @@
     "细结构 ITD": "Fine-struct. ITD",
     "给定对照的解析误差": "Analytic E/D",
     "给定方差下的标量增益 $K = P^-/(P^-+\\Psi)$": "Scalar Kalman gain $K = P^-/(P^-+\\Psi)$",
+    "给定等待预算 / s（对数轴）": "Assigned wait budget / s (log scale)",
     "给定脉冲幅度": "Impulse amplitude",
     "统一历史：g=1": "Unaligned (g = 1)",
     "统一历史：与参考逐点相同": "Unaligned history (= ref.)",
@@ -1270,6 +1278,7 @@
     "缺口内：800点": "Inside gap (800 pts)",
     "网格峰 (5.567, 3.839) m": "Grid peak (5.567, 3.839) m",
     "联合 SOT/DiCoW\n(分块推理)": "Chunked SOT /\nDiCoW ASR",
+    "联合日志/识别\n(分块推理)": "Joint diarization/recognition\n(chunked inference)",
     "聚焦后噪声": "Focused noise",
     "自第 1632 点起的时间 / ms": "Time from sample 1632 (ms)",
     "自适应控制\n读取 $x_a$、d、e": "Adapt. ctrl.\nreads $x_a$, d, e",
@@ -1286,7 +1295,7 @@
     "行：扫描位置": "Row: scan grid",
     "补零 FFT 乘积（$N_{\\mathrm{pad}}=8$）": "Zero-padded FFT ($N_{\\mathrm{pad}}=8$)",
     "观测龄期 (s)": "Time since last valid obs. (s)",
-    "视觉置信度 $\\alpha_\\ell$": "Visual confidence $\\alpha_\\ell$",
+    "视觉置信度 $\\alpha_\\ell$": "Confidence $\\alpha_\\ell$",
     "视频相对音频滞后 $\\Delta t_{\\mathrm{av}}$ / ms": "Video-to-audio lag $\\Delta t_{\\mathrm{av}}$ (ms)",
     "角度 (°)": "Angle (°)",
     "角度方差 (°²)": "Angle variance (°²)",
@@ -1395,7 +1404,7 @@
     "错误非相干模型：源 1": "Incoherent est.: Src 1",
     "错误非相干模型：源 2": "Incoherent est.: Src 2",
     "错误：把幅度倍率用于功率": "Bug: applying amplitude factor to power",
-    "门控融合 $M_{\\mathrm{fused}}$": "Gated $M_{\\mathrm{fused}}$",
+    "门控融合 $M_{\\mathrm{fused}}$": "Fused $M_{\\mathrm{fused}}$",
     "阵元位置（单位 λ/2）": "Sensor position (units of λ/2)",
     "阵列中心迟滞方向": "Retarded true DOA at array",
     "阵列观测\n$\\vec{x}[n]$": "Array input\n$\\vec{x}[n]$",
@@ -1455,7 +1464,10 @@
     "麦克风数量 M": "Number of microphones M",
     "麦克风观测 d": "Mic signal d",
     "麦克风观测 d\n=x*h+s+v": "Mic signal d\n= x*h + s + v",
-    "（16×时延网格插值；\n灰点线=整数采样间隔）": "(16× FFT zero-pad interp.;\ndotted = integer samples)"
+    "（16×时延网格插值；\n灰点线=整数采样间隔）": "(16× FFT zero-pad interp.;\ndotted = integer samples)",
+    "目标幅度": "Target magnitude",
+    "LS": "LS",
+    "MagLS": "MagLS"
   },
   "regex_rules": [
     {
@@ -1518,5 +1530,47 @@
       "pattern": "^图\\s*(\\d+)\\s+",
       "replacement": "Fig. \\1  "
     }
-  ]
+  ],
+  "figure_overrides": {
+    "fig18_aec.png": {
+      "Playback ref.\n$x[n]$": "Playback\n$x[n]$",
+      "NLMS update\n$\\hat{\\vec{w}}[n+1]$": "NLMS\n$\\hat{\\vec{w}}[n+1]$",
+      "Synthetic near-end\nburst": "Synthetic\nnear-end burst"
+    },
+    "fig38_css_overlap.png": {
+      "(a) Overlap Absolute Correlation Matrix": "(a) Absolute overlap\ncorrelation (unitless)"
+    },
+    "fig61_equal_drr_response.png": {
+      "(a) Two Short RIRs with Equal Reflection Energy 0.5": "(a) Reflection energy\n0.5 in both RIRs",
+      "(b) Identical RIR DRR, Opposite Comb Responses": "(b) Same DRR\nDifferent frequency responses",
+      "(c) Dual-Tone Output Error (28800 Pts, No Fit)": "(c) Error: 28800 samples\nNo gain fit",
+      "Analytic refl. / src power": "Analytic reflection/source"
+    },
+    "fig68_phase_reference.png": {
+      "High-tone inverted": "High tone: 180°",
+      "High-tone −90°": "High tone: −90°"
+    },
+    "fig78_own_voice_fusion.png": {
+      "Clean own-voice ref.": "Clean own-voice"
+    },
+    "fig79_hear_through_comb.png": {
+      "Delay τ = 2.0 ms": "τ = 2.0 ms",
+      "Ultra-low τ = 0.1 ms": "τ = 0.1 ms",
+      "1st notch 250 Hz (+ odd multiples)": "Notches: 250 Hz × odd"
+    },
+    "fig81_nearfield_distance_bubble.png": {
+      "Far-field DSB (10 cm)": "DSB, d = 10 cm",
+      "Range bubble (10 cm)": "Bubble, d = 10 cm",
+      "Loaded bubble (2 cm, $\\delta=5\\times 10^{-4}$)": "Loaded, d = 2 cm\n$\\delta=5\\times 10^{-4}$"
+    },
+    "fig82_diarization_tsvad_gss.png": {
+      "Voiceprint-only Spk 1": "Voiceprint: Spk 1",
+      "Spatio-spectral Spk 1": "Spatio-spectral: Spk 1",
+      "Spatio-spectral Spk 2": "Spatio-spectral: Spk 2"
+    },
+    "fig87_wirtinger_probability_bayesian.png": {
+      "Proper ($|C_{zz}|=0$, solid $2\\sigma$ circle)": "Proper: $|C_{zz}|=0$",
+      "Improper ($|C_{zz}|=0.721$, dashed $2\\sigma$ ellipse)": "Improper: $|C_{zz}|=0.721$"
+    }
+  }
 }

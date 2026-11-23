@@ -94,6 +94,7 @@ def _save_report_and_png(fig, fig_name: str, report_name: str, report_payload: d
         fig.get_layout_engine().set(w_pad=0.06, h_pad=0.09, wspace=0.04, hspace=0.06)
     finalize_figure(fig)
     metadata = {
+        "FigureFilename": destination.name,
         "SourceScript": "scripts/make_tse_figures.py",
         "SourceScriptDigest": report_payload["source_sha256"]["scripts/make_tse_figures.py"],
         "GeneratorInputs": json.dumps(report_payload["source_sha256"], sort_keys=True),
@@ -544,7 +545,7 @@ def _build_fig88(sources: dict[str, str], manifest_sha: str) -> None:
     m_av_traj = np.array([0.96, 0.95, 0.94, 0.93, 0.72, 0.58, 0.15, 0.04, 0.05, 0.10, 0.78, 0.94])
     m_fused_traj = av_confidence_gated_mask(m_aud_traj, m_av_traj, alpha_traj)
 
-    arch_names = ["流式条件 TSE\n(声纹前向)", "联合 SOT/DiCoW\n(分块推理)", "离线级联\nTS-VAD+GSS+ASR"]
+    arch_names = ["流式条件 TSE\n(声纹前向)", "联合日志/识别\n(分块推理)", "离线级联\nTS-VAD+GSS+ASR"]
     arch_latency_s = [0.032, 1.20, 4.50]
 
     report = {
@@ -554,26 +555,33 @@ def _build_fig88(sources: dict[str, str], manifest_sha: str) -> None:
         "audio_manifest_sha256": manifest_sha,
         "sync_video_indices": sync_map["video_frame_indices"].tolist(),
         "lag120ms_video_indices": lag_map["video_frame_indices"].tolist(),
+        "alignment_mode": sync_map["alignment_mode"],
+        "audio_decision_times_s": sync_map["audio_decision_times_s"].tolist(),
+        "sync_valid_video_mask": sync_map["valid_video_mask"].tolist(),
+        "lag120ms_valid_video_mask": lag_map["valid_video_mask"].tolist(),
+        "sync_video_arrival_times_s": sync_map["mapped_video_arrival_times_s"].tolist(),
+        "lag120ms_video_arrival_times_s": lag_map["mapped_video_arrival_times_s"].tolist(),
         "lags_ms": lags_ms.tolist(),
         "consonant_loss_percent": loss_pct,
         "occlusion_alpha_v": alpha_traj.tolist(),
         "occlusion_mask_av": m_av_traj.tolist(),
         "occlusion_mask_fused": m_fused_traj.tolist(),
         "architecture_chunk_latency_s": dict(zip(["streaming_tse", "chunked_joint", "offline_gss"], arch_latency_s)),
+        "architecture_latency_scope": "Assigned teaching budgets; not measured model latency or universal minimum context.",
     }
 
     fig, axes = plt.subplots(2, 2, figsize=(9.5, 8.5), constrained_layout=True)
     aud_idx = np.arange(15)
     axes[0, 0].step(
-        aud_idx, sync_map["video_frame_indices"], where="mid",
+        aud_idx, np.where(sync_map["valid_video_mask"], sync_map["video_frame_indices"], np.nan), where="mid",
         marker="o", markersize=4.5, color=C_BLUE, linewidth=2.0, label="零滞后 (0 ms)",
     )
     axes[0, 0].step(
-        aud_idx, lag_map["video_frame_indices"], where="mid",
+        aud_idx, np.where(lag_map["valid_video_mask"], lag_map["video_frame_indices"], np.nan), where="mid",
         marker="s", markersize=4.5, linestyle="--", color=C_RED, linewidth=1.8, label="相机滞后 (+120 ms)",
     )
     axes[0, 0].set(
-        title="(a) 16 ms 音频帧与 25 fps 视频曝光映射",
+        title="(a) 音频决策时刻关联最近已到达的视频帧",
         xlabel=r"音频 STFT 帧索引 $\ell$",
         ylabel="关联视频曝光帧索引 $m$",
         yticks=range(6),
@@ -582,7 +590,7 @@ def _build_fig88(sources: dict[str, str], manifest_sha: str) -> None:
     axes[0, 0].legend(loc="upper left", framealpha=0.96)
 
     axes[0, 1].plot(lags_ms, loss_pct, "o-", color=C_RED, markersize=4, linewidth=1.8, label="词首辅音截断率")
-    axes[0, 1].axvline(120.0, color=C_BLUE, linestyle="--", linewidth=1.5, label="+120 ms 滞后 (87.5%)")
+    axes[0, 1].axvline(120.0, color=C_BLUE, linestyle="--", linewidth=1.5, label="+120 ms 滞后 (100%)")
     axes[0, 1].set(
         title="(b) 视觉正滞后引起的词首辅音丢失",
         xlabel=r"视频相对音频滞后 $\Delta t_{\mathrm{av}}$ / ms",
@@ -622,9 +630,9 @@ def _build_fig88(sources: dict[str, str], manifest_sha: str) -> None:
         )
         axes[1, 1].text(val * 1.18, idx, f"{val:.3g} s", va="center")
     axes[1, 1].set_xscale("log")
-    axes[1, 1].set_title("(d) 三类前端算法等待窗口（典型量级示意）", pad=12)
+    axes[1, 1].set_title("(d) 三类前端的给定教学等待预算", pad=12)
     axes[1, 1].set(
-        xlabel="典型最小上下文等待窗口 / s（对数轴）",
+        xlabel="给定等待预算 / s（对数轴）",
         yticks=y_pos,
         yticklabels=arch_names,
         xlim=(0.01, 20.0),

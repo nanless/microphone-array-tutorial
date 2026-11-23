@@ -82,7 +82,7 @@ def save(fig, name):
         dpi=150,
         bbox_inches="tight",
         facecolor="white",
-        metadata=figure_metadata(),
+        metadata={**figure_metadata(), "FigureFilename": Path(name).name},
     )
     plt.close(fig)
     print("saved", name)

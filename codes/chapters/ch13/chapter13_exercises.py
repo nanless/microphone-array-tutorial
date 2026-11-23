@@ -72,7 +72,7 @@ def resource_control():
 
 
 def dwacd_sro_gating_control(seed: int = 13021, trials: int = 20):
-    """DWACD double-window blind SRO estimation and activity/silence gating control (E13-21)."""
+    """DWACD-inspired two-window cross-spectrum slope and known activity gating control (E13-21)."""
     if isinstance(seed, bool) or not isinstance(seed, int):
         raise ValueError('seed must be an integer')
     if isinstance(trials, bool) or not isinstance(trials, int) or trials < 1:
@@ -286,7 +286,7 @@ def dwacd_sro_gating_control(seed: int = 13021, trials: int = 20):
         'asymmetric_60pct_speech_40pct_quiet_silence': _run_case(mask_60_head, mask_60_tail, 1.0, seed + 1),
         'symmetric_60pct_speech_40pct_local_noise_bursts': _run_case(mask_60_head, mask_60_head, 2500.0, seed + 2),
         'sparse_20pct_speech_80pct_local_noise_bursts': _run_case(mask_20_head, mask_20_head, 1000.0, seed + 3),
-        'scope': 'synthetic complex-STFT double-window coherence control under known SRO; not a measured room recording or full streaming DWACD tracker',
+        'scope': 'synthetic complex-STFT two-window cross-spectrum slope control under known SRO; no original coherence normalization or recursive state; not a measured room recording or full streaming DWACD tracker',
     }
 
 

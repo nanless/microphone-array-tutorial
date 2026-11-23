@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "created_utc": "2026-11-18T16:31:38.272148+00:00",
+  "created_utc": "2026-11-22T22:53:13.027894+00:00",
   "status": "audit_completed_with_original_differences_and_unobserved_peaks",
   "source_identity_before": {
     "source_lock_sha256": "55721fbe8027f67bf3159827b8b58c14bc327ea5e0221b216303681340e890e7",
@@ -1532,7 +1532,7 @@
   },
   "direct_sources": {
     "codes/chapters/ch13/examples/audit_upstream_distributed_contracts.py": "3072a70dbb4b4ff14acba6f03721d5d79d26274da9e4ebb293ffa10b749a5e27",
-    "codes/chapters/ch04/core/upstream_contracts.py": "8669f007ee16a15433598b8f451f226cceb3163bdbc2bf690709504874743167",
+    "codes/chapters/ch04/core/upstream_contracts.py": "e868220b7388ae3124d1098df9de4095e061c1982fb1a251ad7c27c6c0742be5",
     "codes/chapters/ch00/io_contracts.py": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974",
     "codes/chapters/ch00/upstream/fetch_upstreams.py": "442d17a5818ef0edf620bde85cc7959c1e73602a47f75e1cc8fce2b227ae11b4",
     "codes/chapters/ch12/examples/audit_upstream_imaging_contracts.py": "781cb08e4870f5598d31cf593ce568930269f1d164c0999aad682306d55c9913",
@@ -1540,7 +1540,7 @@
   },
   "actual_dependencies_before": {
     "codes/chapters/ch13/examples/audit_upstream_distributed_contracts.py": "3072a70dbb4b4ff14acba6f03721d5d79d26274da9e4ebb293ffa10b749a5e27",
-    "codes/chapters/ch04/core/upstream_contracts.py": "8669f007ee16a15433598b8f451f226cceb3163bdbc2bf690709504874743167",
+    "codes/chapters/ch04/core/upstream_contracts.py": "e868220b7388ae3124d1098df9de4095e061c1982fb1a251ad7c27c6c0742be5",
     "codes/chapters/ch00/io_contracts.py": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974",
     "codes/chapters/ch00/upstream/fetch_upstreams.py": "442d17a5818ef0edf620bde85cc7959c1e73602a47f75e1cc8fce2b227ae11b4",
     "codes/chapters/ch12/examples/audit_upstream_imaging_contracts.py": "781cb08e4870f5598d31cf593ce568930269f1d164c0999aad682306d55c9913",
@@ -1548,20 +1548,20 @@
   },
   "actual_dependencies_after": {
     "codes/chapters/ch13/examples/audit_upstream_distributed_contracts.py": "3072a70dbb4b4ff14acba6f03721d5d79d26274da9e4ebb293ffa10b749a5e27",
-    "codes/chapters/ch04/core/upstream_contracts.py": "8669f007ee16a15433598b8f451f226cceb3163bdbc2bf690709504874743167",
+    "codes/chapters/ch04/core/upstream_contracts.py": "e868220b7388ae3124d1098df9de4095e061c1982fb1a251ad7c27c6c0742be5",
     "codes/chapters/ch00/io_contracts.py": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974",
     "codes/chapters/ch00/upstream/fetch_upstreams.py": "442d17a5818ef0edf620bde85cc7959c1e73602a47f75e1cc8fce2b227ae11b4",
     "codes/chapters/ch12/examples/audit_upstream_imaging_contracts.py": "781cb08e4870f5598d31cf593ce568930269f1d164c0999aad682306d55c9913",
     "codes/chapters/ch00/core/source_history.py": "5a9301a6b7791bb51b49653770654bed893c297e944e4f1a99867f1ac86a7c92"
   },
   "external_namespace_before": {
-    "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/.venv/lib/python3.13/site-packages/numpy/__init__.py",
+    "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/numpy/__init__.py",
     "sha256": "09295a80660f17925ae23765ce8cbd7ff7ceae968d5f2f89349f1cb74c0b9e11",
     "version": "2.5.3",
     "scope": "actual imported NumPy entry file only; compiled modules and full installed dependency closure not verified"
   },
   "external_namespace_after": {
-    "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/.venv/lib/python3.13/site-packages/numpy/__init__.py",
+    "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/numpy/__init__.py",
     "sha256": "09295a80660f17925ae23765ce8cbd7ff7ceae968d5f2f89349f1cb74c0b9e11",
     "version": "2.5.3",
     "scope": "actual imported NumPy entry file only; compiled modules and full installed dependency closure not verified"

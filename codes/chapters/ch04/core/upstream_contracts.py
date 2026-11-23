@@ -7,6 +7,9 @@ No fetching, installation, upstream edits, or implicit report writes occur here.
 from __future__ import annotations
 
 import hashlib
+import contextlib
+import importlib.machinery
+import sys
 from pathlib import Path
 
 from codes.chapters.ch00.io_contracts import (
@@ -280,3 +283,108 @@ def historical_bytes(path):
     if len(payload) != int(git(ROOT, "cat-file", "-s", revision_path)):
         raise ValueError("Historical Git object cannot be represented byte-exactly")
     return payload
+
+
+@contextlib.contextmanager
+def source_imports(package, record=None):
+    """Read target-package Python sources directly; leave existing pyc untouched."""
+    class OriginalSourceLoader(importlib.machinery.SourceFileLoader):
+        def get_code(self, fullname):
+            source = ordinary_file(self.path).read_bytes()
+            digest = hashlib.sha256(source).hexdigest()
+            if record is not None:
+                rows = {str(Path(row['path']).resolve()): row['sha256']
+                        for row in record['python_files'].values()}
+                if rows.get(str(Path(self.path).resolve())) != digest:
+                    raise ValueError('Python execution bytes differ from preflight: '+self.path)
+            self.executed_source_sha256 = digest
+            return compile(source, self.path, 'exec', dont_inherit=True)
+
+        def exec_module(self, module):
+            super().exec_module(module)
+            module.__micarray_original_source_sha256__ = self.executed_source_sha256
+
+    class OriginalSourceFinder:
+        def find_spec(self, fullname, path=None, target=None):
+            if fullname != package and not fullname.startswith(package+'.'):
+                return None
+            spec = importlib.machinery.PathFinder.find_spec(fullname, path)
+            if spec is not None and isinstance(spec.loader, importlib.machinery.SourcelessFileLoader):
+                raise ValueError('Original Python module has bytecode but no source: '+fullname)
+            if spec is not None and isinstance(spec.loader, importlib.machinery.SourceFileLoader):
+                spec.loader = OriginalSourceLoader(fullname, spec.origin)
+            return spec
+
+    finder = OriginalSourceFinder()
+    sys.meta_path.insert(0, finder)
+    try:
+        yield
+    finally:
+        sys.meta_path.remove(finder)
+
+
+
+def package_preflight(package, checkout, expected_root=None):
+    """Read every discoverable installed Python file before importing the package.
+
+    Python source identity is separate from compiled extensions, third-party
+    dependencies and method execution. It is not a proof against concurrent edits.
+    """
+    spec = importlib.machinery.PathFinder.find_spec(package, sys.path)
+    if spec is None or not spec.origin or not spec.submodule_search_locations:
+        raise ModuleNotFoundError('No original package available: '+package)
+    root = validate_parent_chain(Path(spec.origin).parent)
+    if expected_root is not None and root != Path(expected_root).resolve():
+        raise ValueError('Imported package root differs from fixed checkout')
+    for name, module in tuple(sys.modules.items()):
+        if name == package or name.startswith(package+'.'):
+            filename = getattr(module, '__file__', None)
+            if not filename or filename.endswith('.pyc'):
+                raise ValueError('Preloaded package module has no ordinary Python-source identity: '+name)
+            if filename and not Path(filename).resolve().is_relative_to(root):
+                raise ValueError('Preloaded package module differs from checked root')
+            if filename and filename.endswith('.py') and getattr(module, '__micarray_original_source_sha256__', None) != sha(ordinary_file(filename)):
+                raise ValueError('Preloaded Python module has no verified direct-source import identity')
+    files = {}
+    revision = git(checkout, 'rev-parse', 'HEAD')
+    for path in sorted(root.rglob('*.py')):
+        path = ordinary_file(path)
+        relative = package+'/'+str(path.relative_to(root))
+        blob = git(checkout, 'rev-parse', revision+':'+relative)
+        actual = git(checkout, 'hash-object', '--no-filters', '--', str(path))
+        if actual != blob:
+            raise ValueError('Installed original Python blob differs: '+relative)
+        files[relative] = {'path': str(path), 'sha256': sha(path), 'git_blob': blob}
+    cache_files = {str(p.relative_to(root)): sha(ordinary_file(p)) for p in sorted(root.rglob('*.pyc'))}
+    return {'package': package, 'package_root': str(root), 'python_files': files,
+            'existing_pyc_sha256': cache_files, 'existing_pyc_execution': 'bypassed by direct-source loader',
+            'scope': 'all discovered package Python files, before import; compiled extensions and external dependencies are not fixed-source Python blobs'}
+
+
+def package_unchanged(record):
+    root = Path(record['package_root'])
+    if sorted(str(p.relative_to(root)) for p in root.rglob('*.py')) != sorted(
+            str(Path(r['path']).relative_to(root)) for r in record['python_files'].values()):
+        raise ValueError('Package Python membership changed')
+    for row in record['python_files'].values():
+        if sha(ordinary_file(row['path'])) != row['sha256']:
+            raise ValueError('Package Python changed during execution')
+    after_cache = {str(p.relative_to(root)): sha(ordinary_file(p)) for p in sorted(root.rglob('*.pyc'))}
+    if after_cache != record['existing_pyc_sha256']:
+        raise ValueError('Existing package bytecode cache changed')
+    executed = {}
+    for name, module in tuple(sys.modules.items()):
+        if name != record['package'] and not name.startswith(record['package']+'.'):
+            continue
+        filename = getattr(module, '__file__', None)
+        if filename and filename.endswith('.py'):
+            path = ordinary_file(filename)
+            relative = record['package']+'/'+str(path.relative_to(root))
+            row = record['python_files'].get(relative)
+            marker = getattr(module, '__micarray_original_source_sha256__', None)
+            if row is None or marker != row['sha256']:
+                raise ValueError('Loaded Python module lacks the preflighted execution identity: '+name)
+            executed[name] = {'path': str(path), 'executed_source_sha256': marker}
+    record['executed_python_sources'] = executed
+    record['unchanged_after'] = True
+    return record

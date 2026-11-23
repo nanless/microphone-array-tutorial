@@ -185,7 +185,12 @@ _DEFAULT_TELEMETRY: dict[str, float] = {
 
 
 def diagnose_pipeline_symptom(telemetry: dict[str, object]) -> dict[str, object]:
-    """Deterministically triage the highest-priority upstream fault from telemetry."""
+    """Apply the six ordered teaching checks of E17-13 to given telemetry.
+
+    Returns the first triggered rule under the exercise's thresholds and
+    priority. ``hear_through_latency_us`` is the nonnegative electronic/direct
+    relative delay in the equal-gain pure-delay model used for its notch value.
+    """
     if not isinstance(telemetry, dict):
         raise ValueError("telemetry must be a dict")
     unknown = set(telemetry) - set(_DEFAULT_TELEMETRY)
@@ -231,7 +236,7 @@ def diagnose_pipeline_symptom(telemetry: dict[str, object]) -> dict[str, object]
             "chapter_pointer": "§14.10",
             "first_comb_notch_hz": comb_first_notch_hz,
             "action": (
-                "Reduce converter + DSP hear-through path to <= 100 us or attenuate "
+                "Check relative electronic/direct-path delay against 100 us and branch gain/phase; reduce delay or attenuate "
                 "active playback in the passive-leakage overlap band"
             ),
         }
@@ -297,7 +302,7 @@ def diagnose_pipeline_symptom(telemetry: dict[str, object]) -> dict[str, object]
         "priority_rank": 0,
         "stage": "healthy",
         "chapter_pointer": "§11.2 / §17.4",
-        "action": "All upstream physical preconditions satisfied; proceed to worst-case scenario acceptance",
+        "action": "No configured rule fired for the given telemetry; proceed to scenario acceptance",
     }
 
 

@@ -1,1 +1,1 @@
-"""Chapter-owned teaching experiments; shared numerical kernels live in array_tutorial."""
+"""Chapter-owned experiments; each shared numerical kernel lives in its first-teaching chapter core."""

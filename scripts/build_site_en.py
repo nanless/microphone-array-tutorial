@@ -127,24 +127,11 @@ def expected_html_set_en() -> set[str]:
 
 
 def source_digest_en() -> str:
-    digest = hashlib.sha256()
-    paths = sorted(SRC_EN.glob("*.md"))
-    paths += [RESEARCH_EN / name for name, _ in RESEARCH_EN_PAGES]
-    paths += [COURSE_HOME_EN_ROOT / name for name in COURSE_HOME_FILES]
-    paths += [
-        Path(__file__),
-        ROOT / "scripts" / "build_site.py",
-        ROOT / "scripts" / "build_markdown_helpers.py",
-        build_site.INLINE_LAYOUT_PATH,
-        ROOT / "scripts" / "heading_aliases.py",
-        ROOT / "scripts" / "chapter_identity.py",
-    ]
-    for path in paths:
-        digest.update(path.relative_to(ROOT).as_posix().encode("utf-8"))
-        digest.update(b"\0")
-        digest.update(path.read_bytes())
-        digest.update(b"\0")
-    return digest.hexdigest()[:12]
+    from scripts import publication_dependencies_en as dependencies
+
+    paths = dependencies.site_sources(
+        ROOT, SRC_EN, RESEARCH_EN, [name for name, _ in RESEARCH_EN_PAGES])
+    return dependencies.source_digest(ROOT, paths)
 
 
 def paired_zh_heading_aliases(source_path: Path) -> list[list[str]]:

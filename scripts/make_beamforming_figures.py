@@ -89,6 +89,7 @@ def main():
                 'AudioManifestDigest': report['audio_manifest_sha256'],
                 'NumericalReportDigest': hashlib.sha256(report_path.read_bytes()).hexdigest()}
     destination = ROOT/'figures/fig68_phase_reference.png'
+    metadata['FigureFilename'] = destination.name
     fig.savefig(destination, dpi=150, bbox_inches='tight', facecolor='white', metadata=metadata)
     plt.close(fig)
     print(destination.relative_to(ROOT))

@@ -7,6 +7,13 @@ or compiled binary is redistributed by this script.
 """
 from __future__ import annotations
 
+if __package__ in (None, ""):
+    import sys as _entry_sys
+    from pathlib import Path as _EntryPath
+    _entry_sys.path.insert(0, str(_EntryPath(__file__).resolve().parents[4]))
+
+from codes.chapters.ch04.core import upstream_contracts as contracts
+
 import argparse
 from datetime import datetime, timezone
 import hashlib
@@ -27,6 +34,7 @@ SOURCE_FILES = (
     "src/hrtf/loudness.c", "src/hrtf/tools.c", "src/hrtf/tools.h",
     "src/hrtf/mysofa.h", "src/resampler/speex_resampler.h", "LICENSE",
 )
+CURRENT_REPORT = ROOT / "codes/chapters/ch01/reports/libmysofa_loudness_current.json"
 ABS_TOLERANCE = 2e-6
 EXPORT_HEADER = "#ifndef MYSOFA_EXPORT\n#define MYSOFA_EXPORT\n#endif\n"
 
@@ -152,6 +160,7 @@ def evaluate(stdout: str) -> list[dict]:
 
 
 def run_audit(*, compiler: str = "cc", upstream: Path = UPSTREAM) -> dict:
+    dependencies = contracts.dependencies(Path(__file__))
     source = verify_sources(upstream)
     executable = shutil.which(compiler)
     if executable is None:
@@ -172,11 +181,14 @@ def run_audit(*, compiler: str = "cc", upstream: Path = UPSTREAM) -> dict:
         stdout = _run([str(binary)])
     if verify_sources(upstream) != source:
         raise ValueError("Upstream or source lock changed while the audit ran")
+    if contracts.dependencies(Path(__file__)) != dependencies:
+        raise ValueError("Actual audit dependencies changed during execution")
     cases = evaluate(stdout)
     return {"schema_version": 1,
             "executed_at_utc": datetime.now(timezone.utc).isoformat(),
             "audit_source": str(Path(__file__).resolve().relative_to(ROOT)),
             "audit_source_sha256": sha256(Path(__file__)),
+            "report_source_sha256": dependencies,
             "scope": "original-method extracted call: mysofa_loudness only",
             "source": source, "platform": platform.platform(),
             "compiler": {"executable": executable, "version": compiler_version,
@@ -202,11 +214,12 @@ def main() -> None:
     parser.add_argument("--report", type=Path, help="Save the actual run as strict JSON")
     parser.add_argument("--compiler", default="cc", help="C compiler executable (default: cc)")
     args = parser.parse_args()
+    target = (contracts.report_target(args.report, CURRENT_REPORT, (UPSTREAM, LOCK, Path(__file__)))
+              if args.report is not None else None)
     report = run_audit(compiler=args.compiler)
     encoded = json.dumps(report, ensure_ascii=False, indent=2, allow_nan=False) + "\n"
-    if args.report:
-        args.report.parent.mkdir(parents=True, exist_ok=True)
-        args.report.write_text(encoded, encoding="utf-8")
+    if target is not None:
+        contracts.write_report(target, report, CURRENT_REPORT, (UPSTREAM, LOCK, Path(__file__)))
     print(encoded, end="")
     if not report["expected_behavior_observed"]:
         raise SystemExit("Observed behavior differs from the two independently specified expectations")

@@ -131,13 +131,15 @@ def generate_figure(figure_path=FIGURE, report_path=REPORT, *, audio_directory=O
     fig.text(.5,.008,'注：本例按固定确认与过期门限演示单轨迹槽位的建立、缺测保持与超时退役过程。',
              ha='center',fontsize=11)
     figure_path.parent.mkdir(parents=True,exist_ok=True)
+    write_json_report(report_path,report)
     fig.savefig(figure_path,dpi=150,bbox_inches='tight',facecolor='white',metadata={
+        'FigureFilename': figure_path.name,
         'SourceScript':'scripts/make_tracking_figures.py',
         'SourceScriptDigest':report['script_sha256'],
         'AudioManifestDigest':data['input_sha256']['MANIFEST.json'],
+        'NumericalReportDigest':hashlib.sha256(report_path.read_bytes()).hexdigest(),
         'SourceClosureDigest':hashlib.sha256(json.dumps(report['source_sha256'],sort_keys=True).encode()).hexdigest()})
     plt.close(fig)
-    write_json_report(report_path,report)
     return report
 
 

@@ -13,6 +13,10 @@ on:
       - 'dist/microphone-array-tutorial-en.pdf'
       - 'assets/readme/lab/**'
       - 'assets/readme/cases/**'
+      - 'scripts/figure_report_contracts.py'
+      - 'scripts/portable_figure_report_checks.py'
+      - 'scripts/pdf_input_identity.py'
+      - 'codes/chapters/**/reports/figure*.json'
   workflow_dispatch:
 
 permissions:
@@ -30,7 +34,15 @@ jobs:
       - uses: actions/checkout@v6
       - uses: actions/setup-python@v6
         with:
-          python-version: '3.12'
+          python-version: '3.13'
+          cache: 'pip'
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+      - name: Install locked Python dependencies
+        run: pip install -r requirements.txt
+      - name: Verify the exact workspace that will be staged
+        run: python scripts/run_portable_ci.py
       - name: Verify published assets and portable exports before staging
         shell: bash
         run: |

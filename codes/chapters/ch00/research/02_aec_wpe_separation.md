@@ -53,7 +53,7 @@ NLMS 以参考回归向量的能量归一化更新幅度，便于在不同播放
 
 ### A03　AUMDF、分区约束调度与比例分配
 
-Speex 的 `mdf.c` 注释明确采用交替更新的 MDF（AUMDF）。它调度分区约束以控制变换成本，并在代码中调节比例自适应率。比例分配倾向于给较大的路径系数更多更新量，适合考察稀疏路径；分散拖尾的收敛不能由稀疏路径结果代替。
+Speex 的 `mdf.c` 注释明确采用交替更新的 MDF（AUMDF）。它调度分区约束以控制变换成本，并在代码中调节比例自适应率。固定实现中，当分区数 $M>1$ 时，每块投影第一分区和一个轮转的后续分区，共两个；相对每块投影全部 $M$ 个分区，这部分变换工作量为 $2/M$，仅在 $M=4$ 时减半，其他预测、梯度与 FFT 开销须另计。比例分配倾向于给较大的路径系数更多更新量，适合考察稀疏路径；分散拖尾的收敛不能由稀疏路径结果代替。
 
 读代码中的 `proportional adaptation rate` 与 `MDF / AUMDF` 段落时，区分“某个分区是否施加约束”和“该分区是否做梯度更新”。最小实验使用相同长度、相同总能量的稀疏与稠密 FIR，记录相对系数误差和每块耗时。失败实验在大抽头位置突变后检查小抽头是否迟迟得不到足够更新。不要把 Speex 的这一具体控制器直接称作所有 PNLMS/IPNLMS 变体的实现。
 
@@ -729,6 +729,8 @@ ESPnet 的未消费开关、丢弃掩码返回及固定逆矩阵调用由 AST �
 
 ### B02　AuxIVA、IP、ISS 与尺度恢复
 
+固定 PRA `auxiva.py` 使用 IP 线性方程求解，不能把 `ssspy` 的 ISS 选项归给该入口；比较时应记录真正执行的更新分支。
+
 AuxIVA 用一个源跨频点的联合模型约束依赖，辅助函数更新避免手工选择普通梯度步长。迭代投影（IP）与迭代源导向（ISS）是不同更新实现，应分别记录，而不是都写成“用了 IVA”。[ssspy `bss/iva.py`](https://github.com/tky823/ssspy/blob/38b9389e8b1914422561f1936d9b28d042d62d2c/ssspy/bss/iva.py)给出 IP1、IP2、ISS1、ISS2 与 IPA 的选项，[Ono 2011 原论文](https://doi.org/10.1109/ASPAA.2011.6082320)说明辅助函数思想。
 
 读码顺序为源代价 → 加权 SCM → 空间更新 → 归一化 → projection-back。最小实验采用确定混合和已知两源，固定初值比较代价与分离；失败实验使用秩亏混合。恢复参考麦的尺度需要独立步骤，SI-SDR 对尺度不敏感，不能用其通过来证明波形幅度已经恢复。
@@ -742,6 +744,8 @@ E08-04 对人为指定的解混矩阵演示回投影：原输出 `[2s, -3u]` 乘
 **BSS Eval 与 SI-SDR 的评分边界。** 附录 A 所列的 SDR、SIR、SAR 源于 [Vincent、Gribonval 与 Févotte 2006，§II～III](https://doi.org/10.1109/TSA.2005.858005)的盲源分离误差分解：按选定的参考源和允许失真模型，将估计拆为目标、其他源干扰、可能单列的传感噪声以及算法伪影，再按相应分量能量求比。这里的 SDR 须写明 BSS Eval 实现和版本，不能与第 8 章只允许**一个标量投影**、不自动补偿时间偏移的[去均值 SI-SDR](../../../../chapters/08_speech-separation.md#sec-8-5)互换；单源时也不能因为没有其他源，就省略评分窗口、参考对齐和失真滤波约定。
 
 版本差异可从维护者官方说明与固定源码直接定位：[`mir_eval` 0.8.2 的 `separation.py::bss_eval_sources` / `bss_eval_sources_framewise`](https://github.com/mir-evaluation/mir_eval/blob/8db0b3812e2032544c1fc00d02d4256cab043f3d/mir_eval/separation.py)允许长度为 512 的时不变失真滤波器，逐窗接口在各窗口内重新估计；[museval 的 BSS Eval v4 说明](https://github.com/sigsep/sigsep-mus-eval#bsseval-v4)及[`museval` 0.4.1 的 `metrics.py::bss_eval`](https://github.com/sigsep/sigsep-mus-eval/blob/b2a2246f343eeb3c17dd69882db3eb73b6714617/museval/metrics.py)显示，默认 `framewise_filters=False`，先用整段估计共用滤波器，再按窗口评分；兼容 v3 的 `bss_eval_sources` 包装器则设 `framewise_filters=True`、`bsseval_sources_version=True`。还须区分**滤波拟合**与 **SDR 分子/分母**：museval v4 默认 `bsseval_sources_version=False` 时，空间失真 `e_spat` 仍计入 SDR 分母；兼容 v3 接口才把滤波后的目标 `s_true+e_spat` 计入 SDR 分子。因此即使都写“SDR”，版本、入口函数、滤波器是否逐窗变化、窗口及跳距、排列和静音处理仍须逐项报告。两份固定源码的许可分别见 [mir_eval MIT](https://github.com/mir-evaluation/mir_eval/blob/8db0b3812e2032544c1fc00d02d4256cab043f3d/LICENSE.txt) 与 [museval MIT](https://github.com/sigsep/sigsep-mus-eval/blob/b2a2246f343eeb3c17dd69882db3eb73b6714617/LICENSE)。以上提交及源码行为核实于 2026-09-28；这里只做官方源码和文档的静态核查，未将两库纳入 `SOURCES.lock.json`、在本地取得或运行，因而不给出数值对照。
+
+**CI-SDR 的完整卷积范围。** [固定 `fgnt/ci_sdr` 的 `pt/sdr.py`](https://github.com/fgnt/ci_sdr/blob/ab4f88c14f34cf4dfd9d39789154b041ec61c72e/ci_sdr/pt/sdr.py) 第352～355行先预测完整滤波结果，再给估计补 `filter_length-1` 个零；两者在同一完整范围计算能量（2026-11-23 源码核对）。本书 [`ci_sdr_toeplitz`](../../ch08/core/separation_metrics_streaming.py)使用形状 `(N+L-1,L)` 的 NumPy 最小二乘，返回同长的目标投影与残差；可选的截尾矩阵只用于单独命名的对照。E08-25 中 `s=[1,0,-1,0]`、`est=[1,-1,1,-1]`、`L=4` 的完整目标能量为 `4/3`、残差为 `8/3`，得约 `-3.0103 dB`；只拟合前四点却可达到零残差。比较实现时须同时核卷积尾部、补零、去均值、滤波长度和能量下限，不能只比抽头数或函数名。这里的原 Torch 实现用于源码对照，数值算例运行本书 NumPy 核。
 
 一个可复算的**建议实验**是先构造非静音、宽带且非周期的单源参考 $s[n]$，用共同尺度 2 和一采样延迟产生估计，固定长度、补零与有效评分区间：SI-SDR 的标量投影不能把时移当作增益消掉；对允许相应延迟抽头且把滤波目标计入 SDR 分子的 v3 `bss_eval_sources` 口径，该延迟可能被吸收入允许失真。museval v4 默认 SDR 将空间失真计入分母，不能因它也拟合滤波器就推断延迟被 SDR 免除。再让前后两段分别延迟一、二采样，并使所选评分窗口各落在单段内：逐窗滤波器与整段共用滤波器面对的是不同的拟合问题。实际差值仍取决于窗口边缘、滤波器方向、参考和静音策略；这些输入尚未送入两库，所以这里不填写预期分数，也不声称哪一版普遍更好。附录仅需厘清一个词条，不为此额外下载、锁定或复制两个完整评测库；若以后把版本对照变成可执行实验，再将上游提交、许可、依赖和最小输入纳入复现清单。
 

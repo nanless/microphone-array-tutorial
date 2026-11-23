@@ -143,6 +143,7 @@ def generate_figure(figure_path=FIGURE, report_path=REPORT, *, audio_directory=D
     figure_path.parent.mkdir(parents=True, exist_ok=True)
     _destination(figure_path, FIGURE, '.png')
     fig.savefig(figure_path, dpi=150, bbox_inches='tight', facecolor='white', metadata={
+        'FigureFilename': figure_path.name,
         'SourceScript': 'scripts/make_channel_figures.py', 'SourceScriptDigest': report['script_sha256'],
         'GeneratorInputs': json.dumps(sources, sort_keys=True),
         'AudioManifestDigest': input_sha['MANIFEST.json'], 'NumericalReportDigest': _sha(report_path.read_bytes())})

@@ -1,14 +1,16 @@
 #!/usr/bin/env python3
-"""Cross-platform CI runner for Chinese & English quality gates, SHA-256 asset manifests, and unit tests.
+"""Portable publication identities, 35 numeric reports, and selected unit tests.
 
-On the original Apple Silicon generation host (with `.gitignore`d `_downloads/` present), runs full 0-ULP checks.
-On clean GitHub Actions runners (`ubuntu-latest` or `macos-15` without `_downloads/`), runs:
-  1. Full Chinese & English Markdown, figure, website, combined HTML, and <50 MiB PDF quality gates;
-  2. Cryptographic SHA-256 verification across all 32 audio manifests and 35 figure JSON reports;
-  3. Chapter package layout & 360-exercise bilingual catalog verification;
-  4. Chapter 0 math foundations and Chapters 2–9 cross-chapter numerical baselines;
-  5. All self-contained unit test modules in `tests/` (excluding only tests that require `.gitignore`d
-     `codes/chapters/ch00/upstream/_downloads/` checkouts or exact `macOS-27.2.1` OS-kernel string comparison).
+Check bilingual sources/sites/PDFs, all32 audio manifests, and fixed35 report
+identities, independent arithmetic and report-to-PNG bindings. Small analytic
+and actual-PCM integer checks use explicit tolerances where appropriate; saved
+random events are checked as observations and summaries, not resimulated trials.
+This layer does not promise full waveform 0-ULP replay on Linux or other hosts.
+
+The test subset depends on checkout availability, original generation-host
+identity and Apple Silicon arithmetic requirements. Additional strict replay
+tests are selected on the original host. Every excluded module and reason is
+printed; their absence must not be described as successful original execution.
 """
 from __future__ import annotations
 
@@ -21,12 +23,22 @@ import re
 import subprocess
 import sys
 import unittest
+import wave
 
 ROOT = Path(__file__).resolve().parent.parent
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from scripts import build_pdf, build_pdf_en, quality_check, quality_check_en
+from codes.chapters.ch00.io_contracts import strict_json_loads, validate_parent_chain
+
+# These reviewed fixtures use capability flags, private HTML/PDF examples or
+# independent report/PCM arithmetic, without upstream imports or full waveform
+# replay. Their source intentionally names capabilities and asset constants.
+PORTABLE_POLICY_FIXTURES = {
+    "test_review_portable_ci", "test_review_r4_portable_reports",
+    "test_review_r4_publication_en",
+}
 
 HOST_MANIFEST_KEYWORDS = (
     "check_assets",
@@ -116,53 +128,145 @@ DOWNLOADS_REQUIRED_MODULES = {
 }
 
 
+EXPECTED_AUDIO_MANIFESTS = (
+    'codes/chapters/appendix_a/weighted_audio/MANIFEST.json',
+    'codes/chapters/appendix_b/response_audio/MANIFEST.json',
+    'codes/chapters/appendix_b/room_audio/MANIFEST.json',
+    'codes/chapters/ch00/audio/MANIFEST.json',
+    'codes/chapters/ch01/binaural_audio/MANIFEST.json',
+    'codes/chapters/ch01/spectral_audio/MANIFEST.json',
+    'codes/chapters/ch02/real_audio/MANIFEST.json',
+    'codes/chapters/ch02/stft_audio/MANIFEST.json',
+    'codes/chapters/ch02/sweep_audio/MANIFEST.json',
+    'codes/chapters/ch03/baseline_audio/MANIFEST.json',
+    'codes/chapters/ch03/geometry_audio/MANIFEST.json',
+    'codes/chapters/ch04/focus_audio/MANIFEST.json',
+    'codes/chapters/ch04/reflection_audio/MANIFEST.json',
+    'codes/chapters/ch05/binaural_beamforming_audio/MANIFEST.json',
+    'codes/chapters/ch05/derivative_audio/MANIFEST.json',
+    'codes/chapters/ch05/phase_audio/MANIFEST.json',
+    'codes/chapters/ch06/apa_audio/MANIFEST.json',
+    'codes/chapters/ch06/reference_audio/MANIFEST.json',
+    'codes/chapters/ch07/delay_audio/MANIFEST.json',
+    'codes/chapters/ch07/mint_audio/MANIFEST.json',
+    'codes/chapters/ch08/css_audio/MANIFEST.json',
+    'codes/chapters/ch08/gss_audio/MANIFEST.json',
+    'codes/chapters/ch08/mask_audio/MANIFEST.json',
+    'codes/chapters/ch09/moving_audio/MANIFEST.json',
+    'codes/chapters/ch09/tracking_audio/MANIFEST.json',
+    'codes/chapters/ch10/channel_audio/MANIFEST.json',
+    'codes/chapters/ch10/noise_audio/MANIFEST.json',
+    'codes/chapters/ch11/scenario_audio/MANIFEST.json',
+    'codes/chapters/ch12/imaging_audio/MANIFEST.json',
+    'codes/chapters/ch13/distributed_audio/MANIFEST.json',
+    'codes/chapters/ch14/wearable_audio/MANIFEST.json',
+    'codes/chapters/ch15/tse_audio/MANIFEST.json',
+)
+
+def _check_bound_file(folder, filename, digest, label, errors):
+    try:
+        if (type(filename) is not str or not filename or filename in (".", "..")
+                or "/" in filename or "\\" in filename):
+            raise ValueError("bound member must be a simple filename")
+        if type(digest) is not str or re.fullmatch(r"[0-9a-f]{64}", digest) is None:
+            raise ValueError("bound SHA-256 must be64 lowercase hexadecimal characters")
+        target = validate_parent_chain(folder / filename)
+        if not target.is_file() or hashlib.sha256(target.read_bytes()).hexdigest() != digest:
+            raise ValueError("actual member SHA-256 differs")
+    except (OSError, ValueError, TypeError) as exc:
+        errors.append(f"{label}/{filename}: {exc}")
+
+
+def check_binaural_measurement_bindings(folder, data, errors):
+    """Check this manifest's four measurement members, without full synthesis replay."""
+    expected = {role: "binaural_" + role + ".wav" for role in ("input", "bmvdr", "blcmv", "null")}
+    measurements = data.get("measurements")
+    if type(measurements) is not dict or set(measurements) != set(expected):
+        errors.append("binaural measurement member roles differ")
+        return
+    for role, filename in expected.items():
+        row = measurements[role]
+        if type(row) is not dict or row.get("file") != filename:
+            errors.append("binaural measurement filename differs: " + role)
+            continue
+        _check_bound_file(folder, filename, row.get("sha256"), "binaural measurements", errors)
+        try:
+            with wave.open(str(validate_parent_chain(folder / filename)), "rb") as wav:
+                if (wav.getframerate(), wav.getnchannels(), wav.getsampwidth(),
+                        wav.getnframes(), wav.getcomptype()) != (16000, 2, 2, 32000, "NONE"):
+                    raise ValueError("binaural PCM format differs")
+                if len(wav.readframes(32000)) != 128000:
+                    raise ValueError("binaural PCM payload is truncated")
+        except (OSError, ValueError, EOFError, wave.Error) as exc:
+            errors.append(f"{filename}: {exc}")
+
+
 def verify_manifest_and_report_sha256(errors: list[str]) -> None:
+    from scripts.figure_report_contracts import FIGURE_REPORTS
+    declared = {ROOT / name for name in EXPECTED_AUDIO_MANIFESTS}
+    actual = {p for p in (ROOT / "codes/chapters").rglob("MANIFEST.json") if "_downloads" not in p.parts}
+    if actual != declared:
+        errors.append("audio manifest inventory differs from the fixed32 publication members")
     checked_manifests = 0
-    for manifest_path in sorted((ROOT / "codes" / "chapters").rglob("MANIFEST.json")):
-        if "_downloads" in manifest_path.parts:
-            continue
-        data = json.loads(manifest_path.read_text("utf-8"))
-        checked_manifests += 1
-        for src_rel, expected_sha in data.get("source_sha256", {}).items():
-            src_file = ROOT / src_rel
-            if not src_file.is_file():
-                errors.append(f"{manifest_path.relative_to(ROOT)}: missing bound source {src_rel}")
-            elif hashlib.sha256(src_file.read_bytes()).hexdigest() != expected_sha:
-                errors.append(f"{manifest_path.relative_to(ROOT)}: SHA-256 mismatch for {src_rel}")
-
-        files_entry = data.get("files")
-        if isinstance(files_entry, dict):
-            for wav_name, meta in files_entry.items():
-                if isinstance(meta, dict) and "sha256" in meta:
-                    wav_file = manifest_path.parent / wav_name
-                    if not wav_file.is_file():
-                        errors.append(f"{manifest_path.relative_to(ROOT)}: missing {wav_name}")
-                    elif hashlib.sha256(wav_file.read_bytes()).hexdigest() != meta["sha256"]:
-                        errors.append(f"{manifest_path.relative_to(ROOT)}: WAV SHA-256 mismatch for {wav_name}")
-        elif isinstance(files_entry, list) and manifest_path.parent.name != "audio":
-            for meta in files_entry:
-                if isinstance(meta, dict) and "file" in meta and "sha256" in meta:
-                    wav_file = manifest_path.parent / meta["file"]
-                    if not wav_file.is_file():
-                        errors.append(f"{manifest_path.relative_to(ROOT)}: missing {meta['file']}")
-                    elif hashlib.sha256(wav_file.read_bytes()).hexdigest() != meta["sha256"]:
-                        errors.append(f"{manifest_path.relative_to(ROOT)}: WAV SHA-256 mismatch for {meta['file']}")
-
+    for manifest_path in sorted(declared):
+        label = manifest_path.relative_to(ROOT).as_posix()
+        try:
+            data = strict_json_loads(validate_parent_chain(manifest_path).read_bytes())
+            if type(data) is not dict:
+                raise ValueError("manifest root must be an object")
+            checked_manifests += 1
+            sources = data.get("source_sha256", {})
+            if type(sources) is not dict:
+                raise ValueError("source_sha256 must be an object")
+            for relative, expected_sha in sources.items():
+                relative_path = Path(relative)
+                if relative_path.is_absolute() or ".." in relative_path.parts or "\\" in relative:
+                    raise ValueError("bound source must stay within the repository")
+                source = validate_parent_chain(ROOT / relative)
+                if type(expected_sha) is not str or re.fullmatch(r"[0-9a-f]{64}", expected_sha) is None:
+                    raise ValueError("invalid bound source digest")
+                if not source.is_file() or hashlib.sha256(source.read_bytes()).hexdigest() != expected_sha:
+                    errors.append(f"{label}: source SHA-256 mismatch for {relative}")
+            files = data.get("files")
+            if isinstance(files, dict):
+                for filename, meta in files.items():
+                    if not isinstance(meta, dict) or "sha256" not in meta:
+                        raise ValueError("bound file record is missing its SHA-256")
+                    _check_bound_file(manifest_path.parent, filename, meta["sha256"], label, errors)
+            elif isinstance(files, list) and manifest_path.parent.name != "audio":
+                for meta in files:
+                    if not isinstance(meta, dict) or "file" not in meta or "sha256" not in meta:
+                        raise ValueError("bound file list record is missing filename/SHA-256")
+                    _check_bound_file(manifest_path.parent, meta["file"], meta["sha256"], label, errors)
+            elif label != "codes/chapters/ch05/binaural_beamforming_audio/MANIFEST.json" and manifest_path.parent.name != "audio":
+                raise ValueError("manifest files must be a dictionary or list")
+            if label == "codes/chapters/ch05/binaural_beamforming_audio/MANIFEST.json":
+                check_binaural_measurement_bindings(manifest_path.parent, data, errors)
+        except (OSError, ValueError, TypeError, KeyError) as exc:
+            errors.append(f"{label}: {exc}")
     checked_reports = 0
-    for report_path in sorted((ROOT / "codes" / "chapters").rglob("figure*.json")):
-        if "_downloads" in report_path.parts:
-            continue
-        data = json.loads(report_path.read_text("utf-8"))
-        checked_reports += 1
-        src_map = data.get("source_sha256")
-        if isinstance(src_map, dict):
-            for src_rel, expected_sha in src_map.items():
-                src_file = ROOT / src_rel
-                if not src_file.is_file():
-                    errors.append(f"{report_path.relative_to(ROOT)}: missing bound source {src_rel}")
-                elif hashlib.sha256(src_file.read_bytes()).hexdigest() != expected_sha:
-                    errors.append(f"{report_path.relative_to(ROOT)}: SHA-256 mismatch for {src_rel}")
-    print(f"Verified cryptographic SHA-256 bindings across {checked_manifests} audio manifests and {checked_reports} figure reports")
+    for contract in FIGURE_REPORTS:
+        path = ROOT / contract.report_relative
+        try:
+            data = strict_json_loads(validate_parent_chain(path).read_bytes())
+            if type(data) is not dict:
+                raise ValueError("report root must be an object")
+            checked_reports += 1
+            sources = data.get("source_sha256")
+            if isinstance(sources, dict):
+                for relative, expected_sha in sources.items():
+                    candidate = Path(relative)
+                    if candidate.is_absolute() or ".." in candidate.parts or "\\" in relative:
+                        raise ValueError("report source must stay within the repository")
+                    if hashlib.sha256(validate_parent_chain(ROOT / relative).read_bytes()).hexdigest() != expected_sha:
+                        errors.append(f"{contract.report_relative}: source SHA-256 mismatch for {relative}")
+        except (OSError, ValueError, TypeError, KeyError) as exc:
+            errors.append(f"{contract.report_relative}: {exc}")
+    print(f"Parsed {checked_manifests}/32 audio manifests and {checked_reports}/35 figure reports; "
+          "checked declared dictionary SHA bindings and actual member bytes. "
+          "Independent35 report schema/source-role/arithmetic checks run separately.")
+
+
 
 
 def _documented_exercise_ids(text: str) -> set[str]:
@@ -210,6 +314,8 @@ def run_portable_quality_gates() -> None:
     quality_check.check_combined_html(errors)
     quality_check.check_pdf(errors, notices)
     verify_manifest_and_report_sha256(errors)
+    from scripts.portable_figure_report_checks import check_figure_reports
+    check_figure_reports(errors)
     verify_layout_and_bilingual_exercise_catalog(errors)
     if errors:
         print("PORTABLE CHINESE QUALITY CHECK FAILED", file=sys.stderr)
@@ -219,6 +325,31 @@ def run_portable_quality_gates() -> None:
     print("PORTABLE CHINESE QUALITY CHECK PASSED")
 
     quality_check_en.main()
+
+
+def test_selection_reasons(stem: str, text: str, *, has_downloads: bool,
+                           is_exact_host: bool, is_arm64_darwin: bool) -> list[str]:
+    """Return all matching conservative selection rules without importing a test."""
+    if stem in PORTABLE_POLICY_FIXTURES:
+        return []
+    reasons = []
+    if not has_downloads:
+        if stem in DOWNLOADS_REQUIRED_MODULES:
+            reasons.append("requires local upstream checkouts (explicit module)")
+        if "_downloads" in text:
+            reasons.append("source mentions _downloads (conservative text rule)")
+    if not is_exact_host:
+        if stem in HOST_MANIFEST_MODULES:
+            reasons.append("requires original generation host (explicit module)")
+        matches = [word for word in HOST_MANIFEST_KEYWORDS if word in text]
+        if matches:
+            reasons.append("generation-host source rule: " + ", ".join(matches))
+    if not is_arm64_darwin:
+        if "experiments" in stem:
+            reasons.append("experiment filename requires Apple Silicon macOS")
+        if stem in ARM64_MACOS_FLOAT_MODULES:
+            reasons.append("Apple Silicon macOS floating-point baseline (explicit module)")
+    return reasons
 
 
 def run_portable_tests(simulate_portable: bool = False) -> None:
@@ -256,19 +387,17 @@ def run_portable_tests(simulate_portable: bool = False) -> None:
     for test_file in sorted((ROOT / "tests").glob("test_*.py")):
         stem = test_file.stem
         txt = test_file.read_text("utf-8")
-        if not has_downloads and (stem in DOWNLOADS_REQUIRED_MODULES or "_downloads" in txt):
+        reasons = test_selection_reasons(
+            stem, txt, has_downloads=has_downloads, is_exact_host=is_exact_host,
+            is_arm64_darwin=is_arm64_darwin)
+        if reasons:
             skipped_count += 1
-            continue
-        if not is_exact_host and (stem in HOST_MANIFEST_MODULES or any(kw in txt for kw in HOST_MANIFEST_KEYWORDS)):
-            skipped_count += 1
-            continue
-        if not is_arm64_darwin and ("experiments" in stem or stem in ARM64_MACOS_FLOAT_MODULES):
-            skipped_count += 1
+            print(f"Excluded tests.{stem}: {'; '.join(reasons)}")
             continue
         suite.addTests(loader.loadTestsFromName(f"tests.{stem}"))
         included += 1
 
-    print(f"Loaded {included} self-contained test modules (skipped {skipped_count} host-manifest / _downloads modules)")
+    print(f"Loaded {included} test modules; excluded {skipped_count} modules by the reasons above")
     runner = unittest.TextTestRunner(verbosity=1)
     result = runner.run(suite)
     if not result.wasSuccessful():

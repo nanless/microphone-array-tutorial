@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
   "generator": "scripts/make_figures.py::fig_wpe",
-  "source_sha256": "4bc6a6ce675292c51d538c0f7d3c6f9c8fe3a2de2d0d7945f48cb4baaa801e49",
+  "source_sha256": "bf9058d1c3d6ed15bab41ea092439170cd324011936645d577408106813a485a",
   "generator_inputs": {
-    "scripts/make_figures.py": "4bc6a6ce675292c51d538c0f7d3c6f9c8fe3a2de2d0d7945f48cb4baaa801e49",
+    "scripts/make_figures.py": "bf9058d1c3d6ed15bab41ea092439170cd324011936645d577408106813a485a",
     "codes/chapters/ch07/core/dereverberation.py": "39c93bf31d1b1deac607cd734bbacee596cdacce2d58c4b5c304b04df7e04eb7",
-    "codes/chapters/ch02/core/conventions.py": "4e80a27490f05ddd5f4826361420c0c8d0b331464d1e5629c5def492da47b1d7"
+    "codes/chapters/ch02/core/conventions.py": "79af1b8f7fe664e64e7ad786082c36a29664eacbdda63fba96a944e548304865"
   },
   "data_type": "mathematical synthetic signal and impulse response; not real speech or measured RIR",
   "parameters": {
@@ -53,13 +53,29 @@
       "quiet_energy": 11884.23581846863,
       "total_energy": 677482.1699634285,
       "quiet_energy_ratio_db": -17.559266089885973,
-      "active_scale_aligned_nmse_db": -8.66696520469487
+      "active_scale_aligned_nmse_db": -8.66696520469487,
+      "active_alignment": {
+        "reference_energy": 482215.14947135956,
+        "estimate_energy": 649538.2913945382,
+        "reference_conjugate_dot_estimate": [
+          517363.4177275478,
+          54569.626544471466
+        ]
+      }
     },
     "output": {
       "quiet_energy": 4119.550343237339,
       "total_energy": 424136.9458754826,
       "quiet_energy_ratio_db": -20.12656290238749,
-      "active_scale_aligned_nmse_db": -7.69767914889961
+      "active_scale_aligned_nmse_db": -7.69767914889961,
+      "active_alignment": {
+        "reference_energy": 482215.14947135956,
+        "estimate_energy": 414597.2772238508,
+        "reference_conjugate_dot_estimate": [
+          406725.2295353641,
+          23008.16737169972
+        ]
+      }
     }
   }
 }

@@ -2,9 +2,9 @@
   "schema_version": 1,
   "scope": "deterministic teaching controls; no industrial measurement",
   "source_sha256": {
-    "scripts/make_figures.py": "4bc6a6ce675292c51d538c0f7d3c6f9c8fe3a2de2d0d7945f48cb4baaa801e49",
+    "scripts/make_figures.py": "bf9058d1c3d6ed15bab41ea092439170cd324011936645d577408106813a485a",
     "codes/chapters/ch12/core/imaging.py": "3d5090527300d6ac601f212c485824ccb670ff584132c57590ebea68fdae857d",
-    "codes/chapters/ch02/core/conventions.py": "4e80a27490f05ddd5f4826361420c0c8d0b331464d1e5629c5def492da47b1d7",
+    "codes/chapters/ch02/core/conventions.py": "79af1b8f7fe664e64e7ad786082c36a29664eacbdda63fba96a944e548304865",
     "codes/chapters/ch00/io_contracts.py": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974"
   },
   "results": {

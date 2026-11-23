@@ -259,15 +259,22 @@ class Chapter08Exercises(unittest.TestCase):
         self.assertAlmostEqual(room_case['ci_sdr_L2']['residual_energy'], 0.04, places=14)
         self.assertAlmostEqual(room_case['ci_sdr_L2']['ci_sdr_db'], 20.0, places=12)
 
-        # Case 3: L = N = 4 unit lower-triangular Toeplitz matrix fits pure orthogonal distortion.
-        overfit_case = r['overparameterized_L_equals_N']
-        self.assertEqual(overfit_case['toeplitz_L4_determinant'], 1.0)
+        # Case 3: a cropped square fit overfits, but the full convolution tail
+        # adds independent residual energy. Exact normal equations give thirds.
+        overfit_case = r['full_tail_vs_truncated_L_equals_N']
+        self.assertEqual(overfit_case['truncated_L4_determinant'], 1.0)
+        self.assertAlmostEqual(overfit_case['gram_L4_determinant'], 9.0)
+        np.testing.assert_allclose(overfit_case['truncated_L4_filter_taps'], [1, -1, 2, -2])
+        self.assertEqual(overfit_case['truncated_L4_residual_energy'], 0.0)
         self.assertEqual(overfit_case['si_sdr_L1']['ci_sdr_db'], -120.0)
         self.assertEqual(overfit_case['ci_sdr_L2']['ci_sdr_db'], -120.0)
-        self.assertTrue(overfit_case['ci_sdr_L4']['overparameterized'])
+        self.assertFalse(overfit_case['ci_sdr_L4']['overparameterized'])
         self.assertEqual(overfit_case['ci_sdr_L4']['rank'], 4)
-        np.testing.assert_allclose(overfit_case['ci_sdr_L4']['filter_taps'], [1.0, -1.0, 2.0, -2.0], atol=1e-14)
-        self.assertEqual(overfit_case['ci_sdr_L4']['ci_sdr_db'], 120.0)
+        np.testing.assert_allclose(overfit_case['ci_sdr_L4']['filter_taps'],
+                                   [float(F(x, 3)) for x in (1, -1, 2, -2)], atol=1e-14)
+        self.assertAlmostEqual(overfit_case['ci_sdr_L4']['target_energy'], float(F(4, 3)))
+        self.assertAlmostEqual(overfit_case['ci_sdr_L4']['residual_energy'], float(F(8, 3)))
+        self.assertAlmostEqual(overfit_case['ci_sdr_L4']['ci_sdr_db'], 10 * math.log10(.5))
 
         # Verify L=1 agreement with Chapter 8 si_sdr and strict invalid-input rejection.
         vec_est = np.array([1.2, -0.4, -0.8, 0.5])

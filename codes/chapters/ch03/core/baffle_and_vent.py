@@ -258,8 +258,17 @@ def acoustic_vent_highpass(
     f_c = finite_real_scalar(cutoff_hz, "cutoff_hz")
     if f_c <= 0.0:
         raise ValueError("cutoff_hz must be strictly positive")
-    ratio = freqs / f_c
-    return (1j * ratio) / (1.0 + 1j * ratio)
+    # Both ratios are at most one. The reciprocal branch avoids overflow for
+    # finite f >> f_c, while the low-frequency branch also includes DC.
+    result = np.empty(freqs.shape, dtype=np.complex128)
+    low = freqs <= f_c
+    ratio = freqs[low] / f_c
+    result[low] = (ratio * ratio + 1j * ratio) / (1.0 + ratio * ratio)
+    reciprocal = f_c / freqs[~low]
+    result[~low] = (1.0 + 1j * reciprocal) / (1.0 + reciprocal * reciprocal)
+    if not np.all(np.isfinite(result)):
+        raise ValueError("acoustic-vent response exceeded the floating-point range")
+    return result
 
 
 def mems_gasket_leakage_example(

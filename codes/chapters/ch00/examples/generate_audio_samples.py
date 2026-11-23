@@ -66,7 +66,7 @@ def generate(destination: Path, check: bool = False) -> dict:
                                      'harmonic_numbers': [1, 2, 3, 4, 5, 6], 'harmonic_amplitude': '1/(4*k)',
                                      'envelope': '0.3+0.7*sin(2*pi*2*t)^2', 'fade_duration_s': .02,
                                      'fade': 'squared sine, endpoint included'},
-                'rights': 'No third-party recordings or model weights. Repository licensing remains unspecified.',
+                'rights': 'Original mathematical synthesis; no third-party recordings or model weights. See LICENSE for the repository content-type licenses; no separate license for these synthetic WAV assets is declared there.',
                 'pcm': 'signed little-endian 16-bit, round-to-nearest-even; no dither; no per-file normalization',
                 'listening': 'Start at low device volume. No automatic playback. No formal listening study performed.',
                 'generator_inputs': {p: hashlib.sha256((ROOT/p).read_bytes()).hexdigest() for p in INPUTS},

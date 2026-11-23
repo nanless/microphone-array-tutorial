@@ -1,4 +1,4 @@
-"""Generate figures 81..84 and numerical JSON reports for Chapter 14.
+"""Generate figures 76..79 and numerical JSON reports for Chapter 14.
 
 Run from the repository root after generating ``codes/chapters/ch14/wearable_audio``:
     .venv/bin/python -m codes.chapters.ch14.examples.generate_wearable_audio
@@ -99,6 +99,7 @@ def _save_figure_and_report(
         fig.get_layout_engine().set(w_pad=0.06, h_pad=0.09, wspace=0.04, hspace=0.06)
     finalize_figure(fig)
     metadata = {
+        "FigureFilename": dest.name,
         "SourceScript": "scripts/make_wearable_figures.py",
         "SourceScriptDigest": report_payload["source_sha256"]["scripts/make_wearable_figures.py"],
         "GeneratorInputs": json.dumps(report_payload["source_sha256"], sort_keys=True),
@@ -267,9 +268,9 @@ def build_fig82(inputs: dict[str, str], manifest_sha: str) -> None:
 
     x3 = np.arange(3)
     width = 0.25
-    axes[0, 0].bar(x3 - width, np.abs(p3), width=width, color=C_MAIN, edgecolor=C_MAIN, linewidth=0.8, alpha=0.85, label="目标耳幅度")
-    axes[0, 0].bar(x3, m_ls3, width=width, color=C_RED, edgecolor=C_MAIN, linewidth=0.8, hatch="///", alpha=0.85, label="BSM-LS")
-    axes[0, 0].bar(x3 + width, m_mag3, width=width, color=C_GREEN, edgecolor=C_MAIN, linewidth=0.8, hatch="xxx", alpha=0.85, label="BSM-MagLS")
+    axes[0, 0].bar(x3 - width, np.abs(p3), width=width, color=C_MAIN, edgecolor=C_MAIN, linewidth=0.8, alpha=0.85, label="目标幅度")
+    axes[0, 0].bar(x3, m_ls3, width=width, color=C_RED, edgecolor=C_MAIN, linewidth=0.8, hatch="///", alpha=0.85, label="LS")
+    axes[0, 0].bar(x3 + width, m_mag3, width=width, color=C_GREEN, edgecolor=C_MAIN, linewidth=0.8, hatch="xxx", alpha=0.85, label="MagLS")
     axes[0, 0].set(
         title="(a) 双麦三方向手算算例幅度对比",
         xticks=x3,
@@ -279,7 +280,7 @@ def build_fig82(inputs: dict[str, str], manifest_sha: str) -> None:
         ylim=(0.0, 1.48),
     )
     axes[0, 0].legend(
-        ncol=3, loc="upper center", fontsize=8.2,
+        ncol=3, loc="upper center", fontsize=11,
         handlelength=1.35, columnspacing=0.75, handletextpad=0.35,
     )
 
@@ -355,6 +356,14 @@ def build_fig82(inputs: dict[str, str], manifest_sha: str) -> None:
             "magls_magnitudes": m_mag3.tolist(),
         },
         "circular_4khz_72dir": {
+            "parameters": {"frequency_hz": 4000.0, "radius_m": 0.025,
+                           "sound_speed_m_s": float(SPEED_OF_SOUND), "direction_count": 72,
+                           "regularization": 0.05, "iterations": 25},
+            "ls_weights": {"real": w_ls72.real.tolist(), "imag": w_ls72.imag.tolist()},
+            "magls_weights": {"real": w_mag72.real.tolist(), "imag": w_mag72.imag.tolist()},
+            "target_magnitudes": mag_target72.tolist(),
+            "ls_magnitudes": mag_ls72.tolist(),
+            "magls_magnitudes": mag_magls72.tolist(),
             "ls_weighted_mag_mse": bsm_directional_metrics(h72, p72, w_ls72)["weighted_magnitude_mse"],
             "magls_weighted_mag_mse": bsm_directional_metrics(h72, p72, w_mag72)["weighted_magnitude_mse"],
             "objective_history": hist72.tolist(),
@@ -567,7 +576,7 @@ def build_fig84(manifest: dict, signals: dict[str, np.ndarray], inputs: dict[str
     )
     axes[0, 1].set_title("(b) 处理延迟 τ 与首个相消陷波位置", pad=60)
     axes[0, 1].set(
-        xlabel="端到端处理延迟 τ / ms（对数轴）",
+        xlabel="两路相对到达延迟 τ / ms（对数轴）",
         ylabel="首个相消陷波频率 f₀ / Hz",
         xlim=(0.05, 8.0),
         ylim=(50.0, 15000.0),

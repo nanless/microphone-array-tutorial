@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>从入门到工业实践 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="b82b7d85f70d"><style>
+<meta name="source-digest" content="58a2e18a2abd"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -949,7 +949,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
         </div>
         <figcaption>
           <strong>既看干扰压低多少，也核查目标损伤多少</strong>
-          <p>在 300–3400 Hz 频带内，与延迟求和相比，MVDR 加后滤波在 B 单讲段多压低 <b>12.9 dB</b>，同时在 A 单讲段仅有 <b>1.5 dB</b> 能量损失。曲线按 50 ms 窗由实际 WAV 直接算出。</p>
+          <p>在 300–3400 Hz 频带内，与延迟求和相比，MVDR 加后滤波的录音总能量在 B 单讲评分段低 <b>12.9 dB</b>，在 A 单讲评分段低 <b>1.5 dB</b>；各段仍含房间反射和背景声。图中电平曲线另按 50 ms 窗由实际 WAV 算出。</p>
         </figcaption>
       </figure>
       <p class="course-note">数据溯源：<a href="https://zenodo.org/records/3630471">LOCATA 原始数据集</a> · <a href="../assets/readme/cases/locata/NOTICE.txt">署名、许可与复算脚本说明</a> · <a href="../assets/readme/cases/locata/MANIFEST.json">逐窗 PCM 测量清单</a> · <a href="../assets/readme/cases/locata/mvdr.wav">纯线性 MVDR 对照音频</a></p>
@@ -1333,7 +1333,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <ul>
 <li><strong>几何与时频语言（§0.1～§0.2）</strong>：推导三角积化和差、三维正交旋转群 $\mathrm{SO}(3)$、球面坐标与 AES69 俯仰约定及二阶菲涅耳球面波程差近似；串讲复数欧拉相量、幅度与功率分贝标度、离散傅里叶变换（DFT）帕塞瓦尔能量守恒、补零线性卷积等价性及短时傅里叶变换（STFT）完美重建 COLA 条件。</li>
 <li><strong>复线性代数与矩阵分解（§0.3～§0.4）</strong>：建立复内积空间、列空间正交投影与四基本子空间分解，剖析奇异值分解（SVD）条件数、病态逆噪声放大、Tikhonov 对角加载与 Sherman–Morrison–Woodbury 秩一更新引理；推导厄米矩阵瑞利商极值、广义特征值（GEV）白化联合对角化，以及向量化 $\operatorname{vec}$、Kronecker 积与 Khatri–Rao 积恒等式。</li>
-<li><strong>复变优化、统计估计与声学特殊函数（§0.5～§0.9）</strong>：用 Wirtinger 共轭微积分一步导出 MVDR/LCMV 约束拉格朗日闭式解，讲解非负最小二乘（NNLS）KKT 互补松弛条件、MM 替代上界单调下降与二分图匈牙利最优指派；建立圆对称复高斯伪协方差判据、CRLB 方差下界、维纳正交原理与卡尔曼 Joseph 保正定更新，并导引柱/球贝塞尔函数、Legendre 正交多项式与球面调和加法定理。章末提供全书各章数学工具检索总表（<a href="00_math-foundations.html#sec-0-8">§0.8</a>）与 <code>E00-01</code>～<code>E00-16</code> 共 16 道可运行练习（<a href="00_math-foundations.html#sec-0-9">§0.9</a>）。</li>
+<li><strong>复变优化、统计估计与声学特殊函数（§0.5～§0.9）</strong>：用 Wirtinger 共轭微积分一步导出 MVDR/LCMV 约束拉格朗日闭式解，讲解非负最小二乘（NNLS）KKT 互补松弛条件、MM 替代上界单调下降与二分图匈牙利最优指派；建立圆对称复高斯伪协方差判据、CRLB 方差下界、维纳正交原理与卡尔曼 Joseph 对称半正定协方差更新，并导引柱/球贝塞尔函数、Legendre 正交多项式与球面调和加法定理。章末提供全书各章数学工具检索总表（<a href="00_math-foundations.html#sec-0-8">§0.8</a>）与 <code>E00-01</code>～<code>E00-16</code> 共 16 道可运行练习（<a href="00_math-foundations.html#sec-0-9">§0.9</a>）。</li>
 </ul>
 <p>读完本章，读者应能独立完成复相量时延换算、投影与对角加载手算、Wirtinger 约束极值求导及维纳—卡尔曼递推验证，在进入第 1～15 章具体声学问题时不再因数学变形卡壳。</p>
 <span id="sec-5" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-14154617a8"><a href="01_problem-definition.html">01 · 问题定义与双耳启示</a></h3>
@@ -1404,17 +1404,17 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <p>本章配图 4 张，定位为全书主线收官与工程决策手册：</p>
 <ul>
 <li><strong>需求结构化（§11.1～§11.3）</strong>：从交付输出形式、空间覆盖范围、工作频带、主导干扰类型、目标运动速度和硬件成本功耗六大维度定义工程问题，梳理各前端模块的启用与裁剪条件，串起阵列几何与后续算法性能的制约关系。</li>
-<li><strong>候选筛除与多场景权衡（§11.4）</strong>：通过智能音箱、车载免提、会议室拾音和可穿戴设备四类典型案例，演示如何先用延迟、内存与功耗硬约束筛除不可行方案，再在非支配候选集（帕累托前沿）上权衡目标保真、干扰抑制与白噪声增益，并区分固定场景权重总分与最坏场景保障值。</li>
+<li><strong>候选筛除与多场景权衡（§11.4～§11.5）</strong>：通过智能音箱、车载免提、会议室拾音和可穿戴设备四类典型案例，演示如何先用延迟、内存与功耗硬约束筛除不可行方案，再在非支配候选集（帕累托前沿）上权衡目标保真、干扰抑制与白噪声增益，并区分固定场景权重总分与最坏场景保障值。</li>
 <li><strong>可测规格书编写（§11.5～§11.6）</strong>：示范如何把模糊的“降噪效果好”转化为带测试声场条件、统计区间、失败判定规则与待测硬件验证项的可执行验收规格书，并配成套练习巩固全流程决策。</li>
 </ul>
 <p>读完本章，读者应能针对具体产品需求独立拟定麦克风阵列几何方案、算法链路与量化验收标准。</p>
 <span id="sec-u-58e340bcdc" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-3998a41808"><a href="12_acoustic-imaging.html">12 · 扩展专题Ⅰ：声学成像与噪声源诊断</a></h3>
 <p>本专题（第 12 章，配图 4 张）面向工业异响定位、风洞气动声学测试与环境噪声源诊断，建议在读完第 2、3、5 章后选读。与语音前端输出单路增强波形不同，声学成像的目标是在候选空间网格上定量绘制声源辐射强度分布图。</p>
-<p>全章从同步多通道频域快拍构造互谱矩阵（Cross-Spectral Matrix，CSM）出发，阐明常规波束扫描图为何等于真实源强分布与阵列点扩散函数（Point Spread Function，PSF）的空间卷积——扫描图上的亮斑宽度与旁瓣伪影并不直接等于各网格点的真实声源功率。随后逐步推导并对比声源映射反卷积算法（DAMAS）、非负最小二乘（NNLS）、相干源清理算法（CLEAN-SC）与协方差矩阵拟合（CMF），剖析相干声源、网格外声源、互谱对角线自噪声删除与传声器幅度相位校准误差的影响，并严格区分数字均方值、声压均方值（$\mathrm{Pa}^2$）与辐射声功率（$\mathrm{W}$）的物理量纲换算及区域积分条件。</p>
+<p>全章从同步多通道频域快拍构造互谱矩阵（Cross-Spectral Matrix，CSM）出发，阐明不相关源模型下，常规波束扫描图如何由点扩散函数（Point Spread Function，PSF）矩阵作用于真实源强向量得到；在 PSF 平移不变的特殊情况下，这一映射才可写成空间卷积——扫描图上的亮斑宽度与旁瓣伪影并不直接等于各网格点的真实声源功率。随后逐步推导并对比声源映射反卷积算法（DAMAS）、非负最小二乘（NNLS）、相干源清理算法（CLEAN-SC）与协方差矩阵拟合（CMF），剖析相干声源、网格外声源、互谱对角线自噪声删除与传声器幅度相位校准误差的影响，并严格区分数字均方值、声压均方值（$\mathrm{Pa}^2$）与辐射声功率（$\mathrm{W}$）的物理量纲换算及区域积分条件。</p>
 <span id="sec-u-2d4b4b193b" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-ed573e6015"><a href="13_distributed-enhancement.html">13 · 扩展专题Ⅱ：分布式麦克风协同增强</a></h3>
 <p>本专题（第 13 章，配图 3 张）面向多台智能终端、多机位会议拾音器或无线传感器网络在受限通信带宽下协同增强同一目标声源的场景，建议在读完第 2、5、10 章后选读。</p>
 <p>各节点拥有本地麦克风子阵，但受链路带宽与功耗限制，无法把全部原始多通道波形集中上传，只能向邻居或汇聚节点广播低维线性压缩信号。本专题以集中式多通道维纳滤波（MWF）为性能参照，推导跨节点线性压缩达到集中式最优解的代数条件（揭示即便远端压缩信号中目标分量恰好相消，其携带的相关干扰观测仍可帮助本地节点抵消噪声），继而剖析分布式自适应节点特定信号估计（Distributed Adaptive Node-specific Signal Estimation，DANSE 及其拓扑无关形式 TI-DANSE）在顺序更新、同步更新与有限步松弛迭代下的收敛行为。</p>
-<p>围绕真实无线链路，本专题进一步讨论传输量化误差、压缩系数版本切换后的统计量坐标变换、节点间采样率偏移（如 $100\ \mathrm{ppm}$ 频偏）补偿以及网络丢包时的补零与本地回退策略（完整无线实验复现指引见<a href="13_distributed-enhancement.html#sec-13-15">专题 §13.15</a>）。</p>
+<p>围绕真实无线链路，本专题进一步讨论传输量化误差、压缩系数版本切换后的统计量坐标变换、节点间采样率偏移（如 $100\ \mathrm{ppm}$ 频偏）补偿以及网络丢包时的补零与本地回退策略（无线实验设计与当前复现范围见<a href="13_distributed-enhancement.html#sec-13-15">专题 §13.15</a>）。</p>
 <span id="sec-u-6dcf2e71ad" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-3e47e38b8d"><a href="14_spatial-wearable-arrays.html">14 · 扩展专题Ⅲ：空间声场采集、参数化编码与可穿戴阵列</a></h3>
 <p>本专题（第 14 章，配图 4 张）面向全景声录制、扩展现实头显、智能眼镜、真无线耳机与数字助听器，建议在读完第 1、2、5 章后选读。与交付单路增强波形的桌面阵列不同，全景声采集与可穿戴设备需要在受限孔径和头部散射条件下保留三维方位线索与自然听觉包围感。</p>
 <p>全章从一阶全景声（FOA）ACN/SN3D 约定、正四面体编码均衡与头部追踪三维声场逆旋转出发，推导方向性音频编码（DirAC）的有功声强与扩散度参数化分析；随后展开非规则阵列双耳信号匹配（BSM-LS 与高频幅度最小二乘 MagLS）及用参考麦克风混合抑制背景噪声头中坍缩的解析折中，并剖析 Corcos 湍流风噪模型、气导与耳道闭塞内麦跨模态 MVDR 自语音融合，以及耳机通透模式（Hear-Through）的百微秒梳状滤波延迟边界（配套练习 <code>E14-01</code>～<code>E14-16</code> 与 <code>wearable_audio</code> 见<a href="14_spatial-wearable-arrays.html#sec-14-11">专题 §14.11</a>）。</p>
@@ -1958,7 +1958,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <td>fig62_imaging_psf</td>
 <td>12</td>
 <td class="tutorial-short-column" style="--tutorial-column-width:6em">点扩散函数成像</td>
-<td>两网格手算与 441 点球面网格波束扫描图：说明阵列点扩散函数（PSF）的旁瓣耦合为何会令多源扫描峰值偏离真实源位</td>
+<td>两网格手算与 441 点平面网格波束扫描图：说明阵列点扩散函数（PSF）的旁瓣耦合为何会令多源扫描峰值偏离真实源位</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:5em">图63</td>
@@ -2148,7 +2148,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li><strong>空间协方差与对角加载</strong>：第 2 章 §2.5 引入样本空间协方差矩阵，第 4、5、6、8 章反复对其作特征分解或求逆；正的对角加载能改善病态矩阵条件数并抑制自噪声放大，但无法凭空补出阵列几何原本不可观测的方向维度（详见<a href="16_appendix-symbols-math.html#e16-03">附录 A E16-03</a>）。</li>
 <li><strong>WNG 与 DI 的物理权衡</strong>：第 2 章 §2.6 建立定义，第 5 章推导超指向与稳健波束的折中曲线，第 11 章将其转化为硬件孔径与麦克风选型约束；第 14 章（<a href="14_spatial-wearable-arrays.html#sec-14-8">§14.8～§14.9</a>）与第 15 章（<a href="15_target-extraction-diarization.html#sec-15-3">§15.3</a>）进一步揭示可穿戴微孔径阵列的湍流风噪放大与气导/耳内跨模态融合，以及近场距离气泡二阶差分的孔径四次方（$d^4$）底噪边界。</li>
 <li><strong>室内混响的多模块应对</strong>：第 2 章 §2.4 建立房间冲激响应模型，第 4 章分析多径对相关峰的展宽，第 5 章讨论波束对混响场的抑制上限，第 6 章用长分区滤波器覆盖回声尾，第 7 章用跨帧线性预测专门削弱晚期混响。</li>
-<li><strong>时频掩码充当统计桥梁</strong>：第 2 章介绍语音时频稀疏性，第 5 章和第 8 章利用神经网络或空间聚类估计出的软掩码分别统计目标协方差与干扰加噪声协方差以驱动稳健 MVDR 波束形成，第 15 章（<a href="15_target-extraction-diarization.html#sec-15-5">§15.5</a>）进一步利用空谱联合 TS-VAD 构造目标排他乘积掩码 $m_{k,t}^{\mathrm{tar}}$，剥离重叠语音帧对目标协方差的污染。</li>
+<li><strong>时频掩码充当统计桥梁</strong>：第 2 章介绍语音时频稀疏性，第 5 章和第 8 章利用神经网络或空间聚类估计出的软掩码分别统计目标协方差与干扰加噪声协方差以驱动稳健 MVDR 波束形成，第 15 章（<a href="15_target-extraction-diarization.html#sec-15-5">§15.5</a>）进一步利用空谱联合 TS-VAD 构造目标排他乘积掩码 $m_{k,t}^{\mathrm{tar}}$，以减轻重叠语音帧对目标协方差的污染。</li>
 <li><strong>波形相减与时频相乘的配合</strong>：第 6 章 <a href="06_aec.html#sec-6-1">§6.1</a> 依靠已知播放参考估计回声复数波形并直接相减；第 5 章 <a href="05_beamforming.html#sec-5-7">§5.7</a> 在仅有功率统计时用实数增益缩放幅度谱；第 8 章 <a href="08_speech-separation.html#sec-8-6">§8.6</a> 的复数掩码则同时调整幅度与相位。</li>
 <li><strong>硬件几何决定算法上限</strong>：第 3 章证明的镜像模糊、孔径分辨率与空间混叠频率上限，直接制约第 4 章定位、第 9 章三维追踪与第 10 章结构设计。</li>
 <li><strong>通道同步与标定排错</strong>：第 10 章 §10.2 从硬件时钟树与产线校准正向讲起，附录 B §17.4 则从算法异常现象反向倒查同步漂移与通道失配。</li>
@@ -2457,7 +2457,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>[ ] 完成附录 B 综合练习（入门阶段建议先做第 2、3、5、7、10、11、14 题，进阶阶段再做第 6、8、12、13、16、17 题）。</li>
 <li>[ ] 对照附录 B §17.4 演练常见异常排查，并按第 10 章模板试着编制一份延迟、时钟同步与通道标定预算表。</li>
 </ul>
-<p>需要进一步动手演练四篇扩展专题的读者，声学成像的 18 道配套代码题与合成快拍音频实验见<a href="12_acoustic-imaging.html">扩展专题Ⅰ</a>及<a href="research/05_exercises_and_audio.html#sec-47-1">实验手册第 47 节</a>；分布式麦克风协同增强的 20 道配套代码题与多节点音频实验见<a href="13_distributed-enhancement.html">扩展专题Ⅱ</a>及<a href="research/05_exercises_and_audio.html#sec-48-1">实验手册第 48 节</a>。空间声场与可穿戴阵列的 15 道配套代码题及跨模态/通透合成音频实验（<code>wearable_audio</code>）见<a href="14_spatial-wearable-arrays.html#sec-14-11">扩展专题Ⅲ §14.11</a>；条件目标说话人提取与多通道会议说话人日志的 14 道配套代码题及近场距离气泡合成音频实验（<code>tse_audio</code>）见<a href="15_target-extraction-diarization.html#sec-15-8">扩展专题Ⅳ §15.8～§15.10</a>。</p>
+<p>需要进一步动手演练四篇扩展专题的读者，声学成像的 18 道配套代码题与合成快拍音频实验见<a href="12_acoustic-imaging.html">扩展专题Ⅰ</a>及<a href="research/05_exercises_and_audio.html#sec-47-1">实验手册第 47 节</a>；分布式麦克风协同增强的 21 道配套代码题与多节点音频实验见<a href="13_distributed-enhancement.html">扩展专题Ⅱ</a>及<a href="research/05_exercises_and_audio.html#sec-48-1">实验手册第 48 节</a>。空间声场与可穿戴阵列的 16 道配套代码题及跨模态/通透合成音频实验（<code>wearable_audio</code>）见<a href="14_spatial-wearable-arrays.html#sec-14-11">扩展专题Ⅲ §14.11</a>；条件目标说话人提取与多通道会议说话人日志的 15 道配套代码题及近场距离气泡合成音频实验（<code>tse_audio</code>）见<a href="15_target-extraction-diarization.html#sec-15-8">扩展专题Ⅳ §15.8～§15.10</a>。</p>
 <footer class="foot">麦克风阵列信号处理教程 · 静态站由 scripts/build_site.py 生成</footer>
 </div></div></main><a class="topbtn" href="#top" title="回顶部" aria-label="回到页面顶部">↑</a>
 <script>if(!navigator.onLine)document.getElementById('offnote').style.display='block';for(const a of document.querySelectorAll('a[data-lang-peer]'))if(location.protocol==='file:'||location.hostname==='localhost'||location.hostname==='127.0.0.1')a.href=a.dataset.langPeer;</script>

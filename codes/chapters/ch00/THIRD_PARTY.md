@@ -155,7 +155,9 @@ TS-ASR-Whisper v1 的 `inference_pipeline` 子模块固定指向表中 DiCoW 提
 
 DEMAND v1.0 的 NRIVER 河流场景来自 [Zenodo 1227121](https://zenodo.org/records/1227121)，作者为 Joachim Thiemann、Nobutaka Ito、Emmanuel Vincent。官方记录明确将音频和说明文档按 [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/) 分发，核实日期为 2026-09-22。
 
-本仓库只纳入前 10 s 的同步 16 通道摘录、单麦提取、双麦及 16 麦零延时均值，4 个 WAV 连同修改说明保持同一数据许可；见 [署名与修改记录](../ch02/real_audio/ATTRIBUTION.txt)和[数据清单](../ch02/real_audio/MANIFEST.json)。完整归档固定 SHA-256，保存在忽略的下载目录，不进入 Git。公开数据许可不等于原作者认可本书的处理结果，也不改变本仓库独立代码的许可状态。
+第 2 章 DEMAND 资产目录纳入前 10 s 的同步 16 通道摘录、单麦提取、双麦及 16 麦零延时均值，4 个 WAV 连同修改说明保持同一数据许可；见 [署名与修改记录](../ch02/real_audio/ATTRIBUTION.txt)和[数据清单](../ch02/real_audio/MANIFEST.json)。完整归档固定 SHA-256，保存在忽略的下载目录，不进入 Git。公开数据许可不等于原作者认可本书的处理结果，也不改变本仓库独立代码的许可状态。
+
+首页另在 `assets/readme/cases/locata/` 发布 4 个 LOCATA 实录摘录及派生 WAV，按 Open Data Commons Attribution 1.0 保留独立署名、处理说明和摘要；见[案例说明](../../../assets/readme/cases/locata/NOTICE.txt)及[案例清单](../../../assets/readme/cases/locata/MANIFEST.json)。这组首页试听与第 2 章 DEMAND 目录分开保存。
 
 ## 不能混同的许可范围
 

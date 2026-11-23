@@ -74,6 +74,7 @@ def check_assets(directory=ROOM, *, replay=False):
     _same(result.get('schema_version'), 1, 'room result schema')
     _same(result.get('status'), 'pyroomacoustics_simulation_executed', 'room result status')
     current_sources = room.source_hashes()
+    _same(room.PRA_NUM_THREADS, 2, 'fixed room PRA thread source configuration')
     for document in (manifest, result):
         _same(document.get('source_sha256'), current_sources, 'room source closure')
         environment = document.get('environment')
@@ -83,6 +84,11 @@ def check_assets(directory=ROOM, *, replay=False):
             if type(environment.get(key)) is not str or not environment[key]:
                 raise ValueError(f'room environment field is invalid: {key}')
         _same(environment['pyroomacoustics'], room.PRA_VERSION, 'PRA version')
+        _same(environment.get('pra_num_threads_effective'), 2, 'effective PRA threads')
+        if ('pra_num_threads' not in environment or
+                (environment['pra_num_threads'] is not None and
+                 type(environment['pra_num_threads']) is not str)):
+            raise ValueError('original PRA_NUM_THREADS environment must be a string or null')
         library_sources = environment.get('pyroomacoustics_source_sha256')
         if (not isinstance(library_sources, dict) or set(library_sources) != {'room.py', 'acoustics.py', 'parameters.py'}
                 or any(type(value) is not str or len(value) != 64 or any(c not in '0123456789abcdef' for c in value)

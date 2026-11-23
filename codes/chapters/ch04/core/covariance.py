@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import math
+
 import numpy as np
 
 from codes.chapters.ch02.core.conventions import finite_real_scalar, hermitian_part
@@ -63,8 +65,13 @@ def _load_covariance(
     peak = float(np.max(np.maximum(np.abs(matrix.real), np.abs(matrix.imag))))
     if peak == 0.0:
         raise np.linalg.LinAlgError("zero covariance has no invertible noise model")
-    # Divide before summing, so a valid near-limit diagonal does not overflow.
-    scale = float(np.sum(matrix.diagonal().real / matrix.shape[0]))
+    # Summing before division retains small diagonal entries. If the sum
+    # exceeds float64, the PSD covariance's bounded normalized diagonal
+    # still permits a finite mean; this is not a general signed-mean rule.
+    try:
+        scale = math.fsum(matrix.diagonal().real) / matrix.shape[0]
+    except OverflowError:
+        scale = peak * float(np.mean(matrix.diagonal().real / peak))
     if relative_diagonal_loading:
         if scale <= 0.0:
             raise np.linalg.LinAlgError("non-positive covariance scale cannot be loaded relatively")

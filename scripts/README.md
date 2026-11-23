@@ -16,7 +16,7 @@
 
 从 [GitHub Pages 课程首页](https://nanless.github.io/microphone-array-tutorial/) 可以看互动示意、听 LOCATA 房间实录的原始、对齐相加与 MVDR 加后滤波对照，再按基础、算法、工业实践和专题选课。[工业实践入口](https://nanless.github.io/microphone-array-tutorial/site/#course-engineering)按搭链路、算预算和做验收链接到正文及源码手册。
 
-推送站点或配套媒体到 `main` 后，[发布工作流](../.github/workflows/pages.yml)会发布生成好的 `site/`、插图、试听文件和 PDF。本地开发可直接在浏览器中打开 [`site/index.html`](../site/index.html)。
+推送站点或配套媒体到 `main` 后，[发布工作流](../.github/workflows/pages.yml)先在同一检出目录运行 `run_portable_ci.py` 和导出核验，通过后再暂存并上传 `site/`、`site_en/`、插图、试听文件和 PDF。本地开发可直接在浏览器中打开 [`site/index.html`](../site/index.html)。
 
 课程页面、样式和交互的源文件在 [`course_home/`](course_home/)。改动后从仓库根目录运行：
 
@@ -89,6 +89,8 @@
 
 上面的日期为明确的封面日期示例，正式构建按出版日期设置或使用 `SOURCE_DATE_EPOCH`。这些参数不保证字体、Chrome或PDF时间元数据跨环境逐字节相同。Windows将 `.venv/bin/python` 换成 `.venv\Scripts\python.exe`。
 
+`--pdf-only` 会按现有合订 HTML 的构建日期重新生成内存中的规范全文，逐字节核对后才打印私有 HTML 副本；旧 HTML 缺少日期或来源元数据时，先用 `--html-only --build-date YYYY-MM-DD` 重建。PDF 的 `/SourceDigest`、`/HTMLInputSHA256`、`/BuildDate` 分别记录源摘要、实际打印 HTML 的完整摘要和构建日期。门禁按 PDF 自身日期复算，跨日 CI 不用当天日期替换原输入；打印或后处理期间检测到源或输入变化会停止发布。
+
 全部30套独立合成清单（连同主清单与DEMAND实录共32套清单）、样本数和模型边界见[代码音频目录](../codes/chapters/README.md#audio-inventory)。普通生成器均支持只读 `--check`；房间与真实数据检查另用：
 
 ```bash
@@ -127,6 +129,9 @@
 | `build_site.py` | 生成 19 个当前教程页、8 个旧路径兼容页和 6 个研究页（共 33 个 HTML），保留旧版语义及顺序深链；编号图直接引用 `figures/`，独立音频与状态按各自清单核验并复制；站点 MathJax 在线加载 | `site/` 下的网页及独立媒体副本 |
 | `build_pdf.py` | 合订本脚本。19 篇合成带封面和三级目录的 HTML，Chrome 标签化打印 A4 PDF，再以保留结构树的方式写三级书签；第 0～15 章及附录 A/B 的源 h4 进入第三级。常用 flag：`--html-only`、`--pdf-only`、`--no-bookmarks`、`--build-date YYYY-MM-DD` | `dist/combined.html` 与 `dist/microphone-array-tutorial.pdf` |
 | `build_markdown_helpers.py` | 两构建器共享的Markdown数学与代码边界处理；保留代码、原始HTML及转义美元符的语义，数学暂存标识避开原文 | 供构建器导入，无独立产物 |
+| `publication_dependencies_en.py` | 英文站点、合订本及新鲜度门禁共用的显式依赖与源摘要策略；包括配对中文标题、共享脚本、翻译表及英文图，站点另纳入首页与媒体，PDF另纳入本地公式资源 | 供英文构建器与门禁导入，无独立产物 |
+| `figure_report_contracts.py`、`portable_figure_report_checks.py` | 固定 35 组图与数值报告身份，核报告原字节与两语 PNG 绑定，并用独立公式、实际 PCM 整数及保存事件的统计关系检查数值；字段和类型另有显式清单 | 只读错误清单；不重生图、音频或报告 |
+| `pdf_input_identity.py` | 两语 PDF 共用的日期、源摘要和实际 HTML 字节身份；从唯一 head 元数据提取，并核对规范全文、私有输入与 PDF 元数据 | 供构建器和门禁导入，无独立产物 |
 | `code_layout.py` | 主音频组到首讲章节的唯一映射及路径查询；生成器、构建和检查共同使用这一布局 | 各章 `audio/` 路径，不单独生成文件 |
 | `heading_aliases.py`、`legacy_sequential_anchors.json`、`chapter_identity.py`、`chapter_numbering.json` | 按主题维护已发布节号和顺序深链；构建器插入历史别名，门禁另外核对主题与唯一性 | 网页和合订HTML中的兼容锚点 |
 | `../codes/chapters/ch00/io_contracts.py` | 音频生成和上游获取共用的路径、成员、严格JSON、元数据类型和报告写入原语；各调用者保留独立清单、评分与许可逻辑 | 无独立产物；实际参与生成的源摘要进入相应清单 |
@@ -139,7 +144,17 @@
 | `build_pdf_en.py` | 英文合订本构建器。合并 `chapters_en/` 19 篇文档与 `figures_en/` 87 张插图，通过无头 Chrome 打印标签化 A4 英文 PDF，并写入三级书签、语言元数据与对象流无损压缩；支持 `--html-only`、`--pdf-only`、`--no-bookmarks`、`--build-date` | `dist/combined_en.html` 与 `dist/microphone-array-tutorial-en.pdf` |
 | `quality_check_en.py` | 英文版与双许可自动化门禁。核验 `LICENSE`/`LICENSE-DOCS`、全部 68 份中英配对文档顶栏（`language_bars.py --check`）、中英章节/研究手册标题层级与 `\tag` 一致性、87 张英文插图与 5 张英文 SVG、`site_en/` 33 页内链与两份 `<50 MiB` PDF | 英文版与双许可通过/失败门禁报告 |
 | `language_bars.py` | 维护全部 68 份中英配对 Markdown 顶部仅供 GitHub 浏览的 `🌐` 中英切换行（建站与合订本前由 `build_markdown_helpers.shield_math` 剔除）；`--check` 为严格只读漂移核验 | 68 份配对 Markdown 首部切换行 |
-| `run_portable_ci.py` | 跨平台 CI 入口。在无 `_downloads/` 缓存的 GitHub Actions（`ubuntu-latest` / `macos-15`）或本机上统一运行中英文发布门禁、32 套音频清单与 35 份图表 JSON 的 SHA-256 核验、360 题双语索引及自包含单元测试 | 跨平台 CI 综合验证结果 |
+| `run_portable_ci.py` | 跨平台 CI 入口。运行中英文发布门禁、固定 32 套音频清单的成员摘要、35 份图表报告的独立数值检查、360 题双语索引、数学及跨章基线，并按源码缓存、生成宿主和平台条件选择单元测试 | 分层门禁与所选测试结果、逐模块排除理由 |
+
+便携测试的选择规则集中在 `run_portable_ci.py::test_selection_reasons`，由 [`test_review_portable_ci.py`](../tests/test_review_portable_ci.py)用人工能力标志核验：
+
+- 缺少 `_downloads/` 时，排除明确列出的上游测试，以及源码文字含 `_downloads` 的模块。
+- 不符合原生成宿主条件（`Darwin`、`arm64`、`macOS-27.*`、Python `3.13.12`）时，按明确模块名单和 `HOST_MANIFEST_KEYWORDS` 的源码子串排除；例如 `check_assets`、`stage_` 即会命中。
+- 不是 Apple Silicon macOS 时，另排除文件名含 `experiments` 的模块及 `ARM64_MACOS_FLOAT_MODULES` 名单。三个显式列出的便携测试模块 `test_review_portable_ci`、`test_review_r4_portable_reports`、`test_review_r4_publication_en` 单独纳入：它们检查能力标志、独立报告/PCM 算术和私有 HTML/PDF 测试数据，源码中出现能力或目录名称不表示调用完整宿主回放。
+
+这些是保守筛选规则；日志逐模块打印全部命中理由及纳入／排除总数，所选测试通过只对应本次纳入的范围。`--simulate-portable` 将上述三种能力标志均置为假，使用相同筛选器。完整入口仍先更新两份合订 HTML 并运行门禁，因此此参数不是只读检查开关。[CI](../.github/workflows/ci.yml)配置 `ubuntu-latest`、`macos-15`、`windows-latest` 三个作业；[Pages 发布](../.github/workflows/pages.yml)使用 `ubuntu-latest`，在同一作业完成核验、暂存和上传。两者均固定 Python 3.13 与 Node 20；配置了某个平台不等于该平台已实际通过。
+
+35 份报告分别检查来源角色、严格 JSON 字段与类型、独立数值关系和实际 PNG 字节绑定。图13、21保存的随机事件只核结构、取值范围和派生统计，不重新运行整组随机试验；实际 PCM 评分重算整数和与既定分母，小规模浮点公式采用逐项明确的容差。完整波形与模型的严格回放仍由原生成主机上相应的 `--check` 和测试执行，便携门禁通过不表示 Linux 已完成全量零 ULP 重放。
 
 360 道稳定编号的代码题可从各章入口复算，例如：
 
@@ -359,7 +374,7 @@ PRA_NUM_THREADS=2 /tmp/masp-room-pra/bin/python -m codes.chapters.appendix_b.exa
 
 ## 第9章：信息边界、生命周期与追踪合同
 
-第9章共22道稳定编号题。E09-13、E09-15与E09-17分别计算空观测下的Bernoulli存在概率、固定滞后平滑与迟到观测，以及相关观测与瞬时方位的尺度零空间；图56由指定解析参数生成，不读取音频，数值报告为 `codes/chapters/ch09/reports/figure56_tracking_information.json`。
+第9章共23道稳定编号题。E09-13、E09-15与E09-17分别计算空观测下的Bernoulli存在概率、固定滞后平滑与迟到观测，以及相关观测与瞬时方位的尺度零空间；图56由指定解析参数生成，不读取音频，数值报告为 `codes/chapters/ch09/reports/figure56_tracking_information.json`。
 
 五个原独立WAV仍分别由移动源与PCM追踪生成器管理。两生成器的 `--check` 均严格只读，拒绝源码、清单或实际字节失配；网页发布同时检查完整普通文件集合、全部父目录和可见播放器。
 
@@ -397,7 +412,7 @@ PRA_NUM_THREADS=2 /tmp/masp-room-pra/bin/python -m codes.chapters.appendix_b.exa
 .venv/bin/python -m codes.chapters.ch13.examples.audit_upstream_distributed_contracts
 ```
 
-20题覆盖任务相关压缩、真实广播更新、退化输入、时钟、缺口、树消息与GEVD。17个独立WAV用共同增益1和九个冻结真实源；图65/67先完整只读回放，再独立读整数PCM核E/D。图66记录广播改变后的当前有效权重，旧求解快照另列。
+21题覆盖任务相关压缩、真实广播更新、退化输入、时钟、缺口、树消息与GEVD。17个独立WAV用共同增益1和九个冻结真实源；图65/67先完整只读回放，再独立读整数PCM核E/D。图66记录广播改变后的当前有效权重，旧求解快照另列。
 
 预算含初始两次求解。原MATLAB仅作源码静态审读与独立数值对照；paderwasn仅三个NumPy助手原函数，未执行完整网络或WOLA链。详见[实验§48](../codes/chapters/ch00/research/05_exercises_and_audio.md#distributed-exercises-audio)。
 
@@ -412,7 +427,7 @@ PRA_NUM_THREADS=2 /tmp/masp-room-pra/bin/python -m codes.chapters.appendix_b.exa
 .venv/bin/python scripts/make_tse_figures.py
 ```
 
-第14章15题覆盖四面体FOA编码、开球Bessel零陷、旋转对偶、声强DirAC、BSM-MagLS与正则权衡、双耳参考混合、跨模态抗风噪融合与通透梳状滤波；六份独立16kHz数学合成WAV由六个真实源绑定，图76～79与四份JSON报告随图重生。第15章14题覆盖双态地板损失、零重叠旁路、球面波距离气泡、DER下界、空谱TS-VAD/GSS门控、视听正滞后、EEND-EDA与声纹串音门控；六份独立16kHz数学合成WAV由六个真实源绑定，图80～83与四份JSON报告随图重生。详见[练习与音频实验§61～62](../codes/chapters/ch00/research/05_exercises_and_audio.md)。
+第14章16题覆盖四面体FOA编码、开球Bessel零陷、旋转对偶、声强DirAC、BSM-MagLS与正则权衡、双耳参考混合、跨模态抗风噪融合与通透梳状滤波；六份独立16kHz数学合成WAV由六个真实源绑定，图76～79与四份JSON报告随图重生。第15章15题覆盖双态地板损失、零重叠旁路、球面波距离气泡、DER下界、空谱TS-VAD/GSS门控、视听正滞后、EEND-EDA与声纹串音门控；六份独立16kHz数学合成WAV由六个真实源绑定，图80～83与四份JSON报告随图重生。详见[练习与音频实验§61～62](../codes/chapters/ch00/research/05_exercises_and_audio.md)。
 
 
 已知方向基线音频由`codes.chapters.ch03.examples.generate_baseline_audio`单独生成，六个WAV与清单不计入主109样本。站点发布先按当前六真实源完整只读回放，再复制到`site/baseline_audio/`；质量检查另按实际交织PCM整数复算27200点稳窗的逐通道与总功率，并核正文/研究页全部六个播放器和清单链接。单音相位反时差依赖已知小于1ms的主值范围，不是宽带盲时差估计或设备验收。

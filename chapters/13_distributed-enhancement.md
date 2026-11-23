@@ -102,7 +102,7 @@ J_u^\star&=\phi_{d_u}
 -\vec r_{xd_u}^H\mathbf R_{xx}^{-1}\vec r_{xd_u}.
 \end{aligned}\tag{13-4}$$
 
-数值编程时应调用厄米正定线性方程组求解器（如 Cholesky 分解求解）直接解 $\mathbf R_{xx}\vec w_u^\star = \vec r_{xd_u}$，避免显式计算逆矩阵 $\mathbf R_{xx}^{-1}$。还要特别注意：式(13-4)最后一行的化简公式 $J_u^\star = \phi_{d_u} - \vec r_{xd_u}^H\vec w_u^\star$ 利用了 $\mathbf R_{xx}\vec w_u^\star = \vec r_{xd_u}$ 消项，因此**仅对精确满足正规方程的最优权重成立**；评估任何非最优或陈旧权重时，必须直接代回式(13-3)计算完整三项（集中式与节点特定维纳滤波的原始问题定义参见 [Bertrand 与 Moonen 2010，Part I §II-A 式(1)、(2)](https://homes.esat.kuleuven.be/~abertran/reports/09-65.pdf)）。
+数值编程时应调用厄米正定线性方程组求解器（如 Cholesky 分解求解）直接解 $\mathbf R_{xx}\vec w_u^\star = \vec r_{xd_u}$，避免显式计算逆矩阵 $\mathbf R_{xx}^{-1}$。还要特别注意：式(13-4)最后一行的化简公式 $J_u^\star = \phi_{d_u} - \vec r_{xd_u}^H\vec w_u^\star$ 利用了 $\mathbf R_{xx}\vec w_u^\star = \vec r_{xd_u}$ 消项，所以正规方程保证该化简在最优解处成立；这一标量等式本身不是最优性的充要判据。评估非最优或陈旧权重时，应代回式(13-3)计算完整三项（集中式与节点特定维纳滤波的原始问题定义参见 [Bertrand 与 Moonen 2010，Part I §II-A 式(1)、(2)](https://homes.esat.kuleuven.be/~abertran/reports/09-65.pdf)）。
 
 #### 参考目标不能从混合录音直接读出
 
@@ -122,7 +122,9 @@ $$\begin{aligned}
 \phi_{d_u}&=\mathbb{E}[|c_u s|^2]=|c_u|^2\phi_s.
 \end{aligned}\tag{13-5}$$
 
-假定干源功率 $\phi_s > 0$、$\vec a \ne \vec 0$ 且全局噪声协方差严格正定（$\mathbf R_{nn} \succ 0$）。我们定义一个极其关键的无量纲正标量 $q = \vec a^H\mathbf R_{nn}^{-1}\vec a > 0$（注意 $\phi_s q$ 的物理意义正是全阵列匹配滤波后的**全局最大输出信噪比**）。不需要死记硬背 Sherman–Morrison 矩阵求逆引理，只需把待检验向量 $\mathbf R_{nn}^{-1}\vec a$ 左乘 $\mathbf R_{xx}$ 算一步乘法：
+假定干源功率 $\phi_s > 0$、$\vec a \ne \vec 0$ 且全局噪声协方差严格正定（$\mathbf R_{nn} \succ 0$）。我们定义一个极其关键的正标量 $q = \vec a^H\mathbf R_{nn}^{-1}\vec a > 0$（注意 $\phi_s q$ 的物理意义正是全阵列匹配滤波后的**全局最大输出信噪比**）。不需要死记硬背 Sherman–Morrison 矩阵求逆引理，只需把待检验向量 $\mathbf R_{nn}^{-1}\vec a$ 左乘 $\mathbf R_{xx}$ 算一步乘法：
+
+当 $\mathbf R_{nn}$ 用 $\mathrm{Pa}^2$、$\vec a$ 为无量纲比值时，$q=\vec a^H\mathbf R_{nn}^{-1}\vec a$ 的量纲为 $\mathrm{Pa}^{-2}$，只有 $\phi_s q$ 无量纲；采用数字幅度归一化时须另说明口径。
 
 $$\begin{aligned}
 \mathbf R_{xx}(\mathbf R_{nn}^{-1}\vec a)
@@ -521,11 +523,13 @@ $$\begin{aligned}
 
 $$\vec h_u^{\mathrm{red}} = \big(\tilde{\mathbf R}_{xx, u}^{\mathrm{red}}\big)^{-1}\tilde{\mathbf R}_{ss, u}^{\mathrm{red}}\vec e_{r_u},$$
 
-从而在完整保留其余 $U - 1$ 个存活节点已收敛统计的前提下立即无缝切入新拓扑下的最优滤波（两节点退化时即精确回到纯本地 $M_u$ 麦 MWF）。这与 §13.15 剖析的“丢包直接补零”陷阱形成鲜明对照：对已离网的 $\vec z_q$ 盲目补零并死守旧权重会引发剧烈增益塌陷，而把全零向量持续喂入协方差递推则会使 $\tilde{\mathbf R}_{xx, u}$ 迅速走向奇异秩亏。反之，当节点 $q$ 重新入网（或有新节点加入）时，存活节点 $u$ 将原有 $L_u \times L_u$ 阶协方差按分块对角热启动方式扩维至 $(L_u + Q) \times (L_u + Q)$ 阶：
+从而在完整保留其余 $U - 1$ 个存活节点已收敛统计的前提下立即取得剩余固定压缩观测空间内的最优滤波（两节点退化时即精确回到纯本地 $M_u$ 麦 MWF）。这与 §13.15 剖析的“丢包直接补零”陷阱形成鲜明对照：对已离网的 $\vec z_q$ 盲目补零并死守旧权重会引发剧烈增益塌陷，而把全零向量持续喂入协方差递推则会使 $\tilde{\mathbf R}_{xx, u}$ 迅速走向奇异秩亏。反之，当节点 $q$ 重新入网（或有新节点加入）时，存活节点 $u$ 将原有 $L_u \times L_u$ 阶协方差按分块对角热启动方式扩维至 $(L_u + Q) \times (L_u + Q)$ 阶：
 
 $$\tilde{\mathbf R}_{xx, u}^{\mathrm{new}} = \begin{bmatrix} \tilde{\mathbf R}_{xx, u}^{\mathrm{old}} & \mathbf 0 \\ \mathbf 0 & \sigma_0^2\mathbf I_Q \end{bmatrix}, \qquad \tilde{\mathbf R}_{nn, u}^{\mathrm{new}} = \begin{bmatrix} \tilde{\mathbf R}_{nn, u}^{\mathrm{old}} & \mathbf 0 \\ \mathbf 0 & \sigma_0^2\mathbf I_Q \end{bmatrix},$$
 
 其中对角加载 $\sigma_0^2 > 0$ 保证扩维矩阵立即可逆，零互协方差初值使新接入分块的初始接收权重恰好为零、不扰动入网瞬间原存活节点的已收敛输出；随后在短暂的入网过渡期内适度提高遗忘学习率（例如缩短秩一递推的遗忘因子以加速跨节点互协方差 $\mathbb{E}[\tilde{\vec x}_u^{\mathrm{old}}\vec z_q^H]$ 积累，或采用带正定性/Cholesky 校验的短窗凸组合热启动），即可在保持矩阵严格正定与原有通道稳定的同时让新加入节点快速融入协同增强。
+
+删去掉线节点只能在其余固定压缩观测空间内重新取得最优解；若要接近剩余全部原始通道的集中式最优，还须让存活广播方向继续适应。局部正规方程残差很小不能证明更强的集中式等价。
 
 ### 13.12 GEVD与近年的扩展：每种方法究竟改变哪一步
 
@@ -740,7 +744,7 @@ P_{\mathrm{ref}}&=\sum_{n\in\mathcal I}D[n]^2,\\
 
 #### 采样率偏差补偿改变观测统计，而非只改标签
 
-跨设备协同拾音在落地时首先要过“硬件时钟关”（关于时钟偏移、晶振漂移与采样缺口的基础定义及缓冲架构，详见[第 10 章 §10.2](10_engineering-practice.md#sec-10-2)与[§10.7](10_engineering-practice.md#sec-10-7)）。在会议室吊装阵列、广播演播室等有线局域网部署中，支持 **AES67 / IEEE 1588 PTPv2（精确时间协议）** 的专业音频接口能够通过网络硬件时间戳把所有节点的本地 ADC 采样时钟锁相到同一主时钟上，从物理源头消除采样率偏移（SRO）：在 $48\,\mathrm{kHz}$ 采样率下，$\pm 1\,\mu\mathrm{s}$ 的锁相上限即便在两节点反向偏置的最坏情形下，于 $2.4\,\mathrm{kHz}$ 处也仅产生 $1.728^\circ$ 的恒定静态相位差（等权叠加衰减不足 $0.001\,\mathrm{dB}$）。
+跨设备协同拾音在落地时首先要过“硬件时钟关”（关于时钟偏移、晶振漂移与采样缺口的基础定义及缓冲架构，详见[第 10 章 §10.2](10_engineering-practice.md#sec-10-2)与[§10.7](10_engineering-practice.md#sec-10-7)）。在会议室吊装阵列、广播演播室等有线局域网部署中，支持 **AES67 / IEEE 1588 PTPv2（精确时间协议）** 的专业音频接口只有在具体硬件采样时钟伺服确实将 ADC 锁到网络时基时，才能抑制长期采样率偏移（SRO）；仅有 PTP 时间戳并不保证采样同步：在 $48\,\mathrm{kHz}$ 采样率下，$\pm 1\,\mu\mathrm{s}$ 的锁相上限即便在两节点反向偏置的最坏情形下，于 $2.4\,\mathrm{kHz}$ 处也仅产生 $1.728^\circ$ 的恒定静态相位差（等权叠加衰减不足 $0.001\,\mathrm{dB}$）。
 
 然而在手机、平板、蓝牙耳机与智能音箱临时组建的消费级无线网络（ad-hoc WASN）中，各台设备使用独立石英晶振，彼此间普遍存在 $20$～$100\,\mathrm{ppm}$ 的自由运行频偏——以 $100\,\mathrm{ppm}$ 为例，两节点在 $2.4\,\mathrm{kHz}$ 处的相对相位每秒旋转 $86.4^\circ$，仅需 $2.083\,\mathrm{s}$ 就会首次撞上 $180^\circ$ 反相相消零点，上层软件就必须直面在线 SRO 补偿、异步重采样（SRC）与丢包恢复（完整预算对照见 [E13-19](#e13-19)）。
 
@@ -792,7 +796,7 @@ P_k[\ell]
 
 实现式(13-24)时必须同时核对**共轭符号约定**与**相位卷绕上界**两项约束：第一，在全书 $\hat\Gamma_{12} = \hat{\mathbb{E}}[X_1 X_2^*]$ 约定下，$\varepsilon > 0$ 产生正相位斜率（例如 $f_s = 16\,\mathrm{kHz}$、$\varepsilon = +100\,\mathrm{ppm}$、$f_k = 2\,\mathrm{kHz}$、$H = 128$、$L = 10$ 时 $\arg P_k \approx +0.1005\,\mathrm{rad}$）；若代码改用某些 DWACD 文献中的反向共轭 $\hat{\mathbb{E}}[X_1^* X_2]$ 或互换基准节点，估计出的 $\hat\varepsilon$ 符号会随之翻转，若未配套取反便送入重采样器，反而会把原始频偏放大一倍。第二，为避免最高分析频率 $f_{\max}$（通常为 $f_s / 2$）处跨越 $L$ 帧的相位增量超出 $(-\pi, \pi)$ 发生 $2\pi$ 卷绕模糊，须满足无卷绕条件 $|\varepsilon| L H f_{\max} / f_s < 1/2$（例如 $|\varepsilon| = 100\,\mathrm{ppm}$ 且 $f_{\max} = f_s / 2$ 时，须控制 $L H < 10^4$ 个采样点）。
 
-基于式(13-24)的相干漂移机理，学术与工程界形成了两条代表性盲 SRO 估计路线：其一是**加权平均相干漂移（WACD）及其动态在线版本 DWACD**（Gburrek、Schmalenstroeer 与 Haeb-Umbach，ICASSP 2022），通过对 $P_k[\ell]$ 做跨频加权相位斜率回归或逆离散傅里叶变换寻峰估计 $\hat\varepsilon$，并配合语音活动门控动态刷新参考段以跟踪温漂与说话人切换；其二是**双互相关相位变换处理器（DXCP-PhaT）**（Chinaev、Thüne 与 Enzner，*IEEE/ACM TASLP* vol. 29，第 1881～1896 页，2021），通过在 STFT 域构造经相位变换白化的二阶互相关量，恢复漂移互谱的遍历性，在强混响与大间距节点下同时实现盲 SRO 与残余时间偏移（STO）的稳健在线估计，从而与 §13.12 的 SRO 感知 DANSE（Didier 等，*IEEE OJSP* 2023）组成闭环。在真实多设备异步会议评测中，**CHiME-5/6/7/8** 挑战赛（Barker 等，2018；Watanabe 等，2020；Cornell 等，2023/2024）与 **NOTSOFAR-1** 基准（Vinnikov 等，Interspeech 2024）系统检验了自然走动、强混响与自由运行晶振条件下盲 SRO 估计（DWACD / DXCP-PhaT）结合分布式波束形成与 GSS 前端在端到端语音识别上的实际收益。
+基于式(13-24)的相干漂移机理，学术与工程界形成了两条代表性盲 SRO 估计路线：其一是**加权平均相干漂移（WACD）及其动态在线版本 DWACD**（Gburrek、Schmalenstroeer 与 Haeb-Umbach，ICASSP 2022），通过对 $P_k[\ell]$ 做跨频加权相位斜率回归或逆离散傅里叶变换寻峰估计 $\hat\varepsilon$，并配合语音活动门控动态刷新参考段以跟踪温漂与说话人切换；其二是**双互相关相位变换处理器（DXCP-PhaT）**（Chinaev、Thüne 与 Enzner，*IEEE/ACM TASLP* vol. 29，第 1881～1896 页，2021），通过在 STFT 域构造经相位变换白化的二阶互相关量，恢复漂移互谱的遍历性，在强混响与大间距节点下同时实现盲 SRO 与残余时间偏移（STO）的稳健在线估计，从而与 §13.12 的 SRO 感知 DANSE（Didier 等，*IEEE OJSP* 2023）组成闭环。会议任务还应与 SRO 算法原实验分开核对：CHiME-5/6/7/8 的设备拓扑与同步、分离、识别协议随任务变化，不能将挑战赛名本身当作 DWACD/DXCP-PhaT 与分布式波束、GSS 联合运行收益的证据。[NOTSOFAR-1（Vinnikov等，Interspeech 2024，§2）](https://www.isca-archive.org/interspeech_2024/vinnikov24_interspeech.pdf)原任务为单设备单通道/多通道远场识别，刻意避开多设备复杂性；可用它研究相应会议前端，但原基准不是异步多设备 SRO 评测。
 
 **WOLA-SRO 整帧滑移与分数频域相位旋转补偿。** 获得相对频偏估计 $\varepsilon = (f_{s,q} - f_s) / f_s$ 后，在 WOLA 频域处理链路中无需单独架设时域异步重采样器，即可将累积样本漂移拆成“整数环形缓冲滑移 + 分数频域线性相位旋转”两步闭环补偿。严格沿用式(13-24)的符号约定（$\varepsilon > 0$ 表示远端节点 $q$ 采样更快）：在帧移为 $H$ 点的第 $\ell$ 帧处，远端相对参考时钟已多采了累积样本数 $\delta(\ell) = \varepsilon \ell H$，若直接从原始索引 $\ell H$ 读帧，远端波形在物理时间上滞后参考帧 $+\delta(\ell)$ 个样本，在 STFT 域带上多余相位 $e^{-\mathrm{j}\frac{2\pi k}{N}\delta(\ell)}$。为此将 $\delta(\ell)$ 拆为整数部分 $m_\ell$ 与残余分数部分 $\Delta_\ell$：
 
@@ -805,7 +809,9 @@ $$\begin{aligned}
 \qquad k = 0, 1, \dots, N/2.
 \end{aligned}$$
 
-第一步先将远端环形输入缓冲区的读指针前移 $+m_\ell$ 个样本（从索引 $\ell H + m_\ell$ 开始取帧；$\varepsilon > 0$ 时每当 $m_\ell$ 加 $1$ 便无损跳过 $1$ 个样本，$\varepsilon < 0$ 时每当 $m_\ell$ 减 $1$ 便回退 $1$ 个样本），由此得到的滑移帧频谱 $X_q^{(\mathrm{slip})}[k,\ell]$ 仅保留幅值不超过半个样本的滞后 $+\Delta_\ell$（对应残余相位 $e^{-\mathrm{j}\frac{2\pi k}{N}\Delta_\ell}$）；第二步直接在正频点 $k = 0, \dots, N/2$ 上乘以**正号**线性相位旋转因子 $\exp\!\big(+\mathrm{j}\frac{2\pi k}{N}\Delta_\ell\big)$（全长 $N$ 点复谱的负频点取共轭对称，奈奎斯特频点取实部）将其精确抵消——若误用负号，分数滞后非但不会被消去，反而会加倍。需要注意这一频域近似的**帧内漂移有效界**：用单一相位斜坡替代连续重采样默认整帧 $N$ 个采样点内的时钟偏移近似恒定，仅在帧内总漂移满足 $|\varepsilon| N \ll 1$ 时成立（例如 $\varepsilon = 100\,\mathrm{ppm}$、$N = 512$ 时 $|\varepsilon| N = 0.0512 \ll 1$，即使在奈奎斯特频率处窗边缘相位偏差也低于 $4.6^\circ$）；若遭遇剧烈频偏或超长窗导致 $|\varepsilon| N \gtrsim 0.5$，帧内时间伸缩将引发相邻频点间的谱泄漏涂抹，无法再靠逐频点相位乘法消除，必须退回时域加窗 sinc 或 Farrow 多项式重采样（关于 DWACD 盲 SRO 估计与活动门控的定量验证见 [E13-21](#e13-21)）。
+第一步先将远端环形输入缓冲区的读指针前移 $+m_\ell$ 个样本（从索引 $\ell H + m_\ell$ 开始取帧；$\varepsilon > 0$ 时每当 $m_\ell$ 加 $1$ 便跳过 $1$ 个输入样本，$\varepsilon < 0$ 时每当 $m_\ell$ 减 $1$ 便回退 $1$ 个样本），由此得到的滑移帧频谱 $X_q^{(\mathrm{slip})}[k,\ell]$ 仅保留幅值不超过半个样本的滞后 $+\Delta_\ell$（对应残余相位 $e^{-\mathrm{j}\frac{2\pi k}{N}\Delta_\ell}$）；第二步直接在正频点 $k = 0, \dots, N/2$ 上乘以**正号**线性相位旋转因子 $\exp\!\big(+\mathrm{j}\frac{2\pi k}{N}\Delta_\ell\big)$（全长 $N$ 点复谱的负频点取共轭对称，奈奎斯特频点取实部）在带限及帧内时差近似恒定的条件下补偿残余相位——若误用负号，分数滞后非但不会被消去，反而会加倍。需要注意这一频域近似的**帧内漂移有效界**：用单一相位斜坡替代连续重采样默认整帧 $N$ 个采样点内的时钟偏移近似恒定，仅在帧内总漂移满足 $|\varepsilon| N \ll 1$ 时成立（例如 $\varepsilon = 100\,\mathrm{ppm}$、$N = 512$ 时 $|\varepsilon| N = 0.0512 \ll 1$，即使在奈奎斯特频率处窗边缘相位偏差也低于 $4.6^\circ$）；若遭遇剧烈频偏或超长窗导致 $|\varepsilon| N \gtrsim 0.5$，帧内时间伸缩将引发相邻频点间的谱泄漏涂抹，无法再靠逐频点相位乘法消除，必须退回时域加窗 sinc 或 Farrow 多项式重采样（关于 DWACD 盲 SRO 估计与活动门控的定量验证见 [E13-21](#e13-21)）。
+
+此处还要求信号严格带限于 Nyquist 以下。对实序列 $x[n]=(-1)^n$，旋转 Nyquist 频点后取实部会把幅度乘以 $\cos(\pi\Delta)$：$\Delta=1/4$ 时剩 $1/\sqrt2$，$1/2$ 时为零，并非保幅的理想分数延迟。帧内漂移很小也不能消除这个端点限制。
 
 在无需显式空间先验的纯盲 DANSE 之外，若系统还需联合执行跨节点声源定位、空间扇区约束或 DASF-LCMV 零陷控制，就必须先解决**自组网节点几何自定位（Node Self-Localization）**：典型手段包括利用多声源事件到达时差（TDOA）建立成对距离约束后经多维标度（MDS）或非线性最小二乘联合反演节点坐标与声源位置，以及在漫反射环境噪声段利用三维各向同性扩散声场相干模型 $\operatorname{Re}\{\Gamma_{uv}(f)\} \approx \operatorname{sinc}(2f d_{uv} / c)$ 盲反演未知节点间距 $d_{uv}$。
 
@@ -846,7 +852,7 @@ $$\begin{aligned}
 
 ### 13.16 二十一道练习：从压缩方向到完整系统检验
 
-前六题围绕复参考共轭、广播尺度不变性、轮转/同时更新状态与多目标广播秩展开，第 7～17 题串联秩亏退化、带宽内存核算、时钟丢包传输、PCM16 误差界与三层稳窗评分、收敛步长条件、树上求和与 GEVD 白化，第 18～21 题进一步手算与复算广播切换统计坐标变换、AES67/PTPv2 亚微秒同步预算、DASF 约束子空间统一框架以及 DWACD 双窗盲 SRO 估计与语音活动门控。除题干另有声明外，标量目标默认取 $d = s$、干源功率 $\phi_s = 1$；每次算出有效全局权重后，均代回式(13-3)核对总均方误差。
+前六题围绕复参考共轭、广播尺度不变性、轮转/同时更新状态与多目标广播秩展开，第 7～17 题串联秩亏退化、带宽内存核算、时钟丢包传输、PCM16 误差界与三层稳窗评分、收敛步长条件、树上求和与 GEVD 白化，第 18～21 题进一步手算与复算广播切换统计坐标变换、AES67/PTPv2 亚微秒同步预算、DASF 约束子空间统一框架以及 DWACD 启发的双窗互谱斜率控制与语音活动门控。除题干另有声明外，标量目标默认取 $d = s$、干源功率 $\phi_s = 1$；每次算出有效全局权重后，均代回式(13-3)核对总均方误差。
 
 <a id="e13-01"></a>
 #### E13-01：复参考的共轭不能省略
@@ -1156,13 +1162,15 @@ P_{n,\mathrm{stale}}-P_{n,\mathrm{LCMV}}^\star
 **第三阶段：$P = 3 = L_u$ 自由度耗尽锁死与双路广播解锁。** 再添入第三列约束 $\vec c_3 = [0, 0, 0, 1]^\top$（要求第 $4$ 麦权重为零，$\vec f_3 = [1, 0, 0]^\top$，总约束数 $P = 3$）：四麦集中式三约束 LCMV 最优解为 $[34, -26, 26, 0]^\top / 73$，最小输出噪声功率为 $196/365 \approx 0.536986$。然而若仍限制每节点只发单路广播（$R = 1$），局部观测维数 $L_u = 2 + 1 = 3$ 恰好等于约束数 $P = 3$，剩余优化自由度 $L_u - P = 0$。从初值 $\vec f_1^{(0)} = [1, 0]^\top$、$\vec f_2^{(0)} = [11, -24]^\top$ 出发，节点 $1$ 的 $3 \times 3$ 满秩约束方程 $\tilde{\mathbf C}_1^\top\vec h_1 = [1, 0, 0]^\top$ 直接把局部解唯一焊死在 $\vec h_1 = [1, 0, 0]^\top$，节点 $2$ 同样被焊死在有效全局权重 $[1, 0, 0, 0]^\top$，无论轮转多少轮噪声功率都死锁在 $1.0 > 196/365$；一旦将广播扩充至 $R = 2$（恢复 $L_u = 4 > P = 3$），首轮即解锁恢复集中式最优噪声功率 $196/365$（可在仓库根目录下运行 `.venv/bin/python -m codes.chapters.ch13.chapter13_exercises --exercise E13-20` 复核全部三阶段结果）。
 
 <a id="e13-21"></a>
-#### E13-21：DWACD双窗盲SRO估计与语音活动门控
+#### E13-21：DWACD启发的双窗互谱斜率控制与语音活动门控
+
+本节双窗控制只展示互谱漂移斜率与已知活动门控，不含原 DWACD 的相干归一化、递归状态及完整闭环同步器。PTP 网络时间、本地 ADC 速率、传输期限与失锁保持须分开核验；协议名称本身不提供采样时钟锁定证据。
 
 **题目**：沿用 §13.15 式(13-24)的复互谱符号约定 $\hat\Gamma_{12}[k,\ell] = \hat{\mathbb{E}}[X_1[k,\ell]\,X_2^*[k,\ell]]$，考察一对异步拾音节点：基准采样率 $f_s = 16\,\mathrm{kHz}$，FFT 点数 $N = 512$，帧移 $H = 256$（$16\,\mathrm{ms}$），真实相对采样率偏移 $\varepsilon = +100\,\mathrm{ppm} = 10^{-4}$（远端节点 $2$ 采样更快），固定静态声学时差 $\tau_0 = 1.75$ 个样本。构造两段长度均为 $L_w = 100$ 帧、名义间距为 $B = 200$ 帧（$B H / f_s = 3.2\,\mathrm{s}$）的分析段，在频带 $k \in [16, 128]$（$500$～$4000\,\mathrm{Hz}$，共 $113$ 个频点）上通过两段平均互谱乘积 $P[k] = \bar\Gamma_{12}^{(2)}[k]\big(\bar\Gamma_{12}^{(1)}[k]\big)^*$ 与 WACD 复内积寻峰估计 $\hat\varepsilon$：
 
 （1）手算跨越 $B = 200$ 帧的真实累积样本漂移 $\Delta n_{\mathrm{true}}$、$P[k]$ 跨频点的理论相位斜率 $\alpha_{\mathrm{true}}$、端点频点 $k = 16$ 与 $k = 128$ 处的累积相位以及帧内漂移 $|\varepsilon| N$，并说明为何直接取主值相位在 $k = 128$ 处已发生 $2\pi$ 卷绕而复内积寻峰仍可无模糊估计至 $|\Delta n| < N / 2$；
 
-（2）设活动语音帧为相干宽带语音叠加独立本地底噪（$P_s = 100, P_n = 1$，信噪比 $+20\,\mathrm{dB}$），非活动帧为两节点互不相关的纯静音或本地突发噪声（信噪比 $-\infty\,\mathrm{dB}$，跨节点随机相位），用确定性合成仿真（固定种子 `13021`，20 次独立重复）对比**联合活动门控 DWACD**（仅对两段中对应时刻均活动的帧平均互谱）与**无门控直接平均**在以下三种工况下的表现：① $60\%$ 活动语音 + $40\%$ 低电平静音（分别检验两段对称活动与非对称活动，前者验证符号翻转陷阱，后者验证质心偏移偏差）；② $60\%$ 活动语音 + $40\%$ 强本地突发噪声（$P_{\mathrm{burst}} = 2500 = 25 P_s$）；③ $20\%$ 活动语音 + $80\%$ 强本地突发噪声（$P_{\mathrm{burst}} = 1000 = 10 P_s$）。
+（2）设活动语音帧为相干宽带语音叠加独立本地底噪（$P_s = 100, P_n = 1$，信噪比 $+20\,\mathrm{dB}$），非活动帧为两节点互不相关的纯静音或本地突发噪声（信噪比 $-\infty\,\mathrm{dB}$，跨节点随机相位），用确定性合成仿真（固定种子 `13021`，20 次独立重复）对比**联合活动门控双窗控制**（仅对两段中对应时刻均活动的帧平均互谱）与**无门控直接平均**在以下三种工况下的表现：① $60\%$ 活动语音 + $40\%$ 低电平静音（分别检验两段对称活动与非对称活动，前者验证符号翻转陷阱，后者验证质心偏移偏差）；② $60\%$ 活动语音 + $40\%$ 强本地突发噪声（$P_{\mathrm{burst}} = 2500 = 25 P_s$）；③ $20\%$ 活动语音 + $80\%$ 强本地突发噪声（$P_{\mathrm{burst}} = 1000 = 10 P_s$）。
 
 **参考答案**：按闭式解析与确定性数值仿真分三步核对：
 
@@ -1179,9 +1187,9 @@ $$\widehat{\Delta n} = \arg\max_{\tau}\operatorname{Re}\!\left\{\sum_{k=16}^{128
 
 先做粗网格扫描再执行黄金分割精搜，在频点间隔 $\Delta k = 1$ 下无模糊量程可达 $|\Delta n| < N / 2 = 256$ 个样本，彻底绕开了主值卷绕。同时单帧内的漂移仅 $|\varepsilon| N = 0.0512 \ll 1$ 个样本，充分满足 §13.15 的 WOLA 频域线性相位近似界。
 
-**第二步：对称与非对称静音工况——为什么质心错位会引入系统偏差。** 先看对称 $60\%$ 语音 + $40\%$ 低电平静音（两段均在前 $60$ 帧活动，共 $60$ 组联合活动帧对，解析门控互谱信噪比 $16.913\,\mathrm{dB}$）：联合活动门控 DWACD 单次估计 $\widehat{\Delta n} = 5.1232$ 样本、$\hat\varepsilon = +100.062\,\mathrm{ppm}$（误差 $+0.062\,\mathrm{ppm}$），带均幅值平方相干度（MSC）为 $0.8198$，相位 RMSE 为 $0.0784\,\mathrm{rad}$，20 次重复 RMSE 仅 $0.265\,\mathrm{ppm}$；若误把互谱共轭改为 $\hat{\mathbb{E}}[X_1^* X_2]$，估计值立变为 $-100.062\,\mathrm{ppm}$，直接反号。顺便可见，当静音底噪远低于语音（$P_{\mathrm{sil}} = 1 \ll P_s = 100$）且两段语音位置严格对称时，未归一化互谱天然按能量加权，无门控单次估计仍为 $+100.061\,\mathrm{ppm}$（20 次 RMSE $0.266\,\mathrm{ppm}$）。
+**第二步：对称与非对称静音工况——为什么质心错位会引入系统偏差。** 先看对称 $60\%$ 语音 + $40\%$ 低电平静音（两段均在前 $60$ 帧活动，共 $60$ 组联合活动帧对，解析门控互谱信噪比 $16.913\,\mathrm{dB}$）：联合活动门控双窗控制 单次估计 $\widehat{\Delta n} = 5.1232$ 样本、$\hat\varepsilon = +100.062\,\mathrm{ppm}$（误差 $+0.062\,\mathrm{ppm}$），带均幅值平方相干度（MSC）为 $0.8198$，相位 RMSE 为 $0.0784\,\mathrm{rad}$，20 次重复 RMSE 仅 $0.265\,\mathrm{ppm}$；若误把互谱共轭改为 $\hat{\mathbb{E}}[X_1^* X_2]$，估计值立变为 $-100.062\,\mathrm{ppm}$，直接反号。顺便可见，当静音底噪远低于语音（$P_{\mathrm{sil}} = 1 \ll P_s = 100$）且两段语音位置严格对称时，未归一化互谱天然按能量加权，无门控单次估计仍为 $+100.061\,\mathrm{ppm}$（20 次 RMSE $0.266\,\mathrm{ppm}$）。
 
-然而一旦静音分布打破两段对称——令第 1 段在帧 $0\text{～}59$ 活动（质心 $29.5$）、第 2 段在帧 $240\text{～}299$ 活动（质心 $269.5$）——有效语音质心间距实际拉长至 $240.0$ 帧而非名义值 $B = 200$ 帧。此时仅余 $20$ 组精确相隔 $B = 200$ 帧的联合活动帧对：联合活动门控 DWACD 稳稳给出 $\widehat{\Delta n} = 5.1152$ 样本、$\hat\varepsilon = +99.905\,\mathrm{ppm}$（误差 $-0.095\,\mathrm{ppm}$，MSC $0.9618$，相位 RMSE $0.0560\,\mathrm{rad}$，20 次 RMSE $0.129\,\mathrm{ppm}$）；而无门控直接平均却把 $240$ 帧漂移误除名义 $B = 200$，单次给出 $\widehat{\Delta n} = 6.1479$ 样本、$\hat\varepsilon = +120.077\,\mathrm{ppm}$（相位 RMSE 涨至 $0.9982\,\mathrm{rad}$），20 次平均偏差 $+19.954\,\mathrm{ppm}$、RMSE $19.955\,\mathrm{ppm}$，精准印证了 $+20\%$ 质心偏移理论预测值 $+120.0\,\mathrm{ppm}$。
+然而一旦静音分布打破两段对称——令第 1 段在帧 $0\text{～}59$ 活动（质心 $29.5$）、第 2 段在帧 $240\text{～}299$ 活动（质心 $269.5$）——有效语音质心间距实际拉长至 $240.0$ 帧而非名义值 $B = 200$ 帧。此时仅余 $20$ 组精确相隔 $B = 200$ 帧的联合活动帧对：联合活动门控双窗控制 稳稳给出 $\widehat{\Delta n} = 5.1152$ 样本、$\hat\varepsilon = +99.905\,\mathrm{ppm}$（误差 $-0.095\,\mathrm{ppm}$，MSC $0.9618$，相位 RMSE $0.0560\,\mathrm{rad}$，20 次 RMSE $0.129\,\mathrm{ppm}$）；而无门控直接平均却把 $240$ 帧漂移误除名义 $B = 200$，单次给出 $\widehat{\Delta n} = 6.1479$ 样本、$\hat\varepsilon = +120.077\,\mathrm{ppm}$（相位 RMSE 涨至 $0.9982\,\mathrm{rad}$），20 次平均偏差 $+19.954\,\mathrm{ppm}$、RMSE $19.955\,\mathrm{ppm}$，精准印证了 $+20\%$ 质心偏移理论预测值 $+120.0\,\mathrm{ppm}$。
 
 **第三步：本地不相关突发噪声下的互谱信噪比塌陷。** 当语音停顿期间出现高方差本地不相关噪声（如单侧风扇、按键或手持摩擦）时，无门控互谱平均的方差被非活动项 $L_{\mathrm{inact}} P_{\mathrm{burst}}^2$ 彻底淹没，门控与无门控的全部定量指标汇总如下表：
 
@@ -1192,7 +1200,7 @@ $$\widehat{\Delta n} = \arg\max_{\tau}\operatorname{Re}\!\left\{\sum_{k=16}^{128
 | $60\%$ 语音 + $40\%$ 突发噪（$25 P_s$） | 联合门控 / 无门控 | $+16.913$ / $-9.209$ | $+99.654$ / $+105.751$ | $0.8239$ / $0.0270$ | $0.0977$ / $1.7628$ | $0.141$ / $223.156$ |
 | $20\%$ 语音 + $80\%$ 突发噪（$10 P_s$） | 联合门控 / 无门控 | $+12.835$ / $-13.110$ | $+99.894$ / $-86.643$ | $0.9623$ / $0.0121$ | $0.0582$ / $1.7657$ | $0.135$ / $207.738$ |
 
-在两类突发噪声工况下，无门控平均的解析互谱信噪比均暴跌约 $26\,\mathrm{dB}$（跌至 $-9.209\,\mathrm{dB}$ 与 $-13.110\,\mathrm{dB}$），带均 MSC 从 $0.82\text{～}0.96$ 崩塌至 $0.012\text{～}0.027$，相位 RMSE 迫近均匀随机相位的理论极限 $\pi / \sqrt{3} \approx 1.8138\,\mathrm{rad}$，20 次 RMSE 飙升至 $207.7\text{～}223.2\,\mathrm{ppm}$（其中 $80\%$ 突发噪单次甚至错估为 $-86.643\,\mathrm{ppm}$，连正负号都彻底反转）；而联合活动门控 DWACD 在全部四种工况下均将估计误差牢牢压在 $0.35\,\mathrm{ppm}$ 以内（20 次 RMSE 仅 $0.13\text{～}0.27\,\mathrm{ppm}$）。在仓库根目录运行以下命令即可复核全部数值：
+在两类突发噪声工况下，无门控平均的解析互谱信噪比均暴跌约 $26\,\mathrm{dB}$（跌至 $-9.209\,\mathrm{dB}$ 与 $-13.110\,\mathrm{dB}$），带均 MSC 从 $0.82\text{～}0.96$ 崩塌至 $0.012\text{～}0.027$，相位 RMSE 迫近均匀随机相位的理论极限 $\pi / \sqrt{3} \approx 1.8138\,\mathrm{rad}$，20 次 RMSE 飙升至 $207.7\text{～}223.2\,\mathrm{ppm}$（其中 $80\%$ 突发噪单次甚至错估为 $-86.643\,\mathrm{ppm}$，连正负号都彻底反转）；而联合活动门控双窗控制 在全部四种工况下均将估计误差牢牢压在 $0.35\,\mathrm{ppm}$ 以内（20 次 RMSE 仅 $0.13\text{～}0.27\,\mathrm{ppm}$）。在仓库根目录运行以下命令即可复核全部数值：
 
 ```bash
 .venv/bin/python -m codes.chapters.ch13.chapter13_exercises --exercise E13-21
@@ -1211,7 +1219,7 @@ $$\widehat{\Delta n} = \arg\max_{\tau}\operatorname{Re}\!\left\{\sum_{k=16}^{128
 - TI-dMWF（[2026 预印本](https://arxiv.org/html/2607.05561v1)）：在全局源与严格局部源二分且互不相关的结构假设下，给出两趟树上传递的非迭代分布式 MWF 求解路线。
 - Musluoglu, C. 与 Bertrand, A. (*Part I*) 及 Musluoglu, C.、Hovine, C. 与 Bertrand, A. (*Part II*)，*A Unified Algorithmic Framework for Distributed Adaptive Signal Fusion*，*IEEE Transactions on Signal Processing* 71, 1863–1878 & 1879–1894, 2023；以及 Markovich-Golan, S.、Gannot, S. 与 Cohen, I.，*IEEE Transactions on Audio, Speech, and Language Processing* 21(2), 343–356, 2013（EUSIPCO 2012）：前者建立统一分布式 MWF、MVDR、GEVD 与约束 LCMV 的 DASF 子空间投影框架，后者提出全连接 WASN 中的分布式多约束 GSC/LCMV 架构。
 - Cattivelli, F. S. 与 Sayed, A. H.，*IEEE Transactions on Signal Processing* 58(3), 1035–1048, 2010；以及 Sayed, A. H.，*Adaptation, Learning, and Optimization over Networks*，*Foundations and Trends in Machine Learning* 7(4–5), 311–801, 2014（[DOI: 10.1561/2200000051](https://doi.org/10.1561/2200000051)）：系统阐述扩散最小均方（Diffusion LMS）等参数融合范式，与本章的信号广播协同范式形成对照。
-- 盲 SRO 估计与多设备异步会议基准：Gburrek, T.、Schmalenstroeer, J. 与 Haeb-Umbach, R.，ICASSP 2022（WACD/DWACD）；Chinaev, A.、Thüne, P. 与 Enzner, G.，*IEEE/ACM TASLP* 29, 1881–1896, 2021（DXCP-PhaT）；以及 CHiME-5/6/7/8（Barker 等 2018；Watanabe 等 2020；Cornell 等 2023/2024）与 NOTSOFAR-1（Vinnikov 等，Interspeech 2024）远场多设备评测基准。
+- 盲 SRO 原研究与远场会议基准：Gburrek, T.、Schmalenstroeer, J. 与 Haeb-Umbach, R.，ICASSP 2022（WACD/DWACD）；Chinaev, A.、Thüne, P. 与 Enzner, G.，*IEEE/ACM TASLP* 29, 1881–1896, 2021（DXCP-PhaT）；以及 CHiME-5/6/7/8（Barker 等 2018；Watanabe 等 2020；Cornell 等 2023/2024）与 NOTSOFAR-1（Vinnikov 等，Interspeech 2024）远场会议基准；其中 NOTSOFAR-1 原任务为单设备，不能统称为多设备异步评测。
 - 流媒体同步协议、缺失协方差与本仓工程手册：RTP/RTCP 规范（[RFC 3550 §5.1 与 §6.4.1](https://www.rfc-editor.org/rfc/rfc3550)）；关于逐对缺失样本协方差非半正定性的经典说明（[R 语言 `cor` 文档](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/cor.html)）；以及本仓[工业实现手册](../codes/chapters/ch00/research/03_industrial_deployment.md)与[练习、音频和复现实验手册](../codes/chapters/ch00/research/05_exercises_and_audio.md)。
 
 ---

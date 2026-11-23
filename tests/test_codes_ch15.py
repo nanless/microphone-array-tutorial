@@ -231,15 +231,15 @@ class AVAlignmentTests(unittest.TestCase):
         sync = av_alignment.map_video_to_audio_frames(15, 0.016, 25.0, av_offset_s=0.0)
         self.assertEqual(
             sync["video_frame_indices"].tolist(),
-            [0, 0, 1, 1, 1, 2, 2, 3, 3, 3, 4, 4, 5, 5, 5],
+            [-1, 0, 0, 0, 1, 1, 2, 2, 2, 3, 3, 4, 4, 4, 5],
         )
-        self.assertEqual(sync["onset_audit"]["clipped_consonant_frames"], 0)
+        self.assertEqual(sync["onset_audit"]["clipped_consonant_frames"], 1)
 
         lagged = av_alignment.map_video_to_audio_frames(
             30, 0.016, 25.0, av_offset_s=0.120, onset_frame=10, consonant_frames=8
         )
-        self.assertEqual(lagged["onset_audit"]["clipped_consonant_frames"], 7)
-        self.assertAlmostEqual(lagged["onset_audit"]["consonant_loss_fraction"], 0.875, places=15)
+        self.assertEqual(lagged["onset_audit"]["clipped_consonant_frames"], 8)
+        self.assertAlmostEqual(lagged["onset_audit"]["consonant_loss_fraction"], 1.0, places=15)
 
         m_aud = np.array([0.82, 0.82, 0.82], dtype=np.float64)
         m_av = np.array([0.96, 0.65, 0.05], dtype=np.float64)
@@ -451,7 +451,7 @@ class TSEAudioAndExercisesTests(unittest.TestCase):
         self.assertAlmostEqual(ex["E15-09"]["joint_der"], 0.0, places=14)
         self.assertEqual(
             [row["clipped_consonant_frames"] for row in ex["E15-11"]["camera_lag_consonant_clipping_sweep"]],
-            [0, 2, 5, 7],
+            [1, 4, 6, 8],
         )
         self.assertLess(ex["E15-12"]["pcm"]["bubble_d10cm"]["integer_reference_nmse"], 0.025)
         self.assertEqual(ex["E15-13"]["two_speaker_stopping_check"]["estimated_num_speakers"], 2)

@@ -8,11 +8,11 @@
   "assets": {
     "audio_manifest": {
       "file": "MANIFEST.json",
-      "sha256": "a554a6d14bd264ebd260b0984fbbc24f4422407f091ced654d08e86dc51d5af2"
+      "sha256": "3a05c4506f88baee3566b48bdc1b58bc68977b165ec93cbea98f16b2e40b6a7d"
     },
     "figure": {
       "file": "ROOM_RESULTS.png",
-      "sha256": "c469ebb640f545925309959745b1f919488be7780ba0b8a2a0fc248c38b3e730"
+      "sha256": "344790333c22c85a54b0c6508ed708f5b8b0f2974b15c84211c09a27300f7814"
     }
   },
   "cases": [
@@ -106,9 +106,9 @@
     "drr_change_db": 7.553723389008837e-07,
     "previous_drr_db_median": 5.755258753605107,
     "previous_max_order": 32,
-    "previous_t60_s_median": 0.5464806930141838,
+    "previous_t60_s_median": 0.5464806930141837,
     "scope": "one source position, median of four microphones; rerun at higher order if false",
-    "t60_change_s": 2.0772496572840637e-06,
+    "t60_change_s": 2.077249657395086e-06,
     "threshold_drr_db": 0.5,
     "threshold_t60_s": 0.02,
     "within_threshold": true
@@ -130,8 +130,9 @@
   "drr": "10 log10(sum(h_direct^2)/sum((h_full-h_direct)^2)), per microphone; direct RIR uses fully absorbing walls at the same image order and RIR length",
   "environment": {
     "numpy": "2.5.3",
-    "platform": "macOS-26.6.1-arm64-arm-64bit-Mach-O",
-    "pra_num_threads": "2",
+    "platform": "macOS-27.2.1-arm64-arm-64bit-Mach-O",
+    "pra_num_threads": null,
+    "pra_num_threads_effective": 2,
     "pyroomacoustics": "0.10.0",
     "pyroomacoustics_source_sha256": {
       "acoustics.py": "3196254709071ab1061982133f05be94e7da554f2619db98d829203839d7c4d2",
@@ -144,7 +145,7 @@
   "fractional_delay_filter_length_samples": 81,
   "generator": {
     "path": "codes/chapters/appendix_b/examples/room_srp_exercise.py",
-    "sha256": "598509685594821f88c058be7bf0ce256b12032fbe36173804ee2a14ea62bf81"
+    "sha256": "aeadb54d948ef3be6497fc25abf9e13e60688061fcf07f94c3aa1dbe7fe58d0f"
   },
   "interpretation_limit": "one fixed synthetic room and six positions; no real-recording or population claim",
   "inverse_sabine_suggested_max_order": 40,
@@ -205,7 +206,7 @@
       "t60_s_median": 0.5464827702638411,
       "t60_s_per_mic": [
         0.547034089872667,
-        0.5487431196402222,
+        0.5487431196402223,
         0.5339511153675471,
         0.5459314506550151
       ],
@@ -240,12 +241,12 @@
         5.866025403784438,
         3.0
       ],
-      "t60_s_median": 0.5464827695416468,
+      "t60_s_median": 0.5464827695416463,
       "t60_s_per_mic": [
         0.5487431191201866,
-        0.5470340884615572,
-        0.5459314506217362,
-        0.5339511159438106
+        0.5470340884615569,
+        0.5459314506217358,
+        0.5339511159438107
       ],
       "true_azimuth_deg": 30.0
     },
@@ -280,10 +281,10 @@
       ],
       "t60_s_median": 0.5526363228833663,
       "t60_s_per_mic": [
-        0.5579778425902514,
+        0.5579778425902515,
         0.552600773579523,
         0.5526718721872096,
-        0.5405511670493598
+        0.5405511670493599
       ],
       "true_azimuth_deg": -30.0
     },
@@ -354,12 +355,12 @@
         5.826275487565342,
         3.0
       ],
-      "t60_s_median": 0.5548065625407648,
+      "t60_s_median": 0.5548065625407645,
       "t60_s_per_mic": [
-        0.5548106066934738,
-        0.5624587178762603,
+        0.5548106066934737,
+        0.5624587178762607,
         0.5441214901473695,
-        0.5548025183880557
+        0.5548025183880555
       ],
       "true_azimuth_deg": -41.24359465940242
     },
@@ -392,9 +393,9 @@
         6.970819691383463,
         3.0
       ],
-      "t60_s_median": 0.5629644068198897,
+      "t60_s_median": 0.5629644068198896,
       "t60_s_per_mic": [
-        0.5672771463879612,
+        0.5672771463879611,
         0.5477566424394564,
         0.5802115438086488,
         0.5586516672518181
@@ -417,12 +418,12 @@
   "sound_speed_m_s": 343.0,
   "source_position_seed": 20260924,
   "source_sha256": {
-    "codes/chapters/appendix_b/core/room_metrics.py": "79e984ea8eb0afee3157247e06bf2f2a01056e411068168cfe134faf799a8e51",
-    "codes/chapters/appendix_b/examples/room_srp_exercise.py": "598509685594821f88c058be7bf0ce256b12032fbe36173804ee2a14ea62bf81",
-    "codes/chapters/ch02/core/conventions.py": "4e80a27490f05ddd5f4826361420c0c8d0b331464d1e5629c5def492da47b1d7",
+    "codes/chapters/appendix_b/core/room_metrics.py": "1009828945dd58c906caa11821162ce90eeb4d7f2c526e41666bc79c5ded5478",
+    "codes/chapters/appendix_b/examples/room_srp_exercise.py": "aeadb54d948ef3be6497fc25abf9e13e60688061fcf07f94c3aa1dbe7fe58d0f",
+    "codes/chapters/ch02/core/conventions.py": "79af1b8f7fe664e64e7ad786082c36a29664eacbdda63fba96a944e548304865",
     "codes/chapters/ch02/core/spectral.py": "5ade0b101cc00615276b3b60c3659ece3e68ad614cd2cb2edeb568359f034059",
     "codes/chapters/ch03/core/geometry.py": "5a680848301358415f74647199a4c57b65086f0b2580f91706c912ad208d7bdb",
-    "codes/chapters/ch04/core/covariance.py": "d704be037100ee53caf6e2130fbabbe14ce6eeff9e3d11dde389fd368d271249",
+    "codes/chapters/ch04/core/covariance.py": "1fd3d333bb3963bdf81cefe79de3270a485066c57f8b37138e54f1e63ce62a63",
     "codes/chapters/ch04/core/doa.py": "33582d40ec9030537709d79bf13f4a904d2246f388e628aada7f66e8fb6dec04"
   },
   "source_signal": "1 s independent PCG64 white Gaussian noise per case; no additive noise",

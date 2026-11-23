@@ -114,33 +114,7 @@ def verify_sources(root):
     return identities
 
 
-@contextlib.contextmanager
-def source_imports(package):
-    """Read target-package Python sources directly; leave existing pyc untouched."""
-    class OriginalSourceLoader(importlib.machinery.SourceFileLoader):
-        def get_code(self, fullname):
-            source = contracts.ordinary_file(self.path).read_bytes()
-            return compile(source, self.path, 'exec', dont_inherit=True)
-
-        def exec_module(self, module):
-            super().exec_module(module)
-            module.__micarray_original_source_sha256__ = sha256(self.path)
-
-    class OriginalSourceFinder:
-        def find_spec(self, fullname, path=None, target=None):
-            if fullname != package and not fullname.startswith(package+'.'):
-                return None
-            spec = importlib.machinery.PathFinder.find_spec(fullname, path)
-            if spec is not None and isinstance(spec.loader, importlib.machinery.SourceFileLoader):
-                spec.loader = OriginalSourceLoader(fullname, spec.origin)
-            return spec
-
-    finder = OriginalSourceFinder()
-    sys.meta_path.insert(0, finder)
-    try:
-        yield
-    finally:
-        sys.meta_path.remove(finder)
+source_imports = contracts.source_imports
 
 
 def original_source_imports(package):
@@ -153,54 +127,8 @@ def original_source_imports(package):
     return decorate
 
 
-def package_preflight(package, checkout, expected_root=None):
-    """Read every discoverable installed Python file before importing the package.
-
-    Python source identity is separate from compiled extensions, third-party
-    dependencies and method execution. It is not a proof against concurrent edits.
-    """
-    spec = importlib.machinery.PathFinder.find_spec(package, sys.path)
-    if spec is None or not spec.origin or not spec.submodule_search_locations:
-        raise ModuleNotFoundError('No original package available: '+package)
-    root = contracts.validate_parent_chain(Path(spec.origin).parent)
-    if expected_root is not None and root != Path(expected_root).resolve():
-        raise ValueError('Imported package root differs from fixed checkout')
-    for name, module in tuple(sys.modules.items()):
-        if name == package or name.startswith(package+'.'):
-            filename = getattr(module, '__file__', None)
-            if filename and not Path(filename).resolve().is_relative_to(root):
-                raise ValueError('Preloaded package module differs from checked root')
-            if filename and filename.endswith('.py') and getattr(module, '__micarray_original_source_sha256__', None) != sha256(contracts.ordinary_file(filename)):
-                raise ValueError('Preloaded Python module has no verified direct-source import identity')
-    files = {}
-    revision = contracts.git(checkout, 'rev-parse', 'HEAD')
-    for path in sorted(root.rglob('*.py')):
-        path = contracts.ordinary_file(path)
-        relative = package+'/'+str(path.relative_to(root))
-        blob = contracts.git(checkout, 'rev-parse', revision+':'+relative)
-        actual = contracts.git(checkout, 'hash-object', '--no-filters', '--', str(path))
-        if actual != blob:
-            raise ValueError('Installed original Python blob differs: '+relative)
-        files[relative] = {'path': str(path), 'sha256': sha256(path), 'git_blob': blob}
-    cache_files = {str(p.relative_to(root)): sha256(contracts.ordinary_file(p)) for p in sorted(root.rglob('*.pyc'))}
-    return {'package_root': str(root), 'python_files': files,
-            'existing_pyc_sha256': cache_files, 'existing_pyc_execution': 'bypassed by direct-source loader',
-            'scope': 'all discovered package Python files, before import; compiled extensions and external dependencies are not fixed-source Python blobs'}
-
-
-def package_unchanged(record):
-    root = Path(record['package_root'])
-    if sorted(str(p.relative_to(root)) for p in root.rglob('*.py')) != sorted(
-            str(Path(r['path']).relative_to(root)) for r in record['python_files'].values()):
-        raise ValueError('Package Python membership changed')
-    for row in record['python_files'].values():
-        if sha256(contracts.ordinary_file(row['path'])) != row['sha256']:
-            raise ValueError('Package Python changed during execution')
-    after_cache = {str(p.relative_to(root)): sha256(contracts.ordinary_file(p)) for p in sorted(root.rglob('*.pyc'))}
-    if after_cache != record['existing_pyc_sha256']:
-        raise ValueError('Existing package bytecode cache changed')
-    record['unchanged_after'] = True
-    return record
+package_preflight = contracts.package_preflight
+package_unchanged = contracts.package_unchanged
 
 
 @original_source_imports("pyroomacoustics")

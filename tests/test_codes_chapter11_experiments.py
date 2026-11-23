@@ -357,8 +357,8 @@ class Chapter11ExperimentsTests(unittest.TestCase):
             {k: v['verdict'] for k, v in res['howling_gain_candidates'].items()},
             {'12.0dB': 'pass', '15.0dB': 'fail', '18.0dB': 'fail'},
         )
-        self.assertEqual(res['teams_certification_verdict'], 'undetermined')
-        self.assertEqual(res['teams_certification']['per_metric_verdicts']['tclw_max_volume_db'], 'undetermined')
+        self.assertEqual(res['constructed_acceptance_verdict'], 'undetermined')
+        self.assertEqual(res['constructed_acceptance']['per_metric_verdicts']['tclw_max_volume_db'], 'undetermined')
         for bad_delay in (3.0, 4.0):  # excess delay = dsp + 1.0 - 5.0 <= 0 ms
             with self.assertRaises(ValueError):
                 icc_comb_and_howling_metrics(bad_delay)

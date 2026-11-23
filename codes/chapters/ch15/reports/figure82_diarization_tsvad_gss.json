@@ -10,17 +10,17 @@
   "source_sha256": {
     "codes/chapters/ch15/core/conditional_tse.py": "dcf5a4e6854650e22330bdc3b3ed2114b355e4acd832f469a504b04c82bf6888",
     "codes/chapters/ch15/core/distance_bubble.py": "9e26329091896ecd396125ce04eeb4f6dcb3deb2478c087e08ccc26aa1cb7bd4",
-    "codes/chapters/ch15/core/diarization_tsvad.py": "f3e67dfae6814436fc079fd4f9851ae8bfd522a63467085ddf82e559480a4a8f",
-    "codes/chapters/ch15/core/av_alignment.py": "97d5b3f013ea6505ef9bb5b48b13476241a3f289bedd9889bdf153a744d3d5bf",
+    "codes/chapters/ch15/core/diarization_tsvad.py": "b95167599ae33ccb92253a676a34f48c2043bdd2ae3c8d9f5355d4a60ac05580",
+    "codes/chapters/ch15/core/av_alignment.py": "96d70196db9c699e4e029d7169c6945e198a6d997f395d57fb6e5e63571198bb",
     "codes/chapters/ch15/core/tse_audio.py": "4d9f63ab530c7f6d9ea18b43c6cf783cf85dac03c24a2ea861cb28ebd553f9fe",
-    "codes/chapters/ch15/examples/generate_tse_audio.py": "0c3f0e3f446338626e8176bd4fd29f9e3c0d72665cfe2258f2ef826aa5de71bf",
-    "codes/chapters/ch02/core/conventions.py": "4e80a27490f05ddd5f4826361420c0c8d0b331464d1e5629c5def492da47b1d7",
+    "codes/chapters/ch15/examples/generate_tse_audio.py": "ce6671dd5b37f5d48f952bd389e32c19ad166aeecc1632d9f9bb1fec10ff5cc9",
+    "codes/chapters/ch02/core/conventions.py": "79af1b8f7fe664e64e7ad786082c36a29664eacbdda63fba96a944e548304865",
     "codes/chapters/ch00/core/audio_samples.py": "1a7aad90d08fb8c27511aa463a6cc6dd6d4d2d230b27ed82549531f1f18edaba",
     "codes/chapters/ch00/io_contracts.py": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974",
-    "scripts/make_figures.py": "4bc6a6ce675292c51d538c0f7d3c6f9c8fe3a2de2d0d7945f48cb4baaa801e49",
-    "scripts/make_tse_figures.py": "d91a2503a86a6ef1f6ad11a4194dadc2d776c8d10e41d52bd5c25aabc9b25326"
+    "scripts/make_figures.py": "bf9058d1c3d6ed15bab41ea092439170cd324011936645d577408106813a485a",
+    "scripts/make_tse_figures.py": "91d6d674e9ee0d2b5d9b8ac3f24be7ee9f73545a2fc372a4fd4380e61fe55b28"
   },
-  "audio_manifest_sha256": "9eac449b73fefe1bf0ec68e34f742beb40c7e33d16c7646d3d1e9801ccd3bd66",
+  "audio_manifest_sha256": "49ae443e2f19233ffac180030da11bad32bd7a0406b6572e2e762ae0b55d490e",
   "ref_activity": [
     [
       1,

@@ -192,11 +192,15 @@ def lcmv_weights(
     # A positive column rescaling changes neither C.H w=f nor the solution,
     # provided f is rescaled too. This avoids squaring tiny/huge columns.
     scales = np.max(np.maximum(np.abs(c.real), np.abs(c.imag)), axis=0)
+    original_responses = f.copy()
     with np.errstate(over="ignore", invalid="ignore", divide="ignore"):
         c = c.real / scales + 1j * (c.imag / scales)
         f = f.real / scales + 1j * (f.imag / scales)
     if not np.all(np.isfinite(f)):
         raise ValueError("LCMV normalized responses exceed floating-point range")
+    if (np.any((original_responses.real != 0) & (f.real == 0))
+            or np.any((original_responses.imag != 0) & (f.imag == 0))):
+        raise ValueError("LCMV normalization loses a nonzero response component")
     if np.linalg.matrix_rank(c) != c.shape[1]:
         raise np.linalg.LinAlgError("constraint columns must be linearly independent")
     with np.errstate(over="ignore", invalid="ignore"):

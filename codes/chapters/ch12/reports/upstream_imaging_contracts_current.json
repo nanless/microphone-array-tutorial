@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "created_utc": "2026-10-05T03:30:21.007791+00:00",
+  "created_utc": "2026-11-22T22:53:11.098777+00:00",
   "status": "audit_completed_with_original_differences",
   "source_identity_before": {
     "project": "acoular",
@@ -24,12 +24,12 @@
         "acoular/environments.py"
       ]
     },
-    "lock_sha256": "ea8ce3cf679d70d06305f4942dbf9afeee94b69bd0ad7a5b9b09470c327a598f",
+    "lock_sha256": "55721fbe8027f67bf3159827b8b58c14bc327ea5e0221b216303681340e890e7",
     "source_document_paths": {
       "lock": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/SOURCES.lock.json",
       "status": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/SOURCE_STATUS.json"
     },
-    "status_sha256": "be926fccb75979e2f2ac428ac6c65c76a46d672771e21a01d589908d776fcac0",
+    "status_sha256": "96e37d461be3c0c5c07986b48100e935405334d22f346d8efb59ca49b07aa502",
     "recorded_complete_selection": {
       "id": "acoular",
       "revision": "13d3d7df74ac1a8135c7ec71da098cbbc03d8652",
@@ -209,8 +209,8 @@
     "clean_before": true,
     "clean_after": false,
     "source_version": "26.08",
-    "source_lock_sha256": "ea8ce3cf679d70d06305f4942dbf9afeee94b69bd0ad7a5b9b09470c327a598f",
-    "source_status_sha256": "be926fccb75979e2f2ac428ac6c65c76a46d672771e21a01d589908d776fcac0",
+    "source_lock_sha256": "55721fbe8027f67bf3159827b8b58c14bc327ea5e0221b216303681340e890e7",
+    "source_status_sha256": "96e37d461be3c0c5c07986b48100e935405334d22f346d8efb59ca49b07aa502",
     "source_lock_entry": {
       "id": "acoular",
       "url": "https://github.com/acoular/acoular.git",
@@ -326,12 +326,12 @@
         "acoular/environments.py"
       ]
     },
-    "lock_sha256": "ea8ce3cf679d70d06305f4942dbf9afeee94b69bd0ad7a5b9b09470c327a598f",
+    "lock_sha256": "55721fbe8027f67bf3159827b8b58c14bc327ea5e0221b216303681340e890e7",
     "source_document_paths": {
       "lock": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/SOURCES.lock.json",
       "status": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/SOURCE_STATUS.json"
     },
-    "status_sha256": "be926fccb75979e2f2ac428ac6c65c76a46d672771e21a01d589908d776fcac0",
+    "status_sha256": "96e37d461be3c0c5c07986b48100e935405334d22f346d8efb59ca49b07aa502",
     "recorded_complete_selection": {
       "id": "acoular",
       "revision": "13d3d7df74ac1a8135c7ec71da098cbbc03d8652",
@@ -511,8 +511,8 @@
     "clean_before": true,
     "clean_after": true,
     "source_version": "26.08",
-    "source_lock_sha256": "ea8ce3cf679d70d06305f4942dbf9afeee94b69bd0ad7a5b9b09470c327a598f",
-    "source_status_sha256": "be926fccb75979e2f2ac428ac6c65c76a46d672771e21a01d589908d776fcac0",
+    "source_lock_sha256": "55721fbe8027f67bf3159827b8b58c14bc327ea5e0221b216303681340e890e7",
+    "source_status_sha256": "96e37d461be3c0c5c07986b48100e935405334d22f346d8efb59ca49b07aa502",
     "source_lock_entry": {
       "id": "acoular",
       "url": "https://github.com/acoular/acoular.git",
@@ -611,29 +611,29 @@
   "after_clean": true,
   "direct_sources": {
     "codes/chapters/ch12/examples/audit_upstream_imaging_contracts.py": "781cb08e4870f5598d31cf593ce568930269f1d164c0999aad682306d55c9913",
-    "codes/chapters/ch04/core/upstream_contracts.py": "8669f007ee16a15433598b8f451f226cceb3163bdbc2bf690709504874743167",
+    "codes/chapters/ch04/core/upstream_contracts.py": "e868220b7388ae3124d1098df9de4095e061c1982fb1a251ad7c27c6c0742be5",
     "codes/chapters/ch00/io_contracts.py": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974",
     "codes/chapters/ch00/upstream/fetch_upstreams.py": "442d17a5818ef0edf620bde85cc7959c1e73602a47f75e1cc8fce2b227ae11b4"
   },
   "actual_dependencies_before": {
     "codes/chapters/ch12/examples/audit_upstream_imaging_contracts.py": "781cb08e4870f5598d31cf593ce568930269f1d164c0999aad682306d55c9913",
-    "codes/chapters/ch04/core/upstream_contracts.py": "8669f007ee16a15433598b8f451f226cceb3163bdbc2bf690709504874743167",
+    "codes/chapters/ch04/core/upstream_contracts.py": "e868220b7388ae3124d1098df9de4095e061c1982fb1a251ad7c27c6c0742be5",
     "codes/chapters/ch00/io_contracts.py": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974",
     "codes/chapters/ch00/upstream/fetch_upstreams.py": "442d17a5818ef0edf620bde85cc7959c1e73602a47f75e1cc8fce2b227ae11b4"
   },
   "actual_dependencies_after": {
     "codes/chapters/ch12/examples/audit_upstream_imaging_contracts.py": "781cb08e4870f5598d31cf593ce568930269f1d164c0999aad682306d55c9913",
-    "codes/chapters/ch04/core/upstream_contracts.py": "8669f007ee16a15433598b8f451f226cceb3163bdbc2bf690709504874743167",
+    "codes/chapters/ch04/core/upstream_contracts.py": "e868220b7388ae3124d1098df9de4095e061c1982fb1a251ad7c27c6c0742be5",
     "codes/chapters/ch00/io_contracts.py": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974",
     "codes/chapters/ch00/upstream/fetch_upstreams.py": "442d17a5818ef0edf620bde85cc7959c1e73602a47f75e1cc8fce2b227ae11b4"
   },
   "actual_dependencies_unchanged": true,
-  "source_lock_sha256": "ea8ce3cf679d70d06305f4942dbf9afeee94b69bd0ad7a5b9b09470c327a598f",
-  "source_status_sha256": "be926fccb75979e2f2ac428ac6c65c76a46d672771e21a01d589908d776fcac0",
+  "source_lock_sha256": "55721fbe8027f67bf3159827b8b58c14bc327ea5e0221b216303681340e890e7",
+  "source_status_sha256": "96e37d461be3c0c5c07986b48100e935405334d22f346d8efb59ca49b07aa502",
   "environment": {
     "python": "3.13.12",
     "numpy": "2.5.3",
-    "platform": "macOS-26.6.1-arm64-arm-64bit-Mach-O"
+    "platform": "macOS-27.2.1-arm64-arm-64bit-Mach-O"
   },
   "original_definitions": [
     {

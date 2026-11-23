@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 7 章 · 去混响（WPE） · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="b82b7d85f70d"><style>
+<meta name="source-digest" content="58a2e18a2abd"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -525,9 +525,9 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <p>$$\sum_{m=1}^M H_m(z)U_m(z)=z^{-d_0}$$</p>
 <p>（若已预先对齐直达声时刻使至少一路 $h_m[0]\ne 0$，可取 $d_0=0$ 令右端为 $1$，如双麦 $H_1(z)U_1(z)+H_2(z)U_2(z)=1$）。将上式两侧同次幂系数对齐，等价于求解时域线性方程组 $\mathcal{H}\vec u=\vec e_{d_0}$，其中广义 Sylvester 卷积矩阵 $\mathcal{H}\in\mathbb{R}^{(N_h+N_u+1)\times M(N_u+1)}$ 共含 $N_h+N_u+1$ 条延迟时刻等式与 $M(N_u+1)$ 个未知滤波系数。要使任意目标向量（含任意合法建模延迟 $d_0$）均精确可解，$\mathcal{H}$ 必须满行秩，首先给出列数不少于行数的阶数必要条件：</p>
 <p>$$M(N_u+1)\ge N_h+N_u+1\iff N_u\ge\left\lceil\frac{N_h-M+1}{M-1}\right\rceil.$$</p>
-<p>例如双麦（$M=2$）取 $N_u=N_h-1$ 时，$\mathcal{H}$ 恰为 $2N_h\times 2N_h$ 经典 Sylvester 方阵（后文练习 <a href="#e07-16">E07-16</a> 与 <a href="#e07-17">E07-17</a> 中一阶路径 $N_h=1$ 搭配零阶常数权重 $N_u=0$ 正是 $2\times 2$ 方阵的最简特例）。在此须严格区分 $M=2$ 与 $M\ge 3$ 的代数满秩边界：</p>
+<p>例如双麦（$M=2$）取 $N_u=N_h-1$ 时，$\mathcal{H}$ 恰为 $2N_h\times 2N_h$ 经典 Sylvester 方阵（后文练习 <a href="#e07-16">E07-16</a> 与 <a href="#e07-17">E07-17</a> 中一阶路径 $N_h=1$ 搭配零阶常数权重 $N_u=0$ 正是 $2\times 2$ 方阵的最简特例）。以下满行秩讨论先剥除所有通道共有的首部传播延迟，并以 $u=z^{-1}$ 的实际系数多项式判断互素性；公共首零对应公共因子 $u^d$。若保留此延迟，卷积矩阵的首 $d$ 行为零，目标 $\vec e_0$ 不可解，但足够延迟的目标仍可能可解。剥除后，须区分 $M=2$ 与 $M\ge 3$ 的代数满秩边界：</p>
 <ul>
-<li><strong>双麦情形（$M=2,\;N_u=N_h-1$）</strong>：由<strong>贝祖多项式恒等式（Bézout's identity）</strong>，方阵 $\mathcal{H}$ 严格满行秩的充要条件是 $H_1(z),H_2(z)$ <strong>互素</strong>（在整个有限复平面上不存在公共零点 $z_0\in\mathbb{C}\setminus\{0\}$ 使 $H_1(z_0)=H_2(z_0)=0$），且最高阶末抽头不全为零（$\max_m\deg H_m=N_h$；欲取 $d_0=0$ 另须首抽头不全为零）；</li>
+<li><strong>双麦情形（$M=2,\;N_u=N_h-1$）</strong>：由<strong>贝祖多项式恒等式（Bézout's identity）</strong>，方阵 $\mathcal{H}$ 严格满行秩的充要条件是 $H_1(z),H_2(z)$ <strong>互素</strong>（在整个有限复平面上不存在公共零点 $z_0\in\mathbb{C}\setminus\{0\}$ 使 $H_1(z_0)=H_2(z_0)=0$），且最高阶末抽头不全为零（以 $u$ 为变量的最高阶为 $N_h$，并且首抽头不全为零）；</li>
 <li><strong>多麦情形（$M\ge 3$）</strong>：上式 $N_u\ge\lceil(N_h-M+1)/(M-1)\rceil$ 只是列数不少于行数的<strong>必要下界</strong>，在连续参数空间中对“一般（几乎所有）”房间响应成立，但仅靠多项式互素并<strong>不能</strong>保证在该最小阶数下 $\mathcal{H}$ 严格满行秩。看一个极简反例：取 $M=3,\;N_h=2$，必要下界给出 $N_u=\lceil(2-3+1)/2\rceil=0$；令三条路径为 $H_1(z)=1+z^{-1}+z^{-2}$、$H_2(z)=2+2z^{-1}+3z^{-2}$、$H_3(z)=3+3z^{-1}+5z^{-2}$，三者首末抽头全非零，且在 $H_1(z)$ 的两个复根 $z^{-1}=e^{\pm\mathrm{j}2\pi/3}$ 处 $H_2(z)=-1/2\mp\mathrm{j}\sqrt{3}/2\ne 0$（三多项式严格互素），但对应的 $3\times 3$ 卷积矩阵 $\mathcal{H}=\begin{bmatrix}1&2&3\\1&2&3\\1&3&5\end{bmatrix}$ 前两行完全相同、秩仅为 $2\lt 3$，连 $d_0=0$（$\mathcal{H}\vec u=[1,0,0]^\top$）在 $N_u=0$ 下也无精确解。仅由互素性本身保证对任意合法延迟精确可解时，需要选取足够大的滤波器阶数 $N_u$（一般多源多麦情形对应多项式矩阵的互素满秩条件，见 <a href="https://doi.org/10.1109/29.1509">Miyoshi 与 Kaneda，1988，§III～IV</a>）。</li>
 </ul>
 <p>从物理上看，单支麦克风在某个频率陷入声学零陷时能量丢失无法挽回，而只要另一支麦克风在同一复频率处没有同时归零，多路互补就能拼出无混响的纯延迟响应。</p>
@@ -773,8 +773,8 @@ J(\vec g)&=\sum_{n\in\mathcal V}
 \end{aligned}\tag{7-7}$$</p>
 <p>这里每一帧的权重正是早期语音功率的倒数 $w(n)=1/\lambda(n)$：在说话人元音能量极强的帧，$\lambda(n)$ 很大、权重 $1/\lambda(n)$ 很小，防止强直达语音主导回归并把自己抵消掉；而在音节尾声或停顿间隙，直达声消退、$\lambda(n)$ 变小、权重 $1/\lambda(n)$ 变大，算法便集中火力去拟合拖在后面的纯混响尾音。</p>
 <h3 id="sec-u-357fd1b554">展开复数二次型，再解正规方程</h3>
-<p>如何对复向量 $\vec g\in\mathbb{C}^{K\times 1}$ 求实值代价函数 $J(\vec g)$ 的极小值？由于模平方函数 $|z|^2=z z^*$ 包含复共轭，它在复平面上不满足柯西—黎曼方程，不能按普通单复变解析函数求导。信号处理中标准的做法是采用<strong>维尔廷格（Wirtinger）复数微积分</strong>（复梯度规则与交替最小化收敛性质见<a href="00_math-foundations.html#sec-0-5">第 0 章 §0.5</a> 及<a href="16_appendix-symbols-math.html">附录 A</a>）：把 $\vec g$ 与其复共轭 $\vec g^*$ 视为形式上相互独立的变量，实值实微可微函数取得极值的充要条件是关于共轭变量的偏导数 $\frac{\partial J}{\partial \vec g^*}=\vec 0$。</p>
-<p>我们不跳步地把单帧残差模平方按复共轭定义 $|z|^2=z^* z$ 拆开（注意标量的共轭转置就是共轭本身，即 $(\vec g^H\vec x)^*=\vec x^H\vec g$）：</p>
+<p>如何对复向量 $\vec g\in\mathbb{C}^{K\times 1}$ 求实值代价函数 $J(\vec g)$ 的极小值？由于模平方函数 $|z|^2=z z^*$ 包含复共轭，它在复平面上不满足柯西—黎曼方程，不能按普通单复变解析函数求导。信号处理中标准的做法是采用<strong>维尔廷格（Wirtinger）复数微积分</strong>（复梯度规则与交替最小化收敛性质见<a href="00_math-foundations.html#sec-0-5">第 0 章 §0.5</a> 及<a href="16_appendix-symbols-math.html">附录 A</a>）：把 $\vec g$ 与其复共轭 $\vec g^*$ 视为形式上相互独立的变量，实值实微可微函数在无约束内点取得局部极值的一阶必要条件是关于共轭变量的偏导数 $\frac{\partial J}{\partial \vec g^*}=\vec 0$。</p>
+<p>本节固定正功率后的目标是半正定二次型，因此还可由凸性确认其驻点为全局极小点；若正规矩阵正定，解唯一。我们不跳步地把单帧残差模平方按复共轭定义 $|z|^2=z^* z$ 拆开（注意标量的共轭转置就是共轭本身，即 $(\vec g^H\vec x)^*=\vec x^H\vec g$）：</p>
 <p>$$\begin{aligned}
 |X(n)-\vec g^H\vec x(n)|^2
 &=\bigl(X^*(n)-\vec x^H(n)\vec g\bigr)
@@ -810,7 +810,7 @@ J(\vec g)&=\sum_{n\in\mathcal V}
 \hat\lambda_{\mathrm{floor}}(n)
 &=\max\{a_n,\lambda_{\min}\}.
 \end{aligned}\tag{7-10}$$</p>
-<p>当无约束驻点 $a_n$ 落在可行域 $[\lambda_{\min},+\infty)$ 之外时，单调递增的导数保证区间左端点 $\lambda_{\min}$ 就是受约束问题的精确最优解。部分实现还会对 $|E(n)|^2$ 做跨相邻帧的滑动平均平滑（以反映语音包络的短时连续性），这相当于进一步改动了功率先验策略，计算诊断时不应再假定未经修改的原似然式(7-6)严格单调下降（见练习 <a href="#e07-09">E07-09</a>）。</p>
+<p>当无约束驻点 $a_n$ 落在可行域 $[\lambda_{\min},+\infty)$ 之外时，在整个可行区间内都有 $f'(\lambda)>0$，所以函数递增，区间左端点 $\lambda_{\min}$ 就是受约束问题的精确最优解。部分实现还会对 $|E(n)|^2$ 做跨相邻帧的滑动平均平滑（以反映语音包络的短时连续性），这相当于进一步改动了功率先验策略，计算诊断时不应再假定未经修改的原似然式(7-6)严格单调下降（见练习 <a href="#e07-09">E07-09</a>）。</p>
 <p>从更一般的稀疏先验视角看，<a href="https://doi.org/10.1109/TASLP.2015.2438549">Jukić、van Waterschoot、Gerkmann 与 Doclo（<em>IEEE/ACM TASLP</em>，2015）</a> 将 WPE 统一进了多通道 $\ell_p$ 范数稀疏线性预测与迭代重加权最小二乘（IRLS）框架：对早期语音施加 $p\in(0,1]$ 阶稀疏惩罚时，每帧权重推广为 $w(n)=(|E(n)|^2+\varepsilon)^{p/2-1}$，而标准时变高斯 WPE（权重 $1/(|E(n)|^2+\varepsilon)$）恰对应 $p\to 0$ 的对数稀疏极限，这也直接通向近年联合空间—时间稀疏建模的 $\ell_p$-WPD 方法。</p>
 <p>每个频点的一轮工程迭代可以按以下顺序执行：</p>
 <ol>
@@ -820,7 +820,7 @@ J(\vec g)&=\sum_{n\in\mathcal V}
 <li>由新系数计算残差，再按声明的地板和平滑方式更新功率。</li>
 <li>达到迭代上限，或声明的诊断量变化阈值时停止；同时报告失败、旁路和矩阵条件。</li>
 </ol>
-<p>无加载、无平滑且各次精确更新存在时，交替求解才对应同一原目标的坐标最小化。加入地板、加载或平滑后，应说明实际目标与诊断量，不能自动宣称原似然每轮下降；精确坐标最小化本身也不保证得到全局最优解。</p>
+<p>固定有效帧集合、无加载、无平滑且各次精确更新存在时，交替求解对应同一目标的坐标最小化；若采用固定约束 $\lambda\ge\lambda_{\min}$，式(7-10)仍是该可行域中的精确更新，目标值同样不增。加载会引入惩罚项，功率平滑也会改变更新，须分别说明其目标，不能自动宣称原似然每轮下降。目标单调不增本身不保证迭代点收敛到驻点，更不保证全局最优；驻点结论还需满足相应的正则性、迭代有界性和更新条件。</p>
 <p>边界检查包括：$K=0$ 时旁路为输入；零频点不求逆；共同缩放观测及功率后，相对加载的滤波器形状保持不变。</p>
 <p>顺着前两轮交替轨迹 $\lambda^{(0)}\to\vec g^{(1)}\to\lambda^{(1)}\to\vec g^{(2)}$ 可以看到离线 WPE 的收敛机制：首轮以观测能量 $\lambda^{(0)}(n)=\max\{|X(n)|^2,\lambda_{\min}\}$ 起步，先压低强元音帧权重使 $\vec g^{(1)}$ 剥离主要晚期反射；随后按 $\lambda^{(1)}(n)=\max\{|E^{(1)}(n)|^2,\lambda_{\min}\}$ 更新功率，停顿区尾音能量回落后逆权重 $1/\lambda^{(1)}(n)$ 显著抬升，引导次轮 $\vec g^{(2)}$ 更精确地对齐纯混响衰变规律，因此工程离线 WPE 通常 $3\text{～}5$ 轮即可获得主要收益。下面先固定一轮中的权重，手算一次最小二乘闭式求解。</p>
 <h3 id="sec-u-a2127fc156">算例 7-3：加权最小二乘求解器的手算（单抽头 $K=1$、3 个有效帧）</h3>
@@ -1004,7 +1004,8 @@ L_{\mathrm{NMSE}}&=10\log_{10}\mathrm{NMSE}.
 <p>其中 $\alpha\in(0,1)$ 为指数遗忘因子，$\delta\ge 0$ 为同量纲对角加载量。将式(7-18)从起点展开可见，距当前越久远的历史外积被乘上越多次 $\alpha$，呈指数衰减遗忘（初始先验矩阵 $\mathbf R_0$ 也按 $\alpha^t$ 同步衰减，显式批量等价式见练习 <a href="#e07-11">E07-11</a>）。为了避免“用当前帧刚拟合出的系数反过来消去当前帧自身”的数据泄漏，因果在线流程严格遵循<strong>先用上一帧旧系数生成先验预测残差输出，再吸收当前帧更新统计量供下一帧使用</strong>：</p>
 <p>$$E_t^{\mathrm{prior}}=X_t-\vec g_{t-1}^H\vec q_t.
 \tag{7-19}$$</p>
-<p>在实时嵌入式或低延迟服务端实现中，若每帧都对 $D\times D$（例如 $80\times 80$）的 $\mathbf R_t$ 重新做一次 $O(D^3)$ 线性求解，算力开销往往难以承受。注意到式(7-18)的第一行中，$\mathbf R_t$ 只是在缩放后的旧矩阵 $\alpha\mathbf R_{t-1}$ 上叠加了一个<strong>秩一外积</strong> $\vec q_t\vec q_t^H/\lambda_t$。这正好契合自适应滤波中的递推最小二乘（Recursive Least Squares，RLS）结构：为避免与预测阶数 $K$ 或互相关矩阵 $\mathbf P$ 符号混淆，本章统一记逆相关矩阵为 $\mathbf\Psi_t=\mathbf R_t^{-1}$（与<a href="06_aec.html#sec-6-2-6">第 6 章 §6.2.6</a> RLS 的逆协方差矩阵同构），对式(7-18)套用<strong>谢尔曼—莫里森—伍德伯里（Sherman–Morrison–Woodbury）矩阵求逆引理</strong>（见<a href="00_math-foundations.html#sec-0-3-5">第 0 章 §0.3.5</a> 与<a href="16_appendix-symbols-math.html">附录 A</a>），就能绕开显式求逆，把每帧复杂度从 $O(D^3)$ 降到 $O(D^2)$：</p>
+<p>若需要每帧保持固定加载 $\delta\mathbf I$，令 $\mathbf A_t=\mathbf R_t+\delta\mathbf I$，则 $\mathbf A_t=\alpha\mathbf A_{t-1}+\vec q_t\vec q_t^H/\lambda_t+(1-\alpha)\delta\mathbf I$。最后一项不能省略；下面只含秩一修正的递推针对衰减初始先验，并不等于持续固定加载的求解。</p>
+<p>在实时嵌入式或低延迟服务端实现中，若每帧都对 $D\times D$（例如 $80\times 80$）的 $\mathbf R_t$ 重新做一次 $O(D^3)$ 线性求解，算力开销往往难以承受。注意到式(7-18)的第一行中，$\mathbf R_t$ 只是在缩放后的旧矩阵 $\alpha\mathbf R_{t-1}$ 上叠加了一个<strong>秩一外积</strong> $\vec q_t\vec q_t^H/\lambda_t$。这正好契合自适应滤波中的递推最小二乘（Recursive Least Squares，RLS）结构：为避免与预测阶数 $K$ 或互相关矩阵 $\mathbf P$ 符号混淆，本章统一记逆相关矩阵为 $\mathbf\Psi_t=\mathbf R_t^{-1}$（与<a href="06_aec.html#sec-6-2-6">第 6 章 §6.2.6</a> RLS 的逆协方差矩阵同构），当持续加载 $\delta=0$、仅保留随遗忘衰减的正定初始先验时，对式(7-18)前两行套用<strong>谢尔曼—莫里森—伍德伯里（Sherman–Morrison–Woodbury）矩阵求逆引理</strong>（见<a href="00_math-foundations.html#sec-0-3-5">第 0 章 §0.3.5</a> 与<a href="16_appendix-symbols-math.html">附录 A</a>），就能绕开显式求逆，把每帧复杂度从 $O(D^3)$ 降到 $O(D^2)$：</p>
 <p>$$\begin{aligned}
 \vec k_t&=\frac{\mathbf\Psi_{t-1}\vec q_t}
   {\alpha\lambda_t+\vec q_t^H\mathbf\Psi_{t-1}\vec q_t},\\
@@ -1021,7 +1022,7 @@ L_{\mathrm{NMSE}}&=10\log_{10}\mathrm{NMSE}.
 \mathbf\Psi_t&=(1-\beta)\mathbf\Psi_{t-1}
   +\beta\delta^{-1}\mathbf I_D\quad(0\le\beta\le 1,\;e_t\lt \tau_e).
 \end{aligned}\tag{7-21}$$</p>
-<p>其中 $\beta=0$ 对应纯冻结保值，而 $0\lt \beta\le 1$ 保证厄米正定性严格不变且矩阵迹单调收敛回安全先验 $D/\delta$，彻底根除静音后的首字过冲（精确手算对比见练习 <a href="#e07-20">E07-20</a>）。</p>
+<p>此处 $\delta>0$ 指回拉目标的先验强度，与持续给统计矩阵加载是不同的操作。$\beta=0$ 对应纯冻结；固定目标下，$0\lt \beta\le 1$ 保持厄米正定性，并使矩阵迹向 $D/\delta$ 单调靠拢。它抑制遗忘因子造成的逆矩阵无界膨胀，但目标大小仍由 $\delta$ 决定：$\delta$ 太小，目标逆矩阵依然可能很大，不能据此保证复声时没有过冲。本章 $\delta=1$ 的有限对照展示了一种有效工作点（精确手算对比见练习 <a href="#e07-20">E07-20</a>）。</p>
 <h3 id="sec-u-98dff12dd4">三帧因果递推小例</h3>
 <p>下面用单频点、单抽头（$K=1$）实数序列手算三步式(7-18)与式(7-19)，把“先输出、后更新”的时序钉牢。</p>
 <p><strong>输入与口径</strong>：取保护延迟 $\Delta=3$，从零开始计帧的六帧实数观测依次为 $X_{0:5}=[1,\ 2,\ 1,\ 0.8,\ 1.6,\ 1.0]$。从首个具备历史的第 $t=3$ 帧起，三帧的“历史回归量—当前观测”配对 $(q_t,X_t)=(X_{t-3},X_t)$ 依次为 $(1,0.8)$、$(2,1.6)$ 与 $(1,1.0)$。固定遗忘因子 $\alpha=0.5$、功率 $\lambda_t=1$、无加载 $\delta=0$，并在 $t=3$ 之前初始化零统计状态 $R_2=r_2=0$。此时标量更新退化为 $R_t=0.5 R_{t-1}+q_t^2$、$r_t=0.5 r_{t-1}+q_t X_t$ 与 $g_t=r_t/R_t$。</p>
@@ -1051,9 +1052,9 @@ Z = wpe(Y, taps=10, delay=3,   # taps=K（预测阶数），delay=Δ（保护延
 <p>在全双工智能音箱、会议终端或车载多麦前端中，去混响从不孤立工作，工程落地的黄金级联顺序是 <strong>线性 AEC → MIMO-WPE → 波束形成 → 非线性残余抑制（NLP）/单通道神经网络后滤波</strong>。为什么这四个环节的前后次序不能随意颠倒？顺着每一级信号模型的物理假设就能推得一清二楚：</p>
 <ol>
 <li><strong>线性 AEC 必须排在 MIMO-WPE 之前</strong>：设备自身扬声器耦合到麦克风的回声能量通常比远场人声高出 $10\text{～}30\ \mathrm{dB}$，且系统手握精确的播放参考信号。倘若把 WPE 放在 AEC 之前，强回声会彻底劫持 WPE 的时变功率估计 $\lambda(t,f)$ 与预测抽头，而且时变或自适应更新的 WPE 滤波器还会把原本稳定的“扬声器—房间—麦克风”线性回声路径搅成时变系统，导致后级线性 AEC 无法收敛。</li>
-<li><strong>绝不能把 AEC 的非线性残余抑制（NLP）插到 MIMO-WPE 或波束形成之前</strong>：线性 AEC 只做线性滤波相减，保留了近端直达声与房间混响完整的跨帧线性卷积关系及跨麦克风复数相位差；而 NLP（或逐通道独立映射的降噪神经网络）会对每个时频点施加剧烈跳变的实数压制增益 $\gamma_t\in[0,1]$，一旦提前执行就会同时摧毁 WPE 依赖的跨帧线性预测关系与 MVDR/GEV 依赖的空间相对传递函数（RTF）相位一致性。</li>
+<li><strong>多通道 WPE 前优先保留线性残差</strong>：逐帧变化的 NLP 增益可能改变固定跨帧预测关系，逐通道不同的复谱或波形处理还可能改动空间 RTF，因此常把强残余抑制放在 WPE 和波束形成之后。固定一个 STFT 频点时，跨通道共同的非零实增益 $\gamma_t$ 保留同帧各通道的复数比与空间相位；但当 $\gamma_t\ne\gamma_{t-k}$ 时，它仍可能使原有固定时间预测系数失配。共同常数增益则同时保留这两种关系。</li>
 </ol>
-<p>把第 2 点的代数破坏写出来尤为直观：设线性 AEC 精确减除远端回声后的纯净近端混响残差满足延迟自回归模型 $\vec Z_t=\vec E_t+\hat{\vec r}_t$（其中晚期拖尾 $\hat{\vec r}_t$ 为 $\sum_{k=\Delta}^{\Delta+K-1}\mathbf G_k^H\vec Z_{t-k}$，$\mathbf G_k\in\mathbb{C}^{M\times M}$ 为式(7-12)中滞后 $k$ 对应的输入—输出系数子块，其第 $(m',m)$ 元为 $G_{m',m}(k)$）。若在送入 WPE 前先乘上时变 NLP 掩码 $\widetilde{\vec Z}_t=\gamma_t\vec Z_t$，由于时变增益 $\gamma_t$ <strong>与帧延迟算子不可交换</strong>（一般 $\gamma_t\neq\gamma_{t-k}$），真实混响项变成：</p>
+<p>把第 2 点的跨帧失配写出来：设线性 AEC 精确减除远端回声后的纯净近端混响残差满足延迟自回归模型 $\vec Z_t=\vec E_t+\hat{\vec r}_t$（其中晚期拖尾 $\hat{\vec r}_t$ 为 $\sum_{k=\Delta}^{\Delta+K-1}\mathbf G_k^H\vec Z_{t-k}$，$\mathbf G_k\in\mathbb{C}^{M\times M}$ 为式(7-12)中滞后 $k$ 对应的输入—输出系数子块，其第 $(m',m)$ 元为 $G_{m',m}(k)$）。若在送入 WPE 前先乘上时变 NLP 掩码 $\widetilde{\vec Z}_t=\gamma_t\vec Z_t$，由于时变增益 $\gamma_t$ <strong>与帧延迟算子不可交换</strong>（一般 $\gamma_t\neq\gamma_{t-k}$），真实混响项变成：</p>
 <p>$$\gamma_t\sum_{k=\Delta}^{\Delta+K-1}
 \mathbf G_k^H\vec Z_{t-k}
 \neq\sum_{k=\Delta}^{\Delta+K-1}

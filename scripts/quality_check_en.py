@@ -5,6 +5,8 @@ from __future__ import annotations
 from collections import Counter
 from html import unescape
 from html.parser import HTMLParser
+import hashlib
+import json
 from pathlib import Path
 import re
 import sys
@@ -52,6 +54,28 @@ EXPECTED_EN_SVGS = (
     "assets/readme/listening-room-en.svg",
     "assets/readme/listening-room-still-en.svg",
 )
+
+
+# Independent published English titles; never derive expected labels from a PDF.
+EXPECTED_PDF_CHAPTERS_EN = (('00_overview.md', 'Course Overview & Reading Guide'),
+ ('00_math-foundations.md', 'Chapter 0 · Mathematical & Signal Analysis Foundations'),
+ ('01_problem-definition.md', 'Chapter 1 · Problem Formulation & Binaural Cues'),
+ ('02_basics-signal-model.md', 'Chapter 2 · Acoustic Propagation & Array Signal Model'),
+ ('03_array-geometry.md', 'Chapter 3 · Microphone Array Geometry'),
+ ('04_doa-estimation.md', 'Chapter 4 · Sound Source Localization (DOA)'),
+ ('05_beamforming.md', 'Chapter 5 · Beamforming'),
+ ('06_aec.md', 'Chapter 6 · Acoustic Echo Cancellation (AEC)'),
+ ('07_wpe-dereverberation.md', 'Chapter 7 · Dereverberation (WPE)'),
+ ('08_speech-separation.md', 'Chapter 8 · Multichannel Speech Separation'),
+ ('09_source-tracking.md', 'Chapter 9 · Sound Source Tracking'),
+ ('10_engineering-practice.md', 'Chapter 10 · Real-Time Systems, Evaluation & Deployment'),
+ ('11_selection-guide.md', 'Chapter 11 · System Synthesis & Selection Guide'),
+ ('12_acoustic-imaging.md', 'Chapter 12 · Acoustic Imaging & Noise Diagnostics'),
+ ('13_distributed-enhancement.md', 'Chapter 13 · Distributed Wireless Microphone Arrays'),
+ ('14_spatial-wearable-arrays.md', 'Chapter 14 · Spatial Sound Fields & Wearable Arrays'),
+ ('15_target-extraction-diarization.md', 'Chapter 15 · Conditioned Target Extraction & Diarization'),
+ ('16_appendix-symbols-math.md', 'Chapter 16 · Appendix A: Symbols, Glossary & Math Lookup'),
+ ('17_appendix-guide.md', 'Chapter 17 · Appendix B: Literature Map, Triage & Exercises'))
 
 
 def strip_fenced(md: str) -> str:
@@ -155,20 +179,81 @@ def check_en_repo_docs(errors: list[str]) -> None:
         check_markdown_links(txt, p, errors)
 
 
+def figure_source_script(filename: str) -> str:
+    number = int(re.fullmatch(r"fig(\d{2})_[a-z0-9_]+\.png", filename).group(1))
+    singles = {68: "beamforming", 69: "reference", 70: "delay", 71: "css",
+               72: "tracking", 73: "channel", 74: "selection"}
+    if number in singles:
+        return f"scripts/make_{singles[number]}_figures.py"
+    if 76 <= number <= 79:
+        return "scripts/make_wearable_figures.py"
+    if 80 <= number <= 83:
+        return "scripts/make_tse_figures.py"
+    if 84 <= number <= 87:
+        return "scripts/make_math_figures.py"
+    if number in (25, 26, 27, 32, 33, 34):
+        return "scripts/make_aec_figures.py"
+    return "scripts/make_figures.py"
+
+
+def english_png_issues(path: Path, filename: str) -> list[str]:
+    """Fully decode and verify identity without deriving it from the PNG itself."""
+    from PIL import Image
+    issues = []
+    try:
+        with Image.open(path) as picture:
+            picture.load()
+            if picture.format != "PNG":
+                raise ValueError("not PNG")
+            metadata = dict(picture.info)
+            if picture.width < 800 or picture.height < 300:
+                issues.append("resolution below publication minimum")
+        source = figure_source_script(filename)
+        expected = {
+            "FigureFilename": filename,
+            "SourceScript": source,
+            "SourceScriptDigest": hashlib.sha256((ROOT / source).read_bytes()).hexdigest(),
+            "TranslationScript": "scripts/make_figures_en.py",
+            "TranslationScriptSHA256": hashlib.sha256((ROOT / "scripts/make_figures_en.py").read_bytes()).hexdigest(),
+            "TranslationTableSHA256": hashlib.sha256((ROOT / "scripts/figure_en_translations.json").read_bytes()).hexdigest(),
+        }
+        for key, value in expected.items():
+            if metadata.get(key) != value:
+                issues.append(f"{key} mismatch")
+        # Translation must retain the source figure's numerical/audio provenance.
+        with Image.open(FIGURES_ZH / filename) as original:
+            original.load()
+            for key in ("GeneratorInputs", "NumericalReportDigest", "AudioManifestDigest"):
+                if metadata.get(key) != original.info.get(key):
+                    issues.append(f"{key} differs from Chinese numerical figure")
+        if "GeneratorInputs" in metadata:
+            inputs = json.loads(metadata["GeneratorInputs"])
+            if not isinstance(inputs, dict):
+                raise ValueError("GeneratorInputs is not an object")
+            for relative, digest in inputs.items():
+                source_path = ROOT / relative
+                if source_path.resolve().is_relative_to(ROOT.resolve()):
+                    if hashlib.sha256(source_path.read_bytes()).hexdigest() != digest:
+                        issues.append(f"stale generator input: {relative}")
+                else:
+                    issues.append(f"generator input outside repository: {relative}")
+    except (OSError, ValueError, KeyError, TypeError) as exc:
+        issues.append(f"invalid PNG or provenance: {exc}")
+    return issues
+
+
 def check_figures_and_svgs(errors: list[str]) -> None:
-    zh_figs = sorted(p.name for p in FIGURES_ZH.glob("fig*.png"))
-    en_figs = sorted(p.name for p in FIGURES_EN.glob("fig*.png")) if FIGURES_EN.is_dir() else []
-    if len(zh_figs) != 87 or en_figs != zh_figs:
-        errors.append(
-            f"figures_en mismatch: expected 87 matching files, got {len(en_figs)} "
-            f"(missing={sorted(set(zh_figs) - set(en_figs))[:8]})"
-        )
-    else:
-        for name in en_figs:
-            p = FIGURES_EN / name
-            data = p.read_bytes()
-            if len(data) < 1024 or not data.startswith(b"\x89PNG\r\n\x1a\n"):
-                errors.append(f"Invalid PNG in figures_en/{name}")
+    from scripts.figure_report_contracts import report_bindings_issues
+    for directory in (FIGURES_ZH, FIGURES_EN):
+        errors.extend(f"{directory.name}: {issue}" for issue in report_bindings_issues(ROOT, directory))
+    expected = set(quality_check.EXPECTED_FIGURES)
+    for directory in (FIGURES_ZH, FIGURES_EN):
+        actual = {p.name for p in directory.glob("fig*.png")}
+        if actual != expected:
+            errors.append(f"{directory.name} mismatch: missing={sorted(expected-actual)}, extra={sorted(actual-expected)}")
+    for name in sorted(expected):
+        errors.extend(f"figures_en/{name}: {issue}"
+                      for issue in english_png_issues(FIGURES_EN / name, name))
 
     for rel in EXPECTED_EN_SVGS:
         p = ROOT / rel
@@ -246,6 +331,79 @@ def check_site_en(errors: list[str]) -> None:
                     errors.append(f"site_en/{rel}: missing anchor {href}")
 
 
+def expected_pdf_outline_en(documents=None):
+    """Source heading identities plus the independent published chapter catalog."""
+    if documents is None:
+        documents = {name: (CHAPTERS_EN / name).read_text(encoding="utf-8")
+                     for name, _ in EXPECTED_PDF_CHAPTERS_EN}
+    result = []
+    for name, label in EXPECTED_PDF_CHAPTERS_EN:
+        cid = "ch-" + str(quality_check.EXPECTED_PDF_TOPIC_IDS.get(name, int(name.split("_", 1)[0])))
+        level = 2 if name == "00_overview.md" else 3
+        sections, current = [], None
+        records = quality_check.semantic_heading_ids(documents[name])
+        raw = quality_check.markdown_headings(documents[name])
+        for (depth, _title, primary), (_depth, title) in zip(records, raw):
+            entry = (quality_check.outline_heading_text(title), f"{cid}-{primary}", [])
+            if depth == level:
+                current = entry
+                sections.append(entry)
+            elif depth == level + 1 and name in quality_check.EXPECTED_SUBSECTION_COUNTS and current is not None:
+                current[2].append(entry[:2])
+        if len(sections) != quality_check.EXPECTED_SECTION_COUNTS[name]:
+            raise ValueError(f"English source section count differs from publication catalog: {name}")
+        if sum(len(item[2]) for item in sections) != quality_check.EXPECTED_SUBSECTION_COUNTS.get(name, 0):
+            raise ValueError(f"English source subsection count differs from publication catalog: {name}")
+        result.append((label, cid, sections))
+    return result
+
+
+def _outline_identity(outline):
+    clean = build_pdf.bookmark_plain_text
+    return [(clean(label), cid, [(clean(title), sid, [(clean(sub), subid) for sub, subid in children])
+                                for title, sid, children in sections])
+            for label, cid, sections in outline]
+
+
+def cached_html_issues_en(html: str, current_digest: str) -> list[str]:
+    digests = re.findall(r"Source sha256 ([0-9a-f]{12})(?![0-9a-f])", html)
+    issues = []
+    if digests != [current_digest]:
+        issues.append("English combined HTML missing, ambiguous or stale source digest")
+    try:
+        actual = _outline_identity(build_pdf.outline_from_html(html))
+        expected = _outline_identity(expected_pdf_outline_en())
+        if actual != expected:
+            issues.append("English combined HTML outline/heading identities differ from current sources")
+        ids = re.findall(r'\bid=["\']([^"\']+)["\']', html)
+        if len(ids) != len(set(ids)):
+            issues.append("English combined HTML contains duplicate IDs")
+    except (KeyError, ValueError, TypeError) as exc:
+        issues.append(f"English combined HTML source expectation failed: {exc}")
+    return issues
+
+
+def pdf_outline_issues_en(reader) -> list[str]:
+    issues = []
+    try:
+        expected = expected_pdf_outline_en()
+        actual = quality_check.pdf_outline_tree(reader.outline)
+        def check_level(nodes, entries, depth=0):
+            if len(nodes) != len(entries):
+                issues.append(f"English PDF outline length mismatch at depth {depth}")
+            for (destination, children), (title, heading_id, subentries) in zip(nodes, entries):
+                if destination.title != build_pdf.bookmark_plain_text(title):
+                    issues.append(f"English PDF outline title/order mismatch: {heading_id}")
+                issues.extend(quality_check.bookmark_destination_issues(reader, destination, heading_id))
+                check_level(children, subentries, depth + 1)
+        entries = [(label, cid, [(title, sid, [(sub, subid, []) for sub, subid in subs])
+                                 for title, sid, subs in sections]) for label, cid, sections in expected]
+        check_level(actual, entries)
+    except (KeyError, ValueError, TypeError) as exc:
+        issues.append(f"English PDF source expectation failed: {exc}")
+    return issues
+
+
 def check_pdfs(errors: list[str]) -> None:
     max_bytes = 50 * 1024 * 1024  # 50 MiB GitHub warning threshold
     for pdf_name, end_marker in (
@@ -260,6 +418,21 @@ def check_pdfs(errors: list[str]) -> None:
         if sz >= max_bytes:
             errors.append(f"dist/{pdf_name} exceeds 50 MiB limit: {sz / (1024 * 1024):.2f} MiB")
         reader = PdfReader(str(pdf_path))
+        if pdf_name.endswith("-en.pdf"):
+            from scripts import build_pdf_en
+            digest = build_pdf_en.source_digest_en()
+            errors.extend(pdf_outline_issues_en(reader))
+            builder = build_pdf_en.build_html_en
+        else:
+            digest = build_pdf.source_digest()
+            builder = build_pdf.build_html
+        if reader.metadata is None or reader.metadata.get("/SourceDigest") != digest:
+            errors.append(f"dist/{pdf_name} missing or stale SourceDigest")
+        try:
+            build_pdf.verify_pdf_input_metadata(reader, builder,
+                build_pdf_en.source_digest_en if pdf_name.endswith("-en.pdf") else build_pdf.source_digest)
+        except (ValueError, TypeError, OSError) as exc:
+            errors.append(f"dist/{pdf_name} actual HTML input identity: {exc}")
         if len(reader.pages) < 500:
             errors.append(f"dist/{pdf_name} page count suspiciously low: {len(reader.pages)}")
         build_pdf.validate_pdf_structure_tags(reader)

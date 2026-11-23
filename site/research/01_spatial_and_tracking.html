@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>空间处理与追踪源码研究 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="b82b7d85f70d"><style>
+<meta name="source-digest" content="58a2e18a2abd"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -808,9 +808,10 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 </tr>
 </tbody>
 </table></div>
-<p>运行使用 Apple clang 21.0.0、C99、<code>-O0</code>，非零数值的绝对核对容差为 <code>2×10⁻⁶</code>。<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch01/reports/libmysofa_loudness.json">实际报告</a>保留编译器、实际命令、源 SHA、脚手架摘要、输入、输出与未执行范围；非有限结果以 <code>null</code> 和分类字段保存，符合严格 JSON。报告中的“符合预期”包括确认全零退化，不代表两例都成功归一化。可在已有锁定源码与 C 编译器的环境运行：</p>
+<p>运行使用 Apple clang 21.0.0、C99、<code>-O0</code>，非零数值的绝对核对容差为 <code>2×10⁻⁶</code>。<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch01/reports/libmysofa_loudness.json">历史实跑报告</a>保留编译器、实际命令、源 SHA、脚手架摘要、输入、输出与未执行范围；非有限结果以 <code>null</code> 和分类字段保存，符合严格 JSON。报告中的“符合预期”包括确认全零退化，不代表两例都成功归一化。可在已有锁定源码与 C 编译器的环境运行：</p>
 <pre><code class="language-bash">.venv/bin/python -m codes.chapters.ch01.examples.audit_libmysofa_loudness
 </code></pre>
+<p>当前工具默认只输出 stdout。显式 <code>--report</code> 仅允许仓内新路径 <code>ch01/reports/libmysofa_loudness_current.json</code> 或仓外普通文件，并在编译前检查目标；历史报告及其实际旧工具身份保持不变。</p>
 <p>参考方向的选择也有条件。固定版 <code>loudness.c</code> 先在球坐标中最小化方位角与仰角的和 <code>c[0]+c[1]</code>，相同时再比较半径；它不是一般的角距离最小化。此次只有一个方向，验证了公共缩放与全零退化，没有验证多方向网格的参考选择。2026-10-04重新执行默认只读stdout，两个结果保持；未覆盖或改写这份历史报告。使用自己的数据网格时，仍须核对哪个响应被选作参考及其能量。<a href="https://github.com/hoene/libmysofa/blob/6cc5b15a73e9bd97810d03767082edda7f315881/src/hrtf/loudness.c">固定版函数，行 30–55</a></p>
 <p>额外延迟需单独核查。固定版 README 将浮点接口的延迟标为秒、short 接口标为采样数，但源码与 SOFA 的数据单位之间存在不一致：SOFA 将 <code>Data.Delay</code> 定义为采样数；<code>reader.c</code> 直接读取该数组，<code>interpolate.c</code> 对其取值或加权，浮点接口直接返回所得数值。重采样时 <code>resample.c</code> 按新旧采样率之比缩放延迟，而 short 接口会将插值结果再乘当前采样率。</p>
 <p>因此，不能只按 README 的“秒”注释决定补偿量，也不能忽略额外延迟。本书记录的是固定版本的静态源码矛盾，尚未用含非零 <code>Data.Delay</code>、不同输入输出采样率的文件运行验证，不据此声称端到端渲染已经正确。<a href="https://www.sofaconventions.org/mediawiki/index.php/GeneralFIR">SOFA 延迟定义</a>；<a href="https://github.com/hoene/libmysofa/blob/6cc5b15a73e9bd97810d03767082edda7f315881/src/hrtf/easy.c">固定版接口实现</a>；<a href="https://github.com/hoene/libmysofa/blob/6cc5b15a73e9bd97810d03767082edda7f315881/src/hrtf/resample.c">固定版重采样实现</a>。</p>
@@ -1646,7 +1647,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <p>读码顺序为 <code>sim_main.m</code> 或 <code>real_main.m</code> → <code>init_estimator.m</code> → <code>GN_Solver.m</code> → <code>compute_J.m</code>，再核 <code>gt_generation.m</code> 的时间基准及 <code>high2low.m/low2high.m</code> 的参考参数。DOA前端另读 <a href="https://github.com/AISLAB-sustech/Hybrid-TDOA-Multi-Calib/blob/4cc21cb06b9f82f83cc90d65a418f2b100748254/SRP-PHAT-DOA.py#L351">SRP-PHAT-DOA.py:351～404</a>。该入口使用已知平面六麦环，在394行主动取方向z分量的绝对值，395行翻转y；上半球选择来自先验，不能说平面阵凭声学独立辨出上下两侧。Jacobian的局部DOA用接收传播方向，本书 $\vec u$ 指向声源，适配须核对符号和坐标变换。</p>
 <p>固定静态身份中，README的SHA-256为 <code>c54031c5dd6b4537249a4e5f6933dfe121b1dc97ccdc11cb7ba3f6193eed7a77</code>，<code>compute_J.m</code>为 <code>fd82d0e8dc9f9d7937b870557c595043d96ada74c7eeb5984a2f32b04238f42b</code>。这些身份只追溯已读响应，不等于完成本地选集取得、依赖构建或原系统运行。</p>
 <p>静态检查还发现几个复现前须核对的范围：仿真入口首段含 <code>clc7</code>；GN用正规方程并按时间截断；仿真只保存收敛试次，随后统计中间四分位样本；<code>compute_error.m</code>用旋转后的单个固定向量夹角，并非完整SO(3)测地旋转误差。SRP配置声速346m/s，实录数据构造/求解配置另设340m/s。这里只记录原文件配置与实现定义，没有虚构运行报错或判定设备误差；尚未运行MATLAB、PyTorch前端、OneDrive音频、<code>.mat</code>真值或完整比较。</p>
-<p>建议实验从E03-18的满秩与同俯仰退化开始，再把方向测量噪声、错误声速、固定延迟和随时间变化的时钟项分别加入。进入非线性多阵列实验时，应先固定参考位姿、相对offset和事件时间基准，使用留出事件报告残差、对齐后几何误差及失败分母。该段是实验设计，不是已经执行的上游结果。</p>
+<p>建议实验从E03-16的满秩与同俯仰退化开始，再把方向测量噪声、错误声速、固定延迟和随时间变化的时钟项分别加入。进入非线性多阵列实验时，应先固定参考位姿、相对offset和事件时间基准，使用留出事件报告残差、对齐后几何误差及失败分母。该段是实验设计，不是已经执行的上游结果。</p>
 <span id="sec-50" class="anchor-alias" aria-hidden="true"></span><span id="40-imm-多运动模型交互" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-8e8254667a">40. IMM 多运动模型交互</h3>
 <p>对应 §9.2 的运动建模扩展。FilterPy <code>kalman/IMM.py::IMMEstimator</code> 维护多个滤波器、模式概率与 Markov 转移概率，先按模式概率混合状态和协方差，再执行各模型的预测与更新。所有被混合状态应有相同维度和物理含义，不能直接把角度状态与笛卡尔位置相加。<a href="https://github.com/rlabbe/filterpy/blob/3b51149ebcff0401ff1e10bf08ffca7b6bbc4a33/filterpy/kalman/IMM.py">作者源码</a>。</p>
 <p>建议给匀速、转弯和静默三段轨迹，比较单模型与多模型的跟随延迟和协方差。必须核对转移矩阵方向及归一化，而不是凭行列名称猜测；长期缺测时不能把模式概率改变解释成观测证据。源突然停止说话是活动状态变化，并不必然代表其运动模式改变。</p>
@@ -2070,7 +2071,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <p>除 §19 已逐项列出的 SBL 与 RobustSBL 外，其他稀疏贝叶斯变体、原子范数、完整最坏情形稳健波束以及本文未逐项收录的神经定位方法，仍需要逐论文确认代码与模型；不能用同名 GitHub 搜索结果替代作者来源。本文已分别记录实际取得的外部实现、官方实现存在但再分发许可未建立的索引、只核实到原理的算法和版本疑点。深度波束与 WPD 的完整增强链、分离及神经噪声抑制见本目录其他研究文档；同一函数在多个算法条目中被调用，不等于取得了多套独立工程系统。本手册不声称穷尽定位算法领域。</p>
 <p><a id="imaging-contract-audit"></a></p>
 <span id="声学成像原始方法固定源码与实际执行边界" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-4dccdaa37d">声学成像：原始方法、固定源码与实际执行边界</h2>
-<p>对应<a href="../12_acoustic-imaging.html">扩展专题Ⅰ</a>，完整输入、推导和20道分步题在那里展开。本节用于选择原始资料、定位源码接口和区分实际执行范围。声学成像输出频率与空间网格上的源量估计；它与输出目标语音波形的增强链具有不同的输出合同。</p>
+<p>对应<a href="../12_acoustic-imaging.html">扩展专题Ⅰ</a>，完整输入、推导和18道分步题在那里展开。本节用于选择原始资料、定位源码接口和区分实际执行范围。声学成像输出频率与空间网格上的源量估计；它与输出目标语音波形的增强链具有不同的输出合同。</p>
 <span id="原始资料怎样连接到实现" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-dc39369d16">原始资料怎样连接到实现</h3>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
 <thead>
@@ -2216,13 +2217,13 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <td class="tutorial-short-column" style="--tutorial-column-width:10em">DP-RTF</td>
 <td class="tutorial-short-column" style="--tutorial-column-width:12em">双通道CTF首系数比</td>
 <td class="tutorial-short-column" style="--tutorial-column-width:17em">跨帧模型、首段与直达关系、PSD估计及噪声条件</td>
-<td class="tutorial-short-column" style="--tutorial-column-width:15em">E04-25只做精确人工帧CTF交叉关系</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:15em">E04-21只做精确人工帧CTF交叉关系</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:10em">普通单频相干度/秩检查</td>
 <td class="tutorial-short-column" style="--tutorial-column-width:12em">麦克风总声场</td>
 <td class="tutorial-short-column" style="--tutorial-column-width:17em">单频二阶统计</td>
-<td class="tutorial-short-column" style="--tutorial-column-width:15em">E04-24证明不能单凭它确认直达</td>
+<td class="tutorial-short-column" style="--tutorial-column-width:15em">E04-20证明不能单凭它确认直达</td>
 </tr>
 </tbody>
 </table></div>
@@ -2235,7 +2236,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <span id="583-dp-rtf的首系数从哪里来" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-58-3">58.3 DP-RTF的首系数从哪里来</h3>
 <p><a href="https://www.gipsa-lab.grenoble-inp.fr/~laurent.girin/papers/Li_et_al_TASLP_2016.pdf">Li等2016作者论文</a>，DOI <a href="https://doi.org/10.1109/TASLP.2016.2598319">10.1109/TASLP.2016.2598319</a>，§II～III式(3)、(7)～(12)把时域长路径近似为逐频跨帧CTF，再用两通道交叉关系估计归一化系数。跨频项与可能的非因果帧项不是因为写了CTF就消失，采用它们的近似要说明窗、帧移及路径条件。</p>
 <p>CTF首系数是RIR第一段与分析/合成窗相应权重的组合，不是无条件等于某一个时域直达抽头。若直达和最早反射的间隔足够大，适当短窗的首段才更接近直达响应；窗覆盖早反射时，首系数比也会被污染。窗变短还影响频率分辨率及谱估计方差，不能简单宣布越短越好。</p>
-<p>令双通道人工帧模型为x=a<em>s、y=b</em>s，其中卷积发生在帧序号上。交换卷积得a<em>y=b</em>x；令a0非零，再将其他系数除以a0，得到线性回归。这里是普通乘法与转置，不能把交叉关系误改成复内积的共轭转置。E04-25给出Q=2的三行设计矩阵、消元、行列式与条件数，最后比较首比1+j和人工帧调制频率π/2处的整路径比0.1+0.8j。</p>
+<p>令双通道人工帧模型为x=a<em>s、y=b</em>s，其中卷积发生在帧序号上。交换卷积得a<em>y=b</em>x；令a0非零，再将其他系数除以a0，得到线性回归。这里是普通乘法与转置，不能把交叉关系误改成复内积的共轭转置。E04-21给出Q=2的三行设计矩阵、消元、行列式与条件数，最后比较首比1+j和人工帧调制频率π/2处的整路径比0.1+0.8j。</p>
 <p>真实算法不能直接把含噪x/y当无误差回归列。原文随后形成PSD/互PSD统计，并用不同帧区间的差分处理相应噪声项；其成立依赖噪声平稳性、源噪不相关与可用观测。有限平均残余、语音活动检测失误、时变路径和病态设计矩阵仍会造成误差。单一持续复指数使设计行成比例，样本多不自动补足列秩；a0接近零时归一化也会放大误差。</p>
 <span id="584-作者实现的逐文件入口与未运行边界" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-58-4">58.4 作者实现的逐文件入口与未运行边界</h3>
 <p>固定作者仓库为<a href="https://github.com/Audio-WestlakeU/DP_RTF_SSL/tree/b83e6e672f8248a11feb326d44aef6a333cbc709">Audio-WestlakeU/DP_RTF_SSL</a>，完整提交<code>b83e6e672f8248a11feb326d44aef6a333cbc709</code>。当前复核静态读完整四文件树，逐文件SHA保存在来源锁的<code>dprtf-ssl</code>条目；没有建立LICENSE/SPDX授权，所以只索引，没有把作者代码复制入本书发布目录。论文许可不能替代软件许可。</p>
@@ -2272,7 +2273,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 </tbody>
 </table></div>
 <p>256/16000=16ms，64/16000=4ms。代码D=30的时间长度是30×4ms=120ms，原注释写120s；本书按实际配置解释，不修上游。默认T60=400ms时，路径设置的约80ms除以4ms帧移对应Q=20，另有最多50的限制；这些是该实现的参数规则，不能称为普遍正确的混响路径长度。</p>
-<p>每个频点至少需要2Q−1=39个有效语音PSD统计段才满足该代码的最低长度控制；不足时跳过该频点并保留零，不表示整批所有频点都为零。零特征可能表示此控制触发，不能直接当“方向为零”或“无声源”。每个语音统计段另按时间索引距离选最近噪声统计段，同距时取原find顺序的第一项，再作PSD差分；缺少有效统计输入不是用多复制几个帧即可解决。当前复核没有MATLAB/Octave执行、训练、HRIR匹配或作者数据实验，E04-25也没有实现这些完整步骤。</p>
+<p>每个频点至少需要2Q−1=39个有效语音PSD统计段才满足该代码的最低长度控制；不足时跳过该频点并保留零，不表示整批所有频点都为零。零特征可能表示此控制触发，不能直接当“方向为零”或“无声源”。每个语音统计段另按时间索引距离选最近噪声统计段，同距时取原find顺序的第一项，再作PSD差分；缺少有效统计输入不是用多复制几个帧即可解决。当前复核没有MATLAB/Octave执行、训练、HRIR匹配或作者数据实验，E04-21也没有实现这些完整步骤。</p>
 <span id="59-esp-sr从capon接口到有效的新方向观测" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-2973081bee">59. ESP-SR：从Capon接口到有效的新方向观测</h2>
 <p><a href="https://docs.espressif.com/projects/esp-sr/en/latest/esp32/direction_of_arrival/README.html">官方DOA说明</a>与固定<a href="https://github.com/espressif/esp-sr/tree/76581015af7075681814627a5bb03d2f3f328f8a">esp-sr源码</a>分别承担当前产品接口说明和可追溯静态阅读。锁表ID为<code>esp-sr-doa</code>，组件声明2.5.5。当前复核读公开头文件、默认参数、CMake、组件配置、原测试及根许可，没有构建设备程序或运行任何硬件。</p>
 <span id="591-声道坐标块长与角度先对齐" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-59-1">59.1 声道、坐标、块长与角度先对齐</h3>
@@ -2307,7 +2308,7 @@ C_{\mathrm{PAN}}&=\frac{\vec w^H\mathbf R_n\vec a}{\vec w^H\mathbf R_n\vec w},\\
 <p>该2017论文的式(16)使用居中的协方差窗，§6设置250ms窗与32ms STFT、50%重叠；中心窗约需半窗未来观测，还要计入帧可用时刻，不能称零前瞻。2017的逻辑回归系统与上述2019扩展论文分别登记；本次未核到许可明确且可取得的作者网络代码，没有训练、运行网络或复算论文成绩。</p>
 <span id="602-在线逐通道掩码的原始计算" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-60-2">60.2 在线逐通道掩码的原始计算</h3>
 <p><a href="https://arxiv.org/html/2607.26623v1">Middelberg、Voit、Doclo与Corey，2026年7月29日作者预印本v1</a>§3式(5)、(6)、(8)先将各通道观测乘对应掩码的平方根，再对最后P帧的处理后向量外积求均值。分母为P；它与共同标量掩码在原观测外积上的加权、除以掩码总质量是不同操作。每项外积半正定，平均仍半正定，但不能据此推断保留原RTF或单源秩一结构。</p>
-<p>正文E05-24用固定两通道、两帧控制独立复算该差别，没有训练掩码网络、估计未知目标或实现论文完整在线Souden链。原文§4–5使用16kHz、512点STFT、256点hop、平方根Hann窗和200/500/1000ms缓冲；频率上的双向LSTM与时间上的单向LSTM应分别判断。时间单向也还要等分析帧到齐，hop的16ms不能充当全部端到端延迟。论文的紧凑/分布式阵列仿真不等于实际无线时钟、传输或硬件测量。</p>
+<p>正文E05-12用固定两通道、两帧控制独立复算该差别，没有训练掩码网络、估计未知目标或实现论文完整在线Souden链。原文§4–5使用16kHz、512点STFT、256点hop、平方根Hann窗和200/500/1000ms缓冲；频率上的双向LSTM与时间上的单向LSTM应分别判断。时间单向也还要等分析帧到齐，hop的16ms不能充当全部端到端延迟。论文的紧凑/分布式阵列仿真不等于实际无线时钟、传输或硬件测量。</p>
 <p>本次原文未提供可核对、许可明确的作者源码入口，故仅登记原理与独立教学控制，没有取得或运行完整作者实现。已有<a href="https://www.isca-archive.org/interspeech_2026/deng26d_interspeech.html">Deng等Interspeech2026正式论文</a>仍归§46；其复掩码先构造噪声声像，再平均外积，不当作任意复标量协方差权重，也不重复增设算法章。</p>
 <span id="603-固定sof设计与实际输出的取点" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-60-3">60.3 固定SOF设计与实际输出的取点</h3>
 <p>当前复核还实际重新生成<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch05/reports/sof_tdfb_design_current.json">SOF当前源码核查报告</a>。固定 <code>sof_bf_design.m</code> 的归一化sinc自变量与WNG分母问题保留；新增的可选仿真分支在方位循环内重置 <code>nmi</code>，循环后只留下最后一次方位的数据。这是源码控制流审读与独立标量对照，不是已经执行MATLAB并生成错误WAV的证据。默认 <code>create_simulation_data=false</code>，没有运行MATLAB/Octave、设计实际FIR、刷写固件或测试设备。</p>

@@ -47,9 +47,9 @@ $$\sum_{m=1}^M H_m(z)U_m(z)=z^{-d_0}$$
 
 $$M(N_u+1)\ge N_h+N_u+1\iff N_u\ge\left\lceil\frac{N_h-M+1}{M-1}\right\rceil.$$
 
-For two microphones ($M=2$) at $N_u=N_h-1$, $\mathcal{H}$ is the classical square $2N_h\times 2N_h$ Sylvester matrix (first-order paths $N_h=1$ with zero-order scalar weights $N_u=0$ in Exercises [E07-16](#e07-16) and [E07-17](#e07-17) form the minimal $2\times 2$ instance). Here the algebraic full-rank boundary must distinguish $M=2$ strictly from $M\ge 3$:
+For two microphones ($M=2$) at $N_u=N_h-1$, $\mathcal{H}$ is the classical square $2N_h\times 2N_h$ Sylvester matrix (first-order paths $N_h=1$ with zero-order scalar weights $N_u=0$ in Exercises [E07-16](#e07-16) and [E07-17](#e07-17) form the minimal $2\times 2$ instance). For the following full-row-rank statements, first remove the leading propagation delay shared by all channels, then test coprimeness of the actual coefficient polynomials in $u=z^{-1}$; shared leading zeros give a factor $u^d$. Retaining that delay makes the first $d$ convolution-matrix rows zero, ruling out target $\vec e_0$, although a sufficiently delayed target can remain feasible. After removing it, distinguish $M=2$ from $M\ge 3$:
 
-- **Two-microphone case ($M=2,\;N_u=N_h-1$)**: By **Bézout's polynomial identity**, square $\mathcal{H}$ has full row rank if and only if $H_1(z)$ and $H_2(z)$ are **coprime** (sharing no common zero $z_0\in\mathbb{C}\setminus\{0\}$ with $H_1(z_0)=H_2(z_0)=0$) and their highest-order trailing taps are not all zero ($\max_m\deg H_m=N_h$; attaining $d_0=0$ additionally requires leading taps not all zero);
+- **Two-microphone case ($M=2,\;N_u=N_h-1$)**: By **Bézout's polynomial identity**, square $\mathcal{H}$ has full row rank if and only if $H_1(z)$ and $H_2(z)$ are **coprime** (sharing no common zero $z_0\in\mathbb{C}\setminus\{0\}$ with $H_1(z_0)=H_2(z_0)=0$) and their highest-order trailing taps are not all zero (degree in $u$ equals $N_h$, with leading taps not all zero);
 - **Multi-microphone case ($M\ge 3$)**: The bound $N_u\ge\lceil(N_h-M+1)/(M-1)\rceil$ is only a **necessary lower bound** ensuring at least as many columns as rows; while it holds generically (for almost all room responses in continuous parameter space), polynomial coprimeness alone does **not** guarantee full row rank of $\mathcal{H}$ at this minimum order. Consider a minimal counterexample: take $M=3,\;N_h=2$, where the necessary lower bound gives $N_u=\lceil(2-3+1)/2\rceil=0$, and define $H_1(z)=1+z^{-1}+z^{-2}$, $H_2(z)=2+2z^{-1}+3z^{-2}$, and $H_3(z)=3+3z^{-1}+5z^{-2}$. All leading and trailing taps are nonzero, and at both complex roots $z^{-1}=e^{\pm\mathrm{j}2\pi/3}$ of $H_1(z)$ we have $H_2(z)=-1/2\mp\mathrm{j}\sqrt{3}/2\ne 0$ (strictly coprime), yet the resulting $3\times 3$ convolution matrix $\mathcal{H}=\begin{bmatrix}1&2&3\\1&2&3\\1&3&5\end{bmatrix}$ has two identical first rows and rank only $2<3$, so even $d_0=0$ ($\mathcal{H}\vec u=[1,0,0]^\top$) has no exact solution at $N_u=0$. Guaranteeing exact solvability for any valid delay from coprimeness alone requires choosing a sufficiently large filter order $N_u$ (the general multi-source/multi-mic polynomial-matrix coprimeness and full-rank condition appears in [Miyoshi & Kaneda, 1988, §III–IV](https://doi.org/10.1109/29.1509)).
 
 Physically, whereas a single microphone loses information irretrievably at an acoustic null, complementary microphones that do not vanish at the exact same complex frequency reconstruct a pure delay response.
@@ -366,7 +366,7 @@ $$\begin{aligned}
 &=\max\{a_n,\lambda_{\min}\}.
 \end{aligned}\tag{7-10}$$
 
-Whenever $a_n<\lambda_{\min}$, monotonic $f'(\lambda)>0$ on $[\lambda_{\min},+\infty)$ guarantees boundary point $\lambda_{\min}$ is the exact constrained minimizer. Some implementations further smooth $|E(n)|^2$ across neighboring frames via a moving average (capturing short-time speech envelope continuity), which modifies the variance prior so the unpenalized likelihood in Eq. (7-6) can no longer be assumed strictly non-increasing per iteration (Exercise [E07-09](#e07-09)).
+Whenever $a_n<\lambda_{\min}$, the sign $f'(\lambda)>0$ throughout $[\lambda_{\min},+\infty)$ makes the function increasing, so boundary point $\lambda_{\min}$ is the exact constrained minimizer. Some implementations further smooth $|E(n)|^2$ across neighboring frames via a moving average (capturing short-time speech envelope continuity), which modifies the variance prior so the unpenalized likelihood in Eq. (7-6) can no longer be assumed strictly non-increasing per iteration (Exercise [E07-09](#e07-09)).
 
 From a broader sparse-prior perspective, [Jukić, van Waterschoot, Gerkmann & Doclo (*IEEE/ACM TASLP*, 2015)](https://doi.org/10.1109/TASLP.2015.2438549) unified WPE within general $\ell_p$-norm multichannel linear prediction solved via iteratively reweighted least squares (IRLS): imposing an $\ell_p$ sparsity penalty ($p\in(0,1]$) on early speech generalizes frame weights to $w(n)=(|E(n)|^2+\varepsilon)^{p/2-1}$, with standard time-varying Gaussian WPE ($1/(|E(n)|^2+\varepsilon)$) emerging as the $p\to 0$ log-penalty limit—providing the direct analytical bridge to modern $\ell_p$-WPD formulations.
 
@@ -378,7 +378,7 @@ One complete per-bin engineering iteration proceeds in five steps:
 4. Compute residuals from updated taps and update variances using the declared floor and smoothing window.
 5. Stop upon reaching maximum iterations or a diagnostic convergence threshold, logging bypasses, fallbacks, and conditioning metrics.
 
-Exact coordinate descent on Eq. (7-6) holds only without loading, flooring, or temporal smoothing—and even exact coordinate descent on a nonconvex objective guarantees stationary points rather than a global optimum.
+With a fixed valid-frame set, no loading or smoothing, and existing exact block minimizers, alternating updates perform coordinate minimization of one objective. A fixed constraint $\lambda\ge\lambda_{\min}$ still permits exact minimization via Eq. (7-10), so the objective remains nonincreasing over that feasible domain. Loading introduces a penalty, and temporal smoothing changes the update; each requires its own objective description. Nonincrease alone guarantees neither convergence of the iterates to stationary points nor global optimality; stationarity claims require suitable regularity, boundedness, and update conditions.
 
 Standard boundary invariants: $K=0$ bypasses to input; all-zero bins skip inversion; uniform scaling of input and floor leaves relative-loaded filter taps invariant.
 
@@ -609,7 +609,9 @@ Here $\alpha\in(0,1)$ is the exponential forgetting factor and $\delta\ge 0$ is 
 $$E_t^{\mathrm{prior}}=X_t-\vec g_{t-1}^H\vec q_t.
 \tag{7-19}$$
 
-Re-solving $D\times D$ ($80\times 80$) linear systems in $O(D^3)$ every $8\ \mathrm{ms}$ frame is costly on embedded DSPs. Because line 1 of Eq. (7-18) adds a **rank-1 outer product** $\vec q_t\vec q_t^H/\lambda_t$ onto $\alpha\mathbf R_{t-1}$, we obtain an exact Recursive Least Squares (RLS) update: to avoid symbol collisions with prediction order $K$ or cross-correlation matrix $\mathbf P$, we denote the inverse correlation matrix consistently by $\mathbf\Psi_t=\mathbf R_t^{-1}$ (isomorphic to the RLS inverse covariance in [Chapter 6 §6.2.6](06_aec.md#sec-6-2-6)) and apply the **Sherman–Morrison–Woodbury matrix inversion lemma** ([Chapter 0 §0.3.5](00_math-foundations.md#sec-0-3-5) and [Appendix A](16_appendix-symbols-math.md)) to cut per-frame complexity from $O(D^3)$ to $O(D^2)$:
+A fixed per-frame loading $\delta\mathbf I$ instead gives $\mathbf A_t=\mathbf R_t+\delta\mathbf I=\alpha\mathbf A_{t-1}+\vec q_t\vec q_t^H/\lambda_t+(1-\alpha)\delta\mathbf I$. The final term cannot be omitted. The rank-one recursion below describes a decaying initial prior, rather than continuous fixed loading.
+
+Re-solving $D\times D$ ($80\times 80$) linear systems in $O(D^3)$ every $8\ \mathrm{ms}$ frame is costly on embedded DSPs. Because line 1 of Eq. (7-18) adds a **rank-1 outer product** $\vec q_t\vec q_t^H/\lambda_t$ onto $\alpha\mathbf R_{t-1}$, we obtain an exact Recursive Least Squares (RLS) update: to avoid symbol collisions with prediction order $K$ or cross-correlation matrix $\mathbf P$, we denote the inverse correlation matrix consistently by $\mathbf\Psi_t=\mathbf R_t^{-1}$ (isomorphic to the RLS inverse covariance in [Chapter 6 §6.2.6](06_aec.md#sec-6-2-6)) and, when continuous loading is $\delta=0$ with only a decaying positive-definite initial prior, apply the **Sherman–Morrison–Woodbury matrix inversion lemma** ([Chapter 0 §0.3.5](00_math-foundations.md#sec-0-3-5) and [Appendix A](16_appendix-symbols-math.md)) to cut per-frame complexity from $O(D^3)$ to $O(D^2)$:
 
 $$\begin{aligned}
 \vec k_t&=\frac{\mathbf\Psi_{t-1}\vec q_t}
@@ -632,7 +634,7 @@ $$\begin{aligned}
   +\beta\delta^{-1}\mathbf I_D\quad(0\le\beta\le 1,\;e_t<\tau_e).
 \end{aligned}\tag{7-21}$$
 
-Here $\beta=0$ freezes $\mathbf\Psi_t$ in place, while $0<\beta\le 1$ preserves Hermitian positive definiteness and contracts $\operatorname{tr}(\mathbf\Psi_t)$ monotonically back to safe prior $D/\delta$, eliminating post-silence pops altogether (exact rational verification in Exercise [E07-20](#e07-20)).
+Here $\delta>0$ sets the pullback prior; this is distinct from continuously loading the statistics. Setting $\beta=0$ freezes the inverse; with a fixed target, $0<\beta\le 1$ preserves Hermitian positive definiteness and moves its trace monotonically toward $D/\delta$. This suppresses unbounded forgetting-driven inflation, but a small $\delta$ still leaves a large target inverse and does not guarantee an overshoot-free return of speech. The finite $\delta=1$ control in this chapter demonstrates one useful operating point (exact rational verification in Exercise [E07-20](#e07-20)).
 
 #### Three-Frame Causal Recursion Example
 
@@ -681,9 +683,9 @@ Watch closely for a subtle indexing-offset trap when porting third-party WPE lib
 In full-duplex smart speakers, conferencing bars, and automotive arrays, dereverberation operates inside the canonical cascade **Linear AEC $\to$ MIMO-WPE $\to$ Beamforming $\to$ Nonlinear Residual Suppression (NLP) / Single-Channel Neural Post-Filter**. Signal-model physics dictates why this order cannot be scrambled:
 
 1. **Linear AEC must precede MIMO-WPE**: Self-loudspeaker echo typically exceeds far-field user speech by $10$–$30\ \mathrm{dB}$, and the device holds the exact playback reference. Placing WPE ahead of AEC lets loud echo hijack WPE's variance $\lambda(t,f)$ and prediction taps while turning the stationary loudspeaker–room–microphone path into a time-varying system that prevents downstream linear AEC from converging.
-2. **AEC's Nonlinear Processor (NLP) must *never* sit ahead of MIMO-WPE or beamforming**: Linear AEC performs pure linear subtraction, preserving both the cross-frame linear convolutive structure of near-end room reverberation and inter-microphone complex phase differences; NLP (or per-channel nonlinear neural masking) multiplies bins by rapidly fluctuating real gains $\gamma_t\in[0,1]$, simultaneously disrupting WPE's cross-frame linear prediction model and MVDR/GEV's Relative Transfer Function (RTF) phase consistency.
+2. **Prefer linear residuals before multichannel WPE**: Time-varying NLP gains can change a fixed cross-frame prediction relation, and channel-dependent complex-spectrum or waveform processing can also alter spatial RTFs. Strong residual suppression is therefore commonly placed after WPE and beamforming. At a fixed STFT frequency bin, a common nonzero real gain $\gamma_t$ preserves same-frame complex channel ratios and spatial phase, but $\gamma_t\ne\gamma_{t-k}$ can still invalidate fixed temporal predictor coefficients. A common constant gain preserves both relations.
 
-Writing out the algebraic destruction in Rule 2 makes this crystal clear: let echo-free near-end reverberant speech after linear AEC obey $\vec Z_t=\vec E_t+\hat{\vec r}_t$ with $\hat{\vec r}_t=\sum_{k=\Delta}^{\Delta+K-1}\mathbf G_k^H\vec Z_{t-k}$, where $\mathbf G_k\in\mathbb{C}^{M\times M}$ is the lag-$k$ input-to-output subblock of $\mathbf G$ in Eq. (7-12) with entry $(m',m)$ equal to $G_{m',m}(k)$. Multiplying by time-varying NLP mask $\widetilde{\vec Z}_t=\gamma_t\vec Z_t$ ahead of WPE fails because **time-varying $\gamma_t$ does not commute with frame delay** ($\gamma_t\neq\gamma_{t-k}$):
+The temporal mismatch in Rule 2 follows directly: let echo-free near-end reverberant speech after linear AEC obey $\vec Z_t=\vec E_t+\hat{\vec r}_t$ with $\hat{\vec r}_t=\sum_{k=\Delta}^{\Delta+K-1}\mathbf G_k^H\vec Z_{t-k}$, where $\mathbf G_k\in\mathbb{C}^{M\times M}$ is the lag-$k$ input-to-output subblock of $\mathbf G$ in Eq. (7-12) with entry $(m',m)$ equal to $G_{m',m}(k)$. Multiplying by time-varying NLP mask $\widetilde{\vec Z}_t=\gamma_t\vec Z_t$ ahead of WPE fails because **time-varying $\gamma_t$ does not commute with frame delay** ($\gamma_t\neq\gamma_{t-k}$):
 
 $$\gamma_t\sum_{k=\Delta}^{\Delta+K-1}
 \mathbf G_k^H\vec Z_{t-k}
@@ -1226,7 +1228,7 @@ Compare causal minimum-phase $h_1=[1,\ 1/2]$ against maximum-phase $h_2=[1/2,\ 1
 
 **Solution**: At continuous digital angular frequency $\omega$ ($\mathrm{rad}$/sample), $H_1(\omega)=1+\frac{1}{2}e^{-\mathrm{j}\omega}$ and $H_2(\omega)=\frac{1}{2}+e^{-\mathrm{j}\omega}$ share the **exact same** squared magnitude $|H(\omega)|^2=H(\omega)H^*(\omega)=\frac{5}{4}+\cos\omega$.
 
-Across all $8$ DFT bins $\omega_k=2\pi k/8$ ($k=0,\dots,7$), power spectra and natural log-powers $L_k=\ln|H(2\pi k/8)|^2$ are strictly positive and pointwise identical, yielding identical $8$-point real power cepstra:
+Across all $8$ DFT bins $\omega_k=2\pi k/8$ ($k=0,\dots,7$), power spectra are strictly positive and pointwise identical, as are their finite natural log-powers $L_k=\ln|H(2\pi k/8)|^2$ (the log-powers themselves may be negative), yielding identical $8$-point real power cepstra:
 
 $$c_r[q]=\frac{1}{8}\sum_{k=0}^{7}
 L_k\,e^{\mathrm{j}\pi kq/4}.

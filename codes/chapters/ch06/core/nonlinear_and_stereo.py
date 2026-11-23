@@ -316,16 +316,20 @@ def stereo_decorrelation_and_loop_deadlines() -> dict:
     icc_alpha = 0.8
     icc_p1150_limit_ms = 15.0
     icc_cases = []
-    for loop_delay_ms in (10.0, 25.0):
-        loop_delay_s = loop_delay_ms * 1e-3
+    for reinforced_arrival_ms in (16.0, 31.0):
+        direct_arrival_ms = 6.0
+        arrival_difference_ms = reinforced_arrival_ms - direct_arrival_ms
+        loop_delay_s = arrival_difference_ms * 1e-3
         notch_spacing_hz = 1.0 / loop_delay_s
         first_notch_hz = 0.5 / loop_delay_s
         # Notches f_k = (k + 0.5) / tau_loop strictly inside [0, 1000) Hz.
         notches_below_1khz = int(math.floor(1000.0 * loop_delay_s + 0.5))
         icc_cases.append(
             {
-                "loop_delay_ms": loop_delay_ms,
-                "itu_t_p1150_compliant": bool(loop_delay_ms < icc_p1150_limit_ms),
+                "direct_first_arrival_ms": direct_arrival_ms,
+                "reinforced_first_arrival_ms": reinforced_arrival_ms,
+                "arrival_difference_ms": arrival_difference_ms,
+                "meets_arrival_difference_limit": bool(arrival_difference_ms < icc_p1150_limit_ms),
                 "comb_notch_spacing_hz": notch_spacing_hz,
                 "first_notch_hz": first_notch_hz,
                 "notches_in_0_to_1000_hz": notches_below_1khz,
@@ -387,7 +391,7 @@ def stereo_decorrelation_and_loop_deadlines() -> dict:
                 "ram_reference_alignment_feasible": True,
             },
             "icc_itu_t_p1150": {
-                "max_reinforcement_delay_ms": icc_p1150_limit_ms,
+                "max_arrival_difference_ms": icc_p1150_limit_ms,
                 "reinforcement_amplitude_ratio": icc_alpha,
                 "comb_peak_to_notch_swing_db": comb_peak_to_notch_db,
                 "closed_loop_gain": closed_loop_gain,

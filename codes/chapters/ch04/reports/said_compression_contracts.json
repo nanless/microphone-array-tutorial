@@ -1,7 +1,7 @@
 {
-  "run_utc": "2026-11-17T12:52:21.928691+00:00",
-  "run_asia_shanghai": "2026-11-17T20:52:21.934101+08:00",
-  "audit_source_sha256": "1934582b929a5765ef88f1542f9f4a7976c0d5e02f294db681e7cf2814421999",
+  "run_utc": "2026-11-22T23:14:27.655796+00:00",
+  "run_asia_shanghai": "2026-11-23T07:14:27.656622+08:00",
+  "audit_source_sha256": "938f5c81dd6876a8b87420138db61f25afdcc66edee71df638c13ab7d61065b5",
   "lock_sha256": "55721fbe8027f67bf3159827b8b58c14bc327ea5e0221b216303681340e890e7",
   "lock_entry": {
     "id": "said-spatial-imaging",
@@ -425,8 +425,8 @@
     "ignored_members_after": []
   },
   "report_source_sha256": {
-    "codes/chapters/ch04/examples/audit_said_compression.py": "1934582b929a5765ef88f1542f9f4a7976c0d5e02f294db681e7cf2814421999",
-    "codes/chapters/ch04/core/upstream_contracts.py": "8669f007ee16a15433598b8f451f226cceb3163bdbc2bf690709504874743167",
+    "codes/chapters/ch04/examples/audit_said_compression.py": "938f5c81dd6876a8b87420138db61f25afdcc66edee71df638c13ab7d61065b5",
+    "codes/chapters/ch04/core/upstream_contracts.py": "e868220b7388ae3124d1098df9de4095e061c1982fb1a251ad7c27c6c0742be5",
     "codes/chapters/ch00/io_contracts.py": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974",
     "codes/chapters/ch00/upstream/fetch_upstreams.py": "442d17a5818ef0edf620bde85cc7959c1e73602a47f75e1cc8fce2b227ae11b4"
   },
@@ -472,11 +472,12 @@
   },
   "environment": {
     "python": "3.13.12 | packaged by conda-forge | (main, Feb  5 2026, 06:11:05) [Clang 19.1.7 ]",
-    "executable": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/.venv/bin/python",
+    "executable": "/private/tmp/masp-multiround-20261123/room-runtime/bin/python",
     "numpy": "2.5.3"
   },
   "scope": {
-    "execution": "unchanged original compression.py loaded as standalone module; stdlib + NumPy; no said package import",
+    "execution": "verified source bytes compiled as complete original compression.py; existing pyc neither read nor changed; stdlib + NumPy; no said package import",
+    "executed_source_sha256": "6bf2cff5ec690858092e143062b1eb17e28001ffccd4fe5feefc164d695d7b79",
     "functions": [
       "compress_annotation",
       "compress_prediction_directory(workers=1)",

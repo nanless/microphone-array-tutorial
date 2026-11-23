@@ -1,17 +1,17 @@
 {
   "schema_version": 1,
-  "created_utc": "2026-11-11T07:47:17.791568+00:00",
+  "created_utc": "2026-11-22T22:53:10.020170+00:00",
   "status": "limited_execution_with_original_failure",
   "actual_dependencies_before": {
     "codes/chapters/ch12/examples/audit_damas_author_contracts.py": "8c63560ccf2d4e324ed284765d653877a8a9ac32e96bcdc2a0982fb9aca78f93",
-    "codes/chapters/ch04/core/upstream_contracts.py": "8669f007ee16a15433598b8f451f226cceb3163bdbc2bf690709504874743167",
+    "codes/chapters/ch04/core/upstream_contracts.py": "e868220b7388ae3124d1098df9de4095e061c1982fb1a251ad7c27c6c0742be5",
     "codes/chapters/ch00/io_contracts.py": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974",
     "codes/chapters/ch00/upstream/fetch_upstreams.py": "442d17a5818ef0edf620bde85cc7959c1e73602a47f75e1cc8fce2b227ae11b4",
     "codes/chapters/ch10/examples/run_industrial_interfaces.py": "6501c7bdb2e5cd529dd9436cbc99ffd31ec1398fced8d0dc98c62a8524c3111c"
   },
   "actual_dependencies_after": {
     "codes/chapters/ch12/examples/audit_damas_author_contracts.py": "8c63560ccf2d4e324ed284765d653877a8a9ac32e96bcdc2a0982fb9aca78f93",
-    "codes/chapters/ch04/core/upstream_contracts.py": "8669f007ee16a15433598b8f451f226cceb3163bdbc2bf690709504874743167",
+    "codes/chapters/ch04/core/upstream_contracts.py": "e868220b7388ae3124d1098df9de4095e061c1982fb1a251ad7c27c6c0742be5",
     "codes/chapters/ch00/io_contracts.py": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974",
     "codes/chapters/ch00/upstream/fetch_upstreams.py": "442d17a5818ef0edf620bde85cc7959c1e73602a47f75e1cc8fce2b227ae11b4",
     "codes/chapters/ch10/examples/run_industrial_interfaces.py": "6501c7bdb2e5cd529dd9436cbc99ffd31ec1398fced8d0dc98c62a8524c3111c"
@@ -64,12 +64,12 @@
       "verified_at": "2026-10-05",
       "note": "Chardon, Picheral and Ollivier author reference linked by DOI 10.5281/zenodo.4609267. Twenty-one GPLv3 text files (74510 bytes at the fixed commit); retain the complete root LICENSE and source notices. No three MAT datasets or precompiled MEX binaries selected, no MATLAB/MEX execution, no author benchmark or Acoular package run. Original Python solver limitations are preserved and discussed separately; acquired source does not prove runtime correctness or permit relicensing."
     },
-    "lock_sha256": "60ebc7b692d28b5d5406e3cb137d2dcc43b154ea2c4e3d3ac739cf7fda18abeb",
+    "lock_sha256": "55721fbe8027f67bf3159827b8b58c14bc327ea5e0221b216303681340e890e7",
     "source_document_paths": {
       "lock": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/SOURCES.lock.json",
       "status": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/SOURCE_STATUS.json"
     },
-    "status_sha256": "b57d21d42651084303252c66fee49ea8d0ccfcc4108e2e89c5c79b99f8ef8690",
+    "status_sha256": "96e37d461be3c0c5c07986b48100e935405334d22f346d8efb59ca49b07aa502",
     "recorded_complete_selection": {
       "id": "damas-author",
       "revision": "61987952e2237e6b088a169ee891dd96576f2565",
@@ -423,12 +423,12 @@
       "verified_at": "2026-10-05",
       "note": "Chardon, Picheral and Ollivier author reference linked by DOI 10.5281/zenodo.4609267. Twenty-one GPLv3 text files (74510 bytes at the fixed commit); retain the complete root LICENSE and source notices. No three MAT datasets or precompiled MEX binaries selected, no MATLAB/MEX execution, no author benchmark or Acoular package run. Original Python solver limitations are preserved and discussed separately; acquired source does not prove runtime correctness or permit relicensing."
     },
-    "lock_sha256": "60ebc7b692d28b5d5406e3cb137d2dcc43b154ea2c4e3d3ac739cf7fda18abeb",
+    "lock_sha256": "55721fbe8027f67bf3159827b8b58c14bc327ea5e0221b216303681340e890e7",
     "source_document_paths": {
       "lock": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/SOURCES.lock.json",
       "status": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/SOURCE_STATUS.json"
     },
-    "status_sha256": "b57d21d42651084303252c66fee49ea8d0ccfcc4108e2e89c5c79b99f8ef8690",
+    "status_sha256": "96e37d461be3c0c5c07986b48100e935405334d22f346d8efb59ca49b07aa502",
     "recorded_complete_selection": {
       "id": "damas-author",
       "revision": "61987952e2237e6b088a169ee891dd96576f2565",
@@ -784,12 +784,12 @@
         "verified_at": "2026-10-05",
         "note": "Chardon, Picheral and Ollivier author reference linked by DOI 10.5281/zenodo.4609267. Twenty-one GPLv3 text files (74510 bytes at the fixed commit); retain the complete root LICENSE and source notices. No three MAT datasets or precompiled MEX binaries selected, no MATLAB/MEX execution, no author benchmark or Acoular package run. Original Python solver limitations are preserved and discussed separately; acquired source does not prove runtime correctness or permit relicensing."
       },
-      "lock_sha256": "60ebc7b692d28b5d5406e3cb137d2dcc43b154ea2c4e3d3ac739cf7fda18abeb",
+      "lock_sha256": "55721fbe8027f67bf3159827b8b58c14bc327ea5e0221b216303681340e890e7",
       "source_document_paths": {
         "lock": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/SOURCES.lock.json",
         "status": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/SOURCE_STATUS.json"
       },
-      "status_sha256": "b57d21d42651084303252c66fee49ea8d0ccfcc4108e2e89c5c79b99f8ef8690",
+      "status_sha256": "96e37d461be3c0c5c07986b48100e935405334d22f346d8efb59ca49b07aa502",
       "recorded_complete_selection": {
         "id": "damas-author",
         "revision": "61987952e2237e6b088a169ee891dd96576f2565",
@@ -1143,12 +1143,12 @@
         "verified_at": "2026-10-05",
         "note": "Chardon, Picheral and Ollivier author reference linked by DOI 10.5281/zenodo.4609267. Twenty-one GPLv3 text files (74510 bytes at the fixed commit); retain the complete root LICENSE and source notices. No three MAT datasets or precompiled MEX binaries selected, no MATLAB/MEX execution, no author benchmark or Acoular package run. Original Python solver limitations are preserved and discussed separately; acquired source does not prove runtime correctness or permit relicensing."
       },
-      "lock_sha256": "60ebc7b692d28b5d5406e3cb137d2dcc43b154ea2c4e3d3ac739cf7fda18abeb",
+      "lock_sha256": "55721fbe8027f67bf3159827b8b58c14bc327ea5e0221b216303681340e890e7",
       "source_document_paths": {
         "lock": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/SOURCES.lock.json",
         "status": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/SOURCE_STATUS.json"
       },
-      "status_sha256": "b57d21d42651084303252c66fee49ea8d0ccfcc4108e2e89c5c79b99f8ef8690",
+      "status_sha256": "96e37d461be3c0c5c07986b48100e935405334d22f346d8efb59ca49b07aa502",
       "recorded_complete_selection": {
         "id": "damas-author",
         "revision": "61987952e2237e6b088a169ee891dd96576f2565",
@@ -1482,19 +1482,19 @@
     },
     "external_dependencies": {
       "numpy": {
-        "path": "/private/tmp/masp-damas-stage-V8smia/venv/lib/python3.13/site-packages/numpy/__init__.py",
+        "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/numpy/__init__.py",
         "sha256_before": "09295a80660f17925ae23765ce8cbd7ff7ceae968d5f2f89349f1cb74c0b9e11",
         "scope": "direct imported module entry file, not its full transitive library/binary closure",
         "sha256_after": "09295a80660f17925ae23765ce8cbd7ff7ceae968d5f2f89349f1cb74c0b9e11"
       },
       "scipy.linalg": {
-        "path": "/private/tmp/masp-damas-stage-V8smia/venv/lib/python3.13/site-packages/scipy/linalg/__init__.py",
+        "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/scipy/linalg/__init__.py",
         "sha256_before": "8840662d267e8d06503125608c6333e5f50053750f1e2c273b63e5a6c0b79c1c",
         "scope": "direct imported module entry file, not its full transitive library/binary closure",
         "sha256_after": "8840662d267e8d06503125608c6333e5f50053750f1e2c273b63e5a6c0b79c1c"
       },
       "matplotlib.pyplot": {
-        "path": "/private/tmp/masp-damas-stage-V8smia/venv/lib/python3.13/site-packages/matplotlib/pyplot.py",
+        "path": "/private/tmp/masp-multiround-20261123/room-runtime/lib/python3.13/site-packages/matplotlib/pyplot.py",
         "sha256_before": "2c27b5739ad10034f22866cc7647ce968c56f9625cf0f7a288b800e94917ea51",
         "scope": "direct imported module entry file, not its full transitive library/binary closure",
         "sha256_after": "2c27b5739ad10034f22866cc7647ce968c56f9625cf0f7a288b800e94917ea51"
@@ -1592,7 +1592,7 @@
           0.0
         ],
         "matched": true,
-        "original_stdout": "iter 0 tol 4.0\nSolution is unique, T = 0.00069\n",
+        "original_stdout": "iter 0 tol 4.0\nSolution is unique, T = 0.001\n",
         "target": "original full/removed-diagonal CSM objective or unnormalized dirty-map objective; not interchangeable",
         "original_unique_flag": true
       },
@@ -1608,7 +1608,7 @@
           0.0
         ],
         "matched": true,
-        "original_stdout": "iter 0 tol 1.6e+01\nSolution is unique, T = 0.00015\n",
+        "original_stdout": "iter 0 tol 1.6e+01\nSolution is unique, T = 0.00022\n",
         "target": "original full/removed-diagonal CSM objective or unnormalized dirty-map objective; not interchangeable",
         "original_unique_flag": true
       },
@@ -1624,7 +1624,7 @@
           0.0
         ],
         "matched": true,
-        "original_stdout": "iter 0 tol 1.3\nSolution is unique, T = 0.00011\n",
+        "original_stdout": "iter 0 tol 1.3\nSolution is unique, T = 0.00014\n",
         "target": "original full/removed-diagonal CSM objective or unnormalized dirty-map objective; not interchangeable",
         "original_unique_flag": true
       },
@@ -1640,7 +1640,7 @@
           0.0
         ],
         "matched": true,
-        "original_stdout": "iter 0 tol 5.3\nSolution is unique, T = 0.00012\n",
+        "original_stdout": "iter 0 tol 5.3\nSolution is unique, T = 0.00014\n",
         "target": "original full/removed-diagonal CSM objective or unnormalized dirty-map objective; not interchangeable",
         "original_unique_flag": true
       },
@@ -1665,7 +1665,7 @@
           0.0
         ],
         "matched": true,
-        "original_stdout": "iter 0 tol 4.0\nSolution is unique, T = 9e-05\n",
+        "original_stdout": "iter 0 tol 4.0\nSolution is unique, T = 0.00011\n",
         "independent_alternative_solution": [
           0.0,
           1.0
@@ -1683,7 +1683,7 @@
           1.68
         ],
         "matched": true,
-        "original_stdout": "T = 5.3e-05\n",
+        "original_stdout": "T = 6e-05\n",
         "boundary": "known rank-one CSM; no data benchmark, diagonal removal or marker optimization"
       }
     ],

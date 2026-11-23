@@ -96,7 +96,7 @@ PipeWire 官方开发仓库位于 freedesktop GitLab，`PipeWire/pipewire` 是�
 
 SpeexDSP 的 `libspeexdsp/resample.c`、`include/speex/speex_resampler.h` 是另一组连续重采样入口。`libspeexdsp/mdf.c` 提供分块频域回声处理，可与第 6 章教学 NLMS 对照。代码根许可为 BSD-3-Clause，版本和提交沿用锁定清单。重采样器和回声消除器是两个独立状态；取得 SpeexDSP 源码不表示一打开 AEC 就自动纠正播放/采集采样率偏移。
 
-重采样配置包括输入/输出速率、通道数、质量档位、整数或浮点输入，以及每次调用的输入/输出长度。AEC 的帧长、滤波覆盖长度、采样率和播放参考缓冲另行固定；两者共享“连续状态”要求，但不能共用一个模糊的延迟参数。[固定版 AEC 头文件](https://gitlab.xiph.org/xiph/speexdsp/-/blob/8e29a256ef0235ebbe7fcb8417b5ac7731eb8307/include/speex/speex_echo.h)说明 `speex_echo_cancellation()`由应用交付已经对应的播放帧，不额外加入两帧播放缓冲；`speex_echo_playback()`/`speex_echo_capture()`为异步辅助入口，内部预留两帧，实际声卡延迟不一定相等。[官方手册](https://www.speex.org/docs/manual/speex-manual/node7.html)明确要求回声进入麦克风前，对应播放帧已到达回声消除器，过长的额外延迟还会占用滤波器覆盖长度。
+重采样配置包括输入/输出速率、通道数、质量档位、整数或浮点输入，以及每次调用的输入/输出长度。AEC 的帧长、滤波覆盖长度、采样率和播放参考缓冲另行固定；两者共享“连续状态”要求，但不能共用一个模糊的延迟参数。[固定版 AEC 头文件](https://gitlab.xiph.org/xiph/speexdsp/-/blob/8e29a256ef0235ebbe7fcb8417b5ac7731eb8307/include/speex/speex_echo.h)说明 `speex_echo_cancellation()`由应用交付已经对应的播放帧，不额外加入两帧播放缓冲；`speex_echo_playback()`/`speex_echo_capture()`为异步辅助入口，内部预留两帧，实际声卡延迟不一定相等。[官方手册](https://www.speex.org/docs/manual/speex-manual/node7.html)的实时缓冲建议须按处理时刻理解：处理某个麦克风回声样本时，对应播放参考须已可用且对齐落在滤波器覆盖内；同步或离线成对交付不要求参考在声波物理到达麦克风前先送入 AEC。额外错位仍会占用覆盖长度。
 
 这一固定提交的 `mdf.c` 初始化时将采样率置为 **8000 Hz**；16 kHz 输入不能只设置 WAV 文件头。创建状态后要用 `speex_echo_ctl(..., SPEEX_ECHO_SET_SAMPLING_RATE, &rate)` 显式设置，再用 `SPEEX_ECHO_GET_SAMPLING_RATE` 读回验证。[源码初始化与控制分支](https://gitlab.xiph.org/xiph/speexdsp/-/blob/8e29a256ef0235ebbe7fcb8417b5ac7731eb8307/libspeexdsp/mdf.c)。上游 `testecho.c` 只演示接口，循环不核对每次 `fread` 的短读和文件结束；严谨评分应自己验证完整帧数、输入长度及尾部处理。本书的[真实配对 Speex 实验](02_aec_wpe_separation.md#aec)使用严格 PCM16 帧驱动，已在 macOS arm64 上运行，但不代表异步接口或设备链路也已通过。
 
@@ -345,7 +345,7 @@ DI-cpWER 可以帮助诊断说话人归属约束对结果的影响，但作者 �
 
 固定 [`time_constrained.py` 的时间助手与包装器默认参数](https://github.com/fgnt/meeteval/blob/6e3dc81284f2d6928f7ef9e620fd3b6906daa429/meeteval/wer/wer/time_constrained.py#L75-L102)将参考话段按词的字符数分配区间，将假设词放在对应区间的中点。对话段 `abc b`、起止时间0～4 s，字符数为3和1，参考词区间依次是 `[0,3]`、`[3,4]`，假设则是 `[1.5,1.5]`、`[3.5,3.5]`。新诊断只实际调用这两个原助手，并核对这组手算，不运行完整tcpWER。
 
-这些是近似时间，不能称为从波形得到的真实词边界。[作者2025原稿v1 §V-C](https://arxiv.org/html/2508.02112v1)说明假设用中点是为了避免扩大词区间来改善匹配；字符数比例也不保证等于中文词的发音时长。本书E11-24教学核只接受正时长区间，这是有限接口条件，不是原核不能处理点。[作者2023原文 §4.2，印刷第30页](https://www.isca-archive.org/chime_2023/neumann23_chime.pdf)的容差选择依赖当时数据与标注误差；不把该实验的5 s当成所有数据集的默认正确值。
+这些是近似时间，不能称为从波形得到的真实词边界。[作者2025原稿v1 §V-C](https://arxiv.org/html/2508.02112v1)说明假设用中点是为了避免扩大词区间来改善匹配；字符数比例也不保证等于中文词的发音时长。本书[E11-17](../../../../chapters/11_selection-guide.md#e11-17)教学核只接受正时长区间，这是有限接口条件，不是原核不能处理点。[作者2023原文 §4.2，印刷第30页](https://www.isca-archive.org/chime_2023/neumann23_chime.pdf)的容差选择依赖当时数据与标注误差；不把该实验的5 s当成所有数据集的默认正确值。
 
 #### 缺失会话不能随意从统计分母中消失
 

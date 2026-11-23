@@ -231,6 +231,96 @@ EXPECTED_SECTION_COUNT = 173
 EXPECTED_SUBSECTION_COUNT = 835
 EXPECTED_OUTLINE_ITEM_COUNT = 1027
 EXPECTED_FIGURE_NUMBERS = set(range(1, 88))
+# Independent publication catalog; update explicitly when numbered figures change.
+EXPECTED_FIGURES = (
+    'fig01_binaural.png',
+    'fig02_dsin_geometry.png',
+    'fig03_near_far_field.png',
+    'fig04_delay_phase.png',
+    'fig05_room_acoustics.png',
+    'fig06_stft_cov.png',
+    'fig07_beampattern_anatomy.png',
+    'fig08_geometries.png',
+    'fig09_tradeoffs.png',
+    'fig10_sparse_array.png',
+    'fig11_doa_spectrum.png',
+    'fig12_gcc_phat.png',
+    'fig13_gcc_reverb.png',
+    'fig14_srp_grid.png',
+    'fig15_wng_di.png',
+    'fig16_beampattern.png',
+    'fig17_gsc.png',
+    'fig18_aec.png',
+    'fig19_aec_pipeline.png',
+    'fig20_wpe.png',
+    'fig21_tracking.png',
+    'fig22_pipeline.png',
+    'fig23_wpe_frames.png',
+    'fig24_latency_budget.png',
+    'fig25_aec_nlms.png',
+    'fig26_aec_delay_dtd.png',
+    'fig27_aec_nonlinear.png',
+    'fig28_gcc_two_ways.png',
+    'fig29_audio_examples.png',
+    'fig30_audio_counterexamples.png',
+    'fig31_nonlinear_echo.png',
+    'fig32_aec_subband.png',
+    'fig33_aec_four_methods.png',
+    'fig34_aec_pbfdaf_flow.png',
+    'fig35_clock_drift.png',
+    'fig36_interpolation_error.png',
+    'fig37_gss_flow.png',
+    'fig38_css_overlap.png',
+    'fig39_tracking_audio.png',
+    'fig40_agc_blocks.png',
+    'fig41_selection_pareto.png',
+    'fig42_selection_audio_tradeoff.png',
+    'fig43_fft_frequencies.png',
+    'fig44_fft_block_boundary.png',
+    'fig45_stft_convolution.png',
+    'fig46_near_planar_sensitivity.png',
+    'fig47_hexagon_multifrequency.png',
+    'fig48_focus_noise.png',
+    'fig49_coherent_frequency_rank.png',
+    'fig50_derivative_constraints.png',
+    'fig51_omlsa_probability.png',
+    'fig52_affine_projection_geometry.png',
+    'fig53_affine_projection_learning.png',
+    'fig54_mint_noise_tradeoff.png',
+    'fig55_mask_representation.png',
+    'fig56_tracking_information.png',
+    'fig57_engineering_limits.png',
+    'fig58_noise_mismatch.png',
+    'fig59_selection_scenarios.png',
+    'fig60_weighted_noise.png',
+    'fig61_equal_drr_response.png',
+    'fig62_imaging_psf.png',
+    'fig63_imaging_model_checks.png',
+    'fig64_imaging_calibration.png',
+    'fig65_distributed_compression.png',
+    'fig66_distributed_updates.png',
+    'fig67_distributed_transport.png',
+    'fig68_phase_reference.png',
+    'fig69_reference_timing.png',
+    'fig70_prediction_delays.png',
+    'fig71_css_polarity_gain.png',
+    'fig72_tracking_lifecycle.png',
+    'fig73_channel_failure.png',
+    'fig74_selection_evidence.png',
+    'fig75_imaging_objectives.png',
+    'fig76_foa_intensity_diffuseness.png',
+    'fig77_bsm_ls_vs_magls.png',
+    'fig78_own_voice_fusion.png',
+    'fig79_hear_through_comb.png',
+    'fig80_tse_conditioning_modes.png',
+    'fig81_nearfield_distance_bubble.png',
+    'fig82_diarization_tsvad_gss.png',
+    'fig83_av_asynchrony_occlusion.png',
+    'fig84_complex_phasor_fourier.png',
+    'fig85_subspace_projection_svd.png',
+    'fig86_hermitian_rayleigh_gev.png',
+    'fig87_wirtinger_probability_bayesian.png',
+)
 EXPECTED_EXERCISE_COUNT = 360
 EXPECTED_EXERCISE_COUNTS = {
     '00_math-foundations.md': 16,
@@ -817,11 +907,16 @@ def figure_inventory_issues(references, png_names):
 def png_provenance_issues(image_path: Path, script_path: Path):
     from PIL import Image
     with Image.open(image_path) as image:
+        if image.format != "PNG":
+            raise ValueError("figure must decode as PNG")
+        image.load()
         metadata = dict(image.info)
     source = metadata.get("SourceScript", "")
     accepted_sources = {script_path.name, script_path.relative_to(ROOT).as_posix()}
     expected_digest = hashlib.sha256(script_path.read_bytes()).hexdigest()
     issues = []
+    if metadata.get("FigureFilename") != image_path.name:
+        issues.append("FigureFilename 与当前图像文件名不一致")
     if source not in accepted_sources:
         issues.append(f"SourceScript={source!r}，应为 {sorted(accepted_sources)} 之一")
     if metadata.get("SourceScriptDigest") != expected_digest:
@@ -850,10 +945,16 @@ def wpe_figure_provenance_issues(metadata, report):
 
 
 def check_figures(errors: list[str]):
+    from scripts.figure_report_contracts import report_bindings_issues
+    errors.extend(report_bindings_issues(ROOT, ROOT / "figures"))
     references = []
     for path in CHAPTERS.glob("*.md"):
         references.extend(extract_figure_references(path.read_text(encoding="utf-8")))
     png_names = [path.name for path in (ROOT / "figures").glob("fig*.png")]
+    if set(png_names) != set(EXPECTED_FIGURES):
+        fail(errors, "编号PNG与独立出版目录不同：缺失 "
+             f"{sorted(set(EXPECTED_FIGURES) - set(png_names))}，多出 "
+             f"{sorted(set(png_names) - set(EXPECTED_FIGURES))}")
     errors.extend(figure_inventory_issues(references, png_names))
     for name in sorted(set(item[1] for item in references)):
         path = ROOT / "figures" / name
@@ -865,6 +966,7 @@ def check_figures(errors: list[str]):
             with Image.open(path) as image:
                 image.verify()
             with Image.open(path) as image:
+                image.load()
                 width, height = image.size
             if width < 800 or height < 300:
                 fail(errors, f"图片分辨率过低：figures/{name}: {width}×{height}")
@@ -1556,59 +1658,16 @@ def check_combined_html(errors: list[str]):
 
 
 def source_digest():
-    digest = hashlib.sha256()
-    paths = sorted(CHAPTERS.glob("*.md"))
-    paths += [RESEARCH_ROOT / name for name, _ in EXPECTED_RESEARCH_PAGES]
-    paths += [ROOT / "scripts" / "build_site.py", ROOT / "scripts" / "build_markdown_helpers.py",
-              ROOT / "scripts" / "inline_layout.js",
-              ROOT / "scripts" / "heading_aliases.py",
-              ROOT / "scripts" / "chapter_identity.py",
-              ROOT / "scripts" / "chapter_numbering.json",
-              ROOT / "scripts" / "legacy_sequential_anchors.json"]
-    paths += sorted(path for path in (ROOT / "scripts" / "vendor" / "mathjax-3.2.2").rglob("*")
-                    if path.is_file())
-    paths += sorted((ROOT / "figures").glob("fig*.png"))
-    paths += [ROOT / "scripts" / name for name in
-              ("build_pdf.py", "pdf_math.js", "make_math_figures.py", "make_figures.py", "make_aec_figures.py", "make_beamforming_figures.py", "make_reference_figures.py", "make_delay_figures.py", "make_css_figures.py", "make_tracking_figures.py", "make_channel_figures.py", "make_selection_figures.py", "make_wearable_figures.py", "make_tse_figures.py")]
-    paths.append(ROOT / "requirements.txt")
-    paths.append(ROOT / "codes/chapters/ch00/io_contracts.py")
-    for path in paths:
-        digest.update(path.relative_to(ROOT).as_posix().encode("utf-8"))
-        digest.update(b"\0")
-        digest.update(path.read_bytes())
-        digest.update(b"\0")
-    return digest.hexdigest()[:12]
+    """Use the PDF builder's complete publication-input contract."""
+    from scripts import build_pdf
+    return build_pdf.source_digest()
 
 
 def site_source_digest():
-    digest = hashlib.sha256()
-    paths = sorted(CHAPTERS.glob("*.md"))
-    paths += [RESEARCH_ROOT / name for name, _ in EXPECTED_RESEARCH_PAGES]
-    manifest_path = main_audio_manifest_path(CODE_CHAPTERS)
-    paths += [manifest_path]
-    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-    paths += sorted(main_audio_path(CODE_CHAPTERS, record["group"], record["file"])
-                    for record in manifest["files"])
-    for asset_root in (REAL_AUDIO_ROOT, ROOM_AUDIO_ROOT, MOVING_AUDIO_ROOT,
-                       TRACKING_AUDIO_ROOT, GSS_AUDIO_ROOT, BINAURAL_AUDIO_ROOT, SPECTRAL_AUDIO_ROOT, STFT_AUDIO_ROOT, SWEEP_AUDIO_ROOT, BASELINE_AUDIO_ROOT, REFLECTION_AUDIO_ROOT, PHASE_AUDIO_ROOT, BINAURAL_BEAMFORMING_ROOT, GEOMETRY_AUDIO_ROOT, FOCUS_AUDIO_ROOT, DERIVATIVE_AUDIO_ROOT, APA_AUDIO_ROOT, REFERENCE_AUDIO_ROOT, DELAY_AUDIO_ROOT, CSS_AUDIO_ROOT, MINT_AUDIO_ROOT, MASK_AUDIO_ROOT, NOISE_AUDIO_ROOT, CHANNEL_AUDIO_ROOT, SCENARIO_AUDIO_ROOT, WEIGHTED_AUDIO_ROOT, RESPONSE_AUDIO_ROOT, IMAGING_AUDIO_ROOT, DISTRIBUTED_AUDIO_ROOT, WEARABLE_AUDIO_ROOT, TSE_AUDIO_ROOT):
-        paths += sorted(asset_root.glob("*"))
-    paths += sorted((ROOT / "figures").glob("fig*.png"))
-    paths += [ROOT / "scripts/course_home" / name for name in ("index.html", "home.css", "home.js")]
-    paths += [ROOT / "assets/readme/lab" / name for name in ("array-lab.html", "single.wav", "left.wav", "right.wav")]
-    paths += [ROOT / "assets/readme/cases/locata" / name for name in
-              ("MANIFEST.json", "NOTICE.txt", "before.wav", "after.wav", "mvdr.wav", "focus.wav", "levels.svg")]
-    paths += [ROOT / "scripts" / name for name in
-              ("build_site.py", "build_markdown_helpers.py", "inline_layout.js", "heading_aliases.py",
-               "chapter_identity.py", "chapter_numbering.json", "legacy_sequential_anchors.json", "code_layout.py", "make_math_figures.py", "make_figures.py",
-               "make_aec_figures.py", "make_beamforming_figures.py", "make_reference_figures.py", "make_delay_figures.py", "make_css_figures.py", "make_tracking_figures.py", "make_channel_figures.py", "make_selection_figures.py", "make_wearable_figures.py", "make_tse_figures.py")]
-    paths.append(ROOT / "requirements.txt")
-    paths.append(ROOT / "codes/chapters/ch00/io_contracts.py")
-    for path in paths:
-        digest.update(path.relative_to(ROOT).as_posix().encode("utf-8"))
-        digest.update(b"\0")
-        digest.update(path.read_bytes())
-        digest.update(b"\0")
-    return digest.hexdigest()[:12]
+    """Use the site builder's complete publication-input contract."""
+    from scripts import build_site
+    return build_site.source_digest()
+
 
 
 def norm(text: str):
@@ -1754,11 +1813,16 @@ def check_pdf(errors: list[str], notices: list[str]):
         fail(errors, "PDF 缺少正确的标题元数据")
     if metadata.get("/SourceDigest") != source_digest():
         fail(errors, "PDF 不是当前源文件生成，SourceDigest 不一致")
+    from scripts import build_pdf
+    try:
+        build_pdf.verify_pdf_input_metadata(reader, build_pdf.build_html, build_pdf.source_digest)
+    except (ValueError, TypeError, OSError) as error:
+        fail(errors, f'PDF 实际 HTML 输入身份失效：{error}')
     if str(reader.trailer["/Root"].get("/Lang", "")) != "zh-CN":
         fail(errors, "PDF 缺少 /Lang zh-CN")
     root = reader.trailer["/Root"]
-    mark_info = root.get("/MarkInfo")
-    is_marked = bool(mark_info and mark_info.get_object().get("/Marked"))
+    from scripts.build_pdf import pdf_marked_true
+    is_marked = pdf_marked_true(reader)
     if not is_marked or not root.get("/StructTreeRoot"):
         fail(errors, "PDF 缺少结构标签根节点；检查 Chrome 导出与书签写入")
     else:
@@ -2719,13 +2783,13 @@ def check_tracking_lifecycle_figure(errors):
                 raise ValueError("figure77 event or publication denominator differs")
             parameters = section["parameters"]
             for key, expected in (("sample_rate_hz",16000), ("window_samples",512),
-                    ("tick_denominator_hz",32000), ("confirmation_frames",3),
+                    ("tick_denominator_hz",32000), ("hop_samples",160), ("confirmation_frames",3),
                     ("maximum_age_ticks",6400), ("maximum_age_s",.2),
                     ("age_clock","available" if name == "lifecycle" else "state")):
                 if not same_metadata(parameters.get(key),expected):
                     raise ValueError("figure77 time or threshold contract differs")
             fixed_parameters = {
-                "sample_rate_hz":16000, "window_samples":512,
+                "sample_rate_hz":16000, "window_samples":512, "hop_samples":160,
                 "tick_denominator_hz":32000, "confirmation_frames":3,
                 "maximum_age_ticks":6400, "maximum_age_s":.2,
                 "age_clock":"available" if name == "lifecycle" else "state",
@@ -5100,8 +5164,24 @@ def check_tse_figures(errors):
                 mask_av = report.get("occlusion_mask_av", [])
                 mask_fused = report.get("occlusion_mask_fused", [])
                 if (not alpha_v or len(alpha_v) != len(mask_av) or len(alpha_v) != len(mask_fused)
-                        or report.get("consonant_loss_percent", [1.0])[0] != 0.0):
+                        or report.get("consonant_loss_percent", [])[::8] != [12.5, 50.0, 75.0, 100.0, 100.0]):
                     raise ValueError("figure83 AV alignment/occlusion series mismatch")
+                if (report.get("alignment_mode") != "online_last_arrived"
+                        or report.get("sync_video_indices", [])[:5] != [-1, 0, 0, 0, 1]
+                        or report.get("lag120ms_video_indices", [])[:8] != [-1] * 8
+                        or report.get("sync_valid_video_mask", [])[:5] != [False, True, True, True, True]
+                        or report.get("lag120ms_valid_video_mask", [])[:8] != [False] * 8):
+                    raise ValueError("figure83 must show online frame availability")
+                decision_times = report.get("audio_decision_times_s", [])
+                if len(decision_times) != 15:
+                    raise ValueError("figure83 decision timestamps are missing")
+                for prefix in ("sync", "lag120ms"):
+                    valid = report.get(prefix + "_valid_video_mask", [])
+                    arrivals = report.get(prefix + "_video_arrival_times_s", [])
+                    if (len(valid) != 15 or len(arrivals) != 15
+                            or any(type(v) is not bool for v in valid)
+                            or any(arrival > decision for v, arrival, decision in zip(valid, arrivals, decision_times) if v)):
+                        raise ValueError("figure83 associates a future or undeclared video frame")
             with Image.open(validate_parent_chain(ROOT / "figures" / png_name)) as picture:
                 metadata = picture.info
             if (metadata.get("SourceScript") != "scripts/make_tse_figures.py"

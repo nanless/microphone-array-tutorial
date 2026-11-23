@@ -350,19 +350,22 @@ class Chapter10ExperimentsTests(unittest.TestCase):
     def test_p340_duplex_types_and_p808_exact_fraction_screening(self):
         ans = self.answers['E10-28']
         p340 = ans['p340']
-        self.assertEqual([p340[k]['overall_type'] for k in ('A', 'B', 'C')],
+        self.assertEqual([p340[k]['attenuation_type'] for k in ('A', 'B', 'C')],
                          ['Type 3', 'Type 2b', 'Type 1'])
         self.assertAlmostEqual(p340['A']['sending_dt_attenuation_db'], 20 * math.log10(5), places=12)
         self.assertAlmostEqual(p340['B']['sending_dt_attenuation_db'], 20 * math.log10(2.5), places=12)
         self.assertAlmostEqual(p340['B']['receiving_dt_attenuation_db'], 20 * math.log10(2), places=12)
         self.assertAlmostEqual(p340['C']['sending_dt_attenuation_db'], 20 * math.log10(1.25), places=12)
         self.assertAlmostEqual(p340['C']['receiving_dt_attenuation_db'], 20 * math.log10(10 / 9), places=12)
+        for row in p340.values():
+            self.assertIsNone(row['joint_type'])
+            self.assertEqual(row['joint_status'], 'insufficient_evidence')
         p808 = ans['p808']
         self.assertEqual(p808['accepted_workers'], ['w1', 'w2', 'w3', 'w4'])
         self.assertEqual(p808['rejected_workers'], ['w5', 'w6'])
-        self.assertEqual((p808['raw_mos_fraction'], p808['screened_mos_fraction'], p808['mos_debias_fraction']),
+        self.assertEqual((p808['raw_mos_fraction'], p808['screened_mos_fraction'], p808['screening_difference_fraction']),
                          ('29/8', '69/16', '11/16'))
-        self.assertEqual((p808['raw_mos'], p808['screened_mos'], p808['mos_debias_delta']),
+        self.assertEqual((p808['raw_mos'], p808['screened_mos'], p808['screening_difference']),
                          (3.625, 4.3125, 0.6875))
         self.assertEqual(p808['worker_retention_fraction'], '2/3')
         with self.assertRaises(ValueError):

@@ -10,14 +10,14 @@
     "codes/chapters/ch14/core/binaural_matching.py": "a6d18a54486a598137f0c8796c73f69fd34ddac7da6490dcba116936e6205598",
     "codes/chapters/ch14/core/wearable_fusion.py": "706ee403f428d609b6bba4541af2bec43d3db74a8460d9159f1b40a8b0664028",
     "codes/chapters/ch14/core/wearable_audio.py": "2787140eec74640f1cb8f70fc63e064c9da14b024fbecff887f469354fce84d1",
-    "codes/chapters/ch14/examples/generate_wearable_audio.py": "0121d04fa6935fb6db437672e41cfb4362e4d8d84cbb42c8221bf9c87f02f36b",
-    "codes/chapters/ch02/core/conventions.py": "4e80a27490f05ddd5f4826361420c0c8d0b331464d1e5629c5def492da47b1d7",
+    "codes/chapters/ch14/examples/generate_wearable_audio.py": "0963847ab0686df00cca30cbdb041ee984a9f47be9f2bb99287598e3c144a888",
+    "codes/chapters/ch02/core/conventions.py": "79af1b8f7fe664e64e7ad786082c36a29664eacbdda63fba96a944e548304865",
     "codes/chapters/ch00/core/audio_samples.py": "1a7aad90d08fb8c27511aa463a6cc6dd6d4d2d230b27ed82549531f1f18edaba",
     "codes/chapters/ch00/io_contracts.py": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974",
-    "scripts/make_figures.py": "4bc6a6ce675292c51d538c0f7d3c6f9c8fe3a2de2d0d7945f48cb4baaa801e49",
-    "scripts/make_wearable_figures.py": "e400ae7c4b25d92cd6befe15745b7c943c03141bdb252c71b1f4faf85b19a148"
+    "scripts/make_figures.py": "bf9058d1c3d6ed15bab41ea092439170cd324011936645d577408106813a485a",
+    "scripts/make_wearable_figures.py": "a4b6196b1156aa249db0d1398cd907ddd7acc55838ac61143b40868d78828f51"
   },
-  "audio_manifest_sha256": "bb8df8df623695044ff8c40963796658280d2620ffbacf0d5a0b01364835e3bd",
+  "audio_manifest_sha256": "ef3fc5cb658e1de0619a43a2313059516f8f964d0c82a10cd164ba4ad78b2ff6",
   "wav_sha256": {
     "wearable_clean_ref.wav": "3cfd9f7cbbccef6ffeb82084a2b6b3f80ba4843453e2f63bb13f42e9128a1558",
     "wearable_air_wind_2ch.wav": "180d2f053e9753dd9dc8f6f7a55c016abc9d782d21acf29077c638eec426749e",

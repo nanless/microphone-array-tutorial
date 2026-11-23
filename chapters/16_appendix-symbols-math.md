@@ -136,11 +136,11 @@ $$\begin{gathered}
 | 术语 | 解释 |
 |---|---|
 | STFT（短时傅里叶变换） | 将连续长波形按固定帧移切分为重叠短帧，加窗后逐帧计算 DFT，得到时间—频率二维复数谱。窗长与帧移需在频率分辨率、语音短时平稳性与系统延迟之间折中；在满足窄带近似条件时，可把时域宽带卷积拆解为逐频点复数乘加（§2.5） |
-| COLA / WOLA（常数重叠相加 / 加权重叠相加） | COLA 要求分析窗与合成窗按帧移 $H$ 平移乘积累加后在整个平稳时间轴上恒为非零常数（$\sum_\ell w_{\mathrm{syn}}[n-\ell H]w_{\mathrm{ana}}[n-\ell H]=C$），是 STFT 无失真完美重建的充要条件；WOLA 在分析与合成两端各施加窗函数（如开方 Hann 双窗）以压制频域修改引发的块边界不连续，详见[§0.2.4](00_math-foundations.md#sec-0-2-4)、§2.5 |
+| COLA / WOLA（常数重叠相加 / 加权重叠相加） | COLA 要求分析窗与合成窗按帧移 $H$ 平移乘积累加后在整个平稳时间轴上恒为非零常数（$\sum_\ell w_{\mathrm{syn}}[n-\ell H]w_{\mathrm{ana}}[n-\ell H]=C$），在不作逐点归一化的重叠相加中保证未改谱信号以常增益重建；若按窗乘积之和逐点归一化，该和处处非零即可；WOLA 在分析与合成两端各施加窗函数（如开方 Hann 双窗）以压制频域修改引发的块边界不连续，详见[§0.2.4](00_math-foundations.md#sec-0-2-4)、§2.5 |
 | 快拍（snapshot） | 某一帧、某一频点上，$M$ 个麦克风的复数频谱分量按通道顺序排成的 $M$ 维列向量，相当于阵列在该时频格点拍下的一帧空间采样（§2.5） |
 | 空间协方差矩阵 $\mathbf{R}_{xx}$, $\hat{\mathbf{R}}_{xx}$（简记 $\mathbf{R}$, $\hat{\mathbf{R}}$） | 阵列信号处理中常把观测总体二阶矩 $\mathbf{R}_{xx}=\mathbb{E}[\vec{x}\vec{x}^H]$ 与快拍外积的时间平均 $\hat{\mathbf{R}}_{xx}=\frac{1}{L}\sum_\ell \vec{x}_\ell\vec{x}_\ell^H$（无歧义时简记为 $\mathbf{R}$, $\hat{\mathbf{R}}$；加性噪声协方差相应记为 $\mathbf{R}_{vv}$ 或 $\mathbf{R}_{nn}$）统称为空间协方差矩阵。若未先减去样本均值，$\hat{\mathbf{R}}_{xx}$ 严格来说是未中心化样本二阶矩，仅当**当前这批快拍的样本均值恰好为零向量**时才与同分母的中心化样本协方差相等；总体零均值并不能保证有限样本均值为零。它是 Capon、MVDR 与 MUSIC 的核心输入，定义见第 2 章式(2-6)、式(2-7) |
 | 特征分解 / 子空间 | 将厄米矩阵分解为实特征值与正交特征向量。要把前 $K$ 个大特征值对应的特征向量解释为 $K$ 维信号子空间，需同时满足源协方差满秩、导向矩阵满列秩、源数 $K<M$、空间白噪声、源与噪声互二阶矩为零以及流形模型准确；其余对应噪声底的特征向量张成噪声子空间（图 6d、§4.6） |
-| 超定方程组 | 独立方程条数多于未知数个数的线性方程组。当右端观测向量恰好落在系数矩阵列空间内时存在精确解，不相容时则通过最小二乘寻找残差范数最小的近似解。在 TDOA 定位中，多组麦克风对的时差往往共享同一个参考到达时刻，方程条数增加并不代表独立几何约束等量增加（§4.4） |
+| 超定方程组 | 方程条数多于未知数个数的线性方程组；独立约束数由系数矩阵的秩决定。当右端观测向量恰好落在系数矩阵列空间内时存在精确解，不相容时则通过最小二乘寻找残差范数最小的近似解。在 TDOA 定位中，多组麦克风对的时差往往共享同一个参考到达时刻，方程条数增加并不代表独立几何约束等量增加（§4.4） |
 | 双曲线定位 | 在二维平面中，一对麦克风测得的非退化到达距离差对应以这两只麦克风为焦点的双曲线的一支；在三维空间中则对应双叶双曲面的一叶。联立多组独立基线求交即可定位近场声源，但在共线或端射退化几何下可能不存在唯一交点（§4.4） |
 | 常规波束分辨率 / 超分辨 | 常规延迟求和波束的主瓣角宽量级受限于瑞利限 $\lambda/D$；子空间类方法（如 MUSIC、ESPRIT）在流形准确、信噪比与快拍数充足且声源非完全相干时，能够分辨角间距小于 $\lambda/D$ 的多个声源，故称超分辨（§2.6、§4.6） |
 | 波束图（beampattern） | 波束形成器固定权重后对空间各入射方向平面波的复响应模值（或功率增益）随角度变化的曲线，用于直观读取主瓣宽度、旁瓣高度与干扰零陷位置（图 7a） |
@@ -325,13 +325,13 @@ $$\begin{gathered}
 | 类别 | 核心恒等式 / 闭式解 | 前提与完整推导入口 |
 |---|---|---|
 | 复内积与样本二阶矩 | $\|\vec x\|_2^2=\vec x^H\vec x$；$\hat{\mathbf R}_{xx}=\frac{1}{L}\sum_{\ell=1}^L\vec x_\ell\vec x_\ell^H=\hat{\mathbf C}_L+\bar{\vec x}\bar{\vec x}^H$ | 复向量模方必取共轭；$\hat{\mathbf R}_{xx}=\hat{\mathbf C}_L$ 当且仅当本批样本均值 $\bar{\vec x}=\vec 0$（[§0.3.1](00_math-foundations.md#sec-0-3-1)、[§0.6.1](00_math-foundations.md#sec-0-6-1)） |
-| 圆对称复高斯例外 | 伪协方差 $\mathbb{E}[\vec z\vec z^\top]=\mathbf 0$ 时方为圆对称（proper） | 实信号 DFT 的直流（$k=0$）与偶数长 Nyquist（$k=N/2$）恒实，伪协方差非零（[§0.6.1](00_math-foundations.md#sec-0-6-1)、§7.2） |
+| 圆对称复高斯例外 | 对零均值复高斯，伪协方差 $\mathbb{E}[\vec z\vec z^\top]=\mathbf 0$ 等价于 proper 性与圆对称性 | 实信号 DFT 的直流（$k=0$）与偶数长 Nyquist（$k=N/2$）恒实，伪协方差非零（[§0.6.1](00_math-foundations.md#sec-0-6-1)、§7.2） |
 | Wirtinger 三大法则 | $\frac{\partial(\vec w^H\vec a)}{\partial\vec w^*}=\vec a$，$\frac{\partial(\vec a^H\vec w)}{\partial\vec w^*}=\vec 0$，$\frac{\partial(\vec w^H\mathbf R\vec w)}{\partial\vec w^*}=\mathbf R\vec w$ | $\mathbf R=\mathbf R^H$；实值约束乘子项写为 $2\operatorname{Re}\{\lambda^*(\vec w^H\vec a-1)\}$，求共轭偏导后因子 $2$ 自然消去（[§0.5.1](00_math-foundations.md#sec-0-5-1)） |
 | 正交投影与 OLS / GLS | $\mathbf P_{\mathcal R(\mathbf A)}=\mathbf A(\mathbf A^H\mathbf A)^{-1}\mathbf A^H$；$\hat{\vec x}_{\mathrm{WLS}}=(\mathbf A^H\mathbf C^{-1}\mathbf A)^{-1}\mathbf A^H\mathbf C^{-1}\vec b$ | $\mathbf A$ 满列秩、噪声协方差 $\mathbf C=\mathbf L\mathbf L^H\succ\mathbf 0$；Cholesky 白化 $\mathbf W=\mathbf L^{-1}$ 须同步左乘 $\mathbf A$ 与 $\vec b$（[§0.3.2](00_math-foundations.md#sec-0-3-2)、[§0.6.3](00_math-foundations.md#sec-0-6-3)、[E16-15](#e16-15)） |
 | MVDR / LCMV 闭式解 | $\vec w_{\mathrm{MVDR}}=\frac{\mathbf R^{-1}\vec a}{\vec a^H\mathbf R^{-1}\vec a}$；$\vec w_{\mathrm{LCMV}}=\mathbf R^{-1}\mathbf C(\mathbf C^H\mathbf R^{-1}\mathbf C)^{-1}\vec f$ | $\mathbf R\succ\mathbf 0$、$\mathbf C$ 满列秩；线性约束 $\mathbf C^H\vec w=\vec f$ 中指定响应 $g_k=\vec w^H\vec c_k$ 须取共轭 $f_k=g_k^*$（[§0.5.2](00_math-foundations.md#sec-0-5-2)、§5.4～§5.5） |
 | Woodbury / Sherman–Morrison | $(\mathbf M+\mathbf U\mathbf C\mathbf V)^{-1}=\mathbf M^{-1}-\mathbf M^{-1}\mathbf U$<br>$\cdot(\mathbf C^{-1}+\mathbf V\mathbf M^{-1}\mathbf U)^{-1}\mathbf V\mathbf M^{-1}$；<br>秩一 $(\mathbf M+\vec u\vec v^H)^{-1}=\mathbf M^{-1}-\frac{\mathbf M^{-1}\vec u\vec v^H\mathbf M^{-1}}{1+\vec v^H\mathbf M^{-1}\vec u}$ | 将在线遗忘协方差递推求逆由 $O(M^3)$ 降至 $O(M^2)$；长期有限字长递推须定期对称化 $\frac{1}{2}(\mathbf P+\mathbf P^H)$（[§0.3.5](00_math-foundations.md#sec-0-3-5)） |
 | 列优先 $\operatorname{vec}$ / Kronecker / Khatri–Rao | $(\mathbf B_1\otimes\mathbf A_1)(\mathbf B_2\otimes\mathbf A_2)$<br>$=(\mathbf B_1\mathbf B_2)\otimes(\mathbf A_1\mathbf A_2)$；<br>$\operatorname{vec}(\mathbf A\mathbf X\mathbf B^\top)=(\mathbf B\otimes\mathbf A)\operatorname{vec}(\mathbf X)$；<br>$\operatorname{vec}(\mathbf A\operatorname{diag}(\vec q)\mathbf A^H)=(\mathbf A^*\odot\mathbf A)\vec q$ | 统一差分共阵（§3.3）、可分离平面阵（§5.5）与 CMF 成像（§12.7）；左因子须取共轭 $\mathbf A^*$（[§0.4.3](00_math-foundations.md#sec-0-4-3)） |
-| 单位四元数与 SLERP | $\mathbf R(\mathbf q)=(q_w^2-\lVert\vec q_v\rVert_2^2)\mathbf I_3$<br>$+2\vec q_v\vec q_v^\top+2q_w[\vec q_v]_\times$；<br>$\operatorname{SLERP}=\frac{\sin((1-t)\Omega)}{\sin\Omega}\mathbf q_0+\frac{\sin(t\Omega)}{\sin\Omega}\mathbf q_1$ | $\lVert\mathbf q\rVert_2=1$、双重覆盖 $\mathbf q\sim-\mathbf q$；须先使 $\mathbf q_0^\top\mathbf q_1\ge 0$ 取最短弧，支撑 IMU 与头部追踪（[§0.1.3](00_math-foundations.md#sec-0-1-3)、§9.2.3、§14.3） |
+| 单位四元数与 SLERP | $\mathbf R(\mathbf q)=(q_w^2-\lVert\vec q_v\rVert_2^2)\mathbf I_3$<br>$+2\vec q_v\vec q_v^\top+2q_w[\vec q_v]_\times$；<br>$\operatorname{SLERP}=\frac{\sin((1-t)\Omega)}{\sin\Omega}\mathbf q_0+\frac{\sin(t\Omega)}{\sin\Omega}\mathbf q_1$ | $\lVert\mathbf q\rVert_2=1$、双重覆盖 $\mathbf q\sim-\mathbf q$；须先使 $\mathbf q_0^\top\mathbf q_1\ge 0$ 取最短弧；$\Omega=0$ 时取连续极限 $\mathbf q(t)=\mathbf q_0$，近重合时可用归一化线性插值，支撑 IMU 与头部追踪（[§0.1.3](00_math-foundations.md#sec-0-1-3)、§9.2.3、§14.3） |
 | 多相分解与 Noble 恒等式 | $H(z)=\sum_{p=0}^{D-1}z^{-p}E_p(z^D)$；<br>$E(z^D)\!\to\!(\downarrow D)\equiv(\downarrow D)\!\to\!E(z)$；<br>$(\uparrow U)\!\to\!E(z^U)\equiv E(z)\!\to\!(\uparrow U)$ | 将高率抽取/插值滤波移至低率侧，算力精确降至 $1/D$，支撑子带 AEC 与 PDM 抽取（[§0.2.5](00_math-foundations.md#sec-0-2-5)、§6.2.3、§10.2） |
 | Schur 补 LMI 与 SDP | $\vec x^H\mathbf A\vec x\le t\;(\mathbf A\succ\mathbf 0)$<br>$\Longleftrightarrow\;\begin{bmatrix}\mathbf A^{-1} & \vec x \\ \vec x^H & t\end{bmatrix}\succeq\mathbf 0$ | 将凸二次/SOCP 约束等价转为线性矩阵不等式，支撑稳健波束形成与无网格 ANM（[§0.3.5](00_math-foundations.md#sec-0-3-5)、[§0.5.3](00_math-foundations.md#sec-0-5-3)、§5.4、§12.11） |
 
@@ -359,7 +359,7 @@ $$\begin{aligned}
 | 截断 SVD（TSVD / `lstsq(rcond=ρ)`） | 相对阈值 $\rho$ 无量纲 | $\sigma_i\le\rho\sigma_{\max}$ 硬置零，滤波因子发生阶跃跳变 | 切勿把无量纲 `rcond` 当作加性岭参数 $\delta$（[E16-11](#e16-11)） |
 | 岭正则（Ridge / 零阶 Tikhonov） | $\delta$ 与 $\mathbf A^H\mathbf A$ 同量纲 | 平滑软收缩因子 $\sigma_i^2/(\sigma_i^2+\delta)$ | 弱方向连续压低而非截断清零，残差满足 $\mathbf A^H\hat{\vec r}_\delta=-\delta\hat{\vec x}_\delta$（[E16-11](#e16-11)） |
 | Moore–Penrose 伪逆 $\mathbf R^+$ 代逆 | 依赖秩截断门限 | 直接抹除 $\mathbf R$ 的零空间方向 | 奇异 $\mathbf R$ 下若目标导向在零空间有非零投影，伪逆解与 $\delta\to 0^+$ 真 MVDR 极限相悖（[E16-05](#e16-05)） |
-| 显式正规方程 $\mathbf A^H\mathbf A$ vs QR / SVD | — | 显式相乘令条件数平方放大至 $\kappa_2(\mathbf A^H\mathbf A)=\kappa_2(\mathbf A)^2$ | $\kappa_2(\mathbf A)\gtrsim 10^8$ 时 `float64` 正规方程将淹没弱方向，代码须直调 QR/SVD（[§0.3.4](00_math-foundations.md#sec-0-3-4)） |
+| 显式正规方程 $\mathbf A^H\mathbf A$ vs QR / SVD | — | 满列秩时，显式相乘令条件数平方放大至 $\kappa_2(\mathbf A^H\mathbf A)=\kappa_2(\mathbf A)^2$ | $\kappa_2(\mathbf A)\gtrsim 10^8$ 时 `float64` 正规方程将淹没弱方向，代码须直调 QR/SVD（[§0.3.4](00_math-foundations.md#sec-0-3-4)） |
 | 总体最小二乘（TLS） | $[\mathbf A,\vec b]$ 同尺度（无外加正则参） | 对增广阵 $[\mathbf A,\vec b]$ 做 SVD 取末右奇异向量<br>$\hat{\vec x}_{\mathrm{TLS}}=-\vec v_{1:n,n+1}/v_{n+1,n+1}$ | 需满足 $\sigma_n(\mathbf A)>\sigma_{n+1}([\mathbf A,\vec b])$，临近退化时放大噪声；支撑 TLS-ESPRIT（[§0.3.4](00_math-foundations.md#sec-0-3-4)、§4.6） |
 | Weyl 与 Davis–Kahan 微扰界 | $\lVert\mathbf E\rVert_2$ 与间隙 $\Delta_{\mathrm{gap}}$ 同功率量纲 | $\lvert\lambda_i(\hat{\mathbf R})-\lambda_i(\mathbf R)\rvert\le\lVert\mathbf E\rVert_2$；<br>$\lVert\sin\Theta(\hat{\mathbf U}_s,\mathbf U_s)\rVert_2\le\lVert\mathbf E\rVert_2/\Delta_{\mathrm{gap}}$ | $\Delta_{\mathrm{gap}}=\lambda_K(\mathbf R)-\lambda_{K+1}(\hat{\mathbf R})>0$；当 $\lVert\mathbf E\rVert_2$ 逼近 $\Delta_{\mathrm{gap}}$ 时 MUSIC/ESPRIT 发生门限坍塌（[§0.3.4](00_math-foundations.md#sec-0-3-4)、§4.6） |
 
@@ -367,7 +367,7 @@ $$\begin{aligned}
 
 | 常见接口 / 操作 | 默认隐含行为与典型陷阱 | 正确工程校验做法 | 对应练习 |
 |---|---|---|---|
-| `np.fft.fftfreq` vs `rfftfreq` | 完整双边 DFT 后半区对应负频率（末格 $k=N-1$ 为 $-f_s/N$）；偶数 $N$ 的 Nyquist 格点 $k=N/2$ 在双边记 $-f_s/2$、单边记 $+f_s/2$ | 按式(16-1)对齐正负频率，切勿把数组下标直接当高于 $f_s/2$ 的正频率；单边谱求能量对内部频点乘 $2$、两端点乘 $1$ | [E16-06](#e16-06) |
+| `np.fft.fftfreq` vs `rfftfreq` | 完整双边 DFT 后半区对应负频率（末格 $k=N-1$ 为 $-f_s/N$）；偶数 $N$ 的 Nyquist 格点 $k=N/2$ 在双边记 $-f_s/2$、单边记 $+f_s/2$ | 按式(16-1)对齐正负频率，切勿把数组下标直接当高于 $f_s/2$ 的正频率；单边谱求能量时 DC 乘 $1$，偶数 $N$ 的 Nyquist 格点乘 $1$，其余保留频点均乘 $2$（含奇数 $N$ 的最高保留频点） | [E16-06](#e16-06) |
 | `np.linalg.eigh(A, UPLO='L'\|'U')` | 默认仅读单侧三角并**静默丢弃主对角线虚部**，不报错绝不证明输入是合法厄米协方差 | 调用前自检 $\|\hat{\mathbf R}-\hat{\mathbf R}^H\|_F$ 是否在舍入容差内及最小特征值非负 | [E16-13](#e16-13) |
 | `np.linalg.lstsq(A, b, rcond=...)` | 行数 $m\le p$ 或数值判秩不满秩时，返回的 `residuals` 字段恒为空数组 `[]`（即便真实残差非零） | 严禁把 `residuals == []` 误判为零误差；始终显式复算 $\|\mathbf A\hat{\vec x}-\vec b\|_2$ | [E16-11](#e16-11) |
 | `R.ravel()` vs `R.ravel(order='F')` | NumPy 默认按行（C 序）展平，对复厄米矩阵会颠倒非对角共轭项，破坏 Roth 引理与 Khatri–Rao 字典 | 所有涉及 $\operatorname{vec}(\cdot)$ 的运算显式指定列优先 `order='F'`，并在 $\mathbf A^*\odot\mathbf A$ 中保留左因子共轭 | [§0.4.3](00_math-foundations.md#sec-0-4-3) |
@@ -616,7 +616,7 @@ $$\begin{gathered}
 
 **第一步：对比两种 `rcond` 门限下的硬截断。** $\mathbf{A}$ 的两个奇异值为 $\sigma_1=1$ 与 $\sigma_2=10^{-8}$。当设 `rcond=1e-10` 时，截断门限为 $10^{-10}$，两个奇异值均保留，报告数值秩为 $2$，返回完整解 $[1,1]^\top$，真实残差为零；当设 `rcond=1e-6` 时，$\sigma_2=10^{-8}<10^{-6}$ 被硬性置零，报告数值秩降为 $1$，返回截断最小范数解 $[1,0]^\top$，代回原方程算得真实残差为 $[0,-10^{-8}]^\top$（二范数为 $10^{-8}$）。特别留意接口细节：由于本题行数 $m=2$ 不大于列数 $p=2$，两次调用返回的 `residuals` 字段均为空数组——哪怕第二次实际存在 $10^{-8}$ 的非零残差也是如此，因此工程代码必须显式用 $\|\mathbf{A}\hat{\vec{x}}-\vec{b}\|_2$ 复算残差。
 
-**第二步：对比 $\delta=10^{-16}$ 的 Ridge 软收缩。** 将 $\delta=10^{-16}$ 代入式(16-3)的两条解耦标量方程 $(1+\delta)x_1=1$ 与 $(10^{-16}+\delta)x_2=10^{-8}$，精确解为 $\hat{\vec{x}}_\delta=[1/(1+10^{-16}),\ 1/2]^\top$（双精度浮点下第一分量会舍入显示为 $1.0$）：由于在弱方向上恰有 $\delta=\sigma_2^2=10^{-16}$，软收缩因子 $\frac{\sigma_2^2}{\sigma_2^2+\delta}=\frac{1}{2}$ 将第二分量平滑压缩为精确值的一半，既不像全秩解那样原样放行，也不像 TSVD 那样一刀砍成 $0$；其残差内积 $\mathbf A^H\hat{\vec r}_\delta$ 等于 $-\delta\hat{\vec x}_\delta$。这也再次印证了无量纲相对比值 `rcond` 与同量纲惩罚系数 $\delta$ 对应着不同的数学目标。
+**第二步：对比 $\delta=10^{-16}$ 的 Ridge 软收缩。** 将 $\delta=10^{-16}$ 代入式(16-3)的两条解耦标量方程 $(1+\delta)x_1=1$ 与 $(10^{-16}+\delta)x_2=10^{-16}$，精确解为 $\hat{\vec{x}}_\delta=[1/(1+10^{-16}),\ 1/2]^\top$（双精度浮点下第一分量会舍入显示为 $1.0$）：由于在弱方向上恰有 $\delta=\sigma_2^2=10^{-16}$，软收缩因子 $\frac{\sigma_2^2}{\sigma_2^2+\delta}=\frac{1}{2}$ 将第二分量平滑压缩为精确值的一半，既不像全秩解那样原样放行，也不像 TSVD 那样一刀砍成 $0$；其残差内积 $\mathbf A^H\hat{\vec r}_\delta$ 等于 $-\delta\hat{\vec x}_\delta$。这也再次印证了无量纲相对比值 `rcond` 与同量纲惩罚系数 $\delta$ 对应着不同的数学目标。
 
 <a id="e16-12"></a>
 
@@ -713,7 +713,7 @@ $$\mathbf{C}^{-1}=\frac{4}{7}
 
 右乘 $\vec{a}=[1,1]^\top$ 得 $\mathbf{C}^{-1}\vec{a}=[10/7,-2/7]^\top$，再算归一化分母 $\vec{a}^H\mathbf{C}^{-1}\vec{a}=10/7-2/7=8/7$，相除即得最优权重 $\vec{h}=[5/4,-1/4]^\top$。注意看：第二个通道的权重变成了负数 $-1/4$，但两通道权重之和 $5/4+(-1/4)=1$ 依然精确保持目标无失真通过。
 
-为什么负权重反而能降噪？将第二路噪声正交分解为 $n_2=(3/2)n_1+\xi$，由协方差矩阵算得 $\mathbb{E}[n_1\xi^*]=0$ 且独立残差功率 $\mathbb{E}[|\xi|^2]=4-(9/4)\times 1=7/4$；代入输出噪声 $(5/4)n_1-(1/4)n_2=(7/8)n_1-(1/4)\xi$，部分共模相关噪声 $n_1$ 被相减抵消，剩余两正交项功率之和仅为 $(7/8)^2\times 1+(1/4)^2\times(7/4)=49/64+7/64=7/8$（可见线性滤波权重允许取负值或大于 $1$，不能套用 $[0,1]$ 时频活动掩码的直觉）。
+为什么负权重反而能降噪？将第二路噪声正交分解为 $n_2=(3/2)n_1+\xi$，由协方差矩阵算得 $\mathbb{E}[n_1\xi^*]=0$ 且不相关残差功率 $\mathbb{E}[|\xi|^2]=4-(9/4)\times 1=7/4$；代入输出噪声 $(5/4)n_1-(1/4)n_2=(7/8)n_1-(1/4)\xi$，部分共模相关噪声 $n_1$ 被相减抵消，剩余两正交项功率之和仅为 $(7/8)^2\times 1+(1/4)^2\times(7/4)=49/64+7/64=7/8$（可见线性滤波权重允许取负值或大于 $1$，不能套用 $[0,1]$ 时频活动掩码的直觉）。
 
 **第二步：在同一真实协方差 $\mathbf{C}$ 下横向核算方差。** 对任意满足无偏条件的权重 $\vec{h}$，估计误差为 $\hat{x}-x_*=\vec{h}^H\vec{n}$，真实总体方差必须统一用完整的 $\vec{h}^H\mathbf{C}\vec{h}$ 评估（包括忽略相关项算出的对角加权 $[4/5,1/5]^\top$）：
 

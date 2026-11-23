@@ -115,6 +115,8 @@ def loaded_filterpy_modules(identity):
                 raise ValueError("Imported a foreign FilterPy module: " + name) from error
             if relative not in identity["used_files"]:
                 raise ValueError("FilterPy module was not verified before import: " + relative)
+            if getattr(module, '__micarray_original_source_sha256__', None) != identity['used_files'][relative]['sha256']:
+                raise ValueError("FilterPy module lacks verified source-byte execution: " + name)
             loaded[name] = relative
     return loaded
 
@@ -127,8 +129,18 @@ def run_filterpy(root):
     sys.dont_write_bytecode = True
     identity = contracts.verify_project("filterpy", Path(root) / "filterpy",
         relatives=tuple(SOURCES["filterpy"]["files"]), all_python=True)
-    loaded_filterpy_modules(identity)  # Reject preexisting foreign modules first.
-    sys.path.insert(0, str((root / "filterpy").resolve()))
+    loaded_filterpy_modules(identity)  # Reject unmarked or foreign preexisting modules first.
+    path_before = list(sys.path)
+    try:
+        sys.path.insert(0, str((root / "filterpy").resolve()))
+        installed = contracts.package_preflight('filterpy', root / 'filterpy', root / 'filterpy/filterpy')
+        with contracts.source_imports('filterpy', installed):
+            return _run_filterpy_original(root, identity, installed)
+    finally:
+        sys.path[:] = path_before
+
+
+def _run_filterpy_original(root, identity, installed):
     import filterpy
     import scipy
     from filterpy.kalman import (KalmanFilter, IMMEstimator, ExtendedKalmanFilter,
@@ -237,9 +249,10 @@ def run_filterpy(root):
     sigmas = points.sigma_points(np.array([0.]), np.array([[1.]]))
     mean, cov = unscented_transform(sigmas**2, points.Wm, points.Wc)
     loaded = loaded_filterpy_modules(identity)
+    contracts.package_unchanged(installed)
     contracts.check_unchanged(identity)
     return {"execution": "original package classes/functions imported from verified checkout",
-            "source_identity": identity, "imported_modules": loaded,
+            "source_identity": identity, "direct_source_execution": installed, "imported_modules": loaded,
             "imported_module_count": len(loaded),
             "external_dependencies": {"numpy": {"version": np.__version__, "file": np.__file__},
                                       "scipy": {"version": scipy.__version__, "file": scipy.__file__}},

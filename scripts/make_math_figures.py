@@ -95,6 +95,7 @@ def _save_report_and_png(
         fig.get_layout_engine().set(w_pad=0.06, h_pad=0.09, wspace=0.04, hspace=0.06)
     finalize_figure(fig)
     metadata = {
+        "FigureFilename": dest.name,
         "SourceScript": "scripts/make_math_figures.py",
         "SourceScriptDigest": report_payload["source_sha256"]["scripts/make_math_figures.py"],
         "GeneratorInputs": json.dumps(report_payload["source_sha256"], sort_keys=True),
@@ -362,7 +363,7 @@ def _build_fig90(sources: dict[str, str]) -> None:
     )
     ax.legend(loc="center right")
 
-    # (c) Bias-variance U-curve under ill-conditioned inverse (kappa_2 = 1000)
+    # (c) Fixed perturbation and shrinkage error under ill-conditioned inversion
     ax = axes[1, 0]
     g_mat = ex07["g_matrix"]
     x_true = np.array([1.0, 0.0], dtype=np.float64)
@@ -379,11 +380,11 @@ def _build_fig90(sources: dict[str, str]) -> None:
         tot_norms.append(float(np.linalg.norm(x_noisy_est - x_true)))
 
     ax.loglog(eps_grid, tot_norms, color=C_MAIN, linewidth=2.3, label="总估计误差范数")
-    ax.loglog(eps_grid, noise_norms, color=C_RED, linestyle="--", linewidth=1.9, label="弱模态噪声放大项")
-    ax.loglog(eps_grid, bias_norms, color=C_BLUE, linestyle="-.", linewidth=1.9, label="正则化收缩偏差项")
+    ax.loglog(eps_grid, noise_norms, color=C_RED, linestyle="--", linewidth=1.9, label="固定扰动放大项")
+    ax.loglog(eps_grid, bias_norms, color=C_BLUE, linestyle="-.", linewidth=1.9, label="正则化收缩误差项")
     ax.scatter([0.1], [ex07["tikhonov_error_norm"]], color=C_GREEN, s=48, zorder=5, label=r"$\varepsilon=0.1$ 选点")
     ax.set(
-        title=r"(c) 病态逆（$\kappa_2=1000$）偏差—方差折中曲线",
+        title=r"(c) 病态逆（$\kappa_2=1000$）固定扰动与收缩误差",
         xlabel=r"对角加载参数 $\varepsilon$（对数坐标）",
         ylabel="二范数误差",
         xlim=(1e-6, 1e2),

@@ -2,7 +2,7 @@
 <link rel="canonical" href="13_distributed-enhancement.html"><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 13 章 · 分布式麦克风协同增强 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="1baedb55d363"><style>
+<meta name="source-digest" content="95d99d8dac7e"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -638,7 +638,7 @@ J_u^\star&=\phi_{d_u}
 <p>数值编程时应调用厄米正定线性方程组求解器（如 Cholesky 分解求解）直接解 $\mathbf R_{xx}\vec w_u^\star = \vec r_{xd_u}$，避免显式计算逆矩阵 $\mathbf R_{xx}^{-1}$。还要特别注意：式(13-4)最后一行的化简公式 $J_u^\star = \phi_{d_u} - \vec r_{xd_u}^H\vec w_u^\star$ 利用了 $\mathbf R_{xx}\vec w_u^\star = \vec r_{xd_u}$ 消项，所以正规方程保证该化简在最优解处成立；这一标量等式本身不是最优性的充要判据。评估非最优或陈旧权重时，应代回式(13-3)计算完整三项（集中式与节点特定维纳滤波的原始问题定义参见 <a href="https://homes.esat.kuleuven.be/~abertran/reports/09-65.pdf">Bertrand 与 Moonen 2010，Part I §II-A 式(1)、(2)</a>）。</p>
 <span id="sec-10" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-d3d14e7a97">参考目标不能从混合录音直接读出</h3>
 <p>刚接触 MWF 的读者常问：“既然参考选的是第 $r_u$ 支麦克风，那直接拿第 $r_u$ 路录音 $x_{r_u}$ 当作 $d_u$ 去算互相关 $\mathbb{E}[\vec x x_{r_u}^*]$ 行不行？”千万不行。因为实际麦克风录到的 $x_{r_u} = c_u s + n_{r_u}$ 里混有该通道自身的噪声 $n_{r_u}$——如果拿混合信号 $x_{r_u}$ 冒充 $d_u$，正规方程 $\mathbf R_{xx}\vec w = \mathbf R_{xx}\vec e_{r_u}$ 的解就会退化成荒唐的平凡选择向量 $\vec w = \vec e_{r_u}$（原封不动输出带噪参考麦信号，误差为零，一丝噪声都没滤掉）。</p>
-<p>在真实工程系统中，干净目标 $d_u$ 无法直接测量，必须借助语音活动检测（VAD）或时频掩码先分离估计噪声协方差 $\hat{\mathbf R}_{nn}$ 与总协方差 $\hat{\mathbf R}_{xx}$，由源噪不相关关系作差估计目标协方差 $\hat{\mathbf R}_{ss}$（等于 $\hat{\mathbf R}_{xx}$ 减 $\hat{\mathbf R}_{nn}$，或采用后文 §13.12 更稳健的 GEVD 低秩重构），再取出它的第 $r_u$ 列 $\vec r_{xd_u} = \hat{\mathbf R}_{ss}\vec e_{r_u}$ 送入正规方程。此外，本章式(13-3)对应失真与噪声等权重的标准 MWF（即<a href="05_beamforming.html">第 5 章</a>语音失真加权 SDW-MWF 中权衡因子 $\mu = 1$ 的情形）；在噪声协方差 $\mathbf R_{nn} \succ 0$ 且目标为秩一单源（$\mathbf R_{ss} = \phi_s\vec a\vec a^H$）时，即使不同节点各自设定不同的噪声惩罚因子 $\mu_u > 0$，各节点的集中式最优权重仍沿着同一条一维方向 $\mathbf R_{nn}^{-1}\vec a$ 共线，仅改变标量维纳增益。目标为多源或高秩模型（$\operatorname{rank}(\mathbf R_{ss}) \ge 2$）时，最优权重仍位于噪声加权目标响应张成的共同子空间内，但不再保证共线；不同 $\mu_u$ 既可能只改变标量，也可能改变子空间内的方向。广播维数 $Q \lt  S$ 不满足 §13.10 标准收敛定理的 $Q = S$ 条件，节点特定惩罚因子的收敛条件也须另行核对。</p>
+<p>在真实工程系统中，干净目标 $d_u$ 无法直接测量，必须借助语音活动检测（VAD）或时频掩码先分离估计噪声协方差 $\hat{\mathbf R}_{nn}$ 与总协方差 $\hat{\mathbf R}_{xx}$，由源噪不相关关系作差估计目标协方差 $\hat{\mathbf R}_{ss}$（等于 $\hat{\mathbf R}_{xx}$ 减 $\hat{\mathbf R}_{nn}$，或采用后文 §13.12 更稳健的 GEVD 低秩重构），再取出它的第 $r_u$ 列 $\vec r_{xd_u} = \hat{\mathbf R}_{ss}\vec e_{r_u}$ 送入正规方程。此外，本章式(13-3)对应失真与噪声等权重的标准 MWF（即<a href="05_beamforming.html">第 5 章</a>语音失真加权 SDW-MWF 中权衡因子 $\mu = 1$ 的情形）；在噪声协方差 $\mathbf R_{nn} \succ 0$ 且目标为秩一单源（$\mathbf R_{ss} = \phi_s\vec a\vec a^H$）时，即使不同节点各自设定不同的噪声惩罚因子 $\mu_u > 0$，各节点的集中式最优权重仍沿着同一条一维方向 $\mathbf R_{nn}^{-1}\vec a$ 共线，仅改变标量维纳增益。目标为多源或高秩模型（$\operatorname{rank}(\mathbf R_{ss}) \ge 2$）时，最优权重仍位于噪声加权目标响应张成的共同子空间内，但不再保证共线；不同 $\mu_u$ 既可能只改变标量，也可能改变子空间内的方向。广播维数 $Q \lt  S$ 不满足 §13.10 顺序收敛定理的 $Q = S$ 条件。该定理还把各节点的代价化为同一参考目标的均方误差；不能仅凭最优权重属于共同子空间，就推出各节点采用不同噪声惩罚因子时迭代仍会收敛。</p>
 <span id="sec-11" class="anchor-alias" aria-hidden="true"></span><span id="sec-15-4" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-13-4">13.4 秩一模型中的参考尺度与共轭</h2>
 <span id="sec-12" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-16913f1e5b">一个公共源，各节点仍有不同目标</h3>
 <p>当空间中只有一个点声源（式(13-1)的秩一目标模型）时，式(13-4)的集中式最优权重能拆成极其直观的闭式结构。先把 $d_u = c_u s$ 代入互相关向量与参考功率定义，利用 $\mathbb{E}[s\vec n^H] = \vec 0^H$ 得：</p>
@@ -677,7 +677,7 @@ J_u^\star&=\phi_{d_u}-\frac{\phi_s^2|c_u|^2 q}{1+\phi_s q}
 <li><strong>第二步（节点专属的声像映射）</strong>：乘以节点自身的参考传递响应 $c_u$（写在权重 $\vec w_u^\star$ 里带共轭号 $c_u^*$，经 $\vec w^H\vec x$ 共轭转置后正好变回 $c_u$），把干源还原成节点 $u$ 参考麦克风处的真实幅相声像 $c_u s$；</li>
 <li><strong>第三步（单通道 Wiener 实数收缩）</strong>：乘上经典的标量维纳增益 $g_{\mathrm{W}} = \frac{\rho}{1 + \rho} \in (0, 1)$，允许对目标幅度做一丁点收缩，换取残余噪声功率更大幅度的下降，最终使归一化均方误差精准落到 $1 / (1 + \rho)$。</li>
 </ol>
-<p>这一三因子分解还顺带点破了分布式协同增强最核心的秘密：<strong>既然全网所有节点 $u = 1, \ldots, U$ 的集中式最优权重 $\vec w_u^\star$ 都只是同一个全局向量 $\mathbf R_{nn}^{-1}\vec a$ 的不同复标量倍数，那么每个节点真正需要贡献给全网的空间方向其实只有一维。</strong>（注意计算 $\operatorname{NMSE}_u^\star$ 要求参考目标功率 $\phi_{d_u} > 0$，即 $\phi_s > 0$ 且 $c_u \ne 0$。）</p>
+<p>由这一分解可见：<strong>既然全网所有节点 $u = 1, \ldots, U$ 的集中式最优权重 $\vec w_u^\star$ 都只是同一个全局向量 $\mathbf R_{nn}^{-1}\vec a$ 的不同复标量倍数，那么每个节点真正需要贡献给全网的空间方向其实只有一维。</strong>（注意计算 $\operatorname{NMSE}_u^\star$ 要求参考目标功率 $\phi_{d_u} > 0$，即 $\phi_s > 0$ 且 $c_u \ne 0$。）</p>
 <span id="sec-13" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-dd70b69ef3">为什么不能平均所有节点的绝对MSE来排名</h3>
 <p>理解了式(13-6)，就能直观避开分布式评测里常见的“绝对误差平均陷阱”。设节点 $1$ 离说话人较远，参考目标为 $d_1 = s$；节点 $2$ 离说话人更近，参考目标声压大一倍，为 $d_2 = 2s$。由式(13-6)可知，节点 $2$ 的集中式最优权重是节点 $1$ 的 $2$ 倍，绝对均方误差 $J_2^\star = 4 J_1^\star$ 整整大了 $4$ 倍。</p>
 <p>但这绝不意味着节点 $2$ 的增强质量更差——因为节点 $2$ 要保护的目标能量 $\phi_{d_2} = 4\phi_{d_1}$ 同样大了 $4$ 倍，两边按各自参考功率归一化后，$\operatorname{NMSE}_1^\star$ 与 $\operatorname{NMSE}_2^\star$ 均等于 $\frac{1}{1 + \phi_s q}$。如果把各节点的绝对 MSE 不加区分地直接求平均，离声源最近的节点反而会在绝对误差均值中占比最大，导致性能误判。</p>

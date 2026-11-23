@@ -249,6 +249,8 @@ class ZipSourceTests(ArchiveSourceTests):
             with zipfile.ZipFile(raw, "w", compression=zipfile.ZIP_DEFLATED) as archive:
                 for name, content in self.default_members if members is None else members:
                     member = zipfile.ZipInfo(name)
+                    # Keep the fixture name literal even if ZipInfo normalized native separators.
+                    member.filename = name
                     member.create_system = 3
                     if isinstance(content, tuple):
                         types = {tarfile.SYMTYPE: stat.S_IFLNK, tarfile.LNKTYPE: stat.S_IFLNK,

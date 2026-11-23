@@ -103,13 +103,46 @@ def checked_bytes(data: bytes, item: dict, limit: int) -> bytes:
     return data
 
 
+def open_windows_leaf(path: Path) -> int:
+    import ctypes
+    from ctypes import wintypes
+    import msvcrt
+
+    kernel = ctypes.WinDLL("kernel32", use_last_error=True)
+    create = kernel.CreateFileW
+    create.argtypes = (
+        wintypes.LPCWSTR, wintypes.DWORD, wintypes.DWORD, wintypes.LPVOID,
+        wintypes.DWORD, wintypes.DWORD, wintypes.HANDLE,
+    )
+    create.restype = wintypes.HANDLE
+    close = kernel.CloseHandle
+    close.argtypes = (wintypes.HANDLE,)
+    close.restype = wintypes.BOOL
+    read_access = 0x80000000  # GENERIC_READ
+    share_all = 0x7  # FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE
+    open_existing = 3  # OPEN_EXISTING
+    open_reparse_point = 0x00200000  # FILE_FLAG_OPEN_REPARSE_POINT
+    handle = create(str(path), read_access, share_all, None, open_existing, open_reparse_point, None)
+    if handle == wintypes.HANDLE(-1).value:
+        error = ctypes.get_last_error()
+        raise OSError(0, ctypes.FormatError(error).strip(), path, error)
+    try:
+        return msvcrt.open_osfhandle(handle, os.O_RDONLY | os.O_BINARY)
+    except BaseException:
+        close(handle)
+        raise
+
+
 def read_regular(path: Path, limit: int) -> bytes:
-    # O_NOFOLLOW closes the last-component symlink race; callers also reject
-    # symlink directories. Concurrent hostile mutation of parent dirs is outside
-    # this local, single-writer acquisition tool's threat model.
-    with os.fdopen(os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK), "rb") as stream:
+    # Open the final component without following links. Callers check parent paths separately.
+    if os.name == "nt":
+        descriptor = open_windows_leaf(path)
+    else:
+        descriptor = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+    with os.fdopen(descriptor, "rb") as stream:
         info = os.fstat(stream.fileno())
-        if not stat.S_ISREG(info.st_mode) or info.st_nlink != 1 or info.st_size > limit:
+        reparse = getattr(info, "st_file_attributes", 0) & stat.FILE_ATTRIBUTE_REPARSE_POINT
+        if reparse or not stat.S_ISREG(info.st_mode) or info.st_nlink != 1 or info.st_size > limit:
             raise ValueError(f"not a bounded, single-link regular file: {path}")
         return stream.read(limit + 1)
 

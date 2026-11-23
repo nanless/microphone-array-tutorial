@@ -138,9 +138,11 @@ class SourceAcquisitionContracts(unittest.TestCase):
         alias.symlink_to(outside, target_is_directory=True)
         hard = self.root / "hard.json"
         os.link(sentinel, hard)
-        fifo = self.root / "pipe"
-        os.mkfifo(fifo)
-        invalid = (leaf, alias / "keep.json", alias / ".." / "new.json", outside, hard, fifo)
+        invalid = (leaf, alias / "keep.json", alias / ".." / "new.json", outside, hard)
+        if hasattr(os, "mkfifo"):
+            fifo = self.root / "pipe"
+            os.mkfifo(fifo)
+            invalid += (fifo,)
         for module in (git, archive):
             operation = "fetch_project" if module is git else "acquire"
             for report in invalid:

@@ -2030,13 +2030,18 @@ def hermitian_matrix_sqrt(mat: np.ndarray) -> dict:
     sqrt_eigs = np.sqrt(eigvals)
     r_sqrt = (eigvecs * sqrt_eigs[None, :]) @ eigvecs.conj().T
     r_inv_sqrt = (eigvecs * (1.0 / sqrt_eigs)[None, :]) @ eigvecs.conj().T
+    # Compose real and imaginary residual components without squaring their scale.
+    def frobenius_error(residual):
+        return math.hypot(*(float(v) for v in residual.real.flat),
+                          *(float(v) for v in residual.imag.flat))
+
     return {
         "r_sqrt": r_sqrt,
         "r_inv_sqrt": r_inv_sqrt,
         "eigenvalues": eigvals,
-        "square_fro_error": float(np.linalg.norm(r_sqrt @ r_sqrt - r, ord="fro")),
-        "whitening_fro_error": float(
-            np.linalg.norm(r_inv_sqrt @ r @ r_inv_sqrt - np.eye(r.shape[0]), ord="fro")
+        "square_fro_error": frobenius_error(r_sqrt @ r_sqrt - r),
+        "whitening_fro_error": frobenius_error(
+            r_inv_sqrt @ r @ r_inv_sqrt - np.eye(r.shape[0])
         ),
     }
 

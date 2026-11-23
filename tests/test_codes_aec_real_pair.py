@@ -90,9 +90,9 @@ class RealPairExperimentTests(unittest.TestCase):
         args = command(Path("/tmp/audioproc_f"), Path("/tmp/mic.wav"),
                        Path("/tmp/lpb.wav"), Path("/tmp/final.wav"),
                        Path("/tmp/linear.wav"), Path("/tmp/rc.txt"))
-        self.assertIn("--custom_call_order_file=/tmp/rc.txt", args)
-        self.assertIn("--linear_aec_output=/tmp/linear.wav", args)
-        self.assertIn("--o=/tmp/final.wav", args)
+        self.assertIn(f"--custom_call_order_file={Path('/tmp/rc.txt')}", args)
+        self.assertIn(f"--linear_aec_output={Path('/tmp/linear.wav')}", args)
+        self.assertIn(f"--o={Path('/tmp/final.wav')}", args)
         self.assertIn("--stream_delay=0", args)
 
     def test_aec3_adapter_does_not_fake_missing_binary(self) -> None:

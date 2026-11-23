@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 11 章 · 总结与选型指南 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="1baedb55d363"><style>
+<meta name="source-digest" content="95d99d8dac7e"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -2018,7 +2018,7 @@ $$</p>
 <span id="sec-15" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-11-7">11.7 后续阅读</h2>
 <p>如果工程任务从“提取增强语音流”转向“定位并量化机械设备、风洞或车体表面的噪声辐射源强”，请继续阅读<a href="12_acoustic-imaging.html">扩展专题Ⅰ：声学成像</a>，重点区分空间扫描功率图、反卷积源强反演、绝对声压级校准与频带积分量。</p>
 <p>如果系统由多台物理分离、通过无线受限带宽组网的麦克风节点协同完成语音增强，请继续阅读<a href="13_distributed-enhancement.html">扩展专题Ⅱ：分布式麦克风协同增强</a>，先核对第 5 章的参考通道定义与第 10 章的跨设备采样率同步前提（若所有麦克风已通过同步总线接入同一颗处理器，直接采用集中式多通道链路即可，无须引入分布式迭代传输协议）。</p>
-<p>如果产品形态转向全景声采集、扩展现实（XR）头显、智能眼镜、数字助听器或真无线立体声（TWS）耳机，请继续阅读<a href="14_spatial-wearable-arrays.html">扩展专题Ⅲ：空间声场采集、参数化编码与可穿戴阵列</a>，依次核查一阶全景声（FOA）球谐编码与 DirAC 声强参数化、头部追踪三维旋转、非规则镜框双耳信号匹配（BSM/MagLS）、双耳相干度保持、湍流风噪下气导与耳道闭塞内麦/骨导跨模态融合，以及主动通透模式百微秒级防梳状滤波延迟硬约束。</p>
+<p>如果产品形态转向全景声采集、扩展现实（XR）头显、智能眼镜、数字助听器或真无线立体声（TWS）耳机，请继续阅读<a href="14_spatial-wearable-arrays.html">扩展专题Ⅲ：空间声场采集、参数化编码与可穿戴阵列</a>，依次核查一阶全景声（FOA）球谐编码与 DirAC 声强参数化、头部追踪三维旋转、非规则镜框双耳信号匹配（BSM/MagLS）、双耳相干度保持、湍流风噪下气导与耳道闭塞内麦/骨导跨模态融合，以及主动通透模式中相对延迟、漏声增益与梳状滤波的关系。</p>
 <p>如果声场中存在多位说话人、同向远端串音或频繁抢话重叠，需要结合声纹、空间近场距离、说话人日志或视觉唇动线索提取目标语音与归属文本，请继续阅读<a href="15_target-extraction-diarization.html">扩展专题Ⅳ：条件目标提取、多通道日志与远场多模态前端</a>，重点掌握特征级线性调制（FiLM）与沉默段双态能量地板损失、近场球面波声学距离气泡、多人重叠说话人日志误差率（DER）理论下界、多通道空谱 TS-VAD 与排他掩码 GSS 闭环、视听管线正滞后与唇部遮挡门控回退，以及级联链路与端到端 SOT/DiCoW 的会议架构选型。</p>
 <p>需要回查单项模块的数学推导与实现细节时，可按模块查阅第 4～9 章的声源定位、波束形成、AEC、WPE、语音分离与声源追踪，结合<a href="10_engineering-practice.html">第 10 章</a>制定设备级资源预算与联调验收方案；全书前置数学推导见<a href="00_math-foundations.html">第 0 章数学基础</a>，统一数学符号与速查工具见<a href="16_appendix-symbols-math.html">附录 A</a>，分角色阅读路线、全书练习索引与常见故障速查表见<a href="17_appendix-guide.html">附录 B</a>。</p>
 <hr />

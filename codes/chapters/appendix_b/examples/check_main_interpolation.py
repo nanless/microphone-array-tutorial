@@ -2,6 +2,7 @@
 from __future__ import annotations
 import hashlib
 import io
+import math
 import wave
 from pathlib import Path
 from codes.chapters.ch00.core.audio_samples import interpolation_case, prepare_exports
@@ -62,7 +63,18 @@ def check_main_interpolation_assets(repo_root=ROOT, *, manifest_path=None, audio
     actual = {}
     for name, (data, info) in expected.items():
         record = {'file': name, 'chapter': 'ch02', 'sha256': hashlib.sha256(data).hexdigest(), **info}
-        same_tree(selected[name], record, name+' record')
+        # A libm last-bit change in the float source may leave PCM bytes identical
+        # while changing this diagnostic. All other metadata remain exact.
+        quant_key = 'quantization_max_abs_error'
+        same_tree({k: v for k, v in selected[name].items() if k != quant_key},
+                  {k: v for k, v in record.items() if k != quant_key}, name+' record')
+        stored_error, replay_error = selected[name].get(quant_key), record[quant_key]
+        if any(type(v) is not float or not math.isfinite(v) or not 0 <= v <= .5/32768
+               for v in (stored_error, replay_error)):
+            raise ValueError(f'{name} record.{quant_key} is not a bounded PCM16 rounding error')
+        roundoff = 8 * math.ulp(max(info['peak'], 1/32768))
+        if abs(stored_error - replay_error) > roundoff:
+            raise ValueError(f'{name} record.{quant_key} differs from current replay')
         target = ordinary_path(directory/name)
         if not target.is_file():
             raise ValueError(f'published interpolation PCM is missing: {name}')

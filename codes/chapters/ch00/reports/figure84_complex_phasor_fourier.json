@@ -6,7 +6,7 @@
     "E00-05"
   ],
   "source_sha256": {
-    "codes/chapters/ch00/core/chapter00_math.py": "23e7c3d0c968b497c9fa607214b2147f526a2a2def5ecbeeb9ce373baf0ffac4",
+    "codes/chapters/ch00/core/chapter00_math.py": "a89c0b99716bc0aad6ab8e21aaf34e555a21987009f89591d4197d7930a6f73f",
     "codes/chapters/ch00/io_contracts.py": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974",
     "codes/chapters/ch02/core/conventions.py": "79af1b8f7fe664e64e7ad786082c36a29664eacbdda63fba96a944e548304865",
     "scripts/make_figures.py": "0157fc2c9fc9ee0a2d0bba7810a9603b22aa5a24d327a8895ef14412a2fb2fec",

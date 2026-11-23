@@ -8,7 +8,7 @@
   "source_sha256": {
     "codes/chapters/ch00/core/chapter00_math.py": "c688c4be6f4d76b442a9b5cbd87ca6c2a2b6661721f1c21004084ce71ad79247",
     "codes/chapters/ch00/io_contracts.py": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974",
-    "scripts/make_figures.py": "bf9058d1c3d6ed15bab41ea092439170cd324011936645d577408106813a485a",
+    "scripts/make_figures.py": "0157fc2c9fc9ee0a2d0bba7810a9603b22aa5a24d327a8895ef14412a2fb2fec",
     "scripts/make_math_figures.py": "4112e977d637d5f391a6a75fd5d8e94f68eb8e925661199c2c6ab9a764e7cecf"
   },
   "anchors": {

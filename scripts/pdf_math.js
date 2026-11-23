@@ -31,6 +31,30 @@
       if (digest !== expected) throw Error("Mismatched fixed mathematical resource: " + name);
     }
   }
+  async function repeatTableHeaderMath(staged) {
+    // Chrome repeats replaced images when a print table header spans pages.
+    const serializer = new XMLSerializer();
+    const loads = [];
+    for (const {root, svg} of staged) {
+      if (!root.closest("thead th")) continue;
+      const math = svg.cloneNode(true);
+      // A standalone SVG image lacks the print document's CSS inheritance.
+      for (const [index, label] of [...svg.querySelectorAll("text")].entries()) {
+        math.querySelectorAll("text")[index].style.fontFamily = getComputedStyle(label).fontFamily;
+      }
+      math.style.color = getComputedStyle(svg).color;
+      const image = document.createElement("img");
+      image.alt = svg.getAttribute("aria-label");
+      image.lang = svg.getAttribute("lang");
+      image.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(serializer.serializeToString(math));
+      image.className = "pdf-table-header-math";
+      image.style.width = svg.getAttribute("width");
+      image.style.verticalAlign = svg.style.verticalAlign;
+      svg.replaceWith(image);
+      loads.push(image.decode());
+    }
+    await Promise.all(loads);
+  }
   async function prepare() {
     if (MathJax.version !== "3.2.2" || MathJax.startup.output.name !== "SVG")
       throw Error("Unexpected MathJax version or output");
@@ -104,6 +128,7 @@
         }
       }
     }
+    await repeatTableHeaderMath(staged);
     document.documentElement.dataset.pdfMathReady = String(seen.size);
     return seen.size;
   }

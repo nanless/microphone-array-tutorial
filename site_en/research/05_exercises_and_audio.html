@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Chapter Code Exercises & Audio Suites · Microphone Array Signal Processing</title>
-<meta name="source-digest" content="7a209e3fba3d"><style>
+<meta name="source-digest" content="4a5d9a374aa4"><style>
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -4296,7 +4296,7 @@ e^{-\mathrm{j}2\pi \cdot 2000 n/24000},\\
 <pre><code class="language-bash">.venv/bin/python -m codes.chapters.ch08.chapter08_experiments
 .venv/bin/python -m codes.chapters.ch08.examples.generate_css_audio --check
 </code></pre>
-<p>In addition, <a href="../08_speech-separation.html#e08-27"><code>E08-27</code></a> inside <code>chapter08_experiments</code> compares single-bin 2-channel AuxIVA inversion-free rank-1 Iterative Source Steering (ISS) against Iterative Projection (IP): by sweep 5 both converge within $\lt 10^{-14}$ of the shared optimal objective $Q^\star$, confirming step-size-free monotonic descent while eliminating $O(M^3)$ matrix inversions (no extra WAVs).</p>
+<p>The <a href="../08_speech-separation.html#e08-27"><code>E08-27</code></a> entry in <code>chapter08_experiments</code> compares ISS rank-one updates with IP linear solves at one frequency bin, with two channels and fixed covariances. After five sweeps, both costs are within $10^{-14}$ of the minimum $Q^\star$, while off-diagonal residuals after congruence are still on the order of $10^{-7}$. Each ISS sweep uses two rank-one corrections and needs no linear solve. This exercise adds no WAV files.</p>
 <p><a id="tracking-model-lifecycle-sphere-exercises"></a></p>
 <span id="sec-166" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-66cc1801f7" class="anchor-alias" aria-hidden="true"></span><span id="59-第9章模式密度实际pcm生命周期与球面方向" class="anchor-alias" aria-hidden="true"></span><span id="59-chapter-9-interacting-multiple-models-readback-pcm-track-lifecycle-and-directional-statistics-on-mathbbs2" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-d97e4ad7ef">59. Chapter 9: Interacting Multiple Models, Readback PCM Track Lifecycle, and Directional Statistics on $\mathbb{S}^2$</h2>
 <span id="sec-167" class="anchor-alias" aria-hidden="true"></span><span id="591-两个模式与连续缺测的逐步计算" class="anchor-alias" aria-hidden="true"></span><span id="591-step-by-step-two-mode-imm-filtering-across-consecutive-missed-detections" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-59-1">59.1 Step-by-Step Two-Mode IMM Filtering Across Consecutive Missed Detections</h3>

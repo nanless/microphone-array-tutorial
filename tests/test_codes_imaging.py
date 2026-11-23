@@ -1,6 +1,7 @@
 """Independent algebra, real PCM and strict asset-contract tests for E12."""
 from __future__ import annotations
 
+from fractions import Fraction
 import hashlib
 import json
 import math
@@ -235,6 +236,77 @@ class ImagingAlgebraTests(unittest.TestCase):
         self.assertTrue(np.all(np.isfinite(sqrt_sub_eigh)) and np.all(np.isfinite(sqrt_sub_closed)))
         np.testing.assert_allclose(sqrt_sub_eigh, sqrt_sub_closed, rtol=1e-12, atol=0.0)
         np.testing.assert_allclose(sqrt_sub_closed @ sqrt_sub_closed, r_sub, rtol=1e-7, atol=1e-323)
+
+    def test_functional_beamforming_checks_large_finite_covariances(self):
+        matrix = 1e308 * np.eye(2)
+        np.testing.assert_array_equal(hermitian_fractional_power(matrix, 1.0), matrix)
+        np.testing.assert_allclose(closed_form_2x2_sqrt(matrix), 1e154 * np.eye(2), rtol=8e-15)
+        np.testing.assert_allclose(
+            functional_beamforming_map(matrix, np.ones((2, 1))), [5e307], rtol=8e-15,
+        )
+        # The eigenvalues before scaling are 1 ± sqrt(2).
+        indefinite = 1.5e308 * np.array([[1, 1 + 1j], [1 - 1j, 1]])
+        with self.assertRaisesRegex(ValueError, 'semidefinite'):
+            hermitian_fractional_power(indefinite, 0.5)
+
+    def test_functional_beamforming_combines_scaled_eigenvalue_powers(self):
+        matrix = np.diag([math.ldexp(1.0, 511), math.ldexp(3.0, -28)])
+        # The weak square is representable even though its normalized square
+        # lies between zero and the smallest positive float.
+        expected = np.diag([math.ldexp(1.0, 1022), math.ldexp(9.0, -56)])
+        np.testing.assert_allclose(
+            hermitian_fractional_power(matrix, 2.0), expected, rtol=8e-15, atol=0.0,
+        )
+
+        scale = math.ldexp(1.0, 341)
+        matrix = np.array([[scale, 0.25j * scale, 0], [-0.25j * scale, scale, 0],
+                           [0, 0, math.ldexp(3.0, -18)]])
+        # For K = [[0, i], [-i, 0]], K^2 = I and (I + K/4)^3 = 19 I/16 + 49 K/64.
+        scale_cubed = math.ldexp(1.0, 1023)
+        expected = np.array([[19 / 16 * scale_cubed, 49j / 64 * scale_cubed, 0],
+                             [-49j / 64 * scale_cubed, 19 / 16 * scale_cubed, 0],
+                             [0, 0, math.ldexp(27.0, -54)]])
+        np.testing.assert_allclose(
+            hermitian_fractional_power(matrix, 3.0), expected, rtol=8e-15, atol=0.0,
+        )
+
+    def test_functional_beamforming_combines_output_power_and_norm(self):
+        steering = np.array([[math.ldexp(3.0, -520)], [math.ldexp(1.0, -250)]])
+        x, y = (Fraction(float(value)) for value in steering[:, 0])
+        # For R = diag(1, 0) and order 2, the map is x^4 / (x^2 + y^2)^3.
+        expected = float(x**4 / (x*x + y*y)**3)
+        result = functional_beamforming_map(np.diag([1.0, 0.0]), steering, 2.0)
+        np.testing.assert_allclose(result, [expected], rtol=8e-15, atol=0.0)
+
+    def test_functional_beamforming_keeps_representable_weak_diagonal(self):
+        smallest = math.ulp(0.0)
+        matrix = np.diag([1e308, smallest])
+        for order in (1.0, 2.0, 4.0):
+            with self.subTest(order=order):
+                result = functional_beamforming_map(matrix, np.eye(2), order)
+                np.testing.assert_allclose(result, [1e308, smallest], rtol=8e-15, atol=0.0)
+                self.assertEqual(result[1], smallest)
+
+    def test_functional_beamforming_distinguishes_unresolved_positive_determinant(self):
+        smallest = math.ulp(0.0)
+        b = float(np.nextafter(math.ldexp(1.25, -511), math.inf))
+        d = 25 / 16 * np.finfo(float).tiny + 3 * smallest
+        matrix = np.array([[1.0, b], [b, d]])
+        exact_determinant = Fraction(float(d)) - Fraction(b)**2
+        self.assertEqual(exact_determinant / Fraction(smallest), Fraction(1, 2) - Fraction(2)**-52)
+        for compute in (lambda: hermitian_fractional_power(matrix, 0.5),
+                        lambda: closed_form_2x2_sqrt(matrix),
+                        lambda: functional_beamforming_map(matrix, [[0.0], [1e-100]], 2.0)):
+            with self.assertRaisesRegex(ValueError, 'precision'):
+                compute()
+
+        vector = np.array([1.0, -1j])
+        rank_one = np.outer(vector, vector.conj())
+        expected = rank_one / math.sqrt(2.0)
+        np.testing.assert_allclose(closed_form_2x2_sqrt(rank_one), expected, rtol=8e-15, atol=0.0)
+        np.testing.assert_allclose(
+            hermitian_fractional_power(rank_one, 0.5), expected, rtol=8e-15, atol=0.0,
+        )
 
     def test_invalid_inputs_and_floating_range(self):
         removed = source_power_csm(self.a, [1., .25])

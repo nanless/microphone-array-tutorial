@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 4 章 · 声源定位（DOA 估计） · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="58a2e18a2abd"><style>
+<meta name="source-digest" content="f04fb843bff3"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -658,7 +658,7 @@ G[k]&=X_1[k]X_2^*[k]\\
 <tr>
 <td><strong>相位变换（PHAT）</strong></td>
 <td>$1/(\lvert X_1(f)X_2^*(f)\rvert+\varepsilon)$</td>
-<td>直接消去互谱幅度、仅保留相位斜率，对室内语音包络起伏适应力强；但对低信噪比弱频点敏感，需配下限保护</td>
+<td>压低互谱幅度起伏，保留各频点的互谱相位；低信噪比弱频点的相位不可靠，需配下限保护</td>
 </tr>
 <tr>
 <td>最大似然加权（ML / Hannan–Thomson）</td>
@@ -772,7 +772,7 @@ Ng(t)&=H_0+H_{N/2}\cos(\pi t)
 </tr>
 </tbody>
 </table></div>
-<p>只有第三行在全部 $16$ 个半格点上与式(4-5)达到 $10^{-16}$ 浮点一致，严格保持原整数格点取值。此外，PHAT 完全依赖相位斜率，硬件模拟前端或腔体若存在未标定相位差，会直接折算成固定偏置时差（详见 §10.2）。</p>
+<p>只有第三行在全部 $16$ 个半格点上与式(4-5)达到 $10^{-16}$ 浮点一致，严格保持原整数格点取值。通道间未标定的相位响应差会改变相关峰的形状或位置。相位差中随频率线性变化的部分，对应一个附加群时延（详见 §10.2）。</p>
 <p><img alt="图12 GCC-PHAT 原理" src="../figures/fig12_gcc_phat.png" onerror="this.alt+='（图缺失）'" /></p>
 <p>结合图 12 复算“波形错位 → 16 倍频域插值搜峰 → 角度反算”完整数字链（$4096$ 点带限随机源 $300$～$6000\ \mathrm{Hz}$，频域精确施加分数延迟并叠加标准差 $0.05$ 高斯白噪，$8192$ 点 FFT 配 $Q=16$ 倍补零插值）：</p>
 <ul>
@@ -851,7 +851,7 @@ Ng(t)&=H_0+H_{N/2}\cos(\pi t)
 <p>逐一读图 13 的三个子图：</p>
 <ul>
 <li><strong>图 13(a) $\mathrm{DRR}=0\ \mathrm{dB}$ 单帧相关曲线</strong>（采用独立示例种子 <code>seed=7</code>）：横轴为时延（$-4$～$4\ \mathrm{ms}$），黑虚线标出真峰 $-0.5625\ \mathrm{ms}$。绿实线（$T_{60}=0.1\ \mathrm{s}$）在 $0$～$0.5\ \mathrm{ms}$ 处冒出接近 $0.4$ 的强早反射旁峰，红点线（$T_{60}=0.8\ \mathrm{s}$）反射能量被摊平为更均匀的低幅起伏。</li>
-<li><strong>图 13(b) $150$ 次命中率与 $95\%$ Wilson 置信区间</strong>：$\mathrm{DRR}=+6\ \mathrm{dB}$ 与 $0\ \mathrm{dB}$ 始终贴近 $100\%$，降至 $-6\ \mathrm{dB}$ 后断崖式跌落到 $33\%$～$45\%$，印证 DRR 是决定主峰存亡的首要因素。</li>
+<li><strong>图 13(b) $150$ 次命中率与 $95\%$ Wilson 置信区间</strong>：$\mathrm{DRR}=+6\ \mathrm{dB}$ 与 $0\ \mathrm{dB}$ 始终贴近 $100\%$，而 $\mathrm{DRR}=-6\ \mathrm{dB}$ 时只有 $33\%$～$45\%$。在图中的三种衰减时间下，这一组的命中率都明显偏低。</li>
 <li><strong>图 13(c) 峰值对比度统计</strong>：纵轴为 $\max g/(\operatorname{median}|g|+10^{-12})$，实心标记与阴影带为 $150$ 次中位数与四分位区间（IQR），三条曲线按 $\mathrm{DRR}=+6,0,-6\ \mathrm{dB}$ 严格分层。</li>
 </ul>
 <p><strong>基于时频稀疏性的双麦多说话人定位（WDO / DUET）</strong>：双麦 GCC-PHAT 每帧只提取一个全局主峰，遇到两名以上说话人同时发声往往束手无策。然而语音在 STFT 时频平面上具有很强的<strong>窗不相交正交性（W-Disjoint Orthogonality，WDO）</strong>——绝大多数活跃时频格 $(k,\ell)$ 只由<strong>某一位</strong>说话人主导。利用这一物理稀疏性，<strong>DUET（Degenerate Unmixing Estimation Technique，<a href="https://doi.org/10.1109/TSP.2004.828896">Yılmaz 与 Rickard, <em>IEEE TSP</em>, 2004</a>）</strong>在每个活跃时频格直接计算两麦复谱比 $X_2(k,\ell)/X_1(k,\ell)=\hat a(k,\ell)e^{-\mathrm{j}2\pi f_k\hat\delta(k,\ell)}$，提取该格点的瞬时相对衰减 $\hat\alpha(k,\ell)=\hat a-\hat a^{-1}$ 与相对时延 $\hat\delta(k,\ell)=-\frac{1}{2\pi f_k}\arg\big(X_2(k,\ell)/X_1(k,\ell)\big)$（$f_k>0$，注意此处 $\hat\delta=\tau_{21}=-\tau_{12}$，且需满足阵元间距小于最短半波长以防相位卷绕），再以时频能量 $|X_1 X_2|^p f_k^q$ 为权重在二维 $(\alpha,\delta)$ 平面上累加平滑直方图——若不同源的相对衰减和时延参数可区分、且各源有足够占优格点，直方图才可能聚出对应的峰团；WDO 本身不保证这一点，例如两个源的混合比始终同为 $2$ 时只形成同一簇。满足上述附加条件时，DUET 可能突破“两麦只能定一源”的瓶颈（弱混响、近距小间距双麦有效；强混响破坏 WDO 稀疏性后峰团会迅速弥散融合）。</p>

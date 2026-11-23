@@ -1714,6 +1714,8 @@ def pdf_page_is_sparse(extracted_text: str, image_count: int, page_no: int) -> b
 
 def pdf_formula_index(reader):
     """Index real source-labelled Formula nodes; plain SVG has no text layer."""
+    from scripts.build_pdf import pdf_formula_paint_locations
+
     tree = reader.trailer['/Root'].get('/StructTreeRoot')
     if tree is None:
         return {}
@@ -1732,34 +1734,36 @@ def pdf_formula_index(reader):
     if '/ParentTree' in tree:
         numbers(tree['/ParentTree'])
     index, identities, visited = {}, set(), set()
-    def visit(value):
+    def visit(value, in_table_header=False):
         node = value.get_object() if hasattr(value, 'get_object') else value
         if isinstance(node, list):
-            for child in node: visit(child)
+            for child in node:
+                visit(child, in_table_header)
             return
         if not isinstance(node, dict): return
         reference = getattr(node, 'indirect_reference', None)
         key = ('indirect', reference.idnum) if reference else ('direct', id(node))
         if key in visited: raise ValueError('公式结构树重复或循环')
         visited.add(key)
+        in_table_header = in_table_header or node.get('/S') == '/TH'
         if node.get('/S') == '/Formula':
             identity, speech = str(node.get('/T', '')), str(node.get('/Alt', ''))
-            pg, mcid = node.get('/Pg'), node.get('/K')
             if (not re.fullmatch(r'pdf-math-\d{6}', identity) or identity in identities
                     or not speech.strip() or node.get('/ActualText') != speech
-                    or node.get('/Lang') != 'en' or isinstance(mcid, bool)
-                    or not isinstance(mcid, int) or pg is None or reference is None):
+                    or node.get('/Lang') != 'en' or reference is None):
                 raise ValueError('公式语义身份、页面或说明无效')
-            page_id = pg.get_object().indirect_reference.idnum
-            if page_id not in pages: raise ValueError('公式不属于当前PDF页面')
-            page_no = pages[page_id]
-            parents = parent_entries.get(int(reader.pages[page_no].get('/StructParents', -1)))
-            if (not isinstance(parents, list) or not 0 <= mcid < len(parents)
-                    or parents[mcid].get_object().indirect_reference != reference):
-                raise ValueError('公式没有真实父树归属')
-            index.setdefault(page_no, []).append((mcid, speech))
+            for page_id, mcid in pdf_formula_paint_locations(node, in_table_header=in_table_header):
+                if page_id not in pages:
+                    raise ValueError('公式不属于当前PDF页面')
+                page_no = pages[page_id]
+                parents = parent_entries.get(int(reader.pages[page_no].get('/StructParents', -1)))
+                if (not isinstance(parents, list) or not 0 <= mcid < len(parents)
+                        or parents[mcid].get_object().indirect_reference != reference):
+                    raise ValueError('公式没有真实父树归属')
+                index.setdefault(page_no, []).append((mcid, speech))
             identities.add(identity)
-        if '/K' in node: visit(node['/K'])
+        if '/K' in node:
+            visit(node['/K'], in_table_header)
     visit(tree.get('/K', []))
     return index
 

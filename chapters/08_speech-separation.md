@@ -283,9 +283,11 @@ v_{nk}&=\begin{cases}
 \vec y_f(t)\leftarrow\vec y_f(t)-\vec v_k\,y_{kf}(t).
 \end{aligned}\tag{8-9}$$
 
-逐项验证式(8-9)：对所有 $n\ne k$，更新后的第 $n$ 路输出 $y_{nf}^{\mathrm{new}}(t)=y_{nf}(t)-v_{nk}y_{kf}(t)$ 严格满足加权正交 $\sum_t r_n(t)^{-1}y_{nf}^{\mathrm{new}}(t)y_{kf}^*(t)=0$；对 $n=k$，新行 $(\vec w_{kf}^{\mathrm{new}})^H=(1-v_{kk})\vec w_{kf}^H$ 严格满足归一化 $(\vec w_{kf}^{\mathrm{new}})^H\mathbf V_{kf}\vec w_{kf}^{\mathrm{new}}=1$；每步同样严格保证 AuxIVA 辅助目标单调非增且零步长调参，而单频点扫完 $k=1,\dots,M$ 全源与 $T$ 帧的完整一轮开销从 IP 的 $O(TM^3+M^4)$ 降至 $O(TM^2+M^3)$（在帧统计累加与矩阵更新两项上均实现 $M$ 倍加速；`pyroomacoustics` 与 `ssspy` 的 AuxIVA 均提供了 `IP` 与 `ISS` 分支供切换，手算与收敛对照见练习 [E08-27](#e08-27)）。
+逐项验证式(8-9)：对所有 $n\ne k$，更新后的第 $n$ 路输出 $y_{nf}^{\mathrm{new}}(t)=y_{nf}(t)-v_{nk}y_{kf}(t)$ 满足加权正交 $\sum_t r_n(t)^{-1}y_{nf}^{\mathrm{new}}(t)y_{kf}^*(t)=0$；对 $n=k$，新行 $(\vec w_{kf}^{\mathrm{new}})^H=(1-v_{kk})\vec w_{kf}^H$ 满足归一化 $(\vec w_{kf}^{\mathrm{new}})^H\mathbf V_{kf}\vec w_{kf}^{\mathrm{new}}=1$。分母为正时，每步使固定权重下的辅助代价单调不增，无需选步长。
 
-进一步将批处理时间平均改为带指数遗忘因子 $\alpha\in(0,1)$ 的逐帧递推统计（用新到达的单帧复谱 $\vec x_f(t)$ 更新加权二阶矩，并复用轻量级 $O(M^2)$ ISS 秩一修正更新 $\mathbf W_f$，配合逐帧或递推回投影），便得到低延迟流式盲源分离框架 **Online AuxIVA-ISS**（参见 [Nakashima 与 Ono，APSIPA ASC 2022](https://doi.org/10.23919/APSIPAASC55919.2022.9979837)）。相比离线整段批处理，在线版能够追踪缓慢走动的说话人，但同样须防范遗忘因子 $\alpha$ 过小引发的方差震荡以及全员静音段引发的协方差退化。
+式(8-9)直接从当前输出累加加权内积，每个导向步统计 $M$ 路、各 $T$ 帧，再更新 $M\times M$ 解混矩阵。扫完 $M$ 路，每个频点的开销为 $O(TM^2+M^3)$。按式(8-8)显式构造 $M$ 张稠密加权协方差并逐路求解的 IP 实现，需要 $O(TM^3+M^4)$。练习 [E08-27](#e08-27) 从给定协方差出发，ISS 仍可省去线性求解，但逐路计算稠密矩阵与向量的乘积，一轮仍是 $O(M^4)$。本书锁定的 `pyroomacoustics` 版 `auxiva` 采用 IP，`ssspy` 的 AuxIVA 另提供 ISS。
+
+在线 AuxIVA-ISS 用带遗忘因子 $\alpha\in[0,1)$ 的递推式更新加权协方差，再用这些协方差计算 ISS 系数并更新解混矩阵。单次秩一修正本身的开销为 $O(M^2)$，系数计算还要逐路做矩阵与向量的乘法。[Nakashima 与 Ono，APSIPA ASC 2022](https://doi.org/10.23919/APSIPAASC55919.2022.9979837) 在模拟三说话人混合中测试了一路声源突然换位的情形。已知移动声源索引时，可以只沿该索引做导向更新。实际部署仍需防范遗忘因子过小引发的估计波动，以及全员静音时加权协方差退化。
 
 #### ILRMA 的功率模型与交替更新
 
@@ -1276,7 +1278,7 @@ $$\begin{aligned}
 
 ![图38：模拟分离槽位在第二块交换，重叠相关用于恢复对应，再检查PCM输出](../figures/fig38_css_overlap.png)
 
-观察图 38 的三幅子图：图 38(a) 热力图展示了重叠区相关矩阵 ${\mathbf C}$，反对角线上的亮格（$1.00$）清晰压过主对角线（$20/101\approx0.198$），直观指示第 $2$ 块发生了槽位翻转；图 38(b) 与图 38(c) 分别对未关联拼接和重叠关联拼接的槽 0（第一路输出）PCM 波形每 $80\ \mathrm{ms}$ 拟合 $250\ \mathrm{Hz}$ 与 $625\ \mathrm{Hz}$ 幅度包络，可以看到图 38(b) 在灰色阴影标出的 $0.8\text{～}1.2\ \mathrm{s}$ 重叠区内 $250\ \mathrm{Hz}$ 主分量一路跌落而 $625\ \mathrm{Hz}$ 串上来占据主导，图 38(c) 则在整个 $2\ \mathrm{s}$ 内稳稳锁住 $250\ \mathrm{Hz}$ 目标源。
+观察图 38 的三幅子图：图 38(a) 热力图展示了重叠区相关矩阵 ${\mathbf C}$，反对角线上的两项（$1.00$）都大于主对角线上的两项（$20/101\approx0.198$），直观指示第 $2$ 块发生了槽位翻转；图 38(b) 与图 38(c) 分别对未关联拼接和重叠关联拼接的槽 0（第一路输出）PCM 波形每 $80\ \mathrm{ms}$ 拟合 $250\ \mathrm{Hz}$ 与 $625\ \mathrm{Hz}$ 幅度包络，可以看到图 38(b) 在灰色阴影标出的 $0.8\text{～}1.2\ \mathrm{s}$ 重叠区内 $250\ \mathrm{Hz}$ 主分量一路跌落而 $625\ \mathrm{Hz}$ 串上来占据主导，图 38(c) 则在整个 $2\ \mathrm{s}$ 内稳稳锁住 $250\ \mathrm{Hz}$ 目标源。
 
 4. **静音与同波形退化保护**：若重叠区恰逢全员静音（波形全零），相关分母归零；若两槽位输出了完全相同的波形，四格相关全为 $1$，两种排列同分；若前块为 $(s,0)$、后块为 $(0,s)$，只有一对通道具备非零能量证据。仓内教学匹配器通过去均值 RMS 下限（$>10^{-8}$）、配对最小相关门限（$\ge0.5$）和最优排列领先裕度（$>0.05$）拦截上述退化情形，统一返回 `status="ambiguous"` 而不强行盲猜排列。
 
@@ -1652,37 +1654,41 @@ $$\mathbf V_1=\begin{bmatrix}4&4\mathrm j\\-4\mathrm j&20\end{bmatrix},\qquad
 
 $$Q(\mathbf W)=\sum_{n=1}^2 \vec w_n^H\mathbf V_n\vec w_n-2\ln\lvert\det\mathbf W\rvert.$$
 
-完成以下复算：（1）计算初始代价 $Q(\mathbf W^{(0)})$；（2）分别手算一轮完整**迭代投影（IP，式(8-8)）**与一轮完整**无求逆迭代源导向（ISS，式(8-9) 秩一更新 $\mathbf W\leftarrow\mathbf W-\vec v_k\vec w_k^H$）**，给出两者的中间量、更新后矩阵与代价，验证 $Q(\mathbf W^{(0)})>Q(\mathbf W_{\mathrm{ISS}}^{(1)})$；（3）将 IP 与 ISS 各自迭代至 $K=5$ 轮，验证两者单调下降并收敛至同一全局最优驻点（代价差低于 $10^{-10}$），并对照两者的矩阵运算复杂度。
+完成以下复算：（1）计算初始代价 $Q(\mathbf W^{(0)})$；（2）分别手算一轮完整**迭代投影（IP，式(8-8)）**与一轮完整**无求逆迭代源导向（ISS，式(8-9) 秩一更新 $\mathbf W\leftarrow\mathbf W-\vec v_k\vec w_k^H$）**，给出两者的中间量、更新后矩阵与代价，验证 $Q(\mathbf W^{(0)})>Q(\mathbf W_{\mathrm{ISS}}^{(1)})$；（3）将 IP 与 ISS 各自迭代至 $K=5$ 轮，核对五轮代价是否单调下降、两者是否都达到距全局最小值 $10^{-10}$ 以内，再检查合同变换后的非对角项和两种更新的运算量。
 
 **参考答案**：
 
 1. **初始代价**：$\vec w_1^{(0)}=[1,0]^\top$、$\vec w_2^{(0)}=[0,1]^\top$ 且 $\det\mathbf W^{(0)}=1$，故 $\vec w_1^{(0)H}\mathbf V_1\vec w_1^{(0)}=4$、$\vec w_2^{(0)H}\mathbf V_2\vec w_2^{(0)}=4$，初始代价 $Q(\mathbf W^{(0)})=4+4-2\ln 1=8$。
 2. **第 1 轮 IP 扫描（需两次 $2\times 2$ 线性求解）**：
-   - 更新第 $1$ 行：解 $\mathbf W^{(0)}\mathbf V_1\vec u_1=\vec e_1$（$\det\mathbf V_1=64$）得 $\vec u_1=[5/16,\;\mathrm j/16]^\top$，二次型 $\vec u_1^H\mathbf V_1\vec u_1=5/16$，归一化写回共轭转置得第一行 $[\sqrt{5}/4,\;-\mathrm j/(4\sqrt{5})]$，此时代价降至 $5+\ln(16/5)\approx 6.163151$。
-   - 立即使用更新后的 $\mathbf W$ 解 $(\mathbf W\mathbf V_2)\vec u_2=\vec e_2$ 得 $\vec u_2=[-\mathrm j/20,\;3/10]^\top$，二次型 $\vec u_2^H\mathbf V_2\vec u_2=29/100$，归一化后完整第 1 轮 IP 矩阵与代价为：
+    - 更新第 $1$ 行：解 $\mathbf W^{(0)}\mathbf V_1\vec u_1=\vec e_1$（$\det\mathbf V_1=64$）得 $\vec u_1=[5/16,\;\mathrm j/16]^\top$，二次型 $\vec u_1^H\mathbf V_1\vec u_1=5/16$，归一化写回共轭转置得第一行 $[\sqrt{5}/4,\;-\mathrm j/(4\sqrt{5})]$，此时代价降至 $5+\ln(16/5)\approx 6.163151$。
+    - 立即使用更新后的 $\mathbf W$ 解 $(\mathbf W\mathbf V_2)\vec u_2=\vec e_2$ 得 $\vec u_2=[-\mathrm j/20,\;3/10]^\top$，二次型 $\vec u_2^H\mathbf V_2\vec u_2=29/100$，归一化后完整第 1 轮 IP 矩阵与代价为：
 
-     $$\mathbf W_{\mathrm{IP}}^{(1)}=\begin{bmatrix}\dfrac{\sqrt{5}}{4}&-\dfrac{\mathrm j}{4\sqrt{5}}\\\dfrac{\mathrm j}{2\sqrt{29}}&\dfrac{3}{\sqrt{29}}\end{bmatrix},\qquad
+        $$\mathbf W_{\mathrm{IP}}^{(1)}=\begin{bmatrix}\dfrac{\sqrt{5}}{4}&-\dfrac{\mathrm j}{4\sqrt{5}}\\\dfrac{\mathrm j}{2\sqrt{29}}&\dfrac{3}{\sqrt{29}}\end{bmatrix},\qquad
      Q(\mathbf W_{\mathrm{IP}}^{(1)})=2+\ln\frac{320}{29}\approx 4.401025.$$
 
 3. **第 1 轮 ISS 扫描（零矩阵求逆，纯内积与秩一外积）**：按 $v_{nk}=\frac{\vec w_n^H\mathbf V_n\vec w_k}{\vec w_k^H\mathbf V_n\vec w_k}$（$n\ne k$）与 $v_{kk}=1-(\vec w_k^H\mathbf V_k\vec w_k)^{-1/2}$ 顺序推进：
-   - 第 $k=1$ 步（沿 $\vec w_1^{(0)}=[1,0]^\top$）：$v_{11}=1-4^{-1/2}=1/2$，$v_{21}=(-4\mathrm j)/20=-\mathrm j/5$；秩一更新 $\mathbf W^{(1/2)}_{\mathrm{ISS}}=\mathbf W^{(0)}-\vec v_1\vec w_1^{(0)H}=\begin{bmatrix}1/2&0\\\mathrm j/5&1\end{bmatrix}$，此时第 $2$ 行二次型缩至 $16/5$、行列式为 $1/2$，代价立即由 $8$ 降至 $1+16/5-2\ln(1/2)=21/5+2\ln 2\approx 5.586294$。
-   - 第 $k=2$ 步（沿 $\vec w_2^{(1/2)}=[-\mathrm j/5,\;1]^\top$）：$v_{22}=1-(16/5)^{-1/2}=1-\sqrt{5}/4\approx 0.440983$；分子 $(\vec w_1^{(1/2)})^H\mathbf V_1\vec w_2^{(1/2)}=8\mathrm j/5$、分母 $(\vec w_2^{(1/2)})^H\mathbf V_1\vec w_2^{(1/2)}=464/25$，得 $v_{12}=\frac{5}{58}\mathrm j\approx 0.086207\,\mathrm j$。执行 $\mathbf W_{\mathrm{ISS}}^{(1)}=\mathbf W^{(1/2)}_{\mathrm{ISS}}-\vec v_2(\vec w_2^{(1/2)})^H$：
+    - 第 $k=1$ 步（沿 $\vec w_1^{(0)}=[1,0]^\top$）：$v_{11}=1-4^{-1/2}=1/2$，$v_{21}=(-4\mathrm j)/20=-\mathrm j/5$；秩一更新 $\mathbf W^{(1/2)}_{\mathrm{ISS}}=\mathbf W^{(0)}-\vec v_1\vec w_1^{(0)H}=\begin{bmatrix}1/2&0\\\mathrm j/5&1\end{bmatrix}$，此时第 $2$ 行二次型缩至 $16/5$、行列式为 $1/2$，代价立即由 $8$ 降至 $1+16/5-2\ln(1/2)=21/5+2\ln 2\approx 5.586294$。
+    - 第 $k=2$ 步（沿 $\vec w_2^{(1/2)}=[-\mathrm j/5,\;1]^\top$）：$v_{22}=1-(16/5)^{-1/2}=1-\sqrt{5}/4\approx 0.440983$；分子 $(\vec w_1^{(1/2)})^H\mathbf V_1\vec w_2^{(1/2)}=8\mathrm j/5$、分母 $(\vec w_2^{(1/2)})^H\mathbf V_1\vec w_2^{(1/2)}=464/25$，得 $v_{12}=\frac{5}{58}\mathrm j\approx 0.086207\,\mathrm j$。执行 $\mathbf W_{\mathrm{ISS}}^{(1)}=\mathbf W^{(1/2)}_{\mathrm{ISS}}-\vec v_2(\vec w_2^{(1/2)})^H$：
 
-     $$\mathbf W_{\mathrm{ISS}}^{(1)}=\begin{bmatrix}\dfrac{15}{29}&-\dfrac{5}{58}\mathrm j\\\dfrac{\mathrm j}{4\sqrt{5}}&\dfrac{\sqrt{5}}{4}\end{bmatrix},\qquad
+        $$\mathbf W_{\mathrm{ISS}}^{(1)}=\begin{bmatrix}\dfrac{15}{29}&-\dfrac{5}{58}\mathrm j\\\dfrac{\mathrm j}{4\sqrt{5}}&\dfrac{\sqrt{5}}{4}\end{bmatrix},\qquad
      Q(\mathbf W_{\mathrm{ISS}}^{(1)})=\frac{54}{29}+\ln\frac{64}{5}\approx 4.411514<8.$$
 
-4. **$K=5$ 轮收敛至同一最优解与复杂度对照**：广义特征值问题 $\mathbf V_1\vec u=\mu\mathbf V_2\vec u$ 的精确特征值为 $\mu_{1,2}=3\mp 2\sqrt{2}$，对应解析全局最小代价 $Q^\star=2+\ln\bigl(64(3-2\sqrt{2})\bigr)\approx 4.396135909321$。五轮扫描代价演化如下表：
+4. **$K=5$ 轮的代价与矩阵残差**：广义特征值问题 $\mathbf V_1\vec u=\mu\mathbf V_2\vec u$ 的精确特征值为 $\mu_{1,2}=3\mp 2\sqrt{2}$，对应解析全局最小代价 $Q^\star=2+\ln\bigl(64(3-2\sqrt{2})\bigr)\approx 4.396135909321$。五轮扫描代价如下：
 
-   | 轮次 $k$ | IP 代价 $Q(\mathbf W_{\mathrm{IP}}^{(k)})$ | ISS 代价 $Q(\mathbf W_{\mathrm{ISS}}^{(k)})$ |
-   |---:|---:|---:|
-   | $0$ | $8.000000000000$ | $8.000000000000$ |
-   | $1$ | $4.401025165807$ | $4.411514136443$ |
-   | $2$ | $4.396140157111$ | $4.396140166916$ |
-   | $3$ | $4.396135913002$ | $4.396135913002$ |
-   | $4$ | $4.396135909324$ | $4.396135909324$ |
-   | $5$ | $4.396135909321$ | $4.396135909321$ |
+    表中 $k$ 为轮次，两列代价依次为 $Q(\mathbf W_{\mathrm{IP}}^{(k)})$ 和 $Q(\mathbf W_{\mathrm{ISS}}^{(k)})$。
 
-   第 $5$ 轮时两者与 $Q^\star$ 的偏差均小于 $10^{-14}$，两者自身代价差仅约 $8.88\times 10^{-16}\ll 10^{-10}$，且均将 $(\mathbf V_1,\mathbf V_2)$ 同时合同对角化为 $\operatorname{diag}(1,\;3+2\sqrt{2})$ 与 $\operatorname{diag}(3+2\sqrt{2},\;1)$。这验证了 ISS 完整保留了 AuxIVA 的免步长单调下降性质，同时彻底消去每步 $O(M^3)$ 矩阵求逆（单步矩阵更新降至 $O(M^2)$，含 $T$ 帧统计的整轮单频开销由 IP 的 $O(TM^3+M^4)$ 降至 $O(TM^2+M^3)$；代码验证见 [`chapter08_experiments.py`](../codes/chapters/ch08/chapter08_experiments.py) 中 `E08-27`）。
+    | 轮次 | IP 代价 | ISS 代价 |
+    |---:|---:|---:|
+    | $0$ | $8.000000000000$ | $8.000000000000$ |
+    | $1$ | $4.401025165807$ | $4.411514136443$ |
+    | $2$ | $4.396140157111$ | $4.396140166916$ |
+    | $3$ | $4.396135913002$ | $4.396135913002$ |
+    | $4$ | $4.396135909324$ | $4.396135909324$ |
+    | $5$ | $4.396135909321$ | $4.396135909321$ |
+
+    第 $5$ 轮时，两者与 $Q^\star$ 的代价差均小于 $10^{-14}$，两种实现算出的代价相差约 $8.88\times 10^{-16}$。分别用最后一轮的 $\mathbf W$ 计算 $\mathbf W\mathbf V_1\mathbf W^H$ 与 $\mathbf W\mathbf V_2\mathbf W^H$，两矩阵已接近 $\operatorname{diag}(1,\;3+2\sqrt{2})$ 与 $\operatorname{diag}(3+2\sqrt{2},\;1)$。IP 的第一张矩阵和 ISS 的第二张矩阵各有模约 $1.25\times10^{-7}$ 的非对角项。代价差和矩阵残差由 [`chapter08_experiments.py`](../codes/chapters/ch08/chapter08_experiments.py) 中的 `E08-27` 分别计算。
+
+    本例每轮 IP 做两次线性求解，ISS 做两次秩一修正。按给定的稠密协方差推广到 $M$ 路，每个 ISS 导向步形成 $M$ 个协方差矩阵与向量的乘积，整轮为 $O(M^4)$。§8.3 中直接用 $T$ 帧输出累加的实现省去了这一串矩阵乘法。
 
 ---
 

@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>章节代码练习与音频实验 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="58a2e18a2abd"><style>
+<meta name="source-digest" content="f04fb843bff3"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -4571,7 +4571,7 @@ e^{-\mathrm j2\pi 2000n/24000},\\
 <pre><code class="language-bash">.venv/bin/python -m codes.chapters.ch08.chapter08_experiments
 .venv/bin/python -m codes.chapters.ch08.examples.generate_css_audio --check
 </code></pre>
-<p>只读核验拒绝多余成员、链接、元数据漂移和真实源变化，不自动修补。这个实验没有运行CSS分离器、识别说话人、修复任意时延或频率相位，也不是自然语音或正式听测。此外，<a href="../08_speech-separation.html#e08-27">E08-27</a> 在同一章节入口 <code>chapter08_experiments</code> 中复算单频双通道 AuxIVA 的无求逆秩一迭代源导向（ISS）更新与迭代投影（IP）收敛对照：第 5 轮两者距共同最优目标 $Q^\star$ 的偏差均小于 $10^{-14}$，验证 ISS 保持免步长单调下降并消去 $O(M^3)$ 矩阵求逆（无额外 WAV）。</p>
+<p>只读核验拒绝多余成员、链接、元数据漂移和真实源变化，不自动修补。这个实验没有运行CSS分离器、识别说话人、修复任意时延或频率相位，也不是自然语音或正式听测。另见 <a href="../08_speech-separation.html#e08-27">E08-27</a>。章节入口 <code>chapter08_experiments</code> 在单频、双通道、协方差固定的条件下，比较 ISS 秩一更新与 IP 线性求解。第 5 轮两种代价离最小值 $Q^\star$ 均不到 $10^{-14}$，合同变换的非对角残差仍在 $10^{-7}$ 量级。每轮 ISS 做两次秩一修正，无需线性求解（无额外 WAV）。</p>
 <p><a id="tracking-model-lifecycle-sphere-exercises"></a></p>
 <span id="sec-166" class="anchor-alias" aria-hidden="true"></span><span id="59-第9章模式密度实际pcm生命周期与球面方向" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-66cc1801f7">59. 第9章：模式密度、实际PCM生命周期与球面方向</h2>
 <span id="sec-167" class="anchor-alias" aria-hidden="true"></span><span id="591-两个模式与连续缺测的逐步计算" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-59-1">59.1 两个模式与连续缺测的逐步计算</h3>

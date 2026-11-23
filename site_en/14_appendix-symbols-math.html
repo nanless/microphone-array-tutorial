@@ -2,7 +2,7 @@
 <link rel="canonical" href="16_appendix-symbols-math.html"><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Chapter 16 · Appendix A: Symbols, Glossary & Math Lookup · Microphone Array Signal Processing</title>
-<meta name="source-digest" content="7a209e3fba3d"><style>
+<meta name="source-digest" content="4a5d9a374aa4"><style>
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -1366,13 +1366,13 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 <tbody>
 <tr>
 <td>Complex inner product &amp; sample second moment</td>
-<td>$\|\vec x\|_2^2=\vec x^H\vec x$; $\hat{\mathbf R}_{xx}=\frac{1}{L}\sum_{\ell=1}^L\vec x_\ell\vec x_\ell^H=\hat{\mathbf C}_L+\bar{\vec x}\bar{\vec x}^H$</td>
+<td>$\|\vec x\|_2^2=\vec x^H\vec x$<br>$\hat{\mathbf R}_{xx}=\frac{1}{L}\sum_{\ell=1}^L\vec x_\ell\vec x_\ell^H=\hat{\mathbf C}_L+\bar{\vec x}\bar{\vec x}^H$</td>
 <td>Complex squared norm requires conjugation; $\hat{\mathbf R}_{xx}=\hat{\mathbf C}_L$ iff batch sample mean $\bar{\vec x}=\vec 0$ (<a href="00_math-foundations.html#sec-0-3-1">§0.3.1</a>, <a href="00_math-foundations.html#sec-0-6-1">§0.6.1</a>)</td>
 </tr>
 <tr>
 <td>Circularly symmetric complex Gaussian exceptions</td>
 <td>For zero-mean complex Gaussians, proper and circularly symmetric iff pseudo-covariance $\mathbb{E}[\vec z\vec z^\top]=\mathbf 0$</td>
-<td>Real-signal DFT DC ($k=0$) and even-length Nyquist ($k=N/2$) bins are strictly real with non-zero pseudo-covariance (<a href="00_math-foundations.html#sec-0-6-1">§0.6.1</a>, §7.2)</td>
+<td>Real-signal DFT DC ($k=0$) and even-length Nyquist ($k=N/2$) bins are real. Their centered pseudo-covariance equals their real covariance and is nonzero when the variance is nonzero (<a href="00_math-foundations.html#sec-0-6-1">§0.6.1</a>, §7.2)</td>
 </tr>
 <tr>
 <td>Three Wirtinger gradient rules</td>
@@ -1381,33 +1381,33 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 </tr>
 <tr>
 <td>Orthogonal projection &amp; OLS / GLS</td>
-<td>$\mathbf P_{\mathcal R(\mathbf A)}=\mathbf A(\mathbf A^H\mathbf A)^{-1}\mathbf A^H$; $\hat{\vec x}_{\mathrm{WLS}}=(\mathbf A^H\mathbf C^{-1}\mathbf A)^{-1}\mathbf A^H\mathbf C^{-1}\vec b$</td>
+<td>$\mathbf P_{\mathcal R(\mathbf A)}=\mathbf A(\mathbf A^H\mathbf A)^{-1}\mathbf A^H$<br>$\hat{\vec x}_{\mathrm{WLS}}=(\mathbf A^H\mathbf C^{-1}\mathbf A)^{-1}\mathbf A^H\mathbf C^{-1}\vec b$</td>
 <td>Full-column-rank $\mathbf A$, noise covariance $\mathbf C=\mathbf L\mathbf L^H\succ\mathbf 0$; Cholesky whitening $\mathbf W=\mathbf L^{-1}$ must left-multiply BOTH $\mathbf A$ and $\vec b$ (<a href="00_math-foundations.html#sec-0-3-2">§0.3.2</a>, <a href="00_math-foundations.html#sec-0-6-3">§0.6.3</a>, <a href="#e16-15">E16-15</a>)</td>
 </tr>
 <tr>
 <td>MVDR / LCMV closed forms</td>
-<td>$\vec w_{\mathrm{MVDR}}=\frac{\mathbf R^{-1}\vec a}{\vec a^H\mathbf R^{-1}\vec a}$; $\vec w_{\mathrm{LCMV}}=\mathbf R^{-1}\mathbf C(\mathbf C^H\mathbf R^{-1}\mathbf C)^{-1}\vec f$</td>
+<td>$\vec w_{\mathrm{MVDR}}=\frac{\mathbf R^{-1}\vec a}{\vec a^H\mathbf R^{-1}\vec a}$<br>$\vec w_{\mathrm{LCMV}}=\mathbf R^{-1}\mathbf C(\mathbf C^H\mathbf R^{-1}\mathbf C)^{-1}\vec f$</td>
 <td>$\mathbf R\succ\mathbf 0$, full-column-rank $\mathbf C$; in $\mathbf C^H\vec w=\vec f$, target complex response $g_k=\vec w^H\vec c_k$ requires conjugation $f_k=g_k^*$ (<a href="00_math-foundations.html#sec-0-5-2">§0.5.2</a>, §5.4–§5.5)</td>
 </tr>
 <tr>
 <td>Woodbury / Sherman–Morrison</td>
-<td>$(\mathbf M+\mathbf U\mathbf C\mathbf V)^{-1}=\mathbf M^{-1}-\mathbf M^{-1}\mathbf U$<br>$\cdot(\mathbf C^{-1}+\mathbf V\mathbf M^{-1}\mathbf U)^{-1}\mathbf V\mathbf M^{-1}$;<br>rank-1 $(\mathbf M+\vec u\vec v^H)^{-1}=\mathbf M^{-1}-\frac{\mathbf M^{-1}\vec u\vec v^H\mathbf M^{-1}}{1+\vec v^H\mathbf M^{-1}\vec u}$</td>
+<td>$(\mathbf M+\mathbf U\mathbf C\mathbf V)^{-1}=\mathbf M^{-1}-\mathbf M^{-1}\mathbf U$<br>$\cdot(\mathbf C^{-1}+\mathbf V\mathbf M^{-1}\mathbf U)^{-1}\mathbf V\mathbf M^{-1}$<br>rank-1 $(\mathbf M+\vec u\vec v^H)^{-1}=\mathbf M^{-1}-\frac{\mathbf M^{-1}\vec u\vec v^H\mathbf M^{-1}}{1+\vec v^H\mathbf M^{-1}\vec u}$</td>
 <td>Cuts online forgetting-covariance inversion from $O(M^3)$ to $O(M^2)$; periodically re-symmetrize $\frac{1}{2}(\mathbf P+\mathbf P^H)$ in finite precision (<a href="00_math-foundations.html#sec-0-3-5">§0.3.5</a>)</td>
 </tr>
 <tr>
 <td>Column-major $\operatorname{vec}$ / Kronecker / Khatri–Rao</td>
-<td>$(\mathbf B_1\otimes\mathbf A_1)(\mathbf B_2\otimes\mathbf A_2)$<br>$=(\mathbf B_1\mathbf B_2)\otimes(\mathbf A_1\mathbf A_2)$;<br>$\operatorname{vec}(\mathbf A\mathbf X\mathbf B^\top)=(\mathbf B\otimes\mathbf A)\operatorname{vec}(\mathbf X)$;<br>$\operatorname{vec}(\mathbf A\operatorname{diag}(\vec q)\mathbf A^H)=(\mathbf A^*\odot\mathbf A)\vec q$</td>
+<td>$(\mathbf B_1\otimes\mathbf A_1)(\mathbf B_2\otimes\mathbf A_2)$<br>$=(\mathbf B_1\mathbf B_2)\otimes(\mathbf A_1\mathbf A_2)$<br>$\operatorname{vec}(\mathbf A\mathbf X\mathbf B^\top)=(\mathbf B\otimes\mathbf A)\operatorname{vec}(\mathbf X)$<br>$\operatorname{vec}(\mathbf A\operatorname{diag}(\vec q)\mathbf A^H)=(\mathbf A^*\odot\mathbf A)\vec q$</td>
 <td>Unifies difference coarrays (§3.3), separable planar arrays (§5.5), and CMF imaging (§12.7); keep left-factor conjugation $\mathbf A^*$ (<a href="00_math-foundations.html#sec-0-4-3">§0.4.3</a>)</td>
 </tr>
 <tr>
 <td>Unit quaternions &amp; SLERP</td>
-<td>$\mathbf R(\mathbf q)=(q_w^2-\lVert\vec q_v\rVert_2^2)\mathbf I_3$<br>$+2\vec q_v\vec q_v^\top+2q_w[\vec q_v]_\times$;<br>$\operatorname{SLERP}=\frac{\sin((1-t)\Omega)}{\sin\Omega}\mathbf q_0+\frac{\sin(t\Omega)}{\sin\Omega}\mathbf q_1$</td>
+<td>$\mathbf R(\mathbf q)=(q_w^2-\lVert\vec q_v\rVert_2^2)\mathbf I_3$<br>$+2\vec q_v\vec q_v^\top+2q_w[\vec q_v]_\times$<br>$\operatorname{SLERP}=\frac{\sin((1-t)\Omega)}{\sin\Omega}\mathbf q_0+\frac{\sin(t\Omega)}{\sin\Omega}\mathbf q_1$</td>
 <td>$\lVert\mathbf q\rVert_2=1$, double cover $\mathbf q\sim-\mathbf q$; enforce $\mathbf q_0^\top\mathbf q_1\ge 0$ for the shortest arc; at $\Omega=0$ use the continuous limit $\mathbf q(t)=\mathbf q_0$, and near coincidence use normalized linear interpolation for IMU &amp; head tracking (<a href="00_math-foundations.html#sec-0-1-3">§0.1.3</a>, §9.2.3, §14.3)</td>
 </tr>
 <tr>
 <td>Polyphase &amp; Noble identities</td>
-<td>$H(z)=\sum_{p=0}^{D-1}z^{-p}E_p(z^D)$;<br>$E(z^D)\!\to\!(\downarrow D)\equiv(\downarrow D)\!\to\!E(z)$;<br>$(\uparrow U)\!\to\!E(z^U)\equiv E(z)\!\to\!(\uparrow U)$</td>
-<td>Moves decimation/interpolation filtering to low rate with exact $1/D$ MAC reduction in subband AEC &amp; PDM decimation (<a href="00_math-foundations.html#sec-0-2-5">§0.2.5</a>, §6.2.3, §10.2)</td>
+<td>$H(z)=\sum_{p=0}^{D-1}z^{-p}E_p(z^D)$<br>$E(z^D)\!\to\!(\downarrow D)\equiv(\downarrow D)\!\to\!E(z)$<br>$(\uparrow U)\!\to\!E(z^U)\equiv E(z)\!\to\!(\uparrow U)$</td>
+<td>Moves filters satisfying the identities to the low-rate side. For decimation by $D$, the same FIR needs $1/D$ of the convolution MAC rate of a full high-rate implementation; phase routing, buffering, and other processing are separate (<a href="00_math-foundations.html#sec-0-2-5">§0.2.5</a>, §6.2.3, §10.2)</td>
 </tr>
 <tr>
 <td>Schur-complement LMI &amp; SDP</td>
@@ -1416,7 +1416,7 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 </tr>
 </tbody>
 </table></div>
-<p>In addition, for zero-padded finite-length complex sequences, this monograph uniformly defines discrete cross-correlation by conjugating the second sequence (matching <code>scipy.signal.correlate</code>, obeying conjugate anti-symmetry $R_{21}[q]=R_{12}^*[-q]$, and peaking at positive lag $q>0$ whenever Channel 1 arrives $q$ samples later; see <a href="#e16-12">E16-12</a>):</p>
+<p>For zero-padded finite-length complex sequences, this book defines cross-correlation by conjugating the second sequence, matching <code>scipy.signal.correlate</code>. Swapping inputs gives conjugate lag reversal, $R_{21}[q]=R_{12}^*[-q]$. If both complete recordings are nonzero scaled integer shifts of the same nonzero finite template, with no added interference, delaying Channel 1 by $q>0$ samples relative to Channel 2 places the magnitude peak of the full cross-correlation at positive lag $q$; see <a href="#e16-12">E16-12</a>:</p>
 <p>$$R_{12}[q]=\sum_{n\in\mathbb{Z}}x_1[n]x_2^*[n-q].\tag{16-2}$$</p>
 <span id="sec-16-3-8" class="anchor-alias" aria-hidden="true"></span><span id="sec-16-3-9" class="anchor-alias" aria-hidden="true"></span><span id="sec-16-3-10" class="anchor-alias" aria-hidden="true"></span><span id="sec-12-3-3" class="anchor-alias" aria-hidden="true"></span><span id="sec-12-3-8" class="anchor-alias" aria-hidden="true"></span><span id="sec-12-3-9" class="anchor-alias" aria-hidden="true"></span><span id="sec-12-3-10" class="anchor-alias" aria-hidden="true"></span><span id="sec-14-3-3" class="anchor-alias" aria-hidden="true"></span><span id="sec-14-3-8" class="anchor-alias" aria-hidden="true"></span><span id="sec-14-3-9" class="anchor-alias" aria-hidden="true"></span><span id="sec-14-3-10" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-16-3-3">16.3.3 Regularization, Pseudoinverse, and Condition-Number Scaling Quick-Reference Card</h3>
 <p>In least squares $\min_{\vec x}\|\mathbf A\vec x-\vec b\|_2^2$ (thin SVD $\mathbf A=\sum_i \sigma_i\vec u_i\vec v_i^H$) and adaptive covariance inversion, different regularizers and truncation operators exhibit fundamentally distinct filter factors and physical units (complete SVD decoupling derivation in <a href="00_math-foundations.html#sec-0-3-4">§0.3.4</a>):</p>
@@ -1472,7 +1472,7 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 <td>Explicit normal equations $\mathbf A^H\mathbf A$ vs. QR / SVD</td>
 <td>—</td>
 <td>For full-column-rank $\mathbf A$, explicit squaring inflates the condition number to $\kappa_2(\mathbf A^H\mathbf A)=\kappa_2(\mathbf A)^2$</td>
-<td>For $\kappa_2(\mathbf A)\gtrsim 10^8$, <code>float64</code> normal equations lose weak axes in roundoff; call QR/SVD directly (<a href="00_math-foundations.html#sec-0-3-4">§0.3.4</a>)</td>
+<td>For $\kappa_2(\mathbf A)\gtrsim10^8$, roundoff may obscure weak directions in <code>float64</code> normal equations; prefer QR/SVD (<a href="00_math-foundations.html#sec-0-3-4">§0.3.4</a>)</td>
 </tr>
 <tr>
 <td>Total Least Squares (TLS)</td>
@@ -1484,7 +1484,7 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 <td>Weyl &amp; Davis–Kahan bounds</td>
 <td>$\lVert\mathbf E\rVert_2$ and gap $\Delta_{\mathrm{gap}}$ share power units</td>
 <td>$\lvert\lambda_i(\hat{\mathbf R})-\lambda_i(\mathbf R)\rvert\le\lVert\mathbf E\rVert_2$;<br>$\lVert\sin\Theta(\hat{\mathbf U}_s,\mathbf U_s)\rVert_2\le\lVert\mathbf E\rVert_2/\Delta_{\mathrm{gap}}$</td>
-<td>$\Delta_{\mathrm{gap}}=\lambda_K(\mathbf R)-\lambda_{K+1}(\hat{\mathbf R})>0$; MUSIC/ESPRIT suffers threshold collapse as $\lVert\mathbf E\rVert_2\to\Delta_{\mathrm{gap}}$ (<a href="00_math-foundations.html#sec-0-3-4">§0.3.4</a>, §4.6)</td>
+<td>$\Delta_{\mathrm{gap}}=\lambda_K(\mathbf R)-\lambda_{K+1}(\hat{\mathbf R})>0$; as $\lVert\mathbf E\rVert_2$ approaches $\Delta_{\mathrm{gap}}$, the bound widens; actual subspace rotation still depends on the perturbation direction and structure (<a href="00_math-foundations.html#sec-0-3-4">§0.3.4</a>, §4.6)</td>
 </tr>
 </tbody>
 </table></div>
@@ -1506,9 +1506,9 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 <td><a href="#e16-06">E16-06</a></td>
 </tr>
 <tr>
-<td><code>np.linalg.eigh(A, UPLO='L'\|'U')</code></td>
-<td>Reads only one triangle by default and <strong>silently discards imaginary parts on the main diagonal</strong>; finite output never proves the input is a valid Hermitian covariance</td>
-<td>Assert $\|\hat{\mathbf R}-\hat{\mathbf R}^H\|_F$ within floating-point tolerance and check non-negative minimum eigenvalue beforehand</td>
+<td><code>np.linalg.eigh(A)</code><br><code>UPLO='L'</code> or <code>UPLO='U'</code></td>
+<td>Uses the triangle selected by <code>UPLO</code> (lower by default) and treats the imaginary parts of the diagonal as zero</td>
+<td>Check Hermitian error $\|\hat{\mathbf R}-\hat{\mathbf R}^H\|_F$ using a scale-aware rounding tolerance, then compute the spectrum of the checked matrix and assess positive semidefiniteness</td>
 <td><a href="#e16-13">E16-13</a></td>
 </tr>
 <tr>
@@ -1762,14 +1762,14 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 <p><span id="e12-17" class="anchor-alias exercise-alias" aria-hidden="true"></span><span id="e14-17" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e16-12"></a></p>
 <span id="sec-u-7cb5badab0" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-0e9dab8b8b" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-e05d86e60e" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-76145f9ed0" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-3202181de2">E16-12: Does Omitting Conjugation in Complex Cross-Correlation Cancel the True Delay Peak?</h3>
 <p>For zero-padded complex sequences starting at $n=0$, $x_2=[1,\mathrm{j},0]$ and $x_1=[0,1,\mathrm{j}]$ (Channel 1 equals Channel 2 delayed by exactly $1$ sample), evaluate $R_{12}[q]$ and $R_{21}[q]$ via Eq. (16-2) across $q=-2,-1,0,1,2$, then check what happens if conjugation on the second argument is omitted.</p>
-<p><strong>Solution</strong>: Evaluating $R_{12}[q]=\sum_n x_1[n]x_2^*[n-q]$: lags $q=-2,-1$ have zero overlap ($0$); $q=0$ has $1\times\mathrm{j}^*=-\mathrm{j}$ at $n=1$; $q=1$ aligns both non-zero samples for $1\times 1^*+\mathrm{j}\times\mathrm{j}^*=1+1=2$; and $q=2$ has $\mathrm{j}\times 1^*=\mathrm{j}$ at $n=2$. The five lags read $[0,0,-\mathrm{j},2,\mathrm{j}]$ with a clean magnitude peak at true delay $q=+1$ (consistent with the real-impulse rule that Channel 1 arriving $1$ sample later peaks at $q=+1$ and swapping inputs moves the peak to $q=-1$). Substituting $m=n-q$ proves conjugate anti-symmetry $R_{21}[q]=R_{12}^*[-q]$, giving $[-\mathrm{j},2,\mathrm{j},0,0]$ peaking at $q=-1$ (carrying complex conjugation on top of lag reversal).</p>
+<p><strong>Solution</strong>: Evaluating $R_{12}[q]=\sum_n x_1[n]x_2^*[n-q]$: lags $q=-2,-1$ have zero overlap ($0$); $q=0$ has $1\times\mathrm{j}^*=-\mathrm{j}$ at $n=1$; $q=1$ aligns both non-zero samples for $1\times 1^*+\mathrm{j}\times\mathrm{j}^*=1+1=2$; and $q=2$ has $\mathrm{j}\times 1^*=\mathrm{j}$ at $n=2$. The five lags read $[0,0,-\mathrm{j},2,\mathrm{j}]$ with a clean magnitude peak at true delay $q=+1$ (consistent with the real-impulse rule that Channel 1 arriving $1$ sample later peaks at $q=+1$ and swapping inputs moves the peak to $q=-1$). Substituting $m=n-q$ proves conjugate lag reversal $R_{21}[q]=R_{12}^*[-q]$, giving $[-\mathrm{j},2,\mathrm{j},0,0]$ peaking at $q=-1$ (carrying complex conjugation on top of lag reversal).</p>
 <p>If a bug omits conjugation and computes $\sum_n x_1[n]x_2[n-q]$, at true alignment $q=1$ the sum becomes $1\times 1+\mathrm{j}\times\mathrm{j}=1-1=0$, collapsing the five lags to $[0,0,\mathrm{j},0,\mathrm{j}]$—even though the two complex waveforms are identical up to a 1-sample shift, the true alignment peak self-cancels completely to zero.</p>
 <p><span id="e12-18" class="anchor-alias exercise-alias" aria-hidden="true"></span><span id="e14-18" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e16-13"></a></p>
 <span id="sec-u-401a933cc4" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-b849e6d52a" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-e87d05bc4d" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-261df26518" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-1a61d88b48">E16-13: Does <code>eigh</code> Returning Finite Eigenvalues Prove the Input Is a Valid Covariance Matrix?</h3>
 <p>Pass into <code>numpy.linalg.eigh</code> first the $2\times 2$ non-symmetric upper-triangular real matrix $\mathbf A$ (Row 1 $[1,100]$, Row 2 $[0,2]$, testing both <code>UPLO='L'</code> and <code>UPLO='U'</code>), and second the complex-diagonal matrix $\mathbf D=\operatorname{diag}(1+5\mathrm{j}, 2-3\mathrm{j})$. Using the returned $\boldsymbol\Lambda$ and $\mathbf E$, evaluate the eigen-residual $\|\mathbf A\mathbf E-\mathbf E\boldsymbol\Lambda\|_F$ against the <strong>actual input matrix</strong>.</p>
 <p><strong>Solution</strong>: With default <code>UPLO='L'</code>, <code>eigh</code> ignores the upper-triangular $100$ completely, treating $\mathbf{A}$ as $\operatorname{diag}(1,2)$ to return eigenvalues $(1,2)$ and $\mathbf{E}=\mathbf{I}$; checking against true $\mathbf A$ gives $\|\mathbf A-\operatorname{diag}(1,2)\|_F=100$ ($\mathbf I$ is not an eigenvector basis of $\mathbf A$). Switching to <code>UPLO='U'</code> mirrors $100$ into the lower-left entry and solves $(1-\lambda)(2-\lambda)-10000=0$ to return $1.5\pm\sqrt{10000.25}$ ($\approx -98.50125$ and $101.50125$), whose Frobenius eigen-residual against true $\mathbf A$ is still $100$ by unitary invariance.</p>
 <p>On complex-diagonal $\mathbf D$, <code>eigh</code> strips the imaginary parts off the diagonal silently and returns $(1,2)$, leaving true eigen-residual $\sqrt{5^2+(-3)^2}=\sqrt{34}\approx 5.831$.</p>
-<p>This is documented contract behavior rather than a library bug (<a href="https://numpy.org/doc/stable/reference/generated/numpy.linalg.eigh.html">NumPy <code>eigh</code> docs</a>): callers bear full responsibility for guaranteeing Hermitian symmetry beforehand. Always check $\|\hat{\mathbf{R}}-\hat{\mathbf{R}}^H\|_F$ against floating-point tolerance and verify non-negative minimum eigenvalues before passing estimated cross-spectral matrices downstream.</p>
+<p>As specified in the <a href="https://numpy.org/doc/stable/reference/generated/numpy.linalg.eigh.html">NumPy <code>eigh</code> documentation</a>, <code>eigh</code> forms a Hermitian matrix from the triangle selected by <code>UPLO</code> and treats the imaginary parts of the diagonal as zero. Before eigendecomposing an estimated cross-spectral matrix, check Hermitian error $\|\hat{\mathbf{R}}-\hat{\mathbf{R}}^H\|_F$ using a scale-aware rounding tolerance, then compute the spectrum of the checked matrix and assess positive semidefiniteness.</p>
 <p><span id="e12-15" class="anchor-alias exercise-alias" aria-hidden="true"></span><span id="e14-15" class="anchor-alias exercise-alias" aria-hidden="true"></span><span id="e12-19" class="anchor-alias exercise-alias" aria-hidden="true"></span><span id="e14-19" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e16-14"></a></p>
 <span id="sec-u-a87d89ce6d" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-0cf65b9988" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-b4090abdbf" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-333ee075d5" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-a9e3cd8d47" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-2870269265" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-b7c6ebe600" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-41bb59e1c3">E16-14: How Known Diagonal Noise Covariance Changes Least Squares and Two-Channel Audio Output</h3>
 <p>(1) <strong>Single-snapshot analytical diagonal-weighting model</strong> (extending <a href="01_problem-definition.html#e01-03">Chapter 1 E01-03</a>'s scalar 2-mic weighting to matrix GLS orthogonality and 5-WAV PCM16 verification): In $\vec{b}=\mathbf{A}x_*+\vec{n}$ with single-column design matrix $\mathbf{A}=[1,1]^\top$ and zero-mean noise of known diagonal covariance $\mathbf{C}=\operatorname{diag}(1,4)$, compare OLS and WLS/GLS estimates and residual orthogonality metrics on the single reading $\vec{b}=[0,2]^\top$, then prove by completing the square that weights $(4/5,1/5)$ achieve minimum ensemble variance among all linear unbiased estimators.</p>

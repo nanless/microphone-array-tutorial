@@ -760,7 +760,7 @@ Real-time streaming systems must also separate sender media timestamps, packet s
 
 Figure 67 summarizes SRO compensation and $5$-packet ($800$-sample) dropout recovery across our $16\,\mathrm{kHz}$ WAVs ([E13-11](#e13-11) & [E13-12](#e13-12)):
 
-- **Panel (a) SRO and linear SRC**: Synchronous compressed NMSE is $0.153852$; uncompensated $+100\,\mathrm{ppm}$ inflates target distortion (orange) to $0.350885$; known-rate linear SRC restores target alignment while low-passing high-frequency noise (hatched blue) to $0.135726$ under the modified noise covariance.
+- **Panel (a) SRO and linear SRC**: Total PCM NMSE (white diamonds) is $0.153852$ with synchronous compressed data and rises to $0.350885$ at uncompensated $+100\,\mathrm{ppm}$. Known-rate linear SRC restores target alignment and attenuates high-frequency noise, changing the noise covariance. Total PCM NMSE after SRC is $0.135726$.
 - **Panel (b) Finite-window cross-term diagnostic**: Exact zero under synchronous integer-period windows, versus $\approx -2.3 \times 10^{-5}$ normalized signed cross-term (green; raw target–noise cross-power $-1.5668 \times 10^{-7}$ divided by reference power $P = 0.0068$ equals $-2.304 \times 10^{-5}$) under $+100\,\mathrm{ppm}$ drift where carrier cycles lose exact orthogonality.
 - **Panel (c) Full-window vs. in-gap scoring across $800$ dropped samples**: Full-window blue bars ($0.168521$ vs. $0.161924$) look deceptively close, whereas in-gap orange bars expose zero-fill's $0.681955$ collapse versus local-MWF fallback's $0.444451$.
 

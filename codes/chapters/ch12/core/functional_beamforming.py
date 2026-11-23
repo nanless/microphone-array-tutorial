@@ -14,7 +14,48 @@ w_i^H R w_i with w_i = a_i / ||a_i||_2^2. No SciPy or Acoular import is used.
 from __future__ import annotations
 
 import math
+from decimal import Decimal, DecimalException, localcontext
+from fractions import Fraction
 import numpy as np
+
+from codes.chapters.ch02.core.conventions import hermitian_part
+
+
+def _component_peak(array: np.ndarray) -> float:
+    """Finite scale even when a finite complex entry has overflowing modulus."""
+    return float(max(np.max(np.abs(array.real)), np.max(np.abs(array.imag))))
+
+
+def _scaled_csm(array: np.ndarray, scale: float, *, allow_diagonal_loss: bool = True) -> np.ndarray:
+    """Normalize finite components, refusing under-resolved nonzero support.
+
+    Exact diagonal inputs are handled by scalar powers in the root API. Other
+    matrices have no promised extreme dynamic-range eigensolver in this kernel.
+    """
+    normalized = array.real / scale + 1j * (array.imag / scale)
+    tiny = np.finfo(float).tiny
+    underresolved = (np.any((array.real != 0.0) & (np.abs(normalized.real) < tiny))
+                     or np.any((array.imag != 0.0) & (np.abs(normalized.imag) < tiny)))
+    if underresolved and not (allow_diagonal_loss and np.array_equal(array, np.diag(np.diag(array)))):
+        raise ValueError("csm normalization has under-resolved nonzero components at float64 precision")
+    return normalized
+
+
+def _check_2x2_determinant_precision(herm: np.ndarray) -> None:
+    """Refuse a positive 2x2 determinant below the supported normalized range."""
+    if herm.shape != (2, 2) or np.array_equal(herm, np.diag(np.diag(herm))):
+        return
+    scale = _component_peak(herm)
+    unit = _scaled_csm(herm, scale)
+    determinant = (unit[0, 0].real * unit[1, 1].real
+                   - unit[0, 1].real ** 2 - unit[0, 1].imag ** 2)
+    if abs(determinant) < np.finfo(float).tiny:
+        exact = (Fraction(float(herm[0, 0].real)) * Fraction(float(herm[1, 1].real))
+                 - Fraction(float(herm[0, 1].real)) ** 2
+                 - Fraction(float(herm[0, 1].imag)) ** 2)
+        threshold = Fraction(float(np.finfo(float).tiny)) * Fraction(scale) ** 2
+        if 0 < exact < threshold:
+            raise ValueError("positive 2x2 determinant is below supported normalized precision")
 
 
 def _validate_real_scalar(value: object, name: str) -> float:
@@ -59,19 +100,19 @@ def _validate_hpsd_csm(value: object, *, tol: float = 1e-12) -> np.ndarray:
     array = _validate_complex_matrix(value, "csm")
     if array.shape[0] != array.shape[1]:
         raise ValueError("csm must be square")
-    scale = float(np.max(np.abs(array)))
+    scale = _component_peak(array)
     if scale == 0.0:
         return np.zeros_like(array, dtype=np.complex128)
-    normalized = array.real / scale + 1j * (array.imag / scale)
+    normalized = _scaled_csm(array, scale)
     if float(np.max(np.abs(normalized - normalized.conj().T))) > tol_val:
         raise ValueError("csm must be Hermitian")
-    sym_norm = 0.5 * (normalized + normalized.conj().T)
+    sym_norm = hermitian_part(normalized)
     min_eig = float(np.min(np.linalg.eigvalsh(sym_norm)))
     if min_eig < -tol_val:
         raise ValueError("csm must be positive semidefinite (full CSM required)")
-    if np.array_equal(array, array.conj().T):
-        return array.copy()
-    return 0.5 * (array + array.conj().T)
+    herm = array.copy() if np.array_equal(array, array.conj().T) else hermitian_part(array)
+    _check_2x2_determinant_precision(herm)
+    return herm
 
 
 def hermitian_fractional_power(
@@ -85,10 +126,25 @@ def hermitian_fractional_power(
     if exp_val <= 0.0:
         raise ValueError("exponent must be strictly positive")
     herm = _validate_hpsd_csm(csm, tol=tol)
-    scale = float(np.max(np.abs(herm)))
+    scale = _component_peak(herm)
     if scale == 0.0:
         return np.zeros_like(herm, dtype=np.complex128)
-    herm_unit = herm.real / scale + 1j * (herm.imag / scale)
+    herm_unit = _scaled_csm(herm, scale)
+    diagonal = np.diag(herm).real
+    if (np.array_equal(herm, np.diag(np.diag(herm)))
+            and np.any((diagonal > 0.0) & (np.diag(herm_unit).real < np.finfo(float).tiny))):
+        # A diagonal CSM has its eigenvalues explicitly: global scaling must
+        # not erase or coarsen a representable positive entry into a subnormal
+        # unit-scale value. Preserve the established
+        # tolerance rule that admitted small negative eigenvalues become zero.
+        try:
+            with np.errstate(over="raise", invalid="raise"):
+                powered_diagonal = np.power(np.maximum(diagonal, 0.0), exp_val)
+        except (FloatingPointError, OverflowError) as exc:
+            raise ValueError("fractional matrix power exceeds float64 range") from exc
+        if not np.all(np.isfinite(powered_diagonal)):
+            raise ValueError("fractional matrix power exceeds float64 range")
+        return np.diag(powered_diagonal).astype(np.complex128)
     eigenvalues, eigenvectors = np.linalg.eigh(herm_unit)
     eig_max = max(float(np.max(np.abs(eigenvalues))), 1e-300)
     if float(np.min(eigenvalues)) < -tol * eig_max:
@@ -96,12 +152,51 @@ def hermitian_fractional_power(
     # Tolerance admits small negative roundoff; it is not a rank-truncation
     # threshold. Every positive eigenvalue contributes, including at nu=1.
     clipped = np.maximum(eigenvalues, 0.0)
-    with np.errstate(over="raise", invalid="raise"):
-        powered = (scale ** exp_val) * np.power(clipped, exp_val)
-        reconstructed = (eigenvectors * powered) @ eigenvectors.conj().T
-    if not np.all(np.isfinite(reconstructed)):
-        raise ValueError("fractional matrix power exceeds float64 range")
-    return 0.5 * (reconstructed + reconstructed.conj().T)
+    try:
+        with np.errstate(over="raise", invalid="raise"):
+            scale_power = scale ** exp_val
+            if scale_power < np.finfo(float).tiny:
+                raise FloatingPointError("scale power underflow requires combined evaluation")
+            unit_power = np.power(clipped, exp_val)
+            if np.any((clipped > 0.0) & (unit_power < np.finfo(float).tiny)):
+                raise FloatingPointError("unit eigenvalue power requires combined evaluation")
+            powered = scale_power * unit_power
+            if np.any((clipped > 0.0) & (powered < np.finfo(float).tiny)):
+                raise FloatingPointError("combined eigenvalue power required")
+            reconstructed = (eigenvectors * powered) @ eigenvectors.conj().T
+        if not np.all(np.isfinite(reconstructed)):
+            raise FloatingPointError("nonfinite spectral reconstruction")
+    except (FloatingPointError, OverflowError):
+        # A spectral value can exceed float64 even though every matrix entry
+        # is representable. Combine physical eigenvalues and reconstruction
+        # before narrowing the result, without changing the normal fast path.
+        try:
+            with localcontext() as ctx:
+                ctx.prec = 80
+                ctx.Emax = 999999999
+                ctx.Emin = -999999999
+                ds = Decimal.from_float(scale)
+                dp = Decimal.from_float(exp_val)
+                physical = [(ds * Decimal.from_float(float(v))) ** dp if v else Decimal(0)
+                            for v in clipped]
+                reconstructed = np.empty_like(herm)
+                for i in range(len(herm)):
+                    for j in range(len(herm)):
+                        real = Decimal(0)
+                        imag = Decimal(0)
+                        for k, value in enumerate(physical):
+                            vi = eigenvectors[i, k]
+                            vj = eigenvectors[j, k]
+                            ir, ii = Decimal.from_float(float(vi.real)), Decimal.from_float(float(vi.imag))
+                            jr, ji = Decimal.from_float(float(vj.real)), Decimal.from_float(float(vj.imag))
+                            real += value * (ir * jr + ii * ji)
+                            imag += value * (ii * jr - ir * ji)
+                        reconstructed[i, j] = complex(float(real), float(imag))
+        except DecimalException as exc:
+            raise ValueError("fractional matrix power exceeds float64 range") from exc
+        if not np.all(np.isfinite(reconstructed)):
+            raise ValueError("fractional matrix power exceeds float64 range")
+    return hermitian_part(reconstructed)
 
 
 def closed_form_2x2_sqrt(csm: object, *, tol: float = 1e-12) -> np.ndarray:
@@ -114,10 +209,13 @@ def closed_form_2x2_sqrt(csm: object, *, tol: float = 1e-12) -> np.ndarray:
     herm = _validate_hpsd_csm(csm, tol=tol)
     if herm.shape != (2, 2):
         raise ValueError("closed_form_2x2_sqrt requires a 2x2 matrix")
-    scale = float(np.max(np.abs(herm)))
+    scale = _component_peak(herm)
     if scale == 0.0:
         return np.zeros((2, 2), dtype=np.complex128)
-    herm_unit = herm.real / scale + 1j * (herm.imag / scale)
+    herm_unit = _scaled_csm(herm, scale)
+    if (np.array_equal(herm, np.diag(np.diag(herm)))
+            and np.any((np.diag(herm).real > 0.0) & (np.diag(herm_unit).real < np.finfo(float).tiny))):
+        return hermitian_fractional_power(herm, 0.5, tol=tol)
     trace_val = float(herm_unit[0, 0].real + herm_unit[1, 1].real)
     if trace_val <= 0.0:
         return np.zeros((2, 2), dtype=np.complex128)
@@ -130,7 +228,7 @@ def closed_form_2x2_sqrt(csm: object, *, tol: float = 1e-12) -> np.ndarray:
     if denom <= 0.0:
         return np.zeros((2, 2), dtype=np.complex128)
     root = math.sqrt(scale) * (herm_unit + sqrt_det * np.eye(2, dtype=np.complex128)) / denom
-    return 0.5 * (root + root.conj().T)
+    return hermitian_part(root)
 
 
 def functional_beamforming_map(
@@ -161,17 +259,52 @@ def functional_beamforming_map(
     norms_sq = np.sum(np.abs(a_mat) ** 2, axis=0)
     if np.any(norms_sq <= 0.0) or not np.all(np.isfinite(norms_sq)):
         raise ValueError("steering columns must have positive finite squared norm")
-    csm_root = hermitian_fractional_power(herm, 1.0 / nu_val, tol=tol)
     unit_steering = a_mat / np.sqrt(norms_sq)
-    quad = np.einsum("mg,mn,ng->g", unit_steering.conj(), csm_root, unit_steering).real
-    quad_scale = max(1.0, float(np.max(np.abs(quad))))
-    if float(np.min(quad)) < -tol * quad_scale:
-        raise ValueError("fractional CSM quadratic form became negative")
-    clipped_quad = np.maximum(quad, 0.0)
-    with np.errstate(over="raise", invalid="raise"):
-        out = np.power(clipped_quad, nu_val) / norms_sq
-    if not np.all(np.isfinite(out)):
-        raise ValueError("functional beamforming output exceeds float64 range")
+    quad = None
+    try:
+        csm_root = hermitian_fractional_power(herm, 1.0 / nu_val, tol=tol)
+        with np.errstate(over="raise", invalid="raise"):
+            quad = np.einsum("mg,mn,ng->g", unit_steering.conj(), csm_root, unit_steering).real
+            if not np.all(np.isfinite(quad)):
+                raise FloatingPointError("quadratic form range")
+            quad_scale = max(1.0, float(np.max(np.abs(quad))))
+            if float(np.min(quad)) < -tol * quad_scale:
+                raise ValueError("fractional CSM quadratic form became negative")
+            clipped_quad = np.maximum(quad, 0.0)
+            powered_quad = np.power(clipped_quad, nu_val)
+            if np.any((clipped_quad > 0.0) & (powered_quad < np.finfo(float).tiny)):
+                raise FloatingPointError("combined map power required")
+            out = powered_quad / norms_sq
+            if not np.all(np.isfinite(out)):
+                raise FloatingPointError("map range")
+    except (FloatingPointError, OverflowError):
+        if quad is not None and np.all(np.isfinite(quad)):
+            # A finite physical quadratic needs only the final power/ratio
+            # combined; rescaling the CSM could erase a valid tiny diagonal.
+            scale = 1.0
+        else:
+            scale = _component_peak(herm)
+            if scale == 0.0:
+                return np.zeros(a_mat.shape[1], dtype=np.float64)
+            unit = _scaled_csm(herm, scale, allow_diagonal_loss=False)
+            root_unit = hermitian_fractional_power(unit, 1.0 / nu_val, tol=tol)
+            quad = np.einsum("mg,mn,ng->g", unit_steering.conj(), root_unit, unit_steering).real
+            if float(np.min(quad)) < -tol * max(1.0, float(np.max(np.abs(quad)))):
+                raise ValueError("fractional CSM quadratic form became negative")
+        try:
+            with localcontext() as ctx:
+                ctx.prec = 80
+                ctx.Emax = 999999999
+                ctx.Emin = -999999999
+                ds, dn = Decimal.from_float(scale), Decimal.from_float(nu_val)
+                out = np.asarray([
+                    float(ds * Decimal.from_float(max(float(q), 0.0)) ** dn /
+                          Decimal.from_float(float(n))) for q, n in zip(quad, norms_sq)
+                ], dtype=np.float64)
+        except DecimalException as exc:
+            raise ValueError("functional beamforming output exceeds float64 range") from exc
+        if not np.all(np.isfinite(out)):
+            raise ValueError("functional beamforming output exceeds float64 range")
     return np.asarray(out, dtype=np.float64)
 
 

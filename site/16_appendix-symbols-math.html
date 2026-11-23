@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 16 章 · 附录 A：符号术语数学 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="58a2e18a2abd"><style>
+<meta name="source-digest" content="f04fb843bff3"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -1365,13 +1365,13 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 <tbody>
 <tr>
 <td>复内积与样本二阶矩</td>
-<td>$\|\vec x\|_2^2=\vec x^H\vec x$；$\hat{\mathbf R}_{xx}=\frac{1}{L}\sum_{\ell=1}^L\vec x_\ell\vec x_\ell^H=\hat{\mathbf C}_L+\bar{\vec x}\bar{\vec x}^H$</td>
+<td>$\|\vec x\|_2^2=\vec x^H\vec x$<br>$\hat{\mathbf R}_{xx}=\frac{1}{L}\sum_{\ell=1}^L\vec x_\ell\vec x_\ell^H=\hat{\mathbf C}_L+\bar{\vec x}\bar{\vec x}^H$</td>
 <td>复向量模方必取共轭；$\hat{\mathbf R}_{xx}=\hat{\mathbf C}_L$ 当且仅当本批样本均值 $\bar{\vec x}=\vec 0$（<a href="00_math-foundations.html#sec-0-3-1">§0.3.1</a>、<a href="00_math-foundations.html#sec-0-6-1">§0.6.1</a>）</td>
 </tr>
 <tr>
 <td>圆对称复高斯例外</td>
 <td>对零均值复高斯，伪协方差 $\mathbb{E}[\vec z\vec z^\top]=\mathbf 0$ 等价于 proper 性与圆对称性</td>
-<td>实信号 DFT 的直流（$k=0$）与偶数长 Nyquist（$k=N/2$）恒实，伪协方差非零（<a href="00_math-foundations.html#sec-0-6-1">§0.6.1</a>、§7.2）</td>
+<td>实信号 DFT 的直流（$k=0$）与偶数长 Nyquist（$k=N/2$）恒实；其中心化伪协方差等于实协方差，方差非零时才非零（<a href="00_math-foundations.html#sec-0-6-1">§0.6.1</a>、§7.2）</td>
 </tr>
 <tr>
 <td>Wirtinger 三大法则</td>
@@ -1380,33 +1380,33 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 </tr>
 <tr>
 <td>正交投影与 OLS / GLS</td>
-<td>$\mathbf P_{\mathcal R(\mathbf A)}=\mathbf A(\mathbf A^H\mathbf A)^{-1}\mathbf A^H$；$\hat{\vec x}_{\mathrm{WLS}}=(\mathbf A^H\mathbf C^{-1}\mathbf A)^{-1}\mathbf A^H\mathbf C^{-1}\vec b$</td>
+<td>$\mathbf P_{\mathcal R(\mathbf A)}=\mathbf A(\mathbf A^H\mathbf A)^{-1}\mathbf A^H$<br>$\hat{\vec x}_{\mathrm{WLS}}=(\mathbf A^H\mathbf C^{-1}\mathbf A)^{-1}\mathbf A^H\mathbf C^{-1}\vec b$</td>
 <td>$\mathbf A$ 满列秩、噪声协方差 $\mathbf C=\mathbf L\mathbf L^H\succ\mathbf 0$；Cholesky 白化 $\mathbf W=\mathbf L^{-1}$ 须同步左乘 $\mathbf A$ 与 $\vec b$（<a href="00_math-foundations.html#sec-0-3-2">§0.3.2</a>、<a href="00_math-foundations.html#sec-0-6-3">§0.6.3</a>、<a href="#e16-15">E16-15</a>）</td>
 </tr>
 <tr>
 <td>MVDR / LCMV 闭式解</td>
-<td>$\vec w_{\mathrm{MVDR}}=\frac{\mathbf R^{-1}\vec a}{\vec a^H\mathbf R^{-1}\vec a}$；$\vec w_{\mathrm{LCMV}}=\mathbf R^{-1}\mathbf C(\mathbf C^H\mathbf R^{-1}\mathbf C)^{-1}\vec f$</td>
+<td>$\vec w_{\mathrm{MVDR}}=\frac{\mathbf R^{-1}\vec a}{\vec a^H\mathbf R^{-1}\vec a}$<br>$\vec w_{\mathrm{LCMV}}=\mathbf R^{-1}\mathbf C(\mathbf C^H\mathbf R^{-1}\mathbf C)^{-1}\vec f$</td>
 <td>$\mathbf R\succ\mathbf 0$、$\mathbf C$ 满列秩；线性约束 $\mathbf C^H\vec w=\vec f$ 中指定响应 $g_k=\vec w^H\vec c_k$ 须取共轭 $f_k=g_k^*$（<a href="00_math-foundations.html#sec-0-5-2">§0.5.2</a>、§5.4～§5.5）</td>
 </tr>
 <tr>
 <td>Woodbury / Sherman–Morrison</td>
-<td>$(\mathbf M+\mathbf U\mathbf C\mathbf V)^{-1}=\mathbf M^{-1}-\mathbf M^{-1}\mathbf U$<br>$\cdot(\mathbf C^{-1}+\mathbf V\mathbf M^{-1}\mathbf U)^{-1}\mathbf V\mathbf M^{-1}$；<br>秩一 $(\mathbf M+\vec u\vec v^H)^{-1}=\mathbf M^{-1}-\frac{\mathbf M^{-1}\vec u\vec v^H\mathbf M^{-1}}{1+\vec v^H\mathbf M^{-1}\vec u}$</td>
+<td>$(\mathbf M+\mathbf U\mathbf C\mathbf V)^{-1}=\mathbf M^{-1}-\mathbf M^{-1}\mathbf U$<br>$\cdot(\mathbf C^{-1}+\mathbf V\mathbf M^{-1}\mathbf U)^{-1}\mathbf V\mathbf M^{-1}$<br>秩一 $(\mathbf M+\vec u\vec v^H)^{-1}=\mathbf M^{-1}-\frac{\mathbf M^{-1}\vec u\vec v^H\mathbf M^{-1}}{1+\vec v^H\mathbf M^{-1}\vec u}$</td>
 <td>将在线遗忘协方差递推求逆由 $O(M^3)$ 降至 $O(M^2)$；长期有限字长递推须定期对称化 $\frac{1}{2}(\mathbf P+\mathbf P^H)$（<a href="00_math-foundations.html#sec-0-3-5">§0.3.5</a>）</td>
 </tr>
 <tr>
 <td>列优先 $\operatorname{vec}$ / Kronecker / Khatri–Rao</td>
-<td>$(\mathbf B_1\otimes\mathbf A_1)(\mathbf B_2\otimes\mathbf A_2)$<br>$=(\mathbf B_1\mathbf B_2)\otimes(\mathbf A_1\mathbf A_2)$；<br>$\operatorname{vec}(\mathbf A\mathbf X\mathbf B^\top)=(\mathbf B\otimes\mathbf A)\operatorname{vec}(\mathbf X)$；<br>$\operatorname{vec}(\mathbf A\operatorname{diag}(\vec q)\mathbf A^H)=(\mathbf A^*\odot\mathbf A)\vec q$</td>
+<td>$(\mathbf B_1\otimes\mathbf A_1)(\mathbf B_2\otimes\mathbf A_2)$<br>$=(\mathbf B_1\mathbf B_2)\otimes(\mathbf A_1\mathbf A_2)$<br>$\operatorname{vec}(\mathbf A\mathbf X\mathbf B^\top)=(\mathbf B\otimes\mathbf A)\operatorname{vec}(\mathbf X)$<br>$\operatorname{vec}(\mathbf A\operatorname{diag}(\vec q)\mathbf A^H)=(\mathbf A^*\odot\mathbf A)\vec q$</td>
 <td>统一差分共阵（§3.3）、可分离平面阵（§5.5）与 CMF 成像（§12.7）；左因子须取共轭 $\mathbf A^*$（<a href="00_math-foundations.html#sec-0-4-3">§0.4.3</a>）</td>
 </tr>
 <tr>
 <td>单位四元数与 SLERP</td>
-<td>$\mathbf R(\mathbf q)=(q_w^2-\lVert\vec q_v\rVert_2^2)\mathbf I_3$<br>$+2\vec q_v\vec q_v^\top+2q_w[\vec q_v]_\times$；<br>$\operatorname{SLERP}=\frac{\sin((1-t)\Omega)}{\sin\Omega}\mathbf q_0+\frac{\sin(t\Omega)}{\sin\Omega}\mathbf q_1$</td>
+<td>$\mathbf R(\mathbf q)=(q_w^2-\lVert\vec q_v\rVert_2^2)\mathbf I_3$<br>$+2\vec q_v\vec q_v^\top+2q_w[\vec q_v]_\times$<br>$\operatorname{SLERP}=\frac{\sin((1-t)\Omega)}{\sin\Omega}\mathbf q_0+\frac{\sin(t\Omega)}{\sin\Omega}\mathbf q_1$</td>
 <td>$\lVert\mathbf q\rVert_2=1$、双重覆盖 $\mathbf q\sim-\mathbf q$；须先使 $\mathbf q_0^\top\mathbf q_1\ge 0$ 取最短弧；$\Omega=0$ 时取连续极限 $\mathbf q(t)=\mathbf q_0$，近重合时可用归一化线性插值，支撑 IMU 与头部追踪（<a href="00_math-foundations.html#sec-0-1-3">§0.1.3</a>、§9.2.3、§14.3）</td>
 </tr>
 <tr>
 <td>多相分解与 Noble 恒等式</td>
-<td>$H(z)=\sum_{p=0}^{D-1}z^{-p}E_p(z^D)$；<br>$E(z^D)\!\to\!(\downarrow D)\equiv(\downarrow D)\!\to\!E(z)$；<br>$(\uparrow U)\!\to\!E(z^U)\equiv E(z)\!\to\!(\uparrow U)$</td>
-<td>将高率抽取/插值滤波移至低率侧，算力精确降至 $1/D$，支撑子带 AEC 与 PDM 抽取（<a href="00_math-foundations.html#sec-0-2-5">§0.2.5</a>、§6.2.3、§10.2）</td>
+<td>$H(z)=\sum_{p=0}^{D-1}z^{-p}E_p(z^D)$<br>$E(z^D)\!\to\!(\downarrow D)\equiv(\downarrow D)\!\to\!E(z)$<br>$(\uparrow U)\!\to\!E(z^U)\equiv E(z)\!\to\!(\uparrow U)$</td>
+<td>将符合恒等式结构的滤波移至低率侧；抽取 $D$ 时，同一 FIR 的理想卷积乘加率可降至高率逐点实现的 $1/D$，分相、缓冲及其他处理另计（<a href="00_math-foundations.html#sec-0-2-5">§0.2.5</a>、§6.2.3、§10.2）</td>
 </tr>
 <tr>
 <td>Schur 补 LMI 与 SDP</td>
@@ -1415,7 +1415,7 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 </tr>
 </tbody>
 </table></div>
-<p>此外，本书对有限长补零复数序列的离散互相关统一采用第二路取共轭的定义（与 <code>scipy.signal.correlate</code> 约定一致，满足反对称关系 $R_{21}[q]=R_{12}^*[-q]$，第 1 路晚到 $q>0$ 点则正滞后出峰，见 <a href="#e16-12">E16-12</a>）：</p>
+<p>此外，本书对有限长补零复数序列的离散互相关统一采用第二路取共轭的定义（与 <code>scipy.signal.correlate</code> 约定一致），交换输入满足共轭时反关系 $R_{21}[q]=R_{12}^*[-q]$。若两路完整保留同一非零有限模板，仅相差非零倍数与整数移位、且未叠加干扰，则第 1 路相对晚到 $q>0$ 点时，完整互相关的模在正滞后 $q$ 处取得峰值，见 <a href="#e16-12">E16-12</a>：</p>
 <p>$$R_{12}[q]=\sum_{n\in\mathbb{Z}}x_1[n]x_2^*[n-q].\tag{16-2}$$</p>
 <span id="sec-16-3-8" class="anchor-alias" aria-hidden="true"></span><span id="sec-16-3-9" class="anchor-alias" aria-hidden="true"></span><span id="sec-16-3-10" class="anchor-alias" aria-hidden="true"></span><span id="sec-12-3-3" class="anchor-alias" aria-hidden="true"></span><span id="sec-12-3-8" class="anchor-alias" aria-hidden="true"></span><span id="sec-12-3-9" class="anchor-alias" aria-hidden="true"></span><span id="sec-12-3-10" class="anchor-alias" aria-hidden="true"></span><span id="sec-14-3-3" class="anchor-alias" aria-hidden="true"></span><span id="sec-14-3-8" class="anchor-alias" aria-hidden="true"></span><span id="sec-14-3-9" class="anchor-alias" aria-hidden="true"></span><span id="sec-14-3-10" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-16-3-3">16.3.3 正则化、伪逆与条件数量纲速查卡</h3>
 <p>在最小二乘 $\min_{\vec x}\|\mathbf A\vec x-\vec b\|_2^2$（薄奇异值分解 $\mathbf A=\sum_i \sigma_i\vec u_i\vec v_i^H$）与自适应协方差求逆中，不同正则化与截断算子具有截然不同的滤波因子与物理量纲（完整 SVD 解耦推导见<a href="00_math-foundations.html#sec-0-3-4">§0.3.4</a>）：</p>
@@ -1471,7 +1471,7 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 <td>显式正规方程 $\mathbf A^H\mathbf A$ vs QR / SVD</td>
 <td>—</td>
 <td>满列秩时，显式相乘令条件数平方放大至 $\kappa_2(\mathbf A^H\mathbf A)=\kappa_2(\mathbf A)^2$</td>
-<td>$\kappa_2(\mathbf A)\gtrsim 10^8$ 时 <code>float64</code> 正规方程将淹没弱方向，代码须直调 QR/SVD（<a href="00_math-foundations.html#sec-0-3-4">§0.3.4</a>）</td>
+<td>当 $\kappa_2(\mathbf A)\gtrsim10^8$ 时，<code>float64</code> 正规方程的弱方向可能受舍入影响，宜直接用 QR/SVD 求解（<a href="00_math-foundations.html#sec-0-3-4">§0.3.4</a>）</td>
 </tr>
 <tr>
 <td>总体最小二乘（TLS）</td>
@@ -1483,7 +1483,7 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 <td>Weyl 与 Davis–Kahan 微扰界</td>
 <td>$\lVert\mathbf E\rVert_2$ 与间隙 $\Delta_{\mathrm{gap}}$ 同功率量纲</td>
 <td>$\lvert\lambda_i(\hat{\mathbf R})-\lambda_i(\mathbf R)\rvert\le\lVert\mathbf E\rVert_2$；<br>$\lVert\sin\Theta(\hat{\mathbf U}_s,\mathbf U_s)\rVert_2\le\lVert\mathbf E\rVert_2/\Delta_{\mathrm{gap}}$</td>
-<td>$\Delta_{\mathrm{gap}}=\lambda_K(\mathbf R)-\lambda_{K+1}(\hat{\mathbf R})>0$；当 $\lVert\mathbf E\rVert_2$ 逼近 $\Delta_{\mathrm{gap}}$ 时 MUSIC/ESPRIT 发生门限坍塌（<a href="00_math-foundations.html#sec-0-3-4">§0.3.4</a>、§4.6）</td>
+<td>$\Delta_{\mathrm{gap}}=\lambda_K(\mathbf R)-\lambda_{K+1}(\hat{\mathbf R})>0$；当 $\lVert\mathbf E\rVert_2$ 逼近 $\Delta_{\mathrm{gap}}$ 时，上界变宽，实际子空间偏转仍取决于扰动方向与结构（<a href="00_math-foundations.html#sec-0-3-4">§0.3.4</a>、§4.6）</td>
 </tr>
 </tbody>
 </table></div>
@@ -1505,9 +1505,9 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 <td><a href="#e16-06">E16-06</a></td>
 </tr>
 <tr>
-<td><code>np.linalg.eigh(A, UPLO='L'\|'U')</code></td>
-<td>默认仅读单侧三角并<strong>静默丢弃主对角线虚部</strong>，不报错绝不证明输入是合法厄米协方差</td>
-<td>调用前自检 $\|\hat{\mathbf R}-\hat{\mathbf R}^H\|_F$ 是否在舍入容差内及最小特征值非负</td>
+<td><code>np.linalg.eigh(A)</code><br><code>UPLO='L'</code> 或 <code>UPLO='U'</code></td>
+<td>按 <code>UPLO</code> 所选的三角求解（默认下三角），并将主对角线虚部视为零</td>
+<td>先按矩阵尺度与舍入容差检查厄米对称误差 $\|\hat{\mathbf R}-\hat{\mathbf R}^H\|_F$，再对通过检查的矩阵求谱并判断半正定性</td>
 <td><a href="#e16-13">E16-13</a></td>
 </tr>
 <tr>
@@ -1761,14 +1761,14 @@ kf_s/N,&0\leq k\lt \lceil N/2\rceil,\\
 <p><span id="e12-17" class="anchor-alias exercise-alias" aria-hidden="true"></span><span id="e14-17" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e16-12"></a></p>
 <span id="sec-u-7cb5badab0" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-0e9dab8b8b" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-e05d86e60e" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-76145f9ed0">E16-12：复相关漏共轭会把真正的延迟峰抵消吗？</h3>
 <p>设同起点（$n=0$）的两段复数短序列为 $x_2=[1,\mathrm{j},0]$、$x_1=[0,1,\mathrm{j}]$（区间外为零，第 1 路严格等于第 2 路延迟 $1$ 个采样点）。按式(16-2)逐点计算 $q=-2,-1,0,1,2$ 处的正确复互相关 $R_{12}[q]$ 与交换顺序后的 $R_{21}[q]$，再观察若漏掉第二路复共轭会发生什么。</p>
-<p><strong>参考答案</strong>：按正确定义 $R_{12}[q]=\sum_n x_1[n]x_2^*[n-q]$ 逐点代入：$q=-2,-1$ 无重叠非零项故为 $0$，$q=0$ 仅有 $n=1$ 处的 $1\times\mathrm{j}^*=-\mathrm{j}$，$q=1$ 两点完全对齐给出 $1\times 1^*+\mathrm{j}\times\mathrm{j}^*=1+1=2$，$q=2$ 仅有 $n=2$ 处的 $\mathrm{j}\times 1^*=\mathrm{j}$。故五个滞后点依次为 $[0,0,-\mathrm{j},2,\mathrm{j}]$，模长主峰清晰落在真实延迟 $q=+1$（与实脉冲特例“第 1 路晚到 $1$ 点则在 $q=+1$ 出峰、对调输入则移至 $q=-1$”一致）。作求和下标代换 $m=n-q$ 可证共轭反对称性质 $R_{21}[q]=R_{12}^*[-q]$，因此交换输入后的五点取值为 $[-\mathrm{j},2,\mathrm{j},0,0]$，主峰移至 $q=-1$（比实序列多了一次复共轭翻转）。</p>
+<p><strong>参考答案</strong>：按正确定义 $R_{12}[q]=\sum_n x_1[n]x_2^*[n-q]$ 逐点代入：$q=-2,-1$ 无重叠非零项故为 $0$，$q=0$ 仅有 $n=1$ 处的 $1\times\mathrm{j}^*=-\mathrm{j}$，$q=1$ 两点完全对齐给出 $1\times 1^*+\mathrm{j}\times\mathrm{j}^*=1+1=2$，$q=2$ 仅有 $n=2$ 处的 $\mathrm{j}\times 1^*=\mathrm{j}$。故五个滞后点依次为 $[0,0,-\mathrm{j},2,\mathrm{j}]$，模长主峰清晰落在真实延迟 $q=+1$（与实脉冲特例“第 1 路晚到 $1$ 点则在 $q=+1$ 出峰、对调输入则移至 $q=-1$”一致）。作求和下标代换 $m=n-q$ 可证共轭时反关系 $R_{21}[q]=R_{12}^*[-q]$，因此交换输入后的五点取值为 $[-\mathrm{j},2,\mathrm{j},0,0]$，主峰移至 $q=-1$（比实序列多了一次复共轭翻转）。</p>
 <p>倘若写代码时漏掉了共轭号、误算成 $\sum_n x_1[n]x_2[n-q]$，在真实对齐点 $q=1$ 处两项乘积变成 $1\times 1+\mathrm{j}\times\mathrm{j}=1-1=0$，五点结果塌缩为 $[0,0,\mathrm{j},0,\mathrm{j}]$——明明两路波形一模一样仅差 $1$ 点延迟，真正的对齐主峰却因实部与虚部自相抵消而彻底归零。</p>
 <p><span id="e12-18" class="anchor-alias exercise-alias" aria-hidden="true"></span><span id="e14-18" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e16-13"></a></p>
 <span id="sec-u-401a933cc4" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-b849e6d52a" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-e87d05bc4d" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-261df26518">E16-13：eigh 返回有限特征值能证明输入是协方差吗？</h3>
 <p>向 NumPy 的厄米特征分解函数 <code>numpy.linalg.eigh</code> 分别传入二阶上三角非对称实矩阵 $\mathbf A$（首行 $[1,100]$、次行 $[0,2]$，先后指定 <code>UPLO='L'</code> 与 <code>UPLO='U'</code>）以及对角线带虚部的二阶对角阵 $\mathbf D$（对角元为 $1+5\mathrm{j}$ 与 $2-3\mathrm{j}$）。读取返回的特征值对角阵 $\boldsymbol\Lambda$ 与特征向量矩阵 $\mathbf E$，直接用<strong>原始输入矩阵</strong>核算特征方程残差 $\|\mathbf A\mathbf E-\mathbf E\boldsymbol\Lambda\|_F$。</p>
 <p><strong>参考答案</strong>：对矩阵 $\mathbf{A}$ 指定默认下三角 <code>UPLO='L'</code> 时，<code>eigh</code> 完全无视上三角的 $100$，把它当成 $\operatorname{diag}(1,2)$ 分解，返回特征值 $(1,2)$ 与单位特征向量阵 $\mathbf{E}=\mathbf{I}$；代回原矩阵检验得 $\|\mathbf A-\operatorname{diag}(1,2)\|_F=100$（$\mathbf I$ 根本不是上三角阵 $\mathbf A$ 的右特征向量基）。改用上三角 <code>UPLO='U'</code> 时，<code>eigh</code> 又把左下角镜像补成 $100$，按非对角元均为 $100$ 的实对称阵解特征方程 $(1-\lambda)(2-\lambda)-10000=0$，返回一正一负两个特征值 $1.5\pm\sqrt{10000.25}$（约 $-98.50125$ 与 $101.50125$）；因酉矩阵右乘保持 Frobenius 范数不变，相对原输入 $\mathbf A$ 的特征残差依然高达 $100$。</p>
 <p>再看复对角阵 $\mathbf D$：<code>eigh</code> 直接抹去对角线虚部，返回实特征值 $(1,2)$，代回原输入算得残差范数为 $\sqrt{5^2+(-3)^2}=\sqrt{34}\approx 5.831$。</p>
-<p>上述行为并非库函数的缺陷，而是<a href="https://numpy.org/doc/stable/reference/generated/numpy.linalg.eigh.html">NumPy 官方 <code>eigh</code> 文档</a>明确声明的接口约定：调用方有责任保证传入矩阵本身满足厄米对称。因此，在把估计出的互谱矩阵送入子空间分解或波束求逆之前，应当先核验 $\|\hat{\mathbf{R}}-\hat{\mathbf{R}}^H\|_F$ 是否处于浮点舍入容差之内，以及最小特征值是否非负。</p>
+<p><a href="https://numpy.org/doc/stable/reference/generated/numpy.linalg.eigh.html">NumPy 官方 <code>eigh</code> 文档</a>规定，<code>eigh</code> 按 <code>UPLO</code> 选定的三角构造厄米矩阵，并将主对角线虚部视为零。对估计互谱矩阵求特征分解前，应先按矩阵尺度与舍入容差核验厄米对称误差 $\|\hat{\mathbf{R}}-\hat{\mathbf{R}}^H\|_F$，再对通过检查的矩阵求谱并判断半正定性。</p>
 <p><span id="e12-15" class="anchor-alias exercise-alias" aria-hidden="true"></span><span id="e14-15" class="anchor-alias exercise-alias" aria-hidden="true"></span><span id="e12-19" class="anchor-alias exercise-alias" aria-hidden="true"></span><span id="e14-19" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e16-14"></a></p>
 <span id="sec-u-a87d89ce6d" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-0cf65b9988" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-b4090abdbf" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-333ee075d5" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-a9e3cd8d47" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-2870269265" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-b7c6ebe600">E16-14：已知对角噪声协方差怎样改变最小二乘与双通道音频输出？</h3>
 <p>（1）<strong>单快拍解析对角加权模型</strong>（承接<a href="01_problem-definition.html#e01-03">第 1 章 E01-03</a> 的双麦标量反方差加权，将其推广到矩阵 GLS 正交性与五段 WAV 的 PCM16 实算验证）：在线性观测 $\vec{b}=\mathbf{A}x_*+\vec{n}$ 中，设单列设计矩阵 $\mathbf{A}=[1,1]^\top$、零均值噪声已知对角协方差 $\mathbf{C}=\operatorname{diag}(1,4)$。先在单次读数 $\vec{b}=[0,2]^\top$ 上对比普通最小二乘（OLS）与加权最小二乘（WLS/GLS）估计值及残差正交度量，再用配方证明权重 $(4/5,1/5)$ 在全体无偏线性估计中达到最小总体方差。</p>

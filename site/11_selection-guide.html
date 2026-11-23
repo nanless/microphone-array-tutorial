@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 11 章 · 总结与选型指南 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="58a2e18a2abd"><style>
+<meta name="source-digest" content="f04fb843bff3"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -1430,7 +1430,7 @@ $$</p>
 <p><em>图 42：500/1500 Hz 双音目标与 3500 Hz 单音干扰经 3 抽头与 9 抽头 FIR 处理后的 16 位 PCM 读回评测（四份 WAV 共用导出增益 $0.8$，按各自群延迟 1 点、4 点对齐评分）。(a) 三个频点相对各自参考的幅度变化（dB）；(b) $3500\ \mathrm{Hz}$ 干扰衰减与 $1500\ \mathrm{Hz}$ 目标保留比例的二维权衡及对齐总 NMSE。</em></p>
 <p>对照图 42 的两个子图可以直观读出这一取舍机理：</p>
 <ul>
-<li><strong>图 42(a) 逐频幅度响应柱状图</strong>：在 $500\ \mathrm{Hz}$ 基频处，蓝色纯色柱（3 抽头）与绿色斜纹柱（9 抽头）均精确归零（$0\ \mathrm{dB}$ 无失真）；在右侧 $3500\ \mathrm{Hz}$ 干扰处，9 抽头深压至 $-34.2\ \mathrm{dB}$，远优于 3 抽头的 $-6.6\ \mathrm{dB}$；但视线移到中间的 $1500\ \mathrm{Hz}$ 目标谐波，绿色斜纹柱猛跌了 $-13.7\ \mathrm{dB}$，而蓝色柱仅轻微跌落不到 $1\ \mathrm{dB}$。</li>
+<li><strong>图 42(a) 逐频幅度响应柱状图</strong>：在 $500\ \mathrm{Hz}$ 基频处，蓝色纯色柱（3 抽头）与绿色斜纹柱（9 抽头）实测幅度变化均约为 $0\ \mathrm{dB}$；在右侧 $3500\ \mathrm{Hz}$ 干扰处，9 抽头深压至 $-34.2\ \mathrm{dB}$，远优于 3 抽头的 $-6.6\ \mathrm{dB}$；但视线移到中间的 $1500\ \mathrm{Hz}$ 目标谐波，绿色斜纹柱猛跌了 $-13.7\ \mathrm{dB}$，而蓝色柱仅轻微跌落不到 $1\ \mathrm{dB}$。</li>
 <li><strong>图 42(b) 抑噪深度—目标保真二维散点图</strong>：蓝色方块（3 抽头）位于左上角高保真区（目标保留约 $89.9\%$，对齐 NMSE 为 $-9.38\ \mathrm{dB}$），绿色圆点（9 抽头）虽推到了右端高抑噪区，却因目标保留跌至 $20.6\%$ 导致对齐总 NMSE 恶化至 $-5.01\ \mathrm{dB}$。</li>
 </ul>
 <p><strong>试听与复现</strong>：试听前请先调低播放音量，按“干净目标 → 混合输入 → 3 抽头输出 → 9 抽头输出”顺序对比——可以清楚听见 9 抽头虽然彻底消除了刺耳的 $3500\ \mathrm{Hz}$ 哨音，但目标原本明亮的双音音色也变闷发暗（更多音频生成细节见<a href="research/05_exercises_and_audio.html#33-选型取舍更安静的滤波器也可能损伤更多目标">音频研究手册第 33 节</a>）：</p>

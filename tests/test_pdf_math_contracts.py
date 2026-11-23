@@ -89,6 +89,31 @@ def formula_fixture(*, alt=None, role='/Figure', content=None, mcid=0):
     return writer, page, tree, figure, figure_ref, parent_tree
 
 
+def repeated_header_fixture(*, role='/TH', paint=True):
+    writer, first, tree, figure, figure_ref, parent_tree = formula_fixture()
+    document = tree['/K']
+    header = DictionaryObject({NameObject('/Type'): NameObject('/StructElem'),
+                               NameObject('/S'): NameObject(role),
+                               NameObject('/P'): document.indirect_reference,
+                               NameObject('/K'): figure_ref})
+    header_ref = writer._add_object(header)
+    document[NameObject('/K')] = ArrayObject([header_ref])
+    figure[NameObject('/P')] = header_ref
+
+    second = writer.add_blank_page(100, 100)
+    second[NameObject('/StructParents')] = NumberObject(1)
+    stream = DecodedStreamObject()
+    stream.set_data(b'/Figure <</MCID 0>> BDC 10 10 20 20 re f EMC' if paint else
+                    b'/Figure <</MCID 0>> BDC EMC')
+    second[NameObject('/Contents')] = writer._add_object(stream)
+    parent_tree['/Nums'].extend([NumberObject(1), ArrayObject([figure_ref])])
+    repeat = DictionaryObject({NameObject('/Type'): NameObject('/MCR'),
+                               NameObject('/Pg'): second.indirect_reference,
+                               NameObject('/MCID'): NumberObject(0)})
+    figure[NameObject('/K')] = ArrayObject([NumberObject(0), repeat])
+    return writer, first, second, repeat, parent_tree
+
+
 class PDFMathSourceTests(unittest.TestCase):
     def test_literal_code_attributes_comments_and_escaped_dollars_are_not_math(self):
         html = (r'<html><head><title>$not body$</title></head><body>'
@@ -246,6 +271,47 @@ class PDFMathPaintTests(unittest.TestCase):
                 else:
                     figure[NameObject('/K')] = NumberObject(8)
                 tag_pdf_formulas(writer, [SOURCE])
+
+
+class PDFRepeatedHeaderMathTests(unittest.TestCase):
+    def test_actual_paint_is_checked_on_both_pages_of_one_formula(self):
+        from scripts.quality_check import pdf_formula_index, pdf_formula_page_text
+
+        writer, first, second, _, _ = repeated_header_fixture()
+        before = [[operation for _, operation in page.get_contents().operations]
+                  for page in (first, second)]
+        self.assertEqual(tag_pdf_formulas(writer, [SOURCE]), 1)
+        self.assertEqual(before, [[operation for _, operation in page.get_contents().operations]
+                                  for page in (first, second)])
+
+        output = io.BytesIO()
+        writer.write(output)
+        reader = PdfReader(output)
+        self.assertEqual(pdf_formula_index(reader), {0: [(0, 'x plus 1')], 1: [(0, 'x plus 1')]})
+        for number in range(2):
+            self.assertEqual(pdf_formula_page_text(reader, number, [(0, 'x plus 1')]), 'x plus 1')
+
+    def test_repeated_formula_outside_header_is_rejected(self):
+        writer, *_ = repeated_header_fixture(role='/TD')
+        with self.assertRaisesRegex(SystemExit, '表头'):
+            tag_pdf_formulas(writer, [SOURCE])
+
+    def test_repeated_header_without_paint_is_rejected(self):
+        writer, *_ = repeated_header_fixture(paint=False)
+        with self.assertRaisesRegex(SystemExit, '绘制'):
+            tag_pdf_formulas(writer, [SOURCE])
+
+    def test_repeated_header_in_same_page_is_rejected(self):
+        writer, first, _, repeat, _ = repeated_header_fixture()
+        repeat[NameObject('/Pg')] = first.indirect_reference
+        with self.assertRaisesRegex(SystemExit, '同一页面'):
+            tag_pdf_formulas(writer, [SOURCE])
+
+    def test_repeated_header_with_wrong_parent_tree_is_rejected(self):
+        writer, _, _, _, parent_tree = repeated_header_fixture()
+        parent_tree['/Nums'][-1] = ArrayObject([])
+        with self.assertRaisesRegex(SystemExit, '父树'):
+            tag_pdf_formulas(writer, [SOURCE])
 
 
 if __name__ == '__main__':

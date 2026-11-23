@@ -94,7 +94,10 @@ class HistoricalAndWriteBoundaries(unittest.TestCase):
             package = root/'micarray_original_fixture'; package.mkdir()
             source = package/'__init__.py'
             source.write_text("VALUE = 'poison'\n")
-            compiled = Path(py_compile.compile(str(source), doraise=True))
+            compiled = Path(py_compile.compile(
+                str(source), doraise=True,
+                invalidation_mode=py_compile.PycInvalidationMode.TIMESTAMP,
+            ))
             stat = source.stat()
             source.write_text("VALUE = 'actual'\n")
             os.utime(source, ns=(stat.st_atime_ns, stat.st_mtime_ns))

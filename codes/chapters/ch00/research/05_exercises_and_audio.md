@@ -2535,7 +2535,7 @@ E06-28将这个运算顺序扩为可播放的数学模型。采样率16kHz，源
 .venv/bin/python -m codes.chapters.ch08.examples.generate_css_audio --check
 ```
 
-只读核验拒绝多余成员、链接、元数据漂移和真实源变化，不自动修补。这个实验没有运行CSS分离器、识别说话人、修复任意时延或频率相位，也不是自然语音或正式听测。此外，[E08-27](../../../../chapters/08_speech-separation.md#e08-27) 在同一章节入口 `chapter08_experiments` 中复算单频双通道 AuxIVA 的无求逆秩一迭代源导向（ISS）更新与迭代投影（IP）收敛对照：第 5 轮两者距共同最优目标 $Q^\star$ 的偏差均小于 $10^{-14}$，验证 ISS 保持免步长单调下降并消去 $O(M^3)$ 矩阵求逆（无额外 WAV）。
+只读核验拒绝多余成员、链接、元数据漂移和真实源变化，不自动修补。这个实验没有运行CSS分离器、识别说话人、修复任意时延或频率相位，也不是自然语音或正式听测。另见 [E08-27](../../../../chapters/08_speech-separation.md#e08-27)。章节入口 `chapter08_experiments` 在单频、双通道、协方差固定的条件下，比较 ISS 秩一更新与 IP 线性求解。第 5 轮两种代价离最小值 $Q^\star$ 均不到 $10^{-14}$，合同变换的非对角残差仍在 $10^{-7}$ 量级。每轮 ISS 做两次秩一修正，无需线性求解（无额外 WAV）。
 
 
 <a id="tracking-model-lifecycle-sphere-exercises"></a>

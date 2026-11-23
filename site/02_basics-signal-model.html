@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 2 章 · 声音到达阵列时发生了什么 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="58a2e18a2abd"><style>
+<meta name="source-digest" content="f04fb843bff3"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -992,7 +992,7 @@ b_\ell&=\alpha\,b_{\ell-1}+(1-\alpha)\,q_\ell,\qquad
 <li><strong>短时近似平稳、长时剧烈非平稳</strong>：人说话时声道形状在 $20\text{～}30\ \mathrm{ms}$ 内相对稳定，跨越音节与停顿时能量和频谱则剧烈跳变，这正是 STFT 选几十毫秒帧长、协方差用在线遗忘或掩码门控更新的物理依据。</li>
 <li><strong>时频域近似稀疏性（W-disjoint orthogonality）</strong>：即使两三个人同时开口说话，摊开到精细的“频率 × 时间帧”网格上后，大多数单个时频格往往仍由其中某一位说话人占主导。第 8 章的时频掩码分离与空间聚类方法正是借这一特性从混合语音中提取噪声或单人协方差（见 §8.4）；不过强房间混响会把前一个音节的能量拖进后续帧，削弱这种时频稀疏性。</li>
 </ol>
-<p>此外，宽带语音横跨低频与高频：在低频段波长很长，小尺寸阵列相位差微弱、主瓣很宽；到了高频段（例如 $4\ \mathrm{cm}$ 间距在 $4.3\ \mathrm{kHz}$ 以上、$3\ \mathrm{cm}$ 间距在 $5.7\ \mathrm{kHz}$ 以上），相邻麦克风间距又会超过半波长，引发空间混叠。如何在分辨率、混叠与噪声放大之间定量权衡，就需要下一节的四项波束评价指标。</p>
+<p>此外，宽带语音横跨低频与高频：在低频段波长很长，小尺寸阵列相位差微弱、主瓣很宽；到了高频段（例如 $4\ \mathrm{cm}$ 间距在 $4.3\ \mathrm{kHz}$ 以上、$3\ \mathrm{cm}$ 间距在 $5.7\ \mathrm{kHz}$ 以上），相邻麦克风间距又会超过半波长，某些方向可能发生空间混叠。如何在分辨率、混叠与噪声放大之间定量权衡，就需要下一节的四项波束评价指标。</p>
 <span id="sec-7" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-2-6">2.6 怎么衡量一个波束好不好：先学会读波束图</h2>
 <p>评价一个阵列波束的好坏，不能只笼统说“指向性强”，而要分开回答四个互不替代的问题：目标方向的主峰有多窄（半功率波束宽度 HPBW）、非目标方向的最高泄漏有多大（旁瓣电平 SLL）、在四面八方涌来的弥散混响场里能提高多少信噪比（指向性指数 DI），以及麦克风自身的电路底噪进入输出后会被抑制还是放大（白噪声增益 WNG）。</p>
 <p>先写出单个频点上的线性空间滤波公式。设权重列向量为 $\vec w\in\mathbb{C}^{M\times1}$，观测快拍为 $\vec x\in\mathbb{C}^{M\times1}$，则波束输出标量 $y$ 与阵列对三维方向 $\Omega$ 入射平面波的复空间响应 $B(f,\Omega)$ 分别为：</p>
@@ -1009,10 +1009,10 @@ B(f,\Omega)&=\vec w^H\vec a(f,\Omega)\text{。}
 <li><strong>零点（nulls）</strong>：各通道加权复矢量之和为零、使 $|B(f,\Omega)|=0$（分贝图上向下尖锐深陷）的方向；成对反相只是其中一种相消方式。单频波束图上的零点只代表该频率处相消，宽带干扰在其他频率上的零点位置会发生偏移。</li>
 </ul>
 <p><img alt="图7 波束图解剖与栅瓣" src="../figures/fig07_beampattern_anatomy.png" onerror="this.alt+='（图缺失）'" /></p>
-<p>对比图 7 的左右两幅子图可以直观看到阵元间距跨越半波长前后的变化：</p>
+<p>图 7(a) 用半波长间距解释波束图的几个特征；图 7(b) 固定指向 $\theta_0=60^\circ$，比较半波长和一波长间距：</p>
 <ul>
 <li><strong>子图 (a) 无混叠波束图解剖</strong>：横轴为水平入射方向（$-90^\circ\text{～}90^\circ$），纵轴为归一化增益（$\mathrm{dB}$）。8 麦均匀线阵取半波长间距 $d=\lambda/2$、等权延迟求和指向 $\theta_0=30^\circ$，主瓣准确对准 $30^\circ$，红色双箭头测得两侧 $-3.01\ \mathrm{dB}$ 交点间宽度约为 $14.8^\circ$（下节窄主瓣公式近似为 $14.7^\circ$），右侧橙色虚线标出可见角域最高旁瓣约为 $-12.8\ \mathrm{dB}$，主瓣两侧分布着清晰的相消零点。</li>
-<li><strong>子图 (b) 超半波长间距引发的栅瓣</strong>：同一 8 麦线阵改指 $\theta_0=60^\circ$。蓝色虚线保持 $d=\lambda/2$，全角域只有 $60^\circ$ 一个 $0\ \mathrm{dB}$ 主峰；红色实线把间距拉大一倍至 $d=\lambda$，虽然 $60^\circ$ 主瓣本身变窄了，但在 $\theta\approx-7.7^\circ$ 处出现了一座与主瓣同样高达 $0\ \mathrm{dB}$ 的伪主峰——即<strong>栅瓣（grating lobe）</strong>，阵列在该频率上彻底失去了区分 $60^\circ$ 与 $-7.7^\circ$ 的能力。</li>
+<li><strong>子图 (b) 一波长间距下的栅瓣</strong>：同一 8 麦线阵改指 $\theta_0=60^\circ$。蓝色虚线保持 $d=\lambda/2$，全角域只有 $60^\circ$ 一个 $0\ \mathrm{dB}$ 主峰；红色实线把间距拉大一倍至 $d=\lambda$，虽然 $60^\circ$ 主瓣本身变窄了，但在 $\theta\approx-7.7^\circ$ 处出现了一座与主瓣同样高达 $0\ \mathrm{dB}$ 的伪主峰——即<strong>栅瓣（grating lobe）</strong>，阵列在该频率上彻底失去了区分 $60^\circ$ 与 $-7.7^\circ$ 的能力。</li>
 </ul>
 <h3 id="sec-2-6-1">2.6.1 半功率波束宽度：主瓣有多宽</h3>
 <p><strong>半功率波束宽度（Half-Power Beamwidth，HPBW）</strong>定义为目标主瓣左右两侧功率降到峰值功率一半（$1/2$）处的两个方向角之差。在分贝刻度上，功率减半是 $10\log_{10}(0.5)\approx-3.01\ \mathrm{dB}$；若按幅度比计算，功率减半对应幅度变为 $1/\sqrt{2}\approx0.7071$，换算分贝同样是 $20\log_{10}(1/\sqrt{2})\approx-3.01\ \mathrm{dB}$。因此“半功率点”与“$-3\ \mathrm{dB}$ 点”指的是同一个位置（幅度减半则是 $-6.02\ \mathrm{dB}$，对应功率降为 $1/4$）。</p>

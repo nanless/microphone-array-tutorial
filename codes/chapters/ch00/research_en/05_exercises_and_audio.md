@@ -2001,7 +2001,7 @@ In [`E08-23`](../../../../chapters_en/08_speech-separation.md#e08-23), 3-mic cov
 .venv/bin/python -m codes.chapters.ch08.examples.generate_css_audio --check
 ```
 
-In addition, [`E08-27`](../../../../chapters_en/08_speech-separation.md#e08-27) inside `chapter08_experiments` compares single-bin 2-channel AuxIVA inversion-free rank-1 Iterative Source Steering (ISS) against Iterative Projection (IP): by sweep 5 both converge within $<10^{-14}$ of the shared optimal objective $Q^\star$, confirming step-size-free monotonic descent while eliminating $O(M^3)$ matrix inversions (no extra WAVs).
+The [`E08-27`](../../../../chapters_en/08_speech-separation.md#e08-27) entry in `chapter08_experiments` compares ISS rank-one updates with IP linear solves at one frequency bin, with two channels and fixed covariances. After five sweeps, both costs are within $10^{-14}$ of the minimum $Q^\star$, while off-diagonal residuals after congruence are still on the order of $10^{-7}$. Each ISS sweep uses two rank-one corrections and needs no linear solve. This exercise adds no WAV files.
 
 
 <a id="tracking-model-lifecycle-sphere-exercises"></a>

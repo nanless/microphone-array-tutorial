@@ -1914,7 +1914,7 @@ def fig_aec():
     ax.plot(t_axis, erle_frozen, color=C_BLUE, lw=1.7, ls="-",
             marker="o", markevery=5, ms=4.5, label="双讲冻结（保持收敛）")
     ax.plot(t_axis, erle_unfrozen, color=C_RED, lw=1.7, ls="--",
-            marker="s", markevery=5, ms=4.5, label="不冻结（双讲期发散）")
+            marker="s", markevery=5, ms=4.5, label="双讲时继续更新")
     ax.axvspan(0.8, 1.2, color=C_ORANGE, alpha=0.14)
     ax.annotate(f"稳态均值 ≈ {window_mean:.0f} dB",
                 xy=(0.62, window_mean), xytext=(0.12, 34.5),
@@ -2607,7 +2607,7 @@ def fig_beampattern_anatomy():
                 arrowprops=dict(arrowstyle="->", color=C_RED))
     ax.set_xlabel("方向 (°)"); ax.set_ylabel("增益 (dB)")
     ax.legend(fontsize=FS_SMALL, loc="lower left", ncol=1, framealpha=0.95)
-    ax.set_title("(b) 栅瓣演示：同阵列指向 60°，间距超半波长后", fontsize=11)
+    ax.set_title("(b) 指向 60°：一波长间距时出现栅瓣", fontsize=11)
     ax.grid(ls=":", alpha=0.4)
     fig.suptitle("图7  波束图怎么读：主瓣 / HPBW / 旁瓣 / 零点 / 栅瓣（模拟）", fontsize=13)
     fig.tight_layout()

@@ -14,7 +14,7 @@
     "codes/chapters/ch02/core/conventions.py": "79af1b8f7fe664e64e7ad786082c36a29664eacbdda63fba96a944e548304865",
     "codes/chapters/ch00/core/audio_samples.py": "1a7aad90d08fb8c27511aa463a6cc6dd6d4d2d230b27ed82549531f1f18edaba",
     "codes/chapters/ch00/io_contracts.py": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974",
-    "scripts/make_figures.py": "bf9058d1c3d6ed15bab41ea092439170cd324011936645d577408106813a485a",
+    "scripts/make_figures.py": "0157fc2c9fc9ee0a2d0bba7810a9603b22aa5a24d327a8895ef14412a2fb2fec",
     "scripts/make_tse_figures.py": "91d6d674e9ee0d2b5d9b8ac3f24be7ee9f73545a2fc372a4fd4380e61fe55b28"
   },
   "audio_manifest_sha256": "49ae443e2f19233ffac180030da11bad32bd7a0406b6572e2e762ae0b55d490e",

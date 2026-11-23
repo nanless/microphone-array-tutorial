@@ -191,6 +191,7 @@ mjx-container[jax="SVG"][display="true"] svg{max-width:100%;height:auto}
 mjx-container[jax="SVG"]:not([display="true"]){display:inline-block;padding-block:2px}
 td mjx-container[jax="SVG"],th mjx-container[jax="SVG"]{max-width:100%;overflow:visible}
 td mjx-container[jax="SVG"] svg,th mjx-container[jax="SVG"] svg{max-width:100%;height:auto}
+.pdf-table-header-math{display:inline-block;max-width:100%;height:auto;margin:0;padding:0;border:0;background:none}
 pre{font-family:Menlo,Monaco,Consolas,"STHeiti","Hiragino Sans GB","Microsoft YaHei",monospace;font-variant-ligatures:none;background:#F5F3EE;color:#1F2328;border:1px solid #DFDAD0;border-left:3.5px solid #5C564D;padding:11px 14px;margin:14px 0;border-radius:4px;overflow-x:visible;white-space:pre-wrap;font-size:13px;line-height:1.55}
 pre code{background:none;border:none;color:inherit;padding:0}
 blockquote{border-left:3.5px solid #B84A2E;margin:16px 0;padding:9px 14px;background:#F7F5F0;border-radius:0 4px 4px 0;color:#2B2E33}
@@ -260,6 +261,7 @@ thead{display:table-header-group}
 tr{break-inside:avoid}
 td,th{word-break:normal;overflow-wrap:break-word;hyphens:auto}
 td code,th code,td a,th a{overflow-wrap:anywhere;word-break:break-word}
+td code,th code{hyphens:none}
 /* MathJax 的行内长式与展示式均需留在 A4 正文宽度内。 */
 mjx-container{font-size:100%!important;max-width:100%;break-inside:avoid;page-break-inside:avoid}
 mjx-container[jax="SVG"][display="true"]{display:inline-block!important;width:100%;padding:5px 0;box-sizing:border-box}
@@ -1069,23 +1071,52 @@ def keep_imaging_hand_example(page):
             + '</div>\n' + page[start + match.end():])
 
 
+def pdf_formula_paint_locations(node, *, in_table_header=False):
+    """Read Chrome's single paint or its repeated header paint references."""
+    parent_page, content = node.get('/Pg'), node.get('/K')
+
+    def location(page, mcid):
+        resolved = page.get_object() if hasattr(page, 'get_object') else page
+        reference = getattr(resolved, 'indirect_reference', None)
+        if reference is None or isinstance(mcid, bool) or not isinstance(mcid, int) or mcid < 0:
+            raise ValueError('PDF公式缺少有效的页面或MCID')
+        return reference.idnum, int(mcid)
+
+    if not isinstance(content, list):
+        return [location(parent_page, content)]
+    if not in_table_header or len(content) < 2:
+        raise ValueError('仅跨页表头公式允许多个绘制位置')
+    locations = [location(parent_page, content[0])]
+    for child in content[1:]:
+        record = child.get_object() if hasattr(child, 'get_object') else child
+        if (not isinstance(record, dict) or set(record) != {'/Type', '/Pg', '/MCID'}
+                or record['/Type'] != '/MCR'):
+            raise ValueError('跨页表头公式含非标准绘制引用')
+        locations.append(location(record['/Pg'], record['/MCID']))
+    if len({page for page, _ in locations}) != len(locations):
+        raise ValueError('跨页表头公式在同一页面重复绘制')
+    return locations
+
+
 def tag_pdf_formulas(writer, sources):
     """Retag only source-labelled SVG paint, preserving its MCID and ParentTree.
 
-    No positional matching and no artifact replacement. Every authored occurrence
-    must have exactly one Figure connected to actual paint on its own page.
+    Every authored occurrence has one tagged Figure connected to actual paint.
+    Repeated table headers may paint the same formula once per page.
     """
     from pypdf.generic import (ContentStream, DecodedStreamObject, DictionaryObject,
                               NameObject, TextStringObject)
     expected = {item['id']: item for item in sources}
     found = {}
     by_page = {}
-    def visit(value):
+    def visit(value, in_table_header=False):
         node = value.get_object() if hasattr(value, 'get_object') else value
         if isinstance(node, list):
-            for child in node: visit(child)
+            for child in node:
+                visit(child, in_table_header)
             return
         if not isinstance(node, dict): return
+        in_table_header = in_table_header or node.get('/S') == '/TH'
         alt = str(node.get('/Alt', ''))
         if alt.startswith('MASP-MATH:'):
             match = re.fullmatch(r'MASP-MATH:(\d{6}):([0-9a-f]{64}):(.+)', alt, re.S)
@@ -1095,17 +1126,18 @@ def tag_pdf_formulas(writer, sources):
             if (identity not in expected or identity in found or
                     digest != expected[identity]['sha256'] or not speech.strip()):
                 raise SystemExit(f'PDF公式缺失、重复或源摘要不符：{identity}')
-            mcid = node.get('/K')
-            page = node.get('/Pg')
-            if isinstance(mcid, bool) or not isinstance(mcid, int) or page is None:
-                raise SystemExit(f'PDF公式超出已核单MCID合同：{identity}')
-            key = page.get_object().indirect_reference.idnum
-            slots = by_page.setdefault(key, {})
-            if int(mcid) in slots:
-                raise SystemExit('同一PDF页面公式MCID重复')
-            slots[int(mcid)] = (identity, speech)
+            try:
+                locations = pdf_formula_paint_locations(node, in_table_header=in_table_header)
+            except ValueError as exc:
+                raise SystemExit(f'PDF公式绘制引用无效：{identity}，{exc}') from exc
+            for page_id, mcid in locations:
+                slots = by_page.setdefault(page_id, {})
+                if mcid in slots:
+                    raise SystemExit('同一PDF页面公式MCID重复')
+                slots[mcid] = (identity, speech)
             found[identity] = node
-        if '/K' in node: visit(node['/K'])
+        if '/K' in node:
+            visit(node['/K'], in_table_header)
     tree = writer.root_object.get('/StructTreeRoot')
     if tree is None: raise SystemExit('PDF公式缺少结构树')
     visit(tree)

@@ -283,9 +283,11 @@ v_{nk}&=\begin{cases}
 \vec y_f(t)\leftarrow\vec y_f(t)-\vec v_k\,y_{kf}(t).
 \end{aligned}\tag{8-9}$$
 
-Verify each piece of Eq. (8-9): for all $n\ne k$, the updated $n$-th output $y_{nf}^{\mathrm{new}}(t)=y_{nf}(t)-v_{nk}y_{kf}(t)$ satisfies strict weighted orthogonality $\sum_t r_n(t)^{-1}y_{nf}^{\mathrm{new}}(t)y_{kf}^*(t)=0$; for $n=k$, the updated row $(\vec w_{kf}^{\mathrm{new}})^H=(1-v_{kk})\vec w_{kf}^H$ satisfies exact normalization $(\vec w_{kf}^{\mathrm{new}})^H\mathbf V_{kf}\vec w_{kf}^{\mathrm{new}}=1$; every step preserves strict monotonic non-increasing descent of the AuxIVA auxiliary objective with zero step-size tuning while lowering full-sweep per-bin complexity across $k=1,\dots,M$ and $T$ frames from IP's $O(TM^3+M^4)$ to $O(TM^2+M^3)$ (a factor-$M$ reduction on both frame accumulation and matrix algebra; both `pyroomacoustics` and `ssspy` expose `IP` and `ISS` branches for AuxIVA, and [Exercise E08-27](#e08-27) compares IP and ISS step by step).
+Check Eq. (8-9) one row at a time. For $n\ne k$, the updated output $y_{nf}^{\mathrm{new}}(t)=y_{nf}(t)-v_{nk}y_{kf}(t)$ satisfies weighted orthogonality $\sum_t r_n(t)^{-1}y_{nf}^{\mathrm{new}}(t)y_{kf}^*(t)=0$. For $n=k$, the updated row $(\vec w_{kf}^{\mathrm{new}})^H=(1-v_{kk})\vec w_{kf}^H$ satisfies $(\vec w_{kf}^{\mathrm{new}})^H\mathbf V_{kf}\vec w_{kf}^{\mathrm{new}}=1$. With positive denominators, each step leaves the fixed-weight auxiliary cost unchanged or decreases it, without a step size to tune.
 
-Replacing batch time averaging with frame-by-frame exponential-forgetting statistics ($\alpha\in(0,1)$) updated as each new complex frame $\vec x_f(t)$ arrives—paired with lightweight $O(M^2)$ ISS rank-one updates on $\mathbf W_f$ and frame-wise or recursive projection back—yields the low-latency streaming BSS framework **Online AuxIVA-ISS** ([Nakashima & Ono, APSIPA ASC 2022](https://doi.org/10.23919/APSIPAASC55919.2022.9979837)). Unlike offline batch processing, the online variant tracks slowly moving talkers, while similarly requiring safeguards against variance jitter from overly small $\alpha$ and covariance degeneracy during all-speaker silences.
+When Eq. (8-9) accumulates weighted inner products directly from the current outputs, each steering step processes $M$ outputs over $T$ frames and updates an $M\times M$ demixing matrix. A sweep over all $M$ sources costs $O(TM^2+M^3)$ per frequency bin. The IP implementation that forms $M$ dense weighted covariances and solves each row using Eq. (8-8) costs $O(TM^3+M^4)$. [Exercise E08-27](#e08-27) starts from given covariances. ISS saves the linear solves there, while dense covariance–vector products still make a full sweep $O(M^4)$. The locked `pyroomacoustics` implementation of `auxiva` uses IP. The AuxIVA implementation in `ssspy` also offers ISS.
+
+Online AuxIVA-ISS updates its weighted covariances recursively with forgetting factor $\alpha\in[0,1)$ and uses those covariances to compute the ISS coefficients and update the demixing matrix. A rank-one correction itself takes $O(M^2)$ operations, with covariance–vector products still needed to form its coefficients. [Nakashima & Ono, APSIPA ASC 2022](https://doi.org/10.23919/APSIPAASC55919.2022.9979837) tested a simulated mixture of three speakers with one source changing position abruptly. When the moving source index is known, the steering update can use that index alone. In practice, a very small forgetting factor can make the estimates fluctuate, and weighted covariances can become degenerate during all-speaker silences.
 
 #### Power Model and Alternating Updates of ILRMA
 
@@ -1276,7 +1278,7 @@ Synthesize two $2\ \mathrm{s}$, $16\ \mathrm{kHz}$ ($32{,}000$-sample) sinusoids
 
 ![Figure 38: Simulated separated slots flip in Chunk 2, overlap correlation restores slot correspondence, and PCM outputs are verified from disk](../figures_en/fig38_css_overlap.png)
 
-Inspect the three panels of Fig. 38: panel (a) displays the overlap correlation matrix ${\mathbf C}$, where bright anti-diagonal cells ($1.00$) dominate the main diagonal ($20/101\approx0.198$), signaling a slot flip on Chunk $2$; panels (b) and (c) fit $250\ \mathrm{Hz}$ and $625\ \mathrm{Hz}$ amplitude envelopes every $80\ \mathrm{ms}$ on Slot 0's PCM waveform for naive versus aligned stitching—in panel (b), the $250\ \mathrm{Hz}$ target collapses across the gray-shaded $0.8$–$1.2\ \mathrm{s}$ overlap as $625\ \mathrm{Hz}$ takes over, whereas panel (c) locks steadily onto the $250\ \mathrm{Hz}$ target across the entire $2\ \mathrm{s}$.
+Inspect the three panels of Fig. 38: panel (a) displays the overlap correlation matrix ${\mathbf C}$, where both anti-diagonal entries ($1.00$) exceed the main-diagonal entries ($20/101\approx0.198$), signaling a slot flip on Chunk $2$; panels (b) and (c) fit $250\ \mathrm{Hz}$ and $625\ \mathrm{Hz}$ amplitude envelopes every $80\ \mathrm{ms}$ on Slot 0's PCM waveform for naive versus aligned stitching—in panel (b), the $250\ \mathrm{Hz}$ target collapses across the gray-shaded $0.8$–$1.2\ \mathrm{s}$ overlap as $625\ \mathrm{Hz}$ takes over, whereas panel (c) locks steadily onto the $250\ \mathrm{Hz}$ target across the entire $2\ \mathrm{s}$.
 
 4. **Silence and identical-slot degeneracy guards**: If all speakers fall silent across the overlap (all-zero waveform), correlation denominators vanish; if both slots emit identical waveforms, all four entries equal $1$ in a tie; if Chunk $1$ is $(s,0)$ and Chunk $2$ is $(0,s)$, only one pair carries nonzero energy. Our teaching stitcher enforces a zero-mean RMS floor ($>10^{-8}$), a minimum matched-pair correlation ($\ge0.5$), and a winning-permutation margin ($>0.05$), returning `status="ambiguous"` rather than guessing blindly on degenerate overlaps.
 
@@ -1652,37 +1654,41 @@ Define the fixed-covariance AuxIVA auxiliary cost:
 
 $$Q(\mathbf W)=\sum_{n=1}^2 \vec w_n^H\mathbf V_n\vec w_n-2\ln\lvert\det\mathbf W\rvert.$$
 
-Compute: (1) the initial cost $Q(\mathbf W^{(0)})$; (2) one full sweep of **Iterative Projection (IP, Eq. (8-8))** versus one full sweep of **inversion-free Iterative Source Steering (ISS, Eq. (8-9) rank-1 update $\mathbf W\leftarrow\mathbf W-\vec v_k\vec w_k^H$)**, reporting intermediate vectors, updated matrices, and costs to verify $Q(\mathbf W^{(0)})>Q(\mathbf W_{\mathrm{ISS}}^{(1)})$; (3) $K=5$ sweeps of both IP and ISS, verifying monotonic descent to the exact same stationary minimum (cost gap $<10^{-10}$) and contrasting their matrix-algebra complexities.
+Compute (1) the initial cost $Q(\mathbf W^{(0)})$ and (2) one full sweep of **Iterative Projection (IP, Eq. (8-8))** and of **inversion-free Iterative Source Steering (ISS, Eq. (8-9), with rank-one update $\mathbf W\leftarrow\mathbf W-\vec v_k\vec w_k^H$)**. Give the intermediate vectors, updated matrices, and costs, and verify $Q(\mathbf W^{(0)})>Q(\mathbf W_{\mathrm{ISS}}^{(1)})$. (3) Run each method for $K=5$ sweeps, check that both costs decrease and come within $10^{-10}$ of the global minimum, then inspect the off-diagonal entries after congruence and compare the work in each update.
 
 **Solution**:
 
 1. **Initial cost**: With $\vec w_1^{(0)}=[1,0]^\top$, $\vec w_2^{(0)}=[0,1]^\top$, and $\det\mathbf W^{(0)}=1$, we have $\vec w_1^{(0)H}\mathbf V_1\vec w_1^{(0)}=4$ and $\vec w_2^{(0)H}\mathbf V_2\vec w_2^{(0)}=4$, giving $Q(\mathbf W^{(0)})=4+4-2\ln 1=8$.
 2. **Sweep 1 of IP (requires two $2\times 2$ linear solves)**:
-   - Row $1$: solving $\mathbf W^{(0)}\mathbf V_1\vec u_1=\vec e_1$ ($\det\mathbf V_1=64$) yields $\vec u_1=[5/16,\;\mathrm j/16]^\top$ with $\vec u_1^H\mathbf V_1\vec u_1=5/16$; writing back the normalized conjugate transpose gives row $1$ as $[\sqrt{5}/4,\;-\mathrm j/(4\sqrt{5})]$ and drops cost to $5+\ln(16/5)\approx 6.163151$.
-   - Row $2$: immediately using updated $\mathbf W$ to solve $(\mathbf W\mathbf V_2)\vec u_2=\vec e_2$ gives $\vec u_2=[-\mathrm j/20,\;3/10]^\top$ with $\vec u_2^H\mathbf V_2\vec u_2=29/100$, producing Sweep 1 matrix and cost:
+    - Row $1$: solving $\mathbf W^{(0)}\mathbf V_1\vec u_1=\vec e_1$ ($\det\mathbf V_1=64$) yields $\vec u_1=[5/16,\;\mathrm j/16]^\top$ with $\vec u_1^H\mathbf V_1\vec u_1=5/16$; writing back the normalized conjugate transpose gives row $1$ as $[\sqrt{5}/4,\;-\mathrm j/(4\sqrt{5})]$ and drops cost to $5+\ln(16/5)\approx 6.163151$.
+    - Row $2$: immediately using updated $\mathbf W$ to solve $(\mathbf W\mathbf V_2)\vec u_2=\vec e_2$ gives $\vec u_2=[-\mathrm j/20,\;3/10]^\top$ with $\vec u_2^H\mathbf V_2\vec u_2=29/100$, producing Sweep 1 matrix and cost:
 
-     $$\mathbf W_{\mathrm{IP}}^{(1)}=\begin{bmatrix}\dfrac{\sqrt{5}}{4}&-\dfrac{\mathrm j}{4\sqrt{5}}\\\dfrac{\mathrm j}{2\sqrt{29}}&\dfrac{3}{\sqrt{29}}\end{bmatrix},\qquad
+        $$\mathbf W_{\mathrm{IP}}^{(1)}=\begin{bmatrix}\dfrac{\sqrt{5}}{4}&-\dfrac{\mathrm j}{4\sqrt{5}}\\\dfrac{\mathrm j}{2\sqrt{29}}&\dfrac{3}{\sqrt{29}}\end{bmatrix},\qquad
      Q(\mathbf W_{\mathrm{IP}}^{(1)})=2+\ln\frac{320}{29}\approx 4.401025.$$
 
 3. **Sweep 1 of ISS (zero matrix inversions; pure inner products and rank-1 outer products)**: Applying $v_{nk}=\frac{\vec w_n^H\mathbf V_n\vec w_k}{\vec w_k^H\mathbf V_n\vec w_k}$ ($n\ne k$) and $v_{kk}=1-(\vec w_k^H\mathbf V_k\vec w_k)^{-1/2}$ sequentially:
-   - Step $k=1$ (along $\vec w_1^{(0)}=[1,0]^\top$): $v_{11}=1-4^{-1/2}=1/2$ and $v_{21}=(-4\mathrm j)/20=-\mathrm j/5$; rank-1 update $\mathbf W^{(1/2)}_{\mathrm{ISS}}=\mathbf W^{(0)}-\vec v_1\vec w_1^{(0)H}=\begin{bmatrix}1/2&0\\\mathrm j/5&1\end{bmatrix}$ shrinks row $2$'s quadratic form to $16/5$ with $\det=1/2$, dropping cost immediately from $8$ to $1+16/5-2\ln(1/2)=21/5+2\ln 2\approx 5.586294$.
-   - Step $k=2$ (along $\vec w_2^{(1/2)}=[-\mathrm j/5,\;1]^\top$): $v_{22}=1-(16/5)^{-1/2}=1-\sqrt{5}/4\approx 0.440983$; numerator $(\vec w_1^{(1/2)})^H\mathbf V_1\vec w_2^{(1/2)}=8\mathrm j/5$ and denominator $(\vec w_2^{(1/2)})^H\mathbf V_1\vec w_2^{(1/2)}=464/25$ yield $v_{12}=\frac{5}{58}\mathrm j\approx 0.086207\,\mathrm j$. Updating $\mathbf W_{\mathrm{ISS}}^{(1)}=\mathbf W^{(1/2)}_{\mathrm{ISS}}-\vec v_2(\vec w_2^{(1/2)})^H$ gives:
+    - Step $k=1$ (along $\vec w_1^{(0)}=[1,0]^\top$): $v_{11}=1-4^{-1/2}=1/2$ and $v_{21}=(-4\mathrm j)/20=-\mathrm j/5$; rank-1 update $\mathbf W^{(1/2)}_{\mathrm{ISS}}=\mathbf W^{(0)}-\vec v_1\vec w_1^{(0)H}=\begin{bmatrix}1/2&0\\\mathrm j/5&1\end{bmatrix}$ shrinks row $2$'s quadratic form to $16/5$ with $\det=1/2$, dropping cost immediately from $8$ to $1+16/5-2\ln(1/2)=21/5+2\ln 2\approx 5.586294$.
+    - Step $k=2$ (along $\vec w_2^{(1/2)}=[-\mathrm j/5,\;1]^\top$): $v_{22}=1-(16/5)^{-1/2}=1-\sqrt{5}/4\approx 0.440983$; numerator $(\vec w_1^{(1/2)})^H\mathbf V_1\vec w_2^{(1/2)}=8\mathrm j/5$ and denominator $(\vec w_2^{(1/2)})^H\mathbf V_1\vec w_2^{(1/2)}=464/25$ yield $v_{12}=\frac{5}{58}\mathrm j\approx 0.086207\,\mathrm j$. Updating $\mathbf W_{\mathrm{ISS}}^{(1)}=\mathbf W^{(1/2)}_{\mathrm{ISS}}-\vec v_2(\vec w_2^{(1/2)})^H$ gives:
 
-     $$\mathbf W_{\mathrm{ISS}}^{(1)}=\begin{bmatrix}\dfrac{15}{29}&-\dfrac{5}{58}\mathrm j\\\dfrac{\mathrm j}{4\sqrt{5}}&\dfrac{\sqrt{5}}{4}\end{bmatrix},\qquad
+        $$\mathbf W_{\mathrm{ISS}}^{(1)}=\begin{bmatrix}\dfrac{15}{29}&-\dfrac{5}{58}\mathrm j\\\dfrac{\mathrm j}{4\sqrt{5}}&\dfrac{\sqrt{5}}{4}\end{bmatrix},\qquad
      Q(\mathbf W_{\mathrm{ISS}}^{(1)})=\frac{54}{29}+\ln\frac{64}{5}\approx 4.411514<8.$$
 
-4. **Convergence after $K=5$ sweeps and complexity contrast**: Generalized eigenvalues of $\mathbf V_1\vec u=\mu\mathbf V_2\vec u$ are $\mu_{1,2}=3\mp 2\sqrt{2}$, yielding exact closed-form minimum $Q^\star=2+\ln\bigl(64(3-2\sqrt{2})\bigr)\approx 4.396135909321$. Cost trajectories across $5$ sweeps:
+4. **Cost and matrix residuals after $K=5$ sweeps**: Generalized eigenvalues of $\mathbf V_1\vec u=\mu\mathbf V_2\vec u$ are $\mu_{1,2}=3\mp 2\sqrt{2}$, giving the exact minimum $Q^\star=2+\ln\bigl(64(3-2\sqrt{2})\bigr)\approx 4.396135909321$. The costs over five sweeps are:
 
-   | Sweep $k$ | IP Cost $Q(\mathbf W_{\mathrm{IP}}^{(k)})$ | ISS Cost $Q(\mathbf W_{\mathrm{ISS}}^{(k)})$ |
-   |---:|---:|---:|
-   | $0$ | $8.000000000000$ | $8.000000000000$ |
-   | $1$ | $4.401025165807$ | $4.411514136443$ |
-   | $2$ | $4.396140157111$ | $4.396140166916$ |
-   | $3$ | $4.396135913002$ | $4.396135913002$ |
-   | $4$ | $4.396135909324$ | $4.396135909324$ |
-   | $5$ | $4.396135909321$ | $4.396135909321$ |
+    The table gives the sweep $k$ and the two costs $Q(\mathbf W_{\mathrm{IP}}^{(k)})$ and $Q(\mathbf W_{\mathrm{ISS}}^{(k)})$.
 
-   By sweep $5$, both methods reach within $<10^{-14}$ of $Q^\star$ with inter-method gap $\approx 8.88\times 10^{-16}\ll 10^{-10}$, jointly congruence-diagonalizing $(\mathbf V_1,\mathbf V_2)$ to $\operatorname{diag}(1,\;3+2\sqrt{2})$ and $\operatorname{diag}(3+2\sqrt{2},\;1)$. ISS thus preserves step-size-free monotonic AuxIVA descent while completely eliminating $O(M^3)$ matrix inversions (cutting matrix updates to $O(M^2)$ per step and full $T$-frame single-bin sweeps from IP's $O(TM^3+M^4)$ to $O(TM^2+M^3)$; verified in [`chapter08_experiments.py`](../codes/chapters/ch08/chapter08_experiments.py), `E08-27`).
+    | Sweep | IP Cost | ISS Cost |
+    |---:|---:|---:|
+    | $0$ | $8.000000000000$ | $8.000000000000$ |
+    | $1$ | $4.401025165807$ | $4.411514136443$ |
+    | $2$ | $4.396140157111$ | $4.396140166916$ |
+    | $3$ | $4.396135913002$ | $4.396135913002$ |
+    | $4$ | $4.396135909324$ | $4.396135909324$ |
+    | $5$ | $4.396135909321$ | $4.396135909321$ |
+
+    Both costs are within $10^{-14}$ of $Q^\star$ after sweep $5$ and differ from each other by about $8.88\times 10^{-16}$ in the program. For each final $\mathbf W$, compute $\mathbf W\mathbf V_1\mathbf W^H$ and $\mathbf W\mathbf V_2\mathbf W^H$. The matrices are close to $\operatorname{diag}(1,\;3+2\sqrt{2})$ and $\operatorname{diag}(3+2\sqrt{2},\;1)$. The first matrix for IP and the second for ISS each have an off-diagonal entry with magnitude about $1.25\times10^{-7}$. The `E08-27` entry in [`chapter08_experiments.py`](../codes/chapters/ch08/chapter08_experiments.py) calculates the cost gaps and the matrices separately.
+
+    Each IP sweep here uses two linear solves and each ISS sweep uses two rank-one corrections. With $M$ sources and given dense covariances, each ISS steering step forms $M$ covariance–vector products, so a sweep costs $O(M^4)$. The implementation in §8.3 that accumulates directly over $T$ output frames avoids those matrix–vector products.
 
 ---
 

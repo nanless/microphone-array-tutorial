@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Chapter 13 · Distributed Wireless Microphone Arrays · Microphone Array Signal Processing</title>
-<meta name="source-digest" content="7a209e3fba3d"><style>
+<meta name="source-digest" content="4a5d9a374aa4"><style>
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -1116,7 +1116,7 @@ P_{\mathrm{ref}}&=\sum_{n\in\mathcal I}D[n]^2,\\
 <p><img alt="Figure 67: Finite-recording clock compensation and packet-drop recovery controls" src="../figures_en/fig67_distributed_transport.png" onerror="this.alt+=' (figure missing)'" /></p>
 <p>Figure 67 summarizes SRO compensation and $5$-packet ($800$-sample) dropout recovery across our $16\,\mathrm{kHz}$ WAVs (<a href="#e13-11">E13-11</a> &amp; <a href="#e13-12">E13-12</a>):</p>
 <ul>
-<li><strong>Panel (a) SRO and linear SRC</strong>: Synchronous compressed NMSE is $0.153852$; uncompensated $+100\,\mathrm{ppm}$ inflates target distortion (orange) to $0.350885$; known-rate linear SRC restores target alignment while low-passing high-frequency noise (hatched blue) to $0.135726$ under the modified noise covariance.</li>
+<li><strong>Panel (a) SRO and linear SRC</strong>: Total PCM NMSE (white diamonds) is $0.153852$ with synchronous compressed data and rises to $0.350885$ at uncompensated $+100\,\mathrm{ppm}$. Known-rate linear SRC restores target alignment and attenuates high-frequency noise, changing the noise covariance. Total PCM NMSE after SRC is $0.135726$.</li>
 <li><strong>Panel (b) Finite-window cross-term diagnostic</strong>: Exact zero under synchronous integer-period windows, versus $\approx -2.3 \times 10^{-5}$ normalized signed cross-term (green; raw target–noise cross-power $-1.5668 \times 10^{-7}$ divided by reference power $P = 0.0068$ equals $-2.304 \times 10^{-5}$) under $+100\,\mathrm{ppm}$ drift where carrier cycles lose exact orthogonality.</li>
 <li><strong>Panel (c) Full-window vs. in-gap scoring across $800$ dropped samples</strong>: Full-window blue bars ($0.168521$ vs. $0.161924$) look deceptively close, whereas in-gap orange bars expose zero-fill's $0.681955$ collapse versus local-MWF fallback's $0.444451$.</li>
 </ul>

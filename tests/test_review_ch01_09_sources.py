@@ -101,7 +101,10 @@ class OriginalPythonExecutionTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as name:
             root=Path(name);package=root/package_name;package.mkdir();source=package/'__init__.py'
             source.write_text('value = 1\n');stamp=source.stat()
-            cache=Path(py_compile.compile(str(source),doraise=True));old_cache=cache.read_bytes();old_mtime=cache.stat().st_mtime_ns
+            cache=Path(py_compile.compile(
+                str(source),doraise=True,
+                invalidation_mode=py_compile.PycInvalidationMode.TIMESTAMP,
+            ));old_cache=cache.read_bytes();old_mtime=cache.stat().st_mtime_ns
             source.write_text('value = 2\n');os.utime(source,ns=(stamp.st_atime_ns,stamp.st_mtime_ns))
             record={'python_files':{'source':{'path':str(source),'sha256':hashlib.sha256(source.read_bytes()).hexdigest()}}}
             sys.path.insert(0,str(root))

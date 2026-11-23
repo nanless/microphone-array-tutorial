@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 15 章 · 条件目标提取与多通道日志 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="58a2e18a2abd"><style>
+<meta name="source-digest" content="f04fb843bff3"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -770,7 +770,7 @@ r_m(r,\theta)-r
 <ul>
 <li><strong>子图 (a) 正横径向功率响应（$3430\ \mathrm{Hz}$）</strong>：横轴为声源径向距离 $r \in [0.15, 5.0]\ \mathrm{m}$，纵轴为功率增益（dB）。红色虚线（传统远场 DSB）在 $r \gtrsim 0.5\ \mathrm{m}$ 区间近乎水平（$0\ \mathrm{dB}$），仅在极近场 $r = 0.15\ \mathrm{m}$ 处因球面波曲率失配略跌至 $-3.86\ \mathrm{dB}$，对 $4.0\ \mathrm{m}$ 同向干扰毫无抑制能力；蓝色实线（$d = 10\ \mathrm{cm}$ 距离气泡）在 $r_1 = 0.40\ \mathrm{m}$ 绿色点线处精确穿过 $0\ \mathrm{dB}$，随后随距离单调滚降，在 $r_2 = 4.00\ \mathrm{m}$ 紫色点线处压低至 $-19.65\ \mathrm{dB}$；橙色点划线（$d = 2\ \mathrm{cm}$ 正则气泡，$\delta = 5\times 10^{-4}$）则因孔径不足同时丢失近场增益与远场抑制斜率。</li>
 <li><strong>子图 (b) 阵元间距与白噪声增益塌缩</strong>：横轴为相邻阵元间距 $d$（cm），纵轴为无正则白噪声增益 $\mathrm{WNG}$（dB）。蓝色圆点实线直观呈现按 $d^4$ 变化的陡峭滚降，绿色虚线与红色点划线分别标出 $d = 10\ \mathrm{cm}$（$-4.21\ \mathrm{dB}$ 可用工作区）与 $d = 2\ \mathrm{cm}$（$-31.82\ \mathrm{dB}$ 底噪放大禁区）。</li>
-<li><strong>子图 (c) 实际 PCM 波形对照（第 $1600$ 点起）</strong>：横轴为自稳窗起点算起的相对时间（$0$～$3.0\ \mathrm{ms}$，共 $48$ 个采样点），纵轴为 PCM16 解码幅度（无量纲）。红色虚线（远场 DSB）被 $2500\ \mathrm{Hz}$ 同向干扰强烈拍频调制，而蓝色点划线（$10\ \mathrm{cm}$ 距离气泡）与绿色实线（$3200\ \mathrm{Hz}$ 近场目标参考）逐点重合。</li>
+<li><strong>子图 (c) 实际 PCM 波形对照（第 $1600$ 点起）</strong>：横轴为自稳窗起点算起的相对时间（$0$～$3.0\ \mathrm{ms}$，共 $48$ 个采样点），纵轴为 PCM16 解码幅度（无量纲）。红色虚线（远场 DSB）被 $2500\ \mathrm{Hz}$ 同向干扰强烈拍频调制，而蓝色点划线（$10\ \mathrm{cm}$ 距离气泡）已接近绿色实线（$3200\ \mathrm{Hz}$ 近场目标参考），局部仍有可见误差。</li>
 <li><strong>子图 (d) 稳窗实际 PCM16 归一化误差比</strong>：横轴为三种波束形成方案（共同导出增益 $1.0$），纵轴为稳窗整型误差能量比 $E_{\mathrm{PCM}} / P_{\mathrm{ref}}$（无量纲）。远场 DSB 误差比达 $1.2226$，$10\ \mathrm{cm}$ 距离气泡骤降至 $0.0246$，而 $d=2\ \mathrm{cm}$ 间距正则气泡（音频设定 $\delta = 2\times 10^{-4}$）因目标衰减与底噪放大升至 $2.2760$。</li>
 </ul>
 <span id="sec-16" class="anchor-alias" aria-hidden="true"></span><span id="sec-17-4" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-15-4">15.4 说话人日志评价指标与硬单标签聚类的重叠盲区</h2>

@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Chapter 4 · Sound Source Localization (DOA) · Microphone Array Signal Processing</title>
-<meta name="source-digest" content="7a209e3fba3d"><style>
+<meta name="source-digest" content="4a5d9a374aa4"><style>
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -658,7 +658,7 @@ G[k]&=X_1[k]X_2^*[k]\\
 <tr>
 <td><strong>Phase Transform (PHAT)</strong></td>
 <td>$1/(\lvert X_1(f)X_2^*(f)\rvert+\varepsilon)$</td>
-<td>Removes cross-spectral magnitude to keep only phase slope, adapting well to indoor speech envelopes; sensitive to low-SNR weak bins, requiring floor protection</td>
+<td>Reduces variation in cross-spectrum magnitude and preserves each bin’s phase; weak, low-SNR bins have unreliable phase and need floor protection</td>
 </tr>
 <tr>
 <td>Maximum Likelihood (ML / Hannan–Thomson)</td>
@@ -772,7 +772,7 @@ Ng(t)&=H_0+H_{N/2}\cos(\pi t)
 </tr>
 </tbody>
 </table></div>
-<p>Only the third row agrees with Eq. (4-5) to $10^{-16}$ across all $16$ half-sample points, strictly preserving every original integer sample. Moreover, because PHAT relies entirely on phase slope, any uncalibrated phase offset in analog front-ends or acoustic cavities converts directly into a systematic delay bias (see §10.2).</p>
+<p>Only the third row agrees with Eq. (4-5) to $10^{-16}$ across all $16$ half-sample points, strictly preserving every original integer sample. Uncalibrated differences between channel phase responses can change the shape or position of the correlation peak. The component of the phase difference that is linear in frequency contributes an additional group delay (see §10.2).</p>
 <p><img alt="Figure 12 Principle of GCC-PHAT" src="../figures_en/fig12_gcc_phat.png" onerror="this.alt+=' (figure missing)'" /></p>
 <p>Let us trace the complete numerical pipeline in Figure 12—from waveform shift through $16\times$ frequency-domain interpolation to angle inversion ($4096$-sample bandlimited random source over $300$–$6000\ \mathrm{Hz}$, exact frequency-domain fractional delay plus Gaussian white noise of standard deviation $0.05$, $8192$-point FFT with $Q=16$ zero-padded interpolation):</p>
 <ul>
@@ -851,7 +851,7 @@ Ng(t)&=H_0+H_{N/2}\cos(\pi t)
 <p>Reading all three panels of Figure 13:</p>
 <ul>
 <li><strong>Figure 13(a) — Single-frame correlation curves at $\mathrm{DRR}=0\ \mathrm{dB}$</strong> (using an independent example seed <code>seed=7</code>): horizontal axis shows delay ($-4$ to $4\ \mathrm{ms}$), with the dashed black line at true $-0.5625\ \mathrm{ms}$. The solid green curve ($T_{60}=0.1\ \mathrm{s}$) exhibits strong early-reflection side peaks near $0.4$ around $0$–$0.5\ \mathrm{ms}$, whereas the dotted red curve ($T_{60}=0.8\ \mathrm{s}$) spreads reflection energy into lower, more uniform ripples.</li>
-<li><strong>Figure 13(b) — Hit rate over $150$ trials with $95\%$ Wilson confidence intervals</strong>: $\mathrm{DRR}=+6\ \mathrm{dB}$ and $0\ \mathrm{dB}$ hug $100\%$, then plunge precipitously to $33\%$–$45\%$ at $\mathrm{DRR}=-6\ \mathrm{dB}$, confirming DRR as the decisive factor for direct-peak survival.</li>
+<li><strong>Figure 13(b) — Hit rate over $150$ trials with $95\%$ Wilson confidence intervals</strong>: $\mathrm{DRR}=+6\ \mathrm{dB}$ and $0\ \mathrm{dB}$ stay close to $100\%$, while $\mathrm{DRR}=-6\ \mathrm{dB}$ gives $33\%$–$45\%$. At each of the three tested decay times, this group has a much lower hit rate.</li>
 <li><strong>Figure 13(c) — Peak-to-median contrast</strong>: vertical axis shows $\max g/(\operatorname{median}|g|+10^{-12})$ (solid markers and shaded bands denote medians and interquartile ranges across $150$ trials), stratifying cleanly across $\mathrm{DRR}=+6,0,-6\ \mathrm{dB}$.</li>
 </ul>
 <p><strong>Dual-microphone multi-speaker localization via time–frequency sparsity (WDO / DUET)</strong>: Dual-mic GCC-PHAT extracts only one global peak per frame and typically fails when two or more talkers speak simultaneously. Speech in the STFT plane, however, exhibits strong <strong>W-Disjoint Orthogonality (WDO)</strong>—most active time–frequency bins $(k,\ell)$ are dominated by <strong>one</strong> talker at a time. Exploiting this sparsity, <strong>DUET (Degenerate Unmixing Estimation Technique; <a href="https://doi.org/10.1109/TSP.2004.828896">Yılmaz and Rickard, <em>IEEE TSP</em>, 2004</a>)</strong> forms the complex spectral ratio $X_2(k,\ell)/X_1(k,\ell)=\hat a(k,\ell)e^{-\mathrm{j}2\pi f_k\hat\delta(k,\ell)}$ at each active bin, extracts instantaneous relative symmetric attenuation $\hat\alpha(k,\ell)=\hat a-\hat a^{-1}$ and relative delay $\hat\delta(k,\ell)=-\frac{1}{2\pi f_k}\arg\big(X_2(k,\ell)/X_1(k,\ell)\big)$ (for $f_k>0$, noting $\hat\delta=\tau_{21}=-\tau_{12}$, and requiring spacing below half the shortest wavelength to avoid phase wrapping), and accumulates a power-weighted smoothed 2D histogram on the $(\alpha,\delta)$ plane with weights $|X_1 X_2|^p f_k^q$—distinct clusters require distinguishable relative attenuation-delay parameters and enough source-dominated bins. WDO alone does not ensure this: two sources with the same constant mixing ratio $2$ occupy one cluster. When these additional conditions hold, the approach overcomes the "two mics, one source" bottleneck (effective for compact dual mics in weak reverberation; strong reverberation degrades WDO and blurs clusters together).</p>

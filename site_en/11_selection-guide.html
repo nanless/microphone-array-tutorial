@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Chapter 11 · System Synthesis & Selection Guide · Microphone Array Signal Processing</title>
-<meta name="source-digest" content="7a209e3fba3d"><style>
+<meta name="source-digest" content="4a5d9a374aa4"><style>
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -1430,7 +1430,7 @@ $$</p>
 <p><em>Figure 42: 16-bit PCM read-back evaluation of synthetic 500/1500 Hz dual-tone target and 3500 Hz interferer waveforms processed by 3-tap and 9-tap FIR filters (all four WAVs share export gain $0.8$, aligned by respective group delays of 1 and 4 samples). (a) Per-tone amplitude change relative to reference (dB); (b) 2D trade-off between $3500\ \mathrm{Hz}$ interferer attenuation and $1500\ \mathrm{Hz}$ target retention alongside aligned total NMSE.</em></p>
 <p>Inspecting both panels of Figure 42 makes the trade-off unmistakable:</p>
 <ul>
-<li><strong>Figure 42(a) Per-frequency amplitude response bar chart</strong>: At the $500\ \mathrm{Hz}$ fundamental, solid blue (3-tap) and hatched green (9-tap) bars both sit at $0\ \mathrm{dB}$ (distortionless); at the $3500\ \mathrm{Hz}$ interferer on the right, 9 taps suppress to $-34.2\ \mathrm{dB}$, far deeper than 3 taps' $-6.6\ \mathrm{dB}$; yet at the middle $1500\ \mathrm{Hz}$ target harmonic, the hatched green bar plunges $-13.7\ \mathrm{dB}$ whereas the blue bar dips by less than $1\ \mathrm{dB}$.</li>
+<li><strong>Figure 42(a) Per-frequency amplitude response bar chart</strong>: At the $500\ \mathrm{Hz}$ fundamental, solid blue (3-tap) and hatched green (9-tap) bars are both close to $0\ \mathrm{dB}$ on PCM readback; at the $3500\ \mathrm{Hz}$ interferer on the right, 9 taps suppress to $-34.2\ \mathrm{dB}$, far deeper than 3 taps' $-6.6\ \mathrm{dB}$; yet at the middle $1500\ \mathrm{Hz}$ target harmonic, the hatched green bar plunges $-13.7\ \mathrm{dB}$ whereas the blue bar dips by less than $1\ \mathrm{dB}$.</li>
 <li><strong>Figure 42(b) Noise-suppression vs. target-preservation scatter plot</strong>: The blue square (3-tap) occupies the upper-left high-fidelity region ($89.9\%$ target retention, $-9.38\ \mathrm{dB}$ aligned NMSE), while the green circle (9-tap), pushed far right into deep noise suppression, collapses target retention to $20.6\%$ and degrades total aligned NMSE to $-5.01\ \mathrm{dB}$.</li>
 </ul>
 <p><strong>Listening comparison and reproduction</strong>: Lower playback volume before listening and compare in the order "Clean Target $\rightarrow$ Noisy Mixture $\rightarrow$ 3-Tap Output $\rightarrow$ 9-Tap Output"—you will clearly hear that although the 9-tap filter completely eliminates the piercing $3500\ \mathrm{Hz}$ whistle, the target's bright two-tone timbre turns muffled and dull (for audio generation details see <a href="research/05_exercises_and_audio.html#sec-33">Section 33 of the Exercises and Audio Research Manual</a>):</p>

@@ -691,7 +691,7 @@ def fig_pbfdaf_flow():
     arrow(prediction_ax, (11.5, 0.98), (11.95, 0.98), color=C_GREEN)
     prediction_ax.text(0.2, 0.28,
                        "$u_m=[b_{m-1},b_m]$；$Q_m=\\sum_pW_pX_{m-p}$；后 $N$ 点为 $\\hat y_m$。\n"
-                       "频点 $k$ 省略；前 $N$ 点因循环折回而弃用。$h$ 含器件的小信号响应。",
+                       "频点 $k$ 省略；取本块后 $N$ 点。$h$ 含器件的小信号响应。",
                        fontsize=FS_SMALL, color="0.28", va="bottom")
 
     setup(update_ax, "(b) 有效误差驱动下一块的候选权重；冻结只阻止更新")

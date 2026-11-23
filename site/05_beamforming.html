@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 5 章 · 波束形成 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="58a2e18a2abd"><style>
+<meta name="source-digest" content="f04fb843bff3"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -1109,7 +1109,7 @@ g_{\mathrm{BAN}}=\frac{\sqrt{\|\hat{\mathbf R}_{nn}\vec v\|_2^2/M}}{\vec v^H\hat
 <h3 id="sec-u-29b2ca1b3c">从逐频信噪比到复数波形参考（含图 68）</h3>
 <p>上表指出 GEV-BAN 虽能恢复幅频响应，却保留了逐频任意相位 $e^{\mathrm{j}\psi_\gamma}$。将某频点权重乘非零复数 $c$ 时，因内积共轭，输出谱实际乘的是共轭 $c^*$（$\widetilde{\vec w}=c\vec w\implies\widetilde Y=c^*Y$）：当 $|c|=1$ 时逐频功率与逐频 SNR 纹丝不动，但跨频点不一致的相位旋转会造成不可由全局纯延迟补偿的<strong>非线性群延迟波形畸变</strong>。图 68 以无噪 $500\ \mathrm{Hz}+1500\ \mathrm{Hz}$ 双余弦（幅度各 $0.1$，保持 $500\ \mathrm{Hz}$ 不动，将 $1500\ \mathrm{Hz}$ 权重分别乘 $-1$ 与 $+\mathrm{j}$）直观呈现了这一效应（详细推导与三段可试听合成 WAV 见 <a href="#e05-15">E05-15</a>）：</p>
 <p><img alt="图68：同功率的两频分量与参考波形" src="../figures/fig68_phase_reference.png" onerror="this.alt+='（图缺失）'" /></p>
-<p><strong>怎么读图 68</strong>：<code>(a)</code> 展示同钟同增益解码波形，蓝色原相位参考在 $t=0$ 同相冲上 $+0.20$，红色<strong>高频反号</strong>波（$1500\ \mathrm{Hz}$ 权重乘 $-1$）从 $0$ 起步峰谷错开，绿色高频正交波（权重乘 $+\mathrm{j}$、输出乘 $-\mathrm{j}$ 使余弦变正弦）呈现不对称斜峰；<code>(b)</code> 实测提取 $1500\ \mathrm{Hz}$ 相对参考相角精准落在 $0^\circ/+180^\circ/-90^\circ$，印证权重乘 $+\mathrm{j}$ 输出滞后 $90^\circ$ 的共轭律；<code>(c)</code> 与 <code>(d)</code> 并排对比揭示核心警示——三条波形稳态平均功率全部齐平贴在 $0.01$，但相对参考的波形 MSE 却从 $0$ 升至 $0.02$（NMSE $=2$）与 $0.01$（NMSE $=1$）。因此若已知可靠 RTF $\vec a$ 且 $g=\vec w^H\vec a\ne 0$，必须除以共轭 $\vec w/g^*$ 拉回零相参考。此外，式(5-25)要求全通道共享标量掩码；若改做逐通道平方根掩码预滤波，会篡改通道幅度比并令秩一目标协方差跳变为满秩（见 <a href="#e05-12">E05-12</a>）。</p>
+<p><strong>怎么读图 68</strong>：<code>(a)</code> 展示同钟同增益解码波形，蓝色原相位参考在 $t=0$ 同相冲上 $+0.20$，红色<strong>高频反号</strong>波（$1500\ \mathrm{Hz}$ 权重乘 $-1$）从 $0$ 起步峰谷错开，绿色高频正交波（权重乘 $+\mathrm{j}$、输出乘 $-\mathrm{j}$ 使余弦变正弦）呈现不对称斜峰；<code>(b)</code> 实测提取 $1500\ \mathrm{Hz}$ 相对参考相角，按图中精度分别为 $0^\circ/+180^\circ/-90^\circ$，印证权重乘 $+\mathrm{j}$ 输出滞后 $90^\circ$ 的共轭律；<code>(c)</code> 与 <code>(d)</code> 并排对比揭示核心警示——解析稳态平均功率均为 $0.01$，相对参考的波形 MSE 分别为 $0$、$0.02$（NMSE $=2$）与 $0.01$（NMSE $=1$）。图中 PCM 实测值在这些解析值附近，量化后功率略有差别。因此若已知可靠 RTF $\vec a$ 且 $g=\vec w^H\vec a\ne 0$，必须除以共轭 $\vec w/g^*$ 拉回零相参考。此外，式(5-25)要求全通道共享标量掩码；若改做逐通道平方根掩码预滤波，通道幅度比会改变，掩码随帧变化时还可能抬高目标协方差的秩（见 <a href="#e05-12">E05-12</a>）。</p>
 <h3 id="sec-5-9-2">5.9.2 可执行基线与上线检查</h3>
 <p>本书 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch05/core/beamforming.py"><code>beamforming.py</code></a> 提供 DSB、球面相干矩阵、相对加载超指向/MVDR、LCMV、GSC 正交阻塞与单通道 Wiener 后滤的纯 NumPy 实现（统一 $Y=\vec w^H\vec x$，STFT 轴序 <code>(通道, 频点, 帧)</code>；对接第 8 章 <code>(频点, 通道, 帧)</code> 接口前先 <code>swapaxes(0, 1)</code>，全部采用 <code>np.linalg.solve</code> 求解并主动拦截奇异/非厄米输入）。实时上线状态机须固定记录窗长、帧移、参考通道、遗忘因子与更新周期，实时监控条件数、$\mathrm{WNG}_{\mathrm{dB}}$ 与输出峰值，并在空掩码或双讲时平滑冻结或无咔嗒声退回 DSB。</p>
 <p>复用第三方开源波束形成库时（常见开源库接口差异汇总见<a href="research/01_spatial_and_tracking.html">空间处理与追踪研究手册</a>），上线前务必核对三处常见接口语义差异：</p>

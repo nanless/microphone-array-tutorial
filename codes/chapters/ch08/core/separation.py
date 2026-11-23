@@ -307,8 +307,9 @@ def mask_mvdr_2x2(
     roundoff scale. ``return_diagnostics`` reports its count and positions as
     ``rounding_underflow_components/positions``: those zeros cannot distinguish
     an exact null from a strictly nonzero roundoff-scale residual. Other detected
-    restoration loss raises ValueError. No claim of an exact mathematical zero
-    follows from a finite output.
+    restoration loss raises ValueError. At subnormal input scales, a zero
+    normalized sum with opposing nonzero terms is also reported as undecidable.
+    No claim of an exact mathematical zero follows from a finite output.
     """
 
     x = _finite_numeric_spectrum(spectrum)
@@ -419,11 +420,17 @@ def mask_mvdr_2x2(
             for component in ('real', 'imag'):
                 scaled_part, output_part = getattr(scaled_output, component), getattr(output[frequency], component)
                 lost = (scaled_part != 0) & (output_part == 0)
-                if np.any(lost):
+                # At subnormal input scale, cancellation can already round to
+                # zero in the normalized contraction, before restoration.
+                zero_at_tiny_scale = ((scaled_part == 0) & (output_part == 0) &
+                                      (input_scale[frequency] < np.finfo(float).tiny))
+                if np.any(lost | zero_at_tiny_scale):
                     if component == 'real':
                         terms = weight.real[:, None]*normalized[frequency].real + weight.imag[:, None]*normalized[frequency].imag
                     else:
                         terms = weight.real[:, None]*normalized[frequency].imag - weight.imag[:, None]*normalized[frequency].real
+                    cancellation = np.any(terms > 0, axis=0) & np.any(terms < 0, axis=0)
+                    lost |= zero_at_tiny_scale & cancellation
                     bound = 8*np.finfo(float).eps*np.sum(abs(terms), axis=0)
                     if np.any(lost & (abs(scaled_part) > bound)):
                         raise ValueError("MVDR output restoration loses nonzero components outside float64 support")

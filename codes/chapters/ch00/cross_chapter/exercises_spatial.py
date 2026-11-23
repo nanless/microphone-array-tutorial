@@ -20,7 +20,7 @@ if str(ROOT) not in sys.path:
 
 from codes.chapters.ch05.core.beamforming import lcmv_weights, mvdr_weights
 from codes.chapters.ch03.core.covariance import recursive_covariance, spatial_covariance
-from codes.chapters.ch04.core.doa import esprit_ula, gcc_phat, mdl_source_count, music_spectrum
+from codes.chapters.ch04.core.doa import esprit_ula, gcc_phat, mdl_source_count, music_spectrum, srp_phat
 from codes.chapters.ch03.core.geometry import direction_vector, near_field_steering, plane_wave_delays, plane_wave_steering
 from codes.chapters.ch02.core.spectral import istft, stft
 from codes.chapters.ch04.examples.mdl_repeated_trials import run_experiment as mdl_repeated_trials
@@ -414,7 +414,8 @@ def mvdr_finite_noise_null() -> dict:
 
 
 def four_mic_fractional_delay() -> dict:
-    """E04-07: ideal phasors and actual published PCM against clean mic 1."""
+    """E04-07: ideal phasors, PCM comparisons and a scan-then-align example."""
+    sample_rate = 16000
     positions = np.column_stack((.04 * np.arange(4), np.zeros(4)))
     delays = plane_wave_delays(positions, np.deg2rad(30.))
     frequency = 6 * 383.
@@ -426,7 +427,8 @@ def four_mic_fractional_delay() -> dict:
     published = read_published_audio('fractional_array', {
         'fractional_reference.wav':1, 'fractional_array.wav':4,
         'fractional_unaligned.wav':1, 'fractional_aligned.wav':1})
-    reference = published['fractional_reference.wav']['samples'][0,320:31680]
+    clean_mic = published['fractional_reference.wav']['samples'][0]
+    reference = clean_mic[320:31680]
     measurements = {}
     for name in ('fractional_unaligned.wav', 'fractional_aligned.wav'):
         error = published[name]['samples'][0,320:31680]-reference
@@ -435,10 +437,37 @@ def four_mic_fractional_delay() -> dict:
                               'residual_squared_sum':float(np.sum(error**2)),
                               'integer_residual_squared_sum':int(integers@integers),
                               'sample_denominator':int(error.size)}
+    channels = published['fractional_array.wav']['samples']
+    scan_window = (320, 16000)
+    score_window = (16320, 31680)
+    fft_size, hop = 256, 64
+    spectra = stft(channels, n_fft=fft_size, hop_length=hop)
+    frequencies = np.fft.rfftfreq(fft_size, 1 / sample_rate)
+    band = (375 <= frequencies) & (frequencies <= 3000)
+    centers = np.arange(spectra.shape[-1]) * hop
+    half_window = fft_size // 2
+    complete_frames = ((scan_window[0] + half_window <= centers)
+                       & (centers <= scan_window[1] - half_window))
+    candidates = np.arange(-90, 91)
+    scores = srp_phat(spectra[:, band][:, :, complete_frames], frequencies[band],
+                      positions, np.deg2rad(candidates))
+    estimated_angle = int(candidates[np.argmax(scores)])
+
+    samples = np.arange(channels.shape[1])
+    held_out = slice(*score_window)
+    clean_held_out = clean_mic[held_out]
+    held_out_mse = {"mic_1": float(np.mean((channels[0, held_out] - clean_held_out)**2))}
+    for label, angle in (("unaligned", 0), ("estimated", estimated_angle),
+                         ("reversed_angle", -estimated_angle)):
+        arrivals = sample_rate * plane_wave_delays(positions, np.deg2rad(angle))
+        aligned = [np.interp(samples[held_out] + arrival, samples, channel)
+                   for arrival, channel in zip(arrivals, channels)]
+        held_out_mse[label] = float(np.mean((np.mean(aligned, axis=0) - clean_held_out)**2))
+
     return {"positions_m": positions.tolist(), "azimuth_deg": 30.,
-            "sample_rate_hz": 16000, "sound_speed_m_s": 343.,
+            "sample_rate_hz": sample_rate, "sound_speed_m_s": 343.,
             "relative_arrival_us": (delays * 1e6).tolist(),
-            "causal_alignment_samples": (extra_delays * 16000).tolist(),
+            "causal_alignment_samples": (extra_delays * sample_rate).tolist(),
             "test_frequency_hz": frequency,
             "ideal_unaligned_amplitude": unaligned_amplitude,
             "ideal_unaligned_db": float(20 * np.log10(unaligned_amplitude)),
@@ -448,6 +477,11 @@ def four_mic_fractional_delay() -> dict:
             "pcm_measurements":measurements, "scoring_interval_samples":[320,31680],
             "pcm_reference":"fractional_reference.wav: clean physical mic 1, not noisy array channel 0",
             "pcm_decode_divisor":32768, "gain_or_delay_fitting":False,
+            "scan_then_align": {"angle_deg": estimated_angle, "peak_score": float(np.max(scores)),
+                                "scan_interval_samples": list(scan_window),
+                                "scan_frames": int(np.count_nonzero(complete_frames)),
+                                "score_interval_samples": list(score_window),
+                                "score_samples": clean_held_out.size, "mse": held_out_mse},
             "model_scope": "ideal pure-tone phasor; WAV additionally uses broadband noise, linear interpolation and PCM16"}
 
 

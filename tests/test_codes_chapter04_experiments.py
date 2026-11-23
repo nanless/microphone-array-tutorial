@@ -3,6 +3,7 @@ import cmath
 import json
 import math
 import unittest
+from scripts import run_portable_ci as portable_ci
 import warnings
 import numpy as np
 from codes.chapters.ch04 import chapter04_experiments as ex
@@ -20,6 +21,8 @@ from codes.chapters.ch00.core.audio_samples import doa_ambiguity_case, prepare_e
 
 class Chapter04ExperimentsTests(unittest.TestCase):
     def test_catalog_keys_and_strict_json(self):
+        if not portable_ci.is_original_generation_host():
+            self.skipTest("complete published exercise replay requires the original generation host")
         results = ex.run_exercises()
         self.assertEqual(set(results), {f'E04-{i:02d}' for i in range(12, 25)})
         json.dumps(results, allow_nan=False)

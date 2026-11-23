@@ -31,6 +31,17 @@ class PortableSelectionTests(unittest.TestCase):
         self.assertEqual(len(reasons), 1)
         self.assertIn('generation-host source', reasons[0])
 
+    def test_local_audio_fixtures_still_require_the_other_capabilities(self):
+        module = 'test_codes_chapter08_experiments'
+        arm_macos = dict(self.PORTABLE, is_arm64_darwin=True)
+        self.assertEqual(ci.test_selection_reasons(module, 'check_assets', **arm_macos), [])
+        reasons = ci.test_selection_reasons(module, 'check_assets _downloads', **arm_macos)
+        self.assertEqual(len(reasons), 1)
+        self.assertIn('_downloads', reasons[0])
+        reasons = ci.test_selection_reasons(module, 'check_assets', **self.PORTABLE)
+        self.assertEqual(len(reasons), 1)
+        self.assertIn('Apple Silicon macOS', reasons[0])
+
     def test_policy_fixtures_are_selected_without_enabling_similar_real_tests(self):
         text = '_downloads check_assets'
         self.assertEqual(ci.test_selection_reasons('test_review_portable_ci', text, **self.PORTABLE), [])

@@ -65,6 +65,8 @@ Delay-and-Sum requires no online noise statistics; it aligns channel phases to d
 
 $$\vec{w}_{\mathrm{DSB}} = \frac{1}{M}\vec{a}(\theta_0).\tag{5-4}$$
 
+In [Chapter 4, E04-07](04_doa-estimation.md#e04-07), the SRP-PHAT peak from the four-channel WAV supplies $\theta_0$. The exercise aligns the channels in time to Mic 1 before summing, and $a_m^*$ applies the corresponding phase correction here. Work through the results for the estimated and reversed angles before reading the beam patterns below.
+
 For unit-modulus steering ($|a_m|=1$), Eq. (5-4) satisfies $\vec w_{\mathrm{DSB}}^H\vec a(\theta_0)=1$; under near-field amplitude decay or unequal sensor gains ($|a_m|\ne 1$), the unit-distortionless spatial matched filter generalizes to $\vec a/\|\vec a\|_2^2$.
 
 #### Dual-Microphone Delay-and-Sum Hand Calculation
@@ -259,7 +261,7 @@ $$\hat{\mathbf R}_{nn,\mathrm{load}}=\hat{\mathbf R}_{nn}+\alpha_{\mathrm{dl}}\,
 
 $\alpha_{\mathrm{dl}}$ forms a continuous dial between purely data-driven MVDR ($\alpha_{\mathrm{dl}}\to 0$) and purely geometric DSB ($\alpha_{\mathrm{dl}}\to\infty$): raising $\alpha_{\mathrm{dl}}$ lowers condition numbers and lifts $\mathrm{WNG}_{\mathrm{dB}}$ while shallowing interference nulls; always evaluate performance by plugging the resulting weights back into the **unloaded physical covariance**.
 
-**Real multichannel room recording comparison (public LOCATA dataset)**: On [LOCATA dev](https://zenodo.org/records/3630471) Task 2 Recording 1 ($15$-mic $48\ \mathrm{kHz}$ DICIT array; loudspeaker A target, B competing interferer, referenced to Mic $7$), estimating $\hat{\mathbf R}_{nn}$ from B-only interval $3.48$–$3.94\ \mathrm{s}$ ($41$ frames) with $\alpha_{\mathrm{dl}}=0.1$ and applying loaded MVDR across $250$–$6000\ \mathrm{Hz}$ (raised-cosine transition to DSB, minimum WNG $\approx 4.14\ \mathrm{dB}$) produces the following $300$–$3400\ \mathrm{Hz}$ band powers on two held-out single-talker test windows (relative to Mic $7 = 0\ \mathrm{dB}$):
+**Real multichannel room recording comparison (public LOCATA dataset).** Use [LOCATA dev](https://zenodo.org/records/3630471) Task 2 Recording 1, a $15$-mic $48\ \mathrm{kHz}$ DICIT recording. A is the target, B is the competing talker, and Mic $7$ is the reference. The optically measured loudspeaker and microphone positions give the travel times for a spherical wave. Estimate $\hat{\mathbf R}_{nn}$ from the $3.48$–$3.94\ \mathrm{s}$ B-only interval ($41$ frames), set $\alpha_{\mathrm{dl}}=0.1$, and apply loaded MVDR from $250$ to $6000\ \mathrm{Hz}$. Raised-cosine tapers blend into DSB outside this band, and the minimum WNG is about $4.14\ \mathrm{dB}$. The table gives $300$–$3400\ \mathrm{Hz}$ band powers on two held-out single-talker windows, with Mic $7$ at $0\ \mathrm{dB}$.
 
 | Single-Talker Test Window | Delay-and-Sum vs. Mic 7 | MVDR vs. Mic 7 | MVDR vs. Delay-and-Sum |
 |---|---:|---:|---:|

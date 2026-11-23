@@ -1,5 +1,6 @@
 """Independent mathematical boundary tests for chapter-eight float support."""
 from fractions import Fraction
+import math
 import tempfile
 from pathlib import Path
 from unittest.mock import patch
@@ -90,19 +91,88 @@ class NumericalSupportTests(unittest.TestCase):
             value = np.nextafter(np.nextafter(scale, np.inf), np.inf) if perturb else scale
             x = np.array([[[scale, value], [1j*scale, -1j*scale]]])
             y, w, diagnostic = mask_mvdr_2x2(x, [[.9, .1]], [[.1, .9]], return_diagnostics=True)
-            self.assertEqual(y[0, 1], 0)
-            self.assertEqual(diagnostic['rounding_underflow_components'], 1)
-            position = diagnostic['rounding_underflow_positions'][0]
-            self.assertEqual((position['frequency_index'], position['frame_index'], position['component']), (0, 1, 'real'))
-            self.assertIn('cannot distinguish', position['status'])
-            if perturb:
-                # The exact weighted sum of actual binary input/returned
-                # weights is nonzero, despite the float output zero. This is
-                # not an assertion that the method has proved a perfect null.
+            positions = diagnostic['rounding_underflow_positions']
+            self.assertEqual(diagnostic['rounding_underflow_components'], len(positions))
+            if not perturb:
+                # Preserve the real runner's missed-diagnostic regression,
+                # including an exactly zero normalized contraction.
+                self.assertEqual(y[0, 1], 0)
+                self.assertEqual(diagnostic['rounding_underflow_components'], 1)
+                position = positions[0]
+                self.assertEqual((position['frequency_index'], position['frame_index'], position['component']), (0, 1, 'real'))
+                self.assertIn('cannot distinguish', position['status'])
+            else:
                 exact = (Fraction(float(w[0, 0].real))*Fraction(float(value)) -
                          Fraction(float(w[0, 1].imag))*Fraction(float(scale)))
-                self.assertNotEqual(exact, 0)
-                self.assertEqual(float(exact), 0.)
+                real_positions = [p for p in positions if
+                                  (p['frequency_index'], p['frame_index'], p['component']) == (0, 1, 'real')]
+                if y[0, 1].real == 0:
+                    # Even when float(exact) is minsub, an explicitly marked
+                    # roundoff-scale zero is not a proved mathematical null.
+                    self.assertEqual(len(real_positions), 1)
+                    self.assertIn('cannot distinguish', real_positions[0]['status'])
+                    term_sum = (abs(Fraction(float(w[0, 0].real))*Fraction(float(value))) +
+                                abs(Fraction(float(w[0, 1].imag))*Fraction(float(scale))))
+                    roundoff_band = (8*Fraction(float(np.finfo(float).eps))*term_sum +
+                                     Fraction(float(np.nextafter(0., 1.)))/2)
+                    self.assertLessEqual(abs(exact), roundoff_band)
+                else:
+                    self.assertEqual(y[0, 1].real, float(exact))
+                    self.assertLess(abs(y[0, 1].real), np.finfo(float).tiny)
+                    self.assertEqual(real_positions, [])
+                self.assertEqual(y[0, 1].imag, 0)
+
+    def test_subnormal_cancellation_has_two_exact_rational_backend_controls(self):
+        # In the real basis diag(1,j), the actual loaded 2x2 system is
+        # [[a,-c],[-c,d]] [r,t]^T=[p,q]^T. Solve it with exact fractions,
+        # then permit at most two representational ULPs in its returned pair.
+        def backend(shifts):
+            def solve(matrix, rhs):
+                self.assertEqual(matrix.shape, (2, 2))
+                self.assertEqual(matrix[0, 0].imag, 0)
+                self.assertEqual(matrix[1, 1].imag, 0)
+                self.assertEqual(matrix[0, 1].real, 0)
+                self.assertEqual(matrix[1, 0], matrix[0, 1].conjugate())
+                self.assertEqual(rhs[0].imag, 0)
+                self.assertEqual(rhs[1].real, 0)
+                a, c, d, p, q = (Fraction(float(v)) for v in
+                                  (matrix[0, 0].real, matrix[0, 1].imag,
+                                   matrix[1, 1].real, rhs[0].real, rhs[1].imag))
+                det = a*d-c*c
+                r, t = float((d*p+c*q)/det), float((c*p+a*q)/det)
+                for _ in range(abs(shifts[0])):
+                    r = math.nextafter(r, math.inf if shifts[0] > 0 else -math.inf)
+                for _ in range(abs(shifts[1])):
+                    t = math.nextafter(t, math.inf if shifts[1] > 0 else -math.inf)
+                rr, tt = Fraction(r), Fraction(t)
+                residual = max(abs(a*rr-c*tt-p), abs(-c*rr+d*tt-q))
+                norm_scale = max(abs(a)+abs(c), abs(d)+abs(c))*max(abs(rr), abs(tt)) + max(abs(p), abs(q))
+                self.assertLessEqual(residual, 4*Fraction(float(np.finfo(float).eps))*norm_scale)
+                return np.array([complex(r, 0), complex(0, t)])
+            return solve
+
+        unit = np.nextafter(0., 1.)
+        for scale, perturb, shifts in ((1e-309, False, (-1, 0)),
+                                       (1e-308, True, (2, -2))):
+            value = np.nextafter(np.nextafter(scale, np.inf), np.inf) if perturb else scale
+            x = np.array([[[scale, value], [1j*scale, -1j*scale]]])
+            with patch.object(np.linalg, 'solve', side_effect=backend(shifts)):
+                y, w, diagnostic = mask_mvdr_2x2(x, [[.9, .1]], [[.1, .9]], return_diagnostics=True)
+            exact = (Fraction(float(w[0, 0].real))*Fraction(float(value)) -
+                     Fraction(float(w[0, 1].imag))*Fraction(float(scale)))
+            self.assertNotEqual(exact, 0)
+            if not perturb:
+                self.assertLess(abs(exact), Fraction(float(unit))/2)
+                self.assertEqual(float(exact), 0)
+                self.assertEqual(y[0, 1], 0)
+                self.assertEqual(diagnostic['rounding_underflow_components'], 1)
+                position = diagnostic['rounding_underflow_positions'][0]
+                self.assertEqual((position['frequency_index'], position['frame_index'], position['component']), (0, 1, 'real'))
+                self.assertIn('cannot distinguish', position['status'])
+            else:
+                self.assertEqual(float(exact), unit)
+                self.assertEqual(y[0, 1], unit)
+                self.assertEqual(diagnostic['rounding_underflow_components'], 0)
 
     def test_gss_tiny_nonzero_row_has_finite_norm_and_remains_valid(self):
         x = np.tile(np.eye(2), (1, 6))[None].astype(complex)

@@ -1,7 +1,13 @@
 """Independent scalar identities, rational matrices and PCM checks for ch. 3."""
 import json
+import io
+import tempfile
+from pathlib import Path
+from contextlib import redirect_stdout
+from unittest.mock import patch
 import math
 import unittest
+from scripts import run_portable_ci as portable_ci
 import numpy as np
 from codes.chapters.ch03 import chapter03_experiments as ch3
 from codes.chapters.ch03.core import baffle_and_vent as bv
@@ -10,6 +16,8 @@ from codes.chapters.ch00.core.audio_samples import dma_calibration_case, prepare
 
 class Chapter03ExperimentsTest(unittest.TestCase):
     def test_registry_has_eleven_serializable_exercises(self):
+        if not portable_ci.is_original_generation_host():
+            self.skipTest("complete published exercise replay requires the original generation host")
         result=ch3.run_exercises()
         self.assertEqual(set(result),{f'E03-{n:02}' for n in range(8,19)})
         self.assertIn('coplanar_mirror_h0',result['E03-14'])
@@ -235,7 +243,22 @@ class Chapter03ExperimentsTest(unittest.TestCase):
             self.assertLess(row['linear_equation_residual_max_m'],1e-16)
 
     def test_ring_two_frequency_profile_and_harmonic_counterexample(self):
-        result=ch3.multi_frequency_ambiguity();four,eight=result['ring_cases']
+        from codes.chapters.ch03.examples import generate_geometry_audio as demo
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            directory = root / 'codes/chapters/ch03/geometry_audio'
+            with redirect_stdout(io.StringIO()):
+                self.assertEqual(demo.main(['--output-dir', str(directory)]), 0)
+            # Redirect only the chapter's data root; production source bindings
+            # and the strict check_assets implementation remain unchanged.
+            with patch.object(ch3, 'ROOT', root):
+                result = ch3.multi_frequency_ambiguity()
+                wav = directory / demo.FILE_NAMES['reference']
+                changed = bytearray(wav.read_bytes()); changed[244] ^= 1
+                wav.write_bytes(changed)
+                with self.assertRaises(ValueError):
+                    ch3.multi_frequency_ambiguity()
+        four,eight=result['ring_cases']
         # At 4k, four of six ratios change sign; alpha=(2-4)/6=-1/3.
         self.assertAlmostEqual(four['unknown_complex_alpha']['real'],-1/3)
         self.assertAlmostEqual(four['profile_relative_residual'],8/9)

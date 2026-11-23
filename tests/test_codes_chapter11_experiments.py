@@ -1,5 +1,6 @@
 """Independent arithmetic, small counterexamples and actual PCM for chapter 11."""
 import math
+import hashlib
 import json
 import shutil
 import struct
@@ -8,13 +9,17 @@ from itertools import product
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
 import wave
 import numpy as np
 from codes.chapters.ch11.core.selection import (upper_limit_verdict, pareto_minima,
                                             small_slot_word_errors, token_edit_distance)
 from codes.chapters.ch11.core.automotive_selection import bus_clock_drift_metrics, icc_comb_and_howling_metrics
 from codes.chapters.ch00.core.audio_samples import selection_tradeoff_case
-from codes.chapters.ch11.chapter11_experiments import run_experiments, audio_anchor, scenario_audio_anchor
+from codes.chapters.ch11 import chapter11_experiments as experiments
+from codes.chapters.ch11.chapter11_experiments import run_experiments, scenario_audio_anchor
+from codes.chapters.ch00.examples.generate_audio_samples import INPUTS, generate as generate_main_audio
+from scripts.run_portable_ci import is_original_generation_host
 from codes.chapters.ch11.examples.generate_selection_audio import generate, check_main_selection_assets
 from codes.chapters.ch00.cross_chapter.engineering_boundary_exercises import paired_sign_test_lower_is_better
 from codes.chapters.ch00.cross_chapter.tracking_time_exercises import zero_failure_upper_bound
@@ -23,13 +28,24 @@ from codes.chapters.ch00.cross_chapter.tracking_time_exercises import zero_failu
 class Chapter11ExperimentsTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        # Unit fixtures are generated only in a temporary directory. The main
-        # E11-13 branch always reads the already published four repository WAVs.
         cls.temporary = tempfile.TemporaryDirectory()
         cls.addClassCleanup(cls.temporary.cleanup)
         cls.scenario_directory = Path(cls.temporary.name) / 'scenarios'
         generate(cls.scenario_directory)
-        cls.results = run_experiments(scenario_directory=cls.scenario_directory)
+        cls.repository = Path(__file__).resolve().parents[1]
+        cls.main_audio_repository = cls.repository
+        if is_original_generation_host():
+            cls.results = run_experiments(scenario_directory=cls.scenario_directory)
+        else:
+            cls.main_audio_repository = Path(cls.temporary.name) / 'main-audio'
+            generate_main_audio(cls.main_audio_repository / 'codes/chapters')
+            for name in INPUTS:
+                path = cls.main_audio_repository / name
+                path.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(cls.repository / name, path)
+            with patch.object(experiments, 'audio_anchor',
+                              side_effect=lambda: check_main_selection_assets(cls.main_audio_repository)):
+                cls.results = run_experiments(scenario_directory=cls.scenario_directory)
         cls.audio = selection_tradeoff_case()
 
     def test_identifiers_and_pareto_analytic_intersection(self):
@@ -172,17 +188,26 @@ class Chapter11ExperimentsTests(unittest.TestCase):
                 self.assertAlmostEqual(signals[name][0, n], expected, places=15)
 
     def test_pcm_readback_uses_pcm_reference_and_independent_fourier_projection(self):
-        # Read repository bytes, not fresh encoder output. Integer sums and a
-        # Fourier projection are independent of the entry's seven-column LS.
-        directory = Path(__file__).resolve().parents[1] / 'codes/chapters/ch11/audio'
-        values, integers = {}, {}
-        for name in self.audio['signals']:
-            with wave.open(str(directory/(name+'.wav')), 'rb') as wav:
-                self.assertEqual((wav.getnchannels(), wav.getframerate(), wav.getsampwidth(), wav.getnframes()),
-                                 (1, 16000, 2, 32000))
-                integers[name] = struct.unpack('<32000h', wav.readframes(32000))
-            values[name] = np.asarray(integers[name], dtype=float)/32768
-        clean = values['selection_clean'][1600:30400]
+        # Check published integer sums and independently project the PCM read by E11-13.
+        def read_selection(repository):
+            directory = repository / 'codes/chapters/ch11/audio'
+            manifest_path = repository / 'codes/chapters/ch00/audio/MANIFEST.json'
+            manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
+            records = {row['file']: row['sha256'] for row in manifest['files']}
+            integers = {}
+            for stem in self.audio['signals']:
+                path = directory / (stem + '.wav')
+                self.assertEqual(hashlib.sha256(path.read_bytes()).hexdigest(), records[path.name])
+                with wave.open(str(path), 'rb') as wav:
+                    self.assertEqual((wav.getnchannels(), wav.getframerate(),
+                                      wav.getsampwidth(), wav.getnframes()), (1, 16000, 2, 32000))
+                    integers[stem] = struct.unpack('<32000h', wav.readframes(32000))
+            return integers
+
+        published = read_selection(self.repository)
+        integers = (published if self.main_audio_repository == self.repository
+                    else read_selection(self.main_audio_repository))
+        values = {name: np.asarray(pcm, dtype=float) / 32768 for name, pcm in integers.items()}
         def amplitude(signal, f, start, stop):
             return 2*abs(np.dot(signal[start:stop], np.exp(-2j*np.pi*f*np.arange(start, stop)/16000)))/(stop-start)
         for length, expected_error in ((3, 91223542800), (9, 249713672400)):
@@ -195,7 +220,10 @@ class Chapter11ExperimentsTests(unittest.TestCase):
             self.assertAlmostEqual(actual['noise_attenuation_db'], -20*math.log10(noise), places=10)
             denominator = sum(v*v for v in integers['selection_clean'][1600:30400])
             numerator = sum((integers[name][i+delay]-integers['selection_clean'][i])**2 for i in range(1600,30400))
-            self.assertEqual((numerator,denominator), (expected_error,791595378000))
+            published_denominator = sum(v*v for v in published['selection_clean'][1600:30400])
+            published_error = sum((published[name][i+delay]-published['selection_clean'][i])**2
+                                  for i in range(1600,30400))
+            self.assertEqual((published_error, published_denominator), (expected_error, 791595378000))
             self.assertEqual(self.results['E11-13']['integer_analysis'][name]['integer_error_squared_sum'], numerator)
             self.assertAlmostEqual(actual['aligned_total_nmse'], numerator/denominator, places=14)
 
@@ -288,7 +316,7 @@ class Chapter11ExperimentsTests(unittest.TestCase):
             self.assertEqual(list(Path(d).iterdir()),[])
 
     def test_main_selection_check_rejects_bad_pcm_nan_and_boolean_without_repair(self):
-        root=Path(__file__).resolve().parents[1]
+        root = self.main_audio_repository
         metadata=json.loads((root/'codes/chapters/ch00/audio/MANIFEST.json').read_text())
         with tempfile.TemporaryDirectory() as directory:
             d=Path(directory)

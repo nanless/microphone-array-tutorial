@@ -7,6 +7,7 @@ from pathlib import Path
 import shutil
 import tempfile
 import unittest
+from scripts import run_portable_ci as portable_ci
 import wave
 
 import numpy as np
@@ -20,6 +21,8 @@ from codes.chapters.ch02.core.spectral import istft
 
 class Chapter02ExperimentsTest(unittest.TestCase):
     def test_ids_and_serializable_results(self):
+        if not portable_ci.is_original_generation_host():
+            self.skipTest("complete published exercise replay requires the original generation host")
         result = ch2.run_exercises()
         self.assertEqual(set(result), {f'E02-{number:02}' for number in range(9, 21)})
         json.dumps(result, allow_nan=False)

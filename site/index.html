@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>从入门到工业实践 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="95d99d8dac7e"><style>
+<meta name="source-digest" content="2da800f28691"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -831,7 +831,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
   <section class="course-width course-cases" id="course-cases" aria-labelledby="course-cases-title">
     <p class="course-kicker">真实房间录音 × 浏览器实时实验</p>
     <h2 id="course-cases-title">先看真实阵列怎样找方向，再亲手拨动波束试听</h2>
-    <p class="course-section-intro">同一个混响房间里，A、B 两个扬声器播放不同语音。下面用公开基准库 LOCATA 的 15 路 DICIT 阵列实录演示“先扫描定位、再波束增强”，并提供零安装的 4 麦浏览器互动实验室供你随时改向试听。</p>
+    <p class="course-section-intro">同一个混响房间里，A、B 两个扬声器播放不同语音。用公开基准库 LOCATA 的 15 路 DICIT 阵列实录，比较两段单讲录音的扫描峰值，再听波束对准 A 时的效果。</p>
     <div class="course-case-grid">
       <article class="course-case">
         <p class="course-case-tag">第 4 章实录验证 · 声源定位</p>
@@ -928,7 +928,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
           </svg>
           <figcaption>箭头指向 A。下方用第 1、7、14 路示意对齐相加时的补偿结果。<strong>增强版在 MVDR 后继续压低 B 较强的部分。</strong></figcaption>
         </figure>
-        <p>用 3.48–3.94 秒的 B 单讲估计干扰统计。下方用另外的留出时段试听 B 压下多少、A 是否仍清晰自然。</p>
+        <p>按动捕实测的扬声器坐标计算各路传播时差，再用 3.48–3.94 秒的 B 单讲估计干扰统计。下方用另外的留出时段试听 B 压下多少、A 听起来有何变化。</p>
         <div class="course-case-links"><a href="05_beamforming.html#sec-5-4">读第 5 章 · MVDR 推导与复算 →</a></div>
       </article>
     </div>
@@ -1475,7 +1475,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <p>按三个单元读完第 2 章。第一遍可先看图 2～图 7 及物理量解释，再回头细推公式；需要补子空间投影、SVD 正则化或约束求导时查阅<a href="00_math-foundations.html#sec-0-3">第 0 章 §0.3</a>、<a href="00_math-foundations.html#sec-0-5">§0.5</a>及附录 A。读完后动手完成 <a href="01_problem-definition.html#e01-01">E01-01</a>（检验多麦平均降噪为何依赖噪声空间相关性）与 <a href="01_problem-definition.html#e01-02">E01-02</a>（区分整体音量变轻与信噪比改善）。</p>
 </li>
 <li>
-<p>第 3 章重点读几何对比表与算例。第 4 章读 <a href="04_doa-estimation.html#sec-4-2">§4.2</a>、<a href="04_doa-estimation.html#sec-4-3">§4.3</a> 并对照图 12、图 14，完成 <a href="04_doa-estimation.html#e04-01">E04-01</a> 核对交换通道次序后的时差正负号。第 5 章读 <a href="05_beamforming.html#sec-5-1">§5.1</a>、<a href="05_beamforming.html#sec-5-2">§5.2</a>、<a href="05_beamforming.html#sec-5-4">§5.4</a>，先手算双麦目标方向响应，再通过 <a href="05_beamforming.html#e05-04">E05-04</a> 和图 16 体会对角加载的稳健性与干扰抑制折中。</p>
+<p>第 3 章重点读几何对比表与算例。第 4 章读 <a href="04_doa-estimation.html#sec-4-2">§4.2</a>、<a href="04_doa-estimation.html#sec-4-3">§4.3</a> 并对照图 12、图 14，完成 <a href="04_doa-estimation.html#e04-01">E04-01</a> 核对交换通道次序后的时差正负号。接着做 <a href="04_doa-estimation.html#e04-07">E04-07</a>，用四麦录音估计声源方向，再用估计角补时差，比较对齐、直接平均和补错方向的结果。第 5 章读 <a href="05_beamforming.html#sec-5-1">§5.1</a>、<a href="05_beamforming.html#sec-5-2">§5.2</a>、<a href="05_beamforming.html#sec-5-4">§5.4</a>，先手算双麦目标方向响应，再通过 <a href="05_beamforming.html#e05-04">E05-04</a> 和图 16 体会对角加载的稳健性与干扰抑制折中。</p>
 </li>
 <li>
 <p>回声消除从 <a href="06_aec.html#sec-6-1">§6.1</a> 的播放参考、卷积建模与 NLMS 更新读起，再看 <a href="06_aec.html#sec-6-6">§6.6</a> 的阵列级联顺序与 <a href="06_aec.html#sec-6-7">§6.7</a> 的工业引擎实现（对照图 18）。</p>

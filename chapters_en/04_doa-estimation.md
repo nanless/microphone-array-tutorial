@@ -966,6 +966,21 @@ Using the §4.2 $4$-mic ULA ($x=0,0.04,0.08,0.12\ \mathrm{m}$, $\theta=30^\circ$
 
 **Reference Answer**: At $f=2298\ \mathrm{Hz}$, inter-element phase shift is $\Delta\psi=2\pi f\Delta\tau\approx 0.84191\ \mathrm{rad}$. Equal-weight unaligned averaging has phasor magnitude $\frac{1}{4}|\sum_{m=0}^3 e^{\mathrm{j}m\Delta\psi}|\approx 0.607893$, a loss of $20\log_{10}(0.607893)\approx -4.32345\ \mathrm{dB}$, whereas exact alignment restores $1$ ($0\ \mathrm{dB}$). On the $31360$-sample steady-state slice (`PCM16` decoded by dividing by $32768$, no gain or shift fitting), MSE relative to the noiseless reference drops from $0.004222704806$ (unaligned) to $0.000082220157$ (geometrically aligned)—over an order-of-magnitude error-power reduction (including broadband content, linear-interpolation frequency droop, white noise, and quantization; see [Section 14 of the Audio Experiments Manual](../codes/chapters/ch00/research_en/05_exercises_and_audio.md#sec-u-7ca555ca4b)).
 
+**Steer delay-and-sum with the estimated direction.** Assume that the microphone coordinates are known and the source direction is unknown. Feed the four-channel WAV to the SRP-PHAT scan from §4.3. Use complete 256-sample Hann windows within `[320,16000)` with a hop of 64 samples. Scan $-90^\circ$ through $+90^\circ$ in $1^\circ$ steps and sum the bins from 375 to 3000 Hz. Substitute the peak angle into the propagation formula from §4.2. For arrival delay $\hat\tau_m$ at microphone $m$ relative to Mic 1, read $x_m[n+f_s\hat\tau_m]$ by linear interpolation and average the four channels. If $\hat\tau_m<0$, that channel heard the source first, so use an earlier sample from it when the signal reaches Mic 1.
+
+Score the waveform over the 15360 later samples in `[16320,31680)`. Use the clean reference only at this step. The scan uses 242 frames and peaks at $+30^\circ$. The sound reaches Mic 4 about 2.799 samples before Mic 1. Compare all four outputs against the same clean reference to see how reversing the delay sign affects the error.
+
+| Output | Mean-square error |
+|---|---:|
+| Average after aligning for the estimated $+30^\circ$ | $8.13\times10^{-5}$ |
+| Mic 1 alone | $4.01\times10^{-4}$ |
+| Average without alignment | $4.30\times10^{-3}$ |
+| Average after aligning for the reversed angle, $-30^\circ$ | $9.55\times10^{-3}$ |
+
+Run the following command from the repository root and look for `E04-07` → `scan_then_align`. Chapter 5 §5.2 derives the same delay compensation and averaging in the frequency domain.
+
+    .venv/bin/python -m codes.chapters.ch00.cross_chapter.exercises_spatial
+
 <a id="e04-08"></a>
 
 #### E04-08: Independent Replication and Single-Factor Ablation of Two-Source Resolution

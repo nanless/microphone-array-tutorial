@@ -263,7 +263,7 @@
 
 2. 按三个单元读完第 2 章。第一遍可先看图 2～图 7 及物理量解释，再回头细推公式；需要补子空间投影、SVD 正则化或约束求导时查阅[第 0 章 §0.3](00_math-foundations.md#sec-0-3)、[§0.5](00_math-foundations.md#sec-0-5)及附录 A。读完后动手完成 [E01-01](01_problem-definition.md#e01-01)（检验多麦平均降噪为何依赖噪声空间相关性）与 [E01-02](01_problem-definition.md#e01-02)（区分整体音量变轻与信噪比改善）。
 
-3. 第 3 章重点读几何对比表与算例。第 4 章读 [§4.2](04_doa-estimation.md#sec-4-2)、[§4.3](04_doa-estimation.md#sec-4-3) 并对照图 12、图 14，完成 [E04-01](04_doa-estimation.md#e04-01) 核对交换通道次序后的时差正负号。第 5 章读 [§5.1](05_beamforming.md#sec-5-1)、[§5.2](05_beamforming.md#sec-5-2)、[§5.4](05_beamforming.md#sec-5-4)，先手算双麦目标方向响应，再通过 [E05-04](05_beamforming.md#e05-04) 和图 16 体会对角加载的稳健性与干扰抑制折中。
+3. 第 3 章重点读几何对比表与算例。第 4 章读 [§4.2](04_doa-estimation.md#sec-4-2)、[§4.3](04_doa-estimation.md#sec-4-3) 并对照图 12、图 14，完成 [E04-01](04_doa-estimation.md#e04-01) 核对交换通道次序后的时差正负号。接着做 [E04-07](04_doa-estimation.md#e04-07)，用四麦录音估计声源方向，再用估计角补时差，比较对齐、直接平均和补错方向的结果。第 5 章读 [§5.1](05_beamforming.md#sec-5-1)、[§5.2](05_beamforming.md#sec-5-2)、[§5.4](05_beamforming.md#sec-5-4)，先手算双麦目标方向响应，再通过 [E05-04](05_beamforming.md#e05-04) 和图 16 体会对角加载的稳健性与干扰抑制折中。
 
 4. 回声消除从 [§6.1](06_aec.md#sec-6-1) 的播放参考、卷积建模与 NLMS 更新读起，再看 [§6.6](06_aec.md#sec-6-6) 的阵列级联顺序与 [§6.7](06_aec.md#sec-6-7) 的工业引擎实现（对照图 18）。
 

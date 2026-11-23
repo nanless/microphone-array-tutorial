@@ -340,7 +340,7 @@ Accompanying Chapter 4's `E04-07`, a 4-mic ULA at $x \in [0, 0.04, 0.08, 0.12]\,
 | [Unaligned 4-mic average](../../ch04/audio/fractional_unaligned.wav) | 1 | Averages directly without compensating fractional TDOAs |
 | [Geometrically aligned 4-mic average](../../ch04/audio/fractional_aligned.wav) | 1 | Causally delays Mics 2–4 via linear interpolation to match latest Mic 1 before averaging |
 
-- **Readback PCM MSE over `[320, 31680)` (`20–1980 ms`)**: Unaligned MSE against `fractional_reference.wav` is **`0.004222765`**, dropping to **`0.0000822202`** ($\mathrm{FS}^2$) after fractional alignment.
+- **MSE from the WAVs over `[320,31680)` (20–1980 ms).** MSE against `fractional_reference.wav` is $0.0042227048$ without alignment and $0.0000822202$ ($\mathrm{FS}^2$) after alignment using the known direction. [E04-07](../../../../chapters_en/04_doa-estimation.md#e04-07) also estimates the direction from the first part of the four-channel WAV, then compares the estimated angle, reversed angle and single-mic output on the later part.
 - **Standalone 6th-harmonic (`2298 Hz`) hand check**: With $\phi = 2\pi(2298)(0.04\sin 30^\circ / 343) \approx 0.841910\,\mathrm{rad}$, unaligned 4-mic array factor magnitude drops to $|\sin(2\phi)/(4\sin(\phi/2))| \approx 0.607893$ vs. `1.0` when aligned (run [`exercises_spatial.py`](../cross_chapter/exercises_spatial.py) and `generate_audio_samples.py --check`).
 
 ## 15. Linear *A Priori* Residuals Across Four Short-Path AEC Algorithms

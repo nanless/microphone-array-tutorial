@@ -70,6 +70,18 @@ HOST_MANIFEST_MODULES = {
     "test_codes_distributed_fixture",
 }
 
+# These exercise tests isolate strict published-asset replay per test method.
+EXPERIMENTS_WITH_LOCAL_AUDIO_FIXTURES = {
+    "test_codes_chapter01_experiments",
+    "test_codes_chapter02_experiments",
+    "test_codes_chapter03_experiments",
+    "test_codes_chapter04_experiments",
+    "test_codes_chapter05_experiments",
+    "test_codes_chapter07_experiments",
+    "test_codes_chapter08_experiments",
+    "test_codes_chapter11_experiments",
+}
+
 ARM64_MACOS_FLOAT_MODULES = {
     "test_codes_deconvolution",
     "test_codes_distributed",
@@ -327,6 +339,13 @@ def run_portable_quality_gates() -> None:
     quality_check_en.main()
 
 
+def is_original_generation_host() -> bool:
+    return (platform.system() == "Darwin"
+            and platform.machine() == "arm64"
+            and platform.platform().startswith("macOS-27.")
+            and platform.python_version() == "3.13.12")
+
+
 def test_selection_reasons(stem: str, text: str, *, has_downloads: bool,
                            is_exact_host: bool, is_arm64_darwin: bool) -> list[str]:
     """Return all matching conservative selection rules without importing a test."""
@@ -341,9 +360,10 @@ def test_selection_reasons(stem: str, text: str, *, has_downloads: bool,
     if not is_exact_host:
         if stem in HOST_MANIFEST_MODULES:
             reasons.append("requires original generation host (explicit module)")
-        matches = [word for word in HOST_MANIFEST_KEYWORDS if word in text]
-        if matches:
-            reasons.append("generation-host source rule: " + ", ".join(matches))
+        if stem not in EXPERIMENTS_WITH_LOCAL_AUDIO_FIXTURES:
+            matches = [word for word in HOST_MANIFEST_KEYWORDS if word in text]
+            if matches:
+                reasons.append("generation-host source rule: " + ", ".join(matches))
     if not is_arm64_darwin:
         if "experiments" in stem:
             reasons.append("experiment filename requires Apple Silicon macOS")
@@ -372,12 +392,7 @@ def run_portable_tests(simulate_portable: bool = False) -> None:
         is_arm64_darwin = False
     else:
         has_downloads = (ROOT / "codes" / "chapters" / "ch00" / "upstream" / "_downloads").is_dir()
-        is_exact_host = (
-            platform.system() == "Darwin"
-            and platform.machine() == "arm64"
-            and platform.platform().startswith("macOS-27.")
-            and platform.python_version() == "3.13.12"
-        )
+        is_exact_host = is_original_generation_host()
         is_arm64_darwin = platform.system() == "Darwin" and platform.machine() == "arm64"
 
     loader = unittest.TestLoader()

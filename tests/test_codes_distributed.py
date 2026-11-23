@@ -299,8 +299,15 @@ class DistributedTests(unittest.TestCase):
         np.testing.assert_allclose(dof3['central_weights'], expected_w3, atol=2e-15)
         self.assertAlmostEqual(dof3['central_noise_power'], 196/365, places=14)
         self.assertEqual(dof3['r1_locked_remaining_dofs'], [0, 0])
-        np.testing.assert_allclose(dof3['r1_locked_weights'], [1., 0., 0., 0.], atol=2e-15)
-        self.assertAlmostEqual(dof3['r1_locked_noise_power'], 1., places=15)
+        weight_atol = 2e-15
+        np.testing.assert_allclose(dof3['r1_locked_weights'], [1., 0., 0., 0.],
+                                   atol=weight_atol, rtol=0)
+        # For w=e1+d, |w.H R w-1| <= 2||R e1||_1 e + sum(|R|) e²
+        # when each |d_i| <= e; also allow the four-term dot's rounding.
+        power_atol = (2*np.sum(abs(self.rn[:, 0]))*weight_atol
+                      + np.sum(abs(self.rn))*weight_atol**2
+                      + 8*np.finfo(float).eps)
+        self.assertAlmostEqual(dof3['r1_locked_noise_power'], 1., delta=power_atol)
         self.assertEqual(dof3['r2_unlocked_remaining_dofs'], [1, 1])
         np.testing.assert_allclose(dof3['r2_unlocked_weights'], expected_w3, atol=1e-13)
         self.assertAlmostEqual(dof3['r2_unlocked_noise_power'], 196/365, places=14)

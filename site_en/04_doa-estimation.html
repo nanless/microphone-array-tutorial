@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Chapter 4 · Sound Source Localization (DOA) · Microphone Array Signal Processing</title>
-<meta name="source-digest" content="b4da44d8fd6e"><style>
+<meta name="source-digest" content="0c25e905660b"><style>
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -1751,6 +1751,37 @@ J=\sqrt{\frac13\sum_{m=1}^3e_m^2}.
 <li><a href="../site/audio/fractional_reference.wav">Noiseless Mic 1 Reference</a><audio class="audio-sample" controls preload="none" aria-label="Noiseless Mic 1 Reference" src="../site/audio/fractional_reference.wav">Use the WAV link above to download.</audio> | <a href="../site/audio/fractional_array.wav">4-Channel Raw Array Input</a><audio class="audio-sample" controls preload="none" aria-label="4-Channel Raw Array Input" src="../site/audio/fractional_array.wav">Use the WAV link above to download.</audio> | <a href="../site/audio/fractional_unaligned.wav">Unaligned 4-Mic Average</a><audio class="audio-sample" controls preload="none" aria-label="Unaligned 4-Mic Average" src="../site/audio/fractional_unaligned.wav">Use the WAV link above to download.</audio> | <a href="../site/audio/fractional_aligned.wav">Geometrically Aligned 4-Mic Average</a><audio class="audio-sample" controls preload="none" aria-label="Geometrically Aligned 4-Mic Average" src="../site/audio/fractional_aligned.wav">Use the WAV link above to download.</audio></li>
 </ul>
 <p><strong>Reference Answer</strong>: At $f=2298\ \mathrm{Hz}$, inter-element phase shift is $\Delta\psi=2\pi f\Delta\tau\approx 0.84191\ \mathrm{rad}$. Equal-weight unaligned averaging has phasor magnitude $\frac{1}{4}|\sum_{m=0}^3 e^{\mathrm{j}m\Delta\psi}|\approx 0.607893$, a loss of $20\log_{10}(0.607893)\approx -4.32345\ \mathrm{dB}$, whereas exact alignment restores $1$ ($0\ \mathrm{dB}$). On the $31360$-sample steady-state slice (<code>PCM16</code> decoded by dividing by $32768$, no gain or shift fitting), MSE relative to the noiseless reference drops from $0.004222704806$ (unaligned) to $0.000082220157$ (geometrically aligned)—over an order-of-magnitude error-power reduction (including broadband content, linear-interpolation frequency droop, white noise, and quantization; see <a href="research/05_exercises_and_audio.html#sec-u-7ca555ca4b">Section 14 of the Audio Experiments Manual</a>).</p>
+<p><strong>Steer delay-and-sum with the estimated direction.</strong> Assume that the microphone coordinates are known and the source direction is unknown. Feed the four-channel WAV to the SRP-PHAT scan from §4.3. Use complete 256-sample Hann windows within <code>[320,16000)</code> with a hop of 64 samples. Scan $-90^\circ$ through $+90^\circ$ in $1^\circ$ steps and sum the bins from 375 to 3000 Hz. Substitute the peak angle into the propagation formula from §4.2. For arrival delay $\hat\tau_m$ at microphone $m$ relative to Mic 1, read $x_m[n+f_s\hat\tau_m]$ by linear interpolation and average the four channels. If $\hat\tau_m\lt 0$, that channel heard the source first, so use an earlier sample from it when the signal reaches Mic 1.</p>
+<p>Score the waveform over the 15360 later samples in <code>[16320,31680)</code>. Use the clean reference only at this step. The scan uses 242 frames and peaks at $+30^\circ$. The sound reaches Mic 4 about 2.799 samples before Mic 1. Compare all four outputs against the same clean reference to see how reversing the delay sign affects the error.</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable data table"><table>
+<thead>
+<tr>
+<th scope="col">Output</th>
+<th scope="col" style="text-align: right;">Mean-square error</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Average after aligning for the estimated $+30^\circ$</td>
+<td style="text-align: right;">$8.13\times10^{-5}$</td>
+</tr>
+<tr>
+<td>Mic 1 alone</td>
+<td style="text-align: right;">$4.01\times10^{-4}$</td>
+</tr>
+<tr>
+<td>Average without alignment</td>
+<td style="text-align: right;">$4.30\times10^{-3}$</td>
+</tr>
+<tr>
+<td>Average after aligning for the reversed angle, $-30^\circ$</td>
+<td style="text-align: right;">$9.55\times10^{-3}$</td>
+</tr>
+</tbody>
+</table></div>
+<p>Run the following command from the repository root and look for <code>E04-07</code> → <code>scan_then_align</code>. Chapter 5 §5.2 derives the same delay compensation and averaging in the frequency domain.</p>
+<pre><code>.venv/bin/python -m codes.chapters.ch00.cross_chapter.exercises_spatial
+</code></pre>
 <p><a id="e04-08"></a></p>
 <span id="sec-u-f568af8505" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-4b9466439b">E04-08: Independent Replication and Single-Factor Ablation of Two-Source Resolution</h3>
 <p>Compute by hand the single-mic noise variance in the $20\ \mathrm{dB}$ setting of §4.8.1 and the percentage corresponding to $99/200$; then run <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch04/doa_resolution_trials.py"><code>doa_resolution_trials.py</code></a> (<code>--snapshots 400 --snr-db 20</code> and <code>--snapshots 64 --snr-db 0</code>) to reproduce the §4.8.1 table, and perform single-factor ablations (fix $0\ \mathrm{dB}$ and raise snapshots $64\to 400$, or fix $64$ snapshots and raise SNR $0\to 20\ \mathrm{dB}$) to isolate what drives $8^\circ$ recovery for Capon and MUSIC.</p>

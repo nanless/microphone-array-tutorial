@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>From Fundamentals to Industrial Practice · Microphone Array Signal Processing</title>
-<meta name="source-digest" content="b4da44d8fd6e"><style>
+<meta name="source-digest" content="0c25e905660b"><style>
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -928,7 +928,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
           </svg>
           <figcaption>Arrow locks onto A; inset illustrates channels 1, 7, and 14 after delay compensation. <strong>MVDR + postfilter suppresses B-dominated time–frequency bins.</strong></figcaption>
         </figure>
-        <p>Interference covariance is estimated from B-only speech (3.48–3.94 s) and evaluated on held-out segments below.</p>
+        <p>The beams use travel times calculated from the optically measured loudspeaker positions. The B-only segment from 3.48 to 3.94 s supplies the interference covariance. Listen to the separate test segments below for changes in A and B.</p>
         <div class="course-case-links"><a href="05_beamforming.html#sec-5-4">Read Ch 5 · MVDR Derivation &amp; Code →</a></div>
       </article>
     </div>
@@ -1475,7 +1475,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <p>Read Chapter 2 across three study sessions. On your first pass, focus on Figures 2–7 and physical interpretations before re-reading the algebraic derivations; consult <a href="00_math-foundations.html#sec-0-3">Chapter 0 §0.3</a>, <a href="00_math-foundations.html#sec-0-5">§0.5</a>, and Appendix A whenever subspace projections, SVD regularization, or constrained complex derivatives come up. Afterward, run <a href="01_problem-definition.html#e01-01">E01-01</a> (verifying why multi-mic averaging depends on spatial noise correlation) and <a href="01_problem-definition.html#e01-02">E01-02</a> (distinguishing quieter volume from genuine SNR improvement).</p>
 </li>
 <li>
-<p>In Chapter 3, focus on the geometry comparison tables and worked examples. In Chapter 4, read <a href="04_doa-estimation.html#sec-4-2">§4.2</a> and <a href="04_doa-estimation.html#sec-4-3">§4.3</a> alongside Figures 12 and 14, completing <a href="04_doa-estimation.html#e04-01">E04-01</a> to verify how swapping channel order flips TDOA sign. In Chapter 5, read <a href="05_beamforming.html#sec-5-1">§5.1</a>, <a href="05_beamforming.html#sec-5-2">§5.2</a>, and <a href="05_beamforming.html#sec-5-4">§5.4</a>, hand-calculating a two-mic target response before running <a href="05_beamforming.html#e05-04">E05-04</a> with Figure 16 to experience the robustness vs. null-depth trade-off of diagonal loading.</p>
+<p>In Chapter 3, focus on the geometry comparison tables and worked examples. In Chapter 4, read <a href="04_doa-estimation.html#sec-4-2">§4.2</a> and <a href="04_doa-estimation.html#sec-4-3">§4.3</a> alongside Figures 12 and 14, then complete <a href="04_doa-estimation.html#e04-01">E04-01</a> to see how swapping channels flips the TDOA sign. In <a href="04_doa-estimation.html#e04-07">E04-07</a>, estimate the direction from the four-channel WAV and use that estimate to align the channels. Compare the result with averaging without alignment and with steering to the wrong side. In Chapter 5, read <a href="05_beamforming.html#sec-5-1">§5.1</a>, <a href="05_beamforming.html#sec-5-2">§5.2</a>, and <a href="05_beamforming.html#sec-5-4">§5.4</a>, hand-calculating a two-mic target response before running <a href="05_beamforming.html#e05-04">E05-04</a> with Figure 16 to see how diagonal loading affects robustness and null depth.</p>
 </li>
 <li>
 <p>For AEC, start with playback references, convolutive modeling, and NLMS updates in <a href="06_aec.html#sec-6-1">§6.1</a>, then inspect array cascade ordering in <a href="06_aec.html#sec-6-6">§6.6</a> and industrial engine implementations in <a href="06_aec.html#sec-6-7">§6.7</a> (alongside Figure 18).</p>

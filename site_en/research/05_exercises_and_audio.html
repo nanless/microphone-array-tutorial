@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Chapter Code Exercises & Audio Suites · Microphone Array Signal Processing</title>
-<meta name="source-digest" content="b4da44d8fd6e"><style>
+<meta name="source-digest" content="0c25e905660b"><style>
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -1193,7 +1193,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 </tbody>
 </table></div>
 <ul>
-<li><strong>Readback PCM MSE over <code>[320, 31680)</code> (<code>20–1980 ms</code>)</strong>: Unaligned MSE against <code>fractional_reference.wav</code> is <strong><code>0.004222765</code></strong>, dropping to <strong><code>0.0000822202</code></strong> ($\mathrm{FS}^2$) after fractional alignment.</li>
+<li><strong>MSE from the WAVs over <code>[320,31680)</code> (20–1980 ms).</strong> MSE against <code>fractional_reference.wav</code> is $0.0042227048$ without alignment and $0.0000822202$ ($\mathrm{FS}^2$) after alignment using the known direction. <a href="../04_doa-estimation.html#e04-07">E04-07</a> also estimates the direction from the first part of the four-channel WAV, then compares the estimated angle, reversed angle and single-mic output on the later part.</li>
 <li><strong>Standalone 6th-harmonic (<code>2298 Hz</code>) hand check</strong>: With $\phi = 2\pi(2298)(0.04\sin 30^\circ / 343) \approx 0.841910\,\mathrm{rad}$, unaligned 4-mic array factor magnitude drops to $|\sin(2\phi)/(4\sin(\phi/2))| \approx 0.607893$ vs. <code>1.0</code> when aligned (run <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/exercises_spatial.py"><code>exercises_spatial.py</code></a> and <code>generate_audio_samples.py --check</code>).</li>
 </ul>
 <span id="sec-16" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-042e52c4d2" class="anchor-alias" aria-hidden="true"></span><span id="15-同源短路径-aec-的线性残差" class="anchor-alias" aria-hidden="true"></span><span id="15-linear-a-priori-residuals-across-four-short-path-aec-algorithms" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-b060c0d5bb">15. Linear <em>A Priori</em> Residuals Across Four Short-Path AEC Algorithms</h2>

@@ -7,11 +7,15 @@ from pathlib import Path
 import subprocess
 import sys
 import unittest
+import tempfile
+from unittest.mock import patch
 import wave
 
 import numpy as np
 
-from codes.chapters.ch01.chapter01_experiments import run_exercises
+from codes.chapters.ch01 import chapter01_experiments as ex
+from scripts import run_portable_ci as portable_ci
+from codes.chapters.ch00.io_contracts import strict_json_loads, validate_asset_directory
 from codes.chapters.ch01.core.spatial_coherence_and_dba import (
     color_white_samples,
     differential_1f_noise_budget,
@@ -26,7 +30,9 @@ from codes.chapters.ch00.core.audio_samples import alignment_error_case, prepare
 
 class Chapter01ExperimentsTest(unittest.TestCase):
     def test_result_ids_and_finite_json(self):
-        results = run_exercises()
+        if not portable_ci.is_original_generation_host():
+            self.skipTest("complete published exercise replay requires the original generation host")
+        results = ex.run_exercises()
         self.assertEqual(
             set(results),
             {
@@ -37,7 +43,7 @@ class Chapter01ExperimentsTest(unittest.TestCase):
         json.dumps(results, allow_nan=False)
 
     def test_short_record_cross_terms_are_not_assumed_zero(self):
-        full, cropped = run_exercises()['E01-04']['cases']
+        full, cropped = ex.finite_record_cross_terms()['cases']
         self.assertEqual(full['products'], [1, -1, -1, 1])
         self.assertEqual(full['average_squared'], [1, 0, 0, 1])
         self.assertEqual(full['output_mean_square'], 1 / 2)
@@ -50,7 +56,7 @@ class Chapter01ExperimentsTest(unittest.TestCase):
         self.assertAlmostEqual(cropped['gain_relative_to_channel_1_db'], 10 * math.log10(3))
 
     def test_residual_delay_has_independent_half_angle_answers(self):
-        result = run_exercises()['E01-05']
+        result = ex.residual_sample_delay()
         low, high = result['cases']
         # cos(pi/16)^2=(2+sqrt(2+sqrt(2)))/4, cos(pi/4)^2=1/2.
         low_power = (2 + math.sqrt(2 + math.sqrt(2))) / 4
@@ -64,7 +70,7 @@ class Chapter01ExperimentsTest(unittest.TestCase):
         self.assertEqual(result['aligned_common_delay_samples'], 1)
 
     def test_woodworth_zero_side_and_left_right_symmetry(self):
-        rows = {row['azimuth_deg']: row for row in run_exercises()['E01-06']['cases']}
+        rows = {row['azimuth_deg']: row for row in ex.woodworth_comparison()['cases']}
         self.assertEqual(rows[0]['sphere_itd_us'], 0)
         self.assertEqual(rows[0]['free_point_itd_us'], 0)
         # At the side, the extra ray length is quarter circumference + radius.
@@ -110,7 +116,7 @@ class Chapter01ExperimentsTest(unittest.TestCase):
         self.assertEqual(stereo.shape, (2, 32000))
 
     def test_published_alignment_scores_match_actual_pcm_real_projection(self):
-        result = run_exercises()['E01-05']['published_audio']
+        result = ex.residual_sample_delay()['published_audio']
         root = Path(__file__).resolve().parents[1]
         index = np.arange(1600, 30400)
         measured = {}
@@ -148,7 +154,7 @@ class Chapter01ExperimentsTest(unittest.TestCase):
         self.assertEqual(result['scoring_samples'], 28800)
 
     def test_cross_terms_and_same_mixture_have_independent_rational_answers(self):
-        result = run_exercises()['E01-07']
+        result = ex.mixture_power_and_identifiability()
         for row, cross, total in zip(result['illustrative_cross_terms'], (0, 1, -1), (2, 4, 0)):
             self.assertEqual(row['signal_mean_square'], 1)
             self.assertEqual(row['noise_mean_square'], 1)
@@ -168,7 +174,7 @@ class Chapter01ExperimentsTest(unittest.TestCase):
             self.assertAlmostEqual(row['snr_db'], snr)
 
     def test_white_noise_gain_counts_actual_noise_and_preserves_target(self):
-        equal, aggressive = run_exercises()['E01-09']['cases']
+        equal, aggressive = ex.white_noise_gain()['cases']
         for row, weights, expected_noise, expected_gain in ((equal, [.5, .5], .5, 2),
                                                          (aggressive, [2, -1], 5, .2)):
             self.assertEqual(row['weights'], weights)
@@ -178,7 +184,19 @@ class Chapter01ExperimentsTest(unittest.TestCase):
             self.assertAlmostEqual(row['white_noise_gain_db'], 10 * math.log10(expected_gain))
 
     def test_binaural_exercise_reads_all_five_actual_assets(self):
-        result = run_exercises()['E01-08']
+        from codes.chapters.ch01.examples import generate_binaural_cues as demo
+        # A local fixture exercises the actual strict reader in this environment;
+        # the catalog test above separately covers published full replay.
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary) / 'binaural'
+            demo.generate_assets(directory)
+            with patch.object(ex, 'check_assets', side_effect=lambda: demo.check_assets(directory)):
+                result = ex.binaural_level_and_delay()
+                wav = directory / 'itd_only.wav'
+                changed = bytearray(wav.read_bytes()); changed[244] ^= 1
+                wav.write_bytes(changed)
+                with self.assertRaises(ValueError):
+                    ex.binaural_level_and_delay()
         self.assertEqual(set(result['samples']), {'reference', 'itd_only', 'ild_only', 'consistent', 'conflicting'})
         self.assertEqual(result['common_export_gain'], 1.)
         for name, expected_lag, sign in (('reference', 0, 0), ('itd_only', 8, 0),
@@ -193,7 +211,18 @@ class Chapter01ExperimentsTest(unittest.TestCase):
             self.assertEqual(pcm['power_window_samples'], 28800)
 
     def test_spectral_exercise_reads_four_assets_and_keeps_nonzero_conditions(self):
-        result = run_exercises()['E01-10']
+        from codes.chapters.ch01.examples import generate_spectral_cues as demo
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary) / 'spectral'
+            demo.generate_assets(directory)
+            check = demo.check_assets
+            with patch.object(demo, 'check_assets', side_effect=lambda: check(directory)):
+                result = ex.spectral_response_and_source_spectrum()
+                wav = directory / 'flat_stereo.wav'
+                changed = bytearray(wav.read_bytes()); changed[244] ^= 1
+                wav.write_bytes(changed)
+                with self.assertRaises(ValueError):
+                    ex.spectral_response_and_source_spectrum()
         manifest = result['published_audio']
         self.assertEqual(set(manifest['files']), {'flat_source.wav', 'flat_stereo.wav',
                                                 'tilted_source.wav', 'tilted_stereo.wav'})
@@ -262,7 +291,7 @@ class Chapter01ExperimentsTest(unittest.TestCase):
             color_white_samples(np.eye(2), np.ones((3, 4)))
 
     def test_sensor_dba_budget_and_sofa_coordinates_match_closed_forms(self):
-        result = run_exercises()['E01-11']
+        result = ex.sensor_dba_noise_budget()
         spot_by_f = {row['frequency_hz']: row for row in result['iec61672_spot_table']}
         self.assertEqual(spot_by_f[1000.0]['a_db'], 0.0)
         self.assertEqual(spot_by_f[1000.0]['power_weight'], 1.0)
@@ -302,7 +331,7 @@ class Chapter01ExperimentsTest(unittest.TestCase):
                 180.0,
             )
 
-        # Descending frequency grid invariance and direct script bootstrap check.
+        # Descending frequency grid invariance.
         asc_grid = np.array([100.0, 500.0, 1000.0, 4000.0], dtype=np.float64)
         asc_budget = differential_1f_noise_budget(asc_grid, 0.01)
         desc_budget = differential_1f_noise_budget(asc_grid[::-1], 0.01)
@@ -314,10 +343,6 @@ class Chapter01ExperimentsTest(unittest.TestCase):
             'differential_asymptotic_penalty_b_db',
         ):
             self.assertAlmostEqual(desc_budget[key], asc_budget[key], places=14)
-        script = Path(__file__).resolve().parents[1] / 'codes/chapters/ch01/chapter01_experiments.py'
-        proc = subprocess.run([sys.executable, str(script)], capture_output=True, text=True, check=True)
-        self.assertEqual(set(json.loads(proc.stdout)), set(run_exercises()))
-
         # Validation error checks on frequency zeros, spatial aliasing, and out-of-range SOFA angles.
         with self.assertRaises(ValueError):
             iec61672_a_weighting(0.0)
@@ -327,6 +352,81 @@ class Chapter01ExperimentsTest(unittest.TestCase):
             sofa_spherical_to_cartesian_and_colatitude(0.0, 95.0, 1.0)
         with self.assertRaises(ValueError):
             sofa_spherical_to_cartesian_and_colatitude(0.0, 0.0, 0.0)
+
+
+    def _read_published_pcm(self, relative, specification):
+        root = Path(__file__).resolve().parents[1]
+        directory = root / relative
+        validate_asset_directory(directory, set(specification) | {'MANIFEST.json'}, check=True)
+        manifest = strict_json_loads((directory / 'MANIFEST.json').read_bytes())
+        self.assertEqual(set(manifest['files']), set(specification))
+        self.assertEqual(manifest['common_export_gain'], 1.)
+        for source, digest in manifest['source_sha256'].items():
+            self.assertEqual(hashlib.sha256((root / source).read_bytes()).hexdigest(), digest)
+        pcm = {}
+        for name, (channels, frames) in specification.items():
+            blob = (directory / name).read_bytes()
+            self.assertEqual(hashlib.sha256(blob).hexdigest(), manifest['files'][name]['sha256'])
+            with wave.open(io.BytesIO(blob), 'rb') as reader:
+                self.assertEqual((reader.getframerate(), reader.getnchannels(), reader.getnframes(),
+                                  reader.getsampwidth(), reader.getcomptype()),
+                                 (16000, channels, frames, 2, 'NONE'))
+                raw = reader.readframes(frames)
+            self.assertEqual(len(raw), channels * frames * 2)
+            pcm[name] = np.frombuffer(raw, dtype='<i2').reshape(-1, channels).T.astype(np.int64)
+        return pcm
+
+    def test_published_binaural_pcm_integer_delay_and_gain(self):
+        cases = {'reference': ((0, 0), (1, 1)), 'itd_only': ((8, 0), (1, 1)),
+                 'ild_only': ((0, 0), (2, 1)), 'consistent': ((8, 0), (2, 1)),
+                 'conflicting': ((8, 0), (1, 2))}
+        pcm = self._read_published_pcm('codes/chapters/ch01/binaural_audio',
+                                      {name + '.wav': (2, 32008) for name in cases})
+        reference = pcm['reference.wav'][0, :32000]
+        for name, (delays, gain_divisors) in cases.items():
+            data = pcm[name + '.wav']
+            energies = []
+            for channel, (delay, divisor) in enumerate(zip(delays, gain_divisors)):
+                self.assertTrue(np.all(data[channel, :delay] == 0))
+                self.assertTrue(np.all(data[channel, delay + 32000:] == 0))
+                # Two independently rounded copies of x and x/2 differ by at
+                # most one integer count after doubling the latter.
+                error = divisor * data[channel, delay:delay + 32000] - reference
+                self.assertLessEqual(int(np.max(abs(error))), 0 if divisor == 1 else 1)
+                segment = data[channel, 1600 + delay:30400 + delay]
+                energies.append(int(segment @ segment))
+            expected_ild = 20 * math.log10(gain_divisors[0] / gain_divisors[1])
+            self.assertAlmostEqual(10 * math.log10(energies[1] / energies[0]), expected_ild, delta=.0002)
+            right = data[1, 1600:30400]
+            scores = []
+            for lag in range(-16, 17):
+                left = data[0, 1600 + lag:30400 + lag]
+                cross, left_energy, right_energy = int(left @ right), int(left @ left), int(right @ right)
+                scores.append(cross / math.sqrt(left_energy * right_energy))
+            self.assertEqual(int(np.argmax(scores)) - 16, delays[0] - delays[1])
+
+    def test_published_spectral_pcm_integer_fir_bound(self):
+        pcm = self._read_published_pcm('codes/chapters/ch01/spectral_audio',
+                                      {name + suffix + '.wav': (channels, frames)
+                                       for name in ('flat', 'tilted')
+                                       for suffix, channels, frames in (('_source', 1, 32000), ('_stereo', 2, 32001))})
+        for name in ('flat', 'tilted'):
+            source = pcm[name + '_source.wav'][0]
+            current = np.pad(source, (0, 1)); previous = np.pad(source, (1, 0))
+            stereo = pcm[name + '_stereo.wav']
+            for channel, sign in ((0, 1), (1, -1)):
+                # |round(y) - round(x) - .5*round(x_prev)| <= 1.25 counts.
+                # Doubling gives an integer residual with magnitude <= 2.
+                residual = 2 * stereo[channel] - 2 * current - sign * previous
+                self.assertLessEqual(int(np.max(abs(residual))), 2)
+                self.assertGreater(int(stereo[channel] @ stereo[channel]), 0)
+
+    def test_direct_script_bootstrap_with_published_assets(self):
+        if not portable_ci.is_original_generation_host():
+            self.skipTest("direct script evaluates all published assets on the original generation host")
+        script = Path(__file__).resolve().parents[1] / 'codes/chapters/ch01/chapter01_experiments.py'
+        proc = subprocess.run([sys.executable, str(script)], capture_output=True, text=True, check=True)
+        self.assertEqual(set(json.loads(proc.stdout)), set(ex.run_exercises()))
 
 
 if __name__ == '__main__':

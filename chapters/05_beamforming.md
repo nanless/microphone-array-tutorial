@@ -65,6 +65,8 @@ Q&=\frac{|\vec{w}^H\vec{a}|^2}{\vec{w}^H\mathbf{\Gamma}\vec{w}},\qquad
 
 $$\vec{w}_{\mathrm{DSB}} = \frac{1}{M}\vec{a}(\theta_0)\text{。}\tag{5-4}$$
 
+在[第 4 章 E04-07](04_doa-estimation.md#e04-07) 中，$\theta_0$ 取四麦录音的 SRP-PHAT 谱峰。练习在时域把各路补到麦 1 的到达时刻再相加，本节的 $a_m^*$ 对应同一步相位补偿。读者可先复算估计角和反向角的两组结果，再看下文的方向图。
+
 在单位模导向（$|a_m|=1$）下式(5-4)满足 $\vec w_{\mathrm{DSB}}^H\vec a(\theta_0)=1$；若存在近场衰减或不等通道增益（$|a_m|\ne 1$），则单位无失真空间匹配权重应写为更一般的 $\vec a/\|\vec a\|_2^2$。
 
 #### 双麦延迟求和手算
@@ -259,7 +261,7 @@ $$\hat{\mathbf R}_{nn,\mathrm{load}}=\hat{\mathbf R}_{nn}+\alpha_{\mathrm{dl}}\,
 
 $\alpha_{\mathrm{dl}}$ 是连接纯数据驱动 MVDR（$\alpha_{\mathrm{dl}}\to 0$）与纯几何 DSB（$\alpha_{\mathrm{dl}}\to\infty$）的连续旋钮：增大 $\alpha_{\mathrm{dl}}$ 降低条件数、抬升 $\mathrm{WNG}_{\mathrm{dB}}$，但使干扰零陷变浅；评测时必须将求出的权重代回**未加载真实物理协方差**评分。
 
-**真实多麦房间录音对照（LOCATA 公开数据集）**：基于 [LOCATA 开发集](https://zenodo.org/records/3630471)任务 2 第 1 条 $15$ 麦 $48\ \mathrm{kHz}$ DICIT 阵列实录（扬声器 A 为目标、B 为竞争干扰，以第 $7$ 麦为基准），在 B 单独发声区间 $3.48$～$3.94\ \mathrm{s}$（$41$ 帧）估计 $\hat{\mathbf R}_{nn}$ 并取 $\alpha_{\mathrm{dl}}=0.1$，在 $250$～$6000\ \mathrm{Hz}$ 应用加载 MVDR（过渡带升余弦平滑至 DSB，最低 WNG 约 $4.14\ \mathrm{dB}$），在两段独立单讲测试窗内测得 $300$～$3400\ \mathrm{Hz}$ 带内功率（相对第 $7$ 麦 $0\ \mathrm{dB}$）：
+**真实多麦房间录音对照（LOCATA 公开数据集）。** 取 [LOCATA 开发集](https://zenodo.org/records/3630471)任务 2 第 1 条 $15$ 麦 $48\ \mathrm{kHz}$ DICIT 阵列实录，A 为目标，B 为竞争干扰，第 $7$ 麦为参考。用动捕实测的扬声器坐标和阵元位置，按球面波模型计算各路传播时差。用 B 单讲的 $3.48$～$3.94\ \mathrm{s}$（$41$ 帧）估计 $\hat{\mathbf R}_{nn}$，取 $\alpha_{\mathrm{dl}}=0.1$，在 $250$～$6000\ \mathrm{Hz}$ 应用加载 MVDR。过渡带用升余弦平滑至 DSB，最低 WNG 约 $4.14\ \mathrm{dB}$。表中列出两段独立单讲测试窗内 $300$～$3400\ \mathrm{Hz}$ 的带内功率，以第 $7$ 麦为 $0\ \mathrm{dB}$。
 
 | 单讲评分窗 | 对齐相加相对第 7 路 | MVDR 相对第 7 路 | MVDR 相对对齐相加 |
 |---|---:|---:|---:|

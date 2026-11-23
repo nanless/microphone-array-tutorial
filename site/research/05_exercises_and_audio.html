@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>章节代码练习与音频实验 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="95d99d8dac7e"><style>
+<meta name="source-digest" content="2da800f28691"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -1192,7 +1192,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 </tr>
 </tbody>
 </table></div>
-<p><strong>计算步骤。</strong> 从 WAV 读回 PCM16 后，取 <code>[320,31680)</code> 样本，即 20～1980 ms。在该区间逐样本减去无噪麦 1 参考，平方后取平均。直接平均的数字均方误差为 $0.004222765$，几何对齐后为 $0.0000822202$，单位都是归一化数字幅度的平方。两数来自这一组固定噪声、固定插值与已知方位的实现结果，不能当成未知房间中算法的统计提升，也不能用它们推出主观语音质量。</p>
+<p><strong>计算步骤。</strong> 从 WAV 读回 PCM16 后，取 <code>[320,31680)</code> 样本，即 20～1980 ms。在该区间逐样本减去无噪麦 1 参考，平方后取平均。直接平均的均方误差为 $0.0042227048$，按已知方向对齐后为 $0.0000822202$，单位都是归一化数字幅度的平方。<a href="../04_doa-estimation.html#e04-07">E04-07</a> 另用前半段四麦录音估计方向，再在后半段比较估计角、反向角和单麦等输出。</p>
 <p><strong>独立手算。</strong> 仅取第六谐波 2298 Hz 并暂时去掉噪声和插值，四麦直接平均的理想幅度比为 $|\sin(2\phi)/(4\sin(\phi/2))|\approx0.607893$，其中 $\phi=2\pi(2298)(0.04\sin30^\circ/343)\approx0.841910$ rad；理想完全对齐时为 1。该单频幅度比不是上面的全频均方误差。运行 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/exercises_spatial.py"><code>exercises_spatial.py</code></a> 查看 <code>E04-07</code> 的几何、相量计算与随仓实际PCM误差，再运行<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/examples/generate_audio_samples.py">音频生成器</a>的 <code>--check</code> 核对文件与参数清单。</p>
 <p>浏览器可能会把四通道输入自动混成双声道，不能靠该自动混音判断每一麦的方位或时差。请用能查看独立通道的播放器或脚本读入四通道 WAV；试听单声道文件前先调低设备音量。这里真正可检验的结论是本模型下分数点对齐恢复了目标相干叠加，不是“四麦一定优于单麦”。</p>
 <span id="sec-16" class="anchor-alias" aria-hidden="true"></span><span id="15-同源短路径-aec-的线性残差" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-042e52c4d2">15. 同源短路径 AEC 的线性残差</h2>

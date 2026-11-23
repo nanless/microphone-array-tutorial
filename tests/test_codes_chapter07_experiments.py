@@ -13,6 +13,8 @@ from fractions import Fraction as F
 import numpy as np
 from codes.chapters.ch07 import chapter07_experiments as ex
 from codes.chapters.ch07.core import online_and_cascade as oc
+from codes.chapters.ch07.examples.generate_delay_audio import generate_assets as generate_delay_audio
+from scripts.run_portable_ci import is_original_generation_host
 
 
 def z(encoded):
@@ -122,7 +124,11 @@ class Chapter07Experiments(unittest.TestCase):
         np.testing.assert_allclose(r['omitted_GHG_correction_history_filter'],[-6/41,0],atol=1e-15)
 
     def test_stable_ids_and_finite_json(self):
-        r = ex.run_experiments(repo_root=self.root, mint_directory=self.mint)
+        delay = None
+        if not is_original_generation_host():
+            delay = Path(self.temporary.name) / 'delay'
+            generate_delay_audio(delay)
+        r = ex.run_experiments(repo_root=self.root, mint_directory=self.mint, delay_directory=delay)
         self.assertEqual(set(r), {f'E07-{i:02d}' for i in range(8, 22)})
         self.assertEqual(len(r['E07-13']['files']), 4)
         self.assertAlmostEqual(r['E07-18']['rows'][-1]['power_ratio'], 1e-6)
@@ -204,14 +210,21 @@ class Chapter07Experiments(unittest.TestCase):
         r=ex.design_normal_comparison(); A=z(r['design']); b=z(r['target'])
         # Exact equations: g1+g2=0, epsilon*g2=-epsilon.
         np.testing.assert_array_equal(A@np.array([1,-1]),b)
-        self.assertEqual((A.conj().T@A)[1,1],1)  # distinguishable row lost in Gram
+        np.testing.assert_array_equal(A.conj().T@A, np.ones((2,2)))  # exact duplicate rows
         direct,normal=(r['cases'][k] for k in ('design_lstsq','normal'))
         np.testing.assert_allclose(z(direct['coefficients']),[1,-1],atol=1e-14)
         np.testing.assert_allclose(z(normal['coefficients']),[-2.5e-19,-2.5e-19],rtol=1e-14,atol=0)
         self.assertEqual((direct['diagnostic']['rank'],normal['diagnostic']['rank']),(2,1))
         self.assertTrue(normal['diagnostic']['used_lstsq'])
         self.assertEqual(normal['residual_squared_sum'],1e-18)
-        self.assertEqual(normal['diagnostic']['condition_number_status'],'infinite')
+        condition = normal['diagnostic']['condition_number']
+        if condition is None:
+            self.assertEqual(normal['diagnostic']['condition_number_status'],'infinite')
+        else:
+            # SVD may estimate a nonzero final singular value of this exact
+            # singular matrix; keep the numerical-rank cutoff explicit.
+            self.assertTrue(np.isfinite(condition))
+            self.assertGreaterEqual(condition, 1/(2*np.finfo(float).eps))
 
     def test_constrained_regularizer_fraction_stationarity_and_cost(self):
         r=ex.constrained_regularized_mint(); d=r['regularized']

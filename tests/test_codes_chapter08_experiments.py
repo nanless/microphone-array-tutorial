@@ -6,6 +6,8 @@ import math
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
+import wave
 import numpy as np
 from codes.chapters.ch08.chapter08_experiments import (
     ROOT,
@@ -14,6 +16,8 @@ from codes.chapters.ch08.chapter08_experiments import (
     run_experiments,
 )
 from codes.chapters.ch08.core.separation import si_sdr
+from codes.chapters.ch08.examples import generate_css_audio, mask_representation_demo
+from scripts.run_portable_ci import is_original_generation_host
 from codes.chapters.ch08.core.separation_metrics_streaming import (
     ci_sdr_toeplitz,
     single_speaker_bypass_gate,
@@ -28,7 +32,19 @@ def complex_array(value):
 class Chapter08Exercises(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.r = run_experiments()
+        if is_original_generation_host():
+            cls.r = run_experiments()
+            return
+        with tempfile.TemporaryDirectory() as temporary:
+            mask = Path(temporary) / 'mask'
+            css = Path(temporary) / 'css'
+            mask_representation_demo.generate_assets(mask)
+            generate_css_audio.generate_assets(css)
+            check_mask = mask_representation_demo.check_assets
+            check_css = generate_css_audio.check_assets
+            with patch.object(mask_representation_demo, 'check_assets', side_effect=lambda: check_mask(mask)), \
+                 patch.object(generate_css_audio, 'check_assets', side_effect=lambda: check_css(css)):
+                cls.r = run_experiments()
 
     def test_ids_and_finite_json(self):
         self.assertEqual(set(self.r), {f'E08-{i:02}' for i in range(10, 28)})
@@ -206,17 +222,31 @@ class Chapter08Exercises(unittest.TestCase):
         self.assertAlmostEqual(r['weighted_cost_at_equal_projection'], 2/3)
 
     def test_mask_representation_reads_published_pcm(self):
-        r = self.r['E08-21']['published_audio']
-        self.assertEqual(r['sample_rate_hz'], 16000)
-        self.assertEqual(r['common_export_gain'], 1)
-        self.assertEqual(len(r['files']), 6)
-        # Exact integer-energy expectations are independently calculated from
-        # the fixed two-tone oracle model, not copied from the float outputs.
-        records = r['samples']
+        directory = ROOT / 'codes/chapters/ch08/mask_audio'
+        manifest = json.loads((directory / 'MANIFEST.json').read_text(encoding='utf-8'))
+        self.assertEqual(manifest['sample_rate_hz'], 16000)
+        self.assertEqual(manifest['common_export_gain'], 1)
+        self.assertEqual(len(manifest['files']), 6)
+        samples = {}
+        for filename, record in manifest['files'].items():
+            path = directory / filename
+            self.assertEqual(hashlib.sha256(path.read_bytes()).hexdigest(), record['sha256'])
+            with wave.open(str(path), 'rb') as stream:
+                self.assertEqual((stream.getnchannels(), stream.getframerate(),
+                                  stream.getsampwidth(), stream.getnframes()), (1, 16000, 2, 32000))
+                pcm = np.frombuffer(stream.readframes(32000), dtype='<i2').astype(np.int64)
+            samples[filename] = pcm[2400:29600]
+
+        records = manifest['samples']
+        reference = samples[records['target']['file']]
+        self.assertEqual(int(reference @ reference), 292062085900)
         for stem, numerator in [('bounded_real', 166479798100),
                                 ('unbounded_real', 73012418550),
                                 ('complex_oracle', 0)]:
-            measured = records[stem]['pcm_measurements']
+            sample = records[stem]
+            error = samples[sample['file']] - reference
+            self.assertEqual(int(error @ error), numerator)
+            measured = sample['pcm_measurements']
             self.assertEqual(measured['integer_error_squared_sum'], numerator)
             self.assertEqual(measured['integer_reference_squared_sum'], 292062085900)
             self.assertEqual(measured['integer_mse_denominator'], 27200*32768**2)

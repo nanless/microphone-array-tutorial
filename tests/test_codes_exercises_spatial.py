@@ -121,6 +121,19 @@ class SpatialExerciseTest(unittest.TestCase):
         self.assertAlmostEqual(row["ideal_unaligned_amplitude"], expected, places=13)
         self.assertAlmostEqual(row["ideal_aligned_amplitude"], 1., places=13)
 
+    def test_four_mic_recording_scan_drives_held_out_alignment(self):
+        result = self.results["E04-07"]["scan_then_align"]
+        self.assertEqual(result["angle_deg"], 30)
+        self.assertEqual(result["scan_interval_samples"], [320, 16000])
+        self.assertEqual(result["scan_frames"], 242)
+        self.assertEqual(result["score_interval_samples"], [16320, 31680])
+        self.assertEqual(result["score_samples"], 15360)
+        mse = result["mse"]
+        self.assertAlmostEqual(mse["estimated"], 8.1305194e-5, places=11)
+        self.assertLess(mse["estimated"], mse["mic_1"])
+        self.assertLess(mse["mic_1"], mse["unaligned"])
+        self.assertLess(mse["unaligned"], mse["reversed_angle"])
+
     def test_esprit_least_squares_hand_matrix_and_perturbation(self):
         cases = self.results["E04-09"]["subspace_cases"]
         ideal, perturbed = cases

@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 4 章 · 声源定位（DOA 估计） · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="95d99d8dac7e"><style>
+<meta name="source-digest" content="2da800f28691"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -1751,6 +1751,37 @@ J=\sqrt{\frac13\sum_{m=1}^3e_m^2}\text{。}
 <li><a href="audio/fractional_reference.wav">无噪麦 1 参考</a><audio class="audio-sample" controls preload="none" aria-label="无噪麦 1 参考" src="audio/fractional_reference.wav">请使用上方 WAV 链接下载。</audio> ｜ <a href="audio/fractional_array.wav">四通道阵列原始输入</a><audio class="audio-sample" controls preload="none" aria-label="四通道阵列原始输入" src="audio/fractional_array.wav">请使用上方 WAV 链接下载。</audio> ｜ <a href="audio/fractional_unaligned.wav">未经对齐的四麦平均</a><audio class="audio-sample" controls preload="none" aria-label="未经对齐的四麦平均" src="audio/fractional_unaligned.wav">请使用上方 WAV 链接下载。</audio> ｜ <a href="audio/fractional_aligned.wav">按已知几何延迟对齐后的四麦平均</a><audio class="audio-sample" controls preload="none" aria-label="按已知几何延迟对齐后的四麦平均" src="audio/fractional_aligned.wav">请使用上方 WAV 链接下载。</audio></li>
 </ul>
 <p><strong>参考答案</strong>：在 $f=2298\ \mathrm{Hz}$ 处，相邻阵元相位差 $\Delta\psi=2\pi f\Delta\tau\approx 0.84191\ \mathrm{rad}$。未经对齐直接等权平均的复相量模长为 $\frac{1}{4}|\sum_{m=0}^3 e^{\mathrm{j}m\Delta\psi}|\approx 0.607893$，幅度损失 $20\log_{10}(0.607893)\approx -4.32345\ \mathrm{dB}$；精确对齐后恢复为 $1$（$0\ \mathrm{dB}$）。在稳态切片（$31360$ 点，按 <code>PCM16</code> 除以 $32768$ 解码，不拟合增益或时移）上相对无噪参考算得：未对齐平均 MSE 为 $0.004222704806$，几何分数延迟对齐后降至 $0.000082220157$，误差功率下降超过一个数量级（含宽带成分、线性插值频响损耗、白噪声与量化误差，详见<a href="research/05_exercises_and_audio.html#14-四麦分数采样时差">音频实验第 14 节</a>）。</p>
+<p><strong>用估计方向做延迟求和。</strong> 假设只知道阵列坐标，不知道声源在哪一边。把四麦输入送入 §4.3 的 SRP-PHAT，在样本区间 <code>[320,16000)</code> 内取完整的 256 点 Hann 窗（帧移 64 点），按 $1^\circ$ 间隔扫描 $-90^\circ$ 到 $+90^\circ$，只累加 375～3000 Hz 的频点。把谱峰角度代回 §4.2 的传播公式。若第 $m$ 路相对麦 1 的到达时差为 $\hat\tau_m$，就在线性插值后取 $x_m[n+f_s\hat\tau_m]$ 再等权平均。$\hat\tau_m\lt 0$ 表示该路先到，等到麦 1 时应取该路较早的样本。</p>
+<p>这次用后半段 <code>[16320,31680)</code> 的 15360 点计算波形均方误差，干净参考只在这一步使用。实际扫描取到 242 帧，峰值在 $+30^\circ$，第四路相对第一路早到约 2.799 点。四种输出都与同一干净参考比较，补偿时差取反可看出符号用错的代价。</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
+<thead>
+<tr>
+<th scope="col">输出</th>
+<th scope="col" style="text-align: right;">均方误差</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>用估计角 $+30^\circ$ 对齐后平均</td>
+<td style="text-align: right;">$8.13\times10^{-5}$</td>
+</tr>
+<tr>
+<td>只用麦 1</td>
+<td style="text-align: right;">$4.01\times10^{-4}$</td>
+</tr>
+<tr>
+<td>四麦直接平均</td>
+<td style="text-align: right;">$4.30\times10^{-3}$</td>
+</tr>
+<tr>
+<td>把估计角写反为 $-30^\circ$ 再对齐</td>
+<td style="text-align: right;">$9.55\times10^{-3}$</td>
+</tr>
+</tbody>
+</table></div>
+<p>在仓库根目录运行下列命令，查看 <code>E04-07</code> → <code>scan_then_align</code>。第 5 章 §5.2 从频域推导同样的补时差与等权相加。</p>
+<pre><code>.venv/bin/python -m codes.chapters.ch00.cross_chapter.exercises_spatial
+</code></pre>
 <p><a id="e04-08"></a></p>
 <h3 id="sec-u-f568af8505">E04-08：双源分辨率独立复算与单因素改参</h3>
 <p>先手算 §4.8.1 中 $20\ \mathrm{dB}$ 配置下的单麦噪声方差及 $99/200$ 对应的成功率百分比，再运行 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch04/doa_resolution_trials.py"><code>doa_resolution_trials.py</code></a>（参数 <code>--snapshots 400 --snr-db 20</code> 与 <code>--snapshots 64 --snr-db 0</code>）复核 §4.8.1 表中计数，并做单因素对照（固定 $0\ \mathrm{dB}$ 将快拍由 $64$ 提到 $400$，或固定 $64$ 快拍将信噪比提到 $20\ \mathrm{dB}$），观察 $8^\circ$ 下 Capon 与 MUSIC 恢复的主导因素。</p>

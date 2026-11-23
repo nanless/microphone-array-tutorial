@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 5 章 · 波束形成 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="95d99d8dac7e"><style>
+<meta name="source-digest" content="2da800f28691"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -521,6 +521,7 @@ Q&=\frac{|\vec{w}^H\vec{a}|^2}{\vec{w}^H\mathbf{\Gamma}\vec{w}},\qquad
 <span id="sec-3" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-5-2">5.2 延迟求和波束形成器（Delay-and-Sum Beamformer，简称 DSB）：“合唱前先把大家对齐”</h2>
 <p>延迟求和波束形成器不依赖在线噪声统计，按期望导向 $\vec a(\theta_0)$ 对齐相位后等权平均：</p>
 <p>$$\vec{w}_{\mathrm{DSB}} = \frac{1}{M}\vec{a}(\theta_0)\text{。}\tag{5-4}$$</p>
+<p>在<a href="04_doa-estimation.html#e04-07">第 4 章 E04-07</a> 中，$\theta_0$ 取四麦录音的 SRP-PHAT 谱峰。练习在时域把各路补到麦 1 的到达时刻再相加，本节的 $a_m^*$ 对应同一步相位补偿。读者可先复算估计角和反向角的两组结果，再看下文的方向图。</p>
 <p>在单位模导向（$|a_m|=1$）下式(5-4)满足 $\vec w_{\mathrm{DSB}}^H\vec a(\theta_0)=1$；若存在近场衰减或不等通道增益（$|a_m|\ne 1$），则单位无失真空间匹配权重应写为更一般的 $\vec a/\|\vec a\|_2^2$。</p>
 <h3 id="sec-u-acd3ed3bbb">双麦延迟求和手算</h3>
 <p>设两全向麦相距 $d=4\ \mathrm{cm}$，$f=1\ \mathrm{kHz}$，$\theta_0=30^\circ$，$c=343\ \mathrm{m/s}$：</p>
@@ -750,7 +751,7 @@ Q(\alpha)&=\frac{(\alpha+1)^2}{\alpha^2+1/3}\text{。}
 <p>为保证尺度不变性，本书采用无量纲相对对角加载系数 $\alpha_{\mathrm{dl}}\ge 0$（对应第 4 章 Capon 谱中的无量纲加载符号 $\eta$，避免与 DMA 延迟比 $\alpha$ 及遗忘因子混淆）：</p>
 <p>$$\hat{\mathbf R}_{nn,\mathrm{load}}=\hat{\mathbf R}_{nn}+\alpha_{\mathrm{dl}}\,\frac{\operatorname{tr}(\hat{\mathbf R}_{nn})}{M}\mathbf I\text{。}\tag{5-10}$$</p>
 <p>$\alpha_{\mathrm{dl}}$ 是连接纯数据驱动 MVDR（$\alpha_{\mathrm{dl}}\to 0$）与纯几何 DSB（$\alpha_{\mathrm{dl}}\to\infty$）的连续旋钮：增大 $\alpha_{\mathrm{dl}}$ 降低条件数、抬升 $\mathrm{WNG}_{\mathrm{dB}}$，但使干扰零陷变浅；评测时必须将求出的权重代回<strong>未加载真实物理协方差</strong>评分。</p>
-<p><strong>真实多麦房间录音对照（LOCATA 公开数据集）</strong>：基于 <a href="https://zenodo.org/records/3630471">LOCATA 开发集</a>任务 2 第 1 条 $15$ 麦 $48\ \mathrm{kHz}$ DICIT 阵列实录（扬声器 A 为目标、B 为竞争干扰，以第 $7$ 麦为基准），在 B 单独发声区间 $3.48$～$3.94\ \mathrm{s}$（$41$ 帧）估计 $\hat{\mathbf R}_{nn}$ 并取 $\alpha_{\mathrm{dl}}=0.1$，在 $250$～$6000\ \mathrm{Hz}$ 应用加载 MVDR（过渡带升余弦平滑至 DSB，最低 WNG 约 $4.14\ \mathrm{dB}$），在两段独立单讲测试窗内测得 $300$～$3400\ \mathrm{Hz}$ 带内功率（相对第 $7$ 麦 $0\ \mathrm{dB}$）：</p>
+<p><strong>真实多麦房间录音对照（LOCATA 公开数据集）。</strong> 取 <a href="https://zenodo.org/records/3630471">LOCATA 开发集</a>任务 2 第 1 条 $15$ 麦 $48\ \mathrm{kHz}$ DICIT 阵列实录，A 为目标，B 为竞争干扰，第 $7$ 麦为参考。用动捕实测的扬声器坐标和阵元位置，按球面波模型计算各路传播时差。用 B 单讲的 $3.48$～$3.94\ \mathrm{s}$（$41$ 帧）估计 $\hat{\mathbf R}_{nn}$，取 $\alpha_{\mathrm{dl}}=0.1$，在 $250$～$6000\ \mathrm{Hz}$ 应用加载 MVDR。过渡带用升余弦平滑至 DSB，最低 WNG 约 $4.14\ \mathrm{dB}$。表中列出两段独立单讲测试窗内 $300$～$3400\ \mathrm{Hz}$ 的带内功率，以第 $7$ 麦为 $0\ \mathrm{dB}$。</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
 <thead>
 <tr>

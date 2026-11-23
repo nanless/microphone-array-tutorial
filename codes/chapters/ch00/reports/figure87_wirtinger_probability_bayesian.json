@@ -10,7 +10,7 @@
     "codes/chapters/ch00/io_contracts.py": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974",
     "codes/chapters/ch02/core/conventions.py": "79af1b8f7fe664e64e7ad786082c36a29664eacbdda63fba96a944e548304865",
     "scripts/make_figures.py": "0157fc2c9fc9ee0a2d0bba7810a9603b22aa5a24d327a8895ef14412a2fb2fec",
-    "scripts/make_math_figures.py": "c2dc2bbd33da688c9e4c3ef5f0f99848bf10f2d80e7458a87499de87e97df4b3"
+    "scripts/make_math_figures.py": "45a30e42df64d3f15707b5e1fc4546c60be1551246fae8a595e5485613ab761d"
   },
   "seed": 20260089,
   "anchors": {

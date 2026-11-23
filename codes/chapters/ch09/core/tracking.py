@@ -23,6 +23,37 @@ def wrap_angle(angle: float | np.ndarray) -> float | np.ndarray:
     return float(wrapped) if wrapped.ndim == 0 else wrapped
 
 
+def angle_difference(first: float | np.ndarray, second: float | np.ndarray) -> float | np.ndarray:
+    """Signed shortest degree difference, with the same -180 tie as wrap_angle.
+
+    At near-antipodes, a non-tie's magnitude that rounds to 180 is represented
+    by nextafter(180, 0) with its exact direction. Only exact half-turns use -180.
+    """
+    first, second = np.broadcast_arrays(wrap_angle(first), wrap_angle(second))
+    direct = first - second
+    high, low = np.maximum(first, second), np.minimum(first, second)
+    # Sum the distances to the two representations of the seam. Differencing
+    # first can round an angle just below a full turn to exactly 360 degrees.
+    across_seam = (180.0 - high) + (low + 180.0)
+    difference = np.where(direct >= 180.0, -across_seam,
+                          np.where(direct < -180.0, across_seam, direct))
+    # Resolve only rounded half-turn differences exactly. Treating a near
+    # half-turn as a tie can send a limited-rate steering step the wrong way.
+    for index in np.flatnonzero(np.abs(direct) == 180.0):
+        exact = Fraction(float(first.flat[index])) - Fraction(float(second.flat[index]))
+        if exact > 180:
+            exact -= 360
+        elif exact < -180:
+            exact += 360
+        if abs(exact) == 180:
+            difference.flat[index] = -180.0
+        else:
+            rounded = float(exact)
+            difference.flat[index] = (math.copysign(np.nextafter(180.0, 0.0), rounded)
+                                      if abs(rounded) == 180.0 else rounded)
+    return float(difference) if difference.ndim == 0 else difference
+
+
 def _finite_fraction(value, *, positive=False):
     """Convert only the final exact compound result; never call a lost variance zero."""
     try:
@@ -129,7 +160,7 @@ class ConstantVelocityKalman:
             raise ValueError("angle must be finite and measurement_variance positive")
         # Reducing the observation before subtraction avoids overflowing two
         # finite angles that represent ordinary directions modulo 360 degrees.
-        innovation = wrap_angle(wrap_angle(angle) - self.state[0])
+        innovation = angle_difference(angle, self.state[0])
         scale = max(float(np.max(np.abs(self.covariance[:, 0]))), measurement_variance)
         if scale <= 0.0:
             raise ValueError("innovation variance must be positive")
@@ -315,7 +346,7 @@ class CircularParticleFilter:
             prior_logs = np.log(weights, where=weights > 0, out=np.full_like(weights, -np.inf))
         else:
             prior_logs = self._log_weights.copy()
-        error = wrap_angle(wrap_angle(observation) - self.particles)
+        error = angle_difference(observation, self.particles)
         absolute_error = np.abs(error)
         if clutter_probability == 0.0:
             support = np.isfinite(prior_logs)

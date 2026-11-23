@@ -20,7 +20,7 @@ import json
 
 import numpy as np
 
-from codes.chapters.ch09.core.tracking import ConstantVelocityKalman, wrap_angle
+from codes.chapters.ch09.core.tracking import ConstantVelocityKalman, angle_difference, wrap_angle
 
 
 TRACKS = ("A", "B")
@@ -62,8 +62,8 @@ def _minimum_cost_assignment(
                 pairs = tuple(zip(track_indices, detection_indices))
                 squared = []
                 for track_index, detection_index in pairs:
-                    residual = float(wrap_angle(
-                        measured_deg[detection_index] - predicted_deg[track_index]
+                    residual = float(angle_difference(
+                        measured_deg[detection_index], predicted_deg[track_index]
                     ))
                     if abs(residual) > GATE_DEG:
                         break
@@ -111,7 +111,7 @@ def _run_tracker(*, oracle: bool) -> list[dict]:
             "state_velocity_deg_s": {name: float(filters[name].state[1]) for name in TRACKS},
             "angle_variance_deg2": {name: float(filters[name].covariance[0, 0]) for name in TRACKS},
             "absolute_angle_error_deg": {
-                name: abs(float(wrap_angle(filters[name].state[0] - TRUTH_DEG[frame][name])))
+                name: abs(float(angle_difference(filters[name].state[0], TRUTH_DEG[frame][name])))
                 for name in TRACKS
             },
             "wrong_detection_labels": sum(name != label for name, (label, _) in assigned.items()),
@@ -122,7 +122,7 @@ def _run_tracker(*, oracle: bool) -> list[dict]:
 
 def _limited_step(current_deg: float, desired_deg: float, max_speed_deg_s: float, dt_s: float) -> float:
     max_step = max_speed_deg_s * dt_s
-    residual = float(wrap_angle(desired_deg - current_deg))
+    residual = float(angle_difference(desired_deg, current_deg))
     return float(wrap_angle(current_deg + np.clip(residual, -max_step, max_step)))
 
 
@@ -140,7 +140,7 @@ def _dropout_and_control() -> list[dict]:
             "predicted_angle_deg": float(tracker.state[0]),
             "angle_variance_deg2": float(tracker.covariance[0, 0]),
             "steer_angle_deg": steer_angle,
-            "control_lag_deg": abs(float(wrap_angle(tracker.state[0] - steer_angle))),
+            "control_lag_deg": abs(float(angle_difference(tracker.state[0], steer_angle))),
         })
     return rows
 

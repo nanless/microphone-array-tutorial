@@ -14,7 +14,7 @@ from codes.chapters.ch00.core.audio_samples import pcm16_bytes
 from codes.chapters.ch02.core.conventions import finite_real_array, finite_real_scalar
 from codes.chapters.ch04.core.doa import gcc_phat
 from codes.chapters.ch09.core.moving_source import retarded_emission_times
-from codes.chapters.ch09.core.tracking import ConstantVelocityKalman, white_acceleration_covariance, wrap_angle
+from codes.chapters.ch09.core.tracking import ConstantVelocityKalman, white_acceleration_covariance, angle_difference
 
 FS = 16000
 SAMPLES = 32000
@@ -141,7 +141,7 @@ def analyze_array(waveform, *, export_gain=1.):
     missing = ~valid
     initialized = np.isfinite(filtered)
     def rmse(values, mask):
-        return float(np.sqrt(np.mean(wrap_angle(values[mask]-truth[mask])**2))) if mask.any() else None
+        return float(np.sqrt(np.mean(angle_difference(values[mask], truth[mask])**2))) if mask.any() else None
     scores = {'frame_count': len(starts), 'valid_observation_count': int(valid.sum()),
               'missing_observation_count': int(missing.sum()),
               'initialized_missing_count': int(np.sum(missing & initialized)),

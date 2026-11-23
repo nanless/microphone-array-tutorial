@@ -10,7 +10,7 @@ from __future__ import annotations
 
 from itertools import permutations
 from decimal import Decimal, localcontext
-from codes.chapters.ch09.core.tracking import _checked_covariance, wrap_angle
+from codes.chapters.ch09.core.tracking import _checked_covariance, angle_difference, wrap_angle
 import math
 import numbers
 import numpy as np
@@ -79,7 +79,7 @@ def echo_sector_gate(
         raise ValueError("sector_half_width_deg must satisfy 0 < half_width < 180")
 
     wrapped_dets = np.asarray(_wrap_angle_deg(dets), dtype=np.float64).reshape(-1)
-    angular_diffs = np.abs(np.asarray(_wrap_angle_deg(wrapped_dets - spk_deg), dtype=np.float64)).reshape(-1)
+    angular_diffs = np.abs(np.asarray(angle_difference(wrapped_dets, spk_deg), dtype=np.float64)).reshape(-1)
     inside_sector = angular_diffs <= half_width
     gate_active = bool(far_end_active and (not double_talk))
     suppressed_mask = inside_sector if gate_active else np.zeros(wrapped_dets.shape, dtype=bool)
@@ -125,7 +125,7 @@ def oosm_cv_retrodiction_update(
 
     def _joseph_scalar_update(h_row: np.ndarray) -> dict:
         pred_z = float(_wrap_angle_deg(float(h_row @ s_vec)))
-        innovation = float(_wrap_angle_deg(z_deg - pred_z))
+        innovation = float(angle_difference(z_deg, pred_z))
         ph_t = p_mat @ h_row
         s_innov = float(h_row @ ph_t + r_var)
         if s_innov <= 0.0 or not math.isfinite(s_innov):
@@ -179,7 +179,7 @@ def fov_bernoulli_missed_detection_update(
     if not 0.0 <= pd_in <= 1.0:
         raise ValueError("in_fov_detection_prob must lie in [0, 1]")
 
-    in_fov = bool(abs(float(_wrap_angle_deg(theta - cam_center))) <= fov_half)
+    in_fov = bool(abs(float(angle_difference(theta, cam_center))) <= fov_half)
     pd_fov = pd_in if in_fov else 0.0
     if r_prior * pd_fov >= 1.0:
         raise ValueError("r_prior * p_D == 1 makes an empty visual frame impossible")
@@ -229,7 +229,7 @@ def small_set_distances(truth, estimate, *, cutoff=10., order=1):
     m, n = len(first), len(second)
     best_root, best_distances = math.inf, ()
     for assignment in permutations(range(n), m):
-        distances = tuple(min(cutoff, abs(float(_wrap_angle_deg(first[i]-second[j]))))
+        distances = tuple(min(cutoff, abs(float(angle_difference(first[i], second[j]))))
                           for i, j in enumerate(assignment))
         normalized = tuple(distance/cutoff for distance in distances)
         if any(d != 0 and unit == 0 for d, unit in zip(distances, normalized)):
@@ -325,7 +325,7 @@ def clear_mot_angular_summary(
             if gt_id in prev_correspondence:
                 prev_hyp = prev_correspondence[gt_id]
                 if prev_hyp in hyp_map and prev_hyp not in used_hyps:
-                    dist = abs(float(_wrap_angle_deg(gt_map[gt_id] - hyp_map[prev_hyp])))
+                    dist = abs(float(angle_difference(gt_map[gt_id], hyp_map[prev_hyp])))
                     if dist <= tau:
                         current_matches[gt_id] = prev_hyp
                         used_hyps.add(prev_hyp)
@@ -364,7 +364,7 @@ def clear_mot_angular_summary(
             for hid in rem_hyp:
                 if hid in used:
                     continue
-                dist = abs(float(_wrap_angle_deg(gt_map[gid] - hyp_map[hid])))
+                dist = abs(float(angle_difference(gt_map[gid], hyp_map[hid])))
                 if dist <= tau:
                     used.add(hid)
                     chosen.append((gid, hid, dist))
@@ -434,7 +434,7 @@ def _cv_kalman_predict(state: np.ndarray, cov: np.ndarray, dt: float, q_mat: np.
 
 def _cv_kalman_update(state_pred: np.ndarray, cov_pred: np.ndarray, z_deg: float, r_var: float) -> dict:
     h_row = np.array([1.0, 0.0], dtype=np.float64)
-    innov = float(_wrap_angle_deg(z_deg - state_pred[0]))
+    innov = float(angle_difference(z_deg, state_pred[0]))
     s_innov = float(cov_pred[0, 0] + r_var)
     gain = cov_pred[:, 0] / s_innov
     nis = float((innov ** 2) / s_innov)

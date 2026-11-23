@@ -218,7 +218,7 @@ def _build_fig89(sources: dict[str, str]) -> None:
         xlim=(-0.38, 5.35),
         ylim=(-3.90, 3.85),
     )
-    ax.legend(loc="lower left")
+    ax.legend(loc="upper right")
 
     # (d) COLA / WOLA steady-state denominator comparison
     ax = axes[1, 1]

@@ -418349,6 +418349,2730 @@
           }
         ]
       }
+    },
+    "r8-current-candidate-prepublication-evidence.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/r8-current-candidate-prepublication-evidence.json",
+      "sha256": "64408ac3a8ba42c4149e5e1d92414960f1f137912051c7e84321708b9e41f1bf",
+      "bytes": 2596,
+      "boundary": "R7 completed browser checks, R6 corrected portable test and R8 real prepublication build.",
+      "packet": {
+        "browser": {
+          "receipt": {
+            "path": "/private/tmp/masp-multiround-20261123/r7-exact-site-browser-198/report.json",
+            "sha256": "e8edaae5316eb2c4de60a49df9e068c8d2fbb2cc158569fd250203800d75e32e",
+            "bytes": 5001309
+          },
+          "cases": 198,
+          "keyboard": 1648,
+          "media": 285,
+          "failures": 0
+        },
+        "r6_portable_followup": {
+          "receipt": {
+            "path": "/private/tmp/masp-multiround-20261123/r6-nine-research-directions-test/actual-portable-tests.log",
+            "sha256": "4efdbf748896b0e17519e9f9c8b7510185df127f2fe708fd3ced103a1004fb9f",
+            "bytes": 23167
+          },
+          "summary": [
+            "Ran 1376 tests in 1357.099s",
+            "OK (skipped=1)"
+          ]
+        },
+        "r7_print": {
+          "raw_review": {
+            "path": "/private/tmp/masp-multiround-20261123/r7-native-bilingual-publication/opened-raw-visual.json",
+            "sha256": "c9267226ba2a30c386b3f099193275bf89841ee131c4c8694afbd5183002754d",
+            "bytes": 2595
+          },
+          "first_zh_attempt": {
+            "path": "/private/tmp/masp-multiround-20261123/r7-native-bilingual-publication/zh-standard.log",
+            "sha256": "2bfb9d82af9fc49c8e3971ec297e67a2f5c1486922b0d6fc98a8d7a601682a99",
+            "bytes": 1176
+          },
+          "actual_zh_pages": 1391,
+          "actual_en_pages": 1626
+        },
+        "r8_build": {
+          "build": {
+            "path": "/private/tmp/masp-multiround-20261123/r8-integrated-candidate-v2/execution.json",
+            "sha256": "7c016f2d4954a32d883214f72d5ba0ca8e7f71fc9adcd1c381a8db95faf0450f",
+            "bytes": 12084
+          },
+          "candidate": {
+            "path": "/private/tmp/masp-multiround-20261123/r8-checked-cross-chapter-sources-v2/assembly.json",
+            "sha256": "d54c15b3190b9b819c99ccdfb704b2d03fe5634f9ad6ccdef0412825230663dc",
+            "bytes": 12626
+          },
+          "physical_inputs": 168,
+          "new_round_files": 15,
+          "built_items": 70,
+          "focused_suite_completed": 140,
+          "focused_suite_skipped": 1
+        },
+        "r8_style_sources_reviewed": {
+          "old_text_file": {
+            "path": "/private/tmp/masp-multiround-20261123/style-review-production-round5-changed-zh.txt",
+            "sha256": "352944f189e2bcf9480e8fb063fb621a3fb36d77a8bc20f0b259b28e251856f2",
+            "bytes": 26531
+          },
+          "new_text_file": {
+            "path": "/private/tmp/masp-multiround-20261123/style-review-production-round6_and7-changed-zh.txt",
+            "sha256": "435d7056f3b9ed4b7e45f92fc3f0705ca67bd7903db0055d3e8328d914e3a219",
+            "bytes": 33250
+          },
+          "V3": {
+            "path": "/private/tmp/masp-multiround-20261123/r8-chapter15-prose-pass-v3/plan.json",
+            "sha256": "5661184f4fe48520c2fd9aa498cfc206e5449291f82dc12a6bc2f975aca9a8cd",
+            "bytes": 1084
+          }
+        }
+      }
+    },
+    "r7-native-bilingual-publication--opened-raw-visual.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/r7-native-bilingual-publication/opened-raw-visual.json",
+      "sha256": "c9267226ba2a30c386b3f099193275bf89841ee131c4c8694afbd5183002754d",
+      "bytes": 2595,
+      "boundary": "Eight opened original print pages. Actual R7 figure and text, with additional visible math defect.",
+      "packet": {
+        "scope": "Exact raw R7 print proof. The eight named A4 raster pages were individually opened before optimization.",
+        "zh": {
+          "raw_pdf_sha256": "d37a41f0d682a0616366b466ced8c33df127b4c045517613f177c3864870e228",
+          "raw_pages": 1391,
+          "pages": [
+            {
+              "page": 72,
+              "raster_sha256": "15e435ea2fcfd317351febec491f54a0e27c65add3ec058e2f213e9b2354817a",
+              "observation": "Equation (0-17): escaped percent visibly prints a preceding slash in all three math-text labels; inline 50% and 75% print as intended."
+            },
+            {
+              "page": 73,
+              "raster_sha256": "201c607ce60684ef4b4c00c04cc9276a2fa45d606c38a94da7b6903630ce52e6",
+              "observation": "Figure 84(c): the legend at upper right leaves the n=3 negative point and wraparound arrow visible."
+            },
+            {
+              "page": 1243,
+              "raster_sha256": "c12706f94c87c0d90c2e1e23cd2a658cf1ec3a582719f2a82f76d3e6dbed40dd",
+              "observation": "Chapter 15: the seven mutually exclusive states and the pyannote 2.1.1 / later 3.0 versions fit the real page."
+            },
+            {
+              "page": 1257,
+              "raster_sha256": "00afd3873c593b69a147b3975d59391830d736c44ef0a6ff6cf685cfc30da4eb",
+              "observation": "Chapter 15: the prose states hypothesis word interval extended at both ends; the cpWER equation fits the page."
+            }
+          ]
+        },
+        "en": {
+          "raw_pdf_sha256": "393849247306393b471c815bba600a9a4327ca08da645600594487f1784e5388",
+          "raw_pages": 1626,
+          "pages": [
+            {
+              "page": 95,
+              "raster_sha256": "7b817db02702c003699b3d7f065a4a2f4dda58df9b47b7bf943dbe9e64c3a362",
+              "observation": "Equation (0-17): three visible literal backslashes before percent trigger R433; alongside regular mathematical percent glyphs appear normally."
+            },
+            {
+              "page": 96,
+              "raster_sha256": "d4dcd22e3883d7943dcfa6b0fb58d0583e9174d9d8d1ccc1f71d2490fc1a83ea",
+              "observation": "Figure 84(c): legend at upper right leaves all sample markers down to n=3 and the wraparound arrow visible."
+            },
+            {
+              "page": 1447,
+              "raster_sha256": "1306eb20a1de46f0f381fc204aa6c0fc2b7f351a8b51cc71acac41c6fd7e2117",
+              "observation": "Chapter 15: the seven mutually exclusive states, 2.1.1 pipeline and later 3.0 model appear together."
+            },
+            {
+              "page": 1466,
+              "raster_sha256": "e9a2d369110accd96fedf958f89231244b6f1ef520df2938ddfdfeb803498ca3",
+              "observation": "Chapter 15: the cpWER equation is clear; the tcpWER rule says both ends of the hypothesis interval, followed by overlap."
+            }
+          ]
+        }
+      }
+    },
+    "r8-priority-81-current-evidence-complete.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/r8-priority-81-current-evidence-complete.json",
+      "sha256": "274100185320b75d3dbfac3f3d52dc904bb6d8eedc0b8f703ee689a5f22eddbf",
+      "bytes": 1184,
+      "boundary": "Current coverage of the inherited priority consumer list.",
+      "packet": {
+        "priority_ids": 81,
+        "previous_bounded_checks": 76,
+        "verified_final_followups": {
+          "R240-R243": {
+            "path": "/private/tmp/masp-multiround-20261123/r8-four-selection-consumers.json",
+            "sha256": "4408382fc89d9d53a27e2ab79617e6b45f0258253c735554cb5387d055607294"
+          },
+          "R365": {
+            "path": "/private/tmp/masp-multiround-20261123/r8-r365-assets-independent-review/handoff.json",
+            "sha256": "066d461b2b7d2d2e326aff9c4db45df4efc4e2841652af6ef7435266dd5cad9f"
+          }
+        },
+        "last_76_audit": {
+          "path": "/private/tmp/masp-multiround-20261123/content-r6-technical-review/r7f-final-nonvehicle-consumers/handoff.json",
+          "sha256": "e1724d54987590aca4c2c26b30f4f387ae42306e65390c12d4d87e3f324515fc"
+        },
+        "historic_index": {
+          "path": "/private/tmp/masp-multiround-20261123/r7-inherited-review-matrix-277.json",
+          "sha256": "9cba3d238a8b38c2ed23aac1dc7563ab561d843f40a08649b8a06c9f7b51cabe"
+        },
+        "current_bounded_reviews_completed": 81,
+        "boundary": "This closes the scheduled finite consumer rereads, including reopened rows with explicit candidate changes. Formal artifacts and remote gates are separate, all remaining failures are still tracked."
+      }
+    },
+    "r8-four-selection-consumers.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/r8-four-selection-consumers.json",
+      "sha256": "4408382fc89d9d53a27e2ab79617e6b45f0258253c735554cb5387d055607294",
+      "bytes": 2773,
+      "boundary": "Current R240–243 checks against the original device documentation, regulation and two actual website link targets.",
+      "packet": {
+        "status": "current_direct_consumers_confirmed",
+        "read_sources": {
+          "zh": {
+            "source_sha256": "45bc20d30a34210e01d50ffd965a7adbbeecf991459a70de3eb7440965cbaa58",
+            "r8_candidate_sha256": "fa70563bf7da1767292ea2921f0d2dd27e8d663e802a3b37282d0a9cdf963d69",
+            "lines_read": [
+              190,
+              211,
+              215,
+              1090
+            ]
+          },
+          "en": {
+            "source_sha256": "b0fd7999ec6de927941f57629ef034aece500e09bc7f99af8d4f9d4461d13a8b",
+            "r8_candidate_sha256": "38f912baf80a255a4bb65a70a2d113d5607cc3698e7d415df6e37de6d71f2009",
+            "lines_read": [
+              190,
+              211,
+              215,
+              1090
+            ]
+          }
+        },
+        "R240": {
+          "primary": "https://www.analog.com/media/en/technical-documentation/user-guides/ad2437-trm.pdf",
+          "table": "4-4 and surrounding Synchronizing Subordinate Nodes",
+          "nominal_clock_rate_hz": 48000,
+          "slot_clock_hz": 49152000,
+          "first_sync_delay_seconds": "13/49152000",
+          "later_sync_increment_seconds": "7/49152000",
+          "no_claim_for_uncalibrated_latency": true
+        },
+        "R241": {
+          "counterexample": "L(z)=(2/5) z^-1, stable pole 2/5, forward/direct ratio 2/(1-L(z))",
+          "minimum_ratio": "10/7",
+          "preserved_current_ear_ratio_assumption": "0<g<1 for scenario, g=0.8 in E11-22",
+          "corresponding_current_review": "r8-r430-v2-independent-review/handoff.json"
+        },
+        "R242": {
+          "primary": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-H/part-800/subpart-B/section-800.30",
+          "displayed_current_as_of": "2026-11-19",
+          "actual_sections_read": [
+            "a",
+            "b",
+            "d",
+            "e(1)",
+            "e(2)",
+            "e(3)",
+            "e(6)"
+          ],
+          "applies_to": "OTC air-conduction hearing aids under scope paragraph (a)",
+          "scope_and_measurement_conditions_still_agree": true
+        },
+        "R243": {
+          "site": {
+            "research_sha256": "0a458c5f5605c8b1b96d301f5a9c340230c7572b54fab600000910a6084dacc7",
+            "chapter_sha256": "951783128eee3d3233162a6a90811d491a8c9257c488913ef743fd7e82d3bec7",
+            "links_as_built": [
+              "../11_selection-guide.html#e11-17",
+              "../11_selection-guide.html#e11-17"
+            ],
+            "fragment_occurrences": 1
+          },
+          "site_en": {
+            "research_sha256": "e342067e5b86073b0853c92ac95d07108192ae1ca19c81d4d8f160b549fdd29b",
+            "chapter_sha256": "5df1e0b7b74c06c7c4056175abbd68ebe8eb0e3a168c334b2cd51306a2e07222",
+            "links_as_built": [
+              "../11_selection-guide.html#e11-17"
+            ],
+            "fragment_occurrences": 1
+          }
+        },
+        "harness_note": "Initial assertion looked for a paraphrase of the English condition. Updated to the actual printed phrase; source unchanged.",
+        "scope": "Current bilingual direct consumers and actual two-language generated HTML references. No hardware or device compliance trial."
+      }
+    },
+    "r8-r365-assets-independent-review--handoff.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/r8-r365-assets-independent-review/handoff.json",
+      "sha256": "066d461b2b7d2d2e326aff9c4db45df4efc4e2841652af6ef7435266dd5cad9f",
+      "bytes": 50241,
+      "boundary": "Actual three audio replays and two figure reports with four PNGs, held to exact current modified and stable bytes.",
+      "packet": {
+        "id": "R365",
+        "reviewer": "publication_ci; independent post-generation validation",
+        "date": "2026-11-23",
+        "candidate_root": "/private/tmp/masp-multiround-20261123/r7-integrated-candidate/checkout",
+        "decision": "Accept this finite R7 LCMV/audio/figure provenance and numerical posterior; no new defect found. Not global publication or visual acceptance.",
+        "actual_scope": {
+          "unique_solver": "codes/chapters/ch05/core/beamforming.py",
+          "unique_solver_sha256": "e78028539b12d826175e1fc339c086efd8e75e66f937c21558807ec506604e2f",
+          "audio_groups": {
+            "binaural_beamforming": 4,
+            "derivative_constraint": 4,
+            "known_failed_channel": 6
+          },
+          "figure_reports": [
+            73,
+            74
+          ],
+          "PNG_languages": [
+            "zh",
+            "en"
+          ],
+          "asset_total": 23,
+          "source_and_asset_guard_count": 43
+        },
+        "actual_commands": {
+          "commands": [
+            {
+              "group": "binaural",
+              "actual_argv": [
+                "/Users/francis7999/code/github_repos/microphone-array-signal-processing/.venv/bin/python",
+                "-B",
+                "/private/tmp/masp-multiround-20261123/r8-r365-assets-independent-review/readonly_cli.py",
+                "codes.chapters.ch05.examples.binaural_beamforming_demo",
+                "--check"
+              ],
+              "cwd": "/private/tmp/masp-multiround-20261123/r7-integrated-candidate/checkout",
+              "logical_CLI": [
+                "python",
+                "-B",
+                "-m",
+                "codes.chapters.ch05.examples.binaural_beamforming_demo",
+                "--check"
+              ],
+              "exit_code": 0,
+              "seconds": 1.3989875829999998,
+              "stdout_path": "/private/tmp/masp-multiround-20261123/r8-r365-assets-independent-review/binaural-stdout.log",
+              "stderr_path": "/private/tmp/masp-multiround-20261123/r8-r365-assets-independent-review/binaural-stderr.log"
+            },
+            {
+              "group": "derivative",
+              "actual_argv": [
+                "/Users/francis7999/code/github_repos/microphone-array-signal-processing/.venv/bin/python",
+                "-B",
+                "/private/tmp/masp-multiround-20261123/r8-r365-assets-independent-review/readonly_cli.py",
+                "codes.chapters.ch05.examples.generate_derivative_audio",
+                "--check"
+              ],
+              "cwd": "/private/tmp/masp-multiround-20261123/r7-integrated-candidate/checkout",
+              "logical_CLI": [
+                "python",
+                "-B",
+                "-m",
+                "codes.chapters.ch05.examples.generate_derivative_audio",
+                "--check"
+              ],
+              "exit_code": 0,
+              "seconds": 1.2923246659999998,
+              "stdout_path": "/private/tmp/masp-multiround-20261123/r8-r365-assets-independent-review/derivative-stdout.log",
+              "stderr_path": "/private/tmp/masp-multiround-20261123/r8-r365-assets-independent-review/derivative-stderr.log"
+            },
+            {
+              "group": "channel",
+              "actual_argv": [
+                "/Users/francis7999/code/github_repos/microphone-array-signal-processing/.venv/bin/python",
+                "-B",
+                "/private/tmp/masp-multiround-20261123/r8-r365-assets-independent-review/readonly_cli.py",
+                "codes.chapters.ch10.examples.generate_channel_audio",
+                "--check"
+              ],
+              "cwd": "/private/tmp/masp-multiround-20261123/r7-integrated-candidate/checkout",
+              "logical_CLI": [
+                "python",
+                "-B",
+                "-m",
+                "codes.chapters.ch10.examples.generate_channel_audio",
+                "--check"
+              ],
+              "exit_code": 0,
+              "seconds": 1.4065660420000001,
+              "stdout_path": "/private/tmp/masp-multiround-20261123/r8-r365-assets-independent-review/channel-stdout.log",
+              "stderr_path": "/private/tmp/masp-multiround-20261123/r8-r365-assets-independent-review/channel-stderr.log"
+            }
+          ],
+          "guarded_count": 43,
+          "guarded_changes": []
+        },
+        "actual_provenance_and_numeric_checks": {
+          "unique_LCMV_source_SHA256": "e78028539b12d826175e1fc339c086efd8e75e66f937c21558807ec506604e2f",
+          "original_R365_response_loss_negative_controls_and_positives": [
+            {
+              "scale": 1e+308,
+              "response_component": 1e-20,
+              "factor": [
+                1.0,
+                0.0
+              ],
+              "result": "ValueError",
+              "message": "LCMV normalization loses a nonzero response component"
+            },
+            {
+              "scale": 1e+308,
+              "response_component": 1e-20,
+              "factor": [
+                0.0,
+                1.0
+              ],
+              "result": "ValueError",
+              "message": "LCMV normalization loses a nonzero response component"
+            },
+            {
+              "scale": 1e+308,
+              "response_component": 1e-20,
+              "factor": [
+                1.0,
+                1.0
+              ],
+              "result": "ValueError",
+              "message": "LCMV normalization loses a nonzero response component"
+            },
+            {
+              "scale": 1e+200,
+              "response_component": 1e-200,
+              "factor": [
+                1.0,
+                0.0
+              ],
+              "result": "ValueError",
+              "message": "LCMV normalization loses a nonzero response component"
+            },
+            {
+              "scale": 1e+200,
+              "response_component": 1e-200,
+              "factor": [
+                0.0,
+                1.0
+              ],
+              "result": "ValueError",
+              "message": "LCMV normalization loses a nonzero response component"
+            },
+            {
+              "scale": 1e+200,
+              "response_component": 1e-200,
+              "factor": [
+                1.0,
+                1.0
+              ],
+              "result": "ValueError",
+              "message": "LCMV normalization loses a nonzero response component"
+            },
+            {
+              "positive_scale": 1.0,
+              "weights_real": [
+                1.0,
+                1.0,
+                1.0
+              ],
+              "power": 3.0
+            },
+            {
+              "positive_scale": 1e+200,
+              "weights_real": [
+                1.0,
+                1.0,
+                1.0
+              ],
+              "power": 3.0
+            },
+            {
+              "positive_scale": 1e+308,
+              "weights_real": [
+                1.0,
+                1.0,
+                1.0
+              ],
+              "power": 3.0
+            },
+            {
+              "true_zero_response": "accepted",
+              "weights_real": [
+                0.0,
+                0.0
+              ]
+            }
+          ],
+          "audio_inventory": [
+            {
+              "group": "binaural",
+              "manifest_path": "codes/chapters/ch05/binaural_beamforming_audio/MANIFEST.json",
+              "manifest_sha256": "54412b916795014a3502e2e93d6a269ca4c8c84a2b55167f511bfa459352f040",
+              "source_sha256_verified": {
+                "codes/chapters/ch05/examples/binaural_beamforming_demo.py": "5a22686c64bb1a695c045002d8005e9dc5b75fc3fbb15639d9f6bf9fdec96a57",
+                "codes/chapters/ch05/core/beamforming.py": "e78028539b12d826175e1fc339c086efd8e75e66f937c21558807ec506604e2f",
+                "codes/chapters/ch04/core/covariance.py": "1fd3d333bb3963bdf81cefe79de3270a485066c57f8b37138e54f1e63ce62a63",
+                "codes/chapters/ch02/core/conventions.py": "79af1b8f7fe664e64e7ad786082c36a29664eacbdda63fba96a944e548304865",
+                "codes/chapters/ch00/core/audio_samples.py": "1a7aad90d08fb8c27511aa463a6cc6dd6d4d2d230b27ed82549531f1f18edaba",
+                "codes/chapters/ch00/io_contracts.py": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974"
+              },
+              "WAVs": [
+                {
+                  "path": "codes/chapters/ch05/binaural_beamforming_audio/binaural_blcmv.wav",
+                  "sha256": "1869f1ed4ba00607643d5a9c0af57e77d0f5fe0a066154ed90844bc770fb5410",
+                  "bytes": 128044,
+                  "PCM_sha256": "e9faa665b4e5e2bcbf498babdabdc0b0d53932d9eadc0e8c8a7989f489a59151",
+                  "PCM_bytes": 128000,
+                  "header": {
+                    "rate": 16000,
+                    "channels": 2,
+                    "frames": 32000,
+                    "sample_width_bytes": 2,
+                    "compression": "NONE"
+                  },
+                  "bytes_equal_to_R365_actual_regenerated_snapshot": true
+                },
+                {
+                  "path": "codes/chapters/ch05/binaural_beamforming_audio/binaural_bmvdr.wav",
+                  "sha256": "2283f1a6fefc2a9a4f07be80d894b7967627b1d8285cba0a368131bc7735b91d",
+                  "bytes": 128044,
+                  "PCM_sha256": "b1f7e741e0eeea9f9812f2b1b7b853bda719c4cd9255f0cff397d5156fae13e6",
+                  "PCM_bytes": 128000,
+                  "header": {
+                    "rate": 16000,
+                    "channels": 2,
+                    "frames": 32000,
+                    "sample_width_bytes": 2,
+                    "compression": "NONE"
+                  },
+                  "bytes_equal_to_R365_actual_regenerated_snapshot": true
+                },
+                {
+                  "path": "codes/chapters/ch05/binaural_beamforming_audio/binaural_input.wav",
+                  "sha256": "7f4bb7b7187aafa8bcf260156f1551e49c68812d541702d2bcf494a2b4acad51",
+                  "bytes": 128044,
+                  "PCM_sha256": "bfc090c483feb3820e5937dbc575e603f6be4adc70a7f34444874e113542e4bd",
+                  "PCM_bytes": 128000,
+                  "header": {
+                    "rate": 16000,
+                    "channels": 2,
+                    "frames": 32000,
+                    "sample_width_bytes": 2,
+                    "compression": "NONE"
+                  },
+                  "bytes_equal_to_R365_actual_regenerated_snapshot": true
+                },
+                {
+                  "path": "codes/chapters/ch05/binaural_beamforming_audio/binaural_null.wav",
+                  "sha256": "b165b35cd7c1e78bb0bb271fc1bdfff6d4ab4813da284491859793cde9fcd817",
+                  "bytes": 128044,
+                  "PCM_sha256": "630e7d9ef6a0cdee48f5ef6f57d3df61dcf4a49ebfbe1f264715a1a2f84e76de",
+                  "PCM_bytes": 128000,
+                  "header": {
+                    "rate": 16000,
+                    "channels": 2,
+                    "frames": 32000,
+                    "sample_width_bytes": 2,
+                    "compression": "NONE"
+                  },
+                  "bytes_equal_to_R365_actual_regenerated_snapshot": true
+                }
+              ]
+            },
+            {
+              "group": "derivative",
+              "manifest_path": "codes/chapters/ch05/derivative_audio/MANIFEST.json",
+              "manifest_sha256": "7069645e8df4e173bd1f86ed911a8f0d50fc98eb52fd42f31eebbfd92ed33319",
+              "source_sha256_verified": {
+                "codes/chapters/ch05/core/derivative_audio.py": "00f8dc7fe8523a52525fd63057b5338697bc530fbda351e1117ab08227468f99",
+                "codes/chapters/ch05/examples/generate_derivative_audio.py": "bc4f2aad4d55e94965bc3ad681f1d524e72d50fb20a8492f36280b4da483df9e",
+                "codes/chapters/ch05/core/beamforming.py": "e78028539b12d826175e1fc339c086efd8e75e66f937c21558807ec506604e2f",
+                "codes/chapters/ch04/core/covariance.py": "1fd3d333bb3963bdf81cefe79de3270a485066c57f8b37138e54f1e63ce62a63",
+                "codes/chapters/ch03/core/geometry.py": "5a680848301358415f74647199a4c57b65086f0b2580f91706c912ad208d7bdb",
+                "codes/chapters/ch02/core/conventions.py": "79af1b8f7fe664e64e7ad786082c36a29664eacbdda63fba96a944e548304865",
+                "codes/chapters/ch00/core/audio_samples.py": "1a7aad90d08fb8c27511aa463a6cc6dd6d4d2d230b27ed82549531f1f18edaba",
+                "codes/chapters/ch00/io_contracts.py": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974"
+              },
+              "WAVs": [
+                {
+                  "path": "codes/chapters/ch05/derivative_audio/derivative_array.wav",
+                  "sha256": "b317f0ef3eb5ed4959e133bf7c1ae6c69c32af96f65a310224a6653d1f082adb",
+                  "bytes": 192056,
+                  "PCM_sha256": "8ad37a331ec8aac8ff12e9ba3389a608b00a81034b2e24688e26bb71033aed8a",
+                  "PCM_bytes": 192012,
+                  "header": {
+                    "rate": 16000,
+                    "channels": 3,
+                    "frames": 32002,
+                    "sample_width_bytes": 2,
+                    "compression": "NONE"
+                  },
+                  "bytes_equal_to_R365_actual_regenerated_snapshot": true
+                },
+                {
+                  "path": "codes/chapters/ch05/derivative_audio/derivative_constrained.wav",
+                  "sha256": "7ba5de2713136a819ab5f34ea63510ed2022c16b3f117aa08b1224ea430e28f2",
+                  "bytes": 64048,
+                  "PCM_sha256": "4664c3245fb793008ff8ff62beefc7ffba1410a94d88793a0f75db6c9aecc1eb",
+                  "PCM_bytes": 64004,
+                  "header": {
+                    "rate": 16000,
+                    "channels": 1,
+                    "frames": 32002,
+                    "sample_width_bytes": 2,
+                    "compression": "NONE"
+                  },
+                  "bytes_equal_to_R365_actual_regenerated_snapshot": true
+                },
+                {
+                  "path": "codes/chapters/ch05/derivative_audio/derivative_reference.wav",
+                  "sha256": "990b06a74f498b61230a24ae77608d4b58dd827ca76cf62ad62f05890090e699",
+                  "bytes": 64048,
+                  "PCM_sha256": "2614f1a5777985a610ebd1a34123a2fe780a0731984d94ccafe6f427750b19de",
+                  "PCM_bytes": 64004,
+                  "header": {
+                    "rate": 16000,
+                    "channels": 1,
+                    "frames": 32002,
+                    "sample_width_bytes": 2,
+                    "compression": "NONE"
+                  },
+                  "bytes_equal_to_R365_actual_regenerated_snapshot": true
+                },
+                {
+                  "path": "codes/chapters/ch05/derivative_audio/derivative_single.wav",
+                  "sha256": "73edaf765a42eac408cb451fb13a5a1d28f913724c314a24a430d2b6428cb253",
+                  "bytes": 64048,
+                  "PCM_sha256": "3f2ecf59a3479d9a63912c536595030d36dbd710f867315117824df77e2fdce0",
+                  "PCM_bytes": 64004,
+                  "header": {
+                    "rate": 16000,
+                    "channels": 1,
+                    "frames": 32002,
+                    "sample_width_bytes": 2,
+                    "compression": "NONE"
+                  },
+                  "bytes_equal_to_R365_actual_regenerated_snapshot": true
+                }
+              ]
+            },
+            {
+              "group": "channel",
+              "manifest_path": "codes/chapters/ch10/channel_audio/MANIFEST.json",
+              "manifest_sha256": "099ee3671bf77d1d6c62c1a585351d0df5cadbf5efc978b84aee36cd2ba2e0b0",
+              "source_sha256_verified": {
+                "codes/chapters/ch10/core/channel_audio.py": "0fdbae1e4e8373d828f846558d83f20c1a93836a98e9a00da2c1bf3333227c06",
+                "codes/chapters/ch10/examples/generate_channel_audio.py": "e8aa0d43edb4efbf62ed275ead2a07b582645d2c27b31cd00bab2b1a0216118e",
+                "codes/chapters/ch10/core/channel_selection.py": "811b6469a97aefe44cf9ef8892deff8506d159a21be2a0dc43da178593b7882a",
+                "codes/chapters/ch05/core/beamforming.py": "e78028539b12d826175e1fc339c086efd8e75e66f937c21558807ec506604e2f",
+                "codes/chapters/ch04/core/covariance.py": "1fd3d333bb3963bdf81cefe79de3270a485066c57f8b37138e54f1e63ce62a63",
+                "codes/chapters/ch02/core/conventions.py": "79af1b8f7fe664e64e7ad786082c36a29664eacbdda63fba96a944e548304865",
+                "codes/chapters/ch00/core/audio_samples.py": "1a7aad90d08fb8c27511aa463a6cc6dd6d4d2d230b27ed82549531f1f18edaba",
+                "codes/chapters/ch00/io_contracts.py": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974"
+              },
+              "WAVs": [
+                {
+                  "path": "codes/chapters/ch10/channel_audio/channel_faulty_array.wav",
+                  "sha256": "0335b0a4ea8e7e18a9fcd1d356412184a6435e050e1fe2c6605a2f1ca16e2fde",
+                  "bytes": 192044,
+                  "PCM_sha256": "64025984c573a8a0a4b44d63c4575283226e1899e7d62daa04f66e8c79149547",
+                  "PCM_bytes": 192000,
+                  "header": {
+                    "rate": 16000,
+                    "channels": 3,
+                    "frames": 32000,
+                    "sample_width_bytes": 2,
+                    "compression": "NONE"
+                  },
+                  "bytes_equal_to_R365_actual_regenerated_snapshot": true
+                },
+                {
+                  "path": "codes/chapters/ch10/channel_audio/channel_healthy_array.wav",
+                  "sha256": "5558bd155a08a4edc519c4f4623066a9faf978e018d4e498700bbcde7b643d29",
+                  "bytes": 192044,
+                  "PCM_sha256": "9fd054d1658e3edb86c7068452003625b2bba84b41372b77073f1f2c165bebee",
+                  "PCM_bytes": 192000,
+                  "header": {
+                    "rate": 16000,
+                    "channels": 3,
+                    "frames": 32000,
+                    "sample_width_bytes": 2,
+                    "compression": "NONE"
+                  },
+                  "bytes_equal_to_R365_actual_regenerated_snapshot": true
+                },
+                {
+                  "path": "codes/chapters/ch10/channel_audio/channel_healthy_output.wav",
+                  "sha256": "1a95e19a4a455ae4dfe4f990d0c697e9f5e2453fb657eb6228ff3b33aaa843b0",
+                  "bytes": 64044,
+                  "PCM_sha256": "7adf926ed49538ac995e1009313a2f4b555de49165318af676ea32bce5da6390",
+                  "PCM_bytes": 64000,
+                  "header": {
+                    "rate": 16000,
+                    "channels": 1,
+                    "frames": 32000,
+                    "sample_width_bytes": 2,
+                    "compression": "NONE"
+                  },
+                  "bytes_equal_to_R365_actual_regenerated_snapshot": true
+                },
+                {
+                  "path": "codes/chapters/ch10/channel_audio/channel_recomputed_output.wav",
+                  "sha256": "35285ba307f92e4928efc4d1225a87f65b3afec8f2ab389ab1d52392870f9d27",
+                  "bytes": 64044,
+                  "PCM_sha256": "30fed5e431e65c4bbe2b8a1d293a6a3b6a1d853223bad867d150b047905f7dcd",
+                  "PCM_bytes": 64000,
+                  "header": {
+                    "rate": 16000,
+                    "channels": 1,
+                    "frames": 32000,
+                    "sample_width_bytes": 2,
+                    "compression": "NONE"
+                  },
+                  "bytes_equal_to_R365_actual_regenerated_snapshot": true
+                },
+                {
+                  "path": "codes/chapters/ch10/channel_audio/channel_reference.wav",
+                  "sha256": "e1edd0f7fc1d7008986c41128b6f81b5bbbb5258267522cc7d2186375b54726e",
+                  "bytes": 64044,
+                  "PCM_sha256": "ae21e0ff7260d6e32ca7fda79c41c1cafdd8fefeb7e7c7d9a477981b9e4217bd",
+                  "PCM_bytes": 64000,
+                  "header": {
+                    "rate": 16000,
+                    "channels": 1,
+                    "frames": 32000,
+                    "sample_width_bytes": 2,
+                    "compression": "NONE"
+                  },
+                  "bytes_equal_to_R365_actual_regenerated_snapshot": true
+                },
+                {
+                  "path": "codes/chapters/ch10/channel_audio/channel_stale_output.wav",
+                  "sha256": "99689f241f4d4f81cf2c19355cb2da7a10fa64cd317ba305d1ed4ad5acd9f6f9",
+                  "bytes": 64044,
+                  "PCM_sha256": "eff8bc9d8aef3989fa0aa33adaa7897cfa9669411d8efebd251829845e609a59",
+                  "PCM_bytes": 64000,
+                  "header": {
+                    "rate": 16000,
+                    "channels": 1,
+                    "frames": 32000,
+                    "sample_width_bytes": 2,
+                    "compression": "NONE"
+                  },
+                  "bytes_equal_to_R365_actual_regenerated_snapshot": true
+                }
+              ]
+            }
+          ],
+          "figure_inventory": [
+            {
+              "number": 73,
+              "report_path": "codes/chapters/ch10/reports/figure73_channel_failure.json",
+              "report_sha256": "db119bd3360d35c7e3bfbe6a8d0ac9ee0b928df4ae1c5a67169488b9292cfb8a",
+              "source_sha256_verified": {
+                "scripts/make_channel_figures.py": "616046e7b91c50c7c23cb08e0ddb712429dccced1017321f442d256169724351",
+                "codes/chapters/ch10/core/channel_audio.py": "0fdbae1e4e8373d828f846558d83f20c1a93836a98e9a00da2c1bf3333227c06",
+                "codes/chapters/ch10/examples/generate_channel_audio.py": "e8aa0d43edb4efbf62ed275ead2a07b582645d2c27b31cd00bab2b1a0216118e",
+                "codes/chapters/ch10/core/channel_selection.py": "811b6469a97aefe44cf9ef8892deff8506d159a21be2a0dc43da178593b7882a",
+                "codes/chapters/ch05/core/beamforming.py": "e78028539b12d826175e1fc339c086efd8e75e66f937c21558807ec506604e2f",
+                "codes/chapters/ch04/core/covariance.py": "1fd3d333bb3963bdf81cefe79de3270a485066c57f8b37138e54f1e63ce62a63",
+                "codes/chapters/ch02/core/conventions.py": "79af1b8f7fe664e64e7ad786082c36a29664eacbdda63fba96a944e548304865",
+                "codes/chapters/ch00/core/audio_samples.py": "1a7aad90d08fb8c27511aa463a6cc6dd6d4d2d230b27ed82549531f1f18edaba",
+                "codes/chapters/ch00/io_contracts.py": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974"
+              },
+              "input_sha256_verified": {
+                "channel_reference.wav": "e1edd0f7fc1d7008986c41128b6f81b5bbbb5258267522cc7d2186375b54726e",
+                "channel_healthy_array.wav": "5558bd155a08a4edc519c4f4623066a9faf978e018d4e498700bbcde7b643d29",
+                "channel_faulty_array.wav": "0335b0a4ea8e7e18a9fcd1d356412184a6435e050e1fe2c6605a2f1ca16e2fde",
+                "channel_healthy_output.wav": "1a95e19a4a455ae4dfe4f990d0c697e9f5e2453fb657eb6228ff3b33aaa843b0",
+                "channel_stale_output.wav": "99689f241f4d4f81cf2c19355cb2da7a10fa64cd317ba305d1ed4ad5acd9f6f9",
+                "channel_recomputed_output.wav": "35285ba307f92e4928efc4d1225a87f65b3afec8f2ab389ab1d52392870f9d27",
+                "MANIFEST.json": "099ee3671bf77d1d6c62c1a585351d0df5cadbf5efc978b84aee36cd2ba2e0b0"
+              },
+              "PNGs": [
+                {
+                  "path": "figures/fig73_channel_failure.png",
+                  "sha256": "a4b3767e324281c45c970fabf6188e089369faae03ee3ee208e4ecb07454e12c",
+                  "dimensions": [
+                    1423,
+                    1518
+                  ],
+                  "RGBA_sha256": "6797cd3f1f2167378325e25546f1abc66dc146a833e4dbcb392e8a563fd3ea9d",
+                  "full_verify_and_load": true,
+                  "metadata": {
+                    "Software": "Matplotlib version3.11.2, https://matplotlib.org/",
+                    "FigureFilename": "fig73_channel_failure.png",
+                    "SourceScript": "scripts/make_channel_figures.py",
+                    "SourceScriptDigest": "616046e7b91c50c7c23cb08e0ddb712429dccced1017321f442d256169724351",
+                    "GeneratorInputs": "{\"codes/chapters/ch00/core/audio_samples.py\": \"1a7aad90d08fb8c27511aa463a6cc6dd6d4d2d230b27ed82549531f1f18edaba\", \"codes/chapters/ch00/io_contracts.py\": \"0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974\", \"codes/chapters/ch02/core/conventions.py\": \"79af1b8f7fe664e64e7ad786082c36a29664eacbdda63fba96a944e548304865\", \"codes/chapters/ch04/core/covariance.py\": \"1fd3d333bb3963bdf81cefe79de3270a485066c57f8b37138e54f1e63ce62a63\", \"codes/chapters/ch05/core/beamforming.py\": \"e78028539b12d826175e1fc339c086efd8e75e66f937c21558807ec506604e2f\", \"codes/chapters/ch10/core/channel_audio.py\": \"0fdbae1e4e8373d828f846558d83f20c1a93836a98e9a00da2c1bf3333227c06\", \"codes/chapters/ch10/core/channel_selection.py\": \"811b6469a97aefe44cf9ef8892deff8506d159a21be2a0dc43da178593b7882a\", \"codes/chapters/ch10/examples/generate_channel_audio.py\": \"e8aa0d43edb4efbf62ed275ead2a07b582645d2c27b31cd00bab2b1a0216118e\", \"scripts/make_channel_figures.py\": \"616046e7b91c50c7c23cb08e0ddb712429dccced1017321f442d256169724351\"}",
+                    "AudioManifestDigest": "099ee3671bf77d1d6c62c1a585351d0df5cadbf5efc978b84aee36cd2ba2e0b0",
+                    "NumericalReportDigest": "db119bd3360d35c7e3bfbe6a8d0ac9ee0b928df4ae1c5a67169488b9292cfb8a",
+                    "dpi": [
+                      150.01239999999999,
+                      150.01239999999999
+                    ]
+                  }
+                },
+                {
+                  "path": "figures_en/fig73_channel_failure.png",
+                  "sha256": "d1c6440847fb5f8136743038f662bc6bf15f2c4a7fbe9afcb3f1eee02f3d7d51",
+                  "dimensions": [
+                    1425,
+                    1515
+                  ],
+                  "RGBA_sha256": "92c57bf7d0e70ae8f88156c9ee518c7e47d8fd3a37ae51bf5dc11f5d77da0fc9",
+                  "full_verify_and_load": true,
+                  "metadata": {
+                    "Software": "Matplotlib version3.11.2, https://matplotlib.org/",
+                    "FigureFilename": "fig73_channel_failure.png",
+                    "SourceScript": "scripts/make_channel_figures.py",
+                    "SourceScriptDigest": "616046e7b91c50c7c23cb08e0ddb712429dccced1017321f442d256169724351",
+                    "GeneratorInputs": "{\"codes/chapters/ch00/core/audio_samples.py\": \"1a7aad90d08fb8c27511aa463a6cc6dd6d4d2d230b27ed82549531f1f18edaba\", \"codes/chapters/ch00/io_contracts.py\": \"0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974\", \"codes/chapters/ch02/core/conventions.py\": \"79af1b8f7fe664e64e7ad786082c36a29664eacbdda63fba96a944e548304865\", \"codes/chapters/ch04/core/covariance.py\": \"1fd3d333bb3963bdf81cefe79de3270a485066c57f8b37138e54f1e63ce62a63\", \"codes/chapters/ch05/core/beamforming.py\": \"e78028539b12d826175e1fc339c086efd8e75e66f937c21558807ec506604e2f\", \"codes/chapters/ch10/core/channel_audio.py\": \"0fdbae1e4e8373d828f846558d83f20c1a93836a98e9a00da2c1bf3333227c06\", \"codes/chapters/ch10/core/channel_selection.py\": \"811b6469a97aefe44cf9ef8892deff8506d159a21be2a0dc43da178593b7882a\", \"codes/chapters/ch10/examples/generate_channel_audio.py\": \"e8aa0d43edb4efbf62ed275ead2a07b582645d2c27b31cd00bab2b1a0216118e\", \"scripts/make_channel_figures.py\": \"616046e7b91c50c7c23cb08e0ddb712429dccced1017321f442d256169724351\"}",
+                    "AudioManifestDigest": "099ee3671bf77d1d6c62c1a585351d0df5cadbf5efc978b84aee36cd2ba2e0b0",
+                    "NumericalReportDigest": "db119bd3360d35c7e3bfbe6a8d0ac9ee0b928df4ae1c5a67169488b9292cfb8a",
+                    "TranslationScript": "scripts/make_figures_en.py",
+                    "TranslationScriptSHA256": "f541dfc8cbd70a87c1e6c76700a9ed4f9617a7895bf8e43b88917c01aba0f0f7",
+                    "TranslationTableSHA256": "5c784152d01490829b59668d6b590b2c263f32e8a48020b4ca18532f254355e6",
+                    "TranslationStyleSHA256": "0157fc2c9fc9ee0a2d0bba7810a9603b22aa5a24d327a8895ef14412a2fb2fec",
+                    "dpi": [
+                      150.01239999999999,
+                      150.01239999999999
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "number": 74,
+              "report_path": "codes/chapters/ch11/reports/figure74_selection_evidence.json",
+              "report_sha256": "e7ed0add6f7d395cd7e4af395dd05c30cf42b42b47a7effc713bfb294e1a8f65",
+              "source_sha256_verified": {
+                "scripts/make_selection_figures.py": "4a6d8d138b7a92540b41dd5b468f260e57fc807bcf1056fbbfce0ecb7f255e50",
+                "codes/chapters/ch11/core/selection_physics.py": "70a2d908422e0b8861ca3ab6759334a488c40d5eb76073ad43a4105355f81eac",
+                "codes/chapters/ch11/core/selection.py": "987e61d30e9300941d55816629447110b92d28efa342dfbde895b2912df8e2cf",
+                "codes/chapters/ch03/core/geometry.py": "5a680848301358415f74647199a4c57b65086f0b2580f91706c912ad208d7bdb",
+                "codes/chapters/ch05/core/beamforming.py": "e78028539b12d826175e1fc339c086efd8e75e66f937c21558807ec506604e2f",
+                "codes/chapters/ch04/core/covariance.py": "1fd3d333bb3963bdf81cefe79de3270a485066c57f8b37138e54f1e63ce62a63",
+                "codes/chapters/ch02/core/conventions.py": "79af1b8f7fe664e64e7ad786082c36a29664eacbdda63fba96a944e548304865",
+                "codes/chapters/ch00/io_contracts.py": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974"
+              },
+              "input_sha256_verified": null,
+              "PNGs": [
+                {
+                  "path": "figures/fig74_selection_evidence.png",
+                  "sha256": "4cfa8a230dd21766c3a2290b7b4c20346b34bac1924212f317b6a67e502d0422",
+                  "dimensions": [
+                    1364,
+                    1243
+                  ],
+                  "RGBA_sha256": "9d31a54323c8f9d8ee6ddf8126cf8656fde4a8fb8d8bec9369fa6e4d78b11be6",
+                  "full_verify_and_load": true,
+                  "metadata": {
+                    "Software": "Matplotlib version3.11.2, https://matplotlib.org/",
+                    "FigureFilename": "fig74_selection_evidence.png",
+                    "SourceScript": "scripts/make_selection_figures.py",
+                    "SourceScriptDigest": "4a6d8d138b7a92540b41dd5b468f260e57fc807bcf1056fbbfce0ecb7f255e50",
+                    "GeneratorInputs": "{\"codes/chapters/ch00/io_contracts.py\": \"0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974\", \"codes/chapters/ch02/core/conventions.py\": \"79af1b8f7fe664e64e7ad786082c36a29664eacbdda63fba96a944e548304865\", \"codes/chapters/ch03/core/geometry.py\": \"5a680848301358415f74647199a4c57b65086f0b2580f91706c912ad208d7bdb\", \"codes/chapters/ch04/core/covariance.py\": \"1fd3d333bb3963bdf81cefe79de3270a485066c57f8b37138e54f1e63ce62a63\", \"codes/chapters/ch05/core/beamforming.py\": \"e78028539b12d826175e1fc339c086efd8e75e66f937c21558807ec506604e2f\", \"codes/chapters/ch11/core/selection.py\": \"987e61d30e9300941d55816629447110b92d28efa342dfbde895b2912df8e2cf\", \"codes/chapters/ch11/core/selection_physics.py\": \"70a2d908422e0b8861ca3ab6759334a488c40d5eb76073ad43a4105355f81eac\", \"scripts/make_selection_figures.py\": \"4a6d8d138b7a92540b41dd5b468f260e57fc807bcf1056fbbfce0ecb7f255e50\"}",
+                    "NumericalReportDigest": "e7ed0add6f7d395cd7e4af395dd05c30cf42b42b47a7effc713bfb294e1a8f65",
+                    "dpi": [
+                      150.01239999999999,
+                      150.01239999999999
+                    ]
+                  }
+                },
+                {
+                  "path": "figures_en/fig74_selection_evidence.png",
+                  "sha256": "2abe0dfa2382db5ad1915049d9e6d597c1d803035439ca8b13d4f7d1b8dd019c",
+                  "dimensions": [
+                    1388,
+                    1240
+                  ],
+                  "RGBA_sha256": "033b899255ea50c04f2ac4069a945da2d3f1c0a632f4cb0be62544ec1337971a",
+                  "full_verify_and_load": true,
+                  "metadata": {
+                    "Software": "Matplotlib version3.11.2, https://matplotlib.org/",
+                    "FigureFilename": "fig74_selection_evidence.png",
+                    "SourceScript": "scripts/make_selection_figures.py",
+                    "SourceScriptDigest": "4a6d8d138b7a92540b41dd5b468f260e57fc807bcf1056fbbfce0ecb7f255e50",
+                    "GeneratorInputs": "{\"codes/chapters/ch00/io_contracts.py\": \"0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974\", \"codes/chapters/ch02/core/conventions.py\": \"79af1b8f7fe664e64e7ad786082c36a29664eacbdda63fba96a944e548304865\", \"codes/chapters/ch03/core/geometry.py\": \"5a680848301358415f74647199a4c57b65086f0b2580f91706c912ad208d7bdb\", \"codes/chapters/ch04/core/covariance.py\": \"1fd3d333bb3963bdf81cefe79de3270a485066c57f8b37138e54f1e63ce62a63\", \"codes/chapters/ch05/core/beamforming.py\": \"e78028539b12d826175e1fc339c086efd8e75e66f937c21558807ec506604e2f\", \"codes/chapters/ch11/core/selection.py\": \"987e61d30e9300941d55816629447110b92d28efa342dfbde895b2912df8e2cf\", \"codes/chapters/ch11/core/selection_physics.py\": \"70a2d908422e0b8861ca3ab6759334a488c40d5eb76073ad43a4105355f81eac\", \"scripts/make_selection_figures.py\": \"4a6d8d138b7a92540b41dd5b468f260e57fc807bcf1056fbbfce0ecb7f255e50\"}",
+                    "NumericalReportDigest": "e7ed0add6f7d395cd7e4af395dd05c30cf42b42b47a7effc713bfb294e1a8f65",
+                    "TranslationScript": "scripts/make_figures_en.py",
+                    "TranslationScriptSHA256": "f541dfc8cbd70a87c1e6c76700a9ed4f9617a7895bf8e43b88917c01aba0f0f7",
+                    "TranslationTableSHA256": "5c784152d01490829b59668d6b590b2c263f32e8a48020b4ca18532f254355e6",
+                    "TranslationStyleSHA256": "0157fc2c9fc9ee0a2d0bba7810a9603b22aa5a24d327a8895ef14412a2fb2fec",
+                    "dpi": [
+                      150.01239999999999,
+                      150.01239999999999
+                    ]
+                  }
+                }
+              ]
+            }
+          ],
+          "actual_limited_numeric_gates": {
+            "check_channel_figure": [],
+            "check_selection_figure": [],
+            "source": "/private/tmp/masp-multiround-20261123/r7-integrated-candidate/checkout/scripts/quality_check.py",
+            "source_SHA256": "e84e33acb42c6fbaccbc2794a8ebc9cd16c59f2c0fe60b76a5d052041299ff18"
+          },
+          "independent_copy_only_negative_controls": [
+            {
+              "control": "stale_source",
+              "rejected": true,
+              "message": "figure74 actual source identity differs"
+            },
+            {
+              "control": "numeric_candidate_leaf",
+              "rejected": true,
+              "message": "figure79 independent weights, statistics or evidence states differ"
+            },
+            {
+              "control": "fig73_numeric_plot_target_leaf",
+              "rejected": true,
+              "message": "figure78 plotted PCM, target or known total controls differ"
+            }
+          ],
+          "guarded_count": 43,
+          "guarded_changes": [],
+          "not_done": [
+            "No figure regeneration needed/performed",
+            "No new actual visual review",
+            "No site/PDF/browser/fullbook gates",
+            "Actual numerical callbacks reused existing independent oracle; source matching alone not counted as numeric proof",
+            "No assertion that every LCMV dynamic range is supported"
+          ]
+        },
+        "old_stage_comparison": [
+          {
+            "group": "binaural",
+            "old_actual_regenerated_manifest": "/private/tmp/masp-multiround-20261123/r365-binaural-regenerated/MANIFEST.json",
+            "old_SHA256": "5d4b62f5a3f733c72c9eb5c1c55236b94f2de382f25393079b122f64d592cab2",
+            "R7_manifest_SHA256": "54412b916795014a3502e2e93d6a269ca4c8c84a2b55167f511bfa459352f040",
+            "identity_environment_changes": {
+              "/source_sha256/codes/chapters/ch02/core/conventions.py": {
+                "before": [
+                  "str",
+                  "4e80a27490f05ddd5f4826361420c0c8d0b331464d1e5629c5def492da47b1d7"
+                ],
+                "after": [
+                  "str",
+                  "79af1b8f7fe664e64e7ad786082c36a29664eacbdda63fba96a944e548304865"
+                ]
+              },
+              "/source_sha256/codes/chapters/ch04/core/covariance.py": {
+                "before": [
+                  "str",
+                  "d704be037100ee53caf6e2130fbabbe14ce6eeff9e3d11dde389fd368d271249"
+                ],
+                "after": [
+                  "str",
+                  "1fd3d333bb3963bdf81cefe79de3270a485066c57f8b37138e54f1e63ce62a63"
+                ]
+              }
+            },
+            "remaining_typed_leaf_changes": {}
+          },
+          {
+            "group": "derivative",
+            "old_actual_regenerated_manifest": "/private/tmp/masp-multiround-20261123/r365-derivative-regenerated/MANIFEST.json",
+            "old_SHA256": "1cba6e2b3e479e8b112f3811bcfe4a08e4a533aff26f36dcc85464f5075317a2",
+            "R7_manifest_SHA256": "7069645e8df4e173bd1f86ed911a8f0d50fc98eb52fd42f31eebbfd92ed33319",
+            "identity_environment_changes": {
+              "/source_sha256/codes/chapters/ch02/core/conventions.py": {
+                "before": [
+                  "str",
+                  "4e80a27490f05ddd5f4826361420c0c8d0b331464d1e5629c5def492da47b1d7"
+                ],
+                "after": [
+                  "str",
+                  "79af1b8f7fe664e64e7ad786082c36a29664eacbdda63fba96a944e548304865"
+                ]
+              },
+              "/source_sha256/codes/chapters/ch04/core/covariance.py": {
+                "before": [
+                  "str",
+                  "d704be037100ee53caf6e2130fbabbe14ce6eeff9e3d11dde389fd368d271249"
+                ],
+                "after": [
+                  "str",
+                  "1fd3d333bb3963bdf81cefe79de3270a485066c57f8b37138e54f1e63ce62a63"
+                ]
+              }
+            },
+            "remaining_typed_leaf_changes": {}
+          },
+          {
+            "group": "channel",
+            "old_actual_regenerated_manifest": "/private/tmp/masp-multiround-20261123/r365-channel-regenerated/MANIFEST.json",
+            "old_SHA256": "0cabcd0242fd438c05b752d22b41531eebfef1e52bcf6ecb3a8fe697209e85c5",
+            "R7_manifest_SHA256": "099ee3671bf77d1d6c62c1a585351d0df5cadbf5efc978b84aee36cd2ba2e0b0",
+            "identity_environment_changes": {
+              "/source_sha256/codes/chapters/ch02/core/conventions.py": {
+                "before": [
+                  "str",
+                  "4e80a27490f05ddd5f4826361420c0c8d0b331464d1e5629c5def492da47b1d7"
+                ],
+                "after": [
+                  "str",
+                  "79af1b8f7fe664e64e7ad786082c36a29664eacbdda63fba96a944e548304865"
+                ]
+              },
+              "/source_sha256/codes/chapters/ch04/core/covariance.py": {
+                "before": [
+                  "str",
+                  "d704be037100ee53caf6e2130fbabbe14ce6eeff9e3d11dde389fd368d271249"
+                ],
+                "after": [
+                  "str",
+                  "1fd3d333bb3963bdf81cefe79de3270a485066c57f8b37138e54f1e63ce62a63"
+                ]
+              }
+            },
+            "remaining_typed_leaf_changes": {}
+          },
+          {
+            "report_path": "codes/chapters/ch10/reports/figure73_channel_failure.json",
+            "comparison": "Formal current bytes at time of this read; not claimed original R365 phase report",
+            "formal_SHA256": "db119bd3360d35c7e3bfbe6a8d0ac9ee0b928df4ae1c5a67169488b9292cfb8a",
+            "R7_SHA256": "db119bd3360d35c7e3bfbe6a8d0ac9ee0b928df4ae1c5a67169488b9292cfb8a",
+            "typed_leaf_changes": {}
+          },
+          {
+            "report_path": "codes/chapters/ch11/reports/figure74_selection_evidence.json",
+            "comparison": "Formal current bytes at time of this read; not claimed original R365 phase report",
+            "formal_SHA256": "e7ed0add6f7d395cd7e4af395dd05c30cf42b42b47a7effc713bfb294e1a8f65",
+            "R7_SHA256": "e7ed0add6f7d395cd7e4af395dd05c30cf42b42b47a7effc713bfb294e1a8f65",
+            "typed_leaf_changes": {}
+          }
+        ],
+        "history_retained": {
+          "original_failure": "Old R365 normalization could turn nonzero response into zero and return zero weights/power/residual. Historical bytes and packets are retained unchanged, not rewritten into success. This run independently executes repaired-core real/pure-imag/complex cases for both scales and confirms ValueError.",
+          "historical_packets_read": [
+            {
+              "path": "/private/tmp/masp-multiround-20261123/implementation-r365-normalized-response-followup.json",
+              "sha256": "0ec658ddb1eede2ceb1d69fa3bb6caac853c47c9dff242805c8b05ee6d40c475"
+            },
+            {
+              "path": "/private/tmp/masp-multiround-20261123/r365-lcmv-audio-regeneration-verification.json",
+              "sha256": "45b9e4303dcfe413ef47a94806dab7dc2eb5b9f498b1d15fe0e8da872fa0367d"
+            },
+            {
+              "path": "/private/tmp/masp-multiround-20261123/r365-current-figure-gates.json",
+              "sha256": "481a7136be1bde6cb9494cb68e76463d1dcd42b82d2635f983c6a187439b10ac"
+            }
+          ],
+          "historical_failures_not_reexecuted_here": true,
+          "current_vs_original_regenerated": "All14 actual WAV whole bytes equal original R365 regenerated snapshots; each of3 manifest comparisons differs only conventions.py and covariance.py source digest values. No remaining typed numeric/shape/string measurement changes.",
+          "reports_vs_formal": "Both current R7 report JSONs equal current formal-R5 bytes/typed leaves at comparison time; not claimed original R365 report identity."
+        },
+        "independent_negative_controls": [
+          "Six original nonzero-response loss controls (2scales x real/imag/complex) reject; 3huge/ordinary identity-constraint positive controls retain exact ones and power3; truezero legal",
+          "Copy-only report74 oldsourceSHA rejects",
+          "Copy-only report74 numeric candidate actual_NMSE change rejects",
+          "Copy-only report73 plotted target gain change rejects"
+        ],
+        "read_scope": {
+          "actual_current_code": "Bounded unique LCMV168-235 reviewed; audio check_assets/main branches and source inventories; figure73/74 source gathering and generator destination guards; quality check_channel_figure and check_selection_figure and independent scalar report validation. Earlier full-source reviews are separate evidence, not counted anew.",
+          "actual_current_data": "Three complete manifest JSON structures loaded and all14WAV SHA/header/fullPCM read; two complete report objects evaluated by existing independent numerical oracles; four PNG verify+load/fullRGBA and metadata identities evaluated.",
+          "source_original_numeric_oracle_boundary": "Existing quality report callbacks contain independent scalar rank-one and integer PCM formulas; this review ran those frozen existing callbacks and three copy-only rejection controls, not a newly derived full independent LCMV proof.",
+          "visual": "No new image/page actual-view validation performed or claimed."
+        },
+        "R7_input_freeze_check": {
+          "manifest_path": "/private/tmp/masp-multiround-20261123/r7-integrated-candidate/frozen-inputs.json",
+          "manifest_SHA256": "d9b22b264b050506406cd7d1e151d46251979e506506918f994cb90c9a6139db",
+          "count": 159,
+          "mismatches": []
+        },
+        "post_read_guards": [
+          {
+            "path": "codes/chapters/ch00/core/audio_samples.py",
+            "sha256": "1a7aad90d08fb8c27511aa463a6cc6dd6d4d2d230b27ed82549531f1f18edaba"
+          },
+          {
+            "path": "codes/chapters/ch00/io_contracts.py",
+            "sha256": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974"
+          },
+          {
+            "path": "codes/chapters/ch02/core/conventions.py",
+            "sha256": "79af1b8f7fe664e64e7ad786082c36a29664eacbdda63fba96a944e548304865"
+          },
+          {
+            "path": "codes/chapters/ch03/core/geometry.py",
+            "sha256": "5a680848301358415f74647199a4c57b65086f0b2580f91706c912ad208d7bdb"
+          },
+          {
+            "path": "codes/chapters/ch04/core/covariance.py",
+            "sha256": "1fd3d333bb3963bdf81cefe79de3270a485066c57f8b37138e54f1e63ce62a63"
+          },
+          {
+            "path": "codes/chapters/ch05/binaural_beamforming_audio/MANIFEST.json",
+            "sha256": "54412b916795014a3502e2e93d6a269ca4c8c84a2b55167f511bfa459352f040"
+          },
+          {
+            "path": "codes/chapters/ch05/binaural_beamforming_audio/binaural_blcmv.wav",
+            "sha256": "1869f1ed4ba00607643d5a9c0af57e77d0f5fe0a066154ed90844bc770fb5410"
+          },
+          {
+            "path": "codes/chapters/ch05/binaural_beamforming_audio/binaural_bmvdr.wav",
+            "sha256": "2283f1a6fefc2a9a4f07be80d894b7967627b1d8285cba0a368131bc7735b91d"
+          },
+          {
+            "path": "codes/chapters/ch05/binaural_beamforming_audio/binaural_input.wav",
+            "sha256": "7f4bb7b7187aafa8bcf260156f1551e49c68812d541702d2bcf494a2b4acad51"
+          },
+          {
+            "path": "codes/chapters/ch05/binaural_beamforming_audio/binaural_null.wav",
+            "sha256": "b165b35cd7c1e78bb0bb271fc1bdfff6d4ab4813da284491859793cde9fcd817"
+          },
+          {
+            "path": "codes/chapters/ch05/core/beamforming.py",
+            "sha256": "e78028539b12d826175e1fc339c086efd8e75e66f937c21558807ec506604e2f"
+          },
+          {
+            "path": "codes/chapters/ch05/core/derivative_audio.py",
+            "sha256": "00f8dc7fe8523a52525fd63057b5338697bc530fbda351e1117ab08227468f99"
+          },
+          {
+            "path": "codes/chapters/ch05/derivative_audio/MANIFEST.json",
+            "sha256": "7069645e8df4e173bd1f86ed911a8f0d50fc98eb52fd42f31eebbfd92ed33319"
+          },
+          {
+            "path": "codes/chapters/ch05/derivative_audio/derivative_array.wav",
+            "sha256": "b317f0ef3eb5ed4959e133bf7c1ae6c69c32af96f65a310224a6653d1f082adb"
+          },
+          {
+            "path": "codes/chapters/ch05/derivative_audio/derivative_constrained.wav",
+            "sha256": "7ba5de2713136a819ab5f34ea63510ed2022c16b3f117aa08b1224ea430e28f2"
+          },
+          {
+            "path": "codes/chapters/ch05/derivative_audio/derivative_reference.wav",
+            "sha256": "990b06a74f498b61230a24ae77608d4b58dd827ca76cf62ad62f05890090e699"
+          },
+          {
+            "path": "codes/chapters/ch05/derivative_audio/derivative_single.wav",
+            "sha256": "73edaf765a42eac408cb451fb13a5a1d28f913724c314a24a430d2b6428cb253"
+          },
+          {
+            "path": "codes/chapters/ch05/examples/binaural_beamforming_demo.py",
+            "sha256": "5a22686c64bb1a695c045002d8005e9dc5b75fc3fbb15639d9f6bf9fdec96a57"
+          },
+          {
+            "path": "codes/chapters/ch05/examples/generate_derivative_audio.py",
+            "sha256": "bc4f2aad4d55e94965bc3ad681f1d524e72d50fb20a8492f36280b4da483df9e"
+          },
+          {
+            "path": "codes/chapters/ch10/channel_audio/MANIFEST.json",
+            "sha256": "099ee3671bf77d1d6c62c1a585351d0df5cadbf5efc978b84aee36cd2ba2e0b0"
+          },
+          {
+            "path": "codes/chapters/ch10/channel_audio/channel_faulty_array.wav",
+            "sha256": "0335b0a4ea8e7e18a9fcd1d356412184a6435e050e1fe2c6605a2f1ca16e2fde"
+          },
+          {
+            "path": "codes/chapters/ch10/channel_audio/channel_healthy_array.wav",
+            "sha256": "5558bd155a08a4edc519c4f4623066a9faf978e018d4e498700bbcde7b643d29"
+          },
+          {
+            "path": "codes/chapters/ch10/channel_audio/channel_healthy_output.wav",
+            "sha256": "1a95e19a4a455ae4dfe4f990d0c697e9f5e2453fb657eb6228ff3b33aaa843b0"
+          },
+          {
+            "path": "codes/chapters/ch10/channel_audio/channel_recomputed_output.wav",
+            "sha256": "35285ba307f92e4928efc4d1225a87f65b3afec8f2ab389ab1d52392870f9d27"
+          },
+          {
+            "path": "codes/chapters/ch10/channel_audio/channel_reference.wav",
+            "sha256": "e1edd0f7fc1d7008986c41128b6f81b5bbbb5258267522cc7d2186375b54726e"
+          },
+          {
+            "path": "codes/chapters/ch10/channel_audio/channel_stale_output.wav",
+            "sha256": "99689f241f4d4f81cf2c19355cb2da7a10fa64cd317ba305d1ed4ad5acd9f6f9"
+          },
+          {
+            "path": "codes/chapters/ch10/core/channel_audio.py",
+            "sha256": "0fdbae1e4e8373d828f846558d83f20c1a93836a98e9a00da2c1bf3333227c06"
+          },
+          {
+            "path": "codes/chapters/ch10/core/channel_selection.py",
+            "sha256": "811b6469a97aefe44cf9ef8892deff8506d159a21be2a0dc43da178593b7882a"
+          },
+          {
+            "path": "codes/chapters/ch10/examples/generate_channel_audio.py",
+            "sha256": "e8aa0d43edb4efbf62ed275ead2a07b582645d2c27b31cd00bab2b1a0216118e"
+          },
+          {
+            "path": "codes/chapters/ch10/reports/figure73_channel_failure.json",
+            "sha256": "db119bd3360d35c7e3bfbe6a8d0ac9ee0b928df4ae1c5a67169488b9292cfb8a"
+          },
+          {
+            "path": "codes/chapters/ch11/core/selection.py",
+            "sha256": "987e61d30e9300941d55816629447110b92d28efa342dfbde895b2912df8e2cf"
+          },
+          {
+            "path": "codes/chapters/ch11/core/selection_physics.py",
+            "sha256": "70a2d908422e0b8861ca3ab6759334a488c40d5eb76073ad43a4105355f81eac"
+          },
+          {
+            "path": "codes/chapters/ch11/reports/figure74_selection_evidence.json",
+            "sha256": "e7ed0add6f7d395cd7e4af395dd05c30cf42b42b47a7effc713bfb294e1a8f65"
+          },
+          {
+            "path": "figures/fig73_channel_failure.png",
+            "sha256": "a4b3767e324281c45c970fabf6188e089369faae03ee3ee208e4ecb07454e12c"
+          },
+          {
+            "path": "figures/fig74_selection_evidence.png",
+            "sha256": "4cfa8a230dd21766c3a2290b7b4c20346b34bac1924212f317b6a67e502d0422"
+          },
+          {
+            "path": "figures_en/fig73_channel_failure.png",
+            "sha256": "d1c6440847fb5f8136743038f662bc6bf15f2c4a7fbe9afcb3f1eee02f3d7d51"
+          },
+          {
+            "path": "figures_en/fig74_selection_evidence.png",
+            "sha256": "2abe0dfa2382db5ad1915049d9e6d597c1d803035439ca8b13d4f7d1b8dd019c"
+          },
+          {
+            "path": "scripts/figure_en_translations.json",
+            "sha256": "5c784152d01490829b59668d6b590b2c263f32e8a48020b4ca18532f254355e6"
+          },
+          {
+            "path": "scripts/make_channel_figures.py",
+            "sha256": "616046e7b91c50c7c23cb08e0ddb712429dccced1017321f442d256169724351"
+          },
+          {
+            "path": "scripts/make_figures.py",
+            "sha256": "0157fc2c9fc9ee0a2d0bba7810a9603b22aa5a24d327a8895ef14412a2fb2fec"
+          },
+          {
+            "path": "scripts/make_figures_en.py",
+            "sha256": "f541dfc8cbd70a87c1e6c76700a9ed4f9617a7895bf8e43b88917c01aba0f0f7"
+          },
+          {
+            "path": "scripts/make_selection_figures.py",
+            "sha256": "4a6d8d138b7a92540b41dd5b468f260e57fc807bcf1056fbbfce0ecb7f255e50"
+          },
+          {
+            "path": "scripts/quality_check.py",
+            "sha256": "e84e33acb42c6fbaccbc2794a8ebc9cd16c59f2c0fe60b76a5d052041299ff18"
+          }
+        ],
+        "remaining": [
+          "No private or formal figure regeneration needed/performed in this task",
+          "No browser or native whole-book print started",
+          "No site/PDF/current global quality gate",
+          "No all81-consumer review claim",
+          "No hardware, real-ear, subjective listening, full frequency-domain binaural or device-performance validation"
+        ],
+        "no_writes": "Only new external evidence directory written; auditory CLI uses runpy wrapper with frozen-tree write audit guard and dont_write_bytecode. Official and R7 sources/assets untouched.",
+        "artifacts": [
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r8-r365-assets-independent-review/binaural-stderr.log",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r8-r365-assets-independent-review/binaural-stdout.log",
+            "bytes": 23,
+            "sha256": "b610f20680f78c8fdedb6fd85cb2a4ba89bf6311a2e5ef87466f4b64b516160f"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r8-r365-assets-independent-review/bindings-and-numbers-results.json",
+            "bytes": 27216,
+            "sha256": "695ee83eb7e9ebeddd36fe14042d8c4065d111ab5a31b4fbc793c29781ec67ed"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r8-r365-assets-independent-review/channel-stderr.log",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r8-r365-assets-independent-review/channel-stdout.log",
+            "bytes": 7877,
+            "sha256": "641ecc28323ffdc5474cc34e2f80a31fb8467db6470e92b09edb7be5d5d215e5"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r8-r365-assets-independent-review/check-bindings-and-numbers.py",
+            "bytes": 7921,
+            "sha256": "a1d71a1baa8db0a621bf72a1829035661a8a3b9cdbb4a1f52500c3ffa334f78a"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r8-r365-assets-independent-review/checks-results.json",
+            "bytes": 2792,
+            "sha256": "5337bbb17ff449493a7845a3ca5a85c3b177a7fd8a8ee4ac867469151d31674e"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r8-r365-assets-independent-review/derivative-stderr.log",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r8-r365-assets-independent-review/derivative-stdout.log",
+            "bytes": 264,
+            "sha256": "55e7c17189b259a82b5747847e6906c14bb3c14e25755a8876bde0243f3cf73f"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r8-r365-assets-independent-review/input-freeze.json",
+            "bytes": 5234,
+            "sha256": "ba13fc8418e1c7521b904d0785a86c8514824f3bdab11eb813c353faac5eec85"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r8-r365-assets-independent-review/phase-comparisons.json",
+            "bytes": 3984,
+            "sha256": "334193488d725132f9714bd1b816f92f165076cdf92c81bb1d96ee44ec7e1e51"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r8-r365-assets-independent-review/r7-frozen-inputs-check.json",
+            "bytes": 231,
+            "sha256": "5978242bae85045451bd19b6ea7d1dbe93b8ddcb1793f64364833ba13edf9559"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r8-r365-assets-independent-review/readonly_cli.py",
+            "bytes": 996,
+            "sha256": "a3d410aa3592ccf80652055eafdbddc72f73364707cc4ba4efa316804865f9a0"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r8-r365-assets-independent-review/run-checks.py",
+            "bytes": 2340,
+            "sha256": "b05b8c9daad094f7dac6b7fce62838f727a121e209fee00fd3910d1cddd51edc"
+          }
+        ]
+      }
+    },
+    "r8-r430-exact-exercise-replay--execution.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/r8-r430-exact-exercise-replay/execution.json",
+      "sha256": "d5fa477531b540e8e84c1bc17ba9511d0a90742305c9cf49977c40d808b8558a",
+      "bytes": 1404,
+      "boundary": "Real E11-22 and Chapter 11 tests. Only three regime names and one scope text change in the example JSON.",
+      "packet": {
+        "status": "completed",
+        "source_proposal_sha256": "41139fe6779c36b92164871850cadb902c2d1d156de2939a9b7bb96ee26794de",
+        "commands": [
+          {
+            "name": "previous-exercise",
+            "returncode": 0,
+            "sha256": "b413a8d5fc20945753895cc48c15d51e12900acf9ceb5a596d0ff2949c2efa13"
+          },
+          {
+            "name": "candidate-exercise",
+            "returncode": 0,
+            "sha256": "0e4f605ea20656ba795580de90c901d6c9bd3d65fc89192c1f3e563132a1ee1b"
+          },
+          {
+            "name": "all-chapter11-experiments-tests",
+            "returncode": 0,
+            "sha256": "617d01bc4763458fc81ed4eb68325a1d767982423fe1a79ccc7e229db65c3b0e"
+          }
+        ],
+        "only_four_json_text_leaves_changed": {
+          "/E11-22/howling_gain_candidates/12.0dB/regime": {
+            "old": "safe_gain_margin",
+            "new": "meets_gain_margin_budget"
+          },
+          "/E11-22/howling_gain_candidates/15.0dB/regime": {
+            "old": "insufficient_margin_ringing",
+            "new": "gain_margin_below_budget"
+          },
+          "/E11-22/howling_gain_candidates/18.0dB/regime": {
+            "old": "unstable_howling",
+            "new": "open_loop_bound_at_or_above_unity"
+          },
+          "/E11-22/scope": {
+            "old": "closed-form two-ray comb ripple, scalar Barkhausen margin, and constructed interval acceptance table",
+            "new": "closed-form two-ray comb ripple, broadband open-loop magnitude budget, and constructed interval acceptance table"
+          }
+        },
+        "equal_numeric_json_leaves": 1008
+      }
+    },
+    "r8-r430-v2-independent-review--handoff.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/r8-r430-v2-independent-review/handoff.json",
+      "sha256": "028523ad5d21bdaa76cb608d3112db21b74a5586e2701ee96516b0e4e1776653",
+      "bytes": 27103,
+      "boundary": "Non-author review of Chapter 6 and 11, including the actual current ITU standard source bytes.",
+      "packet": {
+        "reviewer": "publication_ci; non-author of V2 changes",
+        "date": "2026-11-23",
+        "status": "sealed independent limited review",
+        "scope": [
+          "R430 V2 six files plus actual all13 examples and semantic regression negative",
+          "R114 latest V2 two-language bounded reread",
+          "Original ITU P1150 first-arrival definitions and cross-chapter relative-delay consistency"
+        ],
+        "candidate_plan": {
+          "path": "/private/tmp/masp-multiround-20261123/r8-r430-selection-acoustic-feedback-v2/plan.json",
+          "sha256": "41139fe6779c36b92164871850cadb902c2d1d156de2939a9b7bb96ee26794de",
+          "review_patch_sha256": "7ae1d85f938e025a37a242a95cda547c72341104322f08c90e0558ce2894bdb0"
+        },
+        "findings": [
+          {
+            "id": "R430",
+            "decision": "Accept finite V2 semantic/code/test package",
+            "evidence": "Equation 11-23 unchanged; beta explicitly broadband acoustic return magnitude bound, listener g separate; LG is bound, not measured loop gain. 0dB bound does not prove oscillation; critical mode is not whole-system stability. Full poles/Nyquist required.",
+            "closed_v1_consumers": [
+              "Three regime strings no longer assert safe/ringing/unstable from scalar budget alone",
+              "Scope replaces scalar Barkhausen claim",
+              "Both coverage rows synchronized",
+              "Two-language ch11:231 architecture generalization removed; measured22-25ms listener excess gives68-78 closed-band notches",
+              "Long window/lookahead judged by actual added delay rather than categorical architecture ban"
+            ],
+            "no_numeric_change": true,
+            "Eq11_23_note": "The equality defines the computed upper-bound quantity; prior text and beta bound declaration make it interpretable without changing original correct equation/numbers."
+          },
+          {
+            "id": "R114",
+            "decision": "Accept limited latest V2 wording increment",
+            "evidence": "Ch6 V2 line70 and concept-check/answer now distinguish ANC attenuation from ICC reinforcement; P1150 listener first-wavefront difference retained. Hear-through relative-path condition agrees with conditional same-polarity comparable-gain ch14 first-minimum formulas.",
+            "scope": "No revalidation of every older claim in the long paragraph, e.g. all ANC architectures or the unchanged phase-error example."
+          }
+        ],
+        "file_identity_and_lineage": [
+          {
+            "path": "chapters/11_selection-guide.md",
+            "candidate_path": "/private/tmp/masp-multiround-20261123/r8-r430-selection-acoustic-feedback-v2/source/chapters/11_selection-guide.md",
+            "candidate_sha256": "fa70563bf7da1767292ea2921f0d2dd27e8d663e802a3b37282d0a9cdf963d69",
+            "actual_base_path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters/11_selection-guide.md",
+            "base_sha256": "45bc20d30a34210e01d50ffd965a7adbbeecf991459a70de3eb7440965cbaa58",
+            "changed_lines": [
+              231,
+              233,
+              1113,
+              1125,
+              1137
+            ],
+            "base_line_count": 1155,
+            "candidate_line_count": 1155
+          },
+          {
+            "path": "chapters_en/11_selection-guide.md",
+            "candidate_path": "/private/tmp/masp-multiround-20261123/r8-r430-selection-acoustic-feedback-v2/source/chapters_en/11_selection-guide.md",
+            "candidate_sha256": "38f912baf80a255a4bb65a70a2d113d5607cc3698e7d415df6e37de6d71f2009",
+            "actual_base_path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters_en/11_selection-guide.md",
+            "base_sha256": "b0fd7999ec6de927941f57629ef034aece500e09bc7f99af8d4f9d4461d13a8b",
+            "changed_lines": [
+              231,
+              233,
+              1113,
+              1125,
+              1137
+            ],
+            "base_line_count": 1155,
+            "candidate_line_count": 1155
+          },
+          {
+            "path": "codes/chapters/ch11/core/automotive_selection.py",
+            "candidate_path": "/private/tmp/masp-multiround-20261123/r8-r430-selection-acoustic-feedback-v2/source/codes/chapters/ch11/core/automotive_selection.py",
+            "candidate_sha256": "e4edf0fa294575c8ab1c54d1f7c9f96af6ca9b4b087b33998fca22533a735cb2",
+            "actual_base_path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch11/core/automotive_selection.py",
+            "base_sha256": "68dd339295f95dfd47915ad6a19ef4b0e81a8bf01145e141ffb64ee2f9fff86e",
+            "changed_lines": [
+              423,
+              424,
+              425,
+              426,
+              429,
+              432,
+              436,
+              491
+            ],
+            "base_line_count": 492,
+            "candidate_line_count": 492
+          },
+          {
+            "path": "codes/chapters/ch00/COVERAGE.md",
+            "candidate_path": "/private/tmp/masp-multiround-20261123/r8-r430-selection-acoustic-feedback-v2/source/codes/chapters/ch00/COVERAGE.md",
+            "candidate_sha256": "22bb46ec7e30f687b7a3e9e772dd063554c111b8a06218796a6dcb05c455ce08",
+            "actual_base_path": "/private/tmp/masp-multiround-20261123/r6-integrated-fifty-four-build/checkout/codes/chapters/ch00/COVERAGE.md",
+            "base_sha256": "4f0fabb8755201dc6e832c57959fe76c7ccc3c24831f72a96c7913019fc007ef",
+            "changed_lines": [
+              407
+            ],
+            "base_line_count": 563,
+            "candidate_line_count": 563
+          },
+          {
+            "path": "codes/chapters/ch00/COVERAGE_EN.md",
+            "candidate_path": "/private/tmp/masp-multiround-20261123/r8-r430-selection-acoustic-feedback-v2/source/codes/chapters/ch00/COVERAGE_EN.md",
+            "candidate_sha256": "1fa692673cca2d76cdf8cdd1a3adbca74f6488db5ea195e21ec6df36afa359ee",
+            "actual_base_path": "/private/tmp/masp-multiround-20261123/r6-integrated-fifty-four-build/checkout/codes/chapters/ch00/COVERAGE_EN.md",
+            "base_sha256": "a787f2dea4c08aa0abb22904d1d47498c6c0dd6f794bbc3c5b6fa08246ce1f5a",
+            "changed_lines": [
+              403
+            ],
+            "base_line_count": 547,
+            "candidate_line_count": 547
+          },
+          {
+            "path": "tests/test_codes_chapter11_experiments.py",
+            "candidate_path": "/private/tmp/masp-multiround-20261123/r8-r430-selection-acoustic-feedback-v2/source/tests/test_codes_chapter11_experiments.py",
+            "candidate_sha256": "bc17cbc8b2bb5b262e9df264962e15ad0622d9ba19a991d591fb194facaf5261",
+            "actual_base_path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/tests/test_codes_chapter11_experiments.py",
+            "base_sha256": "0e23e4f2314801956ec1a26d96c9797c62ba69bf71ed23fb491282be8d430db6",
+            "changed_lines": [
+              360,
+              361,
+              362,
+              363,
+              364,
+              365,
+              366,
+              367,
+              368,
+              369,
+              370,
+              371
+            ],
+            "base_line_count": 371,
+            "candidate_line_count": 378
+          }
+        ],
+        "read_scope": {
+          "R430_V2": "Entire plan and review.patch; all changed statements and their context semantically read, not both complete chapter files reread.",
+          "source_ranges": {
+            "chapters/11_selection-guide.md": [
+              [
+                224,
+                245
+              ],
+              [
+                1105,
+                1139
+              ]
+            ],
+            "chapters_en/11_selection-guide.md": [
+              [
+                224,
+                245
+              ],
+              [
+                1105,
+                1139
+              ]
+            ],
+            "codes/chapters/ch11/core/automotive_selection.py": "Existing full 325-491 core/read in V1; V2 full patch+AST comparison and actual all13 execution; unchanged other functions preserved.",
+            "codes/chapters/ch00/COVERAGE.md": "407 and patch context",
+            "codes/chapters/ch00/COVERAGE_EN.md": "403 and patch context",
+            "tests/test_codes_chapter11_experiments.py": "Full V2 patch and two changed-consumer test methods executed; not claiming all methods semantically reread."
+          },
+          "R114_V2": [
+            {
+              "path": "chapters/06_aec.md",
+              "source_sha256": "4da68c9de852b1755abfa0555b5d9c0cc0a83799dec5d262193a22be182d739b",
+              "baseline_sha256": "eb391d1deadb4c3815dca07054803fca7b50bfe40b57f99d578ed1970cfd6451",
+              "V1_sha256": "68b64fd826833d2c8ea8d49ddd8de940fa40faac015676a19e6394532c7e146b",
+              "changed_lines_from_baseline": [
+                70,
+                1564,
+                1594
+              ],
+              "changed_lines_from_V1": [
+                70,
+                1564,
+                1594
+              ],
+              "actual_read_ranges": [
+                [
+                  66,
+                  72
+                ],
+                [
+                  1412,
+                  1416
+                ],
+                [
+                  1561,
+                  1567
+                ],
+                [
+                  1591,
+                  1597
+                ],
+                [
+                  2141,
+                  2157
+                ]
+              ],
+              "unread_rest_of_chapter_this_increment": true
+            },
+            {
+              "path": "chapters_en/06_aec.md",
+              "source_sha256": "9deadcffe51687ab975ae775a60a0b7ff0320e9ed8c212ed499d2e0b16bcf654",
+              "baseline_sha256": "870ad2871d73ff412781fbbfa6aad80ff885180bdb9f0f796d1feaf3913da69a",
+              "V1_sha256": "7b634bb43c7480a848fdde0cae62ae56497cadae1f1dc7f508aa6037b582bd36",
+              "changed_lines_from_baseline": [
+                70,
+                1594
+              ],
+              "changed_lines_from_V1": [
+                70,
+                1594
+              ],
+              "actual_read_ranges": [
+                [
+                  66,
+                  72
+                ],
+                [
+                  1412,
+                  1416
+                ],
+                [
+                  1561,
+                  1567
+                ],
+                [
+                  1591,
+                  1597
+                ],
+                [
+                  2141,
+                  2157
+                ]
+              ],
+              "unread_rest_of_chapter_this_increment": true
+            }
+          ],
+          "ch14_R6_frozen_ranges": {
+            "chapters/14_spatial-wearable-arrays.md": [
+              [
+                743,
+                762
+              ]
+            ],
+            "chapters_en/14_spatial-wearable-arrays.md": [
+              [
+                741,
+                760
+              ]
+            ]
+          },
+          "R425_previous_read": "CN766/EN764 qualified corresponding critical mode; kept as earlier source read, no full current-ch14 review."
+        },
+        "actual_execution": {
+          "actual13_result_keys": [
+            "E11-10",
+            "E11-11",
+            "E11-12",
+            "E11-13",
+            "E11-14",
+            "E11-15",
+            "E11-16",
+            "E11-17",
+            "E11-18",
+            "E11-19",
+            "E11-20",
+            "E11-21",
+            "E11-22"
+          ],
+          "old_new_typed_leaf_changes": {
+            "/E11-22/howling_gain_candidates/12.0dB/regime": {
+              "old": [
+                "str",
+                "safe_gain_margin"
+              ],
+              "new": [
+                "str",
+                "meets_gain_margin_budget"
+              ]
+            },
+            "/E11-22/howling_gain_candidates/15.0dB/regime": {
+              "old": [
+                "str",
+                "insufficient_margin_ringing"
+              ],
+              "new": [
+                "str",
+                "gain_margin_below_budget"
+              ]
+            },
+            "/E11-22/howling_gain_candidates/18.0dB/regime": {
+              "old": [
+                "str",
+                "unstable_howling"
+              ],
+              "new": [
+                "str",
+                "open_loop_bound_at_or_above_unity"
+              ]
+            },
+            "/E11-22/scope": {
+              "old": [
+                "str",
+                "closed-form two-ray comb ripple, scalar Barkhausen margin, and constructed interval acceptance table"
+              ],
+              "new": [
+                "str",
+                "closed-form two-ray comb ripple, broadband open-loop magnitude budget, and constructed interval acceptance table"
+              ]
+            }
+          },
+          "only_one_function_AST_changes": true,
+          "independent_counts": [
+            {
+              "listener_excess_ms": 8,
+              "tDSP_including_propagation_ms": 12.0,
+              "closed_count": 25,
+              "half_open_upper_count": 25,
+              "first_last_exact": [
+                "625/2",
+                "6625/2"
+              ],
+              "bounds_are_both_notches": false
+            },
+            {
+              "listener_excess_ms": 22,
+              "tDSP_including_propagation_ms": 26.0,
+              "closed_count": 68,
+              "half_open_upper_count": 68,
+              "first_last_exact": [
+                "3750/11",
+                "37250/11"
+              ],
+              "bounds_are_both_notches": false
+            },
+            {
+              "listener_excess_ms": 25,
+              "tDSP_including_propagation_ms": 29.0,
+              "closed_count": 78,
+              "half_open_upper_count": 78,
+              "first_last_exact": [
+                "300",
+                "3380"
+              ],
+              "bounds_are_both_notches": false,
+              "edge_band_300_3380_closed_count": 78,
+              "edge_band_300_3380_half_open_upper_count": 77,
+              "base_band_open_lower_count": 77
+            }
+          ],
+          "small_lookahead_not_categorically_banned": {
+            "example_total_tDSP_ms": 8.0,
+            "example_lookahead_inside_total_ms": 3.0,
+            "listener_arrival_ms": 9.0,
+            "direct_arrival_ms": 5.0,
+            "excess_ms": 4.0,
+            "budget_verdict": "pass"
+          },
+          "old_regime_updated_test_negative": "{'12.[14 chars].0, 'safe_gain_margin'), '15.0dB': (-3.0, 3.0,[70 chars]ng')} != {'12.[14 chars].0, 'meets_gain_margin_budget'), '15.0dB': (-3[91 chars]ty')}\n- {'12.0dB': (-6.0, 6.0, 'safe_gain_margin'),\n?                          ---\n\n+ {'12.0dB': (-6.0, 6.0, 'meets_gain_margin_budget'),\n?                         ++++             +++++++\n\n-  '15.0dB': (-3.0, 3.0, 'insufficient_margin_ringing'),\n-  '18.0dB': (0.0, -0.0, 'unstable_howling')}\n+  '15.0dB': (-3.0, 3.0, 'gain_margin_below_budget'),\n+  '18.0dB': (0.0, 0.0, 'open_loop_bound_at_or_above_unity')}",
+          "updated_existing_tests": {
+            "run": 2,
+            "failures": 0,
+            "errors": 0,
+            "log": "test_icc_comb_notches_howling_margin_and_teams_interval_verdict (_r430_candidate_tests.Chapter11ExperimentsTests.test_icc_comb_notches_howling_margin_and_teams_interval_verdict) ... ok\ntest_computed_results_are_strict_json (_r430_candidate_tests.Chapter11ExperimentsTests.test_computed_results_are_strict_json) ... ok\n\n----------------------------------------------------------------------\nRan 2 tests in 0.956s\n\nOK\n"
+          },
+          "scope": "Privateinprocessmoduleoverlayonly;actualall13codeexecutedandJSONsavedexternally;testscenarioWAVfixturesonlytemporary,notformalassets."
+        },
+        "independent_crosschapter_control": {
+          "ICC_A_ms": {
+            "mouth_to_mic_included_in_tDSP": 1,
+            "tDSP": 12,
+            "speaker_to_ear": 1,
+            "direct_mouth_to_listener": 5,
+            "reinforced_first_arrival": 13,
+            "listener_excess": 8,
+            "electronic_for_feedback": 11,
+            "speaker_return": 5,
+            "loop_total": 16
+          },
+          "ICC_B_ms": {
+            "tDSP": 26,
+            "reinforced_first_arrival": 27,
+            "listener_excess": 22
+          },
+          "hear_through_same_active_total_different_passive": {
+            "active_total_us": 2000,
+            "passive_total_us": 1950,
+            "relative_us": 50,
+            "first_samepolarity_comb_minimum_hz": 10000,
+            "if_passive_zero_relative_us": 2000,
+            "first_samepolarity_comb_minimum_then_hz": 250
+          },
+          "qualification": "Constructedpatharithmeticonly;notarealearmeasurement. Ch14conditionfirstminimum>=5kHzwithcomparablegains yieldsrelative<=100us,notuniversalDSPdelaybound."
+        },
+        "original_standard": {
+          "source_url": "https://www.itu.int/rec/dologin_pub.asp?id=T-REC-P.1150-202001-I%21%21SOFT-ZST-E&lang=e&type=items",
+          "ZIP_sha256": "f595ba1e6493dcb1a457106f17c7d6b3e4b7230e606e577e06672a1d0a9bc34a",
+          "PDF_member": "ITU-T Rec. P.1150.pdf",
+          "PDF_sha256": "53768a973c85cb92c9af43212a768e08353982d751df7c458f02c6572d8dce6a",
+          "PDF_pages": 46,
+          "actually_extracted_page_number_one_based": 19,
+          "scope": "OriginaldownloadmatchespriorR2fixedbytes;onlyspecifiedsourcepageactuallyread,notwhole46pages.",
+          "DOCX": {
+            "ZIP_member": "T-REC-P.1150-202001-I!!MSW-E.docx",
+            "DOCX_sha256": "ee341cd760f6e7e9221cd1c22d52c494fb6630001580155e0843d93c24377c17",
+            "document_xml_sha256": "a7d49ede75319102bfffe50ba85473907a20f4b068dbb5f567068a40deafd57f",
+            "actual_paragraph_indices_zero_based": [
+              535,
+              536,
+              537
+            ],
+            "paraphrase": "BothfirstwavefrontsarecapturedatlistenerHATSears;reinforcedpathincludesICCprocessing/cabinloudspeaker;listenerdifferencebelow15ms. Onlytheseparagraphsread,notwholeDOCX."
+          }
+        },
+        "R114_latest_V2": {
+          "plan_sha256": "f4fbce6e13c802c73e73c61bbb60319ebebcf7709abc2c477e798d92e476b5cb",
+          "sources": [
+            {
+              "path": "chapters/06_aec.md",
+              "source_sha256": "4da68c9de852b1755abfa0555b5d9c0cc0a83799dec5d262193a22be182d739b",
+              "baseline_sha256": "eb391d1deadb4c3815dca07054803fca7b50bfe40b57f99d578ed1970cfd6451",
+              "V1_sha256": "68b64fd826833d2c8ea8d49ddd8de940fa40faac015676a19e6394532c7e146b",
+              "changed_lines_from_baseline": [
+                70,
+                1564,
+                1594
+              ],
+              "changed_lines_from_V1": [
+                70,
+                1564,
+                1594
+              ],
+              "actual_read_ranges": [
+                [
+                  66,
+                  72
+                ],
+                [
+                  1412,
+                  1416
+                ],
+                [
+                  1561,
+                  1567
+                ],
+                [
+                  1591,
+                  1597
+                ],
+                [
+                  2141,
+                  2157
+                ]
+              ],
+              "unread_rest_of_chapter_this_increment": true
+            },
+            {
+              "path": "chapters_en/06_aec.md",
+              "source_sha256": "9deadcffe51687ab975ae775a60a0b7ff0320e9ed8c212ed499d2e0b16bcf654",
+              "baseline_sha256": "870ad2871d73ff412781fbbfa6aad80ff885180bdb9f0f796d1feaf3913da69a",
+              "V1_sha256": "7b634bb43c7480a848fdde0cae62ae56497cadae1f1dc7f508aa6037b582bd36",
+              "changed_lines_from_baseline": [
+                70,
+                1594
+              ],
+              "changed_lines_from_V1": [
+                70,
+                1594
+              ],
+              "actual_read_ranges": [
+                [
+                  66,
+                  72
+                ],
+                [
+                  1412,
+                  1416
+                ],
+                [
+                  1561,
+                  1567
+                ],
+                [
+                  1591,
+                  1597
+                ],
+                [
+                  2141,
+                  2157
+                ]
+              ],
+              "unread_rest_of_chapter_this_increment": true
+            }
+          ],
+          "decision": "Accept limited V2 increment; physical cancellation is no longer attributed to ICC; ANC attenuation and ICC reinforcement distinguished; first arrival at listener retained. No chapter-wide or product-compliance acceptance.",
+          "relative_delay_control": "Same active 2000us, passive1950us gives 50us and first same-polarity minimum10kHz; passive0 instead gives2ms/250Hz. Thus absolute DSP delay alone cannot set comb threshold.",
+          "crosschapter_consistency": "Ch6 hear-through relative-arrival qualification agrees with conditional comparable-gain ch14 formulas; ch11 listener-excess budget distinguishes electronics and feedback-loop delay."
+        },
+        "corrections_and_limits": {
+          "own_harness_error_preserved": "controls-first-upper-endpoint-assumption-failure.py incorrectly predicted77 for25ms on [300,3400); upper3400 is not a notch. Correct count78 agrees candidate. Explicit [300,3380] end-notch control gives78 closed/77 upper-half-open; original failed harness is not a product defect.",
+          "standard_read": "Fresh official ZIP/PDF identity matched old fixed bytes. Actual PDF p19/printed13 section9.2.2.1 and DOCX paragraphs535-537 read. Not all46pages/AnnexD read and no product compliance test.",
+          "prior_asset_dependency_boundary": "Prior immutable R430 V1 independent packet finite scan found no direct automotive_selection binding in32audio manifests/35figure reports/174PNG or four render digest read lists. V2 changes labels/docs, not numeric kernels. This is a direct dependency inventory, not full transitive execution proof; changed MD needs normal site/HTML/PDF rebuild.",
+          "no_formal_changes": "No source, official WAV/PNG/report/site/PDF or Git writes. Existing tests use temporary managed scenario WAV fixtures only."
+        },
+        "prior_rejected_packet": {
+          "path": "/private/tmp/masp-multiround-20261123/r8-r430-independent-review/handoff.json",
+          "sha256": "b0ff5b1ab843e1084fb4410d3202cff4da7306d23cd8530c180a4ede5cc5274f",
+          "note": "V1 evidence immutable; no retroactive promotion of its limited/nonfresh standard read."
+        },
+        "not_done": [
+          "No full repository test run",
+          "No full46page P1150 read/AnnexD revalidation",
+          "No current whole-chapter or full-book semantic reread",
+          "No native page rendering or publication acceptance",
+          "No fresh complete asset closure replay in this increment",
+          "No product/hardware/real-ear measurements"
+        ],
+        "post_read_guards": [
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r8-r430-selection-acoustic-feedback-v2/source/chapters/11_selection-guide.md",
+            "sha256": "fa70563bf7da1767292ea2921f0d2dd27e8d663e802a3b37282d0a9cdf963d69",
+            "role": "candidate_path"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters/11_selection-guide.md",
+            "sha256": "45bc20d30a34210e01d50ffd965a7adbbeecf991459a70de3eb7440965cbaa58",
+            "role": "actual_base_path"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r8-r430-selection-acoustic-feedback-v2/source/chapters_en/11_selection-guide.md",
+            "sha256": "38f912baf80a255a4bb65a70a2d113d5607cc3698e7d415df6e37de6d71f2009",
+            "role": "candidate_path"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters_en/11_selection-guide.md",
+            "sha256": "b0fd7999ec6de927941f57629ef034aece500e09bc7f99af8d4f9d4461d13a8b",
+            "role": "actual_base_path"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r8-r430-selection-acoustic-feedback-v2/source/codes/chapters/ch11/core/automotive_selection.py",
+            "sha256": "e4edf0fa294575c8ab1c54d1f7c9f96af6ca9b4b087b33998fca22533a735cb2",
+            "role": "candidate_path"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch11/core/automotive_selection.py",
+            "sha256": "68dd339295f95dfd47915ad6a19ef4b0e81a8bf01145e141ffb64ee2f9fff86e",
+            "role": "actual_base_path"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r8-r430-selection-acoustic-feedback-v2/source/codes/chapters/ch00/COVERAGE.md",
+            "sha256": "22bb46ec7e30f687b7a3e9e772dd063554c111b8a06218796a6dcb05c455ce08",
+            "role": "candidate_path"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-integrated-fifty-four-build/checkout/codes/chapters/ch00/COVERAGE.md",
+            "sha256": "4f0fabb8755201dc6e832c57959fe76c7ccc3c24831f72a96c7913019fc007ef",
+            "role": "actual_base_path"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r8-r430-selection-acoustic-feedback-v2/source/codes/chapters/ch00/COVERAGE_EN.md",
+            "sha256": "1fa692673cca2d76cdf8cdd1a3adbca74f6488db5ea195e21ec6df36afa359ee",
+            "role": "candidate_path"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-integrated-fifty-four-build/checkout/codes/chapters/ch00/COVERAGE_EN.md",
+            "sha256": "a787f2dea4c08aa0abb22904d1d47498c6c0dd6f794bbc3c5b6fa08246ce1f5a",
+            "role": "actual_base_path"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r8-r430-selection-acoustic-feedback-v2/source/tests/test_codes_chapter11_experiments.py",
+            "sha256": "bc17cbc8b2bb5b262e9df264962e15ad0622d9ba19a991d591fb194facaf5261",
+            "role": "candidate_path"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/tests/test_codes_chapter11_experiments.py",
+            "sha256": "0e23e4f2314801956ec1a26d96c9797c62ba69bf71ed23fb491282be8d430db6",
+            "role": "actual_base_path"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/content-r6-technical-review/r114-r7-bilingual-source-proposal-v2/source/chapters/06_aec.md",
+            "sha256": "4da68c9de852b1755abfa0555b5d9c0cc0a83799dec5d262193a22be182d739b",
+            "role": "R114_V2_candidate"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/content-r6-technical-review/r114-r7-bilingual-source-proposal-v2/source/chapters_en/06_aec.md",
+            "sha256": "9deadcffe51687ab975ae775a60a0b7ff0320e9ed8c212ed499d2e0b16bcf654",
+            "role": "R114_V2_candidate"
+          }
+        ],
+        "artifacts": [
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r8-r430-v2-independent-review/ITU-T Rec. P.1150.pdf",
+            "sha256": "53768a973c85cb92c9af43212a768e08353982d751df7c458f02c6572d8dce6a",
+            "bytes": 1796323
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r8-r430-v2-independent-review/actual-all13-after.json",
+            "sha256": "0e4f605ea20656ba795580de90c901d6c9bd3d65fc89192c1f3e563132a1ee1b",
+            "bytes": 60491
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r8-r430-v2-independent-review/actual-all13-before.json",
+            "sha256": "b413a8d5fc20945753895cc48c15d51e12900acf9ceb5a596d0ff2949c2efa13",
+            "bytes": 60457
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r8-r430-v2-independent-review/control-results.json",
+            "sha256": "c4f4226cd62fb4e9ad451726cca1a431f300a688659f5f688573c71b03201244",
+            "bytes": 3737
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r8-r430-v2-independent-review/controls-first-upper-endpoint-assumption-failure.py",
+            "sha256": "c6624d3561e2ee55caeb811cccee076adbf6f085f892b14b2dd45c3c1e2428e4",
+            "bytes": 5268
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r8-r430-v2-independent-review/controls.py",
+            "sha256": "d129a4c0511fa90acce3a5cfdedd876f6e7692cc8c8837f82504e3d1f08f90ea",
+            "bytes": 5572
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r8-r430-v2-independent-review/lineage-and-crosschapter-results.json",
+            "sha256": "6947f7601416c6b8eb1e4e584fa05644a042cb8e766f8d28f66c5d86e2bada62",
+            "bytes": 6396
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r8-r430-v2-independent-review/lineage-and-crosschapter.py",
+            "sha256": "baa42687d787cc5b55e72fa352c959955ebe43c2a525e3deea00ea25724119a4",
+            "bytes": 4874
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r8-r430-v2-independent-review/p1150-original-software.zip",
+            "sha256": "f595ba1e6493dcb1a457106f17c7d6b3e4b7230e606e577e06672a1d0a9bc34a",
+            "bytes": 5648266
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r8-r430-v2-independent-review/p1150-pdf-page19.txt",
+            "sha256": "bec389eec0fb4a38689d120c3f274b688380f24e3af1a178ceaf732dc9088c4e",
+            "bytes": 3057
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r8-r430-v2-independent-review/r114-v2-increment-results.json",
+            "sha256": "fff58f1d8afcbd937871a9a2fba9b4e704ddf2db9a4aa1f22db35cb63f38a8f0",
+            "bytes": 2408
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r8-r430-v2-independent-review/read-original-standard.py",
+            "sha256": "7057a2c665770cc3ecec2d94d36b183e1589ebd1ed6b3a200477af740ad9351f",
+            "bytes": 1266
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r8-r430-v2-independent-review/seal-handoff.py",
+            "sha256": "0d490d3f46dc001802b5c2560fa9e830e96845dc6b11137dfe18c9d850015a79",
+            "bytes": 6263
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r8-r430-v2-independent-review/standard-identity.json",
+            "sha256": "d3bc5c7c27963802e8b4bf4994d9f4a6b5476d07673819f5aa5a8fd40e9e160d",
+            "bytes": 506
+          }
+        ]
+      }
+    },
+    "r8-r288-independent--handoff.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/r8-r288-independent/handoff.json",
+      "sha256": "507bf77662d66f86aaf3340fb17f3fab7ea161f9da032f9da66ad651c80a146f",
+      "bytes": 10405,
+      "boundary": "Independent multiframe and multifrequency proof of a non-unique covariance decomposition.",
+      "packet": {
+        "id": "R288",
+        "phase": "R8 nonauthor finite review of private bilingualV1; not wholechapter or globalround closure",
+        "verdict": "PASS. CurrentV1 doesnot omit a fixedknownrank1steeringassumption: relevant MNMF model explicitlyusesfull-rank MxM spatialG_nf. Newmathematicalcounterexamples satisfy stated constraints and normalizations and are not meregauge/permutation changes. No sourceedit requested.",
+        "permissions": "danger-full-access approvalnever; privateevidenceonly, formal/candidate/R7 frozen untouched",
+        "proposal": {
+          "plan_path": "/private/tmp/masp-multiround-20261123/content-r6-technical-review/r288-r7-bilingual-source-proposal/plan.json",
+          "plan_sha256": "37faa8334bfb5bc3187468959d46a96f21a5e21702083d6582c11aa85174417e",
+          "patch_path": "/private/tmp/masp-multiround-20261123/content-r6-technical-review/r288-r7-bilingual-source-proposal/review.patch",
+          "patch_sha256": "c9322c96a5dd31aa6ddd8045d335e0021485cb9afb5ce08e166076db4ecf17bc",
+          "sources": [
+            {
+              "path": "/private/tmp/masp-multiround-20261123/content-r6-technical-review/r288-r7-bilingual-source-proposal/source/chapters/08_speech-separation.md",
+              "sha256": "ad33b1e74b8fbda00bea9c2410b88f4fbdb2dfe8d2a669c950e28f8308cf1fec",
+              "changed_lines": [
+                1210
+              ],
+              "other1694lines_bytes_equal": true
+            },
+            {
+              "path": "/private/tmp/masp-multiround-20261123/content-r6-technical-review/r288-r7-bilingual-source-proposal/source/chapters_en/08_speech-separation.md",
+              "sha256": "fe1e365dd514dae884e9ed0af6162a449a945f22123dbec058250dd6bc2fe454",
+              "changed_lines": [
+                1210
+              ],
+              "other1694lines_bytes_equal": true
+            }
+          ]
+        },
+        "fast_dimension_check": {
+          "physical_counts": "M=2microphones,N=3independent modeledsourceimages; G_nf is2x2PD, not a3x3source-assignmentmatrix. B_n isFxK,H_nKxT. FastMNMFg_nf haslengthM2, diagonalizerQ is2x2.",
+          "scope": "EarlierAuxIVA/ILRMA square/rank1 model not imported as an extraMNMFconstraint. Bookexplicitlyswitchesmodels at§8.3fullrankheading.",
+          "author_counter_cells": "Authorprior3frequencyx3frame=9cells; notmatrixdimension3x3.",
+          "our_counter_cells": "Eachnewfamily3frequencyx4frame=12cells,36source2x2covarianceblocks; 2families tested.",
+          "G_constancy": "AllourG_nf constant acrossbothfrequency andtime, strongerthanrequiredonlytimeinvariance. Diagonalorcommonlyrotatedforms alsojointlydiagonalizable, butno claim aboutgeneralextraidentifiabilityconditions."
+        },
+        "independent_controls": {
+          "same_powers_case": "Allsourceλ_nft=b_fh_t withb=[1,5,7],h=[1,4,6,9]; normalizedB=b/13, H=13h. A diagG[(1/5,4/5),(1/2,1/2),(4/5,1/5)];B[(3/10,7/10),(2/5,3/5),(4/5,1/5)]. EveryGtrace1andstrictPD, allthreeGdistinctwithinmodel. Rtotal=(3/2)b_fh_tI atall12cells. R_source traces=p andsourceaggregateenergyshares1/3 inbothmodels, yetsource1 MWFdifferentall12cells.",
+          "same_known_shapes_case": "Gsameinbothmodels:diag[(1/4,3/4),(1/2,1/2),(3/4,1/4)],sourcepowercoefficients A[1,2,3],B[3/2,1,7/2]. IdentityG1+G3=2G2 preservesmixturediag[(7/2)p,(5/2)p]underthisnontrivialpowerredistribution; sourceimagesremain different.",
+          "non_diagonal_control": "Commonrationalrotation[[3/5,-4/5],[4/5,3/5]] preservesPD/trace1 andmixture. FirstsourceMWF atx=[1,-2] becomesA[58/75,-56/75],B[47/75,-18/25]. Fullmatrixvalues inrotate-control.json.",
+          "counts": "24 testedcells acrosstwofamilies, everycell exactFractionmixtureequalityanddifferentfirstsourceposterior, exactRtrace andsourcepower shares, andexactsumallposteriorimages=x. Additionalrotatedfirstcellcheck, not a neworiginalnetworkrun.",
+          "likelihood": "Equalmodelmixturecovariances atallcells implyidentical Gaussianobservedlaw andlikelihood foranyX underthe statedmodel. Exactdeterminant/quadraticchecks onchosenX supplementthematrixidentity.",
+          "not_scale_or_permutation": [
+            "NMFbasiscolumnL1=1 imposed. Positive B/H reciprocalscale leavesλunchanged, so cannotexplainchangedphysicalRn.",
+            "TraceG=1 imposed; G->cG,λ->λ/c gaugecannotaltertrace-normalizedGunlessc=1.",
+            "K1 givesnotrivialbasispermutation; all6sourcepermutations testednoneequatesfullRncollections.",
+            "Maincasealsofixesidenticalλper-sourcebetweenmodels; secondcasealsofixesidenticalGper-sourcebetweenmodels. Thesearephysicalsourceallocationambiguities, notlabelrenaming."
+          ]
+        },
+        "original_singlecell_numbers": {
+          "preserved": {
+            "A_trace_R": [
+              "1",
+              "1/2",
+              "1/2"
+            ],
+            "B_trace_R": [
+              "4/5",
+              "3/5",
+              "3/5"
+            ],
+            "A_first_MWF": [
+              "1/2",
+              "1"
+            ],
+            "B_first_MWF": [
+              "3/5",
+              "2/5"
+            ],
+            "note": "A_first_MWFbelow explicitlymultiplyx=[1,2]; rawlambdas1allowunnormalizedG=Rn. Tochoose trace1, move traceRn into lambda anddivideGbytrace; Rn/MWFunchanged."
+          },
+          "normalization_note": "OriginalE08-14 writesλ_n=1 andrawG_n=R_n withoutrequiringtrace1 atthatpoint. Choosingtrace1 is a reparameterization:λ_n=traceR_n,G_n=R_n/traceR_n, leavingcovariance/MWFunchanged. Do not simultaneouslytreatoriginalλ=1 andtraceG=1 as independentlyknownadditionalconstraints. Ourmainnewcounteravoids thiscaveat byusingidenticalλandtrace1shapesinbothmodels."
+        },
+        "primary_source": {
+          "url": "https://www.eurasip.org/Proceedings/Eusipco/eusipco2019/Proceedings/papers/1570533283.pdf",
+          "authors": "Sekiguchi,Nugraha,Bando,Yoshii,2019FastMNMF originalauthorpaper; §IIreviewsMNMF, notclaimed originalSawada2013paperreading.",
+          "verified_date": "2026-11-23",
+          "retrieval": "OfficialEUSIPCO5pagePDF successfullyopened throughweb; selectedfulltextformula ranges inspected, notwholepaperread.",
+          "actual_ranges": [
+            {
+              "PDFzero_based_page": 1,
+              "printed_page": 2,
+              "section": "II-A ModelFormulation",
+              "equations": "(1)-(4)",
+              "web_lines": [
+                133,
+                180
+              ]
+            },
+            {
+              "PDFzero_based_page": 2,
+              "printed_page": 3,
+              "section": "II-B.2 NMFsource",
+              "equation": "(9)",
+              "web_lines": [
+                213,
+                225
+              ]
+            },
+            {
+              "PDFzero_based_page": 2,
+              "printed_page": 3,
+              "section": "III-A Jointdiagonalization",
+              "equation": "(16)",
+              "web_lines": [
+                363,
+                375
+              ]
+            }
+          ],
+          "supports": "MbyMfullrankG,scalarPSDλ,NMFbasis/activationfactorization,MWFsourceposterior,FastMNMFvectorlengthM. Traceandbasisnormalizations are explicitlyimposed inourconstruction, notmisquotedfromunreadpapersections.",
+          "not_done": "No authorcode/optimizer ororiginaldatasetexecution. No original2013MNMFpaperfullread."
+        },
+        "candidate_semantic_and_style": {
+          "modified_line": "1210onlyeachlanguage; allother1694byte-lines unchanged, total1695.",
+          "correct_numbers_retained": "Original1/2I,1/4I anddiag.6/.2/.2/.4, observation[1,2],posteriors[.5,1]and[.6,.4] unchanged.",
+          "new_sentence": "Commonpositive separablep_ft scalingofbothsourcecovariancefamilies is exactly avalid rank1NMF/timeconstantspatial extension; it is a counterto unconditionaluniqueness, not toidentifiabilityunderstrongerdiversity/separabilitypriors.",
+          "reader_conditions": "Powers/SCMs are statistical modelparameters, not cleanwaveforms or measuredspeechquality. No separate sensor-noise termisintroduced; trace shares are modeledcomponentpowers, not SNR or sourceaccuracyproof."
+        },
+        "actual_source_reading": [
+          {
+            "path": "/private/tmp/masp-multiround-20261123/content-r6-technical-review/r288-r7-bilingual-source-proposal/source/chapters/08_speech-separation.md",
+            "sha256": "ad33b1e74b8fbda00bea9c2410b88f4fbdb2dfe8d2a669c950e28f8308cf1fec",
+            "ranges": [
+              [
+                292,
+                309
+              ],
+              [
+                338,
+                363
+              ],
+              [
+                367,
+                385
+              ],
+              [
+                1193,
+                1213
+              ]
+            ]
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/content-r6-technical-review/r288-r7-bilingual-source-proposal/source/chapters_en/08_speech-separation.md",
+            "sha256": "fe1e365dd514dae884e9ed0af6162a449a945f22123dbec058250dd6bc2fe454",
+            "ranges": [
+              [
+                340,
+                363
+              ],
+              [
+                1197,
+                1211
+              ]
+            ]
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch08/chapter08_experiments.py",
+            "sha256": "6f3edb5c1cc1e22ac7d27892afa10a6451efba2941f797cd4949376f73325ec7",
+            "ranges": [
+              [
+                405,
+                431
+              ]
+            ],
+            "scope": "ActualE08-14onebinliteralarrays/MWFsource read; notfullchapterrunnerexecuted"
+          }
+        ],
+        "author_evidence_read": {
+          "path": "/private/tmp/masp-multiround-20261123/content-r6-technical-review/r7e-nonvehicle-consumers/r288-current-unique-factorization-residual.json",
+          "sha256": "cb8fffa402517c216241318bd52fb9175bc3a85f9bda3930e226de85c3b14fba",
+          "scope": "Author3x3controlreadforcontrast; ourcoefficients/dimensions/normalizations chosenindependently."
+        },
+        "evidence": [
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r8-r288-independent/control.py",
+            "sha256": "6826c009708f70098302444eb06918eaa813d8e8adc16744955468bbaeab0a27"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r8-r288-independent/controls.json",
+            "sha256": "fd59a35fc9a77571901219842a3b0ee27c0846cb6102cf4bfd99e5b46ebec9eb"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r8-r288-independent/rotate_control.py",
+            "sha256": "1761ab29164099a641760e8d3979c7903cfab57e59175bbc1811f58dbe051639"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r8-r288-independent/rotate-control.json",
+            "sha256": "ddd6cd83112139ef7f7bc84187ea3e0d0c3d1db6cd84871e7748af0a38151d65"
+          }
+        ],
+        "limits": [
+          "Noformal,candidate,R7frozen,Git ormediawrites.",
+          "No allMNMFparameteridentifiabilitytheorem or speech/ASR/listeningquality claims. Degeneratepowerprofiles areallowed bystatedconstraints and intentionallyused torefuteguarantee.",
+          "No newfullchapterread,fulltest suite,site/PDFbuild ororiginaloptimizer run.",
+          "Aninventoryqueryfirstusednonexistentchapter08_exercises.py; actualentryischapter08_experiments.py foundwithrg, read405-431. No methodfailureclaimed."
+        ]
+      }
+    },
+    "r8-r431-independent-review--handoff.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/r8-r431-independent-review/handoff.json",
+      "sha256": "27e6db998fca9909ba51f966bd6e0a7805b5f6fe3af1606f43bf5a99747f2d03",
+      "bytes": 3513,
+      "boundary": "Independent scored two-track lower-bound controls and unchanged E15-13 run bytes.",
+      "packet": {
+        "reviewer": "publication_ci; non-author of R431 candidate",
+        "date": "2026-11-23",
+        "decision": "Accept bounded proof-docstring correction",
+        "source": {
+          "path": "/private/tmp/masp-multiround-20261123/r8-fixed-slot-proof-candidate/source/codes/chapters/ch15/core/eend_enrollment_robustness.py",
+          "relative_path": "codes/chapters/ch15/core/eend_enrollment_robustness.py",
+          "before_sha256": "c636718c2748bd64d50cb2eae9f6e52bbeb9b5814822f99f0ca7094fdf1af20b",
+          "candidate_sha256": "d7bf9384d869ee4fc22d55a8a244341364b2af6e2de08ab8ac75683cc332df85",
+          "patch_path": "/private/tmp/masp-multiround-20261123/r8-fixed-slot-proof-candidate/review.patch",
+          "patch_sha256": "c0c43c2f87425f3706ce61ae8f3f0644e2b86c62dd2bb7c65a32339ab8968744"
+        },
+        "candidate_handoff_sha256": "e5cdc85619ba3fa9663c7b06841d75f3b7f71280d958fbfde5ce46e65fb5b107",
+        "actual_read": [
+          "Full review.patch",
+          "Candidate lines1-199 displayed; proof and implementation110-167 semantically reviewed",
+          "Author verification.py read as evidence, not treated as independent execution"
+        ],
+        "scope": "Global output-track identity and a single global one-to-one mapping; raw framewise NIST numerator at provided scored frames. Not per-frame permutation, collars or overlap-exclusion preprocessing, or an actual network performance claim.",
+        "reasoning": "Every unmatched reference identity contributes its scored active duration to n_ref-n_cor. At least max(0,S-K) identities remain unmatched, whose total duration is no smaller than the sum of that many smallest aggregate durations. Copying the K longest reference tracks attains equality. This does not claim every model actually omits least-active identities.",
+        "non_doc_AST_identical": true,
+        "independent_exhaustive_control": {
+          "reference_matrices": 511,
+          "dimensions": [
+            3,
+            3
+          ],
+          "K": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ],
+          "cases": 2555,
+          "K012": "All binary Kx3 hypotheses and global injections enumerated; minimum exact integer numerator compared to candidate",
+          "K34": "Nonnegative error lower bound plus actual candidate zero; retaining all3 references attains it, not exhaustive hypotheses atK>=3",
+          "pass": true
+        },
+        "nonleast_unmatched_control": {
+          "reference_durations": [
+            3,
+            2,
+            1
+          ],
+          "K": 1,
+          "bound": 3,
+          "deliberately_retain_middle_activity_track_error": 4,
+          "qualification": "An arbitrary unmatched set need not be the least-active set; bound and attainable optimum remain correct."
+        },
+        "actual_entry_execution": {
+          "entry": "codes.chapters.ch15.chapter15_exercises.run_experiments",
+          "selected": "E15-13",
+          "actual_candidate_helper_bound": true,
+          "strict_JSON_bytes_equal_to_author_before_and_after": true,
+          "bytes": 2268,
+          "sha256": "704ac0eba25fb60b20c12368fba53c1ed802ab19ac27c1247ab72a613175e187",
+          "other14": "Executed as part of same dictionary but not independently validated."
+        },
+        "asset_boundary": "Author direct-binding inventory read; not independently rescanned in this micro-review. Docstring-only/non-doc AST same; formal asset rebuild is not claimed or performed.",
+        "guards": "Formal preimage and candidate hashes verified before/after; no formal file writes.",
+        "not_done": [
+          "No entire module semantic reread beyond displayed range",
+          "No whole-book suite/site/PDF",
+          "No original neural EEND run or full DER pipeline",
+          "No new direct asset inventory or global publication acceptance"
+        ]
+      }
+    },
+    "r8-chapter15-prose-pass-v2-independent.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/r8-chapter15-prose-pass-v2-independent.json",
+      "sha256": "71a91e9809e4e9e69988ae97fa243700f91693ff464ddf3ca98595528f9187b4",
+      "bytes": 3831,
+      "boundary": "Readability review of five previously revised paragraphs. The one repeated Chinese phrase is fixed in V3.",
+      "packet": {
+        "scope": "Non-author quicksemantic/style checkofroot5alreadyrevisedparagraphs, not newwholechapterreview",
+        "plan_path": "/private/tmp/masp-multiround-20261123/r8-chapter15-prose-pass-v2/plan.json",
+        "plan_sha256": "9b256aa284e7257293db2fb7ab2e75ef5bc1a8347446514844f4a051b318407a",
+        "source_checks": [
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r8-chapter15-prose-pass-v2/source/chapters/15_target-extraction-diarization.md",
+            "sha256": "d291f69f539e28d7abcb838169c9ccd888d4b9b00c1de1367d0dcc566e6fe725",
+            "changed_lines": [
+              381,
+              574,
+              576,
+              586,
+              594
+            ],
+            "source_identity_unchanged_during_review": true
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r8-chapter15-prose-pass-v2/source/chapters_en/15_target-extraction-diarization.md",
+            "sha256": "20c440303accb2a75c71b06b10efc7aea18ae70e2226d451cfe6da535ecb973c",
+            "changed_lines": [
+              381,
+              574,
+              576,
+              586,
+              594
+            ],
+            "source_identity_unchanged_during_review": true
+          }
+        ],
+        "actual_reading": "Fullfiveparagraphpatch reviewed; initialaggregatepatchoutputtruncatedmiddle, missingEN381/CN594andEN594 reread directly,ZH579–588contextdirectread. Other14+paragraphs/fullchapter not re-read.",
+        "verdicts": {
+          "381": "PASS explicitwhole-recording2identitytracks+globalone-to-one mapping, scoredspeakingduration floorandmiss/confusionmeaning preserved. R8boundedexactproof referenced, not rerun.",
+          "574": "OneCNeditingerror: “可以比较 SOT或DiCoW 纳入比较” repeatscomparison. Delete纳入比较. ENcorrect; waveform/textoutputdistinction andlatency/memory/WERmeasurement remaincorrect.",
+          "576": "PASS onlycascadeproducesfront-endwaveform; SI-SDRconditionaloncleanreference. WERcomparebothonsamerecordings preservesfront/back-end separationwithoutclaimingSI-SDRimprovementimpliesWERgain.",
+          "586": "PASS samewordonepersequence andintervalgapgreaterthancollar is sufficientfornoexpandedhyp/refintersection, so1deletion+1insertion; notstarttimedistance. Equalitynotclaimedmatch, R135strictintervalruleunchanged.",
+          "594": "PASS shortwordsphoneticcoverageconditional, priortrackholdandseparatecountsforwordmisses/beamwrong-switches haveequivalentCN/ENmeaning; notphysicalguarantee."
+        },
+        "actual_new_math": "3simpleinterval-overlaparithmeticcontrols only, notMeetEvalnative/scorer rerun",
+        "interval_controls": [
+          {
+            "reference_interval": [
+              0,
+              1
+            ],
+            "hypothesis_interval": [
+              7,
+              8
+            ],
+            "collar_each_hyp_end": 5,
+            "strict_overlap": false,
+            "one_identical_word_expected_edits": 2
+          },
+          {
+            "reference_interval": [
+              0,
+              10
+            ],
+            "hypothesis_interval": [
+              9,
+              11
+            ],
+            "collar_each_hyp_end": 5,
+            "strict_overlap": true,
+            "one_identical_word_expected_edits": 0
+          },
+          {
+            "reference_interval": [
+              0,
+              1
+            ],
+            "hypothesis_interval": [
+              6,
+              7
+            ],
+            "collar_each_hyp_end": 5,
+            "strict_overlap": false,
+            "one_identical_word_expected_edits": 2
+          }
+        ],
+        "only_actionable_change": {
+          "path": "chapters/15_target-extraction-diarization.md",
+          "line": 574,
+          "current": "若只需文字输出，可以比较 `SOT` 或 `DiCoW` 纳入比较",
+          "minimal": "若只需文字输出，可以比较 `SOT` 或 `DiCoW`"
+        },
+        "prior_math_packet": {
+          "path": "/private/tmp/masp-multiround-20261123/r8-der-pit-independent/handoff.json",
+          "sha256": "b7171c8e26ebe191548cadf5bdf55f78b3590d1cf96ed7a4092e9fd0193a82d6",
+          "scope": "UsealreadysealedR8integerDERproof; no newcoveragecount"
+        },
+        "writes": "ThisexternalquickreviewJSONonly; noformal/candidate/R7/sourceasset/Git edits",
+        "new_P2": false
+      }
+    },
+    "r8-r433-independent-review--handoff.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/r8-r433-independent-review/handoff.json",
+      "sha256": "9f3baaca59487f205c88c8fdf97e303e6ce9f3042a4f8130090d9218f2683240",
+      "bytes": 13364,
+      "boundary": "Exact existing MathJax rendered output and text-glyph source repair checked across the full bilingual scan.",
+      "packet": {
+        "id": "R433",
+        "reviewer": "publication_ci; non-author",
+        "date": "2026-11-23",
+        "decision": "Accept limited three-source escape-boundary correction; no blocking issue",
+        "plan_path": "/private/tmp/masp-multiround-20261123/r8-math-text-escapes-candidate/plan.json",
+        "plan_sha256": "f3c30579387418f543c2948e4cf0c8c53732399356a94b3b7b780c372856f869",
+        "source_checks": [
+          {
+            "path": "chapters/00_math-foundations.md",
+            "before_sha256": "02ef1a425784ac663271d43c3ce30d940fff116e5f9a033bcd71d1d1d77dd4a8",
+            "after_sha256": "96febb5ca651e85cf5986c6ca3c71d11d37c5d40373dcb3e0a1dc80ca1d26ec6",
+            "changed_lines": [
+              414,
+              417,
+              421
+            ],
+            "before_actual_path": "/private/tmp/masp-multiround-20261123/r7-integrated-candidate/checkout/chapters/00_math-foundations.md",
+            "candidate_actual_path": "/private/tmp/masp-multiround-20261123/r8-math-text-escapes-candidate/source/chapters/00_math-foundations.md",
+            "all_other_lines_preserved": true,
+            "unwrapped_text_contents_equal": true,
+            "tags_rows_display_delimiters_anchors_preserved": true
+          },
+          {
+            "path": "chapters_en/00_math-foundations.md",
+            "before_sha256": "7e15175c4f530bdfcb02fee63231cf211c9fdd0336188dae36a07d0dcc3400b4",
+            "after_sha256": "d652b987ab5d29221eaf9d8b885a86dc91c6c75631c539b2afeb9bf8823a22ec",
+            "changed_lines": [
+              414,
+              417,
+              421
+            ],
+            "before_actual_path": "/private/tmp/masp-multiround-20261123/r7-integrated-candidate/checkout/chapters_en/00_math-foundations.md",
+            "candidate_actual_path": "/private/tmp/masp-multiround-20261123/r8-math-text-escapes-candidate/source/chapters_en/00_math-foundations.md",
+            "all_other_lines_preserved": true,
+            "unwrapped_text_contents_equal": true,
+            "tags_rows_display_delimiters_anchors_preserved": true
+          },
+          {
+            "path": "chapters_en/06_aec.md",
+            "before_sha256": "870ad2871d73ff412781fbbfa6aad80ff885180bdb9f0f796d1feaf3913da69a",
+            "after_sha256": "1665b45e094363c442fd34a35fd91281ff1d0d9a4eb0fce483f0e8921cbe7501",
+            "changed_lines": [
+              1369,
+              1371
+            ],
+            "before_actual_path": "/private/tmp/masp-multiround-20261123/r7-integrated-candidate/checkout/chapters_en/06_aec.md",
+            "candidate_actual_path": "/private/tmp/masp-multiround-20261123/r8-math-text-escapes-candidate/source/chapters_en/06_aec.md",
+            "all_other_lines_preserved": true,
+            "unwrapped_text_contents_equal": true,
+            "tags_rows_display_delimiters_anchors_preserved": true
+          }
+        ],
+        "native_probe_independent_crosschecks": {
+          "inputs_SHA256": "f29783790d422c8e5c52e6ebcd3d779ab53d37ca805b2f2f76dcda02acd4899c",
+          "results_SHA256": "b3e16aadcd606cab5458fe4dfe88ed19443abe511dc490fe7eff7481b068096a",
+          "vendor_path": "/private/tmp/masp-multiround-20261123/r7-integrated-candidate/checkout/scripts/vendor/mathjax-3.2.2/tex-svg.js",
+          "vendor_SHA256": "d4295dc33744836935c1399feece5159577b34c5c8ffb9f1c6324cd82e03a882",
+          "controls": [
+            {
+              "name": "chapters00414",
+              "before_extra_backslash": true,
+              "after_extra_backslash": false,
+              "other_glyph_order_and_CJK_preserved_allow_space_NBSP": true
+            },
+            {
+              "name": "chapters00417",
+              "before_extra_backslash": true,
+              "after_extra_backslash": false,
+              "other_glyph_order_and_CJK_preserved_allow_space_NBSP": true
+            },
+            {
+              "name": "chapters00421",
+              "before_extra_backslash": true,
+              "after_extra_backslash": false,
+              "other_glyph_order_and_CJK_preserved_allow_space_NBSP": true
+            },
+            {
+              "name": "chapters_en00414",
+              "before_extra_backslash": true,
+              "after_extra_backslash": false,
+              "other_glyph_order_and_CJK_preserved_allow_space_NBSP": true
+            },
+            {
+              "name": "chapters_en00417",
+              "before_extra_backslash": true,
+              "after_extra_backslash": false,
+              "other_glyph_order_and_CJK_preserved_allow_space_NBSP": true
+            },
+            {
+              "name": "chapters_en00421",
+              "before_extra_backslash": true,
+              "after_extra_backslash": false,
+              "other_glyph_order_and_CJK_preserved_allow_space_NBSP": true
+            },
+            {
+              "name": "chapters_en061369",
+              "before_extra_backslash": true,
+              "after_extra_backslash": false,
+              "other_glyph_order_and_CJK_preserved_allow_space_NBSP": true
+            },
+            {
+              "name": "chapters_en061371",
+              "before_extra_backslash": true,
+              "after_extra_backslash": false,
+              "other_glyph_order_and_CJK_preserved_allow_space_NBSP": true
+            }
+          ],
+          "execution_boundary": "Author actual vendored MathJax outputs independently crosschecked against all8 source pairs; this reviewer did not launch a new renderer/browser."
+        },
+        "actual_visual": {
+          "path": "/private/tmp/masp-multiround-20261123/r8-math-text-escapes-candidate/renders.png",
+          "SHA256": "dd225312a0e7a92cf2add909a257a75cd2606bc1c04c9424c657e963325a997c",
+          "opened_with": "view_image",
+          "observed": "All8 old/new pairs actually viewed. Old6percentage/2ampersand headings have extra visible backslash; new ones remove it while retaining symbols, words/CJK and H=N/2,N/4/arrows. Composite has alternate-text rendering beside SVG; not final full-equation/A4-page validation."
+        },
+        "lexical_scan": {
+          "MD_count": 38,
+          "before8": [
+            {
+              "path": "chapters/00_math-foundations.md",
+              "line": 414,
+              "macro": "text",
+              "content": "（1）50\\% 重叠（"
+            },
+            {
+              "path": "chapters/00_math-foundations.md",
+              "line": 417,
+              "macro": "text",
+              "content": "（2）50\\% 重叠平方和（反例）："
+            },
+            {
+              "path": "chapters/00_math-foundations.md",
+              "line": 421,
+              "macro": "text",
+              "content": "（3）75\\% 重叠（"
+            },
+            {
+              "path": "chapters_en/00_math-foundations.md",
+              "line": 414,
+              "macro": "text",
+              "content": "(1) 50\\% overlap ("
+            },
+            {
+              "path": "chapters_en/00_math-foundations.md",
+              "line": 417,
+              "macro": "text",
+              "content": "(2) 50\\% overlap squared sum (counterexample):"
+            },
+            {
+              "path": "chapters_en/00_math-foundations.md",
+              "line": 421,
+              "macro": "text",
+              "content": "(3) 75\\% overlap ("
+            },
+            {
+              "path": "chapters_en/06_aec.md",
+              "line": 1369,
+              "macro": "text",
+              "content": "Smart PA excursion/thermal protection \\& limiter"
+            },
+            {
+              "path": "chapters_en/06_aec.md",
+              "line": 1371,
+              "macro": "text",
+              "content": "Amp \\& Loudspeaker"
+            }
+          ],
+          "after_overlay": [],
+          "guards": [
+            {
+              "path": "chapters/00_math-foundations.md",
+              "sha256": "02ef1a425784ac663271d43c3ce30d940fff116e5f9a033bcd71d1d1d77dd4a8"
+            },
+            {
+              "path": "chapters/00_overview.md",
+              "sha256": "f379e8e6ce73e4a42930f3854eb827f1758ac3e1593aa06e9d596a22d677d611"
+            },
+            {
+              "path": "chapters/01_problem-definition.md",
+              "sha256": "1a64395e1b31a172bb221e2a9d5eb7aa286ec33c4270573a70c98d60edccb418"
+            },
+            {
+              "path": "chapters/02_basics-signal-model.md",
+              "sha256": "06c9fd16e1e53c87cf9784abcb570aa8f458036d17e75a07bb2da2fbd48e1cde"
+            },
+            {
+              "path": "chapters/03_array-geometry.md",
+              "sha256": "dd32e419b411634a4b82ac3c5984346456d5cd9df4afe438a9dc0fb3aba3119f"
+            },
+            {
+              "path": "chapters/04_doa-estimation.md",
+              "sha256": "b0ed4ec589172e72058b6028749db4d3040846252abd640472bececd96b3806c"
+            },
+            {
+              "path": "chapters/05_beamforming.md",
+              "sha256": "82e3bfa7e3f287130f4ca6c197d7bffbc76f97df0ccc6591af0ed71da45a412d"
+            },
+            {
+              "path": "chapters/06_aec.md",
+              "sha256": "eb391d1deadb4c3815dca07054803fca7b50bfe40b57f99d578ed1970cfd6451"
+            },
+            {
+              "path": "chapters/07_wpe-dereverberation.md",
+              "sha256": "e90c25a9104bb7395e283b1c8cea250961eef1f1c114fa4b3174b234865739d6"
+            },
+            {
+              "path": "chapters/08_speech-separation.md",
+              "sha256": "9b7ea8bcb8eb66b65ed080e60ea17f87802531be2710916eb3f4555b93ab2623"
+            },
+            {
+              "path": "chapters/09_source-tracking.md",
+              "sha256": "30f1696a843e49c3134b8b664f875ed371f1c884fd3f869f2ac635476097b6d1"
+            },
+            {
+              "path": "chapters/10_engineering-practice.md",
+              "sha256": "741d5e4be7494f9f7c44273e606da61fef6ce6ad84be93dab4ba4aad2039e4be"
+            },
+            {
+              "path": "chapters/11_selection-guide.md",
+              "sha256": "45bc20d30a34210e01d50ffd965a7adbbeecf991459a70de3eb7440965cbaa58"
+            },
+            {
+              "path": "chapters/12_acoustic-imaging.md",
+              "sha256": "9814bcee50cec43aa96a10d204cd6bc829a144008eb6b5deb27608a04929e404"
+            },
+            {
+              "path": "chapters/13_distributed-enhancement.md",
+              "sha256": "698e38ce96cfc965b49814f710ea489354eaf06dbcda14c682edb526efd13945"
+            },
+            {
+              "path": "chapters/14_spatial-wearable-arrays.md",
+              "sha256": "fc1f99cb751bdfdeef2b48ddca4aeca23b618f0c6ca57188f058c8c9b17dd1d0"
+            },
+            {
+              "path": "chapters/15_target-extraction-diarization.md",
+              "sha256": "dc335b84251f68faeb9af23017bfc4426ca35d4b08934b3bef8a4c9aa2ae674e"
+            },
+            {
+              "path": "chapters/16_appendix-symbols-math.md",
+              "sha256": "8bb1b82e40b514a20a3784d6560b8388688397c7c194c7e0cdd6e3dc7e4416d5"
+            },
+            {
+              "path": "chapters/17_appendix-guide.md",
+              "sha256": "757144e270d1a7329cbcadb83863698d0b84e38111ef919964f7e9ce9eab2a0b"
+            },
+            {
+              "path": "chapters_en/00_math-foundations.md",
+              "sha256": "7e15175c4f530bdfcb02fee63231cf211c9fdd0336188dae36a07d0dcc3400b4"
+            },
+            {
+              "path": "chapters_en/00_overview.md",
+              "sha256": "b4a513377915a243777872831b1eafd2bbfd5d1bf1a684bc797ea9bcf1827162"
+            },
+            {
+              "path": "chapters_en/01_problem-definition.md",
+              "sha256": "b54347aef48cddaa46295fe9af11ad085c124399304f408b222283e8c7a5d170"
+            },
+            {
+              "path": "chapters_en/02_basics-signal-model.md",
+              "sha256": "575c0789e2a3a64d93b778540cfa1b5e55cb1632de20141f35b9a7283dd87136"
+            },
+            {
+              "path": "chapters_en/03_array-geometry.md",
+              "sha256": "6861a9b29e0aba2e5a266fa5d6b1a633867ac20c3bccc3ae170ac00e212c9277"
+            },
+            {
+              "path": "chapters_en/04_doa-estimation.md",
+              "sha256": "fb13471c95c4f7168891748eecc142c6c73e2fecce6c2aabc6dda9d5173e18cd"
+            },
+            {
+              "path": "chapters_en/05_beamforming.md",
+              "sha256": "e036e018b6871073d65e06a466fd74775f7de562f4a65042288e540a2614b863"
+            },
+            {
+              "path": "chapters_en/06_aec.md",
+              "sha256": "870ad2871d73ff412781fbbfa6aad80ff885180bdb9f0f796d1feaf3913da69a"
+            },
+            {
+              "path": "chapters_en/07_wpe-dereverberation.md",
+              "sha256": "7b04dd547942ced0c6e35bb1ac5b7c9f31789f0236a68f9140ca4e3e9b295977"
+            },
+            {
+              "path": "chapters_en/08_speech-separation.md",
+              "sha256": "3170d6314a277fa521aee37235bc9d7076ccf43d61861196ed0396165ca19687"
+            },
+            {
+              "path": "chapters_en/09_source-tracking.md",
+              "sha256": "0037da0db894f4cbf133895291fdba65e5029ebb59a52ef831d2789e0e6a01c9"
+            },
+            {
+              "path": "chapters_en/10_engineering-practice.md",
+              "sha256": "66b5966abb3edb3a7c666063eba68413e4bdf998f344dcbfa5196cad71f303a1"
+            },
+            {
+              "path": "chapters_en/11_selection-guide.md",
+              "sha256": "b0fd7999ec6de927941f57629ef034aece500e09bc7f99af8d4f9d4461d13a8b"
+            },
+            {
+              "path": "chapters_en/12_acoustic-imaging.md",
+              "sha256": "0b685863947572188adba4c09ff37d1ba9dddea7f45ebd82592394d332f82843"
+            },
+            {
+              "path": "chapters_en/13_distributed-enhancement.md",
+              "sha256": "5b394510006f8f4cb4b775e5eb750ad2972910b2259746fb076aacf7d051822b"
+            },
+            {
+              "path": "chapters_en/14_spatial-wearable-arrays.md",
+              "sha256": "222e868e8e10a8eee30280850b2cce66d86af9d9ff19088149215df587c0c20e"
+            },
+            {
+              "path": "chapters_en/15_target-extraction-diarization.md",
+              "sha256": "84c098478fb9432442c47c5cbf3320ac8963631a32ffac330c6fa21329f036c2"
+            },
+            {
+              "path": "chapters_en/16_appendix-symbols-math.md",
+              "sha256": "ce1b32ee62e6c27293da46415a14222e27b2cb26b5f34858e8c4ae5a4518bc2e"
+            },
+            {
+              "path": "chapters_en/17_appendix-guide.md",
+              "sha256": "f4e4317be82d29a4da67e680bba9b3e807779712c9f4888750909e929d22c854"
+            }
+          ],
+          "method": "Brace-balanced common text-like arguments, not arbitrary macro expansion."
+        },
+        "composition_boundary": "ENch6 R4331665b45e… is based on R7 baseline870ad…; compose only1369/1371 onto R114V2 latest9deadc… to retain70/1594. Do not overwrite later-parent whole source.",
+        "limits": [
+          "No fresh nativeChrome/A4/fullbook print",
+          "No new integrated semantic-tag/speech/ParentTree check",
+          "No formal/R7/other-author candidate writes",
+          "Whole38byte scan not whole38semantic reread"
+        ],
+        "execution_note": "First tool orchestration attempt rejected JavaScript syntax before any command ran; corrected external script then completed. Not a product failure."
+      }
     }
   },
   "next_round_issue_index": {

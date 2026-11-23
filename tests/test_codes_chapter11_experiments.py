@@ -357,6 +357,13 @@ class Chapter11ExperimentsTests(unittest.TestCase):
             {k: v['verdict'] for k, v in res['howling_gain_candidates'].items()},
             {'12.0dB': 'pass', '15.0dB': 'fail', '18.0dB': 'fail'},
         )
+        self.assertEqual(
+            {k: (v['loop_gain_db'], v['gain_margin_db'], v['regime'])
+             for k, v in res['howling_gain_candidates'].items()},
+            {'12.0dB': (-6.0, 6.0, 'meets_gain_margin_budget'),
+             '15.0dB': (-3.0, 3.0, 'gain_margin_below_budget'),
+             '18.0dB': (0.0, 0.0, 'open_loop_bound_at_or_above_unity')},
+        )
         self.assertEqual(res['constructed_acceptance_verdict'], 'undetermined')
         self.assertEqual(res['constructed_acceptance']['per_metric_verdicts']['tclw_max_volume_db'], 'undetermined')
         for bad_delay in (3.0, 4.0):  # excess delay = dsp + 1.0 - 5.0 <= 0 ms

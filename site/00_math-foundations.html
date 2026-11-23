@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 0 章 · 全书数学基础与信号分析预备 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="d88c132e5722"><style>
+<meta name="source-digest" content="1baedb55d363"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -913,14 +913,14 @@ X[3] = 1 + 1(\mathrm{j}) + (-1)(-1) + 0 = 2 + \mathrm{j} = X^*[1]\text{。}
 <p>$$g[n] \triangleq \sum_{\ell \in \mathbb{Z}} w_a[n - \ell H]\,w_s[n - \ell H] = 1\qquad(\forall\,n \in \mathbb{Z})\text{。}\tag{0-16}$$</p>
 <p>现在一步不跳地验证周期汉宁窗在 $50\%$ 与 $75\%$ 重叠下的三种经典求和（全部只需余弦反相与二倍角恒等式 $\cos^2\theta = \frac{1+\cos 2\theta}{2}$）：</p>
 <p>$$\begin{aligned}
-&\text{（1）50\% 重叠（}H=N/2\text{）一次和：}\\
+&\text{（1）}50\%\text{ 重叠（}H=N/2\text{）一次和：}\\
 &\quad w_{\mathrm{Hann}}[r] + w_{\mathrm{Hann}}\!\left[r+\tfrac{N}{2}\right]
 = \frac{1-\cos\frac{2\pi r}{N}}{2} + \frac{1+\cos\frac{2\pi r}{N}}{2} = 1\text{；}\\
-&\text{（2）50\% 重叠平方和（反例）：}\\
+&\text{（2）}50\%\text{ 重叠平方和（反例）：}\\
 &\quad w_{\mathrm{Hann}}^2[r] + w_{\mathrm{Hann}}^2\!\left[r+\tfrac{N}{2}\right]
 = \frac{1+\cos^2\frac{2\pi r}{N}}{2}
 = \frac{3}{4} + \frac{1}{4}\cos\frac{4\pi r}{N} \in [0.50,\ 1.00]\text{；}\\
-&\text{（3）75\% 重叠（}H=N/4\text{）四帧平方和：}\\
+&\text{（3）}75\%\text{ 重叠（}H=N/4\text{）四帧平方和：}\\
 &\quad \sum_{q=0}^{3} w_{\mathrm{Hann}}^2\!\left[r+\tfrac{qN}{4}\right]
 = \left(\frac{3}{4}+\frac{1}{4}\cos\frac{4\pi r}{N}\right) + \left(\frac{3}{4}-\frac{1}{4}\cos\frac{4\pi r}{N}\right)
 = 1.5\text{。}

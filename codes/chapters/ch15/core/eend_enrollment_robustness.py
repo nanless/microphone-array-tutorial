@@ -112,14 +112,16 @@ def fixed_slot_der_lower_bound(
     max_slots: int,
     frame_dur_s: float = 0.5,
 ) -> dict:
-    """Compute exact DER lower bound of any fixed-``max_slots`` PIT diarization model.
+    """Compute exact DER lower bound with at most ``max_slots`` global output tracks.
 
     Because NIST framewise error satisfies
     ``miss_t + fa_t + conf_t = max(n_ref_t, n_hyp_t) - n_cor_t >= n_ref_t - n_cor_t``
-    on every frame ``t``, any model restricted to at most ``max_slots`` output tracks
-    can match at most ``M = min(K_ref, max_slots)`` reference speakers under optimal
-    1-to-1 permutation, leaving at least the ``max(0, K_ref - max_slots)`` least-active
-    reference speakers completely unmatched.
+    on every frame ``t``, at most ``M = min(K_ref, max_slots)`` reference speakers
+    can be matched to the output tracks across the full scored input under one
+    global 1-to-1 permutation. At least ``U = max(0, K_ref - max_slots)`` reference
+    speakers remain unmatched. Their total active duration is at least the sum
+    of the ``U`` smallest reference-speaker durations. Retaining the ``M`` most-active
+    reference tracks attains this bound.
     """
     ref = _validate_binary_activity(ref_activity, "ref_activity", allow_empty_speakers=False)
     if isinstance(max_slots, (bool, np.bool_)) or not isinstance(max_slots, (int, np.integer)):

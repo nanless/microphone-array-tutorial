@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 8 章 · 语音分离 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="d88c132e5722"><style>
+<meta name="source-digest" content="1baedb55d363"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -1708,7 +1708,7 @@ J_2&=4\sqrt{2}+2\ln 2+2\ln 3\approx9.240373.
 {\mathbf R}_2&={\mathbf R}_3=\operatorname{diag}(0.2,0.4).
 \end{aligned}$$</p>
 <p><strong>参考答案</strong>：两组模型的混合总协方差均为 ${\mathbf R}_{xx}=\sum_{n=1}^3{\mathbf R}_n={\mathbf I}_2$。因此在该时频点上，两组模型定义的零均值圆对称复高斯观测分布 $\mathcal{CN}(\vec 0,{\mathbf I}_2)$ 完全恒等——无论采集多少帧观测样本，两组模型的对数似然都一模一样，单点统计上根本不可辨识。</p>
-<p>然而当用式(8-14)的多通道维纳滤波 $\hat{\vec c}_n={\mathbf R}_n{\mathbf R}_{xx}^{-1}\vec x$ 重构源图像时，给定观测 $\vec x=[1,2]^\top$，模型甲给出的第 $1$ 源估计是 $[0.5,1]^\top$，模型乙给出的却是 $[0.6,0.4]^\top$（尽管两组模型各自的三源重构之和都精确等于 $\vec x$）。这说明欠定多通道 NMF 之所以能在真实语音上工作，绝不是靠单个时频点硬拆协方差，而是靠跨频点共享低秩谱基以及跨时间帧共享恒定空间矩阵 ${\mathbf G}_{nf}$ 来共同锁定唯一分解。</p>
+<p>然而当用式(8-14)的多通道维纳滤波 $\hat{\vec c}_n={\mathbf R}_n{\mathbf R}_{xx}^{-1}\vec x$ 重构源图像时，给定观测 $\vec x=[1,2]^\top$，模型甲给出的第 $1$ 源估计是 $[0.5,1]^\top$，模型乙给出的却是 $[0.6,0.4]^\top$（尽管两组模型各自的三源重构之和都精确等于 $\vec x$）。跨频点共享低秩谱基、跨时间帧共享恒定空间矩阵 ${\mathbf G}_{nf}$ 可以缩小欠定多通道 NMF 的可行解范围，但这些结构约束本身不保证分解唯一。例如，把上述两组各源协方差同时乘以同一个正的可分离时频因子，仍满足低秩谱模型与空间矩阵跨帧恒定的约束，却保持相同的混合协方差和不同的源估计。</p>
 <p><a id="e08-15"></a></p>
 <h3 id="sec-u-305c26b041">E08-15：共同合同对角化后，怎样重构源图像？</h3>
 <p>固定单个频点，给定两源功率均为 $1$，两张正定空间矩阵与非酉可逆对角化矩阵分别为</p>

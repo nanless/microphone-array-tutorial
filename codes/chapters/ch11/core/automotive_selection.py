@@ -420,20 +420,20 @@ def icc_and_certification_selection_case() -> dict[str, object]:
     min_gain_margin_db = 6.0
     gain_checks: dict[str, dict[str, float | str]] = {}
     for gain_db in (12.0, 15.0, 18.0):
-        loop_gain_db = gain_db + feedback_coupling_db
-        margin_db = -loop_gain_db
-        if loop_gain_db >= 0.0:
-            regime = "unstable_howling"
+        loop_gain_bound_db = gain_db + feedback_coupling_db
+        margin_db = -loop_gain_bound_db
+        if loop_gain_bound_db >= 0.0:
+            regime = "open_loop_bound_at_or_above_unity"
             verdict = "fail"
         elif margin_db < min_gain_margin_db:
-            regime = "insufficient_margin_ringing"
+            regime = "gain_margin_below_budget"
             verdict = "fail"
         else:
-            regime = "safe_gain_margin"
+            regime = "meets_gain_margin_budget"
             verdict = "pass"
         gain_checks[f"{gain_db:.1f}dB"] = {
             "icc_gain_db": gain_db,
-            "loop_gain_db": loop_gain_db,
+            "loop_gain_db": loop_gain_bound_db,
             "gain_margin_db": margin_db,
             "regime": regime,
             "verdict": verdict,
@@ -488,5 +488,5 @@ def icc_and_certification_selection_case() -> dict[str, object]:
             "per_metric_verdicts": per_metric_verdicts,
         },
         "constructed_acceptance_verdict": teams_verdict,
-        "scope": "closed-form two-ray comb ripple, scalar Barkhausen margin, and constructed interval acceptance table",
+        "scope": "closed-form two-ray comb ripple, broadband open-loop magnitude budget, and constructed interval acceptance table",
     }

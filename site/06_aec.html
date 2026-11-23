@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 6 章 · 声学回声消除（AEC） · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="d88c132e5722"><style>
+<meta name="source-digest" content="1baedb55d363"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -561,7 +561,7 @@ y[n]&=\sum_{\ell=0}^{L-1}h[\ell]x[n-\ell].
 <p>更棘手的是，直达声与第 $1,2,\ldots$ 次墙面反射的几何路程各不相同：路程越长的晚期反射，绝对时延漂移越大，因此整条冲激响应发生的是“时间轴拉伸或压缩”，而非整体平移固定的 $50.9\ \mu\mathrm{s}$。<a href="https://www.iwaenc.org/proceedings/2003/data/0025.pdf">Elko, Diethorn &amp; Gänsler（IWAENC 2003）</a>与 <a href="https://www.frontiersin.org/journals/signal-processing/articles/10.3389/frsip.2024.1426082/full">Frontiers in Signal Processing（2024）</a>的实测均表明，这种肉眼不可见的热漂移足以让出厂静态标定的固定滤波器失效，说明在线自适应是声学回声消除不可省略的根基。</p>
 </blockquote>
 <p>在进入推导前，还需要厘清两对容易混淆的物理概念：</p>
-<p>第一对是<strong>数字域波形相减（AEC）与空气声场物理相消（ANC / 车载 ICC）的本质分野</strong>。AEC 在数字处理器内部用麦克风采样 $d[n]$ 减去估计副本 $\hat y[n]$，目的是阻止本机播放声传回远端通话方，房间里的本地人耳依然听得到扬声器外放；只要副本相位误差超过 $60^\circ$，复数减法甚至可能令残余能量反超原回声（见练习 <a href="#e06-04">E06-04</a>）。相比之下，主动噪声控制（Active Noise Control，ANC）通过次级扬声器向空气辐射反相声波，电子控制时延须严格小于主次声路飞行时差（常为亚毫秒级）；车载座舱通话增强（In-Car Communication，ICC）则将前排语音拾取放大后经后排扬声器实时播放在空气中与直达声物理叠加，<strong>ITU-T P.1150</strong> 要求监听位置的强化首波相对自然直达首波的到达差受限（$\Delta_{\mathrm{Rx}}\lt 15\ \mathrm{ms}$），而入耳式耳机通透模式（Hear-Through）的鼓膜叠加延迟上限更收紧至百微秒级（详见<a href="14_spatial-wearable-arrays.html#sec-14-10">第 14 章 §14.10</a>）。这类在空气中直接进入人耳的物理叠加干涉无法靠发送端数字 AEC 事后抹除，三类环路的梳状滤波频响与定量时延预算对比见 §6.7.1 与练习 <a href="#e06-30">E06-30</a> 第 2 问。</p>
+<p>第一对是<strong>数字域波形相减（AEC）与空气中的声波叠加（ANC / 车载 ICC）的本质分野</strong>。AEC 在数字处理器内部用麦克风采样 $d[n]$ 减去估计副本 $\hat y[n]$，目的是阻止本机播放声传回远端通话方，房间里的本地人耳依然听得到扬声器外放；只要副本相位误差超过 $60^\circ$，复数减法甚至可能令残余能量反超原回声（见练习 <a href="#e06-04">E06-04</a>）。相比之下，主动噪声控制（Active Noise Control，ANC）通过次级扬声器向空气辐射反相声波，电子控制时延须严格小于主次声路飞行时差（常为亚毫秒级）；车载座舱通话增强（In-Car Communication，ICC）则将前排语音拾取放大后经后排扬声器实时播放在空气中与直达声物理叠加，<strong>ITU-T P.1150</strong> 要求监听位置的强化首波相对自然直达首波的到达差受限（$\Delta_{\mathrm{Rx}}\lt 15\ \mathrm{ms}$），而入耳式耳机通透模式（Hear-Through）则需按主动处理声与被动漏声的相对到达时间及目标频带检查鼓膜处的梳状响应（详见<a href="14_spatial-wearable-arrays.html#sec-14-10">第 14 章 §14.10</a>）。这类在空气中直接进入人耳的物理叠加干涉无法靠发送端数字 AEC 事后抹除，三类环路的梳状滤波频响与定量时延预算对比见 §6.7.1 与练习 <a href="#e06-30">E06-30</a> 第 2 问。</p>
 <p>第二对是<strong>波形减法与谱幅度乘法的分工</strong>。线性 AEC 握有参考波形 $x[n]$，能够同时估计回声的幅度与相位并直接作波形相减，在近端语音与回声同频重叠时依然可以只剥离回声而保留语音。当缺少精确波形参考（例如抑制线性未建模残余或未知背景噪声）时，经典后置滤波（如 §5.7 维纳后置滤波与 §6.5.1 的频域 RES）往往退而估计功率谱，再对混合时频系数乘以 $0$～$1$ 之间的实数标量增益——这会把同一时频格内的回声与近端语音按相同比例一并压低。至于多通道复数滤波、复数掩码或深度滤波（§6.5.2），则额外引入了跨通道或跨帧复数自由度，阅读时应按各自的数学算子准确区分。</p>
 <p><img alt="图18 声学回声形成、线性抵消结构与双讲冻结" src="../figures/fig18_aec.png" onerror="this.alt+='（图缺失）'" /></p>
 <p>观察图18的四个面板，可以把式(6-1)的物理形成机制、单通道线性 AEC 信号流与双讲冻结保护串联起来：</p>
@@ -2563,7 +2563,7 @@ E_{\Delta}
 <p><strong>概念自测题</strong>（聚焦物理机理与工程架构辨析；建议先合上正文独立作答，再对照下方解析逐题自检，定量数值复算见后文 <code>E06-01</code>～<code>E06-32</code>）：</p>
 <ol>
 <li>
-<p>默写麦克风观测三项模型式(6-1)，说明每个符号的物理含义、AEC 的核心目标，以及数字波形相减（AEC）与空气声场物理相消（ANC / 车载 ICC）的本质差异。</p>
+<p>默写麦克风观测三项模型式(6-1)，说明每个符号的物理含义、AEC 的核心目标，以及数字波形相减（AEC）与空气中的声波叠加（ANC / 车载 ICC）的本质差异。</p>
 </li>
 <li>
 <p>简述从瞬时平方误差 LMS 到能量归一化 NLMS 式(6-3)的三步物理思路，并区分因果系统中的“先验残差”与代数检验用的“后验残差”。</p>
@@ -2608,7 +2608,7 @@ E_{\Delta}
 <p>以下为上述 14 道<strong>概念自测题的参考解析</strong>：</p>
 <ol>
 <li>
-<p>式(6-1)写作 $d[n]=s[n]+(x*h)[n]+v[n]$：$d[n]$ 为麦克风混合采样，$s[n]$ 为待无损保留的近端人声，$x[n]$ 为已知播放参考，$h[\ell]$ 为等效线性回声路径，$v[n]$ 为环境与电路底噪。AEC 在上行数字链路内减除估计副本 $\hat y[n]$ 以阻止回声传回远端，不会消除本地空气中的外放声波；ANC 与车载 ICC 则涉及空气中真实声波的物理叠加，受声路飞行时间或哈斯融合阈值（如 ITU-T P.1150 的 $15\ \mathrm{ms}$）严格制约（见 §6.1.1）。</p>
+<p>式(6-1)写作 $d[n]=s[n]+(x*h)[n]+v[n]$：$d[n]$ 为麦克风混合采样，$s[n]$ 为待无损保留的近端人声，$x[n]$ 为已知播放参考，$h[\ell]$ 为等效线性回声路径，$v[n]$ 为环境与电路底噪。AEC 在上行数字链路内减除估计副本 $\hat y[n]$ 以阻止回声传回远端，不会消除本地空气中的外放声波；ANC 通过空气中的声波叠加抑制噪声，ICC 则通过叠加强化语音；前者受主次声路飞行时差制约，后者须控制监听位置强化首波与自然直达首波的到达差（ITU-T P.1150 要求小于 $15\ \mathrm{ms}$，见 §6.1.1）。</p>
 </li>
 <li>
 <p>先对瞬时平方误差 $J[n]=e^2[n]$ 关于权重求负梯度得 LMS 更新方向 $e[n]\vec x[n]$；再引入步长推进系数；最后除以当前参考滑窗能量 $\|\vec x[n]\|^2+\varepsilon$ 抵消输入幅度平方的尺度敏感性，即得式(6-3)。先验残差用更新前旧权重计算，是实时系统真正送往下游的因果输出；后验残差用更新后新权重回看同一拍输入，仅用于检验单步一维正交投影的收缩幅度（见 §6.1.2）。</p>

@@ -411,14 +411,14 @@ $$g[n] \triangleq \sum_{\ell \in \mathbb{Z}} w_a[n - \ell H]\,w_s[n - \ell H] = 
 Let us verify step by step the three canonical periodic-Hann sums at $50\%$ and $75\%$ overlap (requiring only cosine phase reversal and the double-angle identity $\cos^2\theta = \frac{1+\cos 2\theta}{2}$):
 
 $$\begin{aligned}
-&\text{(1) 50\% overlap (}H=N/2\text{) linear sum:}\\
+&\text{(1) }50\%\text{ overlap (}H=N/2\text{) linear sum:}\\
 &\quad w_{\mathrm{Hann}}[r] + w_{\mathrm{Hann}}\!\left[r+\tfrac{N}{2}\right]
 = \frac{1-\cos\frac{2\pi r}{N}}{2} + \frac{1+\cos\frac{2\pi r}{N}}{2} = 1;\\
-&\text{(2) 50\% overlap squared sum (counterexample):}\\
+&\text{(2) }50\%\text{ overlap squared sum (counterexample):}\\
 &\quad w_{\mathrm{Hann}}^2[r] + w_{\mathrm{Hann}}^2\!\left[r+\tfrac{N}{2}\right]
 = \frac{1+\cos^2\frac{2\pi r}{N}}{2}
 = \frac{3}{4} + \frac{1}{4}\cos\frac{4\pi r}{N} \in [0.50,\ 1.00];\\
-&\text{(3) 75\% overlap (}H=N/4\text{) 4-frame squared sum:}\\
+&\text{(3) }75\%\text{ overlap (}H=N/4\text{) 4-frame squared sum:}\\
 &\quad \sum_{q=0}^{3} w_{\mathrm{Hann}}^2\!\left[r+\tfrac{qN}{4}\right]
 = \left(\frac{3}{4}+\frac{1}{4}\cos\frac{4\pi r}{N}\right) + \left(\frac{3}{4}-\frac{1}{4}\cos\frac{4\pi r}{N}\right)
 = 1.5.

@@ -411,14 +411,14 @@ $$g[n] \triangleq \sum_{\ell \in \mathbb{Z}} w_a[n - \ell H]\,w_s[n - \ell H] = 
 现在一步不跳地验证周期汉宁窗在 $50\%$ 与 $75\%$ 重叠下的三种经典求和（全部只需余弦反相与二倍角恒等式 $\cos^2\theta = \frac{1+\cos 2\theta}{2}$）：
 
 $$\begin{aligned}
-&\text{（1）50\% 重叠（}H=N/2\text{）一次和：}\\
+&\text{（1）}50\%\text{ 重叠（}H=N/2\text{）一次和：}\\
 &\quad w_{\mathrm{Hann}}[r] + w_{\mathrm{Hann}}\!\left[r+\tfrac{N}{2}\right]
 = \frac{1-\cos\frac{2\pi r}{N}}{2} + \frac{1+\cos\frac{2\pi r}{N}}{2} = 1\text{；}\\
-&\text{（2）50\% 重叠平方和（反例）：}\\
+&\text{（2）}50\%\text{ 重叠平方和（反例）：}\\
 &\quad w_{\mathrm{Hann}}^2[r] + w_{\mathrm{Hann}}^2\!\left[r+\tfrac{N}{2}\right]
 = \frac{1+\cos^2\frac{2\pi r}{N}}{2}
 = \frac{3}{4} + \frac{1}{4}\cos\frac{4\pi r}{N} \in [0.50,\ 1.00]\text{；}\\
-&\text{（3）75\% 重叠（}H=N/4\text{）四帧平方和：}\\
+&\text{（3）}75\%\text{ 重叠（}H=N/4\text{）四帧平方和：}\\
 &\quad \sum_{q=0}^{3} w_{\mathrm{Hann}}^2\!\left[r+\tfrac{qN}{4}\right]
 = \left(\frac{3}{4}+\frac{1}{4}\cos\frac{4\pi r}{N}\right) + \left(\frac{3}{4}-\frac{1}{4}\cos\frac{4\pi r}{N}\right)
 = 1.5\text{。}

@@ -373908,6 +373908,3400 @@
         ],
         "scope": "R127 model modes preserved. Conditional experiment design only. No new benchmark, formal or V7 source edited."
       }
+    },
+    "r4-current-en-before-optimization-snapshot.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/r4-current-en-before-optimization-snapshot.json",
+      "sha256": "65c4b3aa35611ba4edb7ce2a9bb15ab36065a00b0011044948f24ed1effee6c4",
+      "bytes": 586,
+      "boundary": "Actual validated R4 English print captured before bookmarks and compression; media pixel comparison can start.",
+      "packet": {
+        "stage": "Validated real English print input, before bookmarks and compression",
+        "copied_from": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/dist/validated-en-ns0ag7dt.pdf",
+        "path": "/private/tmp/masp-multiround-20261123/r4-current-en-before-bookmarks-and-compression.pdf",
+        "bytes": 139702629,
+        "sha256": "50358733084dfac488b12c998c0a4ff2234381389427cf4bb797aca7aa59308b",
+        "pages": 1622,
+        "source_digest": "f1b2c6e1745a",
+        "input_html_sha256": "455b502fa3f1f43cef290805cc6729efe8f67baeaf9b9ff47ab3be4a81c1ec0f",
+        "build_date": "2026-11-23"
+      }
+    },
+    "r5-publication-preflight-independent-review--publication-pre-review-final.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/r5-publication-preflight-independent-review/publication-pre-review-final.json",
+      "sha256": "0548f29d562c587dc8038d72b82d630d7f53761c2087a045c2a2866b64b694f4",
+      "bytes": 103385,
+      "boundary": "Bounded independent publication matrix spanning 22 prior findings, genuine numeric/asset checks and finite interface controls.",
+      "packet": {
+        "role": "Publication_ci whole-publication pre-review preparation; root-shared checks independent, priorownedEN/CI/portable implementation explicitlyselfchecks",
+        "date": "2026-11-23",
+        "status": "Finitepreflightsealed; notR5completion. No newmandatorysourcebugproved. Fullprivategatesremain97errors andPDFprintpending/failedstage.",
+        "index_read": {
+          "path": "/private/tmp/masp-multiround-20261123/pre-r5-issue-index-draft.json",
+          "sha256": "46fb495e9a798a37afb305f19a842f267ee5d16c9439401eb652b8b8f2a3ccd6",
+          "selected_IDs_fully_read": [
+            "B001",
+            "B002",
+            "B003",
+            "B004",
+            "B005",
+            "B006",
+            "B007",
+            "B008",
+            "B009",
+            "B010",
+            "R123",
+            "R126",
+            "R335",
+            "R339",
+            "R340",
+            "R357",
+            "R358",
+            "R361",
+            "R374",
+            "R379",
+            "R383",
+            "R384"
+          ],
+          "all237_not_reread": true,
+          "selected_read_note": "Someinitialbigprints truncated; B009/B010andlaterselectedrecordsre-readinboundedoutputs. No truncatedsourcecountedasfullread."
+        },
+        "candidate_sources35": [
+          {
+            "path": "chapters/00_math-foundations.md",
+            "formal_sha256": "8c9ac31b948510b6990625cf718ae4d5e62d9312d83baea5b0b5ea1ce728fbd5",
+            "candidate_sha256": "02ef1a425784ac663271d43c3ce30d940fff116e5f9a033bcd71d1d1d77dd4a8",
+            "shadow_sha256": "02ef1a425784ac663271d43c3ce30d940fff116e5f9a033bcd71d1d1d77dd4a8",
+            "role": "Bilingual text, figure producers or publication dependency"
+          },
+          {
+            "path": "chapters/02_basics-signal-model.md",
+            "formal_sha256": "e0f38b08cf8816a9305dcfcd2a48fd1192fbe6380e7b3b96fb9883a0192288f6",
+            "candidate_sha256": "06c9fd16e1e53c87cf9784abcb570aa8f458036d17e75a07bb2da2fbd48e1cde",
+            "shadow_sha256": "06c9fd16e1e53c87cf9784abcb570aa8f458036d17e75a07bb2da2fbd48e1cde",
+            "role": "Bilingual text, figure producers or publication dependency"
+          },
+          {
+            "path": "chapters/04_doa-estimation.md",
+            "formal_sha256": "4bb6419b507eb85e6c602231eb819cb8dc7652aa476d99a444aa1a85131fb3b4",
+            "candidate_sha256": "b0ed4ec589172e72058b6028749db4d3040846252abd640472bececd96b3806c",
+            "shadow_sha256": "b0ed4ec589172e72058b6028749db4d3040846252abd640472bececd96b3806c",
+            "role": "Bilingual text, figure producers or publication dependency"
+          },
+          {
+            "path": "chapters/05_beamforming.md",
+            "formal_sha256": "3c3b56d8b9e0a38b668da314eb3ee9551226f1abd8db514048d55fa797752948",
+            "candidate_sha256": "82e3bfa7e3f287130f4ca6c197d7bffbc76f97df0ccc6591af0ed71da45a412d",
+            "shadow_sha256": "82e3bfa7e3f287130f4ca6c197d7bffbc76f97df0ccc6591af0ed71da45a412d",
+            "role": "Bilingual text, figure producers or publication dependency"
+          },
+          {
+            "path": "chapters/06_aec.md",
+            "formal_sha256": "9796c17cea0bfb68c73a315f446a3c84d13bd3d1f550a14ba8cd53a332338a6a",
+            "candidate_sha256": "eb391d1deadb4c3815dca07054803fca7b50bfe40b57f99d578ed1970cfd6451",
+            "shadow_sha256": "eb391d1deadb4c3815dca07054803fca7b50bfe40b57f99d578ed1970cfd6451",
+            "role": "Bilingual text, figure producers or publication dependency"
+          },
+          {
+            "path": "chapters/07_wpe-dereverberation.md",
+            "formal_sha256": "0a25a3815d3abe05903e06a698e14062384013a7bacc7418dfd45a68f971532a",
+            "candidate_sha256": "e90c25a9104bb7395e283b1c8cea250961eef1f1c114fa4b3174b234865739d6",
+            "shadow_sha256": "e90c25a9104bb7395e283b1c8cea250961eef1f1c114fa4b3174b234865739d6",
+            "role": "Bilingual text, figure producers or publication dependency"
+          },
+          {
+            "path": "chapters/08_speech-separation.md",
+            "formal_sha256": "35690035ce5315b26777b2363a415d2e485d93a05ad2529298de200fc041dad7",
+            "candidate_sha256": "4302cd25b7193cd12ddb0b1be0ace87097ecad9c1546a4b1f490d8a7e7850619",
+            "shadow_sha256": "4302cd25b7193cd12ddb0b1be0ace87097ecad9c1546a4b1f490d8a7e7850619",
+            "role": "Bilingual text, figure producers or publication dependency"
+          },
+          {
+            "path": "chapters/11_selection-guide.md",
+            "formal_sha256": "45380956341ccff8082817a5473018973bba80a752456419545f69c8d7f52d3b",
+            "candidate_sha256": "45bc20d30a34210e01d50ffd965a7adbbeecf991459a70de3eb7440965cbaa58",
+            "shadow_sha256": "45bc20d30a34210e01d50ffd965a7adbbeecf991459a70de3eb7440965cbaa58",
+            "role": "Bilingual text, figure producers or publication dependency"
+          },
+          {
+            "path": "chapters/13_distributed-enhancement.md",
+            "formal_sha256": "84dc8313e5ce2fc1da772b74778a0c4526845eac570eb506e9fd648dc45c022d",
+            "candidate_sha256": "a09113cc129982b09bb7dd99be16a664b2d2c57ab03f26b6bc9b0f01d690ee31",
+            "shadow_sha256": "a09113cc129982b09bb7dd99be16a664b2d2c57ab03f26b6bc9b0f01d690ee31",
+            "role": "Bilingual text, figure producers or publication dependency"
+          },
+          {
+            "path": "chapters/15_target-extraction-diarization.md",
+            "formal_sha256": "7f2a280e8efe375e9976d213856484d16c6d9a7af25e2e587aa36493a4f4796d",
+            "candidate_sha256": "01a5769f3e432803ad4eb00b29ea7b21d4b920cbfa9dcf619ebdb5c012cbf93a",
+            "shadow_sha256": "01a5769f3e432803ad4eb00b29ea7b21d4b920cbfa9dcf619ebdb5c012cbf93a",
+            "role": "Bilingual text, figure producers or publication dependency"
+          },
+          {
+            "path": "chapters/16_appendix-symbols-math.md",
+            "formal_sha256": "61af5d09a2c2903ebb75185a98f949e04e0ff04db4b04c050223ac6f494ed865",
+            "candidate_sha256": "8bb1b82e40b514a20a3784d6560b8388688397c7c194c7e0cdd6e3dc7e4416d5",
+            "shadow_sha256": "8bb1b82e40b514a20a3784d6560b8388688397c7c194c7e0cdd6e3dc7e4416d5",
+            "role": "Bilingual text, figure producers or publication dependency"
+          },
+          {
+            "path": "chapters_en/00_math-foundations.md",
+            "formal_sha256": "8b9dfc92facc11c5dc20d626368eb4d5f59b908cfce85e158cc6ec917fd1baf2",
+            "candidate_sha256": "7e15175c4f530bdfcb02fee63231cf211c9fdd0336188dae36a07d0dcc3400b4",
+            "shadow_sha256": "7e15175c4f530bdfcb02fee63231cf211c9fdd0336188dae36a07d0dcc3400b4",
+            "role": "Bilingual text, figure producers or publication dependency"
+          },
+          {
+            "path": "chapters_en/02_basics-signal-model.md",
+            "formal_sha256": "10769ba450d548033a7c4348d5956c2a19df32edc0015f3d43f066154960340f",
+            "candidate_sha256": "575c0789e2a3a64d93b778540cfa1b5e55cb1632de20141f35b9a7283dd87136",
+            "shadow_sha256": "575c0789e2a3a64d93b778540cfa1b5e55cb1632de20141f35b9a7283dd87136",
+            "role": "Bilingual text, figure producers or publication dependency"
+          },
+          {
+            "path": "chapters_en/04_doa-estimation.md",
+            "formal_sha256": "40d6a59e97f56506b3def8efb06a7432f77cc0ba17b0feb6e0966fffd2547616",
+            "candidate_sha256": "fb13471c95c4f7168891748eecc142c6c73e2fecce6c2aabc6dda9d5173e18cd",
+            "shadow_sha256": "fb13471c95c4f7168891748eecc142c6c73e2fecce6c2aabc6dda9d5173e18cd",
+            "role": "Bilingual text, figure producers or publication dependency"
+          },
+          {
+            "path": "chapters_en/05_beamforming.md",
+            "formal_sha256": "1cc6d2afdd88df0bc23bcb4b14a0fdeb2304512a68b8429fb6e273d53f1868a3",
+            "candidate_sha256": "e036e018b6871073d65e06a466fd74775f7de562f4a65042288e540a2614b863",
+            "shadow_sha256": "e036e018b6871073d65e06a466fd74775f7de562f4a65042288e540a2614b863",
+            "role": "Bilingual text, figure producers or publication dependency"
+          },
+          {
+            "path": "chapters_en/06_aec.md",
+            "formal_sha256": "f4640556bb0d81c8c48f53310994f55c009469ee16541982f65f6e27c83c9819",
+            "candidate_sha256": "870ad2871d73ff412781fbbfa6aad80ff885180bdb9f0f796d1feaf3913da69a",
+            "shadow_sha256": "870ad2871d73ff412781fbbfa6aad80ff885180bdb9f0f796d1feaf3913da69a",
+            "role": "Bilingual text, figure producers or publication dependency"
+          },
+          {
+            "path": "chapters_en/07_wpe-dereverberation.md",
+            "formal_sha256": "4382035d7cd5cb2ff05d5304749c7260f75e1fff8b2ce8f4a5c9fc614ff62d19",
+            "candidate_sha256": "7b04dd547942ced0c6e35bb1ac5b7c9f31789f0236a68f9140ca4e3e9b295977",
+            "shadow_sha256": "7b04dd547942ced0c6e35bb1ac5b7c9f31789f0236a68f9140ca4e3e9b295977",
+            "role": "Bilingual text, figure producers or publication dependency"
+          },
+          {
+            "path": "chapters_en/08_speech-separation.md",
+            "formal_sha256": "888866ab5f46c09ed55a9ba1847841a91c616b597c648b03e4731fe63839b6a1",
+            "candidate_sha256": "adcee939fc18d3a0d441de6ee934b6e040920c282246ed2d3ec6780dddb2fdbd",
+            "shadow_sha256": "adcee939fc18d3a0d441de6ee934b6e040920c282246ed2d3ec6780dddb2fdbd",
+            "role": "Bilingual text, figure producers or publication dependency"
+          },
+          {
+            "path": "chapters_en/11_selection-guide.md",
+            "formal_sha256": "38d8f171d6a43f8b78ff2c97fb5f1ba613e358d6ed452dcdfa2826479db3e545",
+            "candidate_sha256": "b0fd7999ec6de927941f57629ef034aece500e09bc7f99af8d4f9d4461d13a8b",
+            "shadow_sha256": "b0fd7999ec6de927941f57629ef034aece500e09bc7f99af8d4f9d4461d13a8b",
+            "role": "Bilingual text, figure producers or publication dependency"
+          },
+          {
+            "path": "chapters_en/13_distributed-enhancement.md",
+            "formal_sha256": "fa0631b838287714fd6fed0d2e4d596a8fb9f60e99f1f49b6bda679a4bcb7036",
+            "candidate_sha256": "b9b081bf79fe7acd383622af50d647bd499acd86ab6f9d819bddc9b7bf5f7db9",
+            "shadow_sha256": "b9b081bf79fe7acd383622af50d647bd499acd86ab6f9d819bddc9b7bf5f7db9",
+            "role": "Bilingual text, figure producers or publication dependency"
+          },
+          {
+            "path": "chapters_en/15_target-extraction-diarization.md",
+            "formal_sha256": "91ef81141b2632c3030a3dba34ebe9a11bbdd6685eb4a03b4238948e5be440f1",
+            "candidate_sha256": "a7fcf00a96e93b17682ce4df5162d39429fd2426d768d259207e68616543c015",
+            "shadow_sha256": "a7fcf00a96e93b17682ce4df5162d39429fd2426d768d259207e68616543c015",
+            "role": "Bilingual text, figure producers or publication dependency"
+          },
+          {
+            "path": "chapters_en/16_appendix-symbols-math.md",
+            "formal_sha256": "ece006f14c648476f14eb79bb0123f33886cf5f14efdb28ef7a5c33354ecf5bb",
+            "candidate_sha256": "ce1b32ee62e6c27293da46415a14222e27b2cb26b5f34858e8c4ae5a4518bc2e",
+            "shadow_sha256": "ce1b32ee62e6c27293da46415a14222e27b2cb26b5f34858e8c4ae5a4518bc2e",
+            "role": "Bilingual text, figure producers or publication dependency"
+          },
+          {
+            "path": "codes/chapters/ch00/research/05_exercises_and_audio.md",
+            "formal_sha256": "ae32a9e75f2fc13c6de9fe5b5ffe852f9deab9e454b4b82b39597b6b4e43a553",
+            "candidate_sha256": "44aa98e856281f6f6707503783d6709a28a104ed1df4d7f5bd38c2dc667b7a64",
+            "shadow_sha256": "44aa98e856281f6f6707503783d6709a28a104ed1df4d7f5bd38c2dc667b7a64",
+            "role": "Bilingual text, figure producers or publication dependency"
+          },
+          {
+            "path": "codes/chapters/ch00/research_en/05_exercises_and_audio.md",
+            "formal_sha256": "2862f026e9387eee1464f329ae170c24176614ff1fe3c10d178d7a7263ede3f0",
+            "candidate_sha256": "abdcd97fa729ce4555324a4ffc2bfd2755a10114879af5d90928dbc4d4276496",
+            "shadow_sha256": "abdcd97fa729ce4555324a4ffc2bfd2755a10114879af5d90928dbc4d4276496",
+            "role": "Bilingual text, figure producers or publication dependency"
+          },
+          {
+            "path": "codes/chapters/ch12/core/functional_beamforming.py",
+            "formal_sha256": "41ecce092306099009821208f37ad6f5afce04f06b80e38f1100428d418d2974",
+            "candidate_sha256": "d8d0a1e38d875c3a9da8cdb8f726f0c24a287174efeb27a5e461f82291e3225d",
+            "shadow_sha256": "41ecce092306099009821208f37ad6f5afce04f06b80e38f1100428d418d2974",
+            "role": "Functional beamforming and independent input precision fixtures"
+          },
+          {
+            "path": "scripts/build_pdf.py",
+            "formal_sha256": "b7b8f21d39fa51a964b8a70146fba8c50a69514c6e72e7d8749c3f24246fc61b",
+            "candidate_sha256": "ea264963122ca12081efa77f620ede52496a55deba53b7c9137859bbff91c2fb",
+            "shadow_sha256": "ea264963122ca12081efa77f620ede52496a55deba53b7c9137859bbff91c2fb",
+            "role": "Bilingual text, figure producers or publication dependency"
+          },
+          {
+            "path": "scripts/figure_en_translations.json",
+            "formal_sha256": "f2cce84d1d1a810117853361ba99dba43a94de243a76e98e53a97235624b47b7",
+            "candidate_sha256": "5c784152d01490829b59668d6b590b2c263f32e8a48020b4ca18532f254355e6",
+            "shadow_sha256": "5c784152d01490829b59668d6b590b2c263f32e8a48020b4ca18532f254355e6",
+            "role": "Bilingual text, figure producers or publication dependency"
+          },
+          {
+            "path": "scripts/make_aec_figures.py",
+            "formal_sha256": "19d3b558266b796307cfe2edd9dfb42c227c22a44dfd7ca61cef634f2a914e40",
+            "candidate_sha256": "0d3cafd3b413b366f07fadcfe2833a5cb1bdf5f37f6e01c038ef356e4c80c1ad",
+            "shadow_sha256": "0d3cafd3b413b366f07fadcfe2833a5cb1bdf5f37f6e01c038ef356e4c80c1ad",
+            "role": "Bilingual text, figure producers or publication dependency"
+          },
+          {
+            "path": "scripts/make_figures.py",
+            "formal_sha256": "bf9058d1c3d6ed15bab41ea092439170cd324011936645d577408106813a485a",
+            "candidate_sha256": "0157fc2c9fc9ee0a2d0bba7810a9603b22aa5a24d327a8895ef14412a2fb2fec",
+            "shadow_sha256": "0157fc2c9fc9ee0a2d0bba7810a9603b22aa5a24d327a8895ef14412a2fb2fec",
+            "role": "Bilingual text, figure producers or publication dependency"
+          },
+          {
+            "path": "scripts/pdf_math.js",
+            "formal_sha256": "56afe1e391dfdeec9b3c04960cafe960d49defc2c800c7fb5bb85db18afc3a69",
+            "candidate_sha256": "1a2b36b49e7643e05495b27b77fc09fb658a240ec2cb2b052fbbb89460801747",
+            "shadow_sha256": "1a2b36b49e7643e05495b27b77fc09fb658a240ec2cb2b052fbbb89460801747",
+            "role": "Bilingual text, figure producers or publication dependency"
+          },
+          {
+            "path": "scripts/quality_check.py",
+            "formal_sha256": "4b861f928baca80d945cdc3cc66552d8aa4133d09e70c1f006de48b6928e51df",
+            "candidate_sha256": "b0d30fe6e77bdd838e6d7679c4148411d10a97ce5425abff47f69a63ed1ec1f2",
+            "shadow_sha256": "b0d30fe6e77bdd838e6d7679c4148411d10a97ce5425abff47f69a63ed1ec1f2",
+            "role": "Bilingual text, figure producers or publication dependency"
+          },
+          {
+            "path": "tests/test_codes_ch08_source_contracts.py",
+            "formal_sha256": "f0638ad3767606ac00d6b8ce9d7710aae27d8a53d39f7298d1996a1347695ac0",
+            "candidate_sha256": "cf65f28b44adbb5729ef1b0f3cd3822be06a73dc40ed88f182cdfeb5a4010c96",
+            "shadow_sha256": null,
+            "role": "CPython valid old timestamp fixture"
+          },
+          {
+            "path": "tests/test_codes_imaging.py",
+            "formal_sha256": "9bdcee750be8ceb8b6f1f0976b707afc38012917f095559b0becc2a5cabf6430",
+            "candidate_sha256": "51f1e1586ec7513acd65b5accb5fb4040d219e87ed6f342de4702f96b56db653",
+            "shadow_sha256": null,
+            "role": "Functional beamforming and independent input precision fixtures"
+          },
+          {
+            "path": "tests/test_pdf_math_contracts.py",
+            "formal_sha256": "21314eac14c3ae6c8ddb89dcaa5c2a79be60ad7ab2336be2742107cb9b1e07f1",
+            "candidate_sha256": "4a4be71a5f5c73d4976cda76a822dfbb42310c2cb40c36cc1a4739b85ea00c8a",
+            "shadow_sha256": null,
+            "role": "Repeated PDF header paint parent-tree fixtures"
+          },
+          {
+            "path": "tests/test_review_ch01_09_sources.py",
+            "formal_sha256": "e307a7fa42b5b5adf307a5adba2efcde06e799d98a06d14e3eabd9fb8d943fc9",
+            "candidate_sha256": "0774d33445f28d7efac989309f8371c00b005994b59308193332e7f9e22403e6",
+            "shadow_sha256": null,
+            "role": "CPython valid old timestamp fixture"
+          }
+        ],
+        "publication_production30_paths_exactly_match_shadow": true,
+        "candidate209": [
+          {
+            "path": "codes/chapters/ch04/reports/figure13_gcc_reverb.json",
+            "shadow_matches_original_candidate": true,
+            "sha256": "2bf56a4d387f34bf646e774dd97b02fc2777c7873b090f1ac6b2a03dbeff1f42"
+          },
+          {
+            "path": "codes/chapters/ch07/reports/figure20_wpe.json",
+            "shadow_matches_original_candidate": true,
+            "sha256": "544a0c5f66f03875ce6c1569ca0cf94d627e9c2f8e3d19fe97437cec2e7386cf"
+          },
+          {
+            "path": "codes/chapters/ch09/reports/figure21_tracking.json",
+            "shadow_matches_original_candidate": true,
+            "sha256": "6d04af617fefbefcdef88bb265a309372586b411242ff48da2ec2376e5762f27"
+          },
+          {
+            "path": "codes/chapters/ch02/reports/figure45_stft_convolution.json",
+            "shadow_matches_original_candidate": true,
+            "sha256": "cada7fbfad0a8738b53de65e69e532400b211bdf616fba6ce4e09d43bb2e89b4"
+          },
+          {
+            "path": "codes/chapters/ch09/reports/figure56_tracking_information.json",
+            "shadow_matches_original_candidate": true,
+            "sha256": "2924c5d9a4eb0df50ffdcc55a4b5a87b4f846145b5255a0e248e7e1a1ee6e251"
+          },
+          {
+            "path": "codes/chapters/ch10/reports/figure57_engineering_limits.json",
+            "shadow_matches_original_candidate": true,
+            "sha256": "c63df37a8af3a2bb100062176bd7a2ab9f5ab81c772b95a74ff4730b0658ebe2"
+          },
+          {
+            "path": "codes/chapters/ch11/reports/figure59_selection_scenarios.json",
+            "shadow_matches_original_candidate": true,
+            "sha256": "d26564ee7ef9a5218d3e338e7da122f8c5cabe9d0b4f7eed1d01f74b55c4e807"
+          },
+          {
+            "path": "codes/chapters/appendix_a/reports/figure60_weighted_noise.json",
+            "shadow_matches_original_candidate": true,
+            "sha256": "6228eddc658fdf16661beb759999c424a0ea747f7cf32df44cea10359bb94028"
+          },
+          {
+            "path": "codes/chapters/appendix_b/reports/figure61_equal_drr_response.json",
+            "shadow_matches_original_candidate": true,
+            "sha256": "5dbc35aa422413e71c1e9f7eebe57d4054a791db3b3b9cb71c5291f1614278a8"
+          },
+          {
+            "path": "codes/chapters/ch12/reports/figure62_imaging_psf.json",
+            "shadow_matches_original_candidate": true,
+            "sha256": "9c48632e41b8e84600d7678d6c5e01810d1e8fcf93d321f53d496b4416e785cf"
+          },
+          {
+            "path": "codes/chapters/ch12/reports/figure63_imaging_model_checks.json",
+            "shadow_matches_original_candidate": true,
+            "sha256": "2005851242c7264b05b3e91346bea37990ce8e12a7221fdcf891b4a26065a341"
+          },
+          {
+            "path": "codes/chapters/ch12/reports/figure64_imaging_calibration.json",
+            "shadow_matches_original_candidate": true,
+            "sha256": "53bc2a93dddd97d95721b9bc5b6545fd2ec02646a2e4aeccb9c4f23ce8ced887"
+          },
+          {
+            "path": "codes/chapters/ch13/reports/figure65_distributed_compression.json",
+            "shadow_matches_original_candidate": true,
+            "sha256": "e6a01f908d318e7801433438dd869b76265e52b25a163b45927993c92c2a122e"
+          },
+          {
+            "path": "codes/chapters/ch13/reports/figure66_distributed_updates.json",
+            "shadow_matches_original_candidate": true,
+            "sha256": "5bfc31bbeed1c4db2037118fdceec11b643ffc7413c1b032328656c99f94c8e6"
+          },
+          {
+            "path": "codes/chapters/ch13/reports/figure67_distributed_transport.json",
+            "shadow_matches_original_candidate": true,
+            "sha256": "1342fa9f62f97aa2a369e98ae67eaf89f6c814b13093aaf3e508e8caa2266188"
+          },
+          {
+            "path": "codes/chapters/ch05/reports/figure68_phase_reference.json",
+            "shadow_matches_original_candidate": true,
+            "sha256": "0d90cb1045560c5491a413ace62c6f7ef84207c7ee56f7c44380a00711757e5b"
+          },
+          {
+            "path": "codes/chapters/ch06/reports/figure69_reference_timing.json",
+            "shadow_matches_original_candidate": true,
+            "sha256": "15e7012b817cee95574fcc11c07fdb552fb868e6962454fb3133276194ee44c4"
+          },
+          {
+            "path": "codes/chapters/ch07/reports/figure70_prediction_delays.json",
+            "shadow_matches_original_candidate": true,
+            "sha256": "41cb44f2fabfed5e00a6f705445b5c78b54b0b5ace7065faa25d6dd0264eb880"
+          },
+          {
+            "path": "codes/chapters/ch08/reports/figure71_css_polarity_gain.json",
+            "shadow_matches_original_candidate": true,
+            "sha256": "2b552e15c53174acc2212f69cfb025d6391ddccae70fbfaf6432c051e088847b"
+          },
+          {
+            "path": "codes/chapters/ch09/reports/figure72_tracking_lifecycle.json",
+            "shadow_matches_original_candidate": true,
+            "sha256": "bc308b5a7e299a6b44407e56feaa99042f52f2af8a898d4c7c2e75debf7d2ca8"
+          },
+          {
+            "path": "codes/chapters/ch10/reports/figure73_channel_failure.json",
+            "shadow_matches_original_candidate": true,
+            "sha256": "db119bd3360d35c7e3bfbe6a8d0ac9ee0b928df4ae1c5a67169488b9292cfb8a"
+          },
+          {
+            "path": "codes/chapters/ch11/reports/figure74_selection_evidence.json",
+            "shadow_matches_original_candidate": true,
+            "sha256": "e7ed0add6f7d395cd7e4af395dd05c30cf42b42b47a7effc713bfb294e1a8f65"
+          },
+          {
+            "path": "codes/chapters/ch12/reports/figure75_imaging_objectives.json",
+            "shadow_matches_original_candidate": true,
+            "sha256": "e3a2a245ca38be3d3853baeed1d653ace23fe7c121c1b557814b015af14a20e3"
+          },
+          {
+            "path": "codes/chapters/ch14/reports/figure76_foa_intensity_diffuseness.json",
+            "shadow_matches_original_candidate": true,
+            "sha256": "6a6ad33b69f991df96b779365a9889bba851e06695cea9603c608598ef82b1b1"
+          },
+          {
+            "path": "codes/chapters/ch14/reports/figure77_bsm_ls_vs_magls.json",
+            "shadow_matches_original_candidate": true,
+            "sha256": "85174b2022c11de4faff715413889ae1d6dad542ab46402810fb4220a6681495"
+          },
+          {
+            "path": "codes/chapters/ch14/reports/figure78_own_voice_fusion.json",
+            "shadow_matches_original_candidate": true,
+            "sha256": "6503cd721c6d8a5f8eed66df3b3548b60298aa2b4a75412a571dac1539315068"
+          },
+          {
+            "path": "codes/chapters/ch14/reports/figure79_hear_through_comb.json",
+            "shadow_matches_original_candidate": true,
+            "sha256": "eac9846e64d2d6dcdff8775cb8688af97710da1bafa25b5725ed6e20e6169442"
+          },
+          {
+            "path": "codes/chapters/ch15/reports/figure80_tse_conditioning_modes.json",
+            "shadow_matches_original_candidate": true,
+            "sha256": "474689c9fd283638e5b46861559d4e92ba46186499d596586411868eb1e6bf85"
+          },
+          {
+            "path": "codes/chapters/ch15/reports/figure81_nearfield_distance_bubble.json",
+            "shadow_matches_original_candidate": true,
+            "sha256": "59c2dd50b5c17bea10c20de3ab1a5fec778e46f77721dc74427b212855370ed6"
+          },
+          {
+            "path": "codes/chapters/ch15/reports/figure82_diarization_tsvad_gss.json",
+            "shadow_matches_original_candidate": true,
+            "sha256": "28d8fe84313c02ed2f0ecc5d284f8fd130368cf128f23abae1407fd62fd3e3f5"
+          },
+          {
+            "path": "codes/chapters/ch15/reports/figure83_av_asynchrony_occlusion.json",
+            "shadow_matches_original_candidate": true,
+            "sha256": "897619d9903bc895d097d106b91649ac816e0e399e4dbbce0c368057acf2b733"
+          },
+          {
+            "path": "codes/chapters/ch00/reports/figure84_complex_phasor_fourier.json",
+            "shadow_matches_original_candidate": true,
+            "sha256": "434022fee65e2fd6c58591897271333e2b876f7c2ca72bbc7f36a7d026c8f018"
+          },
+          {
+            "path": "codes/chapters/ch00/reports/figure85_subspace_projection_svd.json",
+            "shadow_matches_original_candidate": true,
+            "sha256": "347174b50b15012ff2e58104cf3b2a1b7090ae60292c833867b0f0500c339bbb"
+          },
+          {
+            "path": "codes/chapters/ch00/reports/figure86_hermitian_rayleigh_gev.json",
+            "shadow_matches_original_candidate": true,
+            "sha256": "ea40016e4735c339d146a732547425896303b1417c09bc483eeabe8acb71e0b6"
+          },
+          {
+            "path": "codes/chapters/ch00/reports/figure87_wirtinger_probability_bayesian.json",
+            "shadow_matches_original_candidate": true,
+            "sha256": "16400c57e61d83807252acd829f5114558cb86514a064ea63363315c87cdeb59"
+          },
+          {
+            "path": "figures/fig01_binaural.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "e15435ff11c3a7c96cfde38583775f576537347a390de505717fad2340d82caf"
+          },
+          {
+            "path": "figures/fig02_dsin_geometry.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "745ebf233904daef0b3cc3d7aa910ab524f9883dde4656dcac65348979017f86"
+          },
+          {
+            "path": "figures/fig03_near_far_field.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "6021d488f9bbed1b34e8844bb93928596efad2edf97476ad081bd3219ab5e61e"
+          },
+          {
+            "path": "figures/fig04_delay_phase.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "4cd47fdd1553b3a64ff21ee17bb9cb2713e6a98102a557c1cb2f090e3967b38e"
+          },
+          {
+            "path": "figures/fig05_room_acoustics.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "41a0af1c8584d2beeebfd7e33ac8978edb82b5b38044d9eeba21113ebb1f86da"
+          },
+          {
+            "path": "figures/fig06_stft_cov.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "a5d9d6b865e9cb42c8727f7b38e00c353b57e9557aa7da244d95d7ca0f396c10"
+          },
+          {
+            "path": "figures/fig07_beampattern_anatomy.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "0355bca0aa30e7e641ee53b50b7efa0ea24e3531b501871fe39212e0b6a2eb88"
+          },
+          {
+            "path": "figures/fig08_geometries.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "74c4bbb5a1796a98c565fb633e7f5b70ade2e3f9178d257798f1f28a5fb92c90"
+          },
+          {
+            "path": "figures/fig09_tradeoffs.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "b348ac951279c192569fa78b18f3405a992f1d9deb4be3a25c3af282fead9c6f"
+          },
+          {
+            "path": "figures/fig10_sparse_array.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "6ecae9bf9d3b00d69510d6fcee5c0c1c00dd5a35c408e1735bf3a34e20500ee4"
+          },
+          {
+            "path": "figures/fig11_doa_spectrum.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "44e7c811a3e839ff02d37bc3c3c588135b5652e57ded75eb2e0f26f694444be9"
+          },
+          {
+            "path": "figures/fig12_gcc_phat.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "dc33e1e04e81be8b7cc27518ceae90eba57e72d4ec55efe9a9b519baceff3817"
+          },
+          {
+            "path": "figures/fig13_gcc_reverb.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "c989e5aeae8b9c6f2dd528a7e7a5d8545e6e4aac271ae894ff6c36cb4c9322f2"
+          },
+          {
+            "path": "figures/fig14_srp_grid.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "efb08c187488bbadd74825e1c1797b1bce6dfb65965f7daa362242a79117e728"
+          },
+          {
+            "path": "figures/fig15_wng_di.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "1072d2e6ea92e44c382e92015de18a43cea0102e44021afe56fa55a23feb36fb"
+          },
+          {
+            "path": "figures/fig16_beampattern.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "0e6e3d0f50c2af530435b6ac5edea7d8438210f84b78eb3fdaff777665611d37"
+          },
+          {
+            "path": "figures/fig17_gsc.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "969163d00f68fb1b1bf1c0d39dd22f7157b87182b27218c54e8c9034512b721b"
+          },
+          {
+            "path": "figures/fig18_aec.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "ae7db12cd014271931ec721772af4c5d18038d4e8ae4887739058d804a832d74"
+          },
+          {
+            "path": "figures/fig19_aec_pipeline.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "e019c2a056b90253c2466c6e94030afedb286c670dd0d28fdf45bee214325f92"
+          },
+          {
+            "path": "figures/fig20_wpe.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "28f5be19ab365b15f9766c6acf992a332897c82b8e435e5cc97f68e67292b467"
+          },
+          {
+            "path": "figures/fig21_tracking.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "8e50da85b07da9b8409a78a8dba9101ecea609903df79b82bc69df7d467eac1e"
+          },
+          {
+            "path": "figures/fig22_pipeline.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "568463f49318d08f6b2bf7773e54d48e4e921b88882f4461159c855cd22f7dfa"
+          },
+          {
+            "path": "figures/fig23_wpe_frames.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "152e210fbf07f18a00e2f6583d8d63adf0f7e08e938a001748db3a3ecdee0a37"
+          },
+          {
+            "path": "figures/fig24_latency_budget.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "312d69a23554d8c48eaba138c8c51d3c0ab0094be8825a60457d66922d088bc6"
+          },
+          {
+            "path": "figures/fig25_aec_nlms.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "170e5948886af2104f7edfa92dd424ebdafc98f626ceb1d3a41c8d3896ddc87b"
+          },
+          {
+            "path": "figures/fig26_aec_delay_dtd.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "65668c4a469544a591bb20fb144d1d62a3c1f693c37924037200f13b5d50add6"
+          },
+          {
+            "path": "figures/fig27_aec_nonlinear.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "3d450eb2cd0d6ee1856b4eefe6bd835f298dfb4f08340762662ada7c09b56b43"
+          },
+          {
+            "path": "figures/fig28_gcc_two_ways.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "1442a9430bcfd22f54a304e428de6d443691480afc7af665ff2a5f9e14824b13"
+          },
+          {
+            "path": "figures/fig29_audio_examples.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "164823d05b74c77be62b056877b0b03a6070890cb1c05325f94dc142a639ae79"
+          },
+          {
+            "path": "figures/fig30_audio_counterexamples.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "b2d32bfdb06745edeef5a4aa53a449fdeca995a3a2778b2d32a969060a324b78"
+          },
+          {
+            "path": "figures/fig31_nonlinear_echo.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "103cdef2ffff75e4d16ae57a76d4542c9c4d4f957a9ade0dab50cb05cc3d80cc"
+          },
+          {
+            "path": "figures/fig32_aec_subband.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "de0edc11b1ff3d4c10807cb09440953a45d8d9d5f43fb9b498c205d9ff8d15aa"
+          },
+          {
+            "path": "figures/fig33_aec_four_methods.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "42d8e4ecd15d9a06ab1efa95ae7848ab0e2127f5b924a623a5e0ae7e780eac10"
+          },
+          {
+            "path": "figures/fig34_aec_pbfdaf_flow.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "3e3ff4dd13a7dd1b30a6eb2b79b001191bdf7beadd611365b9e6c5b624108835"
+          },
+          {
+            "path": "figures/fig35_clock_drift.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "b3b5e3f7658ebee24047e3ea49dcd8ba7570a8243b83af55741825af1a6ef11a"
+          },
+          {
+            "path": "figures/fig36_interpolation_error.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "141ac9e88d62037157d4e56eaa82763c63c08ce95e610089eeec503962f774e1"
+          },
+          {
+            "path": "figures/fig37_gss_flow.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "dc48e0e99fe1455db196bdef967c80814c52ed24d1d0fc69d05b80325567dab9"
+          },
+          {
+            "path": "figures/fig38_css_overlap.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "46120f833143d64b6b642def6c53e70e07852250d7d4e6147b477097e83ca785"
+          },
+          {
+            "path": "figures/fig39_tracking_audio.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "9b7db29ae28f3dda5812c5d058c081a585200b9ae3c4033f73a14c1ac0688cc3"
+          },
+          {
+            "path": "figures/fig40_agc_blocks.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "110d09bf82e16d428e32951861b5c968a1afc31a776d6fa6b33f86997fb95ab6"
+          },
+          {
+            "path": "figures/fig41_selection_pareto.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "d7303e9f5a687097c99243c0ada53a95c1d985508a2fd0745b6a830eaf5fd07f"
+          },
+          {
+            "path": "figures/fig42_selection_audio_tradeoff.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "623f7fa97de58c5a2bbb07f0672af0bc7d150537e812ff5dd3272008060269e8"
+          },
+          {
+            "path": "figures/fig43_fft_frequencies.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "190126aa4941fc8b92f8fd15feee56b1313d7eb5ed0987b25ccd13eb067c7814"
+          },
+          {
+            "path": "figures/fig44_fft_block_boundary.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "ab6be0fe82da199991b9f974d699aef3eb24aedeabeeadb8a5c824cca9cbf1e3"
+          },
+          {
+            "path": "figures/fig45_stft_convolution.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "c34f4bbe292ada84760efc2306b50ab64eb1c221c47dbe1628356d7104857d3e"
+          },
+          {
+            "path": "figures/fig46_near_planar_sensitivity.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "6493adb0cb05279a05a83a9bcfbb79b2bace6c0da359f09a69e0ca792e5c816e"
+          },
+          {
+            "path": "figures/fig47_hexagon_multifrequency.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "a272bac1613537618c6848949ec48b9ad097be2eb05e8b7bc5847482bbc1558a"
+          },
+          {
+            "path": "figures/fig48_focus_noise.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "53d3081031b850c19b68fc16d181fffa2e2f19db4fa3342fce229bebb4f6c8c9"
+          },
+          {
+            "path": "figures/fig49_coherent_frequency_rank.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "88c455a05cb586b74addaec8d808b8423d7eeac4427715d2495539d1ce86edc0"
+          },
+          {
+            "path": "figures/fig50_derivative_constraints.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "d21e41916442cbfaac3e9e284d2d9f42d74f498a2b83ef58e820eb9e972eac18"
+          },
+          {
+            "path": "figures/fig51_omlsa_probability.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "427928ed4ea08f27d98825c13d8ad071b617ddd2aa023476f255ac80fd038d47"
+          },
+          {
+            "path": "figures/fig52_affine_projection_geometry.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "2b50e753d5d3c4d61af00b2b1acb5c71e40079e2db470201f97adbfeb7930829"
+          },
+          {
+            "path": "figures/fig53_affine_projection_learning.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "6820cdd875532e64cf18dc3d79a6790a342435ac952323f580aa45ba889cf9a5"
+          },
+          {
+            "path": "figures/fig54_mint_noise_tradeoff.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "18a07cf6c6f59050d9e93a6e232f4c9cb38f5f166274127cb15287a7bd422e33"
+          },
+          {
+            "path": "figures/fig55_mask_representation.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "137af78644b944b30f7f5931885d5196b143e3be3401a6cbb7c9b84ed2cad8b6"
+          },
+          {
+            "path": "figures/fig56_tracking_information.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "91bda3af08831ad11a3aacad7cd93701a10c56d411103a7d5096bde972e8bd54"
+          },
+          {
+            "path": "figures/fig57_engineering_limits.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "5b989db703d525aa1c7f101d3c43a641a2648482fa843f9b7fe8b898490ecee5"
+          },
+          {
+            "path": "figures/fig58_noise_mismatch.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "5c8319a15115b0efa7579d2bb4104947f323cc18e863cdcaee8abf6a58a79d05"
+          },
+          {
+            "path": "figures/fig59_selection_scenarios.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "6ba54fab4b21b0a86c6af61821fd6a923b7dfd52c24e0268eabcd592c28c5fcd"
+          },
+          {
+            "path": "figures/fig60_weighted_noise.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "c31462a5dd7e3d3b6ef7ef9dd7c79a7bca902f286c5694653d752f0aeadb85ef"
+          },
+          {
+            "path": "figures/fig61_equal_drr_response.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "2ec16fbc17c6b449059cc4e917e7b23d906c16c853578ffe30e84b0307784eb7"
+          },
+          {
+            "path": "figures/fig62_imaging_psf.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "8a2e723357bb6ff7f130ede891d0c63efa1c230640fe4cc6543655d0d0781f34"
+          },
+          {
+            "path": "figures/fig63_imaging_model_checks.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "1f36d1f577797283c8da6e7a2ff3ea2af2e5aef76ca01c6fb5808a4345ba6358"
+          },
+          {
+            "path": "figures/fig64_imaging_calibration.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "c1a1aded7b3bc36f9b1f30e9328ef0a44dd2b1038523e37fa5771bf9b61656f5"
+          },
+          {
+            "path": "figures/fig65_distributed_compression.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "29fd5a44f9b01e29c6820376718dca202c550ca933840fad537d95acbe607486"
+          },
+          {
+            "path": "figures/fig66_distributed_updates.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "842b9932b4d0cdc6d00a82fa0801c70c9f0a8d1261ca006818bcdcb0ef3c9626"
+          },
+          {
+            "path": "figures/fig67_distributed_transport.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "15381debe44ea4abd6eaf35df73310d920636c5fda72a7d1d19d9513a281b226"
+          },
+          {
+            "path": "figures/fig68_phase_reference.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "ee4070edcd825aca451ba9102cabd824a56a58a52504f9b3150e4cd47ec9f1ff"
+          },
+          {
+            "path": "figures/fig69_reference_timing.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "aaecd12f00fffd83d76a40cffa5a423535b2bb83a5604a70d1d9ac4e1b232d4f"
+          },
+          {
+            "path": "figures/fig70_prediction_delays.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "3457c154f991e7289daffc6d495ddec723038cec48ef37ed91fd3ae7dff5a3a9"
+          },
+          {
+            "path": "figures/fig71_css_polarity_gain.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "63d17d65fff84c47b13c7e9185824dd7ec4e15a4720b93b413112ff6a0016fc2"
+          },
+          {
+            "path": "figures/fig72_tracking_lifecycle.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "84c655b14fbc27ce4c2fd6ca94ff65aa5d424f16469dd405df2093e30582d970"
+          },
+          {
+            "path": "figures/fig73_channel_failure.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "a4b3767e324281c45c970fabf6188e089369faae03ee3ee208e4ecb07454e12c"
+          },
+          {
+            "path": "figures/fig74_selection_evidence.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "4cfa8a230dd21766c3a2290b7b4c20346b34bac1924212f317b6a67e502d0422"
+          },
+          {
+            "path": "figures/fig75_imaging_objectives.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "ad8962c85090a20f18c4b0396edc79c33fc420b70f9fe4e43d00084ec50b9c4f"
+          },
+          {
+            "path": "figures/fig76_foa_intensity_diffuseness.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "7a1162096094c2a31bf2535e1eb9998387ed6b6d67e4d9398ffcc58e94fa69df"
+          },
+          {
+            "path": "figures/fig77_bsm_ls_vs_magls.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "1223f5dc47e49016b9008f61ec5df081682112beabe6d97934ff4cae6519eea0"
+          },
+          {
+            "path": "figures/fig78_own_voice_fusion.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "494280dcd5f5c8079e2cfc711c337b6fe078f3f465f3f9a891bb0117510bf626"
+          },
+          {
+            "path": "figures/fig79_hear_through_comb.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "49eeaeacaa4eb3e708f1173b815fc80eace62e05f2acb42eb301716a43fcef12"
+          },
+          {
+            "path": "figures/fig80_tse_conditioning_modes.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "a720919f5afc11f7b8c5294928c9ebfd14a473f6bc112daa39c7f88e08e7a25d"
+          },
+          {
+            "path": "figures/fig81_nearfield_distance_bubble.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "3f5a9ff7eeb832502b15e739f1930a40b6427dcb4185a4ea924ad3b05b535889"
+          },
+          {
+            "path": "figures/fig82_diarization_tsvad_gss.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "a6b8a9d6adc4c724712734c23f16409b028fa68cf287216456f2d8fe166bf4a8"
+          },
+          {
+            "path": "figures/fig83_av_asynchrony_occlusion.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "4015a8e7473e2ec34f55b95a0a3b2ea16715662051f0098016d15b36597a4bc9"
+          },
+          {
+            "path": "figures/fig84_complex_phasor_fourier.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "46ea699a2902f2e6069dffd1aa5e727c069163a46913e5cbb1ea37f6fc419363"
+          },
+          {
+            "path": "figures/fig85_subspace_projection_svd.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "da4cf294dd6e76f90364e552a2a83500f2c7cde490654730dd1800e39f6e70fc"
+          },
+          {
+            "path": "figures/fig86_hermitian_rayleigh_gev.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "560e8df6e3c00f4f5ee22d86d1d404d8f711bc2c39da9ed1c36d943d340dd939"
+          },
+          {
+            "path": "figures/fig87_wirtinger_probability_bayesian.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "e1858410023683a3b33e3746f446ea23926deff3ab6014884dd0ad2b92b5064e"
+          },
+          {
+            "path": "figures_en/fig01_binaural.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "e81da9ef727709dad6c1873408635995e4402f60bb222dc57060fa11ffe8b19f"
+          },
+          {
+            "path": "figures_en/fig02_dsin_geometry.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "4d92d75fe2ac90102a6ac209c4c973a1bf4fa3777e9f56990718fba44ba64371"
+          },
+          {
+            "path": "figures_en/fig03_near_far_field.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "1d417e2a6271b007805bc9ab8fb9d278dcf15ecc4dcaa017f327faa75f319393"
+          },
+          {
+            "path": "figures_en/fig04_delay_phase.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "9acba8f06a8b007e273960fc3c9a0bb3981180032a67861cecfa7e9cc9492244"
+          },
+          {
+            "path": "figures_en/fig05_room_acoustics.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "8fecbd775b393c6cc7b70b27eca9edd93753583c443e281db8a6ab5015467a41"
+          },
+          {
+            "path": "figures_en/fig06_stft_cov.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "918510e40a408f6b7e39a6016749943fc2dab17849fdc113b7b5f0e528e05886"
+          },
+          {
+            "path": "figures_en/fig07_beampattern_anatomy.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "b2b4d1c1ffe800f2510f3ffba1aa1c5306455d0d57f3d95261c0a32285789508"
+          },
+          {
+            "path": "figures_en/fig08_geometries.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "f85595f1133bafe320ebba75215f5e71937ecf17652e298a7298176cf8770800"
+          },
+          {
+            "path": "figures_en/fig09_tradeoffs.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "21b781b5497e2c03b660b3e4a2782919f99a037f744d3b3e8742727c07498de9"
+          },
+          {
+            "path": "figures_en/fig10_sparse_array.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "bf828938c827a75010a181474def74556fe137b28ea061bf872299a4929dbc39"
+          },
+          {
+            "path": "figures_en/fig11_doa_spectrum.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "3f56928d5bc683f6ca306b9be35f9bd40fbdcdd4d860c909ff6e187a9e6c1f4a"
+          },
+          {
+            "path": "figures_en/fig12_gcc_phat.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "71be3ed353ecba98f82ecac939843540e18ec4c4977b00151e2067d6fe21cd32"
+          },
+          {
+            "path": "figures_en/fig13_gcc_reverb.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "7c4578a77f0a7b1a155a43802ae549484994338eed7af05dcb32875766349bde"
+          },
+          {
+            "path": "figures_en/fig14_srp_grid.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "6ea007682579d5b4580be0ca04c88f398e1f6e572321801ed7b701d351b55832"
+          },
+          {
+            "path": "figures_en/fig15_wng_di.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "0a777979a2ca79b0307fa87bd0c8655af4f3876379b8a152522cc1ab422fb201"
+          },
+          {
+            "path": "figures_en/fig16_beampattern.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "c65b9a4331179f213ff4f8b2f8a1cd1d1c80ca84553855bebb3f50138769a4cd"
+          },
+          {
+            "path": "figures_en/fig17_gsc.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "ec37960b33ae92850451a97e65f5d6f9b75207782f834b25e2b5c15f43766e06"
+          },
+          {
+            "path": "figures_en/fig18_aec.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "c6bef179f99f6d2b1c92679c9d759b3f3fd007a5ffe96d609aafaa138c962770"
+          },
+          {
+            "path": "figures_en/fig19_aec_pipeline.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "060712786bcd65afa01a354c69a33f716648fdd6da993591dcb2905eda8b9ac4"
+          },
+          {
+            "path": "figures_en/fig20_wpe.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "12bf5f921222426c62931ea091043001919f9ffc7ee79ae6922f9be38e6911d4"
+          },
+          {
+            "path": "figures_en/fig21_tracking.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "af40a072e293e7c93b42b55fbae57fe712846324fa4a2b4ada65652ad6480b6c"
+          },
+          {
+            "path": "figures_en/fig22_pipeline.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "d6735e3f862f16ce3ab79a972f244d47a8eb9b6b2109a9f2ee81a5c0a55f5784"
+          },
+          {
+            "path": "figures_en/fig23_wpe_frames.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "4033dba63511dd05c28479b62d145b70cfea524e3c72836d98e4b220cd76415e"
+          },
+          {
+            "path": "figures_en/fig24_latency_budget.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "04c6110b175bc584e4fe5d143c0ddc5dfaedd8e64f1fbb85074683955124aa9c"
+          },
+          {
+            "path": "figures_en/fig25_aec_nlms.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "6794d11d93f47370ca46df1c511311867b2b06d489fb6c11c35fbd7d7e8d1d6d"
+          },
+          {
+            "path": "figures_en/fig26_aec_delay_dtd.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "ff544ff8990940b59461125cb9ec8c4ec0c8c110009a1886e06a5ae39e7636c3"
+          },
+          {
+            "path": "figures_en/fig27_aec_nonlinear.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "0add393b4706572994075aedb1387d3c1e46394c0b4ba198c033745e73e7713e"
+          },
+          {
+            "path": "figures_en/fig28_gcc_two_ways.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "460b8871271b66e771d764a008e9a59be29dc63d658d8485192eac60b8e258a6"
+          },
+          {
+            "path": "figures_en/fig29_audio_examples.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "615988892fbbfba2f111cf6cdb2498caf3ad4926c324ea0c6906ef24db6985d5"
+          },
+          {
+            "path": "figures_en/fig30_audio_counterexamples.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "efd7bf2fe929ba190febae851dc1a58271851f622090a9a3fcd8e789f7faa046"
+          },
+          {
+            "path": "figures_en/fig31_nonlinear_echo.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "2ba791e063a3001735bd965cbb690fbb714026c32a129384fdb735bb0814e475"
+          },
+          {
+            "path": "figures_en/fig32_aec_subband.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "fe0f8aecb204f95588357d6acd9e4608edf4b8c96ee37088c5b659476e671944"
+          },
+          {
+            "path": "figures_en/fig33_aec_four_methods.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "fe1077c84cdce550771f93c780d2426947cdf4ce5f07428e47e63bca773cbacb"
+          },
+          {
+            "path": "figures_en/fig34_aec_pbfdaf_flow.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "780d719c5f38484bf629490424f7bb8a0da070bc0243d94a394edd11ce972475"
+          },
+          {
+            "path": "figures_en/fig35_clock_drift.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "7cf4db4a91c7ee577dbbb0e271f5fe871586b04eb158fc7280de4f55b297c441"
+          },
+          {
+            "path": "figures_en/fig36_interpolation_error.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "b35908010bd1491e00d66ca9e092b32e48299d6ba76a8785fbd8e0f34251b2d3"
+          },
+          {
+            "path": "figures_en/fig37_gss_flow.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "200d8bed9ea88d3de7db53dc7059129e2b127876ee670a0d4f99421119e154bb"
+          },
+          {
+            "path": "figures_en/fig38_css_overlap.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "0f4304bc2cabf82da48a017b2e06413cb25dd972b9cd658fcbd9dce1f74c5581"
+          },
+          {
+            "path": "figures_en/fig39_tracking_audio.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "592e53526ece2a95e87b8562b466ec5d818855d4e4cba57dab6ae84fae421363"
+          },
+          {
+            "path": "figures_en/fig40_agc_blocks.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "79f5daa4f4597dca4e073555657f999e0cfa09e29c076116c78f9b5346b63e5d"
+          },
+          {
+            "path": "figures_en/fig41_selection_pareto.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "5c3514c34431b3e2c32a9ec297b48934aa5cb417614d2baa543cbff3421abf7f"
+          },
+          {
+            "path": "figures_en/fig42_selection_audio_tradeoff.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "cb5159cdeb4748fa05999cdbe138621f2bcb72d8d2260a45150060c58a20dba6"
+          },
+          {
+            "path": "figures_en/fig43_fft_frequencies.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "f1cd418d5a5cf6d4164c59f473b669eff91177e3d0ee0d1fdd314df814abccd6"
+          },
+          {
+            "path": "figures_en/fig44_fft_block_boundary.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "0e9e4015b96d4287b68cd9fb99e1df144502c84a550d0092dc7260a26f5992ee"
+          },
+          {
+            "path": "figures_en/fig45_stft_convolution.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "f039a5fd6b678f780298b281fcee4ecd7070afe4d95e49fc0593a10bcac0f915"
+          },
+          {
+            "path": "figures_en/fig46_near_planar_sensitivity.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "6cec682ae2d0fd77d029a3b0f8f8d4489d709b55ef35ecb19b96c7d1d27f1009"
+          },
+          {
+            "path": "figures_en/fig47_hexagon_multifrequency.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "37657e40cc5e2dbf034ec09544ed15f6561395003ec60d1b1ff4369f41a7d8ed"
+          },
+          {
+            "path": "figures_en/fig48_focus_noise.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "06f4686ee64b521a17e863016be0d83251213564501bc609782792492e6332d9"
+          },
+          {
+            "path": "figures_en/fig49_coherent_frequency_rank.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "276867e1c107396d56253c6d2694a4007d0b1751e16ad0752b545577199cfd14"
+          },
+          {
+            "path": "figures_en/fig50_derivative_constraints.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "63f23c71875d07463a15cf8071b8c88d0323a830813dfb5db3136a719d8d0e35"
+          },
+          {
+            "path": "figures_en/fig51_omlsa_probability.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "09e444d19c73a8376f35bfa224c5ad3db67de49b59132e0760b10ae95d419fc6"
+          },
+          {
+            "path": "figures_en/fig52_affine_projection_geometry.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "d3ebb9a733fd24ded8e55b1ee6c6ea231a6a3b6e7c169aafe9900d4c0278dbf4"
+          },
+          {
+            "path": "figures_en/fig53_affine_projection_learning.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "c87c710d62a1d127400298213cd0981df98fc5841ca4f3ecf849fe44ecddb9b5"
+          },
+          {
+            "path": "figures_en/fig54_mint_noise_tradeoff.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "cf2bf32e2ed03eea8a539fd888c6b6b105d3f02541a642a7c4c31cf43478ac2e"
+          },
+          {
+            "path": "figures_en/fig55_mask_representation.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "e444602c7fe86894d138e5729717c7fa9f8a96c2bfaa845357144153dd40232a"
+          },
+          {
+            "path": "figures_en/fig56_tracking_information.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "bc8156a336c3c9e054d777ce2c7d567f7ecc7eb87a75122b07165f0f26956fd5"
+          },
+          {
+            "path": "figures_en/fig57_engineering_limits.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "6e476929f7ab5ca39396c9d0ad64e58df74d8002a4bf2c29e6dd3377cc2465f9"
+          },
+          {
+            "path": "figures_en/fig58_noise_mismatch.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "53530ea028962cb5d66db80bc506c81572064e4ff691a3310e0b1f62ed08c67a"
+          },
+          {
+            "path": "figures_en/fig59_selection_scenarios.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "f1ef0a372c3a2a6d38c966f1c72f3e48bf15335a5068d7e059d8f1503b4c721d"
+          },
+          {
+            "path": "figures_en/fig60_weighted_noise.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "e0527c582a9f536febdf84301b1374f0f2f08a6ae93b8061a1b769ef7ae54fda"
+          },
+          {
+            "path": "figures_en/fig61_equal_drr_response.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "80515518ecbebd7faa21bda6f1d2b300217260db06227b3714aae88a1fd6592f"
+          },
+          {
+            "path": "figures_en/fig62_imaging_psf.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "19495c5572ccec19f7f902562072f872d3c228db54fe6f39529accf9a5d61bb9"
+          },
+          {
+            "path": "figures_en/fig63_imaging_model_checks.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "020d039eff466791476366f06a9fdce03956e59f37cafbc00805663f2dadfebd"
+          },
+          {
+            "path": "figures_en/fig64_imaging_calibration.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "274455aef8dfa8d12d8c2f130b25d08c72de31120beb1272d413b96d1f20cac5"
+          },
+          {
+            "path": "figures_en/fig65_distributed_compression.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "96422794a0dd1f28b243fdbc3b53875d5371dd0c5be00d2aff958760fec8db0a"
+          },
+          {
+            "path": "figures_en/fig66_distributed_updates.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "554eada777ba06e6e99efc1df038d6396274d9a53f442f818f60c537b32e6832"
+          },
+          {
+            "path": "figures_en/fig67_distributed_transport.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "60b2c81a67d7541189499bc0454216603d94f41669cca9b7821f398c8ed6f66d"
+          },
+          {
+            "path": "figures_en/fig68_phase_reference.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "e2c8c3d6ac8599920afaa68a1d657476b93a14fa71bab9bf583d8058801ef79b"
+          },
+          {
+            "path": "figures_en/fig69_reference_timing.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "f4b13aa8f9f404812cc8cf366e1602be27ac15d8e8e30eff00edbce41b471f1b"
+          },
+          {
+            "path": "figures_en/fig70_prediction_delays.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "92d17ffd5db5f86949ad43ffcc3224db6a893685e1224ff26b1bae023470aff9"
+          },
+          {
+            "path": "figures_en/fig71_css_polarity_gain.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "3c85d488ae825c14136509beeecd45158162ba80d396011756723c8a4121684e"
+          },
+          {
+            "path": "figures_en/fig72_tracking_lifecycle.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "2e39447b4f000f384d95751a0b13983fbab91fa8692c5da696fdbab356618609"
+          },
+          {
+            "path": "figures_en/fig73_channel_failure.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "16df6c34a28e8e7af63a96957c22cc3a8747b04a7c812f4571f954e673b98e0a"
+          },
+          {
+            "path": "figures_en/fig74_selection_evidence.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "70614cd706cd156fda1c7475a398de30a17c7185a956ec818e961a624b8e6408"
+          },
+          {
+            "path": "figures_en/fig75_imaging_objectives.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "564ee02655628284f9e0cb2f62c2e8a59f171905a00fa02d72c9c9d9909afa8f"
+          },
+          {
+            "path": "figures_en/fig76_foa_intensity_diffuseness.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "2e9ddea561da989639a794485071f346c1348d7e6db838dbe68927973314f8cb"
+          },
+          {
+            "path": "figures_en/fig77_bsm_ls_vs_magls.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "67d642bd7cbe0338122cb36600ff3d2be88383c57856fc112f7faa5f6e1c3d31"
+          },
+          {
+            "path": "figures_en/fig78_own_voice_fusion.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "3d27fa9dc2ee5df4b56deac58b3c6d101767cd97095a47559018d89ff05fbde0"
+          },
+          {
+            "path": "figures_en/fig79_hear_through_comb.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "2fcb98fd581752e2b6451a0687ac7664d4b5b1c67917bda0309d7d638a4d2995"
+          },
+          {
+            "path": "figures_en/fig80_tse_conditioning_modes.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "bf14a01f31e28bf673a0161db45479d559370a888a0b9b79fcdb9de829153cc1"
+          },
+          {
+            "path": "figures_en/fig81_nearfield_distance_bubble.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "647eead8c0dfb961b5b5e0084288379c7ea9025478c84499767addff7f742dba"
+          },
+          {
+            "path": "figures_en/fig82_diarization_tsvad_gss.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "9fa05fb6bb54f277e57c5a1feb3da5ed168cfabc9c1541cb76fbaba061409afd"
+          },
+          {
+            "path": "figures_en/fig83_av_asynchrony_occlusion.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "db0f976723f23777ace99b077611fc61fd05c21ddf92145b7844a72c1ddec44d"
+          },
+          {
+            "path": "figures_en/fig84_complex_phasor_fourier.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "1d4331f6328b70e261d1a2dcdc4db10f7d53194ec68b2ea94db3ce9f12266a23"
+          },
+          {
+            "path": "figures_en/fig85_subspace_projection_svd.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "6b62fbae6d81bf9b6a184cf510df932595ee0969953d24583244634d55254a72"
+          },
+          {
+            "path": "figures_en/fig86_hermitian_rayleigh_gev.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "81133006b913bb805ecc8832a73f5de45b30a96c60f0d55e965ab16af647c72b"
+          },
+          {
+            "path": "figures_en/fig87_wirtinger_probability_bayesian.png",
+            "shadow_matches_original_candidate": true,
+            "sha256": "206af6f24f489dc281fbcfa69ac6185ec235cd68192cd58c9a07c325e455550e"
+          }
+        ],
+        "evidence_components": [
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r5-publication-preflight-independent-review/actual-preflight-checks.json",
+            "sha256": "014b424b60333e217cd04b0c5c7953a16f204abbc4f18a46236919856d6ee5eb",
+            "bytes": 116377
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r5-publication-preflight-independent-review/actual-identity-and-PNG-controls.json",
+            "sha256": "dbc1ca8d5318a334697f656c96963817b8c7b4bcffff153cb19f15e05247c728",
+            "bytes": 5022
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r5-publication-preflight-independent-review/timeout-and-recovery-assessment.json",
+            "sha256": "5d83b309c2313e31a5f23ae7586a3dae5878c9662ff1205e93e7e4dddaa09f42",
+            "bytes": 29536
+          }
+        ],
+        "issue_matrix": [
+          {
+            "id": "B001",
+            "evidence_layer": "source+parsed candidate text",
+            "current_support": "360IDs both languages;chapter13/14/15 counts21/16/15 and actualoverviewsource repeatedcounts correct. No new IDs introduced.",
+            "remaining": "No fresh full41entry/codecatalog execution; shadow lacks tests.",
+            "new_source_repair_required_by_this_preflight": false
+          },
+          {
+            "id": "B002",
+            "evidence_layer": "source+parsed candidate text",
+            "current_support": "ScriptsREADME chapters9/13/14/15=23/21/16/15; wearableproducerdoc76..79; no stale18part claim inbuilder head.",
+            "remaining": "Original count/IDs retained; whole source manual not reread here.",
+            "new_source_repair_required_by_this_preflight": false
+          },
+          {
+            "id": "B003",
+            "evidence_layer": "source+manifest read",
+            "current_support": "Mainmanifestrights corrects repository-unspecified claim andexplicitly saysno separate syntheticWAVlicense declared.",
+            "remaining": "No newlicensegrant inferred; no109waveformregeneration.",
+            "new_source_repair_required_by_this_preflight": false
+          },
+          {
+            "id": "B004",
+            "evidence_layer": "source+inmemory byte mutation/selfcheck EN",
+            "current_support": "13targets×2consumerprobes: Chinesepairedheadings,number/alias,35registry,reportJSON,qualityoracle,PDFidentity,LOCATA/site,ROOMPNG/bothactualconsumers andbinauralWAV/site. Check-onlytest intentionallyexcluded.",
+            "remaining": "Binding provesinputdependence,notmathematicaltruth; ENimplementation priorownauthorship labelled.",
+            "new_source_repair_required_by_this_preflight": false
+          },
+          {
+            "id": "B005",
+            "evidence_layer": "source+realparsed smallPDF",
+            "current_support": "ENcheck_pdfs function unchanged andnowcallsSourceDigest+canonicaldatedHTML+independentoutline. SharedsmallPDFwrongdigest/wrongbodyrejected.",
+            "remaining": "FullactualcurrenttwoPDFgatepending; smallPDFdoesnotvalidatebookoutline/links.",
+            "new_source_repair_required_by_this_preflight": false
+          },
+          {
+            "id": "B006",
+            "evidence_layer": "actualPNGdecode/provenance+209identity",
+            "current_support": "ZH87/EN87currentshadowPNGprovenance0;35reportPNGbindingsbothlanguages0;each209byteidenticaltoreviewedactualgenerationcandidate.",
+            "remaining": "Nohandpatchedmetadata; no universalimagecontentoraclefromSHA.",
+            "new_source_repair_required_by_this_preflight": false
+          },
+          {
+            "id": "B007",
+            "evidence_layer": "function identity+historicalindependentfinitepixels",
+            "current_support": "Dedup/floatserializer/fonts pluslosslessimage/page/objectstreamfunctions exactformal-candidate; existingb7independentcounterexamplespreserved.",
+            "remaining": "NewwholeV7streaminputand<50MiBfinaloutputnotacceptedbeforeactualprint/compression. No repeatingjustcompleted12pageproof.",
+            "new_source_repair_required_by_this_preflight": false
+          },
+          {
+            "id": "B008",
+            "evidence_layer": "source+realparsed provenance controls",
+            "current_support": "CanonicalHTMLfullbodyischeckedbeforeprinter; olddatedsamecurrentinputs accepted, wrongbodywithselfconsistentmetadata rejected.",
+            "remaining": "NomainChromeprintlaunchedbyreviewer.",
+            "new_source_repair_required_by_this_preflight": false
+          },
+          {
+            "id": "B009",
+            "evidence_layer": "function identity+previousfinitefontproof",
+            "current_support": "Uniqueverified_layout_space_font andENwrapper exactcurrentcandidate; gs-invalidates-font/qQandPDFW/DWproofretained.",
+            "remaining": "NofullATreadingorderclaim; oldfontrectanglecontrolsnotrerunthisround.",
+            "new_source_repair_required_by_this_preflight": false
+          },
+          {
+            "id": "B010",
+            "evidence_layer": "withdrawal preserved",
+            "current_support": "No newevidence; remainwithdrawn. Thumbnailimpressionnotusedtomodifytranslator.",
+            "remaining": "No inventedmissinglinefinding.",
+            "new_source_repair_required_by_this_preflight": false
+          },
+          {
+            "id": "R123",
+            "evidence_layer": "sourcecontext+reportbinding",
+            "current_support": "ENhomepage378nowlistenforclarity/coloration;ZH378askslistenercheckfidelity,notstatisticalproof. Currentanimationzero-distortionisexplicitmodelconstraintseparatefromLOCATA.",
+            "remaining": "No newsubjectivehearingtest/cleancomponentreference; no data-edittosatisfywording.",
+            "new_source_repair_required_by_this_preflight": false
+          },
+          {
+            "id": "R126",
+            "evidence_layer": "currentreport+sourceconsumer",
+            "current_support": "Figure83scope remainsassignedteachingbudgets,notmodelmeasurements/minimumcontexts. AVarrival/validschemaactivenegativesreject.",
+            "remaining": "NooriginalSOTmodelrunoruniversalrealtimepromise.",
+            "new_source_repair_required_by_this_preflight": false
+          },
+          {
+            "id": "R335",
+            "evidence_layer": "source+rootactualexportlog",
+            "current_support": "Exporterremovesdata-lang-peerafterrewritinghref;unchangedhomeJSonlyoverrideswhenattributeexists. Bothactualv7portableexportcommandsrootexit0.",
+            "remaining": "No new198browserrerunhere; oldactualbrowserproofnotrelabellednew.",
+            "new_source_repair_required_by_this_preflight": false
+          },
+          {
+            "id": "R339",
+            "evidence_layer": "source+staticclassificationactualcandidateoverrides/selfcheck",
+            "current_support": "285testmodulesclassifiedunderfalsecapabilities:143included142excluded;everyreasonandsourceSHArecorded. Noimportsorselectedsuiteexecution.",
+            "remaining": "Old269/128/141countshistorical; noactualLinux/Windows/macOSrunnerpass.",
+            "new_source_repair_required_by_this_preflight": false
+          },
+          {
+            "id": "R340",
+            "evidence_layer": "wholeworkflowstaticread/selfcheck",
+            "current_support": "Pagesrunsportable+exportsinthesamecheckoutbeforestaging/upload;deployneedsbuild;50MiBperPDFandsiteinventoryguardretained.",
+            "remaining": "NoexternalActions/protection/deployrunverified. FullportablewritescombinedHTML;notreadonly.",
+            "new_source_repair_required_by_this_preflight": false
+          },
+          {
+            "id": "R357",
+            "evidence_layer": "localfixedlockidentityselfcheck",
+            "current_support": "ExactlytwoformerlywrongEnglishGitHubtreecommitsnow40hexandmatchfixedlocallockrecords.",
+            "remaining": "No liveupstreamnewHEAD/networkavailabilityclaim.",
+            "new_source_repair_required_by_this_preflight": false
+          },
+          {
+            "id": "R358",
+            "evidence_layer": "sourceheaderreadselfcheck",
+            "current_support": "ThirdpartyENhasonlyonegeneratedlanguagebar;datedsourcehistorynotrewritten.",
+            "remaining": "No entire68languagebarscommandrunhere.",
+            "new_source_repair_required_by_this_preflight": false
+          },
+          {
+            "id": "R361",
+            "evidence_layer": "translationvalue/sourcecontext",
+            "current_support": "Figure55captionnowanalyticsteady-stateMSEversusactualPCMreadback;ceilingsclaimabsent.",
+            "remaining": "OriginalPCMvaluesnotregeneratedorchanged; actualnewA4fig55visualpendingwholeR5scope.",
+            "new_source_repair_required_by_this_preflight": false
+          },
+          {
+            "id": "R374",
+            "evidence_layer": "actual35reports+newparsedcontrols/selfcheck",
+            "current_support": "Fixed35identity/schema/arithmetic0;both35PNGbindings0;AVfuturearrival/invalidfirstflag/WPEbrokencomplexstatreject. Jointenergy/crossscale2acceptsasvalidratioconsistencycontrol.",
+            "remaining": "PortablearithmeticisnotfullWPEwaveform/stochastic/host0ULPreplay.32manifestcomponentcountdoesnotreplaceper-suiteschemaguards/maincheck_audio.",
+            "new_source_repair_required_by_this_preflight": false
+          },
+          {
+            "id": "R379",
+            "evidence_layer": "realparsedPDFtypedcontrols",
+            "current_support": "Booleantrueaccepts;Booleanfalse/Number1/Number7reject.",
+            "remaining": "TaggedrootnotUA/ATcompleteacceptance.",
+            "new_source_repair_required_by_this_preflight": false
+          },
+          {
+            "id": "R383",
+            "evidence_layer": "actualcandidateidentity+priorview/fontproof",
+            "current_support": "209candidatecopiedexactly;9ENfontfixisalreadyrealR4appliedgeneration,sooldpreR5draftpendingprototypewordingishistory. CurrentR5caption7RGBchangesremainseparate.",
+            "remaining": "No newall87artistmeasurement/reviewinthispreflight; actualfinalPDFplacementrequiresreview.",
+            "new_source_repair_required_by_this_preflight": false
+          },
+          {
+            "id": "R384",
+            "evidence_layer": "source/realparsedPDF/dateguards",
+            "current_support": "CapturedHTMLidentity/private-source-finalguards andENverified==captured remainexactfunctions;realold-date+wrongbody/digesttypedcontrolsbehave.",
+            "remaining": "No arbitraryABAclaim; nofinalPDFexpectedhashaccepteduntilbuildcomplete.",
+            "new_source_repair_required_by_this_preflight": false
+          }
+        ],
+        "preview_gate_snapshot": {
+          "path": "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/preview-gates.json",
+          "sha256": "a5d1ffa02611526469748f0478fc4670a458aebb20c9a7699dba9fa15a50bfe4",
+          "status": "completed",
+          "total_errors": 97,
+          "missing_private_PDF_errors": 6,
+          "other_errors": 91,
+          "other_errors_all_missing_shadow_tests_whose_formal_targets_exist": true,
+          "local_link_controls": [
+            {
+              "consumer": "chapters_en/07_wpe-dereverberation.md",
+              "href": "../tests/test_codes_wpe_numerics.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "0c58c7b51542f55d9ca7e37b218a076611129c7ce29ee068d0927577ecc41c36",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "chapters_en/07_wpe-dereverberation.md",
+              "href": "../tests/test_codes_aec_wpe_sep_track.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "51b863cc94833106054f9d85e4cb168753dbf01844276c0ddf7965133a5cbfb6",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "chapters_en/07_wpe-dereverberation.md",
+              "href": "../tests/test_codes_wpe_mask_diagnostics.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "1431a242612867ac87eb8cf7aba960e52958c3ef8c21693d5c82289efb78f1d6",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "chapters_en/07_wpe-dereverberation.md",
+              "href": "../tests/test_codes_wpe_numerics.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "0c58c7b51542f55d9ca7e37b218a076611129c7ce29ee068d0927577ecc41c36",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "chapters_en/08_speech-separation.md",
+              "href": "../tests/test_codes_gss_teaching.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "1b68bbd36dedc921b4ecf6936a24decf162c1961d173dd3a76b37ca149e82675",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "chapters_en/08_speech-separation.md",
+              "href": "../tests/test_codes_aec_wpe_sep_track.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "51b863cc94833106054f9d85e4cb168753dbf01844276c0ddf7965133a5cbfb6",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "chapters_en/08_speech-separation.md",
+              "href": "../tests/test_codes_enhancement_steps.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "9a80987199f5c4386fd0e6a8b8f418580b3a627fff864748a8a05cd37ee56ffa",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "chapters_en/08_speech-separation.md",
+              "href": "../tests/test_codes_enhancement_structure.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "e2a26966635dea06ef867ab376f795ea9f57bf555a649eefb72ebc84011ad37e",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "chapters_en/08_speech-separation.md",
+              "href": "../tests/test_codes_ch08_constraint_teaching.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "a44a39dfe7697b0fd96b1b97f6128487d7a450b850c9688cde0f667a5ef5582e",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "chapters_en/09_source-tracking.md",
+              "href": "../tests/test_codes_aec_wpe_sep_track.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "51b863cc94833106054f9d85e4cb168753dbf01844276c0ddf7965133a5cbfb6",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "chapters_en/09_source-tracking.md",
+              "href": "../tests/test_codes_tracking_crossing_dropout.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "7170e8f68604487e888290e21de163e3c774537498608716970d2f8683e9c5ff",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "chapters_en/09_source-tracking.md",
+              "href": "../tests/test_codes_moving_source.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "6f2816809ed7f049f390457c91164cd3dd63cfe47068fc162d791973e6eb1fcb",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "chapters_en/09_source-tracking.md",
+              "href": "../tests/test_codes_time_state_exercises.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "9712197421e29d518431e3e30175c453a36573a3cbd04cbc93e0f797a28b2daf",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "chapters_en/09_source-tracking.md",
+              "href": "../tests/test_codes_enhancement_structure.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "e2a26966635dea06ef867ab376f795ea9f57bf555a649eefb72ebc84011ad37e",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "chapters_en/17_appendix-guide.md",
+              "href": "../tests/test_codes_time_state_exercises.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "9712197421e29d518431e3e30175c453a36573a3cbd04cbc93e0f797a28b2daf",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/01_spatial_and_tracking.md",
+              "href": "../../../../tests/test_codes_doatools_esprit_reference.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "ff8682d9d768921072b955683beccb75c1f689c94c971a4e83960a160e8830ae",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/01_spatial_and_tracking.md",
+              "href": "../../../../tests/test_codes_ch03_upstream_coarray.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "5c2a8d9a760d68d7b2415af73b5d298d9c886a7c46df0adddbba8bc223a686ca",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/01_spatial_and_tracking.md",
+              "href": "../../../../tests/test_codes_chapter03_self_calibration.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "d47c7cd1af679e5c470c763db8839744d71a7a7f0af01ce737235f6c8c8a9498",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/01_spatial_and_tracking.md",
+              "href": "../../../../tests/test_codes_ch04_said_compression.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "550c7b774e0fb5608890afab24240e457982b644ce701a8b7496a40d5dd04672",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/01_spatial_and_tracking.md",
+              "href": "../../../../tests/test_codes_tracking_upstream_interfaces.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "d85c71222ddc28f34d21bfac66fc4327c765dfaff52c3a37e2cce8be8543ee79",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/01_spatial_and_tracking.md",
+              "href": "../../../../tests/test_codes_ch09_upstream_tracking_contracts.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "82d105b41d115efdb92c7844abde6aaeeb5a90ab84a5be08a9db5bacf715af47",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/01_spatial_and_tracking.md",
+              "href": "../../../../tests/test_codes_ch04_upstream_doa.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "c382888ba17a0295f80dc3eaa54f2a8e501858eb6e5d376e0976ea817966a6e6",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/01_spatial_and_tracking.md",
+              "href": "../../../../tests/test_codes_spatial_model.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "64ce57cf38fb832364649c16360b5abf5fcf6f92f6192f79deeb7832aea7a5dc",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/02_aec_wpe_separation.md",
+              "href": "../../../../tests/test_codes_aec_wpe_sep_track.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "51b863cc94833106054f9d85e4cb168753dbf01844276c0ddf7965133a5cbfb6",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/02_aec_wpe_separation.md",
+              "href": "../../../../tests/test_codes_aec_partitioned.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "ceb5f7b7320f4b563ee02710e16a650f0629cf6d849228ac1bbbafcce38f175f",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/02_aec_wpe_separation.md",
+              "href": "../../../../tests/test_codes_aec_rls.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "dd8324c9bb19349da1e01e3f9270a04d94d9ad75b4f70586785e4c8d38137040",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/02_aec_wpe_separation.md",
+              "href": "../../../../tests/test_codes_aec_kalman_scalar_demo.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "48b2d62fc8b9f3dd27df9b07e1cd3360fc47918c6ad052d5b24802a2437b684e",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/02_aec_wpe_separation.md",
+              "href": "../../../../tests/test_codes_aec_kalman_matrix.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "c967872589f96c6870b7b88ecc8624b415e76543b7f5253e4a60c8d028f559d4",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/02_aec_wpe_separation.md",
+              "href": "../../../../tests/test_codes_ch06_upstream_apa.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "a427cf4a5f43ac725e6e4c7afb0266b31631396b70a4d396b820ff0498662210",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/02_aec_wpe_separation.md",
+              "href": "../../../../tests/test_codes_enhancement_round2.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "fe388c6514892c05e9bc5c371e53cb92664e7f2b91c1f0dea912ac66bd2c0d35",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/02_aec_wpe_separation.md",
+              "href": "../../../../tests/test_codes_exercises_enhancement.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "46814b128a45c71dbd8eb4b3e47cf9f4c95f0c2bf0f104fae084bc5ed723882f",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/02_aec_wpe_separation.md",
+              "href": "../../../../tests/test_codes_aec_controlled_doubletalk.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "8a08fd4c9f63b82b252e4cbee6a1250f10122d92f33b4dd85f0dd689476bd644",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/02_aec_wpe_separation.md",
+              "href": "../../../../tests/test_codes_aec_ipnlms_subband.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "9d0cc83da06231b0e21921eed2775660148a3e32c30c156d853b8777493dc83c",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/02_aec_wpe_separation.md",
+              "href": "../../../../tests/test_codes_aec_crossband.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "df68c8af2c93e0f40e893e33881e3c649eb48bb99dc4031b3f644873c2a8f6f7",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/02_aec_wpe_separation.md",
+              "href": "../../../../tests/test_codes_aec_upstream_interfaces.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "adba7b9aee3601000a0c7f4219660de309ee2d682366166d4a83b905ce44b17e",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/02_aec_wpe_separation.md",
+              "href": "../../../../tests/test_codes_ch06_source_contracts.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "56a7e759568d660a756d7075aa44a2c4a5d823155307cb94ebd1baccf2dc9d5d",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/02_aec_wpe_separation.md",
+              "href": "../../../../tests/test_codes_wpe_upstream_interfaces.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "56af66b129db723d39b66aedb9da4796cf62c8a6f02a63d20dcbfb461bba696c",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/02_aec_wpe_separation.md",
+              "href": "../../../../tests/test_codes_ch07_upstream_wpe_contracts.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "c0c53ec74f22a0e550e10a270a208463f558721ffbabbab579a31f729c3cb725",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/02_aec_wpe_separation.md",
+              "href": "../../../../tests/test_codes_enhancement_structure.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "e2a26966635dea06ef867ab376f795ea9f57bf555a649eefb72ebc84011ad37e",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/02_aec_wpe_separation.md",
+              "href": "../../../../tests/test_codes_ch08_upstream_separation_contracts.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "d0d39dcda2e74672aba788031d9fdd16519283dede3e14bc6805a5c440cee006",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/02_aec_wpe_separation.md",
+              "href": "../../../../tests/test_codes_ch08_source_contracts.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "f0638ad3767606ac00d6b8ce9d7710aae27d8a53d39f7298d1996a1347695ac0",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/02_aec_wpe_separation.md",
+              "href": "../../../../tests/test_codes_tflocoformer_source_audit.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "1cadcbcdd0cfc9c812af03699a8113935160cccab5eb474a925bdd52b8f11ff5",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/03_industrial_deployment.md",
+              "href": "../../../../tests/test_codes_libsamplerate_sro.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "083f81ae66f0e875f9a0fd73144ae690ce659e60d51a6ccfc2fa0e767ca6108c",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/03_industrial_deployment.md",
+              "href": "../../../../tests/test_codes_sro_closed_loop.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "34659864337a6a3bba1c249b46b521be54ef2790a479b777bd52969d2fc2817a",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/03_industrial_deployment.md",
+              "href": "../../../../tests/test_codes_meeting_scoring_interfaces.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "de878bd10b0f4b7e872d6e9637bd555bb53606e855d21334dd0e4c0da9e7ab40",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/03_industrial_deployment.md",
+              "href": "../../../../tests/test_codes_meeting_kernel_contracts.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "94b39d6438e979ce5ff891247bf8ef169300a78f74d64c3212c7adc4e87a2bdb",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/03_industrial_deployment.md",
+              "href": "../../../../tests/test_codes_industrial_interfaces.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "82b80f2bf90baa14a9e47293c2d2b7d58a0f2a4a1fd7f37a1a8db0e5afe405e8",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/03_industrial_deployment.md",
+              "href": "../../../../tests/test_codes_industrial_upstream_interfaces.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "38d5c76119ee2c8c1243d936ea11599f9a4fdc8788d9c6cf487f4f2995457c67",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/04_source_reproduction.md",
+              "href": "../../../../tests/test_codes_appendix_a_source_guards.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "572f24341c79c26d7a995fb73c00411cacb601540968cb8011630c4ee022820c",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/04_source_reproduction.md",
+              "href": "../../../../tests/test_codes_upstream_solver_contracts.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "6939db46dd7662e47d783504235317acd621ce39801c35400611549da244e73e",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/04_source_reproduction.md",
+              "href": "../../../../tests/test_codes_ch06_source_contracts.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "56a7e759568d660a756d7075aa44a2c4a5d823155307cb94ebd1baccf2dc9d5d",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/05_exercises_and_audio.md",
+              "href": "../../../../tests/test_codes_tracking_crossing_dropout.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "7170e8f68604487e888290e21de163e3c774537498608716970d2f8683e9c5ff",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/05_exercises_and_audio.md",
+              "href": "../../../../tests/test_codes_appendix_b_experiments.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "98f22d3798500eec5311094ee13686dc38831c22cc1d5467b846fcaa00d83cbc",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/05_exercises_and_audio.md",
+              "href": "../../../../tests/test_codes_clock_audio.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "eda3205a7ba42b0fd67f1ccc9496285749809db1b4db7f501152cae68a80b151",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/05_exercises_and_audio.md",
+              "href": "../../../../tests/test_codes_interpolation.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "395ecc70229dc34e1068ca48048d72ed427b402b91d4123b5ca1ad65757fd4ec",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/05_exercises_and_audio.md",
+              "href": "../../../../tests/test_codes_chapter01_experiments.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "83d4e0f217a2441cafa989d2b1b8b2559482ded06bd7a9761b84d81fc10f887a",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/05_exercises_and_audio.md",
+              "href": "../../../../tests/test_codes_chapter02_experiments.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "2d033a9c45bbcf98aad75892cd83effaf9ca6ffe5f2383765a2653ef284d6596",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/05_exercises_and_audio.md",
+              "href": "../../../../tests/test_codes_chapter03_experiments.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "b58ca1d3c1552de9a81a6e70f9cc30f67181c035f408acfdc78cd7e73409474f",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/05_exercises_and_audio.md",
+              "href": "../../../../tests/test_codes_chapter04_experiments.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "bde33bd3f1a6112c9b70a143abfed43fd1fd45f5b3bf8674f0e80781cdbd9bd3",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/05_exercises_and_audio.md",
+              "href": "../../../../tests/test_codes_gsc.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "62ab61a2654ce4ca1ccfa70d5df000433ea663acb5b4dd04722efd2abc0bca5c",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/05_exercises_and_audio.md",
+              "href": "../../../../tests/test_codes_aec_dropout_audio.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "a8f185cb7715f22c383ab5015cb25942af8de86ba2309342acbec1ea2c43d1cf",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/05_exercises_and_audio.md",
+              "href": "../../../../tests/test_codes_wpe_predictable_audio.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "be6d80f149c6ec6fd228af008d04a9862773251d7a0d913473decc170c1969c2",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/05_exercises_and_audio.md",
+              "href": "../../../../tests/test_codes_css_overlap.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "4c2d3a671d9460e161d0d4b47d22aaecba5757c086cd67faaeb65b4c3d91a199",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/05_exercises_and_audio.md",
+              "href": "../../../../tests/test_codes_tracking_audio.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "faa63d8b8d12b930b8006d54d209119e1896f2c064c8e4df84bf6211add8d791",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/05_exercises_and_audio.md",
+              "href": "../../../../tests/test_codes_tracking_boundaries.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "fdbddf211a6f9b2bc757cddccdaac6a6c040b217ea2b5f61f1011ca858f654b5",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/05_exercises_and_audio.md",
+              "href": "../../../../tests/test_quality_tracking_audio.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "a35425ae7445b2866d520b27c65a4b50f341d93800a8d76b64f6732b04c36ed9",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/05_exercises_and_audio.md",
+              "href": "../../../../tests/test_codes_chapter09_experiments.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "5168c2cb695dc45a3b4d17a45922be10708b35c8e5afc05121420c58cc1779a5",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/05_exercises_and_audio.md",
+              "href": "../../../../tests/test_codes_chapter10_experiments.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "abb4819ab03dea60e6e6fae70568a1e5db121c1e9b30e709b8ee17396eba70f4",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/05_exercises_and_audio.md",
+              "href": "../../../../tests/test_codes_engineering_ch10_boundaries.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "75e23201257cb048edb6f8da8f73d24961e6fdeca709d8bd09c041897485acb8",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/05_exercises_and_audio.md",
+              "href": "../../../../tests/test_codes_chapter11_experiments.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "0e23e4f2314801956ec1a26d96c9797c62ba69bf71ed23fb491282be8d430db6",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/05_exercises_and_audio.md",
+              "href": "../../../../tests/test_codes_appendix_a_boundaries.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "da81146e7283452c0808a45acf71f597ec971aab77d58843483c4500d0e1ad90",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/05_exercises_and_audio.md",
+              "href": "../../../../tests/test_codes_appendix_a_experiments.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "875bff6af9c7cc5cda5a132776b063bba3c4f2e1991c7ad4824e9efb3ed999b9",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/05_exercises_and_audio.md",
+              "href": "../../../../tests/test_codes_spatial_model.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "64ce57cf38fb832364649c16360b5abf5fcf6f92f6192f79deeb7832aea7a5dc",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/05_exercises_and_audio.md",
+              "href": "../../../../tests/test_codes_ch05_derivative_audio.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "0294e5d9be53891ff02ddf71ab8caabf12d0affaf51bb8f537dfed824b93e84f",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/05_exercises_and_audio.md",
+              "href": "../../../../tests/test_codes_selection_evidence.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "e42399537a6e3efa8111104a36862497d4e9f166e541388fc41c10a86e2dcf6a",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/05_exercises_and_audio.md",
+              "href": "../../../../tests/test_codes_upstream_solver_contracts.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "6939db46dd7662e47d783504235317acd621ce39801c35400611549da244e73e",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/05_exercises_and_audio.md",
+              "href": "../../../../tests/test_codes_appendix_a_source_guards.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "572f24341c79c26d7a995fb73c00411cacb601540968cb8011630c4ee022820c",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/05_exercises_and_audio.md",
+              "href": "../../../../tests/test_codes_appendix_b_boundaries.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "950a27de1cfdc9e34c5c5110045a2f068b9d5a557ee646efd61a4efd6b709815",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/05_exercises_and_audio.md",
+              "href": "../../../../tests/test_codes_response_audio.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "8ef694e6fb8aff730b488b17f9145d0daf9a5491fc0215acfad5b98f5855f1df",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/05_exercises_and_audio.md",
+              "href": "../../../../tests/test_codes_appendix_b_experiments.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "98f22d3798500eec5311094ee13686dc38831c22cc1d5467b846fcaa00d83cbc",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/05_exercises_and_audio.md",
+              "href": "../../../../tests/test_codes_appendix_b_truncated_edc.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "dea09760ae22417043de315539794505bab4d177943604063ef29e4b7fd3cfb2",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/05_exercises_and_audio.md",
+              "href": "../../../../tests/test_codes_imaging.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "9bdcee750be8ceb8b6f1f0976b707afc38012917f095559b0becc2a5cabf6430",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/05_exercises_and_audio.md",
+              "href": "../../../../tests/test_codes_deconvolution.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "626a967475741dbf407991344c8e05350eccbc26a9a6af356db28029e5edafba",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/05_exercises_and_audio.md",
+              "href": "../../../../tests/test_codes_sweep_audio.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "fd453a754966cb92eabb2a2eb7cc71a7cd8aa1769ae16258b15778ad256e2cdb",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/05_exercises_and_audio.md",
+              "href": "../../../../tests/test_codes_stft_consistency.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "565da59312080674ac42672fa45bffbd78406991e8d9d55f25dfcd8ed92ea8de",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/05_exercises_and_audio.md",
+              "href": "../../../../tests/test_ch06_reference_publication.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "ea3128d04cbca495fe356096d3bd9dbf22c11ce3e0862a83fe1be3871b689954",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/05_exercises_and_audio.md",
+              "href": "../../../../tests/test_codes_prediction_delays.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "d4663a8f5890bd4bbe325a669005f6e4ba678a7fbe397efcb041f76b7db5e182",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/05_exercises_and_audio.md",
+              "href": "../../../../tests/test_quality_delay_audio.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "bcde30b4423c305f8f82deb4b36e225e1f68048e9cacd1724ff9846b7aec89c2",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/05_exercises_and_audio.md",
+              "href": "../../../../tests/test_codes_ch09_imm_spherical.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "c492d8c77f36bf620681f77cbf1d0d16131bd97ecd34236a2a7375fb4c378978",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/05_exercises_and_audio.md",
+              "href": "../../../../tests/test_codes_ch09_lifecycle.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "c0b05f1fa205fc191b76b774b39cc57685dec9b8a6dc04aa1b7812ac2e0ff628",
+              "shadow_target_exists": false
+            },
+            {
+              "consumer": "codes/chapters/ch00/research_en/05_exercises_and_audio.md",
+              "href": "../../../../tests/test_quality_ch09_lifecycle_publication.py",
+              "formal_target_exists": true,
+              "formal_target_sha256": "bb6cb26676e2824a11f1bbf5ee9c7112e5d4e6798aa455a915e90355debb4229",
+              "shadow_target_exists": false
+            }
+          ],
+          "interpretation": "IncompleteQAshadowcontextisrealerror; donotdeletevalidlinks/relaxgate. Finalcompletecandidateorformalworkspacemustcontainfullreviewedsource/testsnamespacebeforeallgateacceptance."
+        },
+        "two_fixed_upstream_link_controls": [
+          {
+            "repo": "cevers/sap_locata_io",
+            "revision": "632468f49b13ca5a9f2f51c064d91183c06622fa",
+            "fixed_lock_matches": true
+          },
+          {
+            "repo": "nay0648/bssaec2020",
+            "revision": "a3f52249ee61f19e2369823f65c6c31392dcf042",
+            "fixed_lock_matches": true
+          }
+        ],
+        "extra_function_correspondence": {
+          "scripts/build_pdf.py": [
+            {
+              "name": "recompress_pdf_images_losslessly",
+              "formal_exact_candidate": true,
+              "prototype_exact_candidate": true,
+              "candidate_function_SHA256": "9585a702c0d1843d4503066728870422b11f2f6075267bac5c64fcd1d00a8bbe"
+            },
+            {
+              "name": "compress_pdf_page_streams_losslessly",
+              "formal_exact_candidate": true,
+              "prototype_exact_candidate": true,
+              "candidate_function_SHA256": "a13befd0a63ecd03cad7f2e9ff9031ec913015b57dba20180a7544f17e71a2b8"
+            },
+            {
+              "name": "write_pdf_with_object_streams",
+              "formal_exact_candidate": true,
+              "prototype_exact_candidate": true,
+              "candidate_function_SHA256": "e622d6bc6cdbb8d8a8a9a90a4e783cecd51b74d41ecb474176146919297837f1"
+            },
+            {
+              "name": "pdf_formula_paint_locations",
+              "formal_exact_candidate": false,
+              "prototype_exact_candidate": true,
+              "candidate_function_SHA256": "6c9388b76f2e523e5b1dfccf42becb195e5b16b90d8b9285618750a6fad8b09e"
+            },
+            {
+              "name": "tag_pdf_formulas",
+              "formal_exact_candidate": false,
+              "prototype_exact_candidate": true,
+              "candidate_function_SHA256": "20b35f6dd08e2dcb15dca45ea477466bfa3d62e4eaf570412cbe4e1962f2ff81"
+            }
+          ]
+        },
+        "currentPDFstatus_snapshot": [
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/dist/microphone-array-tutorial.pdf",
+            "bytes": 37379667,
+            "mtime_ns": 1795426400846804473,
+            "sha256_if_nonempty": "d9911618ed8cd150f55d5508393a1f05d7062df36bc3344f9c885b737e9b77ab",
+            "boundary": "Observationonly; nofinalidentity/structure/visualacceptancefromthisinventory"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/dist/microphone-array-tutorial-en.pdf",
+            "bytes": 182578692,
+            "mtime_ns": 1795392205321745312,
+            "sha256_if_nonempty": "8d7f9d37e615cdd6213f1dc0be406e71846bcac403d401f6a58129d83d23b14c",
+            "boundary": "Observationonly; nofinalidentity/structure/visualacceptancefromthisinventory"
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/dist/validated-en-ns0ag7dt.pdf",
+            "bytes": 0,
+            "mtime_ns": 1795426488807610393,
+            "sha256_if_nonempty": null,
+            "boundary": "Observationonly; nofinalidentity/structure/visualacceptancefromthisinventory"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/shadow/dist/validated-en-d_cl7p1u.pdf",
+            "bytes": 0,
+            "mtime_ns": 1795430778022253452,
+            "sha256_if_nonempty": null,
+            "boundary": "Observationonly; nofinalidentity/structure/visualacceptancefromthisinventory"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/shadow/dist/validated-1qcda3pb.pdf",
+            "bytes": 0,
+            "mtime_ns": 1795431268622627860,
+            "sha256_if_nonempty": null,
+            "boundary": "Observationonly; nofinalidentity/structure/visualacceptancefromthisinventory"
+          }
+        ],
+        "formal681_end_unchanged": true,
+        "formal681_changed": [],
+        "adjacent_risks_and_required_next": [
+          "CandidateZHCLI600sdeadlinefailedbeforegenerated/tagstage; timeoutassessmentpreservesnoncausalCPUscopeandoriginalSHArecovery.",
+          "V7ENandnewcontrolledZHneedsactualcompletion;oldR4PDFs/3pageprobesnotnewwholebookacceptance.",
+          "StillrequirefinalHTMLcanonicalmetadata+PDF50MiB+fullbookpages/bookmarks/deeplinks/MathJax/accessibilityandfiniteA4views.",
+          "Current35sourcematrixdoesnotimplyall681sourcefilesre-readatnewSHA. NextwholeR5shouldexplicitlyfreezeupdatednamespaceandclosechangedconsumers.",
+          "Completeall-source/testnamespaceforshadowgates;missingfixturesarenottextbugs.",
+          "Parsedreportstatisticalconsistencyandcryptographicbindingnotproofeverygeneratedcurveorupstream/PCMexecution."
+        ],
+        "no_mutations": "No formal/candidate-source/author-probe/assets/Gitwrite; onlyownexternalJSON/scripts/byteIO. No secondfullChrome/termination."
+      }
+    },
+    "r5-v7-shared-pdf-preview--en-raw-review--reviewed-native-a4.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/en-raw-review/reviewed-native-a4.json",
+      "sha256": "889e2ce9e6ece79bd0a4fe743740f1316791f7ecf403393590966037a59d45ea",
+      "bytes": 6450,
+      "boundary": "Twelve actual opened native English R4/R5 raw pages. On matched page 555 pixel changes are bounded to the three restored table labels.",
+      "packet": {
+        "status": "completed selected actual raw visual check",
+        "raw_R5_print": {
+          "path": "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/en-raw-chrome.pdf",
+          "bytes": 135643658,
+          "sha256": "f445d6d306746cf21c462016d7475aaebe87385fb175fbd68ab8fa182bea35df",
+          "pages": 1624,
+          "html_sha256_used_by_builder": "bfd0e60462aba816808dc1e35f6e28dc29353ae11b2ed7b812893cf8c131db48",
+          "source_digest_used_by_builder": "8b16d9554b7c",
+          "has_struct_tree": true,
+          "postprocessor_metadata_attached": false,
+          "capture_utc": "2026-11-23T10:55:38.493464+00:00",
+          "scope": "Actual Chrome raw candidate from known current exact input. Preserve while regular postprocessing continues unchanged."
+        },
+        "render_manifest_sha256": "5cab42b014df236f1e4872c234536a6c68b14e3be034e9540bc9e2f357729c12",
+        "actual_viewed_pages": [
+          {
+            "version": "R4",
+            "page": 555,
+            "path": "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/en-raw-review/0-0555-actual-a4-110.png",
+            "sha256": "050d0ff4429a2bf60e37307ee6e7c9e6b538d587a15eac35003239e399497981",
+            "observation": "Repeated binaural comparison table lacks all three math labels beneath their plain-language headings. The body values are visible."
+          },
+          {
+            "version": "R5",
+            "page": 555,
+            "path": "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/en-raw-review/1-0555-actual-a4-110.png",
+            "sha256": "bb5e8b3e2c07302cad65784339e65f4f5ec95aeb994a1a765d3afb9207c089a6",
+            "observation": "The three repeated header labels w_L, w_R and (Y_L, Y_R) are visibly present. The two original body rows remain readable."
+          },
+          {
+            "version": "R5",
+            "page": 576,
+            "path": "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/en-raw-review/1-0576-actual-a4-110.png",
+            "sha256": "25fae4da14ec3e6a041683f439aba63bdad602f021dd00166c5e62e65ef761b3",
+            "observation": "Repeated spectrum table has all its ordinary headings and renders the final data row. Equation (6-4) and preceding definition laid out within margins."
+          },
+          {
+            "version": "R5",
+            "page": 854,
+            "path": "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/en-raw-review/1-0854-actual-a4-110.png",
+            "sha256": "d5c525008033afb78227c436d849ea7175fa33875496acc2db9302664d5c7fed",
+            "observation": "Both mask formula rows and right-column explanations visible. This is a text-only repeated header control."
+          },
+          {
+            "version": "R5",
+            "page": 907,
+            "path": "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/en-raw-review/1-0907-actual-a4-110.png",
+            "sha256": "2fbb37eb3c56b8603e8170086ee065ba2133030127d703df58250fd5b3fc794b",
+            "observation": "Exercise title, two weighted covariance inputs, cost formula and numbered first two answer items visible. First nested row begins."
+          },
+          {
+            "version": "R5",
+            "page": 908,
+            "path": "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/en-raw-review/1-0908-actual-a4-110.png",
+            "sha256": "e9ac248ca999600925f4b439dfe001e1a7c7048bedbe93d37c5e573e93de414e",
+            "observation": "Remaining IP row, two nested ISS rows, then step 4 with target value, table labels and sweeps 0–1. All formula and row text visible."
+          },
+          {
+            "version": "R5",
+            "page": 909,
+            "path": "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/en-raw-review/1-0909-actual-a4-110.png",
+            "sha256": "35f49b62c0a6ac8239eeceffe302eca31fb4255400aea7efeaf1583e2b197a85",
+            "observation": "Plain sweep, IP and ISS headings repeat. Sweeps 2–5, actual nonzero residual text and costs explanation visible. End-of-chapter white space after retained conclusion."
+          },
+          {
+            "version": "R5",
+            "page": 1521,
+            "path": "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/en-raw-review/1-1521-actual-a4-110.png",
+            "sha256": "b1f7c6fc900934b686437cbb1946aa00fc23472b99659d544df37782acc24ce7",
+            "observation": "Complex-matrix reference table formulas, label and boundary conditions visible; centered endpoint qualification and links are present."
+          },
+          {
+            "version": "R5",
+            "page": 1522,
+            "path": "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/en-raw-review/1-1522-actual-a4-110.png",
+            "sha256": "62d83317a3e4d1fd44dca4cde0bdc98a0e99c8c973b55304abe2ee8b8814bc7e",
+            "observation": "Reference table repeats existing headings. Polyphase and Schur rows are present; full-record cross-correlation relation and following subsection visible."
+          },
+          {
+            "version": "R5",
+            "page": 1523,
+            "path": "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/en-raw-review/1-1523-actual-a4-110.png",
+            "sha256": "33fbfc9cf2d5427752ebcd1891bbc9a62bb0548179a427ac353f422b82052131",
+            "observation": "Regularization card formulas and caveats fit the page, including the explicit normal-equation range and the non-guaranteed Davis–Kahan behavior. This page contains regularization rows, not the later API FFT row."
+          },
+          {
+            "version": "R5",
+            "page": 1524,
+            "path": "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/en-raw-review/1-1524-actual-a4-110.png",
+            "sha256": "67f844bd77d88a41c09cc143a6020f7fb669695c7efedf6fd7fd49f169835f53",
+            "observation": "API reference incl. UPLO choices as separate actual code chips; no stray pipe or Markdown backslash. Long APIs wrap mechanically in the narrow first column; copied text and final accessible structure are separate checks."
+          },
+          {
+            "version": "R5",
+            "page": 1525,
+            "path": "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/en-raw-review/1-1525-actual-a4-110.png",
+            "sha256": "2fccab8b9155c1a1789512df824d99e5be14b763e139c0ccfd0ff5ed24605d17",
+            "observation": "API card header repeats and final row is intact. Section 16.4 begins on this page and its command blocks and first exercise are visible."
+          }
+        ],
+        "binaural_header_same_page_110dpi_delta": {
+          "difference_pixels": 531,
+          "difference_bounds_xyxy": [
+            261,
+            106,
+            551,
+            122
+          ],
+          "old_pdf_page": 555,
+          "new_pdf_page": 555
+        },
+        "boundary": "Actual raw A4 prints before postprocessing. Thirty-two pages rendered, twelve opened for the observations recorded here. No claim about final bookmarks or all-page perceptual checks."
+      }
+    },
+    "r5-v7-shared-pdf-preview--zh-raw-review--reviewed-native-a4.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/zh-raw-review/reviewed-native-a4.json",
+      "sha256": "cab70130f15d58ff0b0d514f0a74bd77403ad6301624eecf7d4d970753a6a0a4",
+      "bytes": 13126,
+      "boundary": "Actual localized Chinese raw retry. Seven math header pages and two solution lead pagination counterexamples, plus multi-page exercise and appendix controls.",
+      "packet": {
+        "status": "selected_actual_A4_raw_visual_complete",
+        "r5_raw_sha256": "6f57fdd5dbbd726f011f5b3e8ef90cedc46b2f10af612e3458fa89af71d5e469",
+        "r4_formal_comparison_sha256": "d9911618ed8cd150f55d5508393a1f05d7062df36bc3344f9c885b737e9b77ab",
+        "page_count": {
+          "R4": 1389,
+          "R5": 1389
+        },
+        "render_count": 26,
+        "viewed": [
+          {
+            "version": "R4",
+            "page": 1216,
+            "png": "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/zh-raw-review/R4-p1216-110dpi.png",
+            "sha256": "6b83f58ccc6460cd2e31616c2e03c95b672c00eff7ea4e33e2c1f9a3b5facdee",
+            "dimensions_px": [
+              909,
+              1287
+            ],
+            "render_argv": [
+              "/Users/francis7999/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/override/pdftoppm",
+              "-f",
+              "1216",
+              "-l",
+              "1216",
+              "-r",
+              "110",
+              "-singlefile",
+              "-png",
+              "/Users/francis7999/code/github_repos/microphone-array-signal-processing/dist/microphone-array-tutorial.pdf",
+              "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/zh-raw-review/R4-p1216-110dpi"
+            ],
+            "stderr": "",
+            "observation": "跨页表头第三列为空，第一列只剩空括号，阶次和正则两列缺变量。原表数据仍在。"
+          },
+          {
+            "version": "R5",
+            "page": 180,
+            "png": "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/zh-raw-review/R5-p0180-110dpi.png",
+            "sha256": "6052a1983e49f5662be97d91230080c30e0035b2811637e33b72df8183fd62e1",
+            "dimensions_px": [
+              909,
+              1287
+            ],
+            "render_argv": [
+              "/Users/francis7999/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/override/pdftoppm",
+              "-f",
+              "180",
+              "-l",
+              "180",
+              "-r",
+              "110",
+              "-singlefile",
+              "-png",
+              "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/zh-standard-retry-raw-chrome.pdf",
+              "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/zh-raw-review/R5-p0180-110dpi"
+            ],
+            "stderr": "",
+            "observation": "跨页续表显示干扰分量、逐点乘积、交叉项、混合波形和混合总均方中的全部公式。页尾绿底参考答案标签与下页解答分离，登记R419。"
+          },
+          {
+            "version": "R5",
+            "page": 241,
+            "png": "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/zh-raw-review/R5-p0241-110dpi.png",
+            "sha256": "72915b96c50c1fb75948bc274cc8915c5c9fc2e517e399e1210bb54cb2b87618",
+            "dimensions_px": [
+              909,
+              1287
+            ],
+            "render_argv": [
+              "/Users/francis7999/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/override/pdftoppm",
+              "-f",
+              "241",
+              "-l",
+              "241",
+              "-r",
+              "110",
+              "-singlefile",
+              "-png",
+              "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/zh-standard-retry-raw-chrome.pdf",
+              "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/zh-raw-review/R5-p0241-110dpi"
+            ],
+            "stderr": "",
+            "observation": "方差下界CRLB及rad²恢复在重复表头中。两行数值、物理说明与随后算例可读。"
+          },
+          {
+            "version": "R5",
+            "page": 256,
+            "png": "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/zh-raw-review/R5-p0256-110dpi.png",
+            "sha256": "a024e235f8180406f7000726b23378e50bf6e8913859254e3933dba6c5da4896",
+            "dimensions_px": [
+              909,
+              1287
+            ],
+            "render_argv": [
+              "/Users/francis7999/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/override/pdftoppm",
+              "-f",
+              "256",
+              "-l",
+              "256",
+              "-r",
+              "110",
+              "-singlefile",
+              "-png",
+              "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/zh-standard-retry-raw-chrome.pdf",
+              "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/zh-raw-review/R5-p0256-110dpi"
+            ],
+            "stderr": "",
+            "observation": "采样时刻、直达、反射和叠加通道四列的数学标签恢复。前一题能量解释与E02-14起始均可读。"
+          },
+          {
+            "version": "R5",
+            "page": 337,
+            "png": "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/zh-raw-review/R5-p0337-110dpi.png",
+            "sha256": "7cda21be3e8cab9a626bc86eaeb81043ead72151c98ccd3f967c75ecfc0fac6d",
+            "dimensions_px": [
+              909,
+              1287
+            ],
+            "render_argv": [
+              "/Users/francis7999/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/override/pdftoppm",
+              "-f",
+              "337",
+              "-l",
+              "337",
+              "-r",
+              "110",
+              "-singlefile",
+              "-png",
+              "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/zh-standard-retry-raw-chrome.pdf",
+              "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/zh-raw-review/R5-p0337-110dpi"
+            ],
+            "stderr": "",
+            "observation": "真实角和五个低/高频延时或反演角标均恢复。页尾另现独立绿色参考答案，登记R419。"
+          },
+          {
+            "version": "R5",
+            "page": 420,
+            "png": "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/zh-raw-review/R5-p0420-110dpi.png",
+            "sha256": "e08a785c1c81f60d2bde4601a84c008eca56cbea52aa03b8f8b7c9ef80fd6730",
+            "dimensions_px": [
+              909,
+              1287
+            ],
+            "render_argv": [
+              "/Users/francis7999/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/override/pdftoppm",
+              "-f",
+              "420",
+              "-l",
+              "420",
+              "-r",
+              "110",
+              "-singlefile",
+              "-png",
+              "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/zh-standard-retry-raw-chrome.pdf",
+              "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/zh-raw-review/R5-p0420-110dpi"
+            ],
+            "stderr": "",
+            "observation": "重复表头中延迟比、零陷角、球面指向因数和DI齐全。三种模式的行值及后续公式正常。"
+          },
+          {
+            "version": "R5",
+            "page": 762,
+            "png": "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/zh-raw-review/R5-p0762-110dpi.png",
+            "sha256": "0d431ca34a816156e4598c3c5ab75a68d10d9e9b53fe28e6e4c3d8ae9a3c1c1a",
+            "dimensions_px": [
+              909,
+              1287
+            ],
+            "render_argv": [
+              "/Users/francis7999/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/override/pdftoppm",
+              "-f",
+              "762",
+              "-l",
+              "762",
+              "-r",
+              "110",
+              "-singlefile",
+              "-png",
+              "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/zh-standard-retry-raw-chrome.pdf",
+              "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/zh-raw-review/R5-p0762-110dpi"
+            ],
+            "stderr": "",
+            "observation": "E08-27第2步后半、两个真实第3步子项与第4步表前公式均显示。第4步内表格第一面有0–2三行。"
+          },
+          {
+            "version": "R5",
+            "page": 763,
+            "png": "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/zh-raw-review/R5-p0763-110dpi.png",
+            "sha256": "23df6b7e3ec01f5af7399c51fd82f4cbf1cb1753cd6866f3024715c0c56026b6",
+            "dimensions_px": [
+              909,
+              1287
+            ],
+            "render_argv": [
+              "/Users/francis7999/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/override/pdftoppm",
+              "-f",
+              "763",
+              "-l",
+              "763",
+              "-r",
+              "110",
+              "-singlefile",
+              "-png",
+              "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/zh-standard-retry-raw-chrome.pdf",
+              "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/zh-raw-review/R5-p0763-110dpi"
+            ],
+            "stderr": "",
+            "observation": "E08-27续表三列短标题全部重复，末三轮数据、非零残差及比较说明可读，答题内容结束。"
+          },
+          {
+            "version": "R5",
+            "page": 941,
+            "png": "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/zh-raw-review/R5-p0941-110dpi.png",
+            "sha256": "980a835e9b9870b99e5b3d5656c06faa9bfe908c627c4777471802c27d771713",
+            "dimensions_px": [
+              909,
+              1287
+            ],
+            "render_argv": [
+              "/Users/francis7999/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/override/pdftoppm",
+              "-f",
+              "941",
+              "-l",
+              "941",
+              "-r",
+              "110",
+              "-singlefile",
+              "-png",
+              "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/zh-standard-retry-raw-chrome.pdf",
+              "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/zh-raw-review/R5-p0941-110dpi"
+            ],
+            "stderr": "",
+            "observation": "重复表头的两个码值集合、两处7kHz和群延迟符号齐全。下一题题面与首五行表格仍可读。"
+          },
+          {
+            "version": "R5",
+            "page": 1216,
+            "png": "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/zh-raw-review/R5-p1216-110dpi.png",
+            "sha256": "49773b5efb5e55bcdcc8d64248d55bc633ca37787da80cb175a073847579bd00",
+            "dimensions_px": [
+              909,
+              1287
+            ],
+            "render_argv": [
+              "/Users/francis7999/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/override/pdftoppm",
+              "-f",
+              "1216",
+              "-l",
+              "1216",
+              "-r",
+              "110",
+              "-singlefile",
+              "-png",
+              "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/zh-standard-retry-raw-chrome.pdf",
+              "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/zh-raw-review/R5-p1216-110dpi"
+            ],
+            "stderr": "",
+            "observation": "首列κR(f)、阶次n、原来全空的第三列绝对值、增益和保留响应列标签均恢复。六行记录与后续公式无裁切。"
+          },
+          {
+            "version": "R5",
+            "page": 1299,
+            "png": "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/zh-raw-review/R5-p1299-110dpi.png",
+            "sha256": "64c9575100df98fa2d2aee08c0037da237b6eae110ca6d107e414ad4ed6a3ce7",
+            "dimensions_px": [
+              909,
+              1287
+            ],
+            "render_argv": [
+              "/Users/francis7999/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/override/pdftoppm",
+              "-f",
+              "1299",
+              "-l",
+              "1299",
+              "-r",
+              "110",
+              "-singlefile",
+              "-png",
+              "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/zh-standard-retry-raw-chrome.pdf",
+              "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/zh-raw-review/R5-p1299-110dpi"
+            ],
+            "stderr": "",
+            "observation": "复矩阵速查卡续表和相关定义完整。公式、前提和入口均可见。"
+          },
+          {
+            "version": "R5",
+            "page": 1300,
+            "png": "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/zh-raw-review/R5-p1300-110dpi.png",
+            "sha256": "599e8d3a1a4a541c91fedc1d4fa7ff3b068451fc10503ae2fd5699718998609f",
+            "dimensions_px": [
+              909,
+              1287
+            ],
+            "render_argv": [
+              "/Users/francis7999/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/override/pdftoppm",
+              "-f",
+              "1300",
+              "-l",
+              "1300",
+              "-r",
+              "110",
+              "-singlefile",
+              "-png",
+              "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/zh-standard-retry-raw-chrome.pdf",
+              "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/zh-raw-review/R5-p1300-110dpi"
+            ],
+            "stderr": "",
+            "observation": "正则化速查卡的TSVD与岭回归展示式行宽充足，逐条控制和子空间条件均可见。"
+          },
+          {
+            "version": "R5",
+            "page": 1301,
+            "png": "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/zh-raw-review/R5-p1301-110dpi.png",
+            "sha256": "9baf5908b95103c7966631be8a592ca487d3ea73f3204999b89d4cc1644c13ff",
+            "dimensions_px": [
+              909,
+              1287
+            ],
+            "render_argv": [
+              "/Users/francis7999/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/override/pdftoppm",
+              "-f",
+              "1301",
+              "-l",
+              "1301",
+              "-r",
+              "110",
+              "-singlefile",
+              "-png",
+              "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/zh-standard-retry-raw-chrome.pdf",
+              "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/zh-raw-review/R5-p1301-110dpi"
+            ],
+            "stderr": "",
+            "observation": "API卡三组UPLO代码行正常，未显示旧转义竖线。较长API在首列中自动换行，章节内主要条目和公式均可见。"
+          }
+        ],
+        "native_raster_comparisons": [
+          {
+            "page": 1216,
+            "difference_pixels": 870,
+            "bounds_xyxy": [
+              76,
+              81,
+              835,
+              121
+            ]
+          }
+        ],
+        "boundary": "Chrome原始打印的人眼复核。R4对照为经核36dpi全页与110dpi子集RGB保持的正式成品。第五轮书签、压缩和语义尚由原命令处理。"
+      }
+    },
+    "r6-distributed-src-v2--plan.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/r6-distributed-src-v2/plan.json",
+      "sha256": "1deb82edf66a257c9ec9d6509262c0d51af6349a2d0a0ddfe716eea8f819f7b6",
+      "bytes": 1807,
+      "boundary": "R204 and R414 explain varying complex gain, opposite-phase cancellation and the total sample count separately. Exact review proposal.",
+      "packet": {
+        "status": "proposed after independent R204/R414 check",
+        "sources": [
+          {
+            "path": "chapters/13_distributed-enhancement.md",
+            "prior_sha256": "a09113cc129982b09bb7dd99be16a664b2d2c57ab03f26b6bc9b0f01d690ee31",
+            "candidate_sha256": "f3857984b28a786c8b9745f86b79f07c0eff76de257ca1e584902910ef99635c"
+          },
+          {
+            "path": "chapters_en/13_distributed-enhancement.md",
+            "prior_sha256": "b9b081bf79fe7acd383622af50d647bd499acd86ab6f9d819bddc9b7bf5f7db9",
+            "candidate_sha256": "7e00b15fd0e6ac66a88d1b75ac31c775161adee9a418ade665e1780743d2f684"
+          },
+          {
+            "path": "chapters/00_overview.md",
+            "prior_sha256": "50bc773f355e66448fb8d6f199aef57595d750a284fe490f79c2519fb2959000",
+            "candidate_sha256": "f379e8e6ce73e4a42930f3854eb827f1758ac3e1593aa06e9d596a22d677d611"
+          },
+          {
+            "path": "chapters_en/00_overview.md",
+            "prior_sha256": "6a2be47cf3639c42aa7b3150da5a827853797578961a8e4f985cdd503892a519",
+            "candidate_sha256": "b4a513377915a243777872831b1eafd2bbfd5d1bf1a684bc797ea9bcf1827162"
+          }
+        ],
+        "patch_sha256": "4c37bf03b294f6dd1e0b80c04a1c5d331a527004c2dad95457d60dfe0b6339b9",
+        "independent_packet": "a599ae3b4ea69ddf79a73044c651f55e07e7a3798facdea8584ef48df374d174",
+        "last_coordinate": "32002.1999",
+        "interpolation_support_indices": [
+          32002,
+          32003
+        ],
+        "total_remote_record_length": 32004,
+        "time_for_last_right_sample_after_output_nominal_us": "50.00124987501249875012498750",
+        "co_direction_fig67": {
+          "local_response": "5/26",
+          "remote_response": "17/26",
+          "anti_phase_response": "-6/13"
+        },
+        "boundary": "No numerical report, source algorithm or WAV changes. The new endpoint wording distinguishes 32004 total recorded samples from waiting for a single right-bracketing sample and network delivery."
+      }
+    },
+    "r6-r109-ch09-independent-review.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/r6-r109-ch09-independent-review.json",
+      "sha256": "788df9cb12f8d5ca0a170ef51c4b2f122c13660de6b2acfb05973ae69340cb9b",
+      "bytes": 2591,
+      "boundary": "Independent 2x2 Fraction proof of equality at a nonoptimal gain and negative asymmetric shorthand at another gain, plus both exact source deltas.",
+      "packet": {
+        "status": "accepted local prose",
+        "nonauthor": true,
+        "sources": [
+          {
+            "path": "chapters/09_source-tracking.md",
+            "line_edits": [
+              189
+            ],
+            "before_sha256": "631cc1493404a71e70accb56049ff570bb20ded96167578d0df5512a7ada48e2",
+            "after_sha256": "30f1696a843e49c3134b8b664f875ed371f1c884fd3f869f2ac635476097b6d1"
+          },
+          {
+            "path": "chapters_en/09_source-tracking.md",
+            "line_edits": [
+              189
+            ],
+            "before_sha256": "d25998f57475eb6c252189c58705655f08a424fb6ac7782a407d6d95aa4b90bf",
+            "after_sha256": "0037da0db894f4cbf133895291fdba65e5029ebb59a52ef831d2789e0e6a01c9"
+          }
+        ],
+        "demonstration": {
+          "Pminus": [
+            [
+              4,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "H": [
+            [
+              1,
+              2
+            ]
+          ],
+          "R": [
+            [
+              3
+            ]
+          ],
+          "cases": [
+            {
+              "case": "zero",
+              "gain": [
+                [
+                  "0"
+                ],
+                [
+                  "0"
+                ]
+              ],
+              "shorthand": [
+                [
+                  "4",
+                  "1"
+                ],
+                [
+                  "1",
+                  "1"
+                ]
+              ],
+              "joseph": [
+                [
+                  "4",
+                  "1"
+                ],
+                [
+                  "1",
+                  "1"
+                ]
+              ],
+              "joseph_det": "3"
+            },
+            {
+              "case": "optimal",
+              "gain": [
+                [
+                  "2/5"
+                ],
+                [
+                  "1/5"
+                ]
+              ],
+              "shorthand": [
+                [
+                  "8/5",
+                  "-1/5"
+                ],
+                [
+                  "-1/5",
+                  "2/5"
+                ]
+              ],
+              "joseph": [
+                [
+                  "8/5",
+                  "-1/5"
+                ],
+                [
+                  "-1/5",
+                  "2/5"
+                ]
+              ],
+              "joseph_det": "3/5"
+            },
+            {
+              "case": "limited_arbitrary",
+              "gain": [
+                [
+                  "1"
+                ],
+                [
+                  "0"
+                ]
+              ],
+              "shorthand": [
+                [
+                  "-2",
+                  "-2"
+                ],
+                [
+                  "1",
+                  "1"
+                ]
+              ],
+              "joseph": [
+                [
+                  "7",
+                  "-2"
+                ],
+                [
+                  "-2",
+                  "1"
+                ]
+              ],
+              "joseph_det": "3"
+            }
+          ]
+        },
+        "plan_sha256": "440c8a220f3832a581166be641027d3fe6f725372973a01e46ea56b814a642b9",
+        "scope": "Exact non-diagonal two-state Fraction controls, independent of original scalar cases. Source delta only; no full-book publication claim."
+      }
+    },
+    "r6-appendix-b-structure-and-triage-v2--plan.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/r6-appendix-b-structure-and-triage-v2/plan.json",
+      "sha256": "20fdd78d314067558766fb54099cc6a06ab392dda5dd497ba4b3971298cdb494",
+      "bytes": 3472,
+      "boundary": "Two Appendix B exact candidate sources plus corresponding assumptions, research counts, coverage, and explicit outline gates. R416, R128, R293, R208.",
+      "packet": {
+        "status": "proposal",
+        "scope": "R128 plus independently demonstrated R293/R208 and R416; paired candidate on prior exact R5 sources only.",
+        "prior_r128_payload": "/private/tmp/masp-multiround-20261123/r6-appendix-b-frontend-v2/plan.json",
+        "prior_first_composed_revision": "/private/tmp/masp-multiround-20261123/r6-appendix-b-structure-and-triage/plan.json",
+        "sources": [
+          {
+            "path": "chapters/17_appendix-guide.md",
+            "prior_sha256": "1bad92c998b5a2298cffac141d1c2887b827e72875bb13bb0b4cb7c20c44a72a",
+            "candidate_sha256": "757144e270d1a7329cbcadb83863698d0b84e38111ef919964f7e9ce9eab2a0b"
+          },
+          {
+            "path": "chapters_en/17_appendix-guide.md",
+            "prior_sha256": "ff3247a87f76a4b0278f6dd795d4c292bc04c39cb3a69f5bf0e865d337cd7256",
+            "candidate_sha256": "f4e4317be82d29a4da67e680bba9b3e807779712c9f4888750909e929d22c854"
+          },
+          {
+            "path": "codes/chapters/ch00/research/04_source_reproduction.md",
+            "prior_sha256": "cbc488bb09d4ed988d600b7cfa607ac1d865c9e1dd7e7bebc7d94e06bedd3692",
+            "candidate_sha256": "033f91a1c5edf88f585434a7f7ce9f82d86fedeff1f459ed73db23e21ceff37b"
+          },
+          {
+            "path": "codes/chapters/ch00/research_en/04_source_reproduction.md",
+            "prior_sha256": "a655304c44713823e4f07152c673b841672f69134f045950ab21c2cf332595f7",
+            "candidate_sha256": "ab076bd0a3d2ec00ce08ef7ac569d6bdd02cdbfa3cef3437cef85d7aceaf227a"
+          },
+          {
+            "path": "codes/chapters/ch00/COVERAGE.md",
+            "prior_sha256": "2fb32848fa26a55ac0cdb471dc240f5e3ed707edcddf7cf094f85e564fd9b8c5",
+            "candidate_sha256": "4f0fabb8755201dc6e832c57959fe76c7ccc3c24831f72a96c7913019fc007ef"
+          },
+          {
+            "path": "codes/chapters/ch00/COVERAGE_EN.md",
+            "prior_sha256": "93abfab157dcd8400a219ab5a5d98ba5fe4f5d3f472a5ca9698b8bb8e2ae2957",
+            "candidate_sha256": "a787f2dea4c08aa0abb22904d1d47498c6c0dd6f794bbc3c5b6fa08246ce1f5a"
+          },
+          {
+            "path": "scripts/quality_check.py",
+            "prior_sha256": "b0d30fe6e77bdd838e6d7679c4148411d10a97ce5425abff47f69a63ed1ec1f2",
+            "candidate_sha256": "e00b1791784a908da18c45572383a1728e871254735663cccdc1099dc7914e9d"
+          },
+          {
+            "path": "tests/test_research_quality.py",
+            "prior_sha256": "c5edda7714e9a66e7081725197e6c3b72cc89fbb79171a695e34a6310a7eef1b",
+            "candidate_sha256": "ae57f17d7ac9bb7794611dc62f5c34f45d43eafa403170aed3fc573b0d6fb7ca"
+          },
+          {
+            "path": "AGENTS.md",
+            "prior_sha256": "858462bc81f5563fbdd1c6498e1f99ef115ab60a24c165ac9ddabf2bbb9de49b",
+            "candidate_sha256": "e0f2cec3286ca0f2404a1afc699fd5207ca8eef4481c48fd0e3f5fc8cebde29b"
+          },
+          {
+            "path": "AGENTS_EN.md",
+            "prior_sha256": "a4c28644a397e88881559f459a564aa064224e3eb0d5e7b75b6598d26503e830",
+            "candidate_sha256": "b4690b03a22060eba2d7d26b52745ab55bb249b2740a49e3fea8917ea8700b3e"
+          }
+        ],
+        "patch_sha256": "592ae48da8c6b14025af5efdff3813a661624802140a59e41b5c7564f38f5786",
+        "r416": "Appendix B research direction 9 uses the same source heading level as 1 to 8. Source/combined/PDF explicit counts grow by exactly one, with 19 parts and 173 sections retained. Research pair no longer says eight directions.",
+        "r293": "Power ledger retains reported numbers; author and nonauthor must check syntax, model conditions, branch predicates, and partial telemetry with the independent Python candidate before promotion.",
+        "r208": "Replace one remaining unsupported bit agreement claim with actual test tolerance wording."
+      }
+    },
+    "r6-r293-diagnostic-telemetry-proposal-v2--handoff.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/r6-r293-diagnostic-telemetry-proposal-v2/handoff.json",
+      "sha256": "509a1e84cb0419b6025459459881dae7e5c00f5f2b134d33071b31ef16f689f8",
+      "bytes": 15472,
+      "boundary": "First missing-telemetry correction updated after reproduced overflow and invalid-key controls; candidate v2 scope and hashes.",
+      "packet": {
+        "role": "R6 independentreviewofexistingR293 and authorproposal/selfvalidation; awaitingnon-authorpeerreview/promotion",
+        "status": "Sealedv2privatecandidate. Originalv1andits18passingtestsretained; rootnon-authorboundaryfailuresreproducedandfixedonlyinv2. Awaitfullnon-authorv2review; noformal/V7integration.",
+        "scope": {
+          "actual_read": [
+            {
+              "path": "codes/chapters/appendix_b/core/diagnostic_roadmap.py",
+              "continuous_ranges": [
+                [
+                  1,
+                  342
+                ]
+              ],
+              "sha256": "a11934356c2d45d2df1edb4efae287a671cf0f40f97aac64fb0888623e71df9f"
+            },
+            {
+              "path": "tests/test_codes_appendix_b_experiments.py",
+              "continuous_ranges": [
+                [
+                  1,
+                  291
+                ]
+              ],
+              "sha256": "98f22d3798500eec5311094ee13686dc38831c22cc1d5467b846fcaa00d83cbc"
+            },
+            {
+              "path": "codes/chapters/appendix_b/appendix_b_experiments.py",
+              "ranges": [
+                [
+                  402,
+                  424
+                ]
+              ],
+              "read_boundary": "DirectE17-13consumeronly"
+            },
+            {
+              "path": "chapters/17_appendix-guide.md",
+              "ranges": [
+                [
+                  914,
+                  974
+                ]
+              ],
+              "read_only": "rootownswording"
+            },
+            {
+              "path": "chapters_en/17_appendix-guide.md",
+              "ranges": [
+                [
+                  914,
+                  974
+                ]
+              ],
+              "read_only": "rootownswording"
+            }
+          ],
+          "prior_issue_index": "/private/tmp/masp-multiround-20261123/pre-r5-issue-index-draft.json",
+          "prior_index_sha256": "46fb495e9a798a37afb305f19a842f267ee5d16c9439401eb652b8b8f2a3ccd6",
+          "selected_issue": "R293",
+          "code_consumers_search": "Only directappendix_bentrypoint andexistingtests; coveragetwoMDsrootowns. Nofigureproducer/assetwriterconsumerwasfound."
+        },
+        "records": [
+          {
+            "path": "codes/chapters/appendix_b/core/diagnostic_roadmap.py",
+            "preimage_sha256": "a11934356c2d45d2df1edb4efae287a671cf0f40f97aac64fb0888623e71df9f",
+            "candidate_sha256": "dc1351b40d52345c61da1eb2788534dbba1485dfcf0c40cf58cdcf6e3d371e3e",
+            "candidate_path": "/private/tmp/masp-multiround-20261123/r6-r293-diagnostic-telemetry-proposal-v2/source/codes/chapters/appendix_b/core/diagnostic_roadmap.py",
+            "v1_sha256": "c6b34f13050028efce5a1829079e8a1853848014efca4a13c62daafefa4d2d70"
+          },
+          {
+            "path": "tests/test_codes_appendix_b_experiments.py",
+            "preimage_sha256": "98f22d3798500eec5311094ee13686dc38831c22cc1d5467b846fcaa00d83cbc",
+            "candidate_sha256": "3a83c42c783039ba688381679229c4cad6aa22693eb43f0b7f467bcbfa1d5f45",
+            "candidate_path": "/private/tmp/masp-multiround-20261123/r6-r293-diagnostic-telemetry-proposal-v2/source/tests/test_codes_appendix_b_experiments.py",
+            "v1_sha256": "5f221413d84cb313d1b4933156d0f5a1502cf82982ecc44eed9a3526658de7ac"
+          }
+        ],
+        "patch": {
+          "path": "/private/tmp/masp-multiround-20261123/r6-r293-diagnostic-telemetry-proposal-v2/review.patch",
+          "sha256": "7834ec908c1ec2e903dbcbbf33f5902f97394e4c9a1f90cc53054cfe065c52d4",
+          "bytes": 18141
+        },
+        "contract_changes": [
+          {
+            "old": "Omittedtelemetrywasfilledwith12healthydefaults",
+            "new": "Onlysuppliedfinitevalueschecked; fixedkeysethasnodefaultvalues; unknownfield/bool/nonfinite/domainvalidationretained."
+          },
+          {
+            "old": "{}orDERonly90reportednominal/healthy",
+            "new": "Withnoobservedtriggerandincompletefields:returnfault_id/statusinsufficient_telemetry,stage telemetry_incomplete,andmissing_telemetrylist."
+          },
+          {
+            "old": "Partialtriggercouldimplicitlyclaimallupstreamnotmatched",
+            "new": "KeepoldruleIDs/stages/prioritiesforfirstobservedtrigger,addcheck_requiredstatus,telemetry_completeandmissinglist. Missingupstreamfieldsarenotclearedchecks; lowerpriorityhintmaybeusefulwithoutdiagnosingcause."
+          },
+          {
+            "old": "Nominalimpliedhealthy",
+            "new": "Legacyfault_idnominalretainedforcompletenon-triggeringinput;statusno_configured_alert andstageconfigured_rule_checks. All12fieldsaremandatoryforthisresult; itdoesnotcertifyglobalhealth."
+          },
+          {
+            "old": "healthy_pipelinefixturecalled{}",
+            "new": "Passoriginal12idealmeasurementsliterallyinfixture; alloldnumericparametersunchanged."
+          },
+          {
+            "old": "PTPv2listedwithsampleclockasifprotocolaloneprovesADCsync",
+            "new": "AskverifysharedADCclockorcontinuousSRO/resampling;PTPtimestampaloneisnotproofsampleratesynchronized. NoclaimPTPcanneverparticipatehardwarecontrol."
+          },
+          {
+            "old": "Lowcoherence+highlevelhardlabelledwindandspecifiedfusion",
+            "new": "ReturnexistingrouteIDascheck_required,inspectwindormechanicaloverload/clippingandcrosschannelcomparisonbeforechoosingprotection/fusion; nouniquecauseorautomaticupgrade."
+          },
+          {
+            "old": "Delta>=2framesprescribedasgeneralprotection",
+            "new": "Keep2frameexercisecomparisonbutaskactualhop/sample-rate/direct-earlyarrivals; notuniversaldevicecutoff."
+          },
+          {
+            "old": "2*latency*1e-6overflowedbeforeunitconversionat1e308us",
+            "new": "Use1/(2e-6*latency). 2000usremains250exact;1e308usnow5.0000000000000005e-303. ForfiniteL>100,denominatorinabout(2e-4,3.60e302],reciprocalpositivefinite."
+          },
+          {
+            "old": "MixednonstrunknownkeyscouldfailinsortedwithTypeError",
+            "new": "RejectnonstrtelemetrykeyswithValueErrorbeforeunknownsetsorting. Normalstring-keyandallnumericvalidationunchanged."
+          }
+        ],
+        "preserved": [
+          "Allnumericfunctions _validate_real_scalar/_stage_record/cascade_bottleneck_budget exactoriginalbytes.",
+          "Alloriginalnumericreportleavesexacttype/value; all8fixturekeys/faultIDs/priorities/chapterpointersand250Hznotchunchanged.",
+          "All13oldtestmethods byteidentical; noassertionweakened/replaced;5newbehavioralmethods appended.",
+          "SamepublicfunctionsignaturesandE17-13entrypoint,deterministicJSONstdoutworkflow. Nooldformalreportrewritten."
+        ],
+        "test_summary": {
+          "original_methods": 13,
+          "new_methods": [
+            "test_triage_comb_notch_preserves_representable_extremes",
+            "test_triage_exercise_threshold_boundaries_stay_strict",
+            "test_triage_missing_measurements_never_mean_no_alert",
+            "test_triage_priority_is_preserved_among_observed_alerts",
+            "test_triage_sufficient_partial_evidence_routes_a_check",
+            "test_triage_validates_supplied_values_before_routing"
+          ],
+          "actual_methods_run": 19,
+          "failures": 0,
+          "errors": 0,
+          "elapsed_s": 5.042565291019855,
+          "subtests": "16incompletescenarios,8sufficientpartials,15pairwisepriorities,10strictboundaries,4invalidafterknownalert pluscompletepositive within5methods; countmethodsseparatelyfromsubtests/properties.",
+          "extra_properties": {
+            "healthy_subsets_total": 4096,
+            "all_proper_subsets_insufficient": 4095,
+            "known_alert_with_arbitrary_healthy_completions": 11264,
+            "twofield_conjunction_loss": [
+              {
+                "original_alert": "wearable_wind_saturation",
+                "removed": "low_freq_wind_coherence",
+                "result": "insufficient_telemetry"
+              },
+              {
+                "original_alert": "wearable_wind_saturation",
+                "removed": "low_freq_level_db",
+                "result": "insufficient_telemetry"
+              },
+              {
+                "original_alert": "aec_reference_or_erle",
+                "removed": "far_end_active_ratio",
+                "result": "insufficient_telemetry"
+              },
+              {
+                "original_alert": "aec_reference_or_erle",
+                "removed": "far_end_erle_db",
+                "result": "insufficient_telemetry"
+              },
+              {
+                "original_alert": "late_reverberation_wpe",
+                "removed": "rt60_s",
+                "result": "insufficient_telemetry"
+              },
+              {
+                "original_alert": "late_reverberation_wpe",
+                "removed": "drr_db",
+                "result": "insufficient_telemetry"
+              },
+              {
+                "original_alert": "late_reverberation_wpe",
+                "removed": "rt60_s",
+                "result": "insufficient_telemetry"
+              },
+              {
+                "original_alert": "late_reverberation_wpe",
+                "removed": "wpe_prediction_delay_frames",
+                "result": "insufficient_telemetry"
+              },
+              {
+                "original_alert": "overlap_diarization_gss",
+                "removed": "overlap_speech_ratio",
+                "result": "insufficient_telemetry"
+              },
+              {
+                "original_alert": "overlap_diarization_gss",
+                "removed": "der_percent",
+                "result": "insufficient_telemetry"
+              }
+            ]
+          },
+          "all_original_numeric_leaf_count": 69,
+          "boundary_extra_subtests": "New6thmethodchecks2000usandtwohugefinitevalueswithDecimal80oracle; existinginvalidinputmethodadds3nonstrkeycases.",
+          "independent_fraction_boundary_cases": 1325,
+          "fraction_max_relative_error": 2.220446049250313e-16
+        },
+        "consumer_report": {
+          "actual_existing_full_module_run": true,
+          "originaltest_methodtest_e17_13_cascade_bottleneck_and_diagnostic_triage_unchanged": true,
+          "entrypoint": "Actualrun_exercises()viaoriginal13methods; includes11E17IDsandJSON-finitenesscheck. NoPRAupstreamornewroomassetgeneration.",
+          "output_schema_effect": "Addsstatus/telemetry_complete/missing_telemetrytoeverytriageitem; changesnominalstage/actionand4actionwordings. Numericalcascadereportandalloldnumericfieldsremainidentical. Downstreamconsumersrequiringexactoldtriagedictkeysorhealthy-stagewouldneedintentionaladaptation; no suchsourceconsumerfound."
+        },
+        "integration_plan": [
+          "Rootreviewsprivate2filepatchandpreimages,thenindependentpeerreplaysoriginal{}andDER-only90pluspriority/conjunctionandcomplete-inputcontrols.",
+          "RootownsChinese/EnglishE17-13andCOVERAGEwording: explainfirstobservedtrigger,missingupstreamnotpassed,configured-thresholdchecknotcausaldiagnosis; keepcorrectpowerledgernumbers.",
+          "Applyonlyatcoordinatedsourcewindow;donotoverlayongoingV7printtree. Thisproposalnotpartoffrozen35sourcecandidate.",
+          "NoWAV/PNG/sourceidentityreportregenerationneededfromthiscorealonebasedonactualconsumersearch; changedchapters/coveragedocsandfinalpublisherinputsneednormalfreshsource/HTML/PDFvalidationafterintegration.",
+          "Fullglobaltests/publicationacceptancehappenlater;19localmethodsandpropertiesarenotallbook/ATacceptance."
+        ],
+        "evidence": [
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-r293-diagnostic-telemetry-proposal-v2/actual-validation.json",
+            "sha256": "e136a2ddc9a88026d1c4229f630343526aa6b1280744b69b64fe9ea430339360",
+            "bytes": 35346
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-r293-diagnostic-telemetry-proposal-v2/test-execution.log",
+            "sha256": "17dad2c95e174e6da09d2247d262c1be044b444d38b8c89bfcbf2892cf39529a",
+            "bytes": 3493
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-r293-diagnostic-telemetry-proposal-v2/preimages-and-candidates.json",
+            "sha256": "7f0cf25af553c311e311fd246404e33fe788d5623a3feec0828cb89f1a36f018",
+            "bytes": 999
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-r293-diagnostic-telemetry-proposal-v2/review.patch",
+            "sha256": "7834ec908c1ec2e903dbcbbf33f5902f97394e4c9a1f90cc53054cfe065c52d4",
+            "bytes": 18141
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-r293-diagnostic-telemetry-proposal-v2/v1-to-v2.patch",
+            "sha256": "561f488c66f58ce8d692c266b925860fe3d3b74e216aed0040f2159214dc9fcf",
+            "bytes": 2729
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-r293-diagnostic-telemetry-proposal-v2/v1-boundary-counterexamples.json",
+            "sha256": "91c4c6b0ebd57408727dec6823acf7a1489a210dba23ff99aba7774e45d32bde",
+            "bytes": 2360
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-r293-diagnostic-telemetry-proposal-v2/v2-boundary-validation.json",
+            "sha256": "15ee5db640d9364500b4e934e3dc9ed50013665acb7e06abd362da0da3dd52ce",
+            "bytes": 255877
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-r293-diagnostic-telemetry-proposal/publication-dependency-probe.json",
+            "sha256": "52114d09b5a9523ec5870898e669aef3eedee19632bb00f28ebf7ced40e1af81",
+            "bytes": 809
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/_r6_r293_v2_validate.py",
+            "sha256": "8ac8c62c6f4d5c685116f4b5a9616c26bde4d68645a472228f5c0d041cedcf2b",
+            "bytes": 7186
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/_r6_r293_v2_boundary_validate.py",
+            "sha256": "4b8ecf34fda7d1cbc67133b54f700ee958c28c42fe804b08f6cf709c081d6b36",
+            "bytes": 2263
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/_r6_r293_v2_seal.py",
+            "sha256": "769be17261345b49e91a9f4d56ac6df0f6711c9ec944b10c60f96b732261e2e7",
+            "bytes": 5227
+          }
+        ],
+        "guards": {
+          "formal681_changed": [],
+          "existing_private35_candidates_changed": [],
+          "V7_30_publication_sources_changed": [],
+          "original_v1_source_and_test_unchanged": true,
+          "formal_and_V7_sources_untouched": true
+        },
+        "not_run": [
+          "Non-authorpeerreviewofthisnewproposal",
+          "Actualdevice/clipping/wind/PTPmeasurementorhardwaretest",
+          "Fullrepo/fullpublicationregeneration",
+          "NewstandaloneSVG/PDF/renderingnothingrequiredbythisnonvisualcodechange",
+          "Natural-languageactionstringsnotcoveredbystring-mirrorunitassertions; reviewedassourceandkeptinpatch"
+        ],
+        "uncovered_rule_scope": {
+          "input": {
+            "sro_ppm": 1.0,
+            "hear_through_latency_us": 75.0,
+            "low_freq_wind_coherence": 0.75,
+            "low_freq_level_db": -25.0,
+            "far_end_active_ratio": 0.6,
+            "far_end_erle_db": 18.0,
+            "aec_ref_delay_error_ms": 1.0,
+            "rt60_s": 0.3,
+            "drr_db": 2.0,
+            "wpe_prediction_delay_frames": 4.0,
+            "overlap_speech_ratio": 0.0,
+            "der_percent": 90.0
+          },
+          "result": {
+            "status": "no_configured_alert",
+            "telemetry_complete": true,
+            "missing_telemetry": [],
+            "fault_id": "nominal",
+            "priority_rank": 0,
+            "stage": "configured_rule_checks",
+            "chapter_pointer": "§11.2 / §17.4",
+            "action": "No configured rule fired for the complete exercise telemetry; scenario acceptance remains separate"
+          },
+          "meaning": "Noconfiguredalert isnotallpossiblefaultsabsentorproductacceptance; avoidshealthylabel evenforcompleteinput."
+        },
+        "version": 2,
+        "previous_version": {
+          "path": "/private/tmp/masp-multiround-20261123/r6-r293-diagnostic-telemetry-proposal/handoff.json",
+          "sha256": "d1b6d571a09362bf2a3de2918ee7004e1d60d62e2609df70f9192c70e973ee30",
+          "source_and_test_unchanged": true,
+          "do_not_integrate_v1": "hear_through1e308usreturned0ratherthanrepresentable5e-303; mixedstr/intunknownkeyssortedraisedTypeError. Originalfailureskept."
+        },
+        "incremental_from_v1": {
+          "path": "/private/tmp/masp-multiround-20261123/r6-r293-diagnostic-telemetry-proposal-v2/v1-to-v2.patch",
+          "sha256": "561f488c66f58ce8d692c266b925860fe3d3b74e216aed0040f2159214dc9fcf",
+          "bytes": 2729
+        },
+        "publication_dependency_proof": {
+          "path": "/private/tmp/masp-multiround-20261123/r6-r293-diagnostic-telemetry-proposal/publication-dependency-probe.json",
+          "sha256": "52114d09b5a9523ec5870898e669aef3eedee19632bb00f28ebf7ced40e1af81",
+          "actual": "FouractualV7site/PDFdigestbyte-readprobes0reads/nochange;32manifests+35reportJSONand174PNGmetadatahadnodiagnostic_roadmapboundpath. Basedoncurrentgraph,notfutureguarantee."
+        }
+      }
+    },
+    "r6-r293-nonauthor-validation.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/r6-r293-nonauthor-validation.json",
+      "sha256": "caeeed2c9560f3279c38f42116eea6e4a0dce6cd41ce699fe0a06cb05eb84799",
+      "bytes": 1863,
+      "boundary": "Separate nonauthor seeded branch evaluator; 19 actual candidate tests and exact preserved existing cascade values.",
+      "packet": {
+        "status": "accepted R293 v2 local code",
+        "non_author": true,
+        "source_rows": [
+          {
+            "path": "codes/chapters/appendix_b/core/diagnostic_roadmap.py",
+            "preimage_sha256": "a11934356c2d45d2df1edb4efae287a671cf0f40f97aac64fb0888623e71df9f",
+            "candidate_sha256": "dc1351b40d52345c61da1eb2788534dbba1485dfcf0c40cf58cdcf6e3d371e3e",
+            "candidate_path": "/private/tmp/masp-multiround-20261123/r6-r293-diagnostic-telemetry-proposal-v2/source/codes/chapters/appendix_b/core/diagnostic_roadmap.py",
+            "v1_sha256": "c6b34f13050028efce5a1829079e8a1853848014efca4a13c62daafefa4d2d70"
+          },
+          {
+            "path": "tests/test_codes_appendix_b_experiments.py",
+            "preimage_sha256": "98f22d3798500eec5311094ee13686dc38831c22cc1d5467b846fcaa00d83cbc",
+            "candidate_sha256": "3a83c42c783039ba688381679229c4cad6aa22693eb43f0b7f467bcbfa1d5f45",
+            "candidate_path": "/private/tmp/masp-multiround-20261123/r6-r293-diagnostic-telemetry-proposal-v2/source/tests/test_codes_appendix_b_experiments.py",
+            "v1_sha256": "5f221413d84cb313d1b4933156d0f5a1502cf82982ecc44eed9a3526658de7ac"
+          }
+        ],
+        "r293_v2_handoff_sha256": "509a1e84cb0419b6025459459881dae7e5c00f5f2b134d33071b31ef16f689f8",
+        "independent_input_count": 2007,
+        "by_priority_and_status": {
+          "0 insufficient_telemetry": 326,
+          "2 check_required": 648,
+          "1 check_required": 510,
+          "4 check_required": 335,
+          "3 check_required": 64,
+          "5 check_required": 69,
+          "6 check_required": 46,
+          "0 no_configured_alert": 9
+        },
+        "seed": 12041,
+        "unchanged_existing_numeric_controls": true,
+        "actual_test_count": 19,
+        "scope": "Independent ordered branch table, explicit exact threshold controls, seeded incomplete telemetry, finite extreme fractional notch value, and the candidate tests against actual repository datasets. Does not simulate real device telemetry."
+      }
     }
   },
   "next_round_issue_index": {

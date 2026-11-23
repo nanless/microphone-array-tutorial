@@ -1,6 +1,9 @@
 """Independent capability decisions and the verified Pages staging path."""
-import unittest
+import os
 from pathlib import Path
+import subprocess
+import sys
+import unittest
 
 from scripts import run_portable_ci as ci
 
@@ -41,6 +44,28 @@ class PortableSelectionTests(unittest.TestCase):
         self.assertIn('needs: build', deploy)
         self.assertIn("python-version: '3.13'", build)
         self.assertIn("node-version: '20'", build)
+
+    def test_redirected_console_can_report_chinese_in_legacy_locale(self):
+        root = Path(__file__).resolve().parents[1]
+        probe = """
+import runpy
+from unittest.mock import patch
+from scripts import build_pdf
+
+def announce(_args):
+    print("合订：19 篇")
+    raise SystemExit(0)
+
+with patch.object(build_pdf, "main", side_effect=announce):
+    runpy.run_path("scripts/run_portable_ci.py", run_name="__main__")
+"""
+        result = subprocess.run(
+            [sys.executable, "-B", "-c", probe], cwd=root,
+            env={**os.environ, "PYTHONIOENCODING": "cp1252:strict"},
+            capture_output=True,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr.decode("utf-8", errors="replace"))
+        self.assertEqual(result.stdout.decode("utf-8").splitlines(), ["合订：19 篇"])
 
 
 if __name__ == '__main__':

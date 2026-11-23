@@ -417,4 +417,7 @@ def main(argv: list[str] | None = None) -> None:
 
 
 if __name__ == "__main__":
+    # A redirected Windows console can otherwise reject Chinese progress messages.
+    sys.stdout.reconfigure(encoding="utf-8")
+    sys.stderr.reconfigure(encoding="utf-8")
     main()

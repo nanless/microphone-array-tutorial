@@ -414699,6 +414699,3656 @@
           "sha256": "f49ba2c1b755bf424c78807cb8160b51c321207b92038c694fdf8b92a497e6d4"
         }
       }
+    },
+    "r5-online-release-exact-assets.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/r5-online-release-exact-assets.json",
+      "sha256": "2a403f022baf3b70cec78720a93a0a32cddb965d2c1bfa759cffd88b1723b0df",
+      "bytes": 8823,
+      "boundary": "Successful Pages run and six exact online files.",
+      "packet": {
+        "scope": "Exact deployed bytes: four actual public HTML pages and both complete PDFs.",
+        "release_commit": "9f28747bc687ef1365faec0986dc65cbbfe7891e",
+        "pages_workflow": {
+          "conclusion": "success",
+          "headSha": "9f28747bc687ef1365faec0986dc65cbbfe7891e",
+          "jobs": [
+            {
+              "completedAt": "2026-11-23T13:20:46Z",
+              "conclusion": "success",
+              "databaseId": 137713188306,
+              "name": "build",
+              "startedAt": "2026-11-23T13:06:32Z",
+              "status": "completed",
+              "steps": [
+                {
+                  "completedAt": "2026-11-23T13:06:34Z",
+                  "conclusion": "success",
+                  "name": "Set up job",
+                  "number": 1,
+                  "startedAt": "2026-11-23T13:06:33Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-11-23T13:06:47Z",
+                  "conclusion": "success",
+                  "name": "Run actions/checkout@v6",
+                  "number": 2,
+                  "startedAt": "2026-11-23T13:06:34Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-11-23T13:06:49Z",
+                  "conclusion": "success",
+                  "name": "Run actions/setup-python@v6",
+                  "number": 3,
+                  "startedAt": "2026-11-23T13:06:47Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-11-23T13:06:53Z",
+                  "conclusion": "success",
+                  "name": "Run actions/setup-node@v6",
+                  "number": 4,
+                  "startedAt": "2026-11-23T13:06:49Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-11-23T13:07:00Z",
+                  "conclusion": "success",
+                  "name": "Install locked Python dependencies",
+                  "number": 5,
+                  "startedAt": "2026-11-23T13:06:53Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-11-23T13:20:36Z",
+                  "conclusion": "success",
+                  "name": "Verify the exact workspace that will be staged",
+                  "number": 6,
+                  "startedAt": "2026-11-23T13:07:00Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-11-23T13:20:37Z",
+                  "conclusion": "success",
+                  "name": "Verify published assets and portable exports before staging",
+                  "number": 7,
+                  "startedAt": "2026-11-23T13:20:36Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-11-23T13:20:37Z",
+                  "conclusion": "success",
+                  "name": "Run actions/configure-pages@v6",
+                  "number": 8,
+                  "startedAt": "2026-11-23T13:20:37Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-11-23T13:20:37Z",
+                  "conclusion": "success",
+                  "name": "Stage Chinese and English course editions and media",
+                  "number": 9,
+                  "startedAt": "2026-11-23T13:20:37Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-11-23T13:20:43Z",
+                  "conclusion": "success",
+                  "name": "Run actions/upload-pages-artifact@v4",
+                  "number": 10,
+                  "startedAt": "2026-11-23T13:20:37Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-11-23T13:20:43Z",
+                  "conclusion": "success",
+                  "name": "Post Run actions/setup-node@v6",
+                  "number": 18,
+                  "startedAt": "2026-11-23T13:20:43Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-11-23T13:20:44Z",
+                  "conclusion": "success",
+                  "name": "Post Run actions/setup-python@v6",
+                  "number": 19,
+                  "startedAt": "2026-11-23T13:20:43Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-11-23T13:20:44Z",
+                  "conclusion": "success",
+                  "name": "Post Run actions/checkout@v6",
+                  "number": 20,
+                  "startedAt": "2026-11-23T13:20:44Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-11-23T13:20:44Z",
+                  "conclusion": "success",
+                  "name": "Complete job",
+                  "number": 21,
+                  "startedAt": "2026-11-23T13:20:44Z",
+                  "status": "completed"
+                }
+              ],
+              "url": "https://github.com/nanless/microphone-array-tutorial/actions/runs/45180627976/job/137713188306"
+            },
+            {
+              "completedAt": "2026-11-23T13:21:07Z",
+              "conclusion": "success",
+              "databaseId": 137721312243,
+              "name": "deploy",
+              "startedAt": "2026-11-23T13:20:51Z",
+              "status": "completed",
+              "steps": [
+                {
+                  "completedAt": "2026-11-23T13:20:52Z",
+                  "conclusion": "success",
+                  "name": "Set up job",
+                  "number": 1,
+                  "startedAt": "2026-11-23T13:20:51Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-11-23T13:21:05Z",
+                  "conclusion": "success",
+                  "name": "Run actions/deploy-pages@v4",
+                  "number": 2,
+                  "startedAt": "2026-11-23T13:20:52Z",
+                  "status": "completed"
+                },
+                {
+                  "completedAt": "2026-11-23T13:21:05Z",
+                  "conclusion": "success",
+                  "name": "Complete job",
+                  "number": 3,
+                  "startedAt": "2026-11-23T13:21:05Z",
+                  "status": "completed"
+                }
+              ],
+              "url": "https://github.com/nanless/microphone-array-tutorial/actions/runs/45180627976/job/137721312243"
+            }
+          ],
+          "status": "completed",
+          "updatedAt": "2026-11-23T13:21:07Z",
+          "url": "https://github.com/nanless/microphone-array-tutorial/actions/runs/45180627976"
+        },
+        "checked_live_assets": [
+          {
+            "local": "site/index.html",
+            "online": "https://nanless.github.io/microphone-array-tutorial/site/",
+            "status": 200,
+            "bytes": 225246,
+            "expected_bytes": 225246,
+            "expected_sha256": "4a2d154a0d31dc67d1f1e1f878cec47e976eee51b2c95d3ca6083e5c9fa3dfc9",
+            "actual_sha256": "4a2d154a0d31dc67d1f1e1f878cec47e976eee51b2c95d3ca6083e5c9fa3dfc9",
+            "type": "text/html; charset=utf-8",
+            "byte_equal": true
+          },
+          {
+            "local": "site_en/index.html",
+            "online": "https://nanless.github.io/microphone-array-tutorial/site_en/",
+            "status": 200,
+            "bytes": 234384,
+            "expected_bytes": 234384,
+            "expected_sha256": "dc20be2867796a1ff73cb7182f925dc09a6305a4383c595e43da785d3f711d4c",
+            "actual_sha256": "dc20be2867796a1ff73cb7182f925dc09a6305a4383c595e43da785d3f711d4c",
+            "type": "text/html; charset=utf-8",
+            "byte_equal": true
+          },
+          {
+            "local": "site/10_engineering-practice.html",
+            "online": "https://nanless.github.io/microphone-array-tutorial/site/10_engineering-practice.html",
+            "status": 200,
+            "bytes": 320698,
+            "expected_bytes": 320698,
+            "expected_sha256": "ca7aad8fd47e0a44b639d720db960e231491c2dc79479cfc3b105d139b695c08",
+            "actual_sha256": "ca7aad8fd47e0a44b639d720db960e231491c2dc79479cfc3b105d139b695c08",
+            "type": "text/html; charset=utf-8",
+            "byte_equal": true
+          },
+          {
+            "local": "site_en/16_appendix-symbols-math.html",
+            "online": "https://nanless.github.io/microphone-array-tutorial/site_en/16_appendix-symbols-math.html",
+            "status": 200,
+            "bytes": 208261,
+            "expected_bytes": 208261,
+            "expected_sha256": "990ff3026f12c65dd3ffad52f2906413dbc91949f496ebeccc0d7e1110b6befc",
+            "actual_sha256": "990ff3026f12c65dd3ffad52f2906413dbc91949f496ebeccc0d7e1110b6befc",
+            "type": "text/html; charset=utf-8",
+            "byte_equal": true
+          },
+          {
+            "local": "dist/microphone-array-tutorial.pdf",
+            "online": "https://nanless.github.io/microphone-array-tutorial/dist/microphone-array-tutorial.pdf",
+            "status": 200,
+            "bytes": 37499592,
+            "expected_bytes": 37499592,
+            "expected_sha256": "1fe5d8eb9fc2a73075577eb32ec5868bc1b500217754995ca3bd6c54eb512605",
+            "actual_sha256": "1fe5d8eb9fc2a73075577eb32ec5868bc1b500217754995ca3bd6c54eb512605",
+            "type": "application/pdf",
+            "byte_equal": true
+          },
+          {
+            "local": "dist/microphone-array-tutorial-en.pdf",
+            "online": "https://nanless.github.io/microphone-array-tutorial/dist/microphone-array-tutorial-en.pdf",
+            "status": 200,
+            "bytes": 37625534,
+            "expected_bytes": 37625534,
+            "expected_sha256": "4d5e7a8d4f4c61bb2f5b88336b6e7d191f60de1be579e63623bf7d760b10c275",
+            "actual_sha256": "4d5e7a8d4f4c61bb2f5b88336b6e7d191f60de1be579e63623bf7d760b10c275",
+            "type": "application/pdf",
+            "byte_equal": true
+          }
+        ],
+        "prior_attempts": []
+      }
+    },
+    "r7-sealed-progress-compact-evidence.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/r7-sealed-progress-compact-evidence.json",
+      "sha256": "2d4beeda4aaf1a1b8e907c40ea7ac82ff3247e3df16001e860c1d6abe35ec97f",
+      "bytes": 4863,
+      "boundary": "Actual finished R6 browser, test-only follow-up and finite R7 asset outcomes.",
+      "packet": {
+        "r6_actual_browser": {
+          "report": {
+            "path": "/private/tmp/masp-multiround-20261123/r6-exact-site-browser-198/report.json",
+            "sha256": "16c0348ee035539a87b47d89b95bd03e4f5539d7a6df72e80255e86b4f519c07",
+            "bytes": 5001746
+          },
+          "browser_cases": 198,
+          "keyboard_table_checks": 1648,
+          "media_resources": 285,
+          "issues": 0,
+          "html_snapshots": 66,
+          "guarded_sources_and_assets": 149
+        },
+        "r6_portable_obsolete_test": {
+          "first_log": {
+            "path": "/private/tmp/masp-multiround-20261123/r6-private-portable-tests/actual-tests.log",
+            "sha256": "309d9615e2a4db2845e8668f8d08959fb4a863129a6dbdc8d3e74c43f619ca94",
+            "bytes": 23990
+          },
+          "run_count": 1376,
+          "failure_count": 1,
+          "skipped": 1,
+          "repair_plan": {
+            "path": "/private/tmp/masp-multiround-20261123/r6-nine-research-directions-test/plan.json",
+            "sha256": "1d7ed540ddbd95759eb7c5cf79e6a3410d409ba04fa828280e3796c7fd244d74",
+            "bytes": 3347
+          },
+          "real_focused_log": {
+            "path": "/private/tmp/masp-multiround-20261123/r6-nine-research-directions-test/actual-focused-tests.log",
+            "sha256": "e080111d7c1b2b7b9202b035dd8dac08bd4addf7679fea09cc4cc915745a0086",
+            "bytes": 1705
+          },
+          "actual_full_test_restart": "/private/tmp/masp-multiround-20261123/r6-complete-corrected-private-regression/execution.json"
+        },
+        "r5_windows_current": {
+          "actions_job_url": "https://github.com/nanless/microphone-array-tutorial/actions/runs/45180627933/job/137713188196",
+          "raw_log": {
+            "path": "/private/tmp/masp-multiround-20261123/r5-windows-ci-137713188196-action.log",
+            "sha256": "cb8ac1b85ced4b25dcd148126e74add137c8e4fff713305c76f8a3eca0adc5bc",
+            "bytes": 29287
+          },
+          "stale_zh_sites_and_research_pages": 33,
+          "encoding_failures": 2,
+          "stale_zh_pdf_identity": true
+        },
+        "r7_v3_assets": {
+          "producer": {
+            "path": "/private/tmp/masp-multiround-20261123/r7-tracking-and-math-producer-v3/execution.json",
+            "sha256": "8db7b58b5cf7f8ead749f6839172da2992f7fdc1edb5b3f70f4e107b2f6e5c43",
+            "bytes": 14205
+          },
+          "peer_check": {
+            "path": "/private/tmp/masp-multiround-20261123/r7-v3-tracking-assets-independent-review/handoff.json",
+            "sha256": "822a711e8d4ca02bf988944514d6c8a358782708d23d1c2508a6bd13608ba73e",
+            "bytes": 130402
+          },
+          "files_checked": 212,
+          "byte_differences": 18,
+          "pixel_differences": [
+            "figures/fig84_complex_phasor_fourier.png",
+            "figures_en/fig84_complex_phasor_fourier.png"
+          ],
+          "wav_bytes_changed": 0,
+          "sha256s_assets": {
+            "figures/fig39_tracking_audio.png": "72ffd3540af6a1637e5dfe9214957dfaac226754cfb0735843e02cdae9dfd3cf",
+            "figures/fig72_tracking_lifecycle.png": "6420590d93e438d925678767f0f3c39bc1b28487135c094b66916ddf256e7a05",
+            "figures/fig84_complex_phasor_fourier.png": "548f5db68dd5f7f20d88c7ca0d075654893328920d468ccb426c931ba35e74cc",
+            "figures/fig85_subspace_projection_svd.png": "d45fe21da05e484035df666806be97662fc81781339bc5785421b3ea8e9b73d2",
+            "figures/fig86_hermitian_rayleigh_gev.png": "83c9f8021d2a5a410f0e6733de19dd572dff653c5a9ff76b0549ee929eb0a595",
+            "figures/fig87_wirtinger_probability_bayesian.png": "a8f03f4fe22c2e66e9c24ec9045eb51623160eb90afed59a41a982be18afd592",
+            "figures_en/fig39_tracking_audio.png": "43e244a89da546ccf819d72559ebda5915aa94a2943d2f3b440d0b7be5b0608e",
+            "figures_en/fig72_tracking_lifecycle.png": "6f650a265dda653ec32389e1ed4a146f732281de6151c5cde611af47ac51f1ed",
+            "figures_en/fig84_complex_phasor_fourier.png": "6a7a05b124a23902e6456c7ac3e0ed7bb1e22323298c41994fd53ebeeebc40c2",
+            "figures_en/fig85_subspace_projection_svd.png": "e383b640e1c6aafe891a88fba4d0f95d148758b909033bdf10997f1a58131285",
+            "figures_en/fig86_hermitian_rayleigh_gev.png": "eca7d81436e0edb200da3c814632bdf66c7faadc51c793670c21f3b7edee611e",
+            "figures_en/fig87_wirtinger_probability_bayesian.png": "5c443f1c7c2f3723c9306febcb95e2f88b2bc6f03b07383aaafa0829e1471367",
+            "codes/chapters/ch09/tracking_audio/MANIFEST.json": "ca0bab9c01b0db487af095b6932a6d2ef67cb47d5b0ced33fcedc89454fe29e2",
+            "codes/chapters/ch00/reports/figure84_complex_phasor_fourier.json": "ef5bde3b086ce2297106fcb240b71043ed9b3d7073c48cc0494e43fb2ae99f18",
+            "codes/chapters/ch00/reports/figure85_subspace_projection_svd.json": "6b51ad3d78ba2141100dcf9959b2c1d7350e89a27637530c0318a5fcd137b1b8",
+            "codes/chapters/ch00/reports/figure86_hermitian_rayleigh_gev.json": "e63dfde93cefa051dce1d7d09f3eecb0aed2facdf7d1fa793d30e22d9b3d844b",
+            "codes/chapters/ch00/reports/figure87_wirtinger_probability_bayesian.json": "8a3fd264193c6dc55923e3c01965183bba727b6dce7e624426a74aa3be5680e4",
+            "codes/chapters/ch09/reports/figure72_tracking_lifecycle.json": "baf15f2e48d9a26d6adcddc29860d920776a8135557b813925c8b8b929c1ca0e"
+          }
+        }
+      }
+    },
+    "r6-native-bilingual-publication--en-raw-representative-pages--opened-raw-visual.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/r6-native-bilingual-publication/en-raw-representative-pages/opened-raw-visual.json",
+      "sha256": "8344796893cdbb697d905aabca8b9ee22de8ce452b99957cde6b8077816e1159",
+      "bytes": 1962,
+      "boundary": "Six original English print raster pages directly opened before optimization.",
+      "packet": {
+        "raw_pdf_sha256": "d00a1e23b5bd1cc9c874085acd3a69c5ed5f88f11b8e111c15067bc2b92a6c2d",
+        "raw_receipt_sha256": "32a870d8af64959147a413dfb5b6db0ea06cebbd6149fdab80aa946aaf26b0fa",
+        "total_raw_pages": 1626,
+        "opened_pages": [
+          {
+            "page": 219,
+            "raster_sha256": "d91dface82937ac3271e52d3b786118f519f234c3329ad33c4828f0be371008e",
+            "observation": "E01-08 has its question, reference solution label, first step and Equation (1-11) on the same page."
+          },
+          {
+            "page": 220,
+            "raster_sha256": "03c73b84ad17783e097815881d2a6758820d74aa35d497f8fb2c697291a81759",
+            "observation": "E01-08 continues with Steps 2–4, Equation (1-12), and all five audible-control rows; mathematical column labels remain visible."
+          },
+          {
+            "page": 399,
+            "raster_sha256": "32a42d5dd6dab4e1c39d218f94543a459ae46bab4124e9e9e750e83680c54ec3",
+            "observation": "E03-18 ends after the three-part question. The solution label is carried past the page break."
+          },
+          {
+            "page": 400,
+            "raster_sha256": "8e7dc1f15478e48d86d608bdd735a07b429c446c351ba9e813636e5be41f8d86",
+            "observation": "E03-18 starts with the solution label and its first numbered item, Equation (3-23), and the 24.62 degree derivation."
+          },
+          {
+            "page": 1367,
+            "raster_sha256": "d41504d642b42253779042019487413667c6c8ba24b2ee6b804ad33ebca27e04",
+            "observation": "Chapter 14 active/reactive intensity and diffuseness print with visible equation labels and both direction conventions distinguished."
+          },
+          {
+            "page": 1464,
+            "raster_sha256": "1ea0a1ff161e6d9520ce967ef74488d8d6940f43934eaa3f79d6cbb3b325a2da",
+            "observation": "Chapter 15 comparison table retains the cascade target constraint, SOT measured 1–3 speaker range and DiCoW dependency across five visible rows."
+          }
+        ],
+        "scope": "Direct visual inspection of the six listed English A4 images rendered from the standard-command raw Chrome print."
+      }
+    },
+    "r6-nine-research-directions-test--plan.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/r6-nine-research-directions-test/plan.json",
+      "sha256": "1d7ed540ddbd95759eb7c5cf79e6a3410d409ba04fa828280e3796c7fd244d74",
+      "bytes": 3347,
+      "boundary": "One stale test and exact R5-to-R6 old and new bilingual website anchors.",
+      "packet": {
+        "status": "checked_source_and_built_anchors",
+        "path": "tests/test_paragraph_enhancement.py",
+        "candidate": "/private/tmp/masp-multiround-20261123/r6-nine-research-directions-test/source/tests/test_paragraph_enhancement.py",
+        "preimage_sha256": "8a8763d6176d55dcc84229aa56fc0aeebffc1955751ea05f3bcfdcd5917c247e",
+        "sha256": "431d68cd13a4b47dd5ee7d9b8aba20e290be50e21ce48e1d90a1b4b3b3da4b71",
+        "patch_sha256": "bedbebfdaaf72c5e10b7dca7c09122f294db5860db898aff3451dfd432a107a7",
+        "prior_portable_failure": {
+          "log_sha256": "309d9615e2a4db2845e8668f8d08959fb4a863129a6dbdc8d3e74c43f619ca94",
+          "test": "FAIL: test_eight_research_directions_preserve_arraydps (tests.test_paragraph_enhancement.EnhancementParagraphTest.test_eight_research_directions_preserve_arraydps)"
+        },
+        "two_actual_websites": {
+          "site": {
+            "existing_eight_equal": true,
+            "existing_anchors": [
+              [
+                "sec-u-9c2338a3cc",
+                "研究方向一：预训练模型用作远场识别后端"
+              ],
+              [
+                "sec-u-c7dafdd43e",
+                "研究方向二：阵列无关系统"
+              ],
+              [
+                "sec-u-3cf63cbc55",
+                "研究方向三：目标说话人提取"
+              ],
+              [
+                "sec-u-652f8c5a21",
+                "研究方向四：生成式语音增强与推理加速"
+              ],
+              [
+                "sec-u-f9566375e1",
+                "研究方向五：TF-GridNet 与复数谱映射骨干"
+              ],
+              [
+                "sec-u-2b8cb2d1b5",
+                "研究方向六：几何无关前端的期刊研究"
+              ],
+              [
+                "sec-u-10eb2b38cb",
+                "研究方向七：CHiME-9 与大模型后端"
+              ],
+              [
+                "sec-u-0a5abcc280",
+                "研究方向八：扩散先验用于无监督盲分离"
+              ]
+            ],
+            "ninth_anchor": [
+              "sec-u-abc168e214",
+              "研究方向九：全双工语音大模型（Audio-LLM / Speech-to-Speech）与空间听觉大模型（Spatial-LLM）时代的前端定位"
+            ]
+          },
+          "site_en": {
+            "existing_eight_equal": true,
+            "existing_anchors": [
+              [
+                "sec-u-28f002015b",
+                "Direction 1: Pretrained Foundation Models as Distant ASR Back-Ends"
+              ],
+              [
+                "sec-u-9173ca1980",
+                "Direction 2: Array-Agnostic Systems"
+              ],
+              [
+                "sec-u-819e1499c0",
+                "Direction 3: Target Speaker Extraction"
+              ],
+              [
+                "sec-u-0addf1ca9d",
+                "Direction 4: Generative Speech Enhancement and Sampling Acceleration"
+              ],
+              [
+                "sec-u-2881118693",
+                "Direction 5: TF-GridNet and Complex Spectral Mapping Backbones"
+              ],
+              [
+                "sec-u-d272dba833",
+                "Direction 6: Journal Studies on Geometry-Agnostic Front-Ends"
+              ],
+              [
+                "sec-u-0f14048ebc",
+                "Direction 7: CHiME-9 and Conditioned Foundation Back-Ends"
+              ],
+              [
+                "sec-u-fc31a8c2a9",
+                "Direction 8: Diffusion Priors for Unsupervised Blind Source Separation"
+              ]
+            ],
+            "ninth_anchor": [
+              "sec-u-7094e0a48d",
+              "Direction 9: Front-End Positioning in the Era of Full-Duplex Audio-LLMs and Spatial-LLMs"
+            ]
+          }
+        },
+        "scope": "Update one test for the ninth Appendix B research direction. No publication input changes."
+      }
+    },
+    "content-r6-technical-review--r7-nine-direction-test-independent--handoff.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/content-r6-technical-review/r7-nine-direction-test-independent/handoff.json",
+      "sha256": "60ff7a66989302d4fa8e931b17fbe27e6b8013d179344a8daf785ea6931a043a",
+      "bytes": 3766,
+      "boundary": "Non-author check of the nine-direction test fixture.",
+      "packet": {
+        "objective": "Non-author bounded review of one R6 test-only source candidate",
+        "decision": "Accept finite one-test-method update; no required edit identified.",
+        "plan": {
+          "path": "/private/tmp/masp-multiround-20261123/r6-nine-research-directions-test/plan.json",
+          "sha256": "1d7ed540ddbd95759eb7c5cf79e6a3410d409ba04fa828280e3796c7fd244d74"
+        },
+        "candidate": {
+          "path": "/private/tmp/masp-multiround-20261123/r6-nine-research-directions-test/source/tests/test_paragraph_enhancement.py",
+          "sha256": "431d68cd13a4b47dd5ee7d9b8aba20e290be50e21ce48e1d90a1b4b3b3da4b71",
+          "lines": 238,
+          "actual_read_ranges": [
+            [
+              1,
+              125
+            ],
+            [
+              126,
+              238
+            ]
+          ]
+        },
+        "preimage": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/tests/test_paragraph_enhancement.py",
+          "sha256": "8a8763d6176d55dcc84229aa56fc0aeebffc1955751ea05f3bcfdcd5917c247e",
+          "candidate_diff_method_only": [
+            [
+              "test_eight_research_directions_preserve_arraydps",
+              "test_nine_research_directions_preserve_arraydps"
+            ]
+          ]
+        },
+        "patch": {
+          "path": "/private/tmp/masp-multiround-20261123/r6-nine-research-directions-test/review.patch",
+          "sha256": "bedbebfdaaf72c5e10b7dca7c09122f294db5860db898aff3451dfd432a107a7",
+          "actual_read": "Entire one-method diff read."
+        },
+        "why": "Nine labels are still explicit; len(labels) remains9, not a relaxed count. Old eight order/content guards retained inclArrayDPS, FlowSep, DiCoW. NinthMoshi/spatial-cue content anchors correspond to current Direction9 source. Existing full method count10 preserved; no skip or removal. Passage ends before SpecialFocus h4, so9h4 check addresses exactly the9directions.",
+        "source_relationships": [
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-forty-three-draft-build/checkout/chapters/17_appendix-guide.md",
+            "sha256": "757144e270d1a7329cbcadb83863698d0b84e38111ef919964f7e9ce9eab2a0b",
+            "actual_semantic_read_ranges": [
+              [
+                171,
+                205
+              ]
+            ],
+            "headings_only_locator_checked": [
+              133,
+              137,
+              141,
+              149,
+              157,
+              165,
+              171,
+              179,
+              191
+            ],
+            "current_nine_h4_source_count": 9,
+            "scope": "Bounded current source and prior R416 direction relationship; this is not fresh all-directions full text or all-link/browser validation."
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-forty-three-draft-build/checkout/chapters_en/17_appendix-guide.md",
+            "sha256": "f4e4317be82d29a4da67e680bba9b3e807779712c9f4888750909e929d22c854",
+            "actual_semantic_read_ranges": [
+              [
+                179,
+                205
+              ]
+            ],
+            "headings_only_locator_checked": [
+              133,
+              137,
+              141,
+              149,
+              157,
+              165,
+              171,
+              179,
+              191
+            ],
+            "current_nine_h4_source_count": 9,
+            "scope": "Bounded current source and prior R416 direction relationship; this is not fresh all-directions full text or all-link/browser validation."
+          }
+        ],
+        "actual_validation": "SHA/source AST comparison and source segmentation performed. Did not rerun10author-tests or fullportable1376 tests while root already reruns. Author logs/10PASS not substituted for own semantic/diff reading. No new rendering/browser/PDF execution.",
+        "boundary": "Test is intentionally a Chinese paragraph-structure regression; it does not independently prove EN link correctness or model/source factual accuracy. Parent separately checked bilingual generated anchors. No source/media/provenance behavior change.",
+        "not_changed": "Formal source, R6 candidate and root-owned files untouched."
+      }
+    },
+    "r7-r363-independent--handoff.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/r7-r363-independent/handoff.json",
+      "sha256": "5bbddbebced40f99d449e1522864deeb2aa8f914d9c92d0866386f556c680cbf",
+      "bytes": 13364,
+      "boundary": "Independent exact-rational comparison of the V2 near-antipode failure and V3 orientation.",
+      "packet": {
+        "phase": "R7 nonauthor finite signed-circle-difference review; not wholeR7 completion",
+        "scope": [
+          "R363 privateV2 fourproduction sources and3newtestmethods",
+          "R363 V3 exceptional near-antipode fix and4testmethods",
+          "Independent exact rational input semantics and actualconsumerbehavior; publication_ci actualmedia closure separate"
+        ],
+        "permissions": {
+          "sandbox": "danger-full-access",
+          "approval": "never",
+          "formal_and_frozen_writes": false,
+          "author_proposal_writes": false,
+          "writes": "Only private independent review artifacts and captured ordinarybytecopies"
+        },
+        "capture": {
+          "V2": {
+            "codes/chapters/ch09/core/tracking.py": "afdc5d4c720ba3c6691b564671a386e8802a6fb8dad2b45168b84554803839bc",
+            "codes/chapters/ch09/core/echo_av_fusion.py": "55ad013a22e0753659382c65a2232cb074e3564650e1d1edbeb7aca34eb93d24",
+            "codes/chapters/ch09/core/tracking_audio.py": "17d87071aa098de3d162c64101ccc77d936d54e1298832b1a2ff5c03944ca247",
+            "codes/chapters/ch09/tracking_crossing_dropout_demo.py": "d0c7720c1cc0c54d1bb1a5ebcb5ab77f75cfffc988dbbae6001b13366b2bf32f",
+            "tests/test_review_r7_angle_seam.py": "f8dc98a216ae00997abf76a37579079cda057ec69e15812ce61262cc8c949d2c"
+          },
+          "V3": {
+            "codes/chapters/ch09/core/tracking.py": "6442e2cad3284207fc9f4b0e617d05e97e7faa69b35fd7b0f76373dafa38ccc1",
+            "codes/chapters/ch09/core/echo_av_fusion.py": "55ad013a22e0753659382c65a2232cb074e3564650e1d1edbeb7aca34eb93d24",
+            "codes/chapters/ch09/core/tracking_audio.py": "17d87071aa098de3d162c64101ccc77d936d54e1298832b1a2ff5c03944ca247",
+            "codes/chapters/ch09/tracking_crossing_dropout_demo.py": "d0c7720c1cc0c54d1bb1a5ebcb5ab77f75cfffc988dbbae6001b13366b2bf32f",
+            "tests/test_review_r7_angle_seam.py": "a2c96ba6338083f6e0d0456a472cc643d06d66f32668d61d46ffb86a327d643c"
+          },
+          "author_paths_still_equal_capture": true,
+          "V3_plan": {
+            "path": "/private/tmp/masp-multiround-20261123/content-r6-technical-review/r7b-tracking-consumers/r363-signed-source-proposal-v3/plan.json",
+            "sha256": "2aaad21b7597fde5ed58acbab2dc249da9b39a2e0c5a214351562ba5447ea4ac"
+          },
+          "shared_import_identity": {
+            "path": "codes/chapters/ch02/core/conventions.py",
+            "actual_path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch02/core/conventions.py",
+            "sha256": "79af1b8f7fe664e64e7ad786082c36a29664eacbdda63fba96a944e548304865"
+          }
+        },
+        "criterion": {
+          "independent_oracle": "(Fraction.from_float(first)-Fraction.from_float(second)+180)%360-180, using exact storedbinary64 values, never subtracting first in float.",
+          "tie": "Only exacthalfturnuses-180; bothoppositeorientationstrueTie retainthatreasonableexistingconvention.",
+          "V3endpointpolicy": "Nontiemagnitude roundingto180 uses signednextafter(180,0). This preservesdirection and halfopeninterval but is intentionally notnearestfloat atthatendpoint. Finite max1ULP magnitude error accepted, notallIEEE rounding/gatecorrectness."
+        },
+        "confirmed_V2_failure": {
+          "id": "R363 existinggroup, no newID requested",
+          "input": {
+            "current": -180.0,
+            "desired": -1e-14,
+            "max_speed_deg_s": 5.0,
+            "dt_s": 1.0,
+            "covariance": "I2",
+            "measurement_variance": 1.0
+          },
+          "exact": "shortest difference180-Fraction(float(1e-14)) is strictlypositive nontie",
+          "actual_V2": "difference-180, limitedstep175 (wrongnegative direction), ordinaryCVposterior+90 vs approximately-90; OOSMlag0 sameissue.",
+          "root_and_author_notified": true,
+          "old_initial_harness_failure": "First externalprobe missed repo in sys.path -> ModuleNotFoundError codes before candidate reached. Frozen firstharness and errornote retained separately, not misreported as algorithmfailure."
+        },
+        "V2_verdict": {
+          "exact_pairs": 12249,
+          "wrong_sign_count": 40,
+          "supplement_new_author_tests": {
+            "run": 3,
+            "failures": 0,
+            "errors": 0
+          },
+          "state": "V2 insufficient nearantipodes despite original3authorTestsPASS; preserveduntouched."
+        },
+        "V3_verdict": {
+          "state": "PASS bounded independent signed-angle criteria; no remaining substantiveerror identified in testedset",
+          "exact_pairs": 12249,
+          "unique_lattice_angles": 107,
+          "random_dyadic_exponent_pairs": 800,
+          "wrong_sign_count": 0,
+          "max_same_sign_ULPs": 1.0,
+          "true_ties": 246,
+          "true_zero_pairs": 424,
+          "wrap_exact107": [],
+          "broadcast_and_nonstride_inputs_immutable": true,
+          "publicconsumer_tests": "3differentseamspacings:PFposterior,OSPA,echo,FOV,CLEAR pass. CV/OOSM nearantipode direction andactual5degsteering corrected; displayedposterior mayshift1ULP from exactposterior under chosenrepresentation.",
+          "synthetic_audio_consumer": {
+            "frame_count": 197,
+            "raw_rmse": 19.98348197950665,
+            "Fraction_rmse": 19.98348197950665
+          },
+          "author_new_tests_supplement": {
+            "run": 4,
+            "failures": 0,
+            "errors": 0
+          },
+          "ordinary_preimage_strictJSON": {
+            "bytes": 15767,
+            "sha256": "0fcdb2212702303c6ce1ea5817db27dea420bfde23e279f1ad0d953df6863db1",
+            "same": true,
+            "entrypoints": [
+              "tracking_crossing_dropout_demo.run_experiment",
+              "echo_clutter_gating_experiment E09-21",
+              "av_oosm_and_mot_experiment E09-22"
+            ]
+          }
+        },
+        "accepted_finite_boundary": {
+          "path": "/private/tmp/masp-multiround-20261123/r7-r363-independent/v3-convention-control.json",
+          "example": "Atfirst=-1e-14,second=-180, cutoffnextbelow180, exactdistance is justoutside cutoff whileinwardrepresented distanceequalscutoff, soecho gateincludes.",
+          "disposition": "Expected1ULP representation tradeoff expressly authorized and documented, not newP2; do not overstateexact realnumbergate classification. Actualtiewidth and ordinarycutoffs unchanged."
+        },
+        "actual_source_reading": [
+          {
+            "proposal": "V2",
+            "path": "codes/chapters/ch09/core/tracking.py",
+            "intervals": [
+              [
+                1,
+                89
+              ],
+              [
+                130,
+                194
+              ],
+              [
+                274,
+                365
+              ]
+            ],
+            "boundary": "Full4source review.patch read; surrounding first combined90-207 output had truncated tail, not claimed as wholeclass.",
+            "sha256": "afdc5d4c720ba3c6691b564671a386e8802a6fb8dad2b45168b84554803839bc",
+            "actual_file_line_count": 434
+          },
+          {
+            "proposal": "V2",
+            "path": "codes/chapters/ch09/core/echo_av_fusion.py",
+            "intervals": [
+              [
+                1,
+                196
+              ],
+              [
+                205,
+                468
+              ]
+            ],
+            "not_read_this_batch": [
+              [
+                197,
+                204
+              ],
+              [
+                469,
+                548
+              ],
+              [
+                549,
+                631
+              ]
+            ],
+            "boundary": "Last interval intentionally marks remainingtail un-read, actualordinaryfunctions executed but not fulltailread.",
+            "sha256": "55ad013a22e0753659382c65a2232cb074e3564650e1d1edbeb7aca34eb93d24",
+            "actual_file_line_count": 631
+          },
+          {
+            "proposal": "V2",
+            "path": "codes/chapters/ch09/core/tracking_audio.py",
+            "intervals": [
+              [
+                1,
+                201
+              ]
+            ],
+            "boundary": "Actually complete source shown in two chunks1-154 and154-210; exact source line count below.",
+            "sha256": "17d87071aa098de3d162c64101ccc77d936d54e1298832b1a2ff5c03944ca247",
+            "actual_file_line_count": 201
+          },
+          {
+            "proposal": "V2",
+            "path": "codes/chapters/ch09/tracking_crossing_dropout_demo.py",
+            "intervals": [
+              [
+                1,
+                173
+              ]
+            ],
+            "boundary": "Complete source shown; exact count below.",
+            "sha256": "d0c7720c1cc0c54d1bb1a5ebcb5ab77f75cfffc988dbbae6001b13366b2bf32f",
+            "actual_file_line_count": 175
+          },
+          {
+            "proposal": "V3",
+            "path": "codes/chapters/ch09/core/tracking.py",
+            "intervals": [
+              [
+                25,
+                77
+              ]
+            ],
+            "boundary": "Actual complete V2->V3 diff read; onlydoc+halfturn exceptional branch changed,3other sources byte-identical.",
+            "sha256": "6442e2cad3284207fc9f4b0e617d05e97e7faa69b35fd7b0f76373dafa38ccc1",
+            "actual_file_line_count": 452
+          }
+        ],
+        "test_reading": [
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r7-r363-independent/v2-captured/tests/test_review_r7_angle_seam.py",
+            "sha256": "f8dc98a216ae00997abf76a37579079cda057ec69e15812ce61262cc8c949d2c",
+            "intervals": [
+              [
+                1,
+                57
+              ]
+            ]
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r7-r363-independent/v3-captured/tests/test_review_r7_angle_seam.py",
+            "sha256": "a2c96ba6338083f6e0d0456a472cc643d06d66f32668d61d46ffb86a327d643c",
+            "intervals": [
+              [
+                1,
+                74
+              ]
+            ]
+          }
+        ],
+        "other_modulo_consumer_reading": [
+          {
+            "path": "codes/chapters/ch09/core/spherical_tracking.py",
+            "intervals": [
+              [
+                1,
+                38
+              ]
+            ],
+            "disposition": "singleangle normalizing coordinateconstruction, not pairdifference; unchanged."
+          },
+          {
+            "path": "codes/chapters/ch09/chapter09_experiments.py",
+            "intervals": [
+              [
+                1,
+                42
+              ]
+            ],
+            "disposition": "imports remain; no fullchapterrunnerexecuted here."
+          },
+          {
+            "path": "codes/chapters/ch09/examples/audit_tracking_upstream_interfaces.py",
+            "intervals": [
+              [
+                231,
+                254
+              ]
+            ],
+            "disposition": "fixedFilterPy residualcallback uses+180 formula atfixedz=-179; boundedoriginalauditcontrol, not genericnewpublicangleAPI. No originalpackageexecution or upstreamchanges inthisbatch."
+          }
+        ],
+        "proof_scope": "Normalization bounds directdifference within(-360,360), seam-distance sums preserve the tested adjacentseam separation; exactFractionbranch onlydirectrounded±180 resolves trueorfalse tie. Not proof ofeveryfloat rounding or arbitrary device model.",
+        "evidence": [
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r7-r363-independent/probe.py",
+            "sha256": "cb2adb8b262cb79e7c027df9c6c90167ef1a377a9311fec8a82419c08cb48262"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r7-r363-independent/probe-first-harness.py",
+            "sha256": "265df0f231c74887a538f735f311e474774ae04ce4f0326e7bb2cfcdbbb2752a"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r7-r363-independent/first-harness-error.txt",
+            "sha256": "fbcc0f257d0c16866af3bbac1ab42ddb58091dc6121b9a443cd29f7dc1e0dee3"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r7-r363-independent/initial-antipode-probe.json",
+            "sha256": "3bef9a688a460b689a92e96043903cc606225e9e7da5693c1a36f996315cb32d"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r7-r363-independent/independent_check.py",
+            "sha256": "552c9e43f9984d8d380d661001f05bcb6ffec35c39696971bec9f3afae1fee39"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r7-r363-independent/v2-results.json",
+            "sha256": "c4b7f97fff3c56507428e668a5253922f77420506197f954304bbd90e26e9946"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r7-r363-independent/v3-results.json",
+            "sha256": "e99a438b91da8cdf191f0d1e1d9716a05f7f982fdd72ff94ce9d621f42713316"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r7-r363-independent/v2-author-tests.log",
+            "sha256": "93054e6085b892ca834a005ede1a550d94bba83591e1666d22a2bab8a5a457cc"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r7-r363-independent/v3-author-tests.log",
+            "sha256": "ce3630b4d1d4368f8744fc2fa6e6592b7c86764ea842a301bed70838cbaab01e"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r7-r363-independent/ordinary.py",
+            "sha256": "4dc9dc69942f82dacc28dc9c70cfe1e469ab1e0010b318328e44242d9b56d0a0"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r7-r363-independent/ordinary-before.json",
+            "sha256": "0fcdb2212702303c6ce1ea5817db27dea420bfde23e279f1ad0d953df6863db1"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r7-r363-independent/ordinary-v3.json",
+            "sha256": "0fcdb2212702303c6ce1ea5817db27dea420bfde23e279f1ad0d953df6863db1"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r7-r363-independent/convention_control.py",
+            "sha256": "77847fcbd4922d42a3d071adf2bc0348dff55065e4fab7c195e63190c2500961"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r7-r363-independent/v3-convention-control.json",
+            "sha256": "c30085c7717d9300823246e48d4837e7304afb9db2e4f0e3ffdd4ae89ea7b7c9"
+          }
+        ],
+        "not_executed": [
+          "No formal/currentPCMgenerator orfigure39/72 regeneration (otherreviewerassigned).",
+          "No full trackingchapter or fullbooktest suite, no PDF/site acceptance.",
+          "No upstreamFilterPy/PRA execution, no networksource reading needed for rational algebra.",
+          "Notall4productionfiles reread fully; exactreadranges andfull4filediff distinguished.",
+          "CaptureSHA snapshots do not claim globalformal681/otherauthorbranches unchanged."
+        ],
+        "next": "Root may acceptV3 exactfrozenSHA after independentmedia closure; formal source/assetpromotion remainsroot. No change requested from this reviewer."
+      }
+    },
+    "r7-r135-independent-review--handoff.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/r7-r135-independent-review/handoff.json",
+      "sha256": "0389ba8eee1138747c1014878f2b5189f2d519b056febcd73ac068d1fd03a1af",
+      "bytes": 12500,
+      "boundary": "Seven independently compiled MeetEval interval controls, source and languages.",
+      "packet": {
+        "id": "R135",
+        "reviewer": "/root/publication_ci",
+        "sealed_at": "2026-11-23T13:16:11.595742+00:00",
+        "decision": "Accept finite V2 bilingual586 clarification and exact source lineage; no required new edit found in this scope. Not whole R7 or final publication approval.",
+        "plan": {
+          "path": "/private/tmp/masp-multiround-20261123/content-r6-technical-review/r135-after-r418-ch15-source-proposal-v2/plan.json",
+          "sha256": "0c3ee632001ea5317fb47985a66a528d23c436e8899b51da6f674df6e087690f"
+        },
+        "lineage_and_format": {
+          "sources": [
+            {
+              "path": "chapters/15_target-extraction-diarization.md",
+              "candidate_path": "/private/tmp/masp-multiround-20261123/content-r6-technical-review/r135-after-r418-ch15-source-proposal-v2/source/chapters/15_target-extraction-diarization.md",
+              "candidate_sha256": "bfd837c22187108b0ce62372599f0ceb8047fbabc641f52226e3746835bec8e7",
+              "R418_parent_path": "/private/tmp/masp-multiround-20261123/content-r6-technical-review/r418-short-words-after-r136-v3/source/chapters/15_target-extraction-diarization.md",
+              "R418_parent_sha256": "869a61c3f1d760d40e38bdcbb61a82bd20386cb79bd0c259a252dde73a47c81c",
+              "only_changed_line": 586,
+              "all_other_byte_lines_preserved": true,
+              "all_existing_links_same": true,
+              "line873_count_preserved": true,
+              "inline_markdown_math_code_conversion_passes": true,
+              "rendered_fragment_sha256": "19d0f7663f1abde0d6878d95a138108321696f53fbdda3682583fb8e4f21d1e0"
+            },
+            {
+              "path": "chapters_en/15_target-extraction-diarization.md",
+              "candidate_path": "/private/tmp/masp-multiround-20261123/content-r6-technical-review/r135-after-r418-ch15-source-proposal-v2/source/chapters_en/15_target-extraction-diarization.md",
+              "candidate_sha256": "06f35094b4efb863ace778995a8ba587d52b3695a599377c70bc20db22e385d4",
+              "R418_parent_path": "/private/tmp/masp-multiround-20261123/content-r6-technical-review/r418-short-words-after-r136-v3/source/chapters_en/15_target-extraction-diarization.md",
+              "R418_parent_sha256": "6b5b1e0d69c8565bb206b0fbde334641583cdcc25d21e0655a857ec9ee0ae9f7",
+              "only_changed_line": 586,
+              "all_other_byte_lines_preserved": true,
+              "all_existing_links_same": true,
+              "line873_count_preserved": true,
+              "inline_markdown_math_code_conversion_passes": true,
+              "rendered_fragment_sha256": "5d292a35ccb158d9c3a9d5a847e3f47f4119b0942ecbec3f2c9f5a9a2c594f36"
+            }
+          ],
+          "primary_sources": [
+            {
+              "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/meeteval/meeteval/wer/wer/time_constrained.py",
+              "sha256": "b2d6c0c18f4add17484edf53dbea8f9926f37216c9ccd7612871c92ce537435c",
+              "url": "https://github.com/fgnt/meeteval/blob/6e3dc81284f2d6928f7ef9e620fd3b6906daa429/meeteval/wer/wer/time_constrained.py"
+            },
+            {
+              "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/meeteval/meeteval/wer/preprocess.py",
+              "sha256": "6d1139a3f73784fc8ee627c072d82b8f2ca63871c351aeb58911f8d122e468ac",
+              "url": "https://github.com/fgnt/meeteval/blob/6e3dc81284f2d6928f7ef9e620fd3b6906daa429/meeteval/wer/preprocess.py"
+            },
+            {
+              "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/meeteval/meeteval/wer/matching/levenshtein.h",
+              "sha256": "04e013ba7265a6df8f261f793624ba425b57b7beee9ec9b572f4dd4f1e79ce06",
+              "url": "https://github.com/fgnt/meeteval/blob/6e3dc81284f2d6928f7ef9e620fd3b6906daa429/meeteval/wer/matching/levenshtein.h"
+            }
+          ],
+          "main_patch_valid": true,
+          "parent_plan_valid": true,
+          "math_delta": "Oldinlinecollar\\pm5s becomes5sateachend, deliberatelychangesoneinlineTeXtokenperlanguage; noequationtags/headings/IDs changed. CPWERformulaand2Mwcontrolunchanged.",
+          "fragment_scope": "MemoryMarkdownconversiononly,noChrome/site/PDForvisualacceptance"
+        },
+        "independent_native_control": {
+          "header_path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/meeteval/meeteval/wer/matching/levenshtein.h",
+          "header_sha256": "04e013ba7265a6df8f261f793624ba425b57b7beee9ec9b572f4dd4f1e79ce06",
+          "header_unchanged_after": true,
+          "upstream_HEAD": "6e3dc81284f2d6928f7ef9e620fd3b6906daa429",
+          "compile_argv": [
+            "/usr/bin/clang++",
+            "-std=c++17",
+            "-O2",
+            "/private/tmp/masp-multiround-20261123/r7-r135-independent-review/native.cpp",
+            "-o",
+            "/private/tmp/masp-multiround-20261123/r7-r135-independent-review/native"
+          ],
+          "compile_returncode": 0,
+          "compiler_stderr": "",
+          "execution_returncode": 0,
+          "stdout": "0 1 0\n1 0 2\n2 1 0\n3 0 2\n4 1 1\n5 1 0\n6 1 1\n",
+          "actual_cases": [
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              1,
+              0,
+              2
+            ],
+            [
+              2,
+              1,
+              0
+            ],
+            [
+              3,
+              0,
+              2
+            ],
+            [
+              4,
+              1,
+              1
+            ],
+            [
+              5,
+              1,
+              0
+            ],
+            [
+              6,
+              1,
+              1
+            ]
+          ],
+          "independent_expected": [
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              1,
+              0,
+              2
+            ],
+            [
+              2,
+              1,
+              0
+            ],
+            [
+              3,
+              0,
+              2
+            ],
+            [
+              4,
+              1,
+              1
+            ],
+            [
+              5,
+              1,
+              0
+            ],
+            [
+              6,
+              1,
+              1
+            ]
+          ],
+          "case_explanations": [
+            "reference[0,.75],rawhyp[5.5,6.25],collar5 ->[.5,11.25], startdifference5.5>5 butoverlap=>samewordcost0",
+            "Onlyendpointtouchat.75=>nomatch/cost2",
+            "Nextfloatinsidecontact=>overlap/sameword0",
+            "Nextfloatoutsidecontact=>nooverlap/cost2",
+            "Differentwordinoverlap=>substitutioncost1",
+            "Degeneratehypothesistimingpoint.5insidebroadreference=>strictcomparisonspermitmatch(doesnotmeanpositiveintersectionlength)",
+            "Differentwordatinteriorpoint=>cost1"
+          ],
+          "scope": "Complete unchanged official header compiled into new independent7casecaller. No Cython/Python preprocess/tcpWERglobalassignment executed. Collar expansion in caller explanatorycase is arithmetic, not apply_collar invocation."
+        },
+        "source_conclusion": {
+          "pair_meaning": "Both extend each hypothesis/predicted word interval outward at both ends by the prescribed collar.5s is illustrative eachend, not universaldefault, and match/substitutionrequires reference-expandedhyp overlap.",
+          "actual_fixed_python_chain": "time_constrained.py340-365apply_collar subtractsstart/addsend;665-727tcpWER preprocessor accepts collar requiredparameter andpasses it topreprocess;preprocess529-557setsreferencecollarNone andhypothesiscollarprovided;490-502appliespositivecollar;900-928alignmenthelperappliescollarbeforeCython matching. Read only, notexecuted inthisreview.",
+          "native_endpoint_predicate": "levenshtein.h92-96 a.start < b.end && a.end > b.start. Onlytouchingendpointrejected; positive-lengthintersection isnotanaccurateuniversalparaphrasebecauseaninteriorpointtimingcanpass. Currentcandidateonlysaysintervaloverlap anddoesnotaddthatfalsepositive-lengthpremise.",
+          "scope_boundary": "This finite sourcepredicate/collarclarification doesnotturnoriginalsamewordC++kernel callsinto complete tcpWERglobalassignment/pipeline reproduction. No新score/streamingmodelaccuracy asserted."
+        },
+        "crosschapter": {
+          "actually_read": "Formal pairedch11lines124-139 incl131definitionand133protocolcontext; ch15candidatepaired576-590 includingcpWERformula/fixed2Mwqualification andnearbyheading. Headercontext11.2 and11.5.2 checked.",
+          "consistency": "ch11alreadydefinesintervaloverlap andasksreader tocheckendpointcontact/timestamporigin. Newch15removespoint-timestamp-differenceinterpretation andspecifieseachend; compatible. Adjacentfixedspeaker-mapping2Mwcondition andsessionpermutationcaveat unchanged. No ch11 source change necessary for this finite correction.",
+          "old_link_identity": "All586existinghrefs byteidentical. Linkto11.5.2 remainsacceptancespecificationcontext; timingdefinitionalsoexists11.2. No newURL introduced."
+        },
+        "reader_and_style": "Minimal replacement preserves paragraph, code-spans, math delimiters, examples andlanguage strength. Chinese预测词 andEnglishhypothesiswordrefer same hypothesis side. Explicit每端/ateachend prevents readers splitting5sinto2.5seachend. Both retaincaller-prescribedcollar ratherthanclaiming5sdefault.",
+        "actually_read_ranges": {
+          "candidate_prose": [
+            "Both586 and576-590context",
+            "Both873linecandidate/parent bytescompared, not fullsemanticreread"
+          ],
+          "primary": [
+            "time_constrained.py340-365,665-727,900-928",
+            "preprocess.py490-502,529-557",
+            "levenshtein.h1-35,82-160,348-377"
+          ],
+          "patches": [
+            "FullV2review.patch andplan.json; sourcehash/parentplanverified"
+          ],
+          "not_read": [
+            "Fulltime_constrained.py/preprocess.py paper/challengepages not newlyread",
+            "Entireoriginalheader wascompiledincluded, onlylistedranges semanticallyread"
+          ]
+        },
+        "actual_validation": [
+          "Compile originalheaderwithnewindependent7caseC++caller clang++C++17O2,exit0;executeexit0 andall7results equalindependentexpected",
+          "Reference[0,.75],hypothesis[5.5,6.25],collar5 yields[.5,11.25] andsamewordcost0 despite5.5sstartdifference",
+          "Exactendpointcontactcost2,onefloatinsidecost0,onefloatoutsidecost2;overlappingdifferentwordcost1;interiorpointtimecases0/1",
+          "MemoryMarkdown+shield/unshieldconversionbothparagraphs pass;codecpWER/tcpWERandmathintact,alllinksunchanged",
+          "Finalpairedcandidate,parentand3upstreamprimarySHAstable"
+        ],
+        "limits": [
+          "Noformal/authorcandidate/R6/Gitwrites;ownnewexternalC++/binary/fragments/JSONonly",
+          "NoPythonpreprocess/Cython/fulltcpWERpipeline orglobalpermutation execution",
+          "Nofreshchallengeprotocol,leaderboard,ASR,streamingorhardwareexperiment",
+          "NoChrome/browser/finalPDF/wholebookstyleacceptance;twofragmentHTMLfilesarenotnativeprintQA",
+          "NoR7globalcompletion;R428andR363independentpacketsseparate"
+        ],
+        "own_warnings": [
+          "lineage-format.py emitted a SyntaxWarning for an own explanatory string containing literalbackslash-p; it did not affect candidate source or assertions. No production syntax warning attributed."
+        ],
+        "external_artifacts": [
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r7-r135-independent-review/fragment-en.html",
+            "bytes": 1779,
+            "sha256": "5d292a35ccb158d9c3a9d5a847e3f47f4119b0942ecbec3f2c9f5a9a2c594f36"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r7-r135-independent-review/fragment-zh.html",
+            "bytes": 1703,
+            "sha256": "19d0f7663f1abde0d6878d95a138108321696f53fbdda3682583fb8e4f21d1e0"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r7-r135-independent-review/lineage-format-results.json",
+            "bytes": 3460,
+            "sha256": "0998d6253db14d478d91628cb0252521af7e38dac71aa9be6997299e2e3360b8"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r7-r135-independent-review/lineage-format.py",
+            "bytes": 2770,
+            "sha256": "0f3888b9e0bcb37d525e6537e28edf90f1b1fd4cc84e13c7b50fc70991c36f8a"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r7-r135-independent-review/native",
+            "bytes": 37160,
+            "sha256": "c6284b32908ff0f9ae3e6c109b31359448357e4f758301e0780a4aff3aea0718"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r7-r135-independent-review/native-control.py",
+            "bytes": 2806,
+            "sha256": "5e7b7c890b112583cabc2c2f43c6c6089ab307fc9c1f0b72c6c4bedba6d48b88"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r7-r135-independent-review/native-results.json",
+            "bytes": 2102,
+            "sha256": "16d0e3ccad0648df550a4e540866718dc024330fd92d054b3562b609edad8288"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r7-r135-independent-review/native.cpp",
+            "bytes": 772,
+            "sha256": "81c2a92070613cbff7d0d336f55d8d63c967d32b52c62aac30608ec4254fa69c"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r7-r135-independent-review/seal.py",
+            "bytes": 5263,
+            "sha256": "6ee91a51c373103996067de124721edd098b04d8f15618da24df611c3a8ded58"
+          }
+        ]
+      }
+    },
+    "r7-r429-independent-review--handoff.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/r7-r429-independent-review/handoff.json",
+      "sha256": "28f9f00270ba6c47b1893bd3ffef3e640ae438ed737f50796617790828ffeb13",
+      "bytes": 12228,
+      "boundary": "Independent primary-source verification of the seven local diarization classes and neighboring two-track distinction.",
+      "packet": {
+        "id": "R429",
+        "reviewer": "/root/publication_ci",
+        "sealed_at": "2026-11-23T13:23:50.620049+00:00",
+        "final_candidate_version": "V3",
+        "plan": {
+          "path": "/private/tmp/masp-multiround-20261123/content-r6-technical-review/r429-after-r135v2-ch15-source-proposal-v3/plan.json",
+          "sha256": "b64fb7d1d592df2841009ac9a10c98d64fe5ae41b0b55d22675748555aeda8da"
+        },
+        "decision": "Accept finite bilingual attribution/representation clarification in exactV3source. No new required change found in this scope; not globalR7orpublicationacceptance.",
+        "exact_lineage": {
+          "sources": [
+            {
+              "path": "chapters/15_target-extraction-diarization.md",
+              "candidate_sha256": "dc335b84251f68faeb9af23017bfc4426ca35d4b08934b3bef8a4c9aa2ae674e",
+              "V2_sha256": "3c54be0faba572146ca8e3cd9f733dc199a5494f22512a7d4ffa9fe8ce880068",
+              "cumulative_only_changed_lines": [
+                379,
+                381,
+                383
+              ],
+              "V2_to_V3_only_changed_lines": [
+                379,
+                381
+              ],
+              "paper_version_7class_DiariZen_clause383_byte_unchanged": true,
+              "R135_586_byte_unchanged": true,
+              "three_paragraph_markdown_conversion_passes": true
+            },
+            {
+              "path": "chapters_en/15_target-extraction-diarization.md",
+              "candidate_sha256": "84c098478fb9432442c47c5cbf3320ac8963631a32ffac330c6fa21329f036c2",
+              "V2_sha256": "a1992771423805cb3e196c8f9c18695dee0846ca9542f05fde68d6d16e700908",
+              "cumulative_only_changed_lines": [
+                379,
+                381,
+                383
+              ],
+              "V2_to_V3_only_changed_lines": [
+                379,
+                381
+              ],
+              "paper_version_7class_DiariZen_clause383_byte_unchanged": true,
+              "R135_586_byte_unchanged": true,
+              "three_paragraph_markdown_conversion_passes": true
+            }
+          ],
+          "full_recording_capacity_hand_control": {
+            "durations": {
+              "A": 2,
+              "B": 3,
+              "C": 5
+            },
+            "all_two_global_label_assignments": [
+              {
+                "assigned_global_identities": [
+                  "A",
+                  "B"
+                ],
+                "unrepresented_speaker_time": 5
+              },
+              {
+                "assigned_global_identities": [
+                  "A",
+                  "C"
+                ],
+                "unrepresented_speaker_time": 3
+              },
+              {
+                "assigned_global_identities": [
+                  "B",
+                  "A"
+                ],
+                "unrepresented_speaker_time": 5
+              },
+              {
+                "assigned_global_identities": [
+                  "B",
+                  "C"
+                ],
+                "unrepresented_speaker_time": 2
+              },
+              {
+                "assigned_global_identities": [
+                  "C",
+                  "A"
+                ],
+                "unrepresented_speaker_time": 3
+              },
+              {
+                "assigned_global_identities": [
+                  "C",
+                  "B"
+                ],
+                "unrepresented_speaker_time": 2
+              }
+            ],
+            "minimum_unrepresented_speaker_time": 2,
+            "reference_speaker_time_denominator": 10,
+            "floor_fraction": "2/10",
+            "scope": "Handcountconditionalonfixedtwo distinctglobalidentities, not originalDERlibrary/network execution."
+          },
+          "encoding_consumer_countercontrol": {
+            "powerset_class": [
+              0,
+              1
+            ],
+            "decoded_three_track_activity": [
+              1,
+              1,
+              0
+            ],
+            "one_softmax_class_can_encode_two_active_tracks": true,
+            "two_local_slots_plus_global_clustering": "Can emitthree differentfull-recordinglabels fornonoverlappingA/B/Cutterances; not a counterexample toexplicitglobaltwolabelcondition.",
+            "V2_adjacent_binaryhead_necessity_candidate": "ResolvedbyV3activityratherthanindependent-output-head wording."
+          }
+        },
+        "prior_V2_controls_preserved": {
+          "sources": [
+            {
+              "path": "chapters/15_target-extraction-diarization.md",
+              "candidate_sha256": "3c54be0faba572146ca8e3cd9f733dc199a5494f22512a7d4ffa9fe8ce880068",
+              "base_sha256": "bfd837c22187108b0ce62372599f0ceb8047fbabc641f52226e3746835bec8e7",
+              "only_changed_line": 383,
+              "other872byte_lines_preserved": true,
+              "R135_interval_line586_unchanged": true,
+              "one_official_link_added": true,
+              "prior_link_order_preserved": true,
+              "fragment_markdown_conversion_valid": true
+            },
+            {
+              "path": "chapters_en/15_target-extraction-diarization.md",
+              "candidate_sha256": "a1992771423805cb3e196c8f9c18695dee0846ca9542f05fde68d6d16e700908",
+              "base_sha256": "06f35094b4efb863ace778995a8ba587d52b3695a599377c70bc20db22e385d4",
+              "only_changed_line": 383,
+              "other872byte_lines_preserved": true,
+              "R135_interval_line586_unchanged": true,
+              "one_official_link_added": true,
+              "prior_link_order_preserved": true,
+              "fragment_markdown_conversion_valid": true
+            }
+          ],
+          "counts": {
+            "3": {
+              "maximum_simultaneous": 2,
+              "count": 7,
+              "class_vectors": [
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  1
+                ],
+                [
+                  1,
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  1,
+                  1
+                ]
+              ],
+              "full_unrestricted_powerset_count": 8,
+              "triple_states_excluded": true
+            },
+            "4": {
+              "maximum_simultaneous": 2,
+              "count": 11,
+              "class_vectors": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  1,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                [
+                  1,
+                  1,
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  0,
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  0,
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  1,
+                  1,
+                  0
+                ],
+                [
+                  0,
+                  1,
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  0,
+                  1,
+                  1
+                ]
+              ],
+              "full_unrestricted_powerset_count": 16,
+              "triple_states_excluded": true
+            }
+          }
+        },
+        "primary_sources": [
+          {
+            "url": "https://www.isca-archive.org/interspeech_2023/plaquet23_interspeech.pdf",
+            "actual_read": "WebPDFextractedtextunion0-285of457lines, especially§3print3223lines139-150,footnote195-197,§4pipelineversion191-194. Notfull5pages/nativepixels.",
+            "verification_date": "2026-11-23",
+            "supports": "Originalpowersetuses7states:empty,3singles,3pairs,excluding3+simultaneous; experimentsbuildon2.1.1pipeline;softmaxargmaxremovesbinarydetectionthreshold."
+          },
+          {
+            "url": "https://huggingface.co/pyannote/segmentation-3.0",
+            "actual_read": "Officialpublicmodelcard101-142core plusversioncitationcontext;nogatedweightaccess",
+            "verification_date": "2026-11-23",
+            "supports": "Released3.0segmentationmodeluses7powersetstates,Kchunk3/Kframe2;cardstatestrainedwith3.0.0."
+          },
+          {
+            "url": "https://github.com/orgs/pyannote/discussions/1471",
+            "actual_read": "Officialmaintainerrelease125-168;notbenchmarkvalidation",
+            "verification_date": "2026-11-23",
+            "supports": "2023-09-26releaseannouncespowersetsegmentation3.0,afterAugust2023paper."
+          },
+          {
+            "url": "https://arxiv.org/html/2409.09408v1",
+            "actual_read": "Authoredv1text0-77including§§II-A/B61-70;remaining78-214notnewlyread.",
+            "verification_date": "2026-11-23",
+            "supports": "DiariZencombinesweightedWavLMlayers,ConformerlocalpowersetandAHCcannot-linkwithinsegment;Kchunk4/Kframe2gives11states."
+          }
+        ],
+        "judgment_details": {
+          "bilingual383": "Bothoriginal2.1.1experimentalpipelineandlater3.0modelattributionareseparate;7classesdescribeboundedlocalmodel,notallgeneralpowersetmodelsnorallpyannote3.xconfigurations. Detectionthresholdclaimlimitedtobinarysegmentationdetection,notallclustering/tuningthresholds.",
+          "DiariZen": "AdjacentweightedWavLM/Conformer/cannot-linkAHCdescriptionmatchesauthoredv1methods.11classregimeisindependentcountercontrol,notaddedclaimthatbotharchitecturesuse7. No model executed.",
+          "V2_neighbor_issue": "Old379couldbemisreadasnecessityofindependentsigmoidheads. V3removesheadimplementationnecessityandstatesdecodedmultiple-trackactivityinstead;counterexampleonepowersetclass{0,1}->[1,1,0]fits.",
+          "V3_381": "Distinctoutputtracksforthefullrecordingisexplicit,notalimitontwolocalchannelsbeforeglobalclustering. Smallindependentcapacityhandcount2/10supportsconditionalinterpretation;notwholeE15-13orDERlibraryacceptance,whichnumericsreviewsseparately.",
+          "inherited_material": "Only379/381/383differfromR135V2base;allother870byte-linesincludingR135586/R136/R418andallheadings/equationtagsremainexact.383V2sourcebytepreserved. Oneofficialmodellationlinkaddedperlanguage;priorlinksorderpreserved."
+        },
+        "actual_computations": [
+          "Enumerateduniqueempty/single/pairactivityvectors:7for3locals,11for4locals;fullunrestrictedpowersets8/16,so3+-overlapnotimplicitlyincluded",
+          "Oneclassmaydecodeintomultipleactivebinarytracks;doesnotrequirebinaryindependentoutputheads",
+          "Simple3identitydurations2,3,5/twoglobalID6assignmentsyieldminunrepresented2of10speaker-time;globalclusteringintospeakers3isdifferentcondition",
+          "ThreechangedparagraphsrenderthroughmemoryMarkdown/mathshieldconversion;notnativebrowser/PDFQA"
+        ],
+        "read_scope": {
+          "actual_candidate": "V2paired376-388fullcontextincluding383;V3paired379/381actuallyprintedfromsource;383provedexactV2bytes.3sourceclausesonly,notfullchaptersemanticreread.",
+          "plans": "V1/V2plansfull,V3plansemanticfieldsplusSHAchecks;initialcombinedV3plan+patchoutputtruncatedandnotcountedfullpatchread;actualnewsource379/381subsequentlyboundedreadandlineagechecked.",
+          "not_revalidated": "OriginalSTB/EEND-GLA/Sortformer/StreamingSortformer/EEND/TS-VAD/EDAoriginalpapersnotfreshlyre-read,unchangedclaimsnotnewlycertifiedbythispacket."
+        },
+        "source_and_workspace_policy": "Onlynewexternalownscripts/JSONwritten;formal/authorcandidate/R6sources/assets/Gitunchangedbythisreview. OriginalV1/V2authorfilesandownpreliminaryresultskept.",
+        "not_executed": [
+          "No neuralmodel/weights/training/benchmarks/score/hardwareexecution",
+          "No browser/nativePDFvisualorwholebooksitebuild",
+          "No globalR7completion, newformalassetorPDFacceptance",
+          "R363V3assetgenerationisaseparatependingpacket;coreindependentreviewbelongsnumerics"
+        ],
+        "own_warning": "CompactownPythonlist-comprehensiontoken1for raisedSyntaxWarningonly;controlsexecutedandpassed. Notacandidatewarning.",
+        "external_artifacts": [
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r7-r429-independent-review/check-v3.py",
+            "bytes": 3514,
+            "sha256": "41d3b8ee336a8c553de12a7448ea0aafa52ba96b8bbdc482e97b7af917b95d16"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r7-r429-independent-review/check.py",
+            "bytes": 2686,
+            "sha256": "85a10367b7db389dde2bbf370cc68ed41b5f6e88740ffc5627fcf8777cdbe767"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r7-r429-independent-review/checks-results.json",
+            "bytes": 2639,
+            "sha256": "583cf10bb0f0d57a124a8b03e8ad2476677d57d4a48cf9387634ab022ef272b1"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r7-r429-independent-review/checks-v3-results.json",
+            "bytes": 2933,
+            "sha256": "90d2b444ba459e030b1708b29c2f6ef7d93485ef39be84a6d41be6ec84f8a5ea"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r7-r429-independent-review/seal.py",
+            "bytes": 5376,
+            "sha256": "cbdad59d0b131d96202f74530d0f202a647561b2c6cad0489f8effd1569c53f6"
+          }
+        ]
+      }
+    },
+    "r7-r428-independent-review--handoff.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/r7-r428-independent-review/handoff.json",
+      "sha256": "eb2c6f42e59811ab7bab47d703e4de03edec498c3148d55bc2a781d1b5a394a1",
+      "bytes": 35677,
+      "boundary": "Native A4 sample and website controls for the Figure 84 legend.",
+      "packet": {
+        "id": "R428",
+        "reviewer": "/root/publication_ci",
+        "sealed_at": "2026-11-23T13:06:10.164990+00:00",
+        "decision": "Accept finite singlelegend move; no new blocker found",
+        "candidate_handoff": "/private/tmp/masp-multiround-20261123/r7-r428-legend-candidate/handoff.json",
+        "candidate_handoff_sha256": "6c12b00b8912c13c3b9c386d1fce0a15b4ae062941d8600b175612f9314ce9ca",
+        "independent_results": {
+          "source_diff": [
+            "--- \n",
+            "+++ \n",
+            "@@ -219,5 +219,5 @@\n",
+            "         ylim=(-3.90, 3.85),\n",
+            "     )\n",
+            "-    ax.legend(loc=\"lower left\")\n",
+            "+    ax.legend(loc=\"upper right\")\n",
+            " \n",
+            "     # (d) COLA / WOLA steady-state denominator comparison\n"
+          ],
+          "assets": [
+            {
+              "path": "codes/chapters/ch00/reports/figure84_complex_phasor_fourier.json",
+              "candidate_path": "/private/tmp/masp-multiround-20261123/r7-r428-legend-candidate/shadow/codes/chapters/ch00/reports/figure84_complex_phasor_fourier.json",
+              "sha256": "ef5bde3b086ce2297106fcb240b71043ed9b3d7073c48cc0494e43fb2ae99f18"
+            },
+            {
+              "path": "figures/fig84_complex_phasor_fourier.png",
+              "candidate_path": "/private/tmp/masp-multiround-20261123/r7-r428-legend-candidate/shadow/figures/fig84_complex_phasor_fourier.png",
+              "sha256": "548f5db68dd5f7f20d88c7ca0d075654893328920d468ccb426c931ba35e74cc",
+              "RGBA_shape": [
+                1173,
+                1437,
+                4
+              ],
+              "changed_pixels": 87573,
+              "change_bbox_xyxy": [
+                98,
+                676,
+                677,
+                1082
+              ],
+              "report_source_generator_bindings_valid": true
+            },
+            {
+              "path": "figures_en/fig84_complex_phasor_fourier.png",
+              "candidate_path": "/private/tmp/masp-multiround-20261123/r7-r428-legend-candidate/shadow/figures_en/fig84_complex_phasor_fourier.png",
+              "sha256": "6a7a05b124a23902e6456c7ac3e0ed7bb1e22323298c41994fd53ebeeebc40c2",
+              "RGBA_shape": [
+                1173,
+                1438,
+                4
+              ],
+              "changed_pixels": 96406,
+              "change_bbox_xyxy": [
+                99,
+                680,
+                679,
+                1075
+              ],
+              "report_source_generator_bindings_valid": true,
+              "full_subset_byte_equal": true
+            },
+            {
+              "path": "codes/chapters/ch00/reports/figure85_subspace_projection_svd.json",
+              "candidate_path": "/private/tmp/masp-multiround-20261123/r7-r428-legend-candidate/shadow/codes/chapters/ch00/reports/figure85_subspace_projection_svd.json",
+              "sha256": "6b51ad3d78ba2141100dcf9959b2c1d7350e89a27637530c0318a5fcd137b1b8"
+            },
+            {
+              "path": "figures/fig85_subspace_projection_svd.png",
+              "candidate_path": "/private/tmp/masp-multiround-20261123/r7-r428-legend-candidate/shadow/figures/fig85_subspace_projection_svd.png",
+              "sha256": "d45fe21da05e484035df666806be97662fc81781339bc5785421b3ea8e9b73d2",
+              "RGBA_shape": [
+                1173,
+                1437,
+                4
+              ],
+              "changed_pixels": 0,
+              "change_bbox_xyxy": null,
+              "report_source_generator_bindings_valid": true
+            },
+            {
+              "path": "figures_en/fig85_subspace_projection_svd.png",
+              "candidate_path": "/private/tmp/masp-multiround-20261123/r7-r428-legend-candidate/shadow/figures_en/fig85_subspace_projection_svd.png",
+              "sha256": "e383b640e1c6aafe891a88fba4d0f95d148758b909033bdf10997f1a58131285",
+              "RGBA_shape": [
+                1173,
+                1437,
+                4
+              ],
+              "changed_pixels": 0,
+              "change_bbox_xyxy": null,
+              "report_source_generator_bindings_valid": true,
+              "full_subset_byte_equal": true
+            },
+            {
+              "path": "codes/chapters/ch00/reports/figure86_hermitian_rayleigh_gev.json",
+              "candidate_path": "/private/tmp/masp-multiround-20261123/r7-r428-legend-candidate/shadow/codes/chapters/ch00/reports/figure86_hermitian_rayleigh_gev.json",
+              "sha256": "e63dfde93cefa051dce1d7d09f3eecb0aed2facdf7d1fa793d30e22d9b3d844b"
+            },
+            {
+              "path": "figures/fig86_hermitian_rayleigh_gev.png",
+              "candidate_path": "/private/tmp/masp-multiround-20261123/r7-r428-legend-candidate/shadow/figures/fig86_hermitian_rayleigh_gev.png",
+              "sha256": "83c9f8021d2a5a410f0e6733de19dd572dff653c5a9ff76b0549ee929eb0a595",
+              "RGBA_shape": [
+                1173,
+                1433,
+                4
+              ],
+              "changed_pixels": 0,
+              "change_bbox_xyxy": null,
+              "report_source_generator_bindings_valid": true
+            },
+            {
+              "path": "figures_en/fig86_hermitian_rayleigh_gev.png",
+              "candidate_path": "/private/tmp/masp-multiround-20261123/r7-r428-legend-candidate/shadow/figures_en/fig86_hermitian_rayleigh_gev.png",
+              "sha256": "eca7d81436e0edb200da3c814632bdf66c7faadc51c793670c21f3b7edee611e",
+              "RGBA_shape": [
+                1173,
+                1453,
+                4
+              ],
+              "changed_pixels": 0,
+              "change_bbox_xyxy": null,
+              "report_source_generator_bindings_valid": true,
+              "full_subset_byte_equal": true
+            },
+            {
+              "path": "codes/chapters/ch00/reports/figure87_wirtinger_probability_bayesian.json",
+              "candidate_path": "/private/tmp/masp-multiround-20261123/r7-r428-legend-candidate/shadow/codes/chapters/ch00/reports/figure87_wirtinger_probability_bayesian.json",
+              "sha256": "8a3fd264193c6dc55923e3c01965183bba727b6dce7e624426a74aa3be5680e4"
+            },
+            {
+              "path": "figures/fig87_wirtinger_probability_bayesian.png",
+              "candidate_path": "/private/tmp/masp-multiround-20261123/r7-r428-legend-candidate/shadow/figures/fig87_wirtinger_probability_bayesian.png",
+              "sha256": "a8f03f4fe22c2e66e9c24ec9045eb51623160eb90afed59a41a982be18afd592",
+              "RGBA_shape": [
+                1173,
+                1437,
+                4
+              ],
+              "changed_pixels": 0,
+              "change_bbox_xyxy": null,
+              "report_source_generator_bindings_valid": true
+            },
+            {
+              "path": "figures_en/fig87_wirtinger_probability_bayesian.png",
+              "candidate_path": "/private/tmp/masp-multiround-20261123/r7-r428-legend-candidate/shadow/figures_en/fig87_wirtinger_probability_bayesian.png",
+              "sha256": "5c443f1c7c2f3723c9306febcb95e2f88b2bc6f03b07383aaafa0829e1471367",
+              "RGBA_shape": [
+                1173,
+                1450,
+                4
+              ],
+              "changed_pixels": 0,
+              "change_bbox_xyxy": null,
+              "report_source_generator_bindings_valid": true,
+              "full_subset_byte_equal": true
+            }
+          ],
+          "reports": [
+            {
+              "number": 84,
+              "changed_leaf_paths": [
+                "/source_sha256/scripts/make_math_figures.py"
+              ],
+              "all_other_typed_leaves_equal": true,
+              "source_roles": [
+                {
+                  "path": "codes/chapters/ch00/core/chapter00_math.py",
+                  "sha256": "23e7c3d0c968b497c9fa607214b2147f526a2a2def5ecbeeb9ce373baf0ffac4",
+                  "valid": true
+                },
+                {
+                  "path": "codes/chapters/ch00/io_contracts.py",
+                  "sha256": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974",
+                  "valid": true
+                },
+                {
+                  "path": "codes/chapters/ch02/core/conventions.py",
+                  "sha256": "79af1b8f7fe664e64e7ad786082c36a29664eacbdda63fba96a944e548304865",
+                  "valid": true
+                },
+                {
+                  "path": "scripts/make_figures.py",
+                  "sha256": "0157fc2c9fc9ee0a2d0bba7810a9603b22aa5a24d327a8895ef14412a2fb2fec",
+                  "valid": true
+                },
+                {
+                  "path": "scripts/make_math_figures.py",
+                  "sha256": "45a30e42df64d3f15707b5e1fc4546c60be1551246fae8a595e5485613ab761d",
+                  "valid": true
+                }
+              ]
+            },
+            {
+              "number": 85,
+              "changed_leaf_paths": [
+                "/source_sha256/scripts/make_math_figures.py"
+              ],
+              "all_other_typed_leaves_equal": true,
+              "source_roles": [
+                {
+                  "path": "codes/chapters/ch00/core/chapter00_math.py",
+                  "sha256": "23e7c3d0c968b497c9fa607214b2147f526a2a2def5ecbeeb9ce373baf0ffac4",
+                  "valid": true
+                },
+                {
+                  "path": "codes/chapters/ch00/io_contracts.py",
+                  "sha256": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974",
+                  "valid": true
+                },
+                {
+                  "path": "codes/chapters/ch02/core/conventions.py",
+                  "sha256": "79af1b8f7fe664e64e7ad786082c36a29664eacbdda63fba96a944e548304865",
+                  "valid": true
+                },
+                {
+                  "path": "scripts/make_figures.py",
+                  "sha256": "0157fc2c9fc9ee0a2d0bba7810a9603b22aa5a24d327a8895ef14412a2fb2fec",
+                  "valid": true
+                },
+                {
+                  "path": "scripts/make_math_figures.py",
+                  "sha256": "45a30e42df64d3f15707b5e1fc4546c60be1551246fae8a595e5485613ab761d",
+                  "valid": true
+                }
+              ]
+            },
+            {
+              "number": 86,
+              "changed_leaf_paths": [
+                "/source_sha256/scripts/make_math_figures.py"
+              ],
+              "all_other_typed_leaves_equal": true,
+              "source_roles": [
+                {
+                  "path": "codes/chapters/ch00/core/chapter00_math.py",
+                  "sha256": "23e7c3d0c968b497c9fa607214b2147f526a2a2def5ecbeeb9ce373baf0ffac4",
+                  "valid": true
+                },
+                {
+                  "path": "codes/chapters/ch00/io_contracts.py",
+                  "sha256": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974",
+                  "valid": true
+                },
+                {
+                  "path": "codes/chapters/ch02/core/conventions.py",
+                  "sha256": "79af1b8f7fe664e64e7ad786082c36a29664eacbdda63fba96a944e548304865",
+                  "valid": true
+                },
+                {
+                  "path": "scripts/make_figures.py",
+                  "sha256": "0157fc2c9fc9ee0a2d0bba7810a9603b22aa5a24d327a8895ef14412a2fb2fec",
+                  "valid": true
+                },
+                {
+                  "path": "scripts/make_math_figures.py",
+                  "sha256": "45a30e42df64d3f15707b5e1fc4546c60be1551246fae8a595e5485613ab761d",
+                  "valid": true
+                }
+              ]
+            },
+            {
+              "number": 87,
+              "changed_leaf_paths": [
+                "/source_sha256/scripts/make_math_figures.py"
+              ],
+              "all_other_typed_leaves_equal": true,
+              "source_roles": [
+                {
+                  "path": "codes/chapters/ch00/core/chapter00_math.py",
+                  "sha256": "23e7c3d0c968b497c9fa607214b2147f526a2a2def5ecbeeb9ce373baf0ffac4",
+                  "valid": true
+                },
+                {
+                  "path": "codes/chapters/ch00/io_contracts.py",
+                  "sha256": "0b366f123b9c1fe125f30e0b4ff99e7669db9a0c2f29bbfb692f97b7d9ae5974",
+                  "valid": true
+                },
+                {
+                  "path": "codes/chapters/ch02/core/conventions.py",
+                  "sha256": "79af1b8f7fe664e64e7ad786082c36a29664eacbdda63fba96a944e548304865",
+                  "valid": true
+                },
+                {
+                  "path": "scripts/make_figures.py",
+                  "sha256": "0157fc2c9fc9ee0a2d0bba7810a9603b22aa5a24d327a8895ef14412a2fb2fec",
+                  "valid": true
+                },
+                {
+                  "path": "scripts/make_math_figures.py",
+                  "sha256": "45a30e42df64d3f15707b5e1fc4546c60be1551246fae8a595e5485613ab761d",
+                  "valid": true
+                }
+              ]
+            }
+          ],
+          "source_sha256": "45a30e42df64d3f15707b5e1fc4546c60be1551246fae8a595e5485613ab761d",
+          "opened_visuals": [
+            {
+              "path": "/private/tmp/masp-multiround-20261123/r7-r428-legend-candidate/visual/ZH-before.png",
+              "sha256": "21ecce05f02f97e6c1e437a3de5e69098c282ab4fc54a0591ce2fd41f8470774",
+              "actually_opened": true
+            },
+            {
+              "path": "/private/tmp/masp-multiround-20261123/r7-r428-legend-candidate/visual/a4-4.png",
+              "sha256": "e1634a8547e64a28d4691e790ad6c477b817bd957e81b9801a56bca5119d5093",
+              "actually_opened": true
+            },
+            {
+              "path": "/private/tmp/masp-multiround-20261123/r7-r428-legend-candidate/visual/a4-1.png",
+              "sha256": "fb9a81694abd13f01c69834d2e32aa1bb6dff7b811344a8d2b34a01c609fb78e",
+              "actually_opened": true
+            },
+            {
+              "path": "/private/tmp/masp-multiround-20261123/r7-r428-legend-candidate/visual/a4-2.png",
+              "sha256": "7b30273926f46835230cb21e66ae6fbe09d5f81e22e56507802f75149e688886",
+              "actually_opened": true
+            },
+            {
+              "path": "/private/tmp/masp-multiround-20261123/r7-r428-legend-candidate/visual/a4-3.png",
+              "sha256": "b5f568dfd1efdee29dd2e1615bb79916d76497df4a10cb10e35ded7a980de636",
+              "actually_opened": true
+            },
+            {
+              "path": "/private/tmp/masp-multiround-20261123/r7-r428-legend-candidate/visual/EN-after.png",
+              "sha256": "054d30c250f15faf0cbd0281e864d401fe1c96a422ae18b3df704f52e13463e9",
+              "actually_opened": true
+            },
+            {
+              "path": "/private/tmp/masp-multiround-20261123/r7-r428-legend-candidate/visual/EN-before.png",
+              "sha256": "dbdd175b8439a332119a6370614e70de08006da39f4a867c81a1535e452122f4",
+              "actually_opened": true
+            },
+            {
+              "path": "/private/tmp/masp-multiround-20261123/r7-r428-legend-candidate/visual/ZH-after.png",
+              "sha256": "58da2e7dab09504b2003ec9dfe05c3ead4675be385a4a26e30474bae1ecf0371",
+              "actually_opened": true
+            }
+          ]
+        },
+        "other83English_shadowPNG_unchanged": [
+          {
+            "file": "fig01_binaural.png",
+            "shadow_sha256": "8a4fa40b2329a1c538afb29668a54f362950e5e9cc84fd3479b9c0dc918b2a4a",
+            "R6_sha256": "8a4fa40b2329a1c538afb29668a54f362950e5e9cc84fd3479b9c0dc918b2a4a",
+            "equal": true
+          },
+          {
+            "file": "fig02_dsin_geometry.png",
+            "shadow_sha256": "a30031c4917936812cd3598f474723c985cffb9ba14c4e3fe588a279f48c67c9",
+            "R6_sha256": "a30031c4917936812cd3598f474723c985cffb9ba14c4e3fe588a279f48c67c9",
+            "equal": true
+          },
+          {
+            "file": "fig03_near_far_field.png",
+            "shadow_sha256": "27d8f6deb9c716b0f876f4ce752cd1cf046dff8aa050f49e0e551dc508a3c83f",
+            "R6_sha256": "27d8f6deb9c716b0f876f4ce752cd1cf046dff8aa050f49e0e551dc508a3c83f",
+            "equal": true
+          },
+          {
+            "file": "fig04_delay_phase.png",
+            "shadow_sha256": "ac62d022409865dcc7535e7900df21406546b3e3ac8bb37206d7a8f498d711f2",
+            "R6_sha256": "ac62d022409865dcc7535e7900df21406546b3e3ac8bb37206d7a8f498d711f2",
+            "equal": true
+          },
+          {
+            "file": "fig05_room_acoustics.png",
+            "shadow_sha256": "cd2b1133e76b756900a8c07acacef06a0dc6a395000411e99b3d4c06d0a4ae46",
+            "R6_sha256": "cd2b1133e76b756900a8c07acacef06a0dc6a395000411e99b3d4c06d0a4ae46",
+            "equal": true
+          },
+          {
+            "file": "fig06_stft_cov.png",
+            "shadow_sha256": "2bd0ec08249fc685fb6bf084eec24d47fd5751a89257265e2ea895d75edd7bfb",
+            "R6_sha256": "2bd0ec08249fc685fb6bf084eec24d47fd5751a89257265e2ea895d75edd7bfb",
+            "equal": true
+          },
+          {
+            "file": "fig07_beampattern_anatomy.png",
+            "shadow_sha256": "c1b0baec605ee96e32e9d501e5f76b5341d4347effcd86f3efa6b13edba85b7b",
+            "R6_sha256": "c1b0baec605ee96e32e9d501e5f76b5341d4347effcd86f3efa6b13edba85b7b",
+            "equal": true
+          },
+          {
+            "file": "fig08_geometries.png",
+            "shadow_sha256": "d8418efc2aa896fd492089f02ed088c4c2682f5fed76363da73e1e60326df60d",
+            "R6_sha256": "d8418efc2aa896fd492089f02ed088c4c2682f5fed76363da73e1e60326df60d",
+            "equal": true
+          },
+          {
+            "file": "fig09_tradeoffs.png",
+            "shadow_sha256": "5342ef9019504334531344a4e538b7012a625bf6c68c1f83c7dcfe219bb8c286",
+            "R6_sha256": "5342ef9019504334531344a4e538b7012a625bf6c68c1f83c7dcfe219bb8c286",
+            "equal": true
+          },
+          {
+            "file": "fig10_sparse_array.png",
+            "shadow_sha256": "fa628155397ce1ca0173a8fde49ab56d79246d8411048f83480e3f863d4eeb23",
+            "R6_sha256": "fa628155397ce1ca0173a8fde49ab56d79246d8411048f83480e3f863d4eeb23",
+            "equal": true
+          },
+          {
+            "file": "fig11_doa_spectrum.png",
+            "shadow_sha256": "7e2e62deb092d87e4fa21d4132685a0397f192dce0bc6e9206ff7cd2fd52b776",
+            "R6_sha256": "7e2e62deb092d87e4fa21d4132685a0397f192dce0bc6e9206ff7cd2fd52b776",
+            "equal": true
+          },
+          {
+            "file": "fig12_gcc_phat.png",
+            "shadow_sha256": "5e986669488cbc4d57a0ece14edd475bee8e95372aa8e3738a640393519c085b",
+            "R6_sha256": "5e986669488cbc4d57a0ece14edd475bee8e95372aa8e3738a640393519c085b",
+            "equal": true
+          },
+          {
+            "file": "fig13_gcc_reverb.png",
+            "shadow_sha256": "df2960cf84b493b42e249b7ad2bc1cb5241fcd9ce1b4215e2343402d5e0e3887",
+            "R6_sha256": "df2960cf84b493b42e249b7ad2bc1cb5241fcd9ce1b4215e2343402d5e0e3887",
+            "equal": true
+          },
+          {
+            "file": "fig14_srp_grid.png",
+            "shadow_sha256": "d74aac05340a73a34717e8f9b5e388ece3a519d62d2ca6090ce0c96412f0dd39",
+            "R6_sha256": "d74aac05340a73a34717e8f9b5e388ece3a519d62d2ca6090ce0c96412f0dd39",
+            "equal": true
+          },
+          {
+            "file": "fig15_wng_di.png",
+            "shadow_sha256": "f8401bf8ae60ae9ac23944e963805db123e5060af8c03cebc35ce2ac6621671d",
+            "R6_sha256": "f8401bf8ae60ae9ac23944e963805db123e5060af8c03cebc35ce2ac6621671d",
+            "equal": true
+          },
+          {
+            "file": "fig16_beampattern.png",
+            "shadow_sha256": "5f3d1490416ff4545eb1038f2e60c6d2c996bf852f21e5a5c1adc3a8dad19f0f",
+            "R6_sha256": "5f3d1490416ff4545eb1038f2e60c6d2c996bf852f21e5a5c1adc3a8dad19f0f",
+            "equal": true
+          },
+          {
+            "file": "fig17_gsc.png",
+            "shadow_sha256": "67d7550732d3a4335599248461ba928b32b1abe268075946f99bcd8310529189",
+            "R6_sha256": "67d7550732d3a4335599248461ba928b32b1abe268075946f99bcd8310529189",
+            "equal": true
+          },
+          {
+            "file": "fig18_aec.png",
+            "shadow_sha256": "1b1dbadcc5355a03a6b797e6303337f79c1509fb622c765cf867d39846fcc45c",
+            "R6_sha256": "1b1dbadcc5355a03a6b797e6303337f79c1509fb622c765cf867d39846fcc45c",
+            "equal": true
+          },
+          {
+            "file": "fig19_aec_pipeline.png",
+            "shadow_sha256": "aa06362fde4f8ea2c2305df746533141da15a09bde79287531e5de742ecd22f4",
+            "R6_sha256": "aa06362fde4f8ea2c2305df746533141da15a09bde79287531e5de742ecd22f4",
+            "equal": true
+          },
+          {
+            "file": "fig20_wpe.png",
+            "shadow_sha256": "dc1e11b7a3bd9e838af410da5b3255dc55e74d82324b54e498b13eb3dde81875",
+            "R6_sha256": "dc1e11b7a3bd9e838af410da5b3255dc55e74d82324b54e498b13eb3dde81875",
+            "equal": true
+          },
+          {
+            "file": "fig21_tracking.png",
+            "shadow_sha256": "700729a7bd90c87a71f497d7002acca007b1d4ea9e420040771b6e15fd8e4145",
+            "R6_sha256": "700729a7bd90c87a71f497d7002acca007b1d4ea9e420040771b6e15fd8e4145",
+            "equal": true
+          },
+          {
+            "file": "fig22_pipeline.png",
+            "shadow_sha256": "0e6fe703a35a245c441767ff63ab716fef6bfbb7a075fd4cad3ab95a6d7c5ad9",
+            "R6_sha256": "0e6fe703a35a245c441767ff63ab716fef6bfbb7a075fd4cad3ab95a6d7c5ad9",
+            "equal": true
+          },
+          {
+            "file": "fig23_wpe_frames.png",
+            "shadow_sha256": "1c5480d51912e6562bbadcc18dec1e10b4c61dec51a573cce515a6c200472afd",
+            "R6_sha256": "1c5480d51912e6562bbadcc18dec1e10b4c61dec51a573cce515a6c200472afd",
+            "equal": true
+          },
+          {
+            "file": "fig24_latency_budget.png",
+            "shadow_sha256": "fa39f85ffdb84f677a809fb3d2b397a831fb240047565b70f628f0aad40d2e2b",
+            "R6_sha256": "fa39f85ffdb84f677a809fb3d2b397a831fb240047565b70f628f0aad40d2e2b",
+            "equal": true
+          },
+          {
+            "file": "fig25_aec_nlms.png",
+            "shadow_sha256": "6f940c8f6a5a95bc0eb8e6993793091fd9dbfa5a4e9b57d4e1fc5c33934804f4",
+            "R6_sha256": "6f940c8f6a5a95bc0eb8e6993793091fd9dbfa5a4e9b57d4e1fc5c33934804f4",
+            "equal": true
+          },
+          {
+            "file": "fig26_aec_delay_dtd.png",
+            "shadow_sha256": "c25dfdf74683232b34ecfa39041dccf9ecfafff2208f7e4da3d1034c186b8f72",
+            "R6_sha256": "c25dfdf74683232b34ecfa39041dccf9ecfafff2208f7e4da3d1034c186b8f72",
+            "equal": true
+          },
+          {
+            "file": "fig27_aec_nonlinear.png",
+            "shadow_sha256": "3253349dbf0cce6e49891540d500754fc39c5bec208979d403245f1382f80454",
+            "R6_sha256": "3253349dbf0cce6e49891540d500754fc39c5bec208979d403245f1382f80454",
+            "equal": true
+          },
+          {
+            "file": "fig28_gcc_two_ways.png",
+            "shadow_sha256": "067ba28bd44e1a6cae63452a530e6c2f8bdbededdcbf44292b02124fa1ca36b2",
+            "R6_sha256": "067ba28bd44e1a6cae63452a530e6c2f8bdbededdcbf44292b02124fa1ca36b2",
+            "equal": true
+          },
+          {
+            "file": "fig29_audio_examples.png",
+            "shadow_sha256": "fd10fb1914fa4f9fe271bda6a80f04b07de3214a99f4cea5fd11bf64841e3220",
+            "R6_sha256": "fd10fb1914fa4f9fe271bda6a80f04b07de3214a99f4cea5fd11bf64841e3220",
+            "equal": true
+          },
+          {
+            "file": "fig30_audio_counterexamples.png",
+            "shadow_sha256": "658142aa632c98e0d4ce04f4fa97b248d58cfbdb6b55daf250af850de7526e49",
+            "R6_sha256": "658142aa632c98e0d4ce04f4fa97b248d58cfbdb6b55daf250af850de7526e49",
+            "equal": true
+          },
+          {
+            "file": "fig31_nonlinear_echo.png",
+            "shadow_sha256": "ad35b2c188623d58d03daa3537991390ba5f6b09a238c15eaae65b6cab0cfff0",
+            "R6_sha256": "ad35b2c188623d58d03daa3537991390ba5f6b09a238c15eaae65b6cab0cfff0",
+            "equal": true
+          },
+          {
+            "file": "fig32_aec_subband.png",
+            "shadow_sha256": "803a041e6a7a6852e16aecebe5d0fe5dcafa52afea9ed5558036b474bbf9b39b",
+            "R6_sha256": "803a041e6a7a6852e16aecebe5d0fe5dcafa52afea9ed5558036b474bbf9b39b",
+            "equal": true
+          },
+          {
+            "file": "fig33_aec_four_methods.png",
+            "shadow_sha256": "aab1c885789de96555306423c14743a8eeda9685b523a3ca61cb52295beea411",
+            "R6_sha256": "aab1c885789de96555306423c14743a8eeda9685b523a3ca61cb52295beea411",
+            "equal": true
+          },
+          {
+            "file": "fig34_aec_pbfdaf_flow.png",
+            "shadow_sha256": "ed7b82a4f6a05e00affae28acceca829215dd43315956516e0e568770e89dc81",
+            "R6_sha256": "ed7b82a4f6a05e00affae28acceca829215dd43315956516e0e568770e89dc81",
+            "equal": true
+          },
+          {
+            "file": "fig35_clock_drift.png",
+            "shadow_sha256": "c95d6d25319114d17fdd9282336699d865f44f027a8c0b595002723d2e1fbbfc",
+            "R6_sha256": "c95d6d25319114d17fdd9282336699d865f44f027a8c0b595002723d2e1fbbfc",
+            "equal": true
+          },
+          {
+            "file": "fig36_interpolation_error.png",
+            "shadow_sha256": "03308a76f320dbc3269c22261a0f1226b72a87525fa62224d494d3c6f6cdba55",
+            "R6_sha256": "03308a76f320dbc3269c22261a0f1226b72a87525fa62224d494d3c6f6cdba55",
+            "equal": true
+          },
+          {
+            "file": "fig37_gss_flow.png",
+            "shadow_sha256": "0ad5983cdd4e893f6ca65945982583e859507d7fb95e3372aef5b4a5201cc893",
+            "R6_sha256": "0ad5983cdd4e893f6ca65945982583e859507d7fb95e3372aef5b4a5201cc893",
+            "equal": true
+          },
+          {
+            "file": "fig38_css_overlap.png",
+            "shadow_sha256": "cb9785b37aa84b1d40b2c6231b5fd26a28b2470bf4ed1f7f1d926186de2a62ec",
+            "R6_sha256": "cb9785b37aa84b1d40b2c6231b5fd26a28b2470bf4ed1f7f1d926186de2a62ec",
+            "equal": true
+          },
+          {
+            "file": "fig39_tracking_audio.png",
+            "shadow_sha256": "9866e279b9281afafb1724fe00c74aed1fcca122e5037ef3bd24ab24f73c759a",
+            "R6_sha256": "9866e279b9281afafb1724fe00c74aed1fcca122e5037ef3bd24ab24f73c759a",
+            "equal": true
+          },
+          {
+            "file": "fig40_agc_blocks.png",
+            "shadow_sha256": "364176c3e35220f64cf2979d605a0e831f7349297860dd9d76a595d63c304785",
+            "R6_sha256": "364176c3e35220f64cf2979d605a0e831f7349297860dd9d76a595d63c304785",
+            "equal": true
+          },
+          {
+            "file": "fig41_selection_pareto.png",
+            "shadow_sha256": "a71b24d95a6ac606e1c5c3c3f61d4fb6bbee7aec60d8912f606b1f25593a6c1b",
+            "R6_sha256": "a71b24d95a6ac606e1c5c3c3f61d4fb6bbee7aec60d8912f606b1f25593a6c1b",
+            "equal": true
+          },
+          {
+            "file": "fig42_selection_audio_tradeoff.png",
+            "shadow_sha256": "a8ae50e28a6410b193e48d8c7ef1cc0f332be7d485117659b3f4538ecab87cc0",
+            "R6_sha256": "a8ae50e28a6410b193e48d8c7ef1cc0f332be7d485117659b3f4538ecab87cc0",
+            "equal": true
+          },
+          {
+            "file": "fig43_fft_frequencies.png",
+            "shadow_sha256": "b82cc9c07d39e13fc829ccff3f74c88ea4597ea637ce5c1c01bcc1c8aed9de76",
+            "R6_sha256": "b82cc9c07d39e13fc829ccff3f74c88ea4597ea637ce5c1c01bcc1c8aed9de76",
+            "equal": true
+          },
+          {
+            "file": "fig44_fft_block_boundary.png",
+            "shadow_sha256": "5a9472ced42de691351f4479bbfcc2ad710ed9adca39fbc8ca00685fb8fb00c1",
+            "R6_sha256": "5a9472ced42de691351f4479bbfcc2ad710ed9adca39fbc8ca00685fb8fb00c1",
+            "equal": true
+          },
+          {
+            "file": "fig45_stft_convolution.png",
+            "shadow_sha256": "342bc6a1fc194edb0d0d87987499630c623a653c0867a50f659a3f570ff8b211",
+            "R6_sha256": "342bc6a1fc194edb0d0d87987499630c623a653c0867a50f659a3f570ff8b211",
+            "equal": true
+          },
+          {
+            "file": "fig46_near_planar_sensitivity.png",
+            "shadow_sha256": "6a0d039fce23237fbbe5bb5d9a331206f6a9253b20fa21ffc1c9f84d2456cb0a",
+            "R6_sha256": "6a0d039fce23237fbbe5bb5d9a331206f6a9253b20fa21ffc1c9f84d2456cb0a",
+            "equal": true
+          },
+          {
+            "file": "fig47_hexagon_multifrequency.png",
+            "shadow_sha256": "49d400210954374055383567876baea02b8f32e950304f39674abb647987c2d0",
+            "R6_sha256": "49d400210954374055383567876baea02b8f32e950304f39674abb647987c2d0",
+            "equal": true
+          },
+          {
+            "file": "fig48_focus_noise.png",
+            "shadow_sha256": "6dd567b6973fbe5319e58637566a75592ecaa7932fe0bf03285656b6049e5f07",
+            "R6_sha256": "6dd567b6973fbe5319e58637566a75592ecaa7932fe0bf03285656b6049e5f07",
+            "equal": true
+          },
+          {
+            "file": "fig49_coherent_frequency_rank.png",
+            "shadow_sha256": "4cf20b8ea893e4694c2b06e3e2d489251392cdb8d86f368de69fbb1cde72680c",
+            "R6_sha256": "4cf20b8ea893e4694c2b06e3e2d489251392cdb8d86f368de69fbb1cde72680c",
+            "equal": true
+          },
+          {
+            "file": "fig50_derivative_constraints.png",
+            "shadow_sha256": "750af5171f4f0c1c4942d4668fbe8c94d330a7085616180f4bc981f180d55c1b",
+            "R6_sha256": "750af5171f4f0c1c4942d4668fbe8c94d330a7085616180f4bc981f180d55c1b",
+            "equal": true
+          },
+          {
+            "file": "fig51_omlsa_probability.png",
+            "shadow_sha256": "3ec1f21463ea0dbe936adf04d5e4f6efccb38064423eb9f3a05f501dea24b20a",
+            "R6_sha256": "3ec1f21463ea0dbe936adf04d5e4f6efccb38064423eb9f3a05f501dea24b20a",
+            "equal": true
+          },
+          {
+            "file": "fig52_affine_projection_geometry.png",
+            "shadow_sha256": "aaf949741ea916bf3b1113a384efa1ca846b7f4eb82132609670d8a9fa05376e",
+            "R6_sha256": "aaf949741ea916bf3b1113a384efa1ca846b7f4eb82132609670d8a9fa05376e",
+            "equal": true
+          },
+          {
+            "file": "fig53_affine_projection_learning.png",
+            "shadow_sha256": "47979d04b0de8e07f9aba15e4ff6b8b7455c473c1f9af3e733381fde3fe90972",
+            "R6_sha256": "47979d04b0de8e07f9aba15e4ff6b8b7455c473c1f9af3e733381fde3fe90972",
+            "equal": true
+          },
+          {
+            "file": "fig54_mint_noise_tradeoff.png",
+            "shadow_sha256": "b17f0a47f5bee81eadc930e678aed5114c1a78bbaecd8737b4bdf0eae39cbc5f",
+            "R6_sha256": "b17f0a47f5bee81eadc930e678aed5114c1a78bbaecd8737b4bdf0eae39cbc5f",
+            "equal": true
+          },
+          {
+            "file": "fig55_mask_representation.png",
+            "shadow_sha256": "97710218523b0a54c41597ec07fc73e898f212fe1f5de401729ece42b4f7ffa5",
+            "R6_sha256": "97710218523b0a54c41597ec07fc73e898f212fe1f5de401729ece42b4f7ffa5",
+            "equal": true
+          },
+          {
+            "file": "fig56_tracking_information.png",
+            "shadow_sha256": "eb44a3337c5c4a1ae6bb44c56db3dd651fc2f0d4e801af713b2595ad35e0ddbf",
+            "R6_sha256": "eb44a3337c5c4a1ae6bb44c56db3dd651fc2f0d4e801af713b2595ad35e0ddbf",
+            "equal": true
+          },
+          {
+            "file": "fig57_engineering_limits.png",
+            "shadow_sha256": "6345f4263be19afe1da8b4040f03200cef39dee518ccd1195ef4af95ff3efed1",
+            "R6_sha256": "6345f4263be19afe1da8b4040f03200cef39dee518ccd1195ef4af95ff3efed1",
+            "equal": true
+          },
+          {
+            "file": "fig58_noise_mismatch.png",
+            "shadow_sha256": "8d3bc4d7caaa214a616ca8c8bf251ec1f2fe4f3ad20c1f98e233756d6272d714",
+            "R6_sha256": "8d3bc4d7caaa214a616ca8c8bf251ec1f2fe4f3ad20c1f98e233756d6272d714",
+            "equal": true
+          },
+          {
+            "file": "fig59_selection_scenarios.png",
+            "shadow_sha256": "56ba64c5e1eb26317490d5d098d5cbb5ee4adaeb5bee361b538e547c02989dc5",
+            "R6_sha256": "56ba64c5e1eb26317490d5d098d5cbb5ee4adaeb5bee361b538e547c02989dc5",
+            "equal": true
+          },
+          {
+            "file": "fig60_weighted_noise.png",
+            "shadow_sha256": "6fab7250fb19374a44d97c0a5834a2037e93bfced7044bcc0cbc7617e11a3781",
+            "R6_sha256": "6fab7250fb19374a44d97c0a5834a2037e93bfced7044bcc0cbc7617e11a3781",
+            "equal": true
+          },
+          {
+            "file": "fig61_equal_drr_response.png",
+            "shadow_sha256": "6e7bca932a5b16b1a6e8cf8d74ac94cf89d1c590a652be53aac73898af88a689",
+            "R6_sha256": "6e7bca932a5b16b1a6e8cf8d74ac94cf89d1c590a652be53aac73898af88a689",
+            "equal": true
+          },
+          {
+            "file": "fig62_imaging_psf.png",
+            "shadow_sha256": "fab924f7f84da830ff1af0352464e45276f0c48309f204170064e6bdebbd081a",
+            "R6_sha256": "fab924f7f84da830ff1af0352464e45276f0c48309f204170064e6bdebbd081a",
+            "equal": true
+          },
+          {
+            "file": "fig63_imaging_model_checks.png",
+            "shadow_sha256": "64c33037739c324965448dbb21865d8e3fc8b1a326a92cd7b379f44b4403209a",
+            "R6_sha256": "64c33037739c324965448dbb21865d8e3fc8b1a326a92cd7b379f44b4403209a",
+            "equal": true
+          },
+          {
+            "file": "fig64_imaging_calibration.png",
+            "shadow_sha256": "0dc9600acc7152957874021a74f506743c8cd96778af34090c76d564c32df79e",
+            "R6_sha256": "0dc9600acc7152957874021a74f506743c8cd96778af34090c76d564c32df79e",
+            "equal": true
+          },
+          {
+            "file": "fig65_distributed_compression.png",
+            "shadow_sha256": "8e8fca21f9ac52d1a2891bfe553e0c76dacaa232c542cbf2f9176774669acaed",
+            "R6_sha256": "8e8fca21f9ac52d1a2891bfe553e0c76dacaa232c542cbf2f9176774669acaed",
+            "equal": true
+          },
+          {
+            "file": "fig66_distributed_updates.png",
+            "shadow_sha256": "ab3d89d870e85118b04ee20d48fd421753cdddd3462f5463b5a4087cb9fcab73",
+            "R6_sha256": "ab3d89d870e85118b04ee20d48fd421753cdddd3462f5463b5a4087cb9fcab73",
+            "equal": true
+          },
+          {
+            "file": "fig67_distributed_transport.png",
+            "shadow_sha256": "55febfb453cb0a653cb9c8e331fd86b5867aef35f027866e7f382e542e1f331d",
+            "R6_sha256": "55febfb453cb0a653cb9c8e331fd86b5867aef35f027866e7f382e542e1f331d",
+            "equal": true
+          },
+          {
+            "file": "fig68_phase_reference.png",
+            "shadow_sha256": "d9f1adc0e9512421f50457e6e1d3099f0752ac194ac747f2ea14df10552419a9",
+            "R6_sha256": "d9f1adc0e9512421f50457e6e1d3099f0752ac194ac747f2ea14df10552419a9",
+            "equal": true
+          },
+          {
+            "file": "fig69_reference_timing.png",
+            "shadow_sha256": "90c2a3e5fe3585de4d5ddf5d2dd0467fc8d0d4f6130dc87299703f720a7005a4",
+            "R6_sha256": "90c2a3e5fe3585de4d5ddf5d2dd0467fc8d0d4f6130dc87299703f720a7005a4",
+            "equal": true
+          },
+          {
+            "file": "fig70_prediction_delays.png",
+            "shadow_sha256": "2e59e8f308045fb6cd3f5d0f764cc06baa1598ef995406ca83a41c6f748e7b52",
+            "R6_sha256": "2e59e8f308045fb6cd3f5d0f764cc06baa1598ef995406ca83a41c6f748e7b52",
+            "equal": true
+          },
+          {
+            "file": "fig71_css_polarity_gain.png",
+            "shadow_sha256": "84be7eca555d5f94c66af6d5504e52647ee4004d9aabc7f3a27cad9bd12e75b9",
+            "R6_sha256": "84be7eca555d5f94c66af6d5504e52647ee4004d9aabc7f3a27cad9bd12e75b9",
+            "equal": true
+          },
+          {
+            "file": "fig72_tracking_lifecycle.png",
+            "shadow_sha256": "6d3f620efa70988166b884b0950f067bed0271b12d1e307e9e6dfb1ad5bac850",
+            "R6_sha256": "6d3f620efa70988166b884b0950f067bed0271b12d1e307e9e6dfb1ad5bac850",
+            "equal": true
+          },
+          {
+            "file": "fig73_channel_failure.png",
+            "shadow_sha256": "d1c6440847fb5f8136743038f662bc6bf15f2c4a7fbe9afcb3f1eee02f3d7d51",
+            "R6_sha256": "d1c6440847fb5f8136743038f662bc6bf15f2c4a7fbe9afcb3f1eee02f3d7d51",
+            "equal": true
+          },
+          {
+            "file": "fig74_selection_evidence.png",
+            "shadow_sha256": "2abe0dfa2382db5ad1915049d9e6d597c1d803035439ca8b13d4f7d1b8dd019c",
+            "R6_sha256": "2abe0dfa2382db5ad1915049d9e6d597c1d803035439ca8b13d4f7d1b8dd019c",
+            "equal": true
+          },
+          {
+            "file": "fig75_imaging_objectives.png",
+            "shadow_sha256": "fa8c23e8935c4c5bf13ee2d57ac73121a1138dfea7b3993abda8283840dfa7be",
+            "R6_sha256": "fa8c23e8935c4c5bf13ee2d57ac73121a1138dfea7b3993abda8283840dfa7be",
+            "equal": true
+          },
+          {
+            "file": "fig76_foa_intensity_diffuseness.png",
+            "shadow_sha256": "d8f3f83ca36a086f26b2c2bae419de710ad15835235cfae493c3ab8e488787c7",
+            "R6_sha256": "d8f3f83ca36a086f26b2c2bae419de710ad15835235cfae493c3ab8e488787c7",
+            "equal": true
+          },
+          {
+            "file": "fig77_bsm_ls_vs_magls.png",
+            "shadow_sha256": "bde65839cb27be45b7ef108a9db925b96e66dbac829584c007426c7323cc5cbc",
+            "R6_sha256": "bde65839cb27be45b7ef108a9db925b96e66dbac829584c007426c7323cc5cbc",
+            "equal": true
+          },
+          {
+            "file": "fig78_own_voice_fusion.png",
+            "shadow_sha256": "2b468208ff2ca522fd4589e4ffa3446627bb0924100f49d0dd991d4ab32847bd",
+            "R6_sha256": "2b468208ff2ca522fd4589e4ffa3446627bb0924100f49d0dd991d4ab32847bd",
+            "equal": true
+          },
+          {
+            "file": "fig79_hear_through_comb.png",
+            "shadow_sha256": "317ee57f1734674cf2cd903d8b08aefb36c6825a30586b833385faea74e12f6d",
+            "R6_sha256": "317ee57f1734674cf2cd903d8b08aefb36c6825a30586b833385faea74e12f6d",
+            "equal": true
+          },
+          {
+            "file": "fig80_tse_conditioning_modes.png",
+            "shadow_sha256": "d760ec049e52e3f6e26d1a03d9a7fd947d79a3b98addb8b0ec33a9f16cb85330",
+            "R6_sha256": "d760ec049e52e3f6e26d1a03d9a7fd947d79a3b98addb8b0ec33a9f16cb85330",
+            "equal": true
+          },
+          {
+            "file": "fig81_nearfield_distance_bubble.png",
+            "shadow_sha256": "87aa3e0b34f213bbe3b59f48641fdd67e8d761458c9ddaf10f5ad53d6c04870e",
+            "R6_sha256": "87aa3e0b34f213bbe3b59f48641fdd67e8d761458c9ddaf10f5ad53d6c04870e",
+            "equal": true
+          },
+          {
+            "file": "fig82_diarization_tsvad_gss.png",
+            "shadow_sha256": "5fcca51dc89b036a24492affa9e5903297c4b74ea690015ea4435ac2fc05c301",
+            "R6_sha256": "5fcca51dc89b036a24492affa9e5903297c4b74ea690015ea4435ac2fc05c301",
+            "equal": true
+          },
+          {
+            "file": "fig83_av_asynchrony_occlusion.png",
+            "shadow_sha256": "968b2b1003de13d494ce7c5852f4fa5b88c48fc808ce225b9e5310ab7892a597",
+            "R6_sha256": "968b2b1003de13d494ce7c5852f4fa5b88c48fc808ce225b9e5310ab7892a597",
+            "equal": true
+          }
+        ],
+        "actual_visual": "Opened all4old/newbilingual860CSSpx screenshots and4A4pages165mm/150dpi. Oldlowerleftlegend overlaysn3negativepeak; newupperrightleavesn3negativepeak,n1positivepeakandupperlefttailwraparrow visible. No new clipping/labeloverlap in these8actualviews. Not finalwholebooksite/PDF QA.",
+        "numerical_scope": "All4reports exacttypedleaves same except actualmathproducerSHA; no numericalmodel/change. Sourceonlyline221legendlocation changed. Diffpixels confined cquadrant;85-87sameRGBA.",
+        "identity_guard": "12assetSHA+sourceSHA verified before/afterread;4ENfull/subsetbyteequal;actualreportandgenerator/translationfieldschecked;formal/R6sourcepreimageleftread-only.",
+        "setup_failure": "Initial83check lookedinfull/whicharchivesonly4mathPNGs; actualremaining83areinshadow/figures_en/fromfullrun. Correctedlocationchecked, no candidate/outputchanged.",
+        "not_executed": [
+          "No official source/media/report/Git writes or promotion",
+          "No independentproducer rerun; sourceone-line and actualfull/subset12assets inspected",
+          "No finalR7publication/globalacceptance",
+          "R363 separateobjective underreview"
+        ]
+      }
+    },
+    "content-r6-technical-review--r7c-followup-status-and-relay.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/content-r6-technical-review/r7c-followup-status-and-relay.json",
+      "sha256": "403d6d33e06a6c8070c031bd2a231c7f4b33f69e967f4af82f44f1df107d2168",
+      "bytes": 3573,
+      "boundary": "Bounded follow-up on prior content review findings.",
+      "packet": {
+        "phase": "R7C append-only status delta; old handoffs unchanged",
+        "base_handoff": {
+          "path": "/private/tmp/masp-multiround-20261123/content-r6-technical-review/r7c-imaging-pit-scoring-consumers/handoff.json",
+          "sha256": "6adec2f4f5a3e242bfb5987d7912898b43ee30c7fbc638df5ff3dfdbf7a229d3"
+        },
+        "status_updates": [
+          {
+            "id": "R363",
+            "latest": "signed-source-proposal-v3",
+            "non_author_decision": "Numerics accepted bounded V3 criteria;12249 exact pairs,0wrong signs,1ULP maximum same-sign magnitude consistent with explicit endpoint rule. V2 failed40pairs; all old evidence retained.",
+            "reader_boundary": "Own reviewer read peerV2/V3verdict,acceptedfiniteboundary,proofscope,notexecuted fields; did not rerun peer controls or claim peer entirepacket semantic reread.",
+            "media": "Root handles2WAV/manifest and39/72 bilingual figures/report. No source hash substitution."
+          },
+          {
+            "id": "R135",
+            "latest": "after-r418-ch15-source-proposal-v2",
+            "non_author_decision": "Publication accepted exact line586 two-language interval/collar clarification and source lineage;7newnativecontrols peer evidence separate from own2cases.",
+            "integration": "No final-site/PDF claim."
+          },
+          {
+            "id": "R429",
+            "latest": "after-r135v2-ch15-source-proposal-v3",
+            "state": "V3 frozen for non-author review:379same-frame multi-track activity,381full-recording fixed distinct track capacity,383original2.1.1/7classes versuslater3.0model. V1/V2 preserved.",
+            "unchanged": "OnlyV3delta379/381;383V2 and later content/math/identities unchanged."
+          }
+        ],
+        "artifacts": [
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r7-r363-independent/handoff.json",
+            "sha256": "5bbddbebced40f99d449e1522864deeb2aa8f914d9c92d0866386f556c680cbf"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r7-r135-independent-review/handoff.json",
+            "sha256": "0389ba8eee1138747c1014878f2b5189f2d519b056febcd73ac068d1fd03a1af"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/content-r6-technical-review/r429-after-r135v2-ch15-source-proposal-v3/plan.json",
+            "sha256": "b64fb7d1d592df2841009ac9a10c98d64fe5ae41b0b55d22675748555aeda8da"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/content-r6-technical-review/r429-after-r135v2-ch15-source-proposal-v3/review.patch",
+            "sha256": "403d98c662301ea86d72c0abeaf3861fe35a6d0383e8dadd7447d5379d4cb0c0"
+          }
+        ],
+        "old_priority81_relay": {
+          "reviewed_bounded_consumers": 46,
+          "still_requires_current_consumer_batch": 35,
+          "not_whole_ID_completion": true,
+          "R429_extra_new_issue_not_subtracted_from81": true,
+          "remaining_exact": [
+            "R112",
+            "R113",
+            "R117",
+            "R119",
+            "R120",
+            "R125",
+            "R131",
+            "R232",
+            "R233",
+            "R234",
+            "R235",
+            "R240",
+            "R241",
+            "R242",
+            "R243",
+            "R248",
+            "R276",
+            "R278",
+            "R279",
+            "R280",
+            "R281",
+            "R282",
+            "R284",
+            "R285",
+            "R288",
+            "R289",
+            "R311",
+            "R330",
+            "R356",
+            "R365",
+            "R368",
+            "R378",
+            "R380",
+            "R382",
+            "R386"
+          ]
+        },
+        "next_batch": "R112/R113/R117/R119/R120/R125/R131 engineering consumers, with exact observed late privatech10 versus formal source identity. Old original standards evidence preserved; only necessarily new source checks, no blanket revalidation claim.",
+        "formal_tree": "Read-only for this agent; root-controlled promotions are separately acknowledged."
+      }
+    },
+    "content-r6-technical-review--r7d-engineering-standards-consumers--handoff.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/content-r6-technical-review/r7d-engineering-standards-consumers/handoff.json",
+      "sha256": "336ddb9e8d9cbc82b8b9db7c8d4779895125f562ead003bb27f7db2e8691e8c1",
+      "bytes": 15239,
+      "boundary": "Engineering and standards checks with scoped read and arithmetic evidence.",
+      "packet": {
+        "phase": "R7D eight old-ID bounded consumers; not wholeissueorroundcompletion",
+        "scope": [
+          "R112",
+          "R113",
+          "R117",
+          "R119",
+          "R120",
+          "R125",
+          "R131",
+          "R235"
+        ],
+        "read_audit": [
+          {
+            "path": "/private/tmp/masp-multiround-20261123/content-r6-technical-review/r237-after-r372-ch10-source-proposal/source/chapters/10_engineering-practice.md",
+            "sha256": "741d5e4be7494f9f7c44273e606da61fef6ce6ad84be93dab4ba4aad2039e4be",
+            "actual_continuous_ranges": [
+              [
+                195,
+                223
+              ],
+              [
+                665,
+                700
+              ],
+              [
+                841,
+                863
+              ],
+              [
+                879,
+                890
+              ],
+              [
+                1482,
+                1510
+              ]
+            ],
+            "scope": "Seven standards/numerics IDs and directly adjacent screened-MOS R235 only. EN195 clipped in aggregate output and is excluded from claimed continuous range. Not full chapter reread."
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/content-r6-technical-review/r237-after-r372-ch10-source-proposal/source/chapters_en/10_engineering-practice.md",
+            "sha256": "66b5966abb3edb3a7c666063eba68413e4bdf998f344dcbfa5196cad71f303a1",
+            "actual_continuous_ranges": [
+              [
+                197,
+                223
+              ],
+              [
+                665,
+                700
+              ],
+              [
+                840,
+                862
+              ],
+              [
+                878,
+                889
+              ],
+              [
+                1481,
+                1509
+              ]
+            ],
+            "scope": "Seven standards/numerics IDs and directly adjacent screened-MOS R235 only. EN195 clipped in aggregate output and is excluded from claimed continuous range. Not full chapter reread."
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch10/core/pdm_and_eval.py",
+            "sha256": "b34ed4c7a87bc797b7d8a1c1d8e3d701edfc702f701c83f9877d806ecb5eea2a",
+            "actual_continuous_ranges": [
+              [
+                198,
+                392
+              ]
+            ],
+            "scope": "Only relevant helper/controls, not full module reread; original suites read but not rerun unchanged."
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch10/core/engineering.py",
+            "sha256": "22f5fcbbfdaedc399b5de1eb4c718c4f0c692dcb5dd1bdf49c7ef4569e43ae1b",
+            "actual_continuous_ranges": [
+              [
+                1,
+                123
+              ],
+              [
+                378,
+                458
+              ]
+            ],
+            "scope": "Only relevant helper/controls, not full module reread; original suites read but not rerun unchanged."
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/tests/test_review_ch10_15.py",
+            "sha256": "d96754e9cd4982e569b9c16d01c8f0872fe94f4f062cb9fcc15c48040d46d857",
+            "actual_continuous_ranges": [
+              [
+                1,
+                45
+              ]
+            ],
+            "scope": "Only relevant helper/controls, not full module reread; original suites read but not rerun unchanged."
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/tests/test_codes_chapter10_experiments.py",
+            "sha256": "abb4819ab03dea60e6e6fae70568a1e5db121c1e9b30e709b8ee17396eba70f4",
+            "actual_continuous_ranges": [
+              [
+                350,
+                379
+              ]
+            ],
+            "scope": "Only relevant helper/controls, not full module reread; original suites read but not rerun unchanged."
+          }
+        ],
+        "issues": [
+          {
+            "id": "R112",
+            "disposition": "Current paragraph669 satisfies original sampling-rate/filter premise repair. Preserve48kHz4x/96kHz2x and existing libebur128 result.",
+            "new_control": "Different18kHz/48kHzphasepi/8 example:gain1.1 leaves samplepeak.96545 butcontinuouscrest1.045. Analytic only.",
+            "unverified": "No fresh official meter execution/reproduction of.946371 in thisbatch."
+          },
+          {
+            "id": "R113",
+            "disposition": "Core returnsattenuation_type separately fromjoint_typeNone/insufficient_evidence;bothmainparagraphs andE10-28expressmissingTELR/measurementconditions. Preserveold2000edition thresholds.",
+            "new_control": "ActuallocalhelperbypassRMS.125 givesType1attenuationbutunknownjointclass. Not labcertification.",
+            "unverified": "No physicalTELR/P808trialorlatestP340compliance."
+          },
+          {
+            "id": "R117",
+            "disposition": "CurrentSINAD/ENOB equationandconditionalnoise-floorillustration areexplicit;AweightedEIN cannotbe directlysubtractedfromunmatchedADCfigure.",
+            "new_control": "SameSINAD90/ENOB14.6578, differentnoiseSNR100vs90.4576fromtwoN/Dpowersplits.",
+            "unverified": "Genericmic/ADCproductrangesorallfrequencyperformance not freshlyverified."
+          },
+          {
+            "id": "R119",
+            "disposition": "PhysicalSoundWirev1.3vsconfigurationDisCov2.0 distinction retained. No v2.0throughputupgradeclaim.",
+            "source_boundary": "Officialmainrelease1.3verified;oldDisCo2.0fulldirectsourcefresh404, priorresearchretained. Doesnotupgradethelocatorcached2.1metadata intooriginalfullread.",
+            "unverified": "No memberbus/electricalspecorimplementationrun."
+          },
+          {
+            "id": "R120",
+            "disposition": "AsynchronousINversusOUTandconditionalimplicitfeedbackdescription agreeswithactualAppleTN3190body.",
+            "unverified": "No realUSBdevice/descriptor/driverexecutionorwholeUSBspecverification."
+          },
+          {
+            "id": "R125",
+            "disposition": "SCOREQtablecorrectlynamesanotherunpairedcleanutteranceanddistinguishesNR. No samplealignedFRclaim.",
+            "source": "OriginalNRfrozenencoderregression/NMRembeddingdistance definitions379–396 supportscope.",
+            "unverified": "No modelweightsorperceptualmetricrunornewdomainaccuracyvalidation."
+          },
+          {
+            "id": "R131",
+            "disposition": "Bothlanguagesexplicitnormalizedmantissaandintegerexponentmap,headroomexcludesrequiredsignbit,zeroadditionguardonlyforwidesingle-squareexample. Preserveoriginal256example/2^-14.",
+            "new_control": "Actualq15_dot257versusshifted16448, eblk−6/eint−21; restoredBFPerror1/2^30 vsdirect513/2^30;addingtwoshiftedcodesrequiresoneguardbit.",
+            "unverified": "Not an XMOS BFP kernel execution or alloperatorsbitexactcontract."
+          },
+          {
+            "id": "R235",
+            "disposition": "Directlyadjacentp808core/solutionnowcallsscreenedmeananddifference,notunbiasedpopulationmean. AddedthisboundedconsumerbecausecompletefunctionandpairedanswerwerereadforR113.",
+            "new_control": "69/16versus29/8 difference11/16retained;finitepopulation[1,5]mean3butselectedonly5mean5showsselectiondoesnotproveunbiasedness.",
+            "unverified": "No actualhumanratingstudy/P808qualityassuranceexecution."
+          }
+        ],
+        "fresh_primary_source_reads": [
+          {
+            "id": "R112",
+            "url": "https://www.itu.int/dms_pubrec/itu-r/rec/bs/R-REC-BS.1770-5-202311-I!!PDF-E.pdf",
+            "query_or_direct": "Direct official PDF,find96kHz,open578",
+            "actual_read": "CoreAnnex2 web586–611 (PDFpage20,printed18):48kHz assumption,4x,96kHz2x. Returned558–626 surrounding not claimed full32pages.",
+            "date": "2026-11-23",
+            "scope": "Algorithm/example not certification of real meter/DAC."
+          },
+          {
+            "id": "R113",
+            "url": "https://www.itu.int/rec/dologin_pub.asp?lang=e&id=T-REC-P.340-200005-S!!PDF-E&type=items",
+            "query_or_direct": "Exact existing chapter source;find37dB/Table4 andopen833",
+            "actual_read": "§8.1/8.2 web842–870 (PDF27,printed19), adjacent §9summary871–885. Not full48pages/latestrevision.",
+            "date": "2026-11-23"
+          },
+          {
+            "id": "R117",
+            "url": "https://www.analog.com/media/en/training-seminars/tutorials/MT-003.pdf",
+            "query_or_direct": "Direct official WaltKester MT003;findENOB",
+            "actual_read": "Coreweb136–184,Eq1/fullscale correctionEq2,SNRharmonic exclusion. Not full8pages/pixel review.",
+            "date": "2026-11-23"
+          },
+          {
+            "id": "R119",
+            "url": "https://www.mipi.org/specifications/soundwire",
+            "query_or_direct": "site.mipi.org SoundWirev1.3 DisCoSoundWirev2.0;directopen/findLatestRelease",
+            "actual_read": "Main currentrelease589–595 explicitly version1.3Sep2025 and integrationofDisCo softwareinformation. Not member specification full text.",
+            "date": "2026-11-23",
+            "gap": "Fresh directoldDisCo pagehttps://www.mipi.org/specifications/mipi-disco-soundwire returned404; searchcachedmetadata2.0/2.1 is locator only, not rereadfullsource. Prior original R119 verification retained. Current book names2.0 as a distinct historicalconfigurationversion, does not call itlatest."
+          },
+          {
+            "id": "R120",
+            "url": "https://developer.apple.com/documentation/technotes/tn3190-usb-audio-device-design-considerations.md",
+            "query_or_direct": "site.developer.apple.com TN3190USBaudiofeedback;normalpageJSthenofficialViewMarkdown",
+            "actual_read": "79–118 endpoint synchronization,inputhostadaptation,outfeedback,sameclockimplicitfeedback. Not entire671linesorUSBstandardsfulltext.",
+            "date": "2026-11-23",
+            "access_notes": "FirstclickwithURLref failedtoolargumentresolution;clickwithreturnedrefID succeeded. No browser/hardwareexecution."
+          },
+          {
+            "id": "R125",
+            "url": "https://proceedings.neurips.cc/paper_files/paper/2024/file/bece7e02455a628b770e49fcfa791147-Paper-Conference.pdf",
+            "query_or_direct": "SCOREQNeurIPS2024nonmatchingreferencepaper;directprimaryPDF/findnonmatching",
+            "actual_read": "Abstract16–30 andNR/NMRtraining/evaluation379–396 (PDF6–7);unpairedcleanreference89–92. Not entire28pages1463lines, no modelrun.",
+            "date": "2026-11-23"
+          },
+          {
+            "id": "R131",
+            "url": "https://www.xmos.com/documentation/XM-014926-PC/pdf/xcore_math_programming_guide.pdf",
+            "query_or_direct": "site.xmos.com lib_xcore_math blockfloatingpointmantissaexponentheadroom;officialHTMLthenPDFthenordinarydirectPDFdownload",
+            "actual_read": "Direct official PDF Release2.1.2May2023;actual extractedpages6,7,9,10,13,14. §3.1/3.2 pages9–10, printed6–7, defineinteger mantissa/sharedexponent andheadroom. Not latest3.0API/303pages or hardwareexecution.",
+            "date": "2026-11-23",
+            "access_notes": "HTML406,webPDFfind400timeout retained; directurllibfetch succeeded andPypdf extraction followed. Glyphencoding substitutions in extracted digits noted; coreexponent/headroomrelationread, no complete typography/pixel claim."
+          }
+        ],
+        "actual_controls": {
+          "path": "/private/tmp/masp-multiround-20261123/content-r6-technical-review/r7d-engineering-standards-consumers/independent-controls.json",
+          "sha256": "4f62322703513e63f7bb10ea0d0b2faec174d6b1254955e35facae9e25b1f3c2",
+          "meaning": "Memoryfinitecontrols/actuallocalQ15/P340functioncalls; no unchangedbaseline suites rerun."
+        },
+        "XMOS_original_pdf_access": {
+          "path": "/private/tmp/masp-multiround-20261123/content-r6-technical-review/r7d-engineering-standards-consumers/xmos-primary-access.json",
+          "sha256": "9195d4e5257dce24ada193773744c88ff75c8d491970ec0bd9c335af1c92edd8",
+          "contents": {
+            "url": "https://www.xmos.com/documentation/XM-014926-PC/pdf/xcore_math_programming_guide.pdf",
+            "prior_web_failures": [
+              "HTML406",
+              "PDFweb.find400timeout"
+            ],
+            "scope": "Alternative direct official PDF fetch and selected-page extraction only; no whole303page read.",
+            "success": true,
+            "pdf_sha256": "feedce097f568785ef12e4a6f4142b48e489a48920ce31fbfa158e4eaa8c293b",
+            "pdf_pages": 303,
+            "extracted_selected_pages": [
+              {
+                "page_1based": 6,
+                "text_path": "/private/tmp/masp-multiround-20261123/content-r6-technical-review/r7d-engineering-standards-consumers/xcore-page-006.txt",
+                "text_sha256": "e4886022e3d6df266e912cab6a5bf6f6c5f53f3270dedb975c7e1ccf0cffd560"
+              },
+              {
+                "page_1based": 7,
+                "text_path": "/private/tmp/masp-multiround-20261123/content-r6-technical-review/r7d-engineering-standards-consumers/xcore-page-007.txt",
+                "text_sha256": "75e26da61518cb528c98cddc493d0b690c1cd4d832390d92e787e217057b7e5f"
+              },
+              {
+                "page_1based": 9,
+                "text_path": "/private/tmp/masp-multiround-20261123/content-r6-technical-review/r7d-engineering-standards-consumers/xcore-page-009.txt",
+                "text_sha256": "0679b1a54bfbed03a8863eb705a78b5ee3529d2974b2a94f1f175770a261ec9f"
+              },
+              {
+                "page_1based": 10,
+                "text_path": "/private/tmp/masp-multiround-20261123/content-r6-technical-review/r7d-engineering-standards-consumers/xcore-page-010.txt",
+                "text_sha256": "58ad54505a7112c2fdad8ffdd3215c3c0359bcfabd820e81829f973779e99343"
+              },
+              {
+                "page_1based": 13,
+                "text_path": "/private/tmp/masp-multiround-20261123/content-r6-technical-review/r7d-engineering-standards-consumers/xcore-page-013.txt",
+                "text_sha256": "7464225010ec02ddcd43bb4f1e8f469b611916e4c7729e291dab177348de6206"
+              },
+              {
+                "page_1based": 14,
+                "text_path": "/private/tmp/masp-multiround-20261123/content-r6-technical-review/r7d-engineering-standards-consumers/xcore-page-014.txt",
+                "text_sha256": "f2f2f973ff13c04309d8a4809d57fd7be70014a9601a4c9e3dab40079cf6411f"
+              }
+            ]
+          },
+          "scope": "PDFrawandselectedpageextractionsareexternalonly;quoted/derivedsummarieslimitedtocoredefinitions."
+        },
+        "no_new_required_issue_in_this_scope": true,
+        "existing_source_changes_proposed": false,
+        "latest_R429_private_version": {
+          "path": "/private/tmp/masp-multiround-20261123/content-r6-technical-review/r429-after-r135v2-ch15-source-proposal-v3/plan.json",
+          "sha256": "b64fb7d1d592df2841009ac9a10c98d64fe5ae41b0b55d22675748555aeda8da",
+          "status": "Stillseparatecandidate/peerverdictnotassumedhere."
+        },
+        "finite_relay": {
+          "prior_reviewed_bounded": 46,
+          "this_batch": 8,
+          "now_reviewed_bounded": 54,
+          "remaining_current_consumer_batches": 27,
+          "remaining_ids": [
+            "R232",
+            "R233",
+            "R234",
+            "R240",
+            "R241",
+            "R242",
+            "R243",
+            "R248",
+            "R276",
+            "R278",
+            "R279",
+            "R280",
+            "R281",
+            "R282",
+            "R284",
+            "R285",
+            "R288",
+            "R289",
+            "R311",
+            "R330",
+            "R356",
+            "R365",
+            "R368",
+            "R378",
+            "R380",
+            "R382",
+            "R386"
+          ],
+          "meaning": "54isnot54issuewideorpublicationacceptances;originalhistoricalrulingsretained. R363/R135/R429candidateintegration/mediaworkseparate. R429/R430newIDsnotremovedfromold81denominator."
+        },
+        "root_owned_crossconsumer": {
+          "R430": "Rootiscurrentlyhandlingch11closed/openloopamplitudecategorizationandonefrequencyL>=1claims. DonotconflatewitholdR241stableclosedloopdoesnotimplyearg<1; preserveL=.4z^-1,completeenhanced/direct2/(1-.4z^-1)counterexample. Thisagentdidnotedit/readrootchangingch11candidate."
+        },
+        "limits": [
+          "No global681source/209assetrevalidation",
+          "No formalR6/R7sourceormediawrites",
+          "No fullstandardspaperor303pageXMOSread",
+          "No originalneuralmetric/USB/XMOS/hardwareexecution",
+          "No finalwebsite/PDFbuildoracceptance"
+        ],
+        "historical_tables_unchanged": true
+      }
+    },
+    "r8-der-pit-independent--handoff.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/r8-der-pit-independent/handoff.json",
+      "sha256": "b7171c8e26ebe191548cadf5bdf55f78b3590d1cf96ed7a4092e9fd0193a82d6",
+      "bytes": 16986,
+      "boundary": "Exact cross-chapter DER, assignment, scale-invariant score, and PIT controls.",
+      "packet": {
+        "phase": "R8 finite crosschapter mathematical review; not globalR8/fullpublicationclosure",
+        "status": "Both structuralbounds and twoadditional selectedR7 IDs pass finite independentalgebra/enumeration; no newsubstantiveP2 identified. OneoptionalP3doc quantifier clarification recorded.",
+        "permissions": "danger-full-access approvalnever; onlyprivateartifactwrites, noformal/candidate/frozen-source/Git edits",
+        "authorship_boundary": "CurrentR429V3 paragraphupdates were authoredbycontent_map, and are nonauthorchecked here. I had prior ownership of some ch10-15 edits in earlier rounds; this doesnot label every unchangedchapter15paragraph or fullchapter an independentnewauthorreview. These controls were newlyconstructed without reusing authorassertions.",
+        "scopes": [
+          "ch15 §15.4 Eqs15-20/22 and E15-13",
+          "ch11 globalone-to-one cpWER versus utteranceORC and DERlink",
+          "ch8 withinutterancePIT versus chunkedCSS identity",
+          "R108 fulltailCI-SDR",
+          "R132 activepermutation/nonsmoothnonconvexPIT"
+        ],
+        "proofs": {
+          "frame_capacity1": "N_hyp(t)<=1 givesmiss_t>=max(0,N_ref(t)-1). Sum over the fixedscoringframes and divide bypositive reference speakertime. With enoughglobalidentitytracks anoracle can attainthis bound bychoosingoneactiveidentityperframe.",
+          "globalKtracks": "For oneglobal paddedbijection pi, E_t=max(N_ref,N_hyp)-N_correct>=N_ref-N_correct>=sum_{s unassigned}r_s,t. Hence totalerror>=sum_{s unassigned}L_s>=sum of smallestmax(0,S-K) aggregate reference speakertimes. Allowingarbitrary binaryH onK fixedglobaltracks attains thebound by retainingK longestreference rows exactly.",
+          "conditions": [
+            "Kcounts distinct outputidentitytracks across the entire scoredinputwindow, not maximumsimultaneous activity or numberoflocalCSSseparatorchannels.",
+            "Mapping is a singlefixed1-to-1 bijection onpaddedfullactivityrows; perframe/perutterancereassignment has differentfreedom.",
+            "L_s is cumulative scored reference speakertime, not shortestindividualutterance, recordingduration, or allphysicallypresentbutunscored/neveractivespeakers.",
+            "A strictlypositivebound requirespositive reference denominator and nonzero summedunmatched scoredactivity. A zero thirdrow yieldsbound0.",
+            "Bounds concern totalDER; globalK error can be misses or confusion. Whenbothconstraintsapply, they are notadded, and maxofthem is not necessarily the exactjointminimum."
+          ]
+        },
+        "actual_execution": {
+          "all3x3truths": 511,
+          "independent_integer_hypothesis_reference_pairs": 65408,
+          "construction": "For each3bitrow reference:64 arbitrary2-global-rowH and64 3-identityH withperframe0or1active. Scorescomputedwithbitcountco-occurrences+exhaustivebijections, independentfromcoreHungarian.",
+          "actual_API": "511calls to eachboundAPI plus511 oraclecompute_der;256all2trackE15-13hypotheses actualDERcomponents checked;243combined-constraint actualDERcalls; additional explicitcases inresults. These are not countedas a unittesttotal.",
+          "E15-13": {
+            "global2_min_error_frames": 2,
+            "reference_frames": 7,
+            "DER": 0.2857142857142857,
+            "singlelabel_bound": 0.42857142857142855,
+            "minimum_error_examples_with_less_than2miss": [
+              {
+                "H_bitrows": [
+                  6,
+                  15
+                ],
+                "components": [
+                  1,
+                  0,
+                  1
+                ]
+              },
+              {
+                "H_bitrows": [
+                  7,
+                  14
+                ],
+                "components": [
+                  1,
+                  0,
+                  1
+                ]
+              },
+              {
+                "H_bitrows": [
+                  14,
+                  7
+                ],
+                "components": [
+                  1,
+                  0,
+                  1
+                ]
+              },
+              {
+                "H_bitrows": [
+                  15,
+                  6
+                ],
+                "components": [
+                  1,
+                  0,
+                  1
+                ]
+              }
+            ],
+            "EDA_count": 3,
+            "EDA_probabilities": [
+              0.7310585786300049,
+              0.7310585786300049,
+              0.7310585786300049,
+              0.33181222783183395
+            ]
+          },
+          "powerset_semantics": "Onehot7-class output can decode[1,1,0], so a singlepowersetclass is notoneactiveperson. E15referencewith3globalidentitiesbut2activeperframe admits1/7, distinctfrom2globaltracks2/7 and1activeperframe3/7.",
+          "crosschapter_sequential_case": "A/B/C speakonce insequence, two reusedrawstreams A+C andB: DER1/3 entirelyconfusion/miss0, cpWER2/3, ORC0. CSScan recover3globalidentitytracks downstream; fixed2-global bound doesnot limit rawlocalPITslots inisolation.",
+          "R108": {
+            "exact_Gram": [
+              [
+                6,
+                -3
+              ],
+              [
+                -3,
+                6
+              ]
+            ],
+            "exact_rhs": [
+              -5,
+              8
+            ],
+            "exact_h": [
+              "-2/9",
+              "11/9"
+            ],
+            "exact_target_energy": "98/9",
+            "exact_residual_energy": "19/9",
+            "tail_projection": "11/9",
+            "crop_h": [
+              "-1/21",
+              "11/7"
+            ],
+            "crop_residual_energy": "4/21",
+            "full_results": [
+              {
+                "gain": 0.125,
+                "filter": [
+                  -0.22222222222222246,
+                  1.2222222222222217
+                ],
+                "projection": [
+                  -0.055555555555555615,
+                  0.33333333333333326,
+                  -0.18055555555555552,
+                  0.1527777777777777
+                ],
+                "target_energy": 0.1701388888888888,
+                "residual_energy": 0.032986111111111105,
+                "score": 7.124724747396657
+              },
+              {
+                "gain": 1.0,
+                "filter": [
+                  -0.22222222222222246,
+                  1.2222222222222217
+                ],
+                "projection": [
+                  -0.4444444444444449,
+                  2.666666666666666,
+                  -1.4444444444444442,
+                  1.2222222222222217
+                ],
+                "target_energy": 10.888888888888884,
+                "residual_energy": 2.1111111111111107,
+                "score": 7.124724747396657
+              },
+              {
+                "gain": 8.0,
+                "filter": [
+                  -0.22222222222222246,
+                  1.2222222222222217
+                ],
+                "projection": [
+                  -3.5555555555555594,
+                  21.33333333333333,
+                  -11.555555555555554,
+                  9.777777777777773
+                ],
+                "target_energy": 696.8888888888886,
+                "residual_energy": 135.1111111111111,
+                "score": 7.124724747396657
+              }
+            ]
+          },
+          "R132": {
+            "block1_permutation": [
+              1,
+              0
+            ],
+            "block2_permutation": [
+              0,
+              1
+            ],
+            "block_scores": 18.06179973983887,
+            "whole_one_permutation": [
+              0,
+              1
+            ],
+            "whole_score": -4.892271936852112,
+            "whole_exact_score_expression": "5log10((81/179)*(49/211))",
+            "nonconvex_tie": {
+              "losses": "(x-2)^2+1 and(x+2)^2+1",
+              "x": ".25",
+              "minimum_at0": 5,
+              "minimum_atplusminusquarter": "65/16",
+              "convex_tangent_required_lower": "15/4",
+              "convex_tangent_required_upper": "-15/4",
+              "impossible": true
+            }
+          }
+        },
+        "current_text_verdict": {
+          "R429V3_381": "Already explicitly says fullrecordingdistinctoutputtracks andmissorconfusion; retain. No further mandatorydefensiveparagraph needed.",
+          "E15-13": "Correct2/7fullwindowglobal2minimum andEDA toy0; keepnormalnumbers. LocaltwochannelPITalone mustnotbe interpretedas wholemeeting2identitycap.",
+          "Eq15-20": "Integercomponentidentity andmaxweightglobalmatching agree; sameframecan legitimately containmorethanonecorrectspeaker.",
+          "Eq15-22": "Correctsingle-speaker-label-perframe missfloor; softmaxpowersetstateclass doesnot satisfythispremise aftermultilabeldecoding.",
+          "R108": "Ordinarynewintegercase includesactualnonzero11/9tail, fitsfull4samples. Croppingchangesbothh anddenominator; score7.124724747396657dB matches98/19. NooriginalTorch execution inferred.",
+          "R132": "Newtwo-blockcontrols eachchooseoppositecorrectpermutation at18.0617997dB; forcingonewhole-windowpermutation gives-4.89227194dB, so independentlocalmaxima do not establishglobalidentity. Newscalarminbranch exactconvex-tangentcontradiction retained; noautodifftrainingclaim."
+        },
+        "optional_P3_doc_note": {
+          "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch15/core/eend_enrollment_robustness.py",
+          "lines": [
+            119,
+            122
+          ],
+          "current_logic": "Textcouldbereadas everyhypothesisnecessarilyunmatches theleastactiveidentities. Correct universalclaim is at leastS-Kunmatchedidentities whoseaggregatedduration>=sumsmallestS-Kduration. Leastactivespecificidentitiesoccurinthisfunctionminimizingoracle.",
+          "countercontrol": "Rdurations[3,1,1],Hretainstwooneframeparticipants: actualunmatchedlongest3frames, lowerboundmin1frame remainscorrect.",
+          "minimal_optional_reword": "anyfixedKglobaltrack hypothesis leaves at leastS-K referenceidentities unmatched; theirtotalscoredactivity is boundedbelowbytheS-Kleastactive reference durations.",
+          "required_numeric_orasset_change": false,
+          "newID_requested": false
+        },
+        "actual_source_reading": [
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters/15_target-extraction-diarization.md",
+            "sha256": "01a5769f3e432803ad4eb00b29ea7b21d4b920cbfa9dcf619ebdb5c012cbf93a",
+            "continuous_ranges": [
+              [
+                323,
+                376
+              ]
+            ]
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters_en/15_target-extraction-diarization.md",
+            "sha256": "a7fcf00a96e93b17682ce4df5162d39429fd2426d768d259207e68616543c015",
+            "continuous_ranges": [
+              [
+                323,
+                376
+              ]
+            ]
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/content-r6-technical-review/r429-after-r135v2-ch15-source-proposal-v3/source/chapters/15_target-extraction-diarization.md",
+            "sha256": "dc335b84251f68faeb9af23017bfc4426ca35d4b08934b3bef8a4c9aa2ae674e",
+            "continuous_ranges": [
+              [
+                371,
+                383
+              ],
+              [
+                794,
+                812
+              ]
+            ]
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/content-r6-technical-review/r429-after-r135v2-ch15-source-proposal-v3/source/chapters_en/15_target-extraction-diarization.md",
+            "sha256": "84c098478fb9432442c47c5cbf3320ac8963631a32ffac330c6fa21329f036c2",
+            "continuous_ranges": [
+              [
+                371,
+                381
+              ],
+              [
+                383,
+                383
+              ],
+              [
+                794,
+                812
+              ]
+            ]
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters/11_selection-guide.md",
+            "sha256": "45bc20d30a34210e01d50ffd965a7adbbeecf991459a70de3eb7440965cbaa58",
+            "continuous_ranges": [
+              [
+                73,
+                78
+              ],
+              [
+                94,
+                125
+              ]
+            ]
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters_en/11_selection-guide.md",
+            "sha256": "b0fd7999ec6de927941f57629ef034aece500e09bc7f99af8d4f9d4461d13a8b",
+            "continuous_ranges": [
+              [
+                125,
+                125
+              ]
+            ]
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-integrated-fifty-four-build/checkout/chapters/08_speech-separation.md",
+            "sha256": "9b7ea8bcb8eb66b65ed080e60ea17f87802531be2710916eb3f4555b93ab2623",
+            "continuous_ranges": [
+              [
+                115,
+                151
+              ],
+              [
+                669,
+                697
+              ]
+            ]
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-integrated-fifty-four-build/checkout/chapters_en/08_speech-separation.md",
+            "sha256": "3170d6314a277fa521aee37235bc9d7076ccf43d61861196ed0396165ca19687",
+            "continuous_ranges": [
+              [
+                117,
+                148
+              ],
+              [
+                669,
+                697
+              ]
+            ]
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch15/core/diarization_tsvad.py",
+            "sha256": "b95167599ae33ccb92253a676a34f48c2043bdd2ae3c8d9f5355d4a60ac05580",
+            "continuous_ranges": [
+              [
+                113,
+                221
+              ]
+            ]
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch15/core/eend_enrollment_robustness.py",
+            "sha256": "c636718c2748bd64d50cb2eae9f6e52bbeb9b5814822f99f0ca7094fdf1af20b",
+            "continuous_ranges": [
+              [
+                1,
+                109
+              ],
+              [
+                110,
+                166
+              ]
+            ]
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch11/core/selection.py",
+            "sha256": "987e61d30e9300941d55816629447110b92d28efa342dfbde895b2912df8e2cf",
+            "continuous_ranges": [
+              [
+                175,
+                219
+              ]
+            ]
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch08/core/separation.py",
+            "sha256": "cd5cc1e465188f16070d2f347c5234bea41d28d0be8f16f1bb24e47365feb888",
+            "continuous_ranges": [
+              [
+                130,
+                172
+              ]
+            ]
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch08/core/separation_metrics_streaming.py",
+            "sha256": "7ace600b8d9ef8d5e403a158cdc4ee83cd33018038a53eae0c9074f06c1434a1",
+            "continuous_ranges": [
+              [
+                44,
+                177
+              ]
+            ]
+          }
+        ],
+        "prior_packets_used": [
+          {
+            "path": "/private/tmp/masp-multiround-20261123/content-r6-technical-review/r7c-imaging-pit-scoring-consumers/handoff.json",
+            "sha256": "6adec2f4f5a3e242bfb5987d7912898b43ee30c7fbc638df5ff3dfdbf7a229d3",
+            "actually_used": "selectedR132/R429judgments; not entiremetadata/wholeoriginalpapers"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/content-r6-technical-review/r7a-ci-sdr-consumers/handoff-v2.json",
+            "sha256": "3d4a8ee49b3399185ba3764210429a633286d1e74191e540239cec1e22a0318f",
+            "actually_used": "R108selectedjudgment/fulltailandfinite-supportqualification, not newupstreamexecution"
+          }
+        ],
+        "evidence": [
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r8-der-pit-independent/check.py",
+            "sha256": "3d0e3179d1ec7ec710c91b79bab30996e436714b3080d5eb17ce2490de94303f"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r8-der-pit-independent/check-first-harness.py",
+            "sha256": "fec835ae46c0ab855c36409c0c946c0062a2896dff5bee06e55a97b988f16f94"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r8-der-pit-independent/first-harness-error.txt",
+            "sha256": "27acd8dce1fc0b760bbdf24e006148d95c4fa596ed71704f39e55793a7907b79"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r8-der-pit-independent/results.json",
+            "sha256": "e5ad1a4b5b9cf1e0bc03a4760b78302466beefd3b0920e6660dd668cdf965be3"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r8-der-pit-independent/powerset_control.py",
+            "sha256": "30dd0645d7bd4fdd533b5f06e46be7e314d6d585c659d342a7d3d9527dd6d945"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r8-der-pit-independent/powerset-control.json",
+            "sha256": "bab078915ab94367794b391ef7828db7637809fdd44730dc1388acf3f2658d07"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r8-der-pit-independent/combined-constraints.json",
+            "sha256": "505f420a66983c94216d5d8e1a654b973bc276027356c353b831b2f72a4b9d88"
+          }
+        ],
+        "failures_preserved": [
+          "Oneinitialzshglobmeeting*matchednothing, beforefileexecution; retry usedactualcoredirectory.",
+          "FirstprivatecontrolcompletedDER/CIbutPITwholeblockassertfailed becauseitconstructed a differentgain-swappedsecondblock thanhandreference. Originalscript retained; correctedonlyprivateinputtointendedsource-swap/gain-preservingmodel; no kerneldefect inferred. AlsoactualEDAmetadatafieldnameswere read and correctedbefore firstreached.",
+          "Aggregateoutputtruncation nottreatedasfulltextreading; relevantPIT/CI/DERparagraphs andcodeblocks reread insmallboundedranges."
+        ],
+        "not_executed": [
+          "No formalorprivateproductionedits, PNG/WAV/reportgeneration orsourcehashsubstitution.",
+          "No officialNIST/pyannote fullscorer, neuralEDA/TS-VAD/PITtraining, ASR/listening, or fgntTorchCI-SDR execution. Thisis explicituniformframemodelvalidation, notfullprotocolstandardconformance.",
+          "No freshexternalprimarysource reading; thisbatch is independent integer/Fractionalgebra and samebookinterfacecrosscheck.",
+          "No allfloat64 supportorhighdimensionalgeneral-exhaustiveclaim; finiteenumerationchecks3-speaker3-framepatterns plusstatedexamples.",
+          "No fullbooktests orfinalsite/PDF acceptance; otheragents holdactualpublicationclosure."
+        ]
+      }
+    },
+    "r8-r430-independent-review--handoff.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/r8-r430-independent-review/handoff.json",
+      "sha256": "b0ff5b1ab843e1084fb4410d3202cff4da7306d23cd8530c180a4ede5cc5274f",
+      "bytes": 17950,
+      "boundary": "R430 first text-only draft rejected while the runtime still diagnosed oscillation from magnitude only.",
+      "packet": {
+        "id": "R430",
+        "reviewer": "/root/publication_ci",
+        "sealed_at": "2026-11-23T13:37:47.257453+00:00",
+        "reviewed_candidate": {
+          "path": "/private/tmp/masp-multiround-20261123/r8-r430-selection-acoustic-feedback/plan.json",
+          "sha256": "f122116167e38f4a256dcaecd4fc66f879561f0d40b4d023f9e8cb1145f5a360"
+        },
+        "decision": "Not accepted as a closed implementation. Prose corrects keyBarkhausenoverclaim, but actualuniqueE11-22JSONstillassertsringing/howling. ParentwithdrewR430fromR7;keepcandidateforlatercoordinatedsource/textrevision. Noformaleditperformed.",
+        "source_identity": [
+          {
+            "path": "chapters/11_selection-guide.md",
+            "candidate_sha256": "8280be6865756cc64912a1b7cba748705ffdbf828819af9036dd0543f1f8a6f1",
+            "preimage_sha256": "45bc20d30a34210e01d50ffd965a7adbbeecf991459a70de3eb7440965cbaa58",
+            "changed_lines": [
+              233,
+              1113,
+              1125,
+              1137
+            ],
+            "Eq11_23_bytes_unchanged": true,
+            "all_other1151_byte_lines_unchanged": true
+          },
+          {
+            "path": "chapters_en/11_selection-guide.md",
+            "candidate_sha256": "7469e90188aa6e6a398df5fe53df069f35daa5ff3c3e5d53b247cabd9bc180b9",
+            "preimage_sha256": "b0fd7999ec6de927941f57629ef034aece500e09bc7f99af8d4f9d4461d13a8b",
+            "changed_lines": [
+              233,
+              1113,
+              1125,
+              1137
+            ],
+            "Eq11_23_bytes_unchanged": true,
+            "all_other1151_byte_lines_unchanged": true
+          }
+        ],
+        "findings": [
+          {
+            "issue": "Programconsumerstillassertsactualoscillation",
+            "evidence": "automotive_selection.py425-436labels15dBinsufficient_margin_ringingand18dBunstable_howlingfromgain-onlybound;491callsitscalarBarkhausenmargin. ActualJSONwrapperreturnsit;existingtestsdo not inspectregime.",
+            "fix": "Budgetverdictpass/fail/failmaystay6/3/0;qualifyregimelabels/scopetobudgetinsufficiency/upperboundreacheszero,notactualringing/howling.",
+            "status": "ConfirmedsameR430consumerdefect"
+          },
+          {
+            "issue": "Eq11-23actualamplitudeversusbound",
+            "evidence": "Current1113definesβupperboundbutEq11-23usesLG=G+20log|β|withoutnamingLGanupperbound.1125hintsboundcalculationbutcanstillbereadasactualmeasuredloopgain.",
+            "fix": "DefineLGdBasthecalculatedfullbandupperboundorshowappropriateinequality;preserveformulaidentity/numberswherepossible. DefineG/βoncompatibleloop-amplitudereferences;earratio gisaseparatequantity.",
+            "status": "Confirmedreadability/model-identityambiguity,notwrong12dBarithmetic"
+          },
+          {
+            "issue": "Unitcirclemodeversussustainedmarginaloscillation",
+            "evidence": "L=2z^-1-z^-2stableFIRgivesH=(1-z^-1)^-2andh[n]=n+1. A unitcirclemultiplepolecanhaveseculargrowth. Ch14R425usescorrespondingcriticalmodealready.",
+            "fix": "Prefercorrespondingunitcirclecriticalmodeinbothlanguagesoverclaimingboundedmarginaloscillation.",
+            "status": "SpecificnewwordingoverstrengthcandidatewithinR430"
+          },
+          {
+            "issue": "NewEnglishgrammar",
+            "evidence": "233:reserves...ofhowlinggainmarginandback-calculating...",
+            "fix": "Usecoordinatedfiniteverbback-calculatesorrewritesentencewithoutchangingconditions.",
+            "status": "ConcreteP3wording"
+          },
+          {
+            "issue": "Preservedarchitectureban",
+            "evidence": "Unchanged233claimsalllongwindow/lookaheadmodulesexcludedby15ms. A constructedtDSP8ms(including3mslookahead)+spk1-direct5givesΔ4msandmeetsdeclaredlimit. A sum-delaybudgetcannotbanallpositive-lookaheadarchitectures.",
+            "fix": "TrackasexistingR114adjacentconsumer,notnewR430algorithmclaim;limitexclusiontocandidateswhoseactualtotalbudgetfails.",
+            "status": "Confirmedmathematicalcountertooldgeneralization;standardbody/historynotnewlyverifiedhere"
+          }
+        ],
+        "minimum_consumer_list": [
+          {
+            "path": "chapters/11_selection-guide.md",
+            "line": 233,
+            "role": "CurrentR430ChineseproseandE11-22consumer",
+            "required_next_source_edit": true,
+            "suggestion": "Retainnumbers;definepositivefeedbackL andboundnotation, usecorrespondingcriticalmode, avoidunconditionaloscillationconclusion."
+          },
+          {
+            "path": "chapters_en/11_selection-guide.md",
+            "line": 233,
+            "role": "PairedEnglishproseandE11-22consumer",
+            "required_next_source_edit": true,
+            "suggestion": "Synchronizebound/criticalmodeandfixnewreserves...andback-calculatinggrammar."
+          },
+          {
+            "path": "codes/chapters/ch11/core/automotive_selection.py",
+            "lines": [
+              325,
+              491
+            ],
+            "role": "UniqueactualE11-22computationandJSONpayloadproducer",
+            "required_next_source_edit": true,
+            "suggestion": "Keepallnumericvalues/API/returnedbudgetpass-fail, replaceunsupportedringing/howlingregimeclaims andscopeBarkhausen; clarifyfeedbackmagnitude-bound/compatibleamplitudereferences andconditionalstablelinearbudget."
+          },
+          {
+            "path": "codes/chapters/ch00/COVERAGE.md",
+            "line": 407,
+            "latest_R6_sha256": "4f0fabb8755201dc6e832c57959fe76c7ccc3c24831f72a96c7913019fc007ef",
+            "role": "DirectteachingcoverageBarkhausenwording",
+            "required_next_source_edit": true,
+            "suggestion": "Usefull-bandloop-amplitudebudget/stabilityconditionratherthanBarkhausenoscillationclassification."
+          },
+          {
+            "path": "codes/chapters/ch00/COVERAGE_EN.md",
+            "line": 403,
+            "latest_R6_sha256": "a787f2dea4c08aa0abb22904d1d47498c6c0dd6f794bbc3c5b6fa08246ce1f5a",
+            "role": "Pairedcoverageconsumer",
+            "required_next_source_edit": true,
+            "suggestion": "SynchronizeChinese;preserveIDs/entry/denominator."
+          },
+          {
+            "path": "codes/chapters/ch11/chapter11_experiments.py",
+            "lines": [
+              215,
+              235
+            ],
+            "role": "icc_certification_anchor wrapsuniquehelper;run_experimentsmakesE11-22andCLIprintsJSON",
+            "required_next_source_edit": false,
+            "suggestion": "No duplicateimplementation/newfixedreport. Keepwrapper/APIidentity;JSONupdatesfromuniquehelperautomatically."
+          },
+          {
+            "path": "tests/test_codes_chapter11_experiments.py",
+            "lines": [
+              342,
+              367
+            ],
+            "role": "ExistingexactE11-22numericandbudgetverdictpositivecontrols",
+            "required_next_source_edit": false,
+            "suggestion": "Existing2methodsactuallypasswhilewrongregimelabelsunchecked. Retain25/68/ripple/12dB/3.98107/pass-fail-fail/undetermined;proposenewindependentloopcountercontrolsifaddingtests,notstringsnapshotmirroring."
+          }
+        ],
+        "actual_JSON_example": {
+          "path": "/private/tmp/masp-multiround-20261123/r8-r430-independent-review/actual-E11-22-current.json",
+          "sha256": "1d33821d7b79c8a3a105ef0f7597e2d4df5c7bc9dab8b5a5a29e5ff339713e1f",
+          "meaning": "Newexternalrecordofactualunchangedcurrenthelper/wrapperexecution,notofficialsavedreportorrepairedhistoricalJSON.",
+          "tracked_codes_JSON_stored_E11_22_or_bad_regime_matches": []
+        },
+        "numeric_and_bindings": {
+          "core_sha256": "68dd339295f95dfd47915ad6a19ef4b0e81a8bf01145e141ffb64ee2f9fff86e",
+          "actual_case_regimes": {
+            "12.0dB": {
+              "icc_gain_db": 12.0,
+              "loop_gain_db": -6.0,
+              "gain_margin_db": 6.0,
+              "regime": "safe_gain_margin",
+              "verdict": "pass"
+            },
+            "15.0dB": {
+              "icc_gain_db": 15.0,
+              "loop_gain_db": -3.0,
+              "gain_margin_db": 3.0,
+              "regime": "insufficient_margin_ringing",
+              "verdict": "fail"
+            },
+            "18.0dB": {
+              "icc_gain_db": 18.0,
+              "loop_gain_db": 0.0,
+              "gain_margin_db": -0.0,
+              "regime": "unstable_howling",
+              "verdict": "fail"
+            }
+          },
+          "independent_counts": {
+            "8": {
+              "closed_count": 25,
+              "half_open_count_same_band": 25,
+              "m_first_last": [
+                2,
+                26
+              ],
+              "exact_first_last": [
+                "625/2",
+                "6625/2"
+              ],
+              "endpoint_not_a_notch": true
+            },
+            "22": {
+              "closed_count": 68,
+              "half_open_count_same_band": 68,
+              "m_first_last": [
+                7,
+                74
+              ],
+              "exact_first_last": [
+                "3750/11",
+                "37250/11"
+              ],
+              "endpoint_not_a_notch": true
+            }
+          },
+          "binding_inventory": {
+            "fixed32manifest_and35report_count": 67,
+            "direct_path_or_core_SHA_hits": [],
+            "174PNG_metadata_path_or_core_SHA_hits": [],
+            "limits": "Finiteexplicitpublishedassets only;notallhistoricalJSONorPythontransitiveclosure."
+          },
+          "endpoint_API_control": {
+            "band": [
+              312.5,
+              3312.5
+            ],
+            "actual_inclusive_upper_notch_count": 25,
+            "independent_half_open_count": 24,
+            "statement": "Actual existing helper/text useclosedband; original300/3400containsnoendpointnotch,soclosed/halfopencountscoincide. Do not silentlychangeAPIendpointsemantics."
+          },
+          "pure_delay_loop": {
+            "tau": "2/125s",
+            "frequency_step": "125/2Hz",
+            "half_open_count": 50,
+            "first_last": [
+              "625/2",
+              "3375"
+            ],
+            "k_range": [
+              5,
+              54
+            ]
+          },
+          "loop_counterexample": {
+            "L": "1-(1-(5/7)z^-1)^4",
+            "at_z": [
+              "3/5",
+              "4/5"
+            ],
+            "exact_L": [
+              "3425/2401",
+              "0"
+            ],
+            "strictly_causal_FIR_open_loop_stable": true,
+            "closed_H": "1/(1-(5/7)z^-1)^4",
+            "closed_poles": "5/7 multiplicity4 insideunitdisk",
+            "in_phase_gain_greater_than_one_is_not_sufficient": true
+          },
+          "0dB_same_bound_different_phase": {
+            "L_positive_delay": "z^-1 => pole+1, marginal",
+            "L_negative_delay": "-z^-1 => pole-1, marginal",
+            "stable_same_upper_bound_not_attained": "L=.5z^-1 has magnitude<=1 butclosedpole.5; bound0dBdoesnotproveactualunitygain",
+            "equal_actual_magnitude_phase_shaping_control": "Closedpoles requireactualL,notjusta declaredupperbound; no thresholdlabelalone establishes ringing."
+          },
+          "R6_captured_render_digest_direct_membership": {
+            "zh_site": false,
+            "zh_pdf": false,
+            "en_site": false,
+            "en_pdf": false
+          }
+        },
+        "closure_supplement": {
+          "tracked_codes_JSON_count": 160,
+          "actual_path_or_core_SHA_direct_binding_hits": [],
+          "current_four_render_digest_core_read_controls": [
+            {
+              "consumer": "ZHsite",
+              "actual_digest": "f04fb843bff3",
+              "automotive_core_reads": 0
+            },
+            {
+              "consumer": "ZHpdf",
+              "actual_digest": "6d7b57f4f3a3",
+              "automotive_core_reads": 0
+            },
+            {
+              "consumer": "ENsite",
+              "actual_digest": "4a5d9a374aa4",
+              "automotive_core_reads": 0
+            },
+            {
+              "consumer": "ENpdf",
+              "actual_digest": "8b16d9554b7c",
+              "automotive_core_reads": 0
+            }
+          ],
+          "amplitude_quantity_separation": [
+            {
+              "G_ICC_db": 12.0,
+              "return_bound_amplitude": 0.12589254117941673,
+              "complete_loop_amplitude_upper_bound": 0.5011872336272722,
+              "conservative_bound_margin_db": 6.0,
+              "wrong_if_ear_g_substituted": 3.184857364427978
+            },
+            {
+              "G_ICC_db": 15.0,
+              "return_bound_amplitude": 0.12589254117941673,
+              "complete_loop_amplitude_upper_bound": 0.7079457843841379,
+              "conservative_bound_margin_db": 3.0,
+              "wrong_if_ear_g_substituted": 4.4987306015227935
+            },
+            {
+              "G_ICC_db": 18.0,
+              "return_bound_amplitude": 0.12589254117941673,
+              "complete_loop_amplitude_upper_bound": 1.0,
+              "conservative_bound_margin_db": 0.0,
+              "wrong_if_ear_g_substituted": 6.354625877794253
+            }
+          ],
+          "independent_order6_counterexample": {
+            "L": "1-(1-a*z^-1)^6, a=1/sqrt(3)",
+            "phase_test_z": "j",
+            "exact_L": "91/27 real positive",
+            "closed_H": "1/(1-a*z^-1)^6",
+            "closed_poles": "a=1/sqrt(3), multiplicity6, strictlyinsideunitdisk",
+            "open_L": "strictlycausalstableFIR",
+            "criterion_rebuttal": "Singlepositivephasefrequency|L|>1doesnotproveunstableclosedloop."
+          },
+          "unit_circle_multiple_pole_wording_control": {
+            "L": "2z^-1-z^-2, stableFIR",
+            "one_minus_L": "(1-z^-1)^2",
+            "closed_impulse_h_n": "n+1",
+            "conclusion": "Unitcirclemultiplepolecanhaveseculargrowth;preferR425correspondingcriticalmodewordingtoassertingboundedmarginaloscillation."
+          },
+          "standards_read_limit": "OfficialP1150landingmetadataread;linkedZIPunavailablethroughwebtool(unsupportedapplication/x-zip-compressed). FullP1150body/15msclause/AnnexDnotnewlyverifiedhere;unchangedR114sourceclaimsnotfreshlycertified."
+        },
+        "actual_existing_tests": {
+          "argv": [
+            "/Users/francis7999/code/github_repos/microphone-array-signal-processing/.venv/bin/python",
+            "-B",
+            "-m",
+            "unittest",
+            "tests.test_codes_chapter11_experiments.Chapter11ExperimentsTests.test_icc_comb_notches_howling_margin_and_teams_interval_verdict",
+            "tests.test_codes_chapter11_experiments.Chapter11ExperimentsTests.test_computed_results_are_strict_json",
+            "-v"
+          ],
+          "exit_code": 0,
+          "stdout": "",
+          "stderr": "test_icc_comb_notches_howling_margin_and_teams_interval_verdict (tests.test_codes_chapter11_experiments.Chapter11ExperimentsTests.test_icc_comb_notches_howling_margin_and_teams_interval_verdict) ... ok\ntest_computed_results_are_strict_json (tests.test_codes_chapter11_experiments.Chapter11ExperimentsTests.test_computed_results_are_strict_json) ... ok\n\n----------------------------------------------------------------------\nRan 2 tests in 0.958s\n\nOK\n",
+          "meaning": "Actual2existingmethods;numericpositivecontrolsandJSONvaliditypasswhileunsupportedregimelabelsremainunchecked."
+        },
+        "source_asset_conclusion": "Noautomotivecorepath/currentSHAin160trackedcodesJSON, includingfinite32manifests/35reports, or174currentPNGmetadata. Actual4currentrenderdigestreadhooksreadcore0times;R6captured4inputlistsagree. NoevidencecurrentWAV/PNG/reportgenerationmustberunforuniquecorelabel/docfix. LateracceptedpairedMarkdownchangesstillrequireactualsite/combinedHTML/PDFrebuilds;do nothand-updatemetadata. NotclaimcompletePythontransitiveclosure.",
+        "amplitude_and_time_boundaries": {
+          "g": "givenlisteningpositionreinforced/directpressureamplituderatio,usedonlyfortworaycombformula",
+          "beta_fb": "normalizedacousticreturnpathmagnitudebound,separatefromg",
+          "G_ICC": "forwardgainfromfrontpickupthroughreinforcement,needscompatiblereferencewithβtoproducefullL",
+          "times": "tarr13msandΔRx8msarelistenerforwardarrivals;telec11ms+return5ms=tauLoop16ms,not13or8.",
+          "comb_endpoints": "Currenttext/helperuseclosedband. Original300/3400notnotches,soclosed/halfopenboth25/68;explicitedge312.5/3312.5actual25closedvs24halfopen.Do not silentlychangeAPI."
+        },
+        "primary_sources": [
+          {
+            "url": "https://www.cds.caltech.edu/~murray/books/AM08/pdf/fbs-loopanal_24Jul2020.pdf",
+            "actual_read": "PDFtext0-174andfindreturnedsections1120-1187,plusreturnedhistoricalnote1316-1375;notall33pages ornativefigures.",
+            "supports": "Booknegativefeedbackuses1+PCandcritical-1;acousticpositivefeedbackconventionmapsLbook=-Lacoustic. Stableinput-outputblockswithloopgainboundbelow1aresufficientforsmall-gainstability. SinglephasepointisnotcompleteNyquistanalysis.",
+            "verified_date": "2026-11-23"
+          },
+          {
+            "url": "https://www.itu.int/rec/T-REC-P.1150-202001-I/en",
+            "actual_read": "Official35lineversionmetadata2020-01-13;ZIPdownloadlinkwebtoolfailedunsupportedapplication/x-zip-compressed.",
+            "not_verified": "FullP1150body/15ms/AnnexDnotnewlyreadorrecertifiedinthispacket. PriorR114primaryevidenceremainsseparate.",
+            "verified_date": "2026-11-23"
+          }
+        ],
+        "actual_read_scope": {
+          "chapter11": "Bothcandidate219-235and1109-1146;fullreview.patchprinted;full1155linebytecomparisononly4changedlines,notfullchaptersemanticreread.",
+          "chapter14": "ActualfrozenR6ZH766/EN764positivefeedbackR425paragraphre-read;notwholechapter.",
+          "core": "automotive_selection.py325-491full;not1-324.",
+          "consumers": "chapter11_experiments.py1-60and205-235;testfile1-30,330-378;COVERAGEpairedtargetrows. Exactreposearchofsymbols/pathslimitedcodes/scripts/tests,notanallhistoricalreportrewrite."
+        },
+        "not_executed": [
+          "Noformal/authorcandidate/R6sourceasset/Gitwrites",
+          "Noactualoscillation/device/acoustictest",
+          "NoWAV/PNG/reportregeneration",
+          "Noactualsite/PDF/nativevisualQA",
+          "NoacceptanceofwithdrawnR430aspartofR7oroldcertificationclaims"
+        ],
+        "external_artifacts": [
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r8-r430-independent-review/actual-E11-22-current.json",
+            "bytes": 5467,
+            "sha256": "1d33821d7b79c8a3a105ef0f7597e2d4df5c7bc9dab8b5a5a29e5ff339713e1f"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r8-r430-independent-review/actual-tests-results.json",
+            "bytes": 1039,
+            "sha256": "52f0c49cb6869d87608f852344e75daeee0b92b98e6df6bd337d1fe05b8bd667"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r8-r430-independent-review/closure-supplement-results.json",
+            "bytes": 2306,
+            "sha256": "88e53f4a4c7edfcddd7169ed5c3be63e0c7a058d114dd57cc68c1215be20d738"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r8-r430-independent-review/closure-supplement.py",
+            "bytes": 3018,
+            "sha256": "ed82e41eb8e03af76107eeaf803bf602f16ae3b9d0bf61af705b1e2147cc0852"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r8-r430-independent-review/numeric-and-binding-results.json",
+            "bytes": 2897,
+            "sha256": "f5df119a1a55941b12d842335575103c6ec1bc9e0b249ed7edbfa62842393c34"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r8-r430-independent-review/numeric-and-bindings.py",
+            "bytes": 5771,
+            "sha256": "5493671d74ae6f3f1b096ab4f51418ece27f218ff4e78ac13e182cbd766556cb"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r8-r430-independent-review/seal.py",
+            "bytes": 9887,
+            "sha256": "37536ce8bf49a4577762c7d7d87a799302a73c5f46367de40300fdf0f6b14a55"
+          }
+        ]
+      }
     }
   },
   "next_round_issue_index": {

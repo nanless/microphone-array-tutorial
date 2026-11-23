@@ -235,7 +235,7 @@ Input `dtype`s, outputs, analytical expectations, tolerances, warnings, and fail
 
 ### Appendix B: Aligning Research Tasks and Revisions Before Reproducing
 
-The [research landscape survey in Appendix B](../../../../chapters_en/17_appendix-guide.md#sec-17-3) spans eight active directions whose outputs are fundamentally incommensurable: target speaker extraction outputs a single-speaker waveform, DiCoW outputs target-speaker text transcripts, CHiME-9 ECHI outputs a low-latency hearing-aid enhancement stream, and ArrayDPS estimates reverberant source images at a designated reference microphone. Before benchmarking or selecting an architecture, fix the exact task definition; never rank WER, SI-SDR, and algorithmic latency across disparate output modalities in a single table.
+The [research landscape survey in Appendix B](../../../../chapters_en/17_appendix-guide.md#sec-17-3) covers nine directions. Several outputs illustrate why the downstream task matters: target speaker extraction outputs a single-speaker waveform, DiCoW outputs target-speaker text transcripts, CHiME-9 ECHI outputs a low-latency hearing-aid enhancement stream, and ArrayDPS estimates reverberant source images at a designated reference microphone. Before benchmarking or selecting an architecture, fix the exact task definition; never rank WER, SI-SDR, and algorithmic latency across disparate output modalities in a single table.
 
 The architectural scopes and implementation boundaries below were audited on 2026-10-02. Papers are cited strictly by the specific sections inspected rather than copying performance numbers across mismatched conditions; pinned Git commits, licenses, and sparse-checkout file lists remain governed by [`SOURCES.lock.json`](../SOURCES.lock.json).
 

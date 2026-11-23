@@ -24,6 +24,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import importlib.util
 import json
 import os
 from pathlib import Path
@@ -78,6 +79,7 @@ def translation_metadata(filename: str) -> dict[str, str]:
         "TranslationScript": "scripts/make_figures_en.py",
         "TranslationScriptSHA256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         "TranslationTableSHA256": hashlib.sha256(TRANSLATIONS_PATH.read_bytes()).hexdigest(),
+        "TranslationStyleSHA256": hashlib.sha256((REPOSITORY_ROOT / "scripts/make_figures.py").read_bytes()).hexdigest(),
     }
 
 
@@ -455,7 +457,21 @@ def _staged_report_bytes(canonical, staged, read_bytes):
     return actual
 
 
+def _figure_rc_baseline():
+    """Read the shared style without modifying an already imported module."""
+    style_path = REPOSITORY_ROOT / "scripts/make_figures.py"
+    with matplotlib.rc_context():
+        matplotlib.rcdefaults()
+        spec = importlib.util.spec_from_file_location("_masp_english_figure_style", style_path)
+        if spec is None or spec.loader is None:
+            raise ValueError("cannot load the shared figure style")
+        private_style = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(private_style)
+        return plt.rcParams.copy()
+
+
 def generate_all_english_figures(only_scripts: tuple[str, ...] = FIGURE_SCRIPTS) -> list[Path]:
+    baseline = _figure_rc_baseline()
     from scripts.figure_report_contracts import FIGURE_REPORTS
     translator = FigureTranslator(TRANSLATIONS_PATH)
     FIGURES_EN_DIR.mkdir(parents=True, exist_ok=True)
@@ -614,11 +630,12 @@ def generate_all_english_figures(only_scripts: tuple[str, ...] = FIGURE_SCRIPTS)
                 script_path = REPOSITORY_ROOT / "scripts" / script_name
                 sys.argv = [str(script_path)]
                 print(f"[make_figures_en] Executing {script_name} ...", flush=True)
-                try:
-                    runpy.run_path(str(script_path), run_name="__main__")
-                except SystemExit as exc:
-                    if exc.code not in (0, None):
-                        raise
+                with matplotlib.rc_context(rc=baseline):
+                    try:
+                        runpy.run_path(str(script_path), run_name="__main__")
+                    except SystemExit as exc:
+                        if exc.code not in (0, None):
+                            raise
         finally:
             sys.argv = orig_argv
             Path.write_text = orig_write_text

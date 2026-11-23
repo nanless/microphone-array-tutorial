@@ -2,7 +2,7 @@
 <link rel="canonical" href="14_spatial-wearable-arrays.html"><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 14 章 · 空间声场与可穿戴阵列 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="f04fb843bff3"><style>
+<meta name="source-digest" content="db3dfe5c1367"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -170,7 +170,12 @@ pre,.table-scroll,mjx-container[jax="CHTML"]{overflow-wrap:normal}
         significant.some(isEmptyAnchor) &&
         significant.every(node => isEmptyAnchor(node) || isAnchorAlias(node));
       paragraph.classList.toggle("tutorial-anchor-only", !!anchorOnly);
-      const short = significant.length === 1 &&
+      const labelOnly = significant.length === 1 || (
+        significant.length === 2 &&
+        significant[1].nodeType === Node.TEXT_NODE &&
+        /^[：:.。]$/.test(significant[1].data.trim()) &&
+        significant[0].textContent.trim().length > 0);
+      const short = labelOnly &&
         significant[0].nodeType === Node.ELEMENT_NODE &&
         significant[0].tagName === "STRONG" &&
         paragraph.textContent.trim().length <= 60 &&
@@ -782,7 +787,7 @@ cE-\|\vec I_a\|_2
 <ul>
 <li><strong>采样解码器（SAD，Sampling Ambisonic Decoder）</strong>：本段 $\mathbf Y_L$ 局部采用球面均值内积下正交归一的实 N3D 球谐，输入系数也须转换为相同口径。此时 $\mathbf D_{\mathrm{SAD}}=\mathbf Y_L/L$ 在均匀 $t$-design、$t\ge2N$ 时可精确积分最高 $2N$ 次谐波乘积；$t\ge2N+1$ 是能量矢量设计中可能需要的更强条件。若沿用 SN3D，则须带阶次归一因子：一阶四面体 $\mathbf Y_L=[1,u_x,u_y,u_z]$ 给出 $\mathbf Y_L^\top\mathbf Y_L/L=\operatorname{diag}(1,1/3,1/3,1/3)$，对应模式匹配的列因子为 $[1,3,3,3]/L$，不能直接写成 $1/L$。</li>
 <li><strong>模式匹配解码器（MMD，Mode-Matching Decoder）</strong>：在 $L \ge (N+1)^2$ 且 $\mathbf Y_L$ 列满秩时取伪逆 $\mathbf D_{\mathrm{MMD}} = \mathbf Y_L(\mathbf Y_L^\top\mathbf Y_L)^{-1}$（满足 $\mathbf Y_L^\top\mathbf D_{\mathrm{MMD}} = \mathbf I_{(N+1)^2}$），在数学上精确还原至 $N$ 阶的球谐系数；但面对 5.1/7.1.4 家庭影院或缺少下半球扬声器的非均匀排布时，$\mathbf Y_L$ 条件数急剧恶化，导致相邻扬声器产生巨大的反相增益与严重底噪/能量失衡。</li>
-<li><strong>能量保持解码器（EPAD，Energy-Preserving Ambisonic Decoder，Zotter、Pomberger 与 Noisternig 2012）</strong>：对 $\mathbf Y_L = \mathbf U\boldsymbol\Sigma\mathbf V^\top$ 做奇异值极分解并令 $\mathbf D_{\mathrm{EPAD}} \propto \mathbf U\mathbf V^\top$，强制列正交（$\mathbf D_{\mathrm{EPAD}}^\top\mathbf D_{\mathrm{EPAD}} \propto \mathbf I$），从而在不反转微小奇异值的前提下保证轻中度非规则布局上总辐射能量与声源方向无关。</li>
+<li><strong>能量保持解码器（EPAD，Energy-Preserving Ambisonic Decoder，Zotter、Pomberger 与 Noisternig 2012）</strong>：保留完整 $K=(N+1)^2$ 维模态时要求 $L\ge K$。对 $\mathbf Y_L = \mathbf U\boldsymbol\Sigma\mathbf V^\top$ 做奇异值极分解并令 $\mathbf D_{\mathrm{EPAD}} \propto \mathbf U\mathbf V^\top$，强制列正交（$\mathbf D_{\mathrm{EPAD}}^\top\mathbf D_{\mathrm{EPAD}} \propto \mathbf I$），从而无需反转微小奇异值，就能使同幅平面波输入的扬声器馈送平方和（电平归一后的能量代理）与声源方向无关。 若 $L\lt K$，应先选定缩减基并在该子空间中计算解码器；完整 $K$ 维的 $\mathbf D^\top\mathbf D$ 不可能是正比例单位阵。</li>
 <li><strong>全向全景声解码器（AllRAD，All-Round Ambisonic Decoding，Zotter 与 Frank 2012）</strong>：采用两步解耦 $\mathbf D_{\mathrm{AllRAD}} = \mathbf G_{\mathrm{VBAP}}\,\mathbf D_{\mathrm{virt}}$——先将 FOA/HOA 球谐信号解码到覆盖全空间的虚拟均匀球面 $t$-design 扬声器节点上，再通过基于矢量基的幅度平移（VBAP）将每个虚拟节点投影分配给物理布局中最近的三角扬声器组（底部空洞可置虚拟吸声点避免能量倒灌），由此在任意不规则物理布局上兼顾方向平滑性与能量稳定。</li>
 </ul>
 <p><strong>双频段速度/能量交越与 $N$ 阶 $\max\text{-}r_E$ 模态加权</strong>：在约 $700\ \mathrm{Hz}$ 以下的低频段，人耳主要依靠双耳相位差定位，解码器采用全 $1$ 阶次权重（基础 Basic 解码）以精确还原 <strong>Gerzon 速度矢量</strong> $\vec r_V = \frac{\sum_\ell d_\ell \vec u_\ell}{\sum_\ell d_\ell}$；在约 $700\ \mathrm{Hz}$ 以上的中高频段，经相位匹配分频网络平滑切换为最大化 <strong>Gerzon 能量矢量</strong> $\vec r_E = \frac{\sum_\ell d_\ell^2 \vec u_\ell}{\sum_\ell d_\ell^2}$ 模长的 $\max\text{-}r_E$ 模态权重（或消除负旁瓣的同相 in-phase 权重），以收窄声像展宽并压制对侧扬声器反相串扰。对三维 $N$ 阶 HOA，Zotter 与 Frank（2012）给出精确的勒让德多项式 $P_n(\cdot)$ 闭式近似阶次权重：</p>
@@ -1106,7 +1111,7 @@ H_{\mathrm{total}}(f)
 m=0,1,2,\ldots
 \tag{14-27}$$</p>
 <p>式(14-27)说明了传统长帧频域处理缓冲可能带来的梳状滤波：例如采用语音通信常用的 $16\ \mathrm{ms}$ STFT 分帧重叠相加算法，若主动声相对漏声的到达延迟为 $8\ \mathrm{ms}$，首个相消陷波在 $f_0 = \frac{1}{2 \times 0.008} = 62.5\ \mathrm{Hz}$ 处便已出现，随后每隔 $125\ \mathrm{Hz}$ 产生一处深度陷波；与此同时，在满足 $2\pi f_m^{\mathrm{peak}}\tau_{\mathrm{proc}} = 2m\pi$ 的整数倍周期频率 $f_m^{\mathrm{peak}} = m / \tau_{\mathrm{proc}}\;(m = 0, 1, 2, \ldots)$ 处，余弦项取 $+1$ 形成等间距同极性相长峰值，一峰一谷交替使外部环境声与佩戴者自语音出现明显的金属桶状染色（Hollow / Metallic Coloration）。需要说明的是，实际硅胶耳塞的被动漏声路径 $g_{\mathrm{leak}}(f)$ 呈随频率滚降的低通特性，两路干涉在陷波处相对峰值形成的峰谷深度为 $20\log_{10}\frac{\bigl||g_{\mathrm{leak}}(f)| - |g_{\mathrm{ht}}(f)|\bigr|}{|g_{\mathrm{leak}}(f)| + |g_{\mathrm{ht}}(f)|}$，仅在两路幅度相等（$|g_{\mathrm{leak}}(f)| = |g_{\mathrm{ht}}(f)|$）的交越频段才跌入 $-\infty\ \mathrm{dB}$ 的深谷。在可穿戴整机硬件联调中还须严查电声通路极性：一旦动铁受话器（Balanced Armature Receiver）焊线反相或通透 DSP 通路符号反接导致 $g_{\mathrm{leak}} g_{\mathrm{ht}} \lt  0$，式(14-26)中的余弦项正负号翻转会使相长峰与相消谷整体互换，原本位于 $f = 0\ \mathrm{Hz}$ 的相长点瞬间变成直流至百赫兹频段的宽带低频相消空洞，佩戴者会立即感到环境低音空瘪发飘。</p>
-<p>在完整耳机声学控制环路中，前馈通透均衡并非孤立运行，还与三项紧密耦合的物理约束相互制约：其一是<strong>声学反馈啸叫（Acoustic Feedback Howling）</strong>——受话器发出的声音经通气孔或耳塞缝隙泄回外向麦克风构成反馈路径 $H_{\mathrm{fb}}(f)$，一旦开环响应在相位滞后为 $2\pi$ 整数倍的频点满足 $|G_{\mathrm{ht}}(f) H_{\mathrm{fb}}(f)| \ge 1$（突破 Nyquist 稳定裕度），通透链路便会激起刺耳自激啸叫，要求设计者在高频补偿增益与反馈抵消（AFC）余量之间严格留白；其二是<strong>混合 ANC 与通透模式的平滑耦合切换</strong>，现代耳机常在同一套低延迟前馈/反馈双二阶滤波器上通过系数渐变实现降噪与通透之间的无缝混合；其三是<strong>主动闭塞效应消除（Active Occlusion Effect Cancellation，OEC）</strong>——单纯打开外向通透无法消除佩戴者发声时封闭耳道内的低频闷轰声，需借助耳内反馈麦克风与受话器构成的百微秒级闭环反相控制抵消耳道低频驻压（Liebich 与 Vary，<em>IEEE/ACM TASLP</em> 2022），方能实现真正“声学透明”的佩戴听感。</p>
+<p>在完整耳机声学控制环路中，前馈通透均衡并非孤立运行，还与三项紧密耦合的物理约束相互制约：其一是<strong>声学反馈啸叫（Acoustic Feedback Howling）</strong>——受话器发出的声音经通气孔或耳塞缝隙泄回外向麦克风构成反馈路径 $H_{\mathrm{fb}}(f)$，记正反馈环路为 $L(z)=G_{\mathrm{ht}}(z)H_{\mathrm{fb}}(z)$，应根据实际闭环极点或完整 Nyquist 判据判断稳定性。若 $1-L(z)=0$ 对应未抵消的单位圆极点，该闭环模态处于单位圆临界状态；单个同相频点上 $|L|>1$ 并非一般失稳充分条件。设计者仍须为高频补偿增益与反馈抵消（AFC）保留稳定余量；其二是<strong>混合 ANC 与通透模式的平滑耦合切换</strong>，现代耳机常在同一套低延迟前馈/反馈双二阶滤波器上通过系数渐变实现降噪与通透之间的无缝混合；其三是<strong>主动闭塞效应消除（Active Occlusion Effect Cancellation，OEC）</strong>——仅打开外向通透未必足以改善耳道封闭造成的自语音低频增强，OEC 可通过耳内反馈麦克风与受话器的闭环控制减轻这一效应（Liebich 与 Vary，<em>IEEE/ACM TASLP</em> 2022）。<a href="https://www.iks.rwth-aachen.de/publikationen/publications-detail//liebich18d/">作者 2018 年演示</a>报告其特定 DSP 的模拟输入至模拟输出延迟约为 $40\ \mu\mathrm{s}$；整机设计仍须核对实际通透总延迟与 OEC 环路带宽。</p>
 <span id="sec-38" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-2446522ba9" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-615e612fa5" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-f3056f87a9">锚点手算 14-4（下）：2 ms 延迟引发的 250 Hz 陷波与图 79 解读</h3>
 <p>即便把算法压缩到极短帧长，使主动声相对漏声的到达延迟降至 $\tau_{\mathrm{proc}} = 2.0\ \mathrm{ms}$（在采样率 $f_s = 16\ \mathrm{kHz}$ 下恰好对应整数 $D = 16000 \times 0.002 = 32$ 个采样点），取等幅漏声与重放 $g_{\mathrm{leak}} = g_{\mathrm{ht}} = 1.0$ 代入式(14-26)～(14-27)手算（对应函数 <code>hear_through_response</code>）：</p>
 <ul>

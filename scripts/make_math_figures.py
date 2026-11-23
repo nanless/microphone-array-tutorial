@@ -58,6 +58,7 @@ FIG_DIR = ROOT / "figures"
 SCRIPT_INPUT_PATHS = (
     "codes/chapters/ch00/core/chapter00_math.py",
     "codes/chapters/ch00/io_contracts.py",
+    "codes/chapters/ch02/core/conventions.py",
     "scripts/make_figures.py",
     "scripts/make_math_figures.py",
 )

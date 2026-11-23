@@ -106,7 +106,7 @@ Eleven cross-chapter step-by-step precision/state exercises retain their canonic
 |---|---|---|
 | `E02-07`, `E04-10`, `E05-03` | Converting exponential forgetting $\alpha$ to physical time constant $\tau$; 3-mic TDOA zero-sum closure & shared-reference error covariance; worst-case norm-ball response lower bound from WNG | [Spatial precision](../cross_chapter/spatial_precision_exercises.py) |
 | `E06-11`, `E07-06`, `E08-07`–`08` | Batch unbiased LS vs. online NLMS disturbance floor; multichannel WPE shared spatial power $\lambda_t$; 1-step AuxIVA Iterative Projection (`IP`); ILRMA non-negative spectral model | [Enhancement steps](../cross_chapter/enhancement_step_exercises.py) |
-| `E09-07`–`08`, `E10-15`, `E11-08` | Two-frame particle prior propagation; extrapolating lagged DOA measurement to beam-control time; half-open sample intervals for VAD preroll + hangover; exact Clopper–Pearson / Rule-of-3 one-sided risk bound at zero observed failures | [Tracking time & state](../cross_chapter/tracking_time_exercises.py) |
+| `E09-07`–`08`, `E10-15`, `E11-08` | Two-frame particle prior propagation; extrapolating lagged DOA measurement to beam-control time; half-open sample intervals for VAD preroll + hangover; exact Clopper–Pearson one-sided risk bound at zero observed failures | [Tracking time & state](../cross_chapter/tracking_time_exercises.py) |
 
 And subsequent cross-chapter model/boundary modules append cleanly to each chapter's ID sequence:
 

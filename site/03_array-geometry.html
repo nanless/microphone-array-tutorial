@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 3 章 · 阵列几何形态 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="f04fb843bff3"><style>
+<meta name="source-digest" content="db3dfe5c1367"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -169,7 +169,12 @@ pre,.table-scroll,mjx-container[jax="CHTML"]{overflow-wrap:normal}
         significant.some(isEmptyAnchor) &&
         significant.every(node => isEmptyAnchor(node) || isAnchorAlias(node));
       paragraph.classList.toggle("tutorial-anchor-only", !!anchorOnly);
-      const short = significant.length === 1 &&
+      const labelOnly = significant.length === 1 || (
+        significant.length === 2 &&
+        significant[1].nodeType === Node.TEXT_NODE &&
+        /^[：:.。]$/.test(significant[1].data.trim()) &&
+        significant[0].textContent.trim().length > 0);
+      const short = labelOnly &&
         significant[0].nodeType === Node.ELEMENT_NODE &&
         significant[0].tagName === "STRONG" &&
         paragraph.textContent.trim().length <= 60 &&
@@ -844,7 +849,7 @@ B_{\mathrm{ring}}(\Delta\theta,\phi_{\mathrm{el}})
 \approx\frac{0.717\,\lambda}{D\cos\phi_{\mathrm{el}}}
 \quad(\text{弧度，}D\cos\phi_{\mathrm{el}}\gg\lambda)\text{，}
 \end{aligned}$$</p>
-<p>其中 $x_{\mathrm{hp}}\approx1.1264$ 是 $J_0(x)=1/\sqrt{2}$ 的正根。不取小角近似、直接由 $2\kappa r\sin(\Delta\theta/2)=x_{\mathrm{hp}}$ 在水平面（$\phi_{\mathrm{el}}=0$）反解，得 $1\ \mathrm{kHz}$ 为 $220.28^\circ$、$4\ \mathrm{kHz}$ 为 $47.31^\circ$，与上表 6 麦离散圆环的精确值（$220.23^\circ$ 与 $47.31^\circ$）吻合到 $0.05^\circ$ 以内；同时 $J_0$ 的第一旁瓣出现在 $x\approx3.8317$ 处，电平为 $|J_0(3.8317)|\approx0.4028$（即 <strong>$-7.90\ \mathrm{dB}$</strong>，明显高于均匀线阵的 $-13.26\ \mathrm{dB}$，因圆环阵元全部集中在圆周边缘）。更重要的是，开放圆环在水平面上的零阶（未转向等权）相位模式响应恰为 $J_0(\kappa r)$，其首个零点 $\kappa r\approx2.4048$ 对本例 $r=3.75\ \mathrm{cm}$ 落在 <strong>$f_0=2.4048\,c/(2\pi r)\approx3.50\ \mathrm{kHz}$</strong>（6 麦离散圆环未转向均值在此频点亦跌至不足 $0.007$）：空心圆环在此频点丢失全向零阶模式并导致相位模式波束形成严重病态，而在圆心 $r=0$ 增设第 $7$ 颗中心麦（其零阶模式在所有频率恒为 $1$）恰好填平这一贝塞尔零点——这正是图 8(e) 商用 $6+1$ 麦圆阵配置中心参考麦的核心物理原因。</p>
+<p>其中 $x_{\mathrm{hp}}\approx1.1264$ 是 $J_0(x)=1/\sqrt{2}$ 的正根。不取小角近似、直接由 $2\kappa r\sin(\Delta\theta/2)=x_{\mathrm{hp}}$ 在水平面（$\phi_{\mathrm{el}}=0$）反解，得 $1\ \mathrm{kHz}$ 为 $220.28^\circ$、$4\ \mathrm{kHz}$ 为 $47.31^\circ$，与上表 6 麦离散圆环的精确值（$220.23^\circ$ 与 $47.31^\circ$）吻合到 $0.05^\circ$ 以内；同时 $J_0$ 的第一旁瓣出现在 $x\approx3.8317$ 处，电平为 $|J_0(3.8317)|\approx0.4028$（即 <strong>$-7.90\ \mathrm{dB}$</strong>，明显高于均匀线阵的 $-13.26\ \mathrm{dB}$，因圆环阵元全部集中在圆周边缘）。连续开放圆环在水平面上的零阶（未转向等权）相位模式响应为 $J_0(\kappa r)$，其首个零点 $\kappa r\approx2.4048$ 对本例 $r=3.75\ \mathrm{cm}$ 落在 <strong>$f_0=2.4048\,c/(2\pi r)\approx3.50\ \mathrm{kHz}$</strong>（6 麦离散圆环未转向均值在此频点亦跌至不足 $0.007$）：靠环上麦克风补偿零阶模式，在这一带会放大噪声。图 8(e) 的 $6+1$ 布局多了一条中心通道。在这个自由场模型里，中心麦取作相位参考，响应恒为 $1$，可以补足圆环在零点附近缺失的零阶分量。</p>
 <p>那么遇到高于 $5.28\ \mathrm{kHz}$ 的语音高频段该怎么办？工程上常用两条思路：一是定位时利用宽带语音在多个频点联合评分，二是波束增强时结合低频定位角计算高频权重。做多频联合判向时有一个关键代数细节：<strong>说话人在不同频点上的原始发声复幅度本来就各不相同且未知</strong>，因此不能要求候选方向在每个频点预测相同的绝对谱值，而必须先在每个频点将各通道主频相量除以参考通道相量（或在多通道上作最小二乘正交投影，见章末 E03-15 式(3-19)）以消去未知公共源复幅度，只汇总跨通道相对流形的归一化拟合残差。</p>
 <p>E03-15 与图 47 将用 6 麦圆环合成双频音频演示：$8\ \mathrm{kHz}$ 单频完全重合的一对混叠方向，在补入 $4\ \mathrm{kHz}$ 频点后残差立刻拉开为 $0$ 与 $8/9$；同时也给出一个 $2\ \mathrm{kHz}$ 与 $4\ \mathrm{kHz}$ 倍频关系下依然共同混叠的线阵反例，提醒读者宽带消歧取决于实际频点组合而非简单数频点个数。</p>
 <h3 id="sec-3-2-3">3.2.3 算例 3-4：ULA 主瓣宽度计算</h3>
@@ -1925,7 +1930,7 @@ x_2(t)&=1.01\bigl[F(t-b-\tau)+B(t-b)\bigr]\text{。}
 </ol>
 <p><a id="e03-17"></a></p>
 <h3 id="sec-u-350e79508e">E03-17：刚性外壳为什么会让自由场导向矢量算偏角度？</h3>
-<p>将两只理想全向麦克风对径平齐嵌入半径 $a=5\ \mathrm{cm}=0.05\ \mathrm{m}$（物理直径 $2a=10\ \mathrm{cm}$）的刚性球壳表面：参考麦 $0$ 位于 $(-a,0,0)$，麦 $1$ 位于 $(+a,0,0)$，声速 $c=343\ \mathrm{m/s}$。水平面远场平面波从方位角 $\theta\in\{20^\circ,30^\circ,45^\circ,60^\circ\}$ 入射。分别推导低频瑞利（Rayleigh）散射极限（$\kappa a\ll1$）与高频伍德沃思（Woodworth）爬行波绕射（$\kappa a\gg1$）下的跨麦到达时差 $\tau_{10}$，求误按自由场孔径 $2a$ 反推方位角时的系统偏差及反正弦越界临界角（球谐精确模求和验证见 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch03/core/baffle_and_vent.py"><code>baffle_and_vent.py</code></a>）。</p>
+<p>将两只理想全向麦克风对径平齐嵌入半径 $a=5\ \mathrm{cm}=0.05\ \mathrm{m}$（物理直径 $2a=10\ \mathrm{cm}$）的刚性球壳表面：参考麦 $0$ 位于 $(-a,0,0)$，麦 $1$ 位于 $(+a,0,0)$，声速 $c=343\ \mathrm{m/s}$。水平面远场平面波从方位角 $\theta\in\{20^\circ,30^\circ,45^\circ,60^\circ\}$ 入射。分别推导低频瑞利（Rayleigh）散射极限（$\kappa a\ll1$）与高频伍德沃思（Woodworth）爬行波绕射（$\kappa a\gg1$）下的跨麦到达时差 $\tau_{10}$，求误按自由场孔径 $2a$ 反推方位角时的系统偏差及反正弦越界临界角。<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch03/core/baffle_and_vent.py"><code>baffle_and_vent.py</code></a> 用截断球谐和核对低频极限。其中 <code>tau_10_sphere_s</code> 由每个频点的相位差主值除以 $-2\pi f$ 得到，取值只在正负半个周期之内。跨频比较到达时差时，要先选定相位展开或时域到达的定义。</p>
 <p><strong>参考答案</strong>：</p>
 <ol>
 <li>

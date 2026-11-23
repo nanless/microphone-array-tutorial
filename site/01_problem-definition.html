@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 1 章 · 问题定义与双耳启示 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="f04fb843bff3"><style>
+<meta name="source-digest" content="db3dfe5c1367"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -169,7 +169,12 @@ pre,.table-scroll,mjx-container[jax="CHTML"]{overflow-wrap:normal}
         significant.some(isEmptyAnchor) &&
         significant.every(node => isEmptyAnchor(node) || isAnchorAlias(node));
       paragraph.classList.toggle("tutorial-anchor-only", !!anchorOnly);
-      const short = significant.length === 1 &&
+      const labelOnly = significant.length === 1 || (
+        significant.length === 2 &&
+        significant[1].nodeType === Node.TEXT_NODE &&
+        /^[：:.。]$/.test(significant[1].data.trim()) &&
+        significant[0].textContent.trim().length > 0);
+      const short = labelOnly &&
         significant[0].nodeType === Node.ELEMENT_NODE &&
         significant[0].tagName === "STRONG" &&
         paragraph.textContent.trim().length <= 60 &&
@@ -493,7 +498,7 @@ $$</p>
 <p>先看一个极简数字例子建立直觉：假设单只麦克风上的目标功率 $P_s=1$、噪声功率 $P_v=1$，此时线性 $\mathrm{SNR}=1/1=1$，对应 $10\log_{10}1=0\ \mathrm{dB}$。如果某种处理保持目标功率 $P_s=1$ 不变，而把噪声功率压低到 $0.25$，线性 $\mathrm{SNR}$ 就提高到 $4$，即 $10\log_{10}4\approx 6.02\ \mathrm{dB}$；反过来，如果只是把音量旋钮拧小一半，让目标和噪声的幅度同时乘以 $0.5$，两者的功率会双双降为原来的四分之一（$0.25$ 与 $0.25$），听起来声音变轻了，但比值 $\mathrm{SNR}=0.25/0.25=1$（$0\ \mathrm{dB}$）分毫未变。</p>
 <h3 id="sec-1-1-5">1.1.5 器件手册的 dBA 信噪比与低频自噪声陷阱</h3>
 <p>选配硬件传感器时，还要特别留意商用麦克风数据手册里的信噪比定义。翻开硅麦（MEMS 麦克风）规格书，常会看到“$\mathrm{SNR}=65\ \mathrm{dB(A)}$”这样的标称指标：它的分子固定为 $1\ \mathrm{kHz}$、$94\ \mathrm{dB\ SPL}$（有效声压 $1\ \mathrm{Pa}$）标准正弦参考声源功率，分母则是把消声暗室里测得的传感器自噪声功率谱密度先乘上国际标准 IEC 61672-1 的 <strong>A 计权滤波器（A-weighting）</strong> 功率权重，再在音频带（标准全带为 $20\ \mathrm{Hz}$～$20\ \mathrm{kHz}$）积分得到的计权底噪功率。</p>
-<p>A 计权曲线模仿人耳在安静环境下的等响度感受，以 $1\ \mathrm{kHz}$ 为 $0\ \mathrm{dB}$ 基准，对低频能量做了大幅度衰减。对照下表列出的 IEC 61672-1 关键频点权重可以看到，在 $100\ \mathrm{Hz}$ 处功率权重仅剩约 $0.0122$（滤掉了近 $98.8\%$ 的底噪功率），在 $50\ \mathrm{Hz}$ 处更是只剩约 $0.00094$，几乎完全掩盖了硅麦专用集成电路（ASIC）晶体管与振膜泄气孔声阻在低频段急剧抬升的 <strong>$1/f$ 闪烁噪声（flicker noise）</strong>：</p>
+<p>A 计权曲线模仿人耳在安静环境下的等响度感受，以 $1\ \mathrm{kHz}$ 为 $0\ \mathrm{dB}$ 基准，对低频能量做了大幅度衰减。对照下表列出的 IEC 61672-1 关键频点权重可以看到，在 $100\ \mathrm{Hz}$ 处功率权重仅剩约 $0.0122$（滤掉了近 $98.8\%$ 的底噪功率），在 $50\ \mathrm{Hz}$ 处更是只剩约 $0.00094$。硅麦的读出电路可能有 <strong>$1/f$ 闪烁噪声（flicker noise）</strong>。振膜泄气孔的声阻也会产生热噪声，折算到麦克风输入后，谱形取决于泄气孔与背腔等结构（见 <a href="https://doi.org/10.1121/1.4871181">Kim 与 Hall 的等效网络和图 2</a>）。两类低频噪声都会受到下表所示的 A 计权衰减：</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
 <thead>
 <tr>
@@ -542,7 +547,7 @@ $$</p>
 </tr>
 </tbody>
 </table></div>
-<p>对于单只麦克风直接给人耳试听，这种计权基本符合听感；可一旦把麦克风装进小孔径阵列做差分或超指向波束形成（定量推导见第 3 章算例 3-1 与第 5 章 §5.3），情况就会发生反转。间距 $d$ 远小于声波波长时，相邻麦克风相减虽然能抵消后方干扰，却也会让低频目标语音按正弦规律剧烈衰减；后端为了拉平目标语音频响，必须给低频补上反比于 $f^2$ 的高额均衡功率增益，叠加传感器原有的 $1/f$ 低频闪烁底噪后，输出低频自噪声会按 $1/f^3$ 急剧抬升。因此，做小孔径阵列低频噪声预算时必须向器件厂商索取未计权的自噪声功率谱密度曲线，不能只看单个 $\mathrm{dB(A)}$ 标称值——本章练习 E01-11 将亲手复算一款在 $50\ \mathrm{Hz}$～$8\ \mathrm{kHz}$ 宽带语音网格上按 A 计权总底噪功率核算占优约 $1.59\ \mathrm{dB}$（在 $20\ \mathrm{Hz}$～$20\ \mathrm{kHz}$ 全音频带下约占优 $1.91\ \mathrm{dB}$）的硅麦，装入 $1\ \mathrm{cm}$ 差分阵后反而令语音频带自噪声恶化约 $5\ \mathrm{dB}$ 的反转实例。</p>
+<p>对于单只麦克风直接给人耳试听，这种计权基本符合听感；可一旦把麦克风装进小孔径阵列做差分或超指向波束形成（定量推导见第 3 章算例 3-1 与第 5 章 §5.3），单麦的排序就可能反转。间距 $d$ 远小于声波波长时，相邻麦克风相减虽然能抵消后方干扰，却也会让低频目标语音按正弦规律剧烈衰减；后端为了拉平目标语音频响，必须给低频补上反比于 $f^2$ 的高额均衡功率增益。在传感器自噪声功率谱近似 $1/f$ 的频段，两者相乘，输出自噪声谱便近似按 $1/f^3$ 上升。因此，做小孔径阵列低频噪声预算时必须向器件厂商索取未计权的自噪声功率谱密度曲线，不能只看单个 $\mathrm{dB(A)}$ 标称值——本章练习 E01-11 将亲手复算一款在 $50\ \mathrm{Hz}$～$8\ \mathrm{kHz}$ 宽带语音网格上按 A 计权总底噪功率核算占优约 $1.59\ \mathrm{dB}$（在 $20\ \mathrm{Hz}$～$20\ \mathrm{kHz}$ 全音频带下约占优 $1.91\ \mathrm{dB}$）的硅麦，装入 $1\ \mathrm{cm}$ 差分阵后反而令语音频带自噪声恶化约 $5\ \mathrm{dB}$ 的反转实例。</p>
 <h3 id="sec-1-1-6">1.1.6 三类阵列收益与白噪声增益</h3>
 <p>多麦克风阵列把噪声压低了多少，高度依赖噪声在空间是怎么分布的。面对不同的声场假设，工程上使用三把不同的尺子来衡量阵列收益：</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
@@ -793,7 +798,7 @@ $$</p>
 </tbody>
 </table></div>
 <p>沿着上表对比可以发现：阵列的物理几何与腔体结构决定了传感器<strong>能观测到多少空间差异</strong>，而信号处理与机器学习算法则决定了<strong>如何把这些差异提炼成清晰的目标输出</strong>。</p>
-<p>在动手设计算法前，工程上还要先问清“增强后的音频是给机器听还是给人耳听”：语音识别前端通常把多只麦克风合成为单声道音频；而助听器、AR/VR 眼镜等双耳穿戴设备则需要交付左、右两路输出——如果简单地把同一条单路波束输出同时送入左右耳机，两耳非零频点的复数比值恒等于 $1$（$\mathrm{ILD}=0\ \mathrm{dB}$、$\mathrm{IPD}=0$），佩戴者就会丧失所有空间方位感，感觉声音全部集中在头颅正中。</p>
+<p>在动手设计算法前，工程上还要先问清“增强后的音频是给机器听还是给人耳听”：语音识别前端通常把多只麦克风合成为单声道音频；而助听器、AR/VR 眼镜等双耳穿戴设备则需要交付左、右两路输出——如果简单地把同一条单路波束输出同时送入左右耳机，两耳非零频点的复数比值恒等于 $1$（$\mathrm{ILD}=0\ \mathrm{dB}$、$\mathrm{IPD}=0$），原来区分左、右方向的耳间差异就消失了。若单路信号仍带有方向相关的谱峰与谱谷，两耳一起听时仍可能在正中面感到不同的高度。这个线索来自上文讲的单耳谱形。</p>
 <p>保留耳间线索的双耳波束形成将在<a href="05_beamforming.html#sec-5-5">第 5 章 §5.5</a> 展开；面向智能眼镜与真无线耳机的非规则阵列双耳信号匹配（BSM）、气导与耳道闭塞跨模态自语音融合及通透模式百微秒延迟约束，则将在<a href="14_spatial-wearable-arrays.html#sec-14-5">第 14 章</a> 深入推导。下一章（第 2 章），我们将从最基础的声传播时延出发，把这些物理现象正式写成严谨的阵列信号数学模型。</p>
 <span id="sec-u-f7a201edb9" class="anchor-alias" aria-hidden="true"></span><span id="sec-3" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-1-3">1.3 本章练习</h2>
 <p>本章练习 E01-01～E01-03 对应跨章脚本 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/exercises_spatial.py"><code>exercises_spatial.py</code></a>，E01-04～E01-11 对应本章脚本 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch01/chapter01_experiments.py"><code>chapter01_experiments.py</code></a>。两套脚本均无需联网下载外部数据，直接在仓库根目录运行即可：</p>

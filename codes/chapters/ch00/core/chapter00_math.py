@@ -6,8 +6,11 @@ Chapters 1..15 and Appendices A/B without SciPy or external dependencies.
 """
 from __future__ import annotations
 
+from fractions import Fraction
 import math
 import numpy as np
+
+from codes.chapters.ch02.core.conventions import hermitian_part
 
 DEFAULT_SOUND_SPEED_MPS = 343.0
 
@@ -151,7 +154,7 @@ def _check_hermitian(
     asym = float(np.max(np.abs(arr - arr.conj().T)))
     if asym > tol * scale:
         raise ValueError(f"{name} is not Hermitian (max asymmetry {asym:.3e})")
-    herm = 0.5 * (arr + arr.conj().T)
+    herm = hermitian_part(arr)
     if psd or strictly_pd:
         eigs = np.linalg.eigvalsh(herm)
         min_eig = float(np.min(eigs))
@@ -650,6 +653,12 @@ def tikhonov_svd_solve(
     y_obs: np.ndarray,
     loading_eps: float,
 ) -> dict:
+    """SVD ridge solve, with power-of-two scaling for extreme scalar filters.
+
+    Nonrepresentable filters or detected modes/results are refused. The normal-
+    equation consistency diagnostic is NaN when that comparison is unavailable;
+    this does not invalidate an otherwise finite SVD solution.
+    """
     g = _check_complex_array(g_mat, "g_mat", ndim=2)
     y = _check_complex_array(y_obs, "y_obs", shape=(g.shape[0],))
     eps = _check_real_scalar(loading_eps, "loading_eps", min_value=0.0)
@@ -661,17 +670,80 @@ def tikhonov_svd_solve(
         or float(s[-1]) <= 1e-12 * max(1.0, float(s[0]))
     ):
         raise ValueError("unregularized inverse requires m >= n and full column rank")
-    filt = s / (s * s + eps)
-    x_svd = vh.conj().T @ (filt * (u.conj().T @ y))
+    # Keep the ordinary teaching examples' arithmetic order. Squaring a
+    # singular value can overflow or lose a small positive contribution to
+    # eps even when the filtered solution is representable.
+    with np.errstate(over="ignore", under="ignore", invalid="ignore"):
+        squared = s * s
+        denominator = squared + eps
+    ordinary = (np.all(np.isfinite(denominator))
+                and np.all((s == 0) | (squared >= np.finfo(float).tiny)))
+    if ordinary:
+        filt = s / denominator
+    else:
+        filt = np.zeros_like(s)
+        for j, singular in enumerate(s):
+            if singular == 0.0:
+                continue
+            sm, se = math.frexp(float(singular))
+            em, ee = math.frexp(eps)
+            exponent = max(2 * se, ee) if eps else 2 * se
+            reduced = math.ldexp(sm * sm, 2 * se - exponent)
+            if eps:
+                reduced += math.ldexp(em, ee - exponent)
+            try:
+                filt[j] = math.ldexp(sm / reduced, se - exponent)
+            except OverflowError as error:
+                raise ValueError("Tikhonov filter exceeds float64 range") from error
+    if np.any((s != 0) & (filt == 0)):
+        raise ValueError("nonzero Tikhonov filter underflows float64 range")
+    if not np.all(np.isfinite(filt)):
+        raise ValueError("Tikhonov filter exceeds float64 range")
+    with np.errstate(over="ignore", invalid="ignore", under="ignore"):
+        projection = u.conj().T @ y
+        filtered = filt * projection
+    # A rounded subnormal factor can have large relative error. Apply its
+    # mantissa/exponent directly to each projected component, then round the
+    # complete mode; filter_factors remains the float64 diagnostic value.
+    for j in np.flatnonzero((filt != 0) & (filt < np.finfo(float).tiny)):
+        sm, se = math.frexp(float(s[j]))
+        em, ee = math.frexp(eps)
+        exponent = max(2 * se, ee) if eps else 2 * se
+        reduced = math.ldexp(sm * sm, 2 * se - exponent)
+        if eps:
+            reduced += math.ldexp(em, ee - exponent)
+        def component(value):
+            pm, pe = math.frexp(float(value))
+            try:
+                return math.ldexp((sm / reduced) * pm, se - exponent + pe)
+            except OverflowError as error:
+                raise ValueError("Tikhonov solution exceeds float64 range") from error
+        filtered[j] = complex(component(projection[j].real),
+                              component(projection[j].imag))
+    with np.errstate(over="ignore", invalid="ignore", under="ignore"):
+        x_svd = vh.conj().T @ filtered
+    if not (np.all(np.isfinite(projection)) and np.all(np.isfinite(filtered))
+            and np.all(np.isfinite(x_svd))):
+        raise ValueError("Tikhonov solution exceeds float64 range")
+    if np.any((filt != 0) & (projection != 0) & (filtered == 0)):
+        raise ValueError("nonzero Tikhonov mode underflows float64 range")
     n = g.shape[1]
-    normal_mat = g.conj().T @ g + eps * np.eye(n, dtype=np.complex128)
-    try:
-        x_normal = np.linalg.solve(normal_mat, g.conj().T @ y)
-        consistency_err = float(np.linalg.norm(x_svd - x_normal))
-    except np.linalg.LinAlgError:
-        consistency_err = float("nan")
+    # Normal equations are a diagnostic only: their squares can be outside
+    # float64, or a positive ridge can be rounded away in a singular system.
+    consistency_err = float("nan")
+    with np.errstate(over="ignore", invalid="ignore", divide="ignore"):
+        normal_mat = g.conj().T @ g + eps * np.eye(n, dtype=np.complex128)
+        normal_rhs = g.conj().T @ y
+        if np.all(np.isfinite(normal_mat)) and np.all(np.isfinite(normal_rhs)):
+            try:
+                x_normal = np.linalg.solve(normal_mat, normal_rhs)
+                error_norm = float(np.linalg.norm(x_svd - x_normal))
+                if np.all(np.isfinite(x_normal)) and math.isfinite(error_norm):
+                    consistency_err = error_norm
+            except np.linalg.LinAlgError:
+                pass
     cond_2 = (
-        float(s[0] / s[-1])
+        float(s[0]) / float(s[-1])
         if (g.shape[0] >= g.shape[1] and float(s[-1]) > 0.0)
         else float("inf")
     )
@@ -835,7 +907,7 @@ def solve_hermitian_gev(r_a: np.ndarray, r_b: np.ndarray) -> dict:
 
     chol_l = np.linalg.cholesky(b)
     chol_inv = np.linalg.inv(chol_l)
-    whitened = 0.5 * (chol_inv @ a @ chol_inv.conj().T + (chol_inv @ a @ chol_inv.conj().T).conj().T)
+    whitened = hermitian_part(chol_inv @ a @ chol_inv.conj().T)
     eigvals, q_unitary = np.linalg.eigh(whitened)
     phi = np.linalg.solve(chol_l.conj().T, q_unitary)
     return {
@@ -1390,6 +1462,39 @@ def wiener_lmmse_filter(
     }
 
 
+def _scalar_kalman_joseph_step(f, h, q, r, s0, p0, z):
+    # A single-state teaching calculation can keep its binary64 inputs exact
+    # until the results are returned. Even a gain that rounds to zero can
+    # contribute to the state when it multiplies a large measurement.
+    transition, measure, process_var, noise_var, state, prior_var, observed = (
+        Fraction.from_float(float(value))
+        for value in (f[0, 0], h[0, 0], q[0, 0], r[0, 0], s0[0], p0[0, 0], z[0])
+    )
+    predicted_state = transition * state
+    predicted_var = transition**2 * prior_var + process_var
+    innovation = observed - measure * predicted_state
+    innovation_var = measure**2 * predicted_var + noise_var
+    gain = predicted_var * measure / innovation_var
+    complement = noise_var / innovation_var  # 1 - K H
+    posterior_state = complement * predicted_state + gain * observed
+    posterior_var = complement**2 * predicted_var + gain**2 * noise_var
+    standard_var = complement * predicted_var
+    try:
+        return {
+            "predicted_state": np.array([float(predicted_state)]),
+            "predicted_cov": np.array([[float(predicted_var)]]),
+            "innovation": np.array([float(innovation)]),
+            "innovation_cov": np.array([[float(innovation_var)]]),
+            "kalman_gain": np.array([[float(gain)]]),
+            "posterior_state": np.array([float(posterior_state)]),
+            "posterior_cov_joseph": np.array([[float(posterior_var)]]),
+            "joseph_vs_standard_fro_diff": float(abs(posterior_var - standard_var)),
+            "posterior_min_eigenvalue": float(posterior_var),
+        }
+    except OverflowError as exc:
+        raise ValueError("scalar Kalman result exceeds the float64 range") from exc
+
+
 def kalman_joseph_step(
     f_mat: np.ndarray,
     h_mat: np.ndarray,
@@ -1415,6 +1520,9 @@ def kalman_joseph_step(
     if q.shape != (n_dim, n_dim) or p0.shape != (n_dim, n_dim) or r.shape != (m_dim, m_dim):
         raise ValueError("covariance dimensions mismatch state/measurement sizes")
 
+    if n_dim == m_dim == 1:
+        return _scalar_kalman_joseph_step(f, h, q, r, s0, p0, z)
+
     s_pred = f @ s0
     p_pred = f @ p0 @ f.T + q
     innovation = z - h @ s_pred
@@ -1434,7 +1542,7 @@ def kalman_joseph_step(
         "posterior_state": s_post,
         "posterior_cov_joseph": p_joseph,
         "joseph_vs_standard_fro_diff": float(np.linalg.norm(p_joseph - p_standard, ord="fro")),
-        "posterior_min_eigenvalue": float(np.min(np.linalg.eigvalsh(0.5 * (p_joseph + p_joseph.T)))),
+        "posterior_min_eigenvalue": float(np.min(np.linalg.eigvalsh(hermitian_part(p_joseph)))),
     }
 
 
@@ -1995,7 +2103,7 @@ def gauss_markov_gls_solve(
     p_ols = np.linalg.solve(gram_ols, a.conj().T)
     x_ols = p_ols @ b
     cov_ols = p_ols @ c_nn @ p_ols.conj().T
-    cov_diff = 0.5 * ((cov_ols - cov_gls) + (cov_ols - cov_gls).conj().T)
+    cov_diff = hermitian_part(cov_ols - cov_gls)
 
     return {
         "cholesky_l": chol_l,
@@ -2008,11 +2116,22 @@ def gauss_markov_gls_solve(
     }
 
 
+def _zero_failure_bound_from_log_tail(n_trials: int, log_tail: float) -> float:
+    """Reconstruct 1-exp(log_tail/n) after the caller validates its parameters."""
+    try:
+        result = -math.expm1(log_tail / n_trials)
+    except OverflowError as error:
+        raise ValueError("trials exceed the finite float64 calculation range") from error
+    if result == 0:
+        raise ValueError("strictly positive confidence bound underflows float64")
+    return result
+
+
 def binomial_zero_failure_upper_bound(n_trials: int, alpha: float = 0.05) -> float:
     """Exact one-sided (1 - alpha) upper bound p_U = 1 - alpha^(1/n) when 0 failures occur in n trials."""
     n = _check_int(n_trials, "n_trials", min_value=1)
     a = _check_real_scalar(alpha, "alpha", min_value=0.0, strict_min=True, max_value=1.0, strict_max=True)
-    return float(1.0 - (a ** (1.0 / n)))
+    return _zero_failure_bound_from_log_tail(n, math.log(a))
 
 
 def wilson_score_interval(

@@ -1,9 +1,11 @@
 """Independent capability decisions and the verified Pages staging path."""
+import builtins
 import os
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 import subprocess
 import sys
 import unittest
+from unittest.mock import patch
 
 from scripts import run_portable_ci as ci
 
@@ -66,6 +68,32 @@ with patch.object(build_pdf, "main", side_effect=announce):
         )
         self.assertEqual(result.returncode, 0, result.stderr.decode("utf-8", errors="replace"))
         self.assertEqual(result.stdout.decode("utf-8").splitlines(), ["合订：19 篇"])
+
+
+    def test_publication_identity_is_independent_of_windows_path_order(self):
+        from scripts import build_pdf, build_pdf_en, build_site, build_site_en
+        from scripts import publication_dependencies_en as dependencies
+
+        calls = (build_site.source_digest, build_pdf.source_digest,
+                 build_site_en.source_digest_en, build_pdf_en.source_digest_en)
+        platform_order = []
+
+        def windows_sorted(values, *, key=None, reverse=False):
+            paths = list(values)
+            if key is None and paths and all(isinstance(path, Path) for path in paths):
+                key = lambda path: PureWindowsPath(path.as_posix())
+                platform_order.append(len(paths))
+            return builtins.sorted(paths, key=key, reverse=reverse)
+
+        expected = tuple(check() for check in calls)
+        with (
+            patch.object(build_site, 'sorted', windows_sorted, create=True),
+            patch.object(build_pdf, 'sorted', windows_sorted, create=True),
+            patch.object(dependencies, 'sorted', windows_sorted, create=True),
+        ):
+            current = tuple(check() for check in calls)
+        self.assertTrue(platform_order)
+        self.assertEqual(current, expected)
 
 
 if __name__ == '__main__':

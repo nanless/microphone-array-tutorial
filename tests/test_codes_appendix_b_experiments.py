@@ -287,5 +287,119 @@ class AppendixBExperimentsTest(unittest.TestCase):
                 diagnose_pipeline_symptom(bad_telemetry)
 
 
+    @staticmethod
+    def _complete_triage_telemetry():
+        return {
+            "sro_ppm": 1.0, "hear_through_latency_us": 75.0,
+            "low_freq_wind_coherence": 0.75, "low_freq_level_db": -25.0,
+            "far_end_active_ratio": 0.6, "far_end_erle_db": 18.0,
+            "aec_ref_delay_error_ms": 1.0, "rt60_s": 0.3, "drr_db": 2.0,
+            "wpe_prediction_delay_frames": 4.0,
+            "overlap_speech_ratio": 0.05, "der_percent": 12.0,
+        }
+
+    def test_triage_missing_measurements_never_mean_no_alert(self):
+        complete = self._complete_triage_telemetry()
+        cases = [{}, {"der_percent": 90.0}, {"rt60_s": 0.75},
+                 {"far_end_erle_db": 1.5}]
+        cases += [{k: v for k, v in complete.items() if k != missing}
+                  for missing in complete]
+        for telemetry in cases:
+            with self.subTest(telemetry=telemetry):
+                result = diagnose_pipeline_symptom(telemetry)
+                self.assertEqual(result["fault_id"], "insufficient_telemetry")
+                self.assertEqual(result["status"], "insufficient_telemetry")
+                self.assertFalse(result["telemetry_complete"])
+                self.assertEqual(set(result["missing_telemetry"]),
+                                 set(complete) - set(telemetry))
+        result = diagnose_pipeline_symptom(complete)
+        self.assertEqual(result["fault_id"], "nominal")
+        self.assertEqual(result["status"], "no_configured_alert")
+        self.assertTrue(result["telemetry_complete"])
+        self.assertEqual(result["missing_telemetry"], [])
+
+    def test_triage_sufficient_partial_evidence_routes_a_check(self):
+        cases = [
+            ({"sro_ppm": -7.0}, "clock_sro_drift", 1),
+            ({"hear_through_latency_us": 120.0}, "hear_through_latency_comb", 2),
+            ({"low_freq_wind_coherence": 0.1, "low_freq_level_db": -10.0},
+             "wearable_wind_saturation", 3),
+            ({"far_end_active_ratio": 0.2, "far_end_erle_db": 5.0},
+             "aec_reference_or_erle", 4),
+            ({"aec_ref_delay_error_ms": -3.0}, "aec_reference_or_erle", 4),
+            ({"rt60_s": 0.6, "drr_db": -1.0}, "late_reverberation_wpe", 5),
+            ({"rt60_s": 0.6, "wpe_prediction_delay_frames": 1.0},
+             "late_reverberation_wpe", 5),
+            ({"overlap_speech_ratio": 0.2, "der_percent": 40.0},
+             "overlap_diarization_gss", 6),
+        ]
+        for telemetry, fault, rank in cases:
+            with self.subTest(telemetry=telemetry):
+                result = diagnose_pipeline_symptom(telemetry)
+                self.assertEqual((result["fault_id"], result["priority_rank"]), (fault, rank))
+                self.assertEqual(result["status"], "check_required")
+                self.assertFalse(result["telemetry_complete"])
+                self.assertTrue(result["missing_telemetry"])
+
+    def test_triage_priority_is_preserved_among_observed_alerts(self):
+        alerts = [
+            {"sro_ppm": 8.0}, {"hear_through_latency_us": 150.0},
+            {"low_freq_wind_coherence": 0.1, "low_freq_level_db": -8.0},
+            {"aec_ref_delay_error_ms": 3.0},
+            {"rt60_s": 0.7, "drr_db": -2.0},
+            {"overlap_speech_ratio": 0.3, "der_percent": 35.0},
+        ]
+        for first in range(6):
+            for second in range(first + 1, 6):
+                with self.subTest(first=first, second=second):
+                    observed = {**alerts[first], **alerts[second]}
+                    result = diagnose_pipeline_symptom(observed)
+                    self.assertEqual(result["priority_rank"], first + 1)
+                    self.assertEqual(result["status"], "check_required")
+
+    def test_triage_exercise_threshold_boundaries_stay_strict(self):
+        boundaries = [
+            {"sro_ppm": 5.0}, {"hear_through_latency_us": 100.0},
+            {"low_freq_wind_coherence": 0.25, "low_freq_level_db": 0.0},
+            {"low_freq_wind_coherence": 0.24, "low_freq_level_db": -15.0},
+            {"far_end_active_ratio": 0.1, "far_end_erle_db": 0.0},
+            {"aec_ref_delay_error_ms": 2.0},
+            {"rt60_s": 0.4, "drr_db": -4.0, "wpe_prediction_delay_frames": 1.0},
+            {"rt60_s": 0.41, "drr_db": 0.0, "wpe_prediction_delay_frames": 2.0},
+            {"overlap_speech_ratio": 0.1, "der_percent": 90.0},
+            {"overlap_speech_ratio": 0.2, "der_percent": 20.0},
+        ]
+        for boundary in boundaries:
+            with self.subTest(boundary=boundary):
+                result = diagnose_pipeline_symptom({**self._complete_triage_telemetry(), **boundary})
+                self.assertEqual(result["fault_id"], "nominal")
+                self.assertEqual(result["status"], "no_configured_alert")
+
+    def test_triage_comb_notch_preserves_representable_extremes(self):
+        from decimal import Decimal, localcontext
+
+        ordinary = diagnose_pipeline_symptom({"hear_through_latency_us": 2000.0})
+        self.assertEqual(ordinary["first_comb_notch_hz"], 250.0)
+        for latency in (1e308, float(np.finfo(float).max)):
+            with self.subTest(latency=latency):
+                result = diagnose_pipeline_symptom({"hear_through_latency_us": latency})
+                actual = result["first_comb_notch_hz"]
+                with localcontext() as context:
+                    context.prec = 80
+                    expected = float(Decimal(500000) / Decimal.from_float(latency))
+                self.assertTrue(math.isfinite(actual))
+                self.assertGreater(actual, 0.0)
+                self.assertTrue(math.isclose(actual, expected, rel_tol=4e-16, abs_tol=0.0))
+
+    def test_triage_validates_supplied_values_before_routing(self):
+        for bad in (True, float("nan"), float("inf"), float("-inf")):
+            with self.subTest(bad=bad), self.assertRaises(ValueError):
+                diagnose_pipeline_symptom({"sro_ppm": 80.0, "der_percent": bad})
+        for telemetry in ({7: 0.0}, {"unknown_metric": 1.0, 7: 0.0},
+                          {"sro_ppm": 80.0, None: 0.0}):
+            with self.subTest(telemetry=telemetry), self.assertRaises(ValueError):
+                diagnose_pipeline_symptom(telemetry)
+
+
 if __name__ == "__main__":
     unittest.main()

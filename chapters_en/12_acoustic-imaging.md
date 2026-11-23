@@ -226,7 +226,7 @@ Sarradj systematically compared four classical steering-vector formulations in 3
 | Formulation III (`true level`, Eq. (12-8)) | $\vec w_i^{\mathrm{III}} = \dfrac{\vec a_i}{\|\vec a_i\|_2^2}$ | Biased | Unbiased (and WNG-optimal) | $\vec a_i / M$ |
 | Formulation IV (`true location`) | $\vec w_i^{\mathrm{IV}} = \dfrac{\vec a_i}{\sqrt{M}\|\vec a_i\|_2}$ | **Unbiased** ($1/r$-matched, higher SNR than I) | Biased (equals $\frac{\|\vec a_j\|_2^2}{M}q_j$) | $\vec a_i / M$ |
 
-For a noiseless single source $\mathbf R = q_j\vec a_j\vec a_j^H$, both Formulation I and Formulation IV guarantee strictly unbiased 3D peak locations. For Formulation I, the triangle inequality directly gives
+For a noiseless single source $\mathbf R = q_j\vec a_j\vec a_j^H$, both Formulation I and Formulation IV attain their ideal upper bounds at the true source position; steering-equivalent points may share the maximum, as the equality conditions below show. For Formulation I, the triangle inequality directly gives
 
 $$\begin{aligned}
 b_i^{\mathrm{I}}

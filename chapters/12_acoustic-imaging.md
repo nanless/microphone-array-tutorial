@@ -226,7 +226,7 @@ Sarradj 在三维声源映射研究中系统对比了四类经典导向权重约
 | Formulation III（`true level`，式(12-8)） | $\vec w_i^{\mathrm{III}} = \dfrac{\vec a_i}{\|\vec a_i\|_2^2}$ | 有偏 | 无偏（且 WNG 最优） | $\vec a_i / M$ |
 | Formulation IV（`true location`） | $\vec w_i^{\mathrm{IV}} = \dfrac{\vec a_i}{\sqrt{M}\|\vec a_i\|_2}$ | **无偏**（$1/r$ 匹配，SNR 优于 I） | 有偏（等于 $\frac{\|\vec a_j\|_2^2}{M}q_j$） | $\vec a_i / M$ |
 
-对无噪单源 $\mathbf R = q_j\vec a_j\vec a_j^H$，Formulation I 与 Formulation IV 均能保证三维峰位严格无偏。先看 Formulation I：由三角不等式可得
+对无噪单源 $\mathbf R = q_j\vec a_j\vec a_j^H$，Formulation I 与 Formulation IV 都在真值位置达到各自的理想上界；导向等价的其他点也可能同取最大，具体等号条件见下文。先看 Formulation I：由三角不等式可得
 
 $$\begin{aligned}
 b_i^{\mathrm{I}}

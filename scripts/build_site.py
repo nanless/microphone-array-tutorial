@@ -1289,14 +1289,16 @@ def source_digest():
     """站点正文与构建器的稳定摘要，用于拒绝陈旧生成物。"""
     from scripts.figure_report_contracts import FIGURE_REPORTS
     digest = hashlib.sha256()
-    paths = sorted(SRC.glob("*.md"))
+    # Use the repository's case-sensitive path order on every host.
+    path_order = lambda path: path.parts
+    paths = sorted(SRC.glob("*.md"), key=path_order)
     paths += [RESEARCH_ROOT / name for name, _ in RESEARCH]
     paths += [main_audio_manifest_path(CODE_CHAPTERS)]
-    paths += sorted(main_audio_sources())
+    paths += sorted(main_audio_sources(), key=path_order)
     for asset_root in (REAL_AUDIO_ROOT, ROOM_AUDIO_ROOT, MOVING_AUDIO_ROOT,
                        TRACKING_AUDIO_ROOT, GSS_AUDIO_ROOT, BINAURAL_AUDIO_ROOT, SPECTRAL_AUDIO_ROOT, STFT_AUDIO_ROOT, SWEEP_AUDIO_ROOT, BASELINE_AUDIO_ROOT, REFLECTION_AUDIO_ROOT, PHASE_AUDIO_ROOT, BINAURAL_BEAMFORMING_ROOT, GEOMETRY_AUDIO_ROOT, FOCUS_AUDIO_ROOT, DERIVATIVE_AUDIO_ROOT, APA_AUDIO_ROOT, REFERENCE_AUDIO_ROOT, DELAY_AUDIO_ROOT, CSS_AUDIO_ROOT, MINT_AUDIO_ROOT, MASK_AUDIO_ROOT, NOISE_AUDIO_ROOT, CHANNEL_AUDIO_ROOT, SCENARIO_AUDIO_ROOT, WEIGHTED_AUDIO_ROOT, RESPONSE_AUDIO_ROOT, IMAGING_AUDIO_ROOT, DISTRIBUTED_AUDIO_ROOT, WEARABLE_AUDIO_ROOT, TSE_AUDIO_ROOT):
-        paths += sorted(asset_root.glob("*"))
-    paths += sorted((ROOT / "figures").glob("fig*.png"))
+        paths += sorted(asset_root.glob("*"), key=path_order)
+    paths += sorted((ROOT / "figures").glob("fig*.png"), key=path_order)
     paths += [COURSE_HOME_ROOT / name for name in COURSE_HOME_FILES]
     paths += [ROOT / "assets/readme/lab" / name for name in ("array-lab.html", "single.wav", "left.wav", "right.wav")]
     paths += [ROOT / "assets/readme/cases/locata" / name for name in
@@ -2039,7 +2041,7 @@ def main():
         stale = [path for path in OUT.glob("*.html") if path.name not in expected]
         stale += [path for path in (OUT / "research").glob("*.html")
                   if "research/" + path.name not in expected]
-        manifest = json.loads(main_audio_manifest_path(CODE_CHAPTERS).read_text())
+        manifest = json.loads(main_audio_manifest_path(CODE_CHAPTERS).read_text(encoding="utf-8"))
         audio_names = [record["file"] for record in manifest["files"]]
         if len(audio_names) != len(set(audio_names)) or any(not re.fullmatch(r"[a-z0-9_]+\.wav", name) for name in audio_names):
             raise ValueError("音频清单含重复或不安全路径")

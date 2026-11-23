@@ -140,6 +140,78 @@ class ReviewedMathematicalContracts(unittest.TestCase):
             np.ones((1, 1)), np.zeros(2), np.diag([1., 0.]), np.zeros(1))
         np.testing.assert_allclose(result['posterior_cov_joseph'], np.diag([.5, 0.]))
 
+    def test_scalar_kalman_keeps_a_finite_posterior_when_the_gain_rounds_to_one(self):
+        for measure, noise in ((1.0, 1.0), (-0.5, 2.0), (0.0, 3.0)):
+            with self.subTest(measure=measure), warnings.catch_warnings():
+                warnings.simplefilter('error', RuntimeWarning)
+                prior = Fraction.from_float(1e308)
+                h = Fraction.from_float(measure)
+                r = Fraction.from_float(noise)
+                expected = float(prior * r / (h*h*prior + r))
+                result = math_core.kalman_joseph_step(
+                    [[1.0]], [[measure]], [[0.0]], [[noise]], [0.0],
+                    [[float(prior)]], [1.0])
+                np.testing.assert_allclose(result['posterior_cov_joseph'], [[expected]], rtol=5e-15, atol=0)
+                np.testing.assert_allclose(result['posterior_min_eigenvalue'], expected, rtol=5e-15, atol=0)
+
+    def test_scalar_kalman_uses_the_complement_in_the_state_update(self):
+        controls = ((1.0, 1.0, 1e20), (1.0, 1e-20, 1e308), (-0.5, 1e-20, 1e308))
+        for measure, noise, level in controls:
+            with self.subTest(measure=measure, noise=noise, level=level):
+                result = math_core.kalman_joseph_step(
+                    [[1.0]], [[measure]], [[0.0]], [[noise]], [level], [[level]], [0.0])
+                initial = Fraction.from_float(level)
+                r = Fraction.from_float(noise)
+                h = Fraction.from_float(measure)
+                expected = float(r * initial / (h*h*initial + r))
+                np.testing.assert_allclose(result['posterior_state'], [expected], rtol=3e-15, atol=0)
+                np.testing.assert_allclose(result['posterior_cov_joseph'], [[expected]], rtol=3e-15, atol=0)
+
+    def test_scalar_kalman_keeps_an_observation_product_when_the_gain_rounds_tiny(self):
+        unit = np.nextafter(0.0, 1.0)
+        for prior, measure, noise in ((2.0**-400, 2.0**-400, 2.0**400),
+                                      (3 * unit, 1.0, 2.0), (5 * unit, 1.0, 2.0)):
+            with self.subTest(prior=prior, measure=measure, noise=noise):
+                observed = 2.0**1000
+                p, h, r, z = (Fraction.from_float(float(value))
+                              for value in (prior, measure, noise, observed))
+                gain = p * h / (h*h*p + r)
+                result = math_core.kalman_joseph_step(
+                    [[1.0]], [[measure]], [[0.0]], [[noise]], [0.0], [[prior]], [observed])
+                self.assertEqual(result['kalman_gain'][0, 0], float(gain))
+                self.assertEqual(result['posterior_state'][0], float(gain*z))
+
+    def test_scalar_kalman_sums_joseph_terms_before_rounding_the_variance(self):
+        unit = np.nextafter(0.0, 1.0)
+        result = math_core.kalman_joseph_step(
+            [[1.0]], [[1.0]], [[0.0]], [[2*unit]], [0.0], [[2*unit]], [0.0])
+        self.assertEqual(result['posterior_cov_joseph'][0, 0], unit)
+        self.assertEqual(result['posterior_min_eigenvalue'], unit)
+        self.assertEqual(result['joseph_vs_standard_fro_diff'], 0.0)
+
+    def test_scalar_kalman_retains_an_innovation_cancelled_by_prediction_rounding(self):
+        x = math.nextafter(1.0, 2.0)
+        z = 1.0 + 2.0**-51
+        result = math_core.kalman_joseph_step(
+            [[x]], [[1.0]], [[0.0]], [[1.0]], [x], [[1.0]], [z])
+        self.assertEqual(result['predicted_state'][0], z)
+        self.assertEqual(result['innovation'][0], -2.0**-104)
+
+    def test_scalar_kalman_reports_an_output_outside_the_float_range(self):
+        with self.assertRaisesRegex(ValueError, 'exceeds the float64 range'):
+            math_core.kalman_joseph_step(
+                [[2.0]], [[1.0]], [[0.0]], [[1.0]], [1e308], [[1.0]], [0.0])
+
+    def test_large_complex_hermitian_sqrt_keeps_valid_finite_eigenvalues(self):
+        value = 1e308
+        covariance = np.array([[value, .2j*value], [-.2j*value, value]])
+        with warnings.catch_warnings():
+            warnings.simplefilter('error', RuntimeWarning)
+            result = math_core.hermitian_matrix_sqrt(covariance)
+        np.testing.assert_allclose(result['eigenvalues']/value, [.8, 1.2], rtol=1e-15)
+        root = result['r_sqrt']/math.sqrt(value)
+        np.testing.assert_allclose(root @ root, covariance/value, rtol=1e-15, atol=1e-15)
+
     def test_nnls_reports_a_nonoptimal_iterate_when_the_budget_is_exhausted(self):
         result = math_core.solve_nnls_projected_gradient(
             np.array([[1., .5], [.5, 1.]]), np.array([1., -.2]), max_iters=1)

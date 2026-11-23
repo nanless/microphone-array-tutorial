@@ -29,6 +29,7 @@ CH00_FIG_SPECS = (
 EXPECTED_CH00_PLOT_SOURCES = {
     "codes/chapters/ch00/core/chapter00_math.py",
     "codes/chapters/ch00/io_contracts.py",
+    "codes/chapters/ch02/core/conventions.py",
     "scripts/make_figures.py",
     "scripts/make_math_figures.py",
 }
@@ -223,9 +224,14 @@ class Chapter00MarkdownAndPublicationTests(unittest.TestCase):
                 ROOT / "codes/chapters/ch00/reports/figure84_complex_phasor_fourier.json",
                 rep84_path,
             )
-            (tmp_root / "codes/chapters/ch00/core/chapter00_math.py").write_text("# modified\n", encoding="utf-8")
-            errs = verify_ch00_figures_and_reports(tmp_root)
-            self.assertTrue(any("source SHA mismatch" in e for e in errs))
+            for rel in ("codes/chapters/ch00/core/chapter00_math.py",
+                        "codes/chapters/ch02/core/conventions.py"):
+                with self.subTest(source=rel):
+                    path = tmp_root / rel
+                    path.write_text("# modified\n", encoding="utf-8")
+                    errs = verify_ch00_figures_and_reports(tmp_root)
+                    self.assertTrue(any("source SHA mismatch" in e for e in errs))
+                    shutil.copy2(ROOT / rel, path)
 
 
 if __name__ == "__main__":

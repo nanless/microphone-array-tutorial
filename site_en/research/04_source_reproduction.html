@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Upstream Acquisition & Reproduction · Microphone Array Signal Processing</title>
-<meta name="source-digest" content="4a5d9a374aa4"><style>
+<meta name="source-digest" content="6fcc12d9b903"><style>
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -169,7 +169,12 @@ pre,.table-scroll,mjx-container[jax="CHTML"]{overflow-wrap:normal}
         significant.some(isEmptyAnchor) &&
         significant.every(node => isEmptyAnchor(node) || isAnchorAlias(node));
       paragraph.classList.toggle("tutorial-anchor-only", !!anchorOnly);
-      const short = significant.length === 1 &&
+      const labelOnly = significant.length === 1 || (
+        significant.length === 2 &&
+        significant[1].nodeType === Node.TEXT_NODE &&
+        /^[：:.。]$/.test(significant[1].data.trim()) &&
+        significant[0].textContent.trim().length > 0);
+      const short = labelOnly &&
         significant[0].nodeType === Node.ELEMENT_NODE &&
         significant[0].tagName === "STRONG" &&
         paragraph.textContent.trim().length <= 60 &&
@@ -774,7 +779,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <p>Input <code>dtype</code>s, outputs, analytical expectations, tolerances, warnings, and failure categories are all preserved without patching upstream or folding the four new controls into the historical pass count. Full <code>pb_bss</code> separation pipelines, beamformed audio, neural models, and hardware remain outside this verification scope. <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/tests/test_codes_appendix_a_source_guards.py">Standalone negative-control unit tests</a> verify protection against stale <code>.pyc</code> injection and forbidden report paths, while nominal upstream execution is covered by <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/tests/test_codes_upstream_solver_contracts.py">solver contract tests</a>.</p>
 <p><a id="appendix-b-reproduction"></a></p>
 <span id="sec-14" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-6882e0b4c8" class="anchor-alias" aria-hidden="true"></span><span id="附录-b先对齐研究方向的任务与版本" class="anchor-alias" aria-hidden="true"></span><span id="appendix-b-aligning-research-tasks-and-revisions-before-reproducing" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-320cf88280">Appendix B: Aligning Research Tasks and Revisions Before Reproducing</h3>
-<p>The <a href="../17_appendix-guide.html#sec-17-3">research landscape survey in Appendix B</a> spans eight active directions whose outputs are fundamentally incommensurable: target speaker extraction outputs a single-speaker waveform, DiCoW outputs target-speaker text transcripts, CHiME-9 ECHI outputs a low-latency hearing-aid enhancement stream, and ArrayDPS estimates reverberant source images at a designated reference microphone. Before benchmarking or selecting an architecture, fix the exact task definition; never rank WER, SI-SDR, and algorithmic latency across disparate output modalities in a single table.</p>
+<p>The <a href="../17_appendix-guide.html#sec-17-3">research landscape survey in Appendix B</a> covers nine directions. Several outputs illustrate why the downstream task matters: target speaker extraction outputs a single-speaker waveform, DiCoW outputs target-speaker text transcripts, CHiME-9 ECHI outputs a low-latency hearing-aid enhancement stream, and ArrayDPS estimates reverberant source images at a designated reference microphone. Before benchmarking or selecting an architecture, fix the exact task definition; never rank WER, SI-SDR, and algorithmic latency across disparate output modalities in a single table.</p>
 <p>The architectural scopes and implementation boundaries below were audited on 2026-10-02. Papers are cited strictly by the specific sections inspected rather than copying performance numbers across mismatched conditions; pinned Git commits, licenses, and sparse-checkout file lists remain governed by <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/SOURCES.lock.json"><code>SOURCES.lock.json</code></a>.</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable data table"><table>
 <thead>

@@ -13,6 +13,7 @@ import math
 
 import numpy as np
 
+from codes.chapters.ch00.core.chapter00_math import _zero_failure_bound_from_log_tail
 from codes.chapters.ch02.core.conventions import finite_real_array, finite_real_scalar
 from codes.chapters.ch10.core.engineering import HysteresisVAD
 from codes.chapters.ch09.core.tracking import CircularParticleFilter, ConstantVelocityKalman, white_acceleration_covariance
@@ -102,13 +103,7 @@ def zero_failure_upper_bound(trials, confidence=0.95):
     confidence = finite_real_scalar(confidence, "confidence")
     if not 0 < confidence < 1:
         raise ValueError("confidence must be strictly between zero and one")
-    try:
-        result = -math.expm1(math.log1p(-confidence) / int(trials))
-    except OverflowError as error:
-        raise ValueError("trials exceed the finite float64 calculation range") from error
-    if result == 0:
-        raise ValueError("strictly positive confidence bound underflows float64")
-    return result
+    return _zero_failure_bound_from_log_tail(int(trials), math.log1p(-confidence))
 
 
 def run_exercises():

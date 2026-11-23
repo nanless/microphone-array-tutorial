@@ -186,7 +186,7 @@ $$\begin{aligned}
 
 which is precisely optimal Kalman gain Eq. (9-5). Right-multiplying $\mathbf{K}_t\mathbf{S}_t=\mathbf{P}_t^-\mathbf{H}^\top$ by $\mathbf{K}_t^\top$ and substituting into the last term of the expanded $\mathbf{P}_t$ cancels $-\mathbf{P}_t^-\mathbf{H}^\top\mathbf{K}_t^\top$, leaving shorthand Eq. (9-7) ($\mathbf{P}_t=\mathbf{A}_t\mathbf{P}_t^-$).
 
-Thus shorthand Eq. (9-7) equals Eq. (9-9) *only* when $\mathbf{K}_t$ equals the exact optimal gain: Eq. (9-7) is convenient for hand calculations, whereas under finite-precision floating-point arithmetic or engineered gain clamping, multiplying two asymmetric matrices $(\mathbf{I}-\mathbf{K}_t\mathbf{H})\mathbf{P}_t^-$ easily breaks symmetry or produces negative diagonal variances—making Joseph form Eq. (9-9), which sums two symmetric positive-semidefinite quadratic forms, far superior numerically (code should still validate input positive semidefiniteness rather than masking invalid negative-variance inputs behind Joseph updates).
+With the exact optimal Kalman gain $\mathbf{K}_t$, Eq. (9-9) reduces to shorthand Eq. (9-7), which is convenient for hand calculations. In finite precision or after gain clamping, the shorthand need not agree with Joseph form, and direct evaluation of $(\mathbf{I}-\mathbf{K}_t\mathbf{H})\mathbf{P}_t^-$ may lose symmetry or produce negative diagonal variances. Joseph form Eq. (9-9) sums two symmetric positive-semidefinite quadratic forms in exact arithmetic and generally offers better numerical stability; implementations should still check input covariance symmetry and positive semidefiniteness.
 
 #### Innovation Gating and Covariance Validity
 

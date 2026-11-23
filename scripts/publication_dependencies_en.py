@@ -66,7 +66,7 @@ def pdf_sources(root: Path, source: Path, research: Path, research_names) -> lis
 
 def source_digest(root: Path, paths) -> str:
     digest = hashlib.sha256()
-    for path in sorted(set(paths)):
+    for path in sorted(set(paths), key=lambda item: item.parts):
         digest.update(path.relative_to(root).as_posix().encode("utf-8"))
         digest.update(b"\0")
         digest.update(path.read_bytes())

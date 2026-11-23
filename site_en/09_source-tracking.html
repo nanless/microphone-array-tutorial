@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Chapter 9 · Sound Source Tracking · Microphone Array Signal Processing</title>
-<meta name="source-digest" content="4a5d9a374aa4"><style>
+<meta name="source-digest" content="6fcc12d9b903"><style>
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -169,7 +169,12 @@ pre,.table-scroll,mjx-container[jax="CHTML"]{overflow-wrap:normal}
         significant.some(isEmptyAnchor) &&
         significant.every(node => isEmptyAnchor(node) || isAnchorAlias(node));
       paragraph.classList.toggle("tutorial-anchor-only", !!anchorOnly);
-      const short = significant.length === 1 &&
+      const labelOnly = significant.length === 1 || (
+        significant.length === 2 &&
+        significant[1].nodeType === Node.TEXT_NODE &&
+        /^[：:.。]$/.test(significant[1].data.trim()) &&
+        significant[0].textContent.trim().length > 0);
+      const short = labelOnly &&
         significant[0].nodeType === Node.ELEMENT_NODE &&
         significant[0].tagName === "STRONG" &&
         paragraph.textContent.trim().length <= 60 &&
@@ -628,7 +633,7 @@ k_*&=\frac{P^-}{P^-+R}.
 \mathbf{K}_t&=\mathbf{P}_t^-\mathbf{H}^\top\mathbf{S}_t^{-1},
 \end{aligned}$$</p>
 <p>which is precisely optimal Kalman gain Eq. (9-5). Right-multiplying $\mathbf{K}_t\mathbf{S}_t=\mathbf{P}_t^-\mathbf{H}^\top$ by $\mathbf{K}_t^\top$ and substituting into the last term of the expanded $\mathbf{P}_t$ cancels $-\mathbf{P}_t^-\mathbf{H}^\top\mathbf{K}_t^\top$, leaving shorthand Eq. (9-7) ($\mathbf{P}_t=\mathbf{A}_t\mathbf{P}_t^-$).</p>
-<p>Thus shorthand Eq. (9-7) equals Eq. (9-9) <em>only</em> when $\mathbf{K}_t$ equals the exact optimal gain: Eq. (9-7) is convenient for hand calculations, whereas under finite-precision floating-point arithmetic or engineered gain clamping, multiplying two asymmetric matrices $(\mathbf{I}-\mathbf{K}_t\mathbf{H})\mathbf{P}_t^-$ easily breaks symmetry or produces negative diagonal variances—making Joseph form Eq. (9-9), which sums two symmetric positive-semidefinite quadratic forms, far superior numerically (code should still validate input positive semidefiniteness rather than masking invalid negative-variance inputs behind Joseph updates).</p>
+<p>With the exact optimal Kalman gain $\mathbf{K}_t$, Eq. (9-9) reduces to shorthand Eq. (9-7), which is convenient for hand calculations. In finite precision or after gain clamping, the shorthand need not agree with Joseph form, and direct evaluation of $(\mathbf{I}-\mathbf{K}_t\mathbf{H})\mathbf{P}_t^-$ may lose symmetry or produce negative diagonal variances. Joseph form Eq. (9-9) sums two symmetric positive-semidefinite quadratic forms in exact arithmetic and generally offers better numerical stability; implementations should still check input covariance symmetry and positive semidefiniteness.</p>
 <span id="sec-u-22fa9e5493" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-303fea9df7">Innovation Gating and Covariance Validity</h3>
 <p>Strong room reflections routinely spawn transient spurious peaks far from the true speaker, requiring a statistical sanity check on the innovation relative to current prediction uncertainty prior to updating. For innovation vector $\vec{\nu}_t\in\mathbb{R}^p$ and innovation covariance $\mathbf{S}_t$, the Normalized Innovation Squared (NIS, or squared Mahalanobis distance) is</p>
 <p>$$\begin{aligned}

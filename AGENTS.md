@@ -31,7 +31,7 @@
 |---|---|---|---|
 | 教程源文件 | `chapters/*.md`、`chapters_en/*.md` | 中英双语导读、16 章正文（第 0～15 章，含四篇扩展专题）和 2 篇附录 | 直接修改；改后检查跨章引用与中英标题/公式号一致 |
 | 教学代码源文件 | `codes/chapters/{ch00,ch01～ch15,appendix_a,appendix_b}/` 中的 `core/`、`examples/` 与单章入口 | 共享数值核按首讲章节唯一归档，第 0 章数学核与练习及跨章练习在 `ch00/` | 修改唯一真实实现；同步测试、覆盖表和对应章节；旧 `codes.array_tutorial`、`codes.examples` 路径已退出仓内接口 |
-| 第0章数学基础与图 | `codes/chapters/ch00/core/chapter00_math.py`、`codes/chapters/ch00/chapter00_exercises.py`；`scripts/make_math_figures.py` → 图84～87及`ch00/reports/figure84～87*.json` | E00-01～16十六道数学基础题与四张编号图 | 四真实源绑定，随机仿真固定seed；涵盖球面几何、SO(3)、相量/COLA、子空间/SVD/Woodbury、瑞利商/GEV/Khatri–Rao、Wirtinger/NNLS/MM、复高斯/CRLB/维纳/Kalman、匈牙利指派及Bessel/Legendre/球谐函数；不生成新WAV |
+| 第0章数学基础与图 | `codes/chapters/ch00/core/chapter00_math.py`、`codes/chapters/ch00/chapter00_exercises.py`；`scripts/make_math_figures.py` → 图84～87及`ch00/reports/figure84～87*.json` | E00-01～16十六道数学基础题与四张编号图 | 绑定五份源文件，含共用厄米平均，随机仿真固定seed；涵盖球面几何、SO(3)、相量/COLA、子空间/SVD/Woodbury、瑞利商/GEV/Khatri–Rao、Wirtinger/NNLS/MM、复高斯/CRLB/维纳/Kalman、匈牙利指派及Bessel/Legendre/球谐函数；不生成新WAV |
 | 共享文件IO源文件 | `codes/chapters/ch00/io_contracts.py` | 普通父链与成员、严格JSON、元数据类型及报告写入的公共原语 | 生成器和获取工具复用原语；各资产的schema、评分和来源边界由调用者负责。参与生成时须绑定真实SHA；有限写前检查不宣称消除并发竞态或保证崩溃持久性 |
 | 中英切换行 | `scripts/language_bars.py` → 68 份中英配对 Markdown（`chapters/`↔`chapters_en/`、`research/`↔`research_en/`、根及子目录 `*.md`↔`*_EN.md`）首部以 `🌐` 开头的单行 | GitHub 无法在 Markdown 内运行脚本，故每份文档顶部放一行指向对应语言版本的链接；该行仅供仓库浏览，由 `build_markdown_helpers.shield_math` 在生成网站与 PDF 前剔除（站点与 PDF 另有语言切换） | 新增或改名配对文档后运行 `python scripts/language_bars.py` 同步；`quality_check_en.py` 以 `--check` 同源只读核验；不要手写该行 |
 | 主音频布局 | `codes/chapters/ch00/audio/MANIFEST.json`、各章 `audio/*.wav`；`scripts/code_layout.py` 固定组→章节映射 | 27 组、109 个数学合成 WAV，单一总清单、分章存放 | 改生成源后按新布局重生；清单绑定20个真实源，记录每条所属章、生成源 SHA 与 WAV SHA；禁止手改单个 WAV |
@@ -738,7 +738,7 @@ MathJax 公式统一缩到明显小于相邻正文；优先拆行、使用 `alig
 | 构建脚本或依赖 | 运行受影响命令及最小回归；检查退出状态和输出文件 | 命令正常结束；输出完整；未引入无关依赖或文件变化 |
 
 当前完整构建的基线是 87 张编号 PNG 和 1 张房间补图、19 个当前教程页面（首页加18篇）、8 个旧路径兼容页面与 6 个研究手册页面（共33页），以及 PDF 的 19 个章级、173 个节级、
-835 个子节级书签，共 1027 个大纲项。子节级书签来自第 0～11 章、扩展专题Ⅰ～Ⅳ与附录 A/B；各篇独立数量见 `scripts/quality_check.py` 的显式清单。
+836 个子节级书签，共 1028 个大纲项。子节级书签来自第 0～11 章、扩展专题Ⅰ～Ⅳ与附录 A/B；各篇独立数量见 `scripts/quality_check.py` 的显式清单。
 质量门禁应从独立的发布清单或显式常量读取这些基线，不能只从待检 Markdown 动态生成“期望值”
 再自我比较。构建后应核对数量和名称。若本次任务改变章节或图表结构，先更新发布清单、README 和本节，
 再按新值验收，不能为了通过检查保留过期数字。

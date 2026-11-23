@@ -216,6 +216,7 @@ def english_png_issues(path: Path, filename: str) -> list[str]:
             "TranslationScript": "scripts/make_figures_en.py",
             "TranslationScriptSHA256": hashlib.sha256((ROOT / "scripts/make_figures_en.py").read_bytes()).hexdigest(),
             "TranslationTableSHA256": hashlib.sha256((ROOT / "scripts/figure_en_translations.json").read_bytes()).hexdigest(),
+            "TranslationStyleSHA256": hashlib.sha256((ROOT / "scripts/make_figures.py").read_bytes()).hexdigest(),
         }
         for key, value in expected.items():
             if metadata.get(key) != value:

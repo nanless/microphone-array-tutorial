@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>源码获取与独立复现记录 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="f04fb843bff3"><style>
+<meta name="source-digest" content="db3dfe5c1367"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -169,7 +169,12 @@ pre,.table-scroll,mjx-container[jax="CHTML"]{overflow-wrap:normal}
         significant.some(isEmptyAnchor) &&
         significant.every(node => isEmptyAnchor(node) || isAnchorAlias(node));
       paragraph.classList.toggle("tutorial-anchor-only", !!anchorOnly);
-      const short = significant.length === 1 &&
+      const labelOnly = significant.length === 1 || (
+        significant.length === 2 &&
+        significant[1].nodeType === Node.TEXT_NODE &&
+        /^[：:.。]$/.test(significant[1].data.trim()) &&
+        significant[0].textContent.trim().length > 0);
+      const short = labelOnly &&
         significant[0].nodeType === Node.ELEMENT_NODE &&
         significant[0].tagName === "STRONG" &&
         paragraph.textContent.trim().length <= 60 &&
@@ -833,7 +838,7 @@ $\left[\begin{smallmatrix}1/10&1/5\\1/10&1/5\end{smallmatrix}\right]$。</p>
 <p>工具保留输入类型、输出、独立期望、容差、警告和失败分类，不修补上游，也不把四个控制并入旧四例的通过计数。完整包、波束音频、模型和设备都未在这个审计中运行。<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/tests/test_codes_appendix_a_source_guards.py">独立负控</a>检查有效旧pyc与被拒报告目标，正常原源执行另由<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/tests/test_codes_upstream_solver_contracts.py">接口测试</a>核验。</p>
 <p><a id="appendix-b-reproduction"></a></p>
 <span id="sec-14" class="anchor-alias" aria-hidden="true"></span><span id="附录-b先对齐研究方向的任务与版本" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-6882e0b4c8">附录 B：先对齐研究方向的任务与版本</h3>
-<p><a href="../17_appendix-guide.html#sec-17-3">附录B的研究速览</a>包含八类方向，但它们并不输出同一种结果。目标说话人提取输出音轨，DiCoW输出指定说话人的文字，CHiME-9 ECHI输出低延迟增强流；ArrayDPS的输出又有参考通道与混响源像的定义。选型前先固定目标，不能把不同任务的WER、SI-SDR或延迟写成统一排名。</p>
+<p><a href="../17_appendix-guide.html#sec-17-3">附录B的研究速览</a>介绍九个方向，下面选取不同输出的系统作对照。目标说话人提取输出音轨，DiCoW输出指定说话人的文字，CHiME-9 ECHI输出低延迟增强流；ArrayDPS的输出又有参考通道与混响源像的定义。选型前先固定目标，不能把不同任务的WER、SI-SDR或延迟写成统一排名。</p>
 <p>以下定位与实现边界于2026-10-02核查。论文只用实际阅读的相关节说明方法，不转引条件不齐的性能数字；各项目的完整固定提交、许可与本地选集仍以<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/SOURCES.lock.json">锁表</a>为准。</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
 <thead>

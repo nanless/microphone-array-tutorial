@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>从入门到工业实践 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="f04fb843bff3"><style>
+<meta name="source-digest" content="db3dfe5c1367"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -169,7 +169,12 @@ pre,.table-scroll,mjx-container[jax="CHTML"]{overflow-wrap:normal}
         significant.some(isEmptyAnchor) &&
         significant.every(node => isEmptyAnchor(node) || isAnchorAlias(node));
       paragraph.classList.toggle("tutorial-anchor-only", !!anchorOnly);
-      const short = significant.length === 1 &&
+      const labelOnly = significant.length === 1 || (
+        significant.length === 2 &&
+        significant[1].nodeType === Node.TEXT_NODE &&
+        /^[：:.。]$/.test(significant[1].data.trim()) &&
+        significant[0].textContent.trim().length > 0);
+      const short = labelOnly &&
         significant[0].nodeType === Node.ELEMENT_NODE &&
         significant[0].tagName === "STRONG" &&
         paragraph.textContent.trim().length <= 60 &&
@@ -1993,7 +1998,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <td>fig67_distributed_transport</td>
 <td>13</td>
 <td class="tutorial-short-column" style="--tutorial-column-width:6em">时钟补偿与丢包</td>
-<td>对比分布式节点间采样率偏移经线性相位补偿前后的输出误差，以及无线丢包时段补零静音与回退本地单节点滤波的表现</td>
+<td>用合成音频比较已知速率的线性插值校正前后的误差，以及给定丢包缺口中远端补零和回退本地滤波的结果</td>
 </tr>
 <tr>
 <td class="tutorial-short-column" style="--tutorial-column-width:5em">图68</td>

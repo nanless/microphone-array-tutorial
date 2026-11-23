@@ -136,6 +136,7 @@ class EnglishPngTests(unittest.TestCase):
                 'TranslationScript': 'scripts/make_figures_en.py',
                 'TranslationScriptSHA256': hashlib.sha256((ROOT/'scripts/make_figures_en.py').read_bytes()).hexdigest(),
                 'TranslationTableSHA256': hashlib.sha256((ROOT/'scripts/figure_en_translations.json').read_bytes()).hexdigest(),
+                'TranslationStyleSHA256': hashlib.sha256((ROOT/'scripts/make_figures.py').read_bytes()).hexdigest(),
             }
             def save(path, data):
                 info = PngImagePlugin.PngInfo()
@@ -146,7 +147,7 @@ class EnglishPngTests(unittest.TestCase):
             with patch.object(q, 'FIGURES_ZH', zh):
                 self.assertEqual(q.english_png_issues(en/name, name), [])
                 for field in ('FigureFilename','SourceScriptDigest','TranslationScript',
-                              'TranslationScriptSHA256','TranslationTableSHA256'):
+                              'TranslationScriptSHA256','TranslationTableSHA256','TranslationStyleSHA256'):
                     bad = dict(metadata); bad[field] = 'fig02_dsin_geometry.png' if field=='FigureFilename' else 'stale'
                     save(en/name, bad)
                     with self.subTest(field=field):
@@ -166,6 +167,8 @@ class EnglishPngTests(unittest.TestCase):
         self.assertEqual(expected['FigureFilename'], 'fig55_mask_representation.png')
         self.assertEqual(expected['TranslationScript'], 'scripts/make_figures_en.py')
         self.assertEqual(expected['TranslationTableSHA256'], hashlib.sha256(m.TRANSLATIONS_PATH.read_bytes()).hexdigest())
+        self.assertEqual(expected['TranslationStyleSHA256'],
+                         hashlib.sha256((ROOT/'scripts/make_figures.py').read_bytes()).hexdigest())
         import tempfile
         from PIL import Image
         with tempfile.TemporaryDirectory() as directory:
@@ -185,10 +188,36 @@ class EnglishPngTests(unittest.TestCase):
                 picture.load()
                 self.assertEqual(picture.info['FigureFilename'], 'fig55_mask_representation.png')
                 self.assertEqual(picture.info['TranslationTableSHA256'], expected['TranslationTableSHA256'])
+                self.assertEqual(picture.info['TranslationStyleSHA256'], expected['TranslationStyleSHA256'])
                 self.assertEqual(picture.info['TranslationScriptSHA256'], hashlib.sha256(Path(m.__file__).read_bytes()).hexdigest())
                 self.assertEqual(picture.info['NumericalReportDigest'], 'independent report identity')
                 self.assertEqual(picture.info['AudioManifestDigest'], 'independent audio identity')
 
+
+    def test_producers_start_with_the_same_style_when_selected_separately(self):
+        import tempfile
+        from scripts import make_figures_en as m
+
+        observations = []
+
+        def draw(path, **_kwargs):
+            name = Path(path).name
+            observations.append((name, m.plt.rcParams['legend.fontsize']))
+            if name == 'make_channel_figures.py':
+                m.plt.rcParams['legend.fontsize'] = 4
+
+        with tempfile.TemporaryDirectory() as directory, m.plt.rc_context():
+            m.plt.rcParams['legend.fontsize'] = 28
+            with (
+                patch.object(m, 'FIGURES_EN_DIR', Path(directory)),
+                patch.object(m.runpy, 'run_path', side_effect=draw),
+            ):
+                m.generate_all_english_figures(('make_channel_figures.py', 'make_math_figures.py'))
+                m.generate_all_english_figures(('make_math_figures.py',))
+            self.assertEqual(m.plt.rcParams['legend.fontsize'], 28)
+        self.assertEqual(observations[1], observations[2])
+        self.assertEqual(observations[0][1], observations[1][1])
+        self.assertNotEqual(observations[1][1], 4)
 
 
 class EnglishOutlineTests(unittest.TestCase):

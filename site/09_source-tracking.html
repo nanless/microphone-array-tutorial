@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 9 章 · 声源追踪 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="f04fb843bff3"><style>
+<meta name="source-digest" content="db3dfe5c1367"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -169,7 +169,12 @@ pre,.table-scroll,mjx-container[jax="CHTML"]{overflow-wrap:normal}
         significant.some(isEmptyAnchor) &&
         significant.every(node => isEmptyAnchor(node) || isAnchorAlias(node));
       paragraph.classList.toggle("tutorial-anchor-only", !!anchorOnly);
-      const short = significant.length === 1 &&
+      const labelOnly = significant.length === 1 || (
+        significant.length === 2 &&
+        significant[1].nodeType === Node.TEXT_NODE &&
+        /^[：:.。]$/.test(significant[1].data.trim()) &&
+        significant[0].textContent.trim().length > 0);
+      const short = labelOnly &&
         significant[0].nodeType === Node.ELEMENT_NODE &&
         significant[0].tagName === "STRONG" &&
         paragraph.textContent.trim().length <= 60 &&
@@ -628,7 +633,7 @@ k_*&=\frac{P^-}{P^-+R}.
 \mathbf{K}_t&=\mathbf{P}_t^-\mathbf{H}^\top\mathbf{S}_t^{-1}.
 \end{aligned}$$</p>
 <p>这正是第 3 步的最优卡尔曼增益式(9-5)。再把刚证出的最优关系 $\mathbf{K}_t\mathbf{S}_t=\mathbf{P}_t^-\mathbf{H}^\top$ 右乘 $\mathbf{K}_t^\top$ 代回上面展开式的末项，恰好与倒数第二项 $-\mathbf{P}_t^-\mathbf{H}^\top\mathbf{K}_t^\top$ 正负相消，只剩下第 5 步的简写式(9-7)（即 $\mathbf{P}_t=\mathbf{A}_t\mathbf{P}_t^-$）。</p>
-<p>由此可见，简写式(9-7)只有在增益<strong>精确等于</strong>最优卡尔曼增益时才与式(9-9)等价：手算时式(9-7)最省力，但在有限字长浮点运算或对增益做了工程限幅时，$(\mathbf{I}-\mathbf{K}_t\mathbf{H})\mathbf{P}_t^-$ 两个非对称矩阵相乘极易因舍入误差破坏对称性甚至算出负对角方差，而 Joseph 形式式(9-9)显式将两个对称半正定二次型相加，数值稳定性好得多（实现中仍应校验输入协方差的对称半正定性，不能用 Joseph 公式去掩盖非法的负方差输入）。</p>
+<p>取理论最优卡尔曼增益时，式(9-9)可化为简写式(9-7)，手算更方便。有限字长浮点运算或增益限幅后，简式不保证与 Joseph 形式相等，直接计算 $(\mathbf{I}-\mathbf{K}_t\mathbf{H})\mathbf{P}_t^-$ 还可能失去对称性或出现负对角方差。Joseph 形式式(9-9)在精确算术下将两个对称半正定二次型相加，通常有较好的数值稳定性；实现中仍应校验输入协方差的对称性和半正定性。</p>
 <h3 id="sec-u-22fa9e5493">新息门控与协方差有效性</h3>
 <p>房间强反射常在远离真实声源的方位产生瞬态伪峰，送入更新步前必须检验新息相对于当前预测不确定度是否合理。令 $\vec{\nu}_t\in\mathbb{R}^p$ 为新息向量、$\mathbf{S}_t$ 为新息协方差矩阵，归一化新息平方（Normalized Innovation Squared，NIS，又称平方马氏距离）定义为</p>
 <p>$$\begin{aligned}

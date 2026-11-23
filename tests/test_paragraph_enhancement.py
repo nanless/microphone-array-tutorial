@@ -192,23 +192,25 @@ class EnhancementParagraphTest(unittest.TestCase):
         for item in items[1:]:
             self.assertNotIn(r"\tag{8-18}", item["text"])
 
-    def test_eight_research_directions_preserve_arraydps(self):
+    def test_nine_research_directions_preserve_arraydps(self):
         source, path = self.passage("17_appendix-guide.md", "### 17.3", "#### 专题：神经网络前端")
-        headings = re.findall(r"(?m)^#### (研究方向[一二三四五六七八]：[^\n]+)$", source)
-        sections = re.split(r"(?m)^#### 研究方向[一二三四五六七八]：[^\n]+\n", source)[1:]
+        headings = re.findall(r"(?m)^#### (研究方向[一二三四五六七八九]：[^\n]+)$", source)
+        sections = re.split(r"(?m)^#### 研究方向[一二三四五六七八九]：[^\n]+\n", source)[1:]
         labels = ["预训练模型", "阵列无关", "目标说话人提取", "生成式语音增强",
-                  "TF-GridNet", "几何无关前端", "CHiME-9", "扩散先验"]
-        self.assertEqual(len(headings), 8)
-        self.assertEqual(len(sections), 8)
+                  "TF-GridNet", "几何无关前端", "CHiME-9", "扩散先验", "全双工语音大模型"]
+        self.assertEqual(len(headings), len(labels))
+        self.assertEqual(len(sections), len(labels))
         for heading, label in zip(headings, labels):
             self.assertIn(label, heading)
         html, _ = build_site.render(source, path)
-        self.assertEqual(html.count("<h4"), 8, "Each independent direction needs a navigation heading")
+        self.assertEqual(html.count("<h4"), len(labels), "Each independent direction needs a navigation heading")
         self.assertIn("FlowSep", sections[3])
         self.assertIn("DiCoW", sections[6])
         self.assertIn("ArrayDPS", sections[7])
         self.assertIn("而非由注册声纹指定身份", sections[2])
         self.assertIn("最小复现", sections[7])
+        self.assertIn("Moshi", sections[8])
+        self.assertIn("空间线索", sections[8])
 
     def test_twelve_debugging_cases_and_continuations(self):
         source, path = self.passage("17_appendix-guide.md", "### 17.4", "### 17.5")

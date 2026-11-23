@@ -100,7 +100,11 @@ def rigid_sphere_antipodal_response(
     """Exact truncated Helmholtz rigid-sphere surface pressures at (-a,0,0) and (+a,0,0).
 
     Uses pure-NumPy spherical Bessel/Neumann functions under exp(-j*2*pi*f*t)
-    (outgoing Hankel h_n^(2) = j_n - j*y_n) to verify Rayleigh 1.5x dipole limit.
+    (outgoing Hankel h_n^(2) = j_n - j*y_n) to verify the Rayleigh 1.5x dipole limit.
+    ``phase_diff_10_rad`` is the principal phase of p1/p0. ``tau_10_sphere_s``
+    divides that phase by -2*pi*f at each frequency, so its magnitude is at most
+    half a period. Unwrapped phase delay, group delay, and pulse arrival time
+    require separate estimates.
     """
     a_m = finite_real_scalar(radius_m, "radius_m")
     c_m_s = finite_real_scalar(sound_speed, "sound_speed")

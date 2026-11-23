@@ -42,4 +42,6 @@ jobs:
           python scripts/course_home/export_portable.py --check
           python scripts/course_home_en/export_portable.py --check
       - name: Check bilingual publications, 35 numeric reports, asset identities, and selected tests
+        env:
+          PYTHONUTF8: "1"
         run: python scripts/run_portable_ci.py

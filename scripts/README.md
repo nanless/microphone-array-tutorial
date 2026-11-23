@@ -138,7 +138,7 @@
 | `pdf_math.js` | 合订本专用：完整MathML生成固定英文说明，逐式核源身份、真实SVG、非空说明；移除临时身份包装后交给共享排版脚本。嵌入合订HTML并纳入PDF源摘要 | 合订HTML与PDF公式语义 |
 | `inline_layout.js` | 站点与合订本共用的成品排版辅助。等待公式与字体完成后，只保护适合当前宽度的行内公式及紧邻短单位/标点、可见普通文字中的稳定题号；短粗体引导在纸版跟随下一段。视窗和字体变化后重新核对宽度。合订预览在打印前即采用 A4 正文几何，打印期间不重排 DOM；单页网站打印前拆除屏幕分组，结束后恢复。保留 TeX、代码、链接、辅助公式树和长式的滚动接口。脚本内容计入两种产物及独立门禁的源摘要 | 由两个构建器嵌入 HTML；无单独生成物 |
 | `quality_check.py` | 发布门禁。用独立基线检查 19 篇教程与 87 张编号图，核对图号、alt、公式编号与引用、小节语义链接、PNG 绘图脚本摘要、网页导航和 PDF 三级书签。确定性问题阻断发布，高风险口语只提醒人工复核 | 通过、失败清单，以及不阻断发布的人工复核与可访问性提示 |
-| `make_figures_en.py` | 英文插图生成器。借助 `figure_en_translations.json` 无损翻译并重绘全部 87 张编号图，重定向临时报告写入、自动适配英文字体与图元字号并拒绝任何残留 CJK/全角字符 | `figures_en/fig*.png`（87 张英文插图） |
+| `make_figures_en.py` | 英文插图生成器。借助 `figure_en_translations.json` 无损翻译并重绘全部 87 张编号图，各脚本从同一套版式开始，`--scripts` 单跑与全量命令使用相同样式。报告写入临时目录，PNG 记录翻译与共用样式来源，检查残留 CJK／全角字符 | `figures_en/fig*.png`（87 张英文插图） |
 | `course_home_en/export_portable.py` | 从 `scripts/course_home_en/{index.html,home.css,home.js}` 导出可离线打开的英文课程首页单文件；`--check` 只读逐字节比对 | `assets/readme/course-intro-en.html` |
 | `build_site_en.py` | 英文课程站点构建器。从 `chapters_en/` 与 `research_en/` 生成 33 个英文 HTML 页面（19 篇当前页 + 8 个旧路径兼容页 + 6 篇研究页），复用 `../site/` 下 283 段音频并引用 `../figures_en/` | `site_en/` 下的英文网页 |
 | `build_pdf_en.py` | 英文合订本构建器。合并 `chapters_en/` 19 篇文档与 `figures_en/` 87 张插图，通过无头 Chrome 打印标签化 A4 英文 PDF，并写入三级书签、语言元数据与对象流无损压缩；支持 `--html-only`、`--pdf-only`、`--no-bookmarks`、`--build-date` | `dist/combined_en.html` 与 `dist/microphone-array-tutorial-en.pdf` |

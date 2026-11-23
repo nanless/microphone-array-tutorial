@@ -1311,7 +1311,7 @@ class BookmarkPlainTextAndPdfCssTest(unittest.TestCase):
                 self.assertNotIn("$", actual)
                 self.assertNotIn("\\", actual)
 
-    def test_all_2054_zh_and_en_headings_sanitize_without_tex_tokens(self):
+    def test_all_zh_and_en_headings_sanitize_without_tex_tokens(self):
         build_pdf_en = load("build_pdf_en", ROOT / "scripts" / "build_pdf_en.py")
         _, zh_outline = build_pdf.build_html(build_date="2026-10-05")
         _, en_outline = build_pdf_en.build_html_en(build_date="2026-10-05")
@@ -1322,7 +1322,7 @@ class BookmarkPlainTextAndPdfCssTest(unittest.TestCase):
                 for title, _sid, subsecs in secs:
                     titles.append(title)
                     titles.extend(sub for sub, _subid in subsecs)
-            self.assertEqual(len(titles), 1027, msg=f"{edition} outline count")
+            self.assertEqual(len(titles), 1028, msg=f"{edition} outline count")
             for raw in titles:
                 cleaned = build_pdf.bookmark_plain_text(raw)
                 self.assertNotIn("$", cleaned, msg=f"{edition}: {raw!r} -> {cleaned!r}")

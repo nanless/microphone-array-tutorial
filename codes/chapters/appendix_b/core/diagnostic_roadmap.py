@@ -168,68 +168,74 @@ def cascade_bottleneck_budget(
     }
 
 
-_DEFAULT_TELEMETRY: dict[str, float] = {
-    "sro_ppm": 0.0,
-    "hear_through_latency_us": 50.0,
-    "low_freq_wind_coherence": 0.90,
-    "low_freq_level_db": -35.0,
-    "far_end_active_ratio": 0.0,
-    "far_end_erle_db": 25.0,
-    "aec_ref_delay_error_ms": 0.0,
-    "rt60_s": 0.25,
-    "drr_db": 6.0,
-    "wpe_prediction_delay_frames": 3.0,
-    "overlap_speech_ratio": 0.02,
-    "der_percent": 6.0,
+_TELEMETRY_KEYS = {
+    "sro_ppm", "hear_through_latency_us", "low_freq_wind_coherence",
+    "low_freq_level_db", "far_end_active_ratio", "far_end_erle_db",
+    "aec_ref_delay_error_ms", "rt60_s", "drr_db",
+    "wpe_prediction_delay_frames", "overlap_speech_ratio", "der_percent",
 }
-
 
 def diagnose_pipeline_symptom(telemetry: dict[str, object]) -> dict[str, object]:
     """Apply the six ordered teaching checks of E17-13 to given telemetry.
 
-    Returns the first triggered rule under the exercise's thresholds and
-    priority. ``hear_through_latency_us`` is the nonnegative electronic/direct
-    relative delay in the equal-gain pure-delay model used for its notch value.
+    Return the first check supported by the supplied telemetry, using the
+    exercise's thresholds and priority, not a confirmed cause. Missing values
+    are not healthy defaults or passed upstream checks. Only complete input
+    can return no configured alert. ``hear_through_latency_us`` is the
+    nonnegative electronic/direct relative delay in the equal-gain pure-delay
+    model used for its notch value; frame thresholds are exercise settings.
     """
     if not isinstance(telemetry, dict):
         raise ValueError("telemetry must be a dict")
-    unknown = set(telemetry) - set(_DEFAULT_TELEMETRY)
+    if any(not isinstance(key, str) for key in telemetry):
+        raise ValueError("telemetry keys must be strings")
+    unknown = set(telemetry) - _TELEMETRY_KEYS
     if unknown:
         raise ValueError(f"unsupported telemetry keys: {sorted(unknown)}")
 
-    merged = dict(_DEFAULT_TELEMETRY)
-    for key, raw_val in telemetry.items():
-        merged[key] = _validate_real_scalar(raw_val, f"telemetry[{key!r}]")
+    measured = {
+        key: _validate_real_scalar(raw_val, f"telemetry[{key!r}]")
+        for key, raw_val in telemetry.items()
+    }
+    missing = sorted(_TELEMETRY_KEYS - measured.keys())
+    assessment = {
+        "status": "check_required",
+        "telemetry_complete": not missing,
+        "missing_telemetry": missing,
+    }
 
-    if merged["hear_through_latency_us"] < 0.0:
+    if "hear_through_latency_us" in measured and measured["hear_through_latency_us"] < 0.0:
         raise ValueError("telemetry['hear_through_latency_us'] must be non-negative")
-    if merged["rt60_s"] < 0.0:
+    if "rt60_s" in measured and measured["rt60_s"] < 0.0:
         raise ValueError("telemetry['rt60_s'] must be non-negative")
-    if merged["wpe_prediction_delay_frames"] < 0.0:
+    if "wpe_prediction_delay_frames" in measured and measured["wpe_prediction_delay_frames"] < 0.0:
         raise ValueError("telemetry['wpe_prediction_delay_frames'] must be non-negative")
-    if merged["der_percent"] < 0.0:
+    if "der_percent" in measured and measured["der_percent"] < 0.0:
         raise ValueError("telemetry['der_percent'] must be non-negative")
     for ratio_key in ("low_freq_wind_coherence", "far_end_active_ratio", "overlap_speech_ratio"):
-        if not 0.0 <= merged[ratio_key] <= 1.0:
+        if ratio_key in measured and not 0.0 <= measured[ratio_key] <= 1.0:
             raise ValueError(f"telemetry[{ratio_key!r}] must lie in [0, 1]")
 
     # Priority 1: Hardware sample clock / cross-device SRO synchronization
-    if abs(merged["sro_ppm"]) > 5.0:
+    if "sro_ppm" in measured and abs(measured["sro_ppm"]) > 5.0:
         return {
+            **assessment,
             "fault_id": "clock_sro_drift",
             "priority_rank": 1,
             "stage": "clock_and_bus_sync",
             "chapter_pointer": "§10.2 / §13.15",
             "action": (
-                "Lock shared hardware clock (TDM/PDM/PTPv2) or run continuous SRO "
-                "estimation and polyphase resampling before covariance estimation"
+                "Verify a shared ADC sample clock or continuous SRO estimation and "
+                "resampling before covariance estimation; PTP timestamp "
+                "synchronization alone does not verify sample-rate synchronization"
             ),
         }
 
     # Priority 2: Hear-through electro-acoustic comb-filtering latency budget
-    if merged["hear_through_latency_us"] > 100.0:
-        comb_first_notch_hz = 1.0 / (2.0 * merged["hear_through_latency_us"] * 1e-6)
+    if "hear_through_latency_us" in measured and measured["hear_through_latency_us"] > 100.0:
+        comb_first_notch_hz = 1.0 / (2e-6 * measured["hear_through_latency_us"])
         return {
+            **assessment,
             "fault_id": "hear_through_latency_comb",
             "priority_rank": 2,
             "stage": "hear_through_codec_path",
@@ -242,23 +248,35 @@ def diagnose_pipeline_symptom(telemetry: dict[str, object]) -> dict[str, object]
         }
 
     # Priority 3: Outdoor wearable wind buffeting / incoherent low-frequency overload
-    if merged["low_freq_wind_coherence"] < 0.25 and merged["low_freq_level_db"] > -15.0:
+    if (
+        {"low_freq_wind_coherence", "low_freq_level_db"} <= measured.keys()
+        and measured["low_freq_wind_coherence"] < 0.25
+        and measured["low_freq_level_db"] > -15.0
+    ):
         return {
+            **assessment,
             "fault_id": "wearable_wind_saturation",
             "priority_rank": 3,
             "stage": "sensor_mechanical_and_cross_modal",
             "chapter_pointer": "§14.8 / §14.9",
             "action": (
-                "Detect wind via low spatial coherence, enforce WNG / high-pass "
-                "protection, and fuse occluded in-ear microphone below crossover"
+                "Check wind or mechanical overload against the low coherence and high "
+                "level; verify clipping and sheltered/in-ear channels before "
+                "choosing high-pass, WNG protection or cross-modal fusion"
             ),
         }
 
     # Priority 4: Linear AEC reference alignment / ERLE before dereverb or beamforming
     if (
-        merged["far_end_active_ratio"] > 0.10 and merged["far_end_erle_db"] < 10.0
-    ) or abs(merged["aec_ref_delay_error_ms"]) > 2.0:
+        {"far_end_active_ratio", "far_end_erle_db"} <= measured.keys()
+        and measured["far_end_active_ratio"] > 0.10
+        and measured["far_end_erle_db"] < 10.0
+    ) or (
+        "aec_ref_delay_error_ms" in measured
+        and abs(measured["aec_ref_delay_error_ms"]) > 2.0
+    ):
         return {
+            **assessment,
             "fault_id": "aec_reference_or_erle",
             "priority_rank": 4,
             "stage": "linear_aec",
@@ -270,39 +288,61 @@ def diagnose_pipeline_symptom(telemetry: dict[str, object]) -> dict[str, object]
         }
 
     # Priority 5: MIMO-WPE late reverberation & guard-delay configuration
-    if merged["rt60_s"] > 0.40 and (
-        merged["drr_db"] < 0.0 or merged["wpe_prediction_delay_frames"] < 2.0
+    if "rt60_s" in measured and measured["rt60_s"] > 0.40 and (
+        ("drr_db" in measured and measured["drr_db"] < 0.0)
+        or ("wpe_prediction_delay_frames" in measured
+            and measured["wpe_prediction_delay_frames"] < 2.0)
     ):
         return {
+            **assessment,
             "fault_id": "late_reverberation_wpe",
             "priority_rank": 5,
             "stage": "mimo_wpe_dereverberation",
             "chapter_pointer": "§7.2 / §7.6",
             "action": (
-                "Configure WPE guard delay Delta >= 2 frames to protect direct/early "
-                "speech reflections and match filter tap count K to room RT60"
+                "Check the exercise's two-frame delay setting against the actual hop, "
+                "sample rate and direct/early arrivals; choose delay and tap count "
+                "for that scene, not a universal two-frame device threshold"
             ),
         }
 
     # Priority 6: Multi-speaker overlap diarization & GSS target leakage
-    if merged["overlap_speech_ratio"] > 0.10 and merged["der_percent"] > 20.0:
+    if (
+        {"overlap_speech_ratio", "der_percent"} <= measured.keys()
+        and measured["overlap_speech_ratio"] > 0.10
+        and measured["der_percent"] > 20.0
+    ):
         return {
+            **assessment,
             "fault_id": "overlap_diarization_gss",
             "priority_rank": 6,
             "stage": "separation_and_diarization",
             "chapter_pointer": "§8.4 / §15.5",
             "action": (
-                "Upgrade single-label clustering to multi-label spatial TS-VAD and "
-                "drive GSS covariance estimation with exclusive target masks"
+                "Check overlap DER components and mask contamination; compare "
+                "multi-label TS-VAD and target-exclusive GSS on the same recording "
+                "and scoring protocol"
             ),
         }
 
+    if missing:
+        return {
+            **assessment,
+            "status": "insufficient_telemetry",
+            "fault_id": "insufficient_telemetry",
+            "priority_rank": 0,
+            "stage": "telemetry_incomplete",
+            "chapter_pointer": "§11.2 / §17.4",
+            "action": "Collect the missing measurements; unobserved checks have not passed",
+        }
     return {
+        **assessment,
+        "status": "no_configured_alert",
         "fault_id": "nominal",
         "priority_rank": 0,
-        "stage": "healthy",
+        "stage": "configured_rule_checks",
         "chapter_pointer": "§11.2 / §17.4",
-        "action": "No configured rule fired for the given telemetry; proceed to scenario acceptance",
+        "action": "No configured rule fired for the complete exercise telemetry; scenario acceptance remains separate",
     }
 
 
@@ -329,7 +369,20 @@ def diagnostic_roadmap_controls() -> dict[str, object]:
         "compound_clock_plus_overlap": diagnose_pipeline_symptom(
             {"sro_ppm": 80.0, "overlap_speech_ratio": 0.24, "der_percent": 32.0}
         ),
-        "healthy_pipeline": diagnose_pipeline_symptom({}),
+        "healthy_pipeline": diagnose_pipeline_symptom({
+            "sro_ppm": 0.0,
+            "hear_through_latency_us": 50.0,
+            "low_freq_wind_coherence": 0.90,
+            "low_freq_level_db": -35.0,
+            "far_end_active_ratio": 0.0,
+            "far_end_erle_db": 25.0,
+            "aec_ref_delay_error_ms": 0.0,
+            "rt60_s": 0.25,
+            "drr_db": 6.0,
+            "wpe_prediction_delay_frames": 3.0,
+            "overlap_speech_ratio": 0.02,
+            "der_percent": 6.0,
+        }),
     }
     return {
         "exercise_id": "E17-13",
@@ -337,6 +390,8 @@ def diagnostic_roadmap_controls() -> dict[str, object]:
         "symptom_triage": canonical_cases,
         "scope": (
             "deterministic power-budget attribution and upstream-first diagnostic "
-            "triage across Ch 6/7/8/10/13/14/15; not a blind estimator or live telemetry daemon"
+            "checks across Ch 6/7/8/10/13/14/15 using only supplied telemetry; "
+            "missing values remain unmeasured, and a triggered check is not a confirmed "
+            "cause; not a blind estimator or live telemetry daemon"
         ),
     }

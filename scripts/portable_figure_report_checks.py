@@ -744,7 +744,8 @@ def _source_roles(number):
         'codes/chapters/ch15/core/conditional_tse.py','codes/chapters/ch15/core/diarization_tsvad.py',
         'codes/chapters/ch15/core/av_alignment.py','scripts/make_tse_figures.py'}
     if number in range(84,88):return common|{'codes/chapters/ch00/core/chapter00_math.py',
-        'codes/chapters/ch00/io_contracts.py','scripts/make_math_figures.py'}
+        'codes/chapters/ch00/io_contracts.py','codes/chapters/ch02/core/conventions.py',
+        'scripts/make_math_figures.py'}
     return None
 
 

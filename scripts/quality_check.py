@@ -185,7 +185,7 @@ EXPECTED_SUBSECTION_COUNTS = {
     "14_spatial-wearable-arrays.md": 46,
     "15_target-extraction-diarization.md": 42,
     "16_appendix-symbols-math.md": 27,
-    "17_appendix-guide.md": 28,
+    "17_appendix-guide.md": 29,
 }
 # 上表为独立发布基线，不从待检 HTML 或构建器反推。
 EXPECTED_CHAPTERS = [
@@ -228,8 +228,8 @@ EXPECTED_LEGACY_ROUTES = {
     "17_target-extraction-diarization.html": "15_target-extraction-diarization.html",
 }
 EXPECTED_SECTION_COUNT = 173
-EXPECTED_SUBSECTION_COUNT = 835
-EXPECTED_OUTLINE_ITEM_COUNT = 1027
+EXPECTED_SUBSECTION_COUNT = 836
+EXPECTED_OUTLINE_ITEM_COUNT = 1028
 EXPECTED_FIGURE_NUMBERS = set(range(1, 88))
 # Independent publication catalog; update explicitly when numbered figures change.
 EXPECTED_FIGURES = (
@@ -2139,7 +2139,7 @@ def check_real_audio(errors):
             if not np.isfinite(record["common_export_gain"]) or record["common_export_gain"] != 1:
                 fail(errors, f"真实录音共同增益应为 1：{path.name}")
         parser = VisibleMediaParser()
-        parser.feed((SITE / "research/05_exercises_and_audio.html").read_text())
+        parser.feed((SITE / "research/05_exercises_and_audio.html").read_text(encoding="utf-8"))
         allowed_audio_roots = ("../audio/", "../real_audio/", "../room_audio/",
                                "../gss_audio/", "../moving_audio/", "../tracking_audio/", "../binaural_audio/", "../spectral_audio/", "../stft_audio/", "../sweep_audio/", "../baseline_audio/", "../reflection_audio/", "../phase_audio/", "../binaural_beamforming_audio/", "../geometry_audio/", "../focus_audio/", "../derivative_audio/", "../apa_audio/", "../reference_audio/", "../delay_audio/", "../css_audio/", "../mint_audio/", "../mask_audio/", "../noise_audio/", "../channel_audio/", "../scenario_audio/", "../weighted_audio/", "../response_audio/", "../imaging_audio/", "../distributed_audio/", "../wearable_audio/", "../tse_audio/")
         if any(not (p.get("src") or "").startswith(allowed_audio_roots)
@@ -4878,7 +4878,7 @@ def check_audio(errors):
             if not 0 <= record["quantization_max_abs_error"] <= .5/32768 + 1e-15:
                 fail(errors, f"音频量化误差超限：{name}")
         parser = VisibleMediaParser()
-        parser.feed((SITE / "research/05_exercises_and_audio.html").read_text())
+        parser.feed((SITE / "research/05_exercises_and_audio.html").read_text(encoding="utf-8"))
         synthetic_players = [p for p in parser.items if (p.get("src") or "").startswith("../audio/")]
         expected_players = Counter({"../audio/" + n: 1 for n in names})
         # The moving-source comparison repeats the existing panning sample.
@@ -5205,6 +5205,7 @@ def check_math_figures(errors):
         expected_sources = {
             "codes/chapters/ch00/core/chapter00_math.py",
             "codes/chapters/ch00/io_contracts.py",
+            "codes/chapters/ch02/core/conventions.py",
             "scripts/make_figures.py",
             "scripts/make_math_figures.py",
         }

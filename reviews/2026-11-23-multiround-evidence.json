@@ -399847,6 +399847,1882 @@
           "Decimal_float": 5.551115123125783e-17
         }
       ]
+    },
+    "r4-exact-released-commit.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/r4-exact-released-commit.json",
+      "sha256": "2d882996953621b07fb57e2737bb3e2f10ef2ce3514ac1eea1b64b1ea0d7b2ea",
+      "bytes": 2338,
+      "boundary": "Exact R4 production commit and remote verification, with seven human-opened actual final English pages.",
+      "packet": {
+        "status": "Pushed and verified main at origin",
+        "commit": "dff3ec76d054a80fbaa7872e9cfad524db994415",
+        "production_paths": 515,
+        "path_manifest_sha256": "d6d1185c07719c0ee3fe8f43c4cb226b09d9c40a58b06650e4a2705b5b934072",
+        "clean_checkout_after_push": true,
+        "portable_quality_sha256": "62aec6bf0ef60b39bc963ef20a497124687131c96eb230e04ccdf37b627931cf",
+        "en_native_postoptimization_110dpi_visual": {
+          "1": {
+            "raster_sha256": "42f0ca3076ad978241383521e9b98302edc611571539decb2dae0c867fe71b12",
+            "actual_visual_observation": "Cover, four-part scope, asset totals, and actual build metadata."
+          },
+          "151": {
+            "raster_sha256": "f5a842025210c0206eecfd30c8d5634710cd416123a886037f7ca75215af643c",
+            "actual_visual_observation": "Whole Figure 87 and first two explanations. Markers, legend, and units readable."
+          },
+          "555": {
+            "raster_sha256": "050d0ff4429a2bf60e37307ee6e7c9e6b538d587a15eac35003239e399497981",
+            "actual_visual_observation": "Binaural table and adjacent two exercises. Three inline math labels in headers are absent in the repeated table on this R4 page. R5 restored these labels in an actual print."
+          },
+          "905": {
+            "raster_sha256": "4ca5ce4d519b03ccc85eb399d85085b551f34d40f0bf4d630c000759696ae59b",
+            "actual_visual_observation": "E08-27 title, covariance display, objective, and first answer step. The old five-round exact convergence wording remains tracked for the R5 correction."
+          },
+          "1519": {
+            "raster_sha256": "1970d052b0ebc7f4f1b9f411cb82ee6ca18b3b328d822ddba28ba7c94a3f2376",
+            "actual_visual_observation": "Appendix A matrix and Wirtinger card, mathematical shapes and linked equations."
+          },
+          "1522": {
+            "raster_sha256": "7992dd88aa9527f9b772e177789f85e5a6f944bcc21c1cfd431fcc5d93be1a2b",
+            "actual_visual_observation": "Numerical pitfall card. Long function names wrap within narrow columns, including UPLO."
+          },
+          "1622": {
+            "raster_sha256": "b29d8483ecd03fcd109598635e050fe9d8ec0dd4d37fd6ebe287e085c7fc2b74",
+            "actual_visual_observation": "Final command lines, repository links, and end marker."
+          }
+        },
+        "scope": "R4 frozen production commit. R5 continues corrections to native table labels and E08 wording. R6 contains the answer-lead repair. Manual visual checks are selected pages only."
+      }
+    },
+    "r4-exact-production-staging-inspection.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/r4-exact-production-staging-inspection.json",
+      "sha256": "256ef741c7d4d2d43c93b7568fca874d45940966f431f6152306be382906a3d2",
+      "bytes": 631,
+      "boundary": "All 515 selected real production paths matched the immutable source and regenerated output list before staging.",
+      "packet": {
+        "status": "Exact verified files staged. Portable release quality still running at staging.",
+        "head": "4a6b269addd67f2eb81f6643ac16a449560ae489",
+        "frozen_manifest_sha256": "d01f1bf56261e149454ae0321e4a4d78261786f8a54831160dba52edc825de7f",
+        "production_paths": 515,
+        "first_party_new_paths": 21,
+        "path_manifest_sha256": "d6d1185c07719c0ee3fe8f43c4cb226b09d9c40a58b06650e4a2705b5b934072",
+        "en_pdf_sha256": "bab733c9e09323f9a10195f1e26e31b148dabc35bff0a1e1a87c3245e042a1e5",
+        "en_raster_sha256": "84b0afb0d2e35bd2436a05d0d9a9a57ec82f7d364649dc6f04c9259432f93114",
+        "working_tree_has_no_other_nonignored_edits": true
+      }
+    },
+    "r4-final-pdf-build-execution.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/r4-final-pdf-build-execution.json",
+      "sha256": "fc34c7e7da47988c61d06fbba5fcce3bc6020a5efd7f78665700a7f39a168c4c",
+      "bytes": 3035,
+      "boundary": "Both actual formal PDF standard builders completed with the unchanged exact inputs, recording actual HTML and compressed file identities.",
+      "packet": {
+        "status": "completed",
+        "source_count": 681,
+        "guarded_inputs_count": 1282,
+        "build_date": "2026-11-23",
+        "source_freeze_sha256": "20f4659ff3bb95388c701ed2eac70ea2948e5e2328ea8a84017e35ddecdd3a8d",
+        "runs": [
+          {
+            "language": "zh",
+            "argv": [
+              "/Users/francis7999/code/github_repos/microphone-array-signal-processing/.venv/bin/python",
+              "-B",
+              "-u",
+              "scripts/build_pdf.py",
+              "--pdf-only"
+            ],
+            "log": "/private/tmp/masp-multiround-20261123/r4-final-pdf-build-zh.log",
+            "started_utc": "2026-11-23T08:29:02.629925+00:00",
+            "html_sha256": "5e30de85de0d06d84d484bfb05560cf281748524906a3c7a0810c22593fdb657",
+            "source_digest_at_start": "2275f3cb4d83",
+            "old_pdf_sha256": "b1a6a26a79b7352b8eb4ee8d5bd0c6eead86dc87175fb9b476a7bdf6f8b71682",
+            "pid": 40337,
+            "ended_utc": "2026-11-23T09:33:43.986844+00:00",
+            "elapsed_s": 3881.289134999999,
+            "exit_code": 0,
+            "log_sha256": "e5ef7c1cb879fc5f27bc35b9182fb0e760a587c2029bd8df978e34fb2835f442",
+            "pdf_path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/dist/microphone-array-tutorial.pdf",
+            "pdf_sha256": "d9911618ed8cd150f55d5508393a1f05d7062df36bc3344f9c885b737e9b77ab",
+            "bytes": 37379667,
+            "pages": 1389,
+            "source_digest": "2275f3cb4d83",
+            "actual_html_sha256": "5e30de85de0d06d84d484bfb05560cf281748524906a3c7a0810c22593fdb657",
+            "actual_build_date": "2026-11-23",
+            "under_50_MiB": true
+          },
+          {
+            "language": "en",
+            "argv": [
+              "/Users/francis7999/code/github_repos/microphone-array-signal-processing/.venv/bin/python",
+              "-B",
+              "-u",
+              "scripts/build_pdf_en.py",
+              "--pdf-only"
+            ],
+            "log": "/private/tmp/masp-multiround-20261123/r4-final-pdf-build-en.log",
+            "started_utc": "2026-11-23T09:33:50.565755+00:00",
+            "html_sha256": "455b502fa3f1f43cef290805cc6729efe8f67baeaf9b9ff47ab3be4a81c1ec0f",
+            "source_digest_at_start": "f1b2c6e1745a",
+            "old_pdf_sha256": "8d7f9d37e615cdd6213f1dc0be406e71846bcac403d401f6a58129d83d23b14c",
+            "pid": 86329,
+            "ended_utc": "2026-11-23T11:41:49.219601+00:00",
+            "elapsed_s": 7678.388707500009,
+            "exit_code": 0,
+            "log_sha256": "0c6b3de491c3d9e9d4a7c7afcb2598230334c37c53f220e1e032373c891bc45e",
+            "pdf_path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/dist/microphone-array-tutorial-en.pdf",
+            "pdf_sha256": "bab733c9e09323f9a10195f1e26e31b148dabc35bff0a1e1a87c3245e042a1e5",
+            "bytes": 37503383,
+            "pages": 1622,
+            "source_digest": "f1b2c6e1745a",
+            "actual_html_sha256": "455b502fa3f1f43cef290805cc6729efe8f67baeaf9b9ff47ab3be4a81c1ec0f",
+            "actual_build_date": "2026-11-23",
+            "under_50_MiB": true
+          }
+        ],
+        "boundary": "Actual PDF-only builds from canonical current combined HTML, preserving previous PDF bytes in outside backup. Full quality and visual acceptance separate.",
+        "all_guarded_inputs_unchanged": true
+      }
+    },
+    "r4-current-final-en-raster--result.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/result.json",
+      "sha256": "84b0afb0d2e35bd2436a05d0d9a9a57ec82f7d364649dc6f04c9259432f93114",
+      "bytes": 18496,
+      "boundary": "RGB comparison of all 1622 exact final English pages and 35 A4 controls against the validated PDF before optimization.",
+      "packet": {
+        "before_pdf_sha256": "50358733084dfac488b12c998c0a4ff2234381389427cf4bb797aca7aa59308b",
+        "after_pdf_sha256": "bab733c9e09323f9a10195f1e26e31b148dabc35bff0a1e1a87c3245e042a1e5",
+        "source_digest": "f1b2c6e1745a",
+        "html_sha256": "455b502fa3f1f43cef290805cc6729efe8f67baeaf9b9ff47ab3be4a81c1ec0f",
+        "all_pdf_pages_36dpi": 1622,
+        "differences_36dpi": [],
+        "control_pages_110dpi": [
+          {
+            "page": 1,
+            "before_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/before-110dpi/page-0001.png",
+            "after_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/after-110dpi/page-0001.png",
+            "before_sha256": "42f0ca3076ad978241383521e9b98302edc611571539decb2dae0c867fe71b12",
+            "after_sha256": "42f0ca3076ad978241383521e9b98302edc611571539decb2dae0c867fe71b12",
+            "same_dimensions": true,
+            "pixel_difference_bbox": null
+          },
+          {
+            "page": 2,
+            "before_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/before-110dpi/page-0002.png",
+            "after_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/after-110dpi/page-0002.png",
+            "before_sha256": "2812d7b35df26f49c123f076084d599defaf4a335f755a4201a3914a49f836fe",
+            "after_sha256": "2812d7b35df26f49c123f076084d599defaf4a335f755a4201a3914a49f836fe",
+            "same_dimensions": true,
+            "pixel_difference_bbox": null
+          },
+          {
+            "page": 10,
+            "before_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/before-110dpi/page-0010.png",
+            "after_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/after-110dpi/page-0010.png",
+            "before_sha256": "1e161ee27adc7ee7c936706cabb2fba2cd7698a92d55d2d1c8bf7dbfed3deac0",
+            "after_sha256": "1e161ee27adc7ee7c936706cabb2fba2cd7698a92d55d2d1c8bf7dbfed3deac0",
+            "same_dimensions": true,
+            "pixel_difference_bbox": null
+          },
+          {
+            "page": 27,
+            "before_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/before-110dpi/page-0027.png",
+            "after_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/after-110dpi/page-0027.png",
+            "before_sha256": "734e85cf543011765cda00e16ba57e2bb62d6dc5f1909db37d2db413fa9dc8d1",
+            "after_sha256": "734e85cf543011765cda00e16ba57e2bb62d6dc5f1909db37d2db413fa9dc8d1",
+            "same_dimensions": true,
+            "pixel_difference_bbox": null
+          },
+          {
+            "page": 45,
+            "before_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/before-110dpi/page-0045.png",
+            "after_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/after-110dpi/page-0045.png",
+            "before_sha256": "28bac7b065fd38f49de00a3a2a44c6926221850b67515f58c2ff55eadb8866e7",
+            "after_sha256": "28bac7b065fd38f49de00a3a2a44c6926221850b67515f58c2ff55eadb8866e7",
+            "same_dimensions": true,
+            "pixel_difference_bbox": null
+          },
+          {
+            "page": 151,
+            "before_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/before-110dpi/page-0151.png",
+            "after_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/after-110dpi/page-0151.png",
+            "before_sha256": "f5a842025210c0206eecfd30c8d5634710cd416123a886037f7ca75215af643c",
+            "after_sha256": "f5a842025210c0206eecfd30c8d5634710cd416123a886037f7ca75215af643c",
+            "same_dimensions": true,
+            "pixel_difference_bbox": null
+          },
+          {
+            "page": 160,
+            "before_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/before-110dpi/page-0160.png",
+            "after_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/after-110dpi/page-0160.png",
+            "before_sha256": "acb77bb5f38141db7ac78bfe5f11af6d7883845450126220f599623902cd1f72",
+            "after_sha256": "acb77bb5f38141db7ac78bfe5f11af6d7883845450126220f599623902cd1f72",
+            "same_dimensions": true,
+            "pixel_difference_bbox": null
+          },
+          {
+            "page": 242,
+            "before_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/before-110dpi/page-0242.png",
+            "after_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/after-110dpi/page-0242.png",
+            "before_sha256": "57db80b38370233c301a1b0d0669892730667d779f3d2d74b238c04b8e9cbf79",
+            "after_sha256": "57db80b38370233c301a1b0d0669892730667d779f3d2d74b238c04b8e9cbf79",
+            "same_dimensions": true,
+            "pixel_difference_bbox": null
+          },
+          {
+            "page": 274,
+            "before_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/before-110dpi/page-0274.png",
+            "after_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/after-110dpi/page-0274.png",
+            "before_sha256": "66a092ac445264f66912b6d67fef26bc8d8cad938ccca6184bb9f5ec7f12656b",
+            "after_sha256": "66a092ac445264f66912b6d67fef26bc8d8cad938ccca6184bb9f5ec7f12656b",
+            "same_dimensions": true,
+            "pixel_difference_bbox": null
+          },
+          {
+            "page": 417,
+            "before_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/before-110dpi/page-0417.png",
+            "after_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/after-110dpi/page-0417.png",
+            "before_sha256": "919392d46783d3844ff0d9e30e7ba3227dd4aa313ea1ae61484d26ed49c6bebe",
+            "after_sha256": "919392d46783d3844ff0d9e30e7ba3227dd4aa313ea1ae61484d26ed49c6bebe",
+            "same_dimensions": true,
+            "pixel_difference_bbox": null
+          },
+          {
+            "page": 421,
+            "before_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/before-110dpi/page-0421.png",
+            "after_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/after-110dpi/page-0421.png",
+            "before_sha256": "d6799cccf6c21d6af9b4daeff7a99c401d1e937090d2f1d3b645473721e87b4d",
+            "after_sha256": "d6799cccf6c21d6af9b4daeff7a99c401d1e937090d2f1d3b645473721e87b4d",
+            "same_dimensions": true,
+            "pixel_difference_bbox": null
+          },
+          {
+            "page": 555,
+            "before_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/before-110dpi/page-0555.png",
+            "after_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/after-110dpi/page-0555.png",
+            "before_sha256": "050d0ff4429a2bf60e37307ee6e7c9e6b538d587a15eac35003239e399497981",
+            "after_sha256": "050d0ff4429a2bf60e37307ee6e7c9e6b538d587a15eac35003239e399497981",
+            "same_dimensions": true,
+            "pixel_difference_bbox": null
+          },
+          {
+            "page": 576,
+            "before_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/before-110dpi/page-0576.png",
+            "after_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/after-110dpi/page-0576.png",
+            "before_sha256": "bc536df281030b746f0cf24a61f38aadd0d9594641c19abdec4f8dcaa418f1b5",
+            "after_sha256": "bc536df281030b746f0cf24a61f38aadd0d9594641c19abdec4f8dcaa418f1b5",
+            "same_dimensions": true,
+            "pixel_difference_bbox": null
+          },
+          {
+            "page": 638,
+            "before_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/before-110dpi/page-0638.png",
+            "after_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/after-110dpi/page-0638.png",
+            "before_sha256": "8c4ec4af4998d02eac5526c38722f8d15c47e8b7b11558778c466973d1088a5f",
+            "after_sha256": "8c4ec4af4998d02eac5526c38722f8d15c47e8b7b11558778c466973d1088a5f",
+            "same_dimensions": true,
+            "pixel_difference_bbox": null
+          },
+          {
+            "page": 746,
+            "before_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/before-110dpi/page-0746.png",
+            "after_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/after-110dpi/page-0746.png",
+            "before_sha256": "d037b9b18e62177f0115f4ab348a7961abcf00c07fb0434e498ca2ce9268c2d1",
+            "after_sha256": "d037b9b18e62177f0115f4ab348a7961abcf00c07fb0434e498ca2ce9268c2d1",
+            "same_dimensions": true,
+            "pixel_difference_bbox": null
+          },
+          {
+            "page": 853,
+            "before_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/before-110dpi/page-0853.png",
+            "after_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/after-110dpi/page-0853.png",
+            "before_sha256": "a83de762b82a6b8d5672626b9e0398900c2e500c4d4bc8a6fde849c53d264c34",
+            "after_sha256": "a83de762b82a6b8d5672626b9e0398900c2e500c4d4bc8a6fde849c53d264c34",
+            "same_dimensions": true,
+            "pixel_difference_bbox": null
+          },
+          {
+            "page": 884,
+            "before_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/before-110dpi/page-0884.png",
+            "after_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/after-110dpi/page-0884.png",
+            "before_sha256": "789993027513d5b482acd075ea51d9867528595f0f02221aa5c8a1c21becec77",
+            "after_sha256": "789993027513d5b482acd075ea51d9867528595f0f02221aa5c8a1c21becec77",
+            "same_dimensions": true,
+            "pixel_difference_bbox": null
+          },
+          {
+            "page": 905,
+            "before_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/before-110dpi/page-0905.png",
+            "after_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/after-110dpi/page-0905.png",
+            "before_sha256": "4ca5ce4d519b03ccc85eb399d85085b551f34d40f0bf4d630c000759696ae59b",
+            "after_sha256": "4ca5ce4d519b03ccc85eb399d85085b551f34d40f0bf4d630c000759696ae59b",
+            "same_dimensions": true,
+            "pixel_difference_bbox": null
+          },
+          {
+            "page": 907,
+            "before_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/before-110dpi/page-0907.png",
+            "after_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/after-110dpi/page-0907.png",
+            "before_sha256": "dd1e93cbc83fe095f01525ae5275bb328284c9fa978e8c41eb6178e0ed422cd4",
+            "after_sha256": "dd1e93cbc83fe095f01525ae5275bb328284c9fa978e8c41eb6178e0ed422cd4",
+            "same_dimensions": true,
+            "pixel_difference_bbox": null
+          },
+          {
+            "page": 1076,
+            "before_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/before-110dpi/page-1076.png",
+            "after_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/after-110dpi/page-1076.png",
+            "before_sha256": "12065cec7c88603ca688dafa2d21f7557bd25d2252fabbdb6990cea02d15b4cd",
+            "after_sha256": "12065cec7c88603ca688dafa2d21f7557bd25d2252fabbdb6990cea02d15b4cd",
+            "same_dimensions": true,
+            "pixel_difference_bbox": null
+          },
+          {
+            "page": 1089,
+            "before_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/before-110dpi/page-1089.png",
+            "after_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/after-110dpi/page-1089.png",
+            "before_sha256": "55ee711b259c592a17d2dc159f3830980bb2073a4c8579876381997ab18a921a",
+            "after_sha256": "55ee711b259c592a17d2dc159f3830980bb2073a4c8579876381997ab18a921a",
+            "same_dimensions": true,
+            "pixel_difference_bbox": null
+          },
+          {
+            "page": 1099,
+            "before_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/before-110dpi/page-1099.png",
+            "after_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/after-110dpi/page-1099.png",
+            "before_sha256": "794fe91184a926bbc2463d7399238302ad8ab85425edffa35d0df38916adef23",
+            "after_sha256": "794fe91184a926bbc2463d7399238302ad8ab85425edffa35d0df38916adef23",
+            "same_dimensions": true,
+            "pixel_difference_bbox": null
+          },
+          {
+            "page": 1187,
+            "before_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/before-110dpi/page-1187.png",
+            "after_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/after-110dpi/page-1187.png",
+            "before_sha256": "64b803297277b32c6450108a5686a46d560d055fba45a03bb437d785140d832a",
+            "after_sha256": "64b803297277b32c6450108a5686a46d560d055fba45a03bb437d785140d832a",
+            "same_dimensions": true,
+            "pixel_difference_bbox": null
+          },
+          {
+            "page": 1249,
+            "before_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/before-110dpi/page-1249.png",
+            "after_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/after-110dpi/page-1249.png",
+            "before_sha256": "ac2e52e8fb6346fc7f1b6aa28d4b19305e7985ea14d0d0afd616f8651fa5f2e3",
+            "after_sha256": "ac2e52e8fb6346fc7f1b6aa28d4b19305e7985ea14d0d0afd616f8651fa5f2e3",
+            "same_dimensions": true,
+            "pixel_difference_bbox": null
+          },
+          {
+            "page": 1320,
+            "before_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/before-110dpi/page-1320.png",
+            "after_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/after-110dpi/page-1320.png",
+            "before_sha256": "2d9f0737125e84c36920b975251026f36b0b9c5da1da94c1eafc002e3fb282b0",
+            "after_sha256": "2d9f0737125e84c36920b975251026f36b0b9c5da1da94c1eafc002e3fb282b0",
+            "same_dimensions": true,
+            "pixel_difference_bbox": null
+          },
+          {
+            "page": 1381,
+            "before_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/before-110dpi/page-1381.png",
+            "after_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/after-110dpi/page-1381.png",
+            "before_sha256": "3aee674999102f9f56dea1e683e0dd7104b19e493a92d445aee2e07de5938f93",
+            "after_sha256": "3aee674999102f9f56dea1e683e0dd7104b19e493a92d445aee2e07de5938f93",
+            "same_dimensions": true,
+            "pixel_difference_bbox": null
+          },
+          {
+            "page": 1390,
+            "before_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/before-110dpi/page-1390.png",
+            "after_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/after-110dpi/page-1390.png",
+            "before_sha256": "fe7e5230e77d40591c91b2a247ea9bc5d6a454243bb07f25b2b71fdb975c549b",
+            "after_sha256": "fe7e5230e77d40591c91b2a247ea9bc5d6a454243bb07f25b2b71fdb975c549b",
+            "same_dimensions": true,
+            "pixel_difference_bbox": null
+          },
+          {
+            "page": 1394,
+            "before_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/before-110dpi/page-1394.png",
+            "after_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/after-110dpi/page-1394.png",
+            "before_sha256": "626a9ddce53d7202d1f35c2726dd92ec6e2a77a2730c25d73c7c7a541e8ac0ac",
+            "after_sha256": "626a9ddce53d7202d1f35c2726dd92ec6e2a77a2730c25d73c7c7a541e8ac0ac",
+            "same_dimensions": true,
+            "pixel_difference_bbox": null
+          },
+          {
+            "page": 1438,
+            "before_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/before-110dpi/page-1438.png",
+            "after_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/after-110dpi/page-1438.png",
+            "before_sha256": "862355d2da5eaa62b8b8638dc9a47fb564391a7a3614066f44d7c8add7e48efa",
+            "after_sha256": "862355d2da5eaa62b8b8638dc9a47fb564391a7a3614066f44d7c8add7e48efa",
+            "same_dimensions": true,
+            "pixel_difference_bbox": null
+          },
+          {
+            "page": 1519,
+            "before_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/before-110dpi/page-1519.png",
+            "after_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/after-110dpi/page-1519.png",
+            "before_sha256": "1970d052b0ebc7f4f1b9f411cb82ee6ca18b3b328d822ddba28ba7c94a3f2376",
+            "after_sha256": "1970d052b0ebc7f4f1b9f411cb82ee6ca18b3b328d822ddba28ba7c94a3f2376",
+            "same_dimensions": true,
+            "pixel_difference_bbox": null
+          },
+          {
+            "page": 1520,
+            "before_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/before-110dpi/page-1520.png",
+            "after_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/after-110dpi/page-1520.png",
+            "before_sha256": "3dad7c7a013fc41a36bdf9d84a3085003c7733647f275bdc8cf2ae2f9588c559",
+            "after_sha256": "3dad7c7a013fc41a36bdf9d84a3085003c7733647f275bdc8cf2ae2f9588c559",
+            "same_dimensions": true,
+            "pixel_difference_bbox": null
+          },
+          {
+            "page": 1521,
+            "before_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/before-110dpi/page-1521.png",
+            "after_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/after-110dpi/page-1521.png",
+            "before_sha256": "9ae1d965ac7f1cdd29c1a7898b0795d04b8d2fb483d11481a6fa68bc1f78a0b7",
+            "after_sha256": "9ae1d965ac7f1cdd29c1a7898b0795d04b8d2fb483d11481a6fa68bc1f78a0b7",
+            "same_dimensions": true,
+            "pixel_difference_bbox": null
+          },
+          {
+            "page": 1522,
+            "before_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/before-110dpi/page-1522.png",
+            "after_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/after-110dpi/page-1522.png",
+            "before_sha256": "7992dd88aa9527f9b772e177789f85e5a6f944bcc21c1cfd431fcc5d93be1a2b",
+            "after_sha256": "7992dd88aa9527f9b772e177789f85e5a6f944bcc21c1cfd431fcc5d93be1a2b",
+            "same_dimensions": true,
+            "pixel_difference_bbox": null
+          },
+          {
+            "page": 1523,
+            "before_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/before-110dpi/page-1523.png",
+            "after_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/after-110dpi/page-1523.png",
+            "before_sha256": "7af5f25212471727c113206e5e1c10cde5d0090235a99cdef02d22c5dbbd269b",
+            "after_sha256": "7af5f25212471727c113206e5e1c10cde5d0090235a99cdef02d22c5dbbd269b",
+            "same_dimensions": true,
+            "pixel_difference_bbox": null
+          },
+          {
+            "page": 1622,
+            "before_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/before-110dpi/page-1622.png",
+            "after_png": "/private/tmp/masp-multiround-20261123/r4-current-final-en-raster/after-110dpi/page-1622.png",
+            "before_sha256": "b29d8483ecd03fcd109598635e050fe9d8ec0dd4d37fd6ebe287e085c7fc2b74",
+            "after_sha256": "b29d8483ecd03fcd109598635e050fe9d8ec0dd4d37fd6ebe287e085c7fc2b74",
+            "same_dimensions": true,
+            "pixel_difference_bbox": null
+          }
+        ],
+        "renderer": "/Users/francis7999/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/override/pdftoppm",
+        "boundary": "RGB comparisons between actual exact pre-optimization and final formal English PDFs. Human review is separate."
+      }
+    },
+    "r4-formal-bilingual-final-quality-gates--execution.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/r4-formal-bilingual-final-quality-gates/execution.json",
+      "sha256": "62aec6bf0ef60b39bc963ef20a497124687131c96eb230e04ccdf37b627931cf",
+      "bytes": 1996,
+      "boundary": "Actual final English quality and actual portable bilingual quality both returned zero.",
+      "packet": {
+        "status": "completed",
+        "started_utc": "2026-11-23T11:31:52.753728+00:00",
+        "commands": [
+          {
+            "label": "english-quality",
+            "argv": [
+              "/Users/francis7999/code/github_repos/microphone-array-signal-processing/.venv/bin/python",
+              "-B",
+              "-u",
+              "scripts/quality_check_en.py"
+            ],
+            "log": "/private/tmp/masp-multiround-20261123/r4-formal-bilingual-final-quality-gates/english-quality.log",
+            "started_utc": "2026-11-23T11:41:58.455655+00:00",
+            "pid": 32026,
+            "exit_code": 0,
+            "ended_utc": "2026-11-23T11:43:59.288883+00:00",
+            "elapsed_seconds": 120.83959300001152,
+            "log_sha256": "f9eac539790e05c01b50da63c58afa5e9dd420c221985a6afb2b8e7889e25d24"
+          },
+          {
+            "label": "portable-quality",
+            "argv": [
+              "/Users/francis7999/code/github_repos/microphone-array-signal-processing/.venv/bin/python",
+              "-B",
+              "-u",
+              "-c",
+              "from scripts.run_portable_ci import run_portable_quality_gates; run_portable_quality_gates()"
+            ],
+            "log": "/private/tmp/masp-multiround-20261123/r4-formal-bilingual-final-quality-gates/portable-quality.log",
+            "started_utc": "2026-11-23T11:43:59.380812+00:00",
+            "pid": 45527,
+            "exit_code": 0,
+            "ended_utc": "2026-11-23T11:54:00.276680+00:00",
+            "elapsed_seconds": 600.8930552079983,
+            "log_sha256": "59d101573419e241d8bf3536b0f4c0381494ea3fa43b70fb769eb39f6d08f1e7"
+          }
+        ],
+        "scope": "R4 actual formal compressed PDFs. Complete English quality gate and portable quality component. Exact portable test component runs independently under ordinary Python bytecode defaults.",
+        "formal_report_sha256": "fc34c7e7da47988c61d06fbba5fcce3bc6020a5efd7f78665700a7f39a168c4c",
+        "en_pdf_sha256": "bab733c9e09323f9a10195f1e26e31b148dabc35bff0a1e1a87c3245e042a1e5",
+        "zh_pdf_sha256": "d9911618ed8cd150f55d5508393a1f05d7062df36bc3344f9c885b737e9b77ab",
+        "en_pages": 1622,
+        "ended_utc": "2026-11-23T11:54:00.342962+00:00"
+      }
+    },
+    "r4-formal-portable-test-component--execution.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/r4-formal-portable-test-component/execution.json",
+      "sha256": "9d5c3d57105df61c2e25411ce0b2211fc2d7ed5691b595c5d64ef8e6fb8cb53a",
+      "bytes": 1338,
+      "boundary": "143 portable test modules, 1348 cases, one skip, zero exit with no frozen-source changes.",
+      "packet": {
+        "status": "completed",
+        "argv": [
+          "/Users/francis7999/code/github_repos/microphone-array-signal-processing/.venv/bin/python",
+          "-B",
+          "-u",
+          "-c",
+          "from scripts.run_portable_ci import run_portable_tests; run_portable_tests(simulate_portable=True)"
+        ],
+        "log": "/private/tmp/masp-multiround-20261123/r4-formal-portable-test-component/execution.log",
+        "started_utc": "2026-11-23T11:31:33.287437+00:00",
+        "source_freeze_sha256": "20f4659ff3bb95388c701ed2eac70ea2948e5e2328ea8a84017e35ddecdd3a8d",
+        "scope": "Exact portable test component of the existing CI launcher on formal R4 source. Real quality gates run separately after formal English PDF. Ordinary CPython cache semantics used.",
+        "pid": 92291,
+        "exit_code": 0,
+        "finished_utc": "2026-11-23T11:46:03.537795+00:00",
+        "elapsed_seconds": 870.2521359999955,
+        "source_changes": [],
+        "log_sha256": "83a2936d0bb8819f459263ce1e60dbe72ea947bd8debdf01014bb5f6f5765651",
+        "results": [
+          "Running baseline module: codes.chapters.ch00.chapter00_exercises",
+          "Running baseline module: codes.chapters.ch00.cross_chapter.ch02_05_baselines",
+          "Running baseline module: codes.chapters.ch00.cross_chapter.ch06_09_baselines",
+          "Loaded 143 test modules; excluded 142 modules by the reasons above",
+          "Ran 1348 tests in 867.214s",
+          "OK (skipped=1)"
+        ]
+      }
+    },
+    "r5-v7-shared-pdf-preview--preoptimization--en-snapshot.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/preoptimization/en-snapshot.json",
+      "sha256": "16db3fbdfa084ec2bdfba01892f89604b54e2491b6e15a80d892afa04ee00fd1",
+      "bytes": 373,
+      "boundary": "Actual R5 validated 1624-page English PDF before bookmarks and compression; final release run continues.",
+      "packet": {
+        "path": "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/preoptimization/en-validated-before-bookmarks.pdf",
+        "bytes": 139791199,
+        "sha256": "ceebde672a4df1aeea70e568397698eddeee6b51dfed4d1f8da2a3b885af023a",
+        "page_count": 1624,
+        "source_digest": "8b16d9554b7c",
+        "html_sha256": "bfd0e60462aba816808dc1e35f6e28dc29353ae11b2ed7b812893cf8c131db48"
+      }
+    },
+    "r5-v7-shared-pdf-preview--preoptimization--zh-snapshot.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/preoptimization/zh-snapshot.json",
+      "sha256": "a3ce4d4545aba4a98e706658818b4da0492402bc0f3317c3f72fad4454904c0c",
+      "bytes": 373,
+      "boundary": "Actual R5 validated 1389-page Chinese PDF before bookmarks and compression, from the standard retry.",
+      "packet": {
+        "path": "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/preoptimization/zh-validated-before-bookmarks.pdf",
+        "bytes": 140749870,
+        "sha256": "5c0e690472faf0be0e7a74db6715816c16d44b97d35269f18c4bb24ac70e5fb8",
+        "page_count": 1389,
+        "source_digest": "6d7b57f4f3a3",
+        "html_sha256": "d0f7b4a9295999c8674afb06d5897c6dd027c52f71da5652b55f0516e9e8f38a"
+      }
+    },
+    "r6-r415-r421-independent-review--v1-review-and-r415v2-handoff.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/r6-r415-r421-independent-review/v1-review-and-r415v2-handoff.json",
+      "sha256": "7e5c216322b99d5b07abeb16c71d91468b041e919f5b7a5dbf758cb8dfdac4e1",
+      "bytes": 9370,
+      "boundary": "Independent prior R421 comparison and accepted R415 second candidate complex controls.",
+      "packet": {
+        "status": "sealed independent R415v2 acceptance within tested numerical contract; R421v1 residual found, no complete approval",
+        "role": "publication_ci nonauthor of both candidates",
+        "input_sources": {
+          "/private/tmp/masp-multiround-20261123/r6-tikhonov-shadow-v2/chapter00_math.shadow.py": "9cdbc19bcaa80905cc47f5aa4d44e83c663a10cb3661b2c87dd10e8c2bfca521",
+          "/private/tmp/masp-multiround-20261123/r6-tikhonov-shadow/chapter00_math.shadow.py": "6d7f20e20fb6ba3710f812efcb29f871e01ec68d66c7ed08071c2ddec0fb7c2b",
+          "/private/tmp/masp-multiround-20261123/r6-r421-scalar-kalman/with-r369-math.py": "d13aed0b77ac4ddecc985ac10e2bc6e5194384b24c2067a5513015d61e771b56",
+          "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/core/chapter00_math.py": "c688c4be6f4d76b442a9b5cbd87ca6c2a2b6661721f1c21004084ce71ad79247"
+        },
+        "read_scope": {
+          "R415": "handoff7934B and 104 source lines648–751 plus return; v1-v2 patch and8 author test methods read, not executed as independent proof",
+          "R421": "plan1183B, r421-only patch, actual with-r369-math source1375–1458, author43test result and exact runner, appended test patch; only scalar branch and ordinary2D consumer examined"
+        },
+        "R415": {
+          "verdict": "No mismatch in three new complex diagonal/multimode Fraction oracles. Positive subnormal factors applied before premature rounding; explicit unsupported nonrepresentable-filter boundary preserved, no arbitrary SVD accuracy claim.",
+          "new_independent_cases": [
+            {
+              "label": "new_complex_three_subnormal_modes",
+              "max_relative_error": 0.0,
+              "actual_real": [
+                1.3322676295501878e-16,
+                -2.220446049250313e-16,
+                6.217248937900876e-16
+              ],
+              "actual_imag": [
+                -6.661338147750939e-17,
+                -2.220446049250313e-16,
+                -3.108624468950438e-16
+              ],
+              "expected_real": [
+                1.3322676295501878e-16,
+                -2.220446049250313e-16,
+                6.217248937900876e-16
+              ],
+              "expected_imag": [
+                -6.661338147750939e-17,
+                -2.220446049250313e-16,
+                -3.108624468950438e-16
+              ],
+              "warnings": []
+            },
+            {
+              "label": "new_complex_large_three_modes",
+              "max_relative_error": 0.0,
+              "actual_real": [
+                -0.5,
+                0.5,
+                0.5
+              ],
+              "actual_imag": [
+                -0.5,
+                -0.25,
+                -0.5
+              ],
+              "expected_real": [
+                -0.5,
+                0.5,
+                0.5
+              ],
+              "expected_imag": [
+                -0.5,
+                -0.25,
+                -0.5
+              ],
+              "warnings": []
+            },
+            {
+              "label": "new_small_three_modes",
+              "max_relative_error": 0.0,
+              "actual_real": [
+                -0.015384615384615385,
+                0.9999389685688129,
+                0.9999999999417923
+              ],
+              "actual_imag": [
+                -0.015384615384615385,
+                -0.49996948428440646,
+                0.9999999999417923
+              ],
+              "expected_real": [
+                -0.015384615384615385,
+                0.9999389685688129,
+                0.9999999999417923
+              ],
+              "expected_imag": [
+                -0.015384615384615385,
+                -0.49996948428440646,
+                0.9999999999417923
+              ],
+              "warnings": []
+            }
+          ],
+          "before_v1_after_v2": {
+            "r415v1": {
+              "real": [
+                1.1102230246251565e-16,
+                -2.220446049250313e-16,
+                6.661338147750939e-16
+              ],
+              "imag": [
+                -5.551115123125783e-17,
+                -2.220446049250313e-16,
+                -3.3306690738754696e-16
+              ]
+            },
+            "r415v2": {
+              "real": [
+                1.3322676295501878e-16,
+                -2.220446049250313e-16,
+                6.217248937900876e-16
+              ],
+              "imag": [
+                -6.661338147750939e-17,
+                -2.220446049250313e-16,
+                -3.108624468950438e-16
+              ]
+            }
+          },
+          "limitations": "Finite diagonal/modal controls do not prove arbitrary ill-conditioned non-diagonal SVD or cancellation-dominated reconstruction. Author8+20tests were read, not rerun or relabelled as this reviewer execution."
+        },
+        "R421v1": {
+          "verdict": "Covariance range repair supported in seven focused and172 new seeded random rational cases; incomplete on adjacent scalar posterior state. Root accepted same-ID residual and is preparing v2.",
+          "seven_cases": [
+            {
+              "P": 1e+300,
+              "R": 1.0,
+              "H": 3.0,
+              "expected_covariance": 0.1111111111111111,
+              "actual_covariance": 0.1111111111111111,
+              "relative_error": 0.0,
+              "expected_gain": 0.3333333333333333,
+              "actual_gain": 0.3333333333333333,
+              "warnings": []
+            },
+            {
+              "P": 1e-200,
+              "R": 2e-200,
+              "H": -3.0,
+              "expected_covariance": 1.8181818181818183e-201,
+              "actual_covariance": 1.8181818181818183e-201,
+              "relative_error": 0.0,
+              "expected_gain": -0.2727272727272727,
+              "actual_gain": -0.27272727272727276,
+              "warnings": []
+            },
+            {
+              "P": 1e+200,
+              "R": 1e-100,
+              "H": 0.125,
+              "expected_covariance": 6.4e-99,
+              "actual_covariance": 6.4e-99,
+              "relative_error": 0.0,
+              "expected_gain": 8.0,
+              "actual_gain": 8.0,
+              "warnings": []
+            },
+            {
+              "P": 1e+100,
+              "R": 1e+100,
+              "H": -8.0,
+              "expected_covariance": 1.5384615384615383e+98,
+              "actual_covariance": 1.5384615384615383e+98,
+              "relative_error": 0.0,
+              "expected_gain": -0.12307692307692308,
+              "actual_gain": -0.12307692307692307,
+              "warnings": []
+            },
+            {
+              "P": 1e-100,
+              "R": 1e-200,
+              "H": 1.6069380442589903e+60,
+              "expected_covariance": 3.873e-321,
+              "actual_covariance": 3.873e-321,
+              "relative_error": 0.0,
+              "expected_gain": 6.223015277861142e-61,
+              "actual_gain": 6.223015277861142e-61,
+              "warnings": []
+            },
+            {
+              "P": 1e-100,
+              "R": 1e-100,
+              "H": 6.223015277861142e-61,
+              "expected_covariance": 1e-100,
+              "actual_covariance": 1e-100,
+              "relative_error": 0.0,
+              "expected_gain": 6.223015277861142e-61,
+              "actual_gain": 6.223015277861142e-61,
+              "warnings": []
+            },
+            {
+              "P": 1e+20,
+              "R": 1.0,
+              "H": 1.0,
+              "expected_covariance": 1.0,
+              "actual_covariance": 1.0,
+              "relative_error": 0.0,
+              "expected_gain": 1.0,
+              "actual_gain": 1.0,
+              "warnings": []
+            }
+          ],
+          "random_case_summary": {
+            "evaluated": 172,
+            "max_relative_error": 2.49800180592359e-16,
+            "max_ulp_distance": 2.0,
+            "exceptions": 0
+          },
+          "ordinary_2D": {
+            "max_abs_errors": {
+              "predicted_cov": 0.0,
+              "kalman_gain": 0.0,
+              "posterior_cov_joseph": 2.220446049250313e-16,
+              "posterior_state": 0.0
+            },
+            "posterior_cov_truth": [
+              [
+                0.5234375,
+                0.71875
+              ],
+              [
+                0.71875,
+                1.475
+              ]
+            ],
+            "posterior_state_truth": [
+              -0.59375,
+              -1.875
+            ]
+          },
+          "state_counterexample": {
+            "outputs": {
+              "formal": {
+                "mean": [
+                  0.0
+                ],
+                "cov": [
+                  [
+                    1.0
+                  ]
+                ]
+              },
+              "r421": {
+                "mean": [
+                  0.0
+                ],
+                "cov": [
+                  [
+                    1.0
+                  ]
+                ]
+              }
+            },
+            "Fraction_exact_mean_rounded": 1.0,
+            "independent_conditional_mean_expression": "(R/S)*s_pred+(P_pred*H/S)*z",
+            "scope": "This state expression is byte-unchanged in R421; covariance-only repair not claimed to solve all state cancellation."
+          },
+          "scope": "Not a new regression: exact formal source and v1 both produce0. Source formula unchanged but directly related to scalar complement; v1 not fully accepted."
+        },
+        "evidence_files": [
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-r415-r421-independent-review/probe.py",
+            "sha256": "dea593945f271acedd43f5f0507775798b2d75d6dbde41ce3ecd2f4b33384b34"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-r415-r421-independent-review/probe-results.json",
+            "sha256": "7b0c45844be1c7b2853a701db022dcfc4191bfdb05365ccf11a67a1f2b12fc4a"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-r415-r421-independent-review/additional-controls.py",
+            "sha256": "09b21530de43700dac42ec8f1ad447751b600c6431327cf8d785dda87bcbf2c0"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-r415-r421-independent-review/additional-results.json",
+            "sha256": "9a1f8e14c3f490db1cac20f3277af1a3139bfab14f05ac1f502e09ddc6646dc7"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-r415-r421-independent-review/probe-import-path-failure-preserved.py",
+            "sha256": "6d332a7e021e800317c06d74f925e671f81006c226478d5c9d554c74aa7880bc"
+          }
+        ],
+        "setup_failure": "Initial standalone loader lacked repo import path; ModuleNotFoundError before numerical execution. Original script preserved, corrected only independent harness. Not product failure.",
+        "guard": {
+          "changed_input_sources": [],
+          "formal_or_existing_shadow_writes": false,
+          "new_figures_reports_PDF_Chrome_testsuite": false
+        }
+      }
+    },
+    "r6-r420-independent--handoff.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/r6-r420-independent/handoff.json",
+      "sha256": "98d78c4a9e394b2c7f9a1490853074721be66102af1836078bb21392f5a66b1d",
+      "bytes": 13749,
+      "boundary": "Independent zero-failure bound calculations with exact equality and high-precision Decimal references.",
+      "packet": {
+        "id": "R420",
+        "role": "Independent non-author finite review of content_map private numerical proposal",
+        "date": "2026-11-23T11:43:17.152598+00:00",
+        "author_plan": {
+          "path": "/private/tmp/masp-multiround-20261123/r6-r420-binomial-upper-proposal/plan.json",
+          "sha256": "aaa72a6ee18acb9a67386788565f800cf4e8d125d3462a6dcb097aa2690d8ed5"
+        },
+        "sources": [
+          {
+            "path": "codes/chapters/ch00/core/chapter00_math.py",
+            "preimage_sha256": "c688c4be6f4d76b442a9b5cbd87ca6c2a2b6661721f1c21004084ce71ad79247",
+            "candidate_path": "/private/tmp/masp-multiround-20261123/r6-r420-binomial-upper-proposal/source/codes/chapters/ch00/core/chapter00_math.py",
+            "candidate_sha256": "9be62760e31512e68840245ca388895607181c4d1f75903489ac4ee4fc450e29",
+            "old_range": [
+              2011,
+              2016
+            ],
+            "change": "Private stable common reconstruction plus unchanged alpha-facing signature and validators.",
+            "candidate_actual_sha256": "9be62760e31512e68840245ca388895607181c4d1f75903489ac4ee4fc450e29",
+            "matches_author_frozen": true,
+            "formal_actual_sha256": "c688c4be6f4d76b442a9b5cbd87ca6c2a2b6661721f1c21004084ce71ad79247",
+            "formal_unchanged": true
+          },
+          {
+            "path": "codes/chapters/ch00/cross_chapter/tracking_time_exercises.py",
+            "preimage_sha256": "40dacdb70249c3c2f242f778af7aacdbfeb95fe6ea43579d69b8c04aaf5c258d",
+            "candidate_path": "/private/tmp/masp-multiround-20261123/r6-r420-binomial-upper-proposal/source/codes/chapters/ch00/cross_chapter/tracking_time_exercises.py",
+            "candidate_sha256": "232de4cc01d2d66e08e921c70d055cdf658147cf9f98b4bbc9ba6d59a41b22cf",
+            "old_range": [
+              94,
+              111
+            ],
+            "change": "Keep confidence-facing validation and log1p; share only reconstruction, no alpha/confidence conversion.",
+            "candidate_actual_sha256": "232de4cc01d2d66e08e921c70d055cdf658147cf9f98b4bbc9ba6d59a41b22cf",
+            "matches_author_frozen": true,
+            "formal_actual_sha256": "40dacdb70249c3c2f242f778af7aacdbfeb95fe6ea43579d69b8c04aaf5c258d",
+            "formal_unchanged": true
+          },
+          {
+            "path": "tests/test_review_r6_binomial_upper.py",
+            "preimage_sha256": null,
+            "candidate_path": "/private/tmp/masp-multiround-20261123/r6-r420-binomial-upper-proposal/source/tests/test_review_r6_binomial_upper.py",
+            "candidate_sha256": "4c594f6ef50c8ec49ad8e098a757f7f2e2777e1a25ba908843701ff90626265e",
+            "change": "Five behavior tests; independent Decimal reference/constants, both parameterizations and legal support boundaries.",
+            "candidate_actual_sha256": "4c594f6ef50c8ec49ad8e098a757f7f2e2777e1a25ba908843701ff90626265e",
+            "matches_author_frozen": true,
+            "formal_actual_sha256": null,
+            "formal_unchanged": true
+          }
+        ],
+        "verdict": "Accept within declared finite integer/float64 support; no new P2 confirmed. Adjacent P3 index wording separately privately fixed withroot authorization.",
+        "actual_reading": [
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-r420-binomial-upper-proposal/source/codes/chapters/ch00/core/chapter00_math.py",
+            "ranges": [
+              [
+                2005,
+                2045
+              ],
+              [
+                1,
+                10
+              ]
+            ],
+            "scope": "Actual changed helper andalphaAPI source plus nextWilson context; AST import list only for remainingsource, not fullread",
+            "sha256": "9be62760e31512e68840245ca388895607181c4d1f75903489ac4ee4fc450e29"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-r420-binomial-upper-proposal/source/codes/chapters/ch00/cross_chapter/tracking_time_exercises.py",
+            "ranges": [
+              [
+                1,
+                25
+              ],
+              [
+                94,
+                115
+              ]
+            ],
+            "scope": "new shared import + confidence validator/call",
+            "sha256": "232de4cc01d2d66e08e921c70d055cdf658147cf9f98b4bbc9ba6d59a41b22cf"
+          },
+          {
+            "path": "codes/chapters/ch11/chapter11_experiments.py",
+            "ranges": [
+              [
+                42,
+                105
+              ]
+            ],
+            "scope": "zero-event session, simultaneousfamily control, delivered deadline equality",
+            "sha256": "826598ef4efd92074a8757e26b81b92cbed8e7aaef314e2d5de772309bac2685"
+          },
+          {
+            "path": "codes/chapters/ch11/core/selection.py",
+            "ranges": [
+              [
+                61,
+                82
+              ]
+            ],
+            "scope": "interval verdict equality; other matching function inventory is notread",
+            "sha256": "987e61d30e9300941d55816629447110b92d28efa342dfbde895b2912df8e2cf"
+          },
+          {
+            "path": "tests/test_codes_chapter11_experiments.py",
+            "ranges": [
+              [
+                136,
+                156
+              ]
+            ],
+            "sha256": "0e23e4f2314801956ec1a26d96c9797c62ba69bf71ed23fb491282be8d430db6"
+          },
+          {
+            "path": "tests/test_codes_time_state_exercises.py",
+            "ranges": [
+              [
+                69,
+                90
+              ]
+            ],
+            "sha256": "9712197421e29d518431e3e30175c453a36573a3cbd04cbc93e0f797a28b2daf"
+          },
+          {
+            "path": "codes/chapters/ch00/research/03_industrial_deployment.md",
+            "ranges": [
+              [
+                429,
+                435
+              ]
+            ],
+            "sha256": "dfc4ba9d5edeee7fb953e25fb83e046a5ec641572a13bfd40dcd5a28528f48a6"
+          },
+          {
+            "path": "codes/chapters/ch00/research_en/03_industrial_deployment.md",
+            "ranges": [
+              [
+                328,
+                331
+              ]
+            ],
+            "sha256": "fc6b55b8535b5e7384d73d5e53b6089103f4cc72e54df3073c477771ca555019"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r5-complete-source-candidate/source/chapters/11_selection-guide.md",
+            "logical_path": "chapters/11_selection-guide.md",
+            "ranges": [
+              [
+                311,
+                347
+              ],
+              [
+                558,
+                575
+              ]
+            ],
+            "sha256": "45bc20d30a34210e01d50ffd965a7adbbeecf991459a70de3eb7440965cbaa58",
+            "scope": "actual selected consumers only, not full chapter/manual; truncated inventories not counted"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r5-complete-source-candidate/source/chapters_en/11_selection-guide.md",
+            "logical_path": "chapters_en/11_selection-guide.md",
+            "ranges": [
+              [
+                311,
+                311
+              ],
+              [
+                313,
+                318
+              ],
+              [
+                321,
+                347
+              ],
+              [
+                558,
+                575
+              ]
+            ],
+            "sha256": "b0fd7999ec6de927941f57629ef034aece500e09bc7f99af8d4f9d4461d13a8b",
+            "scope": "actual selected consumers only, not full chapter/manual; truncated inventories not counted"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r5-complete-source-candidate/source/codes/chapters/ch00/research/05_exercises_and_audio.md",
+            "logical_path": "codes/chapters/ch00/research/05_exercises_and_audio.md",
+            "ranges": [
+              [
+                109,
+                109
+              ],
+              [
+                1574,
+                1582
+              ]
+            ],
+            "sha256": "44aa98e856281f6f6707503783d6709a28a104ed1df4d7f5bd38c2dc667b7a64",
+            "scope": "actual selected consumers only, not full chapter/manual; truncated inventories not counted"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r5-complete-source-candidate/source/codes/chapters/ch00/research_en/05_exercises_and_audio.md",
+            "logical_path": "codes/chapters/ch00/research_en/05_exercises_and_audio.md",
+            "ranges": [
+              [
+                109,
+                109
+              ],
+              [
+                1216,
+                1216
+              ]
+            ],
+            "sha256": "abdcd97fa729ce4555324a4ffc2bfd2755a10114879af5d90928dbc4d4276496",
+            "scope": "actual selected consumers only, not full chapter/manual; truncated inventories not counted"
+          }
+        ],
+        "independent_execution": {
+          "result_path": "/private/tmp/masp-multiround-20261123/r6-r420-independent/results.json",
+          "sha256": "2046832ca4512eef5b5f46ecf8a04c94945c85d2c5d167aac0d3eaaf18a9a7ad",
+          "Decimal_precision": 1100,
+          "returned_value_controls": 56,
+          "explicit_support_exceptions": 9,
+          "max_observed_error_ulps": 1.0,
+          "warnings": 0,
+          "exact_dyadic_equalities": 48,
+          "half_tail_rational_boundary_rows": 18,
+          "validation_rows": 18,
+          "meaning": "finite deterministic controls, not all IEEE inputs/exact rounding theorem; no random experiment or upstream run"
+        },
+        "regressions": {
+          "tests": 27,
+          "failures": 0,
+          "errors": 0,
+          "skipped": [],
+          "breakdown": "5 author new behavioral tests +2 old direct confidence consumers +20 old math kernel tests. Independent new control scripts are separate, not counted as27 unit tests."
+        },
+        "consumer_execution": {
+          "path": "/private/tmp/masp-multiround-20261123/r6-r420-independent/consumer-results.json",
+          "sha256": "0c6a4b14c72302e674c1076bbb770df29c6e4ee34bd77325600b6dc8d3e49c83",
+          "covered": [
+            "fresh reverse import cross-chapter->foundation",
+            "upper-limit equality pass / lower-limit equality undetermined",
+            "strict tail<alpha at equality doesnotfail",
+            "E11-08 independent planned sessions",
+            "simultaneous alpha budget min-n neighbors",
+            "deadline150ms equality accepted bylate>deadline"
+          ]
+        },
+        "import_graph": {
+          "new_edge": "ch00.cross_chapter.tracking_time_exercises -> ch00.core.chapter00_math",
+          "foundation_imports": [
+            "__future__.annotations",
+            "math",
+            "numpy",
+            "fractions.Fraction only insidefunctions"
+          ],
+          "actual_fresh_orders": [
+            "foundation first then cross-chapter",
+            "cross-chapter first then foundation"
+          ],
+          "namespace_note": "cross_chapter hasno __init__.py; failed existence read keptas initial harness assumption, not runtime import error.",
+          "cycle_verdict": "No cycle introduced bynewedge; not a proof forallfuture edits."
+        },
+        "support_limits": {
+          "n10pow309": "bothAPIs explicitly reject integer-to-float division range though exact bound6.93147180559944e-310 representable. Existing documented numerical support policy retained.",
+          "confidence_minsub_n2": "true bound rounds tominsub; logtail/n intermediate underflowszero, explicitValueError retained; not claiming all representable finalbounds supported.",
+          "confidence_5minsub_n2": "actual2minsub vs correctlyrounded3minsub:1ULP, no global correct-rounding claim; these are legitimate disclosed IEEE edge limitations, not statistical zero-risk inference.",
+          "no_silent_zero": "Every actuallyreturned bound positivefinite≤1, detectedzero reconstruction rejected."
+        },
+        "consumer_verdicts": [
+          {
+            "consumer": "ch11 §11.5.3 andE11-08 bothlanguages",
+            "verdict": "iidcommonp/fixedn/single-sidedalpha/zeroobservednotzerorisk preserved; pU<=target formula correct; no newprosefix needed"
+          },
+          {
+            "consumer": "ch11 upper_limit_verdict anddeadline_acceptance_anchor",
+            "verdict": "strict lower>target fail vsupper<=target pass anddeadlineinclusive consistent"
+          },
+          {
+            "consumer": "03 manuals",
+            "verdict": "zero observed and low actual risk distinguished; correlatedframes nottreatedindependent"
+          },
+          {
+            "consumer": "05 manuals E11-15",
+            "verdict": "Poisson intensity perhour distinct frombinomial per-session; zero count notzero risk correct"
+          },
+          {
+            "consumer": "EN05 index109",
+            "verdict": "P3 exactCP/Rule-of-3 slash ambiguous, authorized singleline removeRule-of-3; allotherbytes retained"
+          }
+        ],
+        "original_source": {
+          "url": "https://itl.nist.gov/div898/handbook/prc/section2/prc241.htm",
+          "retrieval_date": "2026-11-23",
+          "actual_read": "Official HTML tool lines0–45; relevant12–20 and43. Two-sided exact binomial tail equations usealpha/2; one-sided Wilson uses unsplit tail. Current chapter explicitlydistinguishes one-sided derivation fromtwo-sided background.",
+          "independent_derivation": "Forzeroevents, P(X=0)=(1-p)^n. Inverting atalpha gives1-alpha^(1/n); Rule-of-3 is approximate because n*pU approaches-ln(.05)≈2.995732, not exactly3. n20 exact.13910834066826516 vs3/n.15.",
+          "not_claimed": "No full original ClopperPearson1934 or Rule-of-Three clinicalpaper newlyobtained/read."
+        },
+        "P3_followup": {
+          "path": "/private/tmp/masp-multiround-20261123/r6-r420-index-followup/handoff.json",
+          "sha256": "60fd92630730d5d31abe47208dd20a65c5b940d3e772b672f4ec5fb24a317fdb"
+        },
+        "not_executed": [
+          "No finalR5 publication acceptance",
+          "No formal/V7/sourcecandidate modification",
+          "No diagram/WAV/report regeneration",
+          "No exhaustive all-IEEE scalar-bound proof",
+          "No full manuals/ch11 whole reread inthisnarrowtask"
+        ],
+        "running_summary_tool": "Both objectives awaited same-exec update_running_summary; tool rejectedvalidlabels, no repeated retries.",
+        "formal681_mismatches": [],
+        "R5candidate35_mismatches": [],
+        "file_sha256": {
+          "seal.py": "ae48075637b91bde7baa75bf2e28ccc347a5d2b6158482c63860e5e3d691207a",
+          "control.py": "cdf1102eb46ffb12e68eb8f9160ca8039c81c300fcb2cb082d4a0eb6305ac181",
+          "results.json": "2046832ca4512eef5b5f46ecf8a04c94945c85d2c5d167aac0d3eaaf18a9a7ad",
+          "consumer-controls.py": "8dcbd6bafa677eb708550a08bb39c0b4f93f9e0ef0305d9898226799e5fcb2ac",
+          "control.log": "4f55d50019634dedfc4b9ba0dbe2e5d72a665884004a4938890274a2336e45ca",
+          "consumer-results.json": "0c6a4b14c72302e674c1076bbb770df29c6e4ee34bd77325600b6dc8d3e49c83",
+          "regression-results.json": "4717eb352d5abf253a5d1b8f4cab5d55e3b015e17fb64d0df4ae6c62b4b07d58",
+          "regressions.log": "3d75894699712c78e429e8e48c02121f52eb9a2f02a45e5f39e436c5f30c56d3",
+          "consumer-controls.log": "c58b9be36104f77ee1816d9d278037188dac4e8c8b86fb9392e94d7caec5bd74",
+          "run_regressions.py": "add4bcc9a853e70fbd3124f1d7d06c348600bdc5eaa1f7c9b906faedb092f1fd"
+        }
+      }
+    },
+    "r6-r420-index-followup--handoff.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/r6-r420-index-followup/handoff.json",
+      "sha256": "60fd92630730d5d31abe47208dd20a65c5b940d3e772b672f4ec5fb24a317fdb",
+      "bytes": 1538,
+      "boundary": "Exact English index change separates exact upper bound from the customary approximation.",
+      "packet": {
+        "id": "R420",
+        "classification": "adjacent P3 wording only, authorized root private one-line followup",
+        "preimage": {
+          "path": "/private/tmp/masp-multiround-20261123/r5-complete-source-candidate/source/codes/chapters/ch00/research_en/05_exercises_and_audio.md",
+          "sha256": "abdcd97fa729ce4555324a4ffc2bfd2755a10114879af5d90928dbc4d4276496",
+          "basis": "Authoritative35-path R5 complete source candidate, not older formal manual; preserves E08-27 changes"
+        },
+        "candidate": {
+          "path": "/private/tmp/masp-multiround-20261123/r6-r420-index-followup/source/codes/chapters/ch00/research_en/05_exercises_and_audio.md",
+          "sha256": "6f5fd63834ef77f4b37b028e7aef16c70d8783194215484770d2dbc532da3816"
+        },
+        "patch": {
+          "path": "/private/tmp/masp-multiround-20261123/r6-r420-index-followup/review.patch",
+          "sha256": "8e9abb13f27061d5951dc41860205364709ff84ec0a47da747d53a20137f8650"
+        },
+        "actual_diff_lines": [
+          109
+        ],
+        "before": "exact Clopper–Pearson / Rule-of-3 one-sided risk bound at zero observed failures",
+        "after": "exact Clopper–Pearson one-sided risk bound at zero observed failures",
+        "validation": {
+          "all_other_lines_exactly_equal": true,
+          "line_count_unchanged": true,
+          "Chinese_unchanged": true,
+          "E08_27_all_bytes_unchanged": true,
+          "numbers_algorithms_assets_unchanged": true
+        },
+        "explanation": "CP bound is exact binomial model inversion. Rule of Three is an approximate95-percent large-n mnemonic; deleting parallel name keeps index concise and matched to Chinese."
+      }
+    },
+    "r6-r421v3-independent-review--handoff.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/r6-r421v3-independent-review/handoff.json",
+      "sha256": "167e0e312b6407995f9cbe191801621afccfa2c7228b9089e1dfae82f285afb1",
+      "bytes": 7328,
+      "boundary": "Preserved third R421 trial failure and finite matrix and scalar passing controls.",
+      "packet": {
+        "status": "R421v3 independently reviewed; four prior failures repaired, newly confirmed gain and Joseph-sum subnormal residuals remain; no full acceptance",
+        "role": "publication_ci nonauthor",
+        "plan": {
+          "path": "/private/tmp/masp-multiround-20261123/r6-r421-scalar-kalman-v3/plan.json",
+          "sha256": "e7f1b569f0f95a886017bdf789ce82b1e62ff7c5dd9e14112e85139823720055"
+        },
+        "source": {
+          "path": "/private/tmp/masp-multiround-20261123/r6-r421-scalar-kalman-v3/with-r369-math.py",
+          "sha256": "b940f605527ffc6c2c2602c13ce230e2a997312e63b565b78b6c92bf7bfd924b",
+          "matches_declared": true,
+          "function_actual_read_lines": [
+            1395,
+            1467
+          ]
+        },
+        "changes_read": "Full r421-only.patch; actual scalar exponent complement and preserved matrix branch; read plans prior versions as objects to challenge. No assumption author test counts prove correctness.",
+        "prior_four_counterexamples": {
+          "result": "All now agree with exact Fraction: original1e20-state case1; R/S underflow cases1e-20,4e-20,4e-20.",
+          "file": "new-probe-results.json"
+        },
+        "independent_positive_controls": {
+          "104_scalar_states": {
+            "max_relative_error": 3.243806910819064e-15,
+            "warning_cases": 0,
+            "scope": "NonunitF/H, large and micro ordinary values plus100 new seeded cases"
+          },
+          "172_scalar_covariances": {
+            "max_relative_error": 2.49800180592359e-16,
+            "max_ULP": 2.0
+          },
+          "two_state_one_measurement": {
+            "max_abs_errors": {
+              "predicted_cov": 0.0,
+              "kalman_gain": 0.0,
+              "posterior_cov_joseph": 2.220446049250313e-16,
+              "posterior_state": 0.0
+            },
+            "posterior_cov_truth": [
+              [
+                0.5234375,
+                0.71875
+              ],
+              [
+                0.71875,
+                1.475
+              ]
+            ],
+            "posterior_state_truth": [
+              -0.59375,
+              -1.875
+            ]
+          },
+          "two_state_two_measurements": {
+            "oracle": "Exact rational F,Q,P,H,R and2x2 inverse; posterior P-PH^T S^-1 HP and exact conditional mean.",
+            "max_abs_errors": {
+              "predicted_cov": 0.0,
+              "innovation_cov": 0.0,
+              "kalman_gain": 1.1102230246251565e-16,
+              "posterior_cov_joseph": 1.1102230246251565e-16,
+              "posterior_state": 1.6653345369377348e-16
+            }
+          }
+        },
+        "confirmed_new_residuals": [
+          {
+            "family": "gain rounds before large measurement",
+            "inputs": "P=H=2^-400,R=2^400,s0=0,z=2^1000,F1,Q0; ±H and decimal variant",
+            "actual": "gain±0 and state0",
+            "exact_state": "±2^-200=±6.223015277861142e-61; decimal variant1e-92",
+            "cause": "cross covariance positive representable2^-800; gain=cross/S underflows before multiplying z.",
+            "recommendation": "Evaluate full cross*z/S without early gain rounding, or explicitly reject unsupported positive gain loss."
+          },
+          {
+            "family": "nonzero subnormal gain rounds before measurement",
+            "inputs": "u=minsubnormal,P=3u,H1,R2,s0=0,z=2^1000; companionP5u,H-1,R3",
+            "actual": "First1.0587911840678754e-22 vs Fraction7.940933880509066e-23,relative1/3; companion20% error",
+            "cause": "Returned gain nearestfloat2u is valid diagnostic but unsuitable as intermediate of amplified product.",
+            "recommendation": "Same full weighted term scaling. Merely rejecting zero gain misses these examples."
+          },
+          {
+            "family": "two nonnegative Joseph terms separately round to zero",
+            "inputs": "P=R=2u,H1,F1,Q0,s0=z0; companionP2u,R8u,H2",
+            "actual": "gain.5/.25,posterior_cov0",
+            "exact_posterior": "u=5e-324 positive representable",
+            "cause": "Each Joseph contribution is .5u; separately rounded0+0 loses their representable sum.",
+            "recommendation": "Merge the two covariance terms in a common exponent scale and round combined output once, or explicitly refuse supported-range loss. Preserve Joseph identity and ordinary matrix branch.",
+            "positive_neighbors": "P=R=4u,H±1 both give correct2u; true outputs below representable minimum were not falsely classified as positive failures."
+          }
+        ],
+        "reviewer_messages": "All residuals immediately sent to root. Root accepted gain residual, asked to seal without further same-family examples, and is preparing v4. No candidate was modified.",
+        "evidence": [
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-r421v3-independent-review/covariance-and-2d-controls.py",
+            "sha256": "2e362e6c6d0b697463a091dd02214462c615f87a9849f05fb60234dc2934dad9",
+            "bytes": 4590
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-r421v3-independent-review/covariance-and-2d-results.json",
+            "sha256": "5eea26782a344a8bfc22e75ec1a8db3e0b7428adba056cc73c33b01d2ed034bf",
+            "bytes": 49768
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-r421v3-independent-review/full-2d-control.py",
+            "sha256": "766cc2f960791b47c339559c47730656b5932c305c00b2db3a7a95ce93f38a1a",
+            "bytes": 1802
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-r421v3-independent-review/full-2d-results.json",
+            "sha256": "74a617d3d3785db0a2f86f600bfb72b7cfa3884e94d3d5788e4797e10d503921",
+            "bytes": 1684
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-r421v3-independent-review/new-probe-results.json",
+            "sha256": "27a6a314d03900bd68cdc0dd65f54e96907d0986853382cb89099111d088406e",
+            "bytes": 2699
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-r421v3-independent-review/new-probe.py",
+            "sha256": "b90e228d3c5db37e1ca2cbcb647852cbfa03227705e0a78b742b03eb4560daba",
+            "bytes": 1422
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-r421v3-independent-review/ordinary-state-controls.py",
+            "sha256": "f03d811913ecebd49e6593306c717ab33aa9b5711f3cb630d04d07ba1bcd29de",
+            "bytes": 1916
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-r421v3-independent-review/ordinary-state-results.json",
+            "sha256": "58e0b86f995b6fb2898a8accbd84dd60f346452f382b20288daf527e7dc7bf94",
+            "bytes": 45459
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-r421v3-independent-review/positive-subnormal-gain-counterexamples.json",
+            "sha256": "5cfb2c6c6ff68041074d20dc716e5b6879b5151cbfc6c86fcfe2f53bb97c9cb1",
+            "bytes": 855
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-r421v3-independent-review/subnormal-covariance-counterexamples.json",
+            "sha256": "a5bc87e5ea626ed096e9cdb5dc840cbea9bcb4611fd56c568461066580fe5153",
+            "bytes": 843
+          }
+        ],
+        "guards": {
+          "candidate_source_unchanged": true,
+          "other_inputs_changed": [],
+          "formal_existing_candidates_or_assets_written": false,
+          "new_output_scope": "Only this independent external directory",
+          "whole_Chrome_or_full_tests": false
+        },
+        "previous_packets_kept": [
+          "r6-r415-r421-independent-review/v1-review-and-r415v2-handoff.json SHA7e5c216322b99d5b07abeb16c71d91468b041e919f5b7a5dbf758cb8dfdac4e1",
+          "r6-r415-r421-independent-review/r421v2-independent-handoff.json SHA177ff6473200508ad444687ed5247b598081014d3b1d89f180a8cf87f99f7b0e"
+        ],
+        "limits": "No arbitrary-dimensional or full-float-range numerical guarantee; finite Fraction cases and error bounds are specific. No source, diagrams, formal report, media or publication updates."
+      }
+    },
+    "r6-r421-scalar-kalman-v4--plan.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/r6-r421-scalar-kalman-v4/plan.json",
+      "sha256": "2de3d4a7c5ee4dfedce154e036f0336522fb5ba94c4cb6be4f9a97165bf7aa7a",
+      "bytes": 1370,
+      "boundary": "Exact isolated Candidate 4 source. Standard-library rational arithmetic applies to the single-state single-observation learning step.",
+      "packet": {
+        "status": "Scoped scalar candidate. Independent verification pending.",
+        "standalone": {
+          "path": "codes/chapters/ch00/core/chapter00_math.py",
+          "preimage_sha256": "c688c4be6f4d76b442a9b5cbd87ca6c2a2b6661721f1c21004084ce71ad79247",
+          "candidate_sha256": "738ffe758a35bf7fa5f0d0fd89afd6ff8e090ef7bd16012150f0100448c25458",
+          "patch_sha256": "cdd196106ff824220d7cf4337129abc380674f7d199305b83d93b7844cd93693"
+        },
+        "with_r369": {
+          "preimage_sha256": "a45398a1bdd26132f341084b0618bd9ce7cd43198688258e307c2e476dbd6052",
+          "candidate_sha256": "5e60aed57e764387722f7529d424a0fd22d3bbdf7067a808d7062cb2f486a56b"
+        },
+        "existing_test": {
+          "path": "tests/test_review_math_contracts.py",
+          "preimage_sha256": "ae92c07df2bd64a721dfbdcf8675486746db421f7882a57d2f0e6618aa6db643",
+          "candidate_sha256": "8a7b62a904db423524a3419561b05cbc9689fc5d9c641ceae05a2e54727c11db",
+          "patch_sha256": "c456ca59fe453a155b5b14652fb955b6724424dd93b545b305345fcaca667bfc"
+        },
+        "scope": "The one-state, one-measurement teaching step computes from its validated binary64 inputs as exact rationals and rounds once per reported value. This keeps small gain products and Joseph terms through the scalar calculation. It explicitly rejects a result beyond the float64 range. The matrix steps and all validation before the scalar calculation stay on their previous paths."
+      }
+    },
+    "r6-r421v4-independent-review--handoff.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/r6-r421v4-independent-review/handoff.json",
+      "sha256": "f699d0763f3a6a2be1187c71b2b37d9fb4a9e610d52e670e3446a4dc166ac190",
+      "bytes": 12141,
+      "boundary": "Nonauthor scalar exact/Decimal and byte-identical matrix controls. Explicit overflow cases included.",
+      "packet": {
+        "role": "publication_ci nonauthor R421v4 review",
+        "status": "Accepted within stated single-state/single-measurement exact-rational teaching API and tested ordinary matrix compatibility; no new blocking defect observed. Formal integration/rebuild not performed.",
+        "plan": {
+          "path": "/private/tmp/masp-multiround-20261123/r6-r421-scalar-kalman-v4/plan.json",
+          "sha256": "2de3d4a7c5ee4dfedce154e036f0336522fb5ba94c4cb6be4f9a97165bf7aa7a"
+        },
+        "source": {
+          "path": "/private/tmp/masp-multiround-20261123/r6-r421-scalar-kalman-v4/with-r369-math.py",
+          "sha256": "5e60aed57e764387722f7529d424a0fd22d3bbdf7067a808d7062cb2f486a56b",
+          "matches_declared": true
+        },
+        "actual_source_read": {
+          "candidate_ranges": {
+            "_check_real_array": [
+              87,
+              109
+            ],
+            "_check_hermitian": [
+              137,
+              165
+            ],
+            "_scalar_kalman_joseph_step": [
+              1396,
+              1426
+            ],
+            "kalman_joseph_step": [
+              1429,
+              1477
+            ]
+          },
+          "patch": "Full r421-only.patch. Shared checks and full scalar helper/dispatcher/unchanged matrix-return path inspected. Not a fresh full reread of unrelated2000-line math kernel.",
+          "author_tests": "Not executed or counted as independent proof."
+        },
+        "independent_oracles": {
+          "closed_form": "Pminus=F²P+Q, S=H²Pminus+R; conditional posterior mean=(R*F*x+Pminus*H*z)/S, posterior variance=Pminus*R/S. This avoids reproducing candidate Joseph expansion.",
+          "Decimal": "Decimal.from_float inputs,2400 decimal digits;20 prior/new cases both final outputs agree with Fraction and candidate exactly.",
+          "two_matrix_oracles": "Rational prediction/information update with exact2x2 inverse, both2-state/1-observation and2-state/2-observation configurations."
+        },
+        "actual_results": {
+          "prior_failures_and_new_extremes": {
+            "finite_cases": 20,
+            "all9_fields_exact_match": true,
+            "Decimal_both_outputs_exact_match": true,
+            "warning_cases": 0,
+            "covers": "All14 prior controls including positive subnormal gain amplification and two half-u Joseph terms;6new strong-cancellation/intermediate-underflow/micro/zero cases."
+          },
+          "new_strong_cancellation": "P16,R1,H=-.25,F1,Q0,x=z1e308 produces finite-1.5e308 despite K*z separately beyondfloat64.",
+          "new_intermediate_underflows": "P*H belowmin beforedivision and F²P belowmin beforelargeH remain available until each final reportedvalue rounds.",
+          "scalar_state_closed_form": {
+            "cases": 104,
+            "max_relative_error": 0.0
+          },
+          "scalar_covariance_closed_form": {
+            "cases": 172,
+            "max_relative_error": 0.0
+          },
+          "ordinary_scalar_compatibility": {
+            "cases": 100,
+            "shapes_and_keys_same": true,
+            "all_pass_rtol": 2e-12,
+            "all_pass_atol": 5e-13,
+            "max_abs_difference": 2.460254222569347e-13,
+            "claim": "Numerical compatibility; intentionally not scalar byte equality."
+          },
+          "matrix_compatibility": {
+            "cases": 60,
+            "measurement_dims": [
+              1,
+              2
+            ],
+            "all9_fields_bitwise_equal_original": true,
+            "warning_cases": 0
+          },
+          "matrix_rational_examples": {
+            "2state_1obs": {
+              "max_abs_errors": {
+                "predicted_cov": 0.0,
+                "kalman_gain": 0.0,
+                "posterior_cov_joseph": 2.220446049250313e-16,
+                "posterior_state": 0.0
+              },
+              "posterior_cov_truth": [
+                [
+                  0.5234375,
+                  0.71875
+                ],
+                [
+                  0.71875,
+                  1.475
+                ]
+              ],
+              "posterior_state_truth": [
+                -0.59375,
+                -1.875
+              ]
+            },
+            "2state_2obs": {
+              "predicted_cov": {
+                "actual": [
+                  [
+                    2.4375,
+                    0.1796875
+                  ],
+                  [
+                    0.1796875,
+                    1.2421875
+                  ]
+                ],
+                "expected": [
+                  [
+                    2.4375,
+                    0.1796875
+                  ],
+                  [
+                    0.1796875,
+                    1.2421875
+                  ]
+                ],
+                "max_abs_error": 0.0
+              },
+              "innovation_cov": {
+                "actual": [
+                  [
+                    3.677734375,
+                    0.2939453125
+                  ],
+                  [
+                    0.2939453125,
+                    2.5546875
+                  ]
+                ],
+                "expected": [
+                  [
+                    3.677734375,
+                    0.2939453125
+                  ],
+                  [
+                    0.2939453125,
+                    2.5546875
+                  ]
+                ],
+                "max_abs_error": 0.0
+              },
+              "kalman_gain": {
+                "actual": [
+                  [
+                    0.707147595263109,
+                    -0.2495609427271391
+                  ],
+                  [
+                    0.1819534475843526,
+                    0.4477186591273356
+                  ]
+                ],
+                "expected": [
+                  [
+                    0.7071475952631091,
+                    -0.24956094272713908
+                  ],
+                  [
+                    0.18195344758435264,
+                    0.44771865912733555
+                  ]
+                ],
+                "max_abs_error": 1.1102230246251565e-16
+              },
+              "posterior_cov_joseph": {
+                "actual": [
+                  [
+                    0.543061727206184,
+                    -0.0877922971994892
+                  ],
+                  [
+                    -0.0877922971994892,
+                    0.5604444305573413
+                  ]
+                ],
+                "expected": [
+                  [
+                    0.5430617272061841,
+                    -0.08779229719948921
+                  ],
+                  [
+                    -0.08779229719948921,
+                    0.5604444305573413
+                  ]
+                ],
+                "max_abs_error": 1.1102230246251565e-16
+              },
+              "posterior_state": {
+                "actual": [
+                  0.2894875710141778,
+                  -0.1374033359439948
+                ],
+                "expected": [
+                  0.289487571014178,
+                  -0.1374033359439949
+                ],
+                "max_abs_error": 1.6653345369377348e-16
+              }
+            }
+          },
+          "explicit_overflow": {
+            "cases": 6,
+            "all_reject_ValueError": true,
+            "fields": [
+              "predicted_state",
+              "predicted_cov",
+              "innovation",
+              "innovation_cov",
+              "kalman_gain",
+              "posterior_state"
+            ],
+            "scope": "Required diagnostic outputs must also fit, so a finite posterior alone does not authorize a result with nonrepresentable prediction/innovation/gain."
+          }
+        },
+        "diagnostic_interpretation": {
+          "joseph_vs_standard_fro_diff": "Exact scalar optimal-gain Joseph identity equals standard posterior algebraically; returned0 is the exact-model diagnostic, not evidence of cross-platform numerical execution or measured rounding error. Ordinary matrix diagnostic retains original computation.",
+          "kalman_gain": "Returned rounded binary64 gain can be0/subnormal although unrounded rational gain contributes to returned state. Reconstructing posterior using only rounded fields may lose those contributions; planned contract explicitly says once-rounded reportedvalues.",
+          "posterior_min_eigenvalue": "For1x1 it equals the once-rounded exact posterior variance, including legitimate rounded0 when exactpositive belowfloat64. Tests distinguish that from representableu lost in oldv3.",
+          "type_shape": "Allarrays float64; scalar-return keys/shapes match prior API."
+        },
+        "refuted_suspicion": {
+          "candidate": "Small negative scalarP/Q might slip through PSD tolerance then make Fraction dividebyzero.",
+          "actual": "Bothv3/v4 reject all3 negative scalar controls through existing relative PSD rule. No newissue.",
+          "evidence": "validation-tail-results.json"
+        },
+        "guards": {
+          "source_unchanged": true,
+          "other_input_sources_changed": [],
+          "formal_reference_sha256": "c688c4be6f4d76b442a9b5cbd87ca6c2a2b6661721f1c21004084ce71ad79247",
+          "formal_or_existing_shadow_writes": false,
+          "new_asset_report_or_wholeChrome_generation": false,
+          "new_outputs": "Only this private external directory"
+        },
+        "preserved_prior_packets": [
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-r415-r421-independent-review/v1-review-and-r415v2-handoff.json",
+            "sha256": "7e5c216322b99d5b07abeb16c71d91468b041e919f5b7a5dbf758cb8dfdac4e1"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-r415-r421-independent-review/r421v2-independent-handoff.json",
+            "sha256": "177ff6473200508ad444687ed5247b598081014d3b1d89f180a8cf87f99f7b0e"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-r421v3-independent-review/handoff.json",
+            "sha256": "167e0e312b6407995f9cbe191801621afccfa2c7228b9089e1dfae82f285afb1"
+          }
+        ],
+        "evidence": [
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-r421v4-independent-review/covariance-and-2d-controls.py",
+            "sha256": "04f6402a1a1a78c3792836a84db7c26377c61ad500e2f47816d435655a8129d0",
+            "bytes": 4590
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-r421v4-independent-review/covariance-and-2d-results.json",
+            "sha256": "eb0a6d769cfbd18b3962e6c14877f7f487cdb2d53e3e848492df26766148840a",
+            "bytes": 49016
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-r421v4-independent-review/full-2d-control.py",
+            "sha256": "beeaecdd47c4c55a05478dec12203676a2eb01a518d588478bbf834d5e2af5de",
+            "bytes": 1802
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-r421v4-independent-review/full-2d-results.json",
+            "sha256": "74a617d3d3785db0a2f86f600bfb72b7cfa3884e94d3d5788e4797e10d503921",
+            "bytes": 1684
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-r421v4-independent-review/matrix-compatibility-results.json",
+            "sha256": "faff8e2011a841347f629940c670ba3e43734ba592e33cc57ffe6cc1611dd81d",
+            "bytes": 8459
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-r421v4-independent-review/matrix-compatibility.py",
+            "sha256": "c17083cedb3d5c4e00bd3fa7111d855ad6e035235f91e49222fc7263dae8c24f",
+            "bytes": 1814
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-r421v4-independent-review/ordinary-compatibility-results.json",
+            "sha256": "d8992e840f4e7571fe18034f651989509a43712c11a0370596432c1c1b41bb8c",
+            "bytes": 50799
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-r421v4-independent-review/ordinary-compatibility.py",
+            "sha256": "d4568941a0162af89694efeb6c6e3982568dc6e59bb33fe92e20b51832870ed1",
+            "bytes": 1485
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-r421v4-independent-review/ordinary-state-controls.py",
+            "sha256": "cecbea846cc6fae77f329446c816041945d9a25b72ec3c9fa4b6d00091365e69",
+            "bytes": 1916
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-r421v4-independent-review/ordinary-state-results.json",
+            "sha256": "3f11320d8548dbc743a62d0d0c3236f46b5efc71cda3a87e148f1dcc38472378",
+            "bytes": 45029
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-r421v4-independent-review/replay-and-decimal-results.json",
+            "sha256": "56ca1e998ec5467a0af8163a1b58fd00f6ecdac7373bfaa95faa7ba7b18deec2",
+            "bytes": 15006
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-r421v4-independent-review/replay-and-decimal.py",
+            "sha256": "6f86a752e817c035e23698433d184ed9cfbdc629031961ef9229a940e262b397",
+            "bytes": 4135
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-r421v4-independent-review/validation-tail-results.json",
+            "sha256": "6b4c52c10aac55d9bcf850a74e2a45c4699edca5085b29eeffadad4112e4bcb1",
+            "bytes": 1206
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-r421v4-independent-review/validation-tail.py",
+            "sha256": "7c48e322a42ceedeef2c783c64a2782a8277cc781468b00456cf9772565a777f",
+            "bytes": 900
+          }
+        ],
+        "remaining": "No formalapply, author/global unittest run, figures/WAV/report regeneration, browser/PDFbuild or final publication acceptance. No arbitrary-dimensional robust Kalman guarantee. Integration must keep1x1 dispatch and original matrix route; finalauthor/peer tests remain separate."
+      }
+    },
+    "r6-math-producer-sandbox-v4--execution.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/r6-math-producer-sandbox-v4/execution.json",
+      "sha256": "c14ad0a2f8aca4f04ae57442dd37a5baab0b4527f272ff330d9b64c06e48f251",
+      "bytes": 5016,
+      "boundary": "Private math rerender of Chinese and English Figures 84–87 and 73 targeted passing tests. Four English decoded images differ from prior-generation output; cause pending separate control.",
+      "packet": {
+        "status": "completed",
+        "source_files": {
+          "codes/chapters/ch00/core/chapter00_math.py": {
+            "before_sha256": "c688c4be6f4d76b442a9b5cbd87ca6c2a2b6661721f1c21004084ce71ad79247",
+            "after_sha256": "23e7c3d0c968b497c9fa607214b2147f526a2a2def5ecbeeb9ce373baf0ffac4"
+          },
+          "codes/chapters/ch00/cross_chapter/tracking_time_exercises.py": {
+            "before_sha256": "40dacdb70249c3c2f242f778af7aacdbfeb95fe6ea43579d69b8c04aaf5c258d",
+            "after_sha256": "232de4cc01d2d66e08e921c70d055cdf658147cf9f98b4bbc9ba6d59a41b22cf"
+          },
+          "tests/test_review_math_contracts.py": {
+            "before_sha256": "ae92c07df2bd64a721dfbdcf8675486746db421f7882a57d2f0e6618aa6db643",
+            "after_sha256": "8a7b62a904db423524a3419561b05cbc9689fc5d9c641ceae05a2e54727c11db"
+          },
+          "scripts/make_math_figures.py": {
+            "before_sha256": "4112e977d637d5f391a6a75fd5d8e94f68eb8e925661199c2c6ab9a764e7cecf",
+            "after_sha256": "c2dc2bbd33da688c9e4c3ef5f0f99848bf10f2d80e7458a87499de87e97df4b3"
+          },
+          "scripts/portable_figure_report_checks.py": {
+            "before_sha256": "4b5a1c5eed84476a4d29da138a62faf39a8761b04a93aa205fbb8330acf6a517",
+            "after_sha256": "0764414de61f1ecba4e7d8f5b1e8a908686c748a423bacfa2e0f8f10bfc5373a"
+          },
+          "scripts/quality_check.py": {
+            "before_sha256": "e00b1791784a908da18c45572383a1728e871254735663cccdc1099dc7914e9d",
+            "after_sha256": "3c5f1ad86e1a48dd47643f75edb0e438820b78160fd38e4a91317043f1b35171"
+          },
+          "tests/test_ch00_math_publication.py": {
+            "before_sha256": "89e136515a6e43fe606d597c553c0174226afbd5bbc73c8839ed8952827f7b45",
+            "after_sha256": "3c8a866100bda5939e03cdf5e809c11615b6adbe86d465686609312cb192fad6"
+          },
+          "AGENTS.md": {
+            "before_sha256": "e0f2cec3286ca0f2404a1afc699fd5207ca8eef4481c48fd0e3f5fc8cebde29b",
+            "after_sha256": "0cb7a2d4c6f5d9ffbdf092994df3a819cc5a5708927fb86871aca8fde9512563"
+          },
+          "AGENTS_EN.md": {
+            "before_sha256": "b4690b03a22060eba2d7d26b52745ab55bb249b2740a49e3fea8917ea8700b3e",
+            "after_sha256": "724c2f46928bbf6e53e623adf43a020cfa6121644dc2b173cabf6df31f951254"
+          },
+          "tests/test_review_r6_tikhonov.py": {
+            "new_sha256": "361908cab4126a7b3f3ca8eaaf3c7d0a15e40f326afeacebfc6a50aa6c206c5d"
+          },
+          "tests/test_review_r6_binomial_upper.py": {
+            "new_sha256": "4c594f6ef50c8ec49ad8e098a757f7f2e2777e1a25ba908843701ff90626265e"
+          }
+        },
+        "patches": {
+          "r6-hermitian-shadow/review.patch": "e53cc99512214413dc80a270940de5a7afa608e24beea2d9e5a066eeef61afd8",
+          "r6-tikhonov-shadow-v2/review.patch": "2bdedbf7d612f4fab31e8ed225033d941a22d615de2cf354c9600f531d3be42b",
+          "r6-r420-binomial-upper-proposal/review.patch": "7cba9a09a6912bd166aab5605e890d0a3aac806cb18b534af30200cfaa0f6642",
+          "r6-r421-scalar-kalman-v4/r421-only.patch": "cdd196106ff824220d7cf4337129abc380674f7d199305b83d93b7844cd93693",
+          "r6-r421-scalar-kalman-v4/r369-r421-test.patch": "c456ca59fe453a155b5b14652fb955b6724424dd93b545b305345fcaca667bfc"
+        },
+        "commands": [
+          {
+            "label": "zh-math-figures",
+            "command": [
+              "/Users/francis7999/code/github_repos/microphone-array-signal-processing/.venv/bin/python",
+              "-B",
+              "-u",
+              "scripts/make_math_figures.py"
+            ],
+            "log": "/private/tmp/masp-multiround-20261123/r6-math-producer-sandbox-v4/zh-math-figures.log",
+            "pid": 46381,
+            "exit_code": 0,
+            "seconds": 6.628617665992351,
+            "log_sha256": "e9dd90b1091aa2cc2a824958170927d2a3df72d2a9f4091d8bfbf6b36d6acadf"
+          },
+          {
+            "label": "en-math-figures",
+            "command": [
+              "/Users/francis7999/code/github_repos/microphone-array-signal-processing/.venv/bin/python",
+              "-B",
+              "-u",
+              "scripts/make_figures_en.py",
+              "--scripts",
+              "make_math_figures.py"
+            ],
+            "log": "/private/tmp/masp-multiround-20261123/r6-math-producer-sandbox-v4/en-math-figures.log",
+            "pid": 46383,
+            "exit_code": 0,
+            "seconds": 15.825919833994703,
+            "log_sha256": "8a058808cd516dc5c1c4b8129f0caeecd73a0fc87c44b3a2f7a627af86cf86ad"
+          },
+          {
+            "label": "math-regressions",
+            "command": [
+              "/Users/francis7999/code/github_repos/microphone-array-signal-processing/.venv/bin/python",
+              "-B",
+              "-u",
+              "-m",
+              "unittest",
+              "-q",
+              "tests.test_codes_ch00_math_foundations",
+              "tests.test_review_math_contracts",
+              "tests.test_review_r6_tikhonov",
+              "tests.test_review_r6_binomial_upper",
+              "tests.test_codes_time_state_exercises",
+              "tests.test_ch00_math_publication"
+            ],
+            "log": "/private/tmp/masp-multiround-20261123/r6-math-producer-sandbox-v4/math-regressions.log",
+            "pid": 46407,
+            "exit_code": 0,
+            "seconds": 6.381309999997029,
+            "log_sha256": "50381d54312fa68f8424fa96b92b53334b217b9ea1d5900fd84e30f91ab58318"
+          }
+        ],
+        "scope": "Private first integrated math R369, R415 v2, R420 and R421 v4, plus five actual source bindings. No final R6 freeze or formal mutation."
+      }
     }
   },
   "next_round_issue_index": {

@@ -413517,6 +413517,1188 @@
         ]
       },
       "boundary": "Separate small sample of real bilingual PDF compression stage costs, not a throughput claim for the whole book."
+    },
+    "r5-exact-release-commit.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/r5-exact-release-commit.json",
+      "sha256": "d4ff400adf710f6d0ca88bb19db62d18c476c4d3bae0f502618349f8a360c487",
+      "bytes": 822,
+      "boundary": "Verified actual R5 commit, full suite, portable suite, source/media browser and native output proof.",
+      "packet": {
+        "status": "pushed_and_verified",
+        "commit": "9f28747bc687ef1365faec0986dc65cbbfe7891e",
+        "base_commit": "ceda5c07461ebff25a2d6c30760ffc223635d3a4",
+        "staged_production_paths": 306,
+        "full_unit_tests": 2916,
+        "portable_unit_tests": 1354,
+        "formal_gate_sha256": "b88d721aa97f7947733dc0d4371f7ea0855d2ea5050869a0be25711662e8c7da",
+        "staged_receipt_sha256": "e658449a37ec2cab088c126fdd51fb726d0702545b64c7801b22e22bd8fb700b",
+        "browser_198_media_285_receipt_sha256": "e8a268132a8d6fc52d976c80710c109e3248e26924a72db9464ed8651dcec4d5",
+        "pages": {
+          "dist/microphone-array-tutorial.pdf": 1389,
+          "dist/microphone-array-tutorial-en.pdf": 1624
+        },
+        "scope": "Verified R5 output on the original host. Known separate Windows source ordering and UTF-8 readers are carried in the exact R6 publication assembly."
+      }
+    },
+    "r5-release-and-r6-next-compact-evidence.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/r5-release-and-r6-next-compact-evidence.json",
+      "sha256": "33ed24ebbe26aae017586d6455a4ae8f4c705efb0c6db24faa89a6946b6442c0",
+      "bytes": 2913,
+      "boundary": "Compact exact cover for detailed R5 tests and R6 private inputs, including 198 browser scenes and the handoff.",
+      "packet": {
+        "status": "Post-R5 release and R6 finite current evidence",
+        "r5_browser": {
+          "receipt": {
+            "path": "/private/tmp/masp-multiround-20261123/r5-v7-real-browser-198/report.json",
+            "sha256": "e8a268132a8d6fc52d976c80710c109e3248e26924a72db9464ed8651dcec4d5",
+            "bytes": 5001100
+          },
+          "cases": 198,
+          "audio_resources": 285,
+          "actual_keyboard_tables": 1648,
+          "issue_cases": 0,
+          "site_and_source_guards_unchanged": true
+        },
+        "r5_human": {
+          "receipt": {
+            "path": "/private/tmp/masp-multiround-20261123/r5-v7-postoptimized-native-human-visual.json",
+            "sha256": "11750255f8a2d82bdd31ca7c4249936e32373c152430b6650e16ed6b1a95f2d0",
+            "bytes": 6235
+          },
+          "opened_final_pages": {
+            "zh": 7,
+            "en": 8
+          },
+          "additional_zh_independent_receipt": {
+            "path": "/private/tmp/masp-multiround-20261123/r5-zh-final-independent-visual/handoff.json",
+            "sha256": "59f0c153f6cef5e640800f2425f9553de30174301e648494288c96bf5b9ab1fc",
+            "bytes": 20462
+          }
+        },
+        "r6_candidate": {
+          "assembly": {
+            "path": "/private/tmp/masp-multiround-20261123/r6-bilingual-source-assembly-54/assembly.json",
+            "sha256": "4818807b38c6ea18fb402af6032bc215a574fdab53ff440a3574cb24916ac554",
+            "bytes": 85109
+          },
+          "guarded_exact_stage_assets": 95,
+          "sources": 54,
+          "windows_inputs": {
+            "path": "/private/tmp/masp-multiround-20261123/r6-windows-native-digest-and-unicode-proposal/handoff.json",
+            "sha256": "79b9f0dc5bbb9dc4d3784aa43dfdbfabacc570bc4b34b2a33539d0d183b0fc15",
+            "bytes": 2713
+          },
+          "local_audio_ascii_reader_control": {
+            "path": "/private/tmp/masp-multiround-20261123/r6-real-audio-legacy-locale-positive-control.json",
+            "sha256": "d5157d6883162825f947370423a0c105c4140077052df2ed8f2b2ac7caf93dd4",
+            "bytes": 370
+          },
+          "style_final": {
+            "path": "/private/tmp/masp-multiround-20261123/r6-r423-candidate-v3/handoff.json",
+            "sha256": "5f35ebdd49106ad4eda58b550c199a6f11e2e31b2508a4db90aeb8179b0d1e93",
+            "bytes": 10493
+          },
+          "late_chapters": {
+            "path": "/private/tmp/masp-multiround-20261123/content-r6-technical-review/phase-e2-final-and-r7-relay-handoff.json",
+            "sha256": "bf9488a78667f38d4e4ce94bf74ace78077138ab4e7ac951bae8bdce6e17bbca",
+            "bytes": 189512
+          }
+        },
+        "carry_forward": {
+          "previous_277_records": {
+            "path": "/private/tmp/masp-multiround-20261123/r7-inherited-review-matrix-277.json",
+            "sha256": "9cba3d238a8b38c2ed23aac1dc7563ab561d843f40a08649b8a06c9f7b51cabe",
+            "bytes": 201893
+          },
+          "confirmed_new_r428_pending": true,
+          "r363_circular_data": {
+            "path": "/private/tmp/masp-multiround-20261123/content-r6-technical-review/r7b-tracking-consumers/r363-opposite-edge-float-counterexample.json",
+            "sha256": "224982fc6d1224987022cd788fc86095903d568cc30d96ec19fa177c3d3548d4",
+            "bytes": 2100
+          }
+        }
+      }
+    },
+    "r4-online-release-exact-assets.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/r4-online-release-exact-assets.json",
+      "sha256": "b2bbdd0ac150c33495640b22f83a1cd5fb7dea8b36f6793b9a03f9a7acce4add",
+      "bytes": 3483,
+      "boundary": "Pages workflow and actual online representative HTML and both full PDFs match the dff3ec7 release.",
+      "packet": {
+        "release_commit": "dff3ec76d054a80fbaa7872e9cfad524db994415",
+        "pages_workflow": [
+          {
+            "conclusion": "success",
+            "databaseId": 45169626448,
+            "event": "push",
+            "status": "completed",
+            "url": "https://github.com/nanless/microphone-array-tutorial/actions/runs/45169626448",
+            "workflowName": "Publish course to GitHub Pages"
+          },
+          {
+            "conclusion": "cancelled",
+            "databaseId": 45169626350,
+            "event": "push",
+            "status": "completed",
+            "url": "https://github.com/nanless/microphone-array-tutorial/actions/runs/45169626350",
+            "workflowName": "CI Quality & Unit Tests"
+          }
+        ],
+        "checked_live_assets": [
+          {
+            "local": "site/index.html",
+            "online": "https://nanless.github.io/microphone-array-tutorial/site/",
+            "status": 200,
+            "bytes": 225246,
+            "expected_sha256": "36d73aa06fd7b5e003e1bee98f265e8e951226ccdffe70edeec7f37ef0b70714",
+            "actual_sha256": "36d73aa06fd7b5e003e1bee98f265e8e951226ccdffe70edeec7f37ef0b70714",
+            "type": "text/html; charset=utf-8",
+            "byte_equal": true
+          },
+          {
+            "local": "site_en/index.html",
+            "online": "https://nanless.github.io/microphone-array-tutorial/site_en/",
+            "status": 200,
+            "bytes": 234384,
+            "expected_sha256": "17d140ce847a53f16ea017544ecbac1a912909d19e681be84b2d9be77eea309e",
+            "actual_sha256": "17d140ce847a53f16ea017544ecbac1a912909d19e681be84b2d9be77eea309e",
+            "type": "text/html; charset=utf-8",
+            "byte_equal": true
+          },
+          {
+            "local": "site/10_engineering-practice.html",
+            "online": "https://nanless.github.io/microphone-array-tutorial/site/10_engineering-practice.html",
+            "status": 200,
+            "bytes": 320698,
+            "expected_sha256": "ecd469b196df8ca51a95ed21a3c3783bd93c0ff55b8832451be488e886e88b49",
+            "actual_sha256": "ecd469b196df8ca51a95ed21a3c3783bd93c0ff55b8832451be488e886e88b49",
+            "type": "text/html; charset=utf-8",
+            "byte_equal": true
+          },
+          {
+            "local": "site_en/16_appendix-symbols-math.html",
+            "online": "https://nanless.github.io/microphone-array-tutorial/site_en/16_appendix-symbols-math.html",
+            "status": 200,
+            "bytes": 207728,
+            "expected_sha256": "ca4cacc86cc6d8872d3817d2b0803398776faadfc18358c421f367173fa2c69c",
+            "actual_sha256": "ca4cacc86cc6d8872d3817d2b0803398776faadfc18358c421f367173fa2c69c",
+            "type": "text/html; charset=utf-8",
+            "byte_equal": true
+          },
+          {
+            "local": "dist/microphone-array-tutorial.pdf",
+            "online": "https://nanless.github.io/microphone-array-tutorial/dist/microphone-array-tutorial.pdf",
+            "status": 200,
+            "bytes": 37379667,
+            "expected_sha256": "d9911618ed8cd150f55d5508393a1f05d7062df36bc3344f9c885b737e9b77ab",
+            "actual_sha256": "d9911618ed8cd150f55d5508393a1f05d7062df36bc3344f9c885b737e9b77ab",
+            "type": "application/pdf",
+            "byte_equal": true
+          },
+          {
+            "local": "dist/microphone-array-tutorial-en.pdf",
+            "online": "https://nanless.github.io/microphone-array-tutorial/dist/microphone-array-tutorial-en.pdf",
+            "status": 200,
+            "bytes": 37503383,
+            "expected_sha256": "bab733c9e09323f9a10195f1e26e31b148dabc35bff0a1e1a87c3245e042a1e5",
+            "actual_sha256": "bab733c9e09323f9a10195f1e26e31b148dabc35bff0a1e1a87c3245e042a1e5",
+            "type": "application/pdf",
+            "byte_equal": true
+          }
+        ],
+        "scope": "Exact published bytes for four representative actual HTML pages and both entire PDFs."
+      }
+    },
+    "r5-v7-shared-pdf-preview--en-final-raster-comparison--result.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/en-final-raster-comparison/result.json",
+      "sha256": "73a81b97a0dc1dfdb3756dcdc064529147228377c157a01671a1341e8afc166d",
+      "bytes": 870,
+      "boundary": "Full actual R5 English comparisons before and after lossless optimization, all 1624 low-resolution pages and 17 native sampled pages.",
+      "packet": {
+        "language": "en",
+        "source_digest": "8b16d9554b7c",
+        "html_sha256": "bfd0e60462aba816808dc1e35f6e28dc29353ae11b2ed7b812893cf8c131db48",
+        "before_pdf_sha256": "ceebde672a4df1aeea70e568397698eddeee6b51dfed4d1f8da2a3b885af023a",
+        "after_pdf_sha256": "4d5e7a8d4f4c61bb2f5b88336b6e7d191f60de1be579e63623bf7d760b10c275",
+        "after_bytes": 37625534,
+        "builder_receipt_sha256": "69e843771d2009bb42656b196a02b63a75316bf0d8d2041566856a38af600036",
+        "counts": {
+          "36dpi": 1624,
+          "110dpi": 17
+        },
+        "difference": {
+          "36dpi": [],
+          "110dpi": []
+        },
+        "selected_actual_pages": [
+          1,
+          151,
+          166,
+          185,
+          555,
+          556,
+          562,
+          907,
+          908,
+          909,
+          910,
+          1200,
+          1521,
+          1522,
+          1523,
+          1524,
+          1624
+        ],
+        "scope": "Pixel comparison of the exact preoptimization and standard-command final R5 PDFs. Manual viewing separate."
+      }
+    },
+    "r5-v7-shared-pdf-preview--zh-final-raster-comparison--result.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/r5-v7-shared-pdf-preview/zh-final-raster-comparison/result.json",
+      "sha256": "68858e3dd8a0ac1b1389c4c1291bdab4a33e6116520684d0b55500eab1099940",
+      "bytes": 878,
+      "boundary": "Full actual R5 Chinese comparisons before and after lossless optimization, all 1389 low-resolution pages and 18 native sampled pages.",
+      "packet": {
+        "language": "zh",
+        "source_digest": "6d7b57f4f3a3",
+        "html_sha256": "d0f7b4a9295999c8674afb06d5897c6dd027c52f71da5652b55f0516e9e8f38a",
+        "before_pdf_sha256": "5c0e690472faf0be0e7a74db6715816c16d44b97d35269f18c4bb24ac70e5fb8",
+        "after_pdf_sha256": "1fe5d8eb9fc2a73075577eb32ec5868bc1b500217754995ca3bd6c54eb512605",
+        "after_bytes": 37499592,
+        "builder_receipt_sha256": "343ba19d99e349b2ff6a28e2b0385a276b6c4fd32a08b86e8e154de8d12033b3",
+        "counts": {
+          "36dpi": 1389,
+          "110dpi": 18
+        },
+        "difference": {
+          "36dpi": [],
+          "110dpi": []
+        },
+        "selected_actual_pages": [
+          1,
+          150,
+          180,
+          181,
+          241,
+          256,
+          337,
+          338,
+          420,
+          762,
+          763,
+          764,
+          941,
+          1216,
+          1299,
+          1300,
+          1301,
+          1389
+        ],
+        "scope": "Pixel comparison of the exact preoptimization and standard-command final R5 PDFs. Manual viewing separate."
+      }
+    },
+    "r5-complete-private-regression--execution.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/r5-complete-private-regression/execution.json",
+      "sha256": "afd4fe2079a44366a599140d445f50c0ec0a22ab10cd2845ec7c505e6e0cde35",
+      "bytes": 2498,
+      "boundary": "Actual full R5 private checkout regressions, strict 244 source/asset guards, isolated upstream clone.",
+      "packet": {
+        "status": "completed",
+        "started_utc": "2026-11-23T12:04:34.125740+00:00",
+        "working_tree": "/private/tmp/masp-multiround-20261123/r5-exact-edit-and-regression-validation/checkout",
+        "targeted_prerequisite_sha256": "cdefbbb080ec88150a48c2c2283fcfee2b125d9672a69ad98f60fb7a3ea8bbba",
+        "snapshot_anchors": 244,
+        "commands": [
+          {
+            "argv": [
+              "/Users/francis7999/code/github_repos/microphone-array-signal-processing/.venv/bin/python",
+              "-B",
+              "-u",
+              "-m",
+              "unittest",
+              "discover",
+              "-s",
+              "tests",
+              "-q"
+            ],
+            "pid": 49937,
+            "started_utc": "2026-11-23T12:07:00.849398+00:00",
+            "log": "/private/tmp/masp-multiround-20261123/r5-complete-private-regression/complete-suite.log",
+            "exit_code": 0,
+            "elapsed_seconds": 3491.344770166994,
+            "log_sha256": "80327a1b7f951c0ab2ab317fa05774781f6c9133f3976def724c7dbd7a52d569",
+            "tail": [
+              "saved fig75_imaging_objectives.png",
+              "saved /var/folders/45/yy0c7x29677b72dxs1t0bfgr0000gn/T/tmpr1ocwc1z/microphone-array-tutorial-en.pdf (0.00 MiB)",
+              "saved /var/folders/45/yy0c7x29677b72dxs1t0bfgr0000gn/T/tmprrmuo214/microphone-array-tutorial-en.pdf (0.00 MiB)",
+              "/private/tmp/masp-multiround-20261123/r5-exact-edit-and-regression-validation/checkout/scripts/make_figures_en.py:413: UserWarning: constrained_layout not applied because axes sizes collapsed to zero.  Try making figure larger or Axes decorations smaller.",
+              "  fig.canvas.draw()",
+              "saved /var/folders/45/yy0c7x29677b72dxs1t0bfgr0000gn/T/tmp696_kru0/microphone-array-tutorial-en.pdf (0.00 MiB)",
+              "----------------------------------------------------------------------",
+              "Ran 2916 tests in 3486.478s",
+              "",
+              "OK (skipped=10)"
+            ]
+          }
+        ],
+        "scope": "Two exact real R5 input snapshots share a private tested checkout. The full ordinary unit tests verify code and source contracts. Official PDF/website release gates are separate.",
+        "upstream_source_clone": {
+          "argv": [
+            "cp",
+            "-cR",
+            "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads",
+            "/private/tmp/masp-multiround-20261123/r5-exact-edit-and-regression-validation/checkout/codes/chapters/ch00/upstream/_downloads"
+          ],
+          "exit_code": 0,
+          "private_source_checkout_count": 113
+        },
+        "source_changes": [],
+        "finished_utc": "2026-11-23T13:05:12.375877+00:00"
+      }
+    },
+    "r6-publication-win-order-reproduction.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/r6-publication-win-order-reproduction.json",
+      "sha256": "fec79e352a1ce1328a93d6a501340a4bda21059968150e92f09091b7338de13d",
+      "bytes": 8635,
+      "boundary": "Actual SHA behavior under real Windows path ordering with bytes unchanged; explicit case-sensitive order matches POSIX.",
+      "packet": {
+        "scope": "Counterfactual Windows Path comparison on exact private source bytes; POSIX filesystem reads and actual SHA stream functions retain the same bytes. New remote Windows verification is separate.",
+        "posix_order": {
+          "site_zh": "983a0adec415",
+          "pdf_zh": "62be0c0fb82d",
+          "site_en": "482f7126eb0c",
+          "pdf_en": "d24ec239a015"
+        },
+        "windows_path_order": {
+          "site_zh": "5559f15b25cd",
+          "pdf_zh": "f27397e0374c",
+          "site_en": "acc371096c4e",
+          "pdf_en": "8bee04e9b5f3"
+        },
+        "explicit_relative_parts_order": {
+          "site_zh": "983a0adec415",
+          "pdf_zh": "62be0c0fb82d",
+          "site_en": "482f7126eb0c",
+          "pdf_en": "d24ec239a015"
+        },
+        "first_moving_entry_per_changed_call": [
+          {
+            "count": 8,
+            "first_difference": 1,
+            "posix": "codes/chapters/ch02/real_audio/LICENSE.txt",
+            "windows": "codes/chapters/ch02/real_audio/demand_nriver_16ch_10s.wav"
+          },
+          {
+            "count": 21,
+            "first_difference": 0,
+            "posix": "codes/chapters/appendix_b/room_audio/MANIFEST.json",
+            "windows": "codes/chapters/appendix_b/room_audio/fixed_far_left_direct.wav"
+          },
+          {
+            "count": 3,
+            "first_difference": 0,
+            "posix": "codes/chapters/ch09/tracking_audio/MANIFEST.json",
+            "windows": "codes/chapters/ch09/tracking_audio/array_noisy.wav"
+          },
+          {
+            "count": 7,
+            "first_difference": 0,
+            "posix": "codes/chapters/ch08/gss_audio/MANIFEST.json",
+            "windows": "codes/chapters/ch08/gss_audio/enhanced_correct.wav"
+          },
+          {
+            "count": 6,
+            "first_difference": 0,
+            "posix": "codes/chapters/ch01/binaural_audio/MANIFEST.json",
+            "windows": "codes/chapters/ch01/binaural_audio/conflicting.wav"
+          },
+          {
+            "count": 5,
+            "first_difference": 0,
+            "posix": "codes/chapters/ch01/spectral_audio/MANIFEST.json",
+            "windows": "codes/chapters/ch01/spectral_audio/flat_source.wav"
+          },
+          {
+            "count": 4,
+            "first_difference": 0,
+            "posix": "codes/chapters/ch02/stft_audio/MANIFEST.json",
+            "windows": "codes/chapters/ch02/stft_audio/framewise_mtf.wav"
+          },
+          {
+            "count": 7,
+            "first_difference": 0,
+            "posix": "codes/chapters/ch03/baseline_audio/MANIFEST.json",
+            "windows": "codes/chapters/ch03/baseline_audio/baseline_heldout.wav"
+          },
+          {
+            "count": 5,
+            "first_difference": 0,
+            "posix": "codes/chapters/ch05/binaural_beamforming_audio/MANIFEST.json",
+            "windows": "codes/chapters/ch05/binaural_beamforming_audio/binaural_blcmv.wav"
+          },
+          {
+            "count": 4,
+            "first_difference": 0,
+            "posix": "codes/chapters/ch03/geometry_audio/MANIFEST.json",
+            "windows": "codes/chapters/ch03/geometry_audio/geometry_reference.wav"
+          },
+          {
+            "count": 5,
+            "first_difference": 0,
+            "posix": "codes/chapters/ch04/focus_audio/MANIFEST.json",
+            "windows": "codes/chapters/ch04/focus_audio/focus_array.wav"
+          },
+          {
+            "count": 5,
+            "first_difference": 0,
+            "posix": "codes/chapters/ch05/derivative_audio/MANIFEST.json",
+            "windows": "codes/chapters/ch05/derivative_audio/derivative_array.wav"
+          },
+          {
+            "count": 7,
+            "first_difference": 0,
+            "posix": "codes/chapters/ch06/apa_audio/MANIFEST.json",
+            "windows": "codes/chapters/ch06/apa_audio/apa_apa2_residual.wav"
+          },
+          {
+            "count": 7,
+            "first_difference": 0,
+            "posix": "codes/chapters/ch07/delay_audio/MANIFEST.json",
+            "windows": "codes/chapters/ch07/delay_audio/delay_aligned_history.wav"
+          },
+          {
+            "count": 5,
+            "first_difference": 0,
+            "posix": "codes/chapters/ch08/css_audio/MANIFEST.json",
+            "windows": "codes/chapters/ch08/css_audio/css_corrected.wav"
+          },
+          {
+            "count": 7,
+            "first_difference": 0,
+            "posix": "codes/chapters/ch10/channel_audio/MANIFEST.json",
+            "windows": "codes/chapters/ch10/channel_audio/channel_faulty_array.wav"
+          },
+          {
+            "count": 6,
+            "first_difference": 0,
+            "posix": "codes/chapters/ch12/imaging_audio/MANIFEST.json",
+            "windows": "codes/chapters/ch12/imaging_audio/array_coherent.wav"
+          },
+          {
+            "count": 18,
+            "first_difference": 0,
+            "posix": "codes/chapters/ch13/distributed_audio/MANIFEST.json",
+            "windows": "codes/chapters/ch13/distributed_audio/array_correlated.wav"
+          },
+          {
+            "count": 33,
+            "first_difference": 0,
+            "posix": "scripts/vendor/mathjax-3.2.2/LICENSE",
+            "windows": "scripts/vendor/mathjax-3.2.2/a11y/sre.js"
+          },
+          {
+            "count": 21,
+            "first_difference": 0,
+            "posix": "codes/chapters/appendix_b/room_audio/MANIFEST.json",
+            "windows": "codes/chapters/appendix_b/room_audio/fixed_far_left_direct.wav"
+          },
+          {
+            "count": 6,
+            "first_difference": 0,
+            "posix": "codes/chapters/ch01/binaural_audio/MANIFEST.json",
+            "windows": "codes/chapters/ch01/binaural_audio/conflicting.wav"
+          },
+          {
+            "count": 5,
+            "first_difference": 0,
+            "posix": "codes/chapters/ch01/spectral_audio/MANIFEST.json",
+            "windows": "codes/chapters/ch01/spectral_audio/flat_source.wav"
+          },
+          {
+            "count": 8,
+            "first_difference": 1,
+            "posix": "codes/chapters/ch02/real_audio/LICENSE.txt",
+            "windows": "codes/chapters/ch02/real_audio/demand_nriver_16ch_10s.wav"
+          },
+          {
+            "count": 4,
+            "first_difference": 0,
+            "posix": "codes/chapters/ch02/stft_audio/MANIFEST.json",
+            "windows": "codes/chapters/ch02/stft_audio/framewise_mtf.wav"
+          },
+          {
+            "count": 7,
+            "first_difference": 0,
+            "posix": "codes/chapters/ch03/baseline_audio/MANIFEST.json",
+            "windows": "codes/chapters/ch03/baseline_audio/baseline_heldout.wav"
+          },
+          {
+            "count": 4,
+            "first_difference": 0,
+            "posix": "codes/chapters/ch03/geometry_audio/MANIFEST.json",
+            "windows": "codes/chapters/ch03/geometry_audio/geometry_reference.wav"
+          },
+          {
+            "count": 5,
+            "first_difference": 0,
+            "posix": "codes/chapters/ch04/focus_audio/MANIFEST.json",
+            "windows": "codes/chapters/ch04/focus_audio/focus_array.wav"
+          },
+          {
+            "count": 5,
+            "first_difference": 0,
+            "posix": "codes/chapters/ch05/binaural_beamforming_audio/MANIFEST.json",
+            "windows": "codes/chapters/ch05/binaural_beamforming_audio/binaural_blcmv.wav"
+          },
+          {
+            "count": 5,
+            "first_difference": 0,
+            "posix": "codes/chapters/ch05/derivative_audio/MANIFEST.json",
+            "windows": "codes/chapters/ch05/derivative_audio/derivative_array.wav"
+          },
+          {
+            "count": 7,
+            "first_difference": 0,
+            "posix": "codes/chapters/ch06/apa_audio/MANIFEST.json",
+            "windows": "codes/chapters/ch06/apa_audio/apa_apa2_residual.wav"
+          },
+          {
+            "count": 7,
+            "first_difference": 0,
+            "posix": "codes/chapters/ch07/delay_audio/MANIFEST.json",
+            "windows": "codes/chapters/ch07/delay_audio/delay_aligned_history.wav"
+          },
+          {
+            "count": 5,
+            "first_difference": 0,
+            "posix": "codes/chapters/ch08/css_audio/MANIFEST.json",
+            "windows": "codes/chapters/ch08/css_audio/css_corrected.wav"
+          },
+          {
+            "count": 7,
+            "first_difference": 0,
+            "posix": "codes/chapters/ch08/gss_audio/MANIFEST.json",
+            "windows": "codes/chapters/ch08/gss_audio/enhanced_correct.wav"
+          },
+          {
+            "count": 3,
+            "first_difference": 0,
+            "posix": "codes/chapters/ch09/tracking_audio/MANIFEST.json",
+            "windows": "codes/chapters/ch09/tracking_audio/array_noisy.wav"
+          },
+          {
+            "count": 7,
+            "first_difference": 0,
+            "posix": "codes/chapters/ch10/channel_audio/MANIFEST.json",
+            "windows": "codes/chapters/ch10/channel_audio/channel_faulty_array.wav"
+          },
+          {
+            "count": 6,
+            "first_difference": 0,
+            "posix": "codes/chapters/ch12/imaging_audio/MANIFEST.json",
+            "windows": "codes/chapters/ch12/imaging_audio/array_coherent.wav"
+          },
+          {
+            "count": 18,
+            "first_difference": 0,
+            "posix": "codes/chapters/ch13/distributed_audio/MANIFEST.json",
+            "windows": "codes/chapters/ch13/distributed_audio/array_correlated.wav"
+          },
+          {
+            "count": 535,
+            "first_difference": 0,
+            "posix": "assets/readme/cases/locata/MANIFEST.json",
+            "windows": "assets/readme/cases/locata/after.wav"
+          },
+          {
+            "count": 33,
+            "first_difference": 0,
+            "posix": "scripts/vendor/mathjax-3.2.2/LICENSE",
+            "windows": "scripts/vendor/mathjax-3.2.2/a11y/sre.js"
+          },
+          {
+            "count": 237,
+            "first_difference": 204,
+            "posix": "scripts/vendor/mathjax-3.2.2/LICENSE",
+            "windows": "scripts/vendor/mathjax-3.2.2/a11y/sre.js"
+          }
+        ]
+      }
+    },
+    "r6-real-audio-legacy-locale-positive-control.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/r6-real-audio-legacy-locale-positive-control.json",
+      "sha256": "d5157d6883162825f947370423a0c105c4140077052df2ed8f2b2ac7caf93dd4",
+      "bytes": 370,
+      "boundary": "Explicit UTF-8 readers on actual R6 Chinese media pages under an ASCII locale; implicit-read negative control fails.",
+      "packet": {
+        "locale_encoding": "US-ASCII",
+        "python_utf8_mode": 0,
+        "implicit_encoding_negative_control": "'ascii' codec can't decode byte 0xe7 in position 138: ordinal not in range(128)",
+        "checked_actual_html_sha256": "e009be079451e1d744250726a60716e920dd76404e539427132a3fd476fd1e8e",
+        "actual_published_media_check_errors": {
+          "audio": [],
+          "real_audio": []
+        }
+      }
+    },
+    "r6-figure-style-consumer-smoke-v3--execution.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/r6-figure-style-consumer-smoke-v3/execution.json",
+      "sha256": "14f1cc1373f68ccd5ab5957c0d1c98f8876745c0cdbd9b4654d87fdb2f830e0f",
+      "bytes": 1196,
+      "boundary": "Producer V3, consumer verifier, fault fixture and existing font controls tested together.",
+      "packet": {
+        "argv": [
+          "/Users/francis7999/code/github_repos/microphone-array-signal-processing/.venv/bin/python",
+          "-B",
+          "-u",
+          "-m",
+          "unittest",
+          "-q",
+          "tests.test_review_publication_en.EnglishPngTests",
+          "tests.test_review_r4_en_font_readability",
+          "tests.test_review_r4_figure_save"
+        ],
+        "exit_code": 0,
+        "writer_sha256": "f541dfc8cbd70a87c1e6c76700a9ed4f9617a7895bf8e43b88917c01aba0f0f7",
+        "consumers_sha256": "73411baa7928501ce3578a77ab7b3395f46560cd9a5d17cda2276bf8dd90a0d5",
+        "log_sha256": "42c372794703af7160c48783573081281451013af551ae74e7220291586ee77e",
+        "log_tail": [
+          "saved fig75_imaging_objectives.png",
+          "saved fig75_imaging_objectives.png",
+          "saved metadata-smoke.png",
+          "saved fig01_ordinary.png",
+          "saved fig75_imaging_objectives.png",
+          "saved fig75_imaging_objectives.png",
+          "saved fig75_imaging_objectives.png",
+          "saved fig75_imaging_objectives.png",
+          "----------------------------------------------------------------------",
+          "Ran 14 tests in 2.218s",
+          "",
+          "OK"
+        ],
+        "scope": "Targeted actual wrapper, metadata and font guard tests on exact private source. Full actual English regeneration independent."
+      }
+    },
+    "r7-finite-consumer-review--handoff.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/r7-finite-consumer-review/handoff.json",
+      "sha256": "0b8175f0698a3b55957254ae14b78d3a015ebf7b9d2574d535496091b97615ec",
+      "bytes": 12082,
+      "boundary": "New finite math and media consumers; near-singular rank-one sensitivity remains classified within its tested range.",
+      "packet": {
+        "status": "R7 preparation finite consumer review sealed; no claim wholeR7 closure",
+        "sandbox": "danger-full-access; approval never",
+        "base": {
+          "root": "/private/tmp/masp-multiround-20261123/r6-integrated-fifty-four-build/checkout",
+          "54_source_identity": "Every54 candidate file matches assembly at start and final; exact before/after maps in results.json"
+        },
+        "scope": [
+          "Chapter0 changed math APIs and fixed16exercise dispatch",
+          "imaging functionalV5",
+          "figure13 event statistics",
+          "figure38 float matching and actualPCM",
+          "figure42 actualPCM500Hz and integerNMSE",
+          "figure67 integerNMSE5policies7windows",
+          "figure81 actual48segment, integerNMSE,29Fresnel",
+          "figures84-87 selected exact anchors and one PGDstep",
+          "E17-13 missingtelemetry/6thresholds/freshcascade"
+        ],
+        "new_execution": {
+          "results_path": "/private/tmp/masp-multiround-20261123/r7-finite-consumer-review/results.json",
+          "sha256": "a2e0604a87ac50d0992b63036224f70e81b2e394d7afea31c009b57e0fee0aa6",
+          "original_summary": {
+            "cases": 13,
+            "PASS": 12,
+            "FAIL": 1
+          },
+          "failure_not_hidden": "One original strictrelative rank1 control failed at nu3. Complete9calls retained in rankone-sensitive-control.json; this is not overwritten by relaxed pass.",
+          "followup_path": "/private/tmp/masp-multiround-20261123/r7-finite-consumer-review/followup-results.json",
+          "followup_sha256": "0d48298bdd4e3ca84e03f46b6b071bc140c5596b59bfcafcf881ae9a44b1b33c",
+          "followup": "ExactFraction9minors confirm storedbinary64 rank1;12 positive-definite modal controls pass maxrelative1.2247e-14; realpositiveweak2^-80 root retained;4 Decimal1100 complexmoments cases pass",
+          "new_P2": "No new substantiveP2 from this finite set. Rank1 observation is singular spectral-endpoint conditioning, no highrelativeaccuracy claim in currenttext; do not clip positiveweak modes to force analyticrank."
+        },
+        "per_ID": [
+          {
+            "id": "R415",
+            "state": "newcomplexdiagonal3scalespass; original extremecontrols remain priorpacket not rerunhere"
+          },
+          {
+            "id": "R421",
+            "state": "newFraction9scalarKFcasespass signed/zeroH; multivariate stability not inferred"
+          },
+          {
+            "id": "R420",
+            "state": "newDecimal5boundspass; equalitythresholdsnot re-proved fullstatscoverage"
+          },
+          {
+            "id": "R419/R371",
+            "state": "4freshanalyticcomplexmomentcontrols Decimalpass; no broad allfloatproof"
+          },
+          {
+            "id": "R278/R277/V5",
+            "state": "newSPD12androotnegativecontrolpass; rank1weakoffaxis strictfail classifiedconditionedobservation; oldunderflowcounterexamples not rerun thisbatch"
+          },
+          {
+            "id": "R392",
+            "state": "antidiagonalvalueproof plus independent actualPCM FFT (noLS)pass"
+          },
+          {
+            "id": "R393",
+            "state": "actualPCM500Hz retention and exactintegerNMSEpass; 500Hz is near0dB, not exact0"
+          },
+          {
+            "id": "R396",
+            "state": "5policies7windowactualintegerE/D exactlyreport; floatcomponentsnot silentlysubstituted"
+          },
+          {
+            "id": "R397",
+            "state": "48actualintegerscaptured hashes; three steady integerNMSEpass;29Fresnelpass"
+          },
+          {
+            "id": "R398",
+            "state": "PGDstep1 independently rational polynomial matched .08/.16; not proof entire trajectory reaches optimum"
+          },
+          {
+            "id": "R238/R308/figure13",
+            "state": "9literalcondition counts,DecimalWilson and manuallysortedlinearquantilespass; no1350RNGregeneration"
+          },
+          {
+            "id": "E17-13/R293",
+            "state": "6nextafterstrictthresholds+complete/emptyinput+simultaneouspriority+newFractioncascadepass; pedagogicalrulesnotcauseinference"
+          }
+        ],
+        "prior_actual_distinguished": [
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r5-five-figure-independent-review.json",
+            "sha256": "1cec60dffa115f76c26b0de581debda5cfb4d833f60e8daffcf06a40a840a73b",
+            "scope": "Earliernon-authorfivefigurecontrols and actualvisual; retainedhistory, not currentR6execution."
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-r423-candidate-v3/handoff.json",
+            "sha256": "5f35ebdd49106ad4eda58b550c199a6f11e2e31b2508a4db90aeb8179b0d1e93",
+            "scope": "CurrentR6actualfull13generation/reportbytecomparisonandselectedvisual alreadysealed; not rerun bynewnumericcontrols."
+          }
+        ],
+        "read_intervals": [
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-integrated-fifty-four-build/checkout/scripts/make_figures.py",
+            "sha256": "0157fc2c9fc9ee0a2d0bba7810a9603b22aa5a24d327a8895ef14412a2fb2fec",
+            "intervals": [
+              [
+                2321,
+                2382
+              ],
+              [
+                2438,
+                2467
+              ],
+              [
+                3393,
+                3453
+              ],
+              [
+                3610,
+                3714
+              ],
+              [
+                5322,
+                5378
+              ]
+            ]
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-integrated-fifty-four-build/checkout/scripts/make_tse_figures.py",
+            "sha256": "91d6d674e9ee0d2b5d9b8ac3f24be7ee9f73545a2fc372a4fd4380e61fe55b28",
+            "intervals": [
+              [
+                1,
+                95
+              ],
+              [
+                240,
+                298
+              ],
+              [
+                339,
+                390
+              ]
+            ]
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-integrated-fifty-four-build/checkout/codes/chapters/ch12/core/functional_beamforming.py",
+            "sha256": "d8d0a1e38d875c3a9da8cdb8f726f0c24a287174efeb27a5e461f82291e3225d",
+            "intervals": [
+              [
+                1,
+                310
+              ],
+              [
+                311,
+                405
+              ]
+            ]
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-integrated-fifty-four-build/checkout/codes/chapters/ch00/core/chapter00_math.py",
+            "sha256": "23e7c3d0c968b497c9fa607214b2147f526a2a2def5ecbeeb9ce373baf0ffac4",
+            "intervals": [
+              [
+                1,
+                90
+              ],
+              [
+                128,
+                171
+              ],
+              [
+                640,
+                758
+              ],
+              [
+                1284,
+                1372
+              ],
+              [
+                1498,
+                1628
+              ],
+              [
+                2130,
+                2178
+              ]
+            ]
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-integrated-fifty-four-build/checkout/codes/chapters/appendix_b/core/diagnostic_roadmap.py",
+            "sha256": "dc1351b40d52345c61da1eb2788534dbba1485dfcf0c40cf58cdcf6e3d371e3e",
+            "intervals": [
+              [
+                1,
+                382
+              ]
+            ]
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-integrated-fifty-four-build/checkout/codes/chapters/ch00/chapter00_exercises.py",
+            "sha256": "514c94e2fbcd586440aefee69ba547afbba92b87202f69435986bba6f61e298d",
+            "intervals": [
+              [
+                1,
+                125
+              ]
+            ]
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-integrated-fifty-four-build/checkout/chapters/12_acoustic-imaging.md",
+            "sha256": "9814bcee50cec43aa96a10d204cd6bc829a144008eb6b5deb27608a04929e404",
+            "intervals": [
+              [
+                854,
+                890
+              ]
+            ]
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-integrated-fifty-four-build/checkout/chapters_en/12_acoustic-imaging.md",
+            "sha256": "0b685863947572188adba4c09ff37d1ba9dddea7f45ebd82592394d332f82843",
+            "intervals": [
+              [
+                861,
+                890
+              ]
+            ]
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-integrated-fifty-four-build/checkout/scripts/make_math_figures.py",
+            "sha256": "c2dc2bbd33da688c9e4c3ef5f0f99848bf10f2d80e7458a87499de87e97df4b3",
+            "intervals": [
+              [
+                618,
+                708
+              ]
+            ]
+          }
+        ],
+        "assets_inspected": [
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-integrated-fifty-four-build/checkout/codes/chapters/ch00/reports/figure86_hermitian_rayleigh_gev.json",
+            "sha256": "feea008fdc2b37ce845ae6d63ce83dd575fb305301ffbcbcc8fe9581604a45c4"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-integrated-fifty-four-build/checkout/codes/chapters/ch00/reports/figure84_complex_phasor_fourier.json",
+            "sha256": "0a2c08763022b13e7abc304d6e706264e37bdf4fa3f0618cdeecb9042531e730"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-integrated-fifty-four-build/checkout/codes/chapters/ch00/reports/figure87_wirtinger_probability_bayesian.json",
+            "sha256": "490b3a85f0d46b450fa79bdaada6cdce0938035b208743c4c051106bb905d400"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-integrated-fifty-four-build/checkout/codes/chapters/ch00/reports/figure85_subspace_projection_svd.json",
+            "sha256": "8c15cc1edee29c6c2e57d2bef3e72b2d9afd51d046977ca11da50f6835382564"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-integrated-fifty-four-build/checkout/codes/chapters/ch15/reports/figure81_nearfield_distance_bubble.json",
+            "sha256": "59c2dd50b5c17bea10c20de3ab1a5fec778e46f77721dc74427b212855370ed6"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-integrated-fifty-four-build/checkout/codes/chapters/ch13/reports/figure67_distributed_transport.json",
+            "sha256": "1342fa9f62f97aa2a369e98ae67eaf89f6c814b13093aaf3e508e8caa2266188"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-integrated-fifty-four-build/checkout/codes/chapters/ch04/reports/figure13_gcc_reverb.json",
+            "sha256": "2bf56a4d387f34bf646e774dd97b02fc2777c7873b090f1ac6b2a03dbeff1f42"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-integrated-fifty-four-build/checkout/codes/chapters/ch13/distributed_audio/MANIFEST.json",
+            "sha256": "0db19f147f1132244dddd82507da2dc53214ac36f3aff599d8c5b165e6ae4aed"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-integrated-fifty-four-build/checkout/codes/chapters/ch15/tse_audio/MANIFEST.json",
+            "sha256": "49ae443e2f19233ffac180030da11bad32bd7a0406b6572e2e762ae0b55d490e"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r6-integrated-fifty-four-build/checkout/codes/chapters/ch00/audio/MANIFEST.json",
+            "sha256": "23ca37f66a746ee040277fe200b6204e59b5e5653f289253d715177d7e9dc6c6"
+          }
+        ],
+        "raw_files": [
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r7-finite-consumer-review/run.py",
+            "sha256": "76f30d9c5059d8fcdbec1b79e2c7a808d1707ed0d657e770ea6b144631abd478"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r7-finite-consumer-review/followup.py",
+            "sha256": "2e1a1059d93e08a018c3eb62d2f95bd0c051e6c36c8449b451c93342d2af6489"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r7-finite-consumer-review/results.json",
+            "sha256": "a2e0604a87ac50d0992b63036224f70e81b2e394d7afea31c009b57e0fee0aa6"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r7-finite-consumer-review/followup-results.json",
+            "sha256": "0d48298bdd4e3ca84e03f46b6b071bc140c5596b59bfcafcf881ae9a44b1b33c"
+          },
+          {
+            "path": "/private/tmp/masp-multiround-20261123/r7-finite-consumer-review/rankone-sensitive-control.json",
+            "sha256": "5dbf113fadce874f494294b9f2814fec2c6e686744aa1ab8a20cf3464ddeb284"
+          }
+        ],
+        "limits": [
+          "No source/asset/Git writes; all new files privateT.",
+          "No newvisuals inthisfiniteconsumerpacket; previousR423selectedpreview separate.",
+          "No newexternalprimaryreading; mathematicalcontrols independent exact/Decimal formulas.",
+          "No fullnewsite/PDF/PCMproducer/PRA/scoreroriginalrun.",
+          "Source-reading ranges report actual returnedtext; truncatedrgsearch not fullreading. Chapter17 long bilingualoutput was truncated and is not accepted as fullnewreading.",
+          "OtherChapter0 APIfamilies andallunselectedreportfields remain outsidethisbatch; originalfull16dispatch execution is a regression check, not independent proof ofeveryexercise."
+        ],
+        "next": "Root newlyassignedR428 privatefig84(c)legendplacement; not yet included in thispacket. CurrentR6printing/source remain frozen."
+      }
+    },
+    "content-r6-technical-review--r7a-ci-sdr-consumers--handoff-v2.json": {
+      "path_at_capture": "/private/tmp/masp-multiround-20261123/content-r6-technical-review/r7a-ci-sdr-consumers/handoff-v2.json",
+      "sha256": "3d4a8ee49b3399185ba3764210429a633286d1e74191e540239cec1e22a0318f",
+      "bytes": 7547,
+      "boundary": "Independent CI-SDR nonzero-tail hand calculation and source comparison on the actual current consumer.",
+      "packet": {
+        "phase": "R7A firstfinitebatch,R108/R362 currentCI-SDRconsumerreview; notR7complete",
+        "baseline": "CurrentformalR5controlledproduction35sourcepromotionmatchesplan; rootR6late49source/publicationfreezeis separateandwillneedfinalrebind.",
+        "read_audit": [
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch08/core/separation_metrics_streaming.py",
+            "sha256": "7ace600b8d9ef8d5e403a158cdc4ee83cd33018038a53eae0c9074f06c1434a1",
+            "bytes": 20480,
+            "total_lines": 462,
+            "actual_continuous_ranges": [
+              [
+                1,
+                462
+              ]
+            ],
+            "method": "Fourboundedactualreads1–140,141–280,281–410,411–462; notjustAST/fnlist."
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters/08_speech-separation.md",
+            "sha256": "4302cd25b7193cd12ddb0b1be0ace87097ecad9c1546a4b1f490d8a7e7850619",
+            "bytes": 212680,
+            "total_lines": 1695,
+            "actual_continuous_ranges": [
+              [
+                669,
+                697
+              ],
+              [
+                1567,
+                1599
+              ]
+            ],
+            "scope": "CurrentformalR5promotedtext,notlateR6wholechapterorfinalR7frozenpublication."
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/chapters_en/08_speech-separation.md",
+            "sha256": "adcee939fc18d3a0d441de6ee934b6e040920c282246ed2d3ec6780dddb2fdbd",
+            "bytes": 238156,
+            "total_lines": 1695,
+            "actual_continuous_ranges": [
+              [
+                669,
+                697
+              ],
+              [
+                1567,
+                1599
+              ]
+            ],
+            "scope": "CurrentformalR5promotedtext,notlateR6wholechapterorfinalR7frozenpublication."
+          },
+          {
+            "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/tests/test_review_ch01_09.py",
+            "sha256": "6b72f1cd8389d88bf8da36268386f9e8b26889fed87ca46568fb6afcb01dae15",
+            "bytes": 15889,
+            "actual_continuous_ranges": [
+              [
+                78,
+                100
+              ],
+              [
+                230,
+                263
+              ]
+            ],
+            "scope": "Directtestsread; oldgreentestsnotre-runorcountedasnew."
+          }
+        ],
+        "exact_source_snapshot": {
+          "path": "/private/tmp/masp-multiround-20261123/content-r6-technical-review/r7a-ci-sdr-consumers/observed-source/separation_metrics_streaming.py",
+          "sha256": "7ace600b8d9ef8d5e403a158cdc4ee83cd33018038a53eae0c9074f06c1434a1",
+          "bytes": 20480
+        },
+        "original_source_contract": {
+          "HEAD": "ab4f88c14f34cf4dfd9d39789154b041ec61c72e",
+          "origin": "https://github.com/fgnt/ci_sdr.git",
+          "used_files": [
+            {
+              "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/ci-sdr/ci_sdr/pt/sdr.py",
+              "sha256": "a7807e090f6d7ac1ec7fa4f8956ccc9f02e1ecd50e810b40b8770f0160474f46",
+              "bytes": 14697,
+              "read_ranges": [
+                [
+                  1,
+                  30
+                ],
+                [
+                  328,
+                  365
+                ]
+              ],
+              "HEAD_blob": "540a6910b9a217d2b4197ed9828f9de1b88615fc",
+              "actual_blob": "540a6910b9a217d2b4197ed9828f9de1b88615fc"
+            },
+            {
+              "path": "/Users/francis7999/code/github_repos/microphone-array-signal-processing/codes/chapters/ch00/upstream/_downloads/ci-sdr/ci_sdr/pt/wiener_filter.py",
+              "sha256": "45dc1f2ec0e463f96d9d1927f9c4647b558b5a3ddb17980bc2471150dc130c68",
+              "bytes": 16574,
+              "read_ranges": [
+                [
+                  256,
+                  426
+                ]
+              ],
+              "HEAD_blob": "335d767f3988927150e440dd60e35608c9b0bf8d",
+              "actual_blob": "335d767f3988927150e440dd60e35608c9b0bf8d"
+            }
+          ],
+          "scope": "Onlyusedfilebyte/blob/HEAD/origin verification; no wholepackage/status/torchimportororiginalexecution."
+        },
+        "independent_controls": {
+          "path": "/private/tmp/masp-multiround-20261123/content-r6-technical-review/r7a-ci-sdr-consumers/independent-controls.json",
+          "sha256": "77d603627b7b9781412c14cf5980c937b21630d7b18019b50d60cf1c397ec2a3",
+          "bytes": 2136
+        },
+        "judgments": {
+          "R108": "RetainfullN+L−1tailprojection/zero-padding; E08-25properlyseparatesL=Ncroppedoverfitfromfulldomain. NewN3/L2nonzerotailcontrolmatchesFractionclosedform.",
+          "R362": "RetainrawGramNone+representationfornonzero-columnenergyunderflow/overflow, explicitabsolute-energyrejectionandnormalGramvalues. Directregressiontestsreadandoldindependentreviewretained,notre-run.",
+          "full_column_rank_exact_model": "Ifk0isfirstnonzerorefindex, rowsk0..k0+L−1formtriangularshiftedsubmatrixwithdiagref[k0]neq0, provingexactfullcolumnrank. Thisisnotaguaranteeoffloat64numericalconditioning.",
+          "support_boundary": "Oneextremeprobeexplicitlyrejectswhenestpeak/refpeakoverflows althoughcombinedfilterisfinite. No silentvaluewasreturned; noallfiniteIEEEsupportpromiseinferred. Considerdocumentingorhandlinginlaternumericsbatchonlyifwanted; notnewrequiredP1/P2.",
+          "wording_boundary_for_future": "SI-SDRblindspotparagraphdescribesclearhuman/ASRperformanceasifguaranteedunderbenignfiltering. Currentmathematicalscoredefinitionremainscorrect; anybroadperceptual/ASRclaimrequiresactualdata. LoggedasnonblockingR7readerqualification,notformaleditduringprinting."
+        },
+        "actual_execution": "NewlocalNumPyci_sdr_toeplitzordinaryFractioncontrolplusoneexplicitextremerejectiononly; nofullrepo/fgntTorch/ASR/hardwaretest.",
+        "unchanged_source_guard": {
+          "expected": "7ace600b8d9ef8d5e403a158cdc4ee83cd33018038a53eae0c9074f06c1434a1",
+          "actual": "7ace600b8d9ef8d5e403a158cdc4ee83cd33018038a53eae0c9074f06c1434a1",
+          "match": true
+        },
+        "prior_failures_preserved": [
+          "Firstoriginalsourcepathattemptusedci_sdrfolderandFileNotFound; actualfixedcacheis ci-sdr, foundwithrg andthenreadactualsource. No libraryfailureinferred.",
+          "Noformalorrootshadowwrite; old681/209guardchangesremainrootcontrolledpromotionwithseparateacknowledgement."
+        ],
+        "next_finite_family": [
+          "R110/R111/R286/R287/R291/R363/R364trackingandcovarianceconsumercluster",
+          "OtheroldR7historicalrowsstaywithpriorjudgments,notclaimedneverbeforereviewed."
+        ],
+        "date": "2026-11-23",
+        "remaining48_IDs": [
+          "R110",
+          "R111",
+          "R112",
+          "R113",
+          "R117",
+          "R118",
+          "R119",
+          "R120",
+          "R121",
+          "R122",
+          "R124",
+          "R125",
+          "R131",
+          "R132",
+          "R135",
+          "R232",
+          "R233",
+          "R234",
+          "R235",
+          "R240",
+          "R241",
+          "R242",
+          "R243",
+          "R248",
+          "R276",
+          "R278",
+          "R279",
+          "R280",
+          "R281",
+          "R282",
+          "R284",
+          "R285",
+          "R286",
+          "R287",
+          "R288",
+          "R289",
+          "R291",
+          "R311",
+          "R330",
+          "R356",
+          "R363",
+          "R364",
+          "R365",
+          "R368",
+          "R378",
+          "R380",
+          "R382",
+          "R386"
+        ],
+        "remaining_row_canonical_ref": {
+          "path": "/private/tmp/masp-multiround-20261123/content-r6-technical-review/phase-e2-final-and-r7-relay-handoff.json",
+          "sha256": "bf9488a78667f38d4e4ce94bf74ace78077138ab4e7ac951bae8bdce6e17bbca",
+          "JSON_pointer": "/R7_relay/remaining50_old_ID_rows",
+          "exclude_IDs": [
+            "R108",
+            "R362"
+          ],
+          "reason": "Keepcanonicalhistoricalrowswithoutrecopyingall48fullrecordsintoeachpacket. OriginaluncompactedR7Afirsthandoffkeptunchanged."
+        },
+        "first_uncompacted_packet": {
+          "path": "/private/tmp/masp-multiround-20261123/content-r6-technical-review/r7a-ci-sdr-consumers/handoff.json",
+          "sha256": "f49ba2c1b755bf424c78807cb8160b51c321207b92038c694fdf8b92a497e6d4"
+        }
+      }
     }
   },
   "next_round_issue_index": {

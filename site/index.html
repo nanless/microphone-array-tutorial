@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>从入门到工业实践 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="2da800f28691"><style>
+<meta name="source-digest" content="9112c8713651"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -2161,6 +2161,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <hr />
 <p><a name="sec-u-6d43c0086f"></a></p>
 <span id="sec-25" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-6d43c0086f">8. 动手复现</h2>
+<p>想看几种算法如何作用于同一段声音，可以接着做<a href="09_source-tracking.html#sec-u-c88468b903">双麦前端实验</a>。实验用同一段 PCM 比较 AEC、WPE 和分离的波形误差，同时检查 WPE 前后的定位和追踪误差。</p>
 <p><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/README.md"><code>codes/</code></a> 目录提供与各章公式一一对应的小规模教学实现，<code>scripts/</code> 目录包含全部插图的生成脚本。建议先运行基础脚本核对时延符号、矩阵维度、线性约束残差和边界输入，再进一步复现各章的完整实验曲线。各算法在仓库中的实现范围汇总于<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/COVERAGE.md">算法覆盖表</a>，所引用的第三方开源仓库版本与许可证说明记录于<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/THIRD_PARTY.md">第三方记录</a>。</p>
 <p>如果从网页直接进入本页，请先在<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/README.md">仓库根目录</a>执行 <code>python3 -m venv .venv &amp;&amp; .venv/bin/pip install -r requirements.txt</code>，创建 Python 虚拟环境并安装 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/requirements.txt"><code>requirements.txt</code></a> 中的固定版本依赖。以下命令均在仓库根目录执行（Windows 环境请将 <code>.venv/bin/python</code> 替换为 <code>.venv\Scripts\python</code>）：</p>
 <pre><code class="language-bash">.venv/bin/python -m codes.chapters.ch00.chapter00_exercises

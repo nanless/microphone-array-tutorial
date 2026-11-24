@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Chapter 5 · Beamforming · Microphone Array Signal Processing</title>
-<meta name="source-digest" content="0c25e905660b"><style>
+<meta name="source-digest" content="759a86557744"><style>
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -331,6 +331,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li><a href="05_beamforming.html#sec-5-4">5.4 Minimum Variance Distortionless Response (MVDR and MPDR)</a></li>
 <li>&nbsp;&nbsp;<a href="05_beamforming.html#sec-u-df4f340bb1">Worked Example 5-2: Numerical Derivation of a 2-Mic MVDR Beamformer</a></li>
 <li>&nbsp;&nbsp;<a href="05_beamforming.html#sec-u-f123b61836">Diagonal Loading, WNG Constraint, and LOCATA Real-Recording Comparison</a></li>
+<li>&nbsp;&nbsp;<a href="05_beamforming.html#sec-u-0cde8371d9">Steering with the estimated direction</a></li>
 <li>&nbsp;&nbsp;<a href="05_beamforming.html#sec-5-4-1">5.4.1 Robust Beamforming Methods</a></li>
 <li><a href="05_beamforming.html#sec-5-5">5.5 Linearly Constrained Minimum Variance (LCMV): Multi-Constraint, Derivative Flatness, and Binaural Fidelity</a></li>
 <li>&nbsp;&nbsp;<a href="05_beamforming.html#sec-5-5-1">5.5.1 Multichannel Wiener Filtering and the Rank-1 Target Model</a></li>
@@ -399,6 +400,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li><a href="05_beamforming.html#sec-5-4">5.4 Minimum Variance Distortionless Response (MVDR and MPDR)</a></li>
 <li>&nbsp;&nbsp;<a href="05_beamforming.html#sec-u-df4f340bb1">Worked Example 5-2: Numerical Derivation of a 2-Mic MVDR Beamformer</a></li>
 <li>&nbsp;&nbsp;<a href="05_beamforming.html#sec-u-f123b61836">Diagonal Loading, WNG Constraint, and LOCATA Real-Recording Comparison</a></li>
+<li>&nbsp;&nbsp;<a href="05_beamforming.html#sec-u-0cde8371d9">Steering with the estimated direction</a></li>
 <li>&nbsp;&nbsp;<a href="05_beamforming.html#sec-5-4-1">5.4.1 Robust Beamforming Methods</a></li>
 <li><a href="05_beamforming.html#sec-5-5">5.5 Linearly Constrained Minimum Variance (LCMV): Multi-Constraint, Derivative Flatness, and Binaural Fidelity</a></li>
 <li>&nbsp;&nbsp;<a href="05_beamforming.html#sec-5-5-1">5.5.1 Multichannel Wiener Filtering and the Rank-1 Target Model</a></li>
@@ -777,6 +779,56 @@ Q(\alpha)&=\frac{(\alpha+1)^2}{\alpha^2+1/3}.
 </tbody>
 </table></div>
 <p>Within these single-talker scoring windows, MVDR reduces band-integrated total power relative to DSB by $7.42\ \mathrm{dB}$ in window B and $0.86\ \mathrm{dB}$ in window A. Each includes direct speech, reflections, and ambient noise. Total power alone therefore identifies neither clean-target loss nor how much of the reduction comes from dereverberation or denoising; component fidelity requires a clean reference or additional model evidence (interactive audio in the <a href="index.html#audio-assets">Overview Audio Index</a>).</p>
+<p><a id="locata-estimated-steering"></a></p>
+<span id="sec-u-0cbc569e6a" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-0cde8371d9">Steering with the estimated direction</h3>
+<p>Take $+34^\circ$ from the $[2.59,2.82)\ \mathrm{s}$ scan in <a href="04_doa-estimation.html#sec-4-3">Chapter 4 §4.3</a> and compute plane-wave delays relative to Mic 7. Turn those delays into frequency-dependent steering vectors for DSB and loaded MVDR. Repeating the calculation with the optical azimuth of $+33.64^\circ$ shows how much the angle estimate changes the result with the same propagation model. Using the optical position for spherical-wave delays gives a second comparison with the beamformers above. The four MVDR runs share the B-only covariance estimate, diagonal loading, and frequency tapers.</p>
+<p>Score the beams on a separate A-only interval, $[2.86,3.10)\ \mathrm{s}$, and the original B-only interval, $[4.08,4.68)\ \mathrm{s}$. Convert all channels to PCM16 at the same gain and integrate $300$–$3400\ \mathrm{Hz}$ power with the same Hann weighting. Each entry is the power change in dB relative to raw Mic 7 in the same window. The last row subtracts $20^\circ$ from the estimated angle to illustrate a larger pointing error.</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable data table"><table>
+<thead>
+<tr>
+<th scope="col">Steering</th>
+<th scope="col" style="text-align: right;">DSB, A Window</th>
+<th scope="col" style="text-align: right;">DSB, B Window</th>
+<th scope="col" style="text-align: right;">MVDR, A Window</th>
+<th scope="col" style="text-align: right;">MVDR, B Window</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Estimated azimuth, plane wave</td>
+<td style="text-align: right;">−5.87</td>
+<td style="text-align: right;">−6.13</td>
+<td style="text-align: right;">−5.26</td>
+<td style="text-align: right;">−15.39</td>
+</tr>
+<tr>
+<td>Optical azimuth, plane wave</td>
+<td style="text-align: right;">−5.88</td>
+<td style="text-align: right;">−6.09</td>
+<td style="text-align: right;">−5.24</td>
+<td style="text-align: right;">−15.31</td>
+</tr>
+<tr>
+<td>Optical position, spherical wave</td>
+<td style="text-align: right;">−3.55</td>
+<td style="text-align: right;">−8.96</td>
+<td style="text-align: right;">−4.87</td>
+<td style="text-align: right;">−16.38</td>
+</tr>
+<tr>
+<td>Estimated azimuth minus $20^\circ$, plane wave</td>
+<td style="text-align: right;">−5.00</td>
+<td style="text-align: right;">−7.01</td>
+<td style="text-align: right;">−6.00</td>
+<td style="text-align: right;">−15.42</td>
+</tr>
+</tbody>
+</table></div>
+<p>With the same plane-wave model, the two azimuths give power changes that differ by less than $0.08\ \mathrm{dB}$ in all four comparisons. Using the measured distances for DSB raises the A-window power by about $2.32\ \mathrm{dB}$ and lowers the B-window power by about $2.83\ \mathrm{dB}$ compared with steering by the estimated azimuth. This is why the distances are worth checking even when the azimuth is close. When deliberately mispointed, MVDR lowers the B-window power by just another $0.03\ \mathrm{dB}$ while also lowering the A-window power by about $0.74\ \mathrm{dB}$. The B window alone would miss that change. Both windows include reflections and background noise, so the table gives combined output powers for the designated intervals.</p>
+<p>To reproduce the comparison, extract <code>dev/task2/recording1/</code> from the <a href="https://zenodo.org/records/3630471">LOCATA development set</a> <code>dev.zip</code>, preserving the leading <code>dev/</code> directory. Install FFmpeg and run the <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch05/examples/locata_estimated_steering.py">recording example</a> from the repository root. Replace <code>/path/to/locata</code> with the directory containing <code>dev/</code>.</p>
+<pre><code class="language-bash">.venv/bin/python -m codes.chapters.ch05.examples.locata_estimated_steering \
+    /path/to/locata
+</code></pre>
 <span id="sec-7" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-5-4-1">5.4.1 Robust Beamforming Methods</h3>
 <p>Practical beamformer mismatch stems from four root causes: <strong>A. steering-vector mismatch</strong>, <strong>B. finite-snapshot covariance error</strong>, <strong>C. coherent interference / strong early reflections</strong>, and <strong>D. target leakage into $\hat{\mathbf R}_{nn}$ causing self-cancellation</strong>. Beyond fixed diagonal loading, four classical hardening routes apply:</p>
 <ol>

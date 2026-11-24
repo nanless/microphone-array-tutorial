@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 5 章 · 波束形成 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="2da800f28691"><style>
+<meta name="source-digest" content="9112c8713651"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -331,6 +331,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li><a href="05_beamforming.html#sec-5-4">5.4 最小方差无失真响应（MVDR 与 MPDR）</a></li>
 <li>&nbsp;&nbsp;<a href="05_beamforming.html#sec-u-25f070d627">算例 5-2：2 麦 MVDR 数值推导</a></li>
 <li>&nbsp;&nbsp;<a href="05_beamforming.html#sec-u-827fd77bcc">对角加载、WNG 约束与 LOCATA 实录对照</a></li>
+<li>&nbsp;&nbsp;<a href="05_beamforming.html#sec-u-0cbc569e6a">把实录估出的方向交给波束</a></li>
 <li>&nbsp;&nbsp;<a href="05_beamforming.html#sec-5-4-1">5.4.1 稳健波束形成方法</a></li>
 <li><a href="05_beamforming.html#sec-5-5">5.5 线性约束最小方差（LCMV）：多约束、导数平坦与双耳保真</a></li>
 <li>&nbsp;&nbsp;<a href="05_beamforming.html#sec-5-5-1">5.5.1 多通道维纳滤波与秩一目标模型</a></li>
@@ -399,6 +400,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li><a href="05_beamforming.html#sec-5-4">5.4 最小方差无失真响应（MVDR 与 MPDR）</a></li>
 <li>&nbsp;&nbsp;<a href="05_beamforming.html#sec-u-25f070d627">算例 5-2：2 麦 MVDR 数值推导</a></li>
 <li>&nbsp;&nbsp;<a href="05_beamforming.html#sec-u-827fd77bcc">对角加载、WNG 约束与 LOCATA 实录对照</a></li>
+<li>&nbsp;&nbsp;<a href="05_beamforming.html#sec-u-0cbc569e6a">把实录估出的方向交给波束</a></li>
 <li>&nbsp;&nbsp;<a href="05_beamforming.html#sec-5-4-1">5.4.1 稳健波束形成方法</a></li>
 <li><a href="05_beamforming.html#sec-5-5">5.5 线性约束最小方差（LCMV）：多约束、导数平坦与双耳保真</a></li>
 <li>&nbsp;&nbsp;<a href="05_beamforming.html#sec-5-5-1">5.5.1 多通道维纳滤波与秩一目标模型</a></li>
@@ -777,6 +779,56 @@ Q(\alpha)&=\frac{(\alpha+1)^2}{\alpha^2+1/3}\text{。}
 </tbody>
 </table></div>
 <p>在这两个单讲评分窗内，MVDR 相对 DSB 的带内总功率在 B 窗下降 $7.42\ \mathrm{dB}$，在 A 窗下降 $0.86\ \mathrm{dB}$。这里计入了相应说话人的直达声、反射和底噪，不能仅凭总功率把 A 窗下降归为干净目标损失，也不能全部归为去混响或降噪；分量保真需要干净参考或额外模型证据（交互试听见<a href="index.html#audio-assets">导读音频试听与复现总表</a>）。</p>
+<p><a id="locata-estimated-steering"></a></p>
+<h3 id="sec-u-0cbc569e6a">把实录估出的方向交给波束</h3>
+<p>用<a href="04_doa-estimation.html#sec-4-3">第 4 章 §4.3</a>从 $[2.59,2.82)\ \mathrm{s}$ 得到的 $+34^\circ$，按平面波模型计算相对第 7 麦的时差。把这些时差换成逐频导向矢量，一份给 DSB，另一份给加载 MVDR。换成动捕方位 $+33.64^\circ$ 再算一遍，可以单看角度估计误差造成的变化。用动捕位置算球面波时差，则沿用上面实录对照的做法，可以看到换传播模型后的变化。四组 MVDR 都用同一个 B 单讲协方差、同一个加载量和频带过渡。</p>
+<p>评分取 A 单讲的另一段 $[2.86,3.10)\ \mathrm{s}$ 和原 B 单讲窗 $[4.08,4.68)\ \mathrm{s}$。各路按同一增益转成 PCM16，用同一 Hann 加权方法积分 $300$～$3400\ \mathrm{Hz}$ 的功率。表中每个数字都是相对同一窗内原始第 7 麦的功率变化，单位为 dB。最后一行故意把估计角减去 $20^\circ$，看明显指偏时这两个数字怎样变。</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
+<thead>
+<tr>
+<th scope="col">导向取法</th>
+<th scope="col" style="text-align: right;">DSB，A 窗</th>
+<th scope="col" style="text-align: right;">DSB，B 窗</th>
+<th scope="col" style="text-align: right;">MVDR，A 窗</th>
+<th scope="col" style="text-align: right;">MVDR，B 窗</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>录音估计方位，平面波</td>
+<td style="text-align: right;">−5.87</td>
+<td style="text-align: right;">−6.13</td>
+<td style="text-align: right;">−5.26</td>
+<td style="text-align: right;">−15.39</td>
+</tr>
+<tr>
+<td>动捕方位，平面波</td>
+<td style="text-align: right;">−5.88</td>
+<td style="text-align: right;">−6.09</td>
+<td style="text-align: right;">−5.24</td>
+<td style="text-align: right;">−15.31</td>
+</tr>
+<tr>
+<td>动捕位置，球面波</td>
+<td style="text-align: right;">−3.55</td>
+<td style="text-align: right;">−8.96</td>
+<td style="text-align: right;">−4.87</td>
+<td style="text-align: right;">−16.38</td>
+</tr>
+<tr>
+<td>估计方位减 $20^\circ$，平面波</td>
+<td style="text-align: right;">−5.00</td>
+<td style="text-align: right;">−7.01</td>
+<td style="text-align: right;">−6.00</td>
+<td style="text-align: right;">−15.42</td>
+</tr>
+</tbody>
+</table></div>
+<p>保留同一个平面波模型时，两种方位给出的四个功率变化相差都不到 $0.08\ \mathrm{dB}$。DSB 换成实测距离算时差后，A 窗功率高了约 $2.32\ \mathrm{dB}$，B 窗功率低了约 $2.83\ \mathrm{dB}$，说明这次角度估得准以后，距离对时差的影响仍值得检查。故意指偏时，MVDR 的 B 窗功率只低了约 $0.03\ \mathrm{dB}$，A 窗却再低约 $0.74\ \mathrm{dB}$。如果只看 B 窗，就会漏掉这项变化。这两窗仍各自含有房间反射和底噪，表里没有干净目标分量或双讲条件下的分离得分。</p>
+<p>复算可将 <a href="https://zenodo.org/records/3630471">LOCATA 开发集</a>的 <code>dev.zip</code> 中 <code>dev/task2/recording1/</code> 解压到保留 <code>dev/</code> 的目录，安装 FFmpeg，再从仓库根目录运行 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch05/examples/locata_estimated_steering.py">实录复算脚本</a>。把 <code>/path/to/locata</code> 换成包含 <code>dev/</code> 的目录即可。</p>
+<pre><code class="language-bash">.venv/bin/python -m codes.chapters.ch05.examples.locata_estimated_steering \
+    /path/to/locata
+</code></pre>
 <span id="sec-7" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-5-4-1">5.4.1 稳健波束形成方法</h3>
 <p>工程失配归结为四类根源：<strong>A 导向矢量失配</strong>、<strong>B 有限快拍协方差误差</strong>、<strong>C 相干干扰/强早反射</strong>、<strong>D 目标泄漏进 $\hat{\mathbf R}_{nn}$ 引发自消</strong>。除固定对角加载外，四条经典加固路线如下：</p>
 <ol>

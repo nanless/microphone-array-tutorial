@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>From Fundamentals to Industrial Practice · Microphone Array Signal Processing</title>
-<meta name="source-digest" content="0c25e905660b"><style>
+<meta name="source-digest" content="759a86557744"><style>
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -2161,6 +2161,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <hr />
 <p><a name="sec-u-6d43c0086f"></a></p>
 <span id="sec-25" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-6d43c0086f" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-u-2b7672aca3">8. Hands-On Reproduction</h2>
+<p>To see how several stages act on the same audio, try the <a href="09_source-tracking.html#sec-u-0bc468f4ae">two-microphone front-end experiment</a>. It compares waveform error through AEC, WPE, and separation on one PCM recording, then checks how WPE changes localization and tracking.</p>
 <p>The <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/README_EN.md"><code>codes/</code></a> directory provides compact, equation-by-equation educational implementations for every chapter, and <code>scripts/</code> contains the generation scripts for all figures. We recommend running the baseline verification scripts first to check delay signs, matrix shapes, linear constraint residuals, and degenerate inputs before reproducing full experimental curves. Exact implementation scope across the repository is cataloged in the <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/COVERAGE_EN.md">Algorithm Coverage Matrix</a>, and upstream open-source versions and licenses are recorded in <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/THIRD_PARTY_EN.md">Third-Party Attributions</a>.</p>
 <p>If you landed on this page from the web, run <code>python3 -m venv .venv &amp;&amp; .venv/bin/pip install -r requirements.txt</code> at the <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/README_EN.md">repository root</a> first to create a Python virtual environment and install the pinned dependencies in <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/requirements.txt"><code>requirements.txt</code></a>. Execute all commands below from the repository root (on Windows, replace <code>.venv/bin/python</code> with <code>.venv\Scripts\python</code>):</p>
 <pre><code class="language-bash">.venv/bin/python -m codes.chapters.ch00.chapter00_exercises

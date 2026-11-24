@@ -2,7 +2,7 @@
 <link rel="canonical" href="13_distributed-enhancement.html"><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 13 章 · 分布式麦克风协同增强 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="2da800f28691"><style>
+<meta name="source-digest" content="9112c8713651"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -385,6 +385,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-87bec6abd7">采样率偏差补偿改变观测统计，而非只改标签</a></li>
 <li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-f78297cb89">PCM16远端传输的误差界</a></li>
 <li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-7d2b30c94f">盲 SRO 估计、节点几何自定位与无线物理层选型</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-6136ceaff8">三部手机实录：估计时钟偏差，缺包后重新对齐</a></li>
 <li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-da5ae5d202">可以复算的入口与音频组</a></li>
 <li><a href="13_distributed-enhancement.html#sec-13-16">13.16 二十一道练习：从压缩方向到完整系统检验</a></li>
 <li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-e712089bd9">E13-01：复参考的共轭不能省略</a></li>
@@ -474,6 +475,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-87bec6abd7">采样率偏差补偿改变观测统计，而非只改标签</a></li>
 <li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-f78297cb89">PCM16远端传输的误差界</a></li>
 <li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-7d2b30c94f">盲 SRO 估计、节点几何自定位与无线物理层选型</a></li>
+<li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-6136ceaff8">三部手机实录：估计时钟偏差，缺包后重新对齐</a></li>
 <li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-da5ae5d202">可以复算的入口与音频组</a></li>
 <li><a href="13_distributed-enhancement.html#sec-13-16">13.16 二十一道练习：从压缩方向到完整系统检验</a></li>
 <li>&nbsp;&nbsp;<a href="13_distributed-enhancement.html#sec-u-e712089bd9">E13-01：复参考的共轭不能省略</a></li>
@@ -1203,7 +1205,62 @@ P_k[\ell]
 </tr>
 </tbody>
 </table></div>
-<span id="sec-58" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-da5ae5d202">可以复算的入口与音频组</h3>
+<p><a id="clock-recovery-recordings"></a></p>
+<span id="sec-58" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-6136ceaff8">三部手机实录：估计时钟偏差，缺包后重新对齐</h3>
+<p>上面的音频已知远端快 $100\,\mathrm{ppm}$。设备临时组网时，软件往往只能拿到从各自采样时钟录下的波形。若声源在一段时间内位置固定，两个通道之间的传播时差也近似固定。这时可以隔一段音频估一次相对时差，把时差随本地样本序号的变化率用作频偏估计。</p>
+<p>例程把参考麦与远端麦各切成 $8192$ 点一块，每块 $0.512\,\mathrm{s}$。在每块内用 Hann 窗和 $300$～$4000\,\mathrm{Hz}$ 的 GCC-PHAT 搜索 $\pm128$ 样点的相关峰，峰越界或过弱就舍弃。用远端谱乘参考谱的共轭，因此峰值横坐标为正表示该从远端数组更靠后的地方读。同一声源下，可以用 $d_i \approx b+\varepsilon n_i$ 描述各块中心 $n_i$ 的时差 $d_i$。取最近最多 12 个有效峰，两两作差，给出斜率和截距的估计：</p>
+<p>$$
+\hat{\varepsilon}=\operatorname{median}_{i\lt j}\frac{d_j-d_i}{n_j-n_i},
+\qquad
+\hat b=\operatorname{median}_i(d_i-\hat{\varepsilon}n_i).
+$$</p>
+<p>常数项吸收起录时差和固定传播时差。若晚一块的峰从早一块的 $3.0$ 样点移到 $3.8192$ 样点，斜率为 $0.8192/8192=10^{-4}$，即 $+100\,\mathrm{ppm}$。补偿时从远端的 $m(n)=n+\hat b+\hat{\varepsilon}n$ 处取相邻两点做线性插值。固定时差基线用第一次拟合在当时块中心给出的时差，后续只用这一个数。</p>
+<p>第 $i$ 块的插值坐标沿用前一块结束时的拟合。收完当前块后可用本块的峰拒绝突变，并为下一块更新估计。缺包、找不到可靠峰，或本块的峰比预测偏出 $2$ 个样点时，例程丢弃旧拟合，让远端退出这一块。要重新使用远端，需先积累四块有效观测，拟合斜率也须落在 $\pm500\,\mathrm{ppm}$ 内。每块结束后另外留 $130$ 个远端样点的缓冲，只有插值所需的两个样点都已收到才输出该点。这里采用两点插值和逐块更新的教学实现，<a href="#e13-21">E13-21</a> 的 DWACD 双窗漂移检验使用另一种观测量。</p>
+<p>从零编号的第 12～14 块人为标为缺失，保留样本序号。在下表四组输入中，第 15～18 块重估，最早在第 19 块的结束加缓冲处交出结果。从缺口结束算起共 $(5\times8192+130)/16000=2.568125\,\mathrm{s}$。这个等待时间由块长、四块重估门槛和输出缓冲共同决定。减少重估块数会缩短等待，但也减少了可用来估计斜率的时差观测。</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
+<thead>
+<tr>
+<th scope="col">输入及参考时钟</th>
+<th scope="col" style="text-align: right;">使用的频偏估计中位数（ppm）</th>
+<th scope="col" style="text-align: right;">固定时差的块中心残差 RMS（样点）</th>
+<th scope="col" style="text-align: right;">更新时差后的块中心残差 RMS（样点）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>合成，远端设为 $+100\,\mathrm{ppm}$</td>
+<td style="text-align: right;">$+99.73$</td>
+<td style="text-align: right;">$10.4637$</td>
+<td style="text-align: right;">$0.0336$</td>
+</tr>
+<tr>
+<td>合成，远端设为 $-75\,\mathrm{ppm}$</td>
+<td style="text-align: right;">$-74.86$</td>
+<td style="text-align: right;">$7.8231$</td>
+<td style="text-align: right;">$0.0287$</td>
+</tr>
+<tr>
+<td>LibriWASN，Pixel 6a 相对 Pixel 7</td>
+<td style="text-align: right;">$+2.76$</td>
+<td style="text-align: right;">$0.3248$</td>
+<td style="text-align: right;">$0.0249$</td>
+</tr>
+<tr>
+<td>LibriWASN，小米手机相对 Pixel 7</td>
+<td style="text-align: right;">$-16.38$</td>
+<td style="text-align: right;">$1.4631$</td>
+<td style="text-align: right;">$0.1073$</td>
+</tr>
+</tbody>
+</table></div>
+<p>表中残差用当前有效块的 GCC-PHAT 观测减去前一块拟合所得的预报时差。合成数据另有独立真值，两种频偏下，预报相对真值的块中心时差 RMS 分别为 $0.0218$ 和 $0.0132$ 样点。相对同一干净波形，在两种对齐方式都能读到远端样点的位置上，$+100\,\mathrm{ppm}$ 组的 NMSE 从 $1.8828$ 降到 $0.01047$，$-75\,\mathrm{ppm}$ 组从 $1.8238$ 降到 $0.01077$。</p>
+<p>实录取自 <a href="https://doi.org/10.5281/zenodo.7960972">LibriWASN 1.0.0</a> 的 $200\,\mathrm{ms}$ 房间、$0\mathrm L$ 第 8 场，使用三部手机原始 WAV 的 $[770048,974848)$ 索引，即各文件名义时轴上的 $[48.128,60.928)\,\mathrm{s}$。发布者的活动标注将这段划在同一扬声器的活动区间内，例程用标注选段，估计频偏时只读取录音。两个实录对照分别在 14 和 12 个接受块上评分，弱峰块单独列出。每部手机的声路和增益不同，表中变化量表示对所选录音的时差跟踪，绝对采样率和真实网络恢复时间还需要独立参考测量。若说话人移动，声程变化也能造成相关峰缓慢移动，单靠两路波形的峰斜率很难把它和晶振误差分开。</p>
+<p>在仓库根目录运行 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch13/examples/clock_recovery.py">复算例程</a>。第一条用固定种子生成真值对照。第二条读取作者按 CC BY 4.0 发布的原始归档，也可把参数替换为该场次解压后的 <code>record</code> 目录。报告保留三个 WAV 的 SHA-256 和逐块估计，录音由读者从原发布页取得。</p>
+<pre><code class="language-bash">.venv/bin/python -m codes.chapters.ch13.examples.clock_recovery
+.venv/bin/python -m codes.chapters.ch13.examples.clock_recovery \
+    --libriwasn &quot;/路径/LibriWASN_200_0L.zip&quot;
+</code></pre>
+<span id="sec-59" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-da5ae5d202">可以复算的入口与音频组</h3>
 <p>本章核心矩阵与迭代求解器位于 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch13/core/distributed.py"><code>codes/chapters/ch13/core/distributed.py</code></a>，AES67/PTPv2 相位预算与 DASF 约束子空间求解核位于 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch13/core/dasf_and_ptp.py"><code>codes/chapters/ch13/core/dasf_and_ptp.py</code></a>，合成音频与传输失配实验位于 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch13/core/distributed_audio.py"><code>codes/chapters/ch13/core/distributed_audio.py</code></a>。阅读代码时请留意矩阵转置约定：正文公式用列满秩矩阵 $\mathbf T$ 写作 $\tilde{\vec x} = \mathbf T^H\vec x$，而代码接口传入按行排列的观测映射矩阵 $\mathbf B = \mathbf T^H$（复数广播滤波 $\vec f^H\vec x$ 对应共轭行向量 $\vec f^H$）。为兼顾数值条件数与瞬态诊断，求解器在内部先对非零压缩行做范数归一化，并同步记录归一化坐标与原始广播坐标下的局部权重，以及每步更新时刻“上次激活提案权重”与“用当前全网最新广播实时重组的有效权重”两套状态——对照两者即可直接复现图 66(a) 的跨节点瞬态失配尖峰。</p>
 <p>在仓库根目录下运行以下命令，即可生成全部 $17$ 个 WAV 文件及校验清单，或以只读模式逐字节回放核验：</p>
 <pre><code class="language-bash">.venv/bin/python -m codes.chapters.ch13.examples.generate_distributed_audio
@@ -1262,61 +1319,61 @@ P_k[\ell]
 </tbody>
 </table></div>
 <p>在 $28800$ 点稳定窗上重读磁盘 PCM16 整型测得的基准 $\mathrm{NMSE}_{\mathrm{PCM}}$ 为：白噪声集中式约 $0.153852$、相关噪声集中式约 $0.115945$、相关噪声死守旧广播方向约 $0.153858$（节点 $2$ 独立量化参考能量分母亦独立核算，精确 64 位整型分子分母与完整清单保存在 <a href="distributed_audio/MANIFEST.json"><code>MANIFEST.json</code></a> 中，更多工程部署与复现细节可参阅<a href="research/03_industrial_deployment.html">工业实现手册</a>与<a href="research/05_exercises_and_audio.html">练习、音频和复现实验手册</a>）。</p>
-<span id="sec-59" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-ae60fe614c" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-d2277f09c0" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-990fd59df5" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-9493aad880" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-a123bcf090" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-b7dac779da" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-c8f4d1ccc4" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-b01a879a4a" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-db8a2119c9" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-ada0f6befb" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-275e8f69e6" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-0f09bd925b" class="anchor-alias" aria-hidden="true"></span><span id="sec-15-16" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-2fb9fa91dc" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-a558204011" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-6159884015" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-d99ad75e5b" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-0f67d6decb" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-f2c5e4265b" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-13-16">13.16 二十一道练习：从压缩方向到完整系统检验</h2>
+<span id="sec-60" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-ae60fe614c" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-d2277f09c0" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-990fd59df5" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-9493aad880" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-a123bcf090" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-b7dac779da" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-c8f4d1ccc4" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-b01a879a4a" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-db8a2119c9" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-ada0f6befb" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-275e8f69e6" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-0f09bd925b" class="anchor-alias" aria-hidden="true"></span><span id="sec-15-16" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-2fb9fa91dc" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-a558204011" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-6159884015" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-d99ad75e5b" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-0f67d6decb" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-f2c5e4265b" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-13-16">13.16 二十一道练习：从压缩方向到完整系统检验</h2>
 <p>前六题围绕复参考共轭、广播尺度不变性、轮转/同时更新状态与多目标广播秩展开，第 7～17 题串联秩亏退化、带宽内存核算、时钟丢包传输、PCM16 误差界与三层稳窗评分、收敛步长条件、树上求和与 GEVD 白化，第 18～21 题进一步手算与复算广播切换统计坐标变换、AES67/PTPv2 亚微秒同步预算、DASF 约束子空间统一框架以及 DWACD 启发的双窗互谱斜率控制与语音活动门控。除题干另有声明外，标量目标默认取 $d = s$、干源功率 $\phi_s = 1$；每次算出有效全局权重后，均代回式(13-3)核对总均方误差。</p>
 <p><span id="e15-07" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e13-01"></a></p>
-<span id="sec-60" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-9bcc32b7fe" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-66bc517dc7" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-ad5858492f" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-e712089bd9">E13-01：复参考的共轭不能省略</h3>
+<span id="sec-61" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-9bcc32b7fe" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-66bc517dc7" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-ad5858492f" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-e712089bd9">E13-01：复参考的共轭不能省略</h3>
 <p><strong>题目</strong>：在 §13.7 的空间白噪声四麦模型（$\vec a = [1, 1/2, 2, -1/2]^\top$，$\mathbf R_{nn} = \mathbf I_4$）下，将参考目标改为复数声像 $d = (1 + \mathrm{j})s$，求互相关向量、最优权重、绝对 MSE 与 NMSE，并说明为何不能直接拿不同参考幅度的两节点绝对 MSE 比大小。</p>
 <p><strong>参考答案</strong>：由式(13-5)注意共轭位置：互相关 $\vec r_{xd} = \mathbb{E}[\vec x d^*]$ 化简为 $(1 - \mathrm{j})\vec a$，故最优权重为 $\vec w^\star = (1 - \mathrm{j})[2, 1, 4, -1]^\top / 13$。代入共轭转置输出 $(\vec w^\star)^H\vec x$ 时，因子 $(1 - \mathrm{j})^*$ 恰好变回期望的目标相位 $(1 + \mathrm{j})$。因参考目标功率变为 $|1 + \mathrm{j}|^2 = 2$，绝对 MSE 同步翻倍为 $4/13$，而归一化 NMSE 仍为 $2/13$。若误把 $\vec r_{xd}$ 写成 $(1 + \mathrm{j})\vec a$，权重模长虽不变，输出声像相位却会偏转 $90^\circ$；同样地，节点 $2$ 若以 $d_2 = 2s$ 为参考，绝对 MSE 是节点 $1$ 的 $4$ 倍但 NMSE 完全相同，横向比较必须先对齐参考尺度。</p>
 <p>在配套代码中，另构造了复传递向量 $[1, \mathrm{j}/2, 2, -1/2]^\top$ 并选取第 $2$ 支麦克风作为参考（即 $d = (\mathrm{j}/2)s$，参考功率为 $1/4$）：此时求出的绝对 MSE 为 $\frac{1}{4} \times \frac{2}{13} = \frac{1}{26}$，而归一化 NMSE 依然锁定为 $2/13$。</p>
 <p><span id="e15-08" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e13-02"></a></p>
-<span id="sec-61" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-40ecac23db" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-86e56e7136" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-ae1fbf2731" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-1339e48bd7">E13-02：广播尺度改变但有效权重不变</h3>
+<span id="sec-62" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-40ecac23db" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-86e56e7136" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-ae1fbf2731" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-1339e48bd7">E13-02：广播尺度改变但有效权重不变</h3>
 <p><strong>题目</strong>：将 §13.7 的远端广播滤波器 $\vec f_2 = [2, -1/2]^\top$ 乘上非零复常数 $\vec f'_2 = \gamma\vec f_2$（取 $\gamma = 2\mathrm{j}$）。写出新广播信号与新接收系数的变换关系，并说明何时不能盲目做范数归一化。</p>
 <p><strong>参考答案</strong>：新广播信号 $z'_2 = (\vec f'_2)^H\vec x_2$ 等于 $\gamma^* z_2 = -2\mathrm{j}z_2$；为保持输出项 $(g'_{12})^* z'_2 = g_{12}^* z_2$ 恒等不变，本地接收系数必须反比例变换为 $g'_{12} = g_{12} / \gamma$（且局部协方差须同步按新压缩坐标重算，绝不能只改发送尺度却沿用旧接收系数）。在精确算术下，对任意非零复标量 $\gamma\in\mathbb{C}\setminus\{0\}$，上述共轭发送缩放与倒数接收补偿严格抵消，重算后的有效全局权重与物理输出保持完全不变；而在有限精度工程实现中，当远端广播为零向量时严禁除以零范数，面对极微弱近零广播时也应设定正能量门限而非强行归一化放大舍入噪声。</p>
 <p><span id="e15-09" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e13-03"></a></p>
-<span id="sec-62" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-15a9194ba1" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-2a988d60f2" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-6d504d7edf" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-745773ac58">E13-03：真正轮转更新与陈旧状态快照</h3>
+<span id="sec-63" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-15a9194ba1" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-2a988d60f2" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-6d504d7edf" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-745773ac58">E13-03：真正轮转更新与陈旧状态快照</h3>
 <p><strong>题目</strong>：按 §13.9 白噪声模型与初值 $\vec f_1^{(0)} = \vec f_2^{(0)} = [1, 0]^\top$ 依次执行节点 $1 \to 2 \to 1$ 三步轮转更新，逐步列出两节点广播、局部权重与实际生效的全局权重，解释为何第 $2$ 步结束瞬间不能宣称全网输出一致改善。</p>
 <p><strong>参考答案</strong>：三次激活节点求出的局部权重依次为 $[4, 2, 8]^\top / 25$、$[8, -2, 25]^\top / 13$（注意节点 $2$ 的输入排列顺序为 $[x_3, x_4, z_1]^\top$）与 $[2/13, 1/13, 1/2]^\top$。在第 $2$ 步节点 $2$ 刚将广播切换为 $[8, -2]^\top / 13$ 的瞬间，节点 $1$ 尚未重算，仍持有第 $1$ 步的旧接收系数 $g_1 = 8/25$，重组出的实际全局权重变为 $[52, 26, 64, -16]^\top / 325$，真实 MSE 反弹至 $23108 / 105625 \approx 0.2188 > 0.16$，直到第 $3$ 步节点 $1$ 重算后才降至集中式最优值 $2/13$。配套代码还在 §13.8 的相关噪声模型（初值 $[1, 1/2]^\top, [2, -1/2]^\top$）上记录了前六步轮转快照，同样验证了这一跨节点瞬态失配现象。</p>
 <p><span id="e15-10" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e13-04"></a></p>
-<span id="sec-63" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-ecaa4b04e4" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-76c29b9e9a" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-17942b7cf5" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-243b80151f">E13-04：有限预算要报告方向和全局残差</h3>
+<span id="sec-64" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-ecaa4b04e4" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-76c29b9e9a" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-17942b7cf5" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-243b80151f">E13-04：有限预算要报告方向和全局残差</h3>
 <p><strong>题目</strong>：当算力预算只允许执行一、二、三次顺序更新时，应如何衡量当前状态离集中式最优解的距离？为什么只检查刚更新完的那个节点的局部方程残差远远不够？</p>
 <p><strong>参考答案</strong>：刚更新完的活动节点在它当时的压缩子空间内精确求解了式(13-8)，其局部残差恒等于零，完全掩盖了压缩方向偏离集中式子空间的损失以及其余未更新节点的陈旧系数失配。正确做法是在每一步将全网每个节点 $u$ 的缓存接收系数与<strong>当前最新广播</strong>重组为有效全局权重 $\vec w_{u,\mathrm{eff}}$，同时代入式(13-3)计算真实 MSE 并代入式(13-21)计算全局正规方程相对残差 $\epsilon_u$。</p>
 <p>在配套代码的 §13.8 相关噪声轨迹中，将各节点上次激活时刻的提案全局权重与当前广播实时重组的有效全局权重并列对比，可见顺序轮转历经 $14$ 轮更新事件（$14$ 次更新求解，连同 $2$ 次初始本地求解共调用 $16$ 次线性求解器）使全网节点残差全部降至 $10^{-8}$ 以下。</p>
 <p><span id="e15-11" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e13-05"></a></p>
-<span id="sec-64" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-5159378837" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-8f41df6077" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-cbe6d25b1f" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-16ab690f45">E13-05：同时更新与有限步松弛对比算例</h3>
+<span id="sec-65" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-5159378837" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-8f41df6077" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-cbe6d25b1f" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-16ab690f45">E13-05：同时更新与有限步松弛对比算例</h3>
 <p><strong>题目</strong>：在 §13.8 四麦相关噪声模型上（初值同 <a href="#e13-04">E13-04</a>），分别运行全步长同时更新（$\alpha = 1$）与固定半步简化松弛（$\alpha = 1/2$），记录有效权重、NMSE、更新轮数与累计求解次数，并说明能否直接套用 $rS$-DANSE$^+$ 收敛定理。</p>
 <p><strong>参考答案</strong>：每次更新事件中，两节点基于同一份旧广播快照各自独立求局部解，随后同时上线新广播（半步松弛仅将本地发送广播取新旧各一半混合，保留缓存输出系数并用新广播重组实际权重）。在该相关噪声算例上，达到全网残差低于 $10^{-8}$ 时，全步长同时更新耗时 $13$ 轮更新事件（$26$ 次更新求解，加上 $2$ 次初始本地求解共 $28$ 次矩阵求解），固定半步松弛耗时 $38$ 轮更新事件（$76$ 次更新求解，共 $78$ 次矩阵求解），两者最终 NMSE 均收敛至集中式下界 $8/69$。不过要注意理论边界：固定常值步长 $\alpha = 1/2$ 不满足式(13-15)的步长趋零条件，且简化混合未包含式(13-14)的子空间基底对齐矩阵 $\mathbf G_{uu}^{i+1}$，因此该数值收敛仅代表当前良态算例的表现，不能直接援引 $rS$-DANSE$^+$ 定理作普适担保。</p>
 <p><span id="e15-12" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e13-06"></a></p>
-<span id="sec-65" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-481fa3de3e" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-1ba11b3526" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-d9e3267345" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-ee42fea78d">E13-06：多目标广播的秩不足</h3>
+<span id="sec-66" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-481fa3de3e" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-1ba11b3526" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-d9e3267345" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-ee42fea78d">E13-06：多目标广播的秩不足</h3>
 <p><strong>题目</strong>：采用式(13-17)的双源正交模型，节点 $1$ 需要同时恢复 $s_1$ 和 $s_2$，但节点 $2$ 只广播单路和信号 $x_3 + x_4$。求两源的集中式最优 MSE、该单路广播下两源的实际 MSE，并给出达到双源无损的最小改动。</p>
 <p><strong>参考答案</strong>：集中式四麦下 $s_1, s_2$ 各自的最小 MSE 均为 $1/(1 + 3) = 1/4$。节点 $2$ 只广播 $x_3 + x_4 = 2s_1 + n_3 + n_4$ 时，$s_2$ 在远端广播中被彻底抵消，导致节点 $1$ 估计 $s_1$ 无损（MSE 为 $1/4$），但估计 $s_2$ 只能靠本地单路 $x_2$，MSE 退化至 $1/2$。只需增发第二路差信号 $x_3 - x_4$（使 $Q = 2$），即可令式(13-16)的列空间包含条件（$\mathbf W_1^\star$ 的两列均落在 $\mathbf T_1$ 的列空间内）成立；这说明检验列空间包含关系比单纯看矩阵秩更本质（高秩投影若方向选偏照样有损）。</p>
 <p><span id="e15-13" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e13-07"></a></p>
-<span id="sec-66" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-43c36175b8" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-55891f9c74" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-eeff13f4d6" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-01d67224fd">E13-07：零压缩和本地回退</h3>
+<span id="sec-67" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-43c36175b8" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-55891f9c74" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-eeff13f4d6" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-01d67224fd">E13-07：零压缩和本地回退</h3>
 <p><strong>题目</strong>：当远端节点因静音门控或故障发出了全零广播（$\vec f_2 = \vec 0$）时，局部压缩协方差矩阵会出现什么异常？应如何安全回退？为什么“远端广播为零”绝不等于“远端噪声已被完美滤除”？</p>
 <p><strong>参考答案</strong>：全零广播使压缩矩阵 $\mathbf T_1$ 出现全零列，局部协方差 $\tilde{\mathbf R}_1$（即 $\mathbf T_1^H\mathbf R_{xx}\mathbf T_1$）随之出现全零行与全零列，丧失正定性而奇异不可逆。正定求解器检测到零广播列后，应显式剔除该无信息远端支路并安全回退到本地独立 MWF（在白噪声锚点下平稳返回本地最优 MSE $4/9$）。把远端广播乘零只是掐断了通信链路，把目标语音和背景噪声一并截断了，并非零噪声增强。</p>
 <p><span id="e15-14" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e13-08"></a></p>
-<span id="sec-67" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-478a33071c" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-f54078f6df" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-2bdfab7371" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-75575e4f83">E13-08：非半正定输入、病态矩阵与加载目标</h3>
+<span id="sec-68" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-478a33071c" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-f54078f6df" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-2bdfab7371" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-75575e4f83">E13-08：非半正定输入、病态矩阵与加载目标</h3>
 <p><strong>题目</strong>：主对角为 $1$、非对角为 $2$ 的 $2 \times 2$ 实对称矩阵能否作为合法噪声协方差？它与正定病态矩阵 $\operatorname{diag}(1, 10^{-12})$ 有何本质区别？给协方差加上对角加载 $\delta\mathbf I$（$\delta > 0$）仅仅是换了一种线性方程求逆技巧吗？</p>
 <p><strong>参考答案</strong>：第一张矩阵 $\begin{bmatrix}1 & 2 \\ 2 & 1\end{bmatrix}$ 的特征值为 $3$ 和 $-1 \lt  0$，属于不定矩阵（在 $[1, -1]^\top$ 方向上给出非物理的负噪声功率），必须拦截排查上游统计故障（如 §13.13 讲过的逐对缺包拼接错误），绝不可蒙混放行；第二张矩阵 $\operatorname{diag}(1, 10^{-12})$ 特征值全为正，物理上合法，但条件数高达 $10^{12}$，极易放大有限快拍误差与浮点舍入噪声。</p>
 <p>在正规方程左端加上对角加载得到 $(\mathbf R_{xx} + \delta\mathbf I)\vec w$ 等于 $\vec r_{xd_u}$，在数学上等价于把式(13-3)的优化目标改写成了带二次权重惩罚的正则化代价 $J_u(\vec w) + \delta\|\vec w\|_2^2$（物理上等价于假定各通道额外混入了方差为 $\delta$ 的独立虚拟白噪声）。因此对角加载实实在在地改变了优化问题的解，评测报告必须注明加载量 $\delta$ 的物理量纲，并把加载求出的权重代回<strong>未加载的原始统计</strong>式(13-3)诚实评估真实误差。</p>
 <p>在配套代码中，数值核先严格校验输入矩阵的 Hermitian 对称性与半正定性、采用分块尺度缩放防止极端量级平方下溢，并在 $\mathbf R_{nn} = \operatorname{diag}(1, 10^{-14})$、$\mathbf R_{ss} = \operatorname{diag}(1, 0)$ 的病态测试例上对比展示了加载 $\delta = 10^{-3}$ 前后的条件数改善与原目标代价变化。</p>
 <p><span id="e15-15" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e13-09"></a></p>
-<span id="sec-68" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-4bad0eb87f" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-7cead60afd" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-403370e969" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-7ec15b4413">E13-09：PCM、浮点、复谱与发送方式</h3>
+<span id="sec-69" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-4bad0eb87f" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-7cead60afd" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-403370e969" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-7ec15b4413">E13-09：PCM、浮点、复谱与发送方式</h3>
 <p><strong>题目</strong>：计算采样率 $16\,\mathrm{kHz}$ 下单路时域 PCM16、时域 <code>float32</code>，以及 $N = 512, H = 256$ 的 <code>complex64</code> 单边复谱流的净有效载荷比特率。若四节点全连接网络中每个节点向外广播一路信号，物理层广播与逐接收者单播每个周期全网各需发送多少份数据？</p>
 <p><strong>参考答案</strong>：三种格式的单路净载荷依次为 $256000$、$512000$ 与 $1028000\,\mathrm{bit/s}$（注意 <code>complex64</code> 表示实部虚部合占 $64$ 位，不可重复乘 $2$）。四节点网络中，一次物理层共享广播周期全网共发 $4$ 份报文，而逐接收者点对点单播则需发送 $4 \times 3 = 12$ 份报文（均未计底层包头与重传开销）。因此评估压缩收益前必须先固定编码格式与网络发送原语。</p>
 <p>核对配套代码的 <code>resource_control</code> 字段时需留意参数设置差异：代码另取四分之一窗帧移 $H = 128$，帧率比题干的 $H = 256$ 高一倍，故单路复谱流速率为 $2056000\,\mathrm{bit/s}$（两节点合计 $4112000\,\mathrm{bit/s}$）。此外可验证奇数 FFT 长度边界：保持 $H = 256$、将 $N$ 改为奇数 $511$ 时，非负频点为 $k = 0, \ldots, 255$ 共 $256$ 个，单路速率降为 $(16000 / 256) \times 256 \times 64$，即 $1024000\,\mathrm{bit/s}$，且最高频点 $\frac{255}{511}f_s \lt  f_s / 2$ 含有非零虚部，不能当作实数 Nyquist 点省掉虚部。</p>
 <p><span id="e15-16" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e13-10"></a></p>
-<span id="sec-69" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-d6bfdb5b5e" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-9f6977a658" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-cd640dc247" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-7af8af3cc0">E13-10：每节点、全网矩阵与实际求解次数</h3>
+<span id="sec-70" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-d6bfdb5b5e" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-9f6977a658" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-cd640dc247" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-7af8af3cc0">E13-10：每节点、全网矩阵与实际求解次数</h3>
 <p><strong>题目</strong>：四个节点各有两支麦克风并各向外广播一路信号，以 <code>complex128</code>（每元素 $16$ 字节）保存一套单频局部协方差矩阵。求单节点与全网总字节数并对比八麦集中式中心；说明为何不能直接拿外层更新事件数充当算力预算。</p>
 <p><strong>参考答案</strong>：每个节点的局部观测维数为 $L_u = 2 + 3 = 5$，单节点一套矩阵占 $5^2 \times 16 = 400$ 字节，四节点全网合计 $1600$ 字节；而集中式单套 $8 \times 8$ 矩阵占 $64 \times 16 = 1024$ 字节（若同时存总协方差与噪声协方差则乘 $2$，$F$ 个频点再乘 $F$）。分布式架构成功压低了单台设备的内存与矩阵分解维数，但因广播副本在多节点重复统计而使全网总存储上升。</p>
 <p>算力统计上，一次同时更新事件触发 $U$ 个节点各自求解一次方程，而一次顺序轮转事件通常只触发 $1$ 个节点求解（外加初始化求解）；因此必须统计实际发生的节点线性方程组求解总次数，并将四节点内存配置与前文两节点收敛实验配置明确区分。</p>
 <p><span id="e15-17" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e13-11"></a></p>
-<span id="sec-70" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-270f9db859" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-2ab25b15a4" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-067a79a0ca" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-ce0e0d840a">E13-11：已知SRO与线性SRC补偿对照</h3>
+<span id="sec-71" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-270f9db859" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-2ab25b15a4" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-067a79a0ca" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-ce0e0d840a">E13-11：已知SRO与线性SRC补偿对照</h3>
 <p><strong>题目</strong>：对比同步远端广播流、存在 $+100\,\mathrm{ppm}$ 晶振频偏的错位远端流，以及按已知频偏做线性插值重采样（SRC）补偿后的融合流。说明插值坐标方向，并解释为什么插值补偿后的稳窗 NMSE 可以低于理想同步模型的理论下界 $2/13$。</p>
 <p><strong>参考答案</strong>：当远端实际采样率为 $f_d = 16000 \times 1.0001 = 16001.6\,\mathrm{Hz}$ 时，远端第 $m$ 个样本对应物理时刻 $m / f_d$ 秒；欲重建本地参考时刻 $n / 16000$ 秒的信号，必须在远端设备数组坐标 $m = n \cdot (f_d / 16000) = 1.0001 n$ 处插值（因此生成全部 $32000$ 个本地样本需要远端提供 $32004$ 点右端边界支撑，且保留跨块状态的 $257$ 点分块流式调用与整段调用结果逐点一致）。</p>
 <p>实验测得稳窗浮点融合 NMSE 从错位时的约 $0.350880$ 降至插值补偿后的约 $0.135724$，低于未插值同步模型的 $2/13 \approx 0.153846$。这并非突破了 LMMSE 理论下界，而是因为两点线性插值自带高频低通衰减，压低了远端 $2900 / 3500\,\mathrm{Hz}$ 噪声载波方差，改变了输入噪声协方差矩阵 $\mathbf R_{nn}$；若要检验该插值流之上的理论最优界，须针对插值后的新协方差重新计算集中式基准。</p>
 <p><span id="e15-18" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e13-12"></a></p>
-<span id="sec-71" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-4e97b65795" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-03e1ca65d2" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-1251e3d462" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-97a3c2617d">E13-12：缺口策略必须使用同一评分分母</h3>
+<span id="sec-72" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-4e97b65795" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-03e1ca65d2" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-1251e3d462" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-97a3c2617d">E13-12：缺口策略必须使用同一评分分母</h3>
 <p><strong>题目</strong>：远端广播在稳定窗中途连续丢失 $5$ 个数据包（共 $800$ 点），对比“远端直接补零（保留原接收权重）”与“显式切换回本地双麦 MWF 权重”两种恢复策略，手算缺口内解析误差与全稳窗平均误差，说明为何两套窗口指标缺一不可。</p>
 <p><strong>参考答案</strong>：先独立手算 $800$ 点缺口期内的解析误差：</p>
 <ol>
@@ -1325,17 +1382,17 @@ P_k[\ell]
 </ol>
 <p>再按时间占比 $\eta = 800 / 28800 = 1 / 36$ 折算整段 $28800$ 点稳窗平均浮点 NMSE $(1 - \eta)\times(2/13) + \eta J_{\mathrm{gap}}$，两种策略分别约为 $0.168516$ 与 $0.161918$。可以看到短暂丢包在长窗口平均下很容易被正常段稀释得看似相差无几，唯有并列报告全窗与缺口窗（严禁把丢失段偷偷从分母里删掉），才能看清丢包瞬间的真实听感冲击。</p>
 <p><span id="e15-19" class="anchor-alias exercise-alias" aria-hidden="true"></span><span id="e15-20" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e13-13"></a></p>
-<span id="sec-72" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-0c9a031714" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-87f37a1d30" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-5bc0cc2c13" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-0dcd9a42fe" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-907902a486" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-ad154b1e6b" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-826f17e30f">E13-13：PCM16 远端传输界与三层稳窗评分对账</h3>
+<span id="sec-73" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-0c9a031714" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-87f37a1d30" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-5bc0cc2c13" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-0dcd9a42fe" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-907902a486" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-ad154b1e6b" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-826f17e30f">E13-13：PCM16 远端传输界与三层稳窗评分对账</h3>
 <p><strong>题目</strong>：（1）将空间白噪声算例中的远端标量广播 $z_2 = 2x_3 - x_4 / 2$ 编码为 16 位整型 WAV（步长 $\Delta = 1/32768$）并重读回浮点，乘接收系数 $2/13$ 与本地信号融合，求链路量化引起的浮点输出最大幅度增量上界并与实测值比对，再对比“远端两支麦克风分别量化后再加权”的上界；（2）对图 65 的白噪声与相关噪声四种固定权重方案，解释为何解析层、双精度浮点层与重读 WAV 整型比值 $E_{\mathrm{PCM}} / P_{\mathrm{ref}}$ 高度接近却不必逐位相等。</p>
 <p><strong>参考答案</strong>：（1）先在远端合成标量广播再做单次 PCM16 四舍五入时，广播量化误差至多为 $\Delta / 2$，乘本地接收系数 $2/13$ 后，融合输出幅度增量上界为 $(2/13) \times (\Delta / 2) = \Delta / 13$（约 $2.347506 \times 10^{-6}$，均方功率增量上界为其平方）；实测重读 WAV 融合后的最大幅度增量为 $2.347005 \times 10^{-6}$，严格满足该上界。反之，若远端两支麦克风先各自独立量化为 PCM16，传到本地后再乘远端权重 $[4, -1]^\top / 13$，按式(13-23)幅度误差上界则放宽至 $(5/13) \times (\Delta / 2) = 5\Delta / 26$。</p>
 <p>（2）三层对账分工明确：解析层针对理想协方差给出精确有理数（如 $2/13 \approx 0.153846$、$8/69 \approx 0.115942$）；双精度浮点层因 $28800$ 点稳定窗恰好容纳所有正弦载频的整数个周期，交叉项在机器精度内正交抵消，与解析值吻合到十余位；而磁盘 PCM 实测层对干净参考 $D[n]$ 与融合输出 $Y[n]$ 各自执行了一次 16 位取整，因此 $E_{\mathrm{PCM}} / P_{\mathrm{ref}}$（依次约为 $0.153852$、$0.115945$、$0.153858$）真实包含了定点舍入微扰，验证时须将纯链路量化增量与输出最终量化误差分开记录。</p>
 <p><span id="e15-21" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e13-14"></a></p>
-<span id="sec-73" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-9e15aaffec" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-2b170d53fc" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-32f96cea50" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-641c7c2c6a">E13-14：固定Jacobi耦合的发散反例</h3>
+<span id="sec-74" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-9e15aaffec" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-2b170d53fc" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-32f96cea50" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-641c7c2c6a">E13-14：固定Jacobi耦合的发散反例</h3>
 <p><strong>题目</strong>：设 $3 \times 3$ 矩阵 $\mathbf R$ 主对角元全为 $1$、非对角元全为 $0.9$，右端向量 $\vec r = [1, 1, 1]^\top$。从零初值出发执行块同时迭代 $\vec w^{i+1} = \vec w^i + \alpha\vec\rho^i$（其中残差 $\vec\rho^i = \vec r - \mathbf R\vec w^i$），对比全步长 $\alpha = 1$ 与半步松弛 $\alpha = 1/2$ 的收敛性。</p>
 <p><strong>参考答案</strong>：矩阵 $\mathbf R = 0.1\mathbf I_3 + 0.9\,\vec 1\vec 1^\top$ 的特征值为 $2.8, 0.1, 0.1$，是严格对称正定矩阵，精确解 $\vec w^\star$ 等于 $[1, 1, 1]^\top / 2.8 = \frac{5}{14}[1, 1, 1]^\top$。记误差向量 $\vec e^i = \vec w^i - \vec w^\star$，递推关系为 $\vec e^{i+1} = (\mathbf I_3 - \alpha\mathbf R)\vec e^i$，沿特征值 $\lambda$ 方向的误差每步缩放 $(1 - \alpha\lambda)$ 倍，收敛充要条件为谱半径 $\max_\lambda |1 - \alpha\lambda| \lt  1$，即 $0 \lt  \alpha \lt  2 / 2.8 = 5/7$。</p>
 <p>当取 $\alpha = 1$（即标准的无松弛 Jacobi 同时替换：每个坐标固定其余两个旧值单独精确最小化二次代价）时，沿全 $1$ 特征方向的放大因子为 $1 - 2.8 = -1.8$（模长大于 $1$），各分量依次跳出 $1, -0.8, 2.44, -3.392, \ldots$，剧烈震荡发散。改取满足谱半径条件的松弛步长 $\alpha = 1/2 \lt  5/7$ 后，主方向缩放因子收进 $1 - 1.4 = -0.4$，各分量依次走出 $0.5, 0.3, 0.38, 0.348, \ldots$，平稳收敛至 $5/14$。这一精炼反例直观解释了为何“每个节点在旧快照上各自求局部最优”并不自动保证全网同时替换稳定（注意此例为线性定常 Jacobi 迭代，而 DANSE 同时更新还涉及非线性子空间重构，其严格收敛条件由下一题式(13-15)给出）。</p>
 <p><span id="e15-22" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e13-15"></a></p>
-<span id="sec-74" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-4db262b2cd" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-0469bde73b" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-35fc515c3d" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-3631413245">E13-15：原定理的三个步长条件</h3>
+<span id="sec-75" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-4db262b2cd" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-0469bde73b" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-35fc515c3d" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-3631413245">E13-15：原定理的三个步长条件</h3>
 <p><strong>题目</strong>：逐一检验四个步长序列 $\alpha_i = 1/(i + 1)$、常值 $1/2$、几何序列 $2^{-i-1}$ 与平方倒数 $1/(i + 1)^2$（$i = 0, 1, 2, \ldots$）是否满足式(13-15)的三条准则；满足步长条件后，能否直接套用到不含 $\mathbf G_{uu}^{i+1}$ 的简化松弛更新上？</p>
 <p><strong>参考答案</strong>：逐项对照式(13-15)的 $\alpha_i \in (0, 1]$、$\lim_{i\to\infty}\alpha_i = 0$ 与 $\sum_{i=0}^\infty \alpha_i = \infty$：</p>
 <ol>
@@ -1346,7 +1403,7 @@ P_k[\ell]
 </ol>
 <p>最后务必注意：式(13-15)是 $rS$-DANSE$^+$ 定理的组成部分，必须同时配套式(13-14)中的子空间基底对齐块 $\mathbf G_{uu}^{i+1}$、正定观测统计 $\mathbf R_{xx}$ 与满秩共同目标变换（$Q = S$），不能单凭选了调和步长就直接给省去基底对齐的式(13-13)简化更新开具理论收敛支票。</p>
 <p><span id="e15-23" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e13-16"></a></p>
-<span id="sec-75" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-0b8e41071b" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-c7f8fcc136" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-1d70029682" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-d07c497049">E13-16：树上同样本求和的消息路径</h3>
+<span id="sec-76" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-0b8e41071b" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-c7f8fcc136" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-1d70029682" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-d07c497049">E13-16：树上同样本求和的消息路径</h3>
 <p><strong>题目</strong>：三节点链状树 $1 \leftrightarrow 2 \leftrightarrow 3$ 选端点 $1$ 作为根节点，同一采样时刻各节点待累加标量为 $z_1 = 1, z_2 = 2, z_3 = 3$。完整列出上行汇聚与下行分发的每条有向消息，算出各节点恢复的其余节点贡献之和，并说明断边或混入旧帧样本的后果。</p>
 <p><strong>参考答案</strong>：分两趟共 $2(U - 1) = 4$ 条有向边消息完成全网同样本求和：</p>
 <ul>
@@ -1355,7 +1412,7 @@ P_k[\ell]
 </ul>
 <p>最后每个节点各自执行减法 $z_{\mathrm{sum}} - z_u$，节点 $1, 2, 3$ 依次准确拿到其余节点之和 $5, 4, 3$（若只跟直接邻居交换而不做多跳传递，两端点 $1$ 和 $3$ 就会漏掉彼此的观测）。一旦中途某条无线链路断开导致子树缺失，或未对齐时间戳把上一帧旧样本混加进总和，全网共享输入的同步线性模型就会被破坏（完整 TI-DANSE 还须在此求和原语之上叠加发送端坐标规范化与滤波迭代）。</p>
 <p><span id="e15-24" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e13-17"></a></p>
-<span id="sec-76" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-7e45f79bb0" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-f7034ff89c" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-e427641230" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-63cbc678eb">E13-17：GEVD白化与直接MWF相互核对</h3>
+<span id="sec-77" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-7e45f79bb0" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-f7034ff89c" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-e427641230" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-63cbc678eb">E13-17：GEVD白化与直接MWF相互核对</h3>
 <p><strong>题目</strong>：针对式(13-19)的二阶相关噪声矩阵 $\mathbf R_{nn}$（主对角元为 $1$、非对角元为 $1/2$）与传递向量 $\vec a = [1, 2]^\top$，求噪声白化后总协方差矩阵的两个特征值，用 GEVD 低秩重构与直接正规方程相互核对最优权重及 MSE，并解释删除小特征值方向的物理意义。</p>
 <p><strong>参考答案</strong>：先算 $\mathbf R_{nn}^{-1}\vec a = [0, 2]^\top$ 与 $q = \vec a^\top\mathbf R_{nn}^{-1}\vec a = 4$。记白化目标向量 $\vec b = \mathbf R_{nn}^{-1/2}\vec a$，其范数平方 $\|\vec b\|_2^2$ 等于 $\vec a^\top\mathbf R_{nn}^{-1}\vec a = 4$，故白化总协方差 $\mathbf C = \mathbf I_2 + \vec b\vec b^H$ 沿 $\vec b$ 方向的主特征值为 $\lambda_1 = 1 + 4 = 5$，沿正交纯噪声方向的特征值为 $\lambda_2 = 1$。</p>
 <p>本例真实目标确为秩一（$S = 1$），截断删除 $\lambda_2 = 1$ 的纯噪声特征方向完全无损。估计干源 $s$ 的直接 MWF 权重为 $[0, 2/5]^\top$：输出目标响应为 $4/5$，目标失真为 $(4/5 - 1)^2 = 1/25$，残余噪声功率为 $[0, 2/5]\mathbf R_{nn}[0, 2/5]^\top = 4/25$，总 MSE 恰为 $1/25 + 4/25 = 1/5$。</p>
@@ -1367,7 +1424,7 @@ P_k[\ell]
 \end{aligned}$$</p>
 <p>这能彻底杜绝左右白化矩阵乘反或漏减噪声底 $1$ 的编码笔误。</p>
 <p><span id="e15-25" class="anchor-alias exercise-alias" aria-hidden="true"></span><a id="e13-18"></a></p>
-<span id="sec-77" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-632be6e3e5" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-13a2e4109a" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-2c78c71398" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-c4927d5b7e">E13-18：广播版本切换后，怎样把统计换到同一坐标</h3>
+<span id="sec-78" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-632be6e3e5" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-13a2e4109a" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-2c78c71398" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-c4927d5b7e">E13-18：广播版本切换后，怎样把统计换到同一坐标</h3>
 <p><strong>题目</strong>：两节点各有一路观测：$x_1 = s + n_1$，$x_2 = s + n_2$，待估目标为 $d = s$，且 $s, n_1, n_2$ 均为零均值、互不相关、方差均为 $1$。旧版节点 $1$ 收到的二维输入为 $\vec y = [x_1, x_2]^\top$；广播版本切换后，远端节点把发送增益放大两倍，节点 $1$ 收到的新版输入变为 $\vec y' = [x_1, 2x_2]^\top$（本地第一路不变）。</p>
 <p>请依次手算：（1）旧版与新版各自一致坐标下的协方差、互相关向量与最优接收权重；（2）若未经坐标转换直接把新旧两套统计各取一半算术平均，求混合统计解出的权重及其作用于当前输入 $[x_1, 2x_2]^\top$ 时的真实物理 MSE；（3）说明如何通过可逆坐标转换无损复用旧统计，并给出一般子空间切换时不可逆转换的反例。</p>
 <p><strong>参考答案</strong>：分五步手算：</p>
@@ -1415,7 +1472,7 @@ J_{\mathrm{mix}}&=(H_{\mathrm{mix}}-1)^2+\frac{11^2+12^2}{31^2}\\
 <pre><code class="language-bash">.venv/bin/python -m codes.chapters.ch13.chapter13_exercises --exercise E13-18
 </code></pre>
 <p><a id="e13-19"></a></p>
-<span id="sec-78" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-60abc8d82d" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-1979c49802" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-77723688f3">E13-19：AES67/PTPv2亚微秒硬件同步预算与软件SRO-DANSE对照</h3>
+<span id="sec-79" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-60abc8d82d" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-1979c49802" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-77723688f3">E13-19：AES67/PTPv2亚微秒硬件同步预算与软件SRO-DANSE对照</h3>
 <p><strong>题目</strong>：考察采样率 $f_s = 48\,\mathrm{kHz}$ 的双节点协同拾音系统，分析语音核心频点 $f = 2.4\,\mathrm{kHz}$：（1）在支持 AES67 / IEEE 1588 PTPv2 的有线局域网中，每个节点相对主时钟（Grandmaster）的时间偏移均受控于 $|\tau_u| \le \tau_{\mathrm{PTP}} = 1\,\mu\mathrm{s}$。计算采样周期 $T_s$、单节点与两节点反向偏置最坏情形下的样本偏移与相位差，以及双节点等权相干叠加 $\hat s = \frac{1}{2}(1 + e^{-\mathrm{j}\phi_{\max}})s$ 的功率增益衰减与相对节点 $1$ 的静态波形相位失真 MSE；（2）在无硬件同步的消费级无线网络（ad-hoc WASN）中，远端晶振存在 $\varepsilon = 100\,\mathrm{ppm}$ 自由运行采样率偏差，求每秒样本滑移速率、跨越 $1$ 个整样本所需时间、$2.4\,\mathrm{kHz}$ 处的相位旋转速率与首次发生 $180^\circ$ 完全相消零点的时刻 $t_{\mathrm{null}}$，并计算 $N = 1024, H = 512$ 的 WOLA 帧移下软件 SRO-DANSE 每帧需补偿的分数样本漂移与相位旋转量。</p>
 <p><strong>参考答案</strong>：分两步对照核算：</p>
 <p><strong>第一步：AES67 / PTPv2 亚微秒硬件锁相静态预算。</strong> 采样率 $f_s = 48000\,\mathrm{Hz}$ 对应的采样周期 $T_s = 1 / 48000\,\mathrm{s}$ 等于 $125 / 6\,\mu\mathrm{s}$（约 $20.833333\,\mu\mathrm{s}$）。单节点最大偏移 $\tau_{\mathrm{PTP}} = 1\,\mu\mathrm{s}$ 仅占 $0.048\,T_s$，在 $f = 2400\,\mathrm{Hz}$ 处引入相位偏移 $360^\circ \times 2400 \times 10^{-6} = 0.864^\circ$（即 $0.0048\pi\,\mathrm{rad}$）。</p>
@@ -1438,7 +1495,7 @@ t_{\mathrm{null}}&=\frac{1}{2f\varepsilon}
 \end{aligned}\tag{13-30}$$</p>
 <p>可见仅仅开机约 $2.08\,\mathrm{s}$，未补偿的 $100\,\mathrm{ppm}$ 异步融合就会把 $2.4\,\mathrm{kHz}$ 语音彻底抹成零陷（$|H|^2 = 0,\; |H - 1|^2 = 1$）；而软件 SRO-DANSE 不仅要在每一帧对各频点乘上斜率与频率成正比的线性相位因子（在 $2.4\,\mathrm{kHz}$ 处每帧补偿 $0.9216^\circ$），还必须每 $1 / 0.0512 \approx 19.53$ 帧（约 $0.2083\,\mathrm{s}$）执行一次整数样本帧移跳步调整，这也直观解释了为何专业固定安装阵列优先选用 AES67/PTPv2 硬件同步，而消费级无线自组网必须配备在线 SRO 跟踪器（运行 <code>.venv/bin/python -m codes.chapters.ch13.chapter13_exercises --exercise E13-19</code> 可复核全部数值）。</p>
 <p><a id="e13-20"></a></p>
-<span id="sec-79" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-1f2fb8b5ba" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-8f5d54d722" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-45389cc58a">E13-20：DASF统一子空间：分布式MWF、MVDR、GEVD与LCMV何时同方向、何时分道扬镳</h3>
+<span id="sec-80" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-1f2fb8b5ba" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-8f5d54d722" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-45389cc58a">E13-20：DASF统一子空间：分布式MWF、MVDR、GEVD与LCMV何时同方向、何时分道扬镳</h3>
 <p><strong>题目</strong>：沿用 §13.8 的两节点四麦克风跨节点相关噪声模型：全局目标传递向量 $\vec a = [1, 1/2, 2, -1/2]^\top$，干源功率 $\phi_s = 1$，噪声协方差 $\mathbf R_{nn}$ 主对角全为 $1$ 且含跨节点相关项 $R_{nn,13} = R_{nn,31} = 1/5$、$R_{nn,14} = R_{nn,41} = 4/5$（已知 $\mathbf R_{nn}^{-1}\vec a = [25, 4, 11, -24]^\top / 8$，$q = 61/8$）。</p>
 <p>请按 §13.12 的 DASF 框架分三阶段手算：（1）证明集中式 MWF、单约束 MVDR（$\vec a^\top\vec w = 1$）与主广义特征向量（满足 $\vec w^\top\mathbf R_{nn}\vec w = 1$）共线，并验证节点 $2$ 发送单路广播 $z_2 = 11x_3 - 24x_4$ 时节点 $1$ 的局部压缩求解对三者同时无损；（2）添入干扰零陷方向 $\vec b = [0, 1, 1, 0]^\top$，构造双线性约束 $\mathbf C = [\vec a, \vec b]$、$\vec f = [1, 0]^\top$（$P = 2$），手算四麦集中式 LCMV 最优权重与最小输出噪声功率 $P_{n,\mathrm{LCMV}}^\star$，再手算若节点 $2$ 死守旧的 MVDR 广播 $z_2 = 11x_3 - 24x_4$ 时节点 $1$ 局部双约束 LCMV 的精确噪声功率 $P_{n,\mathrm{stale}}$，并与顺序轮转 DASF-LCMV 收敛结果比对；（3）再添入第三条约束 $\vec c_3 = [0, 0, 0, 1]^\top$ 使 $P = 3$，解释单路广播（$R = 1, L_u = 3$）为何发生自由度锁死，并验证双路广播（$R = 2, L_u = 4$）如何恢复集中式最优解。</p>
 <p><strong>参考答案</strong>：分三阶段手算：</p>
@@ -1463,8 +1520,9 @@ P_{n,\mathrm{stale}}-P_{n,\mathrm{LCMV}}^\star
 <p>死守旧广播虽然勉强保住了零陷，输出噪声功率却从集中式下界 $34/203 \approx 0.167488$ 恶化到了 $2116/10397 \approx 0.203520$。反之，由于每个节点的局部维数 $L_u = 3 > P = 2$（保有 $L_u - P = 1$ 个降噪自由度），启动顺序轮转 DASF-LCMV 后，两节点交替把各自最新的二维本地分块更新为对外广播方向，全网输出噪声功率每步单调不增，单调渐近收敛回集中式最优值 $34/203$ 与式(13-31)权重。</p>
 <p><strong>第三阶段：$P = 3 = L_u$ 自由度耗尽锁死与双路广播解锁。</strong> 再添入第三列约束 $\vec c_3 = [0, 0, 0, 1]^\top$（要求第 $4$ 麦权重为零，$\vec f_3 = [1, 0, 0]^\top$，总约束数 $P = 3$）：四麦集中式三约束 LCMV 最优解为 $[34, -26, 26, 0]^\top / 73$，最小输出噪声功率为 $196/365 \approx 0.536986$。然而若仍限制每节点只发单路广播（$R = 1$），局部观测维数 $L_u = 2 + 1 = 3$ 恰好等于约束数 $P = 3$，剩余优化自由度 $L_u - P = 0$。从初值 $\vec f_1^{(0)} = [1, 0]^\top$、$\vec f_2^{(0)} = [11, -24]^\top$ 出发，节点 $1$ 的 $3 \times 3$ 满秩约束方程 $\tilde{\mathbf C}_1^\top\vec h_1 = [1, 0, 0]^\top$ 直接把局部解唯一焊死在 $\vec h_1 = [1, 0, 0]^\top$，节点 $2$ 同样被焊死在有效全局权重 $[1, 0, 0, 0]^\top$，无论轮转多少轮噪声功率都死锁在 $1.0 > 196/365$；一旦将广播扩充至 $R = 2$（恢复 $L_u = 4 > P = 3$），首轮即解锁恢复集中式最优噪声功率 $196/365$（可在仓库根目录下运行 <code>.venv/bin/python -m codes.chapters.ch13.chapter13_exercises --exercise E13-20</code> 复核全部三阶段结果）。</p>
 <p><a id="e13-21"></a></p>
-<span id="sec-80" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-e2eb67a5ed">E13-21：DWACD启发的双窗互谱斜率控制与语音活动门控</h3>
+<span id="sec-81" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-e2eb67a5ed">E13-21：DWACD启发的双窗互谱斜率控制与语音活动门控</h3>
 <p>本节双窗控制只展示互谱漂移斜率与已知活动门控，不含原 DWACD 的相干归一化、递归状态及完整闭环同步器。PTP 网络时间、本地 ADC 速率、传输期限与失锁保持须分开核验；协议名称本身不提供采样时钟锁定证据。</p>
+<p>想继续比较估计之后怎样做插值，以及遇到缺包哪一块可以重新使用远端，可回看 <a href="#sec-u-6136ceaff8">§13.15 的三部手机实录</a>。</p>
 <p><strong>题目</strong>：沿用 §13.15 式(13-24)的复互谱符号约定 $\hat\Gamma_{12}[k,\ell] = \hat{\mathbb{E}}[X_1[k,\ell]\,X_2^*[k,\ell]]$，考察一对异步拾音节点：基准采样率 $f_s = 16\,\mathrm{kHz}$，FFT 点数 $N = 512$，帧移 $H = 256$（$16\,\mathrm{ms}$），真实相对采样率偏移 $\varepsilon = +100\,\mathrm{ppm} = 10^{-4}$（远端节点 $2$ 采样更快），固定静态声学时差 $\tau_0 = 1.75$ 个样本。构造两段长度均为 $L_w = 100$ 帧、名义间距为 $B = 200$ 帧（$B H / f_s = 3.2\,\mathrm{s}$）的分析段，在频带 $k \in [16, 128]$（$500$～$4000\,\mathrm{Hz}$，共 $113$ 个频点）上通过两段平均互谱乘积 $P[k] = \bar\Gamma_{12}^{(2)}[k]\big(\bar\Gamma_{12}^{(1)}[k]\big)^*$ 与 WACD 复内积寻峰估计 $\hat\varepsilon$：</p>
 <p>（1）手算跨越 $B = 200$ 帧的真实累积样本漂移 $\Delta n_{\mathrm{true}}$、$P[k]$ 跨频点的理论相位斜率 $\alpha_{\mathrm{true}}$、端点频点 $k = 16$ 与 $k = 128$ 处的累积相位以及帧内漂移 $|\varepsilon| N$，并说明为何直接取主值相位在 $k = 128$ 处已发生 $2\pi$ 卷绕而复内积寻峰仍可无模糊估计至 $|\Delta n| \lt  N / 2$；</p>
 <p>（2）设活动语音帧为相干宽带语音叠加独立本地底噪（$P_s = 100, P_n = 1$，信噪比 $+20\,\mathrm{dB}$），非活动帧为两节点互不相关的纯静音或本地突发噪声（信噪比 $-\infty\,\mathrm{dB}$，跨节点随机相位），用确定性合成仿真（固定种子 <code>13021</code>，20 次独立重复）对比<strong>联合活动门控双窗控制</strong>（仅对两段中对应时刻均活动的帧平均互谱）与<strong>无门控直接平均</strong>在以下三种工况下的表现：① $60\%$ 活动语音 + $40\%$ 低电平静音（分别检验两段对称活动与非对称活动，前者验证符号翻转陷阱，后者验证质心偏移偏差）；② $60\%$ 活动语音 + $40\%$ 强本地突发噪声（$P_{\mathrm{burst}} = 2500 = 25 P_s$）；③ $20\%$ 活动语音 + $80\%$ 强本地突发噪声（$P_{\mathrm{burst}} = 1000 = 10 P_s$）。</p>
@@ -1534,7 +1592,7 @@ P_{n,\mathrm{stale}}-P_{n,\mathrm{LCMV}}^\star
 <p>在两类突发噪声工况下，无门控平均的解析互谱信噪比均暴跌约 $26\,\mathrm{dB}$（跌至 $-9.209\,\mathrm{dB}$ 与 $-13.110\,\mathrm{dB}$），带均 MSC 从 $0.82\text{～}0.96$ 崩塌至 $0.012\text{～}0.027$，相位 RMSE 迫近均匀随机相位的理论极限 $\pi / \sqrt{3} \approx 1.8138\,\mathrm{rad}$，20 次 RMSE 飙升至 $207.7\text{～}223.2\,\mathrm{ppm}$（其中 $80\%$ 突发噪单次甚至错估为 $-86.643\,\mathrm{ppm}$，连正负号都彻底反转）；而联合活动门控双窗控制 在全部四种工况下均将估计误差牢牢压在 $0.35\,\mathrm{ppm}$ 以内（20 次 RMSE 仅 $0.13\text{～}0.27\,\mathrm{ppm}$）。在仓库根目录运行以下命令即可复核全部数值：</p>
 <pre><code class="language-bash">.venv/bin/python -m codes.chapters.ch13.chapter13_exercises --exercise E13-21
 </code></pre>
-<span id="sec-81" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-13-17">13.17 原始资料与继续阅读</h2>
+<span id="sec-82" class="anchor-alias" aria-hidden="true"></span><h2 id="sec-13-17">13.17 原始资料与继续阅读</h2>
 <p>以下文献与技术规范支撑本章的分布式压缩子空间理论、拓扑无关扩展、采样率偏差校正与流式实现边界：</p>
 <ul>
 <li>Bertrand, A. 与 Moonen, M.，<em>Distributed Adaptive Node-Specific Signal Estimation in Fully Connected Sensor Networks — Part I: Sequential Node Updating</em>（<em>IEEE Transactions on Signal Processing</em> 58(10), 5277–5291, 2010；<a href="https://homes.esat.kuleuven.be/~abertran/reports/09-65.pdf">技术报告 09-65</a>）及 <em>Part II: Simultaneous and Asynchronous Node Updating</em>（<em>IEEE Transactions on Signal Processing</em> 58(10), 5292–5306, 2010；<a href="https://homes.esat.kuleuven.be/~abertran/reports/09-178.pdf">技术报告 09-178</a>）：建立全连接网络中顺序 DANSE、带基底对齐的松弛同时/异步 $rS$-DANSE$^+$ 及精确二阶统计收敛定理。</li>

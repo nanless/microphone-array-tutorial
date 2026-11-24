@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 11 章 · 总结与选型指南 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="2da800f28691"><style>
+<meta name="source-digest" content="9112c8713651"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -1781,7 +1781,7 @@ $$</p>
 \vec w &= \frac{\vec z}{\vec a_0^H \vec z}.
 \end{aligned}\tag{11-20}
 $$</p>
-<p>此处两侧阵元坐标间距 $0.04\ \mathrm{m}$，$20^\circ$ 干扰的导向相位幅值 $\phi_{20}=80\pi\sin 20^\circ / 343$ 约为 $0.250609\ \mathrm{rad}$，故实标量 $\beta = 1 + 2\cos(0.250609)$。以 $\alpha = 1$（即 $\delta = 1.01$、$q = 1.02$）为例，代入式(11-20) 得共轭对称权重 $w_1 \approx 0.342249 + 0.212328\mathrm{j}$、$w_2 \approx 0.315503$、$w_3 \approx 0.342249 - 0.212328\mathrm{j}$，三项之和精确等于 $1$（满足名义无失真约束 $\vec w^H\vec a_0 = 1$）。</p>
+<p>左右两支麦各距中心 $0.04\ \mathrm{m}$，两支外侧麦相距 $0.08\ \mathrm{m}$。$20^\circ$ 干扰的导向相位幅值 $\phi_{20}=80\pi\sin 20^\circ / 343$ 约为 $0.250609\ \mathrm{rad}$，故实标量 $\beta = 1 + 2\cos(0.250609)$。以 $\alpha = 1$（即 $\delta = 1.01$、$q = 1.02$）为例，代入式(11-20) 得共轭对称权重 $w_1 \approx 0.342249 + 0.212328\mathrm{j}$、$w_2 \approx 0.315503$、$w_3 \approx 0.342249 - 0.212328\mathrm{j}$，三项之和精确等于 $1$（满足名义无失真约束 $\vec w^H\vec a_0 = 1$）。</p>
 <p><strong>第三步：严格区分三种空间噪声指标。</strong> 因四个候选均满足 $\vec w^H\vec a_0 = 1$，名义方向分子功率恒为 $1$。记权重范数平方 $\nu_w = \vec w^H\vec w$；令无量纲间距 $d_{mn}=2f|p_m - p_n|/c$，按三维球面各向同性弥散噪声场构造相干矩阵 $\Gamma_{mn} = \operatorname{sinc}(d_{mn})$（其中 $\operatorname{sinc}(x) = \sin(\pi x)/(\pi x)$），记 $\gamma_w = \vec w^H\mathbf{\Gamma}\vec w$。名义白噪声增益、各向同性指向性指数与当前真实噪声场输出功率分别为：</p>
 <p>$$
 \begin{aligned}
@@ -1915,15 +1915,61 @@ $$</p>
 </tr>
 </tbody>
 </table></div>
-<p>尽管未加载 MVDR（$\alpha = 0$）表面拥有全场最低的总 NMSE（$0.129625$），但它一方面把传感器自噪声放大了 $8.43\ \mathrm{dB}$（违反 WNG 红线），另一方面在仅偏 $5^\circ$ 时就削损了逾 $23\%$ 的目标幅度（违反目标保真红线），在第一轮即告淘汰。在通过声学硬约束的 $\{ \mathrm{DS},\; \mathrm{MVDR}(\alpha=1) \}$ 中，$\alpha = 1$ 的实际总 NMSE（$0.767713$）显著优于 DS（$0.962118$），应列为送入实机宽带因果实现与延迟压测的首选方案；但在补齐硬件延迟证据之前，整机验收状态仍须严格保持为“证据不足”。</p>
+<p>尽管未加载 MVDR（$\alpha = 0$）表面拥有全场最低的总 NMSE（$0.129625$），但它一方面把传感器自噪声放大了 $8.43\ \mathrm{dB}$（违反 WNG 红线），另一方面在仅偏 $5^\circ$ 时就削损了逾 $23\%$ 的目标幅度（违反目标保真红线），在第一轮即告淘汰。在通过声学硬约束的 $\{ \mathrm{DS},\; \mathrm{MVDR}(\alpha=1) \}$ 中，$\alpha = 1$ 的实际总 NMSE（$0.767713$）低于 DS（$0.962118$），可优先进入宽带复核；但在补齐硬件延迟证据之前，整机验收状态仍须严格保持为“证据不足”。</p>
 <p><img alt="图74：物理收益、声学硬条件与设备证据分开判断" src="../figures/fig74_selection_evidence.png" onerror="this.alt+='（图缺失）'" /></p>
-<p><em>图 74：E11-20 四个单频波束候选在同一真实噪声协方差 $\mathbf{R}_{nn}$ 与 $5^\circ$ 指向偏差下的完整选型闭环。(a) 输出噪声功率（蓝柱）与计入目标失配后的总 NMSE（黑菱形）；(b) $5^\circ$ 真实目标处的复响应偏差 $|\vec w^H\vec a_5 - 1|$ 及硬上限 $0.03$；(c) 白噪声增益 WNG 及硬下限 $0\ \mathrm{dB}$；(d) 球面弥散参考 DI 与整机三态验收汇总表。</em></p>
+<p><em>图 74：E11-20 四个单频波束候选在同一真实噪声协方差 $\mathbf{R}_{nn}$ 与 $5^\circ$ 指向偏差下的声学筛选和整机判定。(a) 输出噪声功率（蓝柱）与计入目标失配后的总 NMSE（黑菱形）；(b) $5^\circ$ 真实目标处的复响应偏差 $|\vec w^H\vec a_5 - 1|$ 及硬上限 $0.03$；(c) 白噪声增益 WNG 及硬下限 $0\ \mathrm{dB}$；(d) 球面弥散参考 DI 与整机三态验收汇总表。</em></p>
 <p>读懂图 74 的四宫格，就能把全章的选型思想融会贯通：</p>
 <ul>
 <li><strong>图 74(a) 噪声压制与自相消代价</strong>：$\alpha=0$ 的蓝柱虽最低（$0.0751$），但黑色菱形明显悬在柱顶上方（$0.1296$），两者的落差正是 $5^\circ$ 目标自相消引入的失真功率；DS 与 $\alpha=1$ 的黑菱形则紧贴柱顶，目标几乎无损。</li>
 <li><strong>图 74(b) 与 (c) 两道声学硬门槛联审</strong>：水平虚线分别划出 $\varepsilon_H \le 0.03$ 与 $\mathrm{WNG} \ge 0\ \mathrm{dB}$ 红线；$\alpha=0$ 与 $\alpha=0.1$ 在两张子图中双双标红越界，唯有绿柱 DS 与 $\alpha=1$ 同时守住目标保真与自噪声稳定底线。</li>
-<li><strong>图 74(d) 跨模型提醒与整机三态收口</strong>：表格清楚区分了独立弥散场 $\mathbf{\Gamma}$ 算出的 DI 与子图 (a) 的真实噪声功率，并在最后一列展示：即便 $\alpha=1$ 拿下了声学可行集优胜，缺少硬件端到端延迟证据时整机依然停在“证据不足”，必须推进宽带滤波实现与设备上机实测（有关阵元故障后的在线降级重算可对照第 10 章 <a href="10_engineering-practice.html#e10-26">E10-26</a>）。</li>
+<li><strong>图 74(d) 跨模型提醒与整机三态收口</strong>：表格清楚区分了独立弥散场 $\mathbf{\Gamma}$ 算出的 DI 与子图 (a) 的真实噪声功率，并在最后一列展示：即便 $\alpha=1$ 在这个单频模型里通过声学筛选，设备延迟仍是待测项（有关阵元故障后的在线降级重算可对照第 10 章 <a href="10_engineering-practice.html#e10-26">E10-26</a>）。</li>
 </ul>
+<p><a id="e11-20-wideband"></a></p>
+<p><strong>把单频结论放到宽带再算一遍。</strong> 保持三支麦的坐标、两个方向和每个频点的归一化信号功率，在 16 kHz 采样下逐频求权重。每支麦的滤波响应是它的共轭权重。作 4096 点实数逆变换，把零时刻移到第 64 点，再取前 129 点乘汉明窗。这样三个输入都可以用因果 FIR 相加。评分时先去掉公共的 64 点数字延迟，再用 $|H-1|$ 检查目标保真；在 300～3400 Hz 内的 794 个计算频点逐点检查两条门槛。</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
+<thead>
+<tr>
+<th scope="col">候选</th>
+<th scope="col" style="text-align: right;">最低 WNG（dB）</th>
+<th scope="col" style="text-align: right;">最大目标复响应误差</th>
+<th scope="col" style="text-align: right;">频点等权平均 NMSE</th>
+<th scope="col">声学判定</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DS</td>
+<td style="text-align: right;">4.771</td>
+<td style="text-align: right;">0.01564</td>
+<td style="text-align: right;">0.84468</td>
+<td>通过</td>
+</tr>
+<tr>
+<td>MVDR，$\alpha=0$</td>
+<td style="text-align: right;">−13.660</td>
+<td style="text-align: right;">0.24141</td>
+<td style="text-align: right;">0.11553</td>
+<td>失败</td>
+</tr>
+<tr>
+<td>MVDR，$\alpha=0.1$</td>
+<td style="text-align: right;">−3.955</td>
+<td style="text-align: right;">0.21014</td>
+<td style="text-align: right;">0.19056</td>
+<td>失败</td>
+</tr>
+<tr>
+<td>MVDR，$\alpha=1$</td>
+<td style="text-align: right;">2.874</td>
+<td style="text-align: right;">0.12971</td>
+<td style="text-align: right;">0.50137</td>
+<td>失败</td>
+</tr>
+</tbody>
+</table></div>
+<p>加载 $\alpha=1$ 的波束在 1 kHz 可以通过，放到宽带时在约 3398 Hz 的目标误差达到 0.12971，超过 0.03。按这组模型和门槛，只剩 DS 可以进入下一步验收。三路同时输入一个数字脉冲，四个波束的输出峰值都在第 64 点，也就是 4 ms。整机的 150 ms 门槛还要在目标三麦设备上，从声源激励到增强输出按同一时钟测量，其中包括采样、缓冲和输出。可先按<a href="10_engineering-practice.html#sec-10-1">第 10 章的实测方法</a>确定测点，再记录每次回调和输出，分别找出固定延迟和抖动。</p>
+<pre><code class="language-bash">.venv/bin/python -m codes.chapters.ch11.examples.wideband_selection
+</code></pre>
 <p><a id="e11-21"></a></p>
 <h3 id="sec-u-8b058725f6">E11-21：车载多音区总线同步、头枕波束与双讲保护</h3>
 <p>设智能座舱水平截面内，主驾嘴部位于 $\vec s_{\mathrm{D}}=(-0.35,0)\ \mathrm{m}$，副驾嘴部位于 $\vec s_{\mathrm{P}}=(+0.35,0)\ \mathrm{m}$；工作频率 $f=1000\ \mathrm{Hz}$，声速 $c=343\ \mathrm{m/s}$，名义近讲参考距离 $r_{\mathrm{nom}}=0.20\ \mathrm{m}$，两乘员等功率发声（$P_{\mathrm{D}}=P_{\mathrm{P}}=1$），各通道独立传感器自噪声功率 $\sigma_e^2=10^{-3}$。第 $m$ 麦对声源 $\vec s$ 的球面波物理传递系数为 $h_m=(r_{\mathrm{nom}}/r_m)e^{-\mathrm{j}2\pi fr_m/c}$，波束权重按第 3 章近场导向矢量 $\vec a(\vec s)$（以本区第 0 麦归一化）求解。</p>

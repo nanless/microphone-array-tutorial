@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Chapter 9 · Sound Source Tracking · Microphone Array Signal Processing</title>
-<meta name="source-digest" content="0c25e905660b"><style>
+<meta name="source-digest" content="759a86557744"><style>
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -359,6 +359,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="09_source-tracking.html#sec-u-0ce3f61b2f">From Active Measurements to Track Birth, Confirmation, and Deletion</a></li>
 <li>&nbsp;&nbsp;<a href="09_source-tracking.html#sec-u-8cb97029bf">OSPA: Normalized Set Distance Across Localization and Cardinality</a></li>
 <li>&nbsp;&nbsp;<a href="09_source-tracking.html#sec-u-354a791c46">GOSPA: Decomposing Localization, Missed Targets, and False Alarms Without Dilution</a></li>
+<li>&nbsp;&nbsp;<a href="09_source-tracking.html#sec-u-0bc468f4ae">Comparing enhancement and localization on one two-microphone recording</a></li>
 <li><a href="09_source-tracking.html#sec-9-5">9.5 Two-Microphone Free-Field Moving-Source Audio and Propagation Ground Truth</a></li>
 <li>&nbsp;&nbsp;<a href="09_source-tracking.html#sec-u-94ca33e6b3">Emission Time Versus Reception Time</a></li>
 <li>&nbsp;&nbsp;<a href="09_source-tracking.html#sec-u-c3bac46f06">End-to-End Closed Loop from Noisy Two-Mic PCM Waveforms to Localization and Tracking</a></li>
@@ -438,6 +439,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="09_source-tracking.html#sec-u-0ce3f61b2f">From Active Measurements to Track Birth, Confirmation, and Deletion</a></li>
 <li>&nbsp;&nbsp;<a href="09_source-tracking.html#sec-u-8cb97029bf">OSPA: Normalized Set Distance Across Localization and Cardinality</a></li>
 <li>&nbsp;&nbsp;<a href="09_source-tracking.html#sec-u-354a791c46">GOSPA: Decomposing Localization, Missed Targets, and False Alarms Without Dilution</a></li>
+<li>&nbsp;&nbsp;<a href="09_source-tracking.html#sec-u-0bc468f4ae">Comparing enhancement and localization on one two-microphone recording</a></li>
 <li><a href="09_source-tracking.html#sec-9-5">9.5 Two-Microphone Free-Field Moving-Source Audio and Propagation Ground Truth</a></li>
 <li>&nbsp;&nbsp;<a href="09_source-tracking.html#sec-u-94ca33e6b3">Emission Time Versus Reception Time</a></li>
 <li>&nbsp;&nbsp;<a href="09_source-tracking.html#sec-u-c3bac46f06">End-to-End Closed Loop from Noisy Two-Mic PCM Waveforms to Localization and Tracking</a></li>
@@ -1726,6 +1728,45 @@ E_{\mathrm{tot}}
 &=1-\frac{E_{\mathrm{tot}}}{\sum_t g_t}.
 \end{aligned}\tag{9-43}$$</p>
 <p>Scoring that exact two-frame ID swap with <code>MOTA</code>: total ground-truth instances $\sum_t g_t=2+2=4$ have $\mathrm{FN}=\mathrm{FP}=0$ and per-frame $\mathrm{OSPA}=0^\circ$, yet both speakers swapping IDs on Frame 2 triggers $\mathrm{IDSW}_2=2$, reducing <code>MOTA</code> from $1.00$ down to $1-2/4=0.50$; if unshielded loudspeaker echo spawns an extra $-45^\circ$ false track on Frame 2 ($\mathrm{FP}_2=1$), <code>MOTA</code> drops further to $1-(2+1)/4=0.25$ (because false alarms are unbounded, <code>MOTA</code> can go negative under heavy clutter; see Exercise <a href="#e09-22">E09-22</a>; for balanced detection–association evaluation and full trajectory-set distances, see HOTA in <a href="https://doi.org/10.1007/s11263-020-01375-2">Luiten et al., 2021</a> and <a href="https://arxiv.org/abs/1605.01177">García-Fernández et al., 2020</a>).</p>
+<p><a id="same-recording-front-end"></a></p>
+<span id="sec-u-c88468b903" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-0bc468f4ae">Comparing enhancement and localization on one two-microphone recording</h3>
+<p>Run the command below from the repository root. The <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/front_end_recording.py">experiment</a> generates six seconds of 8 kHz, two-channel PCM16 audio and decodes it before running any stage. Two artificial noise sources have different envelopes. One moves on the right from $18^\circ$ to $42^\circ$, and the other stays on the left at $-32^\circ$. The microphones also receive echo from a shared playback reference and reflections delayed by about 32, 56, and 80 ms. The generator keeps the two direct components at the first microphone and the echo component at each microphone for waveform and echo scoring.</p>
+<pre><code class="language-bash">.venv/bin/python -m codes.chapters.ch00.cross_chapter.front_end_recording
+</code></pre>
+<p>In the first second, the near-end sources are silent and the microphones pick up playback echo and sensor noise. A 32-tap NLMS filter learns each microphone’s echo path in that interval. Once the near-end sources enter, the weights are frozen and the estimated playback echo continues to be subtracted. A 256-point STFT with a 64-sample hop converts the residual two-channel waveforms to spectra. One branch localizes directly or after two-channel WPE. Every 16 frames, SRP-PHAT provides a direction measurement in the $0^\circ$–$60^\circ$ sector on the right. The resulting Kalman estimates steer a delay-and-sum beamformer. The other branch passes the same WPE output and the synthesized sources' activity intervals to the guided separator from Chapter 8. The experiment processes the full recording offline and interpolates steering directions between observation centers.</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable data table"><table>
+<thead>
+<tr>
+<th scope="col">First microphone or separated output</th>
+<th scope="col" style="text-align: right;">Right-source SI-SDR (dB)</th>
+<th scope="col" style="text-align: right;">Left-source SI-SDR (dB)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Original first-microphone mixture</td>
+<td style="text-align: right;">−7.73</td>
+<td style="text-align: right;">−6.51</td>
+</tr>
+<tr>
+<td>First microphone after AEC</td>
+<td style="text-align: right;">−3.31</td>
+<td style="text-align: right;">−1.91</td>
+</tr>
+<tr>
+<td>First microphone after AEC and WPE</td>
+<td style="text-align: right;">−2.35</td>
+<td style="text-align: right;">−0.82</td>
+</tr>
+<tr>
+<td>Activity-guided separation after AEC and WPE</td>
+<td style="text-align: right;">0.54</td>
+<td style="text-align: right;">4.13</td>
+</tr>
+</tbody>
+</table></div>
+<p>Waveforms are scored over $[2,5.5)$ seconds against each source's direct component at the first microphone. In that interval, the known echo energy falls by 38.49 dB, measured from the difference between the true and estimated echoes. Direction error is scored separately at the 38 observation centers against the right-hand source's angle. After AEC alone, direction RMSE is $15.94^\circ$ before tracking and $16.17^\circ$ after. With WPE, it is $17.86^\circ$ before tracking and $18.06^\circ$ after. Without WPE, the tracked beamformer's right-source SI-SDR over the same waveform interval is $-1.83\ \mathrm{dB}$. With WPE it rises to $-0.72\ \mathrm{dB}$. Waveform error and angle error can move in opposite directions when both branches use the same WPE output. A separate multichannel feed for localization lets a system choose where to make that trade-off.</p>
+<p>If the pinned <code>ssspy</code> source is available as described in <a href="08_speech-separation.html#sec-8-7">Chapter 8</a>, add <code>--blind</code> to the same command. AuxIVA runs 20 iterations using only the two-channel spectra. With optimal matching against the direct references, mean SI-SDR after AEC alone is $-1.64\ \mathrm{dB}$. With WPE added, the mean is $2.90\ \mathrm{dB}$. The output order also changes, so a system that assigns a persistent slot to each talker still needs a separate identity-matching step.</p>
 <h2 id="sec-9-5">9.5 Two-Microphone Free-Field Moving-Source Audio and Propagation Ground Truth</h2>
 <span id="sec-u-76dfa623a9" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-94ca33e6b3">Emission Time Versus Reception Time</h3>
 <p>Lower playback volume before listening. Earlier perceptual panning demos modulated left/right channel gains without physical inter-microphone propagation delays:</p>

@@ -600,6 +600,8 @@ $$\mathrm{cpWER}
 
 在这组配置里，GSS 级联比 Large 版 FDDT 低 3.6 个百分点。两条路线的识别模型和训练也有差别，这 3.6 个百分点是两套具体系统的差距。GSS 所用的 Whisper Medium 也在这个开发集上选取了检查点，因此这组数是开发集对照。原 [SOT 实验，§5.1](https://www.isca-archive.org/interspeech_2020/kanda20b_interspeech.pdf#page=3)用的是 LibriSpeech 人工混合语音，不能把其 WER 填进同一张表。一次 SOT 输出只给一串词和换人标记时，要先为词提供时间、为片段提供会话内的说话人轨，才可用上面的 tcpWER 协议。输出早晚则要另记系统实际发出结果的时刻，词在录音里的时间戳只用于对齐。
 
+串行解码和逐人解码也有实录对照。[Kocour 等，ICASSP 2026，表 4](https://arxiv.org/html/2510.03723v2#S4.T4)在同一批 AMI 单远场麦克风录音上，用标注的说话人活动比较两种解码方式。DiCoW 逐人转写，cpWER 为 16.3%；SA-DiCoW 沿用 DiCoW 编码器，用同一个解码器串行输出各人的词和时间戳，cpWER 为 18.1%。这一组用单通道、标注日志和 cpWER，上表用多通道、系统估计的日志和 tcpWER。
+
 可以先用已经发布的转写练习复评分。[BUT/JHU 公布的转写与参考](https://github.com/BUTSpeechFIT/error_correction_playground/tree/193dbab42a0ffc7532dd2dc567b7750d7a5c13de/datasets/NOTSOFAR-1/GT_diar_v1)取自 NOTSOFAR-1 eval-small 的 160 个单通道会话，它们由真实录音生成，给识别器使用的是标注说话人活动。用 [评分脚本](../codes/chapters/ch15/examples/score_meeting_transcripts.py)读取这些已规范化的转写，共 235,740 个参考词。5 秒容差下，tcpWER 按会话平均为 20.86%，与作者报告一致。若先相加全部 51,532 个编辑错误再除以总参考词数，则为 21.86%。两种算法给长会话的权重不同，比较方案时要固定一种。这里的输入、划分和日志来源与上表不同。
 
 下载上述固定提交到仓库外，把 `results` 指向其中的 `datasets/NOTSOFAR-1/GT_diar_v1`。在单独的 Python 环境安装 `meeteval==0.4.3` 和 `simplejson==3.20.2`，再从本书仓库根目录运行：

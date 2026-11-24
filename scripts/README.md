@@ -18,6 +18,8 @@
 
 推送站点或配套媒体到 `main` 后，[发布工作流](../.github/workflows/pages.yml)先在同一检出目录运行 `run_portable_ci.py` 和导出核验，通过后再暂存并上传 `site/`、`site_en/`、插图、试听文件和 PDF。本地开发可直接在浏览器中打开 [`site/index.html`](../site/index.html)。
 
+也可从[最新版 Release](https://github.com/nanless/microphone-array-tutorial/releases/latest)下载网页 ZIP。解压后打开 `site/index.html` 或 `site_en/index.html`，用目录逐章阅读。插图、试听和 PDF 随包提供，网页公式排版需联网加载 MathJax。
+
 课程页面、样式和交互的源文件在 [`course_home/`](course_home/)。改动后从仓库根目录运行：
 
 ```bash
@@ -246,7 +248,7 @@ Chrome遗留的排版空格只在严格证明后加Layout标记：未处于现�
 
 这是正文存在性检查，不测纸面占用面积。标题须整块排版，成像两格手算的输入、计算与结论保持同页；实际长标题拆页和大图造成的留白仍须按成品目视判断，不能靠补充语义文本放行。
 
-**独立结构基线**：发布门禁按显式常量核对 19 个顶级书签、各篇节级书签、子节级书签与大纲项总数，以及图 1～87。它还检查图号与 alt、公式编号与引用、小节语义链接、每个源 h2/h3/h4 标题是否真的出现在当前页导航中（源 h1 可排除），以及 PNG 中的 `SourceScript` 和完整 `SourceScriptDigest`。
+**独立结构基线**：发布门禁按显式常量核对 19 个篇级书签、173 个节级书签和 840 个子节级书签，共 1032 项，以及图 1～87。它还检查图号与 alt、公式编号与引用、小节语义链接、每个源 h2/h3/h4 标题是否真的出现在当前页导航中（源 h1 可排除），以及 PNG 中的 `SourceScript` 和完整 `SourceScriptDigest`。
 
 修改绘图脚本后未重画的 PNG 会使门禁失败；高风险口语命中只输出人工复核提示。
 

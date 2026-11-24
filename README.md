@@ -8,6 +8,8 @@
 
 **16 章正文 · 2 篇附录 · 360 道可运行练习 · 87 张编号图** · **283 段配套 WAV 音频** · **129 个上游 Git 项目来源索引**
 
+最新版本包含双语 PDF、逐章 HTML 网页包和复算资料。 [查看发布说明与下载](https://github.com/nanless/microphone-array-tutorial/releases/latest)
+
 <picture>
   <source media="(prefers-reduced-motion: reduce)" srcset="assets/readme/course-cover-still.svg">
   <img alt="麦克风阵列信号处理三步核心机制：左上方展示 −35° 目标语音 A 与 +30° 干扰 B 到达四麦线阵 M1 至 M4 的时间差；左下方展示四路错位波形经时延补偿与空频加权后合成增强输出；右侧极坐标波束方向图展示主瓣 0 dB 保真对准 A 并在 B 方向形成自适应空间零陷。" src="assets/readme/course-cover.svg">

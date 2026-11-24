@@ -8,6 +8,8 @@ A complete, open bilingual (English & Chinese) technical monograph and runnable 
 
 **16 chapters · 2 appendices · 360 runnable exercises · 87 numbered figures** · **283 companion WAV files** · **129 upstream Git project source entries**
 
+The latest release includes both PDFs, a website archive with individual chapter HTML files, and links to the experiment materials. [Release notes and downloads](https://github.com/nanless/microphone-array-tutorial/releases/latest)
+
 <picture>
   <source media="(prefers-reduced-motion: reduce)" srcset="assets/readme/course-cover-still-en.svg">
   <img alt="Three-stage mechanism of microphone array signal processing: top-left shows wavefront arrival time differences across a 4-mic linear array from target speaker A (−35°) and interferer B (+30°); bottom-left compares staggered raw channels against phase-aligned weighted output; right shows the polar MVDR beampattern maintaining 0 dB distortionless gain toward A while carving a deep spatial null toward B." src="assets/readme/course-cover-en.svg">

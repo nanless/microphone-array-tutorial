@@ -1087,6 +1087,58 @@ Waveforms are scored over $[2,5.5)$ seconds against each source's direct compone
 
 If the pinned `ssspy` source is available as described in [Chapter 8](08_speech-separation.md#sec-8-7), add `--blind` to the same command. AuxIVA runs 20 iterations using only the two-channel spectra. With optimal matching against the direct references, mean SI-SDR after AEC alone is $-1.64\ \mathrm{dB}$. With WPE added, the mean is $2.90\ \mathrm{dB}$. The output order also changes, so a system that assigns a persistent slot to each talker still needs a separate identity-matching step.
 
+<a id="locata-dicit-front-end"></a>
+
+#### Echo, dereverberation and tracking in one two-loudspeaker recording
+
+Run the comparison again on the DICIT recording from Chapter 5. In Task 2 Recording 1 of the LOCATA development set, two stationary loudspeakers play speech in the same reverberant room while all $15$ microphones record. We treat Loudspeaker 3 as near-end target A and Loudspeaker 4 as far-end B to be removed. The archive supplies the original digital tracks sent to both speakers, so we can use the track for B as the echo reference. It is the signal before the loudspeaker, at a different point in the signal chain from a hardware loopback. The data are under ODC Attribution 1.0 and the playback speech comes from CSTR VCTK. [LOCATA data](https://zenodo.org/records/3630471) · [Recording notes](https://www.locata.lms.tf.fau.de/files/2020/01/Documentation_LOCATA_final_release_V1.pdf) · [The direction and beamforming comparison in Chapter 5](05_beamforming.md#locata-estimated-steering)
+
+Resample the recordings and both playback tracks from $48\ \mathrm{kHz}$ to $16\ \mathrm{kHz}$. Correlation against Mic 7 on A-only $[2.65,2.85)$ s and B-only $[3.48,3.94)$ s gives delays of $938$ samples for A and $936$ for B. Fit a $1024$-tap echo filter for each microphone on the B calibration interval. Freeze the coefficients, replay the B reference through the filters and subtract their outputs from the whole take. Also scan the A calibration interval with SRP-PHAT to initialize at $34^\circ$. The optically measured azimuths, $33.64^\circ$ for A and $17.70^\circ$ for B, are used for scoring only.
+
+| Time (s) | What the microphones hear | Use |
+|---|---|---|
+| $[2.65,2.85)$ | A only | Align A, initialize the track and identify the A separation output |
+| $[2.91,3.10)$ | A only | Check target preservation on a separate interval |
+| $[3.48,3.94)$ | B only | Align B and fit the $15$ echo filters |
+| $[4.08,4.68)$ | B only | Measure held-out ERLE |
+| $[4.90,5.70)$ | A and B together | Compare waveforms and directions |
+
+On the B-only test interval, ERLE is $7.69\ \mathrm{dB}$ at Mic 7 and the median of the $15$ microphones is $5.46\ \mathrm{dB}$, spanning $2.28$ to $7.71\ \mathrm{dB}$. The ratio uses total microphone energy before and after subtraction. Room noise and uncancelled echo contribute to the residual. On the A-only test interval, the amplitude of Mic 7 projected onto the aligned A playback track changes by $-0.04\ \mathrm{dB}$. In double talk, total energy across the $15$ microphones drops by $1.15\ \mathrm{dB}$. That measurement combines A and B and cannot give their individual reductions.
+
+All four rows below use the same take. WPE uses all $15$ microphones, with a $512$-point STFT, a $128$-sample hop, a prediction delay of $3$ frames, $5$ taps and two iterations. Blind AuxIVA uses only the spectra from Mic 7 and Mic 5 and runs for $20$ iterations. After separation, whichever output has more energy in the A calibration interval is assigned to A. Its share of the two outputs' time-frequency power forms a mask. For localization, keep bins where A accounts for at least half the power and use the phase differences across the $15$ spectra in that route. For beamforming, multiply the delay-and-sum output by the continuous share.
+
+| Input | Mic 7 | Fixed initial angle | Tracked angle | Masked and tracked |
+|---|---:|---:|---:|---:|
+| Raw | −2.68 | 0.05 | −0.98 | −1.18 |
+| AEC only | −0.37 | 1.20 | 1.03 | −5.16 |
+| WPE only | 0.05 | 2.15 | 1.32 | −5.03 |
+| AEC then WPE | 4.40 | 4.21 | 4.39 | 4.02 |
+
+The table gives SI-SDR (dB) against the digital playback track for A over the double-talk interval. The same $938$-sample alignment from calibration and the same time interval are used for every output. The score measures resemblance to the playback track, so the real propagation path and room response contribute to the error. For the separate task of recovering both voices, average SI-SDR across the best-matched AuxIVA outputs is $-9.51\ \mathrm{dB}$ on the raw spectra and $-3.95\ \mathrm{dB}$ after WPE alone. Giving A and B equal weight after AEC answers a different question because AEC deliberately removes B.
+
+| Input | Sector peak error | Kalman track error | Masked Kalman track error |
+|---|---:|---:|---:|
+| Raw | 16.98° | 15.32° | 16.17° |
+| AEC only | 8.54° | 5.25° | 2.10° |
+| WPE only | 15.77° | 13.27° | 4.61° |
+| AEC then WPE | 3.85° | 2.13° | 2.02° |
+
+Angle errors are RMS values over $12$ double-talk observations against the optical position of A. Each group of $8$ frames gives one SRP-PHAT scan over $375$–$3000\ \mathrm{Hz}$, with the peak selected within $\pm22^\circ$ of the initial direction. B also lies in that sector. The raw recording often peaks near $15^\circ$, and Kalman filtering smooths even a sequence of wrong directions. The first group describes the state at $4.948$ s and is complete at $4.992$ s. The first STFT frame that uses the update is centered at $4.992$ s. The difference describes the timing of the localization block. WPE and AuxIVA use the full recording, including the scoring interval, and waveform reconstruction overlaps adjacent frames.
+
+In the WPE-only route, the A-only calibration interval selects the first separation output. In double talk, that output scores $-9.54\ \mathrm{dB}$ against A while the second scores $-1.23\ \mathrm{dB}$. Masking from the first output reduces the track error from $13.27^\circ$ to $4.61^\circ$, but the beam's waveform score drops from $1.32$ to $-5.03\ \mathrm{dB}$. Check whether a slot assigned in single talk still carries the target in double talk. The AEC-plus-WPE path has a similar trade-off. Its mask reduces track error from $2.13^\circ$ to $2.02^\circ$ and lowers the waveform score from $4.39$ to $4.02\ \mathrm{dB}$. For this stationary target, keep the unmasked path when waveform fidelity matters more.
+
+Download `dev.zip` from LOCATA, set up the pinned `ssspy` source as described in [Chapter 8](08_speech-separation.md#sec-8-7), and make `ffmpeg` available on the command line. Run the following from the repository root. [Experiment source](../codes/chapters/ch00/cross_chapter/locata_dicit_front_end.py) · [Per-microphone and per-block report](../codes/chapters/ch09/reports/locata_dicit_front_end.json)
+
+```bash
+unzip dev.zip 'dev/task2/recording1/dicit/*' \
+  'dev/task2/recording1/benchmark2/position_source_loudspeaker*.txt' \
+  -d /tmp/locata-front-end
+.venv/bin/python -m codes.chapters.ch00.cross_chapter.locata_dicit_front_end \
+  /tmp/locata-front-end
+```
+
+Lower the playback volume before listening. Add `--wav-dir /tmp/locata-front-end-wav` to the last command to write six WAVs at one common gain, including Mic 7, intermediate stages and the tracked beam with and without the separation mask.
+
 ### 9.5 Two-Microphone Free-Field Moving-Source Audio and Propagation Ground Truth
 
 #### Emission Time Versus Reception Time

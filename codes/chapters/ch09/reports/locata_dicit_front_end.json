@@ -1,0 +1,1080 @@
+{
+  "dataset": "https://doi.org/10.5281/zenodo.3630471",
+  "dataset_license": "ODC-By-1.0",
+  "archive_md5_from_zenodo": "d5a5417c3f6b2ed0e43581dd06f504e6",
+  "recording": "dev/task2/recording1",
+  "archive_members_sha256": {
+    "dev/task2/recording1/dicit/audio_array_dicit.wav": "76b949375cee3185983aaf7cd839840f6ba76a88f7bbea6d308d376f5813a9dc",
+    "dev/task2/recording1/dicit/position_array_dicit.txt": "f5dd34f1534991596c343550eb8613f75eabcee6dd69ade7e46544055fe28cc9",
+    "dev/task2/recording1/dicit/VAD_dicit_loudspeaker3.txt": "3aa6db7eed941930a08241cf2261669df4cd90db72236bb26867d2dfd6e61c09",
+    "dev/task2/recording1/dicit/VAD_dicit_loudspeaker4.txt": "096d42819b9a6ceb5171fa43c5dd35ff5160f520de20774db3b318e73341797e",
+    "dev/task2/recording1/benchmark2/position_source_loudspeaker3.txt": "c43f4b72d0fdad7c80ebaad866cf14a313820ec3648e9860f95dabca2c9bdfef",
+    "dev/task2/recording1/benchmark2/position_source_loudspeaker4.txt": "68d502dbc1438ac3b0f0925fdedcb8170bcbc55cd7bdc3d36925127c5c2952c4",
+    "dev/task2/recording1/dicit/audio_source_loudspeaker3.wav": "607486982b2f87be3f7d3022432e14c05756164625c2b855ca05d6b143957526",
+    "dev/task2/recording1/dicit/audio_source_loudspeaker4.wav": "9eb1addb5efb02b21d527e24b97e8f848f78a14af66465a00d1d4f03eb266cbf"
+  },
+  "implementation_sha256": "cd961bd463a13c3501389d6c4b2ba7a56731cd8dd08af0b4c8682daa70ebd55e",
+  "ffmpeg_version": "ffmpeg version 9.0.2 Copyright (c) 2000-2026 the FFmpeg developers",
+  "numpy_version": "2.5.3",
+  "sample_rate_hz": 16000,
+  "samples": 100843,
+  "channels": 15,
+  "one_based_mic_reference": 7,
+  "one_based_auxiva_pair": [
+    7,
+    5
+  ],
+  "auxiva_source_commit": "38b9389e8b1914422561f1936d9b28d042d62d2c",
+  "auxiva_iterations": 20,
+  "stft_fft": 512,
+  "stft_hop": 128,
+  "frames_per_observation": 8,
+  "minimum_and_maximum_scan_hz": [
+    375,
+    3000
+  ],
+  "initial_a_deg": 34.0,
+  "optical_a_b_deg": [
+    33.64093881932982,
+    17.697116737045732
+  ],
+  "a_fit_samples": [
+    42400,
+    45600
+  ],
+  "a_only_retention_samples": [
+    46560,
+    49600
+  ],
+  "b_fit_samples": [
+    55680,
+    63040
+  ],
+  "b_only_erle_samples": [
+    65280,
+    74880
+  ],
+  "double_talk_score_samples": [
+    78400,
+    91200
+  ],
+  "double_talk_complete_stft_frames": 96,
+  "playback_delays_samples_a_b": [
+    938,
+    936
+  ],
+  "playback_alignment_correlation_a_b": [
+    0.7424084843528159,
+    0.3821847762197586
+  ],
+  "diagnostic_held_out_a_b_delay_and_correlation": [
+    [
+      937,
+      0.5690040099911204
+    ],
+    [
+      936,
+      0.5092167752661124
+    ]
+  ],
+  "aec_taps": 1024,
+  "aec_leading_taps_relative_to_b_peak": 64,
+  "aec_relative_diagonal_loading": 0.001,
+  "aec_b_only_input_sum_squares": [
+    0.9285227183522514,
+    0.9464073064619051,
+    1.1133301109239264,
+    0.9239351504935578,
+    1.454685977922143,
+    0.8679553649235169,
+    0.7914916188197871,
+    0.7695811515055715,
+    0.9377114459575585,
+    0.19168480669302013,
+    1.1205217099566336,
+    0.806041308346394,
+    0.6031272721240866,
+    0.4945685169304724,
+    0.7560588520365241
+  ],
+  "aec_b_only_residual_sum_squares": [
+    0.291218002230551,
+    0.17968347820511557,
+    0.3165813813444583,
+    0.20437597961877657,
+    0.32882255605495203,
+    0.1837790331571854,
+    0.13466692614999476,
+    0.2553233195031101,
+    0.3080999565621878,
+    0.03244671403450984,
+    0.635804502417372,
+    0.18517078486387237,
+    0.19124038188204778,
+    0.2926546177159642,
+    0.35091133146792447
+  ],
+  "aec_b_only_erle_db_per_mic": [
+    5.035743159027648,
+    7.215699386469199,
+    5.461385853407221,
+    6.552116381723456,
+    6.458076516307973,
+    6.742014294859304,
+    7.691853731981215,
+    4.791639403248684,
+    4.83377580058824,
+    7.714169699184588,
+    2.4609667632261534,
+    6.387848318942044,
+    4.988293645128792,
+    2.278710856169459,
+    3.333582100515171
+  ],
+  "aec_near_a_only_projected_amplitude_change_db": -0.03622776511237216,
+  "aec_double_talk_mix_sum_squares": 41.30555579675857,
+  "aec_double_talk_residual_sum_squares": 31.703560631728568,
+  "wpe": {
+    "delay_frames": 3,
+    "taps": 5,
+    "iterations": 2
+  },
+  "comparison": {
+    "raw": {
+      "mic7_si_sdr_db_a_b": [
+        -2.6794052470890555,
+        -11.87466187188662
+      ],
+      "auxiva_output_to_reference": [
+        1,
+        0
+      ],
+      "auxiva_output_si_sdr_db_a_b": [
+        [
+          -23.407791027682123,
+          -17.46643870589974
+        ],
+        [
+          -1.5483391532522808,
+          -12.935319619684414
+        ]
+      ],
+      "auxiva_pit_mean_si_sdr_db": -9.507388929576011,
+      "auxiva_target_slot_from_a_fit": 1,
+      "track": [
+        {
+          "state_sample": 79168,
+          "available_sample": 79872,
+          "global_peak_deg": 15.0,
+          "sector_peak_deg": 15.0,
+          "filtered_deg": 20.846153846153847
+        },
+        {
+          "state_sample": 80192,
+          "available_sample": 80896,
+          "global_peak_deg": 16.0,
+          "sector_peak_deg": 16.0,
+          "filtered_deg": 18.835724856644955
+        },
+        {
+          "state_sample": 81216,
+          "available_sample": 81920,
+          "global_peak_deg": 15.0,
+          "sector_peak_deg": 15.0,
+          "filtered_deg": 17.609218323665097
+        },
+        {
+          "state_sample": 82240,
+          "available_sample": 82944,
+          "global_peak_deg": 16.0,
+          "sector_peak_deg": 16.0,
+          "filtered_deg": 17.09077360916832
+        },
+        {
+          "state_sample": 83264,
+          "available_sample": 83968,
+          "global_peak_deg": 34.0,
+          "sector_peak_deg": 34.0,
+          "filtered_deg": 21.25416666669865
+        },
+        {
+          "state_sample": 84288,
+          "available_sample": 84992,
+          "global_peak_deg": 15.0,
+          "sector_peak_deg": 15.0,
+          "filtered_deg": 19.984553727713244
+        },
+        {
+          "state_sample": 85312,
+          "available_sample": 86016,
+          "global_peak_deg": 15.0,
+          "sector_peak_deg": 15.0,
+          "filtered_deg": 18.830323468202206
+        },
+        {
+          "state_sample": 86336,
+          "available_sample": 87040,
+          "global_peak_deg": 15.0,
+          "sector_peak_deg": 15.0,
+          "filtered_deg": 17.804313624792318
+        },
+        {
+          "state_sample": 87360,
+          "available_sample": 88064,
+          "global_peak_deg": 15.0,
+          "sector_peak_deg": 15.0,
+          "filtered_deg": 16.925957117689496
+        },
+        {
+          "state_sample": 88384,
+          "available_sample": 89088,
+          "global_peak_deg": 15.0,
+          "sector_peak_deg": 15.0,
+          "filtered_deg": 16.20104213044583
+        },
+        {
+          "state_sample": 89408,
+          "available_sample": 90112,
+          "global_peak_deg": 24.0,
+          "sector_peak_deg": 24.0,
+          "filtered_deg": 17.93893011292485
+        },
+        {
+          "state_sample": 90432,
+          "available_sample": 91136,
+          "global_peak_deg": 16.0,
+          "sector_peak_deg": 16.0,
+          "filtered_deg": 17.39611154777151
+        }
+      ],
+      "track_rmse": {
+        "global_peak_deg": {
+          "observations": 12,
+          "rmse_deg": 16.97811580141114
+        },
+        "sector_peak_deg": {
+          "observations": 12,
+          "rmse_deg": 16.97811580141114
+        },
+        "filtered_deg": {
+          "observations": 12,
+          "rmse_deg": 15.323987232963628
+        }
+      },
+      "masked_track": [
+        {
+          "state_sample": 79168,
+          "available_sample": 79872,
+          "global_peak_deg": 16.0,
+          "sector_peak_deg": 16.0,
+          "filtered_deg": 21.53846153846154
+        },
+        {
+          "state_sample": 80192,
+          "available_sample": 80896,
+          "global_peak_deg": 16.0,
+          "sector_peak_deg": 16.0,
+          "filtered_deg": 19.240828407594236
+        },
+        {
+          "state_sample": 81216,
+          "available_sample": 81920,
+          "global_peak_deg": 15.0,
+          "sector_peak_deg": 15.0,
+          "filtered_deg": 17.883564813081392
+        },
+        {
+          "state_sample": 82240,
+          "available_sample": 82944,
+          "global_peak_deg": 16.0,
+          "sector_peak_deg": 16.0,
+          "filtered_deg": 17.281099294408783
+        },
+        {
+          "state_sample": 83264,
+          "available_sample": 83968,
+          "global_peak_deg": 22.0,
+          "sector_peak_deg": 22.0,
+          "filtered_deg": 18.341716295650066
+        },
+        {
+          "state_sample": 84288,
+          "available_sample": 84992,
+          "global_peak_deg": 15.0,
+          "sector_peak_deg": 15.0,
+          "filtered_deg": 17.48756602213602
+        },
+        {
+          "state_sample": 85312,
+          "available_sample": 86016,
+          "global_peak_deg": 15.0,
+          "sector_peak_deg": 15.0,
+          "filtered_deg": 16.74724157773188
+        },
+        {
+          "state_sample": 86336,
+          "available_sample": 87040,
+          "global_peak_deg": 16.0,
+          "sector_peak_deg": 16.0,
+          "filtered_deg": 16.379411355409655
+        },
+        {
+          "state_sample": 87360,
+          "available_sample": 88064,
+          "global_peak_deg": 15.0,
+          "sector_peak_deg": 15.0,
+          "filtered_deg": 15.830685410550132
+        },
+        {
+          "state_sample": 88384,
+          "available_sample": 89088,
+          "global_peak_deg": 15.0,
+          "sector_peak_deg": 15.0,
+          "filtered_deg": 15.392318865777295
+        },
+        {
+          "state_sample": 89408,
+          "available_sample": 90112,
+          "global_peak_deg": 24.0,
+          "sector_peak_deg": 24.0,
+          "filtered_deg": 17.371130619894952
+        },
+        {
+          "state_sample": 90432,
+          "available_sample": 91136,
+          "global_peak_deg": 16.0,
+          "sector_peak_deg": 16.0,
+          "filtered_deg": 17.025846112353086
+        }
+      ],
+      "masked_track_rmse": {
+        "global_peak_deg": {
+          "observations": 12,
+          "rmse_deg": 17.131588198364533
+        },
+        "sector_peak_deg": {
+          "observations": 12,
+          "rmse_deg": 17.131588198364533
+        },
+        "filtered_deg": {
+          "observations": 12,
+          "rmse_deg": 16.173827988689727
+        }
+      },
+      "fixed_ds_si_sdr_db_a_b": [
+        0.052962211919829194,
+        -12.661952787874231
+      ],
+      "tracked_ds_si_sdr_db_a_b": [
+        -0.9812720676559239,
+        -14.055595298549072
+      ],
+      "masked_tracked_ds_si_sdr_db_a_b": [
+        -1.1772897529451547,
+        -14.933428973973166
+      ]
+    },
+    "aec": {
+      "mic7_si_sdr_db_a_b": [
+        -0.3667315934334414,
+        -31.65708067369298
+      ],
+      "auxiva_output_to_reference": [
+        1,
+        0
+      ],
+      "auxiva_output_si_sdr_db_a_b": [
+        [
+          -2.226497501551173,
+          -29.731157618026124
+        ],
+        [
+          -7.906244845040543,
+          -47.74920204229335
+        ]
+      ],
+      "auxiva_pit_mean_si_sdr_db": -18.818701231533332,
+      "auxiva_target_slot_from_a_fit": 1,
+      "track": [
+        {
+          "state_sample": 79168,
+          "available_sample": 79872,
+          "global_peak_deg": 6.0,
+          "sector_peak_deg": 15.0,
+          "filtered_deg": 20.846153846153847
+        },
+        {
+          "state_sample": 80192,
+          "available_sample": 80896,
+          "global_peak_deg": 33.0,
+          "sector_peak_deg": 33.0,
+          "filtered_deg": 25.888182105557092
+        },
+        {
+          "state_sample": 81216,
+          "available_sample": 81920,
+          "global_peak_deg": 43.0,
+          "sector_peak_deg": 43.0,
+          "filtered_deg": 31.295765986070343
+        },
+        {
+          "state_sample": 82240,
+          "available_sample": 82944,
+          "global_peak_deg": 1.0,
+          "sector_peak_deg": 15.0,
+          "filtered_deg": 27.247108494275732
+        },
+        {
+          "state_sample": 83264,
+          "available_sample": 83968,
+          "global_peak_deg": 34.0,
+          "sector_peak_deg": 34.0,
+          "filtered_deg": 28.950502006552423
+        },
+        {
+          "state_sample": 84288,
+          "available_sample": 84992,
+          "global_peak_deg": 34.0,
+          "sector_peak_deg": 34.0,
+          "filtered_deg": 30.38209031461369
+        },
+        {
+          "state_sample": 85312,
+          "available_sample": 86016,
+          "global_peak_deg": 35.0,
+          "sector_peak_deg": 35.0,
+          "filtered_deg": 31.854873458334314
+        },
+        {
+          "state_sample": 86336,
+          "available_sample": 87040,
+          "global_peak_deg": 43.0,
+          "sector_peak_deg": 43.0,
+          "filtered_deg": 35.15610112411133
+        },
+        {
+          "state_sample": 87360,
+          "available_sample": 88064,
+          "global_peak_deg": 34.0,
+          "sector_peak_deg": 34.0,
+          "filtered_deg": 35.58707148948092
+        },
+        {
+          "state_sample": 88384,
+          "available_sample": 89088,
+          "global_peak_deg": 1.0,
+          "sector_peak_deg": 35.0,
+          "filtered_deg": 36.1042346233501
+        },
+        {
+          "state_sample": 89408,
+          "available_sample": 90112,
+          "global_peak_deg": 34.0,
+          "sector_peak_deg": 34.0,
+          "filtered_deg": 36.19218186068458
+        },
+        {
+          "state_sample": 90432,
+          "available_sample": 91136,
+          "global_peak_deg": 34.0,
+          "sector_peak_deg": 34.0,
+          "filtered_deg": 36.18942583285532
+        }
+      ],
+      "track_rmse": {
+        "global_peak_deg": {
+          "observations": 12,
+          "rmse_deg": 16.002525320804068
+        },
+        "sector_peak_deg": {
+          "observations": 12,
+          "rmse_deg": 8.53865121234078
+        },
+        "filtered_deg": {
+          "observations": 12,
+          "rmse_deg": 5.25323379828421
+        }
+      },
+      "masked_track": [
+        {
+          "state_sample": 79168,
+          "available_sample": 79872,
+          "global_peak_deg": 6.0,
+          "sector_peak_deg": 34.0,
+          "filtered_deg": 34.0
+        },
+        {
+          "state_sample": 80192,
+          "available_sample": 80896,
+          "global_peak_deg": 33.0,
+          "sector_peak_deg": 33.0,
+          "filtered_deg": 33.585149573593405
+        },
+        {
+          "state_sample": 81216,
+          "available_sample": 81920,
+          "global_peak_deg": 43.0,
+          "sector_peak_deg": 43.0,
+          "filtered_deg": 36.50834928497997
+        },
+        {
+          "state_sample": 82240,
+          "available_sample": 82944,
+          "global_peak_deg": 35.0,
+          "sector_peak_deg": 35.0,
+          "filtered_deg": 36.22627455827294
+        },
+        {
+          "state_sample": 83264,
+          "available_sample": 83968,
+          "global_peak_deg": 34.0,
+          "sector_peak_deg": 34.0,
+          "filtered_deg": 35.753943184538514
+        },
+        {
+          "state_sample": 84288,
+          "available_sample": 84992,
+          "global_peak_deg": 34.0,
+          "sector_peak_deg": 34.0,
+          "filtered_deg": 35.34599169506407
+        },
+        {
+          "state_sample": 85312,
+          "available_sample": 86016,
+          "global_peak_deg": 34.0,
+          "sector_peak_deg": 34.0,
+          "filtered_deg": 34.98580297261041
+        },
+        {
+          "state_sample": 86336,
+          "available_sample": 87040,
+          "global_peak_deg": 43.0,
+          "sector_peak_deg": 43.0,
+          "filtered_deg": 37.00318826462493
+        },
+        {
+          "state_sample": 87360,
+          "available_sample": 88064,
+          "global_peak_deg": 34.0,
+          "sector_peak_deg": 34.0,
+          "filtered_deg": 36.40599145898376
+        },
+        {
+          "state_sample": 88384,
+          "available_sample": 89088,
+          "global_peak_deg": 4.0,
+          "sector_peak_deg": 34.0,
+          "filtered_deg": 35.87043123074206
+        },
+        {
+          "state_sample": 89408,
+          "available_sample": 90112,
+          "global_peak_deg": 34.0,
+          "sector_peak_deg": 34.0,
+          "filtered_deg": 35.407638866497706
+        },
+        {
+          "state_sample": 90432,
+          "available_sample": 91136,
+          "global_peak_deg": 34.0,
+          "sector_peak_deg": 34.0,
+          "filtered_deg": 35.01830518480152
+        }
+      ],
+      "masked_track_rmse": {
+        "global_peak_deg": {
+          "observations": 12,
+          "rmse_deg": 12.318083606105146
+        },
+        "sector_peak_deg": {
+          "observations": 12,
+          "rmse_deg": 3.8565237118603948
+        },
+        "filtered_deg": {
+          "observations": 12,
+          "rmse_deg": 2.1047156258147544
+        }
+      },
+      "fixed_ds_si_sdr_db_a_b": [
+        1.2029952144018918,
+        -31.47344297898874
+      ],
+      "tracked_ds_si_sdr_db_a_b": [
+        1.0252415024648016,
+        -32.44670513942607
+      ],
+      "masked_tracked_ds_si_sdr_db_a_b": [
+        -5.159844664335848,
+        -32.2265334877217
+      ]
+    },
+    "wpe": {
+      "mic7_si_sdr_db_a_b": [
+        0.054928441179177834,
+        -10.097081636232925
+      ],
+      "auxiva_output_to_reference": [
+        1,
+        0
+      ],
+      "auxiva_output_si_sdr_db_a_b": [
+        [
+          -9.541920343964938,
+          -6.670291024709067
+        ],
+        [
+          -1.2301137197980103,
+          -16.71282265623701
+        ]
+      ],
+      "auxiva_pit_mean_si_sdr_db": -3.950202372253539,
+      "auxiva_target_slot_from_a_fit": 0,
+      "track": [
+        {
+          "state_sample": 79168,
+          "available_sample": 79872,
+          "global_peak_deg": 15.0,
+          "sector_peak_deg": 15.0,
+          "filtered_deg": 20.846153846153847
+        },
+        {
+          "state_sample": 80192,
+          "available_sample": 80896,
+          "global_peak_deg": 16.0,
+          "sector_peak_deg": 16.0,
+          "filtered_deg": 18.835724856644955
+        },
+        {
+          "state_sample": 81216,
+          "available_sample": 81920,
+          "global_peak_deg": 16.0,
+          "sector_peak_deg": 16.0,
+          "filtered_deg": 17.920425425914072
+        },
+        {
+          "state_sample": 82240,
+          "available_sample": 82944,
+          "global_peak_deg": 16.0,
+          "sector_peak_deg": 16.0,
+          "filtered_deg": 17.33227979668326
+        },
+        {
+          "state_sample": 83264,
+          "available_sample": 83968,
+          "global_peak_deg": 34.0,
+          "sector_peak_deg": 34.0,
+          "filtered_deg": 21.441956140484624
+        },
+        {
+          "state_sample": 84288,
+          "available_sample": 84992,
+          "global_peak_deg": 34.0,
+          "sector_peak_deg": 34.0,
+          "filtered_deg": 24.907525069226075
+        },
+        {
+          "state_sample": 85312,
+          "available_sample": 86016,
+          "global_peak_deg": 15.0,
+          "sector_peak_deg": 15.0,
+          "filtered_deg": 23.024018399742854
+        },
+        {
+          "state_sample": 86336,
+          "available_sample": 87040,
+          "global_peak_deg": 15.0,
+          "sector_peak_deg": 15.0,
+          "filtered_deg": 21.270856998032887
+        },
+        {
+          "state_sample": 87360,
+          "available_sample": 88064,
+          "global_peak_deg": 15.0,
+          "sector_peak_deg": 15.0,
+          "filtered_deg": 19.706879425681546
+        },
+        {
+          "state_sample": 88384,
+          "available_sample": 89088,
+          "global_peak_deg": 15.0,
+          "sector_peak_deg": 15.0,
+          "filtered_deg": 18.366378724656965
+        },
+        {
+          "state_sample": 89408,
+          "available_sample": 90112,
+          "global_peak_deg": 34.0,
+          "sector_peak_deg": 34.0,
+          "filtered_deg": 22.14727996134066
+        },
+        {
+          "state_sample": 90432,
+          "available_sample": 91136,
+          "global_peak_deg": 16.0,
+          "sector_peak_deg": 16.0,
+          "filtered_deg": 20.773714401851066
+        }
+      ],
+      "track_rmse": {
+        "global_peak_deg": {
+          "observations": 12,
+          "rmse_deg": 15.765523209506163
+        },
+        "sector_peak_deg": {
+          "observations": 12,
+          "rmse_deg": 15.765523209506163
+        },
+        "filtered_deg": {
+          "observations": 12,
+          "rmse_deg": 13.26641516661521
+        }
+      },
+      "masked_track": [
+        {
+          "state_sample": 79168,
+          "available_sample": 79872,
+          "global_peak_deg": 15.0,
+          "sector_peak_deg": 15.0,
+          "filtered_deg": 20.846153846153847
+        },
+        {
+          "state_sample": 80192,
+          "available_sample": 80896,
+          "global_peak_deg": 35.0,
+          "sector_peak_deg": 35.0,
+          "filtered_deg": 26.71788295837029
+        },
+        {
+          "state_sample": 81216,
+          "available_sample": 81920,
+          "global_peak_deg": 34.0,
+          "sector_peak_deg": 34.0,
+          "filtered_deg": 29.079931336351194
+        },
+        {
+          "state_sample": 82240,
+          "available_sample": 82944,
+          "global_peak_deg": 33.0,
+          "sector_peak_deg": 33.0,
+          "filtered_deg": 30.331093109792697
+        },
+        {
+          "state_sample": 83264,
+          "available_sample": 83968,
+          "global_peak_deg": 34.0,
+          "sector_peak_deg": 34.0,
+          "filtered_deg": 31.537064303732542
+        },
+        {
+          "state_sample": 84288,
+          "available_sample": 84992,
+          "global_peak_deg": 34.0,
+          "sector_peak_deg": 34.0,
+          "filtered_deg": 32.51606229594707
+        },
+        {
+          "state_sample": 85312,
+          "available_sample": 86016,
+          "global_peak_deg": 34.0,
+          "sector_peak_deg": 34.0,
+          "filtered_deg": 33.307435312195565
+        },
+        {
+          "state_sample": 86336,
+          "available_sample": 87040,
+          "global_peak_deg": 34.0,
+          "sector_peak_deg": 34.0,
+          "filtered_deg": 33.92489016663472
+        },
+        {
+          "state_sample": 87360,
+          "available_sample": 88064,
+          "global_peak_deg": 34.0,
+          "sector_peak_deg": 34.0,
+          "filtered_deg": 34.38467813202013
+        },
+        {
+          "state_sample": 88384,
+          "available_sample": 89088,
+          "global_peak_deg": 34.0,
+          "sector_peak_deg": 34.0,
+          "filtered_deg": 34.70992037005381
+        },
+        {
+          "state_sample": 89408,
+          "available_sample": 90112,
+          "global_peak_deg": 34.0,
+          "sector_peak_deg": 34.0,
+          "filtered_deg": 34.92666316477075
+        },
+        {
+          "state_sample": 90432,
+          "available_sample": 91136,
+          "global_peak_deg": 34.0,
+          "sector_peak_deg": 34.0,
+          "filtered_deg": 35.05952121302385
+        }
+      ],
+      "masked_track_rmse": {
+        "global_peak_deg": {
+          "observations": 12,
+          "rmse_deg": 5.407577818149456
+        },
+        "sector_peak_deg": {
+          "observations": 12,
+          "rmse_deg": 5.407577818149456
+        },
+        "filtered_deg": {
+          "observations": 12,
+          "rmse_deg": 4.606498252404205
+        }
+      },
+      "fixed_ds_si_sdr_db_a_b": [
+        2.1504466030726435,
+        -11.301820526012483
+      ],
+      "tracked_ds_si_sdr_db_a_b": [
+        1.3211894506641075,
+        -12.468370313672601
+      ],
+      "masked_tracked_ds_si_sdr_db_a_b": [
+        -5.033367868461975,
+        -5.260348610934521
+      ]
+    },
+    "aec_wpe": {
+      "mic7_si_sdr_db_a_b": [
+        4.403785526821496,
+        -26.853364667439354
+      ],
+      "auxiva_output_to_reference": [
+        1,
+        0
+      ],
+      "auxiva_output_si_sdr_db_a_b": [
+        [
+          -6.275913745024589,
+          -30.69619269455769
+        ],
+        [
+          3.6418806489006843,
+          -27.72659820064507
+        ]
+      ],
+      "auxiva_pit_mean_si_sdr_db": -13.527156022828503,
+      "auxiva_target_slot_from_a_fit": 1,
+      "track": [
+        {
+          "state_sample": 79168,
+          "available_sample": 79872,
+          "global_peak_deg": 34.0,
+          "sector_peak_deg": 34.0,
+          "filtered_deg": 34.0
+        },
+        {
+          "state_sample": 80192,
+          "available_sample": 80896,
+          "global_peak_deg": 34.0,
+          "sector_peak_deg": 34.0,
+          "filtered_deg": 34.0
+        },
+        {
+          "state_sample": 81216,
+          "available_sample": 81920,
+          "global_peak_deg": 43.0,
+          "sector_peak_deg": 43.0,
+          "filtered_deg": 36.800863920240786
+        },
+        {
+          "state_sample": 82240,
+          "available_sample": 82944,
+          "global_peak_deg": 34.0,
+          "sector_peak_deg": 34.0,
+          "filtered_deg": 36.17355568763448
+        },
+        {
+          "state_sample": 83264,
+          "available_sample": 83968,
+          "global_peak_deg": 34.0,
+          "sector_peak_deg": 34.0,
+          "filtered_deg": 35.690105264073786
+        },
+        {
+          "state_sample": 84288,
+          "available_sample": 84992,
+          "global_peak_deg": 34.0,
+          "sector_peak_deg": 34.0,
+          "filtered_deg": 35.27581561272435
+        },
+        {
+          "state_sample": 85312,
+          "available_sample": 86016,
+          "global_peak_deg": 34.0,
+          "sector_peak_deg": 34.0,
+          "filtered_deg": 34.913839058025594
+        },
+        {
+          "state_sample": 86336,
+          "available_sample": 87040,
+          "global_peak_deg": 43.0,
+          "sector_peak_deg": 43.0,
+          "filtered_deg": 36.933099953863085
+        },
+        {
+          "state_sample": 87360,
+          "available_sample": 88064,
+          "global_peak_deg": 34.0,
+          "sector_peak_deg": 34.0,
+          "filtered_deg": 36.34028083958414
+        },
+        {
+          "state_sample": 88384,
+          "available_sample": 89088,
+          "global_peak_deg": 34.0,
+          "sector_peak_deg": 34.0,
+          "filtered_deg": 35.810518029925916
+        },
+        {
+          "state_sample": 89408,
+          "available_sample": 90112,
+          "global_peak_deg": 35.0,
+          "sector_peak_deg": 35.0,
+          "filtered_deg": 35.6116668262194
+        },
+        {
+          "state_sample": 90432,
+          "available_sample": 91136,
+          "global_peak_deg": 34.0,
+          "sector_peak_deg": 34.0,
+          "filtered_deg": 35.19053635752826
+        }
+      ],
+      "track_rmse": {
+        "global_peak_deg": {
+          "observations": 12,
+          "rmse_deg": 3.8534770450749853
+        },
+        "sector_peak_deg": {
+          "observations": 12,
+          "rmse_deg": 3.8534770450749853
+        },
+        "filtered_deg": {
+          "observations": 12,
+          "rmse_deg": 2.1265420406937627
+        }
+      },
+      "masked_track": [
+        {
+          "state_sample": 79168,
+          "available_sample": 79872,
+          "global_peak_deg": 34.0,
+          "sector_peak_deg": 34.0,
+          "filtered_deg": 34.0
+        },
+        {
+          "state_sample": 80192,
+          "available_sample": 80896,
+          "global_peak_deg": 34.0,
+          "sector_peak_deg": 34.0,
+          "filtered_deg": 34.0
+        },
+        {
+          "state_sample": 81216,
+          "available_sample": 81920,
+          "global_peak_deg": 42.0,
+          "sector_peak_deg": 42.0,
+          "filtered_deg": 36.489656817991815
+        },
+        {
+          "state_sample": 82240,
+          "available_sample": 82944,
+          "global_peak_deg": 34.0,
+          "sector_peak_deg": 34.0,
+          "filtered_deg": 35.93204950011955
+        },
+        {
+          "state_sample": 83264,
+          "available_sample": 83968,
+          "global_peak_deg": 34.0,
+          "sector_peak_deg": 34.0,
+          "filtered_deg": 35.50231579028782
+        },
+        {
+          "state_sample": 84288,
+          "available_sample": 84992,
+          "global_peak_deg": 34.0,
+          "sector_peak_deg": 34.0,
+          "filtered_deg": 35.13405832242165
+        },
+        {
+          "state_sample": 85312,
+          "available_sample": 86016,
+          "global_peak_deg": 34.0,
+          "sector_peak_deg": 34.0,
+          "filtered_deg": 34.81230138491165
+        },
+        {
+          "state_sample": 86336,
+          "available_sample": 87040,
+          "global_peak_deg": 43.0,
+          "sector_peak_deg": 43.0,
+          "filtered_deg": 36.865893702280175
+        },
+        {
+          "state_sample": 87360,
+          "available_sample": 88064,
+          "global_peak_deg": 34.0,
+          "sector_peak_deg": 34.0,
+          "filtered_deg": 36.301329064857875
+        },
+        {
+          "state_sample": 88384,
+          "available_sample": 89088,
+          "global_peak_deg": 34.0,
+          "sector_peak_deg": 34.0,
+          "filtered_deg": 35.79398945223319
+        },
+        {
+          "state_sample": 89408,
+          "available_sample": 90112,
+          "global_peak_deg": 35.0,
+          "sector_peak_deg": 35.0,
+          "filtered_deg": 35.61236221428932
+        },
+        {
+          "state_sample": 90432,
+          "available_sample": 91136,
+          "global_peak_deg": 34.0,
+          "sector_peak_deg": 34.0,
+          "filtered_deg": 35.204065509876905
+        }
+      ],
+      "masked_track_rmse": {
+        "global_peak_deg": {
+          "observations": 12,
+          "rmse_deg": 3.6568805203535812
+        },
+        "sector_peak_deg": {
+          "observations": 12,
+          "rmse_deg": 3.6568805203535812
+        },
+        "filtered_deg": {
+          "observations": 12,
+          "rmse_deg": 2.0234451875727664
+        }
+      },
+      "fixed_ds_si_sdr_db_a_b": [
+        4.211913831054991,
+        -29.28971820964065
+      ],
+      "tracked_ds_si_sdr_db_a_b": [
+        4.389202626592622,
+        -29.21898901050009
+      ],
+      "masked_tracked_ds_si_sdr_db_a_b": [
+        4.024268727028986,
+        -29.989058147825467
+      ]
+    }
+  }
+}

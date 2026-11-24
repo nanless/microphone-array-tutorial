@@ -294,6 +294,8 @@ To reproduce the comparison, extract `dev/task2/recording1/` from the [LOCATA de
     /path/to/locata
 ```
 
+The [Chapter 9 experiment on the same recording](09_source-tracking.md#locata-dicit-front-end) follows A and B into an overlap interval and compares per-microphone echo cancellation, dereverberation, and tracked beams. It uses A's original playback signal as a waveform reference.
+
 #### 5.4.1 Robust Beamforming Methods
 
 Practical beamformer mismatch stems from four root causes: **A. steering-vector mismatch**, **B. finite-snapshot covariance error**, **C. coherent interference / strong early reflections**, and **D. target leakage into $\hat{\mathbf R}_{nn}$ causing self-cancellation**. Beyond fixed diagonal loading, four classical hardening routes apply:

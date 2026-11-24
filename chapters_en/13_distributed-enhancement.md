@@ -859,7 +859,8 @@ Run the [example](../codes/chapters/ch13/examples/clock_recovery.py) from the re
 
 ```bash
 .venv/bin/python -m codes.chapters.ch13.examples.clock_recovery
-.venv/bin/python -m codes.chapters.ch13.examples.clock_recovery --libriwasn "/path/to/LibriWASN_200_0L.zip"
+.venv/bin/python -m codes.chapters.ch13.examples.clock_recovery \
+    --libriwasn "/path/to/LibriWASN_200_0L.zip"
 ```
 
 

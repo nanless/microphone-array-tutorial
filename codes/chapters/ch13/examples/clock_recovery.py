@@ -111,21 +111,25 @@ def _read_positions(remote: np.ndarray, positions: np.ndarray,
 
 
 def _run_pair(reference: np.ndarray, remote: np.ndarray,
-              truth: np.ndarray | None = None) -> dict:
+              truth: np.ndarray | None = None, *,
+              received: np.ndarray | None = None,
+              arrival_ns: np.ndarray | None = None) -> dict:
     observations = deque(maxlen=LOOKBACK)
     model = None
     fixed_lag = None
     blocks = []
     targets, corrected, fixed = [], [], []
-    received = np.ones(remote.size, dtype=bool)
-    received[GAP[0] * BLOCK:GAP[1] * BLOCK] = False
+    if received is None:
+        received = np.ones(remote.size, dtype=bool)
+        received[GAP[0] * BLOCK:GAP[1] * BLOCK] = False
     for number, start in enumerate(range(0, reference.size, BLOCK)):
         stop = start + BLOCK
         center = start + BLOCK // 2
         deadline = stop + BUFFER
         row = {"block": number, "start_sample": start, "available_sample": deadline}
         blocks.append(row)
-        if GAP[0] <= number < GAP[1]:
+        visible = received if arrival_ns is None else received & (arrival_ns <= deadline * 1_000_000_000 // FS)
+        if not visible[start:stop].all():
             row["status"] = "missing"
             observations.clear()
             model = None
@@ -147,8 +151,8 @@ def _run_pair(reference: np.ndarray, remote: np.ndarray,
             indices = np.arange(start, stop)
             offset = model[0] * indices + model[1]
             latest = min(deadline, remote.size)
-            valid, aligned = _read_positions(remote, indices + offset, latest, received)
-            fixed_valid, baseline = _read_positions(remote, indices + fixed_lag, latest, received)
+            valid, aligned = _read_positions(remote, indices + offset, latest, visible)
+            fixed_valid, baseline = _read_positions(remote, indices + fixed_lag, latest, visible)
             common = valid & fixed_valid
             targets.append((reference if truth is None else truth)[indices[common]])
             corrected.append(aligned[fixed_valid[valid]])
@@ -193,7 +197,7 @@ def _run_pair(reference: np.ndarray, remote: np.ndarray,
     return result
 
 
-def _synthetic() -> dict:
+def _synthetic_signals():
     rng = np.random.default_rng(13022)
     length = REAL_BLOCKS * BLOCK
     index = np.arange(length, dtype=float)
@@ -208,10 +212,15 @@ def _synthetic() -> dict:
     source *= 0.05 / np.std(source)
     truth = source[64 * oversample:(64 + length) * oversample:oversample]
     reference = truth + rng.normal(0, 0.0008, length)
-    results = {}
     for ppm in (+100, -75):
         remote_positions = (index - 3.4) / (1 + ppm * 1e-6)
         remote = np.interp(remote_positions, grid, source) + rng.normal(0, 0.0008, length)
+        yield ppm, reference, remote, truth
+
+
+def _synthetic() -> dict:
+    results = {}
+    for ppm, reference, remote, truth in _synthetic_signals():
         result = _run_pair(reference, remote, truth)
         result["true_ppm"] = ppm
         aligned = [row for row in result["blocks"] if row["status"] == "aligned"]
@@ -238,7 +247,7 @@ def _read_recording(raw: bytes) -> np.ndarray:
     return np.frombuffer(data, dtype="<i2").astype(float) / 32768
 
 
-def _libriwasn(source: Path) -> dict:
+def _libriwasn_inputs(source: Path) -> tuple[dict, dict]:
     members = {device: device + "_ntlab_asn_ID_0.wav" for device in _DEVICES}
     raw = {}
     if source.is_dir():
@@ -256,16 +265,21 @@ def _libriwasn(source: Path) -> dict:
     if digests != _WAV_SHA256:
         raise ValueError("LibriWASN member hashes do not match the fixed session8 recordings")
     samples = {device: _read_recording(data) for device, data in raw.items()}
-    return {
+    metadata = {
         "dataset_doi": "10.5281/zenodo.7960972",
         "archive": "LibriWASN_200_0L.zip",
         "archive_members": {device: _WAV_MEMBER_ROOT + name for device, name in members.items()},
         "wav_sha256": digests,
         "reference": _DEVICES[0],
         "interval_samples": [REAL_FIRST_BLOCK * BLOCK, (REAL_FIRST_BLOCK + REAL_BLOCKS) * BLOCK],
-        "pairs": {device: _run_pair(samples[_DEVICES[0]], samples[device])
-                  for device in _DEVICES[1:]},
     }
+    return samples, metadata
+
+
+def _libriwasn(source: Path) -> dict:
+    samples, metadata = _libriwasn_inputs(source)
+    return {**metadata, "pairs": {device: _run_pair(samples[_DEVICES[0]], samples[device])
+                                  for device in _DEVICES[1:]}}
 
 
 def main() -> None:

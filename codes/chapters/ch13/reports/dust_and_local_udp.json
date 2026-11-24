@@ -1,0 +1,5462 @@
+{
+  "dust": {
+    "doi": "10.5281/zenodo.12726671",
+    "member": "sanri_14A.csv.gz",
+    "published_md5": "957e72c6e89b570ec68586e71b7e1272",
+    "full_archive_md5_verified": false,
+    "selected_csv_prefix_sha256": "56c13a7a4054e1de8be9d20cb752f8ca345fff703517ad3278a55d5e22a82fad",
+    "sample_rate_hz": 44100,
+    "packet_samples_in_selected_rows": 24,
+    "rows": 20000,
+    "skipped_sender_packet_indices": 0,
+    "intact_arrivals": 19679,
+    "partially_late_arrivals": 319,
+    "fully_late_arrivals": 2,
+    "total_samples_already_read": 2352,
+    "first_fully_late_packet": {
+      "read_index": 12744,
+      "send_index": 12720,
+      "tstamp_ns": 288980679,
+      "zero_based_row": 530,
+      "samples_already_read": 24
+    },
+    "first_packet_with_samples_left": {
+      "read_index": 12756,
+      "send_index": 12744,
+      "tstamp_ns": 289252786,
+      "zero_based_row": 531,
+      "samples_already_read": 12
+    },
+    "next_intact_packet": {
+      "read_index": 12762,
+      "send_index": 12768,
+      "tstamp_ns": 289483246,
+      "zero_based_row": 532,
+      "samples_already_read": 0
+    },
+    "first_intact_elapsed_ns": 502567
+  },
+  "local_udp": {
+    "recording": {
+      "dataset_doi": "10.5281/zenodo.7960972",
+      "archive": "LibriWASN_200_0L.zip",
+      "archive_members": {
+        "Pixel7": "LibriWASN/200/0L/overlap_ratio_0.0_sil2.9_3.0_session8_actual0.0/record/Pixel7_ntlab_asn_ID_0.wav",
+        "Pixel6a": "LibriWASN/200/0L/overlap_ratio_0.0_sil2.9_3.0_session8_actual0.0/record/Pixel6a_ntlab_asn_ID_0.wav",
+        "Xiaomi": "LibriWASN/200/0L/overlap_ratio_0.0_sil2.9_3.0_session8_actual0.0/record/Xiaomi_ntlab_asn_ID_0.wav"
+      },
+      "wav_sha256": {
+        "Pixel7": "815a0a766f32831e698f9df18c8fb3756573a417ce55bd719d857caf658e1ed6",
+        "Pixel6a": "bbe1d6cc9fb29dddc170b21aa6a1bebfd4369e3f0d2cf4cc773ef6ff70986dd7",
+        "Xiaomi": "bd99e1f46608cb8b2c53060baabfb154639e28dce3374ca3a2c43e0f2a824336"
+      },
+      "reference": "Pixel7",
+      "interval_samples": [
+        770048,
+        974848
+      ]
+    },
+    "remote": "Pixel6a",
+    "network": "local IPv4 UDP loopback",
+    "packet_samples": 256,
+    "packet_period_ns": 16000000,
+    "receiver_grace_ns_from_nominal_packet_end": 32000000,
+    "expected_packets": 800,
+    "accepted_on_time": 704,
+    "omitted_by_sender": [
+      384,
+      385,
+      386,
+      387,
+      388,
+      389,
+      390,
+      391,
+      392,
+      393,
+      394,
+      395,
+      396,
+      397,
+      398,
+      399,
+      400,
+      401,
+      402,
+      403,
+      404,
+      405,
+      406,
+      407,
+      408,
+      409,
+      410,
+      411,
+      412,
+      413,
+      414,
+      415,
+      416,
+      417,
+      418,
+      419,
+      420,
+      421,
+      422,
+      423,
+      424,
+      425,
+      426,
+      427,
+      428,
+      429,
+      430,
+      431,
+      432,
+      433,
+      434,
+      435,
+      436,
+      437,
+      438,
+      439,
+      440,
+      441,
+      442,
+      443,
+      444,
+      445,
+      446,
+      447,
+      448,
+      449,
+      450,
+      451,
+      452,
+      453,
+      454,
+      455,
+      456,
+      457,
+      458,
+      459,
+      460,
+      461,
+      462,
+      463,
+      464,
+      465,
+      466,
+      467,
+      468,
+      469,
+      470,
+      471,
+      472,
+      473,
+      474,
+      475,
+      476,
+      477,
+      478
+    ],
+    "delayed_by_sender": 479,
+    "missing_at_receiver": [
+      384,
+      385,
+      386,
+      387,
+      388,
+      389,
+      390,
+      391,
+      392,
+      393,
+      394,
+      395,
+      396,
+      397,
+      398,
+      399,
+      400,
+      401,
+      402,
+      403,
+      404,
+      405,
+      406,
+      407,
+      408,
+      409,
+      410,
+      411,
+      412,
+      413,
+      414,
+      415,
+      416,
+      417,
+      418,
+      419,
+      420,
+      421,
+      422,
+      423,
+      424,
+      425,
+      426,
+      427,
+      428,
+      429,
+      430,
+      431,
+      432,
+      433,
+      434,
+      435,
+      436,
+      437,
+      438,
+      439,
+      440,
+      441,
+      442,
+      443,
+      444,
+      445,
+      446,
+      447,
+      448,
+      449,
+      450,
+      451,
+      452,
+      453,
+      454,
+      455,
+      456,
+      457,
+      458,
+      459,
+      460,
+      461,
+      462,
+      463,
+      464,
+      465,
+      466,
+      467,
+      468,
+      469,
+      470,
+      471,
+      472,
+      473,
+      474,
+      475,
+      476,
+      477,
+      478
+    ],
+    "received_late": [
+      479
+    ],
+    "arrivals": {
+      "0": {
+        "first_sample": 0,
+        "send_ns": 20720000,
+        "arrival_ns": 20955625,
+        "deadline_ns": 48000000,
+        "accepted": true
+      },
+      "1": {
+        "first_sample": 256,
+        "send_ns": 37597292,
+        "arrival_ns": 37754500,
+        "deadline_ns": 64000000,
+        "accepted": true
+      },
+      "2": {
+        "first_sample": 512,
+        "send_ns": 53187209,
+        "arrival_ns": 53304292,
+        "deadline_ns": 80000000,
+        "accepted": true
+      },
+      "3": {
+        "first_sample": 768,
+        "send_ns": 69418250,
+        "arrival_ns": 69572584,
+        "deadline_ns": 96000000,
+        "accepted": true
+      },
+      "4": {
+        "first_sample": 1024,
+        "send_ns": 85286792,
+        "arrival_ns": 85428334,
+        "deadline_ns": 112000000,
+        "accepted": true
+      },
+      "5": {
+        "first_sample": 1280,
+        "send_ns": 101398750,
+        "arrival_ns": 101667167,
+        "deadline_ns": 128000000,
+        "accepted": true
+      },
+      "6": {
+        "first_sample": 1536,
+        "send_ns": 117267125,
+        "arrival_ns": 117397834,
+        "deadline_ns": 144000000,
+        "accepted": true
+      },
+      "7": {
+        "first_sample": 1792,
+        "send_ns": 129257834,
+        "arrival_ns": 129391459,
+        "deadline_ns": 160000000,
+        "accepted": true
+      },
+      "8": {
+        "first_sample": 2048,
+        "send_ns": 146047042,
+        "arrival_ns": 146181000,
+        "deadline_ns": 176000000,
+        "accepted": true
+      },
+      "9": {
+        "first_sample": 2304,
+        "send_ns": 166976875,
+        "arrival_ns": 167143667,
+        "deadline_ns": 192000000,
+        "accepted": true
+      },
+      "10": {
+        "first_sample": 2560,
+        "send_ns": 179571334,
+        "arrival_ns": 179663542,
+        "deadline_ns": 208000000,
+        "accepted": true
+      },
+      "11": {
+        "first_sample": 2816,
+        "send_ns": 192078292,
+        "arrival_ns": 192205209,
+        "deadline_ns": 224000000,
+        "accepted": true
+      },
+      "12": {
+        "first_sample": 3072,
+        "send_ns": 209422375,
+        "arrival_ns": 209558792,
+        "deadline_ns": 240000000,
+        "accepted": true
+      },
+      "13": {
+        "first_sample": 3328,
+        "send_ns": 225060084,
+        "arrival_ns": 225308334,
+        "deadline_ns": 256000000,
+        "accepted": true
+      },
+      "14": {
+        "first_sample": 3584,
+        "send_ns": 242071959,
+        "arrival_ns": 242196917,
+        "deadline_ns": 272000000,
+        "accepted": true
+      },
+      "15": {
+        "first_sample": 3840,
+        "send_ns": 262950459,
+        "arrival_ns": 263057542,
+        "deadline_ns": 288000000,
+        "accepted": true
+      },
+      "16": {
+        "first_sample": 4096,
+        "send_ns": 276596167,
+        "arrival_ns": 276951250,
+        "deadline_ns": 304000000,
+        "accepted": true
+      },
+      "17": {
+        "first_sample": 4352,
+        "send_ns": 292084334,
+        "arrival_ns": 292217042,
+        "deadline_ns": 320000000,
+        "accepted": true
+      },
+      "18": {
+        "first_sample": 4608,
+        "send_ns": 308740084,
+        "arrival_ns": 308825625,
+        "deadline_ns": 336000000,
+        "accepted": true
+      },
+      "19": {
+        "first_sample": 4864,
+        "send_ns": 325411459,
+        "arrival_ns": 325631667,
+        "deadline_ns": 352000000,
+        "accepted": true
+      },
+      "20": {
+        "first_sample": 5120,
+        "send_ns": 341255667,
+        "arrival_ns": 341377417,
+        "deadline_ns": 368000000,
+        "accepted": true
+      },
+      "21": {
+        "first_sample": 5376,
+        "send_ns": 357365875,
+        "arrival_ns": 357478917,
+        "deadline_ns": 384000000,
+        "accepted": true
+      },
+      "22": {
+        "first_sample": 5632,
+        "send_ns": 370174959,
+        "arrival_ns": 370343959,
+        "deadline_ns": 400000000,
+        "accepted": true
+      },
+      "23": {
+        "first_sample": 5888,
+        "send_ns": 389098375,
+        "arrival_ns": 389286084,
+        "deadline_ns": 416000000,
+        "accepted": true
+      },
+      "24": {
+        "first_sample": 6144,
+        "send_ns": 401086542,
+        "arrival_ns": 401338709,
+        "deadline_ns": 432000000,
+        "accepted": true
+      },
+      "25": {
+        "first_sample": 6400,
+        "send_ns": 423458834,
+        "arrival_ns": 423768334,
+        "deadline_ns": 448000000,
+        "accepted": true
+      },
+      "26": {
+        "first_sample": 6656,
+        "send_ns": 432223625,
+        "arrival_ns": 432329917,
+        "deadline_ns": 464000000,
+        "accepted": true
+      },
+      "27": {
+        "first_sample": 6912,
+        "send_ns": 455931334,
+        "arrival_ns": 456088417,
+        "deadline_ns": 480000000,
+        "accepted": true
+      },
+      "28": {
+        "first_sample": 7168,
+        "send_ns": 468020417,
+        "arrival_ns": 468189834,
+        "deadline_ns": 496000000,
+        "accepted": true
+      },
+      "29": {
+        "first_sample": 7424,
+        "send_ns": 481386042,
+        "arrival_ns": 481630667,
+        "deadline_ns": 512000000,
+        "accepted": true
+      },
+      "30": {
+        "first_sample": 7680,
+        "send_ns": 500214917,
+        "arrival_ns": 500378250,
+        "deadline_ns": 528000000,
+        "accepted": true
+      },
+      "31": {
+        "first_sample": 7936,
+        "send_ns": 517869125,
+        "arrival_ns": 517964000,
+        "deadline_ns": 544000000,
+        "accepted": true
+      },
+      "32": {
+        "first_sample": 8192,
+        "send_ns": 533090084,
+        "arrival_ns": 533250625,
+        "deadline_ns": 560000000,
+        "accepted": true
+      },
+      "33": {
+        "first_sample": 8448,
+        "send_ns": 547771042,
+        "arrival_ns": 547852625,
+        "deadline_ns": 576000000,
+        "accepted": true
+      },
+      "34": {
+        "first_sample": 8704,
+        "send_ns": 566118834,
+        "arrival_ns": 566186209,
+        "deadline_ns": 592000000,
+        "accepted": true
+      },
+      "35": {
+        "first_sample": 8960,
+        "send_ns": 580953209,
+        "arrival_ns": 581054000,
+        "deadline_ns": 608000000,
+        "accepted": true
+      },
+      "36": {
+        "first_sample": 9216,
+        "send_ns": 592969584,
+        "arrival_ns": 593115917,
+        "deadline_ns": 624000000,
+        "accepted": true
+      },
+      "37": {
+        "first_sample": 9472,
+        "send_ns": 615064459,
+        "arrival_ns": 615132959,
+        "deadline_ns": 640000000,
+        "accepted": true
+      },
+      "38": {
+        "first_sample": 9728,
+        "send_ns": 628507375,
+        "arrival_ns": 628763292,
+        "deadline_ns": 656000000,
+        "accepted": true
+      },
+      "39": {
+        "first_sample": 9984,
+        "send_ns": 644287834,
+        "arrival_ns": 644382667,
+        "deadline_ns": 672000000,
+        "accepted": true
+      },
+      "40": {
+        "first_sample": 10240,
+        "send_ns": 656758875,
+        "arrival_ns": 656917750,
+        "deadline_ns": 688000000,
+        "accepted": true
+      },
+      "41": {
+        "first_sample": 10496,
+        "send_ns": 679589709,
+        "arrival_ns": 679690542,
+        "deadline_ns": 704000000,
+        "accepted": true
+      },
+      "42": {
+        "first_sample": 10752,
+        "send_ns": 692116834,
+        "arrival_ns": 692324042,
+        "deadline_ns": 720000000,
+        "accepted": true
+      },
+      "43": {
+        "first_sample": 11008,
+        "send_ns": 708729584,
+        "arrival_ns": 708844292,
+        "deadline_ns": 736000000,
+        "accepted": true
+      },
+      "44": {
+        "first_sample": 11264,
+        "send_ns": 723422959,
+        "arrival_ns": 723549834,
+        "deadline_ns": 752000000,
+        "accepted": true
+      },
+      "45": {
+        "first_sample": 11520,
+        "send_ns": 742311084,
+        "arrival_ns": 742429917,
+        "deadline_ns": 768000000,
+        "accepted": true
+      },
+      "46": {
+        "first_sample": 11776,
+        "send_ns": 753681084,
+        "arrival_ns": 753754875,
+        "deadline_ns": 784000000,
+        "accepted": true
+      },
+      "47": {
+        "first_sample": 12032,
+        "send_ns": 773440750,
+        "arrival_ns": 773535250,
+        "deadline_ns": 800000000,
+        "accepted": true
+      },
+      "48": {
+        "first_sample": 12288,
+        "send_ns": 786449792,
+        "arrival_ns": 786545792,
+        "deadline_ns": 816000000,
+        "accepted": true
+      },
+      "49": {
+        "first_sample": 12544,
+        "send_ns": 806786167,
+        "arrival_ns": 806884292,
+        "deadline_ns": 832000000,
+        "accepted": true
+      },
+      "50": {
+        "first_sample": 12800,
+        "send_ns": 820616000,
+        "arrival_ns": 820762875,
+        "deadline_ns": 848000000,
+        "accepted": true
+      },
+      "51": {
+        "first_sample": 13056,
+        "send_ns": 837679042,
+        "arrival_ns": 837756667,
+        "deadline_ns": 864000000,
+        "accepted": true
+      },
+      "52": {
+        "first_sample": 13312,
+        "send_ns": 853168917,
+        "arrival_ns": 853256875,
+        "deadline_ns": 880000000,
+        "accepted": true
+      },
+      "53": {
+        "first_sample": 13568,
+        "send_ns": 869420292,
+        "arrival_ns": 869492375,
+        "deadline_ns": 896000000,
+        "accepted": true
+      },
+      "54": {
+        "first_sample": 13824,
+        "send_ns": 885290125,
+        "arrival_ns": 885371917,
+        "deadline_ns": 912000000,
+        "accepted": true
+      },
+      "55": {
+        "first_sample": 14080,
+        "send_ns": 901358292,
+        "arrival_ns": 901506542,
+        "deadline_ns": 928000000,
+        "accepted": true
+      },
+      "56": {
+        "first_sample": 14336,
+        "send_ns": 913671500,
+        "arrival_ns": 913754917,
+        "deadline_ns": 944000000,
+        "accepted": true
+      },
+      "57": {
+        "first_sample": 14592,
+        "send_ns": 935169375,
+        "arrival_ns": 935269917,
+        "deadline_ns": 960000000,
+        "accepted": true
+      },
+      "58": {
+        "first_sample": 14848,
+        "send_ns": 947889959,
+        "arrival_ns": 947984875,
+        "deadline_ns": 976000000,
+        "accepted": true
+      },
+      "59": {
+        "first_sample": 15104,
+        "send_ns": 966055167,
+        "arrival_ns": 966149125,
+        "deadline_ns": 992000000,
+        "accepted": true
+      },
+      "60": {
+        "first_sample": 15360,
+        "send_ns": 980970500,
+        "arrival_ns": 981043875,
+        "deadline_ns": 1008000000,
+        "accepted": true
+      },
+      "61": {
+        "first_sample": 15616,
+        "send_ns": 997530625,
+        "arrival_ns": 997634584,
+        "deadline_ns": 1024000000,
+        "accepted": true
+      },
+      "62": {
+        "first_sample": 15872,
+        "send_ns": 1013236542,
+        "arrival_ns": 1013348542,
+        "deadline_ns": 1040000000,
+        "accepted": true
+      },
+      "63": {
+        "first_sample": 16128,
+        "send_ns": 1029376959,
+        "arrival_ns": 1029500042,
+        "deadline_ns": 1056000000,
+        "accepted": true
+      },
+      "64": {
+        "first_sample": 16384,
+        "send_ns": 1045301292,
+        "arrival_ns": 1045396334,
+        "deadline_ns": 1072000000,
+        "accepted": true
+      },
+      "65": {
+        "first_sample": 16640,
+        "send_ns": 1058722625,
+        "arrival_ns": 1058900834,
+        "deadline_ns": 1088000000,
+        "accepted": true
+      },
+      "66": {
+        "first_sample": 16896,
+        "send_ns": 1078607125,
+        "arrival_ns": 1078660292,
+        "deadline_ns": 1104000000,
+        "accepted": true
+      },
+      "67": {
+        "first_sample": 17152,
+        "send_ns": 1092645209,
+        "arrival_ns": 1092779250,
+        "deadline_ns": 1120000000,
+        "accepted": true
+      },
+      "68": {
+        "first_sample": 17408,
+        "send_ns": 1109746667,
+        "arrival_ns": 1109960875,
+        "deadline_ns": 1136000000,
+        "accepted": true
+      },
+      "69": {
+        "first_sample": 17664,
+        "send_ns": 1125089750,
+        "arrival_ns": 1125223042,
+        "deadline_ns": 1152000000,
+        "accepted": true
+      },
+      "70": {
+        "first_sample": 17920,
+        "send_ns": 1141369834,
+        "arrival_ns": 1141484292,
+        "deadline_ns": 1168000000,
+        "accepted": true
+      },
+      "71": {
+        "first_sample": 18176,
+        "send_ns": 1153433625,
+        "arrival_ns": 1153583250,
+        "deadline_ns": 1184000000,
+        "accepted": true
+      },
+      "72": {
+        "first_sample": 18432,
+        "send_ns": 1169220084,
+        "arrival_ns": 1169368667,
+        "deadline_ns": 1200000000,
+        "accepted": true
+      },
+      "73": {
+        "first_sample": 18688,
+        "send_ns": 1186789834,
+        "arrival_ns": 1186943750,
+        "deadline_ns": 1216000000,
+        "accepted": true
+      },
+      "74": {
+        "first_sample": 18944,
+        "send_ns": 1206611000,
+        "arrival_ns": 1206832584,
+        "deadline_ns": 1232000000,
+        "accepted": true
+      },
+      "75": {
+        "first_sample": 19200,
+        "send_ns": 1220665959,
+        "arrival_ns": 1220776292,
+        "deadline_ns": 1248000000,
+        "accepted": true
+      },
+      "76": {
+        "first_sample": 19456,
+        "send_ns": 1237670125,
+        "arrival_ns": 1237822209,
+        "deadline_ns": 1264000000,
+        "accepted": true
+      },
+      "77": {
+        "first_sample": 19712,
+        "send_ns": 1253146584,
+        "arrival_ns": 1253251917,
+        "deadline_ns": 1280000000,
+        "accepted": true
+      },
+      "78": {
+        "first_sample": 19968,
+        "send_ns": 1269438000,
+        "arrival_ns": 1269619584,
+        "deadline_ns": 1296000000,
+        "accepted": true
+      },
+      "79": {
+        "first_sample": 20224,
+        "send_ns": 1282210834,
+        "arrival_ns": 1282281792,
+        "deadline_ns": 1312000000,
+        "accepted": true
+      },
+      "80": {
+        "first_sample": 20480,
+        "send_ns": 1301621875,
+        "arrival_ns": 1301729625,
+        "deadline_ns": 1328000000,
+        "accepted": true
+      },
+      "81": {
+        "first_sample": 20736,
+        "send_ns": 1317178042,
+        "arrival_ns": 1317287042,
+        "deadline_ns": 1344000000,
+        "accepted": true
+      },
+      "82": {
+        "first_sample": 20992,
+        "send_ns": 1333400084,
+        "arrival_ns": 1333453834,
+        "deadline_ns": 1360000000,
+        "accepted": true
+      },
+      "83": {
+        "first_sample": 21248,
+        "send_ns": 1349344667,
+        "arrival_ns": 1349491292,
+        "deadline_ns": 1376000000,
+        "accepted": true
+      },
+      "84": {
+        "first_sample": 21504,
+        "send_ns": 1365308375,
+        "arrival_ns": 1365428667,
+        "deadline_ns": 1392000000,
+        "accepted": true
+      },
+      "85": {
+        "first_sample": 21760,
+        "send_ns": 1381367125,
+        "arrival_ns": 1381484125,
+        "deadline_ns": 1408000000,
+        "accepted": true
+      },
+      "86": {
+        "first_sample": 22016,
+        "send_ns": 1396514167,
+        "arrival_ns": 1396611542,
+        "deadline_ns": 1424000000,
+        "accepted": true
+      },
+      "87": {
+        "first_sample": 22272,
+        "send_ns": 1413751834,
+        "arrival_ns": 1413851209,
+        "deadline_ns": 1440000000,
+        "accepted": true
+      },
+      "88": {
+        "first_sample": 22528,
+        "send_ns": 1428630542,
+        "arrival_ns": 1428714792,
+        "deadline_ns": 1456000000,
+        "accepted": true
+      },
+      "89": {
+        "first_sample": 22784,
+        "send_ns": 1444089834,
+        "arrival_ns": 1444237959,
+        "deadline_ns": 1472000000,
+        "accepted": true
+      },
+      "90": {
+        "first_sample": 23040,
+        "send_ns": 1460731875,
+        "arrival_ns": 1460881750,
+        "deadline_ns": 1488000000,
+        "accepted": true
+      },
+      "91": {
+        "first_sample": 23296,
+        "send_ns": 1476014917,
+        "arrival_ns": 1476112375,
+        "deadline_ns": 1504000000,
+        "accepted": true
+      },
+      "92": {
+        "first_sample": 23552,
+        "send_ns": 1492883250,
+        "arrival_ns": 1492994125,
+        "deadline_ns": 1520000000,
+        "accepted": true
+      },
+      "93": {
+        "first_sample": 23808,
+        "send_ns": 1506722125,
+        "arrival_ns": 1506848959,
+        "deadline_ns": 1536000000,
+        "accepted": true
+      },
+      "94": {
+        "first_sample": 24064,
+        "send_ns": 1526640292,
+        "arrival_ns": 1526744000,
+        "deadline_ns": 1552000000,
+        "accepted": true
+      },
+      "95": {
+        "first_sample": 24320,
+        "send_ns": 1536291500,
+        "arrival_ns": 1536410584,
+        "deadline_ns": 1568000000,
+        "accepted": true
+      },
+      "96": {
+        "first_sample": 24576,
+        "send_ns": 1553682625,
+        "arrival_ns": 1553833584,
+        "deadline_ns": 1584000000,
+        "accepted": true
+      },
+      "97": {
+        "first_sample": 24832,
+        "send_ns": 1573833625,
+        "arrival_ns": 1574062625,
+        "deadline_ns": 1600000000,
+        "accepted": true
+      },
+      "98": {
+        "first_sample": 25088,
+        "send_ns": 1589057542,
+        "arrival_ns": 1589186375,
+        "deadline_ns": 1616000000,
+        "accepted": true
+      },
+      "99": {
+        "first_sample": 25344,
+        "send_ns": 1602163875,
+        "arrival_ns": 1602380167,
+        "deadline_ns": 1632000000,
+        "accepted": true
+      },
+      "100": {
+        "first_sample": 25600,
+        "send_ns": 1618755417,
+        "arrival_ns": 1618988459,
+        "deadline_ns": 1648000000,
+        "accepted": true
+      },
+      "101": {
+        "first_sample": 25856,
+        "send_ns": 1636911417,
+        "arrival_ns": 1637062042,
+        "deadline_ns": 1664000000,
+        "accepted": true
+      },
+      "102": {
+        "first_sample": 26112,
+        "send_ns": 1653585667,
+        "arrival_ns": 1653725834,
+        "deadline_ns": 1680000000,
+        "accepted": true
+      },
+      "103": {
+        "first_sample": 26368,
+        "send_ns": 1664442084,
+        "arrival_ns": 1664572250,
+        "deadline_ns": 1696000000,
+        "accepted": true
+      },
+      "104": {
+        "first_sample": 26624,
+        "send_ns": 1686215042,
+        "arrival_ns": 1686365709,
+        "deadline_ns": 1712000000,
+        "accepted": true
+      },
+      "105": {
+        "first_sample": 26880,
+        "send_ns": 1697853834,
+        "arrival_ns": 1697963417,
+        "deadline_ns": 1728000000,
+        "accepted": true
+      },
+      "106": {
+        "first_sample": 27136,
+        "send_ns": 1717521084,
+        "arrival_ns": 1717693625,
+        "deadline_ns": 1744000000,
+        "accepted": true
+      },
+      "107": {
+        "first_sample": 27392,
+        "send_ns": 1731275292,
+        "arrival_ns": 1731382417,
+        "deadline_ns": 1760000000,
+        "accepted": true
+      },
+      "108": {
+        "first_sample": 27648,
+        "send_ns": 1746713167,
+        "arrival_ns": 1746809292,
+        "deadline_ns": 1776000000,
+        "accepted": true
+      },
+      "109": {
+        "first_sample": 27904,
+        "send_ns": 1765598834,
+        "arrival_ns": 1765884000,
+        "deadline_ns": 1792000000,
+        "accepted": true
+      },
+      "110": {
+        "first_sample": 28160,
+        "send_ns": 1778657000,
+        "arrival_ns": 1778819042,
+        "deadline_ns": 1808000000,
+        "accepted": true
+      },
+      "111": {
+        "first_sample": 28416,
+        "send_ns": 1792480375,
+        "arrival_ns": 1792846167,
+        "deadline_ns": 1824000000,
+        "accepted": true
+      },
+      "112": {
+        "first_sample": 28672,
+        "send_ns": 1810898209,
+        "arrival_ns": 1811040625,
+        "deadline_ns": 1840000000,
+        "accepted": true
+      },
+      "113": {
+        "first_sample": 28928,
+        "send_ns": 1825579584,
+        "arrival_ns": 1825777792,
+        "deadline_ns": 1856000000,
+        "accepted": true
+      },
+      "114": {
+        "first_sample": 29184,
+        "send_ns": 1842137625,
+        "arrival_ns": 1842661709,
+        "deadline_ns": 1872000000,
+        "accepted": true
+      },
+      "115": {
+        "first_sample": 29440,
+        "send_ns": 1858769750,
+        "arrival_ns": 1858951042,
+        "deadline_ns": 1888000000,
+        "accepted": true
+      },
+      "116": {
+        "first_sample": 29696,
+        "send_ns": 1878218042,
+        "arrival_ns": 1878598834,
+        "deadline_ns": 1904000000,
+        "accepted": true
+      },
+      "117": {
+        "first_sample": 29952,
+        "send_ns": 1892263834,
+        "arrival_ns": 1892456542,
+        "deadline_ns": 1920000000,
+        "accepted": true
+      },
+      "118": {
+        "first_sample": 30208,
+        "send_ns": 1908800667,
+        "arrival_ns": 1909000334,
+        "deadline_ns": 1936000000,
+        "accepted": true
+      },
+      "119": {
+        "first_sample": 30464,
+        "send_ns": 1925469875,
+        "arrival_ns": 1925664375,
+        "deadline_ns": 1952000000,
+        "accepted": true
+      },
+      "120": {
+        "first_sample": 30720,
+        "send_ns": 1941289792,
+        "arrival_ns": 1941460250,
+        "deadline_ns": 1968000000,
+        "accepted": true
+      },
+      "121": {
+        "first_sample": 30976,
+        "send_ns": 1957317084,
+        "arrival_ns": 1957462625,
+        "deadline_ns": 1984000000,
+        "accepted": true
+      },
+      "122": {
+        "first_sample": 31232,
+        "send_ns": 1968194959,
+        "arrival_ns": 1968369000,
+        "deadline_ns": 2000000000,
+        "accepted": true
+      },
+      "123": {
+        "first_sample": 31488,
+        "send_ns": 1984744750,
+        "arrival_ns": 1984921292,
+        "deadline_ns": 2016000000,
+        "accepted": true
+      },
+      "124": {
+        "first_sample": 31744,
+        "send_ns": 2006327584,
+        "arrival_ns": 2006464500,
+        "deadline_ns": 2032000000,
+        "accepted": true
+      },
+      "125": {
+        "first_sample": 32000,
+        "send_ns": 2018587709,
+        "arrival_ns": 2018758292,
+        "deadline_ns": 2048000000,
+        "accepted": true
+      },
+      "126": {
+        "first_sample": 32256,
+        "send_ns": 2032144209,
+        "arrival_ns": 2032468917,
+        "deadline_ns": 2064000000,
+        "accepted": true
+      },
+      "127": {
+        "first_sample": 32512,
+        "send_ns": 2051932834,
+        "arrival_ns": 2052066959,
+        "deadline_ns": 2080000000,
+        "accepted": true
+      },
+      "128": {
+        "first_sample": 32768,
+        "send_ns": 2064702750,
+        "arrival_ns": 2064856584,
+        "deadline_ns": 2096000000,
+        "accepted": true
+      },
+      "129": {
+        "first_sample": 33024,
+        "send_ns": 2080092750,
+        "arrival_ns": 2080253250,
+        "deadline_ns": 2112000000,
+        "accepted": true
+      },
+      "130": {
+        "first_sample": 33280,
+        "send_ns": 2098656125,
+        "arrival_ns": 2098819584,
+        "deadline_ns": 2128000000,
+        "accepted": true
+      },
+      "131": {
+        "first_sample": 33536,
+        "send_ns": 2118692042,
+        "arrival_ns": 2118870750,
+        "deadline_ns": 2144000000,
+        "accepted": true
+      },
+      "132": {
+        "first_sample": 33792,
+        "send_ns": 2132339292,
+        "arrival_ns": 2132528125,
+        "deadline_ns": 2160000000,
+        "accepted": true
+      },
+      "133": {
+        "first_sample": 34048,
+        "send_ns": 2146411125,
+        "arrival_ns": 2146562875,
+        "deadline_ns": 2176000000,
+        "accepted": true
+      },
+      "134": {
+        "first_sample": 34304,
+        "send_ns": 2160245250,
+        "arrival_ns": 2160398084,
+        "deadline_ns": 2192000000,
+        "accepted": true
+      },
+      "135": {
+        "first_sample": 34560,
+        "send_ns": 2180137209,
+        "arrival_ns": 2180271959,
+        "deadline_ns": 2208000000,
+        "accepted": true
+      },
+      "136": {
+        "first_sample": 34816,
+        "send_ns": 2196347459,
+        "arrival_ns": 2196506084,
+        "deadline_ns": 2224000000,
+        "accepted": true
+      },
+      "137": {
+        "first_sample": 35072,
+        "send_ns": 2212546167,
+        "arrival_ns": 2212632625,
+        "deadline_ns": 2240000000,
+        "accepted": true
+      },
+      "138": {
+        "first_sample": 35328,
+        "send_ns": 2226037209,
+        "arrival_ns": 2226179917,
+        "deadline_ns": 2256000000,
+        "accepted": true
+      },
+      "139": {
+        "first_sample": 35584,
+        "send_ns": 2241208709,
+        "arrival_ns": 2241403167,
+        "deadline_ns": 2272000000,
+        "accepted": true
+      },
+      "140": {
+        "first_sample": 35840,
+        "send_ns": 2258902167,
+        "arrival_ns": 2259081334,
+        "deadline_ns": 2288000000,
+        "accepted": true
+      },
+      "141": {
+        "first_sample": 36096,
+        "send_ns": 2275517750,
+        "arrival_ns": 2275982334,
+        "deadline_ns": 2304000000,
+        "accepted": true
+      },
+      "142": {
+        "first_sample": 36352,
+        "send_ns": 2291228917,
+        "arrival_ns": 2291420875,
+        "deadline_ns": 2320000000,
+        "accepted": true
+      },
+      "143": {
+        "first_sample": 36608,
+        "send_ns": 2308143334,
+        "arrival_ns": 2308305667,
+        "deadline_ns": 2336000000,
+        "accepted": true
+      },
+      "144": {
+        "first_sample": 36864,
+        "send_ns": 2325466625,
+        "arrival_ns": 2325659459,
+        "deadline_ns": 2352000000,
+        "accepted": true
+      },
+      "145": {
+        "first_sample": 37120,
+        "send_ns": 2336107834,
+        "arrival_ns": 2336247875,
+        "deadline_ns": 2368000000,
+        "accepted": true
+      },
+      "146": {
+        "first_sample": 37376,
+        "send_ns": 2358920917,
+        "arrival_ns": 2359657792,
+        "deadline_ns": 2384000000,
+        "accepted": true
+      },
+      "147": {
+        "first_sample": 37632,
+        "send_ns": 2370911000,
+        "arrival_ns": 2371151334,
+        "deadline_ns": 2400000000,
+        "accepted": true
+      },
+      "148": {
+        "first_sample": 37888,
+        "send_ns": 2385085125,
+        "arrival_ns": 2385170875,
+        "deadline_ns": 2416000000,
+        "accepted": true
+      },
+      "149": {
+        "first_sample": 38144,
+        "send_ns": 2407517084,
+        "arrival_ns": 2407672375,
+        "deadline_ns": 2432000000,
+        "accepted": true
+      },
+      "150": {
+        "first_sample": 38400,
+        "send_ns": 2420250250,
+        "arrival_ns": 2420392834,
+        "deadline_ns": 2448000000,
+        "accepted": true
+      },
+      "151": {
+        "first_sample": 38656,
+        "send_ns": 2436713959,
+        "arrival_ns": 2436828375,
+        "deadline_ns": 2464000000,
+        "accepted": true
+      },
+      "152": {
+        "first_sample": 38912,
+        "send_ns": 2453680959,
+        "arrival_ns": 2453876375,
+        "deadline_ns": 2480000000,
+        "accepted": true
+      },
+      "153": {
+        "first_sample": 39168,
+        "send_ns": 2469083125,
+        "arrival_ns": 2469285584,
+        "deadline_ns": 2496000000,
+        "accepted": true
+      },
+      "154": {
+        "first_sample": 39424,
+        "send_ns": 2485493584,
+        "arrival_ns": 2485703792,
+        "deadline_ns": 2512000000,
+        "accepted": true
+      },
+      "155": {
+        "first_sample": 39680,
+        "send_ns": 2499888542,
+        "arrival_ns": 2500065542,
+        "deadline_ns": 2528000000,
+        "accepted": true
+      },
+      "156": {
+        "first_sample": 39936,
+        "send_ns": 2516177709,
+        "arrival_ns": 2516347125,
+        "deadline_ns": 2544000000,
+        "accepted": true
+      },
+      "157": {
+        "first_sample": 40192,
+        "send_ns": 2530296750,
+        "arrival_ns": 2530373542,
+        "deadline_ns": 2560000000,
+        "accepted": true
+      },
+      "158": {
+        "first_sample": 40448,
+        "send_ns": 2544198834,
+        "arrival_ns": 2544391042,
+        "deadline_ns": 2576000000,
+        "accepted": true
+      },
+      "159": {
+        "first_sample": 40704,
+        "send_ns": 2560977917,
+        "arrival_ns": 2561165250,
+        "deadline_ns": 2592000000,
+        "accepted": true
+      },
+      "160": {
+        "first_sample": 40960,
+        "send_ns": 2577626792,
+        "arrival_ns": 2577719334,
+        "deadline_ns": 2608000000,
+        "accepted": true
+      },
+      "161": {
+        "first_sample": 41216,
+        "send_ns": 2597135167,
+        "arrival_ns": 2597353709,
+        "deadline_ns": 2624000000,
+        "accepted": true
+      },
+      "162": {
+        "first_sample": 41472,
+        "send_ns": 2610211959,
+        "arrival_ns": 2610589542,
+        "deadline_ns": 2640000000,
+        "accepted": true
+      },
+      "163": {
+        "first_sample": 41728,
+        "send_ns": 2625537500,
+        "arrival_ns": 2625683625,
+        "deadline_ns": 2656000000,
+        "accepted": true
+      },
+      "164": {
+        "first_sample": 41984,
+        "send_ns": 2642835000,
+        "arrival_ns": 2642995042,
+        "deadline_ns": 2672000000,
+        "accepted": true
+      },
+      "165": {
+        "first_sample": 42240,
+        "send_ns": 2662424459,
+        "arrival_ns": 2662560334,
+        "deadline_ns": 2688000000,
+        "accepted": true
+      },
+      "166": {
+        "first_sample": 42496,
+        "send_ns": 2675241375,
+        "arrival_ns": 2675567750,
+        "deadline_ns": 2704000000,
+        "accepted": true
+      },
+      "167": {
+        "first_sample": 42752,
+        "send_ns": 2691536167,
+        "arrival_ns": 2691807500,
+        "deadline_ns": 2720000000,
+        "accepted": true
+      },
+      "168": {
+        "first_sample": 43008,
+        "send_ns": 2708485542,
+        "arrival_ns": 2708691167,
+        "deadline_ns": 2736000000,
+        "accepted": true
+      },
+      "169": {
+        "first_sample": 43264,
+        "send_ns": 2724538500,
+        "arrival_ns": 2724668542,
+        "deadline_ns": 2752000000,
+        "accepted": true
+      },
+      "170": {
+        "first_sample": 43520,
+        "send_ns": 2741751750,
+        "arrival_ns": 2741901875,
+        "deadline_ns": 2768000000,
+        "accepted": true
+      },
+      "171": {
+        "first_sample": 43776,
+        "send_ns": 2754235667,
+        "arrival_ns": 2754368917,
+        "deadline_ns": 2784000000,
+        "accepted": true
+      },
+      "172": {
+        "first_sample": 44032,
+        "send_ns": 2774904042,
+        "arrival_ns": 2775074500,
+        "deadline_ns": 2800000000,
+        "accepted": true
+      },
+      "173": {
+        "first_sample": 44288,
+        "send_ns": 2788512000,
+        "arrival_ns": 2788608334,
+        "deadline_ns": 2816000000,
+        "accepted": true
+      },
+      "174": {
+        "first_sample": 44544,
+        "send_ns": 2805067250,
+        "arrival_ns": 2805157875,
+        "deadline_ns": 2832000000,
+        "accepted": true
+      },
+      "175": {
+        "first_sample": 44800,
+        "send_ns": 2818275042,
+        "arrival_ns": 2818355250,
+        "deadline_ns": 2848000000,
+        "accepted": true
+      },
+      "176": {
+        "first_sample": 45056,
+        "send_ns": 2832224209,
+        "arrival_ns": 2832379209,
+        "deadline_ns": 2864000000,
+        "accepted": true
+      },
+      "177": {
+        "first_sample": 45312,
+        "send_ns": 2850180292,
+        "arrival_ns": 2850271959,
+        "deadline_ns": 2880000000,
+        "accepted": true
+      },
+      "178": {
+        "first_sample": 45568,
+        "send_ns": 2865151834,
+        "arrival_ns": 2865330792,
+        "deadline_ns": 2896000000,
+        "accepted": true
+      },
+      "179": {
+        "first_sample": 45824,
+        "send_ns": 2880628459,
+        "arrival_ns": 2880771250,
+        "deadline_ns": 2912000000,
+        "accepted": true
+      },
+      "180": {
+        "first_sample": 46080,
+        "send_ns": 2897970959,
+        "arrival_ns": 2898134250,
+        "deadline_ns": 2928000000,
+        "accepted": true
+      },
+      "181": {
+        "first_sample": 46336,
+        "send_ns": 2915542334,
+        "arrival_ns": 2915653500,
+        "deadline_ns": 2944000000,
+        "accepted": true
+      },
+      "182": {
+        "first_sample": 46592,
+        "send_ns": 2934225792,
+        "arrival_ns": 2934317417,
+        "deadline_ns": 2960000000,
+        "accepted": true
+      },
+      "183": {
+        "first_sample": 46848,
+        "send_ns": 2944917584,
+        "arrival_ns": 2945057292,
+        "deadline_ns": 2976000000,
+        "accepted": true
+      },
+      "184": {
+        "first_sample": 47104,
+        "send_ns": 2965540584,
+        "arrival_ns": 2965646500,
+        "deadline_ns": 2992000000,
+        "accepted": true
+      },
+      "185": {
+        "first_sample": 47360,
+        "send_ns": 2978283625,
+        "arrival_ns": 2978375000,
+        "deadline_ns": 3008000000,
+        "accepted": true
+      },
+      "186": {
+        "first_sample": 47616,
+        "send_ns": 2998414125,
+        "arrival_ns": 2998522375,
+        "deadline_ns": 3024000000,
+        "accepted": true
+      },
+      "187": {
+        "first_sample": 47872,
+        "send_ns": 3009272459,
+        "arrival_ns": 3009427375,
+        "deadline_ns": 3040000000,
+        "accepted": true
+      },
+      "188": {
+        "first_sample": 48128,
+        "send_ns": 3027185292,
+        "arrival_ns": 3027364417,
+        "deadline_ns": 3056000000,
+        "accepted": true
+      },
+      "189": {
+        "first_sample": 48384,
+        "send_ns": 3042059584,
+        "arrival_ns": 3042168417,
+        "deadline_ns": 3072000000,
+        "accepted": true
+      },
+      "190": {
+        "first_sample": 48640,
+        "send_ns": 3062324125,
+        "arrival_ns": 3062433500,
+        "deadline_ns": 3088000000,
+        "accepted": true
+      },
+      "191": {
+        "first_sample": 48896,
+        "send_ns": 3076840209,
+        "arrival_ns": 3076950000,
+        "deadline_ns": 3104000000,
+        "accepted": true
+      },
+      "192": {
+        "first_sample": 49152,
+        "send_ns": 3092544292,
+        "arrival_ns": 3092687084,
+        "deadline_ns": 3120000000,
+        "accepted": true
+      },
+      "193": {
+        "first_sample": 49408,
+        "send_ns": 3108821792,
+        "arrival_ns": 3108938834,
+        "deadline_ns": 3136000000,
+        "accepted": true
+      },
+      "194": {
+        "first_sample": 49664,
+        "send_ns": 3126237084,
+        "arrival_ns": 3126366084,
+        "deadline_ns": 3152000000,
+        "accepted": true
+      },
+      "195": {
+        "first_sample": 49920,
+        "send_ns": 3139475709,
+        "arrival_ns": 3139574667,
+        "deadline_ns": 3168000000,
+        "accepted": true
+      },
+      "196": {
+        "first_sample": 50176,
+        "send_ns": 3152197042,
+        "arrival_ns": 3152290542,
+        "deadline_ns": 3184000000,
+        "accepted": true
+      },
+      "197": {
+        "first_sample": 50432,
+        "send_ns": 3173416834,
+        "arrival_ns": 3173538917,
+        "deadline_ns": 3200000000,
+        "accepted": true
+      },
+      "198": {
+        "first_sample": 50688,
+        "send_ns": 3187508250,
+        "arrival_ns": 3187623959,
+        "deadline_ns": 3216000000,
+        "accepted": true
+      },
+      "199": {
+        "first_sample": 50944,
+        "send_ns": 3206253167,
+        "arrival_ns": 3206383125,
+        "deadline_ns": 3232000000,
+        "accepted": true
+      },
+      "200": {
+        "first_sample": 51200,
+        "send_ns": 3220274875,
+        "arrival_ns": 3220360917,
+        "deadline_ns": 3248000000,
+        "accepted": true
+      },
+      "201": {
+        "first_sample": 51456,
+        "send_ns": 3232561834,
+        "arrival_ns": 3232649125,
+        "deadline_ns": 3264000000,
+        "accepted": true
+      },
+      "202": {
+        "first_sample": 51712,
+        "send_ns": 3251063584,
+        "arrival_ns": 3251149834,
+        "deadline_ns": 3280000000,
+        "accepted": true
+      },
+      "203": {
+        "first_sample": 51968,
+        "send_ns": 3269291459,
+        "arrival_ns": 3269417209,
+        "deadline_ns": 3296000000,
+        "accepted": true
+      },
+      "204": {
+        "first_sample": 52224,
+        "send_ns": 3285359084,
+        "arrival_ns": 3285445417,
+        "deadline_ns": 3312000000,
+        "accepted": true
+      },
+      "205": {
+        "first_sample": 52480,
+        "send_ns": 3296914959,
+        "arrival_ns": 3297068292,
+        "deadline_ns": 3328000000,
+        "accepted": true
+      },
+      "206": {
+        "first_sample": 52736,
+        "send_ns": 3312403000,
+        "arrival_ns": 3312493250,
+        "deadline_ns": 3344000000,
+        "accepted": true
+      },
+      "207": {
+        "first_sample": 52992,
+        "send_ns": 3328717959,
+        "arrival_ns": 3328892000,
+        "deadline_ns": 3360000000,
+        "accepted": true
+      },
+      "208": {
+        "first_sample": 53248,
+        "send_ns": 3347380125,
+        "arrival_ns": 3347513000,
+        "deadline_ns": 3376000000,
+        "accepted": true
+      },
+      "209": {
+        "first_sample": 53504,
+        "send_ns": 3363735459,
+        "arrival_ns": 3363824334,
+        "deadline_ns": 3392000000,
+        "accepted": true
+      },
+      "210": {
+        "first_sample": 53760,
+        "send_ns": 3381370834,
+        "arrival_ns": 3381546334,
+        "deadline_ns": 3408000000,
+        "accepted": true
+      },
+      "211": {
+        "first_sample": 54016,
+        "send_ns": 3393504500,
+        "arrival_ns": 3393692042,
+        "deadline_ns": 3424000000,
+        "accepted": true
+      },
+      "212": {
+        "first_sample": 54272,
+        "send_ns": 3410901459,
+        "arrival_ns": 3411687375,
+        "deadline_ns": 3440000000,
+        "accepted": true
+      },
+      "213": {
+        "first_sample": 54528,
+        "send_ns": 3427026042,
+        "arrival_ns": 3427235084,
+        "deadline_ns": 3456000000,
+        "accepted": true
+      },
+      "214": {
+        "first_sample": 54784,
+        "send_ns": 3443392542,
+        "arrival_ns": 3443741667,
+        "deadline_ns": 3472000000,
+        "accepted": true
+      },
+      "215": {
+        "first_sample": 55040,
+        "send_ns": 3460844750,
+        "arrival_ns": 3461131084,
+        "deadline_ns": 3488000000,
+        "accepted": true
+      },
+      "216": {
+        "first_sample": 55296,
+        "send_ns": 3473818875,
+        "arrival_ns": 3473965459,
+        "deadline_ns": 3504000000,
+        "accepted": true
+      },
+      "217": {
+        "first_sample": 55552,
+        "send_ns": 3490354459,
+        "arrival_ns": 3490726750,
+        "deadline_ns": 3520000000,
+        "accepted": true
+      },
+      "218": {
+        "first_sample": 55808,
+        "send_ns": 3508631792,
+        "arrival_ns": 3508799042,
+        "deadline_ns": 3536000000,
+        "accepted": true
+      },
+      "219": {
+        "first_sample": 56064,
+        "send_ns": 3525487584,
+        "arrival_ns": 3525694542,
+        "deadline_ns": 3552000000,
+        "accepted": true
+      },
+      "220": {
+        "first_sample": 56320,
+        "send_ns": 3538418917,
+        "arrival_ns": 3538512459,
+        "deadline_ns": 3568000000,
+        "accepted": true
+      },
+      "221": {
+        "first_sample": 56576,
+        "send_ns": 3557282709,
+        "arrival_ns": 3557377000,
+        "deadline_ns": 3584000000,
+        "accepted": true
+      },
+      "222": {
+        "first_sample": 56832,
+        "send_ns": 3568850667,
+        "arrival_ns": 3568998667,
+        "deadline_ns": 3600000000,
+        "accepted": true
+      },
+      "223": {
+        "first_sample": 57088,
+        "send_ns": 3585632875,
+        "arrival_ns": 3585762334,
+        "deadline_ns": 3616000000,
+        "accepted": true
+      },
+      "224": {
+        "first_sample": 57344,
+        "send_ns": 3604464084,
+        "arrival_ns": 3604556459,
+        "deadline_ns": 3632000000,
+        "accepted": true
+      },
+      "225": {
+        "first_sample": 57600,
+        "send_ns": 3620411042,
+        "arrival_ns": 3620646542,
+        "deadline_ns": 3648000000,
+        "accepted": true
+      },
+      "226": {
+        "first_sample": 57856,
+        "send_ns": 3633548834,
+        "arrival_ns": 3633730167,
+        "deadline_ns": 3664000000,
+        "accepted": true
+      },
+      "227": {
+        "first_sample": 58112,
+        "send_ns": 3648443334,
+        "arrival_ns": 3648551250,
+        "deadline_ns": 3680000000,
+        "accepted": true
+      },
+      "228": {
+        "first_sample": 58368,
+        "send_ns": 3670860000,
+        "arrival_ns": 3670953834,
+        "deadline_ns": 3696000000,
+        "accepted": true
+      },
+      "229": {
+        "first_sample": 58624,
+        "send_ns": 3680822500,
+        "arrival_ns": 3680969125,
+        "deadline_ns": 3712000000,
+        "accepted": true
+      },
+      "230": {
+        "first_sample": 58880,
+        "send_ns": 3698115959,
+        "arrival_ns": 3698251625,
+        "deadline_ns": 3728000000,
+        "accepted": true
+      },
+      "231": {
+        "first_sample": 59136,
+        "send_ns": 3717084834,
+        "arrival_ns": 3717399625,
+        "deadline_ns": 3744000000,
+        "accepted": true
+      },
+      "232": {
+        "first_sample": 59392,
+        "send_ns": 3729121084,
+        "arrival_ns": 3729264042,
+        "deadline_ns": 3760000000,
+        "accepted": true
+      },
+      "233": {
+        "first_sample": 59648,
+        "send_ns": 3750800417,
+        "arrival_ns": 3750911459,
+        "deadline_ns": 3776000000,
+        "accepted": true
+      },
+      "234": {
+        "first_sample": 59904,
+        "send_ns": 3761696875,
+        "arrival_ns": 3761793334,
+        "deadline_ns": 3792000000,
+        "accepted": true
+      },
+      "235": {
+        "first_sample": 60160,
+        "send_ns": 3781953917,
+        "arrival_ns": 3782041584,
+        "deadline_ns": 3808000000,
+        "accepted": true
+      },
+      "236": {
+        "first_sample": 60416,
+        "send_ns": 3795672542,
+        "arrival_ns": 3795867584,
+        "deadline_ns": 3824000000,
+        "accepted": true
+      },
+      "237": {
+        "first_sample": 60672,
+        "send_ns": 3808194959,
+        "arrival_ns": 3808294167,
+        "deadline_ns": 3840000000,
+        "accepted": true
+      },
+      "238": {
+        "first_sample": 60928,
+        "send_ns": 3826206250,
+        "arrival_ns": 3826605959,
+        "deadline_ns": 3856000000,
+        "accepted": true
+      },
+      "239": {
+        "first_sample": 61184,
+        "send_ns": 3841537917,
+        "arrival_ns": 3841696250,
+        "deadline_ns": 3872000000,
+        "accepted": true
+      },
+      "240": {
+        "first_sample": 61440,
+        "send_ns": 3858479125,
+        "arrival_ns": 3858852250,
+        "deadline_ns": 3888000000,
+        "accepted": true
+      },
+      "241": {
+        "first_sample": 61696,
+        "send_ns": 3875485250,
+        "arrival_ns": 3875953292,
+        "deadline_ns": 3904000000,
+        "accepted": true
+      },
+      "242": {
+        "first_sample": 61952,
+        "send_ns": 3888401709,
+        "arrival_ns": 3888525167,
+        "deadline_ns": 3920000000,
+        "accepted": true
+      },
+      "243": {
+        "first_sample": 62208,
+        "send_ns": 3907420084,
+        "arrival_ns": 3907608625,
+        "deadline_ns": 3936000000,
+        "accepted": true
+      },
+      "244": {
+        "first_sample": 62464,
+        "send_ns": 3925077875,
+        "arrival_ns": 3925266792,
+        "deadline_ns": 3952000000,
+        "accepted": true
+      },
+      "245": {
+        "first_sample": 62720,
+        "send_ns": 3937880750,
+        "arrival_ns": 3937980167,
+        "deadline_ns": 3968000000,
+        "accepted": true
+      },
+      "246": {
+        "first_sample": 62976,
+        "send_ns": 3958093584,
+        "arrival_ns": 3958328959,
+        "deadline_ns": 3984000000,
+        "accepted": true
+      },
+      "247": {
+        "first_sample": 63232,
+        "send_ns": 3972936459,
+        "arrival_ns": 3973034167,
+        "deadline_ns": 4000000000,
+        "accepted": true
+      },
+      "248": {
+        "first_sample": 63488,
+        "send_ns": 3984901375,
+        "arrival_ns": 3985026334,
+        "deadline_ns": 4016000000,
+        "accepted": true
+      },
+      "249": {
+        "first_sample": 63744,
+        "send_ns": 4001045209,
+        "arrival_ns": 4001203750,
+        "deadline_ns": 4032000000,
+        "accepted": true
+      },
+      "250": {
+        "first_sample": 64000,
+        "send_ns": 4019791167,
+        "arrival_ns": 4019986542,
+        "deadline_ns": 4048000000,
+        "accepted": true
+      },
+      "251": {
+        "first_sample": 64256,
+        "send_ns": 4033989167,
+        "arrival_ns": 4034152584,
+        "deadline_ns": 4064000000,
+        "accepted": true
+      },
+      "252": {
+        "first_sample": 64512,
+        "send_ns": 4048361334,
+        "arrival_ns": 4048549750,
+        "deadline_ns": 4080000000,
+        "accepted": true
+      },
+      "253": {
+        "first_sample": 64768,
+        "send_ns": 4064504167,
+        "arrival_ns": 4064693667,
+        "deadline_ns": 4096000000,
+        "accepted": true
+      },
+      "254": {
+        "first_sample": 65024,
+        "send_ns": 4082992542,
+        "arrival_ns": 4083132667,
+        "deadline_ns": 4112000000,
+        "accepted": true
+      },
+      "255": {
+        "first_sample": 65280,
+        "send_ns": 4096209625,
+        "arrival_ns": 4096413209,
+        "deadline_ns": 4128000000,
+        "accepted": true
+      },
+      "256": {
+        "first_sample": 65536,
+        "send_ns": 4117880584,
+        "arrival_ns": 4118013875,
+        "deadline_ns": 4144000000,
+        "accepted": true
+      },
+      "257": {
+        "first_sample": 65792,
+        "send_ns": 4129616959,
+        "arrival_ns": 4130032875,
+        "deadline_ns": 4160000000,
+        "accepted": true
+      },
+      "258": {
+        "first_sample": 66048,
+        "send_ns": 4145932375,
+        "arrival_ns": 4146044125,
+        "deadline_ns": 4176000000,
+        "accepted": true
+      },
+      "259": {
+        "first_sample": 66304,
+        "send_ns": 4167029625,
+        "arrival_ns": 4167137625,
+        "deadline_ns": 4192000000,
+        "accepted": true
+      },
+      "260": {
+        "first_sample": 66560,
+        "send_ns": 4180543917,
+        "arrival_ns": 4180723875,
+        "deadline_ns": 4208000000,
+        "accepted": true
+      },
+      "261": {
+        "first_sample": 66816,
+        "send_ns": 4194216459,
+        "arrival_ns": 4194479459,
+        "deadline_ns": 4224000000,
+        "accepted": true
+      },
+      "262": {
+        "first_sample": 67072,
+        "send_ns": 4214314542,
+        "arrival_ns": 4214418000,
+        "deadline_ns": 4240000000,
+        "accepted": true
+      },
+      "263": {
+        "first_sample": 67328,
+        "send_ns": 4225453792,
+        "arrival_ns": 4225650000,
+        "deadline_ns": 4256000000,
+        "accepted": true
+      },
+      "264": {
+        "first_sample": 67584,
+        "send_ns": 4240228084,
+        "arrival_ns": 4240453500,
+        "deadline_ns": 4272000000,
+        "accepted": true
+      },
+      "265": {
+        "first_sample": 67840,
+        "send_ns": 4260927667,
+        "arrival_ns": 4261260417,
+        "deadline_ns": 4288000000,
+        "accepted": true
+      },
+      "266": {
+        "first_sample": 68096,
+        "send_ns": 4275818584,
+        "arrival_ns": 4276043292,
+        "deadline_ns": 4304000000,
+        "accepted": true
+      },
+      "267": {
+        "first_sample": 68352,
+        "send_ns": 4291260459,
+        "arrival_ns": 4291652042,
+        "deadline_ns": 4320000000,
+        "accepted": true
+      },
+      "268": {
+        "first_sample": 68608,
+        "send_ns": 4308868167,
+        "arrival_ns": 4309102750,
+        "deadline_ns": 4336000000,
+        "accepted": true
+      },
+      "269": {
+        "first_sample": 68864,
+        "send_ns": 4324901500,
+        "arrival_ns": 4325055250,
+        "deadline_ns": 4352000000,
+        "accepted": true
+      },
+      "270": {
+        "first_sample": 69120,
+        "send_ns": 4341787292,
+        "arrival_ns": 4342216792,
+        "deadline_ns": 4368000000,
+        "accepted": true
+      },
+      "271": {
+        "first_sample": 69376,
+        "send_ns": 4352974959,
+        "arrival_ns": 4353234750,
+        "deadline_ns": 4384000000,
+        "accepted": true
+      },
+      "272": {
+        "first_sample": 69632,
+        "send_ns": 4375080542,
+        "arrival_ns": 4375167125,
+        "deadline_ns": 4400000000,
+        "accepted": true
+      },
+      "273": {
+        "first_sample": 69888,
+        "send_ns": 4385091000,
+        "arrival_ns": 4385244167,
+        "deadline_ns": 4416000000,
+        "accepted": true
+      },
+      "274": {
+        "first_sample": 70144,
+        "send_ns": 4401873209,
+        "arrival_ns": 4401966125,
+        "deadline_ns": 4432000000,
+        "accepted": true
+      },
+      "275": {
+        "first_sample": 70400,
+        "send_ns": 4416125792,
+        "arrival_ns": 4416300375,
+        "deadline_ns": 4448000000,
+        "accepted": true
+      },
+      "276": {
+        "first_sample": 70656,
+        "send_ns": 4437001709,
+        "arrival_ns": 4437160084,
+        "deadline_ns": 4464000000,
+        "accepted": true
+      },
+      "277": {
+        "first_sample": 70912,
+        "send_ns": 4452141750,
+        "arrival_ns": 4452323959,
+        "deadline_ns": 4480000000,
+        "accepted": true
+      },
+      "278": {
+        "first_sample": 71168,
+        "send_ns": 4464214459,
+        "arrival_ns": 4464393250,
+        "deadline_ns": 4496000000,
+        "accepted": true
+      },
+      "279": {
+        "first_sample": 71424,
+        "send_ns": 4480269417,
+        "arrival_ns": 4480390459,
+        "deadline_ns": 4512000000,
+        "accepted": true
+      },
+      "280": {
+        "first_sample": 71680,
+        "send_ns": 4496377000,
+        "arrival_ns": 4496482625,
+        "deadline_ns": 4528000000,
+        "accepted": true
+      },
+      "281": {
+        "first_sample": 71936,
+        "send_ns": 4514967250,
+        "arrival_ns": 4515141084,
+        "deadline_ns": 4544000000,
+        "accepted": true
+      },
+      "282": {
+        "first_sample": 72192,
+        "send_ns": 4530242000,
+        "arrival_ns": 4530477500,
+        "deadline_ns": 4560000000,
+        "accepted": true
+      },
+      "283": {
+        "first_sample": 72448,
+        "send_ns": 4549110334,
+        "arrival_ns": 4549256292,
+        "deadline_ns": 4576000000,
+        "accepted": true
+      },
+      "284": {
+        "first_sample": 72704,
+        "send_ns": 4563551209,
+        "arrival_ns": 4563856875,
+        "deadline_ns": 4592000000,
+        "accepted": true
+      },
+      "285": {
+        "first_sample": 72960,
+        "send_ns": 4581290084,
+        "arrival_ns": 4581465500,
+        "deadline_ns": 4608000000,
+        "accepted": true
+      },
+      "286": {
+        "first_sample": 73216,
+        "send_ns": 4596730375,
+        "arrival_ns": 4596828834,
+        "deadline_ns": 4624000000,
+        "accepted": true
+      },
+      "287": {
+        "first_sample": 73472,
+        "send_ns": 4608740834,
+        "arrival_ns": 4608868959,
+        "deadline_ns": 4640000000,
+        "accepted": true
+      },
+      "288": {
+        "first_sample": 73728,
+        "send_ns": 4625486959,
+        "arrival_ns": 4625669334,
+        "deadline_ns": 4656000000,
+        "accepted": true
+      },
+      "289": {
+        "first_sample": 73984,
+        "send_ns": 4642116459,
+        "arrival_ns": 4642294334,
+        "deadline_ns": 4672000000,
+        "accepted": true
+      },
+      "290": {
+        "first_sample": 74240,
+        "send_ns": 4657167917,
+        "arrival_ns": 4657320625,
+        "deadline_ns": 4688000000,
+        "accepted": true
+      },
+      "291": {
+        "first_sample": 74496,
+        "send_ns": 4674726834,
+        "arrival_ns": 4674937875,
+        "deadline_ns": 4704000000,
+        "accepted": true
+      },
+      "292": {
+        "first_sample": 74752,
+        "send_ns": 4690327584,
+        "arrival_ns": 4690603042,
+        "deadline_ns": 4720000000,
+        "accepted": true
+      },
+      "293": {
+        "first_sample": 75008,
+        "send_ns": 4710346959,
+        "arrival_ns": 4710669709,
+        "deadline_ns": 4736000000,
+        "accepted": true
+      },
+      "294": {
+        "first_sample": 75264,
+        "send_ns": 4724745875,
+        "arrival_ns": 4724922459,
+        "deadline_ns": 4752000000,
+        "accepted": true
+      },
+      "295": {
+        "first_sample": 75520,
+        "send_ns": 4736310250,
+        "arrival_ns": 4736641584,
+        "deadline_ns": 4768000000,
+        "accepted": true
+      },
+      "296": {
+        "first_sample": 75776,
+        "send_ns": 4759896042,
+        "arrival_ns": 4760331000,
+        "deadline_ns": 4784000000,
+        "accepted": true
+      },
+      "297": {
+        "first_sample": 76032,
+        "send_ns": 4772008417,
+        "arrival_ns": 4772201292,
+        "deadline_ns": 4800000000,
+        "accepted": true
+      },
+      "298": {
+        "first_sample": 76288,
+        "send_ns": 4790049834,
+        "arrival_ns": 4790420500,
+        "deadline_ns": 4816000000,
+        "accepted": true
+      },
+      "299": {
+        "first_sample": 76544,
+        "send_ns": 4801219917,
+        "arrival_ns": 4801435667,
+        "deadline_ns": 4832000000,
+        "accepted": true
+      },
+      "300": {
+        "first_sample": 76800,
+        "send_ns": 4817046334,
+        "arrival_ns": 4817280209,
+        "deadline_ns": 4848000000,
+        "accepted": true
+      },
+      "301": {
+        "first_sample": 77056,
+        "send_ns": 4834587875,
+        "arrival_ns": 4834717417,
+        "deadline_ns": 4864000000,
+        "accepted": true
+      },
+      "302": {
+        "first_sample": 77312,
+        "send_ns": 4849543209,
+        "arrival_ns": 4849796125,
+        "deadline_ns": 4880000000,
+        "accepted": true
+      },
+      "303": {
+        "first_sample": 77568,
+        "send_ns": 4871201917,
+        "arrival_ns": 4871388000,
+        "deadline_ns": 4896000000,
+        "accepted": true
+      },
+      "304": {
+        "first_sample": 77824,
+        "send_ns": 4882047250,
+        "arrival_ns": 4882263834,
+        "deadline_ns": 4912000000,
+        "accepted": true
+      },
+      "305": {
+        "first_sample": 78080,
+        "send_ns": 4901233292,
+        "arrival_ns": 4901476000,
+        "deadline_ns": 4928000000,
+        "accepted": true
+      },
+      "306": {
+        "first_sample": 78336,
+        "send_ns": 4912385750,
+        "arrival_ns": 4912582875,
+        "deadline_ns": 4944000000,
+        "accepted": true
+      },
+      "307": {
+        "first_sample": 78592,
+        "send_ns": 4931262542,
+        "arrival_ns": 4931365459,
+        "deadline_ns": 4960000000,
+        "accepted": true
+      },
+      "308": {
+        "first_sample": 78848,
+        "send_ns": 4948305709,
+        "arrival_ns": 4948693875,
+        "deadline_ns": 4976000000,
+        "accepted": true
+      },
+      "309": {
+        "first_sample": 79104,
+        "send_ns": 4961961209,
+        "arrival_ns": 4962097042,
+        "deadline_ns": 4992000000,
+        "accepted": true
+      },
+      "310": {
+        "first_sample": 79360,
+        "send_ns": 4977565750,
+        "arrival_ns": 4977776875,
+        "deadline_ns": 5008000000,
+        "accepted": true
+      },
+      "311": {
+        "first_sample": 79616,
+        "send_ns": 4998906875,
+        "arrival_ns": 4999200709,
+        "deadline_ns": 5024000000,
+        "accepted": true
+      },
+      "312": {
+        "first_sample": 79872,
+        "send_ns": 5008784750,
+        "arrival_ns": 5009234459,
+        "deadline_ns": 5040000000,
+        "accepted": true
+      },
+      "313": {
+        "first_sample": 80128,
+        "send_ns": 5024150792,
+        "arrival_ns": 5024308292,
+        "deadline_ns": 5056000000,
+        "accepted": true
+      },
+      "314": {
+        "first_sample": 80384,
+        "send_ns": 5045114500,
+        "arrival_ns": 5045356209,
+        "deadline_ns": 5072000000,
+        "accepted": true
+      },
+      "315": {
+        "first_sample": 80640,
+        "send_ns": 5058943125,
+        "arrival_ns": 5059143500,
+        "deadline_ns": 5088000000,
+        "accepted": true
+      },
+      "316": {
+        "first_sample": 80896,
+        "send_ns": 5077175042,
+        "arrival_ns": 5077342292,
+        "deadline_ns": 5104000000,
+        "accepted": true
+      },
+      "317": {
+        "first_sample": 81152,
+        "send_ns": 5090781792,
+        "arrival_ns": 5091068042,
+        "deadline_ns": 5120000000,
+        "accepted": true
+      },
+      "318": {
+        "first_sample": 81408,
+        "send_ns": 5108880375,
+        "arrival_ns": 5109161709,
+        "deadline_ns": 5136000000,
+        "accepted": true
+      },
+      "319": {
+        "first_sample": 81664,
+        "send_ns": 5125628834,
+        "arrival_ns": 5126116459,
+        "deadline_ns": 5152000000,
+        "accepted": true
+      },
+      "320": {
+        "first_sample": 81920,
+        "send_ns": 5140083792,
+        "arrival_ns": 5140283917,
+        "deadline_ns": 5168000000,
+        "accepted": true
+      },
+      "321": {
+        "first_sample": 82176,
+        "send_ns": 5155816917,
+        "arrival_ns": 5156038459,
+        "deadline_ns": 5184000000,
+        "accepted": true
+      },
+      "322": {
+        "first_sample": 82432,
+        "send_ns": 5168871209,
+        "arrival_ns": 5169143875,
+        "deadline_ns": 5200000000,
+        "accepted": true
+      },
+      "323": {
+        "first_sample": 82688,
+        "send_ns": 5191534292,
+        "arrival_ns": 5191895875,
+        "deadline_ns": 5216000000,
+        "accepted": true
+      },
+      "324": {
+        "first_sample": 82944,
+        "send_ns": 5200514542,
+        "arrival_ns": 5200677334,
+        "deadline_ns": 5232000000,
+        "accepted": true
+      },
+      "325": {
+        "first_sample": 83200,
+        "send_ns": 5217868584,
+        "arrival_ns": 5218031500,
+        "deadline_ns": 5248000000,
+        "accepted": true
+      },
+      "326": {
+        "first_sample": 83456,
+        "send_ns": 5239079959,
+        "arrival_ns": 5239282209,
+        "deadline_ns": 5264000000,
+        "accepted": true
+      },
+      "327": {
+        "first_sample": 83712,
+        "send_ns": 5250737000,
+        "arrival_ns": 5250991917,
+        "deadline_ns": 5280000000,
+        "accepted": true
+      },
+      "328": {
+        "first_sample": 83968,
+        "send_ns": 5266339792,
+        "arrival_ns": 5266726959,
+        "deadline_ns": 5296000000,
+        "accepted": true
+      },
+      "329": {
+        "first_sample": 84224,
+        "send_ns": 5283463000,
+        "arrival_ns": 5283661917,
+        "deadline_ns": 5312000000,
+        "accepted": true
+      },
+      "330": {
+        "first_sample": 84480,
+        "send_ns": 5302272292,
+        "arrival_ns": 5302497584,
+        "deadline_ns": 5328000000,
+        "accepted": true
+      },
+      "331": {
+        "first_sample": 84736,
+        "send_ns": 5316852125,
+        "arrival_ns": 5316966125,
+        "deadline_ns": 5344000000,
+        "accepted": true
+      },
+      "332": {
+        "first_sample": 84992,
+        "send_ns": 5333622000,
+        "arrival_ns": 5333793834,
+        "deadline_ns": 5360000000,
+        "accepted": true
+      },
+      "333": {
+        "first_sample": 85248,
+        "send_ns": 5345426834,
+        "arrival_ns": 5345824084,
+        "deadline_ns": 5376000000,
+        "accepted": true
+      },
+      "334": {
+        "first_sample": 85504,
+        "send_ns": 5360436167,
+        "arrival_ns": 5360624167,
+        "deadline_ns": 5392000000,
+        "accepted": true
+      },
+      "335": {
+        "first_sample": 85760,
+        "send_ns": 5382224042,
+        "arrival_ns": 5382333584,
+        "deadline_ns": 5408000000,
+        "accepted": true
+      },
+      "336": {
+        "first_sample": 86016,
+        "send_ns": 5393040042,
+        "arrival_ns": 5393182542,
+        "deadline_ns": 5424000000,
+        "accepted": true
+      },
+      "337": {
+        "first_sample": 86272,
+        "send_ns": 5408935542,
+        "arrival_ns": 5410338500,
+        "deadline_ns": 5440000000,
+        "accepted": true
+      },
+      "338": {
+        "first_sample": 86528,
+        "send_ns": 5425619042,
+        "arrival_ns": 5426067917,
+        "deadline_ns": 5456000000,
+        "accepted": true
+      },
+      "339": {
+        "first_sample": 86784,
+        "send_ns": 5440265542,
+        "arrival_ns": 5440355084,
+        "deadline_ns": 5472000000,
+        "accepted": true
+      },
+      "340": {
+        "first_sample": 87040,
+        "send_ns": 5460610584,
+        "arrival_ns": 5461054500,
+        "deadline_ns": 5488000000,
+        "accepted": true
+      },
+      "341": {
+        "first_sample": 87296,
+        "send_ns": 5475797750,
+        "arrival_ns": 5476059292,
+        "deadline_ns": 5504000000,
+        "accepted": true
+      },
+      "342": {
+        "first_sample": 87552,
+        "send_ns": 5492636209,
+        "arrival_ns": 5492880375,
+        "deadline_ns": 5520000000,
+        "accepted": true
+      },
+      "343": {
+        "first_sample": 87808,
+        "send_ns": 5508814125,
+        "arrival_ns": 5509187959,
+        "deadline_ns": 5536000000,
+        "accepted": true
+      },
+      "344": {
+        "first_sample": 88064,
+        "send_ns": 5525594000,
+        "arrival_ns": 5525963042,
+        "deadline_ns": 5552000000,
+        "accepted": true
+      },
+      "345": {
+        "first_sample": 88320,
+        "send_ns": 5537332500,
+        "arrival_ns": 5537728084,
+        "deadline_ns": 5568000000,
+        "accepted": true
+      },
+      "346": {
+        "first_sample": 88576,
+        "send_ns": 5557105459,
+        "arrival_ns": 5557427500,
+        "deadline_ns": 5584000000,
+        "accepted": true
+      },
+      "347": {
+        "first_sample": 88832,
+        "send_ns": 5573228625,
+        "arrival_ns": 5573447750,
+        "deadline_ns": 5600000000,
+        "accepted": true
+      },
+      "348": {
+        "first_sample": 89088,
+        "send_ns": 5588150500,
+        "arrival_ns": 5588311625,
+        "deadline_ns": 5616000000,
+        "accepted": true
+      },
+      "349": {
+        "first_sample": 89344,
+        "send_ns": 5600155125,
+        "arrival_ns": 5600426125,
+        "deadline_ns": 5632000000,
+        "accepted": true
+      },
+      "350": {
+        "first_sample": 89600,
+        "send_ns": 5623952209,
+        "arrival_ns": 5624244459,
+        "deadline_ns": 5648000000,
+        "accepted": true
+      },
+      "351": {
+        "first_sample": 89856,
+        "send_ns": 5632663334,
+        "arrival_ns": 5632832875,
+        "deadline_ns": 5664000000,
+        "accepted": true
+      },
+      "352": {
+        "first_sample": 90112,
+        "send_ns": 5648715417,
+        "arrival_ns": 5648973042,
+        "deadline_ns": 5680000000,
+        "accepted": true
+      },
+      "353": {
+        "first_sample": 90368,
+        "send_ns": 5664262292,
+        "arrival_ns": 5664424500,
+        "deadline_ns": 5696000000,
+        "accepted": true
+      },
+      "354": {
+        "first_sample": 90624,
+        "send_ns": 5682617917,
+        "arrival_ns": 5682744167,
+        "deadline_ns": 5712000000,
+        "accepted": true
+      },
+      "355": {
+        "first_sample": 90880,
+        "send_ns": 5702722959,
+        "arrival_ns": 5702943000,
+        "deadline_ns": 5728000000,
+        "accepted": true
+      },
+      "356": {
+        "first_sample": 91136,
+        "send_ns": 5713091292,
+        "arrival_ns": 5713350959,
+        "deadline_ns": 5744000000,
+        "accepted": true
+      },
+      "357": {
+        "first_sample": 91392,
+        "send_ns": 5735439459,
+        "arrival_ns": 5735701417,
+        "deadline_ns": 5760000000,
+        "accepted": true
+      },
+      "358": {
+        "first_sample": 91648,
+        "send_ns": 5748374334,
+        "arrival_ns": 5748788459,
+        "deadline_ns": 5776000000,
+        "accepted": true
+      },
+      "359": {
+        "first_sample": 91904,
+        "send_ns": 5761535250,
+        "arrival_ns": 5761771334,
+        "deadline_ns": 5792000000,
+        "accepted": true
+      },
+      "360": {
+        "first_sample": 92160,
+        "send_ns": 5777938375,
+        "arrival_ns": 5778193417,
+        "deadline_ns": 5808000000,
+        "accepted": true
+      },
+      "361": {
+        "first_sample": 92416,
+        "send_ns": 5794250334,
+        "arrival_ns": 5794457292,
+        "deadline_ns": 5824000000,
+        "accepted": true
+      },
+      "362": {
+        "first_sample": 92672,
+        "send_ns": 5810336250,
+        "arrival_ns": 5810663750,
+        "deadline_ns": 5840000000,
+        "accepted": true
+      },
+      "363": {
+        "first_sample": 92928,
+        "send_ns": 5830787250,
+        "arrival_ns": 5830945375,
+        "deadline_ns": 5856000000,
+        "accepted": true
+      },
+      "364": {
+        "first_sample": 93184,
+        "send_ns": 5842255084,
+        "arrival_ns": 5842930459,
+        "deadline_ns": 5872000000,
+        "accepted": true
+      },
+      "365": {
+        "first_sample": 93440,
+        "send_ns": 5858782375,
+        "arrival_ns": 5859035334,
+        "deadline_ns": 5888000000,
+        "accepted": true
+      },
+      "366": {
+        "first_sample": 93696,
+        "send_ns": 5878248125,
+        "arrival_ns": 5878729959,
+        "deadline_ns": 5904000000,
+        "accepted": true
+      },
+      "367": {
+        "first_sample": 93952,
+        "send_ns": 5891005500,
+        "arrival_ns": 5891105959,
+        "deadline_ns": 5920000000,
+        "accepted": true
+      },
+      "368": {
+        "first_sample": 94208,
+        "send_ns": 5908916209,
+        "arrival_ns": 5909116500,
+        "deadline_ns": 5936000000,
+        "accepted": true
+      },
+      "369": {
+        "first_sample": 94464,
+        "send_ns": 5925495500,
+        "arrival_ns": 5925848625,
+        "deadline_ns": 5952000000,
+        "accepted": true
+      },
+      "370": {
+        "first_sample": 94720,
+        "send_ns": 5936224959,
+        "arrival_ns": 5936410292,
+        "deadline_ns": 5968000000,
+        "accepted": true
+      },
+      "371": {
+        "first_sample": 94976,
+        "send_ns": 5953241417,
+        "arrival_ns": 5953423875,
+        "deadline_ns": 5984000000,
+        "accepted": true
+      },
+      "372": {
+        "first_sample": 95232,
+        "send_ns": 5975976834,
+        "arrival_ns": 5976283709,
+        "deadline_ns": 6000000000,
+        "accepted": true
+      },
+      "373": {
+        "first_sample": 95488,
+        "send_ns": 5984629000,
+        "arrival_ns": 5984862709,
+        "deadline_ns": 6016000000,
+        "accepted": true
+      },
+      "374": {
+        "first_sample": 95744,
+        "send_ns": 6007659250,
+        "arrival_ns": 6007840667,
+        "deadline_ns": 6032000000,
+        "accepted": true
+      },
+      "375": {
+        "first_sample": 96000,
+        "send_ns": 6016399542,
+        "arrival_ns": 6016664167,
+        "deadline_ns": 6048000000,
+        "accepted": true
+      },
+      "376": {
+        "first_sample": 96256,
+        "send_ns": 6032428625,
+        "arrival_ns": 6032612750,
+        "deadline_ns": 6064000000,
+        "accepted": true
+      },
+      "377": {
+        "first_sample": 96512,
+        "send_ns": 6055815959,
+        "arrival_ns": 6056020584,
+        "deadline_ns": 6080000000,
+        "accepted": true
+      },
+      "378": {
+        "first_sample": 96768,
+        "send_ns": 6067995792,
+        "arrival_ns": 6068165209,
+        "deadline_ns": 6096000000,
+        "accepted": true
+      },
+      "379": {
+        "first_sample": 97024,
+        "send_ns": 6080554959,
+        "arrival_ns": 6080778625,
+        "deadline_ns": 6112000000,
+        "accepted": true
+      },
+      "380": {
+        "first_sample": 97280,
+        "send_ns": 6102476584,
+        "arrival_ns": 6102830792,
+        "deadline_ns": 6128000000,
+        "accepted": true
+      },
+      "381": {
+        "first_sample": 97536,
+        "send_ns": 6112830792,
+        "arrival_ns": 6113084459,
+        "deadline_ns": 6144000000,
+        "accepted": true
+      },
+      "382": {
+        "first_sample": 97792,
+        "send_ns": 6128216334,
+        "arrival_ns": 6128412209,
+        "deadline_ns": 6160000000,
+        "accepted": true
+      },
+      "383": {
+        "first_sample": 98048,
+        "send_ns": 6147316084,
+        "arrival_ns": 6147599459,
+        "deadline_ns": 6176000000,
+        "accepted": true
+      },
+      "480": {
+        "first_sample": 122880,
+        "send_ns": 7705620875,
+        "arrival_ns": 7705823084,
+        "deadline_ns": 7728000000,
+        "accepted": true
+      },
+      "481": {
+        "first_sample": 123136,
+        "send_ns": 7713660834,
+        "arrival_ns": 7713891959,
+        "deadline_ns": 7744000000,
+        "accepted": true
+      },
+      "482": {
+        "first_sample": 123392,
+        "send_ns": 7732702417,
+        "arrival_ns": 7732782375,
+        "deadline_ns": 7760000000,
+        "accepted": true
+      },
+      "479": {
+        "first_sample": 122624,
+        "send_ns": 7746720500,
+        "arrival_ns": 7746858167,
+        "deadline_ns": 7712000000,
+        "accepted": false
+      },
+      "483": {
+        "first_sample": 123648,
+        "send_ns": 7746817292,
+        "arrival_ns": 7746885834,
+        "deadline_ns": 7776000000,
+        "accepted": true
+      },
+      "484": {
+        "first_sample": 123904,
+        "send_ns": 7760886334,
+        "arrival_ns": 7761189042,
+        "deadline_ns": 7792000000,
+        "accepted": true
+      },
+      "485": {
+        "first_sample": 124160,
+        "send_ns": 7776144625,
+        "arrival_ns": 7776314000,
+        "deadline_ns": 7808000000,
+        "accepted": true
+      },
+      "486": {
+        "first_sample": 124416,
+        "send_ns": 7795192792,
+        "arrival_ns": 7795379417,
+        "deadline_ns": 7824000000,
+        "accepted": true
+      },
+      "487": {
+        "first_sample": 124672,
+        "send_ns": 7808904625,
+        "arrival_ns": 7809303375,
+        "deadline_ns": 7840000000,
+        "accepted": true
+      },
+      "488": {
+        "first_sample": 124928,
+        "send_ns": 7825581000,
+        "arrival_ns": 7826036375,
+        "deadline_ns": 7856000000,
+        "accepted": true
+      },
+      "489": {
+        "first_sample": 125184,
+        "send_ns": 7842356709,
+        "arrival_ns": 7842715625,
+        "deadline_ns": 7872000000,
+        "accepted": true
+      },
+      "490": {
+        "first_sample": 125440,
+        "send_ns": 7857415917,
+        "arrival_ns": 7857573125,
+        "deadline_ns": 7888000000,
+        "accepted": true
+      },
+      "491": {
+        "first_sample": 125696,
+        "send_ns": 7875547542,
+        "arrival_ns": 7876476875,
+        "deadline_ns": 7904000000,
+        "accepted": true
+      },
+      "492": {
+        "first_sample": 125952,
+        "send_ns": 7892287417,
+        "arrival_ns": 7892562250,
+        "deadline_ns": 7920000000,
+        "accepted": true
+      },
+      "493": {
+        "first_sample": 126208,
+        "send_ns": 7907309625,
+        "arrival_ns": 7907525334,
+        "deadline_ns": 7936000000,
+        "accepted": true
+      },
+      "494": {
+        "first_sample": 126464,
+        "send_ns": 7924684542,
+        "arrival_ns": 7924948375,
+        "deadline_ns": 7952000000,
+        "accepted": true
+      },
+      "495": {
+        "first_sample": 126720,
+        "send_ns": 7941638167,
+        "arrival_ns": 7941854292,
+        "deadline_ns": 7968000000,
+        "accepted": true
+      },
+      "496": {
+        "first_sample": 126976,
+        "send_ns": 7952280042,
+        "arrival_ns": 7952413792,
+        "deadline_ns": 7984000000,
+        "accepted": true
+      },
+      "497": {
+        "first_sample": 127232,
+        "send_ns": 7976026959,
+        "arrival_ns": 7976422209,
+        "deadline_ns": 8000000000,
+        "accepted": true
+      },
+      "498": {
+        "first_sample": 127488,
+        "send_ns": 7984126792,
+        "arrival_ns": 7984346250,
+        "deadline_ns": 8016000000,
+        "accepted": true
+      },
+      "499": {
+        "first_sample": 127744,
+        "send_ns": 8007824375,
+        "arrival_ns": 8008025584,
+        "deadline_ns": 8032000000,
+        "accepted": true
+      },
+      "500": {
+        "first_sample": 128000,
+        "send_ns": 8019790500,
+        "arrival_ns": 8020030917,
+        "deadline_ns": 8048000000,
+        "accepted": true
+      },
+      "501": {
+        "first_sample": 128256,
+        "send_ns": 8035777417,
+        "arrival_ns": 8035897459,
+        "deadline_ns": 8064000000,
+        "accepted": true
+      },
+      "502": {
+        "first_sample": 128512,
+        "send_ns": 8050060125,
+        "arrival_ns": 8050219667,
+        "deadline_ns": 8080000000,
+        "accepted": true
+      },
+      "503": {
+        "first_sample": 128768,
+        "send_ns": 8071023709,
+        "arrival_ns": 8071391417,
+        "deadline_ns": 8096000000,
+        "accepted": true
+      },
+      "504": {
+        "first_sample": 129024,
+        "send_ns": 8084442042,
+        "arrival_ns": 8084693959,
+        "deadline_ns": 8112000000,
+        "accepted": true
+      },
+      "505": {
+        "first_sample": 129280,
+        "send_ns": 8101777959,
+        "arrival_ns": 8102029125,
+        "deadline_ns": 8128000000,
+        "accepted": true
+      },
+      "506": {
+        "first_sample": 129536,
+        "send_ns": 8117093500,
+        "arrival_ns": 8117312125,
+        "deadline_ns": 8144000000,
+        "accepted": true
+      },
+      "507": {
+        "first_sample": 129792,
+        "send_ns": 8133466084,
+        "arrival_ns": 8133732875,
+        "deadline_ns": 8160000000,
+        "accepted": true
+      },
+      "508": {
+        "first_sample": 130048,
+        "send_ns": 8144226292,
+        "arrival_ns": 8144495084,
+        "deadline_ns": 8176000000,
+        "accepted": true
+      },
+      "509": {
+        "first_sample": 130304,
+        "send_ns": 8161735250,
+        "arrival_ns": 8161945417,
+        "deadline_ns": 8192000000,
+        "accepted": true
+      },
+      "510": {
+        "first_sample": 130560,
+        "send_ns": 8179130167,
+        "arrival_ns": 8179222792,
+        "deadline_ns": 8208000000,
+        "accepted": true
+      },
+      "511": {
+        "first_sample": 130816,
+        "send_ns": 8197541042,
+        "arrival_ns": 8197800875,
+        "deadline_ns": 8224000000,
+        "accepted": true
+      },
+      "512": {
+        "first_sample": 131072,
+        "send_ns": 8209138417,
+        "arrival_ns": 8209422667,
+        "deadline_ns": 8240000000,
+        "accepted": true
+      },
+      "513": {
+        "first_sample": 131328,
+        "send_ns": 8228709500,
+        "arrival_ns": 8228972959,
+        "deadline_ns": 8256000000,
+        "accepted": true
+      },
+      "514": {
+        "first_sample": 131584,
+        "send_ns": 8242394167,
+        "arrival_ns": 8243025500,
+        "deadline_ns": 8272000000,
+        "accepted": true
+      },
+      "515": {
+        "first_sample": 131840,
+        "send_ns": 8258794709,
+        "arrival_ns": 8259040292,
+        "deadline_ns": 8288000000,
+        "accepted": true
+      },
+      "516": {
+        "first_sample": 132096,
+        "send_ns": 8274990834,
+        "arrival_ns": 8275259000,
+        "deadline_ns": 8304000000,
+        "accepted": true
+      },
+      "517": {
+        "first_sample": 132352,
+        "send_ns": 8292139917,
+        "arrival_ns": 8292329167,
+        "deadline_ns": 8320000000,
+        "accepted": true
+      },
+      "518": {
+        "first_sample": 132608,
+        "send_ns": 8304876084,
+        "arrival_ns": 8305059000,
+        "deadline_ns": 8336000000,
+        "accepted": true
+      },
+      "519": {
+        "first_sample": 132864,
+        "send_ns": 8325160334,
+        "arrival_ns": 8325630042,
+        "deadline_ns": 8352000000,
+        "accepted": true
+      },
+      "520": {
+        "first_sample": 133120,
+        "send_ns": 8340498250,
+        "arrival_ns": 8340674000,
+        "deadline_ns": 8368000000,
+        "accepted": true
+      },
+      "521": {
+        "first_sample": 133376,
+        "send_ns": 8353625167,
+        "arrival_ns": 8353870709,
+        "deadline_ns": 8384000000,
+        "accepted": true
+      },
+      "522": {
+        "first_sample": 133632,
+        "send_ns": 8375173500,
+        "arrival_ns": 8375490625,
+        "deadline_ns": 8400000000,
+        "accepted": true
+      },
+      "523": {
+        "first_sample": 133888,
+        "send_ns": 8384305167,
+        "arrival_ns": 8384712625,
+        "deadline_ns": 8416000000,
+        "accepted": true
+      },
+      "524": {
+        "first_sample": 134144,
+        "send_ns": 8401448250,
+        "arrival_ns": 8401865875,
+        "deadline_ns": 8432000000,
+        "accepted": true
+      },
+      "525": {
+        "first_sample": 134400,
+        "send_ns": 8416651584,
+        "arrival_ns": 8416824125,
+        "deadline_ns": 8448000000,
+        "accepted": true
+      },
+      "526": {
+        "first_sample": 134656,
+        "send_ns": 8434752417,
+        "arrival_ns": 8435324459,
+        "deadline_ns": 8464000000,
+        "accepted": true
+      },
+      "527": {
+        "first_sample": 134912,
+        "send_ns": 8448146375,
+        "arrival_ns": 8448393459,
+        "deadline_ns": 8480000000,
+        "accepted": true
+      },
+      "528": {
+        "first_sample": 135168,
+        "send_ns": 8471888667,
+        "arrival_ns": 8472048292,
+        "deadline_ns": 8496000000,
+        "accepted": true
+      },
+      "529": {
+        "first_sample": 135424,
+        "send_ns": 8480689834,
+        "arrival_ns": 8480891584,
+        "deadline_ns": 8512000000,
+        "accepted": true
+      },
+      "530": {
+        "first_sample": 135680,
+        "send_ns": 8498825542,
+        "arrival_ns": 8499016417,
+        "deadline_ns": 8528000000,
+        "accepted": true
+      },
+      "531": {
+        "first_sample": 135936,
+        "send_ns": 8514694334,
+        "arrival_ns": 8514857875,
+        "deadline_ns": 8544000000,
+        "accepted": true
+      },
+      "532": {
+        "first_sample": 136192,
+        "send_ns": 8534143584,
+        "arrival_ns": 8534322709,
+        "deadline_ns": 8560000000,
+        "accepted": true
+      },
+      "533": {
+        "first_sample": 136448,
+        "send_ns": 8544467834,
+        "arrival_ns": 8544896417,
+        "deadline_ns": 8576000000,
+        "accepted": true
+      },
+      "534": {
+        "first_sample": 136704,
+        "send_ns": 8560194292,
+        "arrival_ns": 8560352250,
+        "deadline_ns": 8592000000,
+        "accepted": true
+      },
+      "535": {
+        "first_sample": 136960,
+        "send_ns": 8579110792,
+        "arrival_ns": 8579357459,
+        "deadline_ns": 8608000000,
+        "accepted": true
+      },
+      "536": {
+        "first_sample": 137216,
+        "send_ns": 8592420709,
+        "arrival_ns": 8592732667,
+        "deadline_ns": 8624000000,
+        "accepted": true
+      },
+      "537": {
+        "first_sample": 137472,
+        "send_ns": 8608848167,
+        "arrival_ns": 8609765709,
+        "deadline_ns": 8640000000,
+        "accepted": true
+      },
+      "538": {
+        "first_sample": 137728,
+        "send_ns": 8628032500,
+        "arrival_ns": 8628189084,
+        "deadline_ns": 8656000000,
+        "accepted": true
+      },
+      "539": {
+        "first_sample": 137984,
+        "send_ns": 8642433875,
+        "arrival_ns": 8642861917,
+        "deadline_ns": 8672000000,
+        "accepted": true
+      },
+      "540": {
+        "first_sample": 138240,
+        "send_ns": 8657890167,
+        "arrival_ns": 8658029042,
+        "deadline_ns": 8688000000,
+        "accepted": true
+      },
+      "541": {
+        "first_sample": 138496,
+        "send_ns": 8677230959,
+        "arrival_ns": 8677427250,
+        "deadline_ns": 8704000000,
+        "accepted": true
+      },
+      "542": {
+        "first_sample": 138752,
+        "send_ns": 8690066667,
+        "arrival_ns": 8690209584,
+        "deadline_ns": 8720000000,
+        "accepted": true
+      },
+      "543": {
+        "first_sample": 139008,
+        "send_ns": 8706036375,
+        "arrival_ns": 8706201959,
+        "deadline_ns": 8736000000,
+        "accepted": true
+      },
+      "544": {
+        "first_sample": 139264,
+        "send_ns": 8724964292,
+        "arrival_ns": 8725144459,
+        "deadline_ns": 8752000000,
+        "accepted": true
+      },
+      "545": {
+        "first_sample": 139520,
+        "send_ns": 8741541000,
+        "arrival_ns": 8741708834,
+        "deadline_ns": 8768000000,
+        "accepted": true
+      },
+      "546": {
+        "first_sample": 139776,
+        "send_ns": 8756731375,
+        "arrival_ns": 8756890625,
+        "deadline_ns": 8784000000,
+        "accepted": true
+      },
+      "547": {
+        "first_sample": 140032,
+        "send_ns": 8772414625,
+        "arrival_ns": 8772555542,
+        "deadline_ns": 8800000000,
+        "accepted": true
+      },
+      "548": {
+        "first_sample": 140288,
+        "send_ns": 8785611209,
+        "arrival_ns": 8785790500,
+        "deadline_ns": 8816000000,
+        "accepted": true
+      },
+      "549": {
+        "first_sample": 140544,
+        "send_ns": 8807235000,
+        "arrival_ns": 8807488542,
+        "deadline_ns": 8832000000,
+        "accepted": true
+      },
+      "550": {
+        "first_sample": 140800,
+        "send_ns": 8816645209,
+        "arrival_ns": 8816815417,
+        "deadline_ns": 8848000000,
+        "accepted": true
+      },
+      "551": {
+        "first_sample": 141056,
+        "send_ns": 8834674959,
+        "arrival_ns": 8834810417,
+        "deadline_ns": 8864000000,
+        "accepted": true
+      },
+      "552": {
+        "first_sample": 141312,
+        "send_ns": 8850183167,
+        "arrival_ns": 8850338000,
+        "deadline_ns": 8880000000,
+        "accepted": true
+      },
+      "553": {
+        "first_sample": 141568,
+        "send_ns": 8870934292,
+        "arrival_ns": 8871100334,
+        "deadline_ns": 8896000000,
+        "accepted": true
+      },
+      "554": {
+        "first_sample": 141824,
+        "send_ns": 8882702500,
+        "arrival_ns": 8882846209,
+        "deadline_ns": 8912000000,
+        "accepted": true
+      },
+      "555": {
+        "first_sample": 142080,
+        "send_ns": 8901161459,
+        "arrival_ns": 8901331667,
+        "deadline_ns": 8928000000,
+        "accepted": true
+      },
+      "556": {
+        "first_sample": 142336,
+        "send_ns": 8912426459,
+        "arrival_ns": 8912558792,
+        "deadline_ns": 8944000000,
+        "accepted": true
+      },
+      "557": {
+        "first_sample": 142592,
+        "send_ns": 8928452250,
+        "arrival_ns": 8928592667,
+        "deadline_ns": 8960000000,
+        "accepted": true
+      },
+      "558": {
+        "first_sample": 142848,
+        "send_ns": 8951815250,
+        "arrival_ns": 8952035625,
+        "deadline_ns": 8976000000,
+        "accepted": true
+      },
+      "559": {
+        "first_sample": 143104,
+        "send_ns": 8960090375,
+        "arrival_ns": 8960261542,
+        "deadline_ns": 8992000000,
+        "accepted": true
+      },
+      "560": {
+        "first_sample": 143360,
+        "send_ns": 8978736834,
+        "arrival_ns": 8978850584,
+        "deadline_ns": 9008000000,
+        "accepted": true
+      },
+      "561": {
+        "first_sample": 143616,
+        "send_ns": 8993758209,
+        "arrival_ns": 8993986709,
+        "deadline_ns": 9024000000,
+        "accepted": true
+      },
+      "562": {
+        "first_sample": 143872,
+        "send_ns": 9009648375,
+        "arrival_ns": 9009910084,
+        "deadline_ns": 9040000000,
+        "accepted": true
+      },
+      "563": {
+        "first_sample": 144128,
+        "send_ns": 9026754917,
+        "arrival_ns": 9026952125,
+        "deadline_ns": 9056000000,
+        "accepted": true
+      },
+      "564": {
+        "first_sample": 144384,
+        "send_ns": 9040834042,
+        "arrival_ns": 9041075917,
+        "deadline_ns": 9072000000,
+        "accepted": true
+      },
+      "565": {
+        "first_sample": 144640,
+        "send_ns": 9058066709,
+        "arrival_ns": 9058230959,
+        "deadline_ns": 9088000000,
+        "accepted": true
+      },
+      "566": {
+        "first_sample": 144896,
+        "send_ns": 9073715917,
+        "arrival_ns": 9073887834,
+        "deadline_ns": 9104000000,
+        "accepted": true
+      },
+      "567": {
+        "first_sample": 145152,
+        "send_ns": 9092153834,
+        "arrival_ns": 9092372750,
+        "deadline_ns": 9120000000,
+        "accepted": true
+      },
+      "568": {
+        "first_sample": 145408,
+        "send_ns": 9107846959,
+        "arrival_ns": 9107995834,
+        "deadline_ns": 9136000000,
+        "accepted": true
+      },
+      "569": {
+        "first_sample": 145664,
+        "send_ns": 9123687250,
+        "arrival_ns": 9123897709,
+        "deadline_ns": 9152000000,
+        "accepted": true
+      },
+      "570": {
+        "first_sample": 145920,
+        "send_ns": 9137244584,
+        "arrival_ns": 9137409667,
+        "deadline_ns": 9168000000,
+        "accepted": true
+      },
+      "571": {
+        "first_sample": 146176,
+        "send_ns": 9157713292,
+        "arrival_ns": 9157878125,
+        "deadline_ns": 9184000000,
+        "accepted": true
+      },
+      "572": {
+        "first_sample": 146432,
+        "send_ns": 9168628042,
+        "arrival_ns": 9168726167,
+        "deadline_ns": 9200000000,
+        "accepted": true
+      },
+      "573": {
+        "first_sample": 146688,
+        "send_ns": 9188759917,
+        "arrival_ns": 9189060125,
+        "deadline_ns": 9216000000,
+        "accepted": true
+      },
+      "574": {
+        "first_sample": 146944,
+        "send_ns": 9202239834,
+        "arrival_ns": 9202364209,
+        "deadline_ns": 9232000000,
+        "accepted": true
+      },
+      "575": {
+        "first_sample": 147200,
+        "send_ns": 9217877209,
+        "arrival_ns": 9218013209,
+        "deadline_ns": 9248000000,
+        "accepted": true
+      },
+      "576": {
+        "first_sample": 147456,
+        "send_ns": 9239067750,
+        "arrival_ns": 9239207459,
+        "deadline_ns": 9264000000,
+        "accepted": true
+      },
+      "577": {
+        "first_sample": 147712,
+        "send_ns": 9252488125,
+        "arrival_ns": 9252629500,
+        "deadline_ns": 9280000000,
+        "accepted": true
+      },
+      "578": {
+        "first_sample": 147968,
+        "send_ns": 9266959834,
+        "arrival_ns": 9267124875,
+        "deadline_ns": 9296000000,
+        "accepted": true
+      },
+      "579": {
+        "first_sample": 148224,
+        "send_ns": 9282881167,
+        "arrival_ns": 9283048750,
+        "deadline_ns": 9312000000,
+        "accepted": true
+      },
+      "580": {
+        "first_sample": 148480,
+        "send_ns": 9299543042,
+        "arrival_ns": 9299756125,
+        "deadline_ns": 9328000000,
+        "accepted": true
+      },
+      "581": {
+        "first_sample": 148736,
+        "send_ns": 9318254584,
+        "arrival_ns": 9318524792,
+        "deadline_ns": 9344000000,
+        "accepted": true
+      },
+      "582": {
+        "first_sample": 148992,
+        "send_ns": 9332848625,
+        "arrival_ns": 9333045875,
+        "deadline_ns": 9360000000,
+        "accepted": true
+      },
+      "583": {
+        "first_sample": 149248,
+        "send_ns": 9349514375,
+        "arrival_ns": 9349811125,
+        "deadline_ns": 9376000000,
+        "accepted": true
+      },
+      "584": {
+        "first_sample": 149504,
+        "send_ns": 9363130250,
+        "arrival_ns": 9363304209,
+        "deadline_ns": 9392000000,
+        "accepted": true
+      },
+      "585": {
+        "first_sample": 149760,
+        "send_ns": 9378481542,
+        "arrival_ns": 9378843709,
+        "deadline_ns": 9408000000,
+        "accepted": true
+      },
+      "586": {
+        "first_sample": 150016,
+        "send_ns": 9395808167,
+        "arrival_ns": 9396241042,
+        "deadline_ns": 9424000000,
+        "accepted": true
+      },
+      "587": {
+        "first_sample": 150272,
+        "send_ns": 9411720959,
+        "arrival_ns": 9412686042,
+        "deadline_ns": 9440000000,
+        "accepted": true
+      },
+      "588": {
+        "first_sample": 150528,
+        "send_ns": 9426142042,
+        "arrival_ns": 9426359750,
+        "deadline_ns": 9456000000,
+        "accepted": true
+      },
+      "589": {
+        "first_sample": 150784,
+        "send_ns": 9446966417,
+        "arrival_ns": 9447418667,
+        "deadline_ns": 9472000000,
+        "accepted": true
+      },
+      "590": {
+        "first_sample": 151040,
+        "send_ns": 9458788292,
+        "arrival_ns": 9458942750,
+        "deadline_ns": 9488000000,
+        "accepted": true
+      },
+      "591": {
+        "first_sample": 151296,
+        "send_ns": 9475669417,
+        "arrival_ns": 9476242375,
+        "deadline_ns": 9504000000,
+        "accepted": true
+      },
+      "592": {
+        "first_sample": 151552,
+        "send_ns": 9492169709,
+        "arrival_ns": 9492337792,
+        "deadline_ns": 9520000000,
+        "accepted": true
+      },
+      "593": {
+        "first_sample": 151808,
+        "send_ns": 9508775167,
+        "arrival_ns": 9509017500,
+        "deadline_ns": 9536000000,
+        "accepted": true
+      },
+      "594": {
+        "first_sample": 152064,
+        "send_ns": 9525446792,
+        "arrival_ns": 9525674542,
+        "deadline_ns": 9552000000,
+        "accepted": true
+      },
+      "595": {
+        "first_sample": 152320,
+        "send_ns": 9539084667,
+        "arrival_ns": 9539434167,
+        "deadline_ns": 9568000000,
+        "accepted": true
+      },
+      "596": {
+        "first_sample": 152576,
+        "send_ns": 9556806917,
+        "arrival_ns": 9557029667,
+        "deadline_ns": 9584000000,
+        "accepted": true
+      },
+      "597": {
+        "first_sample": 152832,
+        "send_ns": 9573600042,
+        "arrival_ns": 9573819667,
+        "deadline_ns": 9600000000,
+        "accepted": true
+      },
+      "598": {
+        "first_sample": 153088,
+        "send_ns": 9585120209,
+        "arrival_ns": 9585252917,
+        "deadline_ns": 9616000000,
+        "accepted": true
+      },
+      "599": {
+        "first_sample": 153344,
+        "send_ns": 9602681209,
+        "arrival_ns": 9602942875,
+        "deadline_ns": 9632000000,
+        "accepted": true
+      },
+      "600": {
+        "first_sample": 153600,
+        "send_ns": 9618085292,
+        "arrival_ns": 9618561125,
+        "deadline_ns": 9648000000,
+        "accepted": true
+      },
+      "601": {
+        "first_sample": 153856,
+        "send_ns": 9638439167,
+        "arrival_ns": 9638578500,
+        "deadline_ns": 9664000000,
+        "accepted": true
+      },
+      "602": {
+        "first_sample": 154112,
+        "send_ns": 9650552667,
+        "arrival_ns": 9650770167,
+        "deadline_ns": 9680000000,
+        "accepted": true
+      },
+      "603": {
+        "first_sample": 154368,
+        "send_ns": 9665432292,
+        "arrival_ns": 9665712959,
+        "deadline_ns": 9696000000,
+        "accepted": true
+      },
+      "604": {
+        "first_sample": 154624,
+        "send_ns": 9682968667,
+        "arrival_ns": 9683206459,
+        "deadline_ns": 9712000000,
+        "accepted": true
+      },
+      "605": {
+        "first_sample": 154880,
+        "send_ns": 9701285042,
+        "arrival_ns": 9701447792,
+        "deadline_ns": 9728000000,
+        "accepted": true
+      },
+      "606": {
+        "first_sample": 155136,
+        "send_ns": 9717368834,
+        "arrival_ns": 9717606459,
+        "deadline_ns": 9744000000,
+        "accepted": true
+      },
+      "607": {
+        "first_sample": 155392,
+        "send_ns": 9733306292,
+        "arrival_ns": 9733544667,
+        "deadline_ns": 9760000000,
+        "accepted": true
+      },
+      "608": {
+        "first_sample": 155648,
+        "send_ns": 9749376334,
+        "arrival_ns": 9749661667,
+        "deadline_ns": 9776000000,
+        "accepted": true
+      },
+      "609": {
+        "first_sample": 155904,
+        "send_ns": 9763113709,
+        "arrival_ns": 9763234417,
+        "deadline_ns": 9792000000,
+        "accepted": true
+      },
+      "610": {
+        "first_sample": 156160,
+        "send_ns": 9779549292,
+        "arrival_ns": 9779751750,
+        "deadline_ns": 9808000000,
+        "accepted": true
+      },
+      "611": {
+        "first_sample": 156416,
+        "send_ns": 9798236834,
+        "arrival_ns": 9798408959,
+        "deadline_ns": 9824000000,
+        "accepted": true
+      },
+      "612": {
+        "first_sample": 156672,
+        "send_ns": 9808802750,
+        "arrival_ns": 9809031667,
+        "deadline_ns": 9840000000,
+        "accepted": true
+      },
+      "613": {
+        "first_sample": 156928,
+        "send_ns": 9825460917,
+        "arrival_ns": 9825665292,
+        "deadline_ns": 9856000000,
+        "accepted": true
+      },
+      "614": {
+        "first_sample": 157184,
+        "send_ns": 9842153209,
+        "arrival_ns": 9842605167,
+        "deadline_ns": 9872000000,
+        "accepted": true
+      },
+      "615": {
+        "first_sample": 157440,
+        "send_ns": 9862782125,
+        "arrival_ns": 9862977959,
+        "deadline_ns": 9888000000,
+        "accepted": true
+      },
+      "616": {
+        "first_sample": 157696,
+        "send_ns": 9875451584,
+        "arrival_ns": 9875852500,
+        "deadline_ns": 9904000000,
+        "accepted": true
+      },
+      "617": {
+        "first_sample": 157952,
+        "send_ns": 9892509834,
+        "arrival_ns": 9892683625,
+        "deadline_ns": 9920000000,
+        "accepted": true
+      },
+      "618": {
+        "first_sample": 158208,
+        "send_ns": 9908827375,
+        "arrival_ns": 9910935209,
+        "deadline_ns": 9936000000,
+        "accepted": true
+      },
+      "619": {
+        "first_sample": 158464,
+        "send_ns": 9922655000,
+        "arrival_ns": 9923145625,
+        "deadline_ns": 9952000000,
+        "accepted": true
+      },
+      "620": {
+        "first_sample": 158720,
+        "send_ns": 9940093125,
+        "arrival_ns": 9940307917,
+        "deadline_ns": 9968000000,
+        "accepted": true
+      },
+      "621": {
+        "first_sample": 158976,
+        "send_ns": 9952142875,
+        "arrival_ns": 9952300042,
+        "deadline_ns": 9984000000,
+        "accepted": true
+      },
+      "622": {
+        "first_sample": 159232,
+        "send_ns": 9975443459,
+        "arrival_ns": 9975616084,
+        "deadline_ns": 10000000000,
+        "accepted": true
+      },
+      "623": {
+        "first_sample": 159488,
+        "send_ns": 9984623709,
+        "arrival_ns": 9984778250,
+        "deadline_ns": 10016000000,
+        "accepted": true
+      },
+      "624": {
+        "first_sample": 159744,
+        "send_ns": 10005112125,
+        "arrival_ns": 10005270500,
+        "deadline_ns": 10032000000,
+        "accepted": true
+      },
+      "625": {
+        "first_sample": 160000,
+        "send_ns": 10021543417,
+        "arrival_ns": 10021782375,
+        "deadline_ns": 10048000000,
+        "accepted": true
+      },
+      "626": {
+        "first_sample": 160256,
+        "send_ns": 10033829334,
+        "arrival_ns": 10034003417,
+        "deadline_ns": 10064000000,
+        "accepted": true
+      },
+      "627": {
+        "first_sample": 160512,
+        "send_ns": 10051239084,
+        "arrival_ns": 10051441625,
+        "deadline_ns": 10080000000,
+        "accepted": true
+      },
+      "628": {
+        "first_sample": 160768,
+        "send_ns": 10066066709,
+        "arrival_ns": 10066263542,
+        "deadline_ns": 10096000000,
+        "accepted": true
+      },
+      "629": {
+        "first_sample": 161024,
+        "send_ns": 10086977750,
+        "arrival_ns": 10087191042,
+        "deadline_ns": 10112000000,
+        "accepted": true
+      },
+      "630": {
+        "first_sample": 161280,
+        "send_ns": 10096417167,
+        "arrival_ns": 10096574542,
+        "deadline_ns": 10128000000,
+        "accepted": true
+      },
+      "631": {
+        "first_sample": 161536,
+        "send_ns": 10117886292,
+        "arrival_ns": 10118180375,
+        "deadline_ns": 10144000000,
+        "accepted": true
+      },
+      "632": {
+        "first_sample": 161792,
+        "send_ns": 10129944125,
+        "arrival_ns": 10130030459,
+        "deadline_ns": 10160000000,
+        "accepted": true
+      },
+      "633": {
+        "first_sample": 162048,
+        "send_ns": 10144736875,
+        "arrival_ns": 10144922334,
+        "deadline_ns": 10176000000,
+        "accepted": true
+      },
+      "634": {
+        "first_sample": 162304,
+        "send_ns": 10167643292,
+        "arrival_ns": 10167890459,
+        "deadline_ns": 10192000000,
+        "accepted": true
+      },
+      "635": {
+        "first_sample": 162560,
+        "send_ns": 10176581542,
+        "arrival_ns": 10176772917,
+        "deadline_ns": 10208000000,
+        "accepted": true
+      },
+      "636": {
+        "first_sample": 162816,
+        "send_ns": 10198026542,
+        "arrival_ns": 10198267417,
+        "deadline_ns": 10224000000,
+        "accepted": true
+      },
+      "637": {
+        "first_sample": 163072,
+        "send_ns": 10209218584,
+        "arrival_ns": 10209575167,
+        "deadline_ns": 10240000000,
+        "accepted": true
+      },
+      "638": {
+        "first_sample": 163328,
+        "send_ns": 10225608625,
+        "arrival_ns": 10225848375,
+        "deadline_ns": 10256000000,
+        "accepted": true
+      },
+      "639": {
+        "first_sample": 163584,
+        "send_ns": 10242234542,
+        "arrival_ns": 10242513625,
+        "deadline_ns": 10272000000,
+        "accepted": true
+      },
+      "640": {
+        "first_sample": 163840,
+        "send_ns": 10258885459,
+        "arrival_ns": 10259298084,
+        "deadline_ns": 10288000000,
+        "accepted": true
+      },
+      "641": {
+        "first_sample": 164096,
+        "send_ns": 10275460667,
+        "arrival_ns": 10275663542,
+        "deadline_ns": 10304000000,
+        "accepted": true
+      },
+      "642": {
+        "first_sample": 164352,
+        "send_ns": 10290601834,
+        "arrival_ns": 10290833709,
+        "deadline_ns": 10320000000,
+        "accepted": true
+      },
+      "643": {
+        "first_sample": 164608,
+        "send_ns": 10308754084,
+        "arrival_ns": 10308991417,
+        "deadline_ns": 10336000000,
+        "accepted": true
+      },
+      "644": {
+        "first_sample": 164864,
+        "send_ns": 10325526709,
+        "arrival_ns": 10325780250,
+        "deadline_ns": 10352000000,
+        "accepted": true
+      },
+      "645": {
+        "first_sample": 165120,
+        "send_ns": 10336580417,
+        "arrival_ns": 10336848292,
+        "deadline_ns": 10368000000,
+        "accepted": true
+      },
+      "646": {
+        "first_sample": 165376,
+        "send_ns": 10358548250,
+        "arrival_ns": 10358912334,
+        "deadline_ns": 10384000000,
+        "accepted": true
+      },
+      "647": {
+        "first_sample": 165632,
+        "send_ns": 10372621625,
+        "arrival_ns": 10372738042,
+        "deadline_ns": 10400000000,
+        "accepted": true
+      },
+      "648": {
+        "first_sample": 165888,
+        "send_ns": 10384829959,
+        "arrival_ns": 10385129209,
+        "deadline_ns": 10416000000,
+        "accepted": true
+      },
+      "649": {
+        "first_sample": 166144,
+        "send_ns": 10402391459,
+        "arrival_ns": 10402686459,
+        "deadline_ns": 10432000000,
+        "accepted": true
+      },
+      "650": {
+        "first_sample": 166400,
+        "send_ns": 10422761250,
+        "arrival_ns": 10423059459,
+        "deadline_ns": 10448000000,
+        "accepted": true
+      },
+      "651": {
+        "first_sample": 166656,
+        "send_ns": 10436645000,
+        "arrival_ns": 10436947792,
+        "deadline_ns": 10464000000,
+        "accepted": true
+      },
+      "652": {
+        "first_sample": 166912,
+        "send_ns": 10451487500,
+        "arrival_ns": 10451701792,
+        "deadline_ns": 10480000000,
+        "accepted": true
+      },
+      "653": {
+        "first_sample": 167168,
+        "send_ns": 10467501292,
+        "arrival_ns": 10467692584,
+        "deadline_ns": 10496000000,
+        "accepted": true
+      },
+      "654": {
+        "first_sample": 167424,
+        "send_ns": 10486278042,
+        "arrival_ns": 10486556000,
+        "deadline_ns": 10512000000,
+        "accepted": true
+      },
+      "655": {
+        "first_sample": 167680,
+        "send_ns": 10496661042,
+        "arrival_ns": 10496795917,
+        "deadline_ns": 10528000000,
+        "accepted": true
+      },
+      "656": {
+        "first_sample": 167936,
+        "send_ns": 10517623542,
+        "arrival_ns": 10517859750,
+        "deadline_ns": 10544000000,
+        "accepted": true
+      },
+      "657": {
+        "first_sample": 168192,
+        "send_ns": 10533192084,
+        "arrival_ns": 10533465209,
+        "deadline_ns": 10560000000,
+        "accepted": true
+      },
+      "658": {
+        "first_sample": 168448,
+        "send_ns": 10546068209,
+        "arrival_ns": 10546190584,
+        "deadline_ns": 10576000000,
+        "accepted": true
+      },
+      "659": {
+        "first_sample": 168704,
+        "send_ns": 10563665917,
+        "arrival_ns": 10563931084,
+        "deadline_ns": 10592000000,
+        "accepted": true
+      },
+      "660": {
+        "first_sample": 168960,
+        "send_ns": 10582105625,
+        "arrival_ns": 10582255209,
+        "deadline_ns": 10608000000,
+        "accepted": true
+      },
+      "661": {
+        "first_sample": 169216,
+        "send_ns": 10596953959,
+        "arrival_ns": 10597337375,
+        "deadline_ns": 10624000000,
+        "accepted": true
+      },
+      "662": {
+        "first_sample": 169472,
+        "send_ns": 10613456084,
+        "arrival_ns": 10613605250,
+        "deadline_ns": 10640000000,
+        "accepted": true
+      },
+      "663": {
+        "first_sample": 169728,
+        "send_ns": 10629292709,
+        "arrival_ns": 10629535792,
+        "deadline_ns": 10656000000,
+        "accepted": true
+      },
+      "664": {
+        "first_sample": 169984,
+        "send_ns": 10640293417,
+        "arrival_ns": 10640503709,
+        "deadline_ns": 10672000000,
+        "accepted": true
+      },
+      "665": {
+        "first_sample": 170240,
+        "send_ns": 10658599459,
+        "arrival_ns": 10659084000,
+        "deadline_ns": 10688000000,
+        "accepted": true
+      },
+      "666": {
+        "first_sample": 170496,
+        "send_ns": 10675568167,
+        "arrival_ns": 10675813542,
+        "deadline_ns": 10704000000,
+        "accepted": true
+      },
+      "667": {
+        "first_sample": 170752,
+        "send_ns": 10692175750,
+        "arrival_ns": 10692420292,
+        "deadline_ns": 10720000000,
+        "accepted": true
+      },
+      "668": {
+        "first_sample": 171008,
+        "send_ns": 10709204875,
+        "arrival_ns": 10709462500,
+        "deadline_ns": 10736000000,
+        "accepted": true
+      },
+      "669": {
+        "first_sample": 171264,
+        "send_ns": 10725372917,
+        "arrival_ns": 10725602709,
+        "deadline_ns": 10752000000,
+        "accepted": true
+      },
+      "670": {
+        "first_sample": 171520,
+        "send_ns": 10741271084,
+        "arrival_ns": 10741454334,
+        "deadline_ns": 10768000000,
+        "accepted": true
+      },
+      "671": {
+        "first_sample": 171776,
+        "send_ns": 10756704084,
+        "arrival_ns": 10756832875,
+        "deadline_ns": 10784000000,
+        "accepted": true
+      },
+      "672": {
+        "first_sample": 172032,
+        "send_ns": 10770603459,
+        "arrival_ns": 10770771084,
+        "deadline_ns": 10800000000,
+        "accepted": true
+      },
+      "673": {
+        "first_sample": 172288,
+        "send_ns": 10790692042,
+        "arrival_ns": 10790842625,
+        "deadline_ns": 10816000000,
+        "accepted": true
+      },
+      "674": {
+        "first_sample": 172544,
+        "send_ns": 10804652625,
+        "arrival_ns": 10804742500,
+        "deadline_ns": 10832000000,
+        "accepted": true
+      },
+      "675": {
+        "first_sample": 172800,
+        "send_ns": 10816567125,
+        "arrival_ns": 10816725042,
+        "deadline_ns": 10848000000,
+        "accepted": true
+      },
+      "676": {
+        "first_sample": 173056,
+        "send_ns": 10832196459,
+        "arrival_ns": 10832337500,
+        "deadline_ns": 10864000000,
+        "accepted": true
+      },
+      "677": {
+        "first_sample": 173312,
+        "send_ns": 10850321500,
+        "arrival_ns": 10850453792,
+        "deadline_ns": 10880000000,
+        "accepted": true
+      },
+      "678": {
+        "first_sample": 173568,
+        "send_ns": 10867203167,
+        "arrival_ns": 10867382875,
+        "deadline_ns": 10896000000,
+        "accepted": true
+      },
+      "679": {
+        "first_sample": 173824,
+        "send_ns": 10884579584,
+        "arrival_ns": 10884712750,
+        "deadline_ns": 10912000000,
+        "accepted": true
+      },
+      "680": {
+        "first_sample": 174080,
+        "send_ns": 10898867875,
+        "arrival_ns": 10899060417,
+        "deadline_ns": 10928000000,
+        "accepted": true
+      },
+      "681": {
+        "first_sample": 174336,
+        "send_ns": 10915509875,
+        "arrival_ns": 10915623125,
+        "deadline_ns": 10944000000,
+        "accepted": true
+      },
+      "682": {
+        "first_sample": 174592,
+        "send_ns": 10934292750,
+        "arrival_ns": 10934535750,
+        "deadline_ns": 10960000000,
+        "accepted": true
+      },
+      "683": {
+        "first_sample": 174848,
+        "send_ns": 10948106459,
+        "arrival_ns": 10948265542,
+        "deadline_ns": 10976000000,
+        "accepted": true
+      },
+      "684": {
+        "first_sample": 175104,
+        "send_ns": 10961244459,
+        "arrival_ns": 10961678584,
+        "deadline_ns": 10992000000,
+        "accepted": true
+      },
+      "685": {
+        "first_sample": 175360,
+        "send_ns": 10977217375,
+        "arrival_ns": 10977498750,
+        "deadline_ns": 11008000000,
+        "accepted": true
+      },
+      "686": {
+        "first_sample": 175616,
+        "send_ns": 10999374084,
+        "arrival_ns": 10999557042,
+        "deadline_ns": 11024000000,
+        "accepted": true
+      },
+      "687": {
+        "first_sample": 175872,
+        "send_ns": 11008803542,
+        "arrival_ns": 11009177834,
+        "deadline_ns": 11040000000,
+        "accepted": true
+      },
+      "688": {
+        "first_sample": 176128,
+        "send_ns": 11031540750,
+        "arrival_ns": 11031843959,
+        "deadline_ns": 11056000000,
+        "accepted": true
+      },
+      "689": {
+        "first_sample": 176384,
+        "send_ns": 11043758250,
+        "arrival_ns": 11044318667,
+        "deadline_ns": 11072000000,
+        "accepted": true
+      },
+      "690": {
+        "first_sample": 176640,
+        "send_ns": 11058690750,
+        "arrival_ns": 11058871167,
+        "deadline_ns": 11088000000,
+        "accepted": true
+      },
+      "691": {
+        "first_sample": 176896,
+        "send_ns": 11075429834,
+        "arrival_ns": 11075647167,
+        "deadline_ns": 11104000000,
+        "accepted": true
+      },
+      "692": {
+        "first_sample": 177152,
+        "send_ns": 11091745250,
+        "arrival_ns": 11092403542,
+        "deadline_ns": 11120000000,
+        "accepted": true
+      },
+      "693": {
+        "first_sample": 177408,
+        "send_ns": 11110671292,
+        "arrival_ns": 11111517125,
+        "deadline_ns": 11136000000,
+        "accepted": true
+      },
+      "694": {
+        "first_sample": 177664,
+        "send_ns": 11124490875,
+        "arrival_ns": 11124692125,
+        "deadline_ns": 11152000000,
+        "accepted": true
+      },
+      "695": {
+        "first_sample": 177920,
+        "send_ns": 11137664875,
+        "arrival_ns": 11137858584,
+        "deadline_ns": 11168000000,
+        "accepted": true
+      },
+      "696": {
+        "first_sample": 178176,
+        "send_ns": 11157293167,
+        "arrival_ns": 11157469875,
+        "deadline_ns": 11184000000,
+        "accepted": true
+      },
+      "697": {
+        "first_sample": 178432,
+        "send_ns": 11170314625,
+        "arrival_ns": 11170686584,
+        "deadline_ns": 11200000000,
+        "accepted": true
+      },
+      "698": {
+        "first_sample": 178688,
+        "send_ns": 11190780375,
+        "arrival_ns": 11190999917,
+        "deadline_ns": 11216000000,
+        "accepted": true
+      },
+      "699": {
+        "first_sample": 178944,
+        "send_ns": 11200833834,
+        "arrival_ns": 11201075250,
+        "deadline_ns": 11232000000,
+        "accepted": true
+      },
+      "700": {
+        "first_sample": 179200,
+        "send_ns": 11221055792,
+        "arrival_ns": 11221232167,
+        "deadline_ns": 11248000000,
+        "accepted": true
+      },
+      "701": {
+        "first_sample": 179456,
+        "send_ns": 11235920875,
+        "arrival_ns": 11236180292,
+        "deadline_ns": 11264000000,
+        "accepted": true
+      },
+      "702": {
+        "first_sample": 179712,
+        "send_ns": 11251073292,
+        "arrival_ns": 11251314292,
+        "deadline_ns": 11280000000,
+        "accepted": true
+      },
+      "703": {
+        "first_sample": 179968,
+        "send_ns": 11265926209,
+        "arrival_ns": 11266176042,
+        "deadline_ns": 11296000000,
+        "accepted": true
+      },
+      "704": {
+        "first_sample": 180224,
+        "send_ns": 11281212750,
+        "arrival_ns": 11281349792,
+        "deadline_ns": 11312000000,
+        "accepted": true
+      },
+      "705": {
+        "first_sample": 180480,
+        "send_ns": 11299285334,
+        "arrival_ns": 11299505417,
+        "deadline_ns": 11328000000,
+        "accepted": true
+      },
+      "706": {
+        "first_sample": 180736,
+        "send_ns": 11316661417,
+        "arrival_ns": 11316810959,
+        "deadline_ns": 11344000000,
+        "accepted": true
+      },
+      "707": {
+        "first_sample": 180992,
+        "send_ns": 11332989917,
+        "arrival_ns": 11333116125,
+        "deadline_ns": 11360000000,
+        "accepted": true
+      },
+      "708": {
+        "first_sample": 181248,
+        "send_ns": 11345114209,
+        "arrival_ns": 11345348459,
+        "deadline_ns": 11376000000,
+        "accepted": true
+      },
+      "709": {
+        "first_sample": 181504,
+        "send_ns": 11365490709,
+        "arrival_ns": 11365645042,
+        "deadline_ns": 11392000000,
+        "accepted": true
+      },
+      "710": {
+        "first_sample": 181760,
+        "send_ns": 11378842834,
+        "arrival_ns": 11379146792,
+        "deadline_ns": 11408000000,
+        "accepted": true
+      },
+      "711": {
+        "first_sample": 182016,
+        "send_ns": 11397663209,
+        "arrival_ns": 11398110000,
+        "deadline_ns": 11424000000,
+        "accepted": true
+      },
+      "712": {
+        "first_sample": 182272,
+        "send_ns": 11408398042,
+        "arrival_ns": 11408575625,
+        "deadline_ns": 11440000000,
+        "accepted": true
+      },
+      "713": {
+        "first_sample": 182528,
+        "send_ns": 11431087959,
+        "arrival_ns": 11431235084,
+        "deadline_ns": 11456000000,
+        "accepted": true
+      },
+      "714": {
+        "first_sample": 182784,
+        "send_ns": 11443261750,
+        "arrival_ns": 11443875917,
+        "deadline_ns": 11472000000,
+        "accepted": true
+      },
+      "715": {
+        "first_sample": 183040,
+        "send_ns": 11458723167,
+        "arrival_ns": 11458922209,
+        "deadline_ns": 11488000000,
+        "accepted": true
+      },
+      "716": {
+        "first_sample": 183296,
+        "send_ns": 11475631250,
+        "arrival_ns": 11475749875,
+        "deadline_ns": 11504000000,
+        "accepted": true
+      },
+      "717": {
+        "first_sample": 183552,
+        "send_ns": 11491215750,
+        "arrival_ns": 11491694792,
+        "deadline_ns": 11520000000,
+        "accepted": true
+      },
+      "718": {
+        "first_sample": 183808,
+        "send_ns": 11508908334,
+        "arrival_ns": 11510023334,
+        "deadline_ns": 11536000000,
+        "accepted": true
+      },
+      "719": {
+        "first_sample": 184064,
+        "send_ns": 11523718084,
+        "arrival_ns": 11523885209,
+        "deadline_ns": 11552000000,
+        "accepted": true
+      },
+      "720": {
+        "first_sample": 184320,
+        "send_ns": 11540436334,
+        "arrival_ns": 11540569000,
+        "deadline_ns": 11568000000,
+        "accepted": true
+      },
+      "721": {
+        "first_sample": 184576,
+        "send_ns": 11555292042,
+        "arrival_ns": 11555577875,
+        "deadline_ns": 11584000000,
+        "accepted": true
+      },
+      "722": {
+        "first_sample": 184832,
+        "send_ns": 11569062917,
+        "arrival_ns": 11569273542,
+        "deadline_ns": 11600000000,
+        "accepted": true
+      },
+      "723": {
+        "first_sample": 185088,
+        "send_ns": 11584169209,
+        "arrival_ns": 11584401250,
+        "deadline_ns": 11616000000,
+        "accepted": true
+      },
+      "724": {
+        "first_sample": 185344,
+        "send_ns": 11608021792,
+        "arrival_ns": 11608290709,
+        "deadline_ns": 11632000000,
+        "accepted": true
+      },
+      "725": {
+        "first_sample": 185600,
+        "send_ns": 11618757667,
+        "arrival_ns": 11618936250,
+        "deadline_ns": 11648000000,
+        "accepted": true
+      },
+      "726": {
+        "first_sample": 185856,
+        "send_ns": 11638614834,
+        "arrival_ns": 11638799750,
+        "deadline_ns": 11664000000,
+        "accepted": true
+      },
+      "727": {
+        "first_sample": 186112,
+        "send_ns": 11649309667,
+        "arrival_ns": 11649536334,
+        "deadline_ns": 11680000000,
+        "accepted": true
+      },
+      "728": {
+        "first_sample": 186368,
+        "send_ns": 11671323417,
+        "arrival_ns": 11671474542,
+        "deadline_ns": 11696000000,
+        "accepted": true
+      },
+      "729": {
+        "first_sample": 186624,
+        "send_ns": 11684159792,
+        "arrival_ns": 11684384417,
+        "deadline_ns": 11712000000,
+        "accepted": true
+      },
+      "730": {
+        "first_sample": 186880,
+        "send_ns": 11699388625,
+        "arrival_ns": 11699625167,
+        "deadline_ns": 11728000000,
+        "accepted": true
+      },
+      "731": {
+        "first_sample": 187136,
+        "send_ns": 11712405834,
+        "arrival_ns": 11712514084,
+        "deadline_ns": 11744000000,
+        "accepted": true
+      },
+      "732": {
+        "first_sample": 187392,
+        "send_ns": 11733272875,
+        "arrival_ns": 11733417125,
+        "deadline_ns": 11760000000,
+        "accepted": true
+      },
+      "733": {
+        "first_sample": 187648,
+        "send_ns": 11749363125,
+        "arrival_ns": 11749462167,
+        "deadline_ns": 11776000000,
+        "accepted": true
+      },
+      "734": {
+        "first_sample": 187904,
+        "send_ns": 11762983709,
+        "arrival_ns": 11763065625,
+        "deadline_ns": 11792000000,
+        "accepted": true
+      },
+      "735": {
+        "first_sample": 188160,
+        "send_ns": 11782196750,
+        "arrival_ns": 11782313125,
+        "deadline_ns": 11808000000,
+        "accepted": true
+      },
+      "736": {
+        "first_sample": 188416,
+        "send_ns": 11796891375,
+        "arrival_ns": 11796993375,
+        "deadline_ns": 11824000000,
+        "accepted": true
+      },
+      "737": {
+        "first_sample": 188672,
+        "send_ns": 11808879750,
+        "arrival_ns": 11809027917,
+        "deadline_ns": 11840000000,
+        "accepted": true
+      },
+      "738": {
+        "first_sample": 188928,
+        "send_ns": 11829746334,
+        "arrival_ns": 11832198417,
+        "deadline_ns": 11856000000,
+        "accepted": true
+      },
+      "739": {
+        "first_sample": 189184,
+        "send_ns": 11842274625,
+        "arrival_ns": 11843920917,
+        "deadline_ns": 11872000000,
+        "accepted": true
+      },
+      "740": {
+        "first_sample": 189440,
+        "send_ns": 11863942417,
+        "arrival_ns": 11865379792,
+        "deadline_ns": 11888000000,
+        "accepted": true
+      },
+      "741": {
+        "first_sample": 189696,
+        "send_ns": 11876222417,
+        "arrival_ns": 11878112875,
+        "deadline_ns": 11904000000,
+        "accepted": true
+      },
+      "742": {
+        "first_sample": 189952,
+        "send_ns": 11892313667,
+        "arrival_ns": 11893105542,
+        "deadline_ns": 11920000000,
+        "accepted": true
+      },
+      "743": {
+        "first_sample": 190208,
+        "send_ns": 11908665334,
+        "arrival_ns": 11908755084,
+        "deadline_ns": 11936000000,
+        "accepted": true
+      },
+      "744": {
+        "first_sample": 190464,
+        "send_ns": 11925990209,
+        "arrival_ns": 11926421959,
+        "deadline_ns": 11952000000,
+        "accepted": true
+      },
+      "745": {
+        "first_sample": 190720,
+        "send_ns": 11936522917,
+        "arrival_ns": 11936606292,
+        "deadline_ns": 11968000000,
+        "accepted": true
+      },
+      "746": {
+        "first_sample": 190976,
+        "send_ns": 11958710584,
+        "arrival_ns": 11958871417,
+        "deadline_ns": 11984000000,
+        "accepted": true
+      },
+      "747": {
+        "first_sample": 191232,
+        "send_ns": 11972659167,
+        "arrival_ns": 11972746834,
+        "deadline_ns": 12000000000,
+        "accepted": true
+      },
+      "748": {
+        "first_sample": 191488,
+        "send_ns": 11989690500,
+        "arrival_ns": 11989815709,
+        "deadline_ns": 12016000000,
+        "accepted": true
+      },
+      "749": {
+        "first_sample": 191744,
+        "send_ns": 12005158875,
+        "arrival_ns": 12005272625,
+        "deadline_ns": 12032000000,
+        "accepted": true
+      },
+      "750": {
+        "first_sample": 192000,
+        "send_ns": 12020211042,
+        "arrival_ns": 12020360584,
+        "deadline_ns": 12048000000,
+        "accepted": true
+      },
+      "751": {
+        "first_sample": 192256,
+        "send_ns": 12032139709,
+        "arrival_ns": 12032214750,
+        "deadline_ns": 12064000000,
+        "accepted": true
+      },
+      "752": {
+        "first_sample": 192512,
+        "send_ns": 12052372959,
+        "arrival_ns": 12052487542,
+        "deadline_ns": 12080000000,
+        "accepted": true
+      },
+      "753": {
+        "first_sample": 192768,
+        "send_ns": 12065477542,
+        "arrival_ns": 12065562084,
+        "deadline_ns": 12096000000,
+        "accepted": true
+      },
+      "754": {
+        "first_sample": 193024,
+        "send_ns": 12087277584,
+        "arrival_ns": 12087376084,
+        "deadline_ns": 12112000000,
+        "accepted": true
+      },
+      "755": {
+        "first_sample": 193280,
+        "send_ns": 12100344917,
+        "arrival_ns": 12100419750,
+        "deadline_ns": 12128000000,
+        "accepted": true
+      },
+      "756": {
+        "first_sample": 193536,
+        "send_ns": 12112849959,
+        "arrival_ns": 12112969167,
+        "deadline_ns": 12144000000,
+        "accepted": true
+      },
+      "757": {
+        "first_sample": 193792,
+        "send_ns": 12132250167,
+        "arrival_ns": 12132744750,
+        "deadline_ns": 12160000000,
+        "accepted": true
+      },
+      "758": {
+        "first_sample": 194048,
+        "send_ns": 12148471292,
+        "arrival_ns": 12148633709,
+        "deadline_ns": 12176000000,
+        "accepted": true
+      },
+      "759": {
+        "first_sample": 194304,
+        "send_ns": 12165837292,
+        "arrival_ns": 12166125500,
+        "deadline_ns": 12192000000,
+        "accepted": true
+      },
+      "760": {
+        "first_sample": 194560,
+        "send_ns": 12180603625,
+        "arrival_ns": 12180846417,
+        "deadline_ns": 12208000000,
+        "accepted": true
+      },
+      "761": {
+        "first_sample": 194816,
+        "send_ns": 12193272709,
+        "arrival_ns": 12193427125,
+        "deadline_ns": 12224000000,
+        "accepted": true
+      },
+      "762": {
+        "first_sample": 195072,
+        "send_ns": 12215354084,
+        "arrival_ns": 12215531584,
+        "deadline_ns": 12240000000,
+        "accepted": true
+      },
+      "763": {
+        "first_sample": 195328,
+        "send_ns": 12227702834,
+        "arrival_ns": 12227863167,
+        "deadline_ns": 12256000000,
+        "accepted": true
+      },
+      "764": {
+        "first_sample": 195584,
+        "send_ns": 12246059459,
+        "arrival_ns": 12246292709,
+        "deadline_ns": 12272000000,
+        "accepted": true
+      },
+      "765": {
+        "first_sample": 195840,
+        "send_ns": 12258842667,
+        "arrival_ns": 12259163042,
+        "deadline_ns": 12288000000,
+        "accepted": true
+      },
+      "766": {
+        "first_sample": 196096,
+        "send_ns": 12272080709,
+        "arrival_ns": 12272210084,
+        "deadline_ns": 12304000000,
+        "accepted": true
+      },
+      "767": {
+        "first_sample": 196352,
+        "send_ns": 12291067792,
+        "arrival_ns": 12291238042,
+        "deadline_ns": 12320000000,
+        "accepted": true
+      },
+      "768": {
+        "first_sample": 196608,
+        "send_ns": 12308601375,
+        "arrival_ns": 12309119542,
+        "deadline_ns": 12336000000,
+        "accepted": true
+      },
+      "769": {
+        "first_sample": 196864,
+        "send_ns": 12324625542,
+        "arrival_ns": 12324924459,
+        "deadline_ns": 12352000000,
+        "accepted": true
+      },
+      "770": {
+        "first_sample": 197120,
+        "send_ns": 12341661292,
+        "arrival_ns": 12341873334,
+        "deadline_ns": 12368000000,
+        "accepted": true
+      },
+      "771": {
+        "first_sample": 197376,
+        "send_ns": 12357170125,
+        "arrival_ns": 12357388125,
+        "deadline_ns": 12384000000,
+        "accepted": true
+      },
+      "772": {
+        "first_sample": 197632,
+        "send_ns": 12373058625,
+        "arrival_ns": 12373257542,
+        "deadline_ns": 12400000000,
+        "accepted": true
+      },
+      "773": {
+        "first_sample": 197888,
+        "send_ns": 12384577875,
+        "arrival_ns": 12384762667,
+        "deadline_ns": 12416000000,
+        "accepted": true
+      },
+      "774": {
+        "first_sample": 198144,
+        "send_ns": 12406598709,
+        "arrival_ns": 12406703625,
+        "deadline_ns": 12432000000,
+        "accepted": true
+      },
+      "775": {
+        "first_sample": 198400,
+        "send_ns": 12420784042,
+        "arrival_ns": 12421138292,
+        "deadline_ns": 12448000000,
+        "accepted": true
+      },
+      "776": {
+        "first_sample": 198656,
+        "send_ns": 12437529500,
+        "arrival_ns": 12437711334,
+        "deadline_ns": 12464000000,
+        "accepted": true
+      },
+      "777": {
+        "first_sample": 198912,
+        "send_ns": 12451732084,
+        "arrival_ns": 12451927084,
+        "deadline_ns": 12480000000,
+        "accepted": true
+      },
+      "778": {
+        "first_sample": 199168,
+        "send_ns": 12466699417,
+        "arrival_ns": 12466909000,
+        "deadline_ns": 12496000000,
+        "accepted": true
+      },
+      "779": {
+        "first_sample": 199424,
+        "send_ns": 12486662834,
+        "arrival_ns": 12486883459,
+        "deadline_ns": 12512000000,
+        "accepted": true
+      },
+      "780": {
+        "first_sample": 199680,
+        "send_ns": 12500494792,
+        "arrival_ns": 12500764875,
+        "deadline_ns": 12528000000,
+        "accepted": true
+      },
+      "781": {
+        "first_sample": 199936,
+        "send_ns": 12516153042,
+        "arrival_ns": 12516472167,
+        "deadline_ns": 12544000000,
+        "accepted": true
+      },
+      "782": {
+        "first_sample": 200192,
+        "send_ns": 12533861750,
+        "arrival_ns": 12534029959,
+        "deadline_ns": 12560000000,
+        "accepted": true
+      },
+      "783": {
+        "first_sample": 200448,
+        "send_ns": 12546199334,
+        "arrival_ns": 12546368167,
+        "deadline_ns": 12576000000,
+        "accepted": true
+      },
+      "784": {
+        "first_sample": 200704,
+        "send_ns": 12563072542,
+        "arrival_ns": 12563271250,
+        "deadline_ns": 12592000000,
+        "accepted": true
+      },
+      "785": {
+        "first_sample": 200960,
+        "send_ns": 12580392000,
+        "arrival_ns": 12580581084,
+        "deadline_ns": 12608000000,
+        "accepted": true
+      },
+      "786": {
+        "first_sample": 201216,
+        "send_ns": 12596621667,
+        "arrival_ns": 12596810750,
+        "deadline_ns": 12624000000,
+        "accepted": true
+      },
+      "787": {
+        "first_sample": 201472,
+        "send_ns": 12609890042,
+        "arrival_ns": 12610080792,
+        "deadline_ns": 12640000000,
+        "accepted": true
+      },
+      "788": {
+        "first_sample": 201728,
+        "send_ns": 12625417750,
+        "arrival_ns": 12625643917,
+        "deadline_ns": 12656000000,
+        "accepted": true
+      },
+      "789": {
+        "first_sample": 201984,
+        "send_ns": 12642903792,
+        "arrival_ns": 12643082417,
+        "deadline_ns": 12672000000,
+        "accepted": true
+      },
+      "790": {
+        "first_sample": 202240,
+        "send_ns": 12658820417,
+        "arrival_ns": 12659034834,
+        "deadline_ns": 12688000000,
+        "accepted": true
+      },
+      "791": {
+        "first_sample": 202496,
+        "send_ns": 12675630459,
+        "arrival_ns": 12675961750,
+        "deadline_ns": 12704000000,
+        "accepted": true
+      },
+      "792": {
+        "first_sample": 202752,
+        "send_ns": 12692103250,
+        "arrival_ns": 12692480084,
+        "deadline_ns": 12720000000,
+        "accepted": true
+      },
+      "793": {
+        "first_sample": 203008,
+        "send_ns": 12708760709,
+        "arrival_ns": 12708959459,
+        "deadline_ns": 12736000000,
+        "accepted": true
+      },
+      "794": {
+        "first_sample": 203264,
+        "send_ns": 12725333792,
+        "arrival_ns": 12725458459,
+        "deadline_ns": 12752000000,
+        "accepted": true
+      },
+      "795": {
+        "first_sample": 203520,
+        "send_ns": 12738456500,
+        "arrival_ns": 12738590500,
+        "deadline_ns": 12768000000,
+        "accepted": true
+      },
+      "796": {
+        "first_sample": 203776,
+        "send_ns": 12758742042,
+        "arrival_ns": 12758891834,
+        "deadline_ns": 12784000000,
+        "accepted": true
+      },
+      "797": {
+        "first_sample": 204032,
+        "send_ns": 12768963042,
+        "arrival_ns": 12769242709,
+        "deadline_ns": 12800000000,
+        "accepted": true
+      },
+      "798": {
+        "first_sample": 204288,
+        "send_ns": 12785966834,
+        "arrival_ns": 12786143667,
+        "deadline_ns": 12816000000,
+        "accepted": true
+      },
+      "799": {
+        "first_sample": 204544,
+        "send_ns": 12807052417,
+        "arrival_ns": 12807716250,
+        "deadline_ns": 12832000000,
+        "accepted": true
+      }
+    },
+    "alignment_replay": {
+      "fixed_lag_samples": -3.8926433697949743,
+      "aligned_blocks": 14,
+      "median_used_ppm": 2.761679083564525,
+      "first_aligned_block_after_gap": 19,
+      "after_gap_first_aligned_output_s": 2.568125,
+      "tracked_center_residual_rms_samples": 0.024858947934418937,
+      "fixed_center_residual_rms_samples": 0.32481566990687666,
+      "score": {
+        "samples": 114688,
+        "tracked_correlation": 0.5526346517551465,
+        "fixed_correlation": 0.542581444842499
+      },
+      "blocks": [
+        {
+          "block": 0,
+          "start_sample": 0,
+          "available_sample": 8322,
+          "observed_lag_samples": -3.943299916354451,
+          "status": "acquiring"
+        },
+        {
+          "block": 1,
+          "start_sample": 8192,
+          "available_sample": 16514,
+          "observed_lag_samples": -3.8636526806061107,
+          "status": "acquiring"
+        },
+        {
+          "block": 2,
+          "start_sample": 16384,
+          "available_sample": 24706,
+          "observed_lag_samples": -3.9190836152125823,
+          "status": "acquiring"
+        },
+        {
+          "block": 3,
+          "start_sample": 24576,
+          "available_sample": 32898,
+          "observed_lag_samples": -3.8878660048460834,
+          "status": "acquiring",
+          "next_ppm": 1.8668286788161403
+        },
+        {
+          "block": 4,
+          "start_sample": 32768,
+          "available_sample": 41090,
+          "observed_lag_samples": -3.830398168146816,
+          "status": "aligned",
+          "used_ppm": 1.8668286788161403,
+          "predicted_lag_samples": -3.8773503092581123,
+          "aligned_samples": 8192,
+          "common_score_samples": 8192,
+          "next_ppm": 2.850549777508421
+        },
+        {
+          "block": 5,
+          "start_sample": 40960,
+          "available_sample": 49282,
+          "observed_lag_samples": -3.8438514513490283,
+          "status": "aligned",
+          "used_ppm": 2.850549777508421,
+          "predicted_lag_samples": -3.8265413974677065,
+          "aligned_samples": 8192,
+          "common_score_samples": 8192,
+          "next_ppm": 2.4279410401714556
+        },
+        {
+          "block": 6,
+          "start_sample": 49152,
+          "available_sample": 57474,
+          "observed_lag_samples": -3.825441953995301,
+          "status": "aligned",
+          "used_ppm": 2.4279410401714556,
+          "predicted_lag_samples": -3.8239617583479433,
+          "aligned_samples": 8192,
+          "common_score_samples": 8192,
+          "next_ppm": 2.397826382632447
+        },
+        {
+          "block": 7,
+          "start_sample": 57344,
+          "available_sample": 65666,
+          "observed_lag_samples": -3.7677418488306693,
+          "status": "aligned",
+          "used_ppm": 2.397826382632447,
+          "predicted_lag_samples": -3.8057989602687763,
+          "aligned_samples": 8192,
+          "common_score_samples": 8192,
+          "next_ppm": 2.5447666456487874
+        },
+        {
+          "block": 8,
+          "start_sample": 65536,
+          "available_sample": 73858,
+          "observed_lag_samples": -3.7855855478064595,
+          "status": "aligned",
+          "used_ppm": 2.5447666456487874,
+          "predicted_lag_samples": -3.778918677865388,
+          "aligned_samples": 8192,
+          "common_score_samples": 8192,
+          "next_ppm": 2.430291509735434
+        },
+        {
+          "block": 9,
+          "start_sample": 73728,
+          "available_sample": 82050,
+          "observed_lag_samples": -3.7486768405447375,
+          "status": "aligned",
+          "used_ppm": 2.430291509735434,
+          "predicted_lag_samples": -3.7642156591580176,
+          "aligned_samples": 8192,
+          "common_score_samples": 8192,
+          "next_ppm": 2.4970814706939417
+        },
+        {
+          "block": 10,
+          "start_sample": 81920,
+          "available_sample": 90242,
+          "observed_lag_samples": -3.699024290180183,
+          "status": "aligned",
+          "used_ppm": 2.4970814706939417,
+          "predicted_lag_samples": -3.740154998292304,
+          "aligned_samples": 8192,
+          "common_score_samples": 8192,
+          "next_ppm": 2.6728083896206285
+        },
+        {
+          "block": 11,
+          "start_sample": 90112,
+          "available_sample": 98434,
+          "observed_lag_samples": -3.7265173484179446,
+          "status": "aligned",
+          "used_ppm": 2.6728083896206285,
+          "predicted_lag_samples": -3.704885547889193,
+          "aligned_samples": 8192,
+          "common_score_samples": 8192,
+          "next_ppm": 2.4795332923243483
+        },
+        {
+          "block": 12,
+          "start_sample": 98304,
+          "available_sample": 106626,
+          "status": "missing"
+        },
+        {
+          "block": 13,
+          "start_sample": 106496,
+          "available_sample": 114818,
+          "status": "missing"
+        },
+        {
+          "block": 14,
+          "start_sample": 114688,
+          "available_sample": 123010,
+          "status": "missing"
+        },
+        {
+          "block": 15,
+          "start_sample": 122880,
+          "available_sample": 131202,
+          "observed_lag_samples": -3.636657623291352,
+          "status": "acquiring"
+        },
+        {
+          "block": 16,
+          "start_sample": 131072,
+          "available_sample": 139394,
+          "observed_lag_samples": -3.5994418836011084,
+          "status": "acquiring"
+        },
+        {
+          "block": 17,
+          "start_sample": 139264,
+          "available_sample": 147586,
+          "observed_lag_samples": -3.5724151931943346,
+          "status": "acquiring"
+        },
+        {
+          "block": 18,
+          "start_sample": 147456,
+          "available_sample": 155778,
+          "observed_lag_samples": -3.564232787462502,
+          "status": "acquiring",
+          "next_ppm": 3.1230653289626304
+        },
+        {
+          "block": 19,
+          "start_sample": 155648,
+          "available_sample": 163970,
+          "observed_lag_samples": -3.5096995819182326,
+          "status": "aligned",
+          "used_ppm": 3.1230653289626304,
+          "predicted_lag_samples": -3.528505224334214,
+          "aligned_samples": 8192,
+          "common_score_samples": 8192,
+          "next_ppm": 3.7397403685918955
+        },
+        {
+          "block": 20,
+          "start_sample": 163840,
+          "available_sample": 172162,
+          "observed_lag_samples": -3.4424083936049845,
+          "status": "aligned",
+          "used_ppm": 3.7397403685918955,
+          "predicted_lag_samples": -3.4805073338958206,
+          "aligned_samples": 8192,
+          "common_score_samples": 8192,
+          "next_ppm": 3.9210467588511504
+        },
+        {
+          "block": 21,
+          "start_sample": 172032,
+          "available_sample": 180354,
+          "observed_lag_samples": -3.4357494223950193,
+          "status": "aligned",
+          "used_ppm": 3.9210467588511504,
+          "predicted_lag_samples": -3.4439303330003006,
+          "aligned_samples": 8192,
+          "common_score_samples": 8192,
+          "next_ppm": 4.087487811204682
+        },
+        {
+          "block": 22,
+          "start_sample": 180224,
+          "available_sample": 188546,
+          "observed_lag_samples": -3.4168838630179588,
+          "status": "aligned",
+          "used_ppm": 4.087487811204682,
+          "predicted_lag_samples": -3.40226472224563,
+          "aligned_samples": 8192,
+          "common_score_samples": 8192,
+          "next_ppm": 3.89774935252615
+        },
+        {
+          "block": 23,
+          "start_sample": 188416,
+          "available_sample": 196738,
+          "observed_lag_samples": -3.382041261639545,
+          "status": "aligned",
+          "used_ppm": 3.89774935252615,
+          "predicted_lag_samples": -3.3810238693715835,
+          "aligned_samples": 8192,
+          "common_score_samples": 8192,
+          "next_ppm": 3.879794650253641
+        },
+        {
+          "block": 24,
+          "start_sample": 196608,
+          "available_sample": 204930,
+          "observed_lag_samples": -3.337434927273512,
+          "status": "aligned",
+          "used_ppm": 3.879794650253641,
+          "predicted_lag_samples": -3.3502579838646676,
+          "aligned_samples": 8192,
+          "common_score_samples": 8192,
+          "next_ppm": 3.9963979786642834
+        }
+      ]
+    }
+  }
+}

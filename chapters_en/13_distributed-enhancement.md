@@ -863,6 +863,40 @@ Run the [example](../codes/chapters/ch13/examples/clock_recovery.py) from the re
     --libriwasn "/path/to/LibriWASN_200_0L.zip"
 ```
 
+**Estimate and compensate with the original DWACD code.** Use `DynamicWACD` from the [pinned Paderwasn implementation](https://github.com/fgnt/paderwasn/tree/cd7054fcf72da637e4a5e11f035e8979691faf70) on the same excerpt from the three phones. The activity annotation selects the single-speaker interval, and both activity masks are set to true within it. By default, the estimator compares two 8192-sample windows 8192 samples apart every 2048 samples. The first 40 window pairs in this excerpt meet the activity threshold, so the first estimate needs 96256 samples, or $6.016\,\mathrm{s}$ from its start. The returned array fills earlier entries with this estimate, so those entries cannot tell you when it was first available.
+
+Use only the first 16 blocks (8.192 s) to estimate the rate. Take the median of the estimates available after the initial 40 window pairs and pass it to the original `compensate_sro` resampler. In blocks 16–23, fit a line to the GCC-PHAT lags at the block centers before and after resampling. The final block is left out to avoid the resampler boundary. The slope measures drift. The recording start offset and fixed difference in acoustic paths are still present in the intercept.
+
+| Input and reference clock | DWACD estimate (ppm) | Lag slope before compensation (ppm) | Lag slope after compensation (ppm) |
+|---|---:|---:|---:|
+| Synthetic, remote set to $+100\,\mathrm{ppm}$ | $+100.50$ | $+100.11$ | $-0.51$ |
+| Synthetic, remote set to $-75\,\mathrm{ppm}$ | $-75.10$ | $-74.85$ | $+0.09$ |
+| LibriWASN, Pixel 6a relative to Pixel 7 | $+3.21$ | $+4.00$ | $+0.08$ |
+| LibriWASN, Xiaomi relative to Pixel 7 | $-15.16$ | $-15.51$ | $-1.68$ |
+
+With different activity labels in the two windows, check the slice endpoints in the original code. Keep one window pair and set the first-estimate threshold to one pair. Mark the entire reference active, the early remote window inactive, and the late remote window active. The early remote waveform window contains zero active labels. The original code slices its activity mask through the end of the late window, counts 8192 active samples against a threshold of 6144, and still returns $+95.83\,\mathrm{ppm}$. This control changes the labels only. The input waveforms come from the same synthetic source with a $+100\,\mathrm{ppm}$ rate offset. Around a pause or speaker change, check each of the four activity slices against its own waveform window.
+
+The [original-code example](../codes/chapters/ch13/examples/dwacd_recording.py) reads the same LibriWASN archive or `record` directory and reports the executed source hashes, rate estimates, and scoring windows. Its opening docstring gives the environment and command. The [saved run](../codes/chapters/ch13/reports/dwacd_libriwasn.json) includes the measured lags for each scoring block.
+
+**A packet can arrive after the playback head has passed it.** [DUST](https://doi.org/10.5281/zenodo.12726671) records the receiver's read index, sender's sample index, and packet arrival time for audio transport between sites. Take the first 20000 rows of `sanri_14A.csv.gz`. The sample rate is $44100\,\mathrm{Hz}$, and the sender index increases by 24 samples per packet. If a packet starts at sender index $s$ and the receiver is already reading index $r$ at arrival, $\min(24,\max(0,r-s))$ of its samples have been missed. The sender sequence has no gaps in these rows. Nevertheless, 319 packets have some samples already read and 2 have all their samples already read, for a total of 2352 missed samples.
+
+| Trace row (zero-based) | Send index $s$ | Read index $r$ at arrival | Samples still usable on arrival |
+|---:|---:|---:|---:|
+| 530 | 12720 | 12744 | 0 |
+| 531 | 12744 | 12756 | 12 |
+| 532 | 12768 | 12762 | 24 |
+
+The receiver recorded $0.502567\,\mathrm{ms}$ between arrivals 530 and 532. These rows identify samples that missed playback. DUST supplies no packet audio here, so these rows cannot measure when resampled speech aligns again.
+
+For a separate experiment, packetize the recorded LibriWASN Pixel 6a channel into 256-sample packets and send one every 16 ms between two UDP sockets on one computer. Omit packets 384–478 and delay packet 479 by four packet periods. The receiver admits packets up to 32 ms after their nominal end. In one run there were 800 scheduled packet indices, of which 705 were sent and received. Packet 479 was one of the 705 arrivals and missed its deadline, leaving 704 on-time packets. Replaying the four-block acquisition rule against these measured arrivals, blocks 15–18 collect observations and the remote channel can be used at the end of block 19 plus 130 samples. The resulting $2.568125\,\mathrm{s}$ counts from the end of the gap and includes estimation and block buffering. It gives output availability in that replay. The transport used the local loopback interface, and processing time on independent devices was unmeasured.
+
+The [packet-trace example](../codes/chapters/ch13/examples/network_clock_trace.py) can read the DUST compressed file and run the local UDP experiment independently. The [saved trace](../codes/chapters/ch13/reports/dust_and_local_udp.json) includes each local packet arrival time.
+
+```bash
+.venv/bin/python -m codes.chapters.ch13.examples.network_clock_trace \
+    --dust sanri_14A.csv.gz --libriwasn "/path/to/LibriWASN_200_0L.zip"
+```
+
 
 #### Reproducible Entry Points and Audio Groups
 

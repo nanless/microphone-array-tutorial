@@ -1,0 +1,945 @@
+{
+  "paderwasn": {
+    "project": "paderwasn",
+    "checkout": "codes/chapters/ch00/upstream/_downloads/paderwasn",
+    "origin": "https://github.com/fgnt/paderwasn.git",
+    "head": "cd7054fcf72da637e4a5e11f035e8979691faf70",
+    "lock_entry": {
+      "id": "paderwasn",
+      "url": "https://github.com/fgnt/paderwasn.git",
+      "revision": "cd7054fcf72da637e4a5e11f035e8979691faf70",
+      "verified_at": "2026-10-04",
+      "license": "MIT",
+      "license_sha256": "60be4f44a5baa0db1ed1c9f1bc3ea5f7274b2032bb57bd87c054fa27efaa81fe",
+      "fetch_enabled": true,
+      "scope": "Original synchronization helpers, online and dynamic weighted-average coherence-drift source, STO and sync/beamforming integration",
+      "acquisition": "independent_source_checkout",
+      "source_paths": [
+        "LICENSE",
+        "README.md",
+        "setup.py",
+        "paderwasn/__init__.py",
+        "paderwasn/synchronization",
+        "paderwasn/source_extraction",
+        "paderwasn/experiments/sro_estimation_methods.py",
+        "paderwasn/experiments/sto_estimation.py"
+      ],
+      "entrypoints": [
+        "LICENSE",
+        "README.md",
+        "setup.py",
+        "paderwasn/synchronization/sro_estimation.py",
+        "paderwasn/synchronization/sync.py",
+        "paderwasn/synchronization/time_shift_estimation.py",
+        "paderwasn/synchronization/utils.py"
+      ],
+      "note": "Original coarse_sync, golden_section_max_search and max_time_lag_search are extracted with their exact AST bodies and executed on bounded controls using NumPy only. This does not import the complete modules or execute OnlineWACD/DWACD, full SRO/STO estimation, beamforming or a speech benchmark. SciPy/paderbox and external recordings remain separate dependencies; setup.py declares no install_requires. The helper utils.py is under paderwasn/synchronization; no root paderwasn/utils.py is selected."
+    },
+    "lock_sha256": "55721fbe8027f67bf3159827b8b58c14bc327ea5e0221b216303681340e890e7",
+    "source_document_paths": {
+      "lock": "codes/chapters/ch00/SOURCES.lock.json",
+      "status": "codes/chapters/ch00/SOURCE_STATUS.json"
+    },
+    "status_sha256": "96e37d461be3c0c5c07986b48100e935405334d22f346d8efb59ca49b07aa502",
+    "recorded_complete_selection": {
+      "id": "paderwasn",
+      "revision": "cd7054fcf72da637e4a5e11f035e8979691faf70",
+      "status": "source_verified",
+      "missing_entrypoints": [],
+      "execution": "not_run",
+      "dependency_validation": "not_run",
+      "asset_policy": "sparse_source_checkout",
+      "requested_source_paths": [
+        "LICENSE",
+        "README.md",
+        "setup.py",
+        "paderwasn/__init__.py",
+        "paderwasn/synchronization",
+        "paderwasn/source_extraction",
+        "paderwasn/experiments/sro_estimation_methods.py",
+        "paderwasn/experiments/sto_estimation.py"
+      ],
+      "observed_sparse_patterns": [
+        "/LICENSE",
+        "/README.md",
+        "/setup.py",
+        "/paderwasn/__init__.py",
+        "/paderwasn/synchronization",
+        "/paderwasn/source_extraction",
+        "/paderwasn/experiments/sro_estimation_methods.py",
+        "/paderwasn/experiments/sto_estimation.py",
+        "!**/*.wav",
+        "!**/*.flac",
+        "!**/*.mp3",
+        "!**/*.mp4",
+        "!**/*.ogg",
+        "!**/*.pt",
+        "!**/*.pth",
+        "!**/*.ckpt",
+        "!**/*.onnx",
+        "!**/*.tflite",
+        "!**/*.h5",
+        "!**/*.hdf5",
+        "!**/*.npz",
+        "!**/*.npy",
+        "!**/*.so",
+        "!**/*.dll",
+        "!**/*.dylib",
+        "!**/*.zip",
+        "!**/*.tar",
+        "!**/*.gz",
+        "!**/*.bin",
+        "!**/*.pb",
+        "!**/*.pkl",
+        "!**/*.pickle",
+        "!**/*.mat",
+        "!**/*.safetensors",
+        "!**/*.whl",
+        "!**/*.a",
+        "!**/*.o",
+        "!**/*.exe",
+        "!**/*.wasm",
+        "!**/*.weights"
+      ],
+      "expected_sparse_patterns": [
+        "/LICENSE",
+        "/README.md",
+        "/setup.py",
+        "/paderwasn/__init__.py",
+        "/paderwasn/synchronization",
+        "/paderwasn/source_extraction",
+        "/paderwasn/experiments/sro_estimation_methods.py",
+        "/paderwasn/experiments/sto_estimation.py",
+        "!**/*.wav",
+        "!**/*.flac",
+        "!**/*.mp3",
+        "!**/*.mp4",
+        "!**/*.ogg",
+        "!**/*.pt",
+        "!**/*.pth",
+        "!**/*.ckpt",
+        "!**/*.onnx",
+        "!**/*.tflite",
+        "!**/*.h5",
+        "!**/*.hdf5",
+        "!**/*.npz",
+        "!**/*.npy",
+        "!**/*.so",
+        "!**/*.dll",
+        "!**/*.dylib",
+        "!**/*.zip",
+        "!**/*.tar",
+        "!**/*.gz",
+        "!**/*.bin",
+        "!**/*.pb",
+        "!**/*.pkl",
+        "!**/*.pickle",
+        "!**/*.mat",
+        "!**/*.safetensors",
+        "!**/*.whl",
+        "!**/*.a",
+        "!**/*.o",
+        "!**/*.exe",
+        "!**/*.wasm",
+        "!**/*.weights"
+      ],
+      "source_selection_verified": true
+    },
+    "live_complete_selection": {
+      "id": "paderwasn",
+      "revision": "cd7054fcf72da637e4a5e11f035e8979691faf70",
+      "status": "source_verified",
+      "source_selection_verified": true,
+      "missing_entrypoints": [],
+      "observed_sparse_patterns": [
+        "/LICENSE",
+        "/README.md",
+        "/setup.py",
+        "/paderwasn/__init__.py",
+        "/paderwasn/synchronization",
+        "/paderwasn/source_extraction",
+        "/paderwasn/experiments/sro_estimation_methods.py",
+        "/paderwasn/experiments/sto_estimation.py",
+        "!**/*.wav",
+        "!**/*.flac",
+        "!**/*.mp3",
+        "!**/*.mp4",
+        "!**/*.ogg",
+        "!**/*.pt",
+        "!**/*.pth",
+        "!**/*.ckpt",
+        "!**/*.onnx",
+        "!**/*.tflite",
+        "!**/*.h5",
+        "!**/*.hdf5",
+        "!**/*.npz",
+        "!**/*.npy",
+        "!**/*.so",
+        "!**/*.dll",
+        "!**/*.dylib",
+        "!**/*.zip",
+        "!**/*.tar",
+        "!**/*.gz",
+        "!**/*.bin",
+        "!**/*.pb",
+        "!**/*.pkl",
+        "!**/*.pickle",
+        "!**/*.mat",
+        "!**/*.safetensors",
+        "!**/*.whl",
+        "!**/*.a",
+        "!**/*.o",
+        "!**/*.exe",
+        "!**/*.wasm",
+        "!**/*.weights"
+      ],
+      "expected_sparse_patterns": [
+        "/LICENSE",
+        "/README.md",
+        "/setup.py",
+        "/paderwasn/__init__.py",
+        "/paderwasn/synchronization",
+        "/paderwasn/source_extraction",
+        "/paderwasn/experiments/sro_estimation_methods.py",
+        "/paderwasn/experiments/sto_estimation.py",
+        "!**/*.wav",
+        "!**/*.flac",
+        "!**/*.mp3",
+        "!**/*.mp4",
+        "!**/*.ogg",
+        "!**/*.pt",
+        "!**/*.pth",
+        "!**/*.ckpt",
+        "!**/*.onnx",
+        "!**/*.tflite",
+        "!**/*.h5",
+        "!**/*.hdf5",
+        "!**/*.npz",
+        "!**/*.npy",
+        "!**/*.so",
+        "!**/*.dll",
+        "!**/*.dylib",
+        "!**/*.zip",
+        "!**/*.tar",
+        "!**/*.gz",
+        "!**/*.bin",
+        "!**/*.pb",
+        "!**/*.pkl",
+        "!**/*.pickle",
+        "!**/*.mat",
+        "!**/*.safetensors",
+        "!**/*.whl",
+        "!**/*.a",
+        "!**/*.o",
+        "!**/*.exe",
+        "!**/*.wasm",
+        "!**/*.weights"
+      ],
+      "requested_source_paths": [
+        "LICENSE",
+        "README.md",
+        "setup.py",
+        "paderwasn/__init__.py",
+        "paderwasn/synchronization",
+        "paderwasn/source_extraction",
+        "paderwasn/experiments/sro_estimation_methods.py",
+        "paderwasn/experiments/sto_estimation.py"
+      ],
+      "asset_policy": "sparse_source_checkout"
+    },
+    "used_source_identity": "verified",
+    "file_identity_scope": "declared original files plus tracked Python preflight when requested; does not claim every verified file executed",
+    "git_clean_scope": "tracked and nonignored untracked files; ignored members listed separately",
+    "ignored_members_before": [],
+    "used_files": {
+      "LICENSE": {
+        "sha256": "60be4f44a5baa0db1ed1c9f1bc3ea5f7274b2032bb57bd87c054fa27efaa81fe",
+        "bytes": 1121,
+        "git_blob": "5945b3b2ad7c7c4111ad68fc17e0a4c42de6251f",
+        "actual_blob": "5945b3b2ad7c7c4111ad68fc17e0a4c42de6251f"
+      },
+      "paderwasn/__init__.py": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0,
+        "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+        "actual_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      "paderwasn/synchronization/__init__.py": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0,
+        "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+        "actual_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      "paderwasn/synchronization/sro_estimation.py": {
+        "sha256": "4f56cc299f3e86b46e343c398c2a95d45800e0aa1661bf080dda6de7323cf5dd",
+        "bytes": 22190,
+        "git_blob": "5ec4da627dc9ae639a17b90c07e925a87a318d8e",
+        "actual_blob": "5ec4da627dc9ae639a17b90c07e925a87a318d8e"
+      },
+      "paderwasn/synchronization/sync.py": {
+        "sha256": "5b1f6e7f04c6587d5b7b9534d82bed9b7b1b85a7e395750f071457d0dc36bfb7",
+        "bytes": 5472,
+        "git_blob": "90ba930fb967d3d331106f28c46de38313a6239d",
+        "actual_blob": "90ba930fb967d3d331106f28c46de38313a6239d"
+      },
+      "paderwasn/synchronization/time_shift_estimation.py": {
+        "sha256": "175289ea782c8bdbb7ec24247a61cdeb9fcba77079ec00cde89f73400a171713",
+        "bytes": 3405,
+        "git_blob": "768721162808b1b99107c3d7d61df64b0cc2076f",
+        "actual_blob": "768721162808b1b99107c3d7d61df64b0cc2076f"
+      },
+      "paderwasn/synchronization/utils.py": {
+        "sha256": "cae9707fef4e680930a42b4d54804773d5e1db8a5f5a780ed8ece300e34552dd",
+        "bytes": 9364,
+        "git_blob": "658dbad7cdec652134605a31d62185858e93dd5d",
+        "actual_blob": "658dbad7cdec652134605a31d62185858e93dd5d"
+      }
+    },
+    "clean_before": true,
+    "clean_after": true,
+    "ignored_members_after": [],
+    "executed_python": {
+      "paderwasn": {
+        "path": "codes/chapters/ch00/upstream/_downloads/paderwasn/paderwasn/__init__.py",
+        "executed_source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "paderwasn.synchronization": {
+        "path": "codes/chapters/ch00/upstream/_downloads/paderwasn/paderwasn/synchronization/__init__.py",
+        "executed_source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "paderwasn.synchronization.utils": {
+        "path": "codes/chapters/ch00/upstream/_downloads/paderwasn/paderwasn/synchronization/utils.py",
+        "executed_source_sha256": "cae9707fef4e680930a42b4d54804773d5e1db8a5f5a780ed8ece300e34552dd"
+      },
+      "paderwasn.synchronization.time_shift_estimation": {
+        "path": "codes/chapters/ch00/upstream/_downloads/paderwasn/paderwasn/synchronization/time_shift_estimation.py",
+        "executed_source_sha256": "175289ea782c8bdbb7ec24247a61cdeb9fcba77079ec00cde89f73400a171713"
+      },
+      "paderwasn.synchronization.sro_estimation": {
+        "path": "codes/chapters/ch00/upstream/_downloads/paderwasn/paderwasn/synchronization/sro_estimation.py",
+        "executed_source_sha256": "4f56cc299f3e86b46e343c398c2a95d45800e0aa1661bf080dda6de7323cf5dd"
+      },
+      "paderwasn.synchronization.sync": {
+        "path": "codes/chapters/ch00/upstream/_downloads/paderwasn/paderwasn/synchronization/sync.py",
+        "executed_source_sha256": "5b1f6e7f04c6587d5b7b9534d82bed9b7b1b85a7e395750f071457d0dc36bfb7"
+      }
+    }
+  },
+  "paderbox": {
+    "origin": "https://github.com/fgnt/paderbox.git",
+    "revision": "7fed5b44be2effcedb7a26778ada6c5668b1d6bd",
+    "license_sha256": "929f8c5edfb4def57942a92b292578529e4a37c6ee378a62801e7990e7c3a0b5",
+    "executed_python": {
+      "paderbox": {
+        "path": "site-packages/paderbox/__init__.py",
+        "executed_source_sha256": "37279b9aec8d35efa7e7ee67e1b209162286a488d6f79858448c6c056dfaaec8"
+      },
+      "paderbox.utils": {
+        "path": "site-packages/paderbox/utils/__init__.py",
+        "executed_source_sha256": "4bf86884dc21f7d06a3d93137cb3ad230bd3ddd2daabb33fd28270220c43c0c4"
+      },
+      "paderbox.utils.mapping": {
+        "path": "site-packages/paderbox/utils/mapping.py",
+        "executed_source_sha256": "f75f4b67ca8f9a6bba63f6a185b7e068b9c25e83927998fe7a542ba988d40d7a"
+      },
+      "paderbox.array.segment": {
+        "path": "site-packages/paderbox/array/segment.py",
+        "executed_source_sha256": "2d05ec2bb3225c196af56d49645c2ed668fde558ef95a794e945ec25407213a1"
+      },
+      "paderbox.array.rearrange": {
+        "path": "site-packages/paderbox/array/rearrange.py",
+        "executed_source_sha256": "227b6f5e8d1c24ca209c99ed86d674c3b85088f79c65e960435ead1f70bc2e51"
+      },
+      "paderbox.array.context": {
+        "path": "site-packages/paderbox/array/context.py",
+        "executed_source_sha256": "a1191c5f4d3be25f27f0ea27b46cc21fb57153e4b76075d491682ab5675d36ad"
+      },
+      "paderbox.array.padding": {
+        "path": "site-packages/paderbox/array/padding.py",
+        "executed_source_sha256": "db5d45225dac33ea0ac5b908c11504536af9c397b088d0050ce746f97f5959a7"
+      },
+      "paderbox.array": {
+        "path": "site-packages/paderbox/array/__init__.py",
+        "executed_source_sha256": "54e4aca6cf85e357e343c91dc021bfe4482cbe01e97d5a0dcb200dda4835f9fd"
+      },
+      "paderbox.transform.module_stft": {
+        "path": "site-packages/paderbox/transform/module_stft.py",
+        "executed_source_sha256": "3910266dcc6c49e08a3d47aa25d3ad7c9b2fd2bc8910ba15d18aecf8d42b077b"
+      },
+      "paderbox.transform.module_filter": {
+        "path": "site-packages/paderbox/transform/module_filter.py",
+        "executed_source_sha256": "511cc9615d9e108661332cd58d036569746dc657045219521591f926f40d60ab"
+      },
+      "paderbox.transform.module_fbank": {
+        "path": "site-packages/paderbox/transform/module_fbank.py",
+        "executed_source_sha256": "0056bd638fd881ab6e0fa33d0ca129b2400b862f9c50b5c068cd12c7b86f4a98"
+      },
+      "paderbox.transform.module_mfcc": {
+        "path": "site-packages/paderbox/transform/module_mfcc.py",
+        "executed_source_sha256": "e5e9eee75c6d4f8b33b84d3fffe8314e546c9dd0a9cc1215756b56aea756a3da"
+      },
+      "paderbox.transform.module_normalize": {
+        "path": "site-packages/paderbox/transform/module_normalize.py",
+        "executed_source_sha256": "1dd3b3c86dedd325e5c0f17ec7c74bffdff0a552e74b01f3450bf6f417e11f5a"
+      },
+      "paderbox.transform.module_resample": {
+        "path": "site-packages/paderbox/transform/module_resample.py",
+        "executed_source_sha256": "57707ecee0f3da928a6c0ed883f6a0c7b83e7eeada43a0b065948cdea46dac87"
+      },
+      "paderbox.transform": {
+        "path": "site-packages/paderbox/transform/__init__.py",
+        "executed_source_sha256": "ed452c488e90532c15a680e99256640fcbb7dc6e15a50b1d604854bbf940f560"
+      }
+    }
+  },
+  "python": "3.13.12",
+  "numpy": "2.5.3",
+  "scipy": "1.18.1",
+  "scipy_hamming_alias_during_import_only": true,
+  "sample_rate_hz": 16000,
+  "calibration_samples": [
+    0,
+    131072
+  ],
+  "libriwasn": {
+    "dataset_doi": "10.5281/zenodo.7960972",
+    "archive": "LibriWASN_200_0L.zip",
+    "archive_members": {
+      "Pixel7": "LibriWASN/200/0L/overlap_ratio_0.0_sil2.9_3.0_session8_actual0.0/record/Pixel7_ntlab_asn_ID_0.wav",
+      "Pixel6a": "LibriWASN/200/0L/overlap_ratio_0.0_sil2.9_3.0_session8_actual0.0/record/Pixel6a_ntlab_asn_ID_0.wav",
+      "Xiaomi": "LibriWASN/200/0L/overlap_ratio_0.0_sil2.9_3.0_session8_actual0.0/record/Xiaomi_ntlab_asn_ID_0.wav"
+    },
+    "wav_sha256": {
+      "Pixel7": "815a0a766f32831e698f9df18c8fb3756573a417ce55bd719d857caf658e1ed6",
+      "Pixel6a": "bbe1d6cc9fb29dddc170b21aa6a1bebfd4369e3f0d2cf4cc773ef6ff70986dd7",
+      "Xiaomi": "bd99e1f46608cb8b2c53060baabfb154639e28dce3374ca3a2c43e0f2a824336"
+    },
+    "reference": "Pixel7",
+    "interval_samples": [
+      770048,
+      974848
+    ],
+    "activity_annotation": {
+      "member": "vad/speaker.csv",
+      "speaker": 1,
+      "interval_samples": [
+        762880,
+        978688
+      ],
+      "sha256": "aa82d478ab9aa37027c5e2b0d67ff950994d9f6f3affff08b7e30c447a06284d"
+    },
+    "activity_masks": "all true within the stated single-speaker interval",
+    "pairs": {
+      "Pixel6a": {
+        "true_ppm": null,
+        "prefix_fitted_ppm": 3.211820677838091,
+        "prefix_ppm_after_settling": [
+          2.993660911871808,
+          3.0670158329110597,
+          3.1434531040898994,
+          3.119244011797946,
+          3.1434531040898994,
+          3.1987636331163674,
+          3.2590615094339093,
+          3.3696825674868403,
+          3.5064177149832276,
+          3.6220261203272326,
+          3.6934760442150036,
+          3.646235212619187,
+          3.408853701652014,
+          3.277105901446697,
+          3.211820677838093,
+          3.211820677838089,
+          3.1826242382550642,
+          3.2068333305470187
+        ],
+        "full_ppm_after_settling": [
+          2.993660911871808,
+          3.0670158329110597,
+          3.1434531040898994,
+          3.119244011797946,
+          3.1434531040898994,
+          3.1987636331163674,
+          3.2590615094339093,
+          3.3696825674868403,
+          3.5064177149832276,
+          3.6220261203272326,
+          3.6934760442150036,
+          3.646235212619187,
+          3.408853701652014,
+          3.277105901446697,
+          3.211820677838093,
+          3.211820677838089,
+          3.1826242382550642,
+          3.2068333305470187,
+          3.211820677838089,
+          3.2018459832559487,
+          3.117339014646457,
+          3.127313709228597,
+          3.2018459832559487,
+          3.1515228015205516,
+          3.0409017434676167,
+          2.8699828090971433,
+          2.901084245831657,
+          2.935268032705755,
+          2.8911095512495164,
+          2.8327166720834676,
+          2.840786369514119,
+          2.8507610640962593,
+          2.7562794009046265,
+          2.6295189479903884,
+          2.6164619032686667,
+          2.593430163964805,
+          2.6064872086865267,
+          2.6928991744475073,
+          2.7059562191692295,
+          2.801615235348954,
+          2.8911095512495164,
+          2.8699828090971433,
+          2.878052506527795,
+          2.883039853818865,
+          2.8538434142358406,
+          2.8699828090971433,
+          2.9383503828453406,
+          2.9271983352751074,
+          2.888027201109935,
+          2.829634321943886,
+          2.7823934903480696,
+          2.8115899299310945,
+          2.829634321943886
+        ],
+        "first_estimate_reference_end_sample": 96256,
+        "heldout_center_and_lags": [
+          [
+            135168,
+            -3.5994418836011084,
+            -4.00461042688381
+          ],
+          [
+            143360,
+            -3.5724151931943346,
+            -4.006694129743041
+          ],
+          [
+            151552,
+            -3.564232787462502,
+            -4.025994104712784
+          ],
+          [
+            159744,
+            -3.5096995819182326,
+            -4.007278687229809
+          ],
+          [
+            167936,
+            -3.4424083936049845,
+            -3.9868396140807327
+          ],
+          [
+            176128,
+            -3.4357494223950193,
+            -4.000649747875442
+          ],
+          [
+            184320,
+            -3.4168838630179588,
+            -4.0117196198949285
+          ],
+          [
+            192512,
+            -3.382041261639545,
+            -4.006815718713374
+          ]
+        ],
+        "heldout_lag_slope_ppm_before": 3.999549921131693,
+        "heldout_lag_slope_ppm_after": 0.0812460037881329
+      },
+      "Xiaomi": {
+        "true_ppm": null,
+        "prefix_fitted_ppm": -15.158584206399748,
+        "prefix_ppm_after_settling": [
+          -15.156090532754211,
+          -15.161077880045283,
+          -15.227540456641982,
+          -15.30588272497231,
+          -15.331996814415753,
+          -15.261724243516076,
+          -15.116919398589046,
+          -15.082735611714952,
+          -15.053539172131929,
+          -14.977101900953087,
+          -14.897582279634669,
+          -14.845354100747771,
+          -14.99015894567481,
+          -15.079653261575373,
+          -15.21140106178068,
+          -15.266711590807144,
+          -15.258641893376495,
+          -15.28783833295952
+        ],
+        "full_ppm_after_settling": [
+          -15.156090532754211,
+          -15.161077880045283,
+          -15.227540456641982,
+          -15.30588272497231,
+          -15.331996814415753,
+          -15.261724243516076,
+          -15.116919398589046,
+          -15.082735611714952,
+          -15.053539172131929,
+          -14.977101900953087,
+          -14.897582279634669,
+          -14.845354100747771,
+          -14.99015894567481,
+          -15.079653261575373,
+          -15.21140106178068,
+          -15.266711590807144,
+          -15.258641893376495,
+          -15.28783833295952,
+          -15.300895377681238,
+          -15.331996814415753,
+          -15.356205906707707,
+          -15.26979394094673,
+          -15.172229927615515,
+          -15.166065227336354,
+          -15.169147577475936,
+          -15.21140106178068,
+          -15.250572195945846,
+          -15.322022119833614,
+          -15.41151643573417,
+          -15.474896662191288,
+          -15.400364388163938,
+          -15.276686285389284,
+          -15.292825680250587,
+          -15.335079164555339,
+          -15.21140106178068,
+          -15.190274319628308,
+          -15.084640608866444,
+          -14.934848416648343,
+          -14.926778719217692,
+          -14.913721674495967,
+          -14.982089248244161,
+          -15.092710306297095,
+          -15.13188144046226,
+          -15.190274319628308,
+          -15.203331364350028,
+          -15.185286972337236,
+          -15.108849701158395,
+          -15.032412429979555,
+          -14.972114553662017,
+          -14.916804024635548,
+          -14.892594932343595,
+          -14.887607585052526,
+          -14.858411145469493,
+          -14.890689935192105
+        ],
+        "first_estimate_reference_end_sample": 96256,
+        "heldout_center_and_lags": [
+          [
+            135168,
+            0.4875593344561746,
+            2.5401905810758123
+          ],
+          [
+            143360,
+            0.26388807937128617,
+            2.5213680521736603
+          ],
+          [
+            151552,
+            0.07209652805167499,
+            2.4734132828558772
+          ],
+          [
+            159744,
+            0.03521961899032579,
+            2.573459219073203
+          ],
+          [
+            167936,
+            -0.17456206375040245,
+            2.46752103570357
+          ],
+          [
+            176128,
+            -0.18798814812541828,
+            2.5408294495907677
+          ],
+          [
+            184320,
+            -0.3005617708921745,
+            2.5331080610539756
+          ],
+          [
+            192512,
+            -0.49237495509339074,
+            2.3532922400888463
+          ]
+        ],
+        "heldout_lag_slope_ppm_before": -15.508488231021351,
+        "heldout_lag_slope_ppm_after": -1.6759643927759733
+      }
+    }
+  },
+  "synthetic": {
+    "+100_ppm": {
+      "true_ppm": 100,
+      "prefix_fitted_ppm": 100.50363765629132,
+      "prefix_ppm_after_settling": [
+        99.63480858672915,
+        99.77462608436511,
+        99.8249492661005,
+        99.6932014658952,
+        99.77154373422552,
+        100.06922312151023,
+        100.0772928189409,
+        100.3246490244902,
+        100.5247643984437,
+        100.67763894080136,
+        100.60428401976212,
+        100.56701788274844,
+        100.55894818531779,
+        100.50363765629132,
+        100.59811931948295,
+        100.75407621198022,
+        100.64536015107878
+      ],
+      "full_ppm_after_settling": [
+        99.63480858672915,
+        99.77462608436511,
+        99.8249492661005,
+        99.6932014658952,
+        99.77154373422552,
+        100.06922312151023,
+        100.0772928189409,
+        100.3246490244902,
+        100.5247643984437,
+        100.67763894080136,
+        100.60428401976212,
+        100.56701788274844,
+        100.55894818531779,
+        100.50363765629132,
+        100.59811931948295,
+        100.75407621198022,
+        100.64536015107878,
+        100.58506227476124,
+        100.76405090656236,
+        100.7901649960058,
+        100.6906959855231,
+        100.74600651454956,
+        101.06671764113815,
+        101.33329559168834,
+        101.30908649939639,
+        101.14814225960805,
+        100.90386840419833,
+        100.93805219107242,
+        100.9902803699593,
+        101.13009786759525,
+        101.09400908356967,
+        100.92998249364177,
+        100.90386840419833,
+        100.83241848031055,
+        100.83051348315907,
+        101.09591408072116,
+        101.38552377057522,
+        101.39858081529694,
+        101.46196104175405,
+        101.40665051272757,
+        101.31715619682703,
+        101.09899643086074,
+        100.92998249364177,
+        100.84357052788079,
+        100.80131704357603,
+        100.57699257733057,
+        100.56701788274844,
+        100.37497220622559,
+        100.29853493504675,
+        100.44524477712528,
+        100.5378214431654,
+        100.59313197219188,
+        100.64844250121834
+      ],
+      "first_estimate_reference_end_sample": 96256,
+      "heldout_center_and_lags": [
+        [
+          135168,
+          16.926181318834878,
+          3.305339258239279
+        ],
+        [
+          143360,
+          17.75104491304582,
+          3.3021961252786682
+        ],
+        [
+          151552,
+          18.571433266316145,
+          3.300978589357013
+        ],
+        [
+          159744,
+          19.35024452434892,
+          3.295576278231093
+        ],
+        [
+          167936,
+          20.163039003400637,
+          3.2895533374477077
+        ],
+        [
+          176128,
+          21.019520245087584,
+          3.2848682131532643
+        ],
+        [
+          184320,
+          21.854760490296314,
+          3.281120170457593
+        ],
+        [
+          192512,
+          22.67065588846547,
+          3.277964887201141
+        ]
+      ],
+      "heldout_lag_slope_ppm_before": 100.1077638012587,
+      "heldout_lag_slope_ppm_after": -0.5105945997939019
+    },
+    "-75_ppm": {
+      "true_ppm": -75,
+      "prefix_fitted_ppm": -75.09772942486487,
+      "prefix_ppm_after_settling": [
+        -75.4355324448905,
+        -75.17511919461947,
+        -75.29879729739412,
+        -75.39137396343428,
+        -75.59647668467883,
+        -75.62259077412226,
+        -75.27767055524174,
+        -74.98307351809662,
+        -75.02224465226178,
+        -75.17013184732838,
+        -75.16206214989774,
+        -75.03339669983201,
+        -74.78794549143419,
+        -74.70652087296429,
+        -74.78794549143419,
+        -74.6512103439378,
+        -74.71459057039493,
+        -74.56171602803724
+      ],
+      "full_ppm_after_settling": [
+        -75.4355324448905,
+        -75.17511919461947,
+        -75.29879729739412,
+        -75.39137396343428,
+        -75.59647668467883,
+        -75.62259077412226,
+        -75.27767055524174,
+        -74.98307351809662,
+        -75.02224465226178,
+        -75.17013184732838,
+        -75.16206214989774,
+        -75.03339669983201,
+        -74.78794549143419,
+        -74.70652087296429,
+        -74.78794549143419,
+        -74.6512103439378,
+        -74.71459057039493,
+        -74.56171602803724,
+        -74.59589981491135,
+        -74.86438276261302,
+        -74.93773768365227,
+        -74.91162359420885,
+        -74.97192147052638,
+        -75.13785305760578,
+        -75.37523456857295,
+        -75.2515564657983,
+        -75.12978336017513,
+        -75.05951078927545,
+        -74.88550950476541,
+        -74.76183140199075,
+        -74.56479837817682,
+        -74.45916466741495,
+        -74.3858097463757,
+        -74.33049921734923,
+        -74.49833580158013,
+        -74.70153352567321,
+        -74.7357173125473,
+        -74.7357173125473,
+        -74.54058928588488,
+        -74.48527875685839,
+        -74.66426738865952,
+        -74.91661094149991,
+        -74.9880608653877,
+        -75.07755518128825,
+        -75.12479601288406,
+        -75.36408252100271,
+        -75.40134865801639,
+        -75.12479601288406,
+        -75.02723199955284,
+        -74.99304821267876,
+        -74.87245246004369,
+        -74.6884764809515,
+        -74.84325602046066,
+        -74.96194677594426
+      ],
+      "first_estimate_reference_end_sample": 96256,
+      "heldout_center_and_lags": [
+        [
+          135168,
+          -6.764089270132212,
+          3.396170233293953
+        ],
+        [
+          143360,
+          -7.32306056961222,
+          3.3976102224851616
+        ],
+        [
+          151552,
+          -7.972427821369744,
+          3.3960485059032104
+        ],
+        [
+          159744,
+          -8.595819536828957,
+          3.3979404982193233
+        ],
+        [
+          167936,
+          -9.167349855202188,
+          3.398453768192655
+        ],
+        [
+          176128,
+          -9.838352068693396,
+          3.401059589405279
+        ],
+        [
+          184320,
+          -10.413541950509797,
+          3.4010268853127408
+        ],
+        [
+          192512,
+          -11.033130441215706,
+          3.4005417941646354
+        ]
+      ],
+      "heldout_lag_slope_ppm_before": -74.84799072616795,
+      "heldout_lag_slope_ppm_after": 0.0918880799970459
+    }
+  },
+  "activity_window_control": {
+    "settling_pairs": 1,
+    "strict_activity_threshold_samples": 6144.0,
+    "remote_delayed_waveform_activity_samples": 0,
+    "remote_original_delayed_activity_slice_samples": 16384,
+    "remote_original_delayed_activity_true_samples": 8192,
+    "remote_delayed_waveform_passes_threshold": false,
+    "original_estimate_ppm": [
+      95.8307114844612
+    ]
+  }
+}

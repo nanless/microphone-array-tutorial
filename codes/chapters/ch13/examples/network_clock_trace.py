@@ -131,23 +131,32 @@ def _dust(path):
     step = 24
     if len(rows) != DUST_ROWS or any(sent != i * step for i, (_, sent, _) in enumerate(rows)):
         raise ValueError("the selected DUST rows no longer have consecutive 24-sample packets")
-    lost = [min(step, max(0, read - sent)) for read, sent, _ in rows]
-    first_lost = lost.index(step)
-    first_usable = next(i for i in range(first_lost + 1, len(lost)) if lost[i] < step)
-    first_intact = next(i for i in range(first_usable, len(lost)) if lost[i] == 0)
+    # DUST paper, Eq. (2): W = B + S / (1 + d / 1e6). Here d = 0 in both controls.
+    def replay(buffer_samples):
+        write = [buffer_samples + sent for _, sent, _ in rows]
+        missed = [min(step, max(0, read - start)) for (read, _, _), start in zip(rows, write)]
+        intact, fully = missed.count(0), missed.count(step)
+        return missed, {
+            "write_offset_samples": buffer_samples, "drift_correction_ppm": 0,
+            "intact_arrivals": intact, "partially_late_arrivals": len(rows) - intact - fully,
+            "fully_late_arrivals": fully, "total_samples_unusable": sum(missed),
+        }
+
+    missed, no_buffer = replay(0)
+    _, one_packet_buffer = replay(step)
+    first_lost = missed.index(step)
+    first_usable = next(i for i in range(first_lost + 1, len(missed)) if missed[i] < step)
+    first_intact = next(i for i in range(first_usable, len(missed)) if missed[i] == 0)
 
     def packet(i):
-        return dict(zip(fields, rows[i])) | {"zero_based_row": i, "samples_already_read": lost[i]}
+        return dict(zip(fields, rows[i])) | {"zero_based_row": i, "samples_unusable": missed[i]}
 
     return {
         "doi": "10.5281/zenodo.12726671", "member": "sanri_14A.csv.gz", "published_md5": DUST_MD5,
         "full_archive_md5_verified": full_file, "selected_csv_prefix_sha256": digest,
         "sample_rate_hz": 44_100, "packet_samples_in_selected_rows": step, "rows": len(rows),
-        "skipped_sender_packet_indices": 0, "intact_arrivals": lost.count(0),
-        "partially_late_arrivals": len(lost) - lost.count(0) - lost.count(step),
-        "fully_late_arrivals": lost.count(step), "total_samples_already_read": sum(lost),
-        "first_fully_late_packet": packet(first_lost), "first_packet_with_samples_left": packet(first_usable),
-        "next_intact_packet": packet(first_intact),
+        "skipped_sender_packet_indices": 0, "playback_replays": [no_buffer, one_packet_buffer],
+        "no_buffer_example": [packet(first_lost), packet(first_usable), packet(first_intact)],
         "first_intact_elapsed_ns": rows[first_intact][2] - rows[first_lost][2],
     }
 

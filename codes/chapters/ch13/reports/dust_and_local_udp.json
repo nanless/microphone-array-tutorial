@@ -9,31 +9,47 @@
     "packet_samples_in_selected_rows": 24,
     "rows": 20000,
     "skipped_sender_packet_indices": 0,
-    "intact_arrivals": 19679,
-    "partially_late_arrivals": 319,
-    "fully_late_arrivals": 2,
-    "total_samples_already_read": 2352,
-    "first_fully_late_packet": {
-      "read_index": 12744,
-      "send_index": 12720,
-      "tstamp_ns": 288980679,
-      "zero_based_row": 530,
-      "samples_already_read": 24
-    },
-    "first_packet_with_samples_left": {
-      "read_index": 12756,
-      "send_index": 12744,
-      "tstamp_ns": 289252786,
-      "zero_based_row": 531,
-      "samples_already_read": 12
-    },
-    "next_intact_packet": {
-      "read_index": 12762,
-      "send_index": 12768,
-      "tstamp_ns": 289483246,
-      "zero_based_row": 532,
-      "samples_already_read": 0
-    },
+    "playback_replays": [
+      {
+        "write_offset_samples": 0,
+        "drift_correction_ppm": 0,
+        "intact_arrivals": 19679,
+        "partially_late_arrivals": 319,
+        "fully_late_arrivals": 2,
+        "total_samples_unusable": 2352
+      },
+      {
+        "write_offset_samples": 24,
+        "drift_correction_ppm": 0,
+        "intact_arrivals": 19999,
+        "partially_late_arrivals": 1,
+        "fully_late_arrivals": 0,
+        "total_samples_unusable": 6
+      }
+    ],
+    "no_buffer_example": [
+      {
+        "read_index": 12744,
+        "send_index": 12720,
+        "tstamp_ns": 288980679,
+        "zero_based_row": 530,
+        "samples_unusable": 24
+      },
+      {
+        "read_index": 12756,
+        "send_index": 12744,
+        "tstamp_ns": 289252786,
+        "zero_based_row": 531,
+        "samples_unusable": 12
+      },
+      {
+        "read_index": 12762,
+        "send_index": 12768,
+        "tstamp_ns": 289483246,
+        "zero_based_row": 532,
+        "samples_unusable": 0
+      }
+    ],
     "first_intact_elapsed_ns": 502567
   },
   "local_udp": {

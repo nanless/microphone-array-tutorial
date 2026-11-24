@@ -906,7 +906,8 @@ $$
 
 ```bash
 .venv/bin/python -m codes.chapters.ch13.examples.generate_distributed_audio
-.venv/bin/python -m codes.chapters.ch13.examples.generate_distributed_audio --check
+.venv/bin/python -m codes.chapters.ch13.examples.generate_distributed_audio \
+    --check
 ```
 
 练习总入口 `chapter13_exercises.run_experiments()` 按稳定题号返回 `E13-01`～`E13-21` 的完整计算字典。在图 66 的相关噪声收敛预算实验中（停止判据设为全网所有节点当前有效权重的式(13-21)相对残差均低于 $10^{-8}$），顺序轮转、全步长同时更新与固定 $0.5$ 半步松弛分别经历 $14$ 轮（$14$ 次更新求解）、$13$ 轮（$26$ 次更新求解）与 $38$ 轮（$76$ 次更新求解）更新事件（加上 $2$ 次初始本地求解，累计矩阵求解次数分别为 $16$、$28$、$78$ 次）。配套的 $17$ 个合成音频按对照任务编为八组：

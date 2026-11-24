@@ -906,7 +906,8 @@ Generate or strictly verify all $17$ WAVs and `MANIFEST.json` from the repositor
 
 ```bash
 .venv/bin/python -m codes.chapters.ch13.examples.generate_distributed_audio
-.venv/bin/python -m codes.chapters.ch13.examples.generate_distributed_audio --check
+.venv/bin/python -m codes.chapters.ch13.examples.generate_distributed_audio \
+    --check
 ```
 
 `chapter13_exercises.run_experiments()` returns the complete result dictionary for `E13-01`–`E13-21`. In Fig. 66's correlated-noise convergence budget experiment (stopping criterion: every node's live effective weight satisfies Eq. (13-21) relative residual $< 10^{-8}$), Sequential, full-step Simultaneous, and fixed-$0.5$ half-step Relaxed take $14$ rounds ($14$ update solves), $13$ rounds ($26$ update solves), and $38$ rounds ($76$ update solves), respectively ($16, 28, 78$ cumulative matrix solves including the $2$ initial local solves). The $17$ synthetic WAVs are organized into eight comparison groups:

@@ -1571,6 +1571,19 @@ def validate_pdf_named_aliases(reader, aliases):
             raise SystemExit(f"PDF 历史目标偏离当前主题定位：{alias}")
 
 
+def pdf_heading_link_aliases(html, outline):
+    """Name explicit anchors immediately before an outline heading."""
+    headings = {section_id for _, _, sections in outline for _, section_id, _ in sections}
+    headings.update(subsection_id for _, _, sections in outline
+                    for _, _, subsections in sections for _, subsection_id in subsections)
+    pairs = re.findall(
+        r'<p>\s*<a id="(ch-\d+-(?!e\d{2}-\d{2}\b)[a-z0-9_-]+)"></a>\s*</p>\s*'
+        r'(?:<span\b[^>]*\bclass="anchor-alias"[^>]*></span>\s*)*'
+        r'<h[23]\b[^>]*\bid="(ch-\d+-[a-z0-9_-]+)"', html,
+    )
+    return {alias: heading for alias, heading in pairs if heading in headings}
+
+
 def normalize_pdf_semantics(writer, outline, aliases=None):
     """Preserve Chrome content while supplying genuine list and link semantics.
 
@@ -2213,7 +2226,7 @@ def write_pdf_with_object_streams(writer, out_stream, *, chunk_size=200):
     out_stream.write(f"\nendobj\nstartxref\n{xref_offset}\n%%EOF\n".encode("ascii"))
 
 
-def add_bookmarks(pdf_path, outline, aliases=None, *, input_identity):
+def add_bookmarks(pdf_path, outline, aliases=None, *, input_identity, link_aliases=None):
     """按 outline 写三级大纲（篇 + 节 + 指定子节），校验后原子替换 PDF。"""
     if not isinstance(input_identity, PDFInputIdentity):
         raise TypeError('bookmarks require a captured PDFInputIdentity')
@@ -2239,7 +2252,7 @@ def add_bookmarks(pdf_path, outline, aliases=None, *, input_identity):
     writer._root_object.update({NameObject("/Lang"): TextStringObject("zh-CN")})
     if aliases is not None:
         add_pdf_named_aliases(reader, writer, aliases)
-    normalize_pdf_semantics(writer, outline, aliases)
+    normalize_pdf_semantics(writer, outline, {**(link_aliases or {}), **(aliases or {})})
     n_ch, n_sec, n_subsec = 0, 0, 0
 
     def add_heading(title, heading_id, parent=None):
@@ -2617,7 +2630,8 @@ def main(argv=None):
         print_pdf(tmp_html, tmp_pdf, args.min_pages, input_identity=identity)
         require_unchanged_pdf_input(identity, tmp_html, source_digest)
         if not args.no_bookmarks:
-            add_bookmarks(tmp_pdf, outline, pdf_alias_targets(), input_identity=identity)
+            add_bookmarks(tmp_pdf, outline, pdf_alias_targets(), input_identity=identity,
+                          link_aliases=pdf_heading_link_aliases(html_bytes.decode("utf-8"), outline))
         require_unchanged_pdf_input(identity, tmp_html, source_digest)
         if args.pdf_only and combined.read_bytes() != html_bytes:
             raise ValueError('combined.html changed after the private print snapshot was captured')

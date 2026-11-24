@@ -738,7 +738,7 @@ def print_pdf_en(combined: Path, pdf: Path, timeout_min_pages: int = 100, *, inp
     return npages
 
 
-def add_bookmarks_en(pdf_path: Path, outline, aliases=None, *, input_identity):
+def add_bookmarks_en(pdf_path: Path, outline, aliases=None, *, input_identity, link_aliases=None):
     reader = PdfReader(str(pdf_path))
     if (build_pdf.PDFInputIdentity.from_metadata(reader.metadata or {}) != input_identity
             or source_digest_en() != input_identity.source_digest):
@@ -753,7 +753,7 @@ def add_bookmarks_en(pdf_path: Path, outline, aliases=None, *, input_identity):
     writer._root_object.update({NameObject("/Lang"): TextStringObject("en-US")})
     if aliases is not None:
         build_pdf.add_pdf_named_aliases(reader, writer, aliases)
-    normalize_pdf_semantics_en(writer, outline, aliases)
+    normalize_pdf_semantics_en(writer, outline, {**(link_aliases or {}), **(aliases or {})})
     n_ch, n_sec, n_subsec = 0, 0, 0
 
     def add_heading(title, heading_id, parent=None):
@@ -862,7 +862,9 @@ def main(argv=None) -> None:
         tmp_pdf = Path(tmp_name)
         print_pdf_en(tmp_html, tmp_pdf, args.min_pages, input_identity=identity)
         if not args.no_bookmarks:
-            add_bookmarks_en(tmp_pdf, outline, pdf_alias_targets_en(), input_identity=identity)
+            add_bookmarks_en(tmp_pdf, outline, pdf_alias_targets_en(), input_identity=identity,
+                             link_aliases=build_pdf.pdf_heading_link_aliases(
+                                 tmp_html.read_text(encoding="utf-8"), outline))
         build_pdf.validate_pdf_links(tmp_pdf)
         verified = build_pdf.verify_pdf_input_metadata(PdfReader(str(tmp_pdf)), build_html_en, source_digest_en)
         if verified != identity:

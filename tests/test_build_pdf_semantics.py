@@ -7,7 +7,22 @@ from pypdf import PdfReader, PdfWriter
 from pypdf.generic import (ArrayObject, DictionaryObject, NameObject,
                           NumberObject, TextStringObject)
 
-from scripts.build_pdf import normalize_pdf_semantics
+from scripts.build_pdf import normalize_pdf_semantics, pdf_heading_link_aliases
+
+
+class HeadingAliasTest(unittest.TestCase):
+    def test_only_adjacent_outline_headings_supply_alias_labels(self):
+        subsections = [('Exercise', 'ch-5-sec-u-exercise'), ('Example', 'ch-5-sec-u-example')]
+        outline = [('Part', 'ch-5', [('Section', 'ch-5-sec-5-1', subsections)])]
+        html = '''
+        <p><a id="ch-5-decoy"></a></p><h3 id="ch-5-hidden">Not in outline</h3>
+        <p><a id="ch-5-separated"></a></p><p>Other content</p>
+        <h2 id="ch-5-sec-5-1">Section</h2>
+        <p><a id="ch-5-e05-08"></a></p><h3 id="ch-5-sec-u-exercise">Exercise</h3>
+        <p><a id="ch-5-experiment"></a></p>
+        <span id="ch-5-sec-2" class="anchor-alias"></span><h3 id="ch-5-sec-u-example">Example</h3>
+        '''
+        self.assertEqual(pdf_heading_link_aliases(html, outline), {'ch-5-experiment': 'ch-5-sec-u-example'})
 
 
 def elem(writer, role, parent=None, children=None):

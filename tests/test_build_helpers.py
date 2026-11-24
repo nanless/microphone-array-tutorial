@@ -1328,7 +1328,7 @@ class BookmarkPlainTextAndPdfCssTest(unittest.TestCase):
                     titles.append(title)
                     titles.extend(sub for sub, _subid in subsecs)
                     subsection_ids.update(subid for _sub, subid in subsecs)
-            self.assertEqual(len(titles), 1031, msg=f"{edition} outline count")
+            self.assertEqual(len(titles), 1032, msg=f"{edition} outline count")
             for target in experiment_targets[edition]:
                 self.assertIn(target, subsection_ids)
                 # A reader-facing link, in addition to the hidden anchor probe.

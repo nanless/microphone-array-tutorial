@@ -256,6 +256,7 @@ body mjx-assistive-mml{width:1px!important;max-width:1px!important;min-width:0!i
 @media print{
 body{max-width:none;margin:0;padding:0}
 .chap{page-break-before:always}
+html[lang="zh-CN"] .toc .subsec{line-height:1.73}
 table{display:table;width:100%;table-layout:auto;max-width:100%}
 thead{display:table-header-group}
 tr{break-inside:avoid}

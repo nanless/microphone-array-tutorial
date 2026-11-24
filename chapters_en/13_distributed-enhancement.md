@@ -824,6 +824,45 @@ At the wireless hardware layer, transport technologies differ starkly in payload
 | **UWB** (IEEE 802.15.4z) | Several to tens of $\mathrm{Mbit/s}$ (short-range impulse radio) | Sub-millisecond short frames, low jitter | Nanosecond-grade hardware timestamps and centimeter-grade Two-Way Ranging (TWR) | Combines accurate node self-ranging with tight clock anchoring; ideal auxiliary link for multi-node geometric calibration and synchronization |
 | **Wired Ethernet AES67 / PTPv2** | Gigabit-LAN uncompressed $48\,\mathrm{kHz}$ PCM24 multichannel streams | Deterministic sub-ms to few-ms switched forwarding latency | Hardware PTPv2 grandmaster phase lock ($< 1\,\mu\mathrm{s}$, zero long-term SRO) | Negligible packet loss; industrial benchmark transport foundation for ceiling conference arrays, broadcast studios, and fixed distributed installations |
 
+<a id="clock-recovery-recordings"></a>
+
+#### Estimating and Reacquiring Clock Alignment in Three Phone Recordings
+
+The previous WAV example gives the receiver a known $+100\,\mathrm{ppm}$ offset. With independent devices the receiver may only have the audio recorded on each clock. If a source stays in one place, its propagation delay between the two channels stays nearly constant. Repeated measurements of the relative delay then reveal how quickly the sample clocks diverge.
+
+The example divides the reference and remote recordings into blocks of $8192$ samples, or $0.512\,\mathrm{s}$. A Hann window and GCC-PHAT over $300$–$4000\,\mathrm{Hz}$ give one correlation peak per block. The search covers $\pm128$ samples and discards weak peaks and peaks at the search boundary. The cross-spectrum multiplies the remote spectrum by the conjugate of the reference, so a positive lag means reading farther ahead in the remote array. For one source, write the measured lag at block center $n_i$ as $d_i \approx b+\varepsilon n_i$. The fit uses up to the 12 most recent valid peaks:
+
+$$
+\hat{\varepsilon}=\operatorname{median}_{i<j}\frac{d_j-d_i}{n_j-n_i},
+\qquad
+\hat b=\operatorname{median}_i(d_i-\hat{\varepsilon}n_i).
+$$
+
+The intercept includes the recording start offset and the fixed propagation delay. If the peak moves from $3.0$ to $3.8192$ samples over one block, the slope is $0.8192/8192=10^{-4}$, or $+100\,\mathrm{ppm}$. To correct it, linearly interpolate between the two remote samples around $m(n)=n+\hat b+\hat{\varepsilon}n$. The fixed-delay baseline holds the lag from the first fit at that fit's final block center.
+
+Block $i$ uses the fit from the end of the preceding block for interpolation. Once the current block arrives, its peak can veto the correction and update the fit for the next block. A missing block, an unreliable peak, or a lag prediction error over two samples discards the old fit and excludes the remote channel for that block. Reacquisition needs four valid observations and accepts a fitted slope within $\pm500\,\mathrm{ppm}$. Each block has a further $130$ remote-sample buffer, and an output sample requires both interpolation neighbors to have arrived. This example uses two-point interpolation and block-by-block tracking. The DWACD-inspired control in [E13-21](#e13-21) uses a different lag observation.
+
+The example marks zero-based blocks 12–14 missing without renumbering the samples. In all four comparisons below, blocks 15–18 rebuild the fit. The first aligned output can be released after block 19 and its buffer, $(5\times8192+130)/16000=2.568125\,\mathrm{s}$ after the gap ends. The block size, the four-observation requirement, and the output buffer determine this wait. Fewer observations would shorten it but leave fewer lags to estimate the slope.
+
+| Input and reference clock | Median applied rate estimate (ppm) | Fixed-delay center residual RMS (samples) | Updated-delay center residual RMS (samples) |
+|---|---:|---:|---:|
+| Synthetic, remote set to $+100\,\mathrm{ppm}$ | $+99.73$ | $10.4637$ | $0.0336$ |
+| Synthetic, remote set to $-75\,\mathrm{ppm}$ | $-74.86$ | $7.8231$ | $0.0287$ |
+| LibriWASN, Pixel 6a relative to Pixel 7 | $+2.76$ | $0.3248$ | $0.0249$ |
+| LibriWASN, Xiaomi relative to Pixel 7 | $-16.38$ | $1.4631$ | $0.1073$ |
+
+Here the residual is the GCC-PHAT observation for the accepted block minus the lag predicted using the preceding fit. The synthetic signals also supply independent ground truth. Against that truth, the predicted center-lag RMS errors are $0.0218$ and $0.0132$ samples, respectively. On the samples where both alignment methods have valid remote data, NMSE against the same clean waveform drops from $1.8828$ to $0.01047$ for $+100\,\mathrm{ppm}$ and from $1.8238$ to $0.01077$ for $-75\,\mathrm{ppm}$.
+
+The real recordings come from [LibriWASN 1.0.0](https://doi.org/10.5281/zenodo.7960972), the $200\,\mathrm{ms}$ room, $0\mathrm L$ session 8. Use original WAV indices $[770048,974848)$ for each of the three phones, corresponding to $[48.128,60.928)\,\mathrm{s}$ on the nominal file axes. The authors' activity annotation places this excerpt within one loudspeaker's activity interval. It selects the excerpt and does not enter the rate estimate. The recorded pairs contribute 14 and 12 accepted blocks, respectively, and the report lists weak-peak blocks separately. Since the phones have different acoustic paths and gains, the table measures relative lag tracking on this excerpt. An independent clock reference would be needed for absolute sampling rates, and a live packet trace would be needed for actual network recovery times. A moving speaker can also produce a gradual lag, so a slope from two audio channels alone is insufficient to distinguish motion from clock drift.
+
+Run the [example](../codes/chapters/ch13/examples/clock_recovery.py) from the repository root. The first command runs the fixed-seed synthetic comparisons. The second reads the authors' CC BY 4.0 archive or the extracted session `record` directory. The report includes the three WAV SHA-256 hashes and per-block estimates. The recordings are available from the original deposit.
+
+```bash
+.venv/bin/python -m codes.chapters.ch13.examples.clock_recovery
+.venv/bin/python -m codes.chapters.ch13.examples.clock_recovery --libriwasn "/path/to/LibriWASN_200_0L.zip"
+```
+
+
 #### Reproducible Entry Points and Audio Groups
 
 Core matrix and iterative solvers live in [`codes/chapters/ch13/core/distributed.py`](../codes/chapters/ch13/core/distributed.py), AES67/PTPv2 phase-budget and DASF constrained-subspace kernels in [`codes/chapters/ch13/core/dasf_and_ptp.py`](../codes/chapters/ch13/core/dasf_and_ptp.py), and synthetic audio/transport mismatch experiments in [`codes/chapters/ch13/core/distributed_audio.py`](../codes/chapters/ch13/core/distributed_audio.py). Note one transpose convention when reading the code: prose writes $\tilde{\vec x} = \mathbf T^H\vec x$ with tall column-full-rank $\mathbf T$, whereas the code accepts row-arranged observation mapping $\mathbf B = \mathbf T^H$ (complex broadcast $\vec f^H\vec x$ corresponds to conjugated row $\vec f^H$). For numerical conditioning and transient diagnostics, the solver normalizes nonzero compressed rows internally and records both normalized-coordinate and raw-broadcast local weights alongside two per-step states—each node's last-active proposal weight and its live effective weight recombined against the network's newest broadcasts—reproducing Fig. 66(a)'s cross-node transient mismatch spikes directly.
@@ -1155,6 +1194,8 @@ Because $L_u = 3 > P = 2$ retains $1$ noise-reduction DOF, sequential DASF-LCMV 
 #### E13-21: DWACD-Inspired Two-Window Cross-Spectrum Slope Control and Activity Gating
 
 The two-window controls here illustrate a drift phase slope and known activity gating. They do not implement the original DWACD coherence normalization, recursive state, or closed-loop synchronizer. PTP timestamps alone likewise do not lock an ADC: a hardware sample-clock servo must explicitly discipline the sampling clock, with offset, rate error, packet deadlines, and holdover measured separately.
+
+The [three phone recordings in §13.15](#clock-recovery-recordings) show how to interpolate after estimating the rate and how many blocks to wait before using the remote channel again after a gap.
 
 **Problem.** Following §13.15 Eq. (13-24)'s cross-PSD conjugation convention $\hat\Gamma_{12}[k,\ell] = \hat{\mathbb{E}}[X_1[k,\ell]\,X_2^*[k,\ell]]$, consider two asynchronous nodes with reference sampling rate $f_s = 16\,\mathrm{kHz}$, FFT size $N = 512$, hop $H = 256$ ($16\,\mathrm{ms}$), true relative SRO $\varepsilon = +100\,\mathrm{ppm} = 10^{-4}$ (Node 2 samples faster), and static acoustic TDOA $\tau_0 = 1.75$ samples. Construct two correlation segments of length $L_w = 100$ frames separated by nominal lag $B = 200$ frames ($B H / f_s = 3.2\,\mathrm{s}$), and estimate $\hat\varepsilon$ over bins $k \in [16, 128]$ ($500$–$4000\,\mathrm{Hz}$, $113$ bins) from the double-window product $P[k] = \bar\Gamma_{12}^{(2)}[k]\big(\bar\Gamma_{12}^{(1)}[k]\big)^*$ via WACD coherent inner-product peak search:
 

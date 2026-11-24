@@ -1322,7 +1322,7 @@ class BookmarkPlainTextAndPdfCssTest(unittest.TestCase):
                 for title, _sid, subsecs in secs:
                     titles.append(title)
                     titles.extend(sub for sub, _subid in subsecs)
-            self.assertEqual(len(titles), 1028, msg=f"{edition} outline count")
+            self.assertEqual(len(titles), 1029, msg=f"{edition} outline count")
             for raw in titles:
                 cleaned = build_pdf.bookmark_plain_text(raw)
                 self.assertNotIn("$", cleaned, msg=f"{edition}: {raw!r} -> {cleaned!r}")

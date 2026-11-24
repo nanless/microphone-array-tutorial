@@ -1064,6 +1064,27 @@ E_{\mathrm{tot}}
 
 Scoring that exact two-frame ID swap with `MOTA`: total ground-truth instances $\sum_t g_t=2+2=4$ have $\mathrm{FN}=\mathrm{FP}=0$ and per-frame $\mathrm{OSPA}=0^\circ$, yet both speakers swapping IDs on Frame 2 triggers $\mathrm{IDSW}_2=2$, reducing `MOTA` from $1.00$ down to $1-2/4=0.50$; if unshielded loudspeaker echo spawns an extra $-45^\circ$ false track on Frame 2 ($\mathrm{FP}_2=1$), `MOTA` drops further to $1-(2+1)/4=0.25$ (because false alarms are unbounded, `MOTA` can go negative under heavy clutter; see Exercise [E09-22](#e09-22); for balanced detection–association evaluation and full trajectory-set distances, see HOTA in [Luiten et al., 2021](https://doi.org/10.1007/s11263-020-01375-2) and [García-Fernández et al., 2020](https://arxiv.org/abs/1605.01177)).
 
+<a id="same-recording-front-end"></a>
+
+**Comparing enhancement and localization on one two-microphone recording.** Run the command below from the repository root. The [experiment](../codes/chapters/ch00/cross_chapter/front_end_recording.py) generates six seconds of 8 kHz, two-channel PCM16 audio and decodes it before running any stage. Two artificial noise sources have different envelopes. One moves on the right from $18^\circ$ to $42^\circ$, and the other stays on the left at $-32^\circ$. The microphones also receive echo from a shared playback reference and reflections delayed by about 32, 56, and 80 ms. The generator keeps the two direct components at the first microphone and the echo component at each microphone for waveform and echo scoring.
+
+```bash
+.venv/bin/python -m codes.chapters.ch00.cross_chapter.front_end_recording
+```
+
+In the first second, the near-end sources are silent and the microphones pick up playback echo and sensor noise. A 32-tap NLMS filter learns each microphone’s echo path in that interval. Once the near-end sources enter, the weights are frozen and the estimated playback echo continues to be subtracted. A 256-point STFT with a 64-sample hop converts the residual two-channel waveforms to spectra. One branch localizes directly or after two-channel WPE. Every 16 frames, SRP-PHAT provides a direction measurement in the $0^\circ$–$60^\circ$ sector on the right. The resulting Kalman estimates steer a delay-and-sum beamformer. The other branch passes the same WPE output and the synthesized sources' activity intervals to the guided separator from Chapter 8. The experiment processes the full recording offline and interpolates steering directions between observation centers.
+
+| First microphone or separated output | Right-source SI-SDR (dB) | Left-source SI-SDR (dB) |
+|---|---:|---:|
+| Original first-microphone mixture | −7.73 | −6.51 |
+| First microphone after AEC | −3.31 | −1.91 |
+| First microphone after AEC and WPE | −2.35 | −0.82 |
+| Activity-guided separation after AEC and WPE | 0.54 | 4.13 |
+
+Waveforms are scored over $[2,5.5)$ seconds against each source's direct component at the first microphone. In that interval, the known echo energy falls by 38.49 dB, measured from the difference between the true and estimated echoes. Direction error is scored separately at the 38 observation centers against the right-hand source's angle. After AEC alone, direction RMSE is $15.94^\circ$ before tracking and $16.17^\circ$ after. With WPE, it is $17.86^\circ$ before tracking and $18.06^\circ$ after. Over the same waveform scoring interval, adding WPE improves the tracked beamformer's right-source SI-SDR from $-1.83$ dB to $-0.72$ dB. Waveform error and angle error can move in opposite directions when both branches use the same WPE output. A separate multichannel feed for localization lets a system choose where to make that trade-off.
+
+If the pinned `ssspy` source is available as described in [Chapter 8](08_speech-separation.md#sec-8-7), add `--blind` to the same command. AuxIVA runs 20 iterations using only the two-channel spectra. With optimal matching against the direct references, mean SI-SDR goes from $-1.64$ dB after AEC alone to $2.90$ dB after AEC and WPE. The output order also changes, so a system that assigns a persistent slot to each talker still needs a separate identity-matching step.
+
 ### 9.5 Two-Microphone Free-Field Moving-Source Audio and Propagation Ground Truth
 
 #### Emission Time Versus Reception Time

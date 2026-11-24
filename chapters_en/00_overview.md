@@ -416,6 +416,8 @@ As you read across chapters, use the ten threads below to weave concepts scatter
 
 ## 8. Hands-On Reproduction
 
+To see how several stages act on the same audio, try the [two-microphone front-end experiment](09_source-tracking.md#same-recording-front-end). It compares waveform error through AEC, WPE, and separation on one PCM recording, then checks how WPE changes localization and tracking.
+
 The [`codes/`](../codes/chapters/README_EN.md) directory provides compact, equation-by-equation educational implementations for every chapter, and `scripts/` contains the generation scripts for all figures. We recommend running the baseline verification scripts first to check delay signs, matrix shapes, linear constraint residuals, and degenerate inputs before reproducing full experimental curves. Exact implementation scope across the repository is cataloged in the [Algorithm Coverage Matrix](../codes/chapters/ch00/COVERAGE_EN.md), and upstream open-source versions and licenses are recorded in [Third-Party Attributions](../codes/chapters/ch00/THIRD_PARTY_EN.md).
 
 If you landed on this page from the web, run `python3 -m venv .venv && .venv/bin/pip install -r requirements.txt` at the [repository root](../README_EN.md) first to create a Python virtual environment and install the pinned dependencies in [`requirements.txt`](../requirements.txt). Execute all commands below from the repository root (on Windows, replace `.venv/bin/python` with `.venv\Scripts\python`):

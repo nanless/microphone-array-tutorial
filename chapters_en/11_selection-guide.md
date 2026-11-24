@@ -1057,7 +1057,7 @@ Note that Eq. (11-22) takes the modulus of **complex difference** $H - 1$, never
 | MVDR, $\alpha=0.1$ | Fail | Unmeasured | Fail |
 | MVDR, $\alpha=1$ | Pass | Unmeasured | Undetermined |
 
-Although unloaded MVDR ($\alpha = 0$) posts the lowest total NMSE ($0.129625$) on paper, it amplifies sensor self-noise by $8.43\ \mathrm{dB}$ (failing WNG) and attenuates over $23\%$ of target amplitude under a $5^\circ$ offset (failing target fidelity), disqualifying it in Round 1. Within acoustically feasible set $\{ \mathrm{DS},\; \mathrm{MVDR}(\alpha=1) \}$, $\alpha = 1$ achieves substantially lower total NMSE ($0.767713$ vs. $0.962118$) and advances as the lead candidate for wideband causal realization and hardware latency benchmarking—yet until hardware latency evidence is collected, overall device status must remain `undetermined`.
+Although unloaded MVDR ($\alpha = 0$) posts the lowest total NMSE ($0.129625$) on paper, it amplifies sensor self-noise by $8.43\ \mathrm{dB}$ (failing WNG) and attenuates over $23\%$ of target amplitude under a $5^\circ$ offset (failing target fidelity), disqualifying it in Round 1. Within acoustically feasible set $\{ \mathrm{DS},\; \mathrm{MVDR}(\alpha=1) \}$, $\alpha = 1$ has the lower single-frequency NMSE ($0.767713$ versus $0.962118$). A wideband check follows below. Without a hardware latency measurement, the overall device status remains `undetermined`.
 
 ![Figure 74: Evaluating physical gains, acoustic hard constraints, and device evidence separately](../figures_en/fig74_selection_evidence.png)
 
@@ -1067,7 +1067,24 @@ Figure 74 synthesizes the entire chapter's selection philosophy across four pane
 
 - **Figure 74(a) Noise suppression versus self-cancellation penalty**: Although $\alpha=0$ achieves the shortest blue bar ($0.0751$), its black diamond hovers high above the bar top ($0.1296$), visualizing target self-cancellation power under $5^\circ$ mismatch; DS and $\alpha=1$ keep black diamonds flush against bar tops with negligible target loss.
 - **Figures 74(b) & (c) Dual acoustic hard-gate audit**: Horizontal dashed lines mark $\varepsilon_H \le 0.03$ and $\mathrm{WNG} \ge 0\ \mathrm{dB}$; $\alpha=0$ and $\alpha=0.1$ violate both redlines in red, leaving only green bars DS and $\alpha=1$ clear of both gates.
-- **Figure 74(d) Cross-model reminder and device three-state sign-off**: The summary separates isotropic diffuse DI ($\mathbf{\Gamma}$) from Panel (a)'s true-field noise power, while the final column underscores that even acoustic winner $\alpha=1$ remains `undetermined` at the system level until wideband causal filtering and on-device latency measurements are completed (for online weight recomputation after dead-channel faults, compare Chapter 10 [E10-26](10_engineering-practice.md#e10-26)).
+- **Figure 74(d) Cross-model reminder and device three-state sign-off**: The summary separates isotropic diffuse DI ($\mathbf{\Gamma}$) from Panel (a)'s true-field noise power, while the final column underscores that even $\alpha=1$, which passes the single-frequency acoustic screen, still lacks an on-device latency measurement (for online weight recomputation after dead-channel faults, compare Chapter 10 [E10-26](10_engineering-practice.md#e10-26)).
+
+<a id="e11-20-wideband"></a>
+
+**Repeat the selection over a wider band.** Keep the three microphone positions, the two directions, and the normalized signal powers at each frequency. Compute weights on a 4096-point grid at 16 kHz. Each microphone's filter response is its conjugated weight. Take a real inverse FFT, shift time zero to sample 64, retain the first 129 samples, and apply a Hamming window. The three inputs can now be summed through causal FIR filters. Remove the common 64-sample delay before evaluating target fidelity with $|H-1|$. Check both acoustic limits at each of the 794 bins within 300–3400 Hz.
+
+| Candidate | Minimum WNG (dB) | Maximum complex target response error | Equal-bin mean NMSE | Acoustic verdict |
+|---|---:|---:|---:|---|
+| DS | 4.771 | 0.01564 | 0.84468 | Pass |
+| MVDR, $\alpha=0$ | −13.660 | 0.24141 | 0.11553 | Fail |
+| MVDR, $\alpha=0.1$ | −3.955 | 0.21014 | 0.19056 | Fail |
+| MVDR, $\alpha=1$ | 2.874 | 0.12971 | 0.50137 | Fail |
+
+Loading with $\alpha=1$ passes at 1 kHz. In the wider band its target error reaches 0.12971 at about 3398 Hz, exceeding 0.03. Under this model and these limits, only DS reaches the next stage of acceptance. Applying a simultaneous digital impulse to all three inputs puts every beamformer's output peak at sample 64, or 4 ms. Checking the 150 ms device limit still requires the target three-microphone device and a common clock from acoustic excitation to enhanced output, including capture, buffering, and delivery. Use the [measurement procedure in Chapter 10](10_engineering-practice.md#sec-10-1) to place the probes, then record callbacks and outputs to distinguish fixed latency from jitter.
+
+```bash
+.venv/bin/python -m codes.chapters.ch11.examples.wideband_selection
+```
 
 <a id="e11-21"></a>
 

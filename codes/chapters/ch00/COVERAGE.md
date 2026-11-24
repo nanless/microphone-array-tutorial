@@ -467,6 +467,10 @@
 | 专题Ⅳ §15.1～15.2 | 目标说话人提取多模态线索构造与流式推理接口 | 外部参考实现 | `wesep`：`runtime/separate/separate_engine.h`、`examples/spatial/mc_librimix/local/build_spatial_cues.py`、`examples/audio/librimix/local/build_audio_cues.py` | Apache-2.0固定纯文本选集已取得；不含权重与语料，未安装执行 |
 | §10.7、专题Ⅲ §14.9 | 超轻量分组时域卷积循环增强与因果流式缓存参考 | 外部参考实现 | `gtcrn`：`gtcrn.py`、`stream/gtcrn_stream.py`、`stream/modules/convolution.py` | MIT固定纯文本选集已取得；不含权重与音频，未执行推理 |
 
+跨章的[双麦前端对照](cross_chapter/front_end_recording.py)用同一段合成 PCM 串接第 6～9 章已有实现。第 11 章的[宽带选型对照](../ch11/examples/wideband_selection.py)复用第 5 章权重求解器，将 E11-20 的单频比较扩展为因果 FIR 的通带复核。
+
+[LOCATA 对照](../ch05/examples/locata_estimated_steering.py)把第 4 章 SRP-PHAT 的估计方位用于第 5 章 DSB 和 MVDR。第 13 章 [LibriWASN 对照](../ch13/examples/clock_recovery.py)比较固定时差和逐块更新的重采样。第 15 章 [转写对照](../ch15/examples/score_meeting_transcripts.py)调用 MeetEval 评分，与外部识别系统分开运行。
+
 ## 章节代码练习与音频映射
 
 全书共 360 道代码练习（`E00-01`～`E17-13`）与 87 张编号图（含第 0 章图 84～87），练习使用稳定 ID。下表只登记学习入口，不改变上面的 388 行算法统计（其中第 0 章 `codes/chapters/ch00/core/chapter00_math.py` 与 `chapter00_exercises.py` 承载全书共用的 16 道数学与信号分析预备练习，不重复计作新的阵列估计算法行）。补充的空间精算、增强步骤、时间状态模块分别提供 3/4/4 道题，双耳波束另有 3 道题。三个原有 `exercises_` 模块各自提供 `run_exercises()`，分别有 25/22/25 道题；AEC 边界小例另有 1 道，进阶 AEC 手算另有 3 道；E03-07、E04-08、E09-06 与 E10-13 由独立实验入口提供。E04-08 的 200 次独立双源抽样只说明固定模型中的分辨事件频率和 Wilson 区间。E04-04 是固定矩阵的前向空间平滑演示，不扩称为支持任意阵列的公共估计接口。

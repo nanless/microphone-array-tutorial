@@ -39,6 +39,10 @@
 
 `DSB target response` 和 `MVDR target response` 应接近 1；STFT 重建误差接近浮点舍入。极高的匹配无噪声 AEC ERLE 是算术收敛检查，队列示例中的超期次数则来自构造的负载，二者均不代表设备测量。完整核对步骤见导读。
 
+运行 [双麦前端实验](ch00/cross_chapter/front_end_recording.py) 可以在同一段合成双麦信号上比较回声消除、去混响、分离和追踪，入口为 `.venv/bin/python -m codes.chapters.ch00.cross_chapter.front_end_recording`。运行 `.venv/bin/python -m codes.chapters.ch11.examples.wideband_selection` 可复算 [E11-20 的宽带 FIR 选型](../../chapters/11_selection-guide.md#e11-20-wideband)。
+
+[LOCATA 方位与波束对照](ch05/examples/locata_estimated_steering.py) 从官方开发集的同一段录音估方向，再比较估计方位和动捕导向。第 13 章的[手机时钟实验](ch13/examples/clock_recovery.py)默认运行合成真值对照，加 `--libriwasn` 可读取公开实录。第 15 章的[转写评分入口](ch15/examples/score_meeting_transcripts.py)用同一份参考转写比较多套输出。
+
 旧的 `codes.examples.*` 和 `codes.array_tutorial.*` 导入路径已经退出仓内接口。运行时使用上表中的章节模块；修改题目时改唯一真实源文件，再核对全书 360 个稳定练习 ID、对应章节和覆盖表。
 
 E10-17 的变长回调时序在 [跨章工程边界入口](ch00/cross_chapter/engineering_boundary_exercises.py) 内复算。 [MacBook Air 单麦实测](ch10/examples/macbook_audio_latency/README.md)提供原生测量程序、回调时间戳日志和逐次声学偏移。第 11 章统一入口的 E11-11 同时报迟到、未交付、分场景分母和合并结果；[R01 实录](ch02/real_audio/README.md)另用于检查整段和最差窗口的区别。

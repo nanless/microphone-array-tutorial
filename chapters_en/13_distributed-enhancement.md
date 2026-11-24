@@ -1195,7 +1195,7 @@ Because $L_u = 3 > P = 2$ retains $1$ noise-reduction DOF, sequential DASF-LCMV 
 
 The two-window controls here illustrate a drift phase slope and known activity gating. They do not implement the original DWACD coherence normalization, recursive state, or closed-loop synchronizer. PTP timestamps alone likewise do not lock an ADC: a hardware sample-clock servo must explicitly discipline the sampling clock, with offset, rate error, packet deadlines, and holdover measured separately.
 
-The [three phone recordings in §13.15](#clock-recovery-recordings) show how to interpolate after estimating the rate and how many blocks to wait before using the remote channel again after a gap.
+The [three phone recordings in §13.15](#sec-u-016fd7e9db) show how to interpolate after estimating the rate and how many blocks to wait before using the remote channel again after a gap.
 
 **Problem.** Following §13.15 Eq. (13-24)'s cross-PSD conjugation convention $\hat\Gamma_{12}[k,\ell] = \hat{\mathbb{E}}[X_1[k,\ell]\,X_2^*[k,\ell]]$, consider two asynchronous nodes with reference sampling rate $f_s = 16\,\mathrm{kHz}$, FFT size $N = 512$, hop $H = 256$ ($16\,\mathrm{ms}$), true relative SRO $\varepsilon = +100\,\mathrm{ppm} = 10^{-4}$ (Node 2 samples faster), and static acoustic TDOA $\tau_0 = 1.75$ samples. Construct two correlation segments of length $L_w = 100$ frames separated by nominal lag $B = 200$ frames ($B H / f_s = 3.2\,\mathrm{s}$), and estimate $\hat\varepsilon$ over bins $k \in [16, 128]$ ($500$–$4000\,\mathrm{Hz}$, $113$ bins) from the double-window product $P[k] = \bar\Gamma_{12}^{(2)}[k]\big(\bar\Gamma_{12}^{(1)}[k]\big)^*$ via WACD coherent inner-product peak search:
 

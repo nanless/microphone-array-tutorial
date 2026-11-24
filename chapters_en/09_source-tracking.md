@@ -1066,7 +1066,9 @@ Scoring that exact two-frame ID swap with `MOTA`: total ground-truth instances $
 
 <a id="same-recording-front-end"></a>
 
-**Comparing enhancement and localization on one two-microphone recording.** Run the command below from the repository root. The [experiment](../codes/chapters/ch00/cross_chapter/front_end_recording.py) generates six seconds of 8 kHz, two-channel PCM16 audio and decodes it before running any stage. Two artificial noise sources have different envelopes. One moves on the right from $18^\circ$ to $42^\circ$, and the other stays on the left at $-32^\circ$. The microphones also receive echo from a shared playback reference and reflections delayed by about 32, 56, and 80 ms. The generator keeps the two direct components at the first microphone and the echo component at each microphone for waveform and echo scoring.
+#### Comparing enhancement and localization on one two-microphone recording
+
+Run the command below from the repository root. The [experiment](../codes/chapters/ch00/cross_chapter/front_end_recording.py) generates six seconds of 8 kHz, two-channel PCM16 audio and decodes it before running any stage. Two artificial noise sources have different envelopes. One moves on the right from $18^\circ$ to $42^\circ$, and the other stays on the left at $-32^\circ$. The microphones also receive echo from a shared playback reference and reflections delayed by about 32, 56, and 80 ms. The generator keeps the two direct components at the first microphone and the echo component at each microphone for waveform and echo scoring.
 
 ```bash
 .venv/bin/python -m codes.chapters.ch00.cross_chapter.front_end_recording

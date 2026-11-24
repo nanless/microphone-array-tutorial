@@ -416,7 +416,7 @@
 
 ## 8. 动手复现
 
-想看几种算法如何作用于同一段声音，可以接着做[双麦前端实验](09_source-tracking.md#same-recording-front-end)。实验用同一段 PCM 比较 AEC、WPE 和分离的波形误差，同时检查 WPE 前后的定位和追踪误差。
+想看几种算法如何作用于同一段声音，可以接着做[双麦前端实验](09_source-tracking.md#sec-u-c88468b903)。实验用同一段 PCM 比较 AEC、WPE 和分离的波形误差，同时检查 WPE 前后的定位和追踪误差。
 
 [`codes/`](../codes/chapters/README.md) 目录提供与各章公式一一对应的小规模教学实现，`scripts/` 目录包含全部插图的生成脚本。建议先运行基础脚本核对时延符号、矩阵维度、线性约束残差和边界输入，再进一步复现各章的完整实验曲线。各算法在仓库中的实现范围汇总于[算法覆盖表](../codes/chapters/ch00/COVERAGE.md)，所引用的第三方开源仓库版本与许可证说明记录于[第三方记录](../codes/chapters/ch00/THIRD_PARTY.md)。
 

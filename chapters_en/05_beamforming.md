@@ -272,7 +272,9 @@ Within these single-talker scoring windows, MVDR reduces band-integrated total p
 
 <a id="locata-estimated-steering"></a>
 
-**Steering with the estimated direction.** Take $+34^\circ$ from the $[2.59,2.82)\ \mathrm{s}$ scan in [Chapter 4 §4.3](04_doa-estimation.md#sec-4-3) and compute plane-wave delays relative to Mic 7. Turn those delays into frequency-dependent steering vectors for DSB and loaded MVDR. Repeating the calculation with the optical azimuth of $+33.64^\circ$ shows how much the angle estimate changes the result with the same propagation model. Using the optical position for spherical-wave delays gives a second comparison with the beamformers above. The four MVDR runs share the B-only covariance estimate, diagonal loading, and frequency tapers.
+#### Steering with the estimated direction
+
+Take $+34^\circ$ from the $[2.59,2.82)\ \mathrm{s}$ scan in [Chapter 4 §4.3](04_doa-estimation.md#sec-4-3) and compute plane-wave delays relative to Mic 7. Turn those delays into frequency-dependent steering vectors for DSB and loaded MVDR. Repeating the calculation with the optical azimuth of $+33.64^\circ$ shows how much the angle estimate changes the result with the same propagation model. Using the optical position for spherical-wave delays gives a second comparison with the beamformers above. The four MVDR runs share the B-only covariance estimate, diagonal loading, and frequency tapers.
 
 Score the beams on a separate A-only interval, $[2.86,3.10)\ \mathrm{s}$, and the original B-only interval, $[4.08,4.68)\ \mathrm{s}$. Convert all channels to PCM16 at the same gain and integrate $300$–$3400\ \mathrm{Hz}$ power with the same Hann weighting. Each entry is the power change in dB relative to raw Mic 7 in the same window. The last row subtracts $20^\circ$ from the estimated angle to illustrate a larger pointing error.
 

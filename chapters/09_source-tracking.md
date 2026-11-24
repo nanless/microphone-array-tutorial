@@ -1066,7 +1066,9 @@ E_{\mathrm{tot}}
 
 <a id="same-recording-front-end"></a>
 
-**用一段双麦信号比较增强和定位。** 在仓库根目录运行下列命令。[实验源码](../codes/chapters/ch00/cross_chapter/front_end_recording.py)以 8 kHz 生成 6 秒双麦 PCM16，再解码交给各个模块。两路近端声源是包络不同的人工噪声，一路从右侧 $18^\circ$ 移到 $42^\circ$，另一路位于左侧 $-32^\circ$。麦克风还收到同一播放参考形成的回声，以及延后约 32、56、80 ms 的反射。程序另存两路在第 1 麦的直达分量和各麦的回声分量，分别用于波形和回声评分。
+#### 用一段双麦信号比较增强和定位
+
+在仓库根目录运行下列命令。[实验源码](../codes/chapters/ch00/cross_chapter/front_end_recording.py)以 8 kHz 生成 6 秒双麦 PCM16，再解码交给各个模块。两路近端声源是包络不同的人工噪声，一路从右侧 $18^\circ$ 移到 $42^\circ$，另一路位于左侧 $-32^\circ$。麦克风还收到同一播放参考形成的回声，以及延后约 32、56、80 ms 的反射。程序另存两路在第 1 麦的直达分量和各麦的回声分量，分别用于波形和回声评分。
 
 ```bash
 .venv/bin/python -m codes.chapters.ch00.cross_chapter.front_end_recording

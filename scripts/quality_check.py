@@ -173,11 +173,11 @@ EXPECTED_SUBSECTION_COUNTS = {
     "02_basics-signal-model.md": 48,
     "03_array-geometry.md": 33,
     "04_doa-estimation.md": 45,
-    "05_beamforming.md": 40,
+    "05_beamforming.md": 41,
     "06_aec.md": 62,
     "07_wpe-dereverberation.md": 55,
     "08_speech-separation.md": 59,
-    "09_source-tracking.md": 59,
+    "09_source-tracking.md": 60,
     "10_engineering-practice.md": 51,
     "11_selection-guide.md": 39,
     "12_acoustic-imaging.md": 68,
@@ -228,8 +228,8 @@ EXPECTED_LEGACY_ROUTES = {
     "17_target-extraction-diarization.html": "15_target-extraction-diarization.html",
 }
 EXPECTED_SECTION_COUNT = 173
-EXPECTED_SUBSECTION_COUNT = 837
-EXPECTED_OUTLINE_ITEM_COUNT = 1029
+EXPECTED_SUBSECTION_COUNT = 839
+EXPECTED_OUTLINE_ITEM_COUNT = 1031
 EXPECTED_FIGURE_NUMBERS = set(range(1, 88))
 # Independent publication catalog; update explicitly when numbered figures change.
 EXPECTED_FIGURES = (

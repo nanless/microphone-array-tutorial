@@ -1313,16 +1313,26 @@ class BookmarkPlainTextAndPdfCssTest(unittest.TestCase):
 
     def test_all_zh_and_en_headings_sanitize_without_tex_tokens(self):
         build_pdf_en = load("build_pdf_en", ROOT / "scripts" / "build_pdf_en.py")
-        _, zh_outline = build_pdf.build_html(build_date="2026-10-05")
-        _, en_outline = build_pdf_en.build_html_en(build_date="2026-10-05")
-        for edition, outline in (("zh", zh_outline), ("en", en_outline)):
+        zh = build_pdf.build_html(build_date="2026-10-05")
+        en = build_pdf_en.build_html_en(build_date="2026-10-05")
+        experiment_targets = {
+            "zh": ("ch-5-sec-u-0cbc569e6a", "ch-9-sec-u-c88468b903", "ch-15-sec-u-6136ceaff8"),
+            "en": ("ch-5-sec-u-0cde8371d9", "ch-9-sec-u-0bc468f4ae", "ch-15-sec-u-016fd7e9db"),
+        }
+        for edition, (html, outline) in (("zh", zh), ("en", en)):
             titles = []
+            subsection_ids = set()
             for label, _cid, secs in outline:
                 titles.append(label)
                 for title, _sid, subsecs in secs:
                     titles.append(title)
                     titles.extend(sub for sub, _subid in subsecs)
-            self.assertEqual(len(titles), 1029, msg=f"{edition} outline count")
+                    subsection_ids.update(subid for _sub, subid in subsecs)
+            self.assertEqual(len(titles), 1031, msg=f"{edition} outline count")
+            for target in experiment_targets[edition]:
+                self.assertIn(target, subsection_ids)
+                # A reader-facing link, in addition to the hidden anchor probe.
+                self.assertRegex(html, rf'<a href="#{target}">[^.][^<]*</a>')
             for raw in titles:
                 cleaned = build_pdf.bookmark_plain_text(raw)
                 self.assertNotIn("$", cleaned, msg=f"{edition}: {raw!r} -> {cleaned!r}")

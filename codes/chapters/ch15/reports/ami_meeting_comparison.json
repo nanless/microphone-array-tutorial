@@ -14,7 +14,7 @@
     ],
     "sample_rate_hz": 16000,
     "audio_format": "mono PCM16 little-endian per microphone",
-    "selection": "First three excerpts in published cutset order with duration 8–30 s, exactly two speakers, at least 1 s solo for each, and at least 0.2 s overlap. Speech turns and reference text are the cutset supervisions.",
+    "selection": "First three ES2011a excerpts in published cutset order with duration 8–30 s, exactly two speakers, at least 1 s solo for each, and at least 0.2 s overlap. Speech turns and reference text are the cutset supervisions.",
     "input_transformation": "Sample-exact half-open crop, no resampling or gain changes."
   },
   "clips": [

@@ -365,6 +365,10 @@ Sharpening localization along range requires expanding the array aperture. Figur
 
 **Grid quantization error bound**: Grid step $\Delta$ is *not* an error "lower bound"—if the true source lands directly on a grid node, quantization error is $0$. On a 1D uniform grid $\{0^\circ,2^\circ,4^\circ\}$ ($\Delta=2^\circ$), true angles $2^\circ,2.5^\circ,3^\circ$ have nearest-grid errors of $0^\circ,0.5^\circ,1^\circ$, so the ideal nearest-grid maximum quantization bias is bounded above by $\Delta/2$; under reverberation when a wrong side peak wins, actual errors can far exceed $\Delta/2$.
 
+**Estimating a steering angle from a real recording.** Use the first DICIT recording from Task 2 of the [LOCATA development set](https://zenodo.org/records/3630471). The activity labels identify when loudspeaker A is speaking alone. Take $[2.59,2.82)\ \mathrm{s}$ from that interval and use the 15 nominal microphone positions in Table 1 of the [LOCATA release documentation](https://www.locata.lms.tf.fau.de/files/2020/01/Documentation_LOCATA_final_release_V1.pdf) to predict the delays. With 1024-sample windows and a hop of 512 samples, 20 complete frames fit inside the interval. Use their $375$–$3000\ \mathrm{Hz}$ bins to scan the forward sector from $-90^\circ$ to $+90^\circ$ in one-degree steps. Measured from the array’s $+y$ axis toward $+x$, the peak is at $+34^\circ$. The optical position gives $+33.64^\circ$ when expressed in array coordinates. The scan uses the given sector and single-speaker interval, and the optical data supply the comparison angle.
+
+Pass $+34^\circ$ to the [recording comparison in Chapter 5](05_beamforming.md#locata-estimated-steering). Score it on another A-only excerpt and a B-only excerpt from the same recording. The scan estimates horizontal azimuth, so the comparison also checks what happens when the beamformer uses measured source-to-microphone distances.
+
 > When direct-path TDOAs for every pair have already been reliably extracted and associated with a single source, we can switch to the algebraic two-stage geometric solvers of Section 4.4.
 
 ### 4.4 Geometric Solvers for Two-Stage Localization

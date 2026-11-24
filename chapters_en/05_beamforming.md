@@ -270,6 +270,28 @@ $\alpha_{\mathrm{dl}}$ forms a continuous dial between purely data-driven MVDR (
 
 Within these single-talker scoring windows, MVDR reduces band-integrated total power relative to DSB by $7.42\ \mathrm{dB}$ in window B and $0.86\ \mathrm{dB}$ in window A. Each includes direct speech, reflections, and ambient noise. Total power alone therefore identifies neither clean-target loss nor how much of the reduction comes from dereverberation or denoising; component fidelity requires a clean reference or additional model evidence (interactive audio in the [Overview Audio Index](00_overview.md#audio-assets)).
 
+<a id="locata-estimated-steering"></a>
+
+**Steering with the estimated direction.** Take $+34^\circ$ from the $[2.59,2.82)\ \mathrm{s}$ scan in [Chapter 4 §4.3](04_doa-estimation.md#sec-4-3) and compute plane-wave delays relative to Mic 7. Turn those delays into frequency-dependent steering vectors for DSB and loaded MVDR. Repeating the calculation with the optical azimuth of $+33.64^\circ$ shows how much the angle estimate changes the result with the same propagation model. Using the optical position for spherical-wave delays gives a second comparison with the beamformers above. The four MVDR runs share the B-only covariance estimate, diagonal loading, and frequency tapers.
+
+Score the beams on a separate A-only interval, $[2.86,3.10)\ \mathrm{s}$, and the original B-only interval, $[4.08,4.68)\ \mathrm{s}$. Convert all channels to PCM16 at the same gain and integrate $300$–$3400\ \mathrm{Hz}$ power with the same Hann weighting. Each entry is the power change in dB relative to raw Mic 7 in the same window. The last row subtracts $20^\circ$ from the estimated angle to illustrate a larger pointing error.
+
+| Steering | DSB, A Window | DSB, B Window | MVDR, A Window | MVDR, B Window |
+|---|---:|---:|---:|---:|
+| Estimated azimuth, plane wave | −5.87 | −6.13 | −5.26 | −15.39 |
+| Optical azimuth, plane wave | −5.88 | −6.09 | −5.24 | −15.31 |
+| Optical position, spherical wave | −3.55 | −8.96 | −4.87 | −16.38 |
+| Estimated azimuth minus $20^\circ$, plane wave | −5.00 | −7.01 | −6.00 | −15.42 |
+
+With the same plane-wave model, the two azimuths give power changes that differ by less than $0.08\ \mathrm{dB}$ in all four comparisons. Using the measured distances for DSB raises the A-window power by about $2.32\ \mathrm{dB}$ and lowers the B-window power by about $2.83\ \mathrm{dB}$ compared with steering by the estimated azimuth. This is why the distances are worth checking even when the azimuth is close. When deliberately mispointed, MVDR lowers the B-window power by just another $0.03\ \mathrm{dB}$ while also lowering the A-window power by about $0.74\ \mathrm{dB}$. The B window alone would miss that change. Both windows include reflections and background noise, so the table gives combined output powers for the designated intervals.
+
+To reproduce the comparison, extract `dev/task2/recording1/` from the [LOCATA development set](https://zenodo.org/records/3630471) `dev.zip`, preserving the leading `dev/` directory. Install FFmpeg and run the [recording example](../codes/chapters/ch05/examples/locata_estimated_steering.py) from the repository root. Replace `/path/to/locata` with the directory containing `dev/`.
+
+```bash
+.venv/bin/python -m codes.chapters.ch05.examples.locata_estimated_steering \
+    /path/to/locata
+```
+
 #### 5.4.1 Robust Beamforming Methods
 
 Practical beamformer mismatch stems from four root causes: **A. steering-vector mismatch**, **B. finite-snapshot covariance error**, **C. coherent interference / strong early reflections**, and **D. target leakage into $\hat{\mathbf R}_{nn}$ causing self-cancellation**. Beyond fixed diagonal loading, four classical hardening routes apply:

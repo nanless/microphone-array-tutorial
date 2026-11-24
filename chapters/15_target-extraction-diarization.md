@@ -604,11 +604,11 @@ $$\mathrm{cpWER}
 
 可以先用已经发布的转写练习复评分。[BUT/JHU 公布的转写与参考](https://github.com/BUTSpeechFIT/error_correction_playground/tree/193dbab42a0ffc7532dd2dc567b7750d7a5c13de/datasets/NOTSOFAR-1/GT_diar_v1)取自 NOTSOFAR-1 eval-small 的 160 个单通道会话，它们由真实录音生成，给识别器使用的是标注说话人活动。用 [评分脚本](../codes/chapters/ch15/examples/score_meeting_transcripts.py)读取这些已规范化的转写，共 235,740 个参考词。5 秒容差下，tcpWER 按会话平均为 20.86%，与作者报告一致。若先相加全部 51,532 个编辑错误再除以总参考词数，则为 21.86%。两种算法给长会话的权重不同，比较方案时要固定一种。这里的输入、划分和日志来源与上表不同。
 
-下载上述固定提交到仓库外，把 `results` 指向其中的 `datasets/NOTSOFAR-1/GT_diar_v1`。在单独的 Python 环境安装 `meeteval==0.4.3` 和 `simplejson==3.20.2`，再从本书仓库根目录运行：
+下载上述固定提交到仓库外，把命令里的 `/path/to/GT_diar_v1` 换成其中 `datasets/NOTSOFAR-1/GT_diar_v1` 的实际路径。在单独的 Python 环境安装 `meeteval==0.4.3` 和 `simplejson==3.20.2`，再从本书仓库根目录运行：
 
     python -m codes.chapters.ch15.examples.score_meeting_transcripts \
-        --reference "$results"/*/ref.json \
-        --hypothesis but-jhu "$results"/*/tcp_wer_hyp.json
+        --reference "/path/to/GT_diar_v1"/*/ref.json \
+        --hypothesis but-jhu "/path/to/GT_diar_v1"/*/tcp_wer_hyp.json
 
 比较自己的转写时，可以为每套系统追加一个 `--hypothesis`。参考和预测先采用同样的文本规范化，各套转写要覆盖同一批会话。整场无输出时，仍需为该会话保留一条 SegLST 记录：填入其 `session_id`、说话人占位及有效的起止时间，把 `words` 留为空字符串。评分会把该会话的参考词全部记为删除。脚本会列出插入、删除和替换计数，并同时给出等权会话平均和按词汇总的结果。
 

@@ -604,11 +604,11 @@ The GSS cascade scored 3.6 percentage points lower than the Large FDDT system in
 
 For a scoring exercise, use the [transcripts and references released by BUT/JHU](https://github.com/BUTSpeechFIT/error_correction_playground/tree/193dbab42a0ffc7532dd2dc567b7750d7a5c13de/datasets/NOTSOFAR-1/GT_diar_v1) for 160 single-channel NOTSOFAR-1 eval-small sessions. The transcripts come from real recordings, with annotated speaker activity supplied to the recognizer. The [scoring script](../codes/chapters/ch15/examples/score_meeting_transcripts.py) reads these pre-normalized transcripts and references, which contain 235,740 reference words. With a five-second collar, the session mean is 20.86% tcpWER, matching the authors’ reported result. Pooling the 51,532 edits before dividing by the total reference word count gives 21.86%. The two averages weight long sessions differently. Use a single aggregation method when comparing systems. This example uses a different split, channel condition, and source of speaker activity from the table above.
 
-Check out the linked revision outside this repository and set `results` to its `datasets/NOTSOFAR-1/GT_diar_v1` directory. Install `meeteval==0.4.3` and `simplejson==3.20.2` in a separate Python environment, then run from the tutorial root:
+Check out the linked revision outside this repository. In the command below, replace `/path/to/GT_diar_v1` with the path to its `datasets/NOTSOFAR-1/GT_diar_v1` directory. Install `meeteval==0.4.3` and `simplejson==3.20.2` in a separate Python environment, then run from the tutorial root:
 
     python -m codes.chapters.ch15.examples.score_meeting_transcripts \
-        --reference "$results"/*/ref.json \
-        --hypothesis but-jhu "$results"/*/tcp_wer_hyp.json
+        --reference "/path/to/GT_diar_v1"/*/ref.json \
+        --hypothesis but-jhu "/path/to/GT_diar_v1"/*/tcp_wer_hyp.json
 
 To compare your own transcripts, add one `--hypothesis` argument per system. Use the same text normalization for the references and hypotheses, and include the same sessions in every set. If a system returns no words for an entire session, keep one SegLST row with that `session_id`, a speaker placeholder, valid start and end times, and an empty `words` string. The scorer then counts every reference word in that session as a deletion. The script reports insertion, deletion, and substitution counts, plus both the session mean and the pooled word error rate.
 

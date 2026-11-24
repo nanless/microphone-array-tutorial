@@ -45,7 +45,7 @@
 
 第 13 章的[手机时钟实验](ch13/examples/clock_recovery.py)默认运行合成真值对照，加 `--libriwasn` 可读取公开实录。对同一录音可再跑[原版 DWACD](ch13/examples/dwacd_recording.py)，另用[包迹例程](ch13/examples/network_clock_trace.py)比较 DUST 两种播放缓冲和本机 UDP 接收。
 
-第 15 章的 [AMI 实录对照](ch15/examples/ami_meeting_comparison.py)从已下载的两条阵列声道截取三个统一时段，跑两麦 GSS 和单麦对照，再与 [SOT 输出](ch15/examples/run_ami_sot.py)按同一份参考评分。用相应的 Python 环境从仓库根目录运行 `python -m codes.chapters.ch15.examples.ami_meeting_comparison --help` 或 `python -m codes.chapters.ch15.examples.run_ami_sot --help`。[结果文件](ch15/reports/ami_meeting_comparison.json)列出原始录音、分段、模型版本及逐段错数。另可用[转写评分入口](ch15/examples/score_meeting_transcripts.py)复评分已发布的 NOTSOFAR 转写。
+第 15 章的 [AMI 实录对照](ch15/examples/ami_meeting_comparison.py)从已下载的两条阵列声道截取三个统一时段，跑两麦 GSS、单麦对照和 `dicow`，再与 [SOT 输出](ch15/examples/run_ami_sot.py)按同一份参考评分。用相应的 Python 环境从仓库根目录运行 `python -m codes.chapters.ch15.examples.ami_meeting_comparison --help` 或 `python -m codes.chapters.ch15.examples.run_ami_sot --help`。[结果文件](ch15/reports/ami_meeting_comparison.json)列出原始录音、分段、模型版本及逐段错数。另可用[转写评分入口](ch15/examples/score_meeting_transcripts.py)复评分已发布的 NOTSOFAR 转写。
 
 旧的 `codes.examples.*` 和 `codes.array_tutorial.*` 导入路径已经退出仓内接口。运行时使用上表中的章节模块；修改题目时改唯一真实源文件，再核对全书 360 个稳定练习 ID、对应章节和覆盖表。
 

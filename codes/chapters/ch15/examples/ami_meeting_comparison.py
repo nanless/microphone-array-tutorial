@@ -130,7 +130,7 @@ def prepare(clips, original, destination):
             path = original / f"ES2011a.Array1-{channel:02}.wav"
             data = read_pcm(path, clip.start, clip.samples)
             cuts[clip_path(destination, clip, channel)] = require_clip_pcm(data, clip, channel)
-    if any(path.exists() for path in cuts):
+    if any(path.is_symlink() or path.exists() for path in cuts):
         raise FileExistsError("Use a fresh destination for these AMI excerpts")
     for path, data in cuts.items():
         with path.open("xb") as stream, wave.open(stream, "wb") as output:

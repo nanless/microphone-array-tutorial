@@ -2,7 +2,7 @@
 <link rel="canonical" href="13_distributed-enhancement.html"><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 13 章 · 分布式麦克风协同增强 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="9112c8713651"><style>
+<meta name="source-digest" content="3a3a6370f012"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -1260,11 +1260,89 @@ $$</p>
 .venv/bin/python -m codes.chapters.ch13.examples.clock_recovery \
     --libriwasn &quot;/路径/LibriWASN_200_0L.zip&quot;
 </code></pre>
+<p><strong>用原版 DWACD 估计，再用原版重采样补偿。</strong> 在同三部手机的这段录音上，用 <a href="https://github.com/fgnt/paderwasn/tree/cd7054fcf72da637e4a5e11f035e8979691faf70">Paderwasn 原实现</a> 的 <code>DynamicWACD</code> 估计相对频偏。活动标签只用于选取单讲区间，区间内的两路活动标记全设为真。默认参数每隔 2048 点比较相距 8192 点的两个窗。每个窗长 8192 点。这段录音的前 40 对窗都通过活动门槛，因此第一项估计要到摘录第 96256 个样点收完才可给出，即开始后 $6.016\,\mathrm{s}$。原函数最后返回的数组会把这个值填到更早的位置，读数组时不能用这些位置推算首次可用时刻。</p>
+<p>只用前 16 块（8.192 秒）估频偏，取达到上述门槛后的估计中位数，再用原 <code>compensate_sro</code> 重采样。比较第 16～23 块时，按各块中心的 GCC-PHAT 时差拟合直线，看重采样前后的斜率，最后一块留给重采样边界。斜率衡量时差怎样漂移，起录时差与固定声程差还留在截距里。</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
+<thead>
+<tr>
+<th scope="col">输入及参考时钟</th>
+<th scope="col" style="text-align: right;">DWACD 估计（ppm）</th>
+<th scope="col" style="text-align: right;">补偿前时差斜率（ppm）</th>
+<th scope="col" style="text-align: right;">补偿后时差斜率（ppm）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>合成，远端设为 $+100\,\mathrm{ppm}$</td>
+<td style="text-align: right;">$+100.50$</td>
+<td style="text-align: right;">$+100.11$</td>
+<td style="text-align: right;">$-0.51$</td>
+</tr>
+<tr>
+<td>合成，远端设为 $-75\,\mathrm{ppm}$</td>
+<td style="text-align: right;">$-75.10$</td>
+<td style="text-align: right;">$-74.85$</td>
+<td style="text-align: right;">$+0.09$</td>
+</tr>
+<tr>
+<td>LibriWASN，Pixel 6a 相对 Pixel 7</td>
+<td style="text-align: right;">$+3.21$</td>
+<td style="text-align: right;">$+4.00$</td>
+<td style="text-align: right;">$+0.08$</td>
+</tr>
+<tr>
+<td>LibriWASN，小米手机相对 Pixel 7</td>
+<td style="text-align: right;">$-15.16$</td>
+<td style="text-align: right;">$-15.51$</td>
+<td style="text-align: right;">$-1.68$</td>
+</tr>
+</tbody>
+</table></div>
+<p>活动标签不齐时，原程序还有一个切片边界值得核对。只保留一对窗，把参考侧标为全活动，把远端早窗标为全静音、晚窗标为全活动，并把首次估计的门槛改成一对窗。按早窗本身计算，活动点数应为 0。原程序却把远端早窗的活动切片取到了晚窗末尾，数出 8192 个活动点，超过 6144 点门槛，仍给出 $+95.83\,\mathrm{ppm}$。这个对照只改变活动标签，输入波形仍来自同一个 $+100\,\mathrm{ppm}$ 合成声源。读者遇到停顿或换人时，应核对四个活动切片是否与各自的信号窗覆盖同一段样点。</p>
+<p><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch13/examples/dwacd_recording.py">原版复算例程</a> 读取同一 LibriWASN 归档或 <code>record</code> 目录，输出实际执行的原文件摘要、频偏序列和评分窗。环境与命令见脚本开头，<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch13/reports/dwacd_libriwasn.json">本次结果</a>保留了评分窗内各块的实测时差。</p>
+<p><strong>包已到达，播放头可能已经读过。</strong> <a href="https://doi.org/10.5281/zenodo.12726671">DUST</a> 发布了跨地点传音时接收端记录的读指针、发送样点索引与到达时刻。取 <code>sanri_14A.csv.gz</code> 开头 20000 条记录，采样率为 $44100\,\mathrm{Hz}$，发送索引每包增加 24 点。按<a href="https://doi.org/10.1109/IS262782.2024.10704190">数据作者的重放模型</a>，发送索引 $s$ 先换成接收端写入索引 $w=B+s/(1+d\times10^{-6})$，其中 $B$ 是预留的缓冲样点数，$d$ 是要补偿的相对频偏（ppm）。若包到达时读指针为 $r$，则有 $\min(24,\max(0,r-w))$ 点来不及播放。这里给同一包迹两种设置，均暂不补偿频偏。$B=0$ 时，319 包有部分样点来不及，2 包整包来不及，共 2352 点。$B=24$ 时，只剩 1 包的 6 点来不及。</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
+<thead>
+<tr>
+<th scope="col" style="text-align: right;">记录行号（从零编号）</th>
+<th scope="col" style="text-align: right;">发送索引 $s$</th>
+<th scope="col" style="text-align: right;">到包时读指针 $r$</th>
+<th scope="col" style="text-align: right;">$B=0$ 时还能使用（样点）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">530</td>
+<td style="text-align: right;">12720</td>
+<td style="text-align: right;">12744</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td style="text-align: right;">531</td>
+<td style="text-align: right;">12744</td>
+<td style="text-align: right;">12756</td>
+<td style="text-align: right;">12</td>
+</tr>
+<tr>
+<td style="text-align: right;">532</td>
+<td style="text-align: right;">12768</td>
+<td style="text-align: right;">12762</td>
+<td style="text-align: right;">24</td>
+</tr>
+</tbody>
+</table></div>
+<p>第 530 包到第 532 包在接收端实测相隔 $0.502567\,\mathrm{ms}$。错过多少样点取决于采用的播放策略。原数据没有随包音频，无法从这些行算出语音恢复对齐的时刻。</p>
+<p>另把 LibriWASN 的 Pixel 6a 实录切成每包 256 点，用同一台机器上的两个 UDP 套接字，每 16 毫秒送一包。故意停发第 384～478 包，把第 479 包推迟四个包周期再发。接收线程在 <code>recv</code> 返回后立即读时钟，以各包名义结束时刻加 32 毫秒为入队截止。一轮实跑安排了 800 个包序号，实际发送并收到其中 705 包。第 479 包晚于截止，按时的有 704 包。按本轮接收时间重放前面的四块重估规则，第 15～18 块积累观测，第 19 块结束再留 130 点，才重新使用远端。这里的 $2.568125\,\mathrm{s}$ 从缺口末尾算起，包含重估和块缓冲，表示该轮重放时的输出可用时刻。本机里没有无线链路，套接字实验也没测算法在独立设备上的实时处理耗时。</p>
+<p><a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch13/examples/network_clock_trace.py">包迹复算例程</a> 可单独读取 DUST 压缩文件，也可重跑本机 UDP 实验。<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch13/reports/dust_and_local_udp.json">本次包迹</a>保留了每个本机包的到达时刻。</p>
+<pre><code class="language-bash">.venv/bin/python -m codes.chapters.ch13.examples.network_clock_trace \
+    --dust sanri_14A.csv.gz --libriwasn &quot;/路径/LibriWASN_200_0L.zip&quot;
+</code></pre>
 <span id="sec-59" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-da5ae5d202">可以复算的入口与音频组</h3>
 <p>本章核心矩阵与迭代求解器位于 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch13/core/distributed.py"><code>codes/chapters/ch13/core/distributed.py</code></a>，AES67/PTPv2 相位预算与 DASF 约束子空间求解核位于 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch13/core/dasf_and_ptp.py"><code>codes/chapters/ch13/core/dasf_and_ptp.py</code></a>，合成音频与传输失配实验位于 <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch13/core/distributed_audio.py"><code>codes/chapters/ch13/core/distributed_audio.py</code></a>。阅读代码时请留意矩阵转置约定：正文公式用列满秩矩阵 $\mathbf T$ 写作 $\tilde{\vec x} = \mathbf T^H\vec x$，而代码接口传入按行排列的观测映射矩阵 $\mathbf B = \mathbf T^H$（复数广播滤波 $\vec f^H\vec x$ 对应共轭行向量 $\vec f^H$）。为兼顾数值条件数与瞬态诊断，求解器在内部先对非零压缩行做范数归一化，并同步记录归一化坐标与原始广播坐标下的局部权重，以及每步更新时刻“上次激活提案权重”与“用当前全网最新广播实时重组的有效权重”两套状态——对照两者即可直接复现图 66(a) 的跨节点瞬态失配尖峰。</p>
 <p>在仓库根目录下运行以下命令，即可生成全部 $17$ 个 WAV 文件及校验清单，或以只读模式逐字节回放核验：</p>
 <pre><code class="language-bash">.venv/bin/python -m codes.chapters.ch13.examples.generate_distributed_audio
-.venv/bin/python -m codes.chapters.ch13.examples.generate_distributed_audio --check
+.venv/bin/python -m codes.chapters.ch13.examples.generate_distributed_audio \
+    --check
 </code></pre>
 <p>练习总入口 <code>chapter13_exercises.run_experiments()</code> 按稳定题号返回 <code>E13-01</code>～<code>E13-21</code> 的完整计算字典。在图 66 的相关噪声收敛预算实验中（停止判据设为全网所有节点当前有效权重的式(13-21)相对残差均低于 $10^{-8}$），顺序轮转、全步长同时更新与固定 $0.5$ 半步松弛分别经历 $14$ 轮（$14$ 次更新求解）、$13$ 轮（$26$ 次更新求解）与 $38$ 轮（$76$ 次更新求解）更新事件（加上 $2$ 次初始本地求解，累计矩阵求解次数分别为 $16$、$28$、$78$ 次）。配套的 $17$ 个合成音频按对照任务编为八组：</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table class="tutorial-budget-table" style="--tutorial-table-width:48em">

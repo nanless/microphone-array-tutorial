@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Chapter 9 · Sound Source Tracking · Microphone Array Signal Processing</title>
-<meta name="source-digest" content="759a86557744"><style>
+<meta name="source-digest" content="bcba00f5a908"><style>
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -360,6 +360,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="09_source-tracking.html#sec-u-8cb97029bf">OSPA: Normalized Set Distance Across Localization and Cardinality</a></li>
 <li>&nbsp;&nbsp;<a href="09_source-tracking.html#sec-u-354a791c46">GOSPA: Decomposing Localization, Missed Targets, and False Alarms Without Dilution</a></li>
 <li>&nbsp;&nbsp;<a href="09_source-tracking.html#sec-u-0bc468f4ae">Comparing enhancement and localization on one two-microphone recording</a></li>
+<li>&nbsp;&nbsp;<a href="09_source-tracking.html#sec-u-f175c5a2fe">Echo, dereverberation and tracking in one two-loudspeaker recording</a></li>
 <li><a href="09_source-tracking.html#sec-9-5">9.5 Two-Microphone Free-Field Moving-Source Audio and Propagation Ground Truth</a></li>
 <li>&nbsp;&nbsp;<a href="09_source-tracking.html#sec-u-94ca33e6b3">Emission Time Versus Reception Time</a></li>
 <li>&nbsp;&nbsp;<a href="09_source-tracking.html#sec-u-c3bac46f06">End-to-End Closed Loop from Noisy Two-Mic PCM Waveforms to Localization and Tracking</a></li>
@@ -440,6 +441,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="09_source-tracking.html#sec-u-8cb97029bf">OSPA: Normalized Set Distance Across Localization and Cardinality</a></li>
 <li>&nbsp;&nbsp;<a href="09_source-tracking.html#sec-u-354a791c46">GOSPA: Decomposing Localization, Missed Targets, and False Alarms Without Dilution</a></li>
 <li>&nbsp;&nbsp;<a href="09_source-tracking.html#sec-u-0bc468f4ae">Comparing enhancement and localization on one two-microphone recording</a></li>
+<li>&nbsp;&nbsp;<a href="09_source-tracking.html#sec-u-f175c5a2fe">Echo, dereverberation and tracking in one two-loudspeaker recording</a></li>
 <li><a href="09_source-tracking.html#sec-9-5">9.5 Two-Microphone Free-Field Moving-Source Audio and Propagation Ground Truth</a></li>
 <li>&nbsp;&nbsp;<a href="09_source-tracking.html#sec-u-94ca33e6b3">Emission Time Versus Reception Time</a></li>
 <li>&nbsp;&nbsp;<a href="09_source-tracking.html#sec-u-c3bac46f06">End-to-End Closed Loop from Noisy Two-Mic PCM Waveforms to Localization and Tracking</a></li>
@@ -1767,6 +1769,136 @@ E_{\mathrm{tot}}
 </table></div>
 <p>Waveforms are scored over $[2,5.5)$ seconds against each source's direct component at the first microphone. In that interval, the known echo energy falls by 38.49 dB, measured from the difference between the true and estimated echoes. Direction error is scored separately at the 38 observation centers against the right-hand source's angle. After AEC alone, direction RMSE is $15.94^\circ$ before tracking and $16.17^\circ$ after. With WPE, it is $17.86^\circ$ before tracking and $18.06^\circ$ after. Without WPE, the tracked beamformer's right-source SI-SDR over the same waveform interval is $-1.83\ \mathrm{dB}$. With WPE it rises to $-0.72\ \mathrm{dB}$. Waveform error and angle error can move in opposite directions when both branches use the same WPE output. A separate multichannel feed for localization lets a system choose where to make that trade-off.</p>
 <p>If the pinned <code>ssspy</code> source is available as described in <a href="08_speech-separation.html#sec-8-7">Chapter 8</a>, add <code>--blind</code> to the same command. AuxIVA runs 20 iterations using only the two-channel spectra. With optimal matching against the direct references, mean SI-SDR after AEC alone is $-1.64\ \mathrm{dB}$. With WPE added, the mean is $2.90\ \mathrm{dB}$. The output order also changes, so a system that assigns a persistent slot to each talker still needs a separate identity-matching step.</p>
+<p><a id="locata-dicit-front-end"></a></p>
+<span id="sec-u-b93e4808af" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-f175c5a2fe">Echo, dereverberation and tracking in one two-loudspeaker recording</h3>
+<p>Run the comparison again on the DICIT recording from Chapter 5. In Task 2 Recording 1 of the LOCATA development set, two stationary loudspeakers play speech in the same reverberant room while all $15$ microphones record. We treat Loudspeaker 3 as near-end target A and Loudspeaker 4 as far-end B to be removed. The archive supplies the original digital tracks sent to both speakers, so we can use the track for B as the echo reference. It is the signal before the loudspeaker, at a different point in the signal chain from a hardware loopback. The data are under ODC Attribution 1.0 and the playback speech comes from CSTR VCTK. <a href="https://zenodo.org/records/3630471">LOCATA data</a> · <a href="https://www.locata.lms.tf.fau.de/files/2020/01/Documentation_LOCATA_final_release_V1.pdf">Recording notes</a> · <a href="05_beamforming.html#locata-estimated-steering">The direction and beamforming comparison in Chapter 5</a></p>
+<p>Resample the recordings and both playback tracks from $48\ \mathrm{kHz}$ to $16\ \mathrm{kHz}$. Correlation against Mic 7 on A-only $[2.65,2.85)$ s and B-only $[3.48,3.94)$ s gives delays of $938$ samples for A and $936$ for B. Fit a $1024$-tap echo filter for each microphone on the B calibration interval. Freeze the coefficients, replay the B reference through the filters and subtract their outputs from the whole take. Also scan the A calibration interval with SRP-PHAT to initialize at $34^\circ$. The optically measured azimuths, $33.64^\circ$ for A and $17.70^\circ$ for B, are used for scoring only.</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable data table"><table>
+<thead>
+<tr>
+<th scope="col">Time (s)</th>
+<th scope="col">What the microphones hear</th>
+<th scope="col">Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$[2.65,2.85)$</td>
+<td>A only</td>
+<td>Align A, initialize the track and identify the A separation output</td>
+</tr>
+<tr>
+<td>$[2.91,3.10)$</td>
+<td>A only</td>
+<td>Check target preservation on a separate interval</td>
+</tr>
+<tr>
+<td>$[3.48,3.94)$</td>
+<td>B only</td>
+<td>Align B and fit the $15$ echo filters</td>
+</tr>
+<tr>
+<td>$[4.08,4.68)$</td>
+<td>B only</td>
+<td>Measure held-out ERLE</td>
+</tr>
+<tr>
+<td>$[4.90,5.70)$</td>
+<td>A and B together</td>
+<td>Compare waveforms and directions</td>
+</tr>
+</tbody>
+</table></div>
+<p>On the B-only test interval, ERLE is $7.69\ \mathrm{dB}$ at Mic 7 and the median of the $15$ microphones is $5.46\ \mathrm{dB}$, spanning $2.28$ to $7.71\ \mathrm{dB}$. The ratio uses total microphone energy before and after subtraction. Room noise and uncancelled echo contribute to the residual. On the A-only test interval, the amplitude of Mic 7 projected onto the aligned A playback track changes by $-0.04\ \mathrm{dB}$. In double talk, total energy across the $15$ microphones drops by $1.15\ \mathrm{dB}$. That measurement combines A and B and cannot give their individual reductions.</p>
+<p>All four rows below use the same take. WPE uses all $15$ microphones, with a $512$-point STFT, a $128$-sample hop, a prediction delay of $3$ frames, $5$ taps and two iterations. Blind AuxIVA uses only the spectra from Mic 7 and Mic 5 and runs for $20$ iterations. After separation, whichever output has more energy in the A calibration interval is assigned to A. Its share of the two outputs' time-frequency power forms a mask. For localization, keep bins where A accounts for at least half the power and use the phase differences across the $15$ spectra in that route. For beamforming, multiply the delay-and-sum output by the continuous share.</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable data table"><table>
+<thead>
+<tr>
+<th scope="col">Input</th>
+<th scope="col" style="text-align: right;">Mic 7</th>
+<th scope="col" style="text-align: right;">Fixed initial angle</th>
+<th scope="col" style="text-align: right;">Tracked angle</th>
+<th scope="col" style="text-align: right;">Masked and tracked</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Raw</td>
+<td style="text-align: right;">−2.68</td>
+<td style="text-align: right;">0.05</td>
+<td style="text-align: right;">−0.98</td>
+<td style="text-align: right;">−1.18</td>
+</tr>
+<tr>
+<td>AEC only</td>
+<td style="text-align: right;">−0.37</td>
+<td style="text-align: right;">1.20</td>
+<td style="text-align: right;">1.03</td>
+<td style="text-align: right;">−5.16</td>
+</tr>
+<tr>
+<td>WPE only</td>
+<td style="text-align: right;">0.05</td>
+<td style="text-align: right;">2.15</td>
+<td style="text-align: right;">1.32</td>
+<td style="text-align: right;">−5.03</td>
+</tr>
+<tr>
+<td>AEC then WPE</td>
+<td style="text-align: right;">4.40</td>
+<td style="text-align: right;">4.21</td>
+<td style="text-align: right;">4.39</td>
+<td style="text-align: right;">4.02</td>
+</tr>
+</tbody>
+</table></div>
+<p>The table gives SI-SDR (dB) against the digital playback track for A over the double-talk interval. The same $938$-sample alignment from calibration and the same time interval are used for every output. The score measures resemblance to the playback track, so the real propagation path and room response contribute to the error. For the separate task of recovering both voices, average SI-SDR across the best-matched AuxIVA outputs is $-9.51\ \mathrm{dB}$ on the raw spectra and $-3.95\ \mathrm{dB}$ after WPE alone. Giving A and B equal weight after AEC answers a different question because AEC deliberately removes B.</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable data table"><table>
+<thead>
+<tr>
+<th scope="col">Input</th>
+<th scope="col" style="text-align: right;">Sector peak error</th>
+<th scope="col" style="text-align: right;">Kalman track error</th>
+<th scope="col" style="text-align: right;">Masked Kalman track error</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Raw</td>
+<td style="text-align: right;">16.98°</td>
+<td style="text-align: right;">15.32°</td>
+<td style="text-align: right;">16.17°</td>
+</tr>
+<tr>
+<td>AEC only</td>
+<td style="text-align: right;">8.54°</td>
+<td style="text-align: right;">5.25°</td>
+<td style="text-align: right;">2.10°</td>
+</tr>
+<tr>
+<td>WPE only</td>
+<td style="text-align: right;">15.77°</td>
+<td style="text-align: right;">13.27°</td>
+<td style="text-align: right;">4.61°</td>
+</tr>
+<tr>
+<td>AEC then WPE</td>
+<td style="text-align: right;">3.85°</td>
+<td style="text-align: right;">2.13°</td>
+<td style="text-align: right;">2.02°</td>
+</tr>
+</tbody>
+</table></div>
+<p>Angle errors are RMS values over $12$ double-talk observations against the optical position of A. Each group of $8$ frames gives one SRP-PHAT scan over $375$–$3000\ \mathrm{Hz}$, with the peak selected within $\pm22^\circ$ of the initial direction. B also lies in that sector. The raw recording often peaks near $15^\circ$, and Kalman filtering smooths even a sequence of wrong directions. The first group describes the state at $4.948\ \mathrm{s}$ and is complete at $4.992\ \mathrm{s}$. The first STFT frame that uses the update is centered at $4.992\ \mathrm{s}$. The difference describes the timing of the localization block. WPE and AuxIVA use the full recording, including the scoring interval, and waveform reconstruction overlaps adjacent frames.</p>
+<p>In the WPE-only route, the A-only calibration interval selects the first separation output. In double talk, that output scores $-9.54\ \mathrm{dB}$ against A while the second scores $-1.23\ \mathrm{dB}$. Masking from the first output reduces the track error from $13.27^\circ$ to $4.61^\circ$, but the beam's waveform score drops from $1.32$ to $-5.03\ \mathrm{dB}$. Check whether a slot assigned in single talk still carries the target in double talk. The AEC-plus-WPE path has a similar trade-off. Its mask reduces track error from $2.13^\circ$ to $2.02^\circ$ and lowers the waveform score from $4.39$ to $4.02\ \mathrm{dB}$. For this stationary target, keep the unmasked path when waveform fidelity matters more.</p>
+<p>Download <code>dev.zip</code> from LOCATA, set up the pinned <code>ssspy</code> source as described in <a href="08_speech-separation.html#sec-8-7">Chapter 8</a>, and make <code>ffmpeg</code> available on the command line. Run the following from the repository root. <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/locata_dicit_front_end.py">Experiment source</a> · <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch09/reports/locata_dicit_front_end.json">Per-microphone and per-block report</a></p>
+<pre><code class="language-bash">unzip dev.zip 'dev/task2/recording1/dicit/*' \
+  'dev/task2/recording1/benchmark2/position_source_loudspeaker*.txt' \
+  -d /tmp/locata-front-end
+.venv/bin/python -m codes.chapters.ch00.cross_chapter.locata_dicit_front_end \
+  /tmp/locata-front-end
+</code></pre>
+<p>Lower the playback volume before listening. Add <code>--wav-dir /tmp/locata-front-end-wav</code> to the last command to write six WAVs at one common gain, including Mic 7, intermediate stages and the tracked beam with and without the separation mask.</p>
 <h2 id="sec-9-5">9.5 Two-Microphone Free-Field Moving-Source Audio and Propagation Ground Truth</h2>
 <span id="sec-u-76dfa623a9" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-94ca33e6b3">Emission Time Versus Reception Time</h3>
 <p>Lower playback volume before listening. Earlier perceptual panning demos modulated left/right channel gains without physical inter-microphone propagation delays:</p>

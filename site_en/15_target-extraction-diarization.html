@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Chapter 15 · Conditioned Target Extraction & Diarization · Microphone Array Signal Processing</title>
-<meta name="source-digest" content="759a86557744"><style>
+<meta name="source-digest" content="bcba00f5a908"><style>
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -1057,8 +1057,60 @@ M_{\mathrm{fused}}[k,\ell]
 </tbody>
 </table></div>
 <p>The GSS cascade scored 3.6 percentage points lower than the Large FDDT system in these configurations. The recognizers and their training also differed, so the difference compares the two systems as configured. The authors also selected the GSS cascade’s Whisper Medium checkpoint using this development set. The <a href="https://www.isca-archive.org/interspeech_2020/kanda20b_interspeech.pdf#page=3">original SOT experiments, §5.1</a>, use mixtures of LibriSpeech utterances, so their WER belongs to a separate experiment. If an SOT recognizer emits only a token sequence with speaker-change markers, word times and session-wide speaker tracks must be recovered before applying the tcpWER protocol above. To measure response latency, log when the system actually emits each result. Word timestamps locate speech in the recording.</p>
-<p><a href="https://arxiv.org/html/2510.03723v2#S4.T4">Kocour et al., ICASSP 2026, Table 4</a> also compare joint serialized decoding with separate decoding for each speaker on the same AMI single-distant-microphone recordings, using annotated speaker activity. DiCoW decodes each speaker separately and scores 16.3% cpWER. SA-DiCoW uses the DiCoW encoder and a single decoder to emit a serialized sequence of speaker-attributed words and timestamps, scoring 18.1% cpWER. This experiment uses one channel, annotated speaker activity, and cpWER. The table above uses multiple channels, estimated diarization, and tcpWER.</p>
-<p>For a scoring exercise, use the <a href="https://github.com/BUTSpeechFIT/error_correction_playground/tree/193dbab42a0ffc7532dd2dc567b7750d7a5c13de/datasets/NOTSOFAR-1/GT_diar_v1">transcripts and references released by BUT/JHU</a> for 160 single-channel NOTSOFAR-1 eval-small sessions. The transcripts come from real recordings, with annotated speaker activity supplied to the recognizer. The <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch15/examples/score_meeting_transcripts.py">scoring script</a> reads these pre-normalized transcripts and references, which contain 235,740 reference words. With a five-second collar, the session mean is 20.86% tcpWER, matching the authors’ reported result. Pooling the 51,532 edits before dividing by the total reference word count gives 21.86%. The two averages weight long sessions differently. Use a single aggregation method when comparing systems. This example uses a different split, channel condition, and source of speaker activity from the table above.</p>
+<p><a href="https://arxiv.org/html/2510.03723v2#S4.T4">Kocour et al., ICASSP 2026, Table 4</a> also evaluate two models on the same AMI single-distant-microphone recordings, using annotated speaker activity. DiCoW decodes each speaker separately and scores 16.3% cpWER. SA-DiCoW starts with DiCoW weights. The authors train the added components with the original Whisper encoder and decoder frozen, then unfreeze the Whisper parameters and fine-tune the whole model. A shared decoder reads the encoded representations for all speakers and emits one sequence with speaker tags and timestamps. It scores 18.1% cpWER. The training procedure is described in <a href="https://arxiv.org/html/2510.03723v2#S3.SS3">§3.3 of the paper</a>. This experiment uses one channel, annotated speaker activity, and cpWER. The table above uses multiple channels, estimated diarization, and tcpWER.</p>
+<p><strong>Comparing three approaches on the same recording.</strong> The tutorial uses three excerpts of the ES2011a development-set recording from the <a href="https://groups.inf.ed.ac.uk/ami/corpus/">AMI Meeting Corpus</a>, totaling 48.21 seconds. The single-microphone input is Array1-01. The two-microphone input also uses Array1-02. In the <a href="https://huggingface.co/espnet/multi-talker-whisper-small-ami/tree/1b2452421d3acb2405955e66e8b668928632d9cb">ESPnet development cutset</a>, take the first three excerpts from this meeting that last between 8 and 30 seconds, have exactly two speakers with at least one second of solo speech each, and contain at least 0.2 seconds of overlap. The excerpts cover $[65.00,82.89)$, $[82.98,93.10)$, and $[280.98,301.18)$ seconds of the original recording. Overlap lasts 2.60, 0.22, and 2.57 seconds, respectively. Speaker activity and reference text both come from that cutset. All audio inputs come from distant microphones.</p>
+<p>The first two rows use the same Whisper Tiny recognizer and crop each speaker's intervals using the same annotations. The first row crops the original single-microphone signal, which still contains both voices during overlap. The second uses the same activity annotations to guide GSS. It estimates two waveforms with offline WPE followed by the two-microphone cACGMM and MVDR from Chapter 8, then applies the same crops. The third decodes each of those enhanced waveforms over the entire excerpt. The fourth feeds the complete single-microphone excerpt to ESPnet's AMI Whisper Small SOT model, which predicts its own speaker-change tokens. The fifth feeds that same excerpt to the authors' <a href="https://huggingface.co/BUT-FIT/DiCoW_v3_3/tree/c34b64d9a9c5148c65fd355bb188d60343a6b44f">DiCoW v3.3</a>, which converts the annotations used for cropping into a four-state mask on a 20 ms grid and decodes each target speaker separately. Every row uses Whisper's English text normalization and MeetEval. Find the best speaker permutation separately within each excerpt, then add the edit counts across excerpts and divide by the 150 reference words.</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable data table"><table>
+<thead>
+<tr>
+<th scope="col">Offline system</th>
+<th scope="col" style="text-align: right;">Insertions / deletions / substitutions</th>
+<th scope="col" style="text-align: right;">cpWER</th>
+<th scope="col" style="text-align: right;">Wall time (s)</th>
+<th scope="col" style="text-align: right;">RTF</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Single mic, speaker intervals → Whisper Tiny</td>
+<td style="text-align: right;">23 / 14 / 46</td>
+<td style="text-align: right;">55.3%</td>
+<td style="text-align: right;">11.73</td>
+<td style="text-align: right;">0.24</td>
+</tr>
+<tr>
+<td>Two-mic GSS, speaker intervals → Whisper Tiny</td>
+<td style="text-align: right;">12 / 15 / 38</td>
+<td style="text-align: right;">43.3%</td>
+<td style="text-align: right;">32.64</td>
+<td style="text-align: right;">0.68</td>
+</tr>
+<tr>
+<td>Two-mic GSS, full excerpts → Whisper Tiny</td>
+<td style="text-align: right;">103 / 14 / 41</td>
+<td style="text-align: right;">105.3%</td>
+<td style="text-align: right;">24.76</td>
+<td style="text-align: right;">0.51</td>
+</tr>
+<tr>
+<td>Single-mic ESPnet Whisper Small SOT</td>
+<td style="text-align: right;">7 / 6 / 21</td>
+<td style="text-align: right;">22.7%</td>
+<td style="text-align: right;">38.92</td>
+<td style="text-align: right;">0.81</td>
+</tr>
+<tr>
+<td>Single-mic DiCoW v3.3, annotated activity</td>
+<td style="text-align: right;">2 / 8 / 15</td>
+<td style="text-align: right;">16.7%</td>
+<td style="text-align: right;">158.18</td>
+<td style="text-align: right;">3.28</td>
+</tr>
+</tbody>
+</table></div>
+<p>With the recognizer and intervals held fixed, adding two-microphone enhancement reduces the edit count from 83 to 65. Decoding the full enhanced waveforms adds 91 insertions. In the third excerpt, the two streams share a run of 19 consecutive normalized words, and one stream repeats a three-word utterance. Turning off previous-text conditioning leaves all six streams identical. The text alone cannot tell how much came from residual leakage and how much the recognizer introduced. The denominator of cpWER is the reference word count, so enough insertions can push it above 100%. SOT and DiCoW receive the same single-microphone waveform. DiCoW also receives the activity annotations, and the two systems differ in their underlying Whisper models and training. The two scores describe the complete systems under those conditions.</p>
+<p>The runs use the CPU on the same Apple M5. Each timer starts with the waveform in memory and the model loaded, and stops after all streams for that excerpt have been decoded. It includes feature extraction, any enhancement or cropping, and decoding. RTF divides the sum of the three wall times by 48.21 seconds, counting simultaneous channels only once. Each run receives an entire excerpt before processing. These timings describe the compute needed for short offline files. Measuring time to first word in a streaming system also requires logging capture and emission times. The <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch15/examples/ami_meeting_comparison.py">experiment runner</a>, <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch15/examples/run_ami_sot.py">SOT runner</a>, and <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch15/reports/ami_meeting_comparison.json">per-excerpt results</a> record the sample ranges, model versions, and timing conditions. AMI releases the recordings under <a href="https://groups.inf.ed.ac.uk/ami/corpus/license.shtml">CC BY 4.0</a>.</p>
+<p>For a separate scoring exercise, use the <a href="https://github.com/BUTSpeechFIT/error_correction_playground/tree/193dbab42a0ffc7532dd2dc567b7750d7a5c13de/datasets/NOTSOFAR-1/GT_diar_v1">transcripts and references released by BUT/JHU</a> for 160 single-channel NOTSOFAR-1 eval-small sessions. The transcripts come from real recordings, with annotated speaker activity supplied to the recognizer. The <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch15/examples/score_meeting_transcripts.py">scoring script</a> reads these pre-normalized transcripts and references, which contain 235,740 reference words. With a five-second collar, the session mean is 20.86% tcpWER, matching the authors’ reported result. Pooling the 51,532 edits before dividing by the total reference word count gives 21.86%. The two averages weight long sessions differently. Use a single aggregation method when comparing systems. This example uses a different split, channel condition, and source of speaker activity from the preceding comparisons.</p>
 <p>Check out the linked revision outside this repository. In the command below, replace <code>/path/to/GT_diar_v1</code> with the path to its <code>datasets/NOTSOFAR-1/GT_diar_v1</code> directory. Install <code>meeteval==0.4.3</code> and <code>simplejson==3.20.2</code> in a separate Python environment, then run from the tutorial root:</p>
 <pre><code>python -m codes.chapters.ch15.examples.score_meeting_transcripts \
     --reference "/path/to/GT_diar_v1"/*/ref.json \

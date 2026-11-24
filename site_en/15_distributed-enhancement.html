@@ -2,7 +2,7 @@
 <link rel="canonical" href="13_distributed-enhancement.html"><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Chapter 13 · Distributed Wireless Microphone Arrays · Microphone Array Signal Processing</title>
-<meta name="source-digest" content="759a86557744"><style>
+<meta name="source-digest" content="bcba00f5a908"><style>
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -1260,11 +1260,89 @@ $$</p>
 .venv/bin/python -m codes.chapters.ch13.examples.clock_recovery \
     --libriwasn &quot;/path/to/LibriWASN_200_0L.zip&quot;
 </code></pre>
+<p><strong>Estimate and compensate with the original DWACD code.</strong> Use <code>DynamicWACD</code> from the <a href="https://github.com/fgnt/paderwasn/tree/cd7054fcf72da637e4a5e11f035e8979691faf70">pinned Paderwasn implementation</a> on the same excerpt from the three phones. The activity annotation selects the single-speaker interval, and both activity masks are set to true within it. By default, the estimator compares two 8192-sample windows 8192 samples apart every 2048 samples. The first 40 window pairs in this excerpt meet the activity threshold, so the first estimate needs 96256 samples, or $6.016\,\mathrm{s}$ from its start. The returned array fills earlier entries with this estimate, so those entries cannot tell you when it was first available.</p>
+<p>Use only the first 16 blocks (8.192 s) to estimate the rate. Take the median of the estimates available after the initial 40 window pairs and pass it to the original <code>compensate_sro</code> resampler. In blocks 16–23, fit a line to the GCC-PHAT lags at the block centers before and after resampling. The final block is left out to avoid the resampler boundary. The slope measures drift. The recording start offset and fixed difference in acoustic paths are still present in the intercept.</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable data table"><table>
+<thead>
+<tr>
+<th scope="col">Input and reference clock</th>
+<th scope="col" style="text-align: right;">DWACD estimate (ppm)</th>
+<th scope="col" style="text-align: right;">Lag slope before compensation (ppm)</th>
+<th scope="col" style="text-align: right;">Lag slope after compensation (ppm)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Synthetic, remote set to $+100\,\mathrm{ppm}$</td>
+<td style="text-align: right;">$+100.50$</td>
+<td style="text-align: right;">$+100.11$</td>
+<td style="text-align: right;">$-0.51$</td>
+</tr>
+<tr>
+<td>Synthetic, remote set to $-75\,\mathrm{ppm}$</td>
+<td style="text-align: right;">$-75.10$</td>
+<td style="text-align: right;">$-74.85$</td>
+<td style="text-align: right;">$+0.09$</td>
+</tr>
+<tr>
+<td>LibriWASN, Pixel 6a relative to Pixel 7</td>
+<td style="text-align: right;">$+3.21$</td>
+<td style="text-align: right;">$+4.00$</td>
+<td style="text-align: right;">$+0.08$</td>
+</tr>
+<tr>
+<td>LibriWASN, Xiaomi relative to Pixel 7</td>
+<td style="text-align: right;">$-15.16$</td>
+<td style="text-align: right;">$-15.51$</td>
+<td style="text-align: right;">$-1.68$</td>
+</tr>
+</tbody>
+</table></div>
+<p>With different activity labels in the two windows, check the slice endpoints in the original code. Keep one window pair and set the first-estimate threshold to one pair. Mark the entire reference active, the early remote window inactive, and the late remote window active. The early remote waveform window contains zero active labels. The original code slices its activity mask through the end of the late window, counts 8192 active samples against a threshold of 6144, and still returns $+95.83\,\mathrm{ppm}$. This control changes the labels only. The input waveforms come from the same synthetic source with a $+100\,\mathrm{ppm}$ rate offset. Around a pause or speaker change, check each of the four activity slices against its own waveform window.</p>
+<p>The <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch13/examples/dwacd_recording.py">original-code example</a> reads the same LibriWASN archive or <code>record</code> directory and reports the executed source hashes, rate estimates, and scoring windows. Its opening docstring gives the environment and command. The <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch13/reports/dwacd_libriwasn.json">saved run</a> includes the measured lags for each scoring block.</p>
+<p><strong>A packet can arrive after the playback head has passed it.</strong> <a href="https://doi.org/10.5281/zenodo.12726671">DUST</a> records the receiver's read index, sender's sample index, and packet arrival time for audio transport between sites. Take the first 20000 rows of <code>sanri_14A.csv.gz</code>. The sample rate is $44100\,\mathrm{Hz}$, and the sender index increases by 24 samples per packet. In the <a href="https://doi.org/10.1109/IS262782.2024.10704190">authors' replay model</a>, convert the sender index $s$ to the receiver's write index $w=B+s/(1+d\times10^{-6})$, where $B$ is the buffer in samples and $d$ is the relative rate offset in ppm. If the read index is $r$ at arrival, $\min(24,\max(0,r-w))$ samples miss playback. Replay the same trace with no drift correction and two buffer settings. With $B=0$, 319 packets are partially late and 2 are fully late, for a total of 2352 missed samples. With $B=24$, only 6 samples from one packet miss playback.</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable data table"><table>
+<thead>
+<tr>
+<th scope="col" style="text-align: right;">Trace row (zero-based)</th>
+<th scope="col" style="text-align: right;">Send index $s$</th>
+<th scope="col" style="text-align: right;">Read index $r$ at arrival</th>
+<th scope="col" style="text-align: right;">Usable samples with $B=0$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">530</td>
+<td style="text-align: right;">12720</td>
+<td style="text-align: right;">12744</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td style="text-align: right;">531</td>
+<td style="text-align: right;">12744</td>
+<td style="text-align: right;">12756</td>
+<td style="text-align: right;">12</td>
+</tr>
+<tr>
+<td style="text-align: right;">532</td>
+<td style="text-align: right;">12768</td>
+<td style="text-align: right;">12762</td>
+<td style="text-align: right;">24</td>
+</tr>
+</tbody>
+</table></div>
+<p>The receiver recorded $0.502567\,\mathrm{ms}$ between arrivals 530 and 532. The number of missed samples depends on the playback policy. DUST supplies no packet audio here, so these rows cannot show when resampled speech aligns again.</p>
+<p>For a separate experiment, packetize the recorded LibriWASN Pixel 6a channel into 256-sample packets and send one every 16 ms between two UDP sockets on one computer. Omit packets 384–478 and delay packet 479 by four packet periods. The receive thread reads the clock immediately after <code>recv</code> returns and admits packets up to 32 ms after their nominal end. In one run there were 800 scheduled packet indices, of which 705 were sent and received. Packet 479 was one of the 705 arrivals and missed its deadline, leaving 704 on-time packets. Replaying the four-block acquisition rule against these receive times, blocks 15–18 collect observations and the remote channel can be used at the end of block 19 plus 130 samples. The resulting $2.568125\,\mathrm{s}$ counts from the end of the gap and includes estimation and block buffering. It gives output availability in that replay. The transport used the local loopback interface, and processing time on independent devices was unmeasured.</p>
+<p>The <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch13/examples/network_clock_trace.py">packet-trace example</a> can read the DUST compressed file and run the local UDP experiment independently. The <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch13/reports/dust_and_local_udp.json">saved trace</a> includes each local packet arrival time.</p>
+<pre><code class="language-bash">.venv/bin/python -m codes.chapters.ch13.examples.network_clock_trace \
+    --dust sanri_14A.csv.gz --libriwasn &quot;/path/to/LibriWASN_200_0L.zip&quot;
+</code></pre>
 <span id="sec-59" class="anchor-alias" aria-hidden="true"></span><span id="sec-u-da5ae5d202" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-u-b8b4c7f65b">Reproducible Entry Points and Audio Groups</h3>
 <p>Core matrix and iterative solvers live in <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch13/core/distributed.py"><code>codes/chapters/ch13/core/distributed.py</code></a>, AES67/PTPv2 phase-budget and DASF constrained-subspace kernels in <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch13/core/dasf_and_ptp.py"><code>codes/chapters/ch13/core/dasf_and_ptp.py</code></a>, and synthetic audio/transport mismatch experiments in <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch13/core/distributed_audio.py"><code>codes/chapters/ch13/core/distributed_audio.py</code></a>. Note one transpose convention when reading the code: prose writes $\tilde{\vec x} = \mathbf T^H\vec x$ with tall column-full-rank $\mathbf T$, whereas the code accepts row-arranged observation mapping $\mathbf B = \mathbf T^H$ (complex broadcast $\vec f^H\vec x$ corresponds to conjugated row $\vec f^H$). For numerical conditioning and transient diagnostics, the solver normalizes nonzero compressed rows internally and records both normalized-coordinate and raw-broadcast local weights alongside two per-step states—each node's last-active proposal weight and its live effective weight recombined against the network's newest broadcasts—reproducing Fig. 66(a)'s cross-node transient mismatch spikes directly.</p>
 <p>Generate or strictly verify all $17$ WAVs and <code>MANIFEST.json</code> from the repository root via:</p>
 <pre><code class="language-bash">.venv/bin/python -m codes.chapters.ch13.examples.generate_distributed_audio
-.venv/bin/python -m codes.chapters.ch13.examples.generate_distributed_audio --check
+.venv/bin/python -m codes.chapters.ch13.examples.generate_distributed_audio \
+    --check
 </code></pre>
 <p><code>chapter13_exercises.run_experiments()</code> returns the complete result dictionary for <code>E13-01</code>–<code>E13-21</code>. In Fig. 66's correlated-noise convergence budget experiment (stopping criterion: every node's live effective weight satisfies Eq. (13-21) relative residual $\lt  10^{-8}$), Sequential, full-step Simultaneous, and fixed-$0.5$ half-step Relaxed take $14$ rounds ($14$ update solves), $13$ rounds ($26$ update solves), and $38$ rounds ($76$ update solves), respectively ($16, 28, 78$ cumulative matrix solves including the $2$ initial local solves). The $17$ synthetic WAVs are organized into eight comparison groups:</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable data table"><table>

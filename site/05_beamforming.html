@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 5 章 · 波束形成 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="9112c8713651"><style>
+<meta name="source-digest" content="3a3a6370f012"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -829,6 +829,7 @@ Q(\alpha)&=\frac{(\alpha+1)^2}{\alpha^2+1/3}\text{。}
 <pre><code class="language-bash">.venv/bin/python -m codes.chapters.ch05.examples.locata_estimated_steering \
     /path/to/locata
 </code></pre>
+<p>要看 A、B 同时播放时的情况，可用<a href="09_source-tracking.html#locata-dicit-front-end">第 9 章的同场实录</a>比较逐麦回声消除、去混响和追踪波束。那一节有 A 的原始播放轨，能直接比较波形。</p>
 <span id="sec-7" class="anchor-alias" aria-hidden="true"></span><h3 id="sec-5-4-1">5.4.1 稳健波束形成方法</h3>
 <p>工程失配归结为四类根源：<strong>A 导向矢量失配</strong>、<strong>B 有限快拍协方差误差</strong>、<strong>C 相干干扰/强早反射</strong>、<strong>D 目标泄漏进 $\hat{\mathbf R}_{nn}$ 引发自消</strong>。除固定对角加载外，四条经典加固路线如下：</p>
 <ol>

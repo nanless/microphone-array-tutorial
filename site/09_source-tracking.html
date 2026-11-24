@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第 9 章 · 声源追踪 · 麦克风阵列信号处理教程</title>
-<meta name="source-digest" content="9112c8713651"><style>
+<meta name="source-digest" content="3a3a6370f012"><style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.75;color:#1F2328;background:#F6F4EF}
 .topbar{position:sticky;top:0;z-index:10;background:#1E2227;color:#F3F0E8;padding:10px 20px;font-size:15px;border-bottom:1px solid #343941;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .topbar a{color:#9AC0E6;text-decoration:none}.topbar a:hover{text-decoration:underline}
@@ -360,6 +360,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="09_source-tracking.html#sec-u-11f08ac058">OSPA：集合位置与人数的归一化误差</a></li>
 <li>&nbsp;&nbsp;<a href="09_source-tracking.html#sec-u-b328007c83">GOSPA：把定位、漏检与虚警分开</a></li>
 <li>&nbsp;&nbsp;<a href="09_source-tracking.html#sec-u-c88468b903">用一段双麦信号比较增强和定位</a></li>
+<li>&nbsp;&nbsp;<a href="09_source-tracking.html#sec-u-b93e4808af">两只扬声器同场实录里的回声、去混响与追踪</a></li>
 <li><a href="09_source-tracking.html#sec-9-5">9.5 自由场移动声源的双麦音频与传播真值</a></li>
 <li>&nbsp;&nbsp;<a href="09_source-tracking.html#sec-u-76dfa623a9">发射时刻与接收时刻</a></li>
 <li>&nbsp;&nbsp;<a href="09_source-tracking.html#sec-u-666f355e22">从带噪双麦波形到定位与追踪</a></li>
@@ -440,6 +441,7 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [
 <li>&nbsp;&nbsp;<a href="09_source-tracking.html#sec-u-11f08ac058">OSPA：集合位置与人数的归一化误差</a></li>
 <li>&nbsp;&nbsp;<a href="09_source-tracking.html#sec-u-b328007c83">GOSPA：把定位、漏检与虚警分开</a></li>
 <li>&nbsp;&nbsp;<a href="09_source-tracking.html#sec-u-c88468b903">用一段双麦信号比较增强和定位</a></li>
+<li>&nbsp;&nbsp;<a href="09_source-tracking.html#sec-u-b93e4808af">两只扬声器同场实录里的回声、去混响与追踪</a></li>
 <li><a href="09_source-tracking.html#sec-9-5">9.5 自由场移动声源的双麦音频与传播真值</a></li>
 <li>&nbsp;&nbsp;<a href="09_source-tracking.html#sec-u-76dfa623a9">发射时刻与接收时刻</a></li>
 <li>&nbsp;&nbsp;<a href="09_source-tracking.html#sec-u-666f355e22">从带噪双麦波形到定位与追踪</a></li>
@@ -1767,6 +1769,136 @@ E_{\mathrm{tot}}
 </table></div>
 <p>波形评分都取 $[2,5.5)$ 秒，参照第 1 麦各源的直达分量。在这段时间，已知回声分量经 AEC 后降低 38.49 dB，这个数由真回声与估计回声之差得到。定位另在 38 个观测中心按右侧声源的角度计算均方根误差。AEC 后直接定位为 $15.94^\circ$，追踪后为 $16.17^\circ$；加 WPE 后两值分别为 $17.86^\circ$ 和 $18.06^\circ$。与此同时，使用追踪角的延迟求和在加 WPE 后把右侧目标的 SI-SDR 从 $-1.83$ dB 提高到 $-0.72$ dB。同一个 WPE 输出进入两个分支，波形误差和角度误差可以朝不同方向变化。这也是实际系统会为定位单独保留多通道输入的原因。</p>
 <p>已按<a href="08_speech-separation.html#sec-8-7">第 8 章说明</a>取得固定 <code>ssspy</code> 源码时，可在同一命令后加 <code>--blind</code>。20 轮 AuxIVA 仅读取双通道频谱，两路输出与直达参考做最优配对后，平均 SI-SDR 从只做 AEC 时的 $-1.64$ dB 变为加 WPE 后的 $2.90$ dB。两次的输出顺序也互换了，给连续说话人指定输出槽位时，仍需单独处理身份关联。</p>
+<p><a id="locata-dicit-front-end"></a></p>
+<h3 id="sec-u-b93e4808af">两只扬声器同场实录里的回声、去混响与追踪</h3>
+<p>再用第 5 章的同一段 DICIT 实录比较几条处理路线。LOCATA 开发集任务 2 第 1 条录音中，两只固定扬声器在同一个有混响的房间播放语音，$15$ 只麦克风同时收音。我们把 3 号扬声器当作要保留的近端 A，把 4 号扬声器当作要消除的远端 B。库中带有两只扬声器的原始数字播放轨，这里直接用 B 的原轨作回声参考。数字原轨在扬声器之前，和设备电环回的取点不同。数据采用 ODC Attribution 1.0，播放内容来自 CSTR VCTK。<a href="https://zenodo.org/records/3630471">LOCATA 数据</a> · <a href="https://www.locata.lms.tf.fau.de/files/2020/01/Documentation_LOCATA_final_release_V1.pdf">记录说明</a> · <a href="05_beamforming.html#locata-estimated-steering">第 5 章的方向与波束对照</a></p>
+<p>先把录音和两条原轨从 $48\ \mathrm{kHz}$ 降到 $16\ \mathrm{kHz}$。在 $[2.65,2.85)$ 秒的 A 单讲和 $[3.48,3.94)$ 秒的 B 单讲分别与第 7 麦做相关，得到 A 延迟 $938$ 点、B 延迟 $936$ 点。用 B 单讲前窗拟合各麦的 $1024$ 抽头回声滤波器，之后固定系数，整段用 B 原轨重放并相减。A 单讲前窗还供 SRP-PHAT 取得 $34^\circ$ 的初始方向，动捕中 A、B 的方位角分别为 $33.64^\circ$、$17.70^\circ$，只在评分时使用。</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
+<thead>
+<tr>
+<th scope="col">时段（秒）</th>
+<th scope="col">麦克风收到什么</th>
+<th scope="col">怎么用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$[2.65,2.85)$</td>
+<td>A 单讲</td>
+<td>对齐 A、给追踪定初始方向，并在盲分离输出中认出 A</td>
+</tr>
+<tr>
+<td>$[2.91,3.10)$</td>
+<td>A 单讲</td>
+<td>独立检查 A 的保留程度</td>
+</tr>
+<tr>
+<td>$[3.48,3.94)$</td>
+<td>B 单讲</td>
+<td>对齐 B、拟合 $15$ 路回声滤波器</td>
+</tr>
+<tr>
+<td>$[4.08,4.68)$</td>
+<td>B 单讲</td>
+<td>留出做 ERLE 对照</td>
+</tr>
+<tr>
+<td>$[4.90,5.70)$</td>
+<td>A、B 双讲</td>
+<td>比较波形与方向</td>
+</tr>
+</tbody>
+</table></div>
+<p>在 B 留出窗，第 7 麦的 ERLE 为 $7.69\ \mathrm{dB}$，$15$ 麦的中位数为 $5.46\ \mathrm{dB}$，范围为 $2.28$～$7.71\ \mathrm{dB}$。这个比值用各麦相减前后的总能量算，残余包括房间底噪和未消除的回声。在 A 单讲留出窗，第 7 麦在对齐 A 原轨上的投影幅度只变了 $-0.04\ \mathrm{dB}$。双讲时只能直接量到混合残差，$15$ 麦总能量比原始录音低 $1.15\ \mathrm{dB}$，由此无法分出 A、B 各减掉多少。</p>
+<p>下面四行都处理同一段录音。WPE 使用全部 $15$ 麦，STFT 为 $512$ 点、帧移 $128$ 点，预测延迟 $3$ 帧、$5$ 抽头、迭代两轮。盲 AuxIVA 只读第 7 和第 5 麦的频谱，运行 $20$ 轮。两路分离完成后，比较 A 单讲前窗在两个输出里的能量，较强的一路指定给 A。用它占两路的时频功率比例形成掩码。给定位时，只保留 A 占比至少一半的时频点，使用该路线的 $15$ 路频谱在这些点上的相位差。给波束时，把连续的比例乘到延迟求和输出上。</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
+<thead>
+<tr>
+<th scope="col">输入</th>
+<th scope="col" style="text-align: right;">第 7 麦</th>
+<th scope="col" style="text-align: right;">固定初始角求和</th>
+<th scope="col" style="text-align: right;">按追踪角求和</th>
+<th scope="col" style="text-align: right;">加分离掩码再追踪、求和</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>原始</td>
+<td style="text-align: right;">−2.68</td>
+<td style="text-align: right;">0.05</td>
+<td style="text-align: right;">−0.98</td>
+<td style="text-align: right;">−1.18</td>
+</tr>
+<tr>
+<td>只做 AEC</td>
+<td style="text-align: right;">−0.37</td>
+<td style="text-align: right;">1.20</td>
+<td style="text-align: right;">1.03</td>
+<td style="text-align: right;">−5.16</td>
+</tr>
+<tr>
+<td>只做 WPE</td>
+<td style="text-align: right;">0.05</td>
+<td style="text-align: right;">2.15</td>
+<td style="text-align: right;">1.32</td>
+<td style="text-align: right;">−5.03</td>
+</tr>
+<tr>
+<td>AEC 后做 WPE</td>
+<td style="text-align: right;">4.40</td>
+<td style="text-align: right;">4.21</td>
+<td style="text-align: right;">4.39</td>
+<td style="text-align: right;">4.02</td>
+</tr>
+</tbody>
+</table></div>
+<p>表中是双讲窗内相对 A 数字原轨的 SI-SDR（dB）。A 原轨在评分前一律按先前得到的 $938$ 点对齐，每路输出用同一个时窗。这个参考刻画波形接近原轨的程度，仍会把真实传播、房间频响造成的差异计入误差。另算盲分离两路最优配对的平均 SI-SDR 时，原始频谱为 $-9.51\ \mathrm{dB}$，只做 WPE 后为 $-3.95\ \mathrm{dB}$。AEC 已主动压低 B，再给 A、B 两路等权评分，解决的是另一道题。</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="数据表，可横向滚动"><table>
+<thead>
+<tr>
+<th scope="col">输入</th>
+<th scope="col" style="text-align: right;">扇区峰角度误差</th>
+<th scope="col" style="text-align: right;">卡尔曼追踪误差</th>
+<th scope="col" style="text-align: right;">加分离掩码后追踪误差</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>原始</td>
+<td style="text-align: right;">16.98°</td>
+<td style="text-align: right;">15.32°</td>
+<td style="text-align: right;">16.17°</td>
+</tr>
+<tr>
+<td>只做 AEC</td>
+<td style="text-align: right;">8.54°</td>
+<td style="text-align: right;">5.25°</td>
+<td style="text-align: right;">2.10°</td>
+</tr>
+<tr>
+<td>只做 WPE</td>
+<td style="text-align: right;">15.77°</td>
+<td style="text-align: right;">13.27°</td>
+<td style="text-align: right;">4.61°</td>
+</tr>
+<tr>
+<td>AEC 后做 WPE</td>
+<td style="text-align: right;">3.85°</td>
+<td style="text-align: right;">2.13°</td>
+<td style="text-align: right;">2.02°</td>
+</tr>
+</tbody>
+</table></div>
+<p>角度误差以 A 的动捕方位为参考，在双讲窗内的 $12$ 次观测上算均方根。每 $8$ 帧在 $375$～$3000\ \mathrm{Hz}$ 合成一次 SRP-PHAT，在以初始角为中心的 $\pm22^\circ$ 扇区选峰。这个扇区也会收到 B，原始录音经常在约 $15^\circ$ 处出现峰，卡尔曼滤波只能把连续收到的错误方向变得平滑。第一组观测的状态时刻为 $4.948$ 秒，到 $4.992$ 秒才收齐，首个使用新角度的 STFT 帧中心也在 $4.992$ 秒。这个时间差只描述定位块。WPE 和 AuxIVA 用含评分窗的整段录音离线估计，波形重建还要叠加相邻帧。</p>
+<p>只做 WPE 时，A 单讲前窗选中了第 1 路分离输出，到了双讲窗，第 1 路对 A 的 SI-SDR 是 $-9.54\ \mathrm{dB}$，第 2 路却有 $-1.23\ \mathrm{dB}$。按第 1 路做掩码，追踪误差从 $13.27^\circ$ 降到 $4.61^\circ$，但波束的波形分数从 $1.32$ 降到 $-5.03\ \mathrm{dB}$。因此，用单讲能量认出的输出槽应在双讲中再核一遍。AEC 后做 WPE 时也有同类取舍，加掩码使角度误差从 $2.13^\circ$ 降到 $2.02^\circ$，同一输出的波形分数从 $4.39$ 降到 $4.02\ \mathrm{dB}$。对固定 A 的这段录音，如果更在意波形，保留未乘掩码的分支更合适。</p>
+<p>从 LOCATA 下载 <code>dev.zip</code>，按<a href="08_speech-separation.html#sec-8-7">第 8 章</a>准备固定 <code>ssspy</code> 源码，并确认命令行能找到 <code>ffmpeg</code>。在仓库根目录运行下列命令。<a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch00/cross_chapter/locata_dicit_front_end.py">实验源码</a> · <a href="https://github.com/nanless/microphone-array-tutorial/blob/main/codes/chapters/ch09/reports/locata_dicit_front_end.json">逐麦、逐块数值报告</a></p>
+<pre><code class="language-bash">unzip dev.zip 'dev/task2/recording1/dicit/*' \
+  'dev/task2/recording1/benchmark2/position_source_loudspeaker*.txt' \
+  -d /tmp/locata-front-end
+.venv/bin/python -m codes.chapters.ch00.cross_chapter.locata_dicit_front_end \
+  /tmp/locata-front-end
+</code></pre>
+<p>试听前先调低音量。在最后一条命令后加 <code>--wav-dir /tmp/locata-front-end-wav</code>，可在本机得到六份共用增益的 WAV，包括第 7 麦、逐步增强的结果，以及带和不带分离掩码的追踪波束。</p>
 <h2 id="sec-9-5">9.5 自由场移动声源的双麦音频与传播真值</h2>
 <h3 id="sec-u-76dfa623a9">发射时刻与接收时刻</h3>
 <p>试听前请先调低音量。前文用于听感示意的声像移动样本仅在左右声道上做幅度声像调节（panning），并不包含麦克风阵列的物理传播时延差：</p>

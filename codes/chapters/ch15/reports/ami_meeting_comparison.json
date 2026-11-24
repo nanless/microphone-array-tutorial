@@ -272,6 +272,43 @@
           "rtf": 0.6201466893555947
         }
       }
+    },
+    "dicow": {
+      "array_channels": [
+        1
+      ],
+      "annotation_activity_used_during_inference": true,
+      "recognition_input": "one complete mono excerpt and two per-target activity conditions",
+      "local_raw_result_sha256": "6ffa5bf43f1c1c460df4ee7640fc8207793baf335e692cc6d6537ec3f52f43e2",
+      "session_mean": 0.1365270991025518,
+      "word_weighted": 0.16666666666666666,
+      "reference_words": 150,
+      "errors": 25,
+      "insertions": 2,
+      "deletions": 8,
+      "substitutions": 15,
+      "elapsed_seconds": 158.17874449997908,
+      "rtf": 3.2810359780124263,
+      "by_clip": {
+        "ES2011a-3": {
+          "errors": 20,
+          "reference_words": 71,
+          "seconds": 63.19097808300285,
+          "rtf": 3.5321955328676826
+        },
+        "ES2011a-4": {
+          "errors": 2,
+          "reference_words": 30,
+          "seconds": 51.60764837497845,
+          "rtf": 5.0995699975275155
+        },
+        "ES2011a-21": {
+          "errors": 3,
+          "reference_words": 49,
+          "seconds": 43.380118041997775,
+          "rtf": 2.1475305961385036
+        }
+      }
     }
   },
   "full_excerpt_control": {
@@ -283,5 +320,28 @@
       "ES2011a-21": 19
     },
     "local_raw_result_sha256": "079a7c61c050a374943de6df7569178b126a4b59a7f85bcc627e695d5d4d5f6c"
+  },
+  "dicow": {
+    "model": "BUT-FIT/DiCoW_v3_3",
+    "revision": "c34b64d9a9c5148c65fd355bb188d60343a6b44f",
+    "weights_license": "CC BY 4.0",
+    "weights_bytes": 3568074944,
+    "weights_sha256": "73dee45746bb4a6e5e99d8553f582a70b21b6f1499dea68433d6a7178eb4183b",
+    "model_source_sha256": {
+      "FDDT.py": "fe8b1dec493fdae366b5474de3d1ac0004adcac80036533dacd1ea5f35e0c945",
+      "config.py": "fc9eea09841fb6558e68dda42c327332005b5145b144d2fddfe463bff3e9c971",
+      "decoding.py": "b713399e01804690b84eea5e4cd58d5c475d8da4217835478a364bff15243f46",
+      "encoder.py": "ec63648d28e0950ed4e4b0651bf651c60aab613a3bc603b6a9a97f704dc325ef",
+      "generation.py": "a91f671083f385f9dd4469e1f2c24e85fe2ddbd089c572905e5f8259a6cdd38a",
+      "layers.py": "e91a8af1e4d62e5b112032e42b89796b3430a0c05c49f8c5031dff6e37c8a842",
+      "modeling_dicow.py": "aa335c71078cfad5b84b5e323dd56f232289552a0052b02693819a591e1049b1",
+      "utils.py": "f25f0617517f7ed604361643dc875fc5d2d3500376134dbbe240c82688b6714b"
+    },
+    "torch": "2.11.0",
+    "transformers": "4.57.6",
+    "device": "cpu",
+    "torch_threads": 4,
+    "decode": "English, float32, greedy, no CTC rescoring, timestamp tokens excluded from cpWER",
+    "speaker_condition": "Array1-01 across the whole excerpt, with per-target silence / target solo / other solo / overlap conditions from the ESPnet supervisions, on a 20 ms grid"
   }
 }

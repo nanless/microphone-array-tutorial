@@ -585,6 +585,31 @@ $$\mathrm{cpWER}
 
 发言人串槽可通过删词和插词同时增加错误，但要先分清固定映射与最小排列。在**说话人映射固定、其余词序对齐不变**的控制中，一句正确识别的 $M_w$ 词发言若被挂到另一位参会者轨上，会在真实说话人轨少掉 $M_w$ 词、在另一轨多出 $M_w$ 词，形成 $2M_w$ 次编辑。`cpWER` 还会重新选择整场最优排列，因此不能直接断言它的最小总错数必增 $2M_w$；轨道的其余内容会影响最佳映射与编辑对齐。进一步针对流式系统还需考核**时间约束最小排列词错率（Time-Constrained Minimum-Permutation WER，`tcpWER`，标准评测工具集见 MeetEval，[von Neumann 等，CHiME-7 Workshop 2023](https://doi.org/10.21437/CHiME.2023-6)）**：它在计算词级编辑距离时，将预测词的时间区间两端各向外扩展预定容差（collar，如每端 $5\ \mathrm{s}$），只允许与参考词区间重叠的词对作正确匹配或替换。比如参考和预测各只有一个相同的词，若两个区间相隔超过容差，就计一次删除、一次插入（连续分离跨块拼接、评测口径与选型验收规格分别见[第 8 章 §8.6](08_speech-separation.md#sec-8-6)、[第 10 章 §10.5](10_engineering-practice.md#sec-10-5) 与[第 11 章 §11.5.2](11_selection-guide.md#sec-11-5-2)）。面向原生音频大语言模型（Audio-LLM）与全双工语音到语音（Speech-to-Speech）交互系统对多通道打断检测、低延迟去回声与空间目标保持提出的新一代前端需求，可进一步参见[附录 B §17.3](17_appendix-guide.md#sec-17-3) 研究方向九。
 
+<a id="same-meetings-transcript-scoring"></a>
+
+**同一批会议录音的转写对照。**
+
+在 NOTSOFAR-1 的 dev-set-2 上，BUT/JHU 用同一批多通道真实会议录音评测了两条路线。一条先用日志引导 GSS，再把各说话人的估计波形交给 Whisper Medium。另一条把日志送进 Whisper 的 FDDT 层，直接转写目标说话人。下表取自 [Polok 等，CHiME 2024，表 1](https://www.isca-archive.org/chime_2024/polok24_chime.pdf#page=4)。NOTSOFAR-1 给预测词两端各留 5 秒的匹配容差，再按会话计算 tcpWER，最后对会话取等权平均。
+
+| dev-set-2 多通道系统 | tcpWER |
+|---|---:|
+| BUT/JHU 日志 + GSS + Whisper Medium | 29.6% |
+| BUT/JHU FDDT + Whisper Large | 33.2% |
+| BUT/JHU FDDT + Whisper Small | 36.9% |
+| NOTSOFAR-1 基线，CSS + ASR + 日志 | 31.6% |
+
+在这组配置里，GSS 级联比 Large 版 FDDT 低 3.6 个百分点。两条路线的识别模型和训练也有差别，这 3.6 个百分点是两套具体系统的差距。GSS 所用的 Whisper Medium 也在这个开发集上选取了检查点，因此这组数是开发集对照。原 [SOT 实验，§5.1](https://www.isca-archive.org/interspeech_2020/kanda20b_interspeech.pdf#page=3)用的是 LibriSpeech 人工混合语音，不能把其 WER 填进同一张表。一次 SOT 输出只给一串词和换人标记时，要先为词提供时间、为片段提供会话内的说话人轨，才可用上面的 tcpWER 协议。输出早晚则要另记系统实际发出结果的时刻，词在录音里的时间戳只用于对齐。
+
+可以先用已经发布的转写练习复评分。[BUT/JHU 公布的转写与参考](https://github.com/BUTSpeechFIT/error_correction_playground/tree/193dbab42a0ffc7532dd2dc567b7750d7a5c13de/datasets/NOTSOFAR-1/GT_diar_v1)取自 NOTSOFAR-1 eval-small 的 160 个单通道会话，它们由真实录音生成，给识别器使用的是标注说话人活动。用 [评分脚本](../codes/chapters/ch15/examples/score_meeting_transcripts.py)读取这些已规范化的转写，共 235,740 个参考词。5 秒容差下，tcpWER 按会话平均为 20.86%，与作者报告一致。若先相加全部 51,532 个编辑错误再除以总参考词数，则为 21.86%。两种算法给长会话的权重不同，比较方案时要固定一种。这里的输入、划分和日志来源与上表不同。
+
+下载上述固定提交到仓库外，把 `results` 指向其中的 `datasets/NOTSOFAR-1/GT_diar_v1`。在单独的 Python 环境安装 `meeteval==0.4.3` 和 `simplejson==3.20.2`，再从本书仓库根目录运行：
+
+    python -m codes.chapters.ch15.examples.score_meeting_transcripts \
+        --reference "$results"/*/ref.json \
+        --hypothesis but-jhu "$results"/*/tcp_wer_hyp.json
+
+比较自己的转写时，可以为每套系统追加一个 `--hypothesis`。参考和预测先采用同样的文本规范化，各套转写要覆盖同一批会话。整场无输出时，仍需为该会话保留一条 SegLST 记录：填入其 `session_id`、说话人占位及有效的起止时间，把 `words` 留为空字符串。评分会把该会话的参考词全部记为删除。脚本会列出插入、删除和替换计数，并同时给出等权会话平均和按词汇总的结果。
+
 #### 注册声纹漂移、双胞胎音色近似与冷启动工程对策
 
 在部署目标说话人提取（TSE）系统时，切忌把实验室标准注册集上的高分当成无条件保障。纯声纹线索在实际产品中存在四类典型退化边界及配套工程解法：
@@ -806,7 +831,7 @@ p_s&=\sigma\bigl(\vec w_{\mathrm{exist}}^\top\vec a_s+b\bigr),\\
 
 **参考答案**：（1）双人场景下三个候选吸引子的存在对数几率依次为 $2 - 1 = +1.0$、$2 - 1 = +1.0$ 与 $0.2 - 1 = -0.8$，故 $p_1 = p_2 = \sigma(1.0) \approx 0.731059 \ge 0.5$，而第 3 个吸引子 $p_3 = \sigma(-0.8) \approx 0.310026 < 0.5$，解码器准确在 $\hat S = 2$ 处停止。
 
-（2）三人场景下总参考说话人帧数为 $3 + 2 + 2 = 7$ 帧（$T_{\mathrm{ref}} = 3.5\ \mathrm{s}$，其中第 $2$ 帧为三人同时重叠）。EEND-EDA 对前三个正交吸引子均给出 $p_{1,2,3} \approx 0.731059 \ge 0.5$，在第 4 个候选处对数几率为 $0.3 - 1.0 = -0.7$，因 $p_4 = \sigma(-0.7) \approx 0.331812 < 0.5$ 自动停在 $\hat S = 3$；内积矩阵 $\mathbf A^\top\mathbf E$ 在发声格点全为 $+4$（后验 $\sigma(4) \approx 0.982014$）、沉默格点全为 $-4$（后验 $\sigma(-4) \approx 0.017986$），按 $0.5$ 二值化后与 $\mathbf R_{\mathrm{3spk}}$ 完全一致，实现 $\mathrm{DER}_{\mathrm{EDA}} = 0 / 7 = 0.00\%$。反之，任何固定双槽（$K_{\mathrm{fixed}} = 2$）模型在 $1$-对-$1$ 最优匹配下至多匹配两位活跃说话人，总 DER 至少包含 $2$ 个错误帧（$1.0\ \mathrm{s}$），错误可为漏检或身份混淆；本题 oracle 选择丢弃发言最少者，达到该界。因此即便拥有理想双槽掩码，其最低误差率仍受限于 $2 / 7 \approx 28.57\%$（见 `eend_enrollment_robustness.py`）。
+（2）三人场景下总参考说话人帧数为 $3 + 2 + 2 = 7$ 帧（$T_{\mathrm{ref}} = 3.5\ \mathrm{s}$，三人同时发声对应矩阵的第 3 列，也就是从 0 开始编号的帧 $t=2$）。EEND-EDA 对前三个正交吸引子均给出 $p_{1,2,3} \approx 0.731059 \ge 0.5$，在第 4 个候选处对数几率为 $0.3 - 1.0 = -0.7$，因 $p_4 = \sigma(-0.7) \approx 0.331812 < 0.5$ 自动停在 $\hat S = 3$；内积矩阵 $\mathbf A^\top\mathbf E$ 在发声格点全为 $+4$（后验 $\sigma(4) \approx 0.982014$）、沉默格点全为 $-4$（后验 $\sigma(-4) \approx 0.017986$），按 $0.5$ 二值化后与 $\mathbf R_{\mathrm{3spk}}$ 完全一致，实现 $\mathrm{DER}_{\mathrm{EDA}} = 0 / 7 = 0.00\%$。反之，任何固定双槽（$K_{\mathrm{fixed}} = 2$）模型在 $1$-对-$1$ 最优匹配下至多匹配两位活跃说话人，总 DER 至少包含 $2$ 个错误帧（$1.0\ \mathrm{s}$），错误可为漏检或身份混淆；本题 oracle 选择丢弃发言最少者，达到该界。因此即便拥有理想双槽掩码，其最低误差率仍受限于 $2 / 7 \approx 28.57\%$（见 `eend_enrollment_robustness.py`）。
 
 <a id="e15-14"></a>
 

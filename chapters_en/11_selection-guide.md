@@ -1007,7 +1007,7 @@ $$
 \end{aligned}\tag{11-20}
 $$
 
-With outer sensor spacing $0.04\ \mathrm{m}$, the $20^\circ$ interferer steering phase $\phi_{20}=80\pi\sin 20^\circ / 343 \approx 0.250609\ \mathrm{rad}$ gives real scalar $\beta = 1 + 2\cos(0.250609)$. At $\alpha = 1$ ($\delta = 1.01$, $q = 1.02$), Eq. (11-20) yields conjugate-symmetric weights $w_1 \approx 0.342249 + 0.212328\mathrm{j}$, $w_2 \approx 0.315503$, and $w_3 \approx 0.342249 - 0.212328\mathrm{j}$, summing identically to $1$ ($\vec w^H\vec a_0 = 1$).
+Each outer sensor is $0.04\ \mathrm{m}$ from the center sensor, and the two outer sensors are $0.08\ \mathrm{m}$ apart. The $20^\circ$ interferer steering phase $\phi_{20}=80\pi\sin 20^\circ / 343 \approx 0.250609\ \mathrm{rad}$ gives real scalar $\beta = 1 + 2\cos(0.250609)$. At $\alpha = 1$ ($\delta = 1.01$, $q = 1.02$), Eq. (11-20) yields conjugate-symmetric weights $w_1 \approx 0.342249 + 0.212328\mathrm{j}$, $w_2 \approx 0.315503$, and $w_3 \approx 0.342249 - 0.212328\mathrm{j}$, summing identically to $1$ ($\vec w^H\vec a_0 = 1$).
 
 **Step 3: Strictly separate three spatial noise metrics.** Because all four candidates satisfy $\vec w^H\vec a_0 = 1$, nominal target output power is $1$. Write squared weight norm $\nu_w = \vec w^H\vec w$; with dimensionless spacing $d_{mn}=2f|p_m - p_n|/c$, construct the 3D spherically isotropic diffuse coherence matrix $\Gamma_{mn} = \operatorname{sinc}(d_{mn})$ ($\operatorname{sinc}(x) = \sin(\pi x)/(\pi x)$) and quadratic form $\gamma_w = \vec w^H\mathbf{\Gamma}\vec w$. Nominal White Noise Gain, isotropic Directivity Index, and true-field output noise power are:
 
@@ -1061,7 +1061,7 @@ Although unloaded MVDR ($\alpha = 0$) posts the lowest total NMSE ($0.129625$) o
 
 ![Figure 74: Evaluating physical gains, acoustic hard constraints, and device evidence separately](../figures_en/fig74_selection_evidence.png)
 
-*Figure 74: Complete selection loop for the four narrowband beamformer candidates of E11-20 under true noise covariance $\mathbf{R}_{nn}$ and $5^\circ$ pointing mismatch. (a) Output noise power (blue bars) and total NMSE including target mismatch (black diamonds); (b) complex response deviation $|\vec w^H\vec a_5 - 1|$ at true $5^\circ$ target against hard ceiling $0.03$; (c) White Noise Gain WNG against hard floor $0\ \mathrm{dB}$; (d) isotropic diffuse reference DI alongside the overall three-state acceptance summary.*
+*Figure 74: Acoustic screening and device verdicts for the four narrowband beamformer candidates of E11-20 under true noise covariance $\mathbf{R}_{nn}$ and $5^\circ$ pointing mismatch. (a) Output noise power (blue bars) and total NMSE including target mismatch (black diamonds); (b) complex response deviation $|\vec w^H\vec a_5 - 1|$ at true $5^\circ$ target against hard ceiling $0.03$; (c) White Noise Gain WNG against hard floor $0\ \mathrm{dB}$; (d) isotropic diffuse reference DI alongside the overall three-state acceptance summary.*
 
 Figure 74 synthesizes the entire chapter's selection philosophy across four panels:
 

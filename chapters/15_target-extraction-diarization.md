@@ -602,7 +602,22 @@ $$\mathrm{cpWER}
 
 串行解码和逐人解码也有实录对照。[Kocour 等，ICASSP 2026，表 4](https://arxiv.org/html/2510.03723v2#S4.T4)在同一批 AMI 单远场麦克风录音上，用标注的说话人活动比较两种解码方式。DiCoW 逐人转写，cpWER 为 16.3%；SA-DiCoW 沿用 DiCoW 编码器，用同一个解码器串行输出各人的词和时间戳，cpWER 为 18.1%。这一组用单通道、标注日志和 cpWER，上表用多通道、系统估计的日志和 tcpWER。
 
-可以先用已经发布的转写练习复评分。[BUT/JHU 公布的转写与参考](https://github.com/BUTSpeechFIT/error_correction_playground/tree/193dbab42a0ffc7532dd2dc567b7750d7a5c13de/datasets/NOTSOFAR-1/GT_diar_v1)取自 NOTSOFAR-1 eval-small 的 160 个单通道会话，它们由真实录音生成，给识别器使用的是标注说话人活动。用 [评分脚本](../codes/chapters/ch15/examples/score_meeting_transcripts.py)读取这些已规范化的转写，共 235,740 个参考词。5 秒容差下，tcpWER 按会话平均为 20.86%，与作者报告一致。若先相加全部 51,532 个编辑错误再除以总参考词数，则为 21.86%。两种算法给长会话的权重不同，比较方案时要固定一种。这里的输入、划分和日志来源与上表不同。
+**在同一段实录里换前端。** 本书从 [AMI 会议库](https://groups.inf.ed.ac.uk/ami/corpus/)的 ES2011a 开发集录音取三段，总长 48.21 秒。单麦读取 Array1-01，两麦同时读取 Array1-01 和 Array1-02。按 [ESPnet 发布的开发集分段表](https://huggingface.co/espnet/multi-talker-whisper-small-ami/tree/1b2452421d3acb2405955e66e8b668928632d9cb)的顺序，取最早三个符合条件的片段：长 8–30 秒，只有两人发言，两人各有至少 1 秒单讲，且重叠至少 0.2 秒。三段在原录音中的范围为 $[65.00,82.89)$、$[82.98,93.10)$ 和 $[280.98,301.18)$ 秒，重叠分别为 2.60、0.22 和 2.57 秒。活动和参考文字都取自这份分段表，不用近讲声道做输入。
+
+前两行使用同一个 Whisper Tiny 识别器，也按同一份标注裁取各人说话的区间。第一行直接裁原单麦，重叠部分仍有两人。第二行先按活动估计两路波形，再分别裁取；实现沿用第 8 章的两麦 cACGMM 和 MVDR，并在前面加离线 WPE。第三行送入同一份两麦增强输出，但每路都按整段识别。最后一行用 ESPnet 发布的 AMI Whisper Small SOT，输入是完整单麦片段，模型自行输出说话人切换符。统一用 Whisper 的英文规范化和 MeetEval 打分：每段分别找最佳说话人对换，再把三段的编辑错误相加，除以 150 个参考词。
+
+| 离线处理方式 | 插入 / 删除 / 替换 | cpWER | 计算耗时（秒） | RTF |
+|---|---:|---:|---:|---:|
+| 原单麦按活动裁段 → Whisper Tiny | 23 / 14 / 46 | 55.3% | 11.73 | 0.24 |
+| 两麦 GSS 后按活动裁段 → Whisper Tiny | 12 / 15 / 38 | 43.3% | 32.64 | 0.68 |
+| 两麦 GSS 后按整段 → Whisper Tiny | 103 / 14 / 41 | 105.3% | 24.76 | 0.51 |
+| 单麦 ESPnet Whisper Small SOT | 7 / 6 / 21 | 22.7% | 38.92 | 0.81 |
+
+前两行固定识别器和裁段方式，加入两麦增强后，错误从 83 个降到 65 个。第三行让识别器听完两路增强信号的全部时段，多出了 91 个插入。第三个片段的两条转写共有一段连续 19 个经过规范化的词，其中一路还重复了一段三词发言。关闭识别器沿用前文的设置后，三段的六条文字都相同。只看这些文字，还分不出有多少来自波形里的残余串音，有多少是识别器多写的。cpWER 的分母始终是参考词数，因此插入多时可以超过 100%。SOT 一行同时换了输入条件、识别模型和训练方式，这三段的差距不能归因于串行解码这一步。
+
+耗时在同一台 Apple M5 的 CPU 上实测。先读入波形并装载模型，再计到该片段的各路转写完成，包含特征提取、相应的增强或切段和解码。RTF 是三段计算耗时之和除以 48.21 秒，两麦的同一时段只算一次。三个片段都等录音齐备后才处理，因此表中的数可以用来估计处理一批短录音所需的计算时间；要测流式系统多久发出第一个词，还要记录采集和文字发出的时刻。[运行脚本](../codes/chapters/ch15/examples/ami_meeting_comparison.py)、[SOT 入口](../codes/chapters/ch15/examples/run_ami_sot.py)和[逐段结果](../codes/chapters/ch15/reports/ami_meeting_comparison.json)保留了录音样本范围、模型版本和计时条件。录音由 AMI 发布，采用 [CC BY 4.0](https://groups.inf.ed.ac.uk/ami/corpus/license.shtml)。
+
+还可以用已经发布的转写练习复评分。[BUT/JHU 公布的转写与参考](https://github.com/BUTSpeechFIT/error_correction_playground/tree/193dbab42a0ffc7532dd2dc567b7750d7a5c13de/datasets/NOTSOFAR-1/GT_diar_v1)取自 NOTSOFAR-1 eval-small 的 160 个单通道会话，它们由真实录音生成，给识别器使用的是标注说话人活动。用 [评分脚本](../codes/chapters/ch15/examples/score_meeting_transcripts.py)读取这些已规范化的转写，共 235,740 个参考词。5 秒容差下，tcpWER 按会话平均为 20.86%，与作者报告一致。若先相加全部 51,532 个编辑错误再除以总参考词数，则为 21.86%。两种算法给长会话的权重不同，比较方案时要固定一种。这里的输入、划分和日志来源与前面的对照不同。
 
 下载上述固定提交到仓库外，把命令里的 `/path/to/GT_diar_v1` 换成其中 `datasets/NOTSOFAR-1/GT_diar_v1` 的实际路径。在单独的 Python 环境安装 `meeteval==0.4.3` 和 `simplejson==3.20.2`，再从本书仓库根目录运行：
 

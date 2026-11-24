@@ -1,0 +1,287 @@
+{
+  "measured_on": "2026-11-24",
+  "dataset": {
+    "name": "AMI Meeting Corpus",
+    "license": "CC BY 4.0",
+    "license_url": "https://groups.inf.ed.ac.uk/ami/corpus/license.shtml",
+    "recording": "ES2011a",
+    "split": "ESPnet AMI single distant microphone development cutset",
+    "cutset_url": "https://huggingface.co/espnet/multi-talker-whisper-small-ami/blob/1b2452421d3acb2405955e66e8b668928632d9cb/ami-sdm_cutset_dev_utt_group_max_30s.jsonl.gz",
+    "cutset_sha256": "6c6f4d9007df1de49c8ce9fd3072a67b61595608fc043caa5481d32e195f95a4",
+    "array_wavs": [
+      "https://groups.inf.ed.ac.uk/ami/AMICorpusMirror/amicorpus/ES2011a/audio/ES2011a.Array1-01.wav",
+      "https://groups.inf.ed.ac.uk/ami/AMICorpusMirror/amicorpus/ES2011a/audio/ES2011a.Array1-02.wav"
+    ],
+    "sample_rate_hz": 16000,
+    "audio_format": "mono PCM16 little-endian per microphone",
+    "selection": "First three excerpts in published cutset order with duration 8–30 s, exactly two speakers, at least 1 s solo for each, and at least 0.2 s overlap. Speech turns and reference text are the cutset supervisions.",
+    "input_transformation": "Sample-exact half-open crop, no resampling or gain changes."
+  },
+  "clips": [
+    {
+      "id": "ES2011a-3",
+      "source_sample_range": [
+        1040000,
+        1326240
+      ],
+      "duration_seconds": 17.89,
+      "annotated_overlap_seconds": 2.6,
+      "reference_words": 71,
+      "pcm_sha256": {
+        "1": "ec6a0d335204666236626d6677e60ad3c6ba4252e321b6a085ef3eb0b487ca29",
+        "2": "09729706a5f945b12f9e86e8da556e7b86f17cab3fd5fb32389979435576455f"
+      },
+      "local_wav_sha256": {
+        "1": "aaa33c488369e2feb0afde0e06a94431fcc2f5e62a5d8a030b7991158dc4f61a",
+        "2": "50ebc69e80918e2034a441e1084ba65f26cffa83aa289222c8a58ab2651b7658"
+      }
+    },
+    {
+      "id": "ES2011a-4",
+      "source_sample_range": [
+        1327680,
+        1489600
+      ],
+      "duration_seconds": 10.12,
+      "annotated_overlap_seconds": 0.22,
+      "reference_words": 30,
+      "pcm_sha256": {
+        "1": "7a9d752bb26d77ee31c863cc34c1fd8c1dcc2db8634e1a6a8df4bb41da6005d3",
+        "2": "af2cbfe78c9309b09858189d8b0d92f56bc629567aba5d38619ef6af6521877b"
+      },
+      "local_wav_sha256": {
+        "1": "5fd28cb41a2de0580c0ad8c5def5d1d0909fae1c7f52475e65ea45c660e71f3e",
+        "2": "d24d3f54111abf6602b7e0b91ea2a9a46dc6afbc4250a0b82536454fd306a879"
+      }
+    },
+    {
+      "id": "ES2011a-21",
+      "source_sample_range": [
+        4495680,
+        4818880
+      ],
+      "duration_seconds": 20.2,
+      "annotated_overlap_seconds": 2.57,
+      "reference_words": 49,
+      "pcm_sha256": {
+        "1": "1321741e9af012add4a6e4293e985c0314a60dfe37058b9192622d1d6eb1ef90",
+        "2": "325686ee72d70291bc6d6eb5c53f58826758edaf502415226f1203a98b146f3d"
+      },
+      "local_wav_sha256": {
+        "1": "87c55ade4d26b73c828a3f38d5dbdd560533513135e50659c505d0218a5a9b3b",
+        "2": "cf4e8299a538d984c4d6146927af2e962503eb6caf9c5ea3219041d6a2e1c919"
+      }
+    }
+  ],
+  "audio_seconds": 48.21,
+  "scoring": {
+    "metric": "cpWER, one best speaker permutation per excerpt, word-weighted across the three excerpts",
+    "reference_words": 150,
+    "normalizer": "OpenAI Whisper EnglishTextNormalizer",
+    "openai_whisper": "20250625",
+    "meeteval": "0.4.3",
+    "simplejson": "3.20.2"
+  },
+  "timing": {
+    "hardware": "Apple M5 CPU",
+    "macos": "27.2.1",
+    "trials_per_row": 1,
+    "clock": "time.perf_counter, elapsed wall time after audio/model load through complete decoding of all streams of each offline excerpt",
+    "rtf_denominator": "48.21 s of recording time, without multiplying by microphone count",
+    "sot_torch_intraop_threads": 4,
+    "mlx_thread_settings": "VECLIB_MAXIMUM_THREADS=4 and OMP_NUM_THREADS=4 were set; actual native MLX worker count was not measured"
+  },
+  "whisper_tiny": {
+    "model": "mlx-community/whisper-tiny-mlx",
+    "revision": "6caf9c55601caafbe6508a8b0d216bdf4783c4e8",
+    "weights_sha256": "0e03a5993d6eea43b07ee2dcc772b0e4cef5bb227257dacc24bf289387d49186",
+    "mlx_whisper": "0.4.3",
+    "mlx": "0.31.1",
+    "numpy": "2.3.5",
+    "scipy": "1.17.1",
+    "decode": "English, float32, temperature 0"
+  },
+  "sot_whisper_small": {
+    "model": "espnet/multi-talker-whisper-small-ami",
+    "model_revision": "1b2452421d3acb2405955e66e8b668928632d9cb",
+    "model_sha256": "11008ed2cbf9399dadf3a31023c3a3e7e8daeb710cef4851dc6971a7522e3a07",
+    "decoder_revision": "9a2b4def1fce1c7b4be3b0d98483fd1d3142f928",
+    "decoder_sha256": "d758d2f0eaa46b1006f77a76fa89b2d1151032aa99b24d643ac676d50dc7b70e",
+    "torch": "2.11.0",
+    "whisper": "20250625",
+    "device": "cpu",
+    "torch_threads": 4,
+    "decode": "English, float32, beam size 5, previous-text conditioning disabled"
+  },
+  "gss": {
+    "stft_fft_samples": 512,
+    "stft_hop_samples": 160,
+    "wpe_taps": 3,
+    "wpe_delay_frames": 2,
+    "wpe_iterations": 2,
+    "cacgmm_iterations": 8,
+    "beamformer": "chapter 8 two-microphone MVDR"
+  },
+  "results": {
+    "mono-cuts": {
+      "array_channels": [
+        1
+      ],
+      "annotation_activity_used_during_inference": true,
+      "recognition_input": "per-speaker crops of the original Array1-01 signal",
+      "local_raw_result_sha256": "771039b38aa2ea692a7dc62f4ce001d13d2393ba795d203b32c63661ce2ba3e6",
+      "session_mean": 0.5087317556130433,
+      "word_weighted": 0.5533333333333333,
+      "reference_words": 150,
+      "errors": 83,
+      "insertions": 23,
+      "deletions": 14,
+      "substitutions": 46,
+      "elapsed_seconds": 11.73097425000742,
+      "rtf": 0.2433307249534831,
+      "by_clip": {
+        "ES2011a-3": {
+          "errors": 49,
+          "reference_words": 71,
+          "seconds": 5.610333333024755,
+          "rtf": 0.31360163963246257
+        },
+        "ES2011a-4": {
+          "errors": 11,
+          "reference_words": 30,
+          "seconds": 1.8385326249990612,
+          "rtf": 0.1816731842884448
+        },
+        "ES2011a-21": {
+          "errors": 23,
+          "reference_words": 49,
+          "seconds": 4.282108291983604,
+          "rtf": 0.21198555900908933
+        }
+      }
+    },
+    "gss-cuts": {
+      "array_channels": [
+        1,
+        2
+      ],
+      "annotation_activity_used_during_inference": true,
+      "recognition_input": "per-speaker crops of the estimated waveforms",
+      "local_raw_result_sha256": "511f1fef197f509056848dbed9b51c53c1f5e25dbe849ac0777d0ad2fd0ca141",
+      "session_mean": 0.40726901089074125,
+      "word_weighted": 0.43333333333333335,
+      "reference_words": 150,
+      "errors": 65,
+      "insertions": 12,
+      "deletions": 15,
+      "substitutions": 38,
+      "elapsed_seconds": 32.639205373998266,
+      "rtf": 0.6770214763326751,
+      "by_clip": {
+        "ES2011a-3": {
+          "errors": 37,
+          "reference_words": 71,
+          "seconds": 9.780082040990237,
+          "rtf": 0.5466787054773748
+        },
+        "ES2011a-4": {
+          "errors": 10,
+          "reference_words": 30,
+          "seconds": 8.514548250008374,
+          "rtf": 0.8413585227281003
+        },
+        "ES2011a-21": {
+          "errors": 18,
+          "reference_words": 49,
+          "seconds": 14.344575082999654,
+          "rtf": 0.7101274793564185
+        }
+      }
+    },
+    "gss-full": {
+      "array_channels": [
+        1,
+        2
+      ],
+      "annotation_activity_used_during_inference": true,
+      "recognition_input": "one entire estimated waveform per speaker",
+      "local_raw_result_sha256": "481ec73b2fb08593d39032f51df414afa7abc218626445c80af975d658001f35",
+      "session_mean": 1.0246335153779822,
+      "word_weighted": 1.0533333333333332,
+      "reference_words": 150,
+      "errors": 158,
+      "insertions": 103,
+      "deletions": 14,
+      "substitutions": 41,
+      "elapsed_seconds": 24.757033874979243,
+      "rtf": 0.513524867765593,
+      "by_clip": {
+        "ES2011a-3": {
+          "errors": 79,
+          "reference_words": 71,
+          "seconds": 8.48090229195077,
+          "rtf": 0.47405826114872945
+        },
+        "ES2011a-4": {
+          "errors": 27,
+          "reference_words": 30,
+          "seconds": 5.048468374996446,
+          "rtf": 0.49886051136328524
+        },
+        "ES2011a-21": {
+          "errors": 52,
+          "reference_words": 49,
+          "seconds": 11.227663208032027,
+          "rtf": 0.5558249112887143
+        }
+      }
+    },
+    "sot": {
+      "array_channels": [
+        1
+      ],
+      "annotation_activity_used_during_inference": false,
+      "recognition_input": "one decode of the whole excerpt with speaker-change tokens",
+      "local_raw_result_sha256": "f6df99a9455b4ca1f553d16118399e185376c3001b046601c8feeee7ba2f00b5",
+      "session_mean": 0.18519689565967232,
+      "word_weighted": 0.22666666666666666,
+      "reference_words": 150,
+      "errors": 34,
+      "insertions": 7,
+      "deletions": 6,
+      "substitutions": 21,
+      "elapsed_seconds": 38.92064716597088,
+      "rtf": 0.8073148136480165,
+      "by_clip": {
+        "ES2011a-3": {
+          "errors": 28,
+          "reference_words": 71,
+          "seconds": 18.270954124978743,
+          "rtf": 1.0212942495795831
+        },
+        "ES2011a-4": {
+          "errors": 3,
+          "reference_words": 30,
+          "seconds": 8.12272991600912,
+          "rtf": 0.8026412960483321
+        },
+        "ES2011a-21": {
+          "errors": 3,
+          "reference_words": 49,
+          "seconds": 12.526963124983013,
+          "rtf": 0.6201466893555947
+        }
+      }
+    }
+  },
+  "full_excerpt_control": {
+    "settings_changed": "Disable previous-text conditioning in Whisper Tiny, use the same enhanced recordings.",
+    "six_transcripts_identical": true,
+    "longest_common_contiguous_normalized_run_across_streams": {
+      "ES2011a-3": 5,
+      "ES2011a-4": 10,
+      "ES2011a-21": 19
+    },
+    "local_raw_result_sha256": "079a7c61c050a374943de6df7569178b126a4b59a7f85bcc627e695d5d4d5f6c"
+  }
+}
